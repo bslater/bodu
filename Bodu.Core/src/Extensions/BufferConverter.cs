@@ -11,10 +11,13 @@ namespace Bodu.Extensions;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The <see cref="BufferConverter"/> class enables efficient reinterpretation of binary data as strongly-typed arrays without
-/// allocating additional memory or performing per-element conversions. Operations assume platform-native endianness.
+/// The <see cref="BufferConverter" /> class enables efficient reinterpretation of binary data as strongly-typed arrays
+/// without allocating additional memory or performing per-element conversions. Operations assume platform-native
+/// endianness.
 /// </para>
-/// <para>Only types that are <see langword="unmanaged"/> (e.g., primitives, structs without references) are supported.</para>
+/// <para>
+/// Only types that are <see langword="unmanaged" /> (e.g., primitives, structs without references) are supported.
+/// </para>
 /// </remarks>
 public static partial class BufferConverter
 {

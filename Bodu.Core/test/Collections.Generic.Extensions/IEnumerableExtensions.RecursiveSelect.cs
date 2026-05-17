@@ -222,7 +222,7 @@ public partial class IEnumerableExtensionsTests_RecursiveSelect
         var root = new Node { Name = "Root", Children = null! };
         var actual = new object[] { root }.RecursiveSelect(n => (n as Node).Children).ToList();
 
-        Assert.AreEqual(1, actual.Count);
+        Assert.HasCount(1, actual);
         Assert.AreEqual("Root", (actual[0] as Node).Name);
     }
 
@@ -277,7 +277,7 @@ public partial class IEnumerableExtensionsTests_RecursiveSelect
     {
         object[] source = [];
         var actual = source.RecursiveSelect(n => []).ToList();
-        Assert.AreEqual(0, actual.Count);
+        Assert.IsEmpty(actual);
     }
 
     /// <summary>

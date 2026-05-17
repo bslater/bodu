@@ -34,7 +34,7 @@ public partial class DequeTests
             .Where(p => p.SetMethod != null && p.SetMethod.IsPublic)
             .ToList();
 
-        Assert.AreEqual(0, mutableProperties.Count,
+        Assert.IsEmpty(mutableProperties,
             $"Enumerator exposes mutable public properties: {string.Join(", ", mutableProperties.Select(p => p.Name))}");
     }
 

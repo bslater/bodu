@@ -61,7 +61,7 @@ public partial class EvictingDictionaryTests
         dictionary.Remove("B");
         dictionary.Add("C", 3);
 
-        Assert.AreEqual(0, evicted.Count);
+        Assert.IsEmpty(evicted);
     }
 
     /// <summary>

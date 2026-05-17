@@ -9,19 +9,24 @@ namespace Bodu;
 public partial struct WeekPattern
 {
     /// <summary>
-    /// Parses a seven-character week-pattern string into a <see cref="WeekPattern" />,
-    /// auto-detecting the format when <paramref name="formatInfo" /> is <see langword="null" />.
+    /// Parses a seven-character week-pattern string into a <see cref="WeekPattern" />, auto-detecting the format when
+    /// <paramref name="formatInfo" /> is <see langword="null" />.
     /// </summary>
-    /// <param name="input">A seven-character string representing the days of the week. Each position
-    /// indicates whether the corresponding day is selected.</param>
-    /// <param name="formatInfo">An optional format descriptor containing the week-start character
-    /// (<c>'S'</c> or <c>'M'</c>), the character used for unselected days, and whether the encoding
-    /// is binary (<c>'1'</c>/<c>'0'</c>). When <see langword="null" />, these are inferred from
-    /// <paramref name="input" />.</param>
+    /// <param name="input">
+    /// A seven-character string representing the days of the week. Each position indicates whether the corresponding
+    /// day is selected.
+    /// </param>
+    /// <param name="formatInfo">
+    /// An optional format descriptor containing the week-start character (<c>'S'</c> or <c>'M'</c>), the character used
+    /// for unselected days, and whether the encoding is binary (<c>'1'</c>/<c>'0'</c>). When <see langword="null" />,
+    /// these are inferred from <paramref name="input" />.
+    /// </param>
     /// <returns>The parsed <see cref="WeekPattern" /> value.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="input" /> is <see langword="null" />.</exception>
-    /// <exception cref="FormatException"><paramref name="input" /> is not exactly seven characters, or
-    /// contains characters that do not match the detected or supplied format.</exception>
+    /// <exception cref="FormatException">
+    /// <paramref name="input" /> is not exactly seven characters, or contains characters that do not match the detected
+    /// or supplied format.
+    /// </exception>
     private static WeekPattern ParseCore(string input, (char? startDay, char? unselectedChar, bool isBinary)? formatInfo)
     {
         ThrowHelper.ThrowIfNull(input);
@@ -112,42 +117,40 @@ public partial struct WeekPattern
     }
 
     /// <summary>
-    /// Parses the format string for use in <see cref="ParseExact"/> or <see cref="TryParseExact"/>,
-    /// throwing <see cref="FormatException"/> if the format is unrecognized or <see langword="null"/>.
+    /// Parses the format string for use in <see cref="ParseExact" /> or <see cref="TryParseExact" />, throwing
+    /// <see cref="FormatException" /> if the format is unrecognized or <see langword="null" />.
     /// </summary>
     private static (char? startDay, char? unselectedChar, bool isBinary) ParseFormatForParse(string format)
     {
         ThrowHelper.ThrowIfNull(format);
-        if (string.IsNullOrEmpty(format) || !TryParseFormatInfo(format, out var info))
-            throw new FormatException(ResourceStrings.Arg_Invalid_FormatString);
-
-        return info;
+        return string.IsNullOrEmpty(format) || !TryParseFormatInfo(format, out (char? startDay, char? unselectedChar, bool isBinary) info)
+            ? throw new FormatException(ResourceStrings.Arg_Invalid_FormatString)
+            : info;
     }
 
     /// <summary>
-    /// Parses the format string for use in <see cref="ToString(string, IFormatProvider)"/>,
-    /// throwing <see cref="ArgumentException"/> if the format is unrecognized.
+    /// Parses the format string for use in <see cref="ToString(string, IFormatProvider)" />, throwing
+    /// <see cref="ArgumentException" /> if the format is unrecognized.
     /// </summary>
     private static (char? startDay, char? unselectedChar, bool isBinary) ParseFormatForToString(string? format)
     {
         format ??= "S";
-        if (!TryParseFormatInfo(format, out var info))
-            throw new ArgumentException(ResourceStrings.Arg_Invalid_FormatString, nameof(format));
-
-        return info;
+        return !TryParseFormatInfo(format, out (char? startDay, char? unselectedChar, bool isBinary) info)
+            ? throw new ArgumentException(ResourceStrings.Arg_Invalid_FormatString, nameof(format))
+            : info;
     }
 
     /// <summary>
     /// Attempts to parse the format string into its constituent parts for use in formatting or parsing a
-    /// <see cref="WeekPattern"/>.
+    /// <see cref="WeekPattern" />.
     /// </summary>
     /// <param name="format">The format string (one or two characters).</param>
     /// <param name="info">
-    /// When this method returns <see langword="true"/>, contains the parsed format tuple:
-    /// <c>startDay</c> is <c>'S'</c> or <c>'M'</c>; <c>unselectedChar</c> is the placeholder symbol;
-    /// <c>isBinary</c> indicates binary output mode.
+    /// When this method returns <see langword="true" />, contains the parsed format tuple: <c>startDay</c> is
+    /// <c>'S'</c> or <c>'M'</c>; <c>unselectedChar</c> is the placeholder symbol; <c>isBinary</c> indicates binary
+    /// output mode.
     /// </param>
-    /// <returns><see langword="true"/> if the format is recognized; otherwise, <see langword="false"/>.</returns>
+    /// <returns><see langword="true" /> if the format is recognized; otherwise, <see langword="false" />.</returns>
     private static bool TryParseFormatInfo(string format, out (char? startDay, char? unselectedChar, bool isBinary) info)
     {
         info = default;
@@ -186,7 +189,7 @@ public partial struct WeekPattern
             var startDayChar = format[0];
             var specChar = format[1];
 
-            if (startDayChar is not('S' or 'M'))
+            if (startDayChar is not ('S' or 'M'))
                 return false;
 
             var unselected = specChar switch

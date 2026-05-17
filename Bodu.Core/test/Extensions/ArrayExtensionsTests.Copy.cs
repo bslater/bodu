@@ -79,7 +79,7 @@ public partial class ArrayExtensionsTests
 
         var result = source.Copy()!;
 
-        Assert.AreEqual(0, result.Length);
+        Assert.IsEmpty(result);
         Assert.IsFalse(ReferenceEquals(source, result));
     }
 

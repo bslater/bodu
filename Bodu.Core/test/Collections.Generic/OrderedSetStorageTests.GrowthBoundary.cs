@@ -60,8 +60,8 @@ public partial class OrderedSetStorageTests
 
         var reported = sut.EnsureCapacity(1024);
 
-        Assert.IsTrue(reported >= 1024);
-        Assert.IsTrue(sut.Capacity >= 1024);
+        Assert.IsGreaterThanOrEqualTo(1024, reported);
+        Assert.IsGreaterThanOrEqualTo(1024, sut.Capacity);
     }
 
     /// <summary>
@@ -76,7 +76,7 @@ public partial class OrderedSetStorageTests
 
         var reported = sut.EnsureCapacity(1);
 
-        Assert.IsTrue(reported >= 4, $"Expected at least DefaultCapacity (4), got {reported}.");
+        Assert.IsGreaterThanOrEqualTo(4, reported, $"Expected at least DefaultCapacity (4), got {reported}.");
     }
 
 }

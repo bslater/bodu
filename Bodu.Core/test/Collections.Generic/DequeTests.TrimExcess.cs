@@ -24,7 +24,7 @@ public partial class DequeTests
 
         deque.AddLast(2);
         Assert.AreEqual(2, deque.Count);
-        Assert.IsTrue(deque.Capacity >= 2);
+        Assert.IsGreaterThanOrEqualTo(2, deque.Capacity);
     }
 
 }

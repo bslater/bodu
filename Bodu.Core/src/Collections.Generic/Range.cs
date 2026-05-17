@@ -9,15 +9,15 @@ using System.Diagnostics;
 namespace Bodu.Collections.Generic;
 
 /// <summary>
-/// Represents a half-open range, where <see cref="StartInclusive" /> is included and
-/// <see cref="EndExclusive" /> is excluded.
+/// Represents a half-open range, where <see cref="StartInclusive" /> is included and <see cref="EndExclusive" /> is
+/// excluded.
 /// </summary>
 /// <typeparam name="T">The comparable endpoint type.</typeparam>
 /// <remarks>
 /// <para>
-/// <see cref="Range{T}" /> is an immutable value type used as the element of <see cref="RangeSet{T}" /> and as a
-/// shared building block for the <see cref="RangeDictionary{TKey, TValue}" /> family. Validation rejects ranges
-/// where the start is not strictly less than the end.
+/// <see cref="Range{T}" /> is an immutable value type used as the element of <see cref="RangeSet{T}" /> and as a shared
+/// building block for the <see cref="RangeDictionary{TKey, TValue}" /> family. Validation rejects ranges where the
+/// start is not strictly less than the end.
 /// </para>
 /// </remarks>
 [DebuggerDisplay("[{StartInclusive}, {EndExclusive})")]
@@ -63,9 +63,7 @@ public readonly struct Range<T>
     /// <returns>
     /// <see langword="true" /> if <paramref name="value" /> is inside the range; otherwise, <see langword="false" />.
     /// </returns>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="value" /> is <see langword="null" />.
-    /// </exception>
+    /// <exception cref="ArgumentNullException"><paramref name="value" /> is <see langword="null" />.</exception>
     public bool Contains(T value)
     {
         ThrowHelper.ThrowIfNull(value);
@@ -103,9 +101,7 @@ public readonly struct Range<T>
     /// </summary>
     /// <param name="left">The left operand.</param>
     /// <param name="right">The right operand.</param>
-    /// <returns>
-    /// <see langword="true" /> if the operands are equal; otherwise, <see langword="false" />.
-    /// </returns>
+    /// <returns><see langword="true" /> if the operands are equal; otherwise, <see langword="false" />.</returns>
     public static bool operator ==(Range<T> left, Range<T> right) => left.Equals(right);
 
     /// <summary>
@@ -113,9 +109,7 @@ public readonly struct Range<T>
     /// </summary>
     /// <param name="left">The left operand.</param>
     /// <param name="right">The right operand.</param>
-    /// <returns>
-    /// <see langword="true" /> if the operands are not equal; otherwise, <see langword="false" />.
-    /// </returns>
+    /// <returns><see langword="true" /> if the operands are not equal; otherwise, <see langword="false" />.</returns>
     public static bool operator !=(Range<T> left, Range<T> right) => !left.Equals(right);
 
     /// <summary>
@@ -128,7 +122,8 @@ public readonly struct Range<T>
     /// <paramref name="startInclusive" /> or <paramref name="endExclusive" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="startInclusive" /> is greater than or equal to <paramref name="endExclusive" /> per <paramref name="comparer" />.
+    /// <paramref name="startInclusive" /> is greater than or equal to <paramref name="endExclusive" /> per
+    /// <paramref name="comparer" />.
     /// </exception>
     internal static void ValidateRange(T startInclusive, T endExclusive, IComparer<T> comparer)
     {

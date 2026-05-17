@@ -25,7 +25,7 @@ public partial class MultiValueDictionaryTests
 
         mvd.Clear();
 
-        Assert.AreEqual(0, values.Count);
+        Assert.IsEmpty(values);
         Assert.AreEqual(0, mvd.Count);
         Assert.AreEqual(0, mvd.KeyCount);
     }
@@ -42,7 +42,7 @@ public partial class MultiValueDictionaryTests
         var found = mvd.TryGetValues("alpha", out IReadOnlyList<int> values);
 
         Assert.IsTrue(found);
-        Assert.AreEqual(1, values.Count);
+        Assert.HasCount(1, values);
         Assert.AreEqual(1, values[0]);
     }
 
@@ -58,7 +58,7 @@ public partial class MultiValueDictionaryTests
 
         Assert.IsFalse(found);
         Assert.IsNotNull(values);
-        Assert.AreEqual(0, values.Count);
+        Assert.IsEmpty(values);
     }
     /// <summary>
     /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.TryGetValues"/> throws <see cref="ArgumentNullException"/> for a null key.
@@ -87,7 +87,7 @@ public partial class MultiValueDictionaryTests
         var found = mvd.TryGetValues("k", out IReadOnlyList<int> values);
 
         Assert.IsTrue(found);
-        Assert.AreEqual(2, values.Count);
+        Assert.HasCount(2, values);
     }
 
     /// <summary>
@@ -104,7 +104,7 @@ public partial class MultiValueDictionaryTests
 
         mvd.Add("k", 20);
 
-        Assert.AreEqual(2, view.Count);
+        Assert.HasCount(2, view);
         Assert.AreEqual(20, view[1]);
     }
 

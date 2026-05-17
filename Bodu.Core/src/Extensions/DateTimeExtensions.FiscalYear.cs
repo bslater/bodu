@@ -15,7 +15,9 @@ public static partial class DateTimeExtensions
     /// <param name="dateTime">The date to identify.</param>
     /// <param name="provider">The provider that defines the fiscal year boundaries.</param>
     /// <returns>The fiscal year number under the provider's conventions.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="provider" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="provider" /> is <see langword="null" />.
+    /// </exception>
     public static int FiscalYear(this DateTime dateTime, IQuarterDefinitionProvider provider)
     {
         ThrowHelper.ThrowIfNull(provider);
@@ -30,7 +32,9 @@ public static partial class DateTimeExtensions
     /// <param name="fiscalYear">The fiscal year whose start date is requested.</param>
     /// <param name="provider">The provider that defines the fiscal year boundaries.</param>
     /// <returns>A <see cref="DateTime" /> representing the first day of the fiscal year (midnight).</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="provider" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="provider" /> is <see langword="null" />.
+    /// </exception>
     public static DateTime FirstDateOfFiscalYear(int fiscalYear, IQuarterDefinitionProvider provider)
     {
         ThrowHelper.ThrowIfNull(provider);
@@ -45,7 +49,9 @@ public static partial class DateTimeExtensions
     /// <param name="fiscalYear">The fiscal year whose end date is requested.</param>
     /// <param name="provider">The provider that defines the fiscal year boundaries.</param>
     /// <returns>A <see cref="DateTime" /> representing the last day of the fiscal year (midnight).</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="provider" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="provider" /> is <see langword="null" />.
+    /// </exception>
     public static DateTime LastDateOfFiscalYear(int fiscalYear, IQuarterDefinitionProvider provider)
     {
         ThrowHelper.ThrowIfNull(provider);
@@ -54,13 +60,18 @@ public static partial class DateTimeExtensions
     }
 
     /// <summary>
-    /// Returns <see langword="true" /> when <paramref name="dateTime" />'s date component is the first day of its fiscal
-    /// year under the supplied <see cref="IQuarterDefinitionProvider" />.
+    /// Returns <see langword="true" /> when <paramref name="dateTime" />'s date component is the first day of its
+    /// fiscal year under the supplied <see cref="IQuarterDefinitionProvider" />.
     /// </summary>
     /// <param name="dateTime">The value to test.</param>
     /// <param name="provider">The provider that defines the fiscal year boundaries.</param>
-    /// <returns><see langword="true" /> if the date component equals the first day of its fiscal year; otherwise <see langword="false" />.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="provider" /> is <see langword="null" />.</exception>
+    /// <returns>
+    /// <see langword="true" /> if the date component equals the first day of its fiscal year; otherwise
+    /// <see langword="false" />.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="provider" /> is <see langword="null" />.
+    /// </exception>
     public static bool IsFirstDateOfFiscalYear(this DateTime dateTime, IQuarterDefinitionProvider provider) =>
         dateTime.Date == FirstDateOfFiscalYear(dateTime.FiscalYear(provider), provider).Date;
 
@@ -70,8 +81,13 @@ public static partial class DateTimeExtensions
     /// </summary>
     /// <param name="dateTime">The value to test.</param>
     /// <param name="provider">The provider that defines the fiscal year boundaries.</param>
-    /// <returns><see langword="true" /> if the date component equals the last day of its fiscal year; otherwise <see langword="false" />.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="provider" /> is <see langword="null" />.</exception>
+    /// <returns>
+    /// <see langword="true" /> if the date component equals the last day of its fiscal year; otherwise
+    /// <see langword="false" />.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="provider" /> is <see langword="null" />.
+    /// </exception>
     public static bool IsLastDateOfFiscalYear(this DateTime dateTime, IQuarterDefinitionProvider provider) =>
         dateTime.Date == LastDateOfFiscalYear(dateTime.FiscalYear(provider), provider).Date;
 
@@ -84,7 +100,9 @@ public static partial class DateTimeExtensions
     /// <param name="count">The signed number of fiscal years to apply.</param>
     /// <param name="provider">The provider that defines the fiscal year boundaries.</param>
     /// <returns>The date/time offset by <paramref name="count" /> fiscal years.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="provider" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="provider" /> is <see langword="null" />.
+    /// </exception>
     public static DateTime AddFiscalYears(this DateTime dateTime, int count, IQuarterDefinitionProvider provider)
     {
         ThrowHelper.ThrowIfNull(provider);

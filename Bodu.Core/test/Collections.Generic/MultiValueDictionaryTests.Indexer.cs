@@ -24,8 +24,8 @@ public partial class MultiValueDictionaryTests
 
         mvd.Add("a", 1);
 
-        Assert.AreEqual(0, missingView.Count);
-        Assert.AreEqual(1, mvd["a"].Count);
+        Assert.IsEmpty(missingView);
+        Assert.HasCount(1, mvd["a"]);
     }
 
     /// <summary>
@@ -39,7 +39,7 @@ public partial class MultiValueDictionaryTests
 
         IReadOnlyList<int> values = mvd["alpha"];
 
-        Assert.AreEqual(1, values.Count);
+        Assert.HasCount(1, values);
         Assert.AreEqual(1, values[0]);
     }
     /// <summary>
@@ -53,7 +53,7 @@ public partial class MultiValueDictionaryTests
         IReadOnlyList<int> result = mvd["missing"];
 
         Assert.IsNotNull(result);
-        Assert.AreEqual(0, result.Count);
+        Assert.IsEmpty(result);
     }
 
     /// <summary>
@@ -67,7 +67,7 @@ public partial class MultiValueDictionaryTests
         IReadOnlyList<int> values = mvd["missing"];
 
         AssertReadOnlyValueViewCannotBeMutated(values);
-        Assert.AreEqual(0, values.Count);
+        Assert.IsEmpty(values);
     }
 
     /// <summary>
@@ -96,7 +96,7 @@ public partial class MultiValueDictionaryTests
         IReadOnlyList<int> view = mvd["k"];
         mvd.Add("k", 200);
 
-        Assert.AreEqual(2, view.Count);
+        Assert.HasCount(2, view);
         Assert.AreEqual(200, view[1]);
     }
 
@@ -112,7 +112,7 @@ public partial class MultiValueDictionaryTests
 
         IReadOnlyList<int> result = mvd["a"];
 
-        Assert.AreEqual(2, result.Count);
+        Assert.HasCount(2, result);
         CollectionAssert.AreEqual(new[] { 10, 20 }, result.ToList());
     }
 

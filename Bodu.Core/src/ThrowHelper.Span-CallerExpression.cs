@@ -70,19 +70,17 @@ public static partial class ThrowHelper
     /// <param name="span">The span to validate.</param>
     /// <param name="minimumLength">The minimum number of elements that <paramref name="span" /> must contain.</param>
     /// <param name="paramName">
-    /// The name of the span parameter.
-    /// Supplied automatically by the compiler via <see cref="CallerArgumentExpressionAttribute" />.
+    /// The name of the span parameter. Supplied automatically by the compiler via
+    /// <see cref="CallerArgumentExpressionAttribute" />.
     /// </param>
     /// <exception cref="ArgumentException">
     /// Thrown when <c>span.Length</c> is less than <paramref name="minimumLength" />.
     /// </exception>
     /// <remarks>
-    /// <see cref="System.Span{T}" /> is a value type and cannot be <see langword="null" />;
-    /// no null guard is required or possible.
-    /// Use this overload when the caller may supply a larger span than required and the excess elements are simply
-    /// ignored — for example, a buffer that must hold at least a full cipher block but may be larger.
-    /// When the length must be exact,
-    /// use <see cref="ThrowIfSpanLengthIsNotEqualTo{T}(Span{T}, int, string)" /> instead.
+    /// <see cref="System.Span{T}" /> is a value type and cannot be <see langword="null" />; no null guard is required
+    /// or possible. Use this overload when the caller may supply a larger span than required and the excess elements
+    /// are simply ignored — for example, a buffer that must hold at least a full cipher block but may be larger. When
+    /// the length must be exact, use <see cref="ThrowIfSpanLengthIsNotEqualTo{T}(Span{T}, int, string)" /> instead.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfSpanLengthIsInsufficient<T>(
@@ -124,19 +122,18 @@ public static partial class ThrowHelper
     /// <param name="span">The read-only span to validate.</param>
     /// <param name="minimumLength">The minimum number of elements that <paramref name="span" /> must contain.</param>
     /// <param name="paramName">
-    /// The name of the span parameter.
-    /// Supplied automatically by the compiler via <see cref="CallerArgumentExpressionAttribute" />.
+    /// The name of the span parameter. Supplied automatically by the compiler via
+    /// <see cref="CallerArgumentExpressionAttribute" />.
     /// </param>
     /// <exception cref="ArgumentException">
     /// Thrown when <c>span.Length</c> is less than <paramref name="minimumLength" />.
     /// </exception>
     /// <remarks>
-    /// <see cref="System.ReadOnlySpan{T}" /> is a value type and cannot be <see langword="null" />;
-    /// no null guard is required or possible.
-    /// Use this overload when the caller may supply a larger span than required and the excess elements are simply
-    /// ignored — for example, a buffer that must hold at least a full cipher block but may be larger.
-    /// When the length must be exact,
-    /// use <see cref="ThrowIfSpanLengthIsNotEqualTo{T}(ReadOnlySpan{T}, int, string)" /> instead.
+    /// <see cref="System.ReadOnlySpan{T}" /> is a value type and cannot be <see langword="null" />; no null guard is
+    /// required or possible. Use this overload when the caller may supply a larger span than required and the excess
+    /// elements are simply ignored — for example, a buffer that must hold at least a full cipher block but may be
+    /// larger. When the length must be exact, use
+    /// <see cref="ThrowIfSpanLengthIsNotEqualTo{T}(ReadOnlySpan{T}, int, string)" /> instead.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfSpanLengthIsInsufficient<T>(
@@ -164,8 +161,8 @@ public static partial class ThrowHelper
     /// Thrown when <c>span.Length &lt; minLength</c> or <c>span.Length &gt; maxLength</c>.
     /// </exception>
     /// <remarks>
-    /// <see cref="System.ReadOnlySpan{T}" /> is a value type and cannot be <see langword="null" />;
-    /// no null guard is required or possible.
+    /// <see cref="System.ReadOnlySpan{T}" /> is a value type and cannot be <see langword="null" />; no null guard is
+    /// required or possible.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfSpanLengthOutOfRange<T>(
@@ -193,8 +190,8 @@ public static partial class ThrowHelper
     /// Thrown when <c>span.Length &lt; minLength</c> or <c>span.Length &gt; maxLength</c>.
     /// </exception>
     /// <remarks>
-    /// <see cref="System.Span{T}" /> is a value type and cannot be <see langword="null" />;
-    /// no null guard is required or possible.
+    /// <see cref="System.Span{T}" /> is a value type and cannot be <see langword="null" />; no null guard is required
+    /// or possible.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfSpanLengthOutOfRange<T>(
@@ -209,25 +206,24 @@ public static partial class ThrowHelper
 
     /// <summary>
     /// Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="offset" /> or <paramref name="count" />
-    /// is out of range,
-    /// or an <see cref="ArgumentException" /> if the segment they define exceeds the bounds of <paramref name="span" />
-    /// .
+    /// is out of range, or an <see cref="ArgumentException" /> if the segment they define exceeds the bounds of
+    /// <paramref name="span" /> .
     /// </summary>
     /// <typeparam name="T">The type of elements in the span.</typeparam>
     /// <param name="span">The span to validate.</param>
     /// <param name="offset">The zero-based starting index within the span.</param>
     /// <param name="count">The number of elements to access from <paramref name="offset" />.</param>
     /// <param name="paramSpanName">
-    /// The name of the span parameter.
-    /// Supplied automatically by the compiler via <see cref="CallerArgumentExpressionAttribute" />.
+    /// The name of the span parameter. Supplied automatically by the compiler via
+    /// <see cref="CallerArgumentExpressionAttribute" />.
     /// </param>
     /// <param name="paramIndexName">
-    /// The name of the index parameter.
-    /// Supplied automatically by the compiler via <see cref="CallerArgumentExpressionAttribute" />.
+    /// The name of the index parameter. Supplied automatically by the compiler via
+    /// <see cref="CallerArgumentExpressionAttribute" />.
     /// </param>
     /// <param name="paramCountName">
-    /// The name of the count parameter.
-    /// Supplied automatically by the compiler via <see cref="CallerArgumentExpressionAttribute" />.
+    /// The name of the count parameter. Supplied automatically by the compiler via
+    /// <see cref="CallerArgumentExpressionAttribute" />.
     /// </param>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <paramref name="offset" /> or <paramref name="count" /> is negative or exceeds
@@ -238,19 +234,17 @@ public static partial class ThrowHelper
     /// </exception>
     /// <remarks>
     /// <para>
-    /// Unlike the array equivalent (<c>ThrowIfArrayOffsetOrCountInvalid</c>),
-    /// this overload does not check for <see langword="null" /> and does not throw <see cref="ArgumentNullException" />
-    /// . <see cref="Span{T}" /> is a value type and can never be <see langword="null" />;
-    /// a default <see cref="Span{T}" /> is equivalent to an empty span with <see cref="ReadOnlySpan{T}.Length" /> of
-    /// zero.
+    /// Unlike the array equivalent (<c>ThrowIfArrayOffsetOrCountInvalid</c>), this overload does not check for
+    /// <see langword="null" /> and does not throw <see cref="ArgumentNullException" /> . <see cref="Span{T}" /> is a
+    /// value type and can never be <see langword="null" />; a default <see cref="Span{T}" /> is equivalent to an empty
+    /// span with <see cref="ReadOnlySpan{T}.Length" /> of zero.
     /// </para>
     /// <para>
     /// Implicitly converts <paramref name="span" /> to <see cref="ReadOnlySpan{T}" /> and delegates to
-    /// <see cref="ThrowIfSpanOffsetOrCountInvalid{T}(ReadOnlySpan{T}, int, int, string, string, string)" />,
-    /// which is the canonical implementation. <paramref name="paramSpanName" />,
-    /// <paramref name="paramIndexName" />,
-    /// and <paramref name="paramCountName" /> are forwarded explicitly to preserve the call-site argument expressions
-    /// in any exception messages.
+    /// <see cref="ThrowIfSpanOffsetOrCountInvalid{T}(ReadOnlySpan{T}, int, int, string, string, string)" />, which is
+    /// the canonical implementation. <paramref name="paramSpanName" />, <paramref name="paramIndexName" />, and
+    /// <paramref name="paramCountName" /> are forwarded explicitly to preserve the call-site argument expressions in
+    /// any exception messages.
     /// </para>
     /// </remarks>
     public static void ThrowIfSpanOffsetOrCountInvalid<T>(
@@ -264,25 +258,24 @@ public static partial class ThrowHelper
 
     /// <summary>
     /// Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="offset" /> or <paramref name="count" />
-    /// is out of range,
-    /// or an <see cref="ArgumentException" /> if the segment they define exceeds the bounds of <paramref name="span" />
-    /// .
+    /// is out of range, or an <see cref="ArgumentException" /> if the segment they define exceeds the bounds of
+    /// <paramref name="span" /> .
     /// </summary>
     /// <typeparam name="T">The type of elements in the span.</typeparam>
     /// <param name="span">The read-only span to validate.</param>
     /// <param name="offset">The zero-based starting index within the span.</param>
     /// <param name="count">The number of elements to access from <paramref name="offset" />.</param>
     /// <param name="paramSpanName">
-    /// The name of the span parameter.
-    /// Supplied automatically by the compiler via <see cref="CallerArgumentExpressionAttribute" />.
+    /// The name of the span parameter. Supplied automatically by the compiler via
+    /// <see cref="CallerArgumentExpressionAttribute" />.
     /// </param>
     /// <param name="paramOffsetName">
-    /// The name of the index parameter.
-    /// Supplied automatically by the compiler via <see cref="CallerArgumentExpressionAttribute" />.
+    /// The name of the index parameter. Supplied automatically by the compiler via
+    /// <see cref="CallerArgumentExpressionAttribute" />.
     /// </param>
     /// <param name="paramCountName">
-    /// The name of the count parameter.
-    /// Supplied automatically by the compiler via <see cref="CallerArgumentExpressionAttribute" />.
+    /// The name of the count parameter. Supplied automatically by the compiler via
+    /// <see cref="CallerArgumentExpressionAttribute" />.
     /// </param>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <paramref name="offset" /> or <paramref name="count" /> is negative or exceeds
@@ -293,24 +286,22 @@ public static partial class ThrowHelper
     /// </exception>
     /// <remarks>
     /// <para>
-    /// This is the canonical implementation.
-    /// The <see cref="Span{T}" /> overload (<see cref="ThrowIfSpanOffsetOrCountInvalid{T}(Span{T}, int, int, string, string, string)" />
-    /// ) converts its argument and delegates here,
-    /// forwarding all <see cref="CallerArgumentExpressionAttribute" /> values explicitly so that exception messages
-    /// always reflect the original call-site expressions.
+    /// This is the canonical implementation. The <see cref="Span{T}" /> overload (
+    /// <see cref="ThrowIfSpanOffsetOrCountInvalid{T}(Span{T}, int, int, string, string, string)" /> ) converts its
+    /// argument and delegates here, forwarding all <see cref="CallerArgumentExpressionAttribute" /> values explicitly
+    /// so that exception messages always reflect the original call-site expressions.
     /// </para>
     /// <para>
-    /// Unlike the array equivalent (<c>ThrowIfArrayOffsetOrCountInvalid</c>),
-    /// this overload does not check for <see langword="null" /> and does not throw <see cref="ArgumentNullException" />
-    /// . <see cref="ReadOnlySpan{T}" /> is a value type and can never be <see langword="null" />;
-    /// a default <see cref="ReadOnlySpan{T}" /> is equivalent to an empty span with
-    /// <see cref="ReadOnlySpan{T}.Length" /> of zero.
+    /// Unlike the array equivalent (<c>ThrowIfArrayOffsetOrCountInvalid</c>), this overload does not check for
+    /// <see langword="null" /> and does not throw <see cref="ArgumentNullException" /> . <see cref="ReadOnlySpan{T}" />
+    /// is a value type and can never be <see langword="null" />; a default <see cref="ReadOnlySpan{T}" /> is equivalent
+    /// to an empty span with <see cref="ReadOnlySpan{T}.Length" /> of zero.
     /// </para>
     /// <para>
     /// Although the index and count validations are expressed as two-part conditions (<c>&lt; 0 || &gt; span.Length</c>
-    /// ) rather than the single unsigned-cast trick used in <see cref="SpanExtensions" />,
-    /// the explicit form is preferred here because this is a guard method whose primary purpose is clarity of intent.
-    /// The unsigned-cast form trades readability for a marginal branch reduction that is irrelevant on an error path.
+    /// ) rather than the single unsigned-cast trick used in <see cref="SpanExtensions" />, the explicit form is
+    /// preferred here because this is a guard method whose primary purpose is clarity of intent. The unsigned-cast form
+    /// trades readability for a marginal branch reduction that is irrelevant on an error path.
     /// </para>
     /// </remarks>
     public static void ThrowIfSpanOffsetOrCountInvalid<T>(
@@ -340,9 +331,8 @@ public static partial class ThrowHelper
     }
 
     /// <summary>
-    /// Throws an <see cref="ArgumentNullException" /> if either array is <see langword="null" />,
-    /// or an <see cref="ArgumentException" /> if <paramref name="destination" /> is shorter than
-    /// <paramref name="source" />.
+    /// Throws an <see cref="ArgumentNullException" /> if either array is <see langword="null" />, or an
+    /// <see cref="ArgumentException" /> if <paramref name="destination" /> is shorter than <paramref name="source" />.
     /// </summary>
     /// <typeparam name="TSource">The element type of the source array.</typeparam>
     /// <typeparam name="TDestination">The element type of the destination array.</typeparam>
@@ -456,8 +446,8 @@ public static partial class ThrowHelper
     /// <param name="span">The span to validate.</param>
     /// <param name="divisor">The required positive divisor.</param>
     /// <param name="throwIfZero">
-    /// When <see langword="true" />, an empty span is treated as invalid. When <see langword="false" />,
-    /// an empty span passes validation.
+    /// When <see langword="true" />, an empty span is treated as invalid. When <see langword="false" />, an empty span
+    /// passes validation.
     /// </param>
     /// <param name="paramName">The name of the parameter. Supplied automatically by the compiler.</param>
     /// <exception cref="ArgumentException">
@@ -485,8 +475,8 @@ public static partial class ThrowHelper
     /// <param name="span">The span to validate.</param>
     /// <param name="divisor">The required positive divisor.</param>
     /// <param name="throwIfZero">
-    /// When <see langword="true" />, an empty span is treated as invalid. When <see langword="false" />,
-    /// an empty span passes validation.
+    /// When <see langword="true" />, an empty span is treated as invalid. When <see langword="false" />, an empty span
+    /// passes validation.
     /// </param>
     /// <param name="paramName">The name of the parameter. Supplied automatically by the compiler.</param>
     /// <exception cref="ArgumentException">
@@ -517,8 +507,8 @@ public static partial class ThrowHelper
     /// </exception>
     /// <remarks>
     /// Uses an unsigned cast to collapse the two-sided bounds check into a single comparison.
-    /// <see cref="System.ReadOnlySpan{T}" /> is a value type and cannot be <see langword="null" />;
-    /// no null guard is required or possible.
+    /// <see cref="System.ReadOnlySpan{T}" /> is a value type and cannot be <see langword="null" />; no null guard is
+    /// required or possible.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfIndexOutOfRange<T>(
@@ -544,8 +534,8 @@ public static partial class ThrowHelper
     /// </exception>
     /// <remarks>
     /// Uses an unsigned cast to collapse the two-sided bounds check into a single comparison.
-    /// <see cref="System.Span{T}" /> is a value type and cannot be <see langword="null" />;
-    /// no null guard is required or possible.
+    /// <see cref="System.Span{T}" /> is a value type and cannot be <see langword="null" />; no null guard is required
+    /// or possible.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfIndexOutOfRange<T>(

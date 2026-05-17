@@ -119,7 +119,7 @@ public partial class ConcurrentCircularBufferTests
 
         Task.WaitAll(clearer, copier);
 
-        Assert.AreEqual(0, exceptions.Count, "CopyTo threw during concurrent Clear.");
+        Assert.IsEmpty(exceptions, "CopyTo threw during concurrent Clear.");
     }
 
     /// <summary>
@@ -163,7 +163,7 @@ public partial class ConcurrentCircularBufferTests
 
         Task.WaitAll(writer, copier);
 
-        Assert.AreEqual(0, exceptions.Count, "CopyTo threw an exception under concurrency.");
+        Assert.IsEmpty(exceptions, "CopyTo threw an exception under concurrency.");
         Assert.IsTrue(copies.All(copy => copy.Length == buffer.Capacity));
     }
 

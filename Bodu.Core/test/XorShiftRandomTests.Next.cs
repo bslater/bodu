@@ -52,7 +52,7 @@ public partial class XorShiftRandomTests
     {
         var rng = new XorShiftRandom();
         var value = rng.Next();
-        Assert.IsTrue(value >= 0);
+        Assert.IsGreaterThanOrEqualTo(0, value);
     }
 
     /// <summary>
@@ -69,7 +69,7 @@ public partial class XorShiftRandomTests
             values.Add(rng.Next(1000));
         }
 
-        Assert.IsTrue(values.Count > 1, "Next produced repeating or identical values.");
+        Assert.IsGreaterThan(1, values.Count, "Next produced repeating or identical values.");
     }
 
     /// <summary>

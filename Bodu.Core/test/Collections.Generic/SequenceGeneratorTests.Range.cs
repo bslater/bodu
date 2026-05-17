@@ -62,7 +62,7 @@ public partial class SequenceGeneratorTests
     public void Range_WhenCountIsZero_ShouldReturnEmptySequence()
     {
         var actual = SequenceGenerator.Range(500L, 0).ToArray();
-        Assert.AreEqual(0, actual.Length);
+        Assert.IsEmpty(actual);
     }
 
     /// <summary>
@@ -108,7 +108,7 @@ public partial class SequenceGeneratorTests
     public void Range_WhenStepDirectionIsInvalid_ShouldYieldEmptySequence()
     {
         var actual = SequenceGenerator.Range(0, 10, -1).ToArray();
-        Assert.AreEqual(0, actual.Length);
+        Assert.IsEmpty(actual);
     }
 
     /// <summary>

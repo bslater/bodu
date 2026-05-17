@@ -14,9 +14,9 @@ namespace Bodu.Collections.Generic;
 /// <typeparam name="T">The comparable endpoint type.</typeparam>
 /// <remarks>
 /// <para>
-/// Ranges are stored in two compact parallel arrays — one for the inclusive start of each range and one for
-/// the exclusive end. The arrays are kept sorted by start endpoint, and adjacent or overlapping ranges are
-/// merged on insertion.
+/// Ranges are stored in two compact parallel arrays — one for the inclusive start of each range and one for the
+/// exclusive end. The arrays are kept sorted by start endpoint, and adjacent or overlapping ranges are merged on
+/// insertion.
 /// </para>
 /// <para>
 /// Ranges use half-open semantics: <c>[startInclusive, endExclusive)</c>.
@@ -50,22 +50,24 @@ public sealed partial class RangeSet<T>
     /// <summary>
     /// Initializes a new instance of the <see cref="RangeSet{T}" /> class using the specified comparer.
     /// </summary>
-    /// <param name="comparer">The endpoint comparer, or <see langword="null" /> to use <see cref="Comparer{T}.Default" />.</param>
+    /// <param name="comparer">
+    /// The endpoint comparer, or <see langword="null" /> to use <see cref="Comparer{T}.Default" />.
+    /// </param>
     public RangeSet(IComparer<T>? comparer)
     {
         _comparer = comparer ?? Comparer<T>.Default;
-        _starts = Array.Empty<T>();
-        _ends = Array.Empty<T>();
+        _starts = [];
+        _ends = [];
     }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="RangeSet{T}" /> class containing the specified ranges.
     /// </summary>
     /// <param name="ranges">The ranges to add. Must not be <see langword="null" />.</param>
-    /// <param name="comparer">The endpoint comparer, or <see langword="null" /> to use <see cref="Comparer{T}.Default" />.</param>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="ranges" /> is <see langword="null" />.
-    /// </exception>
+    /// <param name="comparer">
+    /// The endpoint comparer, or <see langword="null" /> to use <see cref="Comparer{T}.Default" />.
+    /// </param>
+    /// <exception cref="ArgumentNullException"><paramref name="ranges" /> is <see langword="null" />.</exception>
     public RangeSet(IEnumerable<Range<T>> ranges, IComparer<T>? comparer = null)
         : this(comparer)
     {
@@ -178,9 +180,7 @@ public sealed partial class RangeSet<T>
     /// </summary>
     /// <param name="startInclusive">The inclusive start.</param>
     /// <param name="endExclusive">The exclusive end.</param>
-    /// <returns>
-    /// <see langword="true" /> if the set was changed; otherwise, <see langword="false" />.
-    /// </returns>
+    /// <returns><see langword="true" /> if the set was changed; otherwise, <see langword="false" />.</returns>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="startInclusive" /> or <paramref name="endExclusive" /> is <see langword="null" />.
     /// </exception>
@@ -253,9 +253,7 @@ public sealed partial class RangeSet<T>
     /// Removes the specified range from the set.
     /// </summary>
     /// <param name="range">The range to remove.</param>
-    /// <returns>
-    /// <see langword="true" /> if the set was changed; otherwise, <see langword="false" />.
-    /// </returns>
+    /// <returns><see langword="true" /> if the set was changed; otherwise, <see langword="false" />.</returns>
     public bool Remove(Range<T> range) =>
         Remove(range.StartInclusive, range.EndExclusive);
 
@@ -277,12 +275,8 @@ public sealed partial class RangeSet<T>
     /// Determines whether the specified value falls inside any stored range.
     /// </summary>
     /// <param name="value">The value to test. Must not be <see langword="null" />.</param>
-    /// <returns>
-    /// <see langword="true" /> if the value is contained; otherwise, <see langword="false" />.
-    /// </returns>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="value" /> is <see langword="null" />.
-    /// </exception>
+    /// <returns><see langword="true" /> if the value is contained; otherwise, <see langword="false" />.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="value" /> is <see langword="null" />.</exception>
     public bool Contains(T value) =>
         FindContainingIndex(value) >= 0;
 
@@ -291,9 +285,7 @@ public sealed partial class RangeSet<T>
     /// </summary>
     /// <param name="startInclusive">The inclusive start.</param>
     /// <param name="endExclusive">The exclusive end.</param>
-    /// <returns>
-    /// <see langword="true" /> if the range is fully contained; otherwise, <see langword="false" />.
-    /// </returns>
+    /// <returns><see langword="true" /> if the range is fully contained; otherwise, <see langword="false" />.</returns>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="startInclusive" /> or <paramref name="endExclusive" /> is <see langword="null" />.
     /// </exception>
@@ -344,9 +336,7 @@ public sealed partial class RangeSet<T>
     /// </summary>
     /// <param name="other">The other set. Must not be <see langword="null" />.</param>
     /// <returns>A new <see cref="RangeSet{T}" /> containing the union.</returns>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="other" /> is <see langword="null" />.
-    /// </exception>
+    /// <exception cref="ArgumentNullException"><paramref name="other" /> is <see langword="null" />.</exception>
     public RangeSet<T> Union(RangeSet<T> other)
     {
         ThrowHelper.ThrowIfNull(other);
@@ -368,9 +358,7 @@ public sealed partial class RangeSet<T>
     /// </summary>
     /// <param name="other">The other set. Must not be <see langword="null" />.</param>
     /// <returns>A new <see cref="RangeSet{T}" /> containing the intersection.</returns>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="other" /> is <see langword="null" />.
-    /// </exception>
+    /// <exception cref="ArgumentNullException"><paramref name="other" /> is <see langword="null" />.</exception>
     public RangeSet<T> Intersect(RangeSet<T> other)
     {
         ThrowHelper.ThrowIfNull(other);
@@ -402,9 +390,7 @@ public sealed partial class RangeSet<T>
     /// </summary>
     /// <param name="other">The other set. Must not be <see langword="null" />.</param>
     /// <returns>A new <see cref="RangeSet{T}" /> containing the difference.</returns>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="other" /> is <see langword="null" />.
-    /// </exception>
+    /// <exception cref="ArgumentNullException"><paramref name="other" /> is <see langword="null" />.</exception>
     public RangeSet<T> Except(RangeSet<T> other)
     {
         ThrowHelper.ThrowIfNull(other);
@@ -426,9 +412,7 @@ public sealed partial class RangeSet<T>
     /// </summary>
     /// <param name="capacity">The desired capacity.</param>
     /// <returns>The current capacity.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="capacity" /> is negative.
-    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> is negative.</exception>
     public int EnsureCapacity(int capacity)
     {
         ThrowHelper.ThrowIfNegative(capacity);
@@ -465,19 +449,14 @@ public sealed partial class RangeSet<T>
     /// </summary>
     /// <param name="value">The value to locate. Must not be <see langword="null" />.</param>
     /// <returns>The index of the containing range, or <c>-1</c> if no range contains the value.</returns>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="value" /> is <see langword="null" />.
-    /// </exception>
+    /// <exception cref="ArgumentNullException"><paramref name="value" /> is <see langword="null" />.</exception>
     private int FindContainingIndex(T value)
     {
         ThrowHelper.ThrowIfNull(value);
 
         var index = UpperBound(value) - 1;
 
-        if (index < 0)
-            return -1;
-
-        return _comparer.Compare(value, _ends[index]) < 0 ? index : -1;
+        return index < 0 ? -1 : _comparer.Compare(value, _ends[index]) < 0 ? index : -1;
     }
 
     /// <summary>
@@ -523,9 +502,9 @@ public sealed partial class RangeSet<T>
     }
 
     /// <summary>
-    /// Removes <paramref name="count" /> consecutive ranges starting at <paramref name="index" /> and shifts
-    /// any trailing ranges left to keep storage contiguous. The single caller in <see cref="Add(T, T)" />
-    /// only invokes this when <paramref name="count" /> is positive, so no defensive guard is performed.
+    /// Removes <paramref name="count" /> consecutive ranges starting at <paramref name="index" /> and shifts any
+    /// trailing ranges left to keep storage contiguous. The single caller in <see cref="Add(T, T)" /> only invokes this
+    /// when <paramref name="count" /> is positive, so no defensive guard is performed.
     /// </summary>
     /// <param name="index">The index of the first range to remove.</param>
     /// <param name="count">The number of ranges to remove. Must be greater than zero.</param>
@@ -631,8 +610,8 @@ public sealed partial class RangeSet<T>
     }
 
     /// <summary>
-    /// Computes the next capacity by doubling the current size, with a clamp at <see cref="Array.MaxLength" />
-    /// and a floor at <paramref name="minimum" />.
+    /// Computes the next capacity by doubling the current size, with a clamp at <see cref="Array.MaxLength" /> and a
+    /// floor at <paramref name="minimum" />.
     /// </summary>
     /// <param name="minimum">The minimum acceptable capacity.</param>
     /// <returns>The chosen capacity.</returns>

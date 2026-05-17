@@ -12,18 +12,19 @@ namespace Bodu.Collections.Generic.Extensions;
 public static partial class IEnumerableExtensions
 {
     /// <summary>
-    /// Produces a sequence that lazily caches the elements of the source as it is iterated for the first time. Subsequent iteration
-    /// requests return the cached elements.
+    /// Produces a sequence that lazily caches the elements of the source as it is iterated for the first time.
+    /// Subsequent iteration requests return the cached elements.
     /// </summary>
     /// <typeparam name="T">The type of the elements in the source sequence.</typeparam>
     /// <param name="source">The sequence whose elements should be cached.</param>
     /// <returns>
-    /// An <see cref="IEnumerable{T}"/> that caches the source's elements on first enumeration and returns cached results on all subsequent enumerations.
+    /// An <see cref="IEnumerable{T}" /> that caches the source's elements on first enumeration and returns cached
+    /// results on all subsequent enumerations.
     /// </returns>
-    /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="source" /> is <see langword="null" />.</exception>
     /// <remarks>
-    /// This method uses deferred execution. The caching begins only when the resulting sequence is enumerated. If the source is already a
-    /// collection or an existing cached sequence, no additional wrapping is performed.
+    /// This method uses deferred execution. The caching begins only when the resulting sequence is enumerated. If the
+    /// source is already a collection or an existing cached sequence, no additional wrapping is performed.
     /// </remarks>
     public static IEnumerable<T> Cache<T>(this IEnumerable<T> source) => source switch
     {
@@ -38,10 +39,13 @@ public static partial class IEnumerableExtensions
     };
 
     /// <summary>
-    /// A sequence that caches its elements as they are enumerated, allowing subsequent replays without re-enumerating the source.
+    /// A sequence that caches its elements as they are enumerated, allowing subsequent replays without re-enumerating
+    /// the source.
     /// </summary>
     /// <typeparam name="T">The type of elements in the cached sequence.</typeparam>
-    /// <remarks>This type is used internally by <see cref="Cache{T}"/> and is thread-safe for concurrent enumeration.</remarks>
+    /// <remarks>
+    /// This type is used internally by <see cref="Cache{T}" /> and is thread-safe for concurrent enumeration.
+    /// </remarks>
     private sealed class CacheEnumerable<T> :
        System.Collections.Generic.IEnumerable<T>,
        System.IDisposable
@@ -54,7 +58,7 @@ public static partial class IEnumerableExtensions
         private int _initializationState; // 0 = not initialized, 1 = initializing, 2 = initialized
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CacheEnumerable{T}"/> class.
+        /// Initializes a new instance of the <see cref="CacheEnumerable{T}" /> class.
         /// </summary>
         /// <param name="source">The original sequence to cache during iteration.</param>
         public CacheEnumerable(IEnumerable<T> source)
@@ -66,8 +70,9 @@ public static partial class IEnumerableExtensions
         /// Disposes internal state and releases the source enumerator and cached items.
         /// </summary>
         /// <remarks>
-        /// Field resets are performed via <see cref="Volatile.Write{T}(ref T, T)"/> to ensure that concurrent enumerators observing these fields
-        /// always see the post-dispose state, preventing use of freed resources on weakly-ordered architectures.
+        /// Field resets are performed via <see cref="Volatile.Write{T}(ref T, T)" /> to ensure that concurrent
+        /// enumerators observing these fields always see the post-dispose state, preventing use of freed resources on
+        /// weakly-ordered architectures.
         /// </remarks>
         public void Dispose()
         {
@@ -134,9 +139,9 @@ public static partial class IEnumerableExtensions
             private int _index;
 
             /// <summary>
-            /// Initializes a new instance of the <see cref="Enumerator"/> class.
+            /// Initializes a new instance of the <see cref="Enumerator" /> class.
             /// </summary>
-            /// <param name="parent">The parent <see cref="CacheEnumerable{T}"/> instance.</param>
+            /// <param name="parent">The parent <see cref="CacheEnumerable{T}" /> instance.</param>
             public Enumerator(CacheEnumerable<T> parent)
             {
                 _parent = parent;
@@ -150,10 +155,9 @@ public static partial class IEnumerableExtensions
                 get
                 {
                     List<T> cache = _parent._cache ?? throw new ObjectDisposedException(nameof(CacheEnumerable<T>));
-                    if (_index < 0 || _index >= cache.Count)
-                        throw new InvalidOperationException(ResourceStrings.Op_Invalid_EnumeratorNotOnElement);
-
-                    return cache[_index];
+                    return _index < 0 || _index >= cache.Count
+                        ? throw new InvalidOperationException(ResourceStrings.Op_Invalid_EnumeratorNotOnElement)
+                        : cache[_index];
                 }
             }
 

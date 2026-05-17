@@ -65,10 +65,10 @@ public partial class IndexedSetTests
     {
         IList<int> typed = CreateSet([10, 20, 30]);
 
-        Assert.AreEqual(3, typed.Count);
+        Assert.HasCount(3, typed);
         Assert.AreEqual(10, typed[0]);
         Assert.AreEqual(0, typed.IndexOf(10));
-        Assert.IsTrue(typed.Contains(20));
+        Assert.Contains(20, typed);
         Assert.IsFalse(typed.IsReadOnly);
     }
 
@@ -81,7 +81,7 @@ public partial class IndexedSetTests
     {
         IReadOnlyList<int> typed = CreateSet([10, 20, 30]);
 
-        Assert.AreEqual(3, typed.Count);
+        Assert.HasCount(3, typed);
         Assert.AreEqual(10, typed[0]);
         Assert.AreEqual(20, typed[1]);
         Assert.AreEqual(30, typed[2]);

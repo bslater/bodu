@@ -54,7 +54,7 @@ public class LookAndSayTests
         var actual = SequenceGenerator.LookAndSay(10).ToArray();
         for (var i = 1; i < actual.Length; i++)
         {
-            Assert.IsTrue(actual[i].Length >= actual[i - 1].Length,
+            Assert.IsGreaterThanOrEqualTo(actual[i - 1].Length, actual[i].Length,
                 $"Term at index {i} ({actual[i].Length}) is shorter than the previous term ({actual[i - 1].Length}).");
         }
     }

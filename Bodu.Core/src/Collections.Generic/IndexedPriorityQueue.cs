@@ -12,36 +12,37 @@ namespace Bodu.Collections.Generic;
 /// Represents a binary min-heap priority queue keyed by element identity, supporting O(log n) re-prioritization
 /// (decrease- or increase-key) and removal of any element by value.
 /// </summary>
-/// <typeparam name="TElement">Specifies the element type used as the queue's identity. Must be non-null and unique within the queue.</typeparam>
+/// <typeparam name="TElement">
+/// Specifies the element type used as the queue's identity. Must be non-null and unique within the queue.
+/// </typeparam>
 /// <typeparam name="TPriority">Specifies the priority type used for ordering.</typeparam>
 /// <remarks>
 /// <para>
-/// <see cref="IndexedPriorityQueue{TElement, TPriority}"/> complements
-/// <see cref="System.Collections.Generic.PriorityQueue{TElement, TPriority}"/> by maintaining an auxiliary
-/// element-to-index map alongside the heap. This map turns <see cref="Contains(TElement)"/>,
-/// <see cref="TryGetPriority(TElement, out TPriority)"/>, and the slot lookup used by
-/// <see cref="Update(TElement, TPriority)"/>, <see cref="Remove(TElement)"/>, and
-/// <see cref="EnqueueOrUpdate(TElement, TPriority)"/> into O(1) operations and the subsequent heap
-/// repair into O(log n) — the operations Dijkstra's algorithm, Prim's algorithm, and A* require.
+/// <see cref="IndexedPriorityQueue{TElement, TPriority}" /> complements
+/// <see cref="System.Collections.Generic.PriorityQueue{TElement, TPriority}" /> by maintaining an auxiliary
+/// element-to-index map alongside the heap. This map turns <see cref="Contains(TElement)" />,
+/// <see cref="TryGetPriority(TElement, out TPriority)" />, and the slot lookup used by
+/// <see cref="Update(TElement, TPriority)" />, <see cref="Remove(TElement)" />, and
+/// <see cref="EnqueueOrUpdate(TElement, TPriority)" /> into O(1) operations and the subsequent heap repair into O(log
+/// n) — the operations Dijkstra's algorithm, Prim's algorithm, and A* require.
 /// </para>
 /// <para>
-/// The trade-off relative to the BCL <see cref="System.Collections.Generic.PriorityQueue{TElement, TPriority}"/>
-/// is that elements are unique. <see cref="Enqueue(TElement, TPriority)"/> throws
-/// <see cref="ArgumentException"/> if the element is already present; use
-/// <see cref="EnqueueOrUpdate(TElement, TPriority)"/> for set semantics.
+/// The trade-off relative to the BCL <see cref="System.Collections.Generic.PriorityQueue{TElement, TPriority}" /> is
+/// that elements are unique. <see cref="Enqueue(TElement, TPriority)" /> throws <see cref="ArgumentException" /> if the
+/// element is already present; use <see cref="EnqueueOrUpdate(TElement, TPriority)" /> for set semantics.
 /// </para>
 /// <para>
-/// Ordering is determined by an <see cref="IComparer{TPriority}"/>; smaller priorities are dequeued first
-/// (min-heap). To obtain max-heap behavior, supply a reversed comparer. Element identity uses an
-/// <see cref="IEqualityComparer{TElement}"/>; both default to the framework default comparer when not specified.
+/// Ordering is determined by an <see cref="IComparer{TPriority}" />; smaller priorities are dequeued first (min-heap).
+/// To obtain max-heap behavior, supply a reversed comparer. Element identity uses an
+/// <see cref="IEqualityComparer{TElement}" />; both default to the framework default comparer when not specified.
 /// </para>
 /// <para>
-/// Enumeration walks the underlying heap array in storage order, not priority order. Dequeue items in turn
-/// to obtain priority-ordered output.
+/// Enumeration walks the underlying heap array in storage order, not priority order. Dequeue items in turn to obtain
+/// priority-ordered output.
 /// </para>
 /// <para>
-/// <see cref="IndexedPriorityQueue{TElement, TPriority}"/> is not thread-safe. Concurrent reads and writes
-/// require external synchronization.
+/// <see cref="IndexedPriorityQueue{TElement, TPriority}" /> is not thread-safe. Concurrent reads and writes require
+/// external synchronization.
 /// </para>
 /// </remarks>
 [DebuggerDisplay("Count = {Count}")]
@@ -57,14 +58,14 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
     private const int DefaultGrowCapacity = 4;
 
     /// <summary>
-    /// Backing storage for the heap. Slots <c>[0.._size)</c> are valid heap nodes; the remainder is
-    /// uninitialized reserve capacity.
+    /// Backing storage for the heap. Slots <c>[0.._size)</c> are valid heap nodes; the remainder is uninitialized
+    /// reserve capacity.
     /// </summary>
     private (TElement Element, TPriority Priority)[] _nodes;
 
     /// <summary>
-    /// Maps each element currently in the heap to its position in <see cref="_nodes"/>. Kept in lock-step
-    /// with every swap, insert, and removal so that lookup-by-element remains O(1).
+    /// Maps each element currently in the heap to its position in <see cref="_nodes" />. Kept in lock-step with every
+    /// swap, insert, and removal so that lookup-by-element remains O(1).
     /// </summary>
     private readonly Dictionary<TElement, int> _index;
 
@@ -79,103 +80,119 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
     private int _size;
 
     /// <summary>
-    /// Mutation counter used by <see cref="Enumerator"/> to detect concurrent modification. Incremented on
-    /// every operation that adds, removes, or re-prioritizes an element, and on <see cref="Clear"/>.
+    /// Mutation counter used by <see cref="Enumerator" /> to detect concurrent modification. Incremented on every
+    /// operation that adds, removes, or re-prioritizes an element, and on <see cref="Clear" />.
     /// </summary>
     private int _version;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="IndexedPriorityQueue{TElement, TPriority}"/> class with
-    /// zero initial capacity, the default priority comparer, and the default element comparer.
+    /// Initializes a new instance of the <see cref="IndexedPriorityQueue{TElement, TPriority}" /> class with zero
+    /// initial capacity, the default priority comparer, and the default element comparer.
     /// </summary>
     public IndexedPriorityQueue()
         : this(0, null, null) { }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="IndexedPriorityQueue{TElement, TPriority}"/> class with
-    /// the specified initial capacity, using the default priority comparer and element comparer.
+    /// The composite-format string used when reporting a duplicate element key. The single placeholder receives the
+    /// offending element's <see cref="object.ToString" /> representation.
+    /// </summary>
+    private const string DuplicateElementMessageFormat = "An element with the key '{0}' already exists in the queue.";
+
+    /// <summary>
+    /// The composite-format string used when reporting a missing element key. The single placeholder receives the
+    /// requested element's <see cref="object.ToString" /> representation.
+    /// </summary>
+    private const string ElementNotFoundMessageFormat = "The element '{0}' was not found in the queue.";
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="IndexedPriorityQueue{TElement, TPriority}" /> class with the
+    /// specified initial capacity, using the default priority comparer and element comparer.
     /// </summary>
     /// <param name="capacity">The initial capacity of the heap. Must be non-negative.</param>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity"/> is negative.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> is negative.</exception>
     public IndexedPriorityQueue(int capacity)
         : this(capacity, null, null) { }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="IndexedPriorityQueue{TElement, TPriority}"/> class with
-    /// zero initial capacity and the specified priority comparer.
+    /// Initializes a new instance of the <see cref="IndexedPriorityQueue{TElement, TPriority}" /> class with zero
+    /// initial capacity and the specified priority comparer.
     /// </summary>
     /// <param name="priorityComparer">
-    /// The comparer used to order priorities, or <see langword="null"/> to use <see cref="Comparer{T}.Default"/>.
+    /// The comparer used to order priorities, or <see langword="null" /> to use <see cref="Comparer{T}.Default" />.
     /// </param>
     public IndexedPriorityQueue(IComparer<TPriority>? priorityComparer)
         : this(0, priorityComparer, null) { }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="IndexedPriorityQueue{TElement, TPriority}"/> class with
-    /// the specified initial capacity and priority comparer.
+    /// Initializes a new instance of the <see cref="IndexedPriorityQueue{TElement, TPriority}" /> class with the
+    /// specified initial capacity and priority comparer.
     /// </summary>
     /// <param name="capacity">The initial capacity of the heap. Must be non-negative.</param>
     /// <param name="priorityComparer">
-    /// The comparer used to order priorities, or <see langword="null"/> to use <see cref="Comparer{T}.Default"/>.
+    /// The comparer used to order priorities, or <see langword="null" /> to use <see cref="Comparer{T}.Default" />.
     /// </param>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity"/> is negative.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> is negative.</exception>
     public IndexedPriorityQueue(int capacity, IComparer<TPriority>? priorityComparer)
         : this(capacity, priorityComparer, null) { }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="IndexedPriorityQueue{TElement, TPriority}"/> class with
-    /// the specified initial capacity, priority comparer, and element comparer.
+    /// Initializes a new instance of the <see cref="IndexedPriorityQueue{TElement, TPriority}" /> class with the
+    /// specified initial capacity, priority comparer, and element comparer.
     /// </summary>
     /// <param name="capacity">The initial capacity of the heap. Must be non-negative.</param>
     /// <param name="priorityComparer">
-    /// The comparer used to order priorities, or <see langword="null"/> to use <see cref="Comparer{T}.Default"/>.
+    /// The comparer used to order priorities, or <see langword="null" /> to use <see cref="Comparer{T}.Default" />.
     /// </param>
     /// <param name="elementComparer">
-    /// The comparer used to test element equality, or <see langword="null"/> to use <see cref="EqualityComparer{T}.Default"/>.
+    /// The comparer used to test element equality, or <see langword="null" /> to use
+    /// <see cref="EqualityComparer{T}.Default" />.
     /// </param>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity"/> is negative.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> is negative.</exception>
     public IndexedPriorityQueue(int capacity, IComparer<TPriority>? priorityComparer, IEqualityComparer<TElement>? elementComparer)
     {
         ThrowHelper.ThrowIfNegative(capacity);
 
         _nodes = capacity == 0
-            ? Array.Empty<(TElement, TPriority)>()
+            ? []
             : new (TElement, TPriority)[capacity];
         _comparer = priorityComparer ?? Comparer<TPriority>.Default;
         _index = new Dictionary<TElement, int>(capacity, elementComparer ?? EqualityComparer<TElement>.Default);
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="IndexedPriorityQueue{TElement, TPriority}"/> class
-    /// containing the supplied element-priority pairs, heapified in O(n).
+    /// Initializes a new instance of the <see cref="IndexedPriorityQueue{TElement, TPriority}" /> class containing the
+    /// supplied element-priority pairs, heapified in O(n).
     /// </summary>
     /// <param name="items">
-    /// The element-priority pairs used to populate the queue. Element keys must be unique. Must not be <see langword="null"/>.
+    /// The element-priority pairs used to populate the queue. Element keys must be unique. Must not be
+    /// <see langword="null" />.
     /// </param>
-    /// <exception cref="ArgumentNullException"><paramref name="items"/> is <see langword="null"/>.</exception>
-    /// <exception cref="ArgumentException"><paramref name="items"/> contains a duplicate element key.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="items" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentException"><paramref name="items" /> contains a duplicate element key.</exception>
     public IndexedPriorityQueue(IEnumerable<KeyValuePair<TElement, TPriority>> items)
         : this(items, null, null) { }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="IndexedPriorityQueue{TElement, TPriority}"/> class
-    /// containing the supplied element-priority pairs, with the specified priority and element comparers.
+    /// Initializes a new instance of the <see cref="IndexedPriorityQueue{TElement, TPriority}" /> class containing the
+    /// supplied element-priority pairs, with the specified priority and element comparers.
     /// </summary>
     /// <param name="items">
-    /// The element-priority pairs used to populate the queue. Element keys must be unique. Must not be <see langword="null"/>.
+    /// The element-priority pairs used to populate the queue. Element keys must be unique. Must not be
+    /// <see langword="null" />.
     /// </param>
     /// <param name="priorityComparer">
-    /// The comparer used to order priorities, or <see langword="null"/> to use <see cref="Comparer{T}.Default"/>.
+    /// The comparer used to order priorities, or <see langword="null" /> to use <see cref="Comparer{T}.Default" />.
     /// </param>
     /// <param name="elementComparer">
-    /// The comparer used to test element equality, or <see langword="null"/> to use <see cref="EqualityComparer{T}.Default"/>.
+    /// The comparer used to test element equality, or <see langword="null" /> to use
+    /// <see cref="EqualityComparer{T}.Default" />.
     /// </param>
-    /// <exception cref="ArgumentNullException"><paramref name="items"/> is <see langword="null"/>.</exception>
-    /// <exception cref="ArgumentException"><paramref name="items"/> contains a duplicate element key.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="items" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentException"><paramref name="items" /> contains a duplicate element key.</exception>
     /// <remarks>
-    /// When <paramref name="items"/> implements <see cref="ICollection{T}"/> the backing array is allocated
-    /// up-front to its <see cref="ICollection{T}.Count"/> and the heap is built bottom-up in O(n);
-    /// otherwise the array grows on demand as items are appended.
+    /// When <paramref name="items" /> implements <see cref="ICollection{T}" /> the backing array is allocated up-front
+    /// to its <see cref="ICollection{T}.Count" /> and the heap is built bottom-up in O(n); otherwise the array grows on
+    /// demand as items are appended.
     /// </remarks>
     public IndexedPriorityQueue(IEnumerable<KeyValuePair<TElement, TPriority>> items, IComparer<TPriority>? priorityComparer, IEqualityComparer<TElement>? elementComparer)
     {
@@ -188,13 +205,13 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
         {
             var initialCapacity = collection.Count;
             _nodes = initialCapacity == 0
-                ? Array.Empty<(TElement, TPriority)>()
+                ? []
                 : new (TElement, TPriority)[initialCapacity];
             _index = new Dictionary<TElement, int>(initialCapacity, resolvedElementComparer);
         }
         else
         {
-            _nodes = Array.Empty<(TElement, TPriority)>();
+            _nodes = [];
             _index = new Dictionary<TElement, int>(resolvedElementComparer);
         }
 
@@ -229,21 +246,21 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
     /// <summary>
     /// Gets the priority comparer used by the queue to order elements.
     /// </summary>
-    /// <returns>The configured <see cref="IComparer{TPriority}"/>.</returns>
+    /// <returns>The configured <see cref="IComparer{TPriority}" />.</returns>
     public IComparer<TPriority> Comparer => _comparer;
 
     /// <summary>
     /// Gets the element equality comparer used by the queue to identify elements.
     /// </summary>
-    /// <returns>The configured <see cref="IEqualityComparer{TElement}"/>.</returns>
+    /// <returns>The configured <see cref="IEqualityComparer{TElement}" />.</returns>
     public IEqualityComparer<TElement> ElementComparer => _index.Comparer;
 
     /// <summary>
     /// Determines whether the queue contains the specified element.
     /// </summary>
-    /// <param name="element">The element to locate. Must not be <see langword="null"/>.</param>
-    /// <returns><see langword="true"/> if the element is present; otherwise, <see langword="false"/>.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="element"/> is <see langword="null"/>.</exception>
+    /// <param name="element">The element to locate. Must not be <see langword="null" />.</param>
+    /// <returns><see langword="true" /> if the element is present; otherwise, <see langword="false" />.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="element" /> is <see langword="null" />.</exception>
     public bool Contains(TElement element)
     {
         ThrowHelper.ThrowIfNull(element);
@@ -254,30 +271,33 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
     /// <summary>
     /// Retrieves the priority associated with the specified element.
     /// </summary>
-    /// <param name="element">The element whose priority is to be retrieved. Must not be <see langword="null"/>.</param>
-    /// <returns>The priority currently associated with <paramref name="element"/>.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="element"/> is <see langword="null"/>.</exception>
-    /// <exception cref="KeyNotFoundException"><paramref name="element"/> is not present in the queue.</exception>
+    /// <param name="element">
+    /// The element whose priority is to be retrieved. Must not be <see langword="null" />.
+    /// </param>
+    /// <returns>The priority currently associated with <paramref name="element" />.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="element" /> is <see langword="null" />.</exception>
+    /// <exception cref="KeyNotFoundException"><paramref name="element" /> is not present in the queue.</exception>
     public TPriority GetPriority(TElement element)
     {
         ThrowHelper.ThrowIfNull(element);
 
-        if (!_index.TryGetValue(element, out var slot))
-            throw new KeyNotFoundException(string.Format(ElementNotFoundMessageFormat, element));
-
-        return _nodes[slot].Priority;
+        return !_index.TryGetValue(element, out var slot)
+            ? throw new KeyNotFoundException(string.Format(ElementNotFoundMessageFormat, element))
+            : _nodes[slot].Priority;
     }
 
     /// <summary>
     /// Attempts to retrieve the priority associated with the specified element.
     /// </summary>
-    /// <param name="element">The element whose priority is to be retrieved. Must not be <see langword="null"/>.</param>
-    /// <param name="priority">
-    /// When this method returns, contains the priority associated with <paramref name="element"/> if found;
-    /// otherwise, the default value of <typeparamref name="TPriority"/>.
+    /// <param name="element">
+    /// The element whose priority is to be retrieved. Must not be <see langword="null" />.
     /// </param>
-    /// <returns><see langword="true"/> if the element was found; otherwise, <see langword="false"/>.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="element"/> is <see langword="null"/>.</exception>
+    /// <param name="priority">
+    /// When this method returns, contains the priority associated with <paramref name="element" /> if found; otherwise,
+    /// the default value of <typeparamref name="TPriority" />.
+    /// </param>
+    /// <returns><see langword="true" /> if the element was found; otherwise, <see langword="false" />.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="element" /> is <see langword="null" />.</exception>
     public bool TryGetPriority(TElement element, out TPriority priority)
     {
         ThrowHelper.ThrowIfNull(element);
@@ -302,16 +322,22 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
         if (_size == 0)
             throw new InvalidOperationException(ResourceStrings.Op_Invalid_CollectionEmpty);
 
-        (TElement Element, TPriority Priority) head = _nodes[0];
-        return new KeyValuePair<TElement, TPriority>(head.Element, head.Priority);
+        (TElement Element, TPriority Priority) = _nodes[0];
+        return new KeyValuePair<TElement, TPriority>(Element, Priority);
     }
 
     /// <summary>
     /// Attempts to retrieve the element-priority pair at the head of the queue without removing it.
     /// </summary>
-    /// <param name="element">When this method returns, contains the head element if the queue is non-empty; otherwise, the default value of <typeparamref name="TElement"/>.</param>
-    /// <param name="priority">When this method returns, contains the head priority if the queue is non-empty; otherwise, the default value of <typeparamref name="TPriority"/>.</param>
-    /// <returns><see langword="true"/> if a head element was retrieved; otherwise, <see langword="false"/>.</returns>
+    /// <param name="element">
+    /// When this method returns, contains the head element if the queue is non-empty; otherwise, the default value of
+    /// <typeparamref name="TElement" />.
+    /// </param>
+    /// <param name="priority">
+    /// When this method returns, contains the head priority if the queue is non-empty; otherwise, the default value of
+    /// <typeparamref name="TPriority" />.
+    /// </param>
+    /// <returns><see langword="true" /> if a head element was retrieved; otherwise, <see langword="false" />.</returns>
     public bool TryPeek(out TElement element, out TPriority priority)
     {
         if (_size == 0)
@@ -321,19 +347,19 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
             return false;
         }
 
-        (TElement Element, TPriority Priority) head = _nodes[0];
-        element = head.Element;
-        priority = head.Priority;
+        (TElement Element, TPriority Priority) = _nodes[0];
+        element = Element;
+        priority = Priority;
         return true;
     }
 
     /// <summary>
     /// Adds the specified element with the specified priority. The element must not already be present.
     /// </summary>
-    /// <param name="element">The element to add. Must not be <see langword="null"/>.</param>
+    /// <param name="element">The element to add. Must not be <see langword="null" />.</param>
     /// <param name="priority">The priority associated with the element.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="element"/> is <see langword="null"/>.</exception>
-    /// <exception cref="ArgumentException"><paramref name="element"/> is already present in the queue.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="element" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentException"><paramref name="element" /> is already present in the queue.</exception>
     public void Enqueue(TElement element, TPriority priority)
     {
         ThrowHelper.ThrowIfNull(element);
@@ -345,10 +371,12 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
     /// <summary>
     /// Attempts to add the specified element with the specified priority.
     /// </summary>
-    /// <param name="element">The element to add. Must not be <see langword="null"/>.</param>
+    /// <param name="element">The element to add. Must not be <see langword="null" />.</param>
     /// <param name="priority">The priority associated with the element.</param>
-    /// <returns><see langword="true"/> if the element was added; <see langword="false"/> if it was already present.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="element"/> is <see langword="null"/>.</exception>
+    /// <returns>
+    /// <see langword="true" /> if the element was added; <see langword="false" /> if it was already present.
+    /// </returns>
+    /// <exception cref="ArgumentNullException"><paramref name="element" /> is <see langword="null" />.</exception>
     public bool TryEnqueue(TElement element, TPriority priority)
     {
         ThrowHelper.ThrowIfNull(element);
@@ -359,13 +387,15 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
     /// <summary>
     /// Adds the specified element with the specified priority, or re-prioritizes it if already present.
     /// </summary>
-    /// <param name="element">The element to add or update. Must not be <see langword="null"/>.</param>
+    /// <param name="element">The element to add or update. Must not be <see langword="null" />.</param>
     /// <param name="priority">The priority to assign.</param>
     /// <returns>
-    /// <see langword="true"/> if the element was added; <see langword="false"/> if an existing entry was updated.
+    /// <see langword="true" /> if the element was added; <see langword="false" /> if an existing entry was updated.
     /// </returns>
-    /// <exception cref="ArgumentNullException"><paramref name="element"/> is <see langword="null"/>.</exception>
-    /// <remarks>This is the canonical primitive for Dijkstra-style relaxation steps.</remarks>
+    /// <exception cref="ArgumentNullException"><paramref name="element" /> is <see langword="null" />.</exception>
+    /// <remarks>
+    /// This is the canonical primitive for Dijkstra-style relaxation steps.
+    /// </remarks>
     public bool EnqueueOrUpdate(TElement element, TPriority priority)
     {
         ThrowHelper.ThrowIfNull(element);
@@ -390,17 +420,23 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
         if (_size == 0)
             throw new InvalidOperationException(ResourceStrings.Op_Invalid_CollectionEmpty);
 
-        (TElement Element, TPriority Priority) head = _nodes[0];
+        (TElement Element, TPriority Priority) = _nodes[0];
         RemoveAt(0);
-        return new KeyValuePair<TElement, TPriority>(head.Element, head.Priority);
+        return new KeyValuePair<TElement, TPriority>(Element, Priority);
     }
 
     /// <summary>
     /// Attempts to remove and return the element-priority pair at the head of the queue.
     /// </summary>
-    /// <param name="element">When this method returns, contains the dequeued element if successful; otherwise, the default value of <typeparamref name="TElement"/>.</param>
-    /// <param name="priority">When this method returns, contains the dequeued priority if successful; otherwise, the default value of <typeparamref name="TPriority"/>.</param>
-    /// <returns><see langword="true"/> if an element was dequeued; otherwise, <see langword="false"/>.</returns>
+    /// <param name="element">
+    /// When this method returns, contains the dequeued element if successful; otherwise, the default value of
+    /// <typeparamref name="TElement" />.
+    /// </param>
+    /// <param name="priority">
+    /// When this method returns, contains the dequeued priority if successful; otherwise, the default value of
+    /// <typeparamref name="TPriority" />.
+    /// </param>
+    /// <returns><see langword="true" /> if an element was dequeued; otherwise, <see langword="false" />.</returns>
     public bool TryDequeue(out TElement element, out TPriority priority)
     {
         if (_size == 0)
@@ -410,9 +446,8 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
             return false;
         }
 
-        (TElement Element, TPriority Priority) head = _nodes[0];
-        element = head.Element;
-        priority = head.Priority;
+        element = _nodes[0].Element;
+        priority = _nodes[0].Priority;
         RemoveAt(0);
         return true;
     }
@@ -420,13 +455,13 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
     /// <summary>
     /// Re-prioritizes the specified element. The element must already be present.
     /// </summary>
-    /// <param name="element">The element to re-prioritize. Must not be <see langword="null"/>.</param>
+    /// <param name="element">The element to re-prioritize. Must not be <see langword="null" />.</param>
     /// <param name="priority">The new priority to assign.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="element"/> is <see langword="null"/>.</exception>
-    /// <exception cref="KeyNotFoundException"><paramref name="element"/> is not present in the queue.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="element" /> is <see langword="null" />.</exception>
+    /// <exception cref="KeyNotFoundException"><paramref name="element" /> is not present in the queue.</exception>
     /// <remarks>
-    /// Works for both decrease-key and increase-key. Cost is O(log n) and includes a single sift-up
-    /// or sift-down of the moved node; if the priority is unchanged the operation is a no-op.
+    /// Works for both decrease-key and increase-key. Cost is O(log n) and includes a single sift-up or sift-down of the
+    /// moved node; if the priority is unchanged the operation is a no-op.
     /// </remarks>
     public void Update(TElement element, TPriority priority)
     {
@@ -441,10 +476,12 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
     /// <summary>
     /// Attempts to re-prioritize the specified element.
     /// </summary>
-    /// <param name="element">The element to re-prioritize. Must not be <see langword="null"/>.</param>
+    /// <param name="element">The element to re-prioritize. Must not be <see langword="null" />.</param>
     /// <param name="priority">The new priority to assign.</param>
-    /// <returns><see langword="true"/> if the element was found and updated; otherwise, <see langword="false"/>.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="element"/> is <see langword="null"/>.</exception>
+    /// <returns>
+    /// <see langword="true" /> if the element was found and updated; otherwise, <see langword="false" />.
+    /// </returns>
+    /// <exception cref="ArgumentNullException"><paramref name="element" /> is <see langword="null" />.</exception>
     public bool TryUpdate(TElement element, TPriority priority)
     {
         ThrowHelper.ThrowIfNull(element);
@@ -459,9 +496,11 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
     /// <summary>
     /// Removes the specified element from the queue if present.
     /// </summary>
-    /// <param name="element">The element to remove. Must not be <see langword="null"/>.</param>
-    /// <returns><see langword="true"/> if the element was found and removed; otherwise, <see langword="false"/>.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="element"/> is <see langword="null"/>.</exception>
+    /// <param name="element">The element to remove. Must not be <see langword="null" />.</param>
+    /// <returns>
+    /// <see langword="true" /> if the element was found and removed; otherwise, <see langword="false" />.
+    /// </returns>
+    /// <exception cref="ArgumentNullException"><paramref name="element" /> is <see langword="null" />.</exception>
     public bool Remove(TElement element)
     {
         ThrowHelper.ThrowIfNull(element);
@@ -477,7 +516,7 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
     /// Removes all elements from the queue.
     /// </summary>
     /// <remarks>
-    /// The backing capacity is preserved; call <see cref="TrimExcess"/> to release the unused storage.
+    /// The backing capacity is preserved; call <see cref="TrimExcess" /> to release the unused storage.
     /// </remarks>
     public void Clear()
     {
@@ -491,11 +530,11 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
     }
 
     /// <summary>
-    /// Ensures that the internal storage can hold at least <paramref name="capacity"/> elements without reallocating.
+    /// Ensures that the internal storage can hold at least <paramref name="capacity" /> elements without reallocating.
     /// </summary>
     /// <param name="capacity">The minimum capacity to ensure. Must be non-negative.</param>
     /// <returns>The new capacity of the internal storage.</returns>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity"/> is negative.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> is negative.</exception>
     public int EnsureCapacity(int capacity)
     {
         ThrowHelper.ThrowIfNegative(capacity);
@@ -509,7 +548,9 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
     /// <summary>
     /// Reduces the internal storage to match the current element count.
     /// </summary>
-    /// <remarks>This method does not bump the modification version: enumerators remain valid.</remarks>
+    /// <remarks>
+    /// This method does not bump the modification version: enumerators remain valid.
+    /// </remarks>
     public void TrimExcess()
     {
         if (_size == _nodes.Length)
@@ -517,7 +558,7 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
 
         if (_size == 0)
         {
-            _nodes = Array.Empty<(TElement, TPriority)>();
+            _nodes = [];
             return;
         }
 
@@ -529,12 +570,12 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
     /// <summary>
     /// Returns a struct enumerator that walks the heap storage in array order.
     /// </summary>
-    /// <returns>A new <see cref="Enumerator"/> bound to this queue.</returns>
+    /// <returns>A new <see cref="Enumerator" /> bound to this queue.</returns>
     /// <remarks>
-    /// Enumeration is in heap-storage order, not priority order. To enumerate in priority order, drain the
-    /// queue with successive <see cref="Dequeue"/> calls.
+    /// Enumeration is in heap-storage order, not priority order. To enumerate in priority order, drain the queue with
+    /// successive <see cref="Dequeue" /> calls.
     /// </remarks>
-    public Enumerator GetEnumerator() => new Enumerator(this);
+    public Enumerator GetEnumerator() => new(this);
 
     /// <summary>
     /// Inserts an element-priority pair without performing input validation. The element must not be present.
@@ -556,11 +597,12 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
     }
 
     /// <summary>
-    /// Attempts to insert an element-priority pair, returning <see langword="false"/> if the element is already present.
+    /// Attempts to insert an element-priority pair, returning <see langword="false" /> if the element is already
+    /// present.
     /// </summary>
     /// <param name="element">The element to insert.</param>
     /// <param name="priority">The associated priority.</param>
-    /// <returns><see langword="true"/> if the element was inserted; otherwise, <see langword="false"/>.</returns>
+    /// <returns><see langword="true" /> if the element was inserted; otherwise, <see langword="false" />.</returns>
     private bool TryEnqueueCore(TElement element, TPriority priority)
     {
         if (_index.ContainsKey(element))
@@ -573,7 +615,7 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
     /// <summary>
     /// Re-prioritizes the node at the specified slot, performing the appropriate sift-up or sift-down.
     /// </summary>
-    /// <param name="slot">The slot in <see cref="_nodes"/> whose priority is being changed.</param>
+    /// <param name="slot">The slot in <see cref="_nodes" /> whose priority is being changed.</param>
     /// <param name="newPriority">The replacement priority.</param>
     private void UpdateAt(int slot, TPriority newPriority)
     {
@@ -592,15 +634,15 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
     }
 
     /// <summary>
-    /// Removes the node at the specified slot, repairing the heap by moving the trailing node into the gap
-    /// and sifting it up or down as required.
+    /// Removes the node at the specified slot, repairing the heap by moving the trailing node into the gap and sifting
+    /// it up or down as required.
     /// </summary>
-    /// <param name="slot">The slot in <see cref="_nodes"/> to remove.</param>
+    /// <param name="slot">The slot in <see cref="_nodes" /> to remove.</param>
     private void RemoveAt(int slot)
     {
         var lastIndex = _size - 1;
-        (TElement Element, TPriority Priority) removed = _nodes[slot];
-        _index.Remove(removed.Element);
+        (TElement Element, TPriority Priority) = _nodes[slot];
+        _index.Remove(Element);
 
         if (slot < lastIndex)
         {
@@ -608,7 +650,7 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
             _nodes[slot] = moved;
             _index[moved.Element] = slot;
 
-            var direction = _comparer.Compare(moved.Priority, removed.Priority);
+            var direction = _comparer.Compare(moved.Priority, Priority);
             if (direction < 0)
                 SiftUp(slot);
             else if (direction > 0)
@@ -621,7 +663,7 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
     }
 
     /// <summary>
-    /// Bubbles the node at <paramref name="slot"/> toward the root while it has a smaller priority than its parent.
+    /// Bubbles the node at <paramref name="slot" /> toward the root while it has a smaller priority than its parent.
     /// </summary>
     /// <param name="slot">The starting slot to sift upward.</param>
     private void SiftUp(int slot)
@@ -638,7 +680,7 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
     }
 
     /// <summary>
-    /// Bubbles the node at <paramref name="slot"/> toward the leaves while a child has a smaller priority.
+    /// Bubbles the node at <paramref name="slot" /> toward the leaves while a child has a smaller priority.
     /// </summary>
     /// <param name="slot">The starting slot to sift downward.</param>
     private void SiftDown(int slot)
@@ -661,16 +703,13 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
     }
 
     /// <summary>
-    /// Swaps the two specified slots in <see cref="_nodes"/> and updates <see cref="_index"/> accordingly.
+    /// Swaps the two specified slots in <see cref="_nodes" /> and updates <see cref="_index" /> accordingly.
     /// </summary>
     /// <param name="a">The first slot to swap.</param>
     /// <param name="b">The second slot to swap.</param>
     private void Swap(int a, int b)
     {
-        (TElement Element, TPriority Priority) temp = _nodes[a];
-        _nodes[a] = _nodes[b];
-        _nodes[b] = temp;
-
+        (_nodes[b], _nodes[a]) = (_nodes[a], _nodes[b]);
         _index[_nodes[a].Element] = a;
         _index[_nodes[b].Element] = b;
     }
@@ -678,7 +717,9 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
     /// <summary>
     /// Builds the heap invariant from the bottom up in O(n).
     /// </summary>
-    /// <remarks>Used only by the <see cref="IEnumerable{T}"/> constructor before the queue is observable.</remarks>
+    /// <remarks>
+    /// Used only by the <see cref="IEnumerable{T}" /> constructor before the queue is observable.
+    /// </remarks>
     private void Heapify()
     {
         for (var i = (_size - 2) >> 1; i >= 0; i--)
@@ -686,8 +727,8 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
     }
 
     /// <summary>
-    /// Expands the backing array to at least <paramref name="minCapacity"/> elements, doubling the existing
-    /// length where possible.
+    /// Expands the backing array to at least <paramref name="minCapacity" /> elements, doubling the existing length
+    /// where possible.
     /// </summary>
     /// <param name="minCapacity">The minimum capacity required after the resize.</param>
     private void Grow(int minCapacity)
@@ -703,16 +744,4 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
             Array.Copy(_nodes, resized, _size);
         _nodes = resized;
     }
-
-    /// <summary>
-    /// The composite-format string used when reporting a duplicate element key. The single placeholder
-    /// receives the offending element's <see cref="object.ToString"/> representation.
-    /// </summary>
-    private const string DuplicateElementMessageFormat = "An element with the key '{0}' already exists in the queue.";
-
-    /// <summary>
-    /// The composite-format string used when reporting a missing element key. The single placeholder
-    /// receives the requested element's <see cref="object.ToString"/> representation.
-    /// </summary>
-    private const string ElementNotFoundMessageFormat = "The element '{0}' was not found in the queue.";
 }

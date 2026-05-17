@@ -22,7 +22,7 @@ public partial class MultiValueDictionaryTests
 
         IReadOnlyList<int> values = mvd.GetValues("ALPHA");
 
-        Assert.AreEqual(1, values.Count);
+        Assert.HasCount(1, values);
         Assert.AreEqual(1, values[0]);
     }
 
@@ -66,7 +66,7 @@ public partial class MultiValueDictionaryTests
 
         IReadOnlyList<int> result = mvd.GetValues("k");
 
-        Assert.AreEqual(2, result.Count);
+        Assert.HasCount(2, result);
         Assert.AreEqual(100, result[0]);
         Assert.AreEqual(200, result[1]);
     }
@@ -84,7 +84,7 @@ public partial class MultiValueDictionaryTests
 
         mvd.Remove("a", 1);
 
-        Assert.AreEqual(0, values.Count);
+        Assert.IsEmpty(values);
         Assert.IsFalse(mvd.ContainsKey("a"));
     }
 
@@ -102,7 +102,7 @@ public partial class MultiValueDictionaryTests
 
         mvd.RemoveAll("a");
 
-        Assert.AreEqual(0, values.Count);
+        Assert.IsEmpty(values);
         Assert.IsFalse(mvd.ContainsKey("a"));
     }
     /// <summary>
@@ -138,7 +138,7 @@ public partial class MultiValueDictionaryTests
         IReadOnlyList<int> view = mvd.GetValues("k");
         mvd.Add("k", 2);
 
-        Assert.AreEqual(2, view.Count);
+        Assert.HasCount(2, view);
         Assert.AreEqual(2, view[1]);
     }
 

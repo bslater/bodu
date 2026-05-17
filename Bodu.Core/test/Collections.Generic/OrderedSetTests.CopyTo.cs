@@ -150,7 +150,7 @@ public partial class OrderedSetTests
 
         var array = sut.ToArray();
 
-        Assert.AreEqual(0, array.Length);
+        Assert.IsEmpty(array);
     }
 
     /// <summary>

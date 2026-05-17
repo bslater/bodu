@@ -87,7 +87,7 @@ public sealed partial class IListExtensionsTests_TrySwap
         var list = new List<int>();
 
         Assert.IsFalse(list.TrySwap(0, 0));
-        Assert.AreEqual(0, list.Count);
+        Assert.IsEmpty(list);
     }
 
     /// <summary>

@@ -33,8 +33,8 @@ public partial class EvictingDictionaryTests
         dictionary.Add("A", 1);
 
         ICollection<string> keys = dictionary.Keys;
-        Assert.IsTrue(keys.Contains("A"));
-        Assert.IsFalse(keys.Contains("Z"));
+        Assert.Contains("A", keys);
+        Assert.DoesNotContain("Z", keys);
     }
 
     /// <summary>

@@ -113,7 +113,7 @@ public partial class IndexedSetTests
         var sut = new IndexedSet<int>(source);
 
         Assert.AreEqual(5, sut.Count);
-        Assert.IsTrue(sut.Capacity >= 5);
+        Assert.IsGreaterThanOrEqualTo(5, sut.Capacity);
     }
 
     /// <summary>

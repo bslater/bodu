@@ -23,7 +23,7 @@ public partial class MultiValueDictionaryTests
 
         Assert.AreEqual(1, mvd.KeyCount);
         Assert.AreEqual(2, mvd.Count);
-        Assert.AreEqual(2, mvd[new Coord(1, 2)].Count);
+        Assert.HasCount(2, mvd[new Coord(1, 2)]);
     }
 
     /// <summary>
@@ -55,7 +55,7 @@ public partial class MultiValueDictionaryTests
 
         IReadOnlyList<Coord> values = mvd["grid"];
 
-        Assert.AreEqual(2, values.Count);
+        Assert.HasCount(2, values);
         Assert.AreEqual(new Coord(1, 2), values[0]);
         Assert.AreEqual(new Coord(3, 4), values[1]);
     }

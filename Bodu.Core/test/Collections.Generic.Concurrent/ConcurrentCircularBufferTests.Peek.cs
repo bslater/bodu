@@ -142,7 +142,7 @@ public partial class ConcurrentCircularBufferTests
 
         Task.WaitAll(peeker, consumer);
         Assert.AreEqual(1, success, "Peek should succeed at least once before buffer empties.");
-        Assert.IsTrue(attempts > 0, "Peeker never attempted.");
+        Assert.IsGreaterThan(0, attempts, "Peeker never attempted.");
     }
 
     /// <summary>
@@ -205,8 +205,8 @@ public partial class ConcurrentCircularBufferTests
         });
 
         Task.WaitAll(clearer, peeker);
-        Assert.AreEqual(0, exceptions.Count, "Peek should only throw InvalidOperation when empty.");
-        Assert.IsTrue(observedValues.Count >= 0);
+        Assert.IsEmpty(exceptions, "Peek should only throw InvalidOperation when empty.");
+        Assert.IsGreaterThanOrEqualTo(0, observedValues.Count);
     }
 
     /// <summary>
@@ -236,7 +236,7 @@ public partial class ConcurrentCircularBufferTests
             }
         });
 
-        Assert.AreEqual(0, errors.Count, "No exceptions other than InvalidOperation (empty) are expected.");
+        Assert.IsEmpty(errors, "No exceptions other than InvalidOperation (empty) are expected.");
     }
 
     /// <summary>
@@ -316,7 +316,7 @@ public partial class ConcurrentCircularBufferTests
 
         Task.WaitAll(reader, writer);
 
-        Assert.AreEqual(0, exceptions.Count, "Peek should not throw while producers mutate.");
+        Assert.IsEmpty(exceptions, "Peek should not throw while producers mutate.");
         Assert.IsTrue(peekedItems.All(x => x != null),
             "Peek returned null for a non-null item during concurrent enqueue.");
     }

@@ -26,7 +26,7 @@ public partial class ConcurrentCircularBufferTests
             results.Add(buffer);
         });
 
-        Assert.AreEqual(50, results.Count);
+        Assert.HasCount(50, results);
         Assert.IsTrue(results.All(b => b.Count == 1));
         Assert.IsTrue(results.All(b => b.AllowOverwrite));
         Assert.IsTrue(results.All(b => b.Capacity >= 2)); // DefaultCapacity is internal; ensure minimum is met
@@ -145,7 +145,7 @@ public partial class ConcurrentCircularBufferTests
             results.Add(buffer);
         });
 
-        Assert.AreEqual(100, results.Count);
+        Assert.HasCount(100, results);
         Assert.IsTrue(results.All(b => b.Capacity == 5));
         Assert.IsTrue(results.All(b => b.Count == 1));
     }
@@ -173,7 +173,7 @@ public partial class ConcurrentCircularBufferTests
         var buffer = new ConcurrentCircularBuffer<TestItem?>(source, 4);
 
         TestItem?[] arr = buffer.ToArray();
-        Assert.AreEqual(3, arr.Length);
+        Assert.HasCount(3, arr);
         Assert.IsNotNull(arr[0]);
         Assert.IsNull(arr[1]);
         Assert.IsNotNull(arr[2]);

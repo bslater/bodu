@@ -11,14 +11,15 @@ namespace Bodu;
 /// </summary>
 /// <remarks>
 /// <para>
-/// <see cref="WorkingDaysOfWeek" /> enumerates the commonly observed working-week patterns across global regions.
-/// Each named value maps to a canonical <see cref="WeekPattern" /> preset and is interchangeable with the bitmask
-/// representation through the conversion extension methods on <see cref="Bodu.Extensions.WorkingDaysOfWeekExtensions" />.
+/// <see cref="WorkingDaysOfWeek" /> enumerates the commonly observed working-week patterns across global regions. Each
+/// named value maps to a canonical <see cref="WeekPattern" /> preset and is interchangeable with the bitmask
+/// representation through the conversion extension methods on
+/// <see cref="Bodu.Extensions.WorkingDaysOfWeekExtensions" />.
 /// </para>
 /// <para>
 /// Use a named value when the working week is one of the listed patterns; use <see cref="Custom" /> together with a
-/// caller-supplied <see cref="WeekPattern" /> when the working week is non-standard (for example a four-day week or
-/// an unevenly distributed schedule).
+/// caller-supplied <see cref="WeekPattern" /> when the working week is non-standard (for example a four-day week or an
+/// unevenly distributed schedule).
 /// </para>
 /// </remarks>
 public enum WorkingDaysOfWeek
@@ -67,8 +68,8 @@ public enum WorkingDaysOfWeek
     /// Indicates that every day of the week is treated as a working day (no weekend is defined).
     /// </summary>
     /// <remarks>
-    /// Use this value when the working week has no rest day — for example, an "always on" service schedule or
-    /// regional configurations that do not define a standard weekend.
+    /// Use this value when the working week has no rest day — for example, an "always on" service schedule or regional
+    /// configurations that do not define a standard weekend.
     /// </remarks>
     AllDays = 8,
 }

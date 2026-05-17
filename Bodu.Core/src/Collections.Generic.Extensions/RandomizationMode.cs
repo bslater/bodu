@@ -9,7 +9,10 @@ namespace Bodu.Collections.Generic.Extensions;
 /// <summary>
 /// Specifies the available strategies for randomizing a sequence.
 /// </summary>
-/// <remarks>Use <see cref="RandomizationMode"/> values with <c>Randomize</c> overloads to control how the source sequence is processed and shuffled.</remarks>
+/// <remarks>
+/// Use <see cref="RandomizationMode" /> values with <c>Randomize</c> overloads to control how the source sequence is
+/// processed and shuffled.
+/// </remarks>
 public enum RandomizationMode
 {
     /// <summary>

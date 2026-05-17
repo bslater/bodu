@@ -141,7 +141,7 @@ public partial class ConcurrentCircularBufferTests
             buffer.Enqueue(new TestItem(i));
 
         TestItem[] snap = buffer.ToArray();
-        Assert.IsTrue(snap.Length <= buffer.Capacity, "Snapshot must never exceed Capacity.");
+        Assert.IsLessThanOrEqualTo(buffer.Capacity, snap.Length, "Snapshot must never exceed Capacity.");
         Assert.AreEqual(7, buffer.Capacity);
     }
 

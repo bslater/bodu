@@ -34,7 +34,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
         AddToTail(collection, 1);
         AddToTail(collection, 2);
 
-        Assert.AreEqual(GetCount(collection), collection.Count);
+        Assert.HasCount(GetCount(collection), collection);
     }
 
     /// <summary>

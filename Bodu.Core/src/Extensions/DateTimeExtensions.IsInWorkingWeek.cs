@@ -36,10 +36,12 @@ public static partial class DateTimeExtensions
     /// otherwise, <see langword="false" />.
     /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="workingWeek" /> is not a defined value of the <see cref="WorkingDaysOfWeek" /> enumeration.
+    /// Thrown when <paramref name="workingWeek" /> is not a defined value of the <see cref="WorkingDaysOfWeek" />
+    /// enumeration.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// Thrown when <paramref name="workingWeek" /> is <see cref="WorkingDaysOfWeek.Custom" />, which has no canonical pattern.
+    /// Thrown when <paramref name="workingWeek" /> is <see cref="WorkingDaysOfWeek.Custom" />, which has no canonical
+    /// pattern.
     /// </exception>
     public static bool IsInWorkingWeek(this DateTime dateTime, WorkingDaysOfWeek workingWeek) =>
         IsInWorkingWeek(dateTime, workingWeek.ToWeekPattern());

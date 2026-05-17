@@ -71,7 +71,7 @@ public partial class SequenceGeneratorTests
     public void Repeat_WhenCountIsZero_ShouldReturnEmptySequence()
     {
         var actual = SequenceGenerator.Repeat("A", 0).ToArray();
-        Assert.AreEqual(0, actual.Length);
+        Assert.IsEmpty(actual);
     }
 
 }

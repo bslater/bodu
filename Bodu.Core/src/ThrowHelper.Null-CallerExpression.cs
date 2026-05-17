@@ -34,8 +34,8 @@ public static partial class ThrowHelper
     }
 
     /// <summary>
-    /// Throws an <see cref="ArgumentNullException" /> if <paramref name="value" /> is <see langword="null" />,
-    /// using <paramref name="message" /> as the exception message.
+    /// Throws an <see cref="ArgumentNullException" /> if <paramref name="value" /> is <see langword="null" />, using
+    /// <paramref name="message" /> as the exception message.
     /// </summary>
     /// <typeparam name="T">The type of the object.</typeparam>
     /// <param name="value">The value to check. Must not be <see langword="null" />.</param>
@@ -58,8 +58,8 @@ public static partial class ThrowHelper
     /// </summary>
     /// <param name="disposed">The disposal flag to evaluate.</param>
     /// <param name="objectName">
-    /// The name of the disposed object included in the exception message.
-    /// Supplied automatically by the compiler via <see cref="CallerArgumentExpressionAttribute" />.
+    /// The name of the disposed object included in the exception message. Supplied automatically by the compiler via
+    /// <see cref="CallerArgumentExpressionAttribute" />.
     /// </param>
     /// <exception cref="ObjectDisposedException">
     /// Thrown when <paramref name="disposed" /> is <see langword="true" />.

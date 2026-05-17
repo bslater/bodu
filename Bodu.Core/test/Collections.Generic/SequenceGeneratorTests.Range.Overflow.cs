@@ -42,7 +42,7 @@ public partial class SequenceGeneratorTests
     public void Range_WhenLongStartIsMaxAndCountIsZero_ShouldReturnEmptySequence()
     {
         var actual = SequenceGenerator.Range(long.MaxValue, 0).ToArray();
-        Assert.AreEqual(0, actual.Length);
+        Assert.IsEmpty(actual);
     }
 
     /// <summary>
@@ -53,7 +53,7 @@ public partial class SequenceGeneratorTests
     public void Range_WhenPositiveStepButStopBelowStart_ShouldReturnEmptySequence()
     {
         var actual = SequenceGenerator.Range(10, 5, 1).ToArray();
-        Assert.AreEqual(0, actual.Length);
+        Assert.IsEmpty(actual);
     }
 
 }

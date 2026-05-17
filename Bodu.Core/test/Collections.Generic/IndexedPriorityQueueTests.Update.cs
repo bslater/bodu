@@ -138,7 +138,7 @@ public partial class IndexedPriorityQueueTests
         AssertNonDecreasing(drained);
         Assert.AreEqual(7, drained[0].Key);
         Assert.AreEqual(3, drained[^1].Key);
-        Assert.AreEqual(16, drained.Length);
+        Assert.HasCount(16, drained);
     }
 
     /// <summary>

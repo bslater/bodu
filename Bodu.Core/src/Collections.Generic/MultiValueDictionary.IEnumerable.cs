@@ -34,8 +34,7 @@ public sealed partial class MultiValueDictionary<TKey, TValue>
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Use the <see langword="foreach" /> statement to enumerate the dictionary rather than using this struct
-    /// directly.
+    /// Use the <see langword="foreach" /> statement to enumerate the dictionary rather than using this struct directly.
     /// </para>
     /// <para>
     /// The enumerator provides read-only access. Modifying the underlying dictionary after enumeration begins
@@ -72,7 +71,7 @@ public sealed partial class MultiValueDictionary<TKey, TValue>
         /// <exception cref="InvalidOperationException">
         /// Thrown when the enumerator is not positioned on an element.
         /// </exception>
-        public KeyValuePair<TKey, IReadOnlyList<TValue>> Current =>
+        public readonly KeyValuePair<TKey, IReadOnlyList<TValue>> Current =>
             _hasCurrent
                 ? _current
                 : throw new InvalidOperationException(ResourceStrings.Op_Invalid_EnumeratorNotOnElement);

@@ -50,7 +50,7 @@ public partial class ConcurrentCircularBufferTests
         TestItem[] viaInterface = mvd.ToArray();
         TestItem[] viaConcrete = concrete.ToArray();
 
-        Assert.AreEqual(viaConcrete.Length, viaInterface.Length);
+        Assert.HasCount(viaConcrete.Length, viaInterface);
         for (var i = 0; i < viaConcrete.Length; i++)
             Assert.AreEqual(viaConcrete[i].Value, viaInterface[i].Value);
 
@@ -76,7 +76,7 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsTrue(mvd.TryAdd(new TestItem(1)));
         Assert.IsTrue(mvd.TryAdd(new TestItem(2)));
         Assert.IsFalse(mvd.TryAdd(new TestItem(3)));
-        Assert.AreEqual(2, mvd.Count);
+        Assert.HasCount(2, mvd);
     }
 
     /// <summary>
@@ -94,7 +94,7 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsTrue(mvd.TryAdd(new TestItem(3)));
 
         TestItem[] snapshot = concrete.ToArray();
-        Assert.AreEqual(2, snapshot.Length);
+        Assert.HasCount(2, snapshot);
         Assert.AreEqual(2, snapshot[0].Value);
         Assert.AreEqual(3, snapshot[1].Value);
     }
@@ -110,7 +110,7 @@ public partial class ConcurrentCircularBufferTests
 
         Assert.IsTrue(mvd.TryAdd(new TestItem(1)));
         Assert.IsTrue(mvd.TryAdd(new TestItem(2)));
-        Assert.AreEqual(2, mvd.Count);
+        Assert.HasCount(2, mvd);
     }
 
     /// <summary>

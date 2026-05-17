@@ -9,15 +9,34 @@ namespace Bodu.Extensions;
 public static partial class DateTimeExtensions
 {
     /// <summary>
-    /// Returns a new <see cref="DateTime"/> representing the previous occurrence of a recurring event that starts at <paramref name="dateTime"/> and repeats every <paramref name="interval"/>, occurring strictly before the specified <paramref name="before"/> timestamp.
+    /// Returns a new <see cref="DateTime" /> representing the previous occurrence of a recurring event that starts at
+    /// <paramref name="dateTime" /> and repeats every <paramref name="interval" />, occurring strictly before the
+    /// specified <paramref name="before" /> timestamp.
     /// </summary>
-    /// <param name="dateTime">The date and time value representing the initial reference point of the recurring event.</param>
-    /// <param name="interval">The fixed <see cref="TimeSpan"/> between successive occurrences. Must be greater than <see cref="TimeSpan.Zero"/>.</param>
+    /// <param name="dateTime">
+    /// The date and time value representing the initial reference point of the recurring event.
+    /// </param>
+    /// <param name="interval">
+    /// The fixed <see cref="TimeSpan" /> between successive occurrences. Must be greater than
+    /// <see cref="TimeSpan.Zero" />.
+    /// </param>
     /// <param name="before">The point in time before which the previous occurrence must fall.</param>
-    /// <returns>An object whose value is the last occurrence of the event that falls strictly before <paramref name="before"/>, based on the supplied <paramref name="dateTime"/> and recurring <paramref name="interval"/>, with the original <see cref="DateTime.Kind"/> preserved.</returns>
+    /// <returns>
+    /// An object whose value is the last occurrence of the event that falls strictly before <paramref name="before" />,
+    /// based on the supplied <paramref name="dateTime" /> and recurring <paramref name="interval" />, with the original
+    /// <see cref="DateTime.Kind" /> preserved.
+    /// </returns>
     /// <remarks>
-    /// <para>If <paramref name="before"/> is earlier than or equal to <paramref name="dateTime"/>, the method returns the occurrence immediately prior to <paramref name="dateTime"/>. Otherwise, it computes the largest multiple of <paramref name="interval"/> added to <paramref name="dateTime"/> that remains strictly less than <paramref name="before"/>. When <paramref name="before"/> falls exactly on an occurrence boundary, the occurrence at that boundary is excluded and the preceding one is returned.</para>
-    /// <para><b>Example:</b></para>
+    /// <para>
+    /// If <paramref name="before" /> is earlier than or equal to <paramref name="dateTime" />, the method returns the
+    /// occurrence immediately prior to <paramref name="dateTime" />. Otherwise, it computes the largest multiple of
+    /// <paramref name="interval" /> added to <paramref name="dateTime" /> that remains strictly less than
+    /// <paramref name="before" />. When <paramref name="before" /> falls exactly on an occurrence boundary, the
+    /// occurrence at that boundary is excluded and the preceding one is returned.
+    /// </para>
+    /// <para>
+    /// <b>Example:</b>
+    /// </para>
     /// <code>
     ///<![CDATA[
     /// var start    = new DateTime(2025, 7, 7, 9, 0, 0);             // 09:00
@@ -33,7 +52,9 @@ public static partial class DateTimeExtensions
     ///]]>
     /// </code>
     /// </remarks>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="interval"/> is less than or equal to <see cref="TimeSpan.Zero"/>.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown if <paramref name="interval" /> is less than or equal to <see cref="TimeSpan.Zero" />.
+    /// </exception>
     public static DateTime PreviousOccurrence(this DateTime dateTime, TimeSpan interval, DateTime before)
     {
         ThrowHelper.ThrowIfLessThanOrEqual(interval, TimeSpan.Zero);

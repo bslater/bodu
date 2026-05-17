@@ -54,8 +54,8 @@ public partial class OrderedSetTests
 
         var reported = sut.EnsureCapacity(128);
 
-        Assert.IsTrue(reported >= 128);
-        Assert.IsTrue(sut.Capacity >= 128);
+        Assert.IsGreaterThanOrEqualTo(128, reported);
+        Assert.IsGreaterThanOrEqualTo(128, sut.Capacity);
     }
 
     /// <summary>

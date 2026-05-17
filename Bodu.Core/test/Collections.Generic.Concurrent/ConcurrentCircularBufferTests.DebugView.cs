@@ -71,7 +71,7 @@ public partial class ConcurrentCircularBufferTests
         var view = new ConcurrentCircularBufferDebugView<TestItem>(buffer);
         TestItem[] items = view.Items;
 
-        Assert.AreEqual(3, items.Length);
+        Assert.HasCount(3, items);
         Assert.AreEqual(10, items[0].Value);
         Assert.AreEqual(20, items[1].Value);
         Assert.AreEqual(30, items[2].Value);

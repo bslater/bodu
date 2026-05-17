@@ -211,7 +211,7 @@ public partial class ConcurrentCircularBufferTests
 
         Task.WaitAll(writer, toggler);
 
-        Assert.IsTrue(exceptions.Count > 0, "At least one enqueue should have failed when AllowOverwrite was false.");
+        Assert.IsNotEmpty(exceptions, "At least one enqueue should have failed when AllowOverwrite was false.");
         Assert.IsTrue(exceptions.All(e => e is InvalidOperationException));
     }
 
@@ -276,8 +276,8 @@ public partial class ConcurrentCircularBufferTests
 
         // Expect both some successes (during overwrite=true) and some InvalidOperationExceptions
         // (during overwrite=false).
-        Assert.IsTrue(successes > 0, "Some enqueues should succeed when overwrite is enabled.");
-        Assert.IsTrue(exceptions.Count > 0, "Some enqueues should fail when overwrite is disabled.");
+        Assert.IsGreaterThan(0, successes, "Some enqueues should succeed when overwrite is enabled.");
+        Assert.IsNotEmpty(exceptions, "Some enqueues should fail when overwrite is disabled.");
         Assert.IsTrue(exceptions.All(e => e is InvalidOperationException), "Failures should be InvalidOperationException only.");
     }
 

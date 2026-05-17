@@ -135,7 +135,7 @@ public partial class BufferConverterTests
 
         var result = source.ToArray<byte>(0, 0);
 
-        Assert.AreEqual(0, result.Length);
+        Assert.IsEmpty(result);
     }
 
     /// <summary>
@@ -149,7 +149,7 @@ public partial class BufferConverterTests
         ReadOnlySpan<byte> source = data;
         var result = source.ToArray<int>(0);
 
-        Assert.AreEqual(0, result.Length);
+        Assert.IsEmpty(result);
     }
 
     /// <summary>

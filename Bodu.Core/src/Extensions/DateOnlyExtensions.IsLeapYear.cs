@@ -9,19 +9,41 @@ namespace Bodu.Extensions;
 public static partial class DateOnlyExtensions
 {
     /// <summary>
-    /// Determines whether the year of the specified <see cref="DateOnly"/> is a leap year, according to the proleptic Gregorian calendar.
+    /// Determines whether the year of the specified <see cref="DateOnly" /> is a leap year, according to the proleptic
+    /// Gregorian calendar.
     /// </summary>
-    /// <param name="date">The date value whose <see cref="DateOnly.Year"/> is evaluated.</param>
-    /// <returns><see langword="true"/> if the year contains February 29; otherwise, <see langword="false"/>.</returns>
+    /// <param name="date">The date value whose <see cref="DateOnly.Year" /> is evaluated.</param>
+    /// <returns>
+    /// <see langword="true" /> if the year contains February 29; otherwise, <see langword="false" />.
+    /// </returns>
     /// <remarks>
-    /// <para>This method applies the Gregorian leap-year rules:</para>
+    /// <para>
+    /// This method applies the Gregorian leap-year rules:
+    /// </para>
     /// <list type="bullet">
-    /// <item><description>Years divisible by 4 are leap years,</description></item>
-    /// <item><description>except years divisible by 100,</description></item>
-    /// <item><description>unless also divisible by 400.</description></item>
+    /// <item>
+    /// <description>
+    /// Years divisible by 4 are leap years,
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <description>
+    /// except years divisible by 100,
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <description>
+    /// unless also divisible by 400.
+    /// </description>
+    /// </item>
     /// </list>
-    /// <para>For example, the years 2000 and 2024 are leap years, while 1900 and 2100 are not.</para>
-    /// <para>This method does not consider culture-specific calendars; it always evaluates leap years using the Gregorian calendar.</para>
+    /// <para>
+    /// For example, the years 2000 and 2024 are leap years, while 1900 and 2100 are not.
+    /// </para>
+    /// <para>
+    /// This method does not consider culture-specific calendars; it always evaluates leap years using the Gregorian
+    /// calendar.
+    /// </para>
     /// </remarks>
     public static bool IsLeapYear(this DateOnly date) => DateTime.IsLeapYear(date.Year);
 }

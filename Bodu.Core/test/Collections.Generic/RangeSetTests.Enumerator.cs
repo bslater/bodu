@@ -151,7 +151,7 @@ public partial class RangeSetTests
         foreach (var item in untyped)
             seen.Add((Range<int>)item);
 
-        Assert.AreEqual(2, seen.Count);
+        Assert.HasCount(2, seen);
         Assert.AreEqual(new Range<int>(0, 5), seen[0]);
         Assert.AreEqual(new Range<int>(10, 15), seen[1]);
     }
@@ -174,7 +174,7 @@ public partial class RangeSetTests
         foreach (Range<int> range in typed)
             seen.Add(range);
 
-        Assert.AreEqual(2, seen.Count);
+        Assert.HasCount(2, seen);
         Assert.AreEqual(new Range<int>(0, 5), seen[0]);
         Assert.AreEqual(new Range<int>(10, 15), seen[1]);
     }

@@ -69,7 +69,7 @@ public partial class DateTimeExtensionsTests
             // Parse back and confirm the kind is preserved
             var parsed = DateTime.Parse(actual, null, DateTimeStyles.RoundtripKind);
             Assert.AreEqual(DateTimeKind.Local, parsed.Kind, "Expected kind mismatch for local input.");
-            Assert.IsTrue(actual.StartsWith("2024-04-20T15:30:45"), "Expected prefix missing.");
+            Assert.StartsWith("2024-04-20T15:30:45", actual, "Expected prefix missing.");
         }
     }
 
@@ -87,7 +87,7 @@ public partial class DateTimeExtensionsTests
         if (expected != null)
             Assert.AreEqual(expected, actual);
         else
-            Assert.IsTrue(actual.StartsWith("2024-04-20T15:30:45."));
+            Assert.StartsWith("2024-04-20T15:30:45.", actual);
     }
 
 }

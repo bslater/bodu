@@ -203,16 +203,15 @@ public static partial class ThrowHelper
 
     /// <summary>
     /// Throws an <see cref="ArgumentOutOfRangeException" /> if the nullable <paramref name="value" /> is less than
-    /// <paramref name="min" />.
-    /// Optionally throws <see cref="ArgumentNullException" /> if <paramref name="value" /> is <see langword="null" />.
+    /// <paramref name="min" />. Optionally throws <see cref="ArgumentNullException" /> if <paramref name="value" /> is
+    /// <see langword="null" />.
     /// </summary>
     /// <typeparam name="T">A comparable value type.</typeparam>
     /// <param name="value">The nullable value to validate.</param>
     /// <param name="min">The inclusive lower bound.</param>
     /// <param name="throwIfNull">
-    /// When <see langword="true" />,
-    /// throws <see cref="ArgumentNullException" /> if <paramref name="value" /> is <see langword="null" />.
-    /// When <see langword="false" />, a <see langword="null" /> value passes validation.
+    /// When <see langword="true" />, throws <see cref="ArgumentNullException" /> if <paramref name="value" /> is
+    /// <see langword="null" />. When <see langword="false" />, a <see langword="null" /> value passes validation.
     /// </param>
     /// <param name="paramName">The name of the parameter. Supplied automatically by the compiler.</param>
     /// <exception cref="ArgumentNullException">

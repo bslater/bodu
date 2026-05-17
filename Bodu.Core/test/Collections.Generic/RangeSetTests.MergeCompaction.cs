@@ -65,8 +65,8 @@ public partial class RangeSetTests
 
         var reported = sut.EnsureCapacity(1);
 
-        Assert.IsTrue(reported >= 4, $"Expected default capacity floor of 4 or more, got {reported}.");
-        Assert.IsTrue(sut.Capacity >= 4);
+        Assert.IsGreaterThanOrEqualTo(4, reported, $"Expected default capacity floor of 4 or more, got {reported}.");
+        Assert.IsGreaterThanOrEqualTo(4, sut.Capacity);
     }
 
     /// <summary>
@@ -82,8 +82,8 @@ public partial class RangeSetTests
 
         var reported = sut.EnsureCapacity(1024); // far exceeds 4*2 = 8
 
-        Assert.IsTrue(reported >= 1024);
-        Assert.IsTrue(sut.Capacity >= 1024);
+        Assert.IsGreaterThanOrEqualTo(1024, reported);
+        Assert.IsGreaterThanOrEqualTo(1024, sut.Capacity);
     }
 
 }

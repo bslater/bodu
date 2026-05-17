@@ -25,7 +25,7 @@ public partial class IndexedPriorityQueueTests
         foreach (KeyValuePair<int, int> pair in enumerable)
             Assert.IsTrue(seen.Add(pair.Key));
 
-        Assert.AreEqual(10, seen.Count);
+        Assert.HasCount(10, seen);
     }
 
     /// <summary>
@@ -48,7 +48,7 @@ public partial class IndexedPriorityQueueTests
             Assert.IsTrue(seen.Add(pair.Key));
         }
 
-        Assert.AreEqual(10, seen.Count);
+        Assert.HasCount(10, seen);
     }
 
     /// <summary>
@@ -298,7 +298,7 @@ public partial class IndexedPriorityQueueTests
         while (enumerator.MoveNext())
             seen.Add(enumerator.Current.Key);
 
-        Assert.AreEqual(5, seen.Count);
+        Assert.HasCount(5, seen);
     }
 
     /// <summary>
@@ -359,7 +359,7 @@ public partial class IndexedPriorityQueueTests
         foreach (KeyValuePair<int, int> pair in queue)
             Assert.IsTrue(seen.Add(pair.Key), $"duplicate element {pair.Key}");
 
-        Assert.AreEqual(20, seen.Count);
+        Assert.HasCount(20, seen);
     }
 
 }

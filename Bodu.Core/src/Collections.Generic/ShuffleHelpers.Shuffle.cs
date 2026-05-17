@@ -16,10 +16,12 @@ public static partial class ShuffleHelpers
     /// <typeparam name="T">The type of the elements in the array.</typeparam>
     /// <param name="array">The array of elements to shuffle.</param>
     /// <param name="rng">The random number generator used to shuffle elements.</param>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="array"/> or <paramref name="rng"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown if <paramref name="array" /> or <paramref name="rng" /> is <see langword="null" />.
+    /// </exception>
     /// <remarks>
-    /// This method modifies the original array using the Fisher–Yates algorithm. Each element has an equal probability of ending up in
-    /// any position.
+    /// This method modifies the original array using the Fisher–Yates algorithm. Each element has an equal probability
+    /// of ending up in any position.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Shuffle<T>(T[] array, IRandomGenerator rng)
@@ -42,10 +44,12 @@ public static partial class ShuffleHelpers
     /// <typeparam name="T">The type of the elements in the span.</typeparam>
     /// <param name="span">The span of elements to shuffle.</param>
     /// <param name="rng">The random number generator used to shuffle elements.</param>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="rng"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown if <paramref name="rng" /> is <see langword="null" />.
+    /// </exception>
     /// <remarks>
-    /// This method modifies the span in-place using the Fisher–Yates algorithm. It is optimized for shuffling stack-allocated or pooled
-    /// data, and does not allocate memory.
+    /// This method modifies the span in-place using the Fisher–Yates algorithm. It is optimized for shuffling
+    /// stack-allocated or pooled data, and does not allocate memory.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Shuffle<T>(Span<T> span, IRandomGenerator rng)
@@ -65,10 +69,12 @@ public static partial class ShuffleHelpers
     /// <typeparam name="T">The type of the elements in the memory block.</typeparam>
     /// <param name="memory">The memory region to shuffle.</param>
     /// <param name="rng">The random number generator used to shuffle elements.</param>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="rng"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown if <paramref name="rng" /> is <see langword="null" />.
+    /// </exception>
     /// <remarks>
-    /// This method shuffles the contents of the <paramref name="memory"/> region in-place by accessing its underlying span. The
-    /// original memory region is modified.
+    /// This method shuffles the contents of the <paramref name="memory" /> region in-place by accessing its underlying
+    /// span. The original memory region is modified.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Shuffle<T>(Memory<T> memory, IRandomGenerator rng)

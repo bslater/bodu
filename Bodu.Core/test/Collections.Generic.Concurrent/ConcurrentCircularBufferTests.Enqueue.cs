@@ -77,8 +77,8 @@ public partial class ConcurrentCircularBufferTests
         Task.WaitAll(writer, toggler);
 
         // We expect a mix: some throws (when flag false and full), some evictions (when flag true).
-        Assert.IsTrue(exceptions.Count > 0, "Expected some InvalidOperationExceptions while overwrite was disabled.");
-        Assert.IsTrue(buffer.Count <= buffer.Capacity);
+        Assert.IsNotEmpty(exceptions, "Expected some InvalidOperationExceptions while overwrite was disabled.");
+        Assert.IsLessThanOrEqualTo(buffer.Capacity, buffer.Count);
     }
 
     /// <summary>
@@ -100,7 +100,7 @@ public partial class ConcurrentCircularBufferTests
             catch (InvalidOperationException ex) { failures.Add(ex); }
         });
 
-        Assert.AreEqual(10, failures.Count);
+        Assert.HasCount(10, failures);
         Assert.AreEqual(3, buffer.Count);
         AssertBufferContainsExactlyValues(buffer, 1, 2, 3);
     }
@@ -209,7 +209,7 @@ public partial class ConcurrentCircularBufferTests
 
         Task.WaitAll(writer, reader);
 
-        Assert.IsTrue(enqueueSuccess.Any(s => s), "No enqueue succeeded during concurrent dequeue.");
+        Assert.Contains(s => s, enqueueSuccess, "No enqueue succeeded during concurrent dequeue.");
         Assert.IsTrue(buffer.Count >= 0 && buffer.Count <= buffer.Capacity);
     }
 
@@ -306,8 +306,8 @@ public partial class ConcurrentCircularBufferTests
         });
 
         var items = buffer.ToArray();
-        Assert.AreEqual(10, items.Length);
-        Assert.IsTrue(items.Count(x => x == null) > 0);
+        Assert.HasCount(10, items);
+        Assert.Contains(x => x == null, items);
     }
 
     /// <summary>

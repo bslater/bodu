@@ -9,12 +9,20 @@ namespace Bodu.Extensions;
 public static partial class DateOnlyExtensions
 {
     /// <summary>
-    /// Determines whether the specified <see cref="DateOnly"/> falls on the last day of its calendar quarter, using the standard calendar quarter definition.
+    /// Determines whether the specified <see cref="DateOnly" /> falls on the last day of its calendar quarter, using
+    /// the standard calendar quarter definition.
     /// </summary>
     /// <param name="date">The date value to evaluate.</param>
-    /// <returns><see langword="true"/> if <paramref name="date"/> represents the last day of its quarter; otherwise, <see langword="false"/>.</returns>
+    /// <returns>
+    /// <see langword="true" /> if <paramref name="date" /> represents the last day of its quarter; otherwise,
+    /// <see langword="false" />.
+    /// </returns>
     /// <remarks>
-    /// <para>This overload uses the standard calendar alignment defined by <see cref="CalendarQuarterDefinition.JanuaryToDecember"/>: Q1 = Jan – Mar, Q2 = Apr – Jun, Q3 = Jul – Sep, Q4 = Oct – Dec.</para>
+    /// <para>
+    /// This overload uses the standard calendar alignment defined by
+    /// <see cref="CalendarQuarterDefinition.JanuaryToDecember" />: Q1 = Jan – Mar, Q2 = Apr – Jun, Q3 = Jul – Sep, Q4 =
+    /// Oct – Dec.
+    /// </para>
     /// </remarks>
     public static bool IsLastDateOfQuarter(this DateOnly date)
     {
@@ -23,13 +31,25 @@ public static partial class DateOnlyExtensions
     }
 
     /// <summary>
-    /// Determines whether the specified <see cref="DateOnly"/> falls on the last day of its calendar quarter, using the supplied calendar quarter definition.
+    /// Determines whether the specified <see cref="DateOnly" /> falls on the last day of its calendar quarter, using
+    /// the supplied calendar quarter definition.
     /// </summary>
     /// <param name="date">The date value to evaluate.</param>
-    /// <param name="definition">The <see cref="CalendarQuarterDefinition"/> that determines how quarter boundaries are aligned.</param>
-    /// <returns><see langword="true"/> if <paramref name="date"/> represents the last day of its quarter under <paramref name="definition"/>; otherwise, <see langword="false"/>.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="definition"/> is not a defined value of the <see cref="CalendarQuarterDefinition"/> enumeration.</exception>
-    /// <exception cref="InvalidOperationException">Thrown if <paramref name="definition"/> is <see cref="CalendarQuarterDefinition.Custom"/>; use the provider-based overload instead.</exception>
+    /// <param name="definition">
+    /// The <see cref="CalendarQuarterDefinition" /> that determines how quarter boundaries are aligned.
+    /// </param>
+    /// <returns>
+    /// <see langword="true" /> if <paramref name="date" /> represents the last day of its quarter under
+    /// <paramref name="definition" />; otherwise, <see langword="false" />.
+    /// </returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown if <paramref name="definition" /> is not a defined value of the <see cref="CalendarQuarterDefinition" />
+    /// enumeration.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown if <paramref name="definition" /> is <see cref="CalendarQuarterDefinition.Custom" />; use the
+    /// provider-based overload instead.
+    /// </exception>
     public static bool IsLastDateOfQuarter(this DateOnly date, CalendarQuarterDefinition definition)
     {
         ThrowHelper.ThrowIfEnumValueIsUndefined(definition);
@@ -43,12 +63,21 @@ public static partial class DateOnlyExtensions
     }
 
     /// <summary>
-    /// Determines whether the specified <see cref="DateOnly"/> falls on the last day of its calendar quarter, using a custom <see cref="IQuarterDefinitionProvider"/>.
+    /// Determines whether the specified <see cref="DateOnly" /> falls on the last day of its calendar quarter, using a
+    /// custom <see cref="IQuarterDefinitionProvider" />.
     /// </summary>
     /// <param name="date">The date value to evaluate.</param>
-    /// <param name="provider">The <see cref="IQuarterDefinitionProvider"/> that defines custom quarter boundaries. Must not be <see langword="null"/>.</param>
-    /// <returns><see langword="true"/> if <paramref name="date"/> represents the last day of its quarter as defined by <paramref name="provider"/>; otherwise, <see langword="false"/>.</returns>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="provider"/> is <see langword="null"/>.</exception>
+    /// <param name="provider">
+    /// The <see cref="IQuarterDefinitionProvider" /> that defines custom quarter boundaries. Must not be
+    /// <see langword="null" />.
+    /// </param>
+    /// <returns>
+    /// <see langword="true" /> if <paramref name="date" /> represents the last day of its quarter as defined by
+    /// <paramref name="provider" />; otherwise, <see langword="false" />.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown if <paramref name="provider" /> is <see langword="null" />.
+    /// </exception>
     public static bool IsLastDateOfQuarter(this DateOnly date, IQuarterDefinitionProvider provider)
     {
         ThrowHelper.ThrowIfNull(provider);

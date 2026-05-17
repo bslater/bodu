@@ -77,7 +77,7 @@ public partial class IndexedPriorityQueueTests
             queue.Enqueue(i, i);
 
         Assert.AreEqual(100, queue.Count);
-        Assert.IsTrue(queue.Capacity >= 100);
+        Assert.IsGreaterThanOrEqualTo(100, queue.Capacity);
     }
 
     /// <summary>
@@ -91,7 +91,7 @@ public partial class IndexedPriorityQueueTests
         queue.Enqueue(1, 1);
 
         Assert.AreEqual(1, queue.Count);
-        Assert.IsTrue(queue.Capacity >= 1);
+        Assert.IsGreaterThanOrEqualTo(1, queue.Capacity);
     }
 
     /// <summary>

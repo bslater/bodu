@@ -64,12 +64,12 @@ public partial class DateTimeExtensionsTests
     /// Verifies that <see cref="DateTimeExtensions.DaysInYear" />, when UsingMaxValue, returns <see langword="true" />.
     /// </summary>
     [TestMethod]
-    public void DaysInYear_WhenUsingMaxValue_ShouldNotThrow() => Assert.IsTrue(DateTime.MaxValue.DaysInYear() > 0);
+    public void DaysInYear_WhenUsingMaxValue_ShouldNotThrow() => Assert.IsGreaterThan(0, DateTime.MaxValue.DaysInYear());
 
     /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.DaysInYear" />, when UsingMinValue, returns <see langword="true" />.
     /// </summary>
     [TestMethod]
-    public void DaysInYear_WhenUsingMinValue_ShouldNotThrow() => Assert.IsTrue(DateTime.MinValue.DaysInYear() > 0);
+    public void DaysInYear_WhenUsingMinValue_ShouldNotThrow() => Assert.IsGreaterThan(0, DateTime.MinValue.DaysInYear());
 
 }

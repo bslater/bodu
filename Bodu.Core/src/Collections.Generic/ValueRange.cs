@@ -15,8 +15,8 @@ namespace Bodu.Collections.Generic;
 /// <typeparam name="TValue">The value type.</typeparam>
 /// <remarks>
 /// <see cref="ValueRange{TKey, TValue}" /> is the entry type yielded by <see cref="RangeDictionary{TKey, TValue}" />.
-/// It pairs a half-open range with an associated value, in the spirit of
-/// <see cref="KeyValuePair{TKey, TValue}" /> for keyed dictionaries.
+/// It pairs a half-open range with an associated value, in the spirit of <see cref="KeyValuePair{TKey, TValue}" /> for
+/// keyed dictionaries.
 /// </remarks>
 [DebuggerDisplay("[{StartInclusive}, {EndExclusive}) = {Value}")]
 public readonly struct ValueRange<TKey, TValue>
@@ -88,9 +88,7 @@ public readonly struct ValueRange<TKey, TValue>
     /// <returns>
     /// <see langword="true" /> if <paramref name="key" /> is inside the range; otherwise, <see langword="false" />.
     /// </returns>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="key" /> is <see langword="null" />.
-    /// </exception>
+    /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
     public bool Contains(TKey key)
     {
         ThrowHelper.ThrowIfNull(key);

@@ -21,7 +21,7 @@ public partial class ConcurrentCircularBufferTests
 
         TestItem[] snapshot = InvokeBestEffortSnapshot(buffer);
 
-        Assert.AreEqual(0, snapshot.Length);
+        Assert.IsEmpty(snapshot);
     }
 
     /// <summary>
@@ -63,7 +63,7 @@ public partial class ConcurrentCircularBufferTests
 
         TestItem[] snapshot = InvokeBestEffortSnapshot(buffer);
 
-        Assert.AreEqual(3, snapshot.Length);
+        Assert.HasCount(3, snapshot);
         Assert.IsNotNull(snapshot[0]);
         Assert.AreEqual(1, snapshot[0].Value);
         Assert.IsNull(snapshot[1]);
@@ -115,7 +115,7 @@ public partial class ConcurrentCircularBufferTests
 
         TestItem[] snapshot = buffer.ToArray();
 
-        Assert.AreEqual(3, snapshot.Length);
+        Assert.HasCount(3, snapshot);
         foreach (TestItem item in snapshot)
             Assert.IsNull(item);
     }

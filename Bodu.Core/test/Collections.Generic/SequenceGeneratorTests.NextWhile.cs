@@ -20,7 +20,7 @@ public partial class SequenceGeneratorTests
             x => false,
             x => x + 1).ToArray();
 
-        Assert.AreEqual(0, actual.Length);
+        Assert.IsEmpty(actual);
     }
 
     /// <summary>

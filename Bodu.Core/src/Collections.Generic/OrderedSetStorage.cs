@@ -13,18 +13,18 @@ namespace Bodu.Collections.Generic;
 /// <typeparam name="T">The element type. Elements must not be <see langword="null" />.</typeparam>
 /// <remarks>
 /// <para>
-/// Elements live in a contiguous <see cref="Array" /> for deterministic insertion order. A hand-rolled
-/// open-addressing hash table over two parallel <see cref="int" /> arrays — one of bucket heads, one of
-/// chain links — provides O(1) average-case <see cref="Contains" /> and <see cref="IndexOf" />. The bucket
-/// count is always a power of two and the table is rehashed when the load factor exceeds three quarters.
+/// Elements live in a contiguous <see cref="Array" /> for deterministic insertion order. A hand-rolled open-addressing
+/// hash table over two parallel <see cref="int" /> arrays — one of bucket heads, one of chain links — provides O(1)
+/// average-case <see cref="Contains" /> and <see cref="IndexOf" />. The bucket count is always a power of two and the
+/// table is rehashed when the load factor exceeds three quarters.
 /// </para>
 /// <para>
-/// No BCL collection types back this storage; it is sized and laid out specifically for the ordered-set
-/// surface exposed by its consumers.
+/// No BCL collection types back this storage; it is sized and laid out specifically for the ordered-set surface exposed
+/// by its consumers.
 /// </para>
 /// <para>
-/// This type is internal and is not thread-safe. Consumers are responsible for boundary semantics, choosing
-/// which operations to expose, and synchronizing external mutators.
+/// This type is internal and is not thread-safe. Consumers are responsible for boundary semantics, choosing which
+/// operations to expose, and synchronizing external mutators.
 /// </para>
 /// </remarks>
 [Serializable]
@@ -35,32 +35,43 @@ internal sealed class OrderedSetStorage<T>
     private const int MaxLoadFactorNumerator = 3;
     private const int MaxLoadFactorDenominator = 4;
 
-    /// <summary>The equality comparer used for element identity and hash-table lookup.</summary>
+    /// <summary>
+    /// The equality comparer used for element identity and hash-table lookup.
+    /// </summary>
     internal readonly IEqualityComparer<T> _comparer;
 
-    /// <summary>The one-based bucket heads used by the open-addressing hash table.</summary>
+    /// <summary>
+    /// The one-based bucket heads used by the open-addressing hash table.
+    /// </summary>
     internal int[] _buckets;
 
-    /// <summary>The one-based chain links for entries stored in each bucket.</summary>
+    /// <summary>
+    /// The one-based chain links for entries stored in each bucket.
+    /// </summary>
     internal int[] _next;
 
-    /// <summary>The contiguous element storage that preserves insertion order.</summary>
+    /// <summary>
+    /// The contiguous element storage that preserves insertion order.
+    /// </summary>
     internal T[] _items;
 
-    /// <summary>The number of active elements stored in <see cref="_items" />.</summary>
+    /// <summary>
+    /// The number of active elements stored in <see cref="_items" />.
+    /// </summary>
     internal int _count;
 
-    /// <summary>The mutation version used to detect changes during enumeration.</summary>
+    /// <summary>
+    /// The mutation version used to detect changes during enumeration.
+    /// </summary>
     internal int _version;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="OrderedSetStorage{T}" /> class with the specified capacity and comparer.
+    /// Initializes a new instance of the <see cref="OrderedSetStorage{T}" /> class with the specified capacity and
+    /// comparer.
     /// </summary>
     /// <param name="capacity">The initial element capacity.</param>
     /// <param name="comparer">The equality comparer, or <see langword="null" /> to use the default comparer.</param>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="capacity" /> is negative.
-    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> is negative.</exception>
     internal OrderedSetStorage(int capacity, IEqualityComparer<T>? comparer)
     {
         ThrowHelper.ThrowIfNegative(capacity);
@@ -100,22 +111,17 @@ internal sealed class OrderedSetStorage<T>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="index" /> is negative or greater than or equal to <see cref="Count" />.
     /// </exception>
-    internal T GetAt(int index)
-    {
-        if ((uint)index >= (uint)_count) throw new ArgumentOutOfRangeException(nameof(index));
-        return _items[index];
-    }
+    internal T GetAt(int index) => (uint)index >= (uint)_count ? throw new ArgumentOutOfRangeException(nameof(index)) : _items[index];
 
     /// <summary>
     /// Appends the specified item to the end of the order if it is not already present.
     /// </summary>
     /// <param name="item">The item to add. Must not be <see langword="null" />.</param>
     /// <returns>
-    /// <see langword="true" /> if the item was added; otherwise, <see langword="false" /> when the item was already present.
+    /// <see langword="true" /> if the item was added; otherwise, <see langword="false" /> when the item was already
+    /// present.
     /// </returns>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="item" /> is <see langword="null" />.
-    /// </exception>
+    /// <exception cref="ArgumentNullException"><paramref name="item" /> is <see langword="null" />.</exception>
     internal bool Add(T item)
     {
         ThrowHelper.ThrowIfNull(item);
@@ -139,9 +145,7 @@ internal sealed class OrderedSetStorage<T>
     /// </summary>
     /// <param name="collection">The source collection. Must not be <see langword="null" />.</param>
     /// <returns>The number of items added.</returns>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="collection" /> is <see langword="null" />.
-    /// </exception>
+    /// <exception cref="ArgumentNullException"><paramref name="collection" /> is <see langword="null" />.</exception>
     internal int AddRange(IEnumerable<T> collection)
     {
         ThrowHelper.ThrowIfNull(collection);
@@ -163,11 +167,10 @@ internal sealed class OrderedSetStorage<T>
     /// <param name="index">The insertion index in the range <c>[0, <see cref="Count" />]</c>.</param>
     /// <param name="item">The item to insert. Must not be <see langword="null" />.</param>
     /// <returns>
-    /// <see langword="true" /> if the item was inserted; otherwise, <see langword="false" /> when the item was already present.
+    /// <see langword="true" /> if the item was inserted; otherwise, <see langword="false" /> when the item was already
+    /// present.
     /// </returns>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="item" /> is <see langword="null" />.
-    /// </exception>
+    /// <exception cref="ArgumentNullException"><paramref name="item" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="index" /> is negative or greater than <see cref="Count" />.
     /// </exception>
@@ -198,12 +201,8 @@ internal sealed class OrderedSetStorage<T>
     /// Removes the specified item if present.
     /// </summary>
     /// <param name="item">The item to remove. Must not be <see langword="null" />.</param>
-    /// <returns>
-    /// <see langword="true" /> if the item was removed; otherwise, <see langword="false" />.
-    /// </returns>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="item" /> is <see langword="null" />.
-    /// </exception>
+    /// <returns><see langword="true" /> if the item was removed; otherwise, <see langword="false" />.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="item" /> is <see langword="null" />.</exception>
     internal bool Remove(T item)
     {
         ThrowHelper.ThrowIfNull(item);
@@ -237,7 +236,8 @@ internal sealed class OrderedSetStorage<T>
     /// <param name="oldIndex">The current zero-based index.</param>
     /// <param name="newIndex">The target zero-based index.</param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="oldIndex" /> or <paramref name="newIndex" /> is negative or greater than or equal to <see cref="Count" />.
+    /// <paramref name="oldIndex" /> or <paramref name="newIndex" /> is negative or greater than or equal to
+    /// <see cref="Count" />.
     /// </exception>
     internal void Move(int oldIndex, int newIndex)
     {
@@ -266,15 +266,11 @@ internal sealed class OrderedSetStorage<T>
     /// </summary>
     /// <param name="index">The zero-based index to replace.</param>
     /// <param name="value">The replacement value. Must not be <see langword="null" />.</param>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="value" /> is <see langword="null" />.
-    /// </exception>
+    /// <exception cref="ArgumentNullException"><paramref name="value" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="index" /> is negative or greater than or equal to <see cref="Count" />.
     /// </exception>
-    /// <exception cref="ArgumentException">
-    /// <paramref name="value" /> already exists at another index.
-    /// </exception>
+    /// <exception cref="ArgumentException"><paramref name="value" /> already exists at another index.</exception>
     internal void ReplaceAt(int index, T value)
     {
         ThrowHelper.ThrowIfNegative(index);
@@ -298,12 +294,10 @@ internal sealed class OrderedSetStorage<T>
     /// </summary>
     /// <param name="match">The predicate that selects elements to remove.</param>
     /// <returns>The number of elements removed.</returns>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="match" /> is <see langword="null" />.
-    /// </exception>
+    /// <exception cref="ArgumentNullException"><paramref name="match" /> is <see langword="null" />.</exception>
     /// <remarks>
-    /// Compacts surviving elements in a single pass and then rebuilds the hash table once, which is faster
-    /// than calling <see cref="Remove" /> repeatedly when many removals are anticipated.
+    /// Compacts surviving elements in a single pass and then rebuilds the hash table once, which is faster than calling
+    /// <see cref="Remove" /> repeatedly when many removals are anticipated.
     /// </remarks>
     internal int RemoveWhere(Predicate<T> match)
     {
@@ -353,12 +347,8 @@ internal sealed class OrderedSetStorage<T>
     /// Determines whether the storage contains <paramref name="item" />.
     /// </summary>
     /// <param name="item">The item to locate. Must not be <see langword="null" />.</param>
-    /// <returns>
-    /// <see langword="true" /> if the item exists; otherwise, <see langword="false" />.
-    /// </returns>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="item" /> is <see langword="null" />.
-    /// </exception>
+    /// <returns><see langword="true" /> if the item exists; otherwise, <see langword="false" />.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="item" /> is <see langword="null" />.</exception>
     internal bool Contains(T item)
     {
         ThrowHelper.ThrowIfNull(item);
@@ -370,9 +360,7 @@ internal sealed class OrderedSetStorage<T>
     /// </summary>
     /// <param name="item">The item to locate. Must not be <see langword="null" />.</param>
     /// <returns>The zero-based index of the item, or <c>-1</c> if it is not present.</returns>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="item" /> is <see langword="null" />.
-    /// </exception>
+    /// <exception cref="ArgumentNullException"><paramref name="item" /> is <see langword="null" />.</exception>
     internal int IndexOf(T item)
     {
         ThrowHelper.ThrowIfNull(item);
@@ -384,12 +372,8 @@ internal sealed class OrderedSetStorage<T>
     /// </summary>
     /// <param name="array">The destination array. Must not be <see langword="null" />.</param>
     /// <param name="arrayIndex">The destination start index.</param>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="array" /> is <see langword="null" />.
-    /// </exception>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="arrayIndex" /> is negative.
-    /// </exception>
+    /// <exception cref="ArgumentNullException"><paramref name="array" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="arrayIndex" /> is negative.</exception>
     /// <exception cref="ArgumentException">
     /// <paramref name="array" /> does not have enough space starting at <paramref name="arrayIndex" />.
     /// </exception>
@@ -409,9 +393,7 @@ internal sealed class OrderedSetStorage<T>
     /// </summary>
     /// <param name="capacity">The desired capacity.</param>
     /// <returns>The resulting element capacity.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="capacity" /> is negative.
-    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> is negative.</exception>
     internal int EnsureCapacity(int capacity)
     {
         ThrowHelper.ThrowIfNegative(capacity);
@@ -429,9 +411,9 @@ internal sealed class OrderedSetStorage<T>
     {
         if (_count == 0)
         {
-            _items = Array.Empty<T>();
-            _next = Array.Empty<int>();
-            _buckets = Array.Empty<int>();
+            _items = [];
+            _next = [];
+            _buckets = [];
             _version++;
             return;
         }
@@ -581,8 +563,8 @@ internal sealed class OrderedSetStorage<T>
     }
 
     /// <summary>
-    /// Computes the next element capacity by doubling, clamped to <see cref="Array.MaxLength" /> and floored
-    /// at <paramref name="minimum" />.
+    /// Computes the next element capacity by doubling, clamped to <see cref="Array.MaxLength" /> and floored at
+    /// <paramref name="minimum" />.
     /// </summary>
     /// <param name="minimum">The minimum required capacity.</param>
     /// <returns>The chosen capacity.</returns>

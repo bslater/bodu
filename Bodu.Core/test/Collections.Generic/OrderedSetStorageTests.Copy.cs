@@ -133,7 +133,7 @@ public partial class OrderedSetStorageTests
 
         sut.Add(4);
 
-        Assert.AreEqual(3, snapshot.Length);
+        Assert.HasCount(3, snapshot);
         CollectionAssert.AreEqual(new[] { 1, 2, 3 }, snapshot);
     }
 
@@ -151,7 +151,7 @@ public partial class OrderedSetStorageTests
 
         var array = sut.ToArray();
 
-        Assert.AreEqual(0, array.Length);
+        Assert.IsEmpty(array);
     }
 
     /// <summary>
@@ -166,7 +166,7 @@ public partial class OrderedSetStorageTests
         var array = sut.ToArray();
 
         CollectionAssert.AreEqual(new[] { 10, 20, 30 }, array);
-        Assert.AreEqual(sut.Count, array.Length);
+        Assert.HasCount(sut.Count, array);
     }
 
 }

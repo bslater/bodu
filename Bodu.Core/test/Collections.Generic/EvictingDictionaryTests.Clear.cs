@@ -37,7 +37,7 @@ public partial class EvictingDictionaryTests
         dictionary.Add("B", 2);
         dictionary.Add("C", 3); // triggers eviction
 
-        Assert.IsTrue(dictionary.EvictionCount > 0);
+        Assert.IsGreaterThan(0, dictionary.EvictionCount);
 
         dictionary.Clear();
 
@@ -56,7 +56,7 @@ public partial class EvictingDictionaryTests
 
         dictionary.Clear();
 
-        Assert.AreEqual(0, dictionary.Keys.Count);
+        Assert.IsEmpty(dictionary.Keys);
     }
 
     /// <summary>
@@ -70,7 +70,7 @@ public partial class EvictingDictionaryTests
         dictionary.Touch("A");
         dictionary.Touch("A");
 
-        Assert.IsTrue(dictionary.TotalTouches > 0);
+        Assert.IsGreaterThan(0, dictionary.TotalTouches);
 
         dictionary.Clear();
 

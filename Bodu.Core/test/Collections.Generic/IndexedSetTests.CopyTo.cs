@@ -149,7 +149,7 @@ public partial class IndexedSetTests
 
         var array = sut.ToArray();
 
-        Assert.AreEqual(0, array.Length);
+        Assert.IsEmpty(array);
     }
 
     /// <summary>

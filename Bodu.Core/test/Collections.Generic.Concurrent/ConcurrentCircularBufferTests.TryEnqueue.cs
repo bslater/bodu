@@ -99,10 +99,10 @@ public partial class ConcurrentCircularBufferTests
             buffer.TryEnqueue(new TestItem(i));
         });
 
-        Assert.IsTrue(buffer.Count <= buffer.Capacity, $"Expected Count <= {buffer.Capacity}, got {buffer.Count}.");
+        Assert.IsLessThanOrEqualTo(buffer.Capacity, buffer.Count, $"Expected Count <= {buffer.Capacity}, got {buffer.Count}.");
 
         TestItem[] snapshot = buffer.ToArray();
-        Assert.IsTrue(snapshot.Length <= buffer.Capacity, $"ToArray exceeded capacity: {snapshot.Length}");
+        Assert.IsLessThanOrEqualTo(buffer.Capacity, snapshot.Length, $"ToArray exceeded capacity: {snapshot.Length}");
         Assert.IsTrue(snapshot.All(x => x is not null), "All items in buffer should be non-null.");
     }
 
@@ -159,8 +159,8 @@ public partial class ConcurrentCircularBufferTests
 
         Task.WaitAll(tasks);
 
-        Assert.AreEqual(0, exceptions.Count);
-        Assert.IsTrue(buffer.Count <= buffer.Capacity);
+        Assert.IsEmpty(exceptions);
+        Assert.IsLessThanOrEqualTo(buffer.Capacity, buffer.Count);
     }
 
     /// <summary>
@@ -198,7 +198,7 @@ public partial class ConcurrentCircularBufferTests
         });
 
         Assert.AreEqual(0, successes, "No TryEnqueue should succeed when full and overwrite disabled.");
-        Assert.IsTrue(failures > 0, "Expected at least one TryEnqueue to return false under contention.");
+        Assert.IsGreaterThan(0, failures, "Expected at least one TryEnqueue to return false under contention.");
         Assert.AreEqual(4, buffer.Count);
     }
 

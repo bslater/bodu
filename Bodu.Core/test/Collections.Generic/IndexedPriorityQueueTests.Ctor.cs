@@ -183,7 +183,7 @@ public partial class IndexedPriorityQueueTests
         KeyValuePair<int, int>[] drained = DrainAll(queue);
 
         AssertNonDecreasing(drained);
-        Assert.AreEqual(256, drained.Length);
+        Assert.HasCount(256, drained);
     }
 
     /// <summary>

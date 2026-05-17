@@ -39,7 +39,7 @@ public class ThueMorseTests
     public void ThueMorse_WhenCountIsZero_ShouldReturnEmptySequence()
     {
         var actual = SequenceGenerator.ThueMorse(0).ToArray();
-        Assert.AreEqual(0, actual.Length);
+        Assert.IsEmpty(actual);
     }
 
     /// <summary>

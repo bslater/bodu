@@ -7,7 +7,8 @@
 namespace Bodu.Extensions;
 
 /// <summary>
-/// Specifies the ordinal position of a weekday within a given month. Commonly used in recurrence rules, such as "the second Tuesday of the month".
+/// Specifies the ordinal position of a weekday within a given month. Commonly used in recurrence rules, such as "the
+/// second Tuesday of the month".
 /// </summary>
 public enum WeekOfMonthOrdinal
 {
@@ -32,8 +33,9 @@ public enum WeekOfMonthOrdinal
     Fourth = 4,
 
     /// <summary>
-    /// Represents the fifth occurrence of a specific weekday in the month (e.g., the 5th Monday). <note type="important">This is relatively
-    /// rare and only occurs in months where five instances of the specified weekday exist.</note>
+    /// Represents the fifth occurrence of a specific weekday in the month (e.g., the 5th Monday).
+    /// <note type="important">This is relatively rare and only occurs in months where five instances of the specified
+    /// weekday exist.</note>
     /// </summary>
     Fifth = 5,
 

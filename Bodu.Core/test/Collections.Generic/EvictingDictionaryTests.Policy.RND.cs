@@ -105,7 +105,7 @@ public partial class EvictingDictionaryTests
         dictionary.Add("Y", 2);
         dictionary.Add("Z", 3);
 
-        Assert.IsTrue(evicted.Count > 0);
+        Assert.IsNotEmpty(evicted);
     }
 
     /// <summary>
@@ -140,7 +140,7 @@ public partial class EvictingDictionaryTests
         dictionary.Add("b", 2);
         dictionary.Add("c", 3);
 
-        Assert.AreEqual(2, dictionary.Keys.Count);
+        Assert.HasCount(2, dictionary.Keys);
         Assert.IsTrue(dictionary.ContainsKey("c"));
     }
 

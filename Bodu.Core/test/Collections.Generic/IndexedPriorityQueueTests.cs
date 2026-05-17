@@ -20,8 +20,8 @@ public partial class IndexedPriorityQueueTests
     {
         Comparer<TPriority> comparer = Comparer<TPriority>.Default;
         for (var i = 1; i < pairs.Length; i++)
-            Assert.IsTrue(
-                comparer.Compare(pairs[i - 1].Value, pairs[i].Value) <= 0,
+            Assert.IsLessThanOrEqualTo(
+                0, comparer.Compare(pairs[i - 1].Value, pairs[i].Value),
                 $"Priorities not non-decreasing at index {i}: {pairs[i - 1].Value} > {pairs[i].Value}");
     }
     /// <summary>

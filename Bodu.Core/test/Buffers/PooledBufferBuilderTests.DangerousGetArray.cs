@@ -66,7 +66,7 @@ public partial class PooledBufferBuilderTests
 
         System.ArraySegment<int> segment = builder.DangerousGetArray();
 
-        Assert.AreEqual(0, segment.Count);
+        Assert.IsEmpty(segment);
     }
     /// <summary>
     /// Verifies that <see cref="PooledBufferBuilder{T}.DangerousGetArray"/> returns a segment whose count equals
@@ -81,7 +81,7 @@ public partial class PooledBufferBuilderTests
 
         System.ArraySegment<int> segment = builder.DangerousGetArray();
 
-        Assert.AreEqual(builder.WrittenCount, segment.Count);
+        Assert.HasCount(builder.WrittenCount, segment);
         CollectionAssert.AreEqual(expected, segment.ToArray());
     }
 
@@ -99,7 +99,7 @@ public partial class PooledBufferBuilderTests
 
         System.ArraySegment<int> segment = builder.DangerousGetArray();
 
-        Assert.AreEqual(0, segment.Count);
+        Assert.IsEmpty(segment);
     }
 
 }

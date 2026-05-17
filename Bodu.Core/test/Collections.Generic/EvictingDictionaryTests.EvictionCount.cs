@@ -37,7 +37,7 @@ public partial class EvictingDictionaryTests
         dictionary.Add("b", 2);
         dictionary.Add("c", 3);
 
-        Assert.IsTrue(dictionary.EvictionCount > 0);
+        Assert.IsGreaterThan(0, dictionary.EvictionCount);
 
         dictionary.Clear();
 

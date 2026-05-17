@@ -9,22 +9,21 @@ using System.Diagnostics;
 namespace Bodu.Collections.Generic;
 
 /// <summary>
-/// Represents an index-addressable unique list — an insertion-ordered collection of unique elements that
-/// exposes the full <see cref="IList{T}" /> contract.
+/// Represents an index-addressable unique list — an insertion-ordered collection of unique elements that exposes the
+/// full <see cref="IList{T}" /> contract.
 /// </summary>
 /// <typeparam name="T">The type of elements in the set. Elements must not be <see langword="null" />.</typeparam>
 /// <remarks>
 /// <para>
-/// <see cref="IndexedSet{T}" /> shares its backing storage with <see cref="OrderedSet{T}" /> via the
-/// internal <see cref="OrderedSetStorage{T}" /> engine: a contiguous element array for deterministic index
-/// order plus an open-addressing hash table for O(1) <see cref="Contains" /> and <see cref="IndexOf" />.
-/// No BCL collection types are used as backing storage.
+/// <see cref="IndexedSet{T}" /> shares its backing storage with <see cref="OrderedSet{T}" /> via the internal
+/// <see cref="OrderedSetStorage{T}" /> engine: a contiguous element array for deterministic index order plus an
+/// open-addressing hash table for O(1) <see cref="Contains" /> and <see cref="IndexOf" />. No BCL collection types are
+/// used as backing storage.
 /// </para>
 /// <para>
 /// Use <see cref="IndexedSet{T}" /> when callers need positional mutation — <see cref="Insert" />,
-/// <see cref="RemoveAt" />, <see cref="Move" />, or the indexer setter. Use <see cref="OrderedSet{T}" />
-/// when the public surface is conceptually a set and indices exist only as a read-only view onto insertion
-/// order.
+/// <see cref="RemoveAt" />, <see cref="Move" />, or the indexer setter. Use <see cref="OrderedSet{T}" /> when the
+/// public surface is conceptually a set and indices exist only as a read-only view onto insertion order.
 /// </para>
 /// <para>
 /// This type is not thread-safe.
@@ -37,10 +36,14 @@ public sealed partial class IndexedSet<T>
     : IList<T>, IReadOnlyList<T>
     where T : notnull
 {
-    /// <summary>The shared ordered-set storage engine that preserves insertion order and enforces uniqueness.</summary>
+    /// <summary>
+    /// The shared ordered-set storage engine that preserves insertion order and enforces uniqueness.
+    /// </summary>
     private readonly OrderedSetStorage<T> _storage;
 
-    /// <summary>Gets the backing storage exposed to debugger proxy views.</summary>
+    /// <summary>
+    /// Gets the backing storage exposed to debugger proxy views.
+    /// </summary>
     [DebuggerBrowsable(DebuggerBrowsableState.Never)]
     internal OrderedSetStorage<T> DebuggerStorage => _storage;
 
@@ -63,46 +66,41 @@ public sealed partial class IndexedSet<T>
     /// Initializes a new instance of the <see cref="IndexedSet{T}" /> class with the specified initial capacity.
     /// </summary>
     /// <param name="capacity">The initial element capacity.</param>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="capacity" /> is negative.
-    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> is negative.</exception>
     public IndexedSet(int capacity)
         : this(capacity, null)
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="IndexedSet{T}" /> class with the specified initial capacity and comparer.
+    /// Initializes a new instance of the <see cref="IndexedSet{T}" /> class with the specified initial capacity and
+    /// comparer.
     /// </summary>
     /// <param name="capacity">The initial element capacity.</param>
     /// <param name="comparer">The equality comparer, or <see langword="null" /> to use the default comparer.</param>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="capacity" /> is negative.
-    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> is negative.</exception>
     public IndexedSet(int capacity, IEqualityComparer<T>? comparer)
     {
         _storage = new OrderedSetStorage<T>(capacity, comparer);
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="IndexedSet{T}" /> class containing the unique elements from <paramref name="collection" />.
+    /// Initializes a new instance of the <see cref="IndexedSet{T}" /> class containing the unique elements from
+    /// <paramref name="collection" />.
     /// </summary>
     /// <param name="collection">The source collection. Must not be <see langword="null" />.</param>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="collection" /> is <see langword="null" />.
-    /// </exception>
+    /// <exception cref="ArgumentNullException"><paramref name="collection" /> is <see langword="null" />.</exception>
     public IndexedSet(IEnumerable<T> collection)
         : this(collection, null)
     { }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="IndexedSet{T}" /> class containing the unique elements from <paramref name="collection" />.
+    /// Initializes a new instance of the <see cref="IndexedSet{T}" /> class containing the unique elements from
+    /// <paramref name="collection" />.
     /// </summary>
     /// <param name="collection">The source collection. Must not be <see langword="null" />.</param>
     /// <param name="comparer">The equality comparer, or <see langword="null" /> to use the default comparer.</param>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="collection" /> is <see langword="null" />.
-    /// </exception>
+    /// <exception cref="ArgumentNullException"><paramref name="collection" /> is <see langword="null" />.</exception>
     public IndexedSet(IEnumerable<T> collection, IEqualityComparer<T>? comparer)
         : this(GetCapacityHint(collection), comparer)
     {
@@ -141,15 +139,11 @@ public sealed partial class IndexedSet<T>
     /// </summary>
     /// <param name="index">The zero-based index of the element to access.</param>
     /// <returns>The element at <paramref name="index" />.</returns>
-    /// <exception cref="ArgumentNullException">
-    /// The replacement value is <see langword="null" />.
-    /// </exception>
+    /// <exception cref="ArgumentNullException">The replacement value is <see langword="null" />.</exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="index" /> is negative or greater than or equal to <see cref="Count" />.
     /// </exception>
-    /// <exception cref="ArgumentException">
-    /// The replacement value already exists at another index.
-    /// </exception>
+    /// <exception cref="ArgumentException">The replacement value already exists at another index.</exception>
     public T this[int index]
     {
         get => _storage.GetAt(index);
@@ -161,11 +155,10 @@ public sealed partial class IndexedSet<T>
     /// </summary>
     /// <param name="item">The item to add. Must not be <see langword="null" />.</param>
     /// <returns>
-    /// <see langword="true" /> if the item was added; otherwise, <see langword="false" /> when the set already contained it.
+    /// <see langword="true" /> if the item was added; otherwise, <see langword="false" /> when the set already
+    /// contained it.
     /// </returns>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="item" /> is <see langword="null" />.
-    /// </exception>
+    /// <exception cref="ArgumentNullException"><paramref name="item" /> is <see langword="null" />.</exception>
     public bool Add(T item) =>
         _storage.Add(item);
 
@@ -174,9 +167,7 @@ public sealed partial class IndexedSet<T>
     /// </summary>
     /// <param name="collection">The source collection. Must not be <see langword="null" />.</param>
     /// <returns>The number of items added.</returns>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="collection" /> is <see langword="null" />.
-    /// </exception>
+    /// <exception cref="ArgumentNullException"><paramref name="collection" /> is <see langword="null" />.</exception>
     public int AddRange(IEnumerable<T> collection) =>
         _storage.AddRange(collection);
 
@@ -186,11 +177,10 @@ public sealed partial class IndexedSet<T>
     /// <param name="index">The insertion index in the range <c>[0, <see cref="Count" />]</c>.</param>
     /// <param name="item">The item to insert. Must not be <see langword="null" />.</param>
     /// <returns>
-    /// <see langword="true" /> if the item was inserted; otherwise, <see langword="false" /> when the set already contained it.
+    /// <see langword="true" /> if the item was inserted; otherwise, <see langword="false" /> when the set already
+    /// contained it.
     /// </returns>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="item" /> is <see langword="null" />.
-    /// </exception>
+    /// <exception cref="ArgumentNullException"><paramref name="item" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="index" /> is negative or greater than <see cref="Count" />.
     /// </exception>
@@ -202,9 +192,7 @@ public sealed partial class IndexedSet<T>
     /// </summary>
     /// <param name="index">The insertion index in the range <c>[0, <see cref="Count" />]</c>.</param>
     /// <param name="item">The item to insert. Must not be <see langword="null" />.</param>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="item" /> is <see langword="null" />.
-    /// </exception>
+    /// <exception cref="ArgumentNullException"><paramref name="item" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="index" /> is negative or greater than <see cref="Count" />.
     /// </exception>
@@ -219,12 +207,8 @@ public sealed partial class IndexedSet<T>
     /// Removes the specified item from the set.
     /// </summary>
     /// <param name="item">The item to remove. Must not be <see langword="null" />.</param>
-    /// <returns>
-    /// <see langword="true" /> if the item was removed; otherwise, <see langword="false" />.
-    /// </returns>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="item" /> is <see langword="null" />.
-    /// </exception>
+    /// <returns><see langword="true" /> if the item was removed; otherwise, <see langword="false" />.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="item" /> is <see langword="null" />.</exception>
     public bool Remove(T item) =>
         _storage.Remove(item);
 
@@ -244,7 +228,8 @@ public sealed partial class IndexedSet<T>
     /// <param name="oldIndex">The current zero-based index.</param>
     /// <param name="newIndex">The target zero-based index.</param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="oldIndex" /> or <paramref name="newIndex" /> is negative or greater than or equal to <see cref="Count" />.
+    /// <paramref name="oldIndex" /> or <paramref name="newIndex" /> is negative or greater than or equal to
+    /// <see cref="Count" />.
     /// </exception>
     public void Move(int oldIndex, int newIndex) =>
         _storage.Move(oldIndex, newIndex);
@@ -259,12 +244,8 @@ public sealed partial class IndexedSet<T>
     /// Determines whether the set contains the specified item.
     /// </summary>
     /// <param name="item">The item to locate. Must not be <see langword="null" />.</param>
-    /// <returns>
-    /// <see langword="true" /> if the item exists; otherwise, <see langword="false" />.
-    /// </returns>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="item" /> is <see langword="null" />.
-    /// </exception>
+    /// <returns><see langword="true" /> if the item exists; otherwise, <see langword="false" />.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="item" /> is <see langword="null" />.</exception>
     public bool Contains(T item) =>
         _storage.Contains(item);
 
@@ -273,9 +254,7 @@ public sealed partial class IndexedSet<T>
     /// </summary>
     /// <param name="item">The item to locate. Must not be <see langword="null" />.</param>
     /// <returns>The zero-based index of the item, or <c>-1</c> if it is not present.</returns>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="item" /> is <see langword="null" />.
-    /// </exception>
+    /// <exception cref="ArgumentNullException"><paramref name="item" /> is <see langword="null" />.</exception>
     public int IndexOf(T item) =>
         _storage.IndexOf(item);
 
@@ -284,12 +263,8 @@ public sealed partial class IndexedSet<T>
     /// </summary>
     /// <param name="array">The destination array. Must not be <see langword="null" />.</param>
     /// <param name="arrayIndex">The destination start index.</param>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="array" /> is <see langword="null" />.
-    /// </exception>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="arrayIndex" /> is negative.
-    /// </exception>
+    /// <exception cref="ArgumentNullException"><paramref name="array" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="arrayIndex" /> is negative.</exception>
     /// <exception cref="ArgumentException">
     /// <paramref name="array" /> does not have enough space starting at <paramref name="arrayIndex" />.
     /// </exception>
@@ -301,9 +276,7 @@ public sealed partial class IndexedSet<T>
     /// </summary>
     /// <param name="capacity">The desired item capacity.</param>
     /// <returns>The resulting item capacity.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="capacity" /> is negative.
-    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> is negative.</exception>
     public int EnsureCapacity(int capacity) =>
         _storage.EnsureCapacity(capacity);
 
@@ -332,24 +305,23 @@ public sealed partial class IndexedSet<T>
     /// </summary>
     /// <param name="item">The item to add.</param>
     /// <remarks>
-    /// Discards the boolean result of <see cref="Add(T)" />; callers that need to detect a duplicate-add
-    /// should invoke the typed <see cref="Add(T)" /> overload directly.
+    /// Discards the boolean result of <see cref="Add(T)" />; callers that need to detect a duplicate-add should invoke
+    /// the typed <see cref="Add(T)" /> overload directly.
     /// </remarks>
     void ICollection<T>.Add(T item) =>
         _storage.Add(item);
 
     /// <summary>
-    /// Returns a capacity hint suitable for sizing storage from <paramref name="collection" />, preferring
-    /// the fast paths exposed by <see cref="ICollection{T}" /> and <see cref="IReadOnlyCollection{T}" />.
+    /// Returns a capacity hint suitable for sizing storage from <paramref name="collection" />, preferring the fast
+    /// paths exposed by <see cref="ICollection{T}" /> and <see cref="IReadOnlyCollection{T}" />.
     /// </summary>
     /// <param name="collection">The source enumerable, which may be <see langword="null" />.</param>
     /// <returns>The hinted capacity, or <c>0</c> when the count cannot be determined cheaply.</returns>
     private static int GetCapacityHint(IEnumerable<T>? collection)
     {
-        if (collection is null)
-            return 0;
-
-        return collection is ICollection<T> genericCollection
+        return collection is null
+            ? 0
+            : collection is ICollection<T> genericCollection
             ? genericCollection.Count
             : collection is IReadOnlyCollection<T> readOnlyCollection
                 ? readOnlyCollection.Count

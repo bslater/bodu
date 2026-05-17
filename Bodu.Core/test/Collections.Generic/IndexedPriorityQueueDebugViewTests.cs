@@ -54,7 +54,7 @@ public class IndexedPriorityQueueDebugViewTests
         var view = new IndexedPriorityQueueDebugView<string, int>(queue);
         KeyValuePair<string, int>[] items = view.Items;
 
-        Assert.AreEqual(3, items.Length);
+        Assert.HasCount(3, items);
         Assert.AreEqual("b", items[0].Key);
         Assert.AreEqual("c", items[1].Key);
         Assert.AreEqual("a", items[2].Key);
@@ -69,7 +69,7 @@ public class IndexedPriorityQueueDebugViewTests
         var queue = new IndexedPriorityQueue<string, int>();
         var view = new IndexedPriorityQueueDebugView<string, int>(queue);
 
-        Assert.AreEqual(0, view.Items.Length);
+        Assert.IsEmpty(view.Items);
     }
 
 }

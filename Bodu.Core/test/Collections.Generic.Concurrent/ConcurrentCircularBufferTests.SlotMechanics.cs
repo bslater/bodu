@@ -34,7 +34,7 @@ public partial class ConcurrentCircularBufferTests
         buffer.Enqueue(new TestItem(12));
 
         Assert.AreEqual(4, buffer.Count);
-        Assert.AreEqual(4, ((ICollection)buffer).Count);
+        Assert.HasCount(4, (ICollection)buffer);
     }
 
     /// <summary>
@@ -94,7 +94,7 @@ public partial class ConcurrentCircularBufferTests
         start.Set();
         Task.WaitAll(rotator, reader);
 
-        Assert.AreEqual(0, errors.Count, "Indexer threw an unexpected exception during concurrent slot rotation.");
+        Assert.IsEmpty(errors, "Indexer threw an unexpected exception during concurrent slot rotation.");
     }
 
     /// <summary>

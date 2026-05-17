@@ -30,7 +30,7 @@ public partial class ArrayExtensionsTests
     {
         var array = Array.Empty<int>();
         array.Clear();
-        Assert.AreEqual(0, array.Length);
+        Assert.IsEmpty(array);
     }
     /// <summary>
     /// Verifies that <see cref="ArrayExtensions.Clear{T}(T[])" /> resets every element of an integer array to its default value.

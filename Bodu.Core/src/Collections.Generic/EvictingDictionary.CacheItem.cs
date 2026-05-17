@@ -24,8 +24,8 @@ public partial class EvictingDictionary<TKey, TValue>
         public TValue Value { get; set; }
 
         /// <summary>
-        /// Gets or sets the linked list node that represents the key in the ordering structure. Used by recency- and access-order-based
-        /// eviction policies such as LRU and MRU.
+        /// Gets or sets the linked list node that represents the key in the ordering structure. Used by recency- and
+        /// access-order-based eviction policies such as LRU and MRU.
         /// </summary>
         public LinkedListNode<TKey>? Node { get; set; }
 
@@ -35,13 +35,14 @@ public partial class EvictingDictionary<TKey, TValue>
         public int Frequency { get; set; } = 1;
 
         /// <summary>
-        /// Gets or sets a value indicating whether this entry has been recently accessed. Used by the Second-Chance eviction policy to
-        /// determine eligibility for eviction; when <see langword="true"/>, the item is spared and the flag is cleared.
+        /// Gets or sets a value indicating whether this entry has been recently accessed. Used by the Second-Chance
+        /// eviction policy to determine eligibility for eviction; when <see langword="true" />, the item is spared and
+        /// the flag is cleared.
         /// </summary>
         public bool SecondChance { get; set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CacheItem"/> class with the specified value.
+        /// Initializes a new instance of the <see cref="CacheItem" /> class with the specified value.
         /// </summary>
         /// <param name="value">The value to store in the cache entry.</param>
         public CacheItem(TValue value) => Value = value;

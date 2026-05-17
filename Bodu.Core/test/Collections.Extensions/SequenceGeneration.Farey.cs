@@ -21,7 +21,7 @@ public class FareyTests
         {
             var previous = (double)actual[i - 1].Numerator / actual[i - 1].Denominator;
             var current = (double)actual[i].Numerator / actual[i].Denominator;
-            Assert.IsTrue(current > previous, $"Sequence is not strictly ascending at index {i}: {previous} >= {current}.");
+            Assert.IsGreaterThan(previous, current, $"Sequence is not strictly ascending at index {i}: {previous} >= {current}.");
         }
     }
 

@@ -76,7 +76,7 @@ public partial class SequenceGeneratorTests
             iterateFunction: s => (s.Curr + s.Step, s.Step),
             resultSelector: s => s.Curr).ToArray();
 
-        Assert.AreEqual(0, actual.Length);
+        Assert.IsEmpty(actual);
     }
 
     /// <summary>

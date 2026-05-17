@@ -35,7 +35,7 @@ public partial class XorShiftRandomTests
         var buffer = new byte[16];
         rng.NextBytes(buffer);
 
-        Assert.IsTrue(buffer.Any(b => b != 0), "Expected non-zero bytes in actual.");
+        Assert.Contains(b => b != 0, buffer, "Expected non-zero bytes in actual.");
     }
 
     /// <summary>

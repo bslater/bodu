@@ -16,10 +16,12 @@ public sealed class XmlNamespaceResolver
     private readonly XNamespace _xNamespace;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="XmlNamespaceResolver"/> class with the specified root element.
+    /// Initializes a new instance of the <see cref="XmlNamespaceResolver" /> class with the specified root element.
     /// </summary>
     /// <param name="root">The root element from which to extract the default namespace.</param>
-    /// <exception cref="InvalidOperationException">Thrown if the root element is <see langword="null"/> or has no namespace.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown if the root element is <see langword="null" /> or has no namespace.
+    /// </exception>
     public XmlNamespaceResolver(XElement root)
     {
         ThrowHelper.ThrowIfNull(root);
@@ -33,7 +35,9 @@ public sealed class XmlNamespaceResolver
     /// <param name="parent">The parent element.</param>
     /// <param name="localName">The local name of the child element.</param>
     /// <returns>The matching child XElement, or null if not found.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="parent" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="parent" /> is <see langword="null" />.
+    /// </exception>
     public XElement? Element(XElement parent, string localName)
     {
         ThrowHelper.ThrowIfNull(parent);
@@ -46,7 +50,9 @@ public sealed class XmlNamespaceResolver
     /// <param name="parent">The parent element.</param>
     /// <param name="localName">The local name of the child elements.</param>
     /// <returns>An enumerable of matching XElement objects.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="parent" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="parent" /> is <see langword="null" />.
+    /// </exception>
     public IEnumerable<XElement> Elements(XElement parent, string localName)
     {
         ThrowHelper.ThrowIfNull(parent);

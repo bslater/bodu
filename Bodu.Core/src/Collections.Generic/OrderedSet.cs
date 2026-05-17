@@ -9,22 +9,21 @@ using System.Diagnostics;
 namespace Bodu.Collections.Generic;
 
 /// <summary>
-/// Represents an insertion-ordered set — a <see cref="ISet{T}" /> that preserves the order in which
-/// elements were first added and exposes that order through <see cref="IReadOnlyList{T}" />.
+/// Represents an insertion-ordered set — a <see cref="ISet{T}" /> that preserves the order in which elements were first
+/// added and exposes that order through <see cref="IReadOnlyList{T}" />.
 /// </summary>
 /// <typeparam name="T">The type of elements in the set. Elements must not be <see langword="null" />.</typeparam>
 /// <remarks>
 /// <para>
-/// <see cref="OrderedSet{T}" /> shares its backing storage with <see cref="IndexedSet{T}" /> via the
-/// internal <see cref="OrderedSetStorage{T}" /> engine: a contiguous element array for deterministic
-/// insertion order plus an open-addressing hash table for O(1) <see cref="Contains" />. No BCL collection
-/// types are used as backing storage.
+/// <see cref="OrderedSet{T}" /> shares its backing storage with <see cref="IndexedSet{T}" /> via the internal
+/// <see cref="OrderedSetStorage{T}" /> engine: a contiguous element array for deterministic insertion order plus an
+/// open-addressing hash table for O(1) <see cref="Contains" />. No BCL collection types are used as backing storage.
 /// </para>
 /// <para>
 /// The contract is strictly set-shaped: <see cref="ISet{T}" /> for mutation and set algebra,
-/// <see cref="IReadOnlyList{T}" /> for ordered iteration and positional read access. Positional mutation
-/// (<c>Insert</c>, <c>RemoveAt</c>, <c>Move</c>, indexer setter) is intentionally not exposed — use
-/// <see cref="IndexedSet{T}" /> when those operations are required.
+/// <see cref="IReadOnlyList{T}" /> for ordered iteration and positional read access. Positional mutation (<c>Insert</c>
+/// , <c>RemoveAt</c>, <c>Move</c>, indexer setter) is intentionally not exposed — use <see cref="IndexedSet{T}" /> when
+/// those operations are required.
 /// </para>
 /// <para>
 /// This type is not thread-safe.
@@ -37,10 +36,14 @@ public sealed partial class OrderedSet<T>
     : ISet<T>, IReadOnlyList<T>
     where T : notnull
 {
-    /// <summary>The shared ordered-set storage engine that preserves insertion order and enforces uniqueness.</summary>
+    /// <summary>
+    /// The shared ordered-set storage engine that preserves insertion order and enforces uniqueness.
+    /// </summary>
     private readonly OrderedSetStorage<T> _storage;
 
-    /// <summary>Gets the backing storage exposed to debugger proxy views.</summary>
+    /// <summary>
+    /// Gets the backing storage exposed to debugger proxy views.
+    /// </summary>
     [DebuggerBrowsable(DebuggerBrowsableState.Never)]
     internal OrderedSetStorage<T> DebuggerStorage => _storage;
 
@@ -63,45 +66,40 @@ public sealed partial class OrderedSet<T>
     /// Initializes a new instance of the <see cref="OrderedSet{T}" /> class with the specified initial capacity.
     /// </summary>
     /// <param name="capacity">The initial element capacity.</param>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="capacity" /> is negative.
-    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> is negative.</exception>
     public OrderedSet(int capacity)
         : this(capacity, null)
     { }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="OrderedSet{T}" /> class with the specified initial capacity and comparer.
+    /// Initializes a new instance of the <see cref="OrderedSet{T}" /> class with the specified initial capacity and
+    /// comparer.
     /// </summary>
     /// <param name="capacity">The initial element capacity.</param>
     /// <param name="comparer">The equality comparer, or <see langword="null" /> to use the default comparer.</param>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="capacity" /> is negative.
-    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> is negative.</exception>
     public OrderedSet(int capacity, IEqualityComparer<T>? comparer)
     {
         _storage = new OrderedSetStorage<T>(capacity, comparer);
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="OrderedSet{T}" /> class containing the unique elements from <paramref name="collection" />.
+    /// Initializes a new instance of the <see cref="OrderedSet{T}" /> class containing the unique elements from
+    /// <paramref name="collection" />.
     /// </summary>
     /// <param name="collection">The source collection. Must not be <see langword="null" />.</param>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="collection" /> is <see langword="null" />.
-    /// </exception>
+    /// <exception cref="ArgumentNullException"><paramref name="collection" /> is <see langword="null" />.</exception>
     public OrderedSet(IEnumerable<T> collection)
         : this(collection, null)
     { }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="OrderedSet{T}" /> class containing the unique elements from <paramref name="collection" />.
+    /// Initializes a new instance of the <see cref="OrderedSet{T}" /> class containing the unique elements from
+    /// <paramref name="collection" />.
     /// </summary>
     /// <param name="collection">The source collection. Must not be <see langword="null" />.</param>
     /// <param name="comparer">The equality comparer, or <see langword="null" /> to use the default comparer.</param>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="collection" /> is <see langword="null" />.
-    /// </exception>
+    /// <exception cref="ArgumentNullException"><paramref name="collection" /> is <see langword="null" />.</exception>
     public OrderedSet(IEnumerable<T> collection, IEqualityComparer<T>? comparer)
         : this(GetCapacityHint(collection), comparer)
     {
@@ -150,11 +148,10 @@ public sealed partial class OrderedSet<T>
     /// </summary>
     /// <param name="item">The item to add. Must not be <see langword="null" />.</param>
     /// <returns>
-    /// <see langword="true" /> if the item was added; otherwise, <see langword="false" /> when the set already contained it.
+    /// <see langword="true" /> if the item was added; otherwise, <see langword="false" /> when the set already
+    /// contained it.
     /// </returns>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="item" /> is <see langword="null" />.
-    /// </exception>
+    /// <exception cref="ArgumentNullException"><paramref name="item" /> is <see langword="null" />.</exception>
     public bool Add(T item) =>
         _storage.Add(item);
 
@@ -163,9 +160,7 @@ public sealed partial class OrderedSet<T>
     /// </summary>
     /// <param name="collection">The source collection. Must not be <see langword="null" />.</param>
     /// <returns>The number of items added.</returns>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="collection" /> is <see langword="null" />.
-    /// </exception>
+    /// <exception cref="ArgumentNullException"><paramref name="collection" /> is <see langword="null" />.</exception>
     public int AddRange(IEnumerable<T> collection) =>
         _storage.AddRange(collection);
 
@@ -173,12 +168,8 @@ public sealed partial class OrderedSet<T>
     /// Removes the specified item from the set.
     /// </summary>
     /// <param name="item">The item to remove. Must not be <see langword="null" />.</param>
-    /// <returns>
-    /// <see langword="true" /> if the item was removed; otherwise, <see langword="false" />.
-    /// </returns>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="item" /> is <see langword="null" />.
-    /// </exception>
+    /// <returns><see langword="true" /> if the item was removed; otherwise, <see langword="false" />.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="item" /> is <see langword="null" />.</exception>
     public bool Remove(T item) =>
         _storage.Remove(item);
 
@@ -192,12 +183,8 @@ public sealed partial class OrderedSet<T>
     /// Determines whether the set contains the specified item.
     /// </summary>
     /// <param name="item">The item to locate. Must not be <see langword="null" />.</param>
-    /// <returns>
-    /// <see langword="true" /> if the item exists; otherwise, <see langword="false" />.
-    /// </returns>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="item" /> is <see langword="null" />.
-    /// </exception>
+    /// <returns><see langword="true" /> if the item exists; otherwise, <see langword="false" />.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="item" /> is <see langword="null" />.</exception>
     public bool Contains(T item) =>
         _storage.Contains(item);
 
@@ -206,9 +193,7 @@ public sealed partial class OrderedSet<T>
     /// </summary>
     /// <param name="item">The item to locate. Must not be <see langword="null" />.</param>
     /// <returns>The zero-based index of the item, or <c>-1</c> if it is not present.</returns>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="item" /> is <see langword="null" />.
-    /// </exception>
+    /// <exception cref="ArgumentNullException"><paramref name="item" /> is <see langword="null" />.</exception>
     public int IndexOf(T item) =>
         _storage.IndexOf(item);
 
@@ -217,12 +202,8 @@ public sealed partial class OrderedSet<T>
     /// </summary>
     /// <param name="array">The destination array. Must not be <see langword="null" />.</param>
     /// <param name="arrayIndex">The destination start index.</param>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="array" /> is <see langword="null" />.
-    /// </exception>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="arrayIndex" /> is negative.
-    /// </exception>
+    /// <exception cref="ArgumentNullException"><paramref name="array" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="arrayIndex" /> is negative.</exception>
     /// <exception cref="ArgumentException">
     /// <paramref name="array" /> does not have enough space starting at <paramref name="arrayIndex" />.
     /// </exception>
@@ -234,9 +215,7 @@ public sealed partial class OrderedSet<T>
     /// </summary>
     /// <param name="capacity">The desired item capacity.</param>
     /// <returns>The resulting item capacity.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="capacity" /> is negative.
-    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> is negative.</exception>
     public int EnsureCapacity(int capacity) =>
         _storage.EnsureCapacity(capacity);
 
@@ -261,17 +240,16 @@ public sealed partial class OrderedSet<T>
         new(this);
 
     /// <summary>
-    /// Returns a capacity hint suitable for sizing storage from <paramref name="collection" />, preferring
-    /// the fast paths exposed by <see cref="ICollection{T}" /> and <see cref="IReadOnlyCollection{T}" />.
+    /// Returns a capacity hint suitable for sizing storage from <paramref name="collection" />, preferring the fast
+    /// paths exposed by <see cref="ICollection{T}" /> and <see cref="IReadOnlyCollection{T}" />.
     /// </summary>
     /// <param name="collection">The source enumerable, which may be <see langword="null" />.</param>
     /// <returns>The hinted capacity, or <c>0</c> when the count cannot be determined cheaply.</returns>
     private static int GetCapacityHint(IEnumerable<T>? collection)
     {
-        if (collection is null)
-            return 0;
-
-        return collection is ICollection<T> genericCollection
+        return collection is null
+            ? 0
+            : collection is ICollection<T> genericCollection
             ? genericCollection.Count
             : collection is IReadOnlyCollection<T> readOnlyCollection
                 ? readOnlyCollection.Count

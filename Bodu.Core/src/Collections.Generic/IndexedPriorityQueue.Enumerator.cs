@@ -20,16 +20,18 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
         GetEnumerator();
 
     /// <summary>
-    /// Enumerates the element-priority pairs of an <see cref="IndexedPriorityQueue{TElement, TPriority}"/>
-    /// in heap-storage order.
+    /// Enumerates the element-priority pairs of an <see cref="IndexedPriorityQueue{TElement, TPriority}" /> in
+    /// heap-storage order.
     /// </summary>
     /// <remarks>
-    /// <para>Use the <see langword="foreach"/> statement to enumerate the queue rather than using this struct directly.</para>
+    /// <para>
+    /// Use the <see langword="foreach" /> statement to enumerate the queue rather than using this struct directly.
+    /// </para>
     /// <para>
     /// The enumerator captures the queue's modification version at construction. Any structural mutation —
-    /// <see cref="Enqueue"/>, <see cref="Dequeue"/>, <see cref="Update"/>, <see cref="Remove"/>,
-    /// <see cref="EnqueueOrUpdate"/>, or <see cref="Clear"/> — invalidates an in-flight enumerator and
-    /// causes <see cref="MoveNext"/> or <see cref="Reset"/> to throw <see cref="InvalidOperationException"/>.
+    /// <see cref="Enqueue" />, <see cref="Dequeue" />, <see cref="Update" />, <see cref="Remove" />,
+    /// <see cref="EnqueueOrUpdate" />, or <see cref="Clear" /> — invalidates an in-flight enumerator and causes
+    /// <see cref="MoveNext" /> or <see cref="Reset" /> to throw <see cref="InvalidOperationException" />.
     /// </para>
     /// </remarks>
     [Serializable]
@@ -42,22 +44,23 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
         private readonly IndexedPriorityQueue<TElement, TPriority> _queue;
 
         /// <summary>
-        /// The queue's <see cref="_version"/> captured at construction; used to detect concurrent modification.
+        /// The queue's <see cref="_version" /> captured at construction; used to detect concurrent modification.
         /// </summary>
         private readonly int _version;
 
         /// <summary>
-        /// The slot index currently exposed by <see cref="Current"/>; <c>-1</c> indicates an unstarted or exhausted enumerator.
+        /// The slot index currently exposed by <see cref="Current" />; <c>-1</c> indicates an unstarted or exhausted
+        /// enumerator.
         /// </summary>
         private int _index;
 
         /// <summary>
-        /// The element-priority pair returned by <see cref="Current"/> for the current position.
+        /// The element-priority pair returned by <see cref="Current" /> for the current position.
         /// </summary>
         private KeyValuePair<TElement, TPriority> _current;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Enumerator"/> struct.
+        /// Initializes a new instance of the <see cref="Enumerator" /> struct.
         /// </summary>
         /// <param name="queue">The queue to enumerate.</param>
         internal Enumerator(IndexedPriorityQueue<TElement, TPriority> queue)
@@ -69,7 +72,7 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
         }
 
         /// <inheritdoc />
-        public KeyValuePair<TElement, TPriority> Current =>
+        public readonly KeyValuePair<TElement, TPriority> Current =>
             (_index < 0 || _index >= _queue._size)
                 ? throw new InvalidOperationException(ResourceStrings.Op_Invalid_EnumeratorNotOnElement)
                 : _current;
@@ -78,7 +81,7 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
         object IEnumerator.Current => Current;
 
         /// <inheritdoc />
-        public void Dispose()
+        public readonly void Dispose()
         {
             // No unmanaged resources; method provided for interface completeness.
         }

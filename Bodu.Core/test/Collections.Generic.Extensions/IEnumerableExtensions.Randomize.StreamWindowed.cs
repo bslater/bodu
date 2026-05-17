@@ -24,7 +24,7 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
             .Randomize(RandomizationMode.StreamWindowed, CreateSeededRng())
             .ToArray();
 
-        Assert.AreEqual(windowSize, result.Length, "All source elements must be yielded when source == window size.");
+        Assert.HasCount(windowSize, result, "All source elements must be yielded when source == window size.");
         CollectionAssert.AreEquivalent(source, result);
     }
 
@@ -62,7 +62,7 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
             .Randomize(RandomizationMode.StreamWindowed, CreateSeededRng())
             .ToArray();
 
-        Assert.AreEqual(source.Length, result.Length,
+        Assert.HasCount(source.Length, result,
             "Stream-windowed shuffle must yield every source element exactly once.");
         CollectionAssert.AreEquivalent(source, result);
     }
@@ -80,7 +80,7 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
             .Randomize(RandomizationMode.StreamWindowed, CreateSeededRng())
             .ToArray();
 
-        Assert.AreEqual(0, result.Length);
+        Assert.IsEmpty(result);
     }
 
 }

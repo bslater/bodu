@@ -10,7 +10,8 @@ namespace Bodu.Collections.Extensions;
 /// Provides a collection of static helper methods for generating sequences of values.
 /// </summary>
 /// <remarks>
-/// This partial class is intended to contain reusable sequence generators such as numeric ranges, repeated patterns, and combinatoric sequences.
+/// This partial class is intended to contain reusable sequence generators such as numeric ranges, repeated patterns,
+/// and combinatoric sequences.
 /// </remarks>
 public static partial class SequenceGenerator
 { }

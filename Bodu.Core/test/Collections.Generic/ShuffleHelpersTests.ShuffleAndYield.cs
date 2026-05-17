@@ -21,7 +21,7 @@ public partial class ShuffleHelpersTests
         var buffer = Enumerable.Range(1, 10).ToArray();
         var actual = ShuffleHelpers.ShuffleAndYield(buffer, new XorShiftRandom(), 5).ToArray();
 
-        Assert.AreEqual(5, actual.Length);
+        Assert.HasCount(5, actual);
         CollectionAssert.IsSubsetOf(actual, buffer);
     }
 
@@ -80,7 +80,7 @@ public partial class ShuffleHelpersTests
         IEnumerable<int> source = Enumerable.Range(1, 10);
         var actual = ShuffleHelpers.ShuffleAndYield(source, new XorShiftRandom(), count).ToArray();
 
-        Assert.AreEqual(count, actual.Length);
+        Assert.HasCount(count, actual);
         CollectionAssert.IsSubsetOf(actual, source.ToArray());
     }
     /// <summary>
@@ -93,7 +93,7 @@ public partial class ShuffleHelpersTests
         IEnumerable<int> source = Enumerable.Range(1, 10);
         var actual = ShuffleHelpers.ShuffleAndYield(source, new XorShiftRandom(), 3).ToArray();
 
-        Assert.AreEqual(3, actual.Length);
+        Assert.HasCount(3, actual);
         CollectionAssert.IsSubsetOf(actual, source.ToArray());
     }
 
@@ -157,7 +157,7 @@ public partial class ShuffleHelpersTests
         var actual = ShuffleHelpers.ShuffleAndYield(buffer, new XorShiftRandom(), count).ToArray();
 
         if (count == 0 || bufferSize == 0)
-            Assert.AreEqual(0, actual.Length);
+            Assert.IsEmpty(actual);
     }
 
     /// <summary>
@@ -207,13 +207,13 @@ public partial class ShuffleHelpersTests
         Person[] source = Enumerable.Range(1, 10).Select(i => new Person(id: i, name: $"Person {i}")).ToArray();
         Person[] actual = ShuffleHelpers.ShuffleAndYield(source, new XorShiftRandom(), 5).ToArray();
 
-        Assert.AreEqual(5, actual.Length);
+        Assert.HasCount(5, actual);
         CollectionAssert.IsSubsetOf(actual, source);
 
         // Ensure the references point to the original objects
         foreach (Person? person in actual)
         {
-            Assert.IsTrue(source.Contains(person));
+            Assert.Contains(person, source);
         }
     }
 
@@ -226,13 +226,13 @@ public partial class ShuffleHelpersTests
         IEnumerable<Person> source = Enumerable.Range(1, 10).Select(i => new Person(id: i, name: $"Person {i}")).AsEnumerable();
         Person[] actual = ShuffleHelpers.ShuffleAndYield(source, new XorShiftRandom(), 5).ToArray();
 
-        Assert.AreEqual(5, actual.Length);
+        Assert.HasCount(5, actual);
         CollectionAssert.IsSubsetOf(actual, source.ToArray());
 
         // Ensure the references point to the original objects
         foreach (Person? person in actual)
         {
-            Assert.IsTrue(source.Contains(person));
+            Assert.Contains(person, source);
         }
     }
 
@@ -248,7 +248,7 @@ public partial class ShuffleHelpersTests
         Span<int> span = Enumerable.Range(1, 10).ToArray().AsSpan();
         var actual = ShuffleHelpers.ShuffleAndYield<int>(span, new XorShiftRandom(), 4).ToArray();
 
-        Assert.AreEqual(4, actual.Length);
+        Assert.HasCount(4, actual);
         CollectionAssert.IsSubsetOf(actual, span.ToArray());
     }
 
@@ -262,7 +262,7 @@ public partial class ShuffleHelpersTests
         Memory<int> memory = Enumerable.Range(1, 8).ToArray().AsMemory();
         var actual = ShuffleHelpers.ShuffleAndYield(memory, new XorShiftRandom(), 3).ToArray();
 
-        Assert.AreEqual(3, actual.Length);
+        Assert.HasCount(3, actual);
         CollectionAssert.IsSubsetOf(actual, memory.ToArray());
     }
 
@@ -289,13 +289,13 @@ public partial class ShuffleHelpersTests
         Person[] source = Enumerable.Range(1, 10).Select(i => new Person(id: i, name: $"Person {i}")).ToArray();
         Person[] actual = ShuffleHelpers.ShuffleAndYield<Person>(source.AsSpan(), new XorShiftRandom(), 5).ToArray();
 
-        Assert.AreEqual(5, actual.Length);
+        Assert.HasCount(5, actual);
         CollectionAssert.IsSubsetOf(actual, source.ToArray());
 
         // Ensure the references point to the original objects
         foreach (Person? person in actual)
         {
-            Assert.IsTrue(source.Contains(person));
+            Assert.Contains(person, source);
         }
     }
 
@@ -308,13 +308,13 @@ public partial class ShuffleHelpersTests
         Person[] source = Enumerable.Range(1, 10).Select(i => new Person(id: i, name: $"Person {i}")).ToArray();
         Person[] actual = ShuffleHelpers.ShuffleAndYield<Person>(source.AsMemory(), new XorShiftRandom(), 5).ToArray();
 
-        Assert.AreEqual(5, actual.Length);
+        Assert.HasCount(5, actual);
         CollectionAssert.IsSubsetOf(actual, source.ToArray());
 
         // Ensure the references point to the original objects
         foreach (Person? person in actual)
         {
-            Assert.IsTrue(source.Contains(person));
+            Assert.Contains(person, source);
         }
     }
 #endif

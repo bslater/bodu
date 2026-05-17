@@ -11,13 +11,14 @@ namespace Bodu.Collections.Generic;
 public partial class EvictingDictionary<TKey, TValue>
 {
     /// <summary>
-    /// Represents a live, order-preserving view of the values contained in an <see cref="EvictingDictionary{TKey, TValue}"/>.
+    /// Represents a live, order-preserving view of the values contained in an
+    /// <see cref="EvictingDictionary{TKey, TValue}" />.
     /// </summary>
     /// <remarks>
     /// The collection reflects subsequent mutations to the underlying dictionary. Enumeration order follows the current
-    /// <see cref="EvictingDictionaryPolicy"/>. The collection is read-only;
-    /// <see cref="ICollection{T}.Add"/>, <see cref="ICollection{T}.Clear"/>, and
-    /// <see cref="ICollection{T}.Remove"/> throw <see cref="NotSupportedException"/>.
+    /// <see cref="EvictingDictionaryPolicy" />. The collection is read-only; <see cref="ICollection{T}.Add" />,
+    /// <see cref="ICollection{T}.Clear" />, and <see cref="ICollection{T}.Remove" /> throw
+    /// <see cref="NotSupportedException" />.
     /// </remarks>
     public sealed class ValueCollection :
         ICollection<TValue>,
@@ -27,10 +28,14 @@ public partial class EvictingDictionary<TKey, TValue>
         private readonly EvictingDictionary<TKey, TValue> _dictionary;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ValueCollection"/> class bound to the specified dictionary.
+        /// Initializes a new instance of the <see cref="ValueCollection" /> class bound to the specified dictionary.
         /// </summary>
-        /// <param name="dictionary">The dictionary whose values this collection exposes. Must not be <see langword="null"/>.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="dictionary"/> is <see langword="null"/>.</exception>
+        /// <param name="dictionary">
+        /// The dictionary whose values this collection exposes. Must not be <see langword="null" />.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="dictionary" /> is <see langword="null" />.
+        /// </exception>
         internal ValueCollection(EvictingDictionary<TKey, TValue> dictionary)
         {
             ThrowHelper.ThrowIfNull(dictionary);
@@ -99,17 +104,23 @@ public partial class EvictingDictionary<TKey, TValue>
         }
 
         /// <inheritdoc />
-        /// <exception cref="NotSupportedException">Values cannot be added directly; modify the owning dictionary instead.</exception>
+        /// <exception cref="NotSupportedException">
+        /// Values cannot be added directly; modify the owning dictionary instead.
+        /// </exception>
         void ICollection<TValue>.Add(TValue item) =>
             throw new NotSupportedException("Mutating the dictionary through the Values collection is not supported.");
 
         /// <inheritdoc />
-        /// <exception cref="NotSupportedException">Values cannot be cleared directly; call <see cref="EvictingDictionary{TKey, TValue}.Clear"/> instead.</exception>
+        /// <exception cref="NotSupportedException">
+        /// Values cannot be cleared directly; call <see cref="EvictingDictionary{TKey, TValue}.Clear" /> instead.
+        /// </exception>
         void ICollection<TValue>.Clear() =>
             throw new NotSupportedException("Mutating the dictionary through the Values collection is not supported.");
 
         /// <inheritdoc />
-        /// <exception cref="NotSupportedException">Values cannot be removed directly; modify the owning dictionary instead.</exception>
+        /// <exception cref="NotSupportedException">
+        /// Values cannot be removed directly; modify the owning dictionary instead.
+        /// </exception>
         bool ICollection<TValue>.Remove(TValue item) =>
             throw new NotSupportedException("Mutating the dictionary through the Values collection is not supported.");
     }

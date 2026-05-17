@@ -31,8 +31,8 @@ public partial class EvictingDictionaryTests
         dictionary.Add("A", 10);
         dictionary.Add("B", 20);
 
-        Assert.IsTrue(dictionary.Values.Contains(20));
-        Assert.IsFalse(dictionary.Values.Contains(99));
+        Assert.Contains(20, dictionary.Values);
+        Assert.DoesNotContain(99, dictionary.Values);
     }
 
     /// <summary>
@@ -62,7 +62,7 @@ public partial class EvictingDictionaryTests
 
         dictionary.Clear();
 
-        Assert.AreEqual(0, dictionary.Values.Count);
+        Assert.IsEmpty(dictionary.Values);
     }
     /// <summary>
     /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Values" /> returns an empty collection when the dictionary has no entries.
@@ -72,7 +72,7 @@ public partial class EvictingDictionaryTests
     {
         var dictionary = new EvictingDictionary<string, int>(3);
 
-        Assert.AreEqual(0, dictionary.Values.Count);
+        Assert.IsEmpty(dictionary.Values);
     }
 
     /// <summary>
@@ -120,7 +120,7 @@ public partial class EvictingDictionaryTests
 
         ICollection<int> values = dictionary.Values;
 
-        Assert.AreEqual(3, values.Count);
+        Assert.HasCount(3, values);
         CollectionAssert.Contains(values.ToList(), 10);
         CollectionAssert.Contains(values.ToList(), 20);
         CollectionAssert.Contains(values.ToList(), 30);

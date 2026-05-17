@@ -46,7 +46,7 @@ public partial class ConcurrentCircularBufferTests
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(5);
         var items = buffer.ToList();
-        Assert.AreEqual(0, items.Count);
+        Assert.IsEmpty(items);
     }
 
     /// <summary>
@@ -61,7 +61,7 @@ public partial class ConcurrentCircularBufferTests
         var reader = Task.Run(() =>
         {
             var items = buffer.ToList();
-            Assert.IsTrue(items.Count <= 10);
+            Assert.IsLessThanOrEqualTo(10, items.Count);
         });
 
         var remover = Task.Run(() =>
@@ -85,7 +85,7 @@ public partial class ConcurrentCircularBufferTests
         var enumeratorTask = Task.Run(() =>
         {
             TestItem[] snapshot = buffer.ToArray();
-            Assert.IsTrue(snapshot.Length <= buffer.Capacity);
+            Assert.IsLessThanOrEqualTo(buffer.Capacity, snapshot.Length);
         });
 
         var mutateTask = Task.Run(() =>

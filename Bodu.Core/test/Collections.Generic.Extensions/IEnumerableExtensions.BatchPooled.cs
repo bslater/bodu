@@ -21,7 +21,7 @@ public sealed partial class IEnumerableExtensionsTests_BatchPooled
 
         var batches = source.BatchPooled(10).Select(b => b.ToArray()).ToArray();
 
-        Assert.AreEqual(1, batches.Length);
+        Assert.HasCount(1, batches);
         CollectionAssert.AreEqual(new[] { 1, 2, 3 }, batches[0]);
     }
 
@@ -73,7 +73,7 @@ public sealed partial class IEnumerableExtensionsTests_BatchPooled
 
         var batches = source.BatchPooled(3).Select(b => b.ToArray()).ToArray();
 
-        Assert.AreEqual(3, batches.Length);
+        Assert.HasCount(3, batches);
         CollectionAssert.AreEqual(new[] { 1, 2, 3 }, batches[0]);
         CollectionAssert.AreEqual(new[] { 4, 5, 6 }, batches[1]);
         CollectionAssert.AreEqual(new[] { 7, 8, 9 }, batches[2]);
@@ -89,7 +89,7 @@ public sealed partial class IEnumerableExtensionsTests_BatchPooled
 
         var batches = source.BatchPooled(2, (x, i) => $"{i}:{x}").Select(b => b.ToArray()).ToArray();
 
-        Assert.AreEqual(3, batches.Length);
+        Assert.HasCount(3, batches);
         CollectionAssert.AreEqual(new[] { "0:1", "1:2" }, batches[0]);
         CollectionAssert.AreEqual(new[] { "2:3", "3:4" }, batches[1]);
         CollectionAssert.AreEqual(new[] { "4:5" }, batches[2]);
@@ -160,7 +160,7 @@ public sealed partial class IEnumerableExtensionsTests_BatchPooled
     public void BatchPooled_WhenSourceIsEmpty_ShouldYieldNoBatches()
     {
         ReadOnlyMemory<int>[] batches = Array.Empty<int>().BatchPooled(4).ToArray();
-        Assert.AreEqual(0, batches.Length);
+        Assert.IsEmpty(batches);
     }
 
     /// <summary>
@@ -199,7 +199,7 @@ public sealed partial class IEnumerableExtensionsTests_BatchPooled
 
         var batches = source.BatchPooled(3).Select(b => b.ToArray()).ToArray();
 
-        Assert.AreEqual(4, batches.Length);
+        Assert.HasCount(4, batches);
         CollectionAssert.AreEqual(new[] { 1, 2, 3 }, batches[0]);
         CollectionAssert.AreEqual(new[] { 4, 5, 6 }, batches[1]);
         CollectionAssert.AreEqual(new[] { 7, 8, 9 }, batches[2]);

@@ -9,27 +9,83 @@ namespace Bodu.Extensions;
 public static partial class DateTimeExtensions
 {
     /// <summary>
-    /// Returns a new <see cref="DateTime"/> obtained by truncating the specified <paramref name="dateTime"/> to the supplied <paramref name="resolution"/>, with all smaller time components reset to zero.
+    /// Returns a new <see cref="DateTime" /> obtained by truncating the specified <paramref name="dateTime" /> to the
+    /// supplied <paramref name="resolution" />, with all smaller time components reset to zero.
     /// </summary>
     /// <param name="dateTime">The date and time value to truncate.</param>
-    /// <param name="resolution">The <see cref="DateTimeResolution"/> level to truncate to.</param>
-    /// <returns>An object whose value is the result of truncating <paramref name="dateTime"/> to the supplied <paramref name="resolution"/>, with the original <see cref="DateTime.Kind"/> preserved.</returns>
+    /// <param name="resolution">The <see cref="DateTimeResolution" /> level to truncate to.</param>
+    /// <returns>
+    /// An object whose value is the result of truncating <paramref name="dateTime" /> to the supplied
+    /// <paramref name="resolution" />, with the original <see cref="DateTime.Kind" /> preserved.
+    /// </returns>
     /// <remarks>
-    /// <para>Truncation resets all components smaller than the supplied resolution to their minimum values. For example, truncating to <see cref="DateTimeResolution.Minute"/> clears seconds and fractional seconds.</para>
-    /// <para>The following examples show the result of truncating <c>2024-04-18T14:37:56.7891234</c>:</para>
+    /// <para>
+    /// Truncation resets all components smaller than the supplied resolution to their minimum values. For example,
+    /// truncating to <see cref="DateTimeResolution.Minute" /> clears seconds and fractional seconds.
+    /// </para>
+    /// <para>
+    /// The following examples show the result of truncating <c>2024-04-18T14:37:56.7891234</c>:
+    /// </para>
     /// <list type="table">
-    /// <listheader><term>Resolution</term><description>Result</description></listheader>
-    /// <item><term><see cref="DateTimeResolution.Year"/></term><description><c>2024-01-01T00:00:00.0000000</c></description></item>
-    /// <item><term><see cref="DateTimeResolution.Month"/></term><description><c>2024-04-01T00:00:00.0000000</c></description></item>
-    /// <item><term><see cref="DateTimeResolution.Day"/></term><description><c>2024-04-18T00:00:00.0000000</c></description></item>
-    /// <item><term><see cref="DateTimeResolution.Hour"/></term><description><c>2024-04-18T14:00:00.0000000</c></description></item>
-    /// <item><term><see cref="DateTimeResolution.Minute"/></term><description><c>2024-04-18T14:37:00.0000000</c></description></item>
-    /// <item><term><see cref="DateTimeResolution.Second"/></term><description><c>2024-04-18T14:37:56.0000000</c></description></item>
-    /// <item><term><see cref="DateTimeResolution.Millisecond"/></term><description><c>2024-04-18T14:37:56.7890000</c></description></item>
-    /// <item><term><see cref="DateTimeResolution.Tick"/></term><description><c>2024-04-18T14:37:56.7891234</c> (unchanged)</description></item>
+    /// <listheader><term>Resolution</term>
+    /// <description>
+    /// Result
+    /// </description>
+    /// </listheader>
+    /// <item>
+    /// <term><see cref="DateTimeResolution.Year" /></term>
+    /// <description>
+    /// <c>2024-01-01T00:00:00.0000000</c>
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <term><see cref="DateTimeResolution.Month" /></term>
+    /// <description>
+    /// <c>2024-04-01T00:00:00.0000000</c>
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <term><see cref="DateTimeResolution.Day" /></term>
+    /// <description>
+    /// <c>2024-04-18T00:00:00.0000000</c>
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <term><see cref="DateTimeResolution.Hour" /></term>
+    /// <description>
+    /// <c>2024-04-18T14:00:00.0000000</c>
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <term><see cref="DateTimeResolution.Minute" /></term>
+    /// <description>
+    /// <c>2024-04-18T14:37:00.0000000</c>
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <term><see cref="DateTimeResolution.Second" /></term>
+    /// <description>
+    /// <c>2024-04-18T14:37:56.0000000</c>
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <term><see cref="DateTimeResolution.Millisecond" /></term>
+    /// <description>
+    /// <c>2024-04-18T14:37:56.7890000</c>
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <term><see cref="DateTimeResolution.Tick" /></term>
+    /// <description>
+    /// <c>2024-04-18T14:37:56.7891234</c> (unchanged)
+    /// </description>
+    /// </item>
     /// </list>
     /// </remarks>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="resolution"/> is not a defined value of the <see cref="DateTimeResolution"/> enumeration.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown if <paramref name="resolution" /> is not a defined value of the <see cref="DateTimeResolution" />
+    /// enumeration.
+    /// </exception>
     public static DateTime Truncate(this DateTime dateTime, DateTimeResolution resolution)
     {
         ThrowHelper.ThrowIfEnumValueIsUndefined(resolution);

@@ -40,7 +40,7 @@ public partial class IndexedPriorityQueueTests
         KeyValuePair<int, int>[] drained = DrainAll(queue);
 
         AssertNonDecreasing(drained);
-        Assert.AreEqual(priorities.Length, drained.Length);
+        Assert.HasCount(priorities.Length, drained);
     }
 
     /// <summary>
@@ -58,7 +58,7 @@ public partial class IndexedPriorityQueueTests
         KeyValuePair<int, int>[] drained = DrainAll(queue);
 
         AssertNonDecreasing(drained);
-        Assert.AreEqual(priorities.Length, drained.Length);
+        Assert.HasCount(priorities.Length, drained);
         CollectionAssert.AreEquivalent(
             Enumerable.Range(0, priorities.Length).ToArray(),
             drained.Select(p => p.Key).ToArray());

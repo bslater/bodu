@@ -20,7 +20,7 @@ public partial class EvictingDictionaryTests
         dictionary.Touch("x");
         dictionary.Touch("x");
 
-        Assert.IsTrue(dictionary.TotalTouches > 0);
+        Assert.IsGreaterThan(0, dictionary.TotalTouches);
 
         dictionary.Clear();
 

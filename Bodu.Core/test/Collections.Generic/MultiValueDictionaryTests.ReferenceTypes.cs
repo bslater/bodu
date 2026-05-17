@@ -24,7 +24,7 @@ public partial class MultiValueDictionaryTests
         mvd.Add("k", l2);
 
         Assert.AreEqual(2, mvd.Count);
-        Assert.AreEqual(2, mvd["k"].Count);
+        Assert.HasCount(2, mvd["k"]);
     }
 
     /// <summary>

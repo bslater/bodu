@@ -73,7 +73,7 @@ public partial class OrderedSetStorageTests
         sut.EnsureCapacity(128);
 
         CollectionAssert.AreEqual(new[] { 1, 2, 3 }, Snapshot(sut));
-        Assert.IsTrue(sut.Capacity >= 128);
+        Assert.IsGreaterThanOrEqualTo(128, sut.Capacity);
     }
 
     /// <summary>
@@ -106,8 +106,8 @@ public partial class OrderedSetStorageTests
 
         var newCapacity = sut.EnsureCapacity(128);
 
-        Assert.IsTrue(newCapacity >= 128);
-        Assert.IsTrue(sut.Capacity >= 128);
+        Assert.IsGreaterThanOrEqualTo(128, newCapacity);
+        Assert.IsGreaterThanOrEqualTo(128, sut.Capacity);
     }
 
     /// <summary>

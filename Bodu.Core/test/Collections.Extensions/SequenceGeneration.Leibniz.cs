@@ -18,7 +18,7 @@ public class LeibnizTests
     {
         var actual = SequenceGenerator.Leibniz(0.0, 0.9).Take(1).ToArray();
 
-        Assert.AreEqual(0, actual.Length);
+        Assert.IsEmpty(actual);
     }
 
     /// <summary>
@@ -78,7 +78,7 @@ public class LeibnizTests
     {
         var actual = SequenceGenerator.Leibniz(0.0, 1.1).Take(3).ToArray();
 
-        Assert.AreEqual(3, actual.Length);
+        Assert.HasCount(3, actual);
         Assert.AreEqual(1.0, actual[0], 1e-12);
         Assert.AreEqual(-1.0 / 3.0, actual[1], 1e-12);
         Assert.AreEqual(1.0 / 5.0, actual[2], 1e-12);
@@ -99,12 +99,12 @@ public class LeibnizTests
 
         var actual = SequenceGenerator.Leibniz(min, max).Take(5).ToArray();
 
-        Assert.AreEqual(5, actual.Length);
+        Assert.HasCount(5, actual);
         foreach (var term in actual)
         {
             var magnitude = Math.Abs(term);
-            Assert.IsTrue(magnitude >= min, $"Magnitude {magnitude} fell below the inclusive lower bound {min}.");
-            Assert.IsTrue(magnitude < max, $"Magnitude {magnitude} reached or exceeded the exclusive upper bound {max}.");
+            Assert.IsGreaterThanOrEqualTo(min, magnitude, $"Magnitude {magnitude} fell below the inclusive lower bound {min}.");
+            Assert.IsLessThan(max, magnitude, $"Magnitude {magnitude} reached or exceeded the exclusive upper bound {max}.");
         }
     }
 

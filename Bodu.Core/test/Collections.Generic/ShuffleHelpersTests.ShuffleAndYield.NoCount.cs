@@ -19,7 +19,7 @@ public partial class ShuffleHelpersTests
         var source = Enumerable.Range(1, 8).ToArray();
         var actual = ShuffleHelpers.ShuffleAndYield(source, new XorShiftRandom(7)).ToArray();
 
-        Assert.AreEqual(source.Length, actual.Length);
+        Assert.HasCount(source.Length, actual);
         CollectionAssert.AreEquivalent(source, actual);
         CollectionAssert.AllItemsAreUnique(actual);
     }
@@ -47,7 +47,7 @@ public partial class ShuffleHelpersTests
         var source = Enumerable.Range(1, 10).ToList();
         var actual = ShuffleHelpers.ShuffleAndYield(source.AsEnumerable(), new XorShiftRandom(7)).ToArray();
 
-        Assert.AreEqual(source.Count, actual.Length);
+        Assert.HasCount(source.Count, actual);
         CollectionAssert.AreEquivalent(source, actual);
         CollectionAssert.AllItemsAreUnique(actual);
     }
@@ -79,7 +79,7 @@ public partial class ShuffleHelpersTests
         ReadOnlySpan<int> span = underlying;
         var actual = ShuffleHelpers.ShuffleAndYield(span, new XorShiftRandom(7)).ToArray();
 
-        Assert.AreEqual(underlying.Length, actual.Length);
+        Assert.HasCount(underlying.Length, actual);
         CollectionAssert.AreEquivalent(underlying, actual);
         CollectionAssert.AllItemsAreUnique(actual);
     }
@@ -95,7 +95,7 @@ public partial class ShuffleHelpersTests
         Memory<int> memory = underlying;
         var actual = ShuffleHelpers.ShuffleAndYield(memory, new XorShiftRandom(7)).ToArray();
 
-        Assert.AreEqual(underlying.Length, actual.Length);
+        Assert.HasCount(underlying.Length, actual);
         CollectionAssert.AreEquivalent(underlying, actual);
         CollectionAssert.AllItemsAreUnique(actual);
     }

@@ -88,9 +88,9 @@ public static partial class ThrowHelper
     /// Thrown when <paramref name="value" /> &lt;= 0 or <c>value % divisor != 0</c>.
     /// </exception>
     /// <remarks>
-    /// Useful for validating aligned buffer sizes, memory boundaries, or block-aligned lengths.
-    /// When the required constraint is specifically a power of two,
-    /// prefer <see cref="ThrowIfNotPowerOfTwo{T}" />, which uses a single bitwise operation.
+    /// Useful for validating aligned buffer sizes, memory boundaries, or block-aligned lengths. When the required
+    /// constraint is specifically a power of two, prefer <see cref="ThrowIfNotPowerOfTwo{T}" />, which uses a single
+    /// bitwise operation.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfNotPositiveMultipleOf<T>(
@@ -116,9 +116,8 @@ public static partial class ThrowHelper
     /// set bit (i.e. <c>value &lt;= 0</c> or <c>(value &amp; (value - 1)) != 0</c>).
     /// </exception>
     /// <remarks>
-    /// A specialization of the positive-multiple-of family.
-    /// When the divisor is itself an arbitrary positive integer rather than a power of two,
-    /// use <see cref="ThrowIfNotPositiveMultipleOf{T}" /> instead.
+    /// A specialization of the positive-multiple-of family. When the divisor is itself an arbitrary positive integer
+    /// rather than a power of two, use <see cref="ThrowIfNotPositiveMultipleOf{T}" /> instead.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfNotPowerOfTwo<T>(

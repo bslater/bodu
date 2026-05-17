@@ -49,7 +49,7 @@ public partial class OrderedSetTests
         var sut = new OrderedSet<int>(source);
 
         Assert.AreEqual(4, sut.Count);
-        Assert.IsTrue(sut.Capacity >= 4);
+        Assert.IsGreaterThanOrEqualTo(4, sut.Capacity);
     }
     /// <summary>
     /// Verifies that the internal <see cref="OrderedSet{T}.DebuggerStorage" /> property exposes the same

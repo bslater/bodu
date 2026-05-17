@@ -110,8 +110,8 @@ public static partial class ThrowHelper
     }
 
     /// <summary>
-    /// Throws an <see cref="ArgumentNullException" /> if <paramref name="collection" /> is <see langword="null" />,
-    /// or an <see cref="ArgumentException" /> if it is read-only.
+    /// Throws an <see cref="ArgumentNullException" /> if <paramref name="collection" /> is <see langword="null" />, or
+    /// an <see cref="ArgumentException" /> if it is read-only.
     /// </summary>
     /// <typeparam name="T">The element type of the collection.</typeparam>
     /// <param name="collection">The collection to validate. Must not be <see langword="null" />.</param>

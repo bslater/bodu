@@ -61,7 +61,7 @@ public partial class MultiValueDictionaryTests
 
         var entries = mvd.ToList();
 
-        Assert.AreEqual(2, entries.Count);
+        Assert.HasCount(2, entries);
     }
 
     /// <summary>
@@ -192,7 +192,7 @@ public partial class MultiValueDictionaryTests
 
         var flat = mvd.Flatten().ToList();
 
-        Assert.AreEqual(3, flat.Count);
+        Assert.HasCount(3, flat);
 
         var sorted = flat.OrderBy(p => p.Key).ThenBy(p => p.Value).ToList();
         Assert.AreEqual(new KeyValuePair<string, int>("a", 1), sorted[0]);
@@ -231,7 +231,7 @@ public partial class MultiValueDictionaryTests
     {
         var mvd = new MultiValueDictionary<string, int>();
 
-        Assert.AreEqual(0, mvd.Flatten().Count());
+        Assert.IsEmpty(mvd.Flatten());
     }
 
     /// <summary>

@@ -43,10 +43,11 @@ public static partial class IEnumerableExtensions
     /// <param name="childSelector">A function that returns child elements for a given element.</param>
     /// <returns>A flattened sequence of all elements including their children.</returns>
     /// <exception cref="System.ArgumentNullException">
-    /// Thrown if <paramref name="source"/> or <paramref name="childSelector"/> is <see langword="null"/>.
+    /// Thrown if <paramref name="source" /> or <paramref name="childSelector" /> is <see langword="null" />.
     /// </exception>
     /// <example>
-    /// <code language="csharp"><![CDATA[
+    /// <code language="csharp">
+    ///<![CDATA[
     /// var allNodes = rootNodes.RecursiveSelect(node => node.Children);
     ///]]>
     /// </code>
@@ -62,23 +63,21 @@ public static partial class IEnumerableExtensions
     }
 
     /// <summary>
-    /// Recursively flattens and transforms a hierarchical sequence using the provided child
-    /// selector and projection.
+    /// Recursively flattens and transforms a hierarchical sequence using the provided child selector and projection.
     /// </summary>
     /// <typeparam name="TSource">The type of the source elements.</typeparam>
     /// <typeparam name="TResult">The type of the projected result elements.</typeparam>
     /// <param name="source">The root sequence to begin recursion from.</param>
     /// <param name="childSelector">A function that returns child elements for a given element.</param>
     /// <param name="selector">A transform function applied to each element.</param>
-    /// <returns>
-    /// A flattened and projected sequence of results from all elements including children.
-    /// </returns>
+    /// <returns>A flattened and projected sequence of results from all elements including children.</returns>
     /// <exception cref="System.ArgumentNullException">
-    /// Thrown if <paramref name="source"/>, <paramref name="childSelector"/>, or
-    /// <paramref name="selector"/> is <see langword="null"/>.
+    /// Thrown if <paramref name="source" />, <paramref name="childSelector" />, or <paramref name="selector" /> is
+    /// <see langword="null" />.
     /// </exception>
     /// <example>
-    /// <code language="csharp"><![CDATA[
+    /// <code language="csharp">
+    ///<![CDATA[
     /// var names = rootNodes.RecursiveSelect(
     ///     node => node.Children,
     ///     node => node.Name);
@@ -98,23 +97,21 @@ public static partial class IEnumerableExtensions
     }
 
     /// <summary>
-    /// Recursively flattens and transforms a hierarchical sequence with index using the
-    /// provided child selector.
+    /// Recursively flattens and transforms a hierarchical sequence with index using the provided child selector.
     /// </summary>
     /// <typeparam name="TSource">The type of the source elements.</typeparam>
     /// <typeparam name="TResult">The type of the result elements.</typeparam>
     /// <param name="source">The root sequence to begin recursion from.</param>
     /// <param name="childSelector">A function that returns child elements for a given element.</param>
     /// <param name="selector">A function applied to each element with its index.</param>
-    /// <returns>
-    /// A flattened and projected sequence of results from all elements including children.
-    /// </returns>
+    /// <returns>A flattened and projected sequence of results from all elements including children.</returns>
     /// <exception cref="System.ArgumentNullException">
-    /// Thrown if <paramref name="source"/>, <paramref name="childSelector"/>, or
-    /// <paramref name="selector"/> is <see langword="null"/>.
+    /// Thrown if <paramref name="source" />, <paramref name="childSelector" />, or <paramref name="selector" /> is
+    /// <see langword="null" />.
     /// </exception>
     /// <example>
-    /// <code language="csharp"><![CDATA[
+    /// <code language="csharp">
+    ///<![CDATA[
     /// var indexedNames = rootNodes.RecursiveSelect(
     ///     node => node.Children,
     ///     (node, index) => $"{index}: {node.Name}");
@@ -134,8 +131,8 @@ public static partial class IEnumerableExtensions
     }
 
     /// <summary>
-    /// Recursively flattens and transforms a hierarchical sequence using child selector and a
-    /// selector that receives index and depth.
+    /// Recursively flattens and transforms a hierarchical sequence using child selector and a selector that receives
+    /// index and depth.
     /// </summary>
     /// <typeparam name="TSource">The type of the source elements.</typeparam>
     /// <typeparam name="TResult">The type of the result elements.</typeparam>
@@ -144,11 +141,12 @@ public static partial class IEnumerableExtensions
     /// <param name="selector">A transform applied to each element, receiving index and depth.</param>
     /// <returns>A flattened and projected sequence from all elements including children.</returns>
     /// <exception cref="System.ArgumentNullException">
-    /// Thrown if <paramref name="source"/>, <paramref name="childSelector"/>, or
-    /// <paramref name="selector"/> is <see langword="null"/>.
+    /// Thrown if <paramref name="source" />, <paramref name="childSelector" />, or <paramref name="selector" /> is
+    /// <see langword="null" />.
     /// </exception>
     /// <example>
-    /// <code language="csharp"><![CDATA[
+    /// <code language="csharp">
+    ///<![CDATA[
     /// var formatted = rootNodes.RecursiveSelect(
     ///     node => node.Children,
     ///     (node, index, depth) => new { node.Name, index, depth });
@@ -168,30 +166,32 @@ public static partial class IEnumerableExtensions
     }
 
     /// <summary>
-    /// Recursively flattens and transforms a hierarchical sequence with depth/index tracking and a delegate that returns a
-    /// <see cref="RecursiveSelectControl" /> value to control yielding, recursion, and termination at each node.
+    /// Recursively flattens and transforms a hierarchical sequence with depth/index tracking and a delegate that
+    /// returns a <see cref="RecursiveSelectControl" /> value to control yielding, recursion, and termination at each
+    /// node.
     /// </summary>
     /// <typeparam name="TSource">The type of the source elements.</typeparam>
     /// <typeparam name="TResult">The type of the result elements.</typeparam>
     /// <param name="source">The root sequence to begin recursion from.</param>
     /// <param name="childSelector">A function that returns child elements for a given element.</param>
-    /// <param name="selector">
-    /// A transform function applied to each element with index and depth.
-    /// </param>
+    /// <param name="selector">A transform function applied to each element with index and depth.</param>
     /// <param name="recursionControl">
-    /// A delegate that returns a <see cref="RecursiveSelectControl" /> value for each element, indicating whether to yield it, recurse
-    /// into its children, stop processing sibling elements at the current level, or terminate traversal entirely.
+    /// A delegate that returns a <see cref="RecursiveSelectControl" /> value for each element, indicating whether to
+    /// yield it, recurse into its children, stop processing sibling elements at the current level, or terminate
+    /// traversal entirely.
     /// </param>
     /// <returns>
-    /// A flattened and projected sequence of results. Each element is yielded, skipped, recursed into, or causes traversal to stop
-    /// according to the <see cref="RecursiveSelectControl" /> value returned by <paramref name="recursionControl" />.
+    /// A flattened and projected sequence of results. Each element is yielded, skipped, recursed into, or causes
+    /// traversal to stop according to the <see cref="RecursiveSelectControl" /> value returned by
+    /// <paramref name="recursionControl" />.
     /// </returns>
     /// <exception cref="System.ArgumentNullException">
-    /// Thrown if <paramref name="source"/>, <paramref name="childSelector"/>,
-    /// <paramref name="selector"/>, or <paramref name="recursionControl"/> is <see langword="null"/>.
+    /// Thrown if <paramref name="source" />, <paramref name="childSelector" />, <paramref name="selector" />, or
+    /// <paramref name="recursionControl" /> is <see langword="null" />.
     /// </exception>
     /// <example>
-    /// <code language="csharp"><![CDATA[
+    /// <code language="csharp">
+    ///<![CDATA[
     /// var filtered = rootNodes.RecursiveSelect(
     ///     node => node.Children,
     ///     (node, index, depth) => node.Name,
@@ -216,47 +216,60 @@ public static partial class IEnumerableExtensions
     }
 
     /// <summary>
-    /// Recursively traverses a tree-like structure, yielding transformed elements with access to index and depth, and controlling behavior
-    /// at each node using a <see cref="RecursiveSelectControl"/> value.
+    /// Recursively traverses a tree-like structure, yielding transformed elements with access to index and depth, and
+    /// controlling behavior at each node using a <see cref="RecursiveSelectControl" /> value.
     /// </summary>
     /// <typeparam name="TSource">The type of input elements in the source sequence.</typeparam>
     /// <typeparam name="TResult">The type of elements yielded by the selector.</typeparam>
     /// <param name="source">The current level of source elements to process.</param>
     /// <param name="childSelector">
-    /// A delegate that retrieves the child elements for a given node. May return <c>null</c> or an empty sequence if the node has no children.
+    /// A delegate that retrieves the child elements for a given node. May return <c>null</c> or an empty sequence if
+    /// the node has no children.
     /// </param>
     /// <param name="selector">
-    /// A transformation function that projects each yielded element to a result value, and receives the current index (among siblings) and
-    /// the recursion depth (starting at 0).
+    /// A transformation function that projects each yielded element to a result value, and receives the current index
+    /// (among siblings) and the recursion depth (starting at 0).
     /// </param>
     /// <param name="recursionControl">
-    /// A delegate that returns a <see cref="RecursiveSelectControl"/> value for the given element, indicating whether to yield it, recurse
-    /// into its children, or halt traversal.
+    /// A delegate that returns a <see cref="RecursiveSelectControl" /> value for the given element, indicating whether
+    /// to yield it, recurse into its children, or halt traversal.
     /// </param>
     /// <param name="depth">The current recursion depth (zero for top-level elements).</param>
     /// <param name="state">
-    /// A shared <see cref="RecursionState"/> object used to track whether a global exit has been requested. This enables short-circuiting
-    /// traversal across recursive calls when <c>Exit</c> is encountered.
+    /// A shared <see cref="RecursionState" /> object used to track whether a global exit has been requested. This
+    /// enables short-circuiting traversal across recursive calls when <c>Exit</c> is encountered.
     /// </param>
-    /// <returns>An <see cref="IEnumerable{T}"/> of transformed elements, yielded according to the specified selector and control logic.</returns>
+    /// <returns>
+    /// An <see cref="IEnumerable{T}" /> of transformed elements, yielded according to the specified selector and
+    /// control logic.
+    /// </returns>
     /// <remarks>
     /// <para>
-    /// This method is designed for internal use and does not perform parameter validation. It assumes all inputs are non-null and
-    /// consistent with expected contracts. Callers must ensure correct usage.
+    /// This method is designed for internal use and does not perform parameter validation. It assumes all inputs are
+    /// non-null and consistent with expected contracts. Callers must ensure correct usage.
     /// </para>
-    /// <para>The traversal uses a depth-first strategy. At each level:
+    /// <para>
+    /// The traversal uses a depth-first strategy. At each level:
     /// <list type="bullet">
     /// <item>
-    /// <description>If <c>Yield</c> is set and <c>Skip</c> is not set, the element is yielded.</description>
+    /// <description>
+    /// If <c>Yield</c> is set and <c>Skip</c> is not set, the element is yielded.
+    /// </description>
     /// </item>
     /// <item>
-    /// <description>If <c>Recurse</c> is set, child elements are visited recursively.</description>
+    /// <description>
+    /// If <c>Recurse</c> is set, child elements are visited recursively.
+    /// </description>
     /// </item>
     /// <item>
-    /// <description>If <c>Break</c> is set, remaining siblings are skipped at the current level.</description>
+    /// <description>
+    /// If <c>Break</c> is set, remaining siblings are skipped at the current level.
+    /// </description>
     /// </item>
     /// <item>
-    /// <description>If <c>Exit</c> is set, traversal halts immediately across all levels.</description>
+    /// <description>
+    /// If <c>Exit</c> is set, traversal halts immediately across all levels.
+    /// </description>
     /// </item>
     /// </list>
     /// </para>
@@ -320,7 +333,8 @@ public static partial class IEnumerableExtensions
     }
 
     /// <summary>
-    /// Represents shared traversal state for recursive selection routines, coordinating early-exit behavior across all recursion levels.
+    /// Represents shared traversal state for recursive selection routines, coordinating early-exit behavior across all
+    /// recursion levels.
     /// </summary>
     internal sealed class RecursionState
     {

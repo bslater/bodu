@@ -9,33 +9,34 @@ namespace Bodu.Extensions;
 public static partial class NumericExtensions
 {
     /// <summary>
-    /// Returns a byte array representing the binary encoding of the specified numeric value, in the requested byte order.
+    /// Returns a byte array representing the binary encoding of the specified numeric value, in the requested byte
+    /// order.
     /// </summary>
     /// <typeparam name="T">
-    /// The numeric type to convert. Supported types are <see cref="byte"/>, <see cref="sbyte"/>, <see cref="short"/>,
-    /// <see cref="ushort"/>, <see cref="int"/>, <see cref="uint"/>, <see cref="long"/>, <see cref="ulong"/>,
-    /// <see cref="float"/>, and <see cref="double"/>.
+    /// The numeric type to convert. Supported types are <see cref="byte" />, <see cref="sbyte" />, <see cref="short" />
+    /// , <see cref="ushort" />, <see cref="int" />, <see cref="uint" />, <see cref="long" />, <see cref="ulong" />,
+    /// <see cref="float" />, and <see cref="double" />.
     /// </typeparam>
     /// <param name="value">The numeric value to convert.</param>
     /// <param name="asBigEndian">
-    /// <see langword="true"/> to return bytes in big-endian order (most significant byte first);
-    /// <see langword="false"/> to return bytes in little-endian order (least significant byte first).
-    /// Defaults to <see langword="false"/>.
+    /// <see langword="true" /> to return bytes in big-endian order (most significant byte first);
+    /// <see langword="false" /> to return bytes in little-endian order (least significant byte first). Defaults to
+    /// <see langword="false" />.
     /// </param>
     /// <returns>
-    /// A byte array containing the binary representation of <paramref name="value"/> in the specified byte order.
+    /// A byte array containing the binary representation of <paramref name="value" /> in the specified byte order.
     /// </returns>
     /// <exception cref="InvalidOperationException">
-    /// <typeparamref name="T"/> is not a supported numeric type.
+    /// <typeparamref name="T" /> is not a supported numeric type.
     /// </exception>
     /// <remarks>
     /// <para>
-    /// <see cref="BitConverter"/> is used to obtain the binary representation of each value in the system's
-    /// native byte order. The resulting array is reversed when the requested byte order differs from the
-    /// platform's native endianness.
+    /// <see cref="BitConverter" /> is used to obtain the binary representation of each value in the system's native
+    /// byte order. The resulting array is reversed when the requested byte order differs from the platform's native
+    /// endianness.
     /// </para>
     /// <para>
-    /// For <see cref="float"/> and <see cref="double"/>, the encoding follows the IEEE 754 standard.
+    /// For <see cref="float" /> and <see cref="double" />, the encoding follows the IEEE 754 standard.
     /// </para>
     /// </remarks>
     public static byte[] GetBytes<T>(this T value, bool asBigEndian = false)

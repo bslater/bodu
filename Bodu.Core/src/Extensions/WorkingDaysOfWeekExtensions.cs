@@ -18,17 +18,19 @@ public static class WorkingDaysOfWeekExtensions
     /// <param name="value">The named working-week pattern to convert.</param>
     /// <returns>The <see cref="WeekPattern" /> whose selected days match <paramref name="value" />.</returns>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="value" /> is not a defined member of the <see cref="WorkingDaysOfWeek" /> enumeration.
+    /// Thrown when <paramref name="value" /> is not a defined member of the <see cref="WorkingDaysOfWeek" />
+    /// enumeration.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// Thrown when <paramref name="value" /> is <see cref="WorkingDaysOfWeek.Custom" />, which has no canonical pattern.
+    /// Thrown when <paramref name="value" /> is <see cref="WorkingDaysOfWeek.Custom" />, which has no canonical
+    /// pattern.
     /// </exception>
     public static WeekPattern ToWeekPattern(this WorkingDaysOfWeek value)
     {
         ThrowHelper.ThrowIfEnumValueIsUndefined(value);
-        if (value == WorkingDaysOfWeek.Custom) throw new ArgumentException("Custom has no canonical WeekPattern; pass a WeekPattern directly.", nameof(value));
-
-        return value switch
+        return value == WorkingDaysOfWeek.Custom
+            ? throw new ArgumentException("Custom has no canonical WeekPattern; pass a WeekPattern directly.", nameof(value))
+            : value switch
         {
             WorkingDaysOfWeek.MondayToFriday => WeekPattern.MondayToFriday,
             WorkingDaysOfWeek.MondayToSaturday => WeekPattern.MondayToSaturday,
@@ -44,13 +46,26 @@ public static class WorkingDaysOfWeekExtensions
 
     /// <summary>
     /// Returns the canonical <see cref="WeekPattern" /> for the supplied <see cref="WorkingDaysOfWeek" /> value,
-    /// consulting <paramref name="provider" /> when <paramref name="value" /> is <see cref="WorkingDaysOfWeek.Custom" />.
+    /// consulting <paramref name="provider" /> when <paramref name="value" /> is
+    /// <see cref="WorkingDaysOfWeek.Custom" />.
     /// </summary>
     /// <param name="value">The named working-week pattern to convert.</param>
-    /// <param name="provider">A custom weekend provider consulted only when <paramref name="value" /> is <see cref="WorkingDaysOfWeek.Custom" />.</param>
-    /// <returns>The <see cref="WeekPattern" /> whose selected days match the working-week implied by <paramref name="value" /> (and <paramref name="provider" /> when applicable).</returns>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="value" /> is not a defined member of the <see cref="WorkingDaysOfWeek" /> enumeration.</exception>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="value" /> is <see cref="WorkingDaysOfWeek.Custom" /> and <paramref name="provider" /> is <see langword="null" />.</exception>
+    /// <param name="provider">
+    /// A custom weekend provider consulted only when <paramref name="value" /> is
+    /// <see cref="WorkingDaysOfWeek.Custom" />.
+    /// </param>
+    /// <returns>
+    /// The <see cref="WeekPattern" /> whose selected days match the working-week implied by <paramref name="value" />
+    /// (and <paramref name="provider" /> when applicable).
+    /// </returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="value" /> is not a defined member of the <see cref="WorkingDaysOfWeek" />
+    /// enumeration.
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="value" /> is <see cref="WorkingDaysOfWeek.Custom" /> and
+    /// <paramref name="provider" /> is <see langword="null" />.
+    /// </exception>
     public static WeekPattern ToWeekPattern(this WorkingDaysOfWeek value, IWeekendDefinitionProvider? provider)
     {
         if (value == WorkingDaysOfWeek.Custom)
@@ -82,7 +97,10 @@ public static class WorkingDaysOfWeekExtensions
     /// When this method returns <see langword="true" />, contains the matching <see cref="WorkingDaysOfWeek" />;
     /// otherwise, <see cref="WorkingDaysOfWeek.Custom" />.
     /// </param>
-    /// <returns><see langword="true" /> when <paramref name="pattern" /> matches a named preset; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when <paramref name="pattern" /> matches a named preset; otherwise
+    /// <see langword="false" />.
+    /// </returns>
     public static bool TryGetWorkingDaysOfWeek(this WeekPattern pattern, out WorkingDaysOfWeek value)
     {
         if (pattern == WeekPattern.MondayToFriday) { value = WorkingDaysOfWeek.MondayToFriday; return true; }

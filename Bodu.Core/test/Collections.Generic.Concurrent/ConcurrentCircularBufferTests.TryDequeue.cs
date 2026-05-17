@@ -110,7 +110,7 @@ public partial class ConcurrentCircularBufferTests
         });
 
         Task.WaitAll(clearer, reader);
-        Assert.AreEqual(0, exceptions.Count);
+        Assert.IsEmpty(exceptions);
         Assert.IsFalse(buffer.TryDequeue(out _)); // should be empty now
     }
 
@@ -149,7 +149,7 @@ public partial class ConcurrentCircularBufferTests
         Task.WaitAll(writer, reader);
 
         Assert.AreEqual(1, success, "TryDequeue never succeeded during concurrent enqueue.");
-        Assert.IsTrue(dequeuedCount > 0, "Expected to dequeue at least one item.");
+        Assert.IsGreaterThan(0, dequeuedCount, "Expected to dequeue at least one item.");
     }
 
     /// <summary>
@@ -169,7 +169,7 @@ public partial class ConcurrentCircularBufferTests
                 dequeued.Add(item.Value);
         });
 
-        Assert.AreEqual(20, dequeued.Count);
+        Assert.HasCount(20, dequeued);
         CollectionAssert.AreEquivalent(Enumerable.Range(0, 20).ToArray(), dequeued.OrderBy(x => x).ToArray());
     }
 
@@ -191,7 +191,7 @@ public partial class ConcurrentCircularBufferTests
 
         Task.WaitAll(tasks);
 
-        Assert.AreEqual(30, dequeued.Count);
+        Assert.HasCount(30, dequeued);
 
         var groups = dequeued.GroupBy(x => x).Select(g => g.Count()).ToArray();
         Assert.IsTrue(groups.All(c => c == 1));

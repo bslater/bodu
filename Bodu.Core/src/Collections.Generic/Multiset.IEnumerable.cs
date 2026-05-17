@@ -12,16 +12,15 @@ public sealed partial class Multiset<T>
     : System.Collections.Generic.IEnumerable<T>
 {
     /// <summary>
-    /// Returns an enumerator that iterates all elements in the <see cref="Multiset{T}"/>, yielding each
-    /// element as many times as its occurrence count.
+    /// Returns an enumerator that iterates all elements in the <see cref="Multiset{T}" />, yielding each element as
+    /// many times as its occurrence count.
     /// </summary>
-    /// <returns>An <see cref="Enumerator"/> for the multiset.</returns>
+    /// <returns>An <see cref="Enumerator" /> for the multiset.</returns>
     /// <remarks>
-    /// The enumerator captures a structural-version token at creation. Any subsequent structural
-    /// modification — including <see cref="Add(T)"/>, <see cref="Remove"/>, <see cref="RemoveAll"/>,
-    /// and <see cref="Clear"/> — invalidates the enumerator. The next call to
-    /// <see cref="Enumerator.MoveNext"/> or <see cref="Enumerator.Reset"/> throws
-    /// <see cref="InvalidOperationException"/>.
+    /// The enumerator captures a structural-version token at creation. Any subsequent structural modification —
+    /// including <see cref="Add(T)" />, <see cref="Remove" />, <see cref="RemoveAll" />, and <see cref="Clear" /> —
+    /// invalidates the enumerator. The next call to <see cref="Enumerator.MoveNext" /> or
+    /// <see cref="Enumerator.Reset" /> throws <see cref="InvalidOperationException" />.
     /// </remarks>
     public Enumerator GetEnumerator() => new Enumerator(this);
 
@@ -32,15 +31,17 @@ public sealed partial class Multiset<T>
     IEnumerator IEnumerable.GetEnumerator() => new Enumerator(this);
 
     /// <summary>
-    /// Enumerates the elements of a <see cref="Multiset{T}"/>, yielding each element as many times as
-    /// its occurrence count in an unspecified order.
+    /// Enumerates the elements of a <see cref="Multiset{T}" />, yielding each element as many times as its occurrence
+    /// count in an unspecified order.
     /// </summary>
     /// <remarks>
-    /// <para>Use the <see langword="foreach"/> statement to enumerate the multiset rather than using this struct directly.</para>
     /// <para>
-    /// The enumerator provides read-only access. Modifying the underlying multiset after enumeration
-    /// begins invalidates the enumerator and causes <see cref="MoveNext"/> or <see cref="Reset"/> to
-    /// throw <see cref="InvalidOperationException"/>.
+    /// Use the <see langword="foreach" /> statement to enumerate the multiset rather than using this struct directly.
+    /// </para>
+    /// <para>
+    /// The enumerator provides read-only access. Modifying the underlying multiset after enumeration begins invalidates
+    /// the enumerator and causes <see cref="MoveNext" /> or <see cref="Reset" /> to throw
+    /// <see cref="InvalidOperationException" />.
     /// </para>
     /// </remarks>
     [Serializable]
@@ -54,7 +55,7 @@ public sealed partial class Multiset<T>
         private bool _beforeFirst;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Multiset{T}.Enumerator"/> struct for the specified multiset.
+        /// Initializes a new instance of the <see cref="Multiset{T}.Enumerator" /> struct for the specified multiset.
         /// </summary>
         /// <param name="multiset">The multiset to enumerate.</param>
         internal Enumerator(Multiset<T> multiset)
@@ -74,7 +75,7 @@ public sealed partial class Multiset<T>
         /// <exception cref="InvalidOperationException">
         /// The enumerator is positioned before the first element or after the last element.
         /// </exception>
-        public T Current =>
+        public readonly T Current =>
             _beforeFirst
                 ? throw new InvalidOperationException(ResourceStrings.Op_Invalid_EnumeratorNotOnElement)
                 : _current;
@@ -89,10 +90,12 @@ public sealed partial class Multiset<T>
         /// Advances the enumerator to the next element in the multiset.
         /// </summary>
         /// <returns>
-        /// <see langword="true"/> if the enumerator was successfully advanced to the next element;
-        /// <see langword="false"/> if the enumerator has passed the end of the collection.
+        /// <see langword="true" /> if the enumerator was successfully advanced to the next element;
+        /// <see langword="false" /> if the enumerator has passed the end of the collection.
         /// </returns>
-        /// <exception cref="InvalidOperationException">The multiset was modified after the enumerator was created.</exception>
+        /// <exception cref="InvalidOperationException">
+        /// The multiset was modified after the enumerator was created.
+        /// </exception>
         public bool MoveNext()
         {
             if (_version != _multiset._version)
@@ -122,7 +125,9 @@ public sealed partial class Multiset<T>
         /// <summary>
         /// Sets the enumerator to its initial position, before the first element in the multiset.
         /// </summary>
-        /// <exception cref="InvalidOperationException">The multiset was modified after the enumerator was created.</exception>
+        /// <exception cref="InvalidOperationException">
+        /// The multiset was modified after the enumerator was created.
+        /// </exception>
         public void Reset()
         {
             if (_version != _multiset._version)

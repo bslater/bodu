@@ -472,18 +472,18 @@ public partial class ConcurrentCircularBufferTests
         Task.WaitAll(reader, clearer);
 
         // Assert No unexpected exceptions should have escaped the inner try-catches
-        Assert.AreEqual(0, unexpected.Count, $"Unexpected exceptions: {string.Join(", ", unexpected.Select(e => e.GetType().Name))}");
+        Assert.IsEmpty(unexpected, $"Unexpected exceptions: {string.Join(", ", unexpected.Select(e => e.GetType().Name))}");
 
         // We expect at least some iterations to have run
-        Assert.IsTrue(iterations > 0, "Reader performed no iterations.");
+        Assert.IsGreaterThan(0, iterations, "Reader performed no iterations.");
 
         // Invariants still hold
         Assert.IsTrue(buffer.Count >= 0 && buffer.Count <= buffer.Capacity, "Count must remain within [0, Capacity].");
 
         // Sanity: we should have observed at least *some* of the allowed race conditions (Not strictly required, but useful to ensure
         // the test actually exercised races.)
-        Assert.IsTrue(peekEmptyCount >= 0);
-        Assert.IsTrue(indexerRaceCount >= 0);
+        Assert.IsGreaterThanOrEqualTo(0, peekEmptyCount);
+        Assert.IsGreaterThanOrEqualTo(0, indexerRaceCount);
     }
 
 }

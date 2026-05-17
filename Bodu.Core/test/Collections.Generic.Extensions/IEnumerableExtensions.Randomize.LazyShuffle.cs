@@ -21,7 +21,7 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
 
         var result = source.Randomize(RandomizationMode.LazyShuffle, CreateSeededRng(), count: 0).ToArray();
 
-        Assert.AreEqual(0, result.Length);
+        Assert.IsEmpty(result);
     }
 
 }

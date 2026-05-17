@@ -21,7 +21,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
         var copy = ToArray(collection);
         AddToTail(collection, 2);
 
-        Assert.AreEqual(1, copy.Length);
+        Assert.HasCount(1, copy);
     }
     /// <summary>
     /// Verifies that <see cref="ToArray(TCollection)"/> returns a new array of the correct length.
@@ -33,7 +33,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
         AddToTail(collection, 1);
         AddToTail(collection, 2);
 
-        Assert.AreEqual(2, ToArray(collection).Length);
+        Assert.HasCount(2, ToArray(collection));
     }
 
     /// <summary>
@@ -58,7 +58,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     {
         TCollection collection = CreateCollection(3);
 
-        Assert.AreEqual(0, ToArray(collection).Length);
+        Assert.IsEmpty(ToArray(collection));
     }
 
 }

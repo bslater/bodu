@@ -136,7 +136,7 @@ public partial class MultiValueDictionaryTests
 
         Assert.IsTrue(result);
         Assert.AreEqual(2, mvd.Count);
-        Assert.AreEqual(2, mvd["k"].Count);
+        Assert.HasCount(2, mvd["k"]);
     }
 
     /// <summary>
@@ -160,7 +160,7 @@ public partial class MultiValueDictionaryTests
 
         Assert.IsTrue(result);
         Assert.AreEqual(listSize - 1, mvd.Count);
-        Assert.IsFalse(mvd["k"].Contains(valueToRemove));
+        Assert.DoesNotContain(valueToRemove, mvd["k"]);
     }
 
     /// <summary>

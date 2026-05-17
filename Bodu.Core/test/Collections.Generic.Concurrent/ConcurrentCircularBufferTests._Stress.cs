@@ -210,16 +210,16 @@ public partial class ConcurrentCircularBufferTests
             futureValueViolations,
             "Indexer surfaced a value from a future generation that could not have existed when the call completed.");
 
-        Assert.IsTrue(
-            writeAttempts > 0,
+        Assert.IsGreaterThan(
+            0, writeAttempts,
             "Writers must have exercised TryEnqueue during the indexer stress run.");
 
-        Assert.IsTrue(
-            dequeueAttempts > 0,
+        Assert.IsGreaterThan(
+            0, dequeueAttempts,
             "Consumers must have exercised TryDequeue during the indexer stress run.");
 
-        Assert.IsTrue(
-            reads >= targetSuccessfulReads,
+        Assert.IsGreaterThanOrEqualTo(
+            targetSuccessfulReads, reads,
             "Indexer must have completed the required number of successful reads.");
     }
 
@@ -421,29 +421,29 @@ public partial class ConcurrentCircularBufferTests
             capacityViolations,
             "Capacity must remain stable while the buffer is under concurrent mutation pressure.");
 
-        Assert.IsTrue(
-            writeAttempts > 0,
+        Assert.IsGreaterThan(
+            0, writeAttempts,
             "Writers must have exercised TryEnqueue during the state-property stress run.");
 
-        Assert.IsTrue(
-            readAttempts > 0,
+        Assert.IsGreaterThan(
+            0, readAttempts,
             "Readers must have exercised TryDequeue during the state-property stress run.");
 
-        Assert.IsTrue(
-            toggleOperations > 0,
+        Assert.IsGreaterThan(
+            0, toggleOperations,
             "Togglers must have exercised AllowOverwrite transitions during the state-property stress run.");
 
-        Assert.IsTrue(
-            inspectionAttempts > 0,
+        Assert.IsGreaterThan(
+            0, inspectionAttempts,
             "Inspectors must have exercised public state properties during the stress run.");
 
         Assert.IsTrue(
             finalCount >= 0 && finalCount <= buffer.Capacity,
             "Final Count must remain within [0, Capacity].");
 
-        Assert.AreEqual(
+        Assert.HasCount(
             finalCount,
-            snapshot.Length,
+            snapshot,
             "Count and ToArray().Length must agree once all workers have quiesced.");
     }
     /// <summary>
@@ -614,16 +614,16 @@ public partial class ConcurrentCircularBufferTests
                 faults,
                 $"Unexpected exception occurred during concurrent access. First exception: {firstException}");
 
-            Assert.IsTrue(
-                enqueueAttempts > 0,
+            Assert.IsGreaterThan(
+                0, enqueueAttempts,
                 "Writers must have exercised TryEnqueue during the stress run.");
 
-            Assert.IsTrue(
-                dequeueAttempts > 0,
+            Assert.IsGreaterThan(
+                0, dequeueAttempts,
                 "Readers must have exercised TryDequeue during the stress run.");
 
-            Assert.IsTrue(
-                inspectionAttempts > 0,
+            Assert.IsGreaterThan(
+                0, inspectionAttempts,
                 "Inspectors must have exercised read-side members during the stress run.");
 
             Assert.IsTrue(
@@ -865,16 +865,16 @@ public partial class ConcurrentCircularBufferTests
             togglersStarted,
             $"Togglers must begin exercising AllowOverwrite transitions within {participationTimeoutMs} ms.");
 
-        Assert.IsTrue(
-            enqueueAttempts > 0,
+        Assert.IsGreaterThan(
+            0, enqueueAttempts,
             "Writers must have exercised Enqueue during the stress run.");
 
-        Assert.IsTrue(
-            readAttempts > 0,
+        Assert.IsGreaterThan(
+            0, readAttempts,
             "Readers must have exercised TryDequeue during the stress run.");
 
-        Assert.IsTrue(
-            toggleOperations >= minimumToggleOperations,
+        Assert.IsGreaterThanOrEqualTo(
+            minimumToggleOperations, toggleOperations,
             $"Togglers must have exercised at least {minimumToggleOperations} AllowOverwrite transitions during the stress run. Actual={toggleOperations}.");
 
         Assert.AreEqual(
@@ -997,12 +997,12 @@ public partial class ConcurrentCircularBufferTests
             faults,
             $"No exceptions expected from TryEnqueue or TryDequeue under minimum-capacity churn. First exception: {firstException}");
 
-        Assert.IsTrue(
-            writeAttempts > 0,
+        Assert.IsGreaterThan(
+            0, writeAttempts,
             "Workers must have exercised TryEnqueue during the stress run.");
 
-        Assert.IsTrue(
-            readAttempts > 0,
+        Assert.IsGreaterThan(
+            0, readAttempts,
             "Workers must have exercised TryDequeue during the stress run.");
 
         Assert.AreEqual(
@@ -1151,16 +1151,16 @@ public partial class ConcurrentCircularBufferTests
             faults,
             $"Clear, TryEnqueue, and TryDequeue must not throw under concurrent pressure. First exception: {firstException}");
 
-        Assert.IsTrue(
-            writeAttempts > 0,
+        Assert.IsGreaterThan(
+            0, writeAttempts,
             "Workers must have exercised TryEnqueue during the stress run.");
 
-        Assert.IsTrue(
-            readAttempts > 0,
+        Assert.IsGreaterThan(
+            0, readAttempts,
             "Workers must have exercised TryDequeue during the stress run.");
 
-        Assert.IsTrue(
-            clearAttempts > 0,
+        Assert.IsGreaterThan(
+            0, clearAttempts,
             "Workers must have exercised Clear during the stress run.");
 
         Assert.AreEqual(
@@ -1172,9 +1172,9 @@ public partial class ConcurrentCircularBufferTests
             finalCount >= 0 && finalCount <= buffer.Capacity,
             "Final Count must be within valid bounds.");
 
-        Assert.AreEqual(
+        Assert.HasCount(
             finalCount,
-            snapshot.Length,
+            snapshot,
             "Count and ToArray().Length must be consistent once all tasks have quiesced.");
 
         // Confirm the buffer is fully operational after sustained Clear/mutation stress.
@@ -1328,20 +1328,20 @@ public partial class ConcurrentCircularBufferTests
             enumerationLengthViolations,
             "Enumeration must never produce more items than Capacity.");
 
-        Assert.IsTrue(
-            writeAttempts > 0,
+        Assert.IsGreaterThan(
+            0, writeAttempts,
             "Workers must have exercised TryEnqueue during the enumeration stress run.");
 
-        Assert.IsTrue(
-            readAttempts > 0,
+        Assert.IsGreaterThan(
+            0, readAttempts,
             "Workers must have exercised TryDequeue during the enumeration stress run.");
 
-        Assert.IsTrue(
-            enumerationAttempts > 0,
+        Assert.IsGreaterThan(
+            0, enumerationAttempts,
             "Workers must have exercised enumeration during the stress run.");
 
-        Assert.IsTrue(
-            maxEnumeratedLength <= capacity,
+        Assert.IsLessThanOrEqualTo(
+            capacity, maxEnumeratedLength,
             "The largest enumerated snapshot must not exceed Capacity.");
 
         Assert.IsTrue(
@@ -1544,20 +1544,20 @@ public partial class ConcurrentCircularBufferTests
                 faults,
                 $"No exceptions expected while subscribing, unsubscribing, or delivering ItemEvicted. First exception: {firstException}");
 
-            Assert.IsTrue(
-                writeAttempts > 0,
+            Assert.IsGreaterThan(
+                0, writeAttempts,
                 "Writers must have exercised enqueue/eviction pressure during the stress run.");
 
-            Assert.IsTrue(
-                subscribeOperations > 0,
+            Assert.IsGreaterThan(
+                0, subscribeOperations,
                 "Subscribers must have exercised ItemEvicted subscription during the stress run.");
 
-            Assert.IsTrue(
-                unsubscribeOperations > 0,
+            Assert.IsGreaterThan(
+                0, unsubscribeOperations,
                 "Subscribers must have exercised ItemEvicted unsubscription during the stress run.");
 
-            Assert.IsTrue(
-                stableHandlerEvictions > 0,
+            Assert.IsGreaterThan(
+                0, stableHandlerEvictions,
                 "A registered ItemEvicted handler must receive at least some eviction events during concurrent handler churn.");
 
             Assert.IsTrue(
@@ -1688,16 +1688,16 @@ public partial class ConcurrentCircularBufferTests
             faults,
             $"No exceptions expected during high-concurrency stress. First exception: {firstException}");
 
-        Assert.IsTrue(
-            writeAttempts > 0,
+        Assert.IsGreaterThan(
+            0, writeAttempts,
             "Workers must have exercised TryEnqueue during the stress run.");
 
-        Assert.IsTrue(
-            readAttempts > 0,
+        Assert.IsGreaterThan(
+            0, readAttempts,
             "Workers must have exercised TryDequeue during the stress run.");
 
-        Assert.IsTrue(
-            inspectionAttempts > 0,
+        Assert.IsGreaterThan(
+            0, inspectionAttempts,
             "Workers must have exercised non-mutating members during the stress run.");
 
         Assert.IsTrue(
@@ -1933,16 +1933,16 @@ public partial class ConcurrentCircularBufferTests
             snapshotLengthViolations,
             "ToArray must never return more items than Capacity during mixed API stress.");
 
-        Assert.IsTrue(tryEnqueueAttempts > 0, "Workers must have exercised TryEnqueue.");
-        Assert.IsTrue(enqueueAttempts > 0, "Workers must have exercised Enqueue.");
-        Assert.IsTrue(tryDequeueAttempts > 0, "Workers must have exercised TryDequeue.");
-        Assert.IsTrue(dequeueAttempts > 0, "Workers must have exercised Dequeue.");
-        Assert.IsTrue(tryPeekAttempts > 0, "Workers must have exercised TryPeek.");
-        Assert.IsTrue(containsAttempts > 0, "Workers must have exercised Contains.");
-        Assert.IsTrue(toArrayAttempts > 0, "Workers must have exercised ToArray.");
-        Assert.IsTrue(copyToAttempts > 0, "Workers must have exercised CopyTo.");
-        Assert.IsTrue(clearAttempts > 0, "Workers must have exercised Clear.");
-        Assert.IsTrue(inspectionAttempts > 0, "Workers must have exercised Count and Capacity.");
+        Assert.IsGreaterThan(0, tryEnqueueAttempts, "Workers must have exercised TryEnqueue.");
+        Assert.IsGreaterThan(0, enqueueAttempts, "Workers must have exercised Enqueue.");
+        Assert.IsGreaterThan(0, tryDequeueAttempts, "Workers must have exercised TryDequeue.");
+        Assert.IsGreaterThan(0, dequeueAttempts, "Workers must have exercised Dequeue.");
+        Assert.IsGreaterThan(0, tryPeekAttempts, "Workers must have exercised TryPeek.");
+        Assert.IsGreaterThan(0, containsAttempts, "Workers must have exercised Contains.");
+        Assert.IsGreaterThan(0, toArrayAttempts, "Workers must have exercised ToArray.");
+        Assert.IsGreaterThan(0, copyToAttempts, "Workers must have exercised CopyTo.");
+        Assert.IsGreaterThan(0, clearAttempts, "Workers must have exercised Clear.");
+        Assert.IsGreaterThan(0, inspectionAttempts, "Workers must have exercised Count and Capacity.");
 
         Assert.IsTrue(
             buffer.Count >= 0 && buffer.Count <= buffer.Capacity,
@@ -2072,20 +2072,20 @@ public partial class ConcurrentCircularBufferTests
             snapshotLengthViolations,
             "ToArray must never return more items than Capacity.");
 
-        Assert.IsTrue(
-            writeAttempts > 0,
+        Assert.IsGreaterThan(
+            0, writeAttempts,
             "Workers must have exercised TryEnqueue during the stress run.");
 
-        Assert.IsTrue(
-            readAttempts > 0,
+        Assert.IsGreaterThan(
+            0, readAttempts,
             "Workers must have exercised TryDequeue during the stress run.");
 
-        Assert.IsTrue(
-            snapshotAttempts > 0,
+        Assert.IsGreaterThan(
+            0, snapshotAttempts,
             "Workers must have exercised ToArray during the stress run.");
 
-        Assert.IsTrue(
-            copyAttempts > 0,
+        Assert.IsGreaterThan(
+            0, copyAttempts,
             "Workers must have exercised CopyTo during the stress run.");
 
         Assert.IsTrue(
@@ -2254,12 +2254,12 @@ public partial class ConcurrentCircularBufferTests
             unexpectedDequeueFaults,
             $"Dequeue must only throw InvalidOperationException. First unexpected exception: {firstUnexpectedException}");
 
-        Assert.IsTrue(
-            enqueueAttempts > 0,
+        Assert.IsGreaterThan(
+            0, enqueueAttempts,
             "Workers must have exercised Enqueue during the stress run.");
 
-        Assert.IsTrue(
-            dequeueAttempts > 0,
+        Assert.IsGreaterThan(
+            0, dequeueAttempts,
             "Workers must have exercised Dequeue during the stress run.");
 
         Assert.IsTrue(
@@ -2563,20 +2563,20 @@ public partial class ConcurrentCircularBufferTests
             windowViolations,
             "ToArray returned a snapshot spanning more generations than the buffer capacity — torn read.");
 
-        Assert.IsTrue(
-            writeAttempts > 0,
+        Assert.IsGreaterThan(
+            0, writeAttempts,
             "Writers must have attempted to publish generations during the stress run.");
 
-        Assert.IsTrue(
-            readAttempts > 0,
+        Assert.IsGreaterThan(
+            0, readAttempts,
             "Consumers must have exercised TryDequeue during the stress run.");
 
-        Assert.IsTrue(
-            snapshotsTaken > 0,
+        Assert.IsGreaterThan(
+            0, snapshotsTaken,
             "Readers must have exercised ToArray during the stress run.");
 
-        Assert.IsTrue(
-            snapshotsValidated >= minimumValidatedSnapshots,
+        Assert.IsGreaterThanOrEqualTo(
+            minimumValidatedSnapshots, snapshotsValidated,
             $"ToArray must have produced enough meaningful snapshots to validate the concurrency invariant. " +
             $"Expected at least {minimumValidatedSnapshots}, actual {snapshotsValidated}.");
     }
@@ -2784,20 +2784,20 @@ public partial class ConcurrentCircularBufferTests
             futureValueViolations,
             "TryPeek surfaced a value from a future generation that could not have existed when the call completed.");
 
-        Assert.IsTrue(
-            writeAttempts > 0,
+        Assert.IsGreaterThan(
+            0, writeAttempts,
             "Writers must have exercised TryEnqueue during the TryPeek stress run.");
 
-        Assert.IsTrue(
-            dequeueAttempts > 0,
+        Assert.IsGreaterThan(
+            0, dequeueAttempts,
             "Consumers must have exercised TryDequeue during the TryPeek stress run.");
 
-        Assert.IsTrue(
-            peekAttempts > 0,
+        Assert.IsGreaterThan(
+            0, peekAttempts,
             "Peekers must have exercised TryPeek during the stress run.");
 
-        Assert.IsTrue(
-            successfulPeeks >= minimumSuccessfulPeeks,
+        Assert.IsGreaterThanOrEqualTo(
+            minimumSuccessfulPeeks, successfulPeeks,
             $"TryPeek must have produced enough successful observations to validate the concurrency invariant. " +
             $"Expected at least {minimumSuccessfulPeeks}, actual {successfulPeeks}.");
 

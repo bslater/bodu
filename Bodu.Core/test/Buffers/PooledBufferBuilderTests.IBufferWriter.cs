@@ -227,8 +227,8 @@ public partial class PooledBufferBuilderTests
 
         System.Span<int> span = builder.GetSpan(100);
 
-        Assert.IsTrue(span.Length >= 100);
-        Assert.IsTrue(builder.Capacity >= 100);
+        Assert.IsGreaterThanOrEqualTo(100, span.Length);
+        Assert.IsGreaterThanOrEqualTo(100, builder.Capacity);
     }
     // -----------------------------------------------------------------------
     // GetSpan
@@ -245,7 +245,7 @@ public partial class PooledBufferBuilderTests
 
         System.Span<int> span = builder.GetSpan(8);
 
-        Assert.IsTrue(span.Length >= 8);
+        Assert.IsGreaterThanOrEqualTo(8, span.Length);
     }
 
     /// <summary>
@@ -274,7 +274,7 @@ public partial class PooledBufferBuilderTests
 
         System.Span<int> span = builder.GetSpan(0);
 
-        Assert.IsTrue(span.Length >= 1);
+        Assert.IsGreaterThanOrEqualTo(1, span.Length);
     }
 
     /// <summary>

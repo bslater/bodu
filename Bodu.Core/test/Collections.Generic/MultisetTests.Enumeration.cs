@@ -41,7 +41,7 @@ public partial class MultisetTests
     {
         var mvd = new Multiset<string>();
 
-        Assert.AreEqual(0, mvd.Distinct().Count());
+        Assert.IsEmpty(mvd.Distinct());
     }
 
     /// <summary>
@@ -143,7 +143,7 @@ public partial class MultisetTests
     {
         var mvd = new Multiset<string>();
 
-        Assert.AreEqual(0, mvd.Count());
+        Assert.IsEmpty(mvd);
     }
     // --------------------------------------------------------
     // GetEnumerator / foreach
@@ -298,7 +298,7 @@ public partial class MultisetTests
 
         Assert.AreEqual(2, freqs["a"]);
         Assert.AreEqual(1, freqs["b"]);
-        Assert.AreEqual(2, freqs.Count);
+        Assert.HasCount(2, freqs);
     }
 
     // --------------------------------------------------------
@@ -313,7 +313,7 @@ public partial class MultisetTests
     {
         var mvd = new Multiset<string>();
 
-        Assert.AreEqual(0, mvd.Frequencies().Count());
+        Assert.IsEmpty(mvd.Frequencies());
     }
 
     /// <summary>

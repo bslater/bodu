@@ -125,7 +125,7 @@ public partial class ArrayExtensionsTests
 
         var result = source.Slice(1, 3);
 
-        Assert.AreEqual(3, result.Length);
+        Assert.HasCount(3, result);
     }
 
     // =========================================================================

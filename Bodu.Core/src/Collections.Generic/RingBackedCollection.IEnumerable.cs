@@ -14,12 +14,12 @@ public abstract partial class RingBackedCollection<T> :
     /// <summary>
     /// Returns an enumerator that iterates the collection's elements in head-to-tail logical order.
     /// </summary>
-    /// <returns>An <see cref="Enumerator"/> for the collection.</returns>
+    /// <returns>An <see cref="Enumerator" /> for the collection.</returns>
     /// <remarks>
-    /// The enumerator captures a structural-version token at creation. Any subsequent structural mutation
-    /// — including <c>Clear</c>, <c>TrimExcess</c>, or any of the derived-type mutators — invalidates the
-    /// enumerator. The next <see cref="Enumerator.MoveNext"/> or <see cref="Enumerator.Reset"/> call throws
-    /// <see cref="System.InvalidOperationException"/>.
+    /// The enumerator captures a structural-version token at creation. Any subsequent structural mutation — including
+    /// <c>Clear</c>, <c>TrimExcess</c>, or any of the derived-type mutators — invalidates the enumerator. The next
+    /// <see cref="Enumerator.MoveNext" /> or <see cref="Enumerator.Reset" /> call throws
+    /// <see cref="System.InvalidOperationException" />.
     /// </remarks>
     public Enumerator GetEnumerator() => new Enumerator(this);
 

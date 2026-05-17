@@ -17,7 +17,7 @@ public partial class WeekPatternTests
     public void GetEnumerator_WhenAllDaysSelected_ShouldYieldAllSevenDays()
     {
         var days = WeekPattern.FromByte(0b1111111).ToList();
-        Assert.AreEqual(7, days.Count);
+        Assert.HasCount(7, days);
     }
 
     /// <summary>
@@ -71,7 +71,7 @@ public partial class WeekPatternTests
         for (byte mask = 0; mask <= 127; mask++)
         {
             var pattern = WeekPattern.FromByte(mask);
-            Assert.AreEqual(pattern.Count, pattern.Count(),
+            Assert.HasCount(pattern.Count, pattern,
                 $"Enumerated element count must equal Count for mask {mask}.");
         }
     }
@@ -82,7 +82,7 @@ public partial class WeekPatternTests
     public void GetEnumerator_WhenEmpty_ShouldYieldNoDays()
     {
         var days = WeekPattern.Empty.ToList();
-        Assert.AreEqual(0, days.Count);
+        Assert.IsEmpty(days);
     }
 
     /// <summary>
@@ -95,7 +95,7 @@ public partial class WeekPatternTests
         var pattern = new WeekPattern(DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday);
         var days = pattern.ToList();
 
-        Assert.AreEqual(3, days.Count);
+        Assert.HasCount(3, days);
         CollectionAssert.Contains(days, DayOfWeek.Monday);
         CollectionAssert.Contains(days, DayOfWeek.Wednesday);
         CollectionAssert.Contains(days, DayOfWeek.Friday);

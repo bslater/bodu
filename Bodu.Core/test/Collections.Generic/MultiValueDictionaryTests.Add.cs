@@ -27,7 +27,7 @@ public partial class MultiValueDictionaryTests
 
         Assert.AreEqual(1, mvd.KeyCount);
         Assert.AreEqual(3, mvd.Count);
-        Assert.AreEqual(3, mvd["Alpha"].Count);
+        Assert.HasCount(3, mvd["Alpha"]);
     }
 
     /// <summary>
@@ -44,7 +44,7 @@ public partial class MultiValueDictionaryTests
 
         Assert.AreEqual(1, mvd.KeyCount);
         Assert.AreEqual(3, mvd.Count);
-        Assert.AreEqual(3, mvd["a"].Count);
+        Assert.HasCount(3, mvd["a"]);
     }
 
     /// <summary>
@@ -97,7 +97,7 @@ public partial class MultiValueDictionaryTests
         for (var k = 0; k < keyCount; k++)
         {
             IReadOnlyList<int> values = mvd[k];
-            Assert.AreEqual(valuesPerKey, values.Count);
+            Assert.HasCount(valuesPerKey, values);
             for (var v = 0; v < valuesPerKey; v++)
                 Assert.AreEqual(v, values[v]);
         }
@@ -139,7 +139,7 @@ public partial class MultiValueDictionaryTests
 
         Assert.AreEqual(valueCount, mvd.Count);
         Assert.AreEqual(1, mvd.KeyCount);
-        Assert.AreEqual(valueCount, mvd["k"].Count);
+        Assert.HasCount(valueCount, mvd["k"]);
     }
 
     /// <summary>

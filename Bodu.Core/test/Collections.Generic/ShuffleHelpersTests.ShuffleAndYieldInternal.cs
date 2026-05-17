@@ -20,7 +20,7 @@ public partial class ShuffleHelpersTests
         var buffer = new[] { 1, 2, 3, 4, 5 };
         var actual = ShuffleHelpers.ShuffleAndYieldInternal(buffer, new XorShiftRandom(7), buffer.Length).ToArray();
 
-        Assert.AreEqual(5, actual.Length);
+        Assert.HasCount(5, actual);
         CollectionAssert.AreEquivalent(new[] { 1, 2, 3, 4, 5 }, actual);
         CollectionAssert.AllItemsAreUnique(actual);
     }
@@ -36,7 +36,7 @@ public partial class ShuffleHelpersTests
 
         var actual = ShuffleHelpers.ShuffleAndYieldInternal(buffer, new XorShiftRandom(13), 3).ToArray();
 
-        Assert.AreEqual(3, actual.Length);
+        Assert.HasCount(3, actual);
         CollectionAssert.AllItemsAreUnique(actual);
         foreach (var value in actual)
             Assert.IsTrue(value is 10 or 20 or 30 or 40 or 50);
@@ -53,7 +53,7 @@ public partial class ShuffleHelpersTests
 
         var actual = ShuffleHelpers.ShuffleAndYieldInternal(buffer, new XorShiftRandom(7), 0).ToArray();
 
-        Assert.AreEqual(0, actual.Length);
+        Assert.IsEmpty(actual);
     }
 
 }

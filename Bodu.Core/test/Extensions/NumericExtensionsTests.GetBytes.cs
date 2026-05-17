@@ -78,7 +78,7 @@ public partial class NumericExtensionsTests
     [DataRow((byte)0x00)]
     [DataRow((byte)0xFF)]
     public void GetBytes_WhenValueIsByte_ShouldReturnSingleByte(byte value) =>
-        Assert.AreEqual(1, value.GetBytes().Length);
+        Assert.HasCount(1, value.GetBytes());
 
     /// <summary>
     /// Verifies that <see cref="NumericExtensions.GetBytes{T}" /> returns the byte-reversed output of
@@ -296,7 +296,7 @@ public partial class NumericExtensionsTests
     [DataRow(sbyte.MinValue)]
     [DataRow(sbyte.MaxValue)]
     public void GetBytes_WhenValueIsSByte_ShouldReturnSingleByte(sbyte value) =>
-        Assert.AreEqual(1, value.GetBytes().Length);
+        Assert.HasCount(1, value.GetBytes());
 
     /// <summary>
     /// Verifies that <see cref="NumericExtensions.GetBytes{T}" /> returns the correct big-endian

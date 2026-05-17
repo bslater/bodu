@@ -657,12 +657,12 @@ public partial class ArrayExtensionsTests
     /// whose length matches the full source length, even when only a slice is reversed.
     /// </summary>
     [TestMethod]
-    public void ReverseCore_WhenPartialRangeIsSpecified_ForGenericCore_ShouldReturnResultWithFullSourceLength() => Assert.AreEqual(Ints.Length, ArrayExtensions.ReverseCore<int>(Ints, 1, 2).Length);
+    public void ReverseCore_WhenPartialRangeIsSpecified_ForGenericCore_ShouldReturnResultWithFullSourceLength() => Assert.HasCount(Ints.Length, ArrayExtensions.ReverseCore<int>(Ints, 1, 2));
 
     /// <summary>
     /// Verifies that an empty source returns an empty result.
     /// </summary>
     [TestMethod]
-    public void ReverseCore_WhenSourceIsEmpty_ForGenericCore_ShouldReturnEmptyArray() => Assert.AreEqual(0, ArrayExtensions.ReverseCore<int>(NoInts, 0, 0).Length);
+    public void ReverseCore_WhenSourceIsEmpty_ForGenericCore_ShouldReturnEmptyArray() => Assert.IsEmpty(ArrayExtensions.ReverseCore<int>(NoInts, 0, 0));
 
 }

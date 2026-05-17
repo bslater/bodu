@@ -53,8 +53,8 @@ public static partial class ThrowHelper
         CompositeFormat.Parse(ResourceStrings.Arg_OutOfRange_IndexValidRange);
 
     /// <summary>
-    /// Throws an <see cref="ArgumentNullException" /> if the array is <see langword="null" />,
-    /// or an <see cref="ArgumentException" /> if it contains any non-numeric element.
+    /// Throws an <see cref="ArgumentNullException" /> if the array is <see langword="null" />, or an
+    /// <see cref="ArgumentException" /> if it contains any non-numeric element.
     /// </summary>
     /// <param name="array">The array to validate. Must not be <see langword="null" />.</param>
     /// <param name="paramName">The name of the parameter. Supplied automatically by the compiler.</param>
@@ -65,11 +65,10 @@ public static partial class ThrowHelper
     /// Thrown when any element in <paramref name="array" /> is not a recognized numeric type.
     /// </exception>
     /// <remarks>
-    /// Validates that each non-null element is one of the primitive numeric types:
-    /// <see cref="byte" />, <see cref="sbyte" />, <see cref="short" />, <see cref="ushort" />,
-    /// <see cref="int" />, <see cref="uint" />, <see cref="long" />, <see cref="ulong" />,
-    /// <see cref="float" />, <see cref="double" />, or <see cref="decimal" />.
-    /// Nullable wrappers are unwrapped before the type check is applied.
+    /// Validates that each non-null element is one of the primitive numeric types: <see cref="byte" />,
+    /// <see cref="sbyte" />, <see cref="short" />, <see cref="ushort" />, <see cref="int" />, <see cref="uint" />,
+    /// <see cref="long" />, <see cref="ulong" />, <see cref="float" />, <see cref="double" />, or
+    /// <see cref="decimal" />. Nullable wrappers are unwrapped before the type check is applied.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfArrayContainsNonNumeric(
@@ -102,8 +101,8 @@ public static partial class ThrowHelper
     }
 
     /// <summary>
-    /// Throws an <see cref="ArgumentNullException" /> if the array is <see langword="null" />,
-    /// or an <see cref="ArgumentException" /> if it is not single-dimensional.
+    /// Throws an <see cref="ArgumentNullException" /> if the array is <see langword="null" />, or an
+    /// <see cref="ArgumentException" /> if it is not single-dimensional.
     /// </summary>
     /// <param name="array">The array to validate. Must not be <see langword="null" />.</param>
     /// <param name="paramName">The name of the parameter. Supplied automatically by the compiler.</param>
@@ -124,8 +123,8 @@ public static partial class ThrowHelper
     }
 
     /// <summary>
-    /// Throws an <see cref="ArgumentNullException" /> if the array is <see langword="null" />,
-    /// or an <see cref="ArgumentException" /> if it does not have a zero lower bound.
+    /// Throws an <see cref="ArgumentNullException" /> if the array is <see langword="null" />, or an
+    /// <see cref="ArgumentException" /> if it does not have a zero lower bound.
     /// </summary>
     /// <param name="array">The array to validate. Must not be <see langword="null" />.</param>
     /// <param name="paramName">The name of the parameter. Supplied automatically by the compiler.</param>
@@ -159,8 +158,8 @@ public static partial class ThrowHelper
     /// Thrown when <c>array.Length</c> does not equal <paramref name="expectedLength" />.
     /// </exception>
     /// <remarks>
-    /// Commonly used in cryptographic APIs or buffer transformations where a fixed-size input is mandatory (e.g.
-    /// 16 bytes for a cipher block, 32 bytes for a key).
+    /// Commonly used in cryptographic APIs or buffer transformations where a fixed-size input is mandatory (e.g. 16
+    /// bytes for a cipher block, 32 bytes for a key).
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfArrayLengthIsNotEqualTo(
@@ -183,8 +182,8 @@ public static partial class ThrowHelper
     /// <param name="array">The array to validate. Must not be <see langword="null" />.</param>
     /// <param name="minimumLength">The minimum number of elements that <paramref name="array" /> must contain.</param>
     /// <param name="paramName">
-    /// The name of the array parameter.
-    /// Supplied automatically by the compiler via <see cref="CallerArgumentExpressionAttribute" />.
+    /// The name of the array parameter. Supplied automatically by the compiler via
+    /// <see cref="CallerArgumentExpressionAttribute" />.
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="array" /> is <see langword="null" />.
@@ -194,8 +193,8 @@ public static partial class ThrowHelper
     /// </exception>
     /// <remarks>
     /// Use this overload when the caller may supply a larger array than required and the excess elements are simply
-    /// ignored — for example, a buffer that must hold at least a full cipher block but may be larger.
-    /// When the length must be exact, use <see cref="ThrowIfArrayLengthIsNotEqualTo" /> instead.
+    /// ignored — for example, a buffer that must hold at least a full cipher block but may be larger. When the length
+    /// must be exact, use <see cref="ThrowIfArrayLengthIsNotEqualTo" /> instead.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfArrayLengthIsInsufficient(
@@ -211,8 +210,8 @@ public static partial class ThrowHelper
     }
 
     /// <summary>
-    /// Throws an <see cref="ArgumentNullException" /> if the array is <see langword="null" />,
-    /// or an <see cref="ArgumentException" /> if it has zero length.
+    /// Throws an <see cref="ArgumentNullException" /> if the array is <see langword="null" />, or an
+    /// <see cref="ArgumentException" /> if it has zero length.
     /// </summary>
     /// <param name="array">The array to validate. Must not be <see langword="null" />.</param>
     /// <param name="paramName">The name of the parameter. Supplied automatically by the compiler.</param>
@@ -233,8 +232,8 @@ public static partial class ThrowHelper
     }
 
     /// <summary>
-    /// Throws an <see cref="ArgumentNullException" /> if the array is <see langword="null" />,
-    /// or an <see cref="ArgumentOutOfRangeException" /> if its length is not between <paramref name="minLength" /> and
+    /// Throws an <see cref="ArgumentNullException" /> if the array is <see langword="null" />, or an
+    /// <see cref="ArgumentOutOfRangeException" /> if its length is not between <paramref name="minLength" /> and
     /// <paramref name="maxLength" /> (inclusive).
     /// </summary>
     /// <param name="array">The array to validate. Must not be <see langword="null" />.</param>
@@ -264,8 +263,8 @@ public static partial class ThrowHelper
     }
 
     /// <summary>
-    /// Throws an <see cref="ArgumentNullException" /> if the array is <see langword="null" />,
-    /// or an <see cref="ArgumentException" /> if its length is not a positive multiple of <paramref name="divisor" />.
+    /// Throws an <see cref="ArgumentNullException" /> if the array is <see langword="null" />, or an
+    /// <see cref="ArgumentException" /> if its length is not a positive multiple of <paramref name="divisor" />.
     /// </summary>
     /// <param name="array">The array to validate. Must not be <see langword="null" />.</param>
     /// <param name="divisor">The required positive divisor.</param>
@@ -291,11 +290,10 @@ public static partial class ThrowHelper
     }
 
     /// <summary>
-    /// Throws an <see cref="ArgumentNullException" /> if the array is <see langword="null" />,
-    /// an <see cref="ArgumentOutOfRangeException" /> if <paramref name="offset" /> or <paramref name="count" /> is out
-    /// of range,
-    /// or an <see cref="ArgumentException" /> if the segment they define exceeds the bounds of <paramref name="array" />
-    /// .
+    /// Throws an <see cref="ArgumentNullException" /> if the array is <see langword="null" />, an
+    /// <see cref="ArgumentOutOfRangeException" /> if <paramref name="offset" /> or <paramref name="count" /> is out of
+    /// range, or an <see cref="ArgumentException" /> if the segment they define exceeds the bounds of
+    /// <paramref name="array" /> .
     /// </summary>
     /// <param name="array">The array to validate. Must not be <see langword="null" />.</param>
     /// <param name="offset">The zero-based starting index within the array.</param>
@@ -340,8 +338,8 @@ public static partial class ThrowHelper
     }
 
     /// <summary>
-    /// Throws an <see cref="ArgumentNullException" /> if the array is <see langword="null" />,
-    /// or an <see cref="ArgumentException" /> if it is not assignable to <typeparamref name="TExpected" />[].
+    /// Throws an <see cref="ArgumentNullException" /> if the array is <see langword="null" />, or an
+    /// <see cref="ArgumentException" /> if it is not assignable to <typeparamref name="TExpected" />[].
     /// </summary>
     /// <typeparam name="TExpected">The expected element type.</typeparam>
     /// <param name="array">The array to validate. Must not be <see langword="null" />.</param>
@@ -354,9 +352,8 @@ public static partial class ThrowHelper
     /// </exception>
     /// <remarks>
     /// The null guard is applied before the pattern match because a <see langword="null" /> reference satisfies
-    /// <c>is not TExpected[]</c>,
-    /// which would otherwise produce an <see cref="ArgumentException" /> rather than an <see cref="ArgumentNullException" />
-    /// .
+    /// <c>is not TExpected[]</c>, which would otherwise produce an <see cref="ArgumentException" /> rather than an
+    /// <see cref="ArgumentNullException" /> .
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfArrayTypeIsNotCompatible<TExpected>(

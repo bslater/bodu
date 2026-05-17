@@ -21,7 +21,7 @@ public partial class RangeDictionaryTests
 
         sut.Add(10, 15, "B");
 
-        Assert.AreEqual(1, snapshot.Length);
+        Assert.HasCount(1, snapshot);
         Assert.AreEqual("A", snapshot[0].Value);
     }
     /// <summary>
@@ -35,7 +35,7 @@ public partial class RangeDictionaryTests
 
         ValueRange<int, string>[] array = sut.ToArray();
 
-        Assert.AreEqual(0, array.Length);
+        Assert.IsEmpty(array);
     }
 
     /// <summary>
@@ -52,7 +52,7 @@ public partial class RangeDictionaryTests
 
         ValueRange<int, string>[] array = sut.ToArray();
 
-        Assert.AreEqual(3, array.Length);
+        Assert.HasCount(3, array);
         Assert.AreEqual(0, array[0].StartInclusive);
         Assert.AreEqual("A", array[0].Value);
         Assert.AreEqual(10, array[1].StartInclusive);

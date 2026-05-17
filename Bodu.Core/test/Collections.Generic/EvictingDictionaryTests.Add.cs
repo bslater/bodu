@@ -29,7 +29,7 @@ public partial class EvictingDictionaryTests
         for (var i = 0; i < iterations; i++)
         {
             dictionary.Add(i, i);
-            Assert.IsTrue(dictionary.Count <= capacity,
+            Assert.IsLessThanOrEqualTo(capacity, dictionary.Count,
                 $"Count {dictionary.Count} exceeded capacity {capacity} after adding item {i}.");
         }
     }
@@ -47,7 +47,7 @@ public partial class EvictingDictionaryTests
         for (var i = 0; i < iterations; i++)
         {
             dictionary.Add(i, i);
-            Assert.IsTrue(dictionary.Count <= capacity,
+            Assert.IsLessThanOrEqualTo(capacity, dictionary.Count,
                 $"Count {dictionary.Count} exceeded capacity {capacity} at iteration {i}.");
         }
     }
@@ -69,7 +69,7 @@ public partial class EvictingDictionaryTests
         for (var i = 0; i < iterations; i++)
         {
             dictionary.Add(i, i);
-            Assert.IsTrue(dictionary.Count <= capacity,
+            Assert.IsLessThanOrEqualTo(capacity, dictionary.Count,
                 $"Count {dictionary.Count} exceeded capacity {capacity} at iteration {i}.");
         }
 
@@ -97,7 +97,7 @@ public partial class EvictingDictionaryTests
                 dictionary.Touch(i);
             }
 
-            Assert.IsTrue(dictionary.Count <= capacity,
+            Assert.IsLessThanOrEqualTo(capacity, dictionary.Count,
                 $"Count {dictionary.Count} exceeded capacity {capacity} at iteration {i}.");
         }
     }

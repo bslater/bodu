@@ -25,7 +25,7 @@ public sealed class DebugViewTests
         var view = new EvictingDictionaryDebugView<string, int>(dictionary);
         KeyValuePair<string, int>[] items = view.Items;
 
-        Assert.AreEqual(3, items.Length);
+        Assert.HasCount(3, items);
         CollectionAssert.AreEquivalent(
             new[] { new KeyValuePair<string, int>("A", 1), new KeyValuePair<string, int>("B", 2), new KeyValuePair<string, int>("C", 3) },
             items);
@@ -55,7 +55,7 @@ public sealed class DebugViewTests
         var view = new MultisetDebugView<string>(multiset);
         KeyValuePair<string, int>[] frequencies = view.Frequencies;
 
-        Assert.AreEqual(3, frequencies.Length);
+        Assert.HasCount(3, frequencies);
         Dictionary<string, int> asDict = frequencies.ToDictionary(p => p.Key, p => p.Value);
         Assert.AreEqual(3, asDict["A"]);
         Assert.AreEqual(2, asDict["B"]);
@@ -90,7 +90,7 @@ public sealed class DebugViewTests
         var view = new MultiValueDictionaryDebugView<string, int>(dictionary);
         KeyValuePair<string, IReadOnlyList<int>>[] items = view.Items;
 
-        Assert.AreEqual(2, items.Length);
+        Assert.HasCount(2, items);
 
         Dictionary<string, IReadOnlyList<int>> byKey = items.ToDictionary(e => e.Key, e => e.Value);
         CollectionAssert.AreEquivalent(new[] { 1, 2 }, byKey["A"].ToArray());

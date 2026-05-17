@@ -38,7 +38,7 @@ public partial class ConcurrentCircularBufferTests
         buffer.Enqueue(new TestItem(3));
 
         TestItem?[] snapshot = buffer.ToArray();
-        Assert.AreEqual(3, snapshot.Length);
+        Assert.HasCount(3, snapshot);
         Assert.AreEqual(1, snapshot[0]?.Value);
         Assert.IsNull(snapshot[1]);
         Assert.AreEqual(3, snapshot[2]?.Value);
@@ -66,7 +66,7 @@ public partial class ConcurrentCircularBufferTests
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(5);
         TestItem[] result = buffer.ToArray();
-        Assert.AreEqual(0, result.Length);
+        Assert.IsEmpty(result);
     }
 
     /// <summary>
@@ -99,7 +99,7 @@ public partial class ConcurrentCircularBufferTests
                 {
                     TestItem[] snap = buffer.ToArray();
                     if (snap.Length > 0) nonEmptySnapshots++;
-                    Assert.IsTrue(snap.Length <= buffer.Capacity);
+                    Assert.IsLessThanOrEqualTo(buffer.Capacity, snap.Length);
                 }
                 catch (Exception ex)
                 {
@@ -110,8 +110,8 @@ public partial class ConcurrentCircularBufferTests
 
         Task.WaitAll(clearer, taker);
 
-        Assert.AreEqual(0, failures.Count, "ToArray should not throw while Clear interleaves.");
-        Assert.IsTrue(nonEmptySnapshots >= 0); // sanity: we may see empty or non-empty snapshots
+        Assert.IsEmpty(failures, "ToArray should not throw while Clear interleaves.");
+        Assert.IsGreaterThanOrEqualTo(0, nonEmptySnapshots); // sanity: we may see empty or non-empty snapshots
     }
 
     /// <summary>
@@ -132,7 +132,7 @@ public partial class ConcurrentCircularBufferTests
                 try
                 {
                     TestItem[] snapshot = buffer.ToArray();
-                    Assert.IsTrue(snapshot.Length <= buffer.Capacity);
+                    Assert.IsLessThanOrEqualTo(buffer.Capacity, snapshot.Length);
                 }
                 catch (Exception ex)
                 {
@@ -148,7 +148,7 @@ public partial class ConcurrentCircularBufferTests
         });
 
         Task.WaitAll(reader, dequeuer);
-        Assert.AreEqual(0, failures.Count);
+        Assert.IsEmpty(failures);
     }
 
     /// <summary>
@@ -169,7 +169,7 @@ public partial class ConcurrentCircularBufferTests
                 try
                 {
                     TestItem[] snapshot = buffer.ToArray();
-                    Assert.IsTrue(snapshot.Length <= buffer.Capacity);
+                    Assert.IsLessThanOrEqualTo(buffer.Capacity, snapshot.Length);
                 }
                 catch (Exception ex)
                 {
@@ -185,7 +185,7 @@ public partial class ConcurrentCircularBufferTests
         });
 
         Task.WaitAll(reader, writer);
-        Assert.AreEqual(0, failures.Count, "ToArray should not throw under concurrent enqueue.");
+        Assert.IsEmpty(failures, "ToArray should not throw under concurrent enqueue.");
     }
 
     /// <summary>
@@ -206,7 +206,7 @@ public partial class ConcurrentCircularBufferTests
             {
                 TestItem[] snap = buffer.ToArray();
                 lengths.Add(snap.Length);
-                Assert.IsTrue(snap.Length <= buffer.Capacity);
+                Assert.IsLessThanOrEqualTo(buffer.Capacity, snap.Length);
             }
             catch (Exception ex)
             {
@@ -214,7 +214,7 @@ public partial class ConcurrentCircularBufferTests
             }
         });
 
-        Assert.AreEqual(0, failures.Count);
+        Assert.IsEmpty(failures);
         Assert.IsTrue(lengths.All(len => len >= 0 && len <= 16));
     }
 

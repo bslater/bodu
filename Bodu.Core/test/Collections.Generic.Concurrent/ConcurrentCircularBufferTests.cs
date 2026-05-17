@@ -24,7 +24,7 @@ public partial class ConcurrentCircularBufferTests
         params int[] expectedValues)
     {
         TestItem[] snapshot = buffer.ToArray();
-        Assert.AreEqual(expectedValues.Length, snapshot.Length, "Buffer item count mismatch.");
+        Assert.HasCount(expectedValues.Length, snapshot, "Buffer item count mismatch.");
 
         for (var i = 0; i < expectedValues.Length; i++)
         {
@@ -41,7 +41,7 @@ public partial class ConcurrentCircularBufferTests
     {
         TestItem[] snapshot = buffer.ToArray();
 
-        Assert.AreEqual(expectedCount, snapshot.Length, $"Expected buffer to contain {expectedCount} items.");
+        Assert.HasCount(expectedCount, snapshot, $"Expected buffer to contain {expectedCount} items.");
 
         foreach (TestItem item in snapshot)
         {

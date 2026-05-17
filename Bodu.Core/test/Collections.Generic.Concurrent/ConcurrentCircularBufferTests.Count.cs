@@ -169,7 +169,7 @@ public partial class ConcurrentCircularBufferTests
 
         Parallel.For(0, 10, i => buffer.TryDequeue(out _));
 
-        Assert.IsTrue(buffer.Count >= 0, "Count became negative.");
+        Assert.IsGreaterThanOrEqualTo(0, buffer.Count, "Count became negative.");
     }
 
     /// <summary>
@@ -184,7 +184,7 @@ public partial class ConcurrentCircularBufferTests
             try { buffer.TryEnqueue(new TestItem(i)); } catch { }
         });
 
-        Assert.IsTrue(buffer.Count <= buffer.Capacity, "Count exceeded capacity.");
+        Assert.IsLessThanOrEqualTo(buffer.Capacity, buffer.Count, "Count exceeded capacity.");
     }
 
     /// <summary>
@@ -254,7 +254,7 @@ public partial class ConcurrentCircularBufferTests
             buffer.Enqueue(new TestItem(i));
 
         Assert.AreEqual(3, buffer.Count);
-        Assert.IsTrue(buffer.Count <= buffer.Capacity);
+        Assert.IsLessThanOrEqualTo(buffer.Capacity, buffer.Count);
     }
 
     /// <summary>

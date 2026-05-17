@@ -9,14 +9,16 @@ namespace Bodu.Collections.Generic;
 public abstract partial class RingBackedCollection<T>
 {
     /// <summary>
-    /// Enumerates the elements of a <see cref="RingBackedCollection{T}"/> in head-to-tail logical order.
+    /// Enumerates the elements of a <see cref="RingBackedCollection{T}" /> in head-to-tail logical order.
     /// </summary>
     /// <remarks>
-    /// <para>Use the <see langword="foreach"/> statement to enumerate the collection rather than using this struct directly.</para>
+    /// <para>
+    /// Use the <see langword="foreach" /> statement to enumerate the collection rather than using this struct directly.
+    /// </para>
     /// <para>
     /// The enumerator provides read-only access. Modifying the underlying collection after enumeration begins
-    /// invalidates the enumerator and causes <see cref="MoveNext"/> or <see cref="Reset"/> to throw
-    /// <see cref="InvalidOperationException"/>.
+    /// invalidates the enumerator and causes <see cref="MoveNext" /> or <see cref="Reset" /> to throw
+    /// <see cref="InvalidOperationException" />.
     /// </para>
     /// </remarks>
     [Serializable]
@@ -30,7 +32,7 @@ public abstract partial class RingBackedCollection<T>
         private int _iteratedCount;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Enumerator"/> struct.
+        /// Initializes a new instance of the <see cref="Enumerator" /> struct.
         /// </summary>
         /// <param name="collection">The collection to enumerate.</param>
         internal Enumerator(RingBackedCollection<T> collection)
@@ -43,7 +45,7 @@ public abstract partial class RingBackedCollection<T>
         }
 
         /// <inheritdoc />
-        public T Current =>
+        public readonly T Current =>
             _currentIndex == -1
                 ? throw new InvalidOperationException(ResourceStrings.Op_Invalid_EnumeratorNotOnElement)
                 : _current;
@@ -52,7 +54,7 @@ public abstract partial class RingBackedCollection<T>
         object System.Collections.IEnumerator.Current => Current!;
 
         /// <inheritdoc />
-        public void Dispose()
+        public readonly void Dispose()
         {
             // No unmanaged resources; method provided for interface completeness.
         }

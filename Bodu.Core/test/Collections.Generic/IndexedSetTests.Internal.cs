@@ -49,7 +49,7 @@ public partial class IndexedSetTests
         var sut = new IndexedSet<int>(source);
 
         Assert.AreEqual(4, sut.Count);
-        Assert.IsTrue(sut.Capacity >= 4);
+        Assert.IsGreaterThanOrEqualTo(4, sut.Capacity);
     }
     /// <summary>
     /// Verifies that the internal <see cref="IndexedSet{T}.DebuggerStorage" /> property exposes the same

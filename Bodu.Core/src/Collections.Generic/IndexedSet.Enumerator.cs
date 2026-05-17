@@ -22,8 +22,8 @@ public sealed partial class IndexedSet<T>
     /// Enumerates the elements of an <see cref="IndexedSet{T}" /> in insertion order without allocating.
     /// </summary>
     /// <remarks>
-    /// The enumerator captures the underlying storage version on construction. Any structural mutation
-    /// invalidates the enumerator and causes <see cref="MoveNext" /> or <see cref="Reset" /> to throw
+    /// The enumerator captures the underlying storage version on construction. Any structural mutation invalidates the
+    /// enumerator and causes <see cref="MoveNext" /> or <see cref="Reset" /> to throw
     /// <see cref="InvalidOperationException" />.
     /// </remarks>
     [Serializable]
@@ -63,7 +63,7 @@ public sealed partial class IndexedSet<T>
         }
 
         /// <inheritdoc />
-        public T Current => _current;
+        public readonly T Current => _current;
 
         /// <inheritdoc />
         object IEnumerator.Current => Current;
@@ -93,7 +93,7 @@ public sealed partial class IndexedSet<T>
         }
 
         /// <inheritdoc />
-        public void Dispose()
+        public readonly void Dispose()
         {
         }
     }

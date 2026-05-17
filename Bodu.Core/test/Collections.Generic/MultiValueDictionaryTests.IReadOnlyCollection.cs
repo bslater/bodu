@@ -24,7 +24,7 @@ public partial class MultiValueDictionaryTests
 
         IReadOnlyCollection<KeyValuePair<string, IReadOnlyList<int>>> collection = mvd;
 
-        Assert.AreEqual(mvd.KeyCount, collection.Count);
+        Assert.HasCount(mvd.KeyCount, collection);
     }
 
 }

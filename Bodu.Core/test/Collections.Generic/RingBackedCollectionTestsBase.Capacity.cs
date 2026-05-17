@@ -28,7 +28,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
         if (ReportsExactCapacity)
             Assert.AreEqual(capacity, GetCapacity(collection));
         else
-            Assert.IsTrue(GetCapacity(collection) >= capacity);
+            Assert.IsGreaterThanOrEqualTo(capacity, GetCapacity(collection));
     }
 
     /// <summary>
@@ -42,7 +42,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
         for (var i = 0; i < 4; i++)
             AddToTail(collection, i);
 
-        Assert.IsTrue(GetCapacity(collection) >= GetCount(collection));
+        Assert.IsGreaterThanOrEqualTo(GetCount(collection), GetCapacity(collection));
     }
 
     /// <summary>

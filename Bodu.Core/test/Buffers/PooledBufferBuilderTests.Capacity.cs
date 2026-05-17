@@ -23,12 +23,12 @@ public partial class PooledBufferBuilderTests
         for (var i = 0; i <= initialCapacity; i++)
             builder.Append(i);
 
-        Assert.IsTrue(
-            builder.Capacity > initialCapacity,
+        Assert.IsGreaterThan(
+            initialCapacity, builder.Capacity,
             $"Expected capacity to grow beyond {initialCapacity}, but actual capacity was {builder.Capacity}.");
 
-        Assert.IsTrue(
-            builder.Capacity >= builder.WrittenCount,
+        Assert.IsGreaterThanOrEqualTo(
+            builder.WrittenCount, builder.Capacity,
             $"Expected capacity {builder.Capacity} to be at least written count {builder.WrittenCount}.");
     }
     /// <summary>
@@ -40,7 +40,7 @@ public partial class PooledBufferBuilderTests
     {
         using var builder = new PooledBufferBuilder<int>(32);
 
-        Assert.IsTrue(builder.Capacity >= 32);
+        Assert.IsGreaterThanOrEqualTo(32, builder.Capacity);
     }
 
     /// <summary>

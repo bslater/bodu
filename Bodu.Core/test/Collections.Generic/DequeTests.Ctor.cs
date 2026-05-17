@@ -76,7 +76,7 @@ public partial class DequeTests
     public void Ctor_WhenSmallCollectionProvided_ShouldUseAtLeastDefaultCapacity()
     {
         var deque = new Deque<int>([1]);
-        Assert.IsTrue(deque.Capacity >= DefaultCapacity);
+        Assert.IsGreaterThanOrEqualTo(DefaultCapacity, deque.Capacity);
     }
 
 }

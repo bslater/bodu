@@ -22,7 +22,7 @@ public partial class DateTimeExtensionsTests
         // Round-trip and confirm Kind is preserved as Local.
         var parsed = DateTime.Parse(actual, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.RoundtripKind);
         Assert.AreEqual(DateTimeKind.Local, parsed.Kind);
-        Assert.IsTrue(actual.StartsWith("2024-04-20T15:30:45"));
+        Assert.StartsWith("2024-04-20T15:30:45", actual);
     }
 
     /// <summary>

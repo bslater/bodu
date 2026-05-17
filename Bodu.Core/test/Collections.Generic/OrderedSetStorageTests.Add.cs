@@ -118,7 +118,7 @@ public partial class OrderedSetStorageTests
             Assert.IsTrue(sut.Add(i));
 
         Assert.AreEqual(100, sut.Count);
-        Assert.IsTrue(sut.Capacity >= 100);
+        Assert.IsGreaterThanOrEqualTo(100, sut.Capacity);
     }
 
     // --------------------------------------------------------

@@ -35,8 +35,8 @@ public static partial class ThrowHelper
         CompositeFormat.Parse(ResourceStrings.Arg_Invalid_StringTooLong);
 
     /// <summary>
-    /// Throws an <see cref="ArgumentNullException" /> if <paramref name="value" /> is <see langword="null" />,
-    /// or an <see cref="ArgumentException" /> if it is an empty string.
+    /// Throws an <see cref="ArgumentNullException" /> if <paramref name="value" /> is <see langword="null" />, or an
+    /// <see cref="ArgumentException" /> if it is an empty string.
     /// </summary>
     /// <param name="value">The string value to validate.</param>
     /// <param name="paramName">The name of the parameter. Supplied automatically by the compiler.</param>
@@ -57,8 +57,8 @@ public static partial class ThrowHelper
     }
 
     /// <summary>
-    /// Throws an <see cref="ArgumentNullException" /> if <paramref name="value" /> is <see langword="null" />,
-    /// or an <see cref="ArgumentException" /> if it is empty or contains only whitespace.
+    /// Throws an <see cref="ArgumentNullException" /> if <paramref name="value" /> is <see langword="null" />, or an
+    /// <see cref="ArgumentException" /> if it is empty or contains only whitespace.
     /// </summary>
     /// <param name="value">The string value to validate.</param>
     /// <param name="paramName">The name of the parameter. Supplied automatically by the compiler.</param>
@@ -81,8 +81,8 @@ public static partial class ThrowHelper
     }
 
     /// <summary>
-    /// Throws an <see cref="ArgumentNullException" /> if <paramref name="value" /> is <see langword="null" />,
-    /// or an <see cref="ArgumentOutOfRangeException" /> if its length exceeds <paramref name="maxLength" /> characters.
+    /// Throws an <see cref="ArgumentNullException" /> if <paramref name="value" /> is <see langword="null" />, or an
+    /// <see cref="ArgumentOutOfRangeException" /> if its length exceeds <paramref name="maxLength" /> characters.
     /// </summary>
     /// <param name="value">The string to validate. Must not be <see langword="null" />.</param>
     /// <param name="maxLength">The maximum permitted length, inclusive.</param>
@@ -106,9 +106,8 @@ public static partial class ThrowHelper
     }
 
     /// <summary>
-    /// Throws an <see cref="ArgumentNullException" /> if <paramref name="value" /> is <see langword="null" />,
-    /// or an <see cref="ArgumentException" /> if its length does not equal <paramref name="expectedLength" />
-    /// characters.
+    /// Throws an <see cref="ArgumentNullException" /> if <paramref name="value" /> is <see langword="null" />, or an
+    /// <see cref="ArgumentException" /> if its length does not equal <paramref name="expectedLength" /> characters.
     /// </summary>
     /// <param name="value">The string to validate. Must not be <see langword="null" />.</param>
     /// <param name="expectedLength">The exact required length in characters.</param>
@@ -118,8 +117,8 @@ public static partial class ThrowHelper
     /// </exception>
     /// <exception cref="ArgumentException">Thrown when <c>value.Length != expectedLength</c>.</exception>
     /// <remarks>
-    /// Useful for validating fixed-length identifiers such as ISIN (12 characters), CUSIP (9 characters),
-    /// or IBAN country codes (2 characters).
+    /// Useful for validating fixed-length identifiers such as ISIN (12 characters), CUSIP (9 characters), or IBAN
+    /// country codes (2 characters).
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfStringLengthIsNotEqualTo(
@@ -136,8 +135,8 @@ public static partial class ThrowHelper
     }
 
     /// <summary>
-    /// Throws an <see cref="ArgumentNullException" /> if <paramref name="value" /> is <see langword="null" />,
-    /// or an <see cref="ArgumentOutOfRangeException" /> if its length is not between <paramref name="minLength" /> and
+    /// Throws an <see cref="ArgumentNullException" /> if <paramref name="value" /> is <see langword="null" />, or an
+    /// <see cref="ArgumentOutOfRangeException" /> if its length is not between <paramref name="minLength" /> and
     /// <paramref name="maxLength" /> (inclusive).
     /// </summary>
     /// <param name="value">The string to validate. Must not be <see langword="null" />.</param>

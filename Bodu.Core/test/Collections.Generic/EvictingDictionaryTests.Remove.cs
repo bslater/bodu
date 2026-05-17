@@ -69,7 +69,7 @@ public partial class EvictingDictionaryTests
         dictionary.Add("C", 3);
         dictionary.Add("D", 4);
 
-        Assert.IsFalse(evictedKeys.Contains("A"));
+        Assert.DoesNotContain("A", evictedKeys);
         CollectionAssert.Contains(evictedKeys, "B");
     }
 
@@ -187,7 +187,7 @@ public partial class EvictingDictionaryTests
         dictionary.ItemEvicted += (key, _) => evicted.Add(key);
         dictionary.Add("D", 4);
 
-        Assert.AreEqual(1, evicted.Count);
+        Assert.HasCount(1, evicted);
         Assert.AreEqual("C", evicted[0]);
         Assert.IsTrue(dictionary.ContainsKey("A"));
         Assert.IsTrue(dictionary.ContainsKey("D"));

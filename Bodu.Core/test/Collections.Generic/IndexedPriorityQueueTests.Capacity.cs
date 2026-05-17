@@ -54,8 +54,8 @@ public partial class IndexedPriorityQueueTests
 
         var newCapacity = queue.EnsureCapacity(64);
 
-        Assert.IsTrue(newCapacity >= 64);
-        Assert.IsTrue(queue.Capacity >= 64);
+        Assert.IsGreaterThanOrEqualTo(64, newCapacity);
+        Assert.IsGreaterThanOrEqualTo(64, queue.Capacity);
     }
 
     /// <summary>

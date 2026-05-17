@@ -88,7 +88,7 @@ public partial class ConcurrentCircularBufferTests
         });
 
         Task.WaitAll(clearer, consumer);
-        Assert.AreEqual(0, exceptions.Count, "Unexpected exception during Dequeue/Clear interleaving.");
+        Assert.IsEmpty(exceptions, "Unexpected exception during Dequeue/Clear interleaving.");
         Assert.IsTrue(buffer.Count >= 0 && buffer.Count <= buffer.Capacity);
     }
 
@@ -130,7 +130,7 @@ public partial class ConcurrentCircularBufferTests
         Task.WaitAll(enqueuer, dequeuer);
 
         // All 100 distinct values must be present exactly once; order is not asserted.
-        Assert.AreEqual(100, dequeued.Count, "All items must be dequeued exactly once.");
+        Assert.HasCount(100, dequeued, "All items must be dequeued exactly once.");
         CollectionAssert.AreEquivalent(Enumerable.Range(0, 100).ToArray(), dequeued.ToArray(),
             "The set of dequeued values must equal the set of enqueued values.");
     }
@@ -155,7 +155,7 @@ public partial class ConcurrentCircularBufferTests
                 bag.Add(item.Value);
         });
 
-        Assert.AreEqual(toProduce, bag.Count);
+        Assert.HasCount(toProduce, bag);
         CollectionAssert.AreEquivalent(Enumerable.Range(0, toProduce).ToArray(), bag.ToArray());
         Assert.AreEqual(0, buffer.Count);
     }
@@ -312,7 +312,7 @@ public partial class ConcurrentCircularBufferTests
                 dequeued.Add(item);
         });
 
-        Assert.AreEqual(source.Length, dequeued.Count);
+        Assert.HasCount(source.Length, dequeued);
         CollectionAssert.AreEquivalent(
             source.Select(i => i.Value).ToArray(),
             dequeued.Select(i => i.Value).ToArray());

@@ -19,7 +19,7 @@ public partial class DateOnlyExtensionsTests
     {
         var birth = new DateOnly(2000, 1, 1);
         var age = birth.Age();
-        Assert.IsTrue(age >= 0);
+        Assert.IsGreaterThanOrEqualTo(0, age);
     }
 
     /// <summary>
@@ -243,8 +243,8 @@ public partial class DateOnlyExtensionsTests
         DateOnly result = monday.LastDateOfWeek();
 
         // The result must be at most 6 days after the input and not earlier.
-        Assert.IsTrue(result >= monday);
-        Assert.IsTrue((result.DayNumber - monday.DayNumber) <= 6);
+        Assert.IsGreaterThanOrEqualTo(monday, result);
+        Assert.IsLessThanOrEqualTo(6, result.DayNumber - monday.DayNumber);
     }
 
     /// <summary>

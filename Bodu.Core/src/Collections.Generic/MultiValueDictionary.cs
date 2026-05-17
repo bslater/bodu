@@ -12,83 +12,75 @@ namespace Bodu.Collections.Generic;
 /// <summary>
 /// Represents a mutable dictionary that maps each key to zero or more values.
 /// </summary>
-/// <typeparam name="TKey">
-/// The type of keys.
-/// </typeparam>
-/// <typeparam name="TValue">
-/// The type of values associated with each key.
-/// </typeparam>
+/// <typeparam name="TKey">The type of keys.</typeparam>
+/// <typeparam name="TValue">The type of values associated with each key.</typeparam>
 /// <remarks>
 /// <para>
-/// <see cref="MultiValueDictionary{TKey, TValue}" /> is a mutable one-to-many map, sometimes referred to as a
-/// multimap. A single key can have multiple associated values, and values for the same key are retained in
-/// insertion order.
+/// <see cref="MultiValueDictionary{TKey, TValue}" /> is a mutable one-to-many map, sometimes referred to as a multimap.
+/// A single key can have multiple associated values, and values for the same key are retained in insertion order.
 /// </para>
 /// <para>
 /// The <see cref="Count" /> property returns the total number of key-value entries across all keys. Use
 /// <see cref="KeyCount" /> to obtain the number of distinct keys currently held.
 /// </para>
 /// <para>
-/// The indexer returns the values for a key when the key is present, or an empty read-only list when the key is
-/// absent. Use <see cref="GetValues" /> when absence should be treated as an error, or
-/// <see cref="TryGetValues" /> when absence should be handled without throwing.
+/// The indexer returns the values for a key when the key is present, or an empty read-only list when the key is absent.
+/// Use <see cref="GetValues" /> when absence should be treated as an error, or <see cref="TryGetValues" /> when absence
+/// should be handled without throwing.
 /// </para>
 /// <para>
-/// Values returned by the indexer, <see cref="GetValues" />, <see cref="TryGetValues" />, and enumeration are
-/// live read-only views. They reflect later dictionary changes for the same key, but they do not expose the
-/// mutable backing <see cref="List{T}" /> used internally.
+/// Values returned by the indexer, <see cref="GetValues" />, <see cref="TryGetValues" />, and enumeration are live
+/// read-only views. They reflect later dictionary changes for the same key, but they do not expose the mutable backing
+/// <see cref="List{T}" /> used internally.
 /// </para>
 /// <para>
-/// Enumerators are invalidated by structural modification. Adding values, removing values, removing keys, or
-/// clearing the dictionary after enumeration begins causes the next enumeration step to throw
-/// <see cref="InvalidOperationException" />. Operations that do not change the dictionary, such as removing a
-/// missing key or adding an empty range, do not invalidate existing enumerators.
+/// Enumerators are invalidated by structural modification. Adding values, removing values, removing keys, or clearing
+/// the dictionary after enumeration begins causes the next enumeration step to throw
+/// <see cref="InvalidOperationException" />. Operations that do not change the dictionary, such as removing a missing
+/// key or adding an empty range, do not invalidate existing enumerators.
 /// </para>
 /// <para>
-/// The dictionary's regular enumeration yields one entry per distinct key, where each entry contains the key and
-/// its associated read-only value list. Use <see cref="Flatten" /> to enumerate one
+/// The dictionary's regular enumeration yields one entry per distinct key, where each entry contains the key and its
+/// associated read-only value list. Use <see cref="Flatten" /> to enumerate one
 /// <see cref="KeyValuePair{TKey, TValue}" /> per stored value.
 /// </para>
 /// <para>
 /// This type is not thread-safe. Concurrent reads and writes require external synchronization.
 /// </para>
 /// <example>
-/// The following example stores multiple values under the same key:
-/// <code>
-/// <![CDATA[
-///var map = new MultiValueDictionary&lt;string, int&gt;();
+/// The following example stores multiple values under the same key: <code>
+///<![CDATA[
+/// var map = new MultiValueDictionary&lt;string, int&gt;();
 ///
-///map.Add("odd", 1);
-///map.Add("odd", 3);
-///map.Add("even", 2);
+/// map.Add("odd", 1);
+/// map.Add("odd", 3);
+/// map.Add("even", 2);
 ///
-///Console.WriteLine($"Count:    {map.Count}");    // Count is 3 because there are three key-value entries.
-///Console.WriteLine($"KeyCount: {map.KeyCount}"); // KeyCount is 2 because there are two distinct keys.
-/// ]]>
+/// Console.WriteLine($"Count:    {map.Count}");    // Count is 3 because there are three key-value entries.
+/// Console.WriteLine($"KeyCount: {map.KeyCount}"); // KeyCount is 2 because there are two distinct keys.
+///]]>
 /// </code>
 /// </example>
 /// <example>
-/// The following example retrieves values for a key:
-/// <code>
-/// <![CDATA[
-///IReadOnlyList&lt;int&gt; values = map["odd"];
+/// The following example retrieves values for a key: <code>
+///<![CDATA[
+/// IReadOnlyList&lt;int&gt; values = map["odd"];
 ///
-///foreach (int value in values)
-///{
+/// foreach (int value in values)
+/// {
 ///    Console.WriteLine(value);
-///}
-/// ]]>
+/// }
+///]]>
 /// </code>
 /// </example>
 /// <example>
-/// The following example flattens the dictionary into one pair per value:
-/// <code>
-/// <![CDATA[
-///foreach (KeyValuePair&lt;string, int&gt; pair in map.Flatten())
-///{
+/// The following example flattens the dictionary into one pair per value: <code>
+///<![CDATA[
+/// foreach (KeyValuePair&lt;string, int&gt; pair in map.Flatten())
+/// {
 ///    Console.WriteLine($"{pair.Key}: {pair.Value}");
-///}
-/// ]]>
+/// }
+///]]>
 /// </code>
 /// </example>
 /// </remarks>
@@ -99,24 +91,34 @@ public sealed partial class MultiValueDictionary<TKey, TValue>
     : IReadOnlyCollection<KeyValuePair<TKey, IReadOnlyList<TValue>>>
     where TKey : notnull
 {
-    /// <summary>Shared empty read-only list returned when a key is absent.</summary>
+    /// <summary>
+    /// Shared empty read-only list returned when a key is absent.
+    /// </summary>
     private static readonly IReadOnlyList<TValue> s_emptyValues = Array.AsReadOnly(Array.Empty<TValue>());
 
-    /// <summary>The equality comparer used to determine key equality.</summary>
+    /// <summary>
+    /// The equality comparer used to determine key equality.
+    /// </summary>
     private readonly IEqualityComparer<TKey> _comparer;
 
-    /// <summary>The backing dictionary mapping each key to its value bucket.</summary>
+    /// <summary>
+    /// The backing dictionary mapping each key to its value bucket.
+    /// </summary>
     private readonly Dictionary<TKey, ValueBucket> _map;
 
-    /// <summary>The total number of value entries across all keys.</summary>
+    /// <summary>
+    /// The total number of value entries across all keys.
+    /// </summary>
     private int _count;
 
-    /// <summary>Incremented on every structural change; used by enumerators to detect concurrent modification.</summary>
+    /// <summary>
+    /// Incremented on every structural change; used by enumerators to detect concurrent modification.
+    /// </summary>
     private int _version;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="MultiValueDictionary{TKey, TValue}" /> class that is empty and
-    /// uses the default equality comparer for keys.
+    /// Initializes a new instance of the <see cref="MultiValueDictionary{TKey, TValue}" /> class that is empty and uses
+    /// the default equality comparer for keys.
     /// </summary>
     public MultiValueDictionary()
         : this((IEqualityComparer<TKey>?)null)
@@ -124,8 +126,8 @@ public sealed partial class MultiValueDictionary<TKey, TValue>
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="MultiValueDictionary{TKey, TValue}" /> class that is empty and
-    /// uses the specified equality comparer for keys.
+    /// Initializes a new instance of the <see cref="MultiValueDictionary{TKey, TValue}" /> class that is empty and uses
+    /// the specified equality comparer for keys.
     /// </summary>
     /// <param name="comparer">The equality comparer used to compare keys.</param>
     public MultiValueDictionary(IEqualityComparer<TKey>? comparer)
@@ -153,13 +155,12 @@ public sealed partial class MultiValueDictionary<TKey, TValue>
     public int KeyCount => _map.Count;
 
     /// <summary>
-    /// Gets the number of elements yielded by the dictionary's enumeration, which equals the number of
-    /// distinct keys.
+    /// Gets the number of elements yielded by the dictionary's enumeration, which equals the number of distinct keys.
     /// </summary>
     /// <value>The number of distinct keys, equivalent to <see cref="KeyCount" />.</value>
     /// <remarks>
-    /// The dictionary's enumeration yields one entry per key, so this matches <see cref="KeyCount" /> rather
-    /// than the total value count exposed by the public <see cref="Count" /> property.
+    /// The dictionary's enumeration yields one entry per key, so this matches <see cref="KeyCount" /> rather than the
+    /// total value count exposed by the public <see cref="Count" /> property.
     /// </remarks>
     int IReadOnlyCollection<KeyValuePair<TKey, IReadOnlyList<TValue>>>.Count => _map.Count;
 
@@ -174,14 +175,15 @@ public sealed partial class MultiValueDictionary<TKey, TValue>
     /// </summary>
     /// <param name="key">The key whose values are retrieved.</param>
     /// <returns>
-    /// A live read-only list of values associated with <paramref name="key" />, or an empty list when the key is absent.
+    /// A live read-only list of values associated with <paramref name="key" />, or an empty list when the key is
+    /// absent.
     /// </returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="key" /> is <see langword="null" />.
     /// </exception>
     /// <remarks>
-    /// The returned list reflects later changes made through the dictionary, but it does not expose the mutable
-    /// backing list.
+    /// The returned list reflects later changes made through the dictionary, but it does not expose the mutable backing
+    /// list.
     /// </remarks>
     public IReadOnlyList<TValue> this[TKey key]
     {
@@ -228,14 +230,15 @@ public sealed partial class MultiValueDictionary<TKey, TValue>
     /// </exception>
     /// <remarks>
     /// The operation is atomic with respect to this dictionary. If the source sequence throws while being enumerated,
-    /// the dictionary is left unchanged. An empty source is treated as a no-op and does not invalidate active enumerators.
+    /// the dictionary is left unchanged. An empty source is treated as a no-op and does not invalidate active
+    /// enumerators.
     /// </remarks>
     public void AddRange(TKey key, IEnumerable<TValue> values)
     {
         ThrowHelper.ThrowIfNull(key);
         ThrowHelper.ThrowIfNull(values);
 
-        TValue[] items = values as TValue[] ?? values.ToArray();
+        TValue[] items = values as TValue[] ?? [.. values];
 
         if (items.Length == 0)
             return;
@@ -255,8 +258,8 @@ public sealed partial class MultiValueDictionary<TKey, TValue>
     /// Removes all keys and their associated values from the dictionary.
     /// </summary>
     /// <remarks>
-    /// Each removed bucket's value list is cleared so that any outstanding read-only views previously handed
-    /// out by <see cref="GetValues" />, <see cref="TryGetValues" />, or the indexer reflect the removal.
+    /// Each removed bucket's value list is cleared so that any outstanding read-only views previously handed out by
+    /// <see cref="GetValues" />, <see cref="TryGetValues" />, or the indexer reflect the removal.
     /// </remarks>
     public void Clear()
     {
@@ -322,10 +325,9 @@ public sealed partial class MultiValueDictionary<TKey, TValue>
     {
         ThrowHelper.ThrowIfNull(key);
 
-        if (!_map.TryGetValue(key, out ValueBucket? bucket))
-            throw new KeyNotFoundException($"The key '{key}' was not present in the dictionary.");
-
-        return bucket.ReadOnlyValues;
+        return !_map.TryGetValue(key, out ValueBucket? bucket)
+            ? throw new KeyNotFoundException($"The key '{key}' was not present in the dictionary.")
+            : (IReadOnlyList<TValue>)bucket.ReadOnlyValues;
     }
 
     /// <summary>
@@ -358,9 +360,7 @@ public sealed partial class MultiValueDictionary<TKey, TValue>
     /// </summary>
     /// <param name="key">The key under which to remove the value.</param>
     /// <param name="value">The value to remove.</param>
-    /// <returns>
-    /// <see langword="true" /> if a value was removed; otherwise, <see langword="false" />.
-    /// </returns>
+    /// <returns><see langword="true" /> if a value was removed; otherwise, <see langword="false" />.</returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="key" /> is <see langword="null" />.
     /// </exception>
@@ -388,8 +388,7 @@ public sealed partial class MultiValueDictionary<TKey, TValue>
     /// </summary>
     /// <param name="key">The key to remove.</param>
     /// <returns>
-    /// <see langword="true" /> if <paramref name="key" /> was found and removed; otherwise,
-    /// <see langword="false" />.
+    /// <see langword="true" /> if <paramref name="key" /> was found and removed; otherwise, <see langword="false" />.
     /// </returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="key" /> is <see langword="null" />.
@@ -412,9 +411,7 @@ public sealed partial class MultiValueDictionary<TKey, TValue>
     /// <summary>
     /// Returns a flat sequence of all key-value pairs, one pair per value entry across all keys.
     /// </summary>
-    /// <returns>
-    /// An enumerable in which each item represents one value for one key.
-    /// </returns>
+    /// <returns>An enumerable in which each item represents one value for one key.</returns>
     /// <exception cref="InvalidOperationException">
     /// Thrown when the dictionary is modified after enumeration begins.
     /// </exception>

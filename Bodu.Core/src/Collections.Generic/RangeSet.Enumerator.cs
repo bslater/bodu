@@ -22,9 +22,8 @@ public sealed partial class RangeSet<T>
     /// Enumerates the ranges of a <see cref="RangeSet{T}" /> in ascending start order without allocating.
     /// </summary>
     /// <remarks>
-    /// The enumerator captures the set's version on construction. Any structural mutation invalidates the
-    /// enumerator and causes <see cref="MoveNext" /> or <see cref="Reset" /> to throw
-    /// <see cref="InvalidOperationException" />.
+    /// The enumerator captures the set's version on construction. Any structural mutation invalidates the enumerator
+    /// and causes <see cref="MoveNext" /> or <see cref="Reset" /> to throw <see cref="InvalidOperationException" />.
     /// </remarks>
     [Serializable]
     public struct Enumerator : IEnumerator<Range<T>>
@@ -62,7 +61,7 @@ public sealed partial class RangeSet<T>
         }
 
         /// <inheritdoc />
-        public Range<T> Current => _current;
+        public readonly Range<T> Current => _current;
 
         /// <inheritdoc />
         object IEnumerator.Current => Current;
@@ -92,7 +91,7 @@ public sealed partial class RangeSet<T>
         }
 
         /// <inheritdoc />
-        public void Dispose()
+        public readonly void Dispose()
         {
         }
     }

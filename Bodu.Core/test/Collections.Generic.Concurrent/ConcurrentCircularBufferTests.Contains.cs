@@ -101,7 +101,7 @@ public partial class ConcurrentCircularBufferTests
 
         Task.WaitAll(writer, reader);
 
-        Assert.AreEqual(0, exceptions.Count, "Contains threw during concurrent mutation.");
+        Assert.IsEmpty(exceptions, "Contains threw during concurrent mutation.");
     }
 
     /// <summary>
@@ -138,7 +138,7 @@ public partial class ConcurrentCircularBufferTests
 
         Task.WaitAll(dequeuer, reader);
 
-        Assert.AreEqual(0, exceptions.Count, "Contains should not throw while dequeues are in progress.");
+        Assert.IsEmpty(exceptions, "Contains should not throw while dequeues are in progress.");
     }
 
     /// <summary>

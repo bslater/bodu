@@ -21,7 +21,7 @@ public partial class RangeSetTests
 
         sut.Add(10, 15);
 
-        Assert.AreEqual(1, snapshot.Length);
+        Assert.HasCount(1, snapshot);
         Assert.AreEqual(new Range<int>(0, 5), snapshot[0]);
     }
     /// <summary>
@@ -34,7 +34,7 @@ public partial class RangeSetTests
 
         Range<int>[] array = sut.ToArray();
 
-        Assert.AreEqual(0, array.Length);
+        Assert.IsEmpty(array);
     }
 
     /// <summary>
@@ -47,7 +47,7 @@ public partial class RangeSetTests
 
         Range<int>[] array = sut.ToArray();
 
-        Assert.AreEqual(3, array.Length);
+        Assert.HasCount(3, array);
         Assert.AreEqual(new Range<int>(0, 5), array[0]);
         Assert.AreEqual(new Range<int>(10, 15), array[1]);
         Assert.AreEqual(new Range<int>(20, 25), array[2]);

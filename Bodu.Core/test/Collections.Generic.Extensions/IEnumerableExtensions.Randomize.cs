@@ -132,7 +132,7 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
 
         var result = source.Randomize(RandomizationMode.BufferAll, CreateSeededRng(), count: 4).ToArray();
 
-        Assert.AreEqual(4, result.Length);
+        Assert.HasCount(4, result);
         foreach (var value in result)
             CollectionAssert.Contains(source, value);
     }
@@ -205,7 +205,7 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
 
         var result = source.Randomize(mode, CreateSeededRng(), count: 5).ToArray();
 
-        Assert.AreEqual(5, result.Length);
+        Assert.HasCount(5, result);
         foreach (var value in result)
             CollectionAssert.Contains(source, value);
     }

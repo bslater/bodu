@@ -65,12 +65,12 @@ public partial class DateOnlyExtensionsTests
     /// Verifies that <see cref="DateOnlyExtensions.DaysInYear" />, when UsingMaxValue, returns <see langword="true" />.
     /// </summary>
     [TestMethod]
-    public void DaysInYear_WhenUsingMaxValue_ShouldNotThrow() => Assert.IsTrue(DateOnly.MaxValue.DaysInYear() > 0);
+    public void DaysInYear_WhenUsingMaxValue_ShouldNotThrow() => Assert.IsGreaterThan(0, DateOnly.MaxValue.DaysInYear());
 
     /// <summary>
     /// Verifies that <see cref="DateOnlyExtensions.DaysInYear" />, when UsingMinValue, returns <see langword="true" />.
     /// </summary>
     [TestMethod]
-    public void DaysInYear_WhenUsingMinValue_ShouldNotThrow() => Assert.IsTrue(DateOnly.MinValue.DaysInYear() > 0);
+    public void DaysInYear_WhenUsingMinValue_ShouldNotThrow() => Assert.IsGreaterThan(0, DateOnly.MinValue.DaysInYear());
 
 }

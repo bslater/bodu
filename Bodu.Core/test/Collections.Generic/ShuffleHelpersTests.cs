@@ -61,7 +61,7 @@ public partial class ShuffleHelpersTests
         }
 
         // Fail the test if the number of outliers exceeds the permitted threshold
-        Assert.IsTrue(outliers <= maxOutliers,
+        Assert.IsLessThanOrEqualTo(maxOutliers, outliers,
             $"[{label}] Too many statistical outliers: {outliers} exceeded ±3σ (allowed: {maxOutliers}).");
     }
 

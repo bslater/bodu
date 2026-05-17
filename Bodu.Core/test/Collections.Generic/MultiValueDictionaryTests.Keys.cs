@@ -88,7 +88,7 @@ public partial class MultiValueDictionaryTests
     {
         var mvd = new MultiValueDictionary<string, int>();
 
-        Assert.AreEqual(0, mvd.Keys.Count);
+        Assert.IsEmpty(mvd.Keys);
     }
     /// <summary>
     /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.Keys"/> contains all distinct keys.
@@ -103,7 +103,7 @@ public partial class MultiValueDictionaryTests
 
         CollectionAssert.Contains(mvd.Keys.ToList(), "x");
         CollectionAssert.Contains(mvd.Keys.ToList(), "y");
-        Assert.AreEqual(2, mvd.Keys.Count);
+        Assert.HasCount(2, mvd.Keys);
     }
 
 }

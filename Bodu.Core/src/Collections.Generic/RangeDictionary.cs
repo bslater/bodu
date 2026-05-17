@@ -15,13 +15,13 @@ namespace Bodu.Collections.Generic;
 /// <typeparam name="TValue">The value type.</typeparam>
 /// <remarks>
 /// <para>
-/// Entries are stored in three parallel arrays — one for the inclusive start of each range, one for the
-/// exclusive end, and one for the associated value. Lookups use binary search across the start endpoints,
-/// followed by a single end-boundary check. Insertions and removals shift the affected suffix of each array.
+/// Entries are stored in three parallel arrays — one for the inclusive start of each range, one for the exclusive end,
+/// and one for the associated value. Lookups use binary search across the start endpoints, followed by a single
+/// end-boundary check. Insertions and removals shift the affected suffix of each array.
 /// </para>
 /// <para>
-/// Ranges use half-open semantics: <c>[startInclusive, endExclusive)</c>. Adjacent ranges are allowed;
-/// overlapping ranges are rejected with <see cref="ArgumentException" />.
+/// Ranges use half-open semantics: <c>[startInclusive, endExclusive)</c>. Adjacent ranges are allowed; overlapping
+/// ranges are rejected with <see cref="ArgumentException" />.
 /// </para>
 /// <para>
 /// This type is not thread-safe.
@@ -43,7 +43,8 @@ public sealed partial class RangeDictionary<TKey, TValue>
     private int _version;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="RangeDictionary{TKey, TValue}" /> class using the default endpoint comparer.
+    /// Initializes a new instance of the <see cref="RangeDictionary{TKey, TValue}" /> class using the default endpoint
+    /// comparer.
     /// </summary>
     public RangeDictionary()
         : this(null)
@@ -51,15 +52,18 @@ public sealed partial class RangeDictionary<TKey, TValue>
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="RangeDictionary{TKey, TValue}" /> class using the specified comparer.
+    /// Initializes a new instance of the <see cref="RangeDictionary{TKey, TValue}" /> class using the specified
+    /// comparer.
     /// </summary>
-    /// <param name="comparer">The endpoint comparer, or <see langword="null" /> to use <see cref="Comparer{TKey}.Default" />.</param>
+    /// <param name="comparer">
+    /// The endpoint comparer, or <see langword="null" /> to use <see cref="Comparer{TKey}.Default" />.
+    /// </param>
     public RangeDictionary(IComparer<TKey>? comparer)
     {
         _comparer = comparer ?? Comparer<TKey>.Default;
-        _starts = Array.Empty<TKey>();
-        _ends = Array.Empty<TKey>();
-        _values = Array.Empty<TValue>();
+        _starts = [];
+        _ends = [];
+        _values = [];
     }
 
     /// <summary>
@@ -85,18 +89,15 @@ public sealed partial class RangeDictionary<TKey, TValue>
     /// </summary>
     /// <param name="key">The key to locate. Must not be <see langword="null" />.</param>
     /// <returns>The value associated with the containing range.</returns>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="key" /> is <see langword="null" />.
-    /// </exception>
+    /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
     /// <exception cref="KeyNotFoundException">No range contains <paramref name="key" />.</exception>
     public TValue this[TKey key]
     {
         get
         {
-            if (TryGetValue(key, out TValue? value))
-                return value;
-
-            throw new KeyNotFoundException("The specified key was not contained in any range.");
+            return TryGetValue(key, out TValue? value)
+                ? value
+                : throw new KeyNotFoundException("The specified key was not contained in any range.");
         }
     }
 
@@ -124,8 +125,8 @@ public sealed partial class RangeDictionary<TKey, TValue>
     /// <paramref name="startInclusive" /> or <paramref name="endExclusive" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="startInclusive" /> is greater than or equal to <paramref name="endExclusive" />, or the
-    /// range overlaps an existing range.
+    /// <paramref name="startInclusive" /> is greater than or equal to <paramref name="endExclusive" />, or the range
+    /// overlaps an existing range.
     /// </exception>
     public void Add(TKey startInclusive, TKey endExclusive, TValue value)
     {
@@ -155,9 +156,7 @@ public sealed partial class RangeDictionary<TKey, TValue>
     /// </summary>
     /// <param name="startInclusive">The inclusive start of the range.</param>
     /// <param name="endExclusive">The exclusive end of the range.</param>
-    /// <returns>
-    /// <see langword="true" /> if the exact range was removed; otherwise, <see langword="false" />.
-    /// </returns>
+    /// <returns><see langword="true" /> if the exact range was removed; otherwise, <see langword="false" />.</returns>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="startInclusive" /> or <paramref name="endExclusive" /> is <see langword="null" />.
     /// </exception>
@@ -200,12 +199,8 @@ public sealed partial class RangeDictionary<TKey, TValue>
     /// Determines whether any stored range contains the specified key.
     /// </summary>
     /// <param name="key">The key to locate. Must not be <see langword="null" />.</param>
-    /// <returns>
-    /// <see langword="true" /> if a range contains the key; otherwise, <see langword="false" />.
-    /// </returns>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="key" /> is <see langword="null" />.
-    /// </exception>
+    /// <returns><see langword="true" /> if a range contains the key; otherwise, <see langword="false" />.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
     public bool ContainsKey(TKey key) =>
         FindContainingIndex(key) >= 0;
 
@@ -214,12 +209,8 @@ public sealed partial class RangeDictionary<TKey, TValue>
     /// </summary>
     /// <param name="key">The key to locate. Must not be <see langword="null" />.</param>
     /// <param name="value">The value associated with the containing range, if found.</param>
-    /// <returns>
-    /// <see langword="true" /> if a range contains the key; otherwise, <see langword="false" />.
-    /// </returns>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="key" /> is <see langword="null" />.
-    /// </exception>
+    /// <returns><see langword="true" /> if a range contains the key; otherwise, <see langword="false" />.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
     public bool TryGetValue(TKey key, out TValue value)
     {
         var index = FindContainingIndex(key);
@@ -239,12 +230,8 @@ public sealed partial class RangeDictionary<TKey, TValue>
     /// </summary>
     /// <param name="key">The key to locate. Must not be <see langword="null" />.</param>
     /// <param name="entry">The containing range entry, if found.</param>
-    /// <returns>
-    /// <see langword="true" /> if a range contains the key; otherwise, <see langword="false" />.
-    /// </returns>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="key" /> is <see langword="null" />.
-    /// </exception>
+    /// <returns><see langword="true" /> if a range contains the key; otherwise, <see langword="false" />.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
     public bool TryGetEntry(TKey key, out ValueRange<TKey, TValue> entry)
     {
         var index = FindContainingIndex(key);
@@ -279,10 +266,9 @@ public sealed partial class RangeDictionary<TKey, TValue>
 
         var index = LowerBound(startInclusive);
 
-        if (index > 0 && _comparer.Compare(_ends[index - 1], startInclusive) > 0)
-            return true;
-
-        return index < _count && _comparer.Compare(_starts[index], endExclusive) < 0;
+        return index > 0 && _comparer.Compare(_ends[index - 1], startInclusive) > 0
+            ? true
+            : index < _count && _comparer.Compare(_starts[index], endExclusive) < 0;
     }
 
     /// <summary>
@@ -290,9 +276,7 @@ public sealed partial class RangeDictionary<TKey, TValue>
     /// </summary>
     /// <param name="capacity">The desired capacity.</param>
     /// <returns>The current capacity.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="capacity" /> is negative.
-    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> is negative.</exception>
     public int EnsureCapacity(int capacity)
     {
         ThrowHelper.ThrowIfNegative(capacity);
@@ -329,19 +313,14 @@ public sealed partial class RangeDictionary<TKey, TValue>
     /// </summary>
     /// <param name="key">The key to locate.</param>
     /// <returns>The index of the containing range, or <c>-1</c> if no range contains the key.</returns>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="key" /> is <see langword="null" />.
-    /// </exception>
+    /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
     private int FindContainingIndex(TKey key)
     {
         ThrowHelper.ThrowIfNull(key);
 
         var index = UpperBound(key) - 1;
 
-        if (index < 0)
-            return -1;
-
-        return _comparer.Compare(key, _ends[index]) < 0 ? index : -1;
+        return index < 0 ? -1 : _comparer.Compare(key, _ends[index]) < 0 ? index : -1;
     }
 
     /// <summary>
@@ -459,8 +438,8 @@ public sealed partial class RangeDictionary<TKey, TValue>
     }
 
     /// <summary>
-    /// Computes the next capacity by doubling the current size, with a clamp at <see cref="Array.MaxLength" />
-    /// and a floor at <paramref name="minimum" />.
+    /// Computes the next capacity by doubling the current size, with a clamp at <see cref="Array.MaxLength" /> and a
+    /// floor at <paramref name="minimum" />.
     /// </summary>
     /// <param name="minimum">The minimum acceptable capacity.</param>
     /// <returns>The chosen capacity.</returns>

@@ -121,7 +121,7 @@ public partial class ConcurrentCircularBufferTests
             }
         });
 
-        Assert.AreEqual(0, errors.Count);
+        Assert.IsEmpty(errors);
     }
 
     /// <summary>
@@ -162,7 +162,7 @@ public partial class ConcurrentCircularBufferTests
 
         start.Set();
         Task.WaitAll(reader, writer);
-        Assert.AreEqual(0, errors.Count, "Indexer threw during concurrent enqueue.");
+        Assert.IsEmpty(errors, "Indexer threw during concurrent enqueue.");
     }
 
 }

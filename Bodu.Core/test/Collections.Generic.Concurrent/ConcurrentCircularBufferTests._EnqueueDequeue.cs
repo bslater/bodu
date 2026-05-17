@@ -41,7 +41,7 @@ public partial class ConcurrentCircularBufferTests
 
         // Items leave only via Dequeue; remaining are Count
         Assert.AreEqual(enq, deq + buffer.Count);
-        Assert.IsTrue(buffer.Count <= buffer.Capacity);
+        Assert.IsLessThanOrEqualTo(buffer.Capacity, buffer.Count);
     }
 
     /// <summary>
@@ -69,7 +69,7 @@ public partial class ConcurrentCircularBufferTests
             }
         );
 
-        Assert.AreEqual(0, exceptions.Count, "Enqueue should not throw in overwrite mode.");
+        Assert.IsEmpty(exceptions, "Enqueue should not throw in overwrite mode.");
         Assert.IsTrue(buffer.Count >= 0 && buffer.Count <= buffer.Capacity);
     }
     /// <summary>
@@ -98,7 +98,7 @@ public partial class ConcurrentCircularBufferTests
 
         Task.WaitAll(tasks);
 
-        Assert.AreEqual(0, errors.Count, "No exceptions expected under capacity-1 churn.");
+        Assert.IsEmpty(errors, "No exceptions expected under capacity-1 churn.");
         Assert.IsTrue(buffer.Count >= 0 && buffer.Count <= 1);
     }
 
@@ -183,7 +183,7 @@ public partial class ConcurrentCircularBufferTests
         if (nullCount == 0)
             nullCount = buffer.ToArray().Count(x => x is null); // last-chance snapshot
 
-        Assert.IsTrue(nullCount > 0, "Expected to observe null entries.");
+        Assert.IsGreaterThan(0, nullCount, "Expected to observe null entries.");
         Assert.IsTrue(buffer.Count >= 0 && buffer.Count <= buffer.Capacity);
     }
 

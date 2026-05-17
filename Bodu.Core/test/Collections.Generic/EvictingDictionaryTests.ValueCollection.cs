@@ -47,9 +47,9 @@ public partial class EvictingDictionaryTests
         dictionary.Add("B", 2);
 
         ICollection<int> values = dictionary.Values;
-        Assert.IsTrue(values.Contains(1));
-        Assert.IsTrue(values.Contains(2));
-        Assert.IsFalse(values.Contains(99));
+        Assert.Contains(1, values);
+        Assert.Contains(2, values);
+        Assert.DoesNotContain(99, values);
     }
 
     /// <summary>

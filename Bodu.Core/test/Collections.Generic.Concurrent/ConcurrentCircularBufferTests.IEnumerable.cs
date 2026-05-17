@@ -24,8 +24,8 @@ public partial class ConcurrentCircularBufferTests
         buffer.Enqueue(new TestItem(3));
 
         TestItem?[] items = buffer.ToArray();
-        Assert.AreEqual(3, items.Length);
-        Assert.IsTrue(items.Any(i => i is null));
+        Assert.HasCount(3, items);
+        Assert.Contains(i => i is null, items);
     }
 
     /// <summary>
@@ -36,7 +36,7 @@ public partial class ConcurrentCircularBufferTests
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(5);
         TestItem[] snapshot = buffer.ToArray();
-        Assert.AreEqual(0, snapshot.Length);
+        Assert.IsEmpty(snapshot);
     }
 
     /// <summary>
@@ -68,7 +68,7 @@ public partial class ConcurrentCircularBufferTests
             {
                 start.Wait();
                 TestItem[] snapshot = buffer.ToArray();
-                Assert.IsTrue(snapshot.Length <= buffer.Capacity);
+                Assert.IsLessThanOrEqualTo(buffer.Capacity, snapshot.Length);
             }
             catch (Exception ex) { errors.Add(ex); }
         });
@@ -76,7 +76,7 @@ public partial class ConcurrentCircularBufferTests
         start.Set();
         Task.WaitAll(dequeuer, enumerator);
 
-        Assert.AreEqual(0, errors.Count, $"Unexpected exceptions: {string.Join(", ", errors.Select(e => e.GetType().Name))}");
+        Assert.IsEmpty(errors, $"Unexpected exceptions: {string.Join(", ", errors.Select(e => e.GetType().Name))}");
     }
 
     /// <summary>
@@ -119,7 +119,7 @@ public partial class ConcurrentCircularBufferTests
         start.Set();
         Task.WaitAll(writer, reader);
 
-        Assert.AreEqual(0, errors.Count, $"Unexpected exceptions: {string.Join(", ", errors.Select(e => e.GetType().Name))}");
+        Assert.IsEmpty(errors, $"Unexpected exceptions: {string.Join(", ", errors.Select(e => e.GetType().Name))}");
         Assert.IsTrue(snapshotLengths.All(len => len <= buffer.Capacity));
     }
 

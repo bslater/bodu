@@ -10,84 +10,165 @@ namespace Bodu.Collections.Extensions;
 /// Represents predefined behaviors for how an element is processed during recursive selection.
 /// </summary>
 /// <remarks>
-/// This enum defines composable control flags that determine whether an element should be yielded, whether its children should be
-/// traversed, and whether recursion should stop after the current element. These values are intended to be treated as bitmasks using
-/// <see cref="int"/> values (not [Flags]).
+/// This enum defines composable control flags that determine whether an element should be yielded, whether its children
+/// should be traversed, and whether recursion should stop after the current element. These values are intended to be
+/// treated as bitmasks using <see cref="int" /> values (not [Flags]).
 /// <para>
-/// Typical usage includes returning one of these values from a <c>Func&lt;T, RecursiveSelectControl&gt;</c> to control behavior
-/// dynamically within a recursive traversal method.
+/// Typical usage includes returning one of these values from a <c>Func&lt;T, RecursiveSelectControl&gt;</c> to control
+/// behavior dynamically within a recursive traversal method.
 /// </para>
-/// <para><strong>Behavior Matrix</strong></para>
+/// <para>
+/// <strong>Behavior Matrix</strong>
+/// </para>
 /// <list type="table">
-/// <listheader>
-/// <term>Combination</term>
-/// <description>Yield</description>
-/// <description>Recurse</description>
-/// <description>Break Level</description>
-/// <description>Exit All</description>
+/// <listheader> <term>Combination</term>
+/// <description>
+/// Yield
+/// </description>
+/// <description>
+/// Recurse
+/// </description>
+/// <description>
+/// Break Level
+/// </description>
+/// <description>
+/// Exit All
+/// </description>
 /// </listheader>
 /// <item>
-/// <term><see cref="SkipOnly"/></term>
-/// <description>No</description>
-/// <description>No</description>
-/// <description>No</description>
-/// <description>No</description>
+/// <term><see cref="SkipOnly" /></term>
+/// <description>
+/// No
+/// </description>
+/// <description>
+/// No
+/// </description>
+/// <description>
+/// No
+/// </description>
+/// <description>
+/// No
+/// </description>
 /// </item>
 /// <item>
-/// <term><see cref="YieldOnly"/></term>
-/// <description>Yes</description>
-/// <description>No</description>
-/// <description>No</description>
-/// <description>No</description>
+/// <term><see cref="YieldOnly" /></term>
+/// <description>
+/// Yes
+/// </description>
+/// <description>
+/// No
+/// </description>
+/// <description>
+/// No
+/// </description>
+/// <description>
+/// No
+/// </description>
 /// </item>
 /// <item>
-/// <term><see cref="YieldAndRecurse"/></term>
-/// <description>Yes</description>
-/// <description>Yes</description>
-/// <description>No</description>
-/// <description>No</description>
+/// <term><see cref="YieldAndRecurse" /></term>
+/// <description>
+/// Yes
+/// </description>
+/// <description>
+/// Yes
+/// </description>
+/// <description>
+/// No
+/// </description>
+/// <description>
+/// No
+/// </description>
 /// </item>
 /// <item>
-/// <term><see cref="YieldAndBreak"/></term>
-/// <description>Yes</description>
-/// <description>No</description>
-/// <description>Yes</description>
-/// <description>No</description>
+/// <term><see cref="YieldAndBreak" /></term>
+/// <description>
+/// Yes
+/// </description>
+/// <description>
+/// No
+/// </description>
+/// <description>
+/// Yes
+/// </description>
+/// <description>
+/// No
+/// </description>
 /// </item>
 /// <item>
-/// <term><see cref="YieldAndExit"/></term>
-/// <description>Yes</description>
-/// <description>No</description>
-/// <description>No</description>
-/// <description>Yes</description>
+/// <term><see cref="YieldAndExit" /></term>
+/// <description>
+/// Yes
+/// </description>
+/// <description>
+/// No
+/// </description>
+/// <description>
+/// No
+/// </description>
+/// <description>
+/// Yes
+/// </description>
 /// </item>
 /// <item>
-/// <term><see cref="RecurseOnly"/></term>
-/// <description>No</description>
-/// <description>Yes</description>
-/// <description>No</description>
-/// <description>No</description>
+/// <term><see cref="RecurseOnly" /></term>
+/// <description>
+/// No
+/// </description>
+/// <description>
+/// Yes
+/// </description>
+/// <description>
+/// No
+/// </description>
+/// <description>
+/// No
+/// </description>
 /// </item>
 /// <item>
-/// <term><see cref="SkipAndRecurse"/></term>
-/// <description>No</description>
-/// <description>Yes</description>
-/// <description>No</description>
-/// <description>No</description>
+/// <term><see cref="SkipAndRecurse" /></term>
+/// <description>
+/// No
+/// </description>
+/// <description>
+/// Yes
+/// </description>
+/// <description>
+/// No
+/// </description>
+/// <description>
+/// No
+/// </description>
 /// </item>
 /// <item>
-/// <term><see cref="SkipAndBreak"/></term>
-/// <description>No</description>
-/// <description>No</description>
-/// <description>Yes</description>
-/// <description>No</description>
+/// <term><see cref="SkipAndBreak" /></term>
+/// <description>
+/// No
+/// </description>
+/// <description>
+/// No
+/// </description>
+/// <description>
+/// Yes
+/// </description>
+/// <description>
+/// No
+/// </description>
 /// </item>
 /// <item>
-/// <term><see cref="SkipAndExit"/></term>
-/// <description>No</description>
-/// <description>No</description>
-/// <description>No</description>
-/// <description>Yes</description>
+/// <term><see cref="SkipAndExit" /></term>
+/// <description>
+/// No
+/// </description>
+/// <description>
+/// No
+/// </description>
+/// <description>
+/// No
+/// </description>
+/// <description>
+/// Yes
+/// </description>
 /// </item>
 /// </list>
 /// </remarks>

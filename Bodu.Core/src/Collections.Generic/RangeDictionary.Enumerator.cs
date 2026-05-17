@@ -19,12 +19,12 @@ public sealed partial class RangeDictionary<TKey, TValue>
         GetEnumerator();
 
     /// <summary>
-    /// Enumerates the entries of a <see cref="RangeDictionary{TKey, TValue}" /> in ascending start order
-    /// without allocating.
+    /// Enumerates the entries of a <see cref="RangeDictionary{TKey, TValue}" /> in ascending start order without
+    /// allocating.
     /// </summary>
     /// <remarks>
-    /// The enumerator captures the dictionary's version on construction. Any structural mutation invalidates
-    /// the enumerator and causes <see cref="MoveNext" /> or <see cref="Reset" /> to throw
+    /// The enumerator captures the dictionary's version on construction. Any structural mutation invalidates the
+    /// enumerator and causes <see cref="MoveNext" /> or <see cref="Reset" /> to throw
     /// <see cref="InvalidOperationException" />.
     /// </remarks>
     [Serializable]
@@ -66,7 +66,7 @@ public sealed partial class RangeDictionary<TKey, TValue>
         public readonly ValueRange<TKey, TValue> Current => _current;
 
         /// <inheritdoc />
-        object IEnumerator.Current => Current;
+        readonly object IEnumerator.Current => Current;
 
         /// <inheritdoc />
         public bool MoveNext()
@@ -98,7 +98,7 @@ public sealed partial class RangeDictionary<TKey, TValue>
         }
 
         /// <inheritdoc />
-        public void Dispose()
+        public readonly void Dispose()
         {
         }
     }

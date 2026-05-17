@@ -27,7 +27,7 @@ public partial class ConcurrentCircularBufferTests
                 buffer.Enqueue(new TestItem(i));
 
             TestItem[] snapshot = buffer.ToArray();
-            Assert.IsTrue(snapshot.Length <= 20, "Snapshot must not exceed capacity.");
+            Assert.IsLessThanOrEqualTo(20, snapshot.Length, "Snapshot must not exceed capacity.");
             Assert.IsTrue(snapshot.All(x => x is not null), "No null elements expected here.");
             Assert.IsTrue(buffer.Count >= 0 && buffer.Count <= buffer.Capacity, "Count must remain within bounds.");
         });
@@ -85,10 +85,10 @@ public partial class ConcurrentCircularBufferTests
         buffer2.Enqueue(new TestItem(200));
         buffer2.Enqueue(new TestItem(300)); // evicts 100
 
-        Assert.IsTrue(buffer1Events.Contains("B1:1"), "Buffer1 should report evicting its own item.");
-        Assert.IsTrue(buffer2Events.Contains("B2:100"), "Buffer2 should report evicting its own item.");
-        Assert.IsFalse(buffer1Events.Any(e => e.StartsWith("B2:")), "Buffer1 must not receive Buffer2�s events.");
-        Assert.IsFalse(buffer2Events.Any(e => e.StartsWith("B1:")), "Buffer2 must not receive Buffer1�s events.");
+        Assert.Contains("B1:1", buffer1Events, "Buffer1 should report evicting its own item.");
+        Assert.Contains("B2:100", buffer2Events, "Buffer2 should report evicting its own item.");
+        Assert.DoesNotContain(e => e.StartsWith("B2:"), buffer1Events, "Buffer1 must not receive Buffer2�s events.");
+        Assert.DoesNotContain(e => e.StartsWith("B1:"), buffer2Events, "Buffer2 must not receive Buffer1�s events.");
     }
 
 }

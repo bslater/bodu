@@ -30,7 +30,7 @@ public partial class MultiValueDictionaryTests
         AssertReadOnlyValueViewCannotBeMutated(values);
 
         Assert.AreEqual(1, mvd.Count);
-        Assert.AreEqual(1, mvd["a"].Count);
+        Assert.HasCount(1, mvd["a"]);
         Assert.AreEqual(1, mvd["a"][0]);
     }
 
@@ -49,7 +49,7 @@ public partial class MultiValueDictionaryTests
         AssertReadOnlyValueViewCannotBeMutated(values);
 
         Assert.AreEqual(1, mvd.Count);
-        Assert.AreEqual(1, mvd.GetValues("a").Count);
+        Assert.HasCount(1, mvd.GetValues("a"));
         Assert.AreEqual(1, mvd.GetValues("a")[0]);
     }
     /// <summary>
@@ -66,7 +66,7 @@ public partial class MultiValueDictionaryTests
         AssertReadOnlyValueViewCannotBeMutated(values);
 
         Assert.AreEqual(1, mvd.Count);
-        Assert.AreEqual(1, mvd["a"].Count);
+        Assert.HasCount(1, mvd["a"]);
         Assert.AreEqual(1, mvd["a"][0]);
     }
 
@@ -211,7 +211,7 @@ public partial class MultiValueDictionaryTests
         }
 
         Assert.AreEqual(1, mvd.Count);
-        Assert.AreEqual(1, mvd.GetValues("a").Count);
+        Assert.HasCount(1, mvd.GetValues("a"));
     }
 
     /// <summary>
@@ -230,7 +230,7 @@ public partial class MultiValueDictionaryTests
         AssertReadOnlyValueViewCannotBeMutated(values);
 
         Assert.AreEqual(1, mvd.Count);
-        Assert.AreEqual(1, mvd["a"].Count);
+        Assert.HasCount(1, mvd["a"]);
         Assert.AreEqual(1, mvd["a"][0]);
     }
 

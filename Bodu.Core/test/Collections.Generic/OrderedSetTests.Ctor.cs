@@ -117,7 +117,7 @@ public partial class OrderedSetTests
         var sut = new OrderedSet<int>(source);
 
         Assert.AreEqual(5, sut.Count);
-        Assert.IsTrue(sut.Capacity >= 5);
+        Assert.IsGreaterThanOrEqualTo(5, sut.Capacity);
     }
 
     /// <summary>

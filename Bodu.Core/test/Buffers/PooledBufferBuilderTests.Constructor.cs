@@ -58,7 +58,7 @@ public partial class PooledBufferBuilderTests
         using var builder = new PooledBufferBuilder<int>(16);
 
         Assert.AreEqual(0, builder.WrittenCount);
-        Assert.IsTrue(builder.Capacity >= 16);
+        Assert.IsGreaterThanOrEqualTo(16, builder.Capacity);
     }
     /// <summary>
     /// Verifies that constructing a <see cref="PooledBufferBuilder{T}"/> with an <c>initialCapacity</c> of zero
@@ -85,7 +85,7 @@ public partial class PooledBufferBuilderTests
         using var builder = new PooledBufferBuilder<int>();
 
         Assert.AreEqual(0, builder.WrittenCount);
-        Assert.IsTrue(builder.Capacity >= 256);
+        Assert.IsGreaterThanOrEqualTo(256, builder.Capacity);
     }
 
 }

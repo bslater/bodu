@@ -103,9 +103,9 @@ public partial class MultiValueDictionaryTests
 
         var entries = enumerable.ToList();
 
-        Assert.AreEqual(2, entries.Count);
-        Assert.IsTrue(entries.Any(entry => entry.Key == "a" && entry.Value.SequenceEqual([1, 2])));
-        Assert.IsTrue(entries.Any(entry => entry.Key == "b" && entry.Value.SequenceEqual([3])));
+        Assert.HasCount(2, entries);
+        Assert.Contains(entry => entry.Key == "a" && entry.Value.SequenceEqual([1, 2]), entries);
+        Assert.Contains(entry => entry.Key == "b" && entry.Value.SequenceEqual([3]), entries);
     }
 
     /// <summary>

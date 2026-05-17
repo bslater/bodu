@@ -55,7 +55,7 @@ public class FibonacciTests
 #if NETSTANDARD1_2_OR_GREATER
         Assert.IsTrue(values.Last() < long.MaxValue, "Last value should be less than long.MaxValue.");
 #else
-        Assert.IsTrue(values[^1] < long.MaxValue, "Last value should be less than long.MaxValue.");
+        Assert.IsLessThan(long.MaxValue, values[^1], "Last value should be less than long.MaxValue.");
 #endif
     }
 
@@ -123,7 +123,7 @@ public class FibonacciTests
     public void Fibonacci_WhenRangeIsOneToOne_ShouldReturnEmpty()
     {
         var actual = SequenceGenerator.Fibonacci(1, 1).ToArray();
-        Assert.AreEqual(0, actual.Length);
+        Assert.IsEmpty(actual);
     }
 
     /// <summary>

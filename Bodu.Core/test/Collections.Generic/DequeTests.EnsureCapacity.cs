@@ -29,8 +29,8 @@ public partial class DequeTests
     {
         var deque = new Deque<int>(4);
         var newCap = deque.EnsureCapacity(50);
-        Assert.IsTrue(newCap >= 50);
-        Assert.IsTrue(deque.Capacity >= 50);
+        Assert.IsGreaterThanOrEqualTo(50, newCap);
+        Assert.IsGreaterThanOrEqualTo(50, deque.Capacity);
     }
 
     /// <summary>

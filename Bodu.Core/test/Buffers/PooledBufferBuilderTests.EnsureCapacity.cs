@@ -126,7 +126,7 @@ public partial class PooledBufferBuilderTests
 
         builder.EnsureCapacity(200);
 
-        Assert.IsTrue(builder.Capacity >= 200);
+        Assert.IsGreaterThanOrEqualTo(200, builder.Capacity);
     }
 
 }

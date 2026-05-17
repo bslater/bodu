@@ -176,7 +176,7 @@ public partial class ConcurrentCircularBufferTests
         // Let synchronous handlers settle (mostly a no-op since handlers run inline)
         Thread.Sleep(50);
 
-        Assert.IsTrue(evicted.Count > 0, "Expected at least one eviction.");
+        Assert.IsNotEmpty(evicted, "Expected at least one eviction.");
         Assert.IsTrue(evicted.All(x => x != null));
         Assert.IsTrue(evicted.All(x => x.Value >= 0 && x.Value < 100));
     }
@@ -204,7 +204,7 @@ public partial class ConcurrentCircularBufferTests
         // Inline events should already be processed; small pause for safety
         Thread.Sleep(20);
 
-        Assert.IsTrue(evicted.Count > 0, "Expected some evictions under pressure.");
+        Assert.IsNotEmpty(evicted, "Expected some evictions under pressure.");
         Assert.IsTrue(evicted.All(x => x != null));
         Assert.IsTrue(buffer.Count >= 0 && buffer.Count <= buffer.Capacity);
     }

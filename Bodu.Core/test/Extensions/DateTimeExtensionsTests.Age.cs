@@ -43,7 +43,7 @@ public partial class DateTimeExtensionsTests
     public void Age_WhenUsingMinAndMaxDateOnly_ShouldNotThrow()
     {
         var age = DateOnly.MinValue.Age(DateOnly.MaxValue);
-        Assert.IsTrue(age > 0);
+        Assert.IsGreaterThan(0, age);
     }
 
     /// <summary>

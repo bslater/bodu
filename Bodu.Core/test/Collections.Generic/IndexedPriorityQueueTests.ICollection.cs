@@ -197,7 +197,7 @@ public partial class IndexedPriorityQueueTests
         queue.Enqueue("b", 2);
         ICollection collection = queue;
 
-        Assert.AreEqual(2, collection.Count);
+        Assert.HasCount(2, collection);
     }
 
     /// <summary>

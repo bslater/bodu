@@ -22,7 +22,7 @@ public partial class PooledBufferBuilderTests
 
         builder.EnsureCapacity(initial + 1);
 
-        Assert.IsTrue(builder.Capacity >= initial * 2,
+        Assert.IsGreaterThanOrEqualTo(initial * 2, builder.Capacity,
             $"Expected at least {initial * 2}, got {builder.Capacity}.");
     }
 
@@ -40,7 +40,7 @@ public partial class PooledBufferBuilderTests
 
         builder.EnsureCapacity(requested);
 
-        Assert.IsTrue(builder.Capacity >= requested,
+        Assert.IsGreaterThanOrEqualTo(requested, builder.Capacity,
             $"Expected at least {requested}, got {builder.Capacity}.");
     }
 

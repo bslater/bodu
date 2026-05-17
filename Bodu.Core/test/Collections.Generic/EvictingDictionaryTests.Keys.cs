@@ -33,7 +33,7 @@ public partial class EvictingDictionaryTests
 
         dictionary.Clear();
 
-        Assert.AreEqual(0, dictionary.Keys.Count);
+        Assert.IsEmpty(dictionary.Keys);
     }
     /// <summary>
     /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Keys" /> returns an empty collection when the dictionary is empty.
@@ -43,7 +43,7 @@ public partial class EvictingDictionaryTests
     {
         var dictionary = new EvictingDictionary<string, int>(3);
 
-        Assert.AreEqual(0, dictionary.Keys.Count);
+        Assert.IsEmpty(dictionary.Keys);
     }
 
     /// <summary>
@@ -91,7 +91,7 @@ public partial class EvictingDictionaryTests
 
         ICollection<string> keys = dictionary.Keys;
 
-        Assert.AreEqual(3, keys.Count);
+        Assert.HasCount(3, keys);
         CollectionAssert.Contains(keys.ToList(), "A");
         CollectionAssert.Contains(keys.ToList(), "B");
         CollectionAssert.Contains(keys.ToList(), "C");
@@ -107,7 +107,7 @@ public partial class EvictingDictionaryTests
         dictionary.Add("A", 1);
         dictionary.Add("A", 2); // replace
 
-        Assert.AreEqual(1, dictionary.Keys.Count);
+        Assert.HasCount(1, dictionary.Keys);
     }
 
     /// <summary>
@@ -138,7 +138,7 @@ public partial class EvictingDictionaryTests
         ICollection<string> keys = dictionary.Keys;
         dictionary.Add("B", 2);
 
-        Assert.AreEqual(2, keys.Count);
+        Assert.HasCount(2, keys);
         CollectionAssert.Contains(keys.ToList(), "B");
     }
 

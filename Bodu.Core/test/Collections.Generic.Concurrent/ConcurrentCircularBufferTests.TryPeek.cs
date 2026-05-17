@@ -76,7 +76,7 @@ public partial class ConcurrentCircularBufferTests
         });
 
         Task.WaitAll(writer, peeker);
-        Assert.IsTrue(nullSeen > 0, "Expected TryPeek to observe null items.");
+        Assert.IsGreaterThan(0, nullSeen, "Expected TryPeek to observe null items.");
     }
 
     /// <summary>
@@ -215,7 +215,7 @@ public partial class ConcurrentCircularBufferTests
 
         Task.WaitAll(tasks);
         Assert.AreEqual(0, failures, "TryPeek threw exceptions during concurrent reads.");
-        Assert.IsTrue(totalAttempts > 0, "No TryPeek operations were attempted.");
+        Assert.IsGreaterThan(0, totalAttempts, "No TryPeek operations were attempted.");
     }
 
     /// <summary>
@@ -282,7 +282,7 @@ public partial class ConcurrentCircularBufferTests
         });
 
         Task.WaitAll(enqueuer, dequeuer, peeker);
-        Assert.IsTrue(observed > 0, "TryPeek did not observe any items.");
+        Assert.IsGreaterThan(0, observed, "TryPeek did not observe any items.");
     }
 
     /// <summary>
