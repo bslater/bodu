@@ -1000,6 +1000,141 @@ public static class BoduCodeStyleKats
             }
             """,
             filePath: "GeneratedType.Designer.cs"),
+
+        CodeStyleKat.Safety(
+            id: "XMLSAFE-0004",
+            name: "#pragma warning directive between XML doc and member prevents fix — long summary and returns lines",
+            inputSource:
+            """
+            namespace Bodu.Extensions;
+
+            public static partial class ArrayExtensions
+            {
+                /// <summary>
+                /// Creates a shallow copy of the specified array of value types. Returns <see langword="null" /> if the source array is
+                /// <see langword="null" />.
+                /// </summary>
+                /// <typeparam name="T">The value type of the elements in the array.</typeparam>
+                /// <param name="array">The array to copy.</param>
+                /// <returns>
+                /// A new array containing the same elements as the source, or <see langword="null" /> if the source is <see langword="null" />.
+                /// </returns>
+            #pragma warning disable S1168
+                public static T[] Copy<T>(this T[] array) where T : struct => default;
+            #pragma warning restore S1168
+            }
+            """,
+            expectedSource:
+            """
+            namespace Bodu.Extensions;
+
+            public static partial class ArrayExtensions
+            {
+                /// <summary>
+                /// Creates a shallow copy of the specified array of value types. Returns <see langword="null" /> if the source array is
+                /// <see langword="null" />.
+                /// </summary>
+                /// <typeparam name="T">The value type of the elements in the array.</typeparam>
+                /// <param name="array">The array to copy.</param>
+                /// <returns>
+                /// A new array containing the same elements as the source, or <see langword="null" /> if the source is <see langword="null" />.
+                /// </returns>
+            #pragma warning disable S1168
+                public static T[] Copy<T>(this T[] array) where T : struct => default;
+            #pragma warning restore S1168
+            }
+            """,
+            expectedFailure: CodeStyleKatFailureKind.UnsupportedPreprocessorLayout),
+
+        CodeStyleKat.Safety(
+            id: "XMLSAFE-0005",
+            name: "#pragma warning directive between XML doc and method prevents fix — long para line in remarks",
+            inputSource:
+            """
+            namespace Bodu.Extensions;
+
+            public static partial class DateTimeExtensions
+            {
+                /// <summary>
+                /// Returns the later of two specified nullable <see cref="System.DateTime" /> values.
+                /// </summary>
+                /// <param name="first">The first nullable <see cref="System.DateTime" /> value to compare.</param>
+                /// <param name="second">The second nullable <see cref="System.DateTime" /> value to compare.</param>
+                /// <returns>
+                /// The later non-null <see cref="System.DateTime" /> value, or <see langword="null" /> if both values are <see langword="null" />.
+                /// </returns>
+                /// <remarks>
+                /// <para>
+                /// If both values are non-null, they are compared using the greater-than-or-equal-to (<c>&gt;=</c>) operator. If only one value is non-null, that value is returned. If both are <see langword="null" />, the result is <see langword="null" />.
+                /// </para>
+                /// </remarks>
+            #pragma warning disable S3358
+                public static System.DateTime? Max(System.DateTime? first, System.DateTime? second) => default;
+            #pragma warning restore S3358
+            }
+            """,
+            expectedSource:
+            """
+            namespace Bodu.Extensions;
+
+            public static partial class DateTimeExtensions
+            {
+                /// <summary>
+                /// Returns the later of two specified nullable <see cref="System.DateTime" /> values.
+                /// </summary>
+                /// <param name="first">The first nullable <see cref="System.DateTime" /> value to compare.</param>
+                /// <param name="second">The second nullable <see cref="System.DateTime" /> value to compare.</param>
+                /// <returns>
+                /// The later non-null <see cref="System.DateTime" /> value, or <see langword="null" /> if both values are <see langword="null" />.
+                /// </returns>
+                /// <remarks>
+                /// <para>
+                /// If both values are non-null, they are compared using the greater-than-or-equal-to (<c>&gt;=</c>) operator. If only one value is non-null, that value is returned. If both are <see langword="null" />, the result is <see langword="null" />.
+                /// </para>
+                /// </remarks>
+            #pragma warning disable S3358
+                public static System.DateTime? Max(System.DateTime? first, System.DateTime? second) => default;
+            #pragma warning restore S3358
+            }
+            """,
+            expectedFailure: CodeStyleKatFailureKind.UnsupportedPreprocessorLayout),
+
+        CodeStyleKat.Safety(
+            id: "XMLSAFE-0006",
+            name: "#if/#else/#endif directive between XML doc and class prevents fix — long summary line",
+            inputSource:
+            """
+            namespace Bodu.Collections.Generic;
+
+            public partial class EvictingDictionary<TKey, TValue>
+            {
+                /// <summary>
+                /// Represents a cache entry storing the value and metadata used for eviction policies in the <see cref="EvictingDictionary{TKey, TValue}"/>.
+                /// </summary>
+            #if !NET5_0_OR_GREATER
+                private sealed class CacheItem { }
+            #else
+                private sealed record class CacheItem { }
+            #endif
+            }
+            """,
+            expectedSource:
+            """
+            namespace Bodu.Collections.Generic;
+
+            public partial class EvictingDictionary<TKey, TValue>
+            {
+                /// <summary>
+                /// Represents a cache entry storing the value and metadata used for eviction policies in the <see cref="EvictingDictionary{TKey, TValue}"/>.
+                /// </summary>
+            #if !NET5_0_OR_GREATER
+                private sealed class CacheItem { }
+            #else
+                private sealed record class CacheItem { }
+            #endif
+            }
+            """,
+            expectedFailure: CodeStyleKatFailureKind.UnsupportedPreprocessorLayout),
     };
 
     /// <summary>
