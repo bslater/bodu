@@ -44,6 +44,6 @@ public interface IHashAlgorithmFactory<out T>
     /// <summary>
     /// Creates and returns a new instance of the hash algorithm with any necessary configuration applied.
     /// </summary>
-    /// <returns>A fully initialized <typeparamref name="T"/> instance, ready for data input.</returns>
+    /// <returns>A fully initialized <typeparamref name="T" /> instance, ready for data input.</returns>
     T Create();
 }
