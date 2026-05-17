@@ -32,9 +32,11 @@ public static partial class SequenceGenerator
     /// </para>
     /// </remarks>
     /// <example>
-    /// <code language="csharp"><![CDATA[ var prefix = SequenceGenerator.ThueMorse(16).ToArray(); // => [0, 1, 1, 0, 1, 0, 0, 1,
+    /// <code language="csharp">
+    /// <![CDATA[ var prefix = SequenceGenerator.ThueMorse(16).ToArray(); // => [0, 1, 1, 0, 1, 0, 0, 1,
     /// 1, 0, 0, 1, 0, 1, 1, 0] // Convenient as the schedule for a fair turn-taking algorithm: // player A goes on 0,
-    /// player B goes on 1. ]]></code>
+    /// player B goes on 1. ]]>
+    /// </code>
     /// </example>
     public static IEnumerable<int> ThueMorse(int count)
     {

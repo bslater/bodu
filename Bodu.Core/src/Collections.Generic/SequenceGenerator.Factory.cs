@@ -43,10 +43,12 @@ public static partial class SequenceGenerator
     /// </para>
     /// </remarks>
     /// <example>
-    /// <code language="csharp"><![CDATA[ // Adapt an external pull-style API into an IEnumerable&lt;T&gt; pipeline.
+    /// <code language="csharp">
+    /// <![CDATA[ // Adapt an external pull-style API into an IEnumerable&lt;T&gt; pipeline.
     /// IEnumerable&lt;int&gt; randomBytes = SequenceGenerator.Factory(() =&gt; { var rng = new Random(42); return
     /// Enumerable.Range(0, 4).Select(_ =&gt; rng.Next(0, 256)).GetEnumerator(); }); foreach (int b in randomBytes)
-    /// Console.Write($"{b} "); // => 79 235 64 230 (a deterministic run with seed 42) ]]></code>
+    /// Console.Write($"{b} "); // => 79 235 64 230 (a deterministic run with seed 42) ]]>
+    /// </code>
     /// </example>
     public static IEnumerable<TResult> Factory<TResult>(Func<IEnumerator<TResult>> enumeratorFactory)
     {
