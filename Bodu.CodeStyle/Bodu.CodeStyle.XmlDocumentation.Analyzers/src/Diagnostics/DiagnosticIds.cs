@@ -78,4 +78,10 @@ internal static class DiagnosticIds
     /// any other content that does not belong to a specific tag scope.
     /// </summary>
     public const string XmlDocCrossCutting = "BODU1040";
+
+    /// <summary>
+    /// The diagnostic identifier reported when a <c>&lt;code&gt;</c> documentation element does not contain a
+    /// <c>&lt;![CDATA[…]]&gt;</c> section as its first non-whitespace child.
+    /// </summary>
+    public const string XmlDocCodeRequiresCData = "BODU1405";
 }

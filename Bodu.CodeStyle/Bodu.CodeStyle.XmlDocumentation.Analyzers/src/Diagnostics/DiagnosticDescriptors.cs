@@ -94,6 +94,20 @@ internal static class DiagnosticDescriptors
         description: "Reformats documentation content outside any tag scope (line prefix, indent, prose between tags) to match the Bodu code-style policy.",
         helpLinkUri: HelpLinkBase + "#bodu1040");
 
+    /// <summary>
+    /// Gets the descriptor for <c>BODU1405</c> — a <c>&lt;code&gt;</c> element does not contain a
+    /// <c>&lt;![CDATA[…]]&gt;</c> section as its first non-whitespace child.
+    /// </summary>
+    public static DiagnosticDescriptor XmlDocCodeRequiresCData { get; } = new DiagnosticDescriptor(
+        id: DiagnosticIds.XmlDocCodeRequiresCData,
+        title: "XML documentation <code> element must begin with a CDATA section",
+        messageFormat: "<code> element must contain <![CDATA[…]]> as its first child per project policy",
+        category: Category,
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true,
+        description: "Requires <code> documentation blocks to wrap their body in a <![CDATA[…]]> section so XML-significant characters and language samples render verbatim.",
+        helpLinkUri: HelpLinkBase + "#bodu1405");
+
     /// <summary>Gets the immutable collection of every descriptor surfaced by this analyzer.</summary>
     public static ImmutableArray<DiagnosticDescriptor> All { get; } = ImmutableArray.Create(
         XmlDocSummary,
@@ -114,7 +128,8 @@ internal static class DiagnosticDescriptors
         XmlDocSee,
         XmlDocParamRef,
         XmlDocTypeParamRef,
-        XmlDocCrossCutting);
+        XmlDocCrossCutting,
+        XmlDocCodeRequiresCData);
 
     private static readonly Dictionary<string, DiagnosticDescriptor> s_byTagName =
         new(StringComparer.Ordinal)

@@ -69,6 +69,20 @@ public sealed class DiagnosticDescriptorsTests
     [TestMethod]
     public void All_ShouldContainEveryKnownDescriptor()
     {
-        Assert.AreEqual(19, DiagnosticDescriptors.All.Length);
+        Assert.AreEqual(20, DiagnosticDescriptors.All.Length);
+    }
+
+    /// <summary>
+    /// Verifies that the BODU1405 (code-requires-CDATA) descriptor exposes the documented identifier and metadata.
+    /// </summary>
+    [TestMethod]
+    public void XmlDocCodeRequiresCData_ShouldExposeDocumentedMetadata()
+    {
+        DiagnosticDescriptor descriptor = DiagnosticDescriptors.XmlDocCodeRequiresCData;
+
+        Assert.AreEqual("BODU1405", descriptor.Id);
+        Assert.AreEqual("Documentation", descriptor.Category);
+        Assert.AreEqual(DiagnosticSeverity.Warning, descriptor.DefaultSeverity);
+        Assert.IsTrue(descriptor.IsEnabledByDefault);
     }
 }
