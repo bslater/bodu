@@ -30,12 +30,17 @@ public partial class BoduConfigurationKatRunnerTests
 
         using StringWriter sw = new();
         BoduConfigurationDocument.Save(doc, sw, writeOptions);
+        var written = sw.ToString().TrimEnd('\n', '\r');
 
-        // KAT raw-string literals adopt the source file's line endings, which differ across
-        // platforms under `* text=auto`; normalize so the assertion validates logical content
-        // rather than the checkout's EOL bytes.
-        var written = sw.ToString().ReplaceLineEndings("\n").TrimEnd('\n');
-        var expected = (kat.ExpectedText ?? string.Empty).ReplaceLineEndings("\n").TrimEnd('\n');
+        var expected = (kat.ExpectedText ?? string.Empty).TrimEnd('\n', '\r');
+
+        // On Windows, the KAT data file is checked out with CRLF (`* text=auto` in .gitattributes)
+        // and C# raw-string literals adopt those endings; the writer emits its configured NewLine
+        // ("\n" by default), so the assertion would otherwise fail on internal CRLF/LF mismatches.
+        if (OperatingSystem.IsWindows())
+        {
+            expected = expected.Replace("\r\n", "\n");
+        }
 
         if (kat.Kind is BoduConfigurationKatKind.RoundTrip)
         {
