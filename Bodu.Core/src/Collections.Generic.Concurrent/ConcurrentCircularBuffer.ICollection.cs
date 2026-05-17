@@ -15,17 +15,18 @@ public partial class ConcurrentCircularBuffer<T>
     /// Gets an approximate count of elements currently contained in the buffer.
     /// </summary>
     /// <value>
-    /// The number of elements observed at the time of the call. Under concurrency, the value may be transiently stale. For a stable
-    /// point-in-time count, call <see cref="ToArray"/> and use its length.
+    /// The number of elements observed at the time of the call. Under concurrency, the value may be transiently stale.
+    /// For a stable point-in-time count, call <see cref="ToArray" /> and use its length.
     /// </value>
     /// <remarks>
     /// <para>
     /// The count is computed as the difference between the tail and head positions, clamped to the range
-    /// <c>[0, <see cref="Capacity"/>]</c>. Because these two positions are read independently, the result is approximate.
+    /// <c>[0, <see cref="Capacity"/>]</c>. Because these two positions are read independently, the result is
+    /// approximate.
     /// </para>
     /// <para>
-    /// The clamping guards against both the transient appearance of a negative difference under concurrent modification and the
-    /// correct handling of signed counter wrapping after sustained high-volume use.
+    /// The clamping guards against both the transient appearance of a negative difference under concurrent modification
+    /// and the correct handling of signed counter wrapping after sustained high-volume use.
     /// </para>
     /// </remarks>
     public int Count
@@ -58,13 +59,15 @@ public partial class ConcurrentCircularBuffer<T>
 
     /// <summary>
     /// Gets an object that can be used to synchronize access to the collection. Not supported on this type —
-    /// <see cref="ConcurrentCircularBuffer{T}"/> manages its own internal synchronization.
+    /// <see cref="ConcurrentCircularBuffer{T}" /> manages its own internal synchronization.
     /// </summary>
-    /// <exception cref="NotSupportedException">Always thrown. Use the thread-safe members of this class directly.</exception>
+    /// <exception cref="NotSupportedException">
+    /// Always thrown. Use the thread-safe members of this class directly.
+    /// </exception>
     /// <remarks>
-    /// Exposing a <see cref="ICollection.SyncRoot"/> would allow callers to take the same lock used internally, undermining the
-    /// concurrency guarantees of the collection. This matches the behavior of <see cref="System.Collections.Concurrent.ConcurrentQueue{T}"/>
-    /// and other BCL concurrent collections.
+    /// Exposing a <see cref="ICollection.SyncRoot" /> would allow callers to take the same lock used internally,
+    /// undermining the concurrency guarantees of the collection. This matches the behavior of
+    /// <see cref="System.Collections.Concurrent.ConcurrentQueue{T}" /> and other BCL concurrent collections.
     /// </remarks>
     object ICollection.SyncRoot =>
         throw new NotSupportedException(ResourceStrings.Op_NotSupported_ConcurrentSyncRoot);
