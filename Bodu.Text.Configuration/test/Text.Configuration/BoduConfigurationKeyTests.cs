@@ -1,10 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BoduConfigurationKeyTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using Bodu.Text.Configuration;
 
 namespace Bodu.Text.Configuration;
 
@@ -20,11 +18,11 @@ public partial class BoduConfigurationKeyTests
     [TestMethod]
     public void Parse_WhenDottedKey_ShouldMapToColon()
     {
-        BoduConfigurationKey key = BoduConfigurationKey.Parse("logging.level.default");
+        var key = BoduConfigurationKey.Parse("logging.level.default");
 
         Assert.AreEqual("logging.level.default", key.RawKey);
         Assert.AreEqual("logging:level:default", key.ConfigurationKey);
-        Assert.AreEqual(3, key.Segments.Length);
+        Assert.HasCount(3, key.Segments);
     }
 
     /// <summary>
@@ -33,7 +31,7 @@ public partial class BoduConfigurationKeyTests
     [TestMethod]
     public void Parse_WhenSingleSegment_ShouldRoundTripUnchanged()
     {
-        BoduConfigurationKey key = BoduConfigurationKey.Parse("root");
+        var key = BoduConfigurationKey.Parse("root");
 
         Assert.AreEqual("root", key.RawKey);
         Assert.AreEqual("root", key.ConfigurationKey);
@@ -59,13 +57,13 @@ public partial class BoduConfigurationKeyTests
     [TestMethod]
     public void Equals_WhenCaseSensitivityVaries_ShouldRespectOptions()
     {
-        BoduConfigurationKey insensitiveA = BoduConfigurationKey.Parse("Logging.Level");
-        BoduConfigurationKey insensitiveB = BoduConfigurationKey.Parse("logging.level");
+        var insensitiveA = BoduConfigurationKey.Parse("Logging.Level");
+        var insensitiveB = BoduConfigurationKey.Parse("logging.level");
         Assert.IsTrue(insensitiveA.Equals(insensitiveB));
 
         BoduConfigurationKeyOptions sensitive = new() { CaseSensitive = true };
-        BoduConfigurationKey sensitiveA = BoduConfigurationKey.Parse("Logging.Level", sensitive);
-        BoduConfigurationKey sensitiveB = BoduConfigurationKey.Parse("logging.level", sensitive);
+        var sensitiveA = BoduConfigurationKey.Parse("Logging.Level", sensitive);
+        var sensitiveB = BoduConfigurationKey.Parse("logging.level", sensitive);
         Assert.IsFalse(sensitiveA.Equals(sensitiveB));
     }
 
@@ -88,7 +86,7 @@ public partial class BoduConfigurationKeyTests
     public void Parse_WhenMappingIsIdentity_ShouldEmitRawKeyUnchanged()
     {
         BoduConfigurationKeyOptions options = new() { Mapping = BoduConfigurationKeyMapping.Identity };
-        BoduConfigurationKey key = BoduConfigurationKey.Parse("logging.level.default", options);
+        var key = BoduConfigurationKey.Parse("logging.level.default", options);
 
         Assert.AreEqual("logging.level.default", key.ConfigurationKey);
     }

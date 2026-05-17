@@ -1,10 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BoduConfigurationViewTests.GetString.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System.Collections.Generic;
 
 using Bodu.Text.Formats;
 
@@ -61,7 +59,7 @@ public partial class BoduConfigurationViewTests
         IniDocument doc = new();
         BoduConfigurationView view = doc.Resolve();
 
-        Assert.IsFalse(view.TryGetString("missing", out string? value));
+        Assert.IsFalse(view.TryGetString("missing", out var value));
         Assert.IsNull(value);
     }
 }

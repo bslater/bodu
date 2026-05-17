@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BoduConfigurationKatRunnerTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -64,9 +64,9 @@ public partial class BoduConfigurationKatRunnerTests
     private static BoduConfigurationParseOptions BuildParseOptions(BoduConfigurationKat kat)
     {
         BoduConfigurationProfile profile = MapProfile(kat.Profile);
-        BoduConfigurationParseOptions baseline = BoduConfigurationParseOptions.For(profile);
+        var baseline = BoduConfigurationParseOptions.For(profile);
 
-        bool allowKeyOnly = kat.Options is "AllowKeyOnlyProperties" || baseline.AllowKeyOnlyProperties;
+        var allowKeyOnly = kat.Options is "AllowKeyOnlyProperties" || baseline.AllowKeyOnlyProperties;
 
         return new BoduConfigurationParseOptions
         {

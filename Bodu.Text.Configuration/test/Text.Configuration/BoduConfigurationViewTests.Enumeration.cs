@@ -1,11 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BoduConfigurationViewTests.Enumeration.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System.Collections.Generic;
-using System.Linq;
 
 using Bodu.Text.Formats;
 
@@ -22,11 +19,11 @@ public partial class BoduConfigurationViewTests
         IniDocument doc = BoduConfigurationDocument.Parse("[*]\na = 1\nb = 2\n");
         BoduConfigurationView view = doc.Resolve("any.cs");
 
-        List<KeyValuePair<string, string?>> entries = view.ToList();
+        var entries = view.ToList();
 
-        Assert.AreEqual(2, entries.Count);
-        Assert.IsTrue(entries.Any(e => e.Key == "a" && e.Value == "1"));
-        Assert.IsTrue(entries.Any(e => e.Key == "b" && e.Value == "2"));
+        Assert.HasCount(2, entries);
+        Assert.Contains(e => e.Key == "a" && e.Value == "1", entries);
+        Assert.Contains(e => e.Key == "b" && e.Value == "2", entries);
     }
 
     /// <summary>
@@ -38,7 +35,7 @@ public partial class BoduConfigurationViewTests
         IniDocument doc = BoduConfigurationDocument.Parse("[*]\na = 1\nb = 2\n");
         BoduConfigurationView view = doc.Resolve("any.cs");
 
-        List<string> keys = view.Keys.ToList();
+        var keys = view.Keys.ToList();
 
         CollectionAssert.AreEquivalent(new[] { "a", "b" }, keys);
     }

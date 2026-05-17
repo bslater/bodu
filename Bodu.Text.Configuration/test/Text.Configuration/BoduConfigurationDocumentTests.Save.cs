@@ -1,10 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BoduConfigurationDocumentTests.Save.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.IO;
 using Bodu.Text.Configuration.Infrastructure;
 using Bodu.Text.Formats;
 
@@ -20,15 +19,15 @@ public partial class BoduConfigurationDocumentTests
     public void Save_WhenPathProvided_ShouldRoundTripThroughDisk()
     {
         IniDocument original = BoduConfigurationDocument.Parse(BoduConfigurationFixtures.Representative);
-        string outPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".boduconfig");
+        var outPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".boduconfig");
         try
         {
             BoduConfigurationDocument.Save(original, outPath);
 
             IniDocument reloaded = BoduConfigurationDocument.Load(outPath);
 
-            Assert.AreEqual(original.Sections.Count, reloaded.Sections.Count);
-            Assert.AreEqual(original.Sections[0].Entries.Count, reloaded.Sections[0].Entries.Count);
+            Assert.HasCount(original.Sections.Count, reloaded.Sections);
+            Assert.HasCount(original.Sections[0].Entries.Count, reloaded.Sections[0].Entries);
         }
         finally
         {

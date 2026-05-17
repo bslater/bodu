@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BoduConfigurationDocumentTests.Parse.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -33,7 +33,7 @@ public partial class BoduConfigurationDocumentTests
     {
         IniDocument doc = BoduConfigurationDocument.Parse(BoduConfigurationFixtures.Minimal);
 
-        Assert.AreEqual(1, doc.Sections.Count);
+        Assert.HasCount(1, doc.Sections);
         Assert.AreEqual("*", doc.Sections[0].Name);
         Assert.AreEqual("format.indent.size", doc.Sections[0].Entries[0].Key);
         Assert.AreEqual("4", doc.Sections[0].Entries[0].Value);
@@ -48,9 +48,9 @@ public partial class BoduConfigurationDocumentTests
         IniDocument lf = BoduConfigurationDocument.Parse(BoduConfigurationFixtures.Representative);
         IniDocument crlf = BoduConfigurationDocument.Parse(BoduConfigurationFixtures.Representative.Replace("\n", "\r\n"));
 
-        Assert.AreEqual(lf.Sections.Count, crlf.Sections.Count);
-        Assert.AreEqual(lf.GlobalSection.Entries.Count, crlf.GlobalSection.Entries.Count);
-        Assert.AreEqual(lf.Sections[0].Entries.Count, crlf.Sections[0].Entries.Count);
+        Assert.HasCount(lf.Sections.Count, crlf.Sections);
+        Assert.HasCount(lf.GlobalSection.Entries.Count, crlf.GlobalSection.Entries);
+        Assert.HasCount(lf.Sections[0].Entries.Count, crlf.Sections[0].Entries);
     }
 
     /// <summary>
@@ -60,11 +60,11 @@ public partial class BoduConfigurationDocumentTests
     [TestMethod]
     public void TryParse_WhenInputIsValid_ShouldReturnTrueAndProduceDocument()
     {
-        bool ok = BoduConfigurationDocument.TryParse(BoduConfigurationFixtures.Minimal, out IniDocument? doc);
+        var ok = BoduConfigurationDocument.TryParse(BoduConfigurationFixtures.Minimal, out IniDocument? doc);
 
         Assert.IsTrue(ok);
         Assert.IsNotNull(doc);
-        Assert.AreEqual(1, doc!.Sections.Count);
+        Assert.HasCount(1, doc!.Sections);
     }
 
     /// <summary>
@@ -74,7 +74,7 @@ public partial class BoduConfigurationDocumentTests
     [TestMethod]
     public void TryParse_WhenInputIsMalformed_ShouldReturnFalse()
     {
-        bool ok = BoduConfigurationDocument.TryParse("[*.cs]\nformat.indent.size\n", BoduConfigurationParseOptions.Strict, out IniDocument? doc);
+        var ok = BoduConfigurationDocument.TryParse("[*.cs]\nformat.indent.size\n", BoduConfigurationParseOptions.Strict, out IniDocument? doc);
 
         Assert.IsFalse(ok);
         Assert.IsNull(doc);
@@ -87,7 +87,7 @@ public partial class BoduConfigurationDocumentTests
     [TestMethod]
     public void TryParse_WhenInputIsNull_ShouldReturnFalse()
     {
-        bool ok = BoduConfigurationDocument.TryParse(null, out IniDocument? doc);
+        var ok = BoduConfigurationDocument.TryParse(null, out IniDocument? doc);
 
         Assert.IsFalse(ok);
         Assert.IsNull(doc);
@@ -104,7 +104,7 @@ public partial class BoduConfigurationDocumentTests
             "[*.cs]\nformat.indent.size\n",
             BoduConfigurationParseOptions.Relaxed);
 
-        Assert.IsTrue(result.Diagnostics.Length >= 1);
+        Assert.IsGreaterThanOrEqualTo(1, result.Diagnostics.Length);
         Assert.AreEqual(BoduConfigurationDiagnosticCode.MissingEquals, result.Diagnostics[0].Code);
     }
 }

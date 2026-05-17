@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BoduConfigurationDiagnosticTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -60,7 +60,7 @@ public class BoduConfigurationDiagnosticTests
             "blank",
             default);
 
-        string text = diagnostic.ToString();
+        var text = diagnostic.ToString();
 
         StringAssert.Contains(text, "Warning");
         StringAssert.Contains(text, "EmptyKey");

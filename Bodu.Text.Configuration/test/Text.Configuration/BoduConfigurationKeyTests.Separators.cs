@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BoduConfigurationKeyTests.Separators.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -14,11 +14,11 @@ public partial class BoduConfigurationKeyTests
     [TestMethod]
     public void Parse_WhenUsingDefaultSeparators_ShouldSplitOnDotAndColon()
     {
-        BoduConfigurationKey dotted = BoduConfigurationKey.Parse("a.b.c");
-        BoduConfigurationKey colon = BoduConfigurationKey.Parse("a:b:c");
+        var dotted = BoduConfigurationKey.Parse("a.b.c");
+        var colon = BoduConfigurationKey.Parse("a:b:c");
 
-        Assert.AreEqual(3, dotted.Segments.Length);
-        Assert.AreEqual(3, colon.Segments.Length);
+        Assert.HasCount(3, dotted.Segments);
+        Assert.HasCount(3, colon.Segments);
     }
 
     /// <summary>
@@ -28,9 +28,9 @@ public partial class BoduConfigurationKeyTests
     public void Parse_WhenSeparatorsAreCustom_ShouldSplitOnlyOnSuppliedChars()
     {
         BoduConfigurationKeyOptions options = new() { SegmentSeparators = ['/'] };
-        BoduConfigurationKey key = BoduConfigurationKey.Parse("a/b/c", options);
+        var key = BoduConfigurationKey.Parse("a/b/c", options);
 
-        Assert.AreEqual(3, key.Segments.Length);
+        Assert.HasCount(3, key.Segments);
         Assert.AreEqual("a", key.Segments[0]);
     }
 
@@ -40,9 +40,9 @@ public partial class BoduConfigurationKeyTests
     [TestMethod]
     public void Parse_WhenKeyHasNoSeparator_ShouldProduceSingleSegment()
     {
-        BoduConfigurationKey key = BoduConfigurationKey.Parse("standalone");
+        var key = BoduConfigurationKey.Parse("standalone");
 
-        Assert.AreEqual(1, key.Segments.Length);
+        Assert.HasCount(1, key.Segments);
         Assert.AreEqual("standalone", key.Segments[0]);
     }
 
@@ -54,9 +54,9 @@ public partial class BoduConfigurationKeyTests
     public void Parse_WhenAllowEmptySegmentsIsTrue_ShouldPreserveEmptySegments()
     {
         BoduConfigurationKeyOptions options = new() { AllowEmptySegments = true };
-        BoduConfigurationKey key = BoduConfigurationKey.Parse("a..b", options);
+        var key = BoduConfigurationKey.Parse("a..b", options);
 
-        Assert.AreEqual(3, key.Segments.Length);
+        Assert.HasCount(3, key.Segments);
         Assert.AreEqual(string.Empty, key.Segments[1]);
     }
 }

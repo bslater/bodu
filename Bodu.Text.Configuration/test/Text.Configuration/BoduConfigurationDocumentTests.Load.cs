@@ -1,10 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BoduConfigurationDocumentTests.Load.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.IO;
 using System.Text;
 using Bodu.Text.Configuration.Infrastructure;
 using Bodu.Text.Formats;
@@ -23,7 +22,7 @@ public partial class BoduConfigurationDocumentTests
 
         IniDocument doc = BoduConfigurationDocument.Load(scope.Path);
 
-        Assert.AreEqual(2, doc.Sections.Count);
+        Assert.HasCount(2, doc.Sections);
         Assert.AreEqual("true", doc.GlobalSection["root"]);
     }
 
@@ -63,8 +62,8 @@ public partial class BoduConfigurationDocumentTests
         using MemoryStream stream = new(Encoding.UTF8.GetBytes(BoduConfigurationFixtures.Representative));
         IniDocument fromStream = BoduConfigurationDocument.Load(stream);
 
-        Assert.AreEqual(fromText.Sections.Count, fromStream.Sections.Count);
-        Assert.AreEqual(fromText.GlobalSection.Entries.Count, fromStream.GlobalSection.Entries.Count);
+        Assert.HasCount(fromText.Sections.Count, fromStream.Sections);
+        Assert.HasCount(fromText.GlobalSection.Entries.Count, fromStream.GlobalSection.Entries);
     }
 
     /// <summary>

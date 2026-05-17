@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BoduConfigurationParseOptionsTests.IniInterop.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -19,7 +19,7 @@ public partial class BoduConfigurationParseOptionsTests
     {
         BoduConfigurationParseOptions strict = BoduConfigurationParseOptions.Strict;
 
-        IniParseOptions ini = strict.ToIniParseOptions();
+        var ini = strict.ToIniParseOptions();
 
         Assert.AreEqual(IniDuplicateKeyBehavior.Disallowed, ini.DuplicateKeyBehavior);
     }
@@ -61,7 +61,7 @@ public partial class BoduConfigurationParseOptionsTests
             KeyOptions = new BoduConfigurationKeyOptions { CaseSensitive = true },
         };
 
-        IniParseOptions ini = options.ToIniParseOptions();
+        var ini = options.ToIniParseOptions();
 
         Assert.IsTrue(ini.CaseSensitiveKeys);
         Assert.IsTrue(ini.CaseSensitiveSections);

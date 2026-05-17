@@ -1,10 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BoduConfigurationViewTests.GetInt32.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System.Collections.Generic;
 
 using Bodu.Text.Formats;
 
@@ -87,7 +85,7 @@ public partial class BoduConfigurationViewTests
         IniDocument doc = BoduConfigurationDocument.Parse("[*]\nbad = abc\n");
         BoduConfigurationView view = doc.Resolve("any.cs");
 
-        Assert.IsFalse(view.TryGetInt32("missing", out int _));
-        Assert.IsFalse(view.TryGetInt32("bad", out int _));
+        Assert.IsFalse(view.TryGetInt32("missing", out var _));
+        Assert.IsFalse(view.TryGetInt32("bad", out var _));
     }
 }

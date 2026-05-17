@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BoduConfigurationSourceLocationTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -61,7 +61,7 @@ public class BoduConfigurationSourceLocationTests
     {
         BoduConfigurationSourceLocation location = new(7, 13, 1);
 
-        string text = location.ToString();
+        var text = location.ToString();
 
         StringAssert.Contains(text, "7");
         StringAssert.Contains(text, "13");

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BoduConfigurationParseExceptionTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -28,7 +28,7 @@ public class BoduConfigurationParseExceptionTests
         BoduConfigurationParseException ex = new(diagnostic);
 
         Assert.AreSame(diagnostic, ex.Diagnostic);
-        Assert.AreEqual(1, ex.Diagnostics.Length);
+        Assert.HasCount(1, ex.Diagnostics);
         Assert.AreSame(diagnostic, ex.Diagnostics[0]);
     }
 
@@ -59,7 +59,7 @@ public class BoduConfigurationParseExceptionTests
     {
         BoduConfigurationParseException ex = new(System.Array.Empty<BoduConfigurationDiagnostic>());
 
-        Assert.AreEqual(0, ex.Diagnostics.Length);
+        Assert.IsEmpty(ex.Diagnostics);
         Assert.IsNull(ex.Diagnostic);
     }
 
@@ -71,7 +71,7 @@ public class BoduConfigurationParseExceptionTests
     {
         BoduConfigurationParseException ex = new();
 
-        Assert.AreEqual(0, ex.Diagnostics.Length);
+        Assert.IsEmpty(ex.Diagnostics);
         Assert.IsNull(ex.Diagnostic);
     }
 }

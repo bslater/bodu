@@ -1,11 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TempFileScope.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System;
-using System.IO;
 
 namespace Bodu.Text.Configuration.Infrastructure;
 
@@ -24,7 +21,7 @@ internal sealed class TempFileScope : IDisposable
     /// <param name="extension">An optional extension applied to the temp file (no leading dot).</param>
     internal TempFileScope(string content, string? extension = null)
     {
-        string baseName = System.IO.Path.Combine(System.IO.Path.GetTempPath(), System.IO.Path.GetRandomFileName());
+        var baseName = System.IO.Path.Combine(System.IO.Path.GetTempPath(), System.IO.Path.GetRandomFileName());
         this.Path = extension is null ? baseName : System.IO.Path.ChangeExtension(baseName, extension);
         File.WriteAllText(this.Path, content);
     }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BoduConfigurationPatternTests.NumericRange.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -18,9 +18,9 @@ public partial class BoduConfigurationPatternTests
     [TestCategory(TestCategories.Regression)]
     public void IsMatch_WhenNumericRangeIsModest_ShouldMatchEachIntegerInRange()
     {
-        BoduConfigurationPattern pattern = BoduConfigurationPattern.Compile("file-{1..10}.txt");
+        var pattern = BoduConfigurationPattern.Compile("file-{1..10}.txt");
 
-        for (int i = 1; i <= 10; i++)
+        for (var i = 1; i <= 10; i++)
             Assert.IsTrue(pattern.IsMatch($"file-{i}.txt"), $"expected match for {i}");
 
         Assert.IsFalse(pattern.IsMatch("file-0.txt"));
@@ -34,9 +34,9 @@ public partial class BoduConfigurationPatternTests
     [TestMethod]
     public void IsMatch_WhenNumericRangeIsReversed_ShouldMatchSameIntegersAsForwardRange()
     {
-        BoduConfigurationPattern pattern = BoduConfigurationPattern.Compile("file-{5..1}.txt");
+        var pattern = BoduConfigurationPattern.Compile("file-{5..1}.txt");
 
-        for (int i = 1; i <= 5; i++)
+        for (var i = 1; i <= 5; i++)
             Assert.IsTrue(pattern.IsMatch($"file-{i}.txt"), $"expected match for {i}");
 
         Assert.IsFalse(pattern.IsMatch("file-0.txt"));

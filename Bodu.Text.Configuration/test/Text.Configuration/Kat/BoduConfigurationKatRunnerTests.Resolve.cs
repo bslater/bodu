@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BoduConfigurationKatRunnerTests.Resolve.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -15,10 +15,9 @@ public partial class BoduConfigurationKatRunnerTests
     /// Drives every <see cref="BoduConfigurationKatKind.Resolve" /> KAT in the catalogue.
     /// </summary>
     /// <param name="kat">The KAT case to execute.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DynamicData(nameof(BoduConfigurationKnownAnswerData.ResolutionData),
         typeof(BoduConfigurationKnownAnswerData),
-        DynamicDataSourceType.Property,
         DynamicDataDisplayName = nameof(GetKatDisplayName))]
     public void Resolve_Kat(BoduConfigurationKat kat)
     {
@@ -46,7 +45,7 @@ public partial class BoduConfigurationKatRunnerTests
             Assert.AreEqual(ev.Value, view[ev.Key], $"{kat.Id}: expected value for '{ev.Key}'.");
         }
 
-        foreach (string absent in kat.UnexpectedKeys)
+        foreach (var absent in kat.UnexpectedKeys)
         {
             Assert.IsNull(view[absent], $"{kat.Id}: '{absent}' should be absent from the resolved view.");
         }
@@ -64,7 +63,7 @@ public partial class BoduConfigurationKatRunnerTests
 
     private static BoduConfigurationResolveOptions BuildResolveOptions(BoduConfigurationKat kat, BoduConfigurationProfile profile)
     {
-        BoduConfigurationResolveOptions baseline = BoduConfigurationResolveOptions.For(profile);
+        var baseline = BoduConfigurationResolveOptions.For(profile);
 
         BoduConfigurationUnsetValueMode unsetMode = kat.Options switch
         {

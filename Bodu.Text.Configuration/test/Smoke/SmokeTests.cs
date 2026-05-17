@@ -1,10 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SmokeTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.IO;
 using Bodu.Test;
 using Bodu.Text.Configuration;
 using Bodu.Text.Formats;
@@ -43,10 +42,10 @@ logging.level.default = Warning
         IniDocument doc = result.Document;
 
         Assert.AreEqual("true", doc.GlobalSection["root"]);
-        Assert.AreEqual(2, doc.Sections.Count);
+        Assert.HasCount(2, doc.Sections);
         Assert.AreEqual("*.cs", doc.Sections[0].Name);
         Assert.AreEqual("src/**/*.{cs,csproj}", doc.Sections[1].Name);
-        Assert.AreEqual(0, result.Diagnostics.Length);
+        Assert.IsEmpty(result.Diagnostics);
     }
 
     /// <summary>
@@ -78,9 +77,9 @@ logging.level.default = Warning
         BoduConfigurationDocument.Save(original, sw);
         IniDocument reparsed = BoduConfigurationDocument.Parse(sw.ToString());
 
-        Assert.AreEqual(original.Sections.Count, reparsed.Sections.Count);
+        Assert.HasCount(original.Sections.Count, reparsed.Sections);
         Assert.AreEqual(original.GlobalSection["root"], reparsed.GlobalSection["root"]);
-        Assert.AreEqual(original.GlobalSection.Entries.Count, reparsed.GlobalSection.Entries.Count);
+        Assert.HasCount(original.GlobalSection.Entries.Count, reparsed.GlobalSection.Entries);
     }
 
     /// <summary>
@@ -91,7 +90,7 @@ logging.level.default = Warning
     [TestCategory(TestCategories.Smoke)]
     public void BoduConfigurationPattern_IsMatch_ShouldMatchExpectedPaths()
     {
-        BoduConfigurationPattern pattern = BoduConfigurationPattern.Compile("src/**/*.{cs,csproj}");
+        var pattern = BoduConfigurationPattern.Compile("src/**/*.{cs,csproj}");
 
         Assert.IsTrue(pattern.IsMatch("src/Foo.cs"));
         Assert.IsTrue(pattern.IsMatch("src/Bodu.Text.Configuration/src/Foo.cs"));
@@ -107,9 +106,9 @@ logging.level.default = Warning
     [TestCategory(TestCategories.Smoke)]
     public void BoduConfigurationKey_Parse_ShouldMapDotToColon()
     {
-        BoduConfigurationKey key = BoduConfigurationKey.Parse("logging.level.default");
+        var key = BoduConfigurationKey.Parse("logging.level.default");
 
         Assert.AreEqual("logging:level:default", key.ConfigurationKey);
-        Assert.AreEqual(3, key.Segments.Length);
+        Assert.HasCount(3, key.Segments);
     }
 }

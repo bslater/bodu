@@ -1,10 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BoduConfigurationKatRunnerTests.Parse.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Linq;
 using Bodu.Text.Configuration.Test.Infrastructure;
 using Bodu.Text.Formats;
 
@@ -16,10 +15,9 @@ public partial class BoduConfigurationKatRunnerTests
     /// Drives every <see cref="BoduConfigurationKatKind.Parse" /> KAT in the catalogue.
     /// </summary>
     /// <param name="kat">The KAT case to execute.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DynamicData(nameof(BoduConfigurationKnownAnswerData.ParserData),
         typeof(BoduConfigurationKnownAnswerData),
-        DynamicDataSourceType.Property,
         DynamicDataDisplayName = nameof(GetKatDisplayName))]
     public void Parse_Kat(BoduConfigurationKat kat)
     {
@@ -42,28 +40,28 @@ public partial class BoduConfigurationKatRunnerTests
         ExpectedDocument expected = kat.ExpectedDocument
             ?? throw new InvalidOperationException($"{kat.Id} is missing ExpectedDocument.");
 
-        Assert.AreEqual(expected.Preamble.Count, doc.GlobalSection.Entries.Count, $"{kat.Id}: preamble entry count");
-        for (int i = 0; i < expected.Preamble.Count; i++)
+        Assert.HasCount(expected.Preamble.Count, doc.GlobalSection.Entries, $"{kat.Id}: preamble entry count");
+        for (var i = 0; i < expected.Preamble.Count; i++)
             AssertEntry(kat, expected.Preamble[i], doc.GlobalSection.Entries[i]);
 
-        Assert.AreEqual(expected.Sections.Count, doc.Sections.Count, $"{kat.Id}: section count");
-        for (int s = 0; s < expected.Sections.Count; s++)
+        Assert.HasCount(expected.Sections.Count, doc.Sections, $"{kat.Id}: section count");
+        for (var s = 0; s < expected.Sections.Count; s++)
         {
             ExpectedSection es = expected.Sections[s];
             IniSection actual = doc.Sections[s];
 
             Assert.AreEqual(es.Pattern, actual.Name, $"{kat.Id}: section[{s}].Name");
-            Assert.AreEqual(es.LeadingComments.Count, actual.LeadingComments.Count, $"{kat.Id}: section[{s}].LeadingComments.Count");
-            for (int c = 0; c < es.LeadingComments.Count; c++)
+            Assert.HasCount(es.LeadingComments.Count, actual.LeadingComments, $"{kat.Id}: section[{s}].LeadingComments.Count");
+            for (var c = 0; c < es.LeadingComments.Count; c++)
                 Assert.AreEqual(es.LeadingComments[c], actual.LeadingComments[c].Text, $"{kat.Id}: section[{s}].LeadingComments[{c}]");
 
-            Assert.AreEqual(es.Properties.Count, actual.Entries.Count, $"{kat.Id}: section[{s}].Entries.Count");
-            for (int p = 0; p < es.Properties.Count; p++)
+            Assert.HasCount(es.Properties.Count, actual.Entries, $"{kat.Id}: section[{s}].Entries.Count");
+            for (var p = 0; p < es.Properties.Count; p++)
                 AssertEntry(kat, es.Properties[p], actual.Entries[p]);
         }
 
         if (kat.ExpectedDiagnosticCount.HasValue)
-            Assert.AreEqual(kat.ExpectedDiagnosticCount.Value, result.Diagnostics.Length, $"{kat.Id}: diagnostics count");
+            Assert.HasCount(kat.ExpectedDiagnosticCount.Value, result.Diagnostics, $"{kat.Id}: diagnostics count");
     }
 
     private static void ExecuteParseFail(BoduConfigurationKat kat, BoduConfigurationParseOptions options)
@@ -98,8 +96,8 @@ public partial class BoduConfigurationKatRunnerTests
         Assert.AreEqual(expected.Value, actual.Value, $"{kat.Id}: entry value");
         Assert.AreEqual(expected.ConfigurationKey, actual.ConfigurationKey(), $"{kat.Id}: entry configuration key");
 
-        Assert.AreEqual(expected.LeadingComments.Count, actual.LeadingComments.Count, $"{kat.Id}: leading comment count");
-        for (int i = 0; i < expected.LeadingComments.Count; i++)
+        Assert.HasCount(expected.LeadingComments.Count, actual.LeadingComments, $"{kat.Id}: leading comment count");
+        for (var i = 0; i < expected.LeadingComments.Count; i++)
             Assert.AreEqual(expected.LeadingComments[i], actual.LeadingComments[i].Text, $"{kat.Id}: leading comment[{i}]");
 
         if (expected.InlineComment is null)
@@ -123,7 +121,7 @@ public partial class BoduConfigurationKatRunnerTests
     /// <returns>A short identifier derived from the KAT's stable ID and title.</returns>
     public static string GetKatDisplayName(System.Reflection.MethodInfo methodInfo, object[] data)
     {
-        BoduConfigurationKat kat = (BoduConfigurationKat)data[0];
+        var kat = (BoduConfigurationKat)data[0];
         return $"{kat.Id} - {kat.Title}";
     }
 }

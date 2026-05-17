@@ -1,10 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BoduConfigurationKatRunnerTests.TypedValue.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Collections.Generic;
 using Bodu.Text.Configuration.Test.Infrastructure;
 
 using Bodu.Text.Formats;
@@ -25,10 +24,9 @@ public partial class BoduConfigurationKatRunnerTests
     /// Drives every <see cref="BoduConfigurationKatKind.TypedValue" /> KAT in the catalogue.
     /// </summary>
     /// <param name="kat">The KAT case to execute.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DynamicData(nameof(BoduConfigurationKnownAnswerData.TypedValueData),
         typeof(BoduConfigurationKnownAnswerData),
-        DynamicDataSourceType.Property,
         DynamicDataDisplayName = nameof(GetKatDisplayName))]
     public void TypedValue_Kat(BoduConfigurationKat kat)
     {
@@ -57,7 +55,7 @@ public partial class BoduConfigurationKatRunnerTests
 
     private static void ExecuteTypedPass(BoduConfigurationKat kat, BoduConfigurationView view)
     {
-        string key = kat.Key!.Replace('.', ':');
+        var key = kat.Key!.Replace('.', ':');
 
         switch (kat.TypedAccessor)
         {
@@ -95,7 +93,7 @@ public partial class BoduConfigurationKatRunnerTests
         if (kat.ExpectedException is null)
             Assert.Fail($"{kat.Id} is a fail KAT but has no ExpectedException.");
 
-        string key = kat.Key!.Replace('.', ':');
+        var key = kat.Key!.Replace('.', ':');
 
         AssertThrowsExactlyByName(kat.ExpectedException!, () =>
         {

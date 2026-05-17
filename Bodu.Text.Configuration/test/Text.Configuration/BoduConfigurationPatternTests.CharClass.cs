@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BoduConfigurationPatternTests.CharClass.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -18,12 +18,12 @@ public partial class BoduConfigurationPatternTests
     [TestCategory(TestCategories.Regression)]
     public void IsMatch_WhenCharacterClassCoversAlphaRange_ShouldMatchEachLetterInRange()
     {
-        BoduConfigurationPattern pattern = BoduConfigurationPattern.Compile("file-[a-e].txt");
+        var pattern = BoduConfigurationPattern.Compile("file-[a-e].txt");
 
-        for (char c = 'a'; c <= 'e'; c++)
+        for (var c = 'a'; c <= 'e'; c++)
             Assert.IsTrue(pattern.IsMatch($"file-{c}.txt"), $"expected match for {c}");
 
-        for (char c = 'f'; c <= 'z'; c++)
+        for (var c = 'f'; c <= 'z'; c++)
             Assert.IsFalse(pattern.IsMatch($"file-{c}.txt"), $"unexpected match for {c}");
     }
 
@@ -34,7 +34,7 @@ public partial class BoduConfigurationPatternTests
     [TestMethod]
     public void IsMatch_WhenCharacterClassIsExplicitAndContains_ShouldMatchOnlyListed()
     {
-        BoduConfigurationPattern pattern = BoduConfigurationPattern.Compile("foo[xyz]bar");
+        var pattern = BoduConfigurationPattern.Compile("foo[xyz]bar");
 
         Assert.IsTrue(pattern.IsMatch("fooxbar"));
         Assert.IsTrue(pattern.IsMatch("fooybar"));

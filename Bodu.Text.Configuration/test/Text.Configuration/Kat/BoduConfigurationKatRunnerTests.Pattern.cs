@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BoduConfigurationKatRunnerTests.Pattern.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -14,10 +14,9 @@ public partial class BoduConfigurationKatRunnerTests
     /// Drives every <see cref="BoduConfigurationKatKind.Pattern" /> KAT in the catalogue.
     /// </summary>
     /// <param name="kat">The KAT case to execute.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DynamicData(nameof(BoduConfigurationKnownAnswerData.PatternData),
         typeof(BoduConfigurationKnownAnswerData),
-        DynamicDataSourceType.Property,
         DynamicDataDisplayName = nameof(GetKatDisplayName))]
     public void Pattern_Kat(BoduConfigurationKat kat)
     {
@@ -34,8 +33,8 @@ public partial class BoduConfigurationKatRunnerTests
             return;
         }
 
-        BoduConfigurationPattern pattern = BoduConfigurationPattern.Compile(kat.Pattern!);
-        bool match = pattern.IsMatch(kat.TargetPath!);
+        var pattern = BoduConfigurationPattern.Compile(kat.Pattern!);
+        var match = pattern.IsMatch(kat.TargetPath!);
 
         Assert.AreEqual(
             kat.ExpectedMatch ?? false,

@@ -1,10 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BoduConfigurationDocumentTests.RoundTrip.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.IO;
 using Bodu.Text.Configuration.Infrastructure;
 using Bodu.Text.Formats;
 
@@ -33,16 +32,16 @@ public partial class BoduConfigurationDocumentTests
     public void RoundTrip_WhenRepresentativeFixture_ShouldPreserveCountsAndOrder()
     {
         IniDocument first = BoduConfigurationDocument.Parse(BoduConfigurationFixtures.Representative);
-        string emitted = Emit(first);
+        var emitted = Emit(first);
         IniDocument second = BoduConfigurationDocument.Parse(emitted);
 
-        Assert.AreEqual(first.Sections.Count, second.Sections.Count);
-        Assert.AreEqual(first.GlobalSection.Entries.Count, second.GlobalSection.Entries.Count);
+        Assert.HasCount(first.Sections.Count, second.Sections);
+        Assert.HasCount(first.GlobalSection.Entries.Count, second.GlobalSection.Entries);
 
-        for (int i = 0; i < first.Sections.Count; i++)
+        for (var i = 0; i < first.Sections.Count; i++)
         {
             Assert.AreEqual(first.Sections[i].Name, second.Sections[i].Name);
-            Assert.AreEqual(first.Sections[i].Entries.Count, second.Sections[i].Entries.Count);
+            Assert.HasCount(first.Sections[i].Entries.Count, second.Sections[i].Entries);
         }
     }
 
@@ -55,8 +54,8 @@ public partial class BoduConfigurationDocumentTests
         IniDocument first = BoduConfigurationDocument.Parse(BoduConfigurationFixtures.CommentsAndProperties);
         IniDocument second = BoduConfigurationDocument.Parse(Emit(first));
 
-        Assert.AreEqual(first.Sections[0].LeadingComments.Count, second.Sections[0].LeadingComments.Count);
-        Assert.AreEqual(first.Sections[0].Entries[0].LeadingComments.Count, second.Sections[0].Entries[0].LeadingComments.Count);
+        Assert.HasCount(first.Sections[0].LeadingComments.Count, second.Sections[0].LeadingComments);
+        Assert.HasCount(first.Sections[0].Entries[0].LeadingComments.Count, second.Sections[0].Entries[0].LeadingComments);
     }
 
     /// <summary>
@@ -104,7 +103,7 @@ public partial class BoduConfigurationDocumentTests
         IniDocument reparsed = BoduConfigurationDocument.Parse(Emit(doc));
 
         Assert.AreEqual("true", reparsed.GlobalSection["root"]);
-        Assert.AreEqual(1, reparsed.Sections.Count);
+        Assert.HasCount(1, reparsed.Sections);
         Assert.AreEqual("4", reparsed.Sections[0].Entries[0].Value);
         Assert.AreEqual("space", reparsed.Sections[0].Entries[1].Value);
     }

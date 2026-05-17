@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BoduConfigurationKeyTests.CaseSensitivity.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -38,8 +38,8 @@ public partial class BoduConfigurationKeyTests
     [TestMethod]
     public void Equals_WhenCaseInsensitiveAndKeysDifferInCase_ShouldBeTrue()
     {
-        BoduConfigurationKey upper = BoduConfigurationKey.Parse("LOGGING.LEVEL");
-        BoduConfigurationKey lower = BoduConfigurationKey.Parse("logging.level");
+        var upper = BoduConfigurationKey.Parse("LOGGING.LEVEL");
+        var lower = BoduConfigurationKey.Parse("logging.level");
 
         Assert.IsTrue(upper.Equals(lower));
         Assert.AreEqual(upper.GetHashCode(), lower.GetHashCode());
@@ -52,8 +52,8 @@ public partial class BoduConfigurationKeyTests
     public void Equals_WhenCaseSensitiveAndKeysDifferInCase_ShouldBeFalse()
     {
         BoduConfigurationKeyOptions options = new() { CaseSensitive = true };
-        BoduConfigurationKey upper = BoduConfigurationKey.Parse("LOGGING.LEVEL", options);
-        BoduConfigurationKey lower = BoduConfigurationKey.Parse("logging.level", options);
+        var upper = BoduConfigurationKey.Parse("LOGGING.LEVEL", options);
+        var lower = BoduConfigurationKey.Parse("logging.level", options);
 
         Assert.IsFalse(upper.Equals(lower));
     }
