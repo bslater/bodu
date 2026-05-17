@@ -418,7 +418,9 @@ public sealed class Shake
     /// Serializes the leading lanes of the Keccak state into the destination span using little-endian byte order.
     /// </summary>
     /// <param name="state">The source 25-element state array.</param>
-    /// <param name="destination">The span to write output bytes into. Its length determines how many bytes are extracted.</param>
+    /// <param name="destination">
+    /// The span to write output bytes into. Its length determines how many bytes are extracted.
+    /// </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static void WriteLanesToBytes(ulong[] state, Span<byte> destination)
     {

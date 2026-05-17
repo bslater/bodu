@@ -109,14 +109,16 @@ internal static partial class CryptoHelpers
     /// <typeparam name="T">The element type of the span.</typeparam>
     /// <param name="span">The span whose length is validated.</param>
     /// <param name="divisor">The required positive divisor.</param>
-    /// <param name="throwIfZero"><see langword="true" /> to treat an empty span as invalid; <see langword="false" /> to allow an empty span.</param>
+    /// <param name="throwIfZero">
+    /// <see langword="true" /> to treat an empty span as invalid; <see langword="false" /> to allow an empty span.
+    /// </param>
     /// <param name="paramName">The name of the span parameter. Supplied automatically by the compiler.</param>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <paramref name="divisor" /> is zero or negative.
     /// </exception>
     /// <exception cref="CryptographicException">
-    /// Thrown when <paramref name="span" /> is empty and <paramref name="throwIfZero" /> is <see langword="true" />,
-    /// or when the span length is not evenly divisible by <paramref name="divisor" />.
+    /// Thrown when <paramref name="span" /> is empty and <paramref name="throwIfZero" /> is <see langword="true" />, or
+    /// when the span length is not evenly divisible by <paramref name="divisor" />.
     /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfSpanLengthNotPositiveMultipleOf<T>(
@@ -397,7 +399,9 @@ internal static partial class CryptoHelpers
     /// Throws a <see cref="CryptographicException" /> when <paramref name="success" /> is <see langword="false" />,
     /// indicating that <see cref="HashAlgorithm.TryComputeHash" /> failed because the destination buffer was too small.
     /// </summary>
-    /// <param name="success">The result returned from <see cref="HashAlgorithm.TryComputeHash" /> or an equivalent call.</param>
+    /// <param name="success">
+    /// The result returned from <see cref="HashAlgorithm.TryComputeHash" /> or an equivalent call.
+    /// </param>
     /// <exception cref="CryptographicException">
     /// Thrown when <paramref name="success" /> is <see langword="false" />.
     /// </exception>
@@ -413,7 +417,9 @@ internal static partial class CryptoHelpers
     /// Throws a <see cref="CryptographicException" /> when <paramref name="hash" /> is <see langword="null" />,
     /// indicating that the hash algorithm completed without producing a hash value.
     /// </summary>
-    /// <param name="hash">The hash value returned by the algorithm, or <see langword="null" /> if no value was produced.</param>
+    /// <param name="hash">
+    /// The hash value returned by the algorithm, or <see langword="null" /> if no value was produced.
+    /// </param>
     /// <returns>The non-<see langword="null" /> <paramref name="hash" /> value.</returns>
     /// <exception cref="CryptographicException">
     /// Thrown when <paramref name="hash" /> is <see langword="null" />.

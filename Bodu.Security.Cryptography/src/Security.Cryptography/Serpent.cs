@@ -48,7 +48,9 @@ public abstract class Serpent
     /// <summary>
     /// Initializes a new instance of the <see cref="Serpent" /> class with the specified block and tweak sizes.
     /// </summary>
-    /// <param name="blockSizeBits">The block size in bits. Must match the wide-block Serpent variant block size (256, 512, or 1024).</param>
+    /// <param name="blockSizeBits">
+    /// The block size in bits. Must match the wide-block Serpent variant block size (256, 512, or 1024).
+    /// </param>
     /// <param name="tweakSizeBits">The tweak size in bits (128 for all wide-block Serpent variants).</param>
     protected Serpent(int blockSizeBits, int tweakSizeBits)
     {
