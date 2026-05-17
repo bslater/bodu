@@ -170,7 +170,7 @@ public static partial class IEnumerableExtensions
     /// </remarks>
     /// <example>
     /// <code language="csharp">
-    /// <![CDATA[ var (min, max) = new[] { 3, 1, 4, 1, 5, 9, 2, 6 }.Aggregate( seed1: int.MaxValue,
+    ///<![CDATA[ var (min, max) = new[] { 3, 1, 4, 1, 5, 9, 2, 6 }.Aggregate( seed1: int.MaxValue,
     /// seed2: int.MinValue, func1: (acc, x) => Math.Min(acc, x), func2: (acc, x) => Math.Max(acc, x)); // min == 1, max
     /// == 9 ]]>
     /// </code>
@@ -360,7 +360,7 @@ public static partial class IEnumerableExtensions
     /// </remarks>
     /// <example>
     /// <code language="csharp">
-    /// <![CDATA[ var (sum, count, max) = new[] { 3, 1, 4, 1, 5, 9, 2, 6 }.Aggregate( seed1: 0, seed2: 0,
+    ///<![CDATA[ var (sum, count, max) = new[] { 3, 1, 4, 1, 5, 9, 2, 6 }.Aggregate( seed1: 0, seed2: 0,
     /// seed3: int.MinValue, func1: (acc, x) => acc + x, func2: (acc, _) => acc + 1, func3: (acc, x) => Math.Max(acc,
     /// x)); // sum == 31, count == 8, max == 9 ]]>
     /// </code>

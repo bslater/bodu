@@ -32,7 +32,7 @@ namespace Bodu.Collections.Extensions;
 /// </para>
 /// <example>
 /// <code language="csharp">
-/// <![CDATA[ // Cheap count when the source already exposes ICollection — falls back to enumeration
+///<![CDATA[ // Cheap count when the source already exposes ICollection — falls back to enumeration
 /// otherwise. System.Collections.IEnumerable boxed = new ArrayList { 1, 2, 3, 4 }; int count = boxed.CountOrDefault();
 /// // => 4 // Walk a heterogeneous control tree without committing to a generic type. System.Collections.IEnumerable
 /// controls = root.GetChildren(); foreach (object node in controls.RecursiveSelect(c =&gt; ((Control)c).GetChildren()))

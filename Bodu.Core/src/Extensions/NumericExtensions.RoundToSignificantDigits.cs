@@ -30,7 +30,7 @@ public static partial class NumericExtensions
     /// </remarks>
     /// <example>
     /// <code language="csharp">
-    /// <![CDATA[ 12345.6789.RoundToSignificantDigits(3); // => 12300
+    ///<![CDATA[ 12345.6789.RoundToSignificantDigits(3); // => 12300
     /// 0.0012345.RoundToSignificantDigits(2); // => 0.0012 ]]>
     /// </code>
     /// </example>

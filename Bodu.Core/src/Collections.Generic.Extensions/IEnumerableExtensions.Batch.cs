@@ -246,7 +246,7 @@ public static partial class IEnumerableExtensions
     /// </remarks>
     /// <example>
     /// <code language="csharp">
-    /// <![CDATA[ Input: Enumerable.Range(1, 9) Batch size: 3 Expected output: Batch 1: 1, 2, 3 Batch 2:
+    ///<![CDATA[ Input: Enumerable.Range(1, 9) Batch size: 3 Expected output: Batch 1: 1, 2, 3 Batch 2:
     /// 4, 5, 6 Batch 3: 7, 8, 9 var source = Enumerable.Range(1, 9); foreach (var batch in source.BatchPooled(3)) {
     /// Console.WriteLine(string.Join(", ", batch.ToArray())); } ]]>
     /// </code>
