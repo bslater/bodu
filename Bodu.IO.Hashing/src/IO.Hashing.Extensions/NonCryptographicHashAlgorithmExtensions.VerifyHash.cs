@@ -157,8 +157,8 @@ public static partial class NonCryptographicHashAlgorithmExtensions
     /// </param>
     /// <returns>
     /// <see langword="true" /> if the hash of the stream matches <paramref name="expectedHex" />; otherwise,
-    /// <see langword="false" />.
-    /// Returns <see langword="false" /> if <paramref name="expectedHex" /> is not a valid hexadecimal string.
+    /// <see langword="false" />. Returns <see langword="false" /> if <paramref name="expectedHex" /> is not a valid
+    /// hexadecimal string.
     /// </returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="algorithm" />, <paramref name="stream" />, or <paramref name="expectedHex" /> is

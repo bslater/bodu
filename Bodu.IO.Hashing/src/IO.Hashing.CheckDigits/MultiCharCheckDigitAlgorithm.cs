@@ -43,7 +43,9 @@ public abstract class MultiCharCheckDigitAlgorithm
     /// <summary>
     /// Gets the canonical name of the algorithm, suitable for diagnostic output and logging.
     /// </summary>
-    /// <returns>A short, stable identifier such as <c>"ISO 7064 MOD 97-10"</c>, <c>"IBAN"</c>, or <c>"LEI"</c>.</returns>
+    /// <returns>
+    /// A short, stable identifier such as <c>"ISO 7064 MOD 97-10"</c>, <c>"IBAN"</c>, or <c>"LEI"</c>.
+    /// </returns>
     public abstract string AlgorithmName { get; }
 
     /// <summary>

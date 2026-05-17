@@ -285,7 +285,9 @@ public abstract class BlockNonCryptographicHashAlgorithm<T>
     /// <summary>
     /// Determines whether the final block of input data should be padded before processing.
     /// </summary>
-    /// <returns><see langword="true" /> if the final block should be padded; otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> if the final block should be padded; otherwise, <see langword="false" />.
+    /// </returns>
     /// <remarks>
     /// By default this method returns <see langword="true" />. Derived classes can override to indicate that trailing
     /// residual bytes should be processed verbatim without explicit padding.

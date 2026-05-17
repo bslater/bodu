@@ -94,8 +94,8 @@ public sealed class MurmurHash3_128
     /// </summary>
     /// <param name="source">The input bytes to hash.</param>
     /// <returns>
-    /// A 16-byte array containing the little-endian encoded 128-bit hash value,
-    /// with <c>h1</c> in bytes 0–7 and <c>h2</c> in bytes 8–15.
+    /// A 16-byte array containing the little-endian encoded 128-bit hash value, with <c>h1</c> in bytes 0–7 and
+    /// <c>h2</c> in bytes 8–15.
     /// </returns>
     protected override byte[] ComputeHashCore(ReadOnlySpan<byte> source)
     {

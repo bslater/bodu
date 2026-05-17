@@ -448,8 +448,10 @@ public sealed class Crc
     /// Returns the working-state representation of <see cref="CrcStandard.InitialValue" />, applying input reflection
     /// when required.
     /// </summary>
-    /// <returns>The initial CRC accumulator value, bit-reflected if the standard's
-    /// <see cref="CrcStandard.ReflectIn" /> flag is set.</returns>
+    /// <returns>
+    /// The initial CRC accumulator value, bit-reflected if the standard's <see cref="CrcStandard.ReflectIn" /> flag is
+    /// set.
+    /// </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private ulong ComputeInitialState()
         => this._standard.ReflectIn
