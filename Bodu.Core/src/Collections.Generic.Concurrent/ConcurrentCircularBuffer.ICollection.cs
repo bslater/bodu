@@ -42,15 +42,17 @@ public partial class ConcurrentCircularBuffer<T>
     }
 
     /// <summary>
-    /// Gets a value indicating whether access to the <see cref="ConcurrentCircularBuffer{T}"/> is synchronized (thread safe).
+    /// Gets a value indicating whether access to the <see cref="ConcurrentCircularBuffer{T}" /> is synchronized (thread
+    /// safe).
     /// </summary>
     /// <value>
-    /// Always <see langword="false"/>. <see cref="ConcurrentCircularBuffer{T}"/> manages its own internal synchronization and does
-    /// not expose a public lock object.
+    /// Always <see langword="false" />. <see cref="ConcurrentCircularBuffer{T}" /> manages its own internal
+    /// synchronization and does not expose a public lock object.
     /// </value>
     /// <remarks>
-    /// Thread safety is achieved through internal lock-free or fine-grained locking mechanisms. Callers should not attempt to
-    /// coordinate access externally via <see cref="ICollection.SyncRoot"/>, as that property is not supported.
+    /// Thread safety is achieved through internal lock-free or fine-grained locking mechanisms. Callers should not
+    /// attempt to coordinate access externally via <see cref="ICollection.SyncRoot" />, as that property is not
+    /// supported.
     /// </remarks>
     bool ICollection.IsSynchronized => false;
 
@@ -68,27 +70,30 @@ public partial class ConcurrentCircularBuffer<T>
         throw new NotSupportedException(ResourceStrings.Op_NotSupported_ConcurrentSyncRoot);
 
     /// <summary>
-    /// Copies the elements of the <see cref="ConcurrentCircularBuffer{T}"/> to a one-dimensional, zero-based <see cref="Array"/>,
-    /// starting at the specified index.
+    /// Copies the elements of the <see cref="ConcurrentCircularBuffer{T}" /> to a one-dimensional, zero-based
+    /// <see cref="Array" />, starting at the specified index.
     /// </summary>
     /// <param name="array">
-    /// The destination array. Must not be <see langword="null"/>, must be single-dimensional, and must have zero-based indexing.
+    /// The destination array. Must not be <see langword="null" />, must be single-dimensional, and must have zero-based
+    /// indexing.
     /// </param>
-    /// <param name="index">The zero-based index in <paramref name="array"/> at which copying begins.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="array"/> is <see langword="null"/>.</exception>
+    /// <param name="index">The zero-based index in <paramref name="array" /> at which copying begins.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="array" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="array"/> is multidimensional, does not have zero-based indexing, its element type is incompatible with <typeparamref name="T"/>,
-    /// or the number of elements in the buffer exceeds the available space from <paramref name="index"/> to the end of <paramref name="array"/>.
+    /// <paramref name="array" /> is multidimensional, does not have zero-based indexing, its element type is
+    /// incompatible with <typeparamref name="T" />, or the number of elements in the buffer exceeds the available space
+    /// from <paramref name="index" /> to the end of <paramref name="array" />.
     /// </exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> is less than zero.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is less than zero.</exception>
     /// <remarks>
     /// <para>
-    /// This method takes an atomic snapshot of the buffer before copying. The destination array reflects the state of the buffer at the
-    /// moment the snapshot was taken and is not affected by concurrent modifications made after that point.
+    /// This method takes an atomic snapshot of the buffer before copying. The destination array reflects the state of
+    /// the buffer at the moment the snapshot was taken and is not affected by concurrent modifications made after that
+    /// point.
     /// </para>
     /// <para>
-    /// This method supports the non-generic <see cref="ICollection"/> interface and is intended for interop scenarios. For strongly typed
-    /// copies, use <see cref="CopyTo(T[], int)"/> instead.
+    /// This method supports the non-generic <see cref="ICollection" /> interface and is intended for interop scenarios.
+    /// For strongly typed copies, use <see cref="CopyTo(T[], int)" /> instead.
     /// </para>
     /// </remarks>
     void ICollection.CopyTo(Array array, int index)
