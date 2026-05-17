@@ -64,8 +64,8 @@ public static partial class SpanExtensions
     /// </para>
     /// </remarks>
     /// <example>
-    /// <code> int[] data = { 1, 2, 3, 4, 5 }; // Reverse a middle section; first and last elements are untouched.
-    /// Span&lt;int&gt; result = data.AsSpan().Reverse(start: 1, length: 3); // [ 1, 4, 3, 2, 5 ] </code>
+    /// <code><![CDATA[ int[] data = { 1, 2, 3, 4, 5 }; // Reverse a middle section; first and last elements are untouched.
+    /// Span&lt;int&gt; result = data.AsSpan().Reverse(start: 1, length: 3); // [ 1, 4, 3, 2, 5 ] ]]></code>
     /// </example>
     public static Span<T> Reverse<T>(this ReadOnlySpan<T> source, int index, int count)
     {
@@ -108,8 +108,8 @@ public static partial class SpanExtensions
     /// </para>
     /// </remarks>
     /// <example>
-    /// <code> int[] data = { 1, 2, 3, 4, 5 }; Span&lt;int&gt; fromStart = data.AsSpan().Reverse(1..4); // [ 1, 4, 3, 2,
-    /// 5 ] Span&lt;int&gt; fromEnd = data.AsSpan().Reverse(^4..^1); // [ 1, 4, 3, 2, 5 ] </code>
+    /// <code><![CDATA[ int[] data = { 1, 2, 3, 4, 5 }; Span&lt;int&gt; fromStart = data.AsSpan().Reverse(1..4); // [ 1, 4, 3, 2,
+    /// 5 ] Span&lt;int&gt; fromEnd = data.AsSpan().Reverse(^4..^1); // [ 1, 4, 3, 2, 5 ] ]]></code>
     /// </example>
     public static Span<T> Reverse<T>(this ReadOnlySpan<T> source, Range range)
     {

@@ -67,4 +67,17 @@
             <DependentUpon>ResourceStrings.resx</DependentUpon>
         </Compile>
     </ItemGroup>
+
+    <!--
+      Wire the in-repo XML-doc analyzer and code-fix as a Roslyn analyzer reference scoped to this project.
+      Used to exercise BODU1405 (<code> must begin with CDATA flush against ///) against Bodu.Core in isolation.
+    -->
+    <ItemGroup>
+        <ProjectReference Include="..\..\Bodu.CodeStyle\Bodu.CodeStyle.XmlDocumentation.Analyzers\src\Bodu.CodeStyle.XmlDocumentation.Analyzers.csproj"
+                          ReferenceOutputAssembly="false"
+                          OutputItemType="Analyzer" />
+        <ProjectReference Include="..\..\Bodu.CodeStyle\Bodu.CodeStyle.XmlDocumentation.CodeFixes\src\Bodu.CodeStyle.XmlDocumentation.CodeFixes.csproj"
+                          ReferenceOutputAssembly="false"
+                          OutputItemType="Analyzer" />
+    </ItemGroup>
 </Project>
