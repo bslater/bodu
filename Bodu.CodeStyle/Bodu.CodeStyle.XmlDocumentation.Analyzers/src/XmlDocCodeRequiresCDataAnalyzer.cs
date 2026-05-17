@@ -12,13 +12,16 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
+using Microsoft.CodeAnalysis.Text;
 
 namespace Bodu.CodeStyle.XmlDocumentation.Analyzers;
 
 /// <summary>
 /// Reports <c>BODU1405</c> when a <c>&lt;code&gt;</c> documentation element does not begin with a
-/// <c>&lt;![CDATA[…]]&gt;</c> section. Wrapping the body in CDATA preserves XML-significant characters and
-/// language samples verbatim so that the generated documentation reproduces the example exactly.
+/// <c>&lt;![CDATA[…]]&gt;</c> section, or when that section's opener has whitespace separating it from the
+/// preceding <c>///</c> doc-comment prefix. Wrapping the body in CDATA preserves XML-significant characters
+/// and language samples verbatim; emitting <c>&lt;![CDATA[</c> immediately after <c>///</c> keeps the
+/// rendered example flush-left without an accidental leading space.
 /// </summary>
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public sealed class XmlDocCodeRequiresCDataAnalyzer : DiagnosticAnalyzer
@@ -46,11 +49,16 @@ public sealed class XmlDocCodeRequiresCDataAnalyzer : DiagnosticAnalyzer
         if (!IsCodeElement(element.StartTag.Name)) return;
         if (IsInGeneratedCode(context)) return;
 
+        XmlCDataSectionSyntax? firstCData = null;
         foreach (XmlNodeSyntax child in element.Content)
         {
             if (IsWhitespaceOnly(child)) continue;
 
-            if (child is XmlCDataSectionSyntax) return;
+            if (child is XmlCDataSectionSyntax cdata)
+            {
+                firstCData = cdata;
+                break;
+            }
 
             // First non-whitespace child is not CDATA — flag the element.
             context.ReportDiagnostic(Diagnostic.Create(
@@ -59,10 +67,21 @@ public sealed class XmlDocCodeRequiresCDataAnalyzer : DiagnosticAnalyzer
             return;
         }
 
-        // Element body contains nothing or only whitespace — no CDATA child present.
-        context.ReportDiagnostic(Diagnostic.Create(
-            DiagnosticDescriptors.XmlDocCodeRequiresCData,
-            element.StartTag.GetLocation()));
+        if (firstCData is null)
+        {
+            // Element body contains nothing or only whitespace — no CDATA child present.
+            context.ReportDiagnostic(Diagnostic.Create(
+                DiagnosticDescriptors.XmlDocCodeRequiresCData,
+                element.StartTag.GetLocation()));
+            return;
+        }
+
+        if (HasSpaceBetweenDocPrefixAndCData(firstCData))
+        {
+            context.ReportDiagnostic(Diagnostic.Create(
+                DiagnosticDescriptors.XmlDocCodeRequiresCData,
+                firstCData.GetLocation()));
+        }
     }
 
     private static void AnalyzeXmlEmptyElement(SyntaxNodeAnalysisContext context)
@@ -92,6 +111,34 @@ public sealed class XmlDocCodeRequiresCDataAnalyzer : DiagnosticAnalyzer
 
             return false;
         }
+
+        return true;
+    }
+
+    // Walks backward from the CDATA opener through space / tab characters on the same line. When those
+    // whitespace characters are immediately preceded by exactly "///" (the doc-comment prefix), the opener
+    // sits on its own /// line with a stray separating space — exactly the layout the rule forbids.
+    private static bool HasSpaceBetweenDocPrefixAndCData(XmlCDataSectionSyntax cdata)
+    {
+        SyntaxTree? tree = cdata.SyntaxTree;
+        if (tree is null) return false;
+
+        SourceText text = tree.GetText();
+        var position = cdata.SpanStart - 1;
+        var whitespace = 0;
+
+        while (position >= 0 && (text[position] == ' ' || text[position] == '\t'))
+        {
+            whitespace++;
+            position--;
+        }
+
+        if (whitespace == 0) return false;
+        if (position < 2) return false;
+        if (text[position] != '/' || text[position - 1] != '/' || text[position - 2] != '/') return false;
+
+        // Reject /// runs longer than three slashes (e.g. ////) — those aren't doc-comment prefixes.
+        if (position - 3 >= 0 && text[position - 3] == '/') return false;
 
         return true;
     }

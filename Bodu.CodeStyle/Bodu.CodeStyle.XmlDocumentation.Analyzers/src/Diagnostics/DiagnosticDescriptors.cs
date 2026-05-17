@@ -96,16 +96,17 @@ internal static class DiagnosticDescriptors
 
     /// <summary>
     /// Gets the descriptor for <c>BODU1405</c> — a <c>&lt;code&gt;</c> element does not contain a
-    /// <c>&lt;![CDATA[…]]&gt;</c> section as its first non-whitespace child.
+    /// <c>&lt;![CDATA[…]]&gt;</c> section as its first non-whitespace child, or that section's opener has
+    /// stray whitespace separating it from the preceding <c>///</c> doc-comment prefix.
     /// </summary>
     public static DiagnosticDescriptor XmlDocCodeRequiresCData { get; } = new DiagnosticDescriptor(
         id: DiagnosticIds.XmlDocCodeRequiresCData,
-        title: "XML documentation <code> element must begin with a CDATA section",
-        messageFormat: "<code> element must contain <![CDATA[…]]> as its first child per project policy",
+        title: "XML documentation <code> element must begin with a CDATA section flush against ///",
+        messageFormat: "<code> element must begin with <![CDATA[ immediately after the /// doc-comment prefix per project policy",
         category: Category,
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true,
-        description: "Requires <code> documentation blocks to wrap their body in a <![CDATA[…]]> section so XML-significant characters and language samples render verbatim.",
+        description: "Requires <code> documentation blocks to wrap their body in a <![CDATA[…]]> section so XML-significant characters and language samples render verbatim, and requires the opener to butt directly against the /// prefix with no separating space.",
         helpLinkUri: HelpLinkBase + "#bodu1405");
 
     /// <summary>Gets the immutable collection of every descriptor surfaced by this analyzer.</summary>

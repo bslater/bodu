@@ -41,11 +41,32 @@ public sealed class XmlDocCodeRequiresCDataAnalyzerTests
     }
 
     /// <summary>
-    /// Verifies that a multi-line <c>&lt;code&gt;</c> element whose first non-whitespace child is a CDATA
-    /// section (with intervening doc-comment prefix whitespace and newlines) does not trigger BODU1405.
+    /// Verifies that a multi-line <c>&lt;code&gt;</c> element whose CDATA opener is flush against the
+    /// preceding <c>///</c> prefix (no separating space) does not trigger BODU1405.
     /// </summary>
     [TestMethod]
     public async Task Analyze_WhenCodeWrapsCDataAcrossLines_ShouldNotReport()
+    {
+        var source =
+            "public sealed class Sample\r\n" +
+            "{\r\n" +
+            "    /// <code>\r\n" +
+            "    ///<![CDATA[\r\n" +
+            "    /// var x = 5;\r\n" +
+            "    /// ]]>\r\n" +
+            "    /// </code>\r\n" +
+            "    public int X { get; set; }\r\n" +
+            "}\r\n";
+
+        await CreateTest(source).RunAsync(TestContext.CancellationTokenSource.Token);
+    }
+
+    /// <summary>
+    /// Verifies that a multi-line <c>&lt;code&gt;</c> element whose CDATA opener has a stray space between
+    /// the <c>///</c> doc-comment prefix and <c>&lt;![CDATA[</c> triggers BODU1405.
+    /// </summary>
+    [TestMethod]
+    public async Task Analyze_WhenCDataHasSpaceAfterDocPrefix_ShouldReportBODU1405()
     {
         var source =
             "public sealed class Sample\r\n" +
@@ -58,7 +79,12 @@ public sealed class XmlDocCodeRequiresCDataAnalyzerTests
             "    public int X { get; set; }\r\n" +
             "}\r\n";
 
-        await CreateTest(source).RunAsync(TestContext.CancellationTokenSource.Token);
+        CSharpAnalyzerTest<XmlDocCodeRequiresCDataAnalyzer, MSTestVerifier> test = CreateTest(source);
+        test.ExpectedDiagnostics.Add(
+            new DiagnosticResult(DiagnosticDescriptors.XmlDocCodeRequiresCData)
+                .WithSpan(4, 9, 6, 12));
+
+        await test.RunAsync(TestContext.CancellationTokenSource.Token);
     }
 
     /// <summary>
