@@ -30,9 +30,12 @@ public partial class BoduConfigurationKatRunnerTests
 
         using StringWriter sw = new();
         BoduConfigurationDocument.Save(doc, sw, writeOptions);
-        var written = sw.ToString().TrimEnd('\n', '\r');
 
-        var expected = (kat.ExpectedText ?? string.Empty).TrimEnd('\n', '\r');
+        // KAT raw-string literals adopt the source file's line endings, which differ across
+        // platforms under `* text=auto`; normalize so the assertion validates logical content
+        // rather than the checkout's EOL bytes.
+        var written = sw.ToString().ReplaceLineEndings("\n").TrimEnd('\n');
+        var expected = (kat.ExpectedText ?? string.Empty).ReplaceLineEndings("\n").TrimEnd('\n');
 
         if (kat.Kind is BoduConfigurationKatKind.RoundTrip)
         {
