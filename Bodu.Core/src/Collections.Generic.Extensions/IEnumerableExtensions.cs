@@ -35,12 +35,12 @@ namespace Bodu.Collections.Generic.Extensions;
 /// <see cref="IEqualityComparer{T}" /> default to <see cref="EqualityComparer{T}.Default" /> when one is not supplied.
 /// </para>
 /// <example>
-/// <code language="csharp"> IEnumerable&lt;int&gt; source = Enumerable.Range(1, 9); // Chunk into windows of three.
+/// <code language="csharp"><![CDATA[ IEnumerable&lt;int&gt; source = Enumerable.Range(1, 9); // Chunk into windows of three.
 /// foreach (var window in source.Batch(3)) Console.WriteLine(string.Join(", ", window)); // => 1, 2, 3 // => 4, 5, 6 //
 /// => 7, 8, 9 // Compute count and sum in a single pass. var (count, sum) = source.Aggregate( seed1: 0, seed2: 0L,
 /// func1: (c, _) =&gt; c + 1, func2: (s, x) =&gt; s + x); // => count == 9, sum == 45 // Predicate-style set check
 /// using a custom comparer. bool anyMatch = new[] { "FOO", "bar" } .ContainsAny(new[] { "foo", "baz" },
-/// StringComparer.OrdinalIgnoreCase); // => true </code>
+/// StringComparer.OrdinalIgnoreCase); // => true ]]></code>
 /// </example>
 /// </remarks>
 public static partial class IEnumerableExtensions

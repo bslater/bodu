@@ -34,6 +34,14 @@ public partial class BoduConfigurationKatRunnerTests
 
         var expected = (kat.ExpectedText ?? string.Empty).TrimEnd('\n', '\r');
 
+        // On Windows, the KAT data file is checked out with CRLF (`* text=auto` in .gitattributes)
+        // and C# raw-string literals adopt those endings; the writer emits its configured NewLine
+        // ("\n" by default), so the assertion would otherwise fail on internal CRLF/LF mismatches.
+        if (OperatingSystem.IsWindows())
+        {
+            expected = expected.Replace("\r\n", "\n");
+        }
+
         if (kat.Kind is BoduConfigurationKatKind.RoundTrip)
         {
             IniDocument reparsed = BoduConfigurationDocument.Parse(written, BoduConfigurationParseOptions.Bodu);
