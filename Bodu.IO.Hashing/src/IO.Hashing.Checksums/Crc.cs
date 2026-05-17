@@ -146,7 +146,9 @@ public sealed class Crc
     /// <summary>
     /// Gets or sets the process-wide cache used to share CRC lookup tables across <see cref="Crc" /> instances.
     /// </summary>
-    /// <value>The active <see cref="CrcLookupTableCache" />. A default cache is lazily created when first accessed.</value>
+    /// <value>
+    /// The active <see cref="CrcLookupTableCache" />. A default cache is lazily created when first accessed.
+    /// </value>
     /// <exception cref="ArgumentNullException">The value being assigned is <see langword="null" />.</exception>
     public static CrcLookupTableCache GlobalCache
     {
