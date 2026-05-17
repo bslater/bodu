@@ -72,7 +72,9 @@ public abstract class Serpent
     /// <summary>
     /// Gets or sets the block cipher mode of operation used when creating encryptors and decryptors.
     /// </summary>
-    /// <value>One of the <see cref="CipherModeKind" /> values. The default is <see cref="CipherModeKind.CBC" />.</value>
+    /// <value>
+    /// One of the <see cref="CipherModeKind" /> values. The default is <see cref="CipherModeKind.CBC" />.
+    /// </value>
     /// <remarks>
     /// This property replaces the inherited <see cref="SymmetricAlgorithm.Mode" /> property when used with
     /// <see cref="BlockCipherModeFactory" /> and the extended set of modes it supports, including
