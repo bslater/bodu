@@ -163,9 +163,8 @@ public abstract class MurmurHash3<T>
     /// Releases the resources used by the current instance, optionally clearing managed state.
     /// </summary>
     /// <param name="disposing">
-    /// <see langword="true" /> when called from <see cref="Dispose()" />; <see langword="false" /> when called
-    /// from a finalizer. Managed resources are released only when <paramref name="disposing" /> is
-    /// <see langword="true" />.
+    /// <see langword="true" /> when called from <see cref="Dispose()" />; <see langword="false" /> when called from a
+    /// finalizer. Managed resources are released only when <paramref name="disposing" /> is <see langword="true" />.
     /// </param>
     /// <remarks>
     /// Override in a derived class to release additional resources owned by the subclass. Always invoke

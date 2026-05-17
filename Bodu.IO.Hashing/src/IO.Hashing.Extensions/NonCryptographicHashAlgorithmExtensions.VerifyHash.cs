@@ -21,7 +21,9 @@ public static partial class NonCryptographicHashAlgorithmExtensions
     /// The <see cref="NonCryptographicHashAlgorithm" /> instance used to compute the hash. Must not be
     /// <see langword="null" />.
     /// </param>
-    /// <param name="input">The input byte array whose hash will be computed. Must not be <see langword="null" />.</param>
+    /// <param name="input">
+    /// The input byte array whose hash will be computed. Must not be <see langword="null" />.
+    /// </param>
     /// <param name="expectedHash">The expected hash value as a byte array. Must not be <see langword="null" />.</param>
     /// <returns>
     /// <see langword="true" /> if the computed hash equals <paramref name="expectedHash" />; otherwise,

@@ -120,8 +120,12 @@ public abstract class BlockNonCryptographicHashAlgorithm<T>
     /// Initializes a new instance of the <see cref="BlockNonCryptographicHashAlgorithm{T}" /> class using the specified
     /// output size and block size.
     /// </summary>
-    /// <param name="hashLengthInBytes">The length, in bytes, of the hash produced by this algorithm. Must be greater than zero.</param>
-    /// <param name="blockSize">The block size, in bytes, that the algorithm uses to process input data. Must be greater than zero.</param>
+    /// <param name="hashLengthInBytes">
+    /// The length, in bytes, of the hash produced by this algorithm. Must be greater than zero.
+    /// </param>
+    /// <param name="blockSize">
+    /// The block size, in bytes, that the algorithm uses to process input data. Must be greater than zero.
+    /// </param>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="hashLengthInBytes" /> ≤ 0, or <paramref name="blockSize" /> ≤ 0.
     /// </exception>
@@ -252,8 +256,12 @@ public abstract class BlockNonCryptographicHashAlgorithm<T>
     /// <summary>
     /// Transforms a complete block of input data and updates the internal hash state.
     /// </summary>
-    /// <param name="block">The input block to process. Its length must match the algorithm's configured block size.</param>
-    /// <exception cref="ArgumentException">Thrown if the <paramref name="block" /> is not the expected size.</exception>
+    /// <param name="block">
+    /// The input block to process. Its length must match the algorithm's configured block size.
+    /// </param>
+    /// <exception cref="ArgumentException">
+    /// Thrown if the <paramref name="block" /> is not the expected size.
+    /// </exception>
     protected abstract void ProcessBlock(ReadOnlySpan<byte> block);
 
     /// <summary>

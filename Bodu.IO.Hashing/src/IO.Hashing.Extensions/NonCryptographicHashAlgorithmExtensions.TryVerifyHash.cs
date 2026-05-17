@@ -23,7 +23,9 @@ public static partial class NonCryptographicHashAlgorithmExtensions
     /// <param name="input">
     /// The input data to hash. A <see langword="null" /> value causes the method to return <see langword="false" />.
     /// </param>
-    /// <param name="expectedHash">The expected hash value to compare against. Must not be <see langword="null" />.</param>
+    /// <param name="expectedHash">
+    /// The expected hash value to compare against. Must not be <see langword="null" />.
+    /// </param>
     /// <returns>
     /// <see langword="true" /> if the computed hash matches <paramref name="expectedHash" />; otherwise,
     /// <see langword="false" />.
@@ -62,11 +64,13 @@ public static partial class NonCryptographicHashAlgorithmExtensions
     /// <param name="input">
     /// The input data to hash. A <see langword="null" /> value causes the method to return <see langword="false" />.
     /// </param>
-    /// <param name="expectedHex">The expected hash as a hexadecimal string. Must not be <see langword="null" />.</param>
+    /// <param name="expectedHex">
+    /// The expected hash as a hexadecimal string. Must not be <see langword="null" />.
+    /// </param>
     /// <returns>
     /// <see langword="true" /> if the computed hash matches <paramref name="expectedHex" />; otherwise,
-    /// <see langword="false" />.
-    /// Returns <see langword="false" /> if <paramref name="expectedHex" /> is not a valid hexadecimal string.
+    /// <see langword="false" />. Returns <see langword="false" /> if <paramref name="expectedHex" /> is not a valid
+    /// hexadecimal string.
     /// </returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="algorithm" /> or <paramref name="expectedHex" /> is <see langword="null" />.
@@ -207,11 +211,13 @@ public static partial class NonCryptographicHashAlgorithmExtensions
     /// The input stream to read and hash. A <see langword="null" /> value causes the method to return
     /// <see langword="false" />.
     /// </param>
-    /// <param name="expectedHex">The expected hash value as a hexadecimal string. Must not be <see langword="null" />.</param>
+    /// <param name="expectedHex">
+    /// The expected hash value as a hexadecimal string. Must not be <see langword="null" />.
+    /// </param>
     /// <returns>
     /// <see langword="true" /> if the stream hash matches <paramref name="expectedHex" />; otherwise,
-    /// <see langword="false" />.
-    /// Returns <see langword="false" /> if <paramref name="expectedHex" /> is not a valid hexadecimal string.
+    /// <see langword="false" />. Returns <see langword="false" /> if <paramref name="expectedHex" /> is not a valid
+    /// hexadecimal string.
     /// </returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="algorithm" /> or <paramref name="expectedHex" /> is <see langword="null" />.

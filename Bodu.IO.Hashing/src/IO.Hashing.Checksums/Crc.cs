@@ -124,10 +124,13 @@ public sealed class Crc
     /// <summary>
     /// Initializes a new instance of the <see cref="Crc" /> class using the specified <see cref="CrcStandard" />.
     /// </summary>
-    /// <param name="crcStandard">The CRC parameters (polynomial, width, reflection, initial value, final XOR) to use.</param>
+    /// <param name="crcStandard">
+    /// The CRC parameters (polynomial, width, reflection, initial value, final XOR) to use.
+    /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="crcStandard" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// The <see cref="CrcStandard.Size" /> of <paramref name="crcStandard" /> is outside the supported range (1 to 64 bits).
+    /// The <see cref="CrcStandard.Size" /> of <paramref name="crcStandard" /> is outside the supported range (1 to 64
+    /// bits).
     /// </exception>
     public Crc(CrcStandard crcStandard)
         : base(hashLengthInBytes: HashLengthInBytesFor(crcStandard))

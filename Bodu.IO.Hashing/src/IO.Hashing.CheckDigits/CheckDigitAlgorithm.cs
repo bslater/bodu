@@ -50,8 +50,8 @@ public abstract class CheckDigitAlgorithm
     /// Absorbs the supplied decimal digits into the running check-digit state.
     /// </summary>
     /// <param name="digits">
-    /// The characters to append. Each element must be an ASCII decimal digit (<c>'0'</c> to <c>'9'</c>).
-    /// An empty span is a permitted no-op.
+    /// The characters to append. Each element must be an ASCII decimal digit (<c>'0'</c> to <c>'9'</c>). An empty span
+    /// is a permitted no-op.
     /// </param>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <paramref name="digits" /> contains any character outside the range <c>'0'</c> to <c>'9'</c>.

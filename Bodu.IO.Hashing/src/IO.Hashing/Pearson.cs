@@ -113,19 +113,19 @@ public sealed partial class Pearson
     /// caller-supplied permutation table.
     /// </summary>
     /// <param name="hashSizeBits">
-    /// The size of the produced digest in bits. Must be a multiple of 8 in the inclusive range
-    /// [<see cref="MinHashSizeBits" />, <see cref="MaxHashSizeBits" />].
+    /// The size of the produced digest in bits. Must be a multiple of 8 in the inclusive range [
+    /// <see cref="MinHashSizeBits" />, <see cref="MaxHashSizeBits" />].
     /// </param>
-    /// <param name="permutationTable">
-    /// A 256-byte permutation containing every byte value 0..255 exactly once.
-    /// </param>
-    /// <exception cref="ArgumentNullException"><paramref name="permutationTable" /> is <see langword="null" />.</exception>
+    /// <param name="permutationTable">A 256-byte permutation containing every byte value 0..255 exactly once.</param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="permutationTable" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentException">
     /// <paramref name="permutationTable" /> is not a 256-element permutation of 0..255.
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="hashSizeBits" /> is outside the inclusive range
-    /// [<see cref="MinHashSizeBits" />, <see cref="MaxHashSizeBits" />] or is not a multiple of 8.
+    /// <paramref name="hashSizeBits" /> is outside the inclusive range [<see cref="MinHashSizeBits" />,
+    /// <see cref="MaxHashSizeBits" />] or is not a multiple of 8.
     /// </exception>
     public Pearson(int hashSizeBits, byte[] permutationTable)
         : base(ValidateHashSize(hashSizeBits) / 8)

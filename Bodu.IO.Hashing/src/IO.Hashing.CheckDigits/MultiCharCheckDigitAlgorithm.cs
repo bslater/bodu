@@ -62,8 +62,8 @@ public abstract class MultiCharCheckDigitAlgorithm
     /// Absorbs the supplied characters into the running check-code state.
     /// </summary>
     /// <param name="body">
-    /// The characters to append. Each element must belong to <see cref="InputAlphabet" />. An empty span is a
-    /// permitted no-op.
+    /// The characters to append. Each element must belong to <see cref="InputAlphabet" />. An empty span is a permitted
+    /// no-op.
     /// </param>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <paramref name="body" /> contains any character outside <see cref="InputAlphabet" />.
