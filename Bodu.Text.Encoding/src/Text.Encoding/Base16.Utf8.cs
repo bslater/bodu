@@ -160,8 +160,9 @@ public static partial class Base16
     }
 
     /// <summary>
-    /// Strict-mode streaming decode for character source. Used by both <see cref="Base16.FromHexString(ReadOnlySpan{char}, Span{byte}, out int, out int)" />
-    /// and the lenient path of <see cref="DecodeFromUtf8" />.
+    /// Strict-mode streaming decode for character source. Used by both
+    /// <see cref="Base16.FromHexString(ReadOnlySpan{char}, Span{byte}, out int, out int)" /> and the lenient path of
+    /// <see cref="DecodeFromUtf8" />.
     /// </summary>
     /// <param name="source">The hexadecimal characters.</param>
     /// <param name="destination">The destination byte span.</param>

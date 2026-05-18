@@ -63,14 +63,17 @@ public static partial class Base85
     private static readonly sbyte[] s_z85Lookup = BuildLookup(Z85Alphabet);
 
     /// <summary>
-    /// Returns the exact number of characters that <see cref="Encode(ReadOnlySpan{byte}, Base85Variant, BaseFormattingOptions)" />
-    /// will produce for the supplied data, accounting for the Adobe Ascii85 <c>z</c> shortcut on all-zero groups and
-    /// the optional Adobe Ascii85 <c>&lt;~ ... ~&gt;</c> delimiter pair.
+    /// Returns the exact number of characters that
+    /// <see cref="Encode(ReadOnlySpan{byte}, Base85Variant, BaseFormattingOptions)" /> will produce for the supplied
+    /// data, accounting for the Adobe Ascii85 <c>z</c> shortcut on all-zero groups and the optional Adobe Ascii85
+    /// <c>&lt;~ ... ~&gt;</c> delimiter pair.
     /// </summary>
     /// <param name="source">The input bytes.</param>
     /// <param name="variant">The Base85 variant.</param>
-    /// <param name="options">Formatting options. <see cref="BaseFormattingOptions.IncludePrefix" /> adds four
-    /// characters for the Ascii85 delimiter pair; other flags are ignored.</param>
+    /// <param name="options">
+    /// Formatting options. <see cref="BaseFormattingOptions.IncludePrefix" /> adds four characters for the Ascii85
+    /// delimiter pair; other flags are ignored.
+    /// </param>
     /// <returns>The exact encoded character count.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
     /// <exception cref="ArgumentException">
@@ -122,8 +125,8 @@ public static partial class Base85
     }
 
     /// <summary>
-    /// Returns the maximum number of bytes that decoding <paramref name="charCount" /> characters could produce
-    /// (worst case, assuming no <c>z</c> shortcuts expand to four zero bytes).
+    /// Returns the maximum number of bytes that decoding <paramref name="charCount" /> characters could produce (worst
+    /// case, assuming no <c>z</c> shortcuts expand to four zero bytes).
     /// </summary>
     /// <param name="charCount">The input character count. Must be non-negative.</param>
     /// <returns>The worst-case decoded byte count.</returns>
@@ -140,13 +143,15 @@ public static partial class Base85
     }
 
     /// <summary>
-    /// Returns the maximum number of characters that encoding <paramref name="byteCount" /> bytes could produce
-    /// (i.e. assuming no Ascii85 <c>z</c> shortcuts are emitted), with optional Adobe Ascii85 delimiters.
+    /// Returns the maximum number of characters that encoding <paramref name="byteCount" /> bytes could produce (i.e.
+    /// assuming no Ascii85 <c>z</c> shortcuts are emitted), with optional Adobe Ascii85 delimiters.
     /// </summary>
     /// <param name="byteCount">The input byte count. Must be non-negative.</param>
     /// <param name="variant">The Base85 variant.</param>
-    /// <param name="options">Formatting options. <see cref="BaseFormattingOptions.IncludePrefix" /> adds four
-    /// characters for the Ascii85 delimiter pair; other flags are ignored.</param>
+    /// <param name="options">
+    /// Formatting options. <see cref="BaseFormattingOptions.IncludePrefix" /> adds four characters for the Ascii85
+    /// delimiter pair; other flags are ignored.
+    /// </param>
     /// <returns>The worst-case encoded character count.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="byteCount" /> is negative.</exception>
     public static int GetMaxEncodedLength(int byteCount, Base85Variant variant = Base85Variant.Ascii85, BaseFormattingOptions options = BaseFormattingOptions.None)

@@ -10,13 +10,13 @@ namespace Bodu.Text.Encoding;
 
 /// <summary>
 /// Provides the RFC 4648 §5 URL- and filename-safe Base64 encoding as a first-class type, mirroring the shape of
-/// <c>System.Buffers.Text.Base64Url</c> introduced in .NET 9. URL-safe Base64 swaps <c>+</c> and <c>/</c> for
-/// <c>-</c> and <c>_</c>, and conventionally omits trailing <c>=</c> padding (matching JWT and OAuth practice).
+/// <c>System.Buffers.Text.Base64Url</c> introduced in .NET 9. URL-safe Base64 swaps <c>+</c> and <c>/</c> for <c>-</c>
+/// and <c>_</c>, and conventionally omits trailing <c>=</c> padding (matching JWT and OAuth practice).
 /// </summary>
 /// <remarks>
-/// This is a convenience wrapper over <see cref="Base64" /> with <see cref="Base64Variant.UrlSafe" /> pre-bound.
-/// Code that knows it wants URL-safe Base64 should prefer this type over passing the variant explicitly to every
-/// call. Both forms produce identical output.
+/// This is a convenience wrapper over <see cref="Base64" /> with <see cref="Base64Variant.UrlSafe" /> pre-bound. Code
+/// that knows it wants URL-safe Base64 should prefer this type over passing the variant explicitly to every call. Both
+/// forms produce identical output.
 /// </remarks>
 public static class Base64Url
 {

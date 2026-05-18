@@ -7,22 +7,20 @@
 namespace Bodu.Text.Encoding;
 
 /// <summary>
-/// Represents a binary-to-text encoding scheme (Base16, Base32, Base64, Base58, Base85, …) with the variant
-/// pre-bound, so that callers can pick or inject an encoding at runtime instead of dispatching through static
-/// classes.
+/// Represents a binary-to-text encoding scheme (Base16, Base32, Base64, Base58, Base85, …) with the variant pre-bound,
+/// so that callers can pick or inject an encoding at runtime instead of dispatching through static classes.
 /// </summary>
 /// <remarks>
 /// <para>
-/// Instances are obtained from <see cref="BinaryEncodings" /> — each property there returns a singleton
-/// implementation bound to a specific variant. The pattern mirrors <see cref="System.Text.Encoding" />, but for
-/// radix encoding rather than character-set transcoding.
+/// Instances are obtained from <see cref="BinaryEncodings" /> — each property there returns a singleton implementation
+/// bound to a specific variant. The pattern mirrors <see cref="System.Text.Encoding" />, but for radix encoding rather
+/// than character-set transcoding.
 /// </para>
 /// <para>
 /// Implementations are stateless and thread-safe. The static convenience methods on <see cref="Base16" />,
 /// <see cref="Base32" />, <see cref="Base64" />, <see cref="Base58" />, and <see cref="Base85" /> remain the
-/// recommended entry points when the encoding is known at compile time; the interface is intended for code that
-/// must choose between encodings at runtime (configuration-driven serializers, plugin pipelines, generic
-/// utilities).
+/// recommended entry points when the encoding is known at compile time; the interface is intended for code that must
+/// choose between encodings at runtime (configuration-driven serializers, plugin pipelines, generic utilities).
 /// </para>
 /// </remarks>
 public interface IBinaryEncoding

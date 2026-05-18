@@ -169,8 +169,8 @@ public static partial class Base64
     }
 
     /// <summary>
-    /// Copies <paramref name="source" /> into <paramref name="scratch" />, applying variant character swaps,
-    /// optional whitespace stripping, and re-padding to align the resulting length to a multiple of four characters.
+    /// Copies <paramref name="source" /> into <paramref name="scratch" />, applying variant character swaps, optional
+    /// whitespace stripping, and re-padding to align the resulting length to a multiple of four characters.
     /// </summary>
     /// <param name="source">The input characters.</param>
     /// <param name="scratch">The scratch buffer that receives the normalised characters.</param>

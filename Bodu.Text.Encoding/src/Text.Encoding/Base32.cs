@@ -29,8 +29,8 @@ public static partial class Base32
     private const string HexExtendedAlphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUV";
 
     /// <summary>
-    /// The number of encoded characters per output line when
-    /// <see cref="BaseFormattingOptions.InsertLineBreaks" /> is requested.
+    /// The number of encoded characters per output line when <see cref="BaseFormattingOptions.InsertLineBreaks" /> is
+    /// requested.
     /// </summary>
     private const int LineBreakInterval = 64;
 
@@ -92,17 +92,17 @@ public static partial class Base32
         GetEncodedLength(byteCount, variant, BaseFormattingOptions.None);
 
     /// <summary>
-    /// Computes the number of characters required to encode <paramref name="byteCount" /> bytes with the given
-    /// variant and options.
+    /// Computes the number of characters required to encode <paramref name="byteCount" /> bytes with the given variant
+    /// and options.
     /// </summary>
     /// <param name="byteCount">The number of input bytes. Must be non-negative.</param>
     /// <param name="variant">The Base32 variant.</param>
     /// <param name="options">The formatting options influencing the output length.</param>
-    /// <returns>The number of characters that <see cref="Encode(ReadOnlySpan{byte}, Base32Variant, BaseFormattingOptions)" />
-    /// will produce.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="byteCount" /> is negative.
-    /// </exception>
+    /// <returns>
+    /// The number of characters that <see cref="Encode(ReadOnlySpan{byte}, Base32Variant, BaseFormattingOptions)" />
+    /// will produce.
+    /// </returns>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="byteCount" /> is negative.</exception>
     /// <exception cref="OverflowException">
     /// Thrown when the resulting character count would overflow <see cref="int" />.
     /// </exception>
@@ -146,8 +146,8 @@ public static partial class Base32
     }
 
     /// <summary>
-    /// Indicates whether <paramref name="value" /> is a valid symbol for the supplied Base32 variant. Padding
-    /// (<c>=</c>) is not considered a symbol.
+    /// Indicates whether <paramref name="value" /> is a valid symbol for the supplied Base32 variant. Padding (<c>=</c>
+    /// ) is not considered a symbol.
     /// </summary>
     /// <param name="value">The character to test.</param>
     /// <param name="variant">The variant.</param>
@@ -193,8 +193,8 @@ public static partial class Base32
     }
 
     /// <summary>
-    /// Builds the Crockford Base32 lookup table, including the documented aliases <c>I</c>/<c>L</c> -&gt; <c>1</c>
-    /// and <c>O</c> -&gt; <c>0</c>.
+    /// Builds the Crockford Base32 lookup table, including the documented aliases <c>I</c>/<c>L</c> -&gt; <c>1</c> and
+    /// <c>O</c> -&gt; <c>0</c>.
     /// </summary>
     /// <returns>The Crockford lookup table.</returns>
     private static sbyte[] BuildCrockfordLookup()
@@ -215,8 +215,8 @@ public static partial class Base32
     }
 
     /// <summary>
-    /// Builds a 128-entry symbol lookup table from the supplied alphabet, case-folding letter characters so the
-    /// decoder accepts either case.
+    /// Builds a 128-entry symbol lookup table from the supplied alphabet, case-folding letter characters so the decoder
+    /// accepts either case.
     /// </summary>
     /// <param name="alphabet">The encoding alphabet.</param>
     /// <returns>A lookup table where valid characters map to their symbol value and others map to <c>-1</c>.</returns>

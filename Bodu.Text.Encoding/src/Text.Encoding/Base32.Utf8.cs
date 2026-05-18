@@ -356,11 +356,13 @@ public static partial class Base32
         }
     }
 
-    /// <summary>Marker struct used to select the character-source code path in
-    /// <see cref="DecodeBitStream{TSource}" />.</summary>
+    /// <summary>
+    /// Marker struct used to select the character-source code path in <see cref="DecodeBitStream{TSource}" />.
+    /// </summary>
     private readonly struct CharSource { }
 
-    /// <summary>Marker struct used to select the UTF-8-source code path in
-    /// <see cref="DecodeBitStream{TSource}" />.</summary>
+    /// <summary>
+    /// Marker struct used to select the UTF-8-source code path in <see cref="DecodeBitStream{TSource}" />.
+    /// </summary>
     private readonly struct Utf8Source { }
 }

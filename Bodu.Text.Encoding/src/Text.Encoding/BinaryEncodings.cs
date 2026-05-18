@@ -32,7 +32,8 @@ public static class BinaryEncodings
 
     /// <summary>
     /// Gets the lower-case hexadecimal (Base16) encoding — the same canonical form
-    /// <see cref="global::Bodu.Text.Encoding.Base16.Encode(byte[], BaseFormattingOptions)" /> produces with default options.
+    /// <see cref="global::Bodu.Text.Encoding.Base16.Encode(byte[], BaseFormattingOptions)" /> produces with default
+    /// options.
     /// </summary>
     public static IBinaryEncoding Base16Lower { get; } = new Base16LowerAdapter();
 
@@ -48,8 +49,8 @@ public static class BinaryEncodings
     public static IBinaryEncoding Base32 { get; } = new Base32VariantAdapter(Base32Variant.Standard, "base32", "RFC 4648 §6 Standard Base32 (A-Z, 2-7, padded).");
 
     /// <summary>
-    /// Gets the Crockford Base32 encoding (human-friendly alphabet excluding <c>I</c>, <c>L</c>, <c>O</c>, <c>U</c>;
-    /// no padding by default).
+    /// Gets the Crockford Base32 encoding (human-friendly alphabet excluding <c>I</c>, <c>L</c>, <c>O</c>, <c>U</c>; no
+    /// padding by default).
     /// </summary>
     public static IBinaryEncoding Base32Crockford { get; } = new Base32VariantAdapter(Base32Variant.Crockford, "base32-crockford", "Crockford Base32 (0-9, A-Z minus I/L/O/U; no padding).");
 
@@ -64,8 +65,8 @@ public static class BinaryEncodings
     public static IBinaryEncoding Base32ZBase32 { get; } = new Base32VariantAdapter(Base32Variant.ZBase32, "z-base-32", "z-base-32 (human-oriented lowercase alphabet; no padding).");
 
     /// <summary>
-    /// Gets the Bitcoin/Flickr Base58 encoding — the alphabet used by Bitcoin addresses, IPFS CIDs, Solana, and
-    /// many derivative protocols.
+    /// Gets the Bitcoin/Flickr Base58 encoding — the alphabet used by Bitcoin addresses, IPFS CIDs, Solana, and many
+    /// derivative protocols.
     /// </summary>
     public static IBinaryEncoding Base58 { get; } = new Base58VariantAdapter(Base58Variant.BitcoinFlickr, "base58", "Bitcoin/Flickr Base58 (1-9, A-Z minus O/I, a-z minus l).");
 
@@ -96,15 +97,17 @@ public static class BinaryEncodings
     public static IBinaryEncoding Z85 { get; } = new Base85VariantAdapter(Base85Variant.Z85, "z85", "ZeroMQ Z85 (RFC 32 shell-safe alphabet, 4-byte aligned).");
 
     /// <summary>
-    /// Returns the encoding for the supplied case-insensitive name. The recognised names are the values returned
-    /// by each instance's <see cref="IBinaryEncoding.Name" />: <c>"base16"</c>, <c>"base16-lower"</c>,
+    /// Returns the encoding for the supplied case-insensitive name. The recognised names are the values returned by
+    /// each instance's <see cref="IBinaryEncoding.Name" />: <c>"base16"</c>, <c>"base16-lower"</c>,
     /// <c>"base16-upper"</c>, <c>"base32"</c>, <c>"base32hex"</c>, <c>"base32-crockford"</c>, <c>"z-base-32"</c>,
     /// <c>"base64"</c>, <c>"base64-urlsafe"</c>, <c>"base64-mime"</c>, <c>"base58"</c>, <c>"base58-ripple"</c>,
     /// <c>"ascii85"</c>, <c>"z85"</c>.
     /// </summary>
     /// <param name="name">The encoding name.</param>
     /// <returns>The matching <see cref="IBinaryEncoding" /> instance.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="name" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="name" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentException">Thrown when no matching encoding is registered.</exception>
     public static IBinaryEncoding Get(string name)
     {

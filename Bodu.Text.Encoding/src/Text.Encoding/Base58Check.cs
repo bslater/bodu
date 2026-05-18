@@ -104,12 +104,14 @@ public static class Base58Check
     }
 
     /// <summary>
-    /// Returns an upper bound on the number of characters required to encode a <paramref name="payloadByteCount" />-byte
-    /// payload via Base58Check (payload + four checksum bytes).
+    /// Returns an upper bound on the number of characters required to encode a <paramref name="payloadByteCount" />
+    /// -byte payload via Base58Check (payload + four checksum bytes).
     /// </summary>
     /// <param name="payloadByteCount">The payload byte count.</param>
     /// <returns>An upper bound on the encoded character count.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="payloadByteCount" /> is negative.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="payloadByteCount" /> is negative.
+    /// </exception>
     public static int GetMaxEncodedLength(int payloadByteCount)
     {
         ThrowHelper.ThrowIfNegative(payloadByteCount);

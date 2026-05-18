@@ -17,8 +17,8 @@ namespace Bodu.Text.Encoding;
 public enum Base32Variant : byte
 {
     /// <summary>
-    /// RFC 4648 §6 Base32 using the alphabet <c>A-Z</c> followed by <c>2-7</c>. Encoded output is padded with
-    /// <c>=</c> characters to align to multiples of eight by default.
+    /// RFC 4648 §6 Base32 using the alphabet <c>A-Z</c> followed by <c>2-7</c>. Encoded output is padded with <c>=</c>
+    /// characters to align to multiples of eight by default.
     /// </summary>
     Standard = 0,
 

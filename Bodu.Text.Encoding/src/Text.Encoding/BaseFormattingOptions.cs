@@ -36,8 +36,8 @@ public enum BaseFormattingOptions : byte
     InsertLineBreaks = 1 << 1,
 
     /// <summary>
-    /// Adds a standard prefix to the output denoting the encoding. The prefix format is encoding-specific
-    /// (for example, <c>0x</c> for Base16).
+    /// Adds a standard prefix to the output denoting the encoding. The prefix format is encoding-specific (for example,
+    /// <c>0x</c> for Base16).
     /// </summary>
     IncludePrefix = 1 << 2,
 

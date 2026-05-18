@@ -114,8 +114,8 @@ public static partial class Base64
     }
 
     /// <summary>
-    /// Builds a lookup table for the supplied alphabet, plus UrlSafe aliases for the standard alphabet (and vice
-    /// versa) so the decoder tolerates either form when the user is lenient.
+    /// Builds a lookup table for the supplied alphabet, plus UrlSafe aliases for the standard alphabet (and vice versa)
+    /// so the decoder tolerates either form when the user is lenient.
     /// </summary>
     /// <param name="alphabet">The alphabet.</param>
     /// <returns>A 128-entry lookup table.</returns>
@@ -379,9 +379,13 @@ public static partial class Base64
     private static sbyte[] GetLookup(Base64Variant variant) =>
         variant == Base64Variant.UrlSafe ? s_urlSafeLookup : s_standardLookup;
 
-    /// <summary>Marker struct used to select the character-source code path.</summary>
+    /// <summary>
+    /// Marker struct used to select the character-source code path.
+    /// </summary>
     private readonly struct CharSource { }
 
-    /// <summary>Marker struct used to select the UTF-8-source code path.</summary>
+    /// <summary>
+    /// Marker struct used to select the UTF-8-source code path.
+    /// </summary>
     private readonly struct Utf8Source { }
 }

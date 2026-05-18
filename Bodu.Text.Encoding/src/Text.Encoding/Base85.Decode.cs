@@ -111,7 +111,8 @@ public static partial class Base85
     }
 
     /// <summary>
-    /// Core decoder. Walks the input span, validating characters and accumulating bytes into <paramref name="buffer" />.
+    /// Core decoder. Walks the input span, validating characters and accumulating bytes into <paramref name="buffer" />
+    /// .
     /// </summary>
     /// <param name="chars">The input characters.</param>
     /// <param name="variant">The variant.</param>

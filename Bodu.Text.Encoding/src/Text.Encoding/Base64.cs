@@ -7,8 +7,8 @@
 namespace Bodu.Text.Encoding;
 
 /// <summary>
-/// Provides Base64 encoding and decoding of binary data across the RFC 4648 standard, URL-safe, and MIME variants,
-/// with optional padding control and whitespace tolerance during parsing.
+/// Provides Base64 encoding and decoding of binary data across the RFC 4648 standard, URL-safe, and MIME variants, with
+/// optional padding control and whitespace tolerance during parsing.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -16,9 +16,9 @@ namespace Bodu.Text.Encoding;
 /// <see cref="Convert.ToBase64String(byte[], Base64FormattingOptions)" />,
 /// <see cref="Convert.TryToBase64Chars(ReadOnlySpan{byte}, Span{char}, out int, Base64FormattingOptions)" />, and
 /// <see cref="Convert.TryFromBase64Chars(ReadOnlySpan{char}, Span{byte}, out int)" /> to inherit their
-/// hardware-accelerated paths. The wrapper supplies the alphabet swapping for <see cref="Base64Variant.UrlSafe" />,
-/// the line-break convention for <see cref="Base64Variant.Mime" />, and the padding / leniency flag handling that the
-/// BCL does not expose directly.
+/// hardware-accelerated paths. The wrapper supplies the alphabet swapping for <see cref="Base64Variant.UrlSafe" />, the
+/// line-break convention for <see cref="Base64Variant.Mime" />, and the padding / leniency flag handling that the BCL
+/// does not expose directly.
 /// </para>
 /// <para>
 /// MIME line breaks are inserted every 76 characters (RFC 2045). The <see cref="BaseFormattingOptions.UpperCase" />,
@@ -83,16 +83,14 @@ public static partial class Base64
         GetEncodedLength(byteCount, variant, BaseFormattingOptions.None);
 
     /// <summary>
-    /// Computes the number of characters required to encode <paramref name="byteCount" /> bytes with the given
-    /// variant and options.
+    /// Computes the number of characters required to encode <paramref name="byteCount" /> bytes with the given variant
+    /// and options.
     /// </summary>
     /// <param name="byteCount">The number of input bytes. Must be non-negative.</param>
     /// <param name="variant">The Base64 variant.</param>
     /// <param name="options">The formatting options.</param>
     /// <returns>The number of characters the matching encode overload will produce.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="byteCount" /> is negative.
-    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="byteCount" /> is negative.</exception>
     public static int GetEncodedLength(int byteCount, Base64Variant variant = Base64Variant.Standard, BaseFormattingOptions options = BaseFormattingOptions.None)
     {
         ThrowHelper.ThrowIfNegative(byteCount);

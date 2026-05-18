@@ -12,24 +12,26 @@ public static partial class Base64
 {
 
     /// <summary>
-    /// Decodes <paramref name="s" /> as a Standard Base64 string into a byte array, mirroring the lenient
-    /// whitespace behaviour of <see cref="System.Convert.FromBase64String(string)" />. ASCII whitespace anywhere in
-    /// the input is silently ignored; the canonical-padding rule and alphabet are otherwise enforced strictly.
+    /// Decodes <paramref name="s" /> as a Standard Base64 string into a byte array, mirroring the lenient whitespace
+    /// behaviour of <see cref="System.Convert.FromBase64String(string)" />. ASCII whitespace anywhere in the input is
+    /// silently ignored; the canonical-padding rule and alphabet are otherwise enforced strictly.
     /// </summary>
     /// <param name="s">The Base64 input.</param>
     /// <returns>The decoded byte array.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="s" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="s" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="FormatException">Thrown when the input is not valid Standard Base64.</exception>
     /// <remarks>
-    /// To reject whitespace strictly, call <see cref="Decode(string, Base64Variant, BaseFormatStyles)" /> directly
-    /// with <see cref="BaseFormatStyles.None" />.
+    /// To reject whitespace strictly, call <see cref="Decode(string, Base64Variant, BaseFormatStyles)" /> directly with
+    /// <see cref="BaseFormatStyles.None" />.
     /// </remarks>
     public static byte[] FromBase64String(string s) =>
         Decode(s, Base64Variant.Standard, BaseFormatStyles.IgnoreWhitespace);
 
     /// <summary>
-    /// Decodes <paramref name="chars" /> as a Standard Base64 character span into a byte array, mirroring the
-    /// lenient whitespace behaviour of <see cref="System.Convert.FromBase64String(string)" />.
+    /// Decodes <paramref name="chars" /> as a Standard Base64 character span into a byte array, mirroring the lenient
+    /// whitespace behaviour of <see cref="System.Convert.FromBase64String(string)" />.
     /// </summary>
     /// <param name="chars">The Base64 character span.</param>
     /// <returns>The decoded byte array.</returns>

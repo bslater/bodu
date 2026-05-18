@@ -69,14 +69,12 @@ public static partial class Base16
     }
 
     /// <summary>
-    /// Returns the number of characters produced by encoding <paramref name="byteCount" /> bytes with strict
-    /// formatting (no decorations).
+    /// Returns the number of characters produced by encoding <paramref name="byteCount" /> bytes with strict formatting
+    /// (no decorations).
     /// </summary>
     /// <param name="byteCount">The input byte count. Must be non-negative.</param>
     /// <returns><c>byteCount * 2</c>.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="byteCount" /> is negative.
-    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="byteCount" /> is negative.</exception>
     public static int GetEncodedLength(int byteCount) =>
         GetEncodedLength(byteCount, BaseFormattingOptions.None);
 

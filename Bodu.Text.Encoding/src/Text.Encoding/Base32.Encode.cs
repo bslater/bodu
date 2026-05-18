@@ -138,8 +138,8 @@ public static partial class Base32
     }
 
     /// <summary>
-    /// Appends a single symbol to the string builder, inserting a line break beforehand when the line interval has
-    /// been reached.
+    /// Appends a single symbol to the string builder, inserting a line break beforehand when the line interval has been
+    /// reached.
     /// </summary>
     /// <param name="sb">The destination string builder.</param>
     /// <param name="symbol">The symbol to append.</param>
@@ -254,8 +254,8 @@ public static partial class Base32
     }
 
     /// <summary>
-    /// Writes a single symbol into the destination span, inserting a line break beforehand when the line interval
-    /// has been reached.
+    /// Writes a single symbol into the destination span, inserting a line break beforehand when the line interval has
+    /// been reached.
     /// </summary>
     /// <param name="destination">The destination span.</param>
     /// <param name="position">The current write position, updated by reference.</param>
