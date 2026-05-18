@@ -152,8 +152,8 @@ public static partial class Bencode
     /// </exception>
     /// <remarks>
     /// The encoded payload is staged in a pooled buffer sized exactly to <see cref="GetEncodedLength(BencodedValue)" />
-    /// and then written to <paramref name="destination" /> in a single <see cref="Stream.WriteAsync(ReadOnlyMemory{byte}, CancellationToken)" />
-    /// call. The stream is not closed.
+    /// and then written to <paramref name="destination" /> in a single
+    /// <see cref="Stream.WriteAsync(ReadOnlyMemory{byte}, CancellationToken)" /> call. The stream is not closed.
     /// </remarks>
     public static async ValueTask EncodeAsync(BencodedValue value, Stream destination, CancellationToken cancellationToken = default)
     {

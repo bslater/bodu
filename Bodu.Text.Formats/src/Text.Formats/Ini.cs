@@ -17,14 +17,31 @@ namespace Bodu.Text.Formats;
 /// The parser accepts the most common INI conventions:
 /// </para>
 /// <list type="bullet">
-/// <item><description>Section headers are delimited by <c>[</c> and <c>]</c>.</description></item>
-/// <item><description>Key/value pairs are separated by <c>=</c> or <c>:</c>. Leading and trailing whitespace on both the key and value is trimmed.</description></item>
-/// <item><description>Lines whose first non-whitespace character is <c>;</c> or <c>#</c> are treated as comments and ignored.</description></item>
-/// <item><description>Blank lines are ignored.</description></item>
+/// <item>
+/// <description>
+/// Section headers are delimited by <c>[</c> and <c>]</c>.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Key/value pairs are separated by <c>=</c> or <c>:</c>. Leading and trailing whitespace on both the key and value is
+/// trimmed.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Lines whose first non-whitespace character is <c>;</c> or <c>#</c> are treated as comments and ignored.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Blank lines are ignored.
+/// </description>
+/// </item>
 /// </list>
 /// <para>
-/// Dialect variations such as case sensitivity, duplicate handling, and global-section permission are controlled
-/// via <see cref="IniParseOptions" />.
+/// Dialect variations such as case sensitivity, duplicate handling, and global-section permission are controlled via
+/// <see cref="IniParseOptions" />.
 /// </para>
 /// </remarks>
 public static partial class Ini
@@ -65,9 +82,9 @@ public static partial class Ini
     /// </exception>
     /// <remarks>
     /// <para>
-    /// Global entries are written first without a section header. A blank line separates each named section from
-    /// the preceding content. Key/value pairs are written with a <c> = </c> separator. Comments are not preserved
-    /// because they are not part of the object model.
+    /// Global entries are written first without a section header. A blank line separates each named section from the
+    /// preceding content. Key/value pairs are written with a <c> = </c> separator. Comments are not preserved because
+    /// they are not part of the object model.
     /// </para>
     /// </remarks>
     public static string Format(IniDocument document)

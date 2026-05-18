@@ -17,11 +17,31 @@ namespace Bodu.Text.Formats;
 /// The parser accepts the most common DotEnv conventions:
 /// </para>
 /// <list type="bullet">
-/// <item><description>Blank lines and lines whose first non-whitespace character is <c>#</c> are ignored.</description></item>
-/// <item><description>All other lines are parsed as <c>KEY=VALUE</c> assignments. Keys must match <c>[A-Za-z_][A-Za-z0-9_]*</c>.</description></item>
-/// <item><description>Values may be unquoted, single-quoted (literal), or double-quoted (with escape sequences).</description></item>
-/// <item><description>Double-quoted values may span multiple lines; single-quoted values may not.</description></item>
-/// <item><description>Variable interpolation is not performed at parse time; values are returned as fully resolved strings.</description></item>
+/// <item>
+/// <description>
+/// Blank lines and lines whose first non-whitespace character is <c>#</c> are ignored.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// All other lines are parsed as <c>KEY=VALUE</c> assignments. Keys must match <c>[A-Za-z_][A-Za-z0-9_]*</c>.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Values may be unquoted, single-quoted (literal), or double-quoted (with escape sequences).
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Double-quoted values may span multiple lines; single-quoted values may not.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Variable interpolation is not performed at parse time; values are returned as fully resolved strings.
+/// </description>
+/// </item>
 /// </list>
 /// <para>
 /// Dialect variations such as duplicate-key handling, <c>export</c> prefix recognition, and inline comments are
@@ -66,10 +86,10 @@ public static partial class DotEnv
     /// </exception>
     /// <remarks>
     /// <para>
-    /// Empty values are written as <c>KEY=</c> (no quotes). Values containing only safe characters
-    /// (<c>[A-Za-z0-9_.,:/@+\-]</c>) are written unquoted. All other values are double-quoted with the
-    /// following escape sequences applied: <c>"</c> → <c>\"</c>, <c>\</c> → <c>\\</c>, newline → <c>\n</c>,
-    /// tab → <c>\t</c>, carriage return → <c>\r</c>, <c>$</c> → <c>\$</c>.
+    /// Empty values are written as <c>KEY=</c> (no quotes). Values containing only safe characters (
+    /// <c>[A-Za-z0-9_.,:/@+\-]</c>) are written unquoted. All other values are double-quoted with the following escape
+    /// sequences applied: <c>"</c> → <c>\"</c>, <c>\</c> → <c>\\</c>, newline → <c>\n</c>, tab → <c>\t</c>, carriage
+    /// return → <c>\r</c>, <c>$</c> → <c>\$</c>.
     /// </para>
     /// <para>
     /// Comments and blank lines from the original source are not preserved because they are not part of the object

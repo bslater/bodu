@@ -17,8 +17,7 @@ namespace Bodu.Text.Formats;
 /// <see cref="Ini.TryParse(ReadOnlySpan{char}, out IniDocument)" />.
 /// </para>
 /// <para>
-/// Section lookup uses the comparer configured via <see cref="IniParseOptions.CaseSensitiveSections" /> at parse
-/// time.
+/// Section lookup uses the comparer configured via <see cref="IniParseOptions.CaseSensitiveSections" /> at parse time.
 /// </para>
 /// </remarks>
 public sealed class IniDocument

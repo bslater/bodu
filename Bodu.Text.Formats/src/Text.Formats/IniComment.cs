@@ -14,14 +14,13 @@ namespace Bodu.Text.Formats;
 /// <remarks>
 /// <para>
 /// Comments are captured by the parser only when <see cref="IniParseOptions.PreserveComments" /> is
-/// <see langword="true" /> (the default). Each <see cref="IniComment" /> records the prefix character that
-/// introduced the line (either <c>'#'</c> or <c>';'</c>), the trimmed text, and the 1-based source line at
-/// which it appeared.
+/// <see langword="true" /> (the default). Each <see cref="IniComment" /> records the prefix character that introduced
+/// the line (either <c>'#'</c> or <c>';'</c>), the trimmed text, and the 1-based source line at which it appeared.
 /// </para>
 /// <para>
-/// Pending comments are attached to the next entry or section in source order: comments authored before a
-/// property line appear in <see cref="IniEntry.LeadingComments" />; comments authored before a section header
-/// appear in <see cref="IniSection.LeadingComments" />.
+/// Pending comments are attached to the next entry or section in source order: comments authored before a property line
+/// appear in <see cref="IniEntry.LeadingComments" />; comments authored before a section header appear in
+/// <see cref="IniSection.LeadingComments" />.
 /// </para>
 /// </remarks>
 [DebuggerDisplay("{Prefix}{Text,nq}")]

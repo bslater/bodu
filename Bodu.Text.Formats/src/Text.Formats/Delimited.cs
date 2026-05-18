@@ -17,11 +17,31 @@ namespace Bodu.Text.Formats;
 /// The parser conforms to RFC 4180 with the following extensions:
 /// </para>
 /// <list type="bullet">
-/// <item><description>The delimiter, quote character, and header behaviour are configurable via <see cref="DelimitedParseOptions" />.</description></item>
-/// <item><description>Quoted fields may span multiple lines; literal newlines are preserved.</description></item>
-/// <item><description>Two consecutive quote characters inside a quoted field represent a single literal quote.</description></item>
-/// <item><description>Blank lines (zero characters before the newline) are silently skipped.</description></item>
-/// <item><description>Optionally, lines whose first character is a configurable comment character are skipped.</description></item>
+/// <item>
+/// <description>
+/// The delimiter, quote character, and header behaviour are configurable via <see cref="DelimitedParseOptions" />.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Quoted fields may span multiple lines; literal newlines are preserved.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Two consecutive quote characters inside a quoted field represent a single literal quote.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Blank lines (zero characters before the newline) are silently skipped.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Optionally, lines whose first character is a configurable comment character are skipped.
+/// </description>
+/// </item>
 /// </list>
 /// </remarks>
 public static partial class Delimited
@@ -79,12 +99,12 @@ public static partial class Delimited
     /// <remarks>
     /// <para>
     /// Fields that contain the delimiter character, the quote character, a carriage return, or a line feed are
-    /// surrounded with the quote character; any literal occurrences of the quote character within such a field
-    /// are doubled. Fields that require no quoting are written verbatim.
+    /// surrounded with the quote character; any literal occurrences of the quote character within such a field are
+    /// doubled. Fields that require no quoting are written verbatim.
     /// </para>
     /// <para>
-    /// When <see cref="DelimitedDocument.Headers" /> is non-empty, a header row is written first. Comment lines
-    /// and blank lines from the original source are not preserved because they are not part of the object model.
+    /// When <see cref="DelimitedDocument.Headers" /> is non-empty, a header row is written first. Comment lines and
+    /// blank lines from the original source are not preserved because they are not part of the object model.
     /// </para>
     /// </remarks>
     public static string Format(DelimitedDocument document, DelimitedParseOptions options)

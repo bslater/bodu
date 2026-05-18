@@ -10,10 +10,10 @@ namespace Bodu.Text.Formats;
 /// Defines how the INI parser resolves a section name that appears more than once in the source.
 /// </summary>
 /// <remarks>
-/// The <see cref="Merge" /> value (the default) preserves the historical INI behaviour: entries from later
-/// occurrences are merged into the first occurrence. <see cref="MergeAll" /> is an explicit alias for this
-/// value. <see cref="MergeAdjacent" /> and <see cref="Preserve" /> implement the finer-grained EditorConfig-style
-/// semantics required by <c>Bodu.Text.Configuration</c>.
+/// The <see cref="Merge" /> value (the default) preserves the historical INI behaviour: entries from later occurrences
+/// are merged into the first occurrence. <see cref="MergeAll" /> is an explicit alias for this value.
+/// <see cref="MergeAdjacent" /> and <see cref="Preserve" /> implement the finer-grained EditorConfig-style semantics
+/// required by <c>Bodu.Text.Configuration</c>.
 /// </remarks>
 public enum IniDuplicateSectionBehavior
 {
