@@ -1003,7 +1003,7 @@ public static class BoduCodeStyleKats
 
         CodeStyleKat.Safety(
             id: "XMLSAFE-0004",
-            name: "#pragma warning directive between XML doc and member prevents fix — long summary and returns lines",
+            name: "#pragma warning directive between XML doc and member does not block fix — long summary and returns lines",
             inputSource:
             """
             namespace Bodu.Extensions;
@@ -1031,24 +1031,24 @@ public static class BoduCodeStyleKats
             public static partial class ArrayExtensions
             {
                 /// <summary>
-                /// Creates a shallow copy of the specified array of value types. Returns <see langword="null" /> if the source array is
-                /// <see langword="null" />.
+                /// Creates a shallow copy of the specified array of value types. Returns <see langword="null" /> if the source
+                /// array is <see langword="null" />.
                 /// </summary>
                 /// <typeparam name="T">The value type of the elements in the array.</typeparam>
                 /// <param name="array">The array to copy.</param>
                 /// <returns>
-                /// A new array containing the same elements as the source, or <see langword="null" /> if the source is <see langword="null" />.
+                /// A new array containing the same elements as the source, or <see langword="null" /> if the source is
+                /// <see langword="null" />.
                 /// </returns>
             #pragma warning disable S1168
                 public static T[] Copy<T>(this T[] array) where T : struct => default;
             #pragma warning restore S1168
             }
-            """,
-            expectedFailure: CodeStyleKatFailureKind.UnsupportedPreprocessorLayout),
+            """),
 
         CodeStyleKat.Safety(
             id: "XMLSAFE-0005",
-            name: "#pragma warning directive between XML doc and method prevents fix — long para line in remarks",
+            name: "#pragma warning directive between XML doc and method does not block fix — long para line in remarks",
             inputSource:
             """
             namespace Bodu.Extensions;
@@ -1085,19 +1085,21 @@ public static class BoduCodeStyleKats
                 /// <param name="first">The first nullable <see cref="System.DateTime" /> value to compare.</param>
                 /// <param name="second">The second nullable <see cref="System.DateTime" /> value to compare.</param>
                 /// <returns>
-                /// The later non-null <see cref="System.DateTime" /> value, or <see langword="null" /> if both values are <see langword="null" />.
+                /// The later non-null <see cref="System.DateTime" /> value, or <see langword="null" /> if both values are
+                /// <see langword="null" />.
                 /// </returns>
                 /// <remarks>
                 /// <para>
-                /// If both values are non-null, they are compared using the greater-than-or-equal-to (<c>&gt;=</c>) operator. If only one value is non-null, that value is returned. If both are <see langword="null" />, the result is <see langword="null" />.
+                /// If both values are non-null, they are compared using the greater-than-or-equal-to (<c>&gt;=</c>) operator. If
+                /// only one value is non-null, that value is returned. If both are <see langword="null" />, the result is
+                /// <see langword="null" />.
                 /// </para>
                 /// </remarks>
             #pragma warning disable S3358
                 public static System.DateTime? Max(System.DateTime? first, System.DateTime? second) => default;
             #pragma warning restore S3358
             }
-            """,
-            expectedFailure: CodeStyleKatFailureKind.UnsupportedPreprocessorLayout),
+            """),
 
         CodeStyleKat.Safety(
             id: "XMLSAFE-0006",

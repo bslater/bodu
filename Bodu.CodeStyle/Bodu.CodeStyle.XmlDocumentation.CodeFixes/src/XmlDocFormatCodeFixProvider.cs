@@ -83,11 +83,15 @@ public sealed class XmlDocFormatCodeFixProvider : CodeFixProvider
                 }
             }
 
-            if (HasPreprocessorDirectiveBetweenTriviaAndMember(trivia))
+            if (HasConditionalCompilationDirectiveBetweenTriviaAndMember(trivia))
             {
-                // A preprocessor directive between the doc comment and the documented member makes any rewrite
-                // unsafe — we cannot guarantee the documented member is the same across configurations. Skip
-                // registering a fix for this diagnostic; the squiggle remains, but no code action is offered.
+                // A conditional-compilation directive (#if/#elif/#else/#endif) between the doc comment and
+                // the documented member makes any rewrite unsafe — under a different build configuration
+                // the doc comment could attach to a different member declaration. Skip registering a fix
+                // for this diagnostic; the squiggle remains, but no code action is offered.
+                //
+                // Non-conditional directives (#pragma, #nullable, #region, #line, #define, #undef) do not
+                // change which member the doc comment attaches to, so they are not a barrier to the fix.
                 continue;
             }
 
@@ -100,7 +104,7 @@ public sealed class XmlDocFormatCodeFixProvider : CodeFixProvider
         }
     }
 
-    private static bool HasPreprocessorDirectiveBetweenTriviaAndMember(SyntaxTrivia trivia)
+    private static bool HasConditionalCompilationDirectiveBetweenTriviaAndMember(SyntaxTrivia trivia)
     {
         SyntaxToken token = trivia.Token;
         SyntaxTriviaList leading = token.LeadingTrivia;
@@ -112,13 +116,31 @@ public sealed class XmlDocFormatCodeFixProvider : CodeFixProvider
 
         for (var i = index + 1; i < leading.Count; i++)
         {
-            if (leading[i].IsDirective)
+            if (IsConditionalCompilationDirective(leading[i]))
             {
                 return true;
             }
         }
 
         return false;
+    }
+
+    private static bool IsConditionalCompilationDirective(SyntaxTrivia trivia)
+    {
+        // Only `#if` / `#elif` / `#else` / `#endif` can cause the doc comment to attach to a different
+        // member across build configurations. Other directives (`#pragma`, `#nullable`, `#region`,
+        // `#line`, `#define`, `#undef`) leave the documented member identity unchanged and are safe to
+        // rewrite around.
+        switch (trivia.Kind())
+        {
+            case SyntaxKind.IfDirectiveTrivia:
+            case SyntaxKind.ElifDirectiveTrivia:
+            case SyntaxKind.ElseDirectiveTrivia:
+            case SyntaxKind.EndIfDirectiveTrivia:
+                return true;
+            default:
+                return false;
+        }
     }
 
     private static async Task<Document> ApplyFixAsync(Document document, SyntaxTrivia trivia, string formattedText, CancellationToken cancellationToken)
