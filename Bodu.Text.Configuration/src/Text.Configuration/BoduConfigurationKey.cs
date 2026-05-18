@@ -36,8 +36,10 @@ public readonly partial struct BoduConfigurationKey : IEquatable<BoduConfigurati
     /// </summary>
     /// <param name="rawKey">The raw key as authored in the configuration source.</param>
     /// <param name="options">The key options to apply, or <see langword="null" /> for the defaults.</param>
-    /// <exception cref="ArgumentException"><paramref name="rawKey" /> is <see langword="null" />, empty, or
-    /// contains only whitespace; or a segment was empty when empty segments are not permitted.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="rawKey" /> is <see langword="null" />, empty, or contains only whitespace; or a segment was
+    /// empty when empty segments are not permitted.
+    /// </exception>
     public BoduConfigurationKey(string rawKey, BoduConfigurationKeyOptions? options = null)
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(rawKey);

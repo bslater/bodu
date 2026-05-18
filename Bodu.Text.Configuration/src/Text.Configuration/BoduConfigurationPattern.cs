@@ -79,9 +79,12 @@ public sealed partial class BoduConfigurationPattern
     /// </summary>
     /// <param name="pattern">The pattern to compile.</param>
     /// <returns>A compiled <see cref="BoduConfigurationPattern" />.</returns>
-    /// <exception cref="ArgumentException"><paramref name="pattern" /> is <see langword="null" />, empty, or
-    /// contains only whitespace.</exception>
-    /// <exception cref="BoduConfigurationParseException">The pattern contained an unbalanced brace or bracket.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="pattern" /> is <see langword="null" />, empty, or contains only whitespace.
+    /// </exception>
+    /// <exception cref="BoduConfigurationParseException">
+    /// The pattern contained an unbalanced brace or bracket.
+    /// </exception>
     public static BoduConfigurationPattern Compile(string pattern)
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(pattern);
