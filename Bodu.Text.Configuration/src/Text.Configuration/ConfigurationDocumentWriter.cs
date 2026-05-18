@@ -16,8 +16,8 @@ namespace Bodu.Text.Configuration;
 /// stream/reader overloads.
 /// </summary>
 /// <remarks>
-/// Unlike <see cref="Ini.Format(IniDocument)" /> — which always emits trivia using the INI defaults — this
-/// writer honors the Bodu-specific options: <see cref="BoduConfigurationWriteOptions.KeyValueSeparator" />,
+/// Unlike <see cref="Ini.Format(IniDocument)" /> — which always emits trivia using the INI defaults — this writer
+/// honors the Bodu-specific options: <see cref="BoduConfigurationWriteOptions.KeyValueSeparator" />,
 /// <see cref="BoduConfigurationWriteOptions.NewLine" />, <see cref="BoduConfigurationWriteOptions.PreserveComments" />,
 /// <see cref="BoduConfigurationWriteOptions.WriteInlineComments" />, and
 /// <see cref="BoduConfigurationWriteOptions.InsertBlankLineBetweenSections" />.

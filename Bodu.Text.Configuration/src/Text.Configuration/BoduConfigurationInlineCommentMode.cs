@@ -10,8 +10,8 @@ namespace Bodu.Text.Configuration;
 /// Controls how the reader treats <c>#</c> or <c>;</c> characters that appear after a property value.
 /// </summary>
 /// <remarks>
-/// EditorConfig 0.17.2 explicitly forbids inline comments — a <c>#</c> or <c>;</c> anywhere other than the
-/// start of a line is part of the value. Bodu permits inline comments as an opt-in extension.
+/// EditorConfig 0.17.2 explicitly forbids inline comments — a <c>#</c> or <c>;</c> anywhere other than the start of a
+/// line is part of the value. Bodu permits inline comments as an opt-in extension.
 /// </remarks>
 public enum BoduConfigurationInlineCommentMode
 {

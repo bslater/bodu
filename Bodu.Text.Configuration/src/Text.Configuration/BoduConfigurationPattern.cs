@@ -16,19 +16,46 @@ namespace Bodu.Text.Configuration;
 /// <para>
 /// Patterns support the EditorConfig glob grammar:
 /// <list type="bullet">
-///   <item><description><c>*</c> — matches any character except <c>/</c>.</description></item>
-///   <item><description><c>**</c> — matches any sequence of characters including <c>/</c>.</description></item>
-///   <item><description><c>?</c> — matches a single character except <c>/</c>.</description></item>
-///   <item><description><c>{a,b,c}</c> — matches any of the comma-separated alternatives (nesting permitted).</description></item>
-///   <item><description><c>{n1..n2}</c> — matches any decimal integer in the inclusive range.</description></item>
-///   <item><description><c>[seq]</c> — matches a single character in the set; <c>[!seq]</c> matches any
-///   character not in the set.</description></item>
-///   <item><description><c>\</c> — escapes the next character so it is matched literally.</description></item>
+/// <item>
+/// <description>
+/// <c>*</c> — matches any character except <c>/</c>.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// <c>**</c> — matches any sequence of characters including <c>/</c>.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// <c>?</c> — matches a single character except <c>/</c>.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// <c>{a,b,c}</c> — matches any of the comma-separated alternatives (nesting permitted).
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// <c>{n1..n2}</c> — matches any decimal integer in the inclusive range.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// <c>[seq]</c> — matches a single character in the set; <c>[!seq]</c> matches any character not in the set.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// <c>\</c> — escapes the next character so it is matched literally.
+/// </description>
+/// </item>
 /// </list>
 /// </para>
 /// <para>
-/// Anchoring follows EditorConfig: a pattern with no <c>/</c> matches at any directory depth; a pattern with
-/// <c>/</c> is anchored to the start of the relative path.
+/// Anchoring follows EditorConfig: a pattern with no <c>/</c> matches at any directory depth; a pattern with <c>/</c>
+/// is anchored to the start of the relative path.
 /// </para>
 /// </remarks>
 public sealed partial class BoduConfigurationPattern
