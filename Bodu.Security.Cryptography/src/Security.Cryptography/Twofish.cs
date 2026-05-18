@@ -62,10 +62,14 @@ namespace Bodu.Security.Cryptography;
 /// compatibility is specifically required. </note>
 /// </remarks>
 /// <example>
-/// <code language="csharp"> using System.Security.Cryptography; using Bodu.Security.Cryptography; using
+/// <code language="csharp">
+///<![CDATA[
+/// using System.Security.Cryptography; using Bodu.Security.Cryptography; using
 /// Bodu.Security.Cryptography.Extensions; using var twofish = new Twofish(); twofish.GenerateKey(); // 256-bit by
 /// default twofish.GenerateIV(); byte[] ciphertext = twofish.Encrypt(plaintext); byte[] roundTrip =
-/// twofish.Decrypt(ciphertext); </code>
+/// twofish.Decrypt(ciphertext);
+///]]>
+/// </code>
 /// </example>
 /// <seealso href="https://www.schneier.com/wp-content/uploads/2016/02/paper-twofish-paper.pdf">Twofish: A 128-Bit Block
 /// Cipher (Schneier, Kelsey, Whiting, Wagner, Hall, Ferguson, 1998)</seealso>

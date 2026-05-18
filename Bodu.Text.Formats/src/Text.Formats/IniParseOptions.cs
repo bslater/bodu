@@ -16,8 +16,12 @@ namespace Bodu.Text.Formats;
 /// <see langword="init" /> properties:
 /// </para>
 /// <example>
-/// <code> IniParseOptions options = new IniParseOptions { AllowGlobalSection = false, DuplicateKeyBehavior =
-/// IniDuplicateKeyBehavior.FirstWins, }; </code>
+/// <code>
+///<![CDATA[
+/// IniParseOptions options = new IniParseOptions { AllowGlobalSection = false, DuplicateKeyBehavior =
+/// IniDuplicateKeyBehavior.FirstWins, };
+///]]>
+/// </code>
 /// </example>
 /// <para>
 /// The <see cref="Default" /> field exposes a pre-constructed instance with all properties set to their default values,

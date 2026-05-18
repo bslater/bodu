@@ -56,11 +56,15 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// </remarks>
 /// <example>
-/// <code language="csharp"> using System.Security.Cryptography; using Bodu.Security.Cryptography; using
+/// <code language="csharp">
+///<![CDATA[
+/// using System.Security.Cryptography; using Bodu.Security.Cryptography; using
 /// Bodu.Security.Cryptography.Extensions; using IBlockCipher master = new AesBlockCipher(masterKey); byte[] iv =
 /// BuildSivIv(nonce); // 12-byte nonce padded to the cipher block size using IAeadBlockCipherModeTransform sivlike =
 /// new GcmSivModeTransform( masterCipher: master, cipherFactory: derivedKey =&gt; new AesBlockCipher(derivedKey), iv:
-/// iv); byte[] sealed_ = sivlike.Encrypt(plaintext, associatedData: header); </code>
+/// iv); byte[] sealed_ = sivlike.Encrypt(plaintext, associatedData: header);
+///]]>
+/// </code>
 /// </example>
 /// <seealso href="../guides/cryptography/aead-modes.html#gcm-siv--the-modern-replacement-for-gcm">GCM-SIV walk-through
 /// in the AEAD-modes guide</seealso> <seealso cref="AesBlockCipher"/>

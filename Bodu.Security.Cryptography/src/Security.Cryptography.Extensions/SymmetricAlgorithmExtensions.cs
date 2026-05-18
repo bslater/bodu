@@ -60,14 +60,18 @@ namespace Bodu.Security.Cryptography.Extensions;
 /// explicit synchronization.
 /// </para>
 /// <example>
-/// <code language="csharp"> using System.Security.Cryptography; using Bodu.Security.Cryptography.Extensions; using Aes
+/// <code language="csharp">
+///<![CDATA[
+/// using System.Security.Cryptography; using Bodu.Security.Cryptography.Extensions; using Aes
 /// aes = Aes.Create(); aes.Key = key; aes.IV = iv; // 1. One-shot encrypt of an in-memory span; one-shot decrypt back.
 /// byte[] ciphertext = aes.Encrypt(plaintext.AsSpan()); byte[] roundTrip = aes.Decrypt(ciphertext); // 2.
 /// Stream-encrypt a large file with the default 80 KiB buffer. using FileStream src = File.OpenRead("plain.bin"); using
 /// FileStream dst = File.Create("cipher.bin"); int bytesWritten = aes.Encrypt(src, dst); // 3. Validate caller-supplied
 /// key material without catching CryptographicException. if (!aes.TryCreateDecryptor(suppliedKey, suppliedIv, out
 /// ICryptoTransform? decryptor)) return BadRequest("invalid key/iv combination"); using (decryptor) { /* … decrypt with
-/// the validated transform … */ } </code>
+/// the validated transform … */ }
+///]]>
+/// </code>
 /// </example>
 /// </remarks>
 public static partial class SymmetricAlgorithmExtensions

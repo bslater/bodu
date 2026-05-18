@@ -61,12 +61,16 @@ namespace Bodu.IO.Hashing;
 /// and only the digest remains.
 /// </para>
 /// <example>
-/// <code language="csharp"> using Bodu.IO.Hashing; using Bodu.IO.Hashing.Checksums; // 1. Compute a baseline digest of
+/// <code language="csharp">
+///<![CDATA[
+/// using Bodu.IO.Hashing; using Bodu.IO.Hashing.Checksums; // 1. Compute a baseline digest of
 /// a file's first segment. var crc = new Crc(CrcStandard.CRC32_ISOHDLC); crc.Append(File.ReadAllBytes("part-1.bin"));
 /// byte[] digest1 = crc.GetCurrentHash(); // 2. Hours (or processes) later, fold an additional segment into the same
 /// digest using only `digest1`. var resumable = (IResumableHashAlgorithm)new Crc(CrcStandard.CRC32_ISOHDLC); byte[]
 /// digest2 = resumable.ComputeHashFrom(digest1, File.ReadAllBytes("part-2.bin")); // 3. Same result as if both segments
-/// had been appended in one session — without holding the running state. </code>
+/// had been appended in one session — without holding the running state.
+///]]>
+/// </code>
 /// </example>
 /// </remarks>
 /// <seealso cref="System.IO.Hashing.NonCryptographicHashAlgorithm"/> <seealso cref="Bodu.IO.Hashing.Checksums.Crc"/>

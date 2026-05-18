@@ -46,8 +46,12 @@ namespace Bodu.IO.Hashing.Checksums;
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for
 /// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
 /// <example>
-/// <code language="csharp"> using Bodu.IO.Hashing.Checksums; using Bodu.IO.Hashing.Extensions; // zlib-compatible
-/// Adler-32 of a deflate payload. var adler = new Adler32(); byte[] checksum = adler.ComputeHash(deflateBlock); </code>
+/// <code language="csharp">
+///<![CDATA[
+/// using Bodu.IO.Hashing.Checksums; using Bodu.IO.Hashing.Extensions; // zlib-compatible
+/// Adler-32 of a deflate payload. var adler = new Adler32(); byte[] checksum = adler.ComputeHash(deflateBlock);
+///]]>
+/// </code>
 /// </example>
 /// </remarks>
 /// <seealso cref="Adler{T}"/> <seealso cref="Adler32C"/> <seealso cref="Adler64"/>

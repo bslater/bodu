@@ -24,8 +24,12 @@ namespace Bodu.Text.Formats;
 /// <see langword="false" />, the input is exhausted.
 /// </para>
 /// <example>
-/// <code> using var reader = Delimited.CreateReader(File.OpenText("data.csv")); while (reader.Read()) { string name =
-/// reader.Fields[0]; string age = reader.Fields[1]; } </code>
+/// <code>
+///<![CDATA[
+/// using var reader = Delimited.CreateReader(File.OpenText("data.csv")); while (reader.Read()) { string name =
+/// reader.Fields[0]; string age = reader.Fields[1]; }
+///]]>
+/// </code>
 /// </example>
 /// <para>
 /// The reader takes ownership of the supplied <see cref="TextReader" /> and disposes it when <see cref="Dispose" /> is

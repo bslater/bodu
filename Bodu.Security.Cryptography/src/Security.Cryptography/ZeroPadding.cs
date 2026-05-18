@@ -23,9 +23,13 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// </remarks>
 /// <example>
-/// <code language="csharp"> using Bodu.Security.Cryptography; // Caller is responsible for tracking the original
+/// <code language="csharp">
+///<![CDATA[
+/// using Bodu.Security.Cryptography; // Caller is responsible for tracking the original
 /// plaintext length — // Unpad here returns the padded buffer unchanged. IPaddingStrategy padding = new ZeroPadding();
-/// byte[] padded = padding.Pad(plaintext, blockSize: 128); // 128 bits = 16 bytes </code>
+/// byte[] padded = padding.Pad(plaintext, blockSize: 128); // 128 bits = 16 bytes
+///]]>
+/// </code>
 /// </example>
 public sealed class ZeroPadding
     : IPaddingStrategy

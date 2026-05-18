@@ -62,8 +62,12 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// </remarks>
 /// <example>
-/// <code language="csharp"> using var xof = new AsconXof128(); xof.Absorb(message); byte[] output = xof.GetHash(64); //
-/// Produce 64 bytes of output </code>
+/// <code language="csharp">
+///<![CDATA[
+/// using var xof = new AsconXof128(); xof.Absorb(message); byte[] output = xof.GetHash(64); //
+/// Produce 64 bytes of output
+///]]>
+/// </code>
 /// </example>
 /// <seealso cref="AsconCxof128"/> <seealso cref="AsconHash256"/>
 /// <seealso href="https://doi.org/10.6028/NIST.SP.800-232">NIST SP 800-232 (ASCON)</seealso>

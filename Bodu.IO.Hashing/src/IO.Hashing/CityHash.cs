@@ -54,10 +54,14 @@ namespace Bodu.IO.Hashing;
 /// hashing, digital signatures, or any application that requires collision resistance under adversarial conditions.
 /// </note>
 /// <example>
-/// <code language="csharp"> using Bodu.IO.Hashing; using Bodu.IO.Hashing.Extensions; // 64-bit fingerprint of a content
+/// <code language="csharp">
+///<![CDATA[
+/// using Bodu.IO.Hashing; using Bodu.IO.Hashing.Extensions; // 64-bit fingerprint of a content
 /// blob — typical use case. var city = new CityHash64(); byte[] fingerprint = city.ComputeHash(blob); // Stream-hash a
 /// moderately sized file. Note: CityHash buffers fully — prefer Crc / xxHash for very large streams. using FileStream
-/// fs = File.OpenRead("payload.bin"); byte[] streamDigest = city.ComputeHash(fs); </code>
+/// fs = File.OpenRead("payload.bin"); byte[] streamDigest = city.ComputeHash(fs);
+///]]>
+/// </code>
 /// </example>
 /// </remarks>
 /// <seealso cref="CityHash32"/> <seealso cref="CityHash64"/> <seealso cref="CityHash128"/>

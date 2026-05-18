@@ -26,10 +26,14 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// </remarks>
 /// <example>
-/// <code language="csharp"> using Bodu.Security.Cryptography; // Legacy interop only — padding bytes are random; only
+/// <code language="csharp">
+///<![CDATA[
+/// using Bodu.Security.Cryptography; // Legacy interop only — padding bytes are random; only
 /// the final length byte is validated. IPaddingStrategy padding = new Iso10126Padding(); byte[] padded =
 /// padding.Pad(plaintext, blockSize: 128); // 128 bits = 16 bytes byte[] recovered = padding.Unpad(padded, blockSize:
-/// 128); </code>
+/// 128);
+///]]>
+/// </code>
 /// </example>
 public sealed class Iso10126Padding
     : IPaddingStrategy

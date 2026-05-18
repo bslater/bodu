@@ -55,8 +55,12 @@ namespace Bodu.IO.Hashing;
 /// <note type="important"> This algorithm is <b>not</b> cryptographically secure and must <b>not</b> be used for
 /// password hashing, digital signatures, or any application requiring adversarial collision resistance. </note>
 /// <example>
-/// <code language="csharp"> using Bodu.IO.Hashing; using Bodu.IO.Hashing.Extensions; var city = new CityHash64();
-/// byte[] fingerprint = city.ComputeHash(blob); </code>
+/// <code language="csharp">
+///<![CDATA[
+/// using Bodu.IO.Hashing; using Bodu.IO.Hashing.Extensions; var city = new CityHash64();
+/// byte[] fingerprint = city.ComputeHash(blob);
+///]]>
+/// </code>
 /// </example>
 /// </remarks>
 /// <seealso cref="CityHash{T}"/> <seealso cref="CityHash32"/> <seealso cref="CityHash128"/>

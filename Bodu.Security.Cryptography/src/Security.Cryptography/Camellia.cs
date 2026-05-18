@@ -60,10 +60,14 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// </remarks>
 /// <example>
-/// <code language="csharp"> using System.Security.Cryptography; using Bodu.Security.Cryptography; using
+/// <code language="csharp">
+///<![CDATA[
+/// using System.Security.Cryptography; using Bodu.Security.Cryptography; using
 /// Bodu.Security.Cryptography.Extensions; using var camellia = new Camellia(); camellia.GenerateKey(); // 256-bit by
 /// default camellia.GenerateIV(); byte[] ciphertext = camellia.Encrypt(plaintext); byte[] roundTrip =
-/// camellia.Decrypt(ciphertext); </code>
+/// camellia.Decrypt(ciphertext);
+///]]>
+/// </code>
 /// </example>
 /// <seealso href="../guides/cryptography/camellia.html">Using Camellia</seealso>
 /// <seealso href="../guides/cryptography/encryption-basics.html">Encryption basics</seealso>

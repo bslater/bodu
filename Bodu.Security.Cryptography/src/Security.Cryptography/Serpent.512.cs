@@ -63,11 +63,15 @@ namespace Bodu.Security.Cryptography;
 /// <see cref="Serpent128" />. </note>
 /// </remarks>
 /// <example>
-/// <code language="csharp"> using System.Security.Cryptography; using Bodu.Security.Cryptography; using
+/// <code language="csharp">
+///<![CDATA[
+/// using System.Security.Cryptography; using Bodu.Security.Cryptography; using
 /// Bodu.Security.Cryptography.Extensions; using var serpent = Serpent512.Create(); serpent.Key =
 /// RandomNumberGenerator.GetBytes(64); // 512-bit key serpent.IV = RandomNumberGenerator.GetBytes(64); // matches the
 /// 512-bit block serpent.Tweak = RandomNumberGenerator.GetBytes(16); // 128-bit tweak byte[] ciphertext =
-/// serpent.Encrypt(plaintext); byte[] roundTrip = serpent.Decrypt(ciphertext); </code>
+/// serpent.Encrypt(plaintext); byte[] roundTrip = serpent.Decrypt(ciphertext);
+///]]>
+/// </code>
 /// </example>
 public sealed class Serpent512
     : Serpent

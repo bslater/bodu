@@ -34,8 +34,12 @@ namespace Bodu.IO.Hashing;
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for
 /// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
 /// <example>
-/// <code language="csharp"> using Bodu.IO.Hashing; using Bodu.IO.Hashing.Extensions; var pjw = new Pjw32(); byte[]
-/// digest = pjw.ComputeHash(System.Text.Encoding.ASCII.GetBytes("symbol_name")); </code>
+/// <code language="csharp">
+///<![CDATA[
+/// using Bodu.IO.Hashing; using Bodu.IO.Hashing.Extensions; var pjw = new Pjw32(); byte[]
+/// digest = pjw.ComputeHash(System.Text.Encoding.ASCII.GetBytes("symbol_name"));
+///]]>
+/// </code>
 /// </example>
 /// </remarks>
 public sealed class Pjw32

@@ -37,11 +37,15 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// </remarks>
 /// <example>
-/// <code language="csharp"> using System.Security.Cryptography; using Bodu.Security.Cryptography; // Most callers
+/// <code language="csharp">
+///<![CDATA[
+/// using System.Security.Cryptography; using Bodu.Security.Cryptography; // Most callers
 /// should reach for SymmetricAlgorithm.Mode = ECB instead of constructing this directly. // Direct use is appropriate
 /// only inside larger primitives (e.g. wide-block constructions, KDFs). using IBlockCipher cipher = new
 /// AesBlockCipher(key); IBlockCipherModeTransform ecb = new EcbModeTransform(cipher); byte[] ciphertext = new
-/// byte[plaintext.Length]; int written = ecb.Transform(plaintext, ciphertext, encrypt: true); </code>
+/// byte[plaintext.Length]; int written = ecb.Transform(plaintext, ciphertext, encrypt: true);
+///]]>
+/// </code>
 /// </example>
 /// <seealso href="../guides/cryptography/cipher-modes.html#ecb--almost-never">ECB walk-through in the cipher-modes
 /// guide</seealso>

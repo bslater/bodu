@@ -31,9 +31,13 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// </remarks>
 /// <example>
-/// <code language="csharp"> // Encrypt a single 16-byte block (typically used indirectly via an AEAD mode transform).
+/// <code language="csharp">
+///<![CDATA[
+/// // Encrypt a single 16-byte block (typically used indirectly via an AEAD mode transform).
 /// byte[] key = RandomNumberGenerator.GetBytes(16); using var cipher = new AesBlockCipher(key); Span&lt;byte&gt; block
-/// = stackalloc byte[16]; Span&lt;byte&gt; output = stackalloc byte[16]; cipher.Encrypt(block, output); </code>
+/// = stackalloc byte[16]; Span&lt;byte&gt; output = stackalloc byte[16]; cipher.Encrypt(block, output);
+///]]>
+/// </code>
 /// </example>
 /// <seealso href="../guides/cryptography/aead-modes.html">Using AEAD modes (guide with full encrypt / decrypt examples)
 /// </seealso>

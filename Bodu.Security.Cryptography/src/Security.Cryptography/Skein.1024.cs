@@ -54,8 +54,12 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// </remarks>
 /// <example>
-/// <code language="csharp"> using var skein = new Skein1024(); // Skein-1024-1024 byte[] digest =
-/// skein.ComputeHash(message); </code>
+/// <code language="csharp">
+///<![CDATA[
+/// using var skein = new Skein1024(); // Skein-1024-1024 byte[] digest =
+/// skein.ComputeHash(message);
+///]]>
+/// </code>
 /// </example>
 /// <seealso cref="Threefish1024Cipher"/> <seealso cref="Skein{T}"/> <seealso cref="Skein256"/>
 /// <seealso cref="Skein512"/> <seealso cref="Threefish1024"/>

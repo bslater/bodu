@@ -57,11 +57,15 @@ namespace Bodu.IO.Hashing;
 /// <note type="important"> This algorithm is <b>not</b> cryptographically secure and must <b>not</b> be used for
 /// password hashing, digital signatures, or any application requiring adversarial collision resistance. </note>
 /// <example>
-/// <code language="csharp"> using Bodu.IO.Hashing; using Bodu.IO.Hashing.Extensions; // Default seed, suitable for an
+/// <code language="csharp">
+///<![CDATA[
+/// using Bodu.IO.Hashing; using Bodu.IO.Hashing.Extensions; // Default seed, suitable for an
 /// in-memory hash table. var m = new MurmurHash3_32(); byte[] digest =
 /// m.ComputeHash(System.Text.Encoding.UTF8.GetBytes("hash-table-key")); // Custom seed for a second, independent hash
 /// family (useful in bloom filters). var m2 = new MurmurHash3_32(seed: 0x9E3779B1u); byte[] digest2 =
-/// m2.ComputeHash(System.Text.Encoding.UTF8.GetBytes("hash-table-key")); </code>
+/// m2.ComputeHash(System.Text.Encoding.UTF8.GetBytes("hash-table-key"));
+///]]>
+/// </code>
 /// </example>
 /// </remarks>
 /// <seealso cref="MurmurHash3{T}"/> <seealso cref="MurmurHash3_128"/>

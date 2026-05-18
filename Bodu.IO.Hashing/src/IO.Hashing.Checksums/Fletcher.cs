@@ -44,8 +44,12 @@ using Bodu.IO.Hashing;
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for
 /// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
 /// <example>
-/// <code language="csharp"> using Bodu.IO.Hashing.Checksums; using Bodu.IO.Hashing.Extensions; // 32-bit Fletcher
+/// <code language="csharp">
+///<![CDATA[
+/// using Bodu.IO.Hashing.Checksums; using Bodu.IO.Hashing.Extensions; // 32-bit Fletcher
 /// checksum of a packet payload. var fletcher = new Fletcher32(); byte[] checksum = fletcher.ComputeHash(payload);
+///
+///]]>
 /// </code>
 /// </example>
 /// </remarks>

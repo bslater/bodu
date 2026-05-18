@@ -56,12 +56,16 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// </remarks>
 /// <example>
-/// <code language="csharp"> using System.Security.Cryptography; using Bodu.Security.Cryptography; // XTS uses two
+/// <code language="csharp">
+///<![CDATA[
+/// using System.Security.Cryptography; using Bodu.Security.Cryptography; // XTS uses two
 /// independent keys — Key1 for data, Key2 for the tweak. Never share keys. using IBlockCipher data = new
 /// AesBlockCipher(key1); using IBlockCipher tweak = new AesBlockCipher(key2); byte[] sectorNumber =
 /// BitConverter.GetBytes((long)42); // little-endian sector number, padded to block size Array.Resize(ref sectorNumber,
 /// data.BlockSize / 8); IBlockCipherModeTransform xts = new XtsModeTransform(data, tweak, sectorNumber); byte[]
-/// ciphertext = new byte[plaintext.Length]; int written = xts.Transform(plaintext, ciphertext, encrypt: true); </code>
+/// ciphertext = new byte[plaintext.Length]; int written = xts.Transform(plaintext, ciphertext, encrypt: true);
+///]]>
+/// </code>
 /// </example>
 public sealed class XtsModeTransform
     : IBlockCipherModeTransform

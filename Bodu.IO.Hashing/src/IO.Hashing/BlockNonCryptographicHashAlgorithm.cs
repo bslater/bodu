@@ -90,7 +90,9 @@ namespace Bodu.IO.Hashing;
 /// behind explicit synchronization.
 /// </para>
 /// <example>
-/// <code language="csharp"> // Sketch of a derived block hash. The base class drives buffering and snapshotting; // the
+/// <code language="csharp">
+///<![CDATA[
+/// // Sketch of a derived block hash. The base class drives buffering and snapshotting; // the
 /// derived type only expresses how a single block changes the accumulator. public sealed class MyBlockHash :
 /// BlockNonCryptographicHashAlgorithm&lt;MyBlockHash&gt; { private uint _state; public MyBlockHash() :
 /// base(hashLengthInBytes: 4, blockSize: 16) { } protected override void ProcessBlock(ReadOnlySpan&lt;byte&gt; block) {
@@ -98,7 +100,9 @@ namespace Bodu.IO.Hashing;
 /// ulong messageLength) { // append a 0x80 byte, zero-pad, then write `messageLength` little-endian, return one or more
 /// whole blocks. return Array.Empty&lt;byte&gt;(); } protected override byte[] ProcessFinalBlock() =&gt;
 /// BitConverter.GetBytes(_state); protected override MyBlockHash Clone() { var copy = new MyBlockHash { _state = _state
-/// }; copy.CopyResidualStateFrom(this); return copy; } } </code>
+/// }; copy.CopyResidualStateFrom(this); return copy; } }
+///]]>
+/// </code>
 /// </example>
 /// </remarks>
 /// <seealso cref="System.IO.Hashing.NonCryptographicHashAlgorithm"/> <seealso cref="IResumableHashAlgorithm"/>

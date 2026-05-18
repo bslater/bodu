@@ -40,9 +40,13 @@ namespace Bodu.IO.Hashing;
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for
 /// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
 /// <example>
-/// <code language="csharp"> using Bodu.IO.Hashing; using Bodu.IO.Hashing.Extensions; // Suited to short keys; avoid for
+/// <code language="csharp">
+///<![CDATA[
+/// using Bodu.IO.Hashing; using Bodu.IO.Hashing.Extensions; // Suited to short keys; avoid for
 /// multi-megabyte streams (the input is fully buffered). var sfh = new SuperFastHash(); byte[] digest =
-/// sfh.ComputeHash(System.Text.Encoding.UTF8.GetBytes("short-key")); </code>
+/// sfh.ComputeHash(System.Text.Encoding.UTF8.GetBytes("short-key"));
+///]]>
+/// </code>
 /// </example>
 /// </remarks>
 public sealed class SuperFastHash

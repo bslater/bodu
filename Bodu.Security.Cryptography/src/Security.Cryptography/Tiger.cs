@@ -67,8 +67,12 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// </remarks>
 /// <example>
-/// <code language="csharp"> using var tiger = new Tiger(192) { Variant = TigerHashingVariant.Tiger2 }; byte[] digest =
-/// tiger.ComputeHash(message); </code>
+/// <code language="csharp">
+///<![CDATA[
+/// using var tiger = new Tiger(192) { Variant = TigerHashingVariant.Tiger2 }; byte[] digest =
+/// tiger.ComputeHash(message);
+///]]>
+/// </code>
 /// </example>
 /// <seealso href="https://www.cs.technion.ac.il/~biham/Reports/Tiger/">Tiger home page (Anderson / Biham)</seealso>
 /// <seealso href="../guides/cryptography/tiger.html">Using Tiger</seealso>

@@ -73,7 +73,11 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// </remarks>
 /// <example>
-/// <code language="csharp"> using var blake3 = new Blake3(); byte[] digest = blake3.ComputeHash(message); </code>
+/// <code language="csharp">
+///<![CDATA[
+/// using var blake3 = new Blake3(); byte[] digest = blake3.ComputeHash(message);
+///]]>
+/// </code>
 /// </example>
 /// <seealso cref="Blake2b"/> <seealso cref="Blake2s"/>
 public sealed class Blake3

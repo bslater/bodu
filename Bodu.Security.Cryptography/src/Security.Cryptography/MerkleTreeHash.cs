@@ -74,9 +74,13 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// </remarks>
 /// <example>
-/// <code language="csharp"> using System.Security.Cryptography; using Bodu.Security.Cryptography; // SHA-256 leaves, 4
+/// <code language="csharp">
+///<![CDATA[
+/// using System.Security.Cryptography; using Bodu.Security.Cryptography; // SHA-256 leaves, 4
 /// KiB blocks, fan-out of 4. using var merkle = new MerkleTreeHash( algorithmFactory: () =&gt; SHA256.Create(),
-/// blockSize: 4096, fanOut: 4); byte[] root = merkle.ComputeHash(payload); </code>
+/// blockSize: 4096, fanOut: 4); byte[] root = merkle.ComputeHash(payload);
+///]]>
+/// </code>
 /// </example>
 /// <seealso href="../guides/cryptography/hashing.html#pattern-6--merkle-trees">Merkle-tree recipes in the hashing guide
 /// </seealso> <seealso cref="ParallelMerkleTreeHash"/>

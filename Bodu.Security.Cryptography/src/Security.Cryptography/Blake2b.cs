@@ -68,9 +68,13 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// </remarks>
 /// <example>
-/// <code language="csharp"> // Unkeyed hash using var blake2b = new Blake2b(512); byte[] digest =
+/// <code language="csharp">
+///<![CDATA[
+/// // Unkeyed hash using var blake2b = new Blake2b(512); byte[] digest =
 /// blake2b.ComputeHash(message); // Keyed MAC (BLAKE2b-MAC-512) using var mac = new Blake2b(512) { Key = myKey };
-/// byte[] tag = mac.ComputeHash(message); </code>
+/// byte[] tag = mac.ComputeHash(message);
+///]]>
+/// </code>
 /// </example>
 /// <seealso cref="Blake2s"/> <seealso cref="Blake3"/>
 public sealed class Blake2b

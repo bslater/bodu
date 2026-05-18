@@ -84,14 +84,18 @@ namespace Bodu.IO.Hashing.Checksums;
 /// <see cref="System.Security.Cryptography.HashAlgorithm" /> for password hashing, digital signatures, message
 /// authentication, or any context where a determined attacker could choose the input.</note>
 /// <example>
-/// <code language="csharp"> using System.IO.Hashing; using Bodu.IO.Hashing; using Bodu.IO.Hashing.Checksums; using
+/// <code language="csharp">
+///<![CDATA[
+/// using System.IO.Hashing; using Bodu.IO.Hashing; using Bodu.IO.Hashing.Checksums; using
 /// Bodu.IO.Hashing.Extensions; // 1. Standard PKZIP / Ethernet CRC-32 of a buffer. var crc32 = new
 /// Crc(CrcStandard.CRC32_ISOHDLC); byte[] digest = crc32.ComputeHash(File.ReadAllBytes("payload.bin")); // 2. Modbus
 /// RTU — different polynomial/init/reflect choices, same engine. var modbus = new Crc(CrcStandard.CRC16_MODBUS);
 /// modbus.Append(frameHeader); modbus.Append(framePayload); byte[] frameCrc = modbus.GetCurrentHash(); //
 /// non-destructive snapshot // 3. Resumption — fold an appended log segment into yesterday's digest without re-reading
 /// the original bytes. var resumable = (IResumableHashAlgorithm)new Crc(CrcStandard.CRC32_ISOHDLC); byte[] updated =
-/// resumable.ComputeHashFrom(digest, File.ReadAllBytes("payload.appended.bin")); </code>
+/// resumable.ComputeHashFrom(digest, File.ReadAllBytes("payload.appended.bin"));
+///]]>
+/// </code>
 /// </example>
 /// </remarks>
 /// <seealso cref="CrcStandard"/> <seealso cref="CrcStandards"/> <seealso cref="CrcLookupTableCache"/>

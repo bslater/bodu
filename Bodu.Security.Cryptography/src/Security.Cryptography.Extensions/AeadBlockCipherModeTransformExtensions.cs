@@ -66,7 +66,9 @@ namespace Bodu.Security.Cryptography.Extensions;
 /// <c>ciphertextWithTag.Length - (TagSize / 8)</c> on decrypt.
 /// </para>
 /// <example>
-/// <code language="csharp"> using System.Security.Cryptography; using System.Text; using Bodu.Security.Cryptography;
+/// <code language="csharp">
+///<![CDATA[
+/// using System.Security.Cryptography; using System.Text; using Bodu.Security.Cryptography;
 /// using Bodu.Security.Cryptography.Extensions; byte[] key = RandomNumberGenerator.GetBytes(32); byte[] nonce =
 /// RandomNumberGenerator.GetBytes(12); byte[] header = Encoding.UTF8.GetBytes("v=1;msg=42"); // 1. Encrypt with
 /// associated data; receive ciphertext + tag in a single buffer. using IAeadBlockCipherModeTransform enc = new
@@ -75,6 +77,8 @@ namespace Bodu.Security.Cryptography.Extensions;
 /// = new GcmModeTransform(key, nonce); byte[] recovered = dec.Decrypt(sealed_, associatedData: header); // 3. Same
 /// shape with a different mode — Ascon, EAX, GCM-SIV all interchange behind IAeadBlockCipherModeTransform. using
 /// IAeadBlockCipherModeTransform enc2 = new AsconAead128(key, nonce); byte[] sealedAscon = enc2.Encrypt(plaintext);
+///
+///]]>
 /// </code>
 /// </example>
 /// </remarks>

@@ -25,8 +25,12 @@ namespace Bodu.Text.Configuration;
 /// method to evaluate the document for a specific target path:
 /// </para>
 /// <example>
-/// <code language="csharp"> IniDocument doc = BoduConfigurationDocument.Parse(text); BoduConfigurationView view =
-/// doc.Resolve("src/Foo.cs"); int indent = view.GetInt32("format:indent:size", 4); </code>
+/// <code language="csharp">
+///<![CDATA[
+/// IniDocument doc = BoduConfigurationDocument.Parse(text); BoduConfigurationView view =
+/// doc.Resolve("src/Foo.cs"); int indent = view.GetInt32("format:indent:size", 4);
+///]]>
+/// </code>
 /// </example>
 /// </remarks>
 public static class BoduConfigurationDocument

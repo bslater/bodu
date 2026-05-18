@@ -56,7 +56,11 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// </remarks>
 /// <example>
-/// <code language="csharp"> using var hash = new AsconHash256(); byte[] digest = hash.ComputeHash(message); </code>
+/// <code language="csharp">
+///<![CDATA[
+/// using var hash = new AsconHash256(); byte[] digest = hash.ComputeHash(message);
+///]]>
+/// </code>
 /// </example>
 /// <seealso cref="AsconHashA256"/> <seealso href="https://doi.org/10.6028/NIST.SP.800-232">NIST SP 800-232 (ASCON)
 /// </seealso>

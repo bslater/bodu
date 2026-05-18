@@ -22,8 +22,12 @@ namespace Bodu.Text.Formats;
 /// <see cref="TextWriter" /> and disposes it when <see cref="Dispose" /> is called.
 /// </para>
 /// <example>
-/// <code> using var writer = Delimited.CreateWriter(File.CreateText("out.csv")); writer.WriteHeader(["name", "age"]);
-/// writer.WriteRow(["Alice", "30"]); writer.WriteRow(["Bob", "25"]); </code>
+/// <code>
+///<![CDATA[
+/// using var writer = Delimited.CreateWriter(File.CreateText("out.csv")); writer.WriteHeader(["name", "age"]);
+/// writer.WriteRow(["Alice", "30"]); writer.WriteRow(["Bob", "25"]);
+///]]>
+/// </code>
 /// </example>
 /// </remarks>
 public sealed class DelimitedWriter : IDisposable

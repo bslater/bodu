@@ -27,8 +27,12 @@ namespace Bodu.Globalization.Calendar.Data.AsiaPacific;
 /// </para>
 /// </remarks>
 /// <example>
-/// <code> var service = new NotableDateService( ruleProviders: AsiaPacificCalendarData.CreateProviders(),
-/// workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday); </code>
+/// <code>
+///<![CDATA[
+/// var service = new NotableDateService( ruleProviders: AsiaPacificCalendarData.CreateProviders(),
+/// workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
+///]]>
+/// </code>
 /// </example>
 public static class AsiaPacificCalendarData
 {

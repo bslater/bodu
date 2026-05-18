@@ -64,10 +64,14 @@ namespace Bodu.Security.Cryptography;
 /// or larger block size (such as AES) should be preferred. </note>
 /// </remarks>
 /// <example>
-/// <code language="csharp"> using System.Security.Cryptography; using Bodu.Security.Cryptography; using
+/// <code language="csharp">
+///<![CDATA[
+/// using System.Security.Cryptography; using Bodu.Security.Cryptography; using
 /// Bodu.Security.Cryptography.Extensions; // Legacy interop only. using var blowfish = new Blowfish(); blowfish.Key =
 /// legacyKeyMaterial; // 4–56 bytes blowfish.IV = RandomNumberGenerator.GetBytes(8); // matches the 64-bit block byte[]
-/// ciphertext = blowfish.Encrypt(legacyPlaintext); </code>
+/// ciphertext = blowfish.Encrypt(legacyPlaintext);
+///]]>
+/// </code>
 /// </example>
 /// <seealso href="../guides/cryptography/blowfish.html">Using Blowfish (guide with full encrypt / decrypt examples)
 /// </seealso> <seealso href="../guides/cryptography/encryption-basics.html">Encryption basics</seealso>

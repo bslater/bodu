@@ -62,11 +62,15 @@ namespace Bodu.Security.Cryptography;
 /// such as AES. </note>
 /// </remarks>
 /// <example>
-/// <code language="csharp"> using System.Security.Cryptography; using Bodu.Security.Cryptography; using
+/// <code language="csharp">
+///<![CDATA[
+/// using System.Security.Cryptography; using Bodu.Security.Cryptography; using
 /// Bodu.Security.Cryptography.Extensions; // Legacy interop only — do not use Skipjack to protect new data. using var
 /// skipjack = new Skipjack(); skipjack.Key = legacyKeyMaterial; // exactly 10 bytes skipjack.IV =
 /// RandomNumberGenerator.GetBytes(8); // matches the 64-bit block byte[] ciphertext =
-/// skipjack.Encrypt(legacyPlaintext); </code>
+/// skipjack.Encrypt(legacyPlaintext);
+///]]>
+/// </code>
 /// </example>
 /// <seealso href="https://csrc.nist.gov/csrc/media/publications/fips/185/archive/1994-02-09/documents/fips185.pdf">FIPS
 /// PUB 185 — Escrowed Encryption Standard (Skipjack)</seealso> <seealso href="../guides/cryptography/skipjack.html">
