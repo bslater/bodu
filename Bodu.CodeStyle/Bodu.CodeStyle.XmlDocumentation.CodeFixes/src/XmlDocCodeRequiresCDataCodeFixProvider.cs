@@ -6,6 +6,7 @@
 
 using System.Collections.Immutable;
 using System.Composition;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Bodu.CodeStyle.XmlDocumentation.Analyzers.Diagnostics;
@@ -26,8 +27,8 @@ namespace Bodu.CodeStyle.XmlDocumentation.CodeFixes;
 /// Three fixes are registered depending on the violating shape:
 /// <list type="bullet">
 ///   <item><description>Removes stray whitespace between <c>///</c> and <c>&lt;![CDATA[</c> when the CDATA is present but offset by a space or tab.</description></item>
-///   <item><description>Inserts an empty <c>&lt;![CDATA[]]&gt;</c> body for empty <c>&lt;code&gt;&lt;/code&gt;</c> elements and rewrites self-closing <c>&lt;code /&gt;</c> with the same.</description></item>
-///   <item><description>Wraps existing text content in <c>&lt;![CDATA[…]]&gt;</c> when the <c>&lt;code&gt;</c> body is text or a mix of text and elements without a CDATA leader.</description></item>
+///   <item><description>Rewrites a self-closing <c>&lt;code /&gt;</c> as a multi-line <c>&lt;code&gt;</c> element whose body is an empty <c>&lt;![CDATA[…]]&gt;</c> block, with the opener and closer each on their own line flush against <c>///</c>.</description></item>
+///   <item><description>Wraps the existing body of a non-empty <c>&lt;code&gt;</c> element in a multi-line <c>&lt;![CDATA[…]]&gt;</c> block, placing the opener and closer on their own lines flush against <c>///</c> and preserving the existing body content between them.</description></item>
 /// </list>
 /// </remarks>
 [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(XmlDocCodeRequiresCDataCodeFixProvider))]
@@ -113,9 +114,20 @@ public sealed class XmlDocCodeRequiresCDataCodeFixProvider : CodeFixProvider
     {
         SourceText text = await document.GetTextAsync(cancellationToken).ConfigureAwait(false);
         var localName = element.Name.LocalName.ValueText;
-        var replacement = "<" + localName + "><![CDATA[]]></" + localName + ">";
 
-        SourceText updated = text.WithChanges(new TextChange(element.Span, replacement));
+        var lineEnding = DetectLineEnding(text);
+        var indent = ExtractDocCommentIndent(text, element.SpanStart);
+
+        var sb = new StringBuilder();
+        sb.Append('<').Append(localName).Append('>');
+        sb.Append(lineEnding);
+        sb.Append(indent).Append("///<![CDATA[");
+        sb.Append(lineEnding);
+        sb.Append(indent).Append("///]]>");
+        sb.Append(lineEnding);
+        sb.Append(indent).Append("/// </").Append(localName).Append('>');
+
+        SourceText updated = text.WithChanges(new TextChange(element.Span, sb.ToString()));
         return document.WithText(updated);
     }
 
@@ -126,10 +138,85 @@ public sealed class XmlDocCodeRequiresCDataCodeFixProvider : CodeFixProvider
         var bodyEnd = element.EndTag.Span.Start;
         if (bodyStart > bodyEnd) return document;
 
-        var existing = text.ToString(TextSpan.FromBounds(bodyStart, bodyEnd));
-        var replacement = "<![CDATA[" + existing + "]]>";
+        var lineEnding = DetectLineEnding(text);
+        var indent = ExtractDocCommentIndent(text, element.StartTag.SpanStart);
 
-        SourceText updated = text.WithChanges(new TextChange(TextSpan.FromBounds(bodyStart, bodyEnd), replacement));
+        var existing = text.ToString(TextSpan.FromBounds(bodyStart, bodyEnd));
+        var trimmed = TrimBody(existing);
+
+        // Compose the multi-line CDATA replacement: opener and closer each on their own line flush
+        // against `///`, body content between them with the standard `/// ` prefix on its first line
+        // (continuation lines inside the body retain whatever prefix the original source had).
+        var sb = new StringBuilder();
+        sb.Append(lineEnding);
+        sb.Append(indent).Append("///<![CDATA[");
+        sb.Append(lineEnding);
+        if (trimmed.Length > 0)
+        {
+            sb.Append(indent).Append("/// ").Append(trimmed);
+            sb.Append(lineEnding);
+        }
+
+        sb.Append(indent).Append("///]]>");
+        sb.Append(lineEnding);
+        sb.Append(indent).Append("/// ");
+
+        SourceText updated = text.WithChanges(new TextChange(TextSpan.FromBounds(bodyStart, bodyEnd), sb.ToString()));
         return document.WithText(updated);
     }
+
+    private static string DetectLineEnding(SourceText text)
+    {
+        var length = text.Length;
+        for (var i = 0; i < length; i++)
+        {
+            var ch = text[i];
+            if (ch == '\r')
+            {
+                return i + 1 < length && text[i + 1] == '\n' ? "\r\n" : "\r";
+            }
+
+            if (ch == '\n')
+            {
+                return "\n";
+            }
+        }
+
+        return "\r\n";
+    }
+
+    private static string ExtractDocCommentIndent(SourceText text, int position)
+    {
+        // Walk backward from `position` to find the start of the current line.
+        var lineStart = position;
+        while (lineStart > 0 && text[lineStart - 1] != '\n' && text[lineStart - 1] != '\r')
+        {
+            lineStart--;
+        }
+
+        // The indent is the whitespace run from line start up to the first non-whitespace character
+        // (which on a doc-comment line will be the first `/` of the `///` prefix).
+        var end = lineStart;
+        while (end < text.Length && (text[end] == ' ' || text[end] == '\t'))
+        {
+            end++;
+        }
+
+        return text.ToString(TextSpan.FromBounds(lineStart, end));
+    }
+
+    private static string TrimBody(string body)
+    {
+        // Trim leading/trailing whitespace including newlines so the replacement controls line breaks
+        // around the CDATA wrapper. Internal whitespace and continuation-line `///` prefixes are
+        // preserved verbatim because they belong to the body content.
+        var start = 0;
+        while (start < body.Length && IsWhitespace(body[start])) start++;
+        var end = body.Length;
+        while (end > start && IsWhitespace(body[end - 1])) end--;
+        return body.Substring(start, end - start);
+    }
+
+    private static bool IsWhitespace(char ch) =>
+        ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n';
 }
