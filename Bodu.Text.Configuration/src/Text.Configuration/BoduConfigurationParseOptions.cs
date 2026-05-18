@@ -11,8 +11,8 @@ using Bodu.Text.Formats;
 namespace Bodu.Text.Configuration;
 
 /// <summary>
-/// Controls how a configuration document is parsed: comment handling, duplicate handling, diagnostic routing,
-/// length limits, and the key mapping options.
+/// Controls how a configuration document is parsed: comment handling, duplicate handling, diagnostic routing, length
+/// limits, and the key mapping options.
 /// </summary>
 /// <remarks>
 /// Use <see cref="For(BoduConfigurationProfile)" /> to obtain an options bag that matches one of the predefined
@@ -22,7 +22,8 @@ namespace Bodu.Text.Configuration;
 public sealed partial class BoduConfigurationParseOptions
 {
     /// <summary>
-    /// Gets the behaviour profile this option bag represents. The default is <see cref="BoduConfigurationProfile.Bodu" />.
+    /// Gets the behaviour profile this option bag represents. The default is
+    /// <see cref="BoduConfigurationProfile.Bodu" />.
     /// </summary>
     /// <returns>The selected profile.</returns>
     public BoduConfigurationProfile Profile { get; init; } = BoduConfigurationProfile.Bodu;
@@ -49,8 +50,8 @@ public sealed partial class BoduConfigurationParseOptions
         IniDuplicateSectionBehavior.Preserve;
 
     /// <summary>
-    /// Gets the diagnostic routing mode that controls whether recoverable errors throw, are collected on the
-    /// document, or are silently ignored.
+    /// Gets the diagnostic routing mode that controls whether recoverable errors throw, are collected on the document,
+    /// or are silently ignored.
     /// </summary>
     /// <returns>The selected diagnostic mode.</returns>
     public BoduConfigurationDiagnosticMode DiagnosticMode { get; init; } =
@@ -89,20 +90,21 @@ public sealed partial class BoduConfigurationParseOptions
     public bool AllowKeyOnlyProperties { get; init; }
 
     /// <summary>
-    /// Gets the encoding to assume when loading a configuration document from a byte stream without a byte
-    /// order mark. The default is <see cref="Encoding.UTF8" />.
+    /// Gets the encoding to assume when loading a configuration document from a byte stream without a byte order mark.
+    /// The default is <see cref="Encoding.UTF8" />.
     /// </summary>
     /// <returns>The default encoding.</returns>
     public Encoding DefaultEncoding { get; init; } = Encoding.UTF8;
 
     /// <summary>
-    /// Returns the subset of these options that maps onto an
-    /// <see cref="Bodu.Text.Formats.IniParseOptions" />. Useful when callers want to delegate basic INI parsing
-    /// to <see cref="Bodu.Text.Formats.Ini" /> and layer Configuration-specific features (globs, resolution,
-    /// trivia) on top.
+    /// Returns the subset of these options that maps onto an <see cref="Bodu.Text.Formats.IniParseOptions" />. Useful
+    /// when callers want to delegate basic INI parsing to <see cref="Bodu.Text.Formats.Ini" /> and layer
+    /// Configuration-specific features (globs, resolution, trivia) on top.
     /// </summary>
-    /// <returns>A projection that preserves duplicate-key handling and case sensitivity. Configuration features
-    /// without an INI equivalent — inline comments, diagnostics, preamble — are not exposed by the projection.</returns>
+    /// <returns>
+    /// A projection that preserves duplicate-key handling and case sensitivity. Configuration features without an INI
+    /// equivalent — inline comments, diagnostics, preamble — are not exposed by the projection.
+    /// </returns>
     public IniParseOptions ToIniParseOptions() =>
         new()
         {

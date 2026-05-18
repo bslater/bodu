@@ -13,12 +13,14 @@ namespace Bodu.Text.Configuration;
 public sealed partial class BoduConfigurationPattern
 {
     /// <summary>
-    /// Translates a glob expression into the equivalent <see cref="Regex" /> pattern, anchored to the start
-    /// and end of the input.
+    /// Translates a glob expression into the equivalent <see cref="Regex" /> pattern, anchored to the start and end of
+    /// the input.
     /// </summary>
     /// <param name="pattern">The glob expression to translate.</param>
     /// <returns>The translated regex source.</returns>
-    /// <exception cref="BoduConfigurationParseException">The pattern contains an unbalanced brace or bracket.</exception>
+    /// <exception cref="BoduConfigurationParseException">
+    /// The pattern contains an unbalanced brace or bracket.
+    /// </exception>
     private static string TranslateToRegex(string pattern)
     {
         StringBuilder sb = new StringBuilder(pattern.Length * 2);

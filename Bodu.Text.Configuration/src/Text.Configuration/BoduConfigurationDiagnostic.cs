@@ -9,13 +9,13 @@ using System.Diagnostics;
 namespace Bodu.Text.Configuration;
 
 /// <summary>
-/// Represents a single diagnostic — informational message, warning, or recoverable error — produced while
-/// reading or resolving a configuration document.
+/// Represents a single diagnostic — informational message, warning, or recoverable error — produced while reading or
+/// resolving a configuration document.
 /// </summary>
 /// <remarks>
-/// Diagnostics are immutable. When <see cref="BoduConfigurationDiagnosticMode.Collect" /> is in effect, the
-/// reader gathers diagnostics on the parse result's diagnostics list rather than throwing
-/// at the first issue; the document is still produced and its valid portions remain usable.
+/// Diagnostics are immutable. When <see cref="BoduConfigurationDiagnosticMode.Collect" /> is in effect, the reader
+/// gathers diagnostics on the parse result's diagnostics list rather than throwing at the first issue; the document is
+/// still produced and its valid portions remain usable.
 /// </remarks>
 [DebuggerDisplay("{Severity}: {Code} {Message,nq}")]
 public sealed class BoduConfigurationDiagnostic

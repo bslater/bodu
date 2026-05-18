@@ -14,8 +14,7 @@ public sealed partial class BoduConfigurationView
 {
     /// <summary>
     /// Gets the value for <paramref name="key" /> parsed as <typeparamref name="T" /> using
-    /// <see cref="CultureInfo.InvariantCulture" />. Mirrors
-    /// <c>Bodu.Text.Formats.IniSection.GetValue&lt;T&gt;(key)</c>.
+    /// <see cref="CultureInfo.InvariantCulture" />. Mirrors <c>Bodu.Text.Formats.IniSection.GetValue&lt;T&gt;(key)</c>.
     /// </summary>
     /// <typeparam name="T">The target type. Must implement <see cref="ISpanParsable{TSelf}" />.</typeparam>
     /// <param name="key">The configuration key, in either dotted or colon-delimited form.</param>
@@ -117,8 +116,8 @@ public sealed partial class BoduConfigurationView
     }
 
     /// <summary>
-    /// Gets the 32-bit integer value for <paramref name="key" />, returning <paramref name="fallback" /> on
-    /// missing keys. Present-but-malformed values still throw <see cref="FormatException" />.
+    /// Gets the 32-bit integer value for <paramref name="key" />, returning <paramref name="fallback" /> on missing
+    /// keys. Present-but-malformed values still throw <see cref="FormatException" />.
     /// </summary>
     /// <param name="key">The configuration key.</param>
     /// <param name="fallback">The value to return when the key is absent.</param>
@@ -170,8 +169,8 @@ public sealed partial class BoduConfigurationView
     }
 
     /// <summary>
-    /// Gets the boolean value for <paramref name="key" /> using EditorConfig conventions
-    /// (<c>true</c>/<c>false</c>, case-insensitive).
+    /// Gets the boolean value for <paramref name="key" /> using EditorConfig conventions (<c>true</c>/<c>false</c>,
+    /// case-insensitive).
     /// </summary>
     /// <param name="key">The configuration key.</param>
     /// <returns>The parsed boolean value.</returns>
@@ -187,8 +186,7 @@ public sealed partial class BoduConfigurationView
     }
 
     /// <summary>
-    /// Gets the boolean value for <paramref name="key" />, returning <paramref name="fallback" /> on missing
-    /// keys.
+    /// Gets the boolean value for <paramref name="key" />, returning <paramref name="fallback" /> on missing keys.
     /// </summary>
     /// <param name="key">The configuration key.</param>
     /// <param name="fallback">The value to return when the key is absent.</param>

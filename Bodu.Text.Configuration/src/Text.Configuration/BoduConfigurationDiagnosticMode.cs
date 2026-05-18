@@ -7,8 +7,8 @@
 namespace Bodu.Text.Configuration;
 
 /// <summary>
-/// Controls how the reader reacts to recoverable diagnostics — either throwing immediately, gathering them on
-/// the resulting document, or silently ignoring them.
+/// Controls how the reader reacts to recoverable diagnostics — either throwing immediately, gathering them on the
+/// resulting document, or silently ignoring them.
 /// </summary>
 public enum BoduConfigurationDiagnosticMode
 {
@@ -19,15 +19,14 @@ public enum BoduConfigurationDiagnosticMode
     Throw = 0,
 
     /// <summary>
-    /// The reader runs to completion, capturing diagnostics on the resulting
-    /// parse result's diagnostics list. Non-recoverable errors (truncated stream,
-    /// I/O exceptions) still throw.
+    /// The reader runs to completion, capturing diagnostics on the resulting parse result's diagnostics list.
+    /// Non-recoverable errors (truncated stream, I/O exceptions) still throw.
     /// </summary>
     Collect = 1,
 
     /// <summary>
-    /// Diagnostics are not retained. Recoverable errors are silently dropped; non-recoverable errors still
-    /// throw. Useful for production hot paths where diagnostics would only add allocations.
+    /// Diagnostics are not retained. Recoverable errors are silently dropped; non-recoverable errors still throw.
+    /// Useful for production hot paths where diagnostics would only add allocations.
     /// </summary>
     Ignore = 2,
 }

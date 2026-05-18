@@ -10,8 +10,8 @@ using System.Diagnostics;
 namespace Bodu.Text.Configuration;
 
 /// <summary>
-/// Represents a configuration key in both its raw, file-level form and its colon-delimited logical form used
-/// by the resolved view and by <c>Microsoft.Extensions.Configuration</c>.
+/// Represents a configuration key in both its raw, file-level form and its colon-delimited logical form used by the
+/// resolved view and by <c>Microsoft.Extensions.Configuration</c>.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -86,12 +86,14 @@ public readonly partial struct BoduConfigurationKey : IEquatable<BoduConfigurati
     public bool CaseSensitive => this._caseSensitive;
 
     /// <summary>
-    /// Determines whether this key has the same segment sequence as <paramref name="other" /> under the
-    /// configured comparer.
+    /// Determines whether this key has the same segment sequence as <paramref name="other" /> under the configured
+    /// comparer.
     /// </summary>
     /// <param name="other">The other key to compare with.</param>
-    /// <returns><see langword="true" /> when the segment sequences are equal under the chosen comparer;
-    /// otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the segment sequences are equal under the chosen comparer; otherwise,
+    /// <see langword="false" />.
+    /// </returns>
     public bool Equals(BoduConfigurationKey other)
     {
         ImmutableArray<string> a = this.Segments;

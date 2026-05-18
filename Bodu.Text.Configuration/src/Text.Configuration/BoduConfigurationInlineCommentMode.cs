@@ -16,21 +16,21 @@ namespace Bodu.Text.Configuration;
 public enum BoduConfigurationInlineCommentMode
 {
     /// <summary>
-    /// Inline comments are not recognized. Any <c>#</c> or <c>;</c> that appears in a value is preserved
-    /// verbatim. This is the EditorConfig-compatible setting.
+    /// Inline comments are not recognized. Any <c>#</c> or <c>;</c> that appears in a value is preserved verbatim. This
+    /// is the EditorConfig-compatible setting.
     /// </summary>
     Disabled = 0,
 
     /// <summary>
-    /// Recognize an inline comment when, and only when, the comment prefix is preceded by at least one ASCII
-    /// whitespace character. This is the default Bodu behaviour and minimizes the risk of accidentally
-    /// truncating values that legitimately contain <c>#</c> or <c>;</c>.
+    /// Recognize an inline comment when, and only when, the comment prefix is preceded by at least one ASCII whitespace
+    /// character. This is the default Bodu behaviour and minimizes the risk of accidentally truncating values that
+    /// legitimately contain <c>#</c> or <c>;</c>.
     /// </summary>
     WhitespaceIntroduced = 1,
 
     /// <summary>
-    /// Always treat the first unescaped <c>#</c> or <c>;</c> after the value separator as the start of a
-    /// comment, even when not preceded by whitespace. Surrounding whitespace in the captured value is trimmed.
+    /// Always treat the first unescaped <c>#</c> or <c>;</c> after the value separator as the start of a comment, even
+    /// when not preceded by whitespace. Surrounding whitespace in the captured value is trimmed.
     /// </summary>
     Always = 2,
 }

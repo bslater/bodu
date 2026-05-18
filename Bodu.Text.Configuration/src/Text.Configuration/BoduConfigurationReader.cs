@@ -13,15 +13,14 @@ using Bodu.Text.Formats;
 namespace Bodu.Text.Configuration;
 
 /// <summary>
-/// Reads a configuration document line by line, producing a populated <see cref="IniDocument" /> together with
-/// any diagnostics gathered under the rules of <see cref="BoduConfigurationParseOptions" />.
+/// Reads a configuration document line by line, producing a populated <see cref="IniDocument" /> together with any
+/// diagnostics gathered under the rules of <see cref="BoduConfigurationParseOptions" />.
 /// </summary>
 /// <remarks>
 /// This reader honors the Configuration-specific features that the underlying <c>Ini.Parser</c> does not: inline
-/// comment modes (<see cref="BoduConfigurationInlineCommentMode" />), diagnostic mode routing
-/// (<see cref="BoduConfigurationDiagnosticMode" />), and source location tracking. The resulting document is a
-/// plain <see cref="IniDocument" /> so it composes naturally with everything else in
-/// <c>Bodu.Text.Formats.Ini</c>.
+/// comment modes (<see cref="BoduConfigurationInlineCommentMode" />), diagnostic mode routing (
+/// <see cref="BoduConfigurationDiagnosticMode" />), and source location tracking. The resulting document is a plain
+/// <see cref="IniDocument" /> so it composes naturally with everything else in <c>Bodu.Text.Formats.Ini</c>.
 /// </remarks>
 internal sealed partial class BoduConfigurationReader
 {

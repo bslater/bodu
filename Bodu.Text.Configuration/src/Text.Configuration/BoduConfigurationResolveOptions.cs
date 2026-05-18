@@ -7,8 +7,8 @@
 namespace Bodu.Text.Configuration;
 
 /// <summary>
-/// Controls how a <see cref="BoduConfigurationDocument" /> is projected into a
-/// <see cref="BoduConfigurationView" /> for a specific target path.
+/// Controls how a <see cref="BoduConfigurationDocument" /> is projected into a <see cref="BoduConfigurationView" /> for
+/// a specific target path.
 /// </summary>
 public sealed partial class BoduConfigurationResolveOptions
 {
@@ -19,16 +19,14 @@ public sealed partial class BoduConfigurationResolveOptions
     public BoduConfigurationProfile Profile { get; init; } = BoduConfigurationProfile.Bodu;
 
     /// <summary>
-    /// Gets the optional path root used to evaluate anchored glob patterns. When <see langword="null" /> the
-    /// document's load path is used; if neither is available, <see cref="MissingPathRootMode" /> controls
-    /// behaviour.
+    /// Gets the optional path root used to evaluate anchored glob patterns. When <see langword="null" /> the document's
+    /// load path is used; if neither is available, <see cref="MissingPathRootMode" /> controls behaviour.
     /// </summary>
     /// <returns>The path root, or <see langword="null" />.</returns>
     public string? PathRoot { get; init; }
 
     /// <summary>
-    /// Gets how the resolver reacts to an absent <see cref="PathRoot" /> when the document was parsed from a
-    /// string.
+    /// Gets how the resolver reacts to an absent <see cref="PathRoot" /> when the document was parsed from a string.
     /// </summary>
     /// <returns>The selected mode.</returns>
     public BoduConfigurationMissingPathRootMode MissingPathRootMode { get; init; } =
