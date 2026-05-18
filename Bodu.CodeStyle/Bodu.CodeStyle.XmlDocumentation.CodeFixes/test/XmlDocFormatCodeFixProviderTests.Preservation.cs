@@ -249,14 +249,15 @@ public partial class XmlDocFormatCodeFixProviderTests
 
     /// <summary>
     /// Verifies that a conditional-compilation directive (<c>#if</c>/<c>#else</c>/<c>#endif</c>) between
-    /// the doc comment and the documented member continues to block the fix. The shape is taken verbatim
+    /// the doc comment and the documented member does not block the fix. The shape is taken verbatim
     /// from <c>Bodu.Core/src/Collections.Generic/EvictingDictionary.CacheItem.cs</c>, where the same doc
     /// comment attaches to either a <c>class</c> or a <c>record class</c> depending on target framework.
-    /// Rewriting the trivia would be unsafe because the documented member identity differs by build
-    /// configuration, so the diagnostic is left in place with no code action.
+    /// The rewrite is a deterministic reformat driven by trivia content, indentation, and wrap width —
+    /// none of which depend on which member the trivia attaches to — so replacing the trivia at its
+    /// source position is safe across all configurations.
     /// </summary>
     [TestMethod]
-    public async Task CodeFix_WhenConditionalDirectiveBetweenDocAndMember_ShouldSkipFix()
+    public async Task CodeFix_WhenConditionalDirectiveBetweenDocAndMember_ShouldStillFix()
     {
         var source =
             "public partial class EvictingDictionary<TKey, TValue>\r\n" +
@@ -270,11 +271,25 @@ public partial class XmlDocFormatCodeFixProviderTests
             "#endif\r\n" +
             "}\r\n";
 
+        var expected =
+            "public partial class EvictingDictionary<TKey, TValue>\r\n" +
+            "{\r\n" +
+            "    /// <summary>\r\n" +
+            "    /// Represents a cache entry.\r\n" +
+            "    /// </summary>\r\n" +
+            "#if !NET5_0_OR_GREATER\r\n" +
+            "\r\n" +
+            "    private sealed class CacheItem { }\r\n" +
+            "#else\r\n" +
+            "    private sealed record class CacheItem { }\r\n" +
+            "#endif\r\n" +
+            "}\r\n";
+
         var test =
             new CSharpCodeFixTest<XmlDocFormatAnalyzer, XmlDocFormatCodeFixProvider, MSTestVerifier>
             {
                 TestCode = source,
-                FixedCode = source,
+                FixedCode = expected,
                 ReferenceAssemblies = ReferenceAssemblies.Net.Net80,
             };
 

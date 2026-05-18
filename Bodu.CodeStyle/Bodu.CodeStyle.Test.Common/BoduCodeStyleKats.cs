@@ -913,7 +913,7 @@ public static class BoduCodeStyleKats
         // Safety KATs.
         CodeStyleKat.Safety(
             id: "XMLSAFE-0001",
-            name: "Preprocessor directive between doc and member prevents fix",
+            name: "Preprocessor directive between doc and member does not block fix",
             inputSource:
             """
             namespace Bodu.Text.Formats;
@@ -934,15 +934,16 @@ public static class BoduCodeStyleKats
 
             public static class DotEnv
             {
-                /// <summary>Parses a DotEnv document.</summary>
+                /// <summary>
+                /// Parses a DotEnv document.
+                /// </summary>
             #if DEBUG
                 public static void Parse()
                 {
                 }
             #endif
             }
-            """,
-            expectedFailure: CodeStyleKatFailureKind.UnsupportedPreprocessorLayout),
+            """),
 
         CodeStyleKat.Safety(
             id: "XMLSAFE-0002",
@@ -1103,7 +1104,7 @@ public static class BoduCodeStyleKats
 
         CodeStyleKat.Safety(
             id: "XMLSAFE-0006",
-            name: "#if/#else/#endif directive between XML doc and class prevents fix — long summary line",
+            name: "#if/#else/#endif directive between XML doc and class does not block fix — long summary line",
             inputSource:
             """
             namespace Bodu.Collections.Generic;
@@ -1127,7 +1128,8 @@ public static class BoduCodeStyleKats
             public partial class EvictingDictionary<TKey, TValue>
             {
                 /// <summary>
-                /// Represents a cache entry storing the value and metadata used for eviction policies in the <see cref="EvictingDictionary{TKey, TValue}"/>.
+                /// Represents a cache entry storing the value and metadata used for eviction policies in the
+                /// <see cref="EvictingDictionary{TKey, TValue}" />.
                 /// </summary>
             #if !NET5_0_OR_GREATER
                 private sealed class CacheItem { }
@@ -1135,8 +1137,7 @@ public static class BoduCodeStyleKats
                 private sealed record class CacheItem { }
             #endif
             }
-            """,
-            expectedFailure: CodeStyleKatFailureKind.UnsupportedPreprocessorLayout),
+            """),
     };
 
     /// <summary>
