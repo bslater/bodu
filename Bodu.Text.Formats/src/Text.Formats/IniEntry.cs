@@ -116,8 +116,8 @@ public sealed class IniEntry
     /// Gets the comments authored on lines preceding this entry, in source order.
     /// </summary>
     /// <returns>
-    /// A read-only view onto the section's mutable leading-comment list. The list is empty when no comments
-    /// precede the entry or when <see cref="IniParseOptions.PreserveComments" /> was <see langword="false" />.
+    /// A read-only view onto the section's mutable leading-comment list. The list is empty when no comments precede the
+    /// entry or when <see cref="IniParseOptions.PreserveComments" /> was <see langword="false" />.
     /// </returns>
     public IReadOnlyList<IniComment> LeadingComments => _leadingComments;
 

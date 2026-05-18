@@ -74,7 +74,9 @@ public sealed class BencodedString
     /// Determines whether this instance and another <see cref="BencodedString" /> contain the same bytes.
     /// </summary>
     /// <param name="other">The value to compare with this instance.</param>
-    /// <returns><see langword="true" /> when both byte sequences are equal; otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when both byte sequences are equal; otherwise, <see langword="false" />.
+    /// </returns>
     public bool Equals(BencodedString? other) =>
         other is not null && _bytes.AsSpan().SequenceEqual(other._bytes);
 

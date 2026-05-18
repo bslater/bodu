@@ -53,8 +53,8 @@ public sealed class IniSection
     /// Gets the comments authored on lines preceding this section header, in source order.
     /// </summary>
     /// <returns>
-    /// A read-only view onto the section's leading-comment list. The list is empty when no comments precede the
-    /// section or when <see cref="IniParseOptions.PreserveComments" /> was <see langword="false" />.
+    /// A read-only view onto the section's leading-comment list. The list is empty when no comments precede the section
+    /// or when <see cref="IniParseOptions.PreserveComments" /> was <see langword="false" />.
     /// </returns>
     public IReadOnlyList<IniComment> LeadingComments => _leadingComments;
 
@@ -133,17 +133,15 @@ public sealed class IniSection
     /// <summary>
     /// Gets the name of this section.
     /// </summary>
-    /// <returns>
-    /// The section name as it appeared in the source, or an empty string for the global section.
-    /// </returns>
+    /// <returns>The section name as it appeared in the source, or an empty string for the global section.</returns>
     public string Name { get; }
 
     /// <summary>
     /// Gets the ordered, deduplicated entries in this section.
     /// </summary>
     /// <returns>
-    /// A read-only list of <see cref="IniEntry" /> instances in source order, with duplicates resolved
-    /// according to the <see cref="IniDuplicateKeyBehavior" /> that was active during parsing.
+    /// A read-only list of <see cref="IniEntry" /> instances in source order, with duplicates resolved according to the
+    /// <see cref="IniDuplicateKeyBehavior" /> that was active during parsing.
     /// </returns>
     public IReadOnlyList<IniEntry> Entries { get; }
 

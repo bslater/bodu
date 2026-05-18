@@ -41,8 +41,8 @@ public sealed class DelimitedDocument
     /// header row.
     /// </summary>
     /// <returns>
-    /// A read-only list of header strings in source order. Empty when
-    /// <see cref="DelimitedParseOptions.HasHeader" /> was <see langword="false" />.
+    /// A read-only list of header strings in source order. Empty when <see cref="DelimitedParseOptions.HasHeader" />
+    /// was <see langword="false" />.
     /// </returns>
     public IReadOnlyList<string> Headers { get; }
 
@@ -57,8 +57,8 @@ public sealed class DelimitedDocument
     /// </summary>
     /// <returns>
     /// The number of fields in the header row when <see cref="DelimitedParseOptions.HasHeader" /> was
-    /// <see langword="true" />; otherwise, the field count of the first data row, or <c>0</c> when the document
-    /// is empty.
+    /// <see langword="true" />; otherwise, the field count of the first data row, or <c>0</c> when the document is
+    /// empty.
     /// </returns>
     public int FieldCount { get; }
 }

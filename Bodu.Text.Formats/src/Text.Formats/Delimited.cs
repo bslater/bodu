@@ -200,9 +200,7 @@ public static partial class Delimited
     /// When this method returns <see langword="true" />, contains the parsed document; otherwise,
     /// <see langword="null" />.
     /// </param>
-    /// <returns>
-    /// <see langword="true" /> when parsing succeeded; otherwise, <see langword="false" />.
-    /// </returns>
+    /// <returns><see langword="true" /> when parsing succeeded; otherwise, <see langword="false" />.</returns>
     public static bool TryParse(
         ReadOnlySpan<char> source,
         [NotNullWhen(true)] out DelimitedDocument? document) =>
@@ -217,9 +215,7 @@ public static partial class Delimited
     /// When this method returns <see langword="true" />, contains the parsed document; otherwise,
     /// <see langword="null" />.
     /// </param>
-    /// <returns>
-    /// <see langword="true" /> when parsing succeeded; otherwise, <see langword="false" />.
-    /// </returns>
+    /// <returns><see langword="true" /> when parsing succeeded; otherwise, <see langword="false" />.</returns>
     public static bool TryParse(
         ReadOnlySpan<char> source,
         DelimitedParseOptions options,

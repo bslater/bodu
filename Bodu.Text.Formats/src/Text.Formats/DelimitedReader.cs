@@ -134,8 +134,8 @@ public sealed class DelimitedReader : IDisposable
     /// Advances the reader to the next data row and populates <see cref="Fields" /> with its field values.
     /// </summary>
     /// <returns>
-    /// <see langword="true" /> when a row was successfully read and <see cref="Fields" /> reflects its
-    /// values; <see langword="false" /> when the input is exhausted.
+    /// <see langword="true" /> when a row was successfully read and <see cref="Fields" /> reflects its values;
+    /// <see langword="false" /> when the input is exhausted.
     /// </returns>
     /// <exception cref="ObjectDisposedException">Thrown when the reader has been disposed.</exception>
     /// <exception cref="DelimitedFormatException">

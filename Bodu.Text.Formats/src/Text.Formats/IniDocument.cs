@@ -121,8 +121,7 @@ public sealed class IniDocument
     /// Gets the named sections in the order they first appeared in the source.
     /// </summary>
     /// <returns>
-    /// A read-only list of <see cref="IniSection" /> instances. Does not include
-    /// <see cref="GlobalSection" />.
+    /// A read-only list of <see cref="IniSection" /> instances. Does not include <see cref="GlobalSection" />.
     /// </returns>
     public IReadOnlyList<IniSection> Sections { get; }
 
@@ -149,9 +148,7 @@ public sealed class IniDocument
     /// When this method returns <see langword="true" />, contains the matching section; otherwise,
     /// <see langword="null" />.
     /// </param>
-    /// <returns>
-    /// <see langword="true" /> when the section is present; otherwise, <see langword="false" />.
-    /// </returns>
+    /// <returns><see langword="true" /> when the section is present; otherwise, <see langword="false" />.</returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="name" /> is <see langword="null" />.
     /// </exception>

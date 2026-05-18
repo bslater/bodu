@@ -54,8 +54,8 @@ public readonly struct IniParseOptions
     /// Gets a value indicating whether section-name comparisons are case-sensitive.
     /// </summary>
     /// <returns>
-    /// <see langword="false" /> (the default) for case-insensitive section lookup;
-    /// <see langword="true" /> for ordinal case-sensitive lookup.
+    /// <see langword="false" /> (the default) for case-insensitive section lookup; <see langword="true" /> for ordinal
+    /// case-sensitive lookup.
     /// </returns>
     public bool CaseSensitiveSections { get; init; } = false;
 
@@ -63,25 +63,21 @@ public readonly struct IniParseOptions
     /// Gets a value indicating whether key comparisons within a section are case-sensitive.
     /// </summary>
     /// <returns>
-    /// <see langword="false" /> (the default) for case-insensitive key lookup;
-    /// <see langword="true" /> for ordinal case-sensitive lookup.
+    /// <see langword="false" /> (the default) for case-insensitive key lookup; <see langword="true" /> for ordinal
+    /// case-sensitive lookup.
     /// </returns>
     public bool CaseSensitiveKeys { get; init; } = false;
 
     /// <summary>
     /// Gets the behavior applied when the same key appears more than once within a section.
     /// </summary>
-    /// <returns>
-    /// <see cref="IniDuplicateKeyBehavior.LastWins" /> by default.
-    /// </returns>
+    /// <returns><see cref="IniDuplicateKeyBehavior.LastWins" /> by default.</returns>
     public IniDuplicateKeyBehavior DuplicateKeyBehavior { get; init; } = IniDuplicateKeyBehavior.LastWins;
 
     /// <summary>
     /// Gets the behavior applied when the same section name appears more than once in the source.
     /// </summary>
-    /// <returns>
-    /// <see cref="IniDuplicateSectionBehavior.Merge" /> by default.
-    /// </returns>
+    /// <returns><see cref="IniDuplicateSectionBehavior.Merge" /> by default.</returns>
     public IniDuplicateSectionBehavior DuplicateSectionBehavior { get; init; } = IniDuplicateSectionBehavior.Merge;
 
     /// <summary>

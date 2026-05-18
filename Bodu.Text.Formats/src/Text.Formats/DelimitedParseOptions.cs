@@ -45,14 +45,20 @@ public readonly struct DelimitedParseOptions
     /// names. When <see langword="true" />, the header fields are exposed via <see cref="DelimitedDocument.Headers" />
     /// and fields in subsequent rows can be accessed by column name.
     /// </summary>
-    /// <returns><see langword="true" /> when the first row is a header; otherwise, <see langword="false" />. The default is <see langword="true" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the first row is a header; otherwise, <see langword="false" />. The default is
+    /// <see langword="true" />.
+    /// </returns>
     public bool HasHeader { get; init; } = true;
 
     /// <summary>
     /// Gets a value indicating whether leading and trailing whitespace is trimmed from unquoted field values.
     /// Whitespace inside quoted fields is always preserved.
     /// </summary>
-    /// <returns><see langword="true" /> if unquoted fields are trimmed; otherwise, <see langword="false" />. The default is <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> if unquoted fields are trimmed; otherwise, <see langword="false" />. The default is
+    /// <see langword="false" />.
+    /// </returns>
     public bool TrimFields { get; init; } = false;
 
     /// <summary>

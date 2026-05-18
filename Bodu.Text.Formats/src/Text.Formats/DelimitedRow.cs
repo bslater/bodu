@@ -66,8 +66,8 @@ public sealed class DelimitedRow
     /// </summary>
     /// <param name="header">The column header name to look up.</param>
     /// <returns>
-    /// The field value for the named column, or <see cref="string.Empty" /> when this row has fewer fields
-    /// than the header row.
+    /// The field value for the named column, or <see cref="string.Empty" /> when this row has fewer fields than the
+    /// header row.
     /// </returns>
     /// <exception cref="InvalidOperationException">
     /// Thrown when the document was parsed without a header row.

@@ -35,8 +35,7 @@ public sealed class DotEnvEntry
     /// Gets the fully processed value of this entry.
     /// </summary>
     /// <returns>
-    /// The value string with surrounding quotes removed and escape sequences resolved. Never
-    /// <see langword="null" />.
+    /// The value string with surrounding quotes removed and escape sequences resolved. Never <see langword="null" />.
     /// </returns>
     public string Value { get; }
 

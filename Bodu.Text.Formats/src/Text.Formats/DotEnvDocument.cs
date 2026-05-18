@@ -49,8 +49,8 @@ public sealed class DotEnvDocument
     /// Gets the ordered list of entries in this document.
     /// </summary>
     /// <returns>
-    /// A read-only list of <see cref="DotEnvEntry" /> instances in source order, with duplicates resolved
-    /// according to the <see cref="DotEnvDuplicateKeyBehavior" /> that was active during parsing.
+    /// A read-only list of <see cref="DotEnvEntry" /> instances in source order, with duplicates resolved according to
+    /// the <see cref="DotEnvDuplicateKeyBehavior" /> that was active during parsing.
     /// </returns>
     public IReadOnlyList<DotEnvEntry> Entries { get; }
 
@@ -58,7 +58,10 @@ public sealed class DotEnvDocument
     /// Gets the value associated with the specified key, or <see langword="null" /> if the key is absent.
     /// </summary>
     /// <param name="key">The key to look up.</param>
-    /// <returns>The string value, or <see langword="null" /> when the key is not present or <paramref name="key" /> is <see langword="null" />.</returns>
+    /// <returns>
+    /// The string value, or <see langword="null" /> when the key is not present or <paramref name="key" /> is
+    /// <see langword="null" />.
+    /// </returns>
     public string? this[string key] =>
         key is not null && _lookup.TryGetValue(key, out DotEnvEntry? entry) ? entry.Value : null;
 
