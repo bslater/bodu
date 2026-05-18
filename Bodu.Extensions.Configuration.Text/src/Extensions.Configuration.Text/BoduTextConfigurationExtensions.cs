@@ -104,8 +104,9 @@ public static class BoduTextConfigurationExtensions
     /// <param name="builder">The configuration builder.</param>
     /// <param name="configureSource">A callback that configures the source.</param>
     /// <returns>The supplied <paramref name="builder" />, for chaining.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="builder" /> or
-    /// <paramref name="configureSource" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="builder" /> or <paramref name="configureSource" /> is <see langword="null" />.
+    /// </exception>
     public static IConfigurationBuilder AddBoduConfiguration(
         this IConfigurationBuilder builder,
         Action<BoduTextConfigurationSource> configureSource)
@@ -216,8 +217,9 @@ public static class BoduTextConfigurationExtensions
     /// <param name="builder">The configuration builder.</param>
     /// <param name="configureSource">A callback that configures the source.</param>
     /// <returns>The supplied <paramref name="builder" />, for chaining.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="builder" /> or
-    /// <paramref name="configureSource" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="builder" /> or <paramref name="configureSource" /> is <see langword="null" />.
+    /// </exception>
     public static IConfigurationBuilder AddBoduConfiguration(
         this IConfigurationBuilder builder,
         Action<BoduTextStreamConfigurationSource> configureSource)

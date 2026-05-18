@@ -62,8 +62,9 @@ public static class BoduConfigurationOptionsExtensions
     /// <param name="services">The service collection to register the binding with.</param>
     /// <param name="section">The configuration section to bind from.</param>
     /// <returns>The supplied <paramref name="services" />, for chaining.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="services" /> or <paramref name="section" /> is
-    /// <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="services" /> or <paramref name="section" /> is <see langword="null" />.
+    /// </exception>
     public static IServiceCollection AddBoduConfigurationOptions<TOptions>(
         this IServiceCollection services,
         IConfigurationSection section)
