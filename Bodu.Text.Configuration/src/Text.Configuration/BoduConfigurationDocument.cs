@@ -149,8 +149,10 @@ public static class BoduConfigurationDocument
     /// </summary>
     /// <param name="stream">The stream to read from. Must support reading.</param>
     /// <param name="options">The parse options to apply, or <see langword="null" /> for the defaults.</param>
-    /// <param name="encoding">The encoding to use when the stream lacks a byte order mark, or
-    /// <see langword="null" /> to use the parse options' default encoding.</param>
+    /// <param name="encoding">
+    /// The encoding to use when the stream lacks a byte order mark, or <see langword="null" /> to use the parse
+    /// options' default encoding.
+    /// </param>
     /// <param name="leaveOpen">When <see langword="true" />, the stream remains open after parsing.</param>
     /// <returns>A populated <see cref="IniDocument" />.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="stream" /> is <see langword="null" />.</exception>

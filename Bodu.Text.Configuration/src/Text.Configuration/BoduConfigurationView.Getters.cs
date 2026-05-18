@@ -89,8 +89,9 @@ public sealed partial class BoduConfigurationView
     /// Attempts to get the string value for <paramref name="key" /> without throwing.
     /// </summary>
     /// <param name="key">The configuration key.</param>
-    /// <param name="value">When this method returns, contains the value if found; otherwise,
-    /// <see langword="null" />.</param>
+    /// <param name="value">
+    /// When this method returns, contains the value if found; otherwise, <see langword="null" />.
+    /// </param>
     /// <returns><see langword="true" /> when the key was present; otherwise, <see langword="false" />.</returns>
     public bool TryGetString(string key, out string? value)
     {
@@ -208,7 +209,9 @@ public sealed partial class BoduConfigurationView
     /// Attempts to parse the value for <paramref name="key" /> as a boolean.
     /// </summary>
     /// <param name="key">The configuration key.</param>
-    /// <param name="value">When this method returns, contains the parsed value; otherwise, <see langword="false" />.</param>
+    /// <param name="value">
+    /// When this method returns, contains the parsed value; otherwise, <see langword="false" />.
+    /// </param>
     /// <returns><see langword="true" /> when the value was present and parseable.</returns>
     public bool TryGetBoolean(string key, out bool value)
     {
