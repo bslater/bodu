@@ -40,12 +40,14 @@ public static class BoduTextConfigurationExtensions
     /// <param name="path">The configuration file path, relative to the builder's file provider.</param>
     /// <param name="targetPath">The optional target path used for glob-anchored resolution.</param>
     /// <param name="optional">When <see langword="true" />, the file is permitted to be missing.</param>
-    /// <param name="reloadOnChange">When <see langword="true" />, the provider reloads the configuration when
-    /// the underlying file changes.</param>
+    /// <param name="reloadOnChange">
+    /// When <see langword="true" />, the provider reloads the configuration when the underlying file changes.
+    /// </param>
     /// <returns>The supplied <paramref name="builder" />, for chaining.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="builder" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentException"><paramref name="path" /> is <see langword="null" />, empty, or
-    /// whitespace.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="path" /> is <see langword="null" />, empty, or whitespace.
+    /// </exception>
     public static IConfigurationBuilder AddBoduConfiguration(
         this IConfigurationBuilder builder,
         string path,
@@ -60,17 +62,21 @@ public static class BoduTextConfigurationExtensions
     /// <c>AddJsonFile(IConfigurationBuilder, IFileProvider, string, bool, bool)</c>.
     /// </summary>
     /// <param name="builder">The configuration builder.</param>
-    /// <param name="provider">The file provider that locates <paramref name="path" />, or
-    /// <see langword="null" /> to defer to the builder's default file provider.</param>
+    /// <param name="provider">
+    /// The file provider that locates <paramref name="path" />, or <see langword="null" /> to defer to the builder's
+    /// default file provider.
+    /// </param>
     /// <param name="path">The configuration file path, relative to <paramref name="provider" />.</param>
     /// <param name="targetPath">The optional target path used for glob-anchored resolution.</param>
     /// <param name="optional">When <see langword="true" />, the file is permitted to be missing.</param>
-    /// <param name="reloadOnChange">When <see langword="true" />, the provider reloads the configuration when
-    /// the underlying file changes.</param>
+    /// <param name="reloadOnChange">
+    /// When <see langword="true" />, the provider reloads the configuration when the underlying file changes.
+    /// </param>
     /// <returns>The supplied <paramref name="builder" />, for chaining.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="builder" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentException"><paramref name="path" /> is <see langword="null" />, empty, or
-    /// whitespace.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="path" /> is <see langword="null" />, empty, or whitespace.
+    /// </exception>
     public static IConfigurationBuilder AddBoduConfiguration(
         this IConfigurationBuilder builder,
         IFileProvider? provider,
