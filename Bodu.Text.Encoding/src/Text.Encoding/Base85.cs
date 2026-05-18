@@ -328,8 +328,10 @@ public static partial class Base85
     /// </summary>
     /// <param name="variant">The variant.</param>
     /// <param name="options">The formatting options.</param>
-    /// <returns><see langword="true" /> when <see cref="BaseFormattingOptions.IncludePrefix" /> is set and the variant
-    /// is <see cref="Base85Variant.Ascii85" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when <see cref="BaseFormattingOptions.IncludePrefix" /> is set and the variant is
+    /// <see cref="Base85Variant.Ascii85" />.
+    /// </returns>
     private static bool ShouldEmitAscii85Delimiters(Base85Variant variant, BaseFormattingOptions options) =>
         variant == Base85Variant.Ascii85 && options.HasFlag(BaseFormattingOptions.IncludePrefix);
 

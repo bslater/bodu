@@ -123,7 +123,9 @@ public static partial class Base58
     /// <param name="destination">The destination span.</param>
     /// <param name="charsWritten">When this method returns, contains the number of characters written.</param>
     /// <param name="variant">The Base58 variant.</param>
-    /// <returns><see langword="true" /> when the destination is large enough; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the destination is large enough; otherwise <see langword="false" />.
+    /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
     public static bool TryEncode(ReadOnlySpan<byte> bytes, Span<char> destination, out int charsWritten, Base58Variant variant = Base58Variant.BitcoinFlickr)
     {

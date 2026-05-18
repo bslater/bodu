@@ -70,8 +70,10 @@ public interface IBinaryEncoding
     /// Indicates whether <paramref name="source" /> is a valid encoded input under this encoding's variant rules.
     /// </summary>
     /// <param name="source">The character span to validate.</param>
-    /// <returns><see langword="true" /> when <paramref name="source" /> would decode without error; otherwise
-    /// <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when <paramref name="source" /> would decode without error; otherwise
+    /// <see langword="false" />.
+    /// </returns>
     bool IsValid(ReadOnlySpan<char> source);
 
     /// <summary>
@@ -80,8 +82,10 @@ public interface IBinaryEncoding
     /// <param name="source">The encoded character span.</param>
     /// <param name="destination">The destination byte span.</param>
     /// <param name="bytesWritten">When this method returns, contains the number of bytes written.</param>
-    /// <returns><see langword="true" /> when the destination is large enough and the input is valid; otherwise
-    /// <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the destination is large enough and the input is valid; otherwise
+    /// <see langword="false" />.
+    /// </returns>
     bool TryDecode(ReadOnlySpan<char> source, Span<byte> destination, out int bytesWritten);
 
     /// <summary>
@@ -90,6 +94,8 @@ public interface IBinaryEncoding
     /// <param name="source">The bytes to encode.</param>
     /// <param name="destination">The destination span.</param>
     /// <param name="charsWritten">When this method returns, contains the number of characters written.</param>
-    /// <returns><see langword="true" /> when the destination is large enough; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the destination is large enough; otherwise <see langword="false" />.
+    /// </returns>
     bool TryEncode(ReadOnlySpan<byte> source, Span<char> destination, out int charsWritten);
 }

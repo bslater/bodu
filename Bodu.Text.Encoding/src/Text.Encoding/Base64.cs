@@ -152,7 +152,9 @@ public static partial class Base64
     /// <param name="source">The character span.</param>
     /// <param name="variant">The variant.</param>
     /// <param name="styles">Parsing styles.</param>
-    /// <returns><see langword="true" /> when the input would decode cleanly; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the input would decode cleanly; otherwise <see langword="false" />.
+    /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
     public static bool IsValid(ReadOnlySpan<char> source, Base64Variant variant = Base64Variant.Standard, BaseFormatStyles styles = BaseFormatStyles.None) =>
         TryCountSymbols(source, variant, styles, out _);

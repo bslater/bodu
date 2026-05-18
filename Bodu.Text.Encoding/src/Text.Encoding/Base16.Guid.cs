@@ -28,8 +28,10 @@ public static partial class Base16
     /// </summary>
     /// <param name="value">The <see cref="Guid" /> to encode.</param>
     /// <param name="options">Formatting options applied to the hex output (case, prefix, spacing, line breaks).</param>
-    /// <returns>A Base16 string of the <see cref="Guid" />'s 16 underlying bytes (mixed-endian, matching
-    /// <see cref="Guid.TryWriteBytes(Span{byte})" />).</returns>
+    /// <returns>
+    /// A Base16 string of the <see cref="Guid" />'s 16 underlying bytes (mixed-endian, matching
+    /// <see cref="Guid.TryWriteBytes(Span{byte})" />).
+    /// </returns>
     /// <remarks>
     /// The encoding uses the GUID's native byte layout — the first three fields are little-endian, the fourth is
     /// big-endian. This matches <see cref="Guid.ToByteArray()" /> and <see cref="Guid.TryWriteBytes(Span{byte})" />, so

@@ -84,11 +84,13 @@ public static partial class Base85
     /// <param name="destination">The destination UTF-8 byte span.</param>
     /// <param name="bytesWritten">When this method returns, contains the number of bytes written.</param>
     /// <param name="variant">The variant.</param>
-    /// <returns><see langword="true" /> on success; <see langword="false" /> when the destination is too small.</returns>
+    /// <returns>
+    /// <see langword="true" /> on success; <see langword="false" /> when the destination is too small.
+    /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
     /// <exception cref="ArgumentException">
-    /// Thrown when <paramref name="variant" /> is <see cref="Base85Variant.Z85" /> and the byte count is not a
-    /// multiple of four.
+    /// Thrown when <paramref name="variant" /> is <see cref="Base85Variant.Z85" /> and the byte count is not a multiple
+    /// of four.
     /// </exception>
     public static bool TryEncodeToUtf8(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesWritten, Base85Variant variant = Base85Variant.Ascii85)
     {

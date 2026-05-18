@@ -29,9 +29,11 @@ public static partial class Base16
     /// </summary>
     /// <param name="bytes">The bytes to encode.</param>
     /// <param name="options">Formatting options to apply, such as upper case, spacing, prefix, or line breaks.</param>
-    /// <returns>A Base16 encoded string. When <paramref name="bytes" /> is empty and
-    /// <see cref="BaseFormattingOptions.IncludePrefix" /> is set, the result is the prefix string alone; otherwise
-    /// the result is <see cref="string.Empty" />.</returns>
+    /// <returns>
+    /// A Base16 encoded string. When <paramref name="bytes" /> is empty and
+    /// <see cref="BaseFormattingOptions.IncludePrefix" /> is set, the result is the prefix string alone; otherwise the
+    /// result is <see cref="string.Empty" />.
+    /// </returns>
     /// <remarks>
     /// Provides the optimal allocation profile when no formatting flags beyond
     /// <see cref="BaseFormattingOptions.UpperCase" /> are specified. When spacing, prefix, or line break flags are

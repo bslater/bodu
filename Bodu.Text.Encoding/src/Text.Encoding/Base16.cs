@@ -55,8 +55,9 @@ public static partial class Base16
     /// </summary>
     /// <param name="source">The hexadecimal input.</param>
     /// <param name="styles">The parsing styles.</param>
-    /// <returns>The exact byte count that <see cref="Decode(ReadOnlySpan{char}, BaseFormatStyles)" /> would
-    /// return.</returns>
+    /// <returns>
+    /// The exact byte count that <see cref="Decode(ReadOnlySpan{char}, BaseFormatStyles)" /> would return.
+    /// </returns>
     /// <exception cref="FormatException">
     /// Thrown when the post-decoration digit count is odd, which indicates the input cannot decode cleanly.
     /// </exception>
@@ -84,11 +85,11 @@ public static partial class Base16
     /// </summary>
     /// <param name="byteCount">The number of input bytes. Must be non-negative.</param>
     /// <param name="options">The formatting options that influence the output length.</param>
-    /// <returns>The exact number of characters that <see cref="Encode(ReadOnlySpan{byte}, BaseFormattingOptions)" />
-    /// will produce.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="byteCount" /> is negative.
-    /// </exception>
+    /// <returns>
+    /// The exact number of characters that <see cref="Encode(ReadOnlySpan{byte}, BaseFormattingOptions)" /> will
+    /// produce.
+    /// </returns>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="byteCount" /> is negative.</exception>
     /// <exception cref="OverflowException">
     /// Thrown when <paramref name="byteCount" /> is large enough that the resulting character count would overflow
     /// <see cref="int" />.
@@ -141,11 +142,11 @@ public static partial class Base16
     /// Computes the maximum number of bytes that can result from decoding <paramref name="charCount" /> characters.
     /// </summary>
     /// <param name="charCount">The number of input characters. Must be non-negative.</param>
-    /// <returns>The upper bound on the number of decoded bytes. The actual byte count will be lower when the input
-    /// contains decorations that are stripped during parsing.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="charCount" /> is negative.
-    /// </exception>
+    /// <returns>
+    /// The upper bound on the number of decoded bytes. The actual byte count will be lower when the input contains
+    /// decorations that are stripped during parsing.
+    /// </returns>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="charCount" /> is negative.</exception>
     public static int GetMaxDecodedLength(int charCount)
     {
         ThrowHelper.ThrowIfNegative(charCount);
@@ -156,8 +157,10 @@ public static partial class Base16
     /// Indicates whether <paramref name="value" /> is one of the 22 hexadecimal digit characters.
     /// </summary>
     /// <param name="value">The character to test.</param>
-    /// <returns><see langword="true" /> for <c>'0'</c>-<c>'9'</c>, <c>'A'</c>-<c>'F'</c>, and <c>'a'</c>-<c>'f'</c>;
-    /// otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> for <c>'0'</c>-<c>'9'</c>, <c>'A'</c>-<c>'F'</c>, and <c>'a'</c>-<c>'f'</c>; otherwise
+    /// <see langword="false" />.
+    /// </returns>
     public static bool IsHexDigit(char value) => value switch
     {
         >= '0' and <= '9' => true,
@@ -171,8 +174,10 @@ public static partial class Base16
     /// </summary>
     /// <param name="source">The input characters.</param>
     /// <param name="styles">The parsing styles.</param>
-    /// <returns><see langword="true" /> when every retained character is a hex digit and the retained count is even;
-    /// otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when every retained character is a hex digit and the retained count is even; otherwise
+    /// <see langword="false" />.
+    /// </returns>
     public static bool IsValid(ReadOnlySpan<char> source, BaseFormatStyles styles = BaseFormatStyles.None)
     {
         var start = 0;

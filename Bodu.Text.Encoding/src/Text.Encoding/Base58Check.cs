@@ -93,8 +93,10 @@ public static class Base58Check
     /// produce, after stripping the four-byte checksum suffix.
     /// </summary>
     /// <param name="charCount">The input character count.</param>
-    /// <returns>An upper bound on the payload byte count, or <c>0</c> when <paramref name="charCount" /> is too small
-    /// to contain a checksum.</returns>
+    /// <returns>
+    /// An upper bound on the payload byte count, or <c>0</c> when <paramref name="charCount" /> is too small to contain
+    /// a checksum.
+    /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="charCount" /> is negative.</exception>
     public static int GetMaxDecodedLength(int charCount)
     {
@@ -125,8 +127,10 @@ public static class Base58Check
     /// <param name="source">The Base58Check encoded input.</param>
     /// <param name="variant">The Base58 variant.</param>
     /// <param name="styles">Parsing styles.</param>
-    /// <returns><see langword="true" /> when the input is a structurally and cryptographically valid Base58Check
-    /// encoding; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the input is a structurally and cryptographically valid Base58Check encoding;
+    /// otherwise <see langword="false" />.
+    /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
     public static bool IsValid(ReadOnlySpan<char> source, Base58Variant variant = Base58Variant.BitcoinFlickr, BaseFormatStyles styles = BaseFormatStyles.None)
     {
@@ -164,7 +168,9 @@ public static class Base58Check
     /// <param name="bytesWritten">When this method returns, contains the number of bytes written.</param>
     /// <param name="variant">The Base58 variant.</param>
     /// <param name="styles">Parsing styles.</param>
-    /// <returns><see langword="true" /> when decoding succeeds and the checksum verifies; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when decoding succeeds and the checksum verifies; otherwise <see langword="false" />.
+    /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
     public static bool TryDecode(ReadOnlySpan<char> source, Span<byte> destination, out int bytesWritten, Base58Variant variant = Base58Variant.BitcoinFlickr, BaseFormatStyles styles = BaseFormatStyles.None)
     {

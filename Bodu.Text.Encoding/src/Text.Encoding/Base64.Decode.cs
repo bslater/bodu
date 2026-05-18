@@ -33,8 +33,9 @@ public static partial class Base64
     /// <param name="chars">The character span.</param>
     /// <param name="variant">The Base64 variant.</param>
     /// <param name="style">Parsing styles.</param>
-    /// <returns>A new byte array containing the decoded data. Returns <see cref="Array.Empty{T}" /> when the input is
-    /// empty.</returns>
+    /// <returns>
+    /// A new byte array containing the decoded data. Returns <see cref="Array.Empty{T}" /> when the input is empty.
+    /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
     /// <exception cref="FormatException">Thrown when the input is not valid Base64.</exception>
     public static byte[] Decode(ReadOnlySpan<char> chars, Base64Variant variant = Base64Variant.Standard, BaseFormatStyles style = BaseFormatStyles.None)
@@ -157,8 +158,10 @@ public static partial class Base64
     /// </summary>
     /// <param name="decodedBytes">The bytes that <paramref name="normalisedInput" /> decoded to.</param>
     /// <param name="normalisedInput">The post-normalisation Base64 input (standard alphabet, fully padded).</param>
-    /// <returns><see langword="true" /> when the input matches the canonical re-encoding; <see langword="false" />
-    /// when the input has non-zero unused bits in its final partial group.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the input matches the canonical re-encoding; <see langword="false" /> when the
+    /// input has non-zero unused bits in its final partial group.
+    /// </returns>
     private static bool IsCanonicalEncoding(ReadOnlySpan<byte> decodedBytes, ReadOnlySpan<char> normalisedInput)
     {
         var expectedLength = ((decodedBytes.Length + 2) / 3) * 4;

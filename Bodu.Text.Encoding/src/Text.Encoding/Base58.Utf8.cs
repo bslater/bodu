@@ -84,7 +84,9 @@ public static partial class Base58
     /// <param name="destination">The destination UTF-8 byte span.</param>
     /// <param name="bytesWritten">When this method returns, contains the number of bytes written.</param>
     /// <param name="variant">The Base58 variant.</param>
-    /// <returns><see langword="true" /> on success; <see langword="false" /> when the destination is too small.</returns>
+    /// <returns>
+    /// <see langword="true" /> on success; <see langword="false" /> when the destination is too small.
+    /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
     public static bool TryEncodeToUtf8(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesWritten, Base58Variant variant = Base58Variant.BitcoinFlickr)
     {

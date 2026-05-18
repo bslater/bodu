@@ -148,7 +148,9 @@ public static partial class Base16
     /// </summary>
     /// <param name="source">The UTF-8 hex source.</param>
     /// <param name="destination">The destination byte span.</param>
-    /// <returns><see langword="true" /> when every UTF-8 byte is a valid hex digit; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when every UTF-8 byte is a valid hex digit; otherwise <see langword="false" />.
+    /// </returns>
     private static bool DecodeHexPairsFromUtf8(ReadOnlySpan<byte> source, Span<byte> destination)
     {
         var bi = 0;

@@ -163,7 +163,9 @@ public static partial class Base16
     /// <param name="source">The bytes to encode.</param>
     /// <param name="destination">The destination character span.</param>
     /// <param name="charsWritten">When this method returns, contains the number of characters written.</param>
-    /// <returns><see langword="true" /> on success; <see langword="false" /> when the destination is too small.</returns>
+    /// <returns>
+    /// <see langword="true" /> on success; <see langword="false" /> when the destination is too small.
+    /// </returns>
     public static bool TryToHexString(ReadOnlySpan<byte> source, Span<char> destination, out int charsWritten) =>
         TryEncode(source, destination, out charsWritten, BaseFormattingOptions.UpperCase);
 
@@ -174,7 +176,9 @@ public static partial class Base16
     /// <param name="source">The bytes to encode.</param>
     /// <param name="utf8Destination">The UTF-8 destination span.</param>
     /// <param name="bytesWritten">When this method returns, contains the number of bytes written.</param>
-    /// <returns><see langword="true" /> on success; <see langword="false" /> when the destination is too small.</returns>
+    /// <returns>
+    /// <see langword="true" /> on success; <see langword="false" /> when the destination is too small.
+    /// </returns>
     public static bool TryToHexString(ReadOnlySpan<byte> source, Span<byte> utf8Destination, out int bytesWritten) =>
         TryEncodeToUtf8(source, utf8Destination, out bytesWritten, BaseFormattingOptions.UpperCase);
 
@@ -184,7 +188,9 @@ public static partial class Base16
     /// <param name="source">The bytes to encode.</param>
     /// <param name="destination">The destination character span.</param>
     /// <param name="charsWritten">When this method returns, contains the number of characters written.</param>
-    /// <returns><see langword="true" /> on success; <see langword="false" /> when the destination is too small.</returns>
+    /// <returns>
+    /// <see langword="true" /> on success; <see langword="false" /> when the destination is too small.
+    /// </returns>
     public static bool TryToHexStringLower(ReadOnlySpan<byte> source, Span<char> destination, out int charsWritten) =>
         TryEncode(source, destination, out charsWritten, BaseFormattingOptions.None);
 
@@ -195,7 +201,9 @@ public static partial class Base16
     /// <param name="source">The bytes to encode.</param>
     /// <param name="utf8Destination">The UTF-8 destination span.</param>
     /// <param name="bytesWritten">When this method returns, contains the number of bytes written.</param>
-    /// <returns><see langword="true" /> on success; <see langword="false" /> when the destination is too small.</returns>
+    /// <returns>
+    /// <see langword="true" /> on success; <see langword="false" /> when the destination is too small.
+    /// </returns>
     public static bool TryToHexStringLower(ReadOnlySpan<byte> source, Span<byte> utf8Destination, out int bytesWritten) =>
         TryEncodeToUtf8(source, utf8Destination, out bytesWritten, BaseFormattingOptions.None);
 }

@@ -113,7 +113,9 @@ public static class Base64Url
     /// Indicates whether <paramref name="source" /> is a valid URL-safe Base64 input.
     /// </summary>
     /// <param name="source">The input characters.</param>
-    /// <returns><see langword="true" /> when the input would decode cleanly; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the input would decode cleanly; otherwise <see langword="false" />.
+    /// </returns>
     public static bool IsValid(ReadOnlySpan<char> source) =>
         Base64.IsValid(source, Base64Variant.UrlSafe, BaseFormatStyles.AllowMissingPadding);
 
@@ -123,8 +125,9 @@ public static class Base64Url
     /// <param name="chars">The URL-safe Base64 character span.</param>
     /// <param name="destination">The destination byte span.</param>
     /// <param name="bytesWritten">When this method returns, contains the number of bytes written.</param>
-    /// <returns><see langword="true" /> on success; <see langword="false" /> on malformed input or undersized
-    /// destination.</returns>
+    /// <returns>
+    /// <see langword="true" /> on success; <see langword="false" /> on malformed input or undersized destination.
+    /// </returns>
     public static bool TryDecode(ReadOnlySpan<char> chars, Span<byte> destination, out int bytesWritten) =>
         Base64.TryDecode(chars, destination, out bytesWritten, Base64Variant.UrlSafe, BaseFormatStyles.AllowMissingPadding);
 
@@ -134,7 +137,9 @@ public static class Base64Url
     /// <param name="source">The bytes to encode.</param>
     /// <param name="destination">The destination span.</param>
     /// <param name="charsWritten">When this method returns, contains the number of characters written.</param>
-    /// <returns><see langword="true" /> on success; <see langword="false" /> when the destination is too small.</returns>
+    /// <returns>
+    /// <see langword="true" /> on success; <see langword="false" /> when the destination is too small.
+    /// </returns>
     public static bool TryEncode(ReadOnlySpan<byte> source, Span<char> destination, out int charsWritten) =>
         Base64.TryEncode(source, destination, out charsWritten, Base64Variant.UrlSafe);
 
@@ -145,7 +150,9 @@ public static class Base64Url
     /// <param name="source">The bytes to encode.</param>
     /// <param name="destination">The destination UTF-8 byte span.</param>
     /// <param name="bytesWritten">When this method returns, contains the number of bytes written.</param>
-    /// <returns><see langword="true" /> on success; <see langword="false" /> when the destination is too small.</returns>
+    /// <returns>
+    /// <see langword="true" /> on success; <see langword="false" /> when the destination is too small.
+    /// </returns>
     public static bool TryEncodeToUtf8(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesWritten) =>
         Base64.TryEncodeToUtf8(source, destination, out bytesWritten, Base64Variant.UrlSafe);
 }

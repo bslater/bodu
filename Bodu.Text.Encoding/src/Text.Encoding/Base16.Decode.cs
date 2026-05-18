@@ -37,8 +37,10 @@ public static partial class Base16
     /// </summary>
     /// <param name="chars">The span containing Base16 (hex) characters.</param>
     /// <param name="style">Parsing styles that allow optional prefix and whitespace tolerance.</param>
-    /// <returns>A new byte array representing the decoded binary data. Returns <see cref="Array.Empty{T}" /> when
-    /// <paramref name="chars" /> is empty.</returns>
+    /// <returns>
+    /// A new byte array representing the decoded binary data. Returns <see cref="Array.Empty{T}" /> when
+    /// <paramref name="chars" /> is empty.
+    /// </returns>
     /// <exception cref="FormatException">
     /// Thrown when the input contains non-hexadecimal characters, or when it has an odd number of hex digits after
     /// applying <paramref name="style" />.

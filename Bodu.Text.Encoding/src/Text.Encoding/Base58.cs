@@ -97,8 +97,10 @@ public static partial class Base58
     /// <param name="source">The character span.</param>
     /// <param name="variant">The variant.</param>
     /// <param name="styles">Parsing styles. Only <see cref="BaseFormatStyles.IgnoreWhitespace" /> has effect.</param>
-    /// <returns><see langword="true" /> when every retained character is in the variant alphabet; otherwise
-    /// <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when every retained character is in the variant alphabet; otherwise
+    /// <see langword="false" />.
+    /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
     public static bool IsValid(ReadOnlySpan<char> source, Base58Variant variant = Base58Variant.BitcoinFlickr, BaseFormatStyles styles = BaseFormatStyles.None)
     {
