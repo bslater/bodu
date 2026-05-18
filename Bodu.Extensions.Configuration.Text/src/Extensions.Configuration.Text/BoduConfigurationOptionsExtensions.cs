@@ -12,13 +12,13 @@ namespace Bodu.Extensions.Configuration.Text;
 
 /// <summary>
 /// Provides convenience extension methods for binding a Bodu Text Configuration section to an
-/// <see cref="Microsoft.Extensions.Options.IOptions{TOptions}" /> instance through an
-/// <see cref="IServiceCollection" />.
+/// <see cref="Microsoft.Extensions.Options.IOptions{TOptions}" /> instance through an <see cref="IServiceCollection" />
+/// .
 /// </summary>
 /// <remarks>
 /// These helpers are thin shims over
-/// <c>Microsoft.Extensions.DependencyInjection.OptionsConfigurationServiceCollectionExtensions.Configure</c>;
-/// they exist purely to keep the call-site short and discoverable for consumers who reach for an
+/// <c>Microsoft.Extensions.DependencyInjection.OptionsConfigurationServiceCollectionExtensions.Configure</c>; they
+/// exist purely to keep the call-site short and discoverable for consumers who reach for an
 /// <c>AddBoduConfiguration*</c> API by name. Callers comfortable with
 /// <see cref="Microsoft.Extensions.Options.IOptions{TOptions}" /> binding may continue to call
 /// <see cref="Microsoft.Extensions.DependencyInjection.OptionsConfigurationServiceCollectionExtensions.Configure{TOptions}(IServiceCollection, IConfiguration)" />
@@ -27,18 +27,20 @@ namespace Bodu.Extensions.Configuration.Text;
 public static class BoduConfigurationOptionsExtensions
 {
     /// <summary>
-    /// Registers an <typeparamref name="TOptions" /> binding against the section named
-    /// <paramref name="sectionName" /> in <paramref name="configuration" />.
+    /// Registers an <typeparamref name="TOptions" /> binding against the section named <paramref name="sectionName" />
+    /// in <paramref name="configuration" />.
     /// </summary>
     /// <typeparam name="TOptions">The options type to bind.</typeparam>
     /// <param name="services">The service collection to register the binding with.</param>
     /// <param name="configuration">The configuration root that contains the named section.</param>
     /// <param name="sectionName">The colon-delimited section name to bind from.</param>
     /// <returns>The supplied <paramref name="services" />, for chaining.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="services" /> or <paramref name="configuration" />
-    /// is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentException"><paramref name="sectionName" /> is <see langword="null" />, empty, or
-    /// whitespace.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="services" /> or <paramref name="configuration" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="sectionName" /> is <see langword="null" />, empty, or whitespace.
+    /// </exception>
     public static IServiceCollection AddBoduConfigurationOptions<TOptions>(
         this IServiceCollection services,
         IConfiguration configuration,

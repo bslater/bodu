@@ -15,9 +15,9 @@ namespace Bodu.Extensions.Configuration.Text;
 
 /// <summary>
 /// Provides convenience extension methods for adding a Bodu Text Configuration source to an
-/// <see cref="IConfigurationBuilder" />. The overload set mirrors
-/// <c>Microsoft.Extensions.Configuration.Json</c>'s <c>AddJsonFile</c> / <c>AddJsonStream</c> shape so that
-/// consumers familiar with the JSON provider can swap in this provider with no learning curve.
+/// <see cref="IConfigurationBuilder" />. The overload set mirrors <c>Microsoft.Extensions.Configuration.Json</c>'s
+/// <c>AddJsonFile</c> / <c>AddJsonStream</c> shape so that consumers familiar with the JSON provider can swap in this
+/// provider with no learning curve.
 /// </summary>
 public static class BoduTextConfigurationExtensions
 {
@@ -28,8 +28,8 @@ public static class BoduTextConfigurationExtensions
 
     /// <summary>
     /// The alternative conventional file name probed by
-    /// <see cref="AddBoduConfiguration(IConfigurationBuilder, bool, bool)" /> when
-    /// <see cref="DefaultDotFileName" /> is absent.
+    /// <see cref="AddBoduConfiguration(IConfigurationBuilder, bool, bool)" /> when <see cref="DefaultDotFileName" /> is
+    /// absent.
     /// </summary>
     private const string DefaultPlainFileName = "bodu.config";
 
@@ -114,21 +114,24 @@ public static class BoduTextConfigurationExtensions
     }
 
     /// <summary>
-    /// Adds a Bodu Text Configuration source backed by the conventional file name <c>.boduconfig</c>, falling
-    /// back to <c>bodu.config</c> when the dot-prefixed name is absent. The file is resolved against the
-    /// builder's default file provider.
+    /// Adds a Bodu Text Configuration source backed by the conventional file name <c>.boduconfig</c>, falling back to
+    /// <c>bodu.config</c> when the dot-prefixed name is absent. The file is resolved against the builder's default file
+    /// provider.
     /// </summary>
     /// <param name="builder">The configuration builder.</param>
-    /// <param name="optional">When <see langword="true" /> (the default), neither file is required to exist;
-    /// when <see langword="false" />, at least one of the two conventional names must resolve.</param>
-    /// <param name="reloadOnChange">When <see langword="true" />, the provider reloads the configuration when
-    /// the underlying file changes.</param>
+    /// <param name="optional">
+    /// When <see langword="true" /> (the default), neither file is required to exist; when <see langword="false" />, at
+    /// least one of the two conventional names must resolve.
+    /// </param>
+    /// <param name="reloadOnChange">
+    /// When <see langword="true" />, the provider reloads the configuration when the underlying file changes.
+    /// </param>
     /// <returns>The supplied <paramref name="builder" />, for chaining.</returns>
     /// <remarks>
-    /// The default <c>PhysicalFileProvider</c> filters out dot-prefixed files via its <c>ExclusionFilters</c>
-    /// (<c>Sensitive</c> by default), so to make <c>.boduconfig</c> resolvable the caller must register a
-    /// <c>PhysicalFileProvider</c> constructed with <c>ExclusionFilters.None</c>. The fallback
-    /// <c>bodu.config</c> name is resolved by the default exclusion filters without further configuration.
+    /// The default <c>PhysicalFileProvider</c> filters out dot-prefixed files via its <c>ExclusionFilters</c> (
+    /// <c>Sensitive</c> by default), so to make <c>.boduconfig</c> resolvable the caller must register a
+    /// <c>PhysicalFileProvider</c> constructed with <c>ExclusionFilters.None</c>. The fallback <c>bodu.config</c> name
+    /// is resolved by the default exclusion filters without further configuration.
     /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="builder" /> is <see langword="null" />.</exception>
     /// <exception cref="FileNotFoundException">
@@ -169,8 +172,8 @@ public static class BoduTextConfigurationExtensions
     }
 
     /// <summary>
-    /// Adds a Bodu Text Configuration source backed by the supplied <see cref="Stream" />. The stream is read
-    /// once when the configuration is built; no reload-on-change machinery is attached. Mirrors
+    /// Adds a Bodu Text Configuration source backed by the supplied <see cref="Stream" />. The stream is read once when
+    /// the configuration is built; no reload-on-change machinery is attached. Mirrors
     /// <c>AddJsonStream(IConfigurationBuilder, Stream)</c>.
     /// </summary>
     /// <param name="builder">The configuration builder.</param>
@@ -179,8 +182,9 @@ public static class BoduTextConfigurationExtensions
     /// <param name="parseOptions">The parse options, or <see langword="null" /> for the defaults.</param>
     /// <param name="resolveOptions">The resolve options, or <see langword="null" /> for the defaults.</param>
     /// <returns>The supplied <paramref name="builder" />, for chaining.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="builder" /> or <paramref name="stream" /> is
-    /// <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="builder" /> or <paramref name="stream" /> is <see langword="null" />.
+    /// </exception>
     public static IConfigurationBuilder AddBoduConfiguration(
         this IConfigurationBuilder builder,
         Stream stream,
@@ -222,8 +226,8 @@ public static class BoduTextConfigurationExtensions
     }
 
     /// <summary>
-    /// Adds an already-parsed <see cref="IniDocument" /> to the configuration. The document is resolved
-    /// against <paramref name="targetPath" /> and the resulting key/value map is added via
+    /// Adds an already-parsed <see cref="IniDocument" /> to the configuration. The document is resolved against
+    /// <paramref name="targetPath" /> and the resulting key/value map is added via
     /// <see cref="MemoryConfigurationBuilderExtensions.AddInMemoryCollection" />.
     /// </summary>
     /// <param name="builder">The configuration builder.</param>
@@ -231,8 +235,9 @@ public static class BoduTextConfigurationExtensions
     /// <param name="targetPath">The optional target path used for glob-anchored resolution.</param>
     /// <param name="resolveOptions">The resolve options, or <see langword="null" /> for the defaults.</param>
     /// <returns>The supplied <paramref name="builder" />, for chaining.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="builder" /> or <paramref name="document" />
-    /// is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="builder" /> or <paramref name="document" /> is <see langword="null" />.
+    /// </exception>
     public static IConfigurationBuilder AddBoduConfiguration(
         this IConfigurationBuilder builder,
         IniDocument document,

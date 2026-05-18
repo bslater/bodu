@@ -22,8 +22,8 @@ namespace Bodu.Extensions.Configuration.Text;
 public sealed class BoduTextStreamConfigurationProvider : StreamConfigurationProvider
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="BoduTextStreamConfigurationProvider" /> class backed by
-    /// the supplied source.
+    /// Initializes a new instance of the <see cref="BoduTextStreamConfigurationProvider" /> class backed by the
+    /// supplied source.
     /// </summary>
     /// <param name="source">The source that produced this provider.</param>
     /// <exception cref="ArgumentNullException"><paramref name="source" /> is <see langword="null" />.</exception>

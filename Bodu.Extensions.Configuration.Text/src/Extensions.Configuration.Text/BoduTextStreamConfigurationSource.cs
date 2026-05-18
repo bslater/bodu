@@ -11,14 +11,14 @@ namespace Bodu.Extensions.Configuration.Text;
 
 /// <summary>
 /// A <see cref="StreamConfigurationSource" /> that reads a Bodu Text Configuration document from an arbitrary
-/// <see cref="System.IO.Stream" /> and projects its resolved view into the
-/// <see cref="IConfiguration" /> hierarchy as colon-delimited keys.
+/// <see cref="System.IO.Stream" /> and projects its resolved view into the <see cref="IConfiguration" /> hierarchy as
+/// colon-delimited keys.
 /// </summary>
 /// <remarks>
-/// Mirrors the role of <c>JsonStreamConfigurationSource</c> in
-/// <c>Microsoft.Extensions.Configuration.Json</c>. Unlike <see cref="BoduTextConfigurationSource" /> (which is
-/// file-backed and inherits reload-on-change), this source is one-shot: the stream is parsed once when
-/// <see cref="Build(IConfigurationBuilder)" /> is invoked and no file watcher is attached.
+/// Mirrors the role of <c>JsonStreamConfigurationSource</c> in <c>Microsoft.Extensions.Configuration.Json</c>. Unlike
+/// <see cref="BoduTextConfigurationSource" /> (which is file-backed and inherits reload-on-change), this source is
+/// one-shot: the stream is parsed once when <see cref="Build(IConfigurationBuilder)" /> is invoked and no file watcher
+/// is attached.
 /// </remarks>
 public sealed class BoduTextStreamConfigurationSource : StreamConfigurationSource
 {

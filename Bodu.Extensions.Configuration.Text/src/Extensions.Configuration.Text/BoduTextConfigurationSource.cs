@@ -10,13 +10,13 @@ using Microsoft.Extensions.Configuration;
 namespace Bodu.Extensions.Configuration.Text;
 
 /// <summary>
-/// A <see cref="FileConfigurationSource" /> that reads a Bodu Text Configuration file and projects its
-/// resolved view into the <see cref="IConfiguration" /> hierarchy as colon-delimited keys.
+/// A <see cref="FileConfigurationSource" /> that reads a Bodu Text Configuration file and projects its resolved view
+/// into the <see cref="IConfiguration" /> hierarchy as colon-delimited keys.
 /// </summary>
 /// <remarks>
 /// Inherits the standard reload-on-change, file-provider, and optional-file behaviours from
-/// <see cref="FileConfigurationSource" />, matching the conventions used by the JSON, INI, and XML providers
-/// shipped by Microsoft.
+/// <see cref="FileConfigurationSource" />, matching the conventions used by the JSON, INI, and XML providers shipped by
+/// Microsoft.
 /// </remarks>
 public sealed class BoduTextConfigurationSource : FileConfigurationSource
 {
