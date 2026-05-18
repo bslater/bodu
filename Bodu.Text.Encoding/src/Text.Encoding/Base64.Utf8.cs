@@ -53,8 +53,9 @@ public static partial class Base64
     /// </summary>
     /// <param name="source">The bytes to encode.</param>
     /// <param name="variant">The Base64 variant.</param>
-    /// <param name="options">Formatting options. Only <see cref="BaseFormattingOptions.OmitPadding" /> has an effect
-    /// on the UTF-8 fast path.</param>
+    /// <param name="options">
+    /// Formatting options. Only <see cref="BaseFormattingOptions.OmitPadding" /> has an effect on the UTF-8 fast path.
+    /// </param>
     /// <returns>The UTF-8 encoded Base64 bytes.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
     /// <exception cref="ArgumentException">
@@ -87,10 +88,16 @@ public static partial class Base64
     /// <param name="destination">The destination UTF-8 byte span.</param>
     /// <param name="bytesWritten">When this method returns, contains the number of bytes written.</param>
     /// <param name="variant">The Base64 variant.</param>
-    /// <param name="options">Formatting options. Only <see cref="BaseFormattingOptions.OmitPadding" /> is supported.</param>
-    /// <returns><see langword="true" /> on success; <see langword="false" /> when the destination is too small.</returns>
+    /// <param name="options">
+    /// Formatting options. Only <see cref="BaseFormattingOptions.OmitPadding" /> is supported.
+    /// </param>
+    /// <returns>
+    /// <see langword="true" /> on success; <see langword="false" /> when the destination is too small.
+    /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
-    /// <exception cref="ArgumentException">Thrown when unsupported flags are set in <paramref name="options" />.</exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when unsupported flags are set in <paramref name="options" />.
+    /// </exception>
     public static bool TryEncodeToUtf8(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesWritten, Base64Variant variant = Base64Variant.Standard, BaseFormattingOptions options = BaseFormattingOptions.None)
     {
         EnsureValidVariant(variant);
@@ -313,7 +320,9 @@ public static partial class Base64
     /// <param name="source">The input bytes.</param>
     /// <param name="destination">The destination span.</param>
     /// <param name="variant">The variant.</param>
-    /// <param name="options">The encode options (only <see cref="BaseFormattingOptions.OmitPadding" /> is honoured).</param>
+    /// <param name="options">
+    /// The encode options (only <see cref="BaseFormattingOptions.OmitPadding" /> is honoured).
+    /// </param>
     /// <returns>The number of UTF-8 bytes written.</returns>
     private static int EncodeIntoUtf8Span(ReadOnlySpan<byte> source, Span<byte> destination, Base64Variant variant, BaseFormattingOptions options)
     {

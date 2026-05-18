@@ -175,10 +175,14 @@ public static partial class Base32
     /// Attempts to compute the exact number of decoded bytes for <paramref name="source" />.
     /// </summary>
     /// <param name="source">The input characters.</param>
-    /// <param name="byteCount">When this method returns, contains the decoded byte count, or <c>0</c> on failure.</param>
+    /// <param name="byteCount">
+    /// When this method returns, contains the decoded byte count, or <c>0</c> on failure.
+    /// </param>
     /// <param name="variant">The Base32 variant.</param>
     /// <param name="styles">The parsing styles.</param>
-    /// <returns><see langword="true" /> when the input would decode cleanly; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the input would decode cleanly; otherwise <see langword="false" />.
+    /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
     public static bool TryGetDecodedLength(ReadOnlySpan<char> source, out int byteCount, Base32Variant variant = Base32Variant.Standard, BaseFormatStyles styles = BaseFormatStyles.None)
     {

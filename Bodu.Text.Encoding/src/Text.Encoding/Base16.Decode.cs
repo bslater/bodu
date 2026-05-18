@@ -198,8 +198,9 @@ public static partial class Base16
     /// </summary>
     /// <param name="source">The decorated input span.</param>
     /// <param name="style">The decoration tolerance flags.</param>
-    /// <param name="scratch">The scratch buffer that receives the stripped digits. Must be at least as large as
-    /// <paramref name="source" />.</param>
+    /// <param name="scratch">
+    /// The scratch buffer that receives the stripped digits. Must be at least as large as <paramref name="source" />.
+    /// </param>
     /// <returns>The number of digit characters written to <paramref name="scratch" />.</returns>
     /// <remarks>
     /// <para>

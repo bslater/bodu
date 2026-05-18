@@ -56,8 +56,10 @@ public static partial class Base58
     /// Encodes a span of bytes directly into a destination character span.
     /// </summary>
     /// <param name="bytes">The bytes to encode.</param>
-    /// <param name="destination">The destination span. Must be at least
-    /// <see cref="GetMaxEncodedLength(int)" /> characters in size for safe sizing.</param>
+    /// <param name="destination">
+    /// The destination span. Must be at least <see cref="GetMaxEncodedLength(int)" /> characters in size for safe
+    /// sizing.
+    /// </param>
     /// <param name="variant">The Base58 variant.</param>
     /// <returns>The number of characters written.</returns>
     /// <exception cref="ArgumentException">Thrown when <paramref name="destination" /> is too small.</exception>
@@ -163,8 +165,10 @@ public static partial class Base58
     /// <param name="bytes">The input bytes.</param>
     /// <param name="alphabet">The variant alphabet.</param>
     /// <param name="buffer">The scratch buffer; the encoder writes from the end towards the start.</param>
-    /// <param name="usableLength">The portion of <paramref name="buffer" /> to use (may be smaller than the array
-    /// length when the buffer was rented from <see cref="System.Buffers.ArrayPool{T}" />).</param>
+    /// <param name="usableLength">
+    /// The portion of <paramref name="buffer" /> to use (may be smaller than the array length when the buffer was
+    /// rented from <see cref="System.Buffers.ArrayPool{T}" />).
+    /// </param>
     /// <returns>The number of characters written into the buffer.</returns>
     private static int EncodeIntoBuffer(ReadOnlySpan<byte> bytes, ReadOnlySpan<char> alphabet, char[] buffer, int usableLength)
     {

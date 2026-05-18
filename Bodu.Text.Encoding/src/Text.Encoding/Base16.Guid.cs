@@ -47,8 +47,10 @@ public static partial class Base16
     /// Attempts to decode a hexadecimal representation of a <see cref="Guid" />.
     /// </summary>
     /// <param name="source">The hexadecimal characters.</param>
-    /// <param name="value">When this method returns, contains the decoded <see cref="Guid" /> or
-    /// <see cref="Guid.Empty" /> when the input is invalid.</param>
+    /// <param name="value">
+    /// When this method returns, contains the decoded <see cref="Guid" /> or <see cref="Guid.Empty" /> when the input
+    /// is invalid.
+    /// </param>
     /// <param name="styles">Parsing styles to apply when interpreting decorations.</param>
     /// <returns><see langword="true" /> when decoding succeeds; otherwise <see langword="false" />.</returns>
     public static bool TryDecodeGuid(ReadOnlySpan<char> source, out Guid value, BaseFormatStyles styles = BaseFormatStyles.None)

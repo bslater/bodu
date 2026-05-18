@@ -95,13 +95,18 @@ public static partial class Base32
     /// </summary>
     /// <param name="chars">The input characters.</param>
     /// <param name="destination">The destination span.</param>
-    /// <param name="bytesWritten">When this method returns, contains the number of bytes written, or <c>0</c> on
-    /// failure.</param>
+    /// <param name="bytesWritten">
+    /// When this method returns, contains the number of bytes written, or <c>0</c> on failure.
+    /// </param>
     /// <param name="variant">The Base32 variant.</param>
     /// <param name="style">Parsing styles.</param>
-    /// <returns><see langword="true" /> on success; <see langword="false" /> when the input is malformed or the
-    /// destination is too small.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is not a defined value.</exception>
+    /// <returns>
+    /// <see langword="true" /> on success; <see langword="false" /> when the input is malformed or the destination is
+    /// too small.
+    /// </returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="variant" /> is not a defined value.
+    /// </exception>
     public static bool TryDecode(ReadOnlySpan<char> chars, Span<byte> destination, out int bytesWritten, Base32Variant variant = Base32Variant.Standard, BaseFormatStyles style = BaseFormatStyles.None)
     {
         bytesWritten = 0;
@@ -124,18 +129,24 @@ public static partial class Base32
     /// <param name="chars">The input characters.</param>
     /// <param name="lookup">The variant lookup table.</param>
     /// <param name="ignoreWhitespace">Whether to skip ASCII whitespace.</param>
-    /// <param name="requireExactPadding">Whether the input must be a multiple of eight non-whitespace characters
-    /// (including <c>=</c>).</param>
-    /// <param name="strictQuantum">Whether the input must match an RFC 4648 §6 terminal-quantum length (2, 4, 5, 7,
-    /// or 8 data characters). Only the Standard and HexExtended variants enforce this; Crockford and Z-Base32 omit
-    /// the check.</param>
-    /// <param name="requireCanonical">Whether the input must be in canonical form — the unused bits of the final
-    /// partial group must be zero.</param>
+    /// <param name="requireExactPadding">
+    /// Whether the input must be a multiple of eight non-whitespace characters (including <c>=</c>).
+    /// </param>
+    /// <param name="strictQuantum">
+    /// Whether the input must match an RFC 4648 §6 terminal-quantum length (2, 4, 5, 7, or 8 data characters). Only the
+    /// Standard and HexExtended variants enforce this; Crockford and Z-Base32 omit the check.
+    /// </param>
+    /// <param name="requireCanonical">
+    /// Whether the input must be in canonical form — the unused bits of the final partial group must be zero.
+    /// </param>
     /// <param name="destination">The destination span.</param>
-    /// <param name="bytesWritten">When this method returns, contains the number of bytes written, or <c>0</c> on
-    /// failure.</param>
-    /// <param name="error">When this method returns <see langword="false" />, contains the failure reason, or
-    /// <see langword="null" /> on success.</param>
+    /// <param name="bytesWritten">
+    /// When this method returns, contains the number of bytes written, or <c>0</c> on failure.
+    /// </param>
+    /// <param name="error">
+    /// When this method returns <see langword="false" />, contains the failure reason, or <see langword="null" /> on
+    /// success.
+    /// </param>
     /// <returns><see langword="true" /> on success; <see langword="false" /> on any validation failure.</returns>
     private static bool DecodeCore(ReadOnlySpan<char> chars, sbyte[] lookup, bool ignoreWhitespace, bool requireExactPadding, bool strictQuantum, bool requireCanonical, Span<byte> destination, out int bytesWritten, out string? error)
     {

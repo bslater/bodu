@@ -76,12 +76,15 @@ public static partial class Base58
     /// </summary>
     /// <param name="chars">The Base58 character span.</param>
     /// <param name="destination">The destination byte span.</param>
-    /// <param name="bytesWritten">When this method returns, contains the number of bytes written, or <c>0</c> on
-    /// failure.</param>
+    /// <param name="bytesWritten">
+    /// When this method returns, contains the number of bytes written, or <c>0</c> on failure.
+    /// </param>
     /// <param name="variant">The Base58 variant.</param>
     /// <param name="style">Parsing styles.</param>
-    /// <returns><see langword="true" /> on success; <see langword="false" /> when the input is malformed or the
-    /// destination is too small.</returns>
+    /// <returns>
+    /// <see langword="true" /> on success; <see langword="false" /> when the input is malformed or the destination is
+    /// too small.
+    /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
     public static bool TryDecode(ReadOnlySpan<char> chars, Span<byte> destination, out int bytesWritten, Base58Variant variant = Base58Variant.BitcoinFlickr, BaseFormatStyles style = BaseFormatStyles.None)
     {
@@ -109,7 +112,9 @@ public static partial class Base58
     /// <param name="lookup">The variant lookup table.</param>
     /// <param name="style">Parsing styles.</param>
     /// <param name="result">When this method returns, contains the decoded byte array on success.</param>
-    /// <param name="error">When this method returns, contains a failure reason or <see langword="null" /> on success.</param>
+    /// <param name="error">
+    /// When this method returns, contains a failure reason or <see langword="null" /> on success.
+    /// </param>
     /// <returns><see langword="true" /> on success; <see langword="false" /> on failure.</returns>
     private static bool TryDecodeCore(ReadOnlySpan<char> chars, sbyte[] lookup, BaseFormatStyles style, out byte[]? result, out string? error)
     {

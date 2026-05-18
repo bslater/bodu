@@ -53,8 +53,9 @@ public static partial class Base16
     /// </summary>
     /// <param name="bytes">The bytes to encode.</param>
     /// <param name="destination">The span that receives the encoded characters.</param>
-    /// <param name="options">Formatting options. Only <see cref="BaseFormattingOptions.UpperCase" /> is supported on
-    /// this overload.</param>
+    /// <param name="options">
+    /// Formatting options. Only <see cref="BaseFormattingOptions.UpperCase" /> is supported on this overload.
+    /// </param>
     /// <returns>The number of characters written to <paramref name="destination" />.</returns>
     /// <exception cref="ArgumentException">
     /// Thrown when <paramref name="options" /> contains any flag other than
@@ -104,14 +105,20 @@ public static partial class Base16
     /// </summary>
     /// <param name="bytes">The bytes to encode.</param>
     /// <param name="destination">The span that receives the encoded characters.</param>
-    /// <param name="charsWritten">When this method returns, contains the number of characters written, or <c>0</c>
-    /// when <paramref name="destination" /> is too small.</param>
-    /// <param name="options">Formatting options. Only <see cref="BaseFormattingOptions.UpperCase" /> is supported on
-    /// this overload.</param>
-    /// <returns><see langword="true" /> when the destination is large enough and the encoding succeeded; otherwise
-    /// <see langword="false" />.</returns>
+    /// <param name="charsWritten">
+    /// When this method returns, contains the number of characters written, or <c>0</c> when
+    /// <paramref name="destination" /> is too small.
+    /// </param>
+    /// <param name="options">
+    /// Formatting options. Only <see cref="BaseFormattingOptions.UpperCase" /> is supported on this overload.
+    /// </param>
+    /// <returns>
+    /// <see langword="true" /> when the destination is large enough and the encoding succeeded; otherwise
+    /// <see langword="false" />.
+    /// </returns>
     /// <exception cref="ArgumentException">
-    /// Thrown when <paramref name="options" /> contains any flag other than <see cref="BaseFormattingOptions.UpperCase" />.
+    /// Thrown when <paramref name="options" /> contains any flag other than
+    /// <see cref="BaseFormattingOptions.UpperCase" />.
     /// </exception>
     public static bool TryEncode(ReadOnlySpan<byte> bytes, Span<char> destination, out int charsWritten, BaseFormattingOptions options = BaseFormattingOptions.None)
     {
@@ -164,8 +171,10 @@ public static partial class Base16
     /// Writes the hexadecimal representation of <paramref name="bytes" /> directly into <paramref name="chars" />.
     /// </summary>
     /// <param name="bytes">The input byte span.</param>
-    /// <param name="chars">The destination character span. The caller must ensure it is at least
-    /// <c>bytes.Length * 2</c> characters in size.</param>
+    /// <param name="chars">
+    /// The destination character span. The caller must ensure it is at least <c>bytes.Length * 2</c> characters in
+    /// size.
+    /// </param>
     /// <param name="upperCase">Whether to emit upper case characters.</param>
     private static void EncodeToHexCore(ReadOnlySpan<byte> bytes, Span<char> chars, bool upperCase)
     {

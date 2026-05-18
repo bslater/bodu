@@ -44,8 +44,9 @@ public static partial class Base58
     /// Attempts to decode a Base58 representation of a <see cref="Guid" />.
     /// </summary>
     /// <param name="source">The Base58 characters.</param>
-    /// <param name="value">When this method returns, contains the decoded <see cref="Guid" /> or
-    /// <see cref="Guid.Empty" />.</param>
+    /// <param name="value">
+    /// When this method returns, contains the decoded <see cref="Guid" /> or <see cref="Guid.Empty" />.
+    /// </param>
     /// <param name="variant">The Base58 variant.</param>
     /// <param name="styles">Parsing styles.</param>
     /// <returns><see langword="true" /> when decoding succeeds; otherwise <see langword="false" />.</returns>

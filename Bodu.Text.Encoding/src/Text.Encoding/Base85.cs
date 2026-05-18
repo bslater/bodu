@@ -206,11 +206,14 @@ public static partial class Base85
     /// </summary>
     /// <param name="source">The input characters.</param>
     /// <param name="variant">The variant.</param>
-    /// <param name="styles">Parsing styles. <see cref="BaseFormatStyles.IgnoreWhitespace" /> permits whitespace in the
-    /// input; <see cref="BaseFormatStyles.AllowPrefix" /> permits the optional Adobe Ascii85
-    /// <c>&lt;~</c> / <c>~&gt;</c> delimiter pair (Ascii85 only).</param>
-    /// <returns><see langword="true" /> when every retained character is in the variant alphabet or is a recognised
-    /// shortcut.</returns>
+    /// <param name="styles">
+    /// Parsing styles. <see cref="BaseFormatStyles.IgnoreWhitespace" /> permits whitespace in the input;
+    /// <see cref="BaseFormatStyles.AllowPrefix" /> permits the optional Adobe Ascii85 <c>&lt;~</c> / <c>~&gt;</c>
+    /// delimiter pair (Ascii85 only).
+    /// </param>
+    /// <returns>
+    /// <see langword="true" /> when every retained character is in the variant alphabet or is a recognised shortcut.
+    /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
     public static bool IsValid(ReadOnlySpan<char> source, Base85Variant variant = Base85Variant.Ascii85, BaseFormatStyles styles = BaseFormatStyles.None)
     {
@@ -335,7 +338,9 @@ public static partial class Base85
     /// from <paramref name="source" />.
     /// </summary>
     /// <param name="source">The input span.</param>
-    /// <param name="trimSurroundingWhitespace">Whether to also strip ASCII whitespace surrounding the delimiters.</param>
+    /// <param name="trimSurroundingWhitespace">
+    /// Whether to also strip ASCII whitespace surrounding the delimiters.
+    /// </param>
     /// <returns>The input with delimiters and (optionally) surrounding whitespace removed.</returns>
     private static ReadOnlySpan<char> StripAscii85Delimiters(ReadOnlySpan<char> source, bool trimSurroundingWhitespace)
     {

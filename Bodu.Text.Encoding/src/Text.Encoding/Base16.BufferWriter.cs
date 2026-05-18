@@ -17,14 +17,19 @@ public static partial class Base16
     /// </summary>
     /// <param name="source">The bytes to encode.</param>
     /// <param name="writer">The buffer writer that receives the encoded characters.</param>
-    /// <param name="options">Formatting options. Only <see cref="BaseFormattingOptions.UpperCase" /> is supported on
-    /// this overload — formatted output (spacing, prefix, line breaks) is not compatible with the writer's contiguous
-    /// span contract. For decorated output, call <see cref="Encode(ReadOnlySpan{byte}, BaseFormattingOptions)" /> and
-    /// write the resulting string explicitly.</param>
+    /// <param name="options">
+    /// Formatting options. Only <see cref="BaseFormattingOptions.UpperCase" /> is supported on this overload —
+    /// formatted output (spacing, prefix, line breaks) is not compatible with the writer's contiguous span contract.
+    /// For decorated output, call <see cref="Encode(ReadOnlySpan{byte}, BaseFormattingOptions)" /> and write the
+    /// resulting string explicitly.
+    /// </param>
     /// <returns>The number of characters written to <paramref name="writer" />.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="writer" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="writer" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentException">
-    /// Thrown when <paramref name="options" /> contains any flag other than <see cref="BaseFormattingOptions.UpperCase" />.
+    /// Thrown when <paramref name="options" /> contains any flag other than
+    /// <see cref="BaseFormattingOptions.UpperCase" />.
     /// </exception>
     public static int Encode(ReadOnlySpan<byte> source, IBufferWriter<char> writer, BaseFormattingOptions options = BaseFormattingOptions.None)
     {
@@ -47,12 +52,16 @@ public static partial class Base16
     /// </summary>
     /// <param name="source">The bytes to encode.</param>
     /// <param name="writer">The buffer writer that receives the UTF-8 hexadecimal bytes.</param>
-    /// <param name="options">Formatting options. Only <see cref="BaseFormattingOptions.UpperCase" /> is supported on
-    /// this overload.</param>
+    /// <param name="options">
+    /// Formatting options. Only <see cref="BaseFormattingOptions.UpperCase" /> is supported on this overload.
+    /// </param>
     /// <returns>The number of UTF-8 bytes written to <paramref name="writer" />.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="writer" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="writer" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentException">
-    /// Thrown when <paramref name="options" /> contains any flag other than <see cref="BaseFormattingOptions.UpperCase" />.
+    /// Thrown when <paramref name="options" /> contains any flag other than
+    /// <see cref="BaseFormattingOptions.UpperCase" />.
     /// </exception>
     public static int EncodeToUtf8(ReadOnlySpan<byte> source, IBufferWriter<byte> writer, BaseFormattingOptions options = BaseFormattingOptions.None)
     {

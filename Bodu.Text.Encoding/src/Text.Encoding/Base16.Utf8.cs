@@ -20,10 +20,12 @@ public static partial class Base16
     /// <param name="bytesConsumed">When this method returns, contains the number of source bytes consumed.</param>
     /// <param name="bytesWritten">When this method returns, contains the number of destination bytes written.</param>
     /// <param name="styles">Parsing styles influencing leniency.</param>
-    /// <param name="isFinalBlock">When <see langword="true" />, the decoder enforces that the input forms complete
-    /// byte pairs and any trailing partial pair is reported as <see cref="OperationStatus.InvalidData" />. When
-    /// <see langword="false" />, a trailing single character is reported as <see cref="OperationStatus.NeedMoreData" />
-    /// so the caller can resume on more input.</param>
+    /// <param name="isFinalBlock">
+    /// When <see langword="true" />, the decoder enforces that the input forms complete byte pairs and any trailing
+    /// partial pair is reported as <see cref="OperationStatus.InvalidData" />. When <see langword="false" />, a
+    /// trailing single character is reported as <see cref="OperationStatus.NeedMoreData" /> so the caller can resume on
+    /// more input.
+    /// </param>
     /// <returns>An <see cref="OperationStatus" /> describing the outcome.</returns>
     public static OperationStatus DecodeFromUtf8(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten, BaseFormatStyles styles = BaseFormatStyles.None, bool isFinalBlock = true)
     {
@@ -106,10 +108,14 @@ public static partial class Base16
     /// <param name="source">The bytes to encode.</param>
     /// <param name="destination">The destination UTF-8 byte span.</param>
     /// <param name="bytesWritten">When this method returns, contains the number of UTF-8 bytes written.</param>
-    /// <param name="options">Formatting options. Only <see cref="BaseFormattingOptions.UpperCase" /> is honoured;
-    /// line-break / spacing / prefix flags are not supported on the UTF-8 fast path.</param>
-    /// <returns><see langword="true" /> when <paramref name="destination" /> is large enough; otherwise
-    /// <see langword="false" />.</returns>
+    /// <param name="options">
+    /// Formatting options. Only <see cref="BaseFormattingOptions.UpperCase" /> is honoured; line-break / spacing /
+    /// prefix flags are not supported on the UTF-8 fast path.
+    /// </param>
+    /// <returns>
+    /// <see langword="true" /> when <paramref name="destination" /> is large enough; otherwise <see langword="false" />
+    /// .
+    /// </returns>
     /// <exception cref="ArgumentException">
     /// Thrown when <paramref name="options" /> contains any flag other than
     /// <see cref="BaseFormattingOptions.UpperCase" />.

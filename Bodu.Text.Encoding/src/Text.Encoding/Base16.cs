@@ -205,10 +205,13 @@ public static partial class Base16
     /// Attempts to compute the exact number of bytes that decoding <paramref name="source" /> would produce.
     /// </summary>
     /// <param name="source">The hexadecimal input.</param>
-    /// <param name="byteCount">When this method returns, contains the byte count, or <c>0</c> when the input is
-    /// malformed.</param>
+    /// <param name="byteCount">
+    /// When this method returns, contains the byte count, or <c>0</c> when the input is malformed.
+    /// </param>
     /// <param name="styles">The parsing styles.</param>
-    /// <returns><see langword="true" /> when the input would decode cleanly; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the input would decode cleanly; otherwise <see langword="false" />.
+    /// </returns>
     public static bool TryGetDecodedLength(ReadOnlySpan<char> source, out int byteCount, BaseFormatStyles styles = BaseFormatStyles.None)
     {
         if (!TryCountHexDigits(source, styles, out var digits) || (digits & 1) != 0)
@@ -228,10 +231,14 @@ public static partial class Base16
     /// </summary>
     /// <param name="source">The hexadecimal input.</param>
     /// <param name="styles">The parsing styles.</param>
-    /// <param name="digitCount">When this method returns, contains the retained digit count, or <c>0</c> when an
-    /// invalid character was encountered.</param>
-    /// <returns><see langword="true" /> when every retained character is a hex digit; <see langword="false" /> when
-    /// any retained character is outside the hex alphabet.</returns>
+    /// <param name="digitCount">
+    /// When this method returns, contains the retained digit count, or <c>0</c> when an invalid character was
+    /// encountered.
+    /// </param>
+    /// <returns>
+    /// <see langword="true" /> when every retained character is a hex digit; <see langword="false" /> when any retained
+    /// character is outside the hex alphabet.
+    /// </returns>
     private static bool TryCountHexDigits(ReadOnlySpan<char> source, BaseFormatStyles styles, out int digitCount)
     {
         digitCount = 0;

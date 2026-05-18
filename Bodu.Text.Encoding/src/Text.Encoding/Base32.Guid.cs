@@ -43,8 +43,9 @@ public static partial class Base32
     /// Attempts to decode a Base32 representation of a <see cref="Guid" />.
     /// </summary>
     /// <param name="source">The Base32 characters.</param>
-    /// <param name="value">When this method returns, contains the decoded <see cref="Guid" /> or
-    /// <see cref="Guid.Empty" />.</param>
+    /// <param name="value">
+    /// When this method returns, contains the decoded <see cref="Guid" /> or <see cref="Guid.Empty" />.
+    /// </param>
     /// <param name="variant">The Base32 variant.</param>
     /// <param name="styles">Parsing styles.</param>
     /// <returns><see langword="true" /> when decoding succeeds; otherwise <see langword="false" />.</returns>

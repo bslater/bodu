@@ -107,12 +107,15 @@ public static partial class Base64
     /// </summary>
     /// <param name="chars">The input characters.</param>
     /// <param name="destination">The destination byte span.</param>
-    /// <param name="bytesWritten">When this method returns, contains the number of bytes written, or <c>0</c> on
-    /// failure.</param>
+    /// <param name="bytesWritten">
+    /// When this method returns, contains the number of bytes written, or <c>0</c> on failure.
+    /// </param>
     /// <param name="variant">The Base64 variant.</param>
     /// <param name="style">Parsing styles.</param>
-    /// <returns><see langword="true" /> on success; <see langword="false" /> when the input is malformed or the
-    /// destination is too small.</returns>
+    /// <returns>
+    /// <see langword="true" /> on success; <see langword="false" /> when the input is malformed or the destination is
+    /// too small.
+    /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
     public static bool TryDecode(ReadOnlySpan<char> chars, Span<byte> destination, out int bytesWritten, Base64Variant variant = Base64Variant.Standard, BaseFormatStyles style = BaseFormatStyles.None)
     {

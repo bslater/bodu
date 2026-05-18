@@ -18,9 +18,13 @@ public static partial class Base85
     /// <param name="source">The bytes to encode.</param>
     /// <param name="writer">The buffer writer that receives the encoded characters.</param>
     /// <param name="variant">The Base85 variant.</param>
-    /// <param name="options">Formatting options. See <see cref="Encode(ReadOnlySpan{byte}, Base85Variant, BaseFormattingOptions)" />.</param>
+    /// <param name="options">
+    /// Formatting options. See <see cref="Encode(ReadOnlySpan{byte}, Base85Variant, BaseFormattingOptions)" />.
+    /// </param>
     /// <returns>The number of characters written.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="writer" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="writer" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
     /// <exception cref="ArgumentException">
     /// Thrown when <paramref name="variant" /> is <see cref="Base85Variant.Z85" /> and the source length is not a
