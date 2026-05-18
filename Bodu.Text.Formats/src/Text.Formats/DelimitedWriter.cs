@@ -37,7 +37,9 @@ public sealed class DelimitedWriter : IDisposable
     /// Initializes a new instance of the <see cref="DelimitedWriter" /> class with default options.
     /// </summary>
     /// <param name="writer">The <see cref="TextWriter" /> to write delimited text to. Owned by this instance.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="writer" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="writer" /> is <see langword="null" />.
+    /// </exception>
     public DelimitedWriter(TextWriter writer)
         : this(writer, DelimitedParseOptions.Default) { }
 

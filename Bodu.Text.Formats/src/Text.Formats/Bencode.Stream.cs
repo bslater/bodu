@@ -36,9 +36,7 @@ public static partial class Bencode
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="source" /> is <see langword="null" />.
     /// </exception>
-    /// <exception cref="ArgumentException">
-    /// Thrown when <paramref name="source" /> does not support reading.
-    /// </exception>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="source" /> does not support reading.</exception>
     /// <exception cref="BencodeFormatException">
     /// Thrown when the stream contents are malformed or contain trailing bytes.
     /// </exception>
@@ -67,9 +65,7 @@ public static partial class Bencode
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="source" /> is <see langword="null" />.
     /// </exception>
-    /// <exception cref="ArgumentException">
-    /// Thrown when <paramref name="source" /> does not support reading.
-    /// </exception>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="source" /> does not support reading.</exception>
     /// <exception cref="BencodeFormatException">
     /// Thrown when the stream contents are malformed or contain trailing bytes.
     /// </exception>

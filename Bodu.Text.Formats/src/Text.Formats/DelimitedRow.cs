@@ -101,9 +101,7 @@ public sealed class DelimitedRow
     /// <typeparam name="T">The target type. Must implement <see cref="ISpanParsable{TSelf}" />.</typeparam>
     /// <param name="index">The zero-based index of the field to parse.</param>
     /// <returns>The parsed value.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="index" /> is out of range.
-    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="index" /> is out of range.</exception>
     /// <exception cref="FormatException">
     /// Thrown when the field value cannot be parsed as <typeparamref name="T" />.
     /// </exception>
