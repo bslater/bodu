@@ -135,8 +135,8 @@ public sealed class Blake3
     ];
 
     /// <summary>
-    /// The per-round message word permutation table (§2.4 of the BLAKE3 specification).
-    /// Each row gives the 16 message-word indices consumed by a single round's G calls.
+    /// The per-round message word permutation table (§2.4 of the BLAKE3 specification). Each row gives the 16
+    /// message-word indices consumed by a single round's G calls.
     /// </summary>
 #pragma warning disable SA1025 // Code should not contain multiple whitespace in a row
     private static readonly byte[,] s_msgSchedule =

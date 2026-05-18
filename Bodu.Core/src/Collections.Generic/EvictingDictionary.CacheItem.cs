@@ -8,13 +8,17 @@ namespace Bodu.Collections.Generic;
 
 public partial class EvictingDictionary<TKey, TValue>
 {
+#if !NET5_0_OR_GREATER
+
     /// <summary>
     /// Represents a cache entry storing the value and metadata used for eviction policies in the <see cref="EvictingDictionary{TKey, TValue}"/>.
     /// </summary>
-#if !NET5_0_OR_GREATER
-
     private sealed class CacheItem
 #else
+    /// <summary>
+    /// Represents a cache entry storing the value and metadata used for eviction policies in the
+    /// <see cref="EvictingDictionary{TKey, TValue}" />.
+    /// </summary>
     private sealed record class CacheItem
 #endif
     {
