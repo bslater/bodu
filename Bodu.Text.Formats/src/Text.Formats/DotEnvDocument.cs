@@ -92,12 +92,9 @@ public sealed class DotEnvDocument
     /// </summary>
     /// <param name="key">The key to look up.</param>
     /// <param name="value">
-    /// When this method returns <see langword="true" />, contains the string value; otherwise,
-    /// <see langword="null" />.
+    /// When this method returns <see langword="true" />, contains the string value; otherwise, <see langword="null" />.
     /// </param>
-    /// <returns>
-    /// <see langword="true" /> when the key is present; otherwise, <see langword="false" />.
-    /// </returns>
+    /// <returns><see langword="true" /> when the key is present; otherwise, <see langword="false" />.</returns>
     public bool TryGetValue(string key, [NotNullWhen(true)] out string? value)
     {
         if (key is not null && _lookup.TryGetValue(key, out DotEnvEntry? entry))
@@ -116,8 +113,8 @@ public sealed class DotEnvDocument
     /// <typeparam name="T">The target type. Must implement <see cref="ISpanParsable{TSelf}" />.</typeparam>
     /// <param name="key">The key to look up.</param>
     /// <param name="value">
-    /// When this method returns <see langword="true" />, contains the parsed result; otherwise, the default value
-    /// of <typeparamref name="T" />.
+    /// When this method returns <see langword="true" />, contains the parsed result; otherwise, the default value of
+    /// <typeparamref name="T" />.
     /// </param>
     /// <returns>
     /// <see langword="true" /> when the key is present and its value was successfully parsed as

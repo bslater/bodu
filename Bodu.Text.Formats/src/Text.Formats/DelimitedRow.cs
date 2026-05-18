@@ -30,8 +30,8 @@ public sealed class DelimitedRow
     /// </summary>
     /// <param name="fields">The ordered list of field values for this row.</param>
     /// <param name="headerIndex">
-    /// The column-name-to-index map from the document's header row, or <see langword="null" /> when no header
-    /// row was parsed.
+    /// The column-name-to-index map from the document's header row, or <see langword="null" /> when no header row was
+    /// parsed.
     /// </param>
     internal DelimitedRow(IReadOnlyList<string> fields, IReadOnlyDictionary<string, int>? headerIndex)
     {
@@ -122,12 +122,11 @@ public sealed class DelimitedRow
     /// <typeparam name="T">The target type. Must implement <see cref="ISpanParsable{TSelf}" />.</typeparam>
     /// <param name="index">The zero-based index of the field to parse.</param>
     /// <param name="value">
-    /// When this method returns <see langword="true" />, contains the parsed result; otherwise, the default
-    /// value of <typeparamref name="T" />.
+    /// When this method returns <see langword="true" />, contains the parsed result; otherwise, the default value of
+    /// <typeparamref name="T" />.
     /// </param>
     /// <returns>
-    /// <see langword="true" /> when the index is in range and parsing succeeded; otherwise,
-    /// <see langword="false" />.
+    /// <see langword="true" /> when the index is in range and parsing succeeded; otherwise, <see langword="false" />.
     /// </returns>
     public bool TryGetValue<T>(int index, [MaybeNullWhen(false)] out T value)
         where T : ISpanParsable<T>
@@ -174,8 +173,8 @@ public sealed class DelimitedRow
     /// <typeparam name="T">The target type. Must implement <see cref="ISpanParsable{TSelf}" />.</typeparam>
     /// <param name="header">The column header name to look up.</param>
     /// <param name="value">
-    /// When this method returns <see langword="true" />, contains the parsed result; otherwise, the default
-    /// value of <typeparamref name="T" />.
+    /// When this method returns <see langword="true" />, contains the parsed result; otherwise, the default value of
+    /// <typeparamref name="T" />.
     /// </param>
     /// <returns>
     /// <see langword="true" /> when the header exists and the field was parsed successfully; otherwise,

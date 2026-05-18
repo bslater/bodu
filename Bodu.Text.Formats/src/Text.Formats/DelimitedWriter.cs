@@ -46,10 +46,12 @@ public sealed class DelimitedWriter : IDisposable
     /// </summary>
     /// <param name="writer">The <see cref="TextWriter" /> to write delimited text to. Owned by this instance.</param>
     /// <param name="options">
-    /// Options whose <see cref="DelimitedParseOptions.Delimiter" /> and
-    /// <see cref="DelimitedParseOptions.Quote" /> properties govern the output format.
+    /// Options whose <see cref="DelimitedParseOptions.Delimiter" /> and <see cref="DelimitedParseOptions.Quote" />
+    /// properties govern the output format.
     /// </param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="writer" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="writer" /> is <see langword="null" />.
+    /// </exception>
     public DelimitedWriter(TextWriter writer, DelimitedParseOptions options)
     {
         ThrowHelper.ThrowIfNull(writer);
