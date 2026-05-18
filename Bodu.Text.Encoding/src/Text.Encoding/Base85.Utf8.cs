@@ -53,8 +53,8 @@ public static partial class Base85
     /// <returns>The UTF-8 encoded Base85 bytes.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
     /// <exception cref="ArgumentException">
-    /// Thrown when <paramref name="variant" /> is <see cref="Base85Variant.Z85" /> and the byte count is not a
-    /// multiple of four.
+    /// Thrown when <paramref name="variant" /> is <see cref="Base85Variant.Z85" /> and the byte count is not a multiple
+    /// of four.
     /// </exception>
     public static byte[] EncodeToUtf8(ReadOnlySpan<byte> source, Base85Variant variant = Base85Variant.Ascii85)
     {

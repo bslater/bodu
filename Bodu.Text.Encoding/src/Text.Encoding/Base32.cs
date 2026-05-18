@@ -56,8 +56,8 @@ public static partial class Base32
     /// <returns>The exact decoded byte count.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
     /// <exception cref="FormatException">
-    /// Thrown when the input contains characters outside the variant alphabet, or when the digit count is invalid
-    /// after stripping decorations.
+    /// Thrown when the input contains characters outside the variant alphabet, or when the digit count is invalid after
+    /// stripping decorations.
     /// </exception>
     public static int GetDecodedLength(ReadOnlySpan<char> source, Base32Variant variant = Base32Variant.Standard, BaseFormatStyles styles = BaseFormatStyles.None)
     {
@@ -72,9 +72,7 @@ public static partial class Base32
     /// </summary>
     /// <param name="byteCount">The input byte count. Must be non-negative.</param>
     /// <returns>The number of characters the encoder will produce.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="byteCount" /> is negative.
-    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="byteCount" /> is negative.</exception>
     public static int GetEncodedLength(int byteCount) =>
         GetEncodedLength(byteCount, Base32Variant.Standard, BaseFormattingOptions.None);
 
@@ -133,9 +131,7 @@ public static partial class Base32
     /// </summary>
     /// <param name="charCount">The number of input characters. Must be non-negative.</param>
     /// <returns>The upper bound on the decoded byte count.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="charCount" /> is negative.
-    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="charCount" /> is negative.</exception>
     public static int GetMaxDecodedLength(int charCount)
     {
         ThrowHelper.ThrowIfNegative(charCount);

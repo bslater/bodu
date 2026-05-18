@@ -16,7 +16,9 @@ public static partial class Base32
     /// </summary>
     /// <param name="s">The Base32 input.</param>
     /// <returns>The decoded byte array.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="s" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="s" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="FormatException">Thrown when the input is not strict Standard Base32.</exception>
     public static byte[] FromBase32String(string s) =>
         Decode(s, Base32Variant.Standard, BaseFormatStyles.None);
@@ -84,7 +86,9 @@ public static partial class Base32
     /// </summary>
     /// <param name="inArray">The byte array to encode.</param>
     /// <returns>A Base32 (RFC 4648 §6) string.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="inArray" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="inArray" /> is <see langword="null" />.
+    /// </exception>
     public static string ToBase32String(byte[] inArray) =>
         Encode(inArray, Base32Variant.Standard, BaseFormattingOptions.None);
 
@@ -103,7 +107,9 @@ public static partial class Base32
     /// <param name="offset">The starting offset.</param>
     /// <param name="length">The number of bytes to encode.</param>
     /// <returns>A Base32 string.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="inArray" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="inArray" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <paramref name="offset" /> or <paramref name="length" /> is out of range.
     /// </exception>

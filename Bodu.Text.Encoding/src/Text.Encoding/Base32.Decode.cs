@@ -16,8 +16,12 @@ public static partial class Base32
     /// <param name="variant">The Base32 variant.</param>
     /// <param name="style">Parsing styles that tolerate whitespace and missing padding.</param>
     /// <returns>A new byte array representing the decoded binary data.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="s" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is not a defined value.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="s" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="variant" /> is not a defined value.
+    /// </exception>
     /// <exception cref="FormatException">
     /// Thrown when the input contains characters outside the variant alphabet, has invalid padding, or has an invalid
     /// length for the selected variant.
@@ -35,7 +39,9 @@ public static partial class Base32
     /// <param name="variant">The Base32 variant.</param>
     /// <param name="style">Parsing styles.</param>
     /// <returns>The decoded byte array. Returns <see cref="Array.Empty{T}" /> when the input is empty.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is not a defined value.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="variant" /> is not a defined value.
+    /// </exception>
     /// <exception cref="FormatException">
     /// Thrown when the input is not valid Base32 for the chosen variant and parsing styles.
     /// </exception>
@@ -72,7 +78,9 @@ public static partial class Base32
     /// <param name="variant">The Base32 variant.</param>
     /// <param name="style">Parsing styles.</param>
     /// <returns>A new byte array representing the decoded binary data.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="chars" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="chars" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <paramref name="offset" /> or <paramref name="count" /> is out of range, or when
     /// <paramref name="variant" /> is not a defined value.

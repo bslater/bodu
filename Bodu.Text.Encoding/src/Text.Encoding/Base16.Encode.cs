@@ -17,7 +17,9 @@ public static partial class Base16
     /// <param name="bytes">The byte array to encode.</param>
     /// <param name="options">Formatting options to apply, such as upper case, spacing, prefix, or line breaks.</param>
     /// <returns>A Base16 encoded string representing the input bytes.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="bytes" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="bytes" /> is <see langword="null" />.
+    /// </exception>
     public static string Encode(byte[] bytes, BaseFormattingOptions options = BaseFormattingOptions.None)
     {
         ThrowHelper.ThrowIfNull(bytes);
@@ -87,7 +89,9 @@ public static partial class Base16
     /// <param name="count">The number of bytes to encode.</param>
     /// <param name="options">Formatting options to apply, such as upper case, spacing, prefix, or line breaks.</param>
     /// <returns>A Base16 encoded string representing the selected slice of <paramref name="bytes" />.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="bytes" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="bytes" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <paramref name="offset" /> or <paramref name="count" /> is negative, or either exceeds the bounds of
     /// <paramref name="bytes" />.

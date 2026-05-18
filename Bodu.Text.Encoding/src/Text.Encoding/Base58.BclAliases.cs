@@ -16,7 +16,9 @@ public static partial class Base58
     /// </summary>
     /// <param name="s">The input.</param>
     /// <returns>The decoded byte array.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="s" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="s" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="FormatException">Thrown when the input is not valid Bitcoin/Flickr Base58.</exception>
     public static byte[] FromBase58String(string s) =>
         Decode(s, Base58Variant.BitcoinFlickr, BaseFormatStyles.None);
@@ -86,7 +88,9 @@ public static partial class Base58
     /// </summary>
     /// <param name="inArray">The byte array to encode.</param>
     /// <returns>A Base58 (Bitcoin/Flickr) string.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="inArray" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="inArray" /> is <see langword="null" />.
+    /// </exception>
     public static string ToBase58String(byte[] inArray) =>
         Encode(inArray, Base58Variant.BitcoinFlickr);
 
@@ -105,7 +109,9 @@ public static partial class Base58
     /// <param name="offset">The starting offset.</param>
     /// <param name="length">The number of bytes to encode.</param>
     /// <returns>A Base58 string.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="inArray" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="inArray" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <paramref name="offset" /> or <paramref name="length" /> is out of range.
     /// </exception>

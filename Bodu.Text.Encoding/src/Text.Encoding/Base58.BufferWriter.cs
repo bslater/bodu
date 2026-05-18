@@ -19,7 +19,9 @@ public static partial class Base58
     /// <param name="writer">The buffer writer that receives the encoded characters.</param>
     /// <param name="variant">The Base58 variant.</param>
     /// <returns>The number of characters written.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="writer" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="writer" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
     public static int Encode(ReadOnlySpan<byte> source, IBufferWriter<char> writer, Base58Variant variant = Base58Variant.BitcoinFlickr)
     {
@@ -43,7 +45,9 @@ public static partial class Base58
     /// <param name="writer">The buffer writer that receives the UTF-8 bytes.</param>
     /// <param name="variant">The Base58 variant.</param>
     /// <returns>The number of UTF-8 bytes written.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="writer" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="writer" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
     public static int EncodeToUtf8(ReadOnlySpan<byte> source, IBufferWriter<byte> writer, Base58Variant variant = Base58Variant.BitcoinFlickr)
     {

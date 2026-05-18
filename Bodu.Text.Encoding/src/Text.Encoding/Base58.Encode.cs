@@ -17,7 +17,9 @@ public static partial class Base58
     /// <param name="bytes">The bytes to encode.</param>
     /// <param name="variant">The Base58 variant.</param>
     /// <returns>A Base58 string.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="bytes" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="bytes" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
     public static string Encode(byte[] bytes, Base58Variant variant = Base58Variant.BitcoinFlickr)
     {
@@ -101,7 +103,9 @@ public static partial class Base58
     /// <param name="count">The number of bytes to encode.</param>
     /// <param name="variant">The Base58 variant.</param>
     /// <returns>A Base58 string.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="bytes" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="bytes" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <paramref name="offset" />, <paramref name="count" />, or <paramref name="variant" /> is out of
     /// range.

@@ -27,7 +27,9 @@ public static class Base64Url
     /// </summary>
     /// <param name="s">The URL-safe Base64 input.</param>
     /// <returns>The decoded byte array.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="s" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="s" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="FormatException">Thrown when the input is not valid URL-safe Base64.</exception>
     public static byte[] Decode(string s) =>
         Base64.Decode(s, Base64Variant.UrlSafe, BaseFormatStyles.AllowMissingPadding);
@@ -72,7 +74,9 @@ public static class Base64Url
     /// </summary>
     /// <param name="bytes">The bytes to encode.</param>
     /// <returns>The URL-safe Base64 string.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="bytes" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="bytes" /> is <see langword="null" />.
+    /// </exception>
     public static string Encode(byte[] bytes) =>
         Base64.Encode(bytes, Base64Variant.UrlSafe);
 

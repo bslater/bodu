@@ -42,9 +42,7 @@ public static partial class Base58
     /// </summary>
     /// <param name="charCount">The input character count.</param>
     /// <returns>An upper bound on the decoded byte count.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="charCount" /> is negative.
-    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="charCount" /> is negative.</exception>
     public static int GetMaxDecodedLength(int charCount)
     {
         ThrowHelper.ThrowIfNegative(charCount);

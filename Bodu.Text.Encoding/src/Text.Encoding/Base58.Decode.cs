@@ -18,9 +18,13 @@ public static partial class Base58
     /// <param name="variant">The Base58 variant.</param>
     /// <param name="style">Parsing styles. Only <see cref="BaseFormatStyles.IgnoreWhitespace" /> has effect.</param>
     /// <returns>The decoded byte array.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="s" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="s" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
-    /// <exception cref="FormatException">Thrown when the input contains characters outside the variant alphabet.</exception>
+    /// <exception cref="FormatException">
+    /// Thrown when the input contains characters outside the variant alphabet.
+    /// </exception>
     public static byte[] Decode(string s, Base58Variant variant = Base58Variant.BitcoinFlickr, BaseFormatStyles style = BaseFormatStyles.None)
     {
         ThrowHelper.ThrowIfNull(s);
@@ -55,7 +59,9 @@ public static partial class Base58
     /// <param name="variant">The Base58 variant.</param>
     /// <param name="style">Parsing styles.</param>
     /// <returns>The decoded byte array.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="chars" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="chars" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <paramref name="offset" />, <paramref name="count" />, or <paramref name="variant" /> is out of
     /// range.

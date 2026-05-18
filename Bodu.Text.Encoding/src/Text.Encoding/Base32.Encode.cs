@@ -40,7 +40,9 @@ public static partial class Base32
     /// <param name="variant">The Base32 variant.</param>
     /// <param name="options">Formatting options.</param>
     /// <returns>A Base32 encoded string. Returns <see cref="string.Empty" /> when the input is empty.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is not a defined value.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="variant" /> is not a defined value.
+    /// </exception>
     public static string Encode(ReadOnlySpan<byte> bytes, Base32Variant variant = Base32Variant.Standard, BaseFormattingOptions options = BaseFormattingOptions.None)
     {
         if (bytes.IsEmpty)
@@ -98,7 +100,9 @@ public static partial class Base32
     /// <param name="variant">The Base32 variant.</param>
     /// <param name="options">Formatting options.</param>
     /// <returns>A Base32 encoded string.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="bytes" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="bytes" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <paramref name="offset" /> or <paramref name="count" /> is out of range, or when
     /// <paramref name="variant" /> is not a defined value.

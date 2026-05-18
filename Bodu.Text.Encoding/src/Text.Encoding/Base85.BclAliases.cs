@@ -16,7 +16,9 @@ public static partial class Base85
     /// </summary>
     /// <param name="s">The Ascii85 input.</param>
     /// <returns>The decoded byte array.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="s" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="s" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="FormatException">Thrown when the input is not valid Ascii85.</exception>
     public static byte[] FromBase85String(string s) =>
         Decode(s, Base85Variant.Ascii85, BaseFormatStyles.None);
@@ -80,7 +82,9 @@ public static partial class Base85
     /// </summary>
     /// <param name="inArray">The byte array to encode.</param>
     /// <returns>An Ascii85 string.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="inArray" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="inArray" /> is <see langword="null" />.
+    /// </exception>
     public static string ToBase85String(byte[] inArray) =>
         Encode(inArray, Base85Variant.Ascii85);
 
@@ -99,7 +103,9 @@ public static partial class Base85
     /// <param name="offset">The starting offset.</param>
     /// <param name="length">The number of bytes to encode.</param>
     /// <returns>An Ascii85 string.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="inArray" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="inArray" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <paramref name="offset" /> or <paramref name="length" /> is out of range.
     /// </exception>

@@ -66,7 +66,9 @@ public static partial class Base85
     /// <param name="writer">The buffer writer that receives the UTF-8 bytes.</param>
     /// <param name="variant">The Base85 variant.</param>
     /// <returns>The number of UTF-8 bytes written.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="writer" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="writer" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
     /// <exception cref="ArgumentException">
     /// Thrown when <paramref name="variant" /> is <see cref="Base85Variant.Z85" /> and the source length is not a

@@ -63,9 +63,7 @@ public static partial class Base64
     /// </summary>
     /// <param name="byteCount">The input byte count. Must be non-negative.</param>
     /// <returns>The number of characters the encoder will produce.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="byteCount" /> is negative.
-    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="byteCount" /> is negative.</exception>
     public static int GetEncodedLength(int byteCount) =>
         GetEncodedLength(byteCount, Base64Variant.Standard, BaseFormattingOptions.None);
 
@@ -120,9 +118,7 @@ public static partial class Base64
     /// </summary>
     /// <param name="charCount">The number of input characters. Must be non-negative.</param>
     /// <returns>The upper bound on the decoded byte count.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="charCount" /> is negative.
-    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="charCount" /> is negative.</exception>
     public static int GetMaxDecodedLength(int charCount)
     {
         ThrowHelper.ThrowIfNegative(charCount);

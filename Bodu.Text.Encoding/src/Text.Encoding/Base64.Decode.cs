@@ -18,9 +18,13 @@ public static partial class Base64
     /// <param name="variant">The Base64 variant.</param>
     /// <param name="style">Parsing styles.</param>
     /// <returns>A new byte array containing the decoded data.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="s" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="s" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
-    /// <exception cref="FormatException">Thrown when the input is not valid Base64 for the chosen variant and parsing styles.</exception>
+    /// <exception cref="FormatException">
+    /// Thrown when the input is not valid Base64 for the chosen variant and parsing styles.
+    /// </exception>
     public static byte[] Decode(string s, Base64Variant variant = Base64Variant.Standard, BaseFormatStyles style = BaseFormatStyles.None)
     {
         ThrowHelper.ThrowIfNull(s);
@@ -87,7 +91,9 @@ public static partial class Base64
     /// <param name="variant">The Base64 variant.</param>
     /// <param name="style">Parsing styles.</param>
     /// <returns>A new byte array containing the decoded data.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="chars" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="chars" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <paramref name="offset" /> or <paramref name="count" /> is out of range, or when
     /// <paramref name="variant" /> is undefined.

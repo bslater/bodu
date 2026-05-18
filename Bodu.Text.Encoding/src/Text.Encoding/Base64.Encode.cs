@@ -92,7 +92,9 @@ public static partial class Base64
     /// <param name="variant">The Base64 variant.</param>
     /// <param name="options">Formatting options.</param>
     /// <returns>The Base64 encoded string.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="bytes" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="bytes" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <paramref name="offset" /> or <paramref name="count" /> is out of range, or when
     /// <paramref name="variant" /> is undefined.

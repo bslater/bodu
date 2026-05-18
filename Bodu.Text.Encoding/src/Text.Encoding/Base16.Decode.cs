@@ -21,7 +21,9 @@ public static partial class Base16
     /// <param name="s">The string containing Base16 (hex) characters.</param>
     /// <param name="style">Parsing styles that allow optional prefix and whitespace tolerance.</param>
     /// <returns>A new byte array representing the decoded binary data.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="s" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="s" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="FormatException">
     /// Thrown when the input contains non-hexadecimal characters, or when it has an odd number of hex digits after
     /// applying <paramref name="style" />.
@@ -81,10 +83,12 @@ public static partial class Base16
     /// <param name="count">The number of characters to decode.</param>
     /// <param name="style">Parsing styles that allow optional prefix and whitespace tolerance.</param>
     /// <returns>A new byte array representing the decoded binary data.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="chars" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="chars" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="offset" /> or <paramref name="count" /> is negative, or either exceeds the bounds
-    /// of <paramref name="chars" />.
+    /// Thrown when <paramref name="offset" /> or <paramref name="count" /> is negative, or either exceeds the bounds of
+    /// <paramref name="chars" />.
     /// </exception>
     /// <exception cref="ArgumentException">
     /// Thrown when the segment defined by <paramref name="offset" /> and <paramref name="count" /> exceeds the
