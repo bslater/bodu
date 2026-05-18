@@ -11,8 +11,8 @@ using System.Text;
 namespace Bodu.Text.Formats;
 
 /// <summary>
-/// Represents a single data record in a <see cref="DelimitedDocument" />, exposing its fields by index and —
-/// when a header row was present — by column name, with optional typed value conversion.
+/// Represents a single data record in a <see cref="DelimitedDocument" />, exposing its fields by index and — when a
+/// header row was present — by column name, with optional typed value conversion.
 /// </summary>
 public sealed class DelimitedRow
 {
@@ -20,8 +20,8 @@ public sealed class DelimitedRow
         CompositeFormat.Parse(FormatsResourceStrings.Op_Invalid_DelimitedHeaderNotFound);
 
     /// <summary>
-    /// The column-name-to-index map built from the document's header row, or <see langword="null" /> when the
-    /// document was parsed without a header row.
+    /// The column-name-to-index map built from the document's header row, or <see langword="null" /> when the document
+    /// was parsed without a header row.
     /// </summary>
     private readonly IReadOnlyDictionary<string, int>? _headerIndex;
 
@@ -194,12 +194,16 @@ public sealed class DelimitedRow
         return T.TryParse(field.AsSpan(), CultureInfo.InvariantCulture, out value);
     }
 
-    /// <summary>Throws an <see cref="InvalidOperationException" /> indicating that no header row was parsed.</summary>
+    /// <summary>
+    /// Throws an <see cref="InvalidOperationException" /> indicating that no header row was parsed.
+    /// </summary>
     [DoesNotReturn]
     private static void ThrowNoHeaders() =>
         throw new InvalidOperationException(FormatsResourceStrings.Op_Invalid_DelimitedRowNoHeaders);
 
-    /// <summary>Throws a <see cref="KeyNotFoundException" /> for an absent column header.</summary>
+    /// <summary>
+    /// Throws a <see cref="KeyNotFoundException" /> for an absent column header.
+    /// </summary>
     [DoesNotReturn]
     private static void ThrowHeaderNotFound(string header) =>
         throw new KeyNotFoundException(

@@ -138,8 +138,8 @@ public static partial class DotEnv
     }
 
     /// <summary>
-    /// Appends the formatted representation of <paramref name="value" /> to <paramref name="sb" />, applying
-    /// quoting and escaping as required.
+    /// Appends the formatted representation of <paramref name="value" /> to <paramref name="sb" />, applying quoting
+    /// and escaping as required.
     /// </summary>
     /// <param name="sb">The <see cref="StringBuilder" /> to append to.</param>
     /// <param name="value">The value string to format.</param>
@@ -174,8 +174,8 @@ public static partial class DotEnv
     }
 
     /// <summary>
-    /// Returns <see langword="true" /> when every character in <paramref name="value" /> is safe to write
-    /// unquoted, i.e., matches <c>[A-Za-z0-9_.,:/@+\-]</c>.
+    /// Returns <see langword="true" /> when every character in <paramref name="value" /> is safe to write unquoted,
+    /// i.e., matches <c>[A-Za-z0-9_.,:/@+\-]</c>.
     /// </summary>
     /// <param name="value">The non-empty value string to test.</param>
     /// <returns>
@@ -193,11 +193,13 @@ public static partial class DotEnv
     }
 
     /// <summary>
-    /// Returns <see langword="true" /> when <paramref name="c" /> is a character that is safe to include in an
-    /// unquoted value.
+    /// Returns <see langword="true" /> when <paramref name="c" /> is a character that is safe to include in an unquoted
+    /// value.
     /// </summary>
     /// <param name="c">The character to test.</param>
-    /// <returns><see langword="true" /> if <paramref name="c" /> is safe unquoted; otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> if <paramref name="c" /> is safe unquoted; otherwise, <see langword="false" />.
+    /// </returns>
     private static bool IsUnquotableChar(char c) =>
         (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') ||
         c == '_' || c == '.' || c == ',' || c == ':' || c == '/' || c == '@' || c == '+' || c == '-';

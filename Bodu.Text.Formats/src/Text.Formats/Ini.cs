@@ -100,8 +100,8 @@ public static partial class Ini
     }
 
     /// <summary>
-    /// Writes the supplied entries to <paramref name="sb" />, including any leading-comment trivia and an
-    /// optional inline comment captured on each entry.
+    /// Writes the supplied entries to <paramref name="sb" />, including any leading-comment trivia and an optional
+    /// inline comment captured on each entry.
     /// </summary>
     /// <param name="sb">The destination buffer.</param>
     /// <param name="entries">The entries to emit, in order.</param>

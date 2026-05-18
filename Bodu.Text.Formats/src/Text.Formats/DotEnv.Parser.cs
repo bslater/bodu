@@ -27,31 +27,41 @@ public static partial class DotEnv
     private static readonly CompositeFormat s_unterminatedSingleQuote =
         CompositeFormat.Parse(FormatsResourceStrings.Format_Invalid_DotEnvUnterminatedSingleQuote);
 
-    /// <summary>Throws a <see cref="DotEnvFormatException" /> for a duplicate key.</summary>
+    /// <summary>
+    /// Throws a <see cref="DotEnvFormatException" /> for a duplicate key.
+    /// </summary>
     [DoesNotReturn]
     private static void ThrowDuplicateKey(string key, int lineNumber) =>
         throw new DotEnvFormatException(
             string.Format(CultureInfo.InvariantCulture, s_duplicateKey, key, lineNumber), lineNumber);
 
-    /// <summary>Throws a <see cref="DotEnvFormatException" /> for an invalid key name.</summary>
+    /// <summary>
+    /// Throws a <see cref="DotEnvFormatException" /> for an invalid key name.
+    /// </summary>
     [DoesNotReturn]
     private static void ThrowInvalidKey(string key, int lineNumber) =>
         throw new DotEnvFormatException(
             string.Format(CultureInfo.InvariantCulture, s_invalidKey, key, lineNumber), lineNumber);
 
-    /// <summary>Throws a <see cref="DotEnvFormatException" /> for a malformed entry line.</summary>
+    /// <summary>
+    /// Throws a <see cref="DotEnvFormatException" /> for a malformed entry line.
+    /// </summary>
     [DoesNotReturn]
     private static void ThrowMalformedEntry(int lineNumber) =>
         throw new DotEnvFormatException(
             string.Format(CultureInfo.InvariantCulture, s_malformedEntry, lineNumber), lineNumber);
 
-    /// <summary>Throws a <see cref="DotEnvFormatException" /> for an unterminated double-quoted string.</summary>
+    /// <summary>
+    /// Throws a <see cref="DotEnvFormatException" /> for an unterminated double-quoted string.
+    /// </summary>
     [DoesNotReturn]
     private static void ThrowUnterminatedDoubleQuote(int lineNumber) =>
         throw new DotEnvFormatException(
             string.Format(CultureInfo.InvariantCulture, s_unterminatedDoubleQuote, lineNumber), lineNumber);
 
-    /// <summary>Throws a <see cref="DotEnvFormatException" /> for an unterminated single-quoted string.</summary>
+    /// <summary>
+    /// Throws a <see cref="DotEnvFormatException" /> for an unterminated single-quoted string.
+    /// </summary>
     [DoesNotReturn]
     private static void ThrowUnterminatedSingleQuote(int lineNumber) =>
         throw new DotEnvFormatException(
@@ -78,10 +88,14 @@ public static partial class DotEnv
             _lineNumber = 1;
         }
 
-        /// <summary>Gets a value indicating whether the remaining source is exhausted.</summary>
+        /// <summary>
+        /// Gets a value indicating whether the remaining source is exhausted.
+        /// </summary>
         private readonly bool IsEmpty => _remaining.IsEmpty;
 
-        /// <summary>Gets the current character without consuming it, or <c>'\0'</c> when exhausted.</summary>
+        /// <summary>
+        /// Gets the current character without consuming it, or <c>'\0'</c> when exhausted.
+        /// </summary>
         private readonly char Current => _remaining.IsEmpty ? '\0' : _remaining[0];
 
         /// <summary>
@@ -187,11 +201,15 @@ public static partial class DotEnv
             return new DotEnvDocument(entries, lookup);
         }
 
-        /// <summary>Returns <see langword="true" /> when <paramref name="c" /> is a valid key start character.</summary>
+        /// <summary>
+        /// Returns <see langword="true" /> when <paramref name="c" /> is a valid key start character.
+        /// </summary>
         private static bool IsKeyStart(char c) =>
             c is >= 'A' and <= 'Z' or >= 'a' and <= 'z' or '_';
 
-        /// <summary>Returns <see langword="true" /> when <paramref name="c" /> is a valid key continuation character.</summary>
+        /// <summary>
+        /// Returns <see langword="true" /> when <paramref name="c" /> is a valid key continuation character.
+        /// </summary>
         private static bool IsKeyContinue(char c) =>
             IsKeyStart(c) || (c >= '0' && c <= '9');
 
@@ -260,8 +278,8 @@ public static partial class DotEnv
         }
 
         /// <summary>
-        /// Parses a single-quoted value starting at the current position. The content is literal — no escape
-        /// processing — and the value must be closed on the same line.
+        /// Parses a single-quoted value starting at the current position. The content is literal — no escape processing
+        /// — and the value must be closed on the same line.
         /// </summary>
         /// <param name="startLineNumber">The 1-based line number on which the opening <c>'</c> appears.</param>
         /// <returns>The literal string value with surrounding quotes removed.</returns>
@@ -323,8 +341,7 @@ public static partial class DotEnv
         }
 
         /// <summary>
-        /// Consumes one character, incrementing <see cref="_lineNumber" /> when the consumed character is
-        /// <c>'\n'</c>.
+        /// Consumes one character, incrementing <see cref="_lineNumber" /> when the consumed character is <c>'\n'</c>.
         /// </summary>
         private void Advance()
         {
@@ -356,8 +373,8 @@ public static partial class DotEnv
         }
 
         /// <summary>
-        /// Consumes a <c>\r\n</c>, <c>\r</c>, or <c>\n</c> line terminator and increments
-        /// <see cref="_lineNumber" /> accordingly.
+        /// Consumes a <c>\r\n</c>, <c>\r</c>, or <c>\n</c> line terminator and increments <see cref="_lineNumber" />
+        /// accordingly.
         /// </summary>
         private void SkipLineEnding()
         {

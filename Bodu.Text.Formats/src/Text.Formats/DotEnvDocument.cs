@@ -24,7 +24,9 @@ namespace Bodu.Text.Formats;
 /// </remarks>
 public sealed class DotEnvDocument
 {
-    /// <summary>Cached format for the <c>KeyNotFound</c> message.</summary>
+    /// <summary>
+    /// Cached format for the <c>KeyNotFound</c> message.
+    /// </summary>
     private static readonly CompositeFormat s_keyNotFound =
         CompositeFormat.Parse(FormatsResourceStrings.Op_Invalid_DotEnvKeyNotFound);
 

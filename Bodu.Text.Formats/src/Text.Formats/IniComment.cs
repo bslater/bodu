@@ -62,8 +62,7 @@ public readonly struct IniComment : IEquatable<IniComment>
     public string Text { get; }
 
     /// <summary>
-    /// Gets the 1-based source line at which the comment appeared, or <c>0</c> when programmatically
-    /// constructed.
+    /// Gets the 1-based source line at which the comment appeared, or <c>0</c> when programmatically constructed.
     /// </summary>
     /// <returns>A non-negative line number.</returns>
     public int LineNumber { get; }

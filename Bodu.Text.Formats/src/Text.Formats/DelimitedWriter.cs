@@ -7,29 +7,23 @@
 namespace Bodu.Text.Formats;
 
 /// <summary>
-/// Provides a forward-only, streaming writer for delimited-text output (CSV, TSV, and similar formats),
-/// writing one logical row at a time to a <see cref="TextWriter" /> without accumulating an in-memory
-/// document.
+/// Provides a forward-only, streaming writer for delimited-text output (CSV, TSV, and similar formats), writing one
+/// logical row at a time to a <see cref="TextWriter" /> without accumulating an in-memory document.
 /// </summary>
 /// <remarks>
 /// <para>
-/// <see cref="DelimitedWriter" /> is the streaming counterpart to
-/// <see cref="Delimited.Format(DelimitedDocument)" />. It is suited for generating large files or piping
-/// output to a network stream where materialising a complete <see cref="DelimitedDocument" /> is
-/// impractical.
+/// <see cref="DelimitedWriter" /> is the streaming counterpart to <see cref="Delimited.Format(DelimitedDocument)" />.
+/// It is suited for generating large files or piping output to a network stream where materialising a complete
+/// <see cref="DelimitedDocument" /> is impractical.
 /// </para>
 /// <para>
-/// Optionally call <see cref="WriteHeader" /> once before the first <see cref="WriteRow" /> to emit a
-/// header row. Call <see cref="WriteRow" /> for each subsequent data row. The writer takes ownership of
-/// the supplied <see cref="TextWriter" /> and disposes it when <see cref="Dispose" /> is called.
+/// Optionally call <see cref="WriteHeader" /> once before the first <see cref="WriteRow" /> to emit a header row. Call
+/// <see cref="WriteRow" /> for each subsequent data row. The writer takes ownership of the supplied
+/// <see cref="TextWriter" /> and disposes it when <see cref="Dispose" /> is called.
 /// </para>
 /// <example>
-/// <code>
-/// using var writer = Delimited.CreateWriter(File.CreateText("out.csv"));
-/// writer.WriteHeader(["name", "age"]);
-/// writer.WriteRow(["Alice", "30"]);
-/// writer.WriteRow(["Bob", "25"]);
-/// </code>
+/// <code> using var writer = Delimited.CreateWriter(File.CreateText("out.csv")); writer.WriteHeader(["name", "age"]);
+/// writer.WriteRow(["Alice", "30"]); writer.WriteRow(["Bob", "25"]); </code>
 /// </example>
 /// </remarks>
 public sealed class DelimitedWriter : IDisposable
@@ -72,11 +66,12 @@ public sealed class DelimitedWriter : IDisposable
     public int RowsWritten => _rowsWritten;
 
     /// <summary>
-    /// Writes a header row to the output. Should be called at most once and before any
-    /// <see cref="WriteRow" /> calls.
+    /// Writes a header row to the output. Should be called at most once and before any <see cref="WriteRow" /> calls.
     /// </summary>
     /// <param name="headers">The column names to write as the header row.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="headers" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="headers" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ObjectDisposedException">Thrown when the writer has been disposed.</exception>
     public void WriteHeader(IEnumerable<string> headers)
     {
@@ -87,11 +82,13 @@ public sealed class DelimitedWriter : IDisposable
     }
 
     /// <summary>
-    /// Writes a data row to the output. Fields that require quoting are automatically enclosed in the
-    /// configured <see cref="DelimitedParseOptions.Quote" /> character.
+    /// Writes a data row to the output. Fields that require quoting are automatically enclosed in the configured
+    /// <see cref="DelimitedParseOptions.Quote" /> character.
     /// </summary>
     /// <param name="fields">The field values to write as a single row.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="fields" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="fields" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ObjectDisposedException">Thrown when the writer has been disposed.</exception>
     public void WriteRow(IEnumerable<string> fields)
     {
@@ -115,8 +112,8 @@ public sealed class DelimitedWriter : IDisposable
     }
 
     /// <summary>
-    /// Writes the fields of one row to the underlying writer, separating them with the configured
-    /// delimiter and appending a line feed.
+    /// Writes the fields of one row to the underlying writer, separating them with the configured delimiter and
+    /// appending a line feed.
     /// </summary>
     /// <param name="fields">The field values to write.</param>
     private void WriteFields(IEnumerable<string> fields)
@@ -137,9 +134,9 @@ public sealed class DelimitedWriter : IDisposable
     }
 
     /// <summary>
-    /// Writes a single field value, surrounding it with the quote character and doubling any embedded
-    /// quotes when the value contains the delimiter, the quote character, a carriage return, or a line
-    /// feed. Empty fields are always quoted so they survive a round-trip through the parser.
+    /// Writes a single field value, surrounding it with the quote character and doubling any embedded quotes when the
+    /// value contains the delimiter, the quote character, a carriage return, or a line feed. Empty fields are always
+    /// quoted so they survive a round-trip through the parser.
     /// </summary>
     /// <param name="field">The field value to write.</param>
     private void WriteField(string field)

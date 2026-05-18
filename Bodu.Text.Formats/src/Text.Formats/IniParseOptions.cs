@@ -32,25 +32,22 @@ namespace Bodu.Text.Formats;
 public readonly struct IniParseOptions
 {
     /// <summary>
-    /// Gets a pre-constructed <see cref="IniParseOptions" /> instance with all properties set to their default
-    /// values.
+    /// Gets a pre-constructed <see cref="IniParseOptions" /> instance with all properties set to their default values.
     /// </summary>
-    /// <returns>
-    /// An <see cref="IniParseOptions" /> equivalent to <c>new IniParseOptions()</c>.
-    /// </returns>
+    /// <returns>An <see cref="IniParseOptions" /> equivalent to <c>new IniParseOptions()</c>.</returns>
     public static readonly IniParseOptions Default = new();
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="IniParseOptions" /> struct with all properties set to their
-    /// default values.
+    /// Initializes a new instance of the <see cref="IniParseOptions" /> struct with all properties set to their default
+    /// values.
     /// </summary>
     public IniParseOptions()
     {
     }
 
     /// <summary>
-    /// Gets a value indicating whether keys that appear before the first section header are accepted and collected
-    /// into the global section.
+    /// Gets a value indicating whether keys that appear before the first section header are accepted and collected into
+    /// the global section.
     /// </summary>
     /// <returns>
     /// <see langword="true" /> (the default) to collect pre-section keys into <see cref="IniDocument.GlobalSection" />;
@@ -93,9 +90,8 @@ public readonly struct IniParseOptions
     public IniDuplicateSectionBehavior DuplicateSectionBehavior { get; init; } = IniDuplicateSectionBehavior.Merge;
 
     /// <summary>
-    /// Gets a value indicating whether the parser captures full-line comments as trivia and attaches them to
-    /// the next entry or section as <see cref="IniEntry.LeadingComments" /> and
-    /// <see cref="IniSection.LeadingComments" />.
+    /// Gets a value indicating whether the parser captures full-line comments as trivia and attaches them to the next
+    /// entry or section as <see cref="IniEntry.LeadingComments" /> and <see cref="IniSection.LeadingComments" />.
     /// </summary>
     /// <returns>
     /// <see langword="true" /> (the default) to retain comments for round-trip and tooling scenarios;

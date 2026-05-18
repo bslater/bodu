@@ -11,8 +11,8 @@ using System.Text;
 namespace Bodu.Text.Formats;
 
 /// <summary>
-/// Represents a single <c>[section]</c> block in an INI document, exposing its ordered entries and providing
-/// O(1) key lookup with optional typed value conversion.
+/// Represents a single <c>[section]</c> block in an INI document, exposing its ordered entries and providing O(1) key
+/// lookup with optional typed value conversion.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -25,7 +25,9 @@ namespace Bodu.Text.Formats;
 /// </remarks>
 public sealed class IniSection
 {
-    /// <summary>Cached format for the <c>KeyNotFound</c> message.</summary>
+    /// <summary>
+    /// Cached format for the <c>KeyNotFound</c> message.
+    /// </summary>
     private static readonly CompositeFormat s_keyNotFound =
         CompositeFormat.Parse(FormatsResourceStrings.Op_Invalid_IniSectionKeyNotFound);
 
@@ -80,8 +82,8 @@ public sealed class IniSection
     public void ClearLeadingComments() => _leadingComments.Clear();
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="IniSection" /> class with the supplied name and entries.
-    /// Use this constructor to build sections programmatically without first parsing INI text.
+    /// Initializes a new instance of the <see cref="IniSection" /> class with the supplied name and entries. Use this
+    /// constructor to build sections programmatically without first parsing INI text.
     /// </summary>
     /// <param name="name">The section name, or an empty string for the global section.</param>
     /// <param name="entries">
@@ -89,8 +91,8 @@ public sealed class IniSection
     /// <see cref="IniDuplicateKeyBehavior.LastWins" />; supply a deduplicated sequence to preserve order exactly.
     /// </param>
     /// <param name="caseSensitiveKeys">
-    /// <see langword="true" /> to compare keys with ordinal case sensitivity; otherwise,
-    /// <see langword="false" /> (the INI default) for ordinal case-insensitive comparison.
+    /// <see langword="true" /> to compare keys with ordinal case sensitivity; otherwise, <see langword="false" /> (the
+    /// INI default) for ordinal case-insensitive comparison.
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="name" /> or <paramref name="entries" /> is <see langword="null" />.

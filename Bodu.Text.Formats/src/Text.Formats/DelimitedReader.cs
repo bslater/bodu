@@ -9,41 +9,34 @@ using System.Text;
 namespace Bodu.Text.Formats;
 
 /// <summary>
-/// Provides a forward-only, buffered reader for delimited-text streams (CSV, TSV, and similar formats),
-/// parsing one logical row at a time without loading the entire source into memory.
+/// Provides a forward-only, buffered reader for delimited-text streams (CSV, TSV, and similar formats), parsing one
+/// logical row at a time without loading the entire source into memory.
 /// </summary>
 /// <remarks>
 /// <para>
-/// <see cref="DelimitedReader" /> is the streaming counterpart to
-/// <see cref="Delimited.Parse(ReadOnlySpan{char})" />. It is suited for large files or network streams
-/// where loading the complete input is impractical. For smaller, in-memory inputs,
-/// <see cref="Delimited.Parse(ReadOnlySpan{char})" /> is simpler to use.
+/// <see cref="DelimitedReader" /> is the streaming counterpart to <see cref="Delimited.Parse(ReadOnlySpan{char})" />.
+/// It is suited for large files or network streams where loading the complete input is impractical. For smaller,
+/// in-memory inputs, <see cref="Delimited.Parse(ReadOnlySpan{char})" /> is simpler to use.
 /// </para>
 /// <para>
 /// Call <see cref="Read" /> repeatedly to advance through data rows. When <see cref="Read" /> returns
-/// <see langword="true" />, the current row's field values are available via <see cref="Fields" />. When
-/// it returns <see langword="false" />, the input is exhausted.
+/// <see langword="true" />, the current row's field values are available via <see cref="Fields" />. When it returns
+/// <see langword="false" />, the input is exhausted.
 /// </para>
 /// <example>
-/// <code>
-/// using var reader = Delimited.CreateReader(File.OpenText("data.csv"));
-/// while (reader.Read())
-/// {
-///     string name = reader.Fields[0];
-///     string age  = reader.Fields[1];
-/// }
-/// </code>
+/// <code> using var reader = Delimited.CreateReader(File.OpenText("data.csv")); while (reader.Read()) { string name =
+/// reader.Fields[0]; string age = reader.Fields[1]; } </code>
 /// </example>
 /// <para>
-/// The reader takes ownership of the supplied <see cref="TextReader" /> and disposes it when
-/// <see cref="Dispose" /> is called.
+/// The reader takes ownership of the supplied <see cref="TextReader" /> and disposes it when <see cref="Dispose" /> is
+/// called.
 /// </para>
 /// </remarks>
 public sealed class DelimitedReader : IDisposable
 {
     /// <summary>
-    /// The default size of the internal character buffer in characters used when no buffer size is
-    /// supplied to the constructor.
+    /// The default size of the internal character buffer in characters used when no buffer size is supplied to the
+    /// constructor.
     /// </summary>
     public const int DefaultBufferSize = 4096;
 
@@ -62,36 +55,43 @@ public sealed class DelimitedReader : IDisposable
     private int _rowNumber;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="DelimitedReader" /> class with default options and
-    /// buffer size.
+    /// Initializes a new instance of the <see cref="DelimitedReader" /> class with default options and buffer size.
     /// </summary>
     /// <param name="reader">The <see cref="TextReader" /> to read delimited text from. Owned by this instance.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="reader" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="reader" /> is <see langword="null" />.
+    /// </exception>
     public DelimitedReader(TextReader reader)
         : this(reader, DelimitedParseOptions.Default, DefaultBufferSize) { }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="DelimitedReader" /> class with the specified options
-    /// and the default buffer size.
+    /// Initializes a new instance of the <see cref="DelimitedReader" /> class with the specified options and the
+    /// default buffer size.
     /// </summary>
     /// <param name="reader">The <see cref="TextReader" /> to read delimited text from. Owned by this instance.</param>
     /// <param name="options">Options that control how the source is interpreted.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="reader" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="reader" /> is <see langword="null" />.
+    /// </exception>
     public DelimitedReader(TextReader reader, DelimitedParseOptions options)
         : this(reader, options, DefaultBufferSize) { }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="DelimitedReader" /> class with the specified options
-    /// and buffer size.
+    /// Initializes a new instance of the <see cref="DelimitedReader" /> class with the specified options and buffer
+    /// size.
     /// </summary>
     /// <param name="reader">The <see cref="TextReader" /> to read delimited text from. Owned by this instance.</param>
     /// <param name="options">Options that control how the source is interpreted.</param>
     /// <param name="bufferSize">
-    /// The number of characters in the internal read buffer. Must be at least 1. Larger values reduce the
-    /// number of reads from the underlying stream at the cost of additional memory.
+    /// The number of characters in the internal read buffer. Must be at least 1. Larger values reduce the number of
+    /// reads from the underlying stream at the cost of additional memory.
     /// </param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="reader" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="bufferSize" /> is less than 1.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="reader" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="bufferSize" /> is less than 1.
+    /// </exception>
     public DelimitedReader(TextReader reader, DelimitedParseOptions options, int bufferSize)
     {
         ThrowHelper.ThrowIfNull(reader);
@@ -103,30 +103,29 @@ public sealed class DelimitedReader : IDisposable
     }
 
     /// <summary>
-    /// Gets the column names parsed from the header row. Populated after the first call to
-    /// <see cref="Read" /> when <see cref="DelimitedParseOptions.HasHeader" /> is
-    /// <see langword="true" />; otherwise, always an empty list.
+    /// Gets the column names parsed from the header row. Populated after the first call to <see cref="Read" /> when
+    /// <see cref="DelimitedParseOptions.HasHeader" /> is <see langword="true" />; otherwise, always an empty list.
     /// </summary>
     /// <returns>The ordered list of header names, or an empty list when no header row is present.</returns>
     public IReadOnlyList<string> Headers => _headers;
 
     /// <summary>
-    /// Gets the field values of the current data row. Valid only when the most recent call to
-    /// <see cref="Read" /> returned <see langword="true" />.
+    /// Gets the field values of the current data row. Valid only when the most recent call to <see cref="Read" />
+    /// returned <see langword="true" />.
     /// </summary>
     /// <returns>The field values in source order for the current row.</returns>
     public IReadOnlyList<string> Fields => _fields;
 
     /// <summary>
-    /// Gets the 1-based line number of the position currently being processed in the underlying stream.
-    /// Increments each time a line terminator is consumed.
+    /// Gets the 1-based line number of the position currently being processed in the underlying stream. Increments each
+    /// time a line terminator is consumed.
     /// </summary>
     /// <returns>The current line number, starting at 1.</returns>
     public int LineNumber => _lineNumber;
 
     /// <summary>
-    /// Gets the number of data rows successfully returned by <see cref="Read" />. The header row, blank
-    /// lines, and comment lines are not counted.
+    /// Gets the number of data rows successfully returned by <see cref="Read" />. The header row, blank lines, and
+    /// comment lines are not counted.
     /// </summary>
     /// <returns>The number of data rows read so far.</returns>
     public int RowNumber => _rowNumber;
@@ -181,13 +180,11 @@ public sealed class DelimitedReader : IDisposable
     }
 
     /// <summary>
-    /// Skips blank lines and comment lines, then parses the next non-empty row into
-    /// <paramref name="target" />. Returns <see langword="false" /> when the input is exhausted.
+    /// Skips blank lines and comment lines, then parses the next non-empty row into <paramref name="target" />. Returns
+    /// <see langword="false" /> when the input is exhausted.
     /// </summary>
     /// <param name="target">The list to receive the parsed field values.</param>
-    /// <returns>
-    /// <see langword="true" /> when a row was parsed; <see langword="false" /> at end of input.
-    /// </returns>
+    /// <returns><see langword="true" /> when a row was parsed; <see langword="false" /> at end of input.</returns>
     private bool TryParseRow(List<string> target)
     {
         while (true)
@@ -271,8 +268,8 @@ public sealed class DelimitedReader : IDisposable
     }
 
     /// <summary>
-    /// Parses a double-quoted field from the current buffer position, handling doubled-quote escapes
-    /// (RFC 4180 §2, rule 7) and embedded newlines (rule 6).
+    /// Parses a double-quoted field from the current buffer position, handling doubled-quote escapes (RFC 4180 §2, rule
+    /// 7) and embedded newlines (rule 6).
     /// </summary>
     /// <returns>The field content with surrounding quotes removed and escape sequences resolved.</returns>
     private string ParseQuotedField()
@@ -333,8 +330,8 @@ public sealed class DelimitedReader : IDisposable
     }
 
     /// <summary>
-    /// Parses an unquoted field from the current buffer position. Scans the current buffer window for a
-    /// field terminator; accumulates across buffer fills only when the field value spans a boundary.
+    /// Parses an unquoted field from the current buffer position. Scans the current buffer window for a field
+    /// terminator; accumulates across buffer fills only when the field value spans a boundary.
     /// </summary>
     /// <returns>The raw field text, or an empty string when the next character is a terminator or EOF.</returns>
     private string ParseUnquotedField()
@@ -377,8 +374,7 @@ public sealed class DelimitedReader : IDisposable
     }
 
     /// <summary>
-    /// Consumes a <c>\r\n</c>, <c>\r</c>, or <c>\n</c> line terminator and increments
-    /// <see cref="_lineNumber" />.
+    /// Consumes a <c>\r\n</c>, <c>\r</c>, or <c>\n</c> line terminator and increments <see cref="_lineNumber" />.
     /// </summary>
     private void ConsumeLineEnding()
     {
@@ -423,12 +419,14 @@ public sealed class DelimitedReader : IDisposable
         }
     }
 
-    /// <summary>Gets a value indicating whether the buffer is empty and the stream is exhausted.</summary>
+    /// <summary>
+    /// Gets a value indicating whether the buffer is empty and the stream is exhausted.
+    /// </summary>
     private bool IsExhausted => _pos >= _bufferLen;
 
     /// <summary>
-    /// Refills the buffer from the underlying reader when the current window is exhausted and the stream
-    /// is not yet at EOF.
+    /// Refills the buffer from the underlying reader when the current window is exhausted and the stream is not yet at
+    /// EOF.
     /// </summary>
     private void EnsureData()
     {
@@ -439,8 +437,8 @@ public sealed class DelimitedReader : IDisposable
     }
 
     /// <summary>
-    /// Reads the next chunk of characters from the underlying reader into the buffer, resetting the read
-    /// position. Sets <see cref="_eof" /> when the reader returns no characters.
+    /// Reads the next chunk of characters from the underlying reader into the buffer, resetting the read position. Sets
+    /// <see cref="_eof" /> when the reader returns no characters.
     /// </summary>
     private void Refill()
     {

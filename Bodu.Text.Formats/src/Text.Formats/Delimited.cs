@@ -112,47 +112,63 @@ public static partial class Delimited
     }
 
     /// <summary>
-    /// Creates a forward-only <see cref="DelimitedWriter" /> that writes to the specified
-    /// <see cref="TextWriter" /> using default options.
+    /// Creates a forward-only <see cref="DelimitedWriter" /> that writes to the specified <see cref="TextWriter" />
+    /// using default options.
     /// </summary>
-    /// <param name="writer">The <see cref="TextWriter" /> to write delimited text to. Owned by the returned writer.</param>
+    /// <param name="writer">
+    /// The <see cref="TextWriter" /> to write delimited text to. Owned by the returned writer.
+    /// </param>
     /// <returns>A <see cref="DelimitedWriter" /> ready to accept rows.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="writer" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="writer" /> is <see langword="null" />.
+    /// </exception>
     public static DelimitedWriter CreateWriter(TextWriter writer) =>
         new(writer);
 
     /// <summary>
-    /// Creates a forward-only <see cref="DelimitedWriter" /> that writes to the specified
-    /// <see cref="TextWriter" /> using the supplied options.
+    /// Creates a forward-only <see cref="DelimitedWriter" /> that writes to the specified <see cref="TextWriter" />
+    /// using the supplied options.
     /// </summary>
-    /// <param name="writer">The <see cref="TextWriter" /> to write delimited text to. Owned by the returned writer.</param>
+    /// <param name="writer">
+    /// The <see cref="TextWriter" /> to write delimited text to. Owned by the returned writer.
+    /// </param>
     /// <param name="options">
-    /// Options whose <see cref="DelimitedParseOptions.Delimiter" /> and
-    /// <see cref="DelimitedParseOptions.Quote" /> properties govern the output format.
+    /// Options whose <see cref="DelimitedParseOptions.Delimiter" /> and <see cref="DelimitedParseOptions.Quote" />
+    /// properties govern the output format.
     /// </param>
     /// <returns>A <see cref="DelimitedWriter" /> ready to accept rows.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="writer" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="writer" /> is <see langword="null" />.
+    /// </exception>
     public static DelimitedWriter CreateWriter(TextWriter writer, DelimitedParseOptions options) =>
         new(writer, options);
 
     /// <summary>
-    /// Creates a forward-only <see cref="DelimitedReader" /> that reads from the specified
-    /// <see cref="TextReader" /> using default options.
+    /// Creates a forward-only <see cref="DelimitedReader" /> that reads from the specified <see cref="TextReader" />
+    /// using default options.
     /// </summary>
-    /// <param name="reader">The <see cref="TextReader" /> to read delimited text from. Owned by the returned reader.</param>
+    /// <param name="reader">
+    /// The <see cref="TextReader" /> to read delimited text from. Owned by the returned reader.
+    /// </param>
     /// <returns>A <see cref="DelimitedReader" /> positioned before the first row.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="reader" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="reader" /> is <see langword="null" />.
+    /// </exception>
     public static DelimitedReader CreateReader(TextReader reader) =>
         new(reader);
 
     /// <summary>
-    /// Creates a forward-only <see cref="DelimitedReader" /> that reads from the specified
-    /// <see cref="TextReader" /> using the supplied options.
+    /// Creates a forward-only <see cref="DelimitedReader" /> that reads from the specified <see cref="TextReader" />
+    /// using the supplied options.
     /// </summary>
-    /// <param name="reader">The <see cref="TextReader" /> to read delimited text from. Owned by the returned reader.</param>
+    /// <param name="reader">
+    /// The <see cref="TextReader" /> to read delimited text from. Owned by the returned reader.
+    /// </param>
     /// <param name="options">Options that control how the source is interpreted.</param>
     /// <returns>A <see cref="DelimitedReader" /> positioned before the first row.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="reader" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="reader" /> is <see langword="null" />.
+    /// </exception>
     public static DelimitedReader CreateReader(TextReader reader, DelimitedParseOptions options) =>
         new(reader, options);
 
@@ -202,8 +218,8 @@ public static partial class Delimited
     }
 
     /// <summary>
-    /// Writes the fields of one row to <paramref name="sb" />, separating them with <paramref name="delimiter" />
-    /// and quoting where required.
+    /// Writes the fields of one row to <paramref name="sb" />, separating them with <paramref name="delimiter" /> and
+    /// quoting where required.
     /// </summary>
     /// <param name="sb">The builder to append to.</param>
     /// <param name="fields">The field values to write.</param>

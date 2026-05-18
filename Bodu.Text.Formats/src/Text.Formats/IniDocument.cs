@@ -62,13 +62,12 @@ public sealed class IniDocument
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="IniDocument" /> class from a global section and an ordered
-    /// sequence of named sections. Use this constructor to build documents programmatically without first parsing
-    /// INI text.
+    /// Initializes a new instance of the <see cref="IniDocument" /> class from a global section and an ordered sequence
+    /// of named sections. Use this constructor to build documents programmatically without first parsing INI text.
     /// </summary>
     /// <param name="globalSection">
-    /// The global section (entries authored before the first named section header). Its
-    /// <see cref="IniSection.Name" /> must be the empty string.
+    /// The global section (entries authored before the first named section header). Its <see cref="IniSection.Name" />
+    /// must be the empty string.
     /// </param>
     /// <param name="sections">The ordered, named sections that follow the global section.</param>
     /// <param name="caseSensitiveSections">
@@ -207,11 +206,13 @@ public sealed class IniDocument
 
     /// <summary>
     /// Removes the section with the supplied name. When multiple sections share the same name (under
-    /// <see cref="IniDuplicateSectionBehavior.Preserve" /> or <see cref="IniDuplicateSectionBehavior.MergeAdjacent" />),
-    /// every occurrence is removed.
+    /// <see cref="IniDuplicateSectionBehavior.Preserve" /> or <see cref="IniDuplicateSectionBehavior.MergeAdjacent" />
+    /// ), every occurrence is removed.
     /// </summary>
     /// <param name="name">The section name to remove.</param>
-    /// <returns><see langword="true" /> when at least one section was removed; otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when at least one section was removed; otherwise, <see langword="false" />.
+    /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="name" /> is <see langword="null" />.</exception>
     public bool RemoveSection(string name)
     {
