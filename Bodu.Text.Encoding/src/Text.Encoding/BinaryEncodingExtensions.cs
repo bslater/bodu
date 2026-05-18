@@ -13,8 +13,8 @@ namespace Bodu.Text.Encoding;
 /// <remarks>
 /// <para>
 /// These extensions exist purely for ergonomic discoverability — typing <c>bytes.</c> in an editor brings up
-/// <c>ToBase16String</c>, <c>ToBase64String</c>, <c>ToBase58String</c>, and so on. They delegate without overhead
-/// to the static <see cref="Base16" />, <see cref="Base32" />, <see cref="Base64" />, <see cref="Base58" />, and
+/// <c>ToBase16String</c>, <c>ToBase64String</c>, <c>ToBase58String</c>, and so on. They delegate without overhead to
+/// the static <see cref="Base16" />, <see cref="Base32" />, <see cref="Base64" />, <see cref="Base58" />, and
 /// <see cref="Base85" /> classes.
 /// </para>
 /// <para>

@@ -10,8 +10,8 @@ namespace Bodu.Text.Encoding;
 /// Specifies formatting styles that influence how base-encoded input strings are parsed during decoding.
 /// </summary>
 /// <remarks>
-/// These options control the leniency of the decoder. Multiple flags may be combined using a bitwise OR. The default
-/// of <see cref="None" /> requires strict, decoration-free input.
+/// These options control the leniency of the decoder. Multiple flags may be combined using a bitwise OR. The default of
+/// <see cref="None" /> requires strict, decoration-free input.
 /// </remarks>
 [Flags]
 public enum BaseFormatStyles : byte

@@ -184,7 +184,9 @@ public static partial class Base16
     /// <param name="bytes">The byte span to encode.</param>
     /// <param name="options">The formatting options to apply.</param>
     /// <returns>A formatted hexadecimal string.</returns>
-    /// <remarks>This is the slow path; it is invoked only when at least one decoration flag is set.</remarks>
+    /// <remarks>
+    /// This is the slow path; it is invoked only when at least one decoration flag is set.
+    /// </remarks>
     private static string EncodeWithFormatting(ReadOnlySpan<byte> bytes, BaseFormattingOptions options)
     {
         var upper = options.HasFlag(BaseFormattingOptions.UpperCase);

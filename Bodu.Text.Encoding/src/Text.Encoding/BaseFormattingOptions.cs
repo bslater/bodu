@@ -12,8 +12,8 @@ namespace Bodu.Text.Encoding;
 /// </summary>
 /// <remarks>
 /// These options can be combined to control character casing, spacing, prefix inclusion, and line formatting. The
-/// effect of each option may vary by encoding; not every encoding honours every flag. Refer to the documentation of
-/// the specific encoder for the supported subset.
+/// effect of each option may vary by encoding; not every encoding honours every flag. Refer to the documentation of the
+/// specific encoder for the supported subset.
 /// </remarks>
 [Flags]
 public enum BaseFormattingOptions : byte

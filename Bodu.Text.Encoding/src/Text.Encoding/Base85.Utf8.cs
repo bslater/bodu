@@ -22,8 +22,8 @@ public static partial class Base85
     /// <param name="styles">Parsing styles.</param>
     /// <returns>An <see cref="OperationStatus" /> describing the outcome.</returns>
     /// <remarks>
-    /// Base85 decoding is not streamable in a useful way (each group requires exactly five characters), so the
-    /// decoder treats <paramref name="source" /> as a complete input and does not return
+    /// Base85 decoding is not streamable in a useful way (each group requires exactly five characters), so the decoder
+    /// treats <paramref name="source" /> as a complete input and does not return
     /// <see cref="OperationStatus.NeedMoreData" />.
     /// </remarks>
     public static OperationStatus DecodeFromUtf8(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten, Base85Variant variant = Base85Variant.Ascii85, BaseFormatStyles styles = BaseFormatStyles.None)

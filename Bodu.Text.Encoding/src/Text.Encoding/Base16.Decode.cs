@@ -103,14 +103,17 @@ public static partial class Base16
     /// </summary>
     /// <param name="chars">The span of characters to decode.</param>
     /// <param name="destination">The span that receives the decoded bytes.</param>
-    /// <param name="bytesWritten">When this method returns, contains the number of bytes written, or <c>0</c> when
-    /// decoding failed.</param>
+    /// <param name="bytesWritten">
+    /// When this method returns, contains the number of bytes written, or <c>0</c> when decoding failed.
+    /// </param>
     /// <param name="style">Parsing styles that allow optional prefix and whitespace tolerance.</param>
-    /// <returns><see langword="true" /> when decoding succeeded; <see langword="false" /> when the input is malformed
-    /// or <paramref name="destination" /> is too small.</returns>
+    /// <returns>
+    /// <see langword="true" /> when decoding succeeded; <see langword="false" /> when the input is malformed or
+    /// <paramref name="destination" /> is too small.
+    /// </returns>
     /// <remarks>
-    /// This method never throws for malformed input — it returns <see langword="false" /> instead. Callers that
-    /// require exception semantics should use <see cref="Decode(ReadOnlySpan{char}, BaseFormatStyles)" />.
+    /// This method never throws for malformed input — it returns <see langword="false" /> instead. Callers that require
+    /// exception semantics should use <see cref="Decode(ReadOnlySpan{char}, BaseFormatStyles)" />.
     /// </remarks>
     public static bool TryDecode(ReadOnlySpan<char> chars, Span<byte> destination, out int bytesWritten, BaseFormatStyles style = BaseFormatStyles.None)
     {
@@ -159,9 +162,13 @@ public static partial class Base16
     /// </summary>
     /// <param name="chars">The character span containing hex digits. The length must be a multiple of two.</param>
     /// <param name="bytes">The destination span. Must be at least <c>chars.Length / 2</c> bytes in size.</param>
-    /// <returns><see langword="true" /> when every character is a valid hex digit; <see langword="false" /> when an
-    /// invalid character is encountered.</returns>
-    /// <remarks>This method assumes the caller has already validated the input length.</remarks>
+    /// <returns>
+    /// <see langword="true" /> when every character is a valid hex digit; <see langword="false" /> when an invalid
+    /// character is encountered.
+    /// </returns>
+    /// <remarks>
+    /// This method assumes the caller has already validated the input length.
+    /// </remarks>
     private static bool DecodeHexPairs(ReadOnlySpan<char> chars, Span<byte> bytes)
     {
         var bi = 0;

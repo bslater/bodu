@@ -22,8 +22,8 @@ public static partial class Base58
     /// <param name="styles">Parsing styles.</param>
     /// <returns>An <see cref="OperationStatus" /> describing the outcome.</returns>
     /// <remarks>
-    /// Base58 is not a streamable encoding; this overload always treats <paramref name="source" /> as a complete
-    /// input. <see cref="OperationStatus.NeedMoreData" /> is never returned.
+    /// Base58 is not a streamable encoding; this overload always treats <paramref name="source" /> as a complete input.
+    /// <see cref="OperationStatus.NeedMoreData" /> is never returned.
     /// </remarks>
     public static OperationStatus DecodeFromUtf8(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten, Base58Variant variant = Base58Variant.BitcoinFlickr, BaseFormatStyles styles = BaseFormatStyles.None)
     {

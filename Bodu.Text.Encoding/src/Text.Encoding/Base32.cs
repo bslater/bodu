@@ -18,9 +18,9 @@ namespace Bodu.Text.Encoding;
 /// </para>
 /// <para>
 /// The <see cref="BaseFormattingOptions.UpperCase" />, <see cref="BaseFormattingOptions.IncludePrefix" />, and
-/// <see cref="BaseFormattingOptions.InsertSpacing" /> flags have no effect on Base32 — each variant emits its
-/// canonical alphabet case and there is no standard prefix. The <see cref="BaseFormatStyles.AllowPrefix" /> flag is
-/// also ignored on decode for the same reason.
+/// <see cref="BaseFormattingOptions.InsertSpacing" /> flags have no effect on Base32 — each variant emits its canonical
+/// alphabet case and there is no standard prefix. The <see cref="BaseFormatStyles.AllowPrefix" /> flag is also ignored
+/// on decode for the same reason.
 /// </para>
 /// </remarks>
 public static partial class Base32

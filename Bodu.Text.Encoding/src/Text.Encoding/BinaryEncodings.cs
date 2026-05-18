@@ -12,14 +12,14 @@ namespace Bodu.Text.Encoding;
 /// <remarks>
 /// <para>
 /// Each property returns a thread-safe singleton bound to a specific variant. The pattern is analogous to
-/// <c>System.Text.Encoding.UTF8</c>: a constant instance that can be passed around, stored in configuration, or
-/// used through <see cref="IBinaryEncoding" /> by code that must remain agnostic to the concrete encoding.
+/// <c>System.Text.Encoding.UTF8</c>: a constant instance that can be passed around, stored in configuration, or used
+/// through <see cref="IBinaryEncoding" /> by code that must remain agnostic to the concrete encoding.
 /// </para>
 /// <para>
 /// Code that knows the encoding at compile time should prefer the static methods on <see cref="Base16" />,
-/// <see cref="Base32" />, <see cref="Base64" />, <see cref="Base58" />, or <see cref="Base85" /> — they are
-/// slightly faster (no virtual dispatch) and surface variant-specific options (line breaks, padding control,
-/// alternate variants) that the unified interface intentionally hides.
+/// <see cref="Base32" />, <see cref="Base64" />, <see cref="Base58" />, or <see cref="Base85" /> — they are slightly
+/// faster (no virtual dispatch) and surface variant-specific options (line breaks, padding control, alternate variants)
+/// that the unified interface intentionally hides.
 /// </para>
 /// </remarks>
 public static class BinaryEncodings

@@ -36,8 +36,9 @@ public static partial class Base32
     /// <param name="utf8Source">The UTF-8 hexadecimal source.</param>
     /// <returns>The decoded byte array.</returns>
     /// <exception cref="FormatException">Thrown when the input is not strict Standard Base32.</exception>
-    /// <remarks>Base32 alphabet characters are ASCII, so the UTF-8 byte form is byte-identical to the character
-    /// form.</remarks>
+    /// <remarks>
+    /// Base32 alphabet characters are ASCII, so the UTF-8 byte form is byte-identical to the character form.
+    /// </remarks>
     public static byte[] FromBase32String(ReadOnlySpan<byte> utf8Source)
     {
         if (utf8Source.IsEmpty)
