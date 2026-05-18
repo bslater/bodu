@@ -46,9 +46,11 @@ public static class BoduConfigurationExtensions
     /// </summary>
     /// <param name="section">The section whose name should be treated as a glob pattern.</param>
     /// <param name="relativePath">The path to test, relative to the document's path root.</param>
-    /// <returns><see langword="true" /> when the path matches; otherwise, <see langword="false" />. The global
-    /// section (whose <see cref="IniSection.Name" /> is empty) always returns <see langword="false" />; it is
-    /// layered separately by the resolver.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the path matches; otherwise, <see langword="false" />. The global section (whose
+    /// <see cref="IniSection.Name" /> is empty) always returns <see langword="false" />; it is layered separately by
+    /// the resolver.
+    /// </returns>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="section" /> or <paramref name="relativePath" /> is <see langword="null" />.
     /// </exception>

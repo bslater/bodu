@@ -40,7 +40,9 @@ public sealed partial class BoduConfigurationView
     /// <typeparam name="T">The target type. Must implement <see cref="ISpanParsable{TSelf}" />.</typeparam>
     /// <param name="key">The configuration key, in either dotted or colon-delimited form.</param>
     /// <param name="value">When this method returns <see langword="true" />, contains the parsed value.</param>
-    /// <returns><see langword="true" /> when the value was present and parseable; otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the value was present and parseable; otherwise, <see langword="false" />.
+    /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
     public bool TryGetValue<T>(string key, [MaybeNullWhen(false)] out T value)
         where T : ISpanParsable<T>
@@ -141,7 +143,9 @@ public sealed partial class BoduConfigurationView
     /// </summary>
     /// <param name="key">The configuration key.</param>
     /// <param name="value">When this method returns, contains the parsed value; otherwise, zero.</param>
-    /// <returns><see langword="true" /> when the value was present and parseable; otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the value was present and parseable; otherwise, <see langword="false" />.
+    /// </returns>
     public bool TryGetInt32(string key, out int value)
     {
         ThrowHelper.ThrowIfNull(key);

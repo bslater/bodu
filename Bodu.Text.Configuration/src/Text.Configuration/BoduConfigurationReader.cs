@@ -38,8 +38,10 @@ internal sealed partial class BoduConfigurationReader
     /// </summary>
     /// <param name="reader">The source of configuration text.</param>
     /// <param name="path">The optional file path used when emitting source locations.</param>
-    /// <returns>A <see cref="BoduConfigurationParseResult" /> carrying the populated
-    /// <see cref="IniDocument" /> and any diagnostics collected.</returns>
+    /// <returns>
+    /// A <see cref="BoduConfigurationParseResult" /> carrying the populated <see cref="IniDocument" /> and any
+    /// diagnostics collected.
+    /// </returns>
     internal BoduConfigurationParseResult Read(TextReader reader, string? path)
     {
         ThrowHelper.ThrowIfNull(reader);

@@ -78,15 +78,19 @@ public sealed partial class BoduConfigurationParseOptions
     /// <summary>
     /// Gets a value indicating whether keys and values should be trimmed of leading and trailing whitespace.
     /// </summary>
-    /// <returns><see langword="true" /> when the parser trims; otherwise, <see langword="false" />. The default
-    /// is <see langword="true" />, matching EditorConfig.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the parser trims; otherwise, <see langword="false" />. The default is
+    /// <see langword="true" />, matching EditorConfig.
+    /// </returns>
     public bool TrimKeysAndValues { get; init; } = true;
 
     /// <summary>
     /// Gets a value indicating whether key-only properties (lines with no <c>=</c>) are permitted.
     /// </summary>
-    /// <returns><see langword="true" /> when key-only lines are permitted; otherwise, <see langword="false" />.
-    /// The default is <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when key-only lines are permitted; otherwise, <see langword="false" />. The default is
+    /// <see langword="false" />.
+    /// </returns>
     public bool AllowKeyOnlyProperties { get; init; }
 
     /// <summary>

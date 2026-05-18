@@ -81,8 +81,10 @@ public readonly partial struct BoduConfigurationKey : IEquatable<BoduConfigurati
     /// <summary>
     /// Gets a value indicating whether equality and hashing for this key are case-sensitive.
     /// </summary>
-    /// <returns><see langword="true" /> when ordinal case-sensitive comparison is used; otherwise,
-    /// <see langword="false" /> for ordinal-ignore-case.</returns>
+    /// <returns>
+    /// <see langword="true" /> when ordinal case-sensitive comparison is used; otherwise, <see langword="false" /> for
+    /// ordinal-ignore-case.
+    /// </returns>
     public bool CaseSensitive => this._caseSensitive;
 
     /// <summary>

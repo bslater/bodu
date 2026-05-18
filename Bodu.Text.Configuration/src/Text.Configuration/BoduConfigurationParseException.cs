@@ -109,8 +109,10 @@ public sealed class BoduConfigurationParseException : FormatException
     /// <summary>
     /// Gets the location in the source document that triggered the exception.
     /// </summary>
-    /// <returns>The associated <see cref="BoduConfigurationSourceLocation" />, or
-    /// <see cref="BoduConfigurationSourceLocation.None" /> when no primary diagnostic is available.</returns>
+    /// <returns>
+    /// The associated <see cref="BoduConfigurationSourceLocation" />, or
+    /// <see cref="BoduConfigurationSourceLocation.None" /> when no primary diagnostic is available.
+    /// </returns>
     public BoduConfigurationSourceLocation Location =>
         this.Diagnostic?.Location ?? BoduConfigurationSourceLocation.None;
 

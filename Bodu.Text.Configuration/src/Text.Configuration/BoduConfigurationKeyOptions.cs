@@ -39,9 +39,11 @@ public sealed class BoduConfigurationKeyOptions
     /// <summary>
     /// Gets a value indicating whether logical key comparison is case-sensitive.
     /// </summary>
-    /// <returns><see langword="true" /> when keys are compared with ordinal case sensitivity; otherwise,
+    /// <returns>
+    /// <see langword="true" /> when keys are compared with ordinal case sensitivity; otherwise,
     /// <see langword="false" />. The default is <see langword="false" />, mirroring
-    /// <c>Microsoft.Extensions.Configuration</c>.</returns>
+    /// <c>Microsoft.Extensions.Configuration</c>.
+    /// </returns>
     public bool CaseSensitive { get; init; }
 
     /// <summary>
@@ -54,8 +56,10 @@ public sealed class BoduConfigurationKeyOptions
     /// <summary>
     /// Gets the <see cref="StringComparer" /> implied by <see cref="CaseSensitive" />.
     /// </summary>
-    /// <returns><see cref="StringComparer.Ordinal" /> when case-sensitive; otherwise,
-    /// <see cref="StringComparer.OrdinalIgnoreCase" />.</returns>
+    /// <returns>
+    /// <see cref="StringComparer.Ordinal" /> when case-sensitive; otherwise,
+    /// <see cref="StringComparer.OrdinalIgnoreCase" />.
+    /// </returns>
     public StringComparer KeyComparer =>
         this.CaseSensitive ? StringComparer.Ordinal : StringComparer.OrdinalIgnoreCase;
 }
