@@ -20,6 +20,22 @@ namespace Bodu.Text.Formats;
 /// Section lookup uses the comparer configured via <see cref="IniParseOptions.CaseSensitiveSections" /> at parse time.
 /// </para>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// IniDocument doc = Ini.Parse(text);
+///
+/// // Walk every named section.
+/// foreach (IniSection section in doc.Sections)
+///     Console.WriteLine($"[{section.Name}] — {section.Entries.Count} entries");
+///
+/// // Read the global section (keys that appeared before any header).
+/// IniSection global = doc.GlobalSection;
+///
+/// // Indexer lookup by section name.
+/// if (doc.TryGetSection("database", out IniSection? db))
+///     Console.WriteLine(db!["host"]);
+///]]>
+/// </example>
 public sealed class IniDocument
 {
     private readonly List<IniSection> _sections;

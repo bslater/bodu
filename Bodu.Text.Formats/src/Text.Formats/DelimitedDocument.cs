@@ -20,6 +20,19 @@ namespace Bodu.Text.Formats;
 /// subsequent rows can then be accessed by column name using the <see cref="DelimitedRow.this[string]" /> indexer.
 /// </para>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// DelimitedDocument doc = Delimited.Parse(text);
+///
+/// Console.WriteLine($"{doc.Rows.Count} rows × {doc.FieldCount} fields");
+/// foreach (string column in doc.Headers)
+///     Console.Write($"{column}\t");
+/// Console.WriteLine();
+///
+/// foreach (DelimitedRow row in doc.Rows)
+///     Console.WriteLine(row["name"]);
+///]]>
+/// </example>
 public sealed class DelimitedDocument
 {
 

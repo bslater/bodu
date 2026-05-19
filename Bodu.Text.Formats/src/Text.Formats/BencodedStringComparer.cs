@@ -9,6 +9,32 @@ namespace Bodu.Text.Formats;
 /// <summary>
 /// Compares bencoded byte strings using raw byte ordinal ordering.
 /// </summary>
+/// <remarks>
+/// <para>
+/// The Bencode specification mandates that dictionary keys appear in ascending bytewise order — not any localized or
+/// culture-aware collation. <see cref="BencodedStringComparer" /> implements that exact ordering and is used internally
+/// by <see cref="BencodedDictionary" /> to enforce it; callers that need to sort a collection of
+/// <see cref="BencodedString" /> instances for serialization should reuse the same comparer to stay
+/// specification-conformant.
+/// </para>
+/// <para>
+/// The type is stateless; the singleton <see cref="Ordinal" /> is the only instance and is safe to share across
+/// threads.
+/// </para>
+/// </remarks>
+/// <example>
+///<![CDATA[
+/// var keys = new[]
+/// {
+///     BencodedString.FromUtf8("info"),
+///     BencodedString.FromUtf8("announce"),
+///     BencodedString.FromUtf8("comment"),
+/// };
+///
+/// Array.Sort(keys, BencodedStringComparer.Ordinal);
+/// // keys is now ordered { announce, comment, info } — bytewise ASCII order.
+///]]>
+/// </example>
 public sealed class BencodedStringComparer
     : IComparer<BencodedString>
     , IEqualityComparer<BencodedString>

@@ -44,6 +44,26 @@ namespace Bodu.Text.Formats;
 /// </item>
 /// </list>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // Parse a CSV document with a header row (the default).
+/// DelimitedDocument doc = Delimited.Parse("""
+///     name,age,city
+///     Ada,42,London
+///     Linus,55,Helsinki
+///     """);
+///
+/// foreach (DelimitedRow row in doc.Rows)
+///     Console.WriteLine($"{row["name"]} ({row.GetInt32("age")}) — {row["city"]}");
+///
+/// // TSV without a header.
+/// DelimitedDocument tsv = Delimited.Parse(source, new DelimitedParseOptions
+/// {
+///     Delimiter  = '\t',
+///     HasHeader  = false,
+/// });
+///]]>
+/// </example>
 public static partial class Delimited
 {
     /// <summary>

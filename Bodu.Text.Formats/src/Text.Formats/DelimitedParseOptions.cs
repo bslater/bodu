@@ -10,6 +10,33 @@ namespace Bodu.Text.Formats;
 /// Controls dialect-specific parsing and formatting behaviour for <see cref="Delimited.Parse(ReadOnlySpan{char})" />
 /// and related methods.
 /// </summary>
+/// <remarks>
+/// <para>
+/// The defaults produce a strict RFC 4180 CSV reader with header parsing enabled: comma delimiter, double-quote quote
+/// character, first row treated as a header, no whitespace trimming. Use <see cref="Default" /> when none of those
+/// choices need to change; otherwise construct a fresh value with the desired <c>init</c>-only properties overridden.
+/// </para>
+/// <para>
+/// Most non-default settings exist to accept dialects that diverge from strict CSV — tab-delimited extracts emitted by
+/// spreadsheet tools, vertical-bar files produced by legacy ETL pipelines, headerless data feeds, or sources that embed
+/// a comment-line convention. Instances are <see langword="readonly" />; safe to share across threads.
+/// </para>
+/// </remarks>
+/// <example>
+///<![CDATA[
+/// // Strict RFC 4180 CSV with a header row.
+/// DelimitedDocument csv = Delimited.Parse(text);
+///
+/// // Tab-separated, no header, allow # comments.
+/// var tsv = new DelimitedParseOptions
+/// {
+///     Delimiter         = '\t',
+///     HasHeader         = false,
+///     CommentCharacter  = '#',
+/// };
+/// DelimitedDocument data = Delimited.Parse(text, tsv);
+///]]>
+/// </example>
 public readonly struct DelimitedParseOptions
 {
     /// <summary>

@@ -10,9 +10,30 @@ namespace Bodu.Text.Formats;
 /// Represents a bencoded raw byte string.
 /// </summary>
 /// <remarks>
-/// Bencoded strings are byte strings. They should only be interpreted as text when the consuming format explicitly
-/// defines the field as UTF-8 text.
+/// <para>
+/// Bencoded strings are byte strings: a length-prefixed run of arbitrary bytes that the Bencode format does not assign
+/// a character encoding to. They should only be interpreted as text when the consuming format explicitly defines the
+/// field as UTF-8 text — the conventional encoding for modern peers but never a guarantee. The companion
+/// <see cref="FromUtf8(string)" /> factory and <see cref="GetUtf8String" /> accessor make the encoding decision
+/// explicit; for non-text payloads (info-hashes, peer-id bytes, raw binary blobs) work directly with
+/// <see cref="Bytes" />.
+/// </para>
+/// <para>
+/// Instances are immutable and implement value equality through <see cref="IEquatable{T}" /> so they compose cleanly
+/// with hash sets, dictionaries, and <see cref="BencodedStringComparer.Ordinal" />.
+/// </para>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // Construct from raw bytes or from a UTF-8 string.
+/// var hash  = new BencodedString(infoHashBytes);
+/// var label = BencodedString.FromUtf8("comment");
+///
+/// // Inspect the payload — Bytes for raw, GetUtf8String only when text is expected.
+/// ReadOnlySpan<byte> raw  = hash.Bytes.Span;
+/// string             text = label.GetUtf8String();   // "comment"
+///]]>
+/// </example>
 public sealed class BencodedString
     : BencodedValue
     , IEquatable<BencodedString>

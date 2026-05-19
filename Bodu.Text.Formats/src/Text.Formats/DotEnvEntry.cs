@@ -12,6 +12,30 @@ namespace Bodu.Text.Formats;
 /// <summary>
 /// Represents a single key/value assignment within a DotEnv document.
 /// </summary>
+/// <remarks>
+/// <para>
+/// Entries are produced by <see cref="DotEnv.Parse(ReadOnlySpan{char})" /> and exposed through
+/// <see cref="DotEnvDocument.Entries" />. The <see cref="Key" /> is validated against the conventional
+/// <c>[A-Za-z_][A-Za-z0-9_]*</c> identifier pattern, and <see cref="Value" /> is the fully-processed payload —
+/// surrounding quotes have been removed and any double-quoted escape sequences (<c>\n</c>, <c>\t</c>, <c>\"</c>,
+/// <c>\\</c>, <c>\xHH</c>, and so on) have been resolved.
+/// </para>
+/// <para>
+/// Entries are immutable; construct a new <see cref="DotEnvDocument" /> to alter the value associated with a key rather
+/// than mutating the entry in place.
+/// </para>
+/// </remarks>
+/// <example>
+///<![CDATA[
+/// DotEnvDocument doc = DotEnv.Parse("""
+///     DATABASE_URL=postgres://localhost/app
+///     DEBUG="true"
+///     """);
+///
+/// foreach (DotEnvEntry entry in doc.Entries)
+///     Console.WriteLine($"{entry.Key} = {entry.Value}");
+///]]>
+/// </example>
 public sealed class DotEnvEntry
 {
     /// <summary>

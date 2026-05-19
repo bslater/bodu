@@ -48,6 +48,22 @@ namespace Bodu.Text.Formats;
 /// controlled via <see cref="DotEnvParseOptions" />.
 /// </para>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// DotEnvDocument doc = DotEnv.Parse("""
+///     # Server configuration
+///     export PORT=8080
+///     HOST="0.0.0.0"
+///     DEBUG=true   # inline comment
+///     """);
+///
+/// foreach (DotEnvEntry entry in doc.Entries)
+///     Environment.SetEnvironmentVariable(entry.Key, entry.Value);
+///
+/// // Direct lookup is O(1).
+/// string port = doc["PORT"];   // "8080"
+///]]>
+/// </example>
 public static partial class DotEnv
 {
     /// <summary>

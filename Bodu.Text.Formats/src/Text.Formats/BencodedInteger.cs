@@ -11,6 +11,25 @@ namespace Bodu.Text.Formats;
 /// <summary>
 /// Represents a bencoded integer value.
 /// </summary>
+/// <remarks>
+/// <para>
+/// Bencoded integers are encoded as <c>i</c>&lt;decimal&gt;<c>e</c>, where <c>&lt;decimal&gt;</c> is an ASCII signed
+/// decimal with no leading zeros (other than the literal <c>0</c>) and no leading <c>+</c>. The format itself permits
+/// arbitrary-precision integers; this type narrows the supported range to <see cref="long" />, which is sufficient for
+/// every value found in BitTorrent metadata and the vast majority of bencoded payloads in the wild.
+/// </para>
+/// <para>
+/// Instances are immutable and implement value equality through <see cref="IEquatable{T}" />.
+/// </para>
+/// </remarks>
+/// <example>
+///<![CDATA[
+/// var piece = new BencodedInteger(262144);
+/// Console.WriteLine(piece.Value);                     // 262144
+/// Console.WriteLine(piece.Kind);                      // Integer
+/// Console.WriteLine(piece);                           // "262144"
+///]]>
+/// </example>
 public sealed class BencodedInteger
     : BencodedValue
     , IEquatable<BencodedInteger>

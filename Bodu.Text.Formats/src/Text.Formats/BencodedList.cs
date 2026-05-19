@@ -7,8 +7,29 @@
 namespace Bodu.Text.Formats;
 
 /// <summary>
-/// Represents a bencoded list.
+/// Represents a bencoded list — an ordered, heterogeneous sequence of <see cref="BencodedValue" /> items.
 /// </summary>
+/// <remarks>
+/// <para>
+/// Bencoded lists are encoded as <c>l</c>&lt;values…&gt;<c>e</c>, with each contained value encoded recursively. The
+/// items collection is immutable once constructed; the constructor rejects <see langword="null" /> entries to keep the
+/// list safely usable in pattern-matched switches over <see cref="BencodedValue" />.
+/// </para>
+/// </remarks>
+/// <example>
+///<![CDATA[
+/// var list = new BencodedList(new BencodedValue[]
+/// {
+///     BencodedString.FromUtf8("foo"),
+///     new BencodedInteger(42),
+/// });
+///
+/// Console.WriteLine(list.Count);          // 2
+/// Console.WriteLine(list[0].Kind);        // String
+/// foreach (BencodedValue v in list.Items)
+///     Console.WriteLine(v);
+///]]>
+/// </example>
 public sealed class BencodedList
     : BencodedValue
 {
