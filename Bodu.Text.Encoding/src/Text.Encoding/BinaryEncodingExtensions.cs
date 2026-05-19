@@ -23,6 +23,25 @@ namespace Bodu.Text.Encoding;
 /// extension surface.
 /// </para>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// byte[] data = "hello"u8.ToArray();
+///
+/// // Direct shortcuts — discoverable from IntelliSense via the byte[] receiver.
+/// string hex     = data.ToBase16String();                  // "68656c6c6f"
+/// string base32  = data.ToBase32String();                  // "NBSWY3DP"
+/// string base64  = data.ToBase64String();                  // "aGVsbG8="
+/// string base58  = data.ToBase58String();                  // "Cn8eVZg"
+///
+/// // Round-trip via the matching FromBase*String extension.
+/// byte[] roundtrip = base64.FromBase64String();
+///
+/// // Generic dispatch via IBinaryEncoding for runtime-selected encodings.
+/// IBinaryEncoding chosen = BinaryEncodings.Get(appConfig["encoding"] ?? "base64");
+/// string encoded = data.Encode(chosen);
+/// byte[] decoded = encoded.Decode(chosen);
+///]]>
+/// </example>
 public static class BinaryEncodingExtensions
 {
 

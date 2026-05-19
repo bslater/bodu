@@ -26,6 +26,23 @@ namespace Bodu.Text.Encoding;
 /// have no effect on Base64.
 /// </para>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// byte[] data = "hello"u8.ToArray();
+///
+/// // RFC 4648 Standard Base64 (default).
+/// string standard = Base64.Encode(data);                                       // "aGVsbG8="
+///
+/// // URL-safe alphabet, no padding — the form used by JWT and OAuth tokens.
+/// string urlSafe  = Base64.Encode(data, Base64Variant.UrlSafe);                // "aGVsbG8"
+///
+/// // MIME variant — wraps every 76 characters with CRLF.
+/// string mime     = Base64.Encode(longerPayload, Base64Variant.Mime);
+///
+/// // Round-trip.
+/// byte[] roundtrip = Base64.Decode(standard);
+///]]>
+/// </example>
 public static partial class Base64
 {
 

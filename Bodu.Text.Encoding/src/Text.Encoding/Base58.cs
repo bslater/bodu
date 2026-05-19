@@ -27,6 +27,19 @@ namespace Bodu.Text.Encoding;
 /// flags are likewise ignored; only <see cref="BaseFormatStyles.IgnoreWhitespace" /> has an effect on decode.
 /// </para>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // Bitcoin/Flickr Base58 (default) — leading zero bytes encode as leading '1' characters.
+/// byte[] data = { 0x00, 0xDE, 0xAD, 0xBE, 0xEF };
+/// string encoded = Base58.Encode(data);
+///
+/// // Ripple alphabet — a permutation used by the XRP ledger.
+/// string ripple = Base58.Encode(data, Base58Variant.Ripple);
+///
+/// // Round-trip.
+/// byte[] roundtrip = Base58.Decode(encoded);
+///]]>
+/// </example>
 public static partial class Base58
 {
 

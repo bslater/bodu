@@ -23,6 +23,19 @@ namespace Bodu.Text.Encoding;
 /// choose between encodings at runtime (configuration-driven serializers, plugin pipelines, generic utilities).
 /// </para>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // Pick an encoding at runtime from configuration.
+/// string             configured = appConfig["encoding"];                     // e.g. "base64-urlsafe"
+/// IBinaryEncoding    encoding   = BinaryEncodings.Get(configured);
+///
+/// // Use the same call shape regardless of which variant was chosen.
+/// string encoded = encoding.Encode(payload);
+/// byte[] decoded = encoding.Decode(encoded);
+///
+/// Console.WriteLine($"{encoding.Name}: {encoding.Description}");
+///]]>
+/// </example>
 public interface IBinaryEncoding
 {
 
