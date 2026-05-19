@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BoduConfigurationSourceLocation.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -29,8 +29,8 @@ namespace Bodu.Text.Configuration;
 public readonly struct BoduConfigurationSourceLocation : IEquatable<BoduConfigurationSourceLocation>
 {
     /// <summary>
-    /// Initializes a new <see cref="BoduConfigurationSourceLocation" /> with the specified line number, column, span
-    /// length, and optional file path.
+    /// Initializes a new instance of the <see cref="BoduConfigurationSourceLocation" /> struct. with the specified line
+    /// number, column, span length, and optional file path.
     /// </summary>
     /// <param name="lineNumber">The 1-based line number.</param>
     /// <param name="linePosition">The 1-based column within the line.</param>
@@ -38,10 +38,10 @@ public readonly struct BoduConfigurationSourceLocation : IEquatable<BoduConfigur
     /// <param name="path">The optional source file path.</param>
     public BoduConfigurationSourceLocation(int lineNumber, int linePosition, int length, string? path = null)
     {
-        this.LineNumber = lineNumber;
-        this.LinePosition = linePosition;
-        this.Length = length;
-        this.Path = path;
+        LineNumber = lineNumber;
+        LinePosition = linePosition;
+        Length = length;
+        Path = path;
     }
 
     /// <summary>
@@ -81,18 +81,18 @@ public readonly struct BoduConfigurationSourceLocation : IEquatable<BoduConfigur
     /// <param name="other">The location to compare with this instance.</param>
     /// <returns><see langword="true" /> if every field matches; otherwise, <see langword="false" />.</returns>
     public bool Equals(BoduConfigurationSourceLocation other) =>
-        this.LineNumber == other.LineNumber
-        && this.LinePosition == other.LinePosition
-        && this.Length == other.Length
-        && string.Equals(this.Path, other.Path, StringComparison.Ordinal);
+        LineNumber == other.LineNumber
+        && LinePosition == other.LinePosition
+        && Length == other.Length
+        && string.Equals(Path, other.Path, StringComparison.Ordinal);
 
     /// <inheritdoc />
     public override bool Equals(object? obj) =>
-        obj is BoduConfigurationSourceLocation other && this.Equals(other);
+        obj is BoduConfigurationSourceLocation other && Equals(other);
 
     /// <inheritdoc />
     public override int GetHashCode() =>
-        HashCode.Combine(this.LineNumber, this.LinePosition, this.Length, this.Path);
+        HashCode.Combine(LineNumber, LinePosition, Length, Path);
 
     /// <summary>
     /// Returns a human-readable rendering of the location, suitable for inclusion in diagnostic messages.
@@ -100,16 +100,16 @@ public readonly struct BoduConfigurationSourceLocation : IEquatable<BoduConfigur
     /// <returns>A string of the form <c>line N, column M</c>, optionally prefixed with the path.</returns>
     public override string ToString()
     {
-        if (this.LineNumber == 0 && this.LinePosition == 0)
+        if (LineNumber == 0 && LinePosition == 0)
             return "<unknown>";
 
-        string core = string.Format(
+        var core = string.Format(
             CultureInfo.InvariantCulture,
             "line {0}, column {1}",
-            this.LineNumber,
-            this.LinePosition);
+            LineNumber,
+            LinePosition);
 
-        return this.Path is null ? core : string.Concat(this.Path, ": ", core);
+        return Path is null ? core : string.Concat(Path, ": ", core);
     }
 
     /// <summary>
@@ -118,8 +118,10 @@ public readonly struct BoduConfigurationSourceLocation : IEquatable<BoduConfigur
     /// <param name="left">The first location to compare.</param>
     /// <param name="right">The second location to compare.</param>
     /// <returns><see langword="true" /> if the locations are equal; otherwise, <see langword="false" />.</returns>
-    public static bool operator ==(BoduConfigurationSourceLocation left, BoduConfigurationSourceLocation right) =>
-        left.Equals(right);
+    public static bool operator ==(BoduConfigurationSourceLocation left, BoduConfigurationSourceLocation right)
+    {
+        return left.Equals(right);
+    }
 
     /// <summary>
     /// Determines whether two locations are not equal.
@@ -127,6 +129,8 @@ public readonly struct BoduConfigurationSourceLocation : IEquatable<BoduConfigur
     /// <param name="left">The first location to compare.</param>
     /// <param name="right">The second location to compare.</param>
     /// <returns><see langword="true" /> if the locations differ; otherwise, <see langword="false" />.</returns>
-    public static bool operator !=(BoduConfigurationSourceLocation left, BoduConfigurationSourceLocation right) =>
-        !left.Equals(right);
+    public static bool operator !=(BoduConfigurationSourceLocation left, BoduConfigurationSourceLocation right)
+    {
+        return !left.Equals(right);
+    }
 }

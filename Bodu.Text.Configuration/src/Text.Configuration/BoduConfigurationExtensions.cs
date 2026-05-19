@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BoduConfigurationExtensions.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -59,10 +59,7 @@ public static class BoduConfigurationExtensions
         ThrowHelper.ThrowIfNull(section);
         ThrowHelper.ThrowIfNull(relativePath);
 
-        if (section.Name.Length == 0)
-            return false;
-
-        return BoduConfigurationPattern.Compile(section.Name).IsMatch(relativePath);
+        return section.Name.Length != 0 && BoduConfigurationPattern.Compile(section.Name).IsMatch(relativePath);
     }
 
     /// <summary>
@@ -76,6 +73,7 @@ public static class BoduConfigurationExtensions
     public static string ConfigurationKey(this IniEntry entry, BoduConfigurationKeyOptions? options = null)
     {
         ThrowHelper.ThrowIfNull(entry);
+
         return BoduConfigurationKey.Parse(entry.Key, options).ConfigurationKey;
     }
 
@@ -89,6 +87,7 @@ public static class BoduConfigurationExtensions
     public static IniSection Preamble(this IniDocument document)
     {
         ThrowHelper.ThrowIfNull(document);
+
         return document.GlobalSection;
     }
 }

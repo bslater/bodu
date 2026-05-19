@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BoduConfigurationParseOptions.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -113,10 +113,10 @@ public sealed partial class BoduConfigurationParseOptions
         new()
         {
             AllowGlobalSection = true,
-            CaseSensitiveKeys = this.KeyOptions.CaseSensitive,
-            CaseSensitiveSections = this.KeyOptions.CaseSensitive,
-            DuplicateKeyBehavior = this.DuplicateKeyMode,
-            DuplicateSectionBehavior = this.DuplicateSectionMode,
+            CaseSensitiveKeys = KeyOptions.CaseSensitive,
+            CaseSensitiveSections = KeyOptions.CaseSensitive,
+            DuplicateKeyBehavior = DuplicateKeyMode,
+            DuplicateSectionBehavior = DuplicateSectionMode,
             PreserveComments = true,
         };
 }

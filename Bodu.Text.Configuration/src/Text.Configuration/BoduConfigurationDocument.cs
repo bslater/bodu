@@ -1,12 +1,10 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BoduConfigurationDocument.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.IO;
 using System.Text;
 using Bodu.Text.Formats;
 
@@ -267,7 +265,7 @@ public sealed class BoduConfigurationParseResult
     {
         ThrowHelper.ThrowIfNull(document);
         Document = document;
-        Diagnostics = diagnostics.IsDefault ? ImmutableArray<BoduConfigurationDiagnostic>.Empty : diagnostics;
+        Diagnostics = diagnostics.IsDefault ? [] : diagnostics;
     }
 
     /// <summary>

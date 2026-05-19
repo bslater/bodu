@@ -1,10 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BoduConfigurationView.Getters.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 
@@ -26,7 +25,7 @@ public sealed partial class BoduConfigurationView
         where T : ISpanParsable<T>
     {
         ThrowHelper.ThrowIfNull(key);
-        string? raw = LookupValue(this._values, key);
+        var raw = LookupValue(Values, key);
         if (raw is null)
             throw new KeyNotFoundException(string.Format(CultureInfo.InvariantCulture, ConfigurationResourceStrings.Op_Invalid_ConfigKeyNotPresent, key));
 
@@ -48,7 +47,7 @@ public sealed partial class BoduConfigurationView
         where T : ISpanParsable<T>
     {
         ThrowHelper.ThrowIfNull(key);
-        string? raw = LookupValue(this._values, key);
+        var raw = LookupValue(Values, key);
         if (raw is not null && T.TryParse(raw.AsSpan(), CultureInfo.InvariantCulture, out value))
             return true;
 
@@ -66,7 +65,7 @@ public sealed partial class BoduConfigurationView
     public string GetString(string key)
     {
         ThrowHelper.ThrowIfNull(key);
-        string? value = LookupValue(this._values, key);
+        var value = LookupValue(Values, key);
         if (value is not null)
             return value;
 
@@ -83,7 +82,7 @@ public sealed partial class BoduConfigurationView
     public string? GetString(string key, string? fallback)
     {
         ThrowHelper.ThrowIfNull(key);
-        string? value = LookupValue(this._values, key);
+        var value = LookupValue(Values, key);
         return value ?? fallback;
     }
 
@@ -98,7 +97,7 @@ public sealed partial class BoduConfigurationView
     public bool TryGetString(string key, out string? value)
     {
         ThrowHelper.ThrowIfNull(key);
-        value = LookupValue(this._values, key);
+        value = LookupValue(Values, key);
         return value is not null;
     }
 
@@ -111,8 +110,8 @@ public sealed partial class BoduConfigurationView
     /// <exception cref="FormatException">The value cannot be parsed as an integer.</exception>
     public int GetInt32(string key)
     {
-        string raw = this.GetString(key);
-        if (int.TryParse(raw, NumberStyles.Integer, CultureInfo.InvariantCulture, out int value))
+        var raw = GetString(key);
+        if (int.TryParse(raw, NumberStyles.Integer, CultureInfo.InvariantCulture, out var value))
             return value;
 
         throw new FormatException(string.Format(CultureInfo.InvariantCulture, ConfigurationResourceStrings.Format_Invalid_ValueNotConvertible, key, raw, nameof(Int32)));
@@ -128,11 +127,11 @@ public sealed partial class BoduConfigurationView
     public int GetInt32(string key, int fallback)
     {
         ThrowHelper.ThrowIfNull(key);
-        string? raw = LookupValue(this._values, key);
+        var raw = LookupValue(Values, key);
         if (raw is null)
             return fallback;
 
-        if (int.TryParse(raw, NumberStyles.Integer, CultureInfo.InvariantCulture, out int value))
+        if (int.TryParse(raw, NumberStyles.Integer, CultureInfo.InvariantCulture, out var value))
             return value;
 
         throw new FormatException(string.Format(CultureInfo.InvariantCulture, ConfigurationResourceStrings.Format_Invalid_ValueNotConvertible, key, raw, nameof(Int32)));
@@ -149,7 +148,7 @@ public sealed partial class BoduConfigurationView
     public bool TryGetInt32(string key, out int value)
     {
         ThrowHelper.ThrowIfNull(key);
-        string? raw = LookupValue(this._values, key);
+        var raw = LookupValue(Values, key);
         if (raw is not null && int.TryParse(raw, NumberStyles.Integer, CultureInfo.InvariantCulture, out value))
             return true;
 
@@ -166,8 +165,8 @@ public sealed partial class BoduConfigurationView
     /// <exception cref="FormatException">The value cannot be parsed.</exception>
     public long GetInt64(string key)
     {
-        string raw = this.GetString(key);
-        if (long.TryParse(raw, NumberStyles.Integer, CultureInfo.InvariantCulture, out long value))
+        var raw = GetString(key);
+        if (long.TryParse(raw, NumberStyles.Integer, CultureInfo.InvariantCulture, out var value))
             return value;
 
         throw new FormatException(string.Format(CultureInfo.InvariantCulture, ConfigurationResourceStrings.Format_Invalid_ValueNotConvertible, key, raw, nameof(Int64)));
@@ -183,8 +182,8 @@ public sealed partial class BoduConfigurationView
     /// <exception cref="FormatException">The value cannot be parsed.</exception>
     public bool GetBoolean(string key)
     {
-        string raw = this.GetString(key);
-        if (bool.TryParse(raw, out bool value))
+        var raw = GetString(key);
+        if (bool.TryParse(raw, out var value))
             return value;
 
         throw new FormatException(string.Format(CultureInfo.InvariantCulture, ConfigurationResourceStrings.Format_Invalid_ValueNotConvertible, key, raw, nameof(Boolean)));
@@ -199,11 +198,11 @@ public sealed partial class BoduConfigurationView
     public bool GetBoolean(string key, bool fallback)
     {
         ThrowHelper.ThrowIfNull(key);
-        string? raw = LookupValue(this._values, key);
+        var raw = LookupValue(Values, key);
         if (raw is null)
             return fallback;
 
-        if (bool.TryParse(raw, out bool value))
+        if (bool.TryParse(raw, out var value))
             return value;
 
         throw new FormatException(string.Format(CultureInfo.InvariantCulture, ConfigurationResourceStrings.Format_Invalid_ValueNotConvertible, key, raw, nameof(Boolean)));
@@ -220,7 +219,7 @@ public sealed partial class BoduConfigurationView
     public bool TryGetBoolean(string key, out bool value)
     {
         ThrowHelper.ThrowIfNull(key);
-        string? raw = LookupValue(this._values, key);
+        var raw = LookupValue(Values, key);
         if (raw is not null && bool.TryParse(raw, out value))
             return true;
 
@@ -239,7 +238,7 @@ public sealed partial class BoduConfigurationView
     public TEnum GetEnum<TEnum>(string key)
         where TEnum : struct, Enum
     {
-        string raw = this.GetString(key);
+        var raw = GetString(key);
         if (Enum.TryParse(raw, ignoreCase: true, out TEnum value) && Enum.IsDefined(typeof(TEnum), value))
             return value;
 
