@@ -25,6 +25,25 @@ namespace Bodu.Security.Cryptography;
 /// via <see cref="BlockCipherModeFactory" />) or with an <see cref="IPaddingStrategy" />.
 /// </para>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // Direct single-block use — most callers should prefer the Threefish1024 SymmetricAlgorithm.
+/// byte[] key   = new byte[128];   // 1024-bit key
+/// byte[] tweak = new byte[16];    // 128-bit tweak
+/// RandomNumberGenerator.Fill(key);
+/// RandomNumberGenerator.Fill(tweak);
+///
+/// using var cipher = new Threefish1024Cipher(key, tweak);
+///
+/// byte[] plaintext  = new byte[128];   // one 1024-bit block
+/// byte[] ciphertext = new byte[128];
+/// cipher.Encrypt(plaintext, ciphertext);
+///
+/// byte[] roundtrip = new byte[128];
+/// cipher.Decrypt(ciphertext, roundtrip);
+/// // roundtrip equals plaintext
+///]]>
+/// </example>
 /// <seealso href="../guides/cryptography/composing-primitives.html">Composing primitives — direct use vs.
 /// SymmetricAlgorithm</seealso> <seealso cref="Threefish1024"/>
 public sealed class Threefish1024Cipher
@@ -54,14 +73,70 @@ public sealed class Threefish1024Cipher
 #pragma warning disable SA1137 // Elements should have the same indentation
     protected override int[] RotationSchedule =>
     [
-        24, 13,  8, 47,  8, 17, 22, 37,
-        38, 19, 10, 55, 49, 18, 23, 52,
-        33,  4, 51, 13, 34, 41, 59, 17,
-         5, 20, 48, 41, 47, 28, 16, 25,
-        41,  9, 37, 31, 12, 47, 44, 30,
-        16, 34, 56, 51,  4, 53, 42, 41,
-        31, 44, 47, 46, 19, 42, 44, 25,
-         9, 48, 35, 52, 23, 31, 37, 20
+        24,
+        13,
+        8,
+        47,
+        8,
+        17,
+        22,
+        37,
+        38,
+        19,
+        10,
+        55,
+        49,
+        18,
+        23,
+        52,
+        33,
+        4,
+        51,
+        13,
+        34,
+        41,
+        59,
+        17,
+        5,
+        20,
+        48,
+        41,
+        47,
+        28,
+        16,
+        25,
+        41,
+        9,
+        37,
+        31,
+        12,
+        47,
+        44,
+        30,
+        16,
+        34,
+        56,
+        51,
+        4,
+        53,
+        42,
+        41,
+        31,
+        44,
+        47,
+        46,
+        19,
+        42,
+        44,
+        25,
+        9,
+        48,
+        35,
+        52,
+        23,
+        31,
+        37,
+        20
     ];
 #pragma warning restore SA1137 // Elements should have the same indentation
 

@@ -16,10 +16,35 @@ namespace Bodu.Security.Cryptography;
 /// the bitsliced linear transform applied to each four-word lane. A cross-lane rotation between rounds provides
 /// diffusion across lanes, and a Threefish-style tweak subkey is XOR-injected every four rounds.
 /// </para>
+/// <para>
+/// Most callers should prefer the higher-level <see cref="Serpent1024" /> class, which exposes the standard
+/// <see cref="System.Security.Cryptography.SymmetricAlgorithm" /> contract. Use <see cref="Serpent1024Cipher" />
+/// directly only when composing the raw block primitive with an <see cref="IBlockCipherModeTransform" /> or
+/// <see cref="IPaddingStrategy" />.
+/// </para>
 /// <note type="important"> This type is a **non-standard Serpent-derived construction** and is not interoperable with
 /// any reference Serpent implementation. Its cryptographic properties have not been externally analyzed. For standard,
 /// externally vetted Serpent, use <see cref="Serpent128Cipher" />. </note>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // Direct single-block use. For most workloads prefer the Serpent1024 SymmetricAlgorithm wrapper.
+/// byte[] key   = new byte[128];   // 1024-bit key
+/// byte[] tweak = new byte[16];    // 128-bit tweak
+/// RandomNumberGenerator.Fill(key);
+/// RandomNumberGenerator.Fill(tweak);
+///
+/// using var cipher = new Serpent1024Cipher(key, tweak);
+///
+/// byte[] plaintext  = new byte[128];
+/// byte[] ciphertext = new byte[128];
+/// cipher.Encrypt(plaintext, ciphertext);
+///
+/// byte[] roundtrip = new byte[128];
+/// cipher.Decrypt(ciphertext, roundtrip);
+/// // roundtrip equals plaintext
+///]]>
+/// </example>
 /// <seealso cref="Serpent1024"/>
 public sealed class Serpent1024Cipher
     : SerpentBlockCipher

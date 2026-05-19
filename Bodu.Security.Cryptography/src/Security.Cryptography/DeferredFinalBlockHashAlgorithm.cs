@@ -18,6 +18,21 @@ namespace Bodu.Security.Cryptography;
 /// <typeparam name="T">
 /// The concrete hash algorithm derived from this class. Must expose a public parameterless constructor.
 /// </typeparam>
+/// <example>
+///<![CDATA[
+/// // Consume through a concrete BLAKE-family derivative — the base class defers the final
+/// // block until HashFinal so the compression call can carry isFinal: true.
+/// using HashAlgorithm hash = new Blake3();
+/// byte[] digest = hash.ComputeHash("hello"u8.ToArray());
+///
+/// // Streaming use — the deferral remains transparent across TransformBlock calls.
+/// using HashAlgorithm streaming = new Blake2s();
+/// streaming.TransformBlock(buffer1, 0, buffer1.Length, null, 0);
+/// streaming.TransformBlock(buffer2, 0, buffer2.Length, null, 0);
+/// streaming.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
+/// byte[] result = streaming.Hash!;
+///]]>
+/// </example>
 /// <remarks>
 /// <para>
 /// Unlike Merkle&#8211;Damg&#229;rd hashes, Blake-family compression functions take a per-block byte counter and an

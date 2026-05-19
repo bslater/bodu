@@ -28,6 +28,24 @@ namespace Bodu.Security.Cryptography;
 /// interoperable with any reference Serpent implementation. For standard, externally vetted Serpent, use
 /// <see cref="Serpent128" />. </note>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // Use a concrete wide-block variant — Serpent-256 over a CTR mode.
+/// using TweakableSymmetricAlgorithm alg = new Serpent256();
+/// alg.GenerateKey();
+/// alg.GenerateIV();
+/// alg.GenerateTweak();
+/// alg.BlockMode = CipherModeKind.CTR;
+///
+/// using ICryptoTransform encryptor = alg.CreateEncryptor(alg.Key, alg.IV, alg.Tweak);
+/// using var cipherText = new MemoryStream();
+/// using (var cs = new CryptoStream(cipherText, encryptor, CryptoStreamMode.Write))
+///     cs.Write(plaintext, 0, plaintext.Length);
+///
+/// // For standard, externally vetted Serpent use Serpent128 instead — the wide-block variants
+/// // are experimental and not interoperable with reference Serpent implementations.
+///]]>
+/// </example>
 public abstract class Serpent
     : TweakableSymmetricAlgorithm
 {

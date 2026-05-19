@@ -45,6 +45,25 @@ namespace Bodu.Security.Cryptography;
 /// supplied key/IV/tweak combination is invalid — useful when keying material is user-supplied.
 /// </para>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // Construct via a concrete derivative — Threefish is the production tweakable cipher family.
+/// using TweakableSymmetricAlgorithm alg = new Threefish256();
+/// alg.GenerateKey();
+/// alg.GenerateIV();
+/// alg.GenerateTweak();      // unique to TweakableSymmetricAlgorithm — supplies the per-message tweak
+///
+/// // CreateEncryptor / CreateDecryptor accept the additional tweak argument.
+/// using ICryptoTransform encryptor = alg.CreateEncryptor(alg.Key, alg.IV, alg.Tweak);
+/// using ICryptoTransform decryptor = alg.CreateDecryptor(alg.Key, alg.IV, alg.Tweak);
+///
+/// // The companion try-pattern wrappers gate over user-supplied keying material.
+/// if (alg.TryCreateEncryptor(userKey, userIv, userTweak, out ICryptoTransform? safe))
+/// {
+///     using (safe) { /* encrypt */ }
+/// }
+///]]>
+/// </example>
 /// <seealso cref="Threefish256"/> <seealso cref="Threefish512"/> <seealso cref="Threefish1024"/>
 /// <seealso cref="Bodu.Security.Cryptography.Extensions.TweakableSymmetricAlgorithmExtensions"/>
 public abstract class TweakableSymmetricAlgorithm

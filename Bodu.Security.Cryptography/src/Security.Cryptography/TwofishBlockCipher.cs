@@ -23,6 +23,23 @@ namespace Bodu.Security.Cryptography;
 /// <see cref="System.Security.Cryptography.SymmetricAlgorithm" /> contract.
 /// </para>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // Direct single-block use. For most workloads prefer the Twofish SymmetricAlgorithm wrapper.
+/// byte[] key = new byte[32];   // 128, 192, or 256 bits
+/// RandomNumberGenerator.Fill(key);
+///
+/// using var cipher = new TwofishBlockCipher(key);
+///
+/// byte[] plaintext  = new byte[16];   // one 128-bit block
+/// byte[] ciphertext = new byte[16];
+/// cipher.Encrypt(plaintext, ciphertext);
+///
+/// byte[] roundtrip = new byte[16];
+/// cipher.Decrypt(ciphertext, roundtrip);
+/// // roundtrip equals plaintext
+///]]>
+/// </example>
 /// <seealso cref="Twofish"/>
 public sealed class TwofishBlockCipher
     : IBlockCipher

@@ -75,6 +75,25 @@ namespace Bodu.Security.Cryptography;
 /// of the Ascon suite use <see cref="AsconAead128" />.
 /// </para>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // Consume through a concrete derivative — produce a 32-byte digest from "hello".
+/// using var xof = new AsconXof128();
+/// xof.Absorb("hello"u8);
+///
+/// byte[] digest = new byte[32];
+/// xof.Squeeze(digest);
+///
+/// // Squeeze additional output of any length — the XOF can produce as many bytes as needed.
+/// byte[] more = new byte[64];
+/// xof.Squeeze(more);
+///
+/// // Reuse the instance for a new message via Initialize.
+/// xof.Initialize();
+/// xof.Absorb("world"u8);
+/// xof.Squeeze(digest);
+///]]>
+/// </example>
 /// <seealso cref="AsconXof128"/> <seealso cref="AsconCxof128"/> <seealso cref="AsconHash{T}"/>
 /// <seealso href="https://doi.org/10.6028/NIST.SP.800-232">NIST SP 800-232 (ASCON)</seealso>
 public abstract class AsconXof<T>

@@ -31,6 +31,24 @@ namespace Bodu.Security.Cryptography;
 /// <see cref="IHashAlgorithmFactory{T}" /> interface.
 /// </para>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // Wrap a delegate via the static helper — the call site reads more naturally than the
+/// // constructor and avoids the trailing generic-type repetition.
+/// IHashAlgorithmFactory<SipHash64> factory = HashAlgorithmFactory.From(() =>
+///     new SipHash64 { Key = sharedKey });
+///
+/// // Resolve and use — the factory hands out a freshly-keyed instance each time.
+/// using SipHash64 hash = factory.Create();
+/// byte[] digest = hash.ComputeHash("hello"u8.ToArray());
+///
+/// // Or construct directly when the field type needs to be the concrete factory.
+/// var concreteFactory = new DelegateHashAlgorithmFactory<Tiger>(() => new Tiger
+/// {
+///     HashingVariant = TigerHashingVariant.Tiger2,
+/// });
+///]]>
+/// </example>
 /// <seealso cref="IHashAlgorithmFactory{T}"/> <seealso cref="HashAlgorithmFactory"/>
 /// <seealso cref="HashAlgorithmHelper"/>
 public sealed class DelegateHashAlgorithmFactory<T> :
