@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BoduTextConfigurationSource.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -14,10 +14,42 @@ namespace Bodu.Extensions.Configuration.Text;
 /// into the <see cref="IConfiguration" /> hierarchy as colon-delimited keys.
 /// </summary>
 /// <remarks>
+/// <para>
 /// Inherits the standard reload-on-change, file-provider, and optional-file behaviours from
 /// <see cref="FileConfigurationSource" />, matching the conventions used by the JSON, INI, and XML providers shipped by
-/// Microsoft.
+/// Microsoft. Three Bodu-specific properties extend the base contract: <see cref="TargetPath" /> drives glob-anchored
+/// section matching during resolution, <see cref="ParseOptions" /> controls how the document is read, and
+/// <see cref="ResolveOptions" /> controls how the resolved view is layered.
+/// </para>
+/// <para>
+/// Most callers do not construct this type directly; reach for the
+/// <see cref="BoduTextConfigurationExtensions.AddBoduConfiguration(IConfigurationBuilder, string, string?, bool, bool)" />
+/// extensions instead. Direct construction is appropriate when a host already has the source instance in hand — for
+/// example, when wiring a custom <see cref="IConfigurationBuilder" /> programmatically.
+/// </para>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // Typical lambda registration via the IConfigurationBuilder extension.
+/// builder.Configuration.AddBoduConfiguration(source =>
+/// {
+///     source.Path           = "app.boduconfig";
+///     source.TargetPath     = "src/Web/Startup.cs"; // anchors glob sections like [src/**/*.cs]
+///     source.Optional       = false;
+///     source.ReloadOnChange = true;
+///     source.ParseOptions   = BoduConfigurationParseOptions.Strict;
+/// });
+///
+/// // Direct construction — for example, in a custom builder host.
+/// var source = new BoduTextConfigurationSource
+/// {
+///     Path           = "app.boduconfig",
+///     ReloadOnChange = true,
+///     TargetPath     = "src/Web/Startup.cs",
+/// };
+/// IConfigurationProvider provider = source.Build(builder);
+///]]>
+/// </example>
 public sealed class BoduTextConfigurationSource : FileConfigurationSource
 {
     /// <summary>

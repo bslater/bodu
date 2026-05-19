@@ -13,11 +13,34 @@ namespace Bodu.Extensions.Configuration.Text;
 /// configuration data dictionary with the resolved colon-delimited keys.
 /// </summary>
 /// <remarks>
+/// <para>
 /// The provider inherits change-token, reload-on-change, optional-file, and exception-wrapping behaviour from
 /// <see cref="FileConfigurationProvider" />. Override <see cref="Load(Stream)" /> only. The Parse → Resolve → flatten
 /// pipeline is shared with <see cref="BoduTextStreamConfigurationProvider" /> via
 /// <see cref="BoduTextConfigurationLoader" />.
+/// </para>
+/// <para>
+/// Consumers do not construct this type directly — it is materialized by
+/// <see cref="BoduTextConfigurationSource.Build(IConfigurationBuilder)" /> when an <see cref="IConfigurationBuilder" />
+/// is built. The typed <see cref="BoduSource" /> accessor exists for diagnostic scenarios where a host needs to inspect
+/// the source that produced a given <see cref="IConfigurationProvider" />.
+/// </para>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // Diagnostic introspection: locate the Bodu provider after the configuration root has been built.
+/// IConfigurationRoot root = builder.Build();
+/// BoduTextConfigurationProvider? bodu = root.Providers
+///     .OfType<BoduTextConfigurationProvider>()
+///     .FirstOrDefault();
+///
+/// if (bodu is not null)
+/// {
+///     Console.WriteLine($"Loaded from: {bodu.BoduSource.Path}");
+///     Console.WriteLine($"Reload on change: {bodu.BoduSource.ReloadOnChange}");
+/// }
+///]]>
+/// </example>
 public sealed class BoduTextConfigurationProvider : FileConfigurationProvider
 {
     /// <summary>

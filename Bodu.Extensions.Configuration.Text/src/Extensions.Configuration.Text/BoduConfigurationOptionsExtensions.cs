@@ -15,6 +15,7 @@ namespace Bodu.Extensions.Configuration.Text;
 /// .
 /// </summary>
 /// <remarks>
+/// <para>
 /// These helpers are thin shims over
 /// <c>Microsoft.Extensions.DependencyInjection.OptionsConfigurationServiceCollectionExtensions.Configure</c>; they
 /// exist purely to keep the call-site short and discoverable for consumers who reach for an
@@ -22,7 +23,39 @@ namespace Bodu.Extensions.Configuration.Text;
 /// <see cref="Microsoft.Extensions.Options.IOptions{TOptions}" /> binding may continue to call
 /// <see cref="Microsoft.Extensions.DependencyInjection.OptionsConfigurationServiceCollectionExtensions.Configure{TOptions}(IServiceCollection, IConfiguration)" />
 /// directly.
+/// </para>
+/// <para>
+/// Two overloads are provided: one that takes the section name and the root
+/// <see cref="Microsoft.Extensions.Configuration.IConfiguration" />, and one that takes a pre-resolved
+/// <see cref="Microsoft.Extensions.Configuration.IConfigurationSection" />. Both produce the same registration; pick
+/// whichever shape is more natural at the call site.
+/// </para>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // Strongly-typed options bound to the "Logging" section produced by AddBoduConfiguration.
+/// public sealed class LoggingOptions
+/// {
+///     public string Level { get; init; } = "Information";
+///     public bool   IncludeScopes { get; init; }
+/// }
+///
+/// var builder = WebApplication.CreateBuilder(args);
+/// builder.Configuration.AddBoduConfiguration("appsettings.boduconfig");
+///
+/// // Bind by section name against the configuration root.
+/// builder.Services.AddBoduConfigurationOptions<LoggingOptions>(
+///     builder.Configuration,
+///     sectionName: "Logging");
+///
+/// // Or bind a pre-resolved section directly.
+/// IConfigurationSection logging = builder.Configuration.GetSection("Logging");
+/// builder.Services.AddBoduConfigurationOptions<LoggingOptions>(logging);
+///
+/// // Consumed via constructor injection.
+/// public sealed class HomeController(IOptions<LoggingOptions> options) { /* options.Value.Level */ }
+///]]>
+/// </example>
 public static class BoduConfigurationOptionsExtensions
 {
     /// <summary>
