@@ -13,10 +13,37 @@ namespace Bodu.Text.Configuration;
 /// resolving a configuration document.
 /// </summary>
 /// <remarks>
+/// <para>
 /// Diagnostics are immutable. When <see cref="BoduConfigurationDiagnosticMode.Collect" /> is in effect, the reader
 /// gathers diagnostics on the parse result's diagnostics list rather than throwing at the first issue; the document is
 /// still produced and its valid portions remain usable.
+/// </para>
+/// <para>
+/// Each diagnostic carries a stable <see cref="Code" /> from <see cref="BoduConfigurationDiagnosticCode" /> so that
+/// callers can suppress or escalate categories programmatically, a <see cref="Severity" /> for filtering, a
+/// human-readable <see cref="Message" /> for display, and a <see cref="Location" /> pointing back into the source
+/// document for editor integration. <see cref="ToString" /> renders the four fields in a single line suitable for log
+/// output.
+/// </para>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // Surface every diagnostic the reader produced and tag any errors for caller attention.
+/// foreach (BoduConfigurationDiagnostic d in result.Diagnostics)
+/// {
+///     Console.WriteLine(d); // "Warning DuplicateKey at line 12, column 3: ..."
+///     if (d.Severity == BoduConfigurationDiagnosticSeverity.Error)
+///         hasErrors = true;
+/// }
+///
+/// // Build one directly — useful when a host integrates Bodu diagnostics into its own pipeline.
+/// var diag = new BoduConfigurationDiagnostic(
+///     BoduConfigurationDiagnosticSeverity.Warning,
+///     BoduConfigurationDiagnosticCode.UnknownKey,
+///     "Key 'format:legacy' is no longer recognized.",
+///     new BoduConfigurationSourceLocation(lineNumber: 7, linePosition: 1, length: 14));
+///]]>
+/// </example>
 [DebuggerDisplay("{Severity}: {Code} {Message,nq}")]
 public sealed class BoduConfigurationDiagnostic
 {

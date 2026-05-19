@@ -56,7 +56,24 @@ namespace Bodu.Text.Configuration;
 /// Anchoring follows EditorConfig: a pattern with no <c>/</c> matches at any directory depth; a pattern with <c>/</c>
 /// is anchored to the start of the relative path.
 /// </para>
+/// <para>
+/// Compilation parses the glob once into a culture-invariant <see cref="Regex" />; subsequent
+/// <see cref="IsMatch(string)" /> calls are allocation-free over the compiled state. Cache compiled patterns when the
+/// same glob is matched repeatedly against many paths.
+/// </para>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // Compile once, match many times.
+/// BoduConfigurationPattern csFiles = BoduConfigurationPattern.Compile("**/*.cs");
+/// Console.WriteLine(csFiles.IsMatch("src/Foo.cs"));     // true
+/// Console.WriteLine(csFiles.IsMatch("docs/notes.md"));  // false
+///
+/// // Alternation + numeric range.
+/// BoduConfigurationPattern markup = BoduConfigurationPattern.Compile("**/*.{md,mdx,txt}");
+/// BoduConfigurationPattern logs   = BoduConfigurationPattern.Compile("logs/run-{1..99}.log");
+///]]>
+/// </example>
 public sealed partial class BoduConfigurationPattern
 {
     private readonly Regex _regex;

@@ -20,17 +20,35 @@ namespace Bodu.Text.Configuration;
 /// <para>
 /// Pair the <see cref="Parse(string)" /> family with the
 /// <see cref="BoduConfigurationExtensions.Resolve(IniDocument, string?, BoduConfigurationResolveOptions?)" /> extension
-/// method to evaluate the document for a specific target path:
+/// method to evaluate the document for a specific target path. The document holds the raw, source-faithful model;
+/// <see cref="BoduConfigurationView" /> holds the resolved, target-specific snapshot consumed by application code.
 /// </para>
-/// <example>
-/// <code language="csharp">
-///<![CDATA[
-/// IniDocument doc = BoduConfigurationDocument.Parse(text); BoduConfigurationView view =
-/// doc.Resolve("src/Foo.cs"); int indent = view.GetInt32("format:indent:size", 4);
-///]]>
-/// </code>
-/// </example>
+/// <para>
+/// Diagnostic routing is controlled by the supplied <see cref="BoduConfigurationParseOptions" />. In
+/// <see cref="BoduConfigurationDiagnosticMode.Throw" /> mode a recoverable parse error raises
+/// <see cref="BoduConfigurationParseException" /> at the first issue; in
+/// <see cref="BoduConfigurationDiagnosticMode.Collect" /> mode the parser continues, the document's valid portions
+/// remain usable, and every diagnostic surfaces on <see cref="BoduConfigurationParseResult.Diagnostics" />.
+/// </para>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // Parse and resolve a configuration file for a specific target path.
+/// IniDocument         doc    = BoduConfigurationDocument.Parse(text);
+/// BoduConfigurationView view = doc.Resolve("src/Foo.cs");
+/// int indent = view.GetInt32("format:indent:size", 4);
+///
+/// // Collect every diagnostic instead of failing on the first issue.
+/// var opts = new BoduConfigurationParseOptions
+/// {
+///     Profile        = BoduConfigurationProfile.Bodu,
+///     DiagnosticMode = BoduConfigurationDiagnosticMode.Collect,
+/// };
+/// BoduConfigurationParseResult result = BoduConfigurationDocument.ParseWithDiagnostics(text, opts);
+/// foreach (BoduConfigurationDiagnostic d in result.Diagnostics)
+///     Console.WriteLine(d);
+///]]>
+/// </example>
 public static class BoduConfigurationDocument
 {
     /// <summary>
