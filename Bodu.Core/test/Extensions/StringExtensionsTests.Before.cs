@@ -1,0 +1,52 @@
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="StringExtensionsTests.Before.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+using System;
+using System.Collections.Generic;
+
+namespace Bodu.Extensions;
+
+public partial class StringExtensionsTests
+{
+    /// <summary>
+    /// Provides representative inputs for <see cref="Before_WhenInvoked_ShouldReturnExpected" />.
+    /// </summary>
+    /// <returns>The test cases.</returns>
+    public static IEnumerable<object?[]> GetBeforeCases() =>
+    [
+        ["key=value", "=", StringComparison.Ordinal, "key"],
+        ["key=value=extra", "=", StringComparison.Ordinal, "key"],
+        ["no marker", "=", StringComparison.Ordinal, null],
+        ["=value", "=", StringComparison.Ordinal, ""],
+        ["KEY=value", "key=", StringComparison.OrdinalIgnoreCase, ""],
+    ];
+
+    /// <summary>
+    /// Verifies that <see cref="StringExtensions.Before(string, string, StringComparison)" /> returns the
+    /// characters before the first occurrence of the marker, or <see langword="null" /> when absent.
+    /// </summary>
+    /// <param name="value">The candidate string.</param>
+    /// <param name="marker">The marker.</param>
+    /// <param name="comparison">The comparison.</param>
+    /// <param name="expected">The expected return value.</param>
+    [DataTestMethod]
+    [DynamicData(nameof(GetBeforeCases), DynamicDataSourceType.Method)]
+    public void Before_WhenInvoked_ShouldReturnExpected(string value, string marker, StringComparison comparison, string? expected)
+    {
+        Assert.AreEqual(expected, value.Before(marker, comparison));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="StringExtensions.Before(string, string, StringComparison)" /> throws
+    /// <see cref="ArgumentNullException" /> when either argument is <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void Before_WhenAnyArgumentIsNull_ShouldThrowArgumentNullException()
+    {
+        Assert.ThrowsExactly<ArgumentNullException>(() => _ = StringExtensions.Before(null!, "="));
+        Assert.ThrowsExactly<ArgumentNullException>(() => _ = "hello".Before(null!));
+    }
+}
