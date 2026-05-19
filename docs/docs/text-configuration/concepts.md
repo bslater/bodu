@@ -12,19 +12,19 @@ For the high-level shape of the library and the pipeline diagram, start with the
 ## Document and view
 
 A **document** is the parsed-but-not-yet-resolved representation of the source text. It is an
-<xref:Bodu.Text.Formats.IniDocument> from <xref:Bodu.Text.Formats> — the same structure the INI codec produces — with a
+<xref:Bodu.Text.Ini.IniDocument> from <xref:Bodu.Text.Formats> — the same structure the INI codec produces — with a
 preamble (the global section) and zero or more named sections in source order. The document preserves comments,
 ordering, and duplicate-policy decisions, so it can be re-emitted byte-for-byte.
 
 A **view** is the resolved snapshot for one **target path** — a flat dictionary of colon-delimited configuration keys
-to their effective string values. <xref:Bodu.Text.Configuration.BoduConfigurationView> is one-shot: subsequent mutation
+to their effective string values. <xref:Bodu.Text.Configuration.ConfigurationView> is one-shot: subsequent mutation
 of the originating document does not retroactively update the view. Take a fresh view whenever the document changes or
 the target path changes.
 
 ```
-source text ──► BoduConfigurationDocument.Parse ──► IniDocument
-IniDocument ──► .Resolve(targetPath) ───────────► BoduConfigurationView
-BoduConfigurationView ──► .GetXxx(key) ──────────► typed value
+source text ──► ConfigurationDocument.Parse ──► IniDocument
+IniDocument ──► .Resolve(targetPath) ───────────► ConfigurationView
+ConfigurationView ──► .GetXxx(key) ──────────► typed value
 ```
 
 ## Profile
@@ -38,9 +38,9 @@ A **profile** is a named, validated combination of parse, resolve, and write opt
 | `Strict` | Deterministic parsing for generated files: duplicate keys are rejected, key-only properties are not permitted. |
 | `Relaxed` | Permissive parsing of user-authored files: inline comments enabled, duplicates last-wins, diagnostics collected rather than thrown. |
 
-Each option type — <xref:Bodu.Text.Configuration.BoduConfigurationParseOptions>,
-<xref:Bodu.Text.Configuration.BoduConfigurationResolveOptions>,
-<xref:Bodu.Text.Configuration.BoduConfigurationWriteOptions> — has a static `For(profile)` factory plus the four named
+Each option type — <xref:Bodu.Text.Configuration.ConfigurationParseOptions>,
+<xref:Bodu.Text.Configuration.ConfigurationResolveOptions>,
+<xref:Bodu.Text.Configuration.ConfigurationWriteOptions> — has a static `For(profile)` factory plus the four named
 properties `Bodu`, `EditorConfigCompatible`, `Strict`, `Relaxed`. Profiles are starting points, not contracts; every
 property on every options bag is mutable through `init` setters.
 
@@ -48,7 +48,7 @@ property on every options bag is mutable through `init` setters.
 
 Each option type controls one stage of the pipeline.
 
-**<xref:Bodu.Text.Configuration.BoduConfigurationParseOptions>** controls the reader:
+**<xref:Bodu.Text.Configuration.ConfigurationParseOptions>** controls the reader:
 
 | Property | Role |
 |---|---|
@@ -60,9 +60,9 @@ Each option type controls one stage of the pipeline.
 | `MaxLineLength` / `MaxKeyLength` | DoS-resistant caps; defaults 8192 / 1024. |
 | `TrimKeysAndValues` | EditorConfig-compatible trimming; default `true`. |
 | `AllowKeyOnlyProperties` | Whether lines without `=` are accepted as boolean-true; default `false`. |
-| `KeyOptions` | The <xref:Bodu.Text.Configuration.BoduConfigurationKeyOptions> applied while reading raw keys. |
+| `KeyOptions` | The <xref:Bodu.Text.Configuration.ConfigurationKeyOptions> applied while reading raw keys. |
 
-**<xref:Bodu.Text.Configuration.BoduConfigurationResolveOptions>** controls the resolver:
+**<xref:Bodu.Text.Configuration.ConfigurationResolveOptions>** controls the resolver:
 
 | Property | Role |
 |---|---|
@@ -73,7 +73,7 @@ Each option type controls one stage of the pipeline.
 | `UnsetValueMode` | TreatAsLiteral (default) / RemoveEffectiveValue (EditorConfig sentinel). |
 | `KeyOptions` | The key options applied when expanding raw keys into colon-delimited form. |
 
-**<xref:Bodu.Text.Configuration.BoduConfigurationWriteOptions>** controls `Save`: encoding, newline style, blank-line
+**<xref:Bodu.Text.Configuration.ConfigurationWriteOptions>** controls `Save`: encoding, newline style, blank-line
 policy, property layout. Use the static `Bodu` / `EditorConfigCompatible` / `Strict` / `Relaxed` presets, or supply a
 custom bag.
 
@@ -85,18 +85,18 @@ A configuration key has three concurrent forms:
 |---|---|---|
 | **Raw key** | `logging.level.default` | The text as authored in the source file. |
 | **Segments** | `["logging", "level", "default"]` | Split on the configured separators. |
-| **Configuration key** | `logging:level:default` | The canonical colon-delimited form stored in the view. |
+| **Path** | `logging:level:default` | The canonical colon-delimited form stored in the view. |
 
-<xref:Bodu.Text.Configuration.BoduConfigurationKey> is the read-only struct that holds all three.
-`BoduConfigurationKey.Parse(rawKey)` is the entry point; `TryParse` is the non-throwing variant.
+<xref:Bodu.Text.Configuration.ConfigurationKey> is the read-only struct that holds all three.
+`ConfigurationKey.Parse(rawKey)` is the entry point; `TryParse` is the non-throwing variant.
 
-Lookups on a <xref:Bodu.Text.Configuration.BoduConfigurationView> accept either the dotted or the colon-delimited form
+Lookups on a <xref:Bodu.Text.Configuration.ConfigurationView> accept either the dotted or the colon-delimited form
 — `view["logging.level.default"]` and `view["logging:level:default"]` return the same value. The view stores keys in
 the colon-delimited form to interoperate with `Microsoft.Extensions.Configuration`.
 
 ## Key mapping
 
-`BoduConfigurationKey` uses a <xref:Bodu.Text.Configuration.BoduConfigurationKeyOptions> to govern splitting and
+`ConfigurationKey` uses a <xref:Bodu.Text.Configuration.ConfigurationKeyOptions> to govern splitting and
 mapping:
 
 | Mapping | Behaviour |
@@ -128,17 +128,17 @@ The **target path** is the value passed to `document.Resolve(targetPath)`. Ancho
 are tested against `PathRoot + targetPath`. Unanchored patterns are tested against the filename only.
 
 When `PathRoot` is unset and the document was loaded from a string,
-<xref:Bodu.Text.Configuration.BoduConfigurationMissingPathRootMode> decides: `UseEmptyRoot` matches against the bare
+<xref:Bodu.Text.Configuration.ConfigurationMissingPathRootMode> decides: `UseEmptyRoot` matches against the bare
 target path, `Throw` rejects anchored patterns at resolve time, `IgnoreAnchoredPatterns` silently skips them.
 
-The pattern compiler is <xref:Bodu.Text.Configuration.BoduConfigurationPattern> — the same engine the resolver uses,
+The pattern compiler is <xref:Bodu.Text.Configuration.ConfigurationPattern> — the same engine the resolver uses,
 exposed for callers who want to test pattern matching directly without instantiating a document.
 
 ## Preamble
 
 The **preamble** is the EditorConfig name for the file's global section — properties that appear before any `[...]`
-section header. Bodu exposes it as <xref:Bodu.Text.Formats.IniDocument.GlobalSection> and the
-<xref:Bodu.Text.Configuration.BoduConfigurationExtensions.Preamble(Bodu.Text.Formats.IniDocument)> alias.
+section header. Bodu exposes it as <xref:Bodu.Text.Ini.IniDocument.GlobalSection> and the
+<xref:Bodu.Text.Configuration.ConfigurationExtensions.Preamble(Bodu.Text.Ini.IniDocument)> alias.
 
 Under the default `Bodu` profile, the resolver layers the preamble first and then each matching section in source
 order, so preamble properties act as defaults that any matching section can override. Under
@@ -155,7 +155,7 @@ The resolver walks the document once:
 2. For each named section in source order, test the header pattern against the target path. If it matches, copy each
    property into the working dictionary, overwriting any earlier value for the same key (**last-wins**).
 3. Apply the `UnsetValueMode` policy to any property whose value is the literal `unset`.
-4. Wrap the working dictionary in a <xref:Bodu.Text.Configuration.BoduConfigurationView>.
+4. Wrap the working dictionary in a <xref:Bodu.Text.Configuration.ConfigurationView>.
 
 The walk is single-pass and source-order — no precedence rule beyond "later wins for a given key". This matches
 EditorConfig semantics; tools that need different precedence rules should layer multiple documents or filter the
@@ -167,14 +167,14 @@ The reader can route recoverable issues three ways:
 
 | Mode | Behaviour |
 |---|---|
-| `Throw` (default) | On the first recoverable error, raise <xref:Bodu.Text.Configuration.BoduConfigurationParseException> and stop. The document is not returned. |
-| `Collect` | Run the parser to completion and attach diagnostics to a <xref:Bodu.Text.Configuration.BoduConfigurationParseResult>. The document is still returned and its valid portions remain usable. |
+| `Throw` (default) | On the first recoverable error, raise <xref:Bodu.Text.Configuration.ConfigurationParseException> and stop. The document is not returned. |
+| `Collect` | Run the parser to completion and attach diagnostics to a <xref:Bodu.Text.Configuration.ConfigurationParseResult>. The document is still returned and its valid portions remain usable. |
 | `Ignore` | Discard diagnostics; return the document anyway. |
 
 Use `Throw` for generated files where any deviation is a programmer error; use `Collect` for user-authored files where
 you want to surface every problem at once; use `Ignore` only when you are happy to trust whatever the parser produces.
-<xref:Bodu.Text.Configuration.BoduConfigurationDocument.ParseWithDiagnostics(System.String,Bodu.Text.Configuration.BoduConfigurationParseOptions)>
-returns a <xref:Bodu.Text.Configuration.BoduConfigurationParseResult> directly, even under `Throw` (where the
+<xref:Bodu.Text.Configuration.ConfigurationDocument.ParseWithDiagnostics(System.String,Bodu.Text.Configuration.ConfigurationParseOptions)>
+returns a <xref:Bodu.Text.Configuration.ConfigurationParseResult> directly, even under `Throw` (where the
 diagnostic list is always empty on a successful parse).
 
 ## Unset sentinel
@@ -183,7 +183,7 @@ EditorConfig defines the literal string `unset` as a directive that *removes* th
 the matching path — useful when a deeply nested section should opt out of a default established by an earlier
 section.
 
-<xref:Bodu.Text.Configuration.BoduConfigurationUnsetValueMode> controls how the resolver treats it:
+<xref:Bodu.Text.Configuration.ConfigurationUnsetValueMode> controls how the resolver treats it:
 
 | Mode | Behaviour |
 |---|---|
@@ -195,7 +195,7 @@ section.
 
 ## Typed accessors
 
-<xref:Bodu.Text.Configuration.BoduConfigurationView> exposes a family of typed getters built on top of
+<xref:Bodu.Text.Configuration.ConfigurationView> exposes a family of typed getters built on top of
 <xref:System.ISpanParsable`1>:
 
 | Getter family | Behaviour on missing key | Behaviour on malformed value |
@@ -216,7 +216,7 @@ records, anything with a span-parseable surface. All parsing is done with
 
 ## Saving (round-trip)
 
-<xref:Bodu.Text.Configuration.BoduConfigurationDocument.Save(Bodu.Text.Formats.IniDocument,System.String,Bodu.Text.Configuration.BoduConfigurationWriteOptions)>
+<xref:Bodu.Text.Configuration.ConfigurationDocument.Save(Bodu.Text.Ini.IniDocument,System.String,Bodu.Text.Configuration.ConfigurationWriteOptions)>
 emits the document back to text. The writer preserves comment lines, section ordering, and the original property
 ordering within each section, so a parse-then-save round-trip is byte-stable for any document the library produced.
 The write options control encoding (default UTF-8 without BOM), newline style (default `\n`), and blank-line policy

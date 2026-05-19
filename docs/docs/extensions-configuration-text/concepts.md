@@ -15,9 +15,9 @@ The library follows the three-part contract every `Microsoft.Extensions.Configur
 
 | Role | Type | Responsibility |
 |---|---|---|
-| **Source** | <xref:Bodu.Extensions.Configuration.Text.BoduTextConfigurationSource>, <xref:Bodu.Extensions.Configuration.Text.BoduTextStreamConfigurationSource> | Holds the configuration of "what to load and how" — the path, target path, parse and resolve options, reload behaviour. Implements `Build(IConfigurationBuilder)`. |
-| **Provider** | <xref:Bodu.Extensions.Configuration.Text.BoduTextConfigurationProvider>, <xref:Bodu.Extensions.Configuration.Text.BoduTextStreamConfigurationProvider> | Performs the actual load. Subclasses `FileConfigurationProvider` / `StreamConfigurationProvider`; inherits change-token plumbing. Populates the inherited `Data` dictionary. |
-| **Loader** | <xref:Bodu.Extensions.Configuration.Text.BoduTextConfigurationLoader> | Internal helper that parses a stream into an <xref:Bodu.Text.Formats.IniDocument>, resolves it, and flattens the view into `Dictionary<string, string?>` for the provider. |
+| **Source** | <xref:Bodu.Extensions.Configuration.Text.TextConfigurationSource>, <xref:Bodu.Extensions.Configuration.Text.TextStreamConfigurationSource> | Holds the configuration of "what to load and how" — the path, target path, parse and resolve options, reload behaviour. Implements `Build(IConfigurationBuilder)`. |
+| **Provider** | <xref:Bodu.Extensions.Configuration.Text.TextConfigurationProvider>, <xref:Bodu.Extensions.Configuration.Text.TextStreamConfigurationProvider> | Performs the actual load. Subclasses `FileConfigurationProvider` / `StreamConfigurationProvider`; inherits change-token plumbing. Populates the inherited `Data` dictionary. |
+| **Loader** | <xref:Bodu.Extensions.Configuration.Text.TextConfigurationLoader> | Internal helper that parses a stream into an <xref:Bodu.Text.Ini.IniDocument>, resolves it, and flattens the view into `Dictionary<string, string?>` for the provider. |
 
 Both providers share the same loader, so behaviour stays in lockstep across file and stream backings.
 
@@ -27,8 +27,8 @@ The two source types correspond to the two file shapes Microsoft ships:
 
 | Source | Backing | Reload-on-change |
 |---|---|---|
-| <xref:Bodu.Extensions.Configuration.Text.BoduTextConfigurationSource> | Path resolved through an `IFileProvider` | Yes |
-| <xref:Bodu.Extensions.Configuration.Text.BoduTextStreamConfigurationSource> | Arbitrary `System.IO.Stream` | No |
+| <xref:Bodu.Extensions.Configuration.Text.TextConfigurationSource> | Path resolved through an `IFileProvider` | Yes |
+| <xref:Bodu.Extensions.Configuration.Text.TextStreamConfigurationSource> | Arbitrary `System.IO.Stream` | No |
 
 File sources are the common case — they layer naturally with `appsettings.json`, support hot reload, and accept the
 same path-based options every provider does. Stream sources are useful for tests, embedded resources, or in-memory
@@ -36,11 +36,11 @@ fixtures where the configuration data does not live on disk.
 
 ## Target path
 
-`TargetPath` is the value the source hands to `BoduConfigurationDocument.Resolve(targetPath)`. It anchors glob
+`TargetPath` is the value the source hands to `ConfigurationDocument.Resolve(targetPath)`. It anchors glob
 matching for sections whose headers contain path separators.
 
 ```csharp
-builder.AddBoduConfiguration(
+builder.AddConfiguration(
     "team.boduconfig",
     targetPath: "src/MyApp/Program.cs");
 ```
@@ -65,31 +65,31 @@ A source carries two optional bags:
 
 | Source property | Drives |
 |---|---|
-| `ParseOptions` | The <xref:Bodu.Text.Configuration.BoduConfigurationParseOptions> passed to the reader. Controls inline-comment mode, duplicate handling, diagnostic mode, length limits. |
-| `ResolveOptions` | The <xref:Bodu.Text.Configuration.BoduConfigurationResolveOptions> passed to the resolver. Controls `PathRoot`, `MissingPathRootMode`, `UnsetValueMode`, `PathComparison`. |
+| `ParseOptions` | The <xref:Bodu.Text.Configuration.ConfigurationParseOptions> passed to the reader. Controls inline-comment mode, duplicate handling, diagnostic mode, length limits. |
+| `ResolveOptions` | The <xref:Bodu.Text.Configuration.ConfigurationResolveOptions> passed to the resolver. Controls `PathRoot`, `MissingPathRootMode`, `UnsetValueMode`, `PathComparison`. |
 
 Both default to `null`, in which case the library uses
-<xref:Bodu.Text.Configuration.BoduConfigurationParseOptions.Bodu> and
-<xref:Bodu.Text.Configuration.BoduConfigurationResolveOptions.Bodu>. Set them per-source when one file in a builder
+<xref:Bodu.Text.Configuration.ConfigurationParseOptions.Bodu> and
+<xref:Bodu.Text.Configuration.ConfigurationResolveOptions.Bodu>. Set them per-source when one file in a builder
 needs different semantics — for example, an EditorConfig-strict file alongside a Bodu-permissive one.
 
 ```csharp
-builder.AddBoduConfiguration(src =>
+builder.AddConfiguration(src =>
 {
     src.Path = ".editorconfig";
-    src.ParseOptions   = BoduConfigurationParseOptions.EditorConfigCompatible;
-    src.ResolveOptions = BoduConfigurationResolveOptions.EditorConfigCompatible;
+    src.ParseOptions   = ConfigurationParseOptions.EditorConfigCompatible;
+    src.ResolveOptions = ConfigurationResolveOptions.EditorConfigCompatible;
     src.TargetPath     = "src/Foo.cs";
 });
 ```
 
 ## Conventional file probe
 
-The no-argument overload of `AddBoduConfiguration` is a convenience helper for the common "drop a file in the project
+The no-argument overload of `AddConfiguration` is a convenience helper for the common "drop a file in the project
 root" pattern:
 
 ```csharp
-builder.AddBoduConfiguration(optional: true, reloadOnChange: true);
+builder.AddConfiguration(optional: true, reloadOnChange: true);
 ```
 
 The probe runs against the builder's default file provider and looks for two file names in order:
@@ -118,7 +118,7 @@ ends with that parse. If you need dynamic stream-backed inputs, rebuild the conf
 
 ## File provider precedence
 
-`AddBoduConfiguration` resolves the `IFileProvider` in the standard MEC order:
+`AddConfiguration` resolves the `IFileProvider` in the standard MEC order:
 
 1. If a provider is supplied directly to the overload, use it.
 2. Otherwise, if the source's `FileProvider` is set, use that.
@@ -130,25 +130,25 @@ builder default.
 
 ## Options binding
 
-<xref:Bodu.Extensions.Configuration.Text.BoduConfigurationOptionsExtensions> wraps the standard
+<xref:Bodu.Extensions.Configuration.Text.ConfigurationOptionsExtensions> wraps the standard
 `services.Configure<TOptions>(...)` shape:
 
 ```csharp
-services.AddBoduConfigurationOptions<ServiceOptions>(configuration, "service");
+services.AddConfigurationOptions<ServiceOptions>(configuration, "service");
 // equivalent to:
 services.Configure<ServiceOptions>(configuration.GetSection("service"));
 ```
 
-The wrapper exists for discoverability — call sites that reach for an `AddBoduConfiguration*` API by IntelliSense
+The wrapper exists for discoverability — call sites that reach for an `AddConfiguration*` API by IntelliSense
 find an options helper with the same prefix. The shape is identical to the MEC version; callers who already use
-`Configure<T>` are not penalised, and callers who switch to `AddBoduConfigurationOptions` are not locked in.
+`Configure<T>` are not penalised, and callers who switch to `AddConfigurationOptions` are not locked in.
 
 The two overloads:
 
 | Overload | Use when |
 |---|---|
-| `AddBoduConfigurationOptions<T>(services, configuration, sectionName)` | Section is identified by colon-delimited name in an `IConfiguration` root. |
-| `AddBoduConfigurationOptions<T>(services, section)` | Section is already projected via `configuration.GetSection(...)`. |
+| `AddConfigurationOptions<T>(services, configuration, sectionName)` | Section is identified by colon-delimited name in an `IConfiguration` root. |
+| `AddConfigurationOptions<T>(services, section)` | Section is already projected via `configuration.GetSection(...)`. |
 
 Both throw `ArgumentNullException` for null `services` / `configuration` / `section`; the name-based overload throws
 `ArgumentException` for an empty or whitespace section name.
@@ -165,7 +165,7 @@ logging.level.default = Information
 ```
 
 surfaces as `configuration["service:name"]`, `configuration["service:port"]`,
-`configuration["logging:level:default"]`. Switching to `BoduConfigurationKeyMapping.Identity` preserves the original
+`configuration["logging:level:default"]`. Switching to `ConfigurationKeyMapping.Identity` preserves the original
 delimiter — useful when the file is also consumed by tools that interpret dots as path separators (e.g. AppSettings
 patches).
 

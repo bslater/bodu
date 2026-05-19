@@ -12,11 +12,11 @@ For the high-level shape of the library and the encode/decode pipeline diagram, 
 
 A **format** is the wire grammar — for now, **Bencode** as specified by [BEP 3](https://www.bittorrent.org/beps/bep_0003.html). The grammar defines four kinds of value (integer, byte string, list, dictionary), the framing tokens that delimit each kind, and the invariants every encoder must preserve.
 
-A **codec** is the static façade that exposes encode and decode operations for a format. For Bencode it is <xref:Bodu.Text.Formats.Bencode> — a single `static partial class` with the recursive writer, the forward-only parser, and the span / array / stream overloads layered around them.
+A **codec** is the static façade that exposes encode and decode operations for a format. For Bencode it is <xref:Bodu.Text.Bencode.Bencode> — a single `static partial class` with the recursive writer, the forward-only parser, and the span / array / stream overloads layered around them.
 
 ## Value and document
 
-A **value** is one node in the decoded tree — a `BencodedInteger`, `BencodedString`, `BencodedList`, or `BencodedDictionary`. Every value derives from <xref:Bodu.Text.Formats.BencodedValue> and exposes a `Kind` property that returns the matching <xref:Bodu.Text.Formats.BencodedValueKind> member.
+A **value** is one node in the decoded tree — a `BencodedInteger`, `BencodedString`, `BencodedList`, or `BencodedDictionary`. Every value derives from <xref:Bodu.Text.Bencode.BencodedValue> and exposes a `Kind` property that returns the matching <xref:Bodu.Text.Bencode.BencodedValueKind> member.
 
 A **document** is exactly one top-level value (in practice, almost always a `BencodedDictionary`). `Bencode.Decode(source)` returns that root value; the parser also checks that the entire input was consumed, so a payload with trailing bytes after a complete value is rejected.
 
@@ -48,7 +48,7 @@ BEP 3 invariants enforced by the parser:
 - The declared payload must fit in the remaining input.
 - The length itself must fit in `Int32`.
 
-A bencoded string is **not** required to be text. Consumers that know a field is UTF-8 can call <xref:Bodu.Text.Formats.BencodedString.GetUtf8String> to project it, or build one from a `string` via <xref:Bodu.Text.Formats.BencodedString.FromUtf8>. For arbitrary binary, hold onto the raw `Bytes` directly.
+A bencoded string is **not** required to be text. Consumers that know a field is UTF-8 can call <xref:Bodu.Text.Bencode.BencodedString.GetUtf8String> to project it, or build one from a `string` via <xref:Bodu.Text.Bencode.BencodedString.FromUtf8>. For arbitrary binary, hold onto the raw `Bytes` directly.
 
 ### List (`BencodedList`)
 
@@ -65,7 +65,7 @@ BEP 3 invariants enforced by the parser:
 - Every key is parsed as a `BencodedString` — `dii42ee` (with an integer key) is rejected.
 - Keys must appear in **strict ascending raw byte order**. Out-of-order or duplicate keys cause the parser to reject the input.
 
-The constructor likewise rejects `null` keys, `null` values, and duplicates. Internally the dictionary stores its items in a `SortedDictionary` keyed by <xref:Bodu.Text.Formats.BencodedStringComparer.Ordinal>, so iteration order is always canonical regardless of insertion order.
+The constructor likewise rejects `null` keys, `null` values, and duplicates. Internally the dictionary stores its items in a `SortedDictionary` keyed by <xref:Bodu.Text.Bencode.BencodedStringComparer.Ordinal>, so iteration order is always canonical regardless of insertion order.
 
 ## Framing tokens
 
@@ -121,7 +121,7 @@ The synchronous `Decode(Stream)` and asynchronous `DecodeAsync(Stream)` overload
 
 ## Format exception
 
-A <xref:Bodu.Text.Formats.BencodeFormatException> derives from <xref:System.FormatException> and is thrown by the throwing `Decode` overloads on any structural violation. The message identifies the exact failure mode:
+A <xref:Bodu.Text.Bencode.BencodeFormatException> derives from <xref:System.FormatException> and is thrown by the throwing `Decode` overloads on any structural violation. The message identifies the exact failure mode:
 
 | Message | Trigger |
 |---|---|
@@ -157,7 +157,7 @@ When you build a value, use `BencodedString.FromUtf8(string)` for the text case 
 
 ## Ordering and equality
 
-Dictionary keys are ordered and compared by raw byte ordinal — *not* by Unicode collation, locale, or codepoint. The library exposes this as <xref:Bodu.Text.Formats.BencodedStringComparer.Ordinal>, a singleton that implements both `IComparer<BencodedString>` and `IEqualityComparer<BencodedString>`. Use it when you build a `SortedDictionary` of bencoded keys yourself.
+Dictionary keys are ordered and compared by raw byte ordinal — *not* by Unicode collation, locale, or codepoint. The library exposes this as <xref:Bodu.Text.Bencode.BencodedStringComparer.Ordinal>, a singleton that implements both `IComparer<BencodedString>` and `IEqualityComparer<BencodedString>`. Use it when you build a `SortedDictionary` of bencoded keys yourself.
 
 `BencodedString.Equals` compares the underlying byte sequences. `BencodedInteger.Equals` compares `long` values. The container types do not override `Equals`; deep equality of two trees is something the consumer composes.
 
@@ -165,5 +165,5 @@ Dictionary keys are ordered and compared by raw byte ordinal — *not* by Unicod
 
 - **[Getting started](getting-started.md)** — install + runnable minimal samples.
 - **[Bodu.Text.Formats guides](../../guides/formats/index.md)** — deep-dive walk-throughs for every concept above.
-- **[Bodu.Text.Formats API reference](../../apidoc/Bodu.Text.Formats.md)** — full type-by-type docs.
+- **API reference** — per-namespace pages: [Bencode](../../apidoc/Bodu.Text.Bencode.md), [Delimited](../../apidoc/Bodu.Text.Delimited.md), [DotEnv](../../apidoc/Bodu.Text.DotEnv.md), [Ini](../../apidoc/Bodu.Text.Ini.md).
 - **[Introduction](index.md)** — the high-level shape of the library.

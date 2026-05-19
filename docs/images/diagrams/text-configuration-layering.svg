@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 320" role="img" aria-labelledby="cl-t cl-d">
   <title id="cl-t">Bodu Text Configuration resolution layering</title>
-  <desc id="cl-d">Resolution layers the document for a target path in source order. The preamble (global section) contributes its properties first, then each named section whose glob header matches the target path contributes in turn. Later matches overwrite earlier values for the same key — last-wins precedence. The unset sentinel removes a key entirely when UnsetValueMode is RemoveEffectiveValue. The resulting BoduConfigurationView is a flat dictionary of colon-delimited keys to effective string values.</desc>
+  <desc id="cl-d">Resolution layers the document for a target path in source order. The preamble (global section) contributes its properties first, then each named section whose glob header matches the target path contributes in turn. Later matches overwrite earlier values for the same key — last-wins precedence. The unset sentinel removes a key entirely when UnsetValueMode is RemoveEffectiveValue. The resulting ConfigurationView is a flat dictionary of colon-delimited keys to effective string values.</desc>
 
   <defs>
     <style>
@@ -95,7 +95,7 @@
     <g transform="translate(580 80)">
       <rect class="ambr" width="200" height="208" rx="6"/>
       <text class="lbl" fill="#FBBF24" x="100" y="22">Effective view</text>
-      <text class="mut" x="100" y="38">BoduConfigurationView</text>
+      <text class="mut" x="100" y="38">ConfigurationView</text>
 
       <line x1="12" y1="48" x2="188" y2="48" stroke="#FBBF24" stroke-opacity="0.4" stroke-width="0.8"/>
 

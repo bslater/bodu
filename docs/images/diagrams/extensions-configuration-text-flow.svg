@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 280" role="img" aria-labelledby="ef-t ef-d">
   <title id="ef-t">Bodu.Extensions.Configuration.Text bridge flow</title>
-  <desc id="ef-d">The Bodu Extensions Configuration Text bridge connects Bodu.Text.Configuration to Microsoft.Extensions.Configuration. Calls to IConfigurationBuilder.AddBoduConfiguration register a BoduTextConfigurationSource that carries the path, target path, parse options, and resolve options. When the builder calls Build, the source instantiates a BoduTextConfigurationProvider that parses the file via Bodu.Text.Configuration, resolves it for the target path, and copies the flattened view into the inherited Data dictionary as colon-delimited keys. The resulting IConfiguration is bound to typed POCO options classes through the standard DI Configure helper, surfaced as the AddBoduConfigurationOptions convenience wrapper.</desc>
+  <desc id="ef-d">The Bodu Extensions Configuration Text bridge connects Bodu.Text.Configuration to Microsoft.Extensions.Configuration. Calls to IConfigurationBuilder.AddConfiguration register a TextConfigurationSource that carries the path, target path, parse options, and resolve options. When the builder calls Build, the source instantiates a TextConfigurationProvider that parses the file via Bodu.Text.Configuration, resolves it for the target path, and copies the flattened view into the inherited Data dictionary as colon-delimited keys. The resulting IConfiguration is bound to typed POCO options classes through the standard DI Configure helper, surfaced as the AddConfigurationOptions convenience wrapper.</desc>
 
   <defs>
     <style>
@@ -46,14 +46,14 @@
     <g transform="translate(20 70)">
       <rect class="src" width="170" height="50" rx="6"/>
       <text class="lbl" fill="#2DD4BF" x="85" y="20">IConfigurationBuilder</text>
-      <text class="mut" x="85" y="36">.AddBoduConfiguration(...)</text>
+      <text class="mut" x="85" y="36">.AddConfiguration(...)</text>
     </g>
 
     <line class="wt" x1="190" y1="95" x2="220" y2="95" marker-end="url(#ef-a)"/>
 
     <g transform="translate(220 70)">
       <rect class="mid" width="170" height="50" rx="6"/>
-      <text class="lbl" x="85" y="20">BoduTextConfiguration</text>
+      <text class="lbl" x="85" y="20">TextConfiguration</text>
       <text class="lbl" x="85" y="34">Source</text>
       <text class="mut" x="85" y="46">Path · TargetPath · Options</text>
     </g>
@@ -62,7 +62,7 @@
 
     <g transform="translate(420 70)">
       <rect class="dst" width="170" height="50" rx="6"/>
-      <text class="lbl" fill="#C4B5FD" x="85" y="20">BoduTextConfiguration</text>
+      <text class="lbl" fill="#C4B5FD" x="85" y="20">TextConfiguration</text>
       <text class="lbl" fill="#C4B5FD" x="85" y="34">Provider</text>
       <text class="mut" x="85" y="46">load → parse → resolve</text>
     </g>
@@ -93,7 +93,7 @@
     <g transform="translate(220 175)">
       <rect class="mid" width="170" height="48" rx="6"/>
       <text class="lbl" x="85" y="20">IServiceCollection</text>
-      <text class="mut" x="85" y="36">.AddBoduConfigurationOptions&lt;T&gt;</text>
+      <text class="mut" x="85" y="36">.AddConfigurationOptions&lt;T&gt;</text>
     </g>
 
     <line class="wa" x1="390" y1="199" x2="420" y2="199" marker-end="url(#ef-o)"/>

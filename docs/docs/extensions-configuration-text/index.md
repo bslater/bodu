@@ -6,7 +6,7 @@ title: Bodu.Extensions.Configuration.Text — Introduction
 
 **Bodu.Extensions.Configuration.Text** is the bridge between
 [`Bodu.Text.Configuration`](../text-configuration/index.md) and `Microsoft.Extensions.Configuration`. It exposes a
-single conventional entry point — `IConfigurationBuilder.AddBoduConfiguration(...)` — that adds a Bodu Text
+single conventional entry point — `IConfigurationBuilder.AddConfiguration(...)` — that adds a Bodu Text
 Configuration file (or stream, or pre-parsed document) as a configuration source alongside JSON, INI, XML, and
 environment variables.
 
@@ -24,23 +24,23 @@ configuration.GetSection("service")      // a child section that binds to your P
 ![Configuration flow — builder to provider to IConfiguration to IOptions](../../images/diagrams/extensions-configuration-text-flow.svg)
 
 The provider is a thin host around `Bodu.Text.Configuration`. The builder creates a
-<xref:Bodu.Extensions.Configuration.Text.BoduTextConfigurationSource> (or its stream-only sibling
-<xref:Bodu.Extensions.Configuration.Text.BoduTextStreamConfigurationSource>); the source's `Build` method instantiates
-a <xref:Bodu.Extensions.Configuration.Text.BoduTextConfigurationProvider>; the provider loads the file, parses it with
+<xref:Bodu.Extensions.Configuration.Text.TextConfigurationSource> (or its stream-only sibling
+<xref:Bodu.Extensions.Configuration.Text.TextStreamConfigurationSource>); the source's `Build` method instantiates
+a <xref:Bodu.Extensions.Configuration.Text.TextConfigurationProvider>; the provider loads the file, parses it with
 the supplied
-<xref:Bodu.Text.Configuration.BoduConfigurationParseOptions>, resolves it for the source's `TargetPath` using the
-supplied <xref:Bodu.Text.Configuration.BoduConfigurationResolveOptions>, and copies the resolved view into
-`IConfiguration.Data` as colon-delimited keys. The DI extensions (`AddBoduConfigurationOptions<T>`) bind a named
+<xref:Bodu.Text.Configuration.ConfigurationParseOptions>, resolves it for the source's `TargetPath` using the
+supplied <xref:Bodu.Text.Configuration.ConfigurationResolveOptions>, and copies the resolved view into
+`IConfiguration.Data` as colon-delimited keys. The DI extensions (`AddConfigurationOptions<T>`) bind a named
 section to an `IOptions<T>` instance.
 
 ```
 IConfigurationBuilder
-  ▶ AddBoduConfiguration(path | stream | document, …)
-  ▶ BoduTextConfigurationSource ▶ Build()
-  ▶ BoduTextConfigurationProvider.Load()
+  ▶ AddConfiguration(path | stream | document, …)
+  ▶ TextConfigurationSource ▶ Build()
+  ▶ TextConfigurationProvider.Load()
   ▶ Parse + Resolve via Bodu.Text.Configuration
   ▶ IConfiguration["key:subkey"]
-  ▶ services.AddBoduConfigurationOptions<TOptions>(config, "section")
+  ▶ services.AddConfigurationOptions<TOptions>(config, "section")
   ▶ IOptions<TOptions>
 ```
 
@@ -54,7 +54,7 @@ Everything lives in the `Bodu.Extensions.Configuration.Text` namespace.
 
 | Type | Purpose |
 |---|---|
-| <xref:Bodu.Extensions.Configuration.Text.BoduTextConfigurationExtensions> | Static class. Six `AddBoduConfiguration` overloads: file path, file path + file provider, configure callback, conventional probe (`.boduconfig` → `bodu.config`), stream, and pre-parsed `IniDocument`. |
+| <xref:Bodu.Extensions.Configuration.Text.TextConfigurationExtensions> | Static class. Six `AddConfiguration` overloads: file path, file path + file provider, configure callback, conventional probe (`.boduconfig` → `bodu.config`), stream, and pre-parsed `IniDocument`. |
 
 ### Sources and providers
 
@@ -62,11 +62,11 @@ Everything lives in the `Bodu.Extensions.Configuration.Text` namespace.
 
 | Type | Purpose |
 |---|---|
-| <xref:Bodu.Extensions.Configuration.Text.BoduTextConfigurationSource> | `FileConfigurationSource` subclass. Inherits `Path`, `Optional`, `ReloadOnChange`, `FileProvider`; adds `TargetPath`, `ParseOptions`, `ResolveOptions`. |
-| <xref:Bodu.Extensions.Configuration.Text.BoduTextConfigurationProvider> | `FileConfigurationProvider` subclass. Reads the file via the standard MEC pipeline and projects the resolved view into `Data`. |
-| <xref:Bodu.Extensions.Configuration.Text.BoduTextStreamConfigurationSource> | `StreamConfigurationSource` subclass. One-shot: no reload-on-change. |
-| <xref:Bodu.Extensions.Configuration.Text.BoduTextStreamConfigurationProvider> | The matching stream provider. |
-| <xref:Bodu.Extensions.Configuration.Text.BoduTextConfigurationLoader> | Internal helper that parses + resolves a stream into a flat key/value dictionary; reused by both providers. |
+| <xref:Bodu.Extensions.Configuration.Text.TextConfigurationSource> | `FileConfigurationSource` subclass. Inherits `Path`, `Optional`, `ReloadOnChange`, `FileProvider`; adds `TargetPath`, `ParseOptions`, `ResolveOptions`. |
+| <xref:Bodu.Extensions.Configuration.Text.TextConfigurationProvider> | `FileConfigurationProvider` subclass. Reads the file via the standard MEC pipeline and projects the resolved view into `Data`. |
+| <xref:Bodu.Extensions.Configuration.Text.TextStreamConfigurationSource> | `StreamConfigurationSource` subclass. One-shot: no reload-on-change. |
+| <xref:Bodu.Extensions.Configuration.Text.TextStreamConfigurationProvider> | The matching stream provider. |
+| <xref:Bodu.Extensions.Configuration.Text.TextConfigurationLoader> | Internal helper that parses + resolves a stream into a flat key/value dictionary; reused by both providers. |
 
 ### Options binding
 
@@ -74,22 +74,22 @@ Everything lives in the `Bodu.Extensions.Configuration.Text` namespace.
 
 | Type | Purpose |
 |---|---|
-| <xref:Bodu.Extensions.Configuration.Text.BoduConfigurationOptionsExtensions> | Static class. `AddBoduConfigurationOptions<TOptions>(services, configuration, sectionName)` and the section overload `AddBoduConfigurationOptions<TOptions>(services, IConfigurationSection)`. |
+| <xref:Bodu.Extensions.Configuration.Text.ConfigurationOptionsExtensions> | Static class. `AddConfigurationOptions<TOptions>(services, configuration, sectionName)` and the section overload `AddConfigurationOptions<TOptions>(services, IConfigurationSection)`. |
 
 ## Common scenarios
 
 | Scenario | Reach for |
 |---|---|
-| Add a `.boduconfig` file to the builder | `builder.AddBoduConfiguration(".boduconfig")` |
-| Conventional probe — try `.boduconfig` then `bodu.config` | `builder.AddBoduConfiguration()` (no-arg) |
-| Anchor glob resolution to a specific source path | `builder.AddBoduConfiguration("appsettings.bodu", targetPath: "src/Foo.cs")` |
-| Optional file — do not throw if missing | `builder.AddBoduConfiguration("appsettings.bodu", optional: true)` |
-| Reload-on-change | `builder.AddBoduConfiguration("appsettings.bodu", reloadOnChange: true)` |
-| Use a specific `IFileProvider` | `builder.AddBoduConfiguration(physicalFileProvider, "appsettings.bodu")` |
-| Read from a stream (test fixtures, embedded resources) | `builder.AddBoduConfiguration(stream)` |
-| Wire up everything via a configure callback | `builder.AddBoduConfiguration(src => { src.Path = …; src.TargetPath = …; src.ReloadOnChange = true; })` |
-| Bind a section to an options class | `services.AddBoduConfigurationOptions<MyOptions>(configuration, "service")` |
-| Pre-parsed `IniDocument` (already loaded elsewhere) | `builder.AddBoduConfiguration(document, targetPath: …)` |
+| Add a `.boduconfig` file to the builder | `builder.AddConfiguration(".boduconfig")` |
+| Conventional probe — try `.boduconfig` then `bodu.config` | `builder.AddConfiguration()` (no-arg) |
+| Anchor glob resolution to a specific source path | `builder.AddConfiguration("appsettings.bodu", targetPath: "src/Foo.cs")` |
+| Optional file — do not throw if missing | `builder.AddConfiguration("appsettings.bodu", optional: true)` |
+| Reload-on-change | `builder.AddConfiguration("appsettings.bodu", reloadOnChange: true)` |
+| Use a specific `IFileProvider` | `builder.AddConfiguration(physicalFileProvider, "appsettings.bodu")` |
+| Read from a stream (test fixtures, embedded resources) | `builder.AddConfiguration(stream)` |
+| Wire up everything via a configure callback | `builder.AddConfiguration(src => { src.Path = …; src.TargetPath = …; src.ReloadOnChange = true; })` |
+| Bind a section to an options class | `services.AddConfigurationOptions<MyOptions>(configuration, "service")` |
+| Pre-parsed `IniDocument` (already loaded elsewhere) | `builder.AddConfiguration(document, targetPath: …)` |
 
 ## Conventional file probe
 
@@ -106,11 +106,11 @@ contract.
 
 ## Reload-on-change
 
-`BoduTextConfigurationSource` inherits the `ReloadOnChange` property from `FileConfigurationSource`. When `true`, the
+`TextConfigurationSource` inherits the `ReloadOnChange` property from `FileConfigurationSource`. When `true`, the
 provider attaches a file watcher through the configured `IFileProvider`; any change to the underlying file triggers
 a reparse + reload, and any reload tokens issued through `IConfiguration` fire.
 
-`BoduTextStreamConfigurationSource` does **not** support reload-on-change — it parses the stream once when `Build` is
+`TextStreamConfigurationSource` does **not** support reload-on-change — it parses the stream once when `Build` is
 called, and the stream lifetime ends with that parse. For dynamic stream-backed inputs, rebuild the configuration.
 
 ## Where to go next

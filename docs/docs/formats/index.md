@@ -35,7 +35,7 @@ Bencode is not a binary-to-text encoding like Base64. It is a **binary serializa
 
 ### INI as a sibling format
 
-Alongside Bencode, the package ships the **INI primitives** — <xref:Bodu.Text.Formats.IniDocument>, <xref:Bodu.Text.Formats.IniSection>, <xref:Bodu.Text.Formats.IniEntry>, and the static <xref:Bodu.Text.Formats.Ini> codec — used directly by [`Bodu.Text.Configuration`](../text-configuration/index.md) to layer EditorConfig-style configuration on top of the same model. When you need INI parsing without configuration layering, work with <xref:Bodu.Text.Formats.Ini> directly; when you need glob-anchored sections, profile presets, and a flat colon-delimited view, reach for the Configuration package.
+Alongside Bencode, the package ships the **INI primitives** — <xref:Bodu.Text.Ini.IniDocument>, <xref:Bodu.Text.Ini.IniSection>, <xref:Bodu.Text.Ini.IniEntry>, and the static <xref:Bodu.Text.Ini.Ini> codec — used directly by [`Bodu.Text.Configuration`](../text-configuration/index.md) to layer EditorConfig-style configuration on top of the same model. When you need INI parsing without configuration layering, work with <xref:Bodu.Text.Ini.Ini> directly; when you need glob-anchored sections, profile presets, and a flat colon-delimited view, reach for the Configuration package.
 
 ### Canonicality
 
@@ -65,8 +65,8 @@ Encoding is allocation-conscious: stream variants stage to a pooled buffer of th
 | Pre-size a destination span | `int size = Bencode.GetEncodedLength(tree);` |
 | Parse without throwing on malformed input | `Bencode.TryDecode(source, out var value, out var consumed)` |
 | Write canonically to a `Stream` | `Bencode.Encode(tree, stream)` / `EncodeAsync(tree, stream)` |
-| Compare byte-string keys ordinally | <xref:Bodu.Text.Formats.BencodedStringComparer.Ordinal> |
-| Treat a key payload as text | <xref:Bodu.Text.Formats.BencodedString.GetUtf8String> |
+| Compare byte-string keys ordinally | <xref:Bodu.Text.Bencode.BencodedStringComparer.Ordinal> |
+| Treat a key payload as text | <xref:Bodu.Text.Bencode.BencodedString.GetUtf8String> |
 
 ## Main types
 
@@ -76,30 +76,30 @@ The same surface, grouped by what role you're playing rather than by namespace.
 
 | Type | Purpose |
 |---|---|
-| <xref:Bodu.Text.Formats.Bencode> | Static codec — `Encode`, `Decode`, `TryEncode`, `TryDecode`, `GetEncodedLength` over spans, byte arrays, and `Stream`. |
-| <xref:Bodu.Text.Formats.BencodedValue> | Abstract base for every decoded value; exposes `Kind` for switch-style dispatch. |
-| <xref:Bodu.Text.Formats.BencodedValueKind> | `Integer` · `String` · `List` · `Dictionary`. |
-| <xref:Bodu.Text.Formats.BencodeFormatException> | Thrown for any BEP 3 violation; the message identifies the exact failure mode. |
+| <xref:Bodu.Text.Bencode.Bencode> | Static codec — `Encode`, `Decode`, `TryEncode`, `TryDecode`, `GetEncodedLength` over spans, byte arrays, and `Stream`. |
+| <xref:Bodu.Text.Bencode.BencodedValue> | Abstract base for every decoded value; exposes `Kind` for switch-style dispatch. |
+| <xref:Bodu.Text.Bencode.BencodedValueKind> | `Integer` · `String` · `List` · `Dictionary`. |
+| <xref:Bodu.Text.Bencode.BencodeFormatException> | Thrown for any BEP 3 violation; the message identifies the exact failure mode. |
 
 ### Value types
 
 | Type | Purpose |
 |---|---|
-| <xref:Bodu.Text.Formats.BencodedInteger> | Signed 64-bit integer; rejects leading zeros, negative zero, and values outside `Int64` range. |
-| <xref:Bodu.Text.Formats.BencodedString> | Raw byte string with a `Bytes` payload and helpers (`FromUtf8`, `GetUtf8String`) for the text case. |
-| <xref:Bodu.Text.Formats.BencodedList> | Ordered list of values; constructor rejects `null` elements. |
-| <xref:Bodu.Text.Formats.BencodedDictionary> | Byte-string-keyed dictionary; keys are stored sorted by raw byte order. Indexer, `TryGetValue(BencodedString)`, and `TryGetValue(string)` (UTF-8) all work. |
+| <xref:Bodu.Text.Bencode.BencodedInteger> | Signed 64-bit integer; rejects leading zeros, negative zero, and values outside `Int64` range. |
+| <xref:Bodu.Text.Bencode.BencodedString> | Raw byte string with a `Bytes` payload and helpers (`FromUtf8`, `GetUtf8String`) for the text case. |
+| <xref:Bodu.Text.Bencode.BencodedList> | Ordered list of values; constructor rejects `null` elements. |
+| <xref:Bodu.Text.Bencode.BencodedDictionary> | Byte-string-keyed dictionary; keys are stored sorted by raw byte order. Indexer, `TryGetValue(BencodedString)`, and `TryGetValue(string)` (UTF-8) all work. |
 
 ### Supporting types
 
 | Type | Purpose |
 |---|---|
-| <xref:Bodu.Text.Formats.BencodedStringComparer> | Singleton `Ordinal` comparer for raw byte-string ordering; implements both `IComparer<BencodedString>` and `IEqualityComparer<BencodedString>`. |
+| <xref:Bodu.Text.Bencode.BencodedStringComparer> | Singleton `Ordinal` comparer for raw byte-string ordering; implements both `IComparer<BencodedString>` and `IEqualityComparer<BencodedString>`. |
 
 ## Where to go next
 
 - **[Core concepts](concepts.md)** — full vocabulary: value vs. document, canonical encoding, framing tokens, byte string vs. text, format exception.
 - **[Getting started](getting-started.md)** — install + minimal samples for `Decode`, `Encode`, `Try*`, and the stream overloads.
 - **[Bodu.Text.Formats guides](../../guides/formats/index.md)** — using the Bencode codec, the value model, and stream support.
-- **[Bodu.Text.Formats API reference](../../apidoc/Bodu.Text.Formats.md)** — full type-by-type docs.
+- **API reference** — per-namespace pages: [Bencode](../../apidoc/Bodu.Text.Bencode.md), [Delimited](../../apidoc/Bodu.Text.Delimited.md), [DotEnv](../../apidoc/Bodu.Text.DotEnv.md), [Ini](../../apidoc/Bodu.Text.Ini.md).
 - **For EditorConfig-style configuration layering on `IniDocument`**, see [Bodu.Text.Configuration](../text-configuration/index.md).

@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 280" role="img" aria-labelledby="cp-t cp-d">
   <title id="cp-t">Bodu Text Configuration pipeline</title>
-  <desc id="cp-d">The Bodu.Text.Configuration pipeline runs in four stages. Source text is tokenised by BoduConfigurationReader and produces an immutable IniDocument from Bodu.Text.Formats. The IniDocument is projected by BoduConfigurationResolver for a specific target path, layering the preamble plus matching glob-anchored sections in source order to produce a BoduConfigurationView. The view exposes typed accessors — GetString, GetInt32, GetBoolean, GetEnum, and GetValue&lt;T&gt; for any ISpanParsable — that return the effective value for each colon-delimited configuration key.</desc>
+  <desc id="cp-d">The Bodu.Text.Configuration pipeline runs in four stages. Source text is tokenised by ConfigurationReader and produces an immutable IniDocument from Bodu.Text.Ini. The IniDocument is projected by ConfigurationResolver for a specific target path, layering the preamble plus matching glob-anchored sections in source order to produce a ConfigurationView. The view exposes typed accessors — GetString, GetInt32, GetBoolean, GetEnum, and GetValue&lt;T&gt; for any ISpanParsable — that return the effective value for each colon-delimited configuration key.</desc>
 
   <defs>
     <style>
@@ -49,7 +49,7 @@
 
     <g transform="translate(220 70)">
       <rect class="mid" width="160" height="46" rx="6"/>
-      <text class="lbl" x="80" y="20">BoduConfigurationReader</text>
+      <text class="lbl" x="80" y="20">ConfigurationReader</text>
       <text class="mut" x="80" y="36">tokenise + diagnose</text>
     </g>
 
@@ -85,7 +85,7 @@
 
     <g transform="translate(220 172)">
       <rect class="dst" width="160" height="46" rx="6"/>
-      <text class="lbl" fill="#C4B5FD" x="80" y="20">BoduConfigurationResolver</text>
+      <text class="lbl" fill="#C4B5FD" x="80" y="20">ConfigurationResolver</text>
       <text class="mut" x="80" y="36">preamble + matched globs</text>
     </g>
 
@@ -93,7 +93,7 @@
 
     <g transform="translate(420 172)">
       <rect class="dst" width="160" height="46" rx="6"/>
-      <text class="lbl" fill="#C4B5FD" x="80" y="20">BoduConfigurationView</text>
+      <text class="lbl" fill="#C4B5FD" x="80" y="20">ConfigurationView</text>
       <text class="mut" x="80" y="36">flat colon-delimited keys</text>
     </g>
 
@@ -106,6 +106,6 @@
     </g>
 
     <!-- Footer note -->
-    <text class="mut" x="400" y="244" text-anchor="middle">ParseWithDiagnostics returns a BoduConfigurationParseResult under Collect mode; TryGetXxx never throws on missing or malformed values.</text>
+    <text class="mut" x="400" y="244" text-anchor="middle">ParseWithDiagnostics returns a ConfigurationParseResult under Collect mode; TryGetXxx never throws on missing or malformed values.</text>
   </g>
 </svg>
