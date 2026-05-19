@@ -285,7 +285,7 @@ public static partial class ArrayExtensions
     /// </remarks>
     internal static Array ReverseArrayCore(Array source, int index, int count)
     {
-        Type? elementType = source.GetType().GetElementType() ?? throw new InvalidOperationException("Array element type could not be resolved."); //TODO: define a BCL-style exception message in the resx file and remove inline static text
+        Type? elementType = source.GetType().GetElementType() ?? throw new InvalidOperationException(ResourceStrings.Op_Invalid_ArrayElementTypeUnresolved);
 
         var result = Array.CreateInstance(elementType, source.Length);
         Array.Copy(source, result, source.Length);

@@ -29,7 +29,7 @@ public static class WorkingDaysOfWeekExtensions
     {
         ThrowHelper.ThrowIfEnumValueIsUndefined(value);
         return value == WorkingDaysOfWeek.Custom
-            ? throw new ArgumentException("Custom has no canonical WeekPattern; pass a WeekPattern directly.", nameof(value)) //TODO: define a BCL-style exception message in the resx file and remove inline static text
+            ? throw new ArgumentException(ResourceStrings.Arg_Invalid_CustomHasNoCanonicalWeekPattern, nameof(value))
             : value switch
             {
                 WorkingDaysOfWeek.MondayToFriday => WeekPattern.MondayToFriday,

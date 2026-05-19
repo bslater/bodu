@@ -6,6 +6,7 @@
 
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Globalization;
 
 namespace Bodu.Collections.Generic;
 
@@ -327,7 +328,7 @@ public sealed partial class MultiValueDictionary<TKey, TValue>
 
         return _map.TryGetValue(key, out ValueBucket? bucket)
             ? (IReadOnlyList<TValue>)bucket.ReadOnlyValues
-            : throw new KeyNotFoundException($"The key '{key}' was not present in the dictionary."); //TODO: define a BCL-style exception message in the resx file and remove inline static text
+            : throw new KeyNotFoundException(string.Format(CultureInfo.CurrentCulture, ResourceStrings.KeyNotFound_Dictionary, key));
     }
 
     /// <summary>

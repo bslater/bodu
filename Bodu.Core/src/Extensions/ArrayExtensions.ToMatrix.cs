@@ -38,7 +38,7 @@ public static partial class ArrayExtensions
         for (var i = 1; i < rows; i++)
         {
             T[] row = source[i] ?? throw new ArgumentNullException(nameof(source));
-            if (row.Length != cols) throw new ArgumentException("All inner arrays must have the same length.", nameof(source)); //TODO: define a BCL-style exception message in the resx file and remove inline static text
+            if (row.Length != cols) throw new ArgumentException(ResourceStrings.Arg_Invalid_JaggedArrayInnerLength, nameof(source));
         }
 
         T[,] matrix = transpose ? new T[cols, rows] : new T[rows, cols];

@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
+
 namespace Bodu.Extensions;
 
 public static partial class NumericExtensions
@@ -53,7 +55,7 @@ public static partial class NumericExtensions
             ulong ul => BitConverter.GetBytes(ul),
             float f => BitConverter.GetBytes(f),
             double d => BitConverter.GetBytes(d),
-            _ => throw new InvalidOperationException($"Type '{typeof(T).Name}' is not a supported numeric type.") //TODO: define a BCL-style exception message in the resx file and remove inline static text
+            _ => throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, ResourceStrings.Op_Invalid_UnsupportedNumericType, typeof(T).Name))
         };
 
         // BitConverter always produces bytes in the system's native byte order. Reverse when the

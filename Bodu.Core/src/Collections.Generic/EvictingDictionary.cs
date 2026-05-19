@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Diagnostics;
+using System.Globalization;
 
 namespace Bodu.Collections.Generic;
 
@@ -492,7 +493,7 @@ public partial class EvictingDictionary<TKey, TValue>
     public void TouchOrThrow(TKey key)
     {
         if (!Touch(key))
-            throw new KeyNotFoundException($"The key '{key}' was not found in the dictionary."); //TODO: define a BCL-style exception message in the resx file and remove inline static text
+            throw new KeyNotFoundException(string.Format(CultureInfo.CurrentCulture, ResourceStrings.KeyNotFound_Dictionary, key));
     }
 
     /// <summary>
@@ -609,7 +610,7 @@ public partial class EvictingDictionary<TKey, TValue>
 
         // No candidate was produced. If the store is still at capacity the caller (Add) will exceed the limit, so fail loudly
         // rather than silently corrupting the invariant.
-        if (_store.Count >= Capacity) throw new InvalidOperationException($"Eviction policy '{Policy}' produced no candidate while the dictionary is at capacity.");  //TODO: define a BCL-style exception message in the resx file and remove inline static text
+        if (_store.Count >= Capacity) throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, ResourceStrings.Op_Invalid_EvictionProducedNoCandidate, Policy));
     }
 
     /// <summary>
@@ -618,7 +619,7 @@ public partial class EvictingDictionary<TKey, TValue>
     /// </summary>
     private void ThrowIfEvicting()
     {
-        if (_isEvicting) throw new InvalidOperationException("The dictionary cannot be mutated from within an ItemEvicting or ItemEvicted event handler."); //TODO: define a BCL-style exception message in the resx file and remove inline static text
+        if (_isEvicting) throw new InvalidOperationException(ResourceStrings.Op_Invalid_ReentrancyNotAllowed);
     }
 
     /// <summary>
@@ -706,7 +707,7 @@ public partial class EvictingDictionary<TKey, TValue>
                 break;
 
             default:
-                throw new InvalidOperationException($"Unknown eviction policy: {Policy}"); //TODO: define a BCL-style exception message in the resx file and remove inline static text
+                throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, ResourceStrings.Op_Invalid_UnknownEvictionPolicy, Policy));
         }
     }
 
@@ -718,7 +719,7 @@ public partial class EvictingDictionary<TKey, TValue>
     private void ThrowIfVersionChanged(int capturedVersion)
     {
         if (_version != capturedVersion)
-            throw new InvalidOperationException("Collection was modified; enumeration operation may not execute."); //TODO: define a BCL-style exception message in the resx file and remove inline static text
+            throw new InvalidOperationException(ResourceStrings.Op_Invalid_CollectionModified);
     }
 
     /// <summary>

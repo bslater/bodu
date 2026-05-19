@@ -104,7 +104,7 @@ public static partial class DateOnlyExtensions
     /// </exception>
     public static DateOnly PreviousWeekday(this DateOnly date, WeekPattern workingWeek)
     {
-        if (workingWeek.Count == 0) throw new ArgumentOutOfRangeException(nameof(workingWeek), "The working week must select at least one day."); //TODO: define a BCL-style exception message in the resx file and remove inline static text
+        if (workingWeek.Count == 0) throw new ArgumentOutOfRangeException(nameof(workingWeek), ResourceStrings.Arg_OutOfRange_WorkingWeekEmpty);
 
         var dayNumber = date.DayNumber;
         do
