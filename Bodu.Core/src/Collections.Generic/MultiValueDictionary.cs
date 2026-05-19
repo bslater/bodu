@@ -47,43 +47,27 @@ namespace Bodu.Collections.Generic;
 /// <para>
 /// This type is not thread-safe. Concurrent reads and writes require external synchronization.
 /// </para>
+/// </remarks>
 /// <example>
-/// The following example stores multiple values under the same key: <code language="csharp">
 ///<![CDATA[
-/// var map = new MultiValueDictionary&lt;string, int&gt;();
-///
-/// map.Add("odd", 1);
-/// map.Add("odd", 3);
+/// // Multiple values under a single key — values are retained in insertion order.
+/// var map = new MultiValueDictionary<string, int>();
+/// map.Add("odd",  1);
+/// map.Add("odd",  3);
 /// map.Add("even", 2);
 ///
-/// Console.WriteLine($"Count:    {map.Count}");    // Count is 3 because there are three key-value entries.
-/// Console.WriteLine($"KeyCount: {map.KeyCount}"); // KeyCount is 2 because there are two distinct keys.
-///]]>
-/// </code>
-/// </example>
-/// <example>
-/// The following example retrieves values for a key: <code language="csharp">
-///<![CDATA[
-/// IReadOnlyList&lt;int&gt; values = map["odd"];
+/// Console.WriteLine(map.Count);    // 3 — total key-value entries
+/// Console.WriteLine(map.KeyCount); // 2 — distinct keys
 ///
-/// foreach (int value in values)
-/// {
-///    Console.WriteLine(value);
-/// }
+/// // The indexer returns a live read-only view; absent keys yield an empty list rather than throwing.
+/// foreach (int value in map["odd"])
+///     Console.WriteLine(value);
+///
+/// // Flatten into one KeyValuePair per stored value.
+/// foreach (KeyValuePair<string, int> pair in map.Flatten())
+///     Console.WriteLine($"{pair.Key}: {pair.Value}");
 ///]]>
-/// </code>
 /// </example>
-/// <example>
-/// The following example flattens the dictionary into one pair per value: <code language="csharp">
-///<![CDATA[
-/// foreach (KeyValuePair&lt;string, int&gt; pair in map.Flatten())
-/// {
-///    Console.WriteLine($"{pair.Key}: {pair.Value}");
-/// }
-///]]>
-/// </code>
-/// </example>
-/// </remarks>
 [DebuggerDisplay("KeyCount = {KeyCount}, Count = {Count}")]
 [DebuggerTypeProxy(typeof(MultiValueDictionaryDebugView<,>))]
 [Serializable]

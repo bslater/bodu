@@ -86,24 +86,22 @@ namespace Bodu.Collections.Generic;
 /// <para>
 /// <see cref="Deque{T}" /> accepts <see langword="null" /> values for reference types and allows duplicate elements.
 /// </para>
+/// </remarks>
 /// <example>
-/// <code language="csharp">
 ///<![CDATA[
-/// // Growable double-ended queue (the default)
+/// // Growable double-ended queue (the default).
 /// var deque = new Deque<int>();
 /// deque.AddLast(2);
 /// deque.AddFirst(1);
-/// deque.AddLast(3);          // contents: 1, 2, 3
-/// int head = deque.RemoveFirst();   // 1
+/// deque.AddLast(3);                  // contents: 1, 2, 3
+/// int head = deque.RemoveFirst();    // 1
 ///
-/// // Fixed-capacity queue: rejects adds when full
+/// // Fixed-capacity queue: rejects adds when full.
 /// var bounded = new Deque<int>(capacity: 8, allowGrow: false);
 /// for (int i = 0; i < 8; i++) bounded.AddLast(i);
 /// bool added = bounded.TryAddLast(8); // false — bounded is full
 ///]]>
-/// </code>
 /// </example>
-/// </remarks>
 [DebuggerDisplay("Count = {Count}, Capacity = {Capacity}, AllowGrow = {AllowGrow}")]
 [DebuggerTypeProxy(typeof(DequeDebugView<>))]
 [Serializable]

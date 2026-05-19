@@ -29,6 +29,18 @@ namespace Bodu.Collections.Generic;
 /// knowing the upper bound in advance.
 /// </para>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // Buffer a streamed sequence whose length is unknown, then random-access it by index.
+/// var buffer = new SegmentedBuffer<int>(segmentSize: 512);
+/// foreach (int value in ReadStream())
+///     buffer.Add(value);
+///
+/// Console.WriteLine($"Buffered {buffer.Count} values");
+/// int first = buffer[0];
+/// int last  = buffer[buffer.Count - 1];
+///]]>
+/// </example>
 public sealed class SegmentedBuffer<T> :
     System.Collections.Generic.IEnumerable<T>
 {

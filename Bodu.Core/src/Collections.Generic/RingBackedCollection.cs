@@ -77,6 +77,21 @@ namespace Bodu.Collections.Generic;
 /// does not share storage with this hierarchy.
 /// </para>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // The common surface is consumed through a concrete derivative — CircularBuffer<T> here.
+/// // The same Count, Capacity, IsEmpty, indexer, ToArray, and TrimExcess members are available
+/// // on every RingBackedCollection<T> subtype.
+/// RingBackedCollection<int> ring = new CircularBuffer<int>(capacity: 4);
+/// ((CircularBuffer<int>)ring).Enqueue(10);
+/// ((CircularBuffer<int>)ring).Enqueue(20);
+///
+/// Console.WriteLine(ring.Count);    // 2
+/// Console.WriteLine(ring.Capacity); // 4
+/// Console.WriteLine(ring[0]);       // 10 — head-relative indexer
+/// ring.TrimExcess();                // shrink Capacity towards Count
+///]]>
+/// </example>
 [Serializable]
 public abstract partial class RingBackedCollection<T>
 {

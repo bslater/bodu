@@ -25,6 +25,19 @@ namespace Bodu.Buffers;
 /// Call <see cref="Dispose" /> when the builder is no longer needed.
 /// </para>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // Accumulate a result of unknown length without per-item array doubling.
+/// using var builder = new PooledBufferBuilder<int>(initialCapacity: 256);
+///
+/// foreach (int value in source)
+///     builder.Append(value);
+///
+/// ReadOnlySpan<int> span = builder.WrittenSpan;
+/// Console.WriteLine($"Buffered {builder.WrittenCount} values from a pooled buffer of {builder.Capacity}.");
+/// // The rented array is returned to ArrayPool<int>.Shared when 'builder' is disposed.
+///]]>
+/// </example>
 public sealed class PooledBufferBuilder<T> :
     System.IDisposable,
     System.Buffers.IBufferWriter<T>,

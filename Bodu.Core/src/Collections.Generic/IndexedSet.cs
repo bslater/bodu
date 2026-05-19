@@ -29,6 +29,23 @@ namespace Bodu.Collections.Generic;
 /// This type is not thread-safe.
 /// </para>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // Build a deduplicated playlist that can still be reordered by index.
+/// var playlist = new IndexedSet<string>(StringComparer.OrdinalIgnoreCase);
+///
+/// playlist.Add("Intro");
+/// playlist.Add("Verse");
+/// playlist.Add("Chorus");
+/// bool added = playlist.Add("verse"); // false — already present under case-insensitive comparer
+///
+/// playlist.Insert(0, "Cold Open");    // positional insertion preserves uniqueness
+/// playlist.Move(oldIndex: 1, newIndex: 3);
+///
+/// int chorusIndex = playlist.IndexOf("Chorus"); // O(1) lookup via the hash index
+/// string second   = playlist[1];                // O(1) positional read
+///]]>
+/// </example>
 [DebuggerDisplay("Count = {Count}")]
 [DebuggerTypeProxy(typeof(OrderedSetStorageDebugView<>))]
 [Serializable]
