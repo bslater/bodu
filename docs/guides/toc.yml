@@ -172,3 +172,13 @@
       items:
         - name: Streams and async I/O
           href: formats/streaming.md
+- name: Bodu.Text.Configuration
+  href: text-configuration/
+  items:
+    - name: Overview
+      href: text-configuration/index.md
+- name: Bodu.Extensions.Configuration.Text
+  href: extensions-configuration-text/
+  items:
+    - name: Overview
+      href: extensions-configuration-text/index.md

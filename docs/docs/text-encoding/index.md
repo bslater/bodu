@@ -110,3 +110,5 @@ For runtime-selected encoding choice, see the **[IBinaryEncoding](../../guides/t
 - **[Core concepts](concepts.md)** — vocabulary: alphabet, variant, terminal quantum, padding, shortcut, decoration.
 - **[Getting started](getting-started.md)** — install + minimal sample per encoding type.
 - **[Bodu.Text.Encoding guides](../../guides/text-encoding/index.md)** — using each encoding, choosing variants, streaming, the `IBinaryEncoding` interface.
+- **[Bodu.Text.Encoding API reference](../../apidoc/Bodu.Text.Encoding.md)** — full type-by-type docs.
+- **For structured binary serialization formats** (Bencode, INI) with their own self-describing grammar, see [Bodu.Text.Formats](../formats/index.md).

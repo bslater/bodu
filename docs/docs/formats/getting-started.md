@@ -193,3 +193,4 @@ The library passes every positive Known Answer Test vector from BEP 3 in both di
 - **[Bodu.Text.Formats guides](../../guides/formats/index.md)** — per-API deep dives.
 - **[Core concepts](concepts.md)** — vocabulary refresher.
 - **[Introduction](index.md)** — type map and scenario index.
+- **[Bodu.Text.Formats API reference](../../apidoc/Bodu.Text.Formats.md)** — full type-by-type docs.

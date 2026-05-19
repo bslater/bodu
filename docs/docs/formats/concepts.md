@@ -165,4 +165,5 @@ Dictionary keys are ordered and compared by raw byte ordinal — *not* by Unicod
 
 - **[Getting started](getting-started.md)** — install + runnable minimal samples.
 - **[Bodu.Text.Formats guides](../../guides/formats/index.md)** — deep-dive walk-throughs for every concept above.
+- **[Bodu.Text.Formats API reference](../../apidoc/Bodu.Text.Formats.md)** — full type-by-type docs.
 - **[Introduction](index.md)** — the high-level shape of the library.
