@@ -30,6 +30,20 @@ namespace Bodu.IO.Hashing.Checksums;
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for
 /// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // Single-call computation against a decimal body.
+/// char check = Iso7064Mod11_2.Compute("0794");   // '0'
+///
+/// // Full-sequence validation.
+/// bool ok = Iso7064Mod11_2.IsValid("07940");     // true
+///
+/// // Streaming use when the body is built up incrementally.
+/// var algo = new Iso7064Mod11_2();
+/// algo.Append("0794");
+/// char d = algo.GetCurrentCheckDigit();          // '0'
+///]]>
+/// </example>
 public sealed class Iso7064Mod11_2
     : AlphanumericCheckDigitAlgorithm
 {

@@ -30,6 +30,20 @@ namespace Bodu.IO.Hashing.Checksums;
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for
 /// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // Single-call computation against the 6-character body (consonants and digits only).
+/// char check = Sedol.Compute("B0WNLY");   // '7'
+///
+/// // Full-sequence validation.
+/// bool ok = Sedol.IsValid("B0WNLY7");     // true
+///
+/// // Streaming use when the body is built up incrementally.
+/// var algo = new Sedol();
+/// algo.Append("B0WNLY");
+/// char d = algo.GetCurrentCheckDigit();   // '7'
+///]]>
+/// </example>
 public sealed class Sedol
     : AlphanumericCheckDigitAlgorithm
 {

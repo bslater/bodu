@@ -29,6 +29,20 @@ namespace Bodu.IO.Hashing.Checksums;
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for
 /// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // Single-call computation against the 12-digit body.
+/// char check = Isbn13.Compute("978030640615");   // '7'
+///
+/// // Full-sequence validation.
+/// bool ok = Isbn13.IsValid("9780306406157");     // true
+///
+/// // Streaming use when the body is built up incrementally.
+/// var algo = new Isbn13();
+/// algo.Append("978030640615");
+/// char d = algo.GetCurrentCheckDigit();          // '7'
+///]]>
+/// </example>
 public sealed class Isbn13
     : CheckDigitAlgorithm
 {

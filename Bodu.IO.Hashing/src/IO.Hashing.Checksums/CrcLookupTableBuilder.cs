@@ -38,6 +38,20 @@ namespace Bodu.IO.Hashing.Checksums;
 /// The method is pure, deterministic, and allocation-bounded by the table size; results are safe to cache and share.
 /// </para>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // Build the lookup table for CRC-32/ISO-HDLC (the canonical CRC-32 used by Ethernet, PKZIP, gzip).
+/// CrcStandard isoHdlc = CrcStandard.CRC32_ISOHDLC;
+/// ulong[] table = CrcLookupTableBuilder.BuildLookupTable(
+///     size:       isoHdlc.Size,        // 32
+///     polynomial: isoHdlc.Polynomial,  // 0x04C11DB7
+///     reflectIn:  isoHdlc.ReflectIn);  // true
+///
+/// // table has 256 entries; each value is masked to 32 bits and suitable for
+/// // direct XOR into the running CRC register.
+/// Console.WriteLine(table[0xFF]); // 0x...  the precomputed contribution for byte 0xFF
+///]]>
+/// </example>
 /// <seealso cref="Crc"/> <seealso cref="CrcStandard"/> <seealso cref="CrcLookupTableCache"/>
 public static class CrcLookupTableBuilder
 {

@@ -27,6 +27,21 @@ namespace Bodu.IO.Hashing.Checksums;
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for
 /// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // Two contrasting bodies — the second exercises the 'X' sentinel.
+/// char check    = Isbn10.Compute("030640615");   // '2'
+/// char checkX   = Isbn10.Compute("043942089");   // 'X'  (sentinel for value ten)
+///
+/// // Full-sequence validation.
+/// bool ok = Isbn10.IsValid("043942089X");        // true
+///
+/// // Streaming use when the body is built up incrementally.
+/// var algo = new Isbn10();
+/// algo.Append("030640615");
+/// char d = algo.GetCurrentCheckDigit();          // '2'
+///]]>
+/// </example>
 public sealed class Isbn10
     : AlphanumericCheckDigitAlgorithm
 {
