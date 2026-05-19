@@ -26,6 +26,20 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for
 /// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // Single-call computation against the 12-digit body.
+/// char check = Ean13.Compute("501234567890");   // '0'
+///
+/// // Full-sequence validation.
+/// bool ok = Ean13.IsValid("5012345678900");     // true
+///
+/// // Streaming use when the body is built up incrementally.
+/// var algo = new Ean13();
+/// algo.Append("501234567890");
+/// char d = algo.GetCurrentCheckDigit();         // '0'
+///]]>
+/// </example>
 public sealed class Ean13
     : CheckDigitAlgorithm
 {

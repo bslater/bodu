@@ -31,6 +31,19 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// They must <b>not</b> be used for password hashing, digital signatures, or integrity validation in security-sensitive
 /// applications.</note>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // Use a concrete derivative through the abstract surface — ISIN accepts a mix of
+/// // ASCII letters (the country code) and digits.
+/// AlphanumericCheckDigitAlgorithm algo = new Isin();
+/// algo.Append("US037833100");                          // Apple Inc.
+/// char check = algo.GetCurrentCheckDigit();            // '5'
+///
+/// // Inspect the declared alphabets for input validation upstream.
+/// CheckDigitInputAlphabet  inputs  = algo.InputAlphabet;
+/// CheckDigitOutputAlphabet outputs = algo.OutputAlphabet;
+///]]>
+/// </example>
 public abstract class AlphanumericCheckDigitAlgorithm
 {
     /// <summary>

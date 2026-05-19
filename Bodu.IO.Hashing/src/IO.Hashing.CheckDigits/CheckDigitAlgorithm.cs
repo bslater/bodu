@@ -30,6 +30,19 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// They must <b>not</b> be used for password hashing, digital signatures, or integrity validation in security-sensitive
 /// applications.</note>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // Use a concrete derivative through the abstract surface.
+/// CheckDigitAlgorithm algo = new Luhn();
+/// algo.Append("7992739871");
+/// char check = algo.GetCurrentCheckDigit();   // '3'
+///
+/// // Reset between independent computations.
+/// algo.Reset();
+/// algo.Append('1');
+/// algo.Append("7893729977");
+///]]>
+/// </example>
 public abstract class CheckDigitAlgorithm
 {
     /// <summary>

@@ -27,6 +27,20 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for
 /// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // Single-call computation against an in-memory body.
+/// char check = Verhoeff.Compute("236");   // '3'
+///
+/// // Full-sequence validation.
+/// bool ok = Verhoeff.IsValid("2363");     // true
+///
+/// // Streaming use when the body is built up incrementally.
+/// var algo = new Verhoeff();
+/// algo.Append("236");
+/// char d = algo.GetCurrentCheckDigit();   // '3'
+///]]>
+/// </example>
 public sealed partial class Verhoeff
     : CheckDigitAlgorithm
 {

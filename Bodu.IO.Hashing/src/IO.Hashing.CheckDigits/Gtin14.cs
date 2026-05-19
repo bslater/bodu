@@ -25,6 +25,20 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for
 /// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // Single-call computation against the 13-digit body.
+/// char check = Gtin14.Compute("1061414100041");   // '5'
+///
+/// // Full-sequence validation.
+/// bool ok = Gtin14.IsValid("10614141000415");     // true
+///
+/// // Streaming use when the body is built up incrementally.
+/// var algo = new Gtin14();
+/// algo.Append("1061414100041");
+/// char d = algo.GetCurrentCheckDigit();           // '5'
+///]]>
+/// </example>
 public sealed class Gtin14
     : CheckDigitAlgorithm
 {
