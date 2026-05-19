@@ -192,14 +192,8 @@ public readonly partial struct BoduConfigurationKey : IEquatable<BoduConfigurati
         builder.Add(segment.ToString());
     }
 
-    private static void RejectControlCharacters(string rawKey)
-    {
-        for (var i = 0; i < rawKey.Length; i++)
-        {
-            var c = rawKey[i];
-            if (char.IsControl(c)) throw new ArgumentException(string.Format(System.Globalization.CultureInfo.InvariantCulture, ConfigurationResourceStrings.Arg_Invalid_ConfigKeyControlChar, i), nameof(rawKey));
-        }
-    }
+    private static void RejectControlCharacters(string rawKey) =>
+        ConfigurationThrowHelper.ThrowIfConfigKeyContainsControlChar(rawKey);
 
     private static bool IsSeparator(char c, IReadOnlyList<char> separators)
     {

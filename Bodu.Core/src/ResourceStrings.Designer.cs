@@ -194,7 +194,16 @@ namespace Bodu {
                 return ResourceManager.GetString("Arg_Invalid_Conversion", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Custom has no canonical WeekPattern; pass a WeekPattern directly..
+        /// </summary>
+        internal static string Arg_Invalid_CustomHasNoCanonicalWeekPattern {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_CustomHasNoCanonicalWeekPattern", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to The destination {0} must be at least as long as the source {1}..
         /// </summary>
@@ -203,7 +212,7 @@ namespace Bodu {
                 return ResourceManager.GetString("Arg_Invalid_DestinationTooSmall", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to The dictionary cannot contain duplicate keys..
         /// </summary>
@@ -212,7 +221,16 @@ namespace Bodu {
                 return ResourceManager.GetString("Arg_Invalid_DuplicateDictionaryKey", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to The set already contains the specified value..
+        /// </summary>
+        internal static string Arg_Invalid_DuplicateSetValue {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_DuplicateSetValue", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to The format string is invalid..
         /// </summary>
@@ -248,7 +266,16 @@ namespace Bodu {
                 return ResourceManager.GetString("Arg_Invalid_InputTooShort", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to All inner arrays must have the same length..
+        /// </summary>
+        internal static string Arg_Invalid_JaggedArrayInnerLength {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_JaggedArrayInnerLength", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to The value must not be less than or equal to the value of {0}..
         /// </summary>
@@ -392,7 +419,25 @@ namespace Bodu {
                 return ResourceManager.GetString("Arg_Invalid_ProviderInterface", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to The specified range overlaps an existing range..
+        /// </summary>
+        internal static string Arg_Invalid_RangeOverlap {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_RangeOverlap", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The range start must be less than the range end..
+        /// </summary>
+        internal static string Arg_Invalid_RangeStartNotLessThanEnd {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_RangeStartNotLessThanEnd", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Only single-dimension arrays are supported..
         /// </summary>
@@ -554,7 +599,16 @@ namespace Bodu {
                 return ResourceManager.GetString("Arg_Invalid_WrongActionForCtor", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot advance past the end of the current buffer..
+        /// </summary>
+        internal static string Arg_OutOfRange_AdvancePastBufferEnd {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_AdvancePastBufferEnd", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Hour, Minute, and Second parameters describe an unrepresentable DateTime..
         /// </summary>
@@ -797,7 +851,16 @@ namespace Bodu {
                 return ResourceManager.GetString("Arg_OutOfRange_WeekNotValidForYearAndCulture", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to The working week must select at least one day..
+        /// </summary>
+        internal static string Arg_OutOfRange_WorkingWeekEmpty {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_WorkingWeekEmpty", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Too many bytes in what should have been a 7 bit encoded Int32..
         /// </summary>
@@ -977,7 +1040,25 @@ namespace Bodu {
                 return ResourceManager.GetString("IO_NotSupported_StreamWrite", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to The given key &apos;{0}&apos; was not present in the dictionary..
+        /// </summary>
+        internal static string KeyNotFound_Dictionary {
+            get {
+                return ResourceManager.GetString("KeyNotFound_Dictionary", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The specified key was not contained in any range..
+        /// </summary>
+        internal static string KeyNotFound_Range {
+            get {
+                return ResourceManager.GetString("KeyNotFound_Range", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Activator.CreateInstance returned null for type &apos;{0}&apos;..
         /// </summary>
@@ -1004,7 +1085,16 @@ namespace Bodu {
                 return ResourceManager.GetString("Op_Invalid_AlreadyInitialized", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Array element type could not be resolved..
+        /// </summary>
+        internal static string Op_Invalid_ArrayElementTypeUnresolved {
+            get {
+                return ResourceManager.GetString("Op_Invalid_ArrayElementTypeUnresolved", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Invalid value &apos;{0}&apos; for attribute &apos;{1}&apos;..
         /// </summary>
@@ -1112,7 +1202,16 @@ namespace Bodu {
                 return ResourceManager.GetString("Op_Invalid_EnumeratorNotOnElement", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Eviction policy &apos;{0}&apos; produced no candidate while the dictionary is at capacity..
+        /// </summary>
+        internal static string Op_Invalid_EvictionProducedNoCandidate {
+            get {
+                return ResourceManager.GetString("Op_Invalid_EvictionProducedNoCandidate", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to The factory returned null for type &apos;{0}&apos;..
         /// </summary>
@@ -1193,7 +1292,34 @@ namespace Bodu {
                 return ResourceManager.GetString("Op_Invalid_TimeoutAlreadyEstablished", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown eviction policy &apos;{0}&apos;..
+        /// </summary>
+        internal static string Op_Invalid_UnknownEvictionPolicy {
+            get {
+                return ResourceManager.GetString("Op_Invalid_UnknownEvictionPolicy", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Type &apos;{0}&apos; is not a supported numeric type..
+        /// </summary>
+        internal static string Op_Invalid_UnsupportedNumericType {
+            get {
+                return ResourceManager.GetString("Op_Invalid_UnsupportedNumericType", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Missing XML namespace on root element..
+        /// </summary>
+        internal static string Op_Invalid_XmlMissingNamespace {
+            get {
+                return ResourceManager.GetString("Op_Invalid_XmlMissingNamespace", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to The SyncRoot property may not be used for the synchronization of concurrent collections..
         /// </summary>
@@ -1202,7 +1328,25 @@ namespace Bodu {
                 return ResourceManager.GetString("Op_NotSupported_ConcurrentSyncRoot", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Mutating the dictionary through the Keys collection is not supported..
+        /// </summary>
+        internal static string Op_NotSupported_DictionaryKeysMutation {
+            get {
+                return ResourceManager.GetString("Op_NotSupported_DictionaryKeysMutation", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Mutating the dictionary through the Values collection is not supported..
+        /// </summary>
+        internal static string Op_NotSupported_DictionaryValuesMutation {
+            get {
+                return ResourceManager.GetString("Op_NotSupported_DictionaryValuesMutation", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Negating the minimum value of a twos complement number is invalid..
         /// </summary>

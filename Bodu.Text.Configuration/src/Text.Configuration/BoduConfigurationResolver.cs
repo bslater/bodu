@@ -27,7 +27,7 @@ internal sealed class BoduConfigurationResolver
 
         var pathRoot = _options.PathRoot;
         if (pathRoot is null && _options.MissingPathRootMode == BoduConfigurationMissingPathRootMode.Throw && targetPath is null)
-            throw new InvalidOperationException(ConfigurationResourceStrings.Op_Invalid_ResolveWithoutPathRoot);
+            ConfigurationHelpers.ThrowResolveWithoutPathRoot();
 
         StringComparer comparer = _options.KeyOptions.KeyComparer;
         Dictionary<string, string?> values = new(comparer);

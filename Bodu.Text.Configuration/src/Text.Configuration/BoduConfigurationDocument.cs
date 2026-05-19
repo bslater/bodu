@@ -166,8 +166,7 @@ public static class BoduConfigurationDocument
         bool leaveOpen = false)
     {
         ThrowHelper.ThrowIfNull(stream);
-        if (!stream.CanRead)
-            throw new ArgumentException(ConfigurationResourceStrings.Arg_Invalid_StreamNotReadable, nameof(stream));
+        ConfigurationThrowHelper.ThrowIfStreamNotReadable(stream);
 
         BoduConfigurationParseOptions effective = options ?? BoduConfigurationParseOptions.Bodu;
         Encoding effectiveEncoding = encoding ?? effective.DefaultEncoding;
@@ -219,8 +218,7 @@ public static class BoduConfigurationDocument
     {
         ThrowHelper.ThrowIfNull(document);
         ThrowHelper.ThrowIfNull(stream);
-        if (!stream.CanWrite)
-            throw new ArgumentException(ConfigurationResourceStrings.Arg_Invalid_StreamNotWritable, nameof(stream));
+        ConfigurationThrowHelper.ThrowIfStreamNotWritable(stream);
 
         BoduConfigurationWriteOptions effective = options ?? BoduConfigurationWriteOptions.Bodu;
         using StreamWriter writer = new(stream, effective.Encoding, bufferSize: 1024, leaveOpen: leaveOpen);

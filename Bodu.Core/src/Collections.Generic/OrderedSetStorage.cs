@@ -278,7 +278,7 @@ internal sealed class OrderedSetStorage<T>
         ThrowHelper.ThrowIfNull(value);
 
         var existingIndex = FindIndex(value);
-        if (existingIndex >= 0 && existingIndex != index) throw new ArgumentException("The set already contains the specified value.", nameof(value)); //TODO: define a BCL-style exception message in the resx file and remove inline static text
+        if (existingIndex >= 0 && existingIndex != index) throw new ArgumentException(ResourceStrings.Arg_Invalid_DuplicateSetValue, nameof(value));
 
         if (existingIndex == index)
             return;
@@ -381,7 +381,7 @@ internal sealed class OrderedSetStorage<T>
         ThrowHelper.ThrowIfNull(array);
         ThrowHelper.ThrowIfNegative(arrayIndex);
 
-        if (array.Length - arrayIndex < _count) throw new ArgumentException("The destination array does not have sufficient space.", nameof(array)); //TODO: define a BCL-style exception message in the resx file and remove inline static text
+        if (array.Length - arrayIndex < _count) throw new ArgumentException(ResourceStrings.Arg_Invalid_ArrayLengthExceedsCapacity, nameof(array));
 
         Array.Copy(_items, 0, array, arrayIndex, _count);
     }

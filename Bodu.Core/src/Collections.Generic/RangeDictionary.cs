@@ -94,7 +94,7 @@ public sealed partial class RangeDictionary<TKey, TValue>
     public TValue this[TKey key] =>
         TryGetValue(key, out TValue? value)
             ? value
-            : throw new KeyNotFoundException("The specified key was not contained in any range."); //TODO: define a BCL-style exception message in the resx file and remove inline static text
+            : throw new KeyNotFoundException(ResourceStrings.KeyNotFound_Range);
 
     /// <summary>
     /// Gets the range entry at the specified sorted index.
@@ -129,9 +129,9 @@ public sealed partial class RangeDictionary<TKey, TValue>
 
         var index = LowerBound(startInclusive);
 
-        if (index > 0 && _comparer.Compare(_ends[index - 1], startInclusive) > 0) throw new ArgumentException("The specified range overlaps an existing range.", nameof(startInclusive)); //TODO: define a BCL-style exception message in the resx file and remove inline static text
+        if (index > 0 && _comparer.Compare(_ends[index - 1], startInclusive) > 0) throw new ArgumentException(ResourceStrings.Arg_Invalid_RangeOverlap, nameof(startInclusive));
 
-        if (index < _count && _comparer.Compare(_starts[index], endExclusive) < 0) throw new ArgumentException("The specified range overlaps an existing range.", nameof(endExclusive)); //TODO: define a BCL-style exception message in the resx file and remove inline static text
+        if (index < _count && _comparer.Compare(_starts[index], endExclusive) < 0) throw new ArgumentException(ResourceStrings.Arg_Invalid_RangeOverlap, nameof(endExclusive));
 
         InsertAt(index, startInclusive, endExclusive, value);
     }

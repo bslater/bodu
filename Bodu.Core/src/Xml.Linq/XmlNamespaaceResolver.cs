@@ -26,7 +26,7 @@ public sealed class XmlNamespaceResolver
     {
         ThrowHelper.ThrowIfNull(root);
 
-        _xNamespace = root.Name.Namespace ?? throw new InvalidOperationException("Missing XML _xNamespace on root element."); //TODO: define a BCL-style exception message in the resx file and remove inline static text
+        _xNamespace = root.Name.Namespace ?? throw new InvalidOperationException(ResourceStrings.Op_Invalid_XmlMissingNamespace);
     }
 
     /// <summary>
