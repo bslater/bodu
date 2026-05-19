@@ -4,16 +4,13 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.IO.Hashing.Extensions;
-
-using System;
 using System.Buffers;
-using System.IO;
 using System.IO.Hashing;
+
+namespace Bodu.IO.Hashing.Extensions;
 
 public static partial class NonCryptographicHashAlgorithmExtensions
 {
-
     /// <summary>
     /// Feeds a span of bytes into the ongoing hash computation of the specified
     /// <see cref="NonCryptographicHashAlgorithm" /> without finalizing it.
@@ -105,5 +102,4 @@ public static partial class NonCryptographicHashAlgorithmExtensions
             ArrayPool<byte>.Shared.Return(buffer);
         }
     }
-
 }

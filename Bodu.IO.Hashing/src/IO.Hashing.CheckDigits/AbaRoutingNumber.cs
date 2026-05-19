@@ -33,7 +33,6 @@ namespace Bodu.IO.Hashing.CheckDigits;
 public sealed class AbaRoutingNumber
     : CheckDigitAlgorithm
 {
-
     /// <summary>
     /// The required body length of <c>8</c> decimal digits.
     /// </summary>
@@ -50,7 +49,7 @@ public sealed class AbaRoutingNumber
     // length is known. To preserve the streaming contract (Append / GetCurrentCheckDigit at any point), the
     // implementation buffers the running list of digit values (at most 8) and recomputes the weighted sum on
     // each GetCurrentCheckDigit call. This is acceptably cheap given the tiny fixed body length.
-    private readonly List<int> _digits = new List<int>(BodyLength);
+    private readonly List<int> _digits = new(BodyLength);
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AbaRoutingNumber" /> class.
@@ -91,12 +90,8 @@ public sealed class AbaRoutingNumber
     /// under the ABA scheme; otherwise, <see langword="false" /> — including the case where the length is wrong or a
     /// non-digit character is present.
     /// </returns>
-    public static bool IsValid(ReadOnlySpan<char> digitsIncludingCheck)
-    {
-        if (digitsIncludingCheck.IsEmpty) return true;
-        if (digitsIncludingCheck.Length != SequenceLength) return false;
-        return WeightedMod10.IsValidAba(digitsIncludingCheck);
-    }
+    public static bool IsValid(ReadOnlySpan<char> digitsIncludingCheck) =>
+        digitsIncludingCheck.IsEmpty || (digitsIncludingCheck.Length == SequenceLength && WeightedMod10.IsValidAba(digitsIncludingCheck));
 
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<char> digits)
@@ -107,14 +102,14 @@ public sealed class AbaRoutingNumber
             if ((uint)(ch - '0') > 9u)
                 ThrowHelper.ThrowIfNotAsciiDecimalDigit(ch, nameof(digits));
 
-            this._digits.Add(ch - '0');
+            _digits.Add(ch - '0');
         }
     }
 
     /// <inheritdoc />
     public override char GetCurrentCheckDigit()
     {
-        ReadOnlySpan<int> weights = new int[] { 7, 3, 1 };
+        ReadOnlySpan<int> weights = [7, 3, 1];
         var count = _digits.Count;
         var sum = 0;
         for (int i = count - 1, j = 0; i >= 0; i--, j++)
@@ -126,5 +121,4 @@ public sealed class AbaRoutingNumber
     /// <inheritdoc />
     public override void Reset() =>
         _digits.Clear();
-
 }

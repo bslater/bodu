@@ -41,7 +41,6 @@ namespace Bodu.IO.Hashing.Checksums;
 /// <seealso cref="Crc"/> <seealso cref="CrcStandard"/> <seealso cref="CrcLookupTableCache"/>
 public static class CrcLookupTableBuilder
 {
-
     /// <summary>
     /// Generates a CRC lookup table for a given bit size, polynomial, and reflection mode.
     /// </summary>
@@ -105,5 +104,4 @@ public static class CrcLookupTableBuilder
 
         return table;
     }
-
 }

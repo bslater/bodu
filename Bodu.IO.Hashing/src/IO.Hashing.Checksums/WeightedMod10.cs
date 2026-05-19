@@ -33,7 +33,6 @@ namespace Bodu.IO.Hashing.Checksums;
 /// </remarks>
 internal static class WeightedMod10
 {
-
     /// <summary>
     /// Computes the ABA routing-number check digit for the supplied 8-digit body using weights <c>{1, 7, 3}</c> applied
     /// cyclically from the right-hand data digit toward the left.
@@ -52,7 +51,7 @@ internal static class WeightedMod10
         // From the right-hand data digit toward the left the ABA pattern is {1, 7, 3}. From the check position
         // itself toward the left the pattern is {3, 1, 7, 3, 1, 7, 3, 1, 7}; including the check position makes
         // the total sum a multiple of ten for a consistent sequence.
-        ReadOnlySpan<int> weights = new int[] { 7, 3, 1 };
+        ReadOnlySpan<int> weights = [7, 3, 1];
         var sum = 0;
         for (int i = digits.Length - 1, j = 0; i >= 0; i--, j++)
         {
@@ -65,6 +64,7 @@ internal static class WeightedMod10
 
         return (char)('0' + ((10 - (sum % 10)) % 10));
     }
+
     /// <summary>
     /// Computes the ISBN-13 / GTIN check digit for the supplied body using weights <c>{3, 1}</c> applied from the
     /// right-hand data digit toward the left.
@@ -105,7 +105,7 @@ internal static class WeightedMod10
     /// </returns>
     public static bool IsValidAba(ReadOnlySpan<char> digitsIncludingCheck)
     {
-        ReadOnlySpan<int> weights = new int[] { 1, 7, 3 };
+        ReadOnlySpan<int> weights = [1, 7, 3];
         var sum = 0;
         for (int i = digitsIncludingCheck.Length - 1, j = 0; i >= 0; i--, j++)
         {
@@ -145,5 +145,4 @@ internal static class WeightedMod10
 
         return sum % 10 == 0;
     }
-
 }

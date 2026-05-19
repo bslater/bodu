@@ -4,12 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.IO.Hashing.Checksums;
-
-using System;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using Bodu.IO.Hashing;
+
+namespace Bodu.IO.Hashing.Checksums;
 
 /// <summary>
 /// Provides a base class for the Fletcher checksum family (Fletcher-16, Fletcher-32, Fletcher-64).
@@ -58,14 +55,13 @@ public abstract class Fletcher<TSelf>
     : BlockNonCryptographicHashAlgorithm<TSelf>
     where TSelf : Fletcher<TSelf>, new()
 {
+    private static readonly int[] s_validHashSizes = [16, 32, 64];
 
-    private static readonly int[] ValidHashSizes = { 16, 32, 64 };
+    private readonly int _hashSizeBits;
+    private readonly ulong _modulus;
 
-    private readonly int hashSizeBits;
-    private readonly ulong modulus;
-
-    private ulong partA;
-    private ulong partB;
+    private ulong _partA;
+    private ulong _partB;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Fletcher{TSelf}" /> class with the specified hash size.
@@ -74,20 +70,20 @@ public abstract class Fletcher<TSelf>
     /// <exception cref="ArgumentException">Thrown if <paramref name="hashSize" /> is not 16, 32, or 64.</exception>
     protected Fletcher(int hashSize)
         : base(
-            hashLengthInBytes: ValidHashSizes.Contains(hashSize)
+            hashLengthInBytes: s_validHashSizes.Contains(hashSize)
                 ? hashSize / 8
                 : throw new ArgumentException(
                     string.Format(
                         System.Globalization.CultureInfo.InvariantCulture,
                         HashingResourceStrings.Arg_OutOfRange_HashSize,
                         hashSize,
-                        string.Join(", ", ValidHashSizes)),
+                        string.Join(", ", s_validHashSizes)),
                     nameof(hashSize)),
             blockSize: 1)
     {
-        this.hashSizeBits = hashSize;
-        this.modulus = (1UL << (hashSize / 2)) - 1;
-        this.AlgorithmName = $"Fletcher-{hashSize}";
+        _hashSizeBits = hashSize;
+        _modulus = (1UL << (hashSize / 2)) - 1;
+        AlgorithmName = $"Fletcher-{hashSize}";
     }
 
     /// <summary>
@@ -99,9 +95,11 @@ public abstract class Fletcher<TSelf>
     /// <inheritdoc />
     protected override TSelf Clone()
     {
-        var clone = new TSelf();
-        clone.partA = this.partA;
-        clone.partB = this.partB;
+        var clone = new TSelf
+        {
+            _partA = _partA,
+            _partB = _partB,
+        };
         clone.CopyResidualStateFrom(this);
         return clone;
     }
@@ -109,7 +107,7 @@ public abstract class Fletcher<TSelf>
     /// <inheritdoc />
     protected override byte[] PadBlock(ReadOnlySpan<byte> block, ulong messageLength)
     {
-        var buffer = new byte[this.BlockSizeBytes];
+        var buffer = new byte[BlockSizeBytes];
         block.CopyTo(buffer);
         return buffer;
     }
@@ -118,18 +116,18 @@ public abstract class Fletcher<TSelf>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected override void ProcessBlock(ReadOnlySpan<byte> block)
     {
-        this.partA = (this.partA + block[0]) % this.modulus;
-        this.partB = (this.partB + this.partA) % this.modulus;
+        _partA = (_partA + block[0]) % _modulus;
+        _partB = (_partB + _partA) % _modulus;
     }
 
     /// <inheritdoc />
     protected override byte[] ProcessFinalBlock()
     {
-        var result = new byte[this.hashSizeBits / 8];
+        var result = new byte[_hashSizeBits / 8];
         var halfLength = result.Length / 2;
 
-        WriteBigEndian(this.partB, result.AsSpan(0, halfLength));
-        WriteBigEndian(this.partA, result.AsSpan(halfLength, halfLength));
+        WriteBigEndian(_partB, result.AsSpan(0, halfLength));
+        WriteBigEndian(_partA, result.AsSpan(halfLength, halfLength));
 
         return result;
     }
@@ -137,8 +135,8 @@ public abstract class Fletcher<TSelf>
     /// <inheritdoc />
     protected override void ResetState()
     {
-        this.partA = 0;
-        this.partB = 0;
+        _partA = 0;
+        _partB = 0;
     }
 
     /// <inheritdoc />
@@ -151,5 +149,4 @@ public abstract class Fletcher<TSelf>
             destination[i] = (byte)(value >> ((destination.Length - i - 1) << 3));
         }
     }
-
 }

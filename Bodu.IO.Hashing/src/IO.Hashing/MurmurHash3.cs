@@ -67,8 +67,7 @@ public abstract class MurmurHash3<T>
     : NonCryptographicHashAlgorithm, IDisposable
     where T : MurmurHash3<T>, new()
 {
-
-    private static readonly int[] s_validHashSizes = { 32, 128 };
+    private static readonly int[] s_validHashSizes = [32, 128];
 
     private readonly MemoryStream _inputBuffer = new MemoryStream();
     private bool _disposed;
@@ -85,7 +84,7 @@ public abstract class MurmurHash3<T>
     protected MurmurHash3(int hashSize, uint seed = 0)
         : base(ValidateHashSize(hashSize) / 8)
     {
-        this.Seed = seed;
+        Seed = seed;
     }
 
     /// <summary>
@@ -97,9 +96,9 @@ public abstract class MurmurHash3<T>
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<byte> source)
     {
-        ObjectDisposedException.ThrowIf(this._disposed, this);
+        ObjectDisposedException.ThrowIf(_disposed, this);
         if (source.Length > 0)
-            this._inputBuffer.Write(source);
+            _inputBuffer.Write(source);
     }
 
     /// <summary>
@@ -112,16 +111,16 @@ public abstract class MurmurHash3<T>
     /// </remarks>
     public void Dispose()
     {
-        this.Dispose(disposing: true);
+        Dispose(disposing: true);
         GC.SuppressFinalize(this);
     }
 
     /// <inheritdoc />
     public override void Reset()
     {
-        ObjectDisposedException.ThrowIf(this._disposed, this);
-        this._inputBuffer.SetLength(0);
-        this._inputBuffer.Position = 0;
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        _inputBuffer.SetLength(0);
+        _inputBuffer.Position = 0;
     }
 
     /// <summary>
@@ -176,24 +175,24 @@ public abstract class MurmurHash3<T>
     /// </remarks>
     protected virtual void Dispose(bool disposing)
     {
-        if (this._disposed)
+        if (_disposed)
             return;
 
         if (disposing)
         {
-            this._inputBuffer.Dispose();
+            _inputBuffer.Dispose();
         }
 
-        this._disposed = true;
+        _disposed = true;
     }
 
     /// <inheritdoc />
     protected override void GetCurrentHashCore(Span<byte> destination)
     {
-        ObjectDisposedException.ThrowIf(this._disposed, this);
-        byte[] data = this._inputBuffer.ToArray();
-        byte[] digest = this.ComputeHashCore(data);
-        digest.AsSpan(0, this.HashLengthInBytes).CopyTo(destination);
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        byte[] data = _inputBuffer.ToArray();
+        byte[] digest = ComputeHashCore(data);
+        digest.AsSpan(0, HashLengthInBytes).CopyTo(destination);
     }
 
     private static int ValidateHashSize(int hashSize)
@@ -201,5 +200,4 @@ public abstract class MurmurHash3<T>
         HashingThrowHelper.ThrowIfInvalidHashSize(hashSize, s_validHashSizes);
         return hashSize;
     }
-
 }

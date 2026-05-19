@@ -34,7 +34,6 @@ namespace Bodu.IO.Hashing.Checksums;
 public sealed class Cusip
     : AlphanumericCheckDigitAlgorithm
 {
-
     /// <summary>
     /// The required body length of <c>8</c> characters.
     /// </summary>
@@ -128,8 +127,8 @@ public sealed class Cusip
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<char> body)
     {
-        var sum = this._sum;
-        var count = this._count;
+        var sum = _sum;
+        var count = _count;
 
         for (var i = 0; i < body.Length; i++)
         {
@@ -140,8 +139,8 @@ public sealed class Cusip
             count++;
         }
 
-        this._sum = sum;
-        this._count = count;
+        _sum = sum;
+        _count = count;
     }
 
     /// <inheritdoc />
@@ -154,5 +153,4 @@ public sealed class Cusip
         _sum = 0;
         _count = 0;
     }
-
 }

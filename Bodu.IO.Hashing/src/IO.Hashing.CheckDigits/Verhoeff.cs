@@ -30,7 +30,6 @@ namespace Bodu.IO.Hashing.CheckDigits;
 public sealed partial class Verhoeff
     : CheckDigitAlgorithm
 {
-
     // Eight parallel accumulators allow the streaming Append surface to compute the check digit without
     // buffering digits. _c[k] holds the Verhoeff running value 'c' under the hypothesis that the most
     // recently appended digit occupies right-index k in the final sequence. Update: on each append of v,
@@ -114,18 +113,17 @@ public sealed partial class Verhoeff
 
             var v = ch - '0';
             for (var k = 0; k < 8; k++)
-                next[k] = s_d[s_p[k, v], this._c[(k + 1) & 7]];
+                next[k] = s_d[s_p[k, v], _c[(k + 1) & 7]];
 
-            next.CopyTo(this._c);
+            next.CopyTo(_c);
         }
     }
 
     /// <inheritdoc />
     public override char GetCurrentCheckDigit() =>
-        (char)('0' + s_inv[this._c[1]]);
+        (char)('0' + s_inv[_c[1]]);
 
     /// <inheritdoc />
     public override void Reset() =>
-        Array.Clear(this._c);
-
+        Array.Clear(_c);
 }

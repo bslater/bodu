@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
 using System.IO.Hashing;
 
 namespace Bodu.IO.Hashing;
@@ -76,7 +75,6 @@ namespace Bodu.IO.Hashing;
 /// <seealso cref="System.IO.Hashing.NonCryptographicHashAlgorithm"/> <seealso cref="Bodu.IO.Hashing.Checksums.Crc"/>
 public interface IResumableHashAlgorithm
 {
-
     /// <summary>
     /// Resumes a hash computation from a previously finalized hash value and processes additional input, returning the
     /// new finalized hash result as a byte array.
@@ -132,6 +130,7 @@ public interface IResumableHashAlgorithm
     /// <paramref name="newData" />.
     /// </exception>
     byte[] ComputeHashFrom(byte[] previousHash, byte[] newData, int offset, int length);
+
     /// <summary>
     /// Resumes a hash computation from a previously finalized hash value, processes additional input, and writes the
     /// new finalized hash to the specified destination span.
@@ -153,5 +152,4 @@ public interface IResumableHashAlgorithm
         ReadOnlySpan<byte> newData,
         Span<byte> destination,
         out int bytesWritten);
-
 }

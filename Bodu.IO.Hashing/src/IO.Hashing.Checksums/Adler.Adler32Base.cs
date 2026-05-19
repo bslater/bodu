@@ -24,7 +24,6 @@ namespace Bodu.IO.Hashing.Checksums;
 public abstract class Adler32Base
     : Adler<uint>
 {
-
     private const int HashLength = 4;
 
     /// <summary>
@@ -39,8 +38,7 @@ public abstract class Adler32Base
     /// <inheritdoc />
     protected override void GetCurrentHashCore(Span<byte> destination)
     {
-        var hash = (this.partB << 16) | this.partA;
+        var hash = (PartB << 16) | PartA;
         BinaryPrimitives.WriteUInt32BigEndian(destination, hash);
     }
-
 }

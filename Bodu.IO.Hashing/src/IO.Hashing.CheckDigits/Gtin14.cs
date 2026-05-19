@@ -28,7 +28,6 @@ namespace Bodu.IO.Hashing.CheckDigits;
 public sealed class Gtin14
     : CheckDigitAlgorithm
 {
-
     /// <summary>
     /// The required body length of <c>13</c> decimal digits.
     /// </summary>
@@ -93,7 +92,7 @@ public sealed class Gtin14
     {
         var sumEven = _sumEvenHypothesis;
         var sumOdd = _sumOddHypothesis;
-        var count = this._count;
+        var count = _count;
 
         for (var i = 0; i < digits.Length; i++)
         {
@@ -120,7 +119,7 @@ public sealed class Gtin14
 
         _sumEvenHypothesis = sumEven;
         _sumOddHypothesis = sumOdd;
-        this._count = count;
+        _count = count;
     }
 
     /// <inheritdoc />
@@ -137,5 +136,4 @@ public sealed class Gtin14
         _sumOddHypothesis = 0;
         _count = 0;
     }
-
 }

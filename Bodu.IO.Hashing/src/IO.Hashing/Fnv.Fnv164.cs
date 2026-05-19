@@ -58,7 +58,6 @@ namespace Bodu.IO.Hashing;
 public sealed class Fnv164
     : Fnv<Fnv164>
 {
-
     private const ulong OffsetBasis = 0xCBF29CE484222325UL;
     private const ulong Prime = 0x00000100000001B3UL;
 
@@ -69,5 +68,4 @@ public sealed class Fnv164
         : base(hashSize: 64, prime: Prime, offsetBasis: OffsetBasis, useFnv1a: false)
     {
     }
-
 }

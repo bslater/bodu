@@ -4,17 +4,13 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.IO.Hashing.Extensions;
-
-using System;
 using System.Buffers;
-using System.IO;
 using System.IO.Hashing;
-using Bodu;
+
+namespace Bodu.IO.Hashing.Extensions;
 
 public static partial class NonCryptographicHashAlgorithmExtensions
 {
-
     /// <summary>
     /// Asynchronously computes the hash value for the specified stream.
     /// </summary>
@@ -54,5 +50,4 @@ public static partial class NonCryptographicHashAlgorithmExtensions
             ArrayPool<byte>.Shared.Return(buffer);
         }
     }
-
 }

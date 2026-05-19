@@ -99,7 +99,6 @@ public sealed partial class CrcStandard
     : System.Runtime.Serialization.ISerializable,
       System.IEquatable<CrcStandard>
 {
-
     /// <summary>
     /// The maximum size allowed for a CRC standard (in bits).
     /// </summary>
@@ -129,27 +128,27 @@ public sealed partial class CrcStandard
         ThrowHelper.ThrowIfNullOrEmpty(name);
         ThrowHelper.ThrowIfOutOfRange(size, MinSize, MaxSize);
 
-        this.Name = name;
-        this.Size = size;
-        this.Polynomial = polynomial;
-        this.InitialValue = initialValue;
-        this.ReflectIn = reflectIn;
-        this.ReflectOut = reflectOut;
-        this.XOrOut = xOrOut;
+        Name = name;
+        Size = size;
+        Polynomial = polynomial;
+        InitialValue = initialValue;
+        ReflectIn = reflectIn;
+        ReflectOut = reflectOut;
+        XOrOut = xOrOut;
     }
 
     private CrcStandard(SerializationInfo info, StreamingContext context)
     {
         ThrowHelper.ThrowIfNull(info);
 
-        var serializedName = info.GetString(nameof(this.Name));
-        this.Name = serializedName!;
-        this.Size = info.GetInt32(nameof(this.Size));
-        this.Polynomial = info.GetUInt64(nameof(this.Polynomial));
-        this.InitialValue = info.GetUInt64(nameof(this.InitialValue));
-        this.ReflectIn = info.GetBoolean(nameof(this.ReflectIn));
-        this.ReflectOut = info.GetBoolean(nameof(this.ReflectOut));
-        this.XOrOut = info.GetUInt64(nameof(this.XOrOut));
+        var serializedName = info.GetString(nameof(Name));
+        Name = serializedName!;
+        Size = info.GetInt32(nameof(Size));
+        Polynomial = info.GetUInt64(nameof(Polynomial));
+        InitialValue = info.GetUInt64(nameof(InitialValue));
+        ReflectIn = info.GetBoolean(nameof(ReflectIn));
+        ReflectOut = info.GetBoolean(nameof(ReflectOut));
+        XOrOut = info.GetUInt64(nameof(XOrOut));
     }
 
     /// <summary>
@@ -292,13 +291,13 @@ public sealed partial class CrcStandard
     {
         ThrowHelper.ThrowIfNull(info);
 
-        info.AddValue(nameof(this.Name), this.Name);
-        info.AddValue(nameof(this.Size), this.Size);
-        info.AddValue(nameof(this.Polynomial), this.Polynomial);
-        info.AddValue(nameof(this.InitialValue), this.InitialValue);
-        info.AddValue(nameof(this.ReflectIn), this.ReflectIn);
-        info.AddValue(nameof(this.ReflectOut), this.ReflectOut);
-        info.AddValue(nameof(this.XOrOut), this.XOrOut);
+        info.AddValue(nameof(Name), Name);
+        info.AddValue(nameof(Size), Size);
+        info.AddValue(nameof(Polynomial), Polynomial);
+        info.AddValue(nameof(InitialValue), InitialValue);
+        info.AddValue(nameof(ReflectIn), ReflectIn);
+        info.AddValue(nameof(ReflectOut), ReflectOut);
+        info.AddValue(nameof(XOrOut), XOrOut);
     }
 
     /// <summary>
@@ -312,20 +311,19 @@ public sealed partial class CrcStandard
     /// </returns>
     public bool Equals(CrcStandard? other)
         => other is not null &&
-           string.Equals(this.Name, other.Name, StringComparison.Ordinal) &&
-           this.Size == other.Size &&
-           this.Polynomial == other.Polynomial &&
-           this.InitialValue == other.InitialValue &&
-           this.ReflectIn == other.ReflectIn &&
-           this.ReflectOut == other.ReflectOut &&
-           this.XOrOut == other.XOrOut;
+           string.Equals(Name, other.Name, StringComparison.Ordinal) &&
+           Size == other.Size &&
+           Polynomial == other.Polynomial &&
+           InitialValue == other.InitialValue &&
+           ReflectIn == other.ReflectIn &&
+           ReflectOut == other.ReflectOut &&
+           XOrOut == other.XOrOut;
 
     /// <inheritdoc />
     public override bool Equals(object? obj)
-        => obj is CrcStandard other && this.Equals(other);
+        => obj is CrcStandard other && Equals(other);
 
     /// <inheritdoc />
     public override int GetHashCode()
-        => HashCode.Combine(this.Name, this.Size, this.Polynomial, this.InitialValue, this.ReflectIn, this.ReflectOut, this.XOrOut);
-
+        => HashCode.Combine(Name, Size, Polynomial, InitialValue, ReflectIn, ReflectOut, XOrOut);
 }

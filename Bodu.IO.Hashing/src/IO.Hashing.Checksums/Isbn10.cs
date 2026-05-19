@@ -30,7 +30,6 @@ namespace Bodu.IO.Hashing.Checksums;
 public sealed class Isbn10
     : AlphanumericCheckDigitAlgorithm
 {
-
     /// <summary>
     /// The required body length of <c>9</c> decimal digits.
     /// </summary>
@@ -136,8 +135,8 @@ public sealed class Isbn10
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<char> body)
     {
-        var sum = this._sum;
-        var count = this._count;
+        var sum = _sum;
+        var count = _count;
         for (var i = 0; i < body.Length; i++)
         {
             var ch = body[i];
@@ -152,8 +151,8 @@ public sealed class Isbn10
             count++;
         }
 
-        this._sum = sum;
-        this._count = count;
+        _sum = sum;
+        _count = count;
     }
 
     /// <inheritdoc />
@@ -169,5 +168,4 @@ public sealed class Isbn10
         _sum = 0;
         _count = 0;
     }
-
 }

@@ -34,5 +34,4 @@ namespace Bodu.IO.Hashing;
     "RCS1001:Add braces (when expression spans over multiple lines)",
     Justification = "ThrowHelper methods intentionally use compact guard/throw clauses; adding braces adds noise without improving control-flow clarity.")]
 internal static partial class HashingThrowHelper
-{
-}
+{ }

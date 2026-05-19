@@ -46,7 +46,6 @@ namespace Bodu.IO.Hashing;
 public sealed class SDBM
     : NonCryptographicHashAlgorithm
 {
-
     private const int HashLength = 4;
 
     private uint _workingHash;
@@ -62,20 +61,19 @@ public sealed class SDBM
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<byte> source)
     {
-        var v = this._workingHash;
+        var v = _workingHash;
         foreach (var b in source)
         {
             v = b + (v << 6) + (v << 16) - v;
         }
 
-        this._workingHash = v;
+        _workingHash = v;
     }
 
     /// <inheritdoc />
-    public override void Reset() => this._workingHash = 0;
+    public override void Reset() => _workingHash = 0;
 
     /// <inheritdoc />
     protected override void GetCurrentHashCore(Span<byte> destination) =>
-        BinaryPrimitives.WriteUInt32BigEndian(destination, this._workingHash);
-
+        BinaryPrimitives.WriteUInt32BigEndian(destination, _workingHash);
 }

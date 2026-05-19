@@ -66,8 +66,8 @@ public sealed class ApHash
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<byte> source)
     {
-        var v = this._workingHash;
-        var size = this._size;
+        var v = _workingHash;
+        var size = _size;
         foreach (var b in source)
         {
             if ((size & 1UL) == 0UL)
@@ -78,18 +78,18 @@ public sealed class ApHash
             size++;
         }
 
-        this._workingHash = v;
-        this._size = size;
+        _workingHash = v;
+        _size = size;
     }
 
     /// <inheritdoc />
     public override void Reset()
     {
-        this._workingHash = Seed;
-        this._size = 0UL;
+        _workingHash = Seed;
+        _size = 0UL;
     }
 
     /// <inheritdoc />
     protected override void GetCurrentHashCore(Span<byte> destination) =>
-        BinaryPrimitives.WriteUInt32LittleEndian(destination, this._workingHash);
+        BinaryPrimitives.WriteUInt32LittleEndian(destination, _workingHash);
 }

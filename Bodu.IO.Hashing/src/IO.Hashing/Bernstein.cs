@@ -56,7 +56,6 @@ namespace Bodu.IO.Hashing;
 public sealed class Bernstein
     : NonCryptographicHashAlgorithm
 {
-
     /// <summary>
     /// The default initial value used to seed the hash algorithm.
     /// </summary>
@@ -90,9 +89,9 @@ public sealed class Bernstein
     public Bernstein(uint initialValue, bool useModifiedAlgorithm)
         : base(HashLength)
     {
-        this._initialValue = initialValue;
-        this._useModified = useModifiedAlgorithm;
-        this._workingHash = initialValue;
+        _initialValue = initialValue;
+        _useModified = useModifiedAlgorithm;
+        _workingHash = initialValue;
     }
 
     /// <summary>
@@ -104,13 +103,13 @@ public sealed class Bernstein
     /// </exception>
     public uint InitialValue
     {
-        get => this._initialValue;
+        get => _initialValue;
 
         set
         {
-            this.ThrowIfInvalidState();
-            this._initialValue = value;
-            this._workingHash = value;
+            ThrowIfInvalidState();
+            _initialValue = value;
+            _workingHash = value;
         }
     }
 
@@ -126,12 +125,12 @@ public sealed class Bernstein
     /// </exception>
     public bool UseModifiedAlgorithm
     {
-        get => this._useModified;
+        get => _useModified;
 
         set
         {
-            this.ThrowIfInvalidState();
-            this._useModified = value;
+            ThrowIfInvalidState();
+            _useModified = value;
         }
     }
 
@@ -141,51 +140,50 @@ public sealed class Bernstein
         if (source.Length == 0)
             return;
 
-        if (this._useModified)
-            this.AppendModified(source);
+        if (_useModified)
+            AppendModified(source);
         else
-            this.AppendOriginal(source);
+            AppendOriginal(source);
 
-        this._started = true;
+        _started = true;
     }
 
     /// <inheritdoc />
     public override void Reset()
     {
-        this._workingHash = this._initialValue;
-        this._started = false;
+        _workingHash = _initialValue;
+        _started = false;
     }
 
     /// <inheritdoc />
     protected override void GetCurrentHashCore(Span<byte> destination) =>
-        BinaryPrimitives.WriteUInt32BigEndian(destination, this._workingHash);
+        BinaryPrimitives.WriteUInt32BigEndian(destination, _workingHash);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void AppendModified(ReadOnlySpan<byte> source)
     {
-        var v = this._workingHash;
+        var v = _workingHash;
         foreach (var b in source)
         {
             v = ((v << 5) + v) ^ b;
         }
 
-        this._workingHash = v;
+        _workingHash = v;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void AppendOriginal(ReadOnlySpan<byte> source)
     {
-        var v = this._workingHash;
+        var v = _workingHash;
         foreach (var b in source)
         {
             v = ((v << 5) + v) + b;
         }
 
-        this._workingHash = v;
+        _workingHash = v;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ThrowIfInvalidState() =>
-        HashingThrowHelper.ThrowIfAlgorithmAlreadyStarted(this._started);
-
+        HashingThrowHelper.ThrowIfAlgorithmAlreadyStarted(_started);
 }

@@ -33,7 +33,6 @@ namespace Bodu.IO.Hashing.Checksums;
 public sealed class Sedol
     : AlphanumericCheckDigitAlgorithm
 {
-
     /// <summary>
     /// The required body length of <c>6</c> characters.
     /// </summary>
@@ -44,7 +43,7 @@ public sealed class Sedol
     /// </summary>
     public const int SequenceLength = 7;
 
-    private static readonly int[] s_weights = new int[] { 1, 3, 1, 7, 3, 9 };
+    private static readonly int[] s_weights = [1, 3, 1, 7, 3, 9];
     private int _count;
 
     private int _sum;
@@ -125,8 +124,8 @@ public sealed class Sedol
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<char> body)
     {
-        var sum = this._sum;
-        var count = this._count;
+        var sum = _sum;
+        var count = _count;
 
         for (var i = 0; i < body.Length; i++)
         {
@@ -146,8 +145,8 @@ public sealed class Sedol
             count++;
         }
 
-        this._sum = sum;
-        this._count = count;
+        _sum = sum;
+        _count = count;
     }
 
     /// <inheritdoc />
@@ -160,5 +159,4 @@ public sealed class Sedol
         _sum = 0;
         _count = 0;
     }
-
 }

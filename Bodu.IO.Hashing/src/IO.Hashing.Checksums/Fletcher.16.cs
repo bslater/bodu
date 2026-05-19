@@ -59,7 +59,6 @@ namespace Bodu.IO.Hashing.Checksums;
 public sealed class Fletcher16
     : Fletcher<Fletcher16>
 {
-
     private const int FletcherHashSize = 16;
 
     /// <summary>
@@ -69,5 +68,4 @@ public sealed class Fletcher16
         : base(FletcherHashSize)
     {
     }
-
 }

@@ -4,9 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.IO.Hashing.Checksums;
-
 using Bodu.IO.Hashing.CheckDigits;
+
+namespace Bodu.IO.Hashing.Checksums;
 
 /// <summary>
 /// Computes the two-digit check sequence of an International Bank Account Number (IBAN) using the ISO 13616 algorithm
@@ -37,7 +37,6 @@ using Bodu.IO.Hashing.CheckDigits;
 public sealed class Iban
     : MultiCharCheckDigitAlgorithm
 {
-
     /// <summary>
     /// The fixed check-code length of <c>2</c> decimal digits.
     /// </summary>
@@ -48,10 +47,10 @@ public sealed class Iban
     /// </summary>
     public const int CountryCodeLength = 2;
 
-    private char cc0;
-    private char cc1;
-    private int consumed;
-    private int rBban;
+    private char _cc0;
+    private char _cc1;
+    private int _consumed;
+    private int _rBban;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Iban" /> class.
@@ -123,22 +122,21 @@ public sealed class Iban
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<char> body)
     {
-        var consumed = this.consumed;
-        var r = rBban;
+        var consumed = this._consumed;
+        var r = _rBban;
 
         for (var i = 0; i < body.Length; i++)
         {
             var ch = body[i];
-            if ((uint)(ch - '0') > 9u && (uint)(ch - 'A') > 25u)
-                ThrowHelper.ThrowIfNotAsciiAlphanumericUppercase(ch, nameof(body));
+            if ((uint)(ch - '0') > 9u && (uint)(ch - 'A') > 25u) ThrowHelper.ThrowIfNotAsciiAlphanumericUppercase(ch, nameof(body));
 
             if (consumed == 0)
             {
-                cc0 = ch;
+                _cc0 = ch;
             }
             else if (consumed == 1)
             {
-                cc1 = ch;
+                _cc1 = ch;
             }
             else
             {
@@ -148,8 +146,8 @@ public sealed class Iban
             consumed++;
         }
 
-        this.consumed = consumed;
-        rBban = r;
+        this._consumed = consumed;
+        _rBban = r;
     }
 
     /// <inheritdoc />
@@ -157,9 +155,9 @@ public sealed class Iban
     {
         HashingThrowHelper.ThrowIfDestinationSpanTooShort(destination.Length, CheckLength, nameof(destination));
 
-        var r = rBban;
-        if (consumed >= 1) r = FoldChar(r, cc0);
-        if (consumed >= 2) r = FoldChar(r, cc1);
+        var r = _rBban;
+        if (_consumed >= 1) r = FoldChar(r, _cc0);
+        if (_consumed >= 2) r = FoldChar(r, _cc1);
 
         // Fold in the two trailing placeholder zero digits.
         r = (r * 100) % 97;
@@ -172,18 +170,14 @@ public sealed class Iban
     /// <inheritdoc />
     public override void Reset()
     {
-        cc0 = default;
-        cc1 = default;
-        consumed = 0;
-        rBban = 0;
+        _cc0 = default;
+        _cc1 = default;
+        _consumed = 0;
+        _rBban = 0;
     }
 
-    private static int FoldChar(int r, char ch)
-    {
-        if ((uint)(ch - '0') <= 9u)
-            return ((r * 10) + (ch - '0')) % 97;
-        return ((r * 100) + (ch - 'A' + 10)) % 97;
-    }
+    private static int FoldChar(int r, char ch) =>
+        (uint)(ch - '0') > 9u ? ((r * 100) + ch - 'A' + 10) % 97 : ((r * 10) + (ch - '0')) % 97;
 
     private static bool TryFold(ref int r, char ch)
     {
@@ -195,11 +189,10 @@ public sealed class Iban
 
         if ((uint)(ch - 'A') <= 25u)
         {
-            r = ((r * 100) + (ch - 'A' + 10)) % 97;
+            r = ((r * 100) + ch - 'A' + 10) % 97;
             return true;
         }
 
         return false;
     }
-
 }

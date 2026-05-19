@@ -66,7 +66,6 @@ namespace Bodu.IO.Hashing;
 public sealed class CityHash32
     : CityHash<CityHash32>
 {
-
     /// <summary>
     /// Initializes a new instance of the <see cref="CityHash32" /> class with a fixed 32-bit (4-byte) hash output size.
     /// </summary>
@@ -256,5 +255,4 @@ public sealed class CityHash32
             return (value * C1).RotateBitsRightUnchecked(17) * C2;
         }
     }
-
 }
