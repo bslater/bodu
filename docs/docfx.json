@@ -4,7 +4,8 @@
       "src": [
         {
           "src": "../",
-          "files": [ "**/src/*.csproj" ]
+          "files": [ "**/src/*.csproj" ],
+          "exclude": [ "Bodu.CodeStyle/**" ]
         }
       ],
       "dest": "api",
