@@ -4,9 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.IO.Hashing.CheckDigits;
-
 using Bodu.IO.Hashing.Checksums;
+
+namespace Bodu.IO.Hashing.CheckDigits;
 
 /// <summary>
 /// Computes the check digit of a 12-character International Securities Identification Number (ISIN) using the
@@ -34,7 +34,6 @@ using Bodu.IO.Hashing.Checksums;
 public sealed class Isin
     : AlphanumericCheckDigitAlgorithm
 {
-
     /// <summary>
     /// The required body length of <c>11</c> characters.
     /// </summary>
@@ -45,7 +44,7 @@ public sealed class Isin
     /// </summary>
     public const int SequenceLength = 12;
 
-    private readonly Luhn luhn = new Luhn();
+    private readonly Luhn _luhn = new();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Isin" /> class.
@@ -115,13 +114,13 @@ public sealed class Isin
             var ch = body[i];
             if ((uint)(ch - '0') <= 9u)
             {
-                luhn.Append(ch);
+                _luhn.Append(ch);
             }
             else if ((uint)(ch - 'A') <= 25u)
             {
                 var value = ch - 'A' + 10;
-                luhn.Append((char)('0' + (value / 10)));
-                luhn.Append((char)('0' + (value % 10)));
+                _luhn.Append((char)('0' + (value / 10)));
+                _luhn.Append((char)('0' + (value % 10)));
             }
             else
             {
@@ -132,10 +131,9 @@ public sealed class Isin
 
     /// <inheritdoc />
     public override char GetCurrentCheckDigit() =>
-        luhn.GetCurrentCheckDigit();
+        _luhn.GetCurrentCheckDigit();
 
     /// <inheritdoc />
     public override void Reset() =>
-        luhn.Reset();
-
+        _luhn.Reset();
 }

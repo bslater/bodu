@@ -44,7 +44,6 @@ namespace Bodu.IO.Hashing;
 public sealed class JSHash
     : NonCryptographicHashAlgorithm
 {
-
     private const int HashLength = 4;
     private const uint Seed = 0x4E67C6A7;
 
@@ -62,20 +61,19 @@ public sealed class JSHash
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<byte> source)
     {
-        var v = this._workingHash;
+        var v = _workingHash;
         foreach (var b in source)
         {
             v ^= (v << 5) + (v >> 2) + b;
         }
 
-        this._workingHash = v;
+        _workingHash = v;
     }
 
     /// <inheritdoc />
-    public override void Reset() => this._workingHash = Seed;
+    public override void Reset() => _workingHash = Seed;
 
     /// <inheritdoc />
     protected override void GetCurrentHashCore(Span<byte> destination) =>
-        BinaryPrimitives.WriteUInt32LittleEndian(destination, this._workingHash);
-
+        BinaryPrimitives.WriteUInt32LittleEndian(destination, _workingHash);
 }

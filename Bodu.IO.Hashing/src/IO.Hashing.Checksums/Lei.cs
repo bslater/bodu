@@ -30,7 +30,6 @@ namespace Bodu.IO.Hashing.Checksums;
 public sealed class Lei
     : MultiCharCheckDigitAlgorithm
 {
-
     /// <summary>
     /// The required body length of <c>18</c> characters.
     /// </summary>
@@ -99,5 +98,4 @@ public sealed class Lei
     /// <inheritdoc />
     public override void Reset() =>
         _engine.Reset();
-
 }

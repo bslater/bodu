@@ -38,5 +38,5 @@ internal sealed class MultiValueDictionaryDebugView<TKey, TValue>
     /// </remarks>
     [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
     public KeyValuePair<TKey, IReadOnlyList<TValue>>[] Items =>
-        [.. _dictionary];
+        _dictionary.ToArray();
 }

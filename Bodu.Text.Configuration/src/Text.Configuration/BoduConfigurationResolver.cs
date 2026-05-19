@@ -1,11 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BoduConfigurationResolver.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Collections.Generic;
-using System.IO;
 using Bodu.Text.Formats;
 
 namespace Bodu.Text.Configuration;
@@ -20,25 +18,25 @@ internal sealed class BoduConfigurationResolver
 
     internal BoduConfigurationResolver(BoduConfigurationResolveOptions options)
     {
-        this._options = options;
+        _options = options;
     }
 
     internal BoduConfigurationView Resolve(IniDocument document, string? targetPath)
     {
         ThrowHelper.ThrowIfNull(document);
 
-        string? pathRoot = this._options.PathRoot;
-        if (pathRoot is null && this._options.MissingPathRootMode == BoduConfigurationMissingPathRootMode.Throw && targetPath is null)
+        var pathRoot = _options.PathRoot;
+        if (pathRoot is null && _options.MissingPathRootMode == BoduConfigurationMissingPathRootMode.Throw && targetPath is null)
             throw new InvalidOperationException(ConfigurationResourceStrings.Op_Invalid_ResolveWithoutPathRoot);
 
-        StringComparer comparer = this._options.KeyOptions.KeyComparer;
+        StringComparer comparer = _options.KeyOptions.KeyComparer;
         Dictionary<string, string?> values = new(comparer);
 
-        string normalizedTarget = targetPath is null ? string.Empty : NormalizePath(targetPath, pathRoot);
+        var normalizedTarget = targetPath is null ? string.Empty : NormalizePath(targetPath, pathRoot);
 
         // Apply the global section (preamble) first when enabled.
-        if (this._options.ApplyPreambleProperties)
-            this.ApplySection(document.GlobalSection, values);
+        if (_options.ApplyPreambleProperties)
+            ApplySection(document.GlobalSection, values);
 
         // Apply sections whose name (interpreted as a glob pattern) matches the target path, in source order.
         // Last-wins precedence is naturally handled by dictionary overwrite.
@@ -48,7 +46,7 @@ internal sealed class BoduConfigurationResolver
                 continue;
 
             if (BoduConfigurationPattern.Compile(section.Name).IsMatch(normalizedTarget))
-                this.ApplySection(section, values);
+                ApplySection(section, values);
         }
 
         return new BoduConfigurationView(values);
@@ -58,10 +56,10 @@ internal sealed class BoduConfigurationResolver
     {
         foreach (IniEntry entry in section.Entries)
         {
-            string key = BoduConfigurationKey.Parse(entry.Key, this._options.KeyOptions).ConfigurationKey;
+            var key = BoduConfigurationKey.Parse(entry.Key, _options.KeyOptions).ConfigurationKey;
 
             // EditorConfig "unset" sentinel handling.
-            if (this._options.UnsetValueMode == BoduConfigurationUnsetValueMode.RemoveEffectiveValue
+            if (_options.UnsetValueMode == BoduConfigurationUnsetValueMode.RemoveEffectiveValue
                 && string.Equals(entry.Value, "unset", StringComparison.OrdinalIgnoreCase))
             {
                 values.Remove(key);
@@ -74,17 +72,16 @@ internal sealed class BoduConfigurationResolver
 
     private static string NormalizePath(string targetPath, string? pathRoot)
     {
-        string normalizedTarget = targetPath.Replace('\\', '/');
+        var normalizedTarget = targetPath.Replace('\\', '/');
         if (string.IsNullOrEmpty(pathRoot))
             return normalizedTarget;
 
-        string normalizedRoot = pathRoot.Replace('\\', '/').TrimEnd('/');
+        var normalizedRoot = pathRoot.Replace('\\', '/').TrimEnd('/');
         if (normalizedTarget.StartsWith(normalizedRoot + "/", StringComparison.OrdinalIgnoreCase))
-            return normalizedTarget.Substring(normalizedRoot.Length + 1);
+            return normalizedTarget[(normalizedRoot.Length + 1)..];
 
-        if (string.Equals(normalizedTarget, normalizedRoot, StringComparison.OrdinalIgnoreCase))
-            return Path.GetFileName(normalizedTarget);
-
-        return normalizedTarget;
+        return string.Equals(normalizedTarget, normalizedRoot, StringComparison.OrdinalIgnoreCase)
+            ? Path.GetFileName(normalizedTarget)
+            : normalizedTarget;
     }
 }

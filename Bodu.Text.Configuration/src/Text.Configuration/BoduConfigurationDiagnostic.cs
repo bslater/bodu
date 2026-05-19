@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BoduConfigurationDiagnostic.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -36,10 +36,10 @@ public sealed class BoduConfigurationDiagnostic
     {
         ThrowHelper.ThrowIfNull(message);
 
-        this.Severity = severity;
-        this.Code = code;
-        this.Message = message;
-        this.Location = location;
+        Severity = severity;
+        Code = code;
+        Message = message;
+        Location = location;
     }
 
     /// <summary>
@@ -68,5 +68,5 @@ public sealed class BoduConfigurationDiagnostic
 
     /// <inheritdoc />
     public override string ToString() =>
-        $"{this.Severity} {this.Code} at {this.Location}: {this.Message}";
+        $"{Severity} {Code} at {Location}: {Message}";
 }

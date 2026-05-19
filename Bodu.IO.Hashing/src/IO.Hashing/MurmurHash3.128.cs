@@ -72,7 +72,6 @@ namespace Bodu.IO.Hashing;
 public sealed class MurmurHash3_128
     : MurmurHash3<MurmurHash3_128>
 {
-
     private const ulong C1 = 0x87C37B91114253D5uL;
     private const ulong C2 = 0x4CF5AD432745937FuL;
 
@@ -103,8 +102,8 @@ public sealed class MurmurHash3_128
     /// </returns>
     protected override byte[] ComputeHashCore(ReadOnlySpan<byte> source)
     {
-        ulong h1 = this.Seed;
-        ulong h2 = this.Seed;
+        ulong h1 = Seed;
+        ulong h2 = Seed;
         int len = source.Length;
         int nblocks = len / 16;
 
@@ -196,5 +195,4 @@ public sealed class MurmurHash3_128
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static ulong RotateLeft(ulong value, int bits) =>
         (value << bits) | (value >> (64 - bits));
-
 }

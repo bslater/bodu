@@ -1,11 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BoduTextConfigurationLoader.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Collections.Generic;
-using System.IO;
 using Bodu.Text.Configuration;
 using Bodu.Text.Formats;
 
@@ -45,6 +43,7 @@ internal static class BoduTextConfigurationLoader
         BoduConfigurationResolveOptions effectiveResolve = resolveOptions ?? BoduConfigurationResolveOptions.Bodu;
 
         IniDocument document = BoduConfigurationDocument.Load(stream, effectiveParse, leaveOpen: true);
+
         return LoadData(document, targetPath, effectiveResolve);
     }
 

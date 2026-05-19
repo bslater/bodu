@@ -32,7 +32,6 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// </remarks>
 public abstract class CheckDigitAlgorithm
 {
-
     /// <summary>
     /// Initializes a new instance of the <see cref="CheckDigitAlgorithm" /> class.
     /// </summary>
@@ -66,7 +65,7 @@ public abstract class CheckDigitAlgorithm
     /// Thrown when <paramref name="digit" /> is outside the range <c>'0'</c> to <c>'9'</c>.
     /// </exception>
     public void Append(char digit) =>
-        this.Append([digit]);
+        Append([digit]);
 
     /// <summary>
     /// Returns the check digit computed for the body absorbed since the last <see cref="Reset" /> (or since
@@ -89,5 +88,4 @@ public abstract class CheckDigitAlgorithm
     /// Equivalent in behavior to constructing a fresh instance of the same concrete type.
     /// </remarks>
     public abstract void Reset();
-
 }

@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
 using System.IO.Hashing;
 using System.Text;
 
@@ -12,7 +11,6 @@ namespace Bodu.IO.Hashing.Extensions;
 
 public static partial class NonCryptographicHashAlgorithmExtensions
 {
-
     /// <summary>
     /// Attempts to compute and verify the hash of a byte array against the expected hash value.
     /// </summary>
@@ -246,6 +244,7 @@ public static partial class NonCryptographicHashAlgorithmExtensions
             return false;
         }
     }
+
     /// <summary>
     /// Attempts to compute and verify the hash of a byte array, reporting both whether the operation succeeded and
     /// whether the hash matched.
@@ -344,5 +343,4 @@ public static partial class NonCryptographicHashAlgorithmExtensions
             return false;
         }
     }
-
 }

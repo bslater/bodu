@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BoduTextStreamConfigurationSource.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -45,6 +45,7 @@ public sealed class BoduTextStreamConfigurationSource : StreamConfigurationSourc
     public override IConfigurationProvider Build(IConfigurationBuilder builder)
     {
         ThrowHelper.ThrowIfNull(builder);
+
         return new BoduTextStreamConfigurationProvider(this);
     }
 }

@@ -48,7 +48,6 @@ namespace Bodu.IO.Hashing.Checksums;
 /// <seealso cref="Crc"/> <seealso cref="CrcStandard"/> <seealso cref="CrcLookupTableBuilder"/>
 public class CrcLookupTableCache
 {
-
     private readonly ConcurrentDictionary<string, ulong[]> _localCache;
 
     /// <summary>
@@ -56,7 +55,7 @@ public class CrcLookupTableCache
     /// </summary>
     public CrcLookupTableCache()
     {
-        this._localCache = new ConcurrentDictionary<string, ulong[]>();
+        _localCache = new ConcurrentDictionary<string, ulong[]>();
     }
 
     /// <summary>
@@ -80,7 +79,6 @@ public class CrcLookupTableCache
         ThrowHelper.ThrowIfOutOfRange(size, CrcStandard.MinSize, CrcStandard.MaxSize);
 
         var cacheKey = $"{size}_{polynomial}_{reflectIn}";
-        return this._localCache.GetOrAdd(cacheKey, _ => CrcLookupTableBuilder.BuildLookupTable(size, polynomial, reflectIn));
+        return _localCache.GetOrAdd(cacheKey, _ => CrcLookupTableBuilder.BuildLookupTable(size, polynomial, reflectIn));
     }
-
 }

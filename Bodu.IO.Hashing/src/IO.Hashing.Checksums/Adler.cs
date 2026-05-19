@@ -56,16 +56,15 @@ public abstract class Adler<T>
     : NonCryptographicHashAlgorithm
     where T : unmanaged, INumber<T>
 {
-
     /// <summary>
     /// The A accumulator, initialized to one and updated with each input byte.
     /// </summary>
-    protected T partA;
+    protected T PartA;
 
     /// <summary>
-    /// The B accumulator, which holds the running sum of <see cref="partA" /> across all processed bytes.
+    /// The B accumulator, which holds the running sum of <see cref="PartA" /> across all processed bytes.
     /// </summary>
-    protected T partB;
+    protected T PartB;
 
     private readonly T _modulo;
 
@@ -77,9 +76,9 @@ public abstract class Adler<T>
     protected Adler(int hashLengthInBytes, T modulo)
         : base(hashLengthInBytes)
     {
-        this._modulo = modulo;
-        this.partA = T.One;
-        this.partB = T.Zero;
+        _modulo = modulo;
+        PartA = T.One;
+        PartB = T.Zero;
     }
 
     /// <inheritdoc />
@@ -88,8 +87,8 @@ public abstract class Adler<T>
         const int NMAX = 5552;
         var length = source.Length;
         var index = 0;
-        T pA = this.partA;
-        T pB = this.partB;
+        T pA = PartA;
+        T pB = PartB;
 
         if (Vector.IsHardwareAccelerated && length >= 512)
         {
@@ -136,8 +135,8 @@ public abstract class Adler<T>
                     pB += pA;
                 }
 
-                pA %= this._modulo;
-                pB %= this._modulo;
+                pA %= _modulo;
+                pB %= _modulo;
             }
         }
 
@@ -148,8 +147,8 @@ public abstract class Adler<T>
 
             if ((index % NMAX) == 0)
             {
-                pA %= this._modulo;
-                pB %= this._modulo;
+                pA %= _modulo;
+                pB %= _modulo;
             }
         }
 
@@ -157,15 +156,14 @@ public abstract class Adler<T>
         // The SIMD branch already reduces per chunk; the scalar fallback only reduces at NMAX hits,
         // so without this a sub-NMAX Append (e.g. per-byte) would leave PartA/PartB unreduced and
         // GetCurrentHashCore would emit a non-canonical digest.
-        this.partA = pA % this._modulo;
-        this.partB = pB % this._modulo;
+        PartA = pA % _modulo;
+        PartB = pB % _modulo;
     }
 
     /// <inheritdoc />
     public override void Reset()
     {
-        this.partA = T.One;
-        this.partB = T.Zero;
+        PartA = T.One;
+        PartB = T.Zero;
     }
-
 }

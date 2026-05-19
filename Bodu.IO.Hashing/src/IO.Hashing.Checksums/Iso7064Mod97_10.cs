@@ -4,9 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.IO.Hashing.Checksums;
-
 using Bodu.IO.Hashing.CheckDigits;
+
+namespace Bodu.IO.Hashing.Checksums;
 
 /// <summary>
 /// Computes the 2-character check code of an alphanumeric string using the ISO 7064 <c>MOD 97-10</c> pure algorithm.
@@ -36,13 +36,12 @@ using Bodu.IO.Hashing.CheckDigits;
 public sealed class Iso7064Mod97_10
     : MultiCharCheckDigitAlgorithm
 {
-
     /// <summary>
     /// The fixed check-code length of <c>2</c> decimal digits.
     /// </summary>
     public const int CheckDigits = 2;
 
-    private int r;
+    private int _r;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Iso7064Mod97_10" /> class.
@@ -114,7 +113,7 @@ public sealed class Iso7064Mod97_10
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<char> body)
     {
-        var r = this.r;
+        var r = this._r;
         for (var i = 0; i < body.Length; i++)
         {
             var ch = body[i];
@@ -132,7 +131,7 @@ public sealed class Iso7064Mod97_10
             }
         }
 
-        this.r = r;
+        this._r = r;
     }
 
     /// <inheritdoc />
@@ -140,7 +139,7 @@ public sealed class Iso7064Mod97_10
     {
         HashingThrowHelper.ThrowIfDestinationSpanTooShort(destination.Length, CheckLength, nameof(destination));
 
-        var full = (r * 100) % 97;
+        var full = (_r * 100) % 97;
         var check = (98 - full) % 97;
         destination[0] = (char)('0' + (check / 10));
         destination[1] = (char)('0' + (check % 10));
@@ -149,6 +148,5 @@ public sealed class Iso7064Mod97_10
 
     /// <inheritdoc />
     public override void Reset() =>
-        r = 0;
-
+        _r = 0;
 }

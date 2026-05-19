@@ -32,7 +32,6 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// </remarks>
 public abstract class MultiCharCheckDigitAlgorithm
 {
-
     /// <summary>
     /// Initializes a new instance of the <see cref="MultiCharCheckDigitAlgorithm" /> class.
     /// </summary>
@@ -120,5 +119,4 @@ public abstract class MultiCharCheckDigitAlgorithm
     /// Equivalent in behavior to constructing a fresh instance of the same concrete type.
     /// </remarks>
     public abstract void Reset();
-
 }

@@ -36,7 +36,6 @@ namespace Bodu.IO.Hashing.CheckDigits;
 public sealed class Luhn
     : CheckDigitAlgorithm
 {
-
     private int _count;
     private int _sumEvenHypothesis;
     private int _sumOddHypothesis;
@@ -117,9 +116,9 @@ public sealed class Luhn
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<char> digits)
     {
-        var sumEven = this._sumEvenHypothesis;
-        var sumOdd = this._sumOddHypothesis;
-        var count = this._count;
+        var sumEven = _sumEvenHypothesis;
+        var sumOdd = _sumOddHypothesis;
+        var count = _count;
 
         for (var i = 0; i < digits.Length; i++)
         {
@@ -148,24 +147,23 @@ public sealed class Luhn
             count++;
         }
 
-        this._sumEvenHypothesis = sumEven;
-        this._sumOddHypothesis = sumOdd;
-        this._count = count;
+        _sumEvenHypothesis = sumEven;
+        _sumOddHypothesis = sumOdd;
+        _count = count;
     }
 
     /// <inheritdoc />
     public override char GetCurrentCheckDigit()
     {
-        var sum = (this._count & 1) == 0 ? this._sumEvenHypothesis : this._sumOddHypothesis;
+        var sum = (_count & 1) == 0 ? _sumEvenHypothesis : _sumOddHypothesis;
         return (char)('0' + ((10 - (sum % 10)) % 10));
     }
 
     /// <inheritdoc />
     public override void Reset()
     {
-        this._sumEvenHypothesis = 0;
-        this._sumOddHypothesis = 0;
-        this._count = 0;
+        _sumEvenHypothesis = 0;
+        _sumOddHypothesis = 0;
+        _count = 0;
     }
-
 }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BoduConfigurationKey.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -26,13 +26,9 @@ namespace Bodu.Text.Configuration;
 [DebuggerDisplay("{RawKey,nq} -> {ConfigurationKey,nq}")]
 public readonly partial struct BoduConfigurationKey : IEquatable<BoduConfigurationKey>
 {
-    private readonly ImmutableArray<string> _segments;
-    private readonly string? _rawKey;
-    private readonly string? _configurationKey;
-    private readonly bool _caseSensitive;
-
     /// <summary>
-    /// Initializes a new <see cref="BoduConfigurationKey" /> from a raw key string using the supplied options.
+    /// Initializes a new instance of the <see cref="BoduConfigurationKey" /> struct from a raw key string using the
+    /// supplied options.
     /// </summary>
     /// <param name="rawKey">The raw key as authored in the configuration source.</param>
     /// <param name="options">The key options to apply, or <see langword="null" /> for the defaults.</param>
@@ -48,37 +44,37 @@ public readonly partial struct BoduConfigurationKey : IEquatable<BoduConfigurati
         BoduConfigurationKeyOptions effective = options ?? BoduConfigurationKeyOptions.Default;
         ImmutableArray<string> segments = SplitSegments(rawKey, effective);
 
-        this._rawKey = rawKey;
-        this._segments = segments;
-        this._configurationKey = ComposeConfigurationKey(segments, effective);
-        this._caseSensitive = effective.CaseSensitive;
+        RawKey = rawKey;
+        Segments = segments;
+        ConfigurationKey = ComposeConfigurationKey(segments, effective);
+        CaseSensitive = effective.CaseSensitive;
     }
 
     private BoduConfigurationKey(string rawKey, ImmutableArray<string> segments, string configurationKey, bool caseSensitive)
     {
-        this._rawKey = rawKey;
-        this._segments = segments;
-        this._configurationKey = configurationKey;
-        this._caseSensitive = caseSensitive;
+        RawKey = rawKey;
+        Segments = segments;
+        ConfigurationKey = configurationKey;
+        CaseSensitive = caseSensitive;
     }
 
     /// <summary>
     /// Gets the raw key string exactly as it appeared in the source document.
     /// </summary>
     /// <returns>The original key text, or the empty string for a default instance.</returns>
-    public string RawKey => this._rawKey ?? string.Empty;
+    public string RawKey => field ?? string.Empty;
 
     /// <summary>
     /// Gets the canonical colon-delimited logical key derived from <see cref="Segments" />.
     /// </summary>
     /// <returns>The configuration key in colon-delimited form, or the empty string for a default instance.</returns>
-    public string ConfigurationKey => this._configurationKey ?? string.Empty;
+    public string ConfigurationKey => field ?? string.Empty;
 
     /// <summary>
     /// Gets the segments produced by splitting <see cref="RawKey" /> on the configured separators.
     /// </summary>
     /// <returns>An immutable array of segment strings.</returns>
-    public ImmutableArray<string> Segments => this._segments.IsDefault ? ImmutableArray<string>.Empty : this._segments;
+    public ImmutableArray<string> Segments => field.IsDefault ? [] : field;
 
     /// <summary>
     /// Gets a value indicating whether equality and hashing for this key are case-sensitive.
@@ -87,7 +83,29 @@ public readonly partial struct BoduConfigurationKey : IEquatable<BoduConfigurati
     /// <see langword="true" /> when ordinal case-sensitive comparison is used; otherwise, <see langword="false" /> for
     /// ordinal-ignore-case.
     /// </returns>
-    public bool CaseSensitive => this._caseSensitive;
+    public bool CaseSensitive { get; }
+
+    /// <summary>
+    /// Determines whether two keys are equal.
+    /// </summary>
+    /// <param name="left">The first key to compare.</param>
+    /// <param name="right">The second key to compare.</param>
+    /// <returns><see langword="true" /> when the keys are equal; otherwise, <see langword="false" />.</returns>
+    public static bool operator ==(BoduConfigurationKey left, BoduConfigurationKey right)
+    {
+        return left.Equals(right);
+    }
+
+    /// <summary>
+    /// Determines whether two keys are not equal.
+    /// </summary>
+    /// <param name="left">The first key to compare.</param>
+    /// <param name="right">The second key to compare.</param>
+    /// <returns><see langword="true" /> when the keys differ; otherwise, <see langword="false" />.</returns>
+    public static bool operator !=(BoduConfigurationKey left, BoduConfigurationKey right)
+    {
+        return !left.Equals(right);
+    }
 
     /// <summary>
     /// Determines whether this key has the same segment sequence as <paramref name="other" /> under the configured
@@ -100,20 +118,19 @@ public readonly partial struct BoduConfigurationKey : IEquatable<BoduConfigurati
     /// </returns>
     public bool Equals(BoduConfigurationKey other)
     {
-        ImmutableArray<string> a = this.Segments;
+        ImmutableArray<string> a = Segments;
         ImmutableArray<string> b = other.Segments;
 
         if (a.Length != b.Length)
             return false;
 
-        StringComparer comparer = this._caseSensitive
+        StringComparer comparer = CaseSensitive
             ? StringComparer.Ordinal
             : StringComparer.OrdinalIgnoreCase;
 
-        for (int i = 0; i < a.Length; i++)
+        for (var i = 0; i < a.Length; i++)
         {
-            if (!comparer.Equals(a[i], b[i]))
-                return false;
+            if (!comparer.Equals(a[i], b[i])) return false;
         }
 
         return true;
@@ -121,52 +138,35 @@ public readonly partial struct BoduConfigurationKey : IEquatable<BoduConfigurati
 
     /// <inheritdoc />
     public override bool Equals(object? obj) =>
-        obj is BoduConfigurationKey other && this.Equals(other);
+        obj is BoduConfigurationKey other && Equals(other);
 
     /// <inheritdoc />
     public override int GetHashCode()
     {
-        ImmutableArray<string> segments = this.Segments;
-        StringComparer comparer = this._caseSensitive
+        ImmutableArray<string> segments = Segments;
+        StringComparer comparer = CaseSensitive
             ? StringComparer.Ordinal
             : StringComparer.OrdinalIgnoreCase;
 
         HashCode hash = default;
-        for (int i = 0; i < segments.Length; i++)
+        for (var i = 0; i < segments.Length; i++)
             hash.Add(segments[i], comparer);
+
         return hash.ToHashCode();
     }
 
     /// <inheritdoc />
-    public override string ToString() => this.ConfigurationKey;
-
-    /// <summary>
-    /// Determines whether two keys are equal.
-    /// </summary>
-    /// <param name="left">The first key to compare.</param>
-    /// <param name="right">The second key to compare.</param>
-    /// <returns><see langword="true" /> when the keys are equal; otherwise, <see langword="false" />.</returns>
-    public static bool operator ==(BoduConfigurationKey left, BoduConfigurationKey right) =>
-        left.Equals(right);
-
-    /// <summary>
-    /// Determines whether two keys are not equal.
-    /// </summary>
-    /// <param name="left">The first key to compare.</param>
-    /// <param name="right">The second key to compare.</param>
-    /// <returns><see langword="true" /> when the keys differ; otherwise, <see langword="false" />.</returns>
-    public static bool operator !=(BoduConfigurationKey left, BoduConfigurationKey right) =>
-        !left.Equals(right);
+    public override string ToString() => ConfigurationKey;
 
     private static ImmutableArray<string> SplitSegments(string rawKey, BoduConfigurationKeyOptions options)
     {
         IReadOnlyList<char> separators = options.SegmentSeparators;
         ImmutableArray<string>.Builder builder = ImmutableArray.CreateBuilder<string>();
 
-        int start = 0;
-        for (int i = 0; i < rawKey.Length; i++)
+        var start = 0;
+        for (var i = 0; i < rawKey.Length; i++)
         {
-            char c = rawKey[i];
+            var c = rawKey[i];
             if (IsSeparator(c, separators))
             {
                 AddSegment(builder, rawKey.AsSpan(start, i - start), options);
@@ -175,6 +175,7 @@ public readonly partial struct BoduConfigurationKey : IEquatable<BoduConfigurati
         }
 
         AddSegment(builder, rawKey.AsSpan(start, rawKey.Length - start), options);
+
         return builder.ToImmutable();
     }
 
@@ -182,8 +183,7 @@ public readonly partial struct BoduConfigurationKey : IEquatable<BoduConfigurati
     {
         if (segment.IsEmpty)
         {
-            if (!options.AllowEmptySegments)
-                throw new ArgumentException(ConfigurationResourceStrings.Arg_Invalid_ConfigKeyEmptySegment, nameof(segment));
+            if (!options.AllowEmptySegments) throw new ArgumentException(ConfigurationResourceStrings.Arg_Invalid_ConfigKeyEmptySegment, nameof(segment));
 
             builder.Add(string.Empty);
             return;
@@ -194,17 +194,16 @@ public readonly partial struct BoduConfigurationKey : IEquatable<BoduConfigurati
 
     private static void RejectControlCharacters(string rawKey)
     {
-        for (int i = 0; i < rawKey.Length; i++)
+        for (var i = 0; i < rawKey.Length; i++)
         {
-            char c = rawKey[i];
-            if (char.IsControl(c))
-                throw new ArgumentException(string.Format(System.Globalization.CultureInfo.InvariantCulture, ConfigurationResourceStrings.Arg_Invalid_ConfigKeyControlChar, i), nameof(rawKey));
+            var c = rawKey[i];
+            if (char.IsControl(c)) throw new ArgumentException(string.Format(System.Globalization.CultureInfo.InvariantCulture, ConfigurationResourceStrings.Arg_Invalid_ConfigKeyControlChar, i), nameof(rawKey));
         }
     }
 
     private static bool IsSeparator(char c, IReadOnlyList<char> separators)
     {
-        for (int i = 0; i < separators.Count; i++)
+        for (var i = 0; i < separators.Count; i++)
         {
             if (separators[i] == c)
                 return true;

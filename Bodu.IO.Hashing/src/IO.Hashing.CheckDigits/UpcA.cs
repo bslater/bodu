@@ -28,7 +28,6 @@ namespace Bodu.IO.Hashing.CheckDigits;
 public sealed class UpcA
     : CheckDigitAlgorithm
 {
-
     /// <summary>
     /// The required body length of <c>11</c> decimal digits.
     /// </summary>
@@ -92,7 +91,7 @@ public sealed class UpcA
     {
         var sumEven = _sumEvenHypothesis;
         var sumOdd = _sumOddHypothesis;
-        var count = this._count;
+        var count = _count;
 
         for (var i = 0; i < digits.Length; i++)
         {
@@ -119,7 +118,7 @@ public sealed class UpcA
 
         _sumEvenHypothesis = sumEven;
         _sumOddHypothesis = sumOdd;
-        this._count = count;
+        _count = count;
     }
 
     /// <inheritdoc />
@@ -136,5 +135,4 @@ public sealed class UpcA
         _sumOddHypothesis = 0;
         _count = 0;
     }
-
 }

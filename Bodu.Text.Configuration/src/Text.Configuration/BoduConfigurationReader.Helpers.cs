@@ -1,10 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BoduConfigurationReader.Helpers.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Collections.Generic;
 using Bodu.Text.Formats;
 
 namespace Bodu.Text.Configuration;
@@ -24,16 +23,16 @@ internal sealed partial class BoduConfigurationReader
     {
         BoduConfigurationDiagnostic diagnostic = new(severity, code, message, location);
 
-        switch (this._options.DiagnosticMode)
+        switch (_options.DiagnosticMode)
         {
             case BoduConfigurationDiagnosticMode.Throw:
                 if (severity == BoduConfigurationDiagnosticSeverity.Error)
                     throw new BoduConfigurationParseException(diagnostic);
-                this._diagnostics.Add(diagnostic);
+                _diagnostics.Add(diagnostic);
                 break;
 
             case BoduConfigurationDiagnosticMode.Collect:
-                this._diagnostics.Add(diagnostic);
+                _diagnostics.Add(diagnostic);
                 break;
 
             case BoduConfigurationDiagnosticMode.Ignore:
@@ -54,7 +53,7 @@ internal sealed partial class BoduConfigurationReader
 
     private static int FindFirstNonWhitespace(string line)
     {
-        for (int i = 0; i < line.Length; i++)
+        for (var i = 0; i < line.Length; i++)
         {
             if (!char.IsWhiteSpace(line[i]))
                 return i;
@@ -65,7 +64,7 @@ internal sealed partial class BoduConfigurationReader
 
     private static int FindLastClosingBracket(string line, int firstNonWs)
     {
-        for (int i = line.Length - 1; i > firstNonWs; i--)
+        for (var i = line.Length - 1; i > firstNonWs; i--)
         {
             if (line[i] == ']')
                 return i;
@@ -79,7 +78,7 @@ internal sealed partial class BoduConfigurationReader
 
     private static int FindFirstUnescaped(string line, char target, int from)
     {
-        for (int i = from; i < line.Length; i++)
+        for (var i = from; i < line.Length; i++)
         {
             if (line[i] == '\\' && i + 1 < line.Length)
             {
@@ -96,7 +95,7 @@ internal sealed partial class BoduConfigurationReader
 
     private static string TrimTrailing(string line, int firstNonWs)
     {
-        int end = line.Length - 1;
+        var end = line.Length - 1;
         while (end >= firstNonWs && char.IsWhiteSpace(line[end]))
             end--;
         return line.Substring(firstNonWs, end - firstNonWs + 1);
@@ -107,27 +106,27 @@ internal sealed partial class BoduConfigurationReader
         BoduConfigurationInlineCommentMode mode,
         int lineNumber)
     {
-        for (int i = 0; i < value.Length; i++)
+        for (var i = 0; i < value.Length; i++)
         {
-            char c = value[i];
+            var c = value[i];
             if (c == '\\' && i + 1 < value.Length)
             {
                 i++;
                 continue;
             }
 
-            if (c != '#' && c != ';')
+            if (c is not '#' and not ';')
                 continue;
 
-            bool whitespaceBefore = i > 0 && char.IsWhiteSpace(value[i - 1]);
-            bool isInlineComment = mode == BoduConfigurationInlineCommentMode.Always
+            var whitespaceBefore = i > 0 && char.IsWhiteSpace(value[i - 1]);
+            var isInlineComment = mode == BoduConfigurationInlineCommentMode.Always
                                    || (mode == BoduConfigurationInlineCommentMode.WhitespaceIntroduced && whitespaceBefore);
 
             if (!isInlineComment)
                 continue;
 
-            string commentText = value.Substring(i + 1);
-            string remaining = value.Substring(0, i).TrimEnd();
+            var commentText = value[(i + 1)..];
+            var remaining = value[..i].TrimEnd();
             value = remaining;
             return new IniComment(c, commentText, lineNumber);
         }

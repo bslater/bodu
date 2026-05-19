@@ -53,18 +53,17 @@ namespace Bodu.IO.Hashing;
 public sealed partial class Pearson
     : NonCryptographicHashAlgorithm
 {
-
     /// <summary>
     /// The maximum allowable hash size in bits.
     /// </summary>
     public const int MaxHashSizeBits = 2048;
+
     /// <summary>
     /// The minimum allowable hash size in bits.
     /// </summary>
     public const int MinHashSizeBits = 8;
 
     private readonly byte[] _permutationTable;
-    private readonly PearsonTableType _tableType;
     private readonly byte[] _workingHash;
 
     private bool _isFirstByte;
@@ -106,10 +105,10 @@ public sealed partial class Pearson
                 nameof(tableType));
         }
 
-        this._tableType = tableType;
-        this._permutationTable = GetPermutationTable(tableType);
-        this._workingHash = new byte[hashSizeBits / 8];
-        this._isFirstByte = true;
+        TableType = tableType;
+        _permutationTable = GetPermutationTable(tableType);
+        _workingHash = new byte[hashSizeBits / 8];
+        _isFirstByte = true;
     }
 
     /// <summary>
@@ -138,10 +137,10 @@ public sealed partial class Pearson
         if (permutationTable.Length != 256 || permutationTable.Distinct().Count() != 256)
             throw new ArgumentException(HashingResourceStrings.Arg_Invalid_PearsonTable, nameof(permutationTable));
 
-        this._tableType = PearsonTableType.UserDefined;
-        this._permutationTable = (byte[])permutationTable.Clone();
-        this._workingHash = new byte[hashSizeBits / 8];
-        this._isFirstByte = true;
+        TableType = PearsonTableType.UserDefined;
+        _permutationTable = (byte[])permutationTable.Clone();
+        _workingHash = new byte[hashSizeBits / 8];
+        _isFirstByte = true;
     }
 
     /// <summary>
@@ -179,12 +178,12 @@ public sealed partial class Pearson
     /// <summary>
     /// Gets a copy of the 256-byte permutation table currently in use.
     /// </summary>
-    public byte[] Table => (byte[])this._permutationTable.Clone();
+    public byte[] Table => (byte[])_permutationTable.Clone();
 
     /// <summary>
     /// Gets the permutation table preset selected for this instance.
     /// </summary>
-    public PearsonTableType TableType => this._tableType;
+    public PearsonTableType TableType { get; }
 
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<byte> source)
@@ -192,17 +191,17 @@ public sealed partial class Pearson
         if (source.Length == 0)
             return;
 
-        ReadOnlySpan<byte> table = this._permutationTable;
-        var v = this._workingHash;
+        ReadOnlySpan<byte> table = _permutationTable;
+        var v = _workingHash;
         var offset = 0;
 
-        if (this._isFirstByte)
+        if (_isFirstByte)
         {
             var b = source[0];
             for (var j = 0; j < v.Length; j++)
                 v[j] = table[(b + j) & 0xFF];
 
-            this._isFirstByte = false;
+            _isFirstByte = false;
             offset = 1;
         }
 
@@ -217,13 +216,13 @@ public sealed partial class Pearson
     /// <inheritdoc />
     public override void Reset()
     {
-        Array.Clear(this._workingHash, 0, this._workingHash.Length);
-        this._isFirstByte = true;
+        Array.Clear(_workingHash, 0, _workingHash.Length);
+        _isFirstByte = true;
     }
 
     /// <inheritdoc />
     protected override void GetCurrentHashCore(Span<byte> destination) =>
-        this._workingHash.AsSpan().CopyTo(destination);
+        _workingHash.AsSpan().CopyTo(destination);
 
     private static byte[] GetPermutationTable(PearsonTableType type) => type switch
     {
@@ -244,5 +243,4 @@ public sealed partial class Pearson
 
         return hashSizeBits;
     }
-
 }

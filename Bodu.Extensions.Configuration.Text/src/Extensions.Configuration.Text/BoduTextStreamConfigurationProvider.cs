@@ -1,10 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BoduTextStreamConfigurationProvider.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.IO;
 using Microsoft.Extensions.Configuration;
 
 namespace Bodu.Extensions.Configuration.Text;
@@ -31,6 +30,7 @@ public sealed class BoduTextStreamConfigurationProvider : StreamConfigurationPro
         : base(source)
     {
         ThrowHelper.ThrowIfNull(source);
+
         this.BoduSource = source;
     }
 

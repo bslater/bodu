@@ -1,10 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BoduConfigurationPattern.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace Bodu.Text.Configuration;
@@ -64,8 +63,8 @@ public sealed partial class BoduConfigurationPattern
 
     private BoduConfigurationPattern(string source, Regex regex)
     {
-        this.Source = source;
-        this._regex = regex;
+        Source = source;
+        _regex = regex;
     }
 
     /// <summary>
@@ -89,7 +88,8 @@ public sealed partial class BoduConfigurationPattern
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(pattern);
 
-        string regex = TranslateToRegex(pattern);
+        var regex = TranslateToRegex(pattern);
+
         return new BoduConfigurationPattern(pattern, new Regex(regex, RegexOptions.CultureInvariant));
     }
 
@@ -103,7 +103,7 @@ public sealed partial class BoduConfigurationPattern
     {
         ThrowHelper.ThrowIfNull(relativePath);
 
-        string normalized = relativePath.Replace('\\', '/');
-        return this._regex.IsMatch(normalized);
+        var normalized = relativePath.Replace('\\', '/');
+        return _regex.IsMatch(normalized);
     }
 }

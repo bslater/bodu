@@ -52,7 +52,6 @@ namespace Bodu.IO.Hashing;
 public sealed class SuperFastHash
     : NonCryptographicHashAlgorithm, IDisposable
 {
-
     private const int HashLength = 4;
 
     private readonly MemoryStream _buffer = new MemoryStream();
@@ -69,8 +68,8 @@ public sealed class SuperFastHash
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<byte> source)
     {
-        ObjectDisposedException.ThrowIf(this._disposed, this);
-        this._buffer.Write(source);
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        _buffer.Write(source);
     }
 
     /// <summary>
@@ -84,25 +83,25 @@ public sealed class SuperFastHash
     /// </remarks>
     public void Dispose()
     {
-        if (this._disposed)
+        if (_disposed)
             return;
 
-        this._buffer.Dispose();
-        this._disposed = true;
+        _buffer.Dispose();
+        _disposed = true;
     }
 
     /// <inheritdoc />
     public override void Reset()
     {
-        ObjectDisposedException.ThrowIf(this._disposed, this);
-        this._buffer.SetLength(0);
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        _buffer.SetLength(0);
     }
 
     /// <inheritdoc />
     protected override void GetCurrentHashCore(Span<byte> destination)
     {
-        ObjectDisposedException.ThrowIf(this._disposed, this);
-        ReadOnlySpan<byte> data = this._buffer.GetBuffer().AsSpan(0, (int)this._buffer.Length);
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        ReadOnlySpan<byte> data = _buffer.GetBuffer().AsSpan(0, (int)_buffer.Length);
         BinaryPrimitives.WriteUInt32LittleEndian(destination, Compute(data));
     }
 
@@ -172,5 +171,4 @@ public sealed class SuperFastHash
 
         return hash;
     }
-
 }

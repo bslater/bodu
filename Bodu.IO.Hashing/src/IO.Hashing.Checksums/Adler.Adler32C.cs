@@ -58,7 +58,6 @@ namespace Bodu.IO.Hashing.Checksums;
 public sealed class Adler32C
     : Adler32Base
 {
-
     private const uint Adler32CModulo = 65536U;
 
     /// <summary>
@@ -68,5 +67,4 @@ public sealed class Adler32C
         : base(Adler32CModulo)
     {
     }
-
 }

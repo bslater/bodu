@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
 using System.IO.Hashing;
 
 namespace Bodu.IO.Hashing;
@@ -110,7 +109,6 @@ public abstract class BlockNonCryptographicHashAlgorithm<T>
     : NonCryptographicHashAlgorithm
     where T : BlockNonCryptographicHashAlgorithm<T>, new()
 {
-
     /// <summary>
     /// The fixed size, in bytes, of each block processed by the algorithm.
     /// </summary>
@@ -118,7 +116,6 @@ public abstract class BlockNonCryptographicHashAlgorithm<T>
 
     private readonly byte[] _residualByteBuffer;
     private int _residualBytes;
-    private ulong _totalLength;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="BlockNonCryptographicHashAlgorithm{T}" /> class using the specified
@@ -137,8 +134,8 @@ public abstract class BlockNonCryptographicHashAlgorithm<T>
         : base(hashLengthInBytes)
     {
         ThrowHelper.ThrowIfLessThanOrEqual(blockSize, 0);
-        this.BlockSizeBytes = blockSize;
-        this._residualByteBuffer = new byte[blockSize];
+        BlockSizeBytes = blockSize;
+        _residualByteBuffer = new byte[blockSize];
     }
 
     /// <summary>
@@ -153,7 +150,7 @@ public abstract class BlockNonCryptographicHashAlgorithm<T>
     /// <remarks>
     /// Exposed to derived types that snapshot state in <see cref="Clone" />.
     /// </remarks>
-    protected int ResidualByteCount => this._residualBytes;
+    protected int ResidualByteCount => _residualBytes;
 
     /// <summary>
     /// Gets a read-only view over the residual byte buffer.
@@ -162,7 +159,7 @@ public abstract class BlockNonCryptographicHashAlgorithm<T>
     /// Exposed to derived types that snapshot state in <see cref="Clone" />.
     /// </remarks>
     protected ReadOnlySpan<byte> ResidualBytes =>
-        new ReadOnlySpan<byte>(this._residualByteBuffer, 0, this._residualBytes);
+        new(_residualByteBuffer, 0, _residualBytes);
 
     /// <summary>
     /// Gets the total number of bytes that have been passed to <see cref="Append(ReadOnlySpan{byte})" /> since the last
@@ -171,21 +168,19 @@ public abstract class BlockNonCryptographicHashAlgorithm<T>
     /// <remarks>
     /// Exposed to derived types that snapshot state in <see cref="Clone" />.
     /// </remarks>
-    protected ulong TotalLength => this._totalLength;
+    protected ulong TotalLength { get; private set; }
 
     /// <inheritdoc />
-    public override void Append(ReadOnlySpan<byte> source)
-    {
-        this.ProcessBlocks(source);
-    }
+    public override void Append(ReadOnlySpan<byte> source) =>
+        ProcessBlocks(source);
 
     /// <inheritdoc />
     public override void Reset()
     {
-        Array.Clear(this._residualByteBuffer, 0, this._residualByteBuffer.Length);
-        this._residualBytes = 0;
-        this._totalLength = 0;
-        this.ResetState();
+        Array.Clear(_residualByteBuffer, 0, _residualByteBuffer.Length);
+        _residualBytes = 0;
+        TotalLength = 0;
+        ResetState();
     }
 
     /// <summary>
@@ -204,9 +199,9 @@ public abstract class BlockNonCryptographicHashAlgorithm<T>
     protected void CopyResidualStateFrom(BlockNonCryptographicHashAlgorithm<T> source)
     {
         ArgumentNullException.ThrowIfNull(source);
-        source._residualByteBuffer.AsSpan(0, source._residualBytes).CopyTo(this._residualByteBuffer);
-        this._residualBytes = source._residualBytes;
-        this._totalLength = source._totalLength;
+        source._residualByteBuffer.AsSpan(0, source._residualBytes).CopyTo(_residualByteBuffer);
+        _residualBytes = source._residualBytes;
+        TotalLength = source.TotalLength;
     }
 
     /// <inheritdoc />
@@ -214,13 +209,13 @@ public abstract class BlockNonCryptographicHashAlgorithm<T>
     {
         // Snapshot current accumulator state so that GetCurrentHash() remains non-destructive:
         // pad/final-block processing is performed on a cloned instance, and its digest is copied to destination.
-        T snapshot = this.Clone();
+        T snapshot = Clone();
 
         if (snapshot.ShouldPadFinalBlock())
         {
             var finalBlock = snapshot.PadBlock(
                 new ReadOnlySpan<byte>(snapshot._residualByteBuffer, 0, snapshot._residualBytes),
-                snapshot._totalLength);
+                snapshot.TotalLength);
 
             if (snapshot.AllowUnalignedFinalBlock)
             {
@@ -238,7 +233,7 @@ public abstract class BlockNonCryptographicHashAlgorithm<T>
         }
 
         var digest = snapshot.ProcessFinalBlock();
-        digest.AsSpan(0, this.HashLengthInBytes).CopyTo(destination);
+        digest.AsSpan(0, HashLengthInBytes).CopyTo(destination);
     }
 
     /// <summary>
@@ -306,38 +301,37 @@ public abstract class BlockNonCryptographicHashAlgorithm<T>
     private void ProcessBlocks(ReadOnlySpan<byte> buffer)
     {
         var pos = 0;
-        this._totalLength += (ulong)buffer.Length;
+        TotalLength += (ulong)buffer.Length;
 
-        Span<byte> residualSpan = this._residualByteBuffer;
+        Span<byte> residualSpan = _residualByteBuffer;
 
-        if (this._residualBytes > 0)
+        if (_residualBytes > 0)
         {
-            var remaining = this.BlockSizeBytes - this._residualBytes;
+            var remaining = BlockSizeBytes - _residualBytes;
 
             if (buffer.Length >= remaining)
             {
-                buffer.Slice(0, remaining).CopyTo(residualSpan[this._residualBytes..]);
-                this.ProcessBlock(this._residualByteBuffer);
-                this._residualBytes = 0;
+                buffer.Slice(0, remaining).CopyTo(residualSpan[_residualBytes..]);
+                ProcessBlock(_residualByteBuffer);
+                _residualBytes = 0;
                 pos += remaining;
             }
             else
             {
-                buffer.CopyTo(residualSpan[this._residualBytes..]);
-                this._residualBytes += buffer.Length;
+                buffer.CopyTo(residualSpan[_residualBytes..]);
+                _residualBytes += buffer.Length;
                 return;
             }
         }
 
-        while (pos + this.BlockSizeBytes <= buffer.Length)
+        while (pos + BlockSizeBytes <= buffer.Length)
         {
-            this.ProcessBlock(buffer.Slice(pos, this.BlockSizeBytes));
-            pos += this.BlockSizeBytes;
+            ProcessBlock(buffer.Slice(pos, BlockSizeBytes));
+            pos += BlockSizeBytes;
         }
 
-        this._residualBytes = buffer.Length - pos;
-        if (this._residualBytes > 0)
-            buffer.Slice(pos, this._residualBytes).CopyTo(residualSpan);
+        _residualBytes = buffer.Length - pos;
+        if (_residualBytes > 0)
+            buffer.Slice(pos, _residualBytes).CopyTo(residualSpan);
     }
-
 }

@@ -19,7 +19,6 @@ namespace Bodu.IO.Hashing.Checksums;
 /// </remarks>
 internal static class Alphanumeric
 {
-
     /// <summary>
     /// Expands an ASCII uppercase alphanumeric character, or one of the CUSIP punctuation sentinels (<c>'*'</c>=36,
     /// <c>'@'</c>=37, <c>'#'</c>=38), to its numeric value.
@@ -30,22 +29,19 @@ internal static class Alphanumeric
     /// Thrown when <paramref name="ch" /> is not a recognized CUSIP character.
     /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int ExpandCusip(char ch)
-    {
-        if ((uint)(ch - '0') <= 9u) return ch - '0';
-        if ((uint)(ch - 'A') <= 25u) return ch - 'A' + 10;
-        if (ch == '*') return 36;
-        if (ch == '@') return 37;
-        if (ch == '#') return 38;
+    public static int ExpandCusip(char ch) =>
+        (uint)(ch - '0') <= 9u
+            ? ch - '0'
+            : (uint)(ch - 'A') <= 25u
+                ? ch - 'A' + 10
+                : ch == '*'
+                    ? 36
+                    : ch == '@'
+                        ? 37
+                        : ch == '#'
+                            ? 38
+                            : throw new ArgumentOutOfRangeException(nameof(ch), ch, FormatInvalidCharacterMessage(ch, "CUSIP", "'0'-'9', 'A'-'Z', '*', '@', or '#'"));
 
-        throw new ArgumentOutOfRangeException(
-            nameof(ch),
-            ch,
-            FormatInvalidCharacterMessage(
-                ch,
-                "CUSIP",
-                "'0'-'9', 'A'-'Z', '*', '@', or '#'"));
-    }
     /// <summary>
     /// Expands an ASCII uppercase alphanumeric character to its numeric value. <c>'0'</c>–<c>'9'</c> map to 0–9 and
     /// <c>'A'</c>–<c>'Z'</c> map to 10–35.
@@ -74,7 +70,7 @@ internal static class Alphanumeric
     /// </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsVowel(char ch) =>
-        ch == 'A' || ch == 'E' || ch == 'I' || ch == 'O' || ch == 'U';
+        ch is 'A' or 'E' or 'I' or 'O' or 'U';
 
     /// <summary>
     /// Validates that every character in <paramref name="value" /> is an ASCII decimal digit or uppercase letter.
@@ -89,14 +85,7 @@ internal static class Alphanumeric
         for (var i = 0; i < value.Length; i++)
         {
             var ch = value[i];
-            if ((uint)(ch - '0') > 9u && (uint)(ch - 'A') > 25u)
-                throw new ArgumentOutOfRangeException(
-                    paramName,
-                    ch,
-                    FormatInvalidCharacterMessage(
-                        ch,
-                        "ASCII uppercase alphanumeric",
-                        "'0' to '9' or 'A' to 'Z'"));
+            if ((uint)(ch - '0') > 9u && (uint)(ch - 'A') > 25u) throw new ArgumentOutOfRangeException(paramName, ch, FormatInvalidCharacterMessage(ch, "ASCII uppercase alphanumeric", "'0' to '9' or 'A' to 'Z'"));
         }
     }
 
@@ -115,7 +104,7 @@ internal static class Alphanumeric
             var ch = value[i];
             if ((uint)(ch - '0') <= 9u) continue;
             if ((uint)(ch - 'A') <= 25u) continue;
-            if (ch == '*' || ch == '@' || ch == '#') continue;
+            if (ch is '*' or '@' or '#') continue;
 
             throw new ArgumentOutOfRangeException(
                 paramName,
@@ -167,5 +156,4 @@ internal static class Alphanumeric
             characterSetName,
             validCharacterDescription);
     }
-
 }

@@ -32,7 +32,6 @@ namespace Bodu.IO.Hashing.Checksums;
 public sealed class Isbn13
     : CheckDigitAlgorithm
 {
-
     private int _count;
     private int _sumEvenHypothesis;
     private int _sumOddHypothesis;
@@ -79,7 +78,7 @@ public sealed class Isbn13
     {
         var sumEven = _sumEvenHypothesis;
         var sumOdd = _sumOddHypothesis;
-        var count = this._count;
+        var count = _count;
 
         for (var i = 0; i < digits.Length; i++)
         {
@@ -109,7 +108,7 @@ public sealed class Isbn13
 
         _sumEvenHypothesis = sumEven;
         _sumOddHypothesis = sumOdd;
-        this._count = count;
+        _count = count;
     }
 
     /// <inheritdoc />
@@ -126,5 +125,4 @@ public sealed class Isbn13
         _sumOddHypothesis = 0;
         _count = 0;
     }
-
 }

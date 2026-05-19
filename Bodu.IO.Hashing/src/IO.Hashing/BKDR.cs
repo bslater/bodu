@@ -50,7 +50,6 @@ namespace Bodu.IO.Hashing;
 public sealed class BKDR
     : NonCryptographicHashAlgorithm
 {
-
     /// <summary>
     /// Represents the default seed value used by the <see cref="BKDR" /> hash algorithm.
     /// </summary>
@@ -59,9 +58,9 @@ public sealed class BKDR
     private const int HashLength = 4;
 
     private static readonly uint[] s_validSeedValues =
-    {
+    [
         31U, 131U, 1313U, 13131U, 131313U, 1313131U, 13131313U, 131313131U, 1313131313U,
-    };
+    ];
 
     private uint _seed;
     private bool _started;
@@ -89,8 +88,8 @@ public sealed class BKDR
         : base(HashLength)
     {
         ValidateSeed(seed);
-        this._seed = seed;
-        this._workingHash = seed;
+        _seed = seed;
+        _workingHash = seed;
     }
 
     /// <summary>
@@ -103,14 +102,14 @@ public sealed class BKDR
     /// </exception>
     public uint Seed
     {
-        get => this._seed;
+        get => _seed;
 
         set
         {
-            this.ThrowIfInvalidState();
+            ThrowIfInvalidState();
             ValidateSeed(value);
-            this._seed = value;
-            this._workingHash = value;
+            _seed = value;
+            _workingHash = value;
         }
     }
 
@@ -120,27 +119,27 @@ public sealed class BKDR
         if (source.Length == 0)
             return;
 
-        var v = this._workingHash;
-        var seed = this._seed;
+        var v = _workingHash;
+        var seed = _seed;
         foreach (var b in source)
         {
             v = (v * seed) + b;
         }
 
-        this._workingHash = v;
-        this._started = true;
+        _workingHash = v;
+        _started = true;
     }
 
     /// <inheritdoc />
     public override void Reset()
     {
-        this._workingHash = this._seed;
-        this._started = false;
+        _workingHash = _seed;
+        _started = false;
     }
 
     /// <inheritdoc />
     protected override void GetCurrentHashCore(Span<byte> destination) =>
-        BinaryPrimitives.WriteUInt32BigEndian(destination, this._workingHash);
+        BinaryPrimitives.WriteUInt32BigEndian(destination, _workingHash);
 
     private static void ValidateSeed(uint value)
     {
@@ -167,6 +166,5 @@ public sealed class BKDR
     /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ThrowIfInvalidState() =>
-        HashingThrowHelper.ThrowIfAlgorithmAlreadyStarted(this._started);
-
+        HashingThrowHelper.ThrowIfAlgorithmAlreadyStarted(_started);
 }

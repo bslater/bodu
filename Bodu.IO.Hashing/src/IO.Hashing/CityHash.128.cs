@@ -73,7 +73,6 @@ namespace Bodu.IO.Hashing;
 public sealed class CityHash128
     : CityHash<CityHash128>
 {
-
     /// <summary>
     /// Initializes a new instance of the <see cref="CityHash128" /> class with a fixed 128-bit (16-byte) hash output
     /// size.
@@ -250,5 +249,4 @@ public sealed class CityHash128
         b = HashLen16(d, b);
         return (a ^ b, HashLen16(b, a));
     }
-
 }

@@ -33,7 +33,6 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// </remarks>
 public abstract class AlphanumericCheckDigitAlgorithm
 {
-
     /// <summary>
     /// Initializes a new instance of the <see cref="AlphanumericCheckDigitAlgorithm" /> class.
     /// </summary>
@@ -99,5 +98,4 @@ public abstract class AlphanumericCheckDigitAlgorithm
     /// Equivalent in behavior to constructing a fresh instance of the same concrete type.
     /// </remarks>
     public abstract void Reset();
-
 }

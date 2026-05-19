@@ -21,7 +21,6 @@ namespace Bodu.IO.Hashing.Checksums;
 public abstract class Adler64Base
     : Adler<ulong>
 {
-
     private const int HashLength = 8;
 
     /// <summary>
@@ -36,8 +35,7 @@ public abstract class Adler64Base
     /// <inheritdoc />
     protected override void GetCurrentHashCore(Span<byte> destination)
     {
-        var hash = (this.partB << 32) | this.partA;
+        var hash = (PartB << 32) | PartA;
         BinaryPrimitives.WriteUInt64BigEndian(destination, hash);
     }
-
 }

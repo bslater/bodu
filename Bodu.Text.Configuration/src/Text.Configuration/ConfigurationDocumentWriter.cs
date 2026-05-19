@@ -1,10 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConfigurationDocumentWriter.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.IO;
 using Bodu.Text.Formats;
 
 namespace Bodu.Text.Configuration;
@@ -30,7 +29,7 @@ internal static class ConfigurationDocumentWriter
         ThrowHelper.ThrowIfNull(writer);
         ThrowHelper.ThrowIfNull(options);
 
-        bool wroteAny = WriteSection(document.GlobalSection, writer, options, isGlobal: true);
+        var wroteAny = WriteSection(document.GlobalSection, writer, options, isGlobal: true);
 
         foreach (IniSection section in document.Sections)
         {
@@ -43,7 +42,7 @@ internal static class ConfigurationDocumentWriter
 
     private static bool WriteSection(IniSection section, TextWriter writer, BoduConfigurationWriteOptions options, bool isGlobal)
     {
-        bool wroteAny = false;
+        var wroteAny = false;
 
         if (options.PreserveComments)
         {

@@ -1,13 +1,11 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BoduConfigurationReader.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Globalization;
-using System.IO;
 using Bodu.Text.Formats;
 
 namespace Bodu.Text.Configuration;
@@ -30,7 +28,7 @@ internal sealed partial class BoduConfigurationReader
 
     internal BoduConfigurationReader(BoduConfigurationParseOptions options)
     {
-        this._options = options;
+        _options = options;
     }
 
     /// <summary>
@@ -46,24 +44,24 @@ internal sealed partial class BoduConfigurationReader
     {
         ThrowHelper.ThrowIfNull(reader);
 
-        bool caseSensitiveSections = this._options.KeyOptions.CaseSensitive;
+        var caseSensitiveSections = _options.KeyOptions.CaseSensitive;
         IniDocument document = new(caseSensitiveSections);
         IniSection currentSection = document.GlobalSection;
 
-        int lineNumber = 0;
+        var lineNumber = 0;
         string? line;
         while ((line = reader.ReadLine()) is not null)
         {
             lineNumber++;
-            currentSection = this.ProcessLine(document, currentSection, line, lineNumber, path);
+            currentSection = ProcessLine(document, currentSection, line, lineNumber, path);
         }
 
         // Any pending leading comments at end-of-file attach to whichever section is current.
-        foreach (IniComment c in this._pendingLeadingComments)
+        foreach (IniComment c in _pendingLeadingComments)
             currentSection.AddLeadingComment(c);
-        this._pendingLeadingComments.Clear();
+        _pendingLeadingComments.Clear();
 
-        return new BoduConfigurationParseResult(document, this._diagnostics.ToImmutableArray());
+        return new BoduConfigurationParseResult(document, [.. _diagnostics]);
     }
 
     private IniSection ProcessLine(
@@ -73,37 +71,37 @@ internal sealed partial class BoduConfigurationReader
         int lineNumber,
         string? path)
     {
-        if (line.Length > this._options.MaxLineLength)
+        if (line.Length > _options.MaxLineLength)
         {
-            this.EmitDiagnostic(
+            EmitDiagnostic(
                 BoduConfigurationDiagnosticSeverity.Error,
                 BoduConfigurationDiagnosticCode.LineTooLong,
-                string.Format(CultureInfo.InvariantCulture, ConfigurationResourceStrings.Format_Invalid_LineTooLong, this._options.MaxLineLength),
+                string.Format(CultureInfo.InvariantCulture, ConfigurationResourceStrings.Format_Invalid_LineTooLong, _options.MaxLineLength),
                 new BoduConfigurationSourceLocation(lineNumber, 1, line.Length, path));
+
             return currentSection;
         }
 
-        int firstNonWs = FindFirstNonWhitespace(line);
+        var firstNonWs = FindFirstNonWhitespace(line);
 
         // Blank line: any pending leading comments still attach to the next significant line.
         if (firstNonWs < 0)
             return currentSection;
 
-        char first = line[firstNonWs];
+        var first = line[firstNonWs];
 
         // Full-line comment: capture and defer until we see the next section or property.
-        if (first == '#' || first == ';')
+        if (first is '#' or ';')
         {
-            string commentText = line.Substring(firstNonWs + 1);
+            var commentText = line[(firstNonWs + 1)..];
             _ = path;
-            this._pendingLeadingComments.Add(new IniComment(first, commentText, lineNumber));
+            _pendingLeadingComments.Add(new IniComment(first, commentText, lineNumber));
             return currentSection;
         }
 
-        if (first == '[')
-            return this.ProcessSectionHeader(document, line, firstNonWs, lineNumber, path);
-
-        return this.ProcessPropertyLine(currentSection, line, firstNonWs, lineNumber, path);
+        return first == '['
+            ? ProcessSectionHeader(document, line, firstNonWs, lineNumber, path)
+            : ProcessPropertyLine(currentSection, line, firstNonWs, lineNumber, path);
     }
 
     private IniSection ProcessSectionHeader(
@@ -115,32 +113,35 @@ internal sealed partial class BoduConfigurationReader
     {
         // The section name is everything between the first `[` and the final `]` on the line.
         // We allow `]` inside the section name to mirror EditorConfig section conventions.
-        int lastClose = FindLastClosingBracket(line, firstNonWs);
+        var lastClose = FindLastClosingBracket(line, firstNonWs);
         if (lastClose < 0)
         {
-            this.EmitDiagnostic(
+            EmitDiagnostic(
                 BoduConfigurationDiagnosticSeverity.Error,
                 BoduConfigurationDiagnosticCode.UnterminatedSectionHeader,
                 ConfigurationResourceStrings.Format_Invalid_UnterminatedSectionHeader,
                 new BoduConfigurationSourceLocation(lineNumber, firstNonWs + 1, line.Length - firstNonWs, path));
+
             return GetCurrentSection(document);
         }
 
-        string name = line.Substring(firstNonWs + 1, lastClose - firstNonWs - 1);
+        var name = line.Substring(firstNonWs + 1, lastClose - firstNonWs - 1);
         if (name.Length == 0)
         {
-            this.EmitDiagnostic(
+            EmitDiagnostic(
                 BoduConfigurationDiagnosticSeverity.Error,
                 BoduConfigurationDiagnosticCode.EmptySectionHeader,
                 ConfigurationResourceStrings.Format_Invalid_EmptySectionHeader,
                 new BoduConfigurationSourceLocation(lineNumber, firstNonWs + 1, lastClose - firstNonWs + 1, path));
+
             return GetCurrentSection(document);
         }
 
         BoduConfigurationSourceLocation headerLoc = new(lineNumber, firstNonWs + 1, lastClose - firstNonWs + 1, path);
-        IniSection section = this.ResolveSectionTarget(document, name, headerLoc);
+        IniSection section = ResolveSectionTarget(document, name, headerLoc);
 
-        AttachPendingComments(section, this._pendingLeadingComments);
+        AttachPendingComments(section, _pendingLeadingComments);
+
         return section;
     }
 
@@ -150,11 +151,11 @@ internal sealed partial class BoduConfigurationReader
         // documents constructed under Preserve / MergeAdjacent (which produce multiple sections with the same
         // name) still allow us to find the last-appended occurrence.
         IniSection? existing = null;
-        int existingIndex = -1;
-        IEqualityComparer<string> comparer = this._options.KeyOptions.CaseSensitive
+        var existingIndex = -1;
+        IEqualityComparer<string> comparer = _options.KeyOptions.CaseSensitive
             ? StringComparer.Ordinal
             : StringComparer.OrdinalIgnoreCase;
-        for (int i = 0; i < document.Sections.Count; i++)
+        for (var i = 0; i < document.Sections.Count; i++)
         {
             if (comparer.Equals(document.Sections[i].Name, name))
             {
@@ -165,10 +166,10 @@ internal sealed partial class BoduConfigurationReader
 
         if (existing is not null)
         {
-            switch (this._options.DuplicateSectionMode)
+            switch (_options.DuplicateSectionMode)
             {
                 case IniDuplicateSectionBehavior.Disallowed:
-                    this.EmitDiagnostic(
+                    EmitDiagnostic(
                         BoduConfigurationDiagnosticSeverity.Error,
                         BoduConfigurationDiagnosticCode.UnterminatedSectionHeader,
                         $"Duplicate section pattern '{name}'.",
@@ -183,7 +184,7 @@ internal sealed partial class BoduConfigurationReader
             }
         }
 
-        IniSection created = new(name, Array.Empty<IniEntry>(), this._options.KeyOptions.CaseSensitive);
+        IniSection created = new(name, [], _options.KeyOptions.CaseSensitive);
         document.AddSection(created);
         return created;
     }
@@ -195,29 +196,31 @@ internal sealed partial class BoduConfigurationReader
         int lineNumber,
         string? path)
     {
-        int equalsIndex = FindFirstUnescaped(line, '=', firstNonWs);
+        var equalsIndex = FindFirstUnescaped(line, '=', firstNonWs);
 
         if (equalsIndex < 0)
         {
-            if (this._options.AllowKeyOnlyProperties)
+            if (_options.AllowKeyOnlyProperties)
             {
-                string keyOnly = TrimTrailing(line, firstNonWs);
-                this.AppendEntry(currentSection, keyOnly, value: string.Empty, lineNumber, firstNonWs, path);
+                var keyOnly = TrimTrailing(line, firstNonWs);
+                AppendEntry(currentSection, keyOnly, value: string.Empty, lineNumber, firstNonWs, path);
+
                 return currentSection;
             }
 
-            this.EmitDiagnostic(
+            EmitDiagnostic(
                 BoduConfigurationDiagnosticSeverity.Error,
                 BoduConfigurationDiagnosticCode.MissingEquals,
                 ConfigurationResourceStrings.Format_Invalid_MissingEquals,
                 new BoduConfigurationSourceLocation(lineNumber, firstNonWs + 1, line.Length - firstNonWs, path));
+
             return currentSection;
         }
 
-        string keyText = line.Substring(firstNonWs, equalsIndex - firstNonWs);
-        string valueText = line.Substring(equalsIndex + 1);
+        var keyText = line[firstNonWs..equalsIndex];
+        var valueText = line[(equalsIndex + 1)..];
 
-        if (this._options.TrimKeysAndValues)
+        if (_options.TrimKeysAndValues)
         {
             keyText = keyText.Trim();
             valueText = valueText.Trim();
@@ -225,29 +228,32 @@ internal sealed partial class BoduConfigurationReader
 
         if (keyText.Length == 0)
         {
-            this.EmitDiagnostic(
+            EmitDiagnostic(
                 BoduConfigurationDiagnosticSeverity.Error,
                 BoduConfigurationDiagnosticCode.EmptyKey,
                 ConfigurationResourceStrings.Format_Invalid_EmptyKey,
                 new BoduConfigurationSourceLocation(lineNumber, firstNonWs + 1, equalsIndex - firstNonWs, path));
+
             return currentSection;
         }
 
-        if (keyText.Length > this._options.MaxKeyLength)
+        if (keyText.Length > _options.MaxKeyLength)
         {
-            this.EmitDiagnostic(
+            EmitDiagnostic(
                 BoduConfigurationDiagnosticSeverity.Error,
                 BoduConfigurationDiagnosticCode.KeyTooLong,
-                string.Format(CultureInfo.InvariantCulture, ConfigurationResourceStrings.Format_Invalid_KeyTooLong, this._options.MaxKeyLength),
+                string.Format(CultureInfo.InvariantCulture, ConfigurationResourceStrings.Format_Invalid_KeyTooLong, _options.MaxKeyLength),
                 new BoduConfigurationSourceLocation(lineNumber, firstNonWs + 1, keyText.Length, path));
+
             return currentSection;
         }
 
         IniComment? inlineComment = null;
-        if (this._options.InlineCommentMode != BoduConfigurationInlineCommentMode.Disabled)
-            inlineComment = TryExtractInlineComment(ref valueText, this._options.InlineCommentMode, lineNumber);
+        if (_options.InlineCommentMode != BoduConfigurationInlineCommentMode.Disabled)
+            inlineComment = TryExtractInlineComment(ref valueText, _options.InlineCommentMode, lineNumber);
 
-        this.AppendEntry(currentSection, keyText, valueText, lineNumber, firstNonWs, path, inlineComment);
+        AppendEntry(currentSection, keyText, valueText, lineNumber, firstNonWs, path, inlineComment);
+
         return currentSection;
     }
 
@@ -260,7 +266,7 @@ internal sealed partial class BoduConfigurationReader
         string? path,
         IniComment? inlineComment = null)
     {
-        IEqualityComparer<string> comparer = this._options.KeyOptions.CaseSensitive
+        IEqualityComparer<string> comparer = _options.KeyOptions.CaseSensitive
             ? StringComparer.Ordinal
             : StringComparer.OrdinalIgnoreCase;
 
@@ -280,11 +286,11 @@ internal sealed partial class BoduConfigurationReader
         // applies the same rejection rule as direct callers.
         try
         {
-            _ = new BoduConfigurationKey(rawKey, this._options.KeyOptions);
+            _ = new BoduConfigurationKey(rawKey, _options.KeyOptions);
         }
         catch (ArgumentException ex)
         {
-            this.EmitDiagnostic(
+            EmitDiagnostic(
                 BoduConfigurationDiagnosticSeverity.Error,
                 BoduConfigurationDiagnosticCode.InvalidKeyCharacter,
                 ex.Message,
@@ -294,13 +300,13 @@ internal sealed partial class BoduConfigurationReader
 
         if (existing is not null)
         {
-            switch (this._options.DuplicateKeyMode)
+            switch (_options.DuplicateKeyMode)
             {
                 case IniDuplicateKeyBehavior.FirstWins:
                     return;
 
                 case IniDuplicateKeyBehavior.Disallowed:
-                    this.EmitDiagnostic(
+                    EmitDiagnostic(
                         BoduConfigurationDiagnosticSeverity.Error,
                         BoduConfigurationDiagnosticCode.DuplicateKey,
                         string.Format(CultureInfo.InvariantCulture, ConfigurationResourceStrings.Format_Invalid_DuplicateKey, rawKey),
@@ -313,9 +319,9 @@ internal sealed partial class BoduConfigurationReader
                     IniEntry replacement = new(rawKey, value, lineNumber);
                     if (inlineComment.HasValue)
                         replacement.InlineComment = inlineComment.Value;
-                    foreach (IniComment c in this._pendingLeadingComments)
+                    foreach (IniComment c in _pendingLeadingComments)
                         replacement.AddLeadingComment(c);
-                    this._pendingLeadingComments.Clear();
+                    _pendingLeadingComments.Clear();
                     section.AddEntry(replacement);
                     return;
             }
@@ -324,9 +330,9 @@ internal sealed partial class BoduConfigurationReader
         IniEntry entry = new(rawKey, value, lineNumber);
         if (inlineComment.HasValue)
             entry.InlineComment = inlineComment.Value;
-        foreach (IniComment c in this._pendingLeadingComments)
+        foreach (IniComment c in _pendingLeadingComments)
             entry.AddLeadingComment(c);
-        this._pendingLeadingComments.Clear();
+        _pendingLeadingComments.Clear();
         section.AddEntry(entry);
     }
 }

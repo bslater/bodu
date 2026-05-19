@@ -1,11 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BoduTextConfigurationExtensions.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
-using System.IO;
 using Bodu.Text.Configuration;
 using Bodu.Text.Formats;
 using Microsoft.Extensions.Configuration;
@@ -117,6 +115,7 @@ public static class BoduTextConfigurationExtensions
         BoduTextConfigurationSource source = new();
         configureSource(source);
         builder.Add(source);
+
         return builder;
     }
 
@@ -153,29 +152,24 @@ public static class BoduTextConfigurationExtensions
 
         IFileProvider fileProvider = builder.GetFileProvider();
         string? matched = null;
+
         if (fileProvider.GetFileInfo(DefaultDotFileName).Exists)
             matched = DefaultDotFileName;
         else if (fileProvider.GetFileInfo(DefaultPlainFileName).Exists)
             matched = DefaultPlainFileName;
 
-        if (matched is null)
-        {
-            if (!optional)
-            {
-                throw new FileNotFoundException(
+        return matched is not null
+            ? builder.AddBoduConfiguration(fileProvider, matched, targetPath: null, optional: optional, reloadOnChange: reloadOnChange)
+            : optional
+                ? builder.AddBoduConfiguration(source =>
+                {
+                    source.FileProvider = fileProvider;
+                    source.Path = DefaultDotFileName;
+                    source.Optional = true;
+                    source.ReloadOnChange = reloadOnChange;
+                })
+                : throw new FileNotFoundException(
                     $"Neither '{DefaultDotFileName}' nor '{DefaultPlainFileName}' was found in the configured file provider.");
-            }
-
-            return builder.AddBoduConfiguration(source =>
-            {
-                source.FileProvider = fileProvider;
-                source.Path = DefaultDotFileName;
-                source.Optional = true;
-                source.ReloadOnChange = reloadOnChange;
-            });
-        }
-
-        return builder.AddBoduConfiguration(fileProvider, matched, targetPath: null, optional: optional, reloadOnChange: reloadOnChange);
     }
 
     /// <summary>
@@ -230,6 +224,7 @@ public static class BoduTextConfigurationExtensions
         BoduTextStreamConfigurationSource source = new();
         configureSource(source);
         builder.Add(source);
+
         return builder;
     }
 
@@ -257,7 +252,9 @@ public static class BoduTextConfigurationExtensions
 
         System.Collections.Generic.IDictionary<string, string?> data =
             BoduTextConfigurationLoader.LoadData(document, targetPath, resolveOptions);
+
         builder.AddInMemoryCollection(data);
+
         return builder;
     }
 }

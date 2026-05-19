@@ -4,18 +4,13 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.IO.Hashing.Extensions;
-
-using System;
-using System.IO;
 using System.IO.Hashing;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+
+namespace Bodu.IO.Hashing.Extensions;
 
 public static partial class NonCryptographicHashAlgorithmExtensions
 {
-
     /// <summary>
     /// Attempts to asynchronously compute and verify the hash of a stream against the expected hash value.
     /// </summary>
@@ -287,5 +282,4 @@ public static partial class NonCryptographicHashAlgorithmExtensions
             return false;
         }
     }
-
 }

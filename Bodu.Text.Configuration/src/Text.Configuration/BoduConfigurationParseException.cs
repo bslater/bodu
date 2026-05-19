@@ -1,11 +1,10 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BoduConfigurationParseException.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Collections.Immutable;
-using System.Runtime.Serialization;
 
 namespace Bodu.Text.Configuration;
 
@@ -27,7 +26,7 @@ public sealed class BoduConfigurationParseException : FormatException
     public BoduConfigurationParseException()
         : base("The configuration document could not be parsed.")
     {
-        this.Diagnostics = ImmutableArray<BoduConfigurationDiagnostic>.Empty;
+        Diagnostics = [];
     }
 
     /// <summary>
@@ -38,7 +37,7 @@ public sealed class BoduConfigurationParseException : FormatException
     public BoduConfigurationParseException(string message)
         : base(message)
     {
-        this.Diagnostics = ImmutableArray<BoduConfigurationDiagnostic>.Empty;
+        Diagnostics = [];
     }
 
     /// <summary>
@@ -50,7 +49,7 @@ public sealed class BoduConfigurationParseException : FormatException
     public BoduConfigurationParseException(string message, Exception? innerException)
         : base(message, innerException)
     {
-        this.Diagnostics = ImmutableArray<BoduConfigurationDiagnostic>.Empty;
+        Diagnostics = [];
     }
 
     /// <summary>
@@ -63,8 +62,8 @@ public sealed class BoduConfigurationParseException : FormatException
     public BoduConfigurationParseException(BoduConfigurationDiagnostic diagnostic)
         : base(GetMessage(diagnostic))
     {
-        this.Diagnostic = diagnostic;
-        this.Diagnostics = ImmutableArray.Create(diagnostic);
+        Diagnostic = diagnostic;
+        Diagnostics = [diagnostic];
     }
 
     /// <summary>
@@ -78,8 +77,8 @@ public sealed class BoduConfigurationParseException : FormatException
     {
         ThrowHelper.ThrowIfNull(diagnostics);
 
-        this.Diagnostics = [.. diagnostics];
-        this.Diagnostic = this.Diagnostics.Length > 0 ? this.Diagnostics[0] : null;
+        Diagnostics = [.. diagnostics];
+        Diagnostic = Diagnostics.Length > 0 ? Diagnostics[0] : null;
     }
 
 #if !NET8_0_OR_GREATER
@@ -114,7 +113,7 @@ public sealed class BoduConfigurationParseException : FormatException
     /// <see cref="BoduConfigurationSourceLocation.None" /> when no primary diagnostic is available.
     /// </returns>
     public BoduConfigurationSourceLocation Location =>
-        this.Diagnostic?.Location ?? BoduConfigurationSourceLocation.None;
+        Diagnostic?.Location ?? BoduConfigurationSourceLocation.None;
 
     private static string GetMessage(BoduConfigurationDiagnostic diagnostic)
     {

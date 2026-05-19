@@ -8,7 +8,6 @@ namespace Bodu.IO.Hashing.CheckDigits;
 
 public sealed partial class Verhoeff
 {
-
     // D5 dihedral multiplication table.
     private static readonly byte[,] s_d = new byte[10, 10]
     {
@@ -25,7 +24,7 @@ public sealed partial class Verhoeff
     };
 
     // Multiplicative inverse in D5: Inv[x] is the element y such that D[x, y] = 0.
-    private static readonly byte[] s_inv = { 0, 4, 3, 2, 1, 5, 6, 7, 8, 9 };
+    private static readonly byte[] s_inv = [0, 4, 3, 2, 1, 5, 6, 7, 8, 9];
 
     // Position-dependent permutation table. Row index is (position mod 8); column is the digit value.
     private static readonly byte[,] s_p = new byte[8, 10]
@@ -39,5 +38,4 @@ public sealed partial class Verhoeff
         { 2, 7, 9, 3, 8, 0, 6, 4, 1, 5 },
         { 7, 0, 4, 6, 9, 1, 3, 2, 5, 8 },
     };
-
 }

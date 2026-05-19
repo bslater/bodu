@@ -72,7 +72,6 @@ namespace Bodu.IO.Hashing;
 public sealed class MurmurHash3_32
     : MurmurHash3<MurmurHash3_32>
 {
-
     private const uint C1 = 0xCC9E2D51u;
     private const uint C2 = 0x1B873593u;
 
@@ -100,7 +99,7 @@ public sealed class MurmurHash3_32
     /// <returns>A 4-byte array containing the little-endian encoded 32-bit hash value.</returns>
     protected override byte[] ComputeHashCore(ReadOnlySpan<byte> source)
     {
-        uint h1 = this.Seed;
+        uint h1 = Seed;
         int len = source.Length;
         int nblocks = len / 4;
 
@@ -153,5 +152,4 @@ public sealed class MurmurHash3_32
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static uint RotateLeft(uint value, int bits) =>
         (value << bits) | (value >> (32 - bits));
-
 }

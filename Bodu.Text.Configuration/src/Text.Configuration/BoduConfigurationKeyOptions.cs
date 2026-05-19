@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BoduConfigurationKeyOptions.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -61,5 +61,5 @@ public sealed class BoduConfigurationKeyOptions
     /// <see cref="StringComparer.OrdinalIgnoreCase" />.
     /// </returns>
     public StringComparer KeyComparer =>
-        this.CaseSensitive ? StringComparer.Ordinal : StringComparer.OrdinalIgnoreCase;
+        CaseSensitive ? StringComparer.Ordinal : StringComparer.OrdinalIgnoreCase;
 }

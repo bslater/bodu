@@ -1,11 +1,10 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BoduConfigurationView.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Collections;
-using System.Collections.Generic;
 
 namespace Bodu.Text.Configuration;
 
@@ -29,11 +28,9 @@ namespace Bodu.Text.Configuration;
 /// </remarks>
 public sealed partial class BoduConfigurationView : IEnumerable<KeyValuePair<string, string?>>
 {
-    private readonly IReadOnlyDictionary<string, string?> _values;
-
     internal BoduConfigurationView(IReadOnlyDictionary<string, string?> values)
     {
-        this._values = values;
+        Values = values;
     }
 
     /// <summary>
@@ -51,7 +48,8 @@ public sealed partial class BoduConfigurationView : IEnumerable<KeyValuePair<str
         get
         {
             ThrowHelper.ThrowIfNull(key);
-            return LookupValue(this._values, key);
+
+            return LookupValue(Values, key);
         }
     }
 
@@ -64,13 +62,12 @@ public sealed partial class BoduConfigurationView : IEnumerable<KeyValuePair<str
     /// <returns>The value, or <see langword="null" /> when absent.</returns>
     internal static string? LookupValue(IReadOnlyDictionary<string, string?> values, string key)
     {
-        if (values.TryGetValue(key, out string? value))
-            return value;
+        if (values.TryGetValue(key, out var value)) return value;
 
-        if (key.IndexOf('.') < 0)
-            return null;
+        if (key.IndexOf('.') < 0) return null;
 
-        string normalized = key.Replace('.', ':');
+        var normalized = key.Replace('.', ':');
+
         return values.TryGetValue(normalized, out value) ? value : null;
     }
 
@@ -78,23 +75,23 @@ public sealed partial class BoduConfigurationView : IEnumerable<KeyValuePair<str
     /// Gets the underlying resolved dictionary as a read-only view.
     /// </summary>
     /// <returns>The resolved values keyed by configuration key.</returns>
-    public IReadOnlyDictionary<string, string?> Values => this._values;
+    public IReadOnlyDictionary<string, string?> Values { get; }
 
     /// <summary>
     /// Gets the configuration keys present in the resolved view.
     /// </summary>
     /// <returns>An enumerable of configuration keys.</returns>
-    public IEnumerable<string> Keys => this._values.Keys;
+    public IEnumerable<string> Keys => Values.Keys;
 
     /// <summary>
     /// Gets the number of resolved keys.
     /// </summary>
     /// <returns>The count of keys present in the resolved view.</returns>
-    public int Count => this._values.Count;
+    public int Count => Values.Count;
 
     /// <inheritdoc />
     public IEnumerator<KeyValuePair<string, string?>> GetEnumerator() =>
-        this._values.GetEnumerator();
+        Values.GetEnumerator();
 
-    IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }

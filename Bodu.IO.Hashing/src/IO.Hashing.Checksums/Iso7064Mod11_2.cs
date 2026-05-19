@@ -33,7 +33,6 @@ namespace Bodu.IO.Hashing.Checksums;
 public sealed class Iso7064Mod11_2
     : AlphanumericCheckDigitAlgorithm
 {
-
     private int _p;
 
     /// <summary>
@@ -115,7 +114,7 @@ public sealed class Iso7064Mod11_2
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<char> body)
     {
-        var p = this._p;
+        var p = _p;
         for (var i = 0; i < body.Length; i++)
         {
             var ch = body[i];
@@ -125,7 +124,7 @@ public sealed class Iso7064Mod11_2
             p = ((p + (ch - '0')) * 2) % 11;
         }
 
-        this._p = p;
+        _p = p;
     }
 
     /// <inheritdoc />
@@ -138,5 +137,4 @@ public sealed class Iso7064Mod11_2
     /// <inheritdoc />
     public override void Reset() =>
         _p = 0;
-
 }
