@@ -11,10 +11,32 @@ namespace Bodu.Text.Encoding;
 /// numeral system.
 /// </summary>
 /// <remarks>
+/// <para>
 /// These options can be combined to control character casing, spacing, prefix inclusion, and line formatting. The
 /// effect of each option may vary by encoding; not every encoding honours every flag. Refer to the documentation of the
 /// specific encoder for the supported subset.
+/// </para>
+/// <para>
+/// <see cref="None" /> produces the most compact form for every encoder. Flag combinations that conflict (for example
+/// <see cref="OmitPadding" /> on an encoding that does not emit padding) are silently ignored rather than rejected, so
+/// consumers can compose options uniformly across encoders without conditional branching.
+/// </para>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // Compact lower-case hex (the default Base16 form).
+/// string compact = Base16.Encode(data);
+///
+/// // Diagnostic-friendly: upper case, "0x" prefix, single-space byte groups.
+/// string diagnostic = Base16.Encode(data,
+///     BaseFormattingOptions.UpperCase
+///     | BaseFormattingOptions.IncludePrefix
+///     | BaseFormattingOptions.InsertSpacing);
+///
+/// // Padding-free Base64 — produces the same output as Base64Url.Encode.
+/// string unpadded = Base64.Encode(data, BaseFormattingOptions.OmitPadding);
+///]]>
+/// </example>
 [Flags]
 public enum BaseFormattingOptions : byte
 {

@@ -11,11 +11,39 @@ namespace Bodu.Globalization.Calendar.Plugins;
 /// notable- date plugin assembly.
 /// </summary>
 /// <remarks>
+/// <para>
 /// Derived exception types surface the specific failure mode: <see cref="PluginNotTrustedException" /> when the trust
 /// policy rejects the candidate, <see cref="PluginMissingAttributeException" /> when the assembly does not carry a
 /// valid <see cref="NotableDatePluginAttribute" />, and <see cref="PluginActivationException" /> when the declared
 /// plugin type fails to instantiate.
+/// </para>
+/// <para>
+/// Catch the base type when a host wants to treat all plugin-load failures uniformly; catch one of the derived types
+/// when the host needs to surface different diagnostics (for example, prompting the operator to update the trust policy
+/// in the <see cref="PluginNotTrustedException" /> case).
+/// </para>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// var loader = new ExternalPluginLoader(trustPolicy);
+///
+/// try
+/// {
+///     INotableDatePlugin plugin = loader.Load(assemblyPath);
+///     // ... register the plugin with the service ...
+/// }
+/// catch (PluginNotTrustedException ex)
+/// {
+///     // Trust policy rejected the assembly — log the reason for the operator.
+///     Console.Error.WriteLine(ex.Message);
+/// }
+/// catch (NotableDatePluginException ex)
+/// {
+///     // Catch-all for missing attribute, activation failure, etc.
+///     Console.Error.WriteLine($"Plugin load failed: {ex.Message}");
+/// }
+///]]>
+/// </example>
 public class NotableDatePluginException
     : Exception
 {

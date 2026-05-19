@@ -29,6 +29,23 @@ namespace Bodu.Collections.Generic;
 /// This type is not thread-safe.
 /// </para>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // De-duplicate a stream of tags while keeping the order in which each was first seen.
+/// var tags = new OrderedSet<string>(StringComparer.OrdinalIgnoreCase);
+/// tags.Add("alpha");
+/// tags.Add("beta");
+/// tags.Add("ALPHA"); // ignored — already present under the case-insensitive comparer
+/// tags.Add("gamma");
+///
+/// Console.WriteLine(string.Join(", ", tags)); // alpha, beta, gamma
+/// Console.WriteLine(tags[0]);                 // "alpha" — positional read via IReadOnlyList<T>
+///
+/// // Set algebra returns a new OrderedSet preserving the left operand's order.
+/// var diff = new OrderedSet<string>(tags);
+/// diff.ExceptWith(new[] { "beta" });
+///]]>
+/// </example>
 [DebuggerDisplay("Count = {Count}")]
 [DebuggerTypeProxy(typeof(OrderedSetStorageDebugView<>))]
 [Serializable]

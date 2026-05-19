@@ -22,6 +22,21 @@ namespace Bodu.Text.Encoding;
 /// that the unified interface intentionally hides.
 /// </para>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // Pre-bound singleton — no allocation per call.
+/// IBinaryEncoding hex    = BinaryEncodings.Base16Upper;
+/// IBinaryEncoding jwt    = BinaryEncodings.Base64UrlSafe;
+/// IBinaryEncoding bitcoin = BinaryEncodings.Base58;
+///
+/// string encoded = jwt.Encode(payload);
+/// byte[] decoded = jwt.Decode(encoded);
+///
+/// // Look up by name — accepts canonical names and well-known aliases.
+/// IBinaryEncoding fromConfig = BinaryEncodings.Get(appConfig["encoding"] ?? "base64");
+/// IBinaryEncoding fromAlias  = BinaryEncodings.Get("hex");           // same as Base16Lower
+///]]>
+/// </example>
 public static class BinaryEncodings
 {
     /// <summary>

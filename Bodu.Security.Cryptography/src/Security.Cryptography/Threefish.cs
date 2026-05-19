@@ -56,6 +56,21 @@ namespace Bodu.Security.Cryptography;
 /// <note type="important">This class is not intended to be instantiated directly. Use <see cref="Threefish256" />,
 /// <see cref="Threefish512" />, or <see cref="Threefish1024" /> instead.</note>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // Use the recommended general-purpose variant — Threefish-512 over a CTR mode.
+/// using TweakableSymmetricAlgorithm alg = new Threefish512();
+/// alg.GenerateKey();
+/// alg.GenerateIV();
+/// alg.GenerateTweak();
+/// alg.BlockMode = CipherModeKind.CTR;
+///
+/// using ICryptoTransform encryptor = alg.CreateEncryptor(alg.Key, alg.IV, alg.Tweak);
+/// using var cipherText = new MemoryStream();
+/// using (var cs = new CryptoStream(cipherText, encryptor, CryptoStreamMode.Write))
+///     cs.Write(plaintext, 0, plaintext.Length);
+///]]>
+/// </example>
 /// <seealso cref="Threefish256"/> <seealso cref="Threefish512"/> <seealso cref="Threefish1024"/>
 /// <seealso cref="TweakableSymmetricAlgorithm"/> <seealso cref="Skein{T}"/>
 /// <seealso href="https://www.schneier.com/wp-content/uploads/2016/02/skein.pdf">The Skein Hash Function Family

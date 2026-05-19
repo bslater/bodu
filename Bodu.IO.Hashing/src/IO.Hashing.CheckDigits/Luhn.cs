@@ -33,6 +33,20 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for
 /// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // Single-call computation against an in-memory body.
+/// char check = Luhn.Compute("7992739871");   // '3'
+///
+/// // Full-sequence validation.
+/// bool ok = Luhn.IsValid("79927398713");     // true
+///
+/// // Streaming use when the body is built up incrementally.
+/// var algo = new Luhn();
+/// algo.Append("7992739871");
+/// char d = algo.GetCurrentCheckDigit();      // '3'
+///]]>
+/// </example>
 public sealed class Luhn
     : CheckDigitAlgorithm
 {

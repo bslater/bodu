@@ -24,6 +24,30 @@ namespace Bodu.Globalization.Calendar.Plugins;
 /// surface diagnostic messages and reason about plugin identity across process restarts.
 /// </para>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // Minimal rule-contributing plugin. The plugin assembly also carries
+/// // [assembly: NotableDatePlugin(typeof(AcmePlugin))] so ExternalPluginLoader can find it.
+/// public sealed class AcmePlugin : INotableDatePlugin, INotableDateRulePlugin
+/// {
+///     public string  Name    => "Acme Holiday Pack";
+///     public Version Version => new Version(1, 0, 0);
+///
+///     public IEnumerable<NotableDateRule> GetRules() => new[]
+///     {
+///         new NotableDateRule
+///         {
+///             Name          = "Acme Founders Day",
+///             Strategy      = DateResolutionStrategy.Fixed,
+///             Month         = 6,
+///             Day           = 14,
+///             TerritoryCode = "AU",
+///             Category      = NotableDateCategory.Corporate,
+///         },
+///     };
+/// }
+///]]>
+/// </example>
 public interface INotableDatePlugin
 {
     /// <summary>

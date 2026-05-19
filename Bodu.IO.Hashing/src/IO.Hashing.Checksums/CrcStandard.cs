@@ -78,21 +78,33 @@ namespace Bodu.IO.Hashing.Checksums;
 /// will not fit in the <see cref="ulong" />-backed register. Instances are immutable and therefore safe to share across
 /// threads.
 /// </para>
-/// <example>
-/// <code language="csharp">
-///<![CDATA[
-/// using Bodu.IO.Hashing.Checksums; // 1. Direct named accessor — most callers want exactly
-/// this. var crc = new Crc(CrcStandard.CRC32_ISOHDLC); // 2. Data-driven look-up — pick the variant from a
-/// configuration value. CrcStandards configured = Enum.Parse&lt;CrcStandards&gt;(config["CrcVariant"]); var
-/// configuredCrc = new Crc(CrcStandard.Get(configured)); // 3. Look-up by alias — accept legacy or vendor names
-/// supplied by users. CrcStandard pkzip = CrcStandard.FromName("PKZIP"); // same instance as CRC32_ISOHDLC CrcStandard
-/// ccitt = CrcStandard.FromName("CRC-CCITT"); // resolves to CRC16_KERMIT // 4. Custom variant (not in the RevEng
-/// catalogue): a 12-bit CRC with bespoke parameters. var custom = new CrcStandard( name: "CRC-12/MY-SPEC", size: 12,
-/// polynomial: 0x80F, initialValue: 0x000, reflectIn: false, reflectOut: false, xOrOut: 0x000);
-///]]>
-/// </code>
-/// </example>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// using Bodu.IO.Hashing.Checksums;
+///
+/// // 1. Direct named accessor — most callers want exactly this.
+/// var crc = new Crc(CrcStandard.CRC32_ISOHDLC);
+///
+/// // 2. Data-driven look-up — pick the variant from a configuration value.
+/// CrcStandards configured = Enum.Parse<CrcStandards>(config["CrcVariant"]);
+/// var configuredCrc = new Crc(CrcStandard.Get(configured));
+///
+/// // 3. Look-up by alias — accept legacy or vendor names supplied by users.
+/// CrcStandard pkzip = CrcStandard.FromName("PKZIP");      // same instance as CRC32_ISOHDLC
+/// CrcStandard ccitt = CrcStandard.FromName("CRC-CCITT");  // resolves to CRC16_KERMIT
+///
+/// // 4. Custom variant (not in the RevEng catalogue): a 12-bit CRC with bespoke parameters.
+/// var custom = new CrcStandard(
+///     name:         "CRC-12/MY-SPEC",
+///     size:         12,
+///     polynomial:   0x80F,
+///     initialValue: 0x000,
+///     reflectIn:    false,
+///     reflectOut:   false,
+///     xOrOut:       0x000);
+///]]>
+/// </example>
 /// <seealso cref="Crc"/> <seealso cref="CrcStandards"/> <seealso cref="CrcLookupTableCache"/>
 [Serializable]
 public sealed partial class CrcStandard

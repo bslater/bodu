@@ -26,6 +26,29 @@ namespace Bodu.Globalization.Calendar.Builder;
 /// Each rule is modelled by a separate <see cref="NotableDateRuleBuilder" />.
 /// </para>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // Build a notable date with two rules — one for the pre-1900 observance and one for the modern era.
+/// var doc = new NotableDateDocumentBuilder()
+///     .AddDate("Australia Day", date => date
+///         .AddRule(rule => rule
+///             .Category(NotableDateCategory.Public)
+///             .Fixed(month: 1, day: 26)
+///             .TerritoryCode("AU")
+///             .NonWorking(true)
+///             .LastYear(1993))
+///         .AddRule(rule => rule
+///             .Category(NotableDateCategory.Public)
+///             .Fixed(month: 1, day: 26)
+///             .TerritoryCode("AU")
+///             .NonWorking(true)
+///             .FirstYear(1994)
+///             .AddAdjustment("weekend-roll", adj => adj
+///                 .When(AdjustmentTrigger.IfWeekend)
+///                 .Action(AdjustmentAction.MoveToNextMonday)
+///                 .NonWorking(true))));
+///]]>
+/// </example>
 public sealed class NotableDateBuilder
 {
     /// <summary>

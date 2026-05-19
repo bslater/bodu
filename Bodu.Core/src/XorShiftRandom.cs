@@ -9,12 +9,43 @@ using System.Runtime.CompilerServices;
 namespace Bodu;
 
 /// <summary>
-/// Represents a high-performance, non-cryptographic pseudo-random number generator based on the XOR-shift algorithm.
+/// Represents a high-performance, non-cryptographic pseudo-random number generator based on Marsaglia's xorshift128
+/// algorithm.
 /// </summary>
 /// <remarks>
-/// This class is designed as a drop-in replacement for <see cref="System.Random" /> with better performance
-/// characteristics. It is not suitable for cryptographic purposes.
+/// <para>
+/// <see cref="XorShiftRandom" /> derives each output by combining four 32-bit state words through three xor-and-shift
+/// operations — a generator class introduced by George Marsaglia in 2003. The cost per draw is a handful of register
+/// operations with no branching, no division, and no memory allocation, making it materially faster than
+/// <see cref="System.Random" /> in tight inner loops on every supported runtime.
+/// </para>
+/// <para>
+/// The type subclasses <see cref="System.Random" /> so it can be passed anywhere <see cref="System.Random" /> is
+/// accepted, and it also implements <see cref="IRandomGenerator" /> for use with the library's shuffle and sampling
+/// helpers. The default constructor seeds from <see cref="Environment.TickCount" />; the seeded constructors are the
+/// preferred choice in tests and reproducible benchmarks.
+/// </para>
+/// <para>
+/// Instances are not thread-safe — state updates are non-atomic and concurrent draws will corrupt the internal state.
+/// Use a per-thread instance, an external lock, or a thread-local pool when sharing across threads is required.
+/// </para>
+/// <para>
+/// The algorithm produces a uniform distribution over the 32-bit output range and has a period of <c>2^128 − 1</c>. It
+/// is <em>not</em> suitable for cryptographic use, secret material, or any context where an attacker can observe
+/// outputs and recover state. Use <see cref="System.Security.Cryptography.RandomNumberGenerator" /> for those cases.
+/// </para>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // Reproducible shuffle and sample in a test.
+/// var rng = new XorShiftRandom(seed: 1234);
+/// int    roll  = rng.Next(6) + 1;           // value in [1, 6]
+/// double angle = rng.NextDouble() * Math.Tau;
+///
+/// var bag = new[] { "A", "B", "C", "D" };
+/// ShuffleHelpers.Shuffle(bag, rng);
+///]]>
+/// </example>
 public sealed class XorShiftRandom :
     System.Random,
     IRandomGenerator

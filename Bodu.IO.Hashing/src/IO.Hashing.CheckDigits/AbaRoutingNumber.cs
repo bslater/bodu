@@ -30,6 +30,20 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for
 /// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // Single-call computation against the 8-digit body.
+/// char check = AbaRoutingNumber.Compute("01100001");   // '5'
+///
+/// // Full-sequence validation.
+/// bool ok = AbaRoutingNumber.IsValid("011000015");     // true
+///
+/// // Streaming use when the body is built up incrementally.
+/// var algo = new AbaRoutingNumber();
+/// algo.Append("01100001");
+/// char d = algo.GetCurrentCheckDigit();                // '5'
+///]]>
+/// </example>
 public sealed class AbaRoutingNumber
     : CheckDigitAlgorithm
 {

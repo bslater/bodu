@@ -25,6 +25,25 @@ namespace Bodu.Security.Cryptography;
 /// via <see cref="BlockCipherModeFactory" />) or with an <see cref="IPaddingStrategy" />.
 /// </para>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // Direct single-block use — most callers should prefer the Threefish512 SymmetricAlgorithm.
+/// byte[] key   = new byte[64];   // 512-bit key
+/// byte[] tweak = new byte[16];   // 128-bit tweak
+/// RandomNumberGenerator.Fill(key);
+/// RandomNumberGenerator.Fill(tweak);
+///
+/// using var cipher = new Threefish512Cipher(key, tweak);
+///
+/// byte[] plaintext  = new byte[64];   // one 512-bit block
+/// byte[] ciphertext = new byte[64];
+/// cipher.Encrypt(plaintext, ciphertext);
+///
+/// byte[] roundtrip = new byte[64];
+/// cipher.Decrypt(ciphertext, roundtrip);
+/// // roundtrip equals plaintext
+///]]>
+/// </example>
 /// <seealso href="../guides/cryptography/composing-primitives.html">Composing primitives — direct use vs.
 /// SymmetricAlgorithm</seealso> <seealso cref="Threefish512"/>
 public sealed class Threefish512Cipher
@@ -53,10 +72,38 @@ public sealed class Threefish512Cipher
     /// <inheritdoc />
     protected override int[] RotationSchedule =>
     [
-        46, 36, 19, 37, 33, 27, 14, 42,
-        17, 49, 36, 39, 44, 9, 54, 56,
-        39, 30, 34, 24, 13, 50, 10, 17,
-        25, 29, 39, 43, 8, 35, 56, 22
+        46,
+        36,
+        19,
+        37,
+        33,
+        27,
+        14,
+        42,
+        17,
+        49,
+        36,
+        39,
+        44,
+        9,
+        54,
+        56,
+        39,
+        30,
+        34,
+        24,
+        13,
+        50,
+        10,
+        17,
+        25,
+        29,
+        39,
+        43,
+        8,
+        35,
+        56,
+        22
     ];
 
     /// <inheritdoc />

@@ -88,22 +88,42 @@ namespace Bodu.IO.Hashing;
 /// <see cref="System.Security.Cryptography.HashAlgorithm" /> hierarchy instead. Instances are not thread-safe; share
 /// behind explicit synchronization.
 /// </para>
-/// <example>
-/// <code language="csharp">
-///<![CDATA[
-/// // Sketch of a derived block hash. The base class drives buffering and snapshotting; // the
-/// derived type only expresses how a single block changes the accumulator. public sealed class MyBlockHash :
-/// BlockNonCryptographicHashAlgorithm&lt;MyBlockHash&gt; { private uint _state; public MyBlockHash() :
-/// base(hashLengthInBytes: 4, blockSize: 16) { } protected override void ProcessBlock(ReadOnlySpan&lt;byte&gt; block) {
-/// // mix the 16-byte block into _state ... } protected override byte[] PadBlock(ReadOnlySpan&lt;byte&gt; trailing,
-/// ulong messageLength) { // append a 0x80 byte, zero-pad, then write `messageLength` little-endian, return one or more
-/// whole blocks. return Array.Empty&lt;byte&gt;(); } protected override byte[] ProcessFinalBlock() =&gt;
-/// BitConverter.GetBytes(_state); protected override MyBlockHash Clone() { var copy = new MyBlockHash { _state = _state
-/// }; copy.CopyResidualStateFrom(this); return copy; } }
-///]]>
-/// </code>
-/// </example>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // Sketch of a derived block hash. The base class drives buffering and snapshotting; the
+/// // derived type only expresses how a single block mutates the accumulator.
+/// public sealed class MyBlockHash : BlockNonCryptographicHashAlgorithm<MyBlockHash>
+/// {
+///     private uint _state;
+///
+///     public MyBlockHash()
+///         : base(hashLengthInBytes: 4, blockSize: 16) { }
+///
+///     protected override void ProcessBlock(ReadOnlySpan<byte> block)
+///     {
+///         // mix the 16-byte block into _state ...
+///     }
+///
+///     protected override byte[] PadBlock(ReadOnlySpan<byte> trailing, ulong messageLength)
+///     {
+///         // append a 0x80 byte, zero-pad, then write messageLength little-endian;
+///         // return one or more whole blocks.
+///         return Array.Empty<byte>();
+///     }
+///
+///     protected override byte[] ProcessFinalBlock() =>
+///         BitConverter.GetBytes(_state);
+///
+///     protected override MyBlockHash Clone()
+///     {
+///         var copy = new MyBlockHash { _state = _state };
+///         copy.CopyResidualStateFrom(this);
+///         return copy;
+///     }
+/// }
+///]]>
+/// </example>
 /// <seealso cref="System.IO.Hashing.NonCryptographicHashAlgorithm"/> <seealso cref="IResumableHashAlgorithm"/>
 public abstract class BlockNonCryptographicHashAlgorithm<T>
     : NonCryptographicHashAlgorithm

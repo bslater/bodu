@@ -25,6 +25,20 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for
 /// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // Single-call computation against the 11-digit body.
+/// char check = UpcA.Compute("03600029145");   // '2'
+///
+/// // Full-sequence validation.
+/// bool ok = UpcA.IsValid("036000291452");     // true
+///
+/// // Streaming use when the body is built up incrementally.
+/// var algo = new UpcA();
+/// algo.Append("03600029145");
+/// char d = algo.GetCurrentCheckDigit();       // '2'
+///]]>
+/// </example>
 public sealed class UpcA
     : CheckDigitAlgorithm
 {

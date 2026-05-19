@@ -42,6 +42,20 @@ namespace Bodu.Security.Cryptography;
 /// key (Poly1305, SipHash) derive from <see cref="KeyedBlockHashAlgorithm{T}" />.
 /// </para>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // BLAKE2b in keyed MAC mode — the key is optional and may be up to MaximumKeySize bits.
+/// byte[] key = new byte[32];
+/// RandomNumberGenerator.Fill(key);
+///
+/// using var mac = new Blake2b { Key = key };
+/// byte[] tag = mac.ComputeHash("message"u8.ToArray());
+///
+/// // Or use the same type unkeyed for a plain BLAKE2b digest.
+/// using var digest = new Blake2b();
+/// byte[] hash = digest.ComputeHash("message"u8.ToArray());
+///]]>
+/// </example>
 /// <seealso cref="DeferredFinalBlockHashAlgorithm{T}"/> <seealso cref="KeyedBlockHashAlgorithm{T}"/>
 public abstract class KeyedDeferredFinalBlockHashAlgorithm<T>
     : DeferredFinalBlockHashAlgorithm<T>

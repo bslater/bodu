@@ -9,6 +9,32 @@ namespace Bodu.Text.Formats;
 /// <summary>
 /// Controls dialect-specific parsing behaviour for <see cref="DotEnv.Parse(ReadOnlySpan{char})" /> and related methods.
 /// </summary>
+/// <remarks>
+/// <para>
+/// The defaults accept the broad <c>.env</c> convention used by tools such as <c>dotenv</c>, Foreman / Docker Compose,
+/// and the Twelve-Factor pattern: <c>LastWins</c> duplicate-key behaviour, support for the legacy <c>export </c>
+/// prefix, and inline-comment recognition on unquoted values. Override the properties when consuming files produced by
+/// a stricter dialect that should reject duplicates, omit shell-style prefixes, or treat <c>#</c> as literal data.
+/// </para>
+/// <para>
+/// Instances are <see langword="readonly" />; safe to share across threads.
+/// </para>
+/// </remarks>
+/// <example>
+///<![CDATA[
+/// // Default behaviour — wide compatibility with .env conventions.
+/// DotEnvDocument doc = DotEnv.Parse(text);
+///
+/// // Strict ingest: reject duplicate keys and disallow inline comments.
+/// var options = new DotEnvParseOptions
+/// {
+///     DuplicateKeyBehavior = DotEnvDuplicateKeyBehavior.Disallowed,
+///     AllowExportPrefix    = false,
+///     AllowInlineComments  = false,
+/// };
+/// DotEnvDocument strict = DotEnv.Parse(text, options);
+///]]>
+/// </example>
 public readonly struct DotEnvParseOptions
 {
     /// <summary>

@@ -9,12 +9,39 @@ using System.Collections.Concurrent;
 namespace Bodu.Globalization.Calendar.Algorithms;
 
 /// <summary>
-/// Provides Easter Sunday date calculations based on the given year and calendar system.
+/// Computes the Gregorian or Julian date of Easter Sunday for a supplied year, implementing the
+/// <see cref="INotableDateAlgorithm" /> contract so that the result can be folded into a <see cref="NotableDateRule" />
+/// via <see cref="DateResolutionStrategy.Algorithm" />.
 /// </summary>
 /// <remarks>
-/// This implementation uses the Gregorian calendar for years &gt;= 1583 and the Julian calendar otherwise. Results are
-/// cached for performance. Use this algorithm to retrieve the date of Easter Sunday.
+/// <para>
+/// Easter Sunday is the first Sunday after the Paschal full moon. Two computus algorithms are used: the Gregorian
+/// (Anonymous) algorithm for years <c>&gt;= 1583</c>, and Meeus's adaptation of the Julian algorithm for earlier years
+/// or when the caller explicitly supplies a <see cref="System.Globalization.JulianCalendar" />.
+/// </para>
+/// <para>
+/// Results are deterministic and cached per <c>(year, calendar)</c> pair in a process-wide
+/// <see cref="System.Collections.Concurrent.ConcurrentDictionary{TKey, TValue}" /> so that the relatively expensive
+/// modular arithmetic is paid once per distinct year, regardless of how many rules anchor against Easter.
+/// </para>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // Direct use — most callers reach Easter through NotableDateRule + DateResolutionStrategy.Algorithm
+/// // rather than constructing the algorithm by hand.
+/// INotableDateAlgorithm easter = new EasterSundayNotableDateAlgorithm();
+/// DateTime? sunday = easter.GetDate(2026, calendar: null);   // 2026-04-05 (Gregorian)
+///
+/// // Rule-based use — register the algorithm and anchor every dependent observance against it.
+/// var goodFriday = new NotableDateRule
+/// {
+///     Name         = "Good Friday",
+///     Strategy     = DateResolutionStrategy.OffsetFromAnchor,
+///     AnchorName   = "Easter Sunday",
+///     OffsetDays   = -2,
+/// };
+///]]>
+/// </example>
 public sealed class EasterSundayNotableDateAlgorithm
     : INotableDateAlgorithm
 {

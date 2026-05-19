@@ -10,6 +10,30 @@ namespace Bodu.Text.Formats;
 /// The exception that is thrown when a delimited-text source contains a structural error that prevents it from being
 /// parsed.
 /// </summary>
+/// <remarks>
+/// <para>
+/// Raised by <see cref="Delimited.Parse(ReadOnlySpan{char})" /> and <see cref="DelimitedReader" /> when the source
+/// cannot be interpreted as valid delimited text under the configured dialect — for example, an unterminated quoted
+/// field, an unexpected character following a closing quote, or a row whose field count differs from the header when
+/// strict header enforcement is enabled.
+/// </para>
+/// <para>
+/// <see cref="LineNumber" /> carries the 1-based source line on which the parser detected the failure when known, or
+/// <c>0</c> when the line cannot be identified.
+/// </para>
+/// </remarks>
+/// <example>
+///<![CDATA[
+/// try
+/// {
+///     DelimitedDocument doc = Delimited.Parse(source);
+/// }
+/// catch (DelimitedFormatException ex)
+/// {
+///     Console.Error.WriteLine($"Line {ex.LineNumber}: {ex.Message}");
+/// }
+///]]>
+/// </example>
 public sealed class DelimitedFormatException : FormatException
 {
     /// <summary>

@@ -22,6 +22,22 @@ namespace Bodu.Text.Formats;
 /// Key lookup uses <see cref="StringComparer.Ordinal" />. DotEnv keys are case-sensitive by convention.
 /// </para>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// DotEnvDocument doc = DotEnv.Parse(text);
+///
+/// // Direct lookup — throws KeyNotFoundException when the key is missing.
+/// string apiKey = doc["API_KEY"];
+///
+/// // TryGetValue for optional keys.
+/// if (doc.TryGetValue("LOG_LEVEL", out string? level))
+///     Console.WriteLine($"Log level: {level}");
+///
+/// // Walk every entry in source order.
+/// foreach (DotEnvEntry entry in doc.Entries)
+///     Console.WriteLine($"{entry.Key}={entry.Value}");
+///]]>
+/// </example>
 public sealed class DotEnvDocument
 {
     /// <summary>

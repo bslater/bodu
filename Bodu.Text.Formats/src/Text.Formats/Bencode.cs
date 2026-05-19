@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Bencode.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -12,8 +12,60 @@ using System.Text;
 namespace Bodu.Text.Formats;
 
 /// <summary>
-/// Provides methods for encoding and decoding values using the Bencode serialization format.
+/// Provides methods for encoding and decoding values using the Bencode serialization format used by the BitTorrent
+/// protocol (BEP 3) and a handful of related peer-to-peer protocols.
 /// </summary>
+/// <remarks>
+/// <para>
+/// Bencode is a compact, deterministic, byte-oriented serialization format. Every value falls into one of four kinds:
+/// </para>
+/// <list type="bullet">
+/// <item>
+/// <description>
+/// <c>i</c>&lt;integer&gt;<c>e</c> — an arbitrarily large signed integer encoded as ASCII decimal digits.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// &lt;length&gt;<c>:</c>&lt;bytes&gt; — a raw byte string prefixed with its length in ASCII decimal.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// <c>l</c>&lt;values…&gt;<c>e</c> — an ordered list of any other bencoded values.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// <c>d</c>&lt;key,value pairs…&gt;<c>e</c> — a dictionary whose keys are raw byte strings sorted lexicographically in
+/// bytewise order. Dictionaries with out-of-order keys are not valid bencoded data.
+/// </description>
+/// </item>
+/// </list>
+/// <para>
+/// <see cref="Decode(ReadOnlySpan{byte})" /> consumes a complete document and rejects trailing bytes.
+/// <see cref="Encode(BencodedValue)" /> produces a fresh byte array; <see cref="GetEncodedLength(BencodedValue)" />
+/// reports the exact size in advance so callers can pool destination buffers.
+/// </para>
+/// </remarks>
+/// <example>
+///<![CDATA[
+/// // Decode a BitTorrent-style dictionary and inspect a known field.
+/// byte[] payload = File.ReadAllBytes("example.torrent");
+/// BencodedValue root = Bencode.Decode(payload);
+///
+/// if (root is BencodedDictionary dict
+///     && dict.TryGetValue("announce", out BencodedValue? announce)
+///     && announce is BencodedString url)
+/// {
+///     Console.WriteLine(url.GetUtf8String());
+/// }
+///
+/// // Round-trip: encode the value back to bytes.
+/// int length = Bencode.GetEncodedLength(root);
+/// byte[] reencoded = Bencode.Encode(root);
+///]]>
+/// </example>
 public static partial class Bencode
 {
     private const byte DictionaryPrefix = (byte)'d';

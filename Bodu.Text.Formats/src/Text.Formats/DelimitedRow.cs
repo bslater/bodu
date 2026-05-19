@@ -14,6 +14,35 @@ namespace Bodu.Text.Formats;
 /// Represents a single data record in a <see cref="DelimitedDocument" />, exposing its fields by index and — when a
 /// header row was present — by column name, with optional typed value conversion.
 /// </summary>
+/// <remarks>
+/// <para>
+/// Rows are produced by <see cref="Delimited.Parse(ReadOnlySpan{char})" /> and exposed through
+/// <see cref="DelimitedDocument.Rows" />. Field access by name throws <see cref="KeyNotFoundException" /> when the
+/// column was not present in the header row, so callers consuming optional columns should test header presence first or
+/// use the indexer's fallback overload where available.
+/// </para>
+/// <para>
+/// Typed accessors such as <c>GetInt32</c>, <c>GetDouble</c>, <c>GetBoolean</c>, and <c>GetDateTime</c> parse the
+/// underlying string using <see cref="System.Globalization.CultureInfo.InvariantCulture" /> by default and accept an
+/// explicit culture for locale-aware sources.
+/// </para>
+/// </remarks>
+/// <example>
+///<![CDATA[
+/// foreach (DelimitedRow row in doc.Rows)
+/// {
+///     // By column name when a header row was parsed.
+///     string name = row["name"];
+///
+///     // By zero-based index for headerless data.
+///     string firstField = row[0];
+///
+///     // Typed access with culture-invariant parsing.
+///     int    age   = row.GetInt32("age");
+///     double price = row.GetDouble("price", fallback: 0.0);
+/// }
+///]]>
+/// </example>
 public sealed class DelimitedRow
 {
     private static readonly CompositeFormat s_headerNotFound =

@@ -24,7 +24,33 @@ namespace Bodu.Text.Configuration;
 /// <see cref="Path" /> is set only when the configuration document was loaded from a file. Documents parsed from
 /// strings expose <see langword="null" /> here.
 /// </para>
+/// <para>
+/// <see cref="None" /> is the canonical "unknown" location and compares equal to a default-constructed instance. The
+/// type is a <see langword="readonly struct" /> and is safe to pass by value across diagnostic and exception
+/// boundaries; <see cref="ToString" /> renders the location in <c>line N, column M</c> form suitable for log output and
+/// IDE error lists.
+/// </para>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // Construct a location pointing at a specific span on line 12.
+/// var loc = new BoduConfigurationSourceLocation(
+///     lineNumber:   12,
+///     linePosition: 5,
+///     length:       8,
+///     path:         "app.ini");
+/// Console.WriteLine(loc);   // "app.ini(12,5): length 8"
+///
+/// // Surface from a parse exception in editor-style form.
+/// try { BoduConfigurationDocument.Parse(text); }
+/// catch (BoduConfigurationParseException ex)
+/// {
+///     BoduConfigurationSourceLocation where = ex.Location;
+///     if (!where.Equals(BoduConfigurationSourceLocation.None))
+///         Console.WriteLine($"{where}: {ex.Message}");
+/// }
+///]]>
+/// </example>
 [DebuggerDisplay("Line {LineNumber}, Col {LinePosition}, Len {Length}")]
 public readonly struct BoduConfigurationSourceLocation : IEquatable<BoduConfigurationSourceLocation>
 {

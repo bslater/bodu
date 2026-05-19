@@ -29,6 +29,23 @@ namespace Bodu.Security.Cryptography;
 /// <see cref="IPaddingStrategy" />.
 /// </para>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // Direct single-block use. For most workloads prefer the Serpent128 SymmetricAlgorithm wrapper.
+/// byte[] key = new byte[32];   // 128, 192, or 256 bits — Serpent pads shorter keys to 256
+/// RandomNumberGenerator.Fill(key);
+///
+/// using var cipher = new Serpent128Cipher(key);
+///
+/// byte[] plaintext  = new byte[16];   // one 128-bit block
+/// byte[] ciphertext = new byte[16];
+/// cipher.Encrypt(plaintext, ciphertext);
+///
+/// byte[] roundtrip = new byte[16];
+/// cipher.Decrypt(ciphertext, roundtrip);
+/// // roundtrip equals plaintext
+///]]>
+/// </example>
 /// <seealso cref="Serpent128"/>
 public sealed class Serpent128Cipher
     : SerpentBlockCipherBase

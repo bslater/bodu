@@ -18,6 +18,17 @@ namespace Bodu.Security.Cryptography;
 /// <typeparam name="T">
 /// The concrete hash algorithm derived from this class. Must expose a public parameterless constructor.
 /// </typeparam>
+/// <example>
+///<![CDATA[
+/// // Consume a concrete derivative through the standard HashAlgorithm contract — the base
+/// // class drives the residual buffer and the block-aligned compression loop for you.
+/// using HashAlgorithm hash = new Blake2b();      // DeferredFinalBlockHashAlgorithm<T>
+/// byte[] digest1 = hash.ComputeHash("hello"u8.ToArray());
+///
+/// using HashAlgorithm tiger = new Tiger();       // BlockHashAlgorithm<T>
+/// byte[] digest2 = tiger.ComputeHash("hello"u8.ToArray());
+///]]>
+/// </example>
 /// <remarks>
 /// <para>
 /// This class is the common ancestor for both block-buffered patterns offered by the library:

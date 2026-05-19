@@ -31,6 +31,20 @@ namespace Bodu.IO.Hashing.Checksums;
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for
 /// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // Apple Inc. — CUSIP body "03783310".
+/// char check = Cusip.Compute("03783310");   // '0'
+///
+/// // Full-sequence validation.
+/// bool ok = Cusip.IsValid("037833100");     // true
+///
+/// // Streaming use when the body is built up incrementally.
+/// var algo = new Cusip();
+/// algo.Append("03783310");
+/// char d = algo.GetCurrentCheckDigit();     // '0'
+///]]>
+/// </example>
 public sealed class Cusip
     : AlphanumericCheckDigitAlgorithm
 {

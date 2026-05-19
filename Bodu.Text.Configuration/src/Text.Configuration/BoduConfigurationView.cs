@@ -25,7 +25,29 @@ namespace Bodu.Text.Configuration;
 /// EditorConfig sentinel <c>unset</c> under <see cref="BoduConfigurationUnsetValueMode.RemoveEffectiveValue" /> is
 /// omitted entirely.
 /// </para>
+/// <para>
+/// Lookups accept either the canonical colon-delimited form (<c>logging:level:default</c>) or the dotted form (
+/// <c>logging.level.default</c>); both resolve to the same value because dotted keys are normalized to colon-delimited
+/// form before consulting the backing dictionary. Enumeration yields keys in their canonical colon-delimited form.
+/// </para>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// IniDocument           doc  = BoduConfigurationDocument.Parse(text);
+/// BoduConfigurationView view = doc.Resolve("src/Foo.cs");
+///
+/// // Indexer lookup — colon and dotted forms are equivalent.
+/// string? level = view["logging:level:default"];
+/// string? alt   = view["logging.level.default"]; // same value
+///
+/// // Typed convenience accessors on the view.
+/// int indent = view.GetInt32("format:indent:size", fallback: 4);
+///
+/// // Enumeration yields canonical colon-delimited keys.
+/// foreach (KeyValuePair<string, string?> kv in view)
+///     Console.WriteLine($"{kv.Key} = {kv.Value}");
+///]]>
+/// </example>
 public sealed partial class BoduConfigurationView : IEnumerable<KeyValuePair<string, string?>>
 {
     internal BoduConfigurationView(IReadOnlyDictionary<string, string?> values)

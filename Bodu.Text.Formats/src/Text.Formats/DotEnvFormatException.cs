@@ -10,6 +10,30 @@ namespace Bodu.Text.Formats;
 /// The exception that is thrown when a DotEnv source document contains a structural error that prevents it from being
 /// parsed.
 /// </summary>
+/// <remarks>
+/// <para>
+/// Raised by <see cref="DotEnv.Parse(ReadOnlySpan{char})" /> when the source cannot be interpreted as valid DotEnv text
+/// — for example, when a line is not a comment and does not match <c>KEY=VALUE</c>, when a key contains characters
+/// outside the <c>[A-Za-z_][A-Za-z0-9_]*</c> pattern, when a quoted value is left unterminated, or when the parser
+/// encounters a duplicate key under <see cref="DotEnvDuplicateKeyBehavior.Disallowed" />.
+/// </para>
+/// <para>
+/// <see cref="LineNumber" /> carries the 1-based source line on which the parser detected the failure when known, or
+/// <c>0</c> when the line cannot be identified.
+/// </para>
+/// </remarks>
+/// <example>
+///<![CDATA[
+/// try
+/// {
+///     DotEnvDocument doc = DotEnv.Parse(source);
+/// }
+/// catch (DotEnvFormatException ex)
+/// {
+///     Console.Error.WriteLine($"Line {ex.LineNumber}: {ex.Message}");
+/// }
+///]]>
+/// </example>
 public sealed class DotEnvFormatException : FormatException
 {
     /// <summary>

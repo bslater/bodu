@@ -45,6 +45,23 @@ namespace Bodu.Collections.Generic;
 /// external synchronization.
 /// </para>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // Dijkstra-style relaxation: the tentative cost of each node is its priority, and an improved
+/// // path arrives as a re-prioritization rather than a duplicate enqueue.
+/// var queue = new IndexedPriorityQueue<string, int>();
+///
+/// queue.Enqueue("A", 5);
+/// queue.Enqueue("B", 9);
+/// queue.Enqueue("C", 2);
+///
+/// queue.Update("B", 3);                  // B's tentative cost improved
+/// queue.EnqueueOrUpdate("D", 7);         // adds D if absent, updates otherwise
+///
+/// string next = queue.Dequeue();         // "C" — smallest priority
+/// bool hasD   = queue.TryGetPriority("D", out int priority); // true, priority == 7
+///]]>
+/// </example>
 [DebuggerDisplay("Count = {Count}")]
 [DebuggerTypeProxy(typeof(IndexedPriorityQueueDebugView<,>))]
 [Serializable]

@@ -22,7 +22,29 @@ namespace Bodu.Text.Configuration;
 /// <para>
 /// Equality compares the segment sequence under the configured comparer; the raw form is informational only.
 /// </para>
+/// <para>
+/// Both dotted (<c>logging.level.default</c>) and colon-delimited (<c>logging:level:default</c>) source forms produce
+/// the same canonical <see cref="ConfigurationKey" />, so consumers can mix the two notations in a document without
+/// disturbing the resolved view. Whitespace in segments is trimmed; control characters are rejected at construction
+/// time.
+/// </para>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // Default mapping — split on '.' and ':', case-insensitive comparison.
+/// var k1 = new BoduConfigurationKey("Logging.Level.Default");
+/// var k2 = new BoduConfigurationKey("logging:level:default");
+/// Console.WriteLine(k1 == k2);              // True — same segment sequence under the default comparer
+/// Console.WriteLine(k1.ConfigurationKey);   // "Logging:Level:Default"
+/// Console.WriteLine(string.Join(",", k1.Segments)); // "Logging,Level,Default"
+///
+/// // Case-sensitive parsing for hosts that distinguish 'Foo' from 'foo'.
+/// var opts = new BoduConfigurationKeyOptions { CaseSensitive = true };
+/// var k3   = new BoduConfigurationKey("Foo:Bar", opts);
+/// var k4   = new BoduConfigurationKey("foo:bar", opts);
+/// Console.WriteLine(k3 == k4);              // False
+///]]>
+/// </example>
 [DebuggerDisplay("{RawKey,nq} -> {ConfigurationKey,nq}")]
 public readonly partial struct BoduConfigurationKey : IEquatable<BoduConfigurationKey>
 {

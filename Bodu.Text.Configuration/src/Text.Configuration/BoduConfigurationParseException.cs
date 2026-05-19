@@ -13,10 +13,35 @@ namespace Bodu.Text.Configuration;
 /// <see cref="Diagnostic" />) together with any additional diagnostics gathered before the failure.
 /// </summary>
 /// <remarks>
+/// <para>
 /// In <see cref="BoduConfigurationDiagnosticMode.Throw" /> mode the parser raises this exception on the first
 /// recoverable error it encounters. In <see cref="BoduConfigurationDiagnosticMode.Collect" /> mode this exception is
-/// raised only for non-recoverable errors (such as a truncated stream).
+/// raised only for non-recoverable errors (such as a truncated stream); recoverable errors surface instead on the
+/// <see cref="BoduConfigurationParseResult.Diagnostics" /> list.
+/// </para>
+/// <para>
+/// The exception always provides a non-default <see cref="Diagnostics" /> array; when a single diagnostic triggered the
+/// failure it also appears as <see cref="Diagnostic" />. <see cref="Location" /> forwards to the primary diagnostic's
+/// location and falls back to <see cref="BoduConfigurationSourceLocation.None" /> when no diagnostic is attached.
+/// </para>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// try
+/// {
+///     IniDocument doc = BoduConfigurationDocument.Parse(text);
+/// }
+/// catch (BoduConfigurationParseException ex)
+/// {
+///     // The primary diagnostic includes a source location that points back into the document.
+///     Console.WriteLine($"Parse failed at {ex.Location}: {ex.Message}");
+///
+///     // Every diagnostic gathered before the failure is preserved.
+///     foreach (BoduConfigurationDiagnostic d in ex.Diagnostics)
+///         Console.WriteLine($"  {d}");
+/// }
+///]]>
+/// </example>
 [Serializable]
 public sealed class BoduConfigurationParseException : FormatException
 {

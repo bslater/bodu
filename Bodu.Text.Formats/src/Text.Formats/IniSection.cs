@@ -23,6 +23,23 @@ namespace Bodu.Text.Formats;
 /// Key lookup uses the comparer configured via <see cref="IniParseOptions.CaseSensitiveKeys" /> at parse time.
 /// </para>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// IniSection db = doc["database"];
+///
+/// // Indexer lookup throws KeyNotFoundException when the key is missing.
+/// string host = db["host"];
+///
+/// // TryGetValue + typed accessors with fallbacks for optional keys.
+/// int port = db.GetInt32("port", fallback: 5432);
+/// if (db.TryGetValue("password", out string? password))
+///     Console.WriteLine($"Password length: {password.Length}");
+///
+/// // Walk the entries in source order.
+/// foreach (IniEntry entry in db.Entries)
+///     Console.WriteLine($"{entry.Key} = {entry.Value}");
+///]]>
+/// </example>
 public sealed class IniSection
 {
     /// <summary>

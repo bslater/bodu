@@ -31,6 +31,20 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for
 /// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // Apple Inc. — country code US, body "US037833100".
+/// char check = Isin.Compute("US037833100");   // '5'
+///
+/// // Full-sequence validation.
+/// bool ok = Isin.IsValid("US0378331005");     // true
+///
+/// // Streaming use when the body is built up incrementally.
+/// var algo = new Isin();
+/// algo.Append("US037833100");
+/// char d = algo.GetCurrentCheckDigit();       // '5'
+///]]>
+/// </example>
 public sealed class Isin
     : AlphanumericCheckDigitAlgorithm
 {

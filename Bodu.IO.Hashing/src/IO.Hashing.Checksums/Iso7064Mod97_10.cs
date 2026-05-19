@@ -33,6 +33,20 @@ namespace Bodu.IO.Hashing.Checksums;
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for
 /// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // Single-call computation — returns the two-digit check as a string.
+/// string check = Iso7064Mod97_10.Compute("794");   // "44"
+///
+/// // Full-sequence validation.
+/// bool ok = Iso7064Mod97_10.IsValid("79444");      // true
+///
+/// // Streaming use when the body is built up incrementally.
+/// var algo = new Iso7064Mod97_10();
+/// algo.Append("794");
+/// string code = algo.GetCurrentCheckDigits();      // "44"
+///]]>
+/// </example>
 public sealed class Iso7064Mod97_10
     : MultiCharCheckDigitAlgorithm
 {

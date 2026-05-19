@@ -15,11 +15,44 @@ namespace Bodu.Extensions.Configuration.Text;
 /// colon-delimited keys.
 /// </summary>
 /// <remarks>
+/// <para>
 /// Mirrors the role of <c>JsonStreamConfigurationSource</c> in <c>Microsoft.Extensions.Configuration.Json</c>. Unlike
 /// <see cref="BoduTextConfigurationSource" /> (which is file-backed and inherits reload-on-change), this source is
 /// one-shot: the stream is parsed once when <see cref="Build(IConfigurationBuilder)" /> is invoked and no file watcher
-/// is attached.
+/// is attached. The caller is responsible for the stream's lifetime; the provider does not dispose it.
+/// </para>
+/// <para>
+/// Use this shape when the configuration text lives somewhere other than the file system — embedded resources,
+/// in-memory test inputs, content downloaded from a config service, or content authored by another part of the host
+/// process. <see cref="TargetPath" />, <see cref="ParseOptions" />, and <see cref="ResolveOptions" /> behave the same
+/// way as on the file-backed source.
+/// </para>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // Test-time configuration from an in-memory string.
+/// const string ConfigText = """
+///     [*]
+///     Logging:Level = Debug
+///
+///     [src/**/*.cs]
+///     format:indent:size = 4
+///     """;
+///
+/// using var stream = new MemoryStream(Encoding.UTF8.GetBytes(ConfigText));
+///
+/// IConfigurationRoot root = new ConfigurationBuilder()
+///     .AddBoduConfiguration(source =>
+///     {
+///         source.Stream     = stream;
+///         source.TargetPath = "src/Foo.cs";
+///     })
+///     .Build();
+///
+/// Console.WriteLine(root["Logging:Level"]);          // "Debug"
+/// Console.WriteLine(root["format:indent:size"]);     // "4"
+///]]>
+/// </example>
 public sealed class BoduTextStreamConfigurationSource : StreamConfigurationSource
 {
     /// <summary>

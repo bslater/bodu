@@ -18,6 +18,17 @@ namespace Bodu.Text.Encoding;
 /// that knows it wants URL-safe Base64 should prefer this type over passing the variant explicitly to every call. Both
 /// forms produce identical output.
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // Encode a JWT segment — URL-safe alphabet, no padding.
+/// byte[] header   = "{\"alg\":\"HS256\",\"typ\":\"JWT\"}"u8.ToArray();
+/// string segment  = Base64Url.Encode(header);                                  // "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+///
+/// // Decoder accepts inputs both with and without trailing '=' padding.
+/// byte[] roundtrip = Base64Url.Decode(segment);
+/// byte[] padded    = Base64Url.Decode("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9==");
+///]]>
+/// </example>
 public static class Base64Url
 {
 

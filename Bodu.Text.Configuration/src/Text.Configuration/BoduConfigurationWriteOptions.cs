@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BoduConfigurationWriteOptions.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -13,6 +13,24 @@ namespace Bodu.Text.Configuration;
 /// <see cref="BoduConfigurationDocument.Save(Bodu.Text.Formats.IniDocument, string, BoduConfigurationWriteOptions?)" />
 /// and related methods.
 /// </summary>
+/// <remarks>
+/// <para>
+/// The writer aims to be round-trip preserving by default: <see cref="PreserveComments" /> and
+/// <see cref="WriteInlineComments" /> retain commentary from the original document, and
+/// <see cref="InsertBlankLineBetweenSections" /> keeps section blocks visually separated. Override these when emitting
+/// a freshly built document, or when generating a minimized variant for transport.
+/// </para>
+/// <para>
+/// <see cref="Profile" /> selects the default formatting envelope (Bodu, EditorConfig-compatible, or strict). The
+/// remaining properties override individual aspects of that envelope without abandoning the rest of its defaults.
+/// </para>
+/// <para>
+/// <see cref="Encoding" /> defaults to UTF-8 without a byte-order mark to match the EditorConfig file convention;
+/// supply an alternative explicitly when interoperating with a host that expects a BOM or a different code page.
+/// <see cref="NewLine" /> defaults to a single LF — switch to <c>"\r\n"</c> for hosts that require CRLF on output.
+/// Every property is <c>init</c>-only, so instances are safe to cache and share across threads.
+/// </para>
+/// </remarks>
 public sealed partial class BoduConfigurationWriteOptions
 {
     /// <summary>

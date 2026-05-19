@@ -13,11 +13,33 @@ namespace Bodu.Extensions.Configuration.Text;
 /// configuration data dictionary with the resolved colon-delimited keys.
 /// </summary>
 /// <remarks>
+/// <para>
 /// Stream-backed providers are one-shot: the stream is consumed during the initial <see cref="Load(Stream)" /> call and
 /// no reload-on-change machinery is attached. For file-backed loading with reload support, use
 /// <see cref="BoduTextConfigurationProvider" /> instead. The Parse → Resolve → flatten pipeline is shared with
 /// <see cref="BoduTextConfigurationProvider" /> via <see cref="BoduTextConfigurationLoader" />.
+/// </para>
+/// <para>
+/// Consumers do not construct this type directly — it is materialized by
+/// <see cref="BoduTextStreamConfigurationSource.Build(IConfigurationBuilder)" /> when an
+/// <see cref="IConfigurationBuilder" /> is built. The typed <see cref="BoduSource" /> accessor exists for diagnostic
+/// scenarios where a host needs to inspect the source that produced a given <see cref="IConfigurationProvider" />.
+/// </para>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // Diagnostic introspection: locate the Bodu stream provider after the configuration root has been built.
+/// IConfigurationRoot root = builder.Build();
+/// BoduTextStreamConfigurationProvider? bodu = root.Providers
+///     .OfType<BoduTextStreamConfigurationProvider>()
+///     .FirstOrDefault();
+///
+/// if (bodu is not null)
+/// {
+///     Console.WriteLine($"Target path: {bodu.BoduSource.TargetPath ?? "<none>"}");
+/// }
+///]]>
+/// </example>
 public sealed class BoduTextStreamConfigurationProvider : StreamConfigurationProvider
 {
     /// <summary>

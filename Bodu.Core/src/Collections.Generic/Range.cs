@@ -16,8 +16,20 @@ namespace Bodu.Collections.Generic;
 /// <remarks>
 /// <para>
 /// <see cref="Range{T}" /> is an immutable value type used as the element of <see cref="RangeSet{T}" /> and as a shared
-/// building block for the <see cref="RangeDictionary{TKey, TValue}" /> family. Validation rejects ranges where the
-/// start is not strictly less than the end.
+/// building block for the <see cref="RangeDictionary{TKey, TValue}" /> family. The constructor validates that the start
+/// endpoint is strictly less than the end endpoint and rejects degenerate or inverted ranges with
+/// <see cref="ArgumentException" />.
+/// </para>
+/// <para>
+/// Half-open semantics — <c>[start, end)</c> — match the convention used by .NET span slicing,
+/// <see cref="System.Range" />, and most database <c>BETWEEN</c> alternatives. They allow adjacent ranges (
+/// <c>[0, 5)</c> followed by <c>[5, 10)</c>) to abut without overlapping, which is the property that keeps
+/// <see cref="RangeSet{T}" /> and <see cref="RangeDictionary{TKey, TValue}" /> internally consistent.
+/// </para>
+/// <para>
+/// Equality is structural: two <see cref="Range{T}" /> values are equal when both endpoints compare equal under the
+/// default endpoint comparer. <see cref="Range{T}" /> is suitable as a dictionary key when <typeparamref name="T" /> is
+/// itself a well-behaved value type.
 /// </para>
 /// </remarks>
 [DebuggerDisplay("[{StartInclusive}, {EndExclusive})")]

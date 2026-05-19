@@ -55,6 +55,20 @@ namespace Bodu.Security.Cryptography;
 /// with <c>NonCryptographicHashAlgorithm</c> rather than <see cref="HashAlgorithm" />.
 /// </para>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // Consume through a concrete derivative — the base class drives buffering and finalization.
+/// using HashAlgorithm hash = new Tiger();      // 512-bit block, 192-bit digest
+/// byte[] digest = hash.ComputeHash("hello"u8.ToArray());
+///
+/// // Or feed input incrementally via the standard streaming surface.
+/// using HashAlgorithm streaming = new Tiger();
+/// streaming.TransformBlock(buffer1, 0, buffer1.Length, null, 0);
+/// streaming.TransformBlock(buffer2, 0, buffer2.Length, null, 0);
+/// streaming.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
+/// byte[] result = streaming.Hash!;
+///]]>
+/// </example>
 /// <seealso cref="BufferedBlockHashAlgorithm{T}"/> <seealso cref="DeferredFinalBlockHashAlgorithm{T}"/>
 /// <seealso cref="KeyedBlockHashAlgorithm{T}"/> <seealso cref="KeyedDeferredFinalBlockHashAlgorithm{T}"/>
 public abstract class BlockHashAlgorithm<T>

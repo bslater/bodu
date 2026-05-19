@@ -30,6 +30,16 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// They must <b>not</b> be used for password hashing, digital signatures, or integrity validation in security-sensitive
 /// applications.</note>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // Use a concrete derivative through the abstract surface — IBAN emits a two-digit check.
+/// MultiCharCheckDigitAlgorithm algo = new Iban();
+/// algo.Append("GBWEST12345698765432");                 // country code + BBAN
+///
+/// Span<char> check = stackalloc char[algo.CheckLength];
+/// algo.GetCurrentCheckDigits(check);                   // "82"
+///]]>
+/// </example>
 public abstract class MultiCharCheckDigitAlgorithm
 {
     /// <summary>

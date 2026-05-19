@@ -17,6 +17,84 @@ namespace Bodu.Extensions.Configuration.Text;
 /// <c>AddJsonFile</c> / <c>AddJsonStream</c> shape so that consumers familiar with the JSON provider can swap in this
 /// provider with no learning curve.
 /// </summary>
+/// <remarks>
+/// <para>
+/// Five overload shapes are available, mirroring the JSON provider's surface:
+/// <list type="bullet">
+/// <item>
+/// <description>
+/// File path with optional reload-on-change — the everyday production shape.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// File path with an explicit <see cref="IFileProvider" /> — useful when the file lives outside the default content
+/// root, in an embedded assembly resource, or under a virtual file system.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Lambda configure-source overload — the most flexible shape, exposes every <see cref="BoduTextConfigurationSource" />
+/// property.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Convention-discovery overload — probes for <c>.boduconfig</c>, then <c>bodu.config</c>, in that order.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Stream overload (and a lambda <see cref="BoduTextStreamConfigurationSource" /> variant) — one-shot, no
+/// reload-on-change machinery; ideal for tests and synthetic configuration.
+/// </description>
+/// </item>
+/// </list>
+/// </para>
+/// <para>
+/// File-backed registrations honour the standard <see cref="FileConfigurationSource" /> behaviours (reload-on-change,
+/// optional-file, exception wrapping) and resolve <paramref name="path" />-relative paths through the supplied or
+/// builder-default <see cref="IFileProvider" />. The convention overload uses the builder's default
+/// <see cref="IFileProvider" />; note that <see cref="IFileProvider" /> implementations such as
+/// <see cref="Microsoft.Extensions.FileProviders.PhysicalFileProvider" /> filter out dot-prefixed files by default —
+/// see the remarks on <see cref="AddBoduConfiguration(IConfigurationBuilder, bool, bool)" /> for the workaround
+/// required to surface <c>.boduconfig</c>.
+/// </para>
+/// </remarks>
+/// <example>
+///<![CDATA[
+/// // 1. Canonical ASP.NET / Generic Host registration in Program.cs.
+/// var builder = WebApplication.CreateBuilder(args);
+/// builder.Configuration
+///     .AddBoduConfiguration("appsettings.boduconfig", optional: true, reloadOnChange: true)
+///     .AddBoduConfiguration("appsettings.boduconfig", targetPath: "src/Foo.cs"); // path-aware view
+///
+/// // 2. Convention discovery — probes .boduconfig, then bodu.config.
+/// builder.Configuration.AddBoduConfiguration(optional: true, reloadOnChange: true);
+///
+/// // 3. Lambda overload — pin every option, including parse/resolve behaviour.
+/// builder.Configuration.AddBoduConfiguration(source =>
+/// {
+///     source.Path           = "app.boduconfig";
+///     source.TargetPath     = "src/Web/Startup.cs";
+///     source.Optional       = false;
+///     source.ReloadOnChange = true;
+///     source.ParseOptions   = BoduConfigurationParseOptions.Strict;
+///     source.ResolveOptions = new BoduConfigurationResolveOptions
+///     {
+///         Profile = BoduConfigurationProfile.Bodu,
+///     };
+/// });
+///
+/// // 4. In-memory stream — handy in unit tests.
+/// using var ms = new MemoryStream(Encoding.UTF8.GetBytes("[*]\nLogging:Level=Debug\n"));
+/// builder.Configuration.AddBoduConfiguration(ms);
+///
+/// // 5. Pre-parsed document — share one parse across multiple builders.
+/// IniDocument doc = BoduConfigurationDocument.Parse(text);
+/// builder.Configuration.AddBoduConfiguration(doc, targetPath: "src/Foo.cs");
+///]]>
+/// </example>
 public static class BoduTextConfigurationExtensions
 {
     /// <summary>

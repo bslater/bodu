@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IniEntry.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -24,6 +24,23 @@ namespace Bodu.Text.Formats;
 /// <see cref="LineNumber" /> reflects parser-assigned trivia and is read-only.
 /// </para>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // Build a section programmatically and format it back to text.
+/// var doc = new IniDocument();
+/// IniSection db = doc.AddSection("database");
+/// db.Add(new IniEntry("host", "localhost"));
+/// db.Add(new IniEntry("port", "5432")
+/// {
+///     InlineComment = new IniComment("default Postgres port"),
+/// });
+///
+/// // Mutate an existing entry — Key is immutable; Value is not.
+/// db["port"].Value = "5433";
+///
+/// string text = Ini.Format(doc);
+///]]>
+/// </example>
 public sealed class IniEntry
 {
     private readonly List<IniComment> _leadingComments;

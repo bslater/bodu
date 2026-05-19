@@ -25,6 +25,19 @@ namespace Bodu.Collections.Generic;
 /// This type is not thread-safe.
 /// </para>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // Track disjoint blocks of allocated row IDs. Adjacent and overlapping inserts merge automatically.
+/// var allocated = new RangeSet<int>();
+/// allocated.Add(  0,  10);   // [0, 10)
+/// allocated.Add( 20,  30);   // [20, 30)
+/// allocated.Add(  5,  25);   // merges all three into the single range [0, 30)
+///
+/// Console.WriteLine(allocated.Count);          // 1
+/// Console.WriteLine(allocated.Contains(15));   // true
+/// allocated.Remove(10, 20);                    // splits into [0, 10) and [20, 30)
+///]]>
+/// </example>
 [DebuggerDisplay("Count = {Count}")]
 [Serializable]
 public sealed partial class RangeSet<T>

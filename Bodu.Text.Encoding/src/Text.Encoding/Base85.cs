@@ -33,6 +33,24 @@ namespace Bodu.Text.Encoding;
 /// the Ascii85 payload.
 /// </para>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// byte[] data = "hello world"u8.ToArray();
+///
+/// // Adobe Ascii85 (default) — the form used by PostScript and PDF, with the 'z' shortcut for all-zero groups.
+/// string ascii85 = Base85.Encode(data);
+///
+/// // Wrap the output in the Adobe <~ ... ~> delimiter pair.
+/// string delimited = Base85.Encode(data, BaseFormattingOptions.IncludePrefix);
+///
+/// // ZeroMQ Z85 — shell-safe alphabet; the input must be a multiple of four bytes.
+/// byte[] padded = "hello wor"u8.ToArray();    // 9 bytes — pad to 12 before encoding
+/// string z85    = Base85.Encode(padded.AsSpan(0, 8), Base85Variant.Z85);
+///
+/// // Round-trip.
+/// byte[] roundtrip = Base85.Decode(ascii85);
+///]]>
+/// </example>
 public static partial class Base85
 {
 
