@@ -190,4 +190,5 @@ needs those should keep using the static classes directly.
 
 - **[Getting started](getting-started.md)** — install + minimal sample per encoding type.
 - **[Bodu.Text.Encoding guides](../../guides/text-encoding/index.md)** — using each encoding, choosing variants, streaming, the `IBinaryEncoding` interface.
+- **[Bodu.Text.Encoding API reference](../../apidoc/Bodu.Text.Encoding.md)** — full type-by-type docs.
 - **[Introduction](index.md)** — type map, scenarios, where each encoding fits.

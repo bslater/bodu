@@ -33,6 +33,10 @@ For the full glossary, see [Core concepts](concepts.md).
 
 Bencode is not a binary-to-text encoding like Base64. It is a **binary serialization grammar**: integers and structure tokens are emitted as ASCII for human readability, but the string payload is raw bytes — a torrent file's `pieces` field is a SHA-1 hash table, not text. Use [`Bodu.Text.Encoding`](../text-encoding/index.md) when you need to convert raw bytes into a printable alphabet; use **Bodu.Text.Formats** when you need to (de)serialize a structured value tree.
 
+### INI as a sibling format
+
+Alongside Bencode, the package ships the **INI primitives** — <xref:Bodu.Text.Formats.IniDocument>, <xref:Bodu.Text.Formats.IniSection>, <xref:Bodu.Text.Formats.IniEntry>, and the static <xref:Bodu.Text.Formats.Ini> codec — used directly by [`Bodu.Text.Configuration`](../text-configuration/index.md) to layer EditorConfig-style configuration on top of the same model. When you need INI parsing without configuration layering, work with <xref:Bodu.Text.Formats.Ini> directly; when you need glob-anchored sections, profile presets, and a flat colon-delimited view, reach for the Configuration package.
+
 ### Canonicality
 
 A bencoded value has exactly one canonical encoding: `i42e`, not `i+42e` or `i042e`; dictionary keys are sorted by raw byte order, not insertion order. The codec produces the canonical form and the parser rejects every non-canonical input. This is a load-bearing property for content-addressed identifiers — the SHA-1 of a torrent's `info` dictionary (the *infohash*) only works because every parser agrees on the canonical bytes.
@@ -97,3 +101,5 @@ The same surface, grouped by what role you're playing rather than by namespace.
 - **[Core concepts](concepts.md)** — full vocabulary: value vs. document, canonical encoding, framing tokens, byte string vs. text, format exception.
 - **[Getting started](getting-started.md)** — install + minimal samples for `Decode`, `Encode`, `Try*`, and the stream overloads.
 - **[Bodu.Text.Formats guides](../../guides/formats/index.md)** — using the Bencode codec, the value model, and stream support.
+- **[Bodu.Text.Formats API reference](../../apidoc/Bodu.Text.Formats.md)** — full type-by-type docs.
+- **For EditorConfig-style configuration layering on `IniDocument`**, see [Bodu.Text.Configuration](../text-configuration/index.md).

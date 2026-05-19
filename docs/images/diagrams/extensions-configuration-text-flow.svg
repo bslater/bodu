@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 280" role="img" aria-labelledby="ef-t ef-d">
+  <title id="ef-t">Bodu.Extensions.Configuration.Text bridge flow</title>
+  <desc id="ef-d">The Bodu Extensions Configuration Text bridge connects Bodu.Text.Configuration to Microsoft.Extensions.Configuration. Calls to IConfigurationBuilder.AddBoduConfiguration register a BoduTextConfigurationSource that carries the path, target path, parse options, and resolve options. When the builder calls Build, the source instantiates a BoduTextConfigurationProvider that parses the file via Bodu.Text.Configuration, resolves it for the target path, and copies the flattened view into the inherited Data dictionary as colon-delimited keys. The resulting IConfiguration is bound to typed POCO options classes through the standard DI Configure helper, surfaced as the AddBoduConfigurationOptions convenience wrapper.</desc>
+
+  <defs>
+    <style>
+      .bg    { fill: #0F172A; }
+      .pan   { fill: #1E293B; stroke: #334155; stroke-width: 1; }
+      .hdr   { fill: #111827; stroke: #334155; stroke-width: 1; }
+      .ttl   { fill: #F8FAFC; font: 700 15px/1 "Segoe UI",Arial,sans-serif; }
+      .lbl   { fill: #F8FAFC; font: 700 12px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .sub   { fill: #CBD5E1; font: 400 11px/1.25 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .mut   { fill: #94A3B8; font: 400 10px/1.25 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .ttag  { fill: #94A3B8; font: 700 9px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; letter-spacing: 1px; }
+      .row   { fill: #2DD4BF; font: 700 11px/1 "Segoe UI",Arial,sans-serif; text-anchor: start; }
+      .src   { fill: #0D3331; stroke: #2DD4BF; stroke-width: 1.5; }
+      .mid   { fill: #1E3A5F; stroke: #60A5FA; stroke-width: 1.5; }
+      .dst   { fill: #2A1B54; stroke: #A78BFA; stroke-width: 1.5; }
+      .out   { fill: #431407; stroke: #FBBF24; stroke-width: 1.5; }
+      .wt    { stroke: #2DD4BF; stroke-width: 1.6; fill: none; }
+      .wp    { stroke: #A78BFA; stroke-width: 1.6; fill: none; }
+      .wa    { stroke: #FBBF24; stroke-width: 1.6; fill: none; }
+    </style>
+    <marker id="ef-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#2DD4BF"/>
+    </marker>
+    <marker id="ef-p" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#A78BFA"/>
+    </marker>
+    <marker id="ef-o" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#FBBF24"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" width="820" height="280"/>
+
+  <g transform="translate(10 10)">
+    <rect class="pan" width="800" height="260" rx="8"/>
+    <rect class="hdr" width="800" height="30" rx="8"/>
+    <rect class="hdr" y="22" width="800" height="8"/>
+    <text class="ttl" x="16" y="20">IConfigurationBuilder → IConfiguration → IOptions</text>
+
+    <!-- ===== Top row — LOAD (left-to-right, teal) ===== -->
+    <text class="row" x="20" y="58">LOAD  ▸ register source → parse + resolve → populate Data</text>
+
+    <g transform="translate(20 70)">
+      <rect class="src" width="170" height="50" rx="6"/>
+      <text class="lbl" fill="#2DD4BF" x="85" y="20">IConfigurationBuilder</text>
+      <text class="mut" x="85" y="36">.AddBoduConfiguration(...)</text>
+    </g>
+
+    <line class="wt" x1="190" y1="95" x2="220" y2="95" marker-end="url(#ef-a)"/>
+
+    <g transform="translate(220 70)">
+      <rect class="mid" width="170" height="50" rx="6"/>
+      <text class="lbl" x="85" y="20">BoduTextConfiguration</text>
+      <text class="lbl" x="85" y="34">Source</text>
+      <text class="mut" x="85" y="46">Path · TargetPath · Options</text>
+    </g>
+
+    <line class="wt" x1="390" y1="95" x2="420" y2="95" marker-end="url(#ef-a)"/>
+
+    <g transform="translate(420 70)">
+      <rect class="dst" width="170" height="50" rx="6"/>
+      <text class="lbl" fill="#C4B5FD" x="85" y="20">BoduTextConfiguration</text>
+      <text class="lbl" fill="#C4B5FD" x="85" y="34">Provider</text>
+      <text class="mut" x="85" y="46">load → parse → resolve</text>
+    </g>
+
+    <line class="wp" x1="590" y1="95" x2="620" y2="95" marker-end="url(#ef-p)"/>
+
+    <g transform="translate(620 70)">
+      <rect class="out" width="160" height="50" rx="6"/>
+      <text class="lbl" fill="#FBBF24" x="80" y="20">IConfiguration</text>
+      <text class="mut" x="80" y="36">colon-delimited keys</text>
+      <text class="mut" x="80" y="48">["logging:level:default"]</text>
+    </g>
+
+    <!-- ===== Middle separator ===== -->
+    <line x1="20" y1="140" x2="780" y2="140" stroke="#334155" stroke-width="1"/>
+
+    <!-- ===== Bottom row — BIND (left-to-right, amber) ===== -->
+    <text class="row" x="20" y="162" fill="#FBBF24">BIND  ▸ section → POCO via DI</text>
+
+    <g transform="translate(20 175)">
+      <rect class="out" width="170" height="48" rx="6"/>
+      <text class="lbl" fill="#FBBF24" x="85" y="20">IConfiguration</text>
+      <text class="mut" x="85" y="36">root or GetSection(name)</text>
+    </g>
+
+    <line class="wa" x1="190" y1="199" x2="220" y2="199" marker-end="url(#ef-o)"/>
+
+    <g transform="translate(220 175)">
+      <rect class="mid" width="170" height="48" rx="6"/>
+      <text class="lbl" x="85" y="20">IServiceCollection</text>
+      <text class="mut" x="85" y="36">.AddBoduConfigurationOptions&lt;T&gt;</text>
+    </g>
+
+    <line class="wa" x1="390" y1="199" x2="420" y2="199" marker-end="url(#ef-o)"/>
+
+    <g transform="translate(420 175)">
+      <rect class="dst" width="170" height="48" rx="6"/>
+      <text class="lbl" fill="#C4B5FD" x="85" y="20">DI container</text>
+      <text class="mut" x="85" y="36">services.Configure&lt;T&gt;(section)</text>
+    </g>
+
+    <line class="wa" x1="590" y1="199" x2="620" y2="199" marker-end="url(#ef-o)"/>
+
+    <g transform="translate(620 175)">
+      <rect class="src" width="160" height="48" rx="6"/>
+      <text class="lbl" fill="#2DD4BF" x="80" y="20">IOptions&lt;TOptions&gt;</text>
+      <text class="mut" x="80" y="36">strongly typed POCO</text>
+    </g>
+
+    <!-- Footer note -->
+    <text class="mut" x="400" y="248" text-anchor="middle">ReloadOnChange wires up a file watcher; IOptionsMonitor&lt;T&gt; re-binds automatically when the underlying source changes.</text>
+  </g>
+</svg>

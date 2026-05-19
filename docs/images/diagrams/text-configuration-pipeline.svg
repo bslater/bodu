@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 280" role="img" aria-labelledby="cp-t cp-d">
+  <title id="cp-t">Bodu Text Configuration pipeline</title>
+  <desc id="cp-d">The Bodu.Text.Configuration pipeline runs in four stages. Source text is tokenised by BoduConfigurationReader and produces an immutable IniDocument from Bodu.Text.Formats. The IniDocument is projected by BoduConfigurationResolver for a specific target path, layering the preamble plus matching glob-anchored sections in source order to produce a BoduConfigurationView. The view exposes typed accessors — GetString, GetInt32, GetBoolean, GetEnum, and GetValue&lt;T&gt; for any ISpanParsable — that return the effective value for each colon-delimited configuration key.</desc>
+
+  <defs>
+    <style>
+      .bg    { fill: #0F172A; }
+      .pan   { fill: #1E293B; stroke: #334155; stroke-width: 1; }
+      .hdr   { fill: #111827; stroke: #334155; stroke-width: 1; }
+      .ttl   { fill: #F8FAFC; font: 700 15px/1 "Segoe UI",Arial,sans-serif; }
+      .lbl   { fill: #F8FAFC; font: 700 12px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .sub   { fill: #CBD5E1; font: 400 11px/1.25 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .mut   { fill: #94A3B8; font: 400 10px/1.25 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .row   { fill: #2DD4BF; font: 700 11px/1 "Segoe UI",Arial,sans-serif; text-anchor: start; }
+      .rowd  { fill: #A78BFA; font: 700 11px/1 "Segoe UI",Arial,sans-serif; text-anchor: start; }
+      .src   { fill: #0D3331; stroke: #2DD4BF; stroke-width: 1.5; }
+      .mid   { fill: #1E3A5F; stroke: #60A5FA; stroke-width: 1.5; }
+      .dst   { fill: #2A1B54; stroke: #A78BFA; stroke-width: 1.5; }
+      .out   { fill: #431407; stroke: #FBBF24; stroke-width: 1.5; }
+      .wt    { stroke: #2DD4BF; stroke-width: 1.6; fill: none; }
+      .wp    { stroke: #A78BFA; stroke-width: 1.6; fill: none; }
+    </style>
+    <marker id="cpt-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#2DD4BF"/>
+    </marker>
+    <marker id="cpd-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#A78BFA"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" width="820" height="280"/>
+
+  <g transform="translate(10 10)">
+    <rect class="pan" width="800" height="260" rx="8"/>
+    <rect class="hdr" width="800" height="30" rx="8"/>
+    <rect class="hdr" y="22" width="800" height="8"/>
+    <text class="ttl" x="16" y="20">Bodu.Text.Configuration pipeline</text>
+
+    <!-- ===== Top row — PARSE (left-to-right, teal) ===== -->
+    <text class="row" x="20" y="58">PARSE  ▸ source text → IniDocument</text>
+
+    <g transform="translate(20 70)">
+      <rect class="src" width="160" height="46" rx="6"/>
+      <text class="lbl" fill="#2DD4BF" x="80" y="20">Source text</text>
+      <text class="mut" x="80" y="36">file · stream · string</text>
+    </g>
+
+    <line class="wt" x1="180" y1="93" x2="220" y2="93" marker-end="url(#cpt-a)"/>
+
+    <g transform="translate(220 70)">
+      <rect class="mid" width="160" height="46" rx="6"/>
+      <text class="lbl" x="80" y="20">BoduConfigurationReader</text>
+      <text class="mut" x="80" y="36">tokenise + diagnose</text>
+    </g>
+
+    <line class="wt" x1="380" y1="93" x2="420" y2="93" marker-end="url(#cpt-a)"/>
+
+    <g transform="translate(420 70)">
+      <rect class="mid" width="160" height="46" rx="6"/>
+      <text class="lbl" x="80" y="20">ParseOptions / Profile</text>
+      <text class="mut" x="80" y="36">Bodu · Strict · EditorConfig</text>
+    </g>
+
+    <line class="wt" x1="580" y1="93" x2="620" y2="93" marker-end="url(#cpt-a)"/>
+
+    <g transform="translate(620 70)">
+      <rect class="out" width="160" height="46" rx="6"/>
+      <text class="lbl" fill="#FBBF24" x="80" y="20">IniDocument</text>
+      <text class="mut" x="80" y="36">preamble + sections</text>
+    </g>
+
+    <!-- ===== Middle separator ===== -->
+    <line x1="20" y1="138" x2="780" y2="138" stroke="#334155" stroke-width="1"/>
+
+    <!-- ===== Bottom row — RESOLVE (left-to-right, purple) ===== -->
+    <text class="rowd" x="20" y="160">RESOLVE  ▸ IniDocument + targetPath → typed values</text>
+
+    <g transform="translate(20 172)">
+      <rect class="out" width="160" height="46" rx="6"/>
+      <text class="lbl" fill="#FBBF24" x="80" y="20">IniDocument</text>
+      <text class="mut" x="80" y="36">+ targetPath</text>
+    </g>
+
+    <line class="wp" x1="180" y1="195" x2="220" y2="195" marker-end="url(#cpd-a)"/>
+
+    <g transform="translate(220 172)">
+      <rect class="dst" width="160" height="46" rx="6"/>
+      <text class="lbl" fill="#C4B5FD" x="80" y="20">BoduConfigurationResolver</text>
+      <text class="mut" x="80" y="36">preamble + matched globs</text>
+    </g>
+
+    <line class="wp" x1="380" y1="195" x2="420" y2="195" marker-end="url(#cpd-a)"/>
+
+    <g transform="translate(420 172)">
+      <rect class="dst" width="160" height="46" rx="6"/>
+      <text class="lbl" fill="#C4B5FD" x="80" y="20">BoduConfigurationView</text>
+      <text class="mut" x="80" y="36">flat colon-delimited keys</text>
+    </g>
+
+    <line class="wp" x1="580" y1="195" x2="620" y2="195" marker-end="url(#cpd-a)"/>
+
+    <g transform="translate(620 172)">
+      <rect class="src" width="160" height="46" rx="6"/>
+      <text class="lbl" fill="#2DD4BF" x="80" y="20">Typed value</text>
+      <text class="mut" x="80" y="36">GetString · GetValue&lt;T&gt;</text>
+    </g>
+
+    <!-- Footer note -->
+    <text class="mut" x="400" y="244" text-anchor="middle">ParseWithDiagnostics returns a BoduConfigurationParseResult under Collect mode; TryGetXxx never throws on missing or malformed values.</text>
+  </g>
+</svg>

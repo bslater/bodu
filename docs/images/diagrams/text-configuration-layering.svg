@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 320" role="img" aria-labelledby="cl-t cl-d">
+  <title id="cl-t">Bodu Text Configuration resolution layering</title>
+  <desc id="cl-d">Resolution layers the document for a target path in source order. The preamble (global section) contributes its properties first, then each named section whose glob header matches the target path contributes in turn. Later matches overwrite earlier values for the same key — last-wins precedence. The unset sentinel removes a key entirely when UnsetValueMode is RemoveEffectiveValue. The resulting BoduConfigurationView is a flat dictionary of colon-delimited keys to effective string values.</desc>
+
+  <defs>
+    <style>
+      .bg    { fill: #0F172A; }
+      .pan   { fill: #1E293B; stroke: #334155; stroke-width: 1; }
+      .hdr   { fill: #111827; stroke: #334155; stroke-width: 1; }
+      .ttl   { fill: #F8FAFC; font: 700 15px/1 "Segoe UI",Arial,sans-serif; }
+      .lbl   { fill: #F8FAFC; font: 700 12px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .lblL  { fill: #F8FAFC; font: 700 12px/1 "Segoe UI",Arial,sans-serif; text-anchor: start; }
+      .sub   { fill: #CBD5E1; font: 400 11px/1.25 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .mut   { fill: #94A3B8; font: 400 10px/1.25 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .mutL  { fill: #94A3B8; font: 400 10px/1.25 "Segoe UI",Arial,sans-serif; text-anchor: start; }
+      .code  { fill: #CBD5E1; font: 400 11px/1.2 "Cascadia Code","Fira Code",Consolas,monospace; }
+      .codeb { fill: #F8FAFC; font: 700 11px/1.2 "Cascadia Code","Fira Code",Consolas,monospace; }
+      .row   { fill: #2DD4BF; font: 700 11px/1 "Segoe UI",Arial,sans-serif; text-anchor: start; }
+      .ambr  { fill: #431407; stroke: #FBBF24; stroke-width: 1.5; }
+      .teal  { fill: #0D3331; stroke: #2DD4BF; stroke-width: 1.5; }
+      .blue  { fill: #1E3A5F; stroke: #60A5FA; stroke-width: 1.5; }
+      .purp  { fill: #2A1B54; stroke: #A78BFA; stroke-width: 1.5; }
+      .arr   { stroke: #94A3B8; stroke-width: 1.2; fill: none; }
+      .wt    { stroke: #2DD4BF; stroke-width: 1.6; fill: none; }
+      .strike{ stroke: #F87171; stroke-width: 1.2; }
+    </style>
+    <marker id="cl-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#94A3B8"/>
+    </marker>
+    <marker id="cl-w" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#2DD4BF"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" width="820" height="320"/>
+
+  <g transform="translate(10 10)">
+    <rect class="pan" width="800" height="300" rx="8"/>
+    <rect class="hdr" width="800" height="30" rx="8"/>
+    <rect class="hdr" y="22" width="800" height="8"/>
+    <text class="ttl" x="16" y="20">Resolution layering — last-wins precedence in source order</text>
+
+    <!-- Target path indicator -->
+    <text class="row" x="20" y="58">TARGET PATH</text>
+    <g transform="translate(120 46)">
+      <rect class="ambr" width="200" height="20" rx="4"/>
+      <text class="codeb" fill="#FBBF24" x="100" y="14" text-anchor="middle">src/MyApp/Program.cs</text>
+    </g>
+    <text class="mutL" x="330" y="60">PathRoot + targetPath; anchored globs match against this</text>
+
+    <!-- ===== Layer 1: Preamble ===== -->
+    <g transform="translate(20 80)">
+      <rect class="teal" width="360" height="46" rx="6"/>
+      <text class="lblL" x="12" y="20">① Preamble (global section)</text>
+      <text class="code" x="12" y="36">root = true   ·   format.indent.style = tab</text>
+    </g>
+
+    <line class="arr" x1="400" y1="103" x2="430" y2="103" marker-end="url(#cl-a)"/>
+    <text class="mutL" x="440" y="98">applies first when</text>
+    <text class="mutL" x="440" y="110">ApplyPreambleProperties = true</text>
+
+    <!-- ===== Layer 2: Matching unanchored ===== -->
+    <g transform="translate(20 134)">
+      <rect class="blue" width="360" height="46" rx="6"/>
+      <text class="lblL" x="12" y="20">② [*.cs]   ← unanchored glob match</text>
+      <text class="code" x="12" y="36">format.indent.style = space   ·   indent.size = 4</text>
+    </g>
+
+    <line class="arr" x1="400" y1="157" x2="430" y2="157" marker-end="url(#cl-a)"/>
+    <text class="mutL" x="440" y="152">overrides preamble for</text>
+    <text class="mutL" x="440" y="164">format.indent.style</text>
+
+    <!-- ===== Layer 3: Matching anchored ===== -->
+    <g transform="translate(20 188)">
+      <rect class="purp" width="360" height="46" rx="6"/>
+      <text class="lblL" x="12" y="20">③ [src/**/*.cs]   ← anchored glob match</text>
+      <text class="code" x="12" y="36">format.indent.size = 2   ·   logging.level.default = Warning</text>
+    </g>
+
+    <line class="arr" x1="400" y1="211" x2="430" y2="211" marker-end="url(#cl-a)"/>
+    <text class="mutL" x="440" y="206">overrides layer ② for</text>
+    <text class="mutL" x="440" y="218">format.indent.size — last-wins</text>
+
+    <!-- ===== Layer 4: non-matching section (skipped) ===== -->
+    <g transform="translate(20 242)">
+      <rect class="pan" stroke="#475569" stroke-dasharray="3 2" width="360" height="46" rx="6"/>
+      <text class="lblL" fill="#94A3B8" x="12" y="20">[*.md]   ← does not match — skipped</text>
+      <text class="code" fill="#64748B" x="12" y="36">word_wrap = true</text>
+    </g>
+
+    <text class="mutL" x="440" y="262">non-matching sections</text>
+    <text class="mutL" x="440" y="274">contribute nothing</text>
+
+    <!-- ===== Effective view (right column) ===== -->
+    <g transform="translate(580 80)">
+      <rect class="ambr" width="200" height="208" rx="6"/>
+      <text class="lbl" fill="#FBBF24" x="100" y="22">Effective view</text>
+      <text class="mut" x="100" y="38">BoduConfigurationView</text>
+
+      <line x1="12" y1="48" x2="188" y2="48" stroke="#FBBF24" stroke-opacity="0.4" stroke-width="0.8"/>
+
+      <text class="code" x="12" y="68">format:indent:style</text>
+      <text class="codeb" fill="#FBBF24" x="12" y="84">= "space"   ← ②</text>
+
+      <text class="code" x="12" y="108">format:indent:size</text>
+      <text class="codeb" fill="#FBBF24" x="12" y="124">= "2"   ← ③</text>
+
+      <text class="code" x="12" y="148">logging:level:default</text>
+      <text class="codeb" fill="#FBBF24" x="12" y="164">= "Warning"   ← ③</text>
+
+      <text class="code" x="12" y="188">root</text>
+      <text class="codeb" fill="#FBBF24" x="12" y="204">= "true"   ← ①</text>
+    </g>
+
+    <!-- Bottom note -->
+    <text class="mut" x="400" y="296" text-anchor="middle">The literal value "unset" removes the key entirely when UnsetValueMode = RemoveEffectiveValue (EditorConfig 0.17.2 semantics).</text>
+  </g>
+</svg>
