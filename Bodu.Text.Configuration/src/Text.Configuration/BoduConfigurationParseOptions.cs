@@ -6,7 +6,7 @@
 
 using System.Text;
 
-using Bodu.Text.Formats;
+using Bodu.Text.Ini;
 
 namespace Bodu.Text.Configuration;
 
@@ -119,8 +119,8 @@ public sealed partial class BoduConfigurationParseOptions
     public Encoding DefaultEncoding { get; init; } = Encoding.UTF8;
 
     /// <summary>
-    /// Returns the subset of these options that maps onto an <see cref="Bodu.Text.Formats.IniParseOptions" />. Useful
-    /// when callers want to delegate basic INI parsing to <see cref="Bodu.Text.Formats.Ini" /> and layer
+    /// Returns the subset of these options that maps onto an <see cref="Bodu.Text.Ini.IniParseOptions" />. Useful
+    /// when callers want to delegate basic INI parsing to <see cref="Bodu.Text.Ini.Ini" /> and layer
     /// Configuration-specific features (globs, resolution, trivia) on top.
     /// </summary>
     /// <returns>

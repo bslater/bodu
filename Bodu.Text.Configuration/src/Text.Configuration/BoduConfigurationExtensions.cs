@@ -4,7 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Text.Formats;
+using Bodu.Text.Ini;
 
 namespace Bodu.Text.Configuration;
 
@@ -16,7 +16,7 @@ namespace Bodu.Text.Configuration;
 /// <remarks>
 /// <para>
 /// The Bodu Text Configuration model is intentionally layered on top of the raw INI primitives from
-/// <c>Bodu.Text.Formats</c> rather than replacing them: an <see cref="IniDocument" /> remains the source-faithful
+/// <c>Bodu.Text.Ini</c> rather than replacing them: an <see cref="IniDocument" /> remains the source-faithful
 /// in-memory representation, and these extension methods add the configuration-specific behaviour — section glob
 /// matching, target-path resolution, dotted-to-colon key normalization, and preamble layering — that turns that raw
 /// document into the resolved snapshot consumed by application code.

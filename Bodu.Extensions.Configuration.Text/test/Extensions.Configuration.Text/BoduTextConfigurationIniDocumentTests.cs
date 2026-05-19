@@ -9,7 +9,7 @@ using System.IO;
 using System.Text;
 using Bodu.Extensions.Configuration.Text;
 using Bodu.Text.Configuration;
-using Bodu.Text.Formats;
+using Bodu.Text.Ini;
 using Microsoft.Extensions.Configuration;
 
 namespace Bodu.Extensions.Configuration.Text.Tests;

@@ -4,7 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Text.Formats;
+using Bodu.Text.Ini;
 
 namespace Bodu.Text.Configuration;
 

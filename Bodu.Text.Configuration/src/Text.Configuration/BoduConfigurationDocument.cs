@@ -6,13 +6,13 @@
 
 using System.Collections.Immutable;
 using System.Text;
-using Bodu.Text.Formats;
+using Bodu.Text.Ini;
 
 namespace Bodu.Text.Configuration;
 
 /// <summary>
 /// Provides the profile-aware entry points for parsing, loading, and saving Bodu Text Configuration documents. The
-/// underlying data model is <see cref="IniDocument" /> from <c>Bodu.Text.Formats</c>; this class adds Bodu-specific
+/// underlying data model is <see cref="IniDocument" /> from <c>Bodu.Text.Ini</c>; this class adds Bodu-specific
 /// behaviour — profile presets, inline-comment-mode handling, diagnostic routing, and round-trip support — on top of
 /// the shared INI infrastructure.
 /// </summary>

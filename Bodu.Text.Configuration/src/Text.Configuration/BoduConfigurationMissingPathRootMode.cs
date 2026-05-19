@@ -8,7 +8,7 @@ namespace Bodu.Text.Configuration;
 
 /// <summary>
 /// Selects how
-/// <see cref="BoduConfigurationExtensions.Resolve(Bodu.Text.Formats.IniDocument, string?, BoduConfigurationResolveOptions?)" />
+/// <see cref="BoduConfigurationExtensions.Resolve(Bodu.Text.Ini.IniDocument, string?, BoduConfigurationResolveOptions?)" />
 /// reacts when the document was parsed from a string and no <see cref="BoduConfigurationResolveOptions.PathRoot" /> was
 /// supplied.
 /// </summary>

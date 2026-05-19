@@ -5,7 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Text.Configuration.Test.Infrastructure;
-using Bodu.Text.Formats;
+using Bodu.Text.Ini;
 
 namespace Bodu.Text.Configuration.Kat;
 

@@ -5,14 +5,14 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Text.Configuration.Infrastructure;
-using Bodu.Text.Formats;
+using Bodu.Text.Ini;
 
 namespace Bodu.Text.Configuration;
 
 /// <summary>
 /// Parse / emit / re-parse coverage exercised through the static
 /// <see cref="BoduConfigurationDocument" /> facade. The underlying storage is <see cref="IniDocument" /> from
-/// <c>Bodu.Text.Formats</c>.
+/// <c>Bodu.Text.Ini</c>.
 /// </summary>
 [TestClass]
 public partial class BoduConfigurationDocumentTests

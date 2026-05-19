@@ -4,7 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Text.Formats;
+using Bodu.Text.Ini;
 
 namespace Bodu.Text.Configuration;
 
@@ -15,7 +15,7 @@ namespace Bodu.Text.Configuration;
 /// stream/reader overloads.
 /// </summary>
 /// <remarks>
-/// Unlike <see cref="Ini.Format(IniDocument)" /> — which always emits trivia using the INI defaults — this writer
+/// Unlike <see cref="Bodu.Text.Ini.Ini.Format(IniDocument)" /> — which always emits trivia using the INI defaults — this writer
 /// honors the Bodu-specific options: <see cref="BoduConfigurationWriteOptions.KeyValueSeparator" />,
 /// <see cref="BoduConfigurationWriteOptions.NewLine" />, <see cref="BoduConfigurationWriteOptions.PreserveComments" />,
 /// <see cref="BoduConfigurationWriteOptions.WriteInlineComments" />, and

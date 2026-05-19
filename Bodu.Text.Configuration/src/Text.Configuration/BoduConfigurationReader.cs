@@ -6,7 +6,7 @@
 
 using System.Collections.Immutable;
 using System.Globalization;
-using Bodu.Text.Formats;
+using Bodu.Text.Ini;
 
 namespace Bodu.Text.Configuration;
 
@@ -18,7 +18,7 @@ namespace Bodu.Text.Configuration;
 /// This reader honors the Configuration-specific features that the underlying <c>Ini.Parser</c> does not: inline
 /// comment modes (<see cref="BoduConfigurationInlineCommentMode" />), diagnostic mode routing (
 /// <see cref="BoduConfigurationDiagnosticMode" />), and source location tracking. The resulting document is a plain
-/// <see cref="IniDocument" /> so it composes naturally with everything else in <c>Bodu.Text.Formats.Ini</c>.
+/// <see cref="IniDocument" /> so it composes naturally with everything else in <c>Bodu.Text.Ini.Ini</c>.
 /// </remarks>
 internal sealed partial class BoduConfigurationReader
 {

@@ -6,7 +6,7 @@
 
 using Bodu.Test;
 using Bodu.Text.Configuration;
-using Bodu.Text.Formats;
+using Bodu.Text.Ini;
 
 namespace Bodu.Smoke;
 

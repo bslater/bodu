@@ -6,7 +6,7 @@
 
 using Bodu.Text.Configuration.Infrastructure;
 
-using Bodu.Text.Formats;
+using Bodu.Text.Ini;
 
 namespace Bodu.Text.Configuration;
 

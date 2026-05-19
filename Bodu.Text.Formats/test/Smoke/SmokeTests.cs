@@ -5,12 +5,16 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Test;
+using Bodu.Text.Bencode;
+using Bodu.Text.Delimited;
+using Bodu.Text.DotEnv;
+using Bodu.Text.Ini;
 
-namespace Bodu.Text.Formats;
+namespace Bodu.Smoke;
 
 /// <summary>
-/// Smoke tests for <see cref="Bodu.Text.Formats" />. Each test exercises one happy-path on a primary public type
-/// so that the smoke-tier build catches catastrophic breakage in any of the format's load-bearing surfaces.
+/// Smoke tests for the <c>Bodu.Text.*</c> format namespaces. Each test exercises one happy-path on a primary public
+/// type so that the smoke-tier build catches catastrophic breakage in any of the format's load-bearing surfaces.
 /// </summary>
 [TestClass]
 public sealed class SmokeTests

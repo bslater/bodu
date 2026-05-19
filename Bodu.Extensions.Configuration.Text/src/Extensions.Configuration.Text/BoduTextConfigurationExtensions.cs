@@ -5,7 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Text.Configuration;
-using Bodu.Text.Formats;
+using Bodu.Text.Ini;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.FileProviders;
 
