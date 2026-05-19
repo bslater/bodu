@@ -9,8 +9,8 @@ using Bodu.Text.Formats;
 namespace Bodu.Text.Configuration;
 
 /// <summary>
-/// Identifies a specific class of <see cref="BoduConfigurationDiagnostic" />. Codes are stable so that
-/// consumers may suppress, filter, or test for particular conditions without inspecting the message text.
+/// Identifies a specific class of <see cref="BoduConfigurationDiagnostic" />. Codes are stable so that consumers may
+/// suppress, filter, or test for particular conditions without inspecting the message text.
 /// </summary>
 public enum BoduConfigurationDiagnosticCode
 {

@@ -17,7 +17,9 @@ public static partial class Base58
     /// <param name="bytes">The bytes to encode.</param>
     /// <param name="variant">The Base58 variant.</param>
     /// <returns>A Base58 string.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="bytes" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="bytes" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
     public static string Encode(byte[] bytes, Base58Variant variant = Base58Variant.BitcoinFlickr)
     {
@@ -56,8 +58,10 @@ public static partial class Base58
     /// Encodes a span of bytes directly into a destination character span.
     /// </summary>
     /// <param name="bytes">The bytes to encode.</param>
-    /// <param name="destination">The destination span. Must be at least
-    /// <see cref="GetMaxEncodedLength(int)" /> characters in size for safe sizing.</param>
+    /// <param name="destination">
+    /// The destination span. Must be at least <see cref="GetMaxEncodedLength(int)" /> characters in size for safe
+    /// sizing.
+    /// </param>
     /// <param name="variant">The Base58 variant.</param>
     /// <returns>The number of characters written.</returns>
     /// <exception cref="ArgumentException">Thrown when <paramref name="destination" /> is too small.</exception>
@@ -99,7 +103,9 @@ public static partial class Base58
     /// <param name="count">The number of bytes to encode.</param>
     /// <param name="variant">The Base58 variant.</param>
     /// <returns>A Base58 string.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="bytes" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="bytes" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <paramref name="offset" />, <paramref name="count" />, or <paramref name="variant" /> is out of
     /// range.
@@ -121,7 +127,9 @@ public static partial class Base58
     /// <param name="destination">The destination span.</param>
     /// <param name="charsWritten">When this method returns, contains the number of characters written.</param>
     /// <param name="variant">The Base58 variant.</param>
-    /// <returns><see langword="true" /> when the destination is large enough; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the destination is large enough; otherwise <see langword="false" />.
+    /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
     public static bool TryEncode(ReadOnlySpan<byte> bytes, Span<char> destination, out int charsWritten, Base58Variant variant = Base58Variant.BitcoinFlickr)
     {
@@ -163,8 +171,10 @@ public static partial class Base58
     /// <param name="bytes">The input bytes.</param>
     /// <param name="alphabet">The variant alphabet.</param>
     /// <param name="buffer">The scratch buffer; the encoder writes from the end towards the start.</param>
-    /// <param name="usableLength">The portion of <paramref name="buffer" /> to use (may be smaller than the array
-    /// length when the buffer was rented from <see cref="System.Buffers.ArrayPool{T}" />).</param>
+    /// <param name="usableLength">
+    /// The portion of <paramref name="buffer" /> to use (may be smaller than the array length when the buffer was
+    /// rented from <see cref="System.Buffers.ArrayPool{T}" />).
+    /// </param>
     /// <returns>The number of characters written into the buffer.</returns>
     private static int EncodeIntoBuffer(ReadOnlySpan<byte> bytes, ReadOnlySpan<char> alphabet, char[] buffer, int usableLength)
     {

@@ -48,7 +48,9 @@ public abstract class Serpent
     /// <summary>
     /// Initializes a new instance of the <see cref="Serpent" /> class with the specified block and tweak sizes.
     /// </summary>
-    /// <param name="blockSizeBits">The block size in bits. Must match the wide-block Serpent variant block size (256, 512, or 1024).</param>
+    /// <param name="blockSizeBits">
+    /// The block size in bits. Must match the wide-block Serpent variant block size (256, 512, or 1024).
+    /// </param>
     /// <param name="tweakSizeBits">The tweak size in bits (128 for all wide-block Serpent variants).</param>
     protected Serpent(int blockSizeBits, int tweakSizeBits)
     {
@@ -70,7 +72,9 @@ public abstract class Serpent
     /// <summary>
     /// Gets or sets the block cipher mode of operation used when creating encryptors and decryptors.
     /// </summary>
-    /// <value>One of the <see cref="CipherModeKind" /> values. The default is <see cref="CipherModeKind.CBC" />.</value>
+    /// <value>
+    /// One of the <see cref="CipherModeKind" /> values. The default is <see cref="CipherModeKind.CBC" />.
+    /// </value>
     /// <remarks>
     /// This property replaces the inherited <see cref="SymmetricAlgorithm.Mode" /> property when used with
     /// <see cref="BlockCipherModeFactory" /> and the extended set of modes it supports, including
@@ -161,7 +165,9 @@ public abstract class Serpent
     /// <param name="key">The encryption key.</param>
     /// <param name="tweak">The tweak value.</param>
     /// <returns>A configured <see cref="IBlockCipher" /> instance for encryption or decryption.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="key" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="key" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="CryptographicException">Thrown when the underlying cryptographic algorithm fails.</exception>
     protected abstract IBlockCipher CreateCipher(byte[] key, byte[] tweak);
 }

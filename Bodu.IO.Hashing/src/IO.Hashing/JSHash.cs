@@ -33,8 +33,12 @@ namespace Bodu.IO.Hashing;
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for
 /// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
 /// <example>
-/// <code language="csharp"> using Bodu.IO.Hashing; using Bodu.IO.Hashing.Extensions; var js = new JSHash(); byte[]
-/// digest = js.ComputeHash(System.Text.Encoding.UTF8.GetBytes("input-key")); </code>
+/// <code language="csharp">
+///<![CDATA[
+/// using Bodu.IO.Hashing; using Bodu.IO.Hashing.Extensions; var js = new JSHash(); byte[]
+/// digest = js.ComputeHash(System.Text.Encoding.UTF8.GetBytes("input-key"));
+///]]>
+/// </code>
 /// </example>
 /// </remarks>
 public sealed class JSHash

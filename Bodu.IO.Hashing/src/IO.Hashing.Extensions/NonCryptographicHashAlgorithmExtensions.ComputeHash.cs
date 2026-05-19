@@ -39,9 +39,7 @@ public static partial class NonCryptographicHashAlgorithmExtensions
     /// <param name="algorithm">The hash algorithm instance.</param>
     /// <param name="data">The input bytes to hash.</param>
     /// <returns>The computed hash value.</returns>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="algorithm" /> is <see langword="null" />.
-    /// </exception>
+    /// <exception cref="ArgumentNullException"><paramref name="algorithm" /> is <see langword="null" />.</exception>
     public static byte[] ComputeHash(
         this NonCryptographicHashAlgorithm algorithm,
         ReadOnlySpan<byte> data)

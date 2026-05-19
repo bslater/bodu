@@ -25,9 +25,13 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// </remarks>
 /// <example>
-/// <code language="csharp"> using Bodu.Security.Cryptography; // Caller guarantees that `plaintext.Length` is a
+/// <code language="csharp">
+///<![CDATA[
+/// using Bodu.Security.Cryptography; // Caller guarantees that `plaintext.Length` is a
 /// multiple of the block size. IPaddingStrategy padding = new NoPadding(); byte[] aligned = padding.Pad(plaintext,
-/// blockSize: 128); // 128 bits = 16 bytes; throws if not aligned </code>
+/// blockSize: 128); // 128 bits = 16 bytes; throws if not aligned
+///]]>
+/// </code>
 /// </example>
 public sealed class NoPadding
     : IPaddingStrategy

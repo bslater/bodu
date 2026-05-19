@@ -13,8 +13,10 @@ public readonly partial struct BoduConfigurationKey
     /// </summary>
     /// <param name="rawKey">The raw key to parse.</param>
     /// <returns>A <see cref="BoduConfigurationKey" /> built from <paramref name="rawKey" />.</returns>
-    /// <exception cref="ArgumentException"><paramref name="rawKey" /> is <see langword="null" />, empty, or
-    /// contains only whitespace, or contains an empty segment when empty segments are not permitted.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="rawKey" /> is <see langword="null" />, empty, or contains only whitespace, or contains an empty
+    /// segment when empty segments are not permitted.
+    /// </exception>
     public static BoduConfigurationKey Parse(string rawKey) =>
         Parse(rawKey, options: null);
 
@@ -24,8 +26,10 @@ public readonly partial struct BoduConfigurationKey
     /// <param name="rawKey">The raw key to parse.</param>
     /// <param name="options">The key options to apply, or <see langword="null" /> for the defaults.</param>
     /// <returns>A <see cref="BoduConfigurationKey" /> built from <paramref name="rawKey" />.</returns>
-    /// <exception cref="ArgumentException"><paramref name="rawKey" /> is <see langword="null" />, empty, or
-    /// contains only whitespace, or contains an empty segment when empty segments are not permitted.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="rawKey" /> is <see langword="null" />, empty, or contains only whitespace, or contains an empty
+    /// segment when empty segments are not permitted.
+    /// </exception>
     public static BoduConfigurationKey Parse(string rawKey, BoduConfigurationKeyOptions? options) =>
         new(rawKey, options);
 
@@ -33,8 +37,9 @@ public readonly partial struct BoduConfigurationKey
     /// Attempts to parse a raw configuration key.
     /// </summary>
     /// <param name="rawKey">The raw key to parse.</param>
-    /// <param name="result">When this method returns, contains the parsed key if successful; otherwise, the
-    /// default key.</param>
+    /// <param name="result">
+    /// When this method returns, contains the parsed key if successful; otherwise, the default key.
+    /// </param>
     /// <returns><see langword="true" /> when parsing succeeded; otherwise, <see langword="false" />.</returns>
     public static bool TryParse(string? rawKey, out BoduConfigurationKey result) =>
         TryParse(rawKey, options: null, out result);
@@ -44,8 +49,9 @@ public readonly partial struct BoduConfigurationKey
     /// </summary>
     /// <param name="rawKey">The raw key to parse.</param>
     /// <param name="options">The key options to apply, or <see langword="null" /> for the defaults.</param>
-    /// <param name="result">When this method returns, contains the parsed key if successful; otherwise, the
-    /// default key.</param>
+    /// <param name="result">
+    /// When this method returns, contains the parsed key if successful; otherwise, the default key.
+    /// </param>
     /// <returns><see langword="true" /> when parsing succeeded; otherwise, <see langword="false" />.</returns>
     public static bool TryParse(string? rawKey, BoduConfigurationKeyOptions? options, out BoduConfigurationKey result)
     {

@@ -44,8 +44,12 @@ namespace Bodu.IO.Hashing.Checksums;
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for
 /// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
 /// <example>
-/// <code language="csharp"> using Bodu.IO.Hashing.Checksums; using Bodu.IO.Hashing.Extensions; var adler = new
-/// Adler64(); byte[] checksum = adler.ComputeHash(largePayload); </code>
+/// <code language="csharp">
+///<![CDATA[
+/// using Bodu.IO.Hashing.Checksums; using Bodu.IO.Hashing.Extensions; var adler = new
+/// Adler64(); byte[] checksum = adler.ComputeHash(largePayload);
+///]]>
+/// </code>
 /// </example>
 /// </remarks>
 /// <seealso cref="Adler{T}"/> <seealso cref="Adler32"/> <seealso cref="Adler32C"/>

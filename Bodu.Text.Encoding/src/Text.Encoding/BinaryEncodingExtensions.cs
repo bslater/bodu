@@ -13,8 +13,8 @@ namespace Bodu.Text.Encoding;
 /// <remarks>
 /// <para>
 /// These extensions exist purely for ergonomic discoverability — typing <c>bytes.</c> in an editor brings up
-/// <c>ToBase16String</c>, <c>ToBase64String</c>, <c>ToBase58String</c>, and so on. They delegate without overhead
-/// to the static <see cref="Base16" />, <see cref="Base32" />, <see cref="Base64" />, <see cref="Base58" />, and
+/// <c>ToBase16String</c>, <c>ToBase64String</c>, <c>ToBase58String</c>, and so on. They delegate without overhead to
+/// the static <see cref="Base16" />, <see cref="Base32" />, <see cref="Base64" />, <see cref="Base58" />, and
 /// <see cref="Base85" /> classes.
 /// </para>
 /// <para>
@@ -59,7 +59,9 @@ public static class BinaryEncodingExtensions
     /// </summary>
     /// <param name="hex">The hex input.</param>
     /// <returns>The decoded bytes.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="hex" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="hex" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="FormatException">Thrown when the input is not valid hexadecimal.</exception>
     public static byte[] FromBase16String(this string hex) => Base16.FromHexString(hex);
 
@@ -68,7 +70,9 @@ public static class BinaryEncodingExtensions
     /// </summary>
     /// <param name="base32">The Base32 input.</param>
     /// <returns>The decoded bytes.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="base32" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="base32" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="FormatException">Thrown when the input is not valid Base32.</exception>
     public static byte[] FromBase32String(this string base32) => Base32.FromBase32String(base32);
 
@@ -77,7 +81,9 @@ public static class BinaryEncodingExtensions
     /// </summary>
     /// <param name="base58">The Base58 input.</param>
     /// <returns>The decoded bytes.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="base58" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="base58" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="FormatException">Thrown when the input is not valid Bitcoin/Flickr Base58.</exception>
     public static byte[] FromBase58String(this string base58) => Base58.FromBase58String(base58);
 
@@ -86,7 +92,9 @@ public static class BinaryEncodingExtensions
     /// </summary>
     /// <param name="base64">The Base64 input.</param>
     /// <returns>The decoded bytes.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="base64" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="base64" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="FormatException">Thrown when the input is not valid Base64.</exception>
     public static byte[] FromBase64String(this string base64) => Base64.FromBase64String(base64);
 
@@ -95,7 +103,9 @@ public static class BinaryEncodingExtensions
     /// </summary>
     /// <param name="ascii85">The Ascii85 input.</param>
     /// <returns>The decoded bytes.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="ascii85" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="ascii85" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="FormatException">Thrown when the input is not valid Ascii85.</exception>
     public static byte[] FromBase85String(this string ascii85) => Base85.FromBase85String(ascii85);
 
@@ -104,7 +114,9 @@ public static class BinaryEncodingExtensions
     /// </summary>
     /// <param name="bytes">The bytes to encode.</param>
     /// <returns>The lower-case hex string.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="bytes" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="bytes" /> is <see langword="null" />.
+    /// </exception>
     public static string ToBase16String(this byte[] bytes) => Base16.ToHexStringLower(bytes);
 
     /// <summary>
@@ -119,7 +131,9 @@ public static class BinaryEncodingExtensions
     /// </summary>
     /// <param name="bytes">The bytes to encode.</param>
     /// <returns>The Base32 string.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="bytes" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="bytes" /> is <see langword="null" />.
+    /// </exception>
     public static string ToBase32String(this byte[] bytes) => Base32.ToBase32String(bytes);
 
     /// <summary>
@@ -134,7 +148,9 @@ public static class BinaryEncodingExtensions
     /// </summary>
     /// <param name="bytes">The bytes to encode.</param>
     /// <returns>The Base58 string.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="bytes" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="bytes" /> is <see langword="null" />.
+    /// </exception>
     public static string ToBase58String(this byte[] bytes) => Base58.ToBase58String(bytes);
 
     /// <summary>
@@ -149,7 +165,9 @@ public static class BinaryEncodingExtensions
     /// </summary>
     /// <param name="bytes">The bytes to encode.</param>
     /// <returns>The Base64 string.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="bytes" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="bytes" /> is <see langword="null" />.
+    /// </exception>
     public static string ToBase64String(this byte[] bytes) => Base64.ToBase64String(bytes);
 
     /// <summary>
@@ -164,7 +182,9 @@ public static class BinaryEncodingExtensions
     /// </summary>
     /// <param name="bytes">The bytes to encode.</param>
     /// <returns>The Ascii85 string.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="bytes" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="bytes" /> is <see langword="null" />.
+    /// </exception>
     public static string ToBase85String(this byte[] bytes) => Base85.ToBase85String(bytes);
 
     /// <summary>

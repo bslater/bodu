@@ -59,9 +59,13 @@ namespace Bodu.IO.Hashing;
 /// <note type="important"> This algorithm is <b>not</b> cryptographically secure and must <b>not</b> be used for
 /// password hashing, digital signatures, or any application requiring adversarial collision resistance. </note>
 /// <example>
-/// <code language="csharp"> using Bodu.IO.Hashing; using Bodu.IO.Hashing.Extensions; // 128-bit fingerprint of a
+/// <code language="csharp">
+///<![CDATA[
+/// using Bodu.IO.Hashing; using Bodu.IO.Hashing.Extensions; // 128-bit fingerprint of a
 /// content blob. var m = new MurmurHash3_128(); byte[] fingerprint = m.ComputeHash(blob); // Custom seed to isolate a
-/// second hash family for cuckoo / bloom-filter use. var m2 = new MurmurHash3_128(seed: 0xC2B2AE35u); </code>
+/// second hash family for cuckoo / bloom-filter use. var m2 = new MurmurHash3_128(seed: 0xC2B2AE35u);
+///]]>
+/// </code>
 /// </example>
 /// </remarks>
 /// <seealso cref="MurmurHash3{T}"/> <seealso cref="MurmurHash3_32"/>
@@ -94,8 +98,8 @@ public sealed class MurmurHash3_128
     /// </summary>
     /// <param name="source">The input bytes to hash.</param>
     /// <returns>
-    /// A 16-byte array containing the little-endian encoded 128-bit hash value,
-    /// with <c>h1</c> in bytes 0–7 and <c>h2</c> in bytes 8–15.
+    /// A 16-byte array containing the little-endian encoded 128-bit hash value, with <c>h1</c> in bytes 0–7 and
+    /// <c>h2</c> in bytes 8–15.
     /// </returns>
     protected override byte[] ComputeHashCore(ReadOnlySpan<byte> source)
     {

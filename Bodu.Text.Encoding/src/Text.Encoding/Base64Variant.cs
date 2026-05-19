@@ -16,8 +16,8 @@ namespace Bodu.Text.Encoding;
 public enum Base64Variant : byte
 {
     /// <summary>
-    /// RFC 4648 §4 standard Base64 using the alphabet <c>A-Z a-z 0-9 + /</c>. Encoded output is padded with <c>=</c>
-    /// to a multiple of four characters by default.
+    /// RFC 4648 §4 standard Base64 using the alphabet <c>A-Z a-z 0-9 + /</c>. Encoded output is padded with <c>=</c> to
+    /// a multiple of four characters by default.
     /// </summary>
     Standard = 0,
 

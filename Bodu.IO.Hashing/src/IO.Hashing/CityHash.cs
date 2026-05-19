@@ -54,10 +54,14 @@ namespace Bodu.IO.Hashing;
 /// hashing, digital signatures, or any application that requires collision resistance under adversarial conditions.
 /// </note>
 /// <example>
-/// <code language="csharp"> using Bodu.IO.Hashing; using Bodu.IO.Hashing.Extensions; // 64-bit fingerprint of a content
+/// <code language="csharp">
+///<![CDATA[
+/// using Bodu.IO.Hashing; using Bodu.IO.Hashing.Extensions; // 64-bit fingerprint of a content
 /// blob — typical use case. var city = new CityHash64(); byte[] fingerprint = city.ComputeHash(blob); // Stream-hash a
 /// moderately sized file. Note: CityHash buffers fully — prefer Crc / xxHash for very large streams. using FileStream
-/// fs = File.OpenRead("payload.bin"); byte[] streamDigest = city.ComputeHash(fs); </code>
+/// fs = File.OpenRead("payload.bin"); byte[] streamDigest = city.ComputeHash(fs);
+///]]>
+/// </code>
 /// </example>
 /// </remarks>
 /// <seealso cref="CityHash32"/> <seealso cref="CityHash64"/> <seealso cref="CityHash128"/>
@@ -346,9 +350,8 @@ public abstract class CityHash<T>
     /// Releases the resources used by the current instance, optionally clearing managed state.
     /// </summary>
     /// <param name="disposing">
-    /// <see langword="true" /> when called from <see cref="Dispose()" />; <see langword="false" /> when called
-    /// from a finalizer. Managed resources are released only when <paramref name="disposing" /> is
-    /// <see langword="true" />.
+    /// <see langword="true" /> when called from <see cref="Dispose()" />; <see langword="false" /> when called from a
+    /// finalizer. Managed resources are released only when <paramref name="disposing" /> is <see langword="true" />.
     /// </param>
     /// <remarks>
     /// Override in a derived class to release additional resources owned by the subclass. Always invoke

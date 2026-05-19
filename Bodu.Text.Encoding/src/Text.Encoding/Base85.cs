@@ -23,14 +23,14 @@ namespace Bodu.Text.Encoding;
 /// Base85 has no padding character. The <see cref="BaseFormattingOptions.UpperCase" />,
 /// <see cref="BaseFormattingOptions.InsertSpacing" />, <see cref="BaseFormattingOptions.InsertLineBreaks" />, and
 /// <see cref="BaseFormattingOptions.OmitPadding" /> flags are ignored on the encode side.
-/// <see cref="BaseFormattingOptions.IncludePrefix" /> is honoured for the <see cref="Base85Variant.Ascii85" />
-/// variant — when set, the output is wrapped in the Adobe Ascii85 <c>&lt;~</c> / <c>~&gt;</c> delimiter pair. The
-/// flag is ignored for <see cref="Base85Variant.Z85" />.
+/// <see cref="BaseFormattingOptions.IncludePrefix" /> is honoured for the <see cref="Base85Variant.Ascii85" /> variant
+/// — when set, the output is wrapped in the Adobe Ascii85 <c>&lt;~</c> / <c>~&gt;</c> delimiter pair. The flag is
+/// ignored for <see cref="Base85Variant.Z85" />.
 /// </para>
 /// <para>
 /// On the decode side, <see cref="BaseFormatStyles.IgnoreWhitespace" /> permits whitespace in the input.
-/// <see cref="BaseFormatStyles.AllowPrefix" /> permits an optional <c>&lt;~</c> / <c>~&gt;</c> delimiter pair
-/// around the Ascii85 payload.
+/// <see cref="BaseFormatStyles.AllowPrefix" /> permits an optional <c>&lt;~</c> / <c>~&gt;</c> delimiter pair around
+/// the Ascii85 payload.
 /// </para>
 /// </remarks>
 public static partial class Base85
@@ -63,14 +63,17 @@ public static partial class Base85
     private static readonly sbyte[] s_z85Lookup = BuildLookup(Z85Alphabet);
 
     /// <summary>
-    /// Returns the exact number of characters that <see cref="Encode(ReadOnlySpan{byte}, Base85Variant, BaseFormattingOptions)" />
-    /// will produce for the supplied data, accounting for the Adobe Ascii85 <c>z</c> shortcut on all-zero groups and
-    /// the optional Adobe Ascii85 <c>&lt;~ ... ~&gt;</c> delimiter pair.
+    /// Returns the exact number of characters that
+    /// <see cref="Encode(ReadOnlySpan{byte}, Base85Variant, BaseFormattingOptions)" /> will produce for the supplied
+    /// data, accounting for the Adobe Ascii85 <c>z</c> shortcut on all-zero groups and the optional Adobe Ascii85
+    /// <c>&lt;~ ... ~&gt;</c> delimiter pair.
     /// </summary>
     /// <param name="source">The input bytes.</param>
     /// <param name="variant">The Base85 variant.</param>
-    /// <param name="options">Formatting options. <see cref="BaseFormattingOptions.IncludePrefix" /> adds four
-    /// characters for the Ascii85 delimiter pair; other flags are ignored.</param>
+    /// <param name="options">
+    /// Formatting options. <see cref="BaseFormattingOptions.IncludePrefix" /> adds four characters for the Ascii85
+    /// delimiter pair; other flags are ignored.
+    /// </param>
     /// <returns>The exact encoded character count.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
     /// <exception cref="ArgumentException">
@@ -122,8 +125,8 @@ public static partial class Base85
     }
 
     /// <summary>
-    /// Returns the maximum number of bytes that decoding <paramref name="charCount" /> characters could produce
-    /// (worst case, assuming no <c>z</c> shortcuts expand to four zero bytes).
+    /// Returns the maximum number of bytes that decoding <paramref name="charCount" /> characters could produce (worst
+    /// case, assuming no <c>z</c> shortcuts expand to four zero bytes).
     /// </summary>
     /// <param name="charCount">The input character count. Must be non-negative.</param>
     /// <returns>The worst-case decoded byte count.</returns>
@@ -140,13 +143,15 @@ public static partial class Base85
     }
 
     /// <summary>
-    /// Returns the maximum number of characters that encoding <paramref name="byteCount" /> bytes could produce
-    /// (i.e. assuming no Ascii85 <c>z</c> shortcuts are emitted), with optional Adobe Ascii85 delimiters.
+    /// Returns the maximum number of characters that encoding <paramref name="byteCount" /> bytes could produce (i.e.
+    /// assuming no Ascii85 <c>z</c> shortcuts are emitted), with optional Adobe Ascii85 delimiters.
     /// </summary>
     /// <param name="byteCount">The input byte count. Must be non-negative.</param>
     /// <param name="variant">The Base85 variant.</param>
-    /// <param name="options">Formatting options. <see cref="BaseFormattingOptions.IncludePrefix" /> adds four
-    /// characters for the Ascii85 delimiter pair; other flags are ignored.</param>
+    /// <param name="options">
+    /// Formatting options. <see cref="BaseFormattingOptions.IncludePrefix" /> adds four characters for the Ascii85
+    /// delimiter pair; other flags are ignored.
+    /// </param>
     /// <returns>The worst-case encoded character count.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="byteCount" /> is negative.</exception>
     public static int GetMaxEncodedLength(int byteCount, Base85Variant variant = Base85Variant.Ascii85, BaseFormattingOptions options = BaseFormattingOptions.None)
@@ -201,11 +206,14 @@ public static partial class Base85
     /// </summary>
     /// <param name="source">The input characters.</param>
     /// <param name="variant">The variant.</param>
-    /// <param name="styles">Parsing styles. <see cref="BaseFormatStyles.IgnoreWhitespace" /> permits whitespace in the
-    /// input; <see cref="BaseFormatStyles.AllowPrefix" /> permits the optional Adobe Ascii85
-    /// <c>&lt;~</c> / <c>~&gt;</c> delimiter pair (Ascii85 only).</param>
-    /// <returns><see langword="true" /> when every retained character is in the variant alphabet or is a recognised
-    /// shortcut.</returns>
+    /// <param name="styles">
+    /// Parsing styles. <see cref="BaseFormatStyles.IgnoreWhitespace" /> permits whitespace in the input;
+    /// <see cref="BaseFormatStyles.AllowPrefix" /> permits the optional Adobe Ascii85 <c>&lt;~</c> / <c>~&gt;</c>
+    /// delimiter pair (Ascii85 only).
+    /// </param>
+    /// <returns>
+    /// <see langword="true" /> when every retained character is in the variant alphabet or is a recognised shortcut.
+    /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
     public static bool IsValid(ReadOnlySpan<char> source, Base85Variant variant = Base85Variant.Ascii85, BaseFormatStyles styles = BaseFormatStyles.None)
     {
@@ -320,8 +328,10 @@ public static partial class Base85
     /// </summary>
     /// <param name="variant">The variant.</param>
     /// <param name="options">The formatting options.</param>
-    /// <returns><see langword="true" /> when <see cref="BaseFormattingOptions.IncludePrefix" /> is set and the variant
-    /// is <see cref="Base85Variant.Ascii85" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when <see cref="BaseFormattingOptions.IncludePrefix" /> is set and the variant is
+    /// <see cref="Base85Variant.Ascii85" />.
+    /// </returns>
     private static bool ShouldEmitAscii85Delimiters(Base85Variant variant, BaseFormattingOptions options) =>
         variant == Base85Variant.Ascii85 && options.HasFlag(BaseFormattingOptions.IncludePrefix);
 
@@ -330,7 +340,9 @@ public static partial class Base85
     /// from <paramref name="source" />.
     /// </summary>
     /// <param name="source">The input span.</param>
-    /// <param name="trimSurroundingWhitespace">Whether to also strip ASCII whitespace surrounding the delimiters.</param>
+    /// <param name="trimSurroundingWhitespace">
+    /// Whether to also strip ASCII whitespace surrounding the delimiters.
+    /// </param>
     /// <returns>The input with delimiters and (optionally) surrounding whitespace removed.</returns>
     private static ReadOnlySpan<char> StripAscii85Delimiters(ReadOnlySpan<char> source, bool trimSurroundingWhitespace)
     {

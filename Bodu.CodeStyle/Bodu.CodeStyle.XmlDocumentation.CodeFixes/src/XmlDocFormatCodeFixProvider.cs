@@ -83,13 +83,13 @@ public sealed class XmlDocFormatCodeFixProvider : CodeFixProvider
                 }
             }
 
-            if (HasPreprocessorDirectiveBetweenTriviaAndMember(trivia))
-            {
-                // A preprocessor directive between the doc comment and the documented member makes any rewrite
-                // unsafe — we cannot guarantee the documented member is the same across configurations. Skip
-                // registering a fix for this diagnostic; the squiggle remains, but no code action is offered.
-                continue;
-            }
+            // Preprocessor directives between the doc comment and the documented member are not a barrier
+            // to the fix. The rewrite is a deterministic reformat of the doc trivia text driven only by
+            // the trivia content, the surrounding indentation, and the configured wrap width — none of
+            // which depend on which member the trivia ultimately attaches to under any given build
+            // configuration. Replacing the trivia at its source position preserves correctness under all
+            // configurations, including when a `#if`/`#elif`/`#else`/`#endif` block selects between
+            // alternative declarations of the same member.
 
             context.RegisterCodeFix(
                 CodeAction.Create(
@@ -98,27 +98,6 @@ public sealed class XmlDocFormatCodeFixProvider : CodeFixProvider
                     equivalenceKey: EquivalenceKey),
                 diagnostic);
         }
-    }
-
-    private static bool HasPreprocessorDirectiveBetweenTriviaAndMember(SyntaxTrivia trivia)
-    {
-        SyntaxToken token = trivia.Token;
-        SyntaxTriviaList leading = token.LeadingTrivia;
-        var index = leading.IndexOf(trivia);
-        if (index < 0)
-        {
-            return false;
-        }
-
-        for (var i = index + 1; i < leading.Count; i++)
-        {
-            if (leading[i].IsDirective)
-            {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     private static async Task<Document> ApplyFixAsync(Document document, SyntaxTrivia trivia, string formattedText, CancellationToken cancellationToken)

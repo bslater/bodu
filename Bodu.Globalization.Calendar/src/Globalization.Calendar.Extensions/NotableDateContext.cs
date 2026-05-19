@@ -55,6 +55,11 @@ public static class NotableDateContext
         new(() => new NotableDateService(), System.Threading.LazyThreadSafetyMode.ExecutionAndPublication);
 
     /// <summary>
+    /// The explicitly assigned ambient service, or <see langword="null" /> when reverted to the lazy fallback.
+    /// </summary>
+    private static INotableDateService? s_default;
+
+    /// <summary>
     /// Gets or sets the ambient <see cref="INotableDateService" /> consulted by parameterless extension-method
     /// overloads.
     /// </summary>
@@ -81,8 +86,8 @@ public static class NotableDateContext
     [AllowNull]
     public static INotableDateService Default
     {
-        get => field ?? s_lazyDefault.Value;
-        set;
+        get => s_default ?? s_lazyDefault.Value;
+        set => s_default = value;
     }
 
     /// <summary>

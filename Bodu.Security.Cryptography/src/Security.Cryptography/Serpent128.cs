@@ -65,10 +65,14 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// </remarks>
 /// <example>
-/// <code language="csharp"> using System.Security.Cryptography; using Bodu.Security.Cryptography; using
+/// <code language="csharp">
+///<![CDATA[
+/// using System.Security.Cryptography; using Bodu.Security.Cryptography; using
 /// Bodu.Security.Cryptography.Extensions; using var serpent = new Serpent128(); serpent.GenerateKey(); // 256-bit by
 /// default serpent.GenerateIV(); byte[] ciphertext = serpent.Encrypt(plaintext); byte[] roundTrip =
-/// serpent.Decrypt(ciphertext); </code>
+/// serpent.Decrypt(ciphertext);
+///]]>
+/// </code>
 /// </example>
 /// <seealso href="https://www.cl.cam.ac.uk/~rja14/serpent.html">Serpent home page (Anderson / Biham / Knudsen)
 /// </seealso> <seealso href="https://www.cl.cam.ac.uk/~rja14/Papers/serpent.pdf">Serpent: A Proposal for the Advanced

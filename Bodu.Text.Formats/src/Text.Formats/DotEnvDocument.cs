@@ -24,7 +24,9 @@ namespace Bodu.Text.Formats;
 /// </remarks>
 public sealed class DotEnvDocument
 {
-    /// <summary>Cached format for the <c>KeyNotFound</c> message.</summary>
+    /// <summary>
+    /// Cached format for the <c>KeyNotFound</c> message.
+    /// </summary>
     private static readonly CompositeFormat s_keyNotFound =
         CompositeFormat.Parse(FormatsResourceStrings.Op_Invalid_DotEnvKeyNotFound);
 
@@ -47,8 +49,8 @@ public sealed class DotEnvDocument
     /// Gets the ordered list of entries in this document.
     /// </summary>
     /// <returns>
-    /// A read-only list of <see cref="DotEnvEntry" /> instances in source order, with duplicates resolved
-    /// according to the <see cref="DotEnvDuplicateKeyBehavior" /> that was active during parsing.
+    /// A read-only list of <see cref="DotEnvEntry" /> instances in source order, with duplicates resolved according to
+    /// the <see cref="DotEnvDuplicateKeyBehavior" /> that was active during parsing.
     /// </returns>
     public IReadOnlyList<DotEnvEntry> Entries { get; }
 
@@ -56,7 +58,10 @@ public sealed class DotEnvDocument
     /// Gets the value associated with the specified key, or <see langword="null" /> if the key is absent.
     /// </summary>
     /// <param name="key">The key to look up.</param>
-    /// <returns>The string value, or <see langword="null" /> when the key is not present or <paramref name="key" /> is <see langword="null" />.</returns>
+    /// <returns>
+    /// The string value, or <see langword="null" /> when the key is not present or <paramref name="key" /> is
+    /// <see langword="null" />.
+    /// </returns>
     public string? this[string key] =>
         key is not null && _lookup.TryGetValue(key, out DotEnvEntry? entry) ? entry.Value : null;
 
@@ -90,12 +95,9 @@ public sealed class DotEnvDocument
     /// </summary>
     /// <param name="key">The key to look up.</param>
     /// <param name="value">
-    /// When this method returns <see langword="true" />, contains the string value; otherwise,
-    /// <see langword="null" />.
+    /// When this method returns <see langword="true" />, contains the string value; otherwise, <see langword="null" />.
     /// </param>
-    /// <returns>
-    /// <see langword="true" /> when the key is present; otherwise, <see langword="false" />.
-    /// </returns>
+    /// <returns><see langword="true" /> when the key is present; otherwise, <see langword="false" />.</returns>
     public bool TryGetValue(string key, [NotNullWhen(true)] out string? value)
     {
         if (key is not null && _lookup.TryGetValue(key, out DotEnvEntry? entry))
@@ -114,8 +116,8 @@ public sealed class DotEnvDocument
     /// <typeparam name="T">The target type. Must implement <see cref="ISpanParsable{TSelf}" />.</typeparam>
     /// <param name="key">The key to look up.</param>
     /// <param name="value">
-    /// When this method returns <see langword="true" />, contains the parsed result; otherwise, the default value
-    /// of <typeparamref name="T" />.
+    /// When this method returns <see langword="true" />, contains the parsed result; otherwise, the default value of
+    /// <typeparamref name="T" />.
     /// </param>
     /// <returns>
     /// <see langword="true" /> when the key is present and its value was successfully parsed as

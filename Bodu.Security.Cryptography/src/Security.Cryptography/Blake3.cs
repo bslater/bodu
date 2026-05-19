@@ -73,7 +73,11 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// </remarks>
 /// <example>
-/// <code language="csharp"> using var blake3 = new Blake3(); byte[] digest = blake3.ComputeHash(message); </code>
+/// <code language="csharp">
+///<![CDATA[
+/// using var blake3 = new Blake3(); byte[] digest = blake3.ComputeHash(message);
+///]]>
+/// </code>
 /// </example>
 /// <seealso cref="Blake2b"/> <seealso cref="Blake2s"/>
 public sealed class Blake3
@@ -131,8 +135,8 @@ public sealed class Blake3
     ];
 
     /// <summary>
-    /// The per-round message word permutation table (§2.4 of the BLAKE3 specification).
-    /// Each row gives the 16 message-word indices consumed by a single round's G calls.
+    /// The per-round message word permutation table (§2.4 of the BLAKE3 specification). Each row gives the 16
+    /// message-word indices consumed by a single round's G calls.
     /// </summary>
 #pragma warning disable SA1025 // Code should not contain multiple whitespace in a row
     private static readonly byte[,] s_msgSchedule =

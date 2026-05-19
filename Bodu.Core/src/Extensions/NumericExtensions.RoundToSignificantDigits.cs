@@ -29,8 +29,10 @@ public static partial class NumericExtensions
     /// handled symmetrically.
     /// </remarks>
     /// <example>
-    /// <code language="csharp"><![CDATA[ 12345.6789.RoundToSignificantDigits(3); // => 12300
-    /// 0.0012345.RoundToSignificantDigits(2); // => 0.0012 ]]></code>
+    /// <code language="csharp">
+    ///<![CDATA[ 12345.6789.RoundToSignificantDigits(3); // => 12300
+    /// 0.0012345.RoundToSignificantDigits(2); // => 0.0012 ]]>
+    /// </code>
     /// </example>
     public static double RoundToSignificantDigits(this double value, int digits)
     {

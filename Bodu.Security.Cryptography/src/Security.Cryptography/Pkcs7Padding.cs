@@ -30,9 +30,13 @@ namespace Bodu.Security.Cryptography;
 /// construction with an AEAD mode such as <see cref="GcmModeTransform" /> or <see cref="EaxModeTransform" />. </note>
 /// </remarks>
 /// <example>
-/// <code language="csharp"> using Bodu.Security.Cryptography; IPaddingStrategy padding = new Pkcs7Padding(); byte[]
+/// <code language="csharp">
+///<![CDATA[
+/// using Bodu.Security.Cryptography; IPaddingStrategy padding = new Pkcs7Padding(); byte[]
 /// padded = padding.Pad(plaintext, blockSize: 128); // 128 bits = 16 bytes // padded.Length is a multiple of 16; the
-/// trailing N bytes each equal N. byte[] recovered = padding.Unpad(padded, blockSize: 128); </code>
+/// trailing N bytes each equal N. byte[] recovered = padding.Unpad(padded, blockSize: 128);
+///]]>
+/// </code>
 /// </example>
 public sealed class Pkcs7Padding
     : IPaddingStrategy

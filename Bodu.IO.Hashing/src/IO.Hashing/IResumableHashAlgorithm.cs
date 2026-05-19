@@ -61,12 +61,16 @@ namespace Bodu.IO.Hashing;
 /// and only the digest remains.
 /// </para>
 /// <example>
-/// <code language="csharp"> using Bodu.IO.Hashing; using Bodu.IO.Hashing.Checksums; // 1. Compute a baseline digest of
+/// <code language="csharp">
+///<![CDATA[
+/// using Bodu.IO.Hashing; using Bodu.IO.Hashing.Checksums; // 1. Compute a baseline digest of
 /// a file's first segment. var crc = new Crc(CrcStandard.CRC32_ISOHDLC); crc.Append(File.ReadAllBytes("part-1.bin"));
 /// byte[] digest1 = crc.GetCurrentHash(); // 2. Hours (or processes) later, fold an additional segment into the same
 /// digest using only `digest1`. var resumable = (IResumableHashAlgorithm)new Crc(CrcStandard.CRC32_ISOHDLC); byte[]
 /// digest2 = resumable.ComputeHashFrom(digest1, File.ReadAllBytes("part-2.bin")); // 3. Same result as if both segments
-/// had been appended in one session — without holding the running state. </code>
+/// had been appended in one session — without holding the running state.
+///]]>
+/// </code>
 /// </example>
 /// </remarks>
 /// <seealso cref="System.IO.Hashing.NonCryptographicHashAlgorithm"/> <seealso cref="Bodu.IO.Hashing.Checksums.Crc"/>
@@ -90,10 +94,16 @@ public interface IResumableHashAlgorithm
     /// Resumes a hash computation from a previously finalized hash value and processes additional input, returning the
     /// new finalized hash result as a byte array.
     /// </summary>
-    /// <param name="previousHash">The previously finalized hash value to resume from. Must not be <see langword="null" />.</param>
-    /// <param name="newData">The additional input data to include in the resumed hash calculation. Must not be <see langword="null" />.</param>
+    /// <param name="previousHash">
+    /// The previously finalized hash value to resume from. Must not be <see langword="null" />.
+    /// </param>
+    /// <param name="newData">
+    /// The additional input data to include in the resumed hash calculation. Must not be <see langword="null" />.
+    /// </param>
     /// <returns>A byte array containing the new finalized hash result.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="previousHash" /> or <paramref name="newData" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="previousHash" /> or <paramref name="newData" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentException">
     /// Thrown if the <paramref name="previousHash" /> length does not match
     /// <see cref="NonCryptographicHashAlgorithm.HashLengthInBytes" />.
@@ -104,12 +114,18 @@ public interface IResumableHashAlgorithm
     /// Resumes a hash computation from a previously finalized hash value and processes a specified range of new data,
     /// returning the new finalized hash result as a byte array.
     /// </summary>
-    /// <param name="previousHash">The previously finalized hash value to resume from. Must not be <see langword="null" />.</param>
+    /// <param name="previousHash">
+    /// The previously finalized hash value to resume from. Must not be <see langword="null" />.
+    /// </param>
     /// <param name="newData">The buffer containing additional input data. Must not be <see langword="null" />.</param>
-    /// <param name="offset">The zero-based offset into <paramref name="newData" /> at which to begin reading data.</param>
+    /// <param name="offset">
+    /// The zero-based offset into <paramref name="newData" /> at which to begin reading data.
+    /// </param>
     /// <param name="length">The number of bytes to read from <paramref name="newData" />.</param>
     /// <returns>A byte array containing the new finalized hash result.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="previousHash" /> or <paramref name="newData" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="previousHash" /> or <paramref name="newData" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentException">
     /// Thrown if the <paramref name="previousHash" /> length does not match
     /// <see cref="NonCryptographicHashAlgorithm.HashLengthInBytes" />, or if the offset and length exceed the bounds of

@@ -37,14 +37,19 @@ public sealed class NotableDateServiceOptions
     /// <summary>
     /// Gets the optional resource path resolver used to locate embedded XML rule files.
     /// </summary>
-    /// <value>An <see cref="IResourcePathResolver" />, or <see langword="null" /> to use the default <see cref="ResourcePathResolver" />.</value>
+    /// <value>
+    /// An <see cref="IResourcePathResolver" />, or <see langword="null" /> to use the default
+    /// <see cref="ResourcePathResolver" />.
+    /// </value>
     /// <returns>The configured resolver, or <see langword="null" /> when defaults apply.</returns>
     public IResourcePathResolver? ResourcePathResolver { get; init; }
 
     /// <summary>
     /// Gets the optional layered override providers, applied after the base rules in registration order.
     /// </summary>
-    /// <value>A sequence of <see cref="INotableDateRuleOverrideProvider" />, or <see langword="null" /> for no overrides.</value>
+    /// <value>
+    /// A sequence of <see cref="INotableDateRuleOverrideProvider" />, or <see langword="null" /> for no overrides.
+    /// </value>
     /// <returns>The configured override providers, or <see langword="null" /> when no overrides are layered.</returns>
     public IEnumerable<INotableDateRuleOverrideProvider>? OverrideProviders { get; init; }
 
@@ -73,7 +78,10 @@ public sealed class NotableDateServiceOptions
     /// <summary>
     /// Gets the optional collision resolver that arbitrates same-day rule collisions.
     /// </summary>
-    /// <value>An <see cref="INotableDateCollisionResolver" />, or <see langword="null" /> to use <see cref="DefaultNotableDateCollisionResolver" />.</value>
+    /// <value>
+    /// An <see cref="INotableDateCollisionResolver" />, or <see langword="null" /> to use
+    /// <see cref="DefaultNotableDateCollisionResolver" />.
+    /// </value>
     /// <returns>The configured collision resolver, or <see langword="null" /> when the default is used.</returns>
     public INotableDateCollisionResolver? CollisionResolver { get; init; }
 

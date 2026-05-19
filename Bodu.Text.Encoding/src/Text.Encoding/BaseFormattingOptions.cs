@@ -12,8 +12,8 @@ namespace Bodu.Text.Encoding;
 /// </summary>
 /// <remarks>
 /// These options can be combined to control character casing, spacing, prefix inclusion, and line formatting. The
-/// effect of each option may vary by encoding; not every encoding honours every flag. Refer to the documentation of
-/// the specific encoder for the supported subset.
+/// effect of each option may vary by encoding; not every encoding honours every flag. Refer to the documentation of the
+/// specific encoder for the supported subset.
 /// </remarks>
 [Flags]
 public enum BaseFormattingOptions : byte
@@ -36,8 +36,8 @@ public enum BaseFormattingOptions : byte
     InsertLineBreaks = 1 << 1,
 
     /// <summary>
-    /// Adds a standard prefix to the output denoting the encoding. The prefix format is encoding-specific
-    /// (for example, <c>0x</c> for Base16).
+    /// Adds a standard prefix to the output denoting the encoding. The prefix format is encoding-specific (for example,
+    /// <c>0x</c> for Base16).
     /// </summary>
     IncludePrefix = 1 << 2,
 

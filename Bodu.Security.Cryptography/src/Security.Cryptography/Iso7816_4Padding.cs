@@ -27,9 +27,13 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// </remarks>
 /// <example>
-/// <code language="csharp"> using Bodu.Security.Cryptography; IPaddingStrategy padding = new Iso7816_4Padding(); byte[]
+/// <code language="csharp">
+///<![CDATA[
+/// using Bodu.Security.Cryptography; IPaddingStrategy padding = new Iso7816_4Padding(); byte[]
 /// padded = padding.Pad(plaintext, blockSize: 128); // 128 bits = 16 bytes // padded ends with 0x80 followed by zero or
-/// more 0x00 bytes. byte[] recovered = padding.Unpad(padded, blockSize: 128); </code>
+/// more 0x00 bytes. byte[] recovered = padding.Unpad(padded, blockSize: 128);
+///]]>
+/// </code>
 /// </example>
 public sealed class Iso7816_4Padding
     : IPaddingStrategy

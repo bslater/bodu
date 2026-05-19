@@ -27,31 +27,42 @@ public static partial class Ini
     private static readonly CompositeFormat s_iniMissingKey =
         CompositeFormat.Parse(FormatsResourceStrings.Format_Invalid_IniMissingKey);
 
-    /// <summary>Throws an <see cref="IniFormatException" /> for a duplicate key.</summary>
+    /// <summary>
+    /// Throws an <see cref="IniFormatException" /> for a duplicate key.
+    /// </summary>
     [DoesNotReturn]
     private static void ThrowDuplicateKey(string key, int lineNumber) =>
         throw new IniFormatException(
             string.Format(CultureInfo.InvariantCulture, s_iniDuplicateKey, key, lineNumber), lineNumber);
 
-    /// <summary>Throws an <see cref="IniFormatException" /> for a duplicate section name.</summary>
+    /// <summary>
+    /// Throws an <see cref="IniFormatException" /> for a duplicate section name.
+    /// </summary>
     [DoesNotReturn]
     private static void ThrowDuplicateSection(string name, int lineNumber) =>
         throw new IniFormatException(
             string.Format(CultureInfo.InvariantCulture, s_iniDuplicateSection, name, lineNumber), lineNumber);
 
-    /// <summary>Throws an <see cref="IniFormatException" /> when a key appears before the first section header and global entries are disallowed.</summary>
+    /// <summary>
+    /// Throws an <see cref="IniFormatException" /> when a key appears before the first section header and global
+    /// entries are disallowed.
+    /// </summary>
     [DoesNotReturn]
     private static void ThrowGlobalKeyDisallowed(int lineNumber) =>
         throw new IniFormatException(
             string.Format(CultureInfo.InvariantCulture, s_iniGlobalKeyDisallowed, lineNumber), lineNumber);
 
-    /// <summary>Throws an <see cref="IniFormatException" /> for a malformed section header.</summary>
+    /// <summary>
+    /// Throws an <see cref="IniFormatException" /> for a malformed section header.
+    /// </summary>
     [DoesNotReturn]
     private static void ThrowMalformedSectionHeader(int lineNumber) =>
         throw new IniFormatException(
             string.Format(CultureInfo.InvariantCulture, s_iniMalformedSectionHeader, lineNumber), lineNumber);
 
-    /// <summary>Throws an <see cref="IniFormatException" /> for a property line with an empty key.</summary>
+    /// <summary>
+    /// Throws an <see cref="IniFormatException" /> for a property line with an empty key.
+    /// </summary>
     [DoesNotReturn]
     private static void ThrowMissingKey(int lineNumber) =>
         throw new IniFormatException(
@@ -278,8 +289,8 @@ public static partial class Ini
         }
 
         /// <summary>
-        /// Mutable builder used to accumulate one section's state until <see cref="IniSection" /> is materialized
-        /// at the end of parsing.
+        /// Mutable builder used to accumulate one section's state until <see cref="IniSection" /> is materialized at
+        /// the end of parsing.
         /// </summary>
         private struct SectionBuilder
         {
@@ -298,8 +309,8 @@ public static partial class Ini
         }
 
         /// <summary>
-        /// Parses a single key/value line and adds the resulting entry to the active section's state, applying
-        /// the configured <see cref="IniDuplicateKeyBehavior" />.
+        /// Parses a single key/value line and adds the resulting entry to the active section's state, applying the
+        /// configured <see cref="IniDuplicateKeyBehavior" />.
         /// </summary>
         /// <param name="line">The trimmed source line (not a comment, not a section header, not empty).</param>
         /// <param name="entries">The ordered entry list for the active section.</param>

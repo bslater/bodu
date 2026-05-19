@@ -55,11 +55,15 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// </remarks>
 /// <example>
-/// <code language="csharp"> using System.Security.Cryptography; using Bodu.Security.Cryptography; using
+/// <code language="csharp">
+///<![CDATA[
+/// using System.Security.Cryptography; using Bodu.Security.Cryptography; using
 /// Bodu.Security.Cryptography.Extensions; using var tf = Threefish512.Create(); tf.Key =
 /// RandomNumberGenerator.GetBytes(64); // 512-bit key tf.IV = RandomNumberGenerator.GetBytes(64); // matches the
 /// 512-bit block tf.Tweak = RandomNumberGenerator.GetBytes(16); // 128-bit tweak byte[] ciphertext =
-/// tf.Encrypt(plaintext); byte[] roundTrip = tf.Decrypt(ciphertext); </code>
+/// tf.Encrypt(plaintext); byte[] roundTrip = tf.Decrypt(ciphertext);
+///]]>
+/// </code>
 /// </example>
 /// <seealso href="../guides/cryptography/threefish-512.html">Using Threefish-512 (guide with full encrypt / decrypt
 /// examples)</seealso> <seealso href="../guides/cryptography/encryption-basics.html">Encryption basics</seealso>

@@ -67,12 +67,16 @@ namespace Bodu.IO.Hashing.Extensions;
 /// synchronization. Stream overloads do not dispose the supplied stream.
 /// </para>
 /// <example>
-/// <code language="csharp"> using System.IO.Hashing; using Bodu.IO.Hashing.Extensions; // 1. One-shot hash of a byte
+/// <code language="csharp">
+///<![CDATA[
+/// using System.IO.Hashing; using Bodu.IO.Hashing.Extensions; // 1. One-shot hash of a byte
 /// buffer using xxHash64. var xx = new XxHash64(); byte[] digest = xx.ComputeHash(File.ReadAllBytes("payload.bin")); //
 /// 2. Stream-hash a large file without loading it into memory. using FileStream fs = File.OpenRead("payload.bin");
 /// byte[] streamDigest = xx.ComputeHash(fs); // 3. Verify a downloaded artefact against an expected hex digest, without
 /// throwing on a malformed string. var crc = new Crc32(); if (crc.TryVerifyHash(File.ReadAllBytes("artefact.zip"),
-/// expectedHex: "deadbeef")) Console.WriteLine("artefact verified"); </code>
+/// expectedHex: "deadbeef")) Console.WriteLine("artefact verified");
+///]]>
+/// </code>
 /// </example>
 /// </remarks>
 public static partial class NonCryptographicHashAlgorithmExtensions

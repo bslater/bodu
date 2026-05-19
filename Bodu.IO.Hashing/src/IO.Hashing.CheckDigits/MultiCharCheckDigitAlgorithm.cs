@@ -43,7 +43,9 @@ public abstract class MultiCharCheckDigitAlgorithm
     /// <summary>
     /// Gets the canonical name of the algorithm, suitable for diagnostic output and logging.
     /// </summary>
-    /// <returns>A short, stable identifier such as <c>"ISO 7064 MOD 97-10"</c>, <c>"IBAN"</c>, or <c>"LEI"</c>.</returns>
+    /// <returns>
+    /// A short, stable identifier such as <c>"ISO 7064 MOD 97-10"</c>, <c>"IBAN"</c>, or <c>"LEI"</c>.
+    /// </returns>
     public abstract string AlgorithmName { get; }
 
     /// <summary>
@@ -62,8 +64,8 @@ public abstract class MultiCharCheckDigitAlgorithm
     /// Absorbs the supplied characters into the running check-code state.
     /// </summary>
     /// <param name="body">
-    /// The characters to append. Each element must belong to <see cref="InputAlphabet" />. An empty span is a
-    /// permitted no-op.
+    /// The characters to append. Each element must belong to <see cref="InputAlphabet" />. An empty span is a permitted
+    /// no-op.
     /// </param>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <paramref name="body" /> contains any character outside <see cref="InputAlphabet" />.

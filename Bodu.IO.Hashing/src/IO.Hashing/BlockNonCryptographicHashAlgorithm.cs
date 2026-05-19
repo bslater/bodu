@@ -90,7 +90,9 @@ namespace Bodu.IO.Hashing;
 /// behind explicit synchronization.
 /// </para>
 /// <example>
-/// <code language="csharp"> // Sketch of a derived block hash. The base class drives buffering and snapshotting; // the
+/// <code language="csharp">
+///<![CDATA[
+/// // Sketch of a derived block hash. The base class drives buffering and snapshotting; // the
 /// derived type only expresses how a single block changes the accumulator. public sealed class MyBlockHash :
 /// BlockNonCryptographicHashAlgorithm&lt;MyBlockHash&gt; { private uint _state; public MyBlockHash() :
 /// base(hashLengthInBytes: 4, blockSize: 16) { } protected override void ProcessBlock(ReadOnlySpan&lt;byte&gt; block) {
@@ -98,7 +100,9 @@ namespace Bodu.IO.Hashing;
 /// ulong messageLength) { // append a 0x80 byte, zero-pad, then write `messageLength` little-endian, return one or more
 /// whole blocks. return Array.Empty&lt;byte&gt;(); } protected override byte[] ProcessFinalBlock() =&gt;
 /// BitConverter.GetBytes(_state); protected override MyBlockHash Clone() { var copy = new MyBlockHash { _state = _state
-/// }; copy.CopyResidualStateFrom(this); return copy; } } </code>
+/// }; copy.CopyResidualStateFrom(this); return copy; } }
+///]]>
+/// </code>
 /// </example>
 /// </remarks>
 /// <seealso cref="System.IO.Hashing.NonCryptographicHashAlgorithm"/> <seealso cref="IResumableHashAlgorithm"/>
@@ -120,8 +124,12 @@ public abstract class BlockNonCryptographicHashAlgorithm<T>
     /// Initializes a new instance of the <see cref="BlockNonCryptographicHashAlgorithm{T}" /> class using the specified
     /// output size and block size.
     /// </summary>
-    /// <param name="hashLengthInBytes">The length, in bytes, of the hash produced by this algorithm. Must be greater than zero.</param>
-    /// <param name="blockSize">The block size, in bytes, that the algorithm uses to process input data. Must be greater than zero.</param>
+    /// <param name="hashLengthInBytes">
+    /// The length, in bytes, of the hash produced by this algorithm. Must be greater than zero.
+    /// </param>
+    /// <param name="blockSize">
+    /// The block size, in bytes, that the algorithm uses to process input data. Must be greater than zero.
+    /// </param>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="hashLengthInBytes" /> ≤ 0, or <paramref name="blockSize" /> ≤ 0.
     /// </exception>
@@ -252,8 +260,12 @@ public abstract class BlockNonCryptographicHashAlgorithm<T>
     /// <summary>
     /// Transforms a complete block of input data and updates the internal hash state.
     /// </summary>
-    /// <param name="block">The input block to process. Its length must match the algorithm's configured block size.</param>
-    /// <exception cref="ArgumentException">Thrown if the <paramref name="block" /> is not the expected size.</exception>
+    /// <param name="block">
+    /// The input block to process. Its length must match the algorithm's configured block size.
+    /// </param>
+    /// <exception cref="ArgumentException">
+    /// Thrown if the <paramref name="block" /> is not the expected size.
+    /// </exception>
     protected abstract void ProcessBlock(ReadOnlySpan<byte> block);
 
     /// <summary>
@@ -277,7 +289,9 @@ public abstract class BlockNonCryptographicHashAlgorithm<T>
     /// <summary>
     /// Determines whether the final block of input data should be padded before processing.
     /// </summary>
-    /// <returns><see langword="true" /> if the final block should be padded; otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> if the final block should be padded; otherwise, <see langword="false" />.
+    /// </returns>
     /// <remarks>
     /// By default this method returns <see langword="true" />. Derived classes can override to indicate that trailing
     /// residual bytes should be processed verbatim without explicit padding.

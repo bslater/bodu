@@ -38,8 +38,12 @@ namespace Bodu.IO.Hashing;
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for
 /// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
 /// <example>
-/// <code language="csharp"> using Bodu.IO.Hashing; using Bodu.IO.Hashing.Extensions; var elf = new Elf64(); byte[]
-/// digest = elf.ComputeHash(System.Text.Encoding.ASCII.GetBytes("symbol_name")); </code>
+/// <code language="csharp">
+///<![CDATA[
+/// using Bodu.IO.Hashing; using Bodu.IO.Hashing.Extensions; var elf = new Elf64(); byte[]
+/// digest = elf.ComputeHash(System.Text.Encoding.ASCII.GetBytes("symbol_name"));
+///]]>
+/// </code>
 /// </example>
 /// </remarks>
 public sealed class Elf64
@@ -78,8 +82,7 @@ public sealed class Elf64
     /// </summary>
     /// <value>The seed value applied before hashing begins.</value>
     /// <exception cref="CryptographicUnexpectedOperationException">
-    /// The algorithm has already consumed input and cannot be reconfigured until <see cref="Reset" /> is
-    /// invoked.
+    /// The algorithm has already consumed input and cannot be reconfigured until <see cref="Reset" /> is invoked.
     /// </exception>
     public ulong Seed
     {

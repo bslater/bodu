@@ -20,8 +20,8 @@ public readonly struct DelimitedParseOptions
     public static readonly DelimitedParseOptions Default = new();
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="DelimitedParseOptions" /> struct with all properties set to
-    /// their defaults.
+    /// Initializes a new instance of the <see cref="DelimitedParseOptions" /> struct with all properties set to their
+    /// defaults.
     /// </summary>
     public DelimitedParseOptions()
     {
@@ -34,9 +34,8 @@ public readonly struct DelimitedParseOptions
     public char Delimiter { get; init; } = ',';
 
     /// <summary>
-    /// Gets the character used to quote fields that contain the delimiter, the quote character, or line breaks.
-    /// Within a quoted field, two consecutive quote characters represent a single literal quote. The default is
-    /// <c>'"'</c>.
+    /// Gets the character used to quote fields that contain the delimiter, the quote character, or line breaks. Within
+    /// a quoted field, two consecutive quote characters represent a single literal quote. The default is <c>'"'</c>.
     /// </summary>
     /// <returns>The field-quoting character.</returns>
     public char Quote { get; init; } = '"';
@@ -46,26 +45,35 @@ public readonly struct DelimitedParseOptions
     /// names. When <see langword="true" />, the header fields are exposed via <see cref="DelimitedDocument.Headers" />
     /// and fields in subsequent rows can be accessed by column name.
     /// </summary>
-    /// <returns><see langword="true" /> when the first row is a header; otherwise, <see langword="false" />. The default is <see langword="true" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the first row is a header; otherwise, <see langword="false" />. The default is
+    /// <see langword="true" />.
+    /// </returns>
     public bool HasHeader { get; init; } = true;
 
     /// <summary>
     /// Gets a value indicating whether leading and trailing whitespace is trimmed from unquoted field values.
     /// Whitespace inside quoted fields is always preserved.
     /// </summary>
-    /// <returns><see langword="true" /> if unquoted fields are trimmed; otherwise, <see langword="false" />. The default is <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> if unquoted fields are trimmed; otherwise, <see langword="false" />. The default is
+    /// <see langword="false" />.
+    /// </returns>
     public bool TrimFields { get; init; } = false;
 
     /// <summary>
-    /// Gets a value indicating whether lines whose first non-whitespace character is <see cref="CommentChar" />
-    /// are treated as comments and ignored.
+    /// Gets a value indicating whether lines whose first non-whitespace character is <see cref="CommentChar" /> are
+    /// treated as comments and ignored.
     /// </summary>
-    /// <returns><see langword="true" /> if comment lines are recognised; otherwise, <see langword="false" />. The default is <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> if comment lines are recognised; otherwise, <see langword="false" />. The default is
+    /// <see langword="false" />.
+    /// </returns>
     public bool AllowComments { get; init; } = false;
 
     /// <summary>
-    /// Gets the character that marks the start of a comment line. Only relevant when
-    /// <see cref="AllowComments" /> is <see langword="true" />. The default is <c>'#'</c>.
+    /// Gets the character that marks the start of a comment line. Only relevant when <see cref="AllowComments" /> is
+    /// <see langword="true" />. The default is <c>'#'</c>.
     /// </summary>
     /// <returns>The comment-line start character.</returns>
     public char CommentChar { get; init; } = '#';

@@ -20,12 +20,11 @@ namespace Bodu.Text.Encoding;
 /// Bitcoin/Flickr alphabet) so that the byte-level and character-level forms preserve a meaningful prefix.
 /// </para>
 /// <para>
-/// Base58 has no padding character and no standard decorations. The
-/// <see cref="BaseFormattingOptions.UpperCase" />, <see cref="BaseFormattingOptions.IncludePrefix" />,
-/// <see cref="BaseFormattingOptions.InsertSpacing" />, <see cref="BaseFormattingOptions.InsertLineBreaks" />, and
-/// <see cref="BaseFormattingOptions.OmitPadding" /> flags are no-ops. The
-/// <see cref="BaseFormatStyles.AllowPrefix" /> and <see cref="BaseFormatStyles.AllowMissingPadding" /> flags are
-/// likewise ignored; only <see cref="BaseFormatStyles.IgnoreWhitespace" /> has an effect on decode.
+/// Base58 has no padding character and no standard decorations. The <see cref="BaseFormattingOptions.UpperCase" />,
+/// <see cref="BaseFormattingOptions.IncludePrefix" />, <see cref="BaseFormattingOptions.InsertSpacing" />,
+/// <see cref="BaseFormattingOptions.InsertLineBreaks" />, and <see cref="BaseFormattingOptions.OmitPadding" /> flags
+/// are no-ops. The <see cref="BaseFormatStyles.AllowPrefix" /> and <see cref="BaseFormatStyles.AllowMissingPadding" />
+/// flags are likewise ignored; only <see cref="BaseFormatStyles.IgnoreWhitespace" /> has an effect on decode.
 /// </para>
 /// </remarks>
 public static partial class Base58
@@ -43,9 +42,7 @@ public static partial class Base58
     /// </summary>
     /// <param name="charCount">The input character count.</param>
     /// <returns>An upper bound on the decoded byte count.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="charCount" /> is negative.
-    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="charCount" /> is negative.</exception>
     public static int GetMaxDecodedLength(int charCount)
     {
         ThrowHelper.ThrowIfNegative(charCount);
@@ -62,13 +59,11 @@ public static partial class Base58
     /// </summary>
     /// <param name="byteCount">The input byte count.</param>
     /// <returns>An upper bound on the encoded character count.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="byteCount" /> is negative.
-    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="byteCount" /> is negative.</exception>
     /// <remarks>
-    /// Because Base58 is a non-power-of-two radix and the exact encoded length depends on the leading-zero count of
-    /// the input data, this overload returns a worst-case upper bound suitable for buffer sizing. The actual output
-    /// length is the result of <see cref="Encode(ReadOnlySpan{byte}, Base58Variant)" /> on the specific data.
+    /// Because Base58 is a non-power-of-two radix and the exact encoded length depends on the leading-zero count of the
+    /// input data, this overload returns a worst-case upper bound suitable for buffer sizing. The actual output length
+    /// is the result of <see cref="Encode(ReadOnlySpan{byte}, Base58Variant)" /> on the specific data.
     /// </remarks>
     public static int GetMaxEncodedLength(int byteCount)
     {
@@ -100,8 +95,10 @@ public static partial class Base58
     /// <param name="source">The character span.</param>
     /// <param name="variant">The variant.</param>
     /// <param name="styles">Parsing styles. Only <see cref="BaseFormatStyles.IgnoreWhitespace" /> has effect.</param>
-    /// <returns><see langword="true" /> when every retained character is in the variant alphabet; otherwise
-    /// <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when every retained character is in the variant alphabet; otherwise
+    /// <see langword="false" />.
+    /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
     public static bool IsValid(ReadOnlySpan<char> source, Base58Variant variant = Base58Variant.BitcoinFlickr, BaseFormatStyles styles = BaseFormatStyles.None)
     {

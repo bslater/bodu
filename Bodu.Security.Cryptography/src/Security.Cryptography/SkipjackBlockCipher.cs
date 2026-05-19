@@ -304,15 +304,9 @@ public sealed class SkipjackBlockCipher
     /// <summary>
     /// Writes a 16-bit unsigned integer to the specified byte span in big-endian order.
     /// </summary>
-    /// <param name="d">
-    /// The destination byte span.
-    /// </param>
-    /// <param name="o">
-    /// The byte offset at which to write.
-    /// </param>
-    /// <param name="v">
-    /// The 16-bit value to write.
-    /// </param>
+    /// <param name="d">The destination byte span.</param>
+    /// <param name="o">The byte offset at which to write.</param>
+    /// <param name="v">The 16-bit value to write.</param>
     /// <remarks>
     /// Skipjack represents each 64-bit block as four big-endian 16-bit words. This helper keeps that convention
     /// explicit if the block load/store code is later refactored to use helper calls.

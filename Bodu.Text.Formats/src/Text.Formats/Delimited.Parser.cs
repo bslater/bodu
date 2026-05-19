@@ -15,7 +15,9 @@ public static partial class Delimited
     private static readonly CompositeFormat s_unterminatedQuotedField =
         CompositeFormat.Parse(FormatsResourceStrings.Format_Invalid_DelimitedUnterminatedQuotedField);
 
-    /// <summary>Throws a <see cref="DelimitedFormatException" /> for an unterminated quoted field.</summary>
+    /// <summary>
+    /// Throws a <see cref="DelimitedFormatException" /> for an unterminated quoted field.
+    /// </summary>
     /// <param name="lineNumber">The 1-based line on which the opening quote appeared.</param>
     [DoesNotReturn]
     internal static void ThrowUnterminatedQuotedField(int lineNumber) =>
@@ -23,8 +25,7 @@ public static partial class Delimited
             string.Format(CultureInfo.InvariantCulture, s_unterminatedQuotedField, lineNumber), lineNumber);
 
     /// <summary>
-    /// Provides RFC 4180-style character-by-character parsing over a <see cref="ReadOnlySpan{T}" /> of
-    /// characters.
+    /// Provides RFC 4180-style character-by-character parsing over a <see cref="ReadOnlySpan{T}" /> of characters.
     /// </summary>
     private ref struct Parser
     {
@@ -44,10 +45,14 @@ public static partial class Delimited
             _lineNumber = 1;
         }
 
-        /// <summary>Gets a value indicating whether the remaining source is exhausted.</summary>
+        /// <summary>
+        /// Gets a value indicating whether the remaining source is exhausted.
+        /// </summary>
         private readonly bool IsEmpty => _remaining.IsEmpty;
 
-        /// <summary>Gets the current character without consuming it, or <c>'\0'</c> when exhausted.</summary>
+        /// <summary>
+        /// Gets the current character without consuming it, or <c>'\0'</c> when exhausted.
+        /// </summary>
         private readonly char Current => _remaining.IsEmpty ? '\0' : _remaining[0];
 
         /// <summary>
@@ -116,8 +121,8 @@ public static partial class Delimited
         }
 
         /// <summary>
-        /// Parses a single record from the current position, consuming all fields up to and including the
-        /// terminating line break (or end of source).
+        /// Parses a single record from the current position, consuming all fields up to and including the terminating
+        /// line break (or end of source).
         /// </summary>
         /// <param name="delimiter">The field separator character.</param>
         /// <param name="quote">The quoting character.</param>
@@ -159,8 +164,8 @@ public static partial class Delimited
         }
 
         /// <summary>
-        /// Parses a quoted field starting at the current position. RFC 4180: two consecutive quote characters
-        /// inside the field represent one literal quote. Literal newlines are preserved.
+        /// Parses a quoted field starting at the current position. RFC 4180: two consecutive quote characters inside
+        /// the field represent one literal quote. Literal newlines are preserved.
         /// </summary>
         /// <param name="quote">The quoting character.</param>
         /// <returns>The field content with surrounding quotes removed and doubled-quote escapes resolved.</returns>
@@ -224,8 +229,7 @@ public static partial class Delimited
         }
 
         /// <summary>
-        /// Consumes one character, incrementing <see cref="_lineNumber" /> when the consumed character is
-        /// <c>'\n'</c>.
+        /// Consumes one character, incrementing <see cref="_lineNumber" /> when the consumed character is <c>'\n'</c>.
         /// </summary>
         private void Advance()
         {
@@ -248,8 +252,8 @@ public static partial class Delimited
         }
 
         /// <summary>
-        /// Consumes a <c>\r\n</c>, <c>\r</c>, or <c>\n</c> line terminator and increments
-        /// <see cref="_lineNumber" /> accordingly.
+        /// Consumes a <c>\r\n</c>, <c>\r</c>, or <c>\n</c> line terminator and increments <see cref="_lineNumber" />
+        /// accordingly.
         /// </summary>
         private void SkipLineEnding()
         {

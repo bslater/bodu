@@ -18,7 +18,10 @@ namespace Bodu.CodeStyle.XmlDocumentation.CodeFixes.Test;
 public sealed class XmlDocCodeRequiresCDataCodeFixProviderTests
 {
     /// <summary>
-    /// Verifies that the fix wraps a single-line text-only <c>&lt;code&gt;</c> body in a CDATA section.
+    /// Verifies that the fix wraps a single-line text-only <c>&lt;code&gt;</c> body in a multi-line
+    /// <c>&lt;![CDATA[…]]&gt;</c> section: the opener and closer each sit on their own line flush against
+    /// the <c>///</c> doc-comment prefix, and the existing body content is placed between them with the
+    /// standard <c>/// </c> prefix.
     /// </summary>
     [TestMethod]
     [TestCategory(TestCategories.Smoke)]
@@ -34,7 +37,11 @@ public sealed class XmlDocCodeRequiresCDataCodeFixProviderTests
         var expected =
             "public sealed class Sample\r\n" +
             "{\r\n" +
-            "    /// <code><![CDATA[var x = 5;]]></code>\r\n" +
+            "    /// <code>\r\n" +
+            "    ///<![CDATA[\r\n" +
+            "    /// var x = 5;\r\n" +
+            "    ///]]>\r\n" +
+            "    /// </code>\r\n" +
             "    public int X { get; set; }\r\n" +
             "}\r\n";
 
@@ -54,7 +61,9 @@ public sealed class XmlDocCodeRequiresCDataCodeFixProviderTests
     }
 
     /// <summary>
-    /// Verifies that the fix inserts an empty CDATA section into an empty <c>&lt;code&gt;&lt;/code&gt;</c> element.
+    /// Verifies that the fix replaces an empty <c>&lt;code&gt;&lt;/code&gt;</c> element with a multi-line
+    /// form containing an empty <c>&lt;![CDATA[…]]&gt;</c> block whose opener and closer each sit on
+    /// their own line flush against the <c>///</c> doc-comment prefix.
     /// </summary>
     [TestMethod]
     public async Task CodeFix_WhenCodeIsEmpty_ShouldInsertEmptyCData()
@@ -69,7 +78,10 @@ public sealed class XmlDocCodeRequiresCDataCodeFixProviderTests
         var expected =
             "public sealed class Sample\r\n" +
             "{\r\n" +
-            "    /// <code><![CDATA[]]></code>\r\n" +
+            "    /// <code>\r\n" +
+            "    ///<![CDATA[\r\n" +
+            "    ///]]>\r\n" +
+            "    /// </code>\r\n" +
             "    public int X { get; set; }\r\n" +
             "}\r\n";
 
@@ -89,8 +101,9 @@ public sealed class XmlDocCodeRequiresCDataCodeFixProviderTests
     }
 
     /// <summary>
-    /// Verifies that the fix rewrites a self-closing <c>&lt;code /&gt;</c> element to a non-empty form
-    /// containing an empty CDATA section.
+    /// Verifies that the fix rewrites a self-closing <c>&lt;code /&gt;</c> element to a multi-line
+    /// non-empty form whose body is an empty <c>&lt;![CDATA[…]]&gt;</c> block, with the opener and
+    /// closer each on their own line flush against the <c>///</c> doc-comment prefix.
     /// </summary>
     [TestMethod]
     public async Task CodeFix_WhenCodeIsSelfClosing_ShouldRewriteToEmptyCData()
@@ -105,7 +118,10 @@ public sealed class XmlDocCodeRequiresCDataCodeFixProviderTests
         var expected =
             "public sealed class Sample\r\n" +
             "{\r\n" +
-            "    /// <code><![CDATA[]]></code>\r\n" +
+            "    /// <code>\r\n" +
+            "    ///<![CDATA[\r\n" +
+            "    ///]]>\r\n" +
+            "    /// </code>\r\n" +
             "    public int X { get; set; }\r\n" +
             "}\r\n";
 

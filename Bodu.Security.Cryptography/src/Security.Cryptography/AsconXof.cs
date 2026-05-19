@@ -239,9 +239,9 @@ public abstract class AsconXof<T>
     }
 
     /// <summary>
-    /// Creates a new instance of <typeparamref name="T"/> using its public parameterless constructor.
+    /// Creates a new instance of <typeparamref name="T" /> using its public parameterless constructor.
     /// </summary>
-    /// <returns>A new, uninitialized <typeparamref name="T"/> instance.</returns>
+    /// <returns>A new, uninitialized <typeparamref name="T" /> instance.</returns>
     public static T Create() => new T();
 
     /// <summary>

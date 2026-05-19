@@ -18,9 +18,13 @@ public static partial class Base64
     /// <param name="variant">The Base64 variant.</param>
     /// <param name="style">Parsing styles.</param>
     /// <returns>A new byte array containing the decoded data.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="s" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="s" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
-    /// <exception cref="FormatException">Thrown when the input is not valid Base64 for the chosen variant and parsing styles.</exception>
+    /// <exception cref="FormatException">
+    /// Thrown when the input is not valid Base64 for the chosen variant and parsing styles.
+    /// </exception>
     public static byte[] Decode(string s, Base64Variant variant = Base64Variant.Standard, BaseFormatStyles style = BaseFormatStyles.None)
     {
         ThrowHelper.ThrowIfNull(s);
@@ -33,8 +37,9 @@ public static partial class Base64
     /// <param name="chars">The character span.</param>
     /// <param name="variant">The Base64 variant.</param>
     /// <param name="style">Parsing styles.</param>
-    /// <returns>A new byte array containing the decoded data. Returns <see cref="Array.Empty{T}" /> when the input is
-    /// empty.</returns>
+    /// <returns>
+    /// A new byte array containing the decoded data. Returns <see cref="Array.Empty{T}" /> when the input is empty.
+    /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
     /// <exception cref="FormatException">Thrown when the input is not valid Base64.</exception>
     public static byte[] Decode(ReadOnlySpan<char> chars, Base64Variant variant = Base64Variant.Standard, BaseFormatStyles style = BaseFormatStyles.None)
@@ -86,7 +91,9 @@ public static partial class Base64
     /// <param name="variant">The Base64 variant.</param>
     /// <param name="style">Parsing styles.</param>
     /// <returns>A new byte array containing the decoded data.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="chars" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="chars" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <paramref name="offset" /> or <paramref name="count" /> is out of range, or when
     /// <paramref name="variant" /> is undefined.
@@ -107,12 +114,15 @@ public static partial class Base64
     /// </summary>
     /// <param name="chars">The input characters.</param>
     /// <param name="destination">The destination byte span.</param>
-    /// <param name="bytesWritten">When this method returns, contains the number of bytes written, or <c>0</c> on
-    /// failure.</param>
+    /// <param name="bytesWritten">
+    /// When this method returns, contains the number of bytes written, or <c>0</c> on failure.
+    /// </param>
     /// <param name="variant">The Base64 variant.</param>
     /// <param name="style">Parsing styles.</param>
-    /// <returns><see langword="true" /> on success; <see langword="false" /> when the input is malformed or the
-    /// destination is too small.</returns>
+    /// <returns>
+    /// <see langword="true" /> on success; <see langword="false" /> when the input is malformed or the destination is
+    /// too small.
+    /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
     public static bool TryDecode(ReadOnlySpan<char> chars, Span<byte> destination, out int bytesWritten, Base64Variant variant = Base64Variant.Standard, BaseFormatStyles style = BaseFormatStyles.None)
     {
@@ -154,8 +164,10 @@ public static partial class Base64
     /// </summary>
     /// <param name="decodedBytes">The bytes that <paramref name="normalisedInput" /> decoded to.</param>
     /// <param name="normalisedInput">The post-normalisation Base64 input (standard alphabet, fully padded).</param>
-    /// <returns><see langword="true" /> when the input matches the canonical re-encoding; <see langword="false" />
-    /// when the input has non-zero unused bits in its final partial group.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the input matches the canonical re-encoding; <see langword="false" /> when the
+    /// input has non-zero unused bits in its final partial group.
+    /// </returns>
     private static bool IsCanonicalEncoding(ReadOnlySpan<byte> decodedBytes, ReadOnlySpan<char> normalisedInput)
     {
         var expectedLength = ((decodedBytes.Length + 2) / 3) * 4;
@@ -169,8 +181,8 @@ public static partial class Base64
     }
 
     /// <summary>
-    /// Copies <paramref name="source" /> into <paramref name="scratch" />, applying variant character swaps,
-    /// optional whitespace stripping, and re-padding to align the resulting length to a multiple of four characters.
+    /// Copies <paramref name="source" /> into <paramref name="scratch" />, applying variant character swaps, optional
+    /// whitespace stripping, and re-padding to align the resulting length to a multiple of four characters.
     /// </summary>
     /// <param name="source">The input characters.</param>
     /// <param name="scratch">The scratch buffer that receives the normalised characters.</param>

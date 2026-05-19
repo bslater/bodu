@@ -13,8 +13,8 @@ internal sealed partial class BoduConfigurationReader
 {
     /// <summary>
     /// Emits a diagnostic, throwing immediately when the configured mode is
-    /// <see cref="BoduConfigurationDiagnosticMode.Throw" /> and retaining it on the local diagnostic list only
-    /// when the mode is <see cref="BoduConfigurationDiagnosticMode.Collect" />.
+    /// <see cref="BoduConfigurationDiagnosticMode.Throw" /> and retaining it on the local diagnostic list only when the
+    /// mode is <see cref="BoduConfigurationDiagnosticMode.Collect" />.
     /// </summary>
     private void EmitDiagnostic(
         BoduConfigurationDiagnosticSeverity severity,

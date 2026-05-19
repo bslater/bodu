@@ -47,8 +47,12 @@ namespace Bodu.IO.Hashing.Checksums;
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for
 /// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
 /// <example>
-/// <code language="csharp"> using Bodu.IO.Hashing.Checksums; using Bodu.IO.Hashing.Extensions; var f16 = new
-/// Fletcher16(); byte[] checksum = f16.ComputeHash(framePayload); </code>
+/// <code language="csharp">
+///<![CDATA[
+/// using Bodu.IO.Hashing.Checksums; using Bodu.IO.Hashing.Extensions; var f16 = new
+/// Fletcher16(); byte[] checksum = f16.ComputeHash(framePayload);
+///]]>
+/// </code>
 /// </example>
 /// </remarks>
 /// <seealso cref="Fletcher{T}"/> <seealso cref="Fletcher32"/> <seealso cref="Fletcher64"/>

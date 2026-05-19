@@ -13,22 +13,23 @@ using Bodu.Text.Formats;
 namespace Bodu.Text.Configuration;
 
 /// <summary>
-/// Provides the profile-aware entry points for parsing, loading, and saving Bodu Text Configuration documents.
-/// The underlying data model is <see cref="IniDocument" /> from <c>Bodu.Text.Formats</c>; this class adds
-/// Bodu-specific behaviour — profile presets, inline-comment-mode handling, diagnostic routing, and round-trip
-/// support — on top of the shared INI infrastructure.
+/// Provides the profile-aware entry points for parsing, loading, and saving Bodu Text Configuration documents. The
+/// underlying data model is <see cref="IniDocument" /> from <c>Bodu.Text.Formats</c>; this class adds Bodu-specific
+/// behaviour — profile presets, inline-comment-mode handling, diagnostic routing, and round-trip support — on top of
+/// the shared INI infrastructure.
 /// </summary>
 /// <remarks>
 /// <para>
 /// Pair the <see cref="Parse(string)" /> family with the
-/// <see cref="BoduConfigurationExtensions.Resolve(IniDocument, string?, BoduConfigurationResolveOptions?)" />
-/// extension method to evaluate the document for a specific target path:
+/// <see cref="BoduConfigurationExtensions.Resolve(IniDocument, string?, BoduConfigurationResolveOptions?)" /> extension
+/// method to evaluate the document for a specific target path:
 /// </para>
 /// <example>
 /// <code language="csharp">
-/// IniDocument doc = BoduConfigurationDocument.Parse(text);
-/// BoduConfigurationView view = doc.Resolve("src/Foo.cs");
-/// int indent = view.GetInt32("format:indent:size", 4);
+///<![CDATA[
+/// IniDocument doc = BoduConfigurationDocument.Parse(text); BoduConfigurationView view =
+/// doc.Resolve("src/Foo.cs"); int indent = view.GetInt32("format:indent:size", 4);
+///]]>
 /// </code>
 /// </example>
 /// </remarks>
@@ -63,8 +64,8 @@ public static class BoduConfigurationDocument
     }
 
     /// <summary>
-    /// Parses configuration text and returns the resulting document together with any diagnostics collected
-    /// during the parse.
+    /// Parses configuration text and returns the resulting document together with any diagnostics collected during the
+    /// parse.
     /// </summary>
     /// <param name="text">The configuration text to parse.</param>
     /// <param name="options">The parse options to apply, or <see langword="null" /> for the Bodu defaults.</param>
@@ -119,8 +120,8 @@ public static class BoduConfigurationDocument
     }
 
     /// <summary>
-    /// Loads a configuration document from the file at <paramref name="path" /> using the default Bodu profile
-    /// and UTF-8 encoding with BOM detection.
+    /// Loads a configuration document from the file at <paramref name="path" /> using the default Bodu profile and
+    /// UTF-8 encoding with BOM detection.
     /// </summary>
     /// <param name="path">The file path.</param>
     /// <returns>A populated <see cref="IniDocument" />.</returns>
@@ -152,8 +153,10 @@ public static class BoduConfigurationDocument
     /// </summary>
     /// <param name="stream">The stream to read from. Must support reading.</param>
     /// <param name="options">The parse options to apply, or <see langword="null" /> for the defaults.</param>
-    /// <param name="encoding">The encoding to use when the stream lacks a byte order mark, or
-    /// <see langword="null" /> to use the parse options' default encoding.</param>
+    /// <param name="encoding">
+    /// The encoding to use when the stream lacks a byte order mark, or <see langword="null" /> to use the parse
+    /// options' default encoding.
+    /// </param>
     /// <param name="leaveOpen">When <see langword="true" />, the stream remains open after parsing.</param>
     /// <returns>A populated <see cref="IniDocument" />.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="stream" /> is <see langword="null" />.</exception>
@@ -189,8 +192,7 @@ public static class BoduConfigurationDocument
     }
 
     /// <summary>
-    /// Saves <paramref name="document" /> to the file at <paramref name="path" />, replacing any existing
-    /// content.
+    /// Saves <paramref name="document" /> to the file at <paramref name="path" />, replacing any existing content.
     /// </summary>
     /// <param name="document">The document to save.</param>
     /// <param name="path">The destination file path.</param>
@@ -243,8 +245,8 @@ public static class BoduConfigurationDocument
 }
 
 /// <summary>
-/// Carries the outcome of a configuration parse: the populated <see cref="IniDocument" /> and any diagnostics
-/// collected during the parse.
+/// Carries the outcome of a configuration parse: the populated <see cref="IniDocument" /> and any diagnostics collected
+/// during the parse.
 /// </summary>
 /// <remarks>
 /// Under <see cref="BoduConfigurationDiagnosticMode.Throw" /> the parser raises

@@ -17,8 +17,7 @@ namespace Bodu.Text.Formats;
 /// <see cref="Ini.TryParse(ReadOnlySpan{char}, out IniDocument)" />.
 /// </para>
 /// <para>
-/// Section lookup uses the comparer configured via <see cref="IniParseOptions.CaseSensitiveSections" /> at parse
-/// time.
+/// Section lookup uses the comparer configured via <see cref="IniParseOptions.CaseSensitiveSections" /> at parse time.
 /// </para>
 /// </remarks>
 public sealed class IniDocument
@@ -62,13 +61,12 @@ public sealed class IniDocument
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="IniDocument" /> class from a global section and an ordered
-    /// sequence of named sections. Use this constructor to build documents programmatically without first parsing
-    /// INI text.
+    /// Initializes a new instance of the <see cref="IniDocument" /> class from a global section and an ordered sequence
+    /// of named sections. Use this constructor to build documents programmatically without first parsing INI text.
     /// </summary>
     /// <param name="globalSection">
-    /// The global section (entries authored before the first named section header). Its
-    /// <see cref="IniSection.Name" /> must be the empty string.
+    /// The global section (entries authored before the first named section header). Its <see cref="IniSection.Name" />
+    /// must be the empty string.
     /// </param>
     /// <param name="sections">The ordered, named sections that follow the global section.</param>
     /// <param name="caseSensitiveSections">
@@ -123,8 +121,7 @@ public sealed class IniDocument
     /// Gets the named sections in the order they first appeared in the source.
     /// </summary>
     /// <returns>
-    /// A read-only list of <see cref="IniSection" /> instances. Does not include
-    /// <see cref="GlobalSection" />.
+    /// A read-only list of <see cref="IniSection" /> instances. Does not include <see cref="GlobalSection" />.
     /// </returns>
     public IReadOnlyList<IniSection> Sections { get; }
 
@@ -151,9 +148,7 @@ public sealed class IniDocument
     /// When this method returns <see langword="true" />, contains the matching section; otherwise,
     /// <see langword="null" />.
     /// </param>
-    /// <returns>
-    /// <see langword="true" /> when the section is present; otherwise, <see langword="false" />.
-    /// </returns>
+    /// <returns><see langword="true" /> when the section is present; otherwise, <see langword="false" />.</returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="name" /> is <see langword="null" />.
     /// </exception>
@@ -207,11 +202,13 @@ public sealed class IniDocument
 
     /// <summary>
     /// Removes the section with the supplied name. When multiple sections share the same name (under
-    /// <see cref="IniDuplicateSectionBehavior.Preserve" /> or <see cref="IniDuplicateSectionBehavior.MergeAdjacent" />),
-    /// every occurrence is removed.
+    /// <see cref="IniDuplicateSectionBehavior.Preserve" /> or <see cref="IniDuplicateSectionBehavior.MergeAdjacent" />
+    /// ), every occurrence is removed.
     /// </summary>
     /// <param name="name">The section name to remove.</param>
-    /// <returns><see langword="true" /> when at least one section was removed; otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when at least one section was removed; otherwise, <see langword="false" />.
+    /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="name" /> is <see langword="null" />.</exception>
     public bool RemoveSection(string name)
     {

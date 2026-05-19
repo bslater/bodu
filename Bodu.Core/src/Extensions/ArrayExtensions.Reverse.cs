@@ -74,8 +74,10 @@ public static partial class ArrayExtensions
     /// </para>
     /// </remarks>
     /// <example>
-    /// <code><![CDATA[ int[] data = { 1, 2, 3, 4, 5 }; int[] full = data.Reverse(); // [ 5, 4, 3, 2, 1 ] int[] partial =
-    /// data.Reverse(index: 1, count: 3); // [ 1, 4, 3, 2, 5 ] ]]></code>
+    /// <code>
+    ///<![CDATA[ int[] data = { 1, 2, 3, 4, 5 }; int[] full = data.Reverse(); // [ 5, 4, 3, 2, 1 ] int[] partial =
+    /// data.Reverse(index: 1, count: 3); // [ 1, 4, 3, 2, 5 ] ]]>
+    /// </code>
     /// </example>
     public static T[] Reverse<T>(this T[] source, int index, int count)
     {
@@ -113,8 +115,10 @@ public static partial class ArrayExtensions
     /// already available as integers to avoid constructing an intermediate <see cref="Range" /> value.
     /// </remarks>
     /// <example>
-    /// <code><![CDATA[ int[] data = { 1, 2, 3, 4, 5 }; int[] fromStart = data.Reverse(1..4); // [ 1, 4, 3, 2, 5 ] int[] fromEnd
-    /// = data.Reverse(^4..^1); // [ 1, 4, 3, 2, 5 ] ]]></code>
+    /// <code>
+    ///<![CDATA[ int[] data = { 1, 2, 3, 4, 5 }; int[] fromStart = data.Reverse(1..4); // [ 1, 4, 3, 2, 5 ] int[] fromEnd
+    /// = data.Reverse(^4..^1); // [ 1, 4, 3, 2, 5 ] ]]>
+    /// </code>
     /// </example>
     public static T[] Reverse<T>(this T[] source, Range range)
     {

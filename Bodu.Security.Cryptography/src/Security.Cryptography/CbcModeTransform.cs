@@ -39,11 +39,15 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// </remarks>
 /// <example>
-/// <code language="csharp"> using System.Security.Cryptography; using Bodu.Security.Cryptography; // Most callers
+/// <code language="csharp">
+///<![CDATA[
+/// using System.Security.Cryptography; using Bodu.Security.Cryptography; // Most callers
 /// should set SymmetricAlgorithm.Mode = CipherBlockMode.CBC instead of using this directly. using IBlockCipher cipher =
 /// new AesBlockCipher(key); byte[] iv = RandomNumberGenerator.GetBytes(cipher.BlockSize / 8); // unique per message
 /// IBlockCipherModeTransform cbc = new CbcModeTransform(cipher, iv); byte[] ciphertext = new
-/// byte[paddedPlaintext.Length]; int written = cbc.Transform(paddedPlaintext, ciphertext, encrypt: true); </code>
+/// byte[paddedPlaintext.Length]; int written = cbc.Transform(paddedPlaintext, ciphertext, encrypt: true);
+///]]>
+/// </code>
 /// </example>
 /// <seealso href="../guides/cryptography/cipher-modes.html#cbc--the-default">CBC walk-through in the cipher-modes guide
 /// </seealso>

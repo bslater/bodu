@@ -98,10 +98,14 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// </remarks>
 /// <example>
-/// <code language="csharp"> using System.Security.Cryptography; using Bodu.Security.Cryptography; // SHA-256 leaves, 64
+/// <code language="csharp">
+///<![CDATA[
+/// using System.Security.Cryptography; using Bodu.Security.Cryptography; // SHA-256 leaves, 64
 /// KiB blocks, fan-out of 4 — a typical large-content configuration. using var merkle = new ParallelMerkleTreeHash(
 /// algorithmFactory: () =&gt; SHA256.Create(), blockSize: 64 * 1024, fanOut: 4); using FileStream fs =
-/// File.OpenRead("very-large.bin"); byte[] root = await merkle.ComputeHashAsync(fs, cancellationToken); </code>
+/// File.OpenRead("very-large.bin"); byte[] root = await merkle.ComputeHashAsync(fs, cancellationToken);
+///]]>
+/// </code>
 /// </example>
 /// <seealso href="../guides/cryptography/hashing.html#pattern-6--merkle-trees">Merkle-tree recipes in the hashing guide
 /// </seealso> <seealso cref="MerkleTreeHash"/>

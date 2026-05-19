@@ -82,9 +82,13 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// </remarks>
 /// <example>
-/// <code language="csharp"> // SHAKE128 producing 256-bit output. using var shake = new Shake(256, 128); byte[] digest
+/// <code language="csharp">
+///<![CDATA[
+/// // SHAKE128 producing 256-bit output. using var shake = new Shake(256, 128); byte[] digest
 /// = shake.ComputeHash(Encoding.UTF8.GetBytes("hello")); // SHAKE256 producing 512-bit output. using var shake256 = new
-/// Shake(512, 256); byte[] longer = shake256.ComputeHash(message); </code>
+/// Shake(512, 256); byte[] longer = shake256.ComputeHash(message);
+///]]>
+/// </code>
 /// </example>
 public sealed class Shake
     : BufferedBlockHashAlgorithm<Shake>
@@ -418,7 +422,9 @@ public sealed class Shake
     /// Serializes the leading lanes of the Keccak state into the destination span using little-endian byte order.
     /// </summary>
     /// <param name="state">The source 25-element state array.</param>
-    /// <param name="destination">The span to write output bytes into. Its length determines how many bytes are extracted.</param>
+    /// <param name="destination">
+    /// The span to write output bytes into. Its length determines how many bytes are extracted.
+    /// </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static void WriteLanesToBytes(ulong[] state, Span<byte> destination)
     {

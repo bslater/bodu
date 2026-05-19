@@ -42,7 +42,10 @@ public sealed class IniFormatException
     /// Initializes a new instance of the <see cref="IniFormatException" /> class with an associated source line.
     /// </summary>
     /// <param name="message">The error message.</param>
-    /// <param name="lineNumber">The 1-based line number at which the error occurred, or <c>0</c> if the error is not associated with a specific line.</param>
+    /// <param name="lineNumber">
+    /// The 1-based line number at which the error occurred, or <c>0</c> if the error is not associated with a specific
+    /// line.
+    /// </param>
     public IniFormatException(string message, int lineNumber)
         : base(message)
     {

@@ -14,16 +14,16 @@ namespace Bodu.Extensions.Configuration.Text;
 /// configuration data dictionary with the resolved colon-delimited keys.
 /// </summary>
 /// <remarks>
-/// Stream-backed providers are one-shot: the stream is consumed during the initial <see cref="Load(Stream)" />
-/// call and no reload-on-change machinery is attached. For file-backed loading with reload support, use
+/// Stream-backed providers are one-shot: the stream is consumed during the initial <see cref="Load(Stream)" /> call and
+/// no reload-on-change machinery is attached. For file-backed loading with reload support, use
 /// <see cref="BoduTextConfigurationProvider" /> instead. The Parse → Resolve → flatten pipeline is shared with
 /// <see cref="BoduTextConfigurationProvider" /> via <see cref="BoduTextConfigurationLoader" />.
 /// </remarks>
 public sealed class BoduTextStreamConfigurationProvider : StreamConfigurationProvider
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="BoduTextStreamConfigurationProvider" /> class backed by
-    /// the supplied source.
+    /// Initializes a new instance of the <see cref="BoduTextStreamConfigurationProvider" /> class backed by the
+    /// supplied source.
     /// </summary>
     /// <param name="source">The source that produced this provider.</param>
     /// <exception cref="ArgumentNullException"><paramref name="source" /> is <see langword="null" />.</exception>

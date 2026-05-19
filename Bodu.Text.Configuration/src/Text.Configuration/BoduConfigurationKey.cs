@@ -10,8 +10,8 @@ using System.Diagnostics;
 namespace Bodu.Text.Configuration;
 
 /// <summary>
-/// Represents a configuration key in both its raw, file-level form and its colon-delimited logical form used
-/// by the resolved view and by <c>Microsoft.Extensions.Configuration</c>.
+/// Represents a configuration key in both its raw, file-level form and its colon-delimited logical form used by the
+/// resolved view and by <c>Microsoft.Extensions.Configuration</c>.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -36,8 +36,10 @@ public readonly partial struct BoduConfigurationKey : IEquatable<BoduConfigurati
     /// </summary>
     /// <param name="rawKey">The raw key as authored in the configuration source.</param>
     /// <param name="options">The key options to apply, or <see langword="null" /> for the defaults.</param>
-    /// <exception cref="ArgumentException"><paramref name="rawKey" /> is <see langword="null" />, empty, or
-    /// contains only whitespace; or a segment was empty when empty segments are not permitted.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="rawKey" /> is <see langword="null" />, empty, or contains only whitespace; or a segment was
+    /// empty when empty segments are not permitted.
+    /// </exception>
     public BoduConfigurationKey(string rawKey, BoduConfigurationKeyOptions? options = null)
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(rawKey);
@@ -81,17 +83,21 @@ public readonly partial struct BoduConfigurationKey : IEquatable<BoduConfigurati
     /// <summary>
     /// Gets a value indicating whether equality and hashing for this key are case-sensitive.
     /// </summary>
-    /// <returns><see langword="true" /> when ordinal case-sensitive comparison is used; otherwise,
-    /// <see langword="false" /> for ordinal-ignore-case.</returns>
+    /// <returns>
+    /// <see langword="true" /> when ordinal case-sensitive comparison is used; otherwise, <see langword="false" /> for
+    /// ordinal-ignore-case.
+    /// </returns>
     public bool CaseSensitive => this._caseSensitive;
 
     /// <summary>
-    /// Determines whether this key has the same segment sequence as <paramref name="other" /> under the
-    /// configured comparer.
+    /// Determines whether this key has the same segment sequence as <paramref name="other" /> under the configured
+    /// comparer.
     /// </summary>
     /// <param name="other">The other key to compare with.</param>
-    /// <returns><see langword="true" /> when the segment sequences are equal under the chosen comparer;
-    /// otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the segment sequences are equal under the chosen comparer; otherwise,
+    /// <see langword="false" />.
+    /// </returns>
     public bool Equals(BoduConfigurationKey other)
     {
         ImmutableArray<string> a = this.Segments;

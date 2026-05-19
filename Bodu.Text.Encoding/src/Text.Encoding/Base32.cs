@@ -18,9 +18,9 @@ namespace Bodu.Text.Encoding;
 /// </para>
 /// <para>
 /// The <see cref="BaseFormattingOptions.UpperCase" />, <see cref="BaseFormattingOptions.IncludePrefix" />, and
-/// <see cref="BaseFormattingOptions.InsertSpacing" /> flags have no effect on Base32 — each variant emits its
-/// canonical alphabet case and there is no standard prefix. The <see cref="BaseFormatStyles.AllowPrefix" /> flag is
-/// also ignored on decode for the same reason.
+/// <see cref="BaseFormattingOptions.InsertSpacing" /> flags have no effect on Base32 — each variant emits its canonical
+/// alphabet case and there is no standard prefix. The <see cref="BaseFormatStyles.AllowPrefix" /> flag is also ignored
+/// on decode for the same reason.
 /// </para>
 /// </remarks>
 public static partial class Base32
@@ -29,8 +29,8 @@ public static partial class Base32
     private const string HexExtendedAlphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUV";
 
     /// <summary>
-    /// The number of encoded characters per output line when
-    /// <see cref="BaseFormattingOptions.InsertLineBreaks" /> is requested.
+    /// The number of encoded characters per output line when <see cref="BaseFormattingOptions.InsertLineBreaks" /> is
+    /// requested.
     /// </summary>
     private const int LineBreakInterval = 64;
 
@@ -56,8 +56,8 @@ public static partial class Base32
     /// <returns>The exact decoded byte count.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
     /// <exception cref="FormatException">
-    /// Thrown when the input contains characters outside the variant alphabet, or when the digit count is invalid
-    /// after stripping decorations.
+    /// Thrown when the input contains characters outside the variant alphabet, or when the digit count is invalid after
+    /// stripping decorations.
     /// </exception>
     public static int GetDecodedLength(ReadOnlySpan<char> source, Base32Variant variant = Base32Variant.Standard, BaseFormatStyles styles = BaseFormatStyles.None)
     {
@@ -72,9 +72,7 @@ public static partial class Base32
     /// </summary>
     /// <param name="byteCount">The input byte count. Must be non-negative.</param>
     /// <returns>The number of characters the encoder will produce.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="byteCount" /> is negative.
-    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="byteCount" /> is negative.</exception>
     public static int GetEncodedLength(int byteCount) =>
         GetEncodedLength(byteCount, Base32Variant.Standard, BaseFormattingOptions.None);
 
@@ -92,17 +90,17 @@ public static partial class Base32
         GetEncodedLength(byteCount, variant, BaseFormattingOptions.None);
 
     /// <summary>
-    /// Computes the number of characters required to encode <paramref name="byteCount" /> bytes with the given
-    /// variant and options.
+    /// Computes the number of characters required to encode <paramref name="byteCount" /> bytes with the given variant
+    /// and options.
     /// </summary>
     /// <param name="byteCount">The number of input bytes. Must be non-negative.</param>
     /// <param name="variant">The Base32 variant.</param>
     /// <param name="options">The formatting options influencing the output length.</param>
-    /// <returns>The number of characters that <see cref="Encode(ReadOnlySpan{byte}, Base32Variant, BaseFormattingOptions)" />
-    /// will produce.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="byteCount" /> is negative.
-    /// </exception>
+    /// <returns>
+    /// The number of characters that <see cref="Encode(ReadOnlySpan{byte}, Base32Variant, BaseFormattingOptions)" />
+    /// will produce.
+    /// </returns>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="byteCount" /> is negative.</exception>
     /// <exception cref="OverflowException">
     /// Thrown when the resulting character count would overflow <see cref="int" />.
     /// </exception>
@@ -133,9 +131,7 @@ public static partial class Base32
     /// </summary>
     /// <param name="charCount">The number of input characters. Must be non-negative.</param>
     /// <returns>The upper bound on the decoded byte count.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="charCount" /> is negative.
-    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="charCount" /> is negative.</exception>
     public static int GetMaxDecodedLength(int charCount)
     {
         ThrowHelper.ThrowIfNegative(charCount);
@@ -146,8 +142,8 @@ public static partial class Base32
     }
 
     /// <summary>
-    /// Indicates whether <paramref name="value" /> is a valid symbol for the supplied Base32 variant. Padding
-    /// (<c>=</c>) is not considered a symbol.
+    /// Indicates whether <paramref name="value" /> is a valid symbol for the supplied Base32 variant. Padding (<c>=</c>
+    /// ) is not considered a symbol.
     /// </summary>
     /// <param name="value">The character to test.</param>
     /// <param name="variant">The variant.</param>
@@ -175,10 +171,14 @@ public static partial class Base32
     /// Attempts to compute the exact number of decoded bytes for <paramref name="source" />.
     /// </summary>
     /// <param name="source">The input characters.</param>
-    /// <param name="byteCount">When this method returns, contains the decoded byte count, or <c>0</c> on failure.</param>
+    /// <param name="byteCount">
+    /// When this method returns, contains the decoded byte count, or <c>0</c> on failure.
+    /// </param>
     /// <param name="variant">The Base32 variant.</param>
     /// <param name="styles">The parsing styles.</param>
-    /// <returns><see langword="true" /> when the input would decode cleanly; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the input would decode cleanly; otherwise <see langword="false" />.
+    /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
     public static bool TryGetDecodedLength(ReadOnlySpan<char> source, out int byteCount, Base32Variant variant = Base32Variant.Standard, BaseFormatStyles styles = BaseFormatStyles.None)
     {
@@ -193,8 +193,8 @@ public static partial class Base32
     }
 
     /// <summary>
-    /// Builds the Crockford Base32 lookup table, including the documented aliases <c>I</c>/<c>L</c> -&gt; <c>1</c>
-    /// and <c>O</c> -&gt; <c>0</c>.
+    /// Builds the Crockford Base32 lookup table, including the documented aliases <c>I</c>/<c>L</c> -&gt; <c>1</c> and
+    /// <c>O</c> -&gt; <c>0</c>.
     /// </summary>
     /// <returns>The Crockford lookup table.</returns>
     private static sbyte[] BuildCrockfordLookup()
@@ -215,8 +215,8 @@ public static partial class Base32
     }
 
     /// <summary>
-    /// Builds a 128-entry symbol lookup table from the supplied alphabet, case-folding letter characters so the
-    /// decoder accepts either case.
+    /// Builds a 128-entry symbol lookup table from the supplied alphabet, case-folding letter characters so the decoder
+    /// accepts either case.
     /// </summary>
     /// <param name="alphabet">The encoding alphabet.</param>
     /// <returns>A lookup table where valid characters map to their symbol value and others map to <c>-1</c>.</returns>

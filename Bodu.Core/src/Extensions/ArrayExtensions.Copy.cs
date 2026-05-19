@@ -9,13 +9,14 @@ namespace Bodu.Extensions;
 public static partial class ArrayExtensions
 {
     /// <summary>
-    /// Creates a shallow copy of the specified array of value types. Returns <see langword="null" /> if the source array is
-    /// <see langword="null" />.
+    /// Creates a shallow copy of the specified array of value types. Returns <see langword="null" /> if the source
+    /// array is <see langword="null" />.
     /// </summary>
     /// <typeparam name="T">The value type of the elements in the array.</typeparam>
     /// <param name="array">The array to copy.</param>
     /// <returns>
-    /// A new array containing the same elements as the source, or <see langword="null" /> if the source is <see langword="null" />.
+    /// A new array containing the same elements as the source, or <see langword="null" /> if the source is
+    /// <see langword="null" />.
     /// </returns>
 #pragma warning disable S1168
 

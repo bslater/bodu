@@ -36,7 +36,9 @@ public static partial class NonCryptographicHashAlgorithmExtensions
     /// A task that evaluates to <see langword="true" /> if the computed hash matches <paramref name="expectedHash" />;
     /// otherwise, <see langword="false" />.
     /// </returns>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="algorithm" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown if <paramref name="algorithm" /> is <see langword="null" />.
+    /// </exception>
     public static async Task<bool> TryVerifyHashAsync(
         this NonCryptographicHashAlgorithm algorithm,
         Stream stream,
@@ -75,8 +77,8 @@ public static partial class NonCryptographicHashAlgorithmExtensions
     /// <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
     /// <returns>
     /// A task that evaluates to <see langword="true" /> if the computed hash matches <paramref name="expectedHex" />;
-    /// otherwise, <see langword="false" />.
-    /// Returns <see langword="false" /> if <paramref name="expectedHex" /> is not a valid hexadecimal string.
+    /// otherwise, <see langword="false" />. Returns <see langword="false" /> if <paramref name="expectedHex" /> is not
+    /// a valid hexadecimal string.
     /// </returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="algorithm" /> or <paramref name="expectedHex" /> is <see langword="null" />.
@@ -121,7 +123,9 @@ public static partial class NonCryptographicHashAlgorithmExtensions
     /// A task that evaluates to <see langword="true" /> if the computed hash matches <paramref name="expectedHash" />;
     /// otherwise, <see langword="false" />.
     /// </returns>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="algorithm" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown if <paramref name="algorithm" /> is <see langword="null" />.
+    /// </exception>
     public static async Task<bool> TryVerifyHashAsync(
         this NonCryptographicHashAlgorithm algorithm,
         Stream stream,

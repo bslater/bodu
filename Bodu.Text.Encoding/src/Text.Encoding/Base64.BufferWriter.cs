@@ -18,11 +18,17 @@ public static partial class Base64
     /// <param name="source">The bytes to encode.</param>
     /// <param name="writer">The buffer writer that receives the encoded characters.</param>
     /// <param name="variant">The Base64 variant.</param>
-    /// <param name="options">Formatting options. Only <see cref="BaseFormattingOptions.OmitPadding" /> is supported.</param>
+    /// <param name="options">
+    /// Formatting options. Only <see cref="BaseFormattingOptions.OmitPadding" /> is supported.
+    /// </param>
     /// <returns>The number of characters written.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="writer" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="writer" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
-    /// <exception cref="ArgumentException">Thrown when <paramref name="options" /> contains an unsupported flag.</exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="options" /> contains an unsupported flag.
+    /// </exception>
     public static int Encode(ReadOnlySpan<byte> source, IBufferWriter<char> writer, Base64Variant variant = Base64Variant.Standard, BaseFormattingOptions options = BaseFormattingOptions.None)
     {
         ThrowHelper.ThrowIfNull(writer);
@@ -46,11 +52,17 @@ public static partial class Base64
     /// <param name="source">The bytes to encode.</param>
     /// <param name="writer">The buffer writer that receives the UTF-8 bytes.</param>
     /// <param name="variant">The Base64 variant.</param>
-    /// <param name="options">Formatting options. Only <see cref="BaseFormattingOptions.OmitPadding" /> is supported.</param>
+    /// <param name="options">
+    /// Formatting options. Only <see cref="BaseFormattingOptions.OmitPadding" /> is supported.
+    /// </param>
     /// <returns>The number of UTF-8 bytes written.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="writer" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="writer" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
-    /// <exception cref="ArgumentException">Thrown when <paramref name="options" /> contains an unsupported flag.</exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="options" /> contains an unsupported flag.
+    /// </exception>
     public static int EncodeToUtf8(ReadOnlySpan<byte> source, IBufferWriter<byte> writer, Base64Variant variant = Base64Variant.Standard, BaseFormattingOptions options = BaseFormattingOptions.None)
     {
         ThrowHelper.ThrowIfNull(writer);

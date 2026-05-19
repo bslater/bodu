@@ -3,6 +3,13 @@
 ###############################################################################
 * text=auto
 
+# Pin C# source files to LF on checkout for every platform so the working tree
+# matches the LF blobs stored in the repository. The Bodu XML doc analyzer
+# (BODU1040) compares file line endings against the policy declared in
+# .editorconfig, so without this pin Windows checkouts (autocrlf=true) would
+# materialise as CRLF and trip the analyzer in ways Linux/CI never see.
+*.cs text eol=lf
+
 ###############################################################################
 # Set default behavior for command prompt diff.
 #

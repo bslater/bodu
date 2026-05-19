@@ -46,10 +46,12 @@ public static partial class SequenceGenerator
     /// </para>
     /// </remarks>
     /// <example>
-    /// <code language="csharp"><![CDATA[ // Halving sequence — terminates when the value drops to zero. var halves =
+    /// <code language="csharp">
+    ///<![CDATA[ // Halving sequence — terminates when the value drops to zero. var halves =
     /// SequenceGenerator.NextWhile(64, v =&gt; v &gt; 0, v =&gt; v / 2); // => 64, 32, 16, 8, 4, 2, 1 // Empty result
     /// when the seed already fails the predicate. var none = SequenceGenerator.NextWhile(0, v =&gt; v &gt; 0, v =&gt; v
-    /// - 1); // => (empty) ]]></code>
+    /// - 1); // => (empty) ]]>
+    /// </code>
     /// </example>
     public static IEnumerable<TResult> NextWhile<TResult>(
         TResult initialValue,
@@ -106,8 +108,10 @@ public static partial class SequenceGenerator
     /// </para>
     /// </remarks>
     /// <example>
-    /// <code language="csharp"><![CDATA[ // Triangular numbers up to 100: 0, 1, 3, 6, 10, 15, 21, 28, 36, 45, 55, 66, 78, 91.
-    /// var triangular = SequenceGenerator.NextWhile(0, v =&gt; v &lt;= 100, (v, i) =&gt; v + (i + 1)); ]]></code>
+    /// <code language="csharp">
+    ///<![CDATA[ // Triangular numbers up to 100: 0, 1, 3, 6, 10, 15, 21, 28, 36, 45, 55, 66, 78, 91.
+    /// var triangular = SequenceGenerator.NextWhile(0, v =&gt; v &lt;= 100, (v, i) =&gt; v + (i + 1)); ]]>
+    /// </code>
     /// </example>
     public static IEnumerable<TResult> NextWhile<TResult>(
         TResult initialValue,
@@ -168,10 +172,12 @@ public static partial class SequenceGenerator
     /// </para>
     /// </remarks>
     /// <example>
-    /// <code language="csharp"><![CDATA[ // Fibonacci numbers below 100, tracked through a (prev, curr) state record. var fib =
+    /// <code language="csharp">
+    ///<![CDATA[ // Fibonacci numbers below 100, tracked through a (prev, curr) state record. var fib =
     /// SequenceGenerator.NextWhile( initialState: (Prev: 0, Curr: 1), conditionHandler: s =&gt; s.Curr &lt; 100,
     /// iterateFunction: s =&gt; (s.Curr, s.Prev + s.Curr), resultSelector: s =&gt; s.Curr); // => 1, 1, 2, 3, 5, 8, 13,
-    /// 21, 34, 55, 89 ]]></code>
+    /// 21, 34, 55, 89 ]]>
+    /// </code>
     /// </example>
     public static IEnumerable<TResult> NextWhile<TState, TResult>(
         TState initialState,

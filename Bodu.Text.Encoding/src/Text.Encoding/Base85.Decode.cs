@@ -16,7 +16,9 @@ public static partial class Base85
     /// <param name="variant">The variant.</param>
     /// <param name="style">Parsing styles. Only <see cref="BaseFormatStyles.IgnoreWhitespace" /> has effect.</param>
     /// <returns>The decoded byte array.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="s" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="s" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
     /// <exception cref="FormatException">Thrown when the input is not valid Base85 for the chosen variant.</exception>
     public static byte[] Decode(string s, Base85Variant variant = Base85Variant.Ascii85, BaseFormatStyles style = BaseFormatStyles.None)
@@ -63,7 +65,9 @@ public static partial class Base85
     /// <param name="variant">The variant.</param>
     /// <param name="style">Parsing styles.</param>
     /// <returns>The decoded byte array.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="chars" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="chars" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <paramref name="offset" />, <paramref name="count" />, or <paramref name="variant" /> is out of
     /// range.
@@ -87,8 +91,10 @@ public static partial class Base85
     /// <param name="bytesWritten">When this method returns, contains the number of bytes written.</param>
     /// <param name="variant">The variant.</param>
     /// <param name="style">Parsing styles.</param>
-    /// <returns><see langword="true" /> on success; <see langword="false" /> when the input is malformed or the
-    /// destination is too small.</returns>
+    /// <returns>
+    /// <see langword="true" /> on success; <see langword="false" /> when the input is malformed or the destination is
+    /// too small.
+    /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
     public static bool TryDecode(ReadOnlySpan<char> chars, Span<byte> destination, out int bytesWritten, Base85Variant variant = Base85Variant.Ascii85, BaseFormatStyles style = BaseFormatStyles.None)
     {
@@ -111,7 +117,8 @@ public static partial class Base85
     }
 
     /// <summary>
-    /// Core decoder. Walks the input span, validating characters and accumulating bytes into <paramref name="buffer" />.
+    /// Core decoder. Walks the input span, validating characters and accumulating bytes into <paramref name="buffer" />
+    /// .
     /// </summary>
     /// <param name="chars">The input characters.</param>
     /// <param name="variant">The variant.</param>

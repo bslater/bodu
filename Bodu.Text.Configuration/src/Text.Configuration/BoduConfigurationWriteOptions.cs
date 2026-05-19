@@ -9,7 +9,8 @@ using System.Text;
 namespace Bodu.Text.Configuration;
 
 /// <summary>
-/// Controls how a configuration document is emitted by <see cref="BoduConfigurationDocument.Save(Bodu.Text.Formats.IniDocument, string, BoduConfigurationWriteOptions?)" />
+/// Controls how a configuration document is emitted by
+/// <see cref="BoduConfigurationDocument.Save(Bodu.Text.Formats.IniDocument, string, BoduConfigurationWriteOptions?)" />
 /// and related methods.
 /// </summary>
 public sealed partial class BoduConfigurationWriteOptions

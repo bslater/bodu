@@ -10,27 +10,27 @@ using System.Globalization;
 namespace Bodu.Text.Configuration;
 
 /// <summary>
-/// Identifies a specific position in a configuration source document so that diagnostics, exceptions, and
-/// model elements can point back to the originating line and column.
+/// Identifies a specific position in a configuration source document so that diagnostics, exceptions, and model
+/// elements can point back to the originating line and column.
 /// </summary>
 /// <remarks>
 /// <para>
-/// Locations are 1-based for both <see cref="LineNumber" /> and <see cref="LinePosition" />, matching the
-/// convention used by most editors and diagnostic UIs. A <see cref="Length" /> of zero indicates an
-/// unsized point; non-zero indicates a span that begins at <see cref="LinePosition" /> and runs for
-/// <see cref="Length" /> characters within the same line.
+/// Locations are 1-based for both <see cref="LineNumber" /> and <see cref="LinePosition" />, matching the convention
+/// used by most editors and diagnostic UIs. A <see cref="Length" /> of zero indicates an unsized point; non-zero
+/// indicates a span that begins at <see cref="LinePosition" /> and runs for <see cref="Length" /> characters within the
+/// same line.
 /// </para>
 /// <para>
-/// <see cref="Path" /> is set only when the configuration document was loaded from a file. Documents
-/// parsed from strings expose <see langword="null" /> here.
+/// <see cref="Path" /> is set only when the configuration document was loaded from a file. Documents parsed from
+/// strings expose <see langword="null" /> here.
 /// </para>
 /// </remarks>
 [DebuggerDisplay("Line {LineNumber}, Col {LinePosition}, Len {Length}")]
 public readonly struct BoduConfigurationSourceLocation : IEquatable<BoduConfigurationSourceLocation>
 {
     /// <summary>
-    /// Initializes a new <see cref="BoduConfigurationSourceLocation" /> with the specified line number,
-    /// column, span length, and optional file path.
+    /// Initializes a new <see cref="BoduConfigurationSourceLocation" /> with the specified line number, column, span
+    /// length, and optional file path.
     /// </summary>
     /// <param name="lineNumber">The 1-based line number.</param>
     /// <param name="linePosition">The 1-based column within the line.</param>
@@ -63,8 +63,8 @@ public readonly struct BoduConfigurationSourceLocation : IEquatable<BoduConfigur
     public int Length { get; }
 
     /// <summary>
-    /// Gets the source file path that produced this location, or <see langword="null" /> when the
-    /// document was parsed from an in-memory string.
+    /// Gets the source file path that produced this location, or <see langword="null" /> when the document was parsed
+    /// from an in-memory string.
     /// </summary>
     /// <returns>The optional source path.</returns>
     public string? Path { get; }

@@ -25,12 +25,14 @@ public static partial class Base58
             : new Guid(bytes);
     }
     /// <summary>
-    /// Encodes the byte representation of <paramref name="value" /> as a Base58 string. Typical output is 22
-    /// characters (radix-58 representation of 16 bytes), though leading zero bytes inflate the count slightly.
+    /// Encodes the byte representation of <paramref name="value" /> as a Base58 string. Typical output is 22 characters
+    /// (radix-58 representation of 16 bytes), though leading zero bytes inflate the count slightly.
     /// </summary>
     /// <param name="value">The <see cref="Guid" /> to encode.</param>
     /// <param name="variant">The Base58 variant.</param>
-    /// <returns>A Base58 string of the GUID bytes (mixed-endian, matching <see cref="Guid.TryWriteBytes(Span{byte})" />).</returns>
+    /// <returns>
+    /// A Base58 string of the GUID bytes (mixed-endian, matching <see cref="Guid.TryWriteBytes(Span{byte})" />).
+    /// </returns>
     public static string Encode(Guid value, Base58Variant variant = Base58Variant.BitcoinFlickr)
     {
         Span<byte> bytes = stackalloc byte[16];
@@ -42,8 +44,9 @@ public static partial class Base58
     /// Attempts to decode a Base58 representation of a <see cref="Guid" />.
     /// </summary>
     /// <param name="source">The Base58 characters.</param>
-    /// <param name="value">When this method returns, contains the decoded <see cref="Guid" /> or
-    /// <see cref="Guid.Empty" />.</param>
+    /// <param name="value">
+    /// When this method returns, contains the decoded <see cref="Guid" /> or <see cref="Guid.Empty" />.
+    /// </param>
     /// <param name="variant">The Base58 variant.</param>
     /// <param name="styles">Parsing styles.</param>
     /// <returns><see langword="true" /> when decoding succeeds; otherwise <see langword="false" />.</returns>

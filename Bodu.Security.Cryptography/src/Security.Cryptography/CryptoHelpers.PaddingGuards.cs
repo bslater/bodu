@@ -73,7 +73,10 @@ internal static partial class CryptoHelpers
     /// <summary>
     /// Throws a <see cref="CryptographicException" /> indicating that the specified padding mode is not supported.
     /// </summary>
-    /// <typeparam name="T">The enumeration type representing the padding mode (for example <see cref="PaddingMode" /> or <see cref="PaddingModeKind" />).</typeparam>
+    /// <typeparam name="T">
+    /// The enumeration type representing the padding mode (for example <see cref="PaddingMode" /> or
+    /// <see cref="PaddingModeKind" />).
+    /// </typeparam>
     /// <param name="mode">The unsupported padding mode value.</param>
     /// <exception cref="CryptographicException">
     /// Always thrown when invoked; the exception message identifies the rejected <paramref name="mode" />.

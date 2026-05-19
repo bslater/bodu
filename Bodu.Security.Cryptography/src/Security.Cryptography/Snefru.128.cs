@@ -46,8 +46,12 @@ namespace Bodu.Security.Cryptography;
 /// or secure data integrity checks.</note>
 /// </remarks>
 /// <example>
-/// <code language="csharp"> using Bodu.Security.Cryptography; using var snefru = new Snefru128(); byte[] digest =
-/// snefru.ComputeHash(legacyMessage); </code>
+/// <code language="csharp">
+///<![CDATA[
+/// using Bodu.Security.Cryptography; using var snefru = new Snefru128(); byte[] digest =
+/// snefru.ComputeHash(legacyMessage);
+///]]>
+/// </code>
 /// </example>
 /// <seealso cref="Snefru{T}"/> <seealso cref="Snefru256"/>
 public sealed class Snefru128

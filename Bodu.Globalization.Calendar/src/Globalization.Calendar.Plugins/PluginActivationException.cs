@@ -79,8 +79,8 @@ public sealed class PluginActivationException
     /// </summary>
     /// <value>
     /// The CLR <see cref="Type" /> declared by the plugin's <see cref="NotableDatePluginAttribute" />, or
-    /// <see langword="null" /> when the type could not be located or when the exception was created without
-    /// plugin-type context.
+    /// <see langword="null" /> when the type could not be located or when the exception was created without plugin-type
+    /// context.
     /// </value>
     public Type? PluginType { get; }
 }

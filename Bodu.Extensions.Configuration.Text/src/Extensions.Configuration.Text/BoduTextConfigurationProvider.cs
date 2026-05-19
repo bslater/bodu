@@ -15,15 +15,15 @@ namespace Bodu.Extensions.Configuration.Text;
 /// </summary>
 /// <remarks>
 /// The provider inherits change-token, reload-on-change, optional-file, and exception-wrapping behaviour from
-/// <see cref="FileConfigurationProvider" />. Override <see cref="Load(Stream)" /> only. The Parse → Resolve →
-/// flatten pipeline is shared with <see cref="BoduTextStreamConfigurationProvider" /> via
+/// <see cref="FileConfigurationProvider" />. Override <see cref="Load(Stream)" /> only. The Parse → Resolve → flatten
+/// pipeline is shared with <see cref="BoduTextStreamConfigurationProvider" /> via
 /// <see cref="BoduTextConfigurationLoader" />.
 /// </remarks>
 public sealed class BoduTextConfigurationProvider : FileConfigurationProvider
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="BoduTextConfigurationProvider" /> class backed by the
-    /// supplied source.
+    /// Initializes a new instance of the <see cref="BoduTextConfigurationProvider" /> class backed by the supplied
+    /// source.
     /// </summary>
     /// <param name="source">The source that produced this provider.</param>
     /// <exception cref="ArgumentNullException"><paramref name="source" /> is <see langword="null" />.</exception>

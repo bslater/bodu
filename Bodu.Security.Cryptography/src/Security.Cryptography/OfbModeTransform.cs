@@ -39,11 +39,15 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// </remarks>
 /// <example>
-/// <code language="csharp"> using System.Security.Cryptography; using Bodu.Security.Cryptography; // Most callers
+/// <code language="csharp">
+///<![CDATA[
+/// using System.Security.Cryptography; using Bodu.Security.Cryptography; // Most callers
 /// should set SymmetricAlgorithm.Mode = CipherBlockMode.OFB instead of using this directly. using IBlockCipher cipher =
 /// new AesBlockCipher(key); byte[] iv = RandomNumberGenerator.GetBytes(cipher.BlockSize / 8); // unique per message
 /// IBlockCipherModeTransform ofb = new OfbModeTransform(cipher, iv); byte[] ciphertext = new byte[plaintext.Length];
-/// int written = ofb.Transform(plaintext, ciphertext, encrypt: true); </code>
+/// int written = ofb.Transform(plaintext, ciphertext, encrypt: true);
+///]]>
+/// </code>
 /// </example>
 /// <seealso href="../guides/cryptography/cipher-modes.html#ofb--synchronous-stream-cipher">OFB walk-through in the
 /// cipher-modes guide</seealso>

@@ -14,19 +14,18 @@ namespace Bodu.Text.Formats;
 /// </summary>
 /// <remarks>
 /// <para>
-/// All format-specific, single-use exceptions are thrown inline at their call sites. Only guards that are reused
-/// across multiple call sites and that test a condition (rather than unconditionally throwing) belong here.
+/// All format-specific, single-use exceptions are thrown inline at their call sites. Only guards that are reused across
+/// multiple call sites and that test a condition (rather than unconditionally throwing) belong here.
 /// </para>
 /// <para>
-/// The class follows the same partial-file pattern used by <see cref="Bodu.ThrowHelper" /> in
-/// <c>Bodu.Core</c>: <c>TextThrowHelper.cs</c> holds the root declaration and
-/// <c>TextThrowHelper.CallerExpression.cs</c> holds the implementations, which use
-/// <see cref="System.Runtime.CompilerServices.CallerArgumentExpressionAttribute" /> to capture the parameter name
-/// automatically.
+/// The class follows the same partial-file pattern used by <see cref="Bodu.ThrowHelper" /> in <c>Bodu.Core</c>:
+/// <c>TextThrowHelper.cs</c> holds the root declaration and <c>TextThrowHelper.CallerExpression.cs</c> holds the
+/// implementations, which use <see cref="System.Runtime.CompilerServices.CallerArgumentExpressionAttribute" /> to
+/// capture the parameter name automatically.
 /// </para>
 /// <para>
-/// The class is <c>internal</c> because the helpers are validation primitives consumed only by the project's
-/// own production code and its <c>InternalsVisibleTo</c>-paired test assembly.
+/// The class is <c>internal</c> because the helpers are validation primitives consumed only by the project's own
+/// production code and its <c>InternalsVisibleTo</c>-paired test assembly.
 /// </para>
 /// </remarks>
 [SuppressMessage(

@@ -21,7 +21,9 @@ public static partial class Base16
     /// <param name="s">The string containing Base16 (hex) characters.</param>
     /// <param name="style">Parsing styles that allow optional prefix and whitespace tolerance.</param>
     /// <returns>A new byte array representing the decoded binary data.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="s" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="s" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="FormatException">
     /// Thrown when the input contains non-hexadecimal characters, or when it has an odd number of hex digits after
     /// applying <paramref name="style" />.
@@ -37,8 +39,10 @@ public static partial class Base16
     /// </summary>
     /// <param name="chars">The span containing Base16 (hex) characters.</param>
     /// <param name="style">Parsing styles that allow optional prefix and whitespace tolerance.</param>
-    /// <returns>A new byte array representing the decoded binary data. Returns <see cref="Array.Empty{T}" /> when
-    /// <paramref name="chars" /> is empty.</returns>
+    /// <returns>
+    /// A new byte array representing the decoded binary data. Returns <see cref="Array.Empty{T}" /> when
+    /// <paramref name="chars" /> is empty.
+    /// </returns>
     /// <exception cref="FormatException">
     /// Thrown when the input contains non-hexadecimal characters, or when it has an odd number of hex digits after
     /// applying <paramref name="style" />.
@@ -79,10 +83,12 @@ public static partial class Base16
     /// <param name="count">The number of characters to decode.</param>
     /// <param name="style">Parsing styles that allow optional prefix and whitespace tolerance.</param>
     /// <returns>A new byte array representing the decoded binary data.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="chars" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="chars" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="offset" /> or <paramref name="count" /> is negative, or either exceeds the bounds
-    /// of <paramref name="chars" />.
+    /// Thrown when <paramref name="offset" /> or <paramref name="count" /> is negative, or either exceeds the bounds of
+    /// <paramref name="chars" />.
     /// </exception>
     /// <exception cref="ArgumentException">
     /// Thrown when the segment defined by <paramref name="offset" /> and <paramref name="count" /> exceeds the
@@ -103,14 +109,17 @@ public static partial class Base16
     /// </summary>
     /// <param name="chars">The span of characters to decode.</param>
     /// <param name="destination">The span that receives the decoded bytes.</param>
-    /// <param name="bytesWritten">When this method returns, contains the number of bytes written, or <c>0</c> when
-    /// decoding failed.</param>
+    /// <param name="bytesWritten">
+    /// When this method returns, contains the number of bytes written, or <c>0</c> when decoding failed.
+    /// </param>
     /// <param name="style">Parsing styles that allow optional prefix and whitespace tolerance.</param>
-    /// <returns><see langword="true" /> when decoding succeeded; <see langword="false" /> when the input is malformed
-    /// or <paramref name="destination" /> is too small.</returns>
+    /// <returns>
+    /// <see langword="true" /> when decoding succeeded; <see langword="false" /> when the input is malformed or
+    /// <paramref name="destination" /> is too small.
+    /// </returns>
     /// <remarks>
-    /// This method never throws for malformed input — it returns <see langword="false" /> instead. Callers that
-    /// require exception semantics should use <see cref="Decode(ReadOnlySpan{char}, BaseFormatStyles)" />.
+    /// This method never throws for malformed input — it returns <see langword="false" /> instead. Callers that require
+    /// exception semantics should use <see cref="Decode(ReadOnlySpan{char}, BaseFormatStyles)" />.
     /// </remarks>
     public static bool TryDecode(ReadOnlySpan<char> chars, Span<byte> destination, out int bytesWritten, BaseFormatStyles style = BaseFormatStyles.None)
     {
@@ -159,9 +168,13 @@ public static partial class Base16
     /// </summary>
     /// <param name="chars">The character span containing hex digits. The length must be a multiple of two.</param>
     /// <param name="bytes">The destination span. Must be at least <c>chars.Length / 2</c> bytes in size.</param>
-    /// <returns><see langword="true" /> when every character is a valid hex digit; <see langword="false" /> when an
-    /// invalid character is encountered.</returns>
-    /// <remarks>This method assumes the caller has already validated the input length.</remarks>
+    /// <returns>
+    /// <see langword="true" /> when every character is a valid hex digit; <see langword="false" /> when an invalid
+    /// character is encountered.
+    /// </returns>
+    /// <remarks>
+    /// This method assumes the caller has already validated the input length.
+    /// </remarks>
     private static bool DecodeHexPairs(ReadOnlySpan<char> chars, Span<byte> bytes)
     {
         var bi = 0;
@@ -191,8 +204,9 @@ public static partial class Base16
     /// </summary>
     /// <param name="source">The decorated input span.</param>
     /// <param name="style">The decoration tolerance flags.</param>
-    /// <param name="scratch">The scratch buffer that receives the stripped digits. Must be at least as large as
-    /// <paramref name="source" />.</param>
+    /// <param name="scratch">
+    /// The scratch buffer that receives the stripped digits. Must be at least as large as <paramref name="source" />.
+    /// </param>
     /// <returns>The number of digit characters written to <paramref name="scratch" />.</returns>
     /// <remarks>
     /// <para>

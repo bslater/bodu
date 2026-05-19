@@ -16,16 +16,16 @@ namespace Bodu.Text.Encoding;
 public enum Base85Variant : byte
 {
     /// <summary>
-    /// The Adobe Ascii85 alphabet, used by PDF and PostScript. Uses ASCII characters <c>!</c> (0x21) through
-    /// <c>u</c> (0x75). The character <c>z</c> is recognised as a shortcut for four zero bytes. Partial trailing
-    /// groups of one, two, or three bytes are permitted; output length grows by one character per byte plus one.
+    /// The Adobe Ascii85 alphabet, used by PDF and PostScript. Uses ASCII characters <c>!</c> (0x21) through <c>u</c>
+    /// (0x75). The character <c>z</c> is recognised as a shortcut for four zero bytes. Partial trailing groups of one,
+    /// two, or three bytes are permitted; output length grows by one character per byte plus one.
     /// </summary>
     Ascii85 = 0,
 
     /// <summary>
-    /// The Z85 alphabet defined by ZeroMQ (RFC 32 / "ZMTP/2.0"). Uses a shell-safe alphabet that avoids
-    /// quote, slash, semicolon, and backslash. No <c>z</c> shortcut is recognised, and the input length must be a
-    /// multiple of four bytes (output length is then a multiple of five characters).
+    /// The Z85 alphabet defined by ZeroMQ (RFC 32 / "ZMTP/2.0"). Uses a shell-safe alphabet that avoids quote, slash,
+    /// semicolon, and backslash. No <c>z</c> shortcut is recognised, and the input length must be a multiple of four
+    /// bytes (output length is then a multiple of five characters).
     /// </summary>
     Z85 = 1,
 }

@@ -61,12 +61,16 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// </remarks>
 /// <example>
-/// <code language="csharp"> using System.Security.Cryptography; using Bodu.Security.Cryptography; using
+/// <code language="csharp">
+///<![CDATA[
+/// using System.Security.Cryptography; using Bodu.Security.Cryptography; using
 /// Bodu.Security.Cryptography.Extensions; using IBlockCipher cipher = new AesBlockCipher(key); byte[] nonce =
 /// RandomNumberGenerator.GetBytes(cipher.BlockSize / 8); // unique per message using IAeadBlockCipherModeTransform eax
 /// = new EaxModeTransform(cipher, nonce); byte[] sealed_ = eax.Encrypt(plaintext, associatedData: header); using
 /// IAeadBlockCipherModeTransform dec = new EaxModeTransform(cipher, nonce); byte[] recovered = dec.Decrypt(sealed_,
-/// associatedData: header); </code>
+/// associatedData: header);
+///]]>
+/// </code>
 /// </example>
 /// <seealso href="../guides/cryptography/aead-modes.html#eax--two-pass-fse-2004">EAX walk-through in the AEAD-modes
 /// guide</seealso> <seealso cref="AesBlockCipher"/>

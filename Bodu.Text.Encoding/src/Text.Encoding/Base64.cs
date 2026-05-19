@@ -7,8 +7,8 @@
 namespace Bodu.Text.Encoding;
 
 /// <summary>
-/// Provides Base64 encoding and decoding of binary data across the RFC 4648 standard, URL-safe, and MIME variants,
-/// with optional padding control and whitespace tolerance during parsing.
+/// Provides Base64 encoding and decoding of binary data across the RFC 4648 standard, URL-safe, and MIME variants, with
+/// optional padding control and whitespace tolerance during parsing.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -16,9 +16,9 @@ namespace Bodu.Text.Encoding;
 /// <see cref="Convert.ToBase64String(byte[], Base64FormattingOptions)" />,
 /// <see cref="Convert.TryToBase64Chars(ReadOnlySpan{byte}, Span{char}, out int, Base64FormattingOptions)" />, and
 /// <see cref="Convert.TryFromBase64Chars(ReadOnlySpan{char}, Span{byte}, out int)" /> to inherit their
-/// hardware-accelerated paths. The wrapper supplies the alphabet swapping for <see cref="Base64Variant.UrlSafe" />,
-/// the line-break convention for <see cref="Base64Variant.Mime" />, and the padding / leniency flag handling that the
-/// BCL does not expose directly.
+/// hardware-accelerated paths. The wrapper supplies the alphabet swapping for <see cref="Base64Variant.UrlSafe" />, the
+/// line-break convention for <see cref="Base64Variant.Mime" />, and the padding / leniency flag handling that the BCL
+/// does not expose directly.
 /// </para>
 /// <para>
 /// MIME line breaks are inserted every 76 characters (RFC 2045). The <see cref="BaseFormattingOptions.UpperCase" />,
@@ -63,9 +63,7 @@ public static partial class Base64
     /// </summary>
     /// <param name="byteCount">The input byte count. Must be non-negative.</param>
     /// <returns>The number of characters the encoder will produce.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="byteCount" /> is negative.
-    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="byteCount" /> is negative.</exception>
     public static int GetEncodedLength(int byteCount) =>
         GetEncodedLength(byteCount, Base64Variant.Standard, BaseFormattingOptions.None);
 
@@ -83,16 +81,14 @@ public static partial class Base64
         GetEncodedLength(byteCount, variant, BaseFormattingOptions.None);
 
     /// <summary>
-    /// Computes the number of characters required to encode <paramref name="byteCount" /> bytes with the given
-    /// variant and options.
+    /// Computes the number of characters required to encode <paramref name="byteCount" /> bytes with the given variant
+    /// and options.
     /// </summary>
     /// <param name="byteCount">The number of input bytes. Must be non-negative.</param>
     /// <param name="variant">The Base64 variant.</param>
     /// <param name="options">The formatting options.</param>
     /// <returns>The number of characters the matching encode overload will produce.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="byteCount" /> is negative.
-    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="byteCount" /> is negative.</exception>
     public static int GetEncodedLength(int byteCount, Base64Variant variant = Base64Variant.Standard, BaseFormattingOptions options = BaseFormattingOptions.None)
     {
         ThrowHelper.ThrowIfNegative(byteCount);
@@ -122,9 +118,7 @@ public static partial class Base64
     /// </summary>
     /// <param name="charCount">The number of input characters. Must be non-negative.</param>
     /// <returns>The upper bound on the decoded byte count.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="charCount" /> is negative.
-    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="charCount" /> is negative.</exception>
     public static int GetMaxDecodedLength(int charCount)
     {
         ThrowHelper.ThrowIfNegative(charCount);
@@ -154,7 +148,9 @@ public static partial class Base64
     /// <param name="source">The character span.</param>
     /// <param name="variant">The variant.</param>
     /// <param name="styles">Parsing styles.</param>
-    /// <returns><see langword="true" /> when the input would decode cleanly; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the input would decode cleanly; otherwise <see langword="false" />.
+    /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
     public static bool IsValid(ReadOnlySpan<char> source, Base64Variant variant = Base64Variant.Standard, BaseFormatStyles styles = BaseFormatStyles.None) =>
         TryCountSymbols(source, variant, styles, out _);
@@ -163,10 +159,14 @@ public static partial class Base64
     /// Attempts to compute the exact decoded byte count for <paramref name="source" />.
     /// </summary>
     /// <param name="source">The Base64 character span.</param>
-    /// <param name="byteCount">When this method returns, contains the decoded byte count, or <c>0</c> on failure.</param>
+    /// <param name="byteCount">
+    /// When this method returns, contains the decoded byte count, or <c>0</c> on failure.
+    /// </param>
     /// <param name="variant">The Base64 variant.</param>
     /// <param name="styles">Parsing styles.</param>
-    /// <returns><see langword="true" /> when the input would decode cleanly; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the input would decode cleanly; otherwise <see langword="false" />.
+    /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
     public static bool TryGetDecodedLength(ReadOnlySpan<char> source, out int byteCount, Base64Variant variant = Base64Variant.Standard, BaseFormatStyles styles = BaseFormatStyles.None)
     {
@@ -240,9 +240,13 @@ public static partial class Base64
     /// <param name="source">The input characters.</param>
     /// <param name="variant">The variant.</param>
     /// <param name="styles">Parsing styles.</param>
-    /// <param name="symbolCount">When this method returns, contains the number of data symbols (excluding padding).</param>
-    /// <returns><see langword="true" /> when every character is valid AND the data quantum is structurally
-    /// well-formed; otherwise <see langword="false" />.</returns>
+    /// <param name="symbolCount">
+    /// When this method returns, contains the number of data symbols (excluding padding).
+    /// </param>
+    /// <returns>
+    /// <see langword="true" /> when every character is valid AND the data quantum is structurally well-formed;
+    /// otherwise <see langword="false" />.
+    /// </returns>
     private static bool TryCountSymbols(ReadOnlySpan<char> source, Base64Variant variant, BaseFormatStyles styles, out int symbolCount)
     {
         EnsureValidVariant(variant);

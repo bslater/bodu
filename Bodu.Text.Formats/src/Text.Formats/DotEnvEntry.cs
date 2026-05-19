@@ -35,8 +35,7 @@ public sealed class DotEnvEntry
     /// Gets the fully processed value of this entry.
     /// </summary>
     /// <returns>
-    /// The value string with surrounding quotes removed and escape sequences resolved. Never
-    /// <see langword="null" />.
+    /// The value string with surrounding quotes removed and escape sequences resolved. Never <see langword="null" />.
     /// </returns>
     public string Value { get; }
 
@@ -58,12 +57,10 @@ public sealed class DotEnvEntry
     /// </summary>
     /// <typeparam name="T">The target type. Must implement <see cref="ISpanParsable{TSelf}" />.</typeparam>
     /// <param name="value">
-    /// When this method returns <see langword="true" />, contains the parsed result; otherwise, the default value
-    /// of <typeparamref name="T" />.
+    /// When this method returns <see langword="true" />, contains the parsed result; otherwise, the default value of
+    /// <typeparamref name="T" />.
     /// </param>
-    /// <returns>
-    /// <see langword="true" /> when parsing succeeded; otherwise, <see langword="false" />.
-    /// </returns>
+    /// <returns><see langword="true" /> when parsing succeeded; otherwise, <see langword="false" />.</returns>
     public bool TryGetValue<T>([MaybeNullWhen(false)] out T value)
         where T : ISpanParsable<T> =>
         T.TryParse(Value.AsSpan(), CultureInfo.InvariantCulture, out value);

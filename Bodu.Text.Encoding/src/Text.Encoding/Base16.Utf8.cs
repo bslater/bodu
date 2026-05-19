@@ -20,10 +20,12 @@ public static partial class Base16
     /// <param name="bytesConsumed">When this method returns, contains the number of source bytes consumed.</param>
     /// <param name="bytesWritten">When this method returns, contains the number of destination bytes written.</param>
     /// <param name="styles">Parsing styles influencing leniency.</param>
-    /// <param name="isFinalBlock">When <see langword="true" />, the decoder enforces that the input forms complete
-    /// byte pairs and any trailing partial pair is reported as <see cref="OperationStatus.InvalidData" />. When
-    /// <see langword="false" />, a trailing single character is reported as <see cref="OperationStatus.NeedMoreData" />
-    /// so the caller can resume on more input.</param>
+    /// <param name="isFinalBlock">
+    /// When <see langword="true" />, the decoder enforces that the input forms complete byte pairs and any trailing
+    /// partial pair is reported as <see cref="OperationStatus.InvalidData" />. When <see langword="false" />, a
+    /// trailing single character is reported as <see cref="OperationStatus.NeedMoreData" /> so the caller can resume on
+    /// more input.
+    /// </param>
     /// <returns>An <see cref="OperationStatus" /> describing the outcome.</returns>
     public static OperationStatus DecodeFromUtf8(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten, BaseFormatStyles styles = BaseFormatStyles.None, bool isFinalBlock = true)
     {
@@ -106,10 +108,14 @@ public static partial class Base16
     /// <param name="source">The bytes to encode.</param>
     /// <param name="destination">The destination UTF-8 byte span.</param>
     /// <param name="bytesWritten">When this method returns, contains the number of UTF-8 bytes written.</param>
-    /// <param name="options">Formatting options. Only <see cref="BaseFormattingOptions.UpperCase" /> is honoured;
-    /// line-break / spacing / prefix flags are not supported on the UTF-8 fast path.</param>
-    /// <returns><see langword="true" /> when <paramref name="destination" /> is large enough; otherwise
-    /// <see langword="false" />.</returns>
+    /// <param name="options">
+    /// Formatting options. Only <see cref="BaseFormattingOptions.UpperCase" /> is honoured; line-break / spacing /
+    /// prefix flags are not supported on the UTF-8 fast path.
+    /// </param>
+    /// <returns>
+    /// <see langword="true" /> when <paramref name="destination" /> is large enough; otherwise <see langword="false" />
+    /// .
+    /// </returns>
     /// <exception cref="ArgumentException">
     /// Thrown when <paramref name="options" /> contains any flag other than
     /// <see cref="BaseFormattingOptions.UpperCase" />.
@@ -142,7 +148,9 @@ public static partial class Base16
     /// </summary>
     /// <param name="source">The UTF-8 hex source.</param>
     /// <param name="destination">The destination byte span.</param>
-    /// <returns><see langword="true" /> when every UTF-8 byte is a valid hex digit; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when every UTF-8 byte is a valid hex digit; otherwise <see langword="false" />.
+    /// </returns>
     private static bool DecodeHexPairsFromUtf8(ReadOnlySpan<byte> source, Span<byte> destination)
     {
         var bi = 0;
@@ -160,8 +168,9 @@ public static partial class Base16
     }
 
     /// <summary>
-    /// Strict-mode streaming decode for character source. Used by both <see cref="Base16.FromHexString(ReadOnlySpan{char}, Span{byte}, out int, out int)" />
-    /// and the lenient path of <see cref="DecodeFromUtf8" />.
+    /// Strict-mode streaming decode for character source. Used by both
+    /// <see cref="Base16.FromHexString(ReadOnlySpan{char}, Span{byte}, out int, out int)" /> and the lenient path of
+    /// <see cref="DecodeFromUtf8" />.
     /// </summary>
     /// <param name="source">The hexadecimal characters.</param>
     /// <param name="destination">The destination byte span.</param>

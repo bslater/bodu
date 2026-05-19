@@ -26,12 +26,16 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// </remarks>
 /// <example>
-/// <code language="csharp"> using System.Security.Cryptography; using Bodu.Security.Cryptography; // 1. Bare SHA-256
+/// <code language="csharp">
+///<![CDATA[
+/// using System.Security.Cryptography; using Bodu.Security.Cryptography; // 1. Bare SHA-256
 /// factory. IHashAlgorithmFactory&lt;SHA256&gt; sha256 = HashAlgorithmFactory.From(() =&gt; SHA256.Create()); byte[]
 /// digest = HashAlgorithmHelper.HashData(sha256, payload); // 2. Configured keyed-hash factory — applied consistently
 /// every time the consumer constructs an instance. IHashAlgorithmFactory&lt;SipHash64&gt; sip =
 /// HashAlgorithmFactory.From(() =&gt; new SipHash64 { Key = sessionKey }); byte[] tag =
-/// HashAlgorithmHelper.HashData(sip, message); </code>
+/// HashAlgorithmHelper.HashData(sip, message);
+///]]>
+/// </code>
 /// </example>
 /// <seealso cref="IHashAlgorithmFactory{T}"/> <seealso cref="DelegateHashAlgorithmFactory{T}"/>
 /// <seealso cref="HashAlgorithmHelper"/>

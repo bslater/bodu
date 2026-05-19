@@ -11,8 +11,8 @@ using System.Text;
 namespace Bodu.Text.Formats;
 
 /// <summary>
-/// Represents a single data record in a <see cref="DelimitedDocument" />, exposing its fields by index and —
-/// when a header row was present — by column name, with optional typed value conversion.
+/// Represents a single data record in a <see cref="DelimitedDocument" />, exposing its fields by index and — when a
+/// header row was present — by column name, with optional typed value conversion.
 /// </summary>
 public sealed class DelimitedRow
 {
@@ -20,8 +20,8 @@ public sealed class DelimitedRow
         CompositeFormat.Parse(FormatsResourceStrings.Op_Invalid_DelimitedHeaderNotFound);
 
     /// <summary>
-    /// The column-name-to-index map built from the document's header row, or <see langword="null" /> when the
-    /// document was parsed without a header row.
+    /// The column-name-to-index map built from the document's header row, or <see langword="null" /> when the document
+    /// was parsed without a header row.
     /// </summary>
     private readonly IReadOnlyDictionary<string, int>? _headerIndex;
 
@@ -30,8 +30,8 @@ public sealed class DelimitedRow
     /// </summary>
     /// <param name="fields">The ordered list of field values for this row.</param>
     /// <param name="headerIndex">
-    /// The column-name-to-index map from the document's header row, or <see langword="null" /> when no header
-    /// row was parsed.
+    /// The column-name-to-index map from the document's header row, or <see langword="null" /> when no header row was
+    /// parsed.
     /// </param>
     internal DelimitedRow(IReadOnlyList<string> fields, IReadOnlyDictionary<string, int>? headerIndex)
     {
@@ -66,8 +66,8 @@ public sealed class DelimitedRow
     /// </summary>
     /// <param name="header">The column header name to look up.</param>
     /// <returns>
-    /// The field value for the named column, or <see cref="string.Empty" /> when this row has fewer fields
-    /// than the header row.
+    /// The field value for the named column, or <see cref="string.Empty" /> when this row has fewer fields than the
+    /// header row.
     /// </returns>
     /// <exception cref="InvalidOperationException">
     /// Thrown when the document was parsed without a header row.
@@ -101,9 +101,7 @@ public sealed class DelimitedRow
     /// <typeparam name="T">The target type. Must implement <see cref="ISpanParsable{TSelf}" />.</typeparam>
     /// <param name="index">The zero-based index of the field to parse.</param>
     /// <returns>The parsed value.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="index" /> is out of range.
-    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="index" /> is out of range.</exception>
     /// <exception cref="FormatException">
     /// Thrown when the field value cannot be parsed as <typeparamref name="T" />.
     /// </exception>
@@ -122,12 +120,11 @@ public sealed class DelimitedRow
     /// <typeparam name="T">The target type. Must implement <see cref="ISpanParsable{TSelf}" />.</typeparam>
     /// <param name="index">The zero-based index of the field to parse.</param>
     /// <param name="value">
-    /// When this method returns <see langword="true" />, contains the parsed result; otherwise, the default
-    /// value of <typeparamref name="T" />.
+    /// When this method returns <see langword="true" />, contains the parsed result; otherwise, the default value of
+    /// <typeparamref name="T" />.
     /// </param>
     /// <returns>
-    /// <see langword="true" /> when the index is in range and parsing succeeded; otherwise,
-    /// <see langword="false" />.
+    /// <see langword="true" /> when the index is in range and parsing succeeded; otherwise, <see langword="false" />.
     /// </returns>
     public bool TryGetValue<T>(int index, [MaybeNullWhen(false)] out T value)
         where T : ISpanParsable<T>
@@ -174,8 +171,8 @@ public sealed class DelimitedRow
     /// <typeparam name="T">The target type. Must implement <see cref="ISpanParsable{TSelf}" />.</typeparam>
     /// <param name="header">The column header name to look up.</param>
     /// <param name="value">
-    /// When this method returns <see langword="true" />, contains the parsed result; otherwise, the default
-    /// value of <typeparamref name="T" />.
+    /// When this method returns <see langword="true" />, contains the parsed result; otherwise, the default value of
+    /// <typeparamref name="T" />.
     /// </param>
     /// <returns>
     /// <see langword="true" /> when the header exists and the field was parsed successfully; otherwise,
@@ -194,12 +191,16 @@ public sealed class DelimitedRow
         return T.TryParse(field.AsSpan(), CultureInfo.InvariantCulture, out value);
     }
 
-    /// <summary>Throws an <see cref="InvalidOperationException" /> indicating that no header row was parsed.</summary>
+    /// <summary>
+    /// Throws an <see cref="InvalidOperationException" /> indicating that no header row was parsed.
+    /// </summary>
     [DoesNotReturn]
     private static void ThrowNoHeaders() =>
         throw new InvalidOperationException(FormatsResourceStrings.Op_Invalid_DelimitedRowNoHeaders);
 
-    /// <summary>Throws a <see cref="KeyNotFoundException" /> for an absent column header.</summary>
+    /// <summary>
+    /// Throws a <see cref="KeyNotFoundException" /> for an absent column header.
+    /// </summary>
     [DoesNotReturn]
     private static void ThrowHeaderNotFound(string header) =>
         throw new KeyNotFoundException(

@@ -7,22 +7,20 @@
 namespace Bodu.Text.Encoding;
 
 /// <summary>
-/// Represents a binary-to-text encoding scheme (Base16, Base32, Base64, Base58, Base85, …) with the variant
-/// pre-bound, so that callers can pick or inject an encoding at runtime instead of dispatching through static
-/// classes.
+/// Represents a binary-to-text encoding scheme (Base16, Base32, Base64, Base58, Base85, …) with the variant pre-bound,
+/// so that callers can pick or inject an encoding at runtime instead of dispatching through static classes.
 /// </summary>
 /// <remarks>
 /// <para>
-/// Instances are obtained from <see cref="BinaryEncodings" /> — each property there returns a singleton
-/// implementation bound to a specific variant. The pattern mirrors <see cref="System.Text.Encoding" />, but for
-/// radix encoding rather than character-set transcoding.
+/// Instances are obtained from <see cref="BinaryEncodings" /> — each property there returns a singleton implementation
+/// bound to a specific variant. The pattern mirrors <see cref="System.Text.Encoding" />, but for radix encoding rather
+/// than character-set transcoding.
 /// </para>
 /// <para>
 /// Implementations are stateless and thread-safe. The static convenience methods on <see cref="Base16" />,
 /// <see cref="Base32" />, <see cref="Base64" />, <see cref="Base58" />, and <see cref="Base85" /> remain the
-/// recommended entry points when the encoding is known at compile time; the interface is intended for code that
-/// must choose between encodings at runtime (configuration-driven serializers, plugin pipelines, generic
-/// utilities).
+/// recommended entry points when the encoding is known at compile time; the interface is intended for code that must
+/// choose between encodings at runtime (configuration-driven serializers, plugin pipelines, generic utilities).
 /// </para>
 /// </remarks>
 public interface IBinaryEncoding
@@ -72,8 +70,10 @@ public interface IBinaryEncoding
     /// Indicates whether <paramref name="source" /> is a valid encoded input under this encoding's variant rules.
     /// </summary>
     /// <param name="source">The character span to validate.</param>
-    /// <returns><see langword="true" /> when <paramref name="source" /> would decode without error; otherwise
-    /// <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when <paramref name="source" /> would decode without error; otherwise
+    /// <see langword="false" />.
+    /// </returns>
     bool IsValid(ReadOnlySpan<char> source);
 
     /// <summary>
@@ -82,8 +82,10 @@ public interface IBinaryEncoding
     /// <param name="source">The encoded character span.</param>
     /// <param name="destination">The destination byte span.</param>
     /// <param name="bytesWritten">When this method returns, contains the number of bytes written.</param>
-    /// <returns><see langword="true" /> when the destination is large enough and the input is valid; otherwise
-    /// <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the destination is large enough and the input is valid; otherwise
+    /// <see langword="false" />.
+    /// </returns>
     bool TryDecode(ReadOnlySpan<char> source, Span<byte> destination, out int bytesWritten);
 
     /// <summary>
@@ -92,6 +94,8 @@ public interface IBinaryEncoding
     /// <param name="source">The bytes to encode.</param>
     /// <param name="destination">The destination span.</param>
     /// <param name="charsWritten">When this method returns, contains the number of characters written.</param>
-    /// <returns><see langword="true" /> when the destination is large enough; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the destination is large enough; otherwise <see langword="false" />.
+    /// </returns>
     bool TryEncode(ReadOnlySpan<byte> source, Span<char> destination, out int charsWritten);
 }

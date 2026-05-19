@@ -14,8 +14,7 @@ public sealed partial class BoduConfigurationView
 {
     /// <summary>
     /// Gets the value for <paramref name="key" /> parsed as <typeparamref name="T" /> using
-    /// <see cref="CultureInfo.InvariantCulture" />. Mirrors
-    /// <c>Bodu.Text.Formats.IniSection.GetValue&lt;T&gt;(key)</c>.
+    /// <see cref="CultureInfo.InvariantCulture" />. Mirrors <c>Bodu.Text.Formats.IniSection.GetValue&lt;T&gt;(key)</c>.
     /// </summary>
     /// <typeparam name="T">The target type. Must implement <see cref="ISpanParsable{TSelf}" />.</typeparam>
     /// <param name="key">The configuration key, in either dotted or colon-delimited form.</param>
@@ -41,7 +40,9 @@ public sealed partial class BoduConfigurationView
     /// <typeparam name="T">The target type. Must implement <see cref="ISpanParsable{TSelf}" />.</typeparam>
     /// <param name="key">The configuration key, in either dotted or colon-delimited form.</param>
     /// <param name="value">When this method returns <see langword="true" />, contains the parsed value.</param>
-    /// <returns><see langword="true" /> when the value was present and parseable; otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the value was present and parseable; otherwise, <see langword="false" />.
+    /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
     public bool TryGetValue<T>(string key, [MaybeNullWhen(false)] out T value)
         where T : ISpanParsable<T>
@@ -90,8 +91,9 @@ public sealed partial class BoduConfigurationView
     /// Attempts to get the string value for <paramref name="key" /> without throwing.
     /// </summary>
     /// <param name="key">The configuration key.</param>
-    /// <param name="value">When this method returns, contains the value if found; otherwise,
-    /// <see langword="null" />.</param>
+    /// <param name="value">
+    /// When this method returns, contains the value if found; otherwise, <see langword="null" />.
+    /// </param>
     /// <returns><see langword="true" /> when the key was present; otherwise, <see langword="false" />.</returns>
     public bool TryGetString(string key, out string? value)
     {
@@ -117,8 +119,8 @@ public sealed partial class BoduConfigurationView
     }
 
     /// <summary>
-    /// Gets the 32-bit integer value for <paramref name="key" />, returning <paramref name="fallback" /> on
-    /// missing keys. Present-but-malformed values still throw <see cref="FormatException" />.
+    /// Gets the 32-bit integer value for <paramref name="key" />, returning <paramref name="fallback" /> on missing
+    /// keys. Present-but-malformed values still throw <see cref="FormatException" />.
     /// </summary>
     /// <param name="key">The configuration key.</param>
     /// <param name="fallback">The value to return when the key is absent.</param>
@@ -141,7 +143,9 @@ public sealed partial class BoduConfigurationView
     /// </summary>
     /// <param name="key">The configuration key.</param>
     /// <param name="value">When this method returns, contains the parsed value; otherwise, zero.</param>
-    /// <returns><see langword="true" /> when the value was present and parseable; otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the value was present and parseable; otherwise, <see langword="false" />.
+    /// </returns>
     public bool TryGetInt32(string key, out int value)
     {
         ThrowHelper.ThrowIfNull(key);
@@ -170,8 +174,8 @@ public sealed partial class BoduConfigurationView
     }
 
     /// <summary>
-    /// Gets the boolean value for <paramref name="key" /> using EditorConfig conventions
-    /// (<c>true</c>/<c>false</c>, case-insensitive).
+    /// Gets the boolean value for <paramref name="key" /> using EditorConfig conventions (<c>true</c>/<c>false</c>,
+    /// case-insensitive).
     /// </summary>
     /// <param name="key">The configuration key.</param>
     /// <returns>The parsed boolean value.</returns>
@@ -187,8 +191,7 @@ public sealed partial class BoduConfigurationView
     }
 
     /// <summary>
-    /// Gets the boolean value for <paramref name="key" />, returning <paramref name="fallback" /> on missing
-    /// keys.
+    /// Gets the boolean value for <paramref name="key" />, returning <paramref name="fallback" /> on missing keys.
     /// </summary>
     /// <param name="key">The configuration key.</param>
     /// <param name="fallback">The value to return when the key is absent.</param>
@@ -210,7 +213,9 @@ public sealed partial class BoduConfigurationView
     /// Attempts to parse the value for <paramref name="key" /> as a boolean.
     /// </summary>
     /// <param name="key">The configuration key.</param>
-    /// <param name="value">When this method returns, contains the parsed value; otherwise, <see langword="false" />.</param>
+    /// <param name="value">
+    /// When this method returns, contains the parsed value; otherwise, <see langword="false" />.
+    /// </param>
     /// <returns><see langword="true" /> when the value was present and parseable.</returns>
     public bool TryGetBoolean(string key, out bool value)
     {

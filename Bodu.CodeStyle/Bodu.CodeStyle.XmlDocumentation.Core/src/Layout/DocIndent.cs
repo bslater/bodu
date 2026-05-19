@@ -100,11 +100,13 @@ internal static class DocIndent
             {
                 result.Append(prefixNoTrailingSpace);
             }
-            else if (IsCDataDelimiterLine(content))
+            else if (IsCDataDelimiterLine(content) || StartsWithCDataOpener(content))
             {
-                // CDATA open / close delimiter on its own line: omit the space between the documentation
-                // prefix and the delimiter so the round-trip preserves the Bodu convention of `///<![CDATA[`
-                // and `///]]>` (no space, tightly attached).
+                // CDATA open / close delimiter on its own line, or a line that begins with `<![CDATA[`
+                // (with body on the same line): omit the space between the documentation prefix and the
+                // delimiter so the round-trip preserves the Bodu convention of `///<![CDATA[` and `///]]>`
+                // (no space, tightly attached). The no-space form is required by BODU1405 — any whitespace
+                // between `///` and `<![CDATA[` trips that rule.
                 result.Append(prefixNoTrailingSpace);
                 result.Append(content);
             }
@@ -127,6 +129,18 @@ internal static class DocIndent
         // start with `<![`) gets the normal `/// ` prefix.
         return string.Equals(content, "<![CDATA[", StringComparison.Ordinal)
             || string.Equals(content, "]]>", StringComparison.Ordinal);
+    }
+
+    private static bool StartsWithCDataOpener(string content)
+    {
+        // Treat a line as starting with the CDATA opener when `<![CDATA[` is at position 0 and the next
+        // character (if any) is not a tag-name character. This catches the case where prior reflow has
+        // collapsed a multi-line CDATA body onto a single content line, leaving the opener fused to its
+        // payload (for example `<![CDATA[ int volume = 11; ... ]]>` on one line). Inline CDATA further
+        // into prose (`Use <![CDATA[var x = …]]> for X.`) is unaffected because the line does not begin
+        // with the opener.
+        const string Opener = "<![CDATA[";
+        return content.StartsWith(Opener, StringComparison.Ordinal);
     }
 
     private static string TrimPrefixTrailingSpace(string prefix)

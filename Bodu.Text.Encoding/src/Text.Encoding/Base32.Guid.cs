@@ -31,7 +31,9 @@ public static partial class Base32
     /// <param name="value">The <see cref="Guid" /> to encode.</param>
     /// <param name="variant">The Base32 variant.</param>
     /// <param name="options">Formatting options.</param>
-    /// <returns>A Base32 string of the GUID bytes (mixed-endian, matching <see cref="Guid.TryWriteBytes(Span{byte})" />).</returns>
+    /// <returns>
+    /// A Base32 string of the GUID bytes (mixed-endian, matching <see cref="Guid.TryWriteBytes(Span{byte})" />).
+    /// </returns>
     public static string Encode(Guid value, Base32Variant variant = Base32Variant.Standard, BaseFormattingOptions options = BaseFormattingOptions.None)
     {
         Span<byte> bytes = stackalloc byte[16];
@@ -43,8 +45,9 @@ public static partial class Base32
     /// Attempts to decode a Base32 representation of a <see cref="Guid" />.
     /// </summary>
     /// <param name="source">The Base32 characters.</param>
-    /// <param name="value">When this method returns, contains the decoded <see cref="Guid" /> or
-    /// <see cref="Guid.Empty" />.</param>
+    /// <param name="value">
+    /// When this method returns, contains the decoded <see cref="Guid" /> or <see cref="Guid.Empty" />.
+    /// </param>
     /// <param name="variant">The Base32 variant.</param>
     /// <param name="styles">Parsing styles.</param>
     /// <returns><see langword="true" /> when decoding succeeds; otherwise <see langword="false" />.</returns>

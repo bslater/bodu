@@ -42,11 +42,15 @@ namespace Bodu.IO.Hashing;
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for
 /// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
 /// <example>
-/// <code language="csharp"> using Bodu.IO.Hashing; using Bodu.IO.Hashing.Extensions; // Default djb2 with the canonical
+/// <code language="csharp">
+///<![CDATA[
+/// using Bodu.IO.Hashing; using Bodu.IO.Hashing.Extensions; // Default djb2 with the canonical
 /// 5381 seed. var djb2 = new Bernstein(); byte[] digest =
 /// djb2.ComputeHash(System.Text.Encoding.UTF8.GetBytes("symbol")); // XOR-modified djb2a, generally better
 /// distribution. var djb2a = new Bernstein { UseModifiedAlgorithm = true }; byte[] digestA =
-/// djb2a.ComputeHash(System.Text.Encoding.UTF8.GetBytes("symbol")); </code>
+/// djb2a.ComputeHash(System.Text.Encoding.UTF8.GetBytes("symbol"));
+///]]>
+/// </code>
 /// </example>
 /// </remarks>
 public sealed class Bernstein
@@ -96,8 +100,7 @@ public sealed class Bernstein
     /// </summary>
     /// <value>The initial hash seed. Defaults to <see cref="DefaultInitialValue" />.</value>
     /// <exception cref="CryptographicUnexpectedOperationException">
-    /// The algorithm has already consumed input and cannot be reconfigured until <see cref="Reset" /> is
-    /// invoked.
+    /// The algorithm has already consumed input and cannot be reconfigured until <see cref="Reset" /> is invoked.
     /// </exception>
     public uint InitialValue
     {
@@ -115,12 +118,11 @@ public sealed class Bernstein
     /// Gets or sets a value indicating whether the XOR-modified form of the algorithm is in use.
     /// </summary>
     /// <value>
-    /// <see langword="true" /> when each update performs <c>(hash * 33) ^ c</c>; <see langword="false" /> when
-    /// it performs <c>(hash * 33) + c</c>.
+    /// <see langword="true" /> when each update performs <c>(hash * 33) ^ c</c>; <see langword="false" /> when it
+    /// performs <c>(hash * 33) + c</c>.
     /// </value>
     /// <exception cref="CryptographicUnexpectedOperationException">
-    /// The algorithm has already consumed input and cannot be reconfigured until <see cref="Reset" /> is
-    /// invoked.
+    /// The algorithm has already consumed input and cannot be reconfigured until <see cref="Reset" /> is invoked.
     /// </exception>
     public bool UseModifiedAlgorithm
     {

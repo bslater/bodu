@@ -7,8 +7,7 @@
 namespace Bodu.Text.Formats;
 
 /// <summary>
-/// Represents a parsed delimited-text document, providing access to the optional header row and the ordered data
-/// rows.
+/// Represents a parsed delimited-text document, providing access to the optional header row and the ordered data rows.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -16,10 +15,9 @@ namespace Bodu.Text.Formats;
 /// <see cref="Delimited.TryParse(ReadOnlySpan{char}, out DelimitedDocument)" />.
 /// </para>
 /// <para>
-/// When the source was parsed with <see cref="DelimitedParseOptions.HasHeader" /> set to
-/// <see langword="true" /> (the default), the first record is treated as a header row whose fields are exposed
-/// via <see cref="Headers" />. Fields in subsequent rows can then be accessed by column name using the
-/// <see cref="DelimitedRow.this[string]" /> indexer.
+/// When the source was parsed with <see cref="DelimitedParseOptions.HasHeader" /> set to <see langword="true" /> (the
+/// default), the first record is treated as a header row whose fields are exposed via <see cref="Headers" />. Fields in
+/// subsequent rows can then be accessed by column name using the <see cref="DelimitedRow.this[string]" /> indexer.
 /// </para>
 /// </remarks>
 public sealed class DelimitedDocument
@@ -43,8 +41,8 @@ public sealed class DelimitedDocument
     /// header row.
     /// </summary>
     /// <returns>
-    /// A read-only list of header strings in source order. Empty when
-    /// <see cref="DelimitedParseOptions.HasHeader" /> was <see langword="false" />.
+    /// A read-only list of header strings in source order. Empty when <see cref="DelimitedParseOptions.HasHeader" />
+    /// was <see langword="false" />.
     /// </returns>
     public IReadOnlyList<string> Headers { get; }
 
@@ -59,8 +57,8 @@ public sealed class DelimitedDocument
     /// </summary>
     /// <returns>
     /// The number of fields in the header row when <see cref="DelimitedParseOptions.HasHeader" /> was
-    /// <see langword="true" />; otherwise, the field count of the first data row, or <c>0</c> when the document
-    /// is empty.
+    /// <see langword="true" />; otherwise, the field count of the first data row, or <c>0</c> when the document is
+    /// empty.
     /// </returns>
     public int FieldCount { get; }
 }

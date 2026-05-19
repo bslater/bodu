@@ -16,7 +16,9 @@ public static partial class Base85
     /// </summary>
     /// <param name="s">The Ascii85 input.</param>
     /// <returns>The decoded byte array.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="s" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="s" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="FormatException">Thrown when the input is not valid Ascii85.</exception>
     public static byte[] FromBase85String(string s) =>
         Decode(s, Base85Variant.Ascii85, BaseFormatStyles.None);
@@ -80,7 +82,9 @@ public static partial class Base85
     /// </summary>
     /// <param name="inArray">The byte array to encode.</param>
     /// <returns>An Ascii85 string.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="inArray" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="inArray" /> is <see langword="null" />.
+    /// </exception>
     public static string ToBase85String(byte[] inArray) =>
         Encode(inArray, Base85Variant.Ascii85);
 
@@ -99,7 +103,9 @@ public static partial class Base85
     /// <param name="offset">The starting offset.</param>
     /// <param name="length">The number of bytes to encode.</param>
     /// <returns>An Ascii85 string.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="inArray" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="inArray" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <paramref name="offset" /> or <paramref name="length" /> is out of range.
     /// </exception>
@@ -116,7 +122,9 @@ public static partial class Base85
     /// <param name="source">The bytes to encode.</param>
     /// <param name="destination">The destination span.</param>
     /// <param name="charsWritten">When this method returns, contains the number of characters written.</param>
-    /// <returns><see langword="true" /> on success; <see langword="false" /> when the destination is too small.</returns>
+    /// <returns>
+    /// <see langword="true" /> on success; <see langword="false" /> when the destination is too small.
+    /// </returns>
     public static bool TryToBase85String(ReadOnlySpan<byte> source, Span<char> destination, out int charsWritten) =>
         TryEncode(source, destination, out charsWritten, Base85Variant.Ascii85);
 
@@ -126,7 +134,9 @@ public static partial class Base85
     /// <param name="source">The bytes to encode.</param>
     /// <param name="utf8Destination">The UTF-8 destination span.</param>
     /// <param name="bytesWritten">When this method returns, contains the number of bytes written.</param>
-    /// <returns><see langword="true" /> on success; <see langword="false" /> when the destination is too small.</returns>
+    /// <returns>
+    /// <see langword="true" /> on success; <see langword="false" /> when the destination is too small.
+    /// </returns>
     public static bool TryToBase85String(ReadOnlySpan<byte> source, Span<byte> utf8Destination, out int bytesWritten) =>
         TryEncodeToUtf8(source, utf8Destination, out bytesWritten, Base85Variant.Ascii85);
 }

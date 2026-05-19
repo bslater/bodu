@@ -16,7 +16,9 @@ public static partial class Base32
     /// </summary>
     /// <param name="s">The Base32 input.</param>
     /// <returns>The decoded byte array.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="s" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="s" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="FormatException">Thrown when the input is not strict Standard Base32.</exception>
     public static byte[] FromBase32String(string s) =>
         Decode(s, Base32Variant.Standard, BaseFormatStyles.None);
@@ -36,8 +38,9 @@ public static partial class Base32
     /// <param name="utf8Source">The UTF-8 hexadecimal source.</param>
     /// <returns>The decoded byte array.</returns>
     /// <exception cref="FormatException">Thrown when the input is not strict Standard Base32.</exception>
-    /// <remarks>Base32 alphabet characters are ASCII, so the UTF-8 byte form is byte-identical to the character
-    /// form.</remarks>
+    /// <remarks>
+    /// Base32 alphabet characters are ASCII, so the UTF-8 byte form is byte-identical to the character form.
+    /// </remarks>
     public static byte[] FromBase32String(ReadOnlySpan<byte> utf8Source)
     {
         if (utf8Source.IsEmpty)
@@ -83,7 +86,9 @@ public static partial class Base32
     /// </summary>
     /// <param name="inArray">The byte array to encode.</param>
     /// <returns>A Base32 (RFC 4648 §6) string.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="inArray" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="inArray" /> is <see langword="null" />.
+    /// </exception>
     public static string ToBase32String(byte[] inArray) =>
         Encode(inArray, Base32Variant.Standard, BaseFormattingOptions.None);
 
@@ -102,7 +107,9 @@ public static partial class Base32
     /// <param name="offset">The starting offset.</param>
     /// <param name="length">The number of bytes to encode.</param>
     /// <returns>A Base32 string.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="inArray" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="inArray" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <paramref name="offset" /> or <paramref name="length" /> is out of range.
     /// </exception>
@@ -120,7 +127,9 @@ public static partial class Base32
     /// <param name="source">The bytes to encode.</param>
     /// <param name="destination">The destination span.</param>
     /// <param name="charsWritten">When this method returns, contains the number of characters written.</param>
-    /// <returns><see langword="true" /> on success; <see langword="false" /> when the destination is too small.</returns>
+    /// <returns>
+    /// <see langword="true" /> on success; <see langword="false" /> when the destination is too small.
+    /// </returns>
     public static bool TryToBase32String(ReadOnlySpan<byte> source, Span<char> destination, out int charsWritten) =>
         TryEncode(source, destination, out charsWritten, Base32Variant.Standard, BaseFormattingOptions.None);
 
@@ -131,7 +140,9 @@ public static partial class Base32
     /// <param name="source">The bytes to encode.</param>
     /// <param name="utf8Destination">The UTF-8 destination span.</param>
     /// <param name="bytesWritten">When this method returns, contains the number of bytes written.</param>
-    /// <returns><see langword="true" /> on success; <see langword="false" /> when the destination is too small.</returns>
+    /// <returns>
+    /// <see langword="true" /> on success; <see langword="false" /> when the destination is too small.
+    /// </returns>
     public static bool TryToBase32String(ReadOnlySpan<byte> source, Span<byte> utf8Destination, out int bytesWritten) =>
         TryEncodeToUtf8(source, utf8Destination, out bytesWritten, Base32Variant.Standard, BaseFormattingOptions.None);
 }

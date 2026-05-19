@@ -156,4 +156,34 @@ public sealed class XmlDocFormatterCDataTests
         Assert.IsFalse(result.Changed, $"Formatter changed inline-CDATA content. Formatted text was:\n{result.FormattedText}");
         StringAssert.Contains(result.FormattedText, "<![CDATA[var x = new Foo<int>();]]>");
     }
+
+    /// <summary>
+    /// Verifies that a content line beginning with <c>&lt;![CDATA[</c> followed by body text on the same
+    /// line (the shape produced when prior reflow has collapsed a multi-line CDATA payload onto one line)
+    /// receives the no-space prefix. Without this rule the formatter would emit
+    /// <c>/// &lt;![CDATA[ …</c>, tripping the sibling BODU1405 analyzer which requires the opener to
+    /// butt directly against <c>///</c>.
+    /// </summary>
+    [TestMethod]
+    public void Format_WhenLineStartsWithCDataOpenerAndBody_ShouldUseNoSpacePrefix()
+    {
+        var input =
+            "/// <example>\r\n" +
+            "    /// <code language=\"csharp\">\r\n" +
+            "    ///<![CDATA[ int volume = 11; // Replace explicit min/max calls with a fluent clamp. int safeVolume =\r\n" +
+            "    /// volume.Clamp(0, 10); // => 10 // Inclusive \"between\" predicate, ideal in guard clauses. bool inDecimalDigits =\r\n" +
+            "    /// '7'.IsBetween('0', '9'); // => true ]]>\r\n" +
+            "    /// </code>\r\n" +
+            "    /// </example>\r\n";
+
+        var formatter = new XmlDocFormatter();
+        var context = new XmlDocFormatContext("    ", "\r\n", XmlDocMemberKindHint.Unknown);
+        XmlDocFormatOptions options = XmlDocFormatPolicyDefaults.CreateBoduDefaults();
+
+        XmlDocFormatResult result = formatter.FormatTrivia(input, context, options);
+
+        StringAssert.Contains(result.FormattedText, "///<![CDATA[");
+        Assert.IsFalse(result.FormattedText.Contains("/// <![CDATA["),
+            $"Output contains '/// <![CDATA[' with a space (BODU1405 would fire). Formatted text:\n{result.FormattedText}");
+    }
 }

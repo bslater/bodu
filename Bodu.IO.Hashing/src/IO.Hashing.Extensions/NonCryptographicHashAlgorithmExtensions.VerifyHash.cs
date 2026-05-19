@@ -21,7 +21,9 @@ public static partial class NonCryptographicHashAlgorithmExtensions
     /// The <see cref="NonCryptographicHashAlgorithm" /> instance used to compute the hash. Must not be
     /// <see langword="null" />.
     /// </param>
-    /// <param name="input">The input byte array whose hash will be computed. Must not be <see langword="null" />.</param>
+    /// <param name="input">
+    /// The input byte array whose hash will be computed. Must not be <see langword="null" />.
+    /// </param>
     /// <param name="expectedHash">The expected hash value as a byte array. Must not be <see langword="null" />.</param>
     /// <returns>
     /// <see langword="true" /> if the computed hash equals <paramref name="expectedHash" />; otherwise,
@@ -155,8 +157,8 @@ public static partial class NonCryptographicHashAlgorithmExtensions
     /// </param>
     /// <returns>
     /// <see langword="true" /> if the hash of the stream matches <paramref name="expectedHex" />; otherwise,
-    /// <see langword="false" />.
-    /// Returns <see langword="false" /> if <paramref name="expectedHex" /> is not a valid hexadecimal string.
+    /// <see langword="false" />. Returns <see langword="false" /> if <paramref name="expectedHex" /> is not a valid
+    /// hexadecimal string.
     /// </returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="algorithm" />, <paramref name="stream" />, or <paramref name="expectedHex" /> is

@@ -25,13 +25,15 @@ public static partial class Base85
             : new Guid(bytes);
     }
     /// <summary>
-    /// Encodes the byte representation of <paramref name="value" /> as a Base85 string. 16 bytes encode to exactly
-    /// 20 characters (Ascii85 or Z85).
+    /// Encodes the byte representation of <paramref name="value" /> as a Base85 string. 16 bytes encode to exactly 20
+    /// characters (Ascii85 or Z85).
     /// </summary>
     /// <param name="value">The <see cref="Guid" /> to encode.</param>
     /// <param name="variant">The Base85 variant.</param>
     /// <param name="options">Formatting options.</param>
-    /// <returns>A Base85 string of the GUID bytes (mixed-endian, matching <see cref="Guid.TryWriteBytes(Span{byte})" />).</returns>
+    /// <returns>
+    /// A Base85 string of the GUID bytes (mixed-endian, matching <see cref="Guid.TryWriteBytes(Span{byte})" />).
+    /// </returns>
     public static string Encode(Guid value, Base85Variant variant = Base85Variant.Ascii85, BaseFormattingOptions options = BaseFormattingOptions.None)
     {
         Span<byte> bytes = stackalloc byte[16];
@@ -43,8 +45,9 @@ public static partial class Base85
     /// Attempts to decode a Base85 representation of a <see cref="Guid" />.
     /// </summary>
     /// <param name="source">The Base85 characters.</param>
-    /// <param name="value">When this method returns, contains the decoded <see cref="Guid" /> or
-    /// <see cref="Guid.Empty" />.</param>
+    /// <param name="value">
+    /// When this method returns, contains the decoded <see cref="Guid" /> or <see cref="Guid.Empty" />.
+    /// </param>
     /// <param name="variant">The Base85 variant.</param>
     /// <param name="styles">Parsing styles.</param>
     /// <returns><see langword="true" /> when decoding succeeds; otherwise <see langword="false" />.</returns>

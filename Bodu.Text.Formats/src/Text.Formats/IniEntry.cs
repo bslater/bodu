@@ -10,18 +10,18 @@ using System.Globalization;
 namespace Bodu.Text.Formats;
 
 /// <summary>
-/// Represents a single key/value entry within an <see cref="IniSection" />. Mutable so that callers can edit
-/// values, attach or strip comment trivia, and assemble documents programmatically before calling
+/// Represents a single key/value entry within an <see cref="IniSection" />. Mutable so that callers can edit values,
+/// attach or strip comment trivia, and assemble documents programmatically before calling
 /// <see cref="Ini.Format(IniDocument)" />.
 /// </summary>
 /// <remarks>
 /// <para>
-/// The <see cref="Key" /> is immutable once constructed because the owning section maintains a key-to-entry
-/// lookup that depends on it. To rename a key, remove the entry from its section and add a replacement.
+/// The <see cref="Key" /> is immutable once constructed because the owning section maintains a key-to-entry lookup that
+/// depends on it. To rename a key, remove the entry from its section and add a replacement.
 /// </para>
 /// <para>
-/// <see cref="Value" />, <see cref="InlineComment" />, and the <see cref="LeadingComments" /> list are all
-/// mutable. The <see cref="LineNumber" /> reflects parser-assigned trivia and is read-only.
+/// <see cref="Value" />, <see cref="InlineComment" />, and the <see cref="LeadingComments" /> list are all mutable. The
+/// <see cref="LineNumber" /> reflects parser-assigned trivia and is read-only.
 /// </para>
 /// </remarks>
 public sealed class IniEntry
@@ -60,16 +60,15 @@ public sealed class IniEntry
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="IniEntry" /> class with source line and leading-comment
-    /// trivia.
+    /// Initializes a new instance of the <see cref="IniEntry" /> class with source line and leading-comment trivia.
     /// </summary>
     /// <param name="key">The trimmed key name.</param>
     /// <param name="value">The trimmed value string.</param>
     /// <param name="lineNumber">The 1-based source line, or <c>0</c> when constructed programmatically.</param>
     /// <param name="leadingComments">
-    /// The comments authored on lines that precede this entry, in source order, or <see langword="null" /> when
-    /// no comments precede the entry. The supplied sequence is copied; subsequent mutations of the input
-    /// collection do not affect this entry.
+    /// The comments authored on lines that precede this entry, in source order, or <see langword="null" /> when no
+    /// comments precede the entry. The supplied sequence is copied; subsequent mutations of the input collection do not
+    /// affect this entry.
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="key" /> or <paramref name="value" /> is <see langword="null" />.
@@ -107,8 +106,8 @@ public sealed class IniEntry
     }
 
     /// <summary>
-    /// Gets the 1-based source line number at which this entry was authored, or <c>0</c> when the entry was
-    /// constructed programmatically rather than parsed.
+    /// Gets the 1-based source line number at which this entry was authored, or <c>0</c> when the entry was constructed
+    /// programmatically rather than parsed.
     /// </summary>
     /// <returns>A non-negative line number.</returns>
     public int LineNumber { get; }
@@ -117,14 +116,14 @@ public sealed class IniEntry
     /// Gets the comments authored on lines preceding this entry, in source order.
     /// </summary>
     /// <returns>
-    /// A read-only view onto the section's mutable leading-comment list. The list is empty when no comments
-    /// precede the entry or when <see cref="IniParseOptions.PreserveComments" /> was <see langword="false" />.
+    /// A read-only view onto the section's mutable leading-comment list. The list is empty when no comments precede the
+    /// entry or when <see cref="IniParseOptions.PreserveComments" /> was <see langword="false" />.
     /// </returns>
     public IReadOnlyList<IniComment> LeadingComments => _leadingComments;
 
     /// <summary>
-    /// Gets or sets the comment captured on the same line as this entry, or <see langword="null" /> when no
-    /// inline comment is present.
+    /// Gets or sets the comment captured on the same line as this entry, or <see langword="null" /> when no inline
+    /// comment is present.
     /// </summary>
     /// <returns>The inline comment, or <see langword="null" />.</returns>
     public IniComment? InlineComment { get; set; }
@@ -170,12 +169,10 @@ public sealed class IniEntry
     /// </summary>
     /// <typeparam name="T">The target type. Must implement <see cref="ISpanParsable{TSelf}" />.</typeparam>
     /// <param name="value">
-    /// When this method returns <see langword="true" />, contains the parsed result; otherwise, the default value
-    /// of <typeparamref name="T" />.
+    /// When this method returns <see langword="true" />, contains the parsed result; otherwise, the default value of
+    /// <typeparamref name="T" />.
     /// </param>
-    /// <returns>
-    /// <see langword="true" /> when parsing succeeded; otherwise, <see langword="false" />.
-    /// </returns>
+    /// <returns><see langword="true" /> when parsing succeeded; otherwise, <see langword="false" />.</returns>
     public bool TryGetValue<T>([MaybeNullWhen(false)] out T value)
         where T : ISpanParsable<T> =>
         T.TryParse(Value.AsSpan(), CultureInfo.InvariantCulture, out value);

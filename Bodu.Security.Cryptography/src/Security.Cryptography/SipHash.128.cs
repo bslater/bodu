@@ -54,8 +54,12 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// </remarks>
 /// <example>
-/// <code language="csharp"> using Bodu.Security.Cryptography; using var sip = new SipHash128 { Key = sessionKey };
-/// byte[] tag = sip.ComputeHash(message); </code>
+/// <code language="csharp">
+///<![CDATA[
+/// using Bodu.Security.Cryptography; using var sip = new SipHash128 { Key = sessionKey };
+/// byte[] tag = sip.ComputeHash(message);
+///]]>
+/// </code>
 /// </example>
 /// <seealso cref="SipHash{T}"/> <seealso cref="SipHash64"/>
 /// <seealso href="../guides/cryptography/hashing.html#pattern-2--a-keyed-hash-siphash">Keyed-hash (SipHash) guide

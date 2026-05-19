@@ -169,9 +169,11 @@ public static partial class IEnumerableExtensions
     /// </para>
     /// </remarks>
     /// <example>
-    /// <code language="csharp"><![CDATA[ var (min, max) = new[] { 3, 1, 4, 1, 5, 9, 2, 6 }.Aggregate( seed1: int.MaxValue,
+    /// <code language="csharp">
+    ///<![CDATA[ var (min, max) = new[] { 3, 1, 4, 1, 5, 9, 2, 6 }.Aggregate( seed1: int.MaxValue,
     /// seed2: int.MinValue, func1: (acc, x) => Math.Min(acc, x), func2: (acc, x) => Math.Max(acc, x)); // min == 1, max
-    /// == 9 ]]></code>
+    /// == 9 ]]>
+    /// </code>
     /// </example>
     public static (T1, T2) Aggregate<TSource, T1, T2>(
         this IEnumerable<TSource> source,
@@ -357,9 +359,11 @@ public static partial class IEnumerableExtensions
     /// </para>
     /// </remarks>
     /// <example>
-    /// <code language="csharp"><![CDATA[ var (sum, count, max) = new[] { 3, 1, 4, 1, 5, 9, 2, 6 }.Aggregate( seed1: 0, seed2: 0,
+    /// <code language="csharp">
+    ///<![CDATA[ var (sum, count, max) = new[] { 3, 1, 4, 1, 5, 9, 2, 6 }.Aggregate( seed1: 0, seed2: 0,
     /// seed3: int.MinValue, func1: (acc, x) => acc + x, func2: (acc, _) => acc + 1, func3: (acc, x) => Math.Max(acc,
-    /// x)); // sum == 31, count == 8, max == 9 ]]></code>
+    /// x)); // sum == 31, count == 8, max == 9 ]]>
+    /// </code>
     /// </example>
     public static (T1, T2, T3) Aggregate<TSource, T1, T2, T3>(
         this IEnumerable<TSource> source,

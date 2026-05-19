@@ -16,10 +16,14 @@ public static partial class Base64
     /// </summary>
     /// <param name="bytes">The byte array to encode.</param>
     /// <param name="variant">The Base64 variant.</param>
-    /// <param name="options">Formatting options. Only <see cref="BaseFormattingOptions.InsertLineBreaks" /> and
-    /// <see cref="BaseFormattingOptions.OmitPadding" /> have an effect on Base64.</param>
+    /// <param name="options">
+    /// Formatting options. Only <see cref="BaseFormattingOptions.InsertLineBreaks" /> and
+    /// <see cref="BaseFormattingOptions.OmitPadding" /> have an effect on Base64.
+    /// </param>
     /// <returns>The Base64 encoded string.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="bytes" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="bytes" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
     public static string Encode(byte[] bytes, Base64Variant variant = Base64Variant.Standard, BaseFormattingOptions options = BaseFormattingOptions.None)
     {
@@ -59,8 +63,10 @@ public static partial class Base64
     /// Encodes a span of bytes directly into a destination character span.
     /// </summary>
     /// <param name="bytes">The bytes to encode.</param>
-    /// <param name="destination">The destination span. Must be at least
-    /// <see cref="GetEncodedLength(int, Base64Variant, BaseFormattingOptions)" /> characters in size.</param>
+    /// <param name="destination">
+    /// The destination span. Must be at least
+    /// <see cref="GetEncodedLength(int, Base64Variant, BaseFormattingOptions)" /> characters in size.
+    /// </param>
     /// <param name="variant">The Base64 variant.</param>
     /// <param name="options">Formatting options.</param>
     /// <returns>The number of characters written.</returns>
@@ -86,7 +92,9 @@ public static partial class Base64
     /// <param name="variant">The Base64 variant.</param>
     /// <param name="options">Formatting options.</param>
     /// <returns>The Base64 encoded string.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="bytes" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="bytes" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <paramref name="offset" /> or <paramref name="count" /> is out of range, or when
     /// <paramref name="variant" /> is undefined.
@@ -106,11 +114,15 @@ public static partial class Base64
     /// </summary>
     /// <param name="bytes">The bytes to encode.</param>
     /// <param name="destination">The destination span.</param>
-    /// <param name="charsWritten">When this method returns, contains the number of characters written, or <c>0</c>
-    /// when the destination is too small.</param>
+    /// <param name="charsWritten">
+    /// When this method returns, contains the number of characters written, or <c>0</c> when the destination is too
+    /// small.
+    /// </param>
     /// <param name="variant">The Base64 variant.</param>
     /// <param name="options">Formatting options.</param>
-    /// <returns><see langword="true" /> when the destination is large enough; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the destination is large enough; otherwise <see langword="false" />.
+    /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
     public static bool TryEncode(ReadOnlySpan<byte> bytes, Span<char> destination, out int charsWritten, Base64Variant variant = Base64Variant.Standard, BaseFormattingOptions options = BaseFormattingOptions.None)
     {

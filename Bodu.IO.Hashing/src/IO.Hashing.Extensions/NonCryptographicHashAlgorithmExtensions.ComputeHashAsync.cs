@@ -29,9 +29,7 @@ public static partial class NonCryptographicHashAlgorithmExtensions
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="bufferSize" /> is less than or equal to zero.
     /// </exception>
-    /// <exception cref="OperationCanceledException">
-    /// The operation was canceled.
-    /// </exception>
+    /// <exception cref="OperationCanceledException">The operation was canceled.</exception>
     public static async ValueTask<byte[]> ComputeHashAsync(
         this NonCryptographicHashAlgorithm algorithm,
         Stream source,

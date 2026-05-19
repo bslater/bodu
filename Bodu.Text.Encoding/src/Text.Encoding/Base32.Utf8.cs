@@ -20,8 +20,9 @@ public static partial class Base32
     /// <param name="bytesWritten">When this method returns, contains the number of bytes written.</param>
     /// <param name="variant">The variant.</param>
     /// <param name="styles">Parsing styles.</param>
-    /// <param name="isFinalBlock">Whether <paramref name="source" /> represents the final block of a streamed
-    /// input.</param>
+    /// <param name="isFinalBlock">
+    /// Whether <paramref name="source" /> represents the final block of a streamed input.
+    /// </param>
     /// <returns>An <see cref="OperationStatus" /> describing the outcome.</returns>
     public static OperationStatus DecodeFromUtf8(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten, Base32Variant variant = Base32Variant.Standard, BaseFormatStyles styles = BaseFormatStyles.None, bool isFinalBlock = true)
     {
@@ -40,8 +41,10 @@ public static partial class Base32
     /// </summary>
     /// <param name="source">The bytes to encode.</param>
     /// <param name="variant">The Base32 variant.</param>
-    /// <param name="options">Formatting options. Only <see cref="BaseFormattingOptions.OmitPadding" /> has an effect
-    /// on the UTF-8 path; line-break and spacing flags are not supported.</param>
+    /// <param name="options">
+    /// Formatting options. Only <see cref="BaseFormattingOptions.OmitPadding" /> has an effect on the UTF-8 path;
+    /// line-break and spacing flags are not supported.
+    /// </param>
     /// <returns>The UTF-8 encoded Base32 bytes.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
     /// <exception cref="ArgumentException">
@@ -73,10 +76,16 @@ public static partial class Base32
     /// <param name="destination">The destination UTF-8 byte span.</param>
     /// <param name="bytesWritten">When this method returns, contains the number of bytes written.</param>
     /// <param name="variant">The Base32 variant.</param>
-    /// <param name="options">Formatting options. Only <see cref="BaseFormattingOptions.OmitPadding" /> is supported.</param>
-    /// <returns><see langword="true" /> on success; <see langword="false" /> when the destination is too small.</returns>
+    /// <param name="options">
+    /// Formatting options. Only <see cref="BaseFormattingOptions.OmitPadding" /> is supported.
+    /// </param>
+    /// <returns>
+    /// <see langword="true" /> on success; <see langword="false" /> when the destination is too small.
+    /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
-    /// <exception cref="ArgumentException">Thrown when <paramref name="options" /> contains unsupported flags.</exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="options" /> contains unsupported flags.
+    /// </exception>
     public static bool TryEncodeToUtf8(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesWritten, Base32Variant variant = Base32Variant.Standard, BaseFormattingOptions options = BaseFormattingOptions.None)
     {
         EnsureUtf8EncodeOptionsSupported(options);
@@ -101,12 +110,16 @@ public static partial class Base32
     /// <summary>
     /// Generic bit-stream decoder shared by the char-source and UTF-8-source <see cref="OperationStatus" /> paths.
     /// </summary>
-    /// <typeparam name="TSource">The source kind selector. Use <see cref="CharSource" /> for <paramref name="charSource" />
-    /// or <see cref="Utf8Source" /> for <paramref name="utf8Source" />.</typeparam>
-    /// <param name="charSource">The character source (used when <typeparamref name="TSource" /> is
-    /// <see cref="CharSource" />).</param>
-    /// <param name="utf8Source">The UTF-8 source (used when <typeparamref name="TSource" /> is
-    /// <see cref="Utf8Source" />).</param>
+    /// <typeparam name="TSource">
+    /// The source kind selector. Use <see cref="CharSource" /> for <paramref name="charSource" /> or
+    /// <see cref="Utf8Source" /> for <paramref name="utf8Source" />.
+    /// </typeparam>
+    /// <param name="charSource">
+    /// The character source (used when <typeparamref name="TSource" /> is <see cref="CharSource" />).
+    /// </param>
+    /// <param name="utf8Source">
+    /// The UTF-8 source (used when <typeparamref name="TSource" /> is <see cref="Utf8Source" />).
+    /// </param>
     /// <param name="destination">The destination span.</param>
     /// <param name="lookup">The variant lookup table.</param>
     /// <param name="styles">Parsing styles.</param>
@@ -298,7 +311,9 @@ public static partial class Base32
     /// <param name="source">The input bytes.</param>
     /// <param name="destination">The destination byte span.</param>
     /// <param name="variant">The variant.</param>
-    /// <param name="options">The encode options (only <see cref="BaseFormattingOptions.OmitPadding" /> is honoured).</param>
+    /// <param name="options">
+    /// The encode options (only <see cref="BaseFormattingOptions.OmitPadding" /> is honoured).
+    /// </param>
     /// <returns>The number of UTF-8 bytes written.</returns>
     private static int EncodeIntoUtf8Span(ReadOnlySpan<byte> source, Span<byte> destination, Base32Variant variant, BaseFormattingOptions options)
     {
@@ -356,11 +371,13 @@ public static partial class Base32
         }
     }
 
-    /// <summary>Marker struct used to select the character-source code path in
-    /// <see cref="DecodeBitStream{TSource}" />.</summary>
+    /// <summary>
+    /// Marker struct used to select the character-source code path in <see cref="DecodeBitStream{TSource}" />.
+    /// </summary>
     private readonly struct CharSource { }
 
-    /// <summary>Marker struct used to select the UTF-8-source code path in
-    /// <see cref="DecodeBitStream{TSource}" />.</summary>
+    /// <summary>
+    /// Marker struct used to select the UTF-8-source code path in <see cref="DecodeBitStream{TSource}" />.
+    /// </summary>
     private readonly struct Utf8Source { }
 }

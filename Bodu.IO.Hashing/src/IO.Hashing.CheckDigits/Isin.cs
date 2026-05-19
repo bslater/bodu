@@ -69,8 +69,8 @@ public sealed class Isin
     /// <param name="body">The body characters. Each must be an ASCII decimal digit or uppercase Latin letter.</param>
     /// <returns>The check digit as an ASCII character in the range <c>'0'</c> to <c>'9'</c>.</returns>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="body" /> contains any character outside <c>'0'</c>–<c>'9'</c> and
-    /// <c>'A'</c>–<c>'Z'</c>.
+    /// Thrown when <paramref name="body" /> contains any character outside <c>'0'</c>–<c>'9'</c> and <c>'A'</c>–
+    /// <c>'Z'</c>.
     /// </exception>
     public static char Compute(ReadOnlySpan<char> body)
     {

@@ -12,13 +12,11 @@ namespace Bodu.Text.Encoding;
 internal static partial class EncodingThrowHelper
 {
     /// <summary>
-    /// Throws a <see cref="FormatException" /> when the decoded byte count does not equal the 16 bytes required
-    /// to populate a <see cref="System.Guid" /> value.
+    /// Throws a <see cref="FormatException" /> when the decoded byte count does not equal the 16 bytes required to
+    /// populate a <see cref="System.Guid" /> value.
     /// </summary>
     /// <param name="decodedLength">The number of bytes produced by the decoder.</param>
-    /// <exception cref="FormatException">
-    /// Thrown when <paramref name="decodedLength" /> is not exactly 16.
-    /// </exception>
+    /// <exception cref="FormatException">Thrown when <paramref name="decodedLength" /> is not exactly 16.</exception>
     internal static void ThrowIfGuidLengthMismatch(int decodedLength)
     {
         if (decodedLength != 16)

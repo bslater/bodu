@@ -80,8 +80,8 @@ public static partial class NonCryptographicHashAlgorithmExtensions
     /// <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
     /// <returns>
     /// A task that evaluates to <see langword="true" /> if the computed hash matches <paramref name="expectedHex" />;
-    /// otherwise, <see langword="false" />.
-    /// Returns <see langword="false" /> if <paramref name="expectedHex" /> is not a valid hexadecimal string.
+    /// otherwise, <see langword="false" />. Returns <see langword="false" /> if <paramref name="expectedHex" /> is not
+    /// a valid hexadecimal string.
     /// </returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="algorithm" />, <paramref name="stream" />, or <paramref name="expectedHex" /> is

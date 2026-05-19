@@ -12,24 +12,26 @@ public static partial class Base64
 {
 
     /// <summary>
-    /// Decodes <paramref name="s" /> as a Standard Base64 string into a byte array, mirroring the lenient
-    /// whitespace behaviour of <see cref="System.Convert.FromBase64String(string)" />. ASCII whitespace anywhere in
-    /// the input is silently ignored; the canonical-padding rule and alphabet are otherwise enforced strictly.
+    /// Decodes <paramref name="s" /> as a Standard Base64 string into a byte array, mirroring the lenient whitespace
+    /// behaviour of <see cref="System.Convert.FromBase64String(string)" />. ASCII whitespace anywhere in the input is
+    /// silently ignored; the canonical-padding rule and alphabet are otherwise enforced strictly.
     /// </summary>
     /// <param name="s">The Base64 input.</param>
     /// <returns>The decoded byte array.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="s" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="s" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="FormatException">Thrown when the input is not valid Standard Base64.</exception>
     /// <remarks>
-    /// To reject whitespace strictly, call <see cref="Decode(string, Base64Variant, BaseFormatStyles)" /> directly
-    /// with <see cref="BaseFormatStyles.None" />.
+    /// To reject whitespace strictly, call <see cref="Decode(string, Base64Variant, BaseFormatStyles)" /> directly with
+    /// <see cref="BaseFormatStyles.None" />.
     /// </remarks>
     public static byte[] FromBase64String(string s) =>
         Decode(s, Base64Variant.Standard, BaseFormatStyles.IgnoreWhitespace);
 
     /// <summary>
-    /// Decodes <paramref name="chars" /> as a Standard Base64 character span into a byte array, mirroring the
-    /// lenient whitespace behaviour of <see cref="System.Convert.FromBase64String(string)" />.
+    /// Decodes <paramref name="chars" /> as a Standard Base64 character span into a byte array, mirroring the lenient
+    /// whitespace behaviour of <see cref="System.Convert.FromBase64String(string)" />.
     /// </summary>
     /// <param name="chars">The Base64 character span.</param>
     /// <returns>The decoded byte array.</returns>
@@ -88,7 +90,9 @@ public static partial class Base64
     /// </summary>
     /// <param name="inArray">The byte array to encode.</param>
     /// <returns>A Base64 (RFC 4648 §4) string.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="inArray" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="inArray" /> is <see langword="null" />.
+    /// </exception>
     public static string ToBase64String(byte[] inArray) =>
         Encode(inArray, Base64Variant.Standard, BaseFormattingOptions.None);
 
@@ -107,7 +111,9 @@ public static partial class Base64
     /// <param name="offset">The starting offset.</param>
     /// <param name="length">The number of bytes to encode.</param>
     /// <returns>A Base64 string.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="inArray" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="inArray" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <paramref name="offset" /> or <paramref name="length" /> is out of range.
     /// </exception>
@@ -125,7 +131,9 @@ public static partial class Base64
     /// <param name="source">The bytes to encode.</param>
     /// <param name="destination">The destination span.</param>
     /// <param name="charsWritten">When this method returns, contains the number of characters written.</param>
-    /// <returns><see langword="true" /> on success; <see langword="false" /> when the destination is too small.</returns>
+    /// <returns>
+    /// <see langword="true" /> on success; <see langword="false" /> when the destination is too small.
+    /// </returns>
     public static bool TryToBase64String(ReadOnlySpan<byte> source, Span<char> destination, out int charsWritten) =>
         TryEncode(source, destination, out charsWritten, Base64Variant.Standard, BaseFormattingOptions.None);
 
@@ -136,7 +144,9 @@ public static partial class Base64
     /// <param name="source">The bytes to encode.</param>
     /// <param name="utf8Destination">The UTF-8 destination span.</param>
     /// <param name="bytesWritten">When this method returns, contains the number of bytes written.</param>
-    /// <returns><see langword="true" /> on success; <see langword="false" /> when the destination is too small.</returns>
+    /// <returns>
+    /// <see langword="true" /> on success; <see langword="false" /> when the destination is too small.
+    /// </returns>
     public static bool TryToBase64String(ReadOnlySpan<byte> source, Span<byte> utf8Destination, out int bytesWritten) =>
         TryEncodeToUtf8(source, utf8Destination, out bytesWritten, Base64Variant.Standard, BaseFormattingOptions.None);
 }

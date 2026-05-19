@@ -51,10 +51,14 @@ namespace Bodu.IO.Hashing;
 /// hashing, digital signatures, or any application that requires collision resistance under adversarial conditions.
 /// </note>
 /// <example>
-/// <code language="csharp"> using Bodu.IO.Hashing; using Bodu.IO.Hashing.Extensions; // 32-bit hash, default seed,
+/// <code language="csharp">
+///<![CDATA[
+/// using Bodu.IO.Hashing; using Bodu.IO.Hashing.Extensions; // 32-bit hash, default seed,
 /// suitable for in-memory hash tables. var m32 = new MurmurHash3_32(); uint h32 =
 /// BinaryPrimitives.ReadUInt32LittleEndian(m32.ComputeHash(keyBytes)); // 128-bit hash, custom seed for shard isolation
 /// across services. var m128 = new MurmurHash3_128(seed: 0xC2B2AE35u); byte[] fingerprint = m128.ComputeHash(payload);
+///
+///]]>
 /// </code>
 /// </example>
 /// </remarks>
@@ -163,9 +167,8 @@ public abstract class MurmurHash3<T>
     /// Releases the resources used by the current instance, optionally clearing managed state.
     /// </summary>
     /// <param name="disposing">
-    /// <see langword="true" /> when called from <see cref="Dispose()" />; <see langword="false" /> when called
-    /// from a finalizer. Managed resources are released only when <paramref name="disposing" /> is
-    /// <see langword="true" />.
+    /// <see langword="true" /> when called from <see cref="Dispose()" />; <see langword="false" /> when called from a
+    /// finalizer. Managed resources are released only when <paramref name="disposing" /> is <see langword="true" />.
     /// </param>
     /// <remarks>
     /// Override in a derived class to release additional resources owned by the subclass. Always invoke

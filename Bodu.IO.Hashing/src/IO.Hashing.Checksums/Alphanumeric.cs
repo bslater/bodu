@@ -68,7 +68,10 @@ internal static class Alphanumeric
     /// Determines whether the supplied ASCII character is an uppercase Latin vowel.
     /// </summary>
     /// <param name="ch">The character to test.</param>
-    /// <returns><see langword="true" /> if <paramref name="ch" /> is one of <c>'A'</c>, <c>'E'</c>, <c>'I'</c>, <c>'O'</c>, or <c>'U'</c>; otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> if <paramref name="ch" /> is one of <c>'A'</c>, <c>'E'</c>, <c>'I'</c>, <c>'O'</c>, or
+    /// <c>'U'</c>; otherwise, <see langword="false" />.
+    /// </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsVowel(char ch) =>
         ch == 'A' || ch == 'E' || ch == 'I' || ch == 'O' || ch == 'U';

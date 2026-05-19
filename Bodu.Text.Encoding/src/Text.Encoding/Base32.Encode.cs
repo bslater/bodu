@@ -16,11 +16,17 @@ public static partial class Base32
     /// </summary>
     /// <param name="bytes">The byte array to encode.</param>
     /// <param name="variant">The Base32 variant.</param>
-    /// <param name="options">Formatting options. Only <see cref="BaseFormattingOptions.InsertLineBreaks" /> and
-    /// <see cref="BaseFormattingOptions.OmitPadding" /> are honoured; other flags are ignored.</param>
+    /// <param name="options">
+    /// Formatting options. Only <see cref="BaseFormattingOptions.InsertLineBreaks" /> and
+    /// <see cref="BaseFormattingOptions.OmitPadding" /> are honoured; other flags are ignored.
+    /// </param>
     /// <returns>A Base32 encoded string.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="bytes" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is not a defined value.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="bytes" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="variant" /> is not a defined value.
+    /// </exception>
     public static string Encode(byte[] bytes, Base32Variant variant = Base32Variant.Standard, BaseFormattingOptions options = BaseFormattingOptions.None)
     {
         ThrowHelper.ThrowIfNull(bytes);
@@ -34,7 +40,9 @@ public static partial class Base32
     /// <param name="variant">The Base32 variant.</param>
     /// <param name="options">Formatting options.</param>
     /// <returns>A Base32 encoded string. Returns <see cref="string.Empty" /> when the input is empty.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is not a defined value.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="variant" /> is not a defined value.
+    /// </exception>
     public static string Encode(ReadOnlySpan<byte> bytes, Base32Variant variant = Base32Variant.Standard, BaseFormattingOptions options = BaseFormattingOptions.None)
     {
         if (bytes.IsEmpty)
@@ -55,13 +63,17 @@ public static partial class Base32
     /// variant. Line-break and padding decoration flags are honoured.
     /// </summary>
     /// <param name="bytes">The bytes to encode.</param>
-    /// <param name="destination">The destination span. Must be at least
-    /// <see cref="GetEncodedLength(int, Base32Variant, BaseFormattingOptions)" /> characters in size.</param>
+    /// <param name="destination">
+    /// The destination span. Must be at least
+    /// <see cref="GetEncodedLength(int, Base32Variant, BaseFormattingOptions)" /> characters in size.
+    /// </param>
     /// <param name="variant">The Base32 variant.</param>
     /// <param name="options">Formatting options.</param>
     /// <returns>The number of characters written.</returns>
     /// <exception cref="ArgumentException">Thrown when <paramref name="destination" /> is too small.</exception>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is not a defined value.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="variant" /> is not a defined value.
+    /// </exception>
     public static int Encode(ReadOnlySpan<byte> bytes, Span<char> destination, Base32Variant variant = Base32Variant.Standard, BaseFormattingOptions options = BaseFormattingOptions.None)
     {
         var required = GetEncodedLength(bytes.Length, variant, options);
@@ -88,7 +100,9 @@ public static partial class Base32
     /// <param name="variant">The Base32 variant.</param>
     /// <param name="options">Formatting options.</param>
     /// <returns>A Base32 encoded string.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="bytes" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="bytes" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <paramref name="offset" /> or <paramref name="count" /> is out of range, or when
     /// <paramref name="variant" /> is not a defined value.
@@ -108,12 +122,18 @@ public static partial class Base32
     /// </summary>
     /// <param name="bytes">The bytes to encode.</param>
     /// <param name="destination">The destination span.</param>
-    /// <param name="charsWritten">When this method returns, contains the number of characters written, or <c>0</c>
-    /// when the destination is too small.</param>
+    /// <param name="charsWritten">
+    /// When this method returns, contains the number of characters written, or <c>0</c> when the destination is too
+    /// small.
+    /// </param>
     /// <param name="variant">The Base32 variant.</param>
     /// <param name="options">Formatting options.</param>
-    /// <returns><see langword="true" /> when the destination is large enough; otherwise <see langword="false" />.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is not a defined value.</exception>
+    /// <returns>
+    /// <see langword="true" /> when the destination is large enough; otherwise <see langword="false" />.
+    /// </returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="variant" /> is not a defined value.
+    /// </exception>
     public static bool TryEncode(ReadOnlySpan<byte> bytes, Span<char> destination, out int charsWritten, Base32Variant variant = Base32Variant.Standard, BaseFormattingOptions options = BaseFormattingOptions.None)
     {
         var required = GetEncodedLength(bytes.Length, variant, options);
@@ -138,8 +158,8 @@ public static partial class Base32
     }
 
     /// <summary>
-    /// Appends a single symbol to the string builder, inserting a line break beforehand when the line interval has
-    /// been reached.
+    /// Appends a single symbol to the string builder, inserting a line break beforehand when the line interval has been
+    /// reached.
     /// </summary>
     /// <param name="sb">The destination string builder.</param>
     /// <param name="symbol">The symbol to append.</param>
@@ -163,7 +183,9 @@ public static partial class Base32
     /// <param name="bytes">The input bytes.</param>
     /// <param name="alphabet">The variant alphabet.</param>
     /// <param name="emitPadding">Whether to emit <c>=</c> padding for incomplete final groups.</param>
-    /// <param name="emitLineBreaks">Whether to insert line breaks at <see cref="LineBreakInterval" /> intervals.</param>
+    /// <param name="emitLineBreaks">
+    /// Whether to insert line breaks at <see cref="LineBreakInterval" /> intervals.
+    /// </param>
     /// <param name="sb">The destination string builder.</param>
     private static void EncodeCore(ReadOnlySpan<byte> bytes, string alphabet, bool emitPadding, bool emitLineBreaks, StringBuilder sb)
     {
@@ -254,8 +276,8 @@ public static partial class Base32
     }
 
     /// <summary>
-    /// Writes a single symbol into the destination span, inserting a line break beforehand when the line interval
-    /// has been reached.
+    /// Writes a single symbol into the destination span, inserting a line break beforehand when the line interval has
+    /// been reached.
     /// </summary>
     /// <param name="destination">The destination span.</param>
     /// <param name="position">The current write position, updated by reference.</param>

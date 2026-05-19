@@ -76,12 +76,16 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// </remarks>
 /// <example>
-/// <code language="csharp"> using System.Security.Cryptography; using Bodu.Security.Cryptography; using
+/// <code language="csharp">
+///<![CDATA[
+/// using System.Security.Cryptography; using Bodu.Security.Cryptography; using
 /// Bodu.Security.Cryptography.Extensions; using IBlockCipher cipher = new AesBlockCipher(key); byte[] iv =
 /// BuildGcmIv(nonce); // standard 96-bit nonce padded to the cipher block size using IAeadBlockCipherModeTransform gcm
 /// = new GcmModeTransform(cipher, iv); byte[] sealed_ = gcm.Encrypt(plaintext, associatedData: header); using
 /// IAeadBlockCipherModeTransform dec = new GcmModeTransform(cipher, iv); byte[] recovered = dec.Decrypt(sealed_,
-/// associatedData: header); </code>
+/// associatedData: header);
+///]]>
+/// </code>
 /// </example>
 /// <seealso href="../guides/cryptography/aead-modes.html#gcm--the-workhorse">GCM walk-through in the AEAD-modes guide
 /// </seealso> <seealso cref="AesBlockCipher"/>
@@ -256,7 +260,9 @@ public sealed class GcmModeTransform
 
     /// <inheritdoc />
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
-    /// <exception cref="InvalidOperationException">The instance has already encrypted or decrypted a message.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// The instance has already encrypted or decrypted a message.
+    /// </exception>
     public int Encrypt(ReadOnlySpan<byte> plaintext, Span<byte> output)
     {
         this.ThrowIfDisposed();
@@ -296,7 +302,9 @@ public sealed class GcmModeTransform
 
     /// <inheritdoc />
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
-    /// <exception cref="InvalidOperationException">The instance has already encrypted or decrypted a message.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// The instance has already encrypted or decrypted a message.
+    /// </exception>
     public int Decrypt(ReadOnlySpan<byte> ciphertextWithTag, Span<byte> output)
     {
         this.ThrowIfDisposed();

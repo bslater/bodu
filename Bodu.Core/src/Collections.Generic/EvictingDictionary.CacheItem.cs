@@ -9,7 +9,8 @@ namespace Bodu.Collections.Generic;
 public partial class EvictingDictionary<TKey, TValue>
 {
     /// <summary>
-    /// Represents a cache entry storing the value and metadata used for eviction policies in the <see cref="EvictingDictionary{TKey, TValue}"/>.
+    /// Represents a cache entry storing the value and metadata used for eviction policies in the
+    /// <see cref="EvictingDictionary{TKey, TValue}" />.
     /// </summary>
 #if !NET5_0_OR_GREATER
 

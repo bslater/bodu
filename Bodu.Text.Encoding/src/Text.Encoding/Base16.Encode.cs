@@ -17,7 +17,9 @@ public static partial class Base16
     /// <param name="bytes">The byte array to encode.</param>
     /// <param name="options">Formatting options to apply, such as upper case, spacing, prefix, or line breaks.</param>
     /// <returns>A Base16 encoded string representing the input bytes.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="bytes" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="bytes" /> is <see langword="null" />.
+    /// </exception>
     public static string Encode(byte[] bytes, BaseFormattingOptions options = BaseFormattingOptions.None)
     {
         ThrowHelper.ThrowIfNull(bytes);
@@ -29,9 +31,11 @@ public static partial class Base16
     /// </summary>
     /// <param name="bytes">The bytes to encode.</param>
     /// <param name="options">Formatting options to apply, such as upper case, spacing, prefix, or line breaks.</param>
-    /// <returns>A Base16 encoded string. When <paramref name="bytes" /> is empty and
-    /// <see cref="BaseFormattingOptions.IncludePrefix" /> is set, the result is the prefix string alone; otherwise
-    /// the result is <see cref="string.Empty" />.</returns>
+    /// <returns>
+    /// A Base16 encoded string. When <paramref name="bytes" /> is empty and
+    /// <see cref="BaseFormattingOptions.IncludePrefix" /> is set, the result is the prefix string alone; otherwise the
+    /// result is <see cref="string.Empty" />.
+    /// </returns>
     /// <remarks>
     /// Provides the optimal allocation profile when no formatting flags beyond
     /// <see cref="BaseFormattingOptions.UpperCase" /> are specified. When spacing, prefix, or line break flags are
@@ -53,8 +57,9 @@ public static partial class Base16
     /// </summary>
     /// <param name="bytes">The bytes to encode.</param>
     /// <param name="destination">The span that receives the encoded characters.</param>
-    /// <param name="options">Formatting options. Only <see cref="BaseFormattingOptions.UpperCase" /> is supported on
-    /// this overload.</param>
+    /// <param name="options">
+    /// Formatting options. Only <see cref="BaseFormattingOptions.UpperCase" /> is supported on this overload.
+    /// </param>
     /// <returns>The number of characters written to <paramref name="destination" />.</returns>
     /// <exception cref="ArgumentException">
     /// Thrown when <paramref name="options" /> contains any flag other than
@@ -84,7 +89,9 @@ public static partial class Base16
     /// <param name="count">The number of bytes to encode.</param>
     /// <param name="options">Formatting options to apply, such as upper case, spacing, prefix, or line breaks.</param>
     /// <returns>A Base16 encoded string representing the selected slice of <paramref name="bytes" />.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="bytes" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="bytes" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <paramref name="offset" /> or <paramref name="count" /> is negative, or either exceeds the bounds of
     /// <paramref name="bytes" />.
@@ -104,14 +111,20 @@ public static partial class Base16
     /// </summary>
     /// <param name="bytes">The bytes to encode.</param>
     /// <param name="destination">The span that receives the encoded characters.</param>
-    /// <param name="charsWritten">When this method returns, contains the number of characters written, or <c>0</c>
-    /// when <paramref name="destination" /> is too small.</param>
-    /// <param name="options">Formatting options. Only <see cref="BaseFormattingOptions.UpperCase" /> is supported on
-    /// this overload.</param>
-    /// <returns><see langword="true" /> when the destination is large enough and the encoding succeeded; otherwise
-    /// <see langword="false" />.</returns>
+    /// <param name="charsWritten">
+    /// When this method returns, contains the number of characters written, or <c>0</c> when
+    /// <paramref name="destination" /> is too small.
+    /// </param>
+    /// <param name="options">
+    /// Formatting options. Only <see cref="BaseFormattingOptions.UpperCase" /> is supported on this overload.
+    /// </param>
+    /// <returns>
+    /// <see langword="true" /> when the destination is large enough and the encoding succeeded; otherwise
+    /// <see langword="false" />.
+    /// </returns>
     /// <exception cref="ArgumentException">
-    /// Thrown when <paramref name="options" /> contains any flag other than <see cref="BaseFormattingOptions.UpperCase" />.
+    /// Thrown when <paramref name="options" /> contains any flag other than
+    /// <see cref="BaseFormattingOptions.UpperCase" />.
     /// </exception>
     public static bool TryEncode(ReadOnlySpan<byte> bytes, Span<char> destination, out int charsWritten, BaseFormattingOptions options = BaseFormattingOptions.None)
     {
@@ -164,8 +177,10 @@ public static partial class Base16
     /// Writes the hexadecimal representation of <paramref name="bytes" /> directly into <paramref name="chars" />.
     /// </summary>
     /// <param name="bytes">The input byte span.</param>
-    /// <param name="chars">The destination character span. The caller must ensure it is at least
-    /// <c>bytes.Length * 2</c> characters in size.</param>
+    /// <param name="chars">
+    /// The destination character span. The caller must ensure it is at least <c>bytes.Length * 2</c> characters in
+    /// size.
+    /// </param>
     /// <param name="upperCase">Whether to emit upper case characters.</param>
     private static void EncodeToHexCore(ReadOnlySpan<byte> bytes, Span<char> chars, bool upperCase)
     {
@@ -184,7 +199,9 @@ public static partial class Base16
     /// <param name="bytes">The byte span to encode.</param>
     /// <param name="options">The formatting options to apply.</param>
     /// <returns>A formatted hexadecimal string.</returns>
-    /// <remarks>This is the slow path; it is invoked only when at least one decoration flag is set.</remarks>
+    /// <remarks>
+    /// This is the slow path; it is invoked only when at least one decoration flag is set.
+    /// </remarks>
     private static string EncodeWithFormatting(ReadOnlySpan<byte> bytes, BaseFormattingOptions options)
     {
         var upper = options.HasFlag(BaseFormattingOptions.UpperCase);

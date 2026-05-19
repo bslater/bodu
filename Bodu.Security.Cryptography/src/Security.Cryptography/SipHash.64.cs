@@ -56,10 +56,14 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// </remarks>
 /// <example>
-/// <code language="csharp"> using Bodu.Security.Cryptography; // 16-byte secret key — keep it private to your process;
+/// <code language="csharp">
+///<![CDATA[
+/// using Bodu.Security.Cryptography; // 16-byte secret key — keep it private to your process;
 /// SipHash assumes attackers cannot guess it. byte[] hashTableKey = RandomNumberGenerator.GetBytes(16); using var sip =
 /// new SipHash64 { Key = hashTableKey }; byte[] tag =
-/// sip.ComputeHash(System.Text.Encoding.UTF8.GetBytes("user-supplied-key")); </code>
+/// sip.ComputeHash(System.Text.Encoding.UTF8.GetBytes("user-supplied-key"));
+///]]>
+/// </code>
 /// </example>
 /// <seealso href="../guides/cryptography/hashing.html#pattern-2--a-keyed-hash-siphash">Keyed-hash (SipHash) guide
 /// </seealso> <seealso cref="SipHash{T}"/> <seealso cref="SipHash128"/>

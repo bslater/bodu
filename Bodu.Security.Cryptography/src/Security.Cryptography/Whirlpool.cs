@@ -64,8 +64,12 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// </remarks>
 /// <example>
-/// <code language="csharp"> using var whirlpool = new Whirlpool { Version = WhirlpoolVersion.WhirlpoolInfo3 }; byte[]
-/// digest = whirlpool.ComputeHash(message); </code>
+/// <code language="csharp">
+///<![CDATA[
+/// using var whirlpool = new Whirlpool { Version = WhirlpoolVersion.WhirlpoolInfo3 }; byte[]
+/// digest = whirlpool.ComputeHash(message);
+///]]>
+/// </code>
 /// </example>
 public sealed partial class Whirlpool
     : BlockHashAlgorithm<Whirlpool>
