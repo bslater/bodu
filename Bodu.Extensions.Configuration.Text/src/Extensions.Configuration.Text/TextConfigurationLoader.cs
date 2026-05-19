@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="BoduTextConfigurationLoader.cs" company="PlaceholderCompany">
+// <copyright file="TextConfigurationLoader.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -11,10 +11,10 @@ namespace Bodu.Extensions.Configuration.Text;
 
 /// <summary>
 /// Internal helper that owns the Parse → Resolve → flatten pipeline shared between
-/// <see cref="BoduTextConfigurationProvider" /> (file-backed) and <see cref="BoduTextStreamConfigurationProvider" />
+/// <see cref="TextConfigurationProvider" /> (file-backed) and <see cref="TextStreamConfigurationProvider" />
 /// (stream-backed). Keeps the two providers' <c>Load</c> implementations in lock-step.
 /// </summary>
-internal static class BoduTextConfigurationLoader
+internal static class TextConfigurationLoader
 {
     /// <summary>
     /// Parses <paramref name="stream" /> as a Bodu Text Configuration document, resolves it against the supplied

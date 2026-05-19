@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="BoduTextConfigurationArrayBindingTests.cs" company="PlaceholderCompany">
+// <copyright file="TextConfigurationArrayBindingTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -20,7 +20,7 @@ namespace Bodu.Extensions.Configuration.Text.Tests;
 /// collection types identically across both providers.
 /// </summary>
 [TestClass]
-public class BoduTextConfigurationArrayBindingTests
+public class TextConfigurationArrayBindingTests
 {
     private const string ArraySample = """
 items.0 = first

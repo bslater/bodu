@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="BoduTextConfigurationOptionsTests.cs" company="PlaceholderCompany">
+// <copyright file="TextConfigurationOptionsTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -19,7 +19,7 @@ namespace Bodu.Extensions.Configuration.Text.Tests;
 /// to <see cref="IOptions{TOptions}" /> through the dependency-injection container.
 /// </summary>
 [TestClass]
-public class BoduTextConfigurationOptionsTests
+public class TextConfigurationOptionsTests
 {
     private const string Sample = """
 service.name = Bodu

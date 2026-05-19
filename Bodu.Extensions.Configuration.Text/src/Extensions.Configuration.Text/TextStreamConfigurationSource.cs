@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="BoduTextStreamConfigurationSource.cs" company="PlaceholderCompany">
+// <copyright file="TextStreamConfigurationSource.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -17,7 +17,7 @@ namespace Bodu.Extensions.Configuration.Text;
 /// <remarks>
 /// <para>
 /// Mirrors the role of <c>JsonStreamConfigurationSource</c> in <c>Microsoft.Extensions.Configuration.Json</c>. Unlike
-/// <see cref="BoduTextConfigurationSource" /> (which is file-backed and inherits reload-on-change), this source is
+/// <see cref="TextConfigurationSource" /> (which is file-backed and inherits reload-on-change), this source is
 /// one-shot: the stream is parsed once when <see cref="Build(IConfigurationBuilder)" /> is invoked and no file watcher
 /// is attached. The caller is responsible for the stream's lifetime; the provider does not dispose it.
 /// </para>
@@ -53,7 +53,7 @@ namespace Bodu.Extensions.Configuration.Text;
 /// Console.WriteLine(root["format:indent:size"]);     // "4"
 ///]]>
 /// </example>
-public sealed class BoduTextStreamConfigurationSource : StreamConfigurationSource
+public sealed class TextStreamConfigurationSource : StreamConfigurationSource
 {
     /// <summary>
     /// Gets or sets the path used to evaluate glob-anchored sections during resolution. Defaults to
@@ -79,6 +79,6 @@ public sealed class BoduTextStreamConfigurationSource : StreamConfigurationSourc
     {
         ThrowHelper.ThrowIfNull(builder);
 
-        return new BoduTextStreamConfigurationProvider(this);
+        return new TextStreamConfigurationProvider(this);
     }
 }

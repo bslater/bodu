@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="BoduTextConfigurationMultiSourceTests.cs" company="PlaceholderCompany">
+// <copyright file="TextConfigurationMultiSourceTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -16,14 +16,14 @@ namespace Bodu.Extensions.Configuration.Text.Tests;
 /// last-writer-wins precedence applied by <c>Microsoft.Extensions.Configuration</c> for every provider.
 /// </summary>
 [TestClass]
-public class BoduTextConfigurationMultiSourceTests
+public class TextConfigurationMultiSourceTests
 {
     /// <summary>
     /// Verifies that when two sources are added, the second source overrides the first for keys present in
     /// both.
     /// </summary>
     [TestMethod]
-    public void MultipleBoduSources_ShouldLayerByOrderAdded()
+    public void MultipleTextSources_ShouldLayerByOrderAdded()
     {
         const string baseSource = """
 service.name = First

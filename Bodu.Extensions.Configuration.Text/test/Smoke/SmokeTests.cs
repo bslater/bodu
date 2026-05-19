@@ -20,7 +20,7 @@ namespace Bodu.Smoke;
 public class BridgeSmokeTests
 {
     /// <summary>
-    /// Verifies that <see cref="BoduTextConfigurationExtensions.AddConfiguration(IConfigurationBuilder, string, string?, bool, bool)" />
+    /// Verifies that <see cref="TextConfigurationExtensions.AddConfiguration(IConfigurationBuilder, string, string?, bool, bool)" />
     /// loads a configuration file and exposes its keys in colon-delimited form.
     /// </summary>
     [TestMethod]

@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="BoduTextConfigurationSource.cs" company="PlaceholderCompany">
+// <copyright file="TextConfigurationSource.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -23,7 +23,7 @@ namespace Bodu.Extensions.Configuration.Text;
 /// </para>
 /// <para>
 /// Most callers do not construct this type directly; reach for the
-/// <see cref="BoduTextConfigurationExtensions.AddConfiguration(IConfigurationBuilder, string, string?, bool, bool)" />
+/// <see cref="TextConfigurationExtensions.AddConfiguration(IConfigurationBuilder, string, string?, bool, bool)" />
 /// extensions instead. Direct construction is appropriate when a host already has the source instance in hand — for
 /// example, when wiring a custom <see cref="IConfigurationBuilder" /> programmatically.
 /// </para>
@@ -41,7 +41,7 @@ namespace Bodu.Extensions.Configuration.Text;
 /// });
 ///
 /// // Direct construction — for example, in a custom builder host.
-/// var source = new BoduTextConfigurationSource
+/// var source = new TextConfigurationSource
 /// {
 ///     Path           = "app.boduconfig",
 ///     ReloadOnChange = true,
@@ -50,7 +50,7 @@ namespace Bodu.Extensions.Configuration.Text;
 /// IConfigurationProvider provider = source.Build(builder);
 ///]]>
 /// </example>
-public sealed class BoduTextConfigurationSource : FileConfigurationSource
+public sealed class TextConfigurationSource : FileConfigurationSource
 {
     /// <summary>
     /// Gets or sets the path used to evaluate glob-anchored sections during resolution. Defaults to
@@ -76,6 +76,6 @@ public sealed class BoduTextConfigurationSource : FileConfigurationSource
     {
         ThrowHelper.ThrowIfNull(builder);
         this.EnsureDefaults(builder);
-        return new BoduTextConfigurationProvider(this);
+        return new TextConfigurationProvider(this);
     }
 }

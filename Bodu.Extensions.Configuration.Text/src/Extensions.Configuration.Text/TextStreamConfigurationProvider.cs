@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="BoduTextStreamConfigurationProvider.cs" company="PlaceholderCompany">
+// <copyright file="TextStreamConfigurationProvider.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -16,13 +16,13 @@ namespace Bodu.Extensions.Configuration.Text;
 /// <para>
 /// Stream-backed providers are one-shot: the stream is consumed during the initial <see cref="Load(Stream)" /> call and
 /// no reload-on-change machinery is attached. For file-backed loading with reload support, use
-/// <see cref="BoduTextConfigurationProvider" /> instead. The Parse → Resolve → flatten pipeline is shared with
-/// <see cref="BoduTextConfigurationProvider" /> via <see cref="BoduTextConfigurationLoader" />.
+/// <see cref="TextConfigurationProvider" /> instead. The Parse → Resolve → flatten pipeline is shared with
+/// <see cref="TextConfigurationProvider" /> via <see cref="TextConfigurationLoader" />.
 /// </para>
 /// <para>
 /// Consumers do not construct this type directly — it is materialized by
-/// <see cref="BoduTextStreamConfigurationSource.Build(IConfigurationBuilder)" /> when an
-/// <see cref="IConfigurationBuilder" /> is built. The typed <see cref="BoduSource" /> accessor exists for diagnostic
+/// <see cref="TextStreamConfigurationSource.Build(IConfigurationBuilder)" /> when an
+/// <see cref="IConfigurationBuilder" /> is built. The typed <see cref="TextSource" /> accessor exists for diagnostic
 /// scenarios where a host needs to inspect the source that produced a given <see cref="IConfigurationProvider" />.
 /// </para>
 /// </remarks>
@@ -30,43 +30,43 @@ namespace Bodu.Extensions.Configuration.Text;
 ///<![CDATA[
 /// // Diagnostic introspection: locate the Bodu stream provider after the configuration root has been built.
 /// IConfigurationRoot root = builder.Build();
-/// BoduTextStreamConfigurationProvider? bodu = root.Providers
-///     .OfType<BoduTextStreamConfigurationProvider>()
+/// TextStreamConfigurationProvider? bodu = root.Providers
+///     .OfType<TextStreamConfigurationProvider>()
 ///     .FirstOrDefault();
 ///
 /// if (bodu is not null)
 /// {
-///     Console.WriteLine($"Target path: {bodu.BoduSource.TargetPath ?? "<none>"}");
+///     Console.WriteLine($"Target path: {bodu.TextSource.TargetPath ?? "<none>"}");
 /// }
 ///]]>
 /// </example>
-public sealed class BoduTextStreamConfigurationProvider : StreamConfigurationProvider
+public sealed class TextStreamConfigurationProvider : StreamConfigurationProvider
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="BoduTextStreamConfigurationProvider" /> class backed by the
+    /// Initializes a new instance of the <see cref="TextStreamConfigurationProvider" /> class backed by the
     /// supplied source.
     /// </summary>
     /// <param name="source">The source that produced this provider.</param>
     /// <exception cref="ArgumentNullException"><paramref name="source" /> is <see langword="null" />.</exception>
-    public BoduTextStreamConfigurationProvider(BoduTextStreamConfigurationSource source)
+    public TextStreamConfigurationProvider(TextStreamConfigurationSource source)
         : base(source)
     {
         ThrowHelper.ThrowIfNull(source);
 
-        this.BoduSource = source;
+        this.TextSource = source;
     }
 
     /// <summary>
     /// Gets the typed source that backs this provider.
     /// </summary>
-    /// <returns>The originating <see cref="BoduTextStreamConfigurationSource" />.</returns>
-    public BoduTextStreamConfigurationSource BoduSource { get; }
+    /// <returns>The originating <see cref="TextStreamConfigurationSource" />.</returns>
+    public TextStreamConfigurationSource TextSource { get; }
 
     /// <inheritdoc />
     public override void Load(Stream stream) =>
-        this.Data = BoduTextConfigurationLoader.LoadData(
+        this.Data = TextConfigurationLoader.LoadData(
             stream,
-            this.BoduSource.TargetPath,
-            this.BoduSource.ParseOptions,
-            this.BoduSource.ResolveOptions);
+            this.TextSource.TargetPath,
+            this.TextSource.ParseOptions,
+            this.TextSource.ResolveOptions);
 }

@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="BoduTextConfigurationIniDocumentTests.cs" company="PlaceholderCompany">
+// <copyright file="TextConfigurationIniDocumentTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -19,7 +19,7 @@ namespace Bodu.Extensions.Configuration.Text.Tests;
 /// pre-parsed document and flattens it into the configuration view via <c>AddInMemoryCollection</c>.
 /// </summary>
 [TestClass]
-public class BoduTextConfigurationIniDocumentTests
+public class TextConfigurationIniDocumentTests
 {
     private const string Sample = """
 logging.level.default = Information

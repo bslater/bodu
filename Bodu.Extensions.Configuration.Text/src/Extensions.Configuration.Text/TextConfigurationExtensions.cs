@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="BoduTextConfigurationExtensions.cs" company="PlaceholderCompany">
+// <copyright file="TextConfigurationExtensions.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -34,7 +34,7 @@ namespace Bodu.Extensions.Configuration.Text;
 /// </item>
 /// <item>
 /// <description>
-/// Lambda configure-source overload — the most flexible shape, exposes every <see cref="BoduTextConfigurationSource" />
+/// Lambda configure-source overload — the most flexible shape, exposes every <see cref="TextConfigurationSource" />
 /// property.
 /// </description>
 /// </item>
@@ -45,7 +45,7 @@ namespace Bodu.Extensions.Configuration.Text;
 /// </item>
 /// <item>
 /// <description>
-/// Stream overload (and a lambda <see cref="BoduTextStreamConfigurationSource" /> variant) — one-shot, no
+/// Stream overload (and a lambda <see cref="TextStreamConfigurationSource" /> variant) — one-shot, no
 /// reload-on-change machinery; ideal for tests and synthetic configuration.
 /// </description>
 /// </item>
@@ -95,7 +95,7 @@ namespace Bodu.Extensions.Configuration.Text;
 /// builder.Configuration.AddConfiguration(doc, targetPath: "src/Foo.cs");
 ///]]>
 /// </example>
-public static class BoduTextConfigurationExtensions
+public static class TextConfigurationExtensions
 {
     /// <summary>
     /// The conventional file name probed by <see cref="AddConfiguration(IConfigurationBuilder, bool, bool)" />.
@@ -185,12 +185,12 @@ public static class BoduTextConfigurationExtensions
     /// </exception>
     public static IConfigurationBuilder AddConfiguration(
         this IConfigurationBuilder builder,
-        Action<BoduTextConfigurationSource> configureSource)
+        Action<TextConfigurationSource> configureSource)
     {
         ThrowHelper.ThrowIfNull(builder);
         ThrowHelper.ThrowIfNull(configureSource);
 
-        BoduTextConfigurationSource source = new();
+        TextConfigurationSource source = new();
         configureSource(source);
         builder.Add(source);
 
@@ -294,12 +294,12 @@ public static class BoduTextConfigurationExtensions
     /// </exception>
     public static IConfigurationBuilder AddConfiguration(
         this IConfigurationBuilder builder,
-        Action<BoduTextStreamConfigurationSource> configureSource)
+        Action<TextStreamConfigurationSource> configureSource)
     {
         ThrowHelper.ThrowIfNull(builder);
         ThrowHelper.ThrowIfNull(configureSource);
 
-        BoduTextStreamConfigurationSource source = new();
+        TextStreamConfigurationSource source = new();
         configureSource(source);
         builder.Add(source);
 
@@ -329,7 +329,7 @@ public static class BoduTextConfigurationExtensions
         ThrowHelper.ThrowIfNull(document);
 
         System.Collections.Generic.IDictionary<string, string?> data =
-            BoduTextConfigurationLoader.LoadData(document, targetPath, resolveOptions);
+            TextConfigurationLoader.LoadData(document, targetPath, resolveOptions);
 
         builder.AddInMemoryCollection(data);
 

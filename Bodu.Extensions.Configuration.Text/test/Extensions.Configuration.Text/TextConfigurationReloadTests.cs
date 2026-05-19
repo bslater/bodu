@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="BoduTextConfigurationReloadTests.cs" company="PlaceholderCompany">
+// <copyright file="TextConfigurationReloadTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -18,7 +18,7 @@ namespace Bodu.Extensions.Configuration.Text.Tests;
 /// delivery when the underlying configuration file is replaced on disk.
 /// </summary>
 [TestClass]
-public class BoduTextConfigurationReloadTests
+public class TextConfigurationReloadTests
 {
     private const string InitialContent = """
 logging.level.default = Information

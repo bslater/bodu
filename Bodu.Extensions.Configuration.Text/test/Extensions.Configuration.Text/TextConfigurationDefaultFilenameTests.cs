@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="BoduTextConfigurationDefaultFilenameTests.cs" company="PlaceholderCompany">
+// <copyright file="TextConfigurationDefaultFilenameTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -18,7 +18,7 @@ namespace Bodu.Extensions.Configuration.Text.Tests;
 /// <c>.boduconfig</c> and falls back to <c>bodu.config</c>.
 /// </summary>
 [TestClass]
-public class BoduTextConfigurationDefaultFilenameTests
+public class TextConfigurationDefaultFilenameTests
 {
     private const string Sample = """
 default.filename.loaded = yes

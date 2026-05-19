@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="BoduTextConfigurationBindingTests.cs" company="PlaceholderCompany">
+// <copyright file="TextConfigurationBindingTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -19,7 +19,7 @@ namespace Bodu.Extensions.Configuration.Text.Tests;
 /// <c>GetSection</c>).
 /// </summary>
 [TestClass]
-public class BoduTextConfigurationBindingTests
+public class TextConfigurationBindingTests
 {
     private const string PocoSample = """
 logging.level.default = Information

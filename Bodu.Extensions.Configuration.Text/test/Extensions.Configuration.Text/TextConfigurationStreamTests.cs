@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="BoduTextConfigurationStreamTests.cs" company="PlaceholderCompany">
+// <copyright file="TextConfigurationStreamTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -18,7 +18,7 @@ namespace Bodu.Extensions.Configuration.Text.Tests;
 /// <c>AddJsonStream</c> from <c>Microsoft.Extensions.Configuration.Json</c>.
 /// </summary>
 [TestClass]
-public class BoduTextConfigurationStreamTests
+public class TextConfigurationStreamTests
 {
     private const string Sample = """
 logging.level.default = Information
@@ -28,7 +28,7 @@ logging.level.default = Warning
 """;
 
     /// <summary>
-    /// Verifies that <see cref="BoduTextConfigurationExtensions.AddConfiguration(IConfigurationBuilder, Stream, string?, ConfigurationParseOptions?, ConfigurationResolveOptions?)" />
+    /// Verifies that <see cref="TextConfigurationExtensions.AddConfiguration(IConfigurationBuilder, Stream, string?, ConfigurationParseOptions?, ConfigurationResolveOptions?)" />
     /// reads from a stream and exposes the resulting keys in colon-delimited form.
     /// </summary>
     [TestMethod]
@@ -98,7 +98,7 @@ logging.level.default = Warning
     [TestMethod]
     public void AddConfigurationStream_WhenCallbackIsNull_ShouldThrowArgumentNullException()
     {
-        Action<BoduTextStreamConfigurationSource> configure = null!;
+        Action<TextStreamConfigurationSource> configure = null!;
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

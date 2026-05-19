@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="BoduTextConfigurationFileProviderTests.cs" company="PlaceholderCompany">
+// <copyright file="TextConfigurationFileProviderTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -17,7 +17,7 @@ namespace Bodu.Extensions.Configuration.Text.Tests;
 /// <c>AddJsonFile(IConfigurationBuilder, IFileProvider, string, bool, bool)</c>.
 /// </summary>
 [TestClass]
-public class BoduTextConfigurationFileProviderTests
+public class TextConfigurationFileProviderTests
 {
     private const string Sample = """
 logging.level.default = Information

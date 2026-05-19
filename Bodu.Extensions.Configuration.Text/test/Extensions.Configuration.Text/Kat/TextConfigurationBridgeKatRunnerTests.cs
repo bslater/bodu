@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="BoduTextConfigurationBridgeKatRunnerTests.cs" company="PlaceholderCompany">
+// <copyright file="TextConfigurationBridgeKatRunnerTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -18,7 +18,7 @@ namespace Bodu.Text.Configuration.Kat.Bridge;
 /// KAT subset, exercising the Microsoft.Extensions.Configuration bridge end to end.
 /// </summary>
 [TestClass]
-public class BoduTextConfigurationBridgeKatRunnerTests
+public class TextConfigurationBridgeKatRunnerTests
 {
     /// <summary>
     /// Drives every bridge KAT in the catalogue.
