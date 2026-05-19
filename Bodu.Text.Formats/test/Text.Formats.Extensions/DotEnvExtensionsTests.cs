@@ -1,0 +1,129 @@
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="DotEnvExtensionsTests.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+namespace Bodu.Text.Formats;
+
+/// <summary>
+/// Behavioural tests for <see cref="DotEnvExtensions" />.
+/// </summary>
+[TestClass]
+public sealed class DotEnvExtensionsTests
+{
+    private const string CanonicalSource = "PORT=8080\nHOST=localhost";
+
+    /// <summary>
+    /// Verifies that <see cref="DotEnvExtensions.ParseDotEnv(ReadOnlySpan{char})" /> produces the same document as the
+    /// canonical <see cref="DotEnv.Parse(ReadOnlySpan{char})" /> static method.
+    /// </summary>
+    [TestMethod]
+    public void ParseDotEnv_OnReadOnlySpan_ShouldMatchStaticCanonical()
+    {
+        DotEnvDocument fromExtension = CanonicalSource.AsSpan().ParseDotEnv();
+        DotEnvDocument fromStatic = DotEnv.Parse(CanonicalSource);
+
+        Assert.AreEqual(fromStatic["PORT"], fromExtension["PORT"]);
+        Assert.AreEqual(fromStatic["HOST"], fromExtension["HOST"]);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DotEnvExtensions.ParseDotEnv(string)" /> produces the same document as the canonical
+    /// static method.
+    /// </summary>
+    [TestMethod]
+    public void ParseDotEnv_OnString_ShouldMatchStaticCanonical()
+    {
+        DotEnvDocument fromExtension = CanonicalSource.ParseDotEnv();
+        DotEnvDocument fromStatic = DotEnv.Parse(CanonicalSource);
+
+        Assert.AreEqual(fromStatic["PORT"], fromExtension["PORT"]);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DotEnvExtensions.ParseDotEnv(string, DotEnvParseOptions)" /> respects the supplied
+    /// options.
+    /// </summary>
+    [TestMethod]
+    public void ParseDotEnv_OnStringWithOptions_ShouldRespectOptions()
+    {
+        DotEnvParseOptions options = new();
+
+        DotEnvDocument fromExtension = CanonicalSource.ParseDotEnv(options);
+        DotEnvDocument fromStatic = DotEnv.Parse(CanonicalSource, options);
+
+        Assert.AreEqual(fromStatic.Entries.Count, fromExtension.Entries.Count);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DotEnvExtensions.TryParseDotEnv(string, out DotEnvDocument?)" /> returns
+    /// <see langword="true" /> and produces a document for valid input.
+    /// </summary>
+    [TestMethod]
+    public void TryParseDotEnv_OnString_WhenInputIsValid_ShouldReturnTrue()
+    {
+        var success = CanonicalSource.TryParseDotEnv(out DotEnvDocument? document);
+
+        Assert.IsTrue(success);
+        Assert.IsNotNull(document);
+        Assert.AreEqual("8080", document["PORT"]);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DotEnvExtensions.TryParseDotEnv(ReadOnlySpan{char}, out DotEnvDocument?)" /> matches
+    /// the canonical static <see cref="DotEnv.TryParse(ReadOnlySpan{char}, out DotEnvDocument?)" /> outcome.
+    /// </summary>
+    [TestMethod]
+    public void TryParseDotEnv_OnReadOnlySpan_ShouldMatchStaticCanonical()
+    {
+        var extSuccess = CanonicalSource.AsSpan().TryParseDotEnv(out DotEnvDocument? extDocument);
+        var staticSuccess = DotEnv.TryParse(CanonicalSource, out DotEnvDocument? staticDocument);
+
+        Assert.AreEqual(staticSuccess, extSuccess);
+        Assert.AreEqual(staticDocument!["PORT"], extDocument!["PORT"]);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DotEnvExtensions.FormatDotEnv(DotEnvDocument)" /> returns the same text as the
+    /// canonical <see cref="DotEnv.Format(DotEnvDocument)" /> static method.
+    /// </summary>
+    [TestMethod]
+    public void FormatDotEnv_OnDotEnvDocument_ShouldMatchStaticCanonical()
+    {
+        DotEnvDocument document = DotEnv.Parse(CanonicalSource);
+
+        var fromExtension = document.FormatDotEnv();
+        var fromStatic = DotEnv.Format(document);
+
+        Assert.AreEqual(fromStatic, fromExtension);
+    }
+
+    /// <summary>
+    /// Verifies that <c>ParseDotEnv</c> followed by <c>FormatDotEnv</c> round-trips a DotEnv document through the
+    /// extension surface.
+    /// </summary>
+    [TestMethod]
+    public void ParseDotEnvThenFormatDotEnv_ShouldRoundTrip()
+    {
+        DotEnvDocument first = CanonicalSource.ParseDotEnv();
+        var emitted = first.FormatDotEnv();
+        DotEnvDocument second = emitted.ParseDotEnv();
+
+        Assert.AreEqual(first["PORT"], second["PORT"]);
+        Assert.AreEqual(first["HOST"], second["HOST"]);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DotEnvExtensions.FormatDotEnv(DotEnvDocument)" /> throws
+    /// <see cref="ArgumentNullException" /> when the receiver is <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void FormatDotEnv_WhenDocumentIsNull_ShouldThrowArgumentNullException()
+    {
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = ((DotEnvDocument)null!).FormatDotEnv();
+        });
+    }
+}
