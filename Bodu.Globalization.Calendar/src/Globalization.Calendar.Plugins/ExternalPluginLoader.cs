@@ -30,6 +30,32 @@ namespace Bodu.Globalization.Calendar.Plugins;
 /// <c>Bodu.Globalization.Calendar</c> itself) resolve through <see cref="AssemblyLoadContext.Default" />.
 /// </para>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // Production: pin every trusted plugin by SHA-256.
+/// IPluginTrustPolicy policy = new FileHashPluginTrustPolicy(
+///     new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+///     {
+///         ["AcmeHolidayPack.dll"] = "3a7bd3...e92f",
+///     });
+///
+/// var loader = new ExternalPluginLoader(policy);
+///
+/// try
+/// {
+///     INotableDatePlugin plugin = loader.Load("plugins/AcmeHolidayPack.dll");
+///
+///     // Pass the rules into the service. Plugins typically also implement
+///     // INotableDateRulePlugin or INotableDateAlgorithmPlugin.
+///     if (plugin is INotableDateRulePlugin rules)
+///         service.Register(rules.GetRules());
+/// }
+/// catch (PluginNotTrustedException ex)
+/// {
+///     Console.Error.WriteLine($"Untrusted plugin rejected: {ex.Message}");
+/// }
+///]]>
+/// </example>
 public sealed class ExternalPluginLoader
 {
     /// <summary>

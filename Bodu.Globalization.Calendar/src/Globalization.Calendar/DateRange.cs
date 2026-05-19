@@ -19,6 +19,19 @@ namespace Bodu.Globalization.Calendar;
 /// range yield empty results.
 /// </para>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// var year = new DateRange(new DateTime(2026, 1, 1), new DateTime(2026, 12, 31));
+/// Console.WriteLine(year.IsValid);                                // True
+/// Console.WriteLine(year.DayCount);                               // 365
+/// Console.WriteLine(year.Contains(new DateTime(2026, 7, 15)));    // True
+///
+/// // Inverted ranges are tolerated but produce empty results.
+/// var inverted = new DateRange(new DateTime(2026, 12, 31), new DateTime(2026, 1, 1));
+/// Console.WriteLine(inverted.IsValid);                            // False
+/// Console.WriteLine(inverted.DayCount);                           // 0
+///]]>
+/// </example>
 public readonly record struct DateRange(DateTime StartDate, DateTime EndDate)
 {
     /// <summary>
