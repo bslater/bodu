@@ -9,14 +9,24 @@ using System.Diagnostics;
 namespace Bodu.Collections.Generic;
 
 /// <summary>
-/// Represents a half-open range mapped to a value.
+/// Represents a half-open range mapped to a value — the entry projection produced when enumerating a
+/// <see cref="RangeDictionary{TKey, TValue}" />.
 /// </summary>
 /// <typeparam name="TKey">The comparable endpoint type.</typeparam>
-/// <typeparam name="TValue">The value type.</typeparam>
+/// <typeparam name="TValue">The value type associated with the range.</typeparam>
 /// <remarks>
-/// <see cref="ValueRange{TKey, TValue}" /> is the entry type yielded by <see cref="RangeDictionary{TKey, TValue}" />.
-/// It pairs a half-open range with an associated value, in the spirit of <see cref="KeyValuePair{TKey, TValue}" /> for
-/// keyed dictionaries.
+/// <para>
+/// <see cref="ValueRange{TKey, TValue}" /> pairs a half-open range — <c>[StartInclusive, EndExclusive)</c> — with an
+/// associated value, in the spirit of <see cref="KeyValuePair{TKey, TValue}" /> for keyed dictionaries. It is the
+/// element type returned by <see cref="RangeDictionary{TKey, TValue}" /> enumeration and the natural shape for any API
+/// that projects keyed ranges.
+/// </para>
+/// <para>
+/// The public constructor validates that the start endpoint is strictly less than the end endpoint under
+/// <see cref="Comparer{T}.Default" /> and rejects degenerate or inverted ranges with <see cref="ArgumentException" />.
+/// Owning collections that have already validated endpoints during insertion may use an internal unchecked overload to
+/// avoid re-validating during projection.
+/// </para>
 /// </remarks>
 [DebuggerDisplay("[{StartInclusive}, {EndExclusive}) = {Value}")]
 public readonly struct ValueRange<TKey, TValue>
