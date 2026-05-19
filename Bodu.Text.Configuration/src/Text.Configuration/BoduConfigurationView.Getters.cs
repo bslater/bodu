@@ -27,7 +27,7 @@ public sealed partial class BoduConfigurationView
         ThrowHelper.ThrowIfNull(key);
         var raw = LookupValue(Values, key);
         if (raw is null)
-            throw new KeyNotFoundException(string.Format(CultureInfo.InvariantCulture, ConfigurationResourceStrings.Op_Invalid_ConfigKeyNotPresent, key));
+            ConfigurationHelpers.ThrowConfigKeyNotPresent(key);
 
         return T.Parse(raw.AsSpan(), CultureInfo.InvariantCulture);
     }
@@ -69,7 +69,8 @@ public sealed partial class BoduConfigurationView
         if (value is not null)
             return value;
 
-        throw new KeyNotFoundException(string.Format(CultureInfo.InvariantCulture, ConfigurationResourceStrings.Op_Invalid_ConfigKeyNotPresent, key));
+        ConfigurationHelpers.ThrowConfigKeyNotPresent(key);
+        return null!;
     }
 
     /// <summary>
@@ -114,7 +115,8 @@ public sealed partial class BoduConfigurationView
         if (int.TryParse(raw, NumberStyles.Integer, CultureInfo.InvariantCulture, out var value))
             return value;
 
-        throw new FormatException(string.Format(CultureInfo.InvariantCulture, ConfigurationResourceStrings.Format_Invalid_ValueNotConvertible, key, raw, nameof(Int32)));
+        ConfigurationHelpers.ThrowValueNotConvertible(key, raw, nameof(Int32));
+        return 0;
     }
 
     /// <summary>
@@ -134,7 +136,8 @@ public sealed partial class BoduConfigurationView
         if (int.TryParse(raw, NumberStyles.Integer, CultureInfo.InvariantCulture, out var value))
             return value;
 
-        throw new FormatException(string.Format(CultureInfo.InvariantCulture, ConfigurationResourceStrings.Format_Invalid_ValueNotConvertible, key, raw, nameof(Int32)));
+        ConfigurationHelpers.ThrowValueNotConvertible(key, raw, nameof(Int32));
+        return 0;
     }
 
     /// <summary>
@@ -169,7 +172,8 @@ public sealed partial class BoduConfigurationView
         if (long.TryParse(raw, NumberStyles.Integer, CultureInfo.InvariantCulture, out var value))
             return value;
 
-        throw new FormatException(string.Format(CultureInfo.InvariantCulture, ConfigurationResourceStrings.Format_Invalid_ValueNotConvertible, key, raw, nameof(Int64)));
+        ConfigurationHelpers.ThrowValueNotConvertible(key, raw, nameof(Int64));
+        return 0L;
     }
 
     /// <summary>
@@ -186,7 +190,8 @@ public sealed partial class BoduConfigurationView
         if (bool.TryParse(raw, out var value))
             return value;
 
-        throw new FormatException(string.Format(CultureInfo.InvariantCulture, ConfigurationResourceStrings.Format_Invalid_ValueNotConvertible, key, raw, nameof(Boolean)));
+        ConfigurationHelpers.ThrowValueNotConvertible(key, raw, nameof(Boolean));
+        return false;
     }
 
     /// <summary>
@@ -205,7 +210,8 @@ public sealed partial class BoduConfigurationView
         if (bool.TryParse(raw, out var value))
             return value;
 
-        throw new FormatException(string.Format(CultureInfo.InvariantCulture, ConfigurationResourceStrings.Format_Invalid_ValueNotConvertible, key, raw, nameof(Boolean)));
+        ConfigurationHelpers.ThrowValueNotConvertible(key, raw, nameof(Boolean));
+        return false;
     }
 
     /// <summary>
@@ -242,6 +248,7 @@ public sealed partial class BoduConfigurationView
         if (Enum.TryParse(raw, ignoreCase: true, out TEnum value) && Enum.IsDefined(typeof(TEnum), value))
             return value;
 
-        throw new FormatException(string.Format(CultureInfo.InvariantCulture, ConfigurationResourceStrings.Format_Invalid_ValueNotConvertible, key, raw, typeof(TEnum).Name));
+        ConfigurationHelpers.ThrowValueNotConvertible(key, raw, typeof(TEnum).Name);
+        return default;
     }
 }
