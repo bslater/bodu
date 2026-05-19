@@ -40,6 +40,27 @@ public static partial class EncodingExtensions
     /// Thrown when <paramref name="encoder" /> uses <see cref="System.Text.EncoderExceptionFallback" /> and the
     /// chunk contains a code point that cannot be represented.
     /// </exception>
+    /// <example>
+    ///<![CDATA[
+    /// // Encode a long string into a buffer writer one chunk at a time.
+    /// ReadOnlySpan<char> source = text.AsSpan();
+    /// System.Text.Encoder encoder = System.Text.Encoding.UTF8.GetEncoder();
+    ///
+    /// while (!source.IsEmpty)
+    /// {
+    ///     Span<byte> chunk = writer.GetSpan(sizeHint: 256);
+    ///     OperationStatus status = encoder.EncodeChunk(
+    ///         source,
+    ///         chunk,
+    ///         flush: source.Length <= chunk.Length,
+    ///         out int charsConsumed,
+    ///         out int bytesWritten);
+    ///
+    ///     writer.Advance(bytesWritten);
+    ///     source = source.Slice(charsConsumed);
+    /// }
+    ///]]>
+    /// </example>
     public static OperationStatus EncodeChunk(
         this System.Text.Encoder encoder,
         ReadOnlySpan<char> source,

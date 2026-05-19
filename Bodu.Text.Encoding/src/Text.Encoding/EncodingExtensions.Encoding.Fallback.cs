@@ -13,6 +13,20 @@ public static partial class EncodingExtensions
     /// <see cref="System.Text.EncoderFallbackException" /> / <see cref="System.Text.DecoderFallbackException" />
     /// on invalid sequences.
     /// </summary>
+    /// <example>
+    ///<![CDATA[
+    /// // Configure a single call-site to fail fast on bad input without mutating the global default.
+    /// System.Text.Encoding strictAscii = System.Text.Encoding.ASCII.WithExceptionFallbacks();
+    /// try
+    /// {
+    ///     byte[] bytes = strictAscii.GetBytes(userSuppliedText);
+    /// }
+    /// catch (System.Text.EncoderFallbackException ex)
+    /// {
+    ///     // Surface the offending character at ex.Index for diagnostics.
+    /// }
+    ///]]>
+    /// </example>
     /// <param name="encoding">The source encoding to clone.</param>
     /// <returns>
     /// A new <see cref="System.Text.Encoding" /> instance configured with

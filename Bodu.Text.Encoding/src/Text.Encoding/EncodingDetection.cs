@@ -27,6 +27,19 @@ namespace Bodu.Text.Encoding;
 /// disambiguates them by inspecting the third and fourth bytes.
 /// </para>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // Read a file's leading bytes and decode using the detected encoding, falling back to UTF-8.
+/// byte[] bytes = File.ReadAllBytes(path);
+///
+/// System.Text.Encoding encoding =
+///     EncodingDetection.TryDetectByPreamble(bytes, out System.Text.Encoding? detected)
+///         ? detected
+///         : System.Text.Encoding.UTF8;
+///
+/// string text = encoding.GetStringSkippingPreamble(bytes);
+///]]>
+/// </example>
 public static class EncodingDetection
 {
     /// <summary>

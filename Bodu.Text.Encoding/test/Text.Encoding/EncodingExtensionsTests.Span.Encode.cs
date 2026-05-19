@@ -335,35 +335,51 @@ public sealed partial class EncodingExtensionsTests
     /// </summary>
     private sealed class TrackingMemoryPool : MemoryPool<byte>
     {
+        /// <summary>Gets the number of <see cref="Rent(int)" /> calls observed.</summary>
         public int RentCount { get; private set; }
 
+        /// <summary>Gets the number of times an owner returned by this pool has been disposed.</summary>
         public int DisposeCount { get; private set; }
 
+        /// <inheritdoc />
         public override int MaxBufferSize => int.MaxValue;
 
+        /// <inheritdoc />
         public override IMemoryOwner<byte> Rent(int minBufferSize = -1)
         {
             RentCount++;
             return new TrackingOwner(this, MemoryPool<byte>.Shared.Rent(minBufferSize));
         }
 
+        /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
         }
 
+        /// <summary>
+        /// Wraps an inner <see cref="IMemoryOwner{T}" /> rented from <see cref="MemoryPool{T}.Shared" /> so that
+        /// disposal increments <see cref="TrackingMemoryPool.DisposeCount" /> on the owning pool.
+        /// </summary>
         private sealed class TrackingOwner : IMemoryOwner<byte>
         {
             private readonly TrackingMemoryPool _owner;
             private IMemoryOwner<byte>? _inner;
 
+            /// <summary>
+            /// Initializes a new instance of the <see cref="TrackingOwner" /> class.
+            /// </summary>
+            /// <param name="owner">The originating pool whose dispose count is incremented on disposal.</param>
+            /// <param name="inner">The actual memory owner whose buffer is exposed.</param>
             public TrackingOwner(TrackingMemoryPool owner, IMemoryOwner<byte> inner)
             {
                 _owner = owner;
                 _inner = inner;
             }
 
+            /// <inheritdoc />
             public Memory<byte> Memory => _inner?.Memory ?? throw new ObjectDisposedException(nameof(TrackingOwner));
 
+            /// <inheritdoc />
             public void Dispose()
             {
                 if (_inner is null) return;
