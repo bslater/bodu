@@ -30,7 +30,7 @@ using Bodu.Extensions.Configuration.Text;
 using Microsoft.Extensions.Configuration;
 
 IConfiguration configuration = new ConfigurationBuilder()
-    .AddBoduConfiguration("appsettings.bodu")
+    .AddConfiguration("appsettings.bodu")
     .Build();
 
 string? logLevel = configuration["logging:level:default"];
@@ -43,7 +43,7 @@ file is required by default; pass `optional: true` to tolerate a missing file.
 
 ```csharp
 IConfiguration configuration = new ConfigurationBuilder()
-    .AddBoduConfiguration(optional: true, reloadOnChange: true)
+    .AddConfiguration(optional: true, reloadOnChange: true)
     .Build();
 ```
 
@@ -55,7 +55,7 @@ single conventional configuration file in its working directory.
 
 ```csharp
 IConfiguration configuration = new ConfigurationBuilder()
-    .AddBoduConfiguration(
+    .AddConfiguration(
         path: "team.boduconfig",
         targetPath: "src/MyApp/Program.cs",
         optional: false,
@@ -63,7 +63,7 @@ IConfiguration configuration = new ConfigurationBuilder()
     .Build();
 ```
 
-The `targetPath` is handed to `BoduConfigurationDocument.Resolve(targetPath)` — sections whose header globs match
+The `targetPath` is handed to `ConfigurationDocument.Resolve(targetPath)` — sections whose header globs match
 contribute to the resolved view, in source order, last-wins.
 
 ### Configure via callback
@@ -73,23 +73,23 @@ using Bodu.Text.Configuration;
 using Microsoft.Extensions.FileProviders;
 
 IConfiguration configuration = new ConfigurationBuilder()
-    .AddBoduConfiguration(source =>
+    .AddConfiguration(source =>
     {
         source.FileProvider     = new PhysicalFileProvider("/etc/myapp");
         source.Path             = "settings.bodu";
         source.TargetPath       = "src/Foo.cs";
         source.Optional         = true;
         source.ReloadOnChange   = true;
-        source.ParseOptions     = BoduConfigurationParseOptions.EditorConfigCompatible;
-        source.ResolveOptions   = new BoduConfigurationResolveOptions
+        source.ParseOptions     = ConfigurationParseOptions.EditorConfigCompatible;
+        source.ResolveOptions   = new ConfigurationResolveOptions
         {
-            UnsetValueMode = BoduConfigurationUnsetValueMode.RemoveEffectiveValue,
+            UnsetValueMode = ConfigurationUnsetValueMode.RemoveEffectiveValue,
         };
     })
     .Build();
 ```
 
-The callback receives the <xref:Bodu.Extensions.Configuration.Text.BoduTextConfigurationSource> directly, so every
+The callback receives the <xref:Bodu.Extensions.Configuration.Text.TextConfigurationSource> directly, so every
 property is reachable. Use this overload when several knobs need to be set together — a one-liner overload exists for
 the common "just give me the file" case.
 
@@ -102,7 +102,7 @@ service.port = 8080
 """));
 
 IConfiguration configuration = new ConfigurationBuilder()
-    .AddBoduConfiguration(stream)
+    .AddConfiguration(stream)
     .Build();
 
 string? name = configuration["service:name"];   // "Bodu"
@@ -122,7 +122,7 @@ using Microsoft.Extensions.Options;
 
 ServiceCollection services = new();
 services.AddOptions();
-services.AddBoduConfigurationOptions<ServiceOptions>(configuration, "service");
+services.AddConfigurationOptions<ServiceOptions>(configuration, "service");
 
 using ServiceProvider provider = services.BuildServiceProvider();
 ServiceOptions options = provider.GetRequiredService<IOptions<ServiceOptions>>().Value;
@@ -139,7 +139,7 @@ sealed class ServiceOptions
 The section-overload is equivalent and useful when the section is already projected:
 
 ```csharp
-services.AddBoduConfigurationOptions<ServiceOptions>(configuration.GetSection("service"));
+services.AddConfigurationOptions<ServiceOptions>(configuration.GetSection("service"));
 ```
 
 ### Combine with other providers
@@ -151,7 +151,7 @@ earlier ones for the same key:
 IConfiguration configuration = new ConfigurationBuilder()
     .SetBasePath(Directory.GetCurrentDirectory())
     .AddJsonFile("appsettings.json", optional: true)
-    .AddBoduConfiguration("appsettings.bodu", optional: true)
+    .AddConfiguration("appsettings.bodu", optional: true)
     .AddEnvironmentVariables()
     .Build();
 ```
@@ -163,7 +163,7 @@ environment variables.
 
 ```csharp
 IConfiguration configuration = new ConfigurationBuilder()
-    .AddBoduConfiguration("appsettings.bodu", reloadOnChange: true)
+    .AddConfiguration("appsettings.bodu", reloadOnChange: true)
     .Build();
 
 ChangeToken.OnChange(
@@ -183,13 +183,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 IConfiguration configuration = new ConfigurationBuilder()
-    .AddBoduConfiguration("settings.bodu", optional: false, reloadOnChange: true)
+    .AddConfiguration("settings.bodu", optional: false, reloadOnChange: true)
     .Build();
 
 ServiceCollection services = new();
 services.AddSingleton(configuration);
 services.AddOptions();
-services.AddBoduConfigurationOptions<FeatureOptions>(configuration, "features");
+services.AddConfigurationOptions<FeatureOptions>(configuration, "features");
 
 using ServiceProvider provider = services.BuildServiceProvider();
 IOptionsMonitor<FeatureOptions> monitor = provider.GetRequiredService<IOptionsMonitor<FeatureOptions>>();

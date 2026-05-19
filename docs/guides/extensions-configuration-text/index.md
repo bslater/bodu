@@ -16,10 +16,10 @@ the vocabulary (source, provider, target path, parse / resolve option propagatio
 
 ![IConfigurationBuilder to IConfiguration to IOptions](../../images/diagrams/extensions-configuration-text-flow.svg)
 
-`AddBoduConfiguration(...)` registers a <xref:Bodu.Extensions.Configuration.Text.BoduTextConfigurationSource> on the
+`AddConfiguration(...)` registers a <xref:Bodu.Extensions.Configuration.Text.TextConfigurationSource> on the
 builder. When the builder calls `Build`, the source instantiates a
-<xref:Bodu.Extensions.Configuration.Text.BoduTextConfigurationProvider> that parses the file via
-<xref:Bodu.Text.Configuration.BoduConfigurationDocument>, resolves it for the source's `TargetPath`, and copies the
+<xref:Bodu.Extensions.Configuration.Text.TextConfigurationProvider> that parses the file via
+<xref:Bodu.Text.Configuration.ConfigurationDocument>, resolves it for the source's `TargetPath`, and copies the
 flattened view into the inherited `Data` dictionary as colon-delimited keys. The DI options helper binds named
 sections to typed POCO classes through the standard `Microsoft.Extensions.DependencyInjection` shape.
 
@@ -27,7 +27,7 @@ sections to typed POCO classes through the standard `Microsoft.Extensions.Depend
 
 | Namespace | What lives here | Static docs |
 |---|---|---|
-| `Bodu.Extensions.Configuration.Text` | Builder extensions (`BoduTextConfigurationExtensions`), file source / provider (`BoduTextConfigurationSource`, `BoduTextConfigurationProvider`), stream source / provider (`BoduTextStreamConfigurationSource`, `BoduTextStreamConfigurationProvider`), DI options helpers (`BoduConfigurationOptionsExtensions`). | [Introduction](../../docs/extensions-configuration-text/index.md) · [Core concepts](../../docs/extensions-configuration-text/concepts.md) · [Getting started](../../docs/extensions-configuration-text/getting-started.md) |
+| `Bodu.Extensions.Configuration.Text` | Builder extensions (`TextConfigurationExtensions`), file source / provider (`TextConfigurationSource`, `TextConfigurationProvider`), stream source / provider (`TextStreamConfigurationSource`, `TextStreamConfigurationProvider`), DI options helpers (`ConfigurationOptionsExtensions`). | [Introduction](../../docs/extensions-configuration-text/index.md) · [Core concepts](../../docs/extensions-configuration-text/concepts.md) · [Getting started](../../docs/extensions-configuration-text/getting-started.md) |
 
 ## Where to go next
 

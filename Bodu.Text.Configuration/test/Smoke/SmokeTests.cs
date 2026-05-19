@@ -6,7 +6,7 @@
 
 using Bodu.Test;
 using Bodu.Text.Configuration;
-using Bodu.Text.Formats;
+using Bodu.Text.Ini;
 
 namespace Bodu.Smoke;
 
@@ -31,14 +31,14 @@ logging.level.default = Warning
 """;
 
     /// <summary>
-    /// Verifies that <see cref="BoduConfigurationDocument.Parse(string)" /> populates the global section and
+    /// Verifies that <see cref="ConfigurationDocument.Parse(string)" /> populates the global section and
     /// the named sections from a representative input.
     /// </summary>
     [TestMethod]
     [TestCategory(TestCategories.Smoke)]
-    public void BoduConfigurationDocument_Parse_ShouldPopulateSections()
+    public void ConfigurationDocument_Parse_ShouldPopulateSections()
     {
-        BoduConfigurationParseResult result = BoduConfigurationDocument.ParseWithDiagnostics(Sample);
+        ConfigurationParseResult result = ConfigurationDocument.ParseWithDiagnostics(Sample);
         IniDocument doc = result.Document;
 
         Assert.AreEqual("true", doc.GlobalSection["root"]);
@@ -49,15 +49,15 @@ logging.level.default = Warning
     }
 
     /// <summary>
-    /// Verifies that <see cref="BoduConfigurationExtensions.Resolve(IniDocument, string?)" /> layers the
+    /// Verifies that <see cref="ConfigurationExtensions.Resolve(IniDocument, string?)" /> layers the
     /// global section and matching named sections so that later sections override earlier ones.
     /// </summary>
     [TestMethod]
     [TestCategory(TestCategories.Smoke)]
-    public void BoduConfigurationDocument_Resolve_ShouldLayerSectionsInOrder()
+    public void ConfigurationDocument_Resolve_ShouldLayerSectionsInOrder()
     {
-        IniDocument doc = BoduConfigurationDocument.Parse(Sample);
-        BoduConfigurationView view = doc.Resolve("src/Bodu.Text.Configuration/src/Foo.cs");
+        IniDocument doc = ConfigurationDocument.Parse(Sample);
+        ConfigurationView view = doc.Resolve("src/Bodu.Text.Configuration/src/Foo.cs");
 
         Assert.AreEqual("space", view.GetString("format:indent:style"));
         Assert.AreEqual(2, view.GetInt32("format:indent:size"));
@@ -65,17 +65,17 @@ logging.level.default = Warning
     }
 
     /// <summary>
-    /// Verifies that <see cref="BoduConfigurationDocument.Save(IniDocument, System.IO.TextWriter, BoduConfigurationWriteOptions?)" />
+    /// Verifies that <see cref="ConfigurationDocument.Save(IniDocument, System.IO.TextWriter, ConfigurationWriteOptions?)" />
     /// emits text that re-parses to an equivalent document (round-trip).
     /// </summary>
     [TestMethod]
     [TestCategory(TestCategories.Smoke)]
-    public void BoduConfigurationDocument_RoundTrip_ShouldPreserveSemantics()
+    public void ConfigurationDocument_RoundTrip_ShouldPreserveSemantics()
     {
-        IniDocument original = BoduConfigurationDocument.Parse(Sample);
+        IniDocument original = ConfigurationDocument.Parse(Sample);
         using StringWriter sw = new();
-        BoduConfigurationDocument.Save(original, sw);
-        IniDocument reparsed = BoduConfigurationDocument.Parse(sw.ToString());
+        ConfigurationDocument.Save(original, sw);
+        IniDocument reparsed = ConfigurationDocument.Parse(sw.ToString());
 
         Assert.HasCount(original.Sections.Count, reparsed.Sections);
         Assert.AreEqual(original.GlobalSection["root"], reparsed.GlobalSection["root"]);
@@ -83,14 +83,14 @@ logging.level.default = Warning
     }
 
     /// <summary>
-    /// Verifies that <see cref="BoduConfigurationPattern" /> compiles a representative EditorConfig glob and
+    /// Verifies that <see cref="ConfigurationPattern" /> compiles a representative EditorConfig glob and
     /// matches expected paths.
     /// </summary>
     [TestMethod]
     [TestCategory(TestCategories.Smoke)]
-    public void BoduConfigurationPattern_IsMatch_ShouldMatchExpectedPaths()
+    public void ConfigurationPattern_IsMatch_ShouldMatchExpectedPaths()
     {
-        var pattern = BoduConfigurationPattern.Compile("src/**/*.{cs,csproj}");
+        var pattern = ConfigurationPattern.Compile("src/**/*.{cs,csproj}");
 
         Assert.IsTrue(pattern.IsMatch("src/Foo.cs"));
         Assert.IsTrue(pattern.IsMatch("src/Bodu.Text.Configuration/src/Foo.cs"));
@@ -99,16 +99,16 @@ logging.level.default = Warning
     }
 
     /// <summary>
-    /// Verifies that <see cref="BoduConfigurationKey.Parse(string)" /> splits a dotted key into segments and
+    /// Verifies that <see cref="ConfigurationKey.Parse(string)" /> splits a dotted key into segments and
     /// produces the colon-delimited configuration key.
     /// </summary>
     [TestMethod]
     [TestCategory(TestCategories.Smoke)]
-    public void BoduConfigurationKey_Parse_ShouldMapDotToColon()
+    public void ConfigurationKey_Parse_ShouldMapDotToColon()
     {
-        var key = BoduConfigurationKey.Parse("logging.level.default");
+        var key = ConfigurationKey.Parse("logging.level.default");
 
-        Assert.AreEqual("logging:level:default", key.ConfigurationKey);
+        Assert.AreEqual("logging:level:default", key.Path);
         Assert.HasCount(3, key.Segments);
     }
 }

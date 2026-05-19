@@ -16,15 +16,15 @@ vocabulary (document, view, profile, target path, preamble, glob pattern, key ma
 ![Bodu Text Configuration pipeline](../../images/diagrams/text-configuration-pipeline.svg)
 
 A configuration document is parsed once and then projected — through a target path — into a flat
-<xref:Bodu.Text.Configuration.BoduConfigurationView>. The reader produces an immutable
-<xref:Bodu.Text.Formats.IniDocument>; the resolver layers the preamble plus matching glob-anchored sections in source
+<xref:Bodu.Text.Configuration.ConfigurationView>. The reader produces an immutable
+<xref:Bodu.Text.Ini.IniDocument>; the resolver layers the preamble plus matching glob-anchored sections in source
 order; the view exposes typed accessors that return the effective value for each colon-delimited key.
 
 ## Namespace map
 
 | Namespace | What lives here | Static docs |
 |---|---|---|
-| `Bodu.Text.Configuration` | Static façade (`BoduConfigurationDocument`), resolved view (`BoduConfigurationView`), profile and option types (`BoduConfigurationParseOptions`, `BoduConfigurationResolveOptions`, `BoduConfigurationWriteOptions`, `BoduConfigurationKeyOptions`), key model (`BoduConfigurationKey`), diagnostics (`BoduConfigurationDiagnostic`, `BoduConfigurationParseResult`), and the resolver pattern engine (`BoduConfigurationPattern`). | [Introduction](../../docs/text-configuration/index.md) · [Core concepts](../../docs/text-configuration/concepts.md) · [Getting started](../../docs/text-configuration/getting-started.md) |
+| `Bodu.Text.Configuration` | Static façade (`ConfigurationDocument`), resolved view (`ConfigurationView`), profile and option types (`ConfigurationParseOptions`, `ConfigurationResolveOptions`, `ConfigurationWriteOptions`, `ConfigurationKeyOptions`), key model (`ConfigurationKey`), diagnostics (`ConfigurationDiagnostic`, `ConfigurationParseResult`), and the resolver pattern engine (`ConfigurationPattern`). | [Introduction](../../docs/text-configuration/index.md) · [Core concepts](../../docs/text-configuration/concepts.md) · [Getting started](../../docs/text-configuration/getting-started.md) |
 
 ## Where to go next
 

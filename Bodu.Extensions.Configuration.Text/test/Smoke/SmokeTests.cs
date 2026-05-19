@@ -20,12 +20,12 @@ namespace Bodu.Smoke;
 public class BridgeSmokeTests
 {
     /// <summary>
-    /// Verifies that <see cref="BoduTextConfigurationExtensions.AddBoduConfiguration(IConfigurationBuilder, string, string?, bool, bool)" />
+    /// Verifies that <see cref="TextConfigurationExtensions.AddConfiguration(IConfigurationBuilder, string, string?, bool, bool)" />
     /// loads a configuration file and exposes its keys in colon-delimited form.
     /// </summary>
     [TestMethod]
     [TestCategory(TestCategories.Smoke)]
-    public void AddBoduConfiguration_ShouldExposeColonDelimitedKeys()
+    public void AddConfiguration_ShouldExposeColonDelimitedKeys()
     {
         string path = Path.GetTempFileName();
         try
@@ -39,7 +39,7 @@ logging.level.default = Warning
 """);
 
             IConfiguration configuration = new ConfigurationBuilder()
-                .AddBoduConfiguration(source =>
+                .AddConfiguration(source =>
                 {
                     source.FileProvider = new PhysicalFileProvider(Path.GetDirectoryName(path)!);
                     source.Path = Path.GetFileName(path);
@@ -59,10 +59,10 @@ logging.level.default = Warning
     /// Verifies that an optional missing file does not throw and produces an empty configuration view.
     /// </summary>
     [TestMethod]
-    public void AddBoduConfiguration_WhenOptionalAndMissing_ShouldNotThrow()
+    public void AddConfiguration_WhenOptionalAndMissing_ShouldNotThrow()
     {
         IConfiguration configuration = new ConfigurationBuilder()
-            .AddBoduConfiguration("nonexistent.boduconfig", optional: true)
+            .AddConfiguration("nonexistent.boduconfig", optional: true)
             .Build();
 
         Assert.IsNull(configuration["any:key"]);

@@ -16,7 +16,7 @@ dotnet add package Bodu.Text.Configuration
 Targets `net8.0`. Depends on `Bodu.Core` (throw helpers) and `Bodu.Text.Formats` (the underlying `IniDocument`). No
 external NuGet references.
 
-For `Microsoft.Extensions.Configuration` integration — `AddBoduConfiguration`, options binding, file-provider
+For `Microsoft.Extensions.Configuration` integration — `AddConfiguration`, options binding, file-provider
 support — install the sibling [`Bodu.Extensions.Configuration.Text`](../extensions-configuration-text/getting-started.md)
 package on top.
 
@@ -42,9 +42,9 @@ format.indent.size = 2
 logging.level.default = Warning
 """;
 
-IniDocument doc = BoduConfigurationDocument.Parse(source);
+IniDocument doc = ConfigurationDocument.Parse(source);
 
-BoduConfigurationView view = doc.Resolve("src/Bodu.Text.Configuration/src/Foo.cs");
+ConfigurationView view = doc.Resolve("src/Bodu.Text.Configuration/src/Foo.cs");
 
 string indentStyle = view.GetString("format:indent:style");           // "space"
 int    indentSize  = view.GetInt32("format:indent:size");             // 2 (last-wins from the [src/**] section)
@@ -86,28 +86,28 @@ All parsing uses `CultureInfo.InvariantCulture` so behaviour is deterministic ac
 
 ```csharp
 // Strict — duplicate keys are rejected, key-only properties forbidden, inline comments off.
-IniDocument generated = BoduConfigurationDocument.Parse(
+IniDocument generated = ConfigurationDocument.Parse(
     text,
-    BoduConfigurationParseOptions.Strict);
+    ConfigurationParseOptions.Strict);
 
 // EditorConfig-compatible — inline comments disabled, identity key mapping, only `root` from preamble.
-IniDocument editorConfig = BoduConfigurationDocument.Parse(
+IniDocument editorConfig = ConfigurationDocument.Parse(
     text,
-    BoduConfigurationParseOptions.EditorConfigCompatible);
+    ConfigurationParseOptions.EditorConfigCompatible);
 
 // Pick a profile at runtime.
-BoduConfigurationProfile profile = userProfile;
-BoduConfigurationParseOptions options = BoduConfigurationParseOptions.For(profile);
+ConfigurationProfile profile = userProfile;
+ConfigurationParseOptions options = ConfigurationParseOptions.For(profile);
 ```
 
 ### Collect diagnostics instead of throwing
 
 ```csharp
-BoduConfigurationParseOptions options = BoduConfigurationParseOptions.Relaxed; // DiagnosticMode = Collect
+ConfigurationParseOptions options = ConfigurationParseOptions.Relaxed; // DiagnosticMode = Collect
 
-BoduConfigurationParseResult result = BoduConfigurationDocument.ParseWithDiagnostics(text, options);
+ConfigurationParseResult result = ConfigurationDocument.ParseWithDiagnostics(text, options);
 
-foreach (BoduConfigurationDiagnostic d in result.Diagnostics)
+foreach (ConfigurationDiagnostic d in result.Diagnostics)
 {
     Console.WriteLine($"{d.Severity} {d.Code} at line {d.Location.Line}: {d.Message}");
 }
@@ -115,78 +115,78 @@ foreach (BoduConfigurationDiagnostic d in result.Diagnostics)
 if (result.Diagnostics.Length == 0)
 {
     // Clean parse — document is fully usable.
-    BoduConfigurationView view = result.Document.Resolve("src/Foo.cs");
+    ConfigurationView view = result.Document.Resolve("src/Foo.cs");
 }
 ```
 
 `ParseWithDiagnostics` returns successfully even when the document contains recoverable issues; valid sections remain
 usable in `result.Document`. Under the default `Throw` diagnostic mode, the same method raises
-<xref:Bodu.Text.Configuration.BoduConfigurationParseException> on the first error.
+<xref:Bodu.Text.Configuration.ConfigurationParseException> on the first error.
 
 ### Load from a file or stream
 
 ```csharp
-IniDocument fromPath = BoduConfigurationDocument.Load(".boduconfig");
+IniDocument fromPath = ConfigurationDocument.Load(".boduconfig");
 
 await using FileStream fs = File.OpenRead("bodu.config");
-IniDocument fromStream = BoduConfigurationDocument.Load(fs);
+IniDocument fromStream = ConfigurationDocument.Load(fs);
 ```
 
 `Load(path)` records the originating directory so anchored glob patterns (e.g. `[src/**]`) can resolve against the
 correct root without an explicit `PathRoot` setting. `Load(Stream)` and `Parse(string)` produce documents with no
-path context, so anchored globs require `BoduConfigurationResolveOptions.PathRoot` to be set explicitly — or
+path context, so anchored globs require `ConfigurationResolveOptions.PathRoot` to be set explicitly — or
 `MissingPathRootMode` to opt into the empty-root or ignore behaviour.
 
 ### Resolve options — anchor a path root
 
 ```csharp
-IniDocument doc = BoduConfigurationDocument.Parse(source);
+IniDocument doc = ConfigurationDocument.Parse(source);
 
-BoduConfigurationResolveOptions options = new()
+ConfigurationResolveOptions options = new()
 {
     PathRoot = "/home/user/projects/my-app",
     ApplyPreambleProperties = true,
-    UnsetValueMode = BoduConfigurationUnsetValueMode.RemoveEffectiveValue, // EditorConfig sentinel
+    UnsetValueMode = ConfigurationUnsetValueMode.RemoveEffectiveValue, // EditorConfig sentinel
 };
 
-BoduConfigurationView view = doc.Resolve("src/Bodu/Foo.cs", options);
+ConfigurationView view = doc.Resolve("src/Bodu/Foo.cs", options);
 ```
 
 ### Save (round-trip)
 
 ```csharp
-IniDocument doc = BoduConfigurationDocument.Parse(source);
+IniDocument doc = ConfigurationDocument.Parse(source);
 
 // Modify a value via the underlying IniDocument API.
 doc.Sections[0].SetEntry("format.indent.size", "8");
 
-BoduConfigurationDocument.Save(doc, "/tmp/output.boduconfig");
+ConfigurationDocument.Save(doc, "/tmp/output.boduconfig");
 ```
 
 The writer emits canonical Bodu formatting by default. Use
-<xref:Bodu.Text.Configuration.BoduConfigurationWriteOptions.EditorConfigCompatible> when round-tripping into an
+<xref:Bodu.Text.Configuration.ConfigurationWriteOptions.EditorConfigCompatible> when round-tripping into an
 EditorConfig-strict toolchain.
 
 ### Key parsing
 
 ```csharp
-BoduConfigurationKey key = BoduConfigurationKey.Parse("logging.level.default");
+ConfigurationKey key = ConfigurationKey.Parse("logging.level.default");
 
 string raw      = key.RawKey;             // "logging.level.default"
-string canonical = key.ConfigurationKey;  // "logging:level:default"
+string canonical = key.Path;              // "logging:level:default"
 ImmutableArray<string> segments = key.Segments; // ["logging", "level", "default"]
 
 // Non-throwing variant.
-if (BoduConfigurationKey.TryParse(userInput, out BoduConfigurationKey parsed))
+if (ConfigurationKey.TryParse(userInput, out ConfigurationKey parsed))
 {
-    // parsed.ConfigurationKey is ready for Microsoft.Extensions.Configuration interop
+    // parsed.Path is ready for Microsoft.Extensions.Configuration interop
 }
 ```
 
 ### Iterate the resolved view
 
 ```csharp
-BoduConfigurationView view = doc.Resolve("src/Foo.cs");
+ConfigurationView view = doc.Resolve("src/Foo.cs");
 
 foreach (KeyValuePair<string, string?> kvp in view)
 {
@@ -215,17 +215,17 @@ format.indent.size  = 4
 """;
 
 // Parse → Resolve → Read.
-IniDocument doc = BoduConfigurationDocument.Parse(source);
-BoduConfigurationView view = doc.Resolve("Bodu/Foo.cs");
+IniDocument doc = ConfigurationDocument.Parse(source);
+ConfigurationView view = doc.Resolve("Bodu/Foo.cs");
 
 string style = view.GetString("format:indent:style");                 // "space"
 int size = view.GetInt32("format:indent:size");                       // 4
 
 // Save → Parse again → Compare.
 using StringWriter sw = new();
-BoduConfigurationDocument.Save(doc, sw);
+ConfigurationDocument.Save(doc, sw);
 
-IniDocument reparsed = BoduConfigurationDocument.Parse(sw.ToString());
+IniDocument reparsed = ConfigurationDocument.Parse(sw.ToString());
 Debug.Assert(reparsed.Sections.Count == doc.Sections.Count);
 Debug.Assert(reparsed.GlobalSection["root"] == doc.GlobalSection["root"]);
 ```
