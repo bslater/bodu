@@ -260,7 +260,7 @@ public sealed class BinaryEncodingsCoverageTests
     [TestMethod]
     public void ToBase16String_SpanExtension_ShouldMatchCanonicalEncoder()
     {
-        Assert.AreEqual(Base16.ToHexStringLower(Payload.AsSpan()), Payload.AsSpan().ToBase16String());
+        Assert.AreEqual(Base16.ToHexStringLower(Payload.AsSpan()), ((ReadOnlySpan<byte>)Payload).ToBase16String());
     }
 
     /// <summary>
@@ -270,7 +270,7 @@ public sealed class BinaryEncodingsCoverageTests
     [TestMethod]
     public void ToBase32String_SpanExtension_ShouldMatchCanonicalEncoder()
     {
-        Assert.AreEqual(Base32.ToBase32String(Payload.AsSpan()), Payload.AsSpan().ToBase32String());
+        Assert.AreEqual(Base32.ToBase32String(Payload.AsSpan()), ((ReadOnlySpan<byte>)Payload).ToBase32String());
     }
 
     /// <summary>
@@ -280,7 +280,7 @@ public sealed class BinaryEncodingsCoverageTests
     [TestMethod]
     public void ToBase58String_SpanExtension_ShouldMatchCanonicalEncoder()
     {
-        Assert.AreEqual(Base58.ToBase58String(Payload.AsSpan()), Payload.AsSpan().ToBase58String());
+        Assert.AreEqual(Base58.ToBase58String(Payload.AsSpan()), ((ReadOnlySpan<byte>)Payload).ToBase58String());
     }
 
     /// <summary>
@@ -290,7 +290,7 @@ public sealed class BinaryEncodingsCoverageTests
     [TestMethod]
     public void ToBase64String_SpanExtension_ShouldMatchCanonicalEncoder()
     {
-        Assert.AreEqual(Base64.ToBase64String(Payload.AsSpan()), Payload.AsSpan().ToBase64String());
+        Assert.AreEqual(Base64.ToBase64String(Payload.AsSpan()), ((ReadOnlySpan<byte>)Payload).ToBase64String());
     }
 
     /// <summary>
@@ -300,7 +300,7 @@ public sealed class BinaryEncodingsCoverageTests
     [TestMethod]
     public void ToBase85String_SpanExtension_ShouldMatchCanonicalEncoder()
     {
-        Assert.AreEqual(Base85.ToBase85String(Payload.AsSpan()), Payload.AsSpan().ToBase85String());
+        Assert.AreEqual(Base85.ToBase85String(Payload.AsSpan()), ((ReadOnlySpan<byte>)Payload).ToBase85String());
     }
 
 }
