@@ -28,7 +28,7 @@ public static partial class DateTimeExtensions
     /// <para>
     /// <b>Example:</b>
     /// </para>
-    /// <code>
+    /// <code language="csharp">
     ///<![CDATA[
     /// var dt = new DateTime(2024, 7, 7, 10, 30, 0);
     /// var result = dt.EndOfDay(); // → 2024-07-07 23:59:59.9999999

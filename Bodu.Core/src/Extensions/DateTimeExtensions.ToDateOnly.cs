@@ -27,7 +27,7 @@ public static partial class DateTimeExtensions
     /// <para>
     /// <b>Example:</b>
     /// </para>
-    /// <code>
+    /// <code language="csharp">
     ///<![CDATA[
     /// var dt = new DateTime(2025, 7, 7, 15, 30, 0);
     /// var result = dt.ToDateOnly(); // → 2025-07-07

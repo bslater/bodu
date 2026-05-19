@@ -28,9 +28,7 @@ public partial struct WeekPattern : System.Runtime.Serialization.ISerializable
         ThrowHelper.ThrowIfNull(info);
 
         int data = info.GetByte(nameof(_selectedDays));
-        if (data < MinValue || data > MaxValue)
-            throw new SerializationException(
-                string.Format(ResourceStrings.Serial_Invalid_State, nameof(WeekPattern)));
+        if (data is < MinValue or > MaxValue) throw new SerializationException(string.Format(ResourceStrings.Serial_Invalid_State, nameof(WeekPattern)));
 
         _selectedDays = (byte)data;
     }

@@ -200,7 +200,7 @@ public sealed partial class IndexedSet<T>
     public void Insert(int index, T item)
     {
         if (!_storage.TryInsert(index, item))
-            throw new ArgumentException("The set already contains the specified value.", nameof(item));
+            throw new ArgumentException("The set already contains the specified value.", nameof(item)); //TODO: define a BCL-style exception message in the resx file and remove inline static text
     }
 
     /// <summary>

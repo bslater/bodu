@@ -26,7 +26,7 @@ public static partial class DateOnlyExtensions
     /// <para>
     /// <b>Examples:</b>
     /// </para>
-    /// <code>
+    /// <code language="csharp">
     ///<![CDATA[
     /// var d1 = new DateOnly(2023, 1, 31);
     /// var result1 = d1.Add(0, 1, 0); // → 2023-02-28 (non-leap year)

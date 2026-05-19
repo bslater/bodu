@@ -29,19 +29,19 @@ public static class WorkingDaysOfWeekExtensions
     {
         ThrowHelper.ThrowIfEnumValueIsUndefined(value);
         return value == WorkingDaysOfWeek.Custom
-            ? throw new ArgumentException("Custom has no canonical WeekPattern; pass a WeekPattern directly.", nameof(value))
+            ? throw new ArgumentException("Custom has no canonical WeekPattern; pass a WeekPattern directly.", nameof(value)) //TODO: define a BCL-style exception message in the resx file and remove inline static text
             : value switch
-        {
-            WorkingDaysOfWeek.MondayToFriday => WeekPattern.MondayToFriday,
-            WorkingDaysOfWeek.MondayToSaturday => WeekPattern.MondayToSaturday,
-            WorkingDaysOfWeek.MondayToThursdayAndSaturday => WeekPattern.MondayToThursdayAndSaturday,
-            WorkingDaysOfWeek.SaturdayToThursday => WeekPattern.SaturdayToThursday,
-            WorkingDaysOfWeek.SaturdayToWednesday => WeekPattern.SaturdayToWednesday,
-            WorkingDaysOfWeek.SundayToFriday => WeekPattern.SundayToFriday,
-            WorkingDaysOfWeek.SundayToThursday => WeekPattern.SundayToThursday,
-            WorkingDaysOfWeek.AllDays => WeekPattern.AllDays,
-            _ => throw new ArgumentOutOfRangeException(nameof(value)),
-        };
+            {
+                WorkingDaysOfWeek.MondayToFriday => WeekPattern.MondayToFriday,
+                WorkingDaysOfWeek.MondayToSaturday => WeekPattern.MondayToSaturday,
+                WorkingDaysOfWeek.MondayToThursdayAndSaturday => WeekPattern.MondayToThursdayAndSaturday,
+                WorkingDaysOfWeek.SaturdayToThursday => WeekPattern.SaturdayToThursday,
+                WorkingDaysOfWeek.SaturdayToWednesday => WeekPattern.SaturdayToWednesday,
+                WorkingDaysOfWeek.SundayToFriday => WeekPattern.SundayToFriday,
+                WorkingDaysOfWeek.SundayToThursday => WeekPattern.SundayToThursday,
+                WorkingDaysOfWeek.AllDays => WeekPattern.AllDays,
+                _ => throw new ArgumentOutOfRangeException(nameof(value)),
+            };
     }
 
     /// <summary>

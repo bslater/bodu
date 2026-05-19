@@ -1,6 +1,6 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="ThrowHelper.String.CallerExpression.cs" company="PlaceholderCompany">
-//     Copyright (c) PlaceholderCompany. All rights reserved.
+// <copyright file="ThrowHelper.String-CallerExpression.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 

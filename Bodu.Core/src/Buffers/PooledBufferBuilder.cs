@@ -240,11 +240,7 @@ public sealed class PooledBufferBuilder<T> :
         ThrowIfDisposed();
         ThrowHelper.ThrowIfNegative(count);
 
-        if (count > _internalBuffer.Length - _count)
-            throw new ArgumentOutOfRangeException(
-                nameof(count),
-                count,
-                "Cannot advance past the end of the current buffer.");
+        if (count > _internalBuffer.Length - _count) throw new ArgumentOutOfRangeException(nameof(count), count, "Cannot advance past the end of the current buffer."); //TODO: define a BCL-style exception message in the resx file and remove inline static text
 
         _count += count;
     }

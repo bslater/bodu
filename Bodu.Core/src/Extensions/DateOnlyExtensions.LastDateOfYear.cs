@@ -23,7 +23,7 @@ public static partial class DateOnlyExtensions
     /// <para>
     /// <b>Example:</b>
     /// </para>
-    /// <code>
+    /// <code language="csharp">
     ///<![CDATA[
     /// var date = new DateOnly(2025, 7, 15);
     /// var result = date.LastDateOfYear(); // → 2025-12-31

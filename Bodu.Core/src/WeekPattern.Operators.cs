@@ -8,7 +8,6 @@ namespace Bodu;
 
 public partial struct WeekPattern
 {
-
     /// <summary>
     /// Implicitly converts a <see cref="WeekPattern" /> to its underlying <see cref="byte" /> bitmask.
     /// </summary>
@@ -73,5 +72,4 @@ public partial struct WeekPattern
     /// <returns><see langword="true" /> if the instances differ; otherwise, <see langword="false" />.</returns>
     public static bool operator !=(WeekPattern left, WeekPattern right) =>
         left._selectedDays != right._selectedDays;
-
 }

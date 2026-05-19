@@ -106,7 +106,7 @@ public static partial class DateTimeExtensions
     /// </exception>
     public static DateTime PreviousWeekday(this DateTime dateTime, WeekPattern workingWeek)
     {
-        if (workingWeek.Count == 0) throw new ArgumentOutOfRangeException(nameof(workingWeek), "The working week must select at least one day.");
+        if (workingWeek.Count == 0) throw new ArgumentOutOfRangeException(nameof(workingWeek), "The working week must select at least one day."); //TODO: define a BCL-style exception message in the resx file and remove inline static text
 
         var ticks = dateTime.Ticks;
         do

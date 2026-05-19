@@ -48,7 +48,7 @@ namespace Bodu.Collections.Generic;
 /// This type is not thread-safe. Concurrent reads and writes require external synchronization.
 /// </para>
 /// <example>
-/// The following example stores multiple values under the same key: <code>
+/// The following example stores multiple values under the same key: <code language="csharp">
 ///<![CDATA[
 /// var map = new MultiValueDictionary&lt;string, int&gt;();
 ///
@@ -62,7 +62,7 @@ namespace Bodu.Collections.Generic;
 /// </code>
 /// </example>
 /// <example>
-/// The following example retrieves values for a key: <code>
+/// The following example retrieves values for a key: <code language="csharp">
 ///<![CDATA[
 /// IReadOnlyList&lt;int&gt; values = map["odd"];
 ///
@@ -74,7 +74,7 @@ namespace Bodu.Collections.Generic;
 /// </code>
 /// </example>
 /// <example>
-/// The following example flattens the dictionary into one pair per value: <code>
+/// The following example flattens the dictionary into one pair per value: <code language="csharp">
 ///<![CDATA[
 /// foreach (KeyValuePair&lt;string, int&gt; pair in map.Flatten())
 /// {
@@ -325,9 +325,9 @@ public sealed partial class MultiValueDictionary<TKey, TValue>
     {
         ThrowHelper.ThrowIfNull(key);
 
-        return !_map.TryGetValue(key, out ValueBucket? bucket)
-            ? throw new KeyNotFoundException($"The key '{key}' was not present in the dictionary.")
-            : (IReadOnlyList<TValue>)bucket.ReadOnlyValues;
+        return _map.TryGetValue(key, out ValueBucket? bucket)
+            ? (IReadOnlyList<TValue>)bucket.ReadOnlyValues
+            : throw new KeyNotFoundException($"The key '{key}' was not present in the dictionary."); //TODO: define a BCL-style exception message in the resx file and remove inline static text
     }
 
     /// <summary>

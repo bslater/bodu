@@ -18,7 +18,7 @@ namespace Bodu.Collections.Generic;
 /// <strong>Eviction Example:</strong><br /> Consider a dictionary with a capacity of 3. The following operations occur
 /// in order:
 /// </para>
-/// <code>
+/// <code language="csharp">
 ///<![CDATA[
 /// Add("A")    // Dictionary: A
 /// Add("B")    // Dictionary: A, B

@@ -12,7 +12,6 @@ namespace Bodu.Collections.Generic.Concurrent;
 public partial class ConcurrentCircularBuffer<T> :
     IProducerConsumerCollection<T>
 {
-
     /// <summary>
     /// Attempts to add <paramref name="item" /> to the buffer using the producer-side path.
     /// </summary>
@@ -46,5 +45,4 @@ public partial class ConcurrentCircularBuffer<T> :
         item = value!;
         return taken;
     }
-
 }

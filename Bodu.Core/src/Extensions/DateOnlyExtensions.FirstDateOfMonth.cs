@@ -24,7 +24,7 @@ public static partial class DateOnlyExtensions
     /// <para>
     /// <b>Example:</b>
     /// </para>
-    /// <code>
+    /// <code language="csharp">
     ///<![CDATA[
     /// var date = new DateOnly(2025, 7, 15);
     /// var result = date.FirstDateOfMonth(); // → 2025-07-01

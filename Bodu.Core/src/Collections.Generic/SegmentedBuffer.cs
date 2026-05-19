@@ -36,7 +36,6 @@ public sealed class SegmentedBuffer<T> :
 
     private readonly List<T[]> _segments;
     private readonly int _segmentSize;
-    private int _count;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SegmentedBuffer{T}" /> class using the default segment size.
@@ -73,7 +72,7 @@ public sealed class SegmentedBuffer<T> :
     /// <remarks>
     /// The value returned reflects the total number of elements added via <see cref="Add" />.
     /// </remarks>
-    public int Count => _count;
+    public int Count { get; private set; }
 
     /// <summary>
     /// Gets or sets the element at the specified zero-based index.
@@ -90,7 +89,7 @@ public sealed class SegmentedBuffer<T> :
     {
         get
         {
-            ThrowHelper.ThrowIfGreaterThanOther(index, _count - 1);
+            ThrowHelper.ThrowIfGreaterThanOther(index, Count - 1);
 
             var segmentIndex = index / _segmentSize;
             var offset = index % _segmentSize;
@@ -99,7 +98,7 @@ public sealed class SegmentedBuffer<T> :
 
         set
         {
-            ThrowHelper.ThrowIfGreaterThanOther(index, _count);
+            ThrowHelper.ThrowIfGreaterThanOther(index, Count);
 
             var segmentIndex = index / _segmentSize;
             var offset = index % _segmentSize;
@@ -117,14 +116,14 @@ public sealed class SegmentedBuffer<T> :
     /// </remarks>
     public void Add(T item)
     {
-        if (_count % _segmentSize == 0)
+        if (Count % _segmentSize == 0)
             _segments.Add(new T[_segmentSize]);
 
-        var segmentIndex = _count / _segmentSize;
-        var offset = _count % _segmentSize;
+        var segmentIndex = Count / _segmentSize;
+        var offset = Count % _segmentSize;
         _segments[segmentIndex][offset] = item;
 
-        _count++;
+        Count++;
     }
 
     /// <summary>
@@ -137,7 +136,7 @@ public sealed class SegmentedBuffer<T> :
     /// </remarks>
     public IEnumerator<T> GetEnumerator()
     {
-        var count = _count;
+        var count = Count;
         var fullSegments = count / _segmentSize;
         var lastSegmentCount = count % _segmentSize;
 

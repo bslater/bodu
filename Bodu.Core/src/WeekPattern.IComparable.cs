@@ -30,18 +30,14 @@ public partial struct WeekPattern :
     /// provided to support sorting and binary-search scenarios where a consistent total order is required. For
     /// domain-specific ordering, enumerate the selected days directly.
     /// </remarks>
-    public int CompareTo(object? obj)
-    {
-        if (obj is null) return 1;
-        if (obj is WeekPattern other) return CompareTo(other);
-        return obj is byte b
-            ? CompareTo(b)
-            : throw new ArgumentException(
-            string.Format(
-                ResourceStrings.Arg_Invalid_MustBeComparableType,
-                string.Join(" or ", nameof(WeekPattern), nameof(Byte))),
-            nameof(obj));
-    }
+    public int CompareTo(object? obj) =>
+        obj is null
+            ? 1
+            : obj is WeekPattern other
+                ? CompareTo(other)
+                : obj is byte b
+                    ? CompareTo(b)
+                    : throw new ArgumentException(string.Format(ResourceStrings.Arg_Invalid_MustBeComparableType, string.Join(" or ", nameof(WeekPattern), nameof(Byte))), nameof(obj));
 
     /// <summary>
     /// Compares this instance to a specified <see cref="WeekPattern" /> and returns an indication of their relative

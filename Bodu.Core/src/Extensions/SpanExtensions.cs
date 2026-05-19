@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.Extensions;
+
 /// <summary>
 /// Provides span-shaping helpers — read-only conversion and windowed reversal — for code that already operates on
 /// <see cref="Span{T}" /> or <see cref="ReadOnlySpan{T}" /> and wants to keep the underlying memory allocation-free.

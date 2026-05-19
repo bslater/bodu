@@ -43,8 +43,8 @@ public static partial class NumericExtensions
     {
         var bytes = value switch
         {
-            byte b => new[] { b },
-            sbyte sb => new[] { unchecked((byte)sb) },
+            byte b => [b],
+            sbyte sb => [unchecked((byte)sb)],
             short s => BitConverter.GetBytes(s),
             ushort us => BitConverter.GetBytes(us),
             int i => BitConverter.GetBytes(i),
@@ -53,7 +53,7 @@ public static partial class NumericExtensions
             ulong ul => BitConverter.GetBytes(ul),
             float f => BitConverter.GetBytes(f),
             double d => BitConverter.GetBytes(d),
-            _ => throw new InvalidOperationException($"Type '{typeof(T).Name}' is not a supported numeric type.")
+            _ => throw new InvalidOperationException($"Type '{typeof(T).Name}' is not a supported numeric type.") //TODO: define a BCL-style exception message in the resx file and remove inline static text
         };
 
         // BitConverter always produces bytes in the system's native byte order. Reverse when the

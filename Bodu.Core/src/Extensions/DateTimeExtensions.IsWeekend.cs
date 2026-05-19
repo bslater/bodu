@@ -89,15 +89,12 @@ public static partial class DateTimeExtensions
     {
         ThrowHelper.ThrowIfEnumValueIsUndefined(dayOfWeek);
 
-        if (workingWeek == WorkingDaysOfWeek.Custom)
-        {
-            return provider is null
+        return workingWeek == WorkingDaysOfWeek.Custom
+            ? provider is null
                 ? throw new ArgumentOutOfRangeException(
                     nameof(workingWeek),
                     string.Format(ResourceStrings.Arg_OutOfRange_EnumValue, workingWeek, nameof(WorkingDaysOfWeek)))
-                : provider.IsWeekend(dayOfWeek);
-        }
-
-        return !workingWeek.ToWeekPattern().Contains(dayOfWeek);
+                : provider.IsWeekend(dayOfWeek)
+            : !workingWeek.ToWeekPattern().Contains(dayOfWeek);
     }
 }

@@ -72,7 +72,7 @@ public partial struct WeekPattern : IEnumerable<DayOfWeek>
     private const byte ShiftValue = 0x01;
 
 #pragma warning disable IDE1006
-    private static readonly char[] WeekdaySymbols = { 'S', 'M', 'T', 'W', 'T', 'F', 'S' };
+    private static readonly char[] WeekdaySymbols = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 #pragma warning restore IDE1006
 
     private byte _selectedDays;

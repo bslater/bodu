@@ -58,12 +58,6 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
     private const int DefaultGrowCapacity = 4;
 
     /// <summary>
-    /// Backing storage for the heap. Slots <c>[0.._size)</c> are valid heap nodes; the remainder is uninitialized
-    /// reserve capacity.
-    /// </summary>
-    private (TElement Element, TPriority Priority)[] _nodes;
-
-    /// <summary>
     /// Maps each element currently in the heap to its position in <see cref="_nodes" />. Kept in lock-step with every
     /// swap, insert, and removal so that lookup-by-element remains O(1).
     /// </summary>
@@ -73,6 +67,12 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
     /// The priority comparer used for heap ordering. Smaller values (per this comparer) are dequeued first.
     /// </summary>
     private readonly IComparer<TPriority> _comparer;
+
+    /// <summary>
+    /// Backing storage for the heap. Slots <c>[0.._size)</c> are valid heap nodes; the remainder is uninitialized
+    /// reserve capacity.
+    /// </summary>
+    private (TElement Element, TPriority Priority)[] _nodes;
 
     /// <summary>
     /// The number of nodes currently stored in the heap. Always satisfies <c>_size &lt;= _nodes.Length</c>.

@@ -37,7 +37,7 @@ public static partial class DateTimeExtensions
     /// <para>
     /// <b>Example:</b>
     /// </para>
-    /// <code>
+    /// <code language="csharp">
     ///<![CDATA[
     /// var start    = new DateTime(2025, 7, 7, 9, 0, 0);             // 09:00
     /// var interval = TimeSpan.FromHours(1);                          // every hour

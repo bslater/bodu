@@ -25,7 +25,7 @@ public static partial class DateTimeExtensions
     /// <para>
     /// <b>Example:</b>
     /// </para>
-    /// <code>
+    /// <code language="csharp">
     ///<![CDATA[
     /// var dt = new DateTime(2025, 7, 15, 14, 45, 0);
     /// var result = dt.Midday(); // → 2025-07-15 12:00:00

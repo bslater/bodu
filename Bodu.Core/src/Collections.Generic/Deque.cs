@@ -270,13 +270,10 @@ public sealed class Deque<T>
     /// <param name="capacity">The requested capacity, or <see cref="UseFloorCapacity" />.</param>
     /// <param name="allowGrow">Whether the deque is permitted to grow.</param>
     /// <returns>The capacity to forward to the base constructor.</returns>
-    private static int ResolveCapacity(T[] items, int capacity, bool allowGrow)
-    {
-        if (capacity == UseFloorCapacity)
-            return Math.Max(items.Length, DefaultCapacity);
-
-        return allowGrow && items.Length > capacity ? items.Length : capacity;
-    }
+    private static int ResolveCapacity(T[] items, int capacity, bool allowGrow) =>
+        capacity == UseFloorCapacity
+            ? Math.Max(items.Length, DefaultCapacity)
+            : allowGrow && items.Length > capacity ? items.Length : capacity;
 
     /// <summary>
     /// Materializes <paramref name="collection" /> into an array exactly once, performing the null-check.
@@ -287,6 +284,7 @@ public sealed class Deque<T>
     private static T[] Materialize(IEnumerable<T> collection)
     {
         ThrowHelper.ThrowIfNull(collection);
+
         return collection as T[] ?? [.. collection];
     }
 

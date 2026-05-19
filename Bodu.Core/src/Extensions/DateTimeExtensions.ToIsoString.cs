@@ -111,7 +111,7 @@ public static partial class DateTimeExtensions
             DateTimeKind.Utc => dateTime.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.fffffffZ", CultureInfo.InvariantCulture),
             DateTimeKind.Local => dateTime.ToLocalTime().ToString("o", CultureInfo.InvariantCulture),
             DateTimeKind.Unspecified => DateTime.SpecifyKind(dateTime, DateTimeKind.Unspecified).ToString("o", CultureInfo.InvariantCulture),
-            _ => throw new ArgumentOutOfRangeException(nameof(kind), "Invalid DateTimeKind value.")
+            _ => throw new ArgumentOutOfRangeException(nameof(kind), "Invalid DateTimeKind value.") //TODO: define a BCL-style exception message in the resx file and remove inline static text
         };
     }
 

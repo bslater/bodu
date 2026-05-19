@@ -12,7 +12,6 @@ namespace Bodu.Extensions;
 
 public static partial class NumericExtensions
 {
-
     /// <summary>
     /// Reverses the order of the least significant <paramref name="bitLength" /> bits in the specified
     /// <see cref="byte" /> value, without validating <paramref name="bitLength" />.
@@ -178,6 +177,7 @@ public static partial class NumericExtensions
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static ulong ReverseBytesUnchecked(this ulong value) =>
         BinaryPrimitives.ReverseEndianness(value);
+
     /// <summary>
     /// Rotates the bits of the specified <see cref="byte" /> value to the left by the specified number of positions,
     /// without validating <paramref name="count" />.
@@ -333,5 +333,4 @@ public static partial class NumericExtensions
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static ulong RotateBitsRightUnchecked(this ulong value, int count) =>
         BitOperations.RotateRight(value, count);
-
 }

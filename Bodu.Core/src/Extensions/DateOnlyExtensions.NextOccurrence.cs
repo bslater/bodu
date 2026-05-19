@@ -32,7 +32,7 @@ public static partial class DateOnlyExtensions
     /// <para>
     /// <b>Example:</b>
     /// </para>
-    /// <code>
+    /// <code language="csharp">
     ///<![CDATA[
     /// var start = new DateOnly(2024, 1, 1);
     /// var after = new DateOnly(2024, 1, 12);

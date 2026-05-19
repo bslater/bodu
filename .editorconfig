@@ -290,7 +290,7 @@ dotnet_diagnostic.SA1502.severity = silent
 dotnet_diagnostic.IDE0290.severity = none
 
 # File header template
-file_header_template = // ---------------------------------------------------------------------------------------------------------------\n// <copyright file="{fileName}" company="PlaceholderCompany">\n//     Copyright (c) PlaceholderCompany. All rights reserved.\n// </copyright>\n// ---------------------------------------------------------------------------------------------------------------
+dotnet_diagnostic.IDE0073.severity = none
 
 # ---------------------------------------------------------------------------------------------------------------
 # Bodu code-style analyzer diagnostics (BODU#### family)

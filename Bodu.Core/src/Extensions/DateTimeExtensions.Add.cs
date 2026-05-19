@@ -41,7 +41,7 @@ public static partial class DateTimeExtensions
     /// <para>
     /// <b>Examples:</b>
     /// </para>
-    /// <code>
+    /// <code language="csharp">
     ///<![CDATA[
     /// var dt1 = new DateTime(2023, 1, 31);
     /// var result1 = dt1.Add(0, 1, 0); // → 2023-02-28 (non-leap year)

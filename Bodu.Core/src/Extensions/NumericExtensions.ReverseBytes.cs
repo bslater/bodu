@@ -11,7 +11,6 @@ namespace Bodu.Extensions;
 
 public static partial class NumericExtensions
 {
-
     /// <summary>
     /// Reverses the byte order of the specified <see cref="ushort" /> value.
     /// </summary>
@@ -59,5 +58,4 @@ public static partial class NumericExtensions
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ulong ReverseBytes(this ulong value) =>
         BinaryPrimitives.ReverseEndianness(value);
-
 }

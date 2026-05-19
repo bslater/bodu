@@ -1,6 +1,6 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="ThrowHelper.Array.CallerExpression.cs" company="PlaceholderCompany">
-//     Copyright (c) PlaceholderCompany. All rights reserved.
+// <copyright file="ThrowHelper.Array-CallerExpression.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
@@ -203,6 +203,7 @@ public static partial class ThrowHelper
     {
         if (array is null)
             throw new ArgumentNullException(paramName);
+
         if (array.Length < minimumLength)
             throw new ArgumentException(
                 string.Format(CultureInfo.CurrentCulture, s_argInvalidArrayTooShort, minimumLength),

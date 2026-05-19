@@ -10,7 +10,6 @@ public partial struct WeekPattern :
     System.IEquatable<WeekPattern>,
     System.IEquatable<byte>
 {
-
     /// <summary>
     /// Determines whether the specified object is equal to the current <see cref="WeekPattern" />.
     /// </summary>
@@ -22,11 +21,10 @@ public partial struct WeekPattern :
     /// <see langword="true" /> if <paramref name="obj" /> is a <see cref="WeekPattern" /> or <see cref="byte" /> with
     /// the same selected-day bitmask; otherwise, <see langword="false" />.
     /// </returns>
-    public override bool Equals(object? obj)
-    {
-        if (obj is WeekPattern pattern) return Equals(pattern);
-        return obj is byte b ? Equals(b) : false;
-    }
+    public override bool Equals(object? obj) =>
+         obj is WeekPattern pattern
+            ? Equals(pattern)
+            : obj is byte b && Equals(b);
 
     /// <summary>
     /// Determines whether the specified <see cref="WeekPattern" /> is equal to the current instance.
@@ -50,5 +48,4 @@ public partial struct WeekPattern :
     /// </summary>
     /// <returns>An <see cref="int" /> hash code consistent with <see cref="Equals(WeekPattern)" />.</returns>
     public override readonly int GetHashCode() => _selectedDays.GetHashCode();
-
 }

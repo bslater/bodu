@@ -10,7 +10,6 @@ using Bodu.Buffers;
 
 #endif
 
-
 namespace Bodu.Collections.Generic.Extensions;
 
 public static partial class IEnumerableExtensions

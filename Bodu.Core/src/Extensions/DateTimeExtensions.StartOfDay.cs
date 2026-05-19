@@ -28,7 +28,7 @@ public static partial class DateTimeExtensions
     /// <para>
     /// <b>Example:</b>
     /// </para>
-    /// <code>
+    /// <code language="csharp">
     ///<![CDATA[
     /// var dt = new DateTime(2024, 12, 5, 10, 45, 0, DateTimeKind.Utc);
     /// var result = dt.StartOfDay(); // → 2024-12-05 00:00:00 (Kind = Utc)

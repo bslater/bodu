@@ -108,20 +108,20 @@ public partial class EvictingDictionary<TKey, TValue>
         /// Values cannot be added directly; modify the owning dictionary instead.
         /// </exception>
         void ICollection<TValue>.Add(TValue item) =>
-            throw new NotSupportedException("Mutating the dictionary through the Values collection is not supported.");
+            throw new NotSupportedException("Mutating the dictionary through the Values collection is not supported."); //TODO: define a BCL-style exception message in the resx file and remove inline static text
 
         /// <inheritdoc />
         /// <exception cref="NotSupportedException">
         /// Values cannot be cleared directly; call <see cref="EvictingDictionary{TKey, TValue}.Clear" /> instead.
         /// </exception>
         void ICollection<TValue>.Clear() =>
-            throw new NotSupportedException("Mutating the dictionary through the Values collection is not supported.");
+            throw new NotSupportedException("Mutating the dictionary through the Values collection is not supported."); //TODO: define a BCL-style exception message in the resx file and remove inline static text
 
         /// <inheritdoc />
         /// <exception cref="NotSupportedException">
         /// Values cannot be removed directly; modify the owning dictionary instead.
         /// </exception>
         bool ICollection<TValue>.Remove(TValue item) =>
-            throw new NotSupportedException("Mutating the dictionary through the Values collection is not supported.");
+            throw new NotSupportedException("Mutating the dictionary through the Values collection is not supported."); //TODO: define a BCL-style exception message in the resx file and remove inline static text
     }
 }

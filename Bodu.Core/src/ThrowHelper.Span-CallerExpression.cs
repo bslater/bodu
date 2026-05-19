@@ -1,6 +1,6 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="ThrowHelper.Span.CallerExpression.cs" company="PlaceholderCompany">
-//     Copyright (c) PlaceholderCompany. All rights reserved.
+// <copyright file="ThrowHelper.Span-CallerExpression.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
@@ -8,10 +8,10 @@
 #pragma warning disable SA1117 // Parameters should be on same line or separate lines
 #pragma warning disable IDE0011 // Add braces
 
-using Bodu.Extensions;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Text;
+using Bodu.Extensions;
 
 namespace Bodu;
 

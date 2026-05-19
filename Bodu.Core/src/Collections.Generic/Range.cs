@@ -130,7 +130,6 @@ public readonly struct Range<T>
         ThrowHelper.ThrowIfNull(startInclusive);
         ThrowHelper.ThrowIfNull(endExclusive);
 
-        if (comparer.Compare(startInclusive, endExclusive) >= 0)
-            throw new ArgumentException("The range start must be less than the range end.", nameof(startInclusive));
+        if (comparer.Compare(startInclusive, endExclusive) >= 0) throw new ArgumentException("The range start must be less than the range end.", nameof(startInclusive)); //TODO: define a BCL-style exception message in the resx file and remove inline static text
     }
 }

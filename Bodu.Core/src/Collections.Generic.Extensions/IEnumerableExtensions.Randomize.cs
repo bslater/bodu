@@ -10,7 +10,6 @@ using Bodu.Buffers;
 
 #endif
 
-
 namespace Bodu.Collections.Generic.Extensions;
 
 public static partial class IEnumerableExtensions
@@ -168,12 +167,15 @@ public static partial class IEnumerableExtensions
 #else
         using var builder = new PooledBufferBuilder<T>();
         if (source is IReadOnlyCollection<T> collection && builder.TryCopyFrom(collection))
+        {
             availableCount = builder.WrittenCount;
+        }
         else
         {
             builder.AppendRange(source);
             availableCount = builder.WrittenCount;
         }
+
         // Slice to valid elements only — the pooled array is over-allocated
         // and ShuffleAndYield uses buffer.Length to bound the shuffle
         buffer = builder.AsArray()[..availableCount];

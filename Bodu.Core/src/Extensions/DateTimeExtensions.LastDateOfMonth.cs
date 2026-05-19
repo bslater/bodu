@@ -29,7 +29,7 @@ public static partial class DateTimeExtensions
     /// <para>
     /// <b>Example:</b>
     /// </para>
-    /// <code>
+    /// <code language="csharp">
     ///<![CDATA[
     /// var dt = new DateTime(2024, 2, 15, 14, 45, 0);
     /// var result = dt.LastDateOfMonth(); // → 2024-02-29 00:00:00

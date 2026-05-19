@@ -90,9 +90,7 @@ public static partial class DateTimeExtensions
         ThrowHelper.ThrowIfEnumValueIsUndefined(dayOfWeek);
         ThrowHelper.ThrowIfEnumValueIsUndefined(definition);
 
-        if (definition == CalendarQuarterDefinition.Custom)
-            throw new InvalidOperationException(
-                string.Format(ResourceStrings.Arg_Invalid_ProviderInterface, nameof(IQuarterDefinitionProvider)));
+        if (definition == CalendarQuarterDefinition.Custom) throw new InvalidOperationException(string.Format(ResourceStrings.Arg_Invalid_ProviderInterface, nameof(IQuarterDefinitionProvider)));
 
         (var year, var quarter) = DateTimeExtensions.GetQuarterAndYearFromDate(definition, dateTime);
         return DateTimeExtensions.GetLastDateOfWeekInQuarterInternal(

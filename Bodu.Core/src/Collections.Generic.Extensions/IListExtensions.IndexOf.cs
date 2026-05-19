@@ -92,10 +92,11 @@ public static partial class IListExtensions
     {
         ThrowHelper.ThrowIfNull(list);
         ThrowHelper.ThrowIfNull(predicate);
-        if (index < 0 || index > list.Count) throw new ArgumentOutOfRangeException(nameof(index));
-        return count < 0 || index + count > list.Count
-            ? throw new ArgumentOutOfRangeException(nameof(count))
-            : IndexOfCore(list, predicate, index, count);
+        return index < 0 || index > list.Count
+            ? throw new ArgumentOutOfRangeException(nameof(index))
+            : count < 0 || index + count > list.Count
+                ? throw new ArgumentOutOfRangeException(nameof(count))
+                : IndexOfCore(list, predicate, index, count);
     }
 
     private static int IndexOfCore<TSource>(IList<TSource> list, Func<TSource, bool> predicate, int index, int count)

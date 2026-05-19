@@ -91,15 +91,10 @@ public sealed partial class RangeDictionary<TKey, TValue>
     /// <returns>The value associated with the containing range.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
     /// <exception cref="KeyNotFoundException">No range contains <paramref name="key" />.</exception>
-    public TValue this[TKey key]
-    {
-        get
-        {
-            return TryGetValue(key, out TValue? value)
-                ? value
-                : throw new KeyNotFoundException("The specified key was not contained in any range.");
-        }
-    }
+    public TValue this[TKey key] =>
+        TryGetValue(key, out TValue? value)
+            ? value
+            : throw new KeyNotFoundException("The specified key was not contained in any range."); //TODO: define a BCL-style exception message in the resx file and remove inline static text
 
     /// <summary>
     /// Gets the range entry at the specified sorted index.
@@ -134,11 +129,9 @@ public sealed partial class RangeDictionary<TKey, TValue>
 
         var index = LowerBound(startInclusive);
 
-        if (index > 0 && _comparer.Compare(_ends[index - 1], startInclusive) > 0)
-            throw new ArgumentException("The specified range overlaps an existing range.", nameof(startInclusive));
+        if (index > 0 && _comparer.Compare(_ends[index - 1], startInclusive) > 0) throw new ArgumentException("The specified range overlaps an existing range.", nameof(startInclusive)); //TODO: define a BCL-style exception message in the resx file and remove inline static text
 
-        if (index < _count && _comparer.Compare(_starts[index], endExclusive) < 0)
-            throw new ArgumentException("The specified range overlaps an existing range.", nameof(endExclusive));
+        if (index < _count && _comparer.Compare(_starts[index], endExclusive) < 0) throw new ArgumentException("The specified range overlaps an existing range.", nameof(endExclusive)); //TODO: define a BCL-style exception message in the resx file and remove inline static text
 
         InsertAt(index, startInclusive, endExclusive, value);
     }
@@ -172,8 +165,7 @@ public sealed partial class RangeDictionary<TKey, TValue>
         if (index >= _count)
             return false;
 
-        if (_comparer.Compare(_starts[index], startInclusive) != 0 ||
-            _comparer.Compare(_ends[index], endExclusive) != 0)
+        if (_comparer.Compare(_starts[index], startInclusive) != 0 || _comparer.Compare(_ends[index], endExclusive) != 0)
             return false;
 
         RemoveAt(index);
@@ -266,9 +258,7 @@ public sealed partial class RangeDictionary<TKey, TValue>
 
         var index = LowerBound(startInclusive);
 
-        return index > 0 && _comparer.Compare(_ends[index - 1], startInclusive) > 0
-            ? true
-            : index < _count && _comparer.Compare(_starts[index], endExclusive) < 0;
+        return (index > 0 && _comparer.Compare(_ends[index - 1], startInclusive) > 0) || (index < _count && _comparer.Compare(_starts[index], endExclusive) < 0);
     }
 
     /// <summary>

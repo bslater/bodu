@@ -28,7 +28,7 @@ public static partial class DateTimeExtensions
     /// <para>
     /// <b>Example:</b>
     /// </para>
-    /// <code>
+    /// <code language="csharp">
     ///<![CDATA[
     /// var dt = new DateTime(2025, 7, 15, 14, 45, 0);
     /// var result = dt.LastDateOfYear(); // → 2025-12-31 00:00:00

@@ -463,7 +463,7 @@ public sealed partial class ConcurrentCircularBuffer<T>
 
             var count = tail - head;
             if (count <= 0)
-                return Array.Empty<T>();
+                return [];
             if (count > _capacity)
                 count = _capacity;
 
@@ -590,7 +590,7 @@ public sealed partial class ConcurrentCircularBuffer<T>
         var tail = Volatile.Read(ref _tail);
         var count = Math.Clamp(tail - head, 0, _capacity);
         if (count == 0)
-            return Array.Empty<T>();
+            return [];
 
         var result = new T[count];
         for (var i = 0; i < count; i++)
