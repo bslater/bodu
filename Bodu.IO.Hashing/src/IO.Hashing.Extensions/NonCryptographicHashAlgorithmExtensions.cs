@@ -71,6 +71,7 @@ namespace Bodu.IO.Hashing.Extensions;
 ///<![CDATA[
 /// using System.IO.Hashing;
 /// using Bodu.IO.Hashing.Extensions;
+/// 
 /// // 1. One-shot hash of a byte buffer using xxHash64.
 /// var xx = new XxHash64();
 /// byte[] digest = xx.ComputeHash(File.ReadAllBytes("payload.bin"));
