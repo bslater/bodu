@@ -51,7 +51,7 @@ logging.level.default = Debug
             };
 
             IConfigurationRoot configuration = new ConfigurationBuilder()
-                .AddBoduConfiguration(fileProvider, "reload.boduconfig", targetPath: null, optional: false, reloadOnChange: true)
+                .AddConfiguration(fileProvider, "reload.boduconfig", targetPath: null, optional: false, reloadOnChange: true)
                 .Build();
 
             Assert.AreEqual("Information", configuration["logging:level:default"]);

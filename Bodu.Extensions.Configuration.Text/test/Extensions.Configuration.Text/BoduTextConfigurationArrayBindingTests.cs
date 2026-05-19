@@ -38,7 +38,7 @@ items.2 = third
         using MemoryStream stream = new(Encoding.UTF8.GetBytes(ArraySample));
 
         IConfiguration configuration = new ConfigurationBuilder()
-            .AddBoduConfiguration(stream)
+            .AddConfiguration(stream)
             .Build();
 
         List<string>? items = configuration.GetSection("items").Get<List<string>>();
@@ -57,7 +57,7 @@ items.2 = third
         using MemoryStream stream = new(Encoding.UTF8.GetBytes(ArraySample));
 
         IConfiguration configuration = new ConfigurationBuilder()
-            .AddBoduConfiguration(stream)
+            .AddConfiguration(stream)
             .Build();
 
         string[]? items = configuration.GetSection("items").Get<string[]>();
@@ -77,7 +77,7 @@ items.2 = third
         using MemoryStream stream = new(Encoding.UTF8.GetBytes(ArraySample));
 
         IConfiguration configuration = new ConfigurationBuilder()
-            .AddBoduConfiguration(stream)
+            .AddConfiguration(stream)
             .Build();
 
         List<string> childKeys = configuration.GetSection("items")

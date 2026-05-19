@@ -223,7 +223,7 @@ namespace Bodu {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Cannot resolve a configuration document that was parsed from a string without a path root supplied via BoduConfigurationResolveOptions.PathRoot..
+        ///   Looks up a localized string similar to Cannot resolve a configuration document that was parsed from a string without a path root supplied via ConfigurationResolveOptions.PathRoot..
         /// </summary>
         internal static string Op_Invalid_ResolveWithoutPathRoot {
             get {

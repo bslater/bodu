@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="BoduConfigurationOptionsExtensions.cs" company="PlaceholderCompany">
+// <copyright file="ConfigurationOptionsExtensions.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -19,7 +19,7 @@ namespace Bodu.Extensions.Configuration.Text;
 /// These helpers are thin shims over
 /// <c>Microsoft.Extensions.DependencyInjection.OptionsConfigurationServiceCollectionExtensions.Configure</c>; they
 /// exist purely to keep the call-site short and discoverable for consumers who reach for an
-/// <c>AddBoduConfiguration*</c> API by name. Callers comfortable with
+/// <c>AddConfiguration*</c> API by name. Callers comfortable with
 /// <see cref="Microsoft.Extensions.Options.IOptions{TOptions}" /> binding may continue to call
 /// <see cref="Microsoft.Extensions.DependencyInjection.OptionsConfigurationServiceCollectionExtensions.Configure{TOptions}(IServiceCollection, IConfiguration)" />
 /// directly.
@@ -33,7 +33,7 @@ namespace Bodu.Extensions.Configuration.Text;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// // Strongly-typed options bound to the "Logging" section produced by AddBoduConfiguration.
+/// // Strongly-typed options bound to the "Logging" section produced by AddConfiguration.
 /// public sealed class LoggingOptions
 /// {
 ///     public string Level { get; init; } = "Information";
@@ -41,22 +41,22 @@ namespace Bodu.Extensions.Configuration.Text;
 /// }
 ///
 /// var builder = WebApplication.CreateBuilder(args);
-/// builder.Configuration.AddBoduConfiguration("appsettings.boduconfig");
+/// builder.Configuration.AddConfiguration("appsettings.boduconfig");
 ///
 /// // Bind by section name against the configuration root.
-/// builder.Services.AddBoduConfigurationOptions<LoggingOptions>(
+/// builder.Services.AddConfigurationOptions<LoggingOptions>(
 ///     builder.Configuration,
 ///     sectionName: "Logging");
 ///
 /// // Or bind a pre-resolved section directly.
 /// IConfigurationSection logging = builder.Configuration.GetSection("Logging");
-/// builder.Services.AddBoduConfigurationOptions<LoggingOptions>(logging);
+/// builder.Services.AddConfigurationOptions<LoggingOptions>(logging);
 ///
 /// // Consumed via constructor injection.
 /// public sealed class HomeController(IOptions<LoggingOptions> options) { /* options.Value.Level */ }
 ///]]>
 /// </example>
-public static class BoduConfigurationOptionsExtensions
+public static class ConfigurationOptionsExtensions
 {
     /// <summary>
     /// Registers an <typeparamref name="TOptions" /> binding against the section named <paramref name="sectionName" />
@@ -73,7 +73,7 @@ public static class BoduConfigurationOptionsExtensions
     /// <exception cref="ArgumentException">
     /// <paramref name="sectionName" /> is <see langword="null" />, empty, or whitespace.
     /// </exception>
-    public static IServiceCollection AddBoduConfigurationOptions<TOptions>(
+    public static IServiceCollection AddConfigurationOptions<TOptions>(
         this IServiceCollection services,
         IConfiguration configuration,
         string sectionName)
@@ -97,7 +97,7 @@ public static class BoduConfigurationOptionsExtensions
     /// <exception cref="ArgumentNullException">
     /// <paramref name="services" /> or <paramref name="section" /> is <see langword="null" />.
     /// </exception>
-    public static IServiceCollection AddBoduConfigurationOptions<TOptions>(
+    public static IServiceCollection AddConfigurationOptions<TOptions>(
         this IServiceCollection services,
         IConfigurationSection section)
         where TOptions : class

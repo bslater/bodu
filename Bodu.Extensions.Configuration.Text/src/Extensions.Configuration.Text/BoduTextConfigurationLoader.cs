@@ -24,25 +24,25 @@ internal static class BoduTextConfigurationLoader
     /// <param name="stream">The configuration source stream. The stream is left open.</param>
     /// <param name="targetPath">The optional target path used to evaluate glob-anchored sections.</param>
     /// <param name="parseOptions">
-    /// The parse options, or <see langword="null" /> for <see cref="BoduConfigurationParseOptions.Bodu" />.
+    /// The parse options, or <see langword="null" /> for <see cref="ConfigurationParseOptions.Bodu" />.
     /// </param>
     /// <param name="resolveOptions">
-    /// The resolve options, or <see langword="null" /> for <see cref="BoduConfigurationResolveOptions.Bodu" />.
+    /// The resolve options, or <see langword="null" /> for <see cref="ConfigurationResolveOptions.Bodu" />.
     /// </param>
     /// <returns>A case-insensitive dictionary with colon-delimited logical keys.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="stream" /> is <see langword="null" />.</exception>
     internal static IDictionary<string, string?> LoadData(
         Stream stream,
         string? targetPath,
-        BoduConfigurationParseOptions? parseOptions,
-        BoduConfigurationResolveOptions? resolveOptions)
+        ConfigurationParseOptions? parseOptions,
+        ConfigurationResolveOptions? resolveOptions)
     {
         ThrowHelper.ThrowIfNull(stream);
 
-        BoduConfigurationParseOptions effectiveParse = parseOptions ?? BoduConfigurationParseOptions.Bodu;
-        BoduConfigurationResolveOptions effectiveResolve = resolveOptions ?? BoduConfigurationResolveOptions.Bodu;
+        ConfigurationParseOptions effectiveParse = parseOptions ?? ConfigurationParseOptions.Bodu;
+        ConfigurationResolveOptions effectiveResolve = resolveOptions ?? ConfigurationResolveOptions.Bodu;
 
-        IniDocument document = BoduConfigurationDocument.Load(stream, effectiveParse, leaveOpen: true);
+        IniDocument document = ConfigurationDocument.Load(stream, effectiveParse, leaveOpen: true);
 
         return LoadData(document, targetPath, effectiveResolve);
     }
@@ -54,19 +54,19 @@ internal static class BoduTextConfigurationLoader
     /// <param name="document">The parsed configuration document.</param>
     /// <param name="targetPath">The optional target path used to evaluate glob-anchored sections.</param>
     /// <param name="resolveOptions">
-    /// The resolve options, or <see langword="null" /> for <see cref="BoduConfigurationResolveOptions.Bodu" />.
+    /// The resolve options, or <see langword="null" /> for <see cref="ConfigurationResolveOptions.Bodu" />.
     /// </param>
     /// <returns>A case-insensitive dictionary with colon-delimited logical keys.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="document" /> is <see langword="null" />.</exception>
     internal static IDictionary<string, string?> LoadData(
         IniDocument document,
         string? targetPath,
-        BoduConfigurationResolveOptions? resolveOptions)
+        ConfigurationResolveOptions? resolveOptions)
     {
         ThrowHelper.ThrowIfNull(document);
 
-        BoduConfigurationResolveOptions effectiveResolve = resolveOptions ?? BoduConfigurationResolveOptions.Bodu;
-        BoduConfigurationView view = document.Resolve(targetPath, effectiveResolve);
+        ConfigurationResolveOptions effectiveResolve = resolveOptions ?? ConfigurationResolveOptions.Bodu;
+        ConfigurationView view = document.Resolve(targetPath, effectiveResolve);
 
         Dictionary<string, string?> data = new(StringComparer.OrdinalIgnoreCase);
         foreach (KeyValuePair<string, string?> entry in view)

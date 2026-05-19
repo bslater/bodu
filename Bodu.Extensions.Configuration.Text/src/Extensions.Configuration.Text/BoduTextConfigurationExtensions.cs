@@ -57,7 +57,7 @@ namespace Bodu.Extensions.Configuration.Text;
 /// builder-default <see cref="IFileProvider" />. The convention overload uses the builder's default
 /// <see cref="IFileProvider" />; note that <see cref="IFileProvider" /> implementations such as
 /// <see cref="Microsoft.Extensions.FileProviders.PhysicalFileProvider" /> filter out dot-prefixed files by default —
-/// see the remarks on <see cref="AddBoduConfiguration(IConfigurationBuilder, bool, bool)" /> for the workaround
+/// see the remarks on <see cref="AddConfiguration(IConfigurationBuilder, bool, bool)" /> for the workaround
 /// required to surface <c>.boduconfig</c>.
 /// </para>
 /// </remarks>
@@ -66,45 +66,45 @@ namespace Bodu.Extensions.Configuration.Text;
 /// // 1. Canonical ASP.NET / Generic Host registration in Program.cs.
 /// var builder = WebApplication.CreateBuilder(args);
 /// builder.Configuration
-///     .AddBoduConfiguration("appsettings.boduconfig", optional: true, reloadOnChange: true)
-///     .AddBoduConfiguration("appsettings.boduconfig", targetPath: "src/Foo.cs"); // path-aware view
+///     .AddConfiguration("appsettings.boduconfig", optional: true, reloadOnChange: true)
+///     .AddConfiguration("appsettings.boduconfig", targetPath: "src/Foo.cs"); // path-aware view
 ///
 /// // 2. Convention discovery — probes .boduconfig, then bodu.config.
-/// builder.Configuration.AddBoduConfiguration(optional: true, reloadOnChange: true);
+/// builder.Configuration.AddConfiguration(optional: true, reloadOnChange: true);
 ///
 /// // 3. Lambda overload — pin every option, including parse/resolve behaviour.
-/// builder.Configuration.AddBoduConfiguration(source =>
+/// builder.Configuration.AddConfiguration(source =>
 /// {
 ///     source.Path           = "app.boduconfig";
 ///     source.TargetPath     = "src/Web/Startup.cs";
 ///     source.Optional       = false;
 ///     source.ReloadOnChange = true;
-///     source.ParseOptions   = BoduConfigurationParseOptions.Strict;
-///     source.ResolveOptions = new BoduConfigurationResolveOptions
+///     source.ParseOptions   = ConfigurationParseOptions.Strict;
+///     source.ResolveOptions = new ConfigurationResolveOptions
 ///     {
-///         Profile = BoduConfigurationProfile.Bodu,
+///         Profile = ConfigurationProfile.Bodu,
 ///     };
 /// });
 ///
 /// // 4. In-memory stream — handy in unit tests.
 /// using var ms = new MemoryStream(Encoding.UTF8.GetBytes("[*]\nLogging:Level=Debug\n"));
-/// builder.Configuration.AddBoduConfiguration(ms);
+/// builder.Configuration.AddConfiguration(ms);
 ///
 /// // 5. Pre-parsed document — share one parse across multiple builders.
-/// IniDocument doc = BoduConfigurationDocument.Parse(text);
-/// builder.Configuration.AddBoduConfiguration(doc, targetPath: "src/Foo.cs");
+/// IniDocument doc = ConfigurationDocument.Parse(text);
+/// builder.Configuration.AddConfiguration(doc, targetPath: "src/Foo.cs");
 ///]]>
 /// </example>
 public static class BoduTextConfigurationExtensions
 {
     /// <summary>
-    /// The conventional file name probed by <see cref="AddBoduConfiguration(IConfigurationBuilder, bool, bool)" />.
+    /// The conventional file name probed by <see cref="AddConfiguration(IConfigurationBuilder, bool, bool)" />.
     /// </summary>
     private const string DefaultDotFileName = ".boduconfig";
 
     /// <summary>
     /// The alternative conventional file name probed by
-    /// <see cref="AddBoduConfiguration(IConfigurationBuilder, bool, bool)" /> when <see cref="DefaultDotFileName" /> is
+    /// <see cref="AddConfiguration(IConfigurationBuilder, bool, bool)" /> when <see cref="DefaultDotFileName" /> is
     /// absent.
     /// </summary>
     private const string DefaultPlainFileName = "bodu.config";
@@ -124,13 +124,13 @@ public static class BoduTextConfigurationExtensions
     /// <exception cref="ArgumentException">
     /// <paramref name="path" /> is <see langword="null" />, empty, or whitespace.
     /// </exception>
-    public static IConfigurationBuilder AddBoduConfiguration(
+    public static IConfigurationBuilder AddConfiguration(
         this IConfigurationBuilder builder,
         string path,
         string? targetPath = null,
         bool optional = false,
         bool reloadOnChange = false) =>
-        builder.AddBoduConfiguration(provider: null, path, targetPath, optional, reloadOnChange);
+        builder.AddConfiguration(provider: null, path, targetPath, optional, reloadOnChange);
 
     /// <summary>
     /// Adds a Bodu Text Configuration source backed by the file at <paramref name="path" /> using the supplied
@@ -153,7 +153,7 @@ public static class BoduTextConfigurationExtensions
     /// <exception cref="ArgumentException">
     /// <paramref name="path" /> is <see langword="null" />, empty, or whitespace.
     /// </exception>
-    public static IConfigurationBuilder AddBoduConfiguration(
+    public static IConfigurationBuilder AddConfiguration(
         this IConfigurationBuilder builder,
         IFileProvider? provider,
         string path,
@@ -164,7 +164,7 @@ public static class BoduTextConfigurationExtensions
         ThrowHelper.ThrowIfNull(builder);
         ThrowHelper.ThrowIfNullOrWhiteSpace(path);
 
-        return builder.AddBoduConfiguration(source =>
+        return builder.AddConfiguration(source =>
         {
             source.FileProvider = provider;
             source.Path = path;
@@ -183,7 +183,7 @@ public static class BoduTextConfigurationExtensions
     /// <exception cref="ArgumentNullException">
     /// <paramref name="builder" /> or <paramref name="configureSource" /> is <see langword="null" />.
     /// </exception>
-    public static IConfigurationBuilder AddBoduConfiguration(
+    public static IConfigurationBuilder AddConfiguration(
         this IConfigurationBuilder builder,
         Action<BoduTextConfigurationSource> configureSource)
     {
@@ -221,7 +221,7 @@ public static class BoduTextConfigurationExtensions
     /// <exception cref="FileNotFoundException">
     /// Both conventional files are absent and <paramref name="optional" /> is <see langword="false" />.
     /// </exception>
-    public static IConfigurationBuilder AddBoduConfiguration(
+    public static IConfigurationBuilder AddConfiguration(
         this IConfigurationBuilder builder,
         bool optional = true,
         bool reloadOnChange = false)
@@ -237,9 +237,9 @@ public static class BoduTextConfigurationExtensions
             matched = DefaultPlainFileName;
 
         return matched is not null
-            ? builder.AddBoduConfiguration(fileProvider, matched, targetPath: null, optional: optional, reloadOnChange: reloadOnChange)
+            ? builder.AddConfiguration(fileProvider, matched, targetPath: null, optional: optional, reloadOnChange: reloadOnChange)
             : optional
-                ? builder.AddBoduConfiguration(source =>
+                ? builder.AddConfiguration(source =>
                 {
                     source.FileProvider = fileProvider;
                     source.Path = DefaultDotFileName;
@@ -264,17 +264,17 @@ public static class BoduTextConfigurationExtensions
     /// <exception cref="ArgumentNullException">
     /// <paramref name="builder" /> or <paramref name="stream" /> is <see langword="null" />.
     /// </exception>
-    public static IConfigurationBuilder AddBoduConfiguration(
+    public static IConfigurationBuilder AddConfiguration(
         this IConfigurationBuilder builder,
         Stream stream,
         string? targetPath = null,
-        BoduConfigurationParseOptions? parseOptions = null,
-        BoduConfigurationResolveOptions? resolveOptions = null)
+        ConfigurationParseOptions? parseOptions = null,
+        ConfigurationResolveOptions? resolveOptions = null)
     {
         ThrowHelper.ThrowIfNull(builder);
         ThrowHelper.ThrowIfNull(stream);
 
-        return builder.AddBoduConfiguration(source =>
+        return builder.AddConfiguration(source =>
         {
             source.Stream = stream;
             source.TargetPath = targetPath;
@@ -292,7 +292,7 @@ public static class BoduTextConfigurationExtensions
     /// <exception cref="ArgumentNullException">
     /// <paramref name="builder" /> or <paramref name="configureSource" /> is <see langword="null" />.
     /// </exception>
-    public static IConfigurationBuilder AddBoduConfiguration(
+    public static IConfigurationBuilder AddConfiguration(
         this IConfigurationBuilder builder,
         Action<BoduTextStreamConfigurationSource> configureSource)
     {
@@ -319,11 +319,11 @@ public static class BoduTextConfigurationExtensions
     /// <exception cref="ArgumentNullException">
     /// <paramref name="builder" /> or <paramref name="document" /> is <see langword="null" />.
     /// </exception>
-    public static IConfigurationBuilder AddBoduConfiguration(
+    public static IConfigurationBuilder AddConfiguration(
         this IConfigurationBuilder builder,
         IniDocument document,
         string? targetPath = null,
-        BoduConfigurationResolveOptions? resolveOptions = null)
+        ConfigurationResolveOptions? resolveOptions = null)
     {
         ThrowHelper.ThrowIfNull(builder);
         ThrowHelper.ThrowIfNull(document);

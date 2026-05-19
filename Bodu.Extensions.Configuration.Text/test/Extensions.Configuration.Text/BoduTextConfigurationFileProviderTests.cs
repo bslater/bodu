@@ -13,7 +13,7 @@ using Microsoft.Extensions.FileProviders;
 namespace Bodu.Extensions.Configuration.Text.Tests;
 
 /// <summary>
-/// Verifies the explicit <see cref="IFileProvider" /> overload of <c>AddBoduConfiguration</c>, mirroring
+/// Verifies the explicit <see cref="IFileProvider" /> overload of <c>AddConfiguration</c>, mirroring
 /// <c>AddJsonFile(IConfigurationBuilder, IFileProvider, string, bool, bool)</c>.
 /// </summary>
 [TestClass]
@@ -28,7 +28,7 @@ logging.level.default = Information
     /// <see cref="IFileProvider" /> rather than the builder's default.
     /// </summary>
     [TestMethod]
-    public void AddBoduConfiguration_WithExplicitFileProvider_ShouldLoadFromProvider()
+    public void AddConfiguration_WithExplicitFileProvider_ShouldLoadFromProvider()
     {
         string path = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".boduconfig");
         try
@@ -37,7 +37,7 @@ logging.level.default = Information
             PhysicalFileProvider fileProvider = new(Path.GetDirectoryName(path)!);
 
             IConfiguration configuration = new ConfigurationBuilder()
-                .AddBoduConfiguration(fileProvider, Path.GetFileName(path))
+                .AddConfiguration(fileProvider, Path.GetFileName(path))
                 .Build();
 
             Assert.AreEqual("Information", configuration["logging:level:default"]);
@@ -54,7 +54,7 @@ logging.level.default = Information
     /// the builder's default file provider.
     /// </summary>
     [TestMethod]
-    public void AddBoduConfiguration_WithNullFileProvider_ShouldFallBackToBuilderDefault()
+    public void AddConfiguration_WithNullFileProvider_ShouldFallBackToBuilderDefault()
     {
         string path = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".boduconfig");
         try
@@ -65,7 +65,7 @@ logging.level.default = Information
             builder.SetBasePath(Path.GetDirectoryName(path)!);
 
             IConfiguration configuration = builder
-                .AddBoduConfiguration(provider: null, path: Path.GetFileName(path))
+                .AddConfiguration(provider: null, path: Path.GetFileName(path))
                 .Build();
 
             Assert.AreEqual("Information", configuration["logging:level:default"]);
@@ -81,13 +81,13 @@ logging.level.default = Information
     /// Verifies that the file-provider overload rejects a <see langword="null" /> builder.
     /// </summary>
     [TestMethod]
-    public void AddBoduConfiguration_WithNullBuilder_ShouldThrowArgumentNullException()
+    public void AddConfiguration_WithNullBuilder_ShouldThrowArgumentNullException()
     {
         IConfigurationBuilder builder = null!;
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = builder.AddBoduConfiguration(provider: null, path: "some.boduconfig");
+            _ = builder.AddConfiguration(provider: null, path: "some.boduconfig");
         });
     }
 
@@ -95,11 +95,11 @@ logging.level.default = Information
     /// Verifies that the file-provider overload rejects an empty path.
     /// </summary>
     [TestMethod]
-    public void AddBoduConfiguration_WithEmptyPath_ShouldThrowArgumentException()
+    public void AddConfiguration_WithEmptyPath_ShouldThrowArgumentException()
     {
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
-            _ = new ConfigurationBuilder().AddBoduConfiguration(provider: null, path: "   ");
+            _ = new ConfigurationBuilder().AddConfiguration(provider: null, path: "   ");
         });
     }
 }

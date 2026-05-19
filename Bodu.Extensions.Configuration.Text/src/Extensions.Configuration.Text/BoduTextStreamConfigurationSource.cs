@@ -42,7 +42,7 @@ namespace Bodu.Extensions.Configuration.Text;
 /// using var stream = new MemoryStream(Encoding.UTF8.GetBytes(ConfigText));
 ///
 /// IConfigurationRoot root = new ConfigurationBuilder()
-///     .AddBoduConfiguration(source =>
+///     .AddConfiguration(source =>
 ///     {
 ///         source.Stream     = stream;
 ///         source.TargetPath = "src/Foo.cs";
@@ -66,13 +66,13 @@ public sealed class BoduTextStreamConfigurationSource : StreamConfigurationSourc
     /// Gets or sets the parse options applied when the stream is loaded.
     /// </summary>
     /// <returns>The parse options, or <see langword="null" /> for the defaults.</returns>
-    public BoduConfigurationParseOptions? ParseOptions { get; set; }
+    public ConfigurationParseOptions? ParseOptions { get; set; }
 
     /// <summary>
     /// Gets or sets the resolve options applied when projecting the document into the configuration view.
     /// </summary>
     /// <returns>The resolve options, or <see langword="null" /> for the defaults.</returns>
-    public BoduConfigurationResolveOptions? ResolveOptions { get; set; }
+    public ConfigurationResolveOptions? ResolveOptions { get; set; }
 
     /// <inheritdoc />
     public override IConfigurationProvider Build(IConfigurationBuilder builder)

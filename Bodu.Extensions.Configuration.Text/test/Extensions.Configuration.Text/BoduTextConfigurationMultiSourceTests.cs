@@ -38,8 +38,8 @@ service.name = Second
         using MemoryStream second = new(Encoding.UTF8.GetBytes(overrideSource));
 
         IConfiguration configuration = new ConfigurationBuilder()
-            .AddBoduConfiguration(first)
-            .AddBoduConfiguration(second)
+            .AddConfiguration(first)
+            .AddConfiguration(second)
             .Build();
 
         Assert.AreEqual("Second", configuration["service:name"]);

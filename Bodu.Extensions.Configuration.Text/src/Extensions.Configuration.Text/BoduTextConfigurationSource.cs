@@ -23,7 +23,7 @@ namespace Bodu.Extensions.Configuration.Text;
 /// </para>
 /// <para>
 /// Most callers do not construct this type directly; reach for the
-/// <see cref="BoduTextConfigurationExtensions.AddBoduConfiguration(IConfigurationBuilder, string, string?, bool, bool)" />
+/// <see cref="BoduTextConfigurationExtensions.AddConfiguration(IConfigurationBuilder, string, string?, bool, bool)" />
 /// extensions instead. Direct construction is appropriate when a host already has the source instance in hand — for
 /// example, when wiring a custom <see cref="IConfigurationBuilder" /> programmatically.
 /// </para>
@@ -31,13 +31,13 @@ namespace Bodu.Extensions.Configuration.Text;
 /// <example>
 ///<![CDATA[
 /// // Typical lambda registration via the IConfigurationBuilder extension.
-/// builder.Configuration.AddBoduConfiguration(source =>
+/// builder.Configuration.AddConfiguration(source =>
 /// {
 ///     source.Path           = "app.boduconfig";
 ///     source.TargetPath     = "src/Web/Startup.cs"; // anchors glob sections like [src/**/*.cs]
 ///     source.Optional       = false;
 ///     source.ReloadOnChange = true;
-///     source.ParseOptions   = BoduConfigurationParseOptions.Strict;
+///     source.ParseOptions   = ConfigurationParseOptions.Strict;
 /// });
 ///
 /// // Direct construction — for example, in a custom builder host.
@@ -63,13 +63,13 @@ public sealed class BoduTextConfigurationSource : FileConfigurationSource
     /// Gets or sets the parse options applied when the file is loaded.
     /// </summary>
     /// <returns>The parse options, or <see langword="null" /> for the defaults.</returns>
-    public BoduConfigurationParseOptions? ParseOptions { get; set; }
+    public ConfigurationParseOptions? ParseOptions { get; set; }
 
     /// <summary>
     /// Gets or sets the resolve options applied when projecting the document into the configuration view.
     /// </summary>
     /// <returns>The resolve options, or <see langword="null" /> for the defaults.</returns>
-    public BoduConfigurationResolveOptions? ResolveOptions { get; set; }
+    public ConfigurationResolveOptions? ResolveOptions { get; set; }
 
     /// <inheritdoc />
     public override IConfigurationProvider Build(IConfigurationBuilder builder)

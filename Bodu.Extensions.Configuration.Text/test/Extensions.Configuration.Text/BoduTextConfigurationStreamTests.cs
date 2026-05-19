@@ -14,7 +14,7 @@ using Microsoft.Extensions.Configuration;
 namespace Bodu.Extensions.Configuration.Text.Tests;
 
 /// <summary>
-/// Verifies the stream-based <c>AddBoduConfiguration</c> overloads that mirror
+/// Verifies the stream-based <c>AddConfiguration</c> overloads that mirror
 /// <c>AddJsonStream</c> from <c>Microsoft.Extensions.Configuration.Json</c>.
 /// </summary>
 [TestClass]
@@ -28,16 +28,16 @@ logging.level.default = Warning
 """;
 
     /// <summary>
-    /// Verifies that <see cref="BoduTextConfigurationExtensions.AddBoduConfiguration(IConfigurationBuilder, Stream, string?, BoduConfigurationParseOptions?, BoduConfigurationResolveOptions?)" />
+    /// Verifies that <see cref="BoduTextConfigurationExtensions.AddConfiguration(IConfigurationBuilder, Stream, string?, ConfigurationParseOptions?, ConfigurationResolveOptions?)" />
     /// reads from a stream and exposes the resulting keys in colon-delimited form.
     /// </summary>
     [TestMethod]
-    public void AddBoduConfigurationStream_ShouldExposeColonDelimitedKeys()
+    public void AddConfigurationStream_ShouldExposeColonDelimitedKeys()
     {
         using MemoryStream stream = new(Encoding.UTF8.GetBytes(Sample));
 
         IConfiguration configuration = new ConfigurationBuilder()
-            .AddBoduConfiguration(stream)
+            .AddConfiguration(stream)
             .Build();
 
         Assert.AreEqual("Information", configuration["logging:level:default"]);
@@ -48,12 +48,12 @@ logging.level.default = Warning
     /// section override.
     /// </summary>
     [TestMethod]
-    public void AddBoduConfigurationStream_WhenTargetPathProvided_ShouldApplyMatchingSection()
+    public void AddConfigurationStream_WhenTargetPathProvided_ShouldApplyMatchingSection()
     {
         using MemoryStream stream = new(Encoding.UTF8.GetBytes(Sample));
 
         IConfiguration configuration = new ConfigurationBuilder()
-            .AddBoduConfiguration(stream, targetPath: "src/Foo.cs")
+            .AddConfiguration(stream, targetPath: "src/Foo.cs")
             .Build();
 
         Assert.AreEqual("Warning", configuration["logging:level:default"]);
@@ -63,12 +63,12 @@ logging.level.default = Warning
     /// Verifies that the action-callback stream overload yields the same view as the direct stream overload.
     /// </summary>
     [TestMethod]
-    public void AddBoduConfigurationStream_WhenConfiguredViaCallback_ShouldExposeColonDelimitedKeys()
+    public void AddConfigurationStream_WhenConfiguredViaCallback_ShouldExposeColonDelimitedKeys()
     {
         using MemoryStream stream = new(Encoding.UTF8.GetBytes(Sample));
 
         IConfiguration configuration = new ConfigurationBuilder()
-            .AddBoduConfiguration(source =>
+            .AddConfiguration(source =>
             {
                 source.Stream = stream;
                 source.TargetPath = "src/Foo.cs";
@@ -82,13 +82,13 @@ logging.level.default = Warning
     /// Verifies that the stream overload rejects a <see langword="null" /> stream.
     /// </summary>
     [TestMethod]
-    public void AddBoduConfigurationStream_WhenStreamIsNull_ShouldThrowArgumentNullException()
+    public void AddConfigurationStream_WhenStreamIsNull_ShouldThrowArgumentNullException()
     {
         Stream stream = null!;
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = new ConfigurationBuilder().AddBoduConfiguration(stream);
+            _ = new ConfigurationBuilder().AddConfiguration(stream);
         });
     }
 
@@ -96,13 +96,13 @@ logging.level.default = Warning
     /// Verifies that the stream-callback overload rejects a <see langword="null" /> configuration callback.
     /// </summary>
     [TestMethod]
-    public void AddBoduConfigurationStream_WhenCallbackIsNull_ShouldThrowArgumentNullException()
+    public void AddConfigurationStream_WhenCallbackIsNull_ShouldThrowArgumentNullException()
     {
         Action<BoduTextStreamConfigurationSource> configure = null!;
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = new ConfigurationBuilder().AddBoduConfiguration(configure);
+            _ = new ConfigurationBuilder().AddConfiguration(configure);
         });
     }
 
@@ -111,16 +111,16 @@ logging.level.default = Warning
     /// configuration values.
     /// </summary>
     [TestMethod]
-    public void AddBoduConfigurationStream_WhenOptionsProvided_ShouldUseTheOptions()
+    public void AddConfigurationStream_WhenOptionsProvided_ShouldUseTheOptions()
     {
         using MemoryStream stream = new(Encoding.UTF8.GetBytes(Sample));
 
         IConfiguration configuration = new ConfigurationBuilder()
-            .AddBoduConfiguration(
+            .AddConfiguration(
                 stream,
                 targetPath: null,
-                parseOptions: BoduConfigurationParseOptions.Bodu,
-                resolveOptions: BoduConfigurationResolveOptions.Bodu)
+                parseOptions: ConfigurationParseOptions.Bodu,
+                resolveOptions: ConfigurationResolveOptions.Bodu)
             .Build();
 
         Assert.AreEqual("Information", configuration["logging:level:default"]);

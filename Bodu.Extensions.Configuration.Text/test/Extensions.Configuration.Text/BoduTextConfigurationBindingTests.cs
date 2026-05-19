@@ -37,7 +37,7 @@ logging.provider = Console
         using MemoryStream stream = new(Encoding.UTF8.GetBytes(PocoSample));
 
         IConfiguration configuration = new ConfigurationBuilder()
-            .AddBoduConfiguration(stream)
+            .AddConfiguration(stream)
             .Build();
 
         LoggingOptions options = configuration.GetSection("logging").Get<LoggingOptions>() ?? new();
@@ -58,7 +58,7 @@ logging.provider = Console
         using MemoryStream stream = new(Encoding.UTF8.GetBytes(PocoSample));
 
         IConfiguration configuration = new ConfigurationBuilder()
-            .AddBoduConfiguration(stream)
+            .AddConfiguration(stream)
             .Build();
 
         IConfigurationSection level = configuration.GetSection("logging:level");
@@ -79,7 +79,7 @@ logging.provider = Console
         using MemoryStream stream = new(Encoding.UTF8.GetBytes(PocoSample));
 
         IConfiguration configuration = new ConfigurationBuilder()
-            .AddBoduConfiguration(stream)
+            .AddConfiguration(stream)
             .Build();
 
         IConfigurationSection section = configuration.GetSection("logging");

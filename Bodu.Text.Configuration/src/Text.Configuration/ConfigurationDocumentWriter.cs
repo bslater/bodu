@@ -10,20 +10,20 @@ namespace Bodu.Text.Configuration;
 
 /// <summary>
 /// Emits an <see cref="IniDocument" /> to a <see cref="TextWriter" /> according to a
-/// <see cref="BoduConfigurationWriteOptions" />. Used by
-/// <see cref="BoduConfigurationDocument.Save(IniDocument, string, BoduConfigurationWriteOptions?)" /> and its
+/// <see cref="ConfigurationWriteOptions" />. Used by
+/// <see cref="ConfigurationDocument.Save(IniDocument, string, ConfigurationWriteOptions?)" /> and its
 /// stream/reader overloads.
 /// </summary>
 /// <remarks>
 /// Unlike <see cref="Bodu.Text.Ini.Ini.Format(IniDocument)" /> — which always emits trivia using the INI defaults — this writer
-/// honors the Bodu-specific options: <see cref="BoduConfigurationWriteOptions.KeyValueSeparator" />,
-/// <see cref="BoduConfigurationWriteOptions.NewLine" />, <see cref="BoduConfigurationWriteOptions.PreserveComments" />,
-/// <see cref="BoduConfigurationWriteOptions.WriteInlineComments" />, and
-/// <see cref="BoduConfigurationWriteOptions.InsertBlankLineBetweenSections" />.
+/// honors the Bodu-specific options: <see cref="ConfigurationWriteOptions.KeyValueSeparator" />,
+/// <see cref="ConfigurationWriteOptions.NewLine" />, <see cref="ConfigurationWriteOptions.PreserveComments" />,
+/// <see cref="ConfigurationWriteOptions.WriteInlineComments" />, and
+/// <see cref="ConfigurationWriteOptions.InsertBlankLineBetweenSections" />.
 /// </remarks>
 internal static class ConfigurationDocumentWriter
 {
-    internal static void Write(IniDocument document, TextWriter writer, BoduConfigurationWriteOptions options)
+    internal static void Write(IniDocument document, TextWriter writer, ConfigurationWriteOptions options)
     {
         ThrowHelper.ThrowIfNull(document);
         ThrowHelper.ThrowIfNull(writer);
@@ -40,7 +40,7 @@ internal static class ConfigurationDocumentWriter
         }
     }
 
-    private static bool WriteSection(IniSection section, TextWriter writer, BoduConfigurationWriteOptions options, bool isGlobal)
+    private static bool WriteSection(IniSection section, TextWriter writer, ConfigurationWriteOptions options, bool isGlobal)
     {
         var wroteAny = false;
 

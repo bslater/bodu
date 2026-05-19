@@ -15,7 +15,7 @@ using Microsoft.Extensions.Options;
 namespace Bodu.Extensions.Configuration.Text.Tests;
 
 /// <summary>
-/// Verifies the <see cref="BoduConfigurationOptionsExtensions" /> helpers for binding configuration sections
+/// Verifies the <see cref="ConfigurationOptionsExtensions" /> helpers for binding configuration sections
 /// to <see cref="IOptions{TOptions}" /> through the dependency-injection container.
 /// </summary>
 [TestClass]
@@ -28,21 +28,21 @@ service.port = 8080
 
     /// <summary>
     /// Verifies that
-    /// <see cref="BoduConfigurationOptionsExtensions.AddBoduConfigurationOptions{TOptions}(IServiceCollection, IConfiguration, string)" />
+    /// <see cref="ConfigurationOptionsExtensions.AddConfigurationOptions{TOptions}(IServiceCollection, IConfiguration, string)" />
     /// binds the named section to the options instance resolved from the container.
     /// </summary>
     [TestMethod]
-    public void AddBoduConfigurationOptions_WhenBound_ShouldDeliverViaIOptions()
+    public void AddConfigurationOptions_WhenBound_ShouldDeliverViaIOptions()
     {
         using MemoryStream stream = new(Encoding.UTF8.GetBytes(Sample));
 
         IConfiguration configuration = new ConfigurationBuilder()
-            .AddBoduConfiguration(stream)
+            .AddConfiguration(stream)
             .Build();
 
         ServiceCollection services = new();
         services.AddOptions();
-        services.AddBoduConfigurationOptions<ServiceOptions>(configuration, "service");
+        services.AddConfigurationOptions<ServiceOptions>(configuration, "service");
 
         using ServiceProvider provider = services.BuildServiceProvider();
         ServiceOptions options = provider.GetRequiredService<IOptions<ServiceOptions>>().Value;
@@ -52,21 +52,21 @@ service.port = 8080
     }
 
     /// <summary>
-    /// Verifies that the section-overload of <c>AddBoduConfigurationOptions</c> resolves an equivalent options
+    /// Verifies that the section-overload of <c>AddConfigurationOptions</c> resolves an equivalent options
     /// instance.
     /// </summary>
     [TestMethod]
-    public void AddBoduConfigurationOptions_WithSection_ShouldDeliverViaIOptions()
+    public void AddConfigurationOptions_WithSection_ShouldDeliverViaIOptions()
     {
         using MemoryStream stream = new(Encoding.UTF8.GetBytes(Sample));
 
         IConfiguration configuration = new ConfigurationBuilder()
-            .AddBoduConfiguration(stream)
+            .AddConfiguration(stream)
             .Build();
 
         ServiceCollection services = new();
         services.AddOptions();
-        services.AddBoduConfigurationOptions<ServiceOptions>(configuration.GetSection("service"));
+        services.AddConfigurationOptions<ServiceOptions>(configuration.GetSection("service"));
 
         using ServiceProvider provider = services.BuildServiceProvider();
         ServiceOptions options = provider.GetRequiredService<IOptions<ServiceOptions>>().Value;
@@ -79,14 +79,14 @@ service.port = 8080
     /// Verifies that the name-based overload rejects a <see langword="null" /> service collection.
     /// </summary>
     [TestMethod]
-    public void AddBoduConfigurationOptions_WhenServicesIsNull_ShouldThrowArgumentNullException()
+    public void AddConfigurationOptions_WhenServicesIsNull_ShouldThrowArgumentNullException()
     {
         IServiceCollection services = null!;
         IConfiguration configuration = new ConfigurationBuilder().Build();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = services.AddBoduConfigurationOptions<ServiceOptions>(configuration, "service");
+            _ = services.AddConfigurationOptions<ServiceOptions>(configuration, "service");
         });
     }
 
@@ -94,14 +94,14 @@ service.port = 8080
     /// Verifies that the name-based overload rejects a <see langword="null" /> configuration.
     /// </summary>
     [TestMethod]
-    public void AddBoduConfigurationOptions_WhenConfigurationIsNull_ShouldThrowArgumentNullException()
+    public void AddConfigurationOptions_WhenConfigurationIsNull_ShouldThrowArgumentNullException()
     {
         ServiceCollection services = new();
         IConfiguration configuration = null!;
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = services.AddBoduConfigurationOptions<ServiceOptions>(configuration, "service");
+            _ = services.AddConfigurationOptions<ServiceOptions>(configuration, "service");
         });
     }
 
@@ -109,14 +109,14 @@ service.port = 8080
     /// Verifies that the name-based overload rejects a whitespace section name.
     /// </summary>
     [TestMethod]
-    public void AddBoduConfigurationOptions_WhenSectionNameIsWhitespace_ShouldThrowArgumentException()
+    public void AddConfigurationOptions_WhenSectionNameIsWhitespace_ShouldThrowArgumentException()
     {
         ServiceCollection services = new();
         IConfiguration configuration = new ConfigurationBuilder().Build();
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
-            _ = services.AddBoduConfigurationOptions<ServiceOptions>(configuration, "   ");
+            _ = services.AddConfigurationOptions<ServiceOptions>(configuration, "   ");
         });
     }
 
@@ -124,14 +124,14 @@ service.port = 8080
     /// Verifies that the section overload rejects a <see langword="null" /> service collection.
     /// </summary>
     [TestMethod]
-    public void AddBoduConfigurationOptions_WithSection_WhenServicesIsNull_ShouldThrowArgumentNullException()
+    public void AddConfigurationOptions_WithSection_WhenServicesIsNull_ShouldThrowArgumentNullException()
     {
         IServiceCollection services = null!;
         IConfigurationSection section = new ConfigurationBuilder().Build().GetSection("anything");
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = services.AddBoduConfigurationOptions<ServiceOptions>(section);
+            _ = services.AddConfigurationOptions<ServiceOptions>(section);
         });
     }
 
@@ -139,14 +139,14 @@ service.port = 8080
     /// Verifies that the section overload rejects a <see langword="null" /> section.
     /// </summary>
     [TestMethod]
-    public void AddBoduConfigurationOptions_WithSection_WhenSectionIsNull_ShouldThrowArgumentNullException()
+    public void AddConfigurationOptions_WithSection_WhenSectionIsNull_ShouldThrowArgumentNullException()
     {
         ServiceCollection services = new();
         IConfigurationSection section = null!;
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = services.AddBoduConfigurationOptions<ServiceOptions>(section);
+            _ = services.AddConfigurationOptions<ServiceOptions>(section);
         });
     }
 

@@ -14,7 +14,7 @@ using Microsoft.Extensions.FileProviders.Physical;
 namespace Bodu.Extensions.Configuration.Text.Tests;
 
 /// <summary>
-/// Verifies the parameterless default-filename overload of <c>AddBoduConfiguration</c>, which probes for
+/// Verifies the parameterless default-filename overload of <c>AddConfiguration</c>, which probes for
 /// <c>.boduconfig</c> and falls back to <c>bodu.config</c>.
 /// </summary>
 [TestClass]
@@ -28,7 +28,7 @@ default.filename.loaded = yes
     /// Verifies that when only the dot-prefixed <c>.boduconfig</c> file exists, the default overload loads it.
     /// </summary>
     [TestMethod]
-    public void AddBoduConfiguration_WhenNoArgsAndDotConfigPresent_ShouldLoad()
+    public void AddConfiguration_WhenNoArgsAndDotConfigPresent_ShouldLoad()
     {
         string directory = CreateTempDirectory();
         try
@@ -38,7 +38,7 @@ default.filename.loaded = yes
             ConfigurationBuilder builder = new();
             builder.SetFileProvider(new PhysicalFileProvider(directory, ExclusionFilters.None));
 
-            IConfiguration configuration = builder.AddBoduConfiguration().Build();
+            IConfiguration configuration = builder.AddConfiguration().Build();
 
             Assert.AreEqual("yes", configuration["default:filename:loaded"]);
         }
@@ -53,7 +53,7 @@ default.filename.loaded = yes
     /// <c>bodu.config</c>.
     /// </summary>
     [TestMethod]
-    public void AddBoduConfiguration_WhenNoArgsAndPlainConfigPresent_ShouldLoadFallback()
+    public void AddConfiguration_WhenNoArgsAndPlainConfigPresent_ShouldLoadFallback()
     {
         string directory = CreateTempDirectory();
         try
@@ -63,7 +63,7 @@ default.filename.loaded = yes
             ConfigurationBuilder builder = new();
             builder.SetFileProvider(new PhysicalFileProvider(directory));
 
-            IConfiguration configuration = builder.AddBoduConfiguration().Build();
+            IConfiguration configuration = builder.AddConfiguration().Build();
 
             Assert.AreEqual("yes", configuration["default:filename:loaded"]);
         }
@@ -78,7 +78,7 @@ default.filename.loaded = yes
     /// produces an empty configuration view without throwing.
     /// </summary>
     [TestMethod]
-    public void AddBoduConfiguration_WhenNoArgsAndAllMissing_ShouldNotThrow()
+    public void AddConfiguration_WhenNoArgsAndAllMissing_ShouldNotThrow()
     {
         string directory = CreateTempDirectory();
         try
@@ -86,7 +86,7 @@ default.filename.loaded = yes
             ConfigurationBuilder builder = new();
             builder.SetFileProvider(new PhysicalFileProvider(directory));
 
-            IConfiguration configuration = builder.AddBoduConfiguration(optional: true).Build();
+            IConfiguration configuration = builder.AddConfiguration(optional: true).Build();
 
             Assert.IsNull(configuration["default:filename:loaded"]);
         }
@@ -101,7 +101,7 @@ default.filename.loaded = yes
     /// <see cref="FileNotFoundException" />.
     /// </summary>
     [TestMethod]
-    public void AddBoduConfiguration_WhenNoArgsAndRequiredAndAllMissing_ShouldThrowFileNotFoundException()
+    public void AddConfiguration_WhenNoArgsAndRequiredAndAllMissing_ShouldThrowFileNotFoundException()
     {
         string directory = CreateTempDirectory();
         try
@@ -111,7 +111,7 @@ default.filename.loaded = yes
 
             Assert.ThrowsExactly<FileNotFoundException>(() =>
             {
-                _ = builder.AddBoduConfiguration(optional: false).Build();
+                _ = builder.AddConfiguration(optional: false).Build();
             });
         }
         finally
@@ -124,13 +124,13 @@ default.filename.loaded = yes
     /// Verifies that the default-filename overload rejects a <see langword="null" /> builder.
     /// </summary>
     [TestMethod]
-    public void AddBoduConfiguration_WhenBuilderIsNull_ShouldThrowArgumentNullException()
+    public void AddConfiguration_WhenBuilderIsNull_ShouldThrowArgumentNullException()
     {
         IConfigurationBuilder builder = null!;
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = builder.AddBoduConfiguration();
+            _ = builder.AddConfiguration();
         });
     }
 

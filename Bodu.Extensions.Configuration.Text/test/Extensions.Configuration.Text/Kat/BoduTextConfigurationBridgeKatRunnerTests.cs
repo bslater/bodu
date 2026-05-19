@@ -14,7 +14,7 @@ using Microsoft.Extensions.FileProviders;
 namespace Bodu.Text.Configuration.Kat.Bridge;
 
 /// <summary>
-/// Drives the <see cref="Bodu.Text.Configuration.Test.Infrastructure.BoduConfigurationKatKind.ConfigurationBridge" />
+/// Drives the <see cref="Bodu.Text.Configuration.Test.Infrastructure.ConfigurationKatKind.ConfigurationBridge" />
 /// KAT subset, exercising the Microsoft.Extensions.Configuration bridge end to end.
 /// </summary>
 [TestClass]
@@ -25,13 +25,13 @@ public class BoduTextConfigurationBridgeKatRunnerTests
     /// </summary>
     /// <param name="kat">The KAT case to execute.</param>
     [DataTestMethod]
-    [DynamicData(nameof(BoduConfigurationKnownAnswerData.BridgeData),
-        typeof(BoduConfigurationKnownAnswerData),
+    [DynamicData(nameof(ConfigurationKnownAnswerData.BridgeData),
+        typeof(ConfigurationKnownAnswerData),
         DynamicDataSourceType.Property,
         DynamicDataDisplayName = nameof(GetKatDisplayName))]
-    public void Bridge_Kat(BoduConfigurationKat kat)
+    public void Bridge_Kat(ConfigurationKat kat)
     {
-        if (kat.Outcome is BoduConfigurationKatOutcome.Fail)
+        if (kat.Outcome is ConfigurationKatOutcome.Fail)
         {
             ExecuteBridgeFail(kat);
             return;
@@ -40,7 +40,7 @@ public class BoduTextConfigurationBridgeKatRunnerTests
         ExecuteBridgePass(kat);
     }
 
-    private static void ExecuteBridgePass(BoduConfigurationKat kat)
+    private static void ExecuteBridgePass(ConfigurationKat kat)
     {
         bool optionalMissing = kat.Options is "OptionalTrueMissingFile";
 
@@ -48,7 +48,7 @@ public class BoduTextConfigurationBridgeKatRunnerTests
         {
             // Optional missing file scenario — no file is created, but the builder is configured to expect one.
             IConfiguration configuration = new ConfigurationBuilder()
-                .AddBoduConfiguration(source =>
+                .AddConfiguration(source =>
                 {
                     source.FileProvider = new PhysicalFileProvider(Path.GetTempPath());
                     source.Path = "this-file-does-not-exist.boduconfig";
@@ -67,7 +67,7 @@ public class BoduTextConfigurationBridgeKatRunnerTests
             File.WriteAllText(path, kat.Source);
 
             IConfiguration configuration = new ConfigurationBuilder()
-                .AddBoduConfiguration(source =>
+                .AddConfiguration(source =>
                 {
                     source.FileProvider = new PhysicalFileProvider(Path.GetDirectoryName(path)!);
                     source.Path = Path.GetFileName(path);
@@ -85,7 +85,7 @@ public class BoduTextConfigurationBridgeKatRunnerTests
         }
     }
 
-    private static void ExecuteBridgeFail(BoduConfigurationKat kat)
+    private static void ExecuteBridgeFail(ConfigurationKat kat)
     {
         if (kat.ExpectedException is null)
             Assert.Fail($"{kat.Id}: fail KAT requires an ExpectedException.");
@@ -93,7 +93,7 @@ public class BoduTextConfigurationBridgeKatRunnerTests
         try
         {
             _ = new ConfigurationBuilder()
-                .AddBoduConfiguration(source =>
+                .AddConfiguration(source =>
                 {
                     source.FileProvider = new PhysicalFileProvider(Path.GetTempPath());
                     source.Path = "this-file-does-not-exist.boduconfig";
@@ -117,11 +117,11 @@ public class BoduTextConfigurationBridgeKatRunnerTests
     /// Supplies the per-row display name used by the MSTest runner for KAT-driven tests.
     /// </summary>
     /// <param name="methodInfo">The driver method.</param>
-    /// <param name="data">The row data; the single element is a <see cref="BoduConfigurationKat" />.</param>
+    /// <param name="data">The row data; the single element is a <see cref="ConfigurationKat" />.</param>
     /// <returns>A short identifier derived from the KAT's stable ID and title.</returns>
     public static string GetKatDisplayName(System.Reflection.MethodInfo methodInfo, object[] data)
     {
-        BoduConfigurationKat kat = (BoduConfigurationKat)data[0];
+        ConfigurationKat kat = (ConfigurationKat)data[0];
         return $"{kat.Id} - {kat.Title}";
     }
 }
