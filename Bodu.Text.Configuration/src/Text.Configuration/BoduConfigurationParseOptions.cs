@@ -15,9 +15,27 @@ namespace Bodu.Text.Configuration;
 /// limits, and the key mapping options.
 /// </summary>
 /// <remarks>
-/// Use <see cref="For(BoduConfigurationProfile)" /> to obtain an options bag that matches one of the predefined
-/// behaviour profiles. The static presets (<see cref="Bodu" />, <see cref="EditorConfigCompatible" />,
-/// <see cref="Strict" />, <see cref="Relaxed" />) are thin getters that call into <see cref="For" />.
+/// <para>
+/// The options bag is a profile-grouped set of <c>init</c>-only properties. Start from a named preset that matches the
+/// hosting flavour — <see cref="Bodu" /> for the default Bodu Text Configuration semantics,
+/// <see cref="EditorConfigCompatible" /> for strict EditorConfig parity, <see cref="Strict" /> for fail-fast behaviour,
+/// or <see cref="Relaxed" /> for lenient parsing — and override the specific properties that need to differ. Use
+/// <see cref="For(BoduConfigurationProfile)" /> when the profile is data-driven (for example, read from configuration).
+/// </para>
+/// <para>
+/// <see cref="DiagnosticMode" /> is the most consequential knob. In
+/// <see cref="BoduConfigurationDiagnosticMode.Throw" /> the reader raises
+/// <see cref="BoduConfigurationParseException" /> on the first recoverable error; in
+/// <see cref="BoduConfigurationDiagnosticMode.Collect" /> the parser drives through the document and reports every
+/// recoverable issue via the parse result's <see cref="BoduConfigurationParseResult.Diagnostics" /> list. Pair the
+/// latter with <see cref="BoduConfigurationDocument.ParseWithDiagnostics(string, BoduConfigurationParseOptions?)" />.
+/// </para>
+/// <para>
+/// Key shape is delegated to <see cref="KeyOptions" />. Sharing one configured
+/// <see cref="BoduConfigurationKeyOptions" /> instance between parse and <see cref="BoduConfigurationResolveOptions" />
+/// keeps the parsed model and the resolved view's lookups consistent. Instances are safe to cache and share across
+/// threads because every property is <c>init</c>-only.
+/// </para>
 /// </remarks>
 public sealed partial class BoduConfigurationParseOptions
 {

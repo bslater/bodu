@@ -13,6 +13,21 @@ namespace Bodu.Text.Configuration;
 /// dotted-to-colon key mapping) onto the underlying <see cref="IniDocument" />, <see cref="IniSection" />, and
 /// <see cref="IniEntry" /> primitives.
 /// </summary>
+/// <remarks>
+/// <para>
+/// The Bodu Text Configuration model is intentionally layered on top of the raw INI primitives from
+/// <c>Bodu.Text.Formats</c> rather than replacing them: an <see cref="IniDocument" /> remains the source-faithful
+/// in-memory representation, and these extension methods add the configuration-specific behaviour — section glob
+/// matching, target-path resolution, dotted-to-colon key normalization, and preamble layering — that turns that raw
+/// document into the resolved snapshot consumed by application code.
+/// </para>
+/// <para>
+/// The primary entry point is <see cref="Resolve(IniDocument, string?, BoduConfigurationResolveOptions?)" />, which
+/// produces a <see cref="BoduConfigurationView" /> for a supplied target path. Pair it with
+/// <see cref="BoduConfigurationDocument.Parse(string)" /> at the start of the pipeline and with the typed accessors on
+/// <see cref="BoduConfigurationView" /> at its end.
+/// </para>
+/// </remarks>
 public static class BoduConfigurationExtensions
 {
     /// <summary>

@@ -11,7 +11,24 @@ namespace Bodu.Text.Configuration;
 /// by the resolved view and the Microsoft.Extensions.Configuration bridge.
 /// </summary>
 /// <remarks>
-/// Instances are immutable once constructed. Use <see cref="Default" /> for the default Bodu behaviour.
+/// <para>
+/// Two questions need consistent answers for a configuration host: how are the dotted, colon-delimited, or mixed key
+/// forms in a source document split into segments, and under which comparer are the resulting keys looked up.
+/// <see cref="BoduConfigurationKeyOptions" /> answers both — <see cref="SegmentSeparators" /> drives splitting,
+/// <see cref="Mapping" /> drives the canonical join, and <see cref="CaseSensitive" /> drives the comparer exposed via
+/// <see cref="KeyComparer" /> and used for equality on every <see cref="BoduConfigurationKey" /> it produces.
+/// </para>
+/// <para>
+/// The same instance is consumed by <see cref="BoduConfigurationParseOptions.KeyOptions" /> and
+/// <see cref="BoduConfigurationResolveOptions.KeyOptions" />; sharing one configured value across both keeps the parsed
+/// model and the resolved view's lookups consistent. The default <see cref="Default" /> mirrors
+/// <c>Microsoft.Extensions.Configuration</c> — case-insensitive ordinal comparison, dot-to-colon mapping, and
+/// <c>{ '.', ':' }</c> as recognised separators.
+/// </para>
+/// <para>
+/// Instances are immutable once constructed; <c>init</c>-only setters allow object-initializer syntax for callers that
+/// need to deviate from the defaults. Reuse a single configured instance across calls when consistency matters.
+/// </para>
 /// </remarks>
 public sealed class BoduConfigurationKeyOptions
 {
