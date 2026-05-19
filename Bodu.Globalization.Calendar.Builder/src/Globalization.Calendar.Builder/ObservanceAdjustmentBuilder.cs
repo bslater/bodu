@@ -34,6 +34,30 @@ namespace Bodu.Globalization.Calendar.Builder;
 /// omitted from <see cref="ToXElement(string, XNamespace)" /> and <see cref="ToJsonNode(string)" />.
 /// </para>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // Weekend roll-forward — common for public holidays observed on a fixed date.
+/// rule.AddAdjustment("weekend-roll", adj => adj
+///     .When(AdjustmentTrigger.IfWeekend)
+///     .Action(AdjustmentAction.MoveToNextMonday)
+///     .NonWorking(true));
+///
+/// // Day-of-week conditional adjustment — move only when the date falls on a Saturday.
+/// rule.AddAdjustment("saturday-back", adj => adj
+///     .When(AdjustmentTrigger.IfDayOfWeek)
+///     .OnDayOfWeek(DayOfWeek.Saturday)
+///     .Action(AdjustmentAction.MoveToPreviousFriday)
+///     .NonWorking(true));
+///
+/// // Custom-handler adjustment with bounded reach — useful for jurisdictional override packs.
+/// rule.AddAdjustment("custom", adj => adj
+///     .When(AdjustmentTrigger.IfDayOfWeek)
+///     .Action(AdjustmentAction.UseCustomHandler)
+///     .HandlerType(typeof(MyOrgAdjustmentHandler))
+///     .AddHandlerParameter("flavour", "office-friendly")
+///     .MaxAdjustmentReachDays(7));
+///]]>
+/// </example>
 public sealed class ObservanceAdjustmentBuilder
 {
     /// <summary>
