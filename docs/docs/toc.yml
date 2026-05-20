@@ -47,3 +47,19 @@
       href: formats/concepts.md
     - name: Getting started
       href: formats/getting-started.md
+- name: Bodu.Text.Configuration
+  items:
+    - name: Introduction
+      href: text-configuration/index.md
+    - name: Core concepts
+      href: text-configuration/concepts.md
+    - name: Getting started
+      href: text-configuration/getting-started.md
+- name: Bodu.Extensions.Configuration.Text
+  items:
+    - name: Introduction
+      href: extensions-configuration-text/index.md
+    - name: Core concepts
+      href: extensions-configuration-text/concepts.md
+    - name: Getting started
+      href: extensions-configuration-text/getting-started.md

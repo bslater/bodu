@@ -4,7 +4,7 @@ title: The BencodedValue model
 
 # The `BencodedValue` model
 
-A decoded bencode document is a tree of <xref:Bodu.Text.Formats.BencodedValue> instances. The base class exposes a single read-only property, <xref:Bodu.Text.Formats.BencodedValue.Kind>, that returns the matching <xref:Bodu.Text.Formats.BencodedValueKind> member. Four concrete subtypes implement the four grammar productions.
+A decoded bencode document is a tree of <xref:Bodu.Text.Bencode.BencodedValue> instances. The base class exposes a single read-only property, <xref:Bodu.Text.Bencode.BencodedValue.Kind>, that returns the matching <xref:Bodu.Text.Bencode.BencodedValueKind> member. Four concrete subtypes implement the four grammar productions.
 
 For the grammar itself see [Core concepts — Value kinds](../../docs/formats/concepts.md#value-kinds).
 
@@ -14,10 +14,10 @@ For the grammar itself see [Core concepts — Value kinds](../../docs/formats/co
 
 | Subtype | `Kind` | Wire form (example) | Notes |
 |---|---|---|---|
-| <xref:Bodu.Text.Formats.BencodedInteger> | `Integer` | `i-1024e` | Signed 64-bit integer; no leading zeros, no `-0`. |
-| <xref:Bodu.Text.Formats.BencodedString> | `String` | `5:hello` | Length-prefixed raw bytes; not necessarily UTF-8. |
-| <xref:Bodu.Text.Formats.BencodedList> | `List` | `l4:spami42ee` | Ordered list of values; constructor rejects null elements. |
-| <xref:Bodu.Text.Formats.BencodedDictionary> | `Dictionary` | `d3:cow3:mooe` | Byte-string keyed; stored sorted by raw byte order. |
+| <xref:Bodu.Text.Bencode.BencodedInteger> | `Integer` | `i-1024e` | Signed 64-bit integer; no leading zeros, no `-0`. |
+| <xref:Bodu.Text.Bencode.BencodedString> | `String` | `5:hello` | Length-prefixed raw bytes; not necessarily UTF-8. |
+| <xref:Bodu.Text.Bencode.BencodedList> | `List` | `l4:spami42ee` | Ordered list of values; constructor rejects null elements. |
+| <xref:Bodu.Text.Bencode.BencodedDictionary> | `Dictionary` | `d3:cow3:mooe` | Byte-string keyed; stored sorted by raw byte order. |
 
 ## Dispatching on `Kind`
 
@@ -119,7 +119,7 @@ foreach (BencodedValue item in list.Items)
 
 ## `BencodedDictionary`
 
-A dictionary maps byte-string keys to values. The constructor accepts an `IEnumerable<KeyValuePair<BencodedString, BencodedValue>>` and stores them in a `SortedDictionary` keyed by <xref:Bodu.Text.Formats.BencodedStringComparer.Ordinal>:
+A dictionary maps byte-string keys to values. The constructor accepts an `IEnumerable<KeyValuePair<BencodedString, BencodedValue>>` and stores them in a `SortedDictionary` keyed by <xref:Bodu.Text.Bencode.BencodedStringComparer.Ordinal>:
 
 ```csharp
 using Bodu.Text.Formats;
@@ -166,7 +166,7 @@ Use the `BencodedString` overload in hot paths where the key is already in canon
 
 ## `BencodedStringComparer`
 
-The library's dictionary keys are ordered and compared by **raw byte ordinal**, not by Unicode collation. <xref:Bodu.Text.Formats.BencodedStringComparer.Ordinal> is the singleton comparer that drives this:
+The library's dictionary keys are ordered and compared by **raw byte ordinal**, not by Unicode collation. <xref:Bodu.Text.Bencode.BencodedStringComparer.Ordinal> is the singleton comparer that drives this:
 
 ```csharp
 using Bodu.Text.Formats;

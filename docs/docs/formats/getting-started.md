@@ -90,7 +90,7 @@ var doc = new BencodedDictionary([
 byte[] encoded = Bencode.Encode(doc);
 ```
 
-The constructor accepts items in any order — `BencodedDictionary` stores them in raw byte-ordinal key order using <xref:Bodu.Text.Formats.BencodedStringComparer.Ordinal>, so `Encode` emits the canonical key ordering regardless of how the document was assembled.
+The constructor accepts items in any order — `BencodedDictionary` stores them in raw byte-ordinal key order using <xref:Bodu.Text.Bencode.BencodedStringComparer.Ordinal>, so `Encode` emits the canonical key ordering regardless of how the document was assembled.
 
 ### Pre-size the destination
 
@@ -193,3 +193,4 @@ The library passes every positive Known Answer Test vector from BEP 3 in both di
 - **[Bodu.Text.Formats guides](../../guides/formats/index.md)** — per-API deep dives.
 - **[Core concepts](concepts.md)** — vocabulary refresher.
 - **[Introduction](index.md)** — type map and scenario index.
+- **API reference** — per-namespace pages: [Bencode](../../apidoc/Bodu.Text.Bencode.md), [Delimited](../../apidoc/Bodu.Text.Delimited.md), [DotEnv](../../apidoc/Bodu.Text.DotEnv.md), [Ini](../../apidoc/Bodu.Text.Ini.md).

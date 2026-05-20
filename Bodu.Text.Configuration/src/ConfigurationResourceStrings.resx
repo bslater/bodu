@@ -172,6 +172,6 @@
     <value>The preamble section does not have a pattern; attempting to set one is not allowed.</value>
   </data>
   <data name="Op_Invalid_ResolveWithoutPathRoot" xml:space="preserve">
-    <value>Cannot resolve a configuration document that was parsed from a string without a path root supplied via BoduConfigurationResolveOptions.PathRoot.</value>
+    <value>Cannot resolve a configuration document that was parsed from a string without a path root supplied via ConfigurationResolveOptions.PathRoot.</value>
   </data>
 </root>
