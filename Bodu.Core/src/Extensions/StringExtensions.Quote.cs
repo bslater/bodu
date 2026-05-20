@@ -19,8 +19,8 @@ public static partial class StringExtensions
     /// Thrown when <paramref name="value" /> is <see langword="null" />.
     /// </exception>
     /// <remarks>
-    /// This method does not escape embedded quote characters. For CSV-style escaping use the helpers in
-    /// <c>Bodu.Text.Formats.Delimited</c>.
+    /// This method does not escape embedded quote characters. For CSV-style escaping use the helpers in the
+    /// <c>Bodu.Text.Delimited</c> namespace.
     /// </remarks>
     public static string Quote(this string value)
     {
