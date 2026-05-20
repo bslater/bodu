@@ -14,8 +14,8 @@ namespace Bodu.Extensions;
 public static partial class StringExtensions
 {
     /// <summary>
-    /// Returns <paramref name="value" /> with the first letter of every sentence capitalised and every other
-    /// letter lower-cased, using <see cref="CultureInfo.InvariantCulture" />.
+    /// Returns <paramref name="value" /> with the first letter of every sentence capitalised and every other letter
+    /// lower-cased, using <see cref="CultureInfo.InvariantCulture" />.
     /// </summary>
     /// <param name="value">The string to convert. Must not be <see langword="null" />.</param>
     /// <returns>The sentence-case form of <paramref name="value" />.</returns>
@@ -35,9 +35,9 @@ public static partial class StringExtensions
     /// Thrown when <paramref name="value" /> is <see langword="null" />.
     /// </exception>
     /// <remarks>
-    /// A new sentence starts at the beginning of the input and after every <c>.</c>, <c>!</c>, or <c>?</c>.
-    /// The flag-based overload maps onto <see cref="WordCasingOptions" /> with an empty acronym catalogue, so
-    /// only fully-uppercase input tokens are preserved as acronyms.
+    /// A new sentence starts at the beginning of the input and after every <c>.</c>, <c>!</c>, or <c>?</c>. The
+    /// flag-based overload maps onto <see cref="WordCasingOptions" /> with an empty acronym catalogue, so only
+    /// fully-uppercase input tokens are preserved as acronyms.
     /// </remarks>
     public static string ToSentenceCase(this string value, SentenceCaseOptions options)
     {
@@ -55,28 +55,29 @@ public static partial class StringExtensions
     }
 
     /// <summary>
-    /// Returns <paramref name="value" /> in sentence case under the supplied <paramref name="options" />,
-    /// applying acronym-aware tokenisation, mixed-case-word preservation, and culture-sensitive casing.
+    /// Returns <paramref name="value" /> in sentence case under the supplied <paramref name="options" />, applying
+    /// acronym-aware tokenisation, mixed-case-word preservation, and culture-sensitive casing.
     /// </summary>
     /// <param name="value">The string to convert. Must not be <see langword="null" />.</param>
-    /// <param name="options">The acronym, mixed-case, and culture configuration. Must not be <see langword="null" />.</param>
+    /// <param name="options">
+    /// The acronym, mixed-case, and culture configuration. Must not be <see langword="null" />.
+    /// </param>
     /// <returns>The sentence-case form of <paramref name="value" />.</returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="value" /> or <paramref name="options" /> is <see langword="null" />.
     /// </exception>
     /// <remarks>
     /// <para>
-    /// When the input contains white-space its original spacing and punctuation are preserved: every letter
-    /// is lower-cased except the first letter of each sentence, which is capitalised. A new sentence starts
-    /// at the beginning and after every <c>.</c>, <c>!</c>, or <c>?</c>. When the input contains no
-    /// white-space it is treated as a compound identifier, tokenised, and re-joined with single spaces.
+    /// When the input contains white-space its original spacing and punctuation are preserved: every letter is
+    /// lower-cased except the first letter of each sentence, which is capitalised. A new sentence starts at the
+    /// beginning and after every <c>.</c>, <c>!</c>, or <c>?</c>. When the input contains no white-space it is treated
+    /// as a compound identifier, tokenised, and re-joined with single spaces.
     /// </para>
     /// <para>
     /// Known acronyms and fully-uppercase tokens keep their acronym spelling when
-    /// <see cref="WordCasingOptions.PreserveAcronyms" /> is set; recognised mixed-case words are emitted
-    /// verbatim when <see cref="WordCasingOptions.PreserveMixedCaseWords" /> is set. Only sentence
-    /// terminators — never an apostrophe — trigger capitalisation, so <c>o'connor</c> becomes
-    /// <c>O'connor</c>.
+    /// <see cref="WordCasingOptions.PreserveAcronyms" /> is set; recognised mixed-case words are emitted verbatim when
+    /// <see cref="WordCasingOptions.PreserveMixedCaseWords" /> is set. Only sentence terminators — never an apostrophe
+    /// — trigger capitalisation, so <c>o'connor</c> becomes <c>O'connor</c>.
     /// </para>
     /// </remarks>
     public static string ToSentenceCase(this string value, WordCasingOptions options)
@@ -92,8 +93,7 @@ public static partial class StringExtensions
     }
 
     /// <summary>
-    /// Renders a white-space-containing phrase in sentence case, preserving the original spacing and
-    /// punctuation.
+    /// Renders a white-space-containing phrase in sentence case, preserving the original spacing and punctuation.
     /// </summary>
     /// <param name="value">The phrase to render.</param>
     /// <param name="options">The acronym, mixed-case, and culture configuration.</param>
@@ -131,8 +131,8 @@ public static partial class StringExtensions
     }
 
     /// <summary>
-    /// Renders a white-space-free compound identifier in sentence case by tokenising it and re-joining the
-    /// words with single spaces.
+    /// Renders a white-space-free compound identifier in sentence case by tokenising it and re-joining the words with
+    /// single spaces.
     /// </summary>
     /// <param name="value">The identifier to render.</param>
     /// <param name="options">The acronym, mixed-case, and culture configuration.</param>
@@ -156,9 +156,8 @@ public static partial class StringExtensions
     }
 
     /// <summary>
-    /// Applies sentence-case rules to a single word: preserved acronyms and mixed-case words are emitted
-    /// verbatim, otherwise the word is lower-cased and — when it starts a sentence — its first letter is
-    /// capitalised.
+    /// Applies sentence-case rules to a single word: preserved acronyms and mixed-case words are emitted verbatim,
+    /// otherwise the word is lower-cased and — when it starts a sentence — its first letter is capitalised.
     /// </summary>
     /// <param name="word">The word to case.</param>
     /// <param name="canonical">The canonical acronym lookup keyed by upper-case form.</param>

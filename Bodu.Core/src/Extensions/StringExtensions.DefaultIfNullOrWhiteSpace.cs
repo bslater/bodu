@@ -11,8 +11,8 @@ namespace Bodu.Extensions;
 public static partial class StringExtensions
 {
     /// <summary>
-    /// Returns <paramref name="defaultValue" /> when <paramref name="value" /> is <see langword="null" />,
-    /// empty, or white-space-only; otherwise returns <paramref name="value" /> unchanged.
+    /// Returns <paramref name="defaultValue" /> when <paramref name="value" /> is <see langword="null" />, empty, or
+    /// white-space-only; otherwise returns <paramref name="value" /> unchanged.
     /// </summary>
     /// <param name="value">The string to evaluate.</param>
     /// <param name="defaultValue">

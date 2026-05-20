@@ -28,16 +28,19 @@ public static partial class StringExtensions
         ToConstantCase(value, WordCasingOptions.Default);
 
     /// <summary>
-    /// Converts <paramref name="value" /> to <c>CONSTANT_CASE</c> under the supplied
-    /// <paramref name="options" />.
+    /// Converts <paramref name="value" /> to <c>CONSTANT_CASE</c> under the supplied <paramref name="options" />.
     /// </summary>
     /// <param name="value">The string to convert. Must not be <see langword="null" />.</param>
-    /// <param name="options">The acronym, mixed-case, and culture configuration. Must not be <see langword="null" />.</param>
+    /// <param name="options">
+    /// The acronym, mixed-case, and culture configuration. Must not be <see langword="null" />.
+    /// </param>
     /// <returns>The <c>CONSTANT_CASE</c> form of <paramref name="value" />.</returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="value" /> or <paramref name="options" /> is <see langword="null" />.
     /// </exception>
-    /// <remarks>Every word, including acronyms, is upper-cased before joining.</remarks>
+    /// <remarks>
+    /// Every word, including acronyms, is upper-cased before joining.
+    /// </remarks>
     public static string ToConstantCase(this string value, WordCasingOptions options)
     {
         ThrowHelper.ThrowIfNull(value);

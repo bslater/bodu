@@ -16,11 +16,12 @@ namespace Bodu.Extensions;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Instances are immutable once constructed: every property is <c>init</c>-only. Construct a customised
-/// instance with an object initialiser, or use <see cref="Default" /> for the standard configuration.
+/// Instances are immutable once constructed: every property is <c>init</c>-only. Construct a customised instance with
+/// an object initialiser, or use <see cref="Default" /> for the standard configuration.
 /// </para>
 /// <para>
-/// The same options object is consumed by every rich casing overload — <see cref="StringExtensions.ToCamelCase(string, WordCasingOptions)" />,
+/// The same options object is consumed by every rich casing overload —
+/// <see cref="StringExtensions.ToCamelCase(string, WordCasingOptions)" />,
 /// <see cref="StringExtensions.ToPascalCase(string, WordCasingOptions)" />,
 /// <see cref="StringExtensions.ToSnakeCase(string, WordCasingOptions)" />,
 /// <see cref="StringExtensions.ToKebabCase(string, WordCasingOptions)" />,
@@ -28,8 +29,8 @@ namespace Bodu.Extensions;
 /// <see cref="StringExtensions.ToConstantCase(string, WordCasingOptions)" />,
 /// <see cref="StringExtensions.ToDotCase(string, WordCasingOptions)" />,
 /// <see cref="StringExtensions.ToTitleCase(string, WordCasingOptions)" />, and
-/// <see cref="StringExtensions.ToSentenceCase(string, WordCasingOptions)" /> — so a single configuration can
-/// drive an entire formatting pipeline consistently.
+/// <see cref="StringExtensions.ToSentenceCase(string, WordCasingOptions)" /> — so a single configuration can drive an
+/// entire formatting pipeline consistently.
 /// </para>
 /// </remarks>
 public sealed class WordCasingOptions
@@ -70,12 +71,12 @@ public sealed class WordCasingOptions
     /// Gets the known acronyms recognised during tokenisation and casing.
     /// </summary>
     /// <returns>
-    /// The acronym catalogue. Each entry supplies the canonical spelling emitted when an input chunk matches
-    /// the entry case-insensitively (for example <c>IPv6</c>, <c>OAuth</c>, <c>JSON</c>).
+    /// The acronym catalogue. Each entry supplies the canonical spelling emitted when an input chunk matches the entry
+    /// case-insensitively (for example <c>IPv6</c>, <c>OAuth</c>, <c>JSON</c>).
     /// </returns>
     /// <value>
-    /// Defaults to a built-in list of 38 common technology acronyms. Supply a custom collection to extend or
-    /// replace the catalogue.
+    /// Defaults to a built-in list of 38 common technology acronyms. Supply a custom collection to extend or replace
+    /// the catalogue.
     /// </value>
     public IReadOnlyCollection<string> Acronyms { get; init; } = s_defaultAcronyms;
 
@@ -94,8 +95,8 @@ public sealed class WordCasingOptions
     /// </summary>
     /// <returns>The culture whose casing rules upper-case and lower-case individual characters.</returns>
     /// <value>
-    /// Defaults to <see cref="CultureInfo.InvariantCulture" />. Supply a specific culture (for example
-    /// <c>tr-TR</c>) when locale-sensitive casing is required.
+    /// Defaults to <see cref="CultureInfo.InvariantCulture" />. Supply a specific culture (for example <c>tr-TR</c>)
+    /// when locale-sensitive casing is required.
     /// </value>
     public CultureInfo Culture { get; init; } = CultureInfo.InvariantCulture;
 
@@ -110,8 +111,8 @@ public sealed class WordCasingOptions
     public bool PreserveAcronyms { get; init; } = true;
 
     /// <summary>
-    /// Gets a value indicating whether mixed-case tokens such as <c>OAuth</c>, <c>iPhone</c>, and <c>eBay</c>
-    /// survive casing changes verbatim.
+    /// Gets a value indicating whether mixed-case tokens such as <c>OAuth</c>, <c>iPhone</c>, and <c>eBay</c> survive
+    /// casing changes verbatim.
     /// </summary>
     /// <returns>
     /// <see langword="true" /> when recognised mixed-case tokens are emitted unchanged; otherwise
@@ -124,11 +125,12 @@ public sealed class WordCasingOptions
     /// Gets a value indicating whether interior minor words are down-cased in title case.
     /// </summary>
     /// <returns>
-    /// <see langword="true" /> when minor words that are neither first nor last are lower-cased in title
-    /// case; otherwise <see langword="false" />.
+    /// <see langword="true" /> when minor words that are neither first nor last are lower-cased in title case;
+    /// otherwise <see langword="false" />.
     /// </returns>
     /// <value>
-    /// Defaults to <see langword="false" />. Affects only <see cref="StringExtensions.ToTitleCase(string, WordCasingOptions)" />.
+    /// Defaults to <see langword="false" />. Affects only
+    /// <see cref="StringExtensions.ToTitleCase(string, WordCasingOptions)" />.
     /// </value>
     public bool LowerCaseMinorWords { get; init; }
 }

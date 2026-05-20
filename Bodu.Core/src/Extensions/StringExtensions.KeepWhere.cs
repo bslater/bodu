@@ -12,16 +12,14 @@ namespace Bodu.Extensions;
 public static partial class StringExtensions
 {
     /// <summary>
-    /// Returns <paramref name="value" /> filtered down to the characters for which
-    /// <paramref name="predicate" /> returns <see langword="true" />.
+    /// Returns <paramref name="value" /> filtered down to the characters for which <paramref name="predicate" />
+    /// returns <see langword="true" />.
     /// </summary>
     /// <param name="value">The string to filter. Must not be <see langword="null" />.</param>
-    /// <param name="predicate">
-    /// The selector evaluated for each character. Must not be <see langword="null" />.
-    /// </param>
+    /// <param name="predicate">The selector evaluated for each character. Must not be <see langword="null" />.</param>
     /// <returns>
-    /// A new string containing only the characters where <paramref name="predicate" /> returned
-    /// <see langword="true" />. When every character is kept, the original instance is returned.
+    /// A new string containing only the characters where <paramref name="predicate" /> returned <see langword="true" />
+    /// . When every character is kept, the original instance is returned.
     /// </returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="value" /> or <paramref name="predicate" /> is <see langword="null" />.

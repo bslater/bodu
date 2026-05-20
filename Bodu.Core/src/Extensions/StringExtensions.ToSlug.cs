@@ -14,15 +14,17 @@ namespace Bodu.Extensions;
 public static partial class StringExtensions
 {
     /// <summary>
-    /// Converts <paramref name="value" /> to a URL-friendly slug: lower-cased words joined by hyphens with
-    /// diacritics normalised and punctuation removed.
+    /// Converts <paramref name="value" /> to a URL-friendly slug: lower-cased words joined by hyphens with diacritics
+    /// normalised and punctuation removed.
     /// </summary>
     /// <param name="value">The string to convert. Must not be <see langword="null" />.</param>
     /// <returns>The slug form of <paramref name="value" />.</returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="value" /> is <see langword="null" />.
     /// </exception>
-    /// <remarks>Equivalent to calling <see cref="ToSlug(string, SlugOptions)" /> with <see cref="SlugOptions.Default" />.</remarks>
+    /// <remarks>
+    /// Equivalent to calling <see cref="ToSlug(string, SlugOptions)" /> with <see cref="SlugOptions.Default" />.
+    /// </remarks>
     public static string ToSlug(this string value) =>
         ToSlug(value, SlugOptions.Default);
 
@@ -30,21 +32,23 @@ public static partial class StringExtensions
     /// Converts <paramref name="value" /> to a URL-friendly slug under the supplied <paramref name="options" />.
     /// </summary>
     /// <param name="value">The string to convert. Must not be <see langword="null" />.</param>
-    /// <param name="options">The separator, casing, diacritic, and length configuration. Must not be <see langword="null" />.</param>
+    /// <param name="options">
+    /// The separator, casing, diacritic, and length configuration. Must not be <see langword="null" />.
+    /// </param>
     /// <returns>The slug form of <paramref name="value" />.</returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="value" /> or <paramref name="options" /> is <see langword="null" />.
     /// </exception>
     /// <remarks>
     /// <para>
-    /// When <see cref="SlugOptions.NormalizeDiacritics" /> is set the input is first transliterated: the
-    /// German sharp-s (<c>ß</c>) becomes <c>ss</c> and combining diacritic marks are stripped via
-    /// <see cref="RemoveDiacritics(string)" />. The result is then tokenised, optionally lower-cased, and
-    /// joined with <see cref="SlugOptions.Separator" />.
+    /// When <see cref="SlugOptions.NormalizeDiacritics" /> is set the input is first transliterated: the German sharp-s
+    /// (<c>ß</c>) becomes <c>ss</c> and combining diacritic marks are stripped via
+    /// <see cref="RemoveDiacritics(string)" />. The result is then tokenised, optionally lower-cased, and joined with
+    /// <see cref="SlugOptions.Separator" />.
     /// </para>
     /// <para>
-    /// When <see cref="SlugOptions.MaxLength" /> is greater than zero the slug is truncated at a separator
-    /// boundary so the result never exceeds the limit and never ends with a dangling separator.
+    /// When <see cref="SlugOptions.MaxLength" /> is greater than zero the slug is truncated at a separator boundary so
+    /// the result never exceeds the limit and never ends with a dangling separator.
     /// </para>
     /// </remarks>
     public static string ToSlug(this string value, SlugOptions options)
@@ -69,14 +73,14 @@ public static partial class StringExtensions
     }
 
     /// <summary>
-    /// Transliterates characters that Unicode FormD decomposition cannot fold, then strips the remaining
-    /// combining diacritic marks.
+    /// Transliterates characters that Unicode FormD decomposition cannot fold, then strips the remaining combining
+    /// diacritic marks.
     /// </summary>
     /// <param name="value">The string to transliterate.</param>
     /// <returns>The transliterated, diacritic-free string.</returns>
     /// <remarks>
-    /// The German sharp-s (<c>ß</c>, U+00DF) has no decomposition mapping, so it is expanded to <c>ss</c>
-    /// explicitly before <see cref="RemoveDiacritics(string)" /> removes the remaining combining marks.
+    /// The German sharp-s (<c>ß</c>, U+00DF) has no decomposition mapping, so it is expanded to <c>ss</c> explicitly
+    /// before <see cref="RemoveDiacritics(string)" /> removes the remaining combining marks.
     /// </remarks>
     private static string TransliterateForSlug(string value)
     {

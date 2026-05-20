@@ -14,8 +14,8 @@ namespace Bodu.Extensions;
 public static partial class StringExtensions
 {
     /// <summary>
-    /// Converts <paramref name="value" /> to <c>camelCase</c>: the first word is lower-cased and each
-    /// subsequent word has its first character upper-cased, with separators removed.
+    /// Converts <paramref name="value" /> to <c>camelCase</c>: the first word is lower-cased and each subsequent word
+    /// has its first character upper-cased, with separators removed.
     /// </summary>
     /// <param name="value">The string to convert. Must not be <see langword="null" />.</param>
     /// <returns>The <c>camelCase</c> form of <paramref name="value" />.</returns>
@@ -33,14 +33,16 @@ public static partial class StringExtensions
     /// Converts <paramref name="value" /> to <c>camelCase</c> under the supplied <paramref name="options" />.
     /// </summary>
     /// <param name="value">The string to convert. Must not be <see langword="null" />.</param>
-    /// <param name="options">The acronym, mixed-case, and culture configuration. Must not be <see langword="null" />.</param>
+    /// <param name="options">
+    /// The acronym, mixed-case, and culture configuration. Must not be <see langword="null" />.
+    /// </param>
     /// <returns>The <c>camelCase</c> form of <paramref name="value" />.</returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="value" /> or <paramref name="options" /> is <see langword="null" />.
     /// </exception>
     /// <remarks>
-    /// The first word is fully lower-cased. Each subsequent word is capitalised unless it is a recognised
-    /// mixed-case word, which is emitted verbatim.
+    /// The first word is fully lower-cased. Each subsequent word is capitalised unless it is a recognised mixed-case
+    /// word, which is emitted verbatim.
     /// </remarks>
     public static string ToCamelCase(this string value, WordCasingOptions options)
     {

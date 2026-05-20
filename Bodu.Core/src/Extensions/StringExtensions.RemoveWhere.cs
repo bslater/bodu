@@ -15,12 +15,9 @@ public static partial class StringExtensions
     /// <see langword="true" /> removed.
     /// </summary>
     /// <param name="value">The string to filter. Must not be <see langword="null" />.</param>
-    /// <param name="predicate">
-    /// The selector evaluated for each character. Must not be <see langword="null" />.
-    /// </param>
+    /// <param name="predicate">The selector evaluated for each character. Must not be <see langword="null" />.</param>
     /// <returns>
-    /// A new string with the matching characters removed. When no character matches, the original instance is
-    /// returned.
+    /// A new string with the matching characters removed. When no character matches, the original instance is returned.
     /// </returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="value" /> or <paramref name="predicate" /> is <see langword="null" />.

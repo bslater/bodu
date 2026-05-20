@@ -16,20 +16,20 @@ public static partial class StringExtensions
     /// <paramref name="indentChar" /> stripped from each line.
     /// </summary>
     /// <param name="value">The source text. Must not be <see langword="null" />.</param>
-    /// <param name="count">The maximum number of leading indent characters to remove per line. Must be non-negative.</param>
+    /// <param name="count">
+    /// The maximum number of leading indent characters to remove per line. Must be non-negative.
+    /// </param>
     /// <param name="indentChar">The indent character to strip. Defaults to a regular space.</param>
     /// <returns>The outdented text.</returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="value" /> is <see langword="null" />.
     /// </exception>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="count" /> is negative.
-    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="count" /> is negative.</exception>
     /// <remarks>
-    /// The inverse of <see cref="Indent(string, int, char)" />. Lines that contain fewer than
-    /// <paramref name="count" /> leading <paramref name="indentChar" /> characters are stripped of however
-    /// many are present — no exception is raised. Line boundaries follow the same rules as
-    /// <see cref="Indent(string, int, char)" /> (<c>\r\n</c>, <c>\n</c>, bare <c>\r</c>).
+    /// The inverse of <see cref="Indent(string, int, char)" />. Lines that contain fewer than <paramref name="count" />
+    /// leading <paramref name="indentChar" /> characters are stripped of however many are present — no exception is
+    /// raised. Line boundaries follow the same rules as <see cref="Indent(string, int, char)" /> (<c>\r\n</c>,
+    /// <c>\n</c>, bare <c>\r</c>).
     /// </remarks>
     public static string Outdent(this string value, int count, char indentChar = ' ')
     {
@@ -52,9 +52,11 @@ public static partial class StringExtensions
                     builder.Append('\n');
                     i++;
                 }
+
                 lineStart = i + 1;
             }
         }
+
         return builder.ToString();
     }
 
@@ -83,6 +85,7 @@ public static partial class StringExtensions
             cursor++;
             skipped++;
         }
+
         if (cursor < end) builder.Append(value, cursor, end - cursor);
     }
 }

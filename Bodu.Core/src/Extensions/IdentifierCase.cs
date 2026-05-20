@@ -7,15 +7,14 @@
 namespace Bodu.Extensions;
 
 /// <summary>
-/// Identifies which casing convention <see cref="StringExtensions.ToIdentifier(string, IdentifierCase)" />
-/// applies to the words detected in the source string after invalid identifier characters have been stripped.
+/// Identifies which casing convention <see cref="StringExtensions.ToIdentifier(string, IdentifierCase)" /> applies to
+/// the words detected in the source string after invalid identifier characters have been stripped.
 /// </summary>
 /// <remarks>
-/// The detected words follow the same boundary rules as the other casing helpers (camelCase / PascalCase
-/// transitions, digit transitions, and the standard separator set). Selecting
-/// <see cref="Preserve" /> keeps each word's existing casing and joins them with no separator, which is the
-/// behaviour required when the source already obeys an identifier convention and only invalid characters need
-/// to be removed.
+/// The detected words follow the same boundary rules as the other casing helpers (camelCase / PascalCase transitions,
+/// digit transitions, and the standard separator set). Selecting <see cref="Preserve" /> keeps each word's existing
+/// casing and joins them with no separator, which is the behaviour required when the source already obeys an identifier
+/// convention and only invalid characters need to be removed.
 /// </remarks>
 public enum IdentifierCase
 {

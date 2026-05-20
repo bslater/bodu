@@ -12,8 +12,8 @@ namespace Bodu.Extensions;
 public static partial class StringExtensions
 {
     /// <summary>
-    /// Returns <paramref name="value" /> with <paramref name="count" /> copies of
-    /// <paramref name="indentChar" /> prepended to every line.
+    /// Returns <paramref name="value" /> with <paramref name="count" /> copies of <paramref name="indentChar" />
+    /// prepended to every line.
     /// </summary>
     /// <param name="value">The source text. Must not be <see langword="null" />.</param>
     /// <param name="count">The number of indent characters to prepend per line. Must be non-negative.</param>
@@ -22,13 +22,11 @@ public static partial class StringExtensions
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="value" /> is <see langword="null" />.
     /// </exception>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="count" /> is negative.
-    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="count" /> is negative.</exception>
     /// <remarks>
-    /// Line boundaries are recognised at <c>\r\n</c>, <c>\n</c>, and bare <c>\r</c>. Empty trailing lines (a
-    /// trailing newline followed by nothing) are not indented. When <paramref name="count" /> is zero the
-    /// input is returned unchanged.
+    /// Line boundaries are recognised at <c>\r\n</c>, <c>\n</c>, and bare <c>\r</c>. Empty trailing lines (a trailing
+    /// newline followed by nothing) are not indented. When <paramref name="count" /> is zero the input is returned
+    /// unchanged.
     /// </remarks>
     public static string Indent(this string value, int count, char indentChar = ' ')
     {
@@ -48,6 +46,7 @@ public static partial class StringExtensions
                 builder.Append(prefix);
                 atLineStart = false;
             }
+
             builder.Append(c);
             if (c == '\n')
             {
@@ -60,9 +59,11 @@ public static partial class StringExtensions
                     builder.Append('\n');
                     i++;
                 }
+
                 atLineStart = true;
             }
         }
+
         return builder.ToString();
     }
 }

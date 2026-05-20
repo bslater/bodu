@@ -12,25 +12,23 @@ namespace Bodu.Extensions;
 public static partial class StringExtensions
 {
     /// <summary>
-    /// Returns a sequence of lines from <paramref name="value" />, splitting on every CRLF, CR, or LF
-    /// boundary.
+    /// Returns a sequence of lines from <paramref name="value" />, splitting on every CRLF, CR, or LF boundary.
     /// </summary>
     /// <param name="value">The string to split. Must not be <see langword="null" />.</param>
     /// <param name="removeEmptyLines">
-    /// When <see langword="true" />, empty lines are skipped. Defaults to <see langword="false" /> so callers
-    /// receive a 1:1 mapping with the original line boundaries.
+    /// When <see langword="true" />, empty lines are skipped. Defaults to <see langword="false" /> so callers receive a
+    /// 1:1 mapping with the original line boundaries.
     /// </param>
     /// <returns>
-    /// An enumerable yielding each line of <paramref name="value" /> with the terminator removed. An empty
-    /// input returns an empty sequence.
+    /// An enumerable yielding each line of <paramref name="value" /> with the terminator removed. An empty input
+    /// returns an empty sequence.
     /// </returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="value" /> is <see langword="null" />.
     /// </exception>
     /// <remarks>
-    /// CRLF is treated as a single line ending. Unlike <see cref="string.Split(char[])" />, a trailing line
-    /// terminator does not produce a final empty line — the contract matches typical "lines in a file"
-    /// reading semantics.
+    /// CRLF is treated as a single line ending. Unlike <see cref="string.Split(char[])" />, a trailing line terminator
+    /// does not produce a final empty line — the contract matches typical "lines in a file" reading semantics.
     /// </remarks>
     public static IEnumerable<string> SplitLines(this string value, bool removeEmptyLines = false)
     {

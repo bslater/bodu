@@ -11,8 +11,8 @@ namespace Bodu.Extensions;
 public static partial class StringExtensions
 {
     /// <summary>
-    /// Returns the substring of <paramref name="value" /> between the first occurrence of
-    /// <paramref name="start" /> and the next occurrence of <paramref name="end" /> after it.
+    /// Returns the substring of <paramref name="value" /> between the first occurrence of <paramref name="start" /> and
+    /// the next occurrence of <paramref name="end" /> after it.
     /// </summary>
     /// <param name="value">The string to inspect. Must not be <see langword="null" />.</param>
     /// <param name="start">The opening marker. Must not be <see langword="null" />.</param>
@@ -21,8 +21,8 @@ public static partial class StringExtensions
     /// The comparison rule used to locate the markers. Defaults to <see cref="StringComparison.Ordinal" />.
     /// </param>
     /// <returns>
-    /// The substring between the markers, or <see langword="null" /> when either marker is not present in
-    /// the expected order.
+    /// The substring between the markers, or <see langword="null" /> when either marker is not present in the expected
+    /// order.
     /// </returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="value" />, <paramref name="start" />, or <paramref name="end" /> is

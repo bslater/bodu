@@ -31,18 +31,22 @@ public static partial class StringExtensions
     /// Converts <paramref name="value" /> to <c>dot.case</c> under the supplied <paramref name="options" />.
     /// </summary>
     /// <param name="value">The string to convert. Must not be <see langword="null" />.</param>
-    /// <param name="options">The acronym, mixed-case, and culture configuration. Must not be <see langword="null" />.</param>
+    /// <param name="options">
+    /// The acronym, mixed-case, and culture configuration. Must not be <see langword="null" />.
+    /// </param>
     /// <returns>The <c>dot.case</c> form of <paramref name="value" />.</returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="value" /> or <paramref name="options" /> is <see langword="null" />.
     /// </exception>
-    /// <remarks>Every word, including acronyms, is lower-cased before joining.</remarks>
+    /// <remarks>
+    /// Every word, including acronyms, is lower-cased before joining.
+    /// </remarks>
     public static string ToDotCase(this string value, WordCasingOptions options) =>
         JoinLowerWords(value, options, '.');
 
     /// <summary>
-    /// Tokenises <paramref name="value" />, lower-cases every word using the culture from
-    /// <paramref name="options" />, and joins the words with <paramref name="separator" />.
+    /// Tokenises <paramref name="value" />, lower-cases every word using the culture from <paramref name="options" />,
+    /// and joins the words with <paramref name="separator" />.
     /// </summary>
     /// <param name="value">The string to tokenise and join.</param>
     /// <param name="options">The acronym, mixed-case, and culture configuration.</param>

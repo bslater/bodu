@@ -12,8 +12,8 @@ namespace Bodu.Extensions;
 public static partial class StringExtensions
 {
     /// <summary>
-    /// Returns a value indicating whether <paramref name="value" /> is a syntactically valid C# identifier
-    /// (a letter or underscore followed by zero or more letters, digits, underscores, or connector punctuation).
+    /// Returns a value indicating whether <paramref name="value" /> is a syntactically valid C# identifier (a letter or
+    /// underscore followed by zero or more letters, digits, underscores, or connector punctuation).
     /// </summary>
     /// <param name="value">The string to test.</param>
     /// <returns>
@@ -25,16 +25,14 @@ public static partial class StringExtensions
     /// </exception>
     /// <remarks>
     /// <para>
-    /// The rules follow the C# 5 ECMA-334 identifier grammar at a character level — the first character must
-    /// be a letter (any <see cref="UnicodeCategory" /> in the letter family) or an underscore, and subsequent
-    /// characters must additionally permit decimal digits, connector punctuation, and combining or formatting
-    /// marks. Reserved keywords (<c>if</c>, <c>class</c>, etc.) are not rejected because the keyword set
-    /// changes with the C# language version; callers needing keyword validation should compose this method
-    /// with a custom keyword check.
+    /// The rules follow the C# 5 ECMA-334 identifier grammar at a character level — the first character must be a
+    /// letter (any <see cref="UnicodeCategory" /> in the letter family) or an underscore, and subsequent characters
+    /// must additionally permit decimal digits, connector punctuation, and combining or formatting marks. Reserved
+    /// keywords (<c>if</c>, <c>class</c>, etc.) are not rejected because the keyword set changes with the C# language
+    /// version; callers needing keyword validation should compose this method with a custom keyword check.
     /// </para>
     /// <para>
-    /// The empty string returns <see langword="false" /> because an identifier must contain at least one
-    /// character.
+    /// The empty string returns <see langword="false" /> because an identifier must contain at least one character.
     /// </para>
     /// </remarks>
     public static bool IsValidIdentifier(this string value)
@@ -53,8 +51,8 @@ public static partial class StringExtensions
     }
 
     /// <summary>
-    /// Returns <see langword="true" /> when <paramref name="c" /> is permitted as the first character of an
-    /// identifier (letter or underscore).
+    /// Returns <see langword="true" /> when <paramref name="c" /> is permitted as the first character of an identifier
+    /// (letter or underscore).
     /// </summary>
     /// <param name="c">The candidate character.</param>
     /// <returns>Whether the character may begin an identifier.</returns>
@@ -62,8 +60,8 @@ public static partial class StringExtensions
         c == '_' || char.IsLetter(c);
 
     /// <summary>
-    /// Returns <see langword="true" /> when <paramref name="c" /> is permitted as a non-leading character of
-    /// an identifier (letter, decimal digit, connector punctuation, combining mark, or formatting mark).
+    /// Returns <see langword="true" /> when <paramref name="c" /> is permitted as a non-leading character of an
+    /// identifier (letter, decimal digit, connector punctuation, combining mark, or formatting mark).
     /// </summary>
     /// <param name="c">The candidate character.</param>
     /// <returns>Whether the character may appear in an identifier after the first position.</returns>

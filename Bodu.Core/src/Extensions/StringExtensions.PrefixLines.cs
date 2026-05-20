@@ -17,13 +17,11 @@ public static partial class StringExtensions
     /// <param name="value">The source text. Must not be <see langword="null" />.</param>
     /// <param name="prefix">The string to prepend to each line. Must not be <see langword="null" />.</param>
     /// <returns>The prefixed text.</returns>
-    /// <exception cref="ArgumentNullException">
-    /// Thrown when either argument is <see langword="null" />.
-    /// </exception>
+    /// <exception cref="ArgumentNullException">Thrown when either argument is <see langword="null" />.</exception>
     /// <remarks>
     /// Line boundaries are recognised at <c>\r\n</c>, <c>\n</c>, and bare <c>\r</c>. An empty
-    /// <paramref name="prefix" /> returns the input unchanged. Commonly used to add a comment marker to a
-    /// block of source — e.g. <c>"line1\nline2".PrefixLines("// ")</c>.
+    /// <paramref name="prefix" /> returns the input unchanged. Commonly used to add a comment marker to a block of
+    /// source — e.g. <c>"line1\nline2".PrefixLines("// ")</c>.
     /// </remarks>
     public static string PrefixLines(this string value, string prefix)
     {
@@ -32,7 +30,7 @@ public static partial class StringExtensions
 
         if (prefix.Length == 0 || value.Length == 0) return value;
 
-        StringBuilder builder = new(value.Length + prefix.Length * 4);
+        StringBuilder builder = new(value.Length + (prefix.Length * 4));
         bool atLineStart = true;
         for (int i = 0; i < value.Length; i++)
         {
@@ -42,6 +40,7 @@ public static partial class StringExtensions
                 builder.Append(prefix);
                 atLineStart = false;
             }
+
             builder.Append(c);
             if (c == '\n')
             {
@@ -54,9 +53,11 @@ public static partial class StringExtensions
                     builder.Append('\n');
                     i++;
                 }
+
                 atLineStart = true;
             }
         }
+
         return builder.ToString();
     }
 }

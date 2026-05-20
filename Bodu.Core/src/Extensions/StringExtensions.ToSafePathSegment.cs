@@ -13,22 +13,21 @@ namespace Bodu.Extensions;
 public static partial class StringExtensions
 {
     /// <summary>
-    /// Returns <paramref name="value" /> with every character that <see cref="Path.GetInvalidFileNameChars" />
-    /// reports as invalid for a single path segment (plus the platform path separators) replaced by an
-    /// underscore.
+    /// Returns <paramref name="value" /> with every character that <see cref="Path.GetInvalidFileNameChars" /> reports
+    /// as invalid for a single path segment (plus the platform path separators) replaced by an underscore.
     /// </summary>
     /// <param name="value">The candidate path segment to sanitise.</param>
     /// <returns>
     /// A new string in which each invalid character — including <see cref="Path.DirectorySeparatorChar" /> and
-    /// <see cref="Path.AltDirectorySeparatorChar" /> — has been replaced by <c>'_'</c>. Returns <c>"_"</c> when
-    /// the input is empty so that the result is never itself an empty segment.
+    /// <see cref="Path.AltDirectorySeparatorChar" /> — has been replaced by <c>'_'</c>. Returns <c>"_"</c> when the
+    /// input is empty so that the result is never itself an empty segment.
     /// </returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="value" /> is <see langword="null" />.
     /// </exception>
     /// <remarks>
-    /// Use this when composing a path from user input where each component must be a single segment without
-    /// embedded separators. For a full file name (no embedded separators required as a rule), prefer
+    /// Use this when composing a path from user input where each component must be a single segment without embedded
+    /// separators. For a full file name (no embedded separators required as a rule), prefer
     /// <see cref="ToSafeFileName(string)" /> — the two differ only in whether path separators are stripped.
     /// </remarks>
     public static string ToSafePathSegment(this string value)
@@ -46,6 +45,7 @@ public static partial class StringExtensions
                 || c == Path.AltDirectorySeparatorChar;
             builder.Append(isInvalid ? '_' : c);
         }
+
         return builder.ToString();
     }
 }

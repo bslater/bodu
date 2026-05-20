@@ -13,28 +13,25 @@ namespace Bodu.Extensions;
 public static partial class StringExtensions
 {
     /// <summary>
-    /// Splits <paramref name="value" /> into a sequence of word tokens using CamelCase / PascalCase boundaries
-    /// and common identifier separators (whitespace, <c>-</c>, <c>_</c>, <c>.</c>, <c>:</c>, <c>;</c>,
-    /// <c>/</c>).
+    /// Splits <paramref name="value" /> into a sequence of word tokens using CamelCase / PascalCase boundaries and
+    /// common identifier separators (whitespace, <c>-</c>, <c>_</c>, <c>.</c>, <c>:</c>, <c>;</c>, <c>/</c>).
     /// </summary>
     /// <param name="value">The string to tokenise.</param>
     /// <returns>The detected words in source order, with separators discarded.</returns>
     /// <remarks>
     /// <para>
-    /// Boundaries are detected as: separator characters; lowercase-to-uppercase transitions
-    /// (<c>"helloWorld"</c> → <c>["hello", "World"]</c>); uppercase-run-to-lowercase transitions to preserve
-    /// acronyms (<c>"HTMLParser"</c> → <c>["HTML", "Parser"]</c>); and digit-to-letter transitions
-    /// (<c>"42hello"</c> → <c>["42", "hello"]</c>).
+    /// Boundaries are detected as: separator characters; lowercase-to-uppercase transitions (<c>"helloWorld"</c> →
+    /// <c>["hello", "World"]</c>); uppercase-run-to-lowercase transitions to preserve acronyms (<c>"HTMLParser"</c> →
+    /// <c>["HTML", "Parser"]</c>); and digit-to-letter transitions (<c>"42hello"</c> → <c>["42", "hello"]</c>).
     /// </para>
     /// <para>
-    /// A letter-to-digit transition is intentionally <em>not</em> a boundary, so a trailing version or count
-    /// stays attached to its word (<c>"user42"</c> → <c>["user42"]</c>, <c>"v1"</c> → <c>["v1"]</c>).
+    /// A letter-to-digit transition is intentionally <em>not</em> a boundary, so a trailing version or count stays
+    /// attached to its word (<c>"user42"</c> → <c>["user42"]</c>, <c>"v1"</c> → <c>["v1"]</c>).
     /// </para>
     /// <para>
     /// Used internally by every casing converter (<see cref="ToCamelCase(string)" />,
-    /// <see cref="ToPascalCase(string)" />, <see cref="ToSnakeCase(string)" />,
-    /// <see cref="ToKebabCase(string)" />, <see cref="ToTrainCase(string)" />,
-    /// <see cref="ToConstantCase(string)" />, <see cref="ToDotCase(string)" />).
+    /// <see cref="ToPascalCase(string)" />, <see cref="ToSnakeCase(string)" />, <see cref="ToKebabCase(string)" />,
+    /// <see cref="ToTrainCase(string)" />, <see cref="ToConstantCase(string)" />, <see cref="ToDotCase(string)" />).
     /// </para>
     /// </remarks>
     internal static List<string> EnumerateWords(string value)
@@ -65,8 +62,14 @@ public static partial class StringExtensions
             bool isLetter = char.IsLetter(c);
 
             bool boundary = false;
-            if (isUpper && prevWasLower) boundary = true;
-            else if (isLetter && prevWasDigit) boundary = true;
+            if (isUpper && prevWasLower)
+            {
+                boundary = true;
+            }
+            else if (isLetter && prevWasDigit)
+            {
+                boundary = true;
+            }
             else if (isUpper && current.Length >= 2 && char.IsUpper(prev) && i + 1 < value.Length && char.IsLower(value[i + 1]))
             {
                 // Acronym to word transition: last upper char joins the next word.
@@ -106,22 +109,22 @@ public static partial class StringExtensions
     /// <returns>The detected words in source order, with separators discarded.</returns>
     /// <remarks>
     /// <para>
-    /// The input is first divided into chunks on any character that is neither a letter, a digit, nor an
-    /// apostrophe. Each chunk is then resolved in the following order:
+    /// The input is first divided into chunks on any character that is neither a letter, a digit, nor an apostrophe.
+    /// Each chunk is then resolved in the following order:
     /// </para>
     /// <para>
-    /// 1. A chunk that case-insensitively equals a known acronym is emitted as a single token using the
-    /// catalogue's canonical spelling.
+    /// 1. A chunk that case-insensitively equals a known acronym is emitted as a single token using the catalogue's
+    /// canonical spelling.
     /// </para>
     /// <para>
-    /// 2. When <see cref="WordCasingOptions.PreserveMixedCaseWords" /> is set, a chunk shaped as one lowercase
-    /// letter, then an uppercase letter, then anything (for example <c>iPhone</c>, <c>eBay</c>) — and which is
-    /// not entirely uppercase — is emitted verbatim as a single token.
+    /// 2. When <see cref="WordCasingOptions.PreserveMixedCaseWords" /> is set, a chunk shaped as one lowercase letter,
+    /// then an uppercase letter, then anything (for example <c>iPhone</c>, <c>eBay</c>) — and which is not entirely
+    /// uppercase — is emitted verbatim as a single token.
     /// </para>
     /// <para>
-    /// 3. Otherwise the chunk is case-split into sub-words at lowercase-to-uppercase and digit-to-letter
-    /// transitions and at acronym-to-word boundaries. Any all-uppercase sub-word that is not itself a known
-    /// acronym is then offered for greedy decomposition into a run of two or more known acronyms.
+    /// 3. Otherwise the chunk is case-split into sub-words at lowercase-to-uppercase and digit-to-letter transitions
+    /// and at acronym-to-word boundaries. Any all-uppercase sub-word that is not itself a known acronym is then offered
+    /// for greedy decomposition into a run of two or more known acronyms.
     /// </para>
     /// </remarks>
     internal static List<string> EnumerateWords(string value, WordCasingOptions options)
@@ -171,8 +174,8 @@ public static partial class StringExtensions
     }
 
     /// <summary>
-    /// Resolves a single separator-free chunk into one or more word tokens and appends them to
-    /// <paramref name="sink" />.
+    /// Resolves a single separator-free chunk into one or more word tokens and appends them to <paramref name="sink" />
+    /// .
     /// </summary>
     /// <param name="chunk">The separator-free chunk to resolve.</param>
     /// <param name="canonical">The canonical acronym lookup keyed by upper-case form.</param>
@@ -207,24 +210,24 @@ public static partial class StringExtensions
     }
 
     /// <summary>
-    /// Determines whether <paramref name="chunk" /> matches the mixed-case brand-word shape: exactly one
-    /// leading lowercase letter followed by an uppercase letter, then any remaining characters (for example
-    /// <c>iPhone</c> or <c>eBay</c>).
+    /// Determines whether <paramref name="chunk" /> matches the mixed-case brand-word shape: exactly one leading
+    /// lowercase letter followed by an uppercase letter, then any remaining characters (for example <c>iPhone</c> or
+    /// <c>eBay</c>).
     /// </summary>
     /// <param name="chunk">The chunk to inspect.</param>
     /// <returns>
     /// <see langword="true" /> when the chunk is a mixed-case brand word; otherwise <see langword="false" />.
     /// </returns>
     /// <remarks>
-    /// Because the first character must be lower-case, such a chunk can never be entirely upper-case, so no
-    /// additional all-caps exclusion check is required.
+    /// Because the first character must be lower-case, such a chunk can never be entirely upper-case, so no additional
+    /// all-caps exclusion check is required.
     /// </remarks>
     private static bool IsMixedCaseBrandWord(string chunk) =>
         chunk.Length >= 2 && char.IsLower(chunk[0]) && char.IsUpper(chunk[1]);
 
     /// <summary>
-    /// Splits a separator-free chunk into sub-words at lowercase-to-uppercase, digit-to-letter, and
-    /// acronym-to-word boundaries.
+    /// Splits a separator-free chunk into sub-words at lowercase-to-uppercase, digit-to-letter, and acronym-to-word
+    /// boundaries.
     /// </summary>
     /// <param name="chunk">The separator-free chunk to split.</param>
     /// <returns>The chunk's sub-words in source order.</returns>
@@ -276,8 +279,8 @@ public static partial class StringExtensions
     }
 
     /// <summary>
-    /// Appends a single case-split sub-word to <paramref name="sink" />, decomposing an all-uppercase
-    /// sub-word into a run of known acronyms when a full greedy decomposition exists.
+    /// Appends a single case-split sub-word to <paramref name="sink" />, decomposing an all-uppercase sub-word into a
+    /// run of known acronyms when a full greedy decomposition exists.
     /// </summary>
     /// <param name="subWord">The sub-word produced by case-splitting.</param>
     /// <param name="canonical">The canonical acronym lookup keyed by upper-case form.</param>
@@ -303,14 +306,14 @@ public static partial class StringExtensions
     }
 
     /// <summary>
-    /// Attempts a greedy longest-prefix decomposition of an all-uppercase sub-word into a sequence of two or
-    /// more known acronyms.
+    /// Attempts a greedy longest-prefix decomposition of an all-uppercase sub-word into a sequence of two or more known
+    /// acronyms.
     /// </summary>
     /// <param name="subWord">The all-uppercase sub-word to decompose.</param>
     /// <param name="canonical">The canonical acronym lookup keyed by upper-case form.</param>
     /// <returns>
-    /// The canonical acronym spellings when the entire sub-word decomposes into at least two known acronyms;
-    /// otherwise <see langword="null" />.
+    /// The canonical acronym spellings when the entire sub-word decomposes into at least two known acronyms; otherwise
+    /// <see langword="null" />.
     /// </returns>
     private static List<string>? DecomposeAcronymRun(string subWord, Dictionary<string, string> canonical)
     {

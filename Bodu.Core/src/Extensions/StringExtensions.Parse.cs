@@ -13,8 +13,7 @@ public static partial class StringExtensions
 {
     /// <summary>
     /// Parses <paramref name="value" /> into the requested <typeparamref name="T" /> using the
-    /// <see cref="IParsable{T}" /> contract and <see cref="CultureInfo.InvariantCulture" /> as the
-    /// format provider.
+    /// <see cref="IParsable{T}" /> contract and <see cref="CultureInfo.InvariantCulture" /> as the format provider.
     /// </summary>
     /// <typeparam name="T">The target type, which must implement <see cref="IParsable{T}" />.</typeparam>
     /// <param name="value">The string to parse. Must not be <see langword="null" />.</param>
@@ -30,9 +29,9 @@ public static partial class StringExtensions
     /// <typeparamref name="T" />.
     /// </exception>
     /// <remarks>
-    /// Provides a fluent <c>"42".Parse&lt;int&gt;()</c> form that flows from the string variable, in addition
-    /// to the static <c>T.Parse</c> factory. The invariant culture is used by default to keep behaviour stable
-    /// across machines and locales.
+    /// Provides a fluent <c>"42".Parse&lt;int&gt;()</c> form that flows from the string variable, in addition to the
+    /// static <c>T.Parse</c> factory. The invariant culture is used by default to keep behaviour stable across machines
+    /// and locales.
     /// </remarks>
     public static T Parse<T>(this string value)
         where T : IParsable<T>
@@ -49,8 +48,7 @@ public static partial class StringExtensions
     /// <typeparam name="T">The target type, which must implement <see cref="IParsable{T}" />.</typeparam>
     /// <param name="value">The string to parse.</param>
     /// <param name="result">
-    /// When this method returns <see langword="true" />, contains the parsed value; otherwise the type's
-    /// default value.
+    /// When this method returns <see langword="true" />, contains the parsed value; otherwise the type's default value.
     /// </param>
     /// <returns>
     /// <see langword="true" /> when <paramref name="value" /> was parsed successfully; otherwise
@@ -71,8 +69,8 @@ public static partial class StringExtensions
 
     /// <summary>
     /// Parses <paramref name="value" /> into the requested <typeparamref name="T" /> using the
-    /// <see cref="ISpanParsable{T}" /> contract and <see cref="CultureInfo.InvariantCulture" />, routing
-    /// through the underlying character span to avoid intermediate string allocation.
+    /// <see cref="ISpanParsable{T}" /> contract and <see cref="CultureInfo.InvariantCulture" />, routing through the
+    /// underlying character span to avoid intermediate string allocation.
     /// </summary>
     /// <typeparam name="T">The target type, which must implement <see cref="ISpanParsable{T}" />.</typeparam>
     /// <param name="value">The string to parse. Must not be <see langword="null" />.</param>
@@ -97,14 +95,13 @@ public static partial class StringExtensions
 
     /// <summary>
     /// Attempts to parse <paramref name="value" /> into the requested <typeparamref name="T" /> using the
-    /// <see cref="ISpanParsable{T}" /> contract and <see cref="CultureInfo.InvariantCulture" />, routing
-    /// through the underlying character span.
+    /// <see cref="ISpanParsable{T}" /> contract and <see cref="CultureInfo.InvariantCulture" />, routing through the
+    /// underlying character span.
     /// </summary>
     /// <typeparam name="T">The target type, which must implement <see cref="ISpanParsable{T}" />.</typeparam>
     /// <param name="value">The string to parse.</param>
     /// <param name="result">
-    /// When this method returns <see langword="true" />, contains the parsed value; otherwise the type's
-    /// default value.
+    /// When this method returns <see langword="true" />, contains the parsed value; otherwise the type's default value.
     /// </param>
     /// <returns>
     /// <see langword="true" /> when <paramref name="value" /> was parsed successfully; otherwise

@@ -20,8 +20,8 @@ public static partial class StringExtensions
     /// <see cref="StringComparison.Ordinal" />.
     /// </param>
     /// <returns>
-    /// A new string with the matches removed. When <paramref name="valueToRemove" /> does not appear, the
-    /// original instance is returned unchanged.
+    /// A new string with the matches removed. When <paramref name="valueToRemove" /> does not appear, the original
+    /// instance is returned unchanged.
     /// </returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="value" /> or <paramref name="valueToRemove" /> is <see langword="null" />.
@@ -30,9 +30,9 @@ public static partial class StringExtensions
     /// Thrown when <paramref name="valueToRemove" /> is the empty string.
     /// </exception>
     /// <remarks>
-    /// This is the substring counterpart to the BCL <see cref="string.Remove(int)" /> family, which is
-    /// index-based. Use <see cref="string.TrimStart(char[])" />/<see cref="string.TrimEnd(char[])" /> when the
-    /// goal is to strip individual characters.
+    /// This is the substring counterpart to the BCL <see cref="string.Remove(int)" /> family, which is index-based. Use
+    /// <see cref="string.TrimStart(char[])" />/<see cref="string.TrimEnd(char[])" /> when the goal is to strip
+    /// individual characters.
     /// </remarks>
     public static string Remove(
         this string value,

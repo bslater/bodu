@@ -11,8 +11,7 @@ namespace Bodu.Extensions;
 public static partial class StringExtensions
 {
     /// <summary>
-    /// Returns the substring of <paramref name="value" /> preceding the first occurrence of
-    /// <paramref name="marker" />.
+    /// Returns the substring of <paramref name="value" /> preceding the first occurrence of <paramref name="marker" />.
     /// </summary>
     /// <param name="value">The string to inspect. Must not be <see langword="null" />.</param>
     /// <param name="marker">The marker to locate. Must not be <see langword="null" />.</param>
@@ -21,8 +20,8 @@ public static partial class StringExtensions
     /// <see cref="StringComparison.Ordinal" />.
     /// </param>
     /// <returns>
-    /// The characters before the first occurrence of <paramref name="marker" />, or <see langword="null" />
-    /// when <paramref name="marker" /> is not found.
+    /// The characters before the first occurrence of <paramref name="marker" />, or <see langword="null" /> when
+    /// <paramref name="marker" /> is not found.
     /// </returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="value" /> or <paramref name="marker" /> is <see langword="null" />.

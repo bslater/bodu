@@ -18,17 +18,17 @@ public static partial class StringExtensions
     /// </summary>
     /// <param name="value">The string to encode. Must not be <see langword="null" />.</param>
     /// <param name="encoding">
-    /// The text encoding used to convert <paramref name="value" /> to bytes before Base64 encoding. Defaults
-    /// to <see cref="Encoding.UTF8" /> when <see langword="null" />.
+    /// The text encoding used to convert <paramref name="value" /> to bytes before Base64 encoding. Defaults to
+    /// <see cref="Encoding.UTF8" /> when <see langword="null" />.
     /// </param>
     /// <returns>The Base64-encoded string.</returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="value" /> is <see langword="null" />.
     /// </exception>
     /// <remarks>
-    /// Convenience wrapper over <see cref="Convert.ToBase64String(byte[])" /> that avoids the boilerplate of
-    /// converting the string to bytes manually. Pair with <see cref="FromBase64ToString(string, Encoding)" />
-    /// for the inverse operation.
+    /// Convenience wrapper over <see cref="Convert.ToBase64String(byte[])" /> that avoids the boilerplate of converting
+    /// the string to bytes manually. Pair with <see cref="FromBase64ToString(string, Encoding)" /> for the inverse
+    /// operation.
     /// </remarks>
     public static string ToBase64(this string value, Encoding? encoding = null)
     {

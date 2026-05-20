@@ -11,9 +11,8 @@ namespace Bodu.Extensions;
 public static partial class StringExtensions
 {
     /// <summary>
-    /// Returns <paramref name="value" /> with every occurrence of each entry in
-    /// <paramref name="valuesToRemove" /> removed under ordinal comparison, applied sequentially in array
-    /// order.
+    /// Returns <paramref name="value" /> with every occurrence of each entry in <paramref name="valuesToRemove" />
+    /// removed under ordinal comparison, applied sequentially in array order.
     /// </summary>
     /// <param name="value">The string to inspect. Must not be <see langword="null" />.</param>
     /// <param name="valuesToRemove">
@@ -21,12 +20,12 @@ public static partial class StringExtensions
     /// <see langword="null" /> or empty.
     /// </param>
     /// <returns>
-    /// A new string with all matches removed. When <paramref name="valuesToRemove" /> is empty, the original
-    /// instance is returned unchanged.
+    /// A new string with all matches removed. When <paramref name="valuesToRemove" /> is empty, the original instance
+    /// is returned unchanged.
     /// </returns>
     /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="value" /> or <paramref name="valuesToRemove" /> is <see langword="null" />,
-    /// or when any element of <paramref name="valuesToRemove" /> is <see langword="null" />.
+    /// Thrown when <paramref name="value" /> or <paramref name="valuesToRemove" /> is <see langword="null" />, or when
+    /// any element of <paramref name="valuesToRemove" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">
     /// Thrown when any element of <paramref name="valuesToRemove" /> is the empty string.

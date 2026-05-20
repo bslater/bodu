@@ -9,8 +9,8 @@ using System;
 namespace Bodu.Extensions;
 
 /// <summary>
-/// Tunes the behaviour of <see cref="StringExtensions.ToSentenceCase(string, SentenceCaseOptions)" /> beyond
-/// the plain capitalise-first-letter-of-each-sentence default.
+/// Tunes the behaviour of <see cref="StringExtensions.ToSentenceCase(string, SentenceCaseOptions)" /> beyond the plain
+/// capitalise-first-letter-of-each-sentence default.
 /// </summary>
 [Flags]
 public enum SentenceCaseOptions

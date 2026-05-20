@@ -11,8 +11,8 @@ namespace Bodu.Extensions;
 public static partial class StringExtensions
 {
     /// <summary>
-    /// Returns a value indicating whether <paramref name="value" /> begins with <paramref name="valueToFind" />
-    /// under <see cref="StringComparison.OrdinalIgnoreCase" />.
+    /// Returns a value indicating whether <paramref name="value" /> begins with <paramref name="valueToFind" /> under
+    /// <see cref="StringComparison.OrdinalIgnoreCase" />.
     /// </summary>
     /// <param name="value">The string to inspect. Must not be <see langword="null" />.</param>
     /// <param name="valueToFind">The prefix to locate. Must not be <see langword="null" />.</param>

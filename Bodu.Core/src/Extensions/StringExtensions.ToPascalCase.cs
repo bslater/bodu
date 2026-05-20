@@ -14,8 +14,8 @@ namespace Bodu.Extensions;
 public static partial class StringExtensions
 {
     /// <summary>
-    /// Converts <paramref name="value" /> to <c>PascalCase</c>: every word has its first character
-    /// upper-cased and the remaining characters lower-cased, with separators removed.
+    /// Converts <paramref name="value" /> to <c>PascalCase</c>: every word has its first character upper-cased and the
+    /// remaining characters lower-cased, with separators removed.
     /// </summary>
     /// <param name="value">The string to convert. Must not be <see langword="null" />.</param>
     /// <returns>The <c>PascalCase</c> form of <paramref name="value" />.</returns>
@@ -33,7 +33,9 @@ public static partial class StringExtensions
     /// Converts <paramref name="value" /> to <c>PascalCase</c> under the supplied <paramref name="options" />.
     /// </summary>
     /// <param name="value">The string to convert. Must not be <see langword="null" />.</param>
-    /// <param name="options">The acronym, mixed-case, and culture configuration. Must not be <see langword="null" />.</param>
+    /// <param name="options">
+    /// The acronym, mixed-case, and culture configuration. Must not be <see langword="null" />.
+    /// </param>
     /// <returns>The <c>PascalCase</c> form of <paramref name="value" />.</returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="value" /> or <paramref name="options" /> is <see langword="null" />.

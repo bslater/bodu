@@ -14,8 +14,8 @@ namespace Bodu.Extensions;
 public static partial class StringExtensions
 {
     /// <summary>
-    /// The control character (U+001F unit separator) prefixing a synthetic punctuation token in the phrase
-    /// token stream. It cannot collide with any letter, digit, or punctuation produced by tokenisation.
+    /// The control character (U+001F unit separator) prefixing a synthetic punctuation token in the phrase token
+    /// stream. It cannot collide with any letter, digit, or punctuation produced by tokenisation.
     /// </summary>
     private const char PunctuationMarker = '\u001F';
 
@@ -30,8 +30,8 @@ public static partial class StringExtensions
     ];
 
     /// <summary>
-    /// Returns <paramref name="value" /> with the first character of every word capitalised and the rest
-    /// lower-cased, using <see cref="CultureInfo.InvariantCulture" />.
+    /// Returns <paramref name="value" /> with the first character of every word capitalised and the rest lower-cased,
+    /// using <see cref="CultureInfo.InvariantCulture" />.
     /// </summary>
     /// <param name="value">The string to convert. Must not be <see langword="null" />.</param>
     /// <returns>The title-case form of <paramref name="value" />.</returns>
@@ -51,9 +51,9 @@ public static partial class StringExtensions
     /// Thrown when <paramref name="value" /> is <see langword="null" />.
     /// </exception>
     /// <remarks>
-    /// The flag-based overload maps onto <see cref="WordCasingOptions" /> with an empty acronym catalogue, so
-    /// only fully-uppercase input tokens are preserved as acronyms — lower-case words are never promoted to a
-    /// canonical acronym spelling.
+    /// The flag-based overload maps onto <see cref="WordCasingOptions" /> with an empty acronym catalogue, so only
+    /// fully-uppercase input tokens are preserved as acronyms — lower-case words are never promoted to a canonical
+    /// acronym spelling.
     /// </remarks>
     public static string ToTitleCase(this string value, TitleCaseOptions options)
     {
@@ -74,29 +74,30 @@ public static partial class StringExtensions
     }
 
     /// <summary>
-    /// Returns <paramref name="value" /> in title case under the supplied <paramref name="options" />,
-    /// applying acronym-aware tokenisation, mixed-case-word preservation, and culture-sensitive casing.
+    /// Returns <paramref name="value" /> in title case under the supplied <paramref name="options" />, applying
+    /// acronym-aware tokenisation, mixed-case-word preservation, and culture-sensitive casing.
     /// </summary>
     /// <param name="value">The string to convert. Must not be <see langword="null" />.</param>
-    /// <param name="options">The acronym, minor-word, and culture configuration. Must not be <see langword="null" />.</param>
+    /// <param name="options">
+    /// The acronym, minor-word, and culture configuration. Must not be <see langword="null" />.
+    /// </param>
     /// <returns>The title-case form of <paramref name="value" />.</returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="value" /> or <paramref name="options" /> is <see langword="null" />.
     /// </exception>
     /// <remarks>
     /// <para>
-    /// When the input contains white-space it is treated as a phrase: words are split on white-space, a
-    /// joining hyphen is kept attached, and trailing sentence punctuation is preserved. When the input
-    /// contains no white-space it is treated as a compound identifier and every separator becomes a single
-    /// space.
+    /// When the input contains white-space it is treated as a phrase: words are split on white-space, a joining hyphen
+    /// is kept attached, and trailing sentence punctuation is preserved. When the input contains no white-space it is
+    /// treated as a compound identifier and every separator becomes a single space.
     /// </para>
     /// <para>
     /// Known acronyms and fully-uppercase tokens keep their acronym spelling when
-    /// <see cref="WordCasingOptions.PreserveAcronyms" /> is set; recognised mixed-case words are emitted
-    /// verbatim when <see cref="WordCasingOptions.PreserveMixedCaseWords" /> is set. When
-    /// <see cref="WordCasingOptions.LowerCaseMinorWords" /> is set, minor words that are neither the first nor
-    /// the last word are down-cased. The first letter after an apostrophe is capitalised so that personal
-    /// names such as <c>o'connor</c> become <c>O'Connor</c>.
+    /// <see cref="WordCasingOptions.PreserveAcronyms" /> is set; recognised mixed-case words are emitted verbatim when
+    /// <see cref="WordCasingOptions.PreserveMixedCaseWords" /> is set. When
+    /// <see cref="WordCasingOptions.LowerCaseMinorWords" /> is set, minor words that are neither the first nor the last
+    /// word are down-cased. The first letter after an apostrophe is capitalised so that personal names such as
+    /// <c>o'connor</c> become <c>O'Connor</c>.
     /// </para>
     /// </remarks>
     public static string ToTitleCase(this string value, WordCasingOptions options)
@@ -122,9 +123,9 @@ public static partial class StringExtensions
     /// <param name="options">The acronym, minor-word, and culture configuration.</param>
     /// <returns>The rendered title-case string.</returns>
     /// <remarks>
-    /// A token whose first character is <see cref="PunctuationMarker" /> carries a literal punctuation run
-    /// produced by <see cref="EnumeratePhraseWords(string, WordCasingOptions)" /> and is emitted verbatim
-    /// instead of being capitalised.
+    /// A token whose first character is <see cref="PunctuationMarker" /> carries a literal punctuation run produced by
+    /// <see cref="EnumeratePhraseWords(string, WordCasingOptions)" /> and is emitted verbatim instead of being
+    /// capitalised.
     /// </remarks>
     private static string RenderTitleWords(List<string> tokens, WordCasingOptions options)
     {
@@ -183,14 +184,14 @@ public static partial class StringExtensions
     }
 
     /// <summary>
-    /// Splits a white-space-containing phrase into word tokens interleaved with synthetic punctuation
-    /// markers that capture joining hyphens and sentence terminators.
+    /// Splits a white-space-containing phrase into word tokens interleaved with synthetic punctuation markers that
+    /// capture joining hyphens and sentence terminators.
     /// </summary>
     /// <param name="value">The phrase to tokenise.</param>
     /// <param name="options">The acronym and mixed-case configuration.</param>
     /// <returns>
-    /// The word tokens in source order. A token prefixed with <see cref="PunctuationMarker" /> carries
-    /// literal punctuation to be emitted verbatim by <see cref="RenderTitleWords" />.
+    /// The word tokens in source order. A token prefixed with <see cref="PunctuationMarker" /> carries literal
+    /// punctuation to be emitted verbatim by <see cref="RenderTitleWords" />.
     /// </returns>
     private static List<string> EnumeratePhraseWords(string value, WordCasingOptions options)
     {
@@ -220,8 +221,8 @@ public static partial class StringExtensions
     }
 
     /// <summary>
-    /// Appends a synthetic punctuation marker for a phrase separator run when the run carries punctuation
-    /// that the title-case contract preserves.
+    /// Appends a synthetic punctuation marker for a phrase separator run when the run carries punctuation that the
+    /// title-case contract preserves.
     /// </summary>
     /// <param name="separator">The raw separator run.</param>
     /// <param name="isLeading">Whether the run sits at the start of the input.</param>
@@ -295,8 +296,8 @@ public static partial class StringExtensions
     }
 
     /// <summary>
-    /// Returns <see langword="true" /> when every letter in <paramref name="word" /> is upper case and the
-    /// word contains at least one letter.
+    /// Returns <see langword="true" /> when every letter in <paramref name="word" /> is upper case and the word
+    /// contains at least one letter.
     /// </summary>
     /// <param name="word">The word to inspect.</param>
     /// <returns><see langword="true" /> for all-uppercase words; otherwise <see langword="false" />.</returns>

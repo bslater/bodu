@@ -12,19 +12,17 @@ namespace Bodu.Extensions;
 public static partial class StringExtensions
 {
     /// <summary>
-    /// Returns <paramref name="value" /> with one occurrence of <paramref name="prefix" /> removed from the
-    /// start of every line that begins with it.
+    /// Returns <paramref name="value" /> with one occurrence of <paramref name="prefix" /> removed from the start of
+    /// every line that begins with it.
     /// </summary>
     /// <param name="value">The source text. Must not be <see langword="null" />.</param>
     /// <param name="prefix">The prefix to strip from each line. Must not be <see langword="null" />.</param>
     /// <returns>The text with the prefix removed from each prefixed line.</returns>
-    /// <exception cref="ArgumentNullException">
-    /// Thrown when either argument is <see langword="null" />.
-    /// </exception>
+    /// <exception cref="ArgumentNullException">Thrown when either argument is <see langword="null" />.</exception>
     /// <remarks>
     /// The inverse of <see cref="PrefixLines(string, string)" />. Lines that do not begin with
-    /// <paramref name="prefix" /> are emitted unchanged. Comparison is ordinal. Line boundaries follow the
-    /// usual <c>\r\n</c> / <c>\n</c> / <c>\r</c> recognition.
+    /// <paramref name="prefix" /> are emitted unchanged. Comparison is ordinal. Line boundaries follow the usual
+    /// <c>\r\n</c> / <c>\n</c> / <c>\r</c> recognition.
     /// </remarks>
     public static string UnprefixLines(this string value, string prefix)
     {
@@ -46,6 +44,7 @@ public static partial class StringExtensions
                 {
                     start += prefix.Length;
                 }
+
                 if (start < end) builder.Append(value, start, end - start);
                 if (i == value.Length) break;
                 builder.Append(value[i]);
@@ -54,9 +53,11 @@ public static partial class StringExtensions
                     builder.Append('\n');
                     i++;
                 }
+
                 lineStart = i + 1;
             }
         }
+
         return builder.ToString();
     }
 }

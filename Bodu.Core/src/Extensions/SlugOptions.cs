@@ -11,8 +11,8 @@ namespace Bodu.Extensions;
 /// <see cref="StringExtensions.ToSlug(string, SlugOptions)" />.
 /// </summary>
 /// <remarks>
-/// Instances are immutable once constructed: every property is <c>init</c>-only. Construct a customised
-/// instance with an object initialiser, or use <see cref="Default" /> for the standard configuration.
+/// Instances are immutable once constructed: every property is <c>init</c>-only. Construct a customised instance with
+/// an object initialiser, or use <see cref="Default" /> for the standard configuration.
 /// </remarks>
 public sealed class SlugOptions
 {
@@ -52,8 +52,8 @@ public sealed class SlugOptions
     /// <see langword="false" />.
     /// </returns>
     /// <value>
-    /// Defaults to <see langword="true" />. When set, combining marks are removed and the German sharp-s
-    /// (<c>ß</c>) is transliterated to <c>ss</c>.
+    /// Defaults to <see langword="true" />. When set, combining marks are removed and the German sharp-s (<c>ß</c>) is
+    /// transliterated to <c>ss</c>.
     /// </value>
     public bool NormalizeDiacritics { get; init; } = true;
 
@@ -62,8 +62,8 @@ public sealed class SlugOptions
     /// </summary>
     /// <returns>The maximum character count of the produced slug, or <c>0</c> when unbounded.</returns>
     /// <value>
-    /// Defaults to <c>0</c> (unlimited). When greater than zero, the slug is truncated at a separator
-    /// boundary so the result never exceeds the limit and never ends with a dangling separator.
+    /// Defaults to <c>0</c> (unlimited). When greater than zero, the slug is truncated at a separator boundary so the
+    /// result never exceeds the limit and never ends with a dangling separator.
     /// </value>
     public int MaxLength { get; init; }
 }

@@ -18,8 +18,8 @@ public static partial class StringExtensions
     /// <param name="other">The other string; may be <see langword="null" />.</param>
     /// <returns>
     /// <see langword="true" /> when both strings are <see langword="null" />, or when neither is
-    /// <see langword="null" /> and the characters compare equal under case-insensitive ordinal comparison;
-    /// otherwise <see langword="false" />.
+    /// <see langword="null" /> and the characters compare equal under case-insensitive ordinal comparison; otherwise
+    /// <see langword="false" />.
     /// </returns>
     /// <remarks>
     /// Convenience shortcut for <c>string.Equals(value, other, StringComparison.OrdinalIgnoreCase)</c>.

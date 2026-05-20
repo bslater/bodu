@@ -20,8 +20,7 @@ public static partial class StringExtensions
     /// <param name="culture">The culture whose casing rules are applied.</param>
     /// <returns>The capitalised word.</returns>
     /// <remarks>
-    /// Capitalising after an apostrophe handles personal names such as <c>o'connor</c> becoming
-    /// <c>O'Connor</c>.
+    /// Capitalising after an apostrophe handles personal names such as <c>o'connor</c> becoming <c>O'Connor</c>.
     /// </remarks>
     private static string CapitalizeWord(string word, CultureInfo culture)
     {
@@ -48,14 +47,12 @@ public static partial class StringExtensions
     }
 
     /// <summary>
-    /// Determines whether <paramref name="word" /> is a mixed-case word that must survive casing changes
-    /// verbatim — that is, it carries an upper-case letter beyond the first position and at least one
-    /// lower-case letter.
+    /// Determines whether <paramref name="word" /> is a mixed-case word that must survive casing changes verbatim —
+    /// that is, it carries an upper-case letter beyond the first position and at least one lower-case letter.
     /// </summary>
     /// <param name="word">The word to inspect.</param>
     /// <returns>
-    /// <see langword="true" /> when the word is a preserved mixed-case word; otherwise
-    /// <see langword="false" />.
+    /// <see langword="true" /> when the word is a preserved mixed-case word; otherwise <see langword="false" />.
     /// </returns>
     private static bool IsPreservedMixedCaseWord(string word)
     {

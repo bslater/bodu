@@ -11,8 +11,8 @@ namespace Bodu.Extensions;
 public static partial class StringExtensions
 {
     /// <summary>
-    /// Returns <paramref name="defaultValue" /> when <paramref name="value" /> is <see langword="null" /> or
-    /// empty; otherwise returns <paramref name="value" /> unchanged.
+    /// Returns <paramref name="defaultValue" /> when <paramref name="value" /> is <see langword="null" /> or empty;
+    /// otherwise returns <paramref name="value" /> unchanged.
     /// </summary>
     /// <param name="value">The string to evaluate.</param>
     /// <param name="defaultValue">
@@ -20,8 +20,7 @@ public static partial class StringExtensions
     /// <see langword="null" />.
     /// </param>
     /// <returns>
-    /// <paramref name="value" /> when it contains at least one character; otherwise
-    /// <paramref name="defaultValue" />.
+    /// <paramref name="value" /> when it contains at least one character; otherwise <paramref name="defaultValue" />.
     /// </returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="defaultValue" /> is <see langword="null" />.
