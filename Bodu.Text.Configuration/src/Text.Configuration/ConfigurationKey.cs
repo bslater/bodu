@@ -66,37 +66,41 @@ public readonly partial struct ConfigurationKey : IEquatable<ConfigurationKey>
         ConfigurationKeyOptions effective = options ?? ConfigurationKeyOptions.Default;
         ImmutableArray<string> segments = SplitSegments(rawKey, effective);
 
-        RawKey = rawKey;
-        Segments = segments;
-        Path = ComposePath(segments, effective);
+        _rawKey = rawKey;
+        _segments = segments;
+        _path = ComposePath(segments, effective);
         CaseSensitive = effective.CaseSensitive;
     }
 
     private ConfigurationKey(string rawKey, ImmutableArray<string> segments, string path, bool caseSensitive)
     {
-        RawKey = rawKey;
-        Segments = segments;
-        Path = path;
+        _rawKey = rawKey;
+        _segments = segments;
+        _path = path;
         CaseSensitive = caseSensitive;
     }
+
+    private readonly string? _rawKey;
+    private readonly string? _path;
+    private readonly ImmutableArray<string> _segments;
 
     /// <summary>
     /// Gets the raw key string exactly as it appeared in the source document.
     /// </summary>
     /// <returns>The original key text, or the empty string for a default instance.</returns>
-    public string RawKey => field ?? string.Empty;
+    public string RawKey => _rawKey ?? string.Empty;
 
     /// <summary>
     /// Gets the canonical colon-delimited logical key path derived from <see cref="Segments" />.
     /// </summary>
     /// <returns>The configuration key in colon-delimited form, or the empty string for a default instance.</returns>
-    public string Path => field ?? string.Empty;
+    public string Path => _path ?? string.Empty;
 
     /// <summary>
     /// Gets the segments produced by splitting <see cref="RawKey" /> on the configured separators.
     /// </summary>
     /// <returns>An immutable array of segment strings.</returns>
-    public ImmutableArray<string> Segments => field.IsDefault ? [] : field;
+    public ImmutableArray<string> Segments => _segments.IsDefault ? [] : _segments;
 
     /// <summary>
     /// Gets a value indicating whether equality and hashing for this key are case-sensitive.
