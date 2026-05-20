@@ -23,22 +23,39 @@ public static partial class StringExtensions
     /// Thrown when <paramref name="value" /> is <see langword="null" />.
     /// </exception>
     /// <remarks>
-    /// Word boundaries follow <see cref="EnumerateWords(string)" />. Casing changes use
-    /// <see cref="CultureInfo.InvariantCulture" /> for deterministic output across locales.
+    /// Word boundaries follow <see cref="EnumerateWords(string, WordCasingOptions)" /> using
+    /// <see cref="WordCasingOptions.Default" />. Casing changes use the configured culture.
     /// </remarks>
-    public static string ToPascalCase(this string value)
+    public static string ToPascalCase(this string value) =>
+        ToPascalCase(value, WordCasingOptions.Default);
+
+    /// <summary>
+    /// Converts <paramref name="value" /> to <c>PascalCase</c> under the supplied <paramref name="options" />.
+    /// </summary>
+    /// <param name="value">The string to convert. Must not be <see langword="null" />.</param>
+    /// <param name="options">The acronym, mixed-case, and culture configuration. Must not be <see langword="null" />.</param>
+    /// <returns>The <c>PascalCase</c> form of <paramref name="value" />.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="value" /> or <paramref name="options" /> is <see langword="null" />.
+    /// </exception>
+    /// <remarks>
+    /// Every word is capitalised unless it is a recognised mixed-case word, which is emitted verbatim.
+    /// </remarks>
+    public static string ToPascalCase(this string value, WordCasingOptions options)
     {
         ThrowHelper.ThrowIfNull(value);
+        ThrowHelper.ThrowIfNull(options);
 
-        List<string> words = EnumerateWords(value);
+        List<string> words = EnumerateWords(value, options);
         if (words.Count == 0) return string.Empty;
 
+        CultureInfo culture = options.Culture;
         StringBuilder builder = new(value.Length);
         for (int i = 0; i < words.Count; i++)
         {
-            builder.Append(char.ToUpperInvariant(words[i][0]));
-            if (words[i].Length > 1) builder.Append(words[i].AsSpan(1).ToString().ToLowerInvariant());
+            builder.Append(IsPreservedMixedCaseWord(words[i]) ? words[i] : CapitalizeWord(words[i], culture));
         }
+
         return builder.ToString();
     }
 }

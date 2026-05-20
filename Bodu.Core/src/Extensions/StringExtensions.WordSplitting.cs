@@ -22,9 +22,13 @@ public static partial class StringExtensions
     /// <remarks>
     /// <para>
     /// Boundaries are detected as: separator characters; lowercase-to-uppercase transitions
-    /// (<c>"helloWorld"</c> → <c>["hello", "World"]</c>); and uppercase-run-to-lowercase transitions to
-    /// preserve acronyms (<c>"HTMLParser"</c> → <c>["HTML", "Parser"]</c>); and letter-to-digit transitions
-    /// (<c>"hello42"</c> → <c>["hello", "42"]</c>).
+    /// (<c>"helloWorld"</c> → <c>["hello", "World"]</c>); uppercase-run-to-lowercase transitions to preserve
+    /// acronyms (<c>"HTMLParser"</c> → <c>["HTML", "Parser"]</c>); and digit-to-letter transitions
+    /// (<c>"42hello"</c> → <c>["42", "hello"]</c>).
+    /// </para>
+    /// <para>
+    /// A letter-to-digit transition is intentionally <em>not</em> a boundary, so a trailing version or count
+    /// stays attached to its word (<c>"user42"</c> → <c>["user42"]</c>, <c>"v1"</c> → <c>["v1"]</c>).
     /// </para>
     /// <para>
     /// Used internally by every casing converter (<see cref="ToCamelCase(string)" />,
@@ -58,14 +62,11 @@ public static partial class StringExtensions
             bool isUpper = char.IsUpper(c);
             bool prevWasLower = char.IsLower(prev);
             bool prevWasDigit = char.IsDigit(prev);
-            bool prevWasLetter = char.IsLetter(prev);
-            bool isDigit = char.IsDigit(c);
             bool isLetter = char.IsLetter(c);
 
             bool boundary = false;
             if (isUpper && prevWasLower) boundary = true;
             else if (isLetter && prevWasDigit) boundary = true;
-            else if (isDigit && prevWasLetter) boundary = true;
             else if (isUpper && current.Length >= 2 && char.IsUpper(prev) && i + 1 < value.Length && char.IsLower(value[i + 1]))
             {
                 // Acronym to word transition: last upper char joins the next word.
@@ -94,5 +95,276 @@ public static partial class StringExtensions
             sink.Add(buffer.ToString());
             buffer.Clear();
         }
+    }
+
+    /// <summary>
+    /// Splits <paramref name="value" /> into word tokens using acronym-aware tokenisation driven by
+    /// <paramref name="options" />.
+    /// </summary>
+    /// <param name="value">The string to tokenise.</param>
+    /// <param name="options">The acronym, mixed-case, and culture configuration.</param>
+    /// <returns>The detected words in source order, with separators discarded.</returns>
+    /// <remarks>
+    /// <para>
+    /// The input is first divided into chunks on any character that is neither a letter, a digit, nor an
+    /// apostrophe. Each chunk is then resolved in the following order:
+    /// </para>
+    /// <para>
+    /// 1. A chunk that case-insensitively equals a known acronym is emitted as a single token using the
+    /// catalogue's canonical spelling.
+    /// </para>
+    /// <para>
+    /// 2. When <see cref="WordCasingOptions.PreserveMixedCaseWords" /> is set, a chunk shaped as one lowercase
+    /// letter, then an uppercase letter, then anything (for example <c>iPhone</c>, <c>eBay</c>) — and which is
+    /// not entirely uppercase — is emitted verbatim as a single token.
+    /// </para>
+    /// <para>
+    /// 3. Otherwise the chunk is case-split into sub-words at lowercase-to-uppercase and digit-to-letter
+    /// transitions and at acronym-to-word boundaries. Any all-uppercase sub-word that is not itself a known
+    /// acronym is then offered for greedy decomposition into a run of two or more known acronyms.
+    /// </para>
+    /// </remarks>
+    internal static List<string> EnumerateWords(string value, WordCasingOptions options)
+    {
+        List<string> words = new();
+        if (value.Length == 0) return words;
+
+        Dictionary<string, string> canonical = BuildAcronymLookup(options.Acronyms);
+
+        StringBuilder chunk = new();
+        for (int i = 0; i <= value.Length; i++)
+        {
+            char c = i < value.Length ? value[i] : '\0';
+            bool isChunkChar = i < value.Length && (char.IsLetterOrDigit(c) || c == '\'');
+            if (isChunkChar)
+            {
+                chunk.Append(c);
+                continue;
+            }
+
+            if (chunk.Length > 0)
+            {
+                ProcessChunk(chunk.ToString(), canonical, options, words);
+                chunk.Clear();
+            }
+        }
+
+        return words;
+    }
+
+    /// <summary>
+    /// Builds a case-insensitive lookup that maps an upper-cased acronym key to its canonical spelling.
+    /// </summary>
+    /// <param name="acronyms">The acronym catalogue.</param>
+    /// <returns>A dictionary keyed by the invariant upper-case form of each acronym.</returns>
+    private static Dictionary<string, string> BuildAcronymLookup(IReadOnlyCollection<string> acronyms)
+    {
+        Dictionary<string, string> map = new(StringComparer.Ordinal);
+        foreach (string acronym in acronyms)
+        {
+            if (string.IsNullOrEmpty(acronym)) continue;
+            string key = acronym.ToUpperInvariant();
+            map[key] = acronym;
+        }
+
+        return map;
+    }
+
+    /// <summary>
+    /// Resolves a single separator-free chunk into one or more word tokens and appends them to
+    /// <paramref name="sink" />.
+    /// </summary>
+    /// <param name="chunk">The separator-free chunk to resolve.</param>
+    /// <param name="canonical">The canonical acronym lookup keyed by upper-case form.</param>
+    /// <param name="options">The casing configuration.</param>
+    /// <param name="sink">The token list receiving the resolved words.</param>
+    private static void ProcessChunk(
+        string chunk,
+        Dictionary<string, string> canonical,
+        WordCasingOptions options,
+        List<string> sink)
+    {
+        if (chunk.Length == 0) return;
+
+        // Whole-chunk acronym match (handles ipv6 -> IPv6, sha256 -> SHA256, oauth -> OAuth).
+        if (canonical.TryGetValue(chunk.ToUpperInvariant(), out string? wholeAcronym))
+        {
+            sink.Add(wholeAcronym);
+            return;
+        }
+
+        // Whole-chunk mixed-case brand word (iPhone, eBay): one lower letter, then an upper letter.
+        if (options.PreserveMixedCaseWords && IsMixedCaseBrandWord(chunk))
+        {
+            sink.Add(chunk);
+            return;
+        }
+
+        foreach (string subWord in CaseSplit(chunk))
+        {
+            AppendSubWord(subWord, canonical, sink);
+        }
+    }
+
+    /// <summary>
+    /// Determines whether <paramref name="chunk" /> matches the mixed-case brand-word shape: exactly one
+    /// leading lowercase letter followed by an uppercase letter, then any remaining characters (for example
+    /// <c>iPhone</c> or <c>eBay</c>).
+    /// </summary>
+    /// <param name="chunk">The chunk to inspect.</param>
+    /// <returns>
+    /// <see langword="true" /> when the chunk is a mixed-case brand word; otherwise <see langword="false" />.
+    /// </returns>
+    /// <remarks>
+    /// Because the first character must be lower-case, such a chunk can never be entirely upper-case, so no
+    /// additional all-caps exclusion check is required.
+    /// </remarks>
+    private static bool IsMixedCaseBrandWord(string chunk) =>
+        chunk.Length >= 2 && char.IsLower(chunk[0]) && char.IsUpper(chunk[1]);
+
+    /// <summary>
+    /// Splits a separator-free chunk into sub-words at lowercase-to-uppercase, digit-to-letter, and
+    /// acronym-to-word boundaries.
+    /// </summary>
+    /// <param name="chunk">The separator-free chunk to split.</param>
+    /// <returns>The chunk's sub-words in source order.</returns>
+    private static List<string> CaseSplit(string chunk)
+    {
+        List<string> result = new();
+        StringBuilder current = new();
+        for (int i = 0; i < chunk.Length; i++)
+        {
+            char c = chunk[i];
+            if (current.Length == 0)
+            {
+                current.Append(c);
+                continue;
+            }
+
+            char prev = current[^1];
+            bool isUpper = char.IsUpper(c);
+            bool prevWasLower = char.IsLower(prev);
+            bool prevWasDigit = char.IsDigit(prev);
+            bool isLetter = char.IsLetter(c);
+
+            if (isUpper && prevWasLower)
+            {
+                Flush(result, current);
+            }
+            else if (isLetter && prevWasDigit)
+            {
+                Flush(result, current);
+            }
+            else if (isUpper && current.Length >= 1 && char.IsUpper(prev) && i + 1 < chunk.Length && char.IsLower(chunk[i + 1]))
+            {
+                // Acronym-to-word boundary: the trailing upper char starts the next word.
+                Flush(result, current);
+            }
+
+            current.Append(c);
+        }
+
+        Flush(result, current);
+        return result;
+
+        static void Flush(List<string> sink, StringBuilder buffer)
+        {
+            if (buffer.Length == 0) return;
+            sink.Add(buffer.ToString());
+            buffer.Clear();
+        }
+    }
+
+    /// <summary>
+    /// Appends a single case-split sub-word to <paramref name="sink" />, decomposing an all-uppercase
+    /// sub-word into a run of known acronyms when a full greedy decomposition exists.
+    /// </summary>
+    /// <param name="subWord">The sub-word produced by case-splitting.</param>
+    /// <param name="canonical">The canonical acronym lookup keyed by upper-case form.</param>
+    /// <param name="sink">The token list receiving the resolved words.</param>
+    private static void AppendSubWord(string subWord, Dictionary<string, string> canonical, List<string> sink)
+    {
+        if (subWord.Length == 0) return;
+
+        // An all-uppercase run longer than one character that is not itself a known acronym may be a run of
+        // concatenated acronyms (for example JSONRPCAPI -> JSON, RPC, API).
+        if (subWord.Length > 1 && IsAllUpperLettersOrDigits(subWord)
+            && !canonical.ContainsKey(subWord.ToUpperInvariant()))
+        {
+            List<string>? decomposed = DecomposeAcronymRun(subWord, canonical);
+            if (decomposed is not null)
+            {
+                sink.AddRange(decomposed);
+                return;
+            }
+        }
+
+        sink.Add(subWord);
+    }
+
+    /// <summary>
+    /// Attempts a greedy longest-prefix decomposition of an all-uppercase sub-word into a sequence of two or
+    /// more known acronyms.
+    /// </summary>
+    /// <param name="subWord">The all-uppercase sub-word to decompose.</param>
+    /// <param name="canonical">The canonical acronym lookup keyed by upper-case form.</param>
+    /// <returns>
+    /// The canonical acronym spellings when the entire sub-word decomposes into at least two known acronyms;
+    /// otherwise <see langword="null" />.
+    /// </returns>
+    private static List<string>? DecomposeAcronymRun(string subWord, Dictionary<string, string> canonical)
+    {
+        string upper = subWord.ToUpperInvariant();
+        List<string> parts = new();
+        int index = 0;
+        while (index < upper.Length)
+        {
+            string? best = null;
+            int bestLength = 0;
+            for (int length = upper.Length - index; length >= 1; length--)
+            {
+                string candidate = upper.Substring(index, length);
+                if (canonical.TryGetValue(candidate, out string? spelling))
+                {
+                    best = spelling;
+                    bestLength = length;
+                    break;
+                }
+            }
+
+            if (best is null) return null;
+
+            parts.Add(best);
+            index += bestLength;
+        }
+
+        return parts.Count >= 2 ? parts : null;
+    }
+
+    /// <summary>
+    /// Determines whether every character in <paramref name="value" /> is an upper-case letter or a digit.
+    /// </summary>
+    /// <param name="value">The string to inspect.</param>
+    /// <returns>
+    /// <see langword="true" /> when the string contains only upper-case letters and digits; otherwise
+    /// <see langword="false" />.
+    /// </returns>
+    private static bool IsAllUpperLettersOrDigits(string value)
+    {
+        if (value.Length == 0) return false;
+        for (int i = 0; i < value.Length; i++)
+        {
+            char c = value[i];
+            if (char.IsLetter(c))
+            {
+                if (!char.IsUpper(c)) return false;
+            }
+            else if (!char.IsDigit(c))
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

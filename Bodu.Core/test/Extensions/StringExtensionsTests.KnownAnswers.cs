@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
+using System.Globalization;
 using Bodu.Tests.KnownAnswers;
 
 namespace Bodu.Extensions;
@@ -17,20 +18,12 @@ public partial class StringExtensionsTests
     /// </summary>
     /// <param name="kat">The known-answer scenario to evaluate.</param>
     /// <remarks>
-    /// <para>
-    /// The KAT spec assumes acronym-aware tokenisation, mixed-case-word preservation, culture-aware casing,
-    /// and diacritic normalisation for slugs. The current <see cref="StringExtensions" /> implementation is
-    /// the simpler baseline that ships in the earlier commits — it covers the common scenarios but fails the
-    /// advanced ones. The advanced scenarios remain captured here as executable contract so the test runner
-    /// surfaces every gap in one place.
-    /// </para>
-    /// <para>
-    /// The test is marked <c>[Ignore]</c> until the enhanced implementation lands. Removing the attribute
-    /// turns it into the canonical regression suite for casing and formatting.
-    /// </para>
+    /// Each scenario is dispatched to the acronym-aware rich overloads. The <see cref="WordCasingOptions" />
+    /// and <see cref="SlugOptions" /> instances are built directly from the scenario so the formatter is
+    /// driven by the exact acronym list, minor-word list, culture, and preservation flags the scenario
+    /// declares.
     /// </remarks>
     [DataTestMethod]
-    [Ignore("Enables once the acronym-aware tokeniser and casing options enhancement land.")]
     [DynamicData(
         nameof(StringFormattingKnownAnswers.All),
         typeof(StringFormattingKnownAnswers),
@@ -39,19 +32,38 @@ public partial class StringExtensionsTests
         DynamicDataDisplayNameDeclaringType = typeof(StringFormattingKnownAnswers))]
     public void StringFormatting_AgainstKnownAnswer_ShouldMatchExpected(StringFormattingKnownAnswer kat)
     {
+        CultureInfo culture = kat.CultureName is null
+            ? CultureInfo.InvariantCulture
+            : CultureInfo.GetCultureInfo(kat.CultureName);
+
+        WordCasingOptions casing = new()
+        {
+            Acronyms = kat.Acronyms ?? Array.Empty<string>(),
+            MinorWords = kat.MinorWords ?? Array.Empty<string>(),
+            Culture = culture,
+            PreserveAcronyms = kat.PreserveExistingAcronyms,
+            PreserveMixedCaseWords = kat.PreserveMixedCaseWords,
+            LowerCaseMinorWords = kat.Operation == StringFormattingOperation.TitleCase,
+        };
+
+        SlugOptions slug = new()
+        {
+            NormalizeDiacritics = kat.NormalizeDiacritics,
+        };
+
         string actual = kat.Operation switch
         {
-            StringFormattingOperation.TitleCase => kat.Input.ToTitleCase(TitleCaseOptions.LowerCaseSmallWords | TitleCaseOptions.PreserveAcronyms),
-            StringFormattingOperation.SentenceCase => kat.Input.ToSentenceCase(SentenceCaseOptions.PreserveAcronyms),
-            StringFormattingOperation.CamelCase => kat.Input.ToCamelCase(),
-            StringFormattingOperation.PascalCase => kat.Input.ToPascalCase(),
-            StringFormattingOperation.SnakeCase => kat.Input.ToSnakeCase(),
-            StringFormattingOperation.KebabCase => kat.Input.ToKebabCase(),
-            StringFormattingOperation.TrainCase => kat.Input.ToTrainCase(),
-            StringFormattingOperation.ConstantCase => kat.Input.ToConstantCase(),
-            StringFormattingOperation.DotCase => kat.Input.ToDotCase(),
+            StringFormattingOperation.TitleCase => kat.Input.ToTitleCase(casing),
+            StringFormattingOperation.SentenceCase => kat.Input.ToSentenceCase(casing),
+            StringFormattingOperation.CamelCase => kat.Input.ToCamelCase(casing),
+            StringFormattingOperation.PascalCase => kat.Input.ToPascalCase(casing),
+            StringFormattingOperation.SnakeCase => kat.Input.ToSnakeCase(casing),
+            StringFormattingOperation.KebabCase => kat.Input.ToKebabCase(casing),
+            StringFormattingOperation.TrainCase => kat.Input.ToTrainCase(casing),
+            StringFormattingOperation.ConstantCase => kat.Input.ToConstantCase(casing),
+            StringFormattingOperation.DotCase => kat.Input.ToDotCase(casing),
+            StringFormattingOperation.Slug => kat.Input.ToSlug(slug),
             StringFormattingOperation.NormalizeWhitespace => kat.Input.CollapseWhitespace().Trim(),
-            StringFormattingOperation.Slug => throw new NotImplementedException("ToSlug lands in a later commit."),
             _ => throw new ArgumentOutOfRangeException(nameof(kat), $"Unknown operation {kat.Operation}."),
         };
 
