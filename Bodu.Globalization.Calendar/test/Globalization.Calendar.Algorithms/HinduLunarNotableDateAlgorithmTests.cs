@@ -88,6 +88,25 @@ public sealed class HinduLunarNotableDateAlgorithmTests
     }
 
     /// <summary>
+    /// Verifies that requesting a date with a year above 9999 throws <see cref="ArgumentOutOfRangeException" />
+    /// rather than a raw exception from the <see cref="DateTime" /> constructor.
+    /// </summary>
+    [DataRow(10000)]
+    [DataRow(int.MaxValue)]
+    [TestMethod]
+    public void GetDate_WhenYearGreaterThan9999_ShouldThrowArgumentOutOfRangeException(int year)
+    {
+        var sut = new HinduLunarNotableDateAlgorithm(HinduLunarMonth.Kartik, HinduPaksha.Krishna, 15);
+
+        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = sut.GetDate(year);
+        });
+
+        Assert.AreEqual("year", ex.ParamName);
+    }
+
+    /// <summary>
     /// Verifies that Diwali (Amavasya / Krishna Paksha Chaturdashi of Kartik, i.e. the new moon) falls
     /// within ±2 days of the known panchanga date. Only years without an intercalary Kartik month are included;
     /// years 2022 and 2023 are excluded because an intercalary month causes the algorithm to locate the wrong

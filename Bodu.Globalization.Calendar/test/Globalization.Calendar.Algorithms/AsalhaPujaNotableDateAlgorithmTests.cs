@@ -32,6 +32,23 @@ public sealed class AsalhaPujaNotableDateAlgorithmTests
     }
 
     /// <summary>
+    /// Verifies that requesting Asalha Puja with a year above 9999 throws <see cref="ArgumentOutOfRangeException" />
+    /// rather than a raw exception from the <see cref="DateTime" /> constructor.
+    /// </summary>
+    [DataRow(10000)]
+    [DataRow(int.MaxValue)]
+    [TestMethod]
+    public void GetDate_WhenYearGreaterThan9999_ShouldThrowArgumentOutOfRangeException(int year)
+    {
+        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = _algorithm.GetDate(year);
+        });
+
+        Assert.AreEqual("year", ex.ParamName);
+    }
+
+    /// <summary>
     /// Verifies that Asalha Puja returns known correct dates for years where the first full moon on or after
     /// 15 June matches the Thai Asanha Bucha public holiday. Years with Thai intercalary months (such as 2023 and
     /// 2024) are excluded because the official observance is moved to the following lunation.

@@ -32,6 +32,23 @@ public sealed class QingmingNotableDateAlgorithmTests
     }
 
     /// <summary>
+    /// Verifies that requesting Qingming with a year above 9999 throws <see cref="ArgumentOutOfRangeException" />
+    /// rather than a raw exception from the date calculation overflowing <see cref="DateTime" />.
+    /// </summary>
+    [DataRow(10000)]
+    [DataRow(int.MaxValue)]
+    [TestMethod]
+    public void GetDate_WhenYearGreaterThan9999_ShouldThrowArgumentOutOfRangeException(int year)
+    {
+        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = _algorithm.GetDate(year);
+        });
+
+        Assert.AreEqual("year", ex.ParamName);
+    }
+
+    /// <summary>
     /// Verifies that Qingming falls within one calendar day of the published astronomical date for years in the range
     /// 2020–2026. The algorithm computes solar-term transitions in Universal Time; published dates in East Asia use
     /// CST (UTC+8) and may differ by one calendar day when the transition falls near local midnight.

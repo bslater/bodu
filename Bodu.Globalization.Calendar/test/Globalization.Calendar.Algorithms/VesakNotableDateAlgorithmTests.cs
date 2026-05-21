@@ -32,6 +32,23 @@ public sealed class VesakNotableDateAlgorithmTests
     }
 
     /// <summary>
+    /// Verifies that requesting Vesak with a year above 9999 throws <see cref="ArgumentOutOfRangeException" />
+    /// rather than a raw exception from the <see cref="DateTime" /> constructor.
+    /// </summary>
+    [DataRow(10000)]
+    [DataRow(int.MaxValue)]
+    [TestMethod]
+    public void GetDate_WhenYearGreaterThan9999_ShouldThrowArgumentOutOfRangeException(int year)
+    {
+        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = _algorithm.GetDate(year);
+        });
+
+        Assert.AreEqual("year", ex.ParamName);
+    }
+
+    /// <summary>
     /// Verifies that Vesak returns known correct dates for recent years. The expected dates match the Thai Visakha
     /// Bucha public holiday, which is the first full moon on or after 1 May.
     /// </summary>
