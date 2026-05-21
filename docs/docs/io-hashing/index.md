@@ -10,6 +10,8 @@ title: Bodu.IO.Hashing — Introduction
 
 The library is organized around three subfamilies, each in its own namespace.
 
+![Bodu.IO.Hashing subfamilies — Fingerprints, Checksums, and Check digits over a shared NonCryptographicHashAlgorithm base](../../images/diagrams/io-hashing-families.svg)
+
 ## Namespaces and headline types
 
 ### `Bodu.IO.Hashing` — Fingerprints

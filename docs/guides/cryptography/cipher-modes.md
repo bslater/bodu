@@ -8,6 +8,8 @@ This page walks through each of the five classic block cipher modes exposed via 
 
 For the data-flow visualization, see the panels on the <xref:Bodu.Security.Cryptography.CipherModeKind> API page. Each panel in that diagram corresponds to one section below.
 
+![Classic block cipher modes — CBC, CFB, OFB, CTR, and ECB data flow](../../images/diagrams/classic-modes.svg)
+
 ## CBC — the default
 
 **Use for:** general-purpose encryption of a whole message where you care about confidentiality only, and the IV is generated fresh per message.

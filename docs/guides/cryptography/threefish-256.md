@@ -6,6 +6,8 @@ title: Using Threefish-256
 
 <xref:Bodu.Security.Cryptography.Threefish256> is the 256-bit variant of the Threefish tweakable block cipher family — the core primitive underneath the Skein hash function. It operates on **256-bit (32-byte) blocks** with a **256-bit (32-byte) key** and a **128-bit (16-byte) tweak**.
 
+![Threefish round function — MIX, word permutation, and subkey injection](../../images/diagrams/threefish-round.svg)
+
 ## Fixed sizes at a glance
 
 | Parameter | Size | Notes |

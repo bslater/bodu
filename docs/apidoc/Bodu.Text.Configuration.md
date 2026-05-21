@@ -2,6 +2,8 @@
 uid: Bodu.Text.Configuration
 ---
 
+![Bodu.Text.Configuration](~/images/hero-configuration.svg)
+
 ## Purpose
 
 **Bodu.Text.Configuration** is the configuration-layering package of the Bodu suite. It parses INI / EditorConfig-style text, optionally collects diagnostics, layers a preamble plus glob-anchored sections in source order for a target path, and projects the result into a flat, colon-delimited <xref:Bodu.Text.Configuration.ConfigurationView>. The view exposes typed accessors (`GetString`, `GetInt32`, `GetBoolean`, `GetEnum<T>`, `GetValue<T>` for any <xref:System.ISpanParsable`1>) and integrates directly with `Microsoft.Extensions.Configuration` through the sibling <xref:Bodu.Extensions.Configuration.Text> package.

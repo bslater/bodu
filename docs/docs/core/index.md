@@ -8,6 +8,8 @@ title: Bodu.Core — Introduction
 
 The library is organized around eight focused namespaces, each with a clear responsibility.
 
+![Bodu.Core namespace map — eight focused namespaces and their headline types](../../images/diagrams/core-namespace-map.svg)
+
 ## Namespaces and headline types
 
 ### `Bodu`

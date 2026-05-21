@@ -1,0 +1,131 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 320" role="img" aria-labelledby="tf-title tf-desc">
+  <title id="tf-title">Threefish round function — MIX, permute, subkey injection</title>
+  <desc id="tf-desc">The Threefish round operates on a pair of 64-bit words through the MIX function: x0 plus x1 modulo 2 to the 64, then x1 rotated left by a round-dependent constant, then XORed with the new x0. After every MIX layer the words are permuted, and a subkey is added to every word once every four rounds. Threefish-256 uses 4 words over 72 rounds, Threefish-512 uses 8 words over 72 rounds, and Threefish-1024 uses 16 words over 80 rounds.</desc>
+
+  <defs>
+    <style>
+      .bg { fill: #0F172A; }
+      .panel { fill: #1E293B; stroke: #334155; stroke-width: 1; }
+      .header { fill: #111827; stroke: #334155; stroke-width: 1; }
+      .title { fill: #F8FAFC; font: 700 15px/1 "Segoe UI",Arial,sans-serif; }
+      .formula { fill: #94A3B8; font: italic 12px/1 "Cambria",Georgia,serif; }
+      .label { fill: #F8FAFC; font: 700 13px/1 "Segoe UI",Arial,sans-serif; }
+      .sub { fill: #CBD5E1; font: 400 11px/1 "Segoe UI",Arial,sans-serif; }
+      .sub-muted { fill: #94A3B8; font: 400 10.5px/1 "Segoe UI",Arial,sans-serif; }
+      .word { fill: #F59E0B; stroke: #FBBF24; stroke-width: 1; }
+      .mix { fill: #3B82F6; stroke: #60A5FA; stroke-width: 1; }
+      .subkey { fill: #A78BFA; stroke: #C4B5FD; stroke-width: 1; }
+      .out { fill: #14B8A6; stroke: #2DD4BF; stroke-width: 1; }
+      .wire { stroke: #CBD5E1; stroke-width: 1.6; fill: none; }
+      .wire-perm { stroke: #C4B5FD; stroke-width: 1.6; fill: none; }
+      .wire-key { stroke: #C4B5FD; stroke-width: 1.6; fill: none; }
+      .op { fill: #0F172A; stroke: #F8FAFC; stroke-width: 1.6; }
+      .op-sym { fill: #F8FAFC; font: 700 13px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .box-text { fill: #F8FAFC; font: 700 12px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .word-text { fill: #0F172A; font: 700 12px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+    </style>
+    <marker id="tf-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#CBD5E1"/>
+    </marker>
+    <marker id="tf-arr-p" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#C4B5FD"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" width="820" height="320"/>
+
+  <g transform="translate(10 10)">
+    <rect class="panel" width="800" height="300" rx="8"/>
+    <rect class="header" width="800" height="46" rx="8"/>
+    <rect class="header" y="38" width="800" height="8"/>
+    <text class="title" x="16" y="20">Threefish — the round: MIX ⟶ word permutation ⟶ subkey every 4 rounds</text>
+    <text class="formula" x="784" y="38" text-anchor="end">y₀ = x₀ ⊞ x₁;   y₁ = (x₁ ≪ Rᵈ) ⊕ y₀</text>
+
+    <!-- MIX function group -->
+    <text class="sub" x="30" y="74">MIX(x₀, x₁) — one word pair</text>
+
+    <!-- input words -->
+    <g transform="translate(70 100)">
+      <rect class="word" x="-30" y="-13" width="60" height="26" rx="4"/>
+      <text class="word-text" x="0" y="5">x₀</text>
+    </g>
+    <g transform="translate(70 180)">
+      <rect class="word" x="-30" y="-13" width="60" height="26" rx="4"/>
+      <text class="word-text" x="0" y="5">x₁</text>
+    </g>
+
+    <!-- ADD mod 2^64 -->
+    <g transform="translate(190 100)">
+      <circle class="op" cx="0" cy="0" r="15"/>
+      <text class="op-sym" x="0" y="5">⊞</text>
+    </g>
+    <text class="sub-muted" x="190" y="135" text-anchor="middle">add mod 2⁶⁴</text>
+    <line class="wire" x1="100" y1="100" x2="173" y2="100" marker-end="url(#tf-arr)"/>
+    <path class="wire" d="M 100 180 L 145 180 L 145 108 L 173 100" marker-end="url(#tf-arr)"/>
+
+    <!-- rotate box -->
+    <g transform="translate(190 180)">
+      <rect class="mix" x="-44" y="-16" width="88" height="32" rx="5"/>
+      <text class="box-text" x="0" y="-1">rotate left</text>
+      <text class="box-text" x="0" y="13">by Rᵈ</text>
+    </g>
+    <line class="wire" x1="100" y1="180" x2="143" y2="180" marker-end="url(#tf-arr)"/>
+    <text class="sub-muted" x="190" y="218" text-anchor="middle">round-dependent constant</text>
+
+    <!-- XOR combining rotated x1 with new x0 -->
+    <g transform="translate(320 180)">
+      <circle class="op" cx="0" cy="0" r="15"/>
+      <text class="op-sym" x="0" y="5">⊕</text>
+    </g>
+    <line class="wire" x1="234" y1="180" x2="302" y2="180" marker-end="url(#tf-arr)"/>
+    <path class="wire" d="M 190 115 L 190 150 L 320 150 L 320 162" marker-end="url(#tf-arr)"/>
+
+    <!-- output words -->
+    <g transform="translate(320 100)">
+      <rect class="out" x="-30" y="-13" width="60" height="26" rx="4"/>
+      <text class="word-text" x="0" y="5">y₀</text>
+    </g>
+    <line class="wire" x1="205" y1="100" x2="288" y2="100" marker-end="url(#tf-arr)"/>
+    <g transform="translate(420 180)">
+      <rect class="out" x="-30" y="-13" width="60" height="26" rx="4"/>
+      <text class="word-text" x="0" y="5">y₁</text>
+    </g>
+    <line class="wire" x1="337" y1="180" x2="388" y2="180" marker-end="url(#tf-arr)"/>
+
+    <!-- word permutation -->
+    <g transform="translate(530 140)">
+      <rect class="subkey" x="-58" y="-30" width="116" height="60" rx="6" fill="#475569" stroke="#64748B"/>
+      <text class="box-text" x="0" y="-8">word</text>
+      <text class="box-text" x="0" y="8">permutation</text>
+      <text class="sub-muted" x="0" y="24" text-anchor="middle">π — shuffle words</text>
+    </g>
+    <path class="wire-perm" d="M 350 100 L 472 110" marker-end="url(#tf-arr-p)"/>
+    <path class="wire-perm" d="M 450 180 L 472 170" marker-end="url(#tf-arr-p)"/>
+
+    <!-- subkey injection -->
+    <g transform="translate(530 240)">
+      <rect class="subkey" x="-70" y="-18" width="140" height="34" rx="5"/>
+      <text class="box-text" x="0" y="-1">subkey ⊞ every word</text>
+      <text class="word-text" x="0" y="13" fill="#1E293B" font-size="10">once per 4 rounds</text>
+    </g>
+    <path class="wire-key" d="M 530 170 L 530 222" marker-end="url(#tf-arr-p)"/>
+
+    <!-- next round arrow -->
+    <g transform="translate(700 140)">
+      <rect class="word" x="-44" y="-16" width="88" height="32" rx="5" fill="#14B8A6" stroke="#2DD4BF"/>
+      <text class="word-text" x="0" y="5">next round</text>
+    </g>
+    <line class="wire" x1="588" y1="140" x2="652" y2="140" marker-end="url(#tf-arr)"/>
+
+    <!-- variant legend -->
+    <g transform="translate(620 60)">
+      <text class="sub" x="0" y="0">Variants:</text>
+      <text class="sub-muted" x="0" y="16">Threefish-256 — 4 words · 72 rounds</text>
+      <text class="sub-muted" x="0" y="31">Threefish-512 — 8 words · 72 rounds</text>
+      <text class="sub-muted" x="0" y="46">Threefish-1024 — 16 words · 80 rounds</text>
+    </g>
+
+    <!-- footer note -->
+    <text class="sub" x="20" y="284">Each round mixes every word pair, permutes the words, and — at rounds 0, 4, 8, … — injects a tweak-dependent subkey.</text>
+  </g>
+</svg>
