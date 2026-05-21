@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
+
 namespace Bodu.Numerics;
 
 public partial class FractionTests
@@ -185,5 +187,44 @@ public partial class FractionTests
         ArgumentNullException.ThrowIfNull(text);
 
         return text.Split(',').Select(int.Parse).ToArray();
+    }
+
+    /// <summary>
+    /// Verifies that Approximate finds a best fraction even when the exact value would overflow the backing type.
+    /// </summary>
+    [TestMethod]
+    public void Approximate_WhenExactValueOverflowsBackingType_ShouldStillFindBestApproximation()
+    {
+        Assert.AreEqual(new Fraction<int>(311, 99), Fraction<int>.Approximate(Math.PI, 100));
+    }
+
+    /// <summary>
+    /// Verifies that Approximate produces a best rational approximation of a decimal value.
+    /// </summary>
+    [TestMethod]
+    public void Approximate_WhenGivenDecimal_ShouldReturnBestApproximation()
+    {
+        Assert.AreEqual(new Fraction<int>(1, 3), Fraction<int>.Approximate(0.3333m, 10));
+    }
+
+    /// <summary>
+    /// Verifies that Approximate parses a numeric string and approximates the parsed value.
+    /// </summary>
+    [TestMethod]
+    public void Approximate_WhenGivenString_ShouldParseAndApproximate()
+    {
+        Assert.AreEqual(new Fraction<int>(1, 2), Fraction<int>.Approximate("0.5", 10, CultureInfo.InvariantCulture));
+    }
+
+    /// <summary>
+    /// Verifies that Approximate rejects a denominator limit below one.
+    /// </summary>
+    [TestMethod]
+    public void Approximate_WhenDenominatorLimitIsZero_ShouldThrowArgumentOutOfRangeException()
+    {
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = Fraction<int>.Approximate(0.5, 0);
+        });
     }
 }

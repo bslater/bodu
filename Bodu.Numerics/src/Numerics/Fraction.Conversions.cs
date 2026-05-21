@@ -78,18 +78,9 @@ public readonly partial struct Fraction<T>
     /// </exception>
     public static Fraction<T> FromDecimal(decimal value)
     {
-        int[] bits = decimal.GetBits(value);
-        BigInteger mantissa = (new BigInteger((uint)bits[2]) << 64)
-            | (new BigInteger((uint)bits[1]) << 32)
-            | new BigInteger((uint)bits[0]);
+        (BigInteger numerator, BigInteger denominator) = DecimalToRational(value);
 
-        bool negative = (bits[3] & unchecked((int)0x80000000)) != 0;
-        int scale = (bits[3] >> 16) & 0xFF;
-
-        if (negative)
-            mantissa = -mantissa;
-
-        return FromBigInteger(mantissa, BigInteger.Pow(10, scale));
+        return FromBigInteger(numerator, denominator);
     }
 
     /// <summary>
@@ -123,28 +114,9 @@ public readonly partial struct Fraction<T>
     /// </exception>
     public static Fraction<T> FromDouble(double value)
     {
-        if (!double.IsFinite(value))
-            throw new ArgumentException("Only finite values can be converted to a fraction.", nameof(value));
+        (BigInteger numerator, BigInteger denominator) = DoubleToRational(value);
 
-        long bits = BitConverter.DoubleToInt64Bits(value);
-        bool negative = bits < 0;
-        int exponent = (int)((bits >> 52) & 0x7FF);
-        long mantissa = bits & 0xFFFFFFFFFFFFF;
-
-        if (exponent == 0)
-            exponent++;
-        else
-            mantissa |= 0x10000000000000;
-
-        exponent -= 1075;
-
-        BigInteger numerator = mantissa;
-        if (negative)
-            numerator = -numerator;
-
-        return exponent >= 0
-            ? FromBigInteger(numerator << exponent, BigInteger.One)
-            : FromBigInteger(numerator, BigInteger.One << -exponent);
+        return FromBigInteger(numerator, denominator);
     }
 
     /// <summary>
@@ -285,4 +257,57 @@ public readonly partial struct Fraction<T>
     public Fraction<TOther> As<TOther>()
         where TOther : IBinaryInteger<TOther> =>
         new Fraction<TOther>(TOther.CreateChecked(_numerator), TOther.CreateChecked(Denominator));
+
+    /// <summary>
+    /// Decomposes a finite <see cref="double" /> into the exact numerator and denominator of its rational value.
+    /// </summary>
+    /// <param name="value">The double-precision value to decompose.</param>
+    /// <returns>The exact numerator and denominator of <paramref name="value" />.</returns>
+    /// <exception cref="ArgumentException">Thrown if <paramref name="value" /> is not a finite number.</exception>
+    private static (BigInteger Numerator, BigInteger Denominator) DoubleToRational(double value)
+    {
+        if (!double.IsFinite(value))
+            throw new ArgumentException("Only finite values can be converted to a fraction.", nameof(value));
+
+        long bits = BitConverter.DoubleToInt64Bits(value);
+        bool negative = bits < 0;
+        int exponent = (int)((bits >> 52) & 0x7FF);
+        long mantissa = bits & 0xFFFFFFFFFFFFF;
+
+        if (exponent == 0)
+            exponent++;
+        else
+            mantissa |= 0x10000000000000;
+
+        exponent -= 1075;
+
+        BigInteger numerator = mantissa;
+        if (negative)
+            numerator = -numerator;
+
+        return exponent >= 0
+            ? (numerator << exponent, BigInteger.One)
+            : (numerator, BigInteger.One << -exponent);
+    }
+
+    /// <summary>
+    /// Decomposes a <see cref="decimal" /> into the exact numerator and denominator of its rational value.
+    /// </summary>
+    /// <param name="value">The decimal value to decompose.</param>
+    /// <returns>The exact numerator and denominator of <paramref name="value" />.</returns>
+    private static (BigInteger Numerator, BigInteger Denominator) DecimalToRational(decimal value)
+    {
+        int[] bits = decimal.GetBits(value);
+        BigInteger mantissa = (new BigInteger((uint)bits[2]) << 64)
+            | (new BigInteger((uint)bits[1]) << 32)
+            | new BigInteger((uint)bits[0]);
+
+        bool negative = (bits[3] & unchecked((int)0x80000000)) != 0;
+        int scale = (bits[3] >> 16) & 0xFF;
+
+        if (negative)
+            mantissa = -mantissa;
+
+        return (mantissa, BigInteger.Pow(10, scale));
+    }
 }
