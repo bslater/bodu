@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="HashAlgorithmFactory.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -28,12 +28,16 @@ namespace Bodu.Security.Cryptography;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// using System.Security.Cryptography; using Bodu.Security.Cryptography; // 1. Bare SHA-256
-/// factory. IHashAlgorithmFactory&lt;SHA256&gt; sha256 = HashAlgorithmFactory.From(() =&gt; SHA256.Create()); byte[]
-/// digest = HashAlgorithmHelper.HashData(sha256, payload); // 2. Configured keyed-hash factory — applied consistently
-/// every time the consumer constructs an instance. IHashAlgorithmFactory&lt;SipHash64&gt; sip =
-/// HashAlgorithmFactory.From(() =&gt; new SipHash64 { Key = sessionKey }); byte[] tag =
-/// HashAlgorithmHelper.HashData(sip, message);
+/// using System.Security.Cryptography; 
+/// using Bodu.Security.Cryptography;
+///
+/// // 1. Bare SHA-256 factory. 
+/// IHashAlgorithmFactory<SHA256> sha256 = HashAlgorithmFactory.From(() => SHA256.Create());
+/// byte[] digest = HashAlgorithmHelper.HashData(sha256, payload); 
+///
+/// // 2. Configured keyed-hash factory — applied consistently every time the consumer constructs an instance. 
+/// IHashAlgorithmFactory<SipHash64> sip = HashAlgorithmFactory.From(() => new SipHash64 { Key = sessionKey });
+/// byte[] tag = HashAlgorithmHelper.HashData(sip, message);
 ///]]>
 /// </code>
 /// </example>
