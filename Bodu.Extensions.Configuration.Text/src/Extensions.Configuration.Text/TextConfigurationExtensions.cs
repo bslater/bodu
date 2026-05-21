@@ -45,20 +45,20 @@ namespace Bodu.Extensions.Configuration.Text;
 /// </item>
 /// <item>
 /// <description>
-/// Stream overload (and a lambda <see cref="TextStreamConfigurationSource" /> variant) — one-shot, no
-/// reload-on-change machinery; ideal for tests and synthetic configuration.
+/// Stream overload (and a lambda <see cref="TextStreamConfigurationSource" /> variant) — one-shot, no reload-on-change
+/// machinery; ideal for tests and synthetic configuration.
 /// </description>
 /// </item>
 /// </list>
 /// </para>
 /// <para>
 /// File-backed registrations honour the standard <see cref="FileConfigurationSource" /> behaviours (reload-on-change,
-/// optional-file, exception wrapping) and resolve <paramref name="path" />-relative paths through the supplied or
-/// builder-default <see cref="IFileProvider" />. The convention overload uses the builder's default
-/// <see cref="IFileProvider" />; note that <see cref="IFileProvider" /> implementations such as
+/// optional-file, exception wrapping) and resolve <c>path</c>-relative paths through the supplied or builder-default
+/// <see cref="IFileProvider" />. The convention overload uses the builder's default <see cref="IFileProvider" />; note
+/// that <see cref="IFileProvider" /> implementations such as
 /// <see cref="Microsoft.Extensions.FileProviders.PhysicalFileProvider" /> filter out dot-prefixed files by default —
-/// see the remarks on <see cref="AddConfiguration(IConfigurationBuilder, bool, bool)" /> for the workaround
-/// required to surface <c>.boduconfig</c>.
+/// see the remarks on <see cref="AddConfiguration(IConfigurationBuilder, bool, bool)" /> for the workaround required to
+/// surface <c>.boduconfig</c>.
 /// </para>
 /// </remarks>
 /// <example>
