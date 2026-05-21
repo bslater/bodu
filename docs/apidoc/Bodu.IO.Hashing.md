@@ -17,7 +17,7 @@ Reach for this library when you need a fast, deterministic checksum for error de
 - **[Bodu.IO.Hashing introduction](~/docs/io-hashing/index.md)** — namespaces, headline types, scenarios.
 - **[Bodu.IO.Hashing getting started](~/docs/io-hashing/getting-started.md)** — install and minimal samples for each subfamily.
 - **[Bodu.IO.Hashing guides](~/guides/io-hashing/index.md)** — per-algorithm walk-throughs.
-- **[Algorithm families](~/docs/algorithm-families.md)** — fingerprint vs checksum vs check digit, plus the cryptographic families.
+- **[Bodu.Security.Cryptography introduction](~/docs/cryptography/index.md)** — the sibling library, for keyed and cryptographic hashes with a formal adversary model.
 
 ## Key types
 
@@ -84,4 +84,4 @@ byte[] combined = crc.ComputeHashFrom(previous, Encoding.UTF8.GetBytes(" jumps o
 - **Non-destructive `GetCurrentHash`.** Calling `NonCryptographicHashAlgorithm.GetCurrentHash` snapshots the accumulator and applies the final reflect / XOR / width-mask on the copy, so in-progress hashing is not disturbed. Call it as many times as you like.
 - **Resumable.** <xref:Bodu.IO.Hashing.Checksums.Crc> implements <xref:Bodu.IO.Hashing.IResumableHashAlgorithm> — reverse-finalize a stored digest, append further data, re-finalize. Handy for chunked streams where re-reading earlier bytes is expensive.
 - **Determinism and portability.** All algorithms produce identical byte-for-byte output across platforms and architectures for the same input and configuration.
-- **See also:** the [Using CRC](~/guides/io-hashing/crc.md) and [Using Fletcher](~/guides/io-hashing/fletcher.md) guides, the [full CRC catalogue](~/guides/io-hashing/crc-catalogue.md), the [Bodu.IO.Hashing introduction](~/docs/io-hashing/index.md), and the [Algorithm families](~/docs/algorithm-families.md) overview.
+- **See also:** the [Using CRC](~/guides/io-hashing/crc.md) and [Using Fletcher](~/guides/io-hashing/fletcher.md) guides, the [full CRC catalogue](~/guides/io-hashing/crc-catalogue.md), and the [Bodu.IO.Hashing introduction](~/docs/io-hashing/index.md).

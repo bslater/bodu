@@ -57,5 +57,5 @@ If you have not yet installed the package or want the high-level shape of the li
 
 - [Bodu.Core introduction](../../docs/core/index.md) — namespaces, headline types, scenarios.
 - [Bodu.Core getting started](../../docs/core/getting-started.md) — install and minimal samples.
-- [Algorithm families](../../docs/algorithm-families.md) — cross-library taxonomy (Bodu.Core's `ThrowHelper` underpins the other libraries).
+- [Project introduction](../../docs/introduction.md) — how Bodu.Core relates to the hashing, cryptography, calendar, and text libraries.
 - [Bodu.Collections.Generic API reference](../../apidoc/Bodu.Collections.Generic.md) — full namespace overview.

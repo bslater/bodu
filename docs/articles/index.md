@@ -2,7 +2,7 @@
 
 Narrative documentation and library overviews complement the auto-generated [API reference](xref:Bodu).
 
-If you are new to Bodu, start with the [project introduction](../docs/introduction.md) and the [cross-library getting-started page](../docs/getting-started.md). The [algorithm families](../docs/algorithm-families.md) page maps the hashing and cryptography type hierarchy.
+If you are new to Bodu, start with the [project introduction](../docs/introduction.md) and the [cross-library getting-started page](../docs/getting-started.md). The [Bodu.IO.Hashing](../docs/io-hashing/index.md) and [Bodu.Security.Cryptography](../docs/cryptography/index.md) introductions map the hashing and cryptography type hierarchy and explain how to choose between types that sound similar.
 
 ## API namespace landing pages
 
@@ -35,5 +35,4 @@ Each top-level namespace has a landing page that introduces its purpose, lists i
 
 - [Introduction](../docs/introduction.md) — project overview, design principles, and the per-library map.
 - [Getting started](../docs/getting-started.md) — prerequisites, install commands, and one-minute samples per library.
-- [Algorithm families](../docs/algorithm-families.md) — cross-library taxonomy of fingerprints, checksums, check digits, cryptographic hashes, keyed hashes, and the three symmetric-cipher subtypes (standard, tweakable, AEAD).
 - Per-library introductions: [Bodu.Core](../docs/core/index.md) · [Bodu.IO.Hashing](../docs/io-hashing/index.md) · [Bodu.Security.Cryptography](../docs/cryptography/index.md) · [Bodu.Globalization.Calendar](../docs/calendar/index.md) · [Bodu.Text.Formats](../docs/formats/index.md).

@@ -6,7 +6,7 @@ title: Guides
 
 Recipe-style walk-throughs and conceptual introductions for every library in the Bodu suite. Each library's guide section is organized by **namespace**, with one walk-through per headline type.
 
-If you are new to Bodu, start with the [introduction](../docs/introduction.md) for the project overview, the [getting-started page](../docs/getting-started.md) for install commands, or the [algorithm families](../docs/algorithm-families.md) page if you need to choose between hashing or cryptography types that sound similar.
+If you are new to Bodu, start with the [introduction](../docs/introduction.md) for the project overview, or the [getting-started page](../docs/getting-started.md) for install commands. To choose between hashing or cryptography types that sound similar, see the [Bodu.IO.Hashing](../docs/io-hashing/index.md) and [Bodu.Security.Cryptography](../docs/cryptography/index.md) introductions.
 
 ## Bodu.Core
 

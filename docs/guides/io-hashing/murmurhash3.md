@@ -150,5 +150,5 @@ Reach for **MurmurHash3** when you need a seeded 32- or 128-bit fingerprint with
 - [Using CityHash](cityhash.md) — fastest throughput on large inputs.
 - [Using FNV](fnv.md) — constant-memory streaming alternative.
 - [Using Pearson](pearson.md) — configurable output width from 8 to 2048 bits.
-- [Algorithm families](../../docs/algorithm-families.md) — when to use a fingerprint vs a checksum vs a keyed hash.
+- [Bodu.IO.Hashing introduction](../../docs/io-hashing/index.md) — when to use a fingerprint vs a checksum vs a check digit.
 - [Bodu.IO.Hashing namespace page](../../apidoc/Bodu.IO.Hashing.md) — key types and design notes.

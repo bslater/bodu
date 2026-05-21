@@ -4,9 +4,9 @@ title: Introduction
 
 # Introduction
 
-**Bodu** is a solution that ships six independent .NET NuGet packages, each focused on a narrow, well-defined problem domain. The packages share nothing at runtime — every assembly is self-contained — but they share a single set of source and documentation conventions, a single analyzer and test configuration, and a single quality bar.
+**Bodu** is a solution that ships eight independent .NET NuGet packages, each focused on a narrow, well-defined problem domain. Every package is versioned and released on its own — and most are self-contained, with the few cross-package dependencies listed below — but they share a single set of source and documentation conventions, a single analyzer and test configuration, and a single quality bar.
 
-If you are new to Bodu, start with the **library introductions** below to understand what each package is for. The deeper conceptual map across the hashing and cryptography libraries lives in [Algorithm families](algorithm-families.md).
+If you are new to Bodu, start with the **library introductions** below to understand what each package is for. Each links to a dedicated introduction page that maps its namespaces and headline types, and to the matching getting-started page.
 
 ## The libraries at a glance
 
@@ -17,9 +17,11 @@ If you are new to Bodu, start with the **library introductions** below to unders
 | **[Bodu.Security.Cryptography](cryptography/index.md)** | Cryptographic primitives on the BCL <xref:System.Security.Cryptography.SymmetricAlgorithm?displayProperty=nameWithType> and <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType> contracts — managed block ciphers (Threefish, Serpent, Camellia, Twofish, Blowfish, Skipjack), AES paired with six AEAD mode transforms (GCM, CCM, OCB, EAX, SIV, GCM-SIV), keyed hashes (SipHash, Poly1305), cryptographic digests (Tiger, CubeHash, Snefru, Whirlpool, BLAKE2/3, Skein, Shake), Merkle-tree hashing, and the full ASCON family. | `net8.0` |
 | **[Bodu.Globalization.Calendar](calendar/index.md)** | Rule-driven notable-date resolution — public holidays, observances, religious festivals — for any year, territory, or calendar system. Built-in algorithms cover Gregorian and Orthodox Easter, Hindu Lunar dates, Losar, Vesak, Asalha Puja, and Qingming, with a pluggable algorithm registry, observance-adjustment pipeline, and trust-policy-driven plugin host. | `net8.0` |
 | **[Bodu.Text.Encoding](text-encoding/index.md)** | Binary-to-text encoders for Base16, Base32, Base64, Base58, and Base85 with every common variant (RFC 4648 standard / hex-extended / URL-safe / MIME, Crockford, z-base-32, Bitcoin/Flickr / Ripple, Ascii85 / Z85). Each encoding exposes the same modern API shape: span- and UTF-8-friendly overloads, `OperationStatus` streaming, length-prediction helpers, validation predicates, plus a unified `IBinaryEncoding` interface for runtime-pluggable encoding choice. | `net8.0` |
-| **[Bodu.Text.Formats](formats/index.md)** | Self-framing binary serialization formats with a strongly-typed value model and a span- and stream-friendly codec. Ships **Bencode** (the BitTorrent serialization grammar from BEP 3) as the first format — `Bencode.Encode` / `Decode` / `TryEncode` / `TryDecode` / `GetEncodedLength` over `ReadOnlySpan<byte>`, `byte[]`, and `Stream`; an immutable `BencodedValue` tree (`Integer`, `String`, `List`, `Dictionary`); and BEP 3 canonicality enforcement on both sides of the pipeline. | `net8.0` |
+| **[Bodu.Text.Formats](formats/index.md)** | Self-framing text and binary serialization formats with strongly-typed value models and span- and stream-friendly codecs. Ships four sibling namespaces — **Bencode** (the BitTorrent BEP 3 grammar), **Delimited** (CSV / TSV), **Ini**, and **DotEnv** — each with `Encode` / `Decode` (or `Parse` / `Format`) and `Try*` overloads, an immutable value tree, and strict invariant enforcement on both sides of the pipeline. | `net8.0` |
+| **[Bodu.Text.Configuration](text-configuration/index.md)** | EditorConfig-style configuration layering over an INI document model. Layers a preamble plus glob-anchored sections in source order for a target file path, then projects the result into a flat, colon-delimited `ConfigurationView` with typed accessors (`GetInt32`, `GetEnum<T>`, `GetValue<T>`). Profile presets, optional diagnostic collection, and byte-faithful round-trip save. | `net8.0` |
+| **[Bodu.Extensions.Configuration.Text](extensions-configuration-text/index.md)** | Bridges `Bodu.Text.Configuration` to `Microsoft.Extensions.Configuration`. Adds an `AddConfiguration` entry point on `IConfigurationBuilder` — mirroring `AddJsonFile` / `AddJsonStream` — so a Bodu configuration file layers alongside JSON, INI, XML, and environment-variable sources, with `IOptions<T>` binding and reload-on-change support. | `net8.0` |
 
-Each package is versioned and released independently. Take the one you need and ignore the others — there are no cross-package runtime dependencies. `Bodu.IO.Hashing`, `Bodu.Security.Cryptography`, `Bodu.Text.Encoding`, and `Bodu.Text.Formats` all depend on `Bodu.Core` for shared argument-validation helpers; `Bodu.Text.Formats` additionally references `Bodu.Text.Encoding`.
+Each package is versioned and released independently — take the one you need and ignore the others. The only shared runtime dependency is `Bodu.Core`, whose `ThrowHelper` provides argument validation for `Bodu.IO.Hashing`, `Bodu.Security.Cryptography`, `Bodu.Text.Encoding`, `Bodu.Text.Formats`, `Bodu.Text.Configuration`, and `Bodu.Extensions.Configuration.Text`. Beyond that, `Bodu.Text.Formats` references `Bodu.Text.Encoding`; `Bodu.Text.Configuration` builds on `Bodu.Text.Formats`; and `Bodu.Extensions.Configuration.Text` builds on `Bodu.Text.Configuration` plus `Microsoft.Extensions.Configuration`.
 
 ## Library introductions
 
@@ -83,7 +85,7 @@ Each library has a dedicated introduction page that explains its namespaces, the
 
 <div class="bodu-card">
   <h3><a href="formats/index.md">Bodu.Text.Formats</a></h3>
-  <p>Self-framing binary serialization formats with a strongly-typed value tree and a span- and stream-friendly codec. Ships Bencode (BitTorrent BEP 3) as the first format, with full canonicality enforcement on both sides of the pipeline.</p>
+  <p>Self-framing text and binary serialization formats with strongly-typed value trees and span- and stream-friendly codecs. Ships Bencode, Delimited (CSV / TSV), Ini, and DotEnv as sibling namespaces, each with strict invariant enforcement.</p>
   <div class="bodu-card-links">
     <a href="formats/index.md">Introduction</a>
     <a href="formats/getting-started.md">Getting started</a>
@@ -91,32 +93,29 @@ Each library has a dedicated introduction page that explains its namespaces, the
   </div>
 </div>
 
+<div class="bodu-card">
+  <h3><a href="text-configuration/index.md">Bodu.Text.Configuration</a></h3>
+  <p>EditorConfig-style configuration layering over an INI document model — glob-anchored sections resolved for a target path into a flat, typed <code>ConfigurationView</code>, with profile presets, diagnostic collection, and round-trip save.</p>
+  <div class="bodu-card-links">
+    <a href="text-configuration/index.md">Introduction</a>
+    <a href="text-configuration/getting-started.md">Getting started</a>
+    <a href="../guides/text-configuration/index.md">Guides</a>
+    <a href="../apidoc/Bodu.Text.Configuration.md">API reference</a>
+  </div>
 </div>
 
-## Cross-library map: which library do I need?
+<div class="bodu-card">
+  <h3><a href="extensions-configuration-text/index.md">Bodu.Extensions.Configuration.Text</a></h3>
+  <p>The <code>Microsoft.Extensions.Configuration</code> bridge — an <code>AddConfiguration</code> builder entry point that layers a Bodu configuration file alongside JSON, INI, and environment-variable sources with <code>IOptions&lt;T&gt;</code> binding.</p>
+  <div class="bodu-card-links">
+    <a href="extensions-configuration-text/index.md">Introduction</a>
+    <a href="extensions-configuration-text/getting-started.md">Getting started</a>
+    <a href="../guides/extensions-configuration-text/index.md">Guides</a>
+    <a href="../apidoc/Bodu.Extensions.Configuration.Text.md">API reference</a>
+  </div>
+</div>
 
-![Algorithm taxonomy — family hierarchy across both hashing libraries](../images/diagrams/algorithm-taxonomy.svg)
-
-If your problem touches **hashing**, **checksums**, or **encryption**, the [Algorithm families](algorithm-families.md) page maps the six algorithm families across `Bodu.IO.Hashing` and `Bodu.Security.Cryptography` and tells you which type to reach for.
-
-| You need… | Reach for | Library |
-|---|---|---|
-| A fixed-capacity ring buffer, deque, or evicting cache | `CircularBuffer<T>`, `Deque<T>`, `EvictingDictionary<K,V>` | Bodu.Core |
-| A day-of-week bitmask value type | `WeekPattern` | Bodu.Core |
-| A standard on-the-wire checksum (CRC, Adler-32, Fletcher) | `Crc` + `CrcStandard`, `Adler32`, `Fletcher32` | Bodu.IO.Hashing |
-| A fast hash-table fingerprint | `Fnv1a64`, `CityHash64`, `MurmurHash3_128` | Bodu.IO.Hashing |
-| Validation of a credit card, IBAN, ISBN, GTIN, … | `Luhn`, `Iban`, `Isbn13`, `Gtin14` | Bodu.IO.Hashing |
-| Encryption of data under a key | `Threefish*`, `Serpent*`, `Camellia`, `Twofish`, `Blowfish`, `AesBlockCipher` | Bodu.Security.Cryptography |
-| Authenticated encryption (encrypt + integrity in one) | `AesBlockCipher` + `GcmModeTransform`, `AsconAead128` | Bodu.Security.Cryptography |
-| Keyed hash / message authentication | `SipHash64` / `SipHash128`, `Poly1305` | Bodu.Security.Cryptography |
-| Cryptographic digest for content addressing | `Tiger`, `CubeHash`, `AsconHash256`, `Whirlpool`, `Blake2b` | Bodu.Security.Cryptography |
-| Resolve a public holiday, observance, or religious festival | `NotableDateService` + `NotableDateRule` | Bodu.Globalization.Calendar |
-| Encode a hash digest as hex / Base32 / Base64 | `Base16`, `Base32`, `Base64` | Bodu.Text.Encoding |
-| Decode a JWT token segment (URL-safe Base64) | `Base64.Decode(token, Base64Variant.UrlSafe, BaseFormatStyles.AllowMissingPadding)` | Bodu.Text.Encoding |
-| Parse a Bitcoin / IPFS / Solana identifier | `Base58.Decode(id)` | Bodu.Text.Encoding |
-| Format a TOTP / HOTP shared secret for a user | `Base32.Encode(secret, Base32Variant.Standard, BaseFormattingOptions.OmitPadding)` | Bodu.Text.Encoding |
-| Decode a `.torrent` file or other Bencode payload | `Bencode.Decode(bytes)` | Bodu.Text.Formats |
-| Canonically re-encode a Bencode value tree | `Bencode.Encode(tree)` | Bodu.Text.Formats |
+</div>
 
 ## Design principles
 
@@ -134,6 +133,5 @@ The solution uses **MSTest** with a partial-class test layout that mirrors the s
 ## Where to go next
 
 - **[Getting started](getting-started.md)** — prerequisites, install commands, and a one-minute sample from each library.
-- **[Algorithm families](algorithm-families.md)** — the cross-library taxonomy of fingerprints, checksums, check digits, cryptographic hashes, keyed hashes, and symmetric ciphers.
-- **Library introductions:** [Bodu.Core](core/index.md) · [Bodu.IO.Hashing](io-hashing/index.md) · [Bodu.Security.Cryptography](cryptography/index.md) · [Bodu.Globalization.Calendar](calendar/index.md) · [Bodu.Text.Encoding](text-encoding/index.md) · [Bodu.Text.Formats](formats/index.md).
+- **Library introductions:** [Bodu.Core](core/index.md) · [Bodu.IO.Hashing](io-hashing/index.md) · [Bodu.Security.Cryptography](cryptography/index.md) · [Bodu.Globalization.Calendar](calendar/index.md) · [Bodu.Text.Encoding](text-encoding/index.md) · [Bodu.Text.Formats](formats/index.md) · [Bodu.Text.Configuration](text-configuration/index.md) · [Bodu.Extensions.Configuration.Text](extensions-configuration-text/index.md).
 - **API references:** [Bodu.Collections.Generic](../apidoc/Bodu.Collections.Generic.md) · [Bodu.IO.Hashing](../apidoc/Bodu.IO.Hashing.md) · [Bodu.Security.Cryptography](../apidoc/Bodu.Security.Cryptography.md) · [Bodu.Globalization.Calendar](../apidoc/Bodu.Globalization.Calendar.md).
