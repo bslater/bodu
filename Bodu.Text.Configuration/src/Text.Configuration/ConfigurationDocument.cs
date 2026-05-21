@@ -19,16 +19,16 @@ namespace Bodu.Text.Configuration;
 /// <remarks>
 /// <para>
 /// Pair the <see cref="Parse(string)" /> family with the
-/// <see cref="ConfigurationExtensions.Resolve(IniDocument, string?, ConfigurationResolveOptions?)" /> extension
-/// method to evaluate the document for a specific target path. The document holds the raw, source-faithful model;
+/// <see cref="ConfigurationExtensions.Resolve(IniDocument, string?, ConfigurationResolveOptions?)" /> extension method
+/// to evaluate the document for a specific target path. The document holds the raw, source-faithful model;
 /// <see cref="ConfigurationView" /> holds the resolved, target-specific snapshot consumed by application code.
 /// </para>
 /// <para>
 /// Diagnostic routing is controlled by the supplied <see cref="ConfigurationParseOptions" />. In
 /// <see cref="ConfigurationDiagnosticMode.Throw" /> mode a recoverable parse error raises
-/// <see cref="ConfigurationParseException" /> at the first issue; in
-/// <see cref="ConfigurationDiagnosticMode.Collect" /> mode the parser continues, the document's valid portions
-/// remain usable, and every diagnostic surfaces on <see cref="ConfigurationParseResult.Diagnostics" />.
+/// <see cref="ConfigurationParseException" /> at the first issue; in <see cref="ConfigurationDiagnosticMode.Collect" />
+/// mode the parser continues, the document's valid portions remain usable, and every diagnostic surfaces on
+/// <see cref="ConfigurationParseResult.Diagnostics" />.
 /// </para>
 /// </remarks>
 /// <example>
@@ -263,12 +263,11 @@ public static class ConfigurationDocument
 /// during the parse.
 /// </summary>
 /// <remarks>
-/// Under <see cref="ConfigurationDiagnosticMode.Throw" /> the parser raises
-/// <see cref="ConfigurationParseException" /> on the first recoverable error, so a returned
-/// <see cref="ConfigurationParseResult" /> from <see cref="ConfigurationDocument.ParseWithDiagnostics" />
-/// always represents a successful parse whose diagnostic list is empty. Under
-/// <see cref="ConfigurationDiagnosticMode.Collect" /> the parser runs to completion and the diagnostic list
-/// reflects every recoverable error and warning encountered.
+/// Under <see cref="ConfigurationDiagnosticMode.Throw" /> the parser raises <see cref="ConfigurationParseException" />
+/// on the first recoverable error, so a returned <see cref="ConfigurationParseResult" /> from
+/// <see cref="ConfigurationDocument.ParseWithDiagnostics" /> always represents a successful parse whose diagnostic list
+/// is empty. Under <see cref="ConfigurationDiagnosticMode.Collect" /> the parser runs to completion and the diagnostic
+/// list reflects every recoverable error and warning encountered.
 /// </remarks>
 public sealed class ConfigurationParseResult
 {

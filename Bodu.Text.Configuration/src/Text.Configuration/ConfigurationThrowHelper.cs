@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConfigurationThrowHelper.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -9,8 +9,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace Bodu.Text.Configuration;
 
 /// <summary>
-/// Provides <c>ThrowIf</c> guard helpers shared by multiple configuration primitives in
-/// <c>Bodu.Text.Configuration</c>.
+/// Provides <c>ThrowIf</c> guard helpers shared by multiple configuration primitives in <c>Bodu.Text.Configuration</c>.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -22,8 +21,8 @@ namespace Bodu.Text.Configuration;
 /// The class follows the same partial-file pattern used by <see cref="Bodu.ThrowHelper" /> in <c>Bodu.Core</c>:
 /// <c>ConfigurationThrowHelper.cs</c> holds the root declaration, while
 /// <c>ConfigurationThrowHelper.CallerExpression.cs</c> and <c>ConfigurationThrowHelper.NetStandard.cs</c> hold the
-/// framework-conditional implementations. The wildcard <c>&lt;Compile Remove&gt;</c> entries in the project file
-/// select the correct partial for the current target.
+/// framework-conditional implementations. The wildcard <c>&lt;Compile Remove&gt;</c> entries in the project file select
+/// the correct partial for the current target.
 /// </para>
 /// </remarks>
 [SuppressMessage(

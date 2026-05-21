@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConfigurationMissingPathRootMode.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -15,15 +15,14 @@ namespace Bodu.Text.Configuration;
 /// <remarks>
 /// Strict EditorConfig semantics require every glob to be evaluated relative to a known directory. In-memory scenarios
 /// such as unit tests rarely have a meaningful root; permitting an empty root makes
-/// <see cref="ConfigurationDocument.Parse(string, ConfigurationParseOptions?)" /> useful end-to-end without
-/// forcing every test to supply a path context.
+/// <see cref="ConfigurationDocument.Parse(string, ConfigurationParseOptions?)" /> useful end-to-end without forcing
+/// every test to supply a path context.
 /// </remarks>
 public enum ConfigurationMissingPathRootMode
 {
     /// <summary>
     /// Use an empty path root. Patterns without <c>/</c> match at any depth; patterns with <c>/</c> are anchored to the
-    /// root of the supplied target path. This is the default for the <see cref="ConfigurationProfile.Bodu" />
-    /// profile.
+    /// root of the supplied target path. This is the default for the <see cref="ConfigurationProfile.Bodu" /> profile.
     /// </summary>
     UseEmptyRoot = 0,
 

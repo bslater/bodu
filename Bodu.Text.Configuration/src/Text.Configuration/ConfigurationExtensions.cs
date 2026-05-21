@@ -16,10 +16,10 @@ namespace Bodu.Text.Configuration;
 /// <remarks>
 /// <para>
 /// The Bodu Text Configuration model is intentionally layered on top of the raw INI primitives from
-/// <c>Bodu.Text.Ini</c> rather than replacing them: an <see cref="IniDocument" /> remains the source-faithful
-/// in-memory representation, and these extension methods add the configuration-specific behaviour — section glob
-/// matching, target-path resolution, dotted-to-colon key normalization, and preamble layering — that turns that raw
-/// document into the resolved snapshot consumed by application code.
+/// <c>Bodu.Text.Ini</c> rather than replacing them: an <see cref="IniDocument" /> remains the source-faithful in-memory
+/// representation, and these extension methods add the configuration-specific behaviour — section glob matching,
+/// target-path resolution, dotted-to-colon key normalization, and preamble layering — that turns that raw document into
+/// the resolved snapshot consumed by application code.
 /// </para>
 /// <para>
 /// The primary entry point is <see cref="Resolve(IniDocument, string?, ConfigurationResolveOptions?)" />, which
@@ -31,8 +31,8 @@ namespace Bodu.Text.Configuration;
 public static class ConfigurationExtensions
 {
     /// <summary>
-    /// Projects the document into a resolved <see cref="ConfigurationView" /> for the supplied target path using
-    /// the default Bodu resolve options.
+    /// Projects the document into a resolved <see cref="ConfigurationView" /> for the supplied target path using the
+    /// default Bodu resolve options.
     /// </summary>
     /// <param name="document">The document to resolve.</param>
     /// <param name="targetPath">The path the resolved view is evaluated for, or <see langword="null" />.</param>
@@ -42,8 +42,8 @@ public static class ConfigurationExtensions
         document.Resolve(targetPath, options: null);
 
     /// <summary>
-    /// Projects the document into a resolved <see cref="ConfigurationView" /> for the supplied target path using
-    /// the supplied options.
+    /// Projects the document into a resolved <see cref="ConfigurationView" /> for the supplied target path using the
+    /// supplied options.
     /// </summary>
     /// <param name="document">The document to resolve.</param>
     /// <param name="targetPath">The path the resolved view is evaluated for, or <see langword="null" />.</param>

@@ -50,8 +50,9 @@ internal static partial class ConfigurationThrowHelper
     /// <param name="rawKey">The candidate configuration key to scan.</param>
     /// <param name="paramName">The parameter name reported in the exception; inferred from the call site.</param>
     /// <exception cref="ArgumentException">
-    /// Thrown when <paramref name="rawKey" /> contains a character for which <see cref="char.IsControl(char)" /> returns
-    /// <see langword="true" />. The exception message includes the zero-based index of the first such character.
+    /// Thrown when <paramref name="rawKey" /> contains a character for which <see cref="char.IsControl(char)" />
+    /// returns <see langword="true" />. The exception message includes the zero-based index of the first such
+    /// character.
     /// </exception>
     internal static void ThrowIfConfigKeyContainsControlChar(
         string rawKey,

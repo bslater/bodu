@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Fraction.Serialization.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -24,7 +24,7 @@ public readonly partial struct Fraction<T> :
     {
         ThrowHelper.ThrowIfNull(reader);
 
-        string content = reader.ReadElementContentAsString();
+        var content = reader.ReadElementContentAsString();
 
         // The struct is immutable, so deserialization rebuilds the value and writes it back through a mutable
         // reference to the boxed instance the serializer passes as the receiver.

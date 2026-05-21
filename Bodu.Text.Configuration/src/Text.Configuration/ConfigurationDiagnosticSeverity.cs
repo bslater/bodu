@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConfigurationDiagnosticSeverity.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -25,8 +25,8 @@ public enum ConfigurationDiagnosticSeverity
     Warning = 1,
 
     /// <summary>
-    /// A recoverable error. The document is still produced (when <see cref="ConfigurationDiagnosticMode.Collect" />
-    /// is active), but a portion of the input could not be honored.
+    /// A recoverable error. The document is still produced (when <see cref="ConfigurationDiagnosticMode.Collect" /> is
+    /// active), but a portion of the input could not be honored.
     /// </summary>
     Error = 2,
 }

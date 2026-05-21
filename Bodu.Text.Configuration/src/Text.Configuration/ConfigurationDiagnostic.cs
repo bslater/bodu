@@ -14,16 +14,15 @@ namespace Bodu.Text.Configuration;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Diagnostics are immutable. When <see cref="ConfigurationDiagnosticMode.Collect" /> is in effect, the reader
-/// gathers diagnostics on the parse result's diagnostics list rather than throwing at the first issue; the document is
-/// still produced and its valid portions remain usable.
+/// Diagnostics are immutable. When <see cref="ConfigurationDiagnosticMode.Collect" /> is in effect, the reader gathers
+/// diagnostics on the parse result's diagnostics list rather than throwing at the first issue; the document is still
+/// produced and its valid portions remain usable.
 /// </para>
 /// <para>
-/// Each diagnostic carries a stable <see cref="Code" /> from <see cref="ConfigurationDiagnosticCode" /> so that
-/// callers can suppress or escalate categories programmatically, a <see cref="Severity" /> for filtering, a
-/// human-readable <see cref="Message" /> for display, and a <see cref="Location" /> pointing back into the source
-/// document for editor integration. <see cref="ToString" /> renders the four fields in a single line suitable for log
-/// output.
+/// Each diagnostic carries a stable <see cref="Code" /> from <see cref="ConfigurationDiagnosticCode" /> so that callers
+/// can suppress or escalate categories programmatically, a <see cref="Severity" /> for filtering, a human-readable
+/// <see cref="Message" /> for display, and a <see cref="Location" /> pointing back into the source document for editor
+/// integration. <see cref="ToString" /> renders the four fields in a single line suitable for log output.
 /// </para>
 /// </remarks>
 /// <example>

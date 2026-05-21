@@ -15,18 +15,16 @@ namespace Bodu.Text.Configuration;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The struct stores the input <see cref="RawKey" /> verbatim. <see cref="Path" /> is the canonical
-/// colon-joined form derived from <see cref="Segments" />, applying the mapping policy from
-/// <see cref="ConfigurationKeyOptions" />.
+/// The struct stores the input <see cref="RawKey" /> verbatim. <see cref="Path" /> is the canonical colon-joined form
+/// derived from <see cref="Segments" />, applying the mapping policy from <see cref="ConfigurationKeyOptions" />.
 /// </para>
 /// <para>
 /// Equality compares the segment sequence under the configured comparer; the raw form is informational only.
 /// </para>
 /// <para>
 /// Both dotted (<c>logging.level.default</c>) and colon-delimited (<c>logging:level:default</c>) source forms produce
-/// the same canonical <see cref="Path" />, so consumers can mix the two notations in a document without
-/// disturbing the resolved view. Whitespace in segments is trimmed; control characters are rejected at construction
-/// time.
+/// the same canonical <see cref="Path" />, so consumers can mix the two notations in a document without disturbing the
+/// resolved view. Whitespace in segments is trimmed; control characters are rejected at construction time.
 /// </para>
 /// </remarks>
 /// <example>
