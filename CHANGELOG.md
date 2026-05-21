@@ -6,6 +6,20 @@ The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/
 
 ## [Unreleased]
 
+### Bodu.Numerics — 1.0.0
+
+Initial release of a new numeric-primitives library. Ships `Fraction<T>`, an immutable exact-rational value type generic over any `IBinaryInteger<T>` backing component — use a fixed-width type such as `int` or `long` for compact storage, or `BigInteger` for arithmetic that never overflows.
+
+#### Added
+
+- `Fraction<T>` is always held in canonical form (strictly positive denominator, sign on the numerator, fully reduced). Arithmetic is exact: intermediate results are evaluated with `BigInteger` precision and narrowed back to `T`, throwing `OverflowException` when a fixed-width component cannot represent the canonical result.
+- Arithmetic and comparison operators, named arithmetic methods (`Add`, `Negate`, `Abs`, `Reciprocal`, `Pow`, `Remainder`), and `GreatestCommonDivisor` / `LeastCommonMultiple` helpers.
+- Conversions to and from `decimal` and `double` with exact `FromDecimal` / `FromDouble` factories, plus `As<TOther>()` for retyping the backing component.
+- Continued-fraction expansion (`ToContinuedFraction`, `FromContinuedFraction`) and bounded best-rational approximation (`LimitDenominator`).
+- Parsing of integer, ratio, mixed-number, Unicode vulgar-fraction, and percent forms across `string`, `ReadOnlySpan<char>`, and UTF-8 inputs (`IParsable`, `ISpanParsable`, `IUtf8SpanParsable`); formatting with general, mixed (`M`), Unicode (`U`), and percent (`P`) specifiers (`IFormattable`, `ISpanFormattable`, `IUtf8SpanFormattable`).
+- The full generic-math surface — `INumber<Fraction<T>>`, `INumberBase<Fraction<T>>`, `ISignedNumber<Fraction<T>>` — so `Fraction<T>` composes with `INumber<T>`-constrained code.
+- XML serialization (`IXmlSerializable`) and `System.Text.Json` support through a converter that round-trips the value as its `numerator/denominator` string form.
+
 ### Bodu.Globalization.Calendar — 1.1.0
 
 #### Added
