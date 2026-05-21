@@ -31,6 +31,14 @@ public static partial class StringExtensions
     /// terminated. A value ending in <c>"\r\n"</c> is not considered to end in <c>"\n"</c> for the purposes of this
     /// method.
     /// </remarks>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// "line".EnsureTrailingNewLine();    // "line\n"
+    /// "line\n".EnsureTrailingNewLine();  // "line\n" (already terminated)
+    ///]]>
+    /// </code>
+    /// </example>
     public static string EnsureTrailingNewLine(this string value, string newline = "\n")
     {
         ThrowHelper.ThrowIfNull(value);

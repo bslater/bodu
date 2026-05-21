@@ -26,6 +26,14 @@ public static partial class StringExtensions
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="value" /> or <paramref name="marker" /> is <see langword="null" />.
     /// </exception>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// "user@example.com".Before("@");  // "user"
+    /// "no-delimiter".Before("@");      // null
+    ///]]>
+    /// </code>
+    /// </example>
     public static string? Before(
         this string value,
         string marker,

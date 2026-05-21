@@ -22,6 +22,13 @@ public static partial class StringExtensions
     /// Membership is determined via <see cref="char.IsLetter(char)" />, which recognises every Unicode letter category
     /// (Lu, Ll, Lt, Lm, Lo). ASCII digits, punctuation, whitespace, and control characters are stripped.
     /// </remarks>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// "abc123 def!".KeepLetters();  // "abcdef"
+    ///]]>
+    /// </code>
+    /// </example>
     public static string KeepLetters(this string value) =>
         value.KeepWhere(char.IsLetter);
 }

@@ -22,6 +22,13 @@ public static partial class StringExtensions
     /// Thrown when <paramref name="value" /> or <paramref name="oldValue" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="oldValue" /> is the empty string.</exception>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// "Hello HELLO hello".ReplaceOrdinalIgnoreCase("hello", "hi");  // "hi hi hi"
+    ///]]>
+    /// </code>
+    /// </example>
     public static string ReplaceOrdinalIgnoreCase(this string value, string oldValue, string? newValue)
     {
         ThrowHelper.ThrowIfNull(value);

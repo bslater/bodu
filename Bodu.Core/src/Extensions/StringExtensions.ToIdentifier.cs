@@ -29,6 +29,14 @@ public static partial class StringExtensions
     /// Equivalent to <c>value.ToIdentifier(IdentifierCase.Preserve)</c>. When the input contains no valid identifier
     /// characters at all, a single underscore is returned so the result is still a valid identifier.
     /// </remarks>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// "123 Main St.".ToIdentifier();  // "_123MainSt" (digit start guarded)
+    /// "my-variable!".ToIdentifier();  // "myvariable"
+    ///]]>
+    /// </code>
+    /// </example>
     public static string ToIdentifier(this string value) =>
         value.ToIdentifier(IdentifierCase.Preserve);
 
@@ -53,6 +61,14 @@ public static partial class StringExtensions
     /// <see cref="EnumerateWords(string)" />). Non-letter / non-digit / non-underscore characters are treated as
     /// separators and discarded.
     /// </remarks>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// "user name".ToIdentifier(IdentifierCase.Pascal);  // "UserName"
+    /// "2 cool".ToIdentifier(IdentifierCase.Camel);      // "_2Cool"
+    ///]]>
+    /// </code>
+    /// </example>
     public static string ToIdentifier(this string value, IdentifierCase identifierCase)
     {
         ThrowHelper.ThrowIfNull(value);

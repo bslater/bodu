@@ -29,6 +29,13 @@ public static partial class StringExtensions
     /// U+000B, form feed U+000C) are preserved. Use <see cref="NormalizeLineEndings(string, string)" /> with an empty
     /// string when stripping all newline-equivalent characters is required.
     /// </remarks>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// "line1\r\nline2\n".RemoveLineEndings();  // "line1line2"
+    ///]]>
+    /// </code>
+    /// </example>
     public static string RemoveLineEndings(this string value)
     {
         ThrowHelper.ThrowIfNull(value);

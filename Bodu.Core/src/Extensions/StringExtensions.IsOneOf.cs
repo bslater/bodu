@@ -27,6 +27,14 @@ public static partial class StringExtensions
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="value" /> or <paramref name="values" /> is <see langword="null" />.
     /// </exception>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// "GET".IsOneOf("GET", "POST", "PUT");  // true
+    /// "Trace".IsOneOf("GET", "POST");       // false
+    ///]]>
+    /// </code>
+    /// </example>
     public static bool IsOneOf(this string value, params string[] values)
     {
         ThrowHelper.ThrowIfNull(value);

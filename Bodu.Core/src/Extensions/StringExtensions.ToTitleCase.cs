@@ -38,6 +38,14 @@ public static partial class StringExtensions
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="value" /> is <see langword="null" />.
     /// </exception>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// "the lord of the rings".ToTitleCase();  // "The Lord Of The Rings"
+    /// "the lord of the rings".ToTitleCase(TitleCaseOptions.LowerCaseSmallWords);  // "The Lord of the Rings"
+    ///]]>
+    /// </code>
+    /// </example>
     public static string ToTitleCase(this string value) =>
         ToTitleCase(value, TitleCaseOptions.None);
 

@@ -25,6 +25,13 @@ public static partial class StringExtensions
     /// <remarks>
     /// Equivalent to calling <see cref="ToSlug(string, SlugOptions)" /> with <see cref="SlugOptions.Default" />.
     /// </remarks>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// "Hello, World! — Café".ToSlug();  // "hello-world-cafe"
+    ///]]>
+    /// </code>
+    /// </example>
     public static string ToSlug(this string value) =>
         ToSlug(value, SlugOptions.Default);
 

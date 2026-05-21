@@ -26,6 +26,13 @@ public static partial class StringExtensions
     /// Word boundaries follow <see cref="EnumerateWords(string, WordCasingOptions)" /> using
     /// <see cref="WordCasingOptions.Default" />. Casing changes use the configured culture.
     /// </remarks>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// "user_account_id".ToPascalCase();  // "UserAccountId"
+    ///]]>
+    /// </code>
+    /// </example>
     public static string ToPascalCase(this string value) =>
         ToPascalCase(value, WordCasingOptions.Default);
 

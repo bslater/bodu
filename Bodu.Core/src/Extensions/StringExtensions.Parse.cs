@@ -33,6 +33,14 @@ public static partial class StringExtensions
     /// static <c>T.Parse</c> factory. The invariant culture is used by default to keep behaviour stable across machines
     /// and locales.
     /// </remarks>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// int count = "42".Parse<int>();                 // 42
+    /// DateTime due = "2025-01-31".Parse<DateTime>(); // 2025-01-31
+    ///]]>
+    /// </code>
+    /// </example>
     public static T Parse<T>(this string value)
         where T : IParsable<T>
     {
@@ -57,6 +65,14 @@ public static partial class StringExtensions
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="value" /> is <see langword="null" />.
     /// </exception>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// "42".TryParse<int>(out int n);   // returns true,  n == 42
+    /// "abc".TryParse<int>(out int m);  // returns false, m == 0
+    ///]]>
+    /// </code>
+    /// </example>
     public static bool TryParse<T>(this string value, out T result)
         where T : IParsable<T>
     {

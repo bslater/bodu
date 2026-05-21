@@ -31,6 +31,14 @@ public static partial class StringExtensions
     /// Removes at most one occurrence of <paramref name="suffix" />. Use the BCL <see cref="string.TrimEnd(char[])" />
     /// when greedy removal of character-level suffixes is required.
     /// </remarks>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// "report.txt".RemoveSuffix(".txt");  // "report"
+    /// "report.csv".RemoveSuffix(".txt");  // "report.csv" (suffix absent)
+    ///]]>
+    /// </code>
+    /// </example>
     public static string RemoveSuffix(
         this string value,
         string suffix,

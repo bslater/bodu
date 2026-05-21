@@ -29,6 +29,13 @@ public static partial class StringExtensions
     /// strip the edges. White-space is detected via <see cref="char.IsWhiteSpace(char)" /> so Unicode separators (NBSP,
     /// EN SPACE, line terminators, tab) all collapse to a single ASCII space.
     /// </remarks>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// "  too   many\t\nspaces ".CollapseWhitespace();  // " too many spaces "
+    ///]]>
+    /// </code>
+    /// </example>
     public static string CollapseWhitespace(this string value)
     {
         ThrowHelper.ThrowIfNull(value);

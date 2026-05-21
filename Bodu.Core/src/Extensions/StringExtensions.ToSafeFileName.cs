@@ -29,6 +29,13 @@ public static partial class StringExtensions
     /// Callers writing files for a known target platform should construct the invalid set explicitly rather than
     /// relying on the current platform's defaults.
     /// </remarks>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// "year/month".ToSafeFileName();  // "year_month"
+    ///]]>
+    /// </code>
+    /// </example>
     public static string ToSafeFileName(this string value)
     {
         ThrowHelper.ThrowIfNull(value);

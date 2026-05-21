@@ -23,6 +23,14 @@ public static partial class StringExtensions
     /// Thrown when <paramref name="value" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="maxLength" /> is negative.</exception>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// "Hello, world".Truncate(5);  // "Hello"
+    /// "Hi".Truncate(5);            // "Hi" (already within limit)
+    ///]]>
+    /// </code>
+    /// </example>
     public static string Truncate(this string value, int maxLength)
     {
         ThrowHelper.ThrowIfNull(value);
@@ -51,6 +59,14 @@ public static partial class StringExtensions
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <paramref name="maxLength" /> is smaller than <paramref name="ellipsis" />.Length.
     /// </exception>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// "Hello, world".Truncate(8, "…");    // "Hello, …"
+    /// "Hello, world".Truncate(9, "...");  // "Hello,..."
+    ///]]>
+    /// </code>
+    /// </example>
     public static string Truncate(this string value, int maxLength, string ellipsis)
     {
         ThrowHelper.ThrowIfNull(value);

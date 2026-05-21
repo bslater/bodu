@@ -30,6 +30,13 @@ public static partial class StringExtensions
     /// separators. For a full file name (no embedded separators required as a rule), prefer
     /// <see cref="ToSafeFileName(string)" /> — the two differ only in whether path separators are stripped.
     /// </remarks>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// "docs/2025".ToSafePathSegment();  // "docs_2025" (path separator replaced)
+    ///]]>
+    /// </code>
+    /// </example>
     public static string ToSafePathSegment(this string value)
     {
         ThrowHelper.ThrowIfNull(value);

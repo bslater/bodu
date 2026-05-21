@@ -28,6 +28,14 @@ public static partial class StringExtensions
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="value" /> or <paramref name="prefix" /> is <see langword="null" />.
     /// </exception>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// "api/users".EnsureStartsWith("/");   // "/api/users"
+    /// "/api/users".EnsureStartsWith("/");  // "/api/users" (prefix already present)
+    ///]]>
+    /// </code>
+    /// </example>
     public static string EnsureStartsWith(
         this string value,
         string prefix,
