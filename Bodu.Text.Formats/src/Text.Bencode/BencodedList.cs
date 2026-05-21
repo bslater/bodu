@@ -73,5 +73,16 @@ public sealed class BencodedList
     /// </summary>
     /// <param name="index">The zero-based item index.</param>
     /// <returns>The item at the specified index.</returns>
-    public BencodedValue this[int index] => _items[index];
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="index" /> is less than 0 or greater than or equal to <see cref="Count" />.
+    /// </exception>
+    public BencodedValue this[int index]
+    {
+        get
+        {
+            ThrowHelper.ThrowIfIndexOutOfRange(index, _items);
+
+            return _items[index];
+        }
+    }
 }

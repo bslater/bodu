@@ -82,13 +82,16 @@ public sealed class DelimitedWriter : IDisposable
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="headers" /> is <see langword="null" />.
     /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="headers" /> contains a <see langword="null" /> element.
+    /// </exception>
     /// <exception cref="ObjectDisposedException">Thrown when the writer has been disposed.</exception>
     public void WriteHeader(IEnumerable<string> headers)
     {
         ThrowHelper.ThrowIfNull(headers);
         ObjectDisposedException.ThrowIf(_disposed, this);
 
-        WriteFields(headers);
+        WriteFields(headers, nameof(headers));
     }
 
     /// <summary>
@@ -99,13 +102,16 @@ public sealed class DelimitedWriter : IDisposable
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="fields" /> is <see langword="null" />.
     /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="fields" /> contains a <see langword="null" /> element.
+    /// </exception>
     /// <exception cref="ObjectDisposedException">Thrown when the writer has been disposed.</exception>
     public void WriteRow(IEnumerable<string> fields)
     {
         ThrowHelper.ThrowIfNull(fields);
         ObjectDisposedException.ThrowIf(_disposed, this);
 
-        WriteFields(fields);
+        WriteFields(fields, nameof(fields));
         _rowsWritten++;
     }
 
@@ -126,13 +132,23 @@ public sealed class DelimitedWriter : IDisposable
     /// appending a line feed.
     /// </summary>
     /// <param name="fields">The field values to write.</param>
-    private void WriteFields(IEnumerable<string> fields)
+    /// <param name="paramName">
+    /// The name of the public parameter that supplied <paramref name="fields" />, reported when an element is
+    /// <see langword="null" />.
+    /// </param>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="fields" /> contains a <see langword="null" /> element.
+    /// </exception>
+    private void WriteFields(IEnumerable<string> fields, string paramName)
     {
         var delimiter = _options.Delimiter;
         var first = true;
 
         foreach (var field in fields)
         {
+            if (field is null)
+                throw new ArgumentException(FormatsResourceStrings.Arg_Invalid_NullListElement, paramName);
+
             if (!first)
                 _writer.Write(delimiter);
 
