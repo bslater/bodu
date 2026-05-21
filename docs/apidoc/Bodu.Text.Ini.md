@@ -2,7 +2,7 @@
 uid: Bodu.Text.Ini
 ---
 
-![Bodu.Text.Ini](~/images/hero-formats.svg)
+![Bodu.Text.Ini](~/images/hero-ini.svg)
 
 ## Purpose
 

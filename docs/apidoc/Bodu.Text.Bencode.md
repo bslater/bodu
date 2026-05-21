@@ -2,7 +2,7 @@
 uid: Bodu.Text.Bencode
 ---
 
-![Bodu.Text.Bencode](~/images/hero-formats.svg)
+![Bodu.Text.Bencode](~/images/hero-bencode.svg)
 
 ## Purpose
 
