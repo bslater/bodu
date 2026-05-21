@@ -10,7 +10,7 @@ namespace Bodu.Text.Encoding;
 /// Behavioural tests for <see cref="BinaryEncodingExtensions" />.
 /// </summary>
 [TestClass]
-public sealed class BinaryEncodingExtensionsTests
+public sealed partial class BinaryEncodingExtensionsTests
 {
 
     private static readonly byte[] CanonicalBytes = new byte[] { 0xDE, 0xAD, 0xBE, 0xEF };

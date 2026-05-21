@@ -1,0 +1,32 @@
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="StringExtensionsTests.RemoveControlCharacters.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+using System;
+
+namespace Bodu.Extensions;
+
+public partial class StringExtensionsTests
+{
+    /// <summary>
+    /// Verifies that <see cref="StringExtensions.RemoveControlCharacters(string)" /> strips tab, CR, LF, and
+    /// other control characters.
+    /// </summary>
+    [TestMethod]
+    public void RemoveControlCharacters_WhenInputContainsControlChars_ShouldStripThem()
+    {
+        Assert.AreEqual("helloworld", "hello\t\r\nworld".RemoveControlCharacters());
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="StringExtensions.RemoveControlCharacters(string)" /> throws
+    /// <see cref="ArgumentNullException" /> when <c>value</c> is <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void RemoveControlCharacters_WhenInputIsNull_ShouldThrowArgumentNullException()
+    {
+        Assert.ThrowsExactly<ArgumentNullException>(() => _ = StringExtensions.RemoveControlCharacters(null!));
+    }
+}
