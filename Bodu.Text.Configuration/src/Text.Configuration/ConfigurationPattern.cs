@@ -78,6 +78,12 @@ public sealed partial class ConfigurationPattern
 {
     private readonly Regex _regex;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ConfigurationPattern" /> class with the supplied source and
+    /// compiled regular expression.
+    /// </summary>
+    /// <param name="source">The glob expression as authored.</param>
+    /// <param name="regex">The compiled regular expression equivalent to <paramref name="source" />.</param>
     private ConfigurationPattern(string source, Regex regex)
     {
         Source = source;

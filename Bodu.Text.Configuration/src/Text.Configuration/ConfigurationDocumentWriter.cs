@@ -16,13 +16,20 @@ namespace Bodu.Text.Configuration;
 /// </summary>
 /// <remarks>
 /// Unlike <see cref="Bodu.Text.Ini.Ini.Format(IniDocument)" /> — which always emits trivia using the INI defaults —
-/// this writer honors the Bodu-specific options: <see cref="ConfigurationWriteOptions.KeyValueSeparator" />,
-/// <see cref="ConfigurationWriteOptions.NewLine" />, <see cref="ConfigurationWriteOptions.PreserveComments" />,
-/// <see cref="ConfigurationWriteOptions.WriteInlineComments" />, and
-/// <see cref="ConfigurationWriteOptions.InsertBlankLineBetweenSections" />.
+/// this writer honors the Bodu-specific formatting options exposed by <see cref="ConfigurationWriteOptions" />.
 /// </remarks>
 internal static class ConfigurationDocumentWriter
 {
+    /// <summary>
+    /// Writes <paramref name="document" /> to <paramref name="writer" /> according to <paramref name="options" />.
+    /// </summary>
+    /// <param name="document">The document to emit.</param>
+    /// <param name="writer">The destination writer.</param>
+    /// <param name="options">The write options that govern separators, comments, and section spacing.</param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="document" />, <paramref name="writer" />, or <paramref name="options" /> is
+    /// <see langword="null" />.
+    /// </exception>
     internal static void Write(IniDocument document, TextWriter writer, ConfigurationWriteOptions options)
     {
         ThrowHelper.ThrowIfNull(document);
@@ -40,6 +47,18 @@ internal static class ConfigurationDocumentWriter
         }
     }
 
+    /// <summary>
+    /// Writes a single section — its leading comments, header line, and entries — and reports whether any output was
+    /// produced.
+    /// </summary>
+    /// <param name="section">The section to emit.</param>
+    /// <param name="writer">The destination writer.</param>
+    /// <param name="options">The write options that govern separators, comments, and section spacing.</param>
+    /// <param name="isGlobal">
+    /// <see langword="true" /> when <paramref name="section" /> is the document's global section, whose header line is
+    /// suppressed.
+    /// </param>
+    /// <returns><see langword="true" /> when any line was written; otherwise, <see langword="false" />.</returns>
     private static bool WriteSection(IniSection section, TextWriter writer, ConfigurationWriteOptions options, bool isGlobal)
     {
         var wroteAny = false;

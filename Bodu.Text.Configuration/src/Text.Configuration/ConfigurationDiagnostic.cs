@@ -47,7 +47,8 @@ namespace Bodu.Text.Configuration;
 public sealed class ConfigurationDiagnostic
 {
     /// <summary>
-    /// Initializes a new diagnostic with the specified severity, code, message, and location.
+    /// Initializes a new instance of the <see cref="ConfigurationDiagnostic" /> class with the specified severity,
+    /// code, message, and location.
     /// </summary>
     /// <param name="severity">The severity classification.</param>
     /// <param name="code">The stable code identifying the diagnostic category.</param>

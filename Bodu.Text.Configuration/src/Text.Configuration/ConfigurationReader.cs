@@ -25,6 +25,10 @@ internal sealed partial class ConfigurationReader
     private readonly List<ConfigurationDiagnostic> _diagnostics = [];
     private readonly List<IniComment> _pendingLeadingComments = [];
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ConfigurationReader" /> class with the supplied parse options.
+    /// </summary>
+    /// <param name="options">The parse options that govern comment, duplicate, and diagnostic handling.</param>
     internal ConfigurationReader(ConfigurationParseOptions options)
     {
         _options = options;
@@ -36,8 +40,8 @@ internal sealed partial class ConfigurationReader
     /// <param name="reader">The source of configuration text.</param>
     /// <param name="path">The optional file path used when emitting source locations.</param>
     /// <returns>
-    /// A <see cref="ConfigurationParseResult" /> carrying the populated <see cref="IniDocument" /> and any
-    /// diagnostics collected.
+    /// A <see cref="ConfigurationParseResult" /> carrying the populated <see cref="IniDocument" /> and any diagnostics
+    /// collected.
     /// </returns>
     internal ConfigurationParseResult Read(TextReader reader, string? path)
     {
@@ -63,6 +67,15 @@ internal sealed partial class ConfigurationReader
         return new ConfigurationParseResult(document, [.. _diagnostics]);
     }
 
+    /// <summary>
+    /// Processes a single input line, dispatching to comment, section-header, or property handling.
+    /// </summary>
+    /// <param name="document">The document being populated.</param>
+    /// <param name="currentSection">The section that subsequent properties are added to.</param>
+    /// <param name="line">The raw line text.</param>
+    /// <param name="lineNumber">The 1-based number of <paramref name="line" />.</param>
+    /// <param name="path">The optional source file path used when emitting source locations.</param>
+    /// <returns>The section current after the line has been processed.</returns>
     private IniSection ProcessLine(
         IniDocument document,
         IniSection currentSection,
@@ -103,6 +116,15 @@ internal sealed partial class ConfigurationReader
             : ProcessPropertyLine(currentSection, line, firstNonWs, lineNumber, path);
     }
 
+    /// <summary>
+    /// Processes a section-header line, registering the section and attaching any pending leading comments.
+    /// </summary>
+    /// <param name="document">The document being populated.</param>
+    /// <param name="line">The raw line text containing the section header.</param>
+    /// <param name="firstNonWs">The index of the first non-whitespace character on the line.</param>
+    /// <param name="lineNumber">The 1-based number of <paramref name="line" />.</param>
+    /// <param name="path">The optional source file path used when emitting source locations.</param>
+    /// <returns>The section that subsequent properties are added to.</returns>
     private IniSection ProcessSectionHeader(
         IniDocument document,
         string line,
@@ -144,6 +166,13 @@ internal sealed partial class ConfigurationReader
         return section;
     }
 
+    /// <summary>
+    /// Resolves the section that a header names, honoring the configured duplicate-section behaviour.
+    /// </summary>
+    /// <param name="document">The document being populated.</param>
+    /// <param name="name">The section name parsed from the header.</param>
+    /// <param name="headerLoc">The source location of the header, used when emitting diagnostics.</param>
+    /// <returns>The existing or newly created section that subsequent properties are added to.</returns>
     private IniSection ResolveSectionTarget(IniDocument document, string name, ConfigurationSourceLocation headerLoc)
     {
         // Detect duplicates by scanning the existing sections list rather than a separate lookup, so that
@@ -188,6 +217,15 @@ internal sealed partial class ConfigurationReader
         return created;
     }
 
+    /// <summary>
+    /// Processes a property line, splitting it into a key and value and appending the resulting entry.
+    /// </summary>
+    /// <param name="currentSection">The section the entry is added to.</param>
+    /// <param name="line">The raw line text containing the property.</param>
+    /// <param name="firstNonWs">The index of the first non-whitespace character on the line.</param>
+    /// <param name="lineNumber">The 1-based number of <paramref name="line" />.</param>
+    /// <param name="path">The optional source file path used when emitting source locations.</param>
+    /// <returns>The unchanged <paramref name="currentSection" />.</returns>
     private IniSection ProcessPropertyLine(
         IniSection currentSection,
         string line,
@@ -256,6 +294,17 @@ internal sealed partial class ConfigurationReader
         return currentSection;
     }
 
+    /// <summary>
+    /// Appends a property entry to <paramref name="section" />, validating the key and honoring the configured
+    /// duplicate-key behaviour.
+    /// </summary>
+    /// <param name="section">The section the entry is added to.</param>
+    /// <param name="rawKey">The raw property key.</param>
+    /// <param name="value">The property value.</param>
+    /// <param name="lineNumber">The 1-based line number the entry was read from.</param>
+    /// <param name="linePosition">The zero-based index of the key on the line.</param>
+    /// <param name="path">The optional source file path used when emitting source locations.</param>
+    /// <param name="inlineComment">The inline comment trailing the value, or <see langword="null" />.</param>
     private void AppendEntry(
         IniSection section,
         string rawKey,

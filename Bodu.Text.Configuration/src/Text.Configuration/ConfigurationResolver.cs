@@ -16,11 +16,27 @@ internal sealed class ConfigurationResolver
 {
     private readonly ConfigurationResolveOptions _options;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ConfigurationResolver" /> class with the supplied resolve options.
+    /// </summary>
+    /// <param name="options">The resolve options that govern glob matching and preamble layering.</param>
     internal ConfigurationResolver(ConfigurationResolveOptions options)
     {
         _options = options;
     }
 
+    /// <summary>
+    /// Projects <paramref name="document" /> into a resolved <see cref="ConfigurationView" /> for
+    /// <paramref name="targetPath" />.
+    /// </summary>
+    /// <param name="document">The document to resolve.</param>
+    /// <param name="targetPath">The target path the view is evaluated for, or <see langword="null" />.</param>
+    /// <returns>The resolved view for <paramref name="targetPath" />.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="document" /> is <see langword="null" />.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// The configured options require a path root, the document was parsed without one, and no target path was
+    /// supplied.
+    /// </exception>
     internal ConfigurationView Resolve(IniDocument document, string? targetPath)
     {
         ThrowHelper.ThrowIfNull(document);
@@ -52,6 +68,12 @@ internal sealed class ConfigurationResolver
         return new ConfigurationView(values);
     }
 
+    /// <summary>
+    /// Applies the entries of <paramref name="section" /> to <paramref name="values" />, honoring the EditorConfig
+    /// <c>unset</c> sentinel.
+    /// </summary>
+    /// <param name="section">The section whose entries are layered onto the resolved values.</param>
+    /// <param name="values">The accumulating dictionary of resolved values.</param>
     private void ApplySection(IniSection section, Dictionary<string, string?> values)
     {
         foreach (IniEntry entry in section.Entries)
@@ -70,6 +92,13 @@ internal sealed class ConfigurationResolver
         }
     }
 
+    /// <summary>
+    /// Normalizes <paramref name="targetPath" /> to forward slashes and rebases it relative to
+    /// <paramref name="pathRoot" />.
+    /// </summary>
+    /// <param name="targetPath">The target path to normalize.</param>
+    /// <param name="pathRoot">The path root the result is made relative to, or <see langword="null" />.</param>
+    /// <returns>The normalized, root-relative path.</returns>
     private static string NormalizePath(string targetPath, string? pathRoot)
     {
         var normalizedTarget = targetPath.Replace('\\', '/');
