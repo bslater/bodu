@@ -46,7 +46,7 @@ public static partial class StringExtensions
         foreach (KeyValuePair<string, string> pair in replacements)
         {
             ThrowHelper.ThrowIfNull(pair.Key);
-            if (pair.Key.Length == 0) throw new ArgumentException("Replacement keys must not be empty.", nameof(replacements));
+            if (pair.Key.Length == 0) throw new ArgumentException(ResourceStrings.Arg_Invalid_EmptyDictionaryKey, nameof(replacements));
             current = current.Replace(pair.Key, pair.Value, StringComparison.Ordinal);
         }
 

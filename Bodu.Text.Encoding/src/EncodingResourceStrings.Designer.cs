@@ -237,11 +237,74 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Input contains a character outside the variant alphabet: &apos;{0}&apos;..
+        /// </summary>
+        internal static string Format_Invalid_Base32CharacterNotInAlphabet {
+            get {
+                return ResourceManager.GetString("Format_Invalid_Base32CharacterNotInAlphabet", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Input length is not a multiple of 8 and AllowMissingPadding is not set..
+        /// </summary>
+        internal static string Format_Invalid_Base32LengthNotMultipleOfEight {
+            get {
+                return ResourceManager.GetString("Format_Invalid_Base32LengthNotMultipleOfEight", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Base32 input is not in canonical form — unused trailing bits are non-zero..
+        /// </summary>
+        internal static string Format_Invalid_Base32NonCanonical {
+            get {
+                return ResourceManager.GetString("Format_Invalid_Base32NonCanonical", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Expected {0} padding character(s) but found {1}..
+        /// </summary>
+        internal static string Format_Invalid_Base32PaddingCount {
+            get {
+                return ResourceManager.GetString("Format_Invalid_Base32PaddingCount", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Padding characters may only appear at the end of the input..
+        /// </summary>
+        internal static string Format_Invalid_Base32PaddingNotAtEnd {
+            get {
+                return ResourceManager.GetString("Format_Invalid_Base32PaddingNotAtEnd", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Base32 input has an invalid number of data characters for the final quantum..
+        /// </summary>
+        internal static string Format_Invalid_Base32TerminalQuantum {
+            get {
+                return ResourceManager.GetString("Format_Invalid_Base32TerminalQuantum", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Input contains characters outside the Base32 variant alphabet..
         /// </summary>
         internal static string Format_Invalid_Base32VariantAlphabet {
             get {
                 return ResourceManager.GetString("Format_Invalid_Base32VariantAlphabet", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Input contains a character outside the Base58 variant alphabet: &apos;{0}&apos;..
+        /// </summary>
+        internal static string Format_Invalid_Base58CharacterNotInAlphabet {
+            get {
+                return ResourceManager.GetString("Format_Invalid_Base58CharacterNotInAlphabet", resourceCulture);
             }
         }
 
@@ -296,6 +359,60 @@ namespace Bodu {
         internal static string Format_Invalid_Base64VariantAlphabet {
             get {
                 return ResourceManager.GetString("Format_Invalid_Base64VariantAlphabet", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Input contains a character outside the Base85 variant alphabet: &apos;{0}&apos;..
+        /// </summary>
+        internal static string Format_Invalid_Base85CharacterNotInAlphabet {
+            get {
+                return ResourceManager.GetString("Format_Invalid_Base85CharacterNotInAlphabet", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Base85 group exceeds the maximum 32-bit value..
+        /// </summary>
+        internal static string Format_Invalid_Base85GroupOverflow {
+            get {
+                return ResourceManager.GetString("Format_Invalid_Base85GroupOverflow", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;z&apos; shortcut may only appear at the start of a five-character group..
+        /// </summary>
+        internal static string Format_Invalid_Base85ShortcutPosition {
+            get {
+                return ResourceManager.GetString("Format_Invalid_Base85ShortcutPosition", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to A single trailing Base85 character cannot decode to a complete byte..
+        /// </summary>
+        internal static string Format_Invalid_Base85SingleTrailingCharacter {
+            get {
+                return ResourceManager.GetString("Format_Invalid_Base85SingleTrailingCharacter", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Trailing Base85 group overflows the 32-bit accumulator after padding..
+        /// </summary>
+        internal static string Format_Invalid_Base85TrailingGroupOverflow {
+            get {
+                return ResourceManager.GetString("Format_Invalid_Base85TrailingGroupOverflow", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Z85 input length must be a multiple of five characters..
+        /// </summary>
+        internal static string Format_Invalid_Base85Z85LengthNotMultipleOfFive {
+            get {
+                return ResourceManager.GetString("Format_Invalid_Base85Z85LengthNotMultipleOfFive", resourceCulture);
             }
         }
 

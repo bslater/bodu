@@ -41,7 +41,7 @@ public static partial class StringExtensions
     {
         ThrowHelper.ThrowIfNull(value);
         ThrowHelper.ThrowIfNull(valueToRemove);
-        if (valueToRemove.Length == 0) throw new ArgumentException("valueToRemove must not be empty.", nameof(valueToRemove));
+        if (valueToRemove.Length == 0) throw new ArgumentException(ResourceStrings.Arg_Invalid_StringIsEmpty, nameof(valueToRemove));
 
         return value.Replace(valueToRemove, string.Empty, comparison);
     }

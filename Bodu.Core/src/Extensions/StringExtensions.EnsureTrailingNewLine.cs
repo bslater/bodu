@@ -35,7 +35,7 @@ public static partial class StringExtensions
     {
         ThrowHelper.ThrowIfNull(value);
         ThrowHelper.ThrowIfNull(newline);
-        if (newline.Length == 0) throw new ArgumentException("Newline must not be empty.", nameof(newline));
+        if (newline.Length == 0) throw new ArgumentException(ResourceStrings.Arg_Invalid_StringIsEmpty, nameof(newline));
 
         return value.EndsWith(newline, StringComparison.Ordinal) ? value : value + newline;
     }
