@@ -127,6 +127,7 @@ public abstract class BufferedBlockHashAlgorithm<T>
     /// The fixed size, in bits, of each block consumed by the algorithm. Multiply or divide by 8 at the use site to
     /// convert to bytes for buffer allocation, span sizing, or block-aligned iteration.
     /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Exposed as a protected field so derived hash algorithm classes can access the block size directly on the hot compression path without virtual dispatch.")]
     protected readonly int BlockSize;
 
     /// <summary>
@@ -134,12 +135,14 @@ public abstract class BufferedBlockHashAlgorithm<T>
     /// <see cref="BlockSize" /> / 8 bytes at construction. Cleared by <see cref="Initialize" /> and overwritten with
     /// zeros during disposal.
     /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Exposed as a protected field so derived hash algorithm classes can read and write the residual buffer directly on the hot compression path without virtual dispatch.")]
     protected readonly Memory<byte> _residualBlock;
 
     /// <summary>
     /// Number of bytes currently held in <see cref="_residualBlock" />. Always in the range
     /// <c>[0, <see cref="BlockSize"/> / 8]</c>. Reset to <c>0</c> by <see cref="Initialize" />.
     /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Exposed as a protected field so derived hash algorithm classes can update the residual byte count directly on the hot compression path without virtual dispatch.")]
     protected int _residualBytes;
 
     /// <summary>
@@ -147,6 +150,7 @@ public abstract class BufferedBlockHashAlgorithm<T>
     /// <see cref="_residualBlock" /> when used by derived classes that update the total before processing each block.
     /// Reset to <c>0</c> by <see cref="Initialize" />.
     /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Exposed as a protected field so derived hash algorithm classes can maintain the running byte total directly on the hot compression path without virtual dispatch.")]
     protected ulong _totalBytes;
 
     /// <summary>

@@ -32,7 +32,7 @@ internal sealed class TwofishTransform
     /// <param name="encrypt">
     /// <see langword="true" /> to configure for encryption; <see langword="false" /> for decryption.
     /// </param>
-    internal TwofishTransform(IBlockCipher cipher, CipherModeKind cipherMode, PaddingModeKind paddingMode, byte[] iv, bool encrypt)
+    internal TwofishTransform(IBlockCipher cipher, CipherModeKind cipherMode, PaddingModeKind paddingMode, byte[]? iv, bool encrypt)
         : base(cipher, cipherMode, paddingMode, iv, encrypt)
     {
     }

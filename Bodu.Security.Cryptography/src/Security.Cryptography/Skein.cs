@@ -176,7 +176,11 @@ public abstract partial class Skein<T>
         get
         {
             this.ThrowIfDisposed();
-            return this.KeyValue.Copy();
+
+            if (this.KeyValue is null)
+                throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_KeyNotSet);
+
+            return this.KeyValue!.Copy()!;
         }
 
         set

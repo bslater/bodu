@@ -23,7 +23,7 @@ public static partial class HashAlgorithmExtensions
     /// The number of bytes read per iteration. Must be greater than zero. Defaults to 4096.
     /// </param>
     /// <param name="cancellationToken">
-    /// Token used to cancel the read loop. When signaled, the current <see cref="Stream.ReadAsync" /> is canceled and
+    /// Token used to cancel the read loop. When signaled, the current <see cref="Stream.ReadAsync(Memory{byte}, CancellationToken)" /> is canceled and
     /// <see cref="OperationCanceledException" /> is propagated to the caller.
     /// </param>
     /// <returns>A <see cref="Task" /> that completes when all bytes have been fed into the accumulator.</returns>

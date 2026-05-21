@@ -111,7 +111,7 @@ public sealed class Blake3
     /// <summary>
     /// Size, in bytes, of a single compression input block.
     /// </summary>
-    private const int BlockSize = 64;
+    private new const int BlockSize = 64;
 
     /// <summary>
     /// Size, in bytes, of a single input chunk (leaf of the hash tree).

@@ -919,14 +919,14 @@ public sealed class CamelliaBlockCipher
         var y7 = t3 ^ t4 ^ t5 ^ t6 ^ t8;
         var y8 = t1 ^ t4 ^ t5 ^ t6 ^ t7;
 
-        return ((ulong)(y1 & 0xFF) << 56)
-             | ((ulong)(y2 & 0xFF) << 48)
-             | ((ulong)(y3 & 0xFF) << 40)
-             | ((ulong)(y4 & 0xFF) << 32)
-             | ((ulong)(y5 & 0xFF) << 24)
-             | ((ulong)(y6 & 0xFF) << 16)
-             | ((ulong)(y7 & 0xFF) << 8)
-             | (ulong)(y8 & 0xFF);
+        return ((ulong)(byte)y1 << 56)
+             | ((ulong)(byte)y2 << 48)
+             | ((ulong)(byte)y3 << 40)
+             | ((ulong)(byte)y4 << 32)
+             | ((ulong)(byte)y5 << 24)
+             | ((ulong)(byte)y6 << 16)
+             | ((ulong)(byte)y7 << 8)
+             | (byte)y8;
     }
 
     /// <summary>

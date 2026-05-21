@@ -11,9 +11,9 @@ using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
 
-[System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1117:Parameters should be on same line or separate lines")]
-[System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0011:Add braces")]
-[System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1001:Add braces (when expression spans over multiple lines)")]
+[System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1117:Parameters should be on same line or separate lines", Justification = "The [CallerArgumentExpression] parameter shares a line with the preceding parameter to keep the logical parameter grouping compact and to mirror the netstandard sibling file.")]
+[System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0011:Add braces", Justification = "Single-statement throw guards are intentionally brace-free to maintain density; these are pure guard-clause helpers that do not benefit from braces.")]
+[System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1001:Add braces (when expression spans over multiple lines)", Justification = "Single-statement throw guards are intentionally brace-free to maintain density; these are pure guard-clause helpers that do not benefit from braces.")]
 internal static partial class CryptoHelpers
 {
     /// <summary>
@@ -159,7 +159,7 @@ internal static partial class CryptoHelpers
 
         if (value <= T.Zero || value % divisor != T.Zero)
             throw new CryptographicException(
-                paramName,
+                paramName!,
                 string.Format(CryptoResourceStrings.Crypt_Invalid_HashSizePositiveMultipleOf, divisor));
     }
 

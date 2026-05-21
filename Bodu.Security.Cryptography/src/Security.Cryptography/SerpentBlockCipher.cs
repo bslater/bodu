@@ -50,6 +50,7 @@ public abstract partial class SerpentBlockCipher
     /// counter into the final three state words. The parity entry prevents the cycle from being a simple repetition of
     /// the four raw tweak words.
     /// </remarks>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Scoped private protected so only the in-assembly wide-block Serpent variant classes can access the tweak schedule directly, avoiding property dispatch on the hot encrypt/decrypt path.")]
     private protected readonly uint[] _tweakSchedule;
 
     /// <summary>
@@ -59,6 +60,7 @@ public abstract partial class SerpentBlockCipher
     /// Round key <c>r</c> starts at offset <c>r * BlockWords</c>. Encryption uses one key before each round and a final
     /// post-S-box key after the last round, mirroring canonical Serpent's <c>R + 1</c> key schedule shape.
     /// </remarks>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Scoped private protected so only the in-assembly wide-block Serpent variant classes can access the round-key schedule directly, avoiding property dispatch on the hot encrypt/decrypt path.")]
     private protected readonly uint[] _roundKeys;
 
     /// <summary>

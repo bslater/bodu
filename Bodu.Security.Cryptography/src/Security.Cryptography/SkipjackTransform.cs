@@ -40,7 +40,7 @@ internal sealed class SkipjackTransform
     /// <exception cref="System.ArgumentNullException">
     /// <paramref name="cipher" /> is <see langword="null" />.
     /// </exception>
-    public SkipjackTransform(IBlockCipher cipher, CipherModeKind cipherMode, PaddingModeKind paddingMode, byte[] iv, bool encrypt)
+    public SkipjackTransform(IBlockCipher cipher, CipherModeKind cipherMode, PaddingModeKind paddingMode, byte[]? iv, bool encrypt)
         : base(cipher, cipherMode, paddingMode, iv, encrypt)
     {
     }

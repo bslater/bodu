@@ -81,6 +81,7 @@ public abstract class TweakableSymmetricAlgorithm
         "StyleCop.CSharp.NamingRules",
         "SA1306:Field names should begin with lower-case letter",
         Justification = "The field intentionally follows the protected field naming pattern used by HashAlgorithm, such as HashSizeValue, because it forms part of the inherited algorithm-state surface for derived cryptographic types.")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Follows the BCL protected field naming convention (like LegalKeySizesValue on SymmetricAlgorithm) so that derived tweakable cipher types can read the legal tweak sizes without virtual dispatch.")]
     [MaybeNull]
     protected KeySizes[] LegalTweakSizesValue = null!;
 
@@ -95,6 +96,7 @@ public abstract class TweakableSymmetricAlgorithm
        "StyleCop.CSharp.NamingRules",
        "SA1306:Field names should begin with lower-case letter",
        Justification = "The field intentionally follows the protected field naming pattern used by HashAlgorithm, such as HashSizeValue, because it forms part of the inherited algorithm-state surface for derived cryptographic types.")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Follows the BCL protected field naming convention (like KeySizeValue on SymmetricAlgorithm) so that derived tweakable cipher types can read the tweak size without virtual dispatch.")]
     protected int TweakSizeValue = 0;
 
     /// <summary>
@@ -109,6 +111,7 @@ public abstract class TweakableSymmetricAlgorithm
         "StyleCop.CSharp.NamingRules",
         "SA1306:Field names should begin with lower-case letter",
         Justification = "The field intentionally follows the protected field naming pattern used by HashAlgorithm, such as HashSizeValue, because it forms part of the inherited algorithm-state surface for derived cryptographic types.")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Follows the BCL protected field naming convention (like IVValue on SymmetricAlgorithm) so that derived tweakable cipher types can read and clear tweak material directly without virtual dispatch.")]
     protected byte[]? TweakValue = null;
 
     private bool _disposed = false;

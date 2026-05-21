@@ -103,7 +103,7 @@ public sealed class Poly1305
     /// Length of the Poly1305 input block is 128 bits (16 bytes). Byte length is derived inline via
     /// <see cref="BlockSize" /> / 8 where needed.
     /// </summary>
-    private const int BlockSize = 128;
+    private new const int BlockSize = 128;
 
     private readonly uint[] _acc = new uint[5];
     private readonly uint[] _key = new uint[4];
