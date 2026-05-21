@@ -144,4 +144,48 @@ public readonly partial struct Fraction<T>
     /// </exception>
     public Fraction<T> Remainder(Fraction<T> divisor) =>
         this % divisor;
+
+    /// <summary>
+    /// Returns the multiplicative inverse of this rational value.
+    /// </summary>
+    /// <returns>The canonical value with its numerator and denominator exchanged.</returns>
+    /// <exception cref="DivideByZeroException">Thrown if this value is zero.</exception>
+    /// <exception cref="OverflowException">
+    /// Thrown if the reciprocal cannot be represented by <typeparamref name="T" />.
+    /// </exception>
+    /// <remarks>
+    /// This method is an alias for <see cref="Reciprocal" />.
+    /// </remarks>
+    public Fraction<T> Invert() =>
+        Reciprocal();
+
+    /// <summary>
+    /// Returns the square of this rational value.
+    /// </summary>
+    /// <returns>The canonical value of this rational multiplied by itself.</returns>
+    /// <exception cref="OverflowException">
+    /// Thrown if the canonical result does not fit <typeparamref name="T" />.
+    /// </exception>
+    public Fraction<T> Squared() =>
+        this * this;
+
+    /// <summary>
+    /// Returns the cube of this rational value.
+    /// </summary>
+    /// <returns>The canonical value of this rational raised to the third power.</returns>
+    /// <exception cref="OverflowException">
+    /// Thrown if the canonical result does not fit <typeparamref name="T" />.
+    /// </exception>
+    public Fraction<T> Cubed() =>
+        this * this * this;
+
+    /// <summary>
+    /// Returns this rational value reduced to lowest terms.
+    /// </summary>
+    /// <returns>This value, which is always already in canonical form.</returns>
+    /// <remarks>
+    /// A <see cref="Fraction{T}" /> is reduced when it is constructed, so this method returns the value unchanged.
+    /// </remarks>
+    public Fraction<T> Reduce() =>
+        this;
 }
