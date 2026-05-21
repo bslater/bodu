@@ -104,6 +104,41 @@ public readonly partial struct Fraction<T> :
     }
 
     /// <summary>
+    /// Returns a string representation of this value using Unicode vulgar-fraction glyphs where available.
+    /// </summary>
+    /// <param name="provider">The culture used to render the numeric components.</param>
+    /// <returns>The Unicode string representation of this value.</returns>
+    public string ToUnicodeString(IFormatProvider? provider = null) =>
+        FormatUnicode(provider);
+
+    /// <summary>
+    /// Returns a string representation of this value scaled to a percentage.
+    /// </summary>
+    /// <param name="provider">The culture used to render the numeric components.</param>
+    /// <returns>The percentage string representation of this value.</returns>
+    public string ToPercentString(IFormatProvider? provider = null) =>
+        FormatPercent(provider);
+
+    /// <summary>
+    /// Returns a string representation of this value as a mixed number.
+    /// </summary>
+    /// <param name="provider">The culture used to render the numeric components.</param>
+    /// <returns>The mixed-number string representation of this value.</returns>
+    public string ToMixedString(IFormatProvider? provider = null) =>
+        FormatMixed(provider);
+
+    /// <summary>
+    /// Returns a string representation of this value as a mixed number.
+    /// </summary>
+    /// <param name="provider">The culture used to render the numeric components.</param>
+    /// <returns>The mixed-number string representation of this value.</returns>
+    /// <remarks>
+    /// This method is an alias for <see cref="ToMixedString" />.
+    /// </remarks>
+    public string ToMixedNumberString(IFormatProvider? provider = null) =>
+        ToMixedString(provider);
+
+    /// <summary>
     /// Formats this rational value according to the specified format specifier.
     /// </summary>
     /// <param name="format">The format specifier; an empty span selects the general format.</param>
