@@ -122,6 +122,36 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
         });
     }
 
+    /// <summary>
+    /// Verifies that passing a <see langword="null" /> byte array to the <c>ComputeHash(byte[])</c>
+    /// overload raises <see cref="ArgumentNullException" /> rather than silently treating the missing
+    /// array as empty input.
+    /// </summary>
+    [TestMethod]
+    public void ComputeHash_WhenByteArrayIsNull_ShouldThrowArgumentNullException()
+    {
+        using THasher hasher = Construct(Factory, DefaultBlockSize, DefaultFanOut);
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            ComputeHash(hasher, (byte[])null!);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that passing a <see langword="null" /> byte array to the
+    /// <c>ComputeHash(byte[], int, int)</c> overload raises <see cref="ArgumentNullException" />
+    /// rather than a <see cref="ReadOnlySpan{T}" />-constructor exception keyed to the wrong parameter.
+    /// </summary>
+    [TestMethod]
+    public void ComputeHash_WhenByteArrayIsNullWithOffsetAndCount_ShouldThrowArgumentNullException()
+    {
+        using THasher hasher = Construct(Factory, DefaultBlockSize, DefaultFanOut);
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            ComputeHash(hasher, (byte[])null!, 0, 0);
+        });
+    }
+
     // ═══════════════════════════════════════════════════════════════════════════════════════════
     // ComputeHash — result shape
     // ═══════════════════════════════════════════════════════════════════════════════════════════
