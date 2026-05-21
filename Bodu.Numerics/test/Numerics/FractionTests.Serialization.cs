@@ -4,10 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.IO;
 using System.Numerics;
 using System.Text.Json;
-using System.Xml.Serialization;
 
 namespace Bodu.Numerics;
 
@@ -68,24 +66,6 @@ public partial class FractionTests
     }
 
     /// <summary>
-    /// Verifies that a fraction round-trips through XML serialization.
-    /// </summary>
-    [TestMethod]
-    public void XmlSerialization_WhenRoundTripped_ShouldPreserveValue()
-    {
-        Fraction<int> original = new Fraction<int>(-7, 8);
-        XmlSerializer serializer = new XmlSerializer(typeof(Fraction<int>));
-
-        using StringWriter writer = new StringWriter();
-        serializer.Serialize(writer, original);
-
-        using StringReader reader = new StringReader(writer.ToString());
-        Fraction<int> restored = (Fraction<int>)serializer.Deserialize(reader)!;
-
-        Assert.AreEqual(original, restored);
-    }
-
-    /// <summary>
     /// Verifies that deserializing a non-string JSON token throws <see cref="JsonException" />.
     /// </summary>
     [TestMethod]
@@ -98,26 +78,41 @@ public partial class FractionTests
     }
 
     /// <summary>
-    /// Verifies that a table of values round-trips through XML serialization.
+    /// Verifies that ToJson and FromJson round-trip a fraction through its JSON representation.
     /// </summary>
     [TestMethod]
-    [TestCategory(Bodu.Test.TestCategories.Regression)]
+    public void ToJsonAndFromJson_WhenRoundTripped_ShouldPreserveValue()
+    {
+        Fraction<int> original = new Fraction<int>(-7, 8);
+
+        Assert.AreEqual(original, Fraction<int>.FromJson(original.ToJson()));
+    }
+
+    /// <summary>
+    /// Verifies that ToXml and FromXml round-trip a fraction through its XML representation.
+    /// </summary>
+    [TestMethod]
     [DataRow(3, 4)]
     [DataRow(-7, 8)]
     [DataRow(5, 1)]
     [DataRow(0, 1)]
     [DataRow(-11, 3)]
-    public void XmlSerialization_WhenRoundTrippingKnownValues_ShouldPreserveValue(int numerator, int denominator)
+    public void ToXmlAndFromXml_WhenRoundTripped_ShouldPreserveValue(int numerator, int denominator)
     {
         Fraction<int> original = new Fraction<int>(numerator, denominator);
-        XmlSerializer serializer = new XmlSerializer(typeof(Fraction<int>));
 
-        using StringWriter writer = new StringWriter();
-        serializer.Serialize(writer, original);
+        Assert.AreEqual(original, Fraction<int>.FromXml(original.ToXml()));
+    }
 
-        using StringReader reader = new StringReader(writer.ToString());
-        Fraction<int> restored = (Fraction<int>)serializer.Deserialize(reader)!;
-
-        Assert.AreEqual(original, restored);
+    /// <summary>
+    /// Verifies that FromXml rejects a null argument.
+    /// </summary>
+    [TestMethod]
+    public void FromXml_WhenArgumentIsNull_ShouldThrowArgumentNullException()
+    {
+        _ = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = Fraction<int>.FromXml(null!);
+        });
     }
 }

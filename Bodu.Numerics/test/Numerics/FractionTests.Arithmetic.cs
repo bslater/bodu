@@ -287,4 +287,75 @@ public partial class FractionTests
 
         Assert.AreEqual(-(long)int.MinValue, result.Numerator);
     }
+
+    /// <summary>
+    /// Verifies that the greatest common divisor of a signed minimum value is evaluated correctly when the result
+    /// fits a wider backing type, rather than overflowing through an unsafe negation.
+    /// </summary>
+    [TestMethod]
+    public void GreatestCommonDivisor_WhenArgumentIsSignedMinimum_ShouldReturnCorrectMagnitude()
+    {
+        Assert.AreEqual(-(long)int.MinValue, Fraction<long>.GreatestCommonDivisor(int.MinValue, 0));
+    }
+
+    /// <summary>
+    /// Verifies that the greatest common divisor throws <see cref="OverflowException" /> when its magnitude cannot
+    /// be represented by a fixed-width backing type.
+    /// </summary>
+    [TestMethod]
+    public void GreatestCommonDivisor_WhenResultExceedsFixedWidthRange_ShouldThrowOverflowException()
+    {
+        _ = Assert.ThrowsExactly<OverflowException>(() =>
+        {
+            _ = Fraction<int>.GreatestCommonDivisor(int.MinValue, 0);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that raising a value to <see cref="int.MinValue" /> throws <see cref="OverflowException" />, since
+    /// the magnitude of that exponent cannot be evaluated.
+    /// </summary>
+    [TestMethod]
+    public void Pow_WhenExponentIsIntMinValue_ShouldThrowOverflowException()
+    {
+        _ = Assert.ThrowsExactly<OverflowException>(() =>
+        {
+            _ = new Fraction<int>(2, 3).Pow(int.MinValue);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that Invert returns the same value as Reciprocal.
+    /// </summary>
+    [TestMethod]
+    public void Invert_WhenValueIsNonZero_ShouldMatchReciprocal()
+    {
+        Fraction<int> value = new Fraction<int>(3, 4);
+
+        Assert.AreEqual(value.Reciprocal(), value.Invert());
+    }
+
+    /// <summary>
+    /// Verifies that Squared and Cubed raise the value to the second and third powers.
+    /// </summary>
+    [TestMethod]
+    public void SquaredAndCubed_WhenInvoked_ShouldReturnExpectedPowers()
+    {
+        Fraction<int> value = new Fraction<int>(2, 3);
+
+        Assert.AreEqual(new Fraction<int>(4, 9), value.Squared());
+        Assert.AreEqual(new Fraction<int>(8, 27), value.Cubed());
+    }
+
+    /// <summary>
+    /// Verifies that Reduce returns an already-canonical value unchanged.
+    /// </summary>
+    [TestMethod]
+    public void Reduce_WhenInvoked_ShouldReturnEquivalentValue()
+    {
+        Fraction<int> value = new Fraction<int>(6, 8);
+
+        Assert.AreEqual(value, value.Reduce());
+        Assert.AreEqual(new Fraction<int>(3, 4), value.Reduce());
+    }
 }

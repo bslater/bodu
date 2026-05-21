@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
 using System.Numerics;
 
 namespace Bodu.Numerics;
@@ -118,6 +119,97 @@ public readonly partial struct Fraction<T>
         Fraction<T> bound2 = FromBigInteger(p1, q1);
 
         return (bound2 - this).Abs() <= (bound1 - this).Abs() ? bound2 : bound1;
+    }
+
+    /// <summary>
+    /// Returns the closest rational approximation of a double-precision value within a denominator bound.
+    /// </summary>
+    /// <param name="value">The value to approximate.</param>
+    /// <param name="maxDenominator">The largest denominator the approximation may use.</param>
+    /// <returns>
+    /// The best rational approximation of <paramref name="value" /> with a denominator no greater than
+    /// <paramref name="maxDenominator" />.
+    /// </returns>
+    /// <exception cref="ArgumentException">Thrown if <paramref name="value" /> is not a finite number.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown if <paramref name="maxDenominator" /> is less than one.
+    /// </exception>
+    /// <exception cref="OverflowException">
+    /// Thrown if the canonical result cannot be represented by <typeparamref name="T" />.
+    /// </exception>
+    public static Fraction<T> Approximate(double value, T maxDenominator)
+    {
+        (BigInteger numerator, BigInteger denominator) = DoubleToRational(value);
+
+        return ApproximateCore(numerator, denominator, maxDenominator);
+    }
+
+    /// <summary>
+    /// Returns the closest rational approximation of a decimal value within a denominator bound.
+    /// </summary>
+    /// <param name="value">The value to approximate.</param>
+    /// <param name="maxDenominator">The largest denominator the approximation may use.</param>
+    /// <returns>
+    /// The best rational approximation of <paramref name="value" /> with a denominator no greater than
+    /// <paramref name="maxDenominator" />.
+    /// </returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown if <paramref name="maxDenominator" /> is less than one.
+    /// </exception>
+    /// <exception cref="OverflowException">
+    /// Thrown if the canonical result cannot be represented by <typeparamref name="T" />.
+    /// </exception>
+    public static Fraction<T> Approximate(decimal value, T maxDenominator)
+    {
+        (BigInteger numerator, BigInteger denominator) = DecimalToRational(value);
+
+        return ApproximateCore(numerator, denominator, maxDenominator);
+    }
+
+    /// <summary>
+    /// Returns the closest rational approximation of a numeric string within a denominator bound.
+    /// </summary>
+    /// <param name="value">The decimal-format text to approximate.</param>
+    /// <param name="maxDenominator">The largest denominator the approximation may use.</param>
+    /// <param name="provider">The culture used to interpret <paramref name="value" />.</param>
+    /// <returns>
+    /// The best rational approximation of <paramref name="value" /> with a denominator no greater than
+    /// <paramref name="maxDenominator" />.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown if <paramref name="value" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown if <paramref name="maxDenominator" /> is less than one.
+    /// </exception>
+    /// <exception cref="FormatException">Thrown if <paramref name="value" /> is not a valid decimal number.</exception>
+    /// <exception cref="OverflowException">
+    /// Thrown if <paramref name="value" /> or the canonical result is out of range.
+    /// </exception>
+    public static Fraction<T> Approximate(string value, T maxDenominator, IFormatProvider? provider = null)
+    {
+        ThrowHelper.ThrowIfNull(value);
+
+        return Approximate(decimal.Parse(value, NumberStyles.Number, provider), maxDenominator);
+    }
+
+    /// <summary>
+    /// Computes the best rational approximation of an exact ratio within a denominator bound.
+    /// </summary>
+    /// <param name="numerator">The numerator of the exact value.</param>
+    /// <param name="denominator">The denominator of the exact value.</param>
+    /// <param name="maxDenominator">The largest denominator the approximation may use.</param>
+    /// <returns>The best approximation narrowed to <typeparamref name="T" />.</returns>
+    /// <remarks>
+    /// The approximation is evaluated with <see cref="BigInteger" /> precision so that an exact value too large for
+    /// <typeparamref name="T" /> is bounded before it is narrowed.
+    /// </remarks>
+    private static Fraction<T> ApproximateCore(BigInteger numerator, BigInteger denominator, T maxDenominator)
+    {
+        Fraction<BigInteger> exact = new Fraction<BigInteger>(numerator, denominator);
+        Fraction<BigInteger> limited = exact.LimitDenominator(BigInteger.CreateChecked(maxDenominator));
+
+        return FromBigInteger(limited.Numerator, limited.Denominator);
     }
 
     /// <summary>

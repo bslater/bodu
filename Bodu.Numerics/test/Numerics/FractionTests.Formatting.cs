@@ -190,4 +190,32 @@ public partial class FractionTests
     {
         Assert.AreEqual(expected, new Fraction<int>(numerator, denominator).ToString("P"));
     }
+
+    /// <summary>
+    /// Verifies that the named formatting methods match their format-specifier equivalents.
+    /// </summary>
+    [TestMethod]
+    public void NamedFormatMethods_WhenInvoked_ShouldMatchFormatSpecifiers()
+    {
+        Fraction<int> value = new Fraction<int>(7, 4);
+        CultureInfo culture = CultureInfo.InvariantCulture;
+
+        Assert.AreEqual(value.ToString("M", culture), value.ToMixedString(culture));
+        Assert.AreEqual(value.ToMixedString(culture), value.ToMixedNumberString(culture));
+        Assert.AreEqual(value.ToString("U", culture), value.ToUnicodeString(culture));
+        Assert.AreEqual(value.ToString("P", culture), value.ToPercentString(culture));
+    }
+
+    /// <summary>
+    /// Verifies that the named formatting methods produce the expected text for a known value.
+    /// </summary>
+    [TestMethod]
+    public void NamedFormatMethods_WhenFormattingKnownValue_ShouldReturnExpectedText()
+    {
+        Fraction<int> value = new Fraction<int>(7, 4);
+
+        Assert.AreEqual("1 3/4", value.ToMixedString(CultureInfo.InvariantCulture));
+        Assert.AreEqual("1¾", value.ToUnicodeString(CultureInfo.InvariantCulture));
+        Assert.AreEqual("175%", value.ToPercentString(CultureInfo.InvariantCulture));
+    }
 }

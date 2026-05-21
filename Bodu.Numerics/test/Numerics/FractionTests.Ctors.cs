@@ -174,4 +174,93 @@ public partial class FractionTests
         Assert.AreEqual(int.MaxValue, new Fraction<int>(int.MaxValue).Numerator);
         Assert.AreEqual(1, new Fraction<int>(int.MaxValue).Denominator);
     }
+
+    /// <summary>
+    /// Verifies that Create produces the same canonical value as the constructor.
+    /// </summary>
+    [TestMethod]
+    public void Create_WhenGivenComponents_ShouldReturnCanonicalValue()
+    {
+        Assert.AreEqual(new Fraction<int>(1, 2), Fraction<int>.Create(2, 4));
+    }
+
+    /// <summary>
+    /// Verifies that Create throws DivideByZeroException for a zero denominator.
+    /// </summary>
+    [TestMethod]
+    public void Create_WhenDenominatorIsZero_ShouldThrowDivideByZeroException()
+    {
+        _ = Assert.ThrowsExactly<DivideByZeroException>(() =>
+        {
+            _ = Fraction<int>.Create(1, 0);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that TryCreate succeeds for valid components and fails for a zero denominator.
+    /// </summary>
+    [TestMethod]
+    public void TryCreate_WhenComponentsAreValidOrInvalid_ShouldReportSuccess()
+    {
+        Assert.IsTrue(Fraction<int>.TryCreate(2, 4, out Fraction<int> created));
+        Assert.AreEqual(new Fraction<int>(1, 2), created);
+
+        Assert.IsFalse(Fraction<int>.TryCreate(1, 0, out Fraction<int> failed));
+        Assert.AreEqual(Fraction<int>.Zero, failed);
+    }
+
+    /// <summary>
+    /// Verifies that FromBigInteger reduces large components to a canonical value.
+    /// </summary>
+    [TestMethod]
+    public void FromBigInteger_WhenGivenComponents_ShouldReturnReducedValue()
+    {
+        Assert.AreEqual(new Fraction<int>(1, 2), Fraction<int>.FromBigInteger(50, 100));
+    }
+
+    /// <summary>
+    /// Verifies that FromBigInteger throws DivideByZeroException for a zero denominator.
+    /// </summary>
+    [TestMethod]
+    public void FromBigInteger_WhenDenominatorIsZero_ShouldThrowDivideByZeroException()
+    {
+        _ = Assert.ThrowsExactly<DivideByZeroException>(() =>
+        {
+            _ = Fraction<int>.FromBigInteger(BigInteger.One, BigInteger.Zero);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that TryFromBigInteger reports failure when the result exceeds the backing type range.
+    /// </summary>
+    [TestMethod]
+    public void TryFromBigInteger_WhenResultExceedsFixedWidthRange_ShouldReturnFalse()
+    {
+        Assert.IsFalse(Fraction<int>.TryFromBigInteger(BigInteger.Pow(10, 20), BigInteger.One, out _));
+    }
+
+    /// <summary>
+    /// Verifies that TryFromDecimal converts an exact decimal and reports overflow as failure.
+    /// </summary>
+    [TestMethod]
+    public void TryFromDecimal_WhenValueIsRepresentableOrNot_ShouldReportSuccess()
+    {
+        Assert.IsTrue(Fraction<int>.TryFromDecimal(0.25m, out Fraction<int> created));
+        Assert.AreEqual(new Fraction<int>(1, 4), created);
+
+        Assert.IsFalse(Fraction<int>.TryFromDecimal(decimal.MaxValue, out _));
+    }
+
+    /// <summary>
+    /// Verifies that TryFromDouble converts a finite value and rejects non-finite input.
+    /// </summary>
+    [TestMethod]
+    public void TryFromDouble_WhenValueIsFiniteOrNot_ShouldReportSuccess()
+    {
+        Assert.IsTrue(Fraction<int>.TryFromDouble(0.5, out Fraction<int> created));
+        Assert.AreEqual(new Fraction<int>(1, 2), created);
+
+        Assert.IsFalse(Fraction<int>.TryFromDouble(double.NaN, out _));
+        Assert.IsFalse(Fraction<int>.TryFromDouble(double.PositiveInfinity, out _));
+    }
 }

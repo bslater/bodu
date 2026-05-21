@@ -6,7 +6,7 @@
 
 using System.Diagnostics;
 using System.Numerics;
-using System.Runtime.CompilerServices;
+using System.Reflection;
 using System.Text.Json.Serialization;
 
 namespace Bodu.Numerics;
@@ -44,6 +44,21 @@ public readonly partial struct Fraction<T>
     where T : IBinaryInteger<T>
 {
     /// <summary>
+    /// Indicates whether <typeparamref name="T" /> is a bounded integer type and therefore has a finite range.
+    /// </summary>
+    private static readonly bool s_isBounded;
+
+    /// <summary>
+    /// The smallest value <typeparamref name="T" /> can represent when it is bounded.
+    /// </summary>
+    private static readonly T s_minBacking;
+
+    /// <summary>
+    /// The largest value <typeparamref name="T" /> can represent when it is bounded.
+    /// </summary>
+    private static readonly T s_maxBacking;
+
+    /// <summary>
     /// The canonical numerator. Carries the sign of the rational value.
     /// </summary>
     private readonly T _numerator;
@@ -53,6 +68,14 @@ public readonly partial struct Fraction<T>
     /// interpreted as one by <see cref="Denominator" />.
     /// </summary>
     private readonly T _denominator;
+
+    /// <summary>
+    /// Initializes static members of the <see cref="Fraction{T}" /> struct.
+    /// </summary>
+    static Fraction()
+    {
+        s_isBounded = TryGetBounds(out s_minBacking, out s_maxBacking);
+    }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Fraction{T}" /> struct representing the whole number
@@ -141,6 +164,38 @@ public readonly partial struct Fraction<T>
         FromBigInteger(BigInteger.MinusOne, BigInteger.One);
 
     /// <summary>
+    /// Gets the smallest finite value a <see cref="Fraction{T}" /> backed by <typeparamref name="T" /> can represent.
+    /// </summary>
+    /// <returns>The rational value <c>T.MinValue/1</c>.</returns>
+    /// <exception cref="NotSupportedException">
+    /// Thrown if <typeparamref name="T" /> is an unbounded integer type, such as <see cref="BigInteger" />.
+    /// </exception>
+    /// <remarks>
+    /// A bound exists only when <typeparamref name="T" /> implements <see cref="IMinMaxValue{TSelf}" />. Unbounded
+    /// backing types model the full set of rationals and therefore have no minimum value.
+    /// </remarks>
+    public static Fraction<T> MinValue =>
+        s_isBounded
+            ? new Fraction<T>(s_minBacking, T.One, canonical: true)
+            : throw new NotSupportedException($"The backing type '{typeof(T)}' is unbounded and has no minimum value.");
+
+    /// <summary>
+    /// Gets the largest finite value a <see cref="Fraction{T}" /> backed by <typeparamref name="T" /> can represent.
+    /// </summary>
+    /// <returns>The rational value <c>T.MaxValue/1</c>.</returns>
+    /// <exception cref="NotSupportedException">
+    /// Thrown if <typeparamref name="T" /> is an unbounded integer type, such as <see cref="BigInteger" />.
+    /// </exception>
+    /// <remarks>
+    /// A bound exists only when <typeparamref name="T" /> implements <see cref="IMinMaxValue{TSelf}" />. Unbounded
+    /// backing types model the full set of rationals and therefore have no maximum value.
+    /// </remarks>
+    public static Fraction<T> MaxValue =>
+        s_isBounded
+            ? new Fraction<T>(s_maxBacking, T.One, canonical: true)
+            : throw new NotSupportedException($"The backing type '{typeof(T)}' is unbounded and has no maximum value.");
+
+    /// <summary>
     /// Gets the numerator of the rational value in canonical form.
     /// </summary>
     /// <returns>The signed numerator.</returns>
@@ -178,6 +233,40 @@ public readonly partial struct Fraction<T>
     }
 
     /// <summary>
+    /// Creates a canonical <see cref="Fraction{T}" /> from the specified numerator and denominator.
+    /// </summary>
+    /// <param name="numerator">The numerator of the rational value.</param>
+    /// <param name="denominator">The denominator of the rational value.</param>
+    /// <returns>The reduced rational value.</returns>
+    /// <exception cref="DivideByZeroException">Thrown if <paramref name="denominator" /> is zero.</exception>
+    /// <exception cref="OverflowException">
+    /// Thrown if the canonical numerator or denominator cannot be represented by <typeparamref name="T" />.
+    /// </exception>
+    public static Fraction<T> Create(T numerator, T denominator) =>
+        new Fraction<T>(numerator, denominator);
+
+    /// <summary>
+    /// Attempts to create a canonical <see cref="Fraction{T}" /> from the specified numerator and denominator.
+    /// </summary>
+    /// <param name="numerator">The numerator of the rational value.</param>
+    /// <param name="denominator">The denominator of the rational value.</param>
+    /// <param name="result">When this method returns, contains the created value, or zero on failure.</param>
+    /// <returns><see langword="true" /> if the value was created; otherwise, <see langword="false" />.</returns>
+    public static bool TryCreate(T numerator, T denominator, out Fraction<T> result)
+    {
+        try
+        {
+            result = new Fraction<T>(numerator, denominator);
+            return true;
+        }
+        catch (ArithmeticException)
+        {
+            result = default;
+            return false;
+        }
+    }
+
+    /// <summary>
     /// Computes the greatest common divisor of two integers.
     /// </summary>
     /// <param name="left">The first integer.</param>
@@ -186,18 +275,17 @@ public readonly partial struct Fraction<T>
     /// The largest non-negative integer that divides both <paramref name="left" /> and <paramref name="right" />, or
     /// zero when both arguments are zero.
     /// </returns>
-    public static T GreatestCommonDivisor(T left, T right)
-    {
-        T a = Abs(left);
-        T b = Abs(right);
-
-        while (!T.IsZero(b))
-        {
-            (a, b) = (b, a % b);
-        }
-
-        return a;
-    }
+    /// <exception cref="OverflowException">
+    /// Thrown if the greatest common divisor cannot be represented by <typeparamref name="T" />.
+    /// </exception>
+    /// <remarks>
+    /// The divisor is evaluated with <see cref="BigInteger" /> precision so that the magnitude of a signed minimum
+    /// value — whose absolute value is not itself representable by <typeparamref name="T" /> — is handled correctly.
+    /// </remarks>
+    public static T GreatestCommonDivisor(T left, T right) =>
+        T.CreateChecked(BigInteger.GreatestCommonDivisor(
+            BigInteger.CreateChecked(left),
+            BigInteger.CreateChecked(right)));
 
     /// <summary>
     /// Computes the least common multiple of two integers.
@@ -223,26 +311,20 @@ public readonly partial struct Fraction<T>
     }
 
     /// <summary>
-    /// Returns the absolute value of an integer.
+    /// Creates a canonical <see cref="Fraction{T}" /> from a numerator and denominator of arbitrary magnitude.
     /// </summary>
-    /// <param name="value">The integer whose magnitude is required.</param>
-    /// <returns>The magnitude of <paramref name="value" />.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static T Abs(T value) =>
-        T.IsNegative(value) ? -value : value;
-
-    /// <summary>
-    /// Creates a canonical <see cref="Fraction{T}" /> from a numerator and denominator evaluated with
-    /// <see cref="BigInteger" /> precision.
-    /// </summary>
-    /// <param name="numerator">The unreduced numerator.</param>
-    /// <param name="denominator">The unreduced, non-zero denominator.</param>
+    /// <param name="numerator">The numerator of the rational value.</param>
+    /// <param name="denominator">The denominator of the rational value.</param>
     /// <returns>The reduced rational value narrowed to <typeparamref name="T" />.</returns>
+    /// <exception cref="DivideByZeroException">Thrown if <paramref name="denominator" /> is zero.</exception>
     /// <exception cref="OverflowException">
     /// Thrown if the canonical numerator or denominator cannot be represented by <typeparamref name="T" />.
     /// </exception>
-    private static Fraction<T> FromBigInteger(BigInteger numerator, BigInteger denominator)
+    public static Fraction<T> FromBigInteger(BigInteger numerator, BigInteger denominator)
     {
+        if (denominator.IsZero)
+            throw new DivideByZeroException("The denominator of a fraction must not be zero.");
+
         if (denominator.Sign < 0)
         {
             numerator = -numerator;
@@ -258,4 +340,80 @@ public readonly partial struct Fraction<T>
 
         return new Fraction<T>(T.CreateChecked(numerator), T.CreateChecked(denominator), canonical: true);
     }
+
+    /// <summary>
+    /// Attempts to create a canonical <see cref="Fraction{T}" /> from a numerator and denominator.
+    /// </summary>
+    /// <param name="numerator">The numerator of the rational value.</param>
+    /// <param name="denominator">The denominator of the rational value.</param>
+    /// <param name="result">When this method returns, contains the created value, or zero on failure.</param>
+    /// <returns><see langword="true" /> if the value was created; otherwise, <see langword="false" />.</returns>
+    public static bool TryFromBigInteger(BigInteger numerator, BigInteger denominator, out Fraction<T> result)
+    {
+        try
+        {
+            result = FromBigInteger(numerator, denominator);
+            return true;
+        }
+        catch (ArithmeticException)
+        {
+            result = default;
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Probes whether <typeparamref name="T" /> is a bounded integer type and, when it is, captures its bounds.
+    /// </summary>
+    /// <param name="minValue">On return, the minimum value of <typeparamref name="T" />.</param>
+    /// <param name="maxValue">On return, the maximum value of <typeparamref name="T" />.</param>
+    /// <returns><see langword="true" /> if the backing type is bounded; otherwise, <see langword="false" />.</returns>
+    private static bool TryGetBounds(out T minValue, out T maxValue)
+    {
+        // The IMinMaxValue<T> constraint cannot be placed on Fraction<T> without excluding unbounded backing
+        // types, so it is probed reflectively: a constraint violation on T surfaces as an ArgumentException.
+        try
+        {
+            minValue = InvokeExtreme(nameof(MinValueOf));
+            maxValue = InvokeExtreme(nameof(MaxValueOf));
+            return true;
+        }
+        catch (ArgumentException)
+        {
+            minValue = default!;
+            maxValue = default!;
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Invokes the named generic extreme-value helper for the backing type <typeparamref name="T" />.
+    /// </summary>
+    /// <param name="methodName">The name of the bounded-type extreme-value helper to invoke.</param>
+    /// <returns>The extreme value of <typeparamref name="T" /> yielded by the helper.</returns>
+    /// <exception cref="ArgumentException">Thrown if <typeparamref name="T" /> is not a bounded type.</exception>
+    private static T InvokeExtreme(string methodName)
+    {
+        MethodInfo? definition = typeof(Fraction<T>).GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Static);
+        object? extreme = definition!.MakeGenericMethod(typeof(T)).Invoke(null, null);
+        return (T)extreme!;
+    }
+
+    /// <summary>
+    /// Returns the smallest value a bounded integer type can represent.
+    /// </summary>
+    /// <typeparam name="TBounded">A bounded integer type.</typeparam>
+    /// <returns>The minimum value of <typeparamref name="TBounded" />.</returns>
+    private static TBounded MinValueOf<TBounded>()
+        where TBounded : IMinMaxValue<TBounded> =>
+        TBounded.MinValue;
+
+    /// <summary>
+    /// Returns the largest value a bounded integer type can represent.
+    /// </summary>
+    /// <typeparam name="TBounded">A bounded integer type.</typeparam>
+    /// <returns>The maximum value of <typeparamref name="TBounded" />.</returns>
+    private static TBounded MaxValueOf<TBounded>()
+        where TBounded : IMinMaxValue<TBounded> =>
+        TBounded.MaxValue;
 }
