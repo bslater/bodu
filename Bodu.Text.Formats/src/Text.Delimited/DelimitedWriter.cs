@@ -24,8 +24,10 @@ namespace Bodu.Text.Delimited;
 /// <example>
 /// <code>
 ///<![CDATA[
-/// using var writer = Delimited.CreateWriter(File.CreateText("out.csv")); writer.WriteHeader(["name", "age"]);
-/// writer.WriteRow(["Alice", "30"]); writer.WriteRow(["Bob", "25"]);
+/// using var writer = Delimited.CreateWriter(File.CreateText("out.csv"));
+/// writer.WriteHeader(["name", "age"]);
+/// writer.WriteRow(["Alice", "30"]);
+/// writer.WriteRow(["Bob", "25"]);
 ///]]>
 /// </code>
 /// </example>

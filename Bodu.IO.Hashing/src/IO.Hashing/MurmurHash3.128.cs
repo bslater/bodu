@@ -61,9 +61,15 @@ namespace Bodu.IO.Hashing;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// using Bodu.IO.Hashing; using Bodu.IO.Hashing.Extensions; // 128-bit fingerprint of a
-/// content blob. var m = new MurmurHash3_128(); byte[] fingerprint = m.ComputeHash(blob); // Custom seed to isolate a
-/// second hash family for cuckoo / bloom-filter use. var m2 = new MurmurHash3_128(seed: 0xC2B2AE35u);
+/// using Bodu.IO.Hashing;
+/// using Bodu.IO.Hashing.Extensions;
+///
+/// // 128-bit fingerprint of a content blob.
+/// var m = new MurmurHash3_128();
+/// byte[] fingerprint = m.ComputeHash(blob);
+///
+/// // Custom seed to isolate a second hash family for cuckoo / bloom-filter use.
+/// var m2 = new MurmurHash3_128(seed: 0xC2B2AE35u);
 ///]]>
 /// </code>
 /// </example>

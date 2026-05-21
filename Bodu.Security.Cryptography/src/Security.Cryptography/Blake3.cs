@@ -75,7 +75,8 @@ namespace Bodu.Security.Cryptography;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// using var blake3 = new Blake3(); byte[] digest = blake3.ComputeHash(message);
+/// using var blake3 = new Blake3();
+/// byte[] digest = blake3.ComputeHash(message);
 ///]]>
 /// </code>
 /// </example>

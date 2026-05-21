@@ -64,10 +64,15 @@ namespace Bodu.Security.Cryptography;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// using System.Security.Cryptography; using Bodu.Security.Cryptography; using
-/// Bodu.Security.Cryptography.Extensions; using var twofish = new Twofish(); twofish.GenerateKey(); // 256-bit by
-/// default twofish.GenerateIV(); byte[] ciphertext = twofish.Encrypt(plaintext); byte[] roundTrip =
-/// twofish.Decrypt(ciphertext);
+/// using System.Security.Cryptography;
+/// using Bodu.Security.Cryptography;
+/// using Bodu.Security.Cryptography.Extensions;
+///
+/// using var twofish = new Twofish();
+/// twofish.GenerateKey(); // 256-bit by default
+/// twofish.GenerateIV();
+/// byte[] ciphertext = twofish.Encrypt(plaintext);
+/// byte[] roundTrip = twofish.Decrypt(ciphertext);
 ///]]>
 /// </code>
 /// </example>

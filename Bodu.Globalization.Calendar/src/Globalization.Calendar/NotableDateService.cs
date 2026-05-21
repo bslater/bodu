@@ -99,7 +99,7 @@ namespace Bodu.Globalization.Calendar;
 /// NotableDateService service = new NotableDateService();
 ///
 /// // All notable dates for New South Wales in 2026 (requires the Asia-Pacific data pack):
-/// IReadOnlyList&lt;NotableDate&gt; dates = service.GetNotableDates(2026, territoryCode: "AU-NSW");
+/// IReadOnlyList<NotableDate> dates = service.GetNotableDates(2026, territoryCode: "AU-NSW");
 ///
 /// // Full construction with a custom XML rule file and algorithm registry:
 /// var registry = new NotableDateAlgorithmRegistry()

@@ -38,9 +38,11 @@ public static partial class SequenceGenerator
     /// </remarks>
     /// <example>
     /// <code language="csharp">
-    ///<![CDATA[ // Generate the first five powers of two by zipping a counter against a constant feed.
-    /// var powers = SequenceGenerator.Repeat(2) .Zip(SequenceGenerator.Range(0, 4), (b, e) =&gt; (long)Math.Pow(b, e));
-    /// // => 1, 2, 4, 8, 16 ]]>
+    ///<![CDATA[
+    /// // Generate the first five powers of two by zipping a counter against a constant feed.
+    /// var powers = SequenceGenerator.Repeat(2)
+    ///     .Zip(SequenceGenerator.Range(0, 4), (b, e) => (long)Math.Pow(b, e)); // => 1, 2, 4, 8, 16
+    ///]]>
     /// </code>
     /// </example>
     public static IEnumerable<T> Repeat<T>(T value)
@@ -79,8 +81,10 @@ public static partial class SequenceGenerator
     /// </remarks>
     /// <example>
     /// <code language="csharp">
-    ///<![CDATA[ var dashes = string.Concat(SequenceGenerator.Repeat('-', 5)); // => "-----" var padding
-    /// = SequenceGenerator.Repeat&lt;string?&gt;(null, 3).ToArray(); // => [null, null, null] ]]>
+    ///<![CDATA[
+    /// var dashes = string.Concat(SequenceGenerator.Repeat('-', 5)); // => "-----"
+    /// var padding = SequenceGenerator.Repeat<string?>(null, 3).ToArray(); // => [null, null, null]
+    ///]]>
     /// </code>
     /// </example>
     public static IEnumerable<T> Repeat<T>(T value, int count)

@@ -57,10 +57,16 @@ namespace Bodu.Security.Cryptography;
 /// </remarks>
 /// <example>
 /// The following example configures a <see cref="SipHash64" /> instance to use the stronger <c>SipHash-4-8</c>
-/// parameter set. <code language="csharp">
+/// parameter set.
+/// <code language="csharp">
 ///<![CDATA[
-/// using var sipHash = new SipHash64 { Key = myKey, CompressionRounds = 4,
-/// FinalizationRounds = 8, }; byte[] tag = sipHash.ComputeHash(message);
+/// using var sipHash = new SipHash64
+/// {
+///     Key = myKey,
+///     CompressionRounds = 4,
+///     FinalizationRounds = 8,
+/// };
+/// byte[] tag = sipHash.ComputeHash(message);
 ///]]>
 /// </code>
 /// </example>

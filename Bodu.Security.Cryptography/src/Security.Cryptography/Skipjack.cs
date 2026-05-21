@@ -64,11 +64,15 @@ namespace Bodu.Security.Cryptography;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// using System.Security.Cryptography; using Bodu.Security.Cryptography; using
-/// Bodu.Security.Cryptography.Extensions; // Legacy interop only — do not use Skipjack to protect new data. using var
-/// skipjack = new Skipjack(); skipjack.Key = legacyKeyMaterial; // exactly 10 bytes skipjack.IV =
-/// RandomNumberGenerator.GetBytes(8); // matches the 64-bit block byte[] ciphertext =
-/// skipjack.Encrypt(legacyPlaintext);
+/// using System.Security.Cryptography;
+/// using Bodu.Security.Cryptography;
+/// using Bodu.Security.Cryptography.Extensions;
+///
+/// // Legacy interop only — do not use Skipjack to protect new data.
+/// using var skipjack = new Skipjack();
+/// skipjack.Key = legacyKeyMaterial; // exactly 10 bytes
+/// skipjack.IV = RandomNumberGenerator.GetBytes(8); // matches the 64-bit block
+/// byte[] ciphertext = skipjack.Encrypt(legacyPlaintext);
 ///]]>
 /// </code>
 /// </example>

@@ -40,8 +40,11 @@ namespace Bodu.IO.Hashing;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// using Bodu.IO.Hashing; using Bodu.IO.Hashing.Extensions; var elf = new Elf64(); byte[]
-/// digest = elf.ComputeHash(System.Text.Encoding.ASCII.GetBytes("symbol_name"));
+/// using Bodu.IO.Hashing;
+/// using Bodu.IO.Hashing.Extensions;
+///
+/// var elf = new Elf64();
+/// byte[] digest = elf.ComputeHash(System.Text.Encoding.ASCII.GetBytes("symbol_name"));
 ///]]>
 /// </code>
 /// </example>

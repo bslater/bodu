@@ -45,7 +45,7 @@ namespace Bodu.Globalization.Calendar;
 /// Console.WriteLine(nsw.Contains(australia));      // false
 ///
 /// // Parse a comma-separated list (invalid entries are silently skipped):
-/// IReadOnlyList&lt;TerritoryCode&gt; codes = TerritoryCode.ParseList("AU, AU-NSW, AU-VIC");
+/// IReadOnlyList<TerritoryCode> codes = TerritoryCode.ParseList("AU, AU-NSW, AU-VIC");
 ///]]>
 /// </code>
 /// </example>

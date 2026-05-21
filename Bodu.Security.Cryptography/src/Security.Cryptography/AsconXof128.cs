@@ -64,8 +64,9 @@ namespace Bodu.Security.Cryptography;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// using var xof = new AsconXof128(); xof.Absorb(message); byte[] output = xof.GetHash(64); //
-/// Produce 64 bytes of output
+/// using var xof = new AsconXof128();
+/// xof.Absorb(message);
+/// byte[] output = xof.GetHash(64); // Produce 64 bytes of output
 ///]]>
 /// </code>
 /// </example>

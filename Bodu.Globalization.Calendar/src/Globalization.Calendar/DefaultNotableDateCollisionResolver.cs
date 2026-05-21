@@ -30,7 +30,7 @@ namespace Bodu.Globalization.Calendar;
 /// </para>
 /// <code>
 ///<![CDATA[
-/// IReadOnlyList&lt;NotableDate&gt; resolved = new DefaultNotableDateCollisionResolver().Resolve(
+/// IReadOnlyList<NotableDate> resolved = new DefaultNotableDateCollisionResolver().Resolve(
 ///     new DateTime(2027, 4, 25),
 ///     new[]
 ///     {

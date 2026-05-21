@@ -36,10 +36,18 @@ namespace Bodu.Extensions;
 /// </para>
 /// <example>
 /// <code language="csharp">
-///<![CDATA[ int volume = 11; // Replace explicit min/max calls with a fluent clamp. int safeVolume =
-/// volume.Clamp(0, 10); // => 10 // Inclusive "between" predicate, ideal in guard clauses. bool inDecimalDigits =
-/// '7'.IsBetween('0', '9'); // => true // Custom comparer for case-insensitive string ranges. bool inMidAlphabet =
-/// "Mango".IsBetween("apple", "orange", StringComparer.OrdinalIgnoreCase); // => true ]]>
+///<![CDATA[
+/// int volume = 11;
+///
+/// // Replace explicit min/max calls with a fluent clamp.
+/// int safeVolume = volume.Clamp(0, 10); // => 10
+///
+/// // Inclusive "between" predicate, ideal in guard clauses.
+/// bool inDecimalDigits = '7'.IsBetween('0', '9'); // => true
+///
+/// // Custom comparer for case-insensitive string ranges.
+/// bool inMidAlphabet = "Mango".IsBetween("apple", "orange", StringComparer.OrdinalIgnoreCase); // => true
+///]]>
 /// </code>
 /// </example>
 /// </remarks>

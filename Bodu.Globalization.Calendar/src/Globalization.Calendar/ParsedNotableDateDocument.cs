@@ -40,14 +40,14 @@ namespace Bodu.Globalization.Calendar;
 /// <code>
 ///<![CDATA[
 /// const string xml = """
-///     &lt;NotableDates xmlns="urn:bodu:globalization:calendar"&gt;
-///       &lt;Use source="Bodu/Globalization/Calendar/Resources/global-public.xml"&gt;
-///         &lt;Rule sourceName="New Year's Day" territoryCode="AU" /&gt;
-///       &lt;/Use&gt;
-///       &lt;Rule name="Australia Day" category="Public" territoryCode="AU" isNonWorkingDay="true"&gt;
-///         &lt;Fixed month="1" day="26" /&gt;
-///       &lt;/Rule&gt;
-///     &lt;/NotableDates&gt;
+///     <NotableDates xmlns="urn:bodu:globalization:calendar">
+///       <Use source="Bodu/Globalization/Calendar/Resources/global-public.xml">
+///         <Rule sourceName="New Year's Day" territoryCode="AU" />
+///       </Use>
+///       <Rule name="Australia Day" category="Public" territoryCode="AU" isNonWorkingDay="true">
+///         <Fixed month="1" day="26" />
+///       </Rule>
+///     </NotableDates>
 ///     """;
 ///
 /// ParsedNotableDateDocument document = NotableDateRuleParser.ParseDocument(xml);

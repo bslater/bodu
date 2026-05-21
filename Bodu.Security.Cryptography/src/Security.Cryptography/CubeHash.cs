@@ -59,8 +59,11 @@ namespace Bodu.Security.Cryptography;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// using Bodu.Security.Cryptography; // Default parameters: 512-bit output, 32-byte input
-/// block, 16/16/32 rounds. using var cube = new CubeHash(); byte[] digest = cube.ComputeHash(message);
+/// using Bodu.Security.Cryptography;
+///
+/// // Default parameters: 512-bit output, 32-byte input block, 16/16/32 rounds.
+/// using var cube = new CubeHash();
+/// byte[] digest = cube.ComputeHash(message);
 ///]]>
 /// </code>
 /// </example>

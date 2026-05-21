@@ -49,13 +49,22 @@ namespace Bodu.Security.Cryptography.Extensions;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// using System.Security.Cryptography; using Bodu.Security.Cryptography; using
-/// Bodu.Security.Cryptography.Extensions; using TweakableSymmetricAlgorithm tf = new Threefish256(); // 1. Validate
-/// user-supplied key/IV/tweak without catching CryptographicException. if (!tf.TryCreateEncryptor(suppliedKey,
-/// suppliedIv, suppliedTweak, out ICryptoTransform? encryptor)) return BadRequest("invalid key, iv, or tweak"); using
-/// (encryptor) { /* … encrypt with the validated transform … */ } // 2. Round-trip pairing — same try-pattern shape for
-/// the decryptor. if (tf.TryCreateDecryptor(suppliedKey, suppliedIv, suppliedTweak, out ICryptoTransform? decryptor)) {
-/// using (decryptor) { /* … decrypt … */ } }
+/// using System.Security.Cryptography;
+/// using Bodu.Security.Cryptography;
+/// using Bodu.Security.Cryptography.Extensions;
+///
+/// using TweakableSymmetricAlgorithm tf = new Threefish256();
+///
+/// // 1. Validate user-supplied key/IV/tweak without catching CryptographicException.
+/// if (!tf.TryCreateEncryptor(suppliedKey, suppliedIv, suppliedTweak, out ICryptoTransform? encryptor))
+///     return BadRequest("invalid key, iv, or tweak");
+/// using (encryptor) { /* … encrypt with the validated transform … */ }
+///
+/// // 2. Round-trip pairing — same try-pattern shape for the decryptor.
+/// if (tf.TryCreateDecryptor(suppliedKey, suppliedIv, suppliedTweak, out ICryptoTransform? decryptor))
+/// {
+///     using (decryptor) { /* … decrypt … */ }
+/// }
 ///]]>
 /// </code>
 /// </example>

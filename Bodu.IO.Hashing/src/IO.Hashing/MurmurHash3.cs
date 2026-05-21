@@ -53,11 +53,16 @@ namespace Bodu.IO.Hashing;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// using Bodu.IO.Hashing; using Bodu.IO.Hashing.Extensions; // 32-bit hash, default seed,
-/// suitable for in-memory hash tables. var m32 = new MurmurHash3_32(); uint h32 =
-/// BinaryPrimitives.ReadUInt32LittleEndian(m32.ComputeHash(keyBytes)); // 128-bit hash, custom seed for shard isolation
-/// across services. var m128 = new MurmurHash3_128(seed: 0xC2B2AE35u); byte[] fingerprint = m128.ComputeHash(payload);
+/// using Bodu.IO.Hashing;
+/// using Bodu.IO.Hashing.Extensions;
 ///
+/// // 32-bit hash, default seed, suitable for in-memory hash tables.
+/// var m32 = new MurmurHash3_32();
+/// uint h32 = BinaryPrimitives.ReadUInt32LittleEndian(m32.ComputeHash(keyBytes));
+///
+/// // 128-bit hash, custom seed for shard isolation across services.
+/// var m128 = new MurmurHash3_128(seed: 0xC2B2AE35u);
+/// byte[] fingerprint = m128.ComputeHash(payload);
 ///]]>
 /// </code>
 /// </example>

@@ -57,7 +57,10 @@ namespace Bodu.IO.Hashing;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// using Bodu.IO.Hashing; using Bodu.IO.Hashing.Extensions; var city = new CityHash64();
+/// using Bodu.IO.Hashing;
+/// using Bodu.IO.Hashing.Extensions;
+///
+/// var city = new CityHash64();
 /// byte[] fingerprint = city.ComputeHash(blob);
 ///]]>
 /// </code>

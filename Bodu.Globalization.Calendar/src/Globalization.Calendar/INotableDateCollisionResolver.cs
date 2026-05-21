@@ -31,7 +31,7 @@ namespace Bodu.Globalization.Calendar;
 ///<![CDATA[
 /// public sealed class HighestPriorityCollisionResolver : INotableDateCollisionResolver
 /// {
-///     public IReadOnlyList&lt;NotableDate&gt; Resolve(DateTime date, IReadOnlyList&lt;NotableDate&gt; overlapping)
+///     public IReadOnlyList<NotableDate> Resolve(DateTime date, IReadOnlyList<NotableDate> overlapping)
 ///     {
 ///         NotableDate winner = overlapping
 ///             .OrderBy(d => (int)d.Category)

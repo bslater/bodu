@@ -30,14 +30,15 @@ namespace Bodu.Security.Cryptography;
 /// bytes).
 /// </para>
 /// <para>
-/// Offset initialization uses the RFC 7253 §2.4 K_top stretch: <code>
+/// Offset initialization uses the RFC 7253 §2.4 K_top stretch:
+/// <code>
 ///<![CDATA[
 ///   Nonce  = num2str(TAGLEN mod 128, 7) || zeros(120-bitlen(N)) || 1 || N
 ///   bottom = str2num(Nonce[123..128])
 ///   K_top  = ENCIPHER(K, Nonce[1..122] || zeros(6))
 ///   Stretch = K_top || (K_top[1..64] XOR K_top[9..72])   -- adjacent-byte XOR
 ///   Offset_0 = Stretch[1+bottom..128+bottom]
-///  ]]>
+///]]>
 /// </code>
 /// </para>
 /// <para>

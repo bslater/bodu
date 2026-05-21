@@ -62,10 +62,15 @@ namespace Bodu.Security.Cryptography;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// using System.Security.Cryptography; using Bodu.Security.Cryptography; using
-/// Bodu.Security.Cryptography.Extensions; using var camellia = new Camellia(); camellia.GenerateKey(); // 256-bit by
-/// default camellia.GenerateIV(); byte[] ciphertext = camellia.Encrypt(plaintext); byte[] roundTrip =
-/// camellia.Decrypt(ciphertext);
+/// using System.Security.Cryptography;
+/// using Bodu.Security.Cryptography;
+/// using Bodu.Security.Cryptography.Extensions;
+///
+/// using var camellia = new Camellia();
+/// camellia.GenerateKey(); // 256-bit by default
+/// camellia.GenerateIV();
+/// byte[] ciphertext = camellia.Encrypt(plaintext);
+/// byte[] roundTrip = camellia.Decrypt(ciphertext);
 ///]]>
 /// </code>
 /// </example>

@@ -56,9 +56,11 @@ namespace Bodu.Security.Cryptography;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// using var skein = new Skein512(); // Skein-512-512 (the canonical configuration) byte[]
-/// digest = skein.ComputeHash(message); using var skeinMac = new Skein512 { Key = key }; // Skein-MAC-512-512 byte[]
-/// tag = skeinMac.ComputeHash(message);
+/// using var skein = new Skein512(); // Skein-512-512 (the canonical configuration)
+/// byte[] digest = skein.ComputeHash(message);
+///
+/// using var skeinMac = new Skein512 { Key = key }; // Skein-MAC-512-512
+/// byte[] tag = skeinMac.ComputeHash(message);
 ///]]>
 /// </code>
 /// </example>

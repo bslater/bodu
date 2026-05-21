@@ -41,7 +41,7 @@ namespace Bodu.Globalization.Calendar;
 ///     TerritoryCode: "AU-NT");
 ///
 /// // Returned from an INotableDateRuleOverrideProvider:
-/// public IEnumerable&lt;RuleRemoval&gt; GetRemovals()
+/// public IEnumerable<RuleRemoval> GetRemovals()
 /// {
 ///     yield return boxingDay2026;
 ///     yield return picnicDayNT;

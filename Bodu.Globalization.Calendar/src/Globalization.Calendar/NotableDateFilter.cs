@@ -55,7 +55,7 @@ namespace Bodu.Globalization.Calendar;
 ///     .ForCategory(NotableDateCategory.Public)
 ///     .And(NotableDateFilter.IsNonWorkingDay());
 ///
-/// IReadOnlyList&lt;NotableDate&gt; holidays = service.GetNotableDates(2026, filter, "AU-NSW");
+/// IReadOnlyList<NotableDate> holidays = service.GetNotableDates(2026, filter, "AU-NSW");
 ///
 /// // Public or cultural dates tagged "Christian":
 /// NotableDateFilter christian = NotableDateFilter

@@ -47,9 +47,12 @@ public static partial class SequenceGenerator
     /// </remarks>
     /// <example>
     /// <code language="csharp">
-    ///<![CDATA[ foreach (long f in SequenceGenerator.Fibonacci(10, 1000)) Console.Write($"{f} "); // =>
-    /// 13 21 34 55 89 144 233 377 610 987 var none = SequenceGenerator.Fibonacci(50, 54).ToArray(); // => empty (no
-    /// Fibonacci numbers between 50 and 54). ]]>
+    ///<![CDATA[
+    /// foreach (long f in SequenceGenerator.Fibonacci(10, 1000))
+    ///     Console.Write($"{f} "); // => 13 21 34 55 89 144 233 377 610 987
+    ///
+    /// var none = SequenceGenerator.Fibonacci(50, 54).ToArray(); // => empty (no Fibonacci numbers between 50 and 54).
+    ///]]>
     /// </code>
     /// </example>
     public static IEnumerable<long> Fibonacci(long min, long max)

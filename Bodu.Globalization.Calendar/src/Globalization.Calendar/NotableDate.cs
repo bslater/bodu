@@ -32,7 +32,7 @@ namespace Bodu.Globalization.Calendar;
 /// <code>
 ///<![CDATA[
 /// INotableDateService service = new NotableDateService();
-/// IReadOnlyList&lt;NotableDate&gt; dates = service.GetNotableDates(2026, territoryCode: "AU");
+/// IReadOnlyList<NotableDate> dates = service.GetNotableDates(2026, territoryCode: "AU");
 ///
 /// foreach (NotableDate date in dates)
 /// {

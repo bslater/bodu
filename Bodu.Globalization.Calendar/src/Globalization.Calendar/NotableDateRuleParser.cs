@@ -47,27 +47,27 @@ namespace Bodu.Globalization.Calendar;
 /// <code>
 ///<![CDATA[
 /// const string xml = """
-///     &lt;NotableDates xmlns="urn:bodu:globalization:calendar"&gt;
-///       &lt;Rule name="Australia Day" category="Public" territoryCode="AU" isNonWorkingDay="true"&gt;
-///         &lt;Fixed month="1" day="26" /&gt;
-///         &lt;Adjustment key="weekend-roll"
+///     <NotableDates xmlns="urn:bodu:globalization:calendar">
+///       <Rule name="Australia Day" category="Public" territoryCode="AU" isNonWorkingDay="true">
+///         <Fixed month="1" day="26" />
+///         <Adjustment key="weekend-roll"
 ///                     trigger="IfWeekend"
 ///                     action="MoveToNextMonday"
-///                     isNonWorkingDay="true" /&gt;
-///       &lt;/Rule&gt;
-///       &lt;Rule name="Easter Sunday" category="Religious"&gt;
-///         &lt;Algorithm key="easter-sunday" /&gt;
-///       &lt;/Rule&gt;
-///     &lt;/NotableDates&gt;
+///                     isNonWorkingDay="true" />
+///       </Rule>
+///       <Rule name="Easter Sunday" category="Religious">
+///         <Algorithm key="easter-sunday" />
+///       </Rule>
+///     </NotableDates>
 ///     """;
 ///
-/// List&lt;NotableDateRule&gt; rules = NotableDateRuleParser.ParseXml(xml);
+/// List<NotableDateRule> rules = NotableDateRuleParser.ParseXml(xml);
 /// // rules[0] is the Fixed Australia Day rule with one weekend-roll adjustment.
 /// // rules[1] is the Algorithm-backed Easter Sunday rule.
 ///
-/// // When &lt;Use&gt; directives also matter, parse the full document instead:
+/// // When <Use> directives also matter, parse the full document instead:
 /// ParsedNotableDateDocument document = NotableDateRuleParser.ParseDocument(xml);
-/// IReadOnlyList&lt;NotableDateRuleUseGroup&gt; imports = document.UseGroups;
+/// IReadOnlyList<NotableDateRuleUseGroup> imports = document.UseGroups;
 ///]]>
 /// </code>
 /// </example>

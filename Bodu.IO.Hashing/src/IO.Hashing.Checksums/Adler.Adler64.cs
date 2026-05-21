@@ -46,8 +46,11 @@ namespace Bodu.IO.Hashing.Checksums;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// using Bodu.IO.Hashing.Checksums; using Bodu.IO.Hashing.Extensions; var adler = new
-/// Adler64(); byte[] checksum = adler.ComputeHash(largePayload);
+/// using Bodu.IO.Hashing.Checksums;
+/// using Bodu.IO.Hashing.Extensions;
+///
+/// var adler = new Adler64();
+/// byte[] checksum = adler.ComputeHash(largePayload);
 ///]]>
 /// </code>
 /// </example>

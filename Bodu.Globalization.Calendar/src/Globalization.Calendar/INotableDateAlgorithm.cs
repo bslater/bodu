@@ -54,7 +54,7 @@ namespace Bodu.Globalization.Calendar;
 /// {
 ///     public DateTime? GetDate(int year, System.Globalization.Calendar? calendar = null)
 ///     {
-///         if (year &lt; 1) throw new ArgumentOutOfRangeException(nameof(year));
+///         if (year < 1) throw new ArgumentOutOfRangeException(nameof(year));
 ///
 ///         DateTime firstOfNovember = new(year, 11, 1);
 ///         int offset = ((int)DayOfWeek.Tuesday - (int)firstOfNovember.DayOfWeek + 7) % 7;

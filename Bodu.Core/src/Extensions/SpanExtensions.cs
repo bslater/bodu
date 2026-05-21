@@ -32,10 +32,18 @@ namespace Bodu.Extensions;
 /// </para>
 /// <example>
 /// <code language="csharp">
-///<![CDATA[ Span&lt;int&gt; buffer = stackalloc int[] { 1, 2, 3, 4, 5, 6 }; // Reverse only the
-/// trailing window using a Range. buffer.Reverse(2..); // => buffer is now { 1, 2, 6, 5, 4, 3 } // Narrow the surface
-/// before handing the span to a read-only consumer. ReadOnlySpan&lt;int&gt; view = buffer.AsReadOnly(); // Reverse the
-/// full span back to its original ordering. buffer.Reverse(); // => buffer is now { 3, 4, 5, 6, 2, 1 } ]]>
+///<![CDATA[
+/// Span<int> buffer = stackalloc int[] { 1, 2, 3, 4, 5, 6 };
+///
+/// // Reverse only the trailing window using a Range.
+/// buffer.Reverse(2..); // => buffer is now { 1, 2, 6, 5, 4, 3 }
+///
+/// // Narrow the surface before handing the span to a read-only consumer.
+/// ReadOnlySpan<int> view = buffer.AsReadOnly();
+///
+/// // Reverse the full span back to its original ordering.
+/// buffer.Reverse(); // => buffer is now { 3, 4, 5, 6, 2, 1 }
+///]]>
 /// </code>
 /// </example>
 /// </remarks>

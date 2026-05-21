@@ -29,8 +29,9 @@ namespace Bodu.Globalization.Calendar.Data.AsiaPacific;
 /// <example>
 /// <code>
 ///<![CDATA[
-/// var service = new NotableDateService( ruleProviders: AsiaPacificCalendarData.CreateProviders(),
-/// workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
+/// var service = new NotableDateService(
+///     ruleProviders: AsiaPacificCalendarData.CreateProviders(),
+///     workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 ///]]>
 /// </code>
 /// </example>

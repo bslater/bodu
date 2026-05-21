@@ -69,8 +69,8 @@ namespace Bodu.Security.Cryptography;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// using var tiger = new Tiger(192) { Variant = TigerHashingVariant.Tiger2 }; byte[] digest =
-/// tiger.ComputeHash(message);
+/// using var tiger = new Tiger(192) { Variant = TigerHashingVariant.Tiger2 };
+/// byte[] digest = tiger.ComputeHash(message);
 ///]]>
 /// </code>
 /// </example>

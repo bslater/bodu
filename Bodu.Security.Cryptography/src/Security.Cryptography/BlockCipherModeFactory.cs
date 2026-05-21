@@ -26,7 +26,8 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// </remarks>
 /// <example>
-/// The following example composes a block cipher, a CBC mode transform, and PKCS#7 padding to encrypt a message: <code>
+/// The following example composes a block cipher, a CBC mode transform, and PKCS#7 padding to encrypt a message:
+/// <code>
 ///<![CDATA[
 /// using IBlockCipher cipher = /* construct an IBlockCipher, e.g. an AES wrapper */;
 /// IBlockCipherModeTransform mode = BlockCipherModeFactory.Create(CipherBlockMode.CBC, cipher, iv);

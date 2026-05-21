@@ -35,8 +35,11 @@ namespace Bodu.IO.Hashing;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// using Bodu.IO.Hashing; using Bodu.IO.Hashing.Extensions; var js = new JSHash(); byte[]
-/// digest = js.ComputeHash(System.Text.Encoding.UTF8.GetBytes("input-key"));
+/// using Bodu.IO.Hashing;
+/// using Bodu.IO.Hashing.Extensions;
+///
+/// var js = new JSHash();
+/// byte[] digest = js.ComputeHash(System.Text.Encoding.UTF8.GetBytes("input-key"));
 ///]]>
 /// </code>
 /// </example>
