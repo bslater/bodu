@@ -37,11 +37,22 @@ namespace Bodu.IO.Hashing.Checksums;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// using Bodu.IO.Hashing.Checksums; // Most callers do not interact with the cache directly —
-/// Crc resolves it through Crc.GlobalCache. var crc = new Crc(CrcStandard.CRC32_ISOHDLC); // Use a scoped cache for an
-/// isolated test, then restore the default. CrcLookupTableCache previous = Crc.GlobalCache; try { Crc.GlobalCache = new
-/// CrcLookupTableCache(); // ... run isolated tests against a fresh cache ... } finally { Crc.GlobalCache = previous; }
+/// using Bodu.IO.Hashing.Checksums;
 ///
+/// // Most callers do not interact with the cache directly — Crc resolves it through Crc.GlobalCache.
+/// var crc = new Crc(CrcStandard.CRC32_ISOHDLC);
+///
+/// // Use a scoped cache for an isolated test, then restore the default.
+/// CrcLookupTableCache previous = Crc.GlobalCache;
+/// try
+/// {
+///     Crc.GlobalCache = new CrcLookupTableCache();
+///     // ... run isolated tests against a fresh cache ...
+/// }
+/// finally
+/// {
+///     Crc.GlobalCache = previous;
+/// }
 ///]]>
 /// </code>
 /// </example>

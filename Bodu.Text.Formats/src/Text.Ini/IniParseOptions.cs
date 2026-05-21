@@ -18,8 +18,11 @@ namespace Bodu.Text.Ini;
 /// <example>
 /// <code>
 ///<![CDATA[
-/// IniParseOptions options = new IniParseOptions { AllowGlobalSection = false, DuplicateKeyBehavior =
-/// IniDuplicateKeyBehavior.FirstWins, };
+/// IniParseOptions options = new IniParseOptions
+/// {
+///     AllowGlobalSection = false,
+///     DuplicateKeyBehavior = IniDuplicateKeyBehavior.FirstWins,
+/// };
 ///]]>
 /// </code>
 /// </example>

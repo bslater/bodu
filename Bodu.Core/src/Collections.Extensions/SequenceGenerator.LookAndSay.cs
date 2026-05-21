@@ -40,8 +40,16 @@ public static partial class SequenceGenerator
     /// </remarks>
     /// <example>
     /// <code language="csharp">
-    ///<![CDATA[ foreach (string term in SequenceGenerator.LookAndSay(6)) Console.WriteLine(term); // =>
-    /// 1 // => 11 // => 21 // => 1211 // => 111221 // => 312211 ]]>
+    ///<![CDATA[
+    /// foreach (string term in SequenceGenerator.LookAndSay(6))
+    ///     Console.WriteLine(term);
+    /// // => 1
+    /// // => 11
+    /// // => 21
+    /// // => 1211
+    /// // => 111221
+    /// // => 312211
+    ///]]>
     /// </code>
     /// </example>
     public static IEnumerable<string> LookAndSay(int count)

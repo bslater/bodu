@@ -36,8 +36,11 @@ namespace Bodu.IO.Hashing;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// using Bodu.IO.Hashing; using Bodu.IO.Hashing.Extensions; var pjw = new Pjw32(); byte[]
-/// digest = pjw.ComputeHash(System.Text.Encoding.ASCII.GetBytes("symbol_name"));
+/// using Bodu.IO.Hashing;
+/// using Bodu.IO.Hashing.Extensions;
+///
+/// var pjw = new Pjw32();
+/// byte[] digest = pjw.ComputeHash(System.Text.Encoding.ASCII.GetBytes("symbol_name"));
 ///]]>
 /// </code>
 /// </example>

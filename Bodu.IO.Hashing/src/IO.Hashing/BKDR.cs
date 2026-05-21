@@ -40,9 +40,12 @@ namespace Bodu.IO.Hashing;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// using Bodu.IO.Hashing; using Bodu.IO.Hashing.Extensions; // Default seed (131); appropriate
-/// for short identifier keys. var bkdr = new BKDR(); byte[] digest =
-/// bkdr.ComputeHash(System.Text.Encoding.UTF8.GetBytes("Identifier"));
+/// using Bodu.IO.Hashing;
+/// using Bodu.IO.Hashing.Extensions;
+///
+/// // Default seed (131); appropriate for short identifier keys.
+/// var bkdr = new BKDR();
+/// byte[] digest = bkdr.ComputeHash(System.Text.Encoding.UTF8.GetBytes("Identifier"));
 ///]]>
 /// </code>
 /// </example>

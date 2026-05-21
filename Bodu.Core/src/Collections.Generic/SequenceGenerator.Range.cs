@@ -35,8 +35,13 @@ public static partial class SequenceGenerator
     /// </remarks>
     /// <example>
     /// <code language="csharp">
-    ///<![CDATA[ foreach (int n in SequenceGenerator.Range(10, 14)) Console.Write($"{n} "); // => 10 11
-    /// 12 13 14 foreach (int n in SequenceGenerator.Range(3, -2)) Console.Write($"{n} "); // => 3 2 1 0 -1 -2 ]]>
+    ///<![CDATA[
+    /// foreach (int n in SequenceGenerator.Range(10, 14))
+    ///     Console.Write($"{n} "); // => 10 11 12 13 14
+    ///
+    /// foreach (int n in SequenceGenerator.Range(3, -2))
+    ///     Console.Write($"{n} "); // => 3 2 1 0 -1 -2
+    ///]]>
     /// </code>
     /// </example>
     public static IEnumerable<int> Range(int start, int stop) => SequenceGenerator.Range(start, stop, start < stop ? 1 : -1);
@@ -79,10 +84,16 @@ public static partial class SequenceGenerator
     /// </remarks>
     /// <example>
     /// <code language="csharp">
-    ///<![CDATA[ foreach (int n in SequenceGenerator.Range(0, 20, 5)) Console.Write($"{n} "); // => 0 5
-    /// 10 15 20 foreach (int n in SequenceGenerator.Range(10, 1, -3)) Console.Write($"{n} "); // => 10 7 4 1 // Step of
-    /// zero yields an unbounded sequence — bound it with Take. var heartbeat = SequenceGenerator.Range(42, 0,
-    /// 0).Take(3); // => 42, 42, 42 ]]>
+    ///<![CDATA[
+    /// foreach (int n in SequenceGenerator.Range(0, 20, 5))
+    ///     Console.Write($"{n} "); // => 0 5 10 15 20
+    ///
+    /// foreach (int n in SequenceGenerator.Range(10, 1, -3))
+    ///     Console.Write($"{n} "); // => 10 7 4 1
+    ///
+    /// // Step of zero yields an unbounded sequence — bound it with Take.
+    /// var heartbeat = SequenceGenerator.Range(42, 0, 0).Take(3); // => 42, 42, 42
+    ///]]>
     /// </code>
     /// </example>
     public static IEnumerable<int> Range(int start, int stop, int step)
@@ -139,9 +150,12 @@ public static partial class SequenceGenerator
     /// </remarks>
     /// <example>
     /// <code language="csharp">
-    ///<![CDATA[ foreach (long n in SequenceGenerator.Range(1_000_000_000_000L, 4)) Console.Write($"{n}
-    /// "); // => 1000000000000 1000000000001 1000000000002 1000000000003 var empty = SequenceGenerator.Range(0L,
-    /// 0).ToArray(); // => empty.Length == 0 ]]>
+    ///<![CDATA[
+    /// foreach (long n in SequenceGenerator.Range(1_000_000_000_000L, 4))
+    ///     Console.Write($"{n} "); // => 1000000000000 1000000000001 1000000000002 1000000000003
+    ///
+    /// var empty = SequenceGenerator.Range(0L, 0).ToArray(); // => empty.Length == 0
+    ///]]>
     /// </code>
     /// </example>
     public static IEnumerable<long> Range(long start, int count)

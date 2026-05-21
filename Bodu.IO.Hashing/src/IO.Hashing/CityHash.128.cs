@@ -62,9 +62,12 @@ namespace Bodu.IO.Hashing;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// using Bodu.IO.Hashing; using Bodu.IO.Hashing.Extensions; var city = new CityHash128();
-/// byte[] fingerprint = city.ComputeHash(blob); // fingerprint = [low 64 bits || high 64 bits], each little-endian.
+/// using Bodu.IO.Hashing;
+/// using Bodu.IO.Hashing.Extensions;
 ///
+/// var city = new CityHash128();
+/// byte[] fingerprint = city.ComputeHash(blob);
+/// // fingerprint = [low 64 bits || high 64 bits], each little-endian.
 ///]]>
 /// </code>
 /// </example>

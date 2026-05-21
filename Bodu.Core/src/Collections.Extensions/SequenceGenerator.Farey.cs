@@ -38,8 +38,10 @@ public static partial class SequenceGenerator
     /// </remarks>
     /// <example>
     /// <code language="csharp">
-    ///<![CDATA[ foreach (var (num, den) in SequenceGenerator.Farey(5)) Console.Write($"{num}/{den} ");
-    /// // => 0/1 1/5 1/4 1/3 2/5 1/2 3/5 2/3 3/4 4/5 1/1 ]]>
+    ///<![CDATA[
+    /// foreach (var (num, den) in SequenceGenerator.Farey(5))
+    ///     Console.Write($"{num}/{den} "); // => 0/1 1/5 1/4 1/3 2/5 1/2 3/5 2/3 3/4 4/5 1/1
+    ///]]>
     /// </code>
     /// </example>
     public static IEnumerable<(int Numerator, int Denominator)> Farey(int order)

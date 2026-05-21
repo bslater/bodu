@@ -81,11 +81,11 @@ namespace Bodu.Globalization.Calendar;
 ///     });
 ///
 /// // Equivalent XML:
-/// // &lt;Use source="Bodu/Globalization/Calendar/Resources/au-public.xml"&gt;
-/// //   &lt;Rule sourceName="Anzac Day" territoryCode="AU-WA" isNonWorkingDay="true"&gt;
-/// //     &lt;Adjustment key="weekend-roll" trigger="IfWeekend" action="AddDays" offsetDays="2" isNonWorkingDay="true" /&gt;
-/// //   &lt;/Rule&gt;
-/// // &lt;/Use&gt;
+/// // <Use source="Bodu/Globalization/Calendar/Resources/au-public.xml">
+/// //   <Rule sourceName="Anzac Day" territoryCode="AU-WA" isNonWorkingDay="true">
+/// //     <Adjustment key="weekend-roll" trigger="IfWeekend" action="AddDays" offsetDays="2" isNonWorkingDay="true" />
+/// //   </Rule>
+/// // </Use>
 ///]]>
 /// </code>
 /// </example>

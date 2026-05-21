@@ -26,8 +26,12 @@ namespace Bodu.Text.Delimited;
 /// <example>
 /// <code>
 ///<![CDATA[
-/// using var reader = Delimited.CreateReader(File.OpenText("data.csv")); while (reader.Read()) { string name =
-/// reader.Fields[0]; string age = reader.Fields[1]; }
+/// using var reader = Delimited.CreateReader(File.OpenText("data.csv"));
+/// while (reader.Read())
+/// {
+///     string name = reader.Fields[0];
+///     string age = reader.Fields[1];
+/// }
 ///]]>
 /// </code>
 /// </example>

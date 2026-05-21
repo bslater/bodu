@@ -48,8 +48,12 @@ namespace Bodu.IO.Hashing.Checksums;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// using Bodu.IO.Hashing.Checksums; using Bodu.IO.Hashing.Extensions; // zlib-compatible
-/// Adler-32 of a deflate payload. var adler = new Adler32(); byte[] checksum = adler.ComputeHash(deflateBlock);
+/// using Bodu.IO.Hashing.Checksums;
+/// using Bodu.IO.Hashing.Extensions;
+///
+/// // zlib-compatible Adler-32 of a deflate payload.
+/// var adler = new Adler32();
+/// byte[] checksum = adler.ComputeHash(deflateBlock);
 ///]]>
 /// </code>
 /// </example>

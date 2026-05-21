@@ -49,8 +49,11 @@ namespace Bodu.IO.Hashing.Checksums;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// using Bodu.IO.Hashing.Checksums; using Bodu.IO.Hashing.Extensions; var f32 = new
-/// Fletcher32(); byte[] checksum = f32.ComputeHash(payload);
+/// using Bodu.IO.Hashing.Checksums;
+/// using Bodu.IO.Hashing.Extensions;
+///
+/// var f32 = new Fletcher32();
+/// byte[] checksum = f32.ComputeHash(payload);
 ///]]>
 /// </code>
 /// </example>

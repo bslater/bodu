@@ -29,11 +29,11 @@ namespace Bodu.Globalization.Calendar;
 ///<![CDATA[
 /// public sealed class InMemoryRuleProvider : INotableDateRuleProvider
 /// {
-///     private readonly IReadOnlyList&lt;NotableDateRule&gt; _rules;
+///     private readonly IReadOnlyList<NotableDateRule> _rules;
 ///
-///     public InMemoryRuleProvider(IReadOnlyList&lt;NotableDateRule&gt; rules) =&gt; _rules = rules;
+///     public InMemoryRuleProvider(IReadOnlyList<NotableDateRule> rules) => _rules = rules;
 ///
-///     public IEnumerable&lt;NotableDateRule&gt; LoadRules() =&gt; _rules;
+///     public IEnumerable<NotableDateRule> LoadRules() => _rules;
 /// }
 ///]]>
 /// </code>

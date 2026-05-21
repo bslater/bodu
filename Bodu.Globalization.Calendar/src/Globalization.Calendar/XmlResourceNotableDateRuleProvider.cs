@@ -75,7 +75,7 @@ namespace Bodu.Globalization.Calendar;
 ///     new ResourcePathResolver(),
 ///     assembly: resourceAssembly);
 ///
-/// // Load from a chain of assemblies (data pack first, main library as fallback for &lt;UseFrom&gt; targets):
+/// // Load from a chain of assemblies (data pack first, main library as fallback for <UseFrom> targets):
 /// var packProvider = new XmlResourceNotableDateRuleProvider(
 ///     "MyApp/Calendar/Resources/region-us.xml",
 ///     new ResourcePathResolver(),

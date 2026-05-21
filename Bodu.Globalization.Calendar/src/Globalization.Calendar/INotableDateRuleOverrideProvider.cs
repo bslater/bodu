@@ -26,13 +26,13 @@ namespace Bodu.Globalization.Calendar;
 ///<![CDATA[
 /// public sealed class CompanyCalendarOverrides : INotableDateRuleOverrideProvider
 /// {
-///     public IEnumerable&lt;RuleRemoval&gt; GetRemovals()
+///     public IEnumerable<RuleRemoval> GetRemovals()
 ///     {
 ///         // Remove Boxing Day for 2026 only:
 ///         yield return new RuleRemoval("Boxing Day", FromYear: 2026, ToYear: 2026);
 ///     }
 ///
-///     public IEnumerable&lt;NotableDateRule&gt; GetAdditions()
+///     public IEnumerable<NotableDateRule> GetAdditions()
 ///     {
 ///         yield return new NotableDateRule
 ///         {

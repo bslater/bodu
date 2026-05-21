@@ -56,7 +56,10 @@ namespace Bodu.IO.Hashing;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// using Bodu.IO.Hashing; using Bodu.IO.Hashing.Extensions; var city = new CityHash32();
+/// using Bodu.IO.Hashing;
+/// using Bodu.IO.Hashing.Extensions;
+///
+/// var city = new CityHash32();
 /// byte[] digest = city.ComputeHash(System.Text.Encoding.UTF8.GetBytes("session-key"));
 ///]]>
 /// </code>

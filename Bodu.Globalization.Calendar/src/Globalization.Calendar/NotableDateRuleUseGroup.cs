@@ -39,7 +39,7 @@ namespace Bodu.Globalization.Calendar;
 /// NotableDateRuleUseGroup global = new NotableDateRuleUseGroup(
 ///     SourceResource: "Bodu/Globalization/Calendar/Resources/global-public.xml",
 ///     UseAll: true,
-///     Uses: ImmutableArray&lt;NotableDateRuleUseDirective&gt;.Empty);
+///     Uses: ImmutableArray<NotableDateRuleUseDirective>.Empty);
 ///
 /// // From the AU public-holidays resource, pull only Anzac Day, retargeted to Western Australia:
 /// NotableDateRuleUseGroup australia = new NotableDateRuleUseGroup(
@@ -52,10 +52,10 @@ namespace Bodu.Globalization.Calendar;
 ///             IsNonWorkingDay: true)));
 ///
 /// // Equivalent XML:
-/// // &lt;Use source="...global-public.xml" useAll="true" /&gt;
-/// // &lt;Use source="...au-public.xml"&gt;
-/// //   &lt;Rule sourceName="Anzac Day" territoryCode="AU-WA" isNonWorkingDay="true" /&gt;
-/// // &lt;/Use&gt;
+/// // <Use source="...global-public.xml" useAll="true" />
+/// // <Use source="...au-public.xml">
+/// //   <Rule sourceName="Anzac Day" territoryCode="AU-WA" isNonWorkingDay="true" />
+/// // </Use>
 ///]]>
 /// </code>
 /// </example>
