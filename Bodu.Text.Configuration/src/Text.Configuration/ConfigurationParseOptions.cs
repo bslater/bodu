@@ -23,25 +23,22 @@ namespace Bodu.Text.Configuration;
 /// <see cref="For(ConfigurationProfile)" /> when the profile is data-driven (for example, read from configuration).
 /// </para>
 /// <para>
-/// <see cref="DiagnosticMode" /> is the most consequential knob. In
-/// <see cref="ConfigurationDiagnosticMode.Throw" /> the reader raises
-/// <see cref="ConfigurationParseException" /> on the first recoverable error; in
+/// <see cref="DiagnosticMode" /> is the most consequential knob. In <see cref="ConfigurationDiagnosticMode.Throw" />
+/// the reader raises <see cref="ConfigurationParseException" /> on the first recoverable error; in
 /// <see cref="ConfigurationDiagnosticMode.Collect" /> the parser drives through the document and reports every
-/// recoverable issue via the parse result's <see cref="ConfigurationParseResult.Diagnostics" /> list. Pair the
-/// latter with <see cref="ConfigurationDocument.ParseWithDiagnostics(string, ConfigurationParseOptions?)" />.
+/// recoverable issue via the parse result's <see cref="ConfigurationParseResult.Diagnostics" /> list. Pair the latter
+/// with <see cref="ConfigurationDocument.ParseWithDiagnostics(string, ConfigurationParseOptions?)" />.
 /// </para>
 /// <para>
-/// Key shape is delegated to <see cref="KeyOptions" />. Sharing one configured
-/// <see cref="ConfigurationKeyOptions" /> instance between parse and <see cref="ConfigurationResolveOptions" />
-/// keeps the parsed model and the resolved view's lookups consistent. Instances are safe to cache and share across
-/// threads because every property is <c>init</c>-only.
+/// Key shape is delegated to <see cref="KeyOptions" />. Sharing one configured <see cref="ConfigurationKeyOptions" />
+/// instance between parse and <see cref="ConfigurationResolveOptions" /> keeps the parsed model and the resolved view's
+/// lookups consistent. Instances are safe to cache and share across threads because every property is <c>init</c>-only.
 /// </para>
 /// </remarks>
 public sealed partial class ConfigurationParseOptions
 {
     /// <summary>
-    /// Gets the behaviour profile this option bag represents. The default is
-    /// <see cref="ConfigurationProfile.Bodu" />.
+    /// Gets the behaviour profile this option bag represents. The default is <see cref="ConfigurationProfile.Bodu" />.
     /// </summary>
     /// <returns>The selected profile.</returns>
     public ConfigurationProfile Profile { get; init; } = ConfigurationProfile.Bodu;
@@ -119,9 +116,9 @@ public sealed partial class ConfigurationParseOptions
     public Encoding DefaultEncoding { get; init; } = Encoding.UTF8;
 
     /// <summary>
-    /// Returns the subset of these options that maps onto an <see cref="Bodu.Text.Ini.IniParseOptions" />. Useful
-    /// when callers want to delegate basic INI parsing to <see cref="Bodu.Text.Ini.Ini" /> and layer
-    /// Configuration-specific features (globs, resolution, trivia) on top.
+    /// Returns the subset of these options that maps onto an <see cref="Bodu.Text.Ini.IniParseOptions" />. Useful when
+    /// callers want to delegate basic INI parsing to <see cref="Bodu.Text.Ini.Ini" /> and layer Configuration-specific
+    /// features (globs, resolution, trivia) on top.
     /// </summary>
     /// <returns>
     /// A projection that preserves duplicate-key handling and case sensitivity. Configuration features without an INI

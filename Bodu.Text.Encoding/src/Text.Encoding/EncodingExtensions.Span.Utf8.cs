@@ -36,8 +36,8 @@ public static partial class EncodingExtensions
     }
 
     /// <summary>
-    /// Encodes <paramref name="chars" /> as UTF-8 into <paramref name="destination" /> and returns the number of
-    /// bytes written.
+    /// Encodes <paramref name="chars" /> as UTF-8 into <paramref name="destination" /> and returns the number of bytes
+    /// written.
     /// </summary>
     /// <param name="chars">The character span to encode.</param>
     /// <param name="destination">The destination buffer. Must be large enough to hold the UTF-8 encoded output.</param>
@@ -49,8 +49,8 @@ public static partial class EncodingExtensions
         System.Text.Encoding.UTF8.GetBytes(chars, destination);
 
     /// <summary>
-    /// Attempts to encode <paramref name="chars" /> as UTF-8 into <paramref name="destination" /> without throwing
-    /// when the destination is too small.
+    /// Attempts to encode <paramref name="chars" /> as UTF-8 into <paramref name="destination" /> without throwing when
+    /// the destination is too small.
     /// </summary>
     /// <param name="chars">The character span to encode.</param>
     /// <param name="destination">The destination buffer.</param>
@@ -93,8 +93,8 @@ public static partial class EncodingExtensions
         System.Text.Encoding.UTF8.GetChars(bytes, destination);
 
     /// <summary>
-    /// Attempts to decode <paramref name="bytes" /> as UTF-8 into <paramref name="destination" /> without throwing
-    /// when the destination is too small.
+    /// Attempts to decode <paramref name="bytes" /> as UTF-8 into <paramref name="destination" /> without throwing when
+    /// the destination is too small.
     /// </summary>
     /// <param name="bytes">The UTF-8 encoded byte span.</param>
     /// <param name="destination">The destination buffer.</param>

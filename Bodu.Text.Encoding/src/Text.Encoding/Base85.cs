@@ -53,7 +53,6 @@ namespace Bodu.Text.Encoding;
 /// </example>
 public static partial class Base85
 {
-
     private const string Ascii85Alphabet = "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstu";
 
     /// <summary>

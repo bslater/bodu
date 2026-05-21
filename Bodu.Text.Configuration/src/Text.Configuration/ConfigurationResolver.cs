@@ -9,8 +9,8 @@ using Bodu.Text.Ini;
 namespace Bodu.Text.Configuration;
 
 /// <summary>
-/// Projects an <see cref="IniDocument" /> into a flattened <see cref="ConfigurationView" /> for a specific target
-/// path, applying glob matching, preamble layering, and the EditorConfig <c>unset</c> sentinel.
+/// Projects an <see cref="IniDocument" /> into a flattened <see cref="ConfigurationView" /> for a specific target path,
+/// applying glob matching, preamble layering, and the EditorConfig <c>unset</c> sentinel.
 /// </summary>
 internal sealed class ConfigurationResolver
 {

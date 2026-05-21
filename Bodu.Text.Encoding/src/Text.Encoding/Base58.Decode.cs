@@ -10,7 +10,6 @@ namespace Bodu.Text.Encoding;
 
 public static partial class Base58
 {
-
     /// <summary>
     /// Decodes a Base58 string into a byte array using the supplied variant.
     /// </summary>
@@ -44,10 +43,11 @@ public static partial class Base58
     {
         var lookup = GetLookup(variant);
 
-        if (chars.IsEmpty)
-            return Array.Empty<byte>();
-
-        return !TryDecodeCore(chars, lookup, style, out var result, out var error) ? throw new FormatException(error) : result!;
+        return chars.IsEmpty
+            ? []
+            : TryDecodeCore(chars, lookup, style, out var result, out var error)
+                ? result!
+                : throw new FormatException(error);
     }
 
     /// <summary>

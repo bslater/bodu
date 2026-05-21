@@ -11,12 +11,12 @@ namespace Bodu.Text.Configuration;
 /// <summary>
 /// Emits an <see cref="IniDocument" /> to a <see cref="TextWriter" /> according to a
 /// <see cref="ConfigurationWriteOptions" />. Used by
-/// <see cref="ConfigurationDocument.Save(IniDocument, string, ConfigurationWriteOptions?)" /> and its
-/// stream/reader overloads.
+/// <see cref="ConfigurationDocument.Save(IniDocument, string, ConfigurationWriteOptions?)" /> and its stream/reader
+/// overloads.
 /// </summary>
 /// <remarks>
-/// Unlike <see cref="Bodu.Text.Ini.Ini.Format(IniDocument)" /> — which always emits trivia using the INI defaults — this writer
-/// honors the Bodu-specific options: <see cref="ConfigurationWriteOptions.KeyValueSeparator" />,
+/// Unlike <see cref="Bodu.Text.Ini.Ini.Format(IniDocument)" /> — which always emits trivia using the INI defaults —
+/// this writer honors the Bodu-specific options: <see cref="ConfigurationWriteOptions.KeyValueSeparator" />,
 /// <see cref="ConfigurationWriteOptions.NewLine" />, <see cref="ConfigurationWriteOptions.PreserveComments" />,
 /// <see cref="ConfigurationWriteOptions.WriteInlineComments" />, and
 /// <see cref="ConfigurationWriteOptions.InsertBlankLineBetweenSections" />.

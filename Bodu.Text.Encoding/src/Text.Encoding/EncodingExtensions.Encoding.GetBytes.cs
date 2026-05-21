@@ -31,8 +31,8 @@ public static partial class EncodingExtensions
     /// </exception>
     /// <remarks>
     /// Provided as the encoding-receiver mirror of
-    /// <see cref="TryEncodeTo(ReadOnlySpan{char}, System.Text.Encoding, Span{byte}, out int)" /> so that fluent
-    /// code starting from an <see cref="System.Text.Encoding" /> reference remains symmetrical.
+    /// <see cref="TryEncodeTo(ReadOnlySpan{char}, System.Text.Encoding, Span{byte}, out int)" /> so that fluent code
+    /// starting from an <see cref="System.Text.Encoding" /> reference remains symmetrical.
     /// </remarks>
     public static bool TryGetBytes(
         this System.Text.Encoding encoding,
@@ -46,8 +46,8 @@ public static partial class EncodingExtensions
     }
 
     /// <summary>
-    /// Encodes <paramref name="chars" /> into <paramref name="destination" /> using <paramref name="encoding" />
-    /// and asserts that <paramref name="destination" /> is exactly the size required.
+    /// Encodes <paramref name="chars" /> into <paramref name="destination" /> using <paramref name="encoding" /> and
+    /// asserts that <paramref name="destination" /> is exactly the size required.
     /// </summary>
     /// <param name="encoding">The encoding used to produce the bytes.</param>
     /// <param name="chars">The character span to encode.</param>
@@ -72,11 +72,10 @@ public static partial class EncodingExtensions
         ThrowHelper.ThrowIfNull(encoding);
 
         var required = encoding.GetByteCount(chars);
-        if (destination.Length != required)
-            throw new ArgumentException(
+        return destination.Length == required
+            ? encoding.GetBytes(chars, destination)
+            : throw new ArgumentException(
                 EncodingResourceStrings.Arg_Invalid_DestinationNotExactSizeForEncoded,
                 nameof(destination));
-
-        return encoding.GetBytes(chars, destination);
     }
 }

@@ -21,9 +21,9 @@ public static partial class EncodingExtensions
     /// Thrown when <paramref name="encoding" /> is <see langword="null" />.
     /// </exception>
     /// <remarks>
-    /// This routes through <see cref="System.Text.Encoding.GetByteCount(ReadOnlySpan{char})" /> and walks the
-    /// input to produce the exact value, unlike <see cref="System.Text.Encoding.GetMaxByteCount(int)" /> which
-    /// returns a worst-case upper bound.
+    /// This routes through <see cref="System.Text.Encoding.GetByteCount(ReadOnlySpan{char})" /> and walks the input to
+    /// produce the exact value, unlike <see cref="System.Text.Encoding.GetMaxByteCount(int)" /> which returns a
+    /// worst-case upper bound.
     /// </remarks>
     public static int GetEncodedByteCount(this ReadOnlySpan<char> chars, System.Text.Encoding encoding)
     {
@@ -39,7 +39,8 @@ public static partial class EncodingExtensions
     /// <param name="chars">The character span to encode.</param>
     /// <param name="encoding">The encoding used to produce the bytes.</param>
     /// <returns>
-    /// A new byte array whose length is exactly <see cref="GetEncodedByteCount(ReadOnlySpan{char}, System.Text.Encoding)" />.
+    /// A new byte array whose length is exactly
+    /// <see cref="GetEncodedByteCount(ReadOnlySpan{char}, System.Text.Encoding)" />.
     /// </returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="encoding" /> is <see langword="null" />.
@@ -61,8 +62,8 @@ public static partial class EncodingExtensions
     }
 
     /// <summary>
-    /// Encodes <paramref name="chars" /> into <paramref name="destination" /> using <paramref name="encoding" />
-    /// and returns the number of bytes written.
+    /// Encodes <paramref name="chars" /> into <paramref name="destination" /> using <paramref name="encoding" /> and
+    /// returns the number of bytes written.
     /// </summary>
     /// <param name="chars">The character span to encode.</param>
     /// <param name="encoding">The encoding used to produce the bytes.</param>
@@ -89,8 +90,8 @@ public static partial class EncodingExtensions
     }
 
     /// <summary>
-    /// Encodes <paramref name="chars" /> into <paramref name="destination" /> using <paramref name="encoding" />
-    /// and asserts that <paramref name="destination" /> is exactly the size required.
+    /// Encodes <paramref name="chars" /> into <paramref name="destination" /> using <paramref name="encoding" /> and
+    /// asserts that <paramref name="destination" /> is exactly the size required.
     /// </summary>
     /// <param name="chars">The character span to encode.</param>
     /// <param name="encoding">The encoding used to produce the bytes.</param>
@@ -108,8 +109,8 @@ public static partial class EncodingExtensions
     /// <paramref name="chars" /> contains a code point that cannot be represented.
     /// </exception>
     /// <remarks>
-    /// Use this overload when the caller has pre-sized the destination to match the exact encoded length and
-    /// wants the encode call itself to enforce that contract.
+    /// Use this overload when the caller has pre-sized the destination to match the exact encoded length and wants the
+    /// encode call itself to enforce that contract.
     /// </remarks>
     public static int EncodeExactlyTo(
         this ReadOnlySpan<char> chars,
@@ -119,12 +120,11 @@ public static partial class EncodingExtensions
         ThrowHelper.ThrowIfNull(encoding);
 
         var required = encoding.GetByteCount(chars);
-        if (destination.Length != required)
-            throw new ArgumentException(
+        return destination.Length == required
+            ? encoding.GetBytes(chars, destination)
+            : throw new ArgumentException(
                 EncodingResourceStrings.Arg_Invalid_DestinationNotExactSizeForEncoded,
                 nameof(destination));
-
-        return encoding.GetBytes(chars, destination);
     }
 
     /// <summary>
@@ -169,8 +169,8 @@ public static partial class EncodingExtensions
     /// The pool to rent from. Defaults to <see cref="MemoryPool{T}.Shared" /> when <see langword="null" />.
     /// </param>
     /// <returns>
-    /// An <see cref="IMemoryOwner{T}" /> whose <see cref="IMemoryOwner{T}.Memory" /> length equals exactly the
-    /// number of encoded bytes. Dispose to return the rented buffer to the pool.
+    /// An <see cref="IMemoryOwner{T}" /> whose <see cref="IMemoryOwner{T}.Memory" /> length equals exactly the number
+    /// of encoded bytes. Dispose to return the rented buffer to the pool.
     /// </returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="encoding" /> is <see langword="null" />.
@@ -180,10 +180,10 @@ public static partial class EncodingExtensions
     /// <paramref name="chars" /> contains a code point that cannot be represented.
     /// </exception>
     /// <remarks>
-    /// Prefer the <see cref="System.Text.Encoding" />-receiver variant <c>GetBytesPooled</c> when the caller
-    /// already needs the concrete <see cref="Buffers.PooledBufferBuilder{T}" /> capabilities
-    /// (<see cref="Buffers.PooledBufferBuilder{T}.WrittenSpan" />, <see cref="IBufferWriter{T}" /> integration).
-    /// This method returns the same buffer behind the <see cref="IMemoryOwner{T}" /> abstraction.
+    /// Prefer the <see cref="System.Text.Encoding" />-receiver variant <c>GetBytesPooled</c> when the caller already
+    /// needs the concrete <see cref="Buffers.PooledBufferBuilder{T}" /> capabilities (
+    /// <see cref="Buffers.PooledBufferBuilder{T}.WrittenSpan" />, <see cref="IBufferWriter{T}" /> integration). This
+    /// method returns the same buffer behind the <see cref="IMemoryOwner{T}" /> abstraction.
     /// </remarks>
     public static IMemoryOwner<byte> ToOwnedBytes(
         this ReadOnlySpan<char> chars,

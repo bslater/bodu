@@ -10,7 +10,6 @@ namespace Bodu.Text.Encoding;
 
 public static partial class Base64
 {
-
     /// <summary>
     /// The Standard variant alphabet, used for UTF-8 encode paths.
     /// </summary>

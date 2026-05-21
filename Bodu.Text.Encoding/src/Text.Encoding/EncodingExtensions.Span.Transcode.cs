@@ -23,14 +23,12 @@ public static partial class EncodingExtensions
     /// <see langword="null" />.
     /// </exception>
     /// <exception cref="System.Text.DecoderFallbackException">
-    /// Thrown when <paramref name="sourceEncoding" /> uses
-    /// <see cref="System.Text.DecoderExceptionFallback" /> and <paramref name="source" /> contains a sequence
-    /// that cannot be decoded.
+    /// Thrown when <paramref name="sourceEncoding" /> uses <see cref="System.Text.DecoderExceptionFallback" /> and
+    /// <paramref name="source" /> contains a sequence that cannot be decoded.
     /// </exception>
     /// <exception cref="System.Text.EncoderFallbackException">
-    /// Thrown when <paramref name="destinationEncoding" /> uses
-    /// <see cref="System.Text.EncoderExceptionFallback" /> and the intermediate characters contain a code point
-    /// that cannot be re-encoded.
+    /// Thrown when <paramref name="destinationEncoding" /> uses <see cref="System.Text.EncoderExceptionFallback" /> and
+    /// the intermediate characters contain a code point that cannot be re-encoded.
     /// </exception>
     /// <remarks>
     /// The transcoding pipeline routes through an intermediate <see cref="char" /> buffer rented from
@@ -81,14 +79,12 @@ public static partial class EncodingExtensions
     /// Thrown when <paramref name="destination" /> is too small to receive the transcoded bytes.
     /// </exception>
     /// <exception cref="System.Text.DecoderFallbackException">
-    /// Thrown when <paramref name="sourceEncoding" /> uses
-    /// <see cref="System.Text.DecoderExceptionFallback" /> and <paramref name="source" /> contains a sequence
-    /// that cannot be decoded.
+    /// Thrown when <paramref name="sourceEncoding" /> uses <see cref="System.Text.DecoderExceptionFallback" /> and
+    /// <paramref name="source" /> contains a sequence that cannot be decoded.
     /// </exception>
     /// <exception cref="System.Text.EncoderFallbackException">
-    /// Thrown when <paramref name="destinationEncoding" /> uses
-    /// <see cref="System.Text.EncoderExceptionFallback" /> and the intermediate characters contain a code point
-    /// that cannot be re-encoded.
+    /// Thrown when <paramref name="destinationEncoding" /> uses <see cref="System.Text.EncoderExceptionFallback" /> and
+    /// the intermediate characters contain a code point that cannot be re-encoded.
     /// </exception>
     public static int TranscodeTo(
         this ReadOnlySpan<byte> source,
@@ -124,8 +120,8 @@ public static partial class EncodingExtensions
     /// <param name="destinationEncoding">The encoding the bytes should be re-encoded into.</param>
     /// <param name="destination">The destination buffer.</param>
     /// <param name="bytesWritten">
-    /// When this method returns <see langword="true" />, contains the number of transcoded bytes written;
-    /// otherwise zero.
+    /// When this method returns <see langword="true" />, contains the number of transcoded bytes written; otherwise
+    /// zero.
     /// </param>
     /// <returns>
     /// <see langword="true" /> if the transcode completed successfully; <see langword="false" /> when
@@ -136,14 +132,12 @@ public static partial class EncodingExtensions
     /// <see langword="null" />.
     /// </exception>
     /// <exception cref="System.Text.DecoderFallbackException">
-    /// Thrown when <paramref name="sourceEncoding" /> uses
-    /// <see cref="System.Text.DecoderExceptionFallback" /> and <paramref name="source" /> contains a sequence
-    /// that cannot be decoded.
+    /// Thrown when <paramref name="sourceEncoding" /> uses <see cref="System.Text.DecoderExceptionFallback" /> and
+    /// <paramref name="source" /> contains a sequence that cannot be decoded.
     /// </exception>
     /// <exception cref="System.Text.EncoderFallbackException">
-    /// Thrown when <paramref name="destinationEncoding" /> uses
-    /// <see cref="System.Text.EncoderExceptionFallback" /> and the intermediate characters contain a code point
-    /// that cannot be re-encoded.
+    /// Thrown when <paramref name="destinationEncoding" /> uses <see cref="System.Text.EncoderExceptionFallback" /> and
+    /// the intermediate characters contain a code point that cannot be re-encoded.
     /// </exception>
     public static bool TryTranscodeTo(
         this ReadOnlySpan<byte> source,

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConfigurationUnsetValueMode.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -11,9 +11,9 @@ namespace Bodu.Text.Configuration;
 /// removes the effect of any previously set property for the matching path.
 /// </summary>
 /// <remarks>
-/// In <see cref="ConfigurationProfile.EditorConfigCompatible" /> mode the resolver follows the EditorConfig rule
-/// and removes the effective value. In <see cref="ConfigurationProfile.Bodu" /> mode the literal is preserved by
-/// default so users who wish to store the string <c>unset</c> are not surprised. Set this mode explicitly when you want
+/// In <see cref="ConfigurationProfile.EditorConfigCompatible" /> mode the resolver follows the EditorConfig rule and
+/// removes the effective value. In <see cref="ConfigurationProfile.Bodu" /> mode the literal is preserved by default so
+/// users who wish to store the string <c>unset</c> are not surprised. Set this mode explicitly when you want
 /// EditorConfig-style behaviour under the Bodu profile.
 /// </remarks>
 public enum ConfigurationUnsetValueMode

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EncodingExtensions.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -7,9 +7,9 @@
 namespace Bodu.Text.Encoding;
 
 /// <summary>
-/// Provides span-friendly, allocation-aware, and pool-aware extension methods on
-/// <see cref="System.Text.Encoding" />, <see cref="ReadOnlySpan{T}" /> of <see cref="char" /> and
-/// <see cref="byte" />, and on <see cref="System.Text.Encoder" /> / <see cref="System.Text.Decoder" />.
+/// Provides span-friendly, allocation-aware, and pool-aware extension methods on <see cref="System.Text.Encoding" />,
+/// <see cref="ReadOnlySpan{T}" /> of <see cref="char" /> and <see cref="byte" />, and on
+/// <see cref="System.Text.Encoder" /> / <see cref="System.Text.Decoder" />.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -18,22 +18,22 @@ namespace Bodu.Text.Encoding;
 /// classification, and chunked encoder/decoder operations). Two receiver shapes coexist:
 /// </para>
 /// <list type="bullet">
-///   <item>
-///     <description>
-///       <c>ReadOnlySpan&lt;char&gt;</c> / <c>ReadOnlySpan&lt;byte&gt;</c> receivers express the
-///       <em>data-first</em> form — discoverable via IntelliSense from a span variable.
-///     </description>
-///   </item>
-///   <item>
-///     <description>
-///       <see cref="System.Text.Encoding" /> receivers express the <em>encoding-first</em> form — useful when an
-///       encoding instance is the obvious starting point (for example, encoder-fluent fallback configuration).
-///     </description>
-///   </item>
+/// <item>
+/// <description>
+/// <c>ReadOnlySpan&lt;char&gt;</c> / <c>ReadOnlySpan&lt;byte&gt;</c> receivers express the <em>data-first</em> form —
+/// discoverable via IntelliSense from a span variable.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// <see cref="System.Text.Encoding" /> receivers express the <em>encoding-first</em> form — useful when an encoding
+/// instance is the obvious starting point (for example, encoder-fluent fallback configuration).
+/// </description>
+/// </item>
 /// </list>
 /// <para>
-/// Pooled allocation surfaces are aligned with <see cref="Buffers.PooledBufferBuilder{T}" /> so that all
-/// pool-returning extensions share a single implementation path and the same lifetime semantics.
+/// Pooled allocation surfaces are aligned with <see cref="Buffers.PooledBufferBuilder{T}" /> so that all pool-returning
+/// extensions share a single implementation path and the same lifetime semantics.
 /// </para>
 /// </remarks>
 /// <example>

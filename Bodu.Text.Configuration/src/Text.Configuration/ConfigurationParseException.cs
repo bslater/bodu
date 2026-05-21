@@ -14,9 +14,9 @@ namespace Bodu.Text.Configuration;
 /// </summary>
 /// <remarks>
 /// <para>
-/// In <see cref="ConfigurationDiagnosticMode.Throw" /> mode the parser raises this exception on the first
-/// recoverable error it encounters. In <see cref="ConfigurationDiagnosticMode.Collect" /> mode this exception is
-/// raised only for non-recoverable errors (such as a truncated stream); recoverable errors surface instead on the
+/// In <see cref="ConfigurationDiagnosticMode.Throw" /> mode the parser raises this exception on the first recoverable
+/// error it encounters. In <see cref="ConfigurationDiagnosticMode.Collect" /> mode this exception is raised only for
+/// non-recoverable errors (such as a truncated stream); recoverable errors surface instead on the
 /// <see cref="ConfigurationParseResult.Diagnostics" /> list.
 /// </para>
 /// <para>
@@ -55,8 +55,7 @@ public sealed class ConfigurationParseException : FormatException
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ConfigurationParseException" /> class with the specified
-    /// message.
+    /// Initializes a new instance of the <see cref="ConfigurationParseException" /> class with the specified message.
     /// </summary>
     /// <param name="message">The message describing the failure.</param>
     public ConfigurationParseException(string message)
@@ -66,8 +65,8 @@ public sealed class ConfigurationParseException : FormatException
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ConfigurationParseException" /> class with the specified
-    /// message and inner exception.
+    /// Initializes a new instance of the <see cref="ConfigurationParseException" /> class with the specified message
+    /// and inner exception.
     /// </summary>
     /// <param name="message">The message describing the failure.</param>
     /// <param name="innerException">The exception that caused the failure.</param>
@@ -78,9 +77,8 @@ public sealed class ConfigurationParseException : FormatException
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ConfigurationParseException" /> class from a single diagnostic.
-    /// The diagnostic is exposed both via <see cref="Diagnostic" /> and as the single entry of
-    /// <see cref="Diagnostics" />.
+    /// Initializes a new instance of the <see cref="ConfigurationParseException" /> class from a single diagnostic. The
+    /// diagnostic is exposed both via <see cref="Diagnostic" /> and as the single entry of <see cref="Diagnostics" />.
     /// </summary>
     /// <param name="diagnostic">The diagnostic that triggered the failure.</param>
     /// <exception cref="ArgumentNullException"><paramref name="diagnostic" /> is <see langword="null" />.</exception>

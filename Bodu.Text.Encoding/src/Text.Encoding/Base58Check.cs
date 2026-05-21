@@ -39,7 +39,6 @@ namespace Bodu.Text.Encoding;
 /// </example>
 public static class Base58Check
 {
-
     /// <summary>
     /// The number of checksum bytes appended to the payload before Base58 encoding.
     /// </summary>

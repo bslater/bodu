@@ -11,8 +11,8 @@ namespace Bodu.Text.Encoding;
 public static partial class EncodingExtensions
 {
     /// <summary>
-    /// Throws an <see cref="ArgumentException" /> when <paramref name="destination" /> is too small to receive
-    /// the bytes produced by encoding <paramref name="chars" /> with <paramref name="encoding" />.
+    /// Throws an <see cref="ArgumentException" /> when <paramref name="destination" /> is too small to receive the
+    /// bytes produced by encoding <paramref name="chars" /> with <paramref name="encoding" />.
     /// </summary>
     /// <param name="destination">The destination span to validate.</param>
     /// <param name="chars">The character span whose encoded length is computed.</param>
@@ -43,8 +43,8 @@ public static partial class EncodingExtensions
     }
 
     /// <summary>
-    /// Throws an <see cref="ArgumentException" /> when <paramref name="destination" /> is too small to receive
-    /// the characters produced by decoding <paramref name="bytes" /> with <paramref name="encoding" />.
+    /// Throws an <see cref="ArgumentException" /> when <paramref name="destination" /> is too small to receive the
+    /// characters produced by decoding <paramref name="bytes" /> with <paramref name="encoding" />.
     /// </summary>
     /// <param name="destination">The destination span to validate.</param>
     /// <param name="bytes">The byte span whose decoded length is computed.</param>

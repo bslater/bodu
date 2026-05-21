@@ -10,7 +10,6 @@ namespace Bodu.Text.Encoding;
 
 public static partial class Base32
 {
-
     /// <summary>
     /// Encodes <paramref name="source" /> as Base32 characters into <paramref name="writer" />, suitable for use in
     /// pipelines and other <see cref="IBufferWriter{T}" />-based scenarios.

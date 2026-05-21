@@ -24,8 +24,8 @@ public static partial class EncodingExtensions
     }
 
     /// <summary>
-    /// Returns a value indicating whether <paramref name="encoding" /> is UTF-16 little endian (Windows
-    /// codepage 1200, the value of <see cref="System.Text.Encoding.Unicode" />).
+    /// Returns a value indicating whether <paramref name="encoding" /> is UTF-16 little endian (Windows codepage 1200,
+    /// the value of <see cref="System.Text.Encoding.Unicode" />).
     /// </summary>
     /// <param name="encoding">The encoding to inspect.</param>
     /// <returns><see langword="true" /> when the codepage is 1200; otherwise <see langword="false" />.</returns>
@@ -40,8 +40,8 @@ public static partial class EncodingExtensions
     }
 
     /// <summary>
-    /// Returns a value indicating whether <paramref name="encoding" /> is UTF-16 big endian (Windows codepage
-    /// 1201, the value of <see cref="System.Text.Encoding.BigEndianUnicode" />).
+    /// Returns a value indicating whether <paramref name="encoding" /> is UTF-16 big endian (Windows codepage 1201, the
+    /// value of <see cref="System.Text.Encoding.BigEndianUnicode" />).
     /// </summary>
     /// <param name="encoding">The encoding to inspect.</param>
     /// <returns><see langword="true" /> when the codepage is 1201; otherwise <see langword="false" />.</returns>
@@ -56,8 +56,8 @@ public static partial class EncodingExtensions
     }
 
     /// <summary>
-    /// Returns a value indicating whether <paramref name="encoding" /> is UTF-32 little endian (Windows
-    /// codepage 12000, the value of <see cref="System.Text.Encoding.UTF32" />).
+    /// Returns a value indicating whether <paramref name="encoding" /> is UTF-32 little endian (Windows codepage 12000,
+    /// the value of <see cref="System.Text.Encoding.UTF32" />).
     /// </summary>
     /// <param name="encoding">The encoding to inspect.</param>
     /// <returns><see langword="true" /> when the codepage is 12000; otherwise <see langword="false" />.</returns>
@@ -72,8 +72,7 @@ public static partial class EncodingExtensions
     }
 
     /// <summary>
-    /// Returns a value indicating whether <paramref name="encoding" /> is UTF-32 big endian (Windows codepage
-    /// 12001).
+    /// Returns a value indicating whether <paramref name="encoding" /> is UTF-32 big endian (Windows codepage 12001).
     /// </summary>
     /// <param name="encoding">The encoding to inspect.</param>
     /// <returns><see langword="true" /> when the codepage is 12001; otherwise <see langword="false" />.</returns>
@@ -88,8 +87,8 @@ public static partial class EncodingExtensions
     }
 
     /// <summary>
-    /// Returns a value indicating whether <paramref name="encoding" /> is any UTF encoding (UTF-8, UTF-16 LE,
-    /// UTF-16 BE, UTF-32 LE, or UTF-32 BE).
+    /// Returns a value indicating whether <paramref name="encoding" /> is any UTF encoding (UTF-8, UTF-16 LE, UTF-16
+    /// BE, UTF-32 LE, or UTF-32 BE).
     /// </summary>
     /// <param name="encoding">The encoding to inspect.</param>
     /// <returns>
@@ -122,13 +121,13 @@ public static partial class EncodingExtensions
     }
 
     /// <summary>
-    /// Returns a human-readable display name for <paramref name="encoding" /> that distinguishes BOM-emitting
-    /// UTF variants from their plain counterparts (for example, <c>"UTF-8-BOM"</c> versus <c>"UTF-8"</c>).
+    /// Returns a human-readable display name for <paramref name="encoding" /> that distinguishes BOM-emitting UTF
+    /// variants from their plain counterparts (for example, <c>"UTF-8-BOM"</c> versus <c>"UTF-8"</c>).
     /// </summary>
     /// <param name="encoding">The encoding to describe.</param>
     /// <returns>
-    /// A short, stable name. UTF variants return the canonical short form with a <c>-BOM</c> suffix when the
-    /// encoding emits a preamble; other encodings fall back to <see cref="System.Text.Encoding.WebName" />.
+    /// A short, stable name. UTF variants return the canonical short form with a <c>-BOM</c> suffix when the encoding
+    /// emits a preamble; other encodings fall back to <see cref="System.Text.Encoding.WebName" />.
     /// </returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="encoding" /> is <see langword="null" />.

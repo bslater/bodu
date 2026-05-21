@@ -98,9 +98,7 @@ public sealed partial class ConfigurationPattern
     /// <exception cref="ArgumentException">
     /// <paramref name="pattern" /> is <see langword="null" />, empty, or contains only whitespace.
     /// </exception>
-    /// <exception cref="ConfigurationParseException">
-    /// The pattern contained an unbalanced brace or bracket.
-    /// </exception>
+    /// <exception cref="ConfigurationParseException">The pattern contained an unbalanced brace or bracket.</exception>
     public static ConfigurationPattern Compile(string pattern)
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(pattern);

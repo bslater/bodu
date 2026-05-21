@@ -10,7 +10,6 @@ namespace Bodu.Text.Encoding;
 
 public static partial class Base16
 {
-
     /// <summary>
     /// Decodes a hexadecimal string into a byte array using strict parsing (no prefix, no whitespace).
     /// </summary>
@@ -85,6 +84,7 @@ public static partial class Base16
     /// </returns>
     public static OperationStatus FromHexString(ReadOnlySpan<byte> utf8Source, Span<byte> destination, out int bytesConsumed, out int bytesWritten) =>
         DecodeUtf8WithStatus(utf8Source, destination, out bytesConsumed, out bytesWritten, isFinalBlock: true);
+
     /// <summary>
     /// Encodes <paramref name="inArray" /> into an upper case hexadecimal string. Aliases
     /// <see cref="Convert.ToHexString(byte[])" /> with no formatting decorations.

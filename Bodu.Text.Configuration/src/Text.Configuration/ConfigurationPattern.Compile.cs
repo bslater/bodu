@@ -18,9 +18,7 @@ public sealed partial class ConfigurationPattern
     /// </summary>
     /// <param name="pattern">The glob expression to translate.</param>
     /// <returns>The translated regex source.</returns>
-    /// <exception cref="ConfigurationParseException">
-    /// The pattern contains an unbalanced brace or bracket.
-    /// </exception>
+    /// <exception cref="ConfigurationParseException">The pattern contains an unbalanced brace or bracket.</exception>
     private static string TranslateToRegex(string pattern)
     {
         var sb = new StringBuilder(pattern.Length * 2);

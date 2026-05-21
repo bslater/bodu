@@ -43,7 +43,6 @@ namespace Bodu.Text.Encoding;
 /// </example>
 public static partial class Base16
 {
-
     /// <summary>
     /// The Base16 alphabet using lower case letters.
     /// </summary>
@@ -80,10 +79,11 @@ public static partial class Base16
     /// </exception>
     public static int GetDecodedLength(ReadOnlySpan<char> source, BaseFormatStyles styles = BaseFormatStyles.None)
     {
-        if (!TryCountHexDigits(source, styles, out var digits))
-            throw new FormatException(EncodingResourceStrings.Format_Invalid_HexCharactersAfterStyles);
-
-        return (digits & 1) != 0 ? throw new FormatException(EncodingResourceStrings.Format_Invalid_HexDigitCountOddAfterStyles) : digits / 2;
+        return TryCountHexDigits(source, styles, out var digits)
+            ? (digits & 1) == 0
+                ? digits / 2
+                : throw new FormatException(EncodingResourceStrings.Format_Invalid_HexDigitCountOddAfterStyles)
+            : throw new FormatException(EncodingResourceStrings.Format_Invalid_HexCharactersAfterStyles);
     }
 
     /// <summary>

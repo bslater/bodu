@@ -38,7 +38,6 @@ namespace Bodu.Text.Encoding;
 /// </example>
 public interface IBinaryEncoding
 {
-
     /// <summary>
     /// Gets a human-readable description of the encoding and its origin (specification clause, RFC, etc.).
     /// </summary>

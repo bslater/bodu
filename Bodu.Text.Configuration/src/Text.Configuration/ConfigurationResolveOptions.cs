@@ -7,8 +7,8 @@
 namespace Bodu.Text.Configuration;
 
 /// <summary>
-/// Controls how a <see cref="ConfigurationDocument" /> is projected into a <see cref="ConfigurationView" /> for
-/// a specific target path.
+/// Controls how a <see cref="ConfigurationDocument" /> is projected into a <see cref="ConfigurationView" /> for a
+/// specific target path.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -26,9 +26,9 @@ namespace Bodu.Text.Configuration;
 /// </para>
 /// <para>
 /// <see cref="KeyOptions" /> should normally be the same instance passed to
-/// <see cref="ConfigurationParseOptions.KeyOptions" /> so that lookups against the resolved view use the same
-/// comparer and mapping that produced the parsed keys. The default <see cref="ConfigurationKeyOptions.Default" />
-/// matches the <c>Microsoft.Extensions.Configuration</c> shape.
+/// <see cref="ConfigurationParseOptions.KeyOptions" /> so that lookups against the resolved view use the same comparer
+/// and mapping that produced the parsed keys. The default <see cref="ConfigurationKeyOptions.Default" /> matches the
+/// <c>Microsoft.Extensions.Configuration</c> shape.
 /// </para>
 /// </remarks>
 public sealed partial class ConfigurationResolveOptions

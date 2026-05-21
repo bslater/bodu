@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringEncodingExtensions.ToBytesWithPreamble.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -9,8 +9,8 @@ namespace Bodu.Text.Encoding;
 public static partial class StringEncodingExtensions
 {
     /// <summary>
-    /// Encodes <paramref name="text" /> into a freshly allocated byte array preceded by
-    /// <paramref name="encoding" />'s preamble.
+    /// Encodes <paramref name="text" /> into a freshly allocated byte array preceded by <paramref name="encoding" />'s
+    /// preamble.
     /// </summary>
     /// <param name="text">The string to encode.</param>
     /// <param name="encoding">The encoding used to produce the bytes.</param>

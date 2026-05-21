@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EncodingDetection.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -9,18 +9,37 @@ using System.Diagnostics.CodeAnalysis;
 namespace Bodu.Text.Encoding;
 
 /// <summary>
-/// Provides byte-order-mark (BOM) based heuristics for detecting which <see cref="System.Text.Encoding" /> was
-/// used to produce a byte sequence.
+/// Provides byte-order-mark (BOM) based heuristics for detecting which <see cref="System.Text.Encoding" /> was used to
+/// produce a byte sequence.
 /// </summary>
 /// <remarks>
-/// Detection is intentionally limited to the five canonical Unicode byte-order-marks defined by the Unicode
-/// standard:
+/// Detection is intentionally limited to the five canonical Unicode byte-order-marks defined by the Unicode standard:
 /// <list type="bullet">
-///   <item><description>UTF-8: <c>EF BB BF</c></description></item>
-///   <item><description>UTF-16 little endian: <c>FF FE</c></description></item>
-///   <item><description>UTF-16 big endian: <c>FE FF</c></description></item>
-///   <item><description>UTF-32 little endian: <c>FF FE 00 00</c></description></item>
-///   <item><description>UTF-32 big endian: <c>00 00 FE FF</c></description></item>
+/// <item>
+/// <description>
+/// UTF-8: <c>EF BB BF</c>
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// UTF-16 little endian: <c>FF FE</c>
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// UTF-16 big endian: <c>FE FF</c>
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// UTF-32 little endian: <c>FF FE 00 00</c>
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// UTF-32 big endian: <c>00 00 FE FF</c>
+/// </description>
+/// </item>
 /// </list>
 /// <para>
 /// The UTF-32 little-endian preamble shares its first two bytes with UTF-16 little endian; this implementation
@@ -54,12 +73,12 @@ public static class EncodingDetection
     /// <c>12001</c>); otherwise <see langword="null" />.
     /// </param>
     /// <returns>
-    /// <see langword="true" /> when a recognized BOM is detected; <see langword="false" /> when no BOM is present
-    /// or when the leading bytes do not match a known preamble.
+    /// <see langword="true" /> when a recognized BOM is detected; <see langword="false" /> when no BOM is present or
+    /// when the leading bytes do not match a known preamble.
     /// </returns>
     /// <remarks>
-    /// This method does not allocate. UTF-32 little-endian detection requires inspecting four bytes; when the
-    /// span is shorter than four bytes the UTF-16 little-endian preamble is reported instead, matching
+    /// This method does not allocate. UTF-32 little-endian detection requires inspecting four bytes; when the span is
+    /// shorter than four bytes the UTF-16 little-endian preamble is reported instead, matching
     /// <see cref="System.IO.StreamReader" /> behaviour.
     /// </remarks>
     public static bool TryDetectByPreamble(

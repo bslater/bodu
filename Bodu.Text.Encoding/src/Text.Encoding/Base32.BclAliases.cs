@@ -10,7 +10,6 @@ namespace Bodu.Text.Encoding;
 
 public static partial class Base32
 {
-
     /// <summary>
     /// Decodes <paramref name="s" /> into a byte array using the Standard variant with strict parsing.
     /// </summary>

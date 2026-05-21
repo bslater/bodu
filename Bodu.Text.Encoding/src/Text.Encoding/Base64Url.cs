@@ -31,7 +31,6 @@ namespace Bodu.Text.Encoding;
 /// </example>
 public static class Base64Url
 {
-
     /// <summary>
     /// Decodes <paramref name="s" /> as a URL-safe Base64 string. Accepts inputs both with and without trailing
     /// <c>=</c> padding (the JWT / OAuth convention is to omit it).
@@ -80,6 +79,7 @@ public static class Base64Url
         Buffer.BlockCopy(destination, 0, trimmed, 0, bytesWritten);
         return trimmed;
     }
+
     /// <summary>
     /// Encodes <paramref name="bytes" /> into a URL-safe Base64 string without padding.
     /// </summary>

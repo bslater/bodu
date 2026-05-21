@@ -10,7 +10,6 @@ namespace Bodu.Text.Encoding;
 
 public static partial class Base64
 {
-
     /// <summary>
     /// Decodes <paramref name="s" /> as a Standard Base64 string into a byte array, mirroring the lenient whitespace
     /// behaviour of <see cref="System.Convert.FromBase64String(string)" />. ASCII whitespace anywhere in the input is

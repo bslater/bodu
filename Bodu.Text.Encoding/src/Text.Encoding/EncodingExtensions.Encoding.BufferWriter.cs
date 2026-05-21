@@ -11,8 +11,8 @@ namespace Bodu.Text.Encoding;
 public static partial class EncodingExtensions
 {
     /// <summary>
-    /// Writes <paramref name="encoding" />'s preamble (BOM) into <paramref name="writer" />. No bytes are
-    /// written when the encoding has no preamble.
+    /// Writes <paramref name="encoding" />'s preamble (BOM) into <paramref name="writer" />. No bytes are written when
+    /// the encoding has no preamble.
     /// </summary>
     /// <param name="encoding">The encoding whose preamble is written.</param>
     /// <param name="writer">The buffer writer to receive the preamble bytes.</param>

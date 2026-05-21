@@ -8,7 +8,6 @@ namespace Bodu.Text.Encoding;
 
 public static partial class Base32
 {
-
     /// <summary>
     /// Decodes a Base32 string into a byte array using the supplied variant.
     /// </summary>

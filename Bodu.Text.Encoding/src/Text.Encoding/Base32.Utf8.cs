@@ -10,7 +10,6 @@ namespace Bodu.Text.Encoding;
 
 public static partial class Base32
 {
-
     /// <summary>
     /// Decodes a UTF-8 Base32 byte span into a byte span with the <see cref="OperationStatus" /> return convention.
     /// </summary>
@@ -35,6 +34,7 @@ public static partial class Base32
         (_, var lookup) = GetVariantConfig(variant);
         return DecodeBitStream<Utf8Source>(default, source, destination, lookup, styles, isFinalBlock, variant, ref bytesConsumed, ref bytesWritten);
     }
+
     /// <summary>
     /// Encodes <paramref name="source" /> into a UTF-8 Base32 byte array using the supplied variant and the variant's
     /// default padding convention.

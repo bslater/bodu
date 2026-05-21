@@ -16,13 +16,12 @@ namespace Bodu.Extensions.Configuration.Text;
 /// <para>
 /// The provider inherits change-token, reload-on-change, optional-file, and exception-wrapping behaviour from
 /// <see cref="FileConfigurationProvider" />. Override <see cref="Load(Stream)" /> only. The Parse → Resolve → flatten
-/// pipeline is shared with <see cref="TextStreamConfigurationProvider" /> via
-/// <see cref="TextConfigurationLoader" />.
+/// pipeline is shared with <see cref="TextStreamConfigurationProvider" /> via <see cref="TextConfigurationLoader" />.
 /// </para>
 /// <para>
 /// Consumers do not construct this type directly — it is materialized by
-/// <see cref="TextConfigurationSource.Build(IConfigurationBuilder)" /> when an <see cref="IConfigurationBuilder" />
-/// is built. The typed <see cref="TextSource" /> accessor exists for diagnostic scenarios where a host needs to inspect
+/// <see cref="TextConfigurationSource.Build(IConfigurationBuilder)" /> when an <see cref="IConfigurationBuilder" /> is
+/// built. The typed <see cref="TextSource" /> accessor exists for diagnostic scenarios where a host needs to inspect
 /// the source that produced a given <see cref="IConfigurationProvider" />.
 /// </para>
 /// </remarks>
@@ -44,8 +43,7 @@ namespace Bodu.Extensions.Configuration.Text;
 public sealed class TextConfigurationProvider : FileConfigurationProvider
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="TextConfigurationProvider" /> class backed by the supplied
-    /// source.
+    /// Initializes a new instance of the <see cref="TextConfigurationProvider" /> class backed by the supplied source.
     /// </summary>
     /// <param name="source">The source that produced this provider.</param>
     /// <exception cref="ArgumentNullException"><paramref name="source" /> is <see langword="null" />.</exception>

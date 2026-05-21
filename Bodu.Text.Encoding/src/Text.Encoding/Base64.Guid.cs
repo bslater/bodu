@@ -8,7 +8,6 @@ namespace Bodu.Text.Encoding;
 
 public static partial class Base64
 {
-
     /// <summary>
     /// Decodes a Base64 representation of a <see cref="Guid" />.
     /// </summary>
@@ -24,6 +23,7 @@ public static partial class Base64
             ? throw new FormatException(EncodingResourceStrings.Format_Invalid_GuidNotSixteenBytes)
             : new Guid(bytes);
     }
+
     /// <summary>
     /// Encodes the byte representation of <paramref name="value" /> as a Base64 string. With RFC 4648 padding the
     /// result is 24 characters; without padding it is 22 characters.

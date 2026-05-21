@@ -19,9 +19,8 @@ public static partial class EncodingExtensions
     /// <param name="chars">The character span to encode.</param>
     /// <param name="bytesWritten">The number of bytes written into the returned array.</param>
     /// <returns>
-    /// A rented byte array that may be larger than <paramref name="bytesWritten" />. The caller is responsible
-    /// for returning the array to <see cref="ArrayPool{T}.Shared" /> via
-    /// <see cref="ArrayPool{T}.Return(T[], bool)" />.
+    /// A rented byte array that may be larger than <paramref name="bytesWritten" />. The caller is responsible for
+    /// returning the array to <see cref="ArrayPool{T}.Shared" /> via <see cref="ArrayPool{T}.Return(T[], bool)" />.
     /// </returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="encoding" /> is <see langword="null" />.
@@ -32,10 +31,9 @@ public static partial class EncodingExtensions
     /// </exception>
     /// <remarks>
     /// Prefer <see cref="GetBytesPooled(System.Text.Encoding, ReadOnlySpan{char})" /> or
-    /// <see cref="GetBytesOwner(System.Text.Encoding, ReadOnlySpan{char}, MemoryPool{byte})" /> over this method
-    /// — both wrap the rented buffer in an <see cref="IDisposable" /> so a leak cannot occur when the caller
-    /// uses a <c>using</c> block. This method is provided for interop with APIs that require a bare
-    /// <see cref="byte" /> array.
+    /// <see cref="GetBytesOwner(System.Text.Encoding, ReadOnlySpan{char}, MemoryPool{byte})" /> over this method — both
+    /// wrap the rented buffer in an <see cref="IDisposable" /> so a leak cannot occur when the caller uses a
+    /// <c>using</c> block. This method is provided for interop with APIs that require a bare <see cref="byte" /> array.
     /// </remarks>
     public static byte[] GetBytesRented(
         this System.Text.Encoding encoding,
@@ -72,9 +70,8 @@ public static partial class EncodingExtensions
     /// <param name="bytes">The byte span to decode.</param>
     /// <param name="charsWritten">The number of characters written into the returned array.</param>
     /// <returns>
-    /// A rented character array that may be larger than <paramref name="charsWritten" />. The caller is
-    /// responsible for returning the array to <see cref="ArrayPool{T}.Shared" /> via
-    /// <see cref="ArrayPool{T}.Return(T[], bool)" />.
+    /// A rented character array that may be larger than <paramref name="charsWritten" />. The caller is responsible for
+    /// returning the array to <see cref="ArrayPool{T}.Shared" /> via <see cref="ArrayPool{T}.Return(T[], bool)" />.
     /// </returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="encoding" /> is <see langword="null" />.
@@ -85,10 +82,9 @@ public static partial class EncodingExtensions
     /// </exception>
     /// <remarks>
     /// Prefer <see cref="GetCharsPooled(System.Text.Encoding, ReadOnlySpan{byte})" /> or
-    /// <see cref="GetCharsOwner(System.Text.Encoding, ReadOnlySpan{byte}, MemoryPool{char})" /> over this method
-    /// — both wrap the rented buffer in an <see cref="IDisposable" /> so a leak cannot occur when the caller
-    /// uses a <c>using</c> block. This method is provided for interop with APIs that require a bare
-    /// <see cref="char" /> array.
+    /// <see cref="GetCharsOwner(System.Text.Encoding, ReadOnlySpan{byte}, MemoryPool{char})" /> over this method — both
+    /// wrap the rented buffer in an <see cref="IDisposable" /> so a leak cannot occur when the caller uses a
+    /// <c>using</c> block. This method is provided for interop with APIs that require a bare <see cref="char" /> array.
     /// </remarks>
     public static char[] GetCharsRented(
         this System.Text.Encoding encoding,
@@ -127,8 +123,8 @@ public static partial class EncodingExtensions
     /// The pool to rent from. Defaults to <see cref="MemoryPool{T}.Shared" /> when <see langword="null" />.
     /// </param>
     /// <returns>
-    /// An <see cref="IMemoryOwner{T}" /> whose <see cref="IMemoryOwner{T}.Memory" /> length equals exactly the
-    /// number of encoded bytes. Dispose to return the rented buffer to the pool.
+    /// An <see cref="IMemoryOwner{T}" /> whose <see cref="IMemoryOwner{T}.Memory" /> length equals exactly the number
+    /// of encoded bytes. Dispose to return the rented buffer to the pool.
     /// </returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="encoding" /> is <see langword="null" />.
@@ -153,8 +149,8 @@ public static partial class EncodingExtensions
     /// The pool to rent from. Defaults to <see cref="MemoryPool{T}.Shared" /> when <see langword="null" />.
     /// </param>
     /// <returns>
-    /// An <see cref="IMemoryOwner{T}" /> whose <see cref="IMemoryOwner{T}.Memory" /> length equals exactly the
-    /// number of decoded characters. Dispose to return the rented buffer to the pool.
+    /// An <see cref="IMemoryOwner{T}" /> whose <see cref="IMemoryOwner{T}.Memory" /> length equals exactly the number
+    /// of decoded characters. Dispose to return the rented buffer to the pool.
     /// </returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="encoding" /> is <see langword="null" />.
@@ -192,10 +188,9 @@ public static partial class EncodingExtensions
     /// <param name="encoding">The encoding used to produce the bytes.</param>
     /// <param name="chars">The character span to encode.</param>
     /// <returns>
-    /// A <see cref="PooledBufferBuilder{T}" /> with <see cref="PooledBufferBuilder{T}.WrittenCount" /> equal to
-    /// the exact number of encoded bytes. The builder is both an
-    /// <see cref="IBufferWriter{T}" /> and an <see cref="IMemoryOwner{T}" />; dispose to return the rented
-    /// buffer to the <see cref="ArrayPool{T}.Shared" />.
+    /// A <see cref="PooledBufferBuilder{T}" /> with <see cref="PooledBufferBuilder{T}.WrittenCount" /> equal to the
+    /// exact number of encoded bytes. The builder is both an <see cref="IBufferWriter{T}" /> and an
+    /// <see cref="IMemoryOwner{T}" />; dispose to return the rented buffer to the <see cref="ArrayPool{T}.Shared" />.
     /// </returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="encoding" /> is <see langword="null" />.
@@ -243,10 +238,9 @@ public static partial class EncodingExtensions
     /// <param name="encoding">The encoding used to interpret the bytes.</param>
     /// <param name="bytes">The byte span to decode.</param>
     /// <returns>
-    /// A <see cref="PooledBufferBuilder{T}" /> with <see cref="PooledBufferBuilder{T}.WrittenCount" /> equal to
-    /// the exact number of decoded characters. The builder is both an
-    /// <see cref="IBufferWriter{T}" /> and an <see cref="IMemoryOwner{T}" />; dispose to return the rented
-    /// buffer to the <see cref="ArrayPool{T}.Shared" />.
+    /// A <see cref="PooledBufferBuilder{T}" /> with <see cref="PooledBufferBuilder{T}.WrittenCount" /> equal to the
+    /// exact number of decoded characters. The builder is both an <see cref="IBufferWriter{T}" /> and an
+    /// <see cref="IMemoryOwner{T}" />; dispose to return the rented buffer to the <see cref="ArrayPool{T}.Shared" />.
     /// </returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="encoding" /> is <see langword="null" />.
