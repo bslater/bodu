@@ -141,14 +141,14 @@ public static partial class Base58
 
             if (c >= lookup.Length)
             {
-                error = $"Input contains a character outside the Base58 variant alphabet: '{c}'.";
+                error = string.Format(System.Globalization.CultureInfo.InvariantCulture, EncodingResourceStrings.Format_Invalid_Base58CharacterNotInAlphabet, c);
                 return false;
             }
 
             int symbolValue = lookup[c];
             if (symbolValue < 0)
             {
-                error = $"Input contains a character outside the Base58 variant alphabet: '{c}'.";
+                error = string.Format(System.Globalization.CultureInfo.InvariantCulture, EncodingResourceStrings.Format_Invalid_Base58CharacterNotInAlphabet, c);
                 return false;
             }
 

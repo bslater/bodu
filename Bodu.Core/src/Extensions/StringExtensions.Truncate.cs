@@ -55,7 +55,7 @@ public static partial class StringExtensions
     {
         ThrowHelper.ThrowIfNull(value);
         ThrowHelper.ThrowIfNull(ellipsis);
-        if (maxLength < ellipsis.Length) throw new ArgumentOutOfRangeException(nameof(maxLength), maxLength, "maxLength must be at least ellipsis.Length.");
+        if (maxLength < ellipsis.Length) throw new ArgumentOutOfRangeException(nameof(maxLength), maxLength, ResourceStrings.Arg_OutOfRange_MaxLengthLessThanMarker);
 
         if (value.Length <= maxLength) return value;
         return string.Concat(value.AsSpan(0, maxLength - ellipsis.Length), ellipsis);

@@ -232,6 +232,24 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The collection cannot contain empty elements..
+        /// </summary>
+        internal static string Arg_Invalid_EmptyCollectionElement {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_EmptyCollectionElement", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The dictionary cannot contain empty keys..
+        /// </summary>
+        internal static string Arg_Invalid_EmptyDictionaryKey {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_EmptyDictionaryKey", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The format string is invalid..
         /// </summary>
         internal static string Arg_Invalid_FormatString {
@@ -509,7 +527,16 @@ namespace Bodu {
                 return ResourceManager.GetString("Arg_Invalid_StringEmptyOrWhitespace", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to The value must not be empty..
+        /// </summary>
+        internal static string Arg_Invalid_StringIsEmpty {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_StringIsEmpty", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to The string length must be exactly {0} characters..
         /// </summary>
@@ -689,7 +716,16 @@ namespace Bodu {
                 return ResourceManager.GetString("Arg_OutOfRange_InvalidQuarterNumber", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to The maximum length must be at least the length of the truncation marker..
+        /// </summary>
+        internal static string Arg_OutOfRange_MaxLengthLessThanMarker {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_MaxLengthLessThanMarker", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to The value cannot be greater than the value of &apos;{0}&apos;..
         /// </summary>

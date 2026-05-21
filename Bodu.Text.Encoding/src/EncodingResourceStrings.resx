@@ -118,8 +118,29 @@
   <data name="Format_Invalid_Ascii85" xml:space="preserve">
     <value>Input is not valid Ascii85.</value>
   </data>
+  <data name="Format_Invalid_Base32CharacterNotInAlphabet" xml:space="preserve">
+    <value>Input contains a character outside the variant alphabet: '{0}'.</value>
+  </data>
+  <data name="Format_Invalid_Base32LengthNotMultipleOfEight" xml:space="preserve">
+    <value>Input length is not a multiple of 8 and AllowMissingPadding is not set.</value>
+  </data>
+  <data name="Format_Invalid_Base32NonCanonical" xml:space="preserve">
+    <value>Base32 input is not in canonical form — unused trailing bits are non-zero.</value>
+  </data>
+  <data name="Format_Invalid_Base32PaddingCount" xml:space="preserve">
+    <value>Expected {0} padding character(s) but found {1}.</value>
+  </data>
+  <data name="Format_Invalid_Base32PaddingNotAtEnd" xml:space="preserve">
+    <value>Padding characters may only appear at the end of the input.</value>
+  </data>
+  <data name="Format_Invalid_Base32TerminalQuantum" xml:space="preserve">
+    <value>Base32 input has an invalid number of data characters for the final quantum.</value>
+  </data>
   <data name="Format_Invalid_Base32VariantAlphabet" xml:space="preserve">
     <value>Input contains characters outside the Base32 variant alphabet.</value>
+  </data>
+  <data name="Format_Invalid_Base58CharacterNotInAlphabet" xml:space="preserve">
+    <value>Input contains a character outside the Base58 variant alphabet: '{0}'.</value>
   </data>
   <data name="Format_Invalid_Base58CheckChecksumFailed" xml:space="preserve">
     <value>Base58Check checksum verification failed.</value>
@@ -138,6 +159,24 @@
   </data>
   <data name="Format_Invalid_Base64VariantAlphabet" xml:space="preserve">
     <value>Input contains characters outside the Base64 variant alphabet.</value>
+  </data>
+  <data name="Format_Invalid_Base85CharacterNotInAlphabet" xml:space="preserve">
+    <value>Input contains a character outside the Base85 variant alphabet: '{0}'.</value>
+  </data>
+  <data name="Format_Invalid_Base85GroupOverflow" xml:space="preserve">
+    <value>Base85 group exceeds the maximum 32-bit value.</value>
+  </data>
+  <data name="Format_Invalid_Base85ShortcutPosition" xml:space="preserve">
+    <value>The 'z' shortcut may only appear at the start of a five-character group.</value>
+  </data>
+  <data name="Format_Invalid_Base85SingleTrailingCharacter" xml:space="preserve">
+    <value>A single trailing Base85 character cannot decode to a complete byte.</value>
+  </data>
+  <data name="Format_Invalid_Base85TrailingGroupOverflow" xml:space="preserve">
+    <value>Trailing Base85 group overflows the 32-bit accumulator after padding.</value>
+  </data>
+  <data name="Format_Invalid_Base85Z85LengthNotMultipleOfFive" xml:space="preserve">
+    <value>Z85 input length must be a multiple of five characters.</value>
   </data>
   <data name="Format_Invalid_BitcoinFlickrBase58" xml:space="preserve">
     <value>Input is not valid Bitcoin/Flickr Base58.</value>

@@ -153,7 +153,7 @@ public static partial class Base85
             {
                 if (charsAccumulated != 0)
                 {
-                    error = "The 'z' shortcut may only appear at the start of a five-character group.";
+                    error = EncodingResourceStrings.Format_Invalid_Base85ShortcutPosition;
                     written = 0;
                     return false;
                 }
@@ -167,7 +167,7 @@ public static partial class Base85
 
             if (c >= lookup.Length || lookup[c] < 0)
             {
-                error = $"Input contains a character outside the Base85 variant alphabet: '{c}'.";
+                error = string.Format(System.Globalization.CultureInfo.InvariantCulture, EncodingResourceStrings.Format_Invalid_Base85CharacterNotInAlphabet, c);
                 written = 0;
                 return false;
             }
@@ -179,7 +179,7 @@ public static partial class Base85
             var next = ((ulong)accumulator * 85) + (uint)symbolValue;
             if (next > uint.MaxValue)
             {
-                error = "Base85 group exceeds the maximum 32-bit value.";
+                error = EncodingResourceStrings.Format_Invalid_Base85GroupOverflow;
                 written = 0;
                 return false;
             }
@@ -203,14 +203,14 @@ public static partial class Base85
 
         if (requireFullGroups)
         {
-            error = "Z85 input length must be a multiple of five characters.";
+            error = EncodingResourceStrings.Format_Invalid_Base85Z85LengthNotMultipleOfFive;
             written = 0;
             return false;
         }
 
         if (charsAccumulated == 1)
         {
-            error = "A single trailing Base85 character cannot decode to a complete byte.";
+            error = EncodingResourceStrings.Format_Invalid_Base85SingleTrailingCharacter;
             written = 0;
             return false;
         }
@@ -221,7 +221,7 @@ public static partial class Base85
             var next = ((ulong)accumulator * 85) + 84;
             if (next > uint.MaxValue)
             {
-                error = "Trailing Base85 group overflows the 32-bit accumulator after padding.";
+                error = EncodingResourceStrings.Format_Invalid_Base85TrailingGroupOverflow;
                 written = 0;
                 return false;
             }

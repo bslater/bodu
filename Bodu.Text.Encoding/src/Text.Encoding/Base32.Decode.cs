@@ -179,14 +179,14 @@ public static partial class Base32
 
             if (paddingSeen > 0)
             {
-                error = "Padding characters may only appear at the end of the input.";
+                error = EncodingResourceStrings.Format_Invalid_Base32PaddingNotAtEnd;
                 bytesWritten = 0;
                 return false;
             }
 
             if ((uint)c >= (uint)lookup.Length)
             {
-                error = $"Input contains a character outside the variant alphabet: '{c}'.";
+                error = string.Format(System.Globalization.CultureInfo.InvariantCulture, EncodingResourceStrings.Format_Invalid_Base32CharacterNotInAlphabet, c);
                 bytesWritten = 0;
                 return false;
             }
@@ -194,7 +194,7 @@ public static partial class Base32
             int value = lookup[c];
             if (value < 0)
             {
-                error = $"Input contains a character outside the variant alphabet: '{c}'.";
+                error = string.Format(System.Globalization.CultureInfo.InvariantCulture, EncodingResourceStrings.Format_Invalid_Base32CharacterNotInAlphabet, c);
                 bytesWritten = 0;
                 return false;
             }
@@ -219,7 +219,7 @@ public static partial class Base32
         var totalSymbols = symbolsConsumed + paddingSeen;
         if (requireExactPadding && (totalSymbols % 8) != 0)
         {
-            error = "Input length is not a multiple of 8 and AllowMissingPadding is not set.";
+            error = EncodingResourceStrings.Format_Invalid_Base32LengthNotMultipleOfEight;
             bytesWritten = 0;
             return false;
         }
@@ -229,7 +229,7 @@ public static partial class Base32
             var expectedPadding = (8 - (symbolsConsumed % 8)) % 8;
             if (paddingSeen != expectedPadding)
             {
-                error = $"Expected {expectedPadding} padding character(s) but found {paddingSeen}.";
+                error = string.Format(System.Globalization.CultureInfo.InvariantCulture, EncodingResourceStrings.Format_Invalid_Base32PaddingCount, expectedPadding, paddingSeen);
                 bytesWritten = 0;
                 return false;
             }
@@ -240,7 +240,7 @@ public static partial class Base32
         var dataMod = symbolsConsumed % 8;
         if (strictQuantum && dataMod is 1 or 3 or 6)
         {
-            error = "Base32 input has an invalid number of data characters for the final quantum.";
+            error = EncodingResourceStrings.Format_Invalid_Base32TerminalQuantum;
             bytesWritten = 0;
             return false;
         }
@@ -252,7 +252,7 @@ public static partial class Base32
             var leftoverMask = (1 << bitsAccumulated) - 1;
             if ((accumulator & leftoverMask) != 0)
             {
-                error = "Base32 input is not in canonical form — unused trailing bits are non-zero.";
+                error = EncodingResourceStrings.Format_Invalid_Base32NonCanonical;
                 bytesWritten = 0;
                 return false;
             }
