@@ -7,6 +7,7 @@
 using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using System.Text.Json.Serialization;
 
 namespace Bodu.Numerics;
 
@@ -38,6 +39,7 @@ namespace Bodu.Numerics;
 /// </remarks>
 [Serializable]
 [DebuggerDisplay("{ToString(),nq}")]
+[JsonConverter(typeof(FractionJsonConverterFactory))]
 public readonly partial struct Fraction<T>
     where T : IBinaryInteger<T>
 {
