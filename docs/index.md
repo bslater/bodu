@@ -128,7 +128,6 @@ dotnet add package Bodu.Globalization.Calendar.Data.AsiaPacific
 <div class="bodu-nav">
   <a href="docs/introduction.md">Introduction</a>
   <a href="docs/getting-started.md">Getting started</a>
-  <a href="docs/algorithm-families.md">Algorithm families</a>
   <a href="articles/index.md">Articles</a>
   <a href="api/index.html">API reference</a>
 </div>

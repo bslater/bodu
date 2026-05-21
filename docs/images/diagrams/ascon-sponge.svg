@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 320" role="img" aria-labelledby="as-title as-desc">
+  <title id="as-title">ASCON sponge construction — absorb and squeeze over a 320-bit state</title>
+  <desc id="as-desc">The ASCON sponge maintains a 320-bit state held as five 64-bit words S0 through S4. The state is split into a rate portion, into which message blocks are XORed during the absorb phase and from which output blocks are read during the squeeze phase, and a capacity portion, which is never touched directly and carries the security margin. Between every block the Ascon-p permutation is applied to the full 320-bit state.</desc>
+
+  <defs>
+    <style>
+      .bg { fill: #0F172A; }
+      .panel { fill: #1E293B; stroke: #334155; stroke-width: 1; }
+      .header { fill: #111827; stroke: #334155; stroke-width: 1; }
+      .title { fill: #F8FAFC; font: 700 15px/1 "Segoe UI",Arial,sans-serif; }
+      .formula { fill: #94A3B8; font: italic 12px/1 "Cambria",Georgia,serif; }
+      .label { fill: #F8FAFC; font: 700 13px/1 "Segoe UI",Arial,sans-serif; }
+      .sub { fill: #CBD5E1; font: 400 11px/1 "Segoe UI",Arial,sans-serif; }
+      .sub-muted { fill: #94A3B8; font: 400 10.5px/1 "Segoe UI",Arial,sans-serif; }
+      .rate { fill: #F59E0B; stroke: #FBBF24; stroke-width: 1; }
+      .capacity { fill: #475569; stroke: #64748B; stroke-width: 1; }
+      .perm { fill: #3B82F6; stroke: #60A5FA; stroke-width: 1; }
+      .msg { fill: #A78BFA; stroke: #C4B5FD; stroke-width: 1; }
+      .outblk { fill: #14B8A6; stroke: #2DD4BF; stroke-width: 1; }
+      .wire { stroke: #CBD5E1; stroke-width: 1.6; fill: none; }
+      .wire-msg { stroke: #C4B5FD; stroke-width: 1.6; fill: none; }
+      .wire-out { stroke: #2DD4BF; stroke-width: 1.6; fill: none; }
+      .xor { fill: #0F172A; stroke: #F8FAFC; stroke-width: 1.6; }
+      .xor-sym { fill: #F8FAFC; font: 700 13px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .box-text { fill: #F8FAFC; font: 700 13px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .word-text { fill: #0F172A; font: 700 11px/1 "Consolas","Menlo",monospace; text-anchor: middle; }
+    </style>
+    <marker id="as-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#CBD5E1"/>
+    </marker>
+    <marker id="as-arr-m" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#C4B5FD"/>
+    </marker>
+    <marker id="as-arr-o" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#2DD4BF"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" width="820" height="320"/>
+
+  <g transform="translate(10 10)">
+    <rect class="panel" width="800" height="300" rx="8"/>
+    <rect class="header" width="800" height="46" rx="8"/>
+    <rect class="header" y="38" width="800" height="8"/>
+    <text class="title" x="16" y="20">ASCON sponge — 320-bit state, absorb then squeeze</text>
+    <text class="formula" x="784" y="38" text-anchor="end">state = rate ‖ capacity;   permute with Ascon-p between blocks</text>
+
+    <!-- state: 5 x 64-bit words -->
+    <g transform="translate(40 90)">
+      <text class="sub" x="0" y="-12">320-bit state — five 64-bit words</text>
+      <rect class="rate" x="0"  y="0"  width="120" height="22" rx="3"/>
+      <rect class="rate" x="0"  y="24" width="120" height="22" rx="3"/>
+      <rect class="capacity" x="0"  y="48" width="120" height="22" rx="3"/>
+      <rect class="capacity" x="0"  y="72" width="120" height="22" rx="3"/>
+      <rect class="capacity" x="0"  y="96" width="120" height="22" rx="3"/>
+      <text class="word-text" x="60" y="15">S₀  (rate)</text>
+      <text class="word-text" x="60" y="39">S₁  (rate)</text>
+      <text class="word-text" x="60" y="63" fill="#E2E8F0">S₂ (capacity)</text>
+      <text class="word-text" x="60" y="87" fill="#E2E8F0">S₃ (capacity)</text>
+      <text class="word-text" x="60" y="111" fill="#E2E8F0">S₄ (capacity)</text>
+    </g>
+
+    <!-- rate / capacity brackets -->
+    <g transform="translate(170 90)">
+      <path class="wire" d="M 0 2 L 8 2 L 8 44 L 0 44" stroke="#FBBF24"/>
+      <text class="sub" x="14" y="27" fill="#FBBF24">rate r</text>
+      <path class="wire" d="M 0 50 L 8 50 L 8 116 L 0 116" stroke="#94A3B8"/>
+      <text class="sub-muted" x="14" y="86">capacity c (security margin)</text>
+    </g>
+
+    <!-- Ascon-p permutation box -->
+    <g transform="translate(420 140)">
+      <rect class="perm" x="-66" y="-44" width="132" height="88" rx="8"/>
+      <text class="box-text" x="0" y="-12">Ascon-p</text>
+      <text class="box-text" x="0" y="6" font-size="11">permutation</text>
+      <text class="word-text" x="0" y="26" fill="#DBEAFE">8 or 12 rounds</text>
+    </g>
+    <text class="sub-muted" x="420" y="206" text-anchor="middle">add constant ⟶ 5-bit S-box ⟶ linear diffusion</text>
+    <line class="wire" x1="160" y1="145" x2="350" y2="145" marker-end="url(#as-arr)"/>
+
+    <!-- Absorb phase -->
+    <g transform="translate(300 250)">
+      <rect class="msg" x="-46" y="-15" width="92" height="30" rx="4"/>
+      <text class="box-text" x="0" y="5" fill="#1E293B" font-size="12">message block</text>
+    </g>
+    <g transform="translate(420 245)">
+      <circle class="xor" cx="0" cy="0" r="13"/>
+      <text class="xor-sym" x="0" y="5">⊕</text>
+    </g>
+    <line class="wire-msg" x1="346" y1="250" x2="404" y2="246" marker-end="url(#as-arr-m)"/>
+    <path class="wire-msg" d="M 420 232 L 420 188" marker-end="url(#as-arr-m)"/>
+    <text class="sub-muted" x="220" y="270">ABSORB — XOR each block into the rate, then permute</text>
+
+    <!-- Squeeze phase -->
+    <g transform="translate(620 130)">
+      <rect class="outblk" x="-46" y="-15" width="92" height="30" rx="4"/>
+      <text class="box-text" x="0" y="5" fill="#1E293B" font-size="12">output block</text>
+    </g>
+    <path class="wire-out" d="M 486 130 L 568 130" marker-end="url(#as-arr-o)"/>
+    <text class="sub-muted" x="560" y="170" text-anchor="middle">SQUEEZE — read the rate, permute, repeat</text>
+
+    <!-- permutation loop -->
+    <path class="wire" d="M 486 165 C 540 200, 540 95, 486 116" stroke-dasharray="4 3" marker-end="url(#as-arr)"/>
+    <text class="sub-muted" x="556" y="142" text-anchor="start">loop</text>
+
+    <!-- footer note -->
+    <text class="sub" x="20" y="290">Only the rate is XOR-visible — the capacity is never touched directly, which is what bounds the construction's security.</text>
+  </g>
+</svg>

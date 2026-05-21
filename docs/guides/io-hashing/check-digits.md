@@ -246,6 +246,6 @@ bool valid = Lei.IsValid("5493000IBP32UQZ0KL24");   // true
 
 ## Where to go next
 
-- [Algorithm families](../../docs/algorithm-families.md) — how check digits relate to checksums, fingerprints, and cryptographic primitives.
+- [Bodu.IO.Hashing introduction](../../docs/io-hashing/index.md) — how check digits relate to checksums and fingerprints, and where the cryptographic families fit.
 - [Bodu.IO.Hashing overview](index.md) — the broader non-cryptographic hashing landscape.
 - [Bodu.IO.Hashing API reference](../../apidoc/Bodu.IO.Hashing.md) — full type documentation.

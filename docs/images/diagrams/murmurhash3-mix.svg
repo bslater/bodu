@@ -1,0 +1,134 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 320" role="img" aria-labelledby="mm-title mm-desc">
+  <title id="mm-title">MurmurHash3 — block mixing and avalanche finalization</title>
+  <desc id="mm-desc">MurmurHash3 processes the input in fixed-size blocks. Each block k is scrambled by multiply, rotate, multiply with the constants c1 and c2, then XORed into the hash accumulator h, which is itself rotated and combined with h times five plus a constant. After all blocks, a finalization mix of alternating XOR-shift and multiply steps spreads every input bit across every output bit — the avalanche property.</desc>
+
+  <defs>
+    <style>
+      .bg { fill: #0F172A; }
+      .panel { fill: #1E293B; stroke: #334155; stroke-width: 1; }
+      .header { fill: #111827; stroke: #334155; stroke-width: 1; }
+      .title { fill: #F8FAFC; font: 700 15px/1 "Segoe UI",Arial,sans-serif; }
+      .formula { fill: #94A3B8; font: italic 12px/1 "Cambria",Georgia,serif; }
+      .label { fill: #F8FAFC; font: 700 13px/1 "Segoe UI",Arial,sans-serif; }
+      .sub { fill: #CBD5E1; font: 400 11px/1 "Segoe UI",Arial,sans-serif; }
+      .sub-muted { fill: #94A3B8; font: 400 10.5px/1 "Segoe UI",Arial,sans-serif; }
+      .block { fill: #F59E0B; }
+      .step-k { fill: #A78BFA; stroke: #C4B5FD; stroke-width: 1; }
+      .step-h { fill: #14B8A6; stroke: #2DD4BF; stroke-width: 1; }
+      .step-f { fill: #3B82F6; stroke: #60A5FA; stroke-width: 1; }
+      .tag { fill: #FBBF24; stroke: #F59E0B; stroke-width: 1; }
+      .wire { stroke: #CBD5E1; stroke-width: 1.6; fill: none; }
+      .wire-k { stroke: #C4B5FD; stroke-width: 1.8; fill: none; }
+      .wire-h { stroke: #2DD4BF; stroke-width: 1.8; fill: none; }
+      .wire-f { stroke: #60A5FA; stroke-width: 1.8; fill: none; }
+      .step-text { fill: #0F172A; font: 700 11px/1 "Consolas","Menlo",monospace; text-anchor: middle; }
+      .group { fill: #F8FAFC; font: 700 12px/1 "Segoe UI",Arial,sans-serif; }
+    </style>
+    <marker id="mm-arr-d" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#CBD5E1"/>
+    </marker>
+    <marker id="mm-arr-k" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#C4B5FD"/>
+    </marker>
+    <marker id="mm-arr-h" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#2DD4BF"/>
+    </marker>
+    <marker id="mm-arr-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#60A5FA"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" width="820" height="320"/>
+
+  <g transform="translate(10 10)">
+    <rect class="panel" width="800" height="300" rx="8"/>
+    <rect class="header" width="800" height="46" rx="8"/>
+    <rect class="header" y="38" width="800" height="8"/>
+    <text class="title" x="16" y="20">MurmurHash3 — block mix, then avalanche finalize</text>
+    <text class="formula" x="784" y="38" text-anchor="end">c1, c2, r1, r2 and the 5·h + n step are fixed constants</text>
+
+    <!-- input block -->
+    <g transform="translate(66 96)">
+      <rect class="block" x="-40" y="-15" width="80" height="30" rx="4"/>
+      <text class="label" x="0" y="5" text-anchor="middle" fill="#0F172A">block k</text>
+    </g>
+
+    <!-- block scramble group -->
+    <text class="group" x="40" y="64" fill="#C4B5FD">Per-block scramble of k</text>
+    <g transform="translate(170 96)">
+      <rect class="step-k" x="-34" y="-15" width="68" height="30" rx="5"/>
+      <text class="step-text" x="0" y="4">k ×= c1</text>
+    </g>
+    <g transform="translate(272 96)">
+      <rect class="step-k" x="-40" y="-15" width="80" height="30" rx="5"/>
+      <text class="step-text" x="0" y="4">rotl(k,r1)</text>
+    </g>
+    <g transform="translate(376 96)">
+      <rect class="step-k" x="-34" y="-15" width="68" height="30" rx="5"/>
+      <text class="step-text" x="0" y="4">k ×= c2</text>
+    </g>
+    <line class="wire-k" x1="106" y1="96" x2="133" y2="96" marker-end="url(#mm-arr-k)"/>
+    <line class="wire-k" x1="204" y1="96" x2="229" y2="96" marker-end="url(#mm-arr-k)"/>
+    <line class="wire-k" x1="306" y1="96" x2="333" y2="96" marker-end="url(#mm-arr-k)"/>
+
+    <!-- hash combine group -->
+    <text class="group" x="450" y="64" fill="#2DD4BF">Fold into accumulator h</text>
+    <g transform="translate(480 96)">
+      <rect class="step-h" x="-34" y="-15" width="68" height="30" rx="5"/>
+      <text class="step-text" x="0" y="4">h ^= k</text>
+    </g>
+    <g transform="translate(578 96)">
+      <rect class="step-h" x="-40" y="-15" width="80" height="30" rx="5"/>
+      <text class="step-text" x="0" y="4">rotl(h,r2)</text>
+    </g>
+    <g transform="translate(688 96)">
+      <rect class="step-h" x="-42" y="-15" width="84" height="30" rx="5"/>
+      <text class="step-text" x="0" y="4">h = h·5 + n</text>
+    </g>
+    <line class="wire-k" x1="410" y1="96" x2="443" y2="96" marker-end="url(#mm-arr-k)"/>
+    <line class="wire-h" x1="514" y1="96" x2="535" y2="96" marker-end="url(#mm-arr-h)"/>
+    <line class="wire-h" x1="618" y1="96" x2="643" y2="96" marker-end="url(#mm-arr-h)"/>
+
+    <!-- loop back over blocks -->
+    <path class="wire-h" d="M 688 111 C 688 150, 480 150, 480 117" stroke-dasharray="4 3" marker-end="url(#mm-arr-h)"/>
+    <text class="sub-muted" x="584" y="146" text-anchor="middle">repeat for every block</text>
+
+    <!-- finalization -->
+    <text class="group" x="40" y="190" fill="#60A5FA">Avalanche finalization — fmix(h) after the last block</text>
+    <g transform="translate(96 222)">
+      <rect class="step-f" x="-46" y="-16" width="92" height="32" rx="5"/>
+      <text class="step-text" x="0" y="4">h ^= len</text>
+    </g>
+    <g transform="translate(232 222)">
+      <rect class="step-f" x="-52" y="-16" width="104" height="32" rx="5"/>
+      <text class="step-text" x="0" y="4">h ^= h &gt;&gt; 16</text>
+    </g>
+    <g transform="translate(376 222)">
+      <rect class="step-f" x="-52" y="-16" width="104" height="32" rx="5"/>
+      <text class="step-text" x="0" y="4">h ×= m1</text>
+    </g>
+    <g transform="translate(516 222)">
+      <rect class="step-f" x="-52" y="-16" width="104" height="32" rx="5"/>
+      <text class="step-text" x="0" y="4">h ^= h &gt;&gt; 13</text>
+    </g>
+    <g transform="translate(656 222)">
+      <rect class="step-f" x="-52" y="-16" width="104" height="32" rx="5"/>
+      <text class="step-text" x="0" y="4">h ^= h &gt;&gt; 16</text>
+    </g>
+    <line class="wire-f" x1="142" y1="222" x2="177" y2="222" marker-end="url(#mm-arr-f)"/>
+    <line class="wire-f" x1="284" y1="222" x2="321" y2="222" marker-end="url(#mm-arr-f)"/>
+    <line class="wire-f" x1="428" y1="222" x2="461" y2="222" marker-end="url(#mm-arr-f)"/>
+    <line class="wire-f" x1="568" y1="222" x2="601" y2="222" marker-end="url(#mm-arr-f)"/>
+    <text class="sub-muted" x="446" y="206" text-anchor="middle">xor-shift / multiply chain — drives every output bit</text>
+
+    <!-- final digest -->
+    <g transform="translate(740 222)">
+      <rect class="tag" x="-26" y="-16" width="44" height="32" rx="5"/>
+      <text class="label" x="-4" y="6" text-anchor="middle" fill="#0F172A" font-size="11">digest</text>
+    </g>
+    <line class="wire" x1="708" y1="222" x2="710" y2="222" marker-end="url(#mm-arr-d)"/>
+
+    <!-- footer note -->
+    <text class="sub" x="20" y="282">The body mixes blocks fast; finalization is what makes one flipped input bit flip roughly half the output bits — full avalanche.</text>
+  </g>
+</svg>

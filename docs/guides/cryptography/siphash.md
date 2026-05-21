@@ -6,6 +6,8 @@ title: Using SipHash
 
 SipHash is a family of **keyed** pseudo-random functions designed by Aumasson and Bernstein for one specific job: defeating hash-flooding attacks on hash tables. It takes a 128-bit secret key and a message of any length, and produces a fixed-size digest that is prohibitively expensive to collide without knowledge of the key.
 
+![SipHash SipRound — the add-rotate-XOR network over the four 64-bit state words](../../images/diagrams/siphash-round.svg)
+
 **Bodu.Security.Cryptography** ships two widths:
 
 | Type | Output | Parameterization (default) | When to reach for it |

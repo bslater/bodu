@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 404" role="img" aria-labelledby="cnm-t cnm-d">
+  <title id="cnm-t">Bodu.Core — namespace map</title>
+  <desc id="cnm-d">Bodu.Core is organised into eight focused namespaces. Bodu holds top-level primitives including WeekPattern, ThrowHelper, and the random-generator abstraction. Bodu.Buffers provides pooled buffer infrastructure. Bodu.Collections.Generic hosts the ring-backed and evicting collections. Bodu.Collections.Generic.Concurrent adds thread-safe variants. The Collections extension namespaces add sequence-shaping helpers. Bodu.Extensions covers date, numeric, span, and array helpers. Bodu.Text and Bodu.Xml.Linq provide text and XML helpers.</desc>
+
+  <defs>
+    <style>
+      .cnm-bg   { fill: #0F172A; }
+      .cnm-pan  { fill: #1E293B; stroke: #334155; stroke-width: 1; }
+      .cnm-hdr  { fill: #111827; stroke: #334155; stroke-width: 1; }
+      .cnm-ttl  { fill: #F8FAFC; font: 700 15px/1 "Segoe UI",Arial,sans-serif; }
+      .cnm-form { fill: #94A3B8; font: italic 12px/1 "Cambria",Georgia,serif; }
+      .cnm-card { fill: #0D3331; stroke: #2DD4BF; stroke-width: 1; }
+      .cnm-ns   { fill: #5EEAD4; font: 700 12px/1 "Consolas",Menlo,monospace; }
+      .cnm-role { fill: #E2E8F0; font: 700 11px/1 "Segoe UI",Arial,sans-serif; }
+      .cnm-type { fill: #94A3B8; font: 400 10px/1 "Segoe UI",Arial,sans-serif; }
+    </style>
+  </defs>
+
+  <rect class="cnm-bg" width="840" height="404"/>
+
+  <g transform="translate(10 10)">
+    <rect class="cnm-pan" width="820" height="384" rx="8"/>
+    <rect class="cnm-hdr" width="820" height="46" rx="8"/>
+    <rect class="cnm-hdr" y="38" width="820" height="8"/>
+    <text class="cnm-ttl" x="16" y="29">Bodu.Core — eight focused namespaces</text>
+    <text class="cnm-form" x="804" y="29" text-anchor="end">the foundation package — shared by every other Bodu library</text>
+
+    <!-- Row 1 -->
+    <g transform="translate(14 60)">
+      <rect class="cnm-card" width="189" height="148" rx="7"/>
+      <text class="cnm-ns" x="12" y="22">Bodu</text>
+      <text class="cnm-role" x="12" y="42">Top-level primitives</text>
+      <text class="cnm-type" x="12" y="62">WeekPattern</text>
+      <text class="cnm-type" x="12" y="80">ThrowHelper</text>
+      <text class="cnm-type" x="12" y="98">IRandomGenerator</text>
+      <text class="cnm-type" x="12" y="116">XorShiftRandom</text>
+    </g>
+    <g transform="translate(215 60)">
+      <rect class="cnm-card" width="189" height="148" rx="7"/>
+      <text class="cnm-ns" x="12" y="22">Bodu.Buffers</text>
+      <text class="cnm-role" x="12" y="42">Pooled buffers</text>
+      <text class="cnm-type" x="12" y="62">PooledBufferBuilder&lt;T&gt;</text>
+      <text class="cnm-type" x="12" y="80">ArrayPool-backed,</text>
+      <text class="cnm-type" x="12" y="98">allocation-free span</text>
+      <text class="cnm-type" x="12" y="116">assembly</text>
+    </g>
+    <g transform="translate(416 60)">
+      <rect class="cnm-card" width="189" height="148" rx="7"/>
+      <text class="cnm-ns" x="12" y="22">Bodu.Collections</text>
+      <text class="cnm-ns" x="12" y="37">.Generic</text>
+      <text class="cnm-role" x="12" y="57">Bounded collections</text>
+      <text class="cnm-type" x="12" y="77">CircularBuffer&lt;T&gt;</text>
+      <text class="cnm-type" x="12" y="95">Deque&lt;T&gt;</text>
+      <text class="cnm-type" x="12" y="113">EvictingDictionary&lt;K,V&gt;</text>
+      <text class="cnm-type" x="12" y="131">IndexedSet · RangeSet</text>
+    </g>
+    <g transform="translate(617 60)">
+      <rect class="cnm-card" width="189" height="148" rx="7"/>
+      <text class="cnm-ns" x="12" y="22">Bodu.Collections</text>
+      <text class="cnm-ns" x="12" y="37">.Generic.Concurrent</text>
+      <text class="cnm-role" x="12" y="57">Thread-safe variants</text>
+      <text class="cnm-type" x="12" y="77">ConcurrentCircular-</text>
+      <text class="cnm-type" x="12" y="95">Buffer&lt;T&gt;</text>
+      <text class="cnm-type" x="12" y="113">Vyukov MPMC,</text>
+      <text class="cnm-type" x="12" y="131">IProducerConsumer</text>
+    </g>
+
+    <!-- Row 2 -->
+    <g transform="translate(14 220)">
+      <rect class="cnm-card" width="189" height="148" rx="7"/>
+      <text class="cnm-ns" x="12" y="22">Bodu.Collections</text>
+      <text class="cnm-ns" x="12" y="37">.*.Extensions</text>
+      <text class="cnm-role" x="12" y="57">Sequence helpers</text>
+      <text class="cnm-type" x="12" y="77">IEnumerableExtensions</text>
+      <text class="cnm-type" x="12" y="95">IListExtensions</text>
+      <text class="cnm-type" x="12" y="113">windows · batching ·</text>
+      <text class="cnm-type" x="12" y="131">pluggable shuffles</text>
+    </g>
+    <g transform="translate(215 220)">
+      <rect class="cnm-card" width="189" height="148" rx="7"/>
+      <text class="cnm-ns" x="12" y="22">Bodu.Extensions</text>
+      <text class="cnm-role" x="12" y="42">Date / numeric / span</text>
+      <text class="cnm-type" x="12" y="62">DateTimeExtensions</text>
+      <text class="cnm-type" x="12" y="80">DateOnlyExtensions</text>
+      <text class="cnm-type" x="12" y="98">NumericExtensions</text>
+      <text class="cnm-type" x="12" y="116">SpanExtensions · arrays</text>
+    </g>
+    <g transform="translate(416 220)">
+      <rect class="cnm-card" width="189" height="148" rx="7"/>
+      <text class="cnm-ns" x="12" y="22">Bodu.Text</text>
+      <text class="cnm-role" x="12" y="42">Text helpers</text>
+      <text class="cnm-type" x="12" y="62">String and character</text>
+      <text class="cnm-type" x="12" y="80">helpers used across</text>
+      <text class="cnm-type" x="12" y="98">the Bodu suite —</text>
+      <text class="cnm-type" x="12" y="116">public when needed</text>
+    </g>
+    <g transform="translate(617 220)">
+      <rect class="cnm-card" width="189" height="148" rx="7"/>
+      <text class="cnm-ns" x="12" y="22">Bodu.Xml.Linq</text>
+      <text class="cnm-role" x="12" y="42">XML helpers</text>
+      <text class="cnm-type" x="12" y="62">LINQ-to-XML helpers</text>
+      <text class="cnm-type" x="12" y="80">used internally by</text>
+      <text class="cnm-type" x="12" y="98">other packages —</text>
+      <text class="cnm-type" x="12" y="116">available publicly</text>
+    </g>
+  </g>
+</svg>

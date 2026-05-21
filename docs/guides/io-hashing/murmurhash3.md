@@ -6,6 +6,8 @@ title: Using MurmurHash3
 
 MurmurHash3 is a non-cryptographic hash family designed by Austin Appleby (2011) and distributed in the [SMHasher](https://github.com/aappleby/smhasher) reference repository. It produces excellent avalanche behavior — every input bit influences every output bit — and passes all of the standard non-cryptographic hash quality tests. It is widely used in databases, distributed systems, and probabilistic data structures (Bloom filters, HyperLogLog).
 
+![MurmurHash3 mixing: each block is scrambled with constants c1, c2 and rotations before folding into the accumulator, followed by an xor-shift and multiply avalanche finalization](../../images/diagrams/murmurhash3-mix.svg)
+
 **Bodu.IO.Hashing** provides two variants:
 
 | Type | Output | Optimized for | Notes |
@@ -148,5 +150,5 @@ Reach for **MurmurHash3** when you need a seeded 32- or 128-bit fingerprint with
 - [Using CityHash](cityhash.md) — fastest throughput on large inputs.
 - [Using FNV](fnv.md) — constant-memory streaming alternative.
 - [Using Pearson](pearson.md) — configurable output width from 8 to 2048 bits.
-- [Algorithm families](../../docs/algorithm-families.md) — when to use a fingerprint vs a checksum vs a keyed hash.
+- [Bodu.IO.Hashing introduction](../../docs/io-hashing/index.md) — when to use a fingerprint vs a checksum vs a check digit.
 - [Bodu.IO.Hashing namespace page](../../apidoc/Bodu.IO.Hashing.md) — key types and design notes.

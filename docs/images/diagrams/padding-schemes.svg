@@ -1,0 +1,136 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 340" role="img" aria-labelledby="pad-title pad-desc">
+  <title id="pad-title">Block-cipher padding schemes compared</title>
+  <desc id="pad-desc">A side-by-side comparison of five padding schemes filling the same partial final block of a block cipher. PKCS7 appends N bytes each holding the value N. ANSI X.923 appends zero bytes followed by a trailing length byte. ISO 10126 appends random bytes followed by a trailing length byte. Zeros appends only zero bytes. ISO/IEC 7816-4 bit padding appends a single 0x80 byte followed by zero bytes.</desc>
+
+  <defs>
+    <style>
+      .bg { fill: #0F172A; }
+      .panel { fill: #1E293B; stroke: #334155; stroke-width: 1; }
+      .header { fill: #111827; stroke: #334155; stroke-width: 1; }
+      .title { fill: #F8FAFC; font: 700 15px/1 "Segoe UI",Arial,sans-serif; }
+      .formula { fill: #94A3B8; font: italic 12px/1 "Cambria",Georgia,serif; }
+      .label { fill: #F8FAFC; font: 700 13px/1 "Segoe UI",Arial,sans-serif; }
+      .sub { fill: #CBD5E1; font: 400 11px/1 "Segoe UI",Arial,sans-serif; }
+      .sub-muted { fill: #94A3B8; font: 400 10.5px/1 "Segoe UI",Arial,sans-serif; }
+      .scheme { fill: #F8FAFC; font: 700 12px/1 "Segoe UI",Arial,sans-serif; }
+      .data-cell { fill: #F59E0B; stroke: #FBBF24; stroke-width: 1; }
+      .pad-len { fill: #A78BFA; stroke: #C4B5FD; stroke-width: 1; }
+      .pad-zero { fill: #475569; stroke: #64748B; stroke-width: 1; }
+      .pad-rand { fill: #14B8A6; stroke: #2DD4BF; stroke-width: 1; }
+      .pad-mark { fill: #3B82F6; stroke: #60A5FA; stroke-width: 1; }
+      .cell-text { fill: #0F172A; font: 700 10.5px/1 "Consolas","Menlo",monospace; text-anchor: middle; }
+      .cell-text-l { fill: #E2E8F0; font: 700 10.5px/1 "Consolas","Menlo",monospace; text-anchor: middle; }
+    </style>
+  </defs>
+
+  <rect class="bg" width="820" height="340"/>
+
+  <g transform="translate(10 10)">
+    <rect class="panel" width="800" height="320" rx="8"/>
+    <rect class="header" width="800" height="46" rx="8"/>
+    <rect class="header" y="38" width="800" height="8"/>
+    <text class="title" x="16" y="20">Padding schemes — filling a partial final block (block size 8)</text>
+    <text class="formula" x="784" y="38" text-anchor="end">5 data bytes ⟶ 3 pad bytes to the next 8-byte boundary</text>
+
+    <!-- column headers over the 8 cells -->
+    <g transform="translate(300 64)" class="sub-muted" text-anchor="middle">
+      <text x="22"  y="0">D</text><text x="68"  y="0">D</text><text x="114" y="0">D</text>
+      <text x="160" y="0">D</text><text x="206" y="0">D</text>
+      <text x="284" y="0" fill="#CBD5E1">— pad —</text>
+    </g>
+    <text class="sub" x="240" y="64" text-anchor="end">real data ⟶</text>
+
+    <!-- Reusable row macro emulated by repeating groups. Each cell = 44 wide, 26 tall -->
+
+    <!-- Row 1: PKCS7 -->
+    <g transform="translate(40 78)">
+      <text class="scheme" x="0" y="16">PKCS7</text>
+      <g transform="translate(260 0)">
+        <rect class="data-cell" x="0"   y="0" width="44" height="26" rx="3"/>
+        <rect class="data-cell" x="46"  y="0" width="44" height="26" rx="3"/>
+        <rect class="data-cell" x="92"  y="0" width="44" height="26" rx="3"/>
+        <rect class="data-cell" x="138" y="0" width="44" height="26" rx="3"/>
+        <rect class="data-cell" x="184" y="0" width="44" height="26" rx="3"/>
+        <rect class="pad-len"  x="230" y="0" width="44" height="26" rx="3"/>
+        <rect class="pad-len"  x="276" y="0" width="44" height="26" rx="3"/>
+        <rect class="pad-len"  x="322" y="0" width="44" height="26" rx="3"/>
+        <g class="cell-text"><text x="22" y="17">D</text><text x="68" y="17">D</text><text x="114" y="17">D</text><text x="160" y="17">D</text><text x="206" y="17">D</text><text x="252" y="17">03</text><text x="298" y="17">03</text><text x="344" y="17">03</text></g>
+      </g>
+      <text class="sub-muted" x="640" y="16">N pad bytes, each = N</text>
+    </g>
+
+    <!-- Row 2: ANSI X.923 -->
+    <g transform="translate(40 124)">
+      <text class="scheme" x="0" y="16">ANSI X.923</text>
+      <g transform="translate(260 0)">
+        <rect class="data-cell" x="0"   y="0" width="44" height="26" rx="3"/>
+        <rect class="data-cell" x="46"  y="0" width="44" height="26" rx="3"/>
+        <rect class="data-cell" x="92"  y="0" width="44" height="26" rx="3"/>
+        <rect class="data-cell" x="138" y="0" width="44" height="26" rx="3"/>
+        <rect class="data-cell" x="184" y="0" width="44" height="26" rx="3"/>
+        <rect class="pad-zero" x="230" y="0" width="44" height="26" rx="3"/>
+        <rect class="pad-zero" x="276" y="0" width="44" height="26" rx="3"/>
+        <rect class="pad-len"  x="322" y="0" width="44" height="26" rx="3"/>
+        <g class="cell-text"><text x="22" y="17">D</text><text x="68" y="17">D</text><text x="114" y="17">D</text><text x="160" y="17">D</text><text x="206" y="17">D</text><text x="344" y="17">03</text></g>
+        <g class="cell-text-l"><text x="252" y="17">00</text><text x="298" y="17">00</text></g>
+      </g>
+      <text class="sub-muted" x="640" y="16">zeros, then length byte</text>
+    </g>
+
+    <!-- Row 3: ISO 10126 -->
+    <g transform="translate(40 170)">
+      <text class="scheme" x="0" y="16">ISO 10126</text>
+      <g transform="translate(260 0)">
+        <rect class="data-cell" x="0"   y="0" width="44" height="26" rx="3"/>
+        <rect class="data-cell" x="46"  y="0" width="44" height="26" rx="3"/>
+        <rect class="data-cell" x="92"  y="0" width="44" height="26" rx="3"/>
+        <rect class="data-cell" x="138" y="0" width="44" height="26" rx="3"/>
+        <rect class="data-cell" x="184" y="0" width="44" height="26" rx="3"/>
+        <rect class="pad-rand" x="230" y="0" width="44" height="26" rx="3"/>
+        <rect class="pad-rand" x="276" y="0" width="44" height="26" rx="3"/>
+        <rect class="pad-len"  x="322" y="0" width="44" height="26" rx="3"/>
+        <g class="cell-text"><text x="22" y="17">D</text><text x="68" y="17">D</text><text x="114" y="17">D</text><text x="160" y="17">D</text><text x="206" y="17">D</text><text x="252" y="17">A7</text><text x="298" y="17">3C</text><text x="344" y="17">03</text></g>
+      </g>
+      <text class="sub-muted" x="640" y="16">random, then length byte</text>
+    </g>
+
+    <!-- Row 4: Zeros -->
+    <g transform="translate(40 216)">
+      <text class="scheme" x="0" y="16">Zeros</text>
+      <g transform="translate(260 0)">
+        <rect class="data-cell" x="0"   y="0" width="44" height="26" rx="3"/>
+        <rect class="data-cell" x="46"  y="0" width="44" height="26" rx="3"/>
+        <rect class="data-cell" x="92"  y="0" width="44" height="26" rx="3"/>
+        <rect class="data-cell" x="138" y="0" width="44" height="26" rx="3"/>
+        <rect class="data-cell" x="184" y="0" width="44" height="26" rx="3"/>
+        <rect class="pad-zero" x="230" y="0" width="44" height="26" rx="3"/>
+        <rect class="pad-zero" x="276" y="0" width="44" height="26" rx="3"/>
+        <rect class="pad-zero" x="322" y="0" width="44" height="26" rx="3"/>
+        <g class="cell-text"><text x="22" y="17">D</text><text x="68" y="17">D</text><text x="114" y="17">D</text><text x="160" y="17">D</text><text x="206" y="17">D</text></g>
+        <g class="cell-text-l"><text x="252" y="17">00</text><text x="298" y="17">00</text><text x="344" y="17">00</text></g>
+      </g>
+      <text class="sub-muted" x="640" y="16">zeros — ambiguous unpad</text>
+    </g>
+
+    <!-- Row 5: ISO/IEC 7816-4 -->
+    <g transform="translate(40 262)">
+      <text class="scheme" x="0" y="16">ISO 7816-4</text>
+      <g transform="translate(260 0)">
+        <rect class="data-cell" x="0"   y="0" width="44" height="26" rx="3"/>
+        <rect class="data-cell" x="46"  y="0" width="44" height="26" rx="3"/>
+        <rect class="data-cell" x="92"  y="0" width="44" height="26" rx="3"/>
+        <rect class="data-cell" x="138" y="0" width="44" height="26" rx="3"/>
+        <rect class="data-cell" x="184" y="0" width="44" height="26" rx="3"/>
+        <rect class="pad-mark" x="230" y="0" width="44" height="26" rx="3"/>
+        <rect class="pad-zero" x="276" y="0" width="44" height="26" rx="3"/>
+        <rect class="pad-zero" x="322" y="0" width="44" height="26" rx="3"/>
+        <g class="cell-text"><text x="22" y="17">D</text><text x="68" y="17">D</text><text x="114" y="17">D</text><text x="160" y="17">D</text><text x="206" y="17">D</text></g>
+        <g class="cell-text-l"><text x="252" y="17" fill="#DBEAFE">80</text><text x="298" y="17">00</text><text x="344" y="17">00</text></g>
+      </g>
+      <text class="sub-muted" x="640" y="16">one 0x80 marker, then zeros</text>
+    </g>
+
+    <!-- footer note -->
+    <text class="sub" x="20" y="306">A block-aligned plaintext still gets a full extra pad block in every scheme except Zeros — so unpadding is never ambiguous.</text>
+  </g>
+</svg>

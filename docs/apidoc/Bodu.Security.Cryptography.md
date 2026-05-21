@@ -17,7 +17,7 @@ For non-cryptographic checksums and hash-table hashes (CRC, Fletcher, Adler, FNV
 - **[Bodu.Security.Cryptography introduction](~/docs/cryptography/index.md)** — namespaces, headline types, scenarios.
 - **[Bodu.Security.Cryptography getting started](~/docs/cryptography/getting-started.md)** — install and minimal samples for ciphers, AEAD, keyed hashes, and digests.
 - **[Bodu.Security.Cryptography guides](~/guides/cryptography/index.md)** — encryption basics, cipher modes, padding, composing primitives, AEAD modes, keyed and cryptographic hashing, the ASCON family.
-- **[Algorithm families](~/docs/algorithm-families.md)** — cipher subtypes, hash shapes, and the cross-library map.
+- **[Bodu.IO.Hashing introduction](~/docs/io-hashing/index.md)** — the sibling library, for non-cryptographic checksums and fingerprints (no adversary model).
 
 ## Key types
 

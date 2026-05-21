@@ -6,6 +6,8 @@ title: Using Adler
 
 The Adler checksum — introduced by Mark Adler for zlib — maintains two running sums, **A** and **B**, reduced modulo a prime. It is cheap, position-dependent (so it catches transpositions), and the canonical <xref:Bodu.IO.Hashing.Checksums.Adler32> is the checksum embedded in every zlib stream.
 
+![Adler-32 twin running sums: A starts at 1 and accumulates each byte modulo 65521, B accumulates the running A, and the output is B shifted left 16 bits combined with A](../../images/diagrams/adler-twin-sum.svg)
+
 **Bodu.IO.Hashing** provides three variants:
 
 | Type | Width | Modulus | Intended use |

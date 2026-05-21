@@ -13,59 +13,7 @@ position.
 
 ## Pipeline overview
 
-```
-┌─────────────────────────────────────────────────────────┐
-│  Stage 1 — Rule loading                                  │
-│  INotableDateRuleProvider.LoadRules() × N providers      │
-│  + UseFrom/Use directive materialisation                 │
-└─────────────────────┬───────────────────────────────────┘
-                      │
-┌─────────────────────▼───────────────────────────────────┐
-│  Stage 2 — Override merging                              │
-│  INotableDateRuleOverrideProvider × M providers          │
-│  RuleRemoval → remove by name + year bounds              │
-│  GetAdditions() → append                                 │
-└─────────────────────┬───────────────────────────────────┘
-                      │
-┌─────────────────────▼───────────────────────────────────┐
-│  Stage 3 — Effective rule list assembly                  │
-│  Drop rules outside [FirstYear, LastYear]                │
-│  Drop rules excluded by OccurrenceYears                  │
-│  Drop rules that cannot match the requested territory    │
-└─────────────────────┬───────────────────────────────────┘
-                      │
-┌─────────────────────▼───────────────────────────────────┐
-│  Stage 4 — Per-rule anchor resolution                    │
-│  Fixed / DayOfWeekInMonth / OffsetFromAnchor / Algorithm │
-│  Calendar-system sweep for lunisolar rules               │
-└─────────────────────┬───────────────────────────────────┘
-                      │
-┌─────────────────────▼───────────────────────────────────┐
-│  Stage 5 — Adjustment chain evaluation                   │
-│  ObservanceAdjustment[] sorted by Priority               │
-│  First matching trigger wins; action applied             │
-│  AdjustmentReason recorded when a trigger fires          │
-└─────────────────────┬───────────────────────────────────┘
-                      │
-┌─────────────────────▼───────────────────────────────────┐
-│  Stage 6 — Collision resolution                          │
-│  INotableDateCollisionResolver.Resolve()                 │
-│  Default: remove exact duplicates, order by category+name│
-└─────────────────────┬───────────────────────────────────┘
-                      │
-┌─────────────────────▼───────────────────────────────────┐
-│  Stage 7 — Per-year cache write                          │
-│  ConcurrentDictionary<int, IReadOnlyList<NotableDate>>   │
-│  Thread-safe first-writer-wins with re-entry guard       │
-└─────────────────────┬───────────────────────────────────┘
-                      │
-┌─────────────────────▼───────────────────────────────────┐
-│  Stage 8 — Filter gate (filtered queries only)           │
-│  Primary gate: rule-level, pre-resolution                │
-│  Secondary gate: date-level, post-resolution             │
-│  Filtered queries bypass the per-year cache              │
-└─────────────────────────────────────────────────────────┘
-```
+![NotableDateService eight-stage resolution pipeline, from rule loading through the optional filter gate](../../images/diagrams/calendar-resolution-stages.svg)
 
 ---
 

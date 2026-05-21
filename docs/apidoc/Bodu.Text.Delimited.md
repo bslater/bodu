@@ -2,7 +2,7 @@
 uid: Bodu.Text.Delimited
 ---
 
-![Bodu.Text.Delimited](~/images/hero-formats.svg)
+![Bodu.Text.Delimited](~/images/hero-delimited.svg)
 
 ## Purpose
 

@@ -6,6 +6,8 @@ title: Using Pearson
 
 Peter Pearson's 1990 hash is a table-driven function with a single simple rule: for each input byte `b`, set `h = T[h XOR b]`, where `T` is a **permutation** of the 256 byte values. The permutation's quality defines the hash's distribution, and because the update is one indexed XOR per byte, it is both very fast and very easy to extend to arbitrary output widths by running several parallel accumulators with shifted starting states.
 
+![Pearson hash table-lookup loop: each input byte is XORed with the running state to index a 256-entry permutation table, whose entry becomes the new state](../../images/diagrams/pearson-lookup.svg)
+
 **Bodu.IO.Hashing** provides a single <xref:Bodu.IO.Hashing.Pearson> type with:
 
 - An output size configurable from **8 bits to 2048 bits** in 8-bit steps.

@@ -2,7 +2,7 @@
 uid: Bodu.Text.DotEnv
 ---
 
-![Bodu.Text.DotEnv](~/images/hero-formats.svg)
+![Bodu.Text.DotEnv](~/images/hero-dotenv.svg)
 
 ## Purpose
 

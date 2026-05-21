@@ -6,6 +6,8 @@ title: Using Threefish-512
 
 <xref:Bodu.Security.Cryptography.Threefish512> is the 512-bit variant of the Threefish tweakable block cipher family. It operates on **512-bit (64-byte) blocks** with a **512-bit (64-byte) key** and a **128-bit (16-byte) tweak**. Of the three Threefish variants, this is the one used as the core of the standard Skein hash function.
 
+![Threefish round function — MIX, word permutation, and subkey injection](../../images/diagrams/threefish-round.svg)
+
 ## Fixed sizes at a glance
 
 | Parameter | Size | Notes |

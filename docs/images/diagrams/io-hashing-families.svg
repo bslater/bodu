@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 348" role="img" aria-labelledby="ihf-t ihf-d">
+  <title id="ihf-t">Bodu.IO.Hashing — the three subfamilies</title>
+  <desc id="ihf-d">Every algorithm in Bodu.IO.Hashing derives from System.IO.Hashing.NonCryptographicHashAlgorithm, so the Append, GetCurrentHash, and Reset lifecycle is identical across the package. The package is organised into three subfamilies: Fingerprints are fast distribution-quality hashes for hash-table keys; Checksums are error-detection algorithms with characterised guarantees, also hosting alphanumeric identifier checksums; Check digits are single-character algorithms for human-typed identifiers. The Extensions namespace adds one-shot and async helpers over every algorithm.</desc>
+
+  <defs>
+    <style>
+      .ihf-bg   { fill: #0F172A; }
+      .ihf-pan  { fill: #1E293B; stroke: #334155; stroke-width: 1; }
+      .ihf-hdr  { fill: #111827; stroke: #334155; stroke-width: 1; }
+      .ihf-ttl  { fill: #F8FAFC; font: 700 15px/1 "Segoe UI",Arial,sans-serif; }
+      .ihf-form { fill: #94A3B8; font: italic 12px/1 "Cambria",Georgia,serif; }
+      .ihf-base { fill: #1E1B4B; stroke: #818CF8; stroke-width: 1.4; }
+      .ihf-bttl { fill: #C7D2FE; font: 700 12px/1 "Consolas",Menlo,monospace; text-anchor: middle; }
+      .ihf-bsub { fill: #94A3B8; font: 400 10px/1 "Consolas",Menlo,monospace; text-anchor: middle; }
+      .ihf-card { fill: #0D3331; stroke: #2DD4BF; stroke-width: 1; }
+      .ihf-name { fill: #5EEAD4; font: 700 12px/1 "Segoe UI",Arial,sans-serif; }
+      .ihf-ns   { fill: #94A3B8; font: 400 9.5px/1 "Consolas",Menlo,monospace; }
+      .ihf-type { fill: #E2E8F0; font: 400 10px/1 "Segoe UI",Arial,sans-serif; }
+      .ihf-use  { fill: #FBBF24; font: italic 10px/1 "Segoe UI",Arial,sans-serif; }
+      .ihf-ext  { fill: #2E1065; stroke: #A78BFA; stroke-width: 1; }
+      .ihf-extt { fill: #C4B5FD; font: 700 11px/1 "Segoe UI",Arial,sans-serif; }
+      .ihf-exts { fill: #CBD5E1; font: 400 10px/1 "Segoe UI",Arial,sans-serif; }
+    </style>
+    <marker id="ihf-arr" viewBox="0 0 10 10" refX="5" refY="9" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,0 L5,10 Z" fill="#64748B"/>
+    </marker>
+  </defs>
+
+  <rect class="ihf-bg" width="820" height="348"/>
+
+  <g transform="translate(10 10)">
+    <rect class="ihf-pan" width="800" height="328" rx="8"/>
+    <rect class="ihf-hdr" width="800" height="46" rx="8"/>
+    <rect class="ihf-hdr" y="38" width="800" height="8"/>
+    <text class="ihf-ttl" x="16" y="29">Bodu.IO.Hashing — three subfamilies, one lifecycle</text>
+    <text class="ihf-form" x="784" y="29" text-anchor="end">adversary model: none — error detection, not security</text>
+
+    <!-- base type -->
+    <rect class="ihf-base" x="250" y="58" width="300" height="40" rx="7"/>
+    <text class="ihf-bttl" x="400" y="76">System.IO.Hashing.NonCryptographicHashAlgorithm</text>
+    <text class="ihf-bsub" x="400" y="91">Append · GetCurrentHash · Reset</text>
+
+    <!-- connectors -->
+    <g stroke="#64748B" stroke-width="1.6" fill="none">
+      <path d="M400,98 L400,112 L143,112 L143,128" marker-end="url(#ihf-arr)"/>
+      <path d="M400,98 L400,128" marker-end="url(#ihf-arr)"/>
+      <path d="M400,98 L400,112 L657,112 L657,128" marker-end="url(#ihf-arr)"/>
+    </g>
+
+    <!-- subfamily 1: Fingerprints -->
+    <g transform="translate(20 130)">
+      <rect class="ihf-card" width="246" height="142" rx="7"/>
+      <text class="ihf-name" x="14" y="22">Fingerprints</text>
+      <text class="ihf-ns" x="14" y="37">Bodu.IO.Hashing</text>
+      <text class="ihf-type" x="14" y="58">FNV-1a · CityHash · MurmurHash3</text>
+      <text class="ihf-type" x="14" y="76">Pearson · Bernstein · SDBM · ELF</text>
+      <text class="ihf-type" x="14" y="94">SuperFastHash · classic string hashes</text>
+      <text class="ihf-use" x="14" y="118">hash-table keys · cache buckets ·</text>
+      <text class="ihf-use" x="14" y="132">content-addressable lookups</text>
+    </g>
+
+    <!-- subfamily 2: Checksums -->
+    <g transform="translate(277 130)">
+      <rect class="ihf-card" width="246" height="142" rx="7"/>
+      <text class="ihf-name" x="14" y="22">Checksums</text>
+      <text class="ihf-ns" x="14" y="37">Bodu.IO.Hashing.Checksums</text>
+      <text class="ihf-type" x="14" y="58">CRC (113 RevEng standards)</text>
+      <text class="ihf-type" x="14" y="76">Fletcher-16/32/64 · Adler-32/64</text>
+      <text class="ihf-type" x="14" y="94">IBAN · ISBN · CUSIP · SEDOL · LEI</text>
+      <text class="ihf-use" x="14" y="118">error detection with characterised</text>
+      <text class="ihf-use" x="14" y="132">guarantees · identifier validation</text>
+    </g>
+
+    <!-- subfamily 3: Check digits -->
+    <g transform="translate(534 130)">
+      <rect class="ihf-card" width="246" height="142" rx="7"/>
+      <text class="ihf-name" x="14" y="22">Check digits</text>
+      <text class="ihf-ns" x="14" y="37">Bodu.IO.Hashing.CheckDigits</text>
+      <text class="ihf-type" x="14" y="58">Luhn · Damm · Verhoeff</text>
+      <text class="ihf-type" x="14" y="76">EAN-8/13 · UPC-A · GTIN-14</text>
+      <text class="ihf-type" x="14" y="94">ISIN · ABA routing number</text>
+      <text class="ihf-use" x="14" y="118">single-character digits for</text>
+      <text class="ihf-use" x="14" y="132">human-typed identifiers</text>
+    </g>
+
+    <!-- Extensions bar -->
+    <rect class="ihf-ext" x="20" y="282" width="760" height="32" rx="6"/>
+    <text class="ihf-extt" x="34" y="302">Bodu.IO.Hashing.Extensions</text>
+    <text class="ihf-exts" x="200" y="302">ComputeHash · ComputeHashAsync · VerifyHash · TryVerifyHash — ergonomic one-shot and async helpers over every algorithm above</text>
+  </g>
+</svg>

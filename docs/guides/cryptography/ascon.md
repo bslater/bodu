@@ -10,6 +10,8 @@ share a single 320-bit sponge state — five 64-bit words — and a common permu
 Ascon-p. The permutation is compact enough to run on the smallest microcontrollers, yet resists
 all known distinguishing attacks and has a well-studied, wide peer-reviewed security margin.
 
+![ASCON sponge construction — 320-bit state, Ascon-p permutation, absorb and squeeze phases](../../images/diagrams/ascon-sponge.svg)
+
 **Bodu.Security.Cryptography** ships all four NIST-defined algorithm types:
 
 | Type | Algorithm name | Category | What it does |

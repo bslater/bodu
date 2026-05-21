@@ -10,6 +10,8 @@ title: Bodu.IO.Hashing — Introduction
 
 The library is organized around three subfamilies, each in its own namespace.
 
+![Bodu.IO.Hashing subfamilies — Fingerprints, Checksums, and Check digits over a shared NonCryptographicHashAlgorithm base](../../images/diagrams/io-hashing-families.svg)
+
 ## Namespaces and headline types
 
 ### `Bodu.IO.Hashing` — Fingerprints
@@ -69,15 +71,33 @@ Extension methods over `NonCryptographicHashAlgorithm` for ergonomic one-shot co
 |---|---|
 | <xref:Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions> | `AppendData`, `AppendDataAsync`, `ComputeHash`, `ComputeHashAsync`, `VerifyHash`, `VerifyHashAsync`, `TryVerifyHash`, `TryVerifyHashAsync`. |
 
-## Subfamily comparison
+## Choosing a subfamily
 
-For the structural differences between fingerprints, checksums, and check digits — and how to choose between types that look similar — see [Algorithm families](../algorithm-families.md). The short version:
+All three subfamilies derive from the same base type, but they are tuned for different jobs — and the best algorithm for one job is a poor choice for another.
 
-| Subfamily | Optimized for | Operates on |
+| Subfamily | Optimized for | Operates on | Adversary model |
+|---|---|---|---|
+| Fingerprint | Even distribution and speed | Binary buffer | None |
+| Checksum | Detecting specific error patterns | Binary buffer | None |
+| Check digit | Catching human transcription errors | Character sequence | None |
+
+**Fingerprints** map an arbitrary byte sequence to a fixed-size integer that distributes evenly across the output range. They are judged on *avalanche* (a single input-bit change flips roughly half the output bits), *distribution* (hash-table buckets fill evenly), and *streaming* behaviour (FNV and Pearson are constant-memory; CityHash and MurmurHash3 buffer internally for SIMD throughput). Reach for them for hash-table keys, cache bucketing, deduplication, and content-addressable lookups inside a trust boundary — never for error-pattern detection or authentication.
+
+**Checksums** produce a short tag engineered to catch the error patterns of a transmission or storage channel — single-bit flips, burst errors, adjacent transpositions. Two structural shapes: *polynomial-remainder* (CRC — divides the input as a polynomial over GF(2) by a generator polynomial) and *twin-accumulator* (Fletcher and Adler — two running sums whose cross-position coupling catches transpositions a simple sum misses).
+
+**Check digits** operate on a *printed identifier* — a short, human-readable string — and append one or two characters so a later reader can confirm it was not mis-typed. Five mathematical subfamilies trade off error coverage:
+
+| Subfamily | Detects | Bodu types |
 |---|---|---|
-| Fingerprint | Distribution and speed | Binary buffer |
-| Checksum | Error-pattern detection | Binary buffer |
-| Check digit | Human transcription errors | Character sequence |
+| **Mod 10 (weighted sum)** | All single-digit substitutions; most adjacent transpositions | `Luhn`, `Ean8`, `Ean13`, `Gtin14`, `UpcA`, `AbaRoutingNumber`, `Isin` |
+| **Quasigroup (Damm)** | All single-digit substitutions and all adjacent transpositions | `Damm` |
+| **Dihedral group D₅ (Verhoeff)** | The widest error coverage of any decimal scheme | `Verhoeff` |
+| **Mod 11** | All single-digit errors; most transpositions | `Isbn10`, `Sedol`, `Cusip`, `Iso7064Mod11_2` |
+| **Mod 97-10 (ISO 7064)** | Almost all transcription errors at scale | `Iban`, `Lei`, `Iso7064Mod97_10` |
+
+> **Picking between them.** A checksum guards a *binary payload* that only software sees; a check digit guards a *printed identifier* a human copies by hand; a fingerprint just needs fast, even distribution across a table. CRC and Fletcher distribute poorly as hash functions, and FNV and CityHash give weaker burst-error guarantees than CRC — match the algorithm to the job.
+
+> **Need an adversary model?** Everything in this package is forgeable by an attacker who controls the input. For keyed and cryptographic hashes — SipHash, Poly1305, Tiger, ASCON, Merkle trees — that resist a deliberate attacker, see [Bodu.Security.Cryptography](../cryptography/index.md).
 
 ## Common lifecycle
 
@@ -100,7 +120,6 @@ Only `Crc` currently implements `IResumableHashAlgorithm` (reverse-finalize a st
 ## Where to go next
 
 - **[Getting started](getting-started.md)** — install + one minimal sample per subfamily.
-- **[Algorithm families](../algorithm-families.md)** — fingerprints vs checksums vs check digits, plus the cryptographic families.
 - **[Bodu.IO.Hashing guides](../../guides/io-hashing/index.md)** — recipe-style walk-throughs per algorithm.
 - **[Bodu.IO.Hashing API reference](../../apidoc/Bodu.IO.Hashing.md)** — full type-by-type docs.
 - **For keyed and cryptographic hashes** (SipHash, Poly1305, Tiger, ASCON, Merkle trees), see [Bodu.Security.Cryptography](../cryptography/index.md).

@@ -17,6 +17,8 @@ title: Using AEAD modes
 | **SIV** | <xref:Bodu.Security.Cryptography.SivModeTransform> | RFC 5297 | Misuse-resistant — same message encrypts to the same ciphertext, but confidentiality is preserved. Needs two independent AES keys. |
 | **GCM-SIV** | <xref:Bodu.Security.Cryptography.GcmSivModeTransform> | RFC 8452 | Misuse-resistant successor to GCM; POLYVAL-based. |
 
+![Generic AEAD mode data flow — encryption, associated data, and authentication tag](../../images/diagrams/aead-mode.svg)
+
 ## Prerequisites — an AES `IBlockCipher`
 
 Every mode transform in this family takes an <xref:Bodu.Security.Cryptography.IBlockCipher> as its primitive **and assumes a 16-byte (128-bit) block size**. That assumption is baked into the counter formats, the GHASH/POLYVAL field, and the offset schedules — so the library's other primitives (Skipjack and Blowfish at 8 bytes, Threefish-256/512/1024 at 32/64/128 bytes) are not eligible. <xref:Bodu.Security.Cryptography.AesBlockCipher>, which wraps the BCL's hardware-accelerated `Aes`, is the only primitive that fits.

@@ -106,7 +106,7 @@ bool   match  = hash.VerifyHash(data, expected);
 ## Where to go next
 
 - **[Bodu.IO.Hashing introduction](index.md)** — namespaces, headline types, scenarios.
-- **[Algorithm families](../algorithm-families.md)** — fingerprint vs checksum vs check digit, plus the cryptographic families.
+- **[Bodu.Security.Cryptography](../cryptography/index.md)** — the sibling library, for keyed and cryptographic hashes with a formal adversary model.
 - **[Bodu.IO.Hashing guides](../../guides/io-hashing/index.md)** — per-algorithm walk-throughs.
 - **[Bodu.IO.Hashing API reference](../../apidoc/Bodu.IO.Hashing.md)** — full type-by-type docs.
 - **[CRC catalogue](../../guides/io-hashing/crc-catalogue.md)** — the full RevEng-catalogue table of named CRC standards.

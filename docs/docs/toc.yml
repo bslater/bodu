@@ -3,8 +3,6 @@
   href: introduction.md
 - name: Getting Started
   href: getting-started.md
-- name: Algorithm families
-  href: algorithm-families.md
 - name: Bodu.Core
   items:
     - name: Introduction

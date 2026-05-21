@@ -107,4 +107,4 @@ public static double Average(IReadOnlyList<int> values)
 - **[Bodu.Core introduction](index.md)** — namespaces, headline types, scenarios.
 - **[Bodu.Core guides](../../guides/core/index.md)** — recipe-style walk-throughs for circular buffers, deques, evicting dictionaries, and `WeekPattern`.
 - **[Bodu.Collections.Generic API reference](../../apidoc/Bodu.Collections.Generic.md)** — full type-by-type docs.
-- **[Algorithm families](../algorithm-families.md)** — cross-library taxonomy if you also need hashing or cryptography.
+- **[Project introduction](../introduction.md)** — the per-library map, if you also need hashing, cryptography, calendar, or text utilities.

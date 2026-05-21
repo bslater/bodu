@@ -6,6 +6,8 @@ title: Using Threefish-1024
 
 <xref:Bodu.Security.Cryptography.Threefish1024> is the largest variant in the Threefish family: **1024-bit (128-byte) blocks** with a **1024-bit (128-byte) key** and a **128-bit (16-byte) tweak**. Reach for Threefish-1024 when you want the widest plausible block size — for example in domains that demand very large key/block margins, or where you want to encrypt a chunk that's naturally 128 bytes wide without chaining overhead per inner field.
 
+![Threefish round function — MIX, word permutation, and subkey injection](../../images/diagrams/threefish-round.svg)
+
 ## Fixed sizes at a glance
 
 | Parameter | Size | Notes |

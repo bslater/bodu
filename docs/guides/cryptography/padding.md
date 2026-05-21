@@ -8,6 +8,8 @@ Block ciphers encrypt fixed-size blocks. When a plaintext is not a whole number 
 
 The five framework modes come from the standard <xref:System.Security.Cryptography.PaddingMode> enum. Set them via the algorithm's `Padding` property, or construct a strategy directly through <xref:Bodu.Security.Cryptography.PaddingFactory>. An extended <xref:Bodu.Security.Cryptography.PaddingModeKind> enum mirrors those values and adds ISO/IEC 7816-4 bit padding for scenarios where the framework enum is not expressive enough.
 
+![Block-cipher padding schemes compared — PKCS7, ANSI X.923, ISO 10126, Zeros, and ISO/IEC 7816-4 bit padding](../../images/diagrams/padding-schemes.svg)
+
 ## PKCS7 — the safe default
 
 **Use for:** any block-oriented mode (CBC, ECB) where the plaintext is arbitrary binary or text.

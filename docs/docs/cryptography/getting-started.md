@@ -150,7 +150,7 @@ byte[] root = tree.GetHashAndReset();
 ## Where to go next
 
 - **[Bodu.Security.Cryptography introduction](index.md)** — namespaces, headline types, scenarios.
-- **[Algorithm families](../algorithm-families.md)** — cipher subtypes, hash shapes, and the cross-library map.
+- **[Bodu.IO.Hashing](../io-hashing/index.md)** — the sibling library, for non-cryptographic checksums and fingerprints (no adversary model).
 - **[Bodu.Security.Cryptography guides](../../guides/cryptography/index.md)** — encryption basics, modes, padding, AEAD, hashing.
 - **[Bodu.Security.Cryptography API reference](../../apidoc/Bodu.Security.Cryptography.md)** — full type-by-type docs.
 - **For non-cryptographic checksums and fingerprints** (CRC, Fletcher, Adler, FNV, CityHash), see [Bodu.IO.Hashing](../io-hashing/index.md).

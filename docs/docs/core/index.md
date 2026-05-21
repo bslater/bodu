@@ -8,6 +8,8 @@ title: Bodu.Core — Introduction
 
 The library is organized around eight focused namespaces, each with a clear responsibility.
 
+![Bodu.Core namespace map — eight focused namespaces and their headline types](../../images/diagrams/core-namespace-map.svg)
+
 ## Namespaces and headline types
 
 ### `Bodu`
@@ -103,4 +105,4 @@ Text and XML helpers used internally by the other Bodu packages; available publi
 - **[Getting started](getting-started.md)** — install the package and run a minimal sample for each scenario above.
 - **[Bodu.Core guides](../../guides/core/index.md)** — recipe-style walk-throughs for the headline types.
 - **[Bodu.Collections.Generic API reference](../../apidoc/Bodu.Collections.Generic.md)** — full namespace overview.
-- **[Algorithm families](../algorithm-families.md)** — how Bodu.Core relates to the hashing and cryptography libraries (it doesn't directly — but its `ThrowHelper` is used everywhere).
+- **[Project introduction](../introduction.md)** — how Bodu.Core relates to the hashing, cryptography, calendar, and text libraries (its `ThrowHelper` underpins them all).

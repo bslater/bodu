@@ -2,6 +2,8 @@
 uid: Bodu.Extensions.Configuration.Text
 ---
 
+![Bodu.Extensions.Configuration.Text](~/images/hero-extensions-config.svg)
+
 ## Purpose
 
 **Bodu.Extensions.Configuration.Text** bridges <xref:Bodu.Text.Configuration> to <xref:Microsoft.Extensions.Configuration>. It exposes the conventional `AddConfiguration` entry point on <xref:Microsoft.Extensions.Configuration.IConfigurationBuilder> — the overload set mirrors `Microsoft.Extensions.Configuration.Json`'s `AddJsonFile` / `AddJsonStream` — so a Bodu Text Configuration file can be layered alongside JSON, INI, XML, and environment-variable sources with no learning curve.

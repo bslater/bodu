@@ -8,6 +8,8 @@ title: WeekPattern
 
 Because `WeekPattern` is a value type, every operation that changes the selection returns a new instance rather than mutating the receiver.
 
+![WeekPattern seven-day bitmask — one bit per day indexed by DayOfWeek, with composition and bitwise operators](../../images/diagrams/week-pattern.svg)
+
 ## Pattern 1 — build a pattern with With / Without
 
 ```csharp

@@ -4,9 +4,11 @@ title: Cipher block modes
 
 # Cipher block modes
 
-This page walks through each of the five classic block cipher modes exposed via <xref:Bodu.Security.Cryptography.CipherModeKind>, shows a complete encrypt-and-decrypt round-trip for each, and calls out the IV rules and security trade-offs.
+This page walks through the five classic block cipher modes exposed via <xref:Bodu.Security.Cryptography.CipherModeKind> — plus the specialized **XTS** disk-encryption mode — shows a complete encrypt-and-decrypt round-trip for each, and calls out the IV rules and security trade-offs.
 
 For the data-flow visualization, see the panels on the <xref:Bodu.Security.Cryptography.CipherModeKind> API page. Each panel in that diagram corresponds to one section below.
+
+![Classic block cipher modes — CBC, CFB, OFB, CTR, and ECB data flow](../../images/diagrams/classic-modes.svg)
 
 ## CBC — the default
 
@@ -134,6 +136,47 @@ byte[] recovered  = alg.Decrypt(ciphertext);
 
 ECB encrypts every block independently. That means identical plaintext blocks encrypt to identical ciphertext blocks — an attacker can see the structure of your message without breaking the cipher. The classic *Tux the penguin* demonstration shows why this matters. Do not use ECB for real messages.
 
+## XTS — sector-level disk encryption
+
+**Use for:** encrypting fixed-size storage sectors — full-disk and file-container encryption. XTS is the IEEE 1619-2007 / NIST SP 800-38E standard for the random-access setting where the ciphertext cannot grow; BitLocker, FileVault, dm-crypt/LUKS, and VeraCrypt all use it.
+
+**Keys:** two independent keys — `Key₁` for the data cipher, `Key₂` for the tweak cipher. Never share them or derive one from the other; doing so collapses XTS to a weaker single-key construction.
+
+**IV (tweak):** one block wide, holding the sector number in little-endian order. Unlike a CBC IV it does not need to be unpredictable — it only has to identify the sector uniquely.
+
+**Padding:** none. XTS operates on whole blocks, the on-disk sector size is fixed, and the ciphertext is exactly as long as the plaintext.
+
+![XTS data flow — the tweak cipher encrypts the sector number, successive Galois-field multiplications derive a per-block tweak, and each block is XORed with the tweak before and after the data cipher](../../images/diagrams/xts-mode.svg)
+
+Unlike the five classic modes, XTS does not run through the `BlockMode` property of a `SymmetricAlgorithm`: it needs two keyed ciphers, so it is constructed directly as an <xref:Bodu.Security.Cryptography.XtsModeTransform> over a pair of <xref:Bodu.Security.Cryptography.IBlockCipher> instances.
+
+```csharp
+using System.Security.Cryptography;
+using Bodu.Security.Cryptography;
+
+// One 512-byte disk sector to protect.
+byte[] sectorData = new byte[512];
+RandomNumberGenerator.Fill(sectorData);
+
+// XTS uses two independent keys — Key1 encrypts data, Key2 encrypts the tweak.
+using IBlockCipher dataCipher  = new AesBlockCipher(RandomNumberGenerator.GetBytes(16));
+using IBlockCipher tweakCipher = new AesBlockCipher(RandomNumberGenerator.GetBytes(16));
+
+// The tweak is the sector number, little-endian, padded to the block size.
+byte[] tweak = new byte[dataCipher.BlockSize / 8];
+BitConverter.GetBytes(42L).CopyTo(tweak, 0);
+
+using var xts = new XtsModeTransform(dataCipher, tweakCipher, tweak);
+
+byte[] ciphertext = new byte[sectorData.Length];
+xts.Transform(sectorData, ciphertext, encrypt: true);
+
+byte[] recovered = new byte[sectorData.Length];
+xts.Transform(ciphertext, recovered, encrypt: false);
+```
+
+Each `XtsModeTransform` is bound to a single sector number — construct a fresh transform per sector. The decrypt direction uses the data cipher's *decryption* primitive (unlike CFB, OFB, and CTR). XTS provides confidentiality only: it has **no authentication**, so an attacker who can rewrite sectors cannot read them but can still tamper block-by-block. For data crossing an untrusted channel, choose an [AEAD mode](aead-modes.md) instead.
+
 ## Choosing a mode — quick guide
 
 | If you need… | Use | Why |
@@ -142,6 +185,7 @@ ECB encrypts every block independently. That means identical plaintext blocks en
 | Seekable, parallelisable, stream-shaped encryption | **CTR** | Keystream depends only on counter; blocks are independent. |
 | Byte-level streaming with self-healing on errors | **CFB** | Error propagates for one block then resynchronizes. |
 | Bit-exact error isolation on an unreliable channel | **OFB** | Keystream is plaintext-independent. |
+| Sector-addressable disk or file-container encryption | **XTS** | Per-sector tweak; no ciphertext expansion; two keys. |
 | A cipher primitive for something you're building | **ECB** | The lowest level; you must add your own chaining. |
 
 ## Where to go next
