@@ -273,6 +273,7 @@ public sealed class Crc
     {
         ThrowHelper.ThrowIfNull(previousHash);
         ThrowHelper.ThrowIfNull(newData);
+        ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(newData, offset, length);
 
         return ComputeHashFrom(previousHash.AsSpan(), newData.AsSpan().Slice(offset, length));
     }
