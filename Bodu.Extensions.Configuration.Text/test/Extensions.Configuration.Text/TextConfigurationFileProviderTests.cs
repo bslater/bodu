@@ -1,12 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TextConfigurationFileProviderTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
-using System.IO;
-using Bodu.Extensions.Configuration.Text;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.FileProviders;
 
@@ -30,7 +27,7 @@ logging.level.default = Information
     [TestMethod]
     public void AddConfiguration_WithExplicitFileProvider_ShouldLoadFromProvider()
     {
-        string path = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".boduconfig");
+        var path = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".boduconfig");
         try
         {
             File.WriteAllText(path, Sample);
@@ -56,7 +53,7 @@ logging.level.default = Information
     [TestMethod]
     public void AddConfiguration_WithNullFileProvider_ShouldFallBackToBuilderDefault()
     {
-        string path = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".boduconfig");
+        var path = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".boduconfig");
         try
         {
             File.WriteAllText(path, Sample);

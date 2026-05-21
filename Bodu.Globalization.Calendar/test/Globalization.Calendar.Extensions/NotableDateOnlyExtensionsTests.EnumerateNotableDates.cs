@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Linq;
 using Bodu.Globalization.Calendar;
 
 namespace Bodu.Extensions;

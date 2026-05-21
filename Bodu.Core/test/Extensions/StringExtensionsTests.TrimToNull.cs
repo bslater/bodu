@@ -1,10 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensionsTests.TrimToNull.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System.Collections.Generic;
 
 namespace Bodu.Extensions;
 
@@ -47,9 +45,9 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void TrimToNull_WhenInputIsAlreadyTrimmed_ShouldReturnSameInstance()
     {
-        string value = "hello";
+        var value = "hello";
 
-        string? actual = value.TrimToNull();
+        var actual = value.TrimToNull();
 
         Assert.AreSame(value, actual);
     }

@@ -1,14 +1,10 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TextConfigurationArrayBindingTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Text;
-using Bodu.Extensions.Configuration.Text;
 using Microsoft.Extensions.Configuration;
 
 namespace Bodu.Extensions.Configuration.Text.Tests;
@@ -60,7 +56,7 @@ items.2 = third
             .AddConfiguration(stream)
             .Build();
 
-        string[]? items = configuration.GetSection("items").Get<string[]>();
+        var items = configuration.GetSection("items").Get<string[]>();
 
         Assert.IsNotNull(items);
         CollectionAssert.AreEqual(new[] { "first", "second", "third" }, items);
@@ -80,7 +76,7 @@ items.2 = third
             .AddConfiguration(stream)
             .Build();
 
-        List<string> childKeys = configuration.GetSection("items")
+        var childKeys = configuration.GetSection("items")
             .GetChildren()
             .Select(c => c.Key)
             .OrderBy(k => k)

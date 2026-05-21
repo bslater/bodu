@@ -39,10 +39,10 @@ public sealed partial class Base85Tests
     [TestMethod]
     public void TryEncodeAndTryDecode_WhenSourceIsEmpty_ShouldReturnTrueAndZeroWritten()
     {
-        Assert.IsTrue(Base85.TryEncode(ReadOnlySpan<byte>.Empty, new char[8], out int charsWritten));
+        Assert.IsTrue(Base85.TryEncode(ReadOnlySpan<byte>.Empty, new char[8], out var charsWritten));
         Assert.AreEqual(0, charsWritten);
 
-        Assert.IsTrue(Base85.TryDecode(ReadOnlySpan<char>.Empty, new byte[8], out int bytesWritten));
+        Assert.IsTrue(Base85.TryDecode(ReadOnlySpan<char>.Empty, new byte[8], out var bytesWritten));
         Assert.AreEqual(0, bytesWritten);
     }
 

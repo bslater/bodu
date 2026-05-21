@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DelimitedKnownAnswerVectors.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -23,7 +23,7 @@ public static class DelimitedKnownAnswerVectors
     /// <returns>A sequence suitable for <c>[DynamicData]</c>.</returns>
     public static IEnumerable<object[]> AllVectors()
     {
-        foreach (object[] row in Rfc4180Vectors())
+        foreach (var row in Rfc4180Vectors())
             yield return row;
     }
 

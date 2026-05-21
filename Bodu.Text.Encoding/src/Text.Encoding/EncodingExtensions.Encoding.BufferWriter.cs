@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EncodingExtensions.Encoding.BufferWriter.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -54,11 +54,11 @@ public static partial class EncodingExtensions
         ThrowHelper.ThrowIfNull(encoding);
         ThrowHelper.ThrowIfNull(writer);
 
-        int required = encoding.GetByteCount(chars);
+        var required = encoding.GetByteCount(chars);
         if (required == 0) return;
 
         Span<byte> destination = writer.GetSpan(required);
-        int written = encoding.GetBytes(chars, destination);
+        var written = encoding.GetBytes(chars, destination);
         writer.Advance(written);
     }
 
@@ -110,11 +110,11 @@ public static partial class EncodingExtensions
         ThrowHelper.ThrowIfNull(encoding);
         ThrowHelper.ThrowIfNull(writer);
 
-        int required = encoding.GetCharCount(bytes);
+        var required = encoding.GetCharCount(bytes);
         if (required == 0) return;
 
         Span<char> destination = writer.GetSpan(required);
-        int written = encoding.GetChars(bytes, destination);
+        var written = encoding.GetChars(bytes, destination);
         writer.Advance(written);
     }
 }

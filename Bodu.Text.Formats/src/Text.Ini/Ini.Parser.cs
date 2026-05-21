@@ -116,7 +116,7 @@ public static partial class Ini
             // so that the Merge section behavior can redirect back to a previously opened section's state.
             List<SectionBuilder> namedData = new();
             Dictionary<string, int> namedIndexByName = new(sectionComparer);
-            int lastBuilderIndex = -1;
+            var lastBuilderIndex = -1;
 
             // Pending comments collected from full-line `#` / `;` trivia. Attached to the next section or
             // entry encountered, then cleared. When PreserveComments is false the list is never populated.
@@ -133,8 +133,8 @@ public static partial class Ini
                 {
                     if (_options.PreserveComments)
                     {
-                        char prefix = line[0];
-                        string text = line[1..].ToString();
+                        var prefix = line[0];
+                        var text = line[1..].ToString();
                         pendingComments.Add(new IniComment(prefix, text, _lineNumber));
                     }
 
@@ -155,7 +155,7 @@ public static partial class Ini
 
                     var sectionName = nameSpan.ToString();
 
-                    int targetIdx = SelectSectionTarget(sectionName, namedData, namedIndexByName, lastBuilderIndex);
+                    var targetIdx = SelectSectionTarget(sectionName, namedData, namedIndexByName, lastBuilderIndex);
 
                     if (targetIdx < 0)
                     {
@@ -188,9 +188,9 @@ public static partial class Ini
                         // Append any pending comments to the existing section's leading comments.
                         if (pendingComments.Count > 0)
                         {
-                            IniComment[] combined = new IniComment[existing.LeadingComments.Length + pendingComments.Count];
+                            var combined = new IniComment[existing.LeadingComments.Length + pendingComments.Count];
                             existing.LeadingComments.CopyTo(combined, 0);
-                            for (int i = 0; i < pendingComments.Count; i++)
+                            for (var i = 0; i < pendingComments.Count; i++)
                                 combined[existing.LeadingComments.Length + i] = pendingComments[i];
                             existing.LeadingComments = combined;
                             pendingComments.Clear();
@@ -261,7 +261,7 @@ public static partial class Ini
             Dictionary<string, int> namedIndexByName,
             int lastBuilderIndex)
         {
-            bool isDuplicate = namedIndexByName.TryGetValue(sectionName, out int firstIdx);
+            var isDuplicate = namedIndexByName.TryGetValue(sectionName, out var firstIdx);
 
             switch (_options.DuplicateSectionBehavior)
             {

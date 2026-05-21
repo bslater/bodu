@@ -1,10 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensionsTests.TrimOrEmpty.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System.Collections.Generic;
 
 namespace Bodu.Extensions;
 
@@ -46,7 +44,7 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void TrimOrEmpty_WhenInputIsNull_ShouldReturnEmptyString()
     {
-        string actual = ((string?)null).TrimOrEmpty();
+        var actual = ((string?)null).TrimOrEmpty();
 
         Assert.IsNotNull(actual);
         Assert.AreEqual(string.Empty, actual);

@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
 using System.IO.Hashing;
 
 namespace Bodu.IO.Hashing.Extensions;

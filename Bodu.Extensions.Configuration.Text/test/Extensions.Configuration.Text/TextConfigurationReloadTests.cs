@@ -1,13 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TextConfigurationReloadTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
-using System.IO;
-using System.Threading;
-using Bodu.Extensions.Configuration.Text;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.FileProviders;
 
@@ -35,9 +31,9 @@ logging.level.default = Debug
     [TestMethod]
     public void Reload_WhenFileChangesOnDisk_ShouldFireToken()
     {
-        string directory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+        var directory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
         Directory.CreateDirectory(directory);
-        string path = Path.Combine(directory, "reload.boduconfig");
+        var path = Path.Combine(directory, "reload.boduconfig");
 
         try
         {
@@ -66,7 +62,7 @@ logging.level.default = Debug
             File.WriteAllText(path, UpdatedContent);
             File.SetLastWriteTimeUtc(path, DateTime.UtcNow);
 
-            bool reloaded = signal.Wait(TimeSpan.FromSeconds(15));
+            var reloaded = signal.Wait(TimeSpan.FromSeconds(15));
 
             Assert.IsTrue(reloaded, "Expected the reload token to fire after the file changed on disk.");
             Assert.AreEqual("Debug", configuration["logging:level:default"]);

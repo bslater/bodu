@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EncodingExtensions.Encoding.Fallback.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -115,7 +115,7 @@ public static partial class EncodingExtensions
     {
         if (replacement.Length == 0) return;
 
-        System.Text.Encoding strict = System.Text.Encoding.GetEncoding(
+        var strict = System.Text.Encoding.GetEncoding(
             encoding.CodePage,
             System.Text.EncoderFallback.ExceptionFallback,
             System.Text.DecoderFallback.ExceptionFallback);

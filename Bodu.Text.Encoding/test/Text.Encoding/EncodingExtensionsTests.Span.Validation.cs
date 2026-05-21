@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EncodingExtensionsTests.Span.Validation.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -15,7 +15,7 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void ThrowIfTooSmallForEncoding_WhenDestinationFitsExactly_ShouldNotThrow()
     {
-        int required = System.Text.Encoding.UTF8.GetByteCount(MultiByteText);
+        var required = System.Text.Encoding.UTF8.GetByteCount(MultiByteText);
         Span<byte> destination = new byte[required];
 
         destination.ThrowIfTooSmallForEncoding(MultiByteText.AsSpan(), System.Text.Encoding.UTF8);
@@ -28,7 +28,7 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void ThrowIfTooSmallForEncoding_WhenDestinationIsOversized_ShouldNotThrow()
     {
-        int required = System.Text.Encoding.UTF8.GetByteCount(MultiByteText);
+        var required = System.Text.Encoding.UTF8.GetByteCount(MultiByteText);
         Span<byte> destination = new byte[required + 64];
 
         destination.ThrowIfTooSmallForEncoding(MultiByteText.AsSpan(), System.Text.Encoding.UTF8);
@@ -41,8 +41,8 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void ThrowIfTooSmallForEncoding_WhenDestinationIsOneByteTooSmall_ShouldThrowArgumentException()
     {
-        int required = System.Text.Encoding.UTF8.GetByteCount(MultiByteText);
-        byte[] backing = new byte[required - 1];
+        var required = System.Text.Encoding.UTF8.GetByteCount(MultiByteText);
+        var backing = new byte[required - 1];
 
         ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -60,7 +60,7 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void ThrowIfTooSmallForEncoding_WhenParamNameSupplied_ShouldUseIt()
     {
-        byte[] backing = new byte[1];
+        var backing = new byte[1];
 
         ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -78,7 +78,7 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void ThrowIfTooSmallForEncoding_WhenEncodingIsNull_ShouldThrowArgumentNullException()
     {
-        byte[] backing = new byte[64];
+        var backing = new byte[64];
 
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -96,8 +96,8 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void ThrowIfTooSmallForDecoding_WhenDestinationFitsExactly_ShouldNotThrow()
     {
-        byte[] bytes = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
-        int required = System.Text.Encoding.UTF8.GetCharCount(bytes);
+        var bytes = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
+        var required = System.Text.Encoding.UTF8.GetCharCount(bytes);
         Span<char> destination = new char[required];
 
         destination.ThrowIfTooSmallForDecoding(bytes, System.Text.Encoding.UTF8);
@@ -110,8 +110,8 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void ThrowIfTooSmallForDecoding_WhenDestinationIsOversized_ShouldNotThrow()
     {
-        byte[] bytes = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
-        int required = System.Text.Encoding.UTF8.GetCharCount(bytes);
+        var bytes = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
+        var required = System.Text.Encoding.UTF8.GetCharCount(bytes);
         Span<char> destination = new char[required + 32];
 
         destination.ThrowIfTooSmallForDecoding(bytes, System.Text.Encoding.UTF8);
@@ -124,9 +124,9 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void ThrowIfTooSmallForDecoding_WhenDestinationIsOneCharTooSmall_ShouldThrowArgumentException()
     {
-        byte[] bytes = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
-        int required = System.Text.Encoding.UTF8.GetCharCount(bytes);
-        char[] backing = new char[required - 1];
+        var bytes = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
+        var required = System.Text.Encoding.UTF8.GetCharCount(bytes);
+        var backing = new char[required - 1];
 
         ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -144,7 +144,7 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void ThrowIfTooSmallForDecoding_WhenEncodingIsNull_ShouldThrowArgumentNullException()
     {
-        char[] backing = new char[64];
+        var backing = new char[64];
 
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

@@ -1,11 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensionsTests.EnsureTrailingNewLine.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System;
-using System.Collections.Generic;
 
 namespace Bodu.Extensions;
 
@@ -48,9 +45,9 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void EnsureTrailingNewLine_WhenAlreadyTerminated_ShouldReturnSameInstance()
     {
-        string value = "hello\n";
+        var value = "hello\n";
 
-        string actual = value.EnsureTrailingNewLine();
+        var actual = value.EnsureTrailingNewLine();
 
         Assert.AreSame(value, actual);
     }

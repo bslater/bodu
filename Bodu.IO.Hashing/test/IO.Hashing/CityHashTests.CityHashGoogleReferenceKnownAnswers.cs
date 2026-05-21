@@ -374,14 +374,14 @@ public sealed partial class CityHashTests
 
         private static byte[] CreateGoogleReferenceData()
         {
-            byte[] data = new byte[GoogleReferenceDataSize];
+            var data = new byte[GoogleReferenceDataSize];
 
             unchecked
             {
                 ulong a = 9;
                 ulong b = 777;
 
-                for (int i = 0; i < data.Length; i++)
+                for (var i = 0; i < data.Length; i++)
                 {
                     a += b;
                     b += a;
@@ -397,10 +397,10 @@ public sealed partial class CityHashTests
 
         private static ReadOnlyCollection<NonCryptographicHashKnownAnswer> CreateKnownAnswers(CityHashVariant variant)
         {
-            byte[] corpus = CreateGoogleReferenceData();
+            var corpus = CreateGoogleReferenceData();
             var knownAnswers = new NonCryptographicHashKnownAnswer[s_googleReferenceVectors.Length];
 
-            for (int i = 0; i < s_googleReferenceVectors.Length; i++)
+            for (var i = 0; i < s_googleReferenceVectors.Length; i++)
             {
                 GoogleReferenceVector vector = s_googleReferenceVectors[i];
 

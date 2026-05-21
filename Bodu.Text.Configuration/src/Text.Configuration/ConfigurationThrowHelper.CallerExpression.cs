@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConfigurationThrowHelper.CallerExpression.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -6,7 +6,6 @@
 
 #if !NETSTANDARD2_0_OR_GREATER
 using System.Globalization;
-using System.IO;
 using System.Runtime.CompilerServices;
 
 namespace Bodu.Text.Configuration;

@@ -1,10 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensions.RemoveLineEndings.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
 using System.Text;
 
 namespace Bodu.Extensions;
@@ -29,13 +28,6 @@ public static partial class StringExtensions
     /// U+000B, form feed U+000C) are preserved. Use <see cref="NormalizeLineEndings(string, string)" /> with an empty
     /// string when stripping all newline-equivalent characters is required.
     /// </remarks>
-    /// <example>
-    /// <code language="csharp">
-    ///<![CDATA[
-    /// "line1\r\nline2\n".RemoveLineEndings();  // "line1line2"
-    ///]]>
-    /// </code>
-    /// </example>
     public static string RemoveLineEndings(this string value)
     {
         ThrowHelper.ThrowIfNull(value);
@@ -43,10 +35,10 @@ public static partial class StringExtensions
         if (value.Length == 0) return value;
 
         StringBuilder? builder = null;
-        for (int i = 0; i < value.Length; i++)
+        for (var i = 0; i < value.Length; i++)
         {
-            char c = value[i];
-            if (c == '\r' || c == '\n')
+            var c = value[i];
+            if (c is '\r' or '\n')
             {
                 builder ??= new StringBuilder(value.Length).Append(value, 0, i);
                 continue;

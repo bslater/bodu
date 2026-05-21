@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringEncodingExtensionsTests.ToUtf8Bytes.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -30,9 +30,9 @@ public sealed partial class StringEncodingExtensionsTests
     [DynamicData(nameof(GetToUtf8BytesCases), DynamicDataSourceType.Method)]
     public void ToUtf8Bytes_WhenInvoked_ShouldMatchBclUtf8(string text)
     {
-        byte[] expected = System.Text.Encoding.UTF8.GetBytes(text);
+        var expected = System.Text.Encoding.UTF8.GetBytes(text);
 
-        byte[] actual = text.ToUtf8Bytes();
+        var actual = text.ToUtf8Bytes();
 
         CollectionAssert.AreEqual(expected, actual);
     }

@@ -23,7 +23,7 @@ public sealed partial class ConfigurationPattern
     /// </exception>
     private static string TranslateToRegex(string pattern)
     {
-        StringBuilder sb = new StringBuilder(pattern.Length * 2);
+        var sb = new StringBuilder(pattern.Length * 2);
 
         var hasSlash = pattern.Contains('/');
 

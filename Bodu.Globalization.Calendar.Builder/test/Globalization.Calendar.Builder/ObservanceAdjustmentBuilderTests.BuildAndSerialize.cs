@@ -146,7 +146,7 @@ public partial class ObservanceAdjustmentBuilderTests
             .Action(AdjustmentAction.None)
             .CalendarType(typeof(System.Globalization.HebrewCalendar));
 
-        XElement element = builder.ToXElement("k", s_calendarNs);
+        var element = builder.ToXElement("k", s_calendarNs);
 
         Assert.AreEqual(
             typeof(System.Globalization.HebrewCalendar).AssemblyQualifiedName,

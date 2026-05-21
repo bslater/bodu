@@ -1,11 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensionsTests.ToTitleCase.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System;
-using System.Collections.Generic;
 
 namespace Bodu.Extensions;
 
@@ -46,7 +43,7 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void ToTitleCase_WithLowerCaseSmallWords_ShouldLowerInteriorConnectives()
     {
-        string actual = "the lord of the rings".ToTitleCase(TitleCaseOptions.LowerCaseSmallWords);
+        var actual = "the lord of the rings".ToTitleCase(TitleCaseOptions.LowerCaseSmallWords);
 
         Assert.AreEqual("The Lord of the Rings", actual);
     }
@@ -59,7 +56,7 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void ToTitleCase_WithPreserveAcronyms_ShouldKeepAllUpperWords()
     {
-        string actual = "html parser API design".ToTitleCase(TitleCaseOptions.PreserveAcronyms);
+        var actual = "html parser API design".ToTitleCase(TitleCaseOptions.PreserveAcronyms);
 
         Assert.AreEqual("Html Parser API Design", actual);
     }

@@ -16,9 +16,9 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void TryDecode_WhenAllowPrefixAndPrefixPresent_ShouldStripPrefix()
     {
-        byte[] destination = new byte[4];
+        var destination = new byte[4];
 
-        bool ok = Base16.TryDecode("0xDEADBEEF".AsSpan(), destination, out int bytesWritten, BaseFormatStyles.AllowPrefix);
+        var ok = Base16.TryDecode("0xDEADBEEF".AsSpan(), destination, out var bytesWritten, BaseFormatStyles.AllowPrefix);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(4, bytesWritten);
@@ -37,10 +37,10 @@ public sealed partial class Base16Tests
     [DataRow(2048)]
     public void TryDecode_WhenDestinationExactlyRequiredSize_ShouldReturnTrueAndFillBuffer(int charCount)
     {
-        string input = new string('a', charCount);
-        byte[] destination = new byte[charCount / 2];
+        var input = new string('a', charCount);
+        var destination = new byte[charCount / 2];
 
-        bool ok = Base16.TryDecode(input.AsSpan(), destination, out int bytesWritten);
+        var ok = Base16.TryDecode(input.AsSpan(), destination, out var bytesWritten);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(charCount / 2, bytesWritten);
@@ -58,10 +58,10 @@ public sealed partial class Base16Tests
     [DataRow(128)]
     public void TryDecode_WhenDestinationOneByteShort_ShouldReturnFalseAndZeroBytesWritten(int charCount)
     {
-        string input = new string('a', charCount);
-        byte[] destination = new byte[(charCount / 2) - 1];
+        var input = new string('a', charCount);
+        var destination = new byte[(charCount / 2) - 1];
 
-        bool ok = Base16.TryDecode(input.AsSpan(), destination, out int bytesWritten);
+        var ok = Base16.TryDecode(input.AsSpan(), destination, out var bytesWritten);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(0, bytesWritten);
@@ -74,9 +74,9 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void TryDecode_WhenDestinationTooSmall_ShouldReturnFalseAndZeroBytesWritten()
     {
-        byte[] destination = new byte[1];
+        var destination = new byte[1];
 
-        bool ok = Base16.TryDecode(CanonicalHexLower.AsSpan(), destination, out int bytesWritten);
+        var ok = Base16.TryDecode(CanonicalHexLower.AsSpan(), destination, out var bytesWritten);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(0, bytesWritten);
@@ -89,9 +89,9 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void TryDecode_WhenIgnoreWhitespace_ShouldStripWhitespaceAndDecode()
     {
-        byte[] destination = new byte[4];
+        var destination = new byte[4];
 
-        bool ok = Base16.TryDecode("DE AD BE EF".AsSpan(), destination, out int bytesWritten, BaseFormatStyles.IgnoreWhitespace);
+        var ok = Base16.TryDecode("DE AD BE EF".AsSpan(), destination, out var bytesWritten, BaseFormatStyles.IgnoreWhitespace);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(4, bytesWritten);
@@ -106,16 +106,16 @@ public sealed partial class Base16Tests
     public void TryDecode_WhenInputExceedsStackallocThreshold_ShouldDecodeCorrectly()
     {
         const int byteCount = 200;
-        byte[] bytes = new byte[byteCount];
-        for (int i = 0; i < byteCount; i++)
+        var bytes = new byte[byteCount];
+        for (var i = 0; i < byteCount; i++)
         {
             bytes[i] = (byte)(i & 0xFF);
         }
 
-        string spaced = Base16.Encode(bytes, BaseFormattingOptions.InsertSpacing);
-        byte[] destination = new byte[byteCount];
+        var spaced = Base16.Encode(bytes, BaseFormattingOptions.InsertSpacing);
+        var destination = new byte[byteCount];
 
-        bool ok = Base16.TryDecode(spaced.AsSpan(), destination, out int bytesWritten, BaseFormatStyles.IgnoreWhitespace);
+        var ok = Base16.TryDecode(spaced.AsSpan(), destination, out var bytesWritten, BaseFormatStyles.IgnoreWhitespace);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(byteCount, bytesWritten);
@@ -129,9 +129,9 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void TryDecode_WhenInputIsEmpty_ShouldReturnTrueAndZeroBytesWritten()
     {
-        byte[] destination = new byte[4];
+        var destination = new byte[4];
 
-        bool ok = Base16.TryDecode(ReadOnlySpan<char>.Empty, destination, out int bytesWritten);
+        var ok = Base16.TryDecode(ReadOnlySpan<char>.Empty, destination, out var bytesWritten);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(0, bytesWritten);
@@ -144,9 +144,9 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void TryDecode_WhenInvalidCharacters_ShouldReturnFalseAndZeroBytesWritten()
     {
-        byte[] destination = new byte[4];
+        var destination = new byte[4];
 
-        bool ok = Base16.TryDecode("xy".AsSpan(), destination, out int bytesWritten);
+        var ok = Base16.TryDecode("xy".AsSpan(), destination, out var bytesWritten);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(0, bytesWritten);
@@ -159,12 +159,12 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void TryDecode_WhenLenientYieldsOddDigitCount_ShouldReturnFalse()
     {
-        byte[] destination = new byte[4];
+        var destination = new byte[4];
 
-        bool ok = Base16.TryDecode(
+        var ok = Base16.TryDecode(
             "0x ABC".AsSpan(),
             destination,
-            out int bytesWritten,
+            out var bytesWritten,
             BaseFormatStyles.AllowPrefix | BaseFormatStyles.IgnoreWhitespace);
 
         Assert.IsFalse(ok);
@@ -178,9 +178,9 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void TryDecode_WhenOddLengthInput_ShouldReturnFalseAndZeroBytesWritten()
     {
-        byte[] destination = new byte[4];
+        var destination = new byte[4];
 
-        bool ok = Base16.TryDecode("abc".AsSpan(), destination, out int bytesWritten);
+        var ok = Base16.TryDecode("abc".AsSpan(), destination, out var bytesWritten);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(0, bytesWritten);
@@ -199,9 +199,9 @@ public sealed partial class Base16Tests
     [DataRow(" ab")]    // whitespace in strict mode
     public void TryDecode_WhenStrictAndMalformedInput_ShouldReturnFalse(string malformedInput)
     {
-        byte[] destination = new byte[16];
+        var destination = new byte[16];
 
-        bool ok = Base16.TryDecode(malformedInput.AsSpan(), destination, out int bytesWritten);
+        var ok = Base16.TryDecode(malformedInput.AsSpan(), destination, out var bytesWritten);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(0, bytesWritten);
@@ -213,9 +213,9 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void TryDecode_WhenStrictValidInput_ShouldReturnTrueAndExpectedBytes()
     {
-        byte[] destination = new byte[4];
+        var destination = new byte[4];
 
-        bool ok = Base16.TryDecode(CanonicalHexLower.AsSpan(), destination, out int bytesWritten);
+        var ok = Base16.TryDecode(CanonicalHexLower.AsSpan(), destination, out var bytesWritten);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(4, bytesWritten);

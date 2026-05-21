@@ -78,7 +78,7 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
                     size / 2
                 }));
 
-        foreach (int candidate in candidates.Distinct().OrderBy(size => size))
+        foreach (var candidate in candidates.Distinct().OrderBy(size => size))
         {
             if (!legal.Contains(candidate))
                 yield return new object[] { candidate };
@@ -107,7 +107,7 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
                     size / 2
                 }));
 
-        foreach (int candidate in candidates.Distinct().OrderBy(size => size))
+        foreach (var candidate in candidates.Distinct().OrderBy(size => size))
         {
             if (!legal.Contains(candidate))
                 yield return new object[] { candidate };
@@ -126,7 +126,7 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     {
         SymmetricAlgorithmSpecification spec = new TTest().GetSpecification();
         var blockSize = spec.BlockSizeBits / 8;
-        foreach (int candidate in new[] { 0, -1, blockSize - 1, blockSize + 1, blockSize * 2, blockSize / 2 })
+        foreach (var candidate in new[] { 0, -1, blockSize - 1, blockSize + 1, blockSize * 2, blockSize / 2 })
         {
             if (candidate != blockSize)
                 yield return new object[] { candidate };

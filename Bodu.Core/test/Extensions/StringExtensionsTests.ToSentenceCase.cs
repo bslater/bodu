@@ -1,11 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensionsTests.ToSentenceCase.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System;
-using System.Collections.Generic;
 
 namespace Bodu.Extensions;
 
@@ -46,7 +43,7 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void ToSentenceCase_WithPreserveAcronyms_ShouldKeepAllUpperWords()
     {
-        string actual = "the API is fast. HTML rules.".ToSentenceCase(SentenceCaseOptions.PreserveAcronyms);
+        var actual = "the API is fast. HTML rules.".ToSentenceCase(SentenceCaseOptions.PreserveAcronyms);
 
         Assert.AreEqual("The API is fast. HTML rules.", actual);
     }

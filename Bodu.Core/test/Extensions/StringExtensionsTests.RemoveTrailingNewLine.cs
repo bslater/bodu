@@ -1,11 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensionsTests.RemoveTrailingNewLine.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System;
-using System.Collections.Generic;
 
 namespace Bodu.Extensions;
 
@@ -50,9 +47,9 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void RemoveTrailingNewLine_WhenInputHasNoTrailingNewLine_ShouldReturnSameInstance()
     {
-        string value = "hello";
+        var value = "hello";
 
-        string actual = value.RemoveTrailingNewLine();
+        var actual = value.RemoveTrailingNewLine();
 
         Assert.AreSame(value, actual);
     }

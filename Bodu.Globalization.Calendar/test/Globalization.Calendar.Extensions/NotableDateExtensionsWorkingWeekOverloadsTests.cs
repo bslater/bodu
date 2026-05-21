@@ -35,7 +35,7 @@ public class NotableDateExtensionsWorkingWeekOverloadsTests
     public void IsWorkingDay_WhenSugarOverloadAndPatternOverload_ShouldAgree()
     {
         NotableDateService service = BuildService();
-        DateOnly friday = new DateOnly(2026, 5, 15);
+        var friday = new DateOnly(2026, 5, 15);
 
         Assert.AreEqual(
             friday.IsWorkingDay(service, WeekPattern.SundayToThursday),
@@ -52,7 +52,7 @@ public class NotableDateExtensionsWorkingWeekOverloadsTests
         NotableDateService service = BuildService();
 
         // 2026-05-14 is a Thursday. +1 working day → Sunday 2026-05-17.
-        DateOnly thursday = new DateOnly(2026, 5, 14);
+        var thursday = new DateOnly(2026, 5, 14);
 
         DateOnly next = thursday.AddWorkingDays(service, WeekPattern.SundayToThursday, 1);
 
@@ -67,7 +67,7 @@ public class NotableDateExtensionsWorkingWeekOverloadsTests
     public void NextWorkingDay_WhenFridayUnderSundayToThursdayPattern_ShouldReturnSunday()
     {
         NotableDateService service = BuildService();
-        DateOnly friday = new DateOnly(2026, 5, 15);
+        var friday = new DateOnly(2026, 5, 15);
 
         DateOnly next = friday.NextWorkingDay(service, WeekPattern.SundayToThursday, 1);
 
@@ -82,7 +82,7 @@ public class NotableDateExtensionsWorkingWeekOverloadsTests
     public void PreviousWorkingDay_WhenSaturdayUnderSundayToThursdayPattern_ShouldReturnThursday()
     {
         NotableDateService service = BuildService();
-        DateOnly saturday = new DateOnly(2026, 5, 16);
+        var saturday = new DateOnly(2026, 5, 16);
 
         DateOnly prev = saturday.PreviousWorkingDay(service, WeekPattern.SundayToThursday, 1);
 
@@ -99,7 +99,7 @@ public class NotableDateExtensionsWorkingWeekOverloadsTests
         NotableDateService service = BuildService();
 
         // 2026-05-10 is a Sunday; 2026-05-16 is a Saturday. Under Sun-Thu, the working days are 10..14 = 5 days.
-        int count = new DateOnly(2026, 5, 10).WorkingDaysBetween(new DateOnly(2026, 5, 16), service, WeekPattern.SundayToThursday);
+        var count = new DateOnly(2026, 5, 10).WorkingDaysBetween(new DateOnly(2026, 5, 16), service, WeekPattern.SundayToThursday);
 
         Assert.AreEqual(5, count);
     }
@@ -112,10 +112,10 @@ public class NotableDateExtensionsWorkingWeekOverloadsTests
     public void IsNonWorkingDay_WhenSundayToThursdayPattern_ShouldBeComplementOfIsWorkingDay()
     {
         NotableDateService service = BuildService();
-        DateOnly friday = new DateOnly(2026, 5, 15);
+        var friday = new DateOnly(2026, 5, 15);
 
-        bool working = friday.IsWorkingDay(service, WeekPattern.SundayToThursday);
-        bool nonWorking = friday.IsNonWorkingDay(service, WeekPattern.SundayToThursday);
+        var working = friday.IsWorkingDay(service, WeekPattern.SundayToThursday);
+        var nonWorking = friday.IsNonWorkingDay(service, WeekPattern.SundayToThursday);
 
         Assert.AreNotEqual(working, nonWorking);
     }

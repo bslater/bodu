@@ -1,10 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensionsTests.NullIfEmpty.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System.Collections.Generic;
 
 namespace Bodu.Extensions;
 
@@ -45,9 +43,9 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void NullIfEmpty_WhenInputIsNonEmpty_ShouldReturnSameInstance()
     {
-        string value = "hello";
+        var value = "hello";
 
-        string? actual = value.NullIfEmpty();
+        var actual = value.NullIfEmpty();
 
         Assert.AreSame(value, actual);
     }

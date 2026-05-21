@@ -206,7 +206,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
         Assert.AreEqual(expectedCount, annualEmissions.Length,
             $"Annual rule should emit once per civil year between {startYear} and {endYear} inclusive.");
 
-        for (int i = 0; i < annualEmissions.Length; i++)
+        for (var i = 0; i < annualEmissions.Length; i++)
         {
             Assert.AreEqual(new DateTime(startYear + i, 1, 1), annualEmissions[i].Date);
         }

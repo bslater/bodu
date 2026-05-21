@@ -786,7 +786,7 @@ public sealed class EasterSundayNotableDateAlgorithmTests
     [TestMethod]
     public void GetDate_WhenCalledTwice_ShouldReturnCachedResult()
     {
-        int year = 2026;
+        var year = 2026;
 
         var firstCall = _algorithm.GetDate(year, null);
         var secondCall = _algorithm.GetDate(year, null);
@@ -800,7 +800,7 @@ public sealed class EasterSundayNotableDateAlgorithmTests
     [TestMethod]
     public void GetDate_WhenNullCalendar_ShouldReturnUnspecifiedKindDate()
     {
-        int year = 2030;
+        var year = 2030;
 
         var result = _algorithm.GetDate(year, null);
 

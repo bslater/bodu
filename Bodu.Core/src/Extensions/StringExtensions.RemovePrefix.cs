@@ -1,10 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensions.RemovePrefix.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System;
 
 namespace Bodu.Extensions;
 
@@ -31,14 +29,6 @@ public static partial class StringExtensions
     /// Removes at most one occurrence of <paramref name="prefix" />. Use the BCL
     /// <see cref="string.TrimStart(char[])" /> when greedy removal of character-level prefixes is required.
     /// </remarks>
-    /// <example>
-    /// <code language="csharp">
-    ///<![CDATA[
-    /// "Mr. Smith".RemovePrefix("Mr. ");  // "Smith"
-    /// "Dr. Smith".RemovePrefix("Mr. ");  // "Dr. Smith" (prefix absent)
-    ///]]>
-    /// </code>
-    /// </example>
     public static string RemovePrefix(
         this string value,
         string prefix,
@@ -47,7 +37,6 @@ public static partial class StringExtensions
         ThrowHelper.ThrowIfNull(value);
         ThrowHelper.ThrowIfNull(prefix);
 
-        if (prefix.Length == 0) return value;
-        return value.StartsWith(prefix, comparison) ? value.Substring(prefix.Length) : value;
+        return prefix.Length == 0 ? value : value.StartsWith(prefix, comparison) ? value[prefix.Length..] : value;
     }
 }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DelimitedTests.KnownAnswerVectors.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -25,14 +25,14 @@ public sealed partial class DelimitedTests
         CollectionAssert.AreEqual(vector.ExpectedHeaders, doc.Headers.ToArray());
         Assert.AreEqual(vector.ExpectedRows.Length, doc.Rows.Count);
 
-        for (int r = 0; r < vector.ExpectedRows.Length; r++)
+        for (var r = 0; r < vector.ExpectedRows.Length; r++)
         {
-            string[] expectedFields = vector.ExpectedRows[r];
+            var expectedFields = vector.ExpectedRows[r];
             DelimitedRow row = doc.Rows[r];
 
             Assert.AreEqual(expectedFields.Length, row.Count);
 
-            for (int f = 0; f < expectedFields.Length; f++)
+            for (var f = 0; f < expectedFields.Length; f++)
                 Assert.AreEqual(expectedFields[f], row[f]);
         }
     }
@@ -50,20 +50,20 @@ public sealed partial class DelimitedTests
         DelimitedParseOptions options = vector.Options ?? DelimitedParseOptions.Default;
 
         DelimitedDocument original = Delimited.Parse(vector.Input, options);
-        string formatted = Delimited.Format(original, options);
+        var formatted = Delimited.Format(original, options);
         DelimitedDocument roundTripped = Delimited.Parse(formatted, options);
 
         CollectionAssert.AreEqual(vector.ExpectedHeaders, roundTripped.Headers.ToArray());
         Assert.AreEqual(vector.ExpectedRows.Length, roundTripped.Rows.Count);
 
-        for (int r = 0; r < vector.ExpectedRows.Length; r++)
+        for (var r = 0; r < vector.ExpectedRows.Length; r++)
         {
-            string[] expectedFields = vector.ExpectedRows[r];
+            var expectedFields = vector.ExpectedRows[r];
             DelimitedRow row = roundTripped.Rows[r];
 
             Assert.AreEqual(expectedFields.Length, row.Count);
 
-            for (int f = 0; f < expectedFields.Length; f++)
+            for (var f = 0; f < expectedFields.Length; f++)
                 Assert.AreEqual(expectedFields[f], row[f]);
         }
     }

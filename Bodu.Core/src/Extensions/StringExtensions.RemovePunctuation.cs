@@ -1,10 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensions.RemovePunctuation.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System;
 
 namespace Bodu.Extensions;
 
@@ -22,13 +20,6 @@ public static partial class StringExtensions
     /// Membership is determined via <see cref="char.IsPunctuation(char)" /> which covers the Unicode punctuation
     /// categories (Pc, Pd, Pe, Pf, Pi, Po, Ps).
     /// </remarks>
-    /// <example>
-    /// <code language="csharp">
-    ///<![CDATA[
-    /// "Hello, world!".RemovePunctuation();  // "Hello world"
-    ///]]>
-    /// </code>
-    /// </example>
     public static string RemovePunctuation(this string value) =>
         value.RemoveWhere(char.IsPunctuation);
 }

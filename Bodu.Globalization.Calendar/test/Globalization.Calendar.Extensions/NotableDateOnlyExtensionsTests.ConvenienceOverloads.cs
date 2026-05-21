@@ -102,7 +102,7 @@ public partial class NotableDateOnlyExtensionsTests
                     new DateOnly(2026, 12, 31),
                     NotableDateFilter.ForCategory(NotableDateCategory.Cultural));
 
-            List<NotableDate> list = System.Linq.Enumerable.ToList(filtered);
+            var list = System.Linq.Enumerable.ToList(filtered);
             Assert.AreEqual(1, list.Count);
             Assert.AreEqual("Cultural Day", list[0].Name);
         }
@@ -165,7 +165,7 @@ public partial class NotableDateOnlyExtensionsTests
     public void NextNotableDate_WithFilter_WhenNoMatchExists_ShouldReturnNull()
     {
         NotableDateService service = BuildService(Fixed("Holiday", 4, 1, NotableDateCategory.Holiday));
-        NotableDateFilter filter = NotableDateFilter.ForCategory(NotableDateCategory.Cultural);
+        var filter = NotableDateFilter.ForCategory(NotableDateCategory.Cultural);
 
         NotableDate? result = new DateOnly(2026, 1, 1).NextNotableDate(service, filter);
 

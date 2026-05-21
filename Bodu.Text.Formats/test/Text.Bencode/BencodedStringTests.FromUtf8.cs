@@ -16,7 +16,7 @@ public sealed partial class BencodedStringTests
     [TestMethod]
     public void FromUtf8_WhenAccentedCharacter_ShouldEmitMultiByteSequence()
     {
-        BencodedString value = BencodedString.FromUtf8("é");
+        var value = BencodedString.FromUtf8("é");
 
         CollectionAssert.AreEqual(new byte[] { 0xC3, 0xA9 }, value.Bytes.ToArray());
     }
@@ -27,7 +27,7 @@ public sealed partial class BencodedStringTests
     [TestMethod]
     public void FromUtf8_WhenAsciiText_ShouldEncodeAsAscii()
     {
-        BencodedString value = BencodedString.FromUtf8("spam");
+        var value = BencodedString.FromUtf8("spam");
 
         CollectionAssert.AreEqual(new byte[] { (byte)'s', (byte)'p', (byte)'a', (byte)'m' }, value.Bytes.ToArray());
     }
@@ -39,7 +39,7 @@ public sealed partial class BencodedStringTests
     [TestMethod]
     public void FromUtf8_WhenEmptyString_ShouldProduceEmptyByteArray()
     {
-        BencodedString value = BencodedString.FromUtf8(string.Empty);
+        var value = BencodedString.FromUtf8(string.Empty);
 
         Assert.AreEqual(0, value.Length);
     }
@@ -66,7 +66,7 @@ public sealed partial class BencodedStringTests
     [TestMethod]
     public void FromUtf8_WhenSurrogatePair_ShouldEmitFourByteSequence()
     {
-        BencodedString value = BencodedString.FromUtf8("😀");
+        var value = BencodedString.FromUtf8("😀");
 
         CollectionAssert.AreEqual(new byte[] { 0xF0, 0x9F, 0x98, 0x80 }, value.Bytes.ToArray());
     }

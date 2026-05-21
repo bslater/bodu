@@ -107,8 +107,8 @@ public sealed class PluginTrustPolicyTests
     [TestMethod]
     public void StrongNamePluginTrustPolicy_WhenTokenInAllowlist_ShouldReturnTrusted()
     {
-        byte[] token = new byte[] { 0xB0, 0x3F, 0x5F, 0x7F, 0x11, 0xD5, 0x0A, 0x3A };
-        string tokenHex = "b03f5f7f11d50a3a";
+        var token = new byte[] { 0xB0, 0x3F, 0x5F, 0x7F, 0x11, 0xD5, 0x0A, 0x3A };
+        var tokenHex = "b03f5f7f11d50a3a";
 
         var assemblyName = new AssemblyName("Signed.Assembly");
         assemblyName.SetPublicKeyToken(token);
@@ -128,7 +128,7 @@ public sealed class PluginTrustPolicyTests
     [TestMethod]
     public void StrongNamePluginTrustPolicy_WhenTokenNotInAllowlist_ShouldReturnUntrustedWithReason()
     {
-        byte[] token = new byte[] { 0x01, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF };
+        var token = new byte[] { 0x01, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF };
         var assemblyName = new AssemblyName("Signed.Assembly");
         assemblyName.SetPublicKeyToken(token);
 

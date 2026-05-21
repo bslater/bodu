@@ -5,7 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Collections.Immutable;
-using System.Linq;
 using System.Xml.Schema;
 using Bodu.Extensions;
 

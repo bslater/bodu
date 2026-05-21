@@ -21,12 +21,12 @@ public sealed partial class Base64Tests
     [DataRow(Base64Variant.Mime)]
     public void RoundTrip_ForEverySingleByteValueAndVariant_ShouldRecover(Base64Variant variant)
     {
-        for (int value = 0; value <= 255; value++)
+        for (var value = 0; value <= 255; value++)
         {
-            byte[] original = new byte[] { (byte)value };
+            var original = new byte[] { (byte)value };
 
-            string encoded = Base64.Encode(original, variant);
-            byte[] decoded = Base64.Decode(encoded, variant);
+            var encoded = Base64.Encode(original, variant);
+            var decoded = Base64.Decode(encoded, variant);
 
             CollectionAssert.AreEqual(original, decoded, $"Round trip failed for byte 0x{value:X2}, variant={variant}.");
         }
@@ -42,16 +42,16 @@ public sealed partial class Base64Tests
     [DataRow(Base64Variant.Mime)]
     public void RoundTrip_ForEveryVariantAcrossLengths_ShouldRecoverOriginalBytes(Base64Variant variant)
     {
-        for (int len = 0; len <= 64; len++)
+        for (var len = 0; len <= 64; len++)
         {
-            byte[] original = new byte[len];
-            for (int i = 0; i < len; i++)
+            var original = new byte[len];
+            for (var i = 0; i < len; i++)
             {
                 original[i] = (byte)(i * 7);
             }
 
-            string encoded = Base64.Encode(original, variant);
-            byte[] decoded = Base64.Decode(encoded, variant);
+            var encoded = Base64.Encode(original, variant);
+            var decoded = Base64.Decode(encoded, variant);
 
             CollectionAssert.AreEqual(original, decoded,
                 $"Round trip failed for variant={variant}, length={len}.");
@@ -70,11 +70,11 @@ public sealed partial class Base64Tests
     [DataRow(Base64Variant.Mime)]
     public void RoundTrip_ForLargeRandomInput_ShouldRecover(Base64Variant variant)
     {
-        byte[] original = new byte[8192];
+        var original = new byte[8192];
         new Random(0x42).NextBytes(original);
 
-        string encoded = Base64.Encode(original, variant);
-        byte[] decoded = Base64.Decode(encoded, variant);
+        var encoded = Base64.Encode(original, variant);
+        var decoded = Base64.Decode(encoded, variant);
 
         CollectionAssert.AreEqual(original, decoded);
     }
@@ -86,10 +86,10 @@ public sealed partial class Base64Tests
     [TestMethod]
     public void RoundTrip_WhenOmitPaddingAndAllowMissingPadding_ShouldRecoverOriginal()
     {
-        byte[] original = new byte[] { 0xDE, 0xAD, 0xBE, 0xEF };
+        var original = new byte[] { 0xDE, 0xAD, 0xBE, 0xEF };
 
-        string encoded = Base64.Encode(original, Base64Variant.Standard, BaseFormattingOptions.OmitPadding);
-        byte[] decoded = Base64.Decode(encoded, Base64Variant.Standard, BaseFormatStyles.AllowMissingPadding);
+        var encoded = Base64.Encode(original, Base64Variant.Standard, BaseFormattingOptions.OmitPadding);
+        var decoded = Base64.Decode(encoded, Base64Variant.Standard, BaseFormatStyles.AllowMissingPadding);
 
         Assert.IsFalse(encoded.Contains('='), "Encoded form should contain no padding characters.");
         CollectionAssert.AreEqual(original, decoded);
@@ -101,12 +101,12 @@ public sealed partial class Base64Tests
     [TestMethod]
     public void RoundTrip_WhenSpanTryPath_ShouldRecoverOriginal()
     {
-        byte[] original = new byte[] { 0xDE, 0xAD, 0xBE, 0xEF, 0xCA, 0xFE };
-        char[] charBuffer = new char[Base64.GetEncodedLength(original.Length)];
-        byte[] byteBuffer = new byte[original.Length];
+        var original = new byte[] { 0xDE, 0xAD, 0xBE, 0xEF, 0xCA, 0xFE };
+        var charBuffer = new char[Base64.GetEncodedLength(original.Length)];
+        var byteBuffer = new byte[original.Length];
 
-        bool encOk = Base64.TryEncode(original.AsSpan(), charBuffer, out int charsWritten);
-        bool decOk = Base64.TryDecode(charBuffer.AsSpan(0, charsWritten), byteBuffer, out int bytesWritten);
+        var encOk = Base64.TryEncode(original.AsSpan(), charBuffer, out var charsWritten);
+        var decOk = Base64.TryDecode(charBuffer.AsSpan(0, charsWritten), byteBuffer, out var bytesWritten);
 
         Assert.IsTrue(encOk);
         Assert.IsTrue(decOk);

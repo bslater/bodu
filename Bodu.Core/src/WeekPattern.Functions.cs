@@ -44,7 +44,7 @@ public partial struct WeekPattern
         {
             // Auto-detect binary: if the first character is '0' or '1', treat the whole string as binary.
             var firstChar = char.ToUpperInvariant(input[0]);
-            isBinary = firstChar == '0' || firstChar == '1';
+            isBinary = firstChar is '0' or '1';
         }
         else
         {

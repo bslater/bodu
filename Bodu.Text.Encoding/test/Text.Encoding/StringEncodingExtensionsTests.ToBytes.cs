@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringEncodingExtensionsTests.ToBytes.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -17,9 +17,9 @@ public sealed partial class StringEncodingExtensionsTests
     [DynamicData(nameof(CanonicalEncodings), DynamicDataSourceType.Method)]
     public void ToBytes_WhenInvoked_ShouldMatchBclEncoding(System.Text.Encoding encoding)
     {
-        byte[] expected = encoding.GetBytes(MultiByteText);
+        var expected = encoding.GetBytes(MultiByteText);
 
-        byte[] actual = MultiByteText.ToBytes(encoding);
+        var actual = MultiByteText.ToBytes(encoding);
 
         CollectionAssert.AreEqual(expected, actual);
     }
@@ -31,7 +31,7 @@ public sealed partial class StringEncodingExtensionsTests
     [TestMethod]
     public void ToBytes_WhenStringIsEmpty_ShouldReturnEmptyArray()
     {
-        byte[] actual = string.Empty.ToBytes(System.Text.Encoding.UTF8);
+        var actual = string.Empty.ToBytes(System.Text.Encoding.UTF8);
 
         Assert.AreEqual(0, actual.Length);
     }

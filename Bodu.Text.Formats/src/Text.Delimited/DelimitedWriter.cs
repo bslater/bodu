@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DelimitedWriter.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -128,10 +128,10 @@ public sealed class DelimitedWriter : IDisposable
     /// <param name="fields">The field values to write.</param>
     private void WriteFields(IEnumerable<string> fields)
     {
-        char delimiter = _options.Delimiter;
-        bool first = true;
+        var delimiter = _options.Delimiter;
+        var first = true;
 
-        foreach (string field in fields)
+        foreach (var field in fields)
         {
             if (!first)
                 _writer.Write(delimiter);
@@ -151,10 +151,10 @@ public sealed class DelimitedWriter : IDisposable
     /// <param name="field">The field value to write.</param>
     private void WriteField(string field)
     {
-        char delimiter = _options.Delimiter;
-        char quote = _options.Quote;
+        var delimiter = _options.Delimiter;
+        var quote = _options.Quote;
 
-        bool needsQuoting = field.Length == 0 ||
+        var needsQuoting = field.Length == 0 ||
                             field.IndexOf(delimiter) >= 0 ||
                             field.IndexOf(quote) >= 0 ||
                             field.IndexOf('\n') >= 0 ||
@@ -168,7 +168,7 @@ public sealed class DelimitedWriter : IDisposable
 
         _writer.Write(quote);
 
-        foreach (char c in field)
+        foreach (var c in field)
         {
             if (c == quote)
                 _writer.Write(quote); // RFC 4180 doubled-quote escape

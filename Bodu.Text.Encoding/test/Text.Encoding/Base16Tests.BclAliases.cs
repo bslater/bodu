@@ -18,13 +18,13 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void FromHexString_ForCharSpan_OperationStatus_ShouldReturnDoneWithCounts()
     {
-        byte[] destination = new byte[4];
+        var destination = new byte[4];
 
         OperationStatus status = Base16.FromHexString(
             CanonicalHexLower.AsSpan(),
             destination,
-            out int charsConsumed,
-            out int bytesWritten);
+            out var charsConsumed,
+            out var bytesWritten);
 
         Assert.AreEqual(OperationStatus.Done, status);
         Assert.AreEqual(8, charsConsumed);
@@ -39,13 +39,13 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void FromHexString_ForCharSpan_WhenDestinationTooSmall_ShouldReturnDestinationTooSmall()
     {
-        byte[] destination = new byte[1];
+        var destination = new byte[1];
 
         OperationStatus status = Base16.FromHexString(
             CanonicalHexLower.AsSpan(),
             destination,
-            out int _,
-            out int _);
+            out var _,
+            out var _);
 
         Assert.AreEqual(OperationStatus.DestinationTooSmall, status);
     }
@@ -57,13 +57,13 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void FromHexString_ForCharSpan_WhenInvalidCharacter_ShouldReturnInvalidData()
     {
-        byte[] destination = new byte[4];
+        var destination = new byte[4];
 
         OperationStatus status = Base16.FromHexString(
             "xyz!".AsSpan(),
             destination,
-            out int _,
-            out int _);
+            out var _,
+            out var _);
 
         Assert.AreEqual(OperationStatus.InvalidData, status);
     }
@@ -87,7 +87,7 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void FromHexString_ForString_ShouldStrictlyDecode()
     {
-        byte[] actual = Base16.FromHexString(CanonicalHexUpper);
+        var actual = Base16.FromHexString(CanonicalHexUpper);
 
         CollectionAssert.AreEqual(CanonicalBytes, actual);
     }
@@ -98,9 +98,9 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void FromHexString_ForUtf8Source_ShouldDecodeAsAsciiHex()
     {
-        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes(CanonicalHexLower);
+        var utf8 = System.Text.Encoding.ASCII.GetBytes(CanonicalHexLower);
 
-        byte[] actual = Base16.FromHexString(utf8);
+        var actual = Base16.FromHexString(utf8);
 
         CollectionAssert.AreEqual(CanonicalBytes, actual);
     }
@@ -112,10 +112,10 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void FromHexString_ForUtf8Span_OperationStatus_ShouldReturnDoneWithCounts()
     {
-        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes(CanonicalHexLower);
-        byte[] destination = new byte[4];
+        var utf8 = System.Text.Encoding.ASCII.GetBytes(CanonicalHexLower);
+        var destination = new byte[4];
 
-        OperationStatus status = Base16.FromHexString(utf8, destination, out int bytesConsumed, out int bytesWritten);
+        OperationStatus status = Base16.FromHexString(utf8, destination, out var bytesConsumed, out var bytesWritten);
 
         Assert.AreEqual(OperationStatus.Done, status);
         Assert.AreEqual(8, bytesConsumed);
@@ -129,7 +129,7 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void ToHexString_ForByteArray_ShouldReturnUpperCaseHex()
     {
-        string actual = Base16.ToHexString(CanonicalBytes);
+        var actual = Base16.ToHexString(CanonicalBytes);
 
         Assert.AreEqual(CanonicalHexUpper, actual);
     }
@@ -140,7 +140,7 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void ToHexString_ForByteArraySlice_ShouldEncodeSliceOnly()
     {
-        string actual = Base16.ToHexString(CanonicalBytes, 1, 2);
+        var actual = Base16.ToHexString(CanonicalBytes, 1, 2);
 
         Assert.AreEqual("ADBE", actual);
     }
@@ -151,7 +151,7 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void ToHexString_ForReadOnlySpan_ShouldReturnUpperCaseHex()
     {
-        string actual = Base16.ToHexString(CanonicalBytes.AsSpan());
+        var actual = Base16.ToHexString(CanonicalBytes.AsSpan());
 
         Assert.AreEqual(CanonicalHexUpper, actual);
     }
@@ -162,7 +162,7 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void ToHexStringLower_ForByteArray_ShouldReturnLowerCaseHex()
     {
-        string actual = Base16.ToHexStringLower(CanonicalBytes);
+        var actual = Base16.ToHexStringLower(CanonicalBytes);
 
         Assert.AreEqual(CanonicalHexLower, actual);
     }
@@ -174,9 +174,9 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void TryToHexString_ForCharSpan_ShouldWriteUpperCaseHex()
     {
-        char[] destination = new char[8];
+        var destination = new char[8];
 
-        bool ok = Base16.TryToHexString(CanonicalBytes.AsSpan(), destination, out int charsWritten);
+        var ok = Base16.TryToHexString(CanonicalBytes.AsSpan(), destination, out var charsWritten);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(8, charsWritten);
@@ -190,9 +190,9 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void TryToHexString_ForUtf8Span_ShouldWriteUpperCaseHexAsAsciiBytes()
     {
-        byte[] destination = new byte[8];
+        var destination = new byte[8];
 
-        bool ok = Base16.TryToHexString(CanonicalBytes.AsSpan(), destination.AsSpan(), out int bytesWritten);
+        var ok = Base16.TryToHexString(CanonicalBytes.AsSpan(), destination.AsSpan(), out var bytesWritten);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(8, bytesWritten);
@@ -206,9 +206,9 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void TryToHexStringLower_ForCharSpan_ShouldWriteLowerCaseHex()
     {
-        char[] destination = new char[8];
+        var destination = new char[8];
 
-        bool ok = Base16.TryToHexStringLower(CanonicalBytes.AsSpan(), destination, out int charsWritten);
+        var ok = Base16.TryToHexStringLower(CanonicalBytes.AsSpan(), destination, out var charsWritten);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(8, charsWritten);

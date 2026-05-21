@@ -18,7 +18,7 @@ public sealed partial class Base32Tests
     [DynamicData(nameof(Base32KnownAnswerVectors.HexExtendedRfc4648Vectors), typeof(Base32KnownAnswerVectors), DynamicDataSourceType.Method)]
     public void Decode_ForHexExtendedRfc4648KnownAnswerVector_ShouldRecoverBytes(EncodingKnownAnswerVector vector)
     {
-        byte[] actual = Base32.Decode(vector.Encoded, Base32Variant.HexExtended);
+        var actual = Base32.Decode(vector.Encoded, Base32Variant.HexExtended);
 
         CollectionAssert.AreEqual(vector.DecodedBytes, actual);
     }
@@ -57,7 +57,7 @@ public sealed partial class Base32Tests
     [DynamicData(nameof(Base32KnownAnswerVectors.StandardRfc4648Vectors), typeof(Base32KnownAnswerVectors), DynamicDataSourceType.Method)]
     public void Decode_ForStandardRfc4648KnownAnswerVector_ShouldRecoverBytes(EncodingKnownAnswerVector vector)
     {
-        byte[] actual = Base32.Decode(vector.Encoded, Base32Variant.Standard);
+        var actual = Base32.Decode(vector.Encoded, Base32Variant.Standard);
 
         CollectionAssert.AreEqual(vector.DecodedBytes, actual);
     }
@@ -69,7 +69,7 @@ public sealed partial class Base32Tests
     [TestMethod]
     public void Decode_WhenAllowMissingPaddingAndPaddingOmitted_ShouldDecodeSuccessfully()
     {
-        byte[] actual = Base32.Decode("MZXW6YTBOI", Base32Variant.Standard, BaseFormatStyles.AllowMissingPadding);
+        var actual = Base32.Decode("MZXW6YTBOI", Base32Variant.Standard, BaseFormatStyles.AllowMissingPadding);
 
         CollectionAssert.AreEqual(Ascii("foobar"), actual);
     }
@@ -81,7 +81,7 @@ public sealed partial class Base32Tests
     [TestMethod]
     public void Decode_WhenIgnoreWhitespace_ShouldStripAsciiWhitespaceAndDecode()
     {
-        byte[] actual = Base32.Decode(
+        var actual = Base32.Decode(
             "MZ XW\t6Y\nTBOI======\r",
             Base32Variant.Standard,
             BaseFormatStyles.IgnoreWhitespace);
@@ -103,7 +103,7 @@ public sealed partial class Base32Tests
     [DataRow("\r\nMZXW6YTBOI======\r\n")]
     public void Decode_WhenIgnoreWhitespaceAndVariousWhitespacePatterns_ShouldDecodeFoobar(string decoratedInput)
     {
-        byte[] actual = Base32.Decode(decoratedInput, Base32Variant.Standard, BaseFormatStyles.IgnoreWhitespace);
+        var actual = Base32.Decode(decoratedInput, Base32Variant.Standard, BaseFormatStyles.IgnoreWhitespace);
 
         CollectionAssert.AreEqual(Ascii("foobar"), actual);
     }
@@ -128,7 +128,7 @@ public sealed partial class Base32Tests
     [TestMethod]
     public void Decode_WhenLowerCaseInput_ShouldDecodeCaseInsensitively()
     {
-        byte[] actual = Base32.Decode("mzxw6ytboi======");
+        var actual = Base32.Decode("mzxw6ytboi======");
 
         CollectionAssert.AreEqual(Ascii("foobar"), actual);
     }
@@ -146,7 +146,7 @@ public sealed partial class Base32Tests
     [DataRow("mZxW6yTbOi======", "foobar")]
     public void Decode_WhenMixedCaseInput_ShouldDecodeCaseInsensitively(string input, string expectedAscii)
     {
-        byte[] actual = Base32.Decode(input);
+        var actual = Base32.Decode(input);
 
         CollectionAssert.AreEqual(Ascii(expectedAscii), actual);
     }
@@ -171,9 +171,9 @@ public sealed partial class Base32Tests
     [TestMethod]
     public void Decode_WhenSliceForCharArray_ShouldReturnSliceOnly()
     {
-        char[] chars = "????MZXW6YTBOI======####".ToCharArray();
+        var chars = "????MZXW6YTBOI======####".ToCharArray();
 
-        byte[] actual = Base32.Decode(chars, 4, 16);
+        var actual = Base32.Decode(chars, 4, 16);
 
         CollectionAssert.AreEqual(Ascii("foobar"), actual);
     }
@@ -195,7 +195,7 @@ public sealed partial class Base32Tests
     [DataRow('_')]
     public void Decode_WhenStandardAlphabetExcludedCharacter_ShouldThrowFormatException(char excluded)
     {
-        string input = "MZ" + excluded + "W6YTB";
+        var input = "MZ" + excluded + "W6YTB";
 
         Assert.ThrowsExactly<FormatException>(() =>
         {
@@ -218,7 +218,7 @@ public sealed partial class Base32Tests
     [DataRow("MZXW6YTBOI======", "foobar")]
     public void Decode_WhenStandardVariantReferenceVectors_ShouldRecoverInputBytes(string encoded, string expected)
     {
-        byte[] actual = Base32.Decode(encoded);
+        var actual = Base32.Decode(encoded);
 
         CollectionAssert.AreEqual(Ascii(expected), actual);
     }

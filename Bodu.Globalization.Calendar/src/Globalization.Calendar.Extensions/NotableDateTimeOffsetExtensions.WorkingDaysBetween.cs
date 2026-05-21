@@ -34,8 +34,8 @@ public static partial class NotableDateTimeOffsetExtensions
         ThrowHelper.ThrowIfNull(timeZone);
         ThrowHelper.ThrowIfNull(service);
 
-        DateOnly start = DateOnly.FromDateTime(LocalDateTimeIn(startInstant, timeZone));
-        DateOnly end = DateOnly.FromDateTime(LocalDateTimeIn(endInstant, timeZone));
+        var start = DateOnly.FromDateTime(LocalDateTimeIn(startInstant, timeZone));
+        var end = DateOnly.FromDateTime(LocalDateTimeIn(endInstant, timeZone));
         WeekPattern week = workingWeek ?? service.WorkingWeek;
         return start.WorkingDaysBetween(end, service, week, territoryCode, calendarType);
     }

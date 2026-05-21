@@ -1,11 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensions.ToSafeFileName.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
-using System.IO;
 using System.Text;
 
 namespace Bodu.Extensions;
@@ -29,22 +27,15 @@ public static partial class StringExtensions
     /// Callers writing files for a known target platform should construct the invalid set explicitly rather than
     /// relying on the current platform's defaults.
     /// </remarks>
-    /// <example>
-    /// <code language="csharp">
-    ///<![CDATA[
-    /// "year/month".ToSafeFileName();  // "year_month"
-    ///]]>
-    /// </code>
-    /// </example>
     public static string ToSafeFileName(this string value)
     {
         ThrowHelper.ThrowIfNull(value);
 
         if (value.Length == 0) return "_";
 
-        char[] invalid = Path.GetInvalidFileNameChars();
+        var invalid = Path.GetInvalidFileNameChars();
         StringBuilder builder = new(value.Length);
-        foreach (char c in value)
+        foreach (var c in value)
         {
             builder.Append(Array.IndexOf(invalid, c) >= 0 ? '_' : c);
         }

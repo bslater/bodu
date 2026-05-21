@@ -16,7 +16,7 @@ public sealed partial class BencodeTests
     [TestMethod]
     public void Encode_WhenBencodedInteger_ShouldReturnCanonicalEncoding()
     {
-        byte[] actual = Bencode.Encode(new BencodedInteger(42));
+        var actual = Bencode.Encode(new BencodedInteger(42));
 
         CollectionAssert.AreEqual(CanonicalIntegerBytes, actual);
     }
@@ -28,7 +28,7 @@ public sealed partial class BencodeTests
     [TestMethod]
     public void Encode_WhenBencodedString_ShouldReturnCanonicalEncoding()
     {
-        byte[] actual = Bencode.Encode(BencodedString.FromUtf8("spam"));
+        var actual = Bencode.Encode(BencodedString.FromUtf8("spam"));
 
         CollectionAssert.AreEqual(CanonicalSpamBytes, actual);
     }
@@ -47,7 +47,7 @@ public sealed partial class BencodeTests
             new KeyValuePair<BencodedString, BencodedValue>(BencodedString.FromUtf8("cow"), BencodedString.FromUtf8("moo")),
         });
 
-        byte[] actual = Bencode.Encode(dict);
+        var actual = Bencode.Encode(dict);
 
         CollectionAssert.AreEqual(Bytes("d3:cow3:moo4:spam4:eggse"), actual);
     }
@@ -58,7 +58,7 @@ public sealed partial class BencodeTests
     [TestMethod]
     public void Encode_WhenEmptyBencodedDictionary_ShouldReturnEmptyDictionaryEncoding()
     {
-        byte[] actual = Bencode.Encode(new BencodedDictionary(Array.Empty<KeyValuePair<BencodedString, BencodedValue>>()));
+        var actual = Bencode.Encode(new BencodedDictionary(Array.Empty<KeyValuePair<BencodedString, BencodedValue>>()));
 
         CollectionAssert.AreEqual(CanonicalEmptyDictBytes, actual);
     }
@@ -69,7 +69,7 @@ public sealed partial class BencodeTests
     [TestMethod]
     public void Encode_WhenEmptyBencodedList_ShouldReturnEmptyListEncoding()
     {
-        byte[] actual = Bencode.Encode(new BencodedList(Array.Empty<BencodedValue>()));
+        var actual = Bencode.Encode(new BencodedList(Array.Empty<BencodedValue>()));
 
         CollectionAssert.AreEqual(CanonicalEmptyListBytes, actual);
     }
@@ -87,7 +87,7 @@ public sealed partial class BencodeTests
             new BencodedInteger(42),
         });
 
-        byte[] actual = Bencode.Encode(list);
+        var actual = Bencode.Encode(list);
 
         CollectionAssert.AreEqual(Bytes("l4:spami42ee"), actual);
     }

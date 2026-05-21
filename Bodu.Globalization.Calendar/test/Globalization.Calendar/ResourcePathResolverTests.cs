@@ -22,7 +22,7 @@ public sealed class ResourcePathResolverTests
     {
         IResourcePathResolver resolver = new ResourcePathResolver();
 
-        string result = resolver.Resolve(
+        var result = resolver.Resolve(
             "/Bodu/Globalization/Calendar/Resources/au-all.xml",
             "/Bodu/Globalization/Calendar/Resources/global-public.xml");
 
@@ -38,7 +38,7 @@ public sealed class ResourcePathResolverTests
     {
         IResourcePathResolver resolver = new ResourcePathResolver();
 
-        string result = resolver.Resolve(
+        var result = resolver.Resolve(
             "/Bodu/Globalization/Calendar/Resources/au-all.xml",
             "../regions/au-nsw.xml");
 
@@ -54,7 +54,7 @@ public sealed class ResourcePathResolverTests
     {
         IResourcePathResolver resolver = new ResourcePathResolver();
 
-        string result = resolver.Resolve(
+        var result = resolver.Resolve(
             @"\Bodu\Globalization\Calendar\Resources\au-all.xml",
             @"..\regions\au-nsw.xml");
 
@@ -202,7 +202,7 @@ public sealed class ResourcePathResolverTests
     {
         IResourcePathResolver resolver = new ResourcePathResolver();
 
-        string result = resolver.Resolve(
+        var result = resolver.Resolve(
             "/Bodu/Globalization/Calendar/Resources/au-all.xml",
             "./neighbour.xml");
 
@@ -218,7 +218,7 @@ public sealed class ResourcePathResolverTests
     {
         IResourcePathResolver resolver = new ResourcePathResolver();
 
-        string result = resolver.Resolve(
+        var result = resolver.Resolve(
             "/Bodu/document.xml",
             "../sibling.xml");
 
@@ -233,7 +233,7 @@ public sealed class ResourcePathResolverTests
     {
         IResourcePathResolver resolver = new ResourcePathResolver();
 
-        string result = resolver.Resolve("/document.xml", "child.xml");
+        var result = resolver.Resolve("/document.xml", "child.xml");
 
         Assert.AreEqual("/child.xml", result);
     }

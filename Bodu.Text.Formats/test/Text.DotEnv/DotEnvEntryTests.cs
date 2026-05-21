@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DotEnvEntryTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -21,7 +21,7 @@ public sealed class DotEnvEntryTests
     {
         DotEnvDocument doc = DotEnv.Parse("PORT=8080");
 
-        int port = doc.Entries[0].GetValue<int>();
+        var port = doc.Entries[0].GetValue<int>();
 
         Assert.AreEqual(8080, port);
     }
@@ -34,7 +34,7 @@ public sealed class DotEnvEntryTests
     {
         DotEnvDocument doc = DotEnv.Parse("RATIO=3.14");
 
-        double ratio = doc.Entries[0].GetValue<double>();
+        var ratio = doc.Entries[0].GetValue<double>();
 
         Assert.AreEqual(3.14, ratio, 1e-10);
     }
@@ -47,7 +47,7 @@ public sealed class DotEnvEntryTests
     {
         DotEnvDocument doc = DotEnv.Parse("DEBUG=True");
 
-        bool debug = doc.Entries[0].GetValue<bool>();
+        var debug = doc.Entries[0].GetValue<bool>();
 
         Assert.IsTrue(debug);
     }
@@ -58,7 +58,7 @@ public sealed class DotEnvEntryTests
     [TestMethod]
     public void GetValue_WhenValueIsGuid_ShouldReturnParsedGuid()
     {
-        Guid expected = Guid.Parse("12345678-1234-1234-1234-1234567890ab");
+        var expected = Guid.Parse("12345678-1234-1234-1234-1234567890ab");
         DotEnvDocument doc = DotEnv.Parse($"ID={expected}");
 
         Guid actual = doc.Entries[0].GetValue<Guid>();
@@ -75,7 +75,7 @@ public sealed class DotEnvEntryTests
     {
         DotEnvDocument doc = DotEnv.Parse("NAME=hello");
 
-        string name = doc.Entries[0].GetValue<string>();
+        var name = doc.Entries[0].GetValue<string>();
 
         Assert.AreEqual("hello", name);
     }
@@ -104,7 +104,7 @@ public sealed class DotEnvEntryTests
     {
         DotEnvDocument doc = DotEnv.Parse("PORT=9000");
 
-        bool result = doc.Entries[0].TryGetValue<int>(out int port);
+        var result = doc.Entries[0].TryGetValue<int>(out var port);
 
         Assert.IsTrue(result);
         Assert.AreEqual(9000, port);
@@ -119,7 +119,7 @@ public sealed class DotEnvEntryTests
     {
         DotEnvDocument doc = DotEnv.Parse("KEY=notanumber");
 
-        bool result = doc.Entries[0].TryGetValue<int>(out int _);
+        var result = doc.Entries[0].TryGetValue<int>(out var _);
 
         Assert.IsFalse(result);
     }

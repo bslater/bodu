@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Linq;
 using Bodu.Globalization.Calendar;
 
 namespace Bodu.Extensions;
@@ -61,7 +60,7 @@ public partial class NotableDateOnlyExtensionsTests
     {
         NotableDateService service = BuildService();
 
-        int actual = day.EnumerateNonWorkingDays(day, service).Count();
+        var actual = day.EnumerateNonWorkingDays(day, service).Count();
 
         Assert.AreEqual(expected, actual);
     }

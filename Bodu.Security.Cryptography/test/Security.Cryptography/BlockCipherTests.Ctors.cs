@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BlockCipherTests.Ctors.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -27,7 +27,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
         foreach (TVariant variant in instance.GetBlockCipherVariants())
         {
             BlockCipherSpecification spec = instance.GetSpecification(variant);
-            byte[] validTweak = spec.TestTweak ?? (spec.TweakSize > 0 ? new byte[spec.TweakSize] : Array.Empty<byte>());
+            var validTweak = spec.TestTweak ?? (spec.TweakSize > 0 ? new byte[spec.TweakSize] : Array.Empty<byte>());
 
             yield return new object[] { variant, Array.Empty<byte>(), validTweak };
 
@@ -54,7 +54,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
         foreach (TVariant variant in instance.GetBlockCipherVariants())
         {
             BlockCipherSpecification spec = instance.GetSpecification(variant);
-            byte[] validKey = spec.TestKey ?? new byte[spec.KeySize];
+            var validKey = spec.TestKey ?? new byte[spec.KeySize];
 
             if (!spec.IsTweakable)
             {

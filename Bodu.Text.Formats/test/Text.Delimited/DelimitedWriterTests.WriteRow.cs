@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DelimitedWriterTests.WriteRow.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -223,14 +223,14 @@ public sealed partial class DelimitedWriterTests
         using (DelimitedWriter writer = new(sw))
         {
             writer.WriteHeader(["name", "age", "note"]);
-            foreach (string[] row in data)
+            foreach (var row in data)
                 writer.WriteRow(row);
         }
 
         // Read back — Headers is populated only after the first Read() call.
         using DelimitedReader reader = new(new StringReader(sw.ToString()));
 
-        int rowIndex = 0;
+        var rowIndex = 0;
         while (reader.Read())
         {
             Assert.AreEqual(data[rowIndex][0], reader.Fields[0], $"Row {rowIndex} field 0");

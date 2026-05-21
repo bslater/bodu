@@ -1,11 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensions.ToConstantCase.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
 using System.Globalization;
 
 namespace Bodu.Extensions;
@@ -24,13 +22,6 @@ public static partial class StringExtensions
     /// Word boundaries follow <see cref="EnumerateWords(string, WordCasingOptions)" /> using
     /// <see cref="WordCasingOptions.Default" />. Every word is upper-cased.
     /// </remarks>
-    /// <example>
-    /// <code language="csharp">
-    ///<![CDATA[
-    /// "userAccountId".ToConstantCase();  // "USER_ACCOUNT_ID"
-    ///]]>
-    /// </code>
-    /// </example>
     public static string ToConstantCase(this string value) =>
         ToConstantCase(value, WordCasingOptions.Default);
 
@@ -57,7 +48,7 @@ public static partial class StringExtensions
         if (words.Count == 0) return string.Empty;
 
         CultureInfo culture = options.Culture;
-        for (int i = 0; i < words.Count; i++) words[i] = words[i].ToUpper(culture);
+        for (var i = 0; i < words.Count; i++) words[i] = words[i].ToUpper(culture);
         return string.Join('_', words);
     }
 }

@@ -18,13 +18,13 @@ public sealed partial class Base64Tests
     [TestMethod]
     public void FromBase64String_ForCharSpan_OperationStatus_ShouldReturnDoneWithCounts()
     {
-        byte[] destination = new byte[6];
+        var destination = new byte[6];
 
         OperationStatus status = Base64.FromBase64String(
             "Zm9vYmFy".AsSpan(),
             destination,
-            out int charsConsumed,
-            out int bytesWritten);
+            out var charsConsumed,
+            out var bytesWritten);
 
         Assert.AreEqual(OperationStatus.Done, status);
         Assert.AreEqual(8, charsConsumed);
@@ -39,13 +39,13 @@ public sealed partial class Base64Tests
     [TestMethod]
     public void FromBase64String_ForCharSpan_OperationStatus_WhenInvalidChar_ShouldReturnInvalidData()
     {
-        byte[] destination = new byte[6];
+        var destination = new byte[6];
 
         OperationStatus status = Base64.FromBase64String(
             "Zm@vYmFy".AsSpan(),
             destination,
-            out int _,
-            out int _);
+            out var _,
+            out var _);
 
         Assert.AreEqual(OperationStatus.InvalidData, status);
     }
@@ -56,7 +56,7 @@ public sealed partial class Base64Tests
     [TestMethod]
     public void FromBase64String_ForString_ShouldDecodeCanonicalInput()
     {
-        byte[] actual = Base64.FromBase64String("Zm9vYmFy");
+        var actual = Base64.FromBase64String("Zm9vYmFy");
 
         CollectionAssert.AreEqual(Ascii("foobar"), actual);
     }
@@ -67,9 +67,9 @@ public sealed partial class Base64Tests
     [TestMethod]
     public void FromBase64String_ForUtf8Source_ShouldDecode()
     {
-        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes("Zm9vYmFy");
+        var utf8 = System.Text.Encoding.ASCII.GetBytes("Zm9vYmFy");
 
-        byte[] actual = Base64.FromBase64String(utf8);
+        var actual = Base64.FromBase64String(utf8);
 
         CollectionAssert.AreEqual(Ascii("foobar"), actual);
     }
@@ -81,10 +81,10 @@ public sealed partial class Base64Tests
     [TestMethod]
     public void FromBase64String_ForUtf8Span_OperationStatus_ShouldReturnDoneWithCounts()
     {
-        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes("Zm9vYmFy");
-        byte[] destination = new byte[6];
+        var utf8 = System.Text.Encoding.ASCII.GetBytes("Zm9vYmFy");
+        var destination = new byte[6];
 
-        OperationStatus status = Base64.FromBase64String(utf8, destination, out int bytesConsumed, out int bytesWritten);
+        OperationStatus status = Base64.FromBase64String(utf8, destination, out var bytesConsumed, out var bytesWritten);
 
         Assert.AreEqual(OperationStatus.Done, status);
         Assert.AreEqual(8, bytesConsumed);
@@ -100,10 +100,10 @@ public sealed partial class Base64Tests
     [TestMethod]
     public void FromBase64String_WhenInputContainsWhitespace_ShouldIgnoreWhitespaceLikeBcl()
     {
-        byte[] expected = Ascii("foobar");
+        var expected = Ascii("foobar");
 
-        byte[] viaBodu = Base64.FromBase64String("Zm9v\r\nYmFy");
-        byte[] viaBcl = System.Convert.FromBase64String("Zm9v\r\nYmFy");
+        var viaBodu = Base64.FromBase64String("Zm9v\r\nYmFy");
+        var viaBcl = System.Convert.FromBase64String("Zm9v\r\nYmFy");
 
         CollectionAssert.AreEqual(expected, viaBodu);
         CollectionAssert.AreEqual(expected, viaBcl);
@@ -123,8 +123,8 @@ public sealed partial class Base64Tests
     [DataRow("Zm9v\r\nYmFy")]
     public void FromBase64String_WhenInputHasVariedWhitespace_ShouldMatchBclBehaviour(string input)
     {
-        byte[] viaBodu = Base64.FromBase64String(input);
-        byte[] viaBcl = System.Convert.FromBase64String(input);
+        var viaBodu = Base64.FromBase64String(input);
+        var viaBcl = System.Convert.FromBase64String(input);
 
         CollectionAssert.AreEqual(viaBcl, viaBodu);
     }
@@ -147,7 +147,7 @@ public sealed partial class Base64Tests
     [TestMethod]
     public void ToBase64String_ForByteArray_ShouldReturnStandardVariantOutput()
     {
-        string actual = Base64.ToBase64String(Ascii("foobar"));
+        var actual = Base64.ToBase64String(Ascii("foobar"));
 
         Assert.AreEqual("Zm9vYmFy", actual);
     }
@@ -158,9 +158,9 @@ public sealed partial class Base64Tests
     [TestMethod]
     public void ToBase64String_ForByteArraySlice_ShouldEncodeSliceOnly()
     {
-        byte[] bytes = Ascii("xxxxfoobaryyyy");
+        var bytes = Ascii("xxxxfoobaryyyy");
 
-        string actual = Base64.ToBase64String(bytes, 4, 6);
+        var actual = Base64.ToBase64String(bytes, 4, 6);
 
         Assert.AreEqual("Zm9vYmFy", actual);
     }
@@ -171,7 +171,7 @@ public sealed partial class Base64Tests
     [TestMethod]
     public void ToBase64String_ForReadOnlySpan_ShouldReturnStandardVariantOutput()
     {
-        string actual = Base64.ToBase64String(Ascii("foobar").AsSpan());
+        var actual = Base64.ToBase64String(Ascii("foobar").AsSpan());
 
         Assert.AreEqual("Zm9vYmFy", actual);
     }
@@ -183,9 +183,9 @@ public sealed partial class Base64Tests
     [TestMethod]
     public void TryToBase64String_ForCharSpan_ShouldWriteStandardOutput()
     {
-        char[] destination = new char[8];
+        var destination = new char[8];
 
-        bool ok = Base64.TryToBase64String(Ascii("foobar").AsSpan(), destination, out int charsWritten);
+        var ok = Base64.TryToBase64String(Ascii("foobar").AsSpan(), destination, out var charsWritten);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(8, charsWritten);
@@ -199,9 +199,9 @@ public sealed partial class Base64Tests
     [TestMethod]
     public void TryToBase64String_ForUtf8Span_ShouldWriteStandardOutputAsAsciiBytes()
     {
-        byte[] destination = new byte[8];
+        var destination = new byte[8];
 
-        bool ok = Base64.TryToBase64String(Ascii("foobar").AsSpan(), destination.AsSpan(), out int bytesWritten);
+        var ok = Base64.TryToBase64String(Ascii("foobar").AsSpan(), destination.AsSpan(), out var bytesWritten);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(8, bytesWritten);

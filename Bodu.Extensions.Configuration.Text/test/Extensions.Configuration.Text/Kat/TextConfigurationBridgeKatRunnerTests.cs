@@ -1,11 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TextConfigurationBridgeKatRunnerTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
-using System.IO;
 using Bodu.Extensions.Configuration.Text;
 using Bodu.Text.Configuration.Test.Infrastructure;
 using Microsoft.Extensions.Configuration;
@@ -42,7 +40,7 @@ public class TextConfigurationBridgeKatRunnerTests
 
     private static void ExecuteBridgePass(ConfigurationKat kat)
     {
-        bool optionalMissing = kat.Options is "OptionalTrueMissingFile";
+        var optionalMissing = kat.Options is "OptionalTrueMissingFile";
 
         if (kat.Source is null)
         {
@@ -61,7 +59,7 @@ public class TextConfigurationBridgeKatRunnerTests
             return;
         }
 
-        string path = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".boduconfig");
+        var path = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".boduconfig");
         try
         {
             File.WriteAllText(path, kat.Source);
@@ -121,7 +119,7 @@ public class TextConfigurationBridgeKatRunnerTests
     /// <returns>A short identifier derived from the KAT's stable ID and title.</returns>
     public static string GetKatDisplayName(System.Reflection.MethodInfo methodInfo, object[] data)
     {
-        ConfigurationKat kat = (ConfigurationKat)data[0];
+        var kat = (ConfigurationKat)data[0];
         return $"{kat.Id} - {kat.Title}";
     }
 }

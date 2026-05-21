@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringEncodingExtensionsTests.GetEncodedByteCount.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -17,9 +17,9 @@ public sealed partial class StringEncodingExtensionsTests
     [DynamicData(nameof(CanonicalEncodings), DynamicDataSourceType.Method)]
     public void GetEncodedByteCount_WhenInvoked_ShouldMatchBclEncoding(System.Text.Encoding encoding)
     {
-        int expected = encoding.GetByteCount(MultiByteText);
+        var expected = encoding.GetByteCount(MultiByteText);
 
-        int actual = MultiByteText.GetEncodedByteCount(encoding);
+        var actual = MultiByteText.GetEncodedByteCount(encoding);
 
         Assert.AreEqual(expected, actual);
     }

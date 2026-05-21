@@ -1,10 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensions.WordCasing.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
 using System.Globalization;
 using System.Text;
 
@@ -27,10 +26,10 @@ public static partial class StringExtensions
         if (word.Length == 0) return word;
 
         StringBuilder builder = new(word.Length);
-        bool capitaliseNext = true;
-        for (int i = 0; i < word.Length; i++)
+        var capitaliseNext = true;
+        for (var i = 0; i < word.Length; i++)
         {
-            char c = word[i];
+            var c = word[i];
             if (char.IsLetter(c))
             {
                 builder.Append(capitaliseNext ? ToUpper(c, culture) : ToLower(c, culture));
@@ -58,11 +57,11 @@ public static partial class StringExtensions
     {
         if (word.Length < 2) return false;
 
-        bool hasInteriorUpper = false;
-        bool hasLower = false;
-        for (int i = 0; i < word.Length; i++)
+        var hasInteriorUpper = false;
+        var hasLower = false;
+        for (var i = 0; i < word.Length; i++)
         {
-            char c = word[i];
+            var c = word[i];
             if (char.IsUpper(c) && i > 0) hasInteriorUpper = true;
             else if (char.IsLower(c)) hasLower = true;
         }

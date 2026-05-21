@@ -83,7 +83,7 @@ public sealed partial class BencodeTests
 
         BencodedValue value = Bencode.Decode(stream);
 
-        BencodedList list = (BencodedList)value;
+        var list = (BencodedList)value;
         Assert.AreEqual(2, list.Count);
         Assert.AreEqual("spam", ((BencodedString)list[0]).GetUtf8String());
         Assert.AreEqual(42, ((BencodedInteger)list[1]).Value);

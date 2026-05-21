@@ -1,10 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensionsTests.WrapAndQuote.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System;
 
 namespace Bodu.Extensions;
 
@@ -128,7 +126,7 @@ public partial class StringExtensionsTests
     {
         const string original = "hello";
 
-        string actual = original.Wrap("<b>", "</b>").Unwrap("<b>", "</b>");
+        var actual = original.Wrap("<b>", "</b>").Unwrap("<b>", "</b>");
 
         Assert.AreEqual(original, actual);
     }

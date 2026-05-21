@@ -1,10 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensions.Parse.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
 using System.Globalization;
 
 namespace Bodu.Extensions;
@@ -33,14 +32,6 @@ public static partial class StringExtensions
     /// static <c>T.Parse</c> factory. The invariant culture is used by default to keep behaviour stable across machines
     /// and locales.
     /// </remarks>
-    /// <example>
-    /// <code language="csharp">
-    ///<![CDATA[
-    /// int count = "42".Parse<int>();                 // 42
-    /// DateTime due = "2025-01-31".Parse<DateTime>(); // 2025-01-31
-    ///]]>
-    /// </code>
-    /// </example>
     public static T Parse<T>(this string value)
         where T : IParsable<T>
     {
@@ -65,20 +56,12 @@ public static partial class StringExtensions
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="value" /> is <see langword="null" />.
     /// </exception>
-    /// <example>
-    /// <code language="csharp">
-    ///<![CDATA[
-    /// "42".TryParse<int>(out int n);   // returns true,  n == 42
-    /// "abc".TryParse<int>(out int m);  // returns false, m == 0
-    ///]]>
-    /// </code>
-    /// </example>
     public static bool TryParse<T>(this string value, out T result)
         where T : IParsable<T>
     {
         ThrowHelper.ThrowIfNull(value);
 
-        bool ok = T.TryParse(value, CultureInfo.InvariantCulture, out T? parsed);
+        var ok = T.TryParse(value, CultureInfo.InvariantCulture, out T? parsed);
         result = parsed!;
         return ok;
     }
@@ -131,7 +114,7 @@ public static partial class StringExtensions
     {
         ThrowHelper.ThrowIfNull(value);
 
-        bool ok = T.TryParse(value.AsSpan(), CultureInfo.InvariantCulture, out T? parsed);
+        var ok = T.TryParse(value.AsSpan(), CultureInfo.InvariantCulture, out T? parsed);
         result = parsed!;
         return ok;
     }

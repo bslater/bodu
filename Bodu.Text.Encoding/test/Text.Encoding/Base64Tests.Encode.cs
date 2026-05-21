@@ -18,7 +18,7 @@ public sealed partial class Base64Tests
     [DynamicData(nameof(Base64KnownAnswerVectors.StandardRfc4648Vectors), typeof(Base64KnownAnswerVectors), DynamicDataSourceType.Method)]
     public void Encode_ForStandardRfc4648KnownAnswerVector_ShouldMatch(EncodingKnownAnswerVector vector)
     {
-        string actual = Base64.Encode(vector.DecodedBytes, Base64Variant.Standard);
+        var actual = Base64.Encode(vector.DecodedBytes, Base64Variant.Standard);
 
         Assert.AreEqual(vector.Encoded, actual);
     }
@@ -32,7 +32,7 @@ public sealed partial class Base64Tests
     [DynamicData(nameof(Base64KnownAnswerVectors.UrlSafeVectors), typeof(Base64KnownAnswerVectors), DynamicDataSourceType.Method)]
     public void Encode_ForUrlSafeKnownAnswerVector_ShouldMatch(EncodingKnownAnswerVector vector)
     {
-        string actual = Base64.Encode(vector.DecodedBytes, Base64Variant.UrlSafe);
+        var actual = Base64.Encode(vector.DecodedBytes, Base64Variant.UrlSafe);
 
         Assert.AreEqual(vector.Encoded, actual);
     }
@@ -44,8 +44,8 @@ public sealed partial class Base64Tests
     [TestMethod]
     public void Encode_WhenDestinationTooSmall_ShouldThrowArgumentException()
     {
-        byte[] bytes = Ascii("foobar");
-        char[] destination = new char[1];
+        var bytes = Ascii("foobar");
+        var destination = new char[1];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -60,14 +60,14 @@ public sealed partial class Base64Tests
     [TestMethod]
     public void Encode_WhenMimeVariant_ShouldInsertLineBreaksEvery76Chars()
     {
-        byte[] bytes = new byte[120];
-        for (int i = 0; i < bytes.Length; i++)
+        var bytes = new byte[120];
+        for (var i = 0; i < bytes.Length; i++)
         {
             bytes[i] = (byte)i;
         }
 
-        string actual = Base64.Encode(bytes, Base64Variant.Mime);
-        string[] lines = actual.Split("\r\n");
+        var actual = Base64.Encode(bytes, Base64Variant.Mime);
+        var lines = actual.Split("\r\n");
 
         Assert.IsTrue(lines.Length > 1, "MIME output should contain at least one line break.");
         Assert.AreEqual(76, lines[0].Length);
@@ -80,11 +80,11 @@ public sealed partial class Base64Tests
     [TestMethod]
     public void Encode_WhenOmitPadding_ShouldNotEmitPaddingCharacters()
     {
-        string actual = Base64.Encode(Ascii("foo"), Base64Variant.Standard, BaseFormattingOptions.OmitPadding);
+        var actual = Base64.Encode(Ascii("foo"), Base64Variant.Standard, BaseFormattingOptions.OmitPadding);
 
         Assert.AreEqual("Zm9v", actual);
 
-        string padded = Base64.Encode(Ascii("foob"), Base64Variant.Standard, BaseFormattingOptions.OmitPadding);
+        var padded = Base64.Encode(Ascii("foob"), Base64Variant.Standard, BaseFormattingOptions.OmitPadding);
         Assert.AreEqual("Zm9vYg", padded);
     }
 
@@ -95,9 +95,9 @@ public sealed partial class Base64Tests
     [TestMethod]
     public void Encode_WhenSliceForByteArray_ShouldReturnSliceOnly()
     {
-        byte[] bytes = Ascii("xxxxfoobaryyyy");
+        var bytes = Ascii("xxxxfoobaryyyy");
 
-        string actual = Base64.Encode(bytes, 4, 6);
+        var actual = Base64.Encode(bytes, 4, 6);
 
         Assert.AreEqual("Zm9vYmFy", actual);
     }
@@ -117,7 +117,7 @@ public sealed partial class Base64Tests
     [DataRow("foobar", "Zm9vYmFy")]
     public void Encode_WhenStandardVariant_ShouldMatchRfc4648ReferenceVectors(string input, string expected)
     {
-        string actual = Base64.Encode(Ascii(input));
+        var actual = Base64.Encode(Ascii(input));
 
         Assert.AreEqual(expected, actual);
     }
@@ -142,10 +142,10 @@ public sealed partial class Base64Tests
     [TestMethod]
     public void Encode_WhenWritingToSpan_ShouldReturnExactCharCount()
     {
-        byte[] bytes = Ascii("foobar");
-        char[] destination = new char[Base64.GetEncodedLength(bytes.Length)];
+        var bytes = Ascii("foobar");
+        var destination = new char[Base64.GetEncodedLength(bytes.Length)];
 
-        int charsWritten = Base64.Encode(bytes.AsSpan(), destination);
+        var charsWritten = Base64.Encode(bytes.AsSpan(), destination);
 
         Assert.AreEqual("Zm9vYmFy", new string(destination, 0, charsWritten));
     }

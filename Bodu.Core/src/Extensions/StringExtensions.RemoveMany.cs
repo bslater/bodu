@@ -1,10 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensions.RemoveMany.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System;
 
 namespace Bodu.Extensions;
 
@@ -30,13 +28,6 @@ public static partial class StringExtensions
     /// <exception cref="ArgumentException">
     /// Thrown when any element of <paramref name="valuesToRemove" /> is the empty string.
     /// </exception>
-    /// <example>
-    /// <code language="csharp">
-    ///<![CDATA[
-    /// "(555) 123-4567".RemoveMany("(", ")", " ", "-");  // "5551234567"
-    ///]]>
-    /// </code>
-    /// </example>
     public static string RemoveMany(this string value, params string[] valuesToRemove)
     {
         ThrowHelper.ThrowIfNull(value);
@@ -44,12 +35,12 @@ public static partial class StringExtensions
 
         if (valuesToRemove.Length == 0) return value;
 
-        string current = value;
-        for (int i = 0; i < valuesToRemove.Length; i++)
+        var current = value;
+        for (var i = 0; i < valuesToRemove.Length; i++)
         {
-            string item = valuesToRemove[i];
+            var item = valuesToRemove[i];
             ThrowHelper.ThrowIfNull(item);
-            if (item.Length == 0) throw new ArgumentException(ResourceStrings.Arg_Invalid_EmptyCollectionElement, nameof(valuesToRemove));
+            if (item.Length == 0) throw new ArgumentException("Entries of valuesToRemove must not be empty.", nameof(valuesToRemove));
             current = current.Replace(item, string.Empty, StringComparison.Ordinal);
         }
 

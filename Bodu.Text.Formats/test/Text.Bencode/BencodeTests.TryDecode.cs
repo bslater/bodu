@@ -16,7 +16,7 @@ public sealed partial class BencodeTests
     [TestMethod]
     public void TryDecode_WhenEmptyInput_ShouldReturnFalse()
     {
-        bool result = Bencode.TryDecode(ReadOnlySpan<byte>.Empty, out BencodedValue? value, out int consumed);
+        var result = Bencode.TryDecode(ReadOnlySpan<byte>.Empty, out BencodedValue? value, out var consumed);
 
         Assert.IsFalse(result);
         Assert.IsNull(value);
@@ -31,7 +31,7 @@ public sealed partial class BencodeTests
     [TestMethod]
     public void TryDecode_WhenMalformedInput_ShouldReturnFalseWithDefaults()
     {
-        bool result = Bencode.TryDecode(Bytes("i03e"), out BencodedValue? value, out int consumed);
+        var result = Bencode.TryDecode(Bytes("i03e"), out BencodedValue? value, out var consumed);
 
         Assert.IsFalse(result);
         Assert.IsNull(value);
@@ -45,7 +45,7 @@ public sealed partial class BencodeTests
     [TestMethod]
     public void TryDecode_WhenWellFormedInput_ShouldReturnTrueAndReportBytesConsumed()
     {
-        bool result = Bencode.TryDecode(CanonicalIntegerBytes, out BencodedValue? value, out int consumed);
+        var result = Bencode.TryDecode(CanonicalIntegerBytes, out BencodedValue? value, out var consumed);
 
         Assert.IsTrue(result);
         Assert.IsNotNull(value);
@@ -60,7 +60,7 @@ public sealed partial class BencodeTests
     [TestMethod]
     public void TryDecode_WhenWellFormedPrefixWithTrailingBytes_ShouldReturnTrueAndConsumeOnlyPrefix()
     {
-        bool result = Bencode.TryDecode(Bytes("i3e0:trailing"), out BencodedValue? value, out int consumed);
+        var result = Bencode.TryDecode(Bytes("i3e0:trailing"), out BencodedValue? value, out var consumed);
 
         Assert.IsTrue(result);
         Assert.IsInstanceOfType<BencodedInteger>(value);

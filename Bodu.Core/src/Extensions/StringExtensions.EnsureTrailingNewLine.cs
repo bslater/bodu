@@ -1,10 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensions.EnsureTrailingNewLine.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System;
 
 namespace Bodu.Extensions;
 
@@ -43,8 +41,8 @@ public static partial class StringExtensions
     {
         ThrowHelper.ThrowIfNull(value);
         ThrowHelper.ThrowIfNull(newline);
-        if (newline.Length == 0) throw new ArgumentException(ResourceStrings.Arg_Invalid_StringIsEmpty, nameof(newline));
-
-        return value.EndsWith(newline, StringComparison.Ordinal) ? value : value + newline;
+        return newline.Length == 0
+            ? throw new ArgumentException(ResourceStrings.Arg_Invalid_StringIsEmpty, nameof(newline))
+            : value.EndsWith(newline, StringComparison.Ordinal) ? value : value + newline;
     }
 }

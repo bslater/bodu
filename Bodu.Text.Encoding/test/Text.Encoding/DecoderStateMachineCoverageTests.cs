@@ -87,8 +87,8 @@ public sealed class DecoderStateMachineCoverageTests
     [TestMethod]
     public void Base32_DecodeFromUtf8_WhenByteAbovePrintableAscii_ShouldReturnInvalidData()
     {
-        byte[] utf8 = new byte[] { (byte)'M', (byte)'Z', 0xFF, (byte)'X', (byte)'W', (byte)'6', (byte)'Y', (byte)'Q' };
-        byte[] destination = new byte[5];
+        var utf8 = new byte[] { (byte)'M', (byte)'Z', 0xFF, (byte)'X', (byte)'W', (byte)'6', (byte)'Y', (byte)'Q' };
+        var destination = new byte[5];
 
         OperationStatus status = Base32.DecodeFromUtf8(utf8, destination, out _, out _);
 
@@ -103,8 +103,8 @@ public sealed class DecoderStateMachineCoverageTests
     [TestMethod]
     public void Base32_DecodeFromUtf8_WhenPaddingCountMismatch_ShouldReturnInvalidData()
     {
-        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes("MZXW6===========");
-        byte[] destination = new byte[5];
+        var utf8 = System.Text.Encoding.ASCII.GetBytes("MZXW6===========");
+        var destination = new byte[5];
 
         OperationStatus status = Base32.DecodeFromUtf8(utf8, destination, out _, out _);
 
@@ -118,8 +118,8 @@ public sealed class DecoderStateMachineCoverageTests
     [TestMethod]
     public void Base32_DecodeFromUtf8_WhenPaddingFollowedByDataChar_ShouldReturnInvalidData()
     {
-        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes("MZ=A====");
-        byte[] destination = new byte[5];
+        var utf8 = System.Text.Encoding.ASCII.GetBytes("MZ=A====");
+        var destination = new byte[5];
 
         OperationStatus status = Base32.DecodeFromUtf8(utf8, destination, out _, out _);
 
@@ -134,8 +134,8 @@ public sealed class DecoderStateMachineCoverageTests
     public void Base32_DecodeFromUtf8_WhenPartialPaddingAndNotFinal_ShouldReturnNeedMoreData()
     {
         // 5 data chars + 1 padding char (incomplete pad) when isFinalBlock=false.
-        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes("MZXW6=");
-        byte[] destination = new byte[5];
+        var utf8 = System.Text.Encoding.ASCII.GetBytes("MZXW6=");
+        var destination = new byte[5];
 
         OperationStatus status = Base32.DecodeFromUtf8(utf8, destination, out _, out _, isFinalBlock: false);
 
@@ -149,8 +149,8 @@ public sealed class DecoderStateMachineCoverageTests
     [TestMethod]
     public void Base32_DecodeFromUtf8_WhenTotalSymbolsNotMultipleOfEight_ShouldReturnInvalidData()
     {
-        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes("MZXW6Y");
-        byte[] destination = new byte[5];
+        var utf8 = System.Text.Encoding.ASCII.GetBytes("MZXW6Y");
+        var destination = new byte[5];
 
         OperationStatus status = Base32.DecodeFromUtf8(utf8, destination, out _, out _);
 
@@ -164,9 +164,9 @@ public sealed class DecoderStateMachineCoverageTests
     [TestMethod]
     public void Base32_TryDecode_WhenDestinationTooSmallMidStream_ShouldReturnFalse()
     {
-        byte[] destination = new byte[1];
+        var destination = new byte[1];
 
-        bool ok = Base32.TryDecode("MZXW6YTBOI======".AsSpan(), destination, out int bytesWritten);
+        var ok = Base32.TryDecode("MZXW6YTBOI======".AsSpan(), destination, out var bytesWritten);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(0, bytesWritten);
@@ -196,17 +196,17 @@ public sealed class DecoderStateMachineCoverageTests
     [TestMethod]
     public void Base58_DecodeFromUtf8_WhenIgnoreWhitespace_ShouldStripBeforeDecode()
     {
-        byte[] payload = System.Text.Encoding.ASCII.GetBytes("Hello");
-        byte[] encoded = Base58.EncodeToUtf8(payload);
+        var payload = System.Text.Encoding.ASCII.GetBytes("Hello");
+        var encoded = Base58.EncodeToUtf8(payload);
 
         // Insert a space byte in the middle.
-        byte[] withSpace = new byte[encoded.Length + 1];
+        var withSpace = new byte[encoded.Length + 1];
         encoded.AsSpan(0, 2).CopyTo(withSpace);
         withSpace[2] = (byte)' ';
         encoded.AsSpan(2).CopyTo(withSpace.AsSpan(3));
 
-        byte[] destination = new byte[payload.Length];
-        OperationStatus status = Base58.DecodeFromUtf8(withSpace, destination, out _, out int bytesWritten, Base58Variant.BitcoinFlickr, BaseFormatStyles.IgnoreWhitespace);
+        var destination = new byte[payload.Length];
+        OperationStatus status = Base58.DecodeFromUtf8(withSpace, destination, out _, out var bytesWritten, Base58Variant.BitcoinFlickr, BaseFormatStyles.IgnoreWhitespace);
 
         Assert.AreEqual(OperationStatus.Done, status);
         Assert.AreEqual(payload.Length, bytesWritten);
@@ -220,8 +220,8 @@ public sealed class DecoderStateMachineCoverageTests
     [TestMethod]
     public void Base64_DecodeFromUtf8_WhenByteAbovePrintableAscii_ShouldReturnInvalidData()
     {
-        byte[] utf8 = new byte[] { (byte)'Z', 0xFF, (byte)'9', (byte)'v' };
-        byte[] destination = new byte[5];
+        var utf8 = new byte[] { (byte)'Z', 0xFF, (byte)'9', (byte)'v' };
+        var destination = new byte[5];
 
         OperationStatus status = Base64.DecodeFromUtf8(utf8, destination, out _, out _);
 
@@ -237,8 +237,8 @@ public sealed class DecoderStateMachineCoverageTests
     {
         // "Zm9=" has 3 data chars and 1 padding char — but 3 data chars need 1 padding for a total of 4 chars.
         // That actually decodes successfully ("Zm9" partial = 1 byte). Use a clearer mismatch: 2 data + 1 pad.
-        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes("Zg=");
-        byte[] destination = new byte[5];
+        var utf8 = System.Text.Encoding.ASCII.GetBytes("Zg=");
+        var destination = new byte[5];
 
         OperationStatus status = Base64.DecodeFromUtf8(utf8, destination, out _, out _);
 
@@ -252,8 +252,8 @@ public sealed class DecoderStateMachineCoverageTests
     [TestMethod]
     public void Base64_DecodeFromUtf8_WhenPaddingFollowedByDataChar_ShouldReturnInvalidData()
     {
-        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes("Zg=A");
-        byte[] destination = new byte[5];
+        var utf8 = System.Text.Encoding.ASCII.GetBytes("Zg=A");
+        var destination = new byte[5];
 
         OperationStatus status = Base64.DecodeFromUtf8(utf8, destination, out _, out _);
 
@@ -267,8 +267,8 @@ public sealed class DecoderStateMachineCoverageTests
     [TestMethod]
     public void Base64_DecodeFromUtf8_WhenPartialPaddingAndNotFinal_ShouldReturnNeedMoreData()
     {
-        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes("Zg=");
-        byte[] destination = new byte[5];
+        var utf8 = System.Text.Encoding.ASCII.GetBytes("Zg=");
+        var destination = new byte[5];
 
         OperationStatus status = Base64.DecodeFromUtf8(utf8, destination, out _, out _, isFinalBlock: false);
 
@@ -316,15 +316,15 @@ public sealed class DecoderStateMachineCoverageTests
     [TestMethod]
     public void Base85_DecodeFromUtf8_WhenDecoratedInput_ShouldDecodeViaScratchProjection()
     {
-        string encoded = "<~ 9jqo^ ~>";
-        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes(encoded);
-        byte[] destination = new byte[4];
+        var encoded = "<~ 9jqo^ ~>";
+        var utf8 = System.Text.Encoding.ASCII.GetBytes(encoded);
+        var destination = new byte[4];
 
         OperationStatus status = Base85.DecodeFromUtf8(
             utf8,
             destination,
             out _,
-            out int bytesWritten,
+            out var bytesWritten,
             Base85Variant.Ascii85,
             BaseFormatStyles.AllowPrefix | BaseFormatStyles.IgnoreWhitespace);
 

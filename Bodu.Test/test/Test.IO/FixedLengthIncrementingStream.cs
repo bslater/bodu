@@ -55,10 +55,10 @@ public class FixedLengthIncrementingStream
         if (written == size)
             return 0;
 
-        int remaining = size - written;
-        int localLimit = Math.Min(count, Math.Max(1, remaining / 2));
+        var remaining = size - written;
+        var localLimit = Math.Min(count, Math.Max(1, remaining / 2));
 
-        for (int i = 0; i < localLimit; i++)
+        for (var i = 0; i < localLimit; i++)
         {
             buffer[offset + i] = (byte)written;
             unchecked { written++; }

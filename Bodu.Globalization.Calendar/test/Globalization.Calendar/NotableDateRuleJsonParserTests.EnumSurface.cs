@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Linq;
 using Bodu.Extensions;
 
 namespace Bodu.Globalization.Calendar;
@@ -38,7 +37,7 @@ public partial class NotableDateRuleJsonParserTests
     [TestMethod]
     public void ParseJson_WhenCategoryUsesSupportedValue_ShouldReturnExpectedCategory(string categoryToken, NotableDateCategory expected)
     {
-        string json = $@"{{
+        var json = $@"{{
 			""notableDates"": [
 				{{ ""name"": ""CategoryTest"", ""rules"": [ {{
 					""name"": ""CategoryTestRule"",
@@ -71,7 +70,7 @@ public partial class NotableDateRuleJsonParserTests
     [TestMethod]
     public void ParseJson_WhenAdjustmentTriggerUsesSupportedValue_ShouldReturnExpectedTrigger(string triggerToken, AdjustmentTrigger expected)
     {
-        string json = $@"{{
+        var json = $@"{{
 			""notableDates"": [
 				{{ ""name"": ""TriggerTest"", ""rules"": [ {{
 					""name"": ""TriggerTestRule"",
@@ -105,7 +104,7 @@ public partial class NotableDateRuleJsonParserTests
     [TestMethod]
     public void ParseJson_WhenAdjustmentActionUsesSupportedValue_ShouldReturnExpectedAction(string actionToken, AdjustmentAction expected)
     {
-        string json = $@"{{
+        var json = $@"{{
 			""notableDates"": [
 				{{ ""name"": ""ActionTest"", ""rules"": [ {{
 					""name"": ""ActionTestRule"",
@@ -139,7 +138,7 @@ public partial class NotableDateRuleJsonParserTests
     [TestMethod]
     public void ParseJson_WhenDayOfWeekInMonthUsesSupportedDay_ShouldReturnExpectedDayOfWeek(string dayToken, DayOfWeek expected)
     {
-        string json = $@"{{
+        var json = $@"{{
 			""notableDates"": [
 				{{ ""name"": ""WeekdayTest"", ""rules"": [ {{
 					""name"": ""WeekdayTestRule"",
@@ -168,7 +167,7 @@ public partial class NotableDateRuleJsonParserTests
     [TestMethod]
     public void ParseJson_WhenDayOfWeekInMonthUsesSupportedOrdinal_ShouldReturnExpectedOrdinal(string ordinalToken, WeekOfMonthOrdinal expected)
     {
-        string json = $@"{{
+        var json = $@"{{
 			""notableDates"": [
 				{{ ""name"": ""OrdinalTest"", ""rules"": [ {{
 					""name"": ""OrdinalTestRule"",

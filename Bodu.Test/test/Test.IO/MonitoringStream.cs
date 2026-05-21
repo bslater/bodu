@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Reflection;
-
 namespace Bodu.Test.IO;
 
 /// <summary>
@@ -59,7 +57,7 @@ public sealed class MonitoringStream
     /// <inheritdoc />
     public override int Read(byte[] buffer, int offset, int count)
     {
-        int bytesRead = this._inner.Read(buffer, offset, count);
+        var bytesRead = this._inner.Read(buffer, offset, count);
         if (bytesRead > 0)
         {
             this.reads.Add((this.position, bytesRead));
@@ -71,7 +69,7 @@ public sealed class MonitoringStream
     /// <inheritdoc />
     public override async Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
     {
-        int bytesRead = await this._inner.ReadAsync(buffer, offset, count, cancellationToken);
+        var bytesRead = await this._inner.ReadAsync(buffer, offset, count, cancellationToken);
         if (bytesRead > 0)
         {
             this.reads.Add((this.position, bytesRead));
@@ -100,7 +98,7 @@ public sealed class MonitoringStream
         if (!_inner.CanSeek)
             throw new NotSupportedException("The inner _inner must support seeking to use ToArray().");
 
-        long originalPosition = _inner.Position;
+        var originalPosition = _inner.Position;
 
         try
         {

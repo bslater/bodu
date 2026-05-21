@@ -1,10 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensions.After.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System;
 
 namespace Bodu.Extensions;
 
@@ -42,7 +40,7 @@ public static partial class StringExtensions
         ThrowHelper.ThrowIfNull(value);
         ThrowHelper.ThrowIfNull(marker);
 
-        int index = value.IndexOf(marker, comparison);
-        return index < 0 ? null : value.Substring(index + marker.Length);
+        var index = value.IndexOf(marker, comparison);
+        return index < 0 ? null : value[(index + marker.Length)..];
     }
 }

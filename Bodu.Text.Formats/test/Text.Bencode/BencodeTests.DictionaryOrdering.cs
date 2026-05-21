@@ -55,7 +55,7 @@ public sealed partial class BencodeTests
             new KeyValuePair<BencodedString, BencodedValue>(BencodedString.FromUtf8("mango"), new BencodedInteger(3)),
         });
 
-        byte[] encoded = Bencode.Encode(dict);
+        var encoded = Bencode.Encode(dict);
 
         CollectionAssert.AreEqual(Bytes("d5:alphai2e5:mangoi3e5:zebrai1ee"), encoded);
     }

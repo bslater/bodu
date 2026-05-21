@@ -22,14 +22,14 @@ public sealed partial class Base58Tests
     [DataRow(64)]
     public void Encode_ByteArrayAndSpanOverloads_ShouldProduceIdenticalOutput(int size)
     {
-        byte[] bytes = new byte[size];
-        for (int i = 0; i < size; i++)
+        var bytes = new byte[size];
+        for (var i = 0; i < size; i++)
         {
             bytes[i] = (byte)((i * 19) ^ 0x3C);
         }
 
-        string fromArray = Base58.Encode(bytes);
-        string fromSpan = Base58.Encode(bytes.AsSpan());
+        var fromArray = Base58.Encode(bytes);
+        var fromSpan = Base58.Encode(bytes.AsSpan());
 
         Assert.AreEqual(fromArray, fromSpan);
     }
@@ -43,7 +43,7 @@ public sealed partial class Base58Tests
     [DynamicData(nameof(Base58KnownAnswerVectors.BitcoinFlickrVectors), typeof(Base58KnownAnswerVectors), DynamicDataSourceType.Method)]
     public void Encode_ForBitcoinFlickrKnownAnswerVector_ShouldMatch(EncodingKnownAnswerVector vector)
     {
-        string actual = Base58.Encode(vector.DecodedBytes, Base58Variant.BitcoinFlickr);
+        var actual = Base58.Encode(vector.DecodedBytes, Base58Variant.BitcoinFlickr);
 
         Assert.AreEqual(vector.Encoded, actual);
     }
@@ -61,9 +61,9 @@ public sealed partial class Base58Tests
     [DataRow("48656c6c6f", "9Ajdvzr")]
     public void Encode_WhenBitcoinFlickrVariantKnownVectors_ShouldReturnExpectedOutput(string hexInput, string expected)
     {
-        byte[] bytes = Convert.FromHexString(hexInput);
+        var bytes = Convert.FromHexString(hexInput);
 
-        string actual = Base58.Encode(bytes);
+        var actual = Base58.Encode(bytes);
 
         Assert.AreEqual(expected, actual);
     }
@@ -87,10 +87,10 @@ public sealed partial class Base58Tests
     [TestMethod]
     public void Encode_WhenDestinationExactlyActualSize_ShouldSucceed()
     {
-        byte[] bytes = Ascii("Hello");
-        char[] destination = new char[7]; // actual encoded length, smaller than the worst-case max
+        var bytes = Ascii("Hello");
+        var destination = new char[7]; // actual encoded length, smaller than the worst-case max
 
-        int charsWritten = Base58.Encode(bytes.AsSpan(), destination);
+        var charsWritten = Base58.Encode(bytes.AsSpan(), destination);
 
         Assert.AreEqual(7, charsWritten);
         Assert.AreEqual("9Ajdvzr", new string(destination));
@@ -127,9 +127,9 @@ public sealed partial class Base58Tests
     [TestMethod]
     public void Encode_WhenSliceForByteArray_ShouldReturnSliceOnly()
     {
-        byte[] bytes = Ascii("xxxHelloyyy");
+        var bytes = Ascii("xxxHelloyyy");
 
-        string actual = Base58.Encode(bytes, 3, 5);
+        var actual = Base58.Encode(bytes, 3, 5);
 
         Assert.AreEqual("9Ajdvzr", actual);
     }
@@ -153,10 +153,10 @@ public sealed partial class Base58Tests
     [TestMethod]
     public void Encode_WhenWritingToSpan_ShouldReturnExactCharCount()
     {
-        byte[] bytes = Ascii("Hello");
-        char[] destination = new char[Base58.GetMaxEncodedLength(bytes.Length)];
+        var bytes = Ascii("Hello");
+        var destination = new char[Base58.GetMaxEncodedLength(bytes.Length)];
 
-        int charsWritten = Base58.Encode(bytes.AsSpan(), destination);
+        var charsWritten = Base58.Encode(bytes.AsSpan(), destination);
 
         Assert.AreEqual("9Ajdvzr", new string(destination, 0, charsWritten));
     }
@@ -170,12 +170,12 @@ public sealed partial class Base58Tests
     [TestMethod]
     public void TryEncode_WhenDestinationExactlyActualSize_ShouldReturnTrue()
     {
-        byte[] bytes = Ascii("Hello"); // encodes to "9Ajdvzr" — 7 chars
+        var bytes = Ascii("Hello"); // encodes to "9Ajdvzr" — 7 chars
 
         // Destination is exactly the actual encoded size (7), well below the worst-case upper bound for 5 bytes.
-        char[] destination = new char[7];
+        var destination = new char[7];
 
-        bool ok = Base58.TryEncode(bytes.AsSpan(), destination, out int charsWritten);
+        var ok = Base58.TryEncode(bytes.AsSpan(), destination, out var charsWritten);
 
         Assert.IsTrue(ok, "TryEncode should succeed when destination is at least the actual encoded length.");
         Assert.AreEqual(7, charsWritten);

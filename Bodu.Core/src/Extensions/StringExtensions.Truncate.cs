@@ -1,10 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensions.Truncate.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System;
 
 namespace Bodu.Extensions;
 
@@ -23,20 +21,12 @@ public static partial class StringExtensions
     /// Thrown when <paramref name="value" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="maxLength" /> is negative.</exception>
-    /// <example>
-    /// <code language="csharp">
-    ///<![CDATA[
-    /// "Hello, world".Truncate(5);  // "Hello"
-    /// "Hi".Truncate(5);            // "Hi" (already within limit)
-    ///]]>
-    /// </code>
-    /// </example>
     public static string Truncate(this string value, int maxLength)
     {
         ThrowHelper.ThrowIfNull(value);
         ThrowHelper.ThrowIfNegative(maxLength);
 
-        return value.Length <= maxLength ? value : value.Substring(0, maxLength);
+        return value.Length <= maxLength ? value : value[..maxLength];
     }
 
     /// <summary>
@@ -59,21 +49,12 @@ public static partial class StringExtensions
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <paramref name="maxLength" /> is smaller than <paramref name="ellipsis" />.Length.
     /// </exception>
-    /// <example>
-    /// <code language="csharp">
-    ///<![CDATA[
-    /// "Hello, world".Truncate(8, "…");    // "Hello, …"
-    /// "Hello, world".Truncate(9, "...");  // "Hello,..."
-    ///]]>
-    /// </code>
-    /// </example>
     public static string Truncate(this string value, int maxLength, string ellipsis)
     {
         ThrowHelper.ThrowIfNull(value);
         ThrowHelper.ThrowIfNull(ellipsis);
-        if (maxLength < ellipsis.Length) throw new ArgumentOutOfRangeException(nameof(maxLength), maxLength, ResourceStrings.Arg_OutOfRange_MaxLengthLessThanMarker);
-
-        if (value.Length <= maxLength) return value;
-        return string.Concat(value.AsSpan(0, maxLength - ellipsis.Length), ellipsis);
+        return maxLength < ellipsis.Length
+            ? throw new ArgumentOutOfRangeException(nameof(maxLength), maxLength, "maxLength must be at least ellipsis.Length.")
+            : value.Length <= maxLength ? value : string.Concat(value.AsSpan(0, maxLength - ellipsis.Length), ellipsis);
     }
 }

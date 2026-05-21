@@ -23,14 +23,14 @@ public sealed class Base16FastPathTests
     [TestMethod]
     public void Encode_DefaultLowerCase_ShouldMatchBclCanonicalLowerHex()
     {
-        byte[] bytes = new byte[256];
-        for (int i = 0; i < 256; i++)
+        var bytes = new byte[256];
+        for (var i = 0; i < 256; i++)
         {
             bytes[i] = (byte)i;
         }
 
-        string boduResult = Base16.Encode(bytes);
-        string bclResult = System.Convert.ToHexString(bytes).ToLowerInvariant();
+        var boduResult = Base16.Encode(bytes);
+        var bclResult = System.Convert.ToHexString(bytes).ToLowerInvariant();
 
         Assert.AreEqual(bclResult, boduResult);
     }
@@ -51,7 +51,7 @@ public sealed class Base16FastPathTests
     [DataRow(4096)]
     public void Encode_ShouldMatchBclAcrossSizes(int size)
     {
-        byte[] bytes = new byte[size];
+        var bytes = new byte[size];
         new Random(0xC0FFEE).NextBytes(bytes);
 
         Assert.AreEqual(System.Convert.ToHexString(bytes).ToLowerInvariant(), Base16.Encode(bytes));
@@ -66,7 +66,7 @@ public sealed class Base16FastPathTests
     [TestMethod]
     public void Encode_WhenDecorationsRequested_ShouldStillUseLocalFormattingPath()
     {
-        byte[] bytes = new byte[] { 0xDE, 0xAD, 0xBE, 0xEF };
+        var bytes = new byte[] { 0xDE, 0xAD, 0xBE, 0xEF };
 
         Assert.AreEqual("0xDEADBEEF",
             Base16.Encode(bytes, BaseFormattingOptions.UpperCase | BaseFormattingOptions.IncludePrefix));
@@ -81,14 +81,14 @@ public sealed class Base16FastPathTests
     [TestMethod]
     public void Encode_WithUpperCaseFlag_ShouldMatchBclConvertToHexString()
     {
-        byte[] bytes = new byte[256];
-        for (int i = 0; i < 256; i++)
+        var bytes = new byte[256];
+        for (var i = 0; i < 256; i++)
         {
             bytes[i] = (byte)i;
         }
 
-        string boduResult = Base16.Encode(bytes, BaseFormattingOptions.UpperCase);
-        string bclResult = System.Convert.ToHexString(bytes);
+        var boduResult = Base16.Encode(bytes, BaseFormattingOptions.UpperCase);
+        var bclResult = System.Convert.ToHexString(bytes);
 
         Assert.AreEqual(bclResult, boduResult);
     }

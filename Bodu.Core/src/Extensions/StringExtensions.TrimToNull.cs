@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensions.TrimToNull.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -25,7 +25,7 @@ public static partial class StringExtensions
     {
         if (value is null) return null;
 
-        string trimmed = value.Trim();
+        var trimmed = value.Trim();
         return trimmed.Length == 0 ? null : trimmed;
     }
 }

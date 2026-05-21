@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EncodingExtensions.Span.Transcode.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -47,14 +47,14 @@ public static partial class EncodingExtensions
 
         if (source.IsEmpty) return Array.Empty<byte>();
 
-        int charCount = sourceEncoding.GetCharCount(source);
-        char[] charBuffer = ArrayPool<char>.Shared.Rent(charCount);
+        var charCount = sourceEncoding.GetCharCount(source);
+        var charBuffer = ArrayPool<char>.Shared.Rent(charCount);
         try
         {
-            int charsWritten = sourceEncoding.GetChars(source, charBuffer);
+            var charsWritten = sourceEncoding.GetChars(source, charBuffer);
             ReadOnlySpan<char> chars = charBuffer.AsSpan(0, charsWritten);
-            int byteCount = destinationEncoding.GetByteCount(chars);
-            byte[] result = new byte[byteCount];
+            var byteCount = destinationEncoding.GetByteCount(chars);
+            var result = new byte[byteCount];
             destinationEncoding.GetBytes(chars, result);
             return result;
         }
@@ -101,11 +101,11 @@ public static partial class EncodingExtensions
 
         if (source.IsEmpty) return 0;
 
-        int charCount = sourceEncoding.GetCharCount(source);
-        char[] charBuffer = ArrayPool<char>.Shared.Rent(charCount);
+        var charCount = sourceEncoding.GetCharCount(source);
+        var charBuffer = ArrayPool<char>.Shared.Rent(charCount);
         try
         {
-            int charsWritten = sourceEncoding.GetChars(source, charBuffer);
+            var charsWritten = sourceEncoding.GetChars(source, charBuffer);
             return destinationEncoding.GetBytes(charBuffer.AsSpan(0, charsWritten), destination);
         }
         finally
@@ -161,11 +161,11 @@ public static partial class EncodingExtensions
             return true;
         }
 
-        int charCount = sourceEncoding.GetCharCount(source);
-        char[] charBuffer = ArrayPool<char>.Shared.Rent(charCount);
+        var charCount = sourceEncoding.GetCharCount(source);
+        var charBuffer = ArrayPool<char>.Shared.Rent(charCount);
         try
         {
-            int charsWritten = sourceEncoding.GetChars(source, charBuffer);
+            var charsWritten = sourceEncoding.GetChars(source, charBuffer);
             return destinationEncoding.TryGetBytes(charBuffer.AsSpan(0, charsWritten), destination, out bytesWritten);
         }
         finally

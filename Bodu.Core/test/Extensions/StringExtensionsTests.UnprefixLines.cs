@@ -1,10 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensionsTests.UnprefixLines.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System;
 
 namespace Bodu.Extensions;
 
@@ -17,7 +15,7 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void UnprefixLines_WhenAllLinesArePrefixed_ShouldStripPrefixFromEveryLine()
     {
-        string actual = "// one\n// two".UnprefixLines("// ");
+        var actual = "// one\n// two".UnprefixLines("// ");
 
         Assert.AreEqual("one\ntwo", actual);
     }
@@ -29,7 +27,7 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void UnprefixLines_WhenLineDoesNotBeginWithPrefix_ShouldLeaveLineUnchanged()
     {
-        string actual = "// one\nxtwo".UnprefixLines("// ");
+        var actual = "// one\nxtwo".UnprefixLines("// ");
 
         Assert.AreEqual("one\nxtwo", actual);
     }
@@ -43,7 +41,7 @@ public partial class StringExtensionsTests
     {
         const string input = "one\ntwo\r\nthree";
 
-        string actual = input.PrefixLines("// ").UnprefixLines("// ");
+        var actual = input.PrefixLines("// ").UnprefixLines("// ");
 
         Assert.AreEqual(input, actual);
     }

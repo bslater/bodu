@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Bodu.Test;
+﻿namespace Bodu.Test;
 
 public static partial class TestHelpers
 {
@@ -97,7 +91,7 @@ public static partial class TestHelpers
         if (count < 0)
             throw new ArgumentOutOfRangeException(nameof(count));
 
-        byte[] result = new byte[count];
+        var result = new byte[count];
 
         for (var i = 0; i < result.Length; i++)
             result[i] = unchecked((byte)(start + i));

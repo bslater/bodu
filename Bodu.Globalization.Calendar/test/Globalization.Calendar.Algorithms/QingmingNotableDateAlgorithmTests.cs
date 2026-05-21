@@ -50,7 +50,7 @@ public sealed class QingmingNotableDateAlgorithmTests
         var expected = new DateTime(year, expectedMonth, expectedDay);
 
         Assert.IsNotNull(result);
-        int dayDiff = Math.Abs((result!.Value - expected).Days);
+        var dayDiff = Math.Abs((result!.Value - expected).Days);
         Assert.IsTrue(dayDiff <= 1,
             $"Qingming {year}: expected within ±1 day of {expected:yyyy-MM-dd}, got {result.Value:yyyy-MM-dd}");
     }
@@ -63,7 +63,7 @@ public sealed class QingmingNotableDateAlgorithmTests
     [TestMethod]
     public void GetDate_WhenIteratingSupportedRange_ShouldAlwaysFallBetweenApril3And6()
     {
-        for (int year = 1901; year <= 2100; year++)
+        for (var year = 1901; year <= 2100; year++)
         {
             DateTime? result = _algorithm.GetDate(year);
 

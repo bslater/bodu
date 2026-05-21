@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Linq;
 using System.Security.Cryptography;
 using Bodu.Security.Cryptography.Extensions;
 

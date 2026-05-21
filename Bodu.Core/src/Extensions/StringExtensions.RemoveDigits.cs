@@ -1,10 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensions.RemoveDigits.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System;
 
 namespace Bodu.Extensions;
 
@@ -18,13 +16,6 @@ public static partial class StringExtensions
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="value" /> is <see langword="null" />.
     /// </exception>
-    /// <example>
-    /// <code language="csharp">
-    ///<![CDATA[
-    /// "abc123def".RemoveDigits();  // "abcdef"
-    ///]]>
-    /// </code>
-    /// </example>
     public static string RemoveDigits(this string value) =>
         value.RemoveWhere(char.IsDigit);
 }

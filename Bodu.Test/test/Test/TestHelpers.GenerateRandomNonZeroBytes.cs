@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Bodu.Test;
+﻿namespace Bodu.Test;
 
 public static partial class TestHelpers
 {
@@ -22,7 +16,7 @@ public static partial class TestHelpers
     {
         if (length < 0) throw new ArgumentOutOfRangeException(nameof(length));
 
-        byte[] buffer = new byte[length];
+        var buffer = new byte[length];
 
         if (length == 0)
             return buffer;
@@ -30,7 +24,7 @@ public static partial class TestHelpers
         System.Security.Cryptography.RandomNumberGenerator.Fill(buffer);
 
         Span<byte> value = stackalloc byte[1];
-        for (int i = 0; i < buffer.Length; i++)
+        for (var i = 0; i < buffer.Length; i++)
         {
             while (buffer[i] == 0)
             {

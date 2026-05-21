@@ -1,11 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensions.ReplaceMany.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System;
-using System.Collections.Generic;
 
 namespace Bodu.Extensions;
 
@@ -35,14 +32,6 @@ public static partial class StringExtensions
     /// Replacements are applied sequentially — output of an earlier replacement is visible to a later one. Pre-order
     /// keys to avoid cascading substitutions when independence is required.
     /// </remarks>
-    /// <example>
-    /// <code language="csharp">
-    ///<![CDATA[
-    /// var map = new Dictionary<string, string> { ["{name}"] = "Sam", ["{role}"] = "admin" };
-    /// "Hi {name}, role={role}".ReplaceMany(map);  // "Hi Sam, role=admin"
-    ///]]>
-    /// </code>
-    /// </example>
     public static string ReplaceMany(this string value, IReadOnlyDictionary<string, string> replacements)
     {
         ThrowHelper.ThrowIfNull(value);
@@ -50,11 +39,11 @@ public static partial class StringExtensions
 
         if (replacements.Count == 0) return value;
 
-        string current = value;
+        var current = value;
         foreach (KeyValuePair<string, string> pair in replacements)
         {
             ThrowHelper.ThrowIfNull(pair.Key);
-            if (pair.Key.Length == 0) throw new ArgumentException(ResourceStrings.Arg_Invalid_EmptyDictionaryKey, nameof(replacements));
+            if (pair.Key.Length == 0) throw new ArgumentException("Replacement keys must not be empty.", nameof(replacements));
             current = current.Replace(pair.Key, pair.Value, StringComparison.Ordinal);
         }
 

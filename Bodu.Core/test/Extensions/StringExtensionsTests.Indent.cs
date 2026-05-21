@@ -1,10 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensionsTests.Indent.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System;
 
 namespace Bodu.Extensions;
 
@@ -17,7 +15,7 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void Indent_WhenInputUsesLf_ShouldPrependIndentToEveryLine()
     {
-        string actual = "one\ntwo\nthree".Indent(2);
+        var actual = "one\ntwo\nthree".Indent(2);
 
         Assert.AreEqual("  one\n  two\n  three", actual);
     }
@@ -29,7 +27,7 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void Indent_WhenInputUsesCrLf_ShouldPrependIndentToEveryLine()
     {
-        string actual = "one\r\ntwo".Indent(2);
+        var actual = "one\r\ntwo".Indent(2);
 
         Assert.AreEqual("  one\r\n  two", actual);
     }
@@ -41,7 +39,7 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void Indent_WhenCustomIndentCharSupplied_ShouldUseIt()
     {
-        string actual = "a\nb".Indent(3, '>');
+        var actual = "a\nb".Indent(3, '>');
 
         Assert.AreEqual(">>>a\n>>>b", actual);
     }

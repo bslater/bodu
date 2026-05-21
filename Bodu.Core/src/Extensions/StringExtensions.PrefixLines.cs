@@ -1,10 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensions.PrefixLines.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
 using System.Text;
 
 namespace Bodu.Extensions;
@@ -23,13 +22,6 @@ public static partial class StringExtensions
     /// <paramref name="prefix" /> returns the input unchanged. Commonly used to add a comment marker to a block of
     /// source — e.g. <c>"line1\nline2".PrefixLines("// ")</c>.
     /// </remarks>
-    /// <example>
-    /// <code language="csharp">
-    ///<![CDATA[
-    /// "name\nvalue".PrefixLines("// ");  // "// name\n// value"
-    ///]]>
-    /// </code>
-    /// </example>
     public static string PrefixLines(this string value, string prefix)
     {
         ThrowHelper.ThrowIfNull(value);
@@ -38,10 +30,10 @@ public static partial class StringExtensions
         if (prefix.Length == 0 || value.Length == 0) return value;
 
         StringBuilder builder = new(value.Length + (prefix.Length * 4));
-        bool atLineStart = true;
-        for (int i = 0; i < value.Length; i++)
+        var atLineStart = true;
+        for (var i = 0; i < value.Length; i++)
         {
-            char c = value[i];
+            var c = value[i];
             if (atLineStart)
             {
                 builder.Append(prefix);

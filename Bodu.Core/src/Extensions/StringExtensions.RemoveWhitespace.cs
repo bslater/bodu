@@ -1,10 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensions.RemoveWhitespace.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
 using System.Text;
 
 namespace Bodu.Extensions;
@@ -26,13 +25,6 @@ public static partial class StringExtensions
     /// White-space is detected via <see cref="char.IsWhiteSpace(char)" /> so Unicode separators (NBSP, line
     /// terminators, tab) are all removed.
     /// </remarks>
-    /// <example>
-    /// <code language="csharp">
-    ///<![CDATA[
-    /// "  spaced \t out\n".RemoveWhitespace();  // "spacedout"
-    ///]]>
-    /// </code>
-    /// </example>
     public static string RemoveWhitespace(this string value)
     {
         ThrowHelper.ThrowIfNull(value);
@@ -40,9 +32,9 @@ public static partial class StringExtensions
         if (value.Length == 0) return value;
 
         StringBuilder? builder = null;
-        for (int i = 0; i < value.Length; i++)
+        for (var i = 0; i < value.Length; i++)
         {
-            char c = value[i];
+            var c = value[i];
             if (char.IsWhiteSpace(c))
             {
                 builder ??= new StringBuilder(value.Length).Append(value, 0, i);

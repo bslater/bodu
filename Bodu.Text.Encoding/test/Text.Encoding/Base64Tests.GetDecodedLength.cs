@@ -28,7 +28,7 @@ public sealed partial class Base64Tests
     [TestMethod]
     public void GetDecodedLength_WhenMimeVariant_ShouldImplicitlyStripWhitespace()
     {
-        int actual = Base64.GetDecodedLength("Zm9v\r\nYmFy".AsSpan(), Base64Variant.Mime);
+        var actual = Base64.GetDecodedLength("Zm9v\r\nYmFy".AsSpan(), Base64Variant.Mime);
 
         Assert.AreEqual(6, actual);
     }
@@ -38,7 +38,7 @@ public sealed partial class Base64Tests
     [TestMethod]
     public void GetDecodedLength_WhenPaddedInput_ShouldReturnExactByteCount()
     {
-        int actual = Base64.GetDecodedLength("Zm9vYg==".AsSpan());
+        var actual = Base64.GetDecodedLength("Zm9vYg==".AsSpan());
 
         Assert.AreEqual(4, actual);
     }
@@ -49,7 +49,7 @@ public sealed partial class Base64Tests
     [TestMethod]
     public void GetDecodedLength_WhenUnpaddedInput_ShouldExcludePaddingFromCount()
     {
-        int actual = Base64.GetDecodedLength("Zm9vYmFy".AsSpan());
+        var actual = Base64.GetDecodedLength("Zm9vYmFy".AsSpan());
 
         Assert.AreEqual(6, actual);
     }
@@ -72,8 +72,8 @@ public sealed partial class Base64Tests
     public void GetEncodedLength_WithVariantOverload_ShouldReflectVariantDefaults()
     {
         // 4 bytes -> 6 data chars, Standard pads to 8; UrlSafe omits padding.
-        int standard = Base64.GetEncodedLength(4, Base64Variant.Standard);
-        int urlSafe = Base64.GetEncodedLength(4, Base64Variant.UrlSafe);
+        var standard = Base64.GetEncodedLength(4, Base64Variant.Standard);
+        var urlSafe = Base64.GetEncodedLength(4, Base64Variant.UrlSafe);
 
         Assert.AreEqual(8, standard);
         Assert.AreEqual(6, urlSafe);
@@ -85,7 +85,7 @@ public sealed partial class Base64Tests
     [TestMethod]
     public void TryGetDecodedLength_WhenInvalid_ShouldReturnFalseAndZero()
     {
-        bool ok = Base64.TryGetDecodedLength("Zm@v".AsSpan(), out int byteCount);
+        var ok = Base64.TryGetDecodedLength("Zm@v".AsSpan(), out var byteCount);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(0, byteCount);
@@ -97,7 +97,7 @@ public sealed partial class Base64Tests
     [TestMethod]
     public void TryGetDecodedLength_WhenValid_ShouldReturnTrueAndCount()
     {
-        bool ok = Base64.TryGetDecodedLength("Zm9vYmFy".AsSpan(), out int byteCount);
+        var ok = Base64.TryGetDecodedLength("Zm9vYmFy".AsSpan(), out var byteCount);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(6, byteCount);

@@ -1,13 +1,10 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TextConfigurationStreamTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
-using System.IO;
 using System.Text;
-using Bodu.Extensions.Configuration.Text;
 using Bodu.Text.Configuration;
 using Microsoft.Extensions.Configuration;
 

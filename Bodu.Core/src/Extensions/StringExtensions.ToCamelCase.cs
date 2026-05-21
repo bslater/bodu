@@ -1,11 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensions.ToCamelCase.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 
@@ -26,14 +24,6 @@ public static partial class StringExtensions
     /// Word boundaries follow <see cref="EnumerateWords(string, WordCasingOptions)" /> using
     /// <see cref="WordCasingOptions.Default" />. Casing changes use the configured culture.
     /// </remarks>
-    /// <example>
-    /// <code language="csharp">
-    ///<![CDATA[
-    /// "user_account_id".ToCamelCase();  // "userAccountId"
-    /// "Hello World".ToCamelCase();      // "helloWorld"
-    ///]]>
-    /// </code>
-    /// </example>
     public static string ToCamelCase(this string value) =>
         ToCamelCase(value, WordCasingOptions.Default);
 
@@ -63,7 +53,7 @@ public static partial class StringExtensions
         CultureInfo culture = options.Culture;
         StringBuilder builder = new(value.Length);
         builder.Append(words[0].ToLower(culture));
-        for (int i = 1; i < words.Count; i++)
+        for (var i = 1; i < words.Count; i++)
         {
             builder.Append(IsPreservedMixedCaseWord(words[i]) ? words[i] : CapitalizeWord(words[i], culture));
         }

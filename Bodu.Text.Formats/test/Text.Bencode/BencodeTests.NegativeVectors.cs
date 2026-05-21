@@ -30,15 +30,15 @@ public sealed partial class BencodeTests
 
         if (vector.ExpectedResourceKey is not null)
         {
-            string expectedMessage = FormatsResourceStrings.ResourceManager.GetString(vector.ExpectedResourceKey, System.Globalization.CultureInfo.InvariantCulture)
+            var expectedMessage = FormatsResourceStrings.ResourceManager.GetString(vector.ExpectedResourceKey, System.Globalization.CultureInfo.InvariantCulture)
                 ?? throw new InvalidOperationException($"Missing resource key {vector.ExpectedResourceKey}");
 
             if (vector.ExpectedResourceKey == nameof(FormatsResourceStrings.Format_Invalid_BencodeUnexpectedToken))
             {
                 // Composite-format message — assert that the canonical prefix (everything before the first
                 // placeholder) appears in the thrown message.
-                int firstPlaceholder = expectedMessage.IndexOf('{', StringComparison.Ordinal);
-                string canonicalPrefix = expectedMessage[..firstPlaceholder];
+                var firstPlaceholder = expectedMessage.IndexOf('{', StringComparison.Ordinal);
+                var canonicalPrefix = expectedMessage[..firstPlaceholder];
                 StringAssert.StartsWith(ex.Message, canonicalPrefix);
             }
             else
@@ -64,7 +64,7 @@ public sealed partial class BencodeTests
         if (vector.ExpectedResourceKey == nameof(FormatsResourceStrings.Format_Invalid_BencodeTrailingData))
             return;
 
-        bool result = Bencode.TryDecode(vector.EncodedBytes, out BencodedValue? value, out int consumed);
+        var result = Bencode.TryDecode(vector.EncodedBytes, out BencodedValue? value, out var consumed);
 
         Assert.IsFalse(result);
         Assert.IsNull(value);

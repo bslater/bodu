@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EncodingExtensions.Encoding.Preamble.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -171,11 +171,11 @@ public static partial class EncodingExtensions
         ThrowHelper.ThrowIfNull(encoding);
 
         ReadOnlySpan<byte> preamble = encoding.Preamble;
-        int encodedCount = encoding.GetByteCount(chars);
-        int total = preamble.Length + encodedCount;
+        var encodedCount = encoding.GetByteCount(chars);
+        var total = preamble.Length + encodedCount;
         if (total == 0) return Array.Empty<byte>();
 
-        byte[] buffer = new byte[total];
+        var buffer = new byte[total];
         if (!preamble.IsEmpty) preamble.CopyTo(buffer);
         if (encodedCount > 0) encoding.GetBytes(chars, buffer.AsSpan(preamble.Length));
         return buffer;
@@ -207,8 +207,8 @@ public static partial class EncodingExtensions
         ThrowHelper.ThrowIfNull(encoding);
 
         ReadOnlySpan<byte> preamble = encoding.Preamble;
-        int encodedCount = encoding.GetByteCount(chars);
-        int total = preamble.Length + encodedCount;
+        var encodedCount = encoding.GetByteCount(chars);
+        var total = preamble.Length + encodedCount;
         if (destination.Length < total)
             throw new ArgumentException(
                 EncodingResourceStrings.Arg_Invalid_DestinationTooSmallForEncoded,
@@ -250,8 +250,8 @@ public static partial class EncodingExtensions
         ThrowHelper.ThrowIfNull(encoding);
 
         ReadOnlySpan<byte> preamble = encoding.Preamble;
-        int encodedCount = encoding.GetByteCount(chars);
-        int total = preamble.Length + encodedCount;
+        var encodedCount = encoding.GetByteCount(chars);
+        var total = preamble.Length + encodedCount;
         if (destination.Length < total)
         {
             bytesWritten = 0;

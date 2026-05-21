@@ -5,8 +5,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
-
 namespace Bodu;
 
 public partial class ThrowHelperTests

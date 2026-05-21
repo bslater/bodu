@@ -1,10 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensions.CollapseWhitespace.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
 using System.Text;
 
 namespace Bodu.Extensions;
@@ -29,24 +28,17 @@ public static partial class StringExtensions
     /// strip the edges. White-space is detected via <see cref="char.IsWhiteSpace(char)" /> so Unicode separators (NBSP,
     /// EN SPACE, line terminators, tab) all collapse to a single ASCII space.
     /// </remarks>
-    /// <example>
-    /// <code language="csharp">
-    ///<![CDATA[
-    /// "  too   many\t\nspaces ".CollapseWhitespace();  // " too many spaces "
-    ///]]>
-    /// </code>
-    /// </example>
     public static string CollapseWhitespace(this string value)
     {
         ThrowHelper.ThrowIfNull(value);
 
         if (value.Length == 0) return value;
 
-        StringBuilder builder = new StringBuilder(value.Length);
-        bool prevWasWhite = false;
-        for (int i = 0; i < value.Length; i++)
+        var builder = new StringBuilder(value.Length);
+        var prevWasWhite = false;
+        for (var i = 0; i < value.Length; i++)
         {
-            char c = value[i];
+            var c = value[i];
             if (char.IsWhiteSpace(c))
             {
                 if (!prevWasWhite) builder.Append(' ');
@@ -59,7 +51,7 @@ public static partial class StringExtensions
             }
         }
 
-        string result = builder.ToString();
+        var result = builder.ToString();
         return string.Equals(result, value, StringComparison.Ordinal) ? value : result;
     }
 }

@@ -1,12 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensions.ToSlug.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-using System.Globalization;
 using System.Text;
 
 namespace Bodu.Extensions;
@@ -25,13 +22,6 @@ public static partial class StringExtensions
     /// <remarks>
     /// Equivalent to calling <see cref="ToSlug(string, SlugOptions)" /> with <see cref="SlugOptions.Default" />.
     /// </remarks>
-    /// <example>
-    /// <code language="csharp">
-    ///<![CDATA[
-    /// "Hello, World! — Café".ToSlug();  // "hello-world-cafe"
-    ///]]>
-    /// </code>
-    /// </example>
     public static string ToSlug(this string value) =>
         ToSlug(value, SlugOptions.Default);
 
@@ -65,17 +55,17 @@ public static partial class StringExtensions
 
         if (value.Length == 0) return string.Empty;
 
-        string prepared = options.NormalizeDiacritics ? TransliterateForSlug(value) : value;
+        var prepared = options.NormalizeDiacritics ? TransliterateForSlug(value) : value;
 
         List<string> words = EnumerateWords(prepared, WordCasingOptions.Default);
         if (words.Count == 0) return string.Empty;
 
         if (options.Lowercase)
         {
-            for (int i = 0; i < words.Count; i++) words[i] = words[i].ToLowerInvariant();
+            for (var i = 0; i < words.Count; i++) words[i] = words[i].ToLowerInvariant();
         }
 
-        string slug = string.Join(options.Separator, words);
+        var slug = string.Join(options.Separator, words);
         return options.MaxLength > 0 ? TruncateSlug(slug, options.Separator, options.MaxLength) : slug;
     }
 
@@ -92,7 +82,7 @@ public static partial class StringExtensions
     private static string TransliterateForSlug(string value)
     {
         StringBuilder builder = new(value.Length);
-        foreach (char c in value)
+        foreach (var c in value)
         {
             switch (c)
             {
@@ -123,11 +113,10 @@ public static partial class StringExtensions
     {
         if (slug.Length <= maxLength) return slug;
 
-        int cut = maxLength;
+        var cut = maxLength;
         while (cut > 0 && slug[cut - 1] != separator) cut--;
 
         // Drop the trailing separator; when no boundary was found, fall back to a hard cut.
-        if (cut > 0) return slug.Substring(0, cut - 1);
-        return slug.Substring(0, maxLength);
+        return cut > 0 ? slug[..(cut - 1)] : slug[..maxLength];
     }
 }

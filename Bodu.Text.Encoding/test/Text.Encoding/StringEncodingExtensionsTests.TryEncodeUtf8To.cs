@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringEncodingExtensionsTests.TryEncodeUtf8To.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -31,10 +31,10 @@ public sealed partial class StringEncodingExtensionsTests
     [DynamicData(nameof(GetTryEncodeUtf8ToCases), DynamicDataSourceType.Method)]
     public void TryEncodeUtf8To_ShouldRespectDestinationSize(int extra, bool expectedOk)
     {
-        int required = System.Text.Encoding.UTF8.GetByteCount(MultiByteText);
-        byte[] backing = new byte[required + extra];
+        var required = System.Text.Encoding.UTF8.GetByteCount(MultiByteText);
+        var backing = new byte[required + extra];
 
-        bool ok = MultiByteText.TryEncodeUtf8To(backing, out int written);
+        var ok = MultiByteText.TryEncodeUtf8To(backing, out var written);
 
         Assert.AreEqual(expectedOk, ok);
         Assert.AreEqual(expectedOk ? required : 0, written);
@@ -47,7 +47,7 @@ public sealed partial class StringEncodingExtensionsTests
     [TestMethod]
     public void TryEncodeUtf8To_WhenTextIsNull_ShouldThrowArgumentNullException()
     {
-        byte[] backing = new byte[64];
+        var backing = new byte[64];
 
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

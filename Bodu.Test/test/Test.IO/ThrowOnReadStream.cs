@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Bodu.Test.IO;
+﻿namespace Bodu.Test.IO;
 
 /// <summary>
 /// Provides a readable stream that records whether any read operation was attempted.

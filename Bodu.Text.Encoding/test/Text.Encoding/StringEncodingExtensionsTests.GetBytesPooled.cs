@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringEncodingExtensionsTests.GetBytesPooled.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -17,7 +17,7 @@ public sealed partial class StringEncodingExtensionsTests
     [TestMethod]
     public void GetBytesPooled_WhenInvoked_ShouldReturnBuilderWhoseWrittenSpanMatchesEncoded()
     {
-        byte[] expected = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
+        var expected = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
 
         using PooledBufferBuilder<byte> builder = MultiByteText.GetBytesPooled(System.Text.Encoding.UTF8);
 

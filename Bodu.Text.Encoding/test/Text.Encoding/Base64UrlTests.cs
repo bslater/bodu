@@ -20,10 +20,10 @@ public sealed class Base64UrlTests
     [TestMethod]
     public void Decode_FromUtf8_ShouldRoundTrip()
     {
-        byte[] original = System.Text.Encoding.ASCII.GetBytes("foobar");
-        byte[] encodedUtf8 = Base64Url.EncodeToUtf8(original);
+        var original = System.Text.Encoding.ASCII.GetBytes("foobar");
+        var encodedUtf8 = Base64Url.EncodeToUtf8(original);
 
-        byte[] decoded = Base64Url.Decode(encodedUtf8);
+        var decoded = Base64Url.Decode(encodedUtf8);
 
         CollectionAssert.AreEqual(original, decoded);
     }
@@ -35,10 +35,10 @@ public sealed class Base64UrlTests
     [TestMethod]
     public void Decode_ShouldAcceptPaddedUrlSafeInput()
     {
-        byte[] expected = System.Text.Encoding.ASCII.GetBytes("foob");
+        var expected = System.Text.Encoding.ASCII.GetBytes("foob");
 
-        byte[] withoutPadding = Base64Url.Decode("Zm9vYg");
-        byte[] withPadding = Base64Url.Decode("Zm9vYg==");
+        var withoutPadding = Base64Url.Decode("Zm9vYg");
+        var withPadding = Base64Url.Decode("Zm9vYg==");
 
         CollectionAssert.AreEqual(expected, withoutPadding);
         CollectionAssert.AreEqual(expected, withPadding);
@@ -51,9 +51,9 @@ public sealed class Base64UrlTests
     [TestMethod]
     public void Decode_ShouldAcceptUnpaddedInput()
     {
-        byte[] expected = new byte[] { 0xFB, 0xFF, 0xFE };
+        var expected = new byte[] { 0xFB, 0xFF, 0xFE };
 
-        byte[] actual = Base64Url.Decode("-__-");
+        var actual = Base64Url.Decode("-__-");
 
         CollectionAssert.AreEqual(expected, actual);
     }
@@ -68,8 +68,8 @@ public sealed class Base64UrlTests
         // Header segment of a JWT — {"alg":"HS256","typ":"JWT"} encoded URL-safe, no padding.
         const string segment = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9";
 
-        byte[] decoded = Base64Url.Decode(segment);
-        string json = System.Text.Encoding.UTF8.GetString(decoded);
+        var decoded = Base64Url.Decode(segment);
+        var json = System.Text.Encoding.UTF8.GetString(decoded);
 
         Assert.AreEqual("{\"alg\":\"HS256\",\"typ\":\"JWT\"}", json);
     }
@@ -91,9 +91,9 @@ public sealed class Base64UrlTests
     [TestMethod]
     public void Encode_ShouldProduceUrlSafeOutputWithoutPadding()
     {
-        byte[] bytes = new byte[] { 0xFB, 0xFF, 0xFE };
+        var bytes = new byte[] { 0xFB, 0xFF, 0xFE };
 
-        string actual = Base64Url.Encode(bytes);
+        var actual = Base64Url.Encode(bytes);
 
         Assert.AreEqual("-__-", actual);
         Assert.IsFalse(actual.Contains('='));
@@ -118,12 +118,12 @@ public sealed class Base64UrlTests
     [TestMethod]
     public void TryEncodeAndTryDecode_ShouldRoundTripThroughSpans()
     {
-        byte[] original = new byte[] { 0xDE, 0xAD, 0xBE, 0xEF };
+        var original = new byte[] { 0xDE, 0xAD, 0xBE, 0xEF };
         Span<char> charBuffer = stackalloc char[Base64Url.GetEncodedLength(original.Length)];
         Span<byte> byteBuffer = stackalloc byte[original.Length];
 
-        Assert.IsTrue(Base64Url.TryEncode(original, charBuffer, out int charsWritten));
-        Assert.IsTrue(Base64Url.TryDecode(charBuffer[..charsWritten], byteBuffer, out int bytesWritten));
+        Assert.IsTrue(Base64Url.TryEncode(original, charBuffer, out var charsWritten));
+        Assert.IsTrue(Base64Url.TryDecode(charBuffer[..charsWritten], byteBuffer, out var bytesWritten));
 
         Assert.AreEqual(original.Length, bytesWritten);
         Assert.IsTrue(original.AsSpan().SequenceEqual(byteBuffer[..bytesWritten]));

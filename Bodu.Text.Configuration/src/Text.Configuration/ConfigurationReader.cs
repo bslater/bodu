@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Collections.Immutable;
 using System.Globalization;
 using Bodu.Text.Ini;
 

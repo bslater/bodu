@@ -35,13 +35,13 @@ public static class BencodeKnownAnswerVectors
     /// <returns>A sequence suitable for <c>[DynamicData]</c>.</returns>
     public static IEnumerable<object[]> AllPositiveVectors()
     {
-        foreach (object[] row in Bep3PositiveVectors())
+        foreach (var row in Bep3PositiveVectors())
             yield return row;
 
-        foreach (object[] row in WikipediaVectors())
+        foreach (var row in WikipediaVectors())
             yield return row;
 
-        foreach (object[] row in EdgeCasePositiveVectors())
+        foreach (var row in EdgeCasePositiveVectors())
             yield return row;
     }
 

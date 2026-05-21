@@ -24,7 +24,7 @@ public class NotableDateTimeOffsetExtensionsTests
     {
         NotableDateService service = BuildService();
         // 2026-05-16 is a Saturday.
-        DateTimeOffset saturday = new DateTimeOffset(2026, 5, 16, 9, 0, 0, TimeSpan.Zero);
+        var saturday = new DateTimeOffset(2026, 5, 16, 9, 0, 0, TimeSpan.Zero);
 
         Assert.IsFalse(saturday.IsWorkingDay(Utc, service));
     }
@@ -37,7 +37,7 @@ public class NotableDateTimeOffsetExtensionsTests
     public void IsWorkingDay_WhenFridayAndSundayToThursdayPattern_ShouldReturnFalse()
     {
         NotableDateService service = BuildService();
-        DateTimeOffset friday = new DateTimeOffset(2026, 5, 15, 9, 0, 0, TimeSpan.Zero);
+        var friday = new DateTimeOffset(2026, 5, 15, 9, 0, 0, TimeSpan.Zero);
 
         Assert.IsFalse(friday.IsWorkingDay(Utc, service, WeekPattern.SundayToThursday));
     }
@@ -51,7 +51,7 @@ public class NotableDateTimeOffsetExtensionsTests
     {
         NotableDateService service = BuildService();
         // 2026-05-15 is a Friday.
-        DateTimeOffset friday = new DateTimeOffset(2026, 5, 15, 9, 30, 0, TimeSpan.Zero);
+        var friday = new DateTimeOffset(2026, 5, 15, 9, 30, 0, TimeSpan.Zero);
 
         DateTimeOffset monday = friday.AddWorkingDays(Utc, service, 1);
 
@@ -66,7 +66,7 @@ public class NotableDateTimeOffsetExtensionsTests
     public void AddWorkingDays_WhenDaysIsZero_ShouldReturnInput()
     {
         NotableDateService service = BuildService();
-        DateTimeOffset input = new DateTimeOffset(2026, 5, 15, 9, 30, 0, TimeSpan.Zero);
+        var input = new DateTimeOffset(2026, 5, 15, 9, 30, 0, TimeSpan.Zero);
 
         DateTimeOffset result = input.AddWorkingDays(Utc, service, 0);
 
@@ -82,10 +82,10 @@ public class NotableDateTimeOffsetExtensionsTests
     {
         NotableDateService service = BuildService();
         // Mon 2026-05-11 → Fri 2026-05-15 → 5 working days inclusive.
-        DateTimeOffset monday = new DateTimeOffset(2026, 5, 11, 0, 0, 0, TimeSpan.Zero);
-        DateTimeOffset friday = new DateTimeOffset(2026, 5, 15, 23, 59, 0, TimeSpan.Zero);
+        var monday = new DateTimeOffset(2026, 5, 11, 0, 0, 0, TimeSpan.Zero);
+        var friday = new DateTimeOffset(2026, 5, 15, 23, 59, 0, TimeSpan.Zero);
 
-        int count = monday.WorkingDaysBetween(friday, Utc, service);
+        var count = monday.WorkingDaysBetween(friday, Utc, service);
 
         Assert.AreEqual(5, count);
     }

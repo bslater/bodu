@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EncodingExtensions.Span.Decode.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -51,10 +51,10 @@ public static partial class EncodingExtensions
     {
         ThrowHelper.ThrowIfNull(encoding);
 
-        int count = encoding.GetCharCount(bytes);
+        var count = encoding.GetCharCount(bytes);
         if (count == 0) return Array.Empty<char>();
 
-        char[] buffer = new char[count];
+        var buffer = new char[count];
         encoding.GetChars(bytes, buffer);
         return buffer;
     }
@@ -137,7 +137,7 @@ public static partial class EncodingExtensions
     {
         ThrowHelper.ThrowIfNull(encoding);
 
-        int required = encoding.GetCharCount(bytes);
+        var required = encoding.GetCharCount(bytes);
         if (destination.Length != required)
             throw new ArgumentException(
                 EncodingResourceStrings.Arg_Invalid_DestinationNotExactSizeForDecoded,

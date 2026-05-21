@@ -1,10 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensions.Indent.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
 using System.Text;
 
 namespace Bodu.Extensions;
@@ -28,13 +27,6 @@ public static partial class StringExtensions
     /// newline followed by nothing) are not indented. When <paramref name="count" /> is zero the input is returned
     /// unchanged.
     /// </remarks>
-    /// <example>
-    /// <code language="csharp">
-    ///<![CDATA[
-    /// "line1\nline2".Indent(2);  // "  line1\n  line2"
-    ///]]>
-    /// </code>
-    /// </example>
     public static string Indent(this string value, int count, char indentChar = ' ')
     {
         ThrowHelper.ThrowIfNull(value);
@@ -42,12 +34,12 @@ public static partial class StringExtensions
 
         if (count == 0 || value.Length == 0) return value;
 
-        string prefix = new string(indentChar, count);
+        var prefix = new string(indentChar, count);
         StringBuilder builder = new(value.Length + (count * 4));
-        bool atLineStart = true;
-        for (int i = 0; i < value.Length; i++)
+        var atLineStart = true;
+        for (var i = 0; i < value.Length; i++)
         {
-            char c = value[i];
+            var c = value[i];
             if (atLineStart)
             {
                 builder.Append(prefix);

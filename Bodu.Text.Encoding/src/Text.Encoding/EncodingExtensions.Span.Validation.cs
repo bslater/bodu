@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EncodingExtensions.Span.Validation.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -35,7 +35,7 @@ public static partial class EncodingExtensions
     {
         ThrowHelper.ThrowIfNull(encoding);
 
-        int required = encoding.GetByteCount(chars);
+        var required = encoding.GetByteCount(chars);
         if (destination.Length < required)
             throw new ArgumentException(
                 EncodingResourceStrings.Arg_Invalid_DestinationTooSmallForEncoded,
@@ -67,7 +67,7 @@ public static partial class EncodingExtensions
     {
         ThrowHelper.ThrowIfNull(encoding);
 
-        int required = encoding.GetCharCount(bytes);
+        var required = encoding.GetCharCount(bytes);
         if (destination.Length < required)
             throw new ArgumentException(
                 EncodingResourceStrings.Arg_Invalid_DestinationTooSmallForDecoded,

@@ -38,7 +38,7 @@ public static partial class TestHelpers
     {
         Type? type = typeof(T);
         var visited = new HashSet<string>(StringComparer.Ordinal);
-        int count = 0;
+        var count = 0;
 
         while (type is not null && type != typeof(object))
         {
@@ -49,10 +49,10 @@ public static partial class TestHelpers
                     continue;
                 }
 
-                bool canRead = property.GetMethod is not null;
-                bool canWrite = property.SetMethod is not null && !property.SetMethod.IsPrivate;
+                var canRead = property.GetMethod is not null;
+                var canWrite = property.SetMethod is not null && !property.SetMethod.IsPrivate;
 
-                bool matches = accessMode switch
+                var matches = accessMode switch
                 {
                     PropertyAccessMode.Read => canRead,
                     PropertyAccessMode.Write => canWrite,

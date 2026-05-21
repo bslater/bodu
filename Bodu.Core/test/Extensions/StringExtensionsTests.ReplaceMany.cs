@@ -1,11 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensionsTests.ReplaceMany.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System;
-using System.Collections.Generic;
 
 namespace Bodu.Extensions;
 
@@ -24,7 +21,7 @@ public partial class StringExtensionsTests
             ["{role}"] = "admin",
         };
 
-        string actual = "Hi {name}, your role is {role}.".ReplaceMany(replacements);
+        var actual = "Hi {name}, your role is {role}.".ReplaceMany(replacements);
 
         Assert.AreEqual("Hi Alice, your role is admin.", actual);
     }
@@ -36,9 +33,9 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void ReplaceMany_WhenDictionaryIsEmpty_ShouldReturnSameInstance()
     {
-        string value = "hello";
+        var value = "hello";
 
-        string actual = value.ReplaceMany(new Dictionary<string, string>());
+        var actual = value.ReplaceMany(new Dictionary<string, string>());
 
         Assert.AreSame(value, actual);
     }
@@ -56,7 +53,7 @@ public partial class StringExtensionsTests
             ["b"] = "c",
         };
 
-        string actual = "a".ReplaceMany(replacements);
+        var actual = "a".ReplaceMany(replacements);
 
         Assert.AreEqual("c", actual);
     }

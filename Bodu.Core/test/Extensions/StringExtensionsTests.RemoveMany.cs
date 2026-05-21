@@ -1,10 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensionsTests.RemoveMany.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System;
 
 namespace Bodu.Extensions;
 
@@ -17,7 +15,7 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void RemoveMany_WhenMultipleValuesSupplied_ShouldRemoveEach()
     {
-        string actual = "Hello, World!".RemoveMany(",", "!", "o");
+        var actual = "Hello, World!".RemoveMany(",", "!", "o");
 
         Assert.AreEqual("Hell Wrld", actual);
     }
@@ -29,9 +27,9 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void RemoveMany_WhenArrayIsEmpty_ShouldReturnSameInstance()
     {
-        string value = "hello";
+        var value = "hello";
 
-        string actual = value.RemoveMany();
+        var actual = value.RemoveMany();
 
         Assert.AreSame(value, actual);
     }

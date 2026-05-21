@@ -40,10 +40,10 @@ public sealed partial class SedolTests
 
         // Six body chars, then a seventh body char to exercise the default-weight branch in Append.
         algorithm.Append("B0WNLY".AsSpan());
-        char checkAtSix = algorithm.GetCurrentCheckDigit();
+        var checkAtSix = algorithm.GetCurrentCheckDigit();
 
         algorithm.Append("0".AsSpan());
-        char checkAtSeven = algorithm.GetCurrentCheckDigit();
+        var checkAtSeven = algorithm.GetCurrentCheckDigit();
 
         // Appending a single '0' with weight 1 contributes 0 to the sum, so the check digit is unchanged.
         Assert.AreEqual(checkAtSix, checkAtSeven);
@@ -56,8 +56,8 @@ public sealed partial class SedolTests
     [TestMethod]
     public void Compute_WhenBodyLengthExceedsSixPositions_ShouldUseUnitWeightForTrailingPositions()
     {
-        char checkAtSix = Sedol.Compute("B0WNLY".AsSpan());
-        char checkAtSeven = Sedol.Compute("B0WNLY0".AsSpan());
+        var checkAtSix = Sedol.Compute("B0WNLY".AsSpan());
+        var checkAtSeven = Sedol.Compute("B0WNLY0".AsSpan());
 
         Assert.AreEqual(checkAtSix, checkAtSeven);
     }

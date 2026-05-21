@@ -1,10 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensions.Unwrap.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System;
 
 namespace Bodu.Extensions;
 
@@ -24,14 +22,6 @@ public static partial class StringExtensions
     /// <see cref="Wrap(string, string, string)" />.
     /// </returns>
     /// <exception cref="ArgumentNullException">Thrown when any string argument is <see langword="null" />.</exception>
-    /// <example>
-    /// <code language="csharp">
-    ///<![CDATA[
-    /// "(content)".Unwrap("(", ")");  // "content"
-    /// "(content".Unwrap("(", ")");   // "(content" (both ends must match)
-    ///]]>
-    /// </code>
-    /// </example>
     public static string Unwrap(
         this string value,
         string prefix,
@@ -46,7 +36,7 @@ public static partial class StringExtensions
         if (!value.StartsWith(prefix, comparison)) return value;
         if (!value.EndsWith(suffix, comparison)) return value;
 
-        int inner = value.Length - prefix.Length - suffix.Length;
+        var inner = value.Length - prefix.Length - suffix.Length;
         return value.Substring(prefix.Length, inner);
     }
 }

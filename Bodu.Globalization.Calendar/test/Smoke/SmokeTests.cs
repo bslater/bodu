@@ -41,7 +41,7 @@ public sealed class SmokeTests
     {
         NotableDateService service = new();
 
-        bool actual = service.IsWeekend(new DateTime(2024, 6, 9));
+        var actual = service.IsWeekend(new DateTime(2024, 6, 9));
 
         Assert.IsTrue(actual);
     }

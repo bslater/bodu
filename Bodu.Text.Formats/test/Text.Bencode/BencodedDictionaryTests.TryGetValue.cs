@@ -18,7 +18,7 @@ public sealed partial class BencodedDictionaryTests
     {
         BencodedDictionary dict = new(CowMooSpamEggs());
 
-        bool found = dict.TryGetValue(BencodedString.FromUtf8("cow"), out BencodedValue value);
+        var found = dict.TryGetValue(BencodedString.FromUtf8("cow"), out BencodedValue value);
 
         Assert.IsTrue(found);
         Assert.AreEqual("moo", ((BencodedString)value).GetUtf8String());
@@ -33,7 +33,7 @@ public sealed partial class BencodedDictionaryTests
     {
         BencodedDictionary dict = new(CowMooSpamEggs());
 
-        bool found = dict.TryGetValue("spam", out BencodedValue value);
+        var found = dict.TryGetValue("spam", out BencodedValue value);
 
         Assert.IsTrue(found);
         Assert.AreEqual("eggs", ((BencodedString)value).GetUtf8String());
@@ -48,7 +48,7 @@ public sealed partial class BencodedDictionaryTests
     {
         BencodedDictionary dict = new(CowMooSpamEggs());
 
-        bool found = dict.TryGetValue(BencodedString.FromUtf8("missing"), out _);
+        var found = dict.TryGetValue(BencodedString.FromUtf8("missing"), out _);
 
         Assert.IsFalse(found);
     }

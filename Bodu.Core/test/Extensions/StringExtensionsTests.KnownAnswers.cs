@@ -1,10 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensionsTests.KnownAnswers.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
 using System.Globalization;
 using Bodu.Tests.KnownAnswers;
 
@@ -51,7 +50,7 @@ public partial class StringExtensionsTests
             NormalizeDiacritics = kat.NormalizeDiacritics,
         };
 
-        string actual = kat.Operation switch
+        var actual = kat.Operation switch
         {
             StringFormattingOperation.TitleCase => kat.Input.ToTitleCase(casing),
             StringFormattingOperation.SentenceCase => kat.Input.ToSentenceCase(casing),

@@ -15,7 +15,7 @@ public partial class CryptoHelpersTests
     [TestMethod]
     public void ClearAndNullify_Array_WhenInvoked_ShouldZeroAndNullifyReference()
     {
-        byte[]? array = new byte[] { 1, 2, 3, 4 };
+        var array = new byte[] { 1, 2, 3, 4 };
 
         CryptoHelpers.ClearAndNullify(ref array);
 

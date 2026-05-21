@@ -16,7 +16,7 @@ public sealed partial class Base32Tests
     [TestMethod]
     public void GetDecodedLength_WhenIgnoreWhitespace_ShouldExcludeWhitespace()
     {
-        int actual = Base32.GetDecodedLength(
+        var actual = Base32.GetDecodedLength(
             "MZ XW\t6Y\nTBOI======".AsSpan(),
             Base32Variant.Standard,
             BaseFormatStyles.IgnoreWhitespace);
@@ -42,7 +42,7 @@ public sealed partial class Base32Tests
     [TestMethod]
     public void GetDecodedLength_WhenPaddedInput_ShouldReturnExactByteCount()
     {
-        int actual = Base32.GetDecodedLength("MZXW6YTBOI======".AsSpan());
+        var actual = Base32.GetDecodedLength("MZXW6YTBOI======".AsSpan());
 
         Assert.AreEqual(6, actual);
     }
@@ -53,7 +53,7 @@ public sealed partial class Base32Tests
     [TestMethod]
     public void GetDecodedLength_WhenUnpaddedInput_ShouldExcludePaddingFromCount()
     {
-        int actual = Base32.GetDecodedLength("MZXW6YTB".AsSpan());
+        var actual = Base32.GetDecodedLength("MZXW6YTB".AsSpan());
 
         Assert.AreEqual(5, actual);
     }
@@ -75,8 +75,8 @@ public sealed partial class Base32Tests
     [TestMethod]
     public void GetEncodedLength_WithVariantOverload_ShouldRespectVariantDefaults()
     {
-        int standard = Base32.GetEncodedLength(6, Base32Variant.Standard);
-        int crockford = Base32.GetEncodedLength(6, Base32Variant.Crockford);
+        var standard = Base32.GetEncodedLength(6, Base32Variant.Standard);
+        var crockford = Base32.GetEncodedLength(6, Base32Variant.Crockford);
 
         Assert.AreEqual(16, standard);
         Assert.IsTrue(crockford < standard, "Crockford output (no padding) should be shorter than Standard (padded).");
@@ -88,7 +88,7 @@ public sealed partial class Base32Tests
     [TestMethod]
     public void TryGetDecodedLength_WhenInvalid_ShouldReturnFalseAndZero()
     {
-        bool ok = Base32.TryGetDecodedLength("MZXW@".AsSpan(), out int byteCount);
+        var ok = Base32.TryGetDecodedLength("MZXW@".AsSpan(), out var byteCount);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(0, byteCount);
@@ -101,7 +101,7 @@ public sealed partial class Base32Tests
     [TestMethod]
     public void TryGetDecodedLength_WhenValid_ShouldReturnTrueAndCount()
     {
-        bool ok = Base32.TryGetDecodedLength("MZXW6YTBOI======".AsSpan(), out int byteCount);
+        var ok = Base32.TryGetDecodedLength("MZXW6YTBOI======".AsSpan(), out var byteCount);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(6, byteCount);

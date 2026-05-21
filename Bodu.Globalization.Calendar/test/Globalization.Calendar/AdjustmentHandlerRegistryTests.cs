@@ -21,7 +21,7 @@ public sealed class AdjustmentHandlerRegistryTests
     {
         var registry = new AdjustmentHandlerRegistry();
 
-        bool found = registry.TryGet("any-key", out IAdjustmentHandler handler);
+        var found = registry.TryGet("any-key", out IAdjustmentHandler handler);
 
         Assert.IsFalse(found);
         Assert.IsNull(handler);
@@ -131,7 +131,7 @@ public sealed class AdjustmentHandlerRegistryTests
         var registry = new AdjustmentHandlerRegistry();
         registry.Register("actual", new StubHandler());
 
-        bool found = registry.TryGet(key!, out IAdjustmentHandler handler);
+        var found = registry.TryGet(key!, out IAdjustmentHandler handler);
 
         Assert.IsFalse(found);
         Assert.IsNull(handler);

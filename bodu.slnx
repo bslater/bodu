@@ -30,6 +30,10 @@
     <Project Path="Bodu.IO.Hashing\src\Bodu.IO.Hashing.csproj" />
     <Project Path="Bodu.IO.Hashing\test\Bodu.IO.Hashing.Test.csproj" />
   </Folder>
+  <Folder Name="/Bodu.Numerics/">
+    <Project Path="Bodu.Numerics\src\Bodu.Numerics.csproj" />
+    <Project Path="Bodu.Numerics\test\Bodu.Numerics.Test.csproj" />
+  </Folder>
   <Folder Name="/Bodu.Security.Cryptography/">
     <Project Path="Bodu.Security.Cryptography\src\Bodu.Security.Cryptography.csproj" />
     <Project Path="Bodu.Security.Cryptography\test\Bodu.Security.Cryptography.Test.csproj" />
@@ -47,7 +51,7 @@
     <Project Path="Bodu.Extensions.Configuration.Text\test\Bodu.Extensions.Configuration.Text.Test.csproj" />
   </Folder>
   <Project Path="bc-csharp\crypto\src\BouncyCastle.Crypto.csproj" />
-  <Project Path="Bodu.Test\src\Bodu.Test.csproj" />
+  <Project Path="Bodu.Test\test\Bodu.Test.csproj" />
   <Project Path="ConsoleApp2\ConsoleApp2.csproj" />
   <Project Path="docs\doc.csproj" />
 </Solution>

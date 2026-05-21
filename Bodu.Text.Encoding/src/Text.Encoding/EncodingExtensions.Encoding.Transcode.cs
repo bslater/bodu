@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EncodingExtensions.Encoding.Transcode.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -65,11 +65,11 @@ public static partial class EncodingExtensions
 
         if (source.IsEmpty) return 0;
 
-        int charCount = sourceEncoding.GetCharCount(source);
-        char[] charBuffer = ArrayPool<char>.Shared.Rent(charCount);
+        var charCount = sourceEncoding.GetCharCount(source);
+        var charBuffer = ArrayPool<char>.Shared.Rent(charCount);
         try
         {
-            int charsWritten = sourceEncoding.GetChars(source, charBuffer);
+            var charsWritten = sourceEncoding.GetChars(source, charBuffer);
             return destinationEncoding.GetByteCount(charBuffer.AsSpan(0, charsWritten));
         }
         finally

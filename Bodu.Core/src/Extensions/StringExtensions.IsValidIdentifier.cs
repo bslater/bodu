@@ -1,10 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensions.IsValidIdentifier.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
 using System.Globalization;
 
 namespace Bodu.Extensions;
@@ -35,16 +34,6 @@ public static partial class StringExtensions
     /// The empty string returns <see langword="false" /> because an identifier must contain at least one character.
     /// </para>
     /// </remarks>
-    /// <example>
-    /// <code language="csharp">
-    ///<![CDATA[
-    /// "userName".IsValidIdentifier();  // true
-    /// "_count".IsValidIdentifier();    // true
-    /// "2fast".IsValidIdentifier();     // false (starts with a digit)
-    /// "has-dash".IsValidIdentifier();  // false
-    ///]]>
-    /// </code>
-    /// </example>
     public static bool IsValidIdentifier(this string value)
     {
         ThrowHelper.ThrowIfNull(value);
@@ -52,7 +41,7 @@ public static partial class StringExtensions
         if (value.Length == 0) return false;
         if (!IsIdentifierStart(value[0])) return false;
 
-        for (int i = 1; i < value.Length; i++)
+        for (var i = 1; i < value.Length; i++)
         {
             if (!IsIdentifierPart(value[i])) return false;
         }

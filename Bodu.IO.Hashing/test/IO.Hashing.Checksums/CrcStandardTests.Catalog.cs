@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
-
 namespace Bodu.IO.Hashing.Checksums;
 
 public partial class CrcStandardTests
@@ -47,7 +45,7 @@ public partial class CrcStandardTests
         IReadOnlyList<CrcStandard> all = CrcStandard.All;
         CrcStandards[] values = Enum.GetValues<CrcStandards>();
 
-        for (int i = 0; i < values.Length; i++)
+        for (var i = 0; i < values.Length; i++)
         {
             Assert.AreSame(CrcStandard.Get(values[i]), all[i]);
         }
@@ -191,7 +189,7 @@ public partial class CrcStandardTests
     [TestMethod]
     public void TryFromName_WhenNameCaseDiffers_ShouldReturnFalse()
     {
-        bool ok = CrcStandard.TryFromName("crc-16/modbus", out CrcStandard? resolved);
+        var ok = CrcStandard.TryFromName("crc-16/modbus", out CrcStandard? resolved);
 
         Assert.IsFalse(ok);
         Assert.IsNull(resolved);
@@ -204,7 +202,7 @@ public partial class CrcStandardTests
     [TestMethod]
     public void TryFromName_WhenNameIsCanonical_ShouldReturnTrueAndProduceCanonicalInstance()
     {
-        bool ok = CrcStandard.TryFromName("CRC-32/ISO-HDLC", out CrcStandard? resolved);
+        var ok = CrcStandard.TryFromName("CRC-32/ISO-HDLC", out CrcStandard? resolved);
 
         Assert.IsTrue(ok);
         Assert.IsNotNull(resolved);
@@ -218,7 +216,7 @@ public partial class CrcStandardTests
     [TestMethod]
     public void TryFromName_WhenNameIsNull_ShouldReturnFalseAndNull()
     {
-        bool ok = CrcStandard.TryFromName(null, out CrcStandard? resolved);
+        var ok = CrcStandard.TryFromName(null, out CrcStandard? resolved);
 
         Assert.IsFalse(ok);
         Assert.IsNull(resolved);
@@ -231,7 +229,7 @@ public partial class CrcStandardTests
     [TestMethod]
     public void TryFromName_WhenNameIsUnknown_ShouldReturnFalseAndNull()
     {
-        bool ok = CrcStandard.TryFromName("CRC-NOT-A-REAL-STANDARD", out CrcStandard? resolved);
+        var ok = CrcStandard.TryFromName("CRC-NOT-A-REAL-STANDARD", out CrcStandard? resolved);
 
         Assert.IsFalse(ok);
         Assert.IsNull(resolved);

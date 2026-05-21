@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EncodingExtensions.Encoding.GetChars.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -71,7 +71,7 @@ public static partial class EncodingExtensions
     {
         ThrowHelper.ThrowIfNull(encoding);
 
-        int required = encoding.GetCharCount(bytes);
+        var required = encoding.GetCharCount(bytes);
         if (destination.Length != required)
             throw new ArgumentException(
                 EncodingResourceStrings.Arg_Invalid_DestinationNotExactSizeForDecoded,

@@ -1,10 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensionsTests.KeepWhere.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System;
 
 namespace Bodu.Extensions;
 
@@ -17,7 +15,7 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void KeepWhere_WhenPredicateSupplied_ShouldRetainMatchingCharacters()
     {
-        string actual = "a1b2c3".KeepWhere(char.IsDigit);
+        var actual = "a1b2c3".KeepWhere(char.IsDigit);
 
         Assert.AreEqual("123", actual);
     }
@@ -29,9 +27,9 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void KeepWhere_WhenAllCharactersMatch_ShouldReturnSameInstance()
     {
-        string value = "abc";
+        var value = "abc";
 
-        string actual = value.KeepWhere(char.IsLetter);
+        var actual = value.KeepWhere(char.IsLetter);
 
         Assert.AreSame(value, actual);
     }
@@ -43,7 +41,7 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void KeepWhere_WhenNoCharacterMatches_ShouldReturnEmptyString()
     {
-        string actual = "abc".KeepWhere(char.IsDigit);
+        var actual = "abc".KeepWhere(char.IsDigit);
 
         Assert.AreEqual(string.Empty, actual);
     }

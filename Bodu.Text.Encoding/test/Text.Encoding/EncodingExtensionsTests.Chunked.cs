@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EncodingExtensionsTests.Chunked.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -18,15 +18,15 @@ public sealed partial class EncodingExtensionsTests
     public void EncodeChunk_WhenDestinationFits_ShouldReturnDoneAndWriteAllBytes()
     {
         System.Text.Encoder encoder = System.Text.Encoding.UTF8.GetEncoder();
-        int required = System.Text.Encoding.UTF8.GetByteCount(MultiByteText);
+        var required = System.Text.Encoding.UTF8.GetByteCount(MultiByteText);
         Span<byte> destination = new byte[required + 16];
 
         OperationStatus status = encoder.EncodeChunk(
             MultiByteText,
             destination,
             flush: true,
-            out int charsConsumed,
-            out int bytesWritten);
+            out var charsConsumed,
+            out var bytesWritten);
 
         Assert.AreEqual(OperationStatus.Done, status);
         Assert.AreEqual(MultiByteText.Length, charsConsumed);
@@ -42,26 +42,26 @@ public sealed partial class EncodingExtensionsTests
     public void EncodeChunk_WhenDestinationIsTooSmall_ShouldReturnDestinationTooSmallAndAllowResume()
     {
         System.Text.Encoder encoder = System.Text.Encoding.UTF8.GetEncoder();
-        int total = System.Text.Encoding.UTF8.GetByteCount(MultiByteText);
-        byte[] firstChunk = new byte[total / 2];
+        var total = System.Text.Encoding.UTF8.GetByteCount(MultiByteText);
+        var firstChunk = new byte[total / 2];
 
         OperationStatus first = encoder.EncodeChunk(
             MultiByteText,
             firstChunk,
             flush: false,
-            out int charsConsumedFirst,
-            out int bytesWrittenFirst);
+            out var charsConsumedFirst,
+            out var bytesWrittenFirst);
 
         Assert.AreEqual(OperationStatus.DestinationTooSmall, first);
         Assert.IsTrue(bytesWrittenFirst > 0);
 
-        byte[] secondChunk = new byte[total];
+        var secondChunk = new byte[total];
         OperationStatus second = encoder.EncodeChunk(
             MultiByteText.AsSpan(charsConsumedFirst),
             secondChunk,
             flush: true,
-            out int charsConsumedSecond,
-            out int bytesWrittenSecond);
+            out var charsConsumedSecond,
+            out var bytesWrittenSecond);
 
         Assert.AreEqual(OperationStatus.Done, second);
         Assert.AreEqual(MultiByteText.Length, charsConsumedFirst + charsConsumedSecond);
@@ -75,7 +75,7 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void EncodeChunk_WhenEncoderIsNull_ShouldThrowArgumentNullException()
     {
-        byte[] backing = new byte[16];
+        var backing = new byte[16];
 
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -93,15 +93,15 @@ public sealed partial class EncodingExtensionsTests
     public void DecodeChunk_WhenDestinationFits_ShouldReturnDoneAndWriteAllChars()
     {
         System.Text.Decoder decoder = System.Text.Encoding.UTF8.GetDecoder();
-        byte[] bytes = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
+        var bytes = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
         Span<char> destination = new char[MultiByteText.Length + 8];
 
         OperationStatus status = decoder.DecodeChunk(
             bytes,
             destination,
             flush: true,
-            out int bytesConsumed,
-            out int charsWritten);
+            out var bytesConsumed,
+            out var charsWritten);
 
         Assert.AreEqual(OperationStatus.Done, status);
         Assert.AreEqual(bytes.Length, bytesConsumed);
@@ -116,26 +116,26 @@ public sealed partial class EncodingExtensionsTests
     public void DecodeChunk_WhenDestinationIsTooSmall_ShouldReturnDestinationTooSmallAndAllowResume()
     {
         System.Text.Decoder decoder = System.Text.Encoding.UTF8.GetDecoder();
-        byte[] bytes = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
-        char[] firstChunk = new char[MultiByteText.Length / 2];
+        var bytes = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
+        var firstChunk = new char[MultiByteText.Length / 2];
 
         OperationStatus first = decoder.DecodeChunk(
             bytes,
             firstChunk,
             flush: false,
-            out int bytesConsumedFirst,
-            out int charsWrittenFirst);
+            out var bytesConsumedFirst,
+            out var charsWrittenFirst);
 
         Assert.AreEqual(OperationStatus.DestinationTooSmall, first);
         Assert.IsTrue(charsWrittenFirst > 0);
 
-        char[] secondChunk = new char[MultiByteText.Length];
+        var secondChunk = new char[MultiByteText.Length];
         OperationStatus second = decoder.DecodeChunk(
             bytes.AsSpan(bytesConsumedFirst),
             secondChunk,
             flush: true,
-            out int bytesConsumedSecond,
-            out int charsWrittenSecond);
+            out var bytesConsumedSecond,
+            out var charsWrittenSecond);
 
         Assert.AreEqual(OperationStatus.Done, second);
         Assert.AreEqual(bytes.Length, bytesConsumedFirst + bytesConsumedSecond);
@@ -149,7 +149,7 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void DecodeChunk_WhenDecoderIsNull_ShouldThrowArgumentNullException()
     {
-        char[] backing = new char[16];
+        var backing = new char[16];
 
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -167,18 +167,18 @@ public sealed partial class EncodingExtensionsTests
     public void DecodeChunk_WhenSourceEndsInPartialMultiByteSequence_ShouldRetainStateUntilFlush()
     {
         System.Text.Decoder decoder = System.Text.Encoding.UTF8.GetDecoder();
-        byte[] fullBytes = System.Text.Encoding.UTF8.GetBytes("é");
+        var fullBytes = System.Text.Encoding.UTF8.GetBytes("é");
         Assert.AreEqual(2, fullBytes.Length);
-        byte[] firstHalf = new byte[] { fullBytes[0] };
-        byte[] secondHalf = new byte[] { fullBytes[1] };
-        char[] destination = new char[4];
+        var firstHalf = new byte[] { fullBytes[0] };
+        var secondHalf = new byte[] { fullBytes[1] };
+        var destination = new char[4];
 
         OperationStatus first = decoder.DecodeChunk(
             firstHalf,
             destination,
             flush: false,
-            out int bytesConsumedFirst,
-            out int charsWrittenFirst);
+            out var bytesConsumedFirst,
+            out var charsWrittenFirst);
 
         Assert.AreEqual(OperationStatus.Done, first);
         Assert.AreEqual(1, bytesConsumedFirst);
@@ -188,8 +188,8 @@ public sealed partial class EncodingExtensionsTests
             secondHalf,
             destination,
             flush: true,
-            out int bytesConsumedSecond,
-            out int charsWrittenSecond);
+            out var bytesConsumedSecond,
+            out var charsWrittenSecond);
 
         Assert.AreEqual(OperationStatus.Done, second);
         Assert.AreEqual(1, bytesConsumedSecond);

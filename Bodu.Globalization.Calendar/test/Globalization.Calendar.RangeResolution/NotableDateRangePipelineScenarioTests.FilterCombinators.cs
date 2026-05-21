@@ -466,8 +466,8 @@ public sealed partial class NotableDateRangePipelineScenarioTests
     /// <param name="expectedNames">The expected distinct names.</param>
     private static void AssertEmittedNames(IReadOnlyList<NotableDate> resolved, params string[] expectedNames)
     {
-        string[] actualNames = resolved.Select(n => n.Name).Distinct().OrderBy(s => s, StringComparer.Ordinal).ToArray();
-        string[] expectedSorted = expectedNames.OrderBy(s => s, StringComparer.Ordinal).ToArray();
+        var actualNames = resolved.Select(n => n.Name).Distinct().OrderBy(s => s, StringComparer.Ordinal).ToArray();
+        var expectedSorted = expectedNames.OrderBy(s => s, StringComparer.Ordinal).ToArray();
 
         CollectionAssert.AreEqual(
             expectedSorted,

@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Linq;
-
 namespace Bodu.Globalization.Calendar.Plugins;
 
 /// <summary>
@@ -156,7 +154,7 @@ public sealed class ExternalPluginLoaderTests
         // Activator.CreateInstance wraps the constructor's exception in a TargetInvocationException;
         // walk the chain to confirm the original "intentional" marker reaches the caller.
         Exception? chain = ex.InnerException;
-        bool found = false;
+        var found = false;
         while (chain is not null)
         {
             if (chain.Message.Contains("intentional", StringComparison.OrdinalIgnoreCase))
@@ -195,7 +193,7 @@ public sealed class ExternalPluginLoaderTests
     [TestMethod]
     public void Load_WhenAssemblyFileIsMalformed_ShouldSurfaceException()
     {
-        string malformedPath = Path.Combine(Path.GetTempPath(), $"bodu-malformed-{Guid.NewGuid():N}.dll");
+        var malformedPath = Path.Combine(Path.GetTempPath(), $"bodu-malformed-{Guid.NewGuid():N}.dll");
         try
         {
             File.WriteAllText(malformedPath, "this is not a valid portable-executable file");

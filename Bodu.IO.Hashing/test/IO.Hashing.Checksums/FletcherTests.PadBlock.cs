@@ -25,7 +25,7 @@ public abstract partial class FletcherTests<TTest, TAlgorithm>
         PaddingFletcher fletcher = new();
         byte[] residual = { 0xAA };
 
-        byte[] padded = fletcher.PadBlockExposed(residual, messageLength: 1);
+        var padded = fletcher.PadBlockExposed(residual, messageLength: 1);
 
         Assert.AreEqual(1, padded.Length); // Fletcher is processed byte-wise.
         Assert.AreEqual(0xAA, padded[0]);
@@ -44,7 +44,7 @@ public abstract partial class FletcherTests<TTest, TAlgorithm>
         // GetCurrentHashCore down the padding branch.
         fletcher.Append(new byte[] { 0x01, 0x02, 0x03 });
 
-        byte[] hash = fletcher.GetCurrentHash();
+        var hash = fletcher.GetCurrentHash();
 
         Assert.AreEqual(4, hash.Length);
     }

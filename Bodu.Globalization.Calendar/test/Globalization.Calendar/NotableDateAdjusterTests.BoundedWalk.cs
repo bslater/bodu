@@ -17,7 +17,7 @@ public sealed partial class NotableDateAdjusterTests
     public void Apply_WhenMoveToNextNonWorkingDayPredicateNeverMatches_ShouldInvokePredicateExactly366Times()
     {
         // isNonWorking always returns true — every day is non-working — so no working day is ever found within the bound.
-        int callCount = 0;
+        var callCount = 0;
         var adjuster = CreateAdjuster(isNonWorking: (d, t, c) =>
         {
             callCount++;

@@ -1,10 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensions.RemoveTrailingNewLine.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System;
 
 namespace Bodu.Extensions;
 
@@ -25,22 +23,12 @@ public static partial class StringExtensions
     /// Only one trailing line terminator is removed. Repeated trailing newlines are intentionally preserved — use
     /// <see cref="string.TrimEnd(char[])" /> with <c>'\r','\n'</c> when greedy stripping is required.
     /// </remarks>
-    /// <example>
-    /// <code language="csharp">
-    ///<![CDATA[
-    /// "line\r\n".RemoveTrailingNewLine();  // "line"
-    /// "line\n\n".RemoveTrailingNewLine();  // "line\n" (only one terminator removed)
-    ///]]>
-    /// </code>
-    /// </example>
     public static string RemoveTrailingNewLine(this string value)
     {
         ThrowHelper.ThrowIfNull(value);
 
-        if (value.EndsWith("\r\n", StringComparison.Ordinal))
-            return value.Substring(0, value.Length - 2);
-        if (value.Length > 0 && (value[^1] == '\n' || value[^1] == '\r'))
-            return value.Substring(0, value.Length - 1);
-        return value;
+        return value.EndsWith("\r\n", StringComparison.Ordinal)
+            ? value[..^2]
+            : value.Length > 0 && (value[^1] == '\n' || value[^1] == '\r') ? value[..^1] : value;
     }
 }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringEncodingExtensionsTests.EncodeTo.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -15,10 +15,10 @@ public sealed partial class StringEncodingExtensionsTests
     [TestMethod]
     public void EncodeTo_WhenDestinationFits_ShouldWriteAndReturnCount()
     {
-        int required = System.Text.Encoding.UTF8.GetByteCount(MultiByteText);
+        var required = System.Text.Encoding.UTF8.GetByteCount(MultiByteText);
         Span<byte> destination = new byte[required];
 
-        int written = MultiByteText.EncodeTo(System.Text.Encoding.UTF8, destination);
+        var written = MultiByteText.EncodeTo(System.Text.Encoding.UTF8, destination);
 
         Assert.AreEqual(required, written);
         CollectionAssert.AreEqual(
@@ -33,8 +33,8 @@ public sealed partial class StringEncodingExtensionsTests
     [TestMethod]
     public void EncodeTo_WhenDestinationIsOneByteTooSmall_ShouldThrowArgumentException()
     {
-        int required = System.Text.Encoding.UTF8.GetByteCount(MultiByteText);
-        byte[] backing = new byte[required - 1];
+        var required = System.Text.Encoding.UTF8.GetByteCount(MultiByteText);
+        var backing = new byte[required - 1];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -49,7 +49,7 @@ public sealed partial class StringEncodingExtensionsTests
     [TestMethod]
     public void EncodeTo_WhenTextIsNull_ShouldThrowArgumentNullException()
     {
-        byte[] backing = new byte[64];
+        var backing = new byte[64];
 
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -66,7 +66,7 @@ public sealed partial class StringEncodingExtensionsTests
     [TestMethod]
     public void EncodeTo_WhenEncodingIsNull_ShouldThrowArgumentNullException()
     {
-        byte[] backing = new byte[64];
+        var backing = new byte[64];
 
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

@@ -1,11 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensions.SplitLines.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System;
-using System.Collections.Generic;
 
 namespace Bodu.Extensions;
 
@@ -30,14 +27,6 @@ public static partial class StringExtensions
     /// CRLF is treated as a single line ending. Unlike <see cref="string.Split(char[])" />, a trailing line terminator
     /// does not produce a final empty line — the contract matches typical "lines in a file" reading semantics.
     /// </remarks>
-    /// <example>
-    /// <code language="csharp">
-    ///<![CDATA[
-    /// "a\r\nb\nc".SplitLines();                     // yields "a", "b", "c"
-    /// "a\n\nb".SplitLines(removeEmptyLines: true);  // yields "a", "b"
-    ///]]>
-    /// </code>
-    /// </example>
     public static IEnumerable<string> SplitLines(this string value, bool removeEmptyLines = false)
     {
         ThrowHelper.ThrowIfNull(value);
@@ -56,13 +45,13 @@ public static partial class StringExtensions
     {
         if (value.Length == 0) yield break;
 
-        int lineStart = 0;
-        for (int i = 0; i < value.Length; i++)
+        var lineStart = 0;
+        for (var i = 0; i < value.Length; i++)
         {
-            char c = value[i];
-            if (c == '\r' || c == '\n')
+            var c = value[i];
+            if (c is '\r' or '\n')
             {
-                string line = value.Substring(lineStart, i - lineStart);
+                var line = value[lineStart..i];
                 if (!removeEmptyLines || line.Length > 0) yield return line;
 
                 if (c == '\r' && i + 1 < value.Length && value[i + 1] == '\n') i++;
@@ -72,7 +61,7 @@ public static partial class StringExtensions
 
         if (lineStart < value.Length)
         {
-            string tail = value.Substring(lineStart);
+            var tail = value[lineStart..];
             if (!removeEmptyLines || tail.Length > 0) yield return tail;
         }
     }

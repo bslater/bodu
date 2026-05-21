@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EncodingExtensions.Encoding.Pool.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -44,14 +44,14 @@ public static partial class EncodingExtensions
     {
         ThrowHelper.ThrowIfNull(encoding);
 
-        int required = encoding.GetByteCount(chars);
+        var required = encoding.GetByteCount(chars);
         if (required == 0)
         {
             bytesWritten = 0;
             return Array.Empty<byte>();
         }
 
-        byte[] buffer = ArrayPool<byte>.Shared.Rent(required);
+        var buffer = ArrayPool<byte>.Shared.Rent(required);
         try
         {
             bytesWritten = encoding.GetBytes(chars, buffer);
@@ -97,14 +97,14 @@ public static partial class EncodingExtensions
     {
         ThrowHelper.ThrowIfNull(encoding);
 
-        int required = encoding.GetCharCount(bytes);
+        var required = encoding.GetCharCount(bytes);
         if (required == 0)
         {
             charsWritten = 0;
             return Array.Empty<char>();
         }
 
-        char[] buffer = ArrayPool<char>.Shared.Rent(required);
+        var buffer = ArrayPool<char>.Shared.Rent(required);
         try
         {
             charsWritten = encoding.GetChars(bytes, buffer);
@@ -170,7 +170,7 @@ public static partial class EncodingExtensions
     {
         ThrowHelper.ThrowIfNull(encoding);
 
-        int count = encoding.GetCharCount(bytes);
+        var count = encoding.GetCharCount(bytes);
         MemoryPool<char> pool = memoryPool ?? MemoryPool<char>.Shared;
         IMemoryOwner<char> owner = pool.Rent(count);
         try
@@ -220,12 +220,12 @@ public static partial class EncodingExtensions
     {
         ThrowHelper.ThrowIfNull(encoding);
 
-        int required = Math.Max(1, encoding.GetByteCount(chars));
-        PooledBufferBuilder<byte> builder = new PooledBufferBuilder<byte>(required);
+        var required = Math.Max(1, encoding.GetByteCount(chars));
+        var builder = new PooledBufferBuilder<byte>(required);
         try
         {
             Span<byte> destination = builder.GetSpan(required);
-            int written = encoding.GetBytes(chars, destination);
+            var written = encoding.GetBytes(chars, destination);
             builder.Advance(written);
             return builder;
         }
@@ -261,12 +261,12 @@ public static partial class EncodingExtensions
     {
         ThrowHelper.ThrowIfNull(encoding);
 
-        int required = Math.Max(1, encoding.GetCharCount(bytes));
-        PooledBufferBuilder<char> builder = new PooledBufferBuilder<char>(required);
+        var required = Math.Max(1, encoding.GetCharCount(bytes));
+        var builder = new PooledBufferBuilder<char>(required);
         try
         {
             Span<char> destination = builder.GetSpan(required);
-            int written = encoding.GetChars(bytes, destination);
+            var written = encoding.GetChars(bytes, destination);
             builder.Advance(written);
             return builder;
         }

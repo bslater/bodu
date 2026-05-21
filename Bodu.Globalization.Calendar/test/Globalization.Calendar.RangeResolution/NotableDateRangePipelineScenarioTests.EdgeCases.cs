@@ -37,7 +37,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
             new DateTime(2026, 12, 28),
             new DateTime(2027, 1, 5));
 
-        string[] emittedNames = resolved
+        var emittedNames = resolved
             .Where(n => n.Name.StartsWith("Festival Day", StringComparison.Ordinal))
             .OrderBy(n => n.Date)
             .Select(n => n.Name)
@@ -64,7 +64,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
             new DateTime(2026, 12, 20),
             new DateTime(2026, 12, 28));
 
-        string[] emittedNames = resolved
+        var emittedNames = resolved
             .Where(n => n.Name.StartsWith("Festival Day", StringComparison.Ordinal))
             .OrderBy(n => n.Date)
             .Select(n => n.Name)
@@ -91,7 +91,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
             new DateTime(2026, 12, 27),
             new DateTime(2026, 12, 29));
 
-        string[] emittedNames = resolved
+        var emittedNames = resolved
             .Where(n => n.Name.StartsWith("Festival Day", StringComparison.Ordinal))
             .OrderBy(n => n.Date)
             .Select(n => n.Name)
@@ -122,7 +122,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
             .ToArray();
 
         Assert.AreEqual(7, festivalDays.Length);
-        for (int i = 0; i < 7; i++)
+        for (var i = 0; i < 7; i++)
         {
             Assert.AreEqual($"Festival Day {i + 1}", festivalDays[i].Name);
             Assert.AreEqual(new DateTime(2026, 12, 25 + i), festivalDays[i].Date);
@@ -379,7 +379,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
     private static NotableDateRule[] SevenConsecutiveDecemberHolidays()
     {
         var rules = new NotableDateRule[7];
-        for (int i = 0; i < 7; i++)
+        for (var i = 0; i < 7; i++)
         {
             rules[i] = new NotableDateRule
             {

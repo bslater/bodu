@@ -1,10 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensions.SliceSafe.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System;
 
 namespace Bodu.Extensions;
 
@@ -24,22 +22,11 @@ public static partial class StringExtensions
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="value" /> is <see langword="null" />.
     /// </exception>
-    /// <example>
-    /// <code language="csharp">
-    ///<![CDATA[
-    /// "hello".SliceSafe(2);   // "llo"
-    /// "hello".SliceSafe(99);  // "" (start past end)
-    /// "hello".SliceSafe(-3);  // "hello" (negative start clamped)
-    ///]]>
-    /// </code>
-    /// </example>
     public static string SliceSafe(this string value, int startIndex)
     {
         ThrowHelper.ThrowIfNull(value);
 
-        if (startIndex <= 0) return value;
-        if (startIndex >= value.Length) return string.Empty;
-        return value.Substring(startIndex);
+        return startIndex <= 0 ? value : startIndex >= value.Length ? string.Empty : value[startIndex..];
     }
 
     /// <summary>
@@ -59,23 +46,14 @@ public static partial class StringExtensions
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="value" /> is <see langword="null" />.
     /// </exception>
-    /// <example>
-    /// <code language="csharp">
-    ///<![CDATA[
-    /// "hello world".SliceSafe(6, 99);  // "world" (length clamped to remainder)
-    /// "hello".SliceSafe(-2, 3);        // "hel" (start clamped to 0)
-    ///]]>
-    /// </code>
-    /// </example>
     public static string SliceSafe(this string value, int startIndex, int length)
     {
         ThrowHelper.ThrowIfNull(value);
 
         if (length <= 0) return string.Empty;
-        int start = startIndex < 0 ? 0 : startIndex;
+        var start = startIndex < 0 ? 0 : startIndex;
         if (start >= value.Length) return string.Empty;
-        int take = Math.Min(length, value.Length - start);
-        if (start == 0 && take == value.Length) return value;
-        return value.Substring(start, take);
+        var take = Math.Min(length, value.Length - start);
+        return start == 0 && take == value.Length ? value : value.Substring(start, take);
     }
 }

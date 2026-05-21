@@ -1,12 +1,10 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TextConfigurationMultiSourceTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.IO;
 using System.Text;
-using Bodu.Extensions.Configuration.Text;
 using Microsoft.Extensions.Configuration;
 
 namespace Bodu.Extensions.Configuration.Text.Tests;

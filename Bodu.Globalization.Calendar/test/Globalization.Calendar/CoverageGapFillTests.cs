@@ -5,7 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Collections.Immutable;
-using System.Linq;
 using Bodu.Extensions;
 using Bodu.Globalization.Calendar.Plugins;
 
@@ -544,7 +543,7 @@ public sealed class CoverageGapFillTests
     [TestMethod]
     public void ParseOverrideBody_WhenStrategyIsFixed_ShouldPopulateMonthAndDay()
     {
-        string xml = UseDirectiveNamespaceHeader +
+        var xml = UseDirectiveNamespaceHeader +
             "  <UseFrom resource=\"x\">\n" +
             "    <Use name=\"Seed\"><Rule name=\"Seed Rule\" category=\"Holiday\"><Fixed month=\"March\" day=\"15\" /></Rule></Use>\n" +
             "  </UseFrom>\n" +
@@ -566,7 +565,7 @@ public sealed class CoverageGapFillTests
     [TestMethod]
     public void ParseOverrideBody_WhenStrategyIsDayOfWeekInMonth_ShouldPopulateMonthWeekdayAndOrdinal()
     {
-        string xml = UseDirectiveNamespaceHeader +
+        var xml = UseDirectiveNamespaceHeader +
             "  <UseFrom resource=\"x\">\n" +
             "    <Use name=\"Seed\"><Rule name=\"Seed Rule\" category=\"Holiday\"><DayOfWeekInMonth month=\"May\" dayOfWeek=\"Sunday\" weekOrdinal=\"Second\" /></Rule></Use>\n" +
             "  </UseFrom>\n" +
@@ -589,7 +588,7 @@ public sealed class CoverageGapFillTests
     [TestMethod]
     public void ParseOverrideBody_WhenStrategyIsOffsetFromAnchor_ShouldPopulateAnchorAndOffset()
     {
-        string xml = UseDirectiveNamespaceHeader +
+        var xml = UseDirectiveNamespaceHeader +
             "  <UseFrom resource=\"x\">\n" +
             "    <Use name=\"Seed\"><Rule name=\"Seed Rule\" category=\"Holiday\"><OffsetFromAnchor name=\"Easter Sunday\" offset=\"-2\" /></Rule></Use>\n" +
             "  </UseFrom>\n" +
@@ -611,7 +610,7 @@ public sealed class CoverageGapFillTests
     [TestMethod]
     public void ParseOverrideBody_WhenStrategyIsAlgorithm_ShouldPopulateKeyAndType()
     {
-        string xml = UseDirectiveNamespaceHeader +
+        var xml = UseDirectiveNamespaceHeader +
             "  <UseFrom resource=\"x\">\n" +
             "    <Use name=\"Seed\"><Rule name=\"Seed Rule\" category=\"Holiday\"><Algorithm key=\"easter-sunday\" /></Rule></Use>\n" +
             "  </UseFrom>\n" +
@@ -632,7 +631,7 @@ public sealed class CoverageGapFillTests
     [TestMethod]
     public void ParseXml_WhenAlgorithmTypeNameCannotBeResolved_ShouldLeaveTypeNull()
     {
-        string xml = UseDirectiveNamespaceHeader +
+        var xml = UseDirectiveNamespaceHeader +
             "  <NotableDate name=\"Missing Type Test\">\n" +
             "    <Rule name=\"Missing Type Rule\" category=\"Observance\">\n" +
             "      <Algorithm key=\"x\" type=\"Totally.Invalid.Namespace.DoesNotExist, Nowhere\" />\n" +
@@ -686,7 +685,7 @@ public sealed class CoverageGapFillTests
             ImmutableArray<NotableDateRuleUseGroup>.Empty,
             ImmutableArray<NotableDateRule>.Empty);
 
-        string rendered = doc.ToString()!;
+        var rendered = doc.ToString()!;
 
         Assert.IsTrue(rendered.Contains("ParsedNotableDateDocument", StringComparison.Ordinal));
     }

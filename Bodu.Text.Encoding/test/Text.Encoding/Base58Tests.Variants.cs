@@ -34,12 +34,12 @@ public sealed partial class Base58Tests
     [TestMethod]
     public void Decode_WhenRippleEncodedDecodedAsBitcoin_ShouldProduceDifferentValueOrThrow()
     {
-        byte[] input = Ascii("Hello");
-        string rippleEncoded = Base58.Encode(input, Base58Variant.Ripple);
+        var input = Ascii("Hello");
+        var rippleEncoded = Base58.Encode(input, Base58Variant.Ripple);
 
         try
         {
-            byte[] decodedAsBitcoin = Base58.Decode(rippleEncoded, Base58Variant.BitcoinFlickr);
+            var decodedAsBitcoin = Base58.Decode(rippleEncoded, Base58Variant.BitcoinFlickr);
             Assert.IsFalse(decodedAsBitcoin.SequenceEqual(input),
                 "Decoding Ripple-encoded data as Bitcoin/Flickr should not produce the original bytes.");
         }
@@ -55,10 +55,10 @@ public sealed partial class Base58Tests
     [TestMethod]
     public void Encode_WhenSameInputDifferentVariants_ShouldProduceDifferentOutputs()
     {
-        byte[] input = Ascii("Hello");
+        var input = Ascii("Hello");
 
-        string bitcoin = Base58.Encode(input, Base58Variant.BitcoinFlickr);
-        string ripple = Base58.Encode(input, Base58Variant.Ripple);
+        var bitcoin = Base58.Encode(input, Base58Variant.BitcoinFlickr);
+        var ripple = Base58.Encode(input, Base58Variant.Ripple);
 
         Assert.AreNotEqual(bitcoin, ripple);
     }

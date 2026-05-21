@@ -25,10 +25,10 @@ public sealed partial class Base85Tests
     [TestMethod]
     public void Encode_SpanWithDelimitersAndExactDestination_ShouldEmitDelimitedOutput()
     {
-        int size = Base85.GetEncodedLength(SampleBytes, Base85Variant.Ascii85, BaseFormattingOptions.IncludePrefix);
-        char[] destination = new char[size];
+        var size = Base85.GetEncodedLength(SampleBytes, Base85Variant.Ascii85, BaseFormattingOptions.IncludePrefix);
+        var destination = new char[size];
 
-        int written = Base85.Encode(SampleBytes, destination, Base85Variant.Ascii85, BaseFormattingOptions.IncludePrefix);
+        var written = Base85.Encode(SampleBytes, destination, Base85Variant.Ascii85, BaseFormattingOptions.IncludePrefix);
 
         Assert.AreEqual(size, written);
         string actual = new(destination, 0, written);
@@ -46,15 +46,15 @@ public sealed partial class Base85Tests
     public void Encode_SpanWithDelimitersAndShortcutShrinksOutput_ShouldUseRentedScratch()
     {
         // 8 all-zero bytes encode to two 'z' shortcuts → 2 chars of data + 4 chars of delimiters = 6 chars total.
-        byte[] zeros = new byte[8];
-        int worstCase = Base85.GetMaxEncodedLength(zeros.Length, Base85Variant.Ascii85, BaseFormattingOptions.IncludePrefix);
-        int actualLength = Base85.GetEncodedLength(zeros, Base85Variant.Ascii85, BaseFormattingOptions.IncludePrefix);
+        var zeros = new byte[8];
+        var worstCase = Base85.GetMaxEncodedLength(zeros.Length, Base85Variant.Ascii85, BaseFormattingOptions.IncludePrefix);
+        var actualLength = Base85.GetEncodedLength(zeros, Base85Variant.Ascii85, BaseFormattingOptions.IncludePrefix);
 
         Assert.IsTrue(actualLength < worstCase, "Test premise: shortcut output must be shorter than worst case.");
 
-        char[] destination = new char[actualLength];
+        var destination = new char[actualLength];
 
-        int written = Base85.Encode(zeros, destination, Base85Variant.Ascii85, BaseFormattingOptions.IncludePrefix);
+        var written = Base85.Encode(zeros, destination, Base85Variant.Ascii85, BaseFormattingOptions.IncludePrefix);
 
         Assert.AreEqual(actualLength, written);
         Assert.AreEqual("<~zz~>", new string(destination, 0, written));
@@ -67,8 +67,8 @@ public sealed partial class Base85Tests
     [TestMethod]
     public void Encode_SpanWithDelimitersAndTooSmallDestination_ShouldThrowArgumentException()
     {
-        byte[] zeros = new byte[8];
-        char[] destination = new char[1];
+        var zeros = new byte[8];
+        var destination = new char[1];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -84,9 +84,9 @@ public sealed partial class Base85Tests
     [TestMethod]
     public void Encode_SpanWithEmptyInputAndDelimiters_ShouldWriteFourDelimiterChars()
     {
-        char[] destination = new char[4];
+        var destination = new char[4];
 
-        int written = Base85.Encode(ReadOnlySpan<byte>.Empty, destination, Base85Variant.Ascii85, BaseFormattingOptions.IncludePrefix);
+        var written = Base85.Encode(ReadOnlySpan<byte>.Empty, destination, Base85Variant.Ascii85, BaseFormattingOptions.IncludePrefix);
 
         Assert.AreEqual(4, written);
         Assert.AreEqual("<~~>", new string(destination));
@@ -100,7 +100,7 @@ public sealed partial class Base85Tests
     [TestMethod]
     public void Encode_SpanWithEmptyInputAndDelimitersAndTooSmallDestination_ShouldThrowArgumentException()
     {
-        char[] destination = new char[3];
+        var destination = new char[3];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -117,11 +117,11 @@ public sealed partial class Base85Tests
     public void Encode_SpanWithoutDelimitersAndShortcutShrinksOutput_ShouldUseRentedScratch()
     {
         // 4 zero bytes encode to a single 'z' character (vs 5 chars worst case).
-        byte[] zeros = new byte[4];
-        int actualLength = Base85.GetEncodedLength(zeros, Base85Variant.Ascii85);
-        char[] destination = new char[actualLength];
+        var zeros = new byte[4];
+        var actualLength = Base85.GetEncodedLength(zeros, Base85Variant.Ascii85);
+        var destination = new char[actualLength];
 
-        int written = Base85.Encode(zeros, destination, Base85Variant.Ascii85);
+        var written = Base85.Encode(zeros, destination, Base85Variant.Ascii85);
 
         Assert.AreEqual(actualLength, written);
         Assert.AreEqual("z", new string(destination, 0, written));
@@ -134,10 +134,10 @@ public sealed partial class Base85Tests
     [TestMethod]
     public void TryEncode_SpanWithDelimitersAndExactDestination_ShouldReturnTrueWithDelimitedOutput()
     {
-        int size = Base85.GetEncodedLength(SampleBytes, Base85Variant.Ascii85, BaseFormattingOptions.IncludePrefix);
-        char[] destination = new char[size];
+        var size = Base85.GetEncodedLength(SampleBytes, Base85Variant.Ascii85, BaseFormattingOptions.IncludePrefix);
+        var destination = new char[size];
 
-        bool ok = Base85.TryEncode(SampleBytes, destination, out int written, Base85Variant.Ascii85, BaseFormattingOptions.IncludePrefix);
+        var ok = Base85.TryEncode(SampleBytes, destination, out var written, Base85Variant.Ascii85, BaseFormattingOptions.IncludePrefix);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(size, written);
@@ -152,11 +152,11 @@ public sealed partial class Base85Tests
     [TestMethod]
     public void TryEncode_SpanWithDelimitersAndShortcutShrinksOutput_ShouldReturnTrueViaRentedScratch()
     {
-        byte[] zeros = new byte[8];
-        int actualLength = Base85.GetEncodedLength(zeros, Base85Variant.Ascii85, BaseFormattingOptions.IncludePrefix);
-        char[] destination = new char[actualLength];
+        var zeros = new byte[8];
+        var actualLength = Base85.GetEncodedLength(zeros, Base85Variant.Ascii85, BaseFormattingOptions.IncludePrefix);
+        var destination = new char[actualLength];
 
-        bool ok = Base85.TryEncode(zeros, destination, out int written, Base85Variant.Ascii85, BaseFormattingOptions.IncludePrefix);
+        var ok = Base85.TryEncode(zeros, destination, out var written, Base85Variant.Ascii85, BaseFormattingOptions.IncludePrefix);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(actualLength, written);
@@ -171,10 +171,10 @@ public sealed partial class Base85Tests
     [TestMethod]
     public void TryEncode_SpanWithDelimitersAndTooSmallDestination_ShouldReturnFalseAndZeroCount()
     {
-        byte[] payload = SampleBytes;
-        char[] destination = new char[2];
+        var payload = SampleBytes;
+        var destination = new char[2];
 
-        bool ok = Base85.TryEncode(payload, destination, out int written, Base85Variant.Ascii85, BaseFormattingOptions.IncludePrefix);
+        var ok = Base85.TryEncode(payload, destination, out var written, Base85Variant.Ascii85, BaseFormattingOptions.IncludePrefix);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(0, written);
@@ -187,9 +187,9 @@ public sealed partial class Base85Tests
     [TestMethod]
     public void TryEncode_SpanWithEmptyInputAndDelimiters_ShouldWriteFourDelimiterChars()
     {
-        char[] destination = new char[4];
+        var destination = new char[4];
 
-        bool ok = Base85.TryEncode(ReadOnlySpan<byte>.Empty, destination, out int written, Base85Variant.Ascii85, BaseFormattingOptions.IncludePrefix);
+        var ok = Base85.TryEncode(ReadOnlySpan<byte>.Empty, destination, out var written, Base85Variant.Ascii85, BaseFormattingOptions.IncludePrefix);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(4, written);
@@ -203,9 +203,9 @@ public sealed partial class Base85Tests
     [TestMethod]
     public void TryEncode_SpanWithEmptyInputAndDelimitersAndTooSmallDestination_ShouldReturnFalse()
     {
-        char[] destination = new char[3];
+        var destination = new char[3];
 
-        bool ok = Base85.TryEncode(ReadOnlySpan<byte>.Empty, destination, out int written, Base85Variant.Ascii85, BaseFormattingOptions.IncludePrefix);
+        var ok = Base85.TryEncode(ReadOnlySpan<byte>.Empty, destination, out var written, Base85Variant.Ascii85, BaseFormattingOptions.IncludePrefix);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(0, written);
@@ -218,7 +218,7 @@ public sealed partial class Base85Tests
     [TestMethod]
     public void TryEncode_SpanWithZ85AndUnalignedInput_ShouldThrowArgumentException()
     {
-        char[] destination = new char[16];
+        var destination = new char[16];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {

@@ -5,8 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Collections.Immutable;
-using System.Linq;
-using Bodu.Extensions;
 using Bodu.Globalization.Calendar.Plugins;
 using SysGlobal = System.Globalization;
 

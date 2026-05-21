@@ -1,10 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensionsTests.PrefixLines.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System;
 
 namespace Bodu.Extensions;
 
@@ -17,7 +15,7 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void PrefixLines_WhenInputUsesLf_ShouldPrependPrefixToEveryLine()
     {
-        string actual = "one\ntwo".PrefixLines("// ");
+        var actual = "one\ntwo".PrefixLines("// ");
 
         Assert.AreEqual("// one\n// two", actual);
     }
@@ -29,7 +27,7 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void PrefixLines_WhenInputUsesCrLf_ShouldPreserveLineBoundaries()
     {
-        string actual = "one\r\ntwo".PrefixLines("> ");
+        var actual = "one\r\ntwo".PrefixLines("> ");
 
         Assert.AreEqual("> one\r\n> two", actual);
     }

@@ -778,7 +778,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
             territoryCode: "AU-WA");
 
         // Each rule should appear at most once for AU-WA across a single year.
-        string[] names = resolved.Select(n => n.Name).ToArray();
+        var names = resolved.Select(n => n.Name).ToArray();
         CollectionAssert.AllItemsAreUnique(names);
 
         Assert.IsTrue(resolved.Any(n => n.Name == "New Year's Day"));
@@ -799,7 +799,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 
     private static NotableDateService BuildService(params NotableDateRule[] rules)
     {
-        bool needsAlgorithm = rules.Any(r => r.Strategy == DateResolutionStrategy.Algorithm);
+        var needsAlgorithm = rules.Any(r => r.Strategy == DateResolutionStrategy.Algorithm);
         NotableDateAlgorithmRegistry? registry = needsAlgorithm
             ? new NotableDateAlgorithmRegistry().Register(EasterAlgorithmKey, new GregorianEasterSundayAlgorithm())
             : null;
@@ -841,20 +841,20 @@ public sealed partial class NotableDateRangePipelineScenarioTests
     {
         public DateTime? GetDate(int year, System.Globalization.Calendar? calendar = null)
         {
-            int a = year % 19;
-            int b = year / 100;
-            int c = year % 100;
-            int d = b / 4;
-            int e = b % 4;
-            int f = (b + 8) / 25;
-            int g = (b - f + 1) / 3;
-            int h = ((19 * a) + b - d - g + 15) % 30;
-            int i = c / 4;
-            int k = c % 4;
-            int l = (32 + (2 * e) + (2 * i) - h - k) % 7;
-            int m = (a + (11 * h) + (22 * l)) / 451;
-            int month = (h + l - (7 * m) + 114) / 31;
-            int day = ((h + l - (7 * m) + 114) % 31) + 1;
+            var a = year % 19;
+            var b = year / 100;
+            var c = year % 100;
+            var d = b / 4;
+            var e = b % 4;
+            var f = (b + 8) / 25;
+            var g = (b - f + 1) / 3;
+            var h = ((19 * a) + b - d - g + 15) % 30;
+            var i = c / 4;
+            var k = c % 4;
+            var l = (32 + (2 * e) + (2 * i) - h - k) % 7;
+            var m = (a + (11 * h) + (22 * l)) / 451;
+            var month = (h + l - (7 * m) + 114) / 31;
+            var day = ((h + l - (7 * m) + 114) % 31) + 1;
 
             return new DateTime(year, month, day);
         }

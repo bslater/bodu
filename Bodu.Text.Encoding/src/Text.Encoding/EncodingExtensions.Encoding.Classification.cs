@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EncodingExtensions.Encoding.Classification.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -137,7 +137,7 @@ public static partial class EncodingExtensions
     {
         ThrowHelper.ThrowIfNull(encoding);
 
-        string suffix = encoding.HasPreamble() ? "-BOM" : string.Empty;
+        var suffix = encoding.HasPreamble() ? "-BOM" : string.Empty;
         return encoding.CodePage switch
         {
             65001 => "UTF-8" + suffix,

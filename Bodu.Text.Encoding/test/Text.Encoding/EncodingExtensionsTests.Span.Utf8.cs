@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EncodingExtensionsTests.Span.Utf8.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -20,10 +20,10 @@ public sealed partial class EncodingExtensionsTests
     [DataRow("single-emoji")]
     public void GetUtf8ByteCount_WhenInvoked_ShouldMatchBclUtf8(string key)
     {
-        string text = GetPatternText(key);
-        int expected = System.Text.Encoding.UTF8.GetByteCount(text);
+        var text = GetPatternText(key);
+        var expected = System.Text.Encoding.UTF8.GetByteCount(text);
 
-        int actual = text.AsSpan().GetUtf8ByteCount();
+        var actual = text.AsSpan().GetUtf8ByteCount();
 
         Assert.AreEqual(expected, actual);
     }
@@ -40,10 +40,10 @@ public sealed partial class EncodingExtensionsTests
     [DataRow("single-emoji")]
     public void ToUtf8Bytes_WhenInvoked_ShouldMatchBclUtf8(string key)
     {
-        string text = GetPatternText(key);
-        byte[] expected = System.Text.Encoding.UTF8.GetBytes(text);
+        var text = GetPatternText(key);
+        var expected = System.Text.Encoding.UTF8.GetBytes(text);
 
-        byte[] actual = text.AsSpan().ToUtf8Bytes();
+        var actual = text.AsSpan().ToUtf8Bytes();
 
         CollectionAssert.AreEqual(expected, actual);
     }
@@ -55,7 +55,7 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void ToUtf8Bytes_WhenSpanIsEmpty_ShouldReturnEmptyArray()
     {
-        byte[] result = ReadOnlySpan<char>.Empty.ToUtf8Bytes();
+        var result = ReadOnlySpan<char>.Empty.ToUtf8Bytes();
 
         Assert.AreSame(Array.Empty<byte>(), result);
     }
@@ -67,10 +67,10 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void EncodeUtf8To_WhenDestinationFits_ShouldWriteAndReturnCount()
     {
-        int required = System.Text.Encoding.UTF8.GetByteCount(MultiByteText);
+        var required = System.Text.Encoding.UTF8.GetByteCount(MultiByteText);
         Span<byte> destination = new byte[required];
 
-        int written = MultiByteText.AsSpan().EncodeUtf8To(destination);
+        var written = MultiByteText.AsSpan().EncodeUtf8To(destination);
 
         Assert.AreEqual(required, written);
         CollectionAssert.AreEqual(System.Text.Encoding.UTF8.GetBytes(MultiByteText), destination.ToArray());
@@ -83,8 +83,8 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void EncodeUtf8To_WhenDestinationIsOneByteTooSmall_ShouldThrowArgumentException()
     {
-        int required = System.Text.Encoding.UTF8.GetByteCount(MultiByteText);
-        byte[] backing = new byte[required - 1];
+        var required = System.Text.Encoding.UTF8.GetByteCount(MultiByteText);
+        var backing = new byte[required - 1];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -105,10 +105,10 @@ public sealed partial class EncodingExtensionsTests
     [DataRow(-1, false)]
     public void TryEncodeUtf8To_WhenInvoked_ShouldRespectDestinationSize(int extra, bool expectedOk)
     {
-        int required = System.Text.Encoding.UTF8.GetByteCount(MultiByteText);
-        byte[] backing = new byte[required + extra];
+        var required = System.Text.Encoding.UTF8.GetByteCount(MultiByteText);
+        var backing = new byte[required + extra];
 
-        bool ok = MultiByteText.AsSpan().TryEncodeUtf8To(backing, out int written);
+        var ok = MultiByteText.AsSpan().TryEncodeUtf8To(backing, out var written);
 
         Assert.AreEqual(expectedOk, ok);
         Assert.AreEqual(expectedOk ? required : 0, written);
@@ -126,10 +126,10 @@ public sealed partial class EncodingExtensionsTests
     [DataRow("single-emoji")]
     public void FromUtf8_WhenInvoked_ShouldRoundTripWithToUtf8Bytes(string key)
     {
-        string text = GetPatternText(key);
-        byte[] bytes = text.AsSpan().ToUtf8Bytes();
+        var text = GetPatternText(key);
+        var bytes = text.AsSpan().ToUtf8Bytes();
 
-        string actual = ((ReadOnlySpan<byte>)bytes).FromUtf8();
+        var actual = ((ReadOnlySpan<byte>)bytes).FromUtf8();
 
         Assert.AreEqual(text, actual);
     }
@@ -141,11 +141,11 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void DecodeUtf8To_WhenDestinationFits_ShouldWriteAndReturnCount()
     {
-        byte[] bytes = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
-        int required = System.Text.Encoding.UTF8.GetCharCount(bytes);
+        var bytes = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
+        var required = System.Text.Encoding.UTF8.GetCharCount(bytes);
         Span<char> destination = new char[required];
 
-        int written = ((ReadOnlySpan<byte>)bytes).DecodeUtf8To(destination);
+        var written = ((ReadOnlySpan<byte>)bytes).DecodeUtf8To(destination);
 
         Assert.AreEqual(required, written);
         Assert.AreEqual(MultiByteText, new string(destination));
@@ -158,9 +158,9 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void DecodeUtf8To_WhenDestinationIsOneCharTooSmall_ShouldThrowArgumentException()
     {
-        byte[] bytes = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
-        int required = System.Text.Encoding.UTF8.GetCharCount(bytes);
-        char[] backing = new char[required - 1];
+        var bytes = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
+        var required = System.Text.Encoding.UTF8.GetCharCount(bytes);
+        var backing = new char[required - 1];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -181,11 +181,11 @@ public sealed partial class EncodingExtensionsTests
     [DataRow(-1, false)]
     public void TryDecodeUtf8To_WhenInvoked_ShouldRespectDestinationSize(int extra, bool expectedOk)
     {
-        byte[] bytes = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
-        int required = System.Text.Encoding.UTF8.GetCharCount(bytes);
-        char[] backing = new char[required + extra];
+        var bytes = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
+        var required = System.Text.Encoding.UTF8.GetCharCount(bytes);
+        var backing = new char[required + extra];
 
-        bool ok = ((ReadOnlySpan<byte>)bytes).TryDecodeUtf8To(backing, out int written);
+        var ok = ((ReadOnlySpan<byte>)bytes).TryDecodeUtf8To(backing, out var written);
 
         Assert.AreEqual(expectedOk, ok);
         Assert.AreEqual(expectedOk ? required : 0, written);

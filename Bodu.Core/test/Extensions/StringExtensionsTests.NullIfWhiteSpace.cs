@@ -1,10 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensionsTests.NullIfWhiteSpace.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System.Collections.Generic;
 
 namespace Bodu.Extensions;
 
@@ -47,9 +45,9 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void NullIfWhiteSpace_WhenInputIsMeaningful_ShouldReturnSameInstance()
     {
-        string value = "  hello  ";
+        var value = "  hello  ";
 
-        string? actual = value.NullIfWhiteSpace();
+        var actual = value.NullIfWhiteSpace();
 
         Assert.AreSame(value, actual);
     }

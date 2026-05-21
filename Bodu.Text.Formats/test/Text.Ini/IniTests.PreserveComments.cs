@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IniTests.PreserveComments.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -25,7 +25,7 @@ public sealed partial class IniTests
     [TestMethod]
     public void Parse_WhenPreserveCommentsAndCommentsPrecedeEntry_ShouldAttachToEntry()
     {
-        string source = "# leading comment\n; second\nkey = value\n";
+        var source = "# leading comment\n; second\nkey = value\n";
 
         IniDocument doc = Ini.Parse(source);
 
@@ -43,7 +43,7 @@ public sealed partial class IniTests
     [TestMethod]
     public void Parse_WhenPreserveCommentsAndCommentsPrecedeSection_ShouldAttachToSection()
     {
-        string source = "# applies to server\n[server]\nhost = localhost\n";
+        var source = "# applies to server\n[server]\nhost = localhost\n";
 
         IniDocument doc = Ini.Parse(source);
 
@@ -59,7 +59,7 @@ public sealed partial class IniTests
     [TestMethod]
     public void Parse_WhenPreserveCommentsIsFalse_ShouldDropAllComments()
     {
-        string source = "# leading\n[server]\n; before host\nhost = localhost\n";
+        var source = "# leading\n[server]\n; before host\nhost = localhost\n";
 
         IniDocument doc = Ini.Parse(source, new IniParseOptions { PreserveComments = false });
 
@@ -74,7 +74,7 @@ public sealed partial class IniTests
     [TestMethod]
     public void Parse_WhenCommentsPresent_ShouldAttachLineNumber()
     {
-        string source = "# line one\n# line two\nkey = value\n";
+        var source = "# line one\n# line two\nkey = value\n";
 
         IniDocument doc = Ini.Parse(source);
 

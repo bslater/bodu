@@ -104,7 +104,7 @@ public sealed class HinduLunarNotableDateAlgorithmTests
         var expected = new DateTime(year, knownMonth, knownDay);
 
         Assert.IsNotNull(result);
-        int dayDiff = Math.Abs((result!.Value - expected).Days);
+        var dayDiff = Math.Abs((result!.Value - expected).Days);
         Assert.IsTrue(dayDiff <= 2,
             $"Diwali {year}: expected within ±2 days of {expected:yyyy-MM-dd}, got {result.Value:yyyy-MM-dd}.");
     }
@@ -125,7 +125,7 @@ public sealed class HinduLunarNotableDateAlgorithmTests
         var expected = new DateTime(year, knownMonth, knownDay);
 
         Assert.IsNotNull(result);
-        int dayDiff = Math.Abs((result!.Value - expected).Days);
+        var dayDiff = Math.Abs((result!.Value - expected).Days);
         Assert.IsTrue(dayDiff <= 2,
             $"Holi {year}: expected within ±2 days of {expected:yyyy-MM-dd}, got {result.Value:yyyy-MM-dd}.");
     }
@@ -145,7 +145,7 @@ public sealed class HinduLunarNotableDateAlgorithmTests
         var expected = new DateTime(year, knownMonth, knownDay);
 
         Assert.IsNotNull(result);
-        int dayDiff = Math.Abs((result!.Value - expected).Days);
+        var dayDiff = Math.Abs((result!.Value - expected).Days);
         Assert.IsTrue(dayDiff <= 2,
             $"Navaratri {year}: expected within ±2 days of {expected:yyyy-MM-dd}, got {result.Value:yyyy-MM-dd}.");
     }

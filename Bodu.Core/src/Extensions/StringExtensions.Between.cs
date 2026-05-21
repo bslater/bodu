@@ -1,10 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensions.Between.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System;
 
 namespace Bodu.Extensions;
 
@@ -28,14 +26,6 @@ public static partial class StringExtensions
     /// Thrown when <paramref name="value" />, <paramref name="start" />, or <paramref name="end" /> is
     /// <see langword="null" />.
     /// </exception>
-    /// <example>
-    /// <code language="csharp">
-    ///<![CDATA[
-    /// "<title>Hello</title>".Between("<title>", "</title>");  // "Hello"
-    /// "key=[value]".Between("[", "]");                        // "value"
-    ///]]>
-    /// </code>
-    /// </example>
     public static string? Between(
         this string value,
         string start,
@@ -46,13 +36,11 @@ public static partial class StringExtensions
         ThrowHelper.ThrowIfNull(start);
         ThrowHelper.ThrowIfNull(end);
 
-        int startIndex = value.IndexOf(start, comparison);
+        var startIndex = value.IndexOf(start, comparison);
         if (startIndex < 0) return null;
 
-        int contentStart = startIndex + start.Length;
-        int endIndex = value.IndexOf(end, contentStart, comparison);
-        if (endIndex < 0) return null;
-
-        return value.Substring(contentStart, endIndex - contentStart);
+        var contentStart = startIndex + start.Length;
+        var endIndex = value.IndexOf(end, contentStart, comparison);
+        return endIndex < 0 ? null : value[contentStart..endIndex];
     }
 }

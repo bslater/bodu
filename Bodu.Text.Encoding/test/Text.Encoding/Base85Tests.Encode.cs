@@ -22,14 +22,14 @@ public sealed partial class Base85Tests
     [DataRow(32)]
     public void Encode_ByteArrayAndSpanOverloads_ShouldProduceIdenticalOutput(int size)
     {
-        byte[] bytes = new byte[size];
-        for (int i = 0; i < size; i++)
+        var bytes = new byte[size];
+        for (var i = 0; i < size; i++)
         {
             bytes[i] = (byte)((i * 11) ^ 0x9C);
         }
 
-        string fromArray = Base85.Encode(bytes);
-        string fromSpan = Base85.Encode(bytes.AsSpan());
+        var fromArray = Base85.Encode(bytes);
+        var fromSpan = Base85.Encode(bytes.AsSpan());
 
         Assert.AreEqual(fromArray, fromSpan);
     }
@@ -43,7 +43,7 @@ public sealed partial class Base85Tests
     [DynamicData(nameof(Base85KnownAnswerVectors.Ascii85Vectors), typeof(Base85KnownAnswerVectors), DynamicDataSourceType.Method)]
     public void Encode_ForAscii85KnownAnswerVector_ShouldMatch(EncodingKnownAnswerVector vector)
     {
-        string actual = Base85.Encode(vector.DecodedBytes, Base85Variant.Ascii85);
+        var actual = Base85.Encode(vector.DecodedBytes, Base85Variant.Ascii85);
 
         Assert.AreEqual(vector.Encoded, actual);
     }
@@ -57,7 +57,7 @@ public sealed partial class Base85Tests
     [DynamicData(nameof(Base85KnownAnswerVectors.Z85Vectors), typeof(Base85KnownAnswerVectors), DynamicDataSourceType.Method)]
     public void Encode_ForZ85KnownAnswerVector_ShouldMatch(EncodingKnownAnswerVector vector)
     {
-        string actual = Base85.Encode(vector.DecodedBytes, Base85Variant.Z85);
+        var actual = Base85.Encode(vector.DecodedBytes, Base85Variant.Z85);
 
         Assert.AreEqual(vector.Encoded, actual);
     }
@@ -77,11 +77,11 @@ public sealed partial class Base85Tests
     [DataRow(9, 12)]
     public void Encode_WhenAscii85PartialGroup_ShouldEmitExpectedLength(int byteCount, int expectedCharCount)
     {
-        byte[] bytes = new byte[byteCount];
-        for (int i = 0; i < byteCount; i++)
+        var bytes = new byte[byteCount];
+        for (var i = 0; i < byteCount; i++)
             bytes[i] = (byte)(i + 1);
 
-        string actual = Base85.Encode(bytes);
+        var actual = Base85.Encode(bytes);
 
         Assert.AreEqual(expectedCharCount, actual.Length);
     }
@@ -92,9 +92,9 @@ public sealed partial class Base85Tests
     [TestMethod]
     public void Encode_WhenAscii85VariantCompleteGroup_ShouldReturnFiveCharacters()
     {
-        byte[] bytes = Ascii("Hell");
+        var bytes = Ascii("Hell");
 
-        string actual = Base85.Encode(bytes);
+        var actual = Base85.Encode(bytes);
 
         Assert.AreEqual(5, actual.Length);
     }
@@ -106,9 +106,9 @@ public sealed partial class Base85Tests
     [TestMethod]
     public void Encode_WhenAscii85VariantFourZeroBytes_ShouldEmitZShortcut()
     {
-        byte[] bytes = new byte[4];
+        var bytes = new byte[4];
 
-        string actual = Base85.Encode(bytes);
+        var actual = Base85.Encode(bytes);
 
         Assert.AreEqual("z", actual);
     }
@@ -120,10 +120,10 @@ public sealed partial class Base85Tests
     [TestMethod]
     public void Encode_WhenAscii85ZShortcutAndDestinationExactlyActualSize_ShouldSucceed()
     {
-        byte[] zeros = new byte[4];
-        char[] destination = new char[1];
+        var zeros = new byte[4];
+        var destination = new char[1];
 
-        int charsWritten = Base85.Encode(zeros.AsSpan(), destination);
+        var charsWritten = Base85.Encode(zeros.AsSpan(), destination);
 
         Assert.AreEqual(1, charsWritten);
         Assert.AreEqual('z', destination[0]);
@@ -149,8 +149,8 @@ public sealed partial class Base85Tests
     [TestMethod]
     public void Encode_WhenDestinationTooSmall_ShouldThrowArgumentException()
     {
-        byte[] bytes = new byte[8];
-        char[] destination = new char[1];
+        var bytes = new byte[8];
+        var destination = new char[1];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -176,11 +176,11 @@ public sealed partial class Base85Tests
     [TestMethod]
     public void Encode_WhenSliceForByteArray_ShouldReturnSliceOnly()
     {
-        byte[] bytes = Ascii("xxxxHelloyyy");
+        var bytes = Ascii("xxxxHelloyyy");
 
-        string actual = Base85.Encode(bytes, 4, 5);
+        var actual = Base85.Encode(bytes, 4, 5);
 
-        string expected = Base85.Encode(Ascii("Hello"));
+        var expected = Base85.Encode(Ascii("Hello"));
         Assert.AreEqual(expected, actual);
     }
 
@@ -203,9 +203,9 @@ public sealed partial class Base85Tests
     [TestMethod]
     public void Encode_WhenZ85VariantAlignedInput_ShouldEmitFiveCharsPerFourBytes()
     {
-        byte[] bytes = new byte[8];
+        var bytes = new byte[8];
 
-        string actual = Base85.Encode(bytes, Base85Variant.Z85);
+        var actual = Base85.Encode(bytes, Base85Variant.Z85);
 
         Assert.AreEqual(10, actual.Length);
     }
@@ -217,7 +217,7 @@ public sealed partial class Base85Tests
     [TestMethod]
     public void Encode_WhenZ85VariantAndNonAlignedInput_ShouldThrowArgumentException()
     {
-        byte[] bytes = new byte[5];
+        var bytes = new byte[5];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -236,7 +236,7 @@ public sealed partial class Base85Tests
         Assert.AreEqual(2, Base85.GetEncodedLength(new byte[8].AsSpan(), Base85Variant.Ascii85));
 
         // 4 zero bytes + 4 non-zero bytes (high byte set) = "z" + 5 chars = 6.
-        byte[] mixed = new byte[8];
+        var mixed = new byte[8];
         mixed[4] = 0x01;
         Assert.AreEqual(6, Base85.GetEncodedLength(mixed.AsSpan(), Base85Variant.Ascii85));
     }
@@ -256,14 +256,14 @@ public sealed partial class Base85Tests
     [DataRow(12)]
     public void GetEncodedLength_ShouldAgreeWithActualEncodedLength(int byteCount)
     {
-        byte[] bytes = new byte[byteCount];
-        for (int i = 0; i < byteCount; i++)
+        var bytes = new byte[byteCount];
+        for (var i = 0; i < byteCount; i++)
         {
             bytes[i] = (byte)((i * 7) + 1);
         }
 
-        int predicted = Base85.GetEncodedLength(bytes.AsSpan(), Base85Variant.Ascii85);
-        int actual = Base85.Encode(bytes, Base85Variant.Ascii85).Length;
+        var predicted = Base85.GetEncodedLength(bytes.AsSpan(), Base85Variant.Ascii85);
+        var actual = Base85.Encode(bytes, Base85Variant.Ascii85).Length;
 
         Assert.AreEqual(actual, predicted);
     }
@@ -278,10 +278,10 @@ public sealed partial class Base85Tests
     public void TryEncode_WhenAscii85ZShortcutShrinksOutput_ShouldSucceedWithTightlySizedDestination()
     {
         // Four zero bytes encode as "z" (1 char) under Ascii85, well below the 5-char worst case.
-        byte[] zeros = new byte[4];
-        char[] destination = new char[1];
+        var zeros = new byte[4];
+        var destination = new char[1];
 
-        bool ok = Base85.TryEncode(zeros.AsSpan(), destination, out int charsWritten);
+        var ok = Base85.TryEncode(zeros.AsSpan(), destination, out var charsWritten);
 
         Assert.IsTrue(ok, "TryEncode should succeed when destination is at least the actual encoded length.");
         Assert.AreEqual(1, charsWritten);
@@ -302,15 +302,15 @@ public sealed partial class Base85Tests
     [DataRow(8, 10)]
     public void TryEncode_WhenDestinationExactlyRequiredSize_ShouldReturnTrueAndFillBuffer(int byteCount, int expectedCharCount)
     {
-        byte[] bytes = new byte[byteCount];
-        for (int i = 0; i < byteCount; i++)
+        var bytes = new byte[byteCount];
+        for (var i = 0; i < byteCount; i++)
         {
             bytes[i] = (byte)(i + 1); // avoid all-zero so 'z' shortcut isn't taken
         }
 
-        char[] destination = new char[expectedCharCount];
+        var destination = new char[expectedCharCount];
 
-        bool ok = Base85.TryEncode(bytes.AsSpan(), destination, out int charsWritten);
+        var ok = Base85.TryEncode(bytes.AsSpan(), destination, out var charsWritten);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(expectedCharCount, charsWritten);

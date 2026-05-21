@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CancellationTriggerStream.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -58,7 +58,7 @@ public sealed class CancellationTriggerStream :
     /// <inheritdoc />
     public override int Read(byte[] buffer, int offset, int count)
     {
-        int result = _inner.Read(buffer, offset, count);
+        var result = _inner.Read(buffer, offset, count);
         if (result > 0 && ++_readCount == _cancelAfterRead && !_cts.IsCancellationRequested)
             _cts.Cancel();
         return result;

@@ -18,7 +18,7 @@ public sealed partial class Base58Tests
     [DataRow(Base58Variant.Ripple)]
     public void Decode_WhenEmptyString_ShouldReturnEmptyByteArray(Base58Variant variant)
     {
-        byte[] actual = Base58.Decode(string.Empty, variant);
+        var actual = Base58.Decode(string.Empty, variant);
 
         Assert.AreEqual(0, actual.Length);
     }
@@ -31,7 +31,7 @@ public sealed partial class Base58Tests
     [DataRow(Base58Variant.Ripple)]
     public void Encode_WhenEmptyByteArray_ShouldReturnEmptyString(Base58Variant variant)
     {
-        string actual = Base58.Encode(Array.Empty<byte>(), variant);
+        var actual = Base58.Encode(Array.Empty<byte>(), variant);
 
         Assert.AreEqual(string.Empty, actual);
     }
@@ -43,10 +43,10 @@ public sealed partial class Base58Tests
     [TestMethod]
     public void TryEncodeAndTryDecode_WhenSourceIsEmpty_ShouldReturnTrueAndZeroWritten()
     {
-        Assert.IsTrue(Base58.TryEncode(ReadOnlySpan<byte>.Empty, new char[8], out int charsWritten));
+        Assert.IsTrue(Base58.TryEncode(ReadOnlySpan<byte>.Empty, new char[8], out var charsWritten));
         Assert.AreEqual(0, charsWritten);
 
-        Assert.IsTrue(Base58.TryDecode(ReadOnlySpan<char>.Empty, new byte[8], out int bytesWritten));
+        Assert.IsTrue(Base58.TryDecode(ReadOnlySpan<char>.Empty, new byte[8], out var bytesWritten));
         Assert.AreEqual(0, bytesWritten);
     }
 

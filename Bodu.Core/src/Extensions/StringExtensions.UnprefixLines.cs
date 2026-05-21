@@ -1,10 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensions.UnprefixLines.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
 using System.Text;
 
 namespace Bodu.Extensions;
@@ -24,13 +23,6 @@ public static partial class StringExtensions
     /// <paramref name="prefix" /> are emitted unchanged. Comparison is ordinal. Line boundaries follow the usual
     /// <c>\r\n</c> / <c>\n</c> / <c>\r</c> recognition.
     /// </remarks>
-    /// <example>
-    /// <code language="csharp">
-    ///<![CDATA[
-    /// "// name\n// value".UnprefixLines("// ");  // "name\nvalue"
-    ///]]>
-    /// </code>
-    /// </example>
     public static string UnprefixLines(this string value, string prefix)
     {
         ThrowHelper.ThrowIfNull(value);
@@ -39,13 +31,13 @@ public static partial class StringExtensions
         if (prefix.Length == 0 || value.Length == 0) return value;
 
         StringBuilder builder = new(value.Length);
-        int lineStart = 0;
-        for (int i = 0; i <= value.Length; i++)
+        var lineStart = 0;
+        for (var i = 0; i <= value.Length; i++)
         {
             if (i == value.Length || value[i] == '\n' || value[i] == '\r')
             {
-                int start = lineStart;
-                int end = i;
+                var start = lineStart;
+                var end = i;
                 if (end - start >= prefix.Length
                     && string.CompareOrdinal(value, start, prefix, 0, prefix.Length) == 0)
                 {

@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
-using System.Linq;
 using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;

@@ -17,12 +17,12 @@ public sealed partial class Base32Tests
     [TestMethod]
     public void DecodeFromUtf8_WhenCrockfordVariant_ShouldDecodeCanonicalAlphabet()
     {
-        byte[] original = Ascii("foobar");
-        string encoded = Base32.Encode(original, Base32Variant.Crockford);
-        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes(encoded);
-        byte[] destination = new byte[6];
+        var original = Ascii("foobar");
+        var encoded = Base32.Encode(original, Base32Variant.Crockford);
+        var utf8 = System.Text.Encoding.ASCII.GetBytes(encoded);
+        var destination = new byte[6];
 
-        OperationStatus status = Base32.DecodeFromUtf8(utf8, destination, out _, out int bytesWritten, Base32Variant.Crockford);
+        OperationStatus status = Base32.DecodeFromUtf8(utf8, destination, out _, out var bytesWritten, Base32Variant.Crockford);
 
         Assert.AreEqual(OperationStatus.Done, status);
         Assert.AreEqual(6, bytesWritten);
@@ -37,10 +37,10 @@ public sealed partial class Base32Tests
     [TestMethod]
     public void DecodeFromUtf8_WhenDestinationSmallerThanQuantum_ShouldReportZeroProgress()
     {
-        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes("MZXW6YTBOI======");
-        byte[] destination = new byte[3];
+        var utf8 = System.Text.Encoding.ASCII.GetBytes("MZXW6YTBOI======");
+        var destination = new byte[3];
 
-        OperationStatus status = Base32.DecodeFromUtf8(utf8, destination, out int bytesConsumed, out int bytesWritten);
+        OperationStatus status = Base32.DecodeFromUtf8(utf8, destination, out var bytesConsumed, out var bytesWritten);
 
         Assert.AreEqual(OperationStatus.DestinationTooSmall, status);
         Assert.AreEqual(0, bytesConsumed);
@@ -55,17 +55,17 @@ public sealed partial class Base32Tests
     public void DecodeFromUtf8_WhenDestinationTooSmall_ShouldReportLastQuantumBoundary()
     {
         // "MZXW6YTBOI======" encodes "foobar" (6 bytes). A 5-byte destination fits only the first quantum.
-        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes("MZXW6YTBOI======");
-        byte[] destination = new byte[5];
+        var utf8 = System.Text.Encoding.ASCII.GetBytes("MZXW6YTBOI======");
+        var destination = new byte[5];
 
-        OperationStatus status = Base32.DecodeFromUtf8(utf8, destination, out int bytesConsumed, out int bytesWritten);
+        OperationStatus status = Base32.DecodeFromUtf8(utf8, destination, out var bytesConsumed, out var bytesWritten);
 
         Assert.AreEqual(OperationStatus.DestinationTooSmall, status);
         Assert.AreEqual(8, bytesConsumed);
         Assert.AreEqual(5, bytesWritten);
 
         // The committed bytes correspond to "fooba" (5 bytes of "foobar").
-        byte[] expected = Ascii("fooba");
+        var expected = Ascii("fooba");
         CollectionAssert.AreEqual(expected, destination);
     }
 
@@ -76,10 +76,10 @@ public sealed partial class Base32Tests
     [TestMethod]
     public void DecodeFromUtf8_WhenDestinationTooSmall_ShouldReturnDestinationTooSmall()
     {
-        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes("MZXW6YTBOI======");
-        byte[] destination = new byte[1];
+        var utf8 = System.Text.Encoding.ASCII.GetBytes("MZXW6YTBOI======");
+        var destination = new byte[1];
 
-        OperationStatus status = Base32.DecodeFromUtf8(utf8, destination, out int _, out int _);
+        OperationStatus status = Base32.DecodeFromUtf8(utf8, destination, out var _, out var _);
 
         Assert.AreEqual(OperationStatus.DestinationTooSmall, status);
     }
@@ -93,10 +93,10 @@ public sealed partial class Base32Tests
     {
         // "MZXW6YTB" is exactly one full quantum (5 bytes). Append "OI" to start a partial second quantum without
         // padding.
-        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes("MZXW6YTBOI");
-        byte[] destination = new byte[6];
+        var utf8 = System.Text.Encoding.ASCII.GetBytes("MZXW6YTBOI");
+        var destination = new byte[6];
 
-        OperationStatus status = Base32.DecodeFromUtf8(utf8, destination, out int bytesConsumed, out int bytesWritten, isFinalBlock: false);
+        OperationStatus status = Base32.DecodeFromUtf8(utf8, destination, out var bytesConsumed, out var bytesWritten, isFinalBlock: false);
 
         Assert.AreEqual(OperationStatus.NeedMoreData, status);
         Assert.AreEqual(8, bytesConsumed);
@@ -110,10 +110,10 @@ public sealed partial class Base32Tests
     [TestMethod]
     public void DecodeFromUtf8_WhenPartialGroupAndNotFinal_ShouldReturnNeedMoreData()
     {
-        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes("MZXW6"); // 5 chars - mid-group
-        byte[] destination = new byte[6];
+        var utf8 = System.Text.Encoding.ASCII.GetBytes("MZXW6"); // 5 chars - mid-group
+        var destination = new byte[6];
 
-        OperationStatus status = Base32.DecodeFromUtf8(utf8, destination, out int _, out int _, isFinalBlock: false);
+        OperationStatus status = Base32.DecodeFromUtf8(utf8, destination, out var _, out var _, isFinalBlock: false);
 
         Assert.AreEqual(OperationStatus.NeedMoreData, status);
     }
@@ -125,10 +125,10 @@ public sealed partial class Base32Tests
     [TestMethod]
     public void DecodeFromUtf8_WhenStrictValidInput_ShouldReturnDoneWithCounts()
     {
-        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes("MZXW6YTBOI======");
-        byte[] destination = new byte[6];
+        var utf8 = System.Text.Encoding.ASCII.GetBytes("MZXW6YTBOI======");
+        var destination = new byte[6];
 
-        OperationStatus status = Base32.DecodeFromUtf8(utf8, destination, out int bytesConsumed, out int bytesWritten);
+        OperationStatus status = Base32.DecodeFromUtf8(utf8, destination, out var bytesConsumed, out var bytesWritten);
 
         Assert.AreEqual(OperationStatus.Done, status);
         Assert.AreEqual(16, bytesConsumed);
@@ -142,7 +142,7 @@ public sealed partial class Base32Tests
     [TestMethod]
     public void EncodeToUtf8_ShouldReturnAsciiBytesOfStandardOutput()
     {
-        byte[] actual = Base32.EncodeToUtf8(Ascii("foobar"));
+        var actual = Base32.EncodeToUtf8(Ascii("foobar"));
 
         Assert.AreEqual("MZXW6YTBOI======", System.Text.Encoding.ASCII.GetString(actual));
     }
@@ -153,7 +153,7 @@ public sealed partial class Base32Tests
     [TestMethod]
     public void EncodeToUtf8_WhenEmpty_ShouldReturnEmptyArray()
     {
-        byte[] actual = Base32.EncodeToUtf8(ReadOnlySpan<byte>.Empty);
+        var actual = Base32.EncodeToUtf8(ReadOnlySpan<byte>.Empty);
 
         Assert.AreEqual(0, actual.Length);
     }
@@ -164,7 +164,7 @@ public sealed partial class Base32Tests
     [TestMethod]
     public void EncodeToUtf8_WhenOmitPadding_ShouldNotEmitPaddingBytes()
     {
-        byte[] actual = Base32.EncodeToUtf8(Ascii("foo"), Base32Variant.Standard, BaseFormattingOptions.OmitPadding);
+        var actual = Base32.EncodeToUtf8(Ascii("foo"), Base32Variant.Standard, BaseFormattingOptions.OmitPadding);
 
         Assert.AreEqual("MZXW6", System.Text.Encoding.ASCII.GetString(actual));
     }
@@ -175,10 +175,10 @@ public sealed partial class Base32Tests
     [TestMethod]
     public void RoundTrip_EncodeAndDecodeUtf8_ShouldRecoverOriginal()
     {
-        byte[] original = Ascii("foobar");
+        var original = Ascii("foobar");
 
-        byte[] encoded = Base32.EncodeToUtf8(original);
-        byte[] destination = new byte[6];
+        var encoded = Base32.EncodeToUtf8(original);
+        var destination = new byte[6];
 
         OperationStatus status = Base32.DecodeFromUtf8(encoded, destination, out _, out _);
 
@@ -193,9 +193,9 @@ public sealed partial class Base32Tests
     [TestMethod]
     public void TryEncodeToUtf8_WhenDestinationLargeEnough_ShouldReturnTrueAndExpectedBytes()
     {
-        byte[] destination = new byte[16];
+        var destination = new byte[16];
 
-        bool ok = Base32.TryEncodeToUtf8(Ascii("foobar").AsSpan(), destination, out int bytesWritten);
+        var ok = Base32.TryEncodeToUtf8(Ascii("foobar").AsSpan(), destination, out var bytesWritten);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(16, bytesWritten);
@@ -209,9 +209,9 @@ public sealed partial class Base32Tests
     [TestMethod]
     public void TryEncodeToUtf8_WhenDestinationTooSmall_ShouldReturnFalse()
     {
-        byte[] destination = new byte[1];
+        var destination = new byte[1];
 
-        bool ok = Base32.TryEncodeToUtf8(Ascii("foobar").AsSpan(), destination, out int bytesWritten);
+        var ok = Base32.TryEncodeToUtf8(Ascii("foobar").AsSpan(), destination, out var bytesWritten);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(0, bytesWritten);
@@ -224,7 +224,7 @@ public sealed partial class Base32Tests
     [TestMethod]
     public void TryEncodeToUtf8_WhenUnsupportedFlag_ShouldThrowArgumentException()
     {
-        byte[] destination = new byte[16];
+        var destination = new byte[16];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {

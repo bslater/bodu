@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IniTests.TryParse.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -16,7 +16,7 @@ public sealed partial class IniTests
     [TestMethod]
     public void TryParse_WhenInputIsValid_ShouldReturnTrueAndDocument()
     {
-        bool result = Ini.TryParse("[section]\nkey=value", out IniDocument? document);
+        var result = Ini.TryParse("[section]\nkey=value", out IniDocument? document);
 
         Assert.IsTrue(result);
         Assert.IsNotNull(document);
@@ -30,7 +30,7 @@ public sealed partial class IniTests
     [TestMethod]
     public void TryParse_WhenInputIsEmpty_ShouldReturnTrueWithEmptyDocument()
     {
-        bool result = Ini.TryParse(string.Empty, out IniDocument? document);
+        var result = Ini.TryParse(string.Empty, out IniDocument? document);
 
         Assert.IsTrue(result);
         Assert.IsNotNull(document);
@@ -44,7 +44,7 @@ public sealed partial class IniTests
     [TestMethod]
     public void TryParse_WhenSectionHeaderIsMalformed_ShouldReturnFalseWithNull()
     {
-        bool result = Ini.TryParse("[unclosed", out IniDocument? document);
+        var result = Ini.TryParse("[unclosed", out IniDocument? document);
 
         Assert.IsFalse(result);
         Assert.IsNull(document);
@@ -59,7 +59,7 @@ public sealed partial class IniTests
     {
         IniParseOptions options = new() { AllowGlobalSection = false };
 
-        bool result = Ini.TryParse("key=value", options, out IniDocument? document);
+        var result = Ini.TryParse("key=value", options, out IniDocument? document);
 
         Assert.IsFalse(result);
         Assert.IsNull(document);
@@ -72,7 +72,7 @@ public sealed partial class IniTests
     [TestMethod]
     public void TryParse_WhenInputIsMalformed_ShouldNotThrow()
     {
-        bool result = false;
+        var result = false;
         IniDocument? document = null;
 
         Exception? caughtException = null;

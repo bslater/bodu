@@ -1,11 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensionsTests.EnsureEndsWith.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System;
-using System.Collections.Generic;
 
 namespace Bodu.Extensions;
 
@@ -48,9 +45,9 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void EnsureEndsWith_WhenSuffixAlreadyPresent_ShouldReturnSameInstance()
     {
-        string value = "path/";
+        var value = "path/";
 
-        string actual = value.EnsureEndsWith("/");
+        var actual = value.EnsureEndsWith("/");
 
         Assert.AreSame(value, actual);
     }

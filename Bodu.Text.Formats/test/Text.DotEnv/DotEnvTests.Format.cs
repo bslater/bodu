@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DotEnvTests.Format.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -30,7 +30,7 @@ public sealed partial class DotEnvTests
     {
         DotEnvDocument doc = DotEnv.Parse(string.Empty);
 
-        string formatted = DotEnv.Format(doc);
+        var formatted = DotEnv.Format(doc);
 
         Assert.AreEqual(string.Empty, formatted);
     }
@@ -44,7 +44,7 @@ public sealed partial class DotEnvTests
     {
         DotEnvDocument doc = DotEnv.Parse("KEY=");
 
-        string formatted = DotEnv.Format(doc);
+        var formatted = DotEnv.Format(doc);
 
         StringAssert.Contains(formatted, "KEY=");
         Assert.IsFalse(formatted.Contains('"'), "Empty values should not be quoted.");
@@ -58,7 +58,7 @@ public sealed partial class DotEnvTests
     {
         DotEnvDocument doc = DotEnv.Parse("HOST=localhost");
 
-        string formatted = DotEnv.Format(doc);
+        var formatted = DotEnv.Format(doc);
 
         StringAssert.Contains(formatted, "HOST=localhost");
         Assert.IsFalse(formatted.Contains('"'), "Safe values should not be quoted.");
@@ -72,7 +72,7 @@ public sealed partial class DotEnvTests
     {
         DotEnvDocument doc = DotEnv.Parse("GREETING=\"hello world\"");
 
-        string formatted = DotEnv.Format(doc);
+        var formatted = DotEnv.Format(doc);
 
         StringAssert.Contains(formatted, "GREETING=\"hello world\"");
     }
@@ -85,7 +85,7 @@ public sealed partial class DotEnvTests
     {
         DotEnvDocument doc = DotEnv.Parse("KEY=\"say \\\"hi\\\"\"");
 
-        string formatted = DotEnv.Format(doc);
+        var formatted = DotEnv.Format(doc);
 
         StringAssert.Contains(formatted, "\\\"");
     }
@@ -100,7 +100,7 @@ public sealed partial class DotEnvTests
         const string source = "HOST=localhost\nPORT=8080\nDEBUG=True";
 
         DotEnvDocument original = DotEnv.Parse(source);
-        string formatted = DotEnv.Format(original);
+        var formatted = DotEnv.Format(original);
         DotEnvDocument roundTripped = DotEnv.Parse(formatted);
 
         Assert.AreEqual("localhost", roundTripped["HOST"]);

@@ -1,13 +1,11 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SmokeTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.IO;
 using Bodu.Extensions.Configuration.Text;
 using Bodu.Test;
-using Bodu.Text.Configuration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.FileProviders;
 
@@ -27,7 +25,7 @@ public class BridgeSmokeTests
     [TestCategory(TestCategories.Smoke)]
     public void AddConfiguration_ShouldExposeColonDelimitedKeys()
     {
-        string path = Path.GetTempFileName();
+        var path = Path.GetTempFileName();
         try
         {
             File.WriteAllText(path, """

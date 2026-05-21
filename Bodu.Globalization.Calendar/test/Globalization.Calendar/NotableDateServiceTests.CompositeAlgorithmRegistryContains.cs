@@ -86,7 +86,7 @@ public sealed class NotableDateServiceCompositeAlgorithmRegistryContainsTests
             .GetNestedType("CompositeAlgorithmRegistry", BindingFlags.NonPublic)
             ?? throw new InvalidOperationException("CompositeAlgorithmRegistry nested type was not found on NotableDateService.");
 
-        object instance = Activator.CreateInstance(
+        var instance = Activator.CreateInstance(
             compositeType,
             BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public,
             binder: null,

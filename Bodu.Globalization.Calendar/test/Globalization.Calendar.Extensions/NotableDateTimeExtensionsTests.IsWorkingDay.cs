@@ -18,7 +18,7 @@ public partial class NotableDateTimeExtensionsTests
     {
         NotableDateService service = BuildService();
 
-        bool result = new DateTime(2026, 1, 6).IsWorkingDay(service);
+        var result = new DateTime(2026, 1, 6).IsWorkingDay(service);
 
         Assert.IsTrue(result);
     }
@@ -31,7 +31,7 @@ public partial class NotableDateTimeExtensionsTests
     {
         NotableDateService service = BuildService();
 
-        bool result = new DateTime(2026, 1, 3).IsWorkingDay(service);
+        var result = new DateTime(2026, 1, 3).IsWorkingDay(service);
 
         Assert.IsFalse(result);
     }
@@ -44,7 +44,7 @@ public partial class NotableDateTimeExtensionsTests
     {
         NotableDateService service = BuildService();
 
-        bool result = new DateTime(2026, 1, 4).IsWorkingDay(service);
+        var result = new DateTime(2026, 1, 4).IsWorkingDay(service);
 
         Assert.IsFalse(result);
     }
@@ -57,7 +57,7 @@ public partial class NotableDateTimeExtensionsTests
     {
         NotableDateService service = BuildService(Fixed("New Year's Day", 1, 1, nonWorking: true));
 
-        bool result = new DateTime(2026, 1, 1).IsWorkingDay(service);
+        var result = new DateTime(2026, 1, 1).IsWorkingDay(service);
 
         Assert.IsFalse(result);
     }
@@ -70,7 +70,7 @@ public partial class NotableDateTimeExtensionsTests
     {
         NotableDateService service = BuildService(Fixed("Cultural Day", 6, 5, NotableDateCategory.Cultural, nonWorking: false));
 
-        bool result = new DateTime(2026, 6, 5).IsWorkingDay(service);
+        var result = new DateTime(2026, 6, 5).IsWorkingDay(service);
 
         Assert.IsTrue(result);
     }
@@ -83,7 +83,7 @@ public partial class NotableDateTimeExtensionsTests
     {
         NotableDateService service = BuildService(Fixed("Anzac Day", 4, 25, nonWorking: true, territory: "AU"));
 
-        bool result = new DateTime(2026, 4, 27).IsWorkingDay(service, territoryCode: "NZ");
+        var result = new DateTime(2026, 4, 27).IsWorkingDay(service, territoryCode: "NZ");
 
         Assert.IsTrue(result);
     }
@@ -99,7 +99,7 @@ public partial class NotableDateTimeExtensionsTests
         {
             NotableDateContext.Default = service;
 
-            bool result = new DateTime(2026, 5, 4).IsWorkingDay();
+            var result = new DateTime(2026, 5, 4).IsWorkingDay();
 
             Assert.IsFalse(result);
         }
@@ -131,7 +131,7 @@ public partial class NotableDateTimeExtensionsTests
     {
         NotableDateService service = BuildService();
 
-        bool actual = input.IsWorkingDay(service);
+        var actual = input.IsWorkingDay(service);
 
         Assert.AreEqual(expected, actual);
     }

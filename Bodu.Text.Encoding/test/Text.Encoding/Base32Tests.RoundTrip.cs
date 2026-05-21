@@ -21,12 +21,12 @@ public sealed partial class Base32Tests
     [DataRow(Base32Variant.ZBase32)]
     public void RoundTrip_ForEverySingleByteValueAndVariant_ShouldRecover(Base32Variant variant)
     {
-        for (int value = 0; value <= 255; value++)
+        for (var value = 0; value <= 255; value++)
         {
-            byte[] original = new byte[] { (byte)value };
+            var original = new byte[] { (byte)value };
 
-            string encoded = Base32.Encode(original, variant);
-            byte[] decoded = Base32.Decode(encoded, variant);
+            var encoded = Base32.Encode(original, variant);
+            var decoded = Base32.Decode(encoded, variant);
 
             CollectionAssert.AreEqual(original, decoded, $"Round trip failed for byte 0x{value:X2}, variant={variant}.");
         }
@@ -43,16 +43,16 @@ public sealed partial class Base32Tests
     [DataRow(Base32Variant.ZBase32)]
     public void RoundTrip_ForEveryVariantAcrossLengths_ShouldRecoverOriginalBytes(Base32Variant variant)
     {
-        for (int len = 0; len <= 20; len++)
+        for (var len = 0; len <= 20; len++)
         {
-            byte[] original = new byte[len];
-            for (int i = 0; i < len; i++)
+            var original = new byte[len];
+            for (var i = 0; i < len; i++)
             {
                 original[i] = (byte)(i * 7);
             }
 
-            string encoded = Base32.Encode(original, variant);
-            byte[] decoded = Base32.Decode(encoded, variant);
+            var encoded = Base32.Encode(original, variant);
+            var decoded = Base32.Decode(encoded, variant);
 
             CollectionAssert.AreEqual(original, decoded,
                 $"Round trip failed for variant={variant}, length={len}.");
@@ -71,11 +71,11 @@ public sealed partial class Base32Tests
     [DataRow(Base32Variant.ZBase32)]
     public void RoundTrip_ForLargeRandomInput_ShouldRecover(Base32Variant variant)
     {
-        byte[] original = new byte[8192];
+        var original = new byte[8192];
         new Random(0xC0FFEE).NextBytes(original);
 
-        string encoded = Base32.Encode(original, variant);
-        byte[] decoded = Base32.Decode(encoded, variant);
+        var encoded = Base32.Encode(original, variant);
+        var decoded = Base32.Decode(encoded, variant);
 
         CollectionAssert.AreEqual(original, decoded);
     }
@@ -88,10 +88,10 @@ public sealed partial class Base32Tests
     [TestMethod]
     public void RoundTrip_WhenOmitPaddingAndAllowMissingPadding_ShouldRecoverOriginal()
     {
-        byte[] original = new byte[] { 0xDE, 0xAD, 0xBE, 0xEF };
+        var original = new byte[] { 0xDE, 0xAD, 0xBE, 0xEF };
 
-        string encoded = Base32.Encode(original, Base32Variant.Standard, BaseFormattingOptions.OmitPadding);
-        byte[] decoded = Base32.Decode(encoded, Base32Variant.Standard, BaseFormatStyles.AllowMissingPadding);
+        var encoded = Base32.Encode(original, Base32Variant.Standard, BaseFormattingOptions.OmitPadding);
+        var decoded = Base32.Decode(encoded, Base32Variant.Standard, BaseFormatStyles.AllowMissingPadding);
 
         CollectionAssert.AreEqual(original, decoded);
         Assert.IsFalse(encoded.Contains('='), "Encoded form should contain no padding characters.");
@@ -103,12 +103,12 @@ public sealed partial class Base32Tests
     [TestMethod]
     public void RoundTrip_WhenSpanTryPath_ShouldRecoverOriginal()
     {
-        byte[] original = new byte[] { 0xDE, 0xAD, 0xBE, 0xEF, 0xCA, 0xFE };
-        char[] charBuffer = new char[Base32.GetEncodedLength(original.Length)];
-        byte[] byteBuffer = new byte[original.Length];
+        var original = new byte[] { 0xDE, 0xAD, 0xBE, 0xEF, 0xCA, 0xFE };
+        var charBuffer = new char[Base32.GetEncodedLength(original.Length)];
+        var byteBuffer = new byte[original.Length];
 
-        bool encOk = Base32.TryEncode(original.AsSpan(), charBuffer, out int charsWritten);
-        bool decOk = Base32.TryDecode(charBuffer.AsSpan(0, charsWritten), byteBuffer, out int bytesWritten);
+        var encOk = Base32.TryEncode(original.AsSpan(), charBuffer, out var charsWritten);
+        var decOk = Base32.TryDecode(charBuffer.AsSpan(0, charsWritten), byteBuffer, out var bytesWritten);
 
         Assert.IsTrue(encOk);
         Assert.IsTrue(decOk);

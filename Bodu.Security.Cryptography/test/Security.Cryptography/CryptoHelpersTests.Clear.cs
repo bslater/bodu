@@ -94,7 +94,7 @@ public partial class CryptoHelpersTests
     [TestMethod]
     public void Clear_RefValue_WhenInvoked_ShouldZeroAllBytes()
     {
-        ulong value = 0xDEADBEEFCAFEBABEUL;
+        var value = 0xDEADBEEFCAFEBABEUL;
 
         CryptoHelpers.Clear(ref value);
 

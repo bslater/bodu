@@ -16,14 +16,14 @@ public sealed partial class BencodeTests
     [TestMethod]
     public void TryEncode_WhenDestinationOversized_ShouldReturnTrueAndWriteOnlyRequiredBytes()
     {
-        byte[] destination = new byte[CanonicalIntegerBytes.Length + 8];
+        var destination = new byte[CanonicalIntegerBytes.Length + 8];
 
-        bool result = Bencode.TryEncode(new BencodedInteger(42), destination, out int bytesWritten);
+        var result = Bencode.TryEncode(new BencodedInteger(42), destination, out var bytesWritten);
 
         Assert.IsTrue(result);
         Assert.AreEqual(CanonicalIntegerBytes.Length, bytesWritten);
 
-        for (int i = 0; i < CanonicalIntegerBytes.Length; i++)
+        for (var i = 0; i < CanonicalIntegerBytes.Length; i++)
             Assert.AreEqual(CanonicalIntegerBytes[i], destination[i]);
     }
     /// <summary>
@@ -33,9 +33,9 @@ public sealed partial class BencodeTests
     [TestMethod]
     public void TryEncode_WhenDestinationSizedExactly_ShouldReturnTrueAndWriteExactBytes()
     {
-        byte[] destination = new byte[CanonicalIntegerBytes.Length];
+        var destination = new byte[CanonicalIntegerBytes.Length];
 
-        bool result = Bencode.TryEncode(new BencodedInteger(42), destination, out int bytesWritten);
+        var result = Bencode.TryEncode(new BencodedInteger(42), destination, out var bytesWritten);
 
         Assert.IsTrue(result);
         Assert.AreEqual(CanonicalIntegerBytes.Length, bytesWritten);
@@ -49,9 +49,9 @@ public sealed partial class BencodeTests
     [TestMethod]
     public void TryEncode_WhenDestinationTooSmall_ShouldReturnFalseWithZeroBytesWritten()
     {
-        byte[] destination = new byte[2];
+        var destination = new byte[2];
 
-        bool result = Bencode.TryEncode(new BencodedInteger(42), destination, out int bytesWritten);
+        var result = Bencode.TryEncode(new BencodedInteger(42), destination, out var bytesWritten);
 
         Assert.IsFalse(result);
         Assert.AreEqual(0, bytesWritten);

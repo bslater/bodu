@@ -1,12 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TextConfigurationDefaultFilenameTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
-using System.IO;
-using Bodu.Extensions.Configuration.Text;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.FileProviders.Physical;
@@ -30,7 +27,7 @@ default.filename.loaded = yes
     [TestMethod]
     public void AddConfiguration_WhenNoArgsAndDotConfigPresent_ShouldLoad()
     {
-        string directory = CreateTempDirectory();
+        var directory = CreateTempDirectory();
         try
         {
             File.WriteAllText(Path.Combine(directory, ".boduconfig"), Sample);
@@ -55,7 +52,7 @@ default.filename.loaded = yes
     [TestMethod]
     public void AddConfiguration_WhenNoArgsAndPlainConfigPresent_ShouldLoadFallback()
     {
-        string directory = CreateTempDirectory();
+        var directory = CreateTempDirectory();
         try
         {
             File.WriteAllText(Path.Combine(directory, "bodu.config"), Sample);
@@ -80,7 +77,7 @@ default.filename.loaded = yes
     [TestMethod]
     public void AddConfiguration_WhenNoArgsAndAllMissing_ShouldNotThrow()
     {
-        string directory = CreateTempDirectory();
+        var directory = CreateTempDirectory();
         try
         {
             ConfigurationBuilder builder = new();
@@ -103,7 +100,7 @@ default.filename.loaded = yes
     [TestMethod]
     public void AddConfiguration_WhenNoArgsAndRequiredAndAllMissing_ShouldThrowFileNotFoundException()
     {
-        string directory = CreateTempDirectory();
+        var directory = CreateTempDirectory();
         try
         {
             ConfigurationBuilder builder = new();
@@ -136,7 +133,7 @@ default.filename.loaded = yes
 
     private static string CreateTempDirectory()
     {
-        string directory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+        var directory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
         Directory.CreateDirectory(directory);
         return directory;
     }

@@ -1,10 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensions.RemoveControlCharacters.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System;
 
 namespace Bodu.Extensions;
 
@@ -23,13 +21,6 @@ public static partial class StringExtensions
     /// (U+0000–U+001F), DEL (U+007F), and the C1 control range (U+0080–U+009F). Tab, CR and LF count as control
     /// characters and are also removed.
     /// </remarks>
-    /// <example>
-    /// <code language="csharp">
-    ///<![CDATA[
-    /// "tab\there\nend".RemoveControlCharacters();  // "tabhereend"
-    ///]]>
-    /// </code>
-    /// </example>
     public static string RemoveControlCharacters(this string value) =>
         value.RemoveWhere(char.IsControl);
 }

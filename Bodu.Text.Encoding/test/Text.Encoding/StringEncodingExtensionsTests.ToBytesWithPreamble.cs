@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringEncodingExtensionsTests.ToBytesWithPreamble.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -17,9 +17,9 @@ public sealed partial class StringEncodingExtensionsTests
     {
         System.Text.Encoding utf8WithBom = new System.Text.UTF8Encoding(true);
 
-        byte[] actual = MultiByteText.ToBytesWithPreamble(utf8WithBom);
+        var actual = MultiByteText.ToBytesWithPreamble(utf8WithBom);
 
-        byte[] expected = utf8WithBom.GetPreamble()
+        var expected = utf8WithBom.GetPreamble()
             .Concat(System.Text.Encoding.UTF8.GetBytes(MultiByteText))
             .ToArray();
         CollectionAssert.AreEqual(expected, actual);
@@ -34,7 +34,7 @@ public sealed partial class StringEncodingExtensionsTests
     {
         System.Text.Encoding utf8NoBom = new System.Text.UTF8Encoding(false);
 
-        byte[] actual = SampleText.ToBytesWithPreamble(utf8NoBom);
+        var actual = SampleText.ToBytesWithPreamble(utf8NoBom);
 
         CollectionAssert.AreEqual(System.Text.Encoding.UTF8.GetBytes(SampleText), actual);
     }

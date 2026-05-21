@@ -15,7 +15,7 @@ public sealed partial class BencodedStringTests
     [TestMethod]
     public void GetUtf8String_WhenAccentedCharacter_ShouldReturnOriginalText()
     {
-        BencodedString value = BencodedString.FromUtf8("héllo");
+        var value = BencodedString.FromUtf8("héllo");
 
         Assert.AreEqual("héllo", value.GetUtf8String());
     }
@@ -26,7 +26,7 @@ public sealed partial class BencodedStringTests
     [TestMethod]
     public void GetUtf8String_WhenAsciiContent_ShouldReturnOriginalText()
     {
-        BencodedString value = BencodedString.FromUtf8("spam");
+        var value = BencodedString.FromUtf8("spam");
 
         Assert.AreEqual("spam", value.GetUtf8String());
     }
@@ -37,7 +37,7 @@ public sealed partial class BencodedStringTests
     [TestMethod]
     public void GetUtf8String_WhenEmptyContent_ShouldReturnEmptyString()
     {
-        BencodedString value = BencodedString.FromUtf8(string.Empty);
+        var value = BencodedString.FromUtf8(string.Empty);
 
         Assert.AreEqual(string.Empty, value.GetUtf8String());
     }
@@ -49,7 +49,7 @@ public sealed partial class BencodedStringTests
     [TestMethod]
     public void GetUtf8String_WhenSurrogatePair_ShouldReturnOriginalText()
     {
-        BencodedString value = BencodedString.FromUtf8("😀");
+        var value = BencodedString.FromUtf8("😀");
 
         Assert.AreEqual("😀", value.GetUtf8String());
     }

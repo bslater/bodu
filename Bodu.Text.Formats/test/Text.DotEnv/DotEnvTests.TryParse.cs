@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DotEnvTests.TryParse.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -16,7 +16,7 @@ public sealed partial class DotEnvTests
     [TestMethod]
     public void TryParse_WhenInputIsValid_ShouldReturnTrueAndDocument()
     {
-        bool result = DotEnv.TryParse("KEY=value", out DotEnvDocument? document);
+        var result = DotEnv.TryParse("KEY=value", out DotEnvDocument? document);
 
         Assert.IsTrue(result);
         Assert.IsNotNull(document);
@@ -30,7 +30,7 @@ public sealed partial class DotEnvTests
     [TestMethod]
     public void TryParse_WhenInputIsEmpty_ShouldReturnTrueWithEmptyDocument()
     {
-        bool result = DotEnv.TryParse(string.Empty, out DotEnvDocument? document);
+        var result = DotEnv.TryParse(string.Empty, out DotEnvDocument? document);
 
         Assert.IsTrue(result);
         Assert.IsNotNull(document);
@@ -44,7 +44,7 @@ public sealed partial class DotEnvTests
     [TestMethod]
     public void TryParse_WhenKeyIsInvalid_ShouldReturnFalseWithNull()
     {
-        bool result = DotEnv.TryParse("1INVALID=value", out DotEnvDocument? document);
+        var result = DotEnv.TryParse("1INVALID=value", out DotEnvDocument? document);
 
         Assert.IsFalse(result);
         Assert.IsNull(document);
@@ -59,7 +59,7 @@ public sealed partial class DotEnvTests
     {
         DotEnvParseOptions options = new() { DuplicateKeyBehavior = DotEnvDuplicateKeyBehavior.Disallowed };
 
-        bool result = DotEnv.TryParse("KEY=a\nKEY=b", options, out DotEnvDocument? document);
+        var result = DotEnv.TryParse("KEY=a\nKEY=b", options, out DotEnvDocument? document);
 
         Assert.IsFalse(result);
         Assert.IsNull(document);
@@ -72,7 +72,7 @@ public sealed partial class DotEnvTests
     [TestMethod]
     public void TryParse_WhenInputIsMalformed_ShouldNotThrow()
     {
-        bool result = false;
+        var result = false;
         DotEnvDocument? document = null;
 
         Exception? caughtException = null;

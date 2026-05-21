@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
 using Bodu.Collections.Generic;
 
 namespace Bodu.Smoke;

@@ -19,11 +19,11 @@ public sealed partial class Base85Tests
     [TestMethod]
     public void DecodeFromUtf8_WhenDestinationTooSmall_ShouldReportNoCommittedProgress()
     {
-        byte[] original = Ascii("Hello world!");
-        byte[] encoded = Base85.EncodeToUtf8(original);
-        byte[] destination = new byte[1];
+        var original = Ascii("Hello world!");
+        var encoded = Base85.EncodeToUtf8(original);
+        var destination = new byte[1];
 
-        OperationStatus status = Base85.DecodeFromUtf8(encoded, destination, out int bytesConsumed, out int bytesWritten);
+        OperationStatus status = Base85.DecodeFromUtf8(encoded, destination, out var bytesConsumed, out var bytesWritten);
 
         Assert.AreEqual(OperationStatus.DestinationTooSmall, status);
         Assert.AreEqual(0, bytesConsumed);
@@ -37,11 +37,11 @@ public sealed partial class Base85Tests
     [TestMethod]
     public void DecodeFromUtf8_WhenDestinationTooSmall_ShouldReturnDestinationTooSmall()
     {
-        byte[] original = Ascii("Hello world!");
-        byte[] encoded = Base85.EncodeToUtf8(original);
-        byte[] destination = new byte[1];
+        var original = Ascii("Hello world!");
+        var encoded = Base85.EncodeToUtf8(original);
+        var destination = new byte[1];
 
-        OperationStatus status = Base85.DecodeFromUtf8(encoded, destination, out int _, out int _);
+        OperationStatus status = Base85.DecodeFromUtf8(encoded, destination, out var _, out var _);
 
         Assert.AreEqual(OperationStatus.DestinationTooSmall, status);
     }
@@ -52,11 +52,11 @@ public sealed partial class Base85Tests
     [TestMethod]
     public void DecodeFromUtf8_WhenValidInput_ShouldReturnDoneWithCounts()
     {
-        byte[] original = Ascii("Hello world!");
-        byte[] encoded = Base85.EncodeToUtf8(original);
-        byte[] destination = new byte[original.Length];
+        var original = Ascii("Hello world!");
+        var encoded = Base85.EncodeToUtf8(original);
+        var destination = new byte[original.Length];
 
-        OperationStatus status = Base85.DecodeFromUtf8(encoded, destination, out int bytesConsumed, out int bytesWritten);
+        OperationStatus status = Base85.DecodeFromUtf8(encoded, destination, out var bytesConsumed, out var bytesWritten);
 
         Assert.AreEqual(OperationStatus.Done, status);
         Assert.AreEqual(encoded.Length, bytesConsumed);
@@ -69,10 +69,10 @@ public sealed partial class Base85Tests
     [TestMethod]
     public void EncodeToUtf8_ShouldReturnAsciiBytesOfAscii85Output()
     {
-        byte[] original = Ascii("Hello world!");
+        var original = Ascii("Hello world!");
 
-        byte[] encoded = Base85.EncodeToUtf8(original);
-        string asString = System.Text.Encoding.ASCII.GetString(encoded);
+        var encoded = Base85.EncodeToUtf8(original);
+        var asString = System.Text.Encoding.ASCII.GetString(encoded);
 
         Assert.AreEqual(Base85.Encode(original), asString);
     }
@@ -83,13 +83,13 @@ public sealed partial class Base85Tests
     [TestMethod]
     public void TryEncodeToUtf8_WhenDestinationLargeEnough_ShouldReturnTrueAndExpectedBytes()
     {
-        byte[] original = Ascii("Hello world!");
-        byte[] destination = new byte[Base85.GetMaxEncodedLength(original.Length)];
+        var original = Ascii("Hello world!");
+        var destination = new byte[Base85.GetMaxEncodedLength(original.Length)];
 
-        bool ok = Base85.TryEncodeToUtf8(original.AsSpan(), destination, out int bytesWritten);
+        var ok = Base85.TryEncodeToUtf8(original.AsSpan(), destination, out var bytesWritten);
 
         Assert.IsTrue(ok);
-        string asString = System.Text.Encoding.ASCII.GetString(destination, 0, bytesWritten);
+        var asString = System.Text.Encoding.ASCII.GetString(destination, 0, bytesWritten);
         Assert.AreEqual(Base85.Encode(original), asString);
     }
 

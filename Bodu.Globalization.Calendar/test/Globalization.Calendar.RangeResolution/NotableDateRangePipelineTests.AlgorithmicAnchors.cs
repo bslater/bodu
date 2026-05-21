@@ -183,7 +183,7 @@ public sealed class NotableDateRangePipelineAlgorithmicAnchorsTests
             OffsetDays = 1,
         };
 
-        RuleStaticAnalysis analysis = RuleStaticAnalysis.Build(new[] { root, level1, level2 });
+        var analysis = RuleStaticAnalysis.Build(new[] { root, level1, level2 });
 
         Assert.IsTrue(analysis.TryGetProfile("Easter Tuesday", out RuleStaticProfile profile));
         Assert.AreEqual(RuleTier.OffsetFromAlgorithmic, profile.Tier);
@@ -216,7 +216,7 @@ public sealed class NotableDateRangePipelineAlgorithmicAnchorsTests
             OffsetDays = 1,
         };
 
-        RuleStaticAnalysis analysis = RuleStaticAnalysis.Build(new[] { a, b });
+        var analysis = RuleStaticAnalysis.Build(new[] { a, b });
 
         Assert.IsTrue(analysis.TryGetProfile("A", out RuleStaticProfile profileA));
         Assert.AreEqual(RuleTier.Fixed, profileA.Tier);
@@ -257,7 +257,7 @@ public sealed class NotableDateRangePipelineAlgorithmicAnchorsTests
             OffsetDays = 1,
         };
 
-        RuleStaticAnalysis analysis = RuleStaticAnalysis.Build(new[] { anchor, good, monday });
+        var analysis = RuleStaticAnalysis.Build(new[] { anchor, good, monday });
 
         IReadOnlyList<RuleStaticProfile> dependents = analysis.GetDependents("Easter Sunday");
 
@@ -282,14 +282,14 @@ public sealed class NotableDateRangePipelineAlgorithmicAnchorsTests
             Day = 1,
         };
 
-        RuleStaticAnalysis analysis = RuleStaticAnalysis.Build(new[] { anchor });
+        var analysis = RuleStaticAnalysis.Build(new[] { anchor });
 
         Assert.AreEqual(0, analysis.GetDependents("Standalone").Count);
     }
 
     private static NotableDateRangePipeline BuildPipeline(params NotableDateRule[] rules)
     {
-        RuleStaticAnalysis analysis = RuleStaticAnalysis.Build(rules);
+        var analysis = RuleStaticAnalysis.Build(rules);
         NotableDateRuleResolver resolver = new(rules);
 
         return new NotableDateRangePipeline(

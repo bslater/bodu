@@ -1,10 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensions.RemoveSuffix.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System;
 
 namespace Bodu.Extensions;
 
@@ -31,14 +29,6 @@ public static partial class StringExtensions
     /// Removes at most one occurrence of <paramref name="suffix" />. Use the BCL <see cref="string.TrimEnd(char[])" />
     /// when greedy removal of character-level suffixes is required.
     /// </remarks>
-    /// <example>
-    /// <code language="csharp">
-    ///<![CDATA[
-    /// "report.txt".RemoveSuffix(".txt");  // "report"
-    /// "report.csv".RemoveSuffix(".txt");  // "report.csv" (suffix absent)
-    ///]]>
-    /// </code>
-    /// </example>
     public static string RemoveSuffix(
         this string value,
         string suffix,
@@ -47,9 +37,10 @@ public static partial class StringExtensions
         ThrowHelper.ThrowIfNull(value);
         ThrowHelper.ThrowIfNull(suffix);
 
-        if (suffix.Length == 0) return value;
-        return value.EndsWith(suffix, comparison)
-            ? value.Substring(0, value.Length - suffix.Length)
+        return suffix.Length == 0
+            ? value
+            : value.EndsWith(suffix, comparison)
+            ? value[..^suffix.Length]
             : value;
     }
 }

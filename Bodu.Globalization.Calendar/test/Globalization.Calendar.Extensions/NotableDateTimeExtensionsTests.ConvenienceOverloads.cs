@@ -102,7 +102,7 @@ public partial class NotableDateTimeExtensionsTests
                     new DateTime(2026, 12, 31),
                     NotableDateFilter.ForCategory(NotableDateCategory.Cultural));
 
-            List<NotableDate> list = System.Linq.Enumerable.ToList(filtered);
+            var list = System.Linq.Enumerable.ToList(filtered);
             Assert.AreEqual(1, list.Count);
             Assert.AreEqual("Cultural Day", list[0].Name);
         }
@@ -165,9 +165,9 @@ public partial class NotableDateTimeExtensionsTests
     public void IsNotableDate_WithFilter_WhenFilterMatches_ShouldReturnTrue()
     {
         NotableDateService service = BuildService(Fixed("Holiday", 4, 1, NotableDateCategory.Holiday));
-        NotableDateFilter filter = NotableDateFilter.ForCategory(NotableDateCategory.Holiday);
+        var filter = NotableDateFilter.ForCategory(NotableDateCategory.Holiday);
 
-        bool result = new DateTime(2026, 4, 1).IsNotableDate(service, filter);
+        var result = new DateTime(2026, 4, 1).IsNotableDate(service, filter);
 
         Assert.IsTrue(result);
     }
@@ -180,9 +180,9 @@ public partial class NotableDateTimeExtensionsTests
     public void IsNotableDate_WithFilter_WhenFilterDoesNotMatch_ShouldReturnFalse()
     {
         NotableDateService service = BuildService(Fixed("Holiday", 4, 1, NotableDateCategory.Holiday));
-        NotableDateFilter filter = NotableDateFilter.ForCategory(NotableDateCategory.Cultural);
+        var filter = NotableDateFilter.ForCategory(NotableDateCategory.Cultural);
 
-        bool result = new DateTime(2026, 4, 1).IsNotableDate(service, filter);
+        var result = new DateTime(2026, 4, 1).IsNotableDate(service, filter);
 
         Assert.IsFalse(result);
     }
@@ -195,7 +195,7 @@ public partial class NotableDateTimeExtensionsTests
     public void NextNotableDate_WithFilter_WhenNoMatchExists_ShouldReturnNull()
     {
         NotableDateService service = BuildService(Fixed("Holiday", 4, 1, NotableDateCategory.Holiday));
-        NotableDateFilter filter = NotableDateFilter.ForCategory(NotableDateCategory.Cultural);
+        var filter = NotableDateFilter.ForCategory(NotableDateCategory.Cultural);
 
         NotableDate? result = new DateTime(2026, 1, 1).NextNotableDate(service, filter);
 

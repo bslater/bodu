@@ -27,7 +27,7 @@ public sealed partial class BencodedDictionaryTests
             new KeyValuePair<BencodedString, BencodedValue>(tilde, new BencodedInteger(2)),
         });
 
-        byte[][] orderedKeys = dict.GetOrderedItems()
+        var orderedKeys = dict.GetOrderedItems()
             .Select(pair => pair.Key.Bytes.ToArray())
             .ToArray();
 
@@ -49,7 +49,7 @@ public sealed partial class BencodedDictionaryTests
             new KeyValuePair<BencodedString, BencodedValue>(BencodedString.FromUtf8("apple"), new BencodedInteger(3)),
         });
 
-        string[] orderedKeys = dict.GetOrderedItems()
+        var orderedKeys = dict.GetOrderedItems()
             .Select(pair => pair.Key.GetUtf8String())
             .ToArray();
 

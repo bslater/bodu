@@ -53,7 +53,7 @@ public sealed class LosarNotableDateAlgorithmTests
         var expected = new DateTime(year, knownMonth, knownDay);
 
         Assert.IsNotNull(result);
-        int dayDiff = Math.Abs((result!.Value - expected).Days);
+        var dayDiff = Math.Abs((result!.Value - expected).Days);
         Assert.IsTrue(dayDiff <= 1,
             $"Losar {year}: expected within ±1 day of {expected:yyyy-MM-dd}, got {result.Value:yyyy-MM-dd}.");
     }
@@ -65,7 +65,7 @@ public sealed class LosarNotableDateAlgorithmTests
     [TestMethod]
     public void GetDate_WhenIteratingSupportedRange_ShouldAlwaysFallInJanuaryOrFebruary()
     {
-        for (int year = 1901; year <= 2100; year++)
+        for (var year = 1901; year <= 2100; year++)
         {
             DateTime? result = _algorithm.GetDate(year);
 

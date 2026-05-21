@@ -16,7 +16,7 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void GetDecodedLength_WhenAllowPrefix_ShouldExcludePrefixFromCount()
     {
-        int actual = Base16.GetDecodedLength("0xDEADBEEF".AsSpan(), BaseFormatStyles.AllowPrefix);
+        var actual = Base16.GetDecodedLength("0xDEADBEEF".AsSpan(), BaseFormatStyles.AllowPrefix);
 
         Assert.AreEqual(4, actual);
     }
@@ -28,7 +28,7 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void GetDecodedLength_WhenIgnoreWhitespace_ShouldExcludeWhitespaceFromCount()
     {
-        int actual = Base16.GetDecodedLength("DE AD BE EF".AsSpan(), BaseFormatStyles.IgnoreWhitespace);
+        var actual = Base16.GetDecodedLength("DE AD BE EF".AsSpan(), BaseFormatStyles.IgnoreWhitespace);
 
         Assert.AreEqual(4, actual);
     }
@@ -113,7 +113,7 @@ public sealed partial class Base16Tests
     [DataRow("xx")]
     public void TryGetDecodedLength_WhenInputContainsNonHexCharacters_ShouldReturnFalse(string invalidInput)
     {
-        bool ok = Base16.TryGetDecodedLength(invalidInput.AsSpan(), out int byteCount);
+        var ok = Base16.TryGetDecodedLength(invalidInput.AsSpan(), out var byteCount);
 
         Assert.IsFalse(ok, $"TryGetDecodedLength should return false for: {invalidInput}");
         Assert.AreEqual(0, byteCount);
@@ -126,7 +126,7 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void TryGetDecodedLength_WhenOddInput_ShouldReturnFalseAndZero()
     {
-        bool ok = Base16.TryGetDecodedLength("abc".AsSpan(), out int byteCount);
+        var ok = Base16.TryGetDecodedLength("abc".AsSpan(), out var byteCount);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(0, byteCount);
@@ -139,7 +139,7 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void TryGetDecodedLength_WhenStrictEvenInput_ShouldReturnTrueAndCount()
     {
-        bool ok = Base16.TryGetDecodedLength("DEADBEEF".AsSpan(), out int byteCount);
+        var ok = Base16.TryGetDecodedLength("DEADBEEF".AsSpan(), out var byteCount);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(4, byteCount);

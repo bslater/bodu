@@ -1,11 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensionsTests.ToSafePathSegment.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System;
-using System.IO;
 
 namespace Bodu.Extensions;
 
@@ -18,9 +15,9 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void ToSafePathSegment_WhenInputContainsPrimaryDirectorySeparator_ShouldReplaceWithUnderscore()
     {
-        string input = $"foo{Path.DirectorySeparatorChar}bar";
+        var input = $"foo{Path.DirectorySeparatorChar}bar";
 
-        string actual = input.ToSafePathSegment();
+        var actual = input.ToSafePathSegment();
 
         Assert.AreEqual("foo_bar", actual);
     }
@@ -32,9 +29,9 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void ToSafePathSegment_WhenInputContainsAltDirectorySeparator_ShouldReplaceWithUnderscore()
     {
-        string input = $"foo{Path.AltDirectorySeparatorChar}bar";
+        var input = $"foo{Path.AltDirectorySeparatorChar}bar";
 
-        string actual = input.ToSafePathSegment();
+        var actual = input.ToSafePathSegment();
 
         Assert.AreEqual("foo_bar", actual);
     }
@@ -48,7 +45,7 @@ public partial class StringExtensionsTests
     {
         const string input = "report-2024.txt";
 
-        string actual = input.ToSafePathSegment();
+        var actual = input.ToSafePathSegment();
 
         Assert.AreEqual(input, actual);
     }

@@ -38,7 +38,7 @@ public sealed class Base58CheckTests
     [TestMethod]
     public void Decode_ForGenesisAddress_ShouldRecoverGenesisPayload()
     {
-        byte[] decoded = Base58Check.Decode(GenesisAddress.AsSpan());
+        var decoded = Base58Check.Decode(GenesisAddress.AsSpan());
 
         CollectionAssert.AreEqual(GenesisPayload, decoded);
     }
@@ -51,9 +51,9 @@ public sealed class Base58CheckTests
     public void Decode_WhenChecksumIsCorrupted_ShouldThrowFormatException()
     {
         // Flip the last character of the Genesis address — almost certainly invalidates the checksum.
-        char[] tampered = GenesisAddress.ToCharArray();
+        var tampered = GenesisAddress.ToCharArray();
         tampered[^1] = tampered[^1] == 'a' ? 'b' : 'a';
-        string tamperedAddress = new string(tampered);
+        var tamperedAddress = new string(tampered);
 
         var ex = Assert.ThrowsExactly<FormatException>(() =>
         {
@@ -85,7 +85,7 @@ public sealed class Base58CheckTests
     [TestMethod]
     public void Encode_ForGenesisBlockPayload_ShouldProduceGenesisAddress()
     {
-        string encoded = Base58Check.Encode(GenesisPayload);
+        var encoded = Base58Check.Encode(GenesisPayload);
 
         Assert.AreEqual(GenesisAddress, encoded);
     }
@@ -97,11 +97,11 @@ public sealed class Base58CheckTests
     [TestMethod]
     public void GetMaxEncodedLength_ShouldReturnUpperBoundLargeEnoughForOutput()
     {
-        byte[] payload = new byte[20];
+        var payload = new byte[20];
         new Random(0xABCDEF).NextBytes(payload);
 
-        int upper = Base58Check.GetMaxEncodedLength(payload.Length);
-        string encoded = Base58Check.Encode(payload);
+        var upper = Base58Check.GetMaxEncodedLength(payload.Length);
+        var encoded = Base58Check.Encode(payload);
 
         Assert.IsTrue(encoded.Length <= upper);
     }
@@ -123,7 +123,7 @@ public sealed class Base58CheckTests
     [TestMethod]
     public void IsValid_WhenChecksumIsCorrupted_ShouldReturnFalse()
     {
-        char[] tampered = GenesisAddress.ToCharArray();
+        var tampered = GenesisAddress.ToCharArray();
         tampered[^1] = tampered[^1] == 'a' ? 'b' : 'a';
 
         Assert.IsFalse(Base58Check.IsValid(new string(tampered).AsSpan()));
@@ -146,8 +146,8 @@ public sealed class Base58CheckTests
     [TestMethod]
     public void RoundTrip_ForEmptyPayload_ShouldRecoverEmptyArray()
     {
-        string encoded = Base58Check.Encode(ReadOnlySpan<byte>.Empty);
-        byte[] decoded = Base58Check.Decode(encoded.AsSpan());
+        var encoded = Base58Check.Encode(ReadOnlySpan<byte>.Empty);
+        var decoded = Base58Check.Decode(encoded.AsSpan());
 
         Assert.AreEqual(0, decoded.Length);
     }
@@ -167,11 +167,11 @@ public sealed class Base58CheckTests
     [DataRow(64)]
     public void RoundTrip_ShouldRecoverPayload(int payloadLength)
     {
-        byte[] payload = new byte[payloadLength];
+        var payload = new byte[payloadLength];
         new Random(0xCAFE).NextBytes(payload);
 
-        string encoded = Base58Check.Encode(payload);
-        byte[] decoded = Base58Check.Decode(encoded.AsSpan());
+        var encoded = Base58Check.Encode(payload);
+        var decoded = Base58Check.Decode(encoded.AsSpan());
 
         CollectionAssert.AreEqual(payload, decoded);
     }
@@ -183,9 +183,9 @@ public sealed class Base58CheckTests
     [TestMethod]
     public void TryDecode_ForGenesisAddress_ShouldRecoverPayload()
     {
-        byte[] destination = new byte[GenesisPayload.Length];
+        var destination = new byte[GenesisPayload.Length];
 
-        bool ok = Base58Check.TryDecode(GenesisAddress.AsSpan(), destination, out int bytesWritten);
+        var ok = Base58Check.TryDecode(GenesisAddress.AsSpan(), destination, out var bytesWritten);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(GenesisPayload.Length, bytesWritten);
@@ -199,11 +199,11 @@ public sealed class Base58CheckTests
     [TestMethod]
     public void TryDecode_WhenChecksumIsCorrupted_ShouldReturnFalse()
     {
-        char[] tampered = GenesisAddress.ToCharArray();
+        var tampered = GenesisAddress.ToCharArray();
         tampered[^1] = tampered[^1] == 'a' ? 'b' : 'a';
-        byte[] destination = new byte[GenesisPayload.Length];
+        var destination = new byte[GenesisPayload.Length];
 
-        bool ok = Base58Check.TryDecode(new string(tampered).AsSpan(), destination, out int bytesWritten);
+        var ok = Base58Check.TryDecode(new string(tampered).AsSpan(), destination, out var bytesWritten);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(0, bytesWritten);

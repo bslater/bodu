@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EncodingExtensionsTests.Encoding.BufferWriter.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -19,7 +19,7 @@ public sealed partial class EncodingExtensionsTests
     public void WritePreamble_WhenEncodingHasPreamble_ShouldWriteBomBytes()
     {
         System.Text.Encoding utf8WithBom = new System.Text.UTF8Encoding(true);
-        using PooledBufferBuilder<byte> writer = new PooledBufferBuilder<byte>(16);
+        using var writer = new PooledBufferBuilder<byte>(16);
 
         utf8WithBom.WritePreamble(writer);
 
@@ -34,7 +34,7 @@ public sealed partial class EncodingExtensionsTests
     public void WritePreamble_WhenEncodingHasNoPreamble_ShouldNotWriteAnyBytes()
     {
         System.Text.Encoding utf8NoBom = new System.Text.UTF8Encoding(false);
-        using PooledBufferBuilder<byte> writer = new PooledBufferBuilder<byte>(16);
+        using var writer = new PooledBufferBuilder<byte>(16);
 
         utf8NoBom.WritePreamble(writer);
 
@@ -48,7 +48,7 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void WritePreamble_WhenEncodingIsNull_ShouldThrowArgumentNullException()
     {
-        using PooledBufferBuilder<byte> writer = new PooledBufferBuilder<byte>(16);
+        using var writer = new PooledBufferBuilder<byte>(16);
 
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -80,8 +80,8 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void WriteBytes_WhenInvoked_ShouldWriteEncodedBytesIntoWriter()
     {
-        byte[] expected = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
-        using PooledBufferBuilder<byte> writer = new PooledBufferBuilder<byte>(16);
+        var expected = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
+        using var writer = new PooledBufferBuilder<byte>(16);
 
         System.Text.Encoding.UTF8.WriteBytes(MultiByteText, writer);
 
@@ -95,7 +95,7 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void WriteBytes_WhenSpanIsEmpty_ShouldNotWriteAnyBytes()
     {
-        using PooledBufferBuilder<byte> writer = new PooledBufferBuilder<byte>(16);
+        using var writer = new PooledBufferBuilder<byte>(16);
 
         System.Text.Encoding.UTF8.WriteBytes(ReadOnlySpan<char>.Empty, writer);
 
@@ -109,7 +109,7 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void WriteBytes_WhenEncodingIsNull_ShouldThrowArgumentNullException()
     {
-        using PooledBufferBuilder<byte> writer = new PooledBufferBuilder<byte>(16);
+        using var writer = new PooledBufferBuilder<byte>(16);
 
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -142,12 +142,12 @@ public sealed partial class EncodingExtensionsTests
     public void WriteBytesWithPreamble_WhenEncodingHasPreamble_ShouldWriteBomThenEncodedBytes()
     {
         System.Text.Encoding utf8WithBom = new System.Text.UTF8Encoding(true);
-        byte[] expectedTail = utf8WithBom.GetBytes(SampleText);
-        using PooledBufferBuilder<byte> writer = new PooledBufferBuilder<byte>(64);
+        var expectedTail = utf8WithBom.GetBytes(SampleText);
+        using var writer = new PooledBufferBuilder<byte>(64);
 
         utf8WithBom.WriteBytesWithPreamble(SampleText, writer);
 
-        byte[] writtenArray = writer.WrittenSpan.ToArray();
+        var writtenArray = writer.WrittenSpan.ToArray();
         CollectionAssert.AreEqual(
             utf8WithBom.Preamble.ToArray(),
             writtenArray[..utf8WithBom.Preamble.Length]);
@@ -163,7 +163,7 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void WriteBytesWithPreamble_WhenEncodingIsNull_ShouldThrowArgumentNullException()
     {
-        using PooledBufferBuilder<byte> writer = new PooledBufferBuilder<byte>(16);
+        using var writer = new PooledBufferBuilder<byte>(16);
 
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -180,8 +180,8 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void WriteChars_WhenInvoked_ShouldWriteDecodedCharsIntoWriter()
     {
-        byte[] bytes = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
-        using PooledBufferBuilder<char> writer = new PooledBufferBuilder<char>(16);
+        var bytes = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
+        using var writer = new PooledBufferBuilder<char>(16);
 
         System.Text.Encoding.UTF8.WriteChars(bytes, writer);
 
@@ -195,7 +195,7 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void WriteChars_WhenSpanIsEmpty_ShouldNotWriteAnyChars()
     {
-        using PooledBufferBuilder<char> writer = new PooledBufferBuilder<char>(16);
+        using var writer = new PooledBufferBuilder<char>(16);
 
         System.Text.Encoding.UTF8.WriteChars(ReadOnlySpan<byte>.Empty, writer);
 
@@ -209,7 +209,7 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void WriteChars_WhenEncodingIsNull_ShouldThrowArgumentNullException()
     {
-        using PooledBufferBuilder<char> writer = new PooledBufferBuilder<char>(16);
+        using var writer = new PooledBufferBuilder<char>(16);
 
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

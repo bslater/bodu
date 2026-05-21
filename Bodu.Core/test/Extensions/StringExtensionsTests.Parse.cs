@@ -1,10 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensionsTests.Parse.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System;
 
 namespace Bodu.Extensions;
 
@@ -63,7 +61,7 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void TryParse_OfInt_WhenInputIsValid_ShouldReturnTrueAndParsedValue()
     {
-        bool ok = "42".TryParse(out int result);
+        var ok = "42".TryParse(out int result);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(42, result);
@@ -76,7 +74,7 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void TryParse_OfInt_WhenInputIsInvalid_ShouldReturnFalse()
     {
-        bool ok = "not-a-number".TryParse(out int result);
+        var ok = "not-a-number".TryParse(out int result);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(0, result);
@@ -137,7 +135,7 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void TryParseSpan_OfInt_WhenInputIsValid_ShouldReturnTrueAndParsedValue()
     {
-        bool ok = "42".TryParseSpan(out int result);
+        var ok = "42".TryParseSpan(out int result);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(42, result);
@@ -150,7 +148,7 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void TryParseSpan_OfInt_WhenInputIsInvalid_ShouldReturnFalse()
     {
-        bool ok = "not-a-number".TryParseSpan(out int result);
+        var ok = "not-a-number".TryParseSpan(out int result);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(0, result);

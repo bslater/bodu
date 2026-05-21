@@ -1,11 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensions.ToSafePathSegment.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
-using System.IO;
 using System.Text;
 
 namespace Bodu.Extensions;
@@ -30,24 +28,17 @@ public static partial class StringExtensions
     /// separators. For a full file name (no embedded separators required as a rule), prefer
     /// <see cref="ToSafeFileName(string)" /> — the two differ only in whether path separators are stripped.
     /// </remarks>
-    /// <example>
-    /// <code language="csharp">
-    ///<![CDATA[
-    /// "docs/2025".ToSafePathSegment();  // "docs_2025" (path separator replaced)
-    ///]]>
-    /// </code>
-    /// </example>
     public static string ToSafePathSegment(this string value)
     {
         ThrowHelper.ThrowIfNull(value);
 
         if (value.Length == 0) return "_";
 
-        char[] invalid = Path.GetInvalidFileNameChars();
+        var invalid = Path.GetInvalidFileNameChars();
         StringBuilder builder = new(value.Length);
-        foreach (char c in value)
+        foreach (var c in value)
         {
-            bool isInvalid = Array.IndexOf(invalid, c) >= 0
+            var isInvalid = Array.IndexOf(invalid, c) >= 0
                 || c == Path.DirectorySeparatorChar
                 || c == Path.AltDirectorySeparatorChar;
             builder.Append(isInvalid ? '_' : c);

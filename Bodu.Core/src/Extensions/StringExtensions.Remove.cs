@@ -1,10 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensions.Remove.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System;
 
 namespace Bodu.Extensions;
 
@@ -34,14 +32,6 @@ public static partial class StringExtensions
     /// <see cref="string.TrimStart(char[])" />/<see cref="string.TrimEnd(char[])" /> when the goal is to strip
     /// individual characters.
     /// </remarks>
-    /// <example>
-    /// <code language="csharp">
-    ///<![CDATA[
-    /// "a-b-c".Remove("-");    // "abc"
-    /// "Hello".Remove("xyz");  // "Hello" (substring absent)
-    ///]]>
-    /// </code>
-    /// </example>
     public static string Remove(
         this string value,
         string valueToRemove,
@@ -49,8 +39,8 @@ public static partial class StringExtensions
     {
         ThrowHelper.ThrowIfNull(value);
         ThrowHelper.ThrowIfNull(valueToRemove);
-        if (valueToRemove.Length == 0) throw new ArgumentException(ResourceStrings.Arg_Invalid_StringIsEmpty, nameof(valueToRemove));
-
-        return value.Replace(valueToRemove, string.Empty, comparison);
+        return valueToRemove.Length == 0
+            ? throw new ArgumentException("valueToRemove must not be empty.", nameof(valueToRemove))
+            : value.Replace(valueToRemove, string.Empty, comparison);
     }
 }

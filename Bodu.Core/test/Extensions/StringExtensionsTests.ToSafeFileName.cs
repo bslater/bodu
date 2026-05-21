@@ -1,11 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensionsTests.ToSafeFileName.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System;
-using System.IO;
 
 namespace Bodu.Extensions;
 
@@ -18,10 +15,10 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void ToSafeFileName_WhenInputContainsInvalidChars_ShouldReplaceWithUnderscore()
     {
-        char invalid = Path.GetInvalidFileNameChars()[0];
-        string input = $"valid{invalid}name.txt";
+        var invalid = Path.GetInvalidFileNameChars()[0];
+        var input = $"valid{invalid}name.txt";
 
-        string actual = input.ToSafeFileName();
+        var actual = input.ToSafeFileName();
 
         Assert.AreEqual($"valid_name.txt", actual);
     }
@@ -35,7 +32,7 @@ public partial class StringExtensionsTests
     {
         const string input = "report-2024.txt";
 
-        string actual = input.ToSafeFileName();
+        var actual = input.ToSafeFileName();
 
         Assert.AreEqual(input, actual);
     }

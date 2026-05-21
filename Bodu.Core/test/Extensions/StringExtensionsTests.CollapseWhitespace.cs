@@ -1,11 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensionsTests.CollapseWhitespace.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System;
-using System.Collections.Generic;
 
 namespace Bodu.Extensions;
 
@@ -52,9 +49,9 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void CollapseWhitespace_WhenInputIsAlreadyCollapsed_ShouldReturnSameInstance()
     {
-        string value = "a b c d";
+        var value = "a b c d";
 
-        string actual = value.CollapseWhitespace();
+        var actual = value.CollapseWhitespace();
 
         Assert.AreSame(value, actual);
     }
@@ -66,9 +63,9 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void CollapseWhitespace_WhenInputContainsUnicodeWhitespace_ShouldCollapseToAsciiSpace()
     {
-        string value = "a b c";
+        var value = "a b c";
 
-        string actual = value.CollapseWhitespace();
+        var actual = value.CollapseWhitespace();
 
         Assert.AreEqual("a b c", actual);
     }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DelimitedRowTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -138,7 +138,7 @@ public sealed class DelimitedRowTests
     {
         DelimitedDocument doc = Delimited.Parse("name,score\nAlice,42");
 
-        int score = doc.Rows[0].GetValue<int>(1);
+        var score = doc.Rows[0].GetValue<int>(1);
 
         Assert.AreEqual(42, score);
     }
@@ -169,7 +169,7 @@ public sealed class DelimitedRowTests
     {
         DelimitedDocument doc = Delimited.Parse("x,y\n10,20");
 
-        bool result = doc.Rows[0].TryGetValue<int>(0, out int x);
+        var result = doc.Rows[0].TryGetValue<int>(0, out var x);
 
         Assert.IsTrue(result);
         Assert.AreEqual(10, x);
@@ -184,7 +184,7 @@ public sealed class DelimitedRowTests
     {
         DelimitedDocument doc = Delimited.Parse("a\n1");
 
-        bool result = doc.Rows[0].TryGetValue<int>(99, out int _);
+        var result = doc.Rows[0].TryGetValue<int>(99, out var _);
 
         Assert.IsFalse(result);
     }
@@ -200,7 +200,7 @@ public sealed class DelimitedRowTests
     {
         DelimitedDocument doc = Delimited.Parse("name,score\nAlice,99");
 
-        int score = doc.Rows[0].GetValue<int>("score");
+        var score = doc.Rows[0].GetValue<int>("score");
 
         Assert.AreEqual(99, score);
     }
@@ -217,7 +217,7 @@ public sealed class DelimitedRowTests
         DelimitedParseOptions options = new() { HasHeader = false };
         DelimitedDocument doc = Delimited.Parse("1,2", options);
 
-        bool result = doc.Rows[0].TryGetValue<int>("missing", out int _);
+        var result = doc.Rows[0].TryGetValue<int>("missing", out var _);
 
         Assert.IsFalse(result);
     }
@@ -231,7 +231,7 @@ public sealed class DelimitedRowTests
     {
         DelimitedDocument doc = Delimited.Parse("qty\n7");
 
-        bool result = doc.Rows[0].TryGetValue<int>("qty", out int qty);
+        var result = doc.Rows[0].TryGetValue<int>("qty", out var qty);
 
         Assert.IsTrue(result);
         Assert.AreEqual(7, qty);

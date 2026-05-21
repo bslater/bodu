@@ -6,7 +6,6 @@
 
 namespace Bodu.Security.Cryptography;
 
-using System;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

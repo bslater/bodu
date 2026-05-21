@@ -1,11 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensionsTests.RemoveWhitespace.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System;
-using System.Collections.Generic;
 
 namespace Bodu.Extensions;
 
@@ -48,9 +45,9 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void RemoveWhitespace_WhenInputHasNoWhitespace_ShouldReturnSameInstance()
     {
-        string value = "hello";
+        var value = "hello";
 
-        string actual = value.RemoveWhitespace();
+        var actual = value.RemoveWhitespace();
 
         Assert.AreSame(value, actual);
     }

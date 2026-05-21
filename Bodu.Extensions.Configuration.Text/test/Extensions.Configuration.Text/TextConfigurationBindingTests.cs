@@ -1,14 +1,10 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TextConfigurationBindingTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Text;
-using Bodu.Extensions.Configuration.Text;
 using Microsoft.Extensions.Configuration;
 
 namespace Bodu.Extensions.Configuration.Text.Tests;
@@ -62,7 +58,7 @@ logging.provider = Console
             .Build();
 
         IConfigurationSection level = configuration.GetSection("logging:level");
-        List<string> childKeys = level.GetChildren().Select(c => c.Key).OrderBy(k => k).ToList();
+        var childKeys = level.GetChildren().Select(c => c.Key).OrderBy(k => k).ToList();
 
         CollectionAssert.AreEquivalent(new[] { "console", "default" }, childKeys);
         Assert.AreEqual("Information", level["default"]);

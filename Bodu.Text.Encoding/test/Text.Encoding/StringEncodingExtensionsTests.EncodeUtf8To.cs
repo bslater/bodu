@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringEncodingExtensionsTests.EncodeUtf8To.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -15,10 +15,10 @@ public sealed partial class StringEncodingExtensionsTests
     [TestMethod]
     public void EncodeUtf8To_WhenDestinationFits_ShouldWriteAndReturnCount()
     {
-        int required = System.Text.Encoding.UTF8.GetByteCount(MultiByteText);
+        var required = System.Text.Encoding.UTF8.GetByteCount(MultiByteText);
         Span<byte> destination = new byte[required];
 
-        int written = MultiByteText.EncodeUtf8To(destination);
+        var written = MultiByteText.EncodeUtf8To(destination);
 
         Assert.AreEqual(required, written);
         CollectionAssert.AreEqual(System.Text.Encoding.UTF8.GetBytes(MultiByteText), destination.ToArray());
@@ -31,8 +31,8 @@ public sealed partial class StringEncodingExtensionsTests
     [TestMethod]
     public void EncodeUtf8To_WhenDestinationIsOneByteTooSmall_ShouldThrowArgumentException()
     {
-        int required = System.Text.Encoding.UTF8.GetByteCount(MultiByteText);
-        byte[] backing = new byte[required - 1];
+        var required = System.Text.Encoding.UTF8.GetByteCount(MultiByteText);
+        var backing = new byte[required - 1];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -47,7 +47,7 @@ public sealed partial class StringEncodingExtensionsTests
     [TestMethod]
     public void EncodeUtf8To_WhenTextIsNull_ShouldThrowArgumentNullException()
     {
-        byte[] backing = new byte[64];
+        var backing = new byte[64];
 
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

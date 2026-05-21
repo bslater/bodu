@@ -42,7 +42,7 @@ public sealed partial class Base16Tests
     [DynamicData(nameof(Base16KnownAnswerVectors.Rfc4648Vectors), typeof(Base16KnownAnswerVectors), DynamicDataSourceType.Method)]
     public void Decode_ForRfc4648KnownAnswerVector_ShouldRecoverBytes(EncodingKnownAnswerVector vector)
     {
-        byte[] actual = Base16.Decode(vector.Encoded);
+        var actual = Base16.Decode(vector.Encoded);
 
         CollectionAssert.AreEqual(vector.DecodedBytes, actual);
     }
@@ -55,10 +55,10 @@ public sealed partial class Base16Tests
     [TestCategory("Regression")]
     public void Decode_StringAndSpanOverloads_ShouldProduceIdenticalOutput()
     {
-        string encoded = "deadbeefcafebabe";
+        var encoded = "deadbeefcafebabe";
 
-        byte[] fromString = Base16.Decode(encoded);
-        byte[] fromSpan = Base16.Decode(encoded.AsSpan());
+        var fromString = Base16.Decode(encoded);
+        var fromSpan = Base16.Decode(encoded.AsSpan());
 
         CollectionAssert.AreEqual(fromString, fromSpan);
     }
@@ -70,7 +70,7 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void Decode_WhenAllowPrefixAndIgnoreWhitespace_ShouldStripBoth()
     {
-        byte[] actual = Base16.Decode(
+        var actual = Base16.Decode(
             "0x DE AD BE EF",
             BaseFormatStyles.AllowPrefix | BaseFormatStyles.IgnoreWhitespace);
 
@@ -84,7 +84,7 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void Decode_WhenAllowPrefixAndLeadingZeroNoX_ShouldPreserveDigit()
     {
-        byte[] actual = Base16.Decode("0FAB", BaseFormatStyles.AllowPrefix);
+        var actual = Base16.Decode("0FAB", BaseFormatStyles.AllowPrefix);
 
         CollectionAssert.AreEqual(new byte[] { 0x0F, 0xAB }, actual);
     }
@@ -96,7 +96,7 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void Decode_WhenAllowPrefixAndPrefixPresent_ShouldStripPrefix()
     {
-        byte[] actual = Base16.Decode("0xDEADBEEF", BaseFormatStyles.AllowPrefix);
+        var actual = Base16.Decode("0xDEADBEEF", BaseFormatStyles.AllowPrefix);
 
         CollectionAssert.AreEqual(CanonicalBytes, actual);
     }
@@ -108,7 +108,7 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void Decode_WhenAllowPrefixAndUpperCasePrefix_ShouldStripPrefix()
     {
-        byte[] actual = Base16.Decode("0XDEADBEEF", BaseFormatStyles.AllowPrefix);
+        var actual = Base16.Decode("0XDEADBEEF", BaseFormatStyles.AllowPrefix);
 
         CollectionAssert.AreEqual(CanonicalBytes, actual);
     }
@@ -120,7 +120,7 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void Decode_WhenCountExceedsCharArrayLength_ShouldThrowArgumentOutOfRangeException()
     {
-        char[] chars = "abcd".ToCharArray();
+        var chars = "abcd".ToCharArray();
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -135,7 +135,7 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void Decode_WhenIgnoreWhitespace_ShouldStripAllAsciiWhitespace()
     {
-        byte[] actual = Base16.Decode("DE AD\tBE\nEF\r", BaseFormatStyles.IgnoreWhitespace);
+        var actual = Base16.Decode("DE AD\tBE\nEF\r", BaseFormatStyles.IgnoreWhitespace);
 
         CollectionAssert.AreEqual(CanonicalBytes, actual);
     }
@@ -181,7 +181,7 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void Decode_WhenOffsetPlusCountOverflowsCharArray_ShouldThrowArgumentException()
     {
-        char[] chars = "abcd".ToCharArray();
+        var chars = "abcd".ToCharArray();
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -198,7 +198,7 @@ public sealed partial class Base16Tests
     {
         ReadOnlySpan<char> chars = CanonicalHexLower.AsSpan();
 
-        byte[] actual = Base16.Decode(chars);
+        var actual = Base16.Decode(chars);
 
         CollectionAssert.AreEqual(CanonicalBytes, actual);
     }
@@ -210,9 +210,9 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void Decode_WhenSliceForCharArray_ShouldReturnSliceOnly()
     {
-        char[] chars = "00deadbeef00".ToCharArray();
+        var chars = "00deadbeef00".ToCharArray();
 
-        byte[] actual = Base16.Decode(chars, 2, 8);
+        var actual = Base16.Decode(chars, 2, 8);
 
         CollectionAssert.AreEqual(CanonicalBytes, actual);
     }
@@ -249,7 +249,7 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void Decode_WhenStrictLowerCaseString_ShouldReturnExpectedBytes()
     {
-        byte[] actual = Base16.Decode(CanonicalHexLower);
+        var actual = Base16.Decode(CanonicalHexLower);
 
         CollectionAssert.AreEqual(CanonicalBytes, actual);
     }
@@ -261,7 +261,7 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void Decode_WhenStrictMixedCaseString_ShouldReturnExpectedBytes()
     {
-        byte[] actual = Base16.Decode("DeAdBeEf");
+        var actual = Base16.Decode("DeAdBeEf");
 
         CollectionAssert.AreEqual(CanonicalBytes, actual);
     }
@@ -286,7 +286,7 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void Decode_WhenStrictUpperCaseString_ShouldReturnExpectedBytes()
     {
-        byte[] actual = Base16.Decode(CanonicalHexUpper);
+        var actual = Base16.Decode(CanonicalHexUpper);
 
         CollectionAssert.AreEqual(CanonicalBytes, actual);
     }

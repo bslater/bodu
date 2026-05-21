@@ -20,7 +20,7 @@ public partial class NotableDateTimeExtensionsTests
     {
         NotableDateService service = BuildHolidayService(ruleTerritory);
 
-        bool actual = new DateTime(2026, 4, 7).IsNonWorkingDay(service, territoryCode: queryTerritory);
+        var actual = new DateTime(2026, 4, 7).IsNonWorkingDay(service, territoryCode: queryTerritory);
 
         Assert.AreEqual(expected, actual);
     }
@@ -53,9 +53,9 @@ public partial class NotableDateTimeExtensionsTests
         NotableDateService service = BuildHolidayService(ruleTerritory);
 
         // 2026-04-06..2026-04-10 (Mon..Fri) is normally five working days; the holiday on Tuesday removes one when in scope.
-        int actual = new DateTime(2026, 4, 6).WorkingDaysBetween(new DateTime(2026, 4, 10), service, territoryCode: queryTerritory);
+        var actual = new DateTime(2026, 4, 6).WorkingDaysBetween(new DateTime(2026, 4, 10), service, territoryCode: queryTerritory);
 
-        int expected = expectedExcludesHoliday ? 4 : 5;
+        var expected = expectedExcludesHoliday ? 4 : 5;
         Assert.AreEqual(expected, actual);
     }
 }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IniTests.Parse.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -200,7 +200,7 @@ public sealed partial class IniTests
     [TestMethod]
     public void Parse_WhenStringInput_ShouldParseCorrectly()
     {
-        string source = "[db]\nhost=localhost";
+        var source = "[db]\nhost=localhost";
 
         IniDocument doc = Ini.Parse(source);
 

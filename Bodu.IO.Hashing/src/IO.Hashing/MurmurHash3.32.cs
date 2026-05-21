@@ -104,14 +104,14 @@ public sealed class MurmurHash3_32
     /// <returns>A 4-byte array containing the little-endian encoded 32-bit hash value.</returns>
     protected override byte[] ComputeHashCore(ReadOnlySpan<byte> source)
     {
-        uint h1 = Seed;
-        int len = source.Length;
-        int nblocks = len / 4;
+        var h1 = Seed;
+        var len = source.Length;
+        var nblocks = len / 4;
 
         // Body: process 4-byte blocks.
-        for (int i = 0; i < nblocks; i++)
+        for (var i = 0; i < nblocks; i++)
         {
-            uint k1 = BinaryPrimitives.ReadUInt32LittleEndian(source.Slice(i * 4, 4));
+            var k1 = BinaryPrimitives.ReadUInt32LittleEndian(source.Slice(i * 4, 4));
 
             k1 = unchecked(k1 * C1);
             k1 = RotateLeft(k1, 15);
@@ -143,7 +143,7 @@ public sealed class MurmurHash3_32
         h1 = unchecked(h1 ^ (uint)len);
         h1 = FMix32(h1);
 
-        byte[] result = new byte[4];
+        var result = new byte[4];
         BinaryPrimitives.WriteUInt32LittleEndian(result, h1);
         return result;
     }

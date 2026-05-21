@@ -108,7 +108,7 @@ public static partial class BufferConverter
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(sourceSpan, 0, byteCount);
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(targetSpan, 0, count);
 
-        MemoryMarshal.Cast<byte, T>(sourceSpan.Slice(0, byteCount)).CopyTo(targetSpan.Slice(0, count));
+        MemoryMarshal.Cast<byte, T>(sourceSpan[..byteCount]).CopyTo(targetSpan[..count]);
     }
 
     /// <summary>

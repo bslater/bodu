@@ -1,13 +1,10 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TextConfigurationIniDocumentTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
-using System.IO;
 using System.Text;
-using Bodu.Extensions.Configuration.Text;
 using Bodu.Text.Configuration;
 using Bodu.Text.Ini;
 using Microsoft.Extensions.Configuration;

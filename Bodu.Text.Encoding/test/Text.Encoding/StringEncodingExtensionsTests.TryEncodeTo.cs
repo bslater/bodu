@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringEncodingExtensionsTests.TryEncodeTo.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -32,10 +32,10 @@ public sealed partial class StringEncodingExtensionsTests
     [DynamicData(nameof(GetTryEncodeToCases), DynamicDataSourceType.Method)]
     public void TryEncodeTo_ShouldRespectDestinationSize(int extra, bool expectedOk)
     {
-        int required = System.Text.Encoding.UTF8.GetByteCount(MultiByteText);
-        byte[] backing = new byte[required + extra];
+        var required = System.Text.Encoding.UTF8.GetByteCount(MultiByteText);
+        var backing = new byte[required + extra];
 
-        bool ok = MultiByteText.TryEncodeTo(System.Text.Encoding.UTF8, backing, out int written);
+        var ok = MultiByteText.TryEncodeTo(System.Text.Encoding.UTF8, backing, out var written);
 
         Assert.AreEqual(expectedOk, ok);
         Assert.AreEqual(expectedOk ? required : 0, written);
@@ -49,7 +49,7 @@ public sealed partial class StringEncodingExtensionsTests
     [TestMethod]
     public void TryEncodeTo_WhenTextIsNull_ShouldThrowArgumentNullException()
     {
-        byte[] backing = new byte[64];
+        var backing = new byte[64];
 
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -67,7 +67,7 @@ public sealed partial class StringEncodingExtensionsTests
     [TestMethod]
     public void TryEncodeTo_WhenEncodingIsNull_ShouldThrowArgumentNullException()
     {
-        byte[] backing = new byte[64];
+        var backing = new byte[64];
 
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

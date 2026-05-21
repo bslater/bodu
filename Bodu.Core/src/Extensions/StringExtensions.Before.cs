@@ -1,10 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensions.Before.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System;
 
 namespace Bodu.Extensions;
 
@@ -26,14 +24,6 @@ public static partial class StringExtensions
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="value" /> or <paramref name="marker" /> is <see langword="null" />.
     /// </exception>
-    /// <example>
-    /// <code language="csharp">
-    ///<![CDATA[
-    /// "user@example.com".Before("@");  // "user"
-    /// "no-delimiter".Before("@");      // null
-    ///]]>
-    /// </code>
-    /// </example>
     public static string? Before(
         this string value,
         string marker,
@@ -42,7 +32,7 @@ public static partial class StringExtensions
         ThrowHelper.ThrowIfNull(value);
         ThrowHelper.ThrowIfNull(marker);
 
-        int index = value.IndexOf(marker, comparison);
-        return index < 0 ? null : value.Substring(0, index);
+        var index = value.IndexOf(marker, comparison);
+        return index < 0 ? null : value[..index];
     }
 }

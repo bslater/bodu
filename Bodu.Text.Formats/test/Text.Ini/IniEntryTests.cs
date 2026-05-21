@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IniEntryTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -34,7 +34,7 @@ public sealed class IniEntryTests
     {
         IniEntry entry = new("port", "8080");
 
-        int result = entry.GetValue<int>();
+        var result = entry.GetValue<int>();
 
         Assert.AreEqual(8080, result);
     }
@@ -48,7 +48,7 @@ public sealed class IniEntryTests
     {
         IniEntry entry = new("ratio", "3.14");
 
-        double result = entry.GetValue<double>();
+        var result = entry.GetValue<double>();
 
         Assert.AreEqual(3.14, result, delta: 1e-10);
     }
@@ -61,7 +61,7 @@ public sealed class IniEntryTests
     {
         IniEntry entry = new("enabled", "true");
 
-        bool result = entry.GetValue<bool>();
+        var result = entry.GetValue<bool>();
 
         Assert.IsTrue(result);
     }
@@ -75,7 +75,7 @@ public sealed class IniEntryTests
     {
         IniEntry entry = new("name", "Alice");
 
-        string result = entry.GetValue<string>();
+        var result = entry.GetValue<string>();
 
         Assert.AreEqual("Alice", result);
     }
@@ -86,7 +86,7 @@ public sealed class IniEntryTests
     [TestMethod]
     public void GetValue_WhenValueIsValidGuid_ShouldReturnParsedGuid()
     {
-        Guid expected = Guid.NewGuid();
+        var expected = Guid.NewGuid();
         IniEntry entry = new("id", expected.ToString());
 
         Guid result = entry.GetValue<Guid>();
@@ -118,7 +118,7 @@ public sealed class IniEntryTests
     {
         IniEntry entry = new("count", "7");
 
-        bool result = entry.TryGetValue<int>(out int value);
+        var result = entry.TryGetValue<int>(out var value);
 
         Assert.IsTrue(result);
         Assert.AreEqual(7, value);
@@ -133,7 +133,7 @@ public sealed class IniEntryTests
     {
         IniEntry entry = new("count", "abc");
 
-        bool result = entry.TryGetValue<int>(out int value);
+        var result = entry.TryGetValue<int>(out var value);
 
         Assert.IsFalse(result);
         Assert.AreEqual(default, value);

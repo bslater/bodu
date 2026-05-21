@@ -5,7 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Collections.Immutable;
-using System.Linq;
 using Bodu.Extensions;
 
 namespace Bodu.Globalization.Calendar;
@@ -203,7 +202,7 @@ public sealed partial class NotableDateServiceTests
 
         // Every day is a weekend, so IsNonWorkingDay always returns true; the walk never finds a working day and falls back.
         // Convert the IWeekendDefinitionProvider into the canonical WeekPattern (empty) and use the WeekPattern ctor.
-        WeekPattern workingWeek = new AlwaysWeekendProvider().ToWeekPattern();
+        var workingWeek = new AlwaysWeekendProvider().ToWeekPattern();
         var service = new NotableDateService(
             new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(rule) },
             workingWeek);

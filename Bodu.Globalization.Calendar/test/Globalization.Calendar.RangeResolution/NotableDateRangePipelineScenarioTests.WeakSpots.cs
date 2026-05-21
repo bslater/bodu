@@ -233,7 +233,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
             new DateTime(2026, 1, 1),
             new DateTime(2026, 1, 31));
 
-        string[] emittedTerritories = resolved
+        var emittedTerritories = resolved
             .Where(n => n.Name == "Multi-Territory Holiday")
             .Select(n => n.TerritoryCode ?? "<null>")
             .OrderBy(s => s, StringComparer.Ordinal)

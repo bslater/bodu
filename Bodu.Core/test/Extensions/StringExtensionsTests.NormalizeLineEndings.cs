@@ -1,11 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensionsTests.NormalizeLineEndings.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System;
-using System.Collections.Generic;
 
 namespace Bodu.Extensions;
 
@@ -51,9 +48,9 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void NormalizeLineEndings_WhenInputContainsCrlf_ShouldReplaceWithSingleNewline()
     {
-        string value = "alpha\r\nbeta\r\ngamma";
+        var value = "alpha\r\nbeta\r\ngamma";
 
-        string actual = value.NormalizeLineEndings("|");
+        var actual = value.NormalizeLineEndings("|");
 
         Assert.AreEqual("alpha|beta|gamma", actual);
     }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EncodingExtensions.Chunked.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -77,7 +77,7 @@ public static partial class EncodingExtensions
             flush,
             out charsConsumed,
             out bytesWritten,
-            out bool completed);
+            out var completed);
 
         return completed
             ? OperationStatus.Done
@@ -127,7 +127,7 @@ public static partial class EncodingExtensions
             flush,
             out bytesConsumed,
             out charsWritten,
-            out bool completed);
+            out var completed);
 
         return completed
             ? OperationStatus.Done

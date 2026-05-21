@@ -1,11 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensions.ToDotCase.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
 using System.Globalization;
 
 namespace Bodu.Extensions;
@@ -24,13 +22,6 @@ public static partial class StringExtensions
     /// Word boundaries follow <see cref="EnumerateWords(string, WordCasingOptions)" /> using
     /// <see cref="WordCasingOptions.Default" />. Every word, including acronyms, is lower-cased.
     /// </remarks>
-    /// <example>
-    /// <code language="csharp">
-    ///<![CDATA[
-    /// "UserAccountId".ToDotCase();  // "user.account.id"
-    ///]]>
-    /// </code>
-    /// </example>
     public static string ToDotCase(this string value) =>
         ToDotCase(value, WordCasingOptions.Default);
 
@@ -71,7 +62,7 @@ public static partial class StringExtensions
         if (words.Count == 0) return string.Empty;
 
         CultureInfo culture = options.Culture;
-        for (int i = 0; i < words.Count; i++) words[i] = words[i].ToLower(culture);
+        for (var i = 0; i < words.Count; i++) words[i] = words[i].ToLower(culture);
         return string.Join(separator, words);
     }
 }

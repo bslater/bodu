@@ -18,7 +18,7 @@ public partial class NotableDateTimeExtensionsTests
     {
         NotableDateService service = BuildService();
 
-        int result = new DateTime(2026, 1, 5).WorkingDaysBetween(new DateTime(2026, 1, 11), service);
+        var result = new DateTime(2026, 1, 5).WorkingDaysBetween(new DateTime(2026, 1, 11), service);
 
         Assert.AreEqual(5, result);
     }
@@ -31,7 +31,7 @@ public partial class NotableDateTimeExtensionsTests
     {
         NotableDateService service = BuildService(Fixed("Holiday", 1, 7, nonWorking: true));
 
-        int result = new DateTime(2026, 1, 5).WorkingDaysBetween(new DateTime(2026, 1, 11), service);
+        var result = new DateTime(2026, 1, 5).WorkingDaysBetween(new DateTime(2026, 1, 11), service);
 
         Assert.AreEqual(4, result);
     }
@@ -44,8 +44,8 @@ public partial class NotableDateTimeExtensionsTests
     {
         NotableDateService service = BuildService();
 
-        int forward = new DateTime(2026, 1, 5).WorkingDaysBetween(new DateTime(2026, 1, 11), service);
-        int reversed = new DateTime(2026, 1, 11).WorkingDaysBetween(new DateTime(2026, 1, 5), service);
+        var forward = new DateTime(2026, 1, 5).WorkingDaysBetween(new DateTime(2026, 1, 11), service);
+        var reversed = new DateTime(2026, 1, 11).WorkingDaysBetween(new DateTime(2026, 1, 5), service);
 
         Assert.AreEqual(forward, reversed);
     }
@@ -58,7 +58,7 @@ public partial class NotableDateTimeExtensionsTests
     {
         NotableDateService service = BuildService();
 
-        int result = new DateTime(2026, 1, 6).WorkingDaysBetween(new DateTime(2026, 1, 6), service);
+        var result = new DateTime(2026, 1, 6).WorkingDaysBetween(new DateTime(2026, 1, 6), service);
 
         Assert.AreEqual(1, result);
     }
@@ -71,7 +71,7 @@ public partial class NotableDateTimeExtensionsTests
     {
         NotableDateService service = BuildService();
 
-        int result = new DateTime(2026, 1, 3).WorkingDaysBetween(new DateTime(2026, 1, 3), service);
+        var result = new DateTime(2026, 1, 3).WorkingDaysBetween(new DateTime(2026, 1, 3), service);
 
         Assert.AreEqual(0, result);
     }
@@ -87,7 +87,7 @@ public partial class NotableDateTimeExtensionsTests
         {
             NotableDateContext.Default = service;
 
-            int result = new DateTime(2026, 1, 5).WorkingDaysBetween(new DateTime(2026, 1, 11));
+            var result = new DateTime(2026, 1, 5).WorkingDaysBetween(new DateTime(2026, 1, 11));
 
             Assert.AreEqual(5, result);
         }
@@ -118,7 +118,7 @@ public partial class NotableDateTimeExtensionsTests
     {
         NotableDateService service = BuildService();
 
-        int actual = start.WorkingDaysBetween(end, service);
+        var actual = start.WorkingDaysBetween(end, service);
 
         Assert.AreEqual(expected, actual);
     }

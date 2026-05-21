@@ -24,11 +24,11 @@ public sealed partial class Base64Tests
     [DataRow(6, 0)]
     public void Encode_WhenStandardVariant_ShouldEmitExpectedPaddingCount(int byteCount, int expectedPaddingCount)
     {
-        byte[] bytes = new byte[byteCount];
-        string actual = Base64.Encode(bytes);
+        var bytes = new byte[byteCount];
+        var actual = Base64.Encode(bytes);
 
-        int actualPadding = 0;
-        for (int i = actual.Length - 1; i >= 0 && actual[i] == '='; i--)
+        var actualPadding = 0;
+        for (var i = actual.Length - 1; i >= 0 && actual[i] == '='; i--)
         {
             actualPadding++;
         }
@@ -53,11 +53,11 @@ public sealed partial class Base64Tests
     {
         BaseFormattingOptions options = omitPadding ? BaseFormattingOptions.OmitPadding : BaseFormattingOptions.None;
 
-        for (int n = 0; n <= 80; n++)
+        for (var n = 0; n <= 80; n++)
         {
-            byte[] bytes = new byte[n];
-            int predicted = Base64.GetEncodedLength(n, variantValue, options);
-            int actual = Base64.Encode(bytes, variantValue, options).Length;
+            var bytes = new byte[n];
+            var predicted = Base64.GetEncodedLength(n, variantValue, options);
+            var actual = Base64.Encode(bytes, variantValue, options).Length;
 
             Assert.AreEqual(predicted, actual,
                 $"Mismatch for length={n}, variant={variantValue}, omitPadding={omitPadding}.");

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IniDocumentTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -63,7 +63,7 @@ public sealed class IniDocumentTests
     {
         IniDocument doc = Ini.Parse("[a]\n[b]\n[c]");
 
-        string[] names = doc.Sections.Select(s => s.Name).ToArray();
+        var names = doc.Sections.Select(s => s.Name).ToArray();
 
         CollectionAssert.AreEqual(new[] { "a", "b", "c" }, names);
     }
@@ -137,7 +137,7 @@ public sealed class IniDocumentTests
     {
         IniDocument doc = Ini.Parse("[db]\nhost=localhost");
 
-        bool result = doc.TryGetSection("db", out IniSection? section);
+        var result = doc.TryGetSection("db", out IniSection? section);
 
         Assert.IsTrue(result);
         Assert.IsNotNull(section);
@@ -153,7 +153,7 @@ public sealed class IniDocumentTests
     {
         IniDocument doc = Ini.Parse("[db]\nhost=localhost");
 
-        bool result = doc.TryGetSection("missing", out IniSection? section);
+        var result = doc.TryGetSection("missing", out IniSection? section);
 
         Assert.IsFalse(result);
         Assert.IsNull(section);

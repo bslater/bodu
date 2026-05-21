@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EncodingExtensions.Span.Utf8.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -27,10 +27,10 @@ public static partial class EncodingExtensions
     /// </remarks>
     public static byte[] ToUtf8Bytes(this ReadOnlySpan<char> chars)
     {
-        int count = System.Text.Encoding.UTF8.GetByteCount(chars);
+        var count = System.Text.Encoding.UTF8.GetByteCount(chars);
         if (count == 0) return Array.Empty<byte>();
 
-        byte[] buffer = new byte[count];
+        var buffer = new byte[count];
         System.Text.Encoding.UTF8.GetBytes(chars, buffer);
         return buffer;
     }

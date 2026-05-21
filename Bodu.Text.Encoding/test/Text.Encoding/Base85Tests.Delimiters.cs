@@ -26,7 +26,7 @@ public sealed partial class Base85Tests
     [TestMethod]
     public void Decode_WhenAscii85AndAllowPrefix_ShouldAcceptDelimitedInput()
     {
-        byte[] decoded = Base85.Decode(
+        var decoded = Base85.Decode(
             ("<~" + ManAscii85 + "~>").AsSpan(),
             Base85Variant.Ascii85,
             BaseFormatStyles.AllowPrefix);
@@ -42,7 +42,7 @@ public sealed partial class Base85Tests
     [TestMethod]
     public void Decode_WhenAscii85AndAllowPrefixAndIgnoreWhitespace_ShouldStripSurroundingWhitespace()
     {
-        byte[] decoded = Base85.Decode(
+        var decoded = Base85.Decode(
             ("  <~" + ManAscii85 + "~>  ").AsSpan(),
             Base85Variant.Ascii85,
             BaseFormatStyles.AllowPrefix | BaseFormatStyles.IgnoreWhitespace);
@@ -72,8 +72,8 @@ public sealed partial class Base85Tests
     [TestMethod]
     public void Encode_WhenAscii85AndIncludePrefix_ShouldEmitAdobeDelimiters()
     {
-        byte[] payload = System.Text.Encoding.ASCII.GetBytes("Man ");
-        string encoded = Base85.Encode(payload, Base85Variant.Ascii85, BaseFormattingOptions.IncludePrefix);
+        var payload = System.Text.Encoding.ASCII.GetBytes("Man ");
+        var encoded = Base85.Encode(payload, Base85Variant.Ascii85, BaseFormattingOptions.IncludePrefix);
 
         Assert.AreEqual("<~" + ManAscii85 + "~>", encoded);
     }
@@ -85,8 +85,8 @@ public sealed partial class Base85Tests
     [TestMethod]
     public void Encode_WhenAscii85AndNoIncludePrefix_ShouldOmitDelimiters()
     {
-        byte[] payload = System.Text.Encoding.ASCII.GetBytes("Man ");
-        string encoded = Base85.Encode(payload, Base85Variant.Ascii85);
+        var payload = System.Text.Encoding.ASCII.GetBytes("Man ");
+        var encoded = Base85.Encode(payload, Base85Variant.Ascii85);
 
         Assert.AreEqual(ManAscii85, encoded);
     }
@@ -97,7 +97,7 @@ public sealed partial class Base85Tests
     [TestMethod]
     public void Encode_WhenAscii85EmptyPayloadAndIncludePrefix_ShouldReturnDelimiterOnly()
     {
-        string encoded = Base85.Encode(ReadOnlySpan<byte>.Empty, Base85Variant.Ascii85, BaseFormattingOptions.IncludePrefix);
+        var encoded = Base85.Encode(ReadOnlySpan<byte>.Empty, Base85Variant.Ascii85, BaseFormattingOptions.IncludePrefix);
 
         Assert.AreEqual("<~~>", encoded);
     }
@@ -109,9 +109,9 @@ public sealed partial class Base85Tests
     [TestMethod]
     public void Encode_WhenZ85AndIncludePrefix_ShouldIgnoreFlag()
     {
-        byte[] payload = new byte[] { 0x86, 0x4F, 0xD2, 0x6F };
-        string withPrefix = Base85.Encode(payload, Base85Variant.Z85, BaseFormattingOptions.IncludePrefix);
-        string withoutPrefix = Base85.Encode(payload, Base85Variant.Z85);
+        var payload = new byte[] { 0x86, 0x4F, 0xD2, 0x6F };
+        var withPrefix = Base85.Encode(payload, Base85Variant.Z85, BaseFormattingOptions.IncludePrefix);
+        var withoutPrefix = Base85.Encode(payload, Base85Variant.Z85);
 
         Assert.AreEqual(withoutPrefix, withPrefix);
         Assert.IsFalse(withPrefix.StartsWith("<~", StringComparison.Ordinal));
@@ -124,9 +124,9 @@ public sealed partial class Base85Tests
     [TestMethod]
     public void GetEncodedLength_WhenAscii85AndIncludePrefix_ShouldAddFourDelimiterCharacters()
     {
-        byte[] payload = System.Text.Encoding.ASCII.GetBytes("Man ");
-        int undecorated = Base85.GetEncodedLength(payload, Base85Variant.Ascii85);
-        int decorated = Base85.GetEncodedLength(payload, Base85Variant.Ascii85, BaseFormattingOptions.IncludePrefix);
+        var payload = System.Text.Encoding.ASCII.GetBytes("Man ");
+        var undecorated = Base85.GetEncodedLength(payload, Base85Variant.Ascii85);
+        var decorated = Base85.GetEncodedLength(payload, Base85Variant.Ascii85, BaseFormattingOptions.IncludePrefix);
 
         Assert.AreEqual(undecorated + 4, decorated);
     }
@@ -157,14 +157,14 @@ public sealed partial class Base85Tests
     [TestMethod]
     public void RoundTrip_WhenAscii85WithDelimiters_ShouldRecoverPayload()
     {
-        byte[] payload = new byte[256];
+        var payload = new byte[256];
         new Random(0xFEED).NextBytes(payload);
 
-        string encoded = Base85.Encode(payload, Base85Variant.Ascii85, BaseFormattingOptions.IncludePrefix);
+        var encoded = Base85.Encode(payload, Base85Variant.Ascii85, BaseFormattingOptions.IncludePrefix);
         Assert.IsTrue(encoded.StartsWith("<~", StringComparison.Ordinal));
         Assert.IsTrue(encoded.EndsWith("~>", StringComparison.Ordinal));
 
-        byte[] decoded = Base85.Decode(encoded.AsSpan(), Base85Variant.Ascii85, BaseFormatStyles.AllowPrefix);
+        var decoded = Base85.Decode(encoded.AsSpan(), Base85Variant.Ascii85, BaseFormatStyles.AllowPrefix);
         CollectionAssert.AreEqual(payload, decoded);
     }
 

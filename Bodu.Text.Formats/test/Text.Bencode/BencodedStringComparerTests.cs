@@ -68,7 +68,7 @@ public sealed class BencodedStringComparerTests
     [TestMethod]
     public void Compare_WhenXIsNull_ShouldReturnNegative()
     {
-        int result = BencodedStringComparer.Ordinal.Compare(null, new BencodedString(new byte[] { 0x01 }));
+        var result = BencodedStringComparer.Ordinal.Compare(null, new BencodedString(new byte[] { 0x01 }));
 
         Assert.IsTrue(result < 0);
     }
@@ -80,7 +80,7 @@ public sealed class BencodedStringComparerTests
     [TestMethod]
     public void Compare_WhenYIsNull_ShouldReturnPositive()
     {
-        int result = BencodedStringComparer.Ordinal.Compare(new BencodedString(new byte[] { 0x01 }), null);
+        var result = BencodedStringComparer.Ordinal.Compare(new BencodedString(new byte[] { 0x01 }), null);
 
         Assert.IsTrue(result > 0);
     }

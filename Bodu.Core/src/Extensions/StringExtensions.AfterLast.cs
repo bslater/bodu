@@ -1,10 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensions.AfterLast.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System;
 
 namespace Bodu.Extensions;
 
@@ -26,14 +24,6 @@ public static partial class StringExtensions
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="value" /> or <paramref name="marker" /> is <see langword="null" />.
     /// </exception>
-    /// <example>
-    /// <code language="csharp">
-    ///<![CDATA[
-    /// "a/b/c/file.txt".AfterLast("/");  // "file.txt"
-    /// "no-slash".AfterLast("/");        // null
-    ///]]>
-    /// </code>
-    /// </example>
     public static string? AfterLast(
         this string value,
         string marker,
@@ -42,7 +32,7 @@ public static partial class StringExtensions
         ThrowHelper.ThrowIfNull(value);
         ThrowHelper.ThrowIfNull(marker);
 
-        int index = value.LastIndexOf(marker, comparison);
-        return index < 0 ? null : value.Substring(index + marker.Length);
+        var index = value.LastIndexOf(marker, comparison);
+        return index < 0 ? null : value[(index + marker.Length)..];
     }
 }

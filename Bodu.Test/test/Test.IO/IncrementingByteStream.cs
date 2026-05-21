@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Drawing;
-
 namespace Bodu.Test.IO;
 
 /// <summary>
@@ -71,12 +69,12 @@ public class IncrementingByteStream
             return 0;
 
         // Read no more than half of remaining, or requested count, whichever is smaller
-        int localLimit = remaining / 2;
+        var localLimit = remaining / 2;
         if (localLimit == 0 || localLimit > count)
             localLimit = Math.Min(remaining, count);
 
         // Fill the buffer with incrementing byte values
-        for (int i = 0; i < localLimit; i++)
+        for (var i = 0; i < localLimit; i++)
         {
             buffer[offset + i] = written++;
         }
@@ -98,7 +96,7 @@ public class IncrementingByteStream
     {
         var result = new byte[size];
         byte val = 0;
-        for (int i = 0; i < size; i++)
+        for (var i = 0; i < size; i++)
         {
             result[i] = val++;
         }

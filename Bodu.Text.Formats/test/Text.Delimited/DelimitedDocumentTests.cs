@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DelimitedDocumentTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -84,7 +84,7 @@ public sealed class DelimitedDocumentTests
     {
         DelimitedDocument doc = Delimited.Parse("name\nAlice\nBob\nCarol");
 
-        string[] names = doc.Rows.Select(r => r[0]).ToArray();
+        var names = doc.Rows.Select(r => r[0]).ToArray();
 
         CollectionAssert.AreEqual(new[] { "Alice", "Bob", "Carol" }, names);
     }

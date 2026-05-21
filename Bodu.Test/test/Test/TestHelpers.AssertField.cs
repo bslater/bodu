@@ -28,7 +28,7 @@ public static partial class TestHelpers
     {
         ArgumentNullException.ThrowIfNull(fieldInfo);
 
-        object? value = fieldInfo.GetValue(instance);
+        var value = fieldInfo.GetValue(instance);
         if (value is null) return false;
 
         return AssertValueIsDefault(
@@ -50,7 +50,7 @@ public static partial class TestHelpers
     {
         ArgumentNullException.ThrowIfNull(fieldInfo);
 
-        object? value = fieldInfo.GetValue(instance);
+        var value = fieldInfo.GetValue(instance);
 
         return value is null ||
                AssertValueIsDefault(
@@ -79,9 +79,9 @@ public static partial class TestHelpers
 
             if (array.Length == 0) return true;
 
-            object? defaultElement = Activator.CreateInstance(elementType);
+            var defaultElement = Activator.CreateInstance(elementType);
 
-            foreach (object? item in array)
+            foreach (var item in array)
             {
                 if (!Equals(item, defaultElement))
                     return false;
@@ -96,7 +96,7 @@ public static partial class TestHelpers
 
             try
             {
-                byte[] buffer = stream.ToArray();
+                var buffer = stream.ToArray();
                 return buffer.Length == 0 || buffer.All(static b => b == 0);
             }
             catch (ObjectDisposedException)
@@ -114,9 +114,9 @@ public static partial class TestHelpers
                 var toArrayMethod = fieldType.GetMethod(nameof(Memory<byte>.ToArray))!;
                 var memoryArray = (Array)toArrayMethod.Invoke(value, null)!;
 
-                object? defaultElement = Activator.CreateInstance(fieldType.GetGenericArguments()[0]);
+                var defaultElement = Activator.CreateInstance(fieldType.GetGenericArguments()[0]);
 
-                foreach (object? item in memoryArray)
+                foreach (var item in memoryArray)
                 {
                     if (!Equals(item, defaultElement))
                         return false;
@@ -152,7 +152,7 @@ public static partial class TestHelpers
                 if (nestedField.IsStatic)
                     continue;
 
-                object? nestedValue = nestedField.GetValue(value);
+                var nestedValue = nestedField.GetValue(value);
 
                 if (nestedValue is null)
                     continue;

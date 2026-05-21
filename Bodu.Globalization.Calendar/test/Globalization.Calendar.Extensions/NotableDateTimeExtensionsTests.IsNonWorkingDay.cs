@@ -18,7 +18,7 @@ public partial class NotableDateTimeExtensionsTests
     {
         NotableDateService service = BuildService();
 
-        bool result = new DateTime(2026, 1, 6).IsNonWorkingDay(service);
+        var result = new DateTime(2026, 1, 6).IsNonWorkingDay(service);
 
         Assert.IsFalse(result);
     }
@@ -31,7 +31,7 @@ public partial class NotableDateTimeExtensionsTests
     {
         NotableDateService service = BuildService();
 
-        bool result = new DateTime(2026, 1, 3).IsNonWorkingDay(service);
+        var result = new DateTime(2026, 1, 3).IsNonWorkingDay(service);
 
         Assert.IsTrue(result);
     }
@@ -44,7 +44,7 @@ public partial class NotableDateTimeExtensionsTests
     {
         NotableDateService service = BuildService(Fixed("New Year's Day", 1, 1, nonWorking: true));
 
-        bool result = new DateTime(2026, 1, 1).IsNonWorkingDay(service);
+        var result = new DateTime(2026, 1, 1).IsNonWorkingDay(service);
 
         Assert.IsTrue(result);
     }
@@ -60,7 +60,7 @@ public partial class NotableDateTimeExtensionsTests
         {
             NotableDateContext.Default = service;
 
-            bool result = new DateTime(2026, 7, 14).IsNonWorkingDay();
+            var result = new DateTime(2026, 7, 14).IsNonWorkingDay();
 
             Assert.IsTrue(result);
         }
@@ -92,7 +92,7 @@ public partial class NotableDateTimeExtensionsTests
     {
         NotableDateService service = BuildService();
 
-        bool actual = input.IsNonWorkingDay(service);
+        var actual = input.IsNonWorkingDay(service);
 
         Assert.AreEqual(!expectedWorking, actual);
     }

@@ -37,7 +37,7 @@ public sealed partial class Base85Tests
     [TestMethod]
     public void IsValid_WhenAscii85CanonicalInput_ShouldReturnTrue()
     {
-        string encoded = Base85.Encode(new byte[] { 0xDE, 0xAD, 0xBE, 0xEF, 0xCA, 0xFE });
+        var encoded = Base85.Encode(new byte[] { 0xDE, 0xAD, 0xBE, 0xEF, 0xCA, 0xFE });
 
         Assert.IsTrue(Base85.IsValid(encoded.AsSpan()));
     }

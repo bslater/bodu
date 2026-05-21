@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DotEnvDocumentTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -59,7 +59,7 @@ public sealed class DotEnvDocumentTests
     {
         DotEnvDocument doc = DotEnv.Parse("KEY=world");
 
-        bool result = doc.TryGetValue("KEY", out string? value);
+        var result = doc.TryGetValue("KEY", out var value);
 
         Assert.IsTrue(result);
         Assert.AreEqual("world", value);
@@ -74,7 +74,7 @@ public sealed class DotEnvDocumentTests
     {
         DotEnvDocument doc = DotEnv.Parse("KEY=world");
 
-        bool result = doc.TryGetValue("MISSING", out string? value);
+        var result = doc.TryGetValue("MISSING", out var value);
 
         Assert.IsFalse(result);
         Assert.IsNull(value);
@@ -89,7 +89,7 @@ public sealed class DotEnvDocumentTests
     {
         DotEnvDocument doc = DotEnv.Parse("KEY=world");
 
-        bool result = doc.TryGetValue(null!, out string? value);
+        var result = doc.TryGetValue(null!, out var value);
 
         Assert.IsFalse(result);
         Assert.IsNull(value);
@@ -136,7 +136,7 @@ public sealed class DotEnvDocumentTests
     {
         DotEnvDocument doc = DotEnv.Parse("PORT=4321");
 
-        int port = doc.GetValue<int>("PORT");
+        var port = doc.GetValue<int>("PORT");
 
         Assert.AreEqual(4321, port);
     }
@@ -152,7 +152,7 @@ public sealed class DotEnvDocumentTests
     {
         DotEnvDocument doc = DotEnv.Parse("PORT=1234");
 
-        bool result = doc.TryGetValue<int>(null!, out int value);
+        var result = doc.TryGetValue<int>(null!, out var value);
 
         Assert.IsFalse(result);
         Assert.AreEqual(0, value);
@@ -167,7 +167,7 @@ public sealed class DotEnvDocumentTests
     {
         DotEnvDocument doc = DotEnv.Parse("PORT=1234");
 
-        bool result = doc.TryGetValue<int>("MISSING", out int _);
+        var result = doc.TryGetValue<int>("MISSING", out var _);
 
         Assert.IsFalse(result);
     }
@@ -181,7 +181,7 @@ public sealed class DotEnvDocumentTests
     {
         DotEnvDocument doc = DotEnv.Parse("PORT=5678");
 
-        bool result = doc.TryGetValue<int>("PORT", out int port);
+        var result = doc.TryGetValue<int>("PORT", out var port);
 
         Assert.IsTrue(result);
         Assert.AreEqual(5678, port);
@@ -196,7 +196,7 @@ public sealed class DotEnvDocumentTests
     {
         DotEnvDocument doc = DotEnv.Parse("KEY=notanumber");
 
-        bool result = doc.TryGetValue<int>("KEY", out int _);
+        var result = doc.TryGetValue<int>("KEY", out var _);
 
         Assert.IsFalse(result);
     }
@@ -222,7 +222,7 @@ public sealed class DotEnvDocumentTests
     {
         DotEnvDocument doc = DotEnv.Parse("A=1\nB=2\nC=3");
 
-        string[] keys = doc.Entries.Select(e => e.Key).ToArray();
+        var keys = doc.Entries.Select(e => e.Key).ToArray();
 
         CollectionAssert.AreEqual(new[] { "A", "B", "C" }, keys);
     }

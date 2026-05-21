@@ -51,7 +51,7 @@ public sealed class NotableDateRangePipelineTestsOverrideRemoval
             new DateTime(2024, 1, 1),
             new DateTime(2027, 12, 31)));
 
-        List<int> emittedYears = emitted
+        var emittedYears = emitted
             .Where(n => n.Name == "Scoped")
             .Select(n => n.Date.Year)
             .OrderBy(y => y)
@@ -148,7 +148,7 @@ public sealed class NotableDateRangePipelineTestsOverrideRemoval
         IReadOnlyList<NotableDateRule> rules,
         IReadOnlyList<RuleRemoval> removals)
     {
-        RuleStaticAnalysis analysis = RuleStaticAnalysis.Build(rules);
+        var analysis = RuleStaticAnalysis.Build(rules);
         NotableDateRuleResolver resolver = new(rules);
 
         return new NotableDateRangePipeline(

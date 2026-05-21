@@ -18,7 +18,7 @@ public partial class NotableDateOnlyExtensionsTests
     {
         NotableDateService service = BuildService();
 
-        bool result = new DateOnly(2026, 1, 6).IsWorkingDay(service);
+        var result = new DateOnly(2026, 1, 6).IsWorkingDay(service);
 
         Assert.IsTrue(result);
     }
@@ -31,7 +31,7 @@ public partial class NotableDateOnlyExtensionsTests
     {
         NotableDateService service = BuildService();
 
-        bool result = new DateOnly(2026, 1, 3).IsWorkingDay(service);
+        var result = new DateOnly(2026, 1, 3).IsWorkingDay(service);
 
         Assert.IsFalse(result);
     }
@@ -44,7 +44,7 @@ public partial class NotableDateOnlyExtensionsTests
     {
         NotableDateService service = BuildService(Fixed("New Year's Day", 1, 1, nonWorking: true));
 
-        bool result = new DateOnly(2026, 1, 1).IsWorkingDay(service);
+        var result = new DateOnly(2026, 1, 1).IsWorkingDay(service);
 
         Assert.IsFalse(result);
     }
@@ -60,7 +60,7 @@ public partial class NotableDateOnlyExtensionsTests
         {
             NotableDateContext.Default = service;
 
-            bool result = new DateOnly(2026, 5, 4).IsWorkingDay();
+            var result = new DateOnly(2026, 5, 4).IsWorkingDay();
 
             Assert.IsFalse(result);
         }
@@ -92,7 +92,7 @@ public partial class NotableDateOnlyExtensionsTests
     {
         NotableDateService service = BuildService();
 
-        bool actual = input.IsWorkingDay(service);
+        var actual = input.IsWorkingDay(service);
 
         Assert.AreEqual(expected, actual);
     }
@@ -105,7 +105,7 @@ public partial class NotableDateOnlyExtensionsTests
     {
         NotableDateService service = BuildService(Fixed("Cultural Day", 6, 5, NotableDateCategory.Cultural, nonWorking: false));
 
-        bool result = new DateOnly(2026, 6, 5).IsWorkingDay(service);
+        var result = new DateOnly(2026, 6, 5).IsWorkingDay(service);
 
         Assert.IsTrue(result);
     }

@@ -52,8 +52,8 @@ public sealed class CusipTests
     [TestMethod]
     public void IsValid_WhenBodyContainsCusipSentinel_ShouldAcceptValidSequence(char sentinel)
     {
-        string body = "1234567" + sentinel;
-        char check = Cusip.Compute(body.AsSpan());
+        var body = "1234567" + sentinel;
+        var check = Cusip.Compute(body.AsSpan());
         Assert.IsTrue(Cusip.IsValid((body + check).AsSpan()));
     }
 

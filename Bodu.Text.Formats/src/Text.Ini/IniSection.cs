@@ -133,7 +133,7 @@ public sealed class IniSection
 
             if (_lookup.TryGetValue(entry.Key, out IniEntry? existing))
             {
-                int idx = _entries.IndexOf(existing);
+                var idx = _entries.IndexOf(existing);
                 _entries[idx] = entry;
                 _lookup[entry.Key] = entry;
             }
@@ -268,7 +268,7 @@ public sealed class IniSection
 
         if (_lookup.TryGetValue(entry.Key, out IniEntry? existing))
         {
-            int idx = _entries.IndexOf(existing);
+            var idx = _entries.IndexOf(existing);
             _entries[idx] = entry;
             _lookup[entry.Key] = entry;
         }

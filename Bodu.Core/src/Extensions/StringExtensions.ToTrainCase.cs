@@ -1,11 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensions.ToTrainCase.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 
@@ -26,13 +24,6 @@ public static partial class StringExtensions
     /// Word boundaries follow <see cref="EnumerateWords(string, WordCasingOptions)" /> using
     /// <see cref="WordCasingOptions.Default" />. Casing changes use the configured culture.
     /// </remarks>
-    /// <example>
-    /// <code language="csharp">
-    ///<![CDATA[
-    /// "user_account_id".ToTrainCase();  // "User-Account-Id"
-    ///]]>
-    /// </code>
-    /// </example>
     public static string ToTrainCase(this string value) =>
         ToTrainCase(value, WordCasingOptions.Default);
 
@@ -60,7 +51,7 @@ public static partial class StringExtensions
 
         CultureInfo culture = options.Culture;
         StringBuilder builder = new(value.Length);
-        for (int i = 0; i < words.Count; i++)
+        for (var i = 0; i < words.Count; i++)
         {
             if (i > 0) builder.Append('-');
             builder.Append(IsPreservedMixedCaseWord(words[i]) ? words[i] : CapitalizeWord(words[i], culture));

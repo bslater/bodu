@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DelimitedTests.Format.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -31,7 +31,7 @@ public sealed partial class DelimitedTests
     {
         DelimitedDocument doc = Delimited.Parse(string.Empty);
 
-        string formatted = Delimited.Format(doc);
+        var formatted = Delimited.Format(doc);
 
         Assert.AreEqual(string.Empty, formatted);
     }
@@ -45,7 +45,7 @@ public sealed partial class DelimitedTests
     {
         DelimitedDocument doc = Delimited.Parse("name,age\nAlice,30");
 
-        string formatted = Delimited.Format(doc);
+        var formatted = Delimited.Format(doc);
 
         StringAssert.StartsWith(formatted, "name,age");
     }
@@ -60,7 +60,7 @@ public sealed partial class DelimitedTests
         DelimitedParseOptions options = new() { HasHeader = false };
         DelimitedDocument doc = Delimited.Parse("1,2,3", options);
 
-        string formatted = Delimited.Format(doc);
+        var formatted = Delimited.Format(doc);
 
         StringAssert.StartsWith(formatted, "1,2,3");
     }
@@ -74,7 +74,7 @@ public sealed partial class DelimitedTests
     {
         DelimitedDocument doc = Delimited.Parse("val\n\"a,b\"");
 
-        string formatted = Delimited.Format(doc);
+        var formatted = Delimited.Format(doc);
 
         StringAssert.Contains(formatted, "\"a,b\"");
     }
@@ -88,7 +88,7 @@ public sealed partial class DelimitedTests
     {
         DelimitedDocument doc = Delimited.Parse("q\n\"say \"\"hi\"\"\"");
 
-        string formatted = Delimited.Format(doc);
+        var formatted = Delimited.Format(doc);
 
         StringAssert.Contains(formatted, "\"\"");
     }
@@ -103,7 +103,7 @@ public sealed partial class DelimitedTests
         const string source = "name,age,city\nAlice,30,Paris\nBob,25,London";
 
         DelimitedDocument original = Delimited.Parse(source);
-        string formatted = Delimited.Format(original);
+        var formatted = Delimited.Format(original);
         DelimitedDocument roundTripped = Delimited.Parse(formatted);
 
         Assert.AreEqual(2, roundTripped.Rows.Count);
@@ -122,7 +122,7 @@ public sealed partial class DelimitedTests
         DelimitedParseOptions options = new() { Delimiter = '\t' };
         DelimitedDocument doc = Delimited.Parse("a\tb\n1\t2", options);
 
-        string formatted = Delimited.Format(doc, options);
+        var formatted = Delimited.Format(doc, options);
 
         StringAssert.Contains(formatted, "a\tb");
     }

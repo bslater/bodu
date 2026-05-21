@@ -126,7 +126,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
             new DateTime(year, 1, 1),
             new DateTime(year, 12, 31));
 
-        bool actualEmit = resolved.Any(n => n.Name == "Scoped");
+        var actualEmit = resolved.Any(n => n.Name == "Scoped");
         Assert.AreEqual(expectedEmit, actualEmit,
             $"Year {year}: expected emit={expectedEmit}, got {actualEmit}.");
     }
@@ -349,7 +349,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
         const int taskCount = 64;
         var tasks = new Task<IReadOnlyList<NotableDate>>[taskCount];
 
-        for (int i = 0; i < taskCount; i++)
+        for (var i = 0; i < taskCount; i++)
         {
             tasks[i] = Task.Run(() => service.ResolveNotableDatesInRange(
                 new DateTime(2026, 12, 1),
@@ -358,8 +358,8 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 
         IReadOnlyList<NotableDate>[] results = Task.WhenAll(tasks).GetAwaiter().GetResult();
 
-        string canonical = SerialiseEmissions(results[0]);
-        for (int i = 1; i < results.Length; i++)
+        var canonical = SerialiseEmissions(results[0]);
+        for (var i = 1; i < results.Length; i++)
         {
             Assert.AreEqual(canonical, SerialiseEmissions(results[i]),
                 $"Task {i} emitted a different result than task 0 — pipeline is not deterministic under concurrent access.");
@@ -379,9 +379,9 @@ public sealed partial class NotableDateRangePipelineScenarioTests
         Task<(int Year, IReadOnlyList<NotableDate> Result)>[] tasks =
             new Task<(int, IReadOnlyList<NotableDate>)>[taskCount];
 
-        for (int i = 0; i < taskCount; i++)
+        for (var i = 0; i < taskCount; i++)
         {
-            int year = 2000 + i;
+            var year = 2000 + i;
             tasks[i] = Task.Run<(int, IReadOnlyList<NotableDate>)>(() => (
                 year,
                 service.ResolveNotableDatesInRange(
@@ -391,7 +391,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 
         (int Year, IReadOnlyList<NotableDate> Result)[] results = Task.WhenAll(tasks).GetAwaiter().GetResult();
 
-        foreach ((int year, IReadOnlyList<NotableDate> result) in results)
+        foreach ((var year, IReadOnlyList<NotableDate> result) in results)
         {
             Assert.AreEqual(1, result.Count(n => n.Name == "Annual"),
                 $"Year {year}: expected exactly one Annual emission; got {result.Count(n => n.Name == "Annual")}.");
@@ -414,7 +414,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
         ConcurrentBag<Exception> exceptions = new();
 
         var resolveTasks = new Task[resolveCount];
-        for (int i = 0; i < resolveCount; i++)
+        for (var i = 0; i < resolveCount; i++)
         {
             resolveTasks[i] = Task.Run(() =>
             {
@@ -433,7 +433,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 
         var invalidateTask = Task.Run(() =>
         {
-            for (int i = 0; i < 10; i++)
+            for (var i = 0; i < 10; i++)
             {
                 try
                 {
@@ -513,7 +513,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 
         Assert.AreEqual(100, resolved.Count, "Each rule should emit once.");
 
-        for (int i = 1; i < resolved.Count; i++)
+        for (var i = 1; i < resolved.Count; i++)
         {
             Assert.IsTrue(
                 resolved[i].Date >= resolved[i - 1].Date,
@@ -608,7 +608,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
         count = Math.Clamp(count, 1, 365);
         var rules = new NotableDateRule[count];
         DateTime cursor = new(2026, 1, 1);
-        for (int i = 0; i < count; i++)
+        for (var i = 0; i < count; i++)
         {
             DateTime current = cursor.AddDays(i);
             rules[i] = new NotableDateRule

@@ -1,10 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensions.KeepDigits.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System;
 
 namespace Bodu.Extensions;
 
@@ -22,13 +20,6 @@ public static partial class StringExtensions
     /// Membership is determined via <see cref="char.IsDigit(char)" />, which recognises every Unicode digit (Nd)
     /// character — not just ASCII <c>0–9</c>.
     /// </remarks>
-    /// <example>
-    /// <code language="csharp">
-    ///<![CDATA[
-    /// "Order #12345 (paid)".KeepDigits();  // "12345"
-    ///]]>
-    /// </code>
-    /// </example>
     public static string KeepDigits(this string value) =>
         value.KeepWhere(char.IsDigit);
 }

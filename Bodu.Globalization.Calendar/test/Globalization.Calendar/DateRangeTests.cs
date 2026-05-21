@@ -212,7 +212,7 @@ public sealed class DateRangeTests
     {
         DateRange range = new(new DateTime(2026, 1, 1), new DateTime(2026, 12, 31));
 
-        string text = range.ToString();
+        var text = range.ToString();
 
         Assert.IsTrue(text.Contains("2026-01-01", StringComparison.Ordinal));
         Assert.IsTrue(text.Contains("2026-12-31", StringComparison.Ordinal));

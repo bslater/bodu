@@ -18,15 +18,15 @@ public sealed partial class Base85Tests
     [TestMethod]
     public void FromBase85String_ForCharSpan_OperationStatus_ShouldReturnDoneWithCounts()
     {
-        byte[] original = new byte[] { 0xDE, 0xAD, 0xBE, 0xEF };
-        string encoded = Base85.Encode(original);
-        byte[] destination = new byte[4];
+        var original = new byte[] { 0xDE, 0xAD, 0xBE, 0xEF };
+        var encoded = Base85.Encode(original);
+        var destination = new byte[4];
 
         OperationStatus status = Base85.FromBase85String(
             encoded.AsSpan(),
             destination,
-            out int charsConsumed,
-            out int bytesWritten);
+            out var charsConsumed,
+            out var bytesWritten);
 
         Assert.AreEqual(OperationStatus.Done, status);
         Assert.AreEqual(encoded.Length, charsConsumed);
@@ -41,13 +41,13 @@ public sealed partial class Base85Tests
     [TestMethod]
     public void FromBase85String_ForCharSpan_OperationStatus_WhenInvalidChar_ShouldReturnInvalidData()
     {
-        byte[] destination = new byte[10];
+        var destination = new byte[10];
 
         OperationStatus status = Base85.FromBase85String(
             "\x01\x02\x03\x04\x05".AsSpan(),
             destination,
-            out int _,
-            out int _);
+            out var _,
+            out var _);
 
         Assert.AreEqual(OperationStatus.InvalidData, status);
     }
@@ -58,11 +58,11 @@ public sealed partial class Base85Tests
     [TestMethod]
     public void FromBase85String_ForUtf8Source_ShouldDecode()
     {
-        byte[] original = Ascii("Hello world!");
-        string encoded = Base85.Encode(original);
-        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes(encoded);
+        var original = Ascii("Hello world!");
+        var encoded = Base85.Encode(original);
+        var utf8 = System.Text.Encoding.ASCII.GetBytes(encoded);
 
-        byte[] actual = Base85.FromBase85String(utf8);
+        var actual = Base85.FromBase85String(utf8);
 
         CollectionAssert.AreEqual(original, actual);
     }
@@ -72,10 +72,10 @@ public sealed partial class Base85Tests
     [TestMethod]
     public void ToBase85String_ForByteArray_ShouldReturnAscii85Output()
     {
-        string actual = Base85.ToBase85String(new byte[] { 0xDE, 0xAD, 0xBE, 0xEF });
+        var actual = Base85.ToBase85String(new byte[] { 0xDE, 0xAD, 0xBE, 0xEF });
 
         Assert.IsFalse(string.IsNullOrEmpty(actual));
-        byte[] roundTrip = Base85.FromBase85String(actual);
+        var roundTrip = Base85.FromBase85String(actual);
         CollectionAssert.AreEqual(new byte[] { 0xDE, 0xAD, 0xBE, 0xEF }, roundTrip);
     }
 
@@ -86,10 +86,10 @@ public sealed partial class Base85Tests
     [TestMethod]
     public void TryToBase85String_ForCharSpan_ShouldWriteExpectedOutput()
     {
-        byte[] bytes = new byte[] { 0xDE, 0xAD, 0xBE, 0xEF };
-        char[] destination = new char[Base85.GetMaxEncodedLength(bytes.Length)];
+        var bytes = new byte[] { 0xDE, 0xAD, 0xBE, 0xEF };
+        var destination = new char[Base85.GetMaxEncodedLength(bytes.Length)];
 
-        bool ok = Base85.TryToBase85String(bytes.AsSpan(), destination, out int charsWritten);
+        var ok = Base85.TryToBase85String(bytes.AsSpan(), destination, out var charsWritten);
 
         Assert.IsTrue(ok);
         string encoded = new(destination, 0, charsWritten);

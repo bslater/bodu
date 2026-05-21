@@ -114,7 +114,7 @@ public partial class NotableDateRuleBuilderTests
             .CalendarType(typeof(System.Globalization.HebrewCalendar))
             .Algorithm("easter-gregorian", typeof(System.Globalization.GregorianCalendar), "3", 21);
 
-        XElement element = builder.ToXElement("Test", s_calendarNs);
+        var element = builder.ToXElement("Test", s_calendarNs);
 
         XElement algorithm = element.Element(s_calendarNs + "Algorithm")!;
         Assert.IsNotNull(algorithm);
@@ -144,7 +144,7 @@ public partial class NotableDateRuleBuilderTests
             .Algorithm("easter-gregorian", typeof(System.Globalization.GregorianCalendar), "3", 21);
 
         System.Text.Json.Nodes.JsonObject node = builder.ToJsonNode("Test");
-        System.Text.Json.Nodes.JsonObject algorithm = (System.Text.Json.Nodes.JsonObject)node["algorithm"]!;
+        var algorithm = (System.Text.Json.Nodes.JsonObject)node["algorithm"]!;
 
         Assert.AreEqual("easter-gregorian", (string)algorithm["key"]!);
         Assert.AreEqual(typeof(System.Globalization.GregorianCalendar).AssemblyQualifiedName, (string)algorithm["type"]!);

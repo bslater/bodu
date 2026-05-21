@@ -6,7 +6,6 @@
 
 using System.Collections.Immutable;
 using System.Globalization;
-using System.Linq;
 using Bodu.Extensions;
 
 namespace Bodu.Globalization.Calendar;
@@ -418,7 +417,7 @@ public sealed partial class NotableDateServiceTests
                 OverrideProviders = new[] { (INotableDateRuleOverrideProvider)provider },
             });
 
-        int count = service.GetNotableDates(year).Count(r => r.Name == "Holiday");
+        var count = service.GetNotableDates(year).Count(r => r.Name == "Holiday");
 
         Assert.AreEqual(expectedSuppressed ? 0 : 1, count);
     }
@@ -448,7 +447,7 @@ public sealed partial class NotableDateServiceTests
                 OverrideProviders = new[] { (INotableDateRuleOverrideProvider)provider },
             });
 
-        int count = service.GetNotableDates(2025, territoryCode: ruleTerritory).Count(r => r.Name == "Picnic");
+        var count = service.GetNotableDates(2025, territoryCode: ruleTerritory).Count(r => r.Name == "Picnic");
 
         Assert.AreEqual(expectedSuppressed ? 0 : 1, count);
     }
@@ -473,7 +472,7 @@ public sealed partial class NotableDateServiceTests
                 OverrideProviders = new[] { (INotableDateRuleOverrideProvider)provider },
             });
 
-        int count = service.GetNotableDates(2025).Count(r => r.Name == "Holiday");
+        var count = service.GetNotableDates(2025).Count(r => r.Name == "Holiday");
 
         Assert.AreEqual(1, count);
     }

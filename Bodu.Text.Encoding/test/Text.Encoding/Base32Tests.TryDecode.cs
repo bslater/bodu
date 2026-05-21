@@ -16,12 +16,12 @@ public sealed partial class Base32Tests
     [TestMethod]
     public void TryDecode_WhenAllowMissingPadding_ShouldReturnTrueAndExpectedBytes()
     {
-        byte[] destination = new byte[6];
+        var destination = new byte[6];
 
-        bool ok = Base32.TryDecode(
+        var ok = Base32.TryDecode(
             "MZXW6YTBOI".AsSpan(),
             destination,
-            out int bytesWritten,
+            out var bytesWritten,
             Base32Variant.Standard,
             BaseFormatStyles.AllowMissingPadding);
 
@@ -44,9 +44,9 @@ public sealed partial class Base32Tests
     [DataRow("MZXW6YTBOI======", 6)]
     public void TryDecode_WhenDestinationExactlyRequiredSize_ShouldReturnTrueAndFillBuffer(string input, int expectedByteCount)
     {
-        byte[] destination = new byte[expectedByteCount];
+        var destination = new byte[expectedByteCount];
 
-        bool ok = Base32.TryDecode(input.AsSpan(), destination, out int bytesWritten);
+        var ok = Base32.TryDecode(input.AsSpan(), destination, out var bytesWritten);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(expectedByteCount, bytesWritten);
@@ -59,9 +59,9 @@ public sealed partial class Base32Tests
     [TestMethod]
     public void TryDecode_WhenDestinationTooSmall_ShouldReturnFalseAndZeroBytesWritten()
     {
-        byte[] destination = new byte[1];
+        var destination = new byte[1];
 
-        bool ok = Base32.TryDecode("MZXW6YTBOI======".AsSpan(), destination, out int bytesWritten);
+        var ok = Base32.TryDecode("MZXW6YTBOI======".AsSpan(), destination, out var bytesWritten);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(0, bytesWritten);
@@ -74,9 +74,9 @@ public sealed partial class Base32Tests
     [TestMethod]
     public void TryDecode_WhenInputIsEmpty_ShouldReturnTrueAndZeroBytesWritten()
     {
-        byte[] destination = new byte[6];
+        var destination = new byte[6];
 
-        bool ok = Base32.TryDecode(ReadOnlySpan<char>.Empty, destination, out int bytesWritten);
+        var ok = Base32.TryDecode(ReadOnlySpan<char>.Empty, destination, out var bytesWritten);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(0, bytesWritten);
@@ -89,9 +89,9 @@ public sealed partial class Base32Tests
     [TestMethod]
     public void TryDecode_WhenInvalidCharacters_ShouldReturnFalseAndZeroBytesWritten()
     {
-        byte[] destination = new byte[6];
+        var destination = new byte[6];
 
-        bool ok = Base32.TryDecode("MZXW@YTBOI======".AsSpan(), destination, out int bytesWritten);
+        var ok = Base32.TryDecode("MZXW@YTBOI======".AsSpan(), destination, out var bytesWritten);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(0, bytesWritten);
@@ -102,9 +102,9 @@ public sealed partial class Base32Tests
     [TestMethod]
     public void TryDecode_WhenStandardValidInput_ShouldReturnTrueAndExpectedBytes()
     {
-        byte[] destination = new byte[6];
+        var destination = new byte[6];
 
-        bool ok = Base32.TryDecode("MZXW6YTBOI======".AsSpan(), destination, out int bytesWritten);
+        var ok = Base32.TryDecode("MZXW6YTBOI======".AsSpan(), destination, out var bytesWritten);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(6, bytesWritten);
@@ -124,9 +124,9 @@ public sealed partial class Base32Tests
     [DataRow("M=======")]       // single data char with full padding (invalid)
     public void TryDecode_WhenStrictAndMalformedInput_ShouldReturnFalse(string malformedInput)
     {
-        byte[] destination = new byte[16];
+        var destination = new byte[16];
 
-        bool ok = Base32.TryDecode(malformedInput.AsSpan(), destination, out int bytesWritten);
+        var ok = Base32.TryDecode(malformedInput.AsSpan(), destination, out var bytesWritten);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(0, bytesWritten);
@@ -139,9 +139,9 @@ public sealed partial class Base32Tests
     [TestMethod]
     public void TryDecode_WhenStrictAndPaddingOmitted_ShouldReturnFalseAndZeroBytesWritten()
     {
-        byte[] destination = new byte[6];
+        var destination = new byte[6];
 
-        bool ok = Base32.TryDecode("MZXW6YTBOI".AsSpan(), destination, out int bytesWritten);
+        var ok = Base32.TryDecode("MZXW6YTBOI".AsSpan(), destination, out var bytesWritten);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(0, bytesWritten);
@@ -154,7 +154,7 @@ public sealed partial class Base32Tests
     [TestMethod]
     public void TryDecode_WhenUndefinedVariant_ShouldThrowArgumentOutOfRangeException()
     {
-        byte[] destination = new byte[16];
+        var destination = new byte[16];
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

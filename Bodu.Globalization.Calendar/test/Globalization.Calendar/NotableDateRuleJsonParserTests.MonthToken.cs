@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Linq;
 using System.Text.Json;
 
 namespace Bodu.Globalization.Calendar;
@@ -345,7 +344,7 @@ public partial class NotableDateRuleJsonParserTests
     [TestMethod]
     public void ParseJson_WhenFixedMonthIsEnglishMonthName_ShouldReturnExpectedMonth(string monthToken, int expectedMonth)
     {
-        string json = BuildFixedMonthJson(monthToken);
+        var json = BuildFixedMonthJson(monthToken);
 
         NotableDateRule rule = NotableDateRuleJsonParser.ParseJson(json).Single();
 
@@ -368,7 +367,7 @@ public partial class NotableDateRuleJsonParserTests
     [TestMethod]
     public void ParseJson_WhenFixedMonthIsSimpleHebrewName_ShouldReturnExpectedMonth(string monthToken, int expectedMonth)
     {
-        string json = BuildFixedMonthJson(monthToken, calendarType: "System.Globalization.HebrewCalendar", category: "Religious");
+        var json = BuildFixedMonthJson(monthToken, calendarType: "System.Globalization.HebrewCalendar", category: "Religious");
 
         NotableDateRule rule = NotableDateRuleJsonParser.ParseJson(json).Single();
 
@@ -391,7 +390,7 @@ public partial class NotableDateRuleJsonParserTests
     [TestMethod]
     public void ParseJson_WhenFixedMonthIsLeapDependentHebrewAlias_ShouldPopulateCalendarMonthAlias(string monthAlias)
     {
-        string json = BuildFixedMonthJson(monthAlias, calendarType: "System.Globalization.HebrewCalendar", category: "Religious");
+        var json = BuildFixedMonthJson(monthAlias, calendarType: "System.Globalization.HebrewCalendar", category: "Religious");
 
         NotableDateRule rule = NotableDateRuleJsonParser.ParseJson(json).Single();
 
@@ -421,7 +420,7 @@ public partial class NotableDateRuleJsonParserTests
     [TestMethod]
     public void ParseJson_WhenFixedMonthIsStringNumeric_ShouldReturnExpectedMonth(string monthToken, int expectedMonth)
     {
-        string json = BuildFixedMonthJson(monthToken);
+        var json = BuildFixedMonthJson(monthToken);
 
         NotableDateRule rule = NotableDateRuleJsonParser.ParseJson(json).Single();
 
@@ -440,7 +439,7 @@ public partial class NotableDateRuleJsonParserTests
     /// <returns>A JSON document with one notable date and one Fixed rule.</returns>
     private static string BuildFixedMonthJson(string monthToken, string? calendarType = null, string category = "Holiday")
     {
-        string calendarTypeClause = calendarType is null ? string.Empty : $@", ""calendarType"": ""{calendarType}""";
+        var calendarTypeClause = calendarType is null ? string.Empty : $@", ""calendarType"": ""{calendarType}""";
         return $@"{{
 			""notableDates"": [
 				{{ ""name"": ""MonthTokenTest"", ""rules"": [ {{

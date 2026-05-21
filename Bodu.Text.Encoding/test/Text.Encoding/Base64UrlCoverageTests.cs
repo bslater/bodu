@@ -24,9 +24,9 @@ public sealed class Base64UrlCoverageTests
     [TestMethod]
     public void Decode_CharSpan_ShouldRoundTrip()
     {
-        string encoded = Base64Url.Encode(Payload);
+        var encoded = Base64Url.Encode(Payload);
 
-        byte[] decoded = Base64Url.Decode(encoded.AsSpan());
+        var decoded = Base64Url.Decode(encoded.AsSpan());
 
         CollectionAssert.AreEqual(Payload, decoded);
     }
@@ -37,9 +37,9 @@ public sealed class Base64UrlCoverageTests
     [TestMethod]
     public void Decode_Utf8_ShouldRoundTrip()
     {
-        byte[] utf8 = Base64Url.EncodeToUtf8(Payload);
+        var utf8 = Base64Url.EncodeToUtf8(Payload);
 
-        byte[] decoded = Base64Url.Decode(utf8.AsSpan());
+        var decoded = Base64Url.Decode(utf8.AsSpan());
 
         CollectionAssert.AreEqual(Payload, decoded);
     }
@@ -50,7 +50,7 @@ public sealed class Base64UrlCoverageTests
     [TestMethod]
     public void Decode_Utf8WithEmpty_ShouldReturnEmptyArray()
     {
-        byte[] decoded = Base64Url.Decode(ReadOnlySpan<byte>.Empty);
+        var decoded = Base64Url.Decode(ReadOnlySpan<byte>.Empty);
 
         Assert.AreEqual(0, decoded.Length);
     }
@@ -85,7 +85,7 @@ public sealed class Base64UrlCoverageTests
     [TestMethod]
     public void Encode_Span_ShouldMatchBase64UrlSafeVariant()
     {
-        string encoded = Base64Url.Encode(Payload.AsSpan());
+        var encoded = Base64Url.Encode(Payload.AsSpan());
 
         Assert.AreEqual(Base64.Encode(Payload, Base64Variant.UrlSafe), encoded);
         Assert.IsFalse(encoded.Contains('+', StringComparison.Ordinal));
@@ -99,7 +99,7 @@ public sealed class Base64UrlCoverageTests
     [TestMethod]
     public void EncodeToUtf8_Span_ShouldMatchAsciiOfUrlSafeForm()
     {
-        byte[] utf8 = Base64Url.EncodeToUtf8(Payload.AsSpan());
+        var utf8 = Base64Url.EncodeToUtf8(Payload.AsSpan());
 
         Assert.AreEqual(Base64Url.Encode(Payload.AsSpan()), System.Text.Encoding.ASCII.GetString(utf8));
     }
@@ -122,10 +122,10 @@ public sealed class Base64UrlCoverageTests
     [TestMethod]
     public void TryEncodeToUtf8_ShouldWriteUrlSafeBytes()
     {
-        byte[] expected = Base64Url.EncodeToUtf8(Payload);
-        byte[] destination = new byte[expected.Length];
+        var expected = Base64Url.EncodeToUtf8(Payload);
+        var destination = new byte[expected.Length];
 
-        bool ok = Base64Url.TryEncodeToUtf8(Payload, destination, out int bytesWritten);
+        var ok = Base64Url.TryEncodeToUtf8(Payload, destination, out var bytesWritten);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(expected.Length, bytesWritten);
@@ -139,9 +139,9 @@ public sealed class Base64UrlCoverageTests
     [TestMethod]
     public void TryEncodeToUtf8_WithTooSmallDestination_ShouldReturnFalse()
     {
-        byte[] destination = new byte[1];
+        var destination = new byte[1];
 
-        bool ok = Base64Url.TryEncodeToUtf8(Payload, destination, out int bytesWritten);
+        var ok = Base64Url.TryEncodeToUtf8(Payload, destination, out var bytesWritten);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(0, bytesWritten);

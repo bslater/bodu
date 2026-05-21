@@ -1,10 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensionsTests.Outdent.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System;
 
 namespace Bodu.Extensions;
 
@@ -17,7 +15,7 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void Outdent_WhenAllLinesAreFullyIndented_ShouldStripIndentFromEveryLine()
     {
-        string actual = "    one\n    two".Outdent(2);
+        var actual = "    one\n    two".Outdent(2);
 
         Assert.AreEqual("  one\n  two", actual);
     }
@@ -29,7 +27,7 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void Outdent_WhenLineHasFewerLeadingChars_ShouldStripWhatIsThere()
     {
-        string actual = "  one\nx".Outdent(4);
+        var actual = "  one\nx".Outdent(4);
 
         Assert.AreEqual("one\nx", actual);
     }
@@ -43,7 +41,7 @@ public partial class StringExtensionsTests
     {
         const string input = "one\ntwo\r\nthree";
 
-        string actual = input.Indent(2).Outdent(2);
+        var actual = input.Indent(2).Outdent(2);
 
         Assert.AreEqual(input, actual);
     }
@@ -55,7 +53,7 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void Outdent_WhenCustomIndentCharSupplied_ShouldUseIt()
     {
-        string actual = "\t\tone\n\t\ttwo".Outdent(2, '\t');
+        var actual = "\t\tone\n\t\ttwo".Outdent(2, '\t');
 
         Assert.AreEqual("one\ntwo", actual);
     }

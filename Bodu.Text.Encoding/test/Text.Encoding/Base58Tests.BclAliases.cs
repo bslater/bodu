@@ -18,13 +18,13 @@ public sealed partial class Base58Tests
     [TestMethod]
     public void FromBase58String_ForCharSpan_OperationStatus_ShouldReturnDoneWithCounts()
     {
-        byte[] destination = new byte[5];
+        var destination = new byte[5];
 
         OperationStatus status = Base58.FromBase58String(
             "9Ajdvzr".AsSpan(),
             destination,
-            out int charsConsumed,
-            out int bytesWritten);
+            out var charsConsumed,
+            out var bytesWritten);
 
         Assert.AreEqual(OperationStatus.Done, status);
         Assert.AreEqual(7, charsConsumed);
@@ -39,13 +39,13 @@ public sealed partial class Base58Tests
     [TestMethod]
     public void FromBase58String_ForCharSpan_OperationStatus_WhenInvalidChar_ShouldReturnInvalidData()
     {
-        byte[] destination = new byte[10];
+        var destination = new byte[10];
 
         OperationStatus status = Base58.FromBase58String(
             "9A0dvzr".AsSpan(),
             destination,
-            out int _,
-            out int _);
+            out var _,
+            out var _);
 
         Assert.AreEqual(OperationStatus.InvalidData, status);
     }
@@ -56,7 +56,7 @@ public sealed partial class Base58Tests
     [TestMethod]
     public void FromBase58String_ForString_ShouldStrictlyDecode()
     {
-        byte[] actual = Base58.FromBase58String("9Ajdvzr");
+        var actual = Base58.FromBase58String("9Ajdvzr");
 
         CollectionAssert.AreEqual(Ascii("Hello"), actual);
     }
@@ -67,9 +67,9 @@ public sealed partial class Base58Tests
     [TestMethod]
     public void FromBase58String_ForUtf8Source_ShouldDecode()
     {
-        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes("9Ajdvzr");
+        var utf8 = System.Text.Encoding.ASCII.GetBytes("9Ajdvzr");
 
-        byte[] actual = Base58.FromBase58String(utf8);
+        var actual = Base58.FromBase58String(utf8);
 
         CollectionAssert.AreEqual(Ascii("Hello"), actual);
     }
@@ -81,10 +81,10 @@ public sealed partial class Base58Tests
     [TestMethod]
     public void FromBase58String_ForUtf8Span_OperationStatus_ShouldReturnDoneWithCounts()
     {
-        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes("9Ajdvzr");
-        byte[] destination = new byte[5];
+        var utf8 = System.Text.Encoding.ASCII.GetBytes("9Ajdvzr");
+        var destination = new byte[5];
 
-        OperationStatus status = Base58.FromBase58String(utf8, destination, out int bytesConsumed, out int bytesWritten);
+        OperationStatus status = Base58.FromBase58String(utf8, destination, out var bytesConsumed, out var bytesWritten);
 
         Assert.AreEqual(OperationStatus.Done, status);
         Assert.AreEqual(7, bytesConsumed);
@@ -97,7 +97,7 @@ public sealed partial class Base58Tests
     [TestMethod]
     public void ToBase58String_ForByteArray_ShouldReturnBitcoinFlickrOutput()
     {
-        string actual = Base58.ToBase58String(Ascii("Hello"));
+        var actual = Base58.ToBase58String(Ascii("Hello"));
 
         Assert.AreEqual("9Ajdvzr", actual);
     }
@@ -109,9 +109,9 @@ public sealed partial class Base58Tests
     [TestMethod]
     public void TryToBase58String_ForCharSpan_ShouldWriteExpectedOutput()
     {
-        char[] destination = new char[Base58.GetMaxEncodedLength(5)];
+        var destination = new char[Base58.GetMaxEncodedLength(5)];
 
-        bool ok = Base58.TryToBase58String(Ascii("Hello").AsSpan(), destination, out int charsWritten);
+        var ok = Base58.TryToBase58String(Ascii("Hello").AsSpan(), destination, out var charsWritten);
 
         Assert.IsTrue(ok);
         Assert.AreEqual("9Ajdvzr", new string(destination, 0, charsWritten));
@@ -124,9 +124,9 @@ public sealed partial class Base58Tests
     [TestMethod]
     public void TryToBase58String_ForUtf8Span_ShouldWriteExpectedBytes()
     {
-        byte[] destination = new byte[Base58.GetMaxEncodedLength(5)];
+        var destination = new byte[Base58.GetMaxEncodedLength(5)];
 
-        bool ok = Base58.TryToBase58String(Ascii("Hello").AsSpan(), destination.AsSpan(), out int bytesWritten);
+        var ok = Base58.TryToBase58String(Ascii("Hello").AsSpan(), destination.AsSpan(), out var bytesWritten);
 
         Assert.IsTrue(ok);
         Assert.AreEqual("9Ajdvzr", System.Text.Encoding.ASCII.GetString(destination, 0, bytesWritten));

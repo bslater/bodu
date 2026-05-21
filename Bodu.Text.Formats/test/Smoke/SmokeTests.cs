@@ -28,10 +28,10 @@ public sealed class SmokeTests
     [TestCategory(TestCategories.Smoke)]
     public void Bencode_DecodeEncode_ShouldRoundTripBep3StringExample()
     {
-        byte[] encoded = System.Text.Encoding.ASCII.GetBytes("4:spam");
+        var encoded = System.Text.Encoding.ASCII.GetBytes("4:spam");
 
         BencodedValue decoded = Bencode.Decode(encoded);
-        byte[] reencoded = Bencode.Encode(decoded);
+        var reencoded = Bencode.Encode(decoded);
 
         Assert.AreEqual("spam", ((BencodedString)decoded).GetUtf8String());
         CollectionAssert.AreEqual(encoded, reencoded);
@@ -51,7 +51,7 @@ public sealed class SmokeTests
             new KeyValuePair<BencodedString, BencodedValue>(BencodedString.FromUtf8("spam"), BencodedString.FromUtf8("eggs")),
         });
 
-        string[] orderedKeys = dict.GetOrderedItems()
+        var orderedKeys = dict.GetOrderedItems()
             .Select(pair => pair.Key.GetUtf8String())
             .ToArray();
 
@@ -97,7 +97,7 @@ public sealed class SmokeTests
     [TestCategory(TestCategories.Smoke)]
     public void BencodedString_FromUtf8_ShouldRoundTripText()
     {
-        BencodedString value = BencodedString.FromUtf8("hello");
+        var value = BencodedString.FromUtf8("hello");
 
         Assert.AreEqual("hello", value.GetUtf8String());
     }
@@ -127,7 +127,7 @@ public sealed class SmokeTests
         const string source = "name,age,city\nAlice,30,Paris\nBob,25,London";
 
         DelimitedDocument original = Delimited.Parse(source);
-        string formatted = Delimited.Format(original);
+        var formatted = Delimited.Format(original);
         DelimitedDocument roundTripped = Delimited.Parse(formatted);
 
         Assert.AreEqual(2, roundTripped.Rows.Count);
@@ -148,7 +148,7 @@ public sealed class SmokeTests
         const string source = "HOST=localhost\nPORT=8080\nDEBUG=True";
 
         DotEnvDocument original = DotEnv.Parse(source);
-        string formatted = DotEnv.Format(original);
+        var formatted = DotEnv.Format(original);
         DotEnvDocument roundTripped = DotEnv.Parse(formatted);
 
         Assert.AreEqual("localhost", roundTripped["HOST"]);
@@ -167,7 +167,7 @@ public sealed class SmokeTests
         const string source = "global=g\n[server]\nhost=localhost\nport=8080";
 
         IniDocument original = Ini.Parse(source);
-        string formatted = Ini.Format(original);
+        var formatted = Ini.Format(original);
         IniDocument roundTripped = Ini.Parse(formatted);
 
         Assert.AreEqual("g", roundTripped.GlobalSection["global"]);

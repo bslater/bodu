@@ -1,10 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensionsTests.Base64.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
 using System.Text;
 
 namespace Bodu.Extensions;
@@ -19,7 +18,7 @@ public partial class StringExtensionsTests
     public void ToBase64_WhenEncodingDefaultsToUtf8_ShouldMatchConvertOverUtf8Bytes()
     {
         const string input = "héllo — world";
-        string expected = Convert.ToBase64String(Encoding.UTF8.GetBytes(input));
+        var expected = Convert.ToBase64String(Encoding.UTF8.GetBytes(input));
 
         Assert.AreEqual(expected, input.ToBase64());
     }
@@ -31,7 +30,7 @@ public partial class StringExtensionsTests
     public void ToBase64_WhenAsciiEncodingSupplied_ShouldEncodeBytesFromAscii()
     {
         const string input = "hello";
-        string expected = Convert.ToBase64String(Encoding.ASCII.GetBytes(input));
+        var expected = Convert.ToBase64String(Encoding.ASCII.GetBytes(input));
 
         Assert.AreEqual(expected, input.ToBase64(Encoding.ASCII));
     }
@@ -58,7 +57,7 @@ public partial class StringExtensionsTests
     {
         const string original = "héllo — Привет — 你好";
 
-        string actual = original.ToBase64().FromBase64ToString();
+        var actual = original.ToBase64().FromBase64ToString();
 
         Assert.AreEqual(original, actual);
     }
@@ -70,9 +69,9 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void FromBase64ToString_WhenAsciiEncodingSupplied_ShouldDecodeAsAscii()
     {
-        string encoded = "hello".ToBase64(Encoding.ASCII);
+        var encoded = "hello".ToBase64(Encoding.ASCII);
 
-        string actual = encoded.FromBase64ToString(Encoding.ASCII);
+        var actual = encoded.FromBase64ToString(Encoding.ASCII);
 
         Assert.AreEqual("hello", actual);
     }

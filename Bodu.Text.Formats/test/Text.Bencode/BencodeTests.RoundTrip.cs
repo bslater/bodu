@@ -23,7 +23,7 @@ public sealed partial class BencodeTests
     public void DecodeThenEncode_ForPositiveVector_ShouldReproduceCanonicalBytes(BencodeKnownAnswerVector vector)
     {
         BencodedValue decoded = Bencode.Decode(vector.EncodedBytes);
-        byte[] reencoded = Bencode.Encode(decoded);
+        var reencoded = Bencode.Encode(decoded);
 
         CollectionAssert.AreEqual(vector.EncodedBytes, reencoded);
     }
@@ -46,12 +46,12 @@ public sealed partial class BencodeTests
     public void EncodeThenDecode_ForRandomByteString_ShouldRoundTrip(int seed, int length)
     {
         Random rng = new(seed);
-        byte[] payload = new byte[length];
+        var payload = new byte[length];
         rng.NextBytes(payload);
 
         BencodedString original = new(payload);
-        byte[] encoded = Bencode.Encode(original);
-        BencodedString decoded = (BencodedString)Bencode.Decode(encoded);
+        var encoded = Bencode.Encode(original);
+        var decoded = (BencodedString)Bencode.Decode(encoded);
 
         CollectionAssert.AreEqual(payload, decoded.Bytes.ToArray());
     }
@@ -70,9 +70,9 @@ public sealed partial class BencodeTests
         Random rng = new(seed);
 
         List<KeyValuePair<BencodedString, BencodedValue>> pairs = new();
-        for (int i = 0; i < 16; i++)
+        for (var i = 0; i < 16; i++)
         {
-            BencodedString key = BencodedString.FromUtf8($"k{i:D3}");
+            var key = BencodedString.FromUtf8($"k{i:D3}");
             BencodedValue value = (i % 3) switch
             {
                 0 => new BencodedInteger(rng.NextInt64()),
@@ -83,8 +83,8 @@ public sealed partial class BencodeTests
         }
 
         BencodedDictionary original = new(pairs);
-        byte[] encoded = Bencode.Encode(original);
-        BencodedDictionary decoded = (BencodedDictionary)Bencode.Decode(encoded);
+        var encoded = Bencode.Encode(original);
+        var decoded = (BencodedDictionary)Bencode.Decode(encoded);
 
         Assert.AreEqual(original.Count, decoded.Count);
         foreach (KeyValuePair<BencodedString, BencodedValue> pair in original.GetOrderedItems())

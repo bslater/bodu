@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EncodingExtensionsTests.Encoding.Classification.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -147,7 +147,7 @@ public sealed partial class EncodingExtensionsTests
     {
         System.Text.Encoding encoding = new NonUtfNonAsciiTestEncoding();
 
-        string actual = encoding.GetDisplayName();
+        var actual = encoding.GetDisplayName();
 
         Assert.AreEqual(encoding.WebName, actual);
     }
@@ -171,7 +171,7 @@ public sealed partial class EncodingExtensionsTests
         /// <inheritdoc />
         public override int GetBytes(char[] chars, int charIndex, int charCount, byte[] bytes, int byteIndex)
         {
-            for (int i = 0; i < charCount; i++)
+            for (var i = 0; i < charCount; i++)
                 bytes[byteIndex + i] = (byte)chars[charIndex + i];
             return charCount;
         }
@@ -182,7 +182,7 @@ public sealed partial class EncodingExtensionsTests
         /// <inheritdoc />
         public override int GetChars(byte[] bytes, int byteIndex, int byteCount, char[] chars, int charIndex)
         {
-            for (int i = 0; i < byteCount; i++)
+            for (var i = 0; i < byteCount; i++)
                 chars[charIndex + i] = (char)bytes[byteIndex + i];
             return byteCount;
         }

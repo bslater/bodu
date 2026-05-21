@@ -281,7 +281,7 @@ public sealed class NotableDateRangeResolutionCacheTests
         cache.Add(BuildEntry("Computed", 2026, new DateTime(2026, 1, 1), state: NotableDateCacheState.Computed));
 
         IEnumerable<NotableDateCacheEntry> emissable = cache.EmissableEntries();
-        List<string> names = emissable.Select(e => e.Rule.Name).ToList();
+        var names = emissable.Select(e => e.Rule.Name).ToList();
 
         Assert.AreEqual(1, names.Count);
         Assert.AreEqual("InWindow", names[0]);

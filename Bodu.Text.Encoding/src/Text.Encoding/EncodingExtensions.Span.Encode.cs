@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EncodingExtensions.Span.Encode.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -52,10 +52,10 @@ public static partial class EncodingExtensions
     {
         ThrowHelper.ThrowIfNull(encoding);
 
-        int count = encoding.GetByteCount(chars);
+        var count = encoding.GetByteCount(chars);
         if (count == 0) return Array.Empty<byte>();
 
-        byte[] buffer = new byte[count];
+        var buffer = new byte[count];
         encoding.GetBytes(chars, buffer);
         return buffer;
     }
@@ -118,7 +118,7 @@ public static partial class EncodingExtensions
     {
         ThrowHelper.ThrowIfNull(encoding);
 
-        int required = encoding.GetByteCount(chars);
+        var required = encoding.GetByteCount(chars);
         if (destination.Length != required)
             throw new ArgumentException(
                 EncodingResourceStrings.Arg_Invalid_DestinationNotExactSizeForEncoded,
@@ -192,7 +192,7 @@ public static partial class EncodingExtensions
     {
         ThrowHelper.ThrowIfNull(encoding);
 
-        int count = encoding.GetByteCount(chars);
+        var count = encoding.GetByteCount(chars);
         MemoryPool<byte> pool = memoryPool ?? MemoryPool<byte>.Shared;
         IMemoryOwner<byte> owner = pool.Rent(count);
         try

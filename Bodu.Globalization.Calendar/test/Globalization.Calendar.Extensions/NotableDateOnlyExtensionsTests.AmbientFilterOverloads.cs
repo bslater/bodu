@@ -28,7 +28,7 @@ public partial class NotableDateOnlyExtensionsTests
         try
         {
             NotableDateContext.Default = service;
-            NotableDateFilter filter = NotableDateFilter.ForCategory(NotableDateCategory.Holiday);
+            var filter = NotableDateFilter.ForCategory(NotableDateCategory.Holiday);
 
             IReadOnlyList<NotableDate> resolved = new DateOnly(2026, 5, 14).GetNotableDates(filter);
 
@@ -55,7 +55,7 @@ public partial class NotableDateOnlyExtensionsTests
         try
         {
             NotableDateContext.Default = service;
-            NotableDateFilter filter = NotableDateFilter.ForCategory(NotableDateCategory.Holiday);
+            var filter = NotableDateFilter.ForCategory(NotableDateCategory.Holiday);
 
             IReadOnlyList<NotableDate> resolved = new DateOnly(2026, 5, 1).GetNotableDatesInMonth(filter);
 
@@ -82,7 +82,7 @@ public partial class NotableDateOnlyExtensionsTests
         try
         {
             NotableDateContext.Default = service;
-            NotableDateFilter filter = NotableDateFilter.ForCategory(NotableDateCategory.Holiday);
+            var filter = NotableDateFilter.ForCategory(NotableDateCategory.Holiday);
 
             IReadOnlyList<NotableDate> resolved = new DateOnly(2026, 6, 1).GetNotableDatesInYear(filter);
 
@@ -108,7 +108,7 @@ public partial class NotableDateOnlyExtensionsTests
         try
         {
             NotableDateContext.Default = service;
-            NotableDateFilter filter = NotableDateFilter.ForCategory(NotableDateCategory.Holiday);
+            var filter = NotableDateFilter.ForCategory(NotableDateCategory.Holiday);
 
             NotableDate? next = new DateOnly(2026, 4, 1).NextNotableDate(filter);
 
@@ -135,7 +135,7 @@ public partial class NotableDateOnlyExtensionsTests
         try
         {
             NotableDateContext.Default = service;
-            NotableDateFilter filter = NotableDateFilter.ForCategory(NotableDateCategory.Holiday);
+            var filter = NotableDateFilter.ForCategory(NotableDateCategory.Holiday);
 
             NotableDate? previous = new DateOnly(2026, 6, 1).PreviousNotableDate(filter);
 
@@ -160,7 +160,7 @@ public partial class NotableDateOnlyExtensionsTests
         try
         {
             NotableDateContext.Default = service;
-            NotableDateFilter filter = NotableDateFilter.ForCategory(NotableDateCategory.Holiday);
+            var filter = NotableDateFilter.ForCategory(NotableDateCategory.Holiday);
 
             Assert.IsTrue(new DateOnly(2026, 5, 14).IsNotableDate(filter));
             Assert.IsFalse(new DateOnly(2026, 5, 15).IsNotableDate(filter));

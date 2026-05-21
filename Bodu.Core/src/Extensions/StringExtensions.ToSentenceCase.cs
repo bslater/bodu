@@ -1,11 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensions.ToSentenceCase.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 
@@ -22,13 +20,6 @@ public static partial class StringExtensions
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="value" /> is <see langword="null" />.
     /// </exception>
-    /// <example>
-    /// <code language="csharp">
-    ///<![CDATA[
-    /// "the QUICK brown fox. and more".ToSentenceCase();  // "The quick brown fox. And more"
-    ///]]>
-    /// </code>
-    /// </example>
     public static string ToSentenceCase(this string value) =>
         ToSentenceCase(value, SentenceCaseOptions.None);
 
@@ -50,7 +41,7 @@ public static partial class StringExtensions
     {
         ThrowHelper.ThrowIfNull(value);
 
-        bool preserveAcronyms = (options & SentenceCaseOptions.PreserveAcronyms) == SentenceCaseOptions.PreserveAcronyms;
+        var preserveAcronyms = (options & SentenceCaseOptions.PreserveAcronyms) == SentenceCaseOptions.PreserveAcronyms;
 
         WordCasingOptions casing = new()
         {
@@ -92,9 +83,9 @@ public static partial class StringExtensions
         ThrowHelper.ThrowIfNull(value);
         ThrowHelper.ThrowIfNull(options);
 
-        if (value.Length == 0) return string.Empty;
-
-        return ContainsWhiteSpace(value)
+        return value.Length == 0
+            ? string.Empty
+            : ContainsWhiteSpace(value)
             ? SentenceCasePhrase(value, options)
             : SentenceCaseIdentifier(value, options);
     }
@@ -111,17 +102,17 @@ public static partial class StringExtensions
         CultureInfo culture = options.Culture;
 
         StringBuilder builder = new(value.Length);
-        bool sentenceStart = true;
-        bool sawWord = false;
-        int i = 0;
+        var sentenceStart = true;
+        var sawWord = false;
+        var i = 0;
         while (i < value.Length)
         {
-            char c = value[i];
+            var c = value[i];
             if (char.IsLetterOrDigit(c) || c == '\'')
             {
-                int start = i;
+                var start = i;
                 while (i < value.Length && (char.IsLetterOrDigit(value[i]) || value[i] == '\'')) i++;
-                string word = value.Substring(start, i - start);
+                var word = value[start..i];
                 builder.Append(CaseWordForSentence(word, canonical, options, culture, sentenceStart));
                 sentenceStart = false;
                 sawWord = true;
@@ -153,7 +144,7 @@ public static partial class StringExtensions
         CultureInfo culture = options.Culture;
 
         StringBuilder builder = new(value.Length);
-        for (int i = 0; i < words.Count; i++)
+        for (var i = 0; i < words.Count; i++)
         {
             if (i > 0) builder.Append(' ');
             builder.Append(CaseWordForSentence(words[i], canonical, options, culture, i == 0));
@@ -184,7 +175,7 @@ public static partial class StringExtensions
         if (options.PreserveAcronyms)
         {
             // A known acronym is emitted in its canonical spelling regardless of the input casing.
-            if (canonical.TryGetValue(word.ToUpperInvariant(), out string? canonicalSpelling))
+            if (canonical.TryGetValue(word.ToUpperInvariant(), out var canonicalSpelling))
             {
                 return canonicalSpelling;
             }
@@ -201,14 +192,14 @@ public static partial class StringExtensions
             return word;
         }
 
-        string lower = word.ToLower(culture);
+        var lower = word.ToLower(culture);
         if (!sentenceStart) return lower;
 
         StringBuilder builder = new(lower.Length);
-        bool capitalised = false;
-        for (int i = 0; i < lower.Length; i++)
+        var capitalised = false;
+        for (var i = 0; i < lower.Length; i++)
         {
-            char c = lower[i];
+            var c = lower[i];
             if (!capitalised && char.IsLetter(c))
             {
                 builder.Append(ToUpper(c, culture));

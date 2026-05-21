@@ -4,9 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
-using System.Linq;
-
 namespace Bodu.Globalization.Calendar.Data.Americas.Tests;
 
 /// <summary>

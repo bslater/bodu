@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EncodingExtensionsTests.Encoding.Fallback.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -32,7 +32,7 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void WithExceptionFallbacks_ShouldNotMutateInputEncoding()
     {
-        System.Text.Encoding source = System.Text.Encoding.GetEncoding(
+        var source = System.Text.Encoding.GetEncoding(
             20127,
             System.Text.EncoderFallback.ReplacementFallback,
             System.Text.DecoderFallback.ReplacementFallback);
@@ -66,7 +66,7 @@ public sealed partial class EncodingExtensionsTests
     {
         System.Text.Encoding replacing = System.Text.Encoding.ASCII.WithReplacementFallbacks("?", "?");
 
-        byte[] encoded = replacing.GetBytes("aéb");
+        var encoded = replacing.GetBytes("aéb");
 
         Assert.AreEqual("a?b", System.Text.Encoding.ASCII.GetString(encoded));
     }

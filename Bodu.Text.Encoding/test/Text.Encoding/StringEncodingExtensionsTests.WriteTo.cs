@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringEncodingExtensionsTests.WriteTo.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -19,8 +19,8 @@ public sealed partial class StringEncodingExtensionsTests
     [TestMethod]
     public void WriteTo_WhenInvoked_ShouldWriteEncodedBytesIntoWriter()
     {
-        byte[] expected = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
-        using PooledBufferBuilder<byte> writer = new PooledBufferBuilder<byte>(16);
+        var expected = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
+        using var writer = new PooledBufferBuilder<byte>(16);
 
         MultiByteText.WriteTo(System.Text.Encoding.UTF8, writer);
 
@@ -35,7 +35,7 @@ public sealed partial class StringEncodingExtensionsTests
     [TestMethod]
     public void WriteTo_WhenStringIsEmpty_ShouldNotWriteAnyBytes()
     {
-        using PooledBufferBuilder<byte> writer = new PooledBufferBuilder<byte>(16);
+        using var writer = new PooledBufferBuilder<byte>(16);
 
         string.Empty.WriteTo(System.Text.Encoding.UTF8, writer);
 
@@ -50,7 +50,7 @@ public sealed partial class StringEncodingExtensionsTests
     [TestMethod]
     public void WriteTo_WhenTextIsNull_ShouldThrowArgumentNullException()
     {
-        using PooledBufferBuilder<byte> writer = new PooledBufferBuilder<byte>(16);
+        using var writer = new PooledBufferBuilder<byte>(16);
 
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -68,7 +68,7 @@ public sealed partial class StringEncodingExtensionsTests
     [TestMethod]
     public void WriteTo_WhenEncodingIsNull_ShouldThrowArgumentNullException()
     {
-        using PooledBufferBuilder<byte> writer = new PooledBufferBuilder<byte>(16);
+        using var writer = new PooledBufferBuilder<byte>(16);
 
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

@@ -44,7 +44,7 @@ public static partial class TestHelpers
         var visited = new HashSet<string>(StringComparer.Ordinal);
         var excluded = new HashSet<string>(excludeFields ?? [], StringComparer.Ordinal);
 
-        int count = 0;
+        var count = 0;
 
         while (type != null && type != typeof(object))
         {

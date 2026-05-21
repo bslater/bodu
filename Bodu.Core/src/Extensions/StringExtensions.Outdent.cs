@@ -1,10 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensions.Outdent.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
 using System.Text;
 
 namespace Bodu.Extensions;
@@ -31,13 +30,6 @@ public static partial class StringExtensions
     /// raised. Line boundaries follow the same rules as <see cref="Indent(string, int, char)" /> (<c>\r\n</c>,
     /// <c>\n</c>, bare <c>\r</c>).
     /// </remarks>
-    /// <example>
-    /// <code language="csharp">
-    ///<![CDATA[
-    /// "    line1\n    line2".Outdent(2);  // "  line1\n  line2"
-    ///]]>
-    /// </code>
-    /// </example>
     public static string Outdent(this string value, int count, char indentChar = ' ')
     {
         ThrowHelper.ThrowIfNull(value);
@@ -46,8 +38,8 @@ public static partial class StringExtensions
         if (count == 0 || value.Length == 0) return value;
 
         StringBuilder builder = new(value.Length);
-        int lineStart = 0;
-        for (int i = 0; i <= value.Length; i++)
+        var lineStart = 0;
+        for (var i = 0; i <= value.Length; i++)
         {
             if (i == value.Length || value[i] == '\n' || value[i] == '\r')
             {
@@ -85,8 +77,8 @@ public static partial class StringExtensions
         char indentChar,
         int count)
     {
-        int skipped = 0;
-        int cursor = start;
+        var skipped = 0;
+        var cursor = start;
         while (cursor < end && skipped < count && value[cursor] == indentChar)
         {
             cursor++;

@@ -1,11 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensionsTests.EnsureStartsWith.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System;
-using System.Collections.Generic;
 
 namespace Bodu.Extensions;
 
@@ -48,9 +45,9 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void EnsureStartsWith_WhenPrefixAlreadyPresent_ShouldReturnSameInstance()
     {
-        string value = "hello-world";
+        var value = "hello-world";
 
-        string actual = value.EnsureStartsWith("hello-");
+        var actual = value.EnsureStartsWith("hello-");
 
         Assert.AreSame(value, actual);
     }

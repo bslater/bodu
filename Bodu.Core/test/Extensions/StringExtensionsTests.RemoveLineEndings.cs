@@ -1,11 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensionsTests.RemoveLineEndings.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System;
-using System.Collections.Generic;
 
 namespace Bodu.Extensions;
 
@@ -50,9 +47,9 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void RemoveLineEndings_WhenInputHasNoLineEndings_ShouldReturnSameInstance()
     {
-        string value = "hello world";
+        var value = "hello world";
 
-        string actual = value.RemoveLineEndings();
+        var actual = value.RemoveLineEndings();
 
         Assert.AreSame(value, actual);
     }
@@ -64,9 +61,9 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void RemoveLineEndings_WhenInputContainsUnicodeLineSeparators_ShouldPreserveThem()
     {
-        string value = "a\u2028b\u2029c";
+        var value = "a\u2028b\u2029c";
 
-        string actual = value.RemoveLineEndings();
+        var actual = value.RemoveLineEndings();
 
         Assert.AreEqual(value, actual);
     }

@@ -78,7 +78,7 @@ public static partial class BufferConverter
 #endif
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(sourceSpan, 0, elementSize);
 
-        return MemoryMarshal.Read<T>(sourceSpan.Slice(0, elementSize));
+        return MemoryMarshal.Read<T>(sourceSpan[..elementSize]);
     }
 
 #endif

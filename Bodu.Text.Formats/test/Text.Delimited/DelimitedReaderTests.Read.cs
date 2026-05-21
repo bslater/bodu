@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DelimitedReaderTests.Read.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -17,7 +17,7 @@ public sealed partial class DelimitedReaderTests
     {
         using DelimitedReader reader = new(new StringReader(string.Empty));
 
-        bool result = reader.Read();
+        var result = reader.Read();
 
         Assert.IsFalse(result);
         Assert.AreEqual(0, reader.Headers.Count);
@@ -32,7 +32,7 @@ public sealed partial class DelimitedReaderTests
     {
         using DelimitedReader reader = new(new StringReader("name,age"));
 
-        bool result = reader.Read();
+        var result = reader.Read();
 
         Assert.IsFalse(result);
         CollectionAssert.AreEqual(new[] { "name", "age" }, reader.Headers.ToArray());
@@ -60,7 +60,7 @@ public sealed partial class DelimitedReaderTests
     [TestMethod]
     public void Read_WhenMultipleDataRows_ShouldReadAllRows()
     {
-        string input = "a,b\r\n1,2\r\n3,4\r\n5,6";
+        var input = "a,b\r\n1,2\r\n3,4\r\n5,6";
         using DelimitedReader reader = new(new StringReader(input));
 
         Assert.IsTrue(reader.Read());
@@ -85,7 +85,7 @@ public sealed partial class DelimitedReaderTests
     [TestMethod]
     public void Read_WhenHasHeaderIsFalse_ShouldTreatFirstRowAsData()
     {
-        string input = "1,2\r\n3,4";
+        var input = "1,2\r\n3,4";
         using DelimitedReader reader = new(new StringReader(input), new DelimitedParseOptions { HasHeader = false });
 
         Assert.AreEqual(0, reader.Headers.Count);
@@ -188,7 +188,7 @@ public sealed partial class DelimitedReaderTests
     [TestMethod]
     public void Read_WhenAllowCommentsIsTrue_ShouldSkipCommentLines()
     {
-        string input = "a,b\r\n# this is a comment\r\n1,2";
+        var input = "a,b\r\n# this is a comment\r\n1,2";
         var options = new DelimitedParseOptions { AllowComments = true };
         using DelimitedReader reader = new(new StringReader(input), options);
 
@@ -203,7 +203,7 @@ public sealed partial class DelimitedReaderTests
     [TestMethod]
     public void Read_WhenBlankLinesBetweenRows_ShouldSkipThem()
     {
-        string input = "a,b\r\n1,2\r\n\r\n3,4";
+        var input = "a,b\r\n1,2\r\n\r\n3,4";
         using DelimitedReader reader = new(new StringReader(input));
 
         Assert.IsTrue(reader.Read());
@@ -272,7 +272,7 @@ public sealed partial class DelimitedReaderTests
     [TestMethod]
     public void Read_WhenBufferSizeIsOne_ShouldReadAllFieldsCorrectly()
     {
-        string input = "name,value\r\nAlice,100\r\nBob,200\r\nCarol,300";
+        var input = "name,value\r\nAlice,100\r\nBob,200\r\nCarol,300";
         using DelimitedReader reader = new(new StringReader(input), DelimitedParseOptions.Default, bufferSize: 1);
 
         Assert.IsTrue(reader.Read());
@@ -296,7 +296,7 @@ public sealed partial class DelimitedReaderTests
     [TestMethod]
     public void Read_WhenQuotedFieldSpansBufferBoundary_ShouldReconstructCorrectly()
     {
-        string input = "note\r\n\"hello, world\"";
+        var input = "note\r\n\"hello, world\"";
         using DelimitedReader reader = new(new StringReader(input), DelimitedParseOptions.Default, bufferSize: 4);
 
         Assert.IsTrue(reader.Read());

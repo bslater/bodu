@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Linq;
-
 namespace Bodu.Globalization.Calendar.Data.AsiaPacific.Tests;
 
 /// <summary>

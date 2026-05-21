@@ -18,7 +18,7 @@ public partial class NotableDateTimeExtensionsTests
     {
         NotableDateService service = BuildService();
 
-        bool result = new DateTime(2026, 6, 15).IsNotableDate(service);
+        var result = new DateTime(2026, 6, 15).IsNotableDate(service);
 
         Assert.IsFalse(result);
     }
@@ -31,7 +31,7 @@ public partial class NotableDateTimeExtensionsTests
     {
         NotableDateService service = BuildService(Fixed("New Year's Day", 1, 1));
 
-        bool result = new DateTime(2026, 1, 1).IsNotableDate(service);
+        var result = new DateTime(2026, 1, 1).IsNotableDate(service);
 
         Assert.IsTrue(result);
     }
@@ -45,7 +45,7 @@ public partial class NotableDateTimeExtensionsTests
         NotableDateRule rule = Fixed("Festival", 6, 1) with { DurationDays = 5 };
         NotableDateService service = BuildService(rule);
 
-        bool result = new DateTime(2026, 6, 3).IsNotableDate(service);
+        var result = new DateTime(2026, 6, 3).IsNotableDate(service);
 
         Assert.IsTrue(result);
     }
@@ -59,7 +59,7 @@ public partial class NotableDateTimeExtensionsTests
         NotableDateService service = BuildService(Fixed("Christmas Day", 12, 25, NotableDateCategory.Holiday));
         var filter = NotableDateFilter.ForCategory(NotableDateCategory.Holiday);
 
-        bool result = new DateTime(2026, 12, 25).IsNotableDate(service, filter);
+        var result = new DateTime(2026, 12, 25).IsNotableDate(service, filter);
 
         Assert.IsTrue(result);
     }
@@ -73,7 +73,7 @@ public partial class NotableDateTimeExtensionsTests
         NotableDateService service = BuildService(Fixed("Christmas Day", 12, 25, NotableDateCategory.Holiday));
         var filter = NotableDateFilter.ForCategory(NotableDateCategory.Cultural);
 
-        bool result = new DateTime(2026, 12, 25).IsNotableDate(service, filter);
+        var result = new DateTime(2026, 12, 25).IsNotableDate(service, filter);
 
         Assert.IsFalse(result);
     }
@@ -89,7 +89,7 @@ public partial class NotableDateTimeExtensionsTests
         {
             NotableDateContext.Default = service;
 
-            bool result = new DateTime(2026, 8, 15).IsNotableDate();
+            var result = new DateTime(2026, 8, 15).IsNotableDate();
 
             Assert.IsTrue(result);
         }

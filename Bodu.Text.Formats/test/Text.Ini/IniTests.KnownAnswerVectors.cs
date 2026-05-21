@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IniTests.KnownAnswerVectors.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -22,7 +22,7 @@ public sealed partial class IniTests
         Assert.AreEqual(vector.GlobalEntries.Length, doc.GlobalSection.Entries.Count,
             $"Global entry count mismatch for vector: {vector.Description}");
 
-        for (int i = 0; i < vector.GlobalEntries.Length; i++)
+        for (var i = 0; i < vector.GlobalEntries.Length; i++)
         {
             Assert.AreEqual(vector.GlobalEntries[i].Key, doc.GlobalSection.Entries[i].Key,
                 $"Global entry [{i}] key mismatch for vector: {vector.Description}");
@@ -33,9 +33,9 @@ public sealed partial class IniTests
         Assert.AreEqual(vector.Sections.Length, doc.Sections.Count,
             $"Section count mismatch for vector: {vector.Description}");
 
-        for (int s = 0; s < vector.Sections.Length; s++)
+        for (var s = 0; s < vector.Sections.Length; s++)
         {
-            (string sectionName, (string Key, string Value)[] sectionEntries) = vector.Sections[s];
+            (var sectionName, (string Key, string Value)[] sectionEntries) = vector.Sections[s];
             IniSection actualSection = doc.Sections[s];
 
             Assert.AreEqual(sectionName, actualSection.Name,
@@ -44,7 +44,7 @@ public sealed partial class IniTests
             Assert.AreEqual(sectionEntries.Length, actualSection.Entries.Count,
                 $"Section [{s}] entry count mismatch for vector: {vector.Description}");
 
-            for (int i = 0; i < sectionEntries.Length; i++)
+            for (var i = 0; i < sectionEntries.Length; i++)
             {
                 Assert.AreEqual(sectionEntries[i].Key, actualSection.Entries[i].Key,
                     $"Section [{s}] entry [{i}] key mismatch for vector: {vector.Description}");
@@ -65,13 +65,13 @@ public sealed partial class IniTests
     public void Format_ForSpecKnownAnswerVector_ShouldRoundTripDocument(IniKnownAnswerVector vector)
     {
         IniDocument original = Ini.Parse(vector.Input, vector.Options ?? IniParseOptions.Default);
-        string formatted = Ini.Format(original);
+        var formatted = Ini.Format(original);
         IniDocument roundTripped = Ini.Parse(formatted, vector.Options ?? IniParseOptions.Default);
 
         Assert.AreEqual(vector.GlobalEntries.Length, roundTripped.GlobalSection.Entries.Count,
             $"Round-trip global entry count mismatch for vector: {vector.Description}");
 
-        for (int i = 0; i < vector.GlobalEntries.Length; i++)
+        for (var i = 0; i < vector.GlobalEntries.Length; i++)
         {
             Assert.AreEqual(vector.GlobalEntries[i].Key, roundTripped.GlobalSection.Entries[i].Key,
                 $"Round-trip global entry [{i}] key mismatch for vector: {vector.Description}");
@@ -82,9 +82,9 @@ public sealed partial class IniTests
         Assert.AreEqual(vector.Sections.Length, roundTripped.Sections.Count,
             $"Round-trip section count mismatch for vector: {vector.Description}");
 
-        for (int s = 0; s < vector.Sections.Length; s++)
+        for (var s = 0; s < vector.Sections.Length; s++)
         {
-            (string sectionName, (string Key, string Value)[] sectionEntries) = vector.Sections[s];
+            (var sectionName, (string Key, string Value)[] sectionEntries) = vector.Sections[s];
             IniSection actualSection = roundTripped.Sections[s];
 
             Assert.AreEqual(sectionName, actualSection.Name,
@@ -93,7 +93,7 @@ public sealed partial class IniTests
             Assert.AreEqual(sectionEntries.Length, actualSection.Entries.Count,
                 $"Round-trip section [{s}] entry count mismatch for vector: {vector.Description}");
 
-            for (int i = 0; i < sectionEntries.Length; i++)
+            for (var i = 0; i < sectionEntries.Length; i++)
             {
                 Assert.AreEqual(sectionEntries[i].Key, actualSection.Entries[i].Key,
                     $"Round-trip section [{s}] entry [{i}] key mismatch for vector: {vector.Description}");

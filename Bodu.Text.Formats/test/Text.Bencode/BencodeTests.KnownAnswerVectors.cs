@@ -67,7 +67,7 @@ public sealed partial class BencodeTests
     [DynamicData(nameof(BencodeKnownAnswerVectors.Bep3PositiveVectors), typeof(BencodeKnownAnswerVectors), DynamicDataSourceType.Method)]
     public void Encode_ForBep3KnownAnswerVector_ShouldProduceExpectedBytes(BencodeKnownAnswerVector vector)
     {
-        byte[] actual = Bencode.Encode(vector.DecodedValue);
+        var actual = Bencode.Encode(vector.DecodedValue);
 
         CollectionAssert.AreEqual(vector.EncodedBytes, actual);
     }
@@ -83,7 +83,7 @@ public sealed partial class BencodeTests
     [DynamicData(nameof(BencodeKnownAnswerVectors.EdgeCasePositiveVectors), typeof(BencodeKnownAnswerVectors), DynamicDataSourceType.Method)]
     public void Encode_ForEdgeCaseKnownAnswerVector_ShouldProduceExpectedBytes(BencodeKnownAnswerVector vector)
     {
-        byte[] actual = Bencode.Encode(vector.DecodedValue);
+        var actual = Bencode.Encode(vector.DecodedValue);
 
         CollectionAssert.AreEqual(vector.EncodedBytes, actual);
     }
@@ -98,7 +98,7 @@ public sealed partial class BencodeTests
     [DynamicData(nameof(BencodeKnownAnswerVectors.WikipediaVectors), typeof(BencodeKnownAnswerVectors), DynamicDataSourceType.Method)]
     public void Encode_ForWikipediaKnownAnswerVector_ShouldProduceExpectedBytes(BencodeKnownAnswerVector vector)
     {
-        byte[] actual = Bencode.Encode(vector.DecodedValue);
+        var actual = Bencode.Encode(vector.DecodedValue);
 
         CollectionAssert.AreEqual(vector.EncodedBytes, actual);
     }
@@ -126,14 +126,14 @@ public sealed partial class BencodeTests
                 return;
 
             case BencodedList expectedList:
-                BencodedList actualList = (BencodedList)actual;
+                var actualList = (BencodedList)actual;
                 Assert.AreEqual(expectedList.Count, actualList.Count);
-                for (int i = 0; i < expectedList.Count; i++)
+                for (var i = 0; i < expectedList.Count; i++)
                     AssertValuesEqual(expectedList[i], actualList[i]);
                 return;
 
             case BencodedDictionary expectedDict:
-                BencodedDictionary actualDict = (BencodedDictionary)actual;
+                var actualDict = (BencodedDictionary)actual;
                 Assert.AreEqual(expectedDict.Count, actualDict.Count);
                 using (IEnumerator<KeyValuePair<BencodedString, BencodedValue>> e = expectedDict.GetOrderedItems().GetEnumerator())
                 using (IEnumerator<KeyValuePair<BencodedString, BencodedValue>> a = actualDict.GetOrderedItems().GetEnumerator())

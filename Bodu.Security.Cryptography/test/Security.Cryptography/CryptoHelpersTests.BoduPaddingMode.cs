@@ -106,10 +106,10 @@ public partial class CryptoHelpersTests
         PaddingModeKind boduMode,
         PaddingMode frameworkMode)
     {
-        byte[] input = GetValidMirroredPaddingInput(boduMode);
+        var input = GetValidMirroredPaddingInput(boduMode);
 
-        byte[] bodu = CryptoHelpers.PadBlock(boduMode, 64, input, 0, input.Length);
-        byte[] framework = CryptoHelpers.PadBlock(frameworkMode, 64, input, 0, input.Length);
+        var bodu = CryptoHelpers.PadBlock(boduMode, 64, input, 0, input.Length);
+        var framework = CryptoHelpers.PadBlock(frameworkMode, 64, input, 0, input.Length);
 
         CollectionAssert.AreEqual(framework, bodu);
     }
@@ -159,12 +159,12 @@ public partial class CryptoHelpersTests
         PaddingModeKind boduMode,
         PaddingMode frameworkMode)
     {
-        byte[] input = GetValidMirroredPaddingInput(boduMode);
+        var input = GetValidMirroredPaddingInput(boduMode);
         Span<byte> bodu = stackalloc byte[16];
         Span<byte> framework = stackalloc byte[16];
 
-        int boduWritten = CryptoHelpers.PadBlock(boduMode, 64, input, bodu);
-        int frameworkWritten = CryptoHelpers.PadBlock(frameworkMode, 64, input, framework);
+        var boduWritten = CryptoHelpers.PadBlock(boduMode, 64, input, bodu);
+        var frameworkWritten = CryptoHelpers.PadBlock(frameworkMode, 64, input, framework);
 
         Assert.AreEqual(frameworkWritten, boduWritten);
         Assert.IsTrue(framework.Slice(0, frameworkWritten).SequenceEqual(bodu.Slice(0, boduWritten)));
@@ -210,11 +210,11 @@ public partial class CryptoHelpersTests
         PaddingModeKind boduMode,
         PaddingMode frameworkMode)
     {
-        byte[] input = GetValidMirroredPaddingInput(boduMode);
-        byte[] padded = CryptoHelpers.PadBlock(frameworkMode, 64, input, 0, input.Length);
+        var input = GetValidMirroredPaddingInput(boduMode);
+        var padded = CryptoHelpers.PadBlock(frameworkMode, 64, input, 0, input.Length);
 
-        byte[] bodu = CryptoHelpers.DepadBlock(boduMode, 64, padded, 0, padded.Length);
-        byte[] framework = CryptoHelpers.DepadBlock(frameworkMode, 64, padded, 0, padded.Length);
+        var bodu = CryptoHelpers.DepadBlock(boduMode, 64, padded, 0, padded.Length);
+        var framework = CryptoHelpers.DepadBlock(frameworkMode, 64, padded, 0, padded.Length);
 
         CollectionAssert.AreEqual(framework, bodu);
     }
@@ -293,14 +293,14 @@ public partial class CryptoHelpersTests
         PaddingModeKind boduMode,
         PaddingMode frameworkMode)
     {
-        byte[] input = GetValidMirroredPaddingInput(boduMode);
-        byte[] padded = CryptoHelpers.PadBlock(frameworkMode, 64, input, 0, input.Length);
+        var input = GetValidMirroredPaddingInput(boduMode);
+        var padded = CryptoHelpers.PadBlock(frameworkMode, 64, input, 0, input.Length);
 
         Span<byte> bodu = stackalloc byte[16];
         Span<byte> framework = stackalloc byte[16];
 
-        int boduWritten = CryptoHelpers.DepadBlock(boduMode, 64, padded, bodu);
-        int frameworkWritten = CryptoHelpers.DepadBlock(frameworkMode, 64, padded, framework);
+        var boduWritten = CryptoHelpers.DepadBlock(boduMode, 64, padded, bodu);
+        var frameworkWritten = CryptoHelpers.DepadBlock(frameworkMode, 64, padded, framework);
 
         Assert.AreEqual(frameworkWritten, boduWritten);
         Assert.IsTrue(framework.Slice(0, frameworkWritten).SequenceEqual(bodu.Slice(0, boduWritten)));
@@ -350,12 +350,12 @@ public partial class CryptoHelpersTests
         PaddingModeKind boduMode,
         PaddingMode frameworkMode)
     {
-        byte[] input = GetValidMirroredPaddingInput(boduMode);
+        var input = GetValidMirroredPaddingInput(boduMode);
         Span<byte> bodu = stackalloc byte[16];
         Span<byte> framework = stackalloc byte[16];
 
-        bool boduResult = CryptoHelpers.TryPadBlock(boduMode, 64, input, bodu, out int boduWritten);
-        bool frameworkResult = CryptoHelpers.TryPadBlock(frameworkMode, 64, input, framework, out int frameworkWritten);
+        var boduResult = CryptoHelpers.TryPadBlock(boduMode, 64, input, bodu, out var boduWritten);
+        var frameworkResult = CryptoHelpers.TryPadBlock(frameworkMode, 64, input, framework, out var frameworkWritten);
 
         Assert.AreEqual(frameworkResult, boduResult);
         Assert.AreEqual(frameworkWritten, boduWritten);
@@ -404,14 +404,14 @@ public partial class CryptoHelpersTests
         PaddingModeKind boduMode,
         PaddingMode frameworkMode)
     {
-        byte[] input = GetValidMirroredPaddingInput(boduMode);
-        byte[] padded = CryptoHelpers.PadBlock(frameworkMode, 64, input, 0, input.Length);
+        var input = GetValidMirroredPaddingInput(boduMode);
+        var padded = CryptoHelpers.PadBlock(frameworkMode, 64, input, 0, input.Length);
 
         Span<byte> bodu = stackalloc byte[16];
         Span<byte> framework = stackalloc byte[16];
 
-        bool boduResult = CryptoHelpers.TryDepadBlock(boduMode, 64, padded, bodu, out int boduWritten);
-        bool frameworkResult = CryptoHelpers.TryDepadBlock(frameworkMode, 64, padded, framework, out int frameworkWritten);
+        var boduResult = CryptoHelpers.TryDepadBlock(boduMode, 64, padded, bodu, out var boduWritten);
+        var frameworkResult = CryptoHelpers.TryDepadBlock(frameworkMode, 64, padded, framework, out var frameworkWritten);
 
         Assert.AreEqual(frameworkResult, boduResult);
         Assert.AreEqual(frameworkWritten, boduWritten);

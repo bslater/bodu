@@ -1,10 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensions.TruncateMiddle.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System;
 
 namespace Bodu.Extensions;
 
@@ -36,24 +34,22 @@ public static partial class StringExtensions
     /// Thrown when <paramref name="maxLength" /> is smaller than <paramref name="separator" />.Length.
     /// </exception>
     /// <example>
-    /// <code language="csharp">
     ///<![CDATA[
     /// "hello-world-foo-bar".TruncateMiddle(11);          // "hello…o-bar"
     /// "abcdefghij".TruncateMiddle(7, "...");             // "ab...ij"
     ///]]>
-    /// </code>
     /// </example>
     public static string TruncateMiddle(this string value, int maxLength, string separator = "…")
     {
         ThrowHelper.ThrowIfNull(value);
         ThrowHelper.ThrowIfNull(separator);
-        if (maxLength < separator.Length) throw new ArgumentOutOfRangeException(nameof(maxLength), maxLength, ResourceStrings.Arg_OutOfRange_MaxLengthLessThanMarker);
+        if (maxLength < separator.Length) throw new ArgumentOutOfRangeException(nameof(maxLength), maxLength, "maxLength must be at least separator.Length.");
 
         if (value.Length <= maxLength) return value;
 
-        int budget = maxLength - separator.Length;
-        int prefixLength = (budget + 1) / 2;
-        int suffixLength = budget - prefixLength;
+        var budget = maxLength - separator.Length;
+        var prefixLength = (budget + 1) / 2;
+        var suffixLength = budget - prefixLength;
         return string.Concat(
             value.AsSpan(0, prefixLength),
             separator,
