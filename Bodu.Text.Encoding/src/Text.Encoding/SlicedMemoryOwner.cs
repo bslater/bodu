@@ -71,7 +71,7 @@ internal sealed class SlicedMemoryOwner<T> : IMemoryOwner<T>
         get
         {
             IMemoryOwner<T> inner = _inner
-                ?? throw new ObjectDisposedException(nameof(SlicedMemoryOwner<>));
+                ?? throw new ObjectDisposedException(nameof(SlicedMemoryOwner<T>));
             return inner.Memory.Slice(0, _length);
         }
     }
