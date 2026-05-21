@@ -24,6 +24,14 @@ public static partial class StringExtensions
     /// <see cref="Wrap(string, string, string)" />.
     /// </returns>
     /// <exception cref="ArgumentNullException">Thrown when any string argument is <see langword="null" />.</exception>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// "(content)".Unwrap("(", ")");  // "content"
+    /// "(content".Unwrap("(", ")");   // "(content" (both ends must match)
+    ///]]>
+    /// </code>
+    /// </example>
     public static string Unwrap(
         this string value,
         string prefix,

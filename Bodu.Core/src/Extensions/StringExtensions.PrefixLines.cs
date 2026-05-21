@@ -23,6 +23,13 @@ public static partial class StringExtensions
     /// <paramref name="prefix" /> returns the input unchanged. Commonly used to add a comment marker to a block of
     /// source — e.g. <c>"line1\nline2".PrefixLines("// ")</c>.
     /// </remarks>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// "name\nvalue".PrefixLines("// ");  // "// name\n// value"
+    ///]]>
+    /// </code>
+    /// </example>
     public static string PrefixLines(this string value, string prefix)
     {
         ThrowHelper.ThrowIfNull(value);

@@ -18,6 +18,13 @@ public static partial class StringExtensions
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="value" /> is <see langword="null" />.
     /// </exception>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// "user_name-42!".KeepLettersAndDigits();  // "username42"
+    ///]]>
+    /// </code>
+    /// </example>
     public static string KeepLettersAndDigits(this string value) =>
         value.KeepWhere(char.IsLetterOrDigit);
 }

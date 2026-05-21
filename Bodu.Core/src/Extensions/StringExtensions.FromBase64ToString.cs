@@ -32,6 +32,13 @@ public static partial class StringExtensions
     /// Named <c>FromBase64ToString</c> rather than <c>FromBase64String</c> to avoid colliding with the existing
     /// byte-returning helpers in <c>Bodu.Text.Encoding.BinaryEncodingExtensions</c>.
     /// </remarks>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// "SGVsbG8gd29ybGQ=".FromBase64ToString();  // "Hello world"
+    ///]]>
+    /// </code>
+    /// </example>
     public static string FromBase64ToString(this string value, Encoding? encoding = null)
     {
         ThrowHelper.ThrowIfNull(value);

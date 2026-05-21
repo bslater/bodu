@@ -30,6 +30,7 @@ namespace Bodu.Extensions;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Sanitise then truncate user input for a log line.
 /// string? raw = request?.Title;
@@ -42,6 +43,7 @@ namespace Bodu.Extensions;
 /// string pascal = "user_account_id".ToPascalCase(); // "UserAccountId"
 /// string snake  = "UserAccountId".ToSnakeCase();    // "user_account_id"
 ///]]>
+/// </code>
 /// </example>
 public static partial class StringExtensions
 {

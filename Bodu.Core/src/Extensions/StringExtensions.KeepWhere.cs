@@ -24,6 +24,13 @@ public static partial class StringExtensions
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="value" /> or <paramref name="predicate" /> is <see langword="null" />.
     /// </exception>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// "a1-b2-c3".KeepWhere(char.IsLetter);  // "abc"
+    ///]]>
+    /// </code>
+    /// </example>
     public static string KeepWhere(this string value, Func<char, bool> predicate)
     {
         ThrowHelper.ThrowIfNull(value);

@@ -35,6 +35,16 @@ public static partial class StringExtensions
     /// The empty string returns <see langword="false" /> because an identifier must contain at least one character.
     /// </para>
     /// </remarks>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// "userName".IsValidIdentifier();  // true
+    /// "_count".IsValidIdentifier();    // true
+    /// "2fast".IsValidIdentifier();     // false (starts with a digit)
+    /// "has-dash".IsValidIdentifier();  // false
+    ///]]>
+    /// </code>
+    /// </example>
     public static bool IsValidIdentifier(this string value)
     {
         ThrowHelper.ThrowIfNull(value);

@@ -34,6 +34,14 @@ public static partial class StringExtensions
     /// <see cref="string.TrimStart(char[])" />/<see cref="string.TrimEnd(char[])" /> when the goal is to strip
     /// individual characters.
     /// </remarks>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// "a-b-c".Remove("-");    // "abc"
+    /// "Hello".Remove("xyz");  // "Hello" (substring absent)
+    ///]]>
+    /// </code>
+    /// </example>
     public static string Remove(
         this string value,
         string valueToRemove,

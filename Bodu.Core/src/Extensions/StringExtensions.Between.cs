@@ -28,6 +28,14 @@ public static partial class StringExtensions
     /// Thrown when <paramref name="value" />, <paramref name="start" />, or <paramref name="end" /> is
     /// <see langword="null" />.
     /// </exception>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// "<title>Hello</title>".Between("<title>", "</title>");  // "Hello"
+    /// "key=[value]".Between("[", "]");                        // "value"
+    ///]]>
+    /// </code>
+    /// </example>
     public static string? Between(
         this string value,
         string start,

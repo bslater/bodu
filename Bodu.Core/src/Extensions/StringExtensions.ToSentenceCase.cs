@@ -22,6 +22,13 @@ public static partial class StringExtensions
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="value" /> is <see langword="null" />.
     /// </exception>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// "the QUICK brown fox. and more".ToSentenceCase();  // "The quick brown fox. And more"
+    ///]]>
+    /// </code>
+    /// </example>
     public static string ToSentenceCase(this string value) =>
         ToSentenceCase(value, SentenceCaseOptions.None);
 

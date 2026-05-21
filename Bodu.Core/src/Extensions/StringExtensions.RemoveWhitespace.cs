@@ -26,6 +26,13 @@ public static partial class StringExtensions
     /// White-space is detected via <see cref="char.IsWhiteSpace(char)" /> so Unicode separators (NBSP, line
     /// terminators, tab) are all removed.
     /// </remarks>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// "  spaced \t out\n".RemoveWhitespace();  // "spacedout"
+    ///]]>
+    /// </code>
+    /// </example>
     public static string RemoveWhitespace(this string value)
     {
         ThrowHelper.ThrowIfNull(value);

@@ -26,6 +26,14 @@ public static partial class StringExtensions
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="value" /> or <paramref name="marker" /> is <see langword="null" />.
     /// </exception>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// "a/b/c/file.txt".AfterLast("/");  // "file.txt"
+    /// "no-slash".AfterLast("/");        // null
+    ///]]>
+    /// </code>
+    /// </example>
     public static string? AfterLast(
         this string value,
         string marker,

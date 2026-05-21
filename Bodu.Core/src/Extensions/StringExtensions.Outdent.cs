@@ -31,6 +31,13 @@ public static partial class StringExtensions
     /// raised. Line boundaries follow the same rules as <see cref="Indent(string, int, char)" /> (<c>\r\n</c>,
     /// <c>\n</c>, bare <c>\r</c>).
     /// </remarks>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// "    line1\n    line2".Outdent(2);  // "  line1\n  line2"
+    ///]]>
+    /// </code>
+    /// </example>
     public static string Outdent(this string value, int count, char indentChar = ' ')
     {
         ThrowHelper.ThrowIfNull(value);

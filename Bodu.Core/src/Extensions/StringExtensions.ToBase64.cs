@@ -30,6 +30,13 @@ public static partial class StringExtensions
     /// the string to bytes manually. Pair with <see cref="FromBase64ToString(string, Encoding)" /> for the inverse
     /// operation.
     /// </remarks>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// "Hello world".ToBase64();  // "SGVsbG8gd29ybGQ="
+    ///]]>
+    /// </code>
+    /// </example>
     public static string ToBase64(this string value, Encoding? encoding = null)
     {
         ThrowHelper.ThrowIfNull(value);

@@ -25,6 +25,14 @@ public static partial class StringExtensions
     /// Only one trailing line terminator is removed. Repeated trailing newlines are intentionally preserved — use
     /// <see cref="string.TrimEnd(char[])" /> with <c>'\r','\n'</c> when greedy stripping is required.
     /// </remarks>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// "line\r\n".RemoveTrailingNewLine();  // "line"
+    /// "line\n\n".RemoveTrailingNewLine();  // "line\n" (only one terminator removed)
+    ///]]>
+    /// </code>
+    /// </example>
     public static string RemoveTrailingNewLine(this string value)
     {
         ThrowHelper.ThrowIfNull(value);

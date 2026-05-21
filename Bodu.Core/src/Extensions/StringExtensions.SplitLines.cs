@@ -30,6 +30,14 @@ public static partial class StringExtensions
     /// CRLF is treated as a single line ending. Unlike <see cref="string.Split(char[])" />, a trailing line terminator
     /// does not produce a final empty line — the contract matches typical "lines in a file" reading semantics.
     /// </remarks>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// "a\r\nb\nc".SplitLines();                     // yields "a", "b", "c"
+    /// "a\n\nb".SplitLines(removeEmptyLines: true);  // yields "a", "b"
+    ///]]>
+    /// </code>
+    /// </example>
     public static IEnumerable<string> SplitLines(this string value, bool removeEmptyLines = false)
     {
         ThrowHelper.ThrowIfNull(value);

@@ -30,6 +30,13 @@ public static partial class StringExtensions
     /// <exception cref="ArgumentException">
     /// Thrown when any element of <paramref name="valuesToRemove" /> is the empty string.
     /// </exception>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// "(555) 123-4567".RemoveMany("(", ")", " ", "-");  // "5551234567"
+    ///]]>
+    /// </code>
+    /// </example>
     public static string RemoveMany(this string value, params string[] valuesToRemove)
     {
         ThrowHelper.ThrowIfNull(value);

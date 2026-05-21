@@ -28,6 +28,14 @@ public static partial class StringExtensions
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="value" /> or <paramref name="suffix" /> is <see langword="null" />.
     /// </exception>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// "report".EnsureEndsWith(".txt");      // "report.txt"
+    /// "report.txt".EnsureEndsWith(".txt");  // "report.txt" (suffix already present)
+    ///]]>
+    /// </code>
+    /// </example>
     public static string EnsureEndsWith(
         this string value,
         string suffix,

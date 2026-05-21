@@ -35,6 +35,14 @@ public static partial class StringExtensions
     /// Replacements are applied sequentially — output of an earlier replacement is visible to a later one. Pre-order
     /// keys to avoid cascading substitutions when independence is required.
     /// </remarks>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// var map = new Dictionary<string, string> { ["{name}"] = "Sam", ["{role}"] = "admin" };
+    /// "Hi {name}, role={role}".ReplaceMany(map);  // "Hi Sam, role=admin"
+    ///]]>
+    /// </code>
+    /// </example>
     public static string ReplaceMany(this string value, IReadOnlyDictionary<string, string> replacements)
     {
         ThrowHelper.ThrowIfNull(value);

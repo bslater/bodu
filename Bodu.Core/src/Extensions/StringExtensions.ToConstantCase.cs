@@ -24,6 +24,13 @@ public static partial class StringExtensions
     /// Word boundaries follow <see cref="EnumerateWords(string, WordCasingOptions)" /> using
     /// <see cref="WordCasingOptions.Default" />. Every word is upper-cased.
     /// </remarks>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// "userAccountId".ToConstantCase();  // "USER_ACCOUNT_ID"
+    ///]]>
+    /// </code>
+    /// </example>
     public static string ToConstantCase(this string value) =>
         ToConstantCase(value, WordCasingOptions.Default);
 

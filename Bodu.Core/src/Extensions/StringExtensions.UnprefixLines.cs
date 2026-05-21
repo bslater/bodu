@@ -24,6 +24,13 @@ public static partial class StringExtensions
     /// <paramref name="prefix" /> are emitted unchanged. Comparison is ordinal. Line boundaries follow the usual
     /// <c>\r\n</c> / <c>\n</c> / <c>\r</c> recognition.
     /// </remarks>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// "// name\n// value".UnprefixLines("// ");  // "name\nvalue"
+    ///]]>
+    /// </code>
+    /// </example>
     public static string UnprefixLines(this string value, string prefix)
     {
         ThrowHelper.ThrowIfNull(value);

@@ -19,6 +19,14 @@ public static partial class StringExtensions
     /// <param name="suffix">The string to append. Must not be <see langword="null" />.</param>
     /// <returns>The wrapped string.</returns>
     /// <exception cref="ArgumentNullException">Thrown when any argument is <see langword="null" />.</exception>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// "content".Wrap("[", "]");    // "[content]"
+    /// "name".Wrap("<b>", "</b>");  // "<b>name</b>"
+    ///]]>
+    /// </code>
+    /// </example>
     public static string Wrap(this string value, string prefix, string suffix)
     {
         ThrowHelper.ThrowIfNull(value);

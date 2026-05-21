@@ -34,6 +34,13 @@ public static partial class StringExtensions
     /// search normalisation combine this with <c>ToLowerInvariant</c> and <see cref="CollapseWhitespace(string)" />.
     /// </para>
     /// </remarks>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// "café crème brûlée".RemoveDiacritics();  // "cafe creme brulee"
+    ///]]>
+    /// </code>
+    /// </example>
     public static string RemoveDiacritics(this string value)
     {
         ThrowHelper.ThrowIfNull(value);

@@ -32,6 +32,14 @@ public static partial class StringExtensions
     /// CRLF pairs are treated as a single line ending and replaced by exactly one <paramref name="newline" />. Other
     /// Unicode line separators (U+2028, U+2029, NEL U+0085) are not touched.
     /// </remarks>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// "a\r\nb\rc\n".NormalizeLineEndings();    // "a\nb\nc\n"
+    /// "a\nb".NormalizeLineEndings("\r\n");      // "a\r\nb"
+    ///]]>
+    /// </code>
+    /// </example>
     public static string NormalizeLineEndings(this string value, string newline = "\n")
     {
         ThrowHelper.ThrowIfNull(value);

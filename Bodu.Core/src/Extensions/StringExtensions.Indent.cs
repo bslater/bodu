@@ -28,6 +28,13 @@ public static partial class StringExtensions
     /// newline followed by nothing) are not indented. When <paramref name="count" /> is zero the input is returned
     /// unchanged.
     /// </remarks>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// "line1\nline2".Indent(2);  // "  line1\n  line2"
+    ///]]>
+    /// </code>
+    /// </example>
     public static string Indent(this string value, int count, char indentChar = ' ')
     {
         ThrowHelper.ThrowIfNull(value);
