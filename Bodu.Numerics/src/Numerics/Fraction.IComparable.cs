@@ -52,6 +52,44 @@ public readonly partial struct Fraction<T> :
     /// A negative number if <paramref name="left" /> precedes <paramref name="right" />, zero if they are equal, and a
     /// positive number if <paramref name="left" /> follows <paramref name="right" />.
     /// </returns>
-    private static int Compare(Fraction<T> left, Fraction<T> right) =>
+    public static int Compare(Fraction<T> left, Fraction<T> right) =>
         (left.BigNumerator * right.BigDenominator).CompareTo(right.BigNumerator * left.BigDenominator);
+
+    /// <summary>
+    /// Returns the smaller of two rational values.
+    /// </summary>
+    /// <param name="left">The first value.</param>
+    /// <param name="right">The second value.</param>
+    /// <returns>Whichever of <paramref name="left" /> and <paramref name="right" /> is smaller.</returns>
+    public static Fraction<T> Min(Fraction<T> left, Fraction<T> right) =>
+        Compare(left, right) <= 0 ? left : right;
+
+    /// <summary>
+    /// Returns the larger of two rational values.
+    /// </summary>
+    /// <param name="left">The first value.</param>
+    /// <param name="right">The second value.</param>
+    /// <returns>Whichever of <paramref name="left" /> and <paramref name="right" /> is larger.</returns>
+    public static Fraction<T> Max(Fraction<T> left, Fraction<T> right) =>
+        Compare(left, right) >= 0 ? left : right;
+
+    /// <summary>
+    /// Returns <paramref name="value" /> constrained to the inclusive range bounded by two rational values.
+    /// </summary>
+    /// <param name="value">The value to clamp.</param>
+    /// <param name="min">The inclusive lower bound.</param>
+    /// <param name="max">The inclusive upper bound.</param>
+    /// <returns>The clamped value, constrained to the inclusive range.</returns>
+    /// <exception cref="ArgumentException">
+    /// Thrown if <paramref name="min" /> is greater than <paramref name="max" />.
+    /// </exception>
+    public static Fraction<T> Clamp(Fraction<T> value, Fraction<T> min, Fraction<T> max)
+    {
+        if (Compare(min, max) > 0) throw new ArgumentException("The minimum bound must not exceed the maximum bound.", nameof(min));
+
+        if (Compare(value, min) < 0)
+            return min;
+
+        return Compare(value, max) > 0 ? max : value;
+    }
 }

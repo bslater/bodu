@@ -71,4 +71,46 @@ public partial class FractionTests
             },
             values);
     }
+
+    /// <summary>
+    /// Verifies that the static Compare, Min, and Max return the expected ordering results.
+    /// </summary>
+    [TestMethod]
+    public void CompareMinMax_WhenGivenTwoValues_ShouldReturnExpectedResults()
+    {
+        Fraction<int> low = new Fraction<int>(1, 3);
+        Fraction<int> high = new Fraction<int>(1, 2);
+
+        Assert.IsTrue(Fraction<int>.Compare(low, high) < 0);
+        Assert.IsTrue(Fraction<int>.Compare(high, low) > 0);
+        Assert.AreEqual(0, Fraction<int>.Compare(low, low));
+        Assert.AreEqual(low, Fraction<int>.Min(low, high));
+        Assert.AreEqual(high, Fraction<int>.Max(low, high));
+    }
+
+    /// <summary>
+    /// Verifies that Clamp constrains a value to the inclusive bounds.
+    /// </summary>
+    [TestMethod]
+    public void Clamp_WhenValueIsOutsideRange_ShouldConstrainToBounds()
+    {
+        Fraction<int> min = Fraction<int>.Zero;
+        Fraction<int> max = Fraction<int>.One;
+
+        Assert.AreEqual(max, Fraction<int>.Clamp(new Fraction<int>(3, 2), min, max));
+        Assert.AreEqual(min, Fraction<int>.Clamp(new Fraction<int>(-1, 2), min, max));
+        Assert.AreEqual(new Fraction<int>(1, 2), Fraction<int>.Clamp(new Fraction<int>(1, 2), min, max));
+    }
+
+    /// <summary>
+    /// Verifies that Clamp rejects a range whose minimum exceeds its maximum.
+    /// </summary>
+    [TestMethod]
+    public void Clamp_WhenMinExceedsMax_ShouldThrowArgumentException()
+    {
+        _ = Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            _ = Fraction<int>.Clamp(Fraction<int>.Zero, Fraction<int>.One, Fraction<int>.Zero);
+        });
+    }
 }

@@ -211,16 +211,8 @@ public readonly partial struct Fraction<T> :
     }
 
     /// <inheritdoc />
-    static Fraction<T> INumber<Fraction<T>>.Clamp(Fraction<T> value, Fraction<T> min, Fraction<T> max)
-    {
-        if (Compare(min, max) > 0)
-            throw new ArgumentException("The minimum bound must not exceed the maximum bound.", nameof(min));
-
-        if (Compare(value, min) < 0)
-            return min;
-
-        return Compare(value, max) > 0 ? max : value;
-    }
+    static Fraction<T> INumber<Fraction<T>>.Clamp(Fraction<T> value, Fraction<T> min, Fraction<T> max) =>
+        Clamp(value, min, max);
 
     /// <inheritdoc />
     static Fraction<T> INumber<Fraction<T>>.CopySign(Fraction<T> value, Fraction<T> sign) =>
@@ -228,7 +220,7 @@ public readonly partial struct Fraction<T> :
 
     /// <inheritdoc />
     static Fraction<T> INumber<Fraction<T>>.Max(Fraction<T> x, Fraction<T> y) =>
-        Compare(x, y) >= 0 ? x : y;
+        Max(x, y);
 
     /// <inheritdoc />
     static Fraction<T> INumber<Fraction<T>>.MaxNumber(Fraction<T> x, Fraction<T> y) =>
@@ -236,7 +228,7 @@ public readonly partial struct Fraction<T> :
 
     /// <inheritdoc />
     static Fraction<T> INumber<Fraction<T>>.Min(Fraction<T> x, Fraction<T> y) =>
-        Compare(x, y) <= 0 ? x : y;
+        Min(x, y);
 
     /// <inheritdoc />
     static Fraction<T> INumber<Fraction<T>>.MinNumber(Fraction<T> x, Fraction<T> y) =>

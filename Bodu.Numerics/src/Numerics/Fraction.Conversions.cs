@@ -61,6 +61,14 @@ public readonly partial struct Fraction<T>
         value.ToDouble();
 
     /// <summary>
+    /// Converts a rational value to the nearest <see cref="float" />.
+    /// </summary>
+    /// <param name="value">The rational value to convert.</param>
+    /// <returns>The single-precision approximation of <paramref name="value" />.</returns>
+    public static explicit operator float(Fraction<T> value) =>
+        value.ToSingle();
+
+    /// <summary>
     /// Converts a <see cref="decimal" /> to its exact rational representation.
     /// </summary>
     /// <param name="value">The decimal value to convert.</param>
@@ -181,6 +189,90 @@ public readonly partial struct Fraction<T>
     /// <returns>The double-precision approximation of this value.</returns>
     public double ToDouble() =>
         (double)BigNumerator / (double)BigDenominator;
+
+    /// <summary>
+    /// Converts this rational value to the nearest <see cref="float" />.
+    /// </summary>
+    /// <returns>The single-precision approximation of this value.</returns>
+    public float ToSingle() =>
+        (float)BigNumerator / (float)BigDenominator;
+
+    /// <summary>
+    /// Converts this rational value to a <see cref="BigInteger" />, truncating any fractional component.
+    /// </summary>
+    /// <returns>The integer part of this value, rounded toward zero.</returns>
+    public BigInteger ToBigInteger() =>
+        BigNumerator / BigDenominator;
+
+    /// <summary>
+    /// Converts this rational value to a value of the backing type, truncating any fractional component.
+    /// </summary>
+    /// <returns>The integer part of this value, rounded toward zero.</returns>
+    public T ToInteger() =>
+        T.CreateChecked(BigNumerator / BigDenominator);
+
+    /// <summary>
+    /// Attempts to convert this rational value to the nearest <see cref="decimal" />.
+    /// </summary>
+    /// <param name="result">When this method returns, contains the converted value, or zero on failure.</param>
+    /// <returns><see langword="true" /> if the value was converted; otherwise, <see langword="false" />.</returns>
+    public bool TryToDecimal(out decimal result)
+    {
+        try
+        {
+            result = ToDecimal();
+            return true;
+        }
+        catch (OverflowException)
+        {
+            result = default;
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Converts this rational value to the nearest <see cref="double" />.
+    /// </summary>
+    /// <param name="result">When this method returns, contains the converted value.</param>
+    /// <returns><see langword="true" />, because every rational value has a double-precision approximation.</returns>
+    public bool TryToDouble(out double result)
+    {
+        result = ToDouble();
+        return true;
+    }
+
+    /// <summary>
+    /// Converts this rational value to the nearest <see cref="float" />.
+    /// </summary>
+    /// <param name="result">When this method returns, contains the converted value.</param>
+    /// <returns><see langword="true" />, because every rational value has a single-precision approximation.</returns>
+    public bool TryToSingle(out float result)
+    {
+        result = ToSingle();
+        return true;
+    }
+
+    /// <summary>
+    /// Converts the integer part of this rational value to a <see cref="BigInteger" />.
+    /// </summary>
+    /// <param name="result">When this method returns, contains the converted value.</param>
+    /// <returns><see langword="true" />, because every rational value has an integer part.</returns>
+    public bool TryToBigInteger(out BigInteger result)
+    {
+        result = ToBigInteger();
+        return true;
+    }
+
+    /// <summary>
+    /// Converts the integer part of this rational value to a value of the backing type.
+    /// </summary>
+    /// <param name="result">When this method returns, contains the converted value.</param>
+    /// <returns><see langword="true" />, because the integer part always fits the backing type.</returns>
+    public bool TryToInteger(out T result)
+    {
+        result = ToInteger();
+        return true;
+    }
 
     /// <summary>
     /// Converts this rational value to an equivalent <see cref="Fraction{T}" /> over a different backing integer type.

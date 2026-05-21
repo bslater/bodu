@@ -199,4 +199,62 @@ public partial class FractionTests
     {
         Assert.AreEqual(input, Fraction<long>.FromDouble(input).ToDouble());
     }
+
+    /// <summary>
+    /// Verifies that ToSingle, ToBigInteger, and ToInteger convert a value to each primitive type.
+    /// </summary>
+    [TestMethod]
+    public void ToPrimitive_WhenConverting_ShouldReturnExpectedValues()
+    {
+        Fraction<int> value = new Fraction<int>(7, 2);
+
+        Assert.AreEqual(3.5f, value.ToSingle());
+        Assert.AreEqual((BigInteger)3, value.ToBigInteger());
+        Assert.AreEqual(3, value.ToInteger());
+    }
+
+    /// <summary>
+    /// Verifies that the explicit float conversion operator returns the single-precision approximation.
+    /// </summary>
+    [TestMethod]
+    public void ExplicitFloatOperator_WhenConverting_ShouldReturnApproximation()
+    {
+        Assert.AreEqual(0.25f, (float)new Fraction<int>(1, 4));
+    }
+
+    /// <summary>
+    /// Verifies that the non-failing Try-conversions report success and return the converted value.
+    /// </summary>
+    [TestMethod]
+    public void TryToPrimitive_WhenConverting_ShouldAlwaysSucceed()
+    {
+        Fraction<int> value = new Fraction<int>(7, 2);
+
+        Assert.IsTrue(value.TryToDouble(out double asDouble));
+        Assert.AreEqual(3.5, asDouble);
+
+        Assert.IsTrue(value.TryToSingle(out float asSingle));
+        Assert.AreEqual(3.5f, asSingle);
+
+        Assert.IsTrue(value.TryToBigInteger(out BigInteger asBig));
+        Assert.AreEqual((BigInteger)3, asBig);
+
+        Assert.IsTrue(value.TryToInteger(out int asInt));
+        Assert.AreEqual(3, asInt);
+
+        Assert.IsTrue(value.TryToDecimal(out decimal asDecimal));
+        Assert.AreEqual(3.5m, asDecimal);
+    }
+
+    /// <summary>
+    /// Verifies that TryToDecimal reports failure when the value exceeds the decimal range.
+    /// </summary>
+    [TestMethod]
+    public void TryToDecimal_WhenValueExceedsDecimalRange_ShouldReturnFalse()
+    {
+        Fraction<BigInteger> value = new Fraction<BigInteger>(BigInteger.Pow(10, 40));
+
+        Assert.IsFalse(value.TryToDecimal(out decimal result));
+        Assert.AreEqual(0m, result);
+    }
 }
