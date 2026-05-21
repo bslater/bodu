@@ -233,6 +233,40 @@ public readonly partial struct Fraction<T>
     }
 
     /// <summary>
+    /// Creates a canonical <see cref="Fraction{T}" /> from the specified numerator and denominator.
+    /// </summary>
+    /// <param name="numerator">The numerator of the rational value.</param>
+    /// <param name="denominator">The denominator of the rational value.</param>
+    /// <returns>The reduced rational value.</returns>
+    /// <exception cref="DivideByZeroException">Thrown if <paramref name="denominator" /> is zero.</exception>
+    /// <exception cref="OverflowException">
+    /// Thrown if the canonical numerator or denominator cannot be represented by <typeparamref name="T" />.
+    /// </exception>
+    public static Fraction<T> Create(T numerator, T denominator) =>
+        new Fraction<T>(numerator, denominator);
+
+    /// <summary>
+    /// Attempts to create a canonical <see cref="Fraction{T}" /> from the specified numerator and denominator.
+    /// </summary>
+    /// <param name="numerator">The numerator of the rational value.</param>
+    /// <param name="denominator">The denominator of the rational value.</param>
+    /// <param name="result">When this method returns, contains the created value, or zero on failure.</param>
+    /// <returns><see langword="true" /> if the value was created; otherwise, <see langword="false" />.</returns>
+    public static bool TryCreate(T numerator, T denominator, out Fraction<T> result)
+    {
+        try
+        {
+            result = new Fraction<T>(numerator, denominator);
+            return true;
+        }
+        catch (ArithmeticException)
+        {
+            result = default;
+            return false;
+        }
+    }
+
+    /// <summary>
     /// Computes the greatest common divisor of two integers.
     /// </summary>
     /// <param name="left">The first integer.</param>
@@ -277,17 +311,20 @@ public readonly partial struct Fraction<T>
     }
 
     /// <summary>
-    /// Creates a canonical <see cref="Fraction{T}" /> from a numerator and denominator evaluated with
-    /// <see cref="BigInteger" /> precision.
+    /// Creates a canonical <see cref="Fraction{T}" /> from a numerator and denominator of arbitrary magnitude.
     /// </summary>
-    /// <param name="numerator">The unreduced numerator.</param>
-    /// <param name="denominator">The unreduced, non-zero denominator.</param>
+    /// <param name="numerator">The numerator of the rational value.</param>
+    /// <param name="denominator">The denominator of the rational value.</param>
     /// <returns>The reduced rational value narrowed to <typeparamref name="T" />.</returns>
+    /// <exception cref="DivideByZeroException">Thrown if <paramref name="denominator" /> is zero.</exception>
     /// <exception cref="OverflowException">
     /// Thrown if the canonical numerator or denominator cannot be represented by <typeparamref name="T" />.
     /// </exception>
-    private static Fraction<T> FromBigInteger(BigInteger numerator, BigInteger denominator)
+    public static Fraction<T> FromBigInteger(BigInteger numerator, BigInteger denominator)
     {
+        if (denominator.IsZero)
+            throw new DivideByZeroException("The denominator of a fraction must not be zero.");
+
         if (denominator.Sign < 0)
         {
             numerator = -numerator;
@@ -302,6 +339,27 @@ public readonly partial struct Fraction<T>
         }
 
         return new Fraction<T>(T.CreateChecked(numerator), T.CreateChecked(denominator), canonical: true);
+    }
+
+    /// <summary>
+    /// Attempts to create a canonical <see cref="Fraction{T}" /> from a numerator and denominator.
+    /// </summary>
+    /// <param name="numerator">The numerator of the rational value.</param>
+    /// <param name="denominator">The denominator of the rational value.</param>
+    /// <param name="result">When this method returns, contains the created value, or zero on failure.</param>
+    /// <returns><see langword="true" /> if the value was created; otherwise, <see langword="false" />.</returns>
+    public static bool TryFromBigInteger(BigInteger numerator, BigInteger denominator, out Fraction<T> result)
+    {
+        try
+        {
+            result = FromBigInteger(numerator, denominator);
+            return true;
+        }
+        catch (ArithmeticException)
+        {
+            result = default;
+            return false;
+        }
     }
 
     /// <summary>

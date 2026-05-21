@@ -35,7 +35,7 @@ public readonly partial struct Fraction<T> :
 
     /// <inheritdoc />
     static bool INumberBase<Fraction<T>>.IsCanonical(Fraction<T> value) =>
-        true;
+        value.IsCanonical;
 
     /// <inheritdoc />
     static bool INumberBase<Fraction<T>>.IsComplexNumber(Fraction<T> value) =>
@@ -43,7 +43,7 @@ public readonly partial struct Fraction<T> :
 
     /// <inheritdoc />
     static bool INumberBase<Fraction<T>>.IsEvenInteger(Fraction<T> value) =>
-        value.IsInteger && value.BigNumerator.IsEven;
+        value.IsEvenInteger;
 
     /// <inheritdoc />
     static bool INumberBase<Fraction<T>>.IsFinite(Fraction<T> value) =>
@@ -79,7 +79,7 @@ public readonly partial struct Fraction<T> :
 
     /// <inheritdoc />
     static bool INumberBase<Fraction<T>>.IsOddInteger(Fraction<T> value) =>
-        value.IsInteger && !value.BigNumerator.IsEven;
+        value.IsOddInteger;
 
     /// <inheritdoc />
     static bool INumberBase<Fraction<T>>.IsPositive(Fraction<T> value) =>

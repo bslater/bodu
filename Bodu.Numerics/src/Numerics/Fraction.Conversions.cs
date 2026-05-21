@@ -85,6 +85,26 @@ public readonly partial struct Fraction<T>
     }
 
     /// <summary>
+    /// Attempts to convert a <see cref="decimal" /> to its exact rational representation.
+    /// </summary>
+    /// <param name="value">The decimal value to convert.</param>
+    /// <param name="result">When this method returns, contains the converted value, or zero on failure.</param>
+    /// <returns><see langword="true" /> if the value was converted; otherwise, <see langword="false" />.</returns>
+    public static bool TryFromDecimal(decimal value, out Fraction<T> result)
+    {
+        try
+        {
+            result = FromDecimal(value);
+            return true;
+        }
+        catch (OverflowException)
+        {
+            result = default;
+            return false;
+        }
+    }
+
+    /// <summary>
     /// Converts a finite <see cref="double" /> to its exact rational representation.
     /// </summary>
     /// <param name="value">The double-precision value to convert.</param>
@@ -117,6 +137,32 @@ public readonly partial struct Fraction<T>
         return exponent >= 0
             ? FromBigInteger(numerator << exponent, BigInteger.One)
             : FromBigInteger(numerator, BigInteger.One << -exponent);
+    }
+
+    /// <summary>
+    /// Attempts to convert a <see cref="double" /> to its exact rational representation.
+    /// </summary>
+    /// <param name="value">The double-precision value to convert.</param>
+    /// <param name="result">When this method returns, contains the converted value, or zero on failure.</param>
+    /// <returns><see langword="true" /> if the value was converted; otherwise, <see langword="false" />.</returns>
+    public static bool TryFromDouble(double value, out Fraction<T> result)
+    {
+        if (!double.IsFinite(value))
+        {
+            result = default;
+            return false;
+        }
+
+        try
+        {
+            result = FromDouble(value);
+            return true;
+        }
+        catch (OverflowException)
+        {
+            result = default;
+            return false;
+        }
     }
 
     /// <summary>

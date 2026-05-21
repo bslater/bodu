@@ -64,6 +64,47 @@ public partial class FractionTests
     }
 
     /// <summary>
+    /// Verifies that the extended classification properties report known answers for a range of values.
+    /// </summary>
+    [TestMethod]
+    [DataRow(3, 1, true, true, false, true)]
+    [DataRow(4, 1, true, true, true, false)]
+    [DataRow(3, 4, false, false, false, false)]
+    [DataRow(5, 2, false, true, false, false)]
+    [DataRow(-3, 1, true, true, false, true)]
+    [DataRow(0, 1, true, false, true, false)]
+    [DataRow(-6, 3, true, true, true, false)]
+    [DataRow(1, 1, true, true, false, true)]
+    public void Properties_WhenInspectingExtendedClassification_ShouldReportKnownAnswers(
+        int numerator,
+        int denominator,
+        bool isWhole,
+        bool isImproper,
+        bool isEvenInteger,
+        bool isOddInteger)
+    {
+        Fraction<int> value = new Fraction<int>(numerator, denominator);
+
+        Assert.AreEqual(isWhole, value.IsWhole, nameof(value.IsWhole));
+        Assert.AreEqual(isWhole, value.IsInteger, nameof(value.IsInteger));
+        Assert.AreEqual(isImproper, value.IsImproper, nameof(value.IsImproper));
+        Assert.AreEqual(isEvenInteger, value.IsEvenInteger, nameof(value.IsEvenInteger));
+        Assert.AreEqual(isOddInteger, value.IsOddInteger, nameof(value.IsOddInteger));
+    }
+
+    /// <summary>
+    /// Verifies that a canonical fraction is never reducible and always reports as canonical.
+    /// </summary>
+    [TestMethod]
+    public void Properties_WhenInspectingCanonicalForm_ShouldReportNeverReducible()
+    {
+        Fraction<int> value = new Fraction<int>(2, 4);
+
+        Assert.IsFalse(value.IsReducible);
+        Assert.IsTrue(value.IsCanonical);
+    }
+
+    /// <summary>
     /// Verifies that MinValue and MaxValue report the bounds of a fixed-width backing type.
     /// </summary>
     [TestMethod]
