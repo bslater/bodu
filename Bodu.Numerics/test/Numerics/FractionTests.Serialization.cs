@@ -84,4 +84,40 @@ public partial class FractionTests
 
         Assert.AreEqual(original, restored);
     }
+
+    /// <summary>
+    /// Verifies that deserializing a non-string JSON token throws <see cref="JsonException" />.
+    /// </summary>
+    [TestMethod]
+    public void JsonSerialization_WhenTokenIsNotString_ShouldThrowJsonException()
+    {
+        _ = Assert.ThrowsExactly<JsonException>(() =>
+        {
+            _ = JsonSerializer.Deserialize<Fraction<int>>("123");
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a table of values round-trips through XML serialization.
+    /// </summary>
+    [TestMethod]
+    [TestCategory(Bodu.Test.TestCategories.Regression)]
+    [DataRow(3, 4)]
+    [DataRow(-7, 8)]
+    [DataRow(5, 1)]
+    [DataRow(0, 1)]
+    [DataRow(-11, 3)]
+    public void XmlSerialization_WhenRoundTrippingKnownValues_ShouldPreserveValue(int numerator, int denominator)
+    {
+        Fraction<int> original = new Fraction<int>(numerator, denominator);
+        XmlSerializer serializer = new XmlSerializer(typeof(Fraction<int>));
+
+        using StringWriter writer = new StringWriter();
+        serializer.Serialize(writer, original);
+
+        using StringReader reader = new StringReader(writer.ToString());
+        Fraction<int> restored = (Fraction<int>)serializer.Deserialize(reader)!;
+
+        Assert.AreEqual(original, restored);
+    }
 }

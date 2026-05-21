@@ -107,4 +107,96 @@ public partial class FractionTests
 
         Assert.AreEqual(new Fraction<BigInteger>(3, 2), value);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="Fraction{T}.FromDecimal" /> produces exact values for a table of known decimals.
+    /// </summary>
+    [TestMethod]
+    [TestCategory(Bodu.Test.TestCategories.Regression)]
+    [DataRow("0.5", 1, 2)]
+    [DataRow("0.25", 1, 4)]
+    [DataRow("0.75", 3, 4)]
+    [DataRow("0.1", 1, 10)]
+    [DataRow("0.125", 1, 8)]
+    [DataRow("0.05", 1, 20)]
+    [DataRow("0.2", 1, 5)]
+    [DataRow("1.0", 1, 1)]
+    [DataRow("2.5", 5, 2)]
+    [DataRow("-1.25", -5, 4)]
+    [DataRow("3", 3, 1)]
+    [DataRow("0", 0, 1)]
+    [DataRow("100", 100, 1)]
+    public void FromDecimal_WhenGivenKnownValues_ShouldProduceExactValue(string text, int en, int ed)
+    {
+        decimal input = decimal.Parse(text, System.Globalization.CultureInfo.InvariantCulture);
+
+        Assert.AreEqual(new Fraction<int>(en, ed), Fraction<int>.FromDecimal(input));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Fraction{T}.FromDouble" /> produces exact values for a table of binary
+    /// fractions.
+    /// </summary>
+    [TestMethod]
+    [TestCategory(Bodu.Test.TestCategories.Regression)]
+    [DataRow(0.5, 1, 2)]
+    [DataRow(0.25, 1, 4)]
+    [DataRow(0.75, 3, 4)]
+    [DataRow(0.125, 1, 8)]
+    [DataRow(0.625, 5, 8)]
+    [DataRow(-0.375, -3, 8)]
+    [DataRow(1.0, 1, 1)]
+    [DataRow(2.0, 2, 1)]
+    [DataRow(3.0, 3, 1)]
+    [DataRow(0.0, 0, 1)]
+    [DataRow(-2.5, -5, 2)]
+    public void FromDouble_WhenGivenKnownValues_ShouldProduceExactValue(double input, int en, int ed)
+    {
+        Assert.AreEqual(new Fraction<int>(en, ed), Fraction<int>.FromDouble(input));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Fraction{T}.FromDouble" /> rejects every non-finite value.
+    /// </summary>
+    [TestMethod]
+    [DataRow(double.NaN)]
+    [DataRow(double.PositiveInfinity)]
+    [DataRow(double.NegativeInfinity)]
+    public void FromDouble_WhenGivenNonFiniteValue_ShouldThrowArgumentExceptionForEachCase(double input)
+    {
+        _ = Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            _ = Fraction<int>.FromDouble(input);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that conversion to <see cref="double" /> returns known answers.
+    /// </summary>
+    [TestMethod]
+    [TestCategory(Bodu.Test.TestCategories.Regression)]
+    [DataRow(1, 2, 0.5)]
+    [DataRow(3, 4, 0.75)]
+    [DataRow(-1, 4, -0.25)]
+    [DataRow(5, 1, 5.0)]
+    [DataRow(0, 1, 0.0)]
+    [DataRow(-7, 2, -3.5)]
+    public void ToDouble_WhenConverted_ShouldReturnKnownAnswers(int numerator, int denominator, double expected)
+    {
+        Assert.AreEqual(expected, new Fraction<int>(numerator, denominator).ToDouble());
+    }
+
+    /// <summary>
+    /// Verifies that an exact binary fraction round-trips through <see cref="double" /> conversion.
+    /// </summary>
+    [TestMethod]
+    [DataRow(0.5)]
+    [DataRow(0.25)]
+    [DataRow(-0.375)]
+    [DataRow(123.0)]
+    [DataRow(0.0)]
+    public void FromDouble_WhenRoundTrippedThroughToDouble_ShouldReproduceValue(double input)
+    {
+        Assert.AreEqual(input, Fraction<long>.FromDouble(input).ToDouble());
+    }
 }

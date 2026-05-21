@@ -118,4 +118,147 @@ public partial class FractionTests
     private static TNumber CreateFromInt32<TNumber>(int value)
         where TNumber : INumberBase<TNumber> =>
         TNumber.CreateChecked(value);
+
+    /// <summary>
+    /// Verifies that the generic-math classification predicates report known answers.
+    /// </summary>
+    [TestMethod]
+    [TestCategory(Bodu.Test.TestCategories.Regression)]
+    [DataRow(4, 1, true, true, false, false)]
+    [DataRow(3, 1, true, false, true, false)]
+    [DataRow(3, 4, false, false, false, false)]
+    [DataRow(0, 1, true, true, false, false)]
+    [DataRow(-2, 1, true, true, false, true)]
+    [DataRow(-3, 1, true, false, true, true)]
+    [DataRow(-3, 4, false, false, false, true)]
+    public void GenericMath_WhenClassifyingValue_ShouldReportKnownAnswers(
+        int numerator,
+        int denominator,
+        bool isInteger,
+        bool isEvenInteger,
+        bool isOddInteger,
+        bool isNegative)
+    {
+        Fraction<int> value = new Fraction<int>(numerator, denominator);
+
+        Assert.AreEqual(isInteger, IsIntegerOf(value), nameof(isInteger));
+        Assert.AreEqual(isEvenInteger, IsEvenIntegerOf(value), nameof(isEvenInteger));
+        Assert.AreEqual(isOddInteger, IsOddIntegerOf(value), nameof(isOddInteger));
+        Assert.AreEqual(isNegative, IsNegativeOf(value), nameof(isNegative));
+    }
+
+    /// <summary>
+    /// Verifies that the generic-math minimum, maximum, and magnitude selectors return expected values.
+    /// </summary>
+    [TestMethod]
+    public void GenericMath_WhenSelectingExtremes_ShouldReturnExpectedValues()
+    {
+        Assert.AreEqual(new Fraction<int>(1, 2), MaxOf(new Fraction<int>(1, 3), new Fraction<int>(1, 2)));
+        Assert.AreEqual(new Fraction<int>(1, 3), MinOf(new Fraction<int>(1, 3), new Fraction<int>(1, 2)));
+        Assert.AreEqual(new Fraction<int>(-1, 3), MaxOf(new Fraction<int>(-1, 2), new Fraction<int>(-1, 3)));
+        Assert.AreEqual(new Fraction<int>(-3, 4), MaxMagnitudeOf(new Fraction<int>(-3, 4), new Fraction<int>(1, 2)));
+        Assert.AreEqual(new Fraction<int>(1, 2), MinMagnitudeOf(new Fraction<int>(-3, 4), new Fraction<int>(1, 2)));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Fraction{T}" /> reports a radix of two through the generic-math contract.
+    /// </summary>
+    [TestMethod]
+    public void GenericMath_WhenQueryingRadix_ShouldReturnTwo()
+    {
+        Assert.AreEqual(2, RadixOf<Fraction<int>>());
+    }
+
+    /// <summary>
+    /// Determines whether a number is an integer using the <see cref="INumberBase{TSelf}" /> contract.
+    /// </summary>
+    /// <typeparam name="TNumber">The number type.</typeparam>
+    /// <param name="value">The value to classify.</param>
+    /// <returns><see langword="true" /> if the value is an integer; otherwise, <see langword="false" />.</returns>
+    private static bool IsIntegerOf<TNumber>(TNumber value)
+        where TNumber : INumberBase<TNumber> =>
+        TNumber.IsInteger(value);
+
+    /// <summary>
+    /// Determines whether a number is an even integer using the <see cref="INumberBase{TSelf}" /> contract.
+    /// </summary>
+    /// <typeparam name="TNumber">The number type.</typeparam>
+    /// <param name="value">The value to classify.</param>
+    /// <returns><see langword="true" /> if the value is an even integer; otherwise, <see langword="false" />.</returns>
+    private static bool IsEvenIntegerOf<TNumber>(TNumber value)
+        where TNumber : INumberBase<TNumber> =>
+        TNumber.IsEvenInteger(value);
+
+    /// <summary>
+    /// Determines whether a number is an odd integer using the <see cref="INumberBase{TSelf}" /> contract.
+    /// </summary>
+    /// <typeparam name="TNumber">The number type.</typeparam>
+    /// <param name="value">The value to classify.</param>
+    /// <returns><see langword="true" /> if the value is an odd integer; otherwise, <see langword="false" />.</returns>
+    private static bool IsOddIntegerOf<TNumber>(TNumber value)
+        where TNumber : INumberBase<TNumber> =>
+        TNumber.IsOddInteger(value);
+
+    /// <summary>
+    /// Determines whether a number is negative using the <see cref="INumberBase{TSelf}" /> contract.
+    /// </summary>
+    /// <typeparam name="TNumber">The number type.</typeparam>
+    /// <param name="value">The value to classify.</param>
+    /// <returns><see langword="true" /> if the value is negative; otherwise, <see langword="false" />.</returns>
+    private static bool IsNegativeOf<TNumber>(TNumber value)
+        where TNumber : INumberBase<TNumber> =>
+        TNumber.IsNegative(value);
+
+    /// <summary>
+    /// Returns the larger of two numbers using the <see cref="INumber{TSelf}" /> contract.
+    /// </summary>
+    /// <typeparam name="TNumber">The number type.</typeparam>
+    /// <param name="x">The first value.</param>
+    /// <param name="y">The second value.</param>
+    /// <returns>The larger of the two values.</returns>
+    private static TNumber MaxOf<TNumber>(TNumber x, TNumber y)
+        where TNumber : INumber<TNumber> =>
+        TNumber.Max(x, y);
+
+    /// <summary>
+    /// Returns the smaller of two numbers using the <see cref="INumber{TSelf}" /> contract.
+    /// </summary>
+    /// <typeparam name="TNumber">The number type.</typeparam>
+    /// <param name="x">The first value.</param>
+    /// <param name="y">The second value.</param>
+    /// <returns>The smaller of the two values.</returns>
+    private static TNumber MinOf<TNumber>(TNumber x, TNumber y)
+        where TNumber : INumber<TNumber> =>
+        TNumber.Min(x, y);
+
+    /// <summary>
+    /// Returns the number with the greater magnitude using the <see cref="INumberBase{TSelf}" /> contract.
+    /// </summary>
+    /// <typeparam name="TNumber">The number type.</typeparam>
+    /// <param name="x">The first value.</param>
+    /// <param name="y">The second value.</param>
+    /// <returns>The value with the greater magnitude.</returns>
+    private static TNumber MaxMagnitudeOf<TNumber>(TNumber x, TNumber y)
+        where TNumber : INumberBase<TNumber> =>
+        TNumber.MaxMagnitude(x, y);
+
+    /// <summary>
+    /// Returns the number with the smaller magnitude using the <see cref="INumberBase{TSelf}" /> contract.
+    /// </summary>
+    /// <typeparam name="TNumber">The number type.</typeparam>
+    /// <param name="x">The first value.</param>
+    /// <param name="y">The second value.</param>
+    /// <returns>The value with the smaller magnitude.</returns>
+    private static TNumber MinMagnitudeOf<TNumber>(TNumber x, TNumber y)
+        where TNumber : INumberBase<TNumber> =>
+        TNumber.MinMagnitude(x, y);
+
+    /// <summary>
+    /// Returns the radix of a number type using the <see cref="INumberBase{TSelf}" /> contract.
+    /// </summary>
+    /// <typeparam name="TNumber">The number type.</typeparam>
+    /// <returns>The radix reported by <typeparamref name="TNumber" />.</returns>
+    private static int RadixOf<TNumber>()
+        where TNumber : INumberBase<TNumber> =>
+        TNumber.Radix;
 }

@@ -132,4 +132,46 @@ public partial class FractionTests
 
         Assert.AreEqual(expectedSign, value.Sign);
     }
+
+    /// <summary>
+    /// Verifies that construction reduces a wide table of components to their canonical form.
+    /// </summary>
+    [TestMethod]
+    [TestCategory(Bodu.Test.TestCategories.Regression)]
+    [DataRow(2, 4, 1, 2)]
+    [DataRow(6, 8, 3, 4)]
+    [DataRow(-2, 4, -1, 2)]
+    [DataRow(2, -4, -1, 2)]
+    [DataRow(-2, -4, 1, 2)]
+    [DataRow(0, 5, 0, 1)]
+    [DataRow(0, -5, 0, 1)]
+    [DataRow(10, 5, 2, 1)]
+    [DataRow(100, 10, 10, 1)]
+    [DataRow(7, 7, 1, 1)]
+    [DataRow(-7, 7, -1, 1)]
+    [DataRow(15, 25, 3, 5)]
+    [DataRow(-15, 25, -3, 5)]
+    [DataRow(9, -6, -3, 2)]
+    [DataRow(12, 18, 2, 3)]
+    [DataRow(-12, -18, 2, 3)]
+    [DataRow(17, 19, 17, 19)]
+    [DataRow(1000000, 1, 1000000, 1)]
+    public void Constructor_WhenGivenComponents_ShouldNormalizeToKnownAnswer(int numerator, int denominator, int expectedNumerator, int expectedDenominator)
+    {
+        Fraction<int> value = new Fraction<int>(numerator, denominator);
+
+        Assert.AreEqual(expectedNumerator, value.Numerator);
+        Assert.AreEqual(expectedDenominator, value.Denominator);
+    }
+
+    /// <summary>
+    /// Verifies that the most-negative and most-positive fixed-width values construct without overflow.
+    /// </summary>
+    [TestMethod]
+    public void Constructor_WhenGivenFixedWidthExtremes_ShouldConstructWithoutOverflow()
+    {
+        Assert.AreEqual(int.MinValue, new Fraction<int>(int.MinValue).Numerator);
+        Assert.AreEqual(int.MaxValue, new Fraction<int>(int.MaxValue).Numerator);
+        Assert.AreEqual(1, new Fraction<int>(int.MaxValue).Denominator);
+    }
 }

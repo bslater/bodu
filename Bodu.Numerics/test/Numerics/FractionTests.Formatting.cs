@@ -111,4 +111,83 @@ public partial class FractionTests
 
         Assert.AreEqual(value, Fraction<int>.Parse(text, CultureInfo.InvariantCulture));
     }
+
+    /// <summary>
+    /// Verifies that the default format renders known answers for a wide table of values.
+    /// </summary>
+    [TestMethod]
+    [TestCategory(Bodu.Test.TestCategories.Regression)]
+    [DataRow(0, 1, "0")]
+    [DataRow(1, 1, "1")]
+    [DataRow(-1, 1, "-1")]
+    [DataRow(3, 4, "3/4")]
+    [DataRow(-3, 4, "-3/4")]
+    [DataRow(100, 7, "100/7")]
+    [DataRow(-100, 7, "-100/7")]
+    [DataRow(6, 3, "2")]
+    public void ToString_WhenUsingDefaultFormat_ShouldRenderKnownAnswers(int numerator, int denominator, string expected)
+    {
+        Assert.AreEqual(expected, new Fraction<int>(numerator, denominator).ToString());
+    }
+
+    /// <summary>
+    /// Verifies that the mixed-number format renders known answers for a wide table of values.
+    /// </summary>
+    [TestMethod]
+    [TestCategory(Bodu.Test.TestCategories.Regression)]
+    [DataRow(7, 4, "1 3/4")]
+    [DataRow(-7, 4, "-1 3/4")]
+    [DataRow(11, 4, "2 3/4")]
+    [DataRow(-11, 4, "-2 3/4")]
+    [DataRow(3, 4, "3/4")]
+    [DataRow(5, 3, "1 2/3")]
+    [DataRow(-5, 3, "-1 2/3")]
+    [DataRow(4, 1, "4")]
+    [DataRow(0, 1, "0")]
+    public void ToString_WhenUsingMixedFormat_ShouldRenderKnownAnswers(int numerator, int denominator, string expected)
+    {
+        Assert.AreEqual(expected, new Fraction<int>(numerator, denominator).ToString("M"));
+    }
+
+    /// <summary>
+    /// Verifies that the Unicode format renders known answers for a wide table of values.
+    /// </summary>
+    [TestMethod]
+    [TestCategory(Bodu.Test.TestCategories.Regression)]
+    [DataRow(1, 2, "½")]
+    [DataRow(1, 3, "⅓")]
+    [DataRow(2, 3, "⅔")]
+    [DataRow(1, 4, "¼")]
+    [DataRow(3, 4, "¾")]
+    [DataRow(1, 8, "⅛")]
+    [DataRow(5, 8, "⅝")]
+    [DataRow(7, 4, "1¾")]
+    [DataRow(-1, 2, "-½")]
+    [DataRow(5, 2, "2½")]
+    [DataRow(3, 1, "3")]
+    [DataRow(5, 9, "5/9")]
+    public void ToString_WhenUsingUnicodeFormat_ShouldRenderKnownAnswers(int numerator, int denominator, string expected)
+    {
+        Assert.AreEqual(expected, new Fraction<int>(numerator, denominator).ToString("U"));
+    }
+
+    /// <summary>
+    /// Verifies that the percent format renders known answers for a wide table of values.
+    /// </summary>
+    [TestMethod]
+    [TestCategory(Bodu.Test.TestCategories.Regression)]
+    [DataRow(1, 1, "100%")]
+    [DataRow(1, 2, "50%")]
+    [DataRow(1, 4, "25%")]
+    [DataRow(3, 4, "75%")]
+    [DataRow(2, 1, "200%")]
+    [DataRow(-3, 4, "-75%")]
+    [DataRow(0, 1, "0%")]
+    [DataRow(1, 8, "25/2%")]
+    [DataRow(1, 3, "100/3%")]
+    [DataRow(1, 6, "50/3%")]
+    public void ToString_WhenUsingPercentFormat_ShouldRenderKnownAnswers(int numerator, int denominator, string expected)
+    {
+        Assert.AreEqual(expected, new Fraction<int>(numerator, denominator).ToString("P"));
+    }
 }

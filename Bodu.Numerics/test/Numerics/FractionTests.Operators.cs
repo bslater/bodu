@@ -85,4 +85,50 @@ public partial class FractionTests
         Assert.IsTrue(small != large);
         Assert.IsTrue(small == new Fraction<int>(2, 6));
     }
+
+    /// <summary>
+    /// Verifies that comparison yields the expected relative order for a table of known operand pairs.
+    /// </summary>
+    [TestMethod]
+    [TestCategory(Bodu.Test.TestCategories.Regression)]
+    [DataRow(1, 3, 1, 2, -1)]
+    [DataRow(1, 2, 1, 3, 1)]
+    [DataRow(2, 4, 1, 2, 0)]
+    [DataRow(-1, 2, 1, 2, -1)]
+    [DataRow(-1, 2, -1, 3, -1)]
+    [DataRow(0, 1, 0, 1, 0)]
+    [DataRow(3, 4, 3, 4, 0)]
+    [DataRow(-3, 4, -3, 4, 0)]
+    [DataRow(100, 1, 99, 1, 1)]
+    [DataRow(1, 1000000, 0, 1, 1)]
+    [DataRow(-1, 1000000, 0, 1, -1)]
+    public void Comparison_WhenGivenKnownOperands_ShouldYieldExpectedOrder(int an, int ad, int bn, int bd, int expectedSign)
+    {
+        Fraction<int> a = new Fraction<int>(an, ad);
+        Fraction<int> b = new Fraction<int>(bn, bd);
+
+        Assert.AreEqual(expectedSign, Math.Sign(a.CompareTo(b)));
+    }
+
+    /// <summary>
+    /// Verifies that the relational operators agree with the result of <c>CompareTo</c>.
+    /// </summary>
+    [TestMethod]
+    [DataRow(1, 3, 1, 2)]
+    [DataRow(1, 2, 1, 2)]
+    [DataRow(3, 2, 1, 2)]
+    [DataRow(-1, 2, 1, 4)]
+    public void RelationalOperators_WhenCompared_ShouldAgreeWithCompareTo(int an, int ad, int bn, int bd)
+    {
+        Fraction<int> a = new Fraction<int>(an, ad);
+        Fraction<int> b = new Fraction<int>(bn, bd);
+        int order = a.CompareTo(b);
+
+        Assert.AreEqual(order < 0, a < b);
+        Assert.AreEqual(order <= 0, a <= b);
+        Assert.AreEqual(order > 0, a > b);
+        Assert.AreEqual(order >= 0, a >= b);
+        Assert.AreEqual(order == 0, a == b);
+        Assert.AreEqual(order != 0, a != b);
+    }
 }

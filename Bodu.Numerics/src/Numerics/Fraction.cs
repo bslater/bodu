@@ -138,7 +138,7 @@ public readonly partial struct Fraction<T>
     /// Thrown if <typeparamref name="T" /> is an unsigned type and cannot represent <c>-1</c>.
     /// </exception>
     public static Fraction<T> MinusOne =>
-        new Fraction<T>(-T.One, T.One, canonical: true);
+        FromBigInteger(BigInteger.MinusOne, BigInteger.One);
 
     /// <summary>
     /// Gets the numerator of the rational value in canonical form.

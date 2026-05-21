@@ -1,0 +1,63 @@
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="FractionTests.Properties.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+namespace Bodu.Numerics;
+
+public partial class FractionTests
+{
+    /// <summary>
+    /// Verifies that the classification properties report known answers for a range of canonical values.
+    /// </summary>
+    [TestMethod]
+    [TestCategory(Bodu.Test.TestCategories.Regression)]
+    [DataRow(0, 1, true, true, true, false, false, false)]
+    [DataRow(1, 1, false, true, false, true, false, true)]
+    [DataRow(-1, 1, false, true, false, true, true, false)]
+    [DataRow(1, 2, false, false, true, true, false, true)]
+    [DataRow(-1, 2, false, false, true, true, true, false)]
+    [DataRow(3, 4, false, false, true, false, false, true)]
+    [DataRow(-3, 4, false, false, true, false, true, false)]
+    [DataRow(7, 4, false, false, false, false, false, true)]
+    [DataRow(-7, 4, false, false, false, false, true, false)]
+    [DataRow(5, 1, false, true, false, false, false, true)]
+    [DataRow(-5, 1, false, true, false, false, true, false)]
+    public void Properties_WhenInspected_ShouldReportKnownAnswers(
+        int numerator,
+        int denominator,
+        bool isZero,
+        bool isInteger,
+        bool isProper,
+        bool isUnit,
+        bool isNegative,
+        bool isPositive)
+    {
+        Fraction<int> value = new Fraction<int>(numerator, denominator);
+
+        Assert.AreEqual(isZero, value.IsZero, nameof(value.IsZero));
+        Assert.AreEqual(isInteger, value.IsInteger, nameof(value.IsInteger));
+        Assert.AreEqual(isProper, value.IsProper, nameof(value.IsProper));
+        Assert.AreEqual(isUnit, value.IsUnit, nameof(value.IsUnit));
+        Assert.AreEqual(isNegative, value.IsNegative, nameof(value.IsNegative));
+        Assert.AreEqual(isPositive, value.IsPositive, nameof(value.IsPositive));
+    }
+
+    /// <summary>
+    /// Verifies that exactly one of <c>IsZero</c>, <c>IsNegative</c>, and <c>IsPositive</c> holds for any value.
+    /// </summary>
+    [TestMethod]
+    [DataRow(0, 1)]
+    [DataRow(3, 4)]
+    [DataRow(-3, 4)]
+    [DataRow(9, 2)]
+    public void Properties_WhenInspectingSign_ShouldBeMutuallyExclusive(int numerator, int denominator)
+    {
+        Fraction<int> value = new Fraction<int>(numerator, denominator);
+
+        int trueCount = (value.IsZero ? 1 : 0) + (value.IsNegative ? 1 : 0) + (value.IsPositive ? 1 : 0);
+
+        Assert.AreEqual(1, trueCount);
+    }
+}
