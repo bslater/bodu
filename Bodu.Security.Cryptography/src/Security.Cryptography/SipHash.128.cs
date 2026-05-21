@@ -56,7 +56,9 @@ namespace Bodu.Security.Cryptography;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// using Bodu.Security.Cryptography; using var sip = new SipHash128 { Key = sessionKey };
+/// using Bodu.Security.Cryptography;
+///
+/// using var sip = new SipHash128 { Key = sessionKey };
 /// byte[] tag = sip.ComputeHash(message);
 ///]]>
 /// </code>

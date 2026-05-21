@@ -65,11 +65,16 @@ namespace Bodu.Security.Cryptography;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// using System.Security.Cryptography; using Bodu.Security.Cryptography; using
-/// Bodu.Security.Cryptography.Extensions; using var serpent = Serpent1024.Create(); serpent.Key =
-/// RandomNumberGenerator.GetBytes(128); // 1024-bit key serpent.IV = RandomNumberGenerator.GetBytes(128); // matches
-/// the 1024-bit block serpent.Tweak = RandomNumberGenerator.GetBytes(16); // 128-bit tweak byte[] ciphertext =
-/// serpent.Encrypt(plaintext); byte[] roundTrip = serpent.Decrypt(ciphertext);
+/// using System.Security.Cryptography;
+/// using Bodu.Security.Cryptography;
+/// using Bodu.Security.Cryptography.Extensions;
+///
+/// using var serpent = Serpent1024.Create();
+/// serpent.Key = RandomNumberGenerator.GetBytes(128); // 1024-bit key
+/// serpent.IV = RandomNumberGenerator.GetBytes(128); // matches the 1024-bit block
+/// serpent.Tweak = RandomNumberGenerator.GetBytes(16); // 128-bit tweak
+/// byte[] ciphertext = serpent.Encrypt(plaintext);
+/// byte[] roundTrip = serpent.Decrypt(ciphertext);
 ///]]>
 /// </code>
 /// </example>

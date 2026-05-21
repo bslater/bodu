@@ -41,10 +41,11 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// The S2V algorithm (RFC 5297 Section 2.4) accumulates all associated data blocks and the plaintext into a single
-/// 128-bit tag using CMAC: <code>
+/// 128-bit tag using CMAC:
+/// <code>
 ///<![CDATA[
 /// D ← CMAC(K₁, 0^128)
-/// for each AD block Sᵢ (i &lt; n): D ← dbl(D) ⊕ CMAC(K₁, Sᵢ)
+/// for each AD block Sᵢ (i < n): D ← dbl(D) ⊕ CMAC(K₁, Sᵢ)
 /// if |Sₙ| ≥ 128: T ← CMAC(K₁, xorend(Sₙ, D))
 /// else:            T ← CMAC(K₁, dbl(D) ⊕ pad(Sₙ))
 /// SIV ← T

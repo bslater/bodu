@@ -59,12 +59,16 @@ namespace Bodu.Security.Cryptography;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// using System.Security.Cryptography; using Bodu.Security.Cryptography; using
-/// Bodu.Security.Cryptography.Extensions; using IBlockCipher cipher = new AesBlockCipher(key); byte[] iv =
-/// BuildCcmIv(nonce); // 12-byte nonce in the first 12 bytes of the IV using IAeadBlockCipherModeTransform ccm = new
-/// CcmModeTransform(cipher, iv); byte[] sealed_ = ccm.Encrypt(plaintext, associatedData: header); using
-/// IAeadBlockCipherModeTransform dec = new CcmModeTransform(cipher, iv); byte[] recovered = dec.Decrypt(sealed_,
-/// associatedData: header);
+/// using System.Security.Cryptography;
+/// using Bodu.Security.Cryptography;
+/// using Bodu.Security.Cryptography.Extensions;
+///
+/// using IBlockCipher cipher = new AesBlockCipher(key);
+/// byte[] iv = BuildCcmIv(nonce); // 12-byte nonce in the first 12 bytes of the IV
+/// using IAeadBlockCipherModeTransform ccm = new CcmModeTransform(cipher, iv);
+/// byte[] sealed_ = ccm.Encrypt(plaintext, associatedData: header);
+/// using IAeadBlockCipherModeTransform dec = new CcmModeTransform(cipher, iv);
+/// byte[] recovered = dec.Decrypt(sealed_, associatedData: header);
 ///]]>
 /// </code>
 /// </example>

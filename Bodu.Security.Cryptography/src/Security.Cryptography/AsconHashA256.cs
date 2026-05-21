@@ -57,7 +57,8 @@ namespace Bodu.Security.Cryptography;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// using var hash = new AsconHashA256(); byte[] digest = hash.ComputeHash(message);
+/// using var hash = new AsconHashA256();
+/// byte[] digest = hash.ComputeHash(message);
 ///]]>
 /// </code>
 /// </example>

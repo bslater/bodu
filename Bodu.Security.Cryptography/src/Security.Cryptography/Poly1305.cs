@@ -79,10 +79,13 @@ namespace Bodu.Security.Cryptography;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// using System.Security.Cryptography; using Bodu.Security.Cryptography; // The 32-byte key
-/// MUST be unique per message — typically derived from a stream cipher's keystream. byte[] oneTimeKey =
-/// DerivePoly1305KeyFromChaCha20(sessionKey, nonce); using var poly = new Poly1305 { Key = oneTimeKey }; byte[] tag =
-/// poly.ComputeHash(message);
+/// using System.Security.Cryptography;
+/// using Bodu.Security.Cryptography;
+///
+/// // The 32-byte key MUST be unique per message — typically derived from a stream cipher's keystream.
+/// byte[] oneTimeKey = DerivePoly1305KeyFromChaCha20(sessionKey, nonce);
+/// using var poly = new Poly1305 { Key = oneTimeKey };
+/// byte[] tag = poly.ComputeHash(message);
 ///]]>
 /// </code>
 /// </example>

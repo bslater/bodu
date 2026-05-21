@@ -100,11 +100,15 @@ namespace Bodu.Security.Cryptography;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// using Bodu.Security.Cryptography; using Bodu.Security.Cryptography.Extensions; // Most
-/// callers should reach for the AeadBlockCipherModeTransformExtensions helpers, // which size the output buffer and
-/// return a single freshly allocated array. using IAeadBlockCipherModeTransform enc = new AsconAead128(key, nonce);
-/// byte[] sealed_ = enc.Encrypt(plaintext, associatedData: header); using IAeadBlockCipherModeTransform dec = new
-/// AsconAead128(key, nonce); byte[] recovered = dec.Decrypt(sealed_, associatedData: header);
+/// using Bodu.Security.Cryptography;
+/// using Bodu.Security.Cryptography.Extensions;
+///
+/// // Most callers should reach for the AeadBlockCipherModeTransformExtensions helpers,
+/// // which size the output buffer and return a single freshly allocated array.
+/// using IAeadBlockCipherModeTransform enc = new AsconAead128(key, nonce);
+/// byte[] sealed_ = enc.Encrypt(plaintext, associatedData: header);
+/// using IAeadBlockCipherModeTransform dec = new AsconAead128(key, nonce);
+/// byte[] recovered = dec.Decrypt(sealed_, associatedData: header);
 ///]]>
 /// </code>
 /// </example>

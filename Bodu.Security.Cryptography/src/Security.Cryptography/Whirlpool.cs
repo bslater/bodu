@@ -66,8 +66,8 @@ namespace Bodu.Security.Cryptography;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// using var whirlpool = new Whirlpool { Version = WhirlpoolVersion.WhirlpoolInfo3 }; byte[]
-/// digest = whirlpool.ComputeHash(message);
+/// using var whirlpool = new Whirlpool { Version = WhirlpoolVersion.WhirlpoolInfo3 };
+/// byte[] digest = whirlpool.ComputeHash(message);
 ///]]>
 /// </code>
 /// </example>

@@ -84,9 +84,13 @@ namespace Bodu.Security.Cryptography;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// // SHAKE128 producing 256-bit output. using var shake = new Shake(256, 128); byte[] digest
-/// = shake.ComputeHash(Encoding.UTF8.GetBytes("hello")); // SHAKE256 producing 512-bit output. using var shake256 = new
-/// Shake(512, 256); byte[] longer = shake256.ComputeHash(message);
+/// // SHAKE128 producing 256-bit output.
+/// using var shake = new Shake(256, 128);
+/// byte[] digest = shake.ComputeHash(Encoding.UTF8.GetBytes("hello"));
+///
+/// // SHAKE256 producing 512-bit output.
+/// using var shake256 = new Shake(512, 256);
+/// byte[] longer = shake256.ComputeHash(message);
 ///]]>
 /// </code>
 /// </example>

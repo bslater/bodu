@@ -31,13 +31,15 @@ namespace Bodu.Security.Cryptography;
 /// Using the same key for both reduces XTS to a single-key construction and weakens security.
 /// </para>
 /// <para>
-/// For each 128-bit block j in a sector, the XEX construction is: <code>
+/// For each 128-bit block j in a sector, the XEX construction is:
+/// <code>
 ///<![CDATA[
 /// T_j  = α^j ⊗ tweakCipher.Encrypt(tweak)     // Galois field multiplication
 /// C_j  = dataCipher.Encrypt(P_j ⊕ T_j) ⊕ T_j  // encrypt
 /// P_j  = dataCipher.Decrypt(C_j ⊕ T_j) ⊕ T_j  // decrypt
 ///]]>
-/// </code> The horizontal tweak bus in the diagram corresponds to this successive <c>·α</c> multiplication: each <b>·α
+/// </code>
+/// The horizontal tweak bus in the diagram corresponds to this successive <c>·α</c> multiplication: each <b>·α
 /// </b> box doubles the tweak in GF(2¹²⁸) so the Tⱼ arriving at cell <em>j</em> is αʲ times the base tweak. The two XOR
 /// nodes inside each cell — before and after the data cipher — realize the <c>⊕ T_j</c> pairs in the equation above.
 /// </para>
@@ -58,12 +60,17 @@ namespace Bodu.Security.Cryptography;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// using System.Security.Cryptography; using Bodu.Security.Cryptography; // XTS uses two
-/// independent keys — Key1 for data, Key2 for the tweak. Never share keys. using IBlockCipher data = new
-/// AesBlockCipher(key1); using IBlockCipher tweak = new AesBlockCipher(key2); byte[] sectorNumber =
-/// BitConverter.GetBytes((long)42); // little-endian sector number, padded to block size Array.Resize(ref sectorNumber,
-/// data.BlockSize / 8); IBlockCipherModeTransform xts = new XtsModeTransform(data, tweak, sectorNumber); byte[]
-/// ciphertext = new byte[plaintext.Length]; int written = xts.Transform(plaintext, ciphertext, encrypt: true);
+/// using System.Security.Cryptography;
+/// using Bodu.Security.Cryptography;
+///
+/// // XTS uses two independent keys — Key1 for data, Key2 for the tweak. Never share keys.
+/// using IBlockCipher data = new AesBlockCipher(key1);
+/// using IBlockCipher tweak = new AesBlockCipher(key2);
+/// byte[] sectorNumber = BitConverter.GetBytes((long)42); // little-endian sector number, padded to block size
+/// Array.Resize(ref sectorNumber, data.BlockSize / 8);
+/// IBlockCipherModeTransform xts = new XtsModeTransform(data, tweak, sectorNumber);
+/// byte[] ciphertext = new byte[plaintext.Length];
+/// int written = xts.Transform(plaintext, ciphertext, encrypt: true);
 ///]]>
 /// </code>
 /// </example>

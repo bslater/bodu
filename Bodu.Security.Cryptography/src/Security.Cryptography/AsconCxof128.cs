@@ -89,8 +89,10 @@ namespace Bodu.Security.Cryptography;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// using var cxof = new AsconCxof128(); cxof.Customize(Encoding.UTF8.GetBytes("my-app-v1"));
-/// cxof.Absorb(message); byte[] output = cxof.GetHash(32);
+/// using var cxof = new AsconCxof128();
+/// cxof.Customize(Encoding.UTF8.GetBytes("my-app-v1"));
+/// cxof.Absorb(message);
+/// byte[] output = cxof.GetHash(32);
 ///]]>
 /// </code>
 /// </example>

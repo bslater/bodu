@@ -39,11 +39,15 @@ namespace Bodu.Security.Cryptography;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// using System.Security.Cryptography; using Bodu.Security.Cryptography; // Most callers
-/// should reach for SymmetricAlgorithm.Mode = ECB instead of constructing this directly. // Direct use is appropriate
-/// only inside larger primitives (e.g. wide-block constructions, KDFs). using IBlockCipher cipher = new
-/// AesBlockCipher(key); IBlockCipherModeTransform ecb = new EcbModeTransform(cipher); byte[] ciphertext = new
-/// byte[plaintext.Length]; int written = ecb.Transform(plaintext, ciphertext, encrypt: true);
+/// using System.Security.Cryptography;
+/// using Bodu.Security.Cryptography;
+///
+/// // Most callers should reach for SymmetricAlgorithm.Mode = ECB instead of constructing this directly.
+/// // Direct use is appropriate only inside larger primitives (e.g. wide-block constructions, KDFs).
+/// using IBlockCipher cipher = new AesBlockCipher(key);
+/// IBlockCipherModeTransform ecb = new EcbModeTransform(cipher);
+/// byte[] ciphertext = new byte[plaintext.Length];
+/// int written = ecb.Transform(plaintext, ciphertext, encrypt: true);
 ///]]>
 /// </code>
 /// </example>

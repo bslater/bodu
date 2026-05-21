@@ -24,7 +24,8 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// GCM-SIV derives per-message authentication and encryption keys from the master key and a 12-byte nonce using four
-/// cipher calls with little-endian counters (RFC 8452 Section 4): <code>
+/// cipher calls with little-endian counters (RFC 8452 Section 4):
+/// <code>
 ///<![CDATA[
 /// K_auth = E_K(LE32(0) || nonce)[0..7] || E_K(LE32(1) || nonce)[0..7]   (16 bytes)
 /// K_enc  = E_K(LE32(2) || nonce)[0..7] || E_K(LE32(3) || nonce)[0..7]   (16 bytes)
@@ -58,11 +59,17 @@ namespace Bodu.Security.Cryptography;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// using System.Security.Cryptography; using Bodu.Security.Cryptography; using
-/// Bodu.Security.Cryptography.Extensions; using IBlockCipher master = new AesBlockCipher(masterKey); byte[] iv =
-/// BuildSivIv(nonce); // 12-byte nonce padded to the cipher block size using IAeadBlockCipherModeTransform sivlike =
-/// new GcmSivModeTransform( masterCipher: master, cipherFactory: derivedKey =&gt; new AesBlockCipher(derivedKey), iv:
-/// iv); byte[] sealed_ = sivlike.Encrypt(plaintext, associatedData: header);
+/// using System.Security.Cryptography;
+/// using Bodu.Security.Cryptography;
+/// using Bodu.Security.Cryptography.Extensions;
+///
+/// using IBlockCipher master = new AesBlockCipher(masterKey);
+/// byte[] iv = BuildSivIv(nonce); // 12-byte nonce padded to the cipher block size
+/// using IAeadBlockCipherModeTransform sivlike = new GcmSivModeTransform(
+///     masterCipher: master,
+///     cipherFactory: derivedKey => new AesBlockCipher(derivedKey),
+///     iv: iv);
+/// byte[] sealed_ = sivlike.Encrypt(plaintext, associatedData: header);
 ///]]>
 /// </code>
 /// </example>

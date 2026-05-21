@@ -56,8 +56,8 @@ namespace Bodu.Security.Cryptography;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// using var skein = new Skein1024(); // Skein-1024-1024 byte[] digest =
-/// skein.ComputeHash(message);
+/// using var skein = new Skein1024(); // Skein-1024-1024
+/// byte[] digest = skein.ComputeHash(message);
 ///]]>
 /// </code>
 /// </example>

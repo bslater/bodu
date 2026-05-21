@@ -69,15 +69,24 @@ namespace Bodu.Security.Cryptography.Extensions;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// using System.Security.Cryptography; using System.Text; using
-/// Bodu.Security.Cryptography.Extensions; using var sha = SHA256.Create(); // 1. Verify a UTF-8 string against an
-/// expected digest, throwing if anything is wrong. byte[] expected =
-/// Convert.FromHexString("dffd6021bb2bd5b0af676290809ec3a53191dd81c7f70a4b28688a362182986f"); bool match =
-/// sha.VerifyHash("Hello, World!", Encoding.UTF8, expected); // 2. Stream-verify a downloaded file against a hex
-/// digest, without throwing on malformed hex. using FileStream fs = File.OpenRead("payload.bin"); bool ok =
-/// sha.TryVerifyHash(fs, expectedHex: "ba7816bf..."); // 3. Cancellable async verification of a network stream against
-/// a known digest. await using Stream net = response.Content.ReadAsStream(); bool verified = await
-/// sha.VerifyHashAsync(net, expected, cancellationToken);
+/// using System.Security.Cryptography;
+/// using System.Text;
+/// using Bodu.Security.Cryptography.Extensions;
+///
+/// using var sha = SHA256.Create();
+///
+/// // 1. Verify a UTF-8 string against an expected digest, throwing if anything is wrong.
+/// byte[] expected =
+///     Convert.FromHexString("dffd6021bb2bd5b0af676290809ec3a53191dd81c7f70a4b28688a362182986f");
+/// bool match = sha.VerifyHash("Hello, World!", Encoding.UTF8, expected);
+///
+/// // 2. Stream-verify a downloaded file against a hex digest, without throwing on malformed hex.
+/// using FileStream fs = File.OpenRead("payload.bin");
+/// bool ok = sha.TryVerifyHash(fs, expectedHex: "ba7816bf...");
+///
+/// // 3. Cancellable async verification of a network stream against a known digest.
+/// await using Stream net = response.Content.ReadAsStream();
+/// bool verified = await sha.VerifyHashAsync(net, expected, cancellationToken);
 ///]]>
 /// </code>
 /// </example>

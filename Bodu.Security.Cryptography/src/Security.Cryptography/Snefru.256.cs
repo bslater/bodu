@@ -48,8 +48,10 @@ namespace Bodu.Security.Cryptography;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// using Bodu.Security.Cryptography; using var snefru = new Snefru256(); byte[] digest =
-/// snefru.ComputeHash(legacyMessage);
+/// using Bodu.Security.Cryptography;
+///
+/// using var snefru = new Snefru256();
+/// byte[] digest = snefru.ComputeHash(legacyMessage);
 ///]]>
 /// </code>
 /// </example>
