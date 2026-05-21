@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Numerics;
+
 namespace Bodu.Numerics;
 
 public partial class FractionTests
@@ -59,5 +61,39 @@ public partial class FractionTests
         int trueCount = (value.IsZero ? 1 : 0) + (value.IsNegative ? 1 : 0) + (value.IsPositive ? 1 : 0);
 
         Assert.AreEqual(1, trueCount);
+    }
+
+    /// <summary>
+    /// Verifies that MinValue and MaxValue report the bounds of a fixed-width backing type.
+    /// </summary>
+    [TestMethod]
+    public void MinMaxValue_WhenBackingTypeIsBounded_ShouldReportBackingTypeBounds()
+    {
+        Assert.AreEqual(new Fraction<int>(int.MinValue), Fraction<int>.MinValue);
+        Assert.AreEqual(new Fraction<int>(int.MaxValue), Fraction<int>.MaxValue);
+    }
+
+    /// <summary>
+    /// Verifies that MinValue throws NotSupportedException for an unbounded backing type.
+    /// </summary>
+    [TestMethod]
+    public void MinValue_WhenBackingTypeIsUnbounded_ShouldThrowNotSupportedException()
+    {
+        _ = Assert.ThrowsExactly<NotSupportedException>(() =>
+        {
+            _ = Fraction<BigInteger>.MinValue;
+        });
+    }
+
+    /// <summary>
+    /// Verifies that MaxValue throws NotSupportedException for an unbounded backing type.
+    /// </summary>
+    [TestMethod]
+    public void MaxValue_WhenBackingTypeIsUnbounded_ShouldThrowNotSupportedException()
+    {
+        _ = Assert.ThrowsExactly<NotSupportedException>(() =>
+        {
+            _ = Fraction<BigInteger>.MaxValue;
+        });
     }
 }

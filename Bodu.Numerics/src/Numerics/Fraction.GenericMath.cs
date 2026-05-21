@@ -134,42 +134,80 @@ public readonly partial struct Fraction<T> :
         TryParse(s, provider, out result);
 
     /// <inheritdoc />
-    static bool INumberBase<Fraction<T>>.TryConvertFromChecked<TOther>(TOther value, out Fraction<T> result) =>
-        TryConvertFrom(value, out result);
+    static bool INumberBase<Fraction<T>>.TryConvertFromChecked<TOther>(TOther value, out Fraction<T> result)
+    {
+        try
+        {
+            return TryConvertFromCore(value, out result);
+        }
+        catch (NotSupportedException)
+        {
+            result = default;
+            return false;
+        }
+    }
 
     /// <inheritdoc />
     static bool INumberBase<Fraction<T>>.TryConvertFromSaturating<TOther>(TOther value, out Fraction<T> result) =>
-        TryConvertFrom(value, out result);
+        TryConvertFromClamped(value, out result);
 
     /// <inheritdoc />
     static bool INumberBase<Fraction<T>>.TryConvertFromTruncating<TOther>(TOther value, out Fraction<T> result) =>
-        TryConvertFrom(value, out result);
+        TryConvertFromClamped(value, out result);
 
     /// <inheritdoc />
     static bool INumberBase<Fraction<T>>.TryConvertToChecked<TOther>(Fraction<T> value, out TOther result)
     {
-        result = value.IsInteger
-            ? TOther.CreateChecked(value.BigNumerator)
-            : TOther.CreateChecked(value.ToDouble());
-        return true;
+        try
+        {
+            if (value.IsInteger)
+                result = TOther.CreateChecked(value.BigNumerator);
+            else if (typeof(TOther) == typeof(decimal))
+                result = TOther.CreateChecked(value.ToDecimal());
+            else
+                result = TOther.CreateChecked(value.ToDouble());
+
+            return true;
+        }
+        catch (NotSupportedException)
+        {
+            result = default!;
+            return false;
+        }
     }
 
     /// <inheritdoc />
     static bool INumberBase<Fraction<T>>.TryConvertToSaturating<TOther>(Fraction<T> value, out TOther result)
     {
-        result = value.IsInteger
-            ? TOther.CreateSaturating(value.BigNumerator)
-            : TOther.CreateSaturating(value.ToDouble());
-        return true;
+        try
+        {
+            result = value.IsInteger
+                ? TOther.CreateSaturating(value.BigNumerator)
+                : TOther.CreateSaturating(value.ToDouble());
+            return true;
+        }
+        catch (NotSupportedException)
+        {
+            result = default!;
+            return false;
+        }
     }
 
     /// <inheritdoc />
     static bool INumberBase<Fraction<T>>.TryConvertToTruncating<TOther>(Fraction<T> value, out TOther result)
     {
-        result = value.IsInteger
-            ? TOther.CreateTruncating(value.BigNumerator)
-            : TOther.CreateTruncating(value.ToDouble());
-        return true;
+        try
+        {
+            result = value.IsInteger
+                ? TOther.CreateTruncating(value.BigNumerator)
+                : TOther.CreateTruncating(value.ToDouble());
+            return true;
+        }
+        catch (NotSupportedException)
+        {
+            result = default!;
+            return false;
+        }
     }
 
     /// <inheritdoc />
@@ -215,9 +253,21 @@ public readonly partial struct Fraction<T> :
     /// <param name="value">The value to convert.</param>
     /// <param name="result">When this method returns, contains the converted value, or zero on failure.</param>
     /// <returns><see langword="true" /> if the value was converted; otherwise, <see langword="false" />.</returns>
-    private static bool TryConvertFrom<TOther>(TOther value, out Fraction<T> result)
+    /// <exception cref="OverflowException">Thrown if the result does not fit <typeparamref name="T" />.</exception>
+    /// <exception cref="NotSupportedException">Thrown if <typeparamref name="TOther" /> is not supported.</exception>
+    /// <remarks>
+    /// Integer and <see cref="decimal" /> sources are converted exactly; other finite values are converted through
+    /// their nearest <see cref="double" /> approximation. Non-finite values yield <see langword="false" />.
+    /// </remarks>
+    private static bool TryConvertFromCore<TOther>(TOther value, out Fraction<T> result)
         where TOther : INumberBase<TOther>
     {
+        if (typeof(TOther) == typeof(decimal))
+        {
+            result = FromDecimal((decimal)(object)value);
+            return true;
+        }
+
         if (TOther.IsInteger(value))
         {
             result = FromBigInteger(BigInteger.CreateChecked(value), BigInteger.One);
@@ -230,8 +280,45 @@ public readonly partial struct Fraction<T> :
             return false;
         }
 
-        result = FromDouble(double.CreateChecked(value));
+        double approximation = double.CreateChecked(value);
+        if (!double.IsFinite(approximation))
+        {
+            result = default;
+            return false;
+        }
+
+        result = FromDouble(approximation);
         return true;
+    }
+
+    /// <summary>
+    /// Converts a value of an arbitrary numeric type to a <see cref="Fraction{T}" />, clamping on overflow.
+    /// </summary>
+    /// <typeparam name="TOther">The source numeric type.</typeparam>
+    /// <param name="value">The value to convert.</param>
+    /// <param name="result">When this method returns, contains the converted value, or zero on failure.</param>
+    /// <returns><see langword="true" /> if the value was converted; otherwise, <see langword="false" />.</returns>
+    /// <remarks>
+    /// This method backs the saturating and truncating conversions, which must not raise an
+    /// <see cref="OverflowException" /> for an in-domain but out-of-range value.
+    /// </remarks>
+    private static bool TryConvertFromClamped<TOther>(TOther value, out Fraction<T> result)
+        where TOther : INumberBase<TOther>
+    {
+        try
+        {
+            return TryConvertFromCore(value, out result);
+        }
+        catch (NotSupportedException)
+        {
+            result = default;
+            return false;
+        }
+        catch (OverflowException)
+        {
+            result = TOther.IsNegative(value) ? MinValue : MaxValue;
+            return true;
+        }
     }
 
     /// <summary>

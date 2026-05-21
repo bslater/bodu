@@ -261,4 +261,67 @@ public partial class FractionTests
     private static int RadixOf<TNumber>()
         where TNumber : INumberBase<TNumber> =>
         TNumber.Radix;
+
+    /// <summary>
+    /// Verifies that converting a non-integer fraction with the checked contract succeeds without throwing.
+    /// </summary>
+    [TestMethod]
+    public void GenericMath_WhenConvertingNonIntegerToChecked_ShouldSucceedWithoutThrowing()
+    {
+        Assert.AreEqual(0, ConvertChecked<Fraction<int>, int>(new Fraction<int>(1, 2)));
+    }
+
+    /// <summary>
+    /// Verifies that the checked conversion contract throws for a value outside the destination range.
+    /// </summary>
+    [TestMethod]
+    public void GenericMath_WhenCheckedConversionOverflowsDestination_ShouldThrowOverflowException()
+    {
+        _ = Assert.ThrowsExactly<OverflowException>(() =>
+        {
+            _ = ConvertChecked<Fraction<int>, byte>(new Fraction<int>(1000, 1));
+        });
+    }
+
+    /// <summary>
+    /// Verifies that converting from a decimal preserves the exact rational value rather than a double.
+    /// </summary>
+    [TestMethod]
+    public void GenericMath_WhenConvertingFromDecimal_ShouldPreserveExactValue()
+    {
+        Assert.AreEqual(new Fraction<int>(1, 10), ConvertChecked<decimal, Fraction<int>>(0.1m));
+    }
+
+    /// <summary>
+    /// Verifies that a saturating conversion clamps an out-of-range value instead of throwing.
+    /// </summary>
+    [TestMethod]
+    public void GenericMath_WhenSaturatingConversionOverflows_ShouldClampToBound()
+    {
+        Assert.AreEqual(Fraction<int>.MaxValue, ConvertSaturating<double, Fraction<int>>(1e30));
+    }
+
+    /// <summary>
+    /// Converts a value to a destination type using the checked creation contract.
+    /// </summary>
+    /// <typeparam name="TSource">The source number type.</typeparam>
+    /// <typeparam name="TTarget">The destination number type.</typeparam>
+    /// <param name="value">The value to convert.</param>
+    /// <returns>The value converted to <typeparamref name="TTarget" />.</returns>
+    private static TTarget ConvertChecked<TSource, TTarget>(TSource value)
+        where TSource : INumberBase<TSource>
+        where TTarget : INumberBase<TTarget> =>
+        TTarget.CreateChecked(value);
+
+    /// <summary>
+    /// Converts a value to a destination type using the saturating creation contract.
+    /// </summary>
+    /// <typeparam name="TSource">The source number type.</typeparam>
+    /// <typeparam name="TTarget">The destination number type.</typeparam>
+    /// <param name="value">The value to convert.</param>
+    /// <returns>The value converted to <typeparamref name="TTarget" />.</returns>
+    private static TTarget ConvertSaturating<TSource, TTarget>(TSource value)
+        where TSource : INumberBase<TSource>
+        where TTarget : INumberBase<TTarget> =>
+        TTarget.CreateSaturating(value);
 }

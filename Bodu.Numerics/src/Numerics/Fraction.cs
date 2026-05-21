@@ -6,6 +6,7 @@
 
 using System.Diagnostics;
 using System.Numerics;
+using System.Reflection;
 using System.Text.Json.Serialization;
 
 namespace Bodu.Numerics;
@@ -43,6 +44,21 @@ public readonly partial struct Fraction<T>
     where T : IBinaryInteger<T>
 {
     /// <summary>
+    /// Indicates whether <typeparamref name="T" /> is a bounded integer type and therefore has a finite range.
+    /// </summary>
+    private static readonly bool s_isBounded;
+
+    /// <summary>
+    /// The smallest value <typeparamref name="T" /> can represent when it is bounded.
+    /// </summary>
+    private static readonly T s_minBacking;
+
+    /// <summary>
+    /// The largest value <typeparamref name="T" /> can represent when it is bounded.
+    /// </summary>
+    private static readonly T s_maxBacking;
+
+    /// <summary>
     /// The canonical numerator. Carries the sign of the rational value.
     /// </summary>
     private readonly T _numerator;
@@ -52,6 +68,14 @@ public readonly partial struct Fraction<T>
     /// interpreted as one by <see cref="Denominator" />.
     /// </summary>
     private readonly T _denominator;
+
+    /// <summary>
+    /// Initializes static members of the <see cref="Fraction{T}" /> struct.
+    /// </summary>
+    static Fraction()
+    {
+        s_isBounded = TryGetBounds(out s_minBacking, out s_maxBacking);
+    }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Fraction{T}" /> struct representing the whole number
@@ -138,6 +162,38 @@ public readonly partial struct Fraction<T>
     /// </exception>
     public static Fraction<T> MinusOne =>
         FromBigInteger(BigInteger.MinusOne, BigInteger.One);
+
+    /// <summary>
+    /// Gets the smallest finite value a <see cref="Fraction{T}" /> backed by <typeparamref name="T" /> can represent.
+    /// </summary>
+    /// <returns>The rational value <c>T.MinValue/1</c>.</returns>
+    /// <exception cref="NotSupportedException">
+    /// Thrown if <typeparamref name="T" /> is an unbounded integer type, such as <see cref="BigInteger" />.
+    /// </exception>
+    /// <remarks>
+    /// A bound exists only when <typeparamref name="T" /> implements <see cref="IMinMaxValue{TSelf}" />. Unbounded
+    /// backing types model the full set of rationals and therefore have no minimum value.
+    /// </remarks>
+    public static Fraction<T> MinValue =>
+        s_isBounded
+            ? new Fraction<T>(s_minBacking, T.One, canonical: true)
+            : throw new NotSupportedException($"The backing type '{typeof(T)}' is unbounded and has no minimum value.");
+
+    /// <summary>
+    /// Gets the largest finite value a <see cref="Fraction{T}" /> backed by <typeparamref name="T" /> can represent.
+    /// </summary>
+    /// <returns>The rational value <c>T.MaxValue/1</c>.</returns>
+    /// <exception cref="NotSupportedException">
+    /// Thrown if <typeparamref name="T" /> is an unbounded integer type, such as <see cref="BigInteger" />.
+    /// </exception>
+    /// <remarks>
+    /// A bound exists only when <typeparamref name="T" /> implements <see cref="IMinMaxValue{TSelf}" />. Unbounded
+    /// backing types model the full set of rationals and therefore have no maximum value.
+    /// </remarks>
+    public static Fraction<T> MaxValue =>
+        s_isBounded
+            ? new Fraction<T>(s_maxBacking, T.One, canonical: true)
+            : throw new NotSupportedException($"The backing type '{typeof(T)}' is unbounded and has no maximum value.");
 
     /// <summary>
     /// Gets the numerator of the rational value in canonical form.
@@ -247,4 +303,59 @@ public readonly partial struct Fraction<T>
 
         return new Fraction<T>(T.CreateChecked(numerator), T.CreateChecked(denominator), canonical: true);
     }
+
+    /// <summary>
+    /// Probes whether <typeparamref name="T" /> is a bounded integer type and, when it is, captures its bounds.
+    /// </summary>
+    /// <param name="minValue">On return, the minimum value of <typeparamref name="T" />.</param>
+    /// <param name="maxValue">On return, the maximum value of <typeparamref name="T" />.</param>
+    /// <returns><see langword="true" /> if the backing type is bounded; otherwise, <see langword="false" />.</returns>
+    private static bool TryGetBounds(out T minValue, out T maxValue)
+    {
+        // The IMinMaxValue<T> constraint cannot be placed on Fraction<T> without excluding unbounded backing
+        // types, so it is probed reflectively: a constraint violation on T surfaces as an ArgumentException.
+        try
+        {
+            minValue = InvokeExtreme(nameof(MinValueOf));
+            maxValue = InvokeExtreme(nameof(MaxValueOf));
+            return true;
+        }
+        catch (ArgumentException)
+        {
+            minValue = default!;
+            maxValue = default!;
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Invokes the named generic extreme-value helper for the backing type <typeparamref name="T" />.
+    /// </summary>
+    /// <param name="methodName">The name of the bounded-type extreme-value helper to invoke.</param>
+    /// <returns>The extreme value of <typeparamref name="T" /> yielded by the helper.</returns>
+    /// <exception cref="ArgumentException">Thrown if <typeparamref name="T" /> is not a bounded type.</exception>
+    private static T InvokeExtreme(string methodName)
+    {
+        MethodInfo? definition = typeof(Fraction<T>).GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Static);
+        object? extreme = definition!.MakeGenericMethod(typeof(T)).Invoke(null, null);
+        return (T)extreme!;
+    }
+
+    /// <summary>
+    /// Returns the smallest value a bounded integer type can represent.
+    /// </summary>
+    /// <typeparam name="TBounded">A bounded integer type.</typeparam>
+    /// <returns>The minimum value of <typeparamref name="TBounded" />.</returns>
+    private static TBounded MinValueOf<TBounded>()
+        where TBounded : IMinMaxValue<TBounded> =>
+        TBounded.MinValue;
+
+    /// <summary>
+    /// Returns the largest value a bounded integer type can represent.
+    /// </summary>
+    /// <typeparam name="TBounded">A bounded integer type.</typeparam>
+    /// <returns>The maximum value of <typeparamref name="TBounded" />.</returns>
+    private static TBounded MaxValueOf<TBounded>()
+        where TBounded : IMinMaxValue<TBounded> =>
+        TBounded.MaxValue;
 }
