@@ -47,7 +47,7 @@ public sealed class LosarNotableDateAlgorithm
     /// cannot be determined. The returned <see cref="DateTime.Kind" /> is always
     /// <see cref="DateTimeKind.Unspecified" />.
     /// </returns>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="year" /> is less than 1.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="year" /> is less than 1 or greater than 9999.</exception>
     /// <exception cref="NotSupportedException">
     /// Thrown when the specified <paramref name="calendar" /> type is unsupported.
     /// </exception>
@@ -55,6 +55,7 @@ public sealed class LosarNotableDateAlgorithm
     {
         if (year < 1)
             throw new ArgumentOutOfRangeException(nameof(year), CalendarResourceStrings.Arg_OutOfRange_Year);
+        ThrowHelper.ThrowIfGreaterThan(year, 9999);
 
         // The Tibetan New Year falls on or shortly after the second new moon after the winter
         // solstice. The winter solstice is approximately 21 December; the second new moon after

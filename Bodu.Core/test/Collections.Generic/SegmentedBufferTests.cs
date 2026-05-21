@@ -125,7 +125,7 @@ public sealed class SegmentedBufferTests
     }
 
     /// <summary>
-    /// Verifies that the indexer getter throws <see cref="ArgumentException" /> when the index exceeds the buffer count.
+    /// Verifies that the indexer getter throws <see cref="ArgumentOutOfRangeException" /> when the index exceeds the buffer count.
     /// </summary>
     [TestMethod]
     public void Indexer_Get_WhenIndexIsBeyondCount_ShouldThrowExactly()
@@ -133,9 +133,78 @@ public sealed class SegmentedBufferTests
         var buffer = new SegmentedBuffer<int>(4);
         buffer.Add(0);
 
-        Assert.ThrowsExactly<ArgumentException>(() =>
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             _ = buffer[1];
+        });
+    }
+
+    /// <summary>
+    /// Verifies that the indexer getter throws <see cref="ArgumentOutOfRangeException" /> when the index is negative,
+    /// rather than indexing a backing segment with a negative offset and surfacing an <see cref="IndexOutOfRangeException" />.
+    /// </summary>
+    [TestMethod]
+    [DataRow(-1)]
+    [DataRow(int.MinValue)]
+    public void Indexer_Get_WhenIndexIsNegative_ShouldThrowExactly(int index)
+    {
+        var buffer = new SegmentedBuffer<int>(4);
+        buffer.Add(0);
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = buffer[index];
+        });
+    }
+
+    /// <summary>
+    /// Verifies that the indexer setter throws <see cref="ArgumentOutOfRangeException" /> when the index is negative,
+    /// rather than writing to a backing segment at a negative offset.
+    /// </summary>
+    [TestMethod]
+    [DataRow(-1)]
+    [DataRow(int.MinValue)]
+    public void Indexer_Set_WhenIndexIsNegative_ShouldThrowExactly(int index)
+    {
+        var buffer = new SegmentedBuffer<int>(4);
+        buffer.Add(0);
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            buffer[index] = 1;
+        });
+    }
+
+    /// <summary>
+    /// Verifies that the indexer setter throws <see cref="ArgumentOutOfRangeException" /> when the index equals
+    /// <see cref="SegmentedBuffer{T}.Count" />, which is one position past the last element, rather than silently
+    /// writing into an unused segment slot.
+    /// </summary>
+    [TestMethod]
+    public void Indexer_Set_WhenIndexEqualsCount_ShouldThrowExactly()
+    {
+        var buffer = new SegmentedBuffer<int>(4);
+        buffer.Add(0);
+        buffer.Add(1);
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            buffer[buffer.Count] = 99;
+        });
+    }
+
+    /// <summary>
+    /// Verifies that the indexer setter throws <see cref="ArgumentOutOfRangeException" /> when the index exceeds the buffer count.
+    /// </summary>
+    [TestMethod]
+    public void Indexer_Set_WhenIndexIsBeyondCount_ShouldThrowExactly()
+    {
+        var buffer = new SegmentedBuffer<int>(4);
+        buffer.Add(0);
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            buffer[5] = 99;
         });
     }
 

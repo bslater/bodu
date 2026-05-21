@@ -64,6 +64,56 @@ public partial class CrcTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="Crc.ComputeHashFrom(byte[], byte[], int, int)" /> throws
+    /// <see cref="System.ArgumentOutOfRangeException" /> with <c>ParamName</c> equal to <c>offset</c> when the
+    /// offset is negative, rather than surfacing a span-internal exception from the slice operation.
+    /// </summary>
+    [TestMethod]
+    public void ComputeHashFrom_WhenOffsetIsNegative_ShouldThrowArgumentOutOfRangeException()
+    {
+        Crc crc = new(CrcStandard.CRC32_ISOHDLC);
+        var previousHash = new byte[crc.HashLengthInBytes];
+        byte[] newData = [0x01, 0x02, 0x03, 0x04];
+
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<System.ArgumentOutOfRangeException>(
+            () => crc.ComputeHashFrom(previousHash, newData, -1, 4));
+        Assert.AreEqual("offset", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Crc.ComputeHashFrom(byte[], byte[], int, int)" /> throws
+    /// <see cref="System.ArgumentOutOfRangeException" /> with <c>ParamName</c> equal to <c>length</c> when the
+    /// length is negative.
+    /// </summary>
+    [TestMethod]
+    public void ComputeHashFrom_WhenLengthIsNegative_ShouldThrowArgumentOutOfRangeException()
+    {
+        Crc crc = new(CrcStandard.CRC32_ISOHDLC);
+        var previousHash = new byte[crc.HashLengthInBytes];
+        byte[] newData = [0x01, 0x02, 0x03, 0x04];
+
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<System.ArgumentOutOfRangeException>(
+            () => crc.ComputeHashFrom(previousHash, newData, 0, -1));
+        Assert.AreEqual("length", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Crc.ComputeHashFrom(byte[], byte[], int, int)" /> throws
+    /// <see cref="System.ArgumentException" /> when <c>offset + length</c> exceeds the bounds of
+    /// <paramref name="newData" />, rather than surfacing a span-internal slicing exception.
+    /// </summary>
+    [TestMethod]
+    public void ComputeHashFrom_WhenOffsetPlusLengthExceedsNewData_ShouldThrowArgumentException()
+    {
+        Crc crc = new(CrcStandard.CRC32_ISOHDLC);
+        var previousHash = new byte[crc.HashLengthInBytes];
+        byte[] newData = [0x01, 0x02, 0x03, 0x04];
+
+        Assert.ThrowsExactly<System.ArgumentException>(
+            () => crc.ComputeHashFrom(previousHash, newData, 3, 4));
+    }
+
+    /// <summary>
     /// Verifies that <see cref="Crc.ComputeHashFrom(byte[], byte[])" /> throws
     /// <see cref="System.ArgumentNullException" /> with <c>ParamName</c> equal to <c>previousHash</c> when the
     /// prior-digest argument is <see langword="null" />.

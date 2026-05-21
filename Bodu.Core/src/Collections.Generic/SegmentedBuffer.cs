@@ -101,7 +101,8 @@ public sealed class SegmentedBuffer<T> :
     {
         get
         {
-            ThrowHelper.ThrowIfGreaterThanOther(index, Count - 1);
+            ThrowHelper.ThrowIfLessThan(index, 0);
+            ThrowHelper.ThrowIfGreaterThanOrEqual(index, Count);
 
             var segmentIndex = index / _segmentSize;
             var offset = index % _segmentSize;
@@ -110,7 +111,8 @@ public sealed class SegmentedBuffer<T> :
 
         set
         {
-            ThrowHelper.ThrowIfGreaterThanOther(index, Count);
+            ThrowHelper.ThrowIfLessThan(index, 0);
+            ThrowHelper.ThrowIfGreaterThanOrEqual(index, Count);
 
             var segmentIndex = index / _segmentSize;
             var offset = index % _segmentSize;
