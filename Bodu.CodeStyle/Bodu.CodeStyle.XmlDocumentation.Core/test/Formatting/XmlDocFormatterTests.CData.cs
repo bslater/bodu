@@ -158,6 +158,84 @@ public sealed class XmlDocFormatterCDataTests
     }
 
     /// <summary>
+    /// Verifies that a <c>&lt;para&gt;</c> block whose prose is followed by a <c>&lt;code&gt;</c> element on
+    /// its own line — the pattern that triggered BODU1002 — is considered canonical and round-trips unchanged.
+    /// Before the fix, the formatter packed <c>&lt;code&gt;</c> inline onto the preceding prose line, causing
+    /// the analyser to report a difference and the code-fix provider to produce incorrect output.
+    /// </summary>
+    [TestMethod]
+    public void Format_WhenParaHasProseThenCodeBlockWithMultiLineCData_ShouldLeaveCodeTagOnOwnLine()
+    {
+        // Base indent is empty to match the real-world shape of a file-scoped class doc comment
+        // (e.g. GcmSivModeTransform.cs). The content budget is 120 - 0 - 4 = 116 chars, which
+        // accommodates the 113-char prose line without rewrapping. With a 4-char base indent the
+        // budget drops to 112 and the prose would be reformatted — that is a correct reformat, not
+        // the bug; the bug was specifically <code> being pulled onto the preceding prose line.
+        var input =
+            "/// <remarks>\r\n" +
+            "/// <para>\r\n" +
+            "/// GCM-SIV derives per-message authentication and encryption keys from the master key and a 12-byte nonce using four\r\n" +
+            "/// cipher calls with little-endian counters (RFC 8452 Section 4):\r\n" +
+            "/// <code>\r\n" +
+            "///<![CDATA[\r\n" +
+            "/// K_auth = E_K(LE32(0) || nonce)[0..7] || E_K(LE32(1) || nonce)[0..7]   (16 bytes)\r\n" +
+            "/// K_enc  = E_K(LE32(2) || nonce)[0..7] || E_K(LE32(3) || nonce)[0..7]   (16 bytes)\r\n" +
+            "///]]>\r\n" +
+            "/// </code>\r\n" +
+            "/// </para>\r\n" +
+            "/// </remarks>\r\n";
+
+        var formatter = new XmlDocFormatter();
+        var context = new XmlDocFormatContext("", "\r\n", XmlDocMemberKindHint.Unknown);
+        XmlDocFormatOptions options = XmlDocFormatPolicyDefaults.CreateBoduDefaults();
+
+        XmlDocFormatResult result = formatter.FormatTrivia(input, context, options);
+
+        Assert.IsFalse(result.Changed, $"Formatter changed a canonical <code> block. Formatted text was:\n{result.FormattedText}");
+        Assert.AreEqual(input, result.FormattedText);
+    }
+
+    /// <summary>
+    /// Verifies that a <c>&lt;code&gt;</c> element written inline after prose (the broken form that the
+    /// old code-fix provider produced) is moved to its own line, with the close tag likewise on its own line.
+    /// </summary>
+    [TestMethod]
+    public void Format_WhenCodeTagInlinedAfterProse_ShouldMoveCodeTagToOwnLine()
+    {
+        var input =
+            "/// <remarks>\r\n" +
+            "    /// <para>\r\n" +
+            "    /// Key derivation (RFC 8452 Section 4): <code>\r\n" +
+            "    ///<![CDATA[\r\n" +
+            "    /// K_auth = E_K(LE32(0) || nonce)[0..7]\r\n" +
+            "    ///]]>\r\n" +
+            "    /// </code>\r\n" +
+            "    /// </para>\r\n" +
+            "    /// </remarks>\r\n";
+
+        var expected =
+            "/// <remarks>\r\n" +
+            "    /// <para>\r\n" +
+            "    /// Key derivation (RFC 8452 Section 4):\r\n" +
+            "    /// <code>\r\n" +
+            "    ///<![CDATA[\r\n" +
+            "    /// K_auth = E_K(LE32(0) || nonce)[0..7]\r\n" +
+            "    ///]]>\r\n" +
+            "    /// </code>\r\n" +
+            "    /// </para>\r\n" +
+            "    /// </remarks>\r\n";
+
+        var formatter = new XmlDocFormatter();
+        var context = new XmlDocFormatContext("    ", "\r\n", XmlDocMemberKindHint.Unknown);
+        XmlDocFormatOptions options = XmlDocFormatPolicyDefaults.CreateBoduDefaults();
+
+        XmlDocFormatResult result = formatter.FormatTrivia(input, context, options);
+
+        Assert.IsTrue(result.Changed, "Formatter should have moved the inline <code> tag to its own line.");
+        Assert.AreEqual(expected, result.FormattedText);
+    }
+
+    /// <summary>
     /// Verifies that a content line beginning with <c>&lt;![CDATA[</c> followed by body text on the same
     /// line (the shape produced when prior reflow has collapsed a multi-line CDATA payload onto one line)
     /// receives the no-space prefix. Without this rule the formatter would emit

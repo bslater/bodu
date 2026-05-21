@@ -73,7 +73,8 @@ public static class XmlDocFormatPolicyDefaults
         "example",
         "list",
         "item",
-        "description");
+        "description",
+        "code");
 
     /// <summary>
     /// Gets the default set of tags that may stay single-line when short enough.
