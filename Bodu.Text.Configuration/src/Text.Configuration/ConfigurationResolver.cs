@@ -106,11 +106,10 @@ internal sealed class ConfigurationResolver
             return normalizedTarget;
 
         var normalizedRoot = pathRoot.Replace('\\', '/').TrimEnd('/');
-        if (normalizedTarget.StartsWith(normalizedRoot + "/", StringComparison.OrdinalIgnoreCase))
-            return normalizedTarget[(normalizedRoot.Length + 1)..];
-
-        return string.Equals(normalizedTarget, normalizedRoot, StringComparison.OrdinalIgnoreCase)
-            ? Path.GetFileName(normalizedTarget)
-            : normalizedTarget;
+        return normalizedTarget.StartsWith(normalizedRoot + "/", StringComparison.OrdinalIgnoreCase)
+            ? normalizedTarget[(normalizedRoot.Length + 1)..]
+            : string.Equals(normalizedTarget, normalizedRoot, StringComparison.OrdinalIgnoreCase)
+                ? Path.GetFileName(normalizedTarget)
+                : normalizedTarget;
     }
 }

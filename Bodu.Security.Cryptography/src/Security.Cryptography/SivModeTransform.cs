@@ -41,8 +41,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// The S2V algorithm (RFC 5297 Section 2.4) accumulates all associated data blocks and the plaintext into a single
-/// 128-bit tag using CMAC:
-/// <code>
+/// 128-bit tag using CMAC: <code>
 ///<![CDATA[
 /// D ← CMAC(K₁, 0^128)
 /// for each AD block Sᵢ (i < n): D ← dbl(D) ⊕ CMAC(K₁, Sᵢ)
@@ -537,13 +536,12 @@ public sealed class SivModeTransform
     /// Thrown when any public method or property is accessed after the instance has been disposed.
     /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void ThrowIfDisposed()
-    {
+    private void ThrowIfDisposed() =>
 #if NET8_0_OR_GREATER
         ObjectDisposedException.ThrowIf(this._disposed, this);
 #else
         if (this._disposed)
             throw new ObjectDisposedException(this.GetType().Name);
 #endif
-    }
+
 }

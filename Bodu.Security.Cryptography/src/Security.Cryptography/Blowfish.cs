@@ -219,7 +219,7 @@ public sealed class Blowfish
     /// Creates a new <see cref="Blowfish" /> instance with default parameters.
     /// </summary>
     /// <returns>A new <see cref="Blowfish" /> instance.</returns>
-    public new static Blowfish Create() => new Blowfish();
+    public static new Blowfish Create() => new();
 
     /// <summary>
     /// Creates a symmetric <see cref="Blowfish" /> decryptor using the specified key and initialization vector.
@@ -361,7 +361,7 @@ public sealed class Blowfish
     /// </summary>
     /// <param name="key">The key material used to derive the P-array and S-boxes.</param>
     /// <returns>An <see cref="IBlockCipher" /> configured for single-block encryption and decryption.</returns>
-    private static BlowfishBlockCipher CreateCipher(byte[] key) => new BlowfishBlockCipher(key);
+    private static BlowfishBlockCipher CreateCipher(byte[] key) => new(key);
 
     /// <summary>
     /// Throws an <see cref="ObjectDisposedException" /> if the algorithm instance has been disposed.
@@ -370,13 +370,12 @@ public sealed class Blowfish
     /// Thrown when any public method or property is accessed after the instance has been disposed.
     /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void ThrowIfDisposed()
-    {
+    private void ThrowIfDisposed() =>
 #if NET8_0_OR_GREATER
         ObjectDisposedException.ThrowIf(this._disposed, this);
 #else
         if (this._disposed)
             throw new ObjectDisposedException(this.GetType().Name);
 #endif
-    }
+
 }

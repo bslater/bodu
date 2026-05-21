@@ -38,10 +38,7 @@ internal static partial class CryptoHelpers
     /// Loops until all bytes are non-zero. Uses <see cref="RandomNumberGenerator.Fill(Span{byte})" />.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static void FillWithRandomNonZeroBytes(Span<byte> buffer)
-    {
-        FillWithRandomBytesExcluding(0x00, buffer);
-    }
+    internal static void FillWithRandomNonZeroBytes(Span<byte> buffer) => FillWithRandomBytesExcluding(0x00, buffer);
 
     /// <summary>
     /// Attempts to fill the provided span with cryptographically secure random bytes that do not include <c>0x00</c>,

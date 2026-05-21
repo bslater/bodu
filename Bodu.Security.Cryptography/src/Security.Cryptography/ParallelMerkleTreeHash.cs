@@ -707,15 +707,14 @@ public sealed class ParallelMerkleTreeHash
     /// Thrown when any public method or property is accessed after the instance has been disposed.
     /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void ThrowIfDisposed()
-    {
+    private void ThrowIfDisposed() =>
 #if NET8_0_OR_GREATER
         ObjectDisposedException.ThrowIf(this._disposed, this);
 #else
         if (this._disposed)
             throw new ObjectDisposedException(this.GetType().Name);
 #endif
-    }
+
 
     /// <inheritdoc />
     public void Dispose()

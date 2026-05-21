@@ -449,6 +449,7 @@ internal static partial class CryptoHelpers
                 return true;
             }
         }
+
         return false;
     }
 }

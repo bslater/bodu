@@ -529,15 +529,14 @@ public sealed class AsconAead128
     /// Thrown when any public method or property is accessed after the instance has been disposed.
     /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void ThrowIfDisposed()
-    {
+    private void ThrowIfDisposed() =>
 #if NET8_0_OR_GREATER
         ObjectDisposedException.ThrowIf(this._disposed, this);
 #else
         if (this._disposed)
             throw new ObjectDisposedException(this.GetType().Name);
 #endif
-    }
+
 
     /// <summary>
     /// Throws <see cref="InvalidOperationException" /> if this instance has already completed encryption or decryption.

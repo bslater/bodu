@@ -268,7 +268,7 @@ public sealed class Blake3
         // The zero guard handles the empty-input case where totalBytes is 0.
         var adjustedTotal = totalBytesIncludingThisBlock == 0 ? 0UL : totalBytesIncludingThisBlock - 1;
         var chunkIndex = adjustedTotal / (ulong)ChunkSize;
-        var isFirstBlock = adjustedTotal % (ulong)ChunkSize / (ulong)BlockSize == 0;
+        var isFirstBlock = (adjustedTotal % (ulong)ChunkSize) / (ulong)BlockSize == 0;
         var isLastBlock = totalBytesIncludingThisBlock % (ulong)ChunkSize == 0 || isFinal;
 
         // Non-final blocks are always full; the final block carries the true byte count.
@@ -294,6 +294,7 @@ public sealed class Blake3
         var flags = 0u;
         if (isFirstBlock) flags |= FlagChunkStart;
         if (isLastBlock) flags |= FlagChunkEnd;
+
         // FlagRoot is applied on the final block only when no earlier chunks exist on the stack,
         // meaning this is the sole chunk and therefore the root.  For multi-chunk inputs the root
         // merge is deferred to ProcessFinalBlock so that FlagRoot lands on the final parent compression.

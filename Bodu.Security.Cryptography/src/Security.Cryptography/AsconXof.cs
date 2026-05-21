@@ -261,7 +261,7 @@ public abstract class AsconXof<T>
     /// Creates a new instance of <typeparamref name="T" /> using its public parameterless constructor.
     /// </summary>
     /// <returns>A new, uninitialized <typeparamref name="T" /> instance.</returns>
-    public static T Create() => new T();
+    public static T Create() => new();
 
     /// <summary>
     /// Hashes <paramref name="source" /> in a single pass and returns <paramref name="outputLength" /> bytes.
@@ -319,15 +319,14 @@ public abstract class AsconXof<T>
     /// Thrown when any public method or property is accessed after the instance has been disposed.
     /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    protected void ThrowIfDisposed()
-    {
+    protected void ThrowIfDisposed() =>
 #if NET8_0_OR_GREATER
         ObjectDisposedException.ThrowIf(this._disposed, this);
 #else
         if (this._disposed)
             throw new ObjectDisposedException(this.GetType().Name);
 #endif
-    }
+
 
     /// <summary>
     /// Finalizes a sponge absorption phase by padding the residual buffer with <c>0x01</c> at the next unused byte

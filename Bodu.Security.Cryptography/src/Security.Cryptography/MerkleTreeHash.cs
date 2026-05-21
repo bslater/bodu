@@ -341,8 +341,5 @@ public sealed class MerkleTreeHash
     // -----------------------------------------------------------------------------------------
 
     /// <inheritdoc />
-    public void Dispose()
-    {
-        this._buffer.Dispose();
-    }
+    public void Dispose() => this._buffer.Dispose();
 }

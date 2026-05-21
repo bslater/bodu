@@ -346,6 +346,7 @@ public sealed class SkipjackBlockCipher
     ];
 
 #pragma warning disable SA1132 // Do not combine fields
+
     // Expanded round-key byte streams. Round k uses _key0[k].._key3[k], equivalent to
     // key[(4k + 0) mod 10] through key[(4k + 3) mod 10]. Keeping four arrays avoids modulo arithmetic in G/H.
     private readonly int[] _key0, _key1, _key2, _key3;
@@ -649,13 +650,12 @@ public sealed class SkipjackBlockCipher
     /// Thrown when any public method or property is accessed after the instance has been disposed.
     /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void ThrowIfDisposed()
-    {
+    private void ThrowIfDisposed() =>
 #if NET8_0_OR_GREATER
         ObjectDisposedException.ThrowIf(this._disposed, this);
 #else
         if (this._disposed)
             throw new ObjectDisposedException(this.GetType().Name);
 #endif
-    }
+
 }

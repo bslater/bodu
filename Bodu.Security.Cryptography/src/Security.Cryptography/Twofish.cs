@@ -195,8 +195,8 @@ public sealed class Twofish
     /// Creates a new <see cref="Twofish" /> instance with default parameters.
     /// </summary>
     /// <returns>A new <see cref="Twofish" /> instance.</returns>
-    public new static Twofish Create() =>
-        new Twofish();
+    public static new Twofish Create() =>
+        new();
 
     /// <inheritdoc />
     public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[]? rgbIV)
@@ -252,7 +252,7 @@ public sealed class Twofish
     }
 
     private static TwofishBlockCipher CreateCipher(byte[] key) =>
-        new TwofishBlockCipher(key);
+        new(key);
 
     /// <summary>
     /// Throws an <see cref="ObjectDisposedException" /> if the algorithm instance has been disposed.
@@ -261,13 +261,12 @@ public sealed class Twofish
     /// Thrown when any public method or property is accessed after the instance has been disposed.
     /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void ThrowIfDisposed()
-    {
+    private void ThrowIfDisposed() =>
 #if NET8_0_OR_GREATER
         ObjectDisposedException.ThrowIf(this._disposed, this);
 #else
         if (this._disposed)
             throw new ObjectDisposedException(this.GetType().Name);
 #endif
-    }
+
 }

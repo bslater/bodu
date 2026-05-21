@@ -242,7 +242,7 @@ public sealed class GcmModeTransform
     /// exactly 16 bytes.
     /// </exception>
     internal static GcmModeTransform CreateForTesting(IBlockCipher cipher, ReadOnlySpan<byte> initialCounterBlock) =>
-        new GcmModeTransform(cipher, initialCounterBlock, nameof(initialCounterBlock), useInitialCounterBlock: true);
+        new(cipher, initialCounterBlock, nameof(initialCounterBlock), useInitialCounterBlock: true);
 
     /// <inheritdoc />
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
@@ -564,15 +564,14 @@ public sealed class GcmModeTransform
     /// Thrown when any public method or property is accessed after the instance has been disposed.
     /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void ThrowIfDisposed()
-    {
+    private void ThrowIfDisposed() =>
 #if NET8_0_OR_GREATER
         ObjectDisposedException.ThrowIf(this._disposed, this);
 #else
         if (this._disposed)
             throw new ObjectDisposedException(this.GetType().Name);
 #endif
-    }
+
 
     /// <summary>
     /// Throws <see cref="InvalidOperationException" /> if this instance has already encrypted or decrypted a message.

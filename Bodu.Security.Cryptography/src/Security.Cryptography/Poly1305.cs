@@ -313,6 +313,7 @@ public sealed class Poly1305
         this._finalized = true;
         this.State = 2;
 #endif
+
         // Key material is no longer needed — zero it immediately to enforce
         // Poly1305's one-time-use guarantee and limit key exposure in memory.
         if (this.KeyValue is not null)

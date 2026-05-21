@@ -172,10 +172,7 @@ public abstract class Serpent
     /// </summary>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void ThrowIfDisposed()
-    {
-        ObjectDisposedException.ThrowIf(this._disposed, this);
-    }
+    private void ThrowIfDisposed() => ObjectDisposedException.ThrowIf(this._disposed, this);
 
     /// <summary>
     /// Instantiates the concrete Serpent block cipher with the specified key and tweak.

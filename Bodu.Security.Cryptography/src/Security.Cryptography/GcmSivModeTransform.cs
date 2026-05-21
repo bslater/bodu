@@ -24,8 +24,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// GCM-SIV derives per-message authentication and encryption keys from the master key and a 12-byte nonce using four
-/// cipher calls with little-endian counters (RFC 8452 Section 4):
-/// <code>
+/// cipher calls with little-endian counters (RFC 8452 Section 4): <code>
 ///<![CDATA[
 /// K_auth = E_K(LE32(0) || nonce)[0..7] || E_K(LE32(1) || nonce)[0..7]   (16 bytes)
 /// K_enc  = E_K(LE32(2) || nonce)[0..7] || E_K(LE32(3) || nonce)[0..7]   (16 bytes)
@@ -221,6 +220,7 @@ public sealed class GcmSivModeTransform
                 throw new CryptographicException(
                     CryptoResourceStrings.Crypt_Invalid_AuthenticationTagMismatch);
             }
+
             return plaintextLength;
         }
         finally
@@ -276,6 +276,7 @@ public sealed class GcmSivModeTransform
 
         this._disposed = true;
     }
+
     // ── Private helpers ────────────────────────────────────────────────────────────────────────
 
     /// <summary>
@@ -361,6 +362,7 @@ public sealed class GcmSivModeTransform
             }
         }
     }
+
     /// <summary>
     /// Computes the GCM-SIV tag per RFC 8452 Section 5.2. POLYVAL(K_auth, len(A)||len(C), A blocks, C blocks) XOR
     /// nonce, then clear bit 31 and 63, then encrypt with K_enc.
@@ -420,6 +422,7 @@ public sealed class GcmSivModeTransform
         {
             var len = Math.Min(blockSize, data.Length - offset);
             data.Slice(offset, len).CopyTo(block);
+
             // state ^= block, then multiply by H (authKey) via POLYVAL.
             Xor(state, block, state);
             PolyvalMultiply(state, this._authKey, state);
@@ -459,6 +462,7 @@ public sealed class GcmSivModeTransform
         for (var i = 0; i < 16; i++)
         {
             var b = input[15 - i];
+
             // Reverse bits within byte.
             b = (byte)(((b & 0x01) << 7) | ((b & 0x02) << 5) | ((b & 0x04) << 3) | ((b & 0x08) << 1) |
                        ((b & 0x10) >> 1) | ((b & 0x20) >> 3) | ((b & 0x40) >> 5) | ((b & 0x80) >> 7));
@@ -490,14 +494,18 @@ public sealed class GcmSivModeTransform
                     Xor(z, v, z);
 
                 var lsb = (v[15] & 1) == 1;
+
                 // Right-shift v by 1.
                 for (var j = 15; j > 0; j--)
                     v[j] = (byte)((v[j] >> 1) | (v[j - 1] << 7));
+
                 v[0] >>= 1;
+
                 // Reduce: if LSB was set, XOR with 0xE1 in MSByte (x^128 + x^7 + x^2 + x + 1).
                 if (lsb) v[0] ^= 0xE1;
             }
         }
+
         z.CopyTo(result);
     }
 
@@ -524,6 +532,7 @@ public sealed class GcmSivModeTransform
     private void CtrEncrypt(ReadOnlySpan<byte> input, Span<byte> output, byte[] counter)
     {
         var blockSize = this._encCipher.BlockSize / 8;
+
         // Stack-allocate the mutable counter copy so the ephemeral CTR state never reaches the heap.
         Span<byte> ctr = stackalloc byte[blockSize];
         counter.CopyTo(ctr);
@@ -532,6 +541,7 @@ public sealed class GcmSivModeTransform
         for (var offset = 0; offset < input.Length; offset += blockSize)
         {
             this._encCipher.Encrypt(ctr, ks);
+
             // GCM-SIV CTR increments only the last 32 bits (little-endian), per RFC 8452.
             var lo = (uint)(ctr[12] | (ctr[13] << 8) | (ctr[14] << 16) | (ctr[15] << 24));
             lo++;
@@ -563,13 +573,12 @@ public sealed class GcmSivModeTransform
     /// Thrown when any public method or property is accessed after the instance has been disposed.
     /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void ThrowIfDisposed()
-    {
+    private void ThrowIfDisposed() =>
 #if NET8_0_OR_GREATER
         ObjectDisposedException.ThrowIf(this._disposed, this);
 #else
         if (this._disposed)
             throw new ObjectDisposedException(this.GetType().Name);
 #endif
-    }
+
 }

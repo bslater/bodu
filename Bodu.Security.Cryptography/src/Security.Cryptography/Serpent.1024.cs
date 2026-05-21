@@ -97,7 +97,7 @@ public sealed class Serpent1024
     /// assigned explicitly via <see cref="SymmetricAlgorithm.Key" />, <see cref="SymmetricAlgorithm.IV" />, or
     /// <see cref="TweakableSymmetricAlgorithm.Tweak" />.
     /// </remarks>
-    public new static Serpent1024 Create() => new Serpent1024();
+    public static new Serpent1024 Create() => new();
 
     /// <inheritdoc />
     protected override IBlockCipher CreateCipher(byte[] key, byte[] tweak) =>

@@ -96,10 +96,7 @@ public sealed class Threefish256
     /// assigned explicitly via <see cref="SymmetricAlgorithm.Key" />, <see cref="SymmetricAlgorithm.IV" />, or
     /// <see cref="TweakableSymmetricAlgorithm.Tweak" />.
     /// </remarks>
-    public new static Threefish256 Create()
-    {
-        return new Threefish256();
-    }
+    public static new Threefish256 Create() => new();
 
     /// <inheritdoc />
     protected override ThreefishBlockCipher CreateCipher(byte[] key, byte[] tweak) =>

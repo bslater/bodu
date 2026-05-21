@@ -20,10 +20,7 @@ internal static partial class CryptoHelpers
     /// <param name="memory">The memory buffer to clear.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Clear<T>(Memory<T> memory)
-        where T : unmanaged
-    {
-        CryptographicOperations.ZeroMemory(MemoryMarshal.AsBytes(memory.Span));
-    }
+        where T : unmanaged => CryptographicOperations.ZeroMemory(MemoryMarshal.AsBytes(memory.Span));
 
     /// <summary>
     /// Securely zeroes the contents of a <see cref="Span{T}" /> using <see cref="CryptographicOperations.ZeroMemory" />
@@ -33,10 +30,7 @@ internal static partial class CryptoHelpers
     /// <param name="span">The span to clear.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Clear<T>(Span<T> span)
-        where T : unmanaged
-    {
-        CryptographicOperations.ZeroMemory(MemoryMarshal.AsBytes(span));
-    }
+        where T : unmanaged => CryptographicOperations.ZeroMemory(MemoryMarshal.AsBytes(span));
 
     /// <summary>
     /// Securely zeroes the contents of an unmanaged array using <see cref="CryptographicOperations.ZeroMemory" />.

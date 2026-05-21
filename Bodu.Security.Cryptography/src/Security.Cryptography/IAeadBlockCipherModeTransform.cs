@@ -20,15 +20,12 @@ namespace Bodu.Security.Cryptography;
 /// the ciphertext and AAD together.
 /// </para>
 /// <para>
-/// Usage pattern for encryption:
-/// <code>
+/// Usage pattern for encryption: <code>
 ///<![CDATA[
 /// transform.ProcessAssociatedData(aad);
 /// int written = transform.Encrypt(plaintext, output); // output = ciphertext || tag
 ///]]>
-/// </code>
-/// Usage pattern for decryption:
-/// <code>
+/// </code> Usage pattern for decryption: <code>
 ///<![CDATA[
 /// transform.ProcessAssociatedData(aad);
 /// int written = transform.Decrypt(ciphertextWithTag, output); // throws if tag invalid

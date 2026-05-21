@@ -30,8 +30,7 @@ namespace Bodu.Security.Cryptography;
 /// bytes).
 /// </para>
 /// <para>
-/// Offset initialization uses the RFC 7253 §2.4 K_top stretch:
-/// <code>
+/// Offset initialization uses the RFC 7253 §2.4 K_top stretch: <code>
 ///<![CDATA[
 ///   Nonce  = num2str(TAGLEN mod 128, 7) || zeros(120-bitlen(N)) || 1 || N
 ///   bottom = str2num(Nonce[123..128])
@@ -678,13 +677,12 @@ public sealed class OcbModeTransform
     /// Thrown when any public method or property is accessed after the instance has been disposed.
     /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void ThrowIfDisposed()
-    {
+    private void ThrowIfDisposed() =>
 #if NET8_0_OR_GREATER
         ObjectDisposedException.ThrowIf(this._disposed, this);
 #else
         if (this._disposed)
             throw new ObjectDisposedException(this.GetType().Name);
 #endif
-    }
+
 }

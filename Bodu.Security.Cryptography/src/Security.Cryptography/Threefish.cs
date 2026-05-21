@@ -192,15 +192,14 @@ public abstract class Threefish
     /// </summary>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void ThrowIfDisposed()
-    {
+    private void ThrowIfDisposed() =>
 #if NET8_0_OR_GREATER
         ObjectDisposedException.ThrowIf(this._disposed, this);
 #else
         if (this._disposed)
             throw new ObjectDisposedException(this.GetType().Name);
 #endif
-    }
+
 
     /// <summary>
     /// Instantiates the concrete Threefish block cipher with the specified key and tweak.

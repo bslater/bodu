@@ -192,7 +192,7 @@ public sealed class Serpent128
     /// Creates a new <see cref="Serpent128" /> instance with default parameters.
     /// </summary>
     /// <returns>A new <see cref="Serpent128" /> instance.</returns>
-    public new static Serpent128 Create() => new Serpent128();
+    public static new Serpent128 Create() => new();
 
     /// <inheritdoc />
     public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[]? rgbIV)
@@ -254,13 +254,12 @@ public sealed class Serpent128
     /// Thrown when any public method or property is accessed after the instance has been disposed.
     /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void ThrowIfDisposed()
-    {
+    private void ThrowIfDisposed() =>
 #if NET8_0_OR_GREATER
         ObjectDisposedException.ThrowIf(this._disposed, this);
 #else
         if (this._disposed)
             throw new ObjectDisposedException(this.GetType().Name);
 #endif
-    }
+
 }

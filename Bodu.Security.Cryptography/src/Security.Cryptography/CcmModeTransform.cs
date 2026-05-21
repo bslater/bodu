@@ -203,6 +203,7 @@ public sealed class CcmModeTransform
         this.Dispose(disposing: true);
         GC.SuppressFinalize(this);
     }
+
     /// <summary>
     /// Throws <see cref="InvalidOperationException" /> if this transform has already encrypted or decrypted a message.
     /// CCM transforms are single-use; create a fresh instance per message.
@@ -384,13 +385,12 @@ public sealed class CcmModeTransform
     /// Thrown when any public method or property is accessed after the instance has been disposed.
     /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void ThrowIfDisposed()
-    {
+    private void ThrowIfDisposed() =>
 #if NET8_0_OR_GREATER
         ObjectDisposedException.ThrowIf(this._disposed, this);
 #else
         if (this._disposed)
             throw new ObjectDisposedException(this.GetType().Name);
 #endif
-    }
+
 }

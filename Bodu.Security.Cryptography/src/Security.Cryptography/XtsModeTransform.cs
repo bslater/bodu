@@ -31,15 +31,13 @@ namespace Bodu.Security.Cryptography;
 /// Using the same key for both reduces XTS to a single-key construction and weakens security.
 /// </para>
 /// <para>
-/// For each 128-bit block j in a sector, the XEX construction is:
-/// <code>
+/// For each 128-bit block j in a sector, the XEX construction is: <code>
 ///<![CDATA[
 /// T_j  = α^j ⊗ tweakCipher.Encrypt(tweak)     // Galois field multiplication
 /// C_j  = dataCipher.Encrypt(P_j ⊕ T_j) ⊕ T_j  // encrypt
 /// P_j  = dataCipher.Decrypt(C_j ⊕ T_j) ⊕ T_j  // decrypt
 ///]]>
-/// </code>
-/// The horizontal tweak bus in the diagram corresponds to this successive <c>·α</c> multiplication: each <b>·α
+/// </code> The horizontal tweak bus in the diagram corresponds to this successive <c>·α</c> multiplication: each <b>·α
 /// </b> box doubles the tweak in GF(2¹²⁸) so the Tⱼ arriving at cell <em>j</em> is αʲ times the base tweak. The two XOR
 /// nodes inside each cell — before and after the data cipher — realize the <c>⊕ T_j</c> pairs in the equation above.
 /// </para>
@@ -184,6 +182,7 @@ public sealed class XtsModeTransform
             t1[i] = (byte)((t << 1) | carry);
             carry = t >> 7;
         }
+
         // If the MSB of byte[15] was set (= x^127 coefficient), reduce by 0x87 (= x^7+x^2+x+1).
         if (carry != 0) t1[0] ^= 0x87;
     }

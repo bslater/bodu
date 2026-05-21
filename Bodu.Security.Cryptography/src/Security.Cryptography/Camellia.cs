@@ -191,7 +191,7 @@ public sealed class Camellia
     /// Creates a new <see cref="Camellia" /> instance with default parameters.
     /// </summary>
     /// <returns>A new <see cref="Camellia" /> instance.</returns>
-    public new static Camellia Create() => new Camellia();
+    public static new Camellia Create() => new();
 
     /// <summary>
     /// Creates a symmetric <see cref="Camellia" /> decryptor using the specified key and initialization vector.
@@ -343,13 +343,12 @@ public sealed class Camellia
     /// Thrown when any public method or property is accessed after the instance has been disposed.
     /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void ThrowIfDisposed()
-    {
+    private void ThrowIfDisposed() =>
 #if NET8_0_OR_GREATER
         ObjectDisposedException.ThrowIf(this._disposed, this);
 #else
         if (this._disposed)
             throw new ObjectDisposedException(this.GetType().Name);
 #endif
-    }
+
 }
