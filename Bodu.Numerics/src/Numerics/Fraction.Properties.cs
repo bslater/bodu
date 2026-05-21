@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Numerics;
+
 namespace Bodu.Numerics;
 
 public readonly partial struct Fraction<T>
@@ -32,7 +34,7 @@ public readonly partial struct Fraction<T>
     /// <see langword="false" />.
     /// </returns>
     public bool IsProper =>
-        Abs(_numerator) < Denominator;
+        BigInteger.Abs(BigNumerator) < BigDenominator;
 
     /// <summary>
     /// Gets a value indicating whether this rational value is a unit fraction.
@@ -41,7 +43,7 @@ public readonly partial struct Fraction<T>
     /// <see langword="true" /> if the numerator has a magnitude of one; otherwise, <see langword="false" />.
     /// </returns>
     public bool IsUnit =>
-        Abs(_numerator) == T.One;
+        BigInteger.Abs(BigNumerator).IsOne;
 
     /// <summary>
     /// Gets a value indicating whether this rational value is negative.

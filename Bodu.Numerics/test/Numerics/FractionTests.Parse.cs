@@ -192,4 +192,20 @@ public partial class FractionTests
             Assert.AreEqual(value, Fraction<int>.Parse(text, System.Globalization.CultureInfo.InvariantCulture), format);
         }
     }
+
+    /// <summary>
+    /// Verifies that a mixed number whose magnitude component carries its own sign is rejected, since the only
+    /// permitted sign is the leading sign of the whole value.
+    /// </summary>
+    [TestMethod]
+    [DataRow("1 -1/2")]
+    [DataRow("1 1/-2")]
+    [DataRow("-1 -1/2")]
+    public void TryParse_WhenMagnitudeComponentIsSigned_ShouldReturnFalse(string text)
+    {
+        bool parsed = Fraction<int>.TryParse(text, out Fraction<int> result);
+
+        Assert.IsFalse(parsed);
+        Assert.AreEqual(Fraction<int>.Zero, result);
+    }
 }

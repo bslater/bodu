@@ -106,7 +106,8 @@ public readonly partial struct Fraction<T>
     /// Thrown if <paramref name="exponent" /> is negative and this value is zero.
     /// </exception>
     /// <exception cref="OverflowException">
-    /// Thrown if the canonical result does not fit <typeparamref name="T" />.
+    /// Thrown if the canonical result does not fit <typeparamref name="T" />, or if the magnitude of a negative
+    /// <paramref name="exponent" /> exceeds <see cref="int.MaxValue" />.
     /// </exception>
     public Fraction<T> Pow(int exponent)
     {
@@ -118,10 +119,13 @@ public readonly partial struct Fraction<T>
             if (IsZero)
                 throw new DivideByZeroException("Cannot raise zero to a negative power.");
 
-            int magnitude = -exponent;
+            long magnitude = -(long)exponent;
+            if (magnitude > int.MaxValue)
+                throw new OverflowException("The magnitude of the exponent is too large to evaluate.");
+
             return FromBigInteger(
-                BigInteger.Pow(BigDenominator, magnitude),
-                BigInteger.Pow(BigNumerator, magnitude));
+                BigInteger.Pow(BigDenominator, (int)magnitude),
+                BigInteger.Pow(BigNumerator, (int)magnitude));
         }
 
         return FromBigInteger(

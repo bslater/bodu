@@ -287,4 +287,40 @@ public partial class FractionTests
 
         Assert.AreEqual(-(long)int.MinValue, result.Numerator);
     }
+
+    /// <summary>
+    /// Verifies that the greatest common divisor of a signed minimum value is evaluated correctly when the result
+    /// fits a wider backing type, rather than overflowing through an unsafe negation.
+    /// </summary>
+    [TestMethod]
+    public void GreatestCommonDivisor_WhenArgumentIsSignedMinimum_ShouldReturnCorrectMagnitude()
+    {
+        Assert.AreEqual(-(long)int.MinValue, Fraction<long>.GreatestCommonDivisor(int.MinValue, 0));
+    }
+
+    /// <summary>
+    /// Verifies that the greatest common divisor throws <see cref="OverflowException" /> when its magnitude cannot
+    /// be represented by a fixed-width backing type.
+    /// </summary>
+    [TestMethod]
+    public void GreatestCommonDivisor_WhenResultExceedsFixedWidthRange_ShouldThrowOverflowException()
+    {
+        _ = Assert.ThrowsExactly<OverflowException>(() =>
+        {
+            _ = Fraction<int>.GreatestCommonDivisor(int.MinValue, 0);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that raising a value to <see cref="int.MinValue" /> throws <see cref="OverflowException" />, since
+    /// the magnitude of that exponent cannot be evaluated.
+    /// </summary>
+    [TestMethod]
+    public void Pow_WhenExponentIsIntMinValue_ShouldThrowOverflowException()
+    {
+        _ = Assert.ThrowsExactly<OverflowException>(() =>
+        {
+            _ = new Fraction<int>(2, 3).Pow(int.MinValue);
+        });
+    }
 }

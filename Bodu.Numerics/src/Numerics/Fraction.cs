@@ -6,7 +6,6 @@
 
 using System.Diagnostics;
 using System.Numerics;
-using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
 
 namespace Bodu.Numerics;
@@ -186,18 +185,17 @@ public readonly partial struct Fraction<T>
     /// The largest non-negative integer that divides both <paramref name="left" /> and <paramref name="right" />, or
     /// zero when both arguments are zero.
     /// </returns>
-    public static T GreatestCommonDivisor(T left, T right)
-    {
-        T a = Abs(left);
-        T b = Abs(right);
-
-        while (!T.IsZero(b))
-        {
-            (a, b) = (b, a % b);
-        }
-
-        return a;
-    }
+    /// <exception cref="OverflowException">
+    /// Thrown if the greatest common divisor cannot be represented by <typeparamref name="T" />.
+    /// </exception>
+    /// <remarks>
+    /// The divisor is evaluated with <see cref="BigInteger" /> precision so that the magnitude of a signed minimum
+    /// value — whose absolute value is not itself representable by <typeparamref name="T" /> — is handled correctly.
+    /// </remarks>
+    public static T GreatestCommonDivisor(T left, T right) =>
+        T.CreateChecked(BigInteger.GreatestCommonDivisor(
+            BigInteger.CreateChecked(left),
+            BigInteger.CreateChecked(right)));
 
     /// <summary>
     /// Computes the least common multiple of two integers.
@@ -221,15 +219,6 @@ public readonly partial struct Fraction<T>
 
         return T.CreateChecked(result);
     }
-
-    /// <summary>
-    /// Returns the absolute value of an integer.
-    /// </summary>
-    /// <param name="value">The integer whose magnitude is required.</param>
-    /// <returns>The magnitude of <paramref name="value" />.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static T Abs(T value) =>
-        T.IsNegative(value) ? -value : value;
 
     /// <summary>
     /// Creates a canonical <see cref="Fraction{T}" /> from a numerator and denominator evaluated with
