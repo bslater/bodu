@@ -8,7 +8,6 @@ namespace Bodu.Text.Encoding;
 
 public static partial class Base58
 {
-
     /// <summary>
     /// Decodes a Base58 representation of a <see cref="Guid" />.
     /// </summary>
@@ -24,6 +23,7 @@ public static partial class Base58
             ? throw new FormatException(EncodingResourceStrings.Format_Invalid_GuidNotSixteenBytes)
             : new Guid(bytes);
     }
+
     /// <summary>
     /// Encodes the byte representation of <paramref name="value" /> as a Base58 string. Typical output is 22 characters
     /// (radix-58 representation of 16 bytes), though leading zero bytes inflate the count slightly.

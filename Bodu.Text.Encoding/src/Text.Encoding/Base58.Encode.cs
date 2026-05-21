@@ -10,7 +10,6 @@ namespace Bodu.Text.Encoding;
 
 public static partial class Base58
 {
-
     /// <summary>
     /// Encodes <paramref name="bytes" /> into a Base58 string using the supplied variant.
     /// </summary>
@@ -182,15 +181,9 @@ public static partial class Base58
         while (leadingZeros < bytes.Length && bytes[leadingZeros] == 0)
             leadingZeros++;
 
-        BigInteger value;
-        if (leadingZeros == bytes.Length)
-        {
-            value = BigInteger.Zero;
-        }
-        else
-        {
-            value = new BigInteger(bytes[leadingZeros..], isUnsigned: true, isBigEndian: true);
-        }
+        BigInteger value = leadingZeros == bytes.Length
+            ? BigInteger.Zero
+            : new BigInteger(bytes[leadingZeros..], isUnsigned: true, isBigEndian: true);
 
         var position = usableLength;
         while (value > 0)

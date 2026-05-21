@@ -10,7 +10,6 @@ namespace Bodu.Text.Encoding;
 
 public static partial class Base16
 {
-
     /// <summary>
     /// Encodes the entire byte array into a hexadecimal string.
     /// </summary>

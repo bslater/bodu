@@ -10,7 +10,6 @@ namespace Bodu.Text.Encoding;
 
 public static partial class Base16
 {
-
     /// <summary>
     /// Encodes <paramref name="source" /> as hexadecimal characters into <paramref name="writer" />, suitable for use
     /// in pipelines and other <see cref="IBufferWriter{T}" />-based scenarios.

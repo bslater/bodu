@@ -8,7 +8,6 @@ namespace Bodu.Text.Encoding;
 
 public static partial class Base85
 {
-
     /// <summary>
     /// Encodes <paramref name="bytes" /> into a Base85 string using the supplied variant and options.
     /// </summary>
@@ -343,6 +342,7 @@ public static partial class Base85
         var position = 0;
         var sourcePos = 0;
 
+        Span<char> group = stackalloc char[5];
         while (sourcePos + 4 <= bytes.Length)
         {
             var value =
@@ -357,7 +357,6 @@ public static partial class Base85
             }
             else
             {
-                Span<char> group = stackalloc char[5];
                 for (var i = 4; i >= 0; i--)
                 {
                     group[i] = alphabet[(int)(value % 85)];
@@ -380,7 +379,6 @@ public static partial class Base85
                 value |= (uint)bytes[sourcePos + i] << ((3 - i) * 8);
             }
 
-            Span<char> group = stackalloc char[5];
             for (var i = 4; i >= 0; i--)
             {
                 group[i] = alphabet[(int)(value % 85)];

@@ -10,7 +10,6 @@ namespace Bodu.Text.Encoding;
 
 public static partial class Base64
 {
-
     /// <summary>
     /// Encodes the entire byte array into a Base64 string.
     /// </summary>
@@ -77,10 +76,11 @@ public static partial class Base64
         EnsureValidVariant(variant);
 
         var required = GetEncodedLength(bytes.Length, variant, options);
-        if (destination.Length < required)
-            throw new ArgumentException(EncodingResourceStrings.Arg_Invalid_DestinationTooSmallForEncoded, nameof(destination));
-
-        return bytes.IsEmpty ? 0 : EncodeIntoSpan(bytes, destination, variant, options);
+        return destination.Length >= required
+            ? bytes.IsEmpty
+                ? 0
+                : EncodeIntoSpan(bytes, destination, variant, options)
+            : throw new ArgumentException(EncodingResourceStrings.Arg_Invalid_DestinationTooSmallForEncoded, nameof(destination));
     }
 
     /// <summary>

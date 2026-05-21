@@ -10,7 +10,6 @@ namespace Bodu.Text.Encoding;
 
 public static partial class Base58
 {
-
     /// <summary>
     /// Decodes <paramref name="s" /> as Bitcoin/Flickr Base58 into a byte array.
     /// </summary>

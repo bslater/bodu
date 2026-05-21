@@ -46,7 +46,6 @@ namespace Bodu.Text.Encoding;
 /// </example>
 public static class BinaryEncodingExtensions
 {
-
     /// <summary>
     /// Decodes <paramref name="encoded" /> using <paramref name="encoding" />.
     /// </summary>
@@ -61,6 +60,7 @@ public static class BinaryEncodingExtensions
         ThrowHelper.ThrowIfNull(encoding);
         return encoding.Decode(encoded.AsSpan());
     }
+
     /// <summary>
     /// Encodes <paramref name="bytes" /> using <paramref name="encoding" />.
     /// </summary>
@@ -216,8 +216,8 @@ public static class BinaryEncodingExtensions
     public static string ToBase85String(this ReadOnlySpan<byte> bytes) => Base85.ToBase85String(bytes);
 
     /// <summary>
-    /// Returns the exact number of standard RFC 4648 Base64 characters required to encode
-    /// <paramref name="bytes" />, including any trailing <c>=</c> padding.
+    /// Returns the exact number of standard RFC 4648 Base64 characters required to encode <paramref name="bytes" />,
+    /// including any trailing <c>=</c> padding.
     /// </summary>
     /// <param name="bytes">The byte span whose encoded length is computed.</param>
     /// <returns>The encoded length in characters.</returns>
@@ -225,23 +225,23 @@ public static class BinaryEncodingExtensions
         Base64.GetEncodedLength(bytes.Length);
 
     /// <summary>
-    /// Encodes <paramref name="bytes" /> into <paramref name="destination" /> as standard RFC 4648 Base64 in
-    /// UTF-8 (ASCII) encoded form without throwing when the destination is too small.
+    /// Encodes <paramref name="bytes" /> into <paramref name="destination" /> as standard RFC 4648 Base64 in UTF-8
+    /// (ASCII) encoded form without throwing when the destination is too small.
     /// </summary>
     /// <param name="bytes">The bytes to encode.</param>
     /// <param name="destination">The destination buffer that receives the UTF-8 Base64 bytes.</param>
     /// <param name="bytesWritten">
-    /// When this method returns <see langword="true" />, contains the number of UTF-8 Base64 bytes written;
-    /// otherwise zero.
+    /// When this method returns <see langword="true" />, contains the number of UTF-8 Base64 bytes written; otherwise
+    /// zero.
     /// </param>
     /// <returns>
     /// <see langword="true" /> when the destination was large enough; <see langword="false" /> otherwise.
     /// </returns>
     /// <remarks>
-    /// The output is byte-identical to <see cref="ToBase64String(ReadOnlySpan{byte})" /> after passing the
-    /// resulting bytes through <see cref="System.Text.Encoding.ASCII" />.<c>GetString</c>. Use this overload to
-    /// avoid the intermediate <see cref="string" /> allocation when the consumer accepts UTF-8 bytes directly
-    /// (network writers, file streams, log sinks).
+    /// The output is byte-identical to <see cref="ToBase64String(ReadOnlySpan{byte})" /> after passing the resulting
+    /// bytes through <see cref="System.Text.Encoding.ASCII" />.<c>GetString</c>. Use this overload to avoid the
+    /// intermediate <see cref="string" /> allocation when the consumer accepts UTF-8 bytes directly (network writers,
+    /// file streams, log sinks).
     /// </remarks>
     public static bool TryEncodeBase64ToUtf8(
         this ReadOnlySpan<byte> bytes,
@@ -256,8 +256,7 @@ public static class BinaryEncodingExtensions
     /// <param name="utf8">The UTF-8 Base64 source bytes.</param>
     /// <param name="destination">The destination buffer that receives the decoded bytes.</param>
     /// <param name="bytesWritten">
-    /// When this method returns <see langword="true" />, contains the number of decoded bytes written;
-    /// otherwise zero.
+    /// When this method returns <see langword="true" />, contains the number of decoded bytes written; otherwise zero.
     /// </param>
     /// <returns>
     /// <see langword="true" /> when decoding completed successfully; <see langword="false" /> when
@@ -284,8 +283,8 @@ public static class BinaryEncodingExtensions
     }
 
     /// <summary>
-    /// Encodes <paramref name="bytes" /> using the URL- and filename-safe Base64 alphabet (RFC 4648 §5),
-    /// conventionally omitting trailing <c>=</c> padding (the JWT and OAuth convention).
+    /// Encodes <paramref name="bytes" /> using the URL- and filename-safe Base64 alphabet (RFC 4648 §5), conventionally
+    /// omitting trailing <c>=</c> padding (the JWT and OAuth convention).
     /// </summary>
     /// <param name="bytes">The bytes to encode.</param>
     /// <returns>The URL-safe Base64 string.</returns>
@@ -293,14 +292,13 @@ public static class BinaryEncodingExtensions
         Base64Url.Encode(bytes);
 
     /// <summary>
-    /// Encodes <paramref name="bytes" /> into <paramref name="destination" /> as URL-safe Base64 (RFC 4648 §5)
-    /// in UTF-8 (ASCII) encoded form without throwing when the destination is too small.
+    /// Encodes <paramref name="bytes" /> into <paramref name="destination" /> as URL-safe Base64 (RFC 4648 §5) in UTF-8
+    /// (ASCII) encoded form without throwing when the destination is too small.
     /// </summary>
     /// <param name="bytes">The bytes to encode.</param>
     /// <param name="destination">The destination buffer that receives the UTF-8 URL-safe Base64 bytes.</param>
     /// <param name="bytesWritten">
-    /// When this method returns <see langword="true" />, contains the number of UTF-8 bytes written; otherwise
-    /// zero.
+    /// When this method returns <see langword="true" />, contains the number of UTF-8 bytes written; otherwise zero.
     /// </param>
     /// <returns>
     /// <see langword="true" /> when the destination was large enough; <see langword="false" /> otherwise.
@@ -312,22 +310,21 @@ public static class BinaryEncodingExtensions
         Base64Url.TryEncodeToUtf8(bytes, destination, out bytesWritten);
 
     /// <summary>
-    /// Decodes a UTF-8 (ASCII) encoded URL-safe Base64 byte sequence (RFC 4648 §5) into
-    /// <paramref name="destination" /> without throwing when the destination is too small.
+    /// Decodes a UTF-8 (ASCII) encoded URL-safe Base64 byte sequence (RFC 4648 §5) into <paramref name="destination" />
+    /// without throwing when the destination is too small.
     /// </summary>
     /// <param name="utf8">The UTF-8 URL-safe Base64 source bytes.</param>
     /// <param name="destination">The destination buffer that receives the decoded bytes.</param>
     /// <param name="bytesWritten">
-    /// When this method returns <see langword="true" />, contains the number of decoded bytes written;
-    /// otherwise zero.
+    /// When this method returns <see langword="true" />, contains the number of decoded bytes written; otherwise zero.
     /// </param>
     /// <returns>
     /// <see langword="true" /> when decoding completed successfully; <see langword="false" /> when
     /// <paramref name="destination" /> is too small or when <paramref name="utf8" /> contains invalid input.
     /// </returns>
     /// <remarks>
-    /// Accepts inputs both with and without trailing <c>=</c> padding to match the JWT and OAuth conventions
-    /// where padding is typically omitted.
+    /// Accepts inputs both with and without trailing <c>=</c> padding to match the JWT and OAuth conventions where
+    /// padding is typically omitted.
     /// </remarks>
     public static bool TryDecodeBase64UrlFromUtf8(
         this ReadOnlySpan<byte> utf8,

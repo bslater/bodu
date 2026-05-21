@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringEncodingExtensions.GetBytesPooled.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -18,10 +18,9 @@ public static partial class StringEncodingExtensions
     /// <param name="text">The string to encode.</param>
     /// <param name="encoding">The encoding used to produce the bytes.</param>
     /// <returns>
-    /// A <see cref="PooledBufferBuilder{T}" /> with <see cref="PooledBufferBuilder{T}.WrittenCount" /> equal to
-    /// the exact number of encoded bytes. The builder is both an <see cref="IBufferWriter{T}" /> and an
-    /// <see cref="IMemoryOwner{T}" />; dispose to return the rented buffer to
-    /// <see cref="ArrayPool{T}.Shared" />.
+    /// A <see cref="PooledBufferBuilder{T}" /> with <see cref="PooledBufferBuilder{T}.WrittenCount" /> equal to the
+    /// exact number of encoded bytes. The builder is both an <see cref="IBufferWriter{T}" /> and an
+    /// <see cref="IMemoryOwner{T}" />; dispose to return the rented buffer to <see cref="ArrayPool{T}.Shared" />.
     /// </returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="text" /> or <paramref name="encoding" /> is <see langword="null" />.

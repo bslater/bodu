@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringEncodingExtensions.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -12,9 +12,9 @@ namespace Bodu.Text.Encoding;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Members are split across partial files following the repository convention (see <c>CLAUDE.md</c>): one
-/// partial file per method, named <c>StringEncodingExtensions.&lt;MethodName&gt;.cs</c>. Tests follow the same
-/// pattern in <c>test/Text.Encoding/StringEncodingExtensionsTests.&lt;MethodName&gt;.cs</c>.
+/// Members are split across partial files following the repository convention (see <c>CLAUDE.md</c>): one partial file
+/// per method, named <c>StringEncodingExtensions.&lt;MethodName&gt;.cs</c>. Tests follow the same pattern in
+/// <c>test/Text.Encoding/StringEncodingExtensionsTests.&lt;MethodName&gt;.cs</c>.
 /// </para>
 /// <para>
 /// All overloads delegate to the canonical span- or encoding-receiver implementations in

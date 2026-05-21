@@ -8,7 +8,6 @@ namespace Bodu.Text.Encoding;
 
 public static partial class Base85
 {
-
     /// <summary>
     /// Decodes a Base85 string into a byte array using the supplied variant.
     /// </summary>

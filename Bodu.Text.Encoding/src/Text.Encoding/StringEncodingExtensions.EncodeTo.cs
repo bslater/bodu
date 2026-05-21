@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringEncodingExtensions.EncodeTo.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -9,8 +9,8 @@ namespace Bodu.Text.Encoding;
 public static partial class StringEncodingExtensions
 {
     /// <summary>
-    /// Encodes <paramref name="text" /> into <paramref name="destination" /> using <paramref name="encoding" />
-    /// and returns the number of bytes written.
+    /// Encodes <paramref name="text" /> into <paramref name="destination" /> using <paramref name="encoding" /> and
+    /// returns the number of bytes written.
     /// </summary>
     /// <param name="text">The string to encode.</param>
     /// <param name="encoding">The encoding used to produce the bytes.</param>

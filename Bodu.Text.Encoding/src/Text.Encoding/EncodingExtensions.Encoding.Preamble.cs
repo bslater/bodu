@@ -47,12 +47,11 @@ public static partial class EncodingExtensions
     /// <param name="encoding">The encoding whose preamble is written.</param>
     /// <param name="destination">The destination buffer.</param>
     /// <param name="bytesWritten">
-    /// When this method returns <see langword="true" />, contains the number of preamble bytes written;
-    /// otherwise zero.
+    /// When this method returns <see langword="true" />, contains the number of preamble bytes written; otherwise zero.
     /// </param>
     /// <returns>
-    /// <see langword="true" /> if the preamble fit (including the zero-length case when the encoding has no
-    /// preamble); <see langword="false" /> when <paramref name="destination" /> is too small.
+    /// <see langword="true" /> if the preamble fit (including the zero-length case when the encoding has no preamble);
+    /// <see langword="false" /> when <paramref name="destination" /> is too small.
     /// </returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="encoding" /> is <see langword="null" />.
@@ -83,8 +82,8 @@ public static partial class EncodingExtensions
     /// <param name="encoding">The encoding whose preamble is compared.</param>
     /// <param name="bytes">The byte span to inspect.</param>
     /// <returns>
-    /// <see langword="true" /> when <paramref name="bytes" /> starts with the preamble; <see langword="false" />
-    /// when the encoding has no preamble or when the bytes do not match.
+    /// <see langword="true" /> when <paramref name="bytes" /> starts with the preamble; <see langword="false" /> when
+    /// the encoding has no preamble or when the bytes do not match.
     /// </returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="encoding" /> is <see langword="null" />.
@@ -94,8 +93,7 @@ public static partial class EncodingExtensions
         ThrowHelper.ThrowIfNull(encoding);
 
         ReadOnlySpan<byte> preamble = encoding.Preamble;
-        if (preamble.IsEmpty) return false;
-        return bytes.StartsWith(preamble);
+        return !preamble.IsEmpty && bytes.StartsWith(preamble);
     }
 
     /// <summary>
@@ -104,8 +102,8 @@ public static partial class EncodingExtensions
     /// <param name="encoding">The encoding whose preamble is stripped.</param>
     /// <param name="bytes">The byte span to inspect.</param>
     /// <returns>
-    /// A <see cref="ReadOnlySpan{T}" /> equal to <paramref name="bytes" /> when no preamble is present, or the
-    /// sub-span starting after the preamble when one is matched at the start.
+    /// A <see cref="ReadOnlySpan{T}" /> equal to <paramref name="bytes" /> when no preamble is present, or the sub-span
+    /// starting after the preamble when one is matched at the start.
     /// </returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="encoding" /> is <see langword="null" />.
@@ -115,8 +113,9 @@ public static partial class EncodingExtensions
         ThrowHelper.ThrowIfNull(encoding);
 
         ReadOnlySpan<byte> preamble = encoding.Preamble;
-        if (preamble.IsEmpty || !bytes.StartsWith(preamble)) return bytes;
-        return bytes.Slice(preamble.Length);
+        return preamble.IsEmpty || !bytes.StartsWith(preamble)
+            ? bytes
+            : bytes.Slice(preamble.Length);
     }
 
     /// <summary>
@@ -153,8 +152,8 @@ public static partial class EncodingExtensions
     }
 
     /// <summary>
-    /// Encodes <paramref name="chars" /> into a freshly allocated byte array preceded by
-    /// <paramref name="encoding" />'s preamble.
+    /// Encodes <paramref name="chars" /> into a freshly allocated byte array preceded by <paramref name="encoding" />'s
+    /// preamble.
     /// </summary>
     /// <param name="encoding">The encoding used to produce the bytes.</param>
     /// <param name="chars">The character span to encode.</param>
@@ -178,16 +177,19 @@ public static partial class EncodingExtensions
         var buffer = new byte[total];
         if (!preamble.IsEmpty) preamble.CopyTo(buffer);
         if (encodedCount > 0) encoding.GetBytes(chars, buffer.AsSpan(preamble.Length));
+
         return buffer;
     }
 
     /// <summary>
-    /// Encodes <paramref name="chars" /> into <paramref name="destination" /> preceded by
-    /// <paramref name="encoding" />'s preamble and returns the total number of bytes written.
+    /// Encodes <paramref name="chars" /> into <paramref name="destination" /> preceded by <paramref name="encoding" />
+    /// 's preamble and returns the total number of bytes written.
     /// </summary>
     /// <param name="encoding">The encoding used to produce the bytes.</param>
     /// <param name="chars">The character span to encode.</param>
-    /// <param name="destination">The destination buffer. Must be large enough to hold preamble plus encoded output.</param>
+    /// <param name="destination">
+    /// The destination buffer. Must be large enough to hold preamble plus encoded output.
+    /// </param>
     /// <returns>The preamble length plus the encoded byte count.</returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="encoding" /> is <see langword="null" />.
@@ -209,6 +211,7 @@ public static partial class EncodingExtensions
         ReadOnlySpan<byte> preamble = encoding.Preamble;
         var encodedCount = encoding.GetByteCount(chars);
         var total = preamble.Length + encodedCount;
+
         if (destination.Length < total)
             throw new ArgumentException(
                 EncodingResourceStrings.Arg_Invalid_DestinationTooSmallForEncoded,
@@ -216,6 +219,7 @@ public static partial class EncodingExtensions
 
         if (!preamble.IsEmpty) preamble.CopyTo(destination);
         if (encodedCount > 0) encoding.GetBytes(chars, destination.Slice(preamble.Length));
+
         return total;
     }
 
@@ -227,8 +231,8 @@ public static partial class EncodingExtensions
     /// <param name="chars">The character span to encode.</param>
     /// <param name="destination">The destination buffer.</param>
     /// <param name="bytesWritten">
-    /// When this method returns <see langword="true" />, contains the total number of bytes written (preamble
-    /// plus encoded output); otherwise zero.
+    /// When this method returns <see langword="true" />, contains the total number of bytes written (preamble plus
+    /// encoded output); otherwise zero.
     /// </param>
     /// <returns>
     /// <see langword="true" /> when the preamble and encoded bytes fit; <see langword="false" /> when
@@ -261,6 +265,7 @@ public static partial class EncodingExtensions
         if (!preamble.IsEmpty) preamble.CopyTo(destination);
         if (encodedCount > 0) encoding.GetBytes(chars, destination.Slice(preamble.Length));
         bytesWritten = total;
+
         return true;
     }
 }

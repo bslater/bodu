@@ -8,7 +8,6 @@ namespace Bodu.Text.Encoding;
 
 public static partial class Base16
 {
-
     /// <summary>
     /// Decodes a hexadecimal representation of a <see cref="Guid" />.
     /// </summary>
@@ -23,6 +22,7 @@ public static partial class Base16
             ? throw new FormatException(EncodingResourceStrings.Format_Invalid_GuidNotSixteenBytes)
             : new Guid(bytes);
     }
+
     /// <summary>
     /// Encodes the byte representation of <paramref name="value" /> as a hexadecimal string.
     /// </summary>

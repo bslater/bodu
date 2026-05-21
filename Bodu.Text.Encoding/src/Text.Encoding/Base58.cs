@@ -42,7 +42,6 @@ namespace Bodu.Text.Encoding;
 /// </example>
 public static partial class Base58
 {
-
     private const string BitcoinFlickrAlphabet = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
     private const string RippleAlphabet = "rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz";
 

@@ -45,7 +45,6 @@ namespace Bodu.Text.Encoding;
 /// </example>
 public static partial class Base64
 {
-
     /// <summary>
     /// The number of encoded characters per MIME / line-break line.
     /// </summary>

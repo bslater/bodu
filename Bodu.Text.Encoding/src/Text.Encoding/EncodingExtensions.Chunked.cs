@@ -11,16 +11,16 @@ namespace Bodu.Text.Encoding;
 public static partial class EncodingExtensions
 {
     /// <summary>
-    /// Encodes a chunk of characters from <paramref name="source" /> into <paramref name="destination" /> via
-    /// the stateful <paramref name="encoder" /> and returns an <see cref="OperationStatus" /> indicating whether
-    /// the destination was sufficient.
+    /// Encodes a chunk of characters from <paramref name="source" /> into <paramref name="destination" /> via the
+    /// stateful <paramref name="encoder" /> and returns an <see cref="OperationStatus" /> indicating whether the
+    /// destination was sufficient.
     /// </summary>
     /// <param name="encoder">The encoder used to produce the bytes. Carries cross-chunk state.</param>
     /// <param name="source">The character span to encode.</param>
     /// <param name="destination">The destination buffer.</param>
     /// <param name="flush">
-    /// <see langword="true" /> when <paramref name="source" /> is the final chunk and any pending state should
-    /// be drained; <see langword="false" /> when more chunks may follow.
+    /// <see langword="true" /> when <paramref name="source" /> is the final chunk and any pending state should be
+    /// drained; <see langword="false" /> when more chunks may follow.
     /// </param>
     /// <param name="charsConsumed">
     /// The number of characters from <paramref name="source" /> that were consumed by the encoder.
@@ -29,16 +29,16 @@ public static partial class EncodingExtensions
     /// <returns>
     /// <see cref="OperationStatus.Done" /> when the entire chunk was encoded;
     /// <see cref="OperationStatus.DestinationTooSmall" /> when more output remains; never returns
-    /// <see cref="OperationStatus.NeedMoreData" /> or <see cref="OperationStatus.InvalidData" /> from this
-    /// extension (invalid data surfaces as <see cref="System.Text.EncoderFallbackException" /> when the
-    /// encoder's fallback is the exception fallback).
+    /// <see cref="OperationStatus.NeedMoreData" /> or <see cref="OperationStatus.InvalidData" /> from this extension
+    /// (invalid data surfaces as <see cref="System.Text.EncoderFallbackException" /> when the encoder's fallback is the
+    /// exception fallback).
     /// </returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="encoder" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="System.Text.EncoderFallbackException">
-    /// Thrown when <paramref name="encoder" /> uses <see cref="System.Text.EncoderExceptionFallback" /> and the
-    /// chunk contains a code point that cannot be represented.
+    /// Thrown when <paramref name="encoder" /> uses <see cref="System.Text.EncoderExceptionFallback" /> and the chunk
+    /// contains a code point that cannot be represented.
     /// </exception>
     /// <example>
     ///<![CDATA[
@@ -85,16 +85,16 @@ public static partial class EncodingExtensions
     }
 
     /// <summary>
-    /// Decodes a chunk of bytes from <paramref name="source" /> into <paramref name="destination" /> via the
-    /// stateful <paramref name="decoder" /> and returns an <see cref="OperationStatus" /> indicating whether the
-    /// destination was sufficient.
+    /// Decodes a chunk of bytes from <paramref name="source" /> into <paramref name="destination" /> via the stateful
+    /// <paramref name="decoder" /> and returns an <see cref="OperationStatus" /> indicating whether the destination was
+    /// sufficient.
     /// </summary>
     /// <param name="decoder">The decoder used to interpret the bytes. Carries cross-chunk state.</param>
     /// <param name="source">The byte span to decode.</param>
     /// <param name="destination">The destination buffer.</param>
     /// <param name="flush">
-    /// <see langword="true" /> when <paramref name="source" /> is the final chunk and any pending state should
-    /// be drained; <see langword="false" /> when more chunks may follow.
+    /// <see langword="true" /> when <paramref name="source" /> is the final chunk and any pending state should be
+    /// drained; <see langword="false" /> when more chunks may follow.
     /// </param>
     /// <param name="bytesConsumed">
     /// The number of bytes from <paramref name="source" /> that were consumed by the decoder.
@@ -108,8 +108,8 @@ public static partial class EncodingExtensions
     /// Thrown when <paramref name="decoder" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="System.Text.DecoderFallbackException">
-    /// Thrown when <paramref name="decoder" /> uses <see cref="System.Text.DecoderExceptionFallback" /> and the
-    /// chunk contains a sequence that cannot be decoded.
+    /// Thrown when <paramref name="decoder" /> uses <see cref="System.Text.DecoderExceptionFallback" /> and the chunk
+    /// contains a sequence that cannot be decoded.
     /// </exception>
     public static OperationStatus DecodeChunk(
         this System.Text.Decoder decoder,

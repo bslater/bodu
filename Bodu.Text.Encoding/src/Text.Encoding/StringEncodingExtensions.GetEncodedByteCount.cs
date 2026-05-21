@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringEncodingExtensions.GetEncodedByteCount.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -19,8 +19,8 @@ public static partial class StringEncodingExtensions
     /// Thrown when <paramref name="text" /> or <paramref name="encoding" /> is <see langword="null" />.
     /// </exception>
     /// <remarks>
-    /// Equivalent to <see cref="System.Text.Encoding.GetByteCount(string)" /> but expressed as an extension so
-    /// fluent code can chain from a string variable.
+    /// Equivalent to <see cref="System.Text.Encoding.GetByteCount(string)" /> but expressed as an extension so fluent
+    /// code can chain from a string variable.
     /// </remarks>
     public static int GetEncodedByteCount(this string text, System.Text.Encoding encoding)
     {

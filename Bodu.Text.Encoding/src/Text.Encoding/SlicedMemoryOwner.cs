@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SlicedMemoryOwner.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -15,9 +15,9 @@ namespace Bodu.Text.Encoding;
 /// <typeparam name="T">The element type of the owned memory.</typeparam>
 /// <remarks>
 /// <para>
-/// <see cref="MemoryPool{T}" />.Rent often returns a buffer that is larger than the requested size. Callers that
-/// need an <see cref="IMemoryOwner{T}" /> whose <see cref="IMemoryOwner{T}.Memory" /> matches the exact written
-/// length use this wrapper so that consumers see the trimmed length without leaking the larger rented buffer.
+/// <see cref="MemoryPool{T}" />.Rent often returns a buffer that is larger than the requested size. Callers that need
+/// an <see cref="IMemoryOwner{T}" /> whose <see cref="IMemoryOwner{T}.Memory" /> matches the exact written length use
+/// this wrapper so that consumers see the trimmed length without leaking the larger rented buffer.
 /// </para>
 /// <para>
 /// Disposing this wrapper disposes the inner owner exactly once. Subsequent accesses throw
@@ -32,8 +32,8 @@ internal sealed class SlicedMemoryOwner<T> : IMemoryOwner<T>
     private readonly int _length;
 
     /// <summary>
-    /// The wrapped inner owner. Set to <see langword="null" /> by <see cref="Dispose" /> to enforce single
-    /// disposal and to surface use-after-dispose access via <see cref="ObjectDisposedException" />.
+    /// The wrapped inner owner. Set to <see langword="null" /> by <see cref="Dispose" /> to enforce single disposal and
+    /// to surface use-after-dispose access via <see cref="ObjectDisposedException" />.
     /// </summary>
     private IMemoryOwner<T>? _inner;
 
@@ -65,15 +65,13 @@ internal sealed class SlicedMemoryOwner<T> : IMemoryOwner<T>
     /// Gets the writable memory window narrowed to the length supplied at construction.
     /// </summary>
     /// <returns>A <see cref="Memory{T}" /> of length <see cref="Memory" />.Length.</returns>
-    /// <exception cref="ObjectDisposedException">
-    /// Thrown when this owner has already been disposed.
-    /// </exception>
+    /// <exception cref="ObjectDisposedException">Thrown when this owner has already been disposed.</exception>
     public Memory<T> Memory
     {
         get
         {
             IMemoryOwner<T> inner = _inner
-                ?? throw new ObjectDisposedException(nameof(SlicedMemoryOwner<T>));
+                ?? throw new ObjectDisposedException(nameof(SlicedMemoryOwner<>));
             return inner.Memory.Slice(0, _length);
         }
     }

@@ -31,8 +31,8 @@ public static partial class EncodingExtensions
     /// </exception>
     /// <remarks>
     /// Provided as the encoding-receiver mirror of
-    /// <see cref="TryDecodeTo(ReadOnlySpan{byte}, System.Text.Encoding, Span{char}, out int)" /> so that fluent
-    /// code starting from an <see cref="System.Text.Encoding" /> reference remains symmetrical.
+    /// <see cref="TryDecodeTo(ReadOnlySpan{byte}, System.Text.Encoding, Span{char}, out int)" /> so that fluent code
+    /// starting from an <see cref="System.Text.Encoding" /> reference remains symmetrical.
     /// </remarks>
     public static bool TryGetChars(
         this System.Text.Encoding encoding,
@@ -46,13 +46,15 @@ public static partial class EncodingExtensions
     }
 
     /// <summary>
-    /// Decodes <paramref name="bytes" /> into <paramref name="destination" /> using <paramref name="encoding" />
-    /// and asserts that <paramref name="destination" /> is exactly the size required.
+    /// Decodes <paramref name="bytes" /> into <paramref name="destination" /> using <paramref name="encoding" /> and
+    /// asserts that <paramref name="destination" /> is exactly the size required.
     /// </summary>
     /// <param name="encoding">The encoding used to interpret the bytes.</param>
     /// <param name="bytes">The byte span to decode.</param>
     /// <param name="destination">The destination buffer. Must be exactly the size required by the encoding.</param>
-    /// <returns>The number of characters written, which equals <paramref name="destination" />.Length on success.</returns>
+    /// <returns>
+    /// The number of characters written, which equals <paramref name="destination" />.Length on success.
+    /// </returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="encoding" /> is <see langword="null" />.
     /// </exception>
@@ -72,11 +74,10 @@ public static partial class EncodingExtensions
         ThrowHelper.ThrowIfNull(encoding);
 
         var required = encoding.GetCharCount(bytes);
-        if (destination.Length != required)
-            throw new ArgumentException(
+        return destination.Length == required
+            ? encoding.GetChars(bytes, destination)
+            : throw new ArgumentException(
                 EncodingResourceStrings.Arg_Invalid_DestinationNotExactSizeForDecoded,
                 nameof(destination));
-
-        return encoding.GetChars(bytes, destination);
     }
 }

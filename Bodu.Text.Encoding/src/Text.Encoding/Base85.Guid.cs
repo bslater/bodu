@@ -8,7 +8,6 @@ namespace Bodu.Text.Encoding;
 
 public static partial class Base85
 {
-
     /// <summary>
     /// Decodes a Base85 representation of a <see cref="Guid" />.
     /// </summary>
@@ -24,6 +23,7 @@ public static partial class Base85
             ? throw new FormatException(EncodingResourceStrings.Format_Invalid_GuidNotSixteenBytes)
             : new Guid(bytes);
     }
+
     /// <summary>
     /// Encodes the byte representation of <paramref name="value" /> as a Base85 string. 16 bytes encode to exactly 20
     /// characters (Ascii85 or Z85).

@@ -10,7 +10,6 @@ namespace Bodu.Text.Encoding;
 
 public static partial class Base64
 {
-
     /// <summary>
     /// Decodes a Base64 string into a byte array using the supplied variant.
     /// </summary>

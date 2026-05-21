@@ -10,7 +10,6 @@ namespace Bodu.Text.Encoding;
 
 public static partial class Base58
 {
-
     /// <summary>
     /// Decodes UTF-8 Base58 bytes into a byte span using the <see cref="OperationStatus" /> return convention.
     /// </summary>
@@ -45,6 +44,7 @@ public static partial class Base58
 
         return status;
     }
+
     /// <summary>
     /// Encodes <paramref name="source" /> into a UTF-8 Base58 byte array using the supplied variant.
     /// </summary>

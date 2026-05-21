@@ -10,7 +10,6 @@ namespace Bodu.Text.Encoding;
 
 public static partial class Base16
 {
-
     /// <summary>
     /// Streaming decode of a UTF-8 hexadecimal byte span into a byte span, with leniency styles and a streaming
     /// indicator.
@@ -84,6 +83,7 @@ public static partial class Base16
 
         return status;
     }
+
     /// <summary>
     /// Encodes <paramref name="source" /> into a UTF-8 hexadecimal byte array using lower case characters.
     /// </summary>
@@ -236,10 +236,11 @@ public static partial class Base16
             bytesConsumed = sourcePos;
         }
 
-        if (sourcePos == source.Length)
-            return OperationStatus.Done;
-
-        return isFinalBlock ? OperationStatus.InvalidData : OperationStatus.NeedMoreData;
+        return sourcePos == source.Length
+            ? OperationStatus.Done
+            : isFinalBlock
+                ? OperationStatus.InvalidData
+                : OperationStatus.NeedMoreData;
     }
 
     /// <summary>

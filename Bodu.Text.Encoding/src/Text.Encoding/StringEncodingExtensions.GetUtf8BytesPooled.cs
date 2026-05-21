@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringEncodingExtensions.GetUtf8BytesPooled.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -16,10 +16,9 @@ public static partial class StringEncodingExtensions
     /// </summary>
     /// <param name="text">The string to encode.</param>
     /// <returns>
-    /// A <see cref="PooledBufferBuilder{T}" /> with <see cref="PooledBufferBuilder{T}.WrittenCount" /> equal to
-    /// the exact number of UTF-8 bytes. The builder is both an <see cref="IBufferWriter{T}" /> and an
-    /// <see cref="IMemoryOwner{T}" />; dispose to return the rented buffer to
-    /// <see cref="ArrayPool{T}.Shared" />.
+    /// A <see cref="PooledBufferBuilder{T}" /> with <see cref="PooledBufferBuilder{T}.WrittenCount" /> equal to the
+    /// exact number of UTF-8 bytes. The builder is both an <see cref="IBufferWriter{T}" /> and an
+    /// <see cref="IMemoryOwner{T}" />; dispose to return the rented buffer to <see cref="ArrayPool{T}.Shared" />.
     /// </returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="text" /> is <see langword="null" />.

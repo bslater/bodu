@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringEncodingExtensions.TryEncodeUtf8To.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -9,8 +9,8 @@ namespace Bodu.Text.Encoding;
 public static partial class StringEncodingExtensions
 {
     /// <summary>
-    /// Attempts to encode <paramref name="text" /> as UTF-8 into <paramref name="destination" /> without
-    /// throwing when the destination is too small.
+    /// Attempts to encode <paramref name="text" /> as UTF-8 into <paramref name="destination" /> without throwing when
+    /// the destination is too small.
     /// </summary>
     /// <param name="text">The string to encode.</param>
     /// <param name="destination">The destination buffer.</param>

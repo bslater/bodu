@@ -8,7 +8,6 @@ namespace Bodu.Text.Encoding;
 
 public static partial class Base32
 {
-
     /// <summary>
     /// Decodes a Base32 representation of a <see cref="Guid" />.
     /// </summary>
@@ -24,6 +23,7 @@ public static partial class Base32
             ? throw new FormatException(EncodingResourceStrings.Format_Invalid_GuidNotSixteenBytes)
             : new Guid(bytes);
     }
+
     /// <summary>
     /// Encodes the byte representation of <paramref name="value" /> as a Base32 string. With no padding the result is
     /// 26 characters; with RFC 4648 padding it is 32 characters.
