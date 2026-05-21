@@ -15,6 +15,14 @@ internal sealed partial class ConfigurationReader
     /// <see cref="ConfigurationDiagnosticMode.Throw" /> and retaining it on the local diagnostic list only when the
     /// mode is <see cref="ConfigurationDiagnosticMode.Collect" />.
     /// </summary>
+    /// <param name="severity">The severity classification of the diagnostic.</param>
+    /// <param name="code">The stable code identifying the diagnostic category.</param>
+    /// <param name="message">The human-readable message text.</param>
+    /// <param name="location">The source location the diagnostic refers to.</param>
+    /// <exception cref="ConfigurationParseException">
+    /// The configured mode is <see cref="ConfigurationDiagnosticMode.Throw" /> and <paramref name="severity" /> is
+    /// <see cref="ConfigurationDiagnosticSeverity.Error" />.
+    /// </exception>
     private void EmitDiagnostic(
         ConfigurationDiagnosticSeverity severity,
         ConfigurationDiagnosticCode code,
@@ -41,9 +49,20 @@ internal sealed partial class ConfigurationReader
         }
     }
 
+    /// <summary>
+    /// Gets the section a property should attach to — the most recently declared section, or the global section when
+    /// none have been declared.
+    /// </summary>
+    /// <param name="document">The document being populated.</param>
+    /// <returns>The current target section.</returns>
     private static IniSection GetCurrentSection(IniDocument document) =>
         document.Sections.Count > 0 ? document.Sections[^1] : document.GlobalSection;
 
+    /// <summary>
+    /// Attaches every comment in <paramref name="pending" /> to <paramref name="section" /> and clears the list.
+    /// </summary>
+    /// <param name="section">The section the comments are attached to.</param>
+    /// <param name="pending">The pending leading comments; emptied by this call.</param>
     private static void AttachPendingComments(IniSection section, List<IniComment> pending)
     {
         foreach (IniComment c in pending)
@@ -51,6 +70,11 @@ internal sealed partial class ConfigurationReader
         pending.Clear();
     }
 
+    /// <summary>
+    /// Finds the index of the first non-whitespace character in <paramref name="line" />.
+    /// </summary>
+    /// <param name="line">The line to scan.</param>
+    /// <returns>The zero-based index, or <c>-1</c> when the line is blank.</returns>
     private static int FindFirstNonWhitespace(string line)
     {
         for (var i = 0; i < line.Length; i++)
@@ -62,6 +86,12 @@ internal sealed partial class ConfigurationReader
         return -1;
     }
 
+    /// <summary>
+    /// Finds the index of the last <c>]</c> on <paramref name="line" />, scanning back past trailing whitespace.
+    /// </summary>
+    /// <param name="line">The line to scan.</param>
+    /// <param name="firstNonWs">The index of the first non-whitespace character on the line.</param>
+    /// <returns>The index of the closing <c>]</c>, or <c>-1</c> when none is found.</returns>
     private static int FindLastClosingBracket(string line, int firstNonWs)
     {
         for (var i = line.Length - 1; i > firstNonWs; i--)
@@ -76,6 +106,14 @@ internal sealed partial class ConfigurationReader
         return -1;
     }
 
+    /// <summary>
+    /// Finds the index of the first unescaped occurrence of <paramref name="target" /> at or after
+    /// <paramref name="from" />.
+    /// </summary>
+    /// <param name="line">The line to scan.</param>
+    /// <param name="target">The character to search for.</param>
+    /// <param name="from">The index to begin scanning from.</param>
+    /// <returns>The zero-based index, or <c>-1</c> when no unescaped occurrence is found.</returns>
     private static int FindFirstUnescaped(string line, char target, int from)
     {
         for (var i = from; i < line.Length; i++)
@@ -93,6 +131,13 @@ internal sealed partial class ConfigurationReader
         return -1;
     }
 
+    /// <summary>
+    /// Returns the substring of <paramref name="line" /> from <paramref name="firstNonWs" /> with trailing whitespace
+    /// removed.
+    /// </summary>
+    /// <param name="line">The line to trim.</param>
+    /// <param name="firstNonWs">The index of the first non-whitespace character on the line.</param>
+    /// <returns>The trimmed substring.</returns>
     private static string TrimTrailing(string line, int firstNonWs)
     {
         var end = line.Length - 1;
@@ -101,6 +146,15 @@ internal sealed partial class ConfigurationReader
         return line.Substring(firstNonWs, end - firstNonWs + 1);
     }
 
+    /// <summary>
+    /// Attempts to split an inline comment from the end of <paramref name="value" /> under the supplied comment mode.
+    /// </summary>
+    /// <param name="value">
+    /// The property value to scan; trimmed of the comment and trailing whitespace when one is found.
+    /// </param>
+    /// <param name="mode">The inline comment mode that decides when a comment prefix is recognized.</param>
+    /// <param name="lineNumber">The 1-based line number recorded on the extracted comment.</param>
+    /// <returns>The extracted inline comment, or <see langword="null" /> when none is present.</returns>
     private static IniComment? TryExtractInlineComment(
         ref string value,
         ConfigurationInlineCommentMode mode,

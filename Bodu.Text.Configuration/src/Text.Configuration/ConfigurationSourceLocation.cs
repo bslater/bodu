@@ -55,7 +55,7 @@ namespace Bodu.Text.Configuration;
 public readonly struct ConfigurationSourceLocation : IEquatable<ConfigurationSourceLocation>
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="ConfigurationSourceLocation" /> struct. with the specified line
+    /// Initializes a new instance of the <see cref="ConfigurationSourceLocation" /> struct with the specified line
     /// number, column, span length, and optional file path.
     /// </summary>
     /// <param name="lineNumber">The 1-based line number.</param>

@@ -212,7 +212,9 @@ public static class ConfigurationDocument
     /// <param name="document">The document to save.</param>
     /// <param name="path">The destination file path.</param>
     /// <param name="options">The write options, or <see langword="null" /> for the defaults.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="document" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="document" /> or <paramref name="path" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentException"><paramref name="path" /> is empty or whitespace.</exception>
     public static void Save(IniDocument document, string path, ConfigurationWriteOptions? options = null)
     {
@@ -232,6 +234,10 @@ public static class ConfigurationDocument
     /// <param name="stream">The destination stream. Must support writing.</param>
     /// <param name="options">The write options, or <see langword="null" /> for the defaults.</param>
     /// <param name="leaveOpen">When <see langword="true" />, the stream remains open after writing.</param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="document" /> or <paramref name="stream" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentException"><paramref name="stream" /> does not support writing.</exception>
     public static void Save(IniDocument document, Stream stream, ConfigurationWriteOptions? options = null, bool leaveOpen = false)
     {
         ThrowHelper.ThrowIfNull(document);
@@ -249,6 +255,9 @@ public static class ConfigurationDocument
     /// <param name="document">The document to save.</param>
     /// <param name="writer">The destination writer.</param>
     /// <param name="options">The write options, or <see langword="null" /> for the defaults.</param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="document" /> or <paramref name="writer" /> is <see langword="null" />.
+    /// </exception>
     public static void Save(IniDocument document, TextWriter writer, ConfigurationWriteOptions? options = null)
     {
         ThrowHelper.ThrowIfNull(document);
@@ -272,10 +281,11 @@ public static class ConfigurationDocument
 public sealed class ConfigurationParseResult
 {
     /// <summary>
-    /// Initializes a new <see cref="ConfigurationParseResult" />.
+    /// Initializes a new instance of the <see cref="ConfigurationParseResult" /> class.
     /// </summary>
     /// <param name="document">The parsed document.</param>
     /// <param name="diagnostics">The diagnostics collected during the parse.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="document" /> is <see langword="null" />.</exception>
     public ConfigurationParseResult(IniDocument document, ImmutableArray<ConfigurationDiagnostic> diagnostics)
     {
         ThrowHelper.ThrowIfNull(document);

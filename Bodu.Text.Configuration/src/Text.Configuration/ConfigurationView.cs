@@ -49,6 +49,10 @@ namespace Bodu.Text.Configuration;
 /// </example>
 public sealed partial class ConfigurationView : IEnumerable<KeyValuePair<string, string?>>
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ConfigurationView" /> class over the supplied resolved values.
+    /// </summary>
+    /// <param name="values">The resolved configuration values, keyed by canonical configuration key.</param>
     internal ConfigurationView(IReadOnlyDictionary<string, string?> values)
     {
         Values = values;
@@ -114,5 +118,6 @@ public sealed partial class ConfigurationView : IEnumerable<KeyValuePair<string,
     public IEnumerator<KeyValuePair<string, string?>> GetEnumerator() =>
         Values.GetEnumerator();
 
+    /// <inheritdoc />
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }

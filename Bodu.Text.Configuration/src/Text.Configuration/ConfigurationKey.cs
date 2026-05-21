@@ -70,6 +70,13 @@ public readonly partial struct ConfigurationKey : IEquatable<ConfigurationKey>
         CaseSensitive = effective.CaseSensitive;
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ConfigurationKey" /> struct from already-validated components.
+    /// </summary>
+    /// <param name="rawKey">The raw key as authored in the configuration source.</param>
+    /// <param name="segments">The pre-split, pre-validated key segments.</param>
+    /// <param name="path">The canonical colon-delimited key path.</param>
+    /// <param name="caseSensitive">Whether equality and hashing use ordinal case-sensitive comparison.</param>
     private ConfigurationKey(string rawKey, ImmutableArray<string> segments, string path, bool caseSensitive)
     {
         _rawKey = rawKey;
@@ -182,6 +189,14 @@ public readonly partial struct ConfigurationKey : IEquatable<ConfigurationKey>
     /// <inheritdoc />
     public override string ToString() => Path;
 
+    /// <summary>
+    /// Splits <paramref name="rawKey" /> into segments on the separator characters configured by
+    /// <paramref name="options" />.
+    /// </summary>
+    /// <param name="rawKey">The raw key to split.</param>
+    /// <param name="options">The key options supplying the recognised separators.</param>
+    /// <returns>The ordered segments produced by the split.</returns>
+    /// <exception cref="ArgumentException">A segment was empty and empty segments are not permitted.</exception>
     private static ImmutableArray<string> SplitSegments(string rawKey, ConfigurationKeyOptions options)
     {
         IReadOnlyList<char> separators = options.SegmentSeparators;
@@ -203,6 +218,16 @@ public readonly partial struct ConfigurationKey : IEquatable<ConfigurationKey>
         return builder.ToImmutable();
     }
 
+    /// <summary>
+    /// Appends <paramref name="segment" /> to <paramref name="builder" />, enforcing the empty-segment policy.
+    /// </summary>
+    /// <param name="builder">The builder accumulating the key segments.</param>
+    /// <param name="segment">The candidate segment span.</param>
+    /// <param name="options">The key options that determine whether empty segments are permitted.</param>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="segment" /> is empty and <see cref="ConfigurationKeyOptions.AllowEmptySegments" /> is
+    /// <see langword="false" />.
+    /// </exception>
     private static void AddSegment(ImmutableArray<string>.Builder builder, ReadOnlySpan<char> segment, ConfigurationKeyOptions options)
     {
         if (segment.IsEmpty)
@@ -216,9 +241,20 @@ public readonly partial struct ConfigurationKey : IEquatable<ConfigurationKey>
         builder.Add(segment.ToString());
     }
 
+    /// <summary>
+    /// Throws when <paramref name="rawKey" /> contains a control character.
+    /// </summary>
+    /// <param name="rawKey">The raw key to scan.</param>
+    /// <exception cref="ArgumentException"><paramref name="rawKey" /> contains a control character.</exception>
     private static void RejectControlCharacters(string rawKey) =>
         ConfigurationThrowHelper.ThrowIfConfigKeyContainsControlChar(rawKey);
 
+    /// <summary>
+    /// Determines whether <paramref name="c" /> is one of the configured segment separators.
+    /// </summary>
+    /// <param name="c">The character to test.</param>
+    /// <param name="separators">The recognised separator characters.</param>
+    /// <returns><see langword="true" /> when <paramref name="c" /> matches a separator.</returns>
     private static bool IsSeparator(char c, IReadOnlyList<char> separators)
     {
         for (var i = 0; i < separators.Count; i++)
@@ -230,6 +266,12 @@ public readonly partial struct ConfigurationKey : IEquatable<ConfigurationKey>
         return false;
     }
 
+    /// <summary>
+    /// Joins <paramref name="segments" /> into a canonical key path according to the configured mapping.
+    /// </summary>
+    /// <param name="segments">The key segments to join.</param>
+    /// <param name="options">The key options supplying the mapping policy.</param>
+    /// <returns>The canonical configuration key path.</returns>
     private static string ComposePath(ImmutableArray<string> segments, ConfigurationKeyOptions options) =>
         options.Mapping switch
         {
@@ -239,6 +281,11 @@ public readonly partial struct ConfigurationKey : IEquatable<ConfigurationKey>
             _ => string.Join(':', segments),
         };
 
+    /// <summary>
+    /// Gets the first configured segment separator, falling back to <c>'.'</c> when none are configured.
+    /// </summary>
+    /// <param name="options">The key options supplying the separator set.</param>
+    /// <returns>The first separator character, or <c>'.'</c> when the set is empty.</returns>
     private static char GetFirstSeparator(ConfigurationKeyOptions options) =>
         options.SegmentSeparators.Count > 0 ? options.SegmentSeparators[0] : '.';
 }

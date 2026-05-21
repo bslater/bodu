@@ -105,7 +105,9 @@ public sealed class ConfigurationParseException : FormatException
     }
 
 #if !NET8_0_OR_GREATER
-    /// <summary>Serialization constructor.</summary>
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ConfigurationParseException" /> class from serialized data.
+    /// </summary>
     /// <param name="info">The serialization information.</param>
     /// <param name="context">The streaming context.</param>
     private ConfigurationParseException(SerializationInfo info, StreamingContext context)
@@ -132,18 +134,30 @@ public sealed class ConfigurationParseException : FormatException
     /// Gets the location in the source document that triggered the exception.
     /// </summary>
     /// <returns>
-    /// The associated <see cref="ConfigurationSourceLocation" />, or
-    /// <see cref="ConfigurationSourceLocation.None" /> when no primary diagnostic is available.
+    /// The associated <see cref="ConfigurationSourceLocation" />, or <see cref="ConfigurationSourceLocation.None" />
+    /// when no primary diagnostic is available.
     /// </returns>
     public ConfigurationSourceLocation Location =>
         Diagnostic?.Location ?? ConfigurationSourceLocation.None;
 
+    /// <summary>
+    /// Derives the exception message from a single diagnostic.
+    /// </summary>
+    /// <param name="diagnostic">The diagnostic that triggered the failure.</param>
+    /// <returns>The diagnostic's message text.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="diagnostic" /> is <see langword="null" />.</exception>
     private static string GetMessage(ConfigurationDiagnostic diagnostic)
     {
         ThrowHelper.ThrowIfNull(diagnostic);
         return diagnostic.Message;
     }
 
+    /// <summary>
+    /// Derives the exception message from a set of collected diagnostics.
+    /// </summary>
+    /// <param name="diagnostics">The diagnostics gathered before the failure.</param>
+    /// <returns>The first diagnostic's message, or a default message when the set is empty.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="diagnostics" /> is <see langword="null" />.</exception>
     private static string GetMessage(IReadOnlyList<ConfigurationDiagnostic> diagnostics)
     {
         ThrowHelper.ThrowIfNull(diagnostics);
