@@ -227,7 +227,7 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
     /// confirming the eager-validation contract.
     /// </summary>
     [TestMethod]
-    public void Randomize_WhenRngIsNull_ShouldThrowBeforeEnumeration()
+    public void Randomize_WhenRngIsNull_ShouldThrowExactlyBeforeEnumeration()
     {
         var wasEnumerated = false;
 
