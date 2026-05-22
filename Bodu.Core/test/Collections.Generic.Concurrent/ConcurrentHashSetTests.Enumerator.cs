@@ -172,4 +172,65 @@ public partial class ConcurrentHashSetTests
         enumerator.Dispose();
         enumerator.Dispose();
     }
+
+    /// <summary>
+    /// Verifies that <c>MoveNext</c> on a default-valued <see cref="ConcurrentHashSet{T}.Enumerator" /> reports
+    /// end-of-sequence rather than throwing.
+    /// </summary>
+    [TestMethod]
+    public void Enumerator_Default_MoveNext_ShouldReturnFalse()
+    {
+        ConcurrentHashSet<int>.Enumerator enumerator = default;
+
+        Assert.IsFalse(enumerator.MoveNext());
+    }
+
+    /// <summary>
+    /// Verifies that <c>Current</c> on a default-valued <see cref="ConcurrentHashSet{T}.Enumerator" /> is the type
+    /// default.
+    /// </summary>
+    [TestMethod]
+    public void Enumerator_Default_Current_ShouldBeDefault()
+    {
+        ConcurrentHashSet<int>.Enumerator enumerator = default;
+
+        Assert.AreEqual(0, enumerator.Current);
+    }
+
+    /// <summary>
+    /// Verifies that the non-generic <see cref="System.Collections.IEnumerator.Current" /> on a default-valued
+    /// <see cref="ConcurrentHashSet{T}.Enumerator" /> is the type default.
+    /// </summary>
+    [TestMethod]
+    public void Enumerator_Default_NonGenericCurrent_ShouldBeDefault()
+    {
+        System.Collections.IEnumerator enumerator = default(ConcurrentHashSet<int>.Enumerator);
+
+        Assert.AreEqual(0, enumerator.Current);
+    }
+
+    /// <summary>
+    /// Verifies that <c>Reset</c> on a default-valued <see cref="ConcurrentHashSet{T}.Enumerator" /> is safe and that
+    /// the enumerator still yields nothing afterward.
+    /// </summary>
+    [TestMethod]
+    public void Enumerator_Default_Reset_ShouldBeSafe()
+    {
+        ConcurrentHashSet<int>.Enumerator enumerator = default;
+
+        enumerator.Reset();
+
+        Assert.IsFalse(enumerator.MoveNext());
+    }
+
+    /// <summary>
+    /// Verifies that <c>Dispose</c> on a default-valued <see cref="ConcurrentHashSet{T}.Enumerator" /> is safe.
+    /// </summary>
+    [TestMethod]
+    public void Enumerator_Default_Dispose_ShouldBeSafe()
+    {
+        ConcurrentHashSet<int>.Enumerator enumerator = default;
+
+        enumerator.Dispose();
+    }
 }

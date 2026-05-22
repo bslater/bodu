@@ -28,7 +28,6 @@ public sealed partial class ConcurrentHashSet<T>
     /// The order in which elements are yielded is unspecified and may differ between enumerators.
     /// </para>
     /// </remarks>
-    [Serializable]
     public struct Enumerator : IEnumerator<T>
     {
         /// <summary>
@@ -89,12 +88,17 @@ public sealed partial class ConcurrentHashSet<T>
         /// <see langword="true" /> if the enumerator advanced to a new element; <see langword="false" /> if it has
         /// passed the end of the snapshot.
         /// </returns>
+        /// <remarks>
+        /// A default-valued <see cref="Enumerator" /> — one produced by <c>default</c> rather than by
+        /// <see cref="ConcurrentHashSet{T}.GetEnumerator" /> — holds no snapshot and is treated as an empty sequence.
+        /// </remarks>
         public bool MoveNext()
         {
+            T[] snapshot = _snapshot ?? Array.Empty<T>();
             int next = _index + 1;
-            if (next < _snapshot.Length)
+            if (next < snapshot.Length)
             {
-                _current = _snapshot[next];
+                _current = snapshot[next];
                 _index = next;
                 return true;
             }

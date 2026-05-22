@@ -64,7 +64,6 @@ namespace Bodu.Collections.Generic.Concurrent;
 /// </example>
 [DebuggerDisplay("Count = {Count}")]
 [DebuggerTypeProxy(typeof(ConcurrentHashSetDebugView<>))]
-[Serializable]
 public sealed partial class ConcurrentHashSet<T>
     where T : notnull
 {

@@ -519,4 +519,533 @@ public partial class ConcurrentHashSetTests
         Assert.AreEqual(expectedCount, set.Count, "The set must retain every key added across all threads.");
         Assert.HasCount(expectedCount, set.ToArray());
     }
+
+    /// <summary>
+    /// Verifies that when every key hashes to the same bucket — funnelling all writers through a single stripe lock
+    /// and a single chain — every privately-owned key is still added exactly once and retained.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Stress")]
+    public void Stress_WhenAllThreadsAddCollidingKeys_ShouldRetainEveryKey()
+    {
+        const int workerCount = 4;
+        const int keysPerWorker = 500;
+
+        var set = new ConcurrentHashSet<int>(new ConstantHashComparer());
+        using var startGate = new ManualResetEventSlim(false);
+
+        var faults = 0;
+        var addFailures = 0;
+        Exception? firstException = null;
+
+        Task[] workers = Enumerable.Range(0, workerCount).Select(workerId =>
+            StartWorker(() =>
+            {
+                startGate.Wait();
+                int baseKey = workerId * keysPerWorker;
+
+                try
+                {
+                    for (var k = 0; k < keysPerWorker; k++)
+                    {
+                        if (!set.Add(baseKey + k))
+                            Interlocked.Increment(ref addFailures);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Interlocked.CompareExchange(ref firstException, ex, null);
+                    Interlocked.Increment(ref faults);
+                }
+            })).ToArray();
+
+        startGate.Set();
+        var completed = Task.WaitAll(workers, 60_000);
+
+        var expectedCount = workerCount * keysPerWorker;
+
+        TestContext.WriteLine(
+            $"AddFailures={addFailures}, Faults={faults}, Count={set.Count}, Expected={expectedCount}, " +
+            $"Completed={completed}, FirstException={firstException}");
+
+        Assert.IsTrue(completed, "Workers did not complete within the deadlock timeout.");
+        Assert.AreEqual(0, faults, $"No exception is expected. First exception: {firstException}");
+        Assert.AreEqual(0, addFailures, "Every privately-owned colliding key must be added exactly once.");
+        Assert.AreEqual(expectedCount, set.Count, "Every colliding key must be retained.");
+
+        for (var k = 0; k < expectedCount; k++)
+            Assert.IsTrue(set.Contains(k), $"Colliding key {k} was lost.");
+    }
+
+    /// <summary>
+    /// Verifies that a lock-free <see cref="ConcurrentHashSet{T}.Contains" /> never fails to observe a stable key
+    /// while concurrent adders trigger a steady stream of internal table resizes.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Stress")]
+    public void Stress_WhenContainsRacesResize_ShouldAlwaysSeeStableKeys()
+    {
+        const int stableKeyCount = 200;
+        const int adderCount = 4;
+        const int keysPerAdder = 5_000;
+
+        // A tiny initial capacity forces many GrowTable cycles while readers probe the stable keys.
+        var set = new ConcurrentHashSet<int>(capacity: 4);
+        for (var k = 0; k < stableKeyCount; k++)
+            set.Add(-(k + 1));
+
+        using var cts = new CancellationTokenSource();
+        using var startGate = new ManualResetEventSlim(false);
+
+        var faults = 0;
+        var falseNegatives = 0;
+        var readerOperations = 0;
+        Exception? firstException = null;
+
+        Task[] adders = Enumerable.Range(0, adderCount).Select(adderId =>
+            StartWorker(() =>
+            {
+                startGate.Wait();
+                int baseKey = adderId * keysPerAdder;
+
+                try
+                {
+                    for (var k = 0; k < keysPerAdder; k++)
+                        set.Add(baseKey + k);
+                }
+                catch (Exception ex)
+                {
+                    Interlocked.CompareExchange(ref firstException, ex, null);
+                    Interlocked.Increment(ref faults);
+                    cts.Cancel();
+                }
+            })).ToArray();
+
+        Task[] readers = Enumerable.Range(0, 3).Select(_ =>
+            StartWorker(() =>
+            {
+                startGate.Wait();
+                var random = new Random();
+
+                try
+                {
+                    while (!cts.Token.IsCancellationRequested)
+                    {
+                        int stableKey = -(random.Next(stableKeyCount) + 1);
+                        if (!set.Contains(stableKey))
+                            Interlocked.Increment(ref falseNegatives);
+
+                        Interlocked.Increment(ref readerOperations);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Interlocked.CompareExchange(ref firstException, ex, null);
+                    Interlocked.Increment(ref faults);
+                    cts.Cancel();
+                }
+            })).ToArray();
+
+        startGate.Set();
+        var addersCompleted = Task.WaitAll(adders, 60_000);
+        cts.Cancel();
+        var readersCompleted = Task.WaitAll(readers, 60_000);
+
+        TestContext.WriteLine(
+            $"ReaderOperations={readerOperations}, FalseNegatives={falseNegatives}, Faults={faults}, " +
+            $"AddersCompleted={addersCompleted}, ReadersCompleted={readersCompleted}, FirstException={firstException}");
+
+        Assert.IsTrue(addersCompleted && readersCompleted, "Workers did not complete within the deadlock timeout.");
+        Assert.AreEqual(0, faults, $"No exception is expected. First exception: {firstException}");
+        Assert.AreEqual(0, falseNegatives, "A stable key must never be missed by a lock-free Contains during resize.");
+        Assert.IsGreaterThan(0, readerOperations, "Readers must have queried the set during the resizes.");
+    }
+
+    /// <summary>
+    /// Verifies that the bulk mutating set-algebra members run concurrently with single-element add and remove
+    /// operations without throwing, deadlocking, or leaving the set internally inconsistent.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Stress")]
+    public void Stress_WhenBulkSetOperationsRaceWithMutations_ShouldNeverThrow()
+    {
+        const int keySpace = 500;
+        const int durationMs = 2_000;
+
+        var set = new ConcurrentHashSet<int>(Enumerable.Range(0, keySpace / 2));
+        using var cts = new CancellationTokenSource();
+        using var startGate = new ManualResetEventSlim(false);
+
+        var faults = 0;
+        var bulkOperations = 0;
+        var seed = 9_000;
+        Exception? firstException = null;
+
+        IEnumerable<Task> mutators = Enumerable.Range(0, 4).Select(_ =>
+            StartWorker(() =>
+            {
+                startGate.Wait();
+                var random = new Random(Interlocked.Increment(ref seed));
+
+                try
+                {
+                    while (!cts.Token.IsCancellationRequested)
+                    {
+                        int key = random.Next(keySpace);
+                        if (random.Next(2) == 0)
+                            set.Add(key);
+                        else
+                            set.Remove(key);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Interlocked.CompareExchange(ref firstException, ex, null);
+                    Interlocked.Increment(ref faults);
+                    cts.Cancel();
+                }
+            }));
+
+        IEnumerable<Task> bulkWorkers = Enumerable.Range(0, 4).Select(_ =>
+            StartWorker(() =>
+            {
+                startGate.Wait();
+                var random = new Random(Interlocked.Increment(ref seed));
+
+                try
+                {
+                    while (!cts.Token.IsCancellationRequested)
+                    {
+                        int[] other = Enumerable.Range(0, 20).Select(n => random.Next(keySpace)).ToArray();
+                        switch (random.Next(4))
+                        {
+                            case 0:
+                                set.UnionWith(other);
+                                break;
+                            case 1:
+                                set.ExceptWith(other);
+                                break;
+                            case 2:
+                                set.IntersectWith(other);
+                                break;
+                            default:
+                                set.SymmetricExceptWith(other);
+                                break;
+                        }
+
+                        Interlocked.Increment(ref bulkOperations);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Interlocked.CompareExchange(ref firstException, ex, null);
+                    Interlocked.Increment(ref faults);
+                    cts.Cancel();
+                }
+            }));
+
+        Task[] tasks = mutators.Concat(bulkWorkers).ToArray();
+
+        startGate.Set();
+        Thread.Sleep(durationMs);
+        cts.Cancel();
+        var completed = Task.WaitAll(tasks, 60_000);
+
+        var finalCount = set.Count;
+        int[] snapshot = set.ToArray();
+
+        TestContext.WriteLine(
+            $"BulkOperations={bulkOperations}, Faults={faults}, FinalCount={finalCount}, " +
+            $"SnapshotLength={snapshot.Length}, Completed={completed}, FirstException={firstException}");
+
+        Assert.IsTrue(completed, "Workers did not complete within the deadlock timeout.");
+        Assert.AreEqual(0, faults, $"No exception is expected. First exception: {firstException}");
+        Assert.IsGreaterThan(0, bulkOperations, "Bulk workers must have exercised the set-algebra members.");
+        Assert.HasCount(finalCount, snapshot, "Count and ToArray().Length must agree once the workers quiesce.");
+    }
+
+    /// <summary>
+    /// Verifies that the read-only set-algebra predicates run concurrently with single-element add and remove
+    /// operations without throwing.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Stress")]
+    public void Stress_WhenSetPredicatesRaceWithMutations_ShouldNeverThrow()
+    {
+        const int keySpace = 500;
+        const int durationMs = 2_000;
+
+        var set = new ConcurrentHashSet<int>(Enumerable.Range(0, keySpace / 2));
+        using var cts = new CancellationTokenSource();
+        using var startGate = new ManualResetEventSlim(false);
+
+        var faults = 0;
+        var predicateOperations = 0;
+        var seed = 11_000;
+        Exception? firstException = null;
+
+        IEnumerable<Task> mutators = Enumerable.Range(0, 4).Select(_ =>
+            StartWorker(() =>
+            {
+                startGate.Wait();
+                var random = new Random(Interlocked.Increment(ref seed));
+
+                try
+                {
+                    while (!cts.Token.IsCancellationRequested)
+                    {
+                        int key = random.Next(keySpace);
+                        if (random.Next(2) == 0)
+                            set.Add(key);
+                        else
+                            set.Remove(key);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Interlocked.CompareExchange(ref firstException, ex, null);
+                    Interlocked.Increment(ref faults);
+                    cts.Cancel();
+                }
+            }));
+
+        IEnumerable<Task> predicateWorkers = Enumerable.Range(0, 4).Select(_ =>
+            StartWorker(() =>
+            {
+                startGate.Wait();
+                var random = new Random(Interlocked.Increment(ref seed));
+
+                try
+                {
+                    while (!cts.Token.IsCancellationRequested)
+                    {
+                        int[] other = Enumerable.Range(0, 20).Select(n => random.Next(keySpace)).ToArray();
+                        switch (random.Next(6))
+                        {
+                            case 0:
+                                set.IsSubsetOf(other);
+                                break;
+                            case 1:
+                                set.IsSupersetOf(other);
+                                break;
+                            case 2:
+                                set.IsProperSubsetOf(other);
+                                break;
+                            case 3:
+                                set.IsProperSupersetOf(other);
+                                break;
+                            case 4:
+                                set.Overlaps(other);
+                                break;
+                            default:
+                                set.SetEquals(other);
+                                break;
+                        }
+
+                        Interlocked.Increment(ref predicateOperations);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Interlocked.CompareExchange(ref firstException, ex, null);
+                    Interlocked.Increment(ref faults);
+                    cts.Cancel();
+                }
+            }));
+
+        Task[] tasks = mutators.Concat(predicateWorkers).ToArray();
+
+        startGate.Set();
+        Thread.Sleep(durationMs);
+        cts.Cancel();
+        var completed = Task.WaitAll(tasks, 60_000);
+
+        TestContext.WriteLine(
+            $"PredicateOperations={predicateOperations}, Faults={faults}, Completed={completed}, " +
+            $"FirstException={firstException}");
+
+        Assert.IsTrue(completed, "Workers did not complete within the deadlock timeout.");
+        Assert.AreEqual(0, faults, $"No exception is expected. First exception: {firstException}");
+        Assert.IsGreaterThan(0, predicateOperations, "Predicate workers must have exercised the set-algebra members.");
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentHashSet{T}.Clear" /> interleaved with the bulk set-algebra members never
+    /// throws and leaves the set self-consistent.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Stress")]
+    public void Stress_WhenClearRacesWithBulkOperations_ShouldNeverCorruptState()
+    {
+        const int keySpace = 500;
+        const int durationMs = 2_000;
+
+        var set = new ConcurrentHashSet<int>();
+        using var cts = new CancellationTokenSource();
+        using var startGate = new ManualResetEventSlim(false);
+
+        var faults = 0;
+        var bulkOperations = 0;
+        var clearOperations = 0;
+        var seed = 13_000;
+        Exception? firstException = null;
+
+        IEnumerable<Task> bulkWorkers = Enumerable.Range(0, 6).Select(_ =>
+            StartWorker(() =>
+            {
+                startGate.Wait();
+                var random = new Random(Interlocked.Increment(ref seed));
+
+                try
+                {
+                    while (!cts.Token.IsCancellationRequested)
+                    {
+                        int[] other = Enumerable.Range(0, 20).Select(n => random.Next(keySpace)).ToArray();
+                        if (random.Next(2) == 0)
+                            set.UnionWith(other);
+                        else
+                            set.ExceptWith(other);
+
+                        Interlocked.Increment(ref bulkOperations);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Interlocked.CompareExchange(ref firstException, ex, null);
+                    Interlocked.Increment(ref faults);
+                    cts.Cancel();
+                }
+            }));
+
+        Task clearer = StartWorker(() =>
+        {
+            startGate.Wait();
+
+            try
+            {
+                while (!cts.Token.IsCancellationRequested)
+                {
+                    set.Clear();
+                    Interlocked.Increment(ref clearOperations);
+                    Thread.Yield();
+                }
+            }
+            catch (Exception ex)
+            {
+                Interlocked.CompareExchange(ref firstException, ex, null);
+                Interlocked.Increment(ref faults);
+                cts.Cancel();
+            }
+        });
+
+        Task[] tasks = bulkWorkers.Append(clearer).ToArray();
+
+        startGate.Set();
+        Thread.Sleep(durationMs);
+        cts.Cancel();
+        var completed = Task.WaitAll(tasks, 60_000);
+
+        var finalCount = set.Count;
+        int[] snapshot = set.ToArray();
+
+        TestContext.WriteLine(
+            $"BulkOperations={bulkOperations}, ClearOperations={clearOperations}, Faults={faults}, " +
+            $"FinalCount={finalCount}, Completed={completed}, FirstException={firstException}");
+
+        Assert.IsTrue(completed, "Workers did not complete within the deadlock timeout.");
+        Assert.AreEqual(0, faults, $"No exception is expected. First exception: {firstException}");
+        Assert.IsGreaterThan(0, bulkOperations, "Bulk workers must have exercised the set-algebra members.");
+        Assert.IsGreaterThan(0, clearOperations, "The clearer must have exercised Clear during the stress run.");
+        Assert.HasCount(finalCount, snapshot, "Count and ToArray().Length must agree once the workers quiesce.");
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentHashSet{T}.ToArray" /> taken while <see cref="ConcurrentHashSet{T}.Clear" />
+    /// and adds churn the set always returns a coherent snapshot of distinct, in-range elements.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Stress")]
+    public void Stress_WhenToArrayRacesWithClear_ShouldReturnCoherentSnapshot()
+    {
+        const int keySpace = 600;
+        const int durationMs = 2_000;
+
+        var set = new ConcurrentHashSet<int>();
+        using var cts = new CancellationTokenSource();
+        using var startGate = new ManualResetEventSlim(false);
+
+        var faults = 0;
+        var coherenceViolations = 0;
+        var snapshots = 0;
+        var seed = 15_000;
+        Exception? firstException = null;
+
+        IEnumerable<Task> writers = Enumerable.Range(0, 4).Select(_ =>
+            StartWorker(() =>
+            {
+                startGate.Wait();
+                var random = new Random(Interlocked.Increment(ref seed));
+
+                try
+                {
+                    while (!cts.Token.IsCancellationRequested)
+                    {
+                        if (random.Next(20) == 0)
+                            set.Clear();
+                        else
+                            set.Add(random.Next(keySpace));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Interlocked.CompareExchange(ref firstException, ex, null);
+                    Interlocked.Increment(ref faults);
+                    cts.Cancel();
+                }
+            }));
+
+        IEnumerable<Task> readers = Enumerable.Range(0, 4).Select(_ =>
+            StartWorker(() =>
+            {
+                startGate.Wait();
+
+                try
+                {
+                    while (!cts.Token.IsCancellationRequested)
+                    {
+                        int[] snapshot = set.ToArray();
+                        var seen = new HashSet<int>();
+                        foreach (int value in snapshot)
+                        {
+                            if (value < 0 || value >= keySpace || !seen.Add(value))
+                                Interlocked.Increment(ref coherenceViolations);
+                        }
+
+                        Interlocked.Increment(ref snapshots);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Interlocked.CompareExchange(ref firstException, ex, null);
+                    Interlocked.Increment(ref faults);
+                    cts.Cancel();
+                }
+            }));
+
+        Task[] tasks = writers.Concat(readers).ToArray();
+
+        startGate.Set();
+        Thread.Sleep(durationMs);
+        cts.Cancel();
+        var completed = Task.WaitAll(tasks, 60_000);
+
+        TestContext.WriteLine(
+            $"Snapshots={snapshots}, CoherenceViolations={coherenceViolations}, Faults={faults}, " +
+            $"Completed={completed}, FirstException={firstException}");
+
+        Assert.IsTrue(completed, "Workers did not complete within the deadlock timeout.");
+        Assert.AreEqual(0, faults, $"No exception is expected. First exception: {firstException}");
+        Assert.AreEqual(0, coherenceViolations, "Every snapshot must contain only distinct, in-range elements.");
+        Assert.IsGreaterThan(0, snapshots, "Readers must have captured snapshots during the stress run.");
+    }
 }
