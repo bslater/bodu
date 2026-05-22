@@ -62,7 +62,7 @@ public sealed partial class XmlResourceNotableDateRuleProviderTests
     /// requested resource name to aid diagnosis.
     /// </summary>
     [TestMethod]
-    public void LoadRules_WhenResourceMissing_ShouldThrowExactly()
+    public void LoadRules_WhenResourceMissing_ShouldThrowExactlyWithResourceNameInMessage()
     {
         var provider = new XmlResourceNotableDateRuleProvider(
             "Bodu/Globalization/Calendar/Resources/Imaginary.xml",

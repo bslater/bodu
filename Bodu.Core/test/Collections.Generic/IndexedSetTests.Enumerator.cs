@@ -106,7 +106,7 @@ public partial class IndexedSetTests
     /// <see cref="IndexedSet{T}.Enumerator.Reset" /> to throw <see cref="InvalidOperationException" />.
     /// </summary>
     [TestMethod]
-    public void Enumerator_WhenSetMutatedAfterCreation_ShouldThrowExactly()
+    public void Enumerator_WhenSetMutatedAfterCreation_ShouldThrowExactlyOnReset()
     {
         IndexedSet<int> sut = CreateSet([1, 2, 3]);
         IndexedSet<int>.Enumerator enumerator = sut.GetEnumerator();

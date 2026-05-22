@@ -72,7 +72,7 @@ public partial class OrderedSetTests
     /// <see cref="OrderedSet{T}.Enumerator.Reset" /> to throw <see cref="InvalidOperationException" />.
     /// </summary>
     [TestMethod]
-    public void Enumerator_WhenSetMutatedAfterCreation_ShouldThrowExactly()
+    public void Enumerator_WhenSetMutatedAfterCreation_ShouldThrowExactlyOnReset()
     {
         OrderedSet<int> sut = CreateSet([1, 2, 3]);
         OrderedSet<int>.Enumerator enumerator = sut.GetEnumerator();
