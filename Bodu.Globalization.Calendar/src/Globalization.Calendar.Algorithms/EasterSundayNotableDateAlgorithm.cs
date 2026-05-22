@@ -54,6 +54,7 @@ public sealed class EasterSundayNotableDateAlgorithm
     public DateTime? GetDate(int year, System.Globalization.Calendar? calendar)
     {
         ThrowHelper.ThrowIfLessThan(year, 1);
+        ThrowHelper.ThrowIfGreaterThan(year, 9999);
 
         return GetOrAddEasterSunday(year, calendar);
     }

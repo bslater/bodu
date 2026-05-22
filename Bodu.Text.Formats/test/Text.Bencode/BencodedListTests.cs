@@ -57,6 +57,36 @@ public sealed partial class BencodedListTests
     }
 
     /// <summary>
+    /// Verifies that the indexer throws <see cref="ArgumentOutOfRangeException" /> when the index is negative,
+    /// rather than surfacing an <see cref="IndexOutOfRangeException" /> from the backing array.
+    /// </summary>
+    [TestMethod]
+    public void Indexer_WhenIndexIsNegative_ShouldThrowArgumentOutOfRangeException()
+    {
+        BencodedList list = new(new BencodedValue[] { new BencodedInteger(1) });
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = list[-1];
+        });
+    }
+
+    /// <summary>
+    /// Verifies that the indexer throws <see cref="ArgumentOutOfRangeException" /> when the index is greater than
+    /// or equal to <see cref="BencodedList.Count" />.
+    /// </summary>
+    [TestMethod]
+    public void Indexer_WhenIndexIsBeyondCount_ShouldThrowArgumentOutOfRangeException()
+    {
+        BencodedList list = new(new BencodedValue[] { new BencodedInteger(1) });
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = list[1];
+        });
+    }
+
+    /// <summary>
     /// Verifies that <see cref="BencodedValue.Kind" /> returns <see cref="BencodedValueKind.List" />.
     /// </summary>
     [TestMethod]

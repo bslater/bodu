@@ -9,15 +9,10 @@ namespace Bodu.Security.Cryptography;
 /// <summary>
 /// Pins the <see cref="IPaddingStrategy" /> contract for invalid <c>blockSize</c> values across
 /// both <c>Pad</c> and <c>Unpad</c>. Every implementation must throw
-/// <see cref="ArgumentOutOfRangeException" /> when <c>blockSize &lt;= 0</c> rather than letting the
-/// modulo arithmetic surface a <see cref="DivideByZeroException" /> or silently succeeding for
-/// inputs whose length happens to be a multiple of <c>|blockSize|</c>.
-/// </summary>
-/// Pins the <see cref="IPaddingStrategy" /> contract for invalid <c>blockSize</c> values across
-/// both <c>Pad</c> and <c>Unpad</c>. Every implementation must throw
-/// <see cref="ArgumentOutOfRangeException" /> when <c>blockSize &lt;= 0</c> rather than letting the
-/// modulo arithmetic surface a <see cref="DivideByZeroException" /> or silently succeeding for
-/// inputs whose length happens to be a multiple of <c>|blockSize|</c>.
+/// <see cref="ArgumentOutOfRangeException" /> when <c>blockSize</c> is not a positive multiple of
+/// 8 — rather than letting the <c>blockSize / 8</c> integer division surface a
+/// <see cref="DivideByZeroException" />, or silently succeeding for inputs whose length happens to
+/// be a multiple of <c>|blockSize|</c>.
 /// </summary>
 /// <remarks>
 /// Strategies whose <c>Unpad</c> ignores <c>blockSize</c> (<see cref="NoPadding" />,
@@ -107,6 +102,55 @@ public abstract partial class PaddingStrategyTests<TPadding>
     [DataRow(-16)]
     [DataRow(int.MinValue)]
     public void Unpad_WhenBlockSizeIsNegative_ShouldThrowArgumentOutOfRangeException_fix(int blockSize)
+    {
+        if (!ValidatesBlockSizeOnUnpad)
+        {
+            Assert.Inconclusive($"{typeof(TPadding).Name} ignores the blockSize parameter on Unpad.");
+            return;
+        }
+
+        TPadding padding = CreatePadding();
+        var input = new byte[BlockSize];
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = padding.Unpad(input, blockSize);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that calling <see cref="IPaddingStrategy.Pad" /> with a positive <c>blockSize</c>
+    /// that is not a multiple of 8 throws <see cref="ArgumentOutOfRangeException" />. Values in the
+    /// range <c>1..7</c> would otherwise drive the <c>blockSize / 8</c> integer division to zero and
+    /// surface a <see cref="DivideByZeroException" /> from the subsequent modulo expression.
+    /// </summary>
+    [TestMethod]
+    [DataRow(1)]
+    [DataRow(4)]
+    [DataRow(7)]
+    [DataRow(12)]
+    public void Pad_WhenBlockSizeIsNotMultipleOfEight_ShouldThrowArgumentOutOfRangeException(int blockSize)
+    {
+        TPadding padding = CreatePadding();
+        var input = new byte[BlockSize];
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = padding.Pad(input, blockSize);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that calling <see cref="IPaddingStrategy.Unpad" /> with a positive <c>blockSize</c>
+    /// that is not a multiple of 8 throws <see cref="ArgumentOutOfRangeException" /> rather than
+    /// surfacing a <see cref="DivideByZeroException" /> for values in the range <c>1..7</c>.
+    /// </summary>
+    [TestMethod]
+    [DataRow(1)]
+    [DataRow(4)]
+    [DataRow(7)]
+    [DataRow(12)]
+    public void Unpad_WhenBlockSizeIsNotMultipleOfEight_ShouldThrowArgumentOutOfRangeException(int blockSize)
     {
         if (!ValidatesBlockSizeOnUnpad)
         {

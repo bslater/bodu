@@ -47,16 +47,11 @@ public sealed class ZeroPadding
     /// <param name="blockSize">The block size in bits. Must be a positive multiple of 8.</param>
     /// <returns>The padded input.</returns>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown if <paramref name="blockSize" /> is less than or equal to zero.
+    /// Thrown if <paramref name="blockSize" /> is not a positive multiple of 8.
     /// </exception>
     public byte[] Pad(ReadOnlySpan<byte> input, int blockSize)
     {
-        if (blockSize <= 0)
-        {
-            throw new ArgumentOutOfRangeException(
-                nameof(blockSize),
-                string.Format(CryptoResourceStrings.Arg_OutOfRange_BlockSizeMustBeGreaterThan, 0));
-        }
+        ThrowHelper.ThrowIfNotPositiveMultipleOf(blockSize, 8);
 
         var size = blockSize / 8;
         var paddingLength = size - (input.Length % size);

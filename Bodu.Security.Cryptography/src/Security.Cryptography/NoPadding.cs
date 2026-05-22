@@ -48,17 +48,15 @@ public sealed class NoPadding
     /// <param name="input">The input data to validate and return.</param>
     /// <param name="blockSize">The required block size in bits. Must be a positive multiple of 8.</param>
     /// <returns>A new byte array containing the same bytes as <paramref name="input" />.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown if <paramref name="blockSize" /> is not a positive multiple of 8.
+    /// </exception>
     /// <exception cref="ArgumentException">
     /// Thrown if the length of <paramref name="input" /> is not a multiple of <paramref name="blockSize" />.
     /// </exception>
     public byte[] Pad(ReadOnlySpan<byte> input, int blockSize)
     {
-        if (blockSize <= 0)
-        {
-            throw new ArgumentOutOfRangeException(
-                nameof(blockSize),
-                string.Format(CryptoResourceStrings.Arg_OutOfRange_BlockSizeMustBeGreaterThan, 0));
-        }
+        ThrowHelper.ThrowIfNotPositiveMultipleOf(blockSize, 8);
 
         var size = blockSize / 8;
         if (input.Length % size != 0)

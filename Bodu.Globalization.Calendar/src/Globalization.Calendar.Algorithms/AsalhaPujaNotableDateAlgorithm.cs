@@ -42,7 +42,7 @@ public sealed class AsalhaPujaNotableDateAlgorithm
     /// A <see cref="DateTime" /> representing the date of Asalha Puja, or <see langword="null" /> if the date cannot be
     /// determined. The returned <see cref="DateTime.Kind" /> is always <see cref="DateTimeKind.Unspecified" />.
     /// </returns>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="year" /> is less than 1.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="year" /> is less than 1 or greater than 9999.</exception>
     /// <exception cref="NotSupportedException">
     /// Thrown when the specified <paramref name="calendar" /> type is unsupported.
     /// </exception>
@@ -50,6 +50,7 @@ public sealed class AsalhaPujaNotableDateAlgorithm
     {
         if (year < 1)
             throw new ArgumentOutOfRangeException(nameof(year), CalendarResourceStrings.Arg_OutOfRange_Year);
+        ThrowHelper.ThrowIfGreaterThan(year, 9999);
 
         DateTime? fullMoon = LunarPhaseAlgorithm.GetFullMoonOnOrAfter(new DateTime(year, 6, 15));
         if (fullMoon is null)

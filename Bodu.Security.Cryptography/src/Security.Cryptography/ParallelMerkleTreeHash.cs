@@ -309,10 +309,15 @@ public sealed class ParallelMerkleTreeHash
     /// computation. Pass <see langword="null" /> to disable diagnostic recording.
     /// </param>
     /// <returns>A byte array containing the Merkle root hash of <paramref name="data" />.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="data" /> is <see langword="null" />.</exception>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     /// <exception cref="InvalidOperationException">No input data was provided.</exception>
-    public byte[] ComputeHash(byte[] data, MerkleTreeDiagnostics? diagnostics = null) =>
-        this.ComputeHash(new ReadOnlySpan<byte>(data), diagnostics);
+    public byte[] ComputeHash(byte[] data, MerkleTreeDiagnostics? diagnostics = null)
+    {
+        ArgumentNullException.ThrowIfNull(data);
+
+        return this.ComputeHash(new ReadOnlySpan<byte>(data), diagnostics);
+    }
 
     /// <summary>
     /// Synchronously computes the Merkle root hash of a region within <paramref name="data" />.
@@ -332,8 +337,12 @@ public sealed class ParallelMerkleTreeHash
     /// <paramref name="count" /> exceeds the length of <paramref name="data" />.
     /// </exception>
     /// <exception cref="InvalidOperationException">No input data was provided.</exception>
-    public byte[] ComputeHash(byte[] data, int offset, int count, MerkleTreeDiagnostics? diagnostics = null) =>
-        this.ComputeHash(new ReadOnlySpan<byte>(data, offset, count), diagnostics);
+    public byte[] ComputeHash(byte[] data, int offset, int count, MerkleTreeDiagnostics? diagnostics = null)
+    {
+        ArgumentNullException.ThrowIfNull(data);
+
+        return this.ComputeHash(new ReadOnlySpan<byte>(data, offset, count), diagnostics);
+    }
 
     // -----------------------------------------------------------------------------------------
     // Reset — restores the instance to a clean state for the next computation

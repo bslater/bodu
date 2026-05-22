@@ -119,7 +119,7 @@ public sealed class HinduLunarNotableDateAlgorithm
     /// date cannot be determined. The returned <see cref="DateTime.Kind" /> is always
     /// <see cref="DateTimeKind.Unspecified" />.
     /// </returns>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="year" /> is less than 1.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="year" /> is less than 1 or greater than 9999.</exception>
     /// <exception cref="NotSupportedException">
     /// Thrown when the specified <paramref name="calendar" /> type is unsupported.
     /// </exception>
@@ -127,6 +127,7 @@ public sealed class HinduLunarNotableDateAlgorithm
     {
         if (year < 1)
             throw new ArgumentOutOfRangeException(nameof(year), CalendarResourceStrings.Arg_OutOfRange_Year);
+        ThrowHelper.ThrowIfGreaterThan(year, 9999);
 
         // Find the new moon that begins the target lunar month.
         var searchMonth = GetSearchMonth(_month);

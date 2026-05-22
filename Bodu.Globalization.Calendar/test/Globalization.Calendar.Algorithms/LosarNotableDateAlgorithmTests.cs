@@ -40,6 +40,23 @@ public sealed class LosarNotableDateAlgorithmTests
     }
 
     /// <summary>
+    /// Verifies that requesting Losar with a year above 9999 throws <see cref="ArgumentOutOfRangeException" />
+    /// rather than a raw exception from the <see cref="DateTime" /> constructor.
+    /// </summary>
+    [DataRow(10000)]
+    [DataRow(int.MaxValue)]
+    [TestMethod]
+    public void GetDate_WhenYearGreaterThan9999_ShouldThrowArgumentOutOfRangeException(int year)
+    {
+        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = _algorithm.GetDate(year);
+        });
+
+        Assert.AreEqual("year", ex.ParamName);
+    }
+
+    /// <summary>
     /// Verifies that Losar returns a date within ±1 day of the known official Tibetan New Year for years where the
     /// algorithm agrees with the Tibetan lunisolar calendar. Years where the Tibetan calendar diverges by a full
     /// intercalary month are excluded.

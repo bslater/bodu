@@ -27,6 +27,23 @@ public sealed class EasterSundayNotableDateAlgorithmTests
 
     public sealed record EasterSundayKnownAnswer { public int Year { get; init; } public DateTime ExpectedDate { get; init; } public EasterCalendarType CalendarType { get; init; } = EasterCalendarType.Default; }
 
+    /// <summary>
+    /// Verifies that requesting Easter Sunday with a year above 9999 throws <see cref="ArgumentOutOfRangeException" />
+    /// rather than a raw exception from the <see cref="DateTime" /> constructor.
+    /// </summary>
+    [DataRow(10000)]
+    [DataRow(int.MaxValue)]
+    [TestMethod]
+    public void GetDate_WhenYearGreaterThan9999_ShouldThrowArgumentOutOfRangeException(int year)
+    {
+        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = _algorithm.GetDate(year, null);
+        });
+
+        Assert.AreEqual("year", ex.ParamName);
+    }
+
     public static IEnumerable<object[]> GetInvalidYearTestData()
     {
         yield return new object[] { new EasterSundayKnownAnswer { Year = 1700, ExpectedDate = new DateTime(1700, 4, 11) } };

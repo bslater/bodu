@@ -29,6 +29,25 @@ public sealed class EasterSundayNotableDateProviderBaseTests
     }
 
     /// <summary>
+    /// Verifies that requesting dates with a year above 9999 throws <see cref="ArgumentOutOfRangeException" />
+    /// rather than a raw exception leaking from the date calculation.
+    /// </summary>
+    [DataRow(10000)]
+    [DataRow(int.MaxValue)]
+    [TestMethod]
+    public void GetDates_WhenYearGreaterThan9999_ShouldThrowArgumentOutOfRangeException(int year)
+    {
+        var provider = new DefaultTestProvider();
+
+        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = provider.GetDates(year);
+        });
+
+        Assert.AreEqual("year", ex.ParamName);
+    }
+
+    /// <summary>
     /// Verifies that the default tag set contains the expected Christianity/Easter entries.
     /// </summary>
     [TestMethod]

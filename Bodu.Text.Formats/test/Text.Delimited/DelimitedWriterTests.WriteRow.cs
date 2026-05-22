@@ -25,6 +25,22 @@ public sealed partial class DelimitedWriterTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="DelimitedWriter.WriteRow" /> throws <see cref="ArgumentException" /> when the
+    /// field collection contains a <see langword="null" /> element, rather than a <see cref="NullReferenceException" />.
+    /// </summary>
+    [TestMethod]
+    public void WriteRow_WhenFieldsContainsNullElement_ShouldThrowArgumentException()
+    {
+        using var sw = new StringWriter();
+        using DelimitedWriter writer = new(sw);
+
+        _ = Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            writer.WriteRow(["a", null!, "b"]);
+        });
+    }
+
+    /// <summary>
     /// Verifies that <see cref="DelimitedWriter.WriteRow" /> throws <see cref="ObjectDisposedException" />
     /// after the writer has been disposed.
     /// </summary>
@@ -149,6 +165,22 @@ public sealed partial class DelimitedWriterTests
         _ = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             writer.WriteHeader(null!);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DelimitedWriter.WriteHeader" /> throws <see cref="ArgumentException" /> when the
+    /// header collection contains a <see langword="null" /> element.
+    /// </summary>
+    [TestMethod]
+    public void WriteHeader_WhenHeadersContainsNullElement_ShouldThrowArgumentException()
+    {
+        using var sw = new StringWriter();
+        using DelimitedWriter writer = new(sw);
+
+        _ = Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            writer.WriteHeader(["name", null!, "age"]);
         });
     }
 
