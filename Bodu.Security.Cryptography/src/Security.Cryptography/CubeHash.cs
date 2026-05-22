@@ -647,45 +647,48 @@ public sealed class CubeHash
     private void PerformRounds(int roundCount)
     {
         Span<uint> s = this._state;
-        Span<uint> lower = s[..16];
-        Span<uint> upper = s.Slice(16, 16);
 
         // temp is used as a scratch permutation buffer; allocated once on the stack for the full call
         Span<uint> temp = stackalloc uint[16];
+
+        // Interior refs bypass the per-element bounds checks emitted for Span indexing with non-monotonic
+        // indices such as i^8, i^2, i^4, i^1 — the JIT cannot prove those XOR patterns stay in-range.
+        ref uint sRef = ref MemoryMarshal.GetReference(s);
+        ref uint tempRef = ref MemoryMarshal.GetReference(temp);
 
         for (var r = 0; r < roundCount; r++)
         {
             // Steps 1+2: add lower into upper; scatter lower into temp via XOR-8 permutation
             for (var i = 0; i < 16; i++)
             {
-                upper[i] += lower[i];
-                temp[i ^ 8] = lower[i];
+                Unsafe.Add(ref sRef, 16 + i) += Unsafe.Add(ref sRef, i);
+                Unsafe.Add(ref tempRef, i ^ 8) = Unsafe.Add(ref sRef, i);
             }
 
             // Steps 3+4: rotate temp left by 7 into lower; XOR lower with upper
             for (var i = 0; i < 16; i++)
-                lower[i] = temp[i].RotateBitsLeftUnchecked(7) ^ upper[i];
+                Unsafe.Add(ref sRef, i) = Unsafe.Add(ref tempRef, i).RotateBitsLeftUnchecked(7) ^ Unsafe.Add(ref sRef, 16 + i);
 
             // Step 5: scatter upper into temp via XOR-2 permutation; copy back to upper
             for (var i = 0; i < 16; i++)
-                temp[i ^ 2] = upper[i];
-            temp.CopyTo(upper);
+                Unsafe.Add(ref tempRef, i ^ 2) = Unsafe.Add(ref sRef, 16 + i);
+            temp.CopyTo(s.Slice(16, 16));
 
             // Steps 6+7: add lower into upper; scatter lower into temp via XOR-4 permutation
             for (var i = 0; i < 16; i++)
             {
-                upper[i] += lower[i];
-                temp[i ^ 4] = lower[i];
+                Unsafe.Add(ref sRef, 16 + i) += Unsafe.Add(ref sRef, i);
+                Unsafe.Add(ref tempRef, i ^ 4) = Unsafe.Add(ref sRef, i);
             }
 
             // Steps 8+9: rotate temp left by 11 into lower; XOR lower with upper
             for (var i = 0; i < 16; i++)
-                lower[i] = temp[i].RotateBitsLeftUnchecked(11) ^ upper[i];
+                Unsafe.Add(ref sRef, i) = Unsafe.Add(ref tempRef, i).RotateBitsLeftUnchecked(11) ^ Unsafe.Add(ref sRef, 16 + i);
 
             // Step 10: scatter upper into temp via XOR-1 permutation; copy back to upper
             for (var i = 0; i < 16; i++)
-                temp[i ^ 1] = upper[i];
-            temp.CopyTo(upper);
+                Unsafe.Add(ref tempRef, i ^ 1) = Unsafe.Add(ref sRef, 16 + i);
+            temp.CopyTo(s.Slice(16, 16));
         }
     }
 
