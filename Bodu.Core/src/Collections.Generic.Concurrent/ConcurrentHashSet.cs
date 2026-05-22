@@ -527,13 +527,11 @@ public sealed partial class ConcurrentHashSet<T>
                 approxCount += tables._countPerLock[i];
 
             // A sparsely populated table that still tripped the budget indicates a poor hash distribution rather
-            // than genuine growth. Doubling the budget avoids a resize that would not relieve the clustering.
+            // than genuine growth. Doubling the budget avoids a resize that would not relieve the clustering, while
+            // the clamp keeps the doubling from overflowing once the budget approaches its maximum.
             if (approxCount < tables._buckets.Length / 4)
             {
-                _budget = 2 * _budget;
-                if (_budget < 0)
-                    _budget = int.MaxValue;
-
+                _budget = _budget > int.MaxValue / 2 ? int.MaxValue : _budget * 2;
                 return;
             }
 
