@@ -6,6 +6,8 @@
 
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Runtime.Intrinsics;
+using System.Runtime.Intrinsics.X86;
 using System.Security.Cryptography;
 using Bodu.Extensions;
 
@@ -101,6 +103,27 @@ public sealed class CubeHash
     public const int MinRounds = 1;
 
     private static readonly int[] s_permittedHashSizes = [224, 256, 384, 512];
+
+    /// <summary>
+    /// Gather-index vector for the scatter-by-XOR-8 step: element j receives the value from position
+    /// j^8, swapping the two 256-bit halves of the 512-bit state register.
+    /// </summary>
+    private static readonly Vector512<uint> s_permXor8 = Vector512.Create(8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u);
+
+    /// <summary>
+    /// Gather-index vector for the scatter-by-XOR-4 step: element j receives the value from position j^4.
+    /// </summary>
+    private static readonly Vector512<uint> s_permXor4 = Vector512.Create(4u, 5u, 6u, 7u, 0u, 1u, 2u, 3u, 12u, 13u, 14u, 15u, 8u, 9u, 10u, 11u);
+
+    /// <summary>
+    /// Gather-index vector for the scatter-by-XOR-2 step: element j receives the value from position j^2.
+    /// </summary>
+    private static readonly Vector512<uint> s_permXor2 = Vector512.Create(2u, 3u, 0u, 1u, 6u, 7u, 4u, 5u, 10u, 11u, 8u, 9u, 14u, 15u, 12u, 13u);
+
+    /// <summary>
+    /// Gather-index vector for the scatter-by-XOR-1 step: element j receives the value from position j^1.
+    /// </summary>
+    private static readonly Vector512<uint> s_permXor1 = Vector512.Create(1u, 0u, 3u, 2u, 5u, 4u, 7u, 6u, 9u, 8u, 11u, 10u, 13u, 12u, 15u, 14u);
 
     private bool _disposed = false;
 
@@ -641,10 +664,68 @@ public sealed class CubeHash
     private void InitializeVectors() => this._initializedState.CopyTo(this._state, 0);
 
     /// <summary>
-    /// Executes the specified number of CubeHash transformation rounds on the state vector.
+    /// Executes the specified number of CubeHash transformation rounds on the internal state vector,
+    /// dispatching to an AVX-512F implementation when the hardware supports it and falling back to a
+    /// scalar implementation otherwise.
     /// </summary>
     /// <param name="roundCount">The number of rounds to perform.</param>
     private void PerformRounds(int roundCount)
+    {
+        if (Avx512F.IsSupported)
+            PerformRoundsAvx512(roundCount);
+        else
+            PerformRoundsScalar(roundCount);
+    }
+
+    /// <summary>
+    /// Executes the specified number of CubeHash transformation rounds using AVX-512F vector
+    /// instructions. Loads the 32-word state into two 512-bit registers at entry and stores back on
+    /// exit, keeping all round-to-round state in registers. Each scatter-by-XOR permutation becomes
+    /// a single <c>VPERMD</c> instruction and each rotation becomes a single <c>VPROLD</c>.
+    /// </summary>
+    /// <param name="roundCount">The number of rounds to perform.</param>
+    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+    private void PerformRoundsAvx512(int roundCount)
+    {
+        ref uint stateRef = ref MemoryMarshal.GetArrayDataReference(this._state);
+
+        Vector512<uint> lower = Vector512.LoadUnsafe(ref stateRef);
+        Vector512<uint> upper = Vector512.LoadUnsafe(ref Unsafe.Add(ref stateRef, 16));
+
+        for (var r = 0; r < roundCount; r++)
+        {
+            // Steps 1+2: upper += lower; scatter lower into temp via XOR-8 permutation (VPADDD + VPERMD)
+            upper += lower;
+            Vector512<uint> temp = Avx512F.PermuteVar16x32(lower, s_permXor8);
+
+            // Steps 3+4: rotate temp left by 7 into lower; XOR lower with upper (VPROLD + VPXORD)
+            lower = Avx512F.RotateLeft(temp, 7) ^ upper;
+
+            // Step 5: scatter upper via XOR-2 permutation (VPERMD); upper = result
+            upper = Avx512F.PermuteVar16x32(upper, s_permXor2);
+
+            // Steps 6+7: upper += lower; scatter lower into temp via XOR-4 permutation (VPADDD + VPERMD)
+            upper += lower;
+            temp = Avx512F.PermuteVar16x32(lower, s_permXor4);
+
+            // Steps 8+9: rotate temp left by 11 into lower; XOR lower with upper (VPROLD + VPXORD)
+            lower = Avx512F.RotateLeft(temp, 11) ^ upper;
+
+            // Step 10: scatter upper via XOR-1 permutation (VPERMD); upper = result
+            upper = Avx512F.PermuteVar16x32(upper, s_permXor1);
+        }
+
+        Vector512.StoreUnsafe(lower, ref stateRef);
+        Vector512.StoreUnsafe(upper, ref Unsafe.Add(ref stateRef, 16));
+    }
+
+    /// <summary>
+    /// Executes the specified number of CubeHash transformation rounds using scalar interior-ref
+    /// arithmetic with bounds-check-free accesses. Used as the fallback when AVX-512F is unavailable.
+    /// </summary>
+    /// <param name="roundCount">The number of rounds to perform.</param>
+    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+    private void PerformRoundsScalar(int roundCount)
     {
         Span<uint> s = this._state;
 
