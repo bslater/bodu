@@ -70,6 +70,7 @@ public abstract class KeyedDeferredFinalBlockHashAlgorithm<T>
         "StyleCop.CSharp.NamingRules",
         "SA1306:Field names should begin with lower-case letter",
         Justification = "The field intentionally follows the protected field naming pattern used by HashAlgorithm, such as HashSizeValue, because it forms part of the inherited algorithm-state surface for derived cryptographic types.")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Follows the BCL protected field naming convention (like KeyValue on HMAC) so that derived BLAKE-family keyed hash types can read and clear key material directly without virtual dispatch.")]
     protected byte[]? KeyValue;
 
     /// <summary>
@@ -159,8 +160,10 @@ public abstract class KeyedDeferredFinalBlockHashAlgorithm<T>
             ThrowHelper.ThrowIfNull(value);
 
             if (value.Length > this._maximumKeySize / 8)
+            {
                 throw new CryptographicException(
                     string.Format(CryptoResourceStrings.Crypt_Invalid_KeySize, value.Length * 8, $"0..{this._maximumKeySize}"));
+            }
 
             this.KeyValue = value.Length > 0 ? value.Copy() : null;
             this.Initialize();

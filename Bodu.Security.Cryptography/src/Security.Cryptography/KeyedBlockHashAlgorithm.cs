@@ -68,12 +68,6 @@ public abstract class KeyedBlockHashAlgorithm<T>
     /// <see cref="Initialize" /> validation both treat a <see langword="null" /> value as a contract violation and
     /// throw a <see cref="CryptographicException" />.
     /// </remarks>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage(
-        "StyleCop.CSharp.NamingRules",
-        "SA1306:Field names should begin with lower-case letter",
-        Justification = "The field intentionally follows the protected field naming pattern used by HashAlgorithm, such as HashSizeValue, because it forms part of the inherited algorithm-state surface for derived cryptographic types.")]
-    protected byte[]? KeyValue;
-
     /// <summary>
     /// Holds the required key size, in bits, that the derived algorithm accepts. Supplied via the constructor; aligns
     /// with the BCL convention used by <see cref="System.Security.Cryptography.SymmetricAlgorithm.KeySize" />. Divide
@@ -83,7 +77,25 @@ public abstract class KeyedBlockHashAlgorithm<T>
         "StyleCop.CSharp.NamingRules",
         "SA1306:Field names should begin with lower-case letter",
         Justification = "The field intentionally follows the protected field naming pattern used by HashAlgorithm, such as HashSizeValue, because it forms part of the inherited algorithm-state surface for derived cryptographic types.")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Follows the BCL protected field naming convention (like KeySizeValue on SymmetricAlgorithm) so that derived keyed hash types can read the key size without virtual dispatch.")]
     protected readonly int KeySizeValue;
+
+    /// <summary>
+    /// Internal storage for the key used by the algorithm. Always assigned via defensive copy and cleared on disposal.
+    /// </summary>
+    /// <remarks>
+    /// Declared <see cref="byte" />[] nullable to honestly reflect that the field can be observed in three states:
+    /// <see langword="null" /> on a freshly-constructed instance whose constructor has not yet seeded a key, after
+    /// <see cref="Dispose(bool)" /> has cleared it, and between assignments. The <see cref="Key" /> getter and
+    /// <see cref="Initialize" /> validation both treat a <see langword="null" /> value as a contract violation and
+    /// throw a <see cref="CryptographicException" />.
+    /// </remarks>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "StyleCop.CSharp.NamingRules",
+        "SA1306:Field names should begin with lower-case letter",
+        Justification = "The field intentionally follows the protected field naming pattern used by HashAlgorithm, such as HashSizeValue, because it forms part of the inherited algorithm-state surface for derived cryptographic types.")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Follows the BCL protected field naming convention (like KeyValue on HMAC) so that derived keyed hash types can read and clear key material directly without virtual dispatch.")]
+    protected byte[]? KeyValue;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="KeyedBlockHashAlgorithm{T}" /> class with the specified input block
@@ -142,7 +154,7 @@ public abstract class KeyedBlockHashAlgorithm<T>
             if (this.KeyValue is null)
                 throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_KeyNotSet);
 
-            return this.KeyValue.Copy();
+            return this.KeyValue?.Copy() ?? [];
         }
 
         set
@@ -152,11 +164,13 @@ public abstract class KeyedBlockHashAlgorithm<T>
             ThrowHelper.ThrowIfNull(value);
 
             if (value.Length != this.KeySizeValue / 8)
+            {
                 throw new CryptographicException(
                     string.Format(
                         CryptoResourceStrings.Crypt_Invalid_KeySize,
                         value.Length * 8,
                         this.KeySizeValue));
+            }
 
             // Defensive copy ensures external references cannot mutate the internal key.
             this.KeyValue = value.Copy();

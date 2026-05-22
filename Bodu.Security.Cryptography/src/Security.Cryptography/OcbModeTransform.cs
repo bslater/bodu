@@ -494,7 +494,7 @@ public sealed class OcbModeTransform
 
         try
         {
-            nonceWord[0] = (byte)((this._tagLen * 8 % 128) << 1);
+            nonceWord[0] = (byte)(((this._tagLen * 8) % 128) << 1);
             nonceWord[3] = 0x01;
             this._nonce.CopyTo(nonceWord, 4);
 

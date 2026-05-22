@@ -49,6 +49,7 @@ public abstract partial class SerpentBlockCipherBase
     /// <summary>
     /// Indicates whether the instance has been disposed.
     /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Scoped private protected so only in-assembly Serpent variant classes can read the disposal flag directly in ThrowIfDisposed without virtual dispatch.")]
     private protected bool _disposed;
 
     /// <summary>
@@ -177,7 +178,6 @@ public abstract partial class SerpentBlockCipherBase
         if (this._disposed)
             throw new ObjectDisposedException(this.GetType().Name);
 #endif
-
 
     /// <summary>
     /// Applies the Serpent S-box identified by <paramref name="sBoxIndex" /> to the four 32-bit words in bitsliced

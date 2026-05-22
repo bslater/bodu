@@ -60,9 +60,12 @@ public sealed class NoPadding
 
         var size = blockSize / 8;
         if (input.Length % size != 0)
+        {
             throw new ArgumentException(
                 CryptoResourceStrings.Arg_Invalid_NoPaddingInputNotAligned,
                 nameof(input));
+        }
+
         return input.ToArray();
     }
 

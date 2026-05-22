@@ -227,7 +227,7 @@ public sealed class CtsModeTransform
 
         // Output: C_n (full block) then C_{n-1} = E[0..tailBytes].
         cn.CopyTo(output[bodyLength..]);
-        e[..tailBytes].CopyTo(output[(bodyLength + blockSize)..]);
+        e[..tailBytes].CopyTo(output[(bodyLength + blockSize) ..]);
 
         return input.Length;
     }
@@ -268,7 +268,7 @@ public sealed class CtsModeTransform
         rawDec[tailBytes..].CopyTo(e[tailBytes..]);
 
         // Step 3: recover P_n = rawDec[0..tailBytes] (the rest was padding from E).
-        rawDec[..tailBytes].CopyTo(output[(bodyLength + blockSize)..]);
+        rawDec[..tailBytes].CopyTo(output[(bodyLength + blockSize) ..]);
 
         // Step 4: CBC-decrypt e to get P_{n-1}.
         Span<byte> block = stackalloc byte[blockSize];

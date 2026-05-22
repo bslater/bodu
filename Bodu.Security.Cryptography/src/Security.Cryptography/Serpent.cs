@@ -52,11 +52,13 @@ public abstract class Serpent
     /// <summary>
     /// The block size in bytes.
     /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Exposed as a protected field so derived wide-block Serpent types can read the block byte count directly on cipher-construction paths without virtual dispatch.")]
     protected readonly int BlockSizeBytes;
 
     /// <summary>
     /// The key size in bytes.
     /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Exposed as a protected field so derived wide-block Serpent types can read the key byte count directly on cipher-construction paths without virtual dispatch.")]
     protected readonly int KeySizeBytes;
 
     private readonly int _defaultTweakSizeBytes;
@@ -101,7 +103,7 @@ public abstract class Serpent
     public CipherModeKind BlockMode { get; set; } = CipherModeKind.CBC;
 
     /// <inheritdoc />
-    public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[] rgbIV, byte[] tweak)
+    public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[]? rgbIV, byte[] tweak)
     {
         this.ThrowIfDisposed();
         CryptoHelpers.ThrowIfInvalidKeySize(rgbKey, this.KeySize, this.LegalKeySizes);
@@ -113,7 +115,7 @@ public abstract class Serpent
     }
 
     /// <inheritdoc />
-    public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[] rgbIV, byte[] tweak)
+    public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[]? rgbIV, byte[] tweak)
     {
         this.ThrowIfDisposed();
         CryptoHelpers.ThrowIfInvalidKeySize(rgbKey, this.KeySize, this.LegalKeySizes);

@@ -308,7 +308,7 @@ public sealed class Blake2s
         Span<byte> tmp = stackalloc byte[4];
         for (var i = 0; i < wordCount; i++)
         {
-            Span<byte> wordSpan = output.AsSpan(i * 4, Math.Min(4, outputBytes - i * 4));
+            Span<byte> wordSpan = output.AsSpan(i * 4, Math.Min(4, outputBytes - (i * 4)));
             if (wordSpan.Length == 4)
             {
                 BinaryPrimitives.WriteUInt32LittleEndian(wordSpan, this._h[i]);

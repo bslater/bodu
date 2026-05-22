@@ -107,8 +107,10 @@ public sealed class Threefish256Cipher
     {
         this.ThrowIfDisposed();
         if (input.Length != this.BlockSize / 8 || output.Length != this.BlockSize / 8)
+        {
             throw new ArgumentException(
                 string.Format(CryptoResourceStrings.Crypt_Invalid_BlockLength, this.BlockSize / 8));
+        }
 
         Span<ulong> block = stackalloc ulong[this.BlockWords];
         MemoryMarshal.Cast<byte, ulong>(input).CopyTo(block);
@@ -178,8 +180,10 @@ public sealed class Threefish256Cipher
     {
         this.ThrowIfDisposed();
         if (input.Length != this.BlockSize / 8 || output.Length != this.BlockSize / 8)
+        {
             throw new ArgumentException(
                 string.Format(CryptoResourceStrings.Crypt_Invalid_BlockLength, this.BlockSize / 8));
+        }
 
         Span<ulong> block = stackalloc ulong[this.BlockWords];
         MemoryMarshal.Cast<byte, ulong>(input).CopyTo(block);

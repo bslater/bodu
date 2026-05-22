@@ -152,8 +152,10 @@ internal static partial class CryptoHelpers
         ArraySegment<byte> segment = CryptoHelpers.GetBufferOrThrowIfInaccessible(stream);
 
         if (segment.Array is null)
+        {
             throw new InvalidOperationException(
                 CryptoResourceStrings.Op_Invalid_MemoryStreamBufferInaccessible);
+        }
 
         CryptographicOperations.ZeroMemory(segment.Array.AsSpan(0, segment.Array.Length));
 

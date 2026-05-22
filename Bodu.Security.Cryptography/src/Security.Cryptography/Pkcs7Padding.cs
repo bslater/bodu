@@ -130,6 +130,6 @@ public sealed class Pkcs7Padding
         if (valid == 0)
             CryptoHelpers.ThrowInvalidPadding("PKCS#7");
 
-        return input[..(length - padLen)].ToArray();
+        return input[.. (length - padLen)].ToArray();
     }
 }

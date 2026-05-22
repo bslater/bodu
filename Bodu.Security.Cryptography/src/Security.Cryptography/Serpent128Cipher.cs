@@ -94,9 +94,11 @@ public sealed class Serpent128Cipher
     public Serpent128Cipher(ReadOnlySpan<byte> key)
     {
         if (key.Length != 16 && key.Length != 24 && key.Length != 32)
+        {
             throw new ArgumentException(
                 string.Format(CryptoResourceStrings.Crypt_Invalid_KeySize, key.Length * 8, "128, 192, 256"),
                 nameof(key));
+        }
 
         // Expand the supplied 128-, 192-, or 256-bit key into the 33 canonical Serpent round keys.
         this._roundKeys = new uint[RoundKeyWordCount];
@@ -112,8 +114,10 @@ public sealed class Serpent128Cipher
     {
         this.ThrowIfDisposed();
         if (input.Length != BlockSizeBits / 8 || output.Length != BlockSizeBits / 8)
+        {
             throw new ArgumentException(
                 string.Format(CryptoResourceStrings.Crypt_Invalid_BlockLength, BlockSizeBits / 8));
+        }
 
         // Load the 128-bit plaintext block as four little-endian 32-bit words. This is the canonical Serpent bitslice
         // representation used by the shared S-box and linear-transform helpers.
@@ -166,8 +170,10 @@ public sealed class Serpent128Cipher
     {
         this.ThrowIfDisposed();
         if (input.Length != BlockSizeBits / 8 || output.Length != BlockSizeBits / 8)
+        {
             throw new ArgumentException(
                 string.Format(CryptoResourceStrings.Crypt_Invalid_BlockLength, BlockSizeBits / 8));
+        }
 
         // Load the 128-bit ciphertext block as four little-endian 32-bit words.
         var x0 = BinaryReadUInt32LE(input, 0);
@@ -298,7 +304,7 @@ public sealed class Serpent128Cipher
         // Apply the rotating S-box schedule to successive 4-word groups of the generated prekey tail, producing K_0..K_32.
         for (var r = 0; r <= RoundCount; r++)
         {
-            var src = 8 + r * 4;
+            var src = 8 + (r * 4);
             var x0 = prekeys[src];
             var x1 = prekeys[src + 1];
             var x2 = prekeys[src + 2];

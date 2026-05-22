@@ -128,6 +128,6 @@ public sealed class Ansix923Padding
         if (valid == 0)
             CryptoHelpers.ThrowInvalidPadding("ANSI X.923");
 
-        return input[..(length - padLen)].ToArray();
+        return input[.. (length - padLen)].ToArray();
     }
 }

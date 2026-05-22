@@ -11,9 +11,9 @@ using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
 
-[System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1117:Parameters should be on same line or separate lines")]
-[System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0011:Add braces")]
-[System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1001:Add braces (when expression spans over multiple lines)")]
+[System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1117:Parameters should be on same line or separate lines", Justification = "The [CallerArgumentExpression] parameter shares a line with the preceding parameter to keep the logical parameter grouping compact and to mirror the netstandard sibling file.")]
+[System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0011:Add braces", Justification = "Single-statement throw guards are intentionally brace-free to maintain density; these are pure guard-clause helpers that do not benefit from braces.")]
+[System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1001:Add braces (when expression spans over multiple lines)", Justification = "Single-statement throw guards are intentionally brace-free to maintain density; these are pure guard-clause helpers that do not benefit from braces.")]
 internal static partial class CryptoHelpers
 {
     /// <summary>
@@ -78,9 +78,11 @@ internal static partial class CryptoHelpers
         [CallerArgumentExpression(nameof(output))] string? paramName = null)
     {
         if (output.Length < required)
+        {
             throw new ArgumentException(
                 string.Format(CryptoResourceStrings.Crypt_Invalid_OutputBufferTooSmall, required),
                 paramName);
+        }
     }
 
     /// <summary>
@@ -97,9 +99,11 @@ internal static partial class CryptoHelpers
         [CallerArgumentExpression(nameof(input))] string? paramName = null)
     {
         if (input.Length < tagSize)
+        {
             throw new ArgumentException(
                 string.Format(CryptoResourceStrings.Crypt_Invalid_CiphertextTooShort, tagSize),
                 paramName);
+        }
     }
 
     /// <summary>
@@ -128,9 +132,11 @@ internal static partial class CryptoHelpers
         ThrowHelper.ThrowIfZeroOrNegative(divisor);
 
         if ((throwIfZero && span.Length == 0) || span.Length % divisor != 0)
+        {
             throw new CryptographicException(
                 string.Format(CryptoResourceStrings.Crypt_Invalid_InputLengthBlockMultiple, divisor),
                 paramName);
+        }
     }
 
     /// <summary>
@@ -158,9 +164,11 @@ internal static partial class CryptoHelpers
             throw new ArgumentOutOfRangeException(nameof(divisor));
 
         if (value <= T.Zero || value % divisor != T.Zero)
+        {
             throw new CryptographicException(
-                paramName,
+                paramName!,
                 string.Format(CryptoResourceStrings.Crypt_Invalid_HashSizePositiveMultipleOf, divisor));
+        }
     }
 
     /// <summary>
@@ -188,25 +196,33 @@ internal static partial class CryptoHelpers
         [CallerArgumentExpression(nameof(count))] string? paramCountName = null)
     {
         if (array is null)
+        {
             throw new ArgumentNullException(paramArrayName);
+        }
 
         if (offset < 0 || offset > array.Length)
+        {
             throw new ArgumentOutOfRangeException(
                 paramOffsetName,
                 string.Format(ResourceStrings.Arg_Invalid_ArrayOffset, paramOffsetName));
+        }
 
         if (count < 0 || count > array.Length)
+        {
             throw new ArgumentException(
                 string.Format(ResourceStrings.Arg_Invalid_ArrayOffset, paramCountName),
                 paramCountName);
+        }
 
         if (count > array.Length - offset)
+        {
             throw new ArgumentException(
                 string.Format(
                     ResourceStrings.Arg_Invalid_ArrayOffsetOrLength,
                     paramOffsetName,
                     paramCountName,
                     paramArrayName));
+        }
     }
 
     /// <summary>
@@ -232,12 +248,14 @@ internal static partial class CryptoHelpers
         ThrowHelper.ThrowIfNull(permittedHashSizes);
 
         if (Array.IndexOf(permittedHashSizes, hashSize) == -1)
+        {
             throw new ArgumentOutOfRangeException(
                 paramHashSizeName,
                 string.Format(
                     CryptoResourceStrings.Crypt_Invalid_HashSize,
                     hashSize,
                     string.Join(", ", permittedHashSizes)));
+        }
     }
 
     /// <summary>
@@ -272,11 +290,13 @@ internal static partial class CryptoHelpers
         ThrowHelper.ThrowIfNull(legalBlockSizes);
 
         if (iv.Length != blockSizeBits / 8)
+        {
             throw new CryptographicException(
                 string.Format(
                     CryptoResourceStrings.Crypt_Invalid_IVSize,
                     iv.Length * 8,
                     CryptoHelpers.FormatLegalSizes(legalBlockSizes)));
+        }
     }
 
     /// <summary>
@@ -297,9 +317,11 @@ internal static partial class CryptoHelpers
     {
         ThrowHelper.ThrowIfNull(iv, paramName);
         if (iv.Length != blockSizeBits / 8)
+        {
             throw new ArgumentException(
                 string.Format(CryptoResourceStrings.Arg_Invalid_IvLength, iv.Length * 8, blockSizeBits),
                 paramName);
+        }
     }
 
     /// <summary>
@@ -327,12 +349,14 @@ internal static partial class CryptoHelpers
 
         var keyBits = key.Length * 8;
         if (!IsValidSize(keyBits, legalKeySizes))
+        {
             throw new CryptographicException(
                 string.Format(
                     CryptoResourceStrings.Crypt_Invalid_KeySize,
                     keyBits,
                     CryptoHelpers.FormatLegalSizes(legalKeySizes)),
                 paramKeyName);
+        }
     }
 
     /// <summary>
@@ -357,12 +381,14 @@ internal static partial class CryptoHelpers
         ThrowHelper.ThrowIfNull(legalTweakSizes);
 
         if (tweak.Length != tweakSizeBits / 8)
+        {
             throw new CryptographicException(
                 string.Format(
                     CryptoResourceStrings.Crypt_Invalid_TweakSize,
                     tweak.Length * 8,
                     CryptoHelpers.FormatLegalSizes(legalTweakSizes)),
                 paramTweakName);
+        }
     }
 
     /// <summary>
@@ -387,12 +413,14 @@ internal static partial class CryptoHelpers
         ThrowHelper.ThrowIfNull(legalBlockSizes);
 
         if (value.Length != blockSizeBits / 8)
+        {
             throw new CryptographicException(
                 string.Format(
                     CryptoResourceStrings.Crypt_Invalid_BlockSize,
                     value.Length * 8,
                     CryptoHelpers.FormatLegalSizes(legalBlockSizes)),
                 paramValueName);
+        }
     }
 
     /// <summary>
@@ -409,8 +437,10 @@ internal static partial class CryptoHelpers
     public static void ThrowIfHashAlgorithmDestinationTooSmall(bool success)
     {
         if (!success)
+        {
             throw new CryptographicException(
                 CryptoResourceStrings.Crypt_Invalid_HashAlgorithmDestinationBufferTooSmall);
+        }
     }
 
     /// <summary>

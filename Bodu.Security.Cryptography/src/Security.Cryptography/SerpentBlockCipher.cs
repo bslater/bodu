@@ -50,6 +50,7 @@ public abstract partial class SerpentBlockCipher
     /// counter into the final three state words. The parity entry prevents the cycle from being a simple repetition of
     /// the four raw tweak words.
     /// </remarks>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Scoped private protected so only the in-assembly wide-block Serpent variant classes can access the tweak schedule directly, avoiding property dispatch on the hot encrypt/decrypt path.")]
     private protected readonly uint[] _tweakSchedule;
 
     /// <summary>
@@ -59,6 +60,7 @@ public abstract partial class SerpentBlockCipher
     /// Round key <c>r</c> starts at offset <c>r * BlockWords</c>. Encryption uses one key before each round and a final
     /// post-S-box key after the last round, mirroring canonical Serpent's <c>R + 1</c> key schedule shape.
     /// </remarks>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Scoped private protected so only the in-assembly wide-block Serpent variant classes can access the round-key schedule directly, avoiding property dispatch on the hot encrypt/decrypt path.")]
     private protected readonly uint[] _roundKeys;
 
     /// <summary>
@@ -74,14 +76,18 @@ public abstract partial class SerpentBlockCipher
     private protected SerpentBlockCipher(ReadOnlySpan<byte> key, ReadOnlySpan<byte> tweak)
     {
         if (key.Length != this.BlockSize / 8)
+        {
             throw new ArgumentException(
                 string.Format(CryptoResourceStrings.Crypt_Invalid_KeySize, key.Length * 8, this.BlockSize),
                 nameof(key));
+        }
 
         if (tweak.Length != TweakSizeBits / 8)
+        {
             throw new ArgumentException(
                 string.Format(CryptoResourceStrings.Crypt_Invalid_TweakSize, tweak.Length * 8, TweakSizeBits),
                 nameof(tweak));
+        }
 
         // Build the five-word tweak cycle used by the per-four-round injection points.
         this._tweakSchedule = new uint[5];
@@ -116,15 +122,17 @@ public abstract partial class SerpentBlockCipher
     {
         this.ThrowIfDisposed();
         if (input.Length != this.BlockSize / 8 || output.Length != this.BlockSize / 8)
+        {
             throw new ArgumentException(
                 string.Format(CryptoResourceStrings.Crypt_Invalid_BlockLength, this.BlockSize / 8));
+        }
 
         var w = this.BlockWords;
         var rounds = this.Rounds;
 
         // Load the wide block as little-endian 32-bit words. Canonical Serpent is word-oriented, and the wide-block variants
         // preserve that representation across the expanded state width.
-        Span<uint> state = (stackalloc uint[32])[..w];
+        Span<uint> state = stackalloc uint[w];
         for (var i = 0; i < w; i++)
             state[i] = BinaryPrimitives.ReadUInt32LittleEndian(input.Slice(i * 4, 4));
 
@@ -169,14 +177,16 @@ public abstract partial class SerpentBlockCipher
     {
         this.ThrowIfDisposed();
         if (input.Length != this.BlockSize / 8 || output.Length != this.BlockSize / 8)
+        {
             throw new ArgumentException(
                 string.Format(CryptoResourceStrings.Crypt_Invalid_BlockLength, this.BlockSize / 8));
+        }
 
         var w = this.BlockWords;
         var rounds = this.Rounds;
 
         // Load the ciphertext using the same little-endian word layout used by encryption.
-        Span<uint> state = (stackalloc uint[32])[..w];
+        Span<uint> state = stackalloc uint[w];
         for (var i = 0; i < w; i++)
             state[i] = BinaryPrimitives.ReadUInt32LittleEndian(input.Slice(i * 4, 4));
 
@@ -421,7 +431,7 @@ public abstract partial class SerpentBlockCipher
 
         // Seed the widened prekey recurrence with the raw key words. Serpent-1024 has the widest state
         // (32 words = 128 bytes), which is still small enough for stack allocation.
-        Span<uint> seed = (stackalloc uint[32])[..w];
+        Span<uint> seed = stackalloc uint[w];
         for (var i = 0; i < w; i++)
             seed[i] = BinaryPrimitives.ReadUInt32LittleEndian(key.Slice(i * 4, 4));
 
@@ -440,11 +450,11 @@ public abstract partial class SerpentBlockCipher
             for (var r = 0; r <= this.Rounds; r++)
             {
                 var sboxIndex = KeyScheduleSBoxIndex(r);
-                var roundStart = w + r * w;
+                var roundStart = w + (r * w);
 
                 for (var g = 0; g < groupsPerRoundKey; g++)
                 {
-                    var src = roundStart + g * 4;
+                    var src = roundStart + (g * 4);
                     var x0 = prekeys[src];
                     var x1 = prekeys[src + 1];
                     var x2 = prekeys[src + 2];
@@ -452,7 +462,7 @@ public abstract partial class SerpentBlockCipher
 
                     ApplySBox(sboxIndex, ref x0, ref x1, ref x2, ref x3);
 
-                    var dst = r * w + g * 4;
+                    var dst = (r * w) + (g * 4);
                     this._roundKeys[dst] = x0;
                     this._roundKeys[dst + 1] = x1;
                     this._roundKeys[dst + 2] = x2;

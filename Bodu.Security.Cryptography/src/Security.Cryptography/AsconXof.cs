@@ -110,9 +110,9 @@ public abstract class AsconXof<T>
     private readonly ulong _iv3;
     private readonly ulong _iv4;
 
-    private AsconState _state;
     private readonly byte[] _residualBuffer = new byte[BlockSize];
     private readonly byte[] _squeezeBuffer = new byte[BlockSize];
+    private AsconState _state;
     private int _residualBytes;
     private int _squeezeBufOffset;
     private int _squeezeBufAvailable;
@@ -327,7 +327,6 @@ public abstract class AsconXof<T>
             throw new ObjectDisposedException(this.GetType().Name);
 #endif
 
-
     /// <summary>
     /// Finalizes a sponge absorption phase by padding the residual buffer with <c>0x01</c> at the next unused byte
     /// position, absorbing the padded block, and applying <see cref="_absorptionRounds" /> Ascon-p rounds. Resets the
@@ -355,7 +354,6 @@ public abstract class AsconXof<T>
     /// <param name="value">The value to XOR into <c>S4</c>.</param>
     protected void XorS4(ulong value) =>
         this._state.S4 ^= value;
-
 
     /// <summary>
     /// Accumulates <paramref name="data" /> into the residual buffer, flushing complete 8-byte blocks into the state.

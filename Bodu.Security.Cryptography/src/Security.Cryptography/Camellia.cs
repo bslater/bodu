@@ -322,7 +322,6 @@ public sealed class Camellia
         base.Dispose(disposing);
     }
 
-
     /// <summary>
     /// Gets the configured key size expressed in bytes.
     /// </summary>

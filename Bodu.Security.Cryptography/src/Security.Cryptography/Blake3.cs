@@ -111,7 +111,7 @@ public sealed class Blake3
     /// <summary>
     /// Size, in bytes, of a single compression input block.
     /// </summary>
-    private const int BlockSize = 64;
+    private new const int BlockSize = 64;
 
     /// <summary>
     /// Size, in bytes, of a single input chunk (leaf of the hash tree).
@@ -226,6 +226,7 @@ public sealed class Blake3
     }
 
     // ---- DeferredFinalBlockHashAlgorithm<T> implementation ----
+
     /// <inheritdoc />
     /// <remarks>
     /// Clears the CV stack, zeroes <see cref="_chunkCv" />, releases the framework
@@ -480,7 +481,7 @@ public sealed class Blake3
         var words = new uint[16];
 
         for (var i = 0; i < 16; i++)
-            words[i] = BinaryPrimitives.ReadUInt32LittleEndian(padded[(i * 4)..]);
+            words[i] = BinaryPrimitives.ReadUInt32LittleEndian(padded[(i * 4) ..]);
 
         return words;
     }

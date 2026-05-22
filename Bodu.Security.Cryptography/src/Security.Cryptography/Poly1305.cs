@@ -103,7 +103,7 @@ public sealed class Poly1305
     /// Length of the Poly1305 input block is 128 bits (16 bytes). Byte length is derived inline via
     /// <see cref="BlockSize" /> / 8 where needed.
     /// </summary>
-    private const int BlockSize = 128;
+    private new const int BlockSize = 128;
 
     private readonly uint[] _acc = new uint[5];
     private readonly uint[] _key = new uint[4];
@@ -231,7 +231,7 @@ public sealed class Poly1305
 
         // If full 16 bytes were present, set highest bit (equivalent to adding 2^128 per RFC)
         if (block.Length == blockBytes)
-            h4 += (1 << 24);
+            h4 += 1 << 24;
 
         // Load r and perform 130-bit polynomial multiplication: accumulator * r
         ulong r0 = this._r[0], r1 = this._r[1], r2 = this._r[2], r3 = this._r[3], r4 = this._r[4];

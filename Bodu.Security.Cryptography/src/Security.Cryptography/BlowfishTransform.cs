@@ -36,7 +36,7 @@ internal sealed class BlowfishTransform
     /// <exception cref="System.ArgumentNullException">
     /// <paramref name="cipher" /> is <see langword="null" />.
     /// </exception>
-    internal BlowfishTransform(IBlockCipher cipher, CipherModeKind cipherMode, PaddingModeKind paddingMode, byte[] iv, bool encrypt)
+    internal BlowfishTransform(IBlockCipher cipher, CipherModeKind cipherMode, PaddingModeKind paddingMode, byte[]? iv, bool encrypt)
         : base(cipher, cipherMode, paddingMode, iv, encrypt)
     {
     }

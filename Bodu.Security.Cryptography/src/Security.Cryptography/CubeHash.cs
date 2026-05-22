@@ -745,7 +745,6 @@ public sealed class CubeHash
             throw new ObjectDisposedException(this.GetType().Name);
 #endif
 
-
     /// <summary>
     /// Throws an exception if algorithm configuration is attempted after state mutation.
     /// </summary>

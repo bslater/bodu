@@ -211,7 +211,6 @@ public sealed class CcmModeTransform
     private void ThrowIfCompleted() =>
         CryptoHelpers.ThrowIfAlreadyCompleted(this._completed);
 
-
     /// <summary>
     /// Releases the resources used by this instance.
     /// </summary>
@@ -278,8 +277,10 @@ public sealed class CcmModeTransform
         if (hasAad)
         {
             if (aad.Length >= 0xFF00)
+            {
                 throw new NotSupportedException(
                     string.Format(CryptoResourceStrings.Op_NotSupported_AadTooLongForLengthEncoding, 0xFF00, 2));
+            }
 
             // Encode: 2-byte length + aad + zero-padding to block multiple.
             var encodedLen = 2 + aad.Length;

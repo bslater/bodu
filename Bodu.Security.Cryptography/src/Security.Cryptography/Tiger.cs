@@ -281,7 +281,7 @@ public sealed partial class Tiger
 
         // Append message length in bits in little-endian at end
         var bitLength = messageLength * 8;
-        BinaryPrimitives.WriteUInt64LittleEndian(padded[(totalLength - 8)..], bitLength);
+        BinaryPrimitives.WriteUInt64LittleEndian(padded[(totalLength - 8) ..], bitLength);
 
         return padded[..totalLength].ToArray();
     }
@@ -308,7 +308,7 @@ public sealed partial class Tiger
         BinaryPrimitives.WriteUInt64LittleEndian(output[8..16], this._state1);
         BinaryPrimitives.WriteUInt64LittleEndian(output[16..24], this._state2);
 
-        return output[..(this.HashSizeValue / 8)].ToArray();
+        return output[.. (this.HashSizeValue / 8)].ToArray();
     }
 
     /// <summary>
