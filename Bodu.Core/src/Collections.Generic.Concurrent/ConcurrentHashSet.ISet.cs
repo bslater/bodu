@@ -48,7 +48,7 @@ public sealed partial class ConcurrentHashSet<T> :
         ThrowHelper.ThrowIfNull(array);
         ThrowHelper.ThrowIfNegative(arrayIndex);
         T[] snapshot = ToArray();
-        ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, arrayIndex + snapshot.Length);
+        ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, arrayIndex, snapshot.Length);
 
         Array.Copy(snapshot, 0, array, arrayIndex, snapshot.Length);
     }
@@ -92,7 +92,7 @@ public sealed partial class ConcurrentHashSet<T> :
         if (ReferenceEquals(other, this))
             return;
 
-        var retained = new HashSet<T>(other, _comparer);
+        var retained = CreateValidatedSet(other);
         foreach (T item in ToArray())
         {
             if (!retained.Contains(item))
@@ -145,7 +145,7 @@ public sealed partial class ConcurrentHashSet<T> :
             return;
         }
 
-        foreach (T item in new HashSet<T>(other, _comparer))
+        foreach (T item in CreateValidatedSet(other))
         {
             if (!Add(item))
                 Remove(item);
@@ -170,11 +170,11 @@ public sealed partial class ConcurrentHashSet<T> :
     {
         ThrowHelper.ThrowIfNull(other);
 
+        var otherSet = CreateValidatedSet(other);
         T[] snapshot = ToArray();
         if (snapshot.Length == 0)
             return true;
 
-        var otherSet = new HashSet<T>(other, _comparer);
         foreach (T item in snapshot)
         {
             if (!otherSet.Contains(item))
@@ -230,7 +230,7 @@ public sealed partial class ConcurrentHashSet<T> :
         ThrowHelper.ThrowIfNull(other);
 
         T[] snapshot = ToArray();
-        var otherSet = new HashSet<T>(other, _comparer);
+        var otherSet = CreateValidatedSet(other);
 
         if (snapshot.Length >= otherSet.Count)
             return false;
@@ -262,7 +262,7 @@ public sealed partial class ConcurrentHashSet<T> :
     {
         ThrowHelper.ThrowIfNull(other);
 
-        var otherSet = new HashSet<T>(other, _comparer);
+        var otherSet = CreateValidatedSet(other);
         T[] snapshot = ToArray();
 
         if (snapshot.Length <= otherSet.Count)
@@ -322,7 +322,7 @@ public sealed partial class ConcurrentHashSet<T> :
     {
         ThrowHelper.ThrowIfNull(other);
 
-        var otherSet = new HashSet<T>(other, _comparer);
+        var otherSet = CreateValidatedSet(other);
         T[] snapshot = ToArray();
 
         if (snapshot.Length != otherSet.Count)
@@ -335,5 +335,33 @@ public sealed partial class ConcurrentHashSet<T> :
         }
 
         return true;
+    }
+
+    /// <summary>
+    /// Materializes <paramref name="source" /> into a <see cref="HashSet{T}" /> that uses the set's comparer,
+    /// rejecting any <see langword="null" /> element encountered during enumeration.
+    /// </summary>
+    /// <param name="source">The collection to copy. Must not contain a <see langword="null" /> element.</param>
+    /// <returns>
+    /// A new <see cref="HashSet{T}" /> containing the distinct elements of <paramref name="source" />.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// An element of <paramref name="source" /> is <see langword="null" />.
+    /// </exception>
+    /// <remarks>
+    /// The bulk set-algebra members that materialize <paramref name="source" /> route through this helper so that a
+    /// <see langword="null" /> element is rejected consistently with the single-element <see cref="Add" />,
+    /// <see cref="Remove" />, and <see cref="Contains" /> operations.
+    /// </remarks>
+    private HashSet<T> CreateValidatedSet(IEnumerable<T> source)
+    {
+        var result = new HashSet<T>(_comparer);
+        foreach (T item in source)
+        {
+            ThrowHelper.ThrowIfNull(item);
+            result.Add(item);
+        }
+
+        return result;
     }
 }

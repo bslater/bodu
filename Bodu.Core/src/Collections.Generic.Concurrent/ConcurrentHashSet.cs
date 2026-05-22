@@ -187,9 +187,10 @@ public sealed partial class ConcurrentHashSet<T>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> is negative.</exception>
     /// <remarks>
     /// This is the single shared initializer that every public constructor delegates to. The capacity is raised to at
-    /// least <paramref name="concurrencyLevel" /> so that every lock guards at least one bucket.
+    /// least <paramref name="concurrencyLevel" /> so that every lock guards at least one bucket. It is also visible to
+    /// the test assembly so that instances can be constructed with an explicit lock-striping level.
     /// </remarks>
-    private ConcurrentHashSet(int concurrencyLevel, int capacity, IEqualityComparer<T>? comparer)
+    internal ConcurrentHashSet(int concurrencyLevel, int capacity, IEqualityComparer<T>? comparer)
     {
         ThrowHelper.ThrowIfNegative(capacity);
 
@@ -218,6 +219,20 @@ public sealed partial class ConcurrentHashSet<T>
     /// </summary>
     /// <returns>The active equality comparer.</returns>
     public IEqualityComparer<T> Comparer => _comparer;
+
+    /// <summary>
+    /// Gets the number of buckets in the current internal table. Exposed to the test assembly so that table-sizing
+    /// invariants can be asserted directly.
+    /// </summary>
+    /// <returns>The length of the current bucket array.</returns>
+    internal int BucketCount => _tables._buckets.Length;
+
+    /// <summary>
+    /// Gets the number of stripe locks that guard the table. Exposed to the test assembly so that table-sizing
+    /// invariants can be asserted directly.
+    /// </summary>
+    /// <returns>The fixed number of stripe locks allocated at construction.</returns>
+    internal int LockCount => _locks.Length;
 
     /// <summary>
     /// Gets the number of elements currently contained in the set.
@@ -422,7 +437,8 @@ public sealed partial class ConcurrentHashSet<T>
     /// </summary>
     /// <remarks>
     /// This operation acquires every internal lock and installs a fresh, empty bucket table, so it is atomic with
-    /// respect to all other operations.
+    /// respect to all other operations. The replacement table keeps at least as many buckets as there are lock
+    /// stripes, preserving the invariant that every stripe guards at least one bucket.
     /// </remarks>
     public void Clear()
     {
@@ -431,8 +447,11 @@ public sealed partial class ConcurrentHashSet<T>
         {
             AcquireAllLocks(ref locksAcquired);
 
-            _tables = new Tables(new Node?[DefaultCapacity], new int[_locks.Length]);
-            _budget = Math.Max(1, DefaultCapacity / _locks.Length);
+            // Retain the current bucket count so a previously grown set is not forced to immediately regrow, and
+            // never drop below the lock count or a stripe would guard zero buckets.
+            int bucketCount = Math.Max(_tables._buckets.Length, _locks.Length);
+            _tables = new Tables(new Node?[bucketCount], new int[_locks.Length]);
+            _budget = Math.Max(1, bucketCount / _locks.Length);
         }
         finally
         {
