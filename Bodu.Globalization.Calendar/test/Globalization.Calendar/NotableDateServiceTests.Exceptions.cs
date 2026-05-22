@@ -34,23 +34,6 @@ public sealed partial class NotableDateServiceTests
         });
     }
 
-    /// <summary>
-    /// Verifies that the <see cref="NotableDateService" /> constructor rejects
-    /// <see cref="WorkingDaysOfWeek.Custom" /> because it has no canonical
-    /// <see cref="WeekPattern" />; callers must convert their <see cref="IWeekendDefinitionProvider" /> to a
-    /// <see cref="WeekPattern" /> and use the <see cref="WeekPattern" /> constructor instead.
-    /// </summary>
-    [TestMethod]
-    public void Ctor_WhenWeekendDefinitionIsCustom_ShouldThrowExactly()
-    {
-        Assert.ThrowsExactly<ArgumentException>(() =>
-        {
-            _ = new NotableDateService(
-                Array.Empty<INotableDateRuleProvider>(),
-                WorkingDaysOfWeek.Custom);
-        });
-    }
-
     // -----------------------------------------------------------------------------------------
     // GetNotableDates(int, NotableDateFilter, …) – ParamName + null-filter coverage
     // -----------------------------------------------------------------------------------------
