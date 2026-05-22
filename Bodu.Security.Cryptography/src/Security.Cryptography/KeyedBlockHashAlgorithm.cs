@@ -154,7 +154,7 @@ public abstract class KeyedBlockHashAlgorithm<T>
             if (this.KeyValue is null)
                 throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_KeyNotSet);
 
-            return this.KeyValue!.Copy()!;
+            return this.KeyValue?.Copy() ?? [];
         }
 
         set
@@ -164,11 +164,13 @@ public abstract class KeyedBlockHashAlgorithm<T>
             ThrowHelper.ThrowIfNull(value);
 
             if (value.Length != this.KeySizeValue / 8)
+            {
                 throw new CryptographicException(
                     string.Format(
                         CryptoResourceStrings.Crypt_Invalid_KeySize,
                         value.Length * 8,
                         this.KeySizeValue));
+            }
 
             // Defensive copy ensures external references cannot mutate the internal key.
             this.KeyValue = value.Copy();

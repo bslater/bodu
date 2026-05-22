@@ -280,7 +280,7 @@ public sealed class MerkleTreeHash
         while (this._currentLevel.Count > 1)
         {
             var hashLength = this._currentLevel[0].Length;
-            var nextLevel = new List<byte[]>(this._currentLevel.Count / this._fanOut + 1);
+            var nextLevel = new List<byte[]>((this._currentLevel.Count / this._fanOut) + 1);
 
             for (var i = 0; i < this._currentLevel.Count; i += this._fanOut)
             {

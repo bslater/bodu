@@ -200,7 +200,6 @@ public abstract class Threefish
             throw new ObjectDisposedException(this.GetType().Name);
 #endif
 
-
     /// <summary>
     /// Instantiates the concrete Threefish block cipher with the specified key and tweak.
     /// </summary>

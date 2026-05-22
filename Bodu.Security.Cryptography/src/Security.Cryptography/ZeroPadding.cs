@@ -52,9 +52,11 @@ public sealed class ZeroPadding
     public byte[] Pad(ReadOnlySpan<byte> input, int blockSize)
     {
         if (blockSize <= 0)
+        {
             throw new ArgumentOutOfRangeException(
                 nameof(blockSize),
                 string.Format(CryptoResourceStrings.Arg_OutOfRange_BlockSizeMustBeGreaterThan, 0));
+        }
 
         var size = blockSize / 8;
         var paddingLength = size - (input.Length % size);

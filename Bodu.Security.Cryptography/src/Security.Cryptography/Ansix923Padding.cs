@@ -55,9 +55,11 @@ public sealed class Ansix923Padding
     public byte[] Pad(ReadOnlySpan<byte> input, int blockSize)
     {
         if (blockSize <= 0)
+        {
             throw new ArgumentOutOfRangeException(
                 nameof(blockSize),
                 string.Format(CryptoResourceStrings.Arg_OutOfRange_BlockSizeMustBeGreaterThan, 0));
+        }
 
         var size = blockSize / 8;
         var paddingLength = size - (input.Length % size);
@@ -87,9 +89,11 @@ public sealed class Ansix923Padding
     public byte[] Unpad(ReadOnlySpan<byte> input, int blockSize)
     {
         if (blockSize <= 0)
+        {
             throw new ArgumentOutOfRangeException(
                 nameof(blockSize),
                 string.Format(CryptoResourceStrings.Arg_OutOfRange_BlockSizeMustBeGreaterThan, 0));
+        }
 
         // Constant-time verification to mitigate CBC padding-oracle attacks.
         var size = blockSize / 8;
@@ -131,6 +135,6 @@ public sealed class Ansix923Padding
         if (valid == 0)
             CryptoHelpers.ThrowInvalidPadding("ANSI X.923");
 
-        return input[..(length - padLen)].ToArray();
+        return input[.. (length - padLen)].ToArray();
     }
 }

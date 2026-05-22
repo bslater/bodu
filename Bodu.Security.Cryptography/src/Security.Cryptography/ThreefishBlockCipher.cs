@@ -75,7 +75,7 @@ public abstract partial class ThreefishBlockCipher
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(tweak, 16);
 
         // Key schedule initialization: 4 words + parity + duplicated key
-        this._keySchedule = new ulong[this.BlockWords * 2 + 1];
+        this._keySchedule = new ulong[(this.BlockWords * 2) + 1];
         MemoryMarshal.Cast<byte, ulong>(key).CopyTo(this._keySchedule);
         var parity = KeyParityValue;
         for (var i = 0; i < this.BlockWords; i++)

@@ -181,23 +181,29 @@ public sealed class GcmModeTransform
         this._cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
 
         if (cipher.BlockSize != BlockSize)
+        {
             throw new ArgumentException(
                 $"GCM requires a block cipher with a {BlockSize / 8}-byte block size.",
                 nameof(cipher));
+        }
 
         if (useInitialCounterBlock)
         {
             if (nonceOrJ0.Length != BlockSize / 8)
+            {
                 throw new ArgumentException(
                     $"The initial counter block must be exactly {BlockSize / 8} bytes.",
                     parameterName);
+            }
         }
         else
         {
             if (nonceOrJ0.Length != NonceSize / 8)
+            {
                 throw new ArgumentException(
                     $"The GCM nonce must be exactly {NonceSize / 8} bytes.",
                     parameterName);
+            }
         }
 
         this._h = new byte[BlockSize / 8];
@@ -255,8 +261,10 @@ public sealed class GcmModeTransform
         this.ThrowIfCompleted();
 
         if (this._aadProcessed)
+        {
             throw new InvalidOperationException(
                 CryptoResourceStrings.Crypt_Invalid_AssociatedDataAlreadyProcessed);
+        }
 
         this._aad = associatedData.IsEmpty ? Array.Empty<byte>() : associatedData.ToArray();
         this._aadProcessed = true;
@@ -274,9 +282,11 @@ public sealed class GcmModeTransform
 
         var required = checked(plaintext.Length + (DefaultTagSize / 8));
         if (output.Length < required)
+        {
             throw new ArgumentException(
                 string.Format(CryptoResourceStrings.Crypt_Invalid_OutputBufferTooSmall, required),
                 nameof(output));
+        }
 
         try
         {
@@ -315,15 +325,19 @@ public sealed class GcmModeTransform
         this.ThrowIfCompleted();
 
         if (ciphertextWithTag.Length < DefaultTagSize / 8)
+        {
             throw new ArgumentException(
                 string.Format(CryptoResourceStrings.Crypt_Invalid_CiphertextTooShort, DefaultTagSize / 8),
                 nameof(ciphertextWithTag));
+        }
 
-        var plaintextLength = ciphertextWithTag.Length - DefaultTagSize / 8;
+        var plaintextLength = ciphertextWithTag.Length - (DefaultTagSize / 8);
         if (output.Length < plaintextLength)
+        {
             throw new ArgumentException(
                 string.Format(CryptoResourceStrings.Crypt_Invalid_OutputBufferTooSmall, plaintextLength),
                 nameof(output));
+        }
 
         try
         {
@@ -572,7 +586,6 @@ public sealed class GcmModeTransform
             throw new ObjectDisposedException(this.GetType().Name);
 #endif
 
-
     /// <summary>
     /// Throws <see cref="InvalidOperationException" /> if this instance has already encrypted or decrypted a message.
     /// GCM transforms are single-use; create a fresh instance per message.
@@ -580,7 +593,9 @@ public sealed class GcmModeTransform
     private void ThrowIfCompleted()
     {
         if (this._completed)
+        {
             throw new InvalidOperationException(
                 "This GCM transform has already completed and cannot be reused. Create a new instance per message.");
+        }
     }
 }

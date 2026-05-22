@@ -430,8 +430,10 @@ public sealed class ParallelMerkleTreeHash
         // TryWrite on an unbounded channel fails only if the channel has already been completed.
         // Under the correct bottom-up shutdown sequence this path must never be reached.
         if (!this._levelChannels[level].Writer.TryWrite(hash))
+        {
             throw new InvalidOperationException(
                 $"Write to level-{level} channel failed. The channel was completed before all nodes were submitted.");
+        }
     }
 
     /// <summary>
@@ -624,9 +626,14 @@ public sealed class ParallelMerkleTreeHash
         {
             channel.Writer.TryComplete();
 #pragma warning disable VSTHRD003 // Avoid awaiting foreign Tasks
-            try { await this._levelWorkers[level].ConfigureAwait(false); }
+            try
+            {
+                await this._levelWorkers[level].ConfigureAwait(false);
+            }
 #pragma warning restore VSTHRD003
-            catch { }
+            catch
+            {
+            }
         }
     }
 
@@ -714,7 +721,6 @@ public sealed class ParallelMerkleTreeHash
         if (this._disposed)
             throw new ObjectDisposedException(this.GetType().Name);
 #endif
-
 
     /// <inheritdoc />
     public void Dispose()

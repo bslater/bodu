@@ -364,9 +364,11 @@ public sealed class SkipjackBlockCipher
     public SkipjackBlockCipher(ReadOnlySpan<byte> keyBytes)
     {
         if (keyBytes.Length != KeySize / 8)
+        {
             throw new ArgumentException(
                 CryptoResourceStrings.Arg_Invalid_SkipjackKeyLength,
                 nameof(keyBytes));
+        }
 
         this._key0 = new int[32];
         this._key1 = new int[32];
@@ -378,10 +380,10 @@ public sealed class SkipjackBlockCipher
         // Precomputing these positions gives round k direct access to cv0..cv3 without changing the algorithm.
         for (var i = 0; i < 32; i++)
         {
-            this._key0[i] = keyBytes[(i * 4 + 0) % 10];
-            this._key1[i] = keyBytes[(i * 4 + 1) % 10];
-            this._key2[i] = keyBytes[(i * 4 + 2) % 10];
-            this._key3[i] = keyBytes[(i * 4 + 3) % 10];
+            this._key0[i] = keyBytes[((i * 4) + 0) % 10];
+            this._key1[i] = keyBytes[((i * 4) + 1) % 10];
+            this._key2[i] = keyBytes[((i * 4) + 2) % 10];
+            this._key3[i] = keyBytes[((i * 4) + 3) % 10];
         }
     }
 

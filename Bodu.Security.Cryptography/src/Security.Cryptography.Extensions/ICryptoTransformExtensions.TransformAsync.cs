@@ -119,8 +119,13 @@ public static partial class ICryptoTransformExtensions
                     // may raise a secondary CryptographicException that would mask the original
                     // cause (cancellation or I/O failure). Swallow that secondary exception so
                     // the primary exception propagates.
-                    try { await cryptoStream.DisposeAsync().ConfigureAwait(false); }
-                    catch { }
+                    try
+                    {
+                        await cryptoStream.DisposeAsync().ConfigureAwait(false);
+                    }
+                    catch
+                    {
+                    }
                 }
             }
         }
@@ -218,8 +223,13 @@ public static partial class ICryptoTransformExtensions
                 }
                 else
                 {
-                    try { await cryptoStream.DisposeAsync().ConfigureAwait(false); }
-                    catch { }
+                    try
+                    {
+                        await cryptoStream.DisposeAsync().ConfigureAwait(false);
+                    }
+                    catch
+                    {
+                    }
                 }
             }
 

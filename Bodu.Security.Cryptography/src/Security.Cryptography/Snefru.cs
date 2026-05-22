@@ -162,7 +162,7 @@ public abstract partial class Snefru<T>
         var paddedLength = 2 * (this.BlockSize / 8);
         Span<byte> padded = stackalloc byte[paddedLength];
         block.CopyTo(padded);
-        BinaryPrimitives.WriteUInt64BigEndian(padded[(paddedLength - 8)..], messageLength << 3);
+        BinaryPrimitives.WriteUInt64BigEndian(padded[(paddedLength - 8) ..], messageLength << 3);
         return padded[..paddedLength].ToArray();
     }
 

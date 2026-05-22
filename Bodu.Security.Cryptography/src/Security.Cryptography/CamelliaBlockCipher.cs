@@ -396,10 +396,12 @@ public sealed class CamelliaBlockCipher
     public CamelliaBlockCipher(ReadOnlySpan<byte> key)
     {
         var keyBits = key.Length * 8;
-        if (keyBits is not (Key128SizeBits or Key192SizeBits or Key256SizeBits))
+        if (keyBits is not(Key128SizeBits or Key192SizeBits or Key256SizeBits))
+        {
             throw new ArgumentException(
                 CryptoResourceStrings.Arg_Invalid_CamelliaKeyLength,
                 nameof(key));
+        }
 
         // The 128-bit schedule uses KA and 18 rounds. The 192/256-bit schedule additionally derives KB and uses 24 rounds.
         _usesExtendedKeySchedule = keyBits > Key128SizeBits;

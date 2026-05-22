@@ -160,8 +160,10 @@ public abstract class KeyedDeferredFinalBlockHashAlgorithm<T>
             ThrowHelper.ThrowIfNull(value);
 
             if (value.Length > this._maximumKeySize / 8)
+            {
                 throw new CryptographicException(
                     string.Format(CryptoResourceStrings.Crypt_Invalid_KeySize, value.Length * 8, $"0..{this._maximumKeySize}"));
+            }
 
             this.KeyValue = value.Length > 0 ? value.Copy() : null;
             this.Initialize();

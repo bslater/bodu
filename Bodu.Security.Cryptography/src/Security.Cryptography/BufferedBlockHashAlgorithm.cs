@@ -341,7 +341,6 @@ public abstract class BufferedBlockHashAlgorithm<T>
             throw new ObjectDisposedException(this.GetType().Name);
 #endif
 
-
     /// <summary>
     /// Throws if the algorithm has begun processing and can no longer be reconfigured.
     /// </summary>

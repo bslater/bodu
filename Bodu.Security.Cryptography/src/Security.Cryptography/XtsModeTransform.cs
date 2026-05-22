@@ -101,13 +101,18 @@ public sealed class XtsModeTransform
         this._tweakCipher = tweakCipher ?? throw new ArgumentNullException(nameof(tweakCipher));
         if (tweak is null) throw new ArgumentNullException(nameof(tweak));
         if (tweakCipher.BlockSize != dataCipher.BlockSize)
+        {
             throw new ArgumentException(
                 $"tweakCipher block size ({tweakCipher.BlockSize} bits) must equal dataCipher block size ({dataCipher.BlockSize} bits).",
                 nameof(tweakCipher));
+        }
+
         if (tweak.Length != dataCipher.BlockSize / 8)
+        {
             throw new ArgumentException(
                 $"Tweak length ({tweak.Length} bytes) must equal the cipher block size ({dataCipher.BlockSize / 8} bytes).",
                 nameof(tweak));
+        }
 
         this._tweak = (byte[])tweak.Clone();
     }

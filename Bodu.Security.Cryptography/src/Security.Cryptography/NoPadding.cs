@@ -54,15 +54,20 @@ public sealed class NoPadding
     public byte[] Pad(ReadOnlySpan<byte> input, int blockSize)
     {
         if (blockSize <= 0)
+        {
             throw new ArgumentOutOfRangeException(
                 nameof(blockSize),
                 string.Format(CryptoResourceStrings.Arg_OutOfRange_BlockSizeMustBeGreaterThan, 0));
+        }
 
         var size = blockSize / 8;
         if (input.Length % size != 0)
+        {
             throw new ArgumentException(
                 CryptoResourceStrings.Arg_Invalid_NoPaddingInputNotAligned,
                 nameof(input));
+        }
+
         return input.ToArray();
     }
 

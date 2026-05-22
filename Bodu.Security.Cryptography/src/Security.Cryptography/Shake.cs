@@ -446,5 +446,4 @@ public sealed class Shake
                 destination[baseOffset + b] = (byte)(lane >> (8 * b));
         }
     }
-
 }

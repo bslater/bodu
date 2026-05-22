@@ -55,9 +55,11 @@ public sealed class Iso10126Padding
     public byte[] Pad(ReadOnlySpan<byte> input, int blockSize)
     {
         if (blockSize <= 0)
+        {
             throw new ArgumentOutOfRangeException(
                 nameof(blockSize),
                 string.Format(CryptoResourceStrings.Arg_OutOfRange_BlockSizeMustBeGreaterThan, 0));
+        }
 
         var size = blockSize / 8;
         var paddingLength = size - (input.Length % size);
@@ -95,9 +97,11 @@ public sealed class Iso10126Padding
     public byte[] Unpad(ReadOnlySpan<byte> input, int blockSize)
     {
         if (blockSize <= 0)
+        {
             throw new ArgumentOutOfRangeException(
                 nameof(blockSize),
                 string.Format(CryptoResourceStrings.Arg_OutOfRange_BlockSizeMustBeGreaterThan, 0));
+        }
 
         var size = blockSize / 8;
 
@@ -111,6 +115,6 @@ public sealed class Iso10126Padding
         if (padLen < 1 || padLen > size)
             CryptoHelpers.ThrowInvalidPadding("ISO 10126");
 
-        return input[..(length - padLen)].ToArray();
+        return input[.. (length - padLen)].ToArray();
     }
 }

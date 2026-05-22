@@ -24,10 +24,11 @@ namespace Bodu.Security.Cryptography;
 /// contract and lifecycle — construct an <see cref="IAeadBlockCipherModeTransform" /> implementation directly, or use
 /// the helpers on <see cref="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions" />.
 /// </para>
+/// <para>
+/// The following example composes a block cipher, a CBC mode transform, and PKCS#7 padding to encrypt a message.
+/// </para>
 /// </remarks>
 /// <example>
-/// The following example composes a block cipher, a CBC mode transform, and PKCS#7 padding to encrypt a message:
-/// <code>
 ///<![CDATA[
 /// using IBlockCipher cipher = /* construct an IBlockCipher, e.g. an AES wrapper */;
 /// IBlockCipherModeTransform mode = BlockCipherModeFactory.Create(CipherBlockMode.CBC, cipher, iv);
@@ -37,7 +38,6 @@ namespace Bodu.Security.Cryptography;
 /// byte[] ciphertext = new byte[padded.Length];
 /// mode.Transform(padded, ciphertext, encrypt: true);
 ///]]>
-/// </code>
 /// </example>
 public static class BlockCipherModeFactory
 {

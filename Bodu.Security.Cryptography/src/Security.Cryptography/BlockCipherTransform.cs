@@ -397,7 +397,6 @@ public abstract class BlockCipherTransform
             throw new ObjectDisposedException(this.GetType().Name);
 #endif
 
-
     /// <summary>
     /// Throws if this transform has already completed its final block operation.
     /// </summary>

@@ -57,9 +57,11 @@ public sealed class Iso7816_4Padding
     public byte[] Pad(ReadOnlySpan<byte> input, int blockSize)
     {
         if (blockSize <= 0)
+        {
             throw new ArgumentOutOfRangeException(
                 nameof(blockSize),
                 string.Format(CryptoResourceStrings.Arg_OutOfRange_BlockSizeMustBeGreaterThan, 0));
+        }
 
         var size = blockSize / 8;
         var paddingLength = size - (input.Length % size);
@@ -88,9 +90,11 @@ public sealed class Iso7816_4Padding
     public byte[] Unpad(ReadOnlySpan<byte> input, int blockSize)
     {
         if (blockSize <= 0)
+        {
             throw new ArgumentOutOfRangeException(
                 nameof(blockSize),
                 string.Format(CryptoResourceStrings.Arg_OutOfRange_BlockSizeMustBeGreaterThan, 0));
+        }
 
         var size = blockSize / 8;
 

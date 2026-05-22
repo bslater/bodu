@@ -179,7 +179,6 @@ public abstract partial class SerpentBlockCipherBase
             throw new ObjectDisposedException(this.GetType().Name);
 #endif
 
-
     /// <summary>
     /// Applies the Serpent S-box identified by <paramref name="sBoxIndex" /> to the four 32-bit words in bitsliced
     /// form.
