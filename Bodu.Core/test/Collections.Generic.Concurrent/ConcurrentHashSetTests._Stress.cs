@@ -463,4 +463,60 @@ public partial class ConcurrentHashSetTests
         for (var k = 0; k < totalKeys; k++)
             Assert.IsTrue(set.Contains(k), $"Key {k} was lost across a table resize.");
     }
+
+    /// <summary>
+    /// Verifies that, across a range of thread counts and per-thread workloads, every worker that adds a private block
+    /// of keys sees all of them retained afterward, with an exact final count and no faults.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Stress")]
+    [DataRow(2, 2_000)]
+    [DataRow(4, 2_000)]
+    [DataRow(8, 1_000)]
+    public void Stress_WhenManyThreadsAddPrivateKeyBlocks_ShouldRetainEveryKey(int threadCount, int keysPerThread)
+    {
+        var set = new ConcurrentHashSet<long>(capacity: 4);
+        using var startGate = new ManualResetEventSlim(false);
+
+        var faults = 0;
+        var addFailures = 0;
+        Exception? firstException = null;
+
+        Task[] workers = Enumerable.Range(0, threadCount).Select(threadId =>
+            StartWorker(() =>
+            {
+                startGate.Wait();
+                long baseKey = (long)threadId * keysPerThread;
+
+                try
+                {
+                    for (var k = 0; k < keysPerThread; k++)
+                    {
+                        if (!set.Add(baseKey + k))
+                            Interlocked.Increment(ref addFailures);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Interlocked.CompareExchange(ref firstException, ex, null);
+                    Interlocked.Increment(ref faults);
+                }
+            })).ToArray();
+
+        startGate.Set();
+        var completed = Task.WaitAll(workers, 60_000);
+
+        var expectedCount = threadCount * keysPerThread;
+
+        TestContext.WriteLine(
+            $"ThreadCount={threadCount}, KeysPerThread={keysPerThread}, AddFailures={addFailures}, " +
+            $"Faults={faults}, Count={set.Count}, Expected={expectedCount}, Completed={completed}, " +
+            $"FirstException={firstException}");
+
+        Assert.IsTrue(completed, "Workers did not complete within the deadlock timeout.");
+        Assert.AreEqual(0, faults, $"No exception is expected. First exception: {firstException}");
+        Assert.AreEqual(0, addFailures, "Every add of a privately-owned key must succeed.");
+        Assert.AreEqual(expectedCount, set.Count, "The set must retain every key added across all threads.");
+        Assert.HasCount(expectedCount, set.ToArray());
+    }
 }

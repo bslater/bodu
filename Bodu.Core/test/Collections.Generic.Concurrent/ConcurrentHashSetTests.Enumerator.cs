@@ -79,4 +79,97 @@ public partial class ConcurrentHashSetTests
         Assert.HasCount(3, first);
         CollectionAssert.AreEqual(first, second);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentHashSet{T}.Enumerator.Current" /> is the type default before the first
+    /// <c>MoveNext</c> call.
+    /// </summary>
+    [TestMethod]
+    public void Enumerator_Current_BeforeFirstMoveNext_ShouldBeDefault()
+    {
+        var set = new ConcurrentHashSet<int>(new[] { 1, 2, 3 });
+
+        ConcurrentHashSet<int>.Enumerator enumerator = set.GetEnumerator();
+
+        Assert.AreEqual(0, enumerator.Current);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentHashSet{T}.Enumerator.Current" /> is the type default after enumeration has
+    /// passed the end of the snapshot.
+    /// </summary>
+    [TestMethod]
+    public void Enumerator_Current_AfterEnumerationEnds_ShouldBeDefault()
+    {
+        var set = new ConcurrentHashSet<int>(new[] { 1 });
+        ConcurrentHashSet<int>.Enumerator enumerator = set.GetEnumerator();
+
+        while (enumerator.MoveNext())
+        {
+        }
+
+        Assert.AreEqual(0, enumerator.Current);
+    }
+
+    /// <summary>
+    /// Verifies that calling <c>MoveNext</c> again after it has returned <see langword="false" /> keeps returning
+    /// <see langword="false" />.
+    /// </summary>
+    [TestMethod]
+    public void Enumerator_MoveNext_AfterEnd_ShouldKeepReturningFalse()
+    {
+        var set = new ConcurrentHashSet<int>(new[] { 1 });
+        ConcurrentHashSet<int>.Enumerator enumerator = set.GetEnumerator();
+
+        Assert.IsTrue(enumerator.MoveNext());
+        Assert.IsFalse(enumerator.MoveNext());
+        Assert.IsFalse(enumerator.MoveNext());
+    }
+
+    /// <summary>
+    /// Verifies that the non-generic <see cref="System.Collections.IEnumerator.Current" /> exposes the current
+    /// element.
+    /// </summary>
+    [TestMethod]
+    public void Enumerator_NonGenericCurrent_ShouldExposeCurrentElement()
+    {
+        var set = new ConcurrentHashSet<int>(new[] { 42 });
+        System.Collections.IEnumerator enumerator = set.GetEnumerator();
+
+        Assert.IsTrue(enumerator.MoveNext());
+        Assert.AreEqual(42, enumerator.Current);
+    }
+
+    /// <summary>
+    /// Verifies that two enumerators obtained from the same set advance independently.
+    /// </summary>
+    [TestMethod]
+    public void GetEnumerator_WhenTwoEnumeratorsObtained_ShouldAdvanceIndependently()
+    {
+        var set = new ConcurrentHashSet<int>(new[] { 1, 2, 3 });
+
+        ConcurrentHashSet<int>.Enumerator first = set.GetEnumerator();
+        ConcurrentHashSet<int>.Enumerator second = set.GetEnumerator();
+
+        Assert.IsTrue(first.MoveNext());
+
+        var secondObserved = new List<int>();
+        while (second.MoveNext())
+            secondObserved.Add(second.Current);
+
+        Assert.HasCount(3, secondObserved);
+    }
+
+    /// <summary>
+    /// Verifies that disposing the enumerator is safe and may be called more than once.
+    /// </summary>
+    [TestMethod]
+    public void Enumerator_Dispose_ShouldBeSafeAndIdempotent()
+    {
+        var set = new ConcurrentHashSet<int>(new[] { 1, 2 });
+        ConcurrentHashSet<int>.Enumerator enumerator = set.GetEnumerator();
+
+        enumerator.Dispose();
+        enumerator.Dispose();
+    }
 }

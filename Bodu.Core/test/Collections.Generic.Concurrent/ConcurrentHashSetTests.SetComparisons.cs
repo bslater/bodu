@@ -97,4 +97,38 @@ public partial class ConcurrentHashSetTests
         Assert.ThrowsExactly<ArgumentNullException>(() => set.Overlaps(null!));
         Assert.ThrowsExactly<ArgumentNullException>(() => set.SetEquals(null!));
     }
+
+    /// <summary>
+    /// Verifies that the set-comparison predicates report the expected reflexive results when a set is compared
+    /// against itself.
+    /// </summary>
+    [TestMethod]
+    public void SetComparisons_WhenComparedWithSelf_ShouldReportReflexiveResults()
+    {
+        var set = new ConcurrentHashSet<int>(new[] { 1, 2, 3 });
+
+        Assert.IsTrue(set.IsSubsetOf(set));
+        Assert.IsTrue(set.IsSupersetOf(set));
+        Assert.IsTrue(set.SetEquals(set));
+        Assert.IsTrue(set.Overlaps(set));
+        Assert.IsFalse(set.IsProperSubsetOf(set));
+        Assert.IsFalse(set.IsProperSupersetOf(set));
+    }
+
+    /// <summary>
+    /// Verifies that an empty set is a subset of every collection, is never a proper subset of an empty collection,
+    /// and overlaps nothing.
+    /// </summary>
+    [TestMethod]
+    public void SetComparisons_WhenSetIsEmpty_ShouldReportEmptySetSemantics()
+    {
+        var empty = new ConcurrentHashSet<int>();
+
+        Assert.IsTrue(empty.IsSubsetOf(new[] { 1, 2 }));
+        Assert.IsTrue(empty.IsSubsetOf(Array.Empty<int>()));
+        Assert.IsTrue(empty.IsProperSubsetOf(new[] { 1 }));
+        Assert.IsFalse(empty.IsProperSubsetOf(Array.Empty<int>()));
+        Assert.IsFalse(empty.Overlaps(new[] { 1, 2 }));
+        Assert.IsTrue(empty.SetEquals(Array.Empty<int>()));
+    }
 }
