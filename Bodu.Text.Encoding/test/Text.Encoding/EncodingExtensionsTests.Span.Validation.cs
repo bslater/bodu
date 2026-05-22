@@ -39,7 +39,7 @@ public sealed partial class EncodingExtensionsTests
     /// throws <see cref="ArgumentException" /> when the destination is one byte too small.
     /// </summary>
     [TestMethod]
-    public void ThrowIfTooSmallForEncoding_WhenDestinationIsOneByteTooSmall_ShouldThrowArgumentException()
+    public void ThrowIfTooSmallForEncoding_WhenDestinationIsOneByteTooSmall_ShouldThrowExactly()
     {
         var required = System.Text.Encoding.UTF8.GetByteCount(MultiByteText);
         var backing = new byte[required - 1];
@@ -76,7 +76,7 @@ public sealed partial class EncodingExtensionsTests
     /// throws <see cref="ArgumentNullException" /> when <c>encoding</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void ThrowIfTooSmallForEncoding_WhenEncodingIsNull_ShouldThrowArgumentNullException()
+    public void ThrowIfTooSmallForEncoding_WhenEncodingIsNull_ShouldThrowExactly()
     {
         var backing = new byte[64];
 
@@ -122,7 +122,7 @@ public sealed partial class EncodingExtensionsTests
     /// throws <see cref="ArgumentException" /> when the destination is one character too small.
     /// </summary>
     [TestMethod]
-    public void ThrowIfTooSmallForDecoding_WhenDestinationIsOneCharTooSmall_ShouldThrowArgumentException()
+    public void ThrowIfTooSmallForDecoding_WhenDestinationIsOneCharTooSmall_ShouldThrowExactly()
     {
         var bytes = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
         var required = System.Text.Encoding.UTF8.GetCharCount(bytes);
@@ -142,7 +142,7 @@ public sealed partial class EncodingExtensionsTests
     /// throws <see cref="ArgumentNullException" /> when <c>encoding</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void ThrowIfTooSmallForDecoding_WhenEncodingIsNull_ShouldThrowArgumentNullException()
+    public void ThrowIfTooSmallForDecoding_WhenEncodingIsNull_ShouldThrowExactly()
     {
         var backing = new char[64];
 

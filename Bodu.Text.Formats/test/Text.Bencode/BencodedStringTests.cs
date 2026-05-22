@@ -18,7 +18,7 @@ public sealed partial class BencodedStringTests
     /// <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void Constructor_WhenByteArrayIsNull_ShouldThrowArgumentNullException()
+    public void Constructor_WhenByteArrayIsNull_ShouldThrowExactly()
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

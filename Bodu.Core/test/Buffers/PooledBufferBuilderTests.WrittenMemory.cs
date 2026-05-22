@@ -14,7 +14,7 @@ public partial class PooledBufferBuilderTests
     /// <see cref="ObjectDisposedException"/>.
     /// </summary>
     [TestMethod]
-    public void WrittenMemory_WhenDisposed_ShouldThrowObjectDisposedException()
+    public void WrittenMemory_WhenDisposed_ShouldThrowExactly()
     {
         var builder = new PooledBufferBuilder<int>();
         builder.Dispose();

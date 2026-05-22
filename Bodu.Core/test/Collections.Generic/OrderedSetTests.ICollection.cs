@@ -44,7 +44,7 @@ public partial class OrderedSetTests
     /// <see langword="null" /> reference.
     /// </summary>
     [TestMethod]
-    public void ICollectionAdd_WhenItemIsNull_ShouldThrowArgumentNullException()
+    public void ICollectionAdd_WhenItemIsNull_ShouldThrowExactly()
     {
         var sut = new OrderedSet<string>();
         ICollection<string> typed = sut;

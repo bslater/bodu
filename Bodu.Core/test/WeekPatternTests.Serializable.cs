@@ -19,7 +19,7 @@ public partial class WeekPatternTests
     /// when a <see langword="null" /> <see cref="SerializationInfo" /> is supplied.
     /// </summary>
     [TestMethod]
-    public void GetObjectData_WhenInfoIsNull_ShouldThrowException()
+    public void GetObjectData_WhenInfoIsNull_ShouldThrowExactly()
     {
         var pattern = new WeekPattern(DayOfWeek.Monday);
         var context = new StreamingContext(StreamingContextStates.All);
@@ -63,7 +63,7 @@ public partial class WeekPatternTests
     /// when the stored bitmask value exceeds the valid range of 0–127.
     /// </summary>
     [TestMethod]
-    public void SerializationCtor_WhenStoredValueIsOutOfRange_ShouldThrowException()
+    public void SerializationCtor_WhenStoredValueIsOutOfRange_ShouldThrowExactly()
     {
         var info = new SerializationInfo(typeof(WeekPattern), new FormatterConverter());
         var context = new StreamingContext(StreamingContextStates.All);

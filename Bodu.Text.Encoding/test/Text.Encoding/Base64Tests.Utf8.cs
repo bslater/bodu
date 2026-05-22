@@ -215,7 +215,7 @@ public sealed partial class Base64Tests
     /// Verifies that <see cref="Base64.TryEncodeToUtf8" /> rejects unsupported flags.
     /// </summary>
     [TestMethod]
-    public void TryEncodeToUtf8_WhenUnsupportedFlag_ShouldThrowArgumentException()
+    public void TryEncodeToUtf8_WhenUnsupportedFlag_ShouldThrowExactly()
     {
         var destination = new byte[16];
 

@@ -35,7 +35,7 @@ public partial class ThrowHelperTests
     /// Verifies that <see cref="ThrowHelper.ThrowIfArrayOffsetOrCountInvalid" />, when ArrayIsNull, throws <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void ThrowIfArrayOffsetOrCountInvalid_WhenArrayIsNull_ShouldThrowException()
+    public void ThrowIfArrayOffsetOrCountInvalid_WhenArrayIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -65,7 +65,7 @@ public partial class ThrowHelperTests
     [DataRow(5, 2, 5)]    // 2 + 5 = 7 > 5 => insufficient
     [DataRow(4, 4, 1)]    // 4 + 1 = 5 > 4 => insufficient
     [DataRow(3, 1, 3)]    // 1 + 3 = 4 > 3 => insufficient
-    public void ThrowIfArrayOffsetOrCountInvalid_WhenArrayTooShort_ShouldThrowArgumentException(int arrayLength, int offset, int count)
+    public void ThrowIfArrayOffsetOrCountInvalid_WhenArrayTooShort_ShouldThrowExactly(int arrayLength, int offset, int count)
     {
         var array = new int[arrayLength];
         Assert.ThrowsExactly<ArgumentException>(() =>
@@ -82,7 +82,7 @@ public partial class ThrowHelperTests
     [TestMethod]
     [DataRow(5, 0, -1)]   // negative count
     [DataRow(5, 0, 6)]    // count > array.Length
-    public void ThrowIfArrayOffsetOrCountInvalid_WhenCountInvalid_ShouldThrowArgumentOutOfRangeException(int arrayLength, int offset, int count)
+    public void ThrowIfArrayOffsetOrCountInvalid_WhenCountInvalid_ShouldThrowExactly(int arrayLength, int offset, int count)
     {
         var array = new int[arrayLength];
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
@@ -112,7 +112,7 @@ public partial class ThrowHelperTests
     [TestMethod]
     [DataRow(5, -1, 0)]   // negative offset
     [DataRow(5, 6, 0)]    // offset > array.Length
-    public void ThrowIfArrayOffsetOrCountInvalid_WhenOffsetInvalid_ShouldThrowArgumentOutOfRangeException(int arrayLength, int offset, int count)
+    public void ThrowIfArrayOffsetOrCountInvalid_WhenOffsetInvalid_ShouldThrowExactly(int arrayLength, int offset, int count)
     {
         var array = new int[arrayLength];
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>

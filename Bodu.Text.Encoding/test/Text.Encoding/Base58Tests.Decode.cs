@@ -30,7 +30,7 @@ public sealed partial class Base58Tests
     /// <param name="vector">A negative KAT vector.</param>
     [DataTestMethod]
     [DynamicData(nameof(Base58KnownAnswerVectors.BitcoinFlickrNegativeVectors), typeof(Base58KnownAnswerVectors), DynamicDataSourceType.Method)]
-    public void Decode_ForBitcoinFlickrKnownMalformedInput_ShouldThrowExpectedException(EncodingNegativeDecodeVector vector)
+    public void Decode_ForBitcoinFlickrKnownMalformedInput_ShouldThrowExactly(EncodingNegativeDecodeVector vector)
     {
         Exception? actual = null;
         try
@@ -113,7 +113,7 @@ public sealed partial class Base58Tests
     [DataRow('!')]
     [DataRow('@')]
     [DataRow(' ')]  // strict mode rejects whitespace
-    public void Decode_WhenInputContainsExcludedCharacter_ShouldThrowFormatException(char excluded)
+    public void Decode_WhenInputContainsExcludedCharacter_ShouldThrowExactly(char excluded)
     {
         var input = "2" + excluded + "2";
 
@@ -128,7 +128,7 @@ public sealed partial class Base58Tests
     /// the variant alphabet.
     /// </summary>
     [TestMethod]
-    public void Decode_WhenInvalidCharacter_ShouldThrowFormatException()
+    public void Decode_WhenInvalidCharacter_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<FormatException>(() =>
         {
@@ -155,7 +155,7 @@ public sealed partial class Base58Tests
     /// variant.
     /// </summary>
     [TestMethod]
-    public void Decode_WhenUndefinedVariant_ShouldThrowArgumentOutOfRangeException()
+    public void Decode_WhenUndefinedVariant_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

@@ -45,7 +45,7 @@ public partial class IndexedSetTests
     /// Verifies that <see cref="IndexedSet{T}.Add(T)" /> rejects a <see langword="null" /> reference.
     /// </summary>
     [TestMethod]
-    public void Add_WhenItemIsNull_ShouldThrowArgumentNullException()
+    public void Add_WhenItemIsNull_ShouldThrowExactly()
     {
         var sut = new IndexedSet<string>();
 
@@ -114,7 +114,7 @@ public partial class IndexedSetTests
     /// <see langword="null" /> element.
     /// </summary>
     [TestMethod]
-    public void AddRange_WhenCollectionContainsNull_ShouldThrowArgumentNullException()
+    public void AddRange_WhenCollectionContainsNull_ShouldThrowExactly()
     {
         var sut = new IndexedSet<string>();
 
@@ -146,7 +146,7 @@ public partial class IndexedSetTests
     /// Verifies that <see cref="IndexedSet{T}.AddRange(IEnumerable{T})" /> rejects a <see langword="null" /> source.
     /// </summary>
     [TestMethod]
-    public void AddRange_WhenCollectionIsNull_ShouldThrowArgumentNullException()
+    public void AddRange_WhenCollectionIsNull_ShouldThrowExactly()
     {
         var sut = new IndexedSet<int>();
 

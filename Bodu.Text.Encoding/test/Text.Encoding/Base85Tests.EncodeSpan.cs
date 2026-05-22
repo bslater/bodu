@@ -65,7 +65,7 @@ public sealed partial class Base85Tests
     /// throws <see cref="ArgumentException" /> when the destination is too small even for the actual delimited output.
     /// </summary>
     [TestMethod]
-    public void Encode_SpanWithDelimitersAndTooSmallDestination_ShouldThrowArgumentException()
+    public void Encode_SpanWithDelimitersAndTooSmallDestination_ShouldThrowExactly()
     {
         var zeros = new byte[8];
         var destination = new char[1];
@@ -98,7 +98,7 @@ public sealed partial class Base85Tests
     /// fit the four-character delimiter pair.
     /// </summary>
     [TestMethod]
-    public void Encode_SpanWithEmptyInputAndDelimitersAndTooSmallDestination_ShouldThrowArgumentException()
+    public void Encode_SpanWithEmptyInputAndDelimitersAndTooSmallDestination_ShouldThrowExactly()
     {
         var destination = new char[3];
 
@@ -216,7 +216,7 @@ public sealed partial class Base85Tests
     /// with Z85 variant and an unaligned input throws <see cref="ArgumentException" /> rather than returning false.
     /// </summary>
     [TestMethod]
-    public void TryEncode_SpanWithZ85AndUnalignedInput_ShouldThrowArgumentException()
+    public void TryEncode_SpanWithZ85AndUnalignedInput_ShouldThrowExactly()
     {
         var destination = new char[16];
 

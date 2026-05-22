@@ -22,7 +22,7 @@ public abstract partial class CheckDigitAlgorithmTests<TTest, TAlgorithm>
     [DataRow('Z')]
     [DataRow('\0')]
     [TestMethod]
-    public void Append_WhenCharacterIsNotAnAsciiDigit_ShouldThrowArgumentOutOfRangeException(char invalid)
+    public void Append_WhenCharacterIsNotAnAsciiDigit_ShouldThrowExactly(char invalid)
     {
         TAlgorithm algorithm = CreateAlgorithm();
 
@@ -36,7 +36,7 @@ public abstract partial class CheckDigitAlgorithmTests<TTest, TAlgorithm>
     /// Verifies that the single-character Append overload also rejects non-digit input.
     /// </summary>
     [TestMethod]
-    public void Append_WhenSingleCharacterIsNotAnAsciiDigit_ShouldThrowArgumentOutOfRangeException()
+    public void Append_WhenSingleCharacterIsNotAnAsciiDigit_ShouldThrowExactly()
     {
         TAlgorithm algorithm = CreateAlgorithm();
 

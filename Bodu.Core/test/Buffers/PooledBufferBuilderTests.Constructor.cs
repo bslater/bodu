@@ -38,7 +38,7 @@ public partial class PooledBufferBuilderTests
     /// throws <see cref="ArgumentOutOfRangeException"/>.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenInitialCapacityIsNegative_ShouldThrowArgumentOutOfRangeException()
+    public void Ctor_WhenInitialCapacityIsNegative_ShouldThrowExactly()
     {
         ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -65,7 +65,7 @@ public partial class PooledBufferBuilderTests
     /// throws <see cref="ArgumentOutOfRangeException"/>.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenInitialCapacityIsZero_ShouldThrowArgumentOutOfRangeException()
+    public void Ctor_WhenInitialCapacityIsZero_ShouldThrowExactly()
     {
         ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

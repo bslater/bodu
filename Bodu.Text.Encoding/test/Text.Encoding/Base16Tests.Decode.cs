@@ -16,7 +16,7 @@ public sealed partial class Base16Tests
     /// <param name="vector">A negative KAT vector.</param>
     [DataTestMethod]
     [DynamicData(nameof(Base16KnownAnswerVectors.NegativeVectors), typeof(Base16KnownAnswerVectors), DynamicDataSourceType.Method)]
-    public void Decode_ForKnownMalformedInput_ShouldThrowExpectedException(EncodingNegativeDecodeVector vector)
+    public void Decode_ForKnownMalformedInput_ShouldThrowExactly(EncodingNegativeDecodeVector vector)
     {
         Exception? actual = null;
         try
@@ -118,7 +118,7 @@ public sealed partial class Base16Tests
     /// array length with <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    public void Decode_WhenCountExceedsCharArrayLength_ShouldThrowArgumentOutOfRangeException()
+    public void Decode_WhenCountExceedsCharArrayLength_ShouldThrowExactly()
     {
         var chars = "abcd".ToCharArray();
 
@@ -154,7 +154,7 @@ public sealed partial class Base16Tests
     [DataRow("ab_cd")]
     [DataRow("ab cd")]
     [DataRow("«cd")] // non-ASCII letter outside the alphabet
-    public void Decode_WhenInputContainsInvalidCharacters_ShouldThrowFormatException(string invalidInput)
+    public void Decode_WhenInputContainsInvalidCharacters_ShouldThrowExactly(string invalidInput)
     {
         Assert.ThrowsExactly<FormatException>(() =>
         {
@@ -166,7 +166,7 @@ public sealed partial class Base16Tests
     /// Verifies that lenient decoding still rejects an odd digit count after decorations are stripped.
     /// </summary>
     [TestMethod]
-    public void Decode_WhenLenientYieldsOddDigitCount_ShouldThrowFormatException()
+    public void Decode_WhenLenientYieldsOddDigitCount_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<FormatException>(() =>
         {
@@ -179,7 +179,7 @@ public sealed partial class Base16Tests
     /// plus count overflows the array bounds with <see cref="ArgumentException" />.
     /// </summary>
     [TestMethod]
-    public void Decode_WhenOffsetPlusCountOverflowsCharArray_ShouldThrowArgumentException()
+    public void Decode_WhenOffsetPlusCountOverflowsCharArray_ShouldThrowExactly()
     {
         var chars = "abcd".ToCharArray();
 
@@ -222,7 +222,7 @@ public sealed partial class Base16Tests
     /// input.
     /// </summary>
     [TestMethod]
-    public void Decode_WhenStrictAndPrefixPresent_ShouldThrowFormatException()
+    public void Decode_WhenStrictAndPrefixPresent_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<FormatException>(() =>
         {
@@ -235,7 +235,7 @@ public sealed partial class Base16Tests
     /// for any non-hex character.
     /// </summary>
     [TestMethod]
-    public void Decode_WhenStrictInvalidCharacter_ShouldThrowFormatException()
+    public void Decode_WhenStrictInvalidCharacter_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<FormatException>(() =>
         {
@@ -271,7 +271,7 @@ public sealed partial class Base16Tests
     /// when the input has an odd number of hex digits.
     /// </summary>
     [TestMethod]
-    public void Decode_WhenStrictOddLengthString_ShouldThrowFormatException()
+    public void Decode_WhenStrictOddLengthString_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<FormatException>(() =>
         {

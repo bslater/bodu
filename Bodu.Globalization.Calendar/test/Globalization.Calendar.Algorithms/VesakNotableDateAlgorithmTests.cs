@@ -21,7 +21,7 @@ public sealed class VesakNotableDateAlgorithmTests
     [DataRow(-1)]
     [DataRow(int.MinValue)]
     [TestMethod]
-    public void GetDate_WhenYearLessThanOne_ShouldThrowArgumentOutOfRangeException(int year)
+    public void GetDate_WhenYearLessThanOne_ShouldThrowExactly(int year)
     {
         var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -38,7 +38,7 @@ public sealed class VesakNotableDateAlgorithmTests
     [DataRow(10000)]
     [DataRow(int.MaxValue)]
     [TestMethod]
-    public void GetDate_WhenYearGreaterThan9999_ShouldThrowArgumentOutOfRangeException(int year)
+    public void GetDate_WhenYearGreaterThan9999_ShouldThrowExactly(int year)
     {
         var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

@@ -79,7 +79,7 @@ public sealed class Base64UrlTests
     /// not part of the URL-safe alphabet.
     /// </summary>
     [TestMethod]
-    public void Decode_WhenInputContainsStandardOnlyCharacter_ShouldThrowFormatException()
+    public void Decode_WhenInputContainsStandardOnlyCharacter_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<FormatException>(() => _ = Base64Url.Decode("Zm+v"));
         Assert.ThrowsExactly<FormatException>(() => _ = Base64Url.Decode("Zm/v"));

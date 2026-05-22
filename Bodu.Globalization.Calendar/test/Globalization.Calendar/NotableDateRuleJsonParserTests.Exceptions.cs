@@ -14,7 +14,7 @@ public partial class NotableDateRuleJsonParserTests
     /// Verifies that <see cref="NotableDateRuleJsonParser.ParseJson(string)" /> throws when given a null payload.
     /// </summary>
     [TestMethod]
-    public void ParseJson_WhenInputIsNull_ShouldThrowArgumentNullException()
+    public void ParseJson_WhenInputIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -26,7 +26,7 @@ public partial class NotableDateRuleJsonParserTests
     /// Verifies that <see cref="NotableDateRuleJsonParser.ParseJson(string)" /> throws when given a whitespace payload.
     /// </summary>
     [TestMethod]
-    public void ParseJson_WhenInputIsWhitespace_ShouldThrowArgumentNullException()
+    public void ParseJson_WhenInputIsWhitespace_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -39,7 +39,7 @@ public partial class NotableDateRuleJsonParserTests
     /// <see cref="System.Text.Json.JsonSerializer" />.
     /// </summary>
     [TestMethod]
-    public void ParseJson_WhenInputIsMalformedJson_ShouldThrowJsonException()
+    public void ParseJson_WhenInputIsMalformedJson_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<JsonException>(() =>
         {
@@ -52,7 +52,7 @@ public partial class NotableDateRuleJsonParserTests
     /// <see cref="JsonException" /> via the <c>oneOf</c> exactly-one-strategy clause.
     /// </summary>
     [TestMethod]
-    public void ParseJson_WhenRuleHasNoStrategy_ShouldThrowJsonException()
+    public void ParseJson_WhenRuleHasNoStrategy_ShouldThrowExactly()
     {
         const string json = @"{
 			""notableDates"": [
@@ -71,7 +71,7 @@ public partial class NotableDateRuleJsonParserTests
     /// <see cref="JsonException" /> via the <c>oneOf</c> exactly-one-strategy clause.
     /// </summary>
     [TestMethod]
-    public void ParseJson_WhenRuleHasMultipleStrategies_ShouldThrowJsonException()
+    public void ParseJson_WhenRuleHasMultipleStrategies_ShouldThrowExactly()
     {
         const string json = @"{
 			""notableDates"": [
@@ -95,7 +95,7 @@ public partial class NotableDateRuleJsonParserTests
     /// <see cref="InvalidOperationException" />.
     /// </summary>
     [TestMethod]
-    public void ParseJson_WhenAdjustmentKeysDuplicate_ShouldThrowInvalidOperationException()
+    public void ParseJson_WhenAdjustmentKeysDuplicate_ShouldThrowExactly()
     {
         const string json = @"{
 			""notableDates"": [
@@ -122,7 +122,7 @@ public partial class NotableDateRuleJsonParserTests
     /// <see cref="JsonException" /> via the <c>notableDateCategory</c> enum constraint.
     /// </summary>
     [TestMethod]
-    public void ParseJson_WhenCategoryIsUnknown_ShouldThrowJsonException()
+    public void ParseJson_WhenCategoryIsUnknown_ShouldThrowExactly()
     {
         const string json = @"{
 			""notableDates"": [
@@ -145,7 +145,7 @@ public partial class NotableDateRuleJsonParserTests
     /// <see cref="JsonException" /> via the <c>monthOrNumber</c> oneOf constraint.
     /// </summary>
     [TestMethod]
-    public void ParseJson_WhenFixedMonthIsUnknown_ShouldThrowJsonException()
+    public void ParseJson_WhenFixedMonthIsUnknown_ShouldThrowExactly()
     {
         const string json = @"{
 			""notableDates"": [
@@ -168,7 +168,7 @@ public partial class NotableDateRuleJsonParserTests
     /// schema validation as <see cref="JsonException" /> via the <c>fixedStrategy</c> required clause.
     /// </summary>
     [TestMethod]
-    public void ParseJson_WhenFixedMissingMonth_ShouldThrowJsonException()
+    public void ParseJson_WhenFixedMissingMonth_ShouldThrowExactly()
     {
         const string json = @"{
 			""notableDates"": [

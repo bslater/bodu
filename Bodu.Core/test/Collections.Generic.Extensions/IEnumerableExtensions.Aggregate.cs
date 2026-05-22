@@ -33,7 +33,7 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     /// <see langword="null"/>.
     /// </summary>
     [TestMethod]
-    public void Aggregate_WhenFuncIsNull_ForDefaultSeedOverload_ShouldThrowArgumentNullException()
+    public void Aggregate_WhenFuncIsNull_ForDefaultSeedOverload_ShouldThrowExactly()
     {
         int[] source = [1, 2, 3];
         Func<int, int, int, int> func = null!;
@@ -51,7 +51,7 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     /// <see langword="null"/>.
     /// </summary>
     [TestMethod]
-    public void Aggregate_WhenFuncIsNull_ForSeededOverload_ShouldThrowArgumentNullException()
+    public void Aggregate_WhenFuncIsNull_ForSeededOverload_ShouldThrowExactly()
     {
         int[] source = [1, 2, 3];
         Func<int, int, int, int> func = null!;
@@ -69,7 +69,7 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     /// <see langword="null"/>.
     /// </summary>
     [TestMethod]
-    public void Aggregate_WhenFuncIsNull_ForThreeFuncNoIndex_ShouldThrowArgumentNullException()
+    public void Aggregate_WhenFuncIsNull_ForThreeFuncNoIndex_ShouldThrowExactly()
     {
         int[] source = [1, 2, 3];
         Func<int, int, int> nullFunc = null!;
@@ -90,7 +90,7 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     /// <see langword="null"/>.
     /// </summary>
     [TestMethod]
-    public void Aggregate_WhenFuncIsNull_ForTwoFuncNoIndex_ShouldThrowArgumentNullException()
+    public void Aggregate_WhenFuncIsNull_ForTwoFuncNoIndex_ShouldThrowExactly()
     {
         int[] source = [1, 2, 3];
         Func<int, int, int> nullFunc = null!;
@@ -113,7 +113,7 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     /// <see langword="null"/>.
     /// </summary>
     [TestMethod]
-    public void Aggregate_WhenFuncIsNull_ForTwoFuncWithIndex_ShouldThrowArgumentNullException()
+    public void Aggregate_WhenFuncIsNull_ForTwoFuncWithIndex_ShouldThrowExactly()
     {
         int[] source = [1, 2, 3];
         Func<int, int, int, int> nullFunc = null!;
@@ -382,7 +382,7 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     /// <see langword="null"/>.
     /// </summary>
     [TestMethod]
-    public void Aggregate_WhenResultSelectorIsNull_ForSelectorOverload_ShouldThrowArgumentNullException()
+    public void Aggregate_WhenResultSelectorIsNull_ForSelectorOverload_ShouldThrowExactly()
     {
         int[] source = [1, 2, 3];
         Func<int, string> resultSelector = null!;
@@ -400,7 +400,7 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     /// <see langword="null"/>.
     /// </summary>
     [TestMethod]
-    public void Aggregate_WhenResultSelectorIsNull_ForThreeFuncWithSelector_ShouldThrowArgumentNullException()
+    public void Aggregate_WhenResultSelectorIsNull_ForThreeFuncWithSelector_ShouldThrowExactly()
     {
         int[] source = [1, 2, 3];
         Func<int, int, int, string> resultSelector = null!;
@@ -423,7 +423,7 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     /// <see langword="null"/>.
     /// </summary>
     [TestMethod]
-    public void Aggregate_WhenResultSelectorIsNull_ForTwoFuncWithSelector_ShouldThrowArgumentNullException()
+    public void Aggregate_WhenResultSelectorIsNull_ForTwoFuncWithSelector_ShouldThrowExactly()
     {
         int[] source = [1, 2, 3];
         Func<int, int, string> resultSelector = null!;
@@ -454,7 +454,7 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     /// Verifies that the default-seed overload throws <see cref="InvalidOperationException"/> when the source sequence is empty.
     /// </summary>
     [TestMethod]
-    public void Aggregate_WhenSourceIsEmpty_ForDefaultSeedOverload_ShouldThrowInvalidOperationException()
+    public void Aggregate_WhenSourceIsEmpty_ForDefaultSeedOverload_ShouldThrowExactly()
     {
         int[] source = [];
 
@@ -536,7 +536,7 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     /// <see langword="null"/>.
     /// </summary>
     [TestMethod]
-    public void Aggregate_WhenSourceIsNull_ForDefaultSeedOverload_ShouldThrowArgumentNullException()
+    public void Aggregate_WhenSourceIsNull_ForDefaultSeedOverload_ShouldThrowExactly()
     {
         IEnumerable<int> source = null!;
 
@@ -552,7 +552,7 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     /// Verifies that the seeded overload throws <see cref="ArgumentNullException"/> when the source sequence is <see langword="null"/>.
     /// </summary>
     [TestMethod]
-    public void Aggregate_WhenSourceIsNull_ForSeededOverload_ShouldThrowArgumentNullException()
+    public void Aggregate_WhenSourceIsNull_ForSeededOverload_ShouldThrowExactly()
     {
         IEnumerable<int> source = null!;
 
@@ -569,7 +569,7 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     /// <see langword="null"/>.
     /// </summary>
     [TestMethod]
-    public void Aggregate_WhenSourceIsNull_ForThreeFuncNoIndex_ShouldThrowArgumentNullException()
+    public void Aggregate_WhenSourceIsNull_ForThreeFuncNoIndex_ShouldThrowExactly()
     {
         IEnumerable<int> source = null!;
 
@@ -590,7 +590,7 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     /// <see langword="null"/>.
     /// </summary>
     [TestMethod]
-    public void Aggregate_WhenSourceIsNull_ForThreeFuncWithIndex_ShouldThrowArgumentNullException()
+    public void Aggregate_WhenSourceIsNull_ForThreeFuncWithIndex_ShouldThrowExactly()
     {
         IEnumerable<int> source = null!;
 
@@ -611,7 +611,7 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     /// <see langword="null"/>.
     /// </summary>
     [TestMethod]
-    public void Aggregate_WhenSourceIsNull_ForTwoFuncNoIndex_ShouldThrowArgumentNullException()
+    public void Aggregate_WhenSourceIsNull_ForTwoFuncNoIndex_ShouldThrowExactly()
     {
         IEnumerable<int> source = null!;
 
@@ -628,7 +628,7 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     /// <see langword="null"/>.
     /// </summary>
     [TestMethod]
-    public void Aggregate_WhenSourceIsNull_ForTwoFuncWithIndex_ShouldThrowArgumentNullException()
+    public void Aggregate_WhenSourceIsNull_ForTwoFuncWithIndex_ShouldThrowExactly()
     {
         IEnumerable<int> source = null!;
 

@@ -16,7 +16,7 @@ public sealed class NotableDateResolutionEngineTests
     /// Verifies that construction rejects a null occurrence resolver.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenOccurrenceResolverIsNull_ShouldThrowArgumentNullException()
+    public void Ctor_WhenOccurrenceResolverIsNull_ShouldThrowExactly()
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -30,7 +30,7 @@ public sealed class NotableDateResolutionEngineTests
     /// Verifies that resolution rejects a null request.
     /// </summary>
     [TestMethod]
-    public void Resolve_WhenRequestIsNull_ShouldThrowArgumentNullException()
+    public void Resolve_WhenRequestIsNull_ShouldThrowExactly()
     {
         NotableDateResolutionEngine engine = new(new StubOccurrenceResolver());
 

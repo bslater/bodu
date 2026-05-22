@@ -16,7 +16,7 @@ public sealed partial class Base64Tests
     /// <param name="vector">A negative KAT vector.</param>
     [DataTestMethod]
     [DynamicData(nameof(Base64KnownAnswerVectors.StandardNegativeVectors), typeof(Base64KnownAnswerVectors), DynamicDataSourceType.Method)]
-    public void Decode_ForStandardKnownMalformedInput_ShouldThrowExpectedException(EncodingNegativeDecodeVector vector)
+    public void Decode_ForStandardKnownMalformedInput_ShouldThrowExactly(EncodingNegativeDecodeVector vector)
     {
         Exception? actual = null;
         try
@@ -68,7 +68,7 @@ public sealed partial class Base64Tests
     /// <param name="vector">A negative KAT vector.</param>
     [DataTestMethod]
     [DynamicData(nameof(Base64KnownAnswerVectors.UrlSafeNegativeVectors), typeof(Base64KnownAnswerVectors), DynamicDataSourceType.Method)]
-    public void Decode_ForUrlSafeKnownMalformedInput_ShouldThrowExpectedException(EncodingNegativeDecodeVector vector)
+    public void Decode_ForUrlSafeKnownMalformedInput_ShouldThrowExactly(EncodingNegativeDecodeVector vector)
     {
         Exception? actual = null;
         try
@@ -137,7 +137,7 @@ public sealed partial class Base64Tests
     /// the Standard alphabet with <see cref="FormatException" />.
     /// </summary>
     [TestMethod]
-    public void Decode_WhenInvalidCharacters_ShouldThrowFormatException()
+    public void Decode_WhenInvalidCharacters_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<FormatException>(() =>
         {
@@ -168,7 +168,7 @@ public sealed partial class Base64Tests
     /// Verifies that the decoder rejects an input containing only padding characters.
     /// </summary>
     [TestMethod]
-    public void Decode_WhenOnlyPaddingCharacters_ShouldThrowFormatException()
+    public void Decode_WhenOnlyPaddingCharacters_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<FormatException>(() =>
         {
@@ -218,7 +218,7 @@ public sealed partial class Base64Tests
     [TestMethod]
     [DataRow('-')]
     [DataRow('_')]
-    public void Decode_WhenStandardVariantWithUrlSafeChar_ShouldThrowFormatException(char excluded)
+    public void Decode_WhenStandardVariantWithUrlSafeChar_ShouldThrowExactly(char excluded)
     {
         Assert.ThrowsExactly<FormatException>(() =>
         {
@@ -231,7 +231,7 @@ public sealed partial class Base64Tests
     /// input that omits required padding.
     /// </summary>
     [TestMethod]
-    public void Decode_WhenStrictAndPaddingOmitted_ShouldThrowFormatException()
+    public void Decode_WhenStrictAndPaddingOmitted_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<FormatException>(() =>
         {
@@ -247,7 +247,7 @@ public sealed partial class Base64Tests
     [TestMethod]
     [DataRow('+')]
     [DataRow('/')]
-    public void Decode_WhenUrlSafeVariantWithStandardChar_ShouldThrowFormatException(char excluded)
+    public void Decode_WhenUrlSafeVariantWithStandardChar_ShouldThrowExactly(char excluded)
     {
         Assert.ThrowsExactly<FormatException>(() =>
         {

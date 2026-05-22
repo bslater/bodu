@@ -46,7 +46,7 @@ public sealed class AlphanumericTests
     [DataRow('{')]
     [DataRow('é')]
     [TestMethod]
-    public void ExpandCusip_WhenCharacterIsOutsideCusipAlphabet_ShouldThrowArgumentOutOfRangeException(char invalid)
+    public void ExpandCusip_WhenCharacterIsOutsideCusipAlphabet_ShouldThrowExactly(char invalid)
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -116,7 +116,7 @@ public sealed class AlphanumericTests
     [DataRow('é')]
     [DataRow('\0')]
     [TestMethod]
-    public void ExpandLetterDigit_WhenCharacterIsOutsideAlphanumericUppercase_ShouldThrowArgumentOutOfRangeException(char invalid)
+    public void ExpandLetterDigit_WhenCharacterIsOutsideAlphanumericUppercase_ShouldThrowExactly(char invalid)
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -166,7 +166,7 @@ public sealed class AlphanumericTests
     [DataRow('{')]
     [DataRow('é')]
     [TestMethod]
-    public void ValidateAlphanumeric_WhenCharacterIsOutsideAllowedRange_ShouldThrowArgumentOutOfRangeException(char invalid)
+    public void ValidateAlphanumeric_WhenCharacterIsOutsideAllowedRange_ShouldThrowExactly(char invalid)
     {
         var sequence = "A1" + invalid + "2B";
 
@@ -215,7 +215,7 @@ public sealed class AlphanumericTests
     [DataRow(':')]
     [DataRow('é')]
     [TestMethod]
-    public void ValidateCusip_WhenCharacterIsOutsideCusipAlphabet_ShouldThrowArgumentOutOfRangeException(char invalid)
+    public void ValidateCusip_WhenCharacterIsOutsideCusipAlphabet_ShouldThrowExactly(char invalid)
     {
         var sequence = "A1" + invalid + "2#";
 

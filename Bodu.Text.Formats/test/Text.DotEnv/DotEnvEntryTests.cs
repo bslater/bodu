@@ -85,7 +85,7 @@ public sealed class DotEnvEntryTests
     /// cannot be parsed as the requested type.
     /// </summary>
     [TestMethod]
-    public void GetValue_WhenValueIsNotParseable_ShouldThrowFormatException()
+    public void GetValue_WhenValueIsNotParseable_ShouldThrowExactly()
     {
         DotEnvDocument doc = DotEnv.Parse("KEY=notanumber");
 

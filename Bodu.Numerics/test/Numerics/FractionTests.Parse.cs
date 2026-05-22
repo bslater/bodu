@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FractionTests.Parse.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -38,7 +38,7 @@ public partial class FractionTests
     [DataRow("1/0")]
     [DataRow("/4")]
     [DataRow("3/")]
-    public void Parse_WhenGivenInvalidInput_ShouldThrowFormatException(string text)
+    public void Parse_WhenGivenInvalidInput_ShouldThrowExactly(string text)
     {
         _ = Assert.ThrowsExactly<FormatException>(() =>
         {
@@ -50,7 +50,7 @@ public partial class FractionTests
     /// Verifies that <see cref="Fraction{T}.Parse(string)" /> rejects a <see langword="null" /> string.
     /// </summary>
     [TestMethod]
-    public void Parse_WhenGivenNull_ShouldThrowArgumentNullException()
+    public void Parse_WhenGivenNull_ShouldThrowExactly()
     {
         _ = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -163,7 +163,7 @@ public partial class FractionTests
     [DataRow("%")]
     [DataRow("1 2 3/4")]
     [DataRow("0/0")]
-    public void Parse_WhenGivenMalformedInput_ShouldThrowFormatExceptionForEachCase(string text)
+    public void Parse_WhenGivenMalformedInput_ShouldThrowExactly(string text)
     {
         _ = Assert.ThrowsExactly<FormatException>(() =>
         {

@@ -60,7 +60,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     /// <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void ComputeHash_WhenAlgorithmIsNull_ForByteArrayOverload_ShouldThrowArgumentNullException()
+    public void ComputeHash_WhenAlgorithmIsNull_ForByteArrayOverload_ShouldThrowExactly()
     {
         NonCryptographicHashAlgorithm? algorithm = null;
 
@@ -77,7 +77,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     /// <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void ComputeHash_WhenAlgorithmIsNull_ForByteArrayRangeOverload_ShouldThrowArgumentNullException()
+    public void ComputeHash_WhenAlgorithmIsNull_ForByteArrayRangeOverload_ShouldThrowExactly()
     {
         NonCryptographicHashAlgorithm? algorithm = null;
 
@@ -94,7 +94,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     /// <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void ComputeHash_WhenAlgorithmIsNull_ForSpanOverload_ShouldThrowArgumentNullException()
+    public void ComputeHash_WhenAlgorithmIsNull_ForSpanOverload_ShouldThrowExactly()
     {
         NonCryptographicHashAlgorithm? algorithm = null;
 
@@ -111,7 +111,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     /// <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void ComputeHash_WhenAlgorithmIsNull_ForStreamOverload_ShouldThrowArgumentNullException()
+    public void ComputeHash_WhenAlgorithmIsNull_ForStreamOverload_ShouldThrowExactly()
     {
         NonCryptographicHashAlgorithm? algorithm = null;
         using MemoryStream stream = new(s_sampleData);
@@ -155,7 +155,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     /// <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void ComputeHash_WhenBufferIsNull_ForByteArrayOverload_ShouldThrowArgumentNullException()
+    public void ComputeHash_WhenBufferIsNull_ForByteArrayOverload_ShouldThrowExactly()
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
 
@@ -170,7 +170,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     /// <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void ComputeHash_WhenBufferIsNull_ForByteArrayRangeOverload_ShouldThrowArgumentNullException()
+    public void ComputeHash_WhenBufferIsNull_ForByteArrayRangeOverload_ShouldThrowExactly()
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
 
@@ -184,7 +184,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     /// Verifies that a negative <paramref name="bufferSize" /> throws <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    public void ComputeHash_WhenBufferSizeIsNegative_ForStreamOverload_ShouldThrowArgumentOutOfRangeException()
+    public void ComputeHash_WhenBufferSizeIsNegative_ForStreamOverload_ShouldThrowExactly()
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
         using MemoryStream stream = new(s_sampleData);
@@ -199,7 +199,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     /// Verifies that a zero <paramref name="bufferSize" /> throws <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    public void ComputeHash_WhenBufferSizeIsZero_ForStreamOverload_ShouldThrowArgumentOutOfRangeException()
+    public void ComputeHash_WhenBufferSizeIsZero_ForStreamOverload_ShouldThrowExactly()
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
         using MemoryStream stream = new(s_sampleData);
@@ -293,7 +293,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     /// Verifies that a negative <paramref name="count" /> throws <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    public void ComputeHash_WhenCountIsNegative_ForByteArrayRangeOverload_ShouldThrowArgumentOutOfRangeException()
+    public void ComputeHash_WhenCountIsNegative_ForByteArrayRangeOverload_ShouldThrowExactly()
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
 
@@ -323,7 +323,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     /// <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    public void ComputeHash_WhenOffsetExceedsBuffer_ForByteArrayRangeOverload_ShouldThrowArgumentOutOfRangeException()
+    public void ComputeHash_WhenOffsetExceedsBuffer_ForByteArrayRangeOverload_ShouldThrowExactly()
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
 
@@ -337,7 +337,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     /// Verifies that a negative <paramref name="offset" /> throws <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    public void ComputeHash_WhenOffsetIsNegative_ForByteArrayRangeOverload_ShouldThrowArgumentOutOfRangeException()
+    public void ComputeHash_WhenOffsetIsNegative_ForByteArrayRangeOverload_ShouldThrowExactly()
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
 
@@ -352,7 +352,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     /// of the buffer throws <see cref="ArgumentException" />.
     /// </summary>
     [TestMethod]
-    public void ComputeHash_WhenOffsetPlusCountExceedsBuffer_ForByteArrayRangeOverload_ShouldThrowArgumentException()
+    public void ComputeHash_WhenOffsetPlusCountExceedsBuffer_ForByteArrayRangeOverload_ShouldThrowExactly()
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
 
@@ -483,7 +483,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     /// <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void ComputeHash_WhenStreamIsNull_ForStreamOverload_ShouldThrowArgumentNullException()
+    public void ComputeHash_WhenStreamIsNull_ForStreamOverload_ShouldThrowExactly()
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
 

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FractionTests.Formatting.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -72,7 +72,7 @@ public partial class FractionTests
     /// Verifies that an unsupported format specifier throws <see cref="FormatException" />.
     /// </summary>
     [TestMethod]
-    public void ToString_WhenFormatIsUnsupported_ShouldThrowFormatException()
+    public void ToString_WhenFormatIsUnsupported_ShouldThrowExactly()
     {
         _ = Assert.ThrowsExactly<FormatException>(() =>
         {

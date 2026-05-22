@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IEnumerableExtensions.WhereNotNull.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -56,7 +56,7 @@ public sealed partial class IEnumerableExtensionsTests_WhereNotNull
     /// <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void WhereNotNull_WhenReferenceSourceIsNull_ShouldThrowArgumentNullException()
+    public void WhereNotNull_WhenReferenceSourceIsNull_ShouldThrowExactly()
     {
         IEnumerable<string?> source = null!;
 
@@ -71,7 +71,7 @@ public sealed partial class IEnumerableExtensionsTests_WhereNotNull
     /// <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void WhereNotNull_WhenValueSourceIsNull_ShouldThrowArgumentNullException()
+    public void WhereNotNull_WhenValueSourceIsNull_ShouldThrowExactly()
     {
         IEnumerable<int?> source = null!;
 

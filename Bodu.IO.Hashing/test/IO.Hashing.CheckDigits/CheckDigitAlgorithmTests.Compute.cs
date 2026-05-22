@@ -13,7 +13,7 @@ public abstract partial class CheckDigitAlgorithmTests<TTest, TAlgorithm>
     /// Verifies that <c>Compute</c> rejects non-digit characters with <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    public void Compute_WhenBodyContainsNonDigit_ShouldThrowArgumentOutOfRangeException()
+    public void Compute_WhenBodyContainsNonDigit_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

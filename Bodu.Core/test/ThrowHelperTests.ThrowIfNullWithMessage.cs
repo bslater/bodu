@@ -26,7 +26,7 @@ public partial class ThrowHelperTests
     /// <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void ThrowIfNull_WithCustomMessage_WhenValueIsNull_ShouldThrowArgumentNullExceptionWithMessage()
+    public void ThrowIfNull_WithCustomMessage_WhenValueIsNull_ShouldThrowExactly()
     {
         object value = null!;
         const string Message = "custom message text";
@@ -58,7 +58,7 @@ public partial class ThrowHelperTests
     /// <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void ThrowIfNullWithMessage_WhenValueIsNull_ShouldThrowExactlyWithMessage()
+    public void ThrowIfNullWithMessage_WhenValueIsNull_ShouldThrowExactly()
     {
         object value = null!;
         var paramName = "myParam";

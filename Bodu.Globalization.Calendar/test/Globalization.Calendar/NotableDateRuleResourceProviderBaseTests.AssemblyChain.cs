@@ -23,7 +23,7 @@ public sealed class NotableDateRuleResourceProviderBaseAssemblyChainTests
     /// the multi-assembly join path inside <c>FormatAssemblyChain</c>).
     /// </summary>
     [TestMethod]
-    public void LoadRules_WhenResourceMissingFromMultipleAssemblies_ShouldThrowFileNotFoundExceptionMentioningEveryAssembly()
+    public void LoadRules_WhenResourceMissingFromMultipleAssemblies_ShouldThrowExactly()
     {
         // Two distinct loaded assemblies — neither contains the requested embedded resource.
         Assembly first = typeof(NotableDateRule).Assembly;
@@ -52,7 +52,7 @@ public sealed class NotableDateRuleResourceProviderBaseAssemblyChainTests
     /// exercising the count-one short-circuit branch of <c>FormatAssemblyChain</c>.
     /// </summary>
     [TestMethod]
-    public void LoadRules_WhenResourceMissingFromSingleAssembly_ShouldThrowFileNotFoundExceptionMentioningOneAssembly()
+    public void LoadRules_WhenResourceMissingFromSingleAssembly_ShouldThrowExactly()
     {
         Assembly sole = typeof(NotableDateRuleResourceProviderBaseAssemblyChainTests).Assembly;
 
@@ -75,7 +75,7 @@ public sealed class NotableDateRuleResourceProviderBaseAssemblyChainTests
     /// <see cref="ArgumentException" /> with <c>assemblies</c> as the offending parameter.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenAssemblyChainIsEmpty_ShouldThrowArgumentException()
+    public void Ctor_WhenAssemblyChainIsEmpty_ShouldThrowExactly()
     {
         ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -93,7 +93,7 @@ public sealed class NotableDateRuleResourceProviderBaseAssemblyChainTests
     /// <see cref="ArgumentException" /> with <c>assemblies</c> as the offending parameter.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenAssemblyChainContainsNullEntry_ShouldThrowArgumentException()
+    public void Ctor_WhenAssemblyChainContainsNullEntry_ShouldThrowExactly()
     {
         Assembly real = typeof(NotableDateRuleResourceProviderBaseAssemblyChainTests).Assembly;
 

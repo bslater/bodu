@@ -88,7 +88,7 @@ public partial class ConcurrentCircularBufferTests
     /// Verifies that <see cref="ConcurrentCircularBuffer{T}.Peek" /> on an empty buffer throws <see cref="InvalidOperationException" />.
     /// </summary>
     [TestMethod]
-    public void Peek_WhenBufferIsEmpty_ShouldThrowInvalidOperation()
+    public void Peek_WhenBufferIsEmpty_ShouldThrowExactly()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(3);
         Assert.ThrowsExactly<InvalidOperationException>(() =>

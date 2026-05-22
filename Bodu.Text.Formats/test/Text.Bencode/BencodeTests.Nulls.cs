@@ -13,7 +13,7 @@ public sealed partial class BencodeTests
     /// Verifies that <see cref="Bencode.Decode(byte[])" /> rejects a <see langword="null" /> source array.
     /// </summary>
     [TestMethod]
-    public void Decode_WhenNullByteArraySource_ShouldThrowArgumentNullException()
+    public void Decode_WhenNullByteArraySource_ShouldThrowExactly()
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -27,7 +27,7 @@ public sealed partial class BencodeTests
     /// <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void Encode_WhenNullValue_ShouldThrowArgumentNullException()
+    public void Encode_WhenNullValue_ShouldThrowExactly()
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -42,7 +42,7 @@ public sealed partial class BencodeTests
     /// value with <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void GetEncodedLength_WhenNullValue_ShouldThrowArgumentNullException()
+    public void GetEncodedLength_WhenNullValue_ShouldThrowExactly()
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -57,7 +57,7 @@ public sealed partial class BencodeTests
     /// <see langword="null" /> value with <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void TryEncode_WhenNullValue_ShouldThrowArgumentNullException()
+    public void TryEncode_WhenNullValue_ShouldThrowExactly()
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

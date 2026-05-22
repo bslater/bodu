@@ -70,7 +70,7 @@ public sealed partial class Base16Tests
     /// <see cref="ArgumentException" /> when the destination is exactly one character short of the required size.
     /// </summary>
     [TestMethod]
-    public void Encode_SpanDestination_WhenOneCharShort_ShouldThrowArgumentException()
+    public void Encode_SpanDestination_WhenOneCharShort_ShouldThrowExactly()
     {
         var bytes = new byte[4];
         var destination = new char[7];
@@ -86,7 +86,7 @@ public sealed partial class Base16Tests
     /// exceeds the array length with <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    public void Encode_WhenCountExceedsArrayLength_ShouldThrowArgumentOutOfRangeException()
+    public void Encode_WhenCountExceedsArrayLength_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -110,7 +110,7 @@ public sealed partial class Base16Tests
     /// <see cref="ArgumentException" /> when the destination is too small.
     /// </summary>
     [TestMethod]
-    public void Encode_WhenDestinationTooSmall_ShouldThrowArgumentException()
+    public void Encode_WhenDestinationTooSmall_ShouldThrowExactly()
     {
         var destination = new char[1];
 
@@ -170,7 +170,7 @@ public sealed partial class Base16Tests
     /// <c>offset</c>.
     /// </summary>
     [TestMethod]
-    public void Encode_WhenNegativeOffsetForByteArray_ShouldThrowArgumentOutOfRangeException()
+    public void Encode_WhenNegativeOffsetForByteArray_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -183,7 +183,7 @@ public sealed partial class Base16Tests
     /// offset plus count overflows the array bounds with <see cref="ArgumentException" />.
     /// </summary>
     [TestMethod]
-    public void Encode_WhenOffsetPlusCountOverflows_ShouldThrowArgumentException()
+    public void Encode_WhenOffsetPlusCountOverflows_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -247,7 +247,7 @@ public sealed partial class Base16Tests
     /// unsupported formatting flags with <see cref="ArgumentException" />.
     /// </summary>
     [TestMethod]
-    public void Encode_WhenWritingToSpanWithUnsupportedFlags_ShouldThrowArgumentException()
+    public void Encode_WhenWritingToSpanWithUnsupportedFlags_ShouldThrowExactly()
     {
         var destination = new char[CanonicalBytes.Length * 2];
 

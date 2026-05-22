@@ -47,7 +47,7 @@ public partial class ThrowHelperTests
     [DataRow(1, 0)]
     [DataRow(0, 0)]
     [DataRow(int.MaxValue, int.MaxValue)]
-    public void ThrowIfGreaterThanOrEqualOther_WhenValueIsGreaterThanOrEqualToOther_ShouldThrowArgumentException(int value, int other)
+    public void ThrowIfGreaterThanOrEqualOther_WhenValueIsGreaterThanOrEqualToOther_ShouldThrowExactly(int value, int other)
     {
         Assert.ThrowsExactly<ArgumentException>(() =>
         {

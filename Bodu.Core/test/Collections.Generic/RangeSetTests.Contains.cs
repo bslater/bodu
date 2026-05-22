@@ -27,7 +27,7 @@ public partial class RangeSetTests
     /// Verifies that <see cref="RangeSet{T}.Contains(T)" /> rejects a <see langword="null" /> argument.
     /// </summary>
     [TestMethod]
-    public void Contains_WhenValueIsNull_ShouldThrowArgumentNullException()
+    public void Contains_WhenValueIsNull_ShouldThrowExactly()
     {
         var sut = new RangeSet<string>();
 
@@ -65,7 +65,7 @@ public partial class RangeSetTests
     /// Verifies that the range-containment overload rejects <see langword="null" /> endpoints.
     /// </summary>
     [TestMethod]
-    public void ContainsRange_WhenEndpointIsNull_ShouldThrowArgumentNullException()
+    public void ContainsRange_WhenEndpointIsNull_ShouldThrowExactly()
     {
         var sut = new RangeSet<string>();
 
@@ -112,7 +112,7 @@ public partial class RangeSetTests
     /// Verifies that the range-containment overload rejects degenerate ranges.
     /// </summary>
     [TestMethod]
-    public void ContainsRange_WhenStartIsNotLessThanEnd_ShouldThrowArgumentException()
+    public void ContainsRange_WhenStartIsNotLessThanEnd_ShouldThrowExactly()
     {
         var sut = new RangeSet<int>();
 

@@ -76,7 +76,7 @@ public partial class BufferConverterTests
     /// Verifies that a negative index throws <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    public void Read_WhenIndexIsNegative_ForByteArray_ShouldThrowArgumentOutOfRangeException()
+    public void Read_WhenIndexIsNegative_ForByteArray_ShouldThrowExactly()
     {
         var source = AscendingBytes;
 
@@ -93,7 +93,7 @@ public partial class BufferConverterTests
     [TestMethod]
     [DataRow(13, DisplayName = "Insufficient bytes remaining for int")]
     [DataRow(16, DisplayName = "Index at array length")]
-    public void Read_WhenIndexPlusElementSizeExceedsArrayLength_ForByteArray_ShouldThrowArgumentException(int index)
+    public void Read_WhenIndexPlusElementSizeExceedsArrayLength_ForByteArray_ShouldThrowExactly(int index)
     {
         var source = AscendingBytes;
 
@@ -107,7 +107,7 @@ public partial class BufferConverterTests
     /// Verifies that reading from a null byte array throws <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void Read_WhenSourceIsNull_ForByteArray_ShouldThrowArgumentNullException()
+    public void Read_WhenSourceIsNull_ForByteArray_ShouldThrowExactly()
     {
         byte[]? source = null;
 
@@ -121,7 +121,7 @@ public partial class BufferConverterTests
     /// Verifies that reading from an empty span throws <see cref="ArgumentException" />.
     /// </summary>
     [TestMethod]
-    public void Read_WhenSpanIsEmpty_ForReadOnlySpan_ShouldThrowArgumentException()
+    public void Read_WhenSpanIsEmpty_ForReadOnlySpan_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -134,7 +134,7 @@ public partial class BufferConverterTests
     /// Verifies that reading from a span shorter than the element size throws <see cref="ArgumentException" />.
     /// </summary>
     [TestMethod]
-    public void Read_WhenSpanLengthIsInsufficient_ForReadOnlySpan_ShouldThrowArgumentException()
+    public void Read_WhenSpanLengthIsInsufficient_ForReadOnlySpan_ShouldThrowExactly()
     {
         var data = new byte[3];
 

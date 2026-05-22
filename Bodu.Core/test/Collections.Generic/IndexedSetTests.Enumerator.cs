@@ -31,7 +31,7 @@ public partial class IndexedSetTests
     /// Verifies that replacing an element via the indexer setter invalidates an enumerator.
     /// </summary>
     [TestMethod]
-    public void Enumerator_WhenIndexerSetterCalledAfterCreation_ShouldThrowOnMoveNext()
+    public void Enumerator_WhenIndexerSetterCalledAfterCreation_ShouldThrowExactly()
     {
         IndexedSet<int> sut = CreateSet([1, 2, 3]);
         IndexedSet<int>.Enumerator enumerator = sut.GetEnumerator();
@@ -48,7 +48,7 @@ public partial class IndexedSetTests
     /// Verifies that positional mutation (<see cref="IndexedSet{T}.Move(int, int)" />) invalidates an enumerator.
     /// </summary>
     [TestMethod]
-    public void Enumerator_WhenMoveCalledAfterCreation_ShouldThrowOnMoveNext()
+    public void Enumerator_WhenMoveCalledAfterCreation_ShouldThrowExactly()
     {
         IndexedSet<int> sut = CreateSet([1, 2, 3]);
         IndexedSet<int>.Enumerator enumerator = sut.GetEnumerator();
@@ -88,7 +88,7 @@ public partial class IndexedSetTests
     /// <see cref="IndexedSet{T}.Enumerator.MoveNext" /> calls to throw <see cref="InvalidOperationException" />.
     /// </summary>
     [TestMethod]
-    public void Enumerator_WhenSetMutatedAfterCreation_ShouldThrowOnMoveNext()
+    public void Enumerator_WhenSetMutatedAfterCreation_ShouldThrowExactly()
     {
         IndexedSet<int> sut = CreateSet([1, 2, 3]);
         IndexedSet<int>.Enumerator enumerator = sut.GetEnumerator();
@@ -106,7 +106,7 @@ public partial class IndexedSetTests
     /// <see cref="IndexedSet{T}.Enumerator.Reset" /> to throw <see cref="InvalidOperationException" />.
     /// </summary>
     [TestMethod]
-    public void Enumerator_WhenSetMutatedAfterCreation_ShouldThrowOnReset()
+    public void Enumerator_WhenSetMutatedAfterCreation_ShouldThrowExactly()
     {
         IndexedSet<int> sut = CreateSet([1, 2, 3]);
         IndexedSet<int>.Enumerator enumerator = sut.GetEnumerator();

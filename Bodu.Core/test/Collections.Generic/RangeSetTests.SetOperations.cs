@@ -46,7 +46,7 @@ public partial class RangeSetTests
     /// Verifies that <see cref="RangeSet{T}.Except(RangeSet{T})" /> rejects a <see langword="null" /> operand.
     /// </summary>
     [TestMethod]
-    public void Except_WhenOtherIsNull_ShouldThrowArgumentNullException()
+    public void Except_WhenOtherIsNull_ShouldThrowExactly()
     {
         var sut = new RangeSet<int>();
 
@@ -135,7 +135,7 @@ public partial class RangeSetTests
     /// Verifies that <see cref="RangeSet{T}.Intersect(RangeSet{T})" /> rejects a <see langword="null" /> operand.
     /// </summary>
     [TestMethod]
-    public void Intersect_WhenOtherIsNull_ShouldThrowArgumentNullException()
+    public void Intersect_WhenOtherIsNull_ShouldThrowExactly()
     {
         var sut = new RangeSet<int>();
 
@@ -223,7 +223,7 @@ public partial class RangeSetTests
     /// Verifies that <see cref="RangeSet{T}.Union(RangeSet{T})" /> rejects a <see langword="null" /> operand.
     /// </summary>
     [TestMethod]
-    public void Union_WhenOtherIsNull_ShouldThrowArgumentNullException()
+    public void Union_WhenOtherIsNull_ShouldThrowExactly()
     {
         var sut = new RangeSet<int>();
 

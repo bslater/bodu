@@ -52,7 +52,7 @@ public partial class ThrowHelperTests
     [DataRow("\t")]
     [DataRow("\n")]
     [TestMethod]
-    public void ThrowIfNullOrWhiteSpace_WhenValueIsEmptyOrWhitespace_ShouldThrowArgumentException(string value)
+    public void ThrowIfNullOrWhiteSpace_WhenValueIsEmptyOrWhitespace_ShouldThrowExactly(string value)
     {
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -66,7 +66,7 @@ public partial class ThrowHelperTests
     /// </summary>
     [DataRow(null)]
     [TestMethod]
-    public void ThrowIfNullOrWhiteSpace_WhenValueIsNull_ShouldThrowArgumentNullException(string? value)
+    public void ThrowIfNullOrWhiteSpace_WhenValueIsNull_ShouldThrowExactly(string? value)
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

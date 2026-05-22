@@ -25,7 +25,7 @@ public partial class StringExtensionsTests
     /// <see cref="ArgumentNullException" /> for null arguments.
     /// </summary>
     [TestMethod]
-    public void RemoveWhere_WhenAnyArgumentIsNull_ShouldThrowArgumentNullException()
+    public void RemoveWhere_WhenAnyArgumentIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() => _ = StringExtensions.RemoveWhere(null!, char.IsDigit));
         Assert.ThrowsExactly<ArgumentNullException>(() => _ = "hello".RemoveWhere(null!));

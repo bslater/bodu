@@ -14,7 +14,7 @@ public sealed partial class BencodeTests
     /// <see cref="BencodeFormatException" /> with the unexpected-end-of-data message.
     /// </summary>
     [TestMethod]
-    public void Decode_WhenEmptyInput_ShouldThrowUnexpectedEndOfData()
+    public void Decode_WhenEmptyInput_ShouldThrowExactly()
     {
         BencodeFormatException ex = Assert.ThrowsExactly<BencodeFormatException>(() =>
         {
@@ -95,7 +95,7 @@ public sealed partial class BencodeTests
     /// <see cref="BencodeFormatException" /> when input contains trailing bytes beyond a complete value.
     /// </summary>
     [TestMethod]
-    public void Decode_WhenTrailingData_ShouldThrowBencodeFormatException()
+    public void Decode_WhenTrailingData_ShouldThrowExactly()
     {
         BencodeFormatException ex = Assert.ThrowsExactly<BencodeFormatException>(() =>
         {

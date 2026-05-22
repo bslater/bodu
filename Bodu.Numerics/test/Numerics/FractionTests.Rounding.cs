@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FractionTests.Rounding.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -64,7 +64,7 @@ public partial class FractionTests
     /// Verifies that Round rejects an undefined midpoint rule.
     /// </summary>
     [TestMethod]
-    public void Round_WhenModeIsUndefined_ShouldThrowArgumentOutOfRangeException()
+    public void Round_WhenModeIsUndefined_ShouldThrowExactly()
     {
         _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

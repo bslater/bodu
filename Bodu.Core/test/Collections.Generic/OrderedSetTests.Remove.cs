@@ -82,7 +82,7 @@ public partial class OrderedSetTests
     /// Verifies that <see cref="OrderedSet{T}.Remove(T)" /> rejects a <see langword="null" /> item.
     /// </summary>
     [TestMethod]
-    public void Remove_WhenItemIsNull_ShouldThrowArgumentNullException()
+    public void Remove_WhenItemIsNull_ShouldThrowExactly()
     {
         OrderedSet<string> sut = CreateSet(["a"]);
 

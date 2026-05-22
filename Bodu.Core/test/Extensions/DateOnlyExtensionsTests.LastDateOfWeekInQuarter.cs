@@ -33,7 +33,7 @@ public partial class DateOnlyExtensionsTests
     /// Verifies that an undefined <see cref="DayOfWeek" /> value throws <see cref="ArgumentOutOfRangeException" /> on the instance overload.
     /// </summary>
     [TestMethod]
-    public void LastDateOfWeekInQuarter_WhenDayOfWeekIsInvalid_ShouldThrowArgumentOutOfRangeException()
+    public void LastDateOfWeekInQuarter_WhenDayOfWeekIsInvalid_ShouldThrowExactly()
     {
         var input = new DateOnly(2024, 4, 20);
 
@@ -47,7 +47,7 @@ public partial class DateOnlyExtensionsTests
     /// Verifies that an undefined <see cref="CalendarQuarterDefinition" /> value throws <see cref="ArgumentOutOfRangeException" /> on the instance overload.
     /// </summary>
     [TestMethod]
-    public void LastDateOfWeekInQuarter_WhenDefinitionIsInvalid_ShouldThrowArgumentOutOfRangeException()
+    public void LastDateOfWeekInQuarter_WhenDefinitionIsInvalid_ShouldThrowExactly()
     {
         var input = new DateOnly(2024, 4, 20);
 
@@ -64,7 +64,7 @@ public partial class DateOnlyExtensionsTests
     [DataRow(0)]
     [DataRow(5)]
     [DataRow(-1)]
-    public void LastDateOfWeekInQuarter_WhenQuarterIsOutOfRange_ShouldThrowArgumentOutOfRangeException(int quarter)
+    public void LastDateOfWeekInQuarter_WhenQuarterIsOutOfRange_ShouldThrowExactly(int quarter)
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -105,7 +105,7 @@ public partial class DateOnlyExtensionsTests
     /// Verifies that the static overload throws <see cref="ArgumentOutOfRangeException" /> for an undefined <see cref="DayOfWeek" /> value.
     /// </summary>
     [TestMethod]
-    public void LastDateOfWeekInQuarter_WhenYearAndQuarterOverloadDayOfWeekIsInvalid_ShouldThrowArgumentOutOfRangeException()
+    public void LastDateOfWeekInQuarter_WhenYearAndQuarterOverloadDayOfWeekIsInvalid_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -117,7 +117,7 @@ public partial class DateOnlyExtensionsTests
     /// Verifies that the static overload throws <see cref="ArgumentOutOfRangeException" /> for an undefined <see cref="CalendarQuarterDefinition" /> value.
     /// </summary>
     [TestMethod]
-    public void LastDateOfWeekInQuarter_WhenYearAndQuarterOverloadDefinitionIsInvalid_ShouldThrowArgumentOutOfRangeException()
+    public void LastDateOfWeekInQuarter_WhenYearAndQuarterOverloadDefinitionIsInvalid_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

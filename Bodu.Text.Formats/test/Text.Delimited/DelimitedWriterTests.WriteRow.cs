@@ -13,7 +13,7 @@ public sealed partial class DelimitedWriterTests
     /// <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void WriteRow_WhenFieldsIsNull_ShouldThrowArgumentNullException()
+    public void WriteRow_WhenFieldsIsNull_ShouldThrowExactly()
     {
         using var sw = new StringWriter();
         using DelimitedWriter writer = new(sw);
@@ -29,7 +29,7 @@ public sealed partial class DelimitedWriterTests
     /// field collection contains a <see langword="null" /> element, rather than a <see cref="NullReferenceException" />.
     /// </summary>
     [TestMethod]
-    public void WriteRow_WhenFieldsContainsNullElement_ShouldThrowArgumentException()
+    public void WriteRow_WhenFieldsContainsNullElement_ShouldThrowExactly()
     {
         using var sw = new StringWriter();
         using DelimitedWriter writer = new(sw);
@@ -45,7 +45,7 @@ public sealed partial class DelimitedWriterTests
     /// after the writer has been disposed.
     /// </summary>
     [TestMethod]
-    public void WriteRow_AfterDispose_ShouldThrowObjectDisposedException()
+    public void WriteRow_AfterDispose_ShouldThrowExactly()
     {
         var sw = new StringWriter();
         DelimitedWriter writer = new(sw);
@@ -157,7 +157,7 @@ public sealed partial class DelimitedWriterTests
     /// when passed a <see langword="null" /> argument.
     /// </summary>
     [TestMethod]
-    public void WriteHeader_WhenHeadersIsNull_ShouldThrowArgumentNullException()
+    public void WriteHeader_WhenHeadersIsNull_ShouldThrowExactly()
     {
         using var sw = new StringWriter();
         using DelimitedWriter writer = new(sw);
@@ -173,7 +173,7 @@ public sealed partial class DelimitedWriterTests
     /// header collection contains a <see langword="null" /> element.
     /// </summary>
     [TestMethod]
-    public void WriteHeader_WhenHeadersContainsNullElement_ShouldThrowArgumentException()
+    public void WriteHeader_WhenHeadersContainsNullElement_ShouldThrowExactly()
     {
         using var sw = new StringWriter();
         using DelimitedWriter writer = new(sw);

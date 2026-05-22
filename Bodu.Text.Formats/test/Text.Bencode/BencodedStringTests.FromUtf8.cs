@@ -49,7 +49,7 @@ public sealed partial class BencodedStringTests
     /// with <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void FromUtf8_WhenNull_ShouldThrowArgumentNullException()
+    public void FromUtf8_WhenNull_ShouldThrowExactly()
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

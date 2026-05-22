@@ -31,7 +31,7 @@ public partial class BufferConverterTests
     [DataRow(0, -1, 1, DisplayName = "Negative target index")]
     [DataRow(0, 0, -1, DisplayName = "Negative count")]
     [DataRow(0, 0, 17, DisplayName = "Count exceeds source length")]
-    public void CopyTo_WhenArgumentsAreInvalid_ForByteArrayToByteArray_ShouldThrowArgumentOutOfRangeException(
+    public void CopyTo_WhenArgumentsAreInvalid_ForByteArrayToByteArray_ShouldThrowExactly(
         int sourceIndex,
         int targetIndex,
         int count)
@@ -50,7 +50,7 @@ public partial class BufferConverterTests
     /// <c>ThrowIfSpanLengthIsInsufficient</c>.
     /// </summary>
     [TestMethod]
-    public void CopyTo_WhenCountExceedsSourceSpan_ForByteSpanToTypedSpan_ShouldThrowArgumentException()
+    public void CopyTo_WhenCountExceedsSourceSpan_ForByteSpanToTypedSpan_ShouldThrowExactly()
     {
         var sourceData = AscendingBytes;
         var targetData = new int[8];
@@ -67,7 +67,7 @@ public partial class BufferConverterTests
     /// Verifies that a count exceeding the target span throws <see cref="ArgumentException" />.
     /// </summary>
     [TestMethod]
-    public void CopyTo_WhenCountExceedsTargetSpan_ForByteSpanToTypedSpan_ShouldThrowArgumentException()
+    public void CopyTo_WhenCountExceedsTargetSpan_ForByteSpanToTypedSpan_ShouldThrowExactly()
     {
         var sourceData = AscendingBytes;
         var targetData = new int[2];
@@ -130,7 +130,7 @@ public partial class BufferConverterTests
     /// Verifies that writing a single value at a negative index throws <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    public void CopyTo_WhenIndexIsNegative_ForUnmanagedValueToByteArray_ShouldThrowArgumentOutOfRangeException()
+    public void CopyTo_WhenIndexIsNegative_ForUnmanagedValueToByteArray_ShouldThrowExactly()
     {
         var target = new byte[8];
 
@@ -144,7 +144,7 @@ public partial class BufferConverterTests
     /// Verifies that writing a single value at an index that leaves insufficient space throws <see cref="ArgumentException" />.
     /// </summary>
     [TestMethod]
-    public void CopyTo_WhenIndexLeavesInsufficientSpace_ForUnmanagedValueToByteArray_ShouldThrowArgumentException()
+    public void CopyTo_WhenIndexLeavesInsufficientSpace_ForUnmanagedValueToByteArray_ShouldThrowExactly()
     {
         var target = new byte[8];
 
@@ -237,7 +237,7 @@ public partial class BufferConverterTests
     /// throws <see cref="ArgumentException" />, matching the combination contract of <c>ThrowIfArrayOffsetOrCountInvalid</c>.
     /// </summary>
     [TestMethod]
-    public void CopyTo_WhenSourceIndexPlusCountExceedsSourceLength_ForByteArrayToByteArray_ShouldThrowArgumentException()
+    public void CopyTo_WhenSourceIndexPlusCountExceedsSourceLength_ForByteArrayToByteArray_ShouldThrowExactly()
     {
         var source = AscendingBytes;
         var target = new byte[16];
@@ -252,7 +252,7 @@ public partial class BufferConverterTests
     /// Verifies that a null source byte array throws <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void CopyTo_WhenSourceIsNull_ForByteArrayToTypedArray_ShouldThrowArgumentNullException()
+    public void CopyTo_WhenSourceIsNull_ForByteArrayToTypedArray_ShouldThrowExactly()
     {
         byte[]? source = null;
         var target = new byte[8];
@@ -267,7 +267,7 @@ public partial class BufferConverterTests
     /// Verifies that the implicit-target-index overload throws <see cref="ArgumentNullException" /> when the source is null.
     /// </summary>
     [TestMethod]
-    public void CopyTo_WhenSourceIsNull_ForByteArrayToTypedArrayImplicitTargetIndex_ShouldThrowArgumentNullException()
+    public void CopyTo_WhenSourceIsNull_ForByteArrayToTypedArrayImplicitTargetIndex_ShouldThrowExactly()
     {
         byte[]? source = null;
         var target = new byte[4];
@@ -302,7 +302,7 @@ public partial class BufferConverterTests
     /// Verifies that a null target array throws <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void CopyTo_WhenTargetIsNull_ForByteArrayToTypedArray_ShouldThrowArgumentNullException()
+    public void CopyTo_WhenTargetIsNull_ForByteArrayToTypedArray_ShouldThrowExactly()
     {
         var source = AscendingBytes;
         byte[]? target = null;
@@ -317,7 +317,7 @@ public partial class BufferConverterTests
     /// Verifies that writing a single value into a null byte array throws <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void CopyTo_WhenTargetIsNull_ForUnmanagedValueToByteArray_ShouldThrowArgumentNullException()
+    public void CopyTo_WhenTargetIsNull_ForUnmanagedValueToByteArray_ShouldThrowExactly()
     {
         byte[]? target = null;
 

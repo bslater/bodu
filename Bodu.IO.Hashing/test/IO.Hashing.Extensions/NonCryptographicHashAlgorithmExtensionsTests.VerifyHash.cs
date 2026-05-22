@@ -25,7 +25,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     /// Verifies that a null algorithm raises <see cref="ArgumentNullException" /> on the memory overload.
     /// </summary>
     [TestMethod]
-    public void VerifyHash_WhenAlgorithmIsNull_ForMemoryOverload_ShouldThrowArgumentNullException()
+    public void VerifyHash_WhenAlgorithmIsNull_ForMemoryOverload_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -38,7 +38,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     /// Verifies that a null algorithm raises <see cref="ArgumentNullException" /> on the span overload.
     /// </summary>
     [TestMethod]
-    public void VerifyHash_WhenAlgorithmIsNull_ForSpanOverload_ShouldThrowArgumentNullException()
+    public void VerifyHash_WhenAlgorithmIsNull_ForSpanOverload_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -53,7 +53,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     /// Verifies that a <see langword="null" /> algorithm receiver raises <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void VerifyHash_WhenAlgorithmIsNull_ShouldThrowArgumentNullException()
+    public void VerifyHash_WhenAlgorithmIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -147,7 +147,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     /// Verifies that a null encoding raises <see cref="ArgumentNullException" /> on the string+encoding overload.
     /// </summary>
     [TestMethod]
-    public void VerifyHash_WhenEncodingIsNull_ShouldThrowArgumentNullException()
+    public void VerifyHash_WhenEncodingIsNull_ShouldThrowExactly()
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
 
@@ -161,7 +161,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     /// Verifies that a null expected hash raises <see cref="ArgumentNullException" /> on the memory overload.
     /// </summary>
     [TestMethod]
-    public void VerifyHash_WhenExpectedHashIsNull_ForMemoryOverload_ShouldThrowArgumentNullException()
+    public void VerifyHash_WhenExpectedHashIsNull_ForMemoryOverload_ShouldThrowExactly()
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
 
@@ -175,7 +175,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     /// Verifies that a null expected hash byte array raises <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void VerifyHash_WhenExpectedHashIsNull_ShouldThrowArgumentNullException()
+    public void VerifyHash_WhenExpectedHashIsNull_ShouldThrowExactly()
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
 
@@ -189,7 +189,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     /// Verifies that a null expected hash raises <see cref="ArgumentNullException" /> on the string+encoding overload.
     /// </summary>
     [TestMethod]
-    public void VerifyHash_WhenExpectedHashIsNullForString_ShouldThrowArgumentNullException()
+    public void VerifyHash_WhenExpectedHashIsNullForString_ShouldThrowExactly()
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
 
@@ -203,7 +203,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     /// Verifies that a null expected hex string raises <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void VerifyHash_WhenExpectedHexIsNull_ShouldThrowArgumentNullException()
+    public void VerifyHash_WhenExpectedHexIsNull_ShouldThrowExactly()
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
 
@@ -240,7 +240,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     /// Verifies that a null input byte array raises <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void VerifyHash_WhenInputIsNull_ShouldThrowArgumentNullException()
+    public void VerifyHash_WhenInputIsNull_ShouldThrowExactly()
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
 
@@ -298,7 +298,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     /// Verifies that a null expected hash raises <see cref="ArgumentNullException" /> on the stream overload.
     /// </summary>
     [TestMethod]
-    public void VerifyHash_WhenStreamExpectedHashIsNull_ShouldThrowArgumentNullException()
+    public void VerifyHash_WhenStreamExpectedHashIsNull_ShouldThrowExactly()
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
         using MemoryStream stream = new(s_sampleData);
@@ -313,7 +313,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     /// Verifies that a null expected hex string raises <see cref="ArgumentNullException" /> on the stream overload.
     /// </summary>
     [TestMethod]
-    public void VerifyHash_WhenStreamExpectedHexIsNull_ShouldThrowArgumentNullException()
+    public void VerifyHash_WhenStreamExpectedHexIsNull_ShouldThrowExactly()
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
         using MemoryStream stream = new(s_sampleData);
@@ -328,7 +328,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     /// Verifies that a null stream raises <see cref="ArgumentNullException" /> on the stream-with-byte-array overload.
     /// </summary>
     [TestMethod]
-    public void VerifyHash_WhenStreamIsNull_ShouldThrowArgumentNullException()
+    public void VerifyHash_WhenStreamIsNull_ShouldThrowExactly()
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
 
@@ -371,7 +371,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     /// Verifies that a null string input raises <see cref="ArgumentNullException" /> on the string+encoding overload.
     /// </summary>
     [TestMethod]
-    public void VerifyHash_WhenStringInputIsNull_ShouldThrowArgumentNullException()
+    public void VerifyHash_WhenStringInputIsNull_ShouldThrowExactly()
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
 

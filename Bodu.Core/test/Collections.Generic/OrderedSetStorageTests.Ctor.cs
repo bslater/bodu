@@ -19,7 +19,7 @@ public partial class OrderedSetStorageTests
     [DataRow(-1)]
     [DataRow(-100)]
     [DataRow(int.MinValue)]
-    public void Ctor_WhenCapacityIsNegative_ShouldThrowArgumentOutOfRangeException(int capacity)
+    public void Ctor_WhenCapacityIsNegative_ShouldThrowExactly(int capacity)
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

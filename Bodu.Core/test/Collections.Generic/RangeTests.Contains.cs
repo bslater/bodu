@@ -63,7 +63,7 @@ public partial class RangeTests
     /// Verifies that <see cref="Range{T}.Contains(T)" /> rejects a <see langword="null" /> argument.
     /// </summary>
     [TestMethod]
-    public void Contains_WhenValueIsNull_ShouldThrowArgumentNullException()
+    public void Contains_WhenValueIsNull_ShouldThrowExactly()
     {
         var sut = new Range<string>("a", "z");
 

@@ -13,7 +13,7 @@ public partial class RangeDictionaryTests
     /// Verifies that an exclusive endpoint (immediately past the range) is treated as outside.
     /// </summary>
     [TestMethod]
-    public void Indexer_WhenKeyEqualsExclusiveEnd_ShouldThrowKeyNotFoundException()
+    public void Indexer_WhenKeyEqualsExclusiveEnd_ShouldThrowExactly()
     {
         RangeDictionary<int, string> sut = CreateDictionary((0, 10, "A"));
 
@@ -42,7 +42,7 @@ public partial class RangeDictionaryTests
     /// Verifies that the key indexer throws <see cref="KeyNotFoundException" /> when no range contains the key.
     /// </summary>
     [TestMethod]
-    public void Indexer_WhenKeyIsNotContained_ShouldThrowKeyNotFoundException()
+    public void Indexer_WhenKeyIsNotContained_ShouldThrowExactly()
     {
         RangeDictionary<int, string> sut = CreateDictionary((0, 10, "A"));
 
@@ -55,7 +55,7 @@ public partial class RangeDictionaryTests
     /// Verifies that the key indexer rejects a <see langword="null" /> key.
     /// </summary>
     [TestMethod]
-    public void Indexer_WhenKeyIsNull_ShouldThrowArgumentNullException()
+    public void Indexer_WhenKeyIsNull_ShouldThrowExactly()
     {
         var sut = new RangeDictionary<string, int>();
 

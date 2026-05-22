@@ -18,7 +18,7 @@ public partial class ThrowHelperTests
     [DataRow(0, 4)]
     [DataRow(3, 4)]
     [DataRow(5, 4)]
-    public void ThrowIfSpanLengthIsNotEqualTo_ReadOnlySpan_WhenLengthDiffers_ShouldThrowArgumentException(int spanLength, int expectedLength)
+    public void ThrowIfSpanLengthIsNotEqualTo_ReadOnlySpan_WhenLengthDiffers_ShouldThrowExactly(int spanLength, int expectedLength)
     {
         var buffer = new int[spanLength];
         Assert.ThrowsExactly<ArgumentException>(() =>
@@ -50,7 +50,7 @@ public partial class ThrowHelperTests
     [DataRow(0, 4)]
     [DataRow(3, 4)]
     [DataRow(5, 4)]
-    public void ThrowIfSpanLengthIsNotEqualTo_Span_WhenLengthDiffers_ShouldThrowArgumentException(int spanLength, int expectedLength)
+    public void ThrowIfSpanLengthIsNotEqualTo_Span_WhenLengthDiffers_ShouldThrowExactly(int spanLength, int expectedLength)
     {
         var buffer = new int[spanLength];
         Assert.ThrowsExactly<ArgumentException>(() =>

@@ -368,7 +368,7 @@ public sealed partial class NotableDateAdjusterTests
     /// <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void Apply_WhenAdjustmentIsNull_ShouldThrowArgumentNullException()
+    public void Apply_WhenAdjustmentIsNull_ShouldThrowExactly()
     {
         var adjuster = CreateAdjuster();
 
@@ -386,7 +386,7 @@ public sealed partial class NotableDateAdjusterTests
     /// <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void Apply_WhenRuleIsNull_ShouldThrowArgumentNullException()
+    public void Apply_WhenRuleIsNull_ShouldThrowExactly()
     {
         var adjuster = CreateAdjuster();
         var adjustment = new ObservanceAdjustment
@@ -410,7 +410,7 @@ public sealed partial class NotableDateAdjusterTests
     /// <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void IsInScope_WhenAdjustmentIsNull_ShouldThrowArgumentNullException()
+    public void IsInScope_WhenAdjustmentIsNull_ShouldThrowExactly()
     {
         var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -425,7 +425,7 @@ public sealed partial class NotableDateAdjusterTests
     /// required predicate is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenIsWeekendIsNull_ShouldThrowArgumentNullException()
+    public void Ctor_WhenIsWeekendIsNull_ShouldThrowExactly()
     {
         var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -443,7 +443,7 @@ public sealed partial class NotableDateAdjusterTests
     /// <paramref name="isNonWorkingDay" /> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenIsNonWorkingDayIsNull_ShouldThrowArgumentNullException()
+    public void Ctor_WhenIsNonWorkingDayIsNull_ShouldThrowExactly()
     {
         var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

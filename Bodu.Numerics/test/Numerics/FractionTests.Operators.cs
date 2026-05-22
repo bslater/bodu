@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FractionTests.Operators.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -27,7 +27,7 @@ public partial class FractionTests
     /// Verifies that dividing a fraction by zero throws <see cref="DivideByZeroException" />.
     /// </summary>
     [TestMethod]
-    public void DivisionOperator_WhenDividingByZero_ShouldThrowDivideByZeroException()
+    public void DivisionOperator_WhenDividingByZero_ShouldThrowExactly()
     {
         _ = Assert.ThrowsExactly<DivideByZeroException>(() =>
         {

@@ -136,7 +136,7 @@ public partial class MultisetTests
     /// Verifies that <see cref="Multiset{T}.CopyTo"/> throws <see cref="ArgumentNullException"/> when the array is null.
     /// </summary>
     [TestMethod]
-    public void CopyTo_WhenArrayIsNull_ShouldThrowArgumentNullException()
+    public void CopyTo_WhenArrayIsNull_ShouldThrowExactly()
     {
         var mvd = new Multiset<int>();
 
@@ -150,7 +150,7 @@ public partial class MultisetTests
     /// Verifies that <see cref="Multiset{T}.CopyTo"/> throws <see cref="ArgumentException"/> when the destination array is too small.
     /// </summary>
     [TestMethod]
-    public void CopyTo_WhenArrayIsTooSmall_ShouldThrowArgumentException()
+    public void CopyTo_WhenArrayIsTooSmall_ShouldThrowExactly()
     {
         var mvd = new Multiset<int>();
         mvd.Add(1);
@@ -185,7 +185,7 @@ public partial class MultisetTests
     /// Verifies that <see cref="Multiset{T}.CopyTo"/> throws <see cref="ArgumentOutOfRangeException"/> when the index is negative.
     /// </summary>
     [TestMethod]
-    public void CopyTo_WhenIndexIsNegative_ShouldThrowArgumentOutOfRangeException()
+    public void CopyTo_WhenIndexIsNegative_ShouldThrowExactly()
     {
         var mvd = new Multiset<int>();
 
@@ -233,7 +233,7 @@ public partial class MultisetTests
     /// Verifies that <see cref="Multiset{T}.CopyTo"/> throws <see cref="ArgumentException"/> when the remaining space after the offset is insufficient.
     /// </summary>
     [TestMethod]
-    public void CopyTo_WhenRemainingSpaceAfterOffsetIsInsufficient_ShouldThrowArgumentException()
+    public void CopyTo_WhenRemainingSpaceAfterOffsetIsInsufficient_ShouldThrowExactly()
     {
         var mvd = new Multiset<int>();
         mvd.Add(1);
@@ -345,7 +345,7 @@ public partial class MultisetTests
     /// Verifies that constructing from a null collection throws <see cref="ArgumentNullException"/>.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenCollectionIsNull_ShouldThrowArgumentNullException()
+    public void Ctor_WhenCollectionIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

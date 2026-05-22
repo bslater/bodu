@@ -14,7 +14,7 @@ public partial class FiscalWeekQuarterProviderTests
     /// <c>dayOfWeek</c> is not a defined <see cref="DayOfWeek" /> value.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenDayOfWeekIsUndefined_ShouldThrowException()
+    public void Ctor_WhenDayOfWeekIsUndefined_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
             new FiscalWeekQuarterProvider(1, (DayOfWeek)99));
@@ -39,7 +39,7 @@ public partial class FiscalWeekQuarterProviderTests
     [TestMethod]
     [DataRow(13)]
     [DataRow(100)]
-    public void Ctor_WhenMonthIsAboveValidRange_ShouldThrowException(int month)
+    public void Ctor_WhenMonthIsAboveValidRange_ShouldThrowExactly(int month)
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
             new FiscalWeekQuarterProvider(month));
@@ -51,7 +51,7 @@ public partial class FiscalWeekQuarterProviderTests
     [TestMethod]
     [DataRow(0)]
     [DataRow(-1)]
-    public void Ctor_WhenMonthIsBelowValidRange_ShouldThrowException(int month)
+    public void Ctor_WhenMonthIsBelowValidRange_ShouldThrowExactly(int month)
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
             new FiscalWeekQuarterProvider(month));
@@ -78,7 +78,7 @@ public partial class FiscalWeekQuarterProviderTests
     /// <c>pattern</c> is not a defined <see cref="FiscalWeekPattern" /> value.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenPatternIsUndefined_ShouldThrowException()
+    public void Ctor_WhenPatternIsUndefined_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
             new FiscalWeekQuarterProvider(1, DayOfWeek.Sunday, isFiscalYearEnd: false, pattern: (FiscalWeekPattern)99));

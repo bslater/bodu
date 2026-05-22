@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IniTests.NegativeVectors.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -14,7 +14,7 @@ public sealed partial class IniTests
     /// the source contains a section header missing the closing bracket.
     /// </summary>
     [TestMethod]
-    public void Parse_WhenSectionHeaderMissingClosingBracket_ShouldThrowWithLineNumber()
+    public void Parse_WhenSectionHeaderMissingClosingBracket_ShouldThrowExactly()
     {
         IniFormatException ex = Assert.ThrowsExactly<IniFormatException>(() =>
         {
@@ -32,7 +32,7 @@ public sealed partial class IniTests
     /// the section header contains an empty name.
     /// </summary>
     [TestMethod]
-    public void Parse_WhenSectionNameIsEmpty_ShouldThrowIniFormatException()
+    public void Parse_WhenSectionNameIsEmpty_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<IniFormatException>(() =>
         {
@@ -45,7 +45,7 @@ public sealed partial class IniTests
     /// the section header contains a whitespace-only name.
     /// </summary>
     [TestMethod]
-    public void Parse_WhenSectionNameIsWhitespaceOnly_ShouldThrowIniFormatException()
+    public void Parse_WhenSectionNameIsWhitespaceOnly_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<IniFormatException>(() =>
         {
@@ -73,7 +73,7 @@ public sealed partial class IniTests
     /// a key line contains only a separator character (empty key).
     /// </summary>
     [TestMethod]
-    public void Parse_WhenKeyIsEmpty_ShouldThrowIniFormatException()
+    public void Parse_WhenKeyIsEmpty_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<IniFormatException>(() =>
         {
@@ -101,7 +101,7 @@ public sealed partial class IniTests
     /// global entries are disallowed and a key appears before any section header.
     /// </summary>
     [TestMethod]
-    public void Parse_WhenGlobalKeyDisallowedAndKeyPresent_ShouldThrowIniFormatException()
+    public void Parse_WhenGlobalKeyDisallowedAndKeyPresent_ShouldThrowExactly()
     {
         IniParseOptions options = new() { AllowGlobalSection = false };
 
@@ -118,7 +118,7 @@ public sealed partial class IniTests
     /// duplicate keys are disallowed and the same key appears twice in a section.
     /// </summary>
     [TestMethod]
-    public void Parse_WhenDuplicateKeyDisallowedAndKeyRepeated_ShouldThrowIniFormatException()
+    public void Parse_WhenDuplicateKeyDisallowedAndKeyRepeated_ShouldThrowExactly()
     {
         IniParseOptions options = new() { DuplicateKeyBehavior = IniDuplicateKeyBehavior.Disallowed };
 
@@ -135,7 +135,7 @@ public sealed partial class IniTests
     /// duplicate sections are disallowed and the same section header appears twice.
     /// </summary>
     [TestMethod]
-    public void Parse_WhenDuplicateSectionDisallowedAndSectionRepeated_ShouldThrowIniFormatException()
+    public void Parse_WhenDuplicateSectionDisallowedAndSectionRepeated_ShouldThrowExactly()
     {
         IniParseOptions options = new() { DuplicateSectionBehavior = IniDuplicateSectionBehavior.Disallowed };
 

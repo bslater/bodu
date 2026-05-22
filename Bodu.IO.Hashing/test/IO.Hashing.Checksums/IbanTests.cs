@@ -21,7 +21,7 @@ public sealed class IbanTests
     /// <see cref="ArgumentOutOfRangeException" /> when the body contains a non-alphanumeric character.
     /// </summary>
     [TestMethod]
-    public void Compute_WhenBodyContainsInvalidCharacter_ShouldThrowArgumentOutOfRangeException()
+    public void Compute_WhenBodyContainsInvalidCharacter_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

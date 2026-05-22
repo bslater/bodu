@@ -134,7 +134,7 @@ public sealed partial class Base85Tests
     /// array length.
     /// </summary>
     [TestMethod]
-    public void Encode_WhenCountExceedsArrayLength_ShouldThrowArgumentOutOfRangeException()
+    public void Encode_WhenCountExceedsArrayLength_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -147,7 +147,7 @@ public sealed partial class Base85Tests
     /// destination is too small.
     /// </summary>
     [TestMethod]
-    public void Encode_WhenDestinationTooSmall_ShouldThrowArgumentException()
+    public void Encode_WhenDestinationTooSmall_ShouldThrowExactly()
     {
         var bytes = new byte[8];
         var destination = new char[1];
@@ -162,7 +162,7 @@ public sealed partial class Base85Tests
     /// Verifies that <see cref="Base85.Encode(byte[], int, int, Base85Variant)" /> rejects a negative offset.
     /// </summary>
     [TestMethod]
-    public void Encode_WhenNegativeOffset_ShouldThrowArgumentOutOfRangeException()
+    public void Encode_WhenNegativeOffset_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -188,7 +188,7 @@ public sealed partial class Base85Tests
     /// Verifies that <see cref="Base85.Encode(byte[], Base85Variant)" /> rejects an undefined variant.
     /// </summary>
     [TestMethod]
-    public void Encode_WhenUndefinedVariant_ShouldThrowArgumentOutOfRangeException()
+    public void Encode_WhenUndefinedVariant_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -215,7 +215,7 @@ public sealed partial class Base85Tests
     /// input.
     /// </summary>
     [TestMethod]
-    public void Encode_WhenZ85VariantAndNonAlignedInput_ShouldThrowArgumentException()
+    public void Encode_WhenZ85VariantAndNonAlignedInput_ShouldThrowExactly()
     {
         var bytes = new byte[5];
 

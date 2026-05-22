@@ -120,7 +120,7 @@ public sealed class NotableDateRuleResolverTests
     /// Verifies that an OffsetFromAnchor rule throws when its anchor cannot be located.
     /// </summary>
     [TestMethod]
-    public void ResolveAnchorDate_WhenAnchorMissing_ShouldThrowInvalidOperationException()
+    public void ResolveAnchorDate_WhenAnchorMissing_ShouldThrowExactly()
     {
         var offset = OffsetRule("Orphan", "Missing Anchor", -1);
         var resolver = new NotableDateRuleResolver(new[] { offset });
@@ -133,7 +133,7 @@ public sealed class NotableDateRuleResolverTests
     /// <see cref="InvalidOperationException" />.
     /// </summary>
     [TestMethod]
-    public void ResolveAnchorDate_WhenCircularChain_ShouldThrowInvalidOperationException()
+    public void ResolveAnchorDate_WhenCircularChain_ShouldThrowExactly()
     {
         var a = OffsetRule("A", "B", 1);
         var b = OffsetRule("B", "A", 1);
@@ -231,7 +231,7 @@ public sealed class NotableDateRuleResolverTests
     /// <paramref name="rules" /> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenRulesIsNull_ShouldThrowArgumentNullException()
+    public void Ctor_WhenRulesIsNull_ShouldThrowExactly()
     {
         var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -246,7 +246,7 @@ public sealed class NotableDateRuleResolverTests
     /// <see cref="ArgumentNullException" /> when the rule argument is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void ResolveAnchorDate_WhenRuleIsNull_ShouldThrowArgumentNullException()
+    public void ResolveAnchorDate_WhenRuleIsNull_ShouldThrowExactly()
     {
         var resolver = new NotableDateRuleResolver(Array.Empty<NotableDateRule>());
 
@@ -263,7 +263,7 @@ public sealed class NotableDateRuleResolverTests
     /// <see cref="NotSupportedException" /> naming the rule.
     /// </summary>
     [TestMethod]
-    public void ResolveAnchorDate_WhenStrategyIsUnsupported_ShouldThrowNotSupportedException()
+    public void ResolveAnchorDate_WhenStrategyIsUnsupported_ShouldThrowExactly()
     {
         var rule = new NotableDateRule
         {

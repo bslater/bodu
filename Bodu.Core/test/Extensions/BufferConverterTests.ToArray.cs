@@ -16,7 +16,7 @@ public partial class BufferConverterTests
     [DataRow(-1, 1, DisplayName = "Negative source index")]
     [DataRow(0, -1, DisplayName = "Negative count")]
     [DataRow(0, 17, DisplayName = "Count exceeds source length")]
-    public void ToArray_WhenArgumentsAreInvalid_ForByteArray_ShouldThrowArgumentOutOfRangeException(int sourceIndex, int count)
+    public void ToArray_WhenArgumentsAreInvalid_ForByteArray_ShouldThrowExactly(int sourceIndex, int count)
     {
         var source = AscendingBytes;
 
@@ -112,7 +112,7 @@ public partial class BufferConverterTests
     /// from the span-length-insufficient guard.
     /// </summary>
     [TestMethod]
-    public void ToArray_WhenCountExceedsAvailableBytes_ForReadOnlySpan_ShouldThrowArgumentException()
+    public void ToArray_WhenCountExceedsAvailableBytes_ForReadOnlySpan_ShouldThrowExactly()
     {
         var data = new byte[8];
 
@@ -168,7 +168,7 @@ public partial class BufferConverterTests
     /// throws <see cref="ArgumentException" /> from the combination-violation branch of <c>ThrowIfArrayOffsetOrCountInvalid</c>.
     /// </summary>
     [TestMethod]
-    public void ToArray_WhenSourceIndexPlusCountExceedsSourceLength_ForByteArray_ShouldThrowArgumentException()
+    public void ToArray_WhenSourceIndexPlusCountExceedsSourceLength_ForByteArray_ShouldThrowExactly()
     {
         var source = AscendingBytes;
 
@@ -182,7 +182,7 @@ public partial class BufferConverterTests
     /// Verifies that a null source byte array throws <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void ToArray_WhenSourceIsNull_ForByteArray_ShouldThrowArgumentNullException()
+    public void ToArray_WhenSourceIsNull_ForByteArray_ShouldThrowExactly()
     {
         byte[]? source = null;
 

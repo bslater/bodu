@@ -24,7 +24,7 @@ public partial class CrcTests
     /// <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenStandardIsNull_ShouldThrowArgumentNullException()
+    public void Ctor_WhenStandardIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

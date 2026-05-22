@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FractionTests.Properties.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -118,7 +118,7 @@ public partial class FractionTests
     /// Verifies that MinValue throws NotSupportedException for an unbounded backing type.
     /// </summary>
     [TestMethod]
-    public void MinValue_WhenBackingTypeIsUnbounded_ShouldThrowNotSupportedException()
+    public void MinValue_WhenBackingTypeIsUnbounded_ShouldThrowExactly()
     {
         _ = Assert.ThrowsExactly<NotSupportedException>(() =>
         {
@@ -130,7 +130,7 @@ public partial class FractionTests
     /// Verifies that MaxValue throws NotSupportedException for an unbounded backing type.
     /// </summary>
     [TestMethod]
-    public void MaxValue_WhenBackingTypeIsUnbounded_ShouldThrowNotSupportedException()
+    public void MaxValue_WhenBackingTypeIsUnbounded_ShouldThrowExactly()
     {
         _ = Assert.ThrowsExactly<NotSupportedException>(() =>
         {

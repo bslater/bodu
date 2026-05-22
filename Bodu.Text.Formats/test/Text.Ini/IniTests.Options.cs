@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IniTests.Options.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -200,7 +200,7 @@ public sealed partial class IniTests
     /// the first section header cause an <see cref="IniFormatException" />.
     /// </summary>
     [TestMethod]
-    public void Parse_WhenGlobalSectionDisallowed_ShouldThrowOnPreSectionKey()
+    public void Parse_WhenGlobalSectionDisallowed_ShouldThrowExactly()
     {
         IniParseOptions options = new() { AllowGlobalSection = false };
 

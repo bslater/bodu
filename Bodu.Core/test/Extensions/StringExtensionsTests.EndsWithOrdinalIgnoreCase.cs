@@ -40,7 +40,7 @@ public partial class StringExtensionsTests
     /// <see cref="ArgumentNullException" /> when either argument is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void EndsWithOrdinalIgnoreCase_WhenAnyArgumentIsNull_ShouldThrowArgumentNullException()
+    public void EndsWithOrdinalIgnoreCase_WhenAnyArgumentIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() => _ = StringExtensions.EndsWithOrdinalIgnoreCase(null!, "x"));
         Assert.ThrowsExactly<ArgumentNullException>(() => _ = "hello".EndsWithOrdinalIgnoreCase(null!));

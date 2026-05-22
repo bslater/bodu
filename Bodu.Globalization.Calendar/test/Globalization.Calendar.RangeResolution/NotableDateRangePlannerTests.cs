@@ -150,7 +150,7 @@ public sealed class NotableDateRangePlannerTests
     /// Verifies that <see cref="NotableDateRangePlanner" /> rejects a negative fringe distance during construction.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenFringeDaysIsNegative_ShouldThrowArgumentOutOfRangeException()
+    public void Ctor_WhenFringeDaysIsNegative_ShouldThrowExactly()
     {
         var analysis = RuleStaticAnalysis.Build(Array.Empty<NotableDateRule>());
 
@@ -166,7 +166,7 @@ public sealed class NotableDateRangePlannerTests
     /// Verifies that <see cref="NotableDateRangePlanner.Plan" /> rejects a <see langword="null" /> request.
     /// </summary>
     [TestMethod]
-    public void Plan_WhenRequestIsNull_ShouldThrowArgumentNullException()
+    public void Plan_WhenRequestIsNull_ShouldThrowExactly()
     {
         NotableDateRangePlanner planner = BuildPlanner();
 

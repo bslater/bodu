@@ -45,7 +45,7 @@ public partial class CircularBufferTests
     /// length-vs-capacity guard with a non-array input.
     /// </summary>
     [TestMethod]
-    public void CircularBufferMaterializeWithOverflowPolicy_WhenOverflowDisallowed_ShouldThrow()
+    public void CircularBufferMaterializeWithOverflowPolicy_WhenOverflowDisallowed_ShouldThrowExactly()
     {
         IEnumerable<int> source = YieldMaterializeSequence(1, 5);
 

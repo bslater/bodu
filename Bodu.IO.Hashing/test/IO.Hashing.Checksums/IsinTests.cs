@@ -22,7 +22,7 @@ public sealed class IsinTests
     /// uppercase alphabet.
     /// </summary>
     [TestMethod]
-    public void Compute_WhenBodyContainsInvalidCharacter_ShouldThrowArgumentOutOfRangeException()
+    public void Compute_WhenBodyContainsInvalidCharacter_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

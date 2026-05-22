@@ -73,7 +73,7 @@ public partial class MultiValueDictionaryTests
     /// <see cref="NotSupportedException" /> and does not affect dictionary state.
     /// </summary>
     [TestMethod]
-    public void ReturnedValueView_WhenClearedViaICollection_ShouldThrowNotSupportedException()
+    public void ReturnedValueView_WhenClearedViaICollection_ShouldThrowExactly()
     {
         var mvd = new MultiValueDictionary<string, int>();
         mvd.Add("a", 1);
@@ -97,7 +97,7 @@ public partial class MultiValueDictionaryTests
     /// <see cref="NotSupportedException" /> and does not affect dictionary state.
     /// </summary>
     [TestMethod]
-    public void ReturnedValueView_WhenItemAssignedViaIList_ShouldThrowNotSupportedException()
+    public void ReturnedValueView_WhenItemAssignedViaIList_ShouldThrowExactly()
     {
         var mvd = new MultiValueDictionary<string, int>();
         mvd.Add("a", 1);
@@ -121,7 +121,7 @@ public partial class MultiValueDictionaryTests
     /// <see cref="NotSupportedException" /> and does not affect dictionary state.
     /// </summary>
     [TestMethod]
-    public void ReturnedValueView_WhenItemInsertedViaIList_ShouldThrowNotSupportedException()
+    public void ReturnedValueView_WhenItemInsertedViaIList_ShouldThrowExactly()
     {
         var mvd = new MultiValueDictionary<string, int>();
         mvd.Add("a", 1);
@@ -145,7 +145,7 @@ public partial class MultiValueDictionaryTests
     /// <see cref="NotSupportedException" /> and does not affect dictionary state.
     /// </summary>
     [TestMethod]
-    public void ReturnedValueView_WhenItemRemovedAtViaIList_ShouldThrowNotSupportedException()
+    public void ReturnedValueView_WhenItemRemovedAtViaIList_ShouldThrowExactly()
     {
         var mvd = new MultiValueDictionary<string, int>();
         mvd.Add("a", 1);
@@ -169,7 +169,7 @@ public partial class MultiValueDictionaryTests
     /// throws <see cref="NotSupportedException" /> and does not affect dictionary state.
     /// </summary>
     [TestMethod]
-    public void ReturnedValueView_WhenItemRemovedViaICollection_ShouldThrowNotSupportedException()
+    public void ReturnedValueView_WhenItemRemovedViaICollection_ShouldThrowExactly()
     {
         var mvd = new MultiValueDictionary<string, int>();
         mvd.Add("a", 1);

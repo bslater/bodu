@@ -30,7 +30,7 @@ public partial class ThrowHelperTests
     [TestMethod]
     [DataRow(10, 5)] // destination too small
     [DataRow(5, 4)]
-    public void ThrowIfDestinationSpanTooSmall_WhenDestinationTooSmall_ShouldThrowArgumentException(int sourceLength, int destinationLength)
+    public void ThrowIfDestinationSpanTooSmall_WhenDestinationTooSmall_ShouldThrowExactly(int sourceLength, int destinationLength)
     {
         var source = new byte[sourceLength];
         var destination = new byte[destinationLength];

@@ -151,7 +151,7 @@ public partial class CrcLookupTableBuilderTests
     [DataRow(0)]
     [DataRow(65)]
     [DataRow(int.MaxValue)]
-    public void BuildLookupTable_WhenSizeIsInvalid_ShouldThrow(int size)
+    public void BuildLookupTable_WhenSizeIsInvalid_ShouldThrowExactly(int size)
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

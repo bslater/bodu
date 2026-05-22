@@ -74,7 +74,7 @@ public sealed partial class XmlResourceNotableDateRuleProviderTests
     /// Verifies that loading a non-existent resource throws a clear <see cref="FileNotFoundException" />.
     /// </summary>
     [TestMethod]
-    public void LoadRules_WhenResourceMissing_ShouldThrowFileNotFoundException()
+    public void LoadRules_WhenResourceMissing_ShouldThrowExactly()
     {
         var provider = new XmlResourceNotableDateRuleProvider("Bodu/Globalization/Calendar/Resources/Imaginary.xml", new ResourcePathResolver());
 
@@ -86,7 +86,7 @@ public sealed partial class XmlResourceNotableDateRuleProviderTests
     /// <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenXmlResourceNameIsNull_ShouldThrowArgumentNullException()
+    public void Ctor_WhenXmlResourceNameIsNull_ShouldThrowExactly()
     {
         var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -117,7 +117,7 @@ public sealed partial class XmlResourceNotableDateRuleProviderTests
     /// Verifies that the multi-assembly constructor rejects a <see langword="null" /> chain.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenAssemblyChainIsNull_ShouldThrowArgumentNullException()
+    public void Ctor_WhenAssemblyChainIsNull_ShouldThrowExactly()
     {
         var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -131,7 +131,7 @@ public sealed partial class XmlResourceNotableDateRuleProviderTests
     /// Verifies that the multi-assembly constructor rejects an empty chain with <see cref="ArgumentException" />.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenAssemblyChainIsEmpty_ShouldThrowArgumentException()
+    public void Ctor_WhenAssemblyChainIsEmpty_ShouldThrowExactly()
     {
         var ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -146,7 +146,7 @@ public sealed partial class XmlResourceNotableDateRuleProviderTests
     /// <see cref="ArgumentException" />.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenAssemblyChainContainsNull_ShouldThrowArgumentException()
+    public void Ctor_WhenAssemblyChainContainsNull_ShouldThrowExactly()
     {
         var ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {

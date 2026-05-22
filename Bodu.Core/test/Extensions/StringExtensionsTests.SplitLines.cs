@@ -65,7 +65,7 @@ public partial class StringExtensionsTests
     /// <see cref="ArgumentNullException" /> when <c>value</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void SplitLines_WhenInputIsNull_ShouldThrowArgumentNullException()
+    public void SplitLines_WhenInputIsNull_ShouldThrowExactly()
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

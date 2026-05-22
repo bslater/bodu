@@ -123,7 +123,7 @@ public sealed partial class Base32Tests
     /// <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    public void TryEncode_WhenUndefinedVariant_ShouldThrowArgumentOutOfRangeException()
+    public void TryEncode_WhenUndefinedVariant_ShouldThrowExactly()
     {
         var destination = new char[32];
 

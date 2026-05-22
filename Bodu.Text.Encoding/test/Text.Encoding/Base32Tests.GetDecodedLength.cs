@@ -29,7 +29,7 @@ public sealed partial class Base32Tests
     /// <see cref="FormatException" />.
     /// </summary>
     [TestMethod]
-    public void GetDecodedLength_WhenInvalidCharacter_ShouldThrowFormatException()
+    public void GetDecodedLength_WhenInvalidCharacter_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<FormatException>(() =>
         {

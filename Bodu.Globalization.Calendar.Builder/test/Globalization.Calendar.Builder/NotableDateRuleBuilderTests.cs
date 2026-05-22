@@ -19,7 +19,7 @@ public partial class NotableDateRuleBuilderTests
     /// <see cref="ArgumentOutOfRangeException" /> when the month is less than 1.
     /// </summary>
     [TestMethod]
-    public void Fixed_WhenMonthIsZero_ShouldThrowArgumentOutOfRangeException()
+    public void Fixed_WhenMonthIsZero_ShouldThrowExactly()
     {
         NotableDateRuleBuilder builder = new();
 
@@ -34,7 +34,7 @@ public partial class NotableDateRuleBuilderTests
     /// <see cref="ArgumentOutOfRangeException" /> when the month exceeds 13.
     /// </summary>
     [TestMethod]
-    public void Fixed_WhenMonthExceedsThirteen_ShouldThrowArgumentOutOfRangeException()
+    public void Fixed_WhenMonthExceedsThirteen_ShouldThrowExactly()
     {
         NotableDateRuleBuilder builder = new();
 
@@ -49,7 +49,7 @@ public partial class NotableDateRuleBuilderTests
     /// <see cref="ArgumentOutOfRangeException" /> when the day is less than 1.
     /// </summary>
     [TestMethod]
-    public void Fixed_WhenDayIsZero_ShouldThrowArgumentOutOfRangeException()
+    public void Fixed_WhenDayIsZero_ShouldThrowExactly()
     {
         NotableDateRuleBuilder builder = new();
 
@@ -64,7 +64,7 @@ public partial class NotableDateRuleBuilderTests
     /// <see cref="ArgumentOutOfRangeException" /> when the month is less than 1.
     /// </summary>
     [TestMethod]
-    public void DayOfWeekInMonth_WhenMonthIsZero_ShouldThrowArgumentOutOfRangeException()
+    public void DayOfWeekInMonth_WhenMonthIsZero_ShouldThrowExactly()
     {
         NotableDateRuleBuilder builder = new();
 
@@ -79,7 +79,7 @@ public partial class NotableDateRuleBuilderTests
     /// <see cref="ArgumentOutOfRangeException" /> when the month exceeds 12.
     /// </summary>
     [TestMethod]
-    public void DayOfWeekInMonth_WhenMonthExceedsTwelve_ShouldThrowArgumentOutOfRangeException()
+    public void DayOfWeekInMonth_WhenMonthExceedsTwelve_ShouldThrowExactly()
     {
         NotableDateRuleBuilder builder = new();
 
@@ -94,7 +94,7 @@ public partial class NotableDateRuleBuilderTests
     /// when the anchor rule name is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void OffsetFromAnchor_WhenAnchorRuleNameIsNull_ShouldThrowArgumentNullException()
+    public void OffsetFromAnchor_WhenAnchorRuleNameIsNull_ShouldThrowExactly()
     {
         NotableDateRuleBuilder builder = new();
 
@@ -109,7 +109,7 @@ public partial class NotableDateRuleBuilderTests
     /// when the territory code is whitespace.
     /// </summary>
     [TestMethod]
-    public void Territory_WhenCodeIsWhitespace_ShouldThrowArgumentException()
+    public void Territory_WhenCodeIsWhitespace_ShouldThrowExactly()
     {
         NotableDateRuleBuilder builder = new();
 
@@ -124,7 +124,7 @@ public partial class NotableDateRuleBuilderTests
     /// when the value is less than 1.
     /// </summary>
     [TestMethod]
-    public void Duration_WhenLessThanOne_ShouldThrowArgumentOutOfRangeException()
+    public void Duration_WhenLessThanOne_ShouldThrowExactly()
     {
         NotableDateRuleBuilder builder = new();
 
@@ -139,7 +139,7 @@ public partial class NotableDateRuleBuilderTests
     /// when the value is less than 1.
     /// </summary>
     [TestMethod]
-    public void OccurrenceYears_WhenLessThanOne_ShouldThrowArgumentOutOfRangeException()
+    public void OccurrenceYears_WhenLessThanOne_ShouldThrowExactly()
     {
         NotableDateRuleBuilder builder = new();
 
@@ -154,7 +154,7 @@ public partial class NotableDateRuleBuilderTests
     /// when the key is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void AddAdjustment_WhenKeyIsNull_ShouldThrowArgumentNullException()
+    public void AddAdjustment_WhenKeyIsNull_ShouldThrowExactly()
     {
         NotableDateRuleBuilder builder = new();
 
@@ -169,7 +169,7 @@ public partial class NotableDateRuleBuilderTests
     /// when the configure callback is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void AddAdjustment_WhenConfigureIsNull_ShouldThrowArgumentNullException()
+    public void AddAdjustment_WhenConfigureIsNull_ShouldThrowExactly()
     {
         NotableDateRuleBuilder builder = new();
 
@@ -194,7 +194,7 @@ public partial class NotableDateRuleBuilderTests
     [DataRow("DayOfWeekInMonth")]
     [DataRow("OffsetFromAnchor")]
     [DataRow("Algorithm")]
-    public void Fixed_WhenStrategyAlreadySet_ForNumericMonth_ShouldThrowInvalidOperationException(string firstStrategy)
+    public void Fixed_WhenStrategyAlreadySet_ForNumericMonth_ShouldThrowExactly(string firstStrategy)
     {
         NotableDateRuleBuilder builder = NewBuilderWithStrategy(firstStrategy);
 
@@ -215,7 +215,7 @@ public partial class NotableDateRuleBuilderTests
     [DataRow("DayOfWeekInMonth")]
     [DataRow("OffsetFromAnchor")]
     [DataRow("Algorithm")]
-    public void Fixed_WhenStrategyAlreadySet_ForMonthToken_ShouldThrowInvalidOperationException(string firstStrategy)
+    public void Fixed_WhenStrategyAlreadySet_ForMonthToken_ShouldThrowExactly(string firstStrategy)
     {
         NotableDateRuleBuilder builder = NewBuilderWithStrategy(firstStrategy);
 
@@ -236,7 +236,7 @@ public partial class NotableDateRuleBuilderTests
     [DataRow("DayOfWeekInMonth")]
     [DataRow("OffsetFromAnchor")]
     [DataRow("Algorithm")]
-    public void DayOfWeekInMonth_WhenStrategyAlreadySet_ShouldThrowInvalidOperationException(string firstStrategy)
+    public void DayOfWeekInMonth_WhenStrategyAlreadySet_ShouldThrowExactly(string firstStrategy)
     {
         NotableDateRuleBuilder builder = NewBuilderWithStrategy(firstStrategy);
 
@@ -257,7 +257,7 @@ public partial class NotableDateRuleBuilderTests
     [DataRow("DayOfWeekInMonth")]
     [DataRow("OffsetFromAnchor")]
     [DataRow("Algorithm")]
-    public void OffsetFromAnchor_WhenStrategyAlreadySet_ShouldThrowInvalidOperationException(string firstStrategy)
+    public void OffsetFromAnchor_WhenStrategyAlreadySet_ShouldThrowExactly(string firstStrategy)
     {
         NotableDateRuleBuilder builder = NewBuilderWithStrategy(firstStrategy);
 
@@ -278,7 +278,7 @@ public partial class NotableDateRuleBuilderTests
     [DataRow("DayOfWeekInMonth")]
     [DataRow("OffsetFromAnchor")]
     [DataRow("Algorithm")]
-    public void Algorithm_WhenStrategyAlreadySet_ShouldThrowInvalidOperationException(string firstStrategy)
+    public void Algorithm_WhenStrategyAlreadySet_ShouldThrowExactly(string firstStrategy)
     {
         NotableDateRuleBuilder builder = NewBuilderWithStrategy(firstStrategy);
 
@@ -479,7 +479,7 @@ public partial class NotableDateRuleBuilderTests
     /// Verifies that <see cref="NotableDateRuleBuilder.RemoveTag" /> throws when the supplied value is whitespace.
     /// </summary>
     [TestMethod]
-    public void RemoveTag_WhenTagWhitespace_ShouldThrowArgumentException()
+    public void RemoveTag_WhenTagWhitespace_ShouldThrowExactly()
     {
         NotableDateRuleBuilder builder = new();
 
@@ -562,7 +562,7 @@ public partial class NotableDateRuleBuilderTests
     /// Verifies that <see cref="NotableDateRuleBuilder.RemoveAdjustment" /> throws when the supplied key is whitespace.
     /// </summary>
     [TestMethod]
-    public void RemoveAdjustment_WhenKeyWhitespace_ShouldThrowArgumentException()
+    public void RemoveAdjustment_WhenKeyWhitespace_ShouldThrowExactly()
     {
         NotableDateRuleBuilder builder = new();
 

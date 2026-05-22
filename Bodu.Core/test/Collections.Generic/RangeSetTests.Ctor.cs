@@ -71,7 +71,7 @@ public partial class RangeSetTests
     /// Verifies that the collection constructor rejects a <see langword="null" /> source.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenCollectionIsNull_ShouldThrowArgumentNullException()
+    public void Ctor_WhenCollectionIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

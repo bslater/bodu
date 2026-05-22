@@ -44,7 +44,7 @@ public sealed partial class EncodingExtensionsTests
     /// throws <see cref="ArgumentNullException" /> when <c>encoding</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void GetEncodedByteCount_WhenEncodingIsNull_ShouldThrowArgumentNullException()
+    public void GetEncodedByteCount_WhenEncodingIsNull_ShouldThrowExactly()
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -89,7 +89,7 @@ public sealed partial class EncodingExtensionsTests
     /// <see cref="ArgumentNullException" /> when <c>encoding</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void ToBytes_WhenEncodingIsNull_ShouldThrowArgumentNullException()
+    public void ToBytes_WhenEncodingIsNull_ShouldThrowExactly()
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -122,7 +122,7 @@ public sealed partial class EncodingExtensionsTests
     /// throws <see cref="ArgumentException" /> when the destination is one byte too small.
     /// </summary>
     [TestMethod]
-    public void EncodeTo_WhenDestinationIsOneByteTooSmall_ShouldThrowArgumentException()
+    public void EncodeTo_WhenDestinationIsOneByteTooSmall_ShouldThrowExactly()
     {
         var required = System.Text.Encoding.UTF8.GetByteCount(MultiByteText);
         var backing = new byte[required - 1];
@@ -138,7 +138,7 @@ public sealed partial class EncodingExtensionsTests
     /// throws <see cref="ArgumentNullException" /> when <c>encoding</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void EncodeTo_WhenEncodingIsNull_ShouldThrowArgumentNullException()
+    public void EncodeTo_WhenEncodingIsNull_ShouldThrowExactly()
     {
         var backing = new byte[64];
 
@@ -170,7 +170,7 @@ public sealed partial class EncodingExtensionsTests
     /// throws <see cref="ArgumentException" /> when the destination is larger than the required size.
     /// </summary>
     [TestMethod]
-    public void EncodeExactlyTo_WhenDestinationIsLargerThanRequired_ShouldThrowArgumentException()
+    public void EncodeExactlyTo_WhenDestinationIsLargerThanRequired_ShouldThrowExactly()
     {
         var required = System.Text.Encoding.UTF8.GetByteCount(SampleText);
         var backing = new byte[required + 1];
@@ -188,7 +188,7 @@ public sealed partial class EncodingExtensionsTests
     /// throws <see cref="ArgumentException" /> when the destination is smaller than the required size.
     /// </summary>
     [TestMethod]
-    public void EncodeExactlyTo_WhenDestinationIsSmallerThanRequired_ShouldThrowArgumentException()
+    public void EncodeExactlyTo_WhenDestinationIsSmallerThanRequired_ShouldThrowExactly()
     {
         var required = System.Text.Encoding.UTF8.GetByteCount(SampleText);
         var backing = new byte[required - 1];
@@ -206,7 +206,7 @@ public sealed partial class EncodingExtensionsTests
     /// throws <see cref="ArgumentNullException" /> when <c>encoding</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void EncodeExactlyTo_WhenEncodingIsNull_ShouldThrowArgumentNullException()
+    public void EncodeExactlyTo_WhenEncodingIsNull_ShouldThrowExactly()
     {
         var backing = new byte[64];
 
@@ -255,7 +255,7 @@ public sealed partial class EncodingExtensionsTests
     /// throws <see cref="ArgumentNullException" /> when <c>encoding</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void TryEncodeTo_WhenEncodingIsNull_ShouldThrowArgumentNullException()
+    public void TryEncodeTo_WhenEncodingIsNull_ShouldThrowExactly()
     {
         var backing = new byte[64];
 
@@ -319,7 +319,7 @@ public sealed partial class EncodingExtensionsTests
     /// throws <see cref="ArgumentNullException" /> when <c>encoding</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void ToOwnedBytes_WhenEncodingIsNull_ShouldThrowArgumentNullException()
+    public void ToOwnedBytes_WhenEncodingIsNull_ShouldThrowExactly()
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

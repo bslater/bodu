@@ -63,7 +63,7 @@ public partial class MultiValueDictionaryTests
     /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.Add(TKey,TValue)"/> throws <see cref="ArgumentNullException"/> for a null key.
     /// </summary>
     [TestMethod]
-    public void Add_WhenKeyIsNull_ShouldThrowArgumentNullException()
+    public void Add_WhenKeyIsNull_ShouldThrowExactly()
     {
         var mvd = new MultiValueDictionary<string, int>();
 

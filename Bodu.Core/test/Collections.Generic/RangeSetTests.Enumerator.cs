@@ -50,7 +50,7 @@ public partial class RangeSetTests
     /// invalidates the enumerator.
     /// </summary>
     [TestMethod]
-    public void Enumerator_WhenSetClearedAfterCreation_ShouldThrowOnReset()
+    public void Enumerator_WhenSetClearedAfterCreation_ShouldThrowExactly()
     {
         RangeSet<int> sut = CreateSet((0, 5));
         RangeSet<int>.Enumerator enumerator = sut.GetEnumerator();
@@ -72,7 +72,7 @@ public partial class RangeSetTests
     /// <see cref="RangeSet{T}.Enumerator.MoveNext" /> calls to throw <see cref="InvalidOperationException" />.
     /// </summary>
     [TestMethod]
-    public void Enumerator_WhenSetMutatedByAddAfterCreation_ShouldThrowOnMoveNext()
+    public void Enumerator_WhenSetMutatedByAddAfterCreation_ShouldThrowExactly()
     {
         RangeSet<int> sut = CreateSet((0, 5));
         RangeSet<int>.Enumerator enumerator = sut.GetEnumerator();
@@ -90,7 +90,7 @@ public partial class RangeSetTests
     /// invalidates the enumerator.
     /// </summary>
     [TestMethod]
-    public void Enumerator_WhenSetMutatedByRemoveAfterCreation_ShouldThrowOnMoveNext()
+    public void Enumerator_WhenSetMutatedByRemoveAfterCreation_ShouldThrowExactly()
     {
         RangeSet<int> sut = CreateSet((0, 10));
         RangeSet<int>.Enumerator enumerator = sut.GetEnumerator();

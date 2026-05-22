@@ -62,7 +62,7 @@ logging.level.default = Warning
     /// Verifies that the <see cref="IniDocument" /> overload rejects a <see langword="null" /> document.
     /// </summary>
     [TestMethod]
-    public void AddConfiguration_WithIniDocument_WhenDocumentIsNull_ShouldThrowArgumentNullException()
+    public void AddConfiguration_WithIniDocument_WhenDocumentIsNull_ShouldThrowExactly()
     {
         IniDocument document = null!;
 
@@ -76,7 +76,7 @@ logging.level.default = Warning
     /// Verifies that the <see cref="IniDocument" /> overload rejects a <see langword="null" /> builder.
     /// </summary>
     [TestMethod]
-    public void AddConfiguration_WithIniDocument_WhenBuilderIsNull_ShouldThrowArgumentNullException()
+    public void AddConfiguration_WithIniDocument_WhenBuilderIsNull_ShouldThrowExactly()
     {
         IConfigurationBuilder builder = null!;
         using MemoryStream stream = new(Encoding.UTF8.GetBytes(Sample));

@@ -20,7 +20,7 @@ public partial class PearsonTests
     [DataRow(9)]
     [DataRow(2056)]
     [DataRow(-8)]
-    public void Ctor_WhenHashSizeIsOutOfRange_ShouldThrow(int bits)
+    public void Ctor_WhenHashSizeIsOutOfRange_ShouldThrowExactly(int bits)
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
             _ = new Pearson(bits, Pearson.PearsonTableType.Pearson));
@@ -31,7 +31,7 @@ public partial class PearsonTests
     /// <see cref="ArgumentException" />.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenPermutationTableContainsDuplicates_ShouldThrow()
+    public void Ctor_WhenPermutationTableContainsDuplicates_ShouldThrowExactly()
     {
         var duplicateTable = Enumerable.Repeat((byte)42, 256).ToArray();
 
@@ -43,7 +43,7 @@ public partial class PearsonTests
     /// <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenPermutationTableIsNull_ShouldThrow()
+    public void Ctor_WhenPermutationTableIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() => _ = new Pearson(8, null!));
     }
@@ -52,7 +52,7 @@ public partial class PearsonTests
     /// Verifies that constructing with a permutation that is too short throws <see cref="ArgumentException" />.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenPermutationTableIsTooShort_ShouldThrow()
+    public void Ctor_WhenPermutationTableIsTooShort_ShouldThrowExactly()
     {
         var invalidTable = Enumerable.Range(0, 100).Select(i => (byte)i).ToArray();
 
@@ -79,7 +79,7 @@ public partial class PearsonTests
     /// <see cref="ArgumentOutOfRangeException" /> from the protected permutation-table selector.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenTableTypeIsUndefined_ShouldThrowArgumentOutOfRangeException()
+    public void Ctor_WhenTableTypeIsUndefined_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
             _ = new Pearson(8, (Pearson.PearsonTableType)42));
@@ -90,7 +90,7 @@ public partial class PearsonTests
     /// overload throws <see cref="ArgumentException" />.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenTableTypeIsUserDefinedOnPredefinedOverload_ShouldThrow()
+    public void Ctor_WhenTableTypeIsUserDefinedOnPredefinedOverload_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentException>(() =>
             _ = new Pearson(8, Pearson.PearsonTableType.UserDefined));

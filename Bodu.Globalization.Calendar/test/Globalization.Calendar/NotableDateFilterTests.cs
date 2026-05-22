@@ -143,7 +143,7 @@ public sealed partial class NotableDateFilterTests
     /// categories array is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void ForAnyCategory_WhenCategoriesIsNull_ShouldThrowArgumentNullException()
+    public void ForAnyCategory_WhenCategoriesIsNull_ShouldThrowExactly()
     {
         NotableDateCategory[] categories = null!;
 
@@ -158,7 +158,7 @@ public sealed partial class NotableDateFilterTests
     /// array is empty.
     /// </summary>
     [TestMethod]
-    public void ForAnyCategory_WhenCategoriesIsEmpty_ShouldThrowArgumentException()
+    public void ForAnyCategory_WhenCategoriesIsEmpty_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -213,7 +213,7 @@ public sealed partial class NotableDateFilterTests
     /// is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void WithTag_WhenTagIsNull_ShouldThrowArgumentNullException()
+    public void WithTag_WhenTagIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -226,7 +226,7 @@ public sealed partial class NotableDateFilterTests
     /// is empty.
     /// </summary>
     [TestMethod]
-    public void WithTag_WhenTagIsEmpty_ShouldThrowArgumentException()
+    public void WithTag_WhenTagIsEmpty_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -466,7 +466,7 @@ public sealed partial class NotableDateFilterTests
     /// <paramref name="endDate" /> is earlier than <paramref name="startDate" />.
     /// </summary>
     [TestMethod]
-    public void InDateRange_WhenEndDateIsBeforeStartDate_ShouldThrowArgumentException()
+    public void InDateRange_WhenEndDateIsBeforeStartDate_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -551,7 +551,7 @@ public sealed partial class NotableDateFilterTests
     /// <paramref name="minimumDays" /> is less than one.
     /// </summary>
     [TestMethod]
-    public void WithMinDuration_WhenMinimumDaysIsZero_ShouldThrowArgumentOutOfRangeException()
+    public void WithMinDuration_WhenMinimumDaysIsZero_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -633,7 +633,7 @@ public sealed partial class NotableDateFilterTests
     /// is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void And_WhenOtherIsNull_ShouldThrowArgumentNullException()
+    public void And_WhenOtherIsNull_ShouldThrowExactly()
     {
         var filter = NotableDateFilter.ForCategory(NotableDateCategory.Holiday);
 
@@ -704,7 +704,7 @@ public sealed partial class NotableDateFilterTests
     /// is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void Or_WhenOtherIsNull_ShouldThrowArgumentNullException()
+    public void Or_WhenOtherIsNull_ShouldThrowExactly()
     {
         var filter = NotableDateFilter.ForCategory(NotableDateCategory.Holiday);
 
@@ -754,7 +754,7 @@ public sealed partial class NotableDateFilterTests
     /// Verifies that <see cref="NotableDateFilter.AllOf" /> throws <see cref="ArgumentException" /> when the array is empty.
     /// </summary>
     [TestMethod]
-    public void AllOf_WhenFiltersIsEmpty_ShouldThrowArgumentException()
+    public void AllOf_WhenFiltersIsEmpty_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -798,7 +798,7 @@ public sealed partial class NotableDateFilterTests
     /// Verifies that <see cref="NotableDateFilter.AnyOf" /> throws <see cref="ArgumentException" /> when the array is empty.
     /// </summary>
     [TestMethod]
-    public void AnyOf_WhenFiltersIsEmpty_ShouldThrowArgumentException()
+    public void AnyOf_WhenFiltersIsEmpty_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentException>(() =>
         {

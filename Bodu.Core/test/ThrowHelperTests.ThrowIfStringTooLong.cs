@@ -59,7 +59,7 @@ public partial class ThrowHelperTests
     [DataRow("abcdef", 5)]   // length 6 > max 5
     [DataRow("ab", 1)]       // length 2 > max 1
     [DataRow("x", 0)]        // length 1 > max 0
-    public void ThrowIfStringTooLong_WhenLengthExceedsMaximum_ShouldThrowArgumentOutOfRangeException(string value, int maxLength)
+    public void ThrowIfStringTooLong_WhenLengthExceedsMaximum_ShouldThrowExactly(string value, int maxLength)
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -82,7 +82,7 @@ public partial class ThrowHelperTests
     /// when the string value is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void ThrowIfStringTooLong_WhenValueIsNull_ShouldThrowArgumentNullException()
+    public void ThrowIfStringTooLong_WhenValueIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

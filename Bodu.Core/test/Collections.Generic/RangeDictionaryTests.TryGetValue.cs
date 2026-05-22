@@ -67,7 +67,7 @@ public partial class RangeDictionaryTests
     /// rejects a <see langword="null" /> key.
     /// </summary>
     [TestMethod]
-    public void TryGetEntry_WhenKeyIsNull_ShouldThrowArgumentNullException()
+    public void TryGetEntry_WhenKeyIsNull_ShouldThrowExactly()
     {
         var sut = new RangeDictionary<string, int>();
 
@@ -131,7 +131,7 @@ public partial class RangeDictionaryTests
     /// <see langword="null" /> key.
     /// </summary>
     [TestMethod]
-    public void TryGetValue_WhenKeyIsNull_ShouldThrowArgumentNullException()
+    public void TryGetValue_WhenKeyIsNull_ShouldThrowExactly()
     {
         var sut = new RangeDictionary<string, int>();
 

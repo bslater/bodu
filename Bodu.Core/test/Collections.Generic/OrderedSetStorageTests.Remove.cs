@@ -140,7 +140,7 @@ public partial class OrderedSetStorageTests
     /// Verifies that <see cref="OrderedSetStorage{T}.Remove(T)" /> rejects a <see langword="null" /> item.
     /// </summary>
     [TestMethod]
-    public void Remove_WhenItemIsNull_ShouldThrowArgumentNullException()
+    public void Remove_WhenItemIsNull_ShouldThrowExactly()
     {
         OrderedSetStorage<string> sut = CreateStorage(["a"]);
 
@@ -189,7 +189,7 @@ public partial class OrderedSetStorageTests
     [DataRow(3)]
     [DataRow(int.MaxValue)]
     [DataRow(int.MinValue)]
-    public void RemoveAt_WhenIndexIsOutOfRange_ShouldThrowArgumentOutOfRangeException(int index)
+    public void RemoveAt_WhenIndexIsOutOfRange_ShouldThrowExactly(int index)
     {
         OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
 
@@ -221,7 +221,7 @@ public partial class OrderedSetStorageTests
     /// throws <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    public void RemoveAt_WhenStorageIsEmpty_ShouldThrowArgumentOutOfRangeException()
+    public void RemoveAt_WhenStorageIsEmpty_ShouldThrowExactly()
     {
         var sut = new OrderedSetStorage<int>(0, null);
 
@@ -253,7 +253,7 @@ public partial class OrderedSetStorageTests
     /// Verifies that <see cref="OrderedSetStorage{T}.RemoveWhere(System.Predicate{T})" /> rejects a <see langword="null" /> predicate.
     /// </summary>
     [TestMethod]
-    public void RemoveWhere_WhenMatchIsNull_ShouldThrowArgumentNullException()
+    public void RemoveWhere_WhenMatchIsNull_ShouldThrowExactly()
     {
         OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
 

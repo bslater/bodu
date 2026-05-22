@@ -52,7 +52,7 @@ public sealed class BufferWriterTests
     /// Verifies that passing a null buffer writer throws <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void Base16_Encode_IntoBufferWriterWithNull_ShouldThrowArgumentNullException()
+    public void Base16_Encode_IntoBufferWriterWithNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -158,7 +158,7 @@ public sealed class BufferWriterTests
     /// <see langword="null" /> writer throws <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void Base58_EncodeToUtf8_IntoNullBufferWriter_ShouldThrowArgumentNullException()
+    public void Base58_EncodeToUtf8_IntoNullBufferWriter_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -266,7 +266,7 @@ public sealed class BufferWriterTests
     /// <see langword="null" /> writer throws <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void Base85_EncodeToUtf8_IntoNullBufferWriter_ShouldThrowArgumentNullException()
+    public void Base85_EncodeToUtf8_IntoNullBufferWriter_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

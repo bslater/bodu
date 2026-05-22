@@ -79,7 +79,7 @@ logging.level.default = Warning
     /// Verifies that the stream overload rejects a <see langword="null" /> stream.
     /// </summary>
     [TestMethod]
-    public void AddConfigurationStream_WhenStreamIsNull_ShouldThrowArgumentNullException()
+    public void AddConfigurationStream_WhenStreamIsNull_ShouldThrowExactly()
     {
         Stream stream = null!;
 
@@ -93,7 +93,7 @@ logging.level.default = Warning
     /// Verifies that the stream-callback overload rejects a <see langword="null" /> configuration callback.
     /// </summary>
     [TestMethod]
-    public void AddConfigurationStream_WhenCallbackIsNull_ShouldThrowArgumentNullException()
+    public void AddConfigurationStream_WhenCallbackIsNull_ShouldThrowExactly()
     {
         Action<TextStreamConfigurationSource> configure = null!;
 

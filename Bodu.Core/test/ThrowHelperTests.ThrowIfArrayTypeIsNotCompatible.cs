@@ -21,7 +21,7 @@ public partial class ThrowHelperTests
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(GetIncompatibleArrayTypeTestData))]
-    public void ThrowIfArrayTypeIsNotCompatible_WhenArrayTypeIsIncorrect_ShouldThrowArgumentException(Array array)
+    public void ThrowIfArrayTypeIsNotCompatible_WhenArrayTypeIsIncorrect_ShouldThrowExactly(Array array)
     {
         Assert.ThrowsExactly<ArgumentException>(() =>
         {

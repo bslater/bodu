@@ -48,7 +48,7 @@ public sealed partial class BinaryEncodingExtensionsTests
     /// Verifies that the string overloads reject a <see langword="null" /> string.
     /// </summary>
     [TestMethod]
-    public void FromString_Extensions_WhenNullString_ShouldThrowArgumentNullException()
+    public void FromString_Extensions_WhenNullString_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() => _ = ((string)null!).FromBase16String());
         Assert.ThrowsExactly<ArgumentNullException>(() => _ = ((string)null!).FromBase32String());
@@ -124,7 +124,7 @@ public sealed partial class BinaryEncodingExtensionsTests
     /// Verifies that the byte-array overloads reject a <see langword="null" /> array.
     /// </summary>
     [TestMethod]
-    public void ToString_Extensions_WhenNullByteArray_ShouldThrowArgumentNullException()
+    public void ToString_Extensions_WhenNullByteArray_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() => _ = ((byte[])null!).ToBase16String());
         Assert.ThrowsExactly<ArgumentNullException>(() => _ = ((byte[])null!).ToBase32String());

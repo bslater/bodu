@@ -142,7 +142,7 @@ public partial class SpanExtensionsTests
     [TestMethod]
     [DataRow(0, -1, "count", DisplayName = "Negative count")]
     [DataRow(0, 10, "count", DisplayName = "Count exceeds span length")]
-    public void Reverse_WhenCountIsInvalid_ForMutableSpanIndexCount_ShouldThrowArgumentOutOfRangeException(
+    public void Reverse_WhenCountIsInvalid_ForMutableSpanIndexCount_ShouldThrowExactly(
         int index, int count, string expectedParamName)
     {
         Span<int> source = Ints;
@@ -161,7 +161,7 @@ public partial class SpanExtensionsTests
     [TestMethod]
     [DataRow(0, -1, "count", DisplayName = "Negative count")]
     [DataRow(0, 10, "count", DisplayName = "Count exceeds span length")]
-    public void Reverse_WhenCountIsInvalid_ForReadOnlySpanIndexCount_ShouldThrowArgumentOutOfRangeException(
+    public void Reverse_WhenCountIsInvalid_ForReadOnlySpanIndexCount_ShouldThrowExactly(
         int index, int count, string expectedParamName)
     {
         ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
@@ -204,7 +204,7 @@ public partial class SpanExtensionsTests
     /// and values that extend beyond the end.
     /// </summary>
     [TestMethod]
-    public void Reverse_WhenIndexAndCountIsInvalid_ForMutableSpanIndexCount_ShouldThrowArgumentException()
+    public void Reverse_WhenIndexAndCountIsInvalid_ForMutableSpanIndexCount_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -220,7 +220,7 @@ public partial class SpanExtensionsTests
     /// and values that extend beyond the end.
     /// </summary>
     [TestMethod]
-    public void Reverse_WhenIndexAndCountIsInvalid_ForReadOnlySpanIndexCount_ShouldThrowArgumentException()
+    public void Reverse_WhenIndexAndCountIsInvalid_ForReadOnlySpanIndexCount_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -236,7 +236,7 @@ public partial class SpanExtensionsTests
     [TestMethod]
     [DataRow(-1, 2, "index", DisplayName = "Negative index")]
     [DataRow(6, 0, "index", DisplayName = "Index exceeds span length")]
-    public void Reverse_WhenIndexIsInvalid_ForMutableSpanIndexCount_ShouldThrowArgumentOutOfRangeException(
+    public void Reverse_WhenIndexIsInvalid_ForMutableSpanIndexCount_ShouldThrowExactly(
         int index, int count, string expectedParamName)
     {
         ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
@@ -254,7 +254,7 @@ public partial class SpanExtensionsTests
     [TestMethod]
     [DataRow(-1, 2, "index", DisplayName = "Negative index")]
     [DataRow(6, 0, "index", DisplayName = "Index exceeds span length")]
-    public void Reverse_WhenIndexIsInvalid_ForReadOnlySpanIndexCount_ShouldThrowArgumentOutOfRangeException(
+    public void Reverse_WhenIndexIsInvalid_ForReadOnlySpanIndexCount_ShouldThrowExactly(
         int index, int count, string expectedParamName)
     {
         ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
@@ -269,7 +269,7 @@ public partial class SpanExtensionsTests
     /// throws <see cref="ArgumentOutOfRangeException"/>.
     /// </summary>
     [TestMethod]
-    public void Reverse_WhenRangeExceedsSpanLength_ForReadOnlySpanRange_ShouldThrowException()
+    public void Reverse_WhenRangeExceedsSpanLength_ForReadOnlySpanRange_ShouldThrowExactly()
     {
         ReadOnlySpan<int> source = Ints;
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>

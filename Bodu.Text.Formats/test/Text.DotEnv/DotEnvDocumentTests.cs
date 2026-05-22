@@ -102,7 +102,7 @@ public sealed class DotEnvDocumentTests
     /// when the key is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void GetValue_WhenKeyIsNull_ShouldThrowArgumentNullException()
+    public void GetValue_WhenKeyIsNull_ShouldThrowExactly()
     {
         DotEnvDocument doc = DotEnv.Parse("PORT=1234");
 
@@ -117,7 +117,7 @@ public sealed class DotEnvDocumentTests
     /// when the key is absent.
     /// </summary>
     [TestMethod]
-    public void GetValue_WhenKeyIsAbsent_ShouldThrowKeyNotFoundException()
+    public void GetValue_WhenKeyIsAbsent_ShouldThrowExactly()
     {
         DotEnvDocument doc = DotEnv.Parse("PORT=1234");
 

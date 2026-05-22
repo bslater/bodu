@@ -37,7 +37,7 @@ public sealed class NotableDateResolutionRequestTests
     /// Verifies that invalid request windows are rejected.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenEndDateIsEarlierThanStartDate_ShouldThrowArgumentException()
+    public void Ctor_WhenEndDateIsEarlierThanStartDate_ShouldThrowExactly()
     {
         ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {

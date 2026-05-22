@@ -103,7 +103,7 @@ public sealed class IniDocumentTests
     /// when the name is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void GetSection_WhenNameIsNull_ShouldThrowArgumentNullException()
+    public void GetSection_WhenNameIsNull_ShouldThrowExactly()
     {
         IniDocument doc = Ini.Parse("[server]\nhost=example.com");
 
@@ -164,7 +164,7 @@ public sealed class IniDocumentTests
     /// <see cref="ArgumentNullException" /> when the name is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void TryGetSection_WhenNameIsNull_ShouldThrowArgumentNullException()
+    public void TryGetSection_WhenNameIsNull_ShouldThrowExactly()
     {
         IniDocument doc = Ini.Parse("[db]\nhost=localhost");
 

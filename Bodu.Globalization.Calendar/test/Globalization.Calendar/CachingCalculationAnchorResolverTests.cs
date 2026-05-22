@@ -134,7 +134,7 @@ public sealed class CachingCalculationAnchorResolverTests
     /// Verifies that an unknown anchor name fails clearly.
     /// </summary>
     [TestMethod]
-    public void Resolve_WhenAnchorRuleDoesNotExist_ShouldThrowInvalidOperationException()
+    public void Resolve_WhenAnchorRuleDoesNotExist_ShouldThrowExactly()
     {
         NotableDateRule easterSunday = AlgorithmRule(
             "Easter Sunday",
@@ -159,7 +159,7 @@ public sealed class CachingCalculationAnchorResolverTests
     [DataRow(null)]
     [DataRow("")]
     [DataRow("   ")]
-    public void Resolve_WhenAnchorRuleNameIsNullOrWhiteSpace_ShouldThrowArgumentException(string? anchorRuleName)
+    public void Resolve_WhenAnchorRuleNameIsNullOrWhiteSpace_ShouldThrowExactly(string? anchorRuleName)
     {
         NotableDateRule easterSunday = AlgorithmRule(
             "Easter Sunday",

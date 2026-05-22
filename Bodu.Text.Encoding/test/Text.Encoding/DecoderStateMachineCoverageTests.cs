@@ -24,7 +24,7 @@ public sealed class DecoderStateMachineCoverageTests
     /// count is still a multiple of 8 (drives the dedicated padding-mismatch branch in <c>DecodeCore</c>).
     /// </summary>
     [TestMethod]
-    public void Base32_Decode_WhenPaddingCountMismatch_ShouldThrowFormatException()
+    public void Base32_Decode_WhenPaddingCountMismatch_ShouldThrowExactly()
     {
         // 5 data chars + 11 padding chars = 16 total (multiple of 8) but expected padding for 5 data is 3, not 11.
         var ex = Assert.ThrowsExactly<FormatException>(() =>
@@ -39,7 +39,7 @@ public sealed class DecoderStateMachineCoverageTests
     /// <see cref="FormatException" /> when a non-padding character appears after padding has begun.
     /// </summary>
     [TestMethod]
-    public void Base32_Decode_WhenPaddingFollowedByDataChar_ShouldThrowFormatException()
+    public void Base32_Decode_WhenPaddingFollowedByDataChar_ShouldThrowExactly()
     {
         var ex = Assert.ThrowsExactly<FormatException>(() =>
         {
@@ -54,7 +54,7 @@ public sealed class DecoderStateMachineCoverageTests
     /// terminal quantum has 1, 3, or 6 data characters (invalid per RFC 4648 §6 for Standard / HexExtended).
     /// </summary>
     [TestMethod]
-    public void Base32_Decode_WhenTerminalQuantumIsOneDataChar_ShouldThrowFormatException()
+    public void Base32_Decode_WhenTerminalQuantumIsOneDataChar_ShouldThrowExactly()
     {
         var ex = Assert.ThrowsExactly<FormatException>(() =>
         {
@@ -70,7 +70,7 @@ public sealed class DecoderStateMachineCoverageTests
     /// padding flag is not relaxed.
     /// </summary>
     [TestMethod]
-    public void Base32_Decode_WhenTotalSymbolsNotMultipleOfEight_ShouldThrowFormatException()
+    public void Base32_Decode_WhenTotalSymbolsNotMultipleOfEight_ShouldThrowExactly()
     {
         var ex = Assert.ThrowsExactly<FormatException>(() =>
         {
@@ -178,7 +178,7 @@ public sealed class DecoderStateMachineCoverageTests
     /// <c>TryDecodeCore</c> branch).
     /// </summary>
     [TestMethod]
-    public void Base58_Decode_WhenCharAboveLookupRange_ShouldThrowFormatException()
+    public void Base58_Decode_WhenCharAboveLookupRange_ShouldThrowExactly()
     {
         // 'ÿ' is past the 128-entry lookup table.
         var ex = Assert.ThrowsExactly<FormatException>(() =>
@@ -280,7 +280,7 @@ public sealed class DecoderStateMachineCoverageTests
     /// input character is outside the alphabet's lookup table range.
     /// </summary>
     [TestMethod]
-    public void Base85_Decode_WhenCharAboveLookupRange_ShouldThrowFormatException()
+    public void Base85_Decode_WhenCharAboveLookupRange_ShouldThrowExactly()
     {
         // 'ÿ' is past the 128-entry Ascii85 lookup table.
         var ex = Assert.ThrowsExactly<FormatException>(() =>
@@ -297,7 +297,7 @@ public sealed class DecoderStateMachineCoverageTests
     /// during the <c>u</c>-padding step (covers lines 215-218 of <c>TryDecodeCore</c>).
     /// </summary>
     [TestMethod]
-    public void Base85_Decode_WhenTrailingGroupOverflowsAfterPadding_ShouldThrowFormatException()
+    public void Base85_Decode_WhenTrailingGroupOverflowsAfterPadding_ShouldThrowExactly()
     {
         // 'u' is alphabet index 84 (max). A 4-char trailing group "uuuu" accumulates to 52200624; padding with one
         // more 'u' gives 52200624 * 85 + 84 = 4437053124 which exceeds uint.MaxValue.

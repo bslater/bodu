@@ -63,7 +63,7 @@ public partial class StringExtensionsTests
     /// throws <see cref="ArgumentException" /> when any key is empty.
     /// </summary>
     [TestMethod]
-    public void ReplaceMany_WhenAnyKeyIsEmpty_ShouldThrowArgumentException()
+    public void ReplaceMany_WhenAnyKeyIsEmpty_ShouldThrowExactly()
     {
         Dictionary<string, string> replacements = new() { [""] = "X" };
 
@@ -75,7 +75,7 @@ public partial class StringExtensionsTests
     /// throws <see cref="ArgumentNullException" /> for null arguments.
     /// </summary>
     [TestMethod]
-    public void ReplaceMany_WhenAnyArgumentIsNull_ShouldThrowArgumentNullException()
+    public void ReplaceMany_WhenAnyArgumentIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() => _ = StringExtensions.ReplaceMany(null!, new Dictionary<string, string>()));
         Assert.ThrowsExactly<ArgumentNullException>(() => _ = "hello".ReplaceMany(null!));

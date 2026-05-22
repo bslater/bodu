@@ -41,7 +41,7 @@ public partial class OrderedSetTests
     /// Verifies that <see cref="OrderedSet{T}.IsProperSubsetOf(System.Collections.Generic.IEnumerable{T})" /> rejects a <see langword="null" /> source.
     /// </summary>
     [TestMethod]
-    public void IsProperSubsetOf_WhenOtherIsNull_ShouldThrowArgumentNullException()
+    public void IsProperSubsetOf_WhenOtherIsNull_ShouldThrowExactly()
     {
         var sut = new OrderedSet<int>();
 
@@ -83,7 +83,7 @@ public partial class OrderedSetTests
     /// Verifies that <see cref="OrderedSet{T}.IsProperSupersetOf(System.Collections.Generic.IEnumerable{T})" /> rejects a <see langword="null" /> source.
     /// </summary>
     [TestMethod]
-    public void IsProperSupersetOf_WhenOtherIsNull_ShouldThrowArgumentNullException()
+    public void IsProperSupersetOf_WhenOtherIsNull_ShouldThrowExactly()
     {
         var sut = new OrderedSet<int>();
 
@@ -115,7 +115,7 @@ public partial class OrderedSetTests
     /// Verifies that <see cref="OrderedSet{T}.IsSubsetOf(System.Collections.Generic.IEnumerable{T})" /> rejects a <see langword="null" /> source.
     /// </summary>
     [TestMethod]
-    public void IsSubsetOf_WhenOtherIsNull_ShouldThrowArgumentNullException()
+    public void IsSubsetOf_WhenOtherIsNull_ShouldThrowExactly()
     {
         var sut = new OrderedSet<int>();
 
@@ -172,7 +172,7 @@ public partial class OrderedSetTests
     /// Verifies that <see cref="OrderedSet{T}.IsSupersetOf(System.Collections.Generic.IEnumerable{T})" /> rejects a <see langword="null" /> source.
     /// </summary>
     [TestMethod]
-    public void IsSupersetOf_WhenOtherIsNull_ShouldThrowArgumentNullException()
+    public void IsSupersetOf_WhenOtherIsNull_ShouldThrowExactly()
     {
         var sut = new OrderedSet<int>();
 
@@ -204,7 +204,7 @@ public partial class OrderedSetTests
     /// Verifies that <see cref="OrderedSet{T}.Overlaps(System.Collections.Generic.IEnumerable{T})" /> rejects a <see langword="null" /> source.
     /// </summary>
     [TestMethod]
-    public void Overlaps_WhenOtherIsNull_ShouldThrowArgumentNullException()
+    public void Overlaps_WhenOtherIsNull_ShouldThrowExactly()
     {
         var sut = new OrderedSet<int>();
 
@@ -258,7 +258,7 @@ public partial class OrderedSetTests
     /// Verifies that <see cref="OrderedSet{T}.SetEquals(System.Collections.Generic.IEnumerable{T})" /> rejects a <see langword="null" /> source.
     /// </summary>
     [TestMethod]
-    public void SetEquals_WhenOtherIsNull_ShouldThrowArgumentNullException()
+    public void SetEquals_WhenOtherIsNull_ShouldThrowExactly()
     {
         var sut = new OrderedSet<int>();
 

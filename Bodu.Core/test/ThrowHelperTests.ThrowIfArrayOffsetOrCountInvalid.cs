@@ -57,7 +57,7 @@ public sealed partial class ThrowHelperTests
     [DataRow(6, 2)]   // Offset > array length
     [DataRow(2, -1)]  // Negative count
     [DataRow(2, 10)]  // Count > array length
-    public void ThrowIfArrayOffsetOrCountInvalid_WhenOffsetOrCountOutOfRange_ShouldThrowArgumentOutOfRangeException(int offset, int count)
+    public void ThrowIfArrayOffsetOrCountInvalid_WhenOffsetOrCountOutOfRange_ShouldThrowExactly(int offset, int count)
     {
         var array = new int[5];
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
@@ -87,7 +87,7 @@ public sealed partial class ThrowHelperTests
     [TestMethod]
     [DataRow(3, 3)]  // Offset + count exceeds array length
     [DataRow(4, 2)]  // Offset + count exceeds array length
-    public void ThrowIfArrayOffsetOrCountInvalid_WhenSumExceedsLength_ShouldThrowArgumentException(int offset, int count)
+    public void ThrowIfArrayOffsetOrCountInvalid_WhenSumExceedsLength_ShouldThrowExactly(int offset, int count)
     {
         var array = new int[5];
         Assert.ThrowsExactly<ArgumentException>(() =>

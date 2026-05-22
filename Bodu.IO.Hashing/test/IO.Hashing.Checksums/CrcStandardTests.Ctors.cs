@@ -14,7 +14,7 @@ public partial class CrcStandardTests
     /// <see cref="ArgumentException" /> with <c>ParamName</c> equal to <c>name</c>.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenNameIsEmpty_ShouldThrowArgumentException()
+    public void Ctor_WhenNameIsEmpty_ShouldThrowExactly()
     {
         ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(
             () => new CrcStandard(string.Empty, 32, 0x04C11DB7UL, 0xFFFFFFFFUL, true, true, 0xFFFFFFFFUL));
@@ -25,7 +25,7 @@ public partial class CrcStandardTests
     /// <see cref="ArgumentNullException" /> with <c>ParamName</c> equal to <c>name</c>.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenNameIsNull_ShouldThrowArgumentNullException()
+    public void Ctor_WhenNameIsNull_ShouldThrowExactly()
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(
             () => new CrcStandard(null!, 32, 0x04C11DB7UL, 0xFFFFFFFFUL, true, true, 0xFFFFFFFFUL));
@@ -70,7 +70,7 @@ public partial class CrcStandardTests
     [DataRow(65)]
     [DataRow(128)]
     [DataRow(int.MaxValue)]
-    public void Ctor_WhenSizeIsOutOfRange_ShouldThrowArgumentOutOfRangeException(int size)
+    public void Ctor_WhenSizeIsOutOfRange_ShouldThrowExactly(int size)
     {
         ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(
             () => new CrcStandard("Test", size, 0x1UL, 0x0UL, false, false, 0x0UL));

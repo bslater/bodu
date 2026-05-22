@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FractionTests.UnsignedBackingType.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -36,7 +36,7 @@ public partial class FractionTests
     /// <see cref="OverflowException" />.
     /// </summary>
     [TestMethod]
-    public void MinusOne_WhenBackedByUnsignedType_ShouldThrowOverflowException()
+    public void MinusOne_WhenBackedByUnsignedType_ShouldThrowExactly()
     {
         _ = Assert.ThrowsExactly<OverflowException>(() =>
         {
@@ -48,7 +48,7 @@ public partial class FractionTests
     /// Verifies that negating a non-zero unsigned-backed fraction throws <see cref="OverflowException" />.
     /// </summary>
     [TestMethod]
-    public void Negate_WhenBackedByUnsignedTypeAndNonZero_ShouldThrowOverflowException()
+    public void Negate_WhenBackedByUnsignedTypeAndNonZero_ShouldThrowExactly()
     {
         _ = Assert.ThrowsExactly<OverflowException>(() =>
         {
@@ -70,7 +70,7 @@ public partial class FractionTests
     /// unsigned backing type.
     /// </summary>
     [TestMethod]
-    public void Subtraction_WhenBackedByUnsignedTypeAndResultIsNegative_ShouldThrowOverflowException()
+    public void Subtraction_WhenBackedByUnsignedTypeAndResultIsNegative_ShouldThrowExactly()
     {
         _ = Assert.ThrowsExactly<OverflowException>(() =>
         {
@@ -93,7 +93,7 @@ public partial class FractionTests
     /// <see cref="OverflowException" />.
     /// </summary>
     [TestMethod]
-    public void Addition_WhenBackedByByteAndResultExceedsRange_ShouldThrowOverflowException()
+    public void Addition_WhenBackedByByteAndResultExceedsRange_ShouldThrowExactly()
     {
         _ = Assert.ThrowsExactly<OverflowException>(() =>
         {

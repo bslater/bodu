@@ -209,7 +209,7 @@ public sealed partial class EncodingExtensionsTests
     /// <c>encoding</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void ClassificationMethods_WhenEncodingIsNull_ShouldThrowArgumentNullException()
+    public void ClassificationMethods_WhenEncodingIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() => _ = EncodingExtensions.IsUtf8(null!));
         Assert.ThrowsExactly<ArgumentNullException>(() => _ = EncodingExtensions.IsUtf16LittleEndian(null!));

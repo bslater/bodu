@@ -88,7 +88,7 @@ public partial class DateOnlyExtensionsTests
     /// Verifies that passing <see cref="CalendarQuarterDefinition.Custom" /> without supplying a provider throws <see cref="InvalidOperationException" />.
     /// </summary>
     [TestMethod]
-    public void LastDateOfQuarter_WhenUsingCustomQuarterDefinitionWithoutProvider_ShouldThrowInvalidOperation()
+    public void LastDateOfQuarter_WhenUsingCustomQuarterDefinitionWithoutProvider_ShouldThrowExactly()
     {
         var input = new DateOnly(2024, 4, 20);
 
@@ -117,7 +117,7 @@ public partial class DateOnlyExtensionsTests
     /// Verifies that a custom <c>IQuarterProvider</c> returning out-of-range month values causes the <see cref="DateOnly" /> provider overload to throw <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    public void LastDateOfQuarter_WhenUsingInvalidProvider_ShouldThrowArgumentOutOfRange()
+    public void LastDateOfQuarter_WhenUsingInvalidProvider_ShouldThrowExactly()
     {
         var input = new DateOnly(2024, 4, 20);
         var provider = new DateTimeExtensionsTests.InValidQuarterProvider();

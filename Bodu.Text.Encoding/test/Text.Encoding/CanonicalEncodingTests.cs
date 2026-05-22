@@ -72,7 +72,7 @@ public sealed class CanonicalEncodingTests
     /// unused bits are non-zero.
     /// </summary>
     [TestMethod]
-    public void Base32_Decode_WhenNonCanonicalInputAndRequireCanonical_ShouldThrowFormatException()
+    public void Base32_Decode_WhenNonCanonicalInputAndRequireCanonical_ShouldThrowExactly()
     {
         var ex = Assert.ThrowsExactly<FormatException>(() =>
         {
@@ -167,7 +167,7 @@ public sealed class CanonicalEncodingTests
     /// flag is set. "Zh==" decodes to the same byte as "Zg==" because the bottom 4 bits are unused.
     /// </summary>
     [TestMethod]
-    public void Base64_Decode_WhenNonCanonicalInputAndRequireCanonical_ShouldThrowFormatException()
+    public void Base64_Decode_WhenNonCanonicalInputAndRequireCanonical_ShouldThrowExactly()
     {
         var ex = Assert.ThrowsExactly<FormatException>(() =>
         {

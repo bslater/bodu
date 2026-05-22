@@ -44,7 +44,7 @@ public partial class PooledBufferBuilderTests
     /// <see cref="ObjectDisposedException"/> after the builder has been disposed.
     /// </summary>
     [TestMethod]
-    public void DangerousGetArray_WhenDisposed_ShouldThrowObjectDisposedException()
+    public void DangerousGetArray_WhenDisposed_ShouldThrowExactly()
     {
         var builder = new PooledBufferBuilder<int>();
         builder.Dispose();

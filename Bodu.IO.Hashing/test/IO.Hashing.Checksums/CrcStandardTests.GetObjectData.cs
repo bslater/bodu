@@ -19,7 +19,7 @@ public partial class CrcStandardTests
     /// <see cref="SerializationInfo" />.
     /// </summary>
     [TestMethod]
-    public void GetObjectData_WhenInfoIsNull_ShouldThrowArgumentNullException()
+    public void GetObjectData_WhenInfoIsNull_ShouldThrowExactly()
     {
         CrcStandard standard = CreateReference();
 

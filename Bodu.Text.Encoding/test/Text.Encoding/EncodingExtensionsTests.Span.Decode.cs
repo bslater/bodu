@@ -43,7 +43,7 @@ public sealed partial class EncodingExtensionsTests
     /// throws <see cref="ArgumentNullException" /> when <c>encoding</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void GetDecodedCharCount_WhenEncodingIsNull_ShouldThrowArgumentNullException()
+    public void GetDecodedCharCount_WhenEncodingIsNull_ShouldThrowExactly()
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -89,7 +89,7 @@ public sealed partial class EncodingExtensionsTests
     /// <see cref="ArgumentNullException" /> when <c>encoding</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void ToChars_WhenEncodingIsNull_ShouldThrowArgumentNullException()
+    public void ToChars_WhenEncodingIsNull_ShouldThrowExactly()
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -132,7 +132,7 @@ public sealed partial class EncodingExtensionsTests
     /// throws <see cref="ArgumentNullException" /> when <c>encoding</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void DecodeToString_WhenEncodingIsNull_ShouldThrowArgumentNullException()
+    public void DecodeToString_WhenEncodingIsNull_ShouldThrowExactly()
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -164,7 +164,7 @@ public sealed partial class EncodingExtensionsTests
     /// throws <see cref="ArgumentException" /> when the destination is one character too small.
     /// </summary>
     [TestMethod]
-    public void DecodeTo_WhenDestinationIsOneCharTooSmall_ShouldThrowArgumentException()
+    public void DecodeTo_WhenDestinationIsOneCharTooSmall_ShouldThrowExactly()
     {
         var bytes = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
         var required = System.Text.Encoding.UTF8.GetCharCount(bytes);
@@ -181,7 +181,7 @@ public sealed partial class EncodingExtensionsTests
     /// throws <see cref="ArgumentNullException" /> when <c>encoding</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void DecodeTo_WhenEncodingIsNull_ShouldThrowArgumentNullException()
+    public void DecodeTo_WhenEncodingIsNull_ShouldThrowExactly()
     {
         var backing = new char[64];
 
@@ -214,7 +214,7 @@ public sealed partial class EncodingExtensionsTests
     /// throws <see cref="ArgumentException" /> when the destination is larger than the required size.
     /// </summary>
     [TestMethod]
-    public void DecodeExactlyTo_WhenDestinationIsLargerThanRequired_ShouldThrowArgumentException()
+    public void DecodeExactlyTo_WhenDestinationIsLargerThanRequired_ShouldThrowExactly()
     {
         var bytes = System.Text.Encoding.UTF8.GetBytes(SampleText);
         var required = System.Text.Encoding.UTF8.GetCharCount(bytes);
@@ -233,7 +233,7 @@ public sealed partial class EncodingExtensionsTests
     /// throws <see cref="ArgumentException" /> when the destination is smaller than the required size.
     /// </summary>
     [TestMethod]
-    public void DecodeExactlyTo_WhenDestinationIsSmallerThanRequired_ShouldThrowArgumentException()
+    public void DecodeExactlyTo_WhenDestinationIsSmallerThanRequired_ShouldThrowExactly()
     {
         var bytes = System.Text.Encoding.UTF8.GetBytes(SampleText);
         var required = System.Text.Encoding.UTF8.GetCharCount(bytes);
@@ -252,7 +252,7 @@ public sealed partial class EncodingExtensionsTests
     /// throws <see cref="ArgumentNullException" /> when <c>encoding</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void DecodeExactlyTo_WhenEncodingIsNull_ShouldThrowArgumentNullException()
+    public void DecodeExactlyTo_WhenEncodingIsNull_ShouldThrowExactly()
     {
         var backing = new char[64];
 
@@ -305,7 +305,7 @@ public sealed partial class EncodingExtensionsTests
     /// throws <see cref="ArgumentNullException" /> when <c>encoding</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void TryDecodeTo_WhenEncodingIsNull_ShouldThrowArgumentNullException()
+    public void TryDecodeTo_WhenEncodingIsNull_ShouldThrowExactly()
     {
         var backing = new char[64];
 

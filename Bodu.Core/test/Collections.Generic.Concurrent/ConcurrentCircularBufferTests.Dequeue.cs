@@ -36,7 +36,7 @@ public partial class ConcurrentCircularBufferTests
     /// Verifies that <see cref="ConcurrentCircularBuffer{T}.Dequeue" /> on an empty buffer throws <see cref="InvalidOperationException" />.
     /// </summary>
     [TestMethod]
-    public void Dequeue_WhenBufferIsEmpty_ShouldThrowInvalidOperation()
+    public void Dequeue_WhenBufferIsEmpty_ShouldThrowExactly()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(2);
         Assert.ThrowsExactly<InvalidOperationException>(() =>

@@ -33,7 +33,7 @@ public partial class StringExtensionsTests
     /// when the input is not in a valid format.
     /// </summary>
     [TestMethod]
-    public void Parse_OfInt_WhenInputIsInvalid_ShouldThrowFormatException()
+    public void Parse_OfInt_WhenInputIsInvalid_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<FormatException>(() =>
         {
@@ -46,7 +46,7 @@ public partial class StringExtensionsTests
     /// <see cref="ArgumentNullException" /> when invoked with <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void Parse_WhenValueIsNull_ShouldThrowArgumentNullException()
+    public void Parse_WhenValueIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -85,7 +85,7 @@ public partial class StringExtensionsTests
     /// <see cref="ArgumentNullException" /> when invoked with <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void TryParse_WhenValueIsNull_ShouldThrowArgumentNullException()
+    public void TryParse_WhenValueIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -107,7 +107,7 @@ public partial class StringExtensionsTests
     /// <see cref="FormatException" /> for an invalid input.
     /// </summary>
     [TestMethod]
-    public void ParseSpan_WhenInputIsInvalid_ShouldThrowFormatException()
+    public void ParseSpan_WhenInputIsInvalid_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<FormatException>(() =>
         {
@@ -120,7 +120,7 @@ public partial class StringExtensionsTests
     /// <see cref="ArgumentNullException" /> when invoked with <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void ParseSpan_WhenValueIsNull_ShouldThrowArgumentNullException()
+    public void ParseSpan_WhenValueIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -159,7 +159,7 @@ public partial class StringExtensionsTests
     /// <see cref="ArgumentNullException" /> when invoked with <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void TryParseSpan_WhenValueIsNull_ShouldThrowArgumentNullException()
+    public void TryParseSpan_WhenValueIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

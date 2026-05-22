@@ -18,7 +18,7 @@ public sealed partial class IEnumerableExtensionsTests_Cache
     /// directly (independently of the public <see cref="IEnumerableExtensions.Cache{T}" /> overload's switch-expression null branch).
     /// </summary>
     [TestMethod]
-    public void CacheEnumerableCtor_WhenSourceIsNull_ShouldThrowArgumentNullException()
+    public void CacheEnumerableCtor_WhenSourceIsNull_ShouldThrowExactly()
     {
         Type cacheEnumerableType = GetCacheEnumerableType<int>();
         ConstructorInfo ctor = cacheEnumerableType.GetConstructor(

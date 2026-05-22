@@ -41,7 +41,7 @@ public sealed partial class IEnumerableExtensionsTests_ContainsAll
     /// Verifies that a null items sequence throws <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void ContainsAll_WhenItemsIsNull_ShouldThrowArgumentNullException()
+    public void ContainsAll_WhenItemsIsNull_ShouldThrowExactly()
     {
         int[] source = [1, 2, 3];
         IEnumerable<int>? items = null;
@@ -56,7 +56,7 @@ public sealed partial class IEnumerableExtensionsTests_ContainsAll
     /// Verifies that a null source sequence throws <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void ContainsAll_WhenSourceIsNull_ShouldThrowArgumentNullException()
+    public void ContainsAll_WhenSourceIsNull_ShouldThrowExactly()
     {
         IEnumerable<int>? source = null;
 

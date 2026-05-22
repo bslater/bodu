@@ -13,7 +13,7 @@ public partial class ThrowHelperTests
     /// Verifies that <see cref="ThrowHelper.ThrowIfNotOfType" />, when IntValueIsString, throws <see cref="ArgumentException" />.
     /// </summary>
     [TestMethod]
-    public void ThrowIfNotOfType_WhenIntValueIsString_ShouldThrowException()
+    public void ThrowIfNotOfType_WhenIntValueIsString_ShouldThrowExactly()
     {
         object value = 42;
 
@@ -48,7 +48,7 @@ public partial class ThrowHelperTests
     /// Verifies that <see cref="ThrowHelper.ThrowIfNotOfType" />, when NullValueAndTargetIsNonNullable, throws <see cref="ArgumentException" />.
     /// </summary>
     [TestMethod]
-    public void ThrowIfNotOfType_WhenNullValueAndTargetIsNonNullable_ShouldThrowException()
+    public void ThrowIfNotOfType_WhenNullValueAndTargetIsNonNullable_ShouldThrowExactly()
     {
         object? value = null;
 
@@ -62,7 +62,7 @@ public partial class ThrowHelperTests
     /// Verifies that <see cref="ThrowHelper.ThrowIfNotOfType" />, when StringValueIsNotInt, throws <see cref="ArgumentException" />.
     /// </summary>
     [TestMethod]
-    public void ThrowIfNotOfType_WhenStringValueIsNotInt_ShouldThrowException()
+    public void ThrowIfNotOfType_WhenStringValueIsNotInt_ShouldThrowExactly()
     {
         object value = "string";
 
@@ -77,7 +77,7 @@ public partial class ThrowHelperTests
     /// non-nullable target throws <see cref="ArgumentException" /> with ParamName "value".
     /// </summary>
     [TestMethod]
-    public void ThrowIfNotOfType_WhenValueIsNullAgainstNonNullableTarget_ShouldThrowWithParamName()
+    public void ThrowIfNotOfType_WhenValueIsNullAgainstNonNullableTarget_ShouldThrowExactly()
     {
         AssertGuard(
             "null against int → ArgumentException",

@@ -251,7 +251,7 @@ public sealed class AnchorRelativeRuleIndexTests
     [DataRow(null)]
     [DataRow("")]
     [DataRow("   ")]
-    public void FindRules_WhenAnchorRuleNameIsNullOrWhiteSpace_ShouldThrowArgumentException(string? anchorRuleName)
+    public void FindRules_WhenAnchorRuleNameIsNullOrWhiteSpace_ShouldThrowExactly(string? anchorRuleName)
     {
         AnchorRelativeRuleIndex index = new([]);
 

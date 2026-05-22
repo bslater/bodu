@@ -40,7 +40,7 @@ public partial class StringExtensionsTests
     /// <see cref="ArgumentNullException" /> when either argument is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void BeforeLast_WhenAnyArgumentIsNull_ShouldThrowArgumentNullException()
+    public void BeforeLast_WhenAnyArgumentIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() => _ = StringExtensions.BeforeLast(null!, "/"));
         Assert.ThrowsExactly<ArgumentNullException>(() => _ = "hello".BeforeLast(null!));

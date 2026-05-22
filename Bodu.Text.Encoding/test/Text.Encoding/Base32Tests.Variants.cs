@@ -51,7 +51,7 @@ public sealed partial class Base32Tests
     /// rejects the excluded character <c>U</c>.
     /// </summary>
     [TestMethod]
-    public void Decode_WhenCrockfordVariantWithExcludedU_ShouldThrowFormatException()
+    public void Decode_WhenCrockfordVariantWithExcludedU_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<FormatException>(() =>
         {

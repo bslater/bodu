@@ -89,7 +89,7 @@ public partial class NotableDateOnlyExtensionsTests
     /// Verifies that supplying a <see langword="null" /> service throws <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void AddWorkingDays_WhenServiceIsNull_ShouldThrowArgumentNullException()
+    public void AddWorkingDays_WhenServiceIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -117,7 +117,7 @@ public partial class NotableDateOnlyExtensionsTests
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(AddWorkingDaysOverflowTestData))]
-    public void AddWorkingDays_WhenApplyingDaysWouldOverrunRange_ShouldThrowArgumentOutOfRangeException(DateOnly input, int days)
+    public void AddWorkingDays_WhenApplyingDaysWouldOverrunRange_ShouldThrowExactly(DateOnly input, int days)
     {
         NotableDateService service = BuildService();
 

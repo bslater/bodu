@@ -28,7 +28,7 @@ public partial class MultiValueDictionaryTests
     /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.GetValues"/> throws <see cref="KeyNotFoundException"/> when the key is absent.
     /// </summary>
     [TestMethod]
-    public void GetValues_WhenKeyAbsent_ShouldThrowKeyNotFoundException()
+    public void GetValues_WhenKeyAbsent_ShouldThrowExactly()
     {
         var mvd = new MultiValueDictionary<string, int>();
 
@@ -42,7 +42,7 @@ public partial class MultiValueDictionaryTests
     /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.GetValues"/> throws <see cref="ArgumentNullException"/> for a null key.
     /// </summary>
     [TestMethod]
-    public void GetValues_WhenKeyIsNull_ShouldThrowArgumentNullException()
+    public void GetValues_WhenKeyIsNull_ShouldThrowExactly()
     {
         var mvd = new MultiValueDictionary<string, int>();
 

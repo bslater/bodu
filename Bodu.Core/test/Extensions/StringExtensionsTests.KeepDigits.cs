@@ -22,7 +22,7 @@ public partial class StringExtensionsTests
     /// <see cref="ArgumentNullException" /> when <c>value</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void KeepDigits_WhenInputIsNull_ShouldThrowArgumentNullException()
+    public void KeepDigits_WhenInputIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() => _ = StringExtensions.KeepDigits(null!));
     }

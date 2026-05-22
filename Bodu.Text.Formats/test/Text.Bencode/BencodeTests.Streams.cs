@@ -31,7 +31,7 @@ public sealed partial class BencodeTests
     /// <see cref="ArgumentException" /> using the resx-backed message.
     /// </summary>
     [TestMethod]
-    public void DecodeStream_WhenNotReadable_ShouldThrowArgumentException()
+    public void DecodeStream_WhenNotReadable_ShouldThrowExactly()
     {
         using MemoryStream stream = new();
         stream.Close();
@@ -49,7 +49,7 @@ public sealed partial class BencodeTests
     /// Verifies that <see cref="Bencode.Decode(Stream)" /> rejects a <see langword="null" /> source.
     /// </summary>
     [TestMethod]
-    public void DecodeStream_WhenNullSource_ShouldThrowArgumentNullException()
+    public void DecodeStream_WhenNullSource_ShouldThrowExactly()
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -93,7 +93,7 @@ public sealed partial class BencodeTests
     /// Verifies that <see cref="Bencode.Encode(BencodedValue, Stream)" /> rejects a non-writable stream.
     /// </summary>
     [TestMethod]
-    public void EncodeStream_WhenNotWritable_ShouldThrowArgumentException()
+    public void EncodeStream_WhenNotWritable_ShouldThrowExactly()
     {
         // A read-only MemoryStream is non-writable.
         using MemoryStream stream = new(new byte[8], writable: false);
@@ -112,7 +112,7 @@ public sealed partial class BencodeTests
     /// destination.
     /// </summary>
     [TestMethod]
-    public void EncodeStream_WhenNullDestination_ShouldThrowArgumentNullException()
+    public void EncodeStream_WhenNullDestination_ShouldThrowExactly()
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -127,7 +127,7 @@ public sealed partial class BencodeTests
     /// value.
     /// </summary>
     [TestMethod]
-    public void EncodeStream_WhenNullValue_ShouldThrowArgumentNullException()
+    public void EncodeStream_WhenNullValue_ShouldThrowExactly()
     {
         using MemoryStream stream = new();
 

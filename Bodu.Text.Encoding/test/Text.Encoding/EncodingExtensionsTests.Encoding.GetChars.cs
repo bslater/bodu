@@ -47,7 +47,7 @@ public sealed partial class EncodingExtensionsTests
     /// throws <see cref="ArgumentNullException" /> when <c>encoding</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void TryGetChars_WhenEncodingIsNull_ShouldThrowArgumentNullException()
+    public void TryGetChars_WhenEncodingIsNull_ShouldThrowExactly()
     {
         var backing = new char[64];
 
@@ -81,7 +81,7 @@ public sealed partial class EncodingExtensionsTests
     /// throws <see cref="ArgumentException" /> when the destination is larger than the required size.
     /// </summary>
     [TestMethod]
-    public void GetCharsExactly_WhenDestinationIsLargerThanRequired_ShouldThrowArgumentException()
+    public void GetCharsExactly_WhenDestinationIsLargerThanRequired_ShouldThrowExactly()
     {
         var bytes = System.Text.Encoding.UTF8.GetBytes(SampleText);
         var required = System.Text.Encoding.UTF8.GetCharCount(bytes);
@@ -100,7 +100,7 @@ public sealed partial class EncodingExtensionsTests
     /// throws <see cref="ArgumentException" /> when the destination is smaller than the required size.
     /// </summary>
     [TestMethod]
-    public void GetCharsExactly_WhenDestinationIsSmallerThanRequired_ShouldThrowArgumentException()
+    public void GetCharsExactly_WhenDestinationIsSmallerThanRequired_ShouldThrowExactly()
     {
         var bytes = System.Text.Encoding.UTF8.GetBytes(SampleText);
         var required = System.Text.Encoding.UTF8.GetCharCount(bytes);
@@ -119,7 +119,7 @@ public sealed partial class EncodingExtensionsTests
     /// throws <see cref="ArgumentNullException" /> when <c>encoding</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void GetCharsExactly_WhenEncodingIsNull_ShouldThrowArgumentNullException()
+    public void GetCharsExactly_WhenEncodingIsNull_ShouldThrowExactly()
     {
         var backing = new char[64];
 

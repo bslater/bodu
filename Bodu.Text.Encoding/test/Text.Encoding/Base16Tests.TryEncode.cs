@@ -129,7 +129,7 @@ public sealed partial class Base16Tests
     /// rejects unsupported formatting flags with <see cref="ArgumentException" />.
     /// </summary>
     [TestMethod]
-    public void TryEncode_WhenUnsupportedFlagsRequested_ShouldThrowArgumentException()
+    public void TryEncode_WhenUnsupportedFlagsRequested_ShouldThrowExactly()
     {
         var destination = new char[16];
 

@@ -16,7 +16,7 @@ public partial class ThrowHelperTests
     /// when an array is passed, since arrays expose a read-only <c>ICollection&lt;T&gt;</c> view.
     /// </summary>
     [TestMethod]
-    public void ThrowIfReadOnly_WhenCollectionIsArray_ShouldThrowArgumentException()
+    public void ThrowIfReadOnly_WhenCollectionIsArray_ShouldThrowExactly()
     {
         int[] array = [1, 2, 3];
         ICollection<int> collection = array;
@@ -44,7 +44,7 @@ public partial class ThrowHelperTests
     /// when the collection is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void ThrowIfReadOnly_WhenCollectionIsNull_ShouldThrowArgumentNullException()
+    public void ThrowIfReadOnly_WhenCollectionIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -57,7 +57,7 @@ public partial class ThrowHelperTests
     /// when the collection's <c>IsReadOnly</c> property is <see langword="true" />.
     /// </summary>
     [TestMethod]
-    public void ThrowIfReadOnly_WhenCollectionIsReadOnly_ShouldThrowArgumentException()
+    public void ThrowIfReadOnly_WhenCollectionIsReadOnly_ShouldThrowExactly()
     {
         ICollection<int> collection = new ReadOnlyCollection<int>([1, 2, 3]);
 

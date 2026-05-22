@@ -21,7 +21,7 @@ public sealed class Iso7064Mod11_2Tests
     /// <see cref="ArgumentOutOfRangeException" /> when invoked with a non-digit input.
     /// </summary>
     [TestMethod]
-    public void Compute_WhenBodyContainsInvalidCharacter_ShouldThrowArgumentOutOfRangeException()
+    public void Compute_WhenBodyContainsInvalidCharacter_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

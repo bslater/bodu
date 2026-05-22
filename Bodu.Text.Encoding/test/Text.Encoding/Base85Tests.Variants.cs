@@ -13,7 +13,7 @@ public sealed partial class Base85Tests
     /// Verifies that the Z85 variant rejects the <c>z</c> shortcut (it does not exist outside Ascii85).
     /// </summary>
     [TestMethod]
-    public void Decode_WhenZ85VariantWithZShortcut_ShouldThrowFormatException()
+    public void Decode_WhenZ85VariantWithZShortcut_ShouldThrowExactly()
     {
         // The Z85 alphabet does NOT contain 'z' (lowercase z is digit 35 in Z85, not the all-zero shortcut).
         // But 'z' IS in the Z85 alphabet at index 35. So this test is not about rejecting z literal.

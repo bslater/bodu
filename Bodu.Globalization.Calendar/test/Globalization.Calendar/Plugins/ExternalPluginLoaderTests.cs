@@ -67,7 +67,7 @@ public sealed class ExternalPluginLoaderTests
     /// stated reason without loading the plugin assembly.
     /// </summary>
     [TestMethod]
-    public void Load_WhenTrustPolicyRejects_ShouldThrowPluginNotTrustedExceptionWithReason()
+    public void Load_WhenTrustPolicyRejects_ShouldThrowExactly()
     {
         var rejecting = new DelegatingPluginTrustPolicy(_ => new PluginTrustResult(false, "unit-test-rejection"));
         var loader = new ExternalPluginLoader(rejecting);
@@ -83,7 +83,7 @@ public sealed class ExternalPluginLoaderTests
     /// <see cref="PluginMissingAttributeException" /> rather than an activation attempt.
     /// </summary>
     [TestMethod]
-    public void Load_WhenAssemblyMissingPluginAttribute_ShouldThrowPluginMissingAttributeException()
+    public void Load_WhenAssemblyMissingPluginAttribute_ShouldThrowExactly()
     {
         Assert.IsTrue(File.Exists(Plugin2Path), $"Non-plugin test assembly not found at '{Plugin2Path}'.");
 
@@ -99,7 +99,7 @@ public sealed class ExternalPluginLoaderTests
     /// or misleading error.
     /// </summary>
     [TestMethod]
-    public void Load_WhenAssemblyDoesNotExist_ShouldThrowFileNotFoundException()
+    public void Load_WhenAssemblyDoesNotExist_ShouldThrowExactly()
     {
         var loader = new ExternalPluginLoader(new AllowAllPluginTrustPolicy());
 
@@ -112,7 +112,7 @@ public sealed class ExternalPluginLoaderTests
     [TestMethod]
     [DataRow("")]
     [DataRow("   ")]
-    public void Load_WhenPathIsEmpty_ShouldThrowArgumentException(string path)
+    public void Load_WhenPathIsEmpty_ShouldThrowExactly(string path)
     {
         var loader = new ExternalPluginLoader(new AllowAllPluginTrustPolicy());
 
@@ -124,7 +124,7 @@ public sealed class ExternalPluginLoaderTests
     /// <see cref="ExternalPluginLoader.Load" /> call.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenTrustPolicyIsNull_ShouldThrowArgumentNullException()
+    public void Ctor_WhenTrustPolicyIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() => _ = new ExternalPluginLoader(null!));
     }
@@ -141,7 +141,7 @@ public sealed class ExternalPluginLoaderTests
     /// <see cref="PluginActivationException" /> wrapping the original cause.
     /// </summary>
     [TestMethod]
-    public void Load_WhenPluginConstructorThrows_ShouldThrowPluginActivationExceptionWrappingCause()
+    public void Load_WhenPluginConstructorThrows_ShouldThrowExactly()
     {
         Assert.IsTrue(File.Exists(Plugin3Path), $"Plugin3 assembly not found at '{Plugin3Path}'.");
         var loader = new ExternalPluginLoader(new AllowAllPluginTrustPolicy());
@@ -173,7 +173,7 @@ public sealed class ExternalPluginLoaderTests
     /// <see cref="PluginMissingAttributeException" /> with a reason mentioning the interface.
     /// </summary>
     [TestMethod]
-    public void Load_WhenAttributeTypeDoesNotImplementInterface_ShouldThrowPluginMissingAttributeException()
+    public void Load_WhenAttributeTypeDoesNotImplementInterface_ShouldThrowExactly()
     {
         Assert.IsTrue(File.Exists(Plugin4Path), $"Plugin4 assembly not found at '{Plugin4Path}'.");
         var loader = new ExternalPluginLoader(new AllowAllPluginTrustPolicy());

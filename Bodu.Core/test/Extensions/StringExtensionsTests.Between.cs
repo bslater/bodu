@@ -45,7 +45,7 @@ public partial class StringExtensionsTests
     /// <see cref="ArgumentNullException" /> for any null argument.
     /// </summary>
     [TestMethod]
-    public void Between_WhenAnyArgumentIsNull_ShouldThrowArgumentNullException()
+    public void Between_WhenAnyArgumentIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() => _ = StringExtensions.Between(null!, "[", "]"));
         Assert.ThrowsExactly<ArgumentNullException>(() => _ = "hello".Between(null!, "]"));

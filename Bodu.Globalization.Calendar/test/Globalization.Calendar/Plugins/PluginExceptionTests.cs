@@ -117,7 +117,7 @@ public sealed class PluginExceptionTests
     /// <see cref="ArgumentNullException" /> when the evaluator callback is null.
     /// </summary>
     [TestMethod]
-    public void DelegatingPluginTrustPolicy_WhenEvaluatorIsNull_ShouldThrowArgumentNullException()
+    public void DelegatingPluginTrustPolicy_WhenEvaluatorIsNull_ShouldThrowExactly()
     {
         var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

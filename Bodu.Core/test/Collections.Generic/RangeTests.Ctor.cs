@@ -26,7 +26,7 @@ public partial class RangeTests
     /// Verifies that a <see langword="null" /> end endpoint is rejected with <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenEndIsNull_ShouldThrowArgumentNullException()
+    public void Ctor_WhenEndIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -70,7 +70,7 @@ public partial class RangeTests
     /// Verifies that endpoints with <c>start == end</c> are rejected with <see cref="ArgumentException" />.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenStartEqualsEnd_ShouldThrowArgumentException()
+    public void Ctor_WhenStartEqualsEnd_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -85,7 +85,7 @@ public partial class RangeTests
     [DataRow(10, 5)]
     [DataRow(1, 0)]
     [DataRow(int.MaxValue, int.MinValue)]
-    public void Ctor_WhenStartIsGreaterThanEnd_ShouldThrowArgumentException(int start, int end)
+    public void Ctor_WhenStartIsGreaterThanEnd_ShouldThrowExactly(int start, int end)
     {
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -100,7 +100,7 @@ public partial class RangeTests
     /// Verifies that a <see langword="null" /> start endpoint is rejected with <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenStartIsNull_ShouldThrowArgumentNullException()
+    public void Ctor_WhenStartIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

@@ -51,7 +51,7 @@ public partial class StringExtensionsTests
     /// <see cref="ArgumentNullException" /> for null arguments.
     /// </summary>
     [TestMethod]
-    public void UnprefixLines_WhenAnyArgumentIsNull_ShouldThrowArgumentNullException()
+    public void UnprefixLines_WhenAnyArgumentIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() => _ = StringExtensions.UnprefixLines(null!, ">"));
         Assert.ThrowsExactly<ArgumentNullException>(() => _ = "hello".UnprefixLines(null!));

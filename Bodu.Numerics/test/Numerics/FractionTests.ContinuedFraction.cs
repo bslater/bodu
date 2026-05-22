@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FractionTests.ContinuedFraction.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -42,7 +42,7 @@ public partial class FractionTests
     /// Verifies that <see cref="Fraction{T}.FromContinuedFraction" /> rejects an empty coefficient set.
     /// </summary>
     [TestMethod]
-    public void FromContinuedFraction_WhenGivenNoCoefficients_ShouldThrowArgumentException()
+    public void FromContinuedFraction_WhenGivenNoCoefficients_ShouldThrowExactly()
     {
         _ = Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -55,7 +55,7 @@ public partial class FractionTests
     /// coefficient.
     /// </summary>
     [TestMethod]
-    public void FromContinuedFraction_WhenTrailingCoefficientIsNotPositive_ShouldThrowArgumentOutOfRangeException()
+    public void FromContinuedFraction_WhenTrailingCoefficientIsNotPositive_ShouldThrowExactly()
     {
         _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -67,7 +67,7 @@ public partial class FractionTests
     /// Verifies that <see cref="Fraction{T}.FromContinuedFraction" /> rejects a <see langword="null" /> array.
     /// </summary>
     [TestMethod]
-    public void FromContinuedFraction_WhenGivenNullArray_ShouldThrowArgumentNullException()
+    public void FromContinuedFraction_WhenGivenNullArray_ShouldThrowExactly()
     {
         _ = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -104,7 +104,7 @@ public partial class FractionTests
     /// Verifies that <see cref="Fraction{T}.LimitDenominator" /> rejects a limit below one.
     /// </summary>
     [TestMethod]
-    public void LimitDenominator_WhenLimitIsLessThanOne_ShouldThrowArgumentOutOfRangeException()
+    public void LimitDenominator_WhenLimitIsLessThanOne_ShouldThrowExactly()
     {
         _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -220,7 +220,7 @@ public partial class FractionTests
     /// Verifies that Approximate rejects a denominator limit below one.
     /// </summary>
     [TestMethod]
-    public void Approximate_WhenDenominatorLimitIsZero_ShouldThrowArgumentOutOfRangeException()
+    public void Approximate_WhenDenominatorLimitIsZero_ShouldThrowExactly()
     {
         _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

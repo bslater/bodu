@@ -38,7 +38,7 @@ public partial class DateTimeExtensionsTests
     /// Verifies that the static year/quarter overload throws <see cref="ArgumentOutOfRangeException" /> for an undefined <see cref="DayOfWeek" />.
     /// </summary>
     [TestMethod]
-    public void GetLastDateOfWeekInQuarter_WhenDayOfWeekIsInvalid_ShouldThrowArgumentOutOfRangeException()
+    public void GetLastDateOfWeekInQuarter_WhenDayOfWeekIsInvalid_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -50,7 +50,7 @@ public partial class DateTimeExtensionsTests
     /// Verifies that the static definition overload throws <see cref="InvalidOperationException" /> when given <see cref="CalendarQuarterDefinition.Custom" />.
     /// </summary>
     [TestMethod]
-    public void GetLastDateOfWeekInQuarter_WhenDefinitionIsCustom_ShouldThrowInvalidOperationException()
+    public void GetLastDateOfWeekInQuarter_WhenDefinitionIsCustom_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
@@ -62,7 +62,7 @@ public partial class DateTimeExtensionsTests
     /// Verifies that the static definition overload throws <see cref="ArgumentOutOfRangeException" /> for an undefined <see cref="CalendarQuarterDefinition" /> value.
     /// </summary>
     [TestMethod]
-    public void GetLastDateOfWeekInQuarter_WhenDefinitionIsInvalid_ShouldThrowArgumentOutOfRangeException()
+    public void GetLastDateOfWeekInQuarter_WhenDefinitionIsInvalid_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -77,7 +77,7 @@ public partial class DateTimeExtensionsTests
     [DataRow(0)]
     [DataRow(5)]
     [DataRow(-1)]
-    public void GetLastDateOfWeekInQuarter_WhenQuarterIsOutOfRange_ShouldThrowArgumentOutOfRangeException(int quarter)
+    public void GetLastDateOfWeekInQuarter_WhenQuarterIsOutOfRange_ShouldThrowExactly(int quarter)
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -121,7 +121,7 @@ public partial class DateTimeExtensionsTests
     [TestMethod]
     [DataRow(0)]
     [DataRow(10000)]
-    public void GetLastDateOfWeekInQuarter_WhenYearIsOutOfRange_ShouldThrowArgumentOutOfRangeException(int year)
+    public void GetLastDateOfWeekInQuarter_WhenYearIsOutOfRange_ShouldThrowExactly(int year)
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -133,7 +133,7 @@ public partial class DateTimeExtensionsTests
     /// Verifies that passing <see cref="CalendarQuarterDefinition.Custom" /> without supplying a provider throws <see cref="InvalidOperationException" />.
     /// </summary>
     [TestMethod]
-    public void LastDateOfWeekInQuarter_WhenCustomDefinitionWithoutProvider_ShouldThrowInvalidOperationException()
+    public void LastDateOfWeekInQuarter_WhenCustomDefinitionWithoutProvider_ShouldThrowExactly()
     {
         var input = new DateTime(2024, 5, 10);
         Assert.ThrowsExactly<InvalidOperationException>(() =>
@@ -146,7 +146,7 @@ public partial class DateTimeExtensionsTests
     /// Verifies that the instance calendar-default overload throws <see cref="ArgumentOutOfRangeException" /> for an undefined <see cref="DayOfWeek" />.
     /// </summary>
     [TestMethod]
-    public void LastDateOfWeekInQuarter_WhenInstanceCalendarOverload_DayOfWeekInvalid_ShouldThrowArgumentOutOfRangeException()
+    public void LastDateOfWeekInQuarter_WhenInstanceCalendarOverload_DayOfWeekInvalid_ShouldThrowExactly()
     {
         var input = new DateTime(2024, 2, 15);
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
@@ -170,7 +170,7 @@ public partial class DateTimeExtensionsTests
     /// Verifies that the instance definition overload throws <see cref="ArgumentOutOfRangeException" /> for an undefined <see cref="CalendarQuarterDefinition" /> value.
     /// </summary>
     [TestMethod]
-    public void LastDateOfWeekInQuarter_WhenInstanceDefinitionOverload_DefinitionInvalid_ShouldThrowArgumentOutOfRangeException()
+    public void LastDateOfWeekInQuarter_WhenInstanceDefinitionOverload_DefinitionInvalid_ShouldThrowExactly()
     {
         var input = new DateTime(2024, 5, 10);
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
@@ -189,7 +189,7 @@ public partial class DateTimeExtensionsTests
     /// Verifies that the instance provider overload throws <see cref="ArgumentNullException" /> when the provider is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void LastDateOfWeekInQuarter_WhenProviderIsNull_ShouldThrowArgumentNullException()
+    public void LastDateOfWeekInQuarter_WhenProviderIsNull_ShouldThrowExactly()
     {
         var input = new DateTime(2024, 5, 10);
         IQuarterDefinitionProvider? provider = null;
@@ -204,7 +204,7 @@ public partial class DateTimeExtensionsTests
     /// Verifies that the instance provider overload throws <see cref="ArgumentOutOfRangeException" /> for an undefined <see cref="DayOfWeek" />.
     /// </summary>
     [TestMethod]
-    public void LastDateOfWeekInQuarter_WhenProviderOverload_DayOfWeekInvalid_ShouldThrowArgumentOutOfRangeException()
+    public void LastDateOfWeekInQuarter_WhenProviderOverload_DayOfWeekInvalid_ShouldThrowExactly()
     {
         var input = new DateTime(2024, 5, 10);
         IQuarterDefinitionProvider provider = new ValidQuarterProvider();

@@ -22,7 +22,7 @@ public partial class StringExtensionsTests
     /// when invoked with <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void Quote_WhenValueIsNull_ShouldThrowArgumentNullException()
+    public void Quote_WhenValueIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -45,7 +45,7 @@ public partial class StringExtensionsTests
     /// <see cref="ArgumentNullException" /> when invoked with <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void SingleQuote_WhenValueIsNull_ShouldThrowArgumentNullException()
+    public void SingleQuote_WhenValueIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -68,7 +68,7 @@ public partial class StringExtensionsTests
     /// <see cref="ArgumentNullException" /> when any argument is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void Wrap_WhenAnyArgumentIsNull_ShouldThrowArgumentNullException()
+    public void Wrap_WhenAnyArgumentIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() => _ = StringExtensions.Wrap(null!, "<", ">"));
         Assert.ThrowsExactly<ArgumentNullException>(() => _ = "hello".Wrap(null!, ">"));
@@ -147,7 +147,7 @@ public partial class StringExtensionsTests
     /// receiver.
     /// </summary>
     [TestMethod]
-    public void BracketStyleShortcuts_WhenValueIsNull_ShouldThrowArgumentNullException()
+    public void BracketStyleShortcuts_WhenValueIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() => _ = StringExtensions.Parenthesize(null!));
         Assert.ThrowsExactly<ArgumentNullException>(() => _ = StringExtensions.Bracket(null!));

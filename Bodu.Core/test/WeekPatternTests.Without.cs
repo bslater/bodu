@@ -81,7 +81,7 @@ public partial class WeekPatternTests
     [DataRow(-1)]
     [DataRow(7)]
     [DataRow(99)]
-    public void Without_WhenInvalidDay_ShouldThrowArgumentOutOfRangeException(int invalidDay)
+    public void Without_WhenInvalidDay_ShouldThrowExactly(int invalidDay)
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

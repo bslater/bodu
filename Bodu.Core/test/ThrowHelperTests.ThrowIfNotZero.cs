@@ -55,7 +55,7 @@ public partial class ThrowHelperTests
     [DataRow(-1)]
     [DataRow(int.MaxValue)]
     [DataRow(int.MinValue)]
-    public void ThrowIfNotZero_WhenValueIsNotZero_ShouldThrow(int value)
+    public void ThrowIfNotZero_WhenValueIsNotZero_ShouldThrowExactly(int value)
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

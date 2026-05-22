@@ -21,7 +21,7 @@ public partial class NotableDateRuleJsonParserTests
     /// <see cref="JsonException" /> via the <c>adjustment.required</c> clause.
     /// </summary>
     [TestMethod]
-    public void ParseJson_WhenAdjustmentKeyIsMissing_ShouldThrowJsonException()
+    public void ParseJson_WhenAdjustmentKeyIsMissing_ShouldThrowExactly()
     {
         const string json = @"{
 			""notableDates"": [
@@ -47,7 +47,7 @@ public partial class NotableDateRuleJsonParserTests
     /// <see cref="JsonException" /> via the <c>adjustment.required</c> clause.
     /// </summary>
     [TestMethod]
-    public void ParseJson_WhenAdjustmentTriggerIsMissing_ShouldThrowJsonException()
+    public void ParseJson_WhenAdjustmentTriggerIsMissing_ShouldThrowExactly()
     {
         const string json = @"{
 			""notableDates"": [
@@ -73,7 +73,7 @@ public partial class NotableDateRuleJsonParserTests
     /// validation as <see cref="JsonException" /> via the <c>adjustmentTrigger</c> enum constraint.
     /// </summary>
     [TestMethod]
-    public void ParseJson_WhenAdjustmentTriggerIsUnknown_ShouldThrowJsonException()
+    public void ParseJson_WhenAdjustmentTriggerIsUnknown_ShouldThrowExactly()
     {
         const string json = @"{
 			""notableDates"": [
@@ -99,7 +99,7 @@ public partial class NotableDateRuleJsonParserTests
     /// <see cref="JsonException" /> via the <c>adjustment.required</c> clause.
     /// </summary>
     [TestMethod]
-    public void ParseJson_WhenAdjustmentActionIsMissing_ShouldThrowJsonException()
+    public void ParseJson_WhenAdjustmentActionIsMissing_ShouldThrowExactly()
     {
         const string json = @"{
 			""notableDates"": [
@@ -125,7 +125,7 @@ public partial class NotableDateRuleJsonParserTests
     /// validation as <see cref="JsonException" /> via the <c>adjustmentAction</c> enum constraint.
     /// </summary>
     [TestMethod]
-    public void ParseJson_WhenAdjustmentActionIsUnknown_ShouldThrowJsonException()
+    public void ParseJson_WhenAdjustmentActionIsUnknown_ShouldThrowExactly()
     {
         const string json = @"{
 			""notableDates"": [

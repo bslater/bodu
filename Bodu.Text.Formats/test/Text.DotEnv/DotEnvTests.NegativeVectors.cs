@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DotEnvTests.NegativeVectors.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -14,7 +14,7 @@ public sealed partial class DotEnvTests
     /// when a key starts with a digit.
     /// </summary>
     [TestMethod]
-    public void Parse_WhenKeyStartsWithDigit_ShouldThrowDotEnvFormatException()
+    public void Parse_WhenKeyStartsWithDigit_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<DotEnvFormatException>(() =>
         {
@@ -27,7 +27,7 @@ public sealed partial class DotEnvTests
     /// when a key contains a hyphen.
     /// </summary>
     [TestMethod]
-    public void Parse_WhenKeyContainsHyphen_ShouldThrowDotEnvFormatException()
+    public void Parse_WhenKeyContainsHyphen_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<DotEnvFormatException>(() =>
         {
@@ -55,7 +55,7 @@ public sealed partial class DotEnvTests
     /// when a double-quoted string is not closed before end of input.
     /// </summary>
     [TestMethod]
-    public void Parse_WhenDoubleQuotedStringIsUnterminated_ShouldThrowDotEnvFormatException()
+    public void Parse_WhenDoubleQuotedStringIsUnterminated_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<DotEnvFormatException>(() =>
         {
@@ -83,7 +83,7 @@ public sealed partial class DotEnvTests
     /// when a single-quoted string is not closed before the end of the line.
     /// </summary>
     [TestMethod]
-    public void Parse_WhenSingleQuotedStringIsUnterminated_ShouldThrowDotEnvFormatException()
+    public void Parse_WhenSingleQuotedStringIsUnterminated_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<DotEnvFormatException>(() =>
         {
@@ -96,7 +96,7 @@ public sealed partial class DotEnvTests
     /// when duplicate keys are disallowed and the same key appears twice.
     /// </summary>
     [TestMethod]
-    public void Parse_WhenDuplicateKeyDisallowedAndKeyRepeated_ShouldThrowDotEnvFormatException()
+    public void Parse_WhenDuplicateKeyDisallowedAndKeyRepeated_ShouldThrowExactly()
     {
         DotEnvParseOptions options = new() { DuplicateKeyBehavior = DotEnvDuplicateKeyBehavior.Disallowed };
 

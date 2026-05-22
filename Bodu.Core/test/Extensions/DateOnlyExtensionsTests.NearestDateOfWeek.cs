@@ -45,7 +45,7 @@ public partial class DateOnlyExtensionsTests
     /// Verifies that an undefined <see cref="DayOfWeek" /> value throws <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    public void NearestDateOfWeek_WhenDayOfWeekIsInvalid_ShouldThrowArgumentOutOfRangeException()
+    public void NearestDateOfWeek_WhenDayOfWeekIsInvalid_ShouldThrowExactly()
     {
         var date = new DateOnly(2024, 4, 17);
 
@@ -86,7 +86,7 @@ public partial class DateOnlyExtensionsTests
     /// Verifies that the static <c>(year, month, day)</c> overload throws <see cref="ArgumentOutOfRangeException" /> for an undefined <see cref="DayOfWeek" />.
     /// </summary>
     [TestMethod]
-    public void NearestDateOfWeek_WhenUsingYearMonthDayWithInvalidDayOfWeek_ShouldThrowArgumentOutOfRangeException()
+    public void NearestDateOfWeek_WhenUsingYearMonthDayWithInvalidDayOfWeek_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

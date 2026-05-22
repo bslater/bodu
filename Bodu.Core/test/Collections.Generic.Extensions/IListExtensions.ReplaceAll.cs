@@ -43,7 +43,7 @@ public sealed class IListExtensionsTests_ReplaceAll
     /// when the list is <see langword="null"/>.
     /// </summary>
     [TestMethod]
-    public void ReplaceAll_WithComparer_WhenListIsNull_ShouldThrowArgumentNullException()
+    public void ReplaceAll_WithComparer_WhenListIsNull_ShouldThrowExactly()
     {
         IList<string>? list = null;
 
@@ -71,7 +71,7 @@ public sealed class IListExtensionsTests_ReplaceAll
     /// Verifies that <c>ReplaceAll(oldItem, newItem)</c> throws <see cref="ArgumentNullException"/> when the list is <see langword="null"/>.
     /// </summary>
     [TestMethod]
-    public void ReplaceAll_WithDefaultEquality_WhenListIsNull_ShouldThrowArgumentNullException()
+    public void ReplaceAll_WithDefaultEquality_WhenListIsNull_ShouldThrowExactly()
     {
         IList<int>? list = null;
 
@@ -140,7 +140,7 @@ public sealed class IListExtensionsTests_ReplaceAll
     /// Verifies that <c>ReplaceAll(newItem, predicate)</c> throws <see cref="ArgumentNullException"/> when the list is <see langword="null"/>.
     /// </summary>
     [TestMethod]
-    public void ReplaceAll_WithPredicate_WhenListIsNull_ShouldThrowArgumentNullException()
+    public void ReplaceAll_WithPredicate_WhenListIsNull_ShouldThrowExactly()
     {
         IList<int>? list = null;
 
@@ -168,7 +168,7 @@ public sealed class IListExtensionsTests_ReplaceAll
     /// Verifies that <c>ReplaceAll(newItem, predicate)</c> throws <see cref="ArgumentNullException"/> when the predicate is <see langword="null"/>.
     /// </summary>
     [TestMethod]
-    public void ReplaceAll_WithPredicate_WhenPredicateIsNull_ShouldThrowArgumentNullException()
+    public void ReplaceAll_WithPredicate_WhenPredicateIsNull_ShouldThrowExactly()
     {
         IList<int> list = new List<int> { 1 };
         Func<int, bool>? predicate = null;

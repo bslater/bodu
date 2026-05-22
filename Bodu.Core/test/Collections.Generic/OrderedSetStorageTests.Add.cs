@@ -32,7 +32,7 @@ public partial class OrderedSetStorageTests
     /// Verifies that adding a <see langword="null" /> reference is rejected with <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void Add_WhenItemIsNull_ShouldThrowArgumentNullException()
+    public void Add_WhenItemIsNull_ShouldThrowExactly()
     {
         var sut = new OrderedSetStorage<string>(0, null);
 
@@ -162,7 +162,7 @@ public partial class OrderedSetStorageTests
     /// that yields a <see langword="null" /> element.
     /// </summary>
     [TestMethod]
-    public void AddRange_WhenCollectionContainsNull_ShouldThrowArgumentNullException()
+    public void AddRange_WhenCollectionContainsNull_ShouldThrowExactly()
     {
         var sut = new OrderedSetStorage<string>(0, null);
 
@@ -196,7 +196,7 @@ public partial class OrderedSetStorageTests
     /// Verifies that <see cref="OrderedSetStorage{T}.AddRange(IEnumerable{T})" /> rejects a <see langword="null" /> collection.
     /// </summary>
     [TestMethod]
-    public void AddRange_WhenCollectionIsNull_ShouldThrowArgumentNullException()
+    public void AddRange_WhenCollectionIsNull_ShouldThrowExactly()
     {
         var sut = new OrderedSetStorage<int>(0, null);
 

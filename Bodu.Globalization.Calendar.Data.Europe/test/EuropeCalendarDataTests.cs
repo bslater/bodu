@@ -131,7 +131,7 @@ public sealed class EuropeCalendarDataTests
     /// <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void CreateProvider_WhenResourceNameIsNull_ShouldThrowArgumentNullException()
+    public void CreateProvider_WhenResourceNameIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

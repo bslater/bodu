@@ -59,7 +59,7 @@ public partial class IndexedSetTests
     [DataRow(0, -1)]
     [DataRow(0, 3)]
     [DataRow(0, int.MaxValue)]
-    public void Move_WhenNewIndexIsOutOfRange_ShouldThrowArgumentOutOfRangeException(int oldIndex, int newIndex)
+    public void Move_WhenNewIndexIsOutOfRange_ShouldThrowExactly(int oldIndex, int newIndex)
     {
         IndexedSet<int> sut = CreateSet([1, 2, 3]);
 
@@ -79,7 +79,7 @@ public partial class IndexedSetTests
     [DataRow(-1, 0)]
     [DataRow(3, 0)]
     [DataRow(int.MaxValue, 0)]
-    public void Move_WhenOldIndexIsOutOfRange_ShouldThrowArgumentOutOfRangeException(int oldIndex, int newIndex)
+    public void Move_WhenOldIndexIsOutOfRange_ShouldThrowExactly(int oldIndex, int newIndex)
     {
         IndexedSet<int> sut = CreateSet([1, 2, 3]);
 

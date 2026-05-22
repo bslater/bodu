@@ -220,7 +220,7 @@ public sealed partial class DelimitedReaderTests
     /// after <see cref="DelimitedReader.Dispose" /> has been called.
     /// </summary>
     [TestMethod]
-    public void Read_AfterDispose_ShouldThrowObjectDisposedException()
+    public void Read_AfterDispose_ShouldThrowExactly()
     {
         DelimitedReader reader = new(new StringReader("a,b\r\n1,2"));
         reader.Dispose();
@@ -307,7 +307,7 @@ public sealed partial class DelimitedReaderTests
     /// Verifies that an unterminated quoted field throws <see cref="DelimitedFormatException" />.
     /// </summary>
     [TestMethod]
-    public void Read_WhenQuotedFieldIsUnterminated_ShouldThrowDelimitedFormatException()
+    public void Read_WhenQuotedFieldIsUnterminated_ShouldThrowExactly()
     {
         using DelimitedReader reader = new(new StringReader("a\r\n\"no closing quote"));
 

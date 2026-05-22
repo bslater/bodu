@@ -14,7 +14,7 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     /// <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void Aggregate_WhenFuncIsNull_ForThreeFuncWithIndex_ShouldThrowArgumentNullException()
+    public void Aggregate_WhenFuncIsNull_ForThreeFuncWithIndex_ShouldThrowExactly()
     {
         int[] source = [1, 2, 3];
         Func<int, int, int, int> nullFunc = null!;
@@ -135,7 +135,7 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     /// is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void Aggregate_WhenResultSelectorIsNull_ForThreeFuncWithIndexAndSelector_ShouldThrowArgumentNullException()
+    public void Aggregate_WhenResultSelectorIsNull_ForThreeFuncWithIndexAndSelector_ShouldThrowExactly()
     {
         int[] source = [1, 2, 3];
         Func<int, int, int, string> resultSelector = null!;

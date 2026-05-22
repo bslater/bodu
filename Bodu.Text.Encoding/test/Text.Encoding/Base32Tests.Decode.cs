@@ -31,7 +31,7 @@ public sealed partial class Base32Tests
     /// <param name="vector">A negative KAT vector.</param>
     [DataTestMethod]
     [DynamicData(nameof(Base32KnownAnswerVectors.StandardNegativeVectors), typeof(Base32KnownAnswerVectors), DynamicDataSourceType.Method)]
-    public void Decode_ForStandardKnownMalformedInput_ShouldThrowExpectedException(EncodingNegativeDecodeVector vector)
+    public void Decode_ForStandardKnownMalformedInput_ShouldThrowExactly(EncodingNegativeDecodeVector vector)
     {
         Exception? actual = null;
         try
@@ -113,7 +113,7 @@ public sealed partial class Base32Tests
     /// the variant alphabet with <see cref="FormatException" />.
     /// </summary>
     [TestMethod]
-    public void Decode_WhenInvalidCharacters_ShouldThrowFormatException()
+    public void Decode_WhenInvalidCharacters_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<FormatException>(() =>
         {
@@ -156,7 +156,7 @@ public sealed partial class Base32Tests
     /// (padding that appears before any data character past the last data character).
     /// </summary>
     [TestMethod]
-    public void Decode_WhenPaddingBeforeDataEnds_ShouldThrowFormatException()
+    public void Decode_WhenPaddingBeforeDataEnds_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<FormatException>(() =>
         {
@@ -193,7 +193,7 @@ public sealed partial class Base32Tests
     [DataRow('#')]
     [DataRow('-')]
     [DataRow('_')]
-    public void Decode_WhenStandardAlphabetExcludedCharacter_ShouldThrowFormatException(char excluded)
+    public void Decode_WhenStandardAlphabetExcludedCharacter_ShouldThrowExactly(char excluded)
     {
         var input = "MZ" + excluded + "W6YTB";
 
@@ -228,7 +228,7 @@ public sealed partial class Base32Tests
     /// input that omits required padding.
     /// </summary>
     [TestMethod]
-    public void Decode_WhenStrictAndPaddingOmitted_ShouldThrowFormatException()
+    public void Decode_WhenStrictAndPaddingOmitted_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<FormatException>(() =>
         {
@@ -241,7 +241,7 @@ public sealed partial class Base32Tests
     /// variant.
     /// </summary>
     [TestMethod]
-    public void Decode_WhenUndefinedVariant_ShouldThrowArgumentOutOfRangeException()
+    public void Decode_WhenUndefinedVariant_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

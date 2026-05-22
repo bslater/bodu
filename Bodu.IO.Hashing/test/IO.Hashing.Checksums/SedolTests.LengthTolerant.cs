@@ -18,7 +18,7 @@ public sealed partial class SedolTests
     /// the static <see cref="Sedol.Compute" /> helper.
     /// </summary>
     [TestMethod]
-    public void Append_WhenBodyContainsNonAlphanumericCharacter_ShouldThrowArgumentOutOfRangeException()
+    public void Append_WhenBodyContainsNonAlphanumericCharacter_ShouldThrowExactly()
     {
         Sedol algorithm = new();
 

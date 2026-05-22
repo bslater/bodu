@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DotEnvExtensionsTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -119,7 +119,7 @@ public sealed class DotEnvExtensionsTests
     /// <see cref="ArgumentNullException" /> when the receiver is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void FormatDotEnv_WhenDocumentIsNull_ShouldThrowArgumentNullException()
+    public void FormatDotEnv_WhenDocumentIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

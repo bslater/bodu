@@ -117,7 +117,7 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     [DataRow(0, -1, "count", DisplayName = "Negative count")]
     [DataRow(0, 10, "count", DisplayName = "Count exceeds array length")]
-    public void Reverse_WhenCountIsInvalid_ForNonGenericArrayIndexCount_ShouldThrowArgumentOutOfRangeException(
+    public void Reverse_WhenCountIsInvalid_ForNonGenericArrayIndexCount_ShouldThrowExactly(
         int index, int count, string expectedParamName)
     {
         ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
@@ -136,7 +136,7 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     [DataRow(0, -1, "count", DisplayName = "Negative count")]
     [DataRow(0, 10, "count", DisplayName = "Count exceeds array length")]
-    public void Reverse_WhenCountIsInvalid_ForTypedArrayIndexCount_ShouldThrowArgumentOutOfRangeException(
+    public void Reverse_WhenCountIsInvalid_ForTypedArrayIndexCount_ShouldThrowExactly(
         int index, int count, string expectedParamName)
     {
         ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
@@ -175,7 +175,7 @@ public partial class ArrayExtensionsTests
     /// and values that extend beyond the end.
     /// </summary>
     [TestMethod]
-    public void Reverse_WhenIndexAndCountIsInvalid_ForTypedArrayIndexCount_ShouldThrowArgumentException()
+    public void Reverse_WhenIndexAndCountIsInvalid_ForTypedArrayIndexCount_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -191,7 +191,7 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     [DataRow(-1, 2, "index", DisplayName = "Negative index")]
     [DataRow(6, 0, "index", DisplayName = "Index exceeds array length")]
-    public void Reverse_WhenIndexIsInvalid_ForNonGenericArrayIndexCount_ShouldThrowArgumentOutOfRangeException(
+    public void Reverse_WhenIndexIsInvalid_ForNonGenericArrayIndexCount_ShouldThrowExactly(
         int index, int count, string expectedParamName)
     {
         ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
@@ -209,7 +209,7 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     [DataRow(-1, 2, "index", DisplayName = "Negative index")]
     [DataRow(6, 0, "index", DisplayName = "Index exceeds array length")]
-    public void Reverse_WhenIndexIsInvalid_ForTypedArrayIndexCount_ShouldThrowArgumentOutOfRangeException(
+    public void Reverse_WhenIndexIsInvalid_ForTypedArrayIndexCount_ShouldThrowExactly(
         int index, int count, string expectedParamName)
     {
         ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
@@ -226,7 +226,7 @@ public partial class ArrayExtensionsTests
     /// the message is asserted to confirm the correct validation path was reached.
     /// </summary>
     [TestMethod]
-    public void Reverse_WhenIndexPlusCountExceedsArrayLength_ForNonGenericArrayIndexCount_ShouldThrowException()
+    public void Reverse_WhenIndexPlusCountExceedsArrayLength_ForNonGenericArrayIndexCount_ShouldThrowExactly()
     {
         // ThrowIfArrayOffsetOrCountInvalid raises ArgumentException (not
         // ArgumentOutOfRangeException) for the combination case, aligning with the
@@ -243,7 +243,7 @@ public partial class ArrayExtensionsTests
     /// length throws <see cref="ArgumentOutOfRangeException"/>.
     /// </summary>
     [TestMethod]
-    public void Reverse_WhenRangeExceedsArrayLength_ForNonGenericArrayRange_ShouldThrowException()
+    public void Reverse_WhenRangeExceedsArrayLength_ForNonGenericArrayRange_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -256,7 +256,7 @@ public partial class ArrayExtensionsTests
     /// throws <see cref="ArgumentOutOfRangeException"/>.
     /// </summary>
     [TestMethod]
-    public void Reverse_WhenRangeExceedsArrayLength_ForTypedArrayRange_ShouldThrowException()
+    public void Reverse_WhenRangeExceedsArrayLength_ForTypedArrayRange_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -393,7 +393,7 @@ public partial class ArrayExtensionsTests
     /// exception identifies the correct parameter name.
     /// </summary>
     [TestMethod]
-    public void Reverse_WhenSourceIsMultidimensional_ForNonGenericArray_ShouldThrowException()
+    public void Reverse_WhenSourceIsMultidimensional_ForNonGenericArray_ShouldThrowExactly()
     {
         Array source = new int[2, 3];
         Assert.ThrowsExactly<RankException>(() =>
@@ -408,7 +408,7 @@ public partial class ArrayExtensionsTests
     /// parameter name.
     /// </summary>
     [TestMethod]
-    public void Reverse_WhenSourceIsMultidimensional_ForNonGenericArrayIndexCount_ShouldThrowException()
+    public void Reverse_WhenSourceIsMultidimensional_ForNonGenericArrayIndexCount_ShouldThrowExactly()
     {
         Array source = new int[2, 3];
         ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
@@ -424,7 +424,7 @@ public partial class ArrayExtensionsTests
     /// parameter name.
     /// </summary>
     [TestMethod]
-    public void Reverse_WhenSourceIsMultidimensional_ForNonGenericArrayRange_ShouldThrowException()
+    public void Reverse_WhenSourceIsMultidimensional_ForNonGenericArrayRange_ShouldThrowExactly()
     {
         Array source = new int[2, 3];
         ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
@@ -439,7 +439,7 @@ public partial class ArrayExtensionsTests
     /// and that the exception identifies the correct parameter name.
     /// </summary>
     [TestMethod]
-    public void Reverse_WhenSourceIsNull_ForNonGenericArray_ShouldThrowException()
+    public void Reverse_WhenSourceIsNull_ForNonGenericArray_ShouldThrowExactly()
     {
         Array? source = null;
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
@@ -455,7 +455,7 @@ public partial class ArrayExtensionsTests
     /// parameter name.
     /// </summary>
     [TestMethod]
-    public void Reverse_WhenSourceIsNull_ForNonGenericArrayIndexCount_ShouldThrowException()
+    public void Reverse_WhenSourceIsNull_ForNonGenericArrayIndexCount_ShouldThrowExactly()
     {
         Array? source = null;
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
@@ -471,7 +471,7 @@ public partial class ArrayExtensionsTests
     /// parameter name.
     /// </summary>
     [TestMethod]
-    public void Reverse_WhenSourceIsNull_ForNonGenericArrayRange_ShouldThrowException()
+    public void Reverse_WhenSourceIsNull_ForNonGenericArrayRange_ShouldThrowExactly()
     {
         Array? source = null;
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
@@ -486,7 +486,7 @@ public partial class ArrayExtensionsTests
     /// and that the exception identifies the correct parameter name.
     /// </summary>
     [TestMethod]
-    public void Reverse_WhenSourceIsNull_ForTypedArray_ShouldThrowException()
+    public void Reverse_WhenSourceIsNull_ForTypedArray_ShouldThrowExactly()
     {
         int[]? source = null;
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(
@@ -500,7 +500,7 @@ public partial class ArrayExtensionsTests
     /// parameter name.
     /// </summary>
     [TestMethod]
-    public void Reverse_WhenSourceIsNull_ForTypedArrayIndexCount_ShouldThrowException()
+    public void Reverse_WhenSourceIsNull_ForTypedArrayIndexCount_ShouldThrowExactly()
     {
         int[]? source = null;
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
@@ -516,7 +516,7 @@ public partial class ArrayExtensionsTests
     /// parameter name.
     /// </summary>
     [TestMethod]
-    public void Reverse_WhenSourceIsNull_ForTypedArrayRange_ShouldThrowException()
+    public void Reverse_WhenSourceIsNull_ForTypedArrayRange_ShouldThrowExactly()
     {
         int[]? source = null;
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>

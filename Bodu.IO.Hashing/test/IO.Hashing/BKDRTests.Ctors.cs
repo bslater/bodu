@@ -13,7 +13,7 @@ public partial class BKDRTests
     /// Verifies that constructing with an unsupported seed multiplier throws <see cref="ArgumentException" />.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenSeedIsUnsupported_ShouldThrow()
+    public void Ctor_WhenSeedIsUnsupported_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentException>(() => _ = new BKDR(1234U));
     }

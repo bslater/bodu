@@ -36,7 +36,7 @@ public partial class OrderedSetTests
     [DataRow(-1)]
     [DataRow(-100)]
     [DataRow(int.MinValue)]
-    public void Ctor_WhenCapacityIsNegative_ShouldThrowArgumentOutOfRangeException(int capacity)
+    public void Ctor_WhenCapacityIsNegative_ShouldThrowExactly(int capacity)
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -95,7 +95,7 @@ public partial class OrderedSetTests
     /// Verifies that the collection constructor rejects a source that yields a <see langword="null" /> element.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenCollectionContainsNull_ShouldThrowArgumentNullException()
+    public void Ctor_WhenCollectionContainsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -137,7 +137,7 @@ public partial class OrderedSetTests
     /// Verifies that the collection constructor rejects a <see langword="null" /> source.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenCollectionIsNull_ShouldThrowArgumentNullException()
+    public void Ctor_WhenCollectionIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

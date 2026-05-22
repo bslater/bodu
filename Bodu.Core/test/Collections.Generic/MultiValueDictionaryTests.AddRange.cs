@@ -132,7 +132,7 @@ public partial class MultiValueDictionaryTests
     /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.AddRange"/> throws <see cref="ArgumentNullException"/> for a null key.
     /// </summary>
     [TestMethod]
-    public void AddRange_WhenKeyIsNull_ShouldThrowArgumentNullException()
+    public void AddRange_WhenKeyIsNull_ShouldThrowExactly()
     {
         var mvd = new MultiValueDictionary<string, int>();
 
@@ -246,7 +246,7 @@ public partial class MultiValueDictionaryTests
     /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.AddRange"/> throws <see cref="ArgumentNullException"/> for a null values sequence.
     /// </summary>
     [TestMethod]
-    public void AddRange_WhenValuesIsNull_ShouldThrowArgumentNullException()
+    public void AddRange_WhenValuesIsNull_ShouldThrowExactly()
     {
         var mvd = new MultiValueDictionary<string, int>();
 

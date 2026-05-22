@@ -212,7 +212,7 @@ public partial class NotableDateDocumentBuilderTests
     /// when a rule builder has no strategy selected.
     /// </summary>
     [TestMethod]
-    public void Build_WhenNoStrategySet_ShouldThrowInvalidOperationException()
+    public void Build_WhenNoStrategySet_ShouldThrowExactly()
     {
         NotableDateDocumentBuilder builder = NotableDateDocumentBuilder.Create()
             .AddDate("Missing Strategy", date => date
@@ -229,7 +229,7 @@ public partial class NotableDateDocumentBuilderTests
     /// when a notable date entry has no rules added.
     /// </summary>
     [TestMethod]
-    public void Build_WhenNoRulesForDate_ShouldThrowInvalidOperationException()
+    public void Build_WhenNoRulesForDate_ShouldThrowExactly()
     {
         NotableDateDocumentBuilder builder = NotableDateDocumentBuilder.Create()
             .AddDate("Empty Date", _ => { });
@@ -245,7 +245,7 @@ public partial class NotableDateDocumentBuilderTests
     /// when the <c>name</c> argument is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void AddDate_WhenNameIsNull_ShouldThrowArgumentNullException()
+    public void AddDate_WhenNameIsNull_ShouldThrowExactly()
     {
         var builder = NotableDateDocumentBuilder.Create();
 
@@ -260,7 +260,7 @@ public partial class NotableDateDocumentBuilderTests
     /// when the <c>configure</c> callback is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void AddDate_WhenConfigureIsNull_ShouldThrowArgumentNullException()
+    public void AddDate_WhenConfigureIsNull_ShouldThrowExactly()
     {
         var builder = NotableDateDocumentBuilder.Create();
 

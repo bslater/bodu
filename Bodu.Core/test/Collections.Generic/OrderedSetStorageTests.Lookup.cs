@@ -29,7 +29,7 @@ public partial class OrderedSetStorageTests
     /// Verifies that <see cref="OrderedSetStorage{T}.Contains(T)" /> rejects a <see langword="null" /> item.
     /// </summary>
     [TestMethod]
-    public void Contains_WhenItemIsNull_ShouldThrowArgumentNullException()
+    public void Contains_WhenItemIsNull_ShouldThrowExactly()
     {
         OrderedSetStorage<string> sut = CreateStorage(["a"]);
 
@@ -97,7 +97,7 @@ public partial class OrderedSetStorageTests
     [DataRow(3)]
     [DataRow(int.MinValue)]
     [DataRow(int.MaxValue)]
-    public void GetAt_WhenIndexIsOutOfRange_ShouldThrowArgumentOutOfRangeException(int index)
+    public void GetAt_WhenIndexIsOutOfRange_ShouldThrowExactly(int index)
     {
         OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
 
@@ -127,7 +127,7 @@ public partial class OrderedSetStorageTests
     /// throws <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    public void GetAt_WhenStorageIsEmpty_ShouldThrowArgumentOutOfRangeException()
+    public void GetAt_WhenStorageIsEmpty_ShouldThrowExactly()
     {
         var sut = new OrderedSetStorage<int>(0, null);
 
@@ -145,7 +145,7 @@ public partial class OrderedSetStorageTests
     /// Verifies that <see cref="OrderedSetStorage{T}.IndexOf(T)" /> rejects a <see langword="null" /> item.
     /// </summary>
     [TestMethod]
-    public void IndexOf_WhenItemIsNull_ShouldThrowArgumentNullException()
+    public void IndexOf_WhenItemIsNull_ShouldThrowExactly()
     {
         OrderedSetStorage<string> sut = CreateStorage(["a"]);
 

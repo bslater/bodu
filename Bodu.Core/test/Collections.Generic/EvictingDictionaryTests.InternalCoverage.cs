@@ -85,7 +85,7 @@ public partial class EvictingDictionaryTests
     /// <see langword="null" /> dictionary, exercising the constructor's <c>?? throw</c> branch.
     /// </summary>
     [TestMethod]
-    public void DictionaryEnumeratorCtor_WhenDictionaryIsNull_ShouldThrowArgumentNullException()
+    public void DictionaryEnumeratorCtor_WhenDictionaryIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -105,7 +105,7 @@ public partial class EvictingDictionaryTests
     [DataRow(EvictingDictionaryPolicy.LeastFrequentlyUsed)]
     [DataRow(EvictingDictionaryPolicy.SecondChance)]
     [DataRow(EvictingDictionaryPolicy.RandomReplacement)]
-    public void Enumerator_WhenDictionaryMutatedDuringEnumeration_ShouldThrowForAllPolicies(EvictingDictionaryPolicy policy)
+    public void Enumerator_WhenDictionaryMutatedDuringEnumeration_ShouldThrowExactly(EvictingDictionaryPolicy policy)
     {
         var dictionary = new EvictingDictionary<string, int>(5, policy);
         dictionary.Add("A", 1);

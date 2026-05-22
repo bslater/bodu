@@ -43,7 +43,7 @@ public partial class StringExtensionsTests
     /// <see cref="ArgumentNullException" /> when <c>defaultValue</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void DefaultIfNullOrWhiteSpace_WhenDefaultIsNull_ShouldThrowArgumentNullException()
+    public void DefaultIfNullOrWhiteSpace_WhenDefaultIsNull_ShouldThrowExactly()
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

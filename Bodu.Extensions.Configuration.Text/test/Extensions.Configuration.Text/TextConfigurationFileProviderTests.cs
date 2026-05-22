@@ -78,7 +78,7 @@ logging.level.default = Information
     /// Verifies that the file-provider overload rejects a <see langword="null" /> builder.
     /// </summary>
     [TestMethod]
-    public void AddConfiguration_WithNullBuilder_ShouldThrowArgumentNullException()
+    public void AddConfiguration_WithNullBuilder_ShouldThrowExactly()
     {
         IConfigurationBuilder builder = null!;
 
@@ -92,7 +92,7 @@ logging.level.default = Information
     /// Verifies that the file-provider overload rejects an empty path.
     /// </summary>
     [TestMethod]
-    public void AddConfiguration_WithEmptyPath_ShouldThrowArgumentException()
+    public void AddConfiguration_WithEmptyPath_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentException>(() =>
         {

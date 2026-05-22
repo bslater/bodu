@@ -30,7 +30,7 @@ public partial class RangeSetTests
     [TestMethod]
     [DataRow(-1)]
     [DataRow(int.MinValue)]
-    public void EnsureCapacity_WhenCapacityIsNegative_ShouldThrowArgumentOutOfRangeException(int capacity)
+    public void EnsureCapacity_WhenCapacityIsNegative_ShouldThrowExactly(int capacity)
     {
         var sut = new RangeSet<int>();
 

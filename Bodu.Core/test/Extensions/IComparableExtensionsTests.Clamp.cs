@@ -25,7 +25,7 @@ public partial class IComparableExtensionsTests
     /// Verifies that a null comparer passed to the comparer overload throws <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void Clamp_WhenComparerIsNull_ShouldThrowArgumentNullException()
+    public void Clamp_WhenComparerIsNull_ShouldThrowExactly()
     {
         IComparer<int>? comparer = null;
 

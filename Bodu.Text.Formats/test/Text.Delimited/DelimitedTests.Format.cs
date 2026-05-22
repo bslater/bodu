@@ -14,7 +14,7 @@ public sealed partial class DelimitedTests
     /// when the document is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void Format_WhenDocumentIsNull_ShouldThrowArgumentNullException()
+    public void Format_WhenDocumentIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

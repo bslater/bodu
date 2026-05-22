@@ -78,7 +78,7 @@ public partial class NotableDateTimeExtensionsTests
     /// Verifies that supplying a <see langword="null" /> service throws <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void GetNotableDates_WhenServiceIsNull_ShouldThrowArgumentNullException()
+    public void GetNotableDates_WhenServiceIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -90,7 +90,7 @@ public partial class NotableDateTimeExtensionsTests
     /// Verifies that supplying a <see langword="null" /> filter to the explicit-service overload throws <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void GetNotableDates_WhenExplicitFilterIsNull_ShouldThrowArgumentNullException()
+    public void GetNotableDates_WhenExplicitFilterIsNull_ShouldThrowExactly()
     {
         NotableDateService service = BuildService();
 
@@ -104,7 +104,7 @@ public partial class NotableDateTimeExtensionsTests
     /// Verifies that supplying a <see langword="null" /> filter to the ambient overload throws <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void GetNotableDates_WhenAmbientFilterIsNull_ShouldThrowArgumentNullException()
+    public void GetNotableDates_WhenAmbientFilterIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

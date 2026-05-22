@@ -70,7 +70,7 @@ public partial class ConcurrentCircularBufferTests
     /// Verifies that the indexer throws <see cref="ArgumentOutOfRangeException" /> when given a negative index.
     /// </summary>
     [TestMethod]
-    public void Indexer_WhenNegativeIndex_ShouldThrowArgumentOutOfRange()
+    public void Indexer_WhenNegativeIndex_ShouldThrowExactly()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(3);
         buffer.Enqueue(new TestItem(1));
@@ -85,7 +85,7 @@ public partial class ConcurrentCircularBufferTests
     /// Verifies that the indexer throws <see cref="ArgumentOutOfRangeException" /> when given an index beyond the current snapshot's length.
     /// </summary>
     [TestMethod]
-    public void Indexer_WhenNonNegativeIndexBeyondSnapshot_ShouldThrowArgumentOutOfRange()
+    public void Indexer_WhenNonNegativeIndexBeyondSnapshot_ShouldThrowExactly()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(3);
         buffer.Enqueue(new TestItem(1)); // snapshot length at least 1

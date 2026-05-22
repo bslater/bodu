@@ -31,7 +31,7 @@ public partial class PooledBufferBuilderTests
     /// when called on a disposed builder.
     /// </summary>
     [TestMethod]
-    public void TryCopyFrom_WhenDisposed_ShouldThrowObjectDisposedException()
+    public void TryCopyFrom_WhenDisposed_ShouldThrowExactly()
     {
         var builder = new PooledBufferBuilder<int>();
         builder.Dispose();
@@ -98,7 +98,7 @@ public partial class PooledBufferBuilderTests
     /// throws <see cref="ArgumentNullException"/>.
     /// </summary>
     [TestMethod]
-    public void TryCopyFrom_WhenSourceIsNull_ShouldThrowArgumentNullException()
+    public void TryCopyFrom_WhenSourceIsNull_ShouldThrowExactly()
     {
         using var builder = new PooledBufferBuilder<int>();
 

@@ -85,7 +85,7 @@ public partial class NumericExtensionsTests
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(LcmArrayEmptyActions))]
-    public void LeastCommonMultiple_AllArrayOverloads_WhenArrayIsEmpty_ShouldThrowArgumentException(Action action) =>
+    public void LeastCommonMultiple_AllArrayOverloads_WhenArrayIsEmpty_ShouldThrowExactly(Action action) =>
         Assert.ThrowsExactly<ArgumentException>(action);
 
     /// <summary>
@@ -93,7 +93,7 @@ public partial class NumericExtensionsTests
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(LcmArrayNullActions))]
-    public void LeastCommonMultiple_AllArrayOverloads_WhenArrayIsNull_ShouldThrowArgumentNullException(Action action) =>
+    public void LeastCommonMultiple_AllArrayOverloads_WhenArrayIsNull_ShouldThrowExactly(Action action) =>
         Assert.ThrowsExactly<ArgumentNullException>(action);
 
     /// <summary>
@@ -135,7 +135,7 @@ public partial class NumericExtensionsTests
     /// Verifies that <c>LeastCommonMultiple</c> throws <see cref="ArgumentOutOfRangeException"/> for negative left-hand inputs.
     /// </summary>
     [TestMethod]
-    public void LeastCommonMultiple_Int_WhenLeftIsNegative_ShouldThrowArgumentOutOfRangeException() =>
+    public void LeastCommonMultiple_Int_WhenLeftIsNegative_ShouldThrowExactly() =>
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             _ = (-1).LeastCommonMultiple(10);
@@ -160,7 +160,7 @@ public partial class NumericExtensionsTests
     /// not fit in <see cref="int"/>.
     /// </summary>
     [TestMethod]
-    public void LeastCommonMultiple_Int_WhenResultOverflows_ShouldThrowOverflowException() =>
+    public void LeastCommonMultiple_Int_WhenResultOverflows_ShouldThrowExactly() =>
         Assert.ThrowsExactly<OverflowException>(() =>
         {
             _ = int.MaxValue.LeastCommonMultiple(int.MaxValue - 1);
@@ -170,7 +170,7 @@ public partial class NumericExtensionsTests
     /// Verifies that <c>LeastCommonMultiple</c> throws <see cref="ArgumentOutOfRangeException"/> for negative right-hand inputs.
     /// </summary>
     [TestMethod]
-    public void LeastCommonMultiple_Int_WhenRightIsNegative_ShouldThrowArgumentOutOfRangeException() =>
+    public void LeastCommonMultiple_Int_WhenRightIsNegative_ShouldThrowExactly() =>
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             _ = 10.LeastCommonMultiple(-1);
@@ -181,7 +181,7 @@ public partial class NumericExtensionsTests
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(LcmNegativeIntArrays))]
-    public void LeastCommonMultiple_IntArray_WhenAnyValueIsNegative_ShouldThrowArgumentOutOfRangeException(int[] values) =>
+    public void LeastCommonMultiple_IntArray_WhenAnyValueIsNegative_ShouldThrowExactly(int[] values) =>
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             _ = values.LeastCommonMultiple();
@@ -191,7 +191,7 @@ public partial class NumericExtensionsTests
     /// Verifies that the <see cref="int"/> array overload throws <see cref="ArgumentException"/> when empty.
     /// </summary>
     [TestMethod]
-    public void LeastCommonMultiple_IntArray_WhenArrayIsEmpty_ShouldThrowArgumentException() =>
+    public void LeastCommonMultiple_IntArray_WhenArrayIsEmpty_ShouldThrowExactly() =>
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
             _ = Array.Empty<int>().LeastCommonMultiple();
@@ -232,7 +232,7 @@ public partial class NumericExtensionsTests
     [TestMethod]
     [DataRow(-1L, 10L)]
     [DataRow(10L, -1L)]
-    public void LeastCommonMultiple_Long_WhenNegative_ShouldThrowArgumentOutOfRangeException(long a, long b) =>
+    public void LeastCommonMultiple_Long_WhenNegative_ShouldThrowExactly(long a, long b) =>
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             _ = a.LeastCommonMultiple(b);
@@ -242,7 +242,7 @@ public partial class NumericExtensionsTests
     /// Verifies that <c>LeastCommonMultiple</c> on <see cref="long"/> throws when the result exceeds <see cref="long.MaxValue"/>.
     /// </summary>
     [TestMethod]
-    public void LeastCommonMultiple_Long_WhenResultOverflows_ShouldThrowOverflowException() =>
+    public void LeastCommonMultiple_Long_WhenResultOverflows_ShouldThrowExactly() =>
         Assert.ThrowsExactly<OverflowException>(() =>
         {
             _ = long.MaxValue.LeastCommonMultiple(long.MaxValue - 1);
@@ -260,7 +260,7 @@ public partial class NumericExtensionsTests
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(LcmNegativeLongArrays))]
-    public void LeastCommonMultiple_LongArray_WhenAnyValueIsNegative_ShouldThrowArgumentOutOfRangeException(long[] values) =>
+    public void LeastCommonMultiple_LongArray_WhenAnyValueIsNegative_ShouldThrowExactly(long[] values) =>
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             _ = values.LeastCommonMultiple();
@@ -283,7 +283,7 @@ public partial class NumericExtensionsTests
     [TestMethod]
     [DataRow((short)-1, (short)10)]
     [DataRow((short)10, (short)-1)]
-    public void LeastCommonMultiple_Short_WhenNegative_ShouldThrowArgumentOutOfRangeException(short a, short b) =>
+    public void LeastCommonMultiple_Short_WhenNegative_ShouldThrowExactly(short a, short b) =>
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             _ = a.LeastCommonMultiple(b);
@@ -293,7 +293,7 @@ public partial class NumericExtensionsTests
     /// Verifies that <c>LeastCommonMultiple</c> on <see cref="short"/> throws when the result exceeds <see cref="short.MaxValue"/>.
     /// </summary>
     [TestMethod]
-    public void LeastCommonMultiple_Short_WhenResultOverflows_ShouldThrowOverflowException() =>
+    public void LeastCommonMultiple_Short_WhenResultOverflows_ShouldThrowExactly() =>
         Assert.ThrowsExactly<OverflowException>(() =>
         {
             _ = ((short)1000).LeastCommonMultiple((short)1001);
@@ -311,7 +311,7 @@ public partial class NumericExtensionsTests
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(LcmNegativeShortArrays))]
-    public void LeastCommonMultiple_ShortArray_WhenAnyValueIsNegative_ShouldThrowArgumentOutOfRangeException(short[] values) =>
+    public void LeastCommonMultiple_ShortArray_WhenAnyValueIsNegative_ShouldThrowExactly(short[] values) =>
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             _ = values.LeastCommonMultiple();
@@ -345,7 +345,7 @@ public partial class NumericExtensionsTests
     /// Verifies that <c>LeastCommonMultiple</c> on <see cref="uint"/> throws when the result exceeds <see cref="uint.MaxValue"/>.
     /// </summary>
     [TestMethod]
-    public void LeastCommonMultiple_UInt_WhenResultOverflows_ShouldThrowOverflowException() =>
+    public void LeastCommonMultiple_UInt_WhenResultOverflows_ShouldThrowExactly() =>
         Assert.ThrowsExactly<OverflowException>(() =>
         {
             _ = uint.MaxValue.LeastCommonMultiple(uint.MaxValue - 1u);
@@ -372,7 +372,7 @@ public partial class NumericExtensionsTests
     /// Verifies that <c>LeastCommonMultiple</c> on <see cref="ulong"/> throws when the multiplication overflows.
     /// </summary>
     [TestMethod]
-    public void LeastCommonMultiple_ULong_WhenResultOverflows_ShouldThrowOverflowException() =>
+    public void LeastCommonMultiple_ULong_WhenResultOverflows_ShouldThrowExactly() =>
         Assert.ThrowsExactly<OverflowException>(() =>
         {
             _ = ulong.MaxValue.LeastCommonMultiple(ulong.MaxValue - 1ul);
@@ -406,7 +406,7 @@ public partial class NumericExtensionsTests
     /// Verifies that <c>LeastCommonMultiple</c> on <see cref="ushort"/> throws when the result exceeds <see cref="ushort.MaxValue"/>.
     /// </summary>
     [TestMethod]
-    public void LeastCommonMultiple_UShort_WhenResultOverflows_ShouldThrowOverflowException() =>
+    public void LeastCommonMultiple_UShort_WhenResultOverflows_ShouldThrowExactly() =>
         Assert.ThrowsExactly<OverflowException>(() =>
         {
             _ = ((ushort)1000).LeastCommonMultiple((ushort)1001);

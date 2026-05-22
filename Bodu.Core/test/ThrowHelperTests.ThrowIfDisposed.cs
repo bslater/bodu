@@ -27,7 +27,7 @@ public partial class ThrowHelperTests
     /// when the disposed flag is <see langword="true" />.
     /// </summary>
     [TestMethod]
-    public void ThrowIfDisposed_WhenDisposedIsTrue_ShouldThrowObjectDisposedException()
+    public void ThrowIfDisposed_WhenDisposedIsTrue_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ObjectDisposedException>(() =>
         {

@@ -222,7 +222,7 @@ public sealed partial class Base32Tests
     /// <see cref="ArgumentException" />.
     /// </summary>
     [TestMethod]
-    public void TryEncodeToUtf8_WhenUnsupportedFlag_ShouldThrowArgumentException()
+    public void TryEncodeToUtf8_WhenUnsupportedFlag_ShouldThrowExactly()
     {
         var destination = new byte[16];
 

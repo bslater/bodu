@@ -31,7 +31,7 @@ public sealed class UseDirectiveInheritanceTests
     /// Verifies that an <c>&lt;Adjustment&gt;</c> element without a <c>key</c> attribute fails schema validation at parse time.
     /// </summary>
     [TestMethod]
-    public void ParseDocument_WhenAdjustmentMissingKey_ShouldThrowSchemaValidationException()
+    public void ParseDocument_WhenAdjustmentMissingKey_ShouldThrowExactly()
     {
         var xml = NamespaceHeader +
             "  <NotableDate name=\"Test\">\n" +
@@ -104,7 +104,7 @@ public sealed class UseDirectiveInheritanceTests
     /// time, protecting the uniqueness invariant the merge algorithm relies on.
     /// </summary>
     [TestMethod]
-    public void ParseDocument_WhenOverrideDeclaresDuplicateAdjustmentKeys_ShouldThrow()
+    public void ParseDocument_WhenOverrideDeclaresDuplicateAdjustmentKeys_ShouldThrowExactly()
     {
         var xml = NamespaceHeader +
             "  <UseFrom resource=\"Bodu.Globalization.Calendar.Resources.Common.xml\">\n" +

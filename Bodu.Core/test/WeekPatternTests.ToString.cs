@@ -207,7 +207,7 @@ public partial class WeekPatternTests
     /// when the format string is unrecognised.
     /// </summary>
     [TestMethod]
-    public void ToString_WhenFormatIsUnrecognised_ShouldThrowException()
+    public void ToString_WhenFormatIsUnrecognised_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -249,7 +249,7 @@ public partial class WeekPatternTests
     /// when an unrecognised format specifier is provided.
     /// </summary>
     [TestMethod]
-    public void ToString_WhenInvalidFormat_ShouldThrowException()
+    public void ToString_WhenInvalidFormat_ShouldThrowExactly()
     {
         var pattern = new WeekPattern(DayOfWeek.Monday);
         Assert.ThrowsExactly<ArgumentException>(() => pattern.ToString("X"));
@@ -271,7 +271,7 @@ public partial class WeekPatternTests
     /// two-character format specifier has an invalid first character (i.e. not <c>'S'</c> or <c>'M'</c>).
     /// </summary>
     [TestMethod]
-    public void ToString_WhenTwoCharFormatHasInvalidStartDay_ShouldThrowArgumentException()
+    public void ToString_WhenTwoCharFormatHasInvalidStartDay_ShouldThrowExactly()
     {
         var pattern = new WeekPattern(DayOfWeek.Monday);
         Assert.ThrowsExactly<ArgumentException>(() => pattern.ToString("XU"));

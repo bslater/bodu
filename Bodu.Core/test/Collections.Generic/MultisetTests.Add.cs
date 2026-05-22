@@ -29,7 +29,7 @@ public partial class MultisetTests
     /// Verifies that <see cref="Multiset{T}.Add(T, int)"/> throws <see cref="ArgumentOutOfRangeException"/> when count is negative.
     /// </summary>
     [TestMethod]
-    public void Add_WhenCountIsNegative_ShouldThrowArgumentOutOfRangeException()
+    public void Add_WhenCountIsNegative_ShouldThrowExactly()
     {
         var mvd = new Multiset<int>();
 
@@ -61,7 +61,7 @@ public partial class MultisetTests
     /// Verifies that <see cref="Multiset{T}.Add(T, int)"/> throws <see cref="ArgumentOutOfRangeException"/> when count is zero.
     /// </summary>
     [TestMethod]
-    public void Add_WhenCountIsZero_ShouldThrowArgumentOutOfRangeException()
+    public void Add_WhenCountIsZero_ShouldThrowExactly()
     {
         var mvd = new Multiset<int>();
 

@@ -33,7 +33,7 @@ public sealed class CusipTests
     /// the CUSIP alphabet by throwing <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    public void Compute_WhenBodyContainsInvalidCharacter_ShouldThrowArgumentOutOfRangeException()
+    public void Compute_WhenBodyContainsInvalidCharacter_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

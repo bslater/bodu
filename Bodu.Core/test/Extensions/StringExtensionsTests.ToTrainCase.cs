@@ -39,7 +39,7 @@ public partial class StringExtensionsTests
     /// <see cref="ArgumentNullException" /> when <c>value</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void ToTrainCase_WhenInputIsNull_ShouldThrowArgumentNullException()
+    public void ToTrainCase_WhenInputIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() => _ = StringExtensions.ToTrainCase(null!));
     }

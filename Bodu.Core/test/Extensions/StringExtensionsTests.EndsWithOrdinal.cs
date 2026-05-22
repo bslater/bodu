@@ -40,7 +40,7 @@ public partial class StringExtensionsTests
     /// <see cref="ArgumentNullException" /> when either argument is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void EndsWithOrdinal_WhenAnyArgumentIsNull_ShouldThrowArgumentNullException()
+    public void EndsWithOrdinal_WhenAnyArgumentIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() => _ = StringExtensions.EndsWithOrdinal(null!, "x"));
         Assert.ThrowsExactly<ArgumentNullException>(() => _ = "hello".EndsWithOrdinal(null!));

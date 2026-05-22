@@ -236,7 +236,7 @@ public partial class ConcurrentCircularBufferTests
     /// property must never lazily create a lock object that a caller could subsequently lock on.
     /// </summary>
     [TestMethod]
-    public void SyncRoot_WhenAccessedRepeatedly_ShouldThrowOnEveryCall()
+    public void SyncRoot_WhenAccessedRepeatedly_ShouldThrowExactly()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(2);
         ICollection collection = buffer;

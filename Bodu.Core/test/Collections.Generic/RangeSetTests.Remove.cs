@@ -13,7 +13,7 @@ public partial class RangeSetTests
     /// Verifies that removing a range with a <see langword="null" /> end is rejected.
     /// </summary>
     [TestMethod]
-    public void Remove_WhenEndIsNull_ShouldThrowArgumentNullException()
+    public void Remove_WhenEndIsNull_ShouldThrowExactly()
     {
         var sut = new RangeSet<string>();
 
@@ -184,7 +184,7 @@ public partial class RangeSetTests
     [TestMethod]
     [DataRow(5, 5)]
     [DataRow(10, 5)]
-    public void Remove_WhenStartIsNotLessThanEnd_ShouldThrowArgumentException(int start, int end)
+    public void Remove_WhenStartIsNotLessThanEnd_ShouldThrowExactly(int start, int end)
     {
         var sut = new RangeSet<int>();
 
@@ -201,7 +201,7 @@ public partial class RangeSetTests
     /// Verifies that removing a range with a <see langword="null" /> start is rejected.
     /// </summary>
     [TestMethod]
-    public void Remove_WhenStartIsNull_ShouldThrowArgumentNullException()
+    public void Remove_WhenStartIsNull_ShouldThrowExactly()
     {
         var sut = new RangeSet<string>();
 

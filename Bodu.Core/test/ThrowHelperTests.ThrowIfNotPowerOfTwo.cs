@@ -47,7 +47,7 @@ public partial class ThrowHelperTests
     /// exercising the generic <c>IBinaryInteger&lt;T&gt;</c> constraint.
     /// </summary>
     [TestMethod]
-    public void ThrowIfNotPowerOfTwo_WhenLongValueIsNotPowerOfTwo_ShouldThrowArgumentOutOfRangeException()
+    public void ThrowIfNotPowerOfTwo_WhenLongValueIsNotPowerOfTwo_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -73,7 +73,7 @@ public partial class ThrowHelperTests
     [DataRow(-2)]
     [DataRow(-4)]
     [DataRow(int.MinValue)]
-    public void ThrowIfNotPowerOfTwo_WhenValueIsNegative_ShouldThrowArgumentOutOfRangeException(int value)
+    public void ThrowIfNotPowerOfTwo_WhenValueIsNegative_ShouldThrowExactly(int value)
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -93,7 +93,7 @@ public partial class ThrowHelperTests
     [DataRow(9)]
     [DataRow(10)]
     [DataRow(100)]
-    public void ThrowIfNotPowerOfTwo_WhenValueIsNotPowerOfTwo_ShouldThrowArgumentOutOfRangeException(int value)
+    public void ThrowIfNotPowerOfTwo_WhenValueIsNotPowerOfTwo_ShouldThrowExactly(int value)
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -122,7 +122,7 @@ public partial class ThrowHelperTests
     /// <see cref="ArgumentOutOfRangeException" /> when the value is zero.
     /// </summary>
     [TestMethod]
-    public void ThrowIfNotPowerOfTwo_WhenValueIsZero_ShouldThrowArgumentOutOfRangeException()
+    public void ThrowIfNotPowerOfTwo_WhenValueIsZero_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

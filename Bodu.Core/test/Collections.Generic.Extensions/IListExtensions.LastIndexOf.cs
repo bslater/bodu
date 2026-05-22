@@ -28,7 +28,7 @@ public sealed class IListExtensionsTests_LastIndexOf
     /// extends before the start of the list.
     /// </summary>
     [TestMethod]
-    public void LastIndexOf_WhenCountExtendsBeforeStart_ShouldThrowArgumentOutOfRangeException()
+    public void LastIndexOf_WhenCountExtendsBeforeStart_ShouldThrowExactly()
     {
         IList<int> list = new List<int> { 1, 2, 3 };
 
@@ -43,7 +43,7 @@ public sealed class IListExtensionsTests_LastIndexOf
     /// is negative.
     /// </summary>
     [TestMethod]
-    public void LastIndexOf_WhenCountIsNegative_ShouldThrowArgumentOutOfRangeException()
+    public void LastIndexOf_WhenCountIsNegative_ShouldThrowExactly()
     {
         IList<int> list = new List<int> { 1, 2, 3 };
 
@@ -100,7 +100,7 @@ public sealed class IListExtensionsTests_LastIndexOf
     [DataRow(0)]
     [DataRow(1)]
     [DataRow(-2)]
-    public void LastIndexOf_WhenListIsEmptyAndStartIndexIsNotMinusOne_ShouldThrowArgumentOutOfRangeException(int startIndex)
+    public void LastIndexOf_WhenListIsEmptyAndStartIndexIsNotMinusOne_ShouldThrowExactly(int startIndex)
     {
         IList<int> list = new List<int>();
 
@@ -127,7 +127,7 @@ public sealed class IListExtensionsTests_LastIndexOf
     /// Verifies that <c>LastIndexOf</c> throws <see cref="ArgumentNullException"/> when the list is <see langword="null"/>.
     /// </summary>
     [TestMethod]
-    public void LastIndexOf_WhenListIsNull_ShouldThrowArgumentNullException()
+    public void LastIndexOf_WhenListIsNull_ShouldThrowExactly()
     {
         IList<int>? list = null;
 
@@ -181,7 +181,7 @@ public sealed class IListExtensionsTests_LastIndexOf
     /// Verifies that <c>LastIndexOf</c> throws <see cref="ArgumentNullException"/> when the predicate is <see langword="null"/>.
     /// </summary>
     [TestMethod]
-    public void LastIndexOf_WhenPredicateIsNull_ShouldThrowArgumentNullException()
+    public void LastIndexOf_WhenPredicateIsNull_ShouldThrowExactly()
     {
         IList<int> list = new List<int> { 1 };
         Func<int, bool>? predicate = null;
@@ -197,7 +197,7 @@ public sealed class IListExtensionsTests_LastIndexOf
     /// <paramref name="startIndex"/> equals <see cref="ICollection{T}.Count"/>.
     /// </summary>
     [TestMethod]
-    public void LastIndexOf_WhenStartIndexEqualsCount_ShouldThrowArgumentOutOfRangeException()
+    public void LastIndexOf_WhenStartIndexEqualsCount_ShouldThrowExactly()
     {
         IList<int> list = new List<int> { 1, 2, 3 };
 
@@ -212,7 +212,7 @@ public sealed class IListExtensionsTests_LastIndexOf
     /// <paramref name="startIndex"/> is negative on a non-empty list.
     /// </summary>
     [TestMethod]
-    public void LastIndexOf_WhenStartIndexIsNegative_ShouldThrowArgumentOutOfRangeException()
+    public void LastIndexOf_WhenStartIndexIsNegative_ShouldThrowExactly()
     {
         IList<int> list = new List<int> { 1, 2, 3 };
 

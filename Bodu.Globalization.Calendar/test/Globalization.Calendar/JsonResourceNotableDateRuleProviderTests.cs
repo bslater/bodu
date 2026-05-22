@@ -62,7 +62,7 @@ public sealed class JsonResourceNotableDateRuleProviderTests
     /// <see cref="ArgumentNullException" /> and exposes the parameter name on the exception.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenResourcePathResolverIsNull_ShouldThrowArgumentNullException()
+    public void Ctor_WhenResourcePathResolverIsNull_ShouldThrowExactly()
     {
         var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -77,7 +77,7 @@ public sealed class JsonResourceNotableDateRuleProviderTests
     /// message references the resource name to aid diagnosis.
     /// </summary>
     [TestMethod]
-    public void LoadRules_WhenResourceMissing_ShouldThrowFileNotFoundException()
+    public void LoadRules_WhenResourceMissing_ShouldThrowExactly()
     {
         var provider = new JsonResourceNotableDateRuleProvider(
             "Bodu.Globalization.Calendar.Fixtures.NotThere.json",
@@ -97,7 +97,7 @@ public sealed class JsonResourceNotableDateRuleProviderTests
     /// <see cref="InvalidOperationException" />.
     /// </summary>
     [TestMethod]
-    public void LoadRules_WhenSourceRuleNameMissing_ShouldThrowInvalidOperationException()
+    public void LoadRules_WhenSourceRuleNameMissing_ShouldThrowExactly()
     {
         var provider = new JsonResourceNotableDateRuleProvider(
             MissingNameReferrerJson,
@@ -115,7 +115,7 @@ public sealed class JsonResourceNotableDateRuleProviderTests
     /// <see cref="InvalidOperationException" /> through the shared circular-reference detection in the base provider.
     /// </summary>
     [TestMethod]
-    public void LoadRules_WhenJsonGraphIsCircular_ShouldThrowInvalidOperationException()
+    public void LoadRules_WhenJsonGraphIsCircular_ShouldThrowExactly()
     {
         var provider = new JsonResourceNotableDateRuleProvider(
             CircularJsonA,

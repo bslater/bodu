@@ -35,7 +35,7 @@ public sealed class EasterSundayNotableDateProviderBaseTests
     [DataRow(10000)]
     [DataRow(int.MaxValue)]
     [TestMethod]
-    public void GetDates_WhenYearGreaterThan9999_ShouldThrowArgumentOutOfRangeException(int year)
+    public void GetDates_WhenYearGreaterThan9999_ShouldThrowExactly(int year)
     {
         var provider = new DefaultTestProvider();
 
@@ -85,7 +85,7 @@ public sealed class EasterSundayNotableDateProviderBaseTests
     /// to the caller and never invokes <c>CalculateDate</c>.
     /// </summary>
     [TestMethod]
-    public void GetDates_WhenSubclassValidateCalendarRejects_ShouldThrowWithoutCalculating()
+    public void GetDates_WhenSubclassValidateCalendarRejects_ShouldThrowExactly()
     {
         var provider = new RejectingTestProvider();
 

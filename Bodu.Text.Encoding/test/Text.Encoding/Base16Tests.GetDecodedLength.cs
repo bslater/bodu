@@ -45,7 +45,7 @@ public sealed partial class Base16Tests
     [DataRow("ab!c")]
     [DataRow("xx")]
     [DataRow("0xZZ")]
-    public void GetDecodedLength_WhenInputContainsNonHexCharacters_ShouldThrowFormatException(string invalidInput)
+    public void GetDecodedLength_WhenInputContainsNonHexCharacters_ShouldThrowExactly(string invalidInput)
     {
         Assert.ThrowsExactly<FormatException>(() =>
         {
@@ -81,7 +81,7 @@ public sealed partial class Base16Tests
     /// <see cref="FormatException" /> for an odd-length strict input.
     /// </summary>
     [TestMethod]
-    public void GetDecodedLength_WhenStrictOddInput_ShouldThrowFormatException()
+    public void GetDecodedLength_WhenStrictOddInput_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<FormatException>(() =>
         {

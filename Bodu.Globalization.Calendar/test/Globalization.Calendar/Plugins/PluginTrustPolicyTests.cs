@@ -176,7 +176,7 @@ public sealed class PluginTrustPolicyTests
     /// Verifies that <see cref="CompositePluginTrustPolicy" /> throws when constructed with an empty policy array.
     /// </summary>
     [TestMethod]
-    public void CompositePluginTrustPolicy_WhenConstructedEmpty_ShouldThrowArgumentException()
+    public void CompositePluginTrustPolicy_WhenConstructedEmpty_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentException>(() => _ = new CompositePluginTrustPolicy());
     }
@@ -213,7 +213,7 @@ public sealed class PluginTrustPolicyTests
     /// policies array with <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void CompositePluginTrustPolicy_WhenPoliciesArrayIsNull_ShouldThrowArgumentNullException()
+    public void CompositePluginTrustPolicy_WhenPoliciesArrayIsNull_ShouldThrowExactly()
     {
         var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -228,7 +228,7 @@ public sealed class PluginTrustPolicyTests
     /// contains a <see langword="null" /> element with <see cref="ArgumentException" />.
     /// </summary>
     [TestMethod]
-    public void CompositePluginTrustPolicy_WhenPoliciesArrayContainsNullElement_ShouldThrowArgumentException()
+    public void CompositePluginTrustPolicy_WhenPoliciesArrayContainsNullElement_ShouldThrowExactly()
     {
         var ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -243,7 +243,7 @@ public sealed class PluginTrustPolicyTests
     /// allowlist dictionary with <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void FileHashPluginTrustPolicy_WhenAllowedHashesIsNull_ShouldThrowArgumentNullException()
+    public void FileHashPluginTrustPolicy_WhenAllowedHashesIsNull_ShouldThrowExactly()
     {
         var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -322,7 +322,7 @@ public sealed class PluginTrustPolicyTests
     /// <see langword="null" /> allowlist with <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void StrongNamePluginTrustPolicy_WhenAllowlistIsNull_ShouldThrowArgumentNullException()
+    public void StrongNamePluginTrustPolicy_WhenAllowlistIsNull_ShouldThrowExactly()
     {
         var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

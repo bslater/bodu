@@ -61,7 +61,7 @@ public sealed partial class BencodedListTests
     /// rather than surfacing an <see cref="IndexOutOfRangeException" /> from the backing array.
     /// </summary>
     [TestMethod]
-    public void Indexer_WhenIndexIsNegative_ShouldThrowArgumentOutOfRangeException()
+    public void Indexer_WhenIndexIsNegative_ShouldThrowExactly()
     {
         BencodedList list = new(new BencodedValue[] { new BencodedInteger(1) });
 
@@ -76,7 +76,7 @@ public sealed partial class BencodedListTests
     /// or equal to <see cref="BencodedList.Count" />.
     /// </summary>
     [TestMethod]
-    public void Indexer_WhenIndexIsBeyondCount_ShouldThrowArgumentOutOfRangeException()
+    public void Indexer_WhenIndexIsBeyondCount_ShouldThrowExactly()
     {
         BencodedList list = new(new BencodedValue[] { new BencodedInteger(1) });
 

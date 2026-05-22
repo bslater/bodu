@@ -47,7 +47,7 @@ public partial class ConcurrentCircularBufferTests
     /// <see cref="ArgumentNullException"/>.
     /// </summary>
     [TestMethod]
-    public void DebugView_WhenBufferIsNull_ShouldThrowArgumentNullException()
+    public void DebugView_WhenBufferIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

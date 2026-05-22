@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DelimitedWriterTests.Ctors.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -13,7 +13,7 @@ public sealed partial class DelimitedWriterTests
     /// <see cref="TextWriter" /> throws <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenWriterIsNull_ShouldThrowArgumentNullException()
+    public void Ctor_WhenWriterIsNull_ShouldThrowExactly()
     {
         _ = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

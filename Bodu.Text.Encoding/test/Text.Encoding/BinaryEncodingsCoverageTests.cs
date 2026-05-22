@@ -245,7 +245,7 @@ public sealed class BinaryEncodingsCoverageTests
     /// encoding names — the default branch of the switch expression.
     /// </summary>
     [TestMethod]
-    public void Get_WhenUnknownName_ShouldThrowArgumentException()
+    public void Get_WhenUnknownName_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentException>(() =>
         {

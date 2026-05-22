@@ -78,7 +78,7 @@ public partial class PooledBufferBuilderTests
     /// the destination span is too small.
     /// </summary>
     [TestMethod]
-    public void CopyTo_WhenDestinationIsTooSmall_ShouldThrowArgumentException()
+    public void CopyTo_WhenDestinationIsTooSmall_ShouldThrowExactly()
     {
         using var builder = new PooledBufferBuilder<int>();
         builder.AppendRange([1, 2, 3]);
@@ -94,7 +94,7 @@ public partial class PooledBufferBuilderTests
     /// after the builder has been disposed.
     /// </summary>
     [TestMethod]
-    public void CopyTo_WhenDisposed_ShouldThrowObjectDisposedException()
+    public void CopyTo_WhenDisposed_ShouldThrowExactly()
     {
         var builder = new PooledBufferBuilder<int>();
         builder.Dispose();

@@ -54,7 +54,7 @@ public sealed partial class EncodingExtensionsTests
     /// throws <see cref="ArgumentNullException" /> when <c>sourceEncoding</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void Transcode_WhenSourceEncodingIsNull_ShouldThrowArgumentNullException()
+    public void Transcode_WhenSourceEncodingIsNull_ShouldThrowExactly()
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -69,7 +69,7 @@ public sealed partial class EncodingExtensionsTests
     /// throws <see cref="ArgumentNullException" /> when <c>destinationEncoding</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void Transcode_WhenDestinationEncodingIsNull_ShouldThrowArgumentNullException()
+    public void Transcode_WhenDestinationEncodingIsNull_ShouldThrowExactly()
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -121,7 +121,7 @@ public sealed partial class EncodingExtensionsTests
     /// throws <see cref="ArgumentException" /> when the destination is one byte too small.
     /// </summary>
     [TestMethod]
-    public void TranscodeTo_WhenDestinationIsTooSmall_ShouldThrowArgumentException()
+    public void TranscodeTo_WhenDestinationIsTooSmall_ShouldThrowExactly()
     {
         var utf8 = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
         var required = System.Text.Encoding.Convert(System.Text.Encoding.UTF8, System.Text.Encoding.Unicode, utf8).Length;
@@ -141,7 +141,7 @@ public sealed partial class EncodingExtensionsTests
     /// throws <see cref="ArgumentNullException" /> for null encodings.
     /// </summary>
     [TestMethod]
-    public void TranscodeTo_WhenSourceEncodingIsNull_ShouldThrowArgumentNullException()
+    public void TranscodeTo_WhenSourceEncodingIsNull_ShouldThrowExactly()
     {
         var backing = new byte[16];
 

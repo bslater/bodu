@@ -56,7 +56,7 @@ public sealed class FiscalYearExtensionsDateTimeTests
     /// when the provider argument is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void DateTimeFiscalYearMethods_WhenProviderIsNull_ShouldThrowArgumentNullException()
+    public void DateTimeFiscalYearMethods_WhenProviderIsNull_ShouldThrowExactly()
     {
         var date = new DateTime(2026, 5, 14);
 

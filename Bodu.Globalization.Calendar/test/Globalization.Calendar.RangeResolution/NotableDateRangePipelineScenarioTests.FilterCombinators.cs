@@ -370,7 +370,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
     /// Verifies that <see cref="NotableDateFilter.ForAnyCategory" /> rejects an empty parameter array.
     /// </summary>
     [TestMethod]
-    public void Filter_ForAnyCategory_WhenCalledWithNoCategories_ShouldThrowArgumentException()
+    public void Filter_ForAnyCategory_WhenCalledWithNoCategories_ShouldThrowExactly()
     {
         ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -384,7 +384,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
     /// Verifies that <see cref="NotableDateFilter.WithTag" /> rejects whitespace-only input.
     /// </summary>
     [TestMethod]
-    public void Filter_WithTag_WhenCalledWithWhitespace_ShouldThrowArgumentException()
+    public void Filter_WithTag_WhenCalledWithWhitespace_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -396,7 +396,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
     /// Verifies that <see cref="NotableDateFilter.InDateRange" /> rejects an inverted range (end before start).
     /// </summary>
     [TestMethod]
-    public void Filter_InDateRange_WhenEndIsBeforeStart_ShouldThrowArgumentException()
+    public void Filter_InDateRange_WhenEndIsBeforeStart_ShouldThrowExactly()
     {
         ArgumentException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -410,7 +410,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
     /// Verifies that <see cref="NotableDateFilter.WithMinDuration" /> rejects values less than one.
     /// </summary>
     [TestMethod]
-    public void Filter_WithMinDuration_WhenLessThanOne_ShouldThrowArgumentOutOfRangeException()
+    public void Filter_WithMinDuration_WhenLessThanOne_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -422,7 +422,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
     /// Verifies that <see cref="NotableDateFilter.And" /> rejects a <see langword="null" /> sibling.
     /// </summary>
     [TestMethod]
-    public void Combinator_And_WhenOtherIsNull_ShouldThrowArgumentNullException()
+    public void Combinator_And_WhenOtherIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

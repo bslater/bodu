@@ -97,7 +97,7 @@ public partial class NotableDateRuleParserTests
     /// overload rejects a null document via <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void ParseDocument_WhenXDocumentIsNull_ShouldThrowArgumentNullException()
+    public void ParseDocument_WhenXDocumentIsNull_ShouldThrowExactly()
     {
         var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

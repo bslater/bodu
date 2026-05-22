@@ -19,7 +19,7 @@ public sealed partial class Base58Tests
     [DataRow('O')]
     [DataRow('I')]
     [DataRow('l')]
-    public void Decode_WhenBitcoinFlickrVariantWithExcludedCharacter_ShouldThrowFormatException(char excluded)
+    public void Decode_WhenBitcoinFlickrVariantWithExcludedCharacter_ShouldThrowExactly(char excluded)
     {
         Assert.ThrowsExactly<FormatException>(() =>
         {

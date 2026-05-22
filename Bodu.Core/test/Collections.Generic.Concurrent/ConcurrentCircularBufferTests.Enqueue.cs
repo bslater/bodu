@@ -109,7 +109,7 @@ public partial class ConcurrentCircularBufferTests
     /// Verifies that enqueueing into a full buffer with overwriting disabled throws <see cref="InvalidOperationException" />.
     /// </summary>
     [TestMethod]
-    public void Enqueue_WhenBufferFullAndAllowOverwriteFalse_ShouldThrowInvalidOperation()
+    public void Enqueue_WhenBufferFullAndAllowOverwriteFalse_ShouldThrowExactly()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(2, allowOverwrite: false);
         buffer.Enqueue(new TestItem(1));

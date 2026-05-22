@@ -14,7 +14,7 @@ public partial class ArrayExtensionsTests
     /// array is <see langword="null"/>, exercising the index-0 null check separately from the loop.
     /// </summary>
     [TestMethod]
-    public void ToMatrix_WhenFirstInnerArrayIsNull_ShouldThrowArgumentNullException()
+    public void ToMatrix_WhenFirstInnerArrayIsNull_ShouldThrowExactly()
     {
         int[][] source = [null!, [1, 2]];
 
@@ -29,7 +29,7 @@ public partial class ArrayExtensionsTests
     /// array is <see langword="null"/>.
     /// </summary>
     [TestMethod]
-    public void ToMatrix_WhenInnerArrayIsNull_ShouldThrowArgumentNullException()
+    public void ToMatrix_WhenInnerArrayIsNull_ShouldThrowExactly()
     {
         int[][] source = [[1, 2], null!];
 
@@ -72,7 +72,7 @@ public partial class ArrayExtensionsTests
     /// Verifies that <c>ToMatrix</c> throws <see cref="ArgumentException"/> when inner arrays have different lengths.
     /// </summary>
     [TestMethod]
-    public void ToMatrix_WhenInnerArraysHaveDifferentLengths_ShouldThrowArgumentException()
+    public void ToMatrix_WhenInnerArraysHaveDifferentLengths_ShouldThrowExactly()
     {
         int[][] source =
         [
@@ -90,7 +90,7 @@ public partial class ArrayExtensionsTests
     /// Verifies that <c>ToMatrix</c> throws <see cref="ArgumentException"/> when the source has no rows.
     /// </summary>
     [TestMethod]
-    public void ToMatrix_WhenSourceHasNoRows_ShouldThrowArgumentException()
+    public void ToMatrix_WhenSourceHasNoRows_ShouldThrowExactly()
     {
         var source = Array.Empty<int[]>();
 
@@ -104,7 +104,7 @@ public partial class ArrayExtensionsTests
     /// Verifies that <c>ToMatrix</c> throws <see cref="ArgumentNullException"/> when the source is <see langword="null"/>.
     /// </summary>
     [TestMethod]
-    public void ToMatrix_WhenSourceIsNull_ShouldThrowArgumentNullException()
+    public void ToMatrix_WhenSourceIsNull_ShouldThrowExactly()
     {
         int[][]? source = null;
 

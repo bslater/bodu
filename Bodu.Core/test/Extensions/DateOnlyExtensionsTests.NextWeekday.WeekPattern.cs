@@ -29,7 +29,7 @@ public partial class DateOnlyExtensionsTests
     /// <see cref="ArgumentOutOfRangeException" /> when supplied an empty working-week pattern.
     /// </summary>
     [TestMethod]
-    public void NextWeekday_WhenWorkingWeekIsEmpty_ShouldThrowArgumentOutOfRangeException()
+    public void NextWeekday_WhenWorkingWeekIsEmpty_ShouldThrowExactly()
     {
         var input = new DateOnly(2024, 4, 20);
 

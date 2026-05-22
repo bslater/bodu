@@ -21,7 +21,7 @@ public partial class ThrowHelperTests
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(GetTooSmallCollectionTestData))]
-    public void ThrowIfCollectionTooSmall_WhenCollectionTooSmall_ShouldThrowArgumentException(ICollection<int> collection, int minimumCount)
+    public void ThrowIfCollectionTooSmall_WhenCollectionTooSmall_ShouldThrowExactly(ICollection<int> collection, int minimumCount)
     {
         Assert.ThrowsExactly<ArgumentException>(() =>
         {

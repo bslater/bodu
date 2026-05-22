@@ -17,7 +17,7 @@ public partial class ArrayExtensionsTests
     [DataRow(0, -1, DisplayName = "Negative count")]
     [DataRow(10, 0, DisplayName = "Index exceeds array length")]
     [DataRow(0, 10, DisplayName = "Count exceeds array length")]
-    public void Slice_WhenArgumentsAreInvalid_ForTypedArrayIndexCount_ShouldThrowArgumentOutOfRangeException(int index, int count)
+    public void Slice_WhenArgumentsAreInvalid_ForTypedArrayIndexCount_ShouldThrowExactly(int index, int count)
     {
         int[] source = [1, 2, 3, 4, 5];
 
@@ -61,7 +61,7 @@ public partial class ArrayExtensionsTests
     /// Verifies that an index beyond the array length throws <see cref="ArgumentOutOfRangeException" /> from the index-only overload.
     /// </summary>
     [TestMethod]
-    public void Slice_WhenIndexExceedsLength_ForTypedArrayIndexOnly_ShouldThrowArgumentOutOfRangeException()
+    public void Slice_WhenIndexExceedsLength_ForTypedArrayIndexOnly_ShouldThrowExactly()
     {
         int[] source = [1, 2, 3];
 
@@ -75,7 +75,7 @@ public partial class ArrayExtensionsTests
     /// Verifies that a negative index throws <see cref="ArgumentOutOfRangeException" /> from the index-only overload.
     /// </summary>
     [TestMethod]
-    public void Slice_WhenIndexIsNegative_ForTypedArrayIndexOnly_ShouldThrowArgumentOutOfRangeException()
+    public void Slice_WhenIndexIsNegative_ForTypedArrayIndexOnly_ShouldThrowExactly()
     {
         int[] source = [1, 2, 3];
 
@@ -89,7 +89,7 @@ public partial class ArrayExtensionsTests
     /// Verifies that an index plus count that extends past the array end throws <see cref="ArgumentException" />.
     /// </summary>
     [TestMethod]
-    public void Slice_WhenIndexPlusCountExceedsLength_ForTypedArrayIndexCount_ShouldThrowArgumentException()
+    public void Slice_WhenIndexPlusCountExceedsLength_ForTypedArrayIndexCount_ShouldThrowExactly()
     {
         int[] source = [1, 2, 3, 4, 5];
 
@@ -153,7 +153,7 @@ public partial class ArrayExtensionsTests
     /// Verifies that a null array throws <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void Slice_WhenSourceIsNull_ForTypedArrayIndexCount_ShouldThrowArgumentNullException()
+    public void Slice_WhenSourceIsNull_ForTypedArrayIndexCount_ShouldThrowExactly()
     {
         int[]? source = null;
 
@@ -167,7 +167,7 @@ public partial class ArrayExtensionsTests
     /// Verifies that slicing from a null array throws <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void Slice_WhenSourceIsNull_ForTypedArrayIndexOnly_ShouldThrowArgumentNullException()
+    public void Slice_WhenSourceIsNull_ForTypedArrayIndexOnly_ShouldThrowExactly()
     {
         int[]? source = null;
 

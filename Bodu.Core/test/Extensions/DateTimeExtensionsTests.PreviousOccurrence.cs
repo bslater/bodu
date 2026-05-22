@@ -108,7 +108,7 @@ public partial class DateTimeExtensionsTests
     /// Verifies that a negative <see cref="TimeSpan"/> interval throws <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    public void PreviousOccurrence_WhenIntervalIsNegative_ShouldThrowArgumentOutOfRangeException()
+    public void PreviousOccurrence_WhenIntervalIsNegative_ShouldThrowExactly()
     {
         var start = new DateTime(2025, 7, 7, 9, 0, 0);
 
@@ -122,7 +122,7 @@ public partial class DateTimeExtensionsTests
     /// Verifies that a zero <see cref="TimeSpan"/> interval throws <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    public void PreviousOccurrence_WhenIntervalIsZero_ShouldThrowArgumentOutOfRangeException()
+    public void PreviousOccurrence_WhenIntervalIsZero_ShouldThrowExactly()
     {
         var start = new DateTime(2025, 7, 7, 9, 0, 0);
 

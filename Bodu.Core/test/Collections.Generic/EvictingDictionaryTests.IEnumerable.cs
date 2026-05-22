@@ -15,7 +15,7 @@ public partial class EvictingDictionaryTests
     /// Verifies that mutating the dictionary via Clear during enumeration invalidates the active enumerator.
     /// </summary>
     [TestMethod]
-    public void GetEnumerator_WhenDictionaryIsClearedDuringEnumeration_ShouldThrowException()
+    public void GetEnumerator_WhenDictionaryIsClearedDuringEnumeration_ShouldThrowExactly()
     {
         var dictionary = new EvictingDictionary<int, int>(10);
         for (var i = 0; i < 3; i++)
@@ -33,7 +33,7 @@ public partial class EvictingDictionaryTests
     /// causes the next <c>MoveNext</c> to throw <see cref="InvalidOperationException"/>.
     /// </summary>
     [TestMethod]
-    public void GetEnumerator_WhenDictionaryIsMutatedByAddDuringEnumeration_ShouldThrowException()
+    public void GetEnumerator_WhenDictionaryIsMutatedByAddDuringEnumeration_ShouldThrowExactly()
     {
         var dictionary = new EvictingDictionary<int, int>(10);
         for (var i = 0; i < 5; i++)
@@ -50,7 +50,7 @@ public partial class EvictingDictionaryTests
     /// Verifies that mutating the dictionary via Remove during enumeration invalidates the active enumerator.
     /// </summary>
     [TestMethod]
-    public void GetEnumerator_WhenDictionaryIsMutatedByRemoveDuringEnumeration_ShouldThrowException()
+    public void GetEnumerator_WhenDictionaryIsMutatedByRemoveDuringEnumeration_ShouldThrowExactly()
     {
         var dictionary = new EvictingDictionary<int, int>(10);
         for (var i = 0; i < 5; i++)

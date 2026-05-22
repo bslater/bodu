@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FractionTests.DefaultValue.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -64,7 +64,7 @@ public partial class FractionTests
     /// <see cref="DivideByZeroException" />.
     /// </summary>
     [TestMethod]
-    public void Default_WhenReciprocalRequested_ShouldThrowDivideByZeroException()
+    public void Default_WhenReciprocalRequested_ShouldThrowExactly()
     {
         _ = Assert.ThrowsExactly<DivideByZeroException>(() =>
         {

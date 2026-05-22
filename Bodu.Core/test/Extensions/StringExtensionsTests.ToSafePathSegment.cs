@@ -65,7 +65,7 @@ public partial class StringExtensionsTests
     /// <see cref="ArgumentNullException" /> when invoked with <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void ToSafePathSegment_WhenValueIsNull_ShouldThrowArgumentNullException()
+    public void ToSafePathSegment_WhenValueIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

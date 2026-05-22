@@ -22,7 +22,7 @@ public sealed class Iso7064Mod97_10Tests
     /// character.
     /// </summary>
     [TestMethod]
-    public void Compute_WhenBodyContainsInvalidCharacter_ShouldThrowArgumentOutOfRangeException()
+    public void Compute_WhenBodyContainsInvalidCharacter_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

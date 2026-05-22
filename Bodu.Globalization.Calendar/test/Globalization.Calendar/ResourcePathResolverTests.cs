@@ -71,7 +71,7 @@ public sealed class ResourcePathResolverTests
     /// <see langword="null" /> and exposes the parameter name on the exception.
     /// </summary>
     [TestMethod]
-    public void Resolve_WhenDocumentPathIsNull_ShouldThrowArgumentNullException()
+    public void Resolve_WhenDocumentPathIsNull_ShouldThrowExactly()
     {
         IResourcePathResolver resolver = new ResourcePathResolver();
 
@@ -92,7 +92,7 @@ public sealed class ResourcePathResolverTests
     [DataRow(" ")]
     [DataRow("\t\r\n")]
     [TestMethod]
-    public void Resolve_WhenDocumentPathIsEmptyOrWhitespace_ShouldThrowArgumentException(string documentPath)
+    public void Resolve_WhenDocumentPathIsEmptyOrWhitespace_ShouldThrowExactly(string documentPath)
     {
         IResourcePathResolver resolver = new ResourcePathResolver();
 
@@ -110,7 +110,7 @@ public sealed class ResourcePathResolverTests
     /// <see langword="null" /> and exposes the parameter name on the exception.
     /// </summary>
     [TestMethod]
-    public void Resolve_WhenChildPathIsNull_ShouldThrowArgumentNullException()
+    public void Resolve_WhenChildPathIsNull_ShouldThrowExactly()
     {
         IResourcePathResolver resolver = new ResourcePathResolver();
 
@@ -131,7 +131,7 @@ public sealed class ResourcePathResolverTests
     [DataRow(" ")]
     [DataRow("\t\r\n")]
     [TestMethod]
-    public void Resolve_WhenChildPathIsEmptyOrWhitespace_ShouldThrowArgumentException(string childPath)
+    public void Resolve_WhenChildPathIsEmptyOrWhitespace_ShouldThrowExactly(string childPath)
     {
         IResourcePathResolver resolver = new ResourcePathResolver();
 
@@ -153,7 +153,7 @@ public sealed class ResourcePathResolverTests
     /// path outside the resource hierarchy.
     /// </summary>
     [TestMethod]
-    public void Resolve_WhenRelativeChildPathEscapesRoot_ShouldThrowInvalidOperationException()
+    public void Resolve_WhenRelativeChildPathEscapesRoot_ShouldThrowExactly()
     {
         IResourcePathResolver resolver = new ResourcePathResolver();
 
@@ -168,7 +168,7 @@ public sealed class ResourcePathResolverTests
     /// also throws <see cref="InvalidOperationException" />.
     /// </summary>
     [TestMethod]
-    public void Resolve_WhenAbsoluteChildPathEscapesRoot_ShouldThrowInvalidOperationException()
+    public void Resolve_WhenAbsoluteChildPathEscapesRoot_ShouldThrowExactly()
     {
         IResourcePathResolver resolver = new ResourcePathResolver();
 
@@ -184,7 +184,7 @@ public sealed class ResourcePathResolverTests
     /// <see cref="InvalidOperationException" />.
     /// </summary>
     [TestMethod]
-    public void Resolve_WhenManyParentSegmentsExhaustDirectory_ShouldThrowInvalidOperationException()
+    public void Resolve_WhenManyParentSegmentsExhaustDirectory_ShouldThrowExactly()
     {
         IResourcePathResolver resolver = new ResourcePathResolver();
 

@@ -19,7 +19,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     /// <param name="variant">The algorithm variant under test.</param>
     [TestMethod]
     [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
-    public void GetHashCode_WhenCalled_ShouldThrowException(TVariant variant)
+    public void GetHashCode_WhenCalled_ShouldThrowExactly(TVariant variant)
     {
         TAlgorithm algorithm = CreateAlgorithm(variant);
         Assert.ThrowsExactly<NotSupportedException>(() =>

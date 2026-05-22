@@ -56,7 +56,7 @@ public partial class CrcStandardTests
     /// therefore rejects a lowercased canonical name.
     /// </summary>
     [TestMethod]
-    public void FromName_WhenNameCaseDiffers_ShouldThrowKeyNotFoundException()
+    public void FromName_WhenNameCaseDiffers_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<KeyNotFoundException>(() =>
         {
@@ -97,7 +97,7 @@ public partial class CrcStandardTests
     /// <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void FromName_WhenNameIsNull_ShouldThrowArgumentNullException()
+    public void FromName_WhenNameIsNull_ShouldThrowExactly()
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -111,7 +111,7 @@ public partial class CrcStandardTests
     /// <see cref="KeyNotFoundException" /> when the supplied name does not match any catalogue entry.
     /// </summary>
     [TestMethod]
-    public void FromName_WhenNameIsUnknown_ShouldThrowKeyNotFoundException()
+    public void FromName_WhenNameIsUnknown_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<KeyNotFoundException>(() =>
         {
@@ -138,7 +138,7 @@ public partial class CrcStandardTests
     /// enum value is outside the declared catalogue range.
     /// </summary>
     [TestMethod]
-    public void Get_WhenStandardIsUndefined_ShouldThrowArgumentOutOfRangeException()
+    public void Get_WhenStandardIsUndefined_ShouldThrowExactly()
     {
         ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

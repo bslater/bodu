@@ -13,7 +13,7 @@ public partial class EvictingDictionaryTests
     /// Verifies that mutating the dictionary through the Keys collection is not supported and throws.
     /// </summary>
     [TestMethod]
-    public void Keys_Add_ShouldThrowException()
+    public void Keys_Add_ShouldThrowExactly()
     {
         var dictionary = new EvictingDictionary<string, int>(3);
         ICollection<string> keys = dictionary.Keys;

@@ -17,7 +17,7 @@ public partial class OrderedSetTests
     [DataRow(3)]
     [DataRow(int.MaxValue)]
     [DataRow(int.MinValue)]
-    public void Indexer_WhenIndexIsOutOfRange_ShouldThrowArgumentOutOfRangeException(int index)
+    public void Indexer_WhenIndexIsOutOfRange_ShouldThrowExactly(int index)
     {
         OrderedSet<int> sut = CreateSet([1, 2, 3]);
 
@@ -47,7 +47,7 @@ public partial class OrderedSetTests
     /// Verifies that the indexer on an empty set throws <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    public void Indexer_WhenSetIsEmpty_ShouldThrowArgumentOutOfRangeException()
+    public void Indexer_WhenSetIsEmpty_ShouldThrowExactly()
     {
         var sut = new OrderedSet<int>();
 

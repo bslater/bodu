@@ -15,7 +15,7 @@ public partial class CrcTests
     /// additional-data argument is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void ComputeHashFrom_WhenNewDataByteArrayIsNull_ShouldThrowArgumentNullException()
+    public void ComputeHashFrom_WhenNewDataByteArrayIsNull_ShouldThrowExactly()
     {
         Crc crc = new(CrcStandard.CRC32_ISOHDLC);
         var previousHash = new byte[crc.HashLengthInBytes];
@@ -31,7 +31,7 @@ public partial class CrcTests
     /// additional-data argument is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void ComputeHashFrom_WhenNewDataIsNull_ForOffsetOverload_ShouldThrowArgumentNullException()
+    public void ComputeHashFrom_WhenNewDataIsNull_ForOffsetOverload_ShouldThrowExactly()
     {
         Crc crc = new(CrcStandard.CRC32_ISOHDLC);
         var previousHash = new byte[crc.HashLengthInBytes];
@@ -69,7 +69,7 @@ public partial class CrcTests
     /// offset is negative, rather than surfacing a span-internal exception from the slice operation.
     /// </summary>
     [TestMethod]
-    public void ComputeHashFrom_WhenOffsetIsNegative_ShouldThrowArgumentOutOfRangeException()
+    public void ComputeHashFrom_WhenOffsetIsNegative_ShouldThrowExactly()
     {
         Crc crc = new(CrcStandard.CRC32_ISOHDLC);
         var previousHash = new byte[crc.HashLengthInBytes];
@@ -86,7 +86,7 @@ public partial class CrcTests
     /// length is negative.
     /// </summary>
     [TestMethod]
-    public void ComputeHashFrom_WhenLengthIsNegative_ShouldThrowArgumentOutOfRangeException()
+    public void ComputeHashFrom_WhenLengthIsNegative_ShouldThrowExactly()
     {
         Crc crc = new(CrcStandard.CRC32_ISOHDLC);
         var previousHash = new byte[crc.HashLengthInBytes];
@@ -103,7 +103,7 @@ public partial class CrcTests
     /// <paramref name="newData" />, rather than surfacing a span-internal slicing exception.
     /// </summary>
     [TestMethod]
-    public void ComputeHashFrom_WhenOffsetPlusLengthExceedsNewData_ShouldThrowArgumentException()
+    public void ComputeHashFrom_WhenOffsetPlusLengthExceedsNewData_ShouldThrowExactly()
     {
         Crc crc = new(CrcStandard.CRC32_ISOHDLC);
         var previousHash = new byte[crc.HashLengthInBytes];
@@ -119,7 +119,7 @@ public partial class CrcTests
     /// prior-digest argument is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void ComputeHashFrom_WhenPreviousHashByteArrayIsNull_ShouldThrowArgumentNullException()
+    public void ComputeHashFrom_WhenPreviousHashByteArrayIsNull_ShouldThrowExactly()
     {
         Crc crc = new(CrcStandard.CRC32_ISOHDLC);
         byte[] newData = [0x01];
@@ -135,7 +135,7 @@ public partial class CrcTests
     /// prior-digest argument is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void ComputeHashFrom_WhenPreviousHashIsNull_ForOffsetOverload_ShouldThrowArgumentNullException()
+    public void ComputeHashFrom_WhenPreviousHashIsNull_ForOffsetOverload_ShouldThrowExactly()
     {
         Crc crc = new(CrcStandard.CRC32_ISOHDLC);
         byte[] newData = [0x01, 0x02, 0x03];
@@ -226,7 +226,7 @@ public partial class CrcTests
     [TestMethod]
     [DataRow(-1)]
     [DataRow(+1)]
-    public void TryComputeHashFrom_WhenPreviousHashLengthMismatches_ShouldThrowArgumentException(int lengthDelta)
+    public void TryComputeHashFrom_WhenPreviousHashLengthMismatches_ShouldThrowExactly(int lengthDelta)
     {
         Crc crc = new(CrcStandard.CRC32_ISOHDLC);
         var previousHash = new byte[crc.HashLengthInBytes + lengthDelta];

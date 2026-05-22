@@ -44,7 +44,7 @@ public partial class StringExtensionsTests
     /// <see cref="ArgumentNullException" /> when invoked with <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void RemoveDiacritics_WhenValueIsNull_ShouldThrowArgumentNullException()
+    public void RemoveDiacritics_WhenValueIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

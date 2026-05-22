@@ -98,7 +98,7 @@ default.filename.loaded = yes
     /// <see cref="FileNotFoundException" />.
     /// </summary>
     [TestMethod]
-    public void AddConfiguration_WhenNoArgsAndRequiredAndAllMissing_ShouldThrowFileNotFoundException()
+    public void AddConfiguration_WhenNoArgsAndRequiredAndAllMissing_ShouldThrowExactly()
     {
         var directory = CreateTempDirectory();
         try
@@ -121,7 +121,7 @@ default.filename.loaded = yes
     /// Verifies that the default-filename overload rejects a <see langword="null" /> builder.
     /// </summary>
     [TestMethod]
-    public void AddConfiguration_WhenBuilderIsNull_ShouldThrowArgumentNullException()
+    public void AddConfiguration_WhenBuilderIsNull_ShouldThrowExactly()
     {
         IConfigurationBuilder builder = null!;
 

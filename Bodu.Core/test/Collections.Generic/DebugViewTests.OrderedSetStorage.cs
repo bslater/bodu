@@ -42,7 +42,7 @@ public sealed class DebugViewTests_OrderedSetStorage
     /// <see cref="IndexedSet{T}" />.
     /// </summary>
     [TestMethod]
-    public void OrderedSetStorageDebugView_WhenIndexedSetIsNull_ShouldThrowArgumentNullException()
+    public void OrderedSetStorageDebugView_WhenIndexedSetIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -55,7 +55,7 @@ public sealed class DebugViewTests_OrderedSetStorage
     /// <see cref="OrderedSet{T}" />.
     /// </summary>
     [TestMethod]
-    public void OrderedSetStorageDebugView_WhenOrderedSetIsNull_ShouldThrowArgumentNullException()
+    public void OrderedSetStorageDebugView_WhenOrderedSetIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

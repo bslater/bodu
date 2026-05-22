@@ -16,7 +16,7 @@ public partial class RangeDictionaryTests
     /// invalidates an enumerator.
     /// </summary>
     [TestMethod]
-    public void Enumerator_WhenDictionaryClearedAfterCreation_ShouldThrowOnReset()
+    public void Enumerator_WhenDictionaryClearedAfterCreation_ShouldThrowExactly()
     {
         RangeDictionary<int, string> sut = CreateDictionary((0, 5, "A"));
         RangeDictionary<int, string>.Enumerator enumerator = sut.GetEnumerator();
@@ -39,7 +39,7 @@ public partial class RangeDictionaryTests
     /// <see cref="InvalidOperationException" />.
     /// </summary>
     [TestMethod]
-    public void Enumerator_WhenDictionaryMutatedByAddAfterCreation_ShouldThrowOnMoveNext()
+    public void Enumerator_WhenDictionaryMutatedByAddAfterCreation_ShouldThrowExactly()
     {
         RangeDictionary<int, string> sut = CreateDictionary((0, 5, "A"));
         RangeDictionary<int, string>.Enumerator enumerator = sut.GetEnumerator();
@@ -57,7 +57,7 @@ public partial class RangeDictionaryTests
     /// invalidates an enumerator.
     /// </summary>
     [TestMethod]
-    public void Enumerator_WhenDictionaryMutatedByRemoveAfterCreation_ShouldThrowOnMoveNext()
+    public void Enumerator_WhenDictionaryMutatedByRemoveAfterCreation_ShouldThrowExactly()
     {
         RangeDictionary<int, string> sut = CreateDictionary((0, 5, "A"));
         RangeDictionary<int, string>.Enumerator enumerator = sut.GetEnumerator();

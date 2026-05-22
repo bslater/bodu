@@ -96,7 +96,7 @@ public sealed partial class Base32Tests
     /// Verifies that <see cref="Base32.FromBase32String(string)" /> rejects unpadded input.
     /// </summary>
     [TestMethod]
-    public void FromBase32String_WhenPaddingOmitted_ShouldThrowFormatException()
+    public void FromBase32String_WhenPaddingOmitted_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<FormatException>(() =>
         {

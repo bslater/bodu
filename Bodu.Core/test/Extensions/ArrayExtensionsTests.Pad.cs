@@ -13,7 +13,7 @@ public partial class ArrayExtensionsTests
     /// Verifies that <c>PadLeft</c> throws <see cref="ArgumentNullException"/> when the source is <see langword="null"/>.
     /// </summary>
     [TestMethod]
-    public void PadLeft_WhenArrayIsNull_ShouldThrowArgumentNullException()
+    public void PadLeft_WhenArrayIsNull_ShouldThrowExactly()
     {
         int[]? array = null;
 
@@ -95,7 +95,7 @@ public partial class ArrayExtensionsTests
     /// <paramref name="totalLength"/> is smaller than the source.
     /// </summary>
     [TestMethod]
-    public void PadLeft_WhenTotalLengthIsLessThanSourceLength_ShouldThrowArgumentOutOfRangeException()
+    public void PadLeft_WhenTotalLengthIsLessThanSourceLength_ShouldThrowExactly()
     {
         int[] source = [1, 2, 3];
 
@@ -125,7 +125,7 @@ public partial class ArrayExtensionsTests
     /// Verifies that <c>PadRight</c> throws <see cref="ArgumentNullException"/> when the source is <see langword="null"/>.
     /// </summary>
     [TestMethod]
-    public void PadRight_WhenArrayIsNull_ShouldThrowArgumentNullException()
+    public void PadRight_WhenArrayIsNull_ShouldThrowExactly()
     {
         int[]? array = null;
 
@@ -209,7 +209,7 @@ public partial class ArrayExtensionsTests
     /// <paramref name="totalLength"/> is smaller than the source.
     /// </summary>
     [TestMethod]
-    public void PadRight_WhenTotalLengthIsLessThanSourceLength_ShouldThrowArgumentOutOfRangeException()
+    public void PadRight_WhenTotalLengthIsLessThanSourceLength_ShouldThrowExactly()
     {
         int[] source = [1, 2, 3];
 

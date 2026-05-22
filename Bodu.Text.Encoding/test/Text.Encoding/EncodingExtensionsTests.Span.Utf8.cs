@@ -81,7 +81,7 @@ public sealed partial class EncodingExtensionsTests
     /// <see cref="ArgumentException" /> when the destination is one byte too small.
     /// </summary>
     [TestMethod]
-    public void EncodeUtf8To_WhenDestinationIsOneByteTooSmall_ShouldThrowArgumentException()
+    public void EncodeUtf8To_WhenDestinationIsOneByteTooSmall_ShouldThrowExactly()
     {
         var required = System.Text.Encoding.UTF8.GetByteCount(MultiByteText);
         var backing = new byte[required - 1];
@@ -156,7 +156,7 @@ public sealed partial class EncodingExtensionsTests
     /// <see cref="ArgumentException" /> when the destination is one character too small.
     /// </summary>
     [TestMethod]
-    public void DecodeUtf8To_WhenDestinationIsOneCharTooSmall_ShouldThrowArgumentException()
+    public void DecodeUtf8To_WhenDestinationIsOneCharTooSmall_ShouldThrowExactly()
     {
         var bytes = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
         var required = System.Text.Encoding.UTF8.GetCharCount(bytes);

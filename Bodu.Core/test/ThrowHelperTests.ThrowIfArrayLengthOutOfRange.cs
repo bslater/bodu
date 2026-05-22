@@ -13,7 +13,7 @@ public partial class ThrowHelperTests
     /// Verifies that <see cref="ThrowHelper.ThrowIfArrayLengthOutOfRange" />, when ArrayIsNull, throws <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void ThrowIfArrayLengthOutOfRange_WhenArrayIsNull_ShouldThrowArgumentNullException()
+    public void ThrowIfArrayLengthOutOfRange_WhenArrayIsNull_ShouldThrowExactly()
     {
         Array? array = null;
         Assert.ThrowsExactly<ArgumentNullException>(() =>
@@ -65,7 +65,7 @@ public partial class ThrowHelperTests
     [DataRow(11, 1, 10)]   // above max
     [DataRow(5, 10, 20)]   // below min
     [DataRow(25, 10, 20)]  // above max
-    public void ThrowIfArrayLengthOutOfRange_WhenLengthIsOutOfRange_ShouldThrowArgumentOutOfRangeException(int arrayLength, int minLength, int maxLength)
+    public void ThrowIfArrayLengthOutOfRange_WhenLengthIsOutOfRange_ShouldThrowExactly(int arrayLength, int minLength, int maxLength)
     {
         Array array = new int[arrayLength];
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>

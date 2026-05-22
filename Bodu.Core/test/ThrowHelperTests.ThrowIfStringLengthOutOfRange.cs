@@ -54,7 +54,7 @@ public partial class ThrowHelperTests
     [DataRow("abcdef", 1, 5)]   // length 6 > max 5
     [DataRow("hello!", 2, 5)]   // length 6 > max 5
     [DataRow("abcde", 1, 4)]    // length 5 > max 4
-    public void ThrowIfStringLengthOutOfRange_WhenLengthExceedsMaximum_ShouldThrowArgumentOutOfRangeException(string value, int minLength, int maxLength)
+    public void ThrowIfStringLengthOutOfRange_WhenLengthExceedsMaximum_ShouldThrowExactly(string value, int minLength, int maxLength)
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -70,7 +70,7 @@ public partial class ThrowHelperTests
     [DataRow("a", 2, 10)]   // length 1 < min 2
     [DataRow("", 1, 5)]     // length 0 < min 1
     [DataRow("abc", 5, 10)] // length 3 < min 5
-    public void ThrowIfStringLengthOutOfRange_WhenLengthIsBelowMinimum_ShouldThrowArgumentOutOfRangeException(string value, int minLength, int maxLength)
+    public void ThrowIfStringLengthOutOfRange_WhenLengthIsBelowMinimum_ShouldThrowExactly(string value, int minLength, int maxLength)
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -95,7 +95,7 @@ public partial class ThrowHelperTests
     /// <see cref="ArgumentNullException" /> when the string value is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void ThrowIfStringLengthOutOfRange_WhenValueIsNull_ShouldThrowArgumentNullException()
+    public void ThrowIfStringLengthOutOfRange_WhenValueIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

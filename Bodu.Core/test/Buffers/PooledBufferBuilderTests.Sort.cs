@@ -85,7 +85,7 @@ public partial class PooledBufferBuilderTests
     /// comparison throws <see cref="ArgumentNullException"/>.
     /// </summary>
     [TestMethod]
-    public void Sort_WhenComparisonIsNull_ShouldThrowArgumentNullException()
+    public void Sort_WhenComparisonIsNull_ShouldThrowExactly()
     {
         using var builder = new PooledBufferBuilder<int>();
         builder.Append(1);
@@ -101,7 +101,7 @@ public partial class PooledBufferBuilderTests
     /// after the builder has been disposed.
     /// </summary>
     [TestMethod]
-    public void Sort_WhenDisposed_ShouldThrowObjectDisposedException()
+    public void Sort_WhenDisposed_ShouldThrowExactly()
     {
         var builder = new PooledBufferBuilder<int>();
         builder.Dispose();
@@ -117,7 +117,7 @@ public partial class PooledBufferBuilderTests
     /// <see cref="ObjectDisposedException"/> after the builder has been disposed.
     /// </summary>
     [TestMethod]
-    public void Sort_WhenDisposed_ShouldThrowObjectDisposedException_UsingComparison()
+    public void Sort_WhenDisposed_ShouldThrowExactly()
     {
         var builder = new PooledBufferBuilder<int>();
         builder.Dispose();

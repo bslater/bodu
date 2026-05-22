@@ -88,7 +88,7 @@ public partial class NotableDateOnlyExtensionsTests
     /// Verifies that supplying a <see langword="null" /> service throws <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void NextWorkingDay_WhenServiceIsNull_ShouldThrowArgumentNullException()
+    public void NextWorkingDay_WhenServiceIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -100,7 +100,7 @@ public partial class NotableDateOnlyExtensionsTests
     /// Verifies that supplying a negative count throws <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    public void NextWorkingDay_WhenCountIsNegative_ShouldThrowArgumentOutOfRangeException()
+    public void NextWorkingDay_WhenCountIsNegative_ShouldThrowExactly()
     {
         NotableDateService service = BuildService();
 
@@ -114,7 +114,7 @@ public partial class NotableDateOnlyExtensionsTests
     /// Verifies that advancing past <see cref="DateOnly.MaxValue" /> throws <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    public void NextWorkingDay_WhenAdvancePastMaxValue_ShouldThrowArgumentOutOfRangeException()
+    public void NextWorkingDay_WhenAdvancePastMaxValue_ShouldThrowExactly()
     {
         NotableDateService service = BuildService();
 

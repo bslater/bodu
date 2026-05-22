@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StreamExtensionsTests.ReadAllBytesAsync.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -55,7 +55,7 @@ public partial class StreamExtensionsTests
     /// stream is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void ReadAllBytesAsync_WhenStreamIsNull_ShouldThrowArgumentNullException()
+    public void ReadAllBytesAsync_WhenStreamIsNull_ShouldThrowExactly()
     {
         Stream stream = null!;
 

@@ -99,7 +99,7 @@ public sealed class IniEntryTests
     /// string cannot be parsed as the target type.
     /// </summary>
     [TestMethod]
-    public void GetValue_WhenValueIsInvalidForTargetType_ShouldThrowFormatException()
+    public void GetValue_WhenValueIsInvalidForTargetType_ShouldThrowExactly()
     {
         IniEntry entry = new("port", "not-a-number");
 

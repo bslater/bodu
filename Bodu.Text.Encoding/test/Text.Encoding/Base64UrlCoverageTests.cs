@@ -60,7 +60,7 @@ public sealed class Base64UrlCoverageTests
     /// invalid input bytes.
     /// </summary>
     [TestMethod]
-    public void Decode_Utf8WithInvalidByte_ShouldThrowFormatException()
+    public void Decode_Utf8WithInvalidByte_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<FormatException>(() =>
         {

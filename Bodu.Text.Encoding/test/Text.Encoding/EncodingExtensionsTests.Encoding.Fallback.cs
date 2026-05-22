@@ -47,7 +47,7 @@ public sealed partial class EncodingExtensionsTests
     /// <see cref="ArgumentNullException" /> when <c>encoding</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void WithExceptionFallbacks_WhenEncodingIsNull_ShouldThrowArgumentNullException()
+    public void WithExceptionFallbacks_WhenEncodingIsNull_ShouldThrowExactly()
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -77,7 +77,7 @@ public sealed partial class EncodingExtensionsTests
     /// encoding.
     /// </summary>
     [TestMethod]
-    public void WithReplacementFallbacks_WhenEncoderReplacementIsUnencodable_ShouldThrowArgumentException()
+    public void WithReplacementFallbacks_WhenEncoderReplacementIsUnencodable_ShouldThrowExactly()
     {
         ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -94,7 +94,7 @@ public sealed partial class EncodingExtensionsTests
     /// throws <see cref="ArgumentNullException" /> when any argument is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void WithReplacementFallbacks_WhenAnyArgumentIsNull_ShouldThrowArgumentNullException()
+    public void WithReplacementFallbacks_WhenAnyArgumentIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() => _ = EncodingExtensions.WithReplacementFallbacks(null!));
         Assert.ThrowsExactly<ArgumentNullException>(() => _ = System.Text.Encoding.UTF8.WithReplacementFallbacks(null!));
@@ -121,7 +121,7 @@ public sealed partial class EncodingExtensionsTests
     /// <see cref="ArgumentNullException" /> when <c>encoding</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void UsesExceptionFallbacks_WhenEncodingIsNull_ShouldThrowArgumentNullException()
+    public void UsesExceptionFallbacks_WhenEncodingIsNull_ShouldThrowExactly()
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -151,7 +151,7 @@ public sealed partial class EncodingExtensionsTests
     /// <see cref="ArgumentNullException" /> when <c>encoding</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void UsesReplacementFallbacks_WhenEncodingIsNull_ShouldThrowArgumentNullException()
+    public void UsesReplacementFallbacks_WhenEncodingIsNull_ShouldThrowExactly()
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

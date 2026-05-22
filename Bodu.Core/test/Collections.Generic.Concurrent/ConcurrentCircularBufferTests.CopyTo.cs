@@ -196,7 +196,7 @@ public partial class ConcurrentCircularBufferTests
     /// Verifies that passing a <see langword="null" /> destination array to <see cref="ConcurrentCircularBuffer{T}.CopyTo" /> throws <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void CopyTo_WhenDestinationArrayIsNull_ShouldThrowArgumentNull()
+    public void CopyTo_WhenDestinationArrayIsNull_ShouldThrowExactly()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(MinCapacity);
         buffer.Enqueue(new TestItem(1));
@@ -275,7 +275,7 @@ public partial class ConcurrentCircularBufferTests
     /// Verifies that a destination index equal to the array length throws <see cref="ArgumentException" /> when the buffer is non-empty.
     /// </summary>
     [TestMethod]
-    public void CopyTo_WhenDestinationIndexBeyondCopyRange_ShouldThrowException()
+    public void CopyTo_WhenDestinationIndexBeyondCopyRange_ShouldThrowExactly()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(3);
         buffer.Enqueue(new TestItem(1));
@@ -293,7 +293,7 @@ public partial class ConcurrentCircularBufferTests
     /// Verifies that a negative destination index throws <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    public void CopyTo_WhenDestinationIndexIsNegative_ShouldThrowArgumentOutOfRange()
+    public void CopyTo_WhenDestinationIndexIsNegative_ShouldThrowExactly()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(2);
         buffer.Enqueue(new TestItem(1));
@@ -326,7 +326,7 @@ public partial class ConcurrentCircularBufferTests
     /// Verifies that a destination array smaller than the buffer's current count throws <see cref="ArgumentException" />.
     /// </summary>
     [TestMethod]
-    public void CopyTo_WhenDestinationTooSmall_ShouldThrowException()
+    public void CopyTo_WhenDestinationTooSmall_ShouldThrowExactly()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(2);
         buffer.Enqueue(new TestItem(1));
@@ -343,7 +343,7 @@ public partial class ConcurrentCircularBufferTests
     /// Verifies that <see cref="ConcurrentCircularBuffer{T}.CopyTo" /> throws ArgumentException when a valid mid-array index leaves insufficient trailing space for all elements.
     /// </summary>
     [TestMethod]
-    public void CopyTo_WhenIndexOffsetLeavesInsufficientSpace_ShouldThrowException()
+    public void CopyTo_WhenIndexOffsetLeavesInsufficientSpace_ShouldThrowExactly()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(3);
         buffer.Enqueue(new TestItem(1));

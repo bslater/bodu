@@ -22,7 +22,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     /// <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void AppendData_WhenAlgorithmIsNull_ForSpanOverload_ShouldThrowArgumentNullException()
+    public void AppendData_WhenAlgorithmIsNull_ForSpanOverload_ShouldThrowExactly()
     {
         NonCryptographicHashAlgorithm? algorithm = null;
 
@@ -39,7 +39,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     /// <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void AppendData_WhenAlgorithmIsNull_ForStreamOverload_ShouldThrowArgumentNullException()
+    public void AppendData_WhenAlgorithmIsNull_ForStreamOverload_ShouldThrowExactly()
     {
         NonCryptographicHashAlgorithm? algorithm = null;
         using MemoryStream stream = new(s_sampleData);
@@ -54,7 +54,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     /// Verifies that a negative <paramref name="bufferSize" /> throws <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    public void AppendData_WhenBufferSizeIsNegative_ShouldThrowArgumentOutOfRangeException()
+    public void AppendData_WhenBufferSizeIsNegative_ShouldThrowExactly()
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
         using MemoryStream stream = new(s_sampleData);
@@ -69,7 +69,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     /// Verifies that a zero <paramref name="bufferSize" /> throws <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    public void AppendData_WhenBufferSizeIsZero_ShouldThrowArgumentOutOfRangeException()
+    public void AppendData_WhenBufferSizeIsZero_ShouldThrowExactly()
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
         using MemoryStream stream = new(s_sampleData);
@@ -225,7 +225,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     /// <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void AppendData_WhenStreamIsNull_ShouldThrowArgumentNullException()
+    public void AppendData_WhenStreamIsNull_ShouldThrowExactly()
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
 

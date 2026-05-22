@@ -58,7 +58,7 @@ public partial class DateTimeExtensionsTests
     /// Verifies that the provider overload still throws <see cref="ArgumentOutOfRangeException" /> for an undefined <see cref="WorkingDaysOfWeek" /> even when a provider is supplied.
     /// </summary>
     [TestMethod]
-    public void NextWeekday_WhenProviderOverload_WeekendIsInvalid_ShouldThrowArgumentOutOfRangeException()
+    public void NextWeekday_WhenProviderOverload_WeekendIsInvalid_ShouldThrowExactly()
     {
         var input = new DateTime(2024, 4, 20);
 
@@ -97,7 +97,7 @@ public partial class DateTimeExtensionsTests
     /// Verifies that an undefined <see cref="WorkingDaysOfWeek" /> value throws <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    public void NextWeekday_WhenWeekendIsInvalid_ShouldThrowArgumentOutOfRangeException()
+    public void NextWeekday_WhenWeekendIsInvalid_ShouldThrowExactly()
     {
         var input = new DateTime(2024, 4, 20);
 

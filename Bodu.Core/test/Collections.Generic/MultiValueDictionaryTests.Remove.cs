@@ -60,7 +60,7 @@ public partial class MultiValueDictionaryTests
     /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.Remove(TKey,TValue)"/> throws <see cref="ArgumentNullException"/> for a null key.
     /// </summary>
     [TestMethod]
-    public void Remove_WhenKeyIsNull_ShouldThrowArgumentNullException()
+    public void Remove_WhenKeyIsNull_ShouldThrowExactly()
     {
         var mvd = new MultiValueDictionary<string, int>();
 

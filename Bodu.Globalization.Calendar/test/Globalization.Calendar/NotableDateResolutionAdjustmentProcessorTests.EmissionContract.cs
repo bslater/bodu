@@ -159,7 +159,7 @@ public sealed class NotableDateResolutionAdjustmentProcessorEmissionContractTest
     /// throws <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenCustomWeekendDefinitionAndProviderIsNull_ShouldThrowArgumentNullException()
+    public void Ctor_WhenCustomWeekendDefinitionAndProviderIsNull_ShouldThrowExactly()
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -174,7 +174,7 @@ public sealed class NotableDateResolutionAdjustmentProcessorEmissionContractTest
     /// unsupported projection enum value throws <see cref="ArgumentOutOfRangeException" /> from the projection switch.
     /// </summary>
     [TestMethod]
-    public void ApplyAdjustments_WhenProjectionIsUnsupported_ShouldThrowArgumentOutOfRangeException()
+    public void ApplyAdjustments_WhenProjectionIsUnsupported_ShouldThrowExactly()
     {
         NotableDateRule rule = FixedWithAdjustment(
             "Holiday",

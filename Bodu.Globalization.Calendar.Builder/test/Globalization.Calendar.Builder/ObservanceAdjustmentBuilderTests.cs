@@ -17,7 +17,7 @@ public partial class ObservanceAdjustmentBuilderTests
     /// <see cref="ArgumentOutOfRangeException" /> when the month is less than 1.
     /// </summary>
     [TestMethod]
-    public void ComparisonDate_WhenMonthIsZero_ShouldThrowArgumentOutOfRangeException()
+    public void ComparisonDate_WhenMonthIsZero_ShouldThrowExactly()
     {
         ObservanceAdjustmentBuilder builder = new();
 
@@ -32,7 +32,7 @@ public partial class ObservanceAdjustmentBuilderTests
     /// <see cref="ArgumentOutOfRangeException" /> when the month exceeds 12.
     /// </summary>
     [TestMethod]
-    public void ComparisonDate_WhenMonthExceedsTwelve_ShouldThrowArgumentOutOfRangeException()
+    public void ComparisonDate_WhenMonthExceedsTwelve_ShouldThrowExactly()
     {
         ObservanceAdjustmentBuilder builder = new();
 
@@ -47,7 +47,7 @@ public partial class ObservanceAdjustmentBuilderTests
     /// <see cref="ArgumentOutOfRangeException" /> when the day is less than 1.
     /// </summary>
     [TestMethod]
-    public void ComparisonDate_WhenDayIsZero_ShouldThrowArgumentOutOfRangeException()
+    public void ComparisonDate_WhenDayIsZero_ShouldThrowExactly()
     {
         ObservanceAdjustmentBuilder builder = new();
 
@@ -62,7 +62,7 @@ public partial class ObservanceAdjustmentBuilderTests
     /// <see cref="ArgumentOutOfRangeException" /> when the day exceeds 31.
     /// </summary>
     [TestMethod]
-    public void ComparisonDate_WhenDayExceedsThirtyOne_ShouldThrowArgumentOutOfRangeException()
+    public void ComparisonDate_WhenDayExceedsThirtyOne_ShouldThrowExactly()
     {
         ObservanceAdjustmentBuilder builder = new();
 
@@ -77,7 +77,7 @@ public partial class ObservanceAdjustmentBuilderTests
     /// when the territory code is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void Territory_WhenCodeIsNull_ShouldThrowArgumentNullException()
+    public void Territory_WhenCodeIsNull_ShouldThrowExactly()
     {
         ObservanceAdjustmentBuilder builder = new();
 
@@ -92,7 +92,7 @@ public partial class ObservanceAdjustmentBuilderTests
     /// when the calendar type is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void CalendarType_WhenTypeIsNull_ShouldThrowArgumentNullException()
+    public void CalendarType_WhenTypeIsNull_ShouldThrowExactly()
     {
         ObservanceAdjustmentBuilder builder = new();
 
@@ -107,7 +107,7 @@ public partial class ObservanceAdjustmentBuilderTests
     /// rule name is whitespace.
     /// </summary>
     [TestMethod]
-    public void Target_WhenRuleNameIsWhitespace_ShouldThrowArgumentException()
+    public void Target_WhenRuleNameIsWhitespace_ShouldThrowExactly()
     {
         ObservanceAdjustmentBuilder builder = new();
 
@@ -122,7 +122,7 @@ public partial class ObservanceAdjustmentBuilderTests
     /// key is an empty string.
     /// </summary>
     [TestMethod]
-    public void HandlerKey_WhenKeyIsEmpty_ShouldThrowArgumentException()
+    public void HandlerKey_WhenKeyIsEmpty_ShouldThrowExactly()
     {
         ObservanceAdjustmentBuilder builder = new();
 
@@ -137,7 +137,7 @@ public partial class ObservanceAdjustmentBuilderTests
     /// <see cref="ArgumentNullException" /> when the key is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void AddHandlerParameter_WhenKeyIsNull_ShouldThrowArgumentNullException()
+    public void AddHandlerParameter_WhenKeyIsNull_ShouldThrowExactly()
     {
         ObservanceAdjustmentBuilder builder = new();
 
@@ -152,7 +152,7 @@ public partial class ObservanceAdjustmentBuilderTests
     /// when the key is whitespace.
     /// </summary>
     [TestMethod]
-    public void AddHandlerParameter_WhenKeyIsWhitespace_ShouldThrowArgumentException()
+    public void AddHandlerParameter_WhenKeyIsWhitespace_ShouldThrowExactly()
     {
         ObservanceAdjustmentBuilder builder = new();
 
@@ -167,7 +167,7 @@ public partial class ObservanceAdjustmentBuilderTests
     /// <see cref="ArgumentNullException" /> when the value is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void AddHandlerParameter_WhenValueIsNull_ShouldThrowArgumentNullException()
+    public void AddHandlerParameter_WhenValueIsNull_ShouldThrowExactly()
     {
         ObservanceAdjustmentBuilder builder = new();
 
@@ -182,7 +182,7 @@ public partial class ObservanceAdjustmentBuilderTests
     /// <see cref="ArgumentOutOfRangeException" /> when the day count is negative.
     /// </summary>
     [TestMethod]
-    public void MaxAdjustmentReachDays_WhenNegative_ShouldThrowArgumentOutOfRangeException()
+    public void MaxAdjustmentReachDays_WhenNegative_ShouldThrowExactly()
     {
         ObservanceAdjustmentBuilder builder = new();
 

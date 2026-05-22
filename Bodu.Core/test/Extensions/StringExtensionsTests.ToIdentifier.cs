@@ -90,7 +90,7 @@ public partial class StringExtensionsTests
     /// <see cref="ArgumentNullException" /> when invoked with <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void ToIdentifier_WhenValueIsNull_ShouldThrowArgumentNullException()
+    public void ToIdentifier_WhenValueIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -103,7 +103,7 @@ public partial class StringExtensionsTests
     /// <see cref="ArgumentOutOfRangeException" /> when the casing argument is not a defined enum value.
     /// </summary>
     [TestMethod]
-    public void ToIdentifier_WhenCaseIsUndefined_ShouldThrowArgumentOutOfRangeException()
+    public void ToIdentifier_WhenCaseIsUndefined_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

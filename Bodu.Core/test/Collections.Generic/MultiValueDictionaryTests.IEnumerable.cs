@@ -16,7 +16,7 @@ public partial class MultiValueDictionaryTests
     /// accessed after enumeration is exhausted.
     /// </summary>
     [TestMethod]
-    public void Current_WhenAccessedAfterExhaustion_ForGenericInterface_ShouldThrowInvalidOperationException()
+    public void Current_WhenAccessedAfterExhaustion_ForGenericInterface_ShouldThrowExactly()
     {
         var mvd = new MultiValueDictionary<string, int>();
         mvd.Add("a", 1);
@@ -39,7 +39,7 @@ public partial class MultiValueDictionaryTests
     /// accessed before the first call to <see cref="IEnumerator.MoveNext" />.
     /// </summary>
     [TestMethod]
-    public void Current_WhenAccessedBeforeMoveNext_ForGenericInterface_ShouldThrowInvalidOperationException()
+    public void Current_WhenAccessedBeforeMoveNext_ForGenericInterface_ShouldThrowExactly()
     {
         var mvd = new MultiValueDictionary<string, int>();
         mvd.Add("a", 1);
@@ -58,7 +58,7 @@ public partial class MultiValueDictionaryTests
     /// accessed before the first call to <see cref="IEnumerator.MoveNext" />.
     /// </summary>
     [TestMethod]
-    public void Current_WhenAccessedBeforeMoveNext_ForNonGenericInterface_ShouldThrowInvalidOperationException()
+    public void Current_WhenAccessedBeforeMoveNext_ForNonGenericInterface_ShouldThrowExactly()
     {
         var mvd = new MultiValueDictionary<string, int>();
         mvd.Add("a", 1);
@@ -132,7 +132,7 @@ public partial class MultiValueDictionaryTests
     /// <see cref="InvalidOperationException" /> on the next call to <see cref="IEnumerator.MoveNext" />.
     /// </summary>
     [TestMethod]
-    public void MoveNext_WhenDictionaryModified_ShouldThrowInvalidOperationException()
+    public void MoveNext_WhenDictionaryModified_ShouldThrowExactly()
     {
         var mvd = new MultiValueDictionary<string, int>();
         mvd.Add("a", 1);
@@ -153,7 +153,7 @@ public partial class MultiValueDictionaryTests
     /// <see cref="InvalidOperationException" /> on <see cref="IEnumerator.Reset" />.
     /// </summary>
     [TestMethod]
-    public void Reset_WhenDictionaryModified_ForNonGenericInterface_ShouldThrowInvalidOperationException()
+    public void Reset_WhenDictionaryModified_ForNonGenericInterface_ShouldThrowExactly()
     {
         var mvd = new MultiValueDictionary<string, int>();
         mvd.Add("a", 1);

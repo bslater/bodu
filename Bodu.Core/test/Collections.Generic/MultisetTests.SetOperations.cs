@@ -66,7 +66,7 @@ public partial class MultisetTests
     /// Verifies that <see cref="Multiset{T}.Except"/> throws <see cref="ArgumentNullException"/> when other is null.
     /// </summary>
     [TestMethod]
-    public void Except_WhenOtherIsNull_ShouldThrowArgumentNullException()
+    public void Except_WhenOtherIsNull_ShouldThrowExactly()
     {
         var mvd = new Multiset<int>();
 
@@ -178,7 +178,7 @@ public partial class MultisetTests
     /// Verifies that <see cref="Multiset{T}.Intersect"/> throws <see cref="ArgumentNullException"/> when other is null.
     /// </summary>
     [TestMethod]
-    public void Intersect_WhenOtherIsNull_ShouldThrowArgumentNullException()
+    public void Intersect_WhenOtherIsNull_ShouldThrowExactly()
     {
         var mvd = new Multiset<int>();
 
@@ -299,7 +299,7 @@ public partial class MultisetTests
     /// Verifies that <see cref="Multiset{T}.Sum"/> throws <see cref="ArgumentNullException"/> when other is null.
     /// </summary>
     [TestMethod]
-    public void Sum_WhenOtherIsNull_ShouldThrowArgumentNullException()
+    public void Sum_WhenOtherIsNull_ShouldThrowExactly()
     {
         var mvd = new Multiset<int>();
 
@@ -414,7 +414,7 @@ public partial class MultisetTests
     /// Verifies that <see cref="Multiset{T}.Union"/> throws <see cref="ArgumentNullException"/> when other is null.
     /// </summary>
     [TestMethod]
-    public void Union_WhenOtherIsNull_ShouldThrowArgumentNullException()
+    public void Union_WhenOtherIsNull_ShouldThrowExactly()
     {
         var mvd = new Multiset<int>();
 

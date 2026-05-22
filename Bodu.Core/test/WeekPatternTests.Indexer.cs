@@ -38,7 +38,7 @@ public partial class WeekPatternTests
     [DataRow(-1)]
     [DataRow(7)]
     [DataRow(10)]
-    public void IndexerGet_WhenInvalidDayIndex_ShouldThrowArgumentOutOfRangeException(int invalidDayIndex)
+    public void IndexerGet_WhenInvalidDayIndex_ShouldThrowExactly(int invalidDayIndex)
     {
         var pattern = new WeekPattern();
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>

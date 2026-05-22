@@ -88,7 +88,7 @@ public sealed partial class EncodingExtensionsTests
     /// either encoding is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void EncodingReceiver_Transcode_WhenAnyEncodingIsNull_ShouldThrowArgumentNullException()
+    public void EncodingReceiver_Transcode_WhenAnyEncodingIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() => _ = EncodingExtensions.Transcode(null!, new byte[] { 0x68 }, System.Text.Encoding.Unicode));
         Assert.ThrowsExactly<ArgumentNullException>(() => _ = System.Text.Encoding.UTF8.Transcode(new byte[] { 0x68 }, null!));

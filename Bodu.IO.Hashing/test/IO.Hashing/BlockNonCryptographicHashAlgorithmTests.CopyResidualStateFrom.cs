@@ -15,7 +15,7 @@ public partial class BlockNonCryptographicHashAlgorithmTests
     /// <see langword="null" /> source instance.
     /// </summary>
     [TestMethod]
-    public void CopyResidualStateFrom_WhenSourceIsNull_ShouldThrowArgumentNullException()
+    public void CopyResidualStateFrom_WhenSourceIsNull_ShouldThrowExactly()
     {
         RecordingBlockHasher hasher = new();
 

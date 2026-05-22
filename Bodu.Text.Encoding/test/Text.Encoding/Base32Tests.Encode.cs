@@ -69,7 +69,7 @@ public sealed partial class Base32Tests
     /// out-of-range count with <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    public void Encode_WhenCountExceedsArrayLength_ShouldThrowArgumentOutOfRangeException()
+    public void Encode_WhenCountExceedsArrayLength_ShouldThrowExactly()
     {
         var bytes = new byte[4];
 
@@ -84,7 +84,7 @@ public sealed partial class Base32Tests
     /// throws <see cref="ArgumentException" /> when the destination is too small.
     /// </summary>
     [TestMethod]
-    public void Encode_WhenDestinationTooSmall_ShouldThrowArgumentException()
+    public void Encode_WhenDestinationTooSmall_ShouldThrowExactly()
     {
         var bytes = Ascii("foobar");
         var destination = new char[2];
@@ -120,7 +120,7 @@ public sealed partial class Base32Tests
     /// negative offset.
     /// </summary>
     [TestMethod]
-    public void Encode_WhenNegativeOffset_ShouldThrowArgumentOutOfRangeException()
+    public void Encode_WhenNegativeOffset_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -179,7 +179,7 @@ public sealed partial class Base32Tests
     /// variant.
     /// </summary>
     [TestMethod]
-    public void Encode_WhenUndefinedVariant_ShouldThrowArgumentOutOfRangeException()
+    public void Encode_WhenUndefinedVariant_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

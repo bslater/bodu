@@ -46,7 +46,7 @@ public partial class ThrowHelperTests
     [TestMethod]
     [DataRow(5, 2, 5)]   // span.Length = 5; offset = 2; count = 5 => insufficient
     [DataRow(4, 0, 5)]   // span.Length = 4; offset = 0; count = 5 => insufficient
-    public void ThrowIfSpanLengthIsInsufficient_ReadOnlySpan_WhenInsufficient_ShouldThrow(int spanLength, int offset, int count)
+    public void ThrowIfSpanLengthIsInsufficient_ReadOnlySpan_WhenInsufficient_ShouldThrowExactly(int spanLength, int offset, int count)
     {
         var span = new int[spanLength];
         Assert.ThrowsExactly<ArgumentException>(() =>
@@ -105,7 +105,7 @@ public partial class ThrowHelperTests
     [TestMethod]
     [DataRow(5, 2, 5)]
     [DataRow(4, 1, 4)]
-    public void ThrowIfSpanLengthIsInsufficient_Span_WhenInsufficient_ShouldThrow(int spanLength, int offset, int count)
+    public void ThrowIfSpanLengthIsInsufficient_Span_WhenInsufficient_ShouldThrowExactly(int spanLength, int offset, int count)
     {
         var span = new int[spanLength];
         Assert.ThrowsExactly<ArgumentException>(() =>

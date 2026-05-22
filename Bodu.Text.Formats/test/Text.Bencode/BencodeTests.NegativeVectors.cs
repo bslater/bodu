@@ -21,7 +21,7 @@ public sealed partial class BencodeTests
     [TestMethod]
     [TestCategory(TestCategories.Regression)]
     [DynamicData(nameof(BencodeKnownAnswerVectors.Bep3NegativeVectors), typeof(BencodeKnownAnswerVectors), DynamicDataSourceType.Method)]
-    public void Decode_ForNegativeVector_ShouldThrowExpectedException(BencodeNegativeDecodeVector vector)
+    public void Decode_ForNegativeVector_ShouldThrowExactly(BencodeNegativeDecodeVector vector)
     {
         Exception ex = Assert.ThrowsExactly<BencodeFormatException>(() =>
         {

@@ -32,7 +32,7 @@ public partial class IndexedSetTests
     [DataRow(-1)]
     [DataRow(3)]
     [DataRow(int.MinValue)]
-    public void Insert_WhenIndexIsOutOfRange_ShouldThrowArgumentOutOfRangeException(int index)
+    public void Insert_WhenIndexIsOutOfRange_ShouldThrowExactly(int index)
     {
         IndexedSet<int> sut = CreateSet([1, 2]);
 
@@ -65,7 +65,7 @@ public partial class IndexedSetTests
     /// the item is already in the set.
     /// </summary>
     [TestMethod]
-    public void Insert_WhenItemIsDuplicate_ShouldThrowArgumentException()
+    public void Insert_WhenItemIsDuplicate_ShouldThrowExactly()
     {
         IndexedSet<int> sut = CreateSet([1, 2, 3]);
 
@@ -83,7 +83,7 @@ public partial class IndexedSetTests
     /// Verifies that <see cref="IndexedSet{T}.Insert(int, T)" /> rejects a <see langword="null" /> item.
     /// </summary>
     [TestMethod]
-    public void Insert_WhenItemIsNull_ShouldThrowArgumentNullException()
+    public void Insert_WhenItemIsNull_ShouldThrowExactly()
     {
         IndexedSet<string> sut = CreateSet(["a", "b"]);
 
@@ -101,7 +101,7 @@ public partial class IndexedSetTests
     [DataRow(3)]
     [DataRow(int.MinValue)]
     [DataRow(int.MaxValue)]
-    public void TryInsert_WhenIndexIsOutOfRange_ShouldThrowArgumentOutOfRangeException(int index)
+    public void TryInsert_WhenIndexIsOutOfRange_ShouldThrowExactly(int index)
     {
         IndexedSet<int> sut = CreateSet([1, 2]);
 
@@ -169,7 +169,7 @@ public partial class IndexedSetTests
     /// Verifies that <see cref="IndexedSet{T}.TryInsert(int, T)" /> rejects a <see langword="null" /> item.
     /// </summary>
     [TestMethod]
-    public void TryInsert_WhenItemIsNull_ShouldThrowArgumentNullException()
+    public void TryInsert_WhenItemIsNull_ShouldThrowExactly()
     {
         IndexedSet<string> sut = CreateSet(["a", "b"]);
 

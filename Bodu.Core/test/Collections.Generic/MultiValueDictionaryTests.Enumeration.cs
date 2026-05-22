@@ -14,7 +14,7 @@ public partial class MultiValueDictionaryTests
     /// enumerator is exhausted throws <see cref="InvalidOperationException"/>.
     /// </summary>
     [TestMethod]
-    public void Enumerator_WhenCurrentAccessedAfterExhaustion_ShouldThrowInvalidOperationException()
+    public void Enumerator_WhenCurrentAccessedAfterExhaustion_ShouldThrowExactly()
     {
         var mvd = new MultiValueDictionary<string, int>();
         mvd.Add("a", 1);
@@ -33,7 +33,7 @@ public partial class MultiValueDictionaryTests
     /// <see cref="InvalidOperationException"/>.
     /// </summary>
     [TestMethod]
-    public void Enumerator_WhenCurrentAccessedBeforeMoveNext_ShouldThrowInvalidOperationException()
+    public void Enumerator_WhenCurrentAccessedBeforeMoveNext_ShouldThrowExactly()
     {
         var mvd = new MultiValueDictionary<string, int>();
         mvd.Add("a", 1);
@@ -66,7 +66,7 @@ public partial class MultiValueDictionaryTests
     /// during enumeration.
     /// </summary>
     [TestMethod]
-    public void Enumerator_WhenModifiedDuringEnumeration_ShouldThrowInvalidOperationException()
+    public void Enumerator_WhenModifiedDuringEnumeration_ShouldThrowExactly()
     {
         var mvd = new MultiValueDictionary<string, int>();
         mvd.Add("a", 1);
@@ -83,7 +83,7 @@ public partial class MultiValueDictionaryTests
     /// during enumeration.
     /// </summary>
     [TestMethod]
-    public void Enumerator_WhenModifiedViaClear_ShouldThrowInvalidOperationException()
+    public void Enumerator_WhenModifiedViaClear_ShouldThrowExactly()
     {
         var mvd = new MultiValueDictionary<string, int>();
         mvd.Add("a", 1);
@@ -101,7 +101,7 @@ public partial class MultiValueDictionaryTests
     /// from an existing key during enumeration.
     /// </summary>
     [TestMethod]
-    public void Enumerator_WhenModifiedViaRemove_ShouldThrowInvalidOperationException()
+    public void Enumerator_WhenModifiedViaRemove_ShouldThrowExactly()
     {
         var mvd = new MultiValueDictionary<string, int>();
         mvd.Add("a", 1);
@@ -119,7 +119,7 @@ public partial class MultiValueDictionaryTests
     /// via <see cref="MultiValueDictionary{TKey,TValue}.RemoveAll"/> during enumeration.
     /// </summary>
     [TestMethod]
-    public void Enumerator_WhenModifiedViaRemoveAll_ShouldThrowInvalidOperationException()
+    public void Enumerator_WhenModifiedViaRemoveAll_ShouldThrowExactly()
     {
         var mvd = new MultiValueDictionary<string, int>();
         mvd.Add("a", 1);
@@ -164,7 +164,7 @@ public partial class MultiValueDictionaryTests
     /// <see cref="InvalidOperationException"/> when the dictionary was modified after the enumerator was created.
     /// </summary>
     [TestMethod]
-    public void Enumerator_WhenResetAfterModification_ShouldThrowInvalidOperationException()
+    public void Enumerator_WhenResetAfterModification_ShouldThrowExactly()
     {
         var mvd = new MultiValueDictionary<string, int>();
         mvd.Add("a", 1);
@@ -202,7 +202,7 @@ public partial class MultiValueDictionaryTests
     /// <see cref="InvalidOperationException" /> when the dictionary is cleared after enumeration has begun.
     /// </summary>
     [TestMethod]
-    public void Flatten_WhenClearedAfterEnumerationBegins_ShouldThrowInvalidOperationException()
+    public void Flatten_WhenClearedAfterEnumerationBegins_ShouldThrowExactly()
     {
         var mvd = new MultiValueDictionary<string, int>();
         mvd.Add("a", 1);
@@ -236,7 +236,7 @@ public partial class MultiValueDictionaryTests
     /// when the dictionary is modified during enumeration.
     /// </summary>
     [TestMethod]
-    public void Flatten_WhenModifiedDuringEnumeration_ShouldThrowInvalidOperationException()
+    public void Flatten_WhenModifiedDuringEnumeration_ShouldThrowExactly()
     {
         var mvd = new MultiValueDictionary<string, int>();
         mvd.Add("a", 1);
@@ -254,7 +254,7 @@ public partial class MultiValueDictionaryTests
     /// when a value is removed during enumeration.
     /// </summary>
     [TestMethod]
-    public void Flatten_WhenModifiedViaRemove_ShouldThrowInvalidOperationException()
+    public void Flatten_WhenModifiedViaRemove_ShouldThrowExactly()
     {
         var mvd = new MultiValueDictionary<string, int>();
         mvd.Add("a", 1);
@@ -272,7 +272,7 @@ public partial class MultiValueDictionaryTests
     /// when the dictionary is modified via <see cref="MultiValueDictionary{TKey,TValue}.RemoveAll"/> during enumeration.
     /// </summary>
     [TestMethod]
-    public void Flatten_WhenModifiedViaRemoveAll_ShouldThrowInvalidOperationException()
+    public void Flatten_WhenModifiedViaRemoveAll_ShouldThrowExactly()
     {
         var mvd = new MultiValueDictionary<string, int>();
         mvd.Add("a", 1);

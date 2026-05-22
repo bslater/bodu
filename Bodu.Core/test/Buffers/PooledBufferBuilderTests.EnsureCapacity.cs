@@ -29,7 +29,7 @@ public partial class PooledBufferBuilderTests
     /// <see cref="ObjectDisposedException"/> after the builder has been disposed.
     /// </summary>
     [TestMethod]
-    public void EnsureCapacity_WhenDisposed_ShouldThrowObjectDisposedException()
+    public void EnsureCapacity_WhenDisposed_ShouldThrowExactly()
     {
         var builder = new PooledBufferBuilder<int>();
         builder.Dispose();
@@ -76,7 +76,7 @@ public partial class PooledBufferBuilderTests
     /// <see cref="ArgumentOutOfRangeException"/> when the requested minimum is negative.
     /// </summary>
     [TestMethod]
-    public void EnsureCapacity_WhenMinimumIsNegative_ShouldThrowArgumentOutOfRangeException()
+    public void EnsureCapacity_WhenMinimumIsNegative_ShouldThrowExactly()
     {
         using var builder = new PooledBufferBuilder<int>();
 

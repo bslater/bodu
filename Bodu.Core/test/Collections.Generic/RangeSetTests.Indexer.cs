@@ -17,7 +17,7 @@ public partial class RangeSetTests
     [DataRow(2)]
     [DataRow(int.MaxValue)]
     [DataRow(int.MinValue)]
-    public void Indexer_WhenIndexIsOutOfRange_ShouldThrowArgumentOutOfRangeException(int index)
+    public void Indexer_WhenIndexIsOutOfRange_ShouldThrowExactly(int index)
     {
         RangeSet<int> sut = CreateSet((0, 5), (10, 15));
 
@@ -31,7 +31,7 @@ public partial class RangeSetTests
     /// Verifies that the indexer on an empty set throws <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    public void Indexer_WhenSetIsEmpty_ShouldThrowArgumentOutOfRangeException()
+    public void Indexer_WhenSetIsEmpty_ShouldThrowExactly()
     {
         var sut = new RangeSet<int>();
 

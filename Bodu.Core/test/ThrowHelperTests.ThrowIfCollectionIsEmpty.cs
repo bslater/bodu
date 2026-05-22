@@ -14,7 +14,7 @@ public partial class ThrowHelperTests
     /// <see cref="ArgumentException" /> for an empty array.
     /// </summary>
     [TestMethod]
-    public void ThrowIfCollectionIsEmpty_WhenArrayIsEmpty_ShouldThrowArgumentException()
+    public void ThrowIfCollectionIsEmpty_WhenArrayIsEmpty_ShouldThrowExactly()
     {
         ICollection<int> collection = Array.Empty<int>();
 
@@ -53,7 +53,7 @@ public partial class ThrowHelperTests
     /// <see cref="ArgumentException" /> when the collection has no elements.
     /// </summary>
     [TestMethod]
-    public void ThrowIfCollectionIsEmpty_WhenCollectionIsEmpty_ShouldThrowArgumentException()
+    public void ThrowIfCollectionIsEmpty_WhenCollectionIsEmpty_ShouldThrowExactly()
     {
         ICollection<int> collection = new List<int>();
 
@@ -68,7 +68,7 @@ public partial class ThrowHelperTests
     /// <see cref="ArgumentNullException" /> when the collection is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void ThrowIfCollectionIsEmpty_WhenCollectionIsNull_ShouldThrowArgumentNullException()
+    public void ThrowIfCollectionIsEmpty_WhenCollectionIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

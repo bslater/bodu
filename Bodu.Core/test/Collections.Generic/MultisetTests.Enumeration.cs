@@ -45,7 +45,7 @@ public partial class MultisetTests
     /// Verifies that <see cref="Multiset{T}.Distinct()"/> throws <see cref="InvalidOperationException"/> when modified during enumeration.
     /// </summary>
     [TestMethod]
-    public void Distinct_WhenModifiedDuringEnumeration_ShouldThrowInvalidOperationException()
+    public void Distinct_WhenModifiedDuringEnumeration_ShouldThrowExactly()
     {
         var mvd = new Multiset<int>([1, 2, 3]);
 
@@ -64,7 +64,7 @@ public partial class MultisetTests
     /// Verifies that <see cref="Multiset{T}.Distinct()"/> throws <see cref="InvalidOperationException"/> when the multiset is modified via <see cref="Multiset{T}.RemoveAll"/> during enumeration.
     /// </summary>
     [TestMethod]
-    public void Distinct_WhenModifiedViaRemoveAllDuringEnumeration_ShouldThrowInvalidOperationException()
+    public void Distinct_WhenModifiedViaRemoveAllDuringEnumeration_ShouldThrowExactly()
     {
         var mvd = new Multiset<int>([1, 2, 3]);
 
@@ -105,7 +105,7 @@ public partial class MultisetTests
     /// <see cref="Multiset{T}.Enumerator.MoveNext"/> throws <see cref="InvalidOperationException"/>.
     /// </summary>
     [TestMethod]
-    public void Enumerator_CurrentBeforeMoveNext_ShouldThrowInvalidOperationException()
+    public void Enumerator_CurrentBeforeMoveNext_ShouldThrowExactly()
     {
         var mvd = new Multiset<int>();
         mvd.Add(1);
@@ -121,7 +121,7 @@ public partial class MultisetTests
     /// Verifies that the enumerator throws <see cref="InvalidOperationException"/> when the multiset is cleared during enumeration.
     /// </summary>
     [TestMethod]
-    public void Enumerator_WhenClearedDuringEnumeration_ShouldThrowInvalidOperationException()
+    public void Enumerator_WhenClearedDuringEnumeration_ShouldThrowExactly()
     {
         var mvd = new Multiset<int>([1, 2, 3]);
 
@@ -166,7 +166,7 @@ public partial class MultisetTests
     /// Verifies that the enumerator throws <see cref="InvalidOperationException"/> when the multiset is modified during enumeration via Add.
     /// </summary>
     [TestMethod]
-    public void Enumerator_WhenModifiedDuringEnumerationViaAdd_ShouldThrowInvalidOperationException()
+    public void Enumerator_WhenModifiedDuringEnumerationViaAdd_ShouldThrowExactly()
     {
         var mvd = new Multiset<int>([1, 2, 3]);
 
@@ -185,7 +185,7 @@ public partial class MultisetTests
     /// Verifies that the enumerator throws <see cref="InvalidOperationException"/> when the multiset is modified via <see cref="Multiset{T}.Add(T, int)"/> during enumeration.
     /// </summary>
     [TestMethod]
-    public void Enumerator_WhenModifiedDuringEnumerationViaAddWithCount_ShouldThrowInvalidOperationException()
+    public void Enumerator_WhenModifiedDuringEnumerationViaAddWithCount_ShouldThrowExactly()
     {
         var mvd = new Multiset<int>([1, 2, 3]);
 
@@ -200,7 +200,7 @@ public partial class MultisetTests
     /// Verifies that the enumerator throws <see cref="InvalidOperationException"/> when the multiset is modified during enumeration via Remove.
     /// </summary>
     [TestMethod]
-    public void Enumerator_WhenModifiedDuringEnumerationViaRemove_ShouldThrowInvalidOperationException()
+    public void Enumerator_WhenModifiedDuringEnumerationViaRemove_ShouldThrowExactly()
     {
         var mvd = new Multiset<int>([1, 2, 3]);
 
@@ -219,7 +219,7 @@ public partial class MultisetTests
     /// Verifies that the enumerator throws <see cref="InvalidOperationException"/> when the multiset is modified via <see cref="Multiset{T}.RemoveAll"/> during enumeration.
     /// </summary>
     [TestMethod]
-    public void Enumerator_WhenModifiedDuringEnumerationViaRemoveAll_ShouldThrowInvalidOperationException()
+    public void Enumerator_WhenModifiedDuringEnumerationViaRemoveAll_ShouldThrowExactly()
     {
         var mvd = new Multiset<int>([1, 2, 3]);
 
@@ -266,7 +266,7 @@ public partial class MultisetTests
     /// when the multiset has been modified after the enumerator was created.
     /// </summary>
     [TestMethod]
-    public void Enumerator_WhenResetAfterModification_ShouldThrowInvalidOperationException()
+    public void Enumerator_WhenResetAfterModification_ShouldThrowExactly()
     {
         var mvd = new Multiset<int>();
         mvd.Add(1);
@@ -317,7 +317,7 @@ public partial class MultisetTests
     /// Verifies that <see cref="Multiset{T}.Frequencies()"/> throws <see cref="InvalidOperationException"/> when modified during enumeration.
     /// </summary>
     [TestMethod]
-    public void Frequencies_WhenModifiedDuringEnumeration_ShouldThrowInvalidOperationException()
+    public void Frequencies_WhenModifiedDuringEnumeration_ShouldThrowExactly()
     {
         var mvd = new Multiset<int>([1, 2, 3]);
 
@@ -336,7 +336,7 @@ public partial class MultisetTests
     /// Verifies that <see cref="Multiset{T}.Frequencies()"/> throws <see cref="InvalidOperationException"/> when the multiset is modified via <see cref="Multiset{T}.RemoveAll"/> during enumeration.
     /// </summary>
     [TestMethod]
-    public void Frequencies_WhenModifiedViaRemoveAllDuringEnumeration_ShouldThrowInvalidOperationException()
+    public void Frequencies_WhenModifiedViaRemoveAllDuringEnumeration_ShouldThrowExactly()
     {
         var mvd = new Multiset<int>([1, 2, 3]);
 

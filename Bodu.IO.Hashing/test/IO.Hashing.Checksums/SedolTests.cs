@@ -21,7 +21,7 @@ public sealed partial class SedolTests
     /// the SEDOL alphabet by throwing <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    public void Compute_WhenBodyContainsInvalidCharacter_ShouldThrowArgumentOutOfRangeException()
+    public void Compute_WhenBodyContainsInvalidCharacter_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -39,7 +39,7 @@ public sealed partial class SedolTests
     [DataRow('O')]
     [DataRow('U')]
     [TestMethod]
-    public void Compute_WhenBodyContainsVowel_ShouldThrowArgumentOutOfRangeException(char vowel)
+    public void Compute_WhenBodyContainsVowel_ShouldThrowExactly(char vowel)
     {
         var body = new string(['1', vowel, '2', '3', '4', '5']);
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>

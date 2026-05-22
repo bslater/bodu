@@ -29,7 +29,7 @@ public abstract partial class FletcherTests<TTest, TAlgorithm>
     [DataRow(48)]
     [DataRow(128)]
     [DataRow(-1)]
-    public void Ctor_WhenHashSizeIsNotSupported_ShouldThrowArgumentException(int hashSize)
+    public void Ctor_WhenHashSizeIsNotSupported_ShouldThrowExactly(int hashSize)
     {
         ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() => new TestFletcher(hashSize));
         Assert.AreEqual("hashSize", ex.ParamName);

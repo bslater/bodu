@@ -30,7 +30,7 @@ public sealed class FnvHashSizeValidationTests
     [DataRow(128)]
     [DataRow(-1)]
     [DataRow(int.MaxValue)]
-    public void Ctor_WhenHashSizeIsNotSupported_ShouldThrowArgumentException(int hashSize)
+    public void Ctor_WhenHashSizeIsNotSupported_ShouldThrowExactly(int hashSize)
     {
         ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {

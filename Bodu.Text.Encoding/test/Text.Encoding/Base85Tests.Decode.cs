@@ -30,7 +30,7 @@ public sealed partial class Base85Tests
     /// <param name="vector">A negative KAT vector.</param>
     [DataTestMethod]
     [DynamicData(nameof(Base85KnownAnswerVectors.Ascii85NegativeVectors), typeof(Base85KnownAnswerVectors), DynamicDataSourceType.Method)]
-    public void Decode_ForAscii85KnownMalformedInput_ShouldThrowExpectedException(EncodingNegativeDecodeVector vector)
+    public void Decode_ForAscii85KnownMalformedInput_ShouldThrowExactly(EncodingNegativeDecodeVector vector)
     {
         Exception? actual = null;
         try
@@ -68,7 +68,7 @@ public sealed partial class Base85Tests
     /// <param name="vector">A negative KAT vector.</param>
     [DataTestMethod]
     [DynamicData(nameof(Base85KnownAnswerVectors.Z85NegativeVectors), typeof(Base85KnownAnswerVectors), DynamicDataSourceType.Method)]
-    public void Decode_ForZ85KnownMalformedInput_ShouldThrowExpectedException(EncodingNegativeDecodeVector vector)
+    public void Decode_ForZ85KnownMalformedInput_ShouldThrowExactly(EncodingNegativeDecodeVector vector)
     {
         Exception? actual = null;
         try
@@ -90,7 +90,7 @@ public sealed partial class Base85Tests
     /// bound).
     /// </summary>
     [TestMethod]
-    public void Decode_WhenAscii85CharAboveAlphabetRange_ShouldThrowFormatException()
+    public void Decode_WhenAscii85CharAboveAlphabetRange_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<FormatException>(() =>
         {
@@ -103,7 +103,7 @@ public sealed partial class Base85Tests
     /// the Ascii85 alphabet (a control character below ASCII <c>'!'</c>).
     /// </summary>
     [TestMethod]
-    public void Decode_WhenAscii85InvalidCharacter_ShouldThrowFormatException()
+    public void Decode_WhenAscii85InvalidCharacter_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<FormatException>(() =>
         {
@@ -116,7 +116,7 @@ public sealed partial class Base85Tests
     /// group plus a single trailing character — invalid).
     /// </summary>
     [TestMethod]
-    public void Decode_WhenAscii85SixCharSequenceWithTrailingSingleChar_ShouldThrowFormatException()
+    public void Decode_WhenAscii85SixCharSequenceWithTrailingSingleChar_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<FormatException>(() =>
         {
@@ -129,7 +129,7 @@ public sealed partial class Base85Tests
     /// valid Base85 final group.
     /// </summary>
     [TestMethod]
-    public void Decode_WhenAscii85TrailingSingleChar_ShouldThrowFormatException()
+    public void Decode_WhenAscii85TrailingSingleChar_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<FormatException>(() =>
         {
@@ -153,7 +153,7 @@ public sealed partial class Base85Tests
     /// the variant alphabet (using a definitely-invalid character).
     /// </summary>
     [TestMethod]
-    public void Decode_WhenCharBelowAlphabetRange_ShouldThrowFormatException()
+    public void Decode_WhenCharBelowAlphabetRange_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<FormatException>(() =>
         {
@@ -185,7 +185,7 @@ public sealed partial class Base85Tests
     /// variant.
     /// </summary>
     [TestMethod]
-    public void Decode_WhenUndefinedVariant_ShouldThrowArgumentOutOfRangeException()
+    public void Decode_WhenUndefinedVariant_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -202,7 +202,7 @@ public sealed partial class Base85Tests
     [DataRow('\'')]
     [DataRow('\\')]
     [DataRow(';')]
-    public void Decode_WhenZ85AlphabetExcludedCharacter_ShouldThrowFormatException(char excluded)
+    public void Decode_WhenZ85AlphabetExcludedCharacter_ShouldThrowExactly(char excluded)
     {
         var input = "abcd" + excluded;
 
@@ -217,7 +217,7 @@ public sealed partial class Base85Tests
     /// non-aligned input length.
     /// </summary>
     [TestMethod]
-    public void Decode_WhenZ85NonAlignedInput_ShouldThrowFormatException()
+    public void Decode_WhenZ85NonAlignedInput_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<FormatException>(() =>
         {
@@ -230,7 +230,7 @@ public sealed partial class Base85Tests
     /// <c>z</c> shortcut characters.
     /// </summary>
     [TestMethod]
-    public void Decode_WhenZShortcutInMiddleOfGroup_ShouldThrowFormatException()
+    public void Decode_WhenZShortcutInMiddleOfGroup_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<FormatException>(() =>
         {

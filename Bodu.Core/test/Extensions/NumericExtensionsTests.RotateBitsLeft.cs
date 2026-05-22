@@ -17,7 +17,7 @@ public partial class NumericExtensionsTests
     [DataRow(9)]
     [DataRow(16)]
     [DataRow(int.MaxValue)]
-    public void RotateBitsLeft_WhenCountExceedsBitWidth_ForByte_ShouldThrowArgumentOutOfRangeException(int count) =>
+    public void RotateBitsLeft_WhenCountExceedsBitWidth_ForByte_ShouldThrowExactly(int count) =>
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             ((byte)0xFF).RotateBitsLeft(count);
@@ -35,7 +35,7 @@ public partial class NumericExtensionsTests
     [DataRow(-1)]
     [DataRow(-8)]
     [DataRow(int.MinValue)]
-    public void RotateBitsLeft_WhenCountIsNegative_ForByte_ShouldThrowArgumentOutOfRangeException(int count) =>
+    public void RotateBitsLeft_WhenCountIsNegative_ForByte_ShouldThrowExactly(int count) =>
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             ((byte)0xFF).RotateBitsLeft(count);
@@ -49,7 +49,7 @@ public partial class NumericExtensionsTests
     [DataRow(-1)]
     [DataRow(33)]
     [DataRow(int.MaxValue)]
-    public void RotateBitsLeft_WhenCountIsOutOfRange_ForUInt_ShouldThrowArgumentOutOfRangeException(int count) =>
+    public void RotateBitsLeft_WhenCountIsOutOfRange_ForUInt_ShouldThrowExactly(int count) =>
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             0xFFFFFFFFU.RotateBitsLeft(count);
@@ -63,7 +63,7 @@ public partial class NumericExtensionsTests
     [DataRow(-1)]
     [DataRow(65)]
     [DataRow(int.MaxValue)]
-    public void RotateBitsLeft_WhenCountIsOutOfRange_ForULong_ShouldThrowArgumentOutOfRangeException(int count) =>
+    public void RotateBitsLeft_WhenCountIsOutOfRange_ForULong_ShouldThrowExactly(int count) =>
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             0xFFFFFFFFFFFFFFFFUL.RotateBitsLeft(count);
@@ -77,7 +77,7 @@ public partial class NumericExtensionsTests
     [DataRow(-1)]
     [DataRow(17)]
     [DataRow(int.MaxValue)]
-    public void RotateBitsLeft_WhenCountIsOutOfRange_ForUShort_ShouldThrowArgumentOutOfRangeException(int count) =>
+    public void RotateBitsLeft_WhenCountIsOutOfRange_ForUShort_ShouldThrowExactly(int count) =>
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             ((ushort)0xFFFF).RotateBitsLeft(count);

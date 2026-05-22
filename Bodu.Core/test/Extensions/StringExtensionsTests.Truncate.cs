@@ -69,7 +69,7 @@ public partial class StringExtensionsTests
     /// <see cref="ArgumentOutOfRangeException" /> when <c>maxLength</c> is negative.
     /// </summary>
     [TestMethod]
-    public void Truncate_WhenMaxLengthIsNegative_ShouldThrowArgumentOutOfRangeException()
+    public void Truncate_WhenMaxLengthIsNegative_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => _ = "hello".Truncate(-1));
     }
@@ -79,7 +79,7 @@ public partial class StringExtensionsTests
     /// <see cref="ArgumentOutOfRangeException" /> when <c>maxLength</c> is smaller than the ellipsis.
     /// </summary>
     [TestMethod]
-    public void Truncate_WhenMaxLengthIsSmallerThanEllipsis_ShouldThrowArgumentOutOfRangeException()
+    public void Truncate_WhenMaxLengthIsSmallerThanEllipsis_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => _ = "hello".Truncate(2, "..."));
     }
@@ -88,7 +88,7 @@ public partial class StringExtensionsTests
     /// Verifies that the truncate methods throw <see cref="ArgumentNullException" /> for null arguments.
     /// </summary>
     [TestMethod]
-    public void Truncate_WhenAnyArgumentIsNull_ShouldThrowArgumentNullException()
+    public void Truncate_WhenAnyArgumentIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() => _ = StringExtensions.Truncate(null!, 5));
         Assert.ThrowsExactly<ArgumentNullException>(() => _ = StringExtensions.Truncate(null!, 5, "..."));

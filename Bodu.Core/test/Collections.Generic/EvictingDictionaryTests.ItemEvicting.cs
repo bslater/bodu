@@ -14,7 +14,7 @@ public partial class EvictingDictionaryTests
     /// re-entrant mutation from corrupting internal state mid-eviction.
     /// </summary>
     [TestMethod]
-    public void Add_WhenCalledFromItemEvictingHandler_ShouldThrowException()
+    public void Add_WhenCalledFromItemEvictingHandler_ShouldThrowExactly()
     {
         var dictionary = new EvictingDictionary<string, int>(2);
         dictionary.Add("A", 1);
@@ -36,7 +36,7 @@ public partial class EvictingDictionaryTests
     /// Verifies that calling <see cref="EvictingDictionary{TKey, TValue}.Clear" /> from an ItemEvicted handler throws InvalidOperationException.
     /// </summary>
     [TestMethod]
-    public void Clear_WhenCalledFromItemEvictedHandler_ShouldThrowException()
+    public void Clear_WhenCalledFromItemEvictedHandler_ShouldThrowExactly()
     {
         var dictionary = new EvictingDictionary<string, int>(2);
         dictionary.Add("A", 1);
@@ -97,7 +97,7 @@ public partial class EvictingDictionaryTests
     /// Verifies that calling <see cref="EvictingDictionary{TKey, TValue}.Remove" /> from an ItemEvicting handler throws InvalidOperationException.
     /// </summary>
     [TestMethod]
-    public void Remove_WhenCalledFromItemEvictingHandler_ShouldThrowException()
+    public void Remove_WhenCalledFromItemEvictingHandler_ShouldThrowExactly()
     {
         var dictionary = new EvictingDictionary<string, int>(2);
         dictionary.Add("A", 1);

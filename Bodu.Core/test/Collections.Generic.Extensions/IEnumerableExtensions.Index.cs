@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IEnumerableExtensions.Index.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -57,7 +57,7 @@ public sealed partial class IEnumerableExtensionsTests_Index
     /// <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void Index_WhenSourceIsNull_ShouldThrowArgumentNullException()
+    public void Index_WhenSourceIsNull_ShouldThrowExactly()
     {
         IEnumerable<int> source = null!;
 

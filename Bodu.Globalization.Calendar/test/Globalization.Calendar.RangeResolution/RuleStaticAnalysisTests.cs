@@ -288,7 +288,7 @@ public sealed class RuleStaticAnalysisTests
     /// <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void Build_WhenRulesIsNull_ShouldThrowArgumentNullException()
+    public void Build_WhenRulesIsNull_ShouldThrowExactly()
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

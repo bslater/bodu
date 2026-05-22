@@ -47,7 +47,7 @@ public partial class ThrowHelperTests
     /// </summary>
     [DataRow("")]
     [TestMethod]
-    public void ThrowIfNullOrEmpty_WhenValueIsEmpty_ShouldThrowArgumentException(string value)
+    public void ThrowIfNullOrEmpty_WhenValueIsEmpty_ShouldThrowExactly(string value)
     {
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -74,7 +74,7 @@ public partial class ThrowHelperTests
     /// </summary>
     [DataRow(null)]
     [TestMethod]
-    public void ThrowIfNullOrEmpty_WhenValueIsNull_ShouldThrowArgumentNullException(string? value)
+    public void ThrowIfNullOrEmpty_WhenValueIsNull_ShouldThrowExactly(string? value)
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

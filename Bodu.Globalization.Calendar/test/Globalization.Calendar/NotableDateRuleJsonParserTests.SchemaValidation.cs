@@ -21,7 +21,7 @@ public partial class NotableDateRuleJsonParserTests
     /// (root <c>additionalProperties: false</c>).
     /// </summary>
     [TestMethod]
-    public void ParseJson_WhenRootDeclaresUnknownProperty_ShouldThrowJsonException()
+    public void ParseJson_WhenRootDeclaresUnknownProperty_ShouldThrowExactly()
     {
         const string json = @"{
 			""nonsense"": ""value"",
@@ -39,7 +39,7 @@ public partial class NotableDateRuleJsonParserTests
     /// <c>useAll</c> as a presence flag (<c>const: true</c>) — false is not meaningful.
     /// </summary>
     [TestMethod]
-    public void ParseJson_WhenUseAllIsFalse_ShouldThrowJsonException()
+    public void ParseJson_WhenUseAllIsFalse_ShouldThrowExactly()
     {
         const string json = @"{
 			""useFrom"": [
@@ -58,7 +58,7 @@ public partial class NotableDateRuleJsonParserTests
     /// schema validation (the <c>anyOf</c> clause requires at least one of them).
     /// </summary>
     [TestMethod]
-    public void ParseJson_WhenUseFromHasNoDirective_ShouldThrowJsonException()
+    public void ParseJson_WhenUseFromHasNoDirective_ShouldThrowExactly()
     {
         const string json = @"{
 			""useFrom"": [
@@ -77,7 +77,7 @@ public partial class NotableDateRuleJsonParserTests
     /// (the <c>day</c> simple type maxes at 31).
     /// </summary>
     [TestMethod]
-    public void ParseJson_WhenFixedDayExceedsMaximum_ShouldThrowJsonException()
+    public void ParseJson_WhenFixedDayExceedsMaximum_ShouldThrowExactly()
     {
         const string json = @"{
 			""notableDates"": [
@@ -100,7 +100,7 @@ public partial class NotableDateRuleJsonParserTests
     /// validation (<c>adjustmentTrigger</c> enum constraint).
     /// </summary>
     [TestMethod]
-    public void ParseJson_WhenAdjustmentTriggerIsUnknownEnum_ShouldThrowJsonException()
+    public void ParseJson_WhenAdjustmentTriggerIsUnknownEnum_ShouldThrowExactly()
     {
         const string json = @"{
 			""notableDates"": [
@@ -126,7 +126,7 @@ public partial class NotableDateRuleJsonParserTests
     /// schema validation (<c>territory</c> pattern constraint).
     /// </summary>
     [TestMethod]
-    public void ParseJson_WhenTerritoryViolatesPattern_ShouldThrowJsonException()
+    public void ParseJson_WhenTerritoryViolatesPattern_ShouldThrowExactly()
     {
         const string json = @"{
 			""notableDates"": [
@@ -150,7 +150,7 @@ public partial class NotableDateRuleJsonParserTests
     /// validation (<c>minItems: 1</c> on the rules array).
     /// </summary>
     [TestMethod]
-    public void ParseJson_WhenNotableDateHasEmptyRules_ShouldThrowJsonException()
+    public void ParseJson_WhenNotableDateHasEmptyRules_ShouldThrowExactly()
     {
         const string json = @"{
 			""notableDates"": [
@@ -170,7 +170,7 @@ public partial class NotableDateRuleJsonParserTests
     /// <c>OverrideRule</c> requirement.
     /// </summary>
     [TestMethod]
-    public void ParseJson_WhenOverrideRuleOmitsName_ShouldThrowJsonException()
+    public void ParseJson_WhenOverrideRuleOmitsName_ShouldThrowExactly()
     {
         const string json = @"{
 			""useFrom"": [
@@ -198,7 +198,7 @@ public partial class NotableDateRuleJsonParserTests
     /// requirement.
     /// </summary>
     [TestMethod]
-    public void ParseJson_WhenOverrideRuleOmitsCategory_ShouldThrowJsonException()
+    public void ParseJson_WhenOverrideRuleOmitsCategory_ShouldThrowExactly()
     {
         const string json = @"{
 			""useFrom"": [
@@ -225,7 +225,7 @@ public partial class NotableDateRuleJsonParserTests
     /// rejected by schema validation (<c>monthOrNumber</c> integer branch range).
     /// </summary>
     [TestMethod]
-    public void ParseJson_WhenFixedNumericMonthExceedsMaximum_ShouldThrowJsonException()
+    public void ParseJson_WhenFixedNumericMonthExceedsMaximum_ShouldThrowExactly()
     {
         const string json = @"{
 			""notableDates"": [

@@ -19,7 +19,7 @@ public partial class ThrowHelperTests
     [DataRow(6, 2)]
     [DataRow(2, -1)]
     [DataRow(2, 10)]
-    public void ThrowIfSpanOffsetOrCountInvalid_ReadOnlySpan_WhenOffsetOrCountOutOfRange_ShouldThrowArgumentOutOfRangeException(int offset, int count)
+    public void ThrowIfSpanOffsetOrCountInvalid_ReadOnlySpan_WhenOffsetOrCountOutOfRange_ShouldThrowExactly(int offset, int count)
     {
         var buffer = new int[5];
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
@@ -49,7 +49,7 @@ public partial class ThrowHelperTests
     [TestMethod]
     [DataRow(3, 3)]
     [DataRow(4, 2)]
-    public void ThrowIfSpanOffsetOrCountInvalid_ReadOnlySpan_WhenSumExceedsLength_ShouldThrowArgumentException(int offset, int count)
+    public void ThrowIfSpanOffsetOrCountInvalid_ReadOnlySpan_WhenSumExceedsLength_ShouldThrowExactly(int offset, int count)
     {
         var buffer = new int[5];
         Assert.ThrowsExactly<ArgumentException>(() =>
@@ -111,7 +111,7 @@ public partial class ThrowHelperTests
     [DataRow(6, 2)]    // offset > length
     [DataRow(2, -1)]   // negative count
     [DataRow(2, 10)]   // count > length
-    public void ThrowIfSpanOffsetOrCountInvalid_Span_WhenOffsetOrCountOutOfRange_ShouldThrowArgumentOutOfRangeException(int offset, int count)
+    public void ThrowIfSpanOffsetOrCountInvalid_Span_WhenOffsetOrCountOutOfRange_ShouldThrowExactly(int offset, int count)
     {
         var buffer = new int[5];
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
@@ -141,7 +141,7 @@ public partial class ThrowHelperTests
     [TestMethod]
     [DataRow(3, 3)]    // offset + count > length
     [DataRow(4, 2)]    // offset + count > length
-    public void ThrowIfSpanOffsetOrCountInvalid_Span_WhenSumExceedsLength_ShouldThrowArgumentException(int offset, int count)
+    public void ThrowIfSpanOffsetOrCountInvalid_Span_WhenSumExceedsLength_ShouldThrowExactly(int offset, int count)
     {
         var buffer = new int[5];
         Assert.ThrowsExactly<ArgumentException>(() =>

@@ -13,7 +13,7 @@ public partial class ThrowHelperTests
     /// Verifies that <see cref="ThrowHelper.ThrowIfArrayMultidimensional" />, when ArrayHasRankThree, throws <see cref="ArgumentException" />.
     /// </summary>
     [TestMethod]
-    public void ThrowIfArrayMultidimensional_WhenArrayHasRankThree_ShouldThrowArgumentException()
+    public void ThrowIfArrayMultidimensional_WhenArrayHasRankThree_ShouldThrowExactly()
     {
         Array array = new int[2, 2, 2];
         Assert.ThrowsExactly<ArgumentException>(() =>
@@ -26,7 +26,7 @@ public partial class ThrowHelperTests
     /// Verifies that <see cref="ThrowHelper.ThrowIfArrayMultidimensional" />, when ArrayHasRankTwo, throws <see cref="ArgumentException" />.
     /// </summary>
     [TestMethod]
-    public void ThrowIfArrayMultidimensional_WhenArrayHasRankTwo_ShouldThrowArgumentException()
+    public void ThrowIfArrayMultidimensional_WhenArrayHasRankTwo_ShouldThrowExactly()
     {
         Array array = new int[2, 3];
         Assert.ThrowsExactly<ArgumentException>(() =>
@@ -49,7 +49,7 @@ public partial class ThrowHelperTests
     /// Verifies that <see cref="ThrowHelper.ThrowIfArrayMultidimensional" />, when ArrayIsNull, throws <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void ThrowIfArrayMultidimensional_WhenArrayIsNull_ShouldThrowArgumentNullException()
+    public void ThrowIfArrayMultidimensional_WhenArrayIsNull_ShouldThrowExactly()
     {
         Array? array = null;
         Assert.ThrowsExactly<ArgumentNullException>(() =>

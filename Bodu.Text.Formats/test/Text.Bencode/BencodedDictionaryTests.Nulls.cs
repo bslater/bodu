@@ -14,7 +14,7 @@ public sealed partial class BencodedDictionaryTests
     /// resx-backed message.
     /// </summary>
     [TestMethod]
-    public void Constructor_WhenDuplicateKeys_ShouldThrowArgumentException()
+    public void Constructor_WhenDuplicateKeys_ShouldThrowExactly()
     {
         ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -32,7 +32,7 @@ public sealed partial class BencodedDictionaryTests
     /// Verifies that the constructor rejects a <see langword="null" /> items enumerable.
     /// </summary>
     [TestMethod]
-    public void Constructor_WhenItemsIsNull_ShouldThrowArgumentNullException()
+    public void Constructor_WhenItemsIsNull_ShouldThrowExactly()
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -47,7 +47,7 @@ public sealed partial class BencodedDictionaryTests
     /// <see cref="ArgumentException" /> carrying the resx-backed message.
     /// </summary>
     [TestMethod]
-    public void Constructor_WhenPairKeyIsNull_ShouldThrowArgumentException()
+    public void Constructor_WhenPairKeyIsNull_ShouldThrowExactly()
     {
         ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -66,7 +66,7 @@ public sealed partial class BencodedDictionaryTests
     /// <see cref="ArgumentException" /> carrying the resx-backed message.
     /// </summary>
     [TestMethod]
-    public void Constructor_WhenPairValueIsNull_ShouldThrowArgumentException()
+    public void Constructor_WhenPairValueIsNull_ShouldThrowExactly()
     {
         ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {

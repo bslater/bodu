@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FractionTests.Conversions.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -52,7 +52,7 @@ public partial class FractionTests
     /// Verifies that <see cref="Fraction{T}.FromDouble" /> rejects non-finite values.
     /// </summary>
     [TestMethod]
-    public void FromDouble_WhenGivenNonFiniteValue_ShouldThrowArgumentException()
+    public void FromDouble_WhenGivenNonFiniteValue_ShouldThrowExactly()
     {
         _ = Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -89,7 +89,7 @@ public partial class FractionTests
     /// <see cref="OverflowException" />.
     /// </summary>
     [TestMethod]
-    public void As_WhenComponentDoesNotFitTargetType_ShouldThrowOverflowException()
+    public void As_WhenComponentDoesNotFitTargetType_ShouldThrowExactly()
     {
         _ = Assert.ThrowsExactly<OverflowException>(() =>
         {
@@ -162,7 +162,7 @@ public partial class FractionTests
     [DataRow(double.NaN)]
     [DataRow(double.PositiveInfinity)]
     [DataRow(double.NegativeInfinity)]
-    public void FromDouble_WhenGivenNonFiniteValue_ShouldThrowArgumentExceptionForEachCase(double input)
+    public void FromDouble_WhenGivenNonFiniteValue_ShouldThrowExactly(double input)
     {
         _ = Assert.ThrowsExactly<ArgumentException>(() =>
         {

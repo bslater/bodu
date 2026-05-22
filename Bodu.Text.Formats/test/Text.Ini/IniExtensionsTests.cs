@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IniExtensionsTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -121,7 +121,7 @@ public sealed class IniExtensionsTests
     /// <see cref="ArgumentNullException" /> when the receiver is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void FormatIni_WhenDocumentIsNull_ShouldThrowArgumentNullException()
+    public void FormatIni_WhenDocumentIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

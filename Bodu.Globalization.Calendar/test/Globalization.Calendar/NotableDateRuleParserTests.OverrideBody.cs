@@ -226,7 +226,7 @@ public partial class NotableDateRuleParserTests
     /// <see cref="InvalidOperationException" />.
     /// </summary>
     [TestMethod]
-    public void ParseDocument_WhenXmlOverrideHasDuplicateAdjustmentKeys_ShouldThrowInvalidOperationException()
+    public void ParseDocument_WhenXmlOverrideHasDuplicateAdjustmentKeys_ShouldThrowExactly()
     {
         const string xml = @"
 			<NotableDates xmlns=""urn:bodu:globalization:calendar"">

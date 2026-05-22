@@ -57,7 +57,7 @@ public partial class StringExtensionsTests
     /// <see cref="ArgumentNullException" /> when <c>value</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void EnsureTrailingNewLine_WhenInputIsNull_ShouldThrowArgumentNullException()
+    public void EnsureTrailingNewLine_WhenInputIsNull_ShouldThrowExactly()
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -72,7 +72,7 @@ public partial class StringExtensionsTests
     /// <see cref="ArgumentNullException" /> when <c>newline</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void EnsureTrailingNewLine_WhenNewlineIsNull_ShouldThrowArgumentNullException()
+    public void EnsureTrailingNewLine_WhenNewlineIsNull_ShouldThrowExactly()
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -87,7 +87,7 @@ public partial class StringExtensionsTests
     /// <see cref="ArgumentException" /> when <c>newline</c> is an empty string.
     /// </summary>
     [TestMethod]
-    public void EnsureTrailingNewLine_WhenNewlineIsEmpty_ShouldThrowArgumentException()
+    public void EnsureTrailingNewLine_WhenNewlineIsEmpty_ShouldThrowExactly()
     {
         ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {

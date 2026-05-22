@@ -22,7 +22,7 @@ public partial class ThrowHelperTests
     /// </summary>
     [TestMethod]
     [DataRow(null)]
-    public void ThrowIfNull_WhenValueIsNull_ShouldThrow(object? value)
+    public void ThrowIfNull_WhenValueIsNull_ShouldThrowExactly(object? value)
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -43,7 +43,7 @@ public partial class ThrowHelperTests
     /// </summary>
     [TestMethod]
     [DataRow(null, "Custom message")]
-    public void ThrowIfNull_WithMessage_WhenValueIsNull_ShouldThrowWithMessage(object? value, string message)
+    public void ThrowIfNull_WithMessage_WhenValueIsNull_ShouldThrowExactly(object? value, string message)
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

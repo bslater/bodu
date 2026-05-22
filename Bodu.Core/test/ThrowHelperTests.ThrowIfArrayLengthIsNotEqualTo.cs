@@ -13,7 +13,7 @@ public partial class ThrowHelperTests
     /// Verifies that <see cref="ThrowHelper.ThrowIfArrayLengthIsNotEqualTo" />, when ArrayIsNull, throws <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void ThrowIfArrayLengthIsNotEqualTo_WhenArrayIsNull_ShouldThrowArgumentNullException()
+    public void ThrowIfArrayLengthIsNotEqualTo_WhenArrayIsNull_ShouldThrowExactly()
     {
         Array? array = null;
         Assert.ThrowsExactly<ArgumentNullException>(() =>
@@ -62,7 +62,7 @@ public partial class ThrowHelperTests
     [DataRow(3, 4)]
     [DataRow(5, 4)]
     [DataRow(10, 1)]
-    public void ThrowIfArrayLengthIsNotEqualTo_WhenLengthDiffers_ShouldThrowArgumentException(int arrayLength, int expectedLength)
+    public void ThrowIfArrayLengthIsNotEqualTo_WhenLengthDiffers_ShouldThrowExactly(int arrayLength, int expectedLength)
     {
         Array array = new int[arrayLength];
         Assert.ThrowsExactly<ArgumentException>(() =>

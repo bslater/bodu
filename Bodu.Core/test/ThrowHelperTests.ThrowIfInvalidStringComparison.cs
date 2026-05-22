@@ -47,7 +47,7 @@ public partial class ThrowHelperTests
     [DataRow((StringComparison)999)]
     [DataRow((StringComparison)(-1))]
     [DataRow((StringComparison)int.MaxValue)]
-    public void ThrowIfInvalidStringComparison_WhenValueIsInvalid_ShouldThrowArgumentException(StringComparison stringComparison)
+    public void ThrowIfInvalidStringComparison_WhenValueIsInvalid_ShouldThrowExactly(StringComparison stringComparison)
     {
         Assert.ThrowsExactly<ArgumentException>(() =>
         {

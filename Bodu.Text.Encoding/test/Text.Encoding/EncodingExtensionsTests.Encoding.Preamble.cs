@@ -29,7 +29,7 @@ public sealed partial class EncodingExtensionsTests
     /// <see cref="ArgumentNullException" /> when <c>encoding</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void HasPreamble_WhenEncodingIsNull_ShouldThrowArgumentNullException()
+    public void HasPreamble_WhenEncodingIsNull_ShouldThrowExactly()
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -63,7 +63,7 @@ public sealed partial class EncodingExtensionsTests
     /// <see cref="ArgumentNullException" /> when <c>encoding</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void GetPreambleLength_WhenEncodingIsNull_ShouldThrowArgumentNullException()
+    public void GetPreambleLength_WhenEncodingIsNull_ShouldThrowExactly()
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -266,7 +266,7 @@ public sealed partial class EncodingExtensionsTests
     /// throws <see cref="ArgumentException" /> when the destination is too small.
     /// </summary>
     [TestMethod]
-    public void GetBytesWithPreamble_SpanOverload_WhenDestinationIsTooSmall_ShouldThrowArgumentException()
+    public void GetBytesWithPreamble_SpanOverload_WhenDestinationIsTooSmall_ShouldThrowExactly()
     {
         System.Text.Encoding utf8WithBom = new System.Text.UTF8Encoding(true);
         var total = utf8WithBom.GetByteCountWithPreamble(MultiByteText);
@@ -307,7 +307,7 @@ public sealed partial class EncodingExtensionsTests
     /// <c>encoding</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void PreambleExtensions_WhenEncodingIsNull_ShouldThrowArgumentNullException()
+    public void PreambleExtensions_WhenEncodingIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() => EncodingExtensions.StartsWithPreamble(null!, new byte[] { 0x68 }));
         Assert.ThrowsExactly<ArgumentNullException>(() => _ = EncodingExtensions.StripPreamble(null!, new byte[] { 0x68 }));

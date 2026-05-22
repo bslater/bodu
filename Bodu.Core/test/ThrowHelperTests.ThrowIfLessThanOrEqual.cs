@@ -54,7 +54,7 @@ public partial class ThrowHelperTests
     [DataRow(5, 6)]
     [DataRow(int.MinValue, int.MaxValue)]
     [DataRow(3, 3)]
-    public void ThrowIfLessThanOrEqual_WhenValueIsLessThanOrEqualToMin_ShouldThrowArgumentOutOfRangeException(int value, int min)
+    public void ThrowIfLessThanOrEqual_WhenValueIsLessThanOrEqualToMin_ShouldThrowExactly(int value, int min)
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

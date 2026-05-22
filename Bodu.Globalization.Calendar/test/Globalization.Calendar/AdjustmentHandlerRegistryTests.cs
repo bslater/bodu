@@ -53,7 +53,7 @@ public sealed class AdjustmentHandlerRegistryTests
     /// <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenHandlersIsNull_ShouldThrowArgumentNullException()
+    public void Ctor_WhenHandlersIsNull_ShouldThrowExactly()
     {
         var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -71,7 +71,7 @@ public sealed class AdjustmentHandlerRegistryTests
     [DataRow("")]
     [DataRow("   ")]
     [TestMethod]
-    public void Register_WhenKeyIsNullOrWhitespace_ShouldThrowArgumentException(string? key)
+    public void Register_WhenKeyIsNullOrWhitespace_ShouldThrowExactly(string? key)
     {
         var registry = new AdjustmentHandlerRegistry();
 
@@ -88,7 +88,7 @@ public sealed class AdjustmentHandlerRegistryTests
     /// rejects a <see langword="null" /> handler with <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void Register_WhenHandlerIsNull_ShouldThrowArgumentNullException()
+    public void Register_WhenHandlerIsNull_ShouldThrowExactly()
     {
         var registry = new AdjustmentHandlerRegistry();
 

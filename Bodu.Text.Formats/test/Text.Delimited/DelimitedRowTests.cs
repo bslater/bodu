@@ -30,7 +30,7 @@ public sealed class DelimitedRowTests
     /// Verifies that the integer indexer throws <see cref="ArgumentOutOfRangeException" /> for a negative index.
     /// </summary>
     [TestMethod]
-    public void IndexerInt_WhenIndexIsNegative_ShouldThrowArgumentOutOfRangeException()
+    public void IndexerInt_WhenIndexIsNegative_ShouldThrowExactly()
     {
         DelimitedDocument doc = Delimited.Parse("a,b\n1,2");
 
@@ -45,7 +45,7 @@ public sealed class DelimitedRowTests
     /// greater than or equal to the field count.
     /// </summary>
     [TestMethod]
-    public void IndexerInt_WhenIndexIsOutOfRange_ShouldThrowArgumentOutOfRangeException()
+    public void IndexerInt_WhenIndexIsOutOfRange_ShouldThrowExactly()
     {
         DelimitedDocument doc = Delimited.Parse("a,b\n1,2");
 
@@ -74,7 +74,7 @@ public sealed class DelimitedRowTests
     /// parsed without a header row.
     /// </summary>
     [TestMethod]
-    public void IndexerString_WhenNoHeaderRow_ShouldThrowInvalidOperationException()
+    public void IndexerString_WhenNoHeaderRow_ShouldThrowExactly()
     {
         DelimitedParseOptions options = new() { HasHeader = false };
         DelimitedDocument doc = Delimited.Parse("Alice,30", options);
@@ -90,7 +90,7 @@ public sealed class DelimitedRowTests
     /// <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void IndexerString_WhenHeaderIsNull_ShouldThrowArgumentNullException()
+    public void IndexerString_WhenHeaderIsNull_ShouldThrowExactly()
     {
         DelimitedDocument doc = Delimited.Parse("name\nAlice");
 
@@ -105,7 +105,7 @@ public sealed class DelimitedRowTests
     /// found in the document.
     /// </summary>
     [TestMethod]
-    public void IndexerString_WhenHeaderNotFound_ShouldThrowKeyNotFoundException()
+    public void IndexerString_WhenHeaderNotFound_ShouldThrowExactly()
     {
         DelimitedDocument doc = Delimited.Parse("name\nAlice");
 
@@ -148,7 +148,7 @@ public sealed class DelimitedRowTests
     /// for an out-of-range index.
     /// </summary>
     [TestMethod]
-    public void GetValueByIndex_WhenIndexIsOutOfRange_ShouldThrowArgumentOutOfRangeException()
+    public void GetValueByIndex_WhenIndexIsOutOfRange_ShouldThrowExactly()
     {
         DelimitedDocument doc = Delimited.Parse("a\n1");
 

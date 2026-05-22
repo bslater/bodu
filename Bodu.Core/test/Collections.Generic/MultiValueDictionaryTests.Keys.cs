@@ -48,7 +48,7 @@ public partial class MultiValueDictionaryTests
     /// Verifies that key enumeration detects structural modification.
     /// </summary>
     [TestMethod]
-    public void Keys_WhenDictionaryModifiedDuringEnumeration_ShouldThrowInvalidOperationException()
+    public void Keys_WhenDictionaryModifiedDuringEnumeration_ShouldThrowExactly()
     {
         var mvd = new MultiValueDictionary<string, int>();
         mvd.Add("a", 1);

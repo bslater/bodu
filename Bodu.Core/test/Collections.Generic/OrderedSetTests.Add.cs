@@ -50,7 +50,7 @@ public partial class OrderedSetTests
     /// Verifies that <see cref="OrderedSet{T}.Add(T)" /> rejects a <see langword="null" /> reference.
     /// </summary>
     [TestMethod]
-    public void Add_WhenItemIsNull_ShouldThrowArgumentNullException()
+    public void Add_WhenItemIsNull_ShouldThrowExactly()
     {
         var sut = new OrderedSet<string>();
 
@@ -119,7 +119,7 @@ public partial class OrderedSetTests
     /// <see langword="null" /> element.
     /// </summary>
     [TestMethod]
-    public void AddRange_WhenCollectionContainsNull_ShouldThrowArgumentNullException()
+    public void AddRange_WhenCollectionContainsNull_ShouldThrowExactly()
     {
         var sut = new OrderedSet<string>();
 
@@ -153,7 +153,7 @@ public partial class OrderedSetTests
     /// collection.
     /// </summary>
     [TestMethod]
-    public void AddRange_WhenCollectionIsNull_ShouldThrowArgumentNullException()
+    public void AddRange_WhenCollectionIsNull_ShouldThrowExactly()
     {
         var sut = new OrderedSet<int>();
 

@@ -28,7 +28,7 @@ public sealed class IListExtensionsTests_IndexOf
     /// when <paramref name="index"/> exceeds <see cref="ICollection{T}.Count"/>.
     /// </summary>
     [TestMethod]
-    public void IndexOf_ThreeArg_WhenIndexExceedsCount_ShouldThrowArgumentOutOfRangeException()
+    public void IndexOf_ThreeArg_WhenIndexExceedsCount_ShouldThrowExactly()
     {
         IList<int> list = new List<int> { 1, 2, 3 };
 
@@ -43,7 +43,7 @@ public sealed class IListExtensionsTests_IndexOf
     /// when <paramref name="index"/> is negative, exercising the index-validation branch of that overload.
     /// </summary>
     [TestMethod]
-    public void IndexOf_ThreeArg_WhenIndexIsNegative_ShouldThrowArgumentOutOfRangeException()
+    public void IndexOf_ThreeArg_WhenIndexIsNegative_ShouldThrowExactly()
     {
         IList<int> list = new List<int> { 1, 2, 3 };
 
@@ -57,7 +57,7 @@ public sealed class IListExtensionsTests_IndexOf
     /// Verifies that <c>IndexOf</c> throws <see cref="ArgumentOutOfRangeException"/> when <paramref name="count"/> is negative.
     /// </summary>
     [TestMethod]
-    public void IndexOf_WhenCountIsNegative_ShouldThrowArgumentOutOfRangeException()
+    public void IndexOf_WhenCountIsNegative_ShouldThrowExactly()
     {
         IList<int> list = new List<int> { 1, 2, 3 };
 
@@ -85,7 +85,7 @@ public sealed class IListExtensionsTests_IndexOf
     /// exceeds <see cref="ICollection{T}.Count"/>.
     /// </summary>
     [TestMethod]
-    public void IndexOf_WhenIndexExceedsCount_ShouldThrowArgumentOutOfRangeException()
+    public void IndexOf_WhenIndexExceedsCount_ShouldThrowExactly()
     {
         IList<int> list = new List<int> { 1, 2, 3 };
 
@@ -99,7 +99,7 @@ public sealed class IListExtensionsTests_IndexOf
     /// Verifies that <c>IndexOf</c> throws <see cref="ArgumentOutOfRangeException"/> when the start index is negative.
     /// </summary>
     [TestMethod]
-    public void IndexOf_WhenIndexIsNegative_ShouldThrowArgumentOutOfRangeException()
+    public void IndexOf_WhenIndexIsNegative_ShouldThrowExactly()
     {
         IList<int> list = new List<int> { 1, 2, 3 };
 
@@ -114,7 +114,7 @@ public sealed class IListExtensionsTests_IndexOf
     /// <c>index + count</c> exceeds the list size.
     /// </summary>
     [TestMethod]
-    public void IndexOf_WhenIndexPlusCountExceedsCount_ShouldThrowArgumentOutOfRangeException()
+    public void IndexOf_WhenIndexPlusCountExceedsCount_ShouldThrowExactly()
     {
         IList<int> list = new List<int> { 1, 2, 3 };
 
@@ -154,7 +154,7 @@ public sealed class IListExtensionsTests_IndexOf
     /// Verifies that <c>IndexOf</c> throws <see cref="ArgumentNullException"/> when the list is <see langword="null"/>.
     /// </summary>
     [TestMethod]
-    public void IndexOf_WhenListIsNull_ShouldThrowArgumentNullException()
+    public void IndexOf_WhenListIsNull_ShouldThrowExactly()
     {
         IList<int>? list = null;
 
@@ -208,7 +208,7 @@ public sealed class IListExtensionsTests_IndexOf
     /// Verifies that <c>IndexOf</c> throws <see cref="ArgumentNullException"/> when the predicate is <see langword="null"/>.
     /// </summary>
     [TestMethod]
-    public void IndexOf_WhenPredicateIsNull_ShouldThrowArgumentNullException()
+    public void IndexOf_WhenPredicateIsNull_ShouldThrowExactly()
     {
         IList<int> list = new List<int> { 1 };
         Func<int, bool>? predicate = null;

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FractionTests.Arithmetic.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -49,7 +49,7 @@ public partial class FractionTests
     /// Verifies that taking the reciprocal of zero throws <see cref="DivideByZeroException" />.
     /// </summary>
     [TestMethod]
-    public void Reciprocal_WhenValueIsZero_ShouldThrowDivideByZeroException()
+    public void Reciprocal_WhenValueIsZero_ShouldThrowExactly()
     {
         _ = Assert.ThrowsExactly<DivideByZeroException>(() =>
         {
@@ -75,7 +75,7 @@ public partial class FractionTests
     /// Verifies that raising zero to a negative power throws <see cref="DivideByZeroException" />.
     /// </summary>
     [TestMethod]
-    public void Pow_WhenZeroRaisedToNegativePower_ShouldThrowDivideByZeroException()
+    public void Pow_WhenZeroRaisedToNegativePower_ShouldThrowExactly()
     {
         _ = Assert.ThrowsExactly<DivideByZeroException>(() =>
         {
@@ -98,7 +98,7 @@ public partial class FractionTests
     /// Verifies that arithmetic overflowing a fixed-width component throws <see cref="OverflowException" />.
     /// </summary>
     [TestMethod]
-    public void Addition_WhenResultExceedsFixedWidthRange_ShouldThrowOverflowException()
+    public void Addition_WhenResultExceedsFixedWidthRange_ShouldThrowExactly()
     {
         _ = Assert.ThrowsExactly<OverflowException>(() =>
         {
@@ -238,7 +238,7 @@ public partial class FractionTests
     /// Verifies that multiplication overflowing a fixed-width component throws <see cref="OverflowException" />.
     /// </summary>
     [TestMethod]
-    public void Multiplication_WhenResultExceedsFixedWidthRange_ShouldThrowOverflowException()
+    public void Multiplication_WhenResultExceedsFixedWidthRange_ShouldThrowExactly()
     {
         _ = Assert.ThrowsExactly<OverflowException>(() =>
         {
@@ -250,7 +250,7 @@ public partial class FractionTests
     /// Verifies that exponentiation overflowing a fixed-width component throws <see cref="OverflowException" />.
     /// </summary>
     [TestMethod]
-    public void Pow_WhenResultExceedsFixedWidthRange_ShouldThrowOverflowException()
+    public void Pow_WhenResultExceedsFixedWidthRange_ShouldThrowExactly()
     {
         _ = Assert.ThrowsExactly<OverflowException>(() =>
         {
@@ -263,7 +263,7 @@ public partial class FractionTests
     /// <see cref="OverflowException" /> because the result cannot be represented.
     /// </summary>
     [TestMethod]
-    public void NegateAndAbs_WhenMagnitudeExceedsFixedWidthRange_ShouldThrowOverflowException()
+    public void NegateAndAbs_WhenMagnitudeExceedsFixedWidthRange_ShouldThrowExactly()
     {
         _ = Assert.ThrowsExactly<OverflowException>(() =>
         {
@@ -303,7 +303,7 @@ public partial class FractionTests
     /// be represented by a fixed-width backing type.
     /// </summary>
     [TestMethod]
-    public void GreatestCommonDivisor_WhenResultExceedsFixedWidthRange_ShouldThrowOverflowException()
+    public void GreatestCommonDivisor_WhenResultExceedsFixedWidthRange_ShouldThrowExactly()
     {
         _ = Assert.ThrowsExactly<OverflowException>(() =>
         {
@@ -316,7 +316,7 @@ public partial class FractionTests
     /// the magnitude of that exponent cannot be evaluated.
     /// </summary>
     [TestMethod]
-    public void Pow_WhenExponentIsIntMinValue_ShouldThrowOverflowException()
+    public void Pow_WhenExponentIsIntMinValue_ShouldThrowExactly()
     {
         _ = Assert.ThrowsExactly<OverflowException>(() =>
         {

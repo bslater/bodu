@@ -29,7 +29,7 @@ public sealed partial class StringEncodingExtensionsTests
     /// <see cref="ArgumentException" /> when the destination is one byte too small.
     /// </summary>
     [TestMethod]
-    public void EncodeUtf8To_WhenDestinationIsOneByteTooSmall_ShouldThrowArgumentException()
+    public void EncodeUtf8To_WhenDestinationIsOneByteTooSmall_ShouldThrowExactly()
     {
         var required = System.Text.Encoding.UTF8.GetByteCount(MultiByteText);
         var backing = new byte[required - 1];
@@ -45,7 +45,7 @@ public sealed partial class StringEncodingExtensionsTests
     /// <see cref="ArgumentNullException" /> when <c>text</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void EncodeUtf8To_WhenTextIsNull_ShouldThrowArgumentNullException()
+    public void EncodeUtf8To_WhenTextIsNull_ShouldThrowExactly()
     {
         var backing = new byte[64];
 

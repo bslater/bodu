@@ -24,7 +24,7 @@ public sealed partial class NotableDateServiceTests
     /// <c>weekendDefinition</c> parameter name when an undefined enum value is supplied.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenWeekendDefinitionIsUndefined_ShouldThrowArgumentOutOfRangeExceptionWithParamName()
+    public void Ctor_WhenWeekendDefinitionIsUndefined_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -41,7 +41,7 @@ public sealed partial class NotableDateServiceTests
     /// <see cref="WeekPattern" /> and use the <see cref="WeekPattern" /> constructor instead.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenWeekendDefinitionIsCustom_ShouldThrowArgumentException()
+    public void Ctor_WhenWeekendDefinitionIsCustom_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -60,7 +60,7 @@ public sealed partial class NotableDateServiceTests
     /// exposes the <c>filter</c> parameter name on the thrown <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void GetNotableDates_WhenYearFilterIsNull_ShouldThrowArgumentNullExceptionWithParamName()
+    public void GetNotableDates_WhenYearFilterIsNull_ShouldThrowExactly()
     {
         NotableDateService service = BuildService(Fixed("Holiday A", 1, 1));
 
@@ -77,7 +77,7 @@ public sealed partial class NotableDateServiceTests
     /// exposes the <c>filter</c> parameter name on the thrown <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void GetNotableDates_WhenDateRangeFilterIsNull_ShouldThrowArgumentNullExceptionWithParamName()
+    public void GetNotableDates_WhenDateRangeFilterIsNull_ShouldThrowExactly()
     {
         NotableDateService service = BuildService(Fixed("Holiday A", 1, 1));
 
@@ -97,7 +97,7 @@ public sealed partial class NotableDateServiceTests
     /// exposes the <c>filter</c> parameter name on the thrown <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void GetNotableDates_WhenSingleDateFilterIsNull_ShouldThrowArgumentNullExceptionWithParamName()
+    public void GetNotableDates_WhenSingleDateFilterIsNull_ShouldThrowExactly()
     {
         NotableDateService service = BuildService(Fixed("Holiday A", 1, 1));
 

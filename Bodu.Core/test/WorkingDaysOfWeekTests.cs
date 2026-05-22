@@ -33,7 +33,7 @@ public class WorkingDaysOfWeekTests
     /// <see cref="ArgumentException" /> when called with <see cref="WorkingDaysOfWeek.Custom" />.
     /// </summary>
     [TestMethod]
-    public void ToWeekPattern_WhenCustom_ShouldThrowExactlyArgumentException()
+    public void ToWeekPattern_WhenCustom_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -61,7 +61,7 @@ public class WorkingDaysOfWeekTests
     /// <see cref="ArgumentOutOfRangeException" /> when the enum value is not defined.
     /// </summary>
     [TestMethod]
-    public void ToWeekPattern_WhenUndefinedEnumValue_ShouldThrowExactlyArgumentOutOfRangeException()
+    public void ToWeekPattern_WhenUndefinedEnumValue_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -165,7 +165,7 @@ public class WorkingDaysOfWeekTests
     /// throws <see cref="ArgumentNullException" /> when called with <see cref="WorkingDaysOfWeek.Custom" /> and a <see langword="null" /> provider.
     /// </summary>
     [TestMethod]
-    public void ToWeekPattern_WhenCustomAndProviderIsNull_ShouldThrowExactlyArgumentNullException()
+    public void ToWeekPattern_WhenCustomAndProviderIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -193,7 +193,7 @@ public class WorkingDaysOfWeekTests
     /// <see cref="ArgumentNullException" /> when the provider argument is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void IWeekendDefinitionProviderToWeekPattern_WhenProviderIsNull_ShouldThrowExactlyArgumentNullException()
+    public void IWeekendDefinitionProviderToWeekPattern_WhenProviderIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

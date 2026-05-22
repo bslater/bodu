@@ -16,7 +16,7 @@ public partial class IndexedSetTests
     /// Verifies that <see cref="IndexedSet{T}.CopyTo(T[], int)" /> rejects a <see langword="null" /> array.
     /// </summary>
     [TestMethod]
-    public void CopyTo_WhenArrayIsNull_ShouldThrowArgumentNullException()
+    public void CopyTo_WhenArrayIsNull_ShouldThrowExactly()
     {
         IndexedSet<int> sut = CreateSet([1, 2]);
 
@@ -31,7 +31,7 @@ public partial class IndexedSetTests
     /// when the array is too small.
     /// </summary>
     [TestMethod]
-    public void CopyTo_WhenArrayIsTooSmall_ShouldThrowArgumentException()
+    public void CopyTo_WhenArrayIsTooSmall_ShouldThrowExactly()
     {
         IndexedSet<int> sut = CreateSet([1, 2, 3]);
 
@@ -47,7 +47,7 @@ public partial class IndexedSetTests
     [TestMethod]
     [DataRow(-1)]
     [DataRow(int.MinValue)]
-    public void CopyTo_WhenIndexIsNegative_ShouldThrowArgumentOutOfRangeException(int arrayIndex)
+    public void CopyTo_WhenIndexIsNegative_ShouldThrowExactly(int arrayIndex)
     {
         IndexedSet<int> sut = CreateSet([1, 2]);
 
@@ -94,7 +94,7 @@ public partial class IndexedSetTests
     /// when the remaining space after the offset is insufficient.
     /// </summary>
     [TestMethod]
-    public void CopyTo_WhenRemainingSpaceAfterOffsetIsInsufficient_ShouldThrowArgumentException()
+    public void CopyTo_WhenRemainingSpaceAfterOffsetIsInsufficient_ShouldThrowExactly()
     {
         IndexedSet<int> sut = CreateSet([1, 2, 3]);
 

@@ -14,7 +14,7 @@ public partial class PooledBufferBuilderTests
     /// after the builder has been disposed.
     /// </summary>
     [TestMethod]
-    public void WrittenCount_WhenDisposed_ShouldThrowObjectDisposedException()
+    public void WrittenCount_WhenDisposed_ShouldThrowExactly()
     {
         var builder = new PooledBufferBuilder<int>();
         builder.Dispose();

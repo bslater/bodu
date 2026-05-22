@@ -22,7 +22,7 @@ public partial class NotableDateRuleBuilderTests
     /// <see cref="InvalidOperationException" /> when no resolution strategy has been selected.
     /// </summary>
     [TestMethod]
-    public void ToXElement_WhenNoStrategySelected_ShouldThrowInvalidOperationException()
+    public void ToXElement_WhenNoStrategySelected_ShouldThrowExactly()
     {
         NotableDateRuleBuilder builder = new();
         builder.Category(NotableDateCategory.Holiday);
@@ -38,7 +38,7 @@ public partial class NotableDateRuleBuilderTests
     /// <see cref="InvalidOperationException" /> when no resolution strategy has been selected.
     /// </summary>
     [TestMethod]
-    public void ToJsonNode_WhenNoStrategySelected_ShouldThrowInvalidOperationException()
+    public void ToJsonNode_WhenNoStrategySelected_ShouldThrowExactly()
     {
         NotableDateRuleBuilder builder = new();
         builder.Category(NotableDateCategory.Holiday);
@@ -54,7 +54,7 @@ public partial class NotableDateRuleBuilderTests
     /// <c>_strategy</c> holds a value that is outside the defined <see cref="DateResolutionStrategy" /> enumeration.
     /// </summary>
     [TestMethod]
-    public void Build_WhenStrategyValueIsUndefined_ShouldThrowNotSupportedException()
+    public void Build_WhenStrategyValueIsUndefined_ShouldThrowExactly()
     {
         NotableDateRuleBuilder builder = new();
         builder.Category(NotableDateCategory.Holiday);
@@ -71,7 +71,7 @@ public partial class NotableDateRuleBuilderTests
     /// when the strategy value is undefined, which routes through the <c>BuildStrategyElement</c> default arm.
     /// </summary>
     [TestMethod]
-    public void ToXElement_WhenStrategyValueIsUndefined_ShouldThrowNotSupportedException()
+    public void ToXElement_WhenStrategyValueIsUndefined_ShouldThrowExactly()
     {
         NotableDateRuleBuilder builder = new();
         builder.Category(NotableDateCategory.Holiday);
@@ -88,7 +88,7 @@ public partial class NotableDateRuleBuilderTests
     /// when the strategy value is undefined, exercising the <c>default</c> arm of the strategy switch.
     /// </summary>
     [TestMethod]
-    public void ToJsonNode_WhenStrategyValueIsUndefined_ShouldThrowNotSupportedException()
+    public void ToJsonNode_WhenStrategyValueIsUndefined_ShouldThrowExactly()
     {
         NotableDateRuleBuilder builder = new();
         builder.Category(NotableDateCategory.Holiday);

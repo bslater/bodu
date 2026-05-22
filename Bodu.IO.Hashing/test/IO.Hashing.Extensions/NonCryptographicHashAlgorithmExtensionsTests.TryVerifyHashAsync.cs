@@ -27,7 +27,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     /// Verifies that a <see langword="null" /> algorithm receiver still raises <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public async Task TryVerifyHashAsync_WhenAlgorithmIsNull_ShouldThrowArgumentNullException()
+    public async Task TryVerifyHashAsync_WhenAlgorithmIsNull_ShouldThrowExactly()
     {
         NonCryptographicHashAlgorithm? algorithm = null;
         using MemoryStream stream = new(s_sampleData);
@@ -96,7 +96,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     /// Verifies that a null expected hex string still raises <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public async Task TryVerifyHashAsync_WhenExpectedHexIsNull_ShouldThrowArgumentNullException()
+    public async Task TryVerifyHashAsync_WhenExpectedHexIsNull_ShouldThrowExactly()
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
         using MemoryStream stream = new(s_sampleData);

@@ -121,7 +121,7 @@ public sealed partial class Base64Tests
     /// Verifies that <see cref="Base64.TryEncode" /> rejects an undefined variant.
     /// </summary>
     [TestMethod]
-    public void TryEncode_WhenUndefinedVariant_ShouldThrowArgumentOutOfRangeException()
+    public void TryEncode_WhenUndefinedVariant_ShouldThrowExactly()
     {
         var destination = new char[16];
 

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DelimitedReaderTests.Ctors.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -13,7 +13,7 @@ public sealed partial class DelimitedReaderTests
     /// <see cref="TextReader" /> throws <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenReaderIsNull_ShouldThrowArgumentNullException()
+    public void Ctor_WhenReaderIsNull_ShouldThrowExactly()
     {
         _ = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -26,7 +26,7 @@ public sealed partial class DelimitedReaderTests
     /// zero throws <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenBufferSizeIsZero_ShouldThrowArgumentOutOfRangeException()
+    public void Ctor_WhenBufferSizeIsZero_ShouldThrowExactly()
     {
         _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -39,7 +39,7 @@ public sealed partial class DelimitedReaderTests
     /// <paramref name="bufferSize" /> throws <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenBufferSizeIsNegative_ShouldThrowArgumentOutOfRangeException()
+    public void Ctor_WhenBufferSizeIsNegative_ShouldThrowExactly()
     {
         _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

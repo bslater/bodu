@@ -24,7 +24,7 @@ public partial class OrderedSetTests
     /// Verifies that <see cref="OrderedSet{T}.IndexOf(T)" /> rejects a <see langword="null" /> item.
     /// </summary>
     [TestMethod]
-    public void IndexOf_WhenItemIsNull_ShouldThrowArgumentNullException()
+    public void IndexOf_WhenItemIsNull_ShouldThrowExactly()
     {
         var sut = new OrderedSet<string>();
 

@@ -46,7 +46,7 @@ public sealed partial class EncodingExtensionsTests
     /// throws <see cref="ArgumentNullException" /> when <c>encoding</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void WritePreamble_WhenEncodingIsNull_ShouldThrowArgumentNullException()
+    public void WritePreamble_WhenEncodingIsNull_ShouldThrowExactly()
     {
         using var writer = new PooledBufferBuilder<byte>(16);
 
@@ -63,7 +63,7 @@ public sealed partial class EncodingExtensionsTests
     /// throws <see cref="ArgumentNullException" /> when <c>writer</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void WritePreamble_WhenWriterIsNull_ShouldThrowArgumentNullException()
+    public void WritePreamble_WhenWriterIsNull_ShouldThrowExactly()
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -107,7 +107,7 @@ public sealed partial class EncodingExtensionsTests
     /// throws <see cref="ArgumentNullException" /> when <c>encoding</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void WriteBytes_WhenEncodingIsNull_ShouldThrowArgumentNullException()
+    public void WriteBytes_WhenEncodingIsNull_ShouldThrowExactly()
     {
         using var writer = new PooledBufferBuilder<byte>(16);
 
@@ -124,7 +124,7 @@ public sealed partial class EncodingExtensionsTests
     /// throws <see cref="ArgumentNullException" /> when <c>writer</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void WriteBytes_WhenWriterIsNull_ShouldThrowArgumentNullException()
+    public void WriteBytes_WhenWriterIsNull_ShouldThrowExactly()
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -161,7 +161,7 @@ public sealed partial class EncodingExtensionsTests
     /// throws <see cref="ArgumentNullException" /> for null encoding.
     /// </summary>
     [TestMethod]
-    public void WriteBytesWithPreamble_WhenEncodingIsNull_ShouldThrowArgumentNullException()
+    public void WriteBytesWithPreamble_WhenEncodingIsNull_ShouldThrowExactly()
     {
         using var writer = new PooledBufferBuilder<byte>(16);
 
@@ -207,7 +207,7 @@ public sealed partial class EncodingExtensionsTests
     /// throws <see cref="ArgumentNullException" /> for null encoding.
     /// </summary>
     [TestMethod]
-    public void WriteChars_WhenEncodingIsNull_ShouldThrowArgumentNullException()
+    public void WriteChars_WhenEncodingIsNull_ShouldThrowExactly()
     {
         using var writer = new PooledBufferBuilder<char>(16);
 
@@ -224,7 +224,7 @@ public sealed partial class EncodingExtensionsTests
     /// throws <see cref="ArgumentNullException" /> for null writer.
     /// </summary>
     [TestMethod]
-    public void WriteChars_WhenWriterIsNull_ShouldThrowArgumentNullException()
+    public void WriteChars_WhenWriterIsNull_ShouldThrowExactly()
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

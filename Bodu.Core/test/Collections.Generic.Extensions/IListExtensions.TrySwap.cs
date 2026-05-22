@@ -108,7 +108,7 @@ public sealed partial class IListExtensionsTests_TrySwap
     /// Verifies that <c>TrySwap</c> throws <see cref="ArgumentNullException" /> when the list is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void TrySwap_WhenListIsNull_ShouldThrowArgumentNullException()
+    public void TrySwap_WhenListIsNull_ShouldThrowExactly()
     {
         IList<int>? list = null;
 

@@ -232,7 +232,7 @@ public sealed partial class NotableDateServiceTests
     /// <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenRuleProvidersIsNull_ShouldThrowArgumentNullException()
+    public void Ctor_WhenRuleProvidersIsNull_ShouldThrowExactly()
     {
         var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -252,7 +252,7 @@ public sealed partial class NotableDateServiceTests
     [DataRow(-1)]
     [DataRow(100)]
     [TestMethod]
-    public void Ctor_WhenWeekendDefinitionIsUndefined_ShouldThrowArgumentOutOfRangeException(int undefined)
+    public void Ctor_WhenWeekendDefinitionIsUndefined_ShouldThrowExactly(int undefined)
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -268,7 +268,7 @@ public sealed partial class NotableDateServiceTests
     /// callers must convert their <see cref="IWeekendDefinitionProvider" /> to a <see cref="WeekPattern" /> first.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenWeekendDefinitionIsCustom_ShouldThrow()
+    public void Ctor_WhenWeekendDefinitionIsCustom_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentException>(() =>
         {

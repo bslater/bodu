@@ -30,7 +30,7 @@ public partial class PooledBufferBuilderTests
     /// disposal throws <see cref="ObjectDisposedException"/>.
     /// </summary>
     [TestMethod]
-    public void AppendRange_WhenDisposed_ShouldThrowObjectDisposedException_UsingReadOnlySpan()
+    public void AppendRange_WhenDisposed_ShouldThrowExactly()
     {
         var builder = new PooledBufferBuilder<int>();
         builder.Dispose();
@@ -137,7 +137,7 @@ public partial class PooledBufferBuilderTests
     /// with a <see langword="null"/> source throws <see cref="ArgumentNullException"/>.
     /// </summary>
     [TestMethod]
-    public void AppendRange_WhenSourceIsNull_ShouldThrowArgumentNullException_UsingIEnumerable()
+    public void AppendRange_WhenSourceIsNull_ShouldThrowExactly()
     {
         using var builder = new PooledBufferBuilder<int>();
 

@@ -103,7 +103,7 @@ public sealed class BencodedStringComparerTests
     /// <see langword="null" /> argument with <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void GetHashCode_WhenNull_ShouldThrowArgumentNullException()
+    public void GetHashCode_WhenNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

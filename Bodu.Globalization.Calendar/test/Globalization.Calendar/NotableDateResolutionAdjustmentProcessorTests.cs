@@ -18,7 +18,7 @@ public sealed class NotableDateResolutionAdjustmentProcessorTests
     /// Verifies that construction rejects an undefined weekend definition.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenWeekendDefinitionIsUndefined_ShouldThrowArgumentOutOfRangeException()
+    public void Ctor_WhenWeekendDefinitionIsUndefined_ShouldThrowExactly()
     {
         ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -32,7 +32,7 @@ public sealed class NotableDateResolutionAdjustmentProcessorTests
     /// Verifies that applying adjustments rejects a null window.
     /// </summary>
     [TestMethod]
-    public void ApplyAdjustments_WhenWindowIsNull_ShouldThrowArgumentNullException()
+    public void ApplyAdjustments_WhenWindowIsNull_ShouldThrowExactly()
     {
         NotableDateResolutionAdjustmentProcessor processor = new(WorkingDaysOfWeek.MondayToFriday);
         NotableDateResolutionRequest request = Request(new DateTime(2021, 12, 1), new DateTime(2021, 12, 31));
@@ -49,7 +49,7 @@ public sealed class NotableDateResolutionAdjustmentProcessorTests
     /// Verifies that applying adjustments rejects a null request.
     /// </summary>
     [TestMethod]
-    public void ApplyAdjustments_WhenRequestIsNull_ShouldThrowArgumentNullException()
+    public void ApplyAdjustments_WhenRequestIsNull_ShouldThrowExactly()
     {
         NotableDateResolutionAdjustmentProcessor processor = new(WorkingDaysOfWeek.MondayToFriday);
         NotableDateResolutionWindow window = new(new DateTime(2021, 12, 1), new DateTime(2021, 12, 31));
@@ -66,7 +66,7 @@ public sealed class NotableDateResolutionAdjustmentProcessorTests
     /// Verifies that applying adjustments rejects a null occurrence list.
     /// </summary>
     [TestMethod]
-    public void ApplyAdjustments_WhenOccurrencesIsNull_ShouldThrowArgumentNullException()
+    public void ApplyAdjustments_WhenOccurrencesIsNull_ShouldThrowExactly()
     {
         NotableDateResolutionAdjustmentProcessor processor = new(WorkingDaysOfWeek.MondayToFriday);
         NotableDateResolutionWindow window = new(new DateTime(2021, 12, 1), new DateTime(2021, 12, 31));

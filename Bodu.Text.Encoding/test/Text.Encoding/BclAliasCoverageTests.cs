@@ -47,7 +47,7 @@ public sealed class BclAliasCoverageTests
     /// when a byte is outside the hex alphabet.
     /// </summary>
     [TestMethod]
-    public void Base16_FromHexString_Utf8WithInvalidChar_ShouldThrowFormatException()
+    public void Base16_FromHexString_Utf8WithInvalidChar_ShouldThrowExactly()
     {
         var ex = Assert.ThrowsExactly<FormatException>(() =>
         {
@@ -62,7 +62,7 @@ public sealed class BclAliasCoverageTests
     /// when the byte count is odd.
     /// </summary>
     [TestMethod]
-    public void Base16_FromHexString_Utf8WithOddLength_ShouldThrowFormatException()
+    public void Base16_FromHexString_Utf8WithOddLength_ShouldThrowExactly()
     {
         var ex = Assert.ThrowsExactly<FormatException>(() =>
         {
@@ -147,7 +147,7 @@ public sealed class BclAliasCoverageTests
     /// Verifies that <see cref="Base32.FromBase32String(ReadOnlySpan{byte})" /> throws on invalid bytes.
     /// </summary>
     [TestMethod]
-    public void Base32_FromBase32String_Utf8WithInvalidByte_ShouldThrowFormatException()
+    public void Base32_FromBase32String_Utf8WithInvalidByte_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<FormatException>(() =>
         {
@@ -198,7 +198,7 @@ public sealed class BclAliasCoverageTests
     /// Verifies that <see cref="Base58.FromBase58String(ReadOnlySpan{byte})" /> throws on invalid bytes.
     /// </summary>
     [TestMethod]
-    public void Base58_FromBase58String_Utf8WithInvalidByte_ShouldThrowFormatException()
+    public void Base58_FromBase58String_Utf8WithInvalidByte_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<FormatException>(() =>
         {
@@ -267,7 +267,7 @@ public sealed class BclAliasCoverageTests
     /// Verifies that <see cref="Base64.FromBase64String(ReadOnlySpan{byte})" /> throws on invalid bytes.
     /// </summary>
     [TestMethod]
-    public void Base64_FromBase64String_Utf8WithInvalidByte_ShouldThrowFormatException()
+    public void Base64_FromBase64String_Utf8WithInvalidByte_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<FormatException>(() =>
         {
@@ -330,7 +330,7 @@ public sealed class BclAliasCoverageTests
     /// Verifies that <see cref="Base85.FromBase85String(ReadOnlySpan{byte})" /> throws on invalid bytes.
     /// </summary>
     [TestMethod]
-    public void Base85_FromBase85String_Utf8WithInvalidByte_ShouldThrowFormatException()
+    public void Base85_FromBase85String_Utf8WithInvalidByte_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<FormatException>(() =>
         {

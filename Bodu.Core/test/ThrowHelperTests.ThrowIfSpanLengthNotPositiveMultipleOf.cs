@@ -16,7 +16,7 @@ public partial class ThrowHelperTests
     [DataRow(5, 2)]  // Not a multiple
     [DataRow(0, 1)]  // Zero length
     [DataRow(7, 3)]  // Not a multiple
-    public void ThrowIfSpanLengthNotPositiveMultipleOf_ReadOnlySpan_WhenLengthInvalid_ShouldThrow(int length, int factor)
+    public void ThrowIfSpanLengthNotPositiveMultipleOf_ReadOnlySpan_WhenLengthInvalid_ShouldThrowExactly(int length, int factor)
     {
         var span = new int[length];
         Assert.ThrowsExactly<ArgumentException>(() =>
@@ -45,7 +45,7 @@ public partial class ThrowHelperTests
     [DataRow(5, 2)]
     [DataRow(0, 1)]
     [DataRow(7, 3)]
-    public void ThrowIfSpanLengthNotPositiveMultipleOf_Span_WhenLengthInvalid_ShouldThrow(int length, int factor)
+    public void ThrowIfSpanLengthNotPositiveMultipleOf_Span_WhenLengthInvalid_ShouldThrowExactly(int length, int factor)
     {
         var span = new int[length];
         Assert.ThrowsExactly<ArgumentException>(() =>

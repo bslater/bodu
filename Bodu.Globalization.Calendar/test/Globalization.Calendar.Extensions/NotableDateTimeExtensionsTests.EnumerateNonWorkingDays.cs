@@ -44,7 +44,7 @@ public partial class NotableDateTimeExtensionsTests
     /// Verifies that supplying a <see langword="null" /> service throws <see cref="ArgumentNullException" /> eagerly.
     /// </summary>
     [TestMethod]
-    public void EnumerateNonWorkingDays_WhenServiceIsNull_ShouldThrowArgumentNullExceptionEagerly()
+    public void EnumerateNonWorkingDays_WhenServiceIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

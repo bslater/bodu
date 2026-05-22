@@ -18,7 +18,7 @@ public class NotableDateBuilderTests
     /// <c>NotableDateBuilder.ToXElement</c> requires at least one rule.
     /// </summary>
     [TestMethod]
-    public void ToXml_WhenNotableDateHasNoRules_ShouldThrowInvalidOperationException()
+    public void ToXml_WhenNotableDateHasNoRules_ShouldThrowExactly()
     {
         NotableDateDocumentBuilder builder = NotableDateDocumentBuilder.Create()
             .AddDate("Empty Date", _ => { });
@@ -35,7 +35,7 @@ public class NotableDateBuilderTests
     /// <c>NotableDateBuilder.ToJsonNode</c> requires at least one rule.
     /// </summary>
     [TestMethod]
-    public void ToJson_WhenNotableDateHasNoRules_ShouldThrowInvalidOperationException()
+    public void ToJson_WhenNotableDateHasNoRules_ShouldThrowExactly()
     {
         NotableDateDocumentBuilder builder = NotableDateDocumentBuilder.Create()
             .AddDate("Empty Date", _ => { });
@@ -51,7 +51,7 @@ public class NotableDateBuilderTests
     /// <see cref="InvalidOperationException" /> when a notable date entry has no rules.
     /// </summary>
     [TestMethod]
-    public void ToJsonNode_WhenNotableDateHasNoRules_ShouldThrowInvalidOperationException()
+    public void ToJsonNode_WhenNotableDateHasNoRules_ShouldThrowExactly()
     {
         NotableDateDocumentBuilder builder = NotableDateDocumentBuilder.Create()
             .AddDate("Empty Date", _ => { });

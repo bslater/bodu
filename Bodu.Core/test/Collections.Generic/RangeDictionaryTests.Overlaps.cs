@@ -25,7 +25,7 @@ public partial class RangeDictionaryTests
     /// <see langword="null" /> endpoints.
     /// </summary>
     [TestMethod]
-    public void Overlaps_WhenEndpointIsNull_ShouldThrowArgumentNullException()
+    public void Overlaps_WhenEndpointIsNull_ShouldThrowExactly()
     {
         var sut = new RangeDictionary<string, int>();
 
@@ -66,7 +66,7 @@ public partial class RangeDictionaryTests
     /// ranges.
     /// </summary>
     [TestMethod]
-    public void Overlaps_WhenStartIsNotLessThanEnd_ShouldThrowArgumentException()
+    public void Overlaps_WhenStartIsNotLessThanEnd_ShouldThrowExactly()
     {
         var sut = new RangeDictionary<int, string>();
 

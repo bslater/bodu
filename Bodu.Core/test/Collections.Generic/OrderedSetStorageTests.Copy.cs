@@ -16,7 +16,7 @@ public partial class OrderedSetStorageTests
     /// Verifies that <see cref="OrderedSetStorage{T}.CopyTo(T[], int)" /> rejects a <see langword="null" /> array.
     /// </summary>
     [TestMethod]
-    public void CopyTo_WhenArrayIsNull_ShouldThrowArgumentNullException()
+    public void CopyTo_WhenArrayIsNull_ShouldThrowExactly()
     {
         OrderedSetStorage<int> sut = CreateStorage([1, 2]);
 
@@ -31,7 +31,7 @@ public partial class OrderedSetStorageTests
     /// when the array is too small to hold the storage.
     /// </summary>
     [TestMethod]
-    public void CopyTo_WhenArrayIsTooSmall_ShouldThrowArgumentException()
+    public void CopyTo_WhenArrayIsTooSmall_ShouldThrowExactly()
     {
         OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
 
@@ -47,7 +47,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     [DataRow(-1)]
     [DataRow(int.MinValue)]
-    public void CopyTo_WhenIndexIsNegative_ShouldThrowArgumentOutOfRangeException(int arrayIndex)
+    public void CopyTo_WhenIndexIsNegative_ShouldThrowExactly(int arrayIndex)
     {
         OrderedSetStorage<int> sut = CreateStorage([1, 2]);
 
@@ -95,7 +95,7 @@ public partial class OrderedSetStorageTests
     /// when there is insufficient space after the supplied offset.
     /// </summary>
     [TestMethod]
-    public void CopyTo_WhenRemainingSpaceAfterOffsetIsInsufficient_ShouldThrowArgumentException()
+    public void CopyTo_WhenRemainingSpaceAfterOffsetIsInsufficient_ShouldThrowExactly()
     {
         OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
 

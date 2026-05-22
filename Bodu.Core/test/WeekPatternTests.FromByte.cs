@@ -42,6 +42,6 @@ public partial class WeekPatternTests
     /// when the supplied value exceeds the maximum valid bitmask of 127.
     /// </summary>
     [TestMethod]
-    public void FromByte_WhenValueGreaterThanMax_ShouldThrowException() => Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => WeekPattern.FromByte(128));
+    public void FromByte_WhenValueGreaterThanMax_ShouldThrowExactly() => Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => WeekPattern.FromByte(128));
 
 }

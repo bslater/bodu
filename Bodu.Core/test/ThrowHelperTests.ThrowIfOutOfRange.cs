@@ -90,7 +90,7 @@ public partial class ThrowHelperTests
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(GetOutOfRangeTestData_UsingDefaultInclusive))]
-    public void ThrowIfOutOfRange_WhenCalledWithoutInclusiveParameter_ShouldThrowForValuesOutsideInclusiveRange<T>(T value, T min, T max)
+    public void ThrowIfOutOfRange_WhenCalledWithoutInclusiveParameter_ShouldThrowExactly(T value, T min, T max)
         where T : IComparable<T>
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
@@ -132,7 +132,7 @@ public partial class ThrowHelperTests
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(GetOutOfRangeTestData))]
-    public void ThrowIfOutOfRange_WhenValueOutsideRange_ShouldThrow<T>(T value, T min, T max, bool inclusive)
+    public void ThrowIfOutOfRange_WhenValueOutsideRange_ShouldThrowExactly(T value, T min, T max, bool inclusive)
         where T : IComparable<T>
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>

@@ -65,7 +65,7 @@ public partial class IndexedSetTests
     /// Verifies that <see cref="IndexedSet{T}.Remove(T)" /> rejects a <see langword="null" /> item.
     /// </summary>
     [TestMethod]
-    public void Remove_WhenItemIsNull_ShouldThrowArgumentNullException()
+    public void Remove_WhenItemIsNull_ShouldThrowExactly()
     {
         IndexedSet<string> sut = CreateSet(["a"]);
 
@@ -104,7 +104,7 @@ public partial class IndexedSetTests
     [DataRow(3)]
     [DataRow(int.MaxValue)]
     [DataRow(int.MinValue)]
-    public void RemoveAt_WhenIndexIsOutOfRange_ShouldThrowArgumentOutOfRangeException(int index)
+    public void RemoveAt_WhenIndexIsOutOfRange_ShouldThrowExactly(int index)
     {
         IndexedSet<int> sut = CreateSet([1, 2, 3]);
 
@@ -156,7 +156,7 @@ public partial class IndexedSetTests
     /// <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    public void RemoveAt_WhenSetIsEmpty_ShouldThrowArgumentOutOfRangeException()
+    public void RemoveAt_WhenSetIsEmpty_ShouldThrowExactly()
     {
         var sut = new IndexedSet<int>();
 

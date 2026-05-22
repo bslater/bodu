@@ -22,7 +22,7 @@ public partial class ObservanceAdjustmentBuilderTests
     /// called.
     /// </summary>
     [TestMethod]
-    public void Build_WhenTriggerNotSet_ShouldThrowInvalidOperationException()
+    public void Build_WhenTriggerNotSet_ShouldThrowExactly()
     {
         ObservanceAdjustmentBuilder builder = new();
         builder.Action(AdjustmentAction.None);
@@ -39,7 +39,7 @@ public partial class ObservanceAdjustmentBuilderTests
     /// called.
     /// </summary>
     [TestMethod]
-    public void Build_WhenActionNotSet_ShouldThrowInvalidOperationException()
+    public void Build_WhenActionNotSet_ShouldThrowExactly()
     {
         ObservanceAdjustmentBuilder builder = new();
         builder.When(AdjustmentTrigger.Always);
@@ -106,7 +106,7 @@ public partial class ObservanceAdjustmentBuilderTests
     /// <see cref="InvalidOperationException" /> when no trigger has been set.
     /// </summary>
     [TestMethod]
-    public void ToXElement_WhenTriggerNotSet_ShouldThrowInvalidOperationException()
+    public void ToXElement_WhenTriggerNotSet_ShouldThrowExactly()
     {
         ObservanceAdjustmentBuilder builder = new();
         builder.Action(AdjustmentAction.None);
@@ -122,7 +122,7 @@ public partial class ObservanceAdjustmentBuilderTests
     /// <see cref="InvalidOperationException" /> when no action has been set.
     /// </summary>
     [TestMethod]
-    public void ToXElement_WhenActionNotSet_ShouldThrowInvalidOperationException()
+    public void ToXElement_WhenActionNotSet_ShouldThrowExactly()
     {
         ObservanceAdjustmentBuilder builder = new();
         builder.When(AdjustmentTrigger.Always);
@@ -158,7 +158,7 @@ public partial class ObservanceAdjustmentBuilderTests
     /// <see cref="InvalidOperationException" /> when no trigger has been set.
     /// </summary>
     [TestMethod]
-    public void ToJsonNode_WhenTriggerNotSet_ShouldThrowInvalidOperationException()
+    public void ToJsonNode_WhenTriggerNotSet_ShouldThrowExactly()
     {
         ObservanceAdjustmentBuilder builder = new();
         builder.Action(AdjustmentAction.None);
@@ -174,7 +174,7 @@ public partial class ObservanceAdjustmentBuilderTests
     /// <see cref="InvalidOperationException" /> when no action has been set.
     /// </summary>
     [TestMethod]
-    public void ToJsonNode_WhenActionNotSet_ShouldThrowInvalidOperationException()
+    public void ToJsonNode_WhenActionNotSet_ShouldThrowExactly()
     {
         ObservanceAdjustmentBuilder builder = new();
         builder.When(AdjustmentTrigger.Always);

@@ -122,7 +122,7 @@ public partial class NumericExtensionsTests
     /// Verifies that <c>RotateDigitsLeft</c> throws when the count is negative.
     /// </summary>
     [TestMethod]
-    public void RotateDigitsLeft_ULong_WhenCountIsNegative_ShouldThrowArgumentOutOfRangeException() =>
+    public void RotateDigitsLeft_ULong_WhenCountIsNegative_ShouldThrowExactly() =>
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             _ = 12345UL.RotateDigitsLeft(-1);
@@ -186,7 +186,7 @@ public partial class NumericExtensionsTests
     /// Verifies that <c>RotateDigitsRight</c> throws when the count is negative.
     /// </summary>
     [TestMethod]
-    public void RotateDigitsRight_ULong_WhenCountIsNegative_ShouldThrowArgumentOutOfRangeException() =>
+    public void RotateDigitsRight_ULong_WhenCountIsNegative_ShouldThrowExactly() =>
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             _ = 12345UL.RotateDigitsRight(-1);

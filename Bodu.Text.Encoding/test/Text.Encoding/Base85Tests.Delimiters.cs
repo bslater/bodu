@@ -56,7 +56,7 @@ public sealed partial class Base85Tests
     /// is outside the alphabet's value range.
     /// </summary>
     [TestMethod]
-    public void Decode_WhenAscii85AndDelimitersWithoutAllowPrefix_ShouldThrowFormatException()
+    public void Decode_WhenAscii85AndDelimitersWithoutAllowPrefix_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<FormatException>(() =>
         {

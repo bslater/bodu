@@ -40,7 +40,7 @@ public partial class StringExtensionsTests
     /// <see cref="ArgumentNullException" /> when invoked with <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void ToBase64_WhenValueIsNull_ShouldThrowArgumentNullException()
+    public void ToBase64_WhenValueIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -81,7 +81,7 @@ public partial class StringExtensionsTests
     /// <see cref="FormatException" /> when the input is not valid Base64.
     /// </summary>
     [TestMethod]
-    public void FromBase64ToString_WhenInputIsInvalid_ShouldThrowFormatException()
+    public void FromBase64ToString_WhenInputIsInvalid_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<FormatException>(() =>
         {
@@ -94,7 +94,7 @@ public partial class StringExtensionsTests
     /// <see cref="ArgumentNullException" /> when invoked with <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void FromBase64ToString_WhenValueIsNull_ShouldThrowArgumentNullException()
+    public void FromBase64ToString_WhenValueIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

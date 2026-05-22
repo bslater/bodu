@@ -49,7 +49,7 @@ public sealed class GregorianEasterSundayNotableDateProviderTests
     [DataRow(0)]
     [DataRow(-1)]
     [TestMethod]
-    public void GetDates_WhenYearLessThanOne_ShouldThrowArgumentOutOfRangeException(int year)
+    public void GetDates_WhenYearLessThanOne_ShouldThrowExactly(int year)
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -62,7 +62,7 @@ public sealed class GregorianEasterSundayNotableDateProviderTests
     /// via the overridden <c>ValidateCalendar</c> contract.
     /// </summary>
     [TestMethod]
-    public void GetDates_WhenCalendarIsJulian_ShouldThrowNotSupportedException()
+    public void GetDates_WhenCalendarIsJulian_ShouldThrowExactly()
     {
         var ex = Assert.ThrowsExactly<NotSupportedException>(() =>
         {

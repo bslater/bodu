@@ -16,7 +16,7 @@ public partial class ThrowHelperTests
     [DataRow(6, 5)]   // Count exceeds available
     [DataRow(-1, 5)]  // Count is negative
     [DataRow(-10, 0)] // Count is negative regardless of available
-    public void ThrowIfCountExceedsAvailable_WhenCountIsInvalid_ShouldThrowArgumentOutOfRangeException(int count, int available)
+    public void ThrowIfCountExceedsAvailable_WhenCountIsInvalid_ShouldThrowExactly(int count, int available)
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

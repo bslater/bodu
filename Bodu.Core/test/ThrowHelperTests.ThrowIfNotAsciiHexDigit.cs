@@ -49,7 +49,7 @@ public partial class ThrowHelperTests
     [DataRow('Z')]
     [DataRow(' ')]
     [DataRow('!')]
-    public void ThrowIfNotAsciiHexDigit_WhenCharIsNotHexDigit_ShouldThrowArgumentOutOfRangeException(char value)
+    public void ThrowIfNotAsciiHexDigit_WhenCharIsNotHexDigit_ShouldThrowExactly(char value)
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

@@ -134,7 +134,7 @@ public sealed partial class NotableDateServiceTests
     /// <see cref="ArgumentNullException" /> when the filter is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void GetNotableDates_WithYearAndNullFilter_ShouldThrowArgumentNullException()
+    public void GetNotableDates_WithYearAndNullFilter_ShouldThrowExactly()
     {
         NotableDateService service = BuildService(Fixed("Holiday A", 1, 1));
 
@@ -194,7 +194,7 @@ public sealed partial class NotableDateServiceTests
     /// throws <see cref="ArgumentNullException" /> when the filter is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void GetNotableDates_WithDateRangeAndNullFilter_ShouldThrowArgumentNullException()
+    public void GetNotableDates_WithDateRangeAndNullFilter_ShouldThrowExactly()
     {
         NotableDateService service = BuildService(Fixed("Holiday A", 1, 1));
 
@@ -247,7 +247,7 @@ public sealed partial class NotableDateServiceTests
     /// <see cref="ArgumentNullException" /> when the filter is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void GetNotableDates_WithSingleDateAndNullFilter_ShouldThrowArgumentNullException()
+    public void GetNotableDates_WithSingleDateAndNullFilter_ShouldThrowExactly()
     {
         NotableDateService service = BuildService(Fixed("Holiday A", 1, 1));
 

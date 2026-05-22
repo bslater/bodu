@@ -43,7 +43,7 @@ public partial class PooledBufferBuilderTests
     /// when the count is negative.
     /// </summary>
     [TestMethod]
-    public void AddMany_WhenCountIsNegative_ShouldThrowArgumentOutOfRangeException()
+    public void AddMany_WhenCountIsNegative_ShouldThrowExactly()
     {
         using var builder = new PooledBufferBuilder<int>();
 
@@ -88,7 +88,7 @@ public partial class PooledBufferBuilderTests
     /// after the builder has been disposed.
     /// </summary>
     [TestMethod]
-    public void AddMany_WhenDisposed_ShouldThrowObjectDisposedException()
+    public void AddMany_WhenDisposed_ShouldThrowExactly()
     {
         var builder = new PooledBufferBuilder<int>();
         builder.Dispose();

@@ -18,7 +18,7 @@ public partial class ThrowHelperTests
     [DataRow(1, 1)]
     [DataRow(-5, -5)]
     [DataRow(int.MaxValue, int.MaxValue)]
-    public void ThrowIfEqual_WhenIntValuesAreEqual_ShouldThrowArgumentOutOfRangeException(int value, int other)
+    public void ThrowIfEqual_WhenIntValuesAreEqual_ShouldThrowExactly(int value, int other)
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -42,7 +42,7 @@ public partial class ThrowHelperTests
     /// when two string values are equal.
     /// </summary>
     [TestMethod]
-    public void ThrowIfEqual_WhenStringValuesAreEqual_ShouldThrowArgumentOutOfRangeException()
+    public void ThrowIfEqual_WhenStringValuesAreEqual_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

@@ -58,7 +58,7 @@ public sealed partial class BencodedDictionaryTests
     /// <see langword="null" /> key with <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void TryGetValue_WhenNullUtf8StringKey_ShouldThrowArgumentNullException()
+    public void TryGetValue_WhenNullUtf8StringKey_ShouldThrowExactly()
     {
         BencodedDictionary dict = new(CowMooSpamEggs());
 

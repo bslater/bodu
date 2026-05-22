@@ -600,7 +600,7 @@ public sealed class NotableDateRangePipelineTests
     /// <see cref="ArgumentException" /> when the end date precedes the start date.
     /// </summary>
     [TestMethod]
-    public void ResolveNotableDatesInRange_WhenEndDateIsBeforeStartDate_ShouldThrowArgumentException()
+    public void ResolveNotableDatesInRange_WhenEndDateIsBeforeStartDate_ShouldThrowExactly()
     {
         NotableDateService service = new(
             ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider() },

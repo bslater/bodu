@@ -51,7 +51,7 @@ public partial class DateTimeExtensionsTests
     /// Verifies that an undefined <see cref="DayOfWeek" /> value throws <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    public void NearestDateOfWeek_WhenDayOfWeekIsInvalid_ShouldThrowArgumentOutOfRangeException()
+    public void NearestDateOfWeek_WhenDayOfWeekIsInvalid_ShouldThrowExactly()
     {
         var dateTime = new DateTime(2024, 4, 17);
 
@@ -100,7 +100,7 @@ public partial class DateTimeExtensionsTests
     /// Verifies that the static <c>(year, month, day)</c> overload throws <see cref="ArgumentOutOfRangeException" /> for an undefined <see cref="DayOfWeek" />.
     /// </summary>
     [TestMethod]
-    public void NearestDateOfWeek_WhenUsingYearMonthDayWithInvalidDayOfWeek_ShouldThrowArgumentOutOfRangeException()
+    public void NearestDateOfWeek_WhenUsingYearMonthDayWithInvalidDayOfWeek_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

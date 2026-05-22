@@ -14,7 +14,7 @@ public sealed partial class Base16Tests
     /// <see cref="ArgumentNullException" /> when the character array is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void Decode_WhenNullCharArray_ShouldThrowArgumentNullException()
+    public void Decode_WhenNullCharArray_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -27,7 +27,7 @@ public sealed partial class Base16Tests
     /// <see cref="ArgumentNullException" /> when the string is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void Decode_WhenNullString_ShouldThrowArgumentNullException()
+    public void Decode_WhenNullString_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -39,7 +39,7 @@ public sealed partial class Base16Tests
     /// <see cref="ArgumentNullException" /> when the byte array is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void Encode_WhenNullByteArray_ShouldThrowArgumentNullException()
+    public void Encode_WhenNullByteArray_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -52,7 +52,7 @@ public sealed partial class Base16Tests
     /// <see cref="ArgumentNullException" /> when the byte array is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void Encode_WhenNullByteArrayWithSlice_ShouldThrowArgumentNullException()
+    public void Encode_WhenNullByteArrayWithSlice_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

@@ -41,7 +41,7 @@ public partial class StringExtensionsTests
     /// <see cref="ArgumentOutOfRangeException" /> when <c>maxLength</c> is smaller than the separator.
     /// </summary>
     [TestMethod]
-    public void TruncateMiddle_WhenMaxLengthIsSmallerThanSeparator_ShouldThrowArgumentOutOfRangeException()
+    public void TruncateMiddle_WhenMaxLengthIsSmallerThanSeparator_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => _ = "hello".TruncateMiddle(2, "..."));
     }
@@ -51,7 +51,7 @@ public partial class StringExtensionsTests
     /// <see cref="ArgumentNullException" /> for null arguments.
     /// </summary>
     [TestMethod]
-    public void TruncateMiddle_WhenAnyArgumentIsNull_ShouldThrowArgumentNullException()
+    public void TruncateMiddle_WhenAnyArgumentIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() => _ = StringExtensions.TruncateMiddle(null!, 5));
         Assert.ThrowsExactly<ArgumentNullException>(() => _ = "hello".TruncateMiddle(5, null!));

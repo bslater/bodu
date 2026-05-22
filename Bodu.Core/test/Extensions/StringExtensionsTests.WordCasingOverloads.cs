@@ -173,7 +173,7 @@ public partial class StringExtensionsTests
     /// <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void RichCasingOverloads_WhenValueIsNull_ShouldThrowArgumentNullException()
+    public void RichCasingOverloads_WhenValueIsNull_ShouldThrowExactly()
     {
         WordCasingOptions options = WordCasingOptions.Default;
 
@@ -193,7 +193,7 @@ public partial class StringExtensionsTests
     /// argument is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void RichCasingOverloads_WhenOptionsIsNull_ShouldThrowArgumentNullException()
+    public void RichCasingOverloads_WhenOptionsIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() => _ = "value".ToCamelCase((WordCasingOptions)null!));
         Assert.ThrowsExactly<ArgumentNullException>(() => _ = "value".ToPascalCase((WordCasingOptions)null!));

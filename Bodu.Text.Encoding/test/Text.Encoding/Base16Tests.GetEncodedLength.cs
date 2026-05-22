@@ -32,7 +32,7 @@ public sealed partial class Base16Tests
     /// Verifies that <see cref="Base16.GetEncodedLength" /> rejects a negative byte count.
     /// </summary>
     [TestMethod]
-    public void GetEncodedLength_WhenNegativeByteCount_ShouldThrowArgumentOutOfRangeException()
+    public void GetEncodedLength_WhenNegativeByteCount_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

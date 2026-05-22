@@ -28,7 +28,7 @@ public sealed class XmlResourceFixtureTests
     /// time, with the message identifying the offending resource.
     /// </summary>
     [TestMethod]
-    public void LoadRules_WhenFixturesAreCircular_ShouldThrowInvalidOperationException()
+    public void LoadRules_WhenFixturesAreCircular_ShouldThrowExactly()
     {
         var provider = new XmlResourceNotableDateRuleProvider(
             $"{FixtureNamespace}.CircularA.xml",
@@ -69,7 +69,7 @@ public sealed class XmlResourceFixtureTests
     /// surfaces as an <see cref="InvalidOperationException" /> naming the missing rule.
     /// </summary>
     [TestMethod]
-    public void LoadRules_WhenUseDirectiveNamesNonExistentRule_ShouldThrowInvalidOperationException()
+    public void LoadRules_WhenUseDirectiveNamesNonExistentRule_ShouldThrowExactly()
     {
         var provider = new XmlResourceNotableDateRuleProvider(
             $"{FixtureNamespace}.MissingNameReferrer.xml",

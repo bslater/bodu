@@ -24,7 +24,7 @@ public partial class ThrowHelperTests
     /// </summary>
     [TestMethod]
     [DataRow(null, true, true)]
-    public void ThrowIfConditionallyRequiredParameterIsNull_WhenConditionMatchesAndValueIsNull_ShouldThrowArgumentException(string? value, bool condition, bool matchValue)
+    public void ThrowIfConditionallyRequiredParameterIsNull_WhenConditionMatchesAndValueIsNull_ShouldThrowExactly(string? value, bool condition, bool matchValue)
     {
         Assert.ThrowsExactly<ArgumentException>(() =>
         {

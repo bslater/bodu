@@ -73,7 +73,7 @@ public partial class StringExtensionsTests
     /// throws <see cref="ArgumentNullException" /> when <c>value</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void IsOneOf_WhenValueIsNull_ShouldThrowArgumentNullException()
+    public void IsOneOf_WhenValueIsNull_ShouldThrowExactly()
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -88,7 +88,7 @@ public partial class StringExtensionsTests
     /// <c>comparer</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void IsOneOf_WhenComparerIsNull_ShouldThrowArgumentNullException()
+    public void IsOneOf_WhenComparerIsNull_ShouldThrowExactly()
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

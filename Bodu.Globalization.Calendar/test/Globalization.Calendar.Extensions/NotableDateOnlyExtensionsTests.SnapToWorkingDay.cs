@@ -62,7 +62,7 @@ public partial class NotableDateOnlyExtensionsTests
     /// Verifies that supplying a <see langword="null" /> service throws <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void SnapToWorkingDay_WhenServiceIsNull_ShouldThrowArgumentNullException()
+    public void SnapToWorkingDay_WhenServiceIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

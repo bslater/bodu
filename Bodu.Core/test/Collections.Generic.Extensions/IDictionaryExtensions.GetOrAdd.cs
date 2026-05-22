@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IDictionaryExtensions.GetOrAdd.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -76,7 +76,7 @@ public sealed partial class IDictionaryExtensionsTests_GetOrAdd
     /// <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void GetOrAdd_WhenDictionaryIsNull_ShouldThrowArgumentNullException()
+    public void GetOrAdd_WhenDictionaryIsNull_ShouldThrowExactly()
     {
         IDictionary<string, int> dictionary = null!;
 
@@ -91,7 +91,7 @@ public sealed partial class IDictionaryExtensionsTests_GetOrAdd
     /// <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void GetOrAdd_WhenFactoryIsNull_ShouldThrowArgumentNullException()
+    public void GetOrAdd_WhenFactoryIsNull_ShouldThrowExactly()
     {
         Dictionary<string, int> dictionary = new();
 

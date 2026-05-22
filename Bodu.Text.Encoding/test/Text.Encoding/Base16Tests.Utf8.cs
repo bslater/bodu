@@ -398,7 +398,7 @@ public sealed partial class Base16Tests
     /// rejects unsupported formatting flags.
     /// </summary>
     [TestMethod]
-    public void TryEncodeToUtf8_WhenUnsupportedFlagsRequested_ShouldThrowArgumentException()
+    public void TryEncodeToUtf8_WhenUnsupportedFlagsRequested_ShouldThrowExactly()
     {
         var destination = new byte[8];
 

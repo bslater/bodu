@@ -14,7 +14,7 @@ public partial class RangeDictionaryTests
     /// throws <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    public void GetEntryAt_WhenDictionaryIsEmpty_ShouldThrowArgumentOutOfRangeException()
+    public void GetEntryAt_WhenDictionaryIsEmpty_ShouldThrowExactly()
     {
         var sut = new RangeDictionary<int, string>();
 
@@ -54,7 +54,7 @@ public partial class RangeDictionaryTests
     [DataRow(2)]
     [DataRow(int.MaxValue)]
     [DataRow(int.MinValue)]
-    public void GetEntryAt_WhenIndexIsOutOfRange_ShouldThrowArgumentOutOfRangeException(int index)
+    public void GetEntryAt_WhenIndexIsOutOfRange_ShouldThrowExactly(int index)
     {
         RangeDictionary<int, string> sut = CreateDictionary((0, 10, "A"), (20, 30, "B"));
 

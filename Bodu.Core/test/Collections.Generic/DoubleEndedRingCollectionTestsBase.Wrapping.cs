@@ -13,7 +13,7 @@ public abstract partial class DoubleEndedRingCollectionTestsBase<TTest, TCollect
     /// Verifies that <see cref="AddToHead(TCollection, int)"/> during iteration invalidates the enumerator.
     /// </summary>
     [TestMethod]
-    public void Enumerator_WhenAddToHeadCalledDuringIteration_ShouldThrowOnMoveNext()
+    public void Enumerator_WhenAddToHeadCalledDuringIteration_ShouldThrowExactly()
     {
         TCollection collection = CreateCollection(5);
         AddToTail(collection, 1);
@@ -30,7 +30,7 @@ public abstract partial class DoubleEndedRingCollectionTestsBase<TTest, TCollect
     /// Verifies that <see cref="RemoveFromTail(TCollection)"/> during iteration invalidates the enumerator.
     /// </summary>
     [TestMethod]
-    public void Enumerator_WhenRemoveFromTailCalledDuringIteration_ShouldThrowOnMoveNext()
+    public void Enumerator_WhenRemoveFromTailCalledDuringIteration_ShouldThrowExactly()
     {
         TCollection collection = CreateCollection(5);
         AddToTail(collection, 1);

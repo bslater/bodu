@@ -54,7 +54,7 @@ public sealed class NotableDateAlgorithmRegistryTests
     /// <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenAlgorithmsIsNull_ShouldThrowArgumentNullException()
+    public void Ctor_WhenAlgorithmsIsNull_ShouldThrowExactly()
     {
         var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -72,7 +72,7 @@ public sealed class NotableDateAlgorithmRegistryTests
     [DataRow("")]
     [DataRow("   ")]
     [TestMethod]
-    public void Register_WhenKeyIsNullOrWhitespace_ShouldThrowArgumentException(string? key)
+    public void Register_WhenKeyIsNullOrWhitespace_ShouldThrowExactly(string? key)
     {
         var registry = new NotableDateAlgorithmRegistry();
 
@@ -89,7 +89,7 @@ public sealed class NotableDateAlgorithmRegistryTests
     /// <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void Register_WhenAlgorithmIsNull_ShouldThrowArgumentNullException()
+    public void Register_WhenAlgorithmIsNull_ShouldThrowExactly()
     {
         var registry = new NotableDateAlgorithmRegistry();
 

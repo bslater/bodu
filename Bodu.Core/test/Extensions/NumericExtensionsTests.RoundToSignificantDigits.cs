@@ -34,7 +34,7 @@ public partial class NumericExtensionsTests
     [TestMethod]
     [DataRow(0)]
     [DataRow(29)]
-    public void RoundToSignificantDigits_Decimal_WhenDigitsOutOfRange_ShouldThrowArgumentOutOfRangeException(int digits) =>
+    public void RoundToSignificantDigits_Decimal_WhenDigitsOutOfRange_ShouldThrowExactly(int digits) =>
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             _ = 123.45m.RoundToSignificantDigits(digits);
@@ -110,7 +110,7 @@ public partial class NumericExtensionsTests
     [DataRow(0)]
     [DataRow(-1)]
     [DataRow(16)]
-    public void RoundToSignificantDigits_Double_WhenDigitsOutOfRange_ShouldThrowArgumentOutOfRangeException(int digits) =>
+    public void RoundToSignificantDigits_Double_WhenDigitsOutOfRange_ShouldThrowExactly(int digits) =>
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             _ = 123.45.RoundToSignificantDigits(digits);

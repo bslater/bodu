@@ -29,7 +29,7 @@ public sealed class HinduLunarNotableDateAlgorithmTests
     /// Verifies that an undefined <see cref="HinduLunarMonth" /> value throws <see cref="ArgumentException" />.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenMonthIsUndefined_ShouldThrowArgumentException()
+    public void Ctor_WhenMonthIsUndefined_ShouldThrowExactly()
     {
         var ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -43,7 +43,7 @@ public sealed class HinduLunarNotableDateAlgorithmTests
     /// Verifies that an undefined <see cref="HinduPaksha" /> value throws <see cref="ArgumentException" />.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenPakshaIsUndefined_ShouldThrowArgumentException()
+    public void Ctor_WhenPakshaIsUndefined_ShouldThrowExactly()
     {
         var ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -59,7 +59,7 @@ public sealed class HinduLunarNotableDateAlgorithmTests
     [DataRow(0)]
     [DataRow(16)]
     [TestMethod]
-    public void Ctor_WhenTithiOutOfRange_ShouldThrowArgumentOutOfRangeException(int tithi)
+    public void Ctor_WhenTithiOutOfRange_ShouldThrowExactly(int tithi)
     {
         var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -75,7 +75,7 @@ public sealed class HinduLunarNotableDateAlgorithmTests
     [DataRow(0)]
     [DataRow(-1)]
     [TestMethod]
-    public void GetDate_WhenYearLessThanOne_ShouldThrowArgumentOutOfRangeException(int year)
+    public void GetDate_WhenYearLessThanOne_ShouldThrowExactly(int year)
     {
         var sut = new HinduLunarNotableDateAlgorithm(HinduLunarMonth.Kartik, HinduPaksha.Krishna, 15);
 
@@ -94,7 +94,7 @@ public sealed class HinduLunarNotableDateAlgorithmTests
     [DataRow(10000)]
     [DataRow(int.MaxValue)]
     [TestMethod]
-    public void GetDate_WhenYearGreaterThan9999_ShouldThrowArgumentOutOfRangeException(int year)
+    public void GetDate_WhenYearGreaterThan9999_ShouldThrowExactly(int year)
     {
         var sut = new HinduLunarNotableDateAlgorithm(HinduLunarMonth.Kartik, HinduPaksha.Krishna, 15);
 

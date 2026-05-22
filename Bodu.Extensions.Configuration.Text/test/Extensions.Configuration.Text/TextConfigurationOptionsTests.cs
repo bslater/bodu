@@ -76,7 +76,7 @@ service.port = 8080
     /// Verifies that the name-based overload rejects a <see langword="null" /> service collection.
     /// </summary>
     [TestMethod]
-    public void AddConfigurationOptions_WhenServicesIsNull_ShouldThrowArgumentNullException()
+    public void AddConfigurationOptions_WhenServicesIsNull_ShouldThrowExactly()
     {
         IServiceCollection services = null!;
         IConfiguration configuration = new ConfigurationBuilder().Build();
@@ -91,7 +91,7 @@ service.port = 8080
     /// Verifies that the name-based overload rejects a <see langword="null" /> configuration.
     /// </summary>
     [TestMethod]
-    public void AddConfigurationOptions_WhenConfigurationIsNull_ShouldThrowArgumentNullException()
+    public void AddConfigurationOptions_WhenConfigurationIsNull_ShouldThrowExactly()
     {
         ServiceCollection services = new();
         IConfiguration configuration = null!;
@@ -106,7 +106,7 @@ service.port = 8080
     /// Verifies that the name-based overload rejects a whitespace section name.
     /// </summary>
     [TestMethod]
-    public void AddConfigurationOptions_WhenSectionNameIsWhitespace_ShouldThrowArgumentException()
+    public void AddConfigurationOptions_WhenSectionNameIsWhitespace_ShouldThrowExactly()
     {
         ServiceCollection services = new();
         IConfiguration configuration = new ConfigurationBuilder().Build();
@@ -121,7 +121,7 @@ service.port = 8080
     /// Verifies that the section overload rejects a <see langword="null" /> service collection.
     /// </summary>
     [TestMethod]
-    public void AddConfigurationOptions_WithSection_WhenServicesIsNull_ShouldThrowArgumentNullException()
+    public void AddConfigurationOptions_WithSection_WhenServicesIsNull_ShouldThrowExactly()
     {
         IServiceCollection services = null!;
         IConfigurationSection section = new ConfigurationBuilder().Build().GetSection("anything");
@@ -136,7 +136,7 @@ service.port = 8080
     /// Verifies that the section overload rejects a <see langword="null" /> section.
     /// </summary>
     [TestMethod]
-    public void AddConfigurationOptions_WithSection_WhenSectionIsNull_ShouldThrowArgumentNullException()
+    public void AddConfigurationOptions_WithSection_WhenSectionIsNull_ShouldThrowExactly()
     {
         ServiceCollection services = new();
         IConfigurationSection section = null!;

@@ -42,7 +42,7 @@ public sealed partial class Base64Tests
     /// throws <see cref="ArgumentException" /> when the destination is too small.
     /// </summary>
     [TestMethod]
-    public void Encode_WhenDestinationTooSmall_ShouldThrowArgumentException()
+    public void Encode_WhenDestinationTooSmall_ShouldThrowExactly()
     {
         var bytes = Ascii("foobar");
         var destination = new char[1];
@@ -127,7 +127,7 @@ public sealed partial class Base64Tests
     /// variant.
     /// </summary>
     [TestMethod]
-    public void Encode_WhenUndefinedVariant_ShouldThrowArgumentOutOfRangeException()
+    public void Encode_WhenUndefinedVariant_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

@@ -39,7 +39,7 @@ public partial class MultiValueDictionaryTests
     /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.ContainsKey"/> throws <see cref="ArgumentNullException"/> for a null key.
     /// </summary>
     [TestMethod]
-    public void ContainsKey_WhenKeyIsNull_ShouldThrowArgumentNullException()
+    public void ContainsKey_WhenKeyIsNull_ShouldThrowExactly()
     {
         var mvd = new MultiValueDictionary<string, int>();
 

@@ -43,7 +43,7 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
     /// <c>ThrowIfGreaterThanOther</c> validation inside the buffered implementation.
     /// </summary>
     [TestMethod]
-    public void Randomize_WhenCountExceedsSourceLength_ForBufferAllMode_ShouldThrowArgumentException()
+    public void Randomize_WhenCountExceedsSourceLength_ForBufferAllMode_ShouldThrowExactly()
     {
         int[] source = [1, 2, 3];
 
@@ -58,7 +58,7 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
     /// when <c>count</c> exceeds the number of available elements, confirming the reservoir-fill contract.
     /// </summary>
     [TestMethod]
-    public void Randomize_WhenCountExceedsSourceLength_ForReservoirSampleMode_ShouldThrowArgumentOutOfRangeException()
+    public void Randomize_WhenCountExceedsSourceLength_ForReservoirSampleMode_ShouldThrowExactly()
     {
         int[] source = [1, 2, 3];
 
@@ -72,7 +72,7 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
     /// Verifies that a negative count throws <see cref="ArgumentOutOfRangeException" /> eagerly.
     /// </summary>
     [TestMethod]
-    public void Randomize_WhenCountIsNegative_ShouldThrowArgumentOutOfRangeException()
+    public void Randomize_WhenCountIsNegative_ShouldThrowExactly()
     {
         int[] source = [1, 2, 3];
 
@@ -88,7 +88,7 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(GetModesRequiringCount))]
-    public void Randomize_WhenCountIsNullForCountRequiringMode_ShouldThrowArgumentException(RandomizationMode mode)
+    public void Randomize_WhenCountIsNullForCountRequiringMode_ShouldThrowExactly(RandomizationMode mode)
     {
         int[] source = [1, 2, 3];
 
@@ -180,7 +180,7 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
     /// Verifies that an undefined <see cref="RandomizationMode" /> value throws <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    public void Randomize_WhenModeIsUndefined_ShouldThrowArgumentOutOfRangeException()
+    public void Randomize_WhenModeIsUndefined_ShouldThrowExactly()
     {
         int[] source = [1, 2, 3];
 
@@ -211,7 +211,7 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
     /// Verifies that <c>Randomize</c> throws <see cref="ArgumentNullException" /> eagerly when the RNG is null.
     /// </summary>
     [TestMethod]
-    public void Randomize_WhenRngIsNull_ShouldThrowArgumentNullException()
+    public void Randomize_WhenRngIsNull_ShouldThrowExactly()
     {
         int[] source = [1, 2, 3];
         IRandomGenerator? rng = null;
@@ -227,7 +227,7 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
     /// confirming the eager-validation contract.
     /// </summary>
     [TestMethod]
-    public void Randomize_WhenRngIsNull_ShouldThrowImmediatelyWithoutEnumeratingSource()
+    public void Randomize_WhenRngIsNull_ShouldThrowExactly()
     {
         var wasEnumerated = false;
 
@@ -252,7 +252,7 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
     /// when the source is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void Randomize_WhenSourceIsNull_ForDefaultOverload_ShouldThrowArgumentNullException()
+    public void Randomize_WhenSourceIsNull_ForDefaultOverload_ShouldThrowExactly()
     {
         IEnumerable<int>? source = null;
 
@@ -266,7 +266,7 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
     /// Verifies that <c>Randomize</c> throws <see cref="ArgumentNullException" /> eagerly when the source is null.
     /// </summary>
     [TestMethod]
-    public void Randomize_WhenSourceIsNull_ForExplicitOverload_ShouldThrowArgumentNullException()
+    public void Randomize_WhenSourceIsNull_ForExplicitOverload_ShouldThrowExactly()
     {
         IEnumerable<int>? source = null;
 

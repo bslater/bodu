@@ -73,7 +73,7 @@ public sealed partial class Base16Tests
     /// <see cref="Base16.Decode(string, BaseFormatStyles)" /> would accept.
     /// </summary>
     [TestMethod]
-    public void FromHexString_ForDecoratedInput_ShouldThrowFormatException()
+    public void FromHexString_ForDecoratedInput_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<FormatException>(() =>
         {

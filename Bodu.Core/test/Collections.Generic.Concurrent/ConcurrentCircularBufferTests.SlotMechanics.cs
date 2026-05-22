@@ -145,7 +145,7 @@ public partial class ConcurrentCircularBufferTests
     /// <c>InternalDequeue</c>'s <c>throwIfEmpty == true</c> path to surface <see cref="InvalidOperationException" />.
     /// </summary>
     [TestMethod]
-    public void InternalDequeue_WhenBufferIsEmptyAndThrowOnEmptyTrue_ShouldThrowInvalidOperationException()
+    public void InternalDequeue_WhenBufferIsEmptyAndThrowOnEmptyTrue_ShouldThrowExactly()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(4);
 

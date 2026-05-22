@@ -32,7 +32,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     /// Verifies that a <see langword="null" /> algorithm receiver still raises <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void TryVerifyHash_WhenAlgorithmIsNull_ShouldThrowArgumentNullException()
+    public void TryVerifyHash_WhenAlgorithmIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -141,7 +141,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     /// <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void TryVerifyHash_WhenExpectedHashIsNull_ShouldThrowArgumentNullException()
+    public void TryVerifyHash_WhenExpectedHashIsNull_ShouldThrowExactly()
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
 
@@ -155,7 +155,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     /// Verifies that a null expected hex string still raises <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void TryVerifyHash_WhenExpectedHexIsNull_ShouldThrowArgumentNullException()
+    public void TryVerifyHash_WhenExpectedHexIsNull_ShouldThrowExactly()
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
 
@@ -220,7 +220,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     /// Verifies that a null expected hash in the stream overload still raises <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void TryVerifyHash_WhenStreamExpectedHexIsNull_ShouldThrowArgumentNullException()
+    public void TryVerifyHash_WhenStreamExpectedHexIsNull_ShouldThrowExactly()
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
 

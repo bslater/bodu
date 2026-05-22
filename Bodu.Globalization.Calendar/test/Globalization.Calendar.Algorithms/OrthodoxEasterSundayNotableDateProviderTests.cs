@@ -48,7 +48,7 @@ public sealed class OrthodoxEasterSundayNotableDateProviderTests
     [DataRow(0)]
     [DataRow(-1)]
     [TestMethod]
-    public void GetDates_WhenYearLessThanOne_ShouldThrowArgumentOutOfRangeException(int year)
+    public void GetDates_WhenYearLessThanOne_ShouldThrowExactly(int year)
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -60,7 +60,7 @@ public sealed class OrthodoxEasterSundayNotableDateProviderTests
     /// Verifies that passing a non-Julian calendar throws <see cref="NotSupportedException" />.
     /// </summary>
     [TestMethod]
-    public void GetDates_WhenCalendarIsGregorian_ShouldThrowNotSupportedException()
+    public void GetDates_WhenCalendarIsGregorian_ShouldThrowExactly()
     {
         var ex = Assert.ThrowsExactly<NotSupportedException>(() =>
         {

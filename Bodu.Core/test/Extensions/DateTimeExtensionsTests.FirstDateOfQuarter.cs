@@ -126,7 +126,7 @@ public partial class DateTimeExtensionsTests
     /// Verifies that passing <see cref="CalendarQuarterDefinition.Custom" /> without supplying a provider throws <see cref="InvalidOperationException" />.
     /// </summary>
     [TestMethod]
-    public void FirstDateOfQuarter_WhenUsingCustomQuarterDefinitionWithoutProvider_ShouldThrowInvalidOperation()
+    public void FirstDateOfQuarter_WhenUsingCustomQuarterDefinitionWithoutProvider_ShouldThrowExactly()
     {
         var input = new DateTime(2024, 4, 20);
 
@@ -151,7 +151,7 @@ public partial class DateTimeExtensionsTests
     /// Verifies that a custom <c>IQuarterProvider</c> returning out-of-range month values causes <see cref="DateTimeExtensions.FirstDateOfQuarter{T}" /> to throw <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    public void FirstDateOfQuarter_WhenUsingInvalidProvider_ShouldThrowArgumentOutOfRange()
+    public void FirstDateOfQuarter_WhenUsingInvalidProvider_ShouldThrowExactly()
     {
         var input = new DateTime(2024, 4, 20);
         var provider = new InValidQuarterProvider();

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IDictionaryExtensions.AddOrUpdate.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -40,7 +40,7 @@ public sealed partial class IDictionaryExtensionsTests_AddOrUpdate
     /// <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void AddOrUpdate_WhenDictionaryIsNull_ShouldThrowArgumentNullException()
+    public void AddOrUpdate_WhenDictionaryIsNull_ShouldThrowExactly()
     {
         IDictionary<string, int> dictionary = null!;
 

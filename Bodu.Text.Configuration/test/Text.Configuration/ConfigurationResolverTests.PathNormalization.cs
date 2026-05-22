@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConfigurationResolverTests.PathNormalization.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -52,7 +52,7 @@ format.indent.size = 2
     /// resolving without a path root throws.
     /// </summary>
     [TestMethod]
-    public void Resolve_WhenMissingPathRootModeIsThrow_ShouldThrowWhenNoContext()
+    public void Resolve_WhenMissingPathRootModeIsThrow_ShouldThrowExactly()
     {
         const string fixture = "application.name = Bodu\n";
         IniDocument doc = ConfigurationDocument.Parse(fixture);

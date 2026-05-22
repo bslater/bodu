@@ -15,7 +15,7 @@ public abstract partial class AlphanumericCheckDigitAlgorithmTests<TTest, TAlgor
     /// Verifies that <c>Append</c> rejects characters that fall outside the declared input alphabet.
     /// </summary>
     [TestMethod]
-    public void Append_WhenCharacterIsOutsideInputAlphabet_ShouldThrowArgumentOutOfRangeException()
+    public void Append_WhenCharacterIsOutsideInputAlphabet_ShouldThrowExactly()
     {
         AlphanumericCheckDigitAlgorithmSpecification spec = GetSpecification();
         var invalid = spec.InputAlphabet == CheckDigitInputAlphabet.DecimalDigits ? 'A' : '!';

@@ -43,7 +43,7 @@ public sealed partial class StringEncodingExtensionsTests
     /// <see cref="ArgumentNullException" /> when <c>text</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void GetBytesPooled_WhenTextIsNull_ShouldThrowArgumentNullException()
+    public void GetBytesPooled_WhenTextIsNull_ShouldThrowExactly()
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -58,7 +58,7 @@ public sealed partial class StringEncodingExtensionsTests
     /// <see cref="ArgumentNullException" /> when <c>encoding</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void GetBytesPooled_WhenEncodingIsNull_ShouldThrowArgumentNullException()
+    public void GetBytesPooled_WhenEncodingIsNull_ShouldThrowExactly()
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

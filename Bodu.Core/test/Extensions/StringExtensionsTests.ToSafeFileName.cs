@@ -52,7 +52,7 @@ public partial class StringExtensionsTests
     /// <see cref="ArgumentNullException" /> when invoked with <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void ToSafeFileName_WhenValueIsNull_ShouldThrowArgumentNullException()
+    public void ToSafeFileName_WhenValueIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

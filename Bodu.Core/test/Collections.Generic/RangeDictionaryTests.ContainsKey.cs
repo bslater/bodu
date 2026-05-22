@@ -24,7 +24,7 @@ public partial class RangeDictionaryTests
     /// Verifies that <see cref="RangeDictionary{TKey, TValue}.ContainsKey(TKey)" /> rejects a <see langword="null" /> key.
     /// </summary>
     [TestMethod]
-    public void ContainsKey_WhenKeyIsNull_ShouldThrowArgumentNullException()
+    public void ContainsKey_WhenKeyIsNull_ShouldThrowExactly()
     {
         var sut = new RangeDictionary<string, int>();
 

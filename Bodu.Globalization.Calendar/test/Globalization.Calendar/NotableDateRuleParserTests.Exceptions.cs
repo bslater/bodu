@@ -31,7 +31,7 @@ public partial class NotableDateRuleParserTests
     [DataRow(" ")]
     [DataRow("\t\n  ")]
     [TestMethod]
-    public void ParseXml_WhenInputIsNullOrWhitespace_ShouldThrowArgumentNullException(string? xml)
+    public void ParseXml_WhenInputIsNullOrWhitespace_ShouldThrowExactly(string? xml)
     {
         var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -47,7 +47,7 @@ public partial class NotableDateRuleParserTests
     /// <c>document</c> parameter name on the exception.
     /// </summary>
     [TestMethod]
-    public void ParseXml_WhenXDocumentIsNull_ShouldThrowArgumentNullException()
+    public void ParseXml_WhenXDocumentIsNull_ShouldThrowExactly()
     {
         var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -63,7 +63,7 @@ public partial class NotableDateRuleParserTests
     /// parser error.
     /// </summary>
     [TestMethod]
-    public void ParseXml_WhenInputViolatesSchema_ShouldThrowXmlSchemaValidationException()
+    public void ParseXml_WhenInputViolatesSchema_ShouldThrowExactly()
     {
         const string invalidXml = @"
 			<NotableDates xmlns=""urn:bodu:globalization:calendar"">
@@ -94,7 +94,7 @@ public partial class NotableDateRuleParserTests
     [DataRow(" ")]
     [DataRow("\r\n\t")]
     [TestMethod]
-    public void ParseDocument_WhenInputIsNullOrWhitespace_ShouldThrowArgumentNullException(string? xml)
+    public void ParseDocument_WhenInputIsNullOrWhitespace_ShouldThrowExactly(string? xml)
     {
         var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -109,7 +109,7 @@ public partial class NotableDateRuleParserTests
     /// violations as <see cref="XmlSchemaValidationException" />.
     /// </summary>
     [TestMethod]
-    public void ParseDocument_WhenInputViolatesSchema_ShouldThrowXmlSchemaValidationException()
+    public void ParseDocument_WhenInputViolatesSchema_ShouldThrowExactly()
     {
         const string invalidXml = @"
 			<NotableDates xmlns=""urn:bodu:globalization:calendar"">
@@ -136,7 +136,7 @@ public partial class NotableDateRuleParserTests
     /// constructed in memory and bypasses the string-form validation pipeline.
     /// </summary>
     [TestMethod]
-    public void ParseDocument_WhenXDocumentViolatesSchema_ShouldThrowXmlSchemaValidationException()
+    public void ParseDocument_WhenXDocumentViolatesSchema_ShouldThrowExactly()
     {
         const string invalidXml = @"
 			<NotableDates xmlns=""urn:bodu:globalization:calendar"">
@@ -165,7 +165,7 @@ public partial class NotableDateRuleParserTests
     /// merge pipeline relies on.
     /// </summary>
     [TestMethod]
-    public void ParseXml_WhenRuleHasDuplicateAdjustmentKeys_ShouldThrowInvalidOperationException()
+    public void ParseXml_WhenRuleHasDuplicateAdjustmentKeys_ShouldThrowExactly()
     {
         const string duplicateKeyXml = @"
 			<NotableDates xmlns=""urn:bodu:globalization:calendar"">

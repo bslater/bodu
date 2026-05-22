@@ -58,7 +58,7 @@ public partial class WeekPatternTests
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(WeekPatternTests.InvalidTypesForCompareTo), typeof(WeekPatternTests))]
-    public void CompareToObject_WhenInvalidType_ShouldThrowArgumentException(object value)
+    public void CompareToObject_WhenInvalidType_ShouldThrowExactly(object value)
     {
         Assert.ThrowsExactly<ArgumentException>(() =>
             new WeekPattern(DayOfWeek.Monday).CompareTo(value));

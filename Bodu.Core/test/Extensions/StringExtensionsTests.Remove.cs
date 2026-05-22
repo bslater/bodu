@@ -40,7 +40,7 @@ public partial class StringExtensionsTests
     /// <see cref="ArgumentException" /> when <c>valueToRemove</c> is empty.
     /// </summary>
     [TestMethod]
-    public void Remove_WhenValueToRemoveIsEmpty_ShouldThrowArgumentException()
+    public void Remove_WhenValueToRemoveIsEmpty_ShouldThrowExactly()
     {
         ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -55,7 +55,7 @@ public partial class StringExtensionsTests
     /// <see cref="ArgumentNullException" /> for null arguments.
     /// </summary>
     [TestMethod]
-    public void Remove_WhenAnyArgumentIsNull_ShouldThrowArgumentNullException()
+    public void Remove_WhenAnyArgumentIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() => _ = StringExtensions.Remove(null!, "x"));
         Assert.ThrowsExactly<ArgumentNullException>(() => _ = "hello".Remove(null!));

@@ -31,7 +31,7 @@ public sealed partial class StringEncodingExtensionsTests
     /// throws <see cref="ArgumentException" /> when the destination is one byte too small.
     /// </summary>
     [TestMethod]
-    public void EncodeTo_WhenDestinationIsOneByteTooSmall_ShouldThrowArgumentException()
+    public void EncodeTo_WhenDestinationIsOneByteTooSmall_ShouldThrowExactly()
     {
         var required = System.Text.Encoding.UTF8.GetByteCount(MultiByteText);
         var backing = new byte[required - 1];
@@ -47,7 +47,7 @@ public sealed partial class StringEncodingExtensionsTests
     /// throws <see cref="ArgumentNullException" /> when <c>text</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void EncodeTo_WhenTextIsNull_ShouldThrowArgumentNullException()
+    public void EncodeTo_WhenTextIsNull_ShouldThrowExactly()
     {
         var backing = new byte[64];
 
@@ -64,7 +64,7 @@ public sealed partial class StringEncodingExtensionsTests
     /// throws <see cref="ArgumentNullException" /> when <c>encoding</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void EncodeTo_WhenEncodingIsNull_ShouldThrowArgumentNullException()
+    public void EncodeTo_WhenEncodingIsNull_ShouldThrowExactly()
     {
         var backing = new byte[64];
 

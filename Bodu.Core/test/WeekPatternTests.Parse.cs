@@ -14,7 +14,7 @@ public partial class WeekPatternTests
     /// when the input contains an unrecognised character.
     /// </summary>
     [TestMethod]
-    public void Parse_WhenInputContainsInvalidCharacter_ShouldThrowException() => Assert.ThrowsExactly<FormatException>(() => { _ = WeekPattern.Parse("SMTWTFX"); });
+    public void Parse_WhenInputContainsInvalidCharacter_ShouldThrowExactly() => Assert.ThrowsExactly<FormatException>(() => { _ = WeekPattern.Parse("SMTWTFX"); });
 
     /// <summary>
     /// Verifies that <see cref="WeekPattern.Parse(string)" /> correctly auto-detects and parses a
@@ -56,7 +56,7 @@ public partial class WeekPatternTests
     /// when the input is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void Parse_WhenInputIsNull_ShouldThrowException() => Assert.ThrowsExactly<ArgumentNullException>(() => { _ = WeekPattern.Parse(null!); });
+    public void Parse_WhenInputIsNull_ShouldThrowExactly() => Assert.ThrowsExactly<ArgumentNullException>(() => { _ = WeekPattern.Parse(null!); });
 
     /// <summary>
     /// Verifies that <see cref="WeekPattern.Parse(string)" /> correctly identifies a Sunday-first
@@ -88,7 +88,7 @@ public partial class WeekPatternTests
     /// when the input is not exactly seven characters long.
     /// </summary>
     [TestMethod]
-    public void Parse_WhenInputLengthIsNot7_ShouldThrowException() => Assert.ThrowsExactly<FormatException>(() => { _ = WeekPattern.Parse("SMTWTF"); });
+    public void Parse_WhenInputLengthIsNot7_ShouldThrowExactly() => Assert.ThrowsExactly<FormatException>(() => { _ = WeekPattern.Parse("SMTWTF"); });
 
     /// <summary>
     /// Verifies that <see cref="WeekPattern.Parse(string)" /> throws <see cref="FormatException" /> for
@@ -96,7 +96,7 @@ public partial class WeekPatternTests
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(WeekPatternTests.GetInvalidParseInputNoFormatTestData), typeof(WeekPatternTests))]
-    public void Parse_WhenInvalidInput_ShouldThrowFormatException(string input) => Assert.ThrowsExactly<FormatException>(() => { _ = WeekPattern.Parse(input); });
+    public void Parse_WhenInvalidInput_ShouldThrowExactly(string input) => Assert.ThrowsExactly<FormatException>(() => { _ = WeekPattern.Parse(input); });
 
     /// <summary>
     /// Verifies that <see cref="WeekPattern.Parse(string)" /> correctly assigns day indices when the

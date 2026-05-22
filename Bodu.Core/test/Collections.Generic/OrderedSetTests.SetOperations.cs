@@ -44,7 +44,7 @@ public partial class OrderedSetTests
     /// Verifies that <see cref="OrderedSet{T}.ExceptWith(IEnumerable{T})" /> rejects a <see langword="null" /> source.
     /// </summary>
     [TestMethod]
-    public void ExceptWith_WhenOtherIsNull_ShouldThrowArgumentNullException()
+    public void ExceptWith_WhenOtherIsNull_ShouldThrowExactly()
     {
         var sut = new OrderedSet<int>();
 
@@ -115,7 +115,7 @@ public partial class OrderedSetTests
     /// Verifies that <see cref="OrderedSet{T}.IntersectWith(IEnumerable{T})" /> rejects a <see langword="null" /> source.
     /// </summary>
     [TestMethod]
-    public void IntersectWith_WhenOtherIsNull_ShouldThrowArgumentNullException()
+    public void IntersectWith_WhenOtherIsNull_ShouldThrowExactly()
     {
         var sut = new OrderedSet<int>();
 
@@ -208,7 +208,7 @@ public partial class OrderedSetTests
     /// Verifies that <see cref="OrderedSet{T}.SymmetricExceptWith(IEnumerable{T})" /> rejects a <see langword="null" /> source.
     /// </summary>
     [TestMethod]
-    public void SymmetricExceptWith_WhenOtherIsNull_ShouldThrowArgumentNullException()
+    public void SymmetricExceptWith_WhenOtherIsNull_ShouldThrowExactly()
     {
         var sut = new OrderedSet<int>();
 
@@ -285,7 +285,7 @@ public partial class OrderedSetTests
     /// Verifies that <see cref="OrderedSet{T}.UnionWith(IEnumerable{T})" /> rejects a <see langword="null" /> source.
     /// </summary>
     [TestMethod]
-    public void UnionWith_WhenOtherIsNull_ShouldThrowArgumentNullException()
+    public void UnionWith_WhenOtherIsNull_ShouldThrowExactly()
     {
         var sut = new OrderedSet<int>();
 

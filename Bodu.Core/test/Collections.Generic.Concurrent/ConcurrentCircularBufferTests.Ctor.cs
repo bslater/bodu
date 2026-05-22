@@ -75,7 +75,7 @@ public partial class ConcurrentCircularBufferTests
     [DataRow(-1)]
     [DataRow(0)]
     [DataRow(1)]
-    public void Ctor_WhenCapacityIsLessThanTwo_ShouldThrowArgumentOutOfRange(int capacity)
+    public void Ctor_WhenCapacityIsLessThanTwo_ShouldThrowExactly(int capacity)
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -98,7 +98,7 @@ public partial class ConcurrentCircularBufferTests
     [DataRow(-1, false)]
     [DataRow(0, false)]
     [DataRow(1, false)]
-    public void Ctor_WhenCapacityIsLessThanTwo_WithSourceEnumerable_ShouldThrowArgumentOutOfRange(
+    public void Ctor_WhenCapacityIsLessThanTwo_WithSourceEnumerable_ShouldThrowExactly(
         int capacity, bool allowOverwrite)
     {
         TestItem[] empty = Array.Empty<TestItem>();
@@ -211,7 +211,7 @@ public partial class ConcurrentCircularBufferTests
     /// capacity throws <see cref="ArgumentOutOfRangeException"/>.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenEmptyCollectionAndInvalidCapacity_ShouldThrowArgumentOutOfRangeException()
+    public void Ctor_WhenEmptyCollectionAndInvalidCapacity_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -236,7 +236,7 @@ public partial class ConcurrentCircularBufferTests
     /// Verifies that passing a <see langword="null" /> source to the capacity-taking constructor throws <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenEnumerableIsNull_WithCapacity_ShouldThrowArgumentNull()
+    public void Ctor_WhenEnumerableIsNull_WithCapacity_ShouldThrowExactly()
     {
         IEnumerable<TestItem> source = null!;
 
@@ -250,7 +250,7 @@ public partial class ConcurrentCircularBufferTests
     /// Verifies that passing a <see langword="null" /> source to the three-argument constructor throws <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenEnumerableIsNull_WithCapacityAndAllowOverwrite_ShouldThrowArgumentNull()
+    public void Ctor_WhenEnumerableIsNull_WithCapacityAndAllowOverwrite_ShouldThrowExactly()
     {
         IEnumerable<TestItem> source = null!;
 
@@ -264,7 +264,7 @@ public partial class ConcurrentCircularBufferTests
     /// Verifies that a source exceeding capacity with overwriting disabled throws <see cref="InvalidOperationException" /> during construction.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenSourceExceedsCapacity_WithAllowOverwriteFalse_ShouldThrowInvalidOperation()
+    public void Ctor_WhenSourceExceedsCapacity_WithAllowOverwriteFalse_ShouldThrowExactly()
     {
         IEnumerable<TestItem> source = Enumerable.Range(1, 5).Select(i => new TestItem(i));
 

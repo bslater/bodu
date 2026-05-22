@@ -116,7 +116,7 @@ public partial class NotableDateTimeExtensionsTests
     /// Verifies that supplying a <see langword="null" /> service throws <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void PreviousWorkingDay_WhenServiceIsNull_ShouldThrowArgumentNullException()
+    public void PreviousWorkingDay_WhenServiceIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -128,7 +128,7 @@ public partial class NotableDateTimeExtensionsTests
     /// Verifies that supplying a negative count throws <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    public void PreviousWorkingDay_WhenCountIsNegative_ShouldThrowArgumentOutOfRangeException()
+    public void PreviousWorkingDay_WhenCountIsNegative_ShouldThrowExactly()
     {
         NotableDateService service = BuildService();
 
@@ -142,7 +142,7 @@ public partial class NotableDateTimeExtensionsTests
     /// Verifies that retreating past <see cref="DateTime.MinValue" /> throws <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    public void PreviousWorkingDay_WhenRetreatPastMinValue_ShouldThrowArgumentOutOfRangeException()
+    public void PreviousWorkingDay_WhenRetreatPastMinValue_ShouldThrowExactly()
     {
         NotableDateService service = BuildService();
 

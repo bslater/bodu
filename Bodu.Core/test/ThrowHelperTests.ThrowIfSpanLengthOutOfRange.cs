@@ -19,7 +19,7 @@ public partial class ThrowHelperTests
     [DataRow(11, 1, 10)]
     [DataRow(5, 10, 20)]
     [DataRow(25, 10, 20)]
-    public void ThrowIfSpanLengthOutOfRange_ReadOnlySpan_WhenLengthIsOutOfRange_ShouldThrowArgumentOutOfRangeException(int spanLength, int minLength, int maxLength)
+    public void ThrowIfSpanLengthOutOfRange_ReadOnlySpan_WhenLengthIsOutOfRange_ShouldThrowExactly(int spanLength, int minLength, int maxLength)
     {
         var buffer = new int[spanLength];
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
@@ -53,7 +53,7 @@ public partial class ThrowHelperTests
     [DataRow(11, 1, 10)]
     [DataRow(5, 10, 20)]
     [DataRow(25, 10, 20)]
-    public void ThrowIfSpanLengthOutOfRange_Span_WhenLengthIsOutOfRange_ShouldThrowArgumentOutOfRangeException(int spanLength, int minLength, int maxLength)
+    public void ThrowIfSpanLengthOutOfRange_Span_WhenLengthIsOutOfRange_ShouldThrowExactly(int spanLength, int minLength, int maxLength)
     {
         var buffer = new int[spanLength];
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>

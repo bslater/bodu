@@ -13,7 +13,7 @@ public partial class RangeSetTests
     /// Verifies that <see cref="RangeSet{T}.Overlaps(T, T)" /> rejects <see langword="null" /> endpoints.
     /// </summary>
     [TestMethod]
-    public void Overlaps_WhenEndpointIsNull_ShouldThrowArgumentNullException()
+    public void Overlaps_WhenEndpointIsNull_ShouldThrowExactly()
     {
         var sut = new RangeSet<string>();
 
@@ -64,7 +64,7 @@ public partial class RangeSetTests
     /// Verifies that <see cref="RangeSet{T}.Overlaps(T, T)" /> rejects degenerate ranges.
     /// </summary>
     [TestMethod]
-    public void Overlaps_WhenStartIsNotLessThanEnd_ShouldThrowArgumentException()
+    public void Overlaps_WhenStartIsNotLessThanEnd_ShouldThrowExactly()
     {
         var sut = new RangeSet<int>();
 

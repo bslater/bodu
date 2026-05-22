@@ -34,7 +34,7 @@ public partial class ValueRangeTests
     /// Verifies that <see cref="ValueRange{TKey, TValue}.Contains(TKey)" /> rejects a <see langword="null" /> argument.
     /// </summary>
     [TestMethod]
-    public void Contains_WhenKeyIsNull_ShouldThrowArgumentNullException()
+    public void Contains_WhenKeyIsNull_ShouldThrowExactly()
     {
         var sut = new ValueRange<string, int>("a", "z", 42);
 

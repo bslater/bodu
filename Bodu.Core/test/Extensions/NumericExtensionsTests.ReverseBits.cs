@@ -334,7 +334,7 @@ public partial class NumericExtensionsTests
     [DataRow(9)]
     [DataRow(16)]
     [DataRow(int.MaxValue)]
-    public void ReverseBits_WhenBitLengthExceedsTypeWidth_ForByte_ShouldThrowArgumentOutOfRangeException(int bitLength) =>
+    public void ReverseBits_WhenBitLengthExceedsTypeWidth_ForByte_ShouldThrowExactly(int bitLength) =>
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             ((byte)0xFF).ReverseBits(bitLength);
@@ -401,7 +401,7 @@ public partial class NumericExtensionsTests
     [DataRow(-1)]
     [DataRow(-8)]
     [DataRow(int.MinValue)]
-    public void ReverseBits_WhenBitLengthIsNegative_ForByte_ShouldThrowArgumentOutOfRangeException(int bitLength) =>
+    public void ReverseBits_WhenBitLengthIsNegative_ForByte_ShouldThrowExactly(int bitLength) =>
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             ((byte)0xFF).ReverseBits(bitLength);
@@ -416,7 +416,7 @@ public partial class NumericExtensionsTests
     [DataRow(33)]
     [DataRow(int.MaxValue)]
     [DataRow(int.MinValue)]
-    public void ReverseBits_WhenBitLengthIsOutOfRange_ForUInt_ShouldThrowArgumentOutOfRangeException(int bitLength) =>
+    public void ReverseBits_WhenBitLengthIsOutOfRange_ForUInt_ShouldThrowExactly(int bitLength) =>
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             0xFFFFFFFFu.ReverseBits(bitLength);
@@ -431,7 +431,7 @@ public partial class NumericExtensionsTests
     [DataRow(65)]
     [DataRow(int.MaxValue)]
     [DataRow(int.MinValue)]
-    public void ReverseBits_WhenBitLengthIsOutOfRange_ForULong_ShouldThrowArgumentOutOfRangeException(int bitLength) =>
+    public void ReverseBits_WhenBitLengthIsOutOfRange_ForULong_ShouldThrowExactly(int bitLength) =>
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             0xFFFFFFFFFFFFFFFFul.ReverseBits(bitLength);
@@ -446,7 +446,7 @@ public partial class NumericExtensionsTests
     [DataRow(17)]
     [DataRow(int.MaxValue)]
     [DataRow(int.MinValue)]
-    public void ReverseBits_WhenBitLengthIsOutOfRange_ForUShort_ShouldThrowArgumentOutOfRangeException(int bitLength) =>
+    public void ReverseBits_WhenBitLengthIsOutOfRange_ForUShort_ShouldThrowExactly(int bitLength) =>
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             ((ushort)0xFFFF).ReverseBits(bitLength);
@@ -597,7 +597,7 @@ public partial class NumericExtensionsTests
     /// <see cref="ArgumentNullException" /> when the input array is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void ReverseBits_WhenByteArrayIsNull_ShouldThrowException() =>
+    public void ReverseBits_WhenByteArrayIsNull_ShouldThrowExactly() =>
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             ((byte[])null!).ReverseBits();

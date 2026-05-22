@@ -36,7 +36,7 @@ public partial class CrcTests
     /// previously configured cache.
     /// </summary>
     [TestMethod]
-    public void GlobalCache_WhenAssignedNull_ShouldThrowArgumentNullException()
+    public void GlobalCache_WhenAssignedNull_ShouldThrowExactly()
     {
         ArgumentNullException ex = Assert.ThrowsExactly<System.ArgumentNullException>(() => Crc.GlobalCache = null!);
         Assert.AreEqual("value", ex.ParamName);

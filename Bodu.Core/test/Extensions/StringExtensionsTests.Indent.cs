@@ -59,7 +59,7 @@ public partial class StringExtensionsTests
     /// <see cref="ArgumentNullException" /> when invoked with <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void Indent_WhenValueIsNull_ShouldThrowArgumentNullException()
+    public void Indent_WhenValueIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -72,7 +72,7 @@ public partial class StringExtensionsTests
     /// <see cref="ArgumentOutOfRangeException" /> when <c>count</c> is negative.
     /// </summary>
     [TestMethod]
-    public void Indent_WhenCountIsNegative_ShouldThrowArgumentOutOfRangeException()
+    public void Indent_WhenCountIsNegative_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

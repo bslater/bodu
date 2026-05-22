@@ -16,7 +16,7 @@ public partial class BKDRTests
     /// previously stored seed unchanged.
     /// </summary>
     [TestMethod]
-    public void Seed_WhenAssignedUnsupportedValue_ShouldThrowAndNotModifyState()
+    public void Seed_WhenAssignedUnsupportedValue_ShouldThrowExactly()
     {
         BKDR algorithm = new();
         Assert.ThrowsExactly<ArgumentException>(() => algorithm.Seed = 1234U);
@@ -47,7 +47,7 @@ public partial class BKDRTests
     /// <see cref="CryptographicUnexpectedOperationException" />.
     /// </summary>
     [TestMethod]
-    public void Seed_WhenSetAfterHashingStarted_ShouldThrow()
+    public void Seed_WhenSetAfterHashingStarted_ShouldThrowExactly()
     {
         BKDR algorithm = new();
         algorithm.Append(new byte[] { 1, 2, 3 });

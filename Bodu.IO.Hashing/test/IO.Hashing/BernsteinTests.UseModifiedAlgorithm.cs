@@ -42,7 +42,7 @@ public partial class BernsteinTests
     /// throws <see cref="CryptographicUnexpectedOperationException" />.
     /// </summary>
     [TestMethod]
-    public void UseModifiedAlgorithm_WhenSetAfterHashingStarted_ShouldThrow()
+    public void UseModifiedAlgorithm_WhenSetAfterHashingStarted_ShouldThrowExactly()
     {
         Bernstein algorithm = new();
         algorithm.Append(new byte[] { 1, 2, 3 });

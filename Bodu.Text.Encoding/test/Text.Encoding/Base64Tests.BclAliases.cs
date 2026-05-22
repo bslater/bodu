@@ -134,7 +134,7 @@ public sealed partial class Base64Tests
     /// <see cref="System.Convert.FromBase64String(string)" />, which is strict on padding).
     /// </summary>
     [TestMethod]
-    public void FromBase64String_WhenPaddingOmitted_ShouldThrowFormatException()
+    public void FromBase64String_WhenPaddingOmitted_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<FormatException>(() =>
         {

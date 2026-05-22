@@ -41,7 +41,7 @@ public sealed class BinaryEncodingsTests
     /// Verifies that <see cref="BinaryEncodings.Get(string)" /> rejects a <see langword="null" /> name.
     /// </summary>
     [TestMethod]
-    public void Get_WhenNullName_ShouldThrowArgumentNullException()
+    public void Get_WhenNullName_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -54,7 +54,7 @@ public sealed class BinaryEncodingsTests
     /// <see cref="ArgumentException" />.
     /// </summary>
     [TestMethod]
-    public void Get_WhenUnknownName_ShouldThrowArgumentException()
+    public void Get_WhenUnknownName_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentException>(() =>
         {

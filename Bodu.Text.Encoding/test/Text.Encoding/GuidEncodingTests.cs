@@ -333,7 +333,7 @@ public sealed class GuidEncodingTests
     /// 16 bytes.
     /// </summary>
     [TestMethod]
-    public void DecodeGuid_WhenInputNotSixteenBytes_ShouldThrowFormatException()
+    public void DecodeGuid_WhenInputNotSixteenBytes_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<FormatException>(() =>
         {

@@ -43,7 +43,7 @@ public partial class StringExtensionsTests
     /// <see cref="ArgumentNullException" /> when <c>value</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void RemoveSuffix_WhenValueIsNull_ShouldThrowArgumentNullException()
+    public void RemoveSuffix_WhenValueIsNull_ShouldThrowExactly()
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -58,7 +58,7 @@ public partial class StringExtensionsTests
     /// <see cref="ArgumentNullException" /> when <c>suffix</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void RemoveSuffix_WhenSuffixIsNull_ShouldThrowArgumentNullException()
+    public void RemoveSuffix_WhenSuffixIsNull_ShouldThrowExactly()
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

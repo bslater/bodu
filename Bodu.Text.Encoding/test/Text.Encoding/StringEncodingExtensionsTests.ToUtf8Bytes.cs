@@ -42,7 +42,7 @@ public sealed partial class StringEncodingExtensionsTests
     /// <see cref="ArgumentNullException" /> when <c>text</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void ToUtf8Bytes_WhenTextIsNull_ShouldThrowArgumentNullException()
+    public void ToUtf8Bytes_WhenTextIsNull_ShouldThrowExactly()
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

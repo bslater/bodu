@@ -16,7 +16,7 @@ public partial class OrderedSetTests
     /// Verifies that <see cref="OrderedSet{T}.CopyTo(T[], int)" /> rejects a <see langword="null" /> array.
     /// </summary>
     [TestMethod]
-    public void CopyTo_WhenArrayIsNull_ShouldThrowArgumentNullException()
+    public void CopyTo_WhenArrayIsNull_ShouldThrowExactly()
     {
         OrderedSet<int> sut = CreateSet([1, 2]);
 
@@ -31,7 +31,7 @@ public partial class OrderedSetTests
     /// when the array is too small.
     /// </summary>
     [TestMethod]
-    public void CopyTo_WhenArrayIsTooSmall_ShouldThrowArgumentException()
+    public void CopyTo_WhenArrayIsTooSmall_ShouldThrowExactly()
     {
         OrderedSet<int> sut = CreateSet([1, 2, 3]);
 
@@ -47,7 +47,7 @@ public partial class OrderedSetTests
     [TestMethod]
     [DataRow(-1)]
     [DataRow(int.MinValue)]
-    public void CopyTo_WhenIndexIsNegative_ShouldThrowArgumentOutOfRangeException(int arrayIndex)
+    public void CopyTo_WhenIndexIsNegative_ShouldThrowExactly(int arrayIndex)
     {
         OrderedSet<int> sut = CreateSet([1, 2]);
 
@@ -95,7 +95,7 @@ public partial class OrderedSetTests
     /// when the remaining space after the offset is insufficient.
     /// </summary>
     [TestMethod]
-    public void CopyTo_WhenRemainingSpaceAfterOffsetIsInsufficient_ShouldThrowArgumentException()
+    public void CopyTo_WhenRemainingSpaceAfterOffsetIsInsufficient_ShouldThrowExactly()
     {
         OrderedSet<int> sut = CreateSet([1, 2, 3]);
 

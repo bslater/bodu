@@ -45,7 +45,7 @@ public partial class ThrowHelperTests
     [TestMethod]
     [DataRow((TestEnum)99)]
     [DataRow((TestEnum)(-1))]
-    public void ThrowIfEnumValueIsUndefined_WhenValueIsUndefined_ShouldThrowArgumentOutOfRangeException(TestEnum value)
+    public void ThrowIfEnumValueIsUndefined_WhenValueIsUndefined_ShouldThrowExactly(TestEnum value)
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

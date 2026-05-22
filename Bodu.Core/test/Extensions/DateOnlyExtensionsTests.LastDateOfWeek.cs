@@ -87,7 +87,7 @@ public partial class DateOnlyExtensionsTests
     /// Verifies that <see cref="DateOnlyExtensions.LastDateOfWeek"/> throws if the calculated actual exceeds <see cref="DateOnly.MaxValue"/>.
     /// </summary>
     [TestMethod]
-    public void LastDateOfWeek_WhenResultExceedsMaxValue_ShouldThrowException()
+    public void LastDateOfWeek_WhenResultExceedsMaxValue_ShouldThrowExactly()
     {
         var nearMax = DateOnly.MaxValue.AddDays(-1); // e.g., Dec 30, 9999
         var weekend = WorkingDaysOfWeek.MondayToFriday; // Start of week = Monday → end = Sunday
@@ -139,7 +139,7 @@ public partial class DateOnlyExtensionsTests
     /// Verifies that <see cref="DateOnlyExtensions.LastDateOfWeek"/> throws when given an undefined <see cref="WorkingDaysOfWeek"/>.
     /// </summary>
     [TestMethod]
-    public void LastDateOfWeek_WhenWeekendIsUndefined_ShouldThrowException()
+    public void LastDateOfWeek_WhenWeekendIsUndefined_ShouldThrowExactly()
     {
         var date = new DateOnly(2024, 1, 1);
         var invalidWeekend = (WorkingDaysOfWeek)(-5);

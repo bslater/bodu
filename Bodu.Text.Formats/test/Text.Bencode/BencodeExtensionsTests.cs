@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeExtensionsTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -45,7 +45,7 @@ public sealed class BencodeExtensionsTests
     /// <see cref="ArgumentNullException" /> when the receiver is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void ParseBencode_OnByteArray_WhenSourceIsNull_ShouldThrowArgumentNullException()
+    public void ParseBencode_OnByteArray_WhenSourceIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -140,7 +140,7 @@ public sealed class BencodeExtensionsTests
     /// <see cref="ArgumentNullException" /> when the receiver is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void FormatBencode_WhenValueIsNull_ShouldThrowArgumentNullException()
+    public void FormatBencode_WhenValueIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

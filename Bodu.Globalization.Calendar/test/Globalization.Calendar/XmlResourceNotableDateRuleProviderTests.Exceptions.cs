@@ -23,7 +23,7 @@ public sealed partial class XmlResourceNotableDateRuleProviderTests
     /// with <see cref="ArgumentNullException" /> and exposes the parameter name on the exception.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenResourcePathResolverIsNull_ShouldThrowArgumentNullException()
+    public void Ctor_WhenResourcePathResolverIsNull_ShouldThrowExactly()
     {
         var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -46,7 +46,7 @@ public sealed partial class XmlResourceNotableDateRuleProviderTests
     [DataRow(" ")]
     [DataRow("\t")]
     [TestMethod]
-    public void LoadRules_WhenResourceNameIsEmptyOrWhitespace_ShouldThrowArgumentException(string resourceName)
+    public void LoadRules_WhenResourceNameIsEmptyOrWhitespace_ShouldThrowExactly(string resourceName)
     {
         var provider = new XmlResourceNotableDateRuleProvider(resourceName, new ResourcePathResolver());
 
@@ -62,7 +62,7 @@ public sealed partial class XmlResourceNotableDateRuleProviderTests
     /// requested resource name to aid diagnosis.
     /// </summary>
     [TestMethod]
-    public void LoadRules_WhenResourceMissing_ShouldThrowFileNotFoundExceptionWithMessage()
+    public void LoadRules_WhenResourceMissing_ShouldThrowExactly()
     {
         var provider = new XmlResourceNotableDateRuleProvider(
             "Bodu/Globalization/Calendar/Resources/Imaginary.xml",
@@ -84,7 +84,7 @@ public sealed partial class XmlResourceNotableDateRuleProviderTests
     /// not contain it.
     /// </summary>
     [TestMethod]
-    public void LoadRules_WhenAssemblyDoesNotContainResource_ShouldThrowFileNotFoundException()
+    public void LoadRules_WhenAssemblyDoesNotContainResource_ShouldThrowExactly()
     {
         Assembly fxBaseAssembly = typeof(object).Assembly;
         var provider = new XmlResourceNotableDateRuleProvider(

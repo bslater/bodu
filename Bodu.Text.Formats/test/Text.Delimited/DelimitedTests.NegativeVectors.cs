@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DelimitedTests.NegativeVectors.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -14,7 +14,7 @@ public sealed partial class DelimitedTests
     /// <see cref="DelimitedFormatException" /> when a quoted field is not closed before the end of the source.
     /// </summary>
     [TestMethod]
-    public void Parse_WhenQuotedFieldIsUnterminated_ShouldThrowDelimitedFormatException()
+    public void Parse_WhenQuotedFieldIsUnterminated_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<DelimitedFormatException>(() =>
         {

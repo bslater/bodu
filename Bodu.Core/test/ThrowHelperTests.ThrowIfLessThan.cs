@@ -23,7 +23,7 @@ public partial class ThrowHelperTests
     [TestMethod]
     [DataRow(2, 5, false)]
     [DataRow(-1, 0, false)]
-    public void ThrowIfLessThan_Nullable_WhenValueIsLessThanMin_ShouldThrowArgumentOutOfRangeException(int? value, int min, bool throwIfNull)
+    public void ThrowIfLessThan_Nullable_WhenValueIsLessThanMin_ShouldThrowExactly(int? value, int min, bool throwIfNull)
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -38,7 +38,7 @@ public partial class ThrowHelperTests
     /// </summary>
     [TestMethod]
     [DataRow(null, 5, true)]
-    public void ThrowIfLessThan_Nullable_WhenValueIsNullAndThrowIfNull_ShouldThrowArgumentNullException(int? value, int min, bool throwIfNull)
+    public void ThrowIfLessThan_Nullable_WhenValueIsNullAndThrowIfNull_ShouldThrowExactly(int? value, int min, bool throwIfNull)
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -94,7 +94,7 @@ public partial class ThrowHelperTests
     [DataRow(-1, 0)]
     [DataRow(0, 1)]
     [DataRow(5, 6)]
-    public void ThrowIfLessThan_WhenValueIsLessThanMin_ShouldThrowArgumentOutOfRangeException(int value, int min)
+    public void ThrowIfLessThan_WhenValueIsLessThanMin_ShouldThrowExactly(int value, int min)
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

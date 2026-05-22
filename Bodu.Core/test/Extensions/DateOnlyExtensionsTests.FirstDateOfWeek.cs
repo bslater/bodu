@@ -135,7 +135,7 @@ public partial class DateOnlyExtensionsTests
     /// Verifies that <see cref="DateOnlyExtensions.FirstDateOfWeek"/> throws if the calculated actual underflows <see cref="DateOnly.MinValue"/>.
     /// </summary>
     [TestMethod]
-    public void FirstDateOfWeek_WhenResultUnderflowsMinValue_ShouldThrowException()
+    public void FirstDateOfWeek_WhenResultUnderflowsMinValue_ShouldThrowExactly()
     {
         var nearMin = DateOnly.MinValue.AddDays(1); // e.g., Jan 2, 0001
         var weekend = WorkingDaysOfWeek.SundayToThursday; // Start of week = Sunday → offset = -1
@@ -165,7 +165,7 @@ public partial class DateOnlyExtensionsTests
     /// Verifies that <see cref="DateOnlyExtensions.FirstDateOfWeek"/> throws when given an undefined <see cref="WorkingDaysOfWeek"/>.
     /// </summary>
     [TestMethod]
-    public void FirstDateOfWeek_WhenWeekendIsUndefined_ShouldThrowException()
+    public void FirstDateOfWeek_WhenWeekendIsUndefined_ShouldThrowExactly()
     {
         var date = new DateOnly(2024, 1, 1);
         var invalidWeekend = (WorkingDaysOfWeek)999;

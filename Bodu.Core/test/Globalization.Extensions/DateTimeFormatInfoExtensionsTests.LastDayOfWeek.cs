@@ -46,7 +46,7 @@ public partial class DateTimeFormatInfoExtensionsTests
     /// Verifies that <see cref="DateTimeFormatInfoExtensions.LastDateOfWeek" />, when InfoIsNull, throws <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void LastDateOfWeek_WhenInfoIsNull_ShouldThrowArgumentNullException()
+    public void LastDateOfWeek_WhenInfoIsNull_ShouldThrowExactly()
     {
         DateTimeFormatInfo? info = null;
 

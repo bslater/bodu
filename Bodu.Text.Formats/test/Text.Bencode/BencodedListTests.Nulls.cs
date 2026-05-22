@@ -14,7 +14,7 @@ public sealed partial class BencodedListTests
     /// <see cref="ArgumentException" /> using the resx-backed message.
     /// </summary>
     [TestMethod]
-    public void Constructor_WhenItemsContainsNullElement_ShouldThrowArgumentException()
+    public void Constructor_WhenItemsContainsNullElement_ShouldThrowExactly()
     {
         ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -29,7 +29,7 @@ public sealed partial class BencodedListTests
     /// <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void Constructor_WhenItemsIsNull_ShouldThrowArgumentNullException()
+    public void Constructor_WhenItemsIsNull_ShouldThrowExactly()
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

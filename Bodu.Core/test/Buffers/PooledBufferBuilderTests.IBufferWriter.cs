@@ -35,7 +35,7 @@ public partial class PooledBufferBuilderTests
     /// when the count would exceed the current buffer length.
     /// </summary>
     [TestMethod]
-    public void Advance_WhenCountExceedsBufferLength_ShouldThrowArgumentOutOfRangeException()
+    public void Advance_WhenCountExceedsBufferLength_ShouldThrowExactly()
     {
         using var builder = new PooledBufferBuilder<int>(4);
         _ = builder.GetSpan(2);
@@ -51,7 +51,7 @@ public partial class PooledBufferBuilderTests
     /// when the count is negative.
     /// </summary>
     [TestMethod]
-    public void Advance_WhenCountIsNegative_ShouldThrowArgumentOutOfRangeException()
+    public void Advance_WhenCountIsNegative_ShouldThrowExactly()
     {
         using var builder = new PooledBufferBuilder<int>(8);
 
@@ -81,7 +81,7 @@ public partial class PooledBufferBuilderTests
     /// after the builder has been disposed.
     /// </summary>
     [TestMethod]
-    public void Advance_WhenDisposed_ShouldThrowObjectDisposedException()
+    public void Advance_WhenDisposed_ShouldThrowExactly()
     {
         var builder = new PooledBufferBuilder<int>();
         builder.Dispose();
@@ -118,7 +118,7 @@ public partial class PooledBufferBuilderTests
     /// after the builder has been disposed.
     /// </summary>
     [TestMethod]
-    public void GetMemory_WhenDisposed_ShouldThrowObjectDisposedException()
+    public void GetMemory_WhenDisposed_ShouldThrowExactly()
     {
         var builder = new PooledBufferBuilder<int>();
         builder.Dispose();
@@ -134,7 +134,7 @@ public partial class PooledBufferBuilderTests
     /// <see cref="ArgumentOutOfRangeException"/>.
     /// </summary>
     [TestMethod]
-    public void GetMemory_WhenSizeHintIsNegative_ShouldThrowArgumentOutOfRangeException()
+    public void GetMemory_WhenSizeHintIsNegative_ShouldThrowExactly()
     {
         using var builder = new PooledBufferBuilder<int>();
 
@@ -205,7 +205,7 @@ public partial class PooledBufferBuilderTests
     /// after the builder has been disposed.
     /// </summary>
     [TestMethod]
-    public void GetSpan_WhenDisposed_ShouldThrowObjectDisposedException()
+    public void GetSpan_WhenDisposed_ShouldThrowExactly()
     {
         var builder = new PooledBufferBuilder<int>();
         builder.Dispose();
@@ -253,7 +253,7 @@ public partial class PooledBufferBuilderTests
     /// when the size hint is negative.
     /// </summary>
     [TestMethod]
-    public void GetSpan_WhenSizeHintIsNegative_ShouldThrowArgumentOutOfRangeException()
+    public void GetSpan_WhenSizeHintIsNegative_ShouldThrowExactly()
     {
         using var builder = new PooledBufferBuilder<int>();
 

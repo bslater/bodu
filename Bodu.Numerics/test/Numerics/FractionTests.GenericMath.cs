@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FractionTests.GenericMath.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -275,7 +275,7 @@ public partial class FractionTests
     /// Verifies that the checked conversion contract throws for a value outside the destination range.
     /// </summary>
     [TestMethod]
-    public void GenericMath_WhenCheckedConversionOverflowsDestination_ShouldThrowOverflowException()
+    public void GenericMath_WhenCheckedConversionOverflowsDestination_ShouldThrowExactly()
     {
         _ = Assert.ThrowsExactly<OverflowException>(() =>
         {

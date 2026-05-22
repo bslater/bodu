@@ -124,7 +124,7 @@ public sealed partial class NotableDateFilterTests
     /// <paramref name="tag" /> consists solely of whitespace.
     /// </summary>
     [TestMethod]
-    public void WithTag_WhenTagIsWhitespace_ShouldThrowArgumentException()
+    public void WithTag_WhenTagIsWhitespace_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -137,7 +137,7 @@ public sealed partial class NotableDateFilterTests
     /// the tags array is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void WithAnyTag_WhenTagsIsNull_ShouldThrowArgumentNullException()
+    public void WithAnyTag_WhenTagsIsNull_ShouldThrowExactly()
     {
         string[] tags = null!;
 
@@ -152,7 +152,7 @@ public sealed partial class NotableDateFilterTests
     /// the tags array contains no elements.
     /// </summary>
     [TestMethod]
-    public void WithAnyTag_WhenTagsIsEmpty_ShouldThrowArgumentException()
+    public void WithAnyTag_WhenTagsIsEmpty_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -165,7 +165,7 @@ public sealed partial class NotableDateFilterTests
     /// the tags array is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void WithAllTags_WhenTagsIsNull_ShouldThrowArgumentNullException()
+    public void WithAllTags_WhenTagsIsNull_ShouldThrowExactly()
     {
         string[] tags = null!;
 
@@ -180,7 +180,7 @@ public sealed partial class NotableDateFilterTests
     /// the tags array contains no elements.
     /// </summary>
     [TestMethod]
-    public void WithAllTags_WhenTagsIsEmpty_ShouldThrowArgumentException()
+    public void WithAllTags_WhenTagsIsEmpty_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -193,7 +193,7 @@ public sealed partial class NotableDateFilterTests
     /// <paramref name="name" /> consists solely of whitespace.
     /// </summary>
     [TestMethod]
-    public void WithName_WhenNameIsWhitespace_ShouldThrowArgumentException()
+    public void WithName_WhenNameIsWhitespace_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -206,7 +206,7 @@ public sealed partial class NotableDateFilterTests
     /// the names array is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void WithAnyName_WhenNamesIsNull_ShouldThrowArgumentNullException()
+    public void WithAnyName_WhenNamesIsNull_ShouldThrowExactly()
     {
         string[] names = null!;
 
@@ -221,7 +221,7 @@ public sealed partial class NotableDateFilterTests
     /// the names array contains no elements.
     /// </summary>
     [TestMethod]
-    public void WithAnyName_WhenNamesIsEmpty_ShouldThrowArgumentException()
+    public void WithAnyName_WhenNamesIsEmpty_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -234,7 +234,7 @@ public sealed partial class NotableDateFilterTests
     /// the filters array is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void AllOf_WhenFiltersIsNull_ShouldThrowArgumentNullException()
+    public void AllOf_WhenFiltersIsNull_ShouldThrowExactly()
     {
         NotableDateFilter[] filters = null!;
 
@@ -249,7 +249,7 @@ public sealed partial class NotableDateFilterTests
     /// the filters array is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void AnyOf_WhenFiltersIsNull_ShouldThrowArgumentNullException()
+    public void AnyOf_WhenFiltersIsNull_ShouldThrowExactly()
     {
         NotableDateFilter[] filters = null!;
 
@@ -264,7 +264,7 @@ public sealed partial class NotableDateFilterTests
     /// when <paramref name="minimumDays" /> is negative.
     /// </summary>
     [TestMethod]
-    public void WithMinDuration_WhenMinimumDaysIsNegative_ShouldThrowArgumentOutOfRangeException()
+    public void WithMinDuration_WhenMinimumDaysIsNegative_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

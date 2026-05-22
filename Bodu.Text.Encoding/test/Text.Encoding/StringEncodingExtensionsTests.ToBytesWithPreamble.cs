@@ -44,7 +44,7 @@ public sealed partial class StringEncodingExtensionsTests
     /// throws <see cref="ArgumentNullException" /> when <c>text</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void ToBytesWithPreamble_WhenTextIsNull_ShouldThrowArgumentNullException()
+    public void ToBytesWithPreamble_WhenTextIsNull_ShouldThrowExactly()
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -59,7 +59,7 @@ public sealed partial class StringEncodingExtensionsTests
     /// throws <see cref="ArgumentNullException" /> when <c>encoding</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void ToBytesWithPreamble_WhenEncodingIsNull_ShouldThrowArgumentNullException()
+    public void ToBytesWithPreamble_WhenEncodingIsNull_ShouldThrowExactly()
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

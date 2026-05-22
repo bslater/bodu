@@ -77,7 +77,7 @@ public partial class StringExtensionsTests
     /// <see cref="ArgumentNullException" /> when <c>value</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void SliceSafe_WhenValueIsNull_ShouldThrowArgumentNullException()
+    public void SliceSafe_WhenValueIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() => _ = StringExtensions.SliceSafe(null!, 0));
         Assert.ThrowsExactly<ArgumentNullException>(() => _ = StringExtensions.SliceSafe(null!, 0, 5));

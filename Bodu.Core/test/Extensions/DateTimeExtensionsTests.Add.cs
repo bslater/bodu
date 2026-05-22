@@ -120,7 +120,7 @@ public partial class DateTimeExtensionsTests
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(GetAddExceptionCases))]
-    public void Add_WhenOutOfRange_ShouldThrowArgumentOutOfRangeException(DateTime input, int years, int months, double days)
+    public void Add_WhenOutOfRange_ShouldThrowExactly(DateTime input, int years, int months, double days)
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

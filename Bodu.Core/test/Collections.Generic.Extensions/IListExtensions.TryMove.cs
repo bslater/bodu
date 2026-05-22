@@ -100,7 +100,7 @@ public sealed partial class IListExtensionsTests_TryMove
     /// Verifies that <c>TryMove</c> throws <see cref="ArgumentNullException" /> when the list is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void TryMove_WhenListIsNull_ShouldThrowArgumentNullException()
+    public void TryMove_WhenListIsNull_ShouldThrowExactly()
     {
         IList<int>? list = null;
 

@@ -24,7 +24,7 @@ public partial class IndexedSetTests
     /// Verifies that <see cref="IndexedSet{T}.IndexOf(T)" /> rejects a <see langword="null" /> item.
     /// </summary>
     [TestMethod]
-    public void IndexOf_WhenItemIsNull_ShouldThrowArgumentNullException()
+    public void IndexOf_WhenItemIsNull_ShouldThrowExactly()
     {
         var sut = new IndexedSet<string>();
 

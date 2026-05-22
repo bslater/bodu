@@ -217,7 +217,7 @@ public partial class NotableDateRuleJsonParserTests
     /// as <see cref="JsonException" /> via the <c>atMostOneStrategy</c> clause.
     /// </summary>
     [TestMethod]
-    public void ParseDocument_WhenOverrideHasMultipleStrategies_ShouldThrowJsonException()
+    public void ParseDocument_WhenOverrideHasMultipleStrategies_ShouldThrowExactly()
     {
         const string json = @"{
 			""useFrom"": [ {
@@ -301,7 +301,7 @@ public partial class NotableDateRuleJsonParserTests
     /// <see cref="InvalidOperationException" />.
     /// </summary>
     [TestMethod]
-    public void ParseDocument_WhenOverrideHasDuplicateAdjustmentKeys_ShouldThrowInvalidOperationException()
+    public void ParseDocument_WhenOverrideHasDuplicateAdjustmentKeys_ShouldThrowExactly()
     {
         const string json = @"{
 			""useFrom"": [ {
@@ -424,7 +424,7 @@ public partial class NotableDateRuleJsonParserTests
     /// validation as <see cref="JsonException" /> via the <c>useFrom.required</c> clause.
     /// </summary>
     [TestMethod]
-    public void ParseDocument_WhenUseFromResourceIsMissing_ShouldThrowJsonException()
+    public void ParseDocument_WhenUseFromResourceIsMissing_ShouldThrowExactly()
     {
         const string json = @"{
 			""useFrom"": [ { ""uses"": [ { ""name"": ""Anything"" } ] } ]
@@ -441,7 +441,7 @@ public partial class NotableDateRuleJsonParserTests
     /// as <see cref="JsonException" /> via the <c>use.required</c> clause.
     /// </summary>
     [TestMethod]
-    public void ParseDocument_WhenUseDirectiveNameIsMissing_ShouldThrowJsonException()
+    public void ParseDocument_WhenUseDirectiveNameIsMissing_ShouldThrowExactly()
     {
         const string json = @"{
 			""useFrom"": [ {

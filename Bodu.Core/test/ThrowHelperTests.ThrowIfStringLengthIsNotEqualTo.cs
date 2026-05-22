@@ -51,7 +51,7 @@ public partial class ThrowHelperTests
     [DataRow("abcdef", 5)] // longer than expected
     [DataRow("", 1)]       // empty but 1 expected
     [DataRow("ab", 0)]     // non-empty but 0 expected
-    public void ThrowIfStringLengthIsNotEqualTo_WhenLengthDiffers_ShouldThrowArgumentException(string value, int expectedLength)
+    public void ThrowIfStringLengthIsNotEqualTo_WhenLengthDiffers_ShouldThrowExactly(string value, int expectedLength)
     {
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -76,7 +76,7 @@ public partial class ThrowHelperTests
     /// <see cref="ArgumentNullException" /> when the string value is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void ThrowIfStringLengthIsNotEqualTo_WhenValueIsNull_ShouldThrowArgumentNullException()
+    public void ThrowIfStringLengthIsNotEqualTo_WhenValueIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

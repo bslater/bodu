@@ -13,7 +13,7 @@ public partial class IComparableExtensionsTests
     /// Verifies that a null comparer throws <see cref="ArgumentNullException"/>.
     /// </summary>
     [TestMethod]
-    public void IsEqualTo_WhenComparerIsNull_ShouldThrowArgumentNullException()
+    public void IsEqualTo_WhenComparerIsNull_ShouldThrowExactly()
     {
         IComparer<int>? comparer = null;
 

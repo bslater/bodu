@@ -15,7 +15,7 @@ public partial class BlockNonCryptographicHashAlgorithmTests
     /// supplied block size is negative.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenBlockSizeIsNegative_ShouldThrowArgumentOutOfRangeException()
+    public void Ctor_WhenBlockSizeIsNegative_ShouldThrowExactly()
     {
         ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new NegativeBlockSizeHasher());
         Assert.AreEqual("blockSize", ex.ParamName);
@@ -26,7 +26,7 @@ public partial class BlockNonCryptographicHashAlgorithmTests
     /// supplied block size is zero.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenBlockSizeIsZero_ShouldThrowArgumentOutOfRangeException()
+    public void Ctor_WhenBlockSizeIsZero_ShouldThrowExactly()
     {
         ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new InvalidBlockSizeHasher());
         Assert.AreEqual("blockSize", ex.ParamName);

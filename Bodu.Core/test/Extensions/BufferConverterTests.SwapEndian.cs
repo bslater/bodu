@@ -47,7 +47,7 @@ public partial class BufferConverterTests
     /// Verifies that a destination shorter than the source throws an appropriate exception.
     /// </summary>
     [TestMethod]
-    public void SwapEndian_WhenDestinationIsShorterThanSource_ForByteSpans_ShouldThrowArgumentOutOfRangeException()
+    public void SwapEndian_WhenDestinationIsShorterThanSource_ForByteSpans_ShouldThrowExactly()
     {
         var source = new byte[8];
         var destination = new byte[4];
@@ -65,7 +65,7 @@ public partial class BufferConverterTests
     [DataRow(0, DisplayName = "Element size zero")]
     [DataRow(1, DisplayName = "Element size one")]
     [DataRow(-1, DisplayName = "Negative element size")]
-    public void SwapEndian_WhenElementSizeIsInvalid_ForByteSpans_ShouldThrowArgumentOutOfRangeException(int elementSize)
+    public void SwapEndian_WhenElementSizeIsInvalid_ForByteSpans_ShouldThrowExactly(int elementSize)
     {
         byte[] source = [0x01, 0x02, 0x03, 0x04];
         var destination = new byte[source.Length];
@@ -109,7 +109,7 @@ public partial class BufferConverterTests
     /// Verifies that source or destination lengths that are not a positive multiple of the element size throw <see cref="ArgumentException" />.
     /// </summary>
     [TestMethod]
-    public void SwapEndian_WhenSourceLengthIsNotMultipleOfElementSize_ForByteSpans_ShouldThrowArgumentException()
+    public void SwapEndian_WhenSourceLengthIsNotMultipleOfElementSize_ForByteSpans_ShouldThrowExactly()
     {
         var source = new byte[5];
         var destination = new byte[8];

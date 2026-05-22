@@ -19,7 +19,7 @@ public partial class MultisetTests
     /// Verifies that the non-generic <c>ICollection.CopyTo</c> throws <see cref="ArgumentException"/> when the array is multidimensional.
     /// </summary>
     [TestMethod]
-    public void ICollectionCopyTo_WhenArrayIsMultidimensional_ShouldThrowArgumentException()
+    public void ICollectionCopyTo_WhenArrayIsMultidimensional_ShouldThrowExactly()
     {
         ICollection mvd = new Multiset<int>();
 
@@ -37,7 +37,7 @@ public partial class MultisetTests
     /// Verifies that the non-generic <c>ICollection.CopyTo</c> throws <see cref="ArgumentNullException"/> when the array is <see langword="null"/>.
     /// </summary>
     [TestMethod]
-    public void ICollectionCopyTo_WhenArrayIsNull_ShouldThrowArgumentNullException()
+    public void ICollectionCopyTo_WhenArrayIsNull_ShouldThrowExactly()
     {
         ICollection mvd = new Multiset<int>();
         ((Multiset<int>)mvd).Add(1);
@@ -56,7 +56,7 @@ public partial class MultisetTests
     /// Verifies that the non-generic <c>ICollection.CopyTo</c> throws <see cref="ArgumentException"/> when the destination array is too small.
     /// </summary>
     [TestMethod]
-    public void ICollectionCopyTo_WhenArrayIsTooSmall_ShouldThrowArgumentException()
+    public void ICollectionCopyTo_WhenArrayIsTooSmall_ShouldThrowExactly()
     {
         var multiset = new Multiset<int>();
         multiset.Add(1);
@@ -78,7 +78,7 @@ public partial class MultisetTests
     /// Verifies that the non-generic <c>ICollection.CopyTo</c> throws <see cref="ArgumentException"/> when the destination array has an incompatible element type.
     /// </summary>
     [TestMethod]
-    public void ICollectionCopyTo_WhenElementTypeIsIncompatible_ShouldThrowArgumentException()
+    public void ICollectionCopyTo_WhenElementTypeIsIncompatible_ShouldThrowExactly()
     {
         var multiset = new Multiset<string>();
         multiset.Add("hello");
@@ -98,7 +98,7 @@ public partial class MultisetTests
     /// Verifies that the non-generic <c>ICollection.CopyTo</c> throws <see cref="ArgumentOutOfRangeException"/> when the index is negative.
     /// </summary>
     [TestMethod]
-    public void ICollectionCopyTo_WhenIndexIsNegative_ShouldThrowArgumentOutOfRangeException()
+    public void ICollectionCopyTo_WhenIndexIsNegative_ShouldThrowExactly()
     {
         ICollection mvd = new Multiset<int>();
 

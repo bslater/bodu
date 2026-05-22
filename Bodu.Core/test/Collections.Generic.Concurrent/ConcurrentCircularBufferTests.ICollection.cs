@@ -54,7 +54,7 @@ public partial class ConcurrentCircularBufferTests
     /// Verifies that <see cref="ConcurrentCircularBuffer{T}.CopyTo" /> throws ArgumentException when the destination is a multidimensional array.
     /// </summary>
     [TestMethod]
-    public void ICollection_CopyTo_WhenArrayIsMultiDimensional_ShouldThrowException()
+    public void ICollection_CopyTo_WhenArrayIsMultiDimensional_ShouldThrowExactly()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(2);
         buffer.Enqueue(new TestItem(1));
@@ -69,7 +69,7 @@ public partial class ConcurrentCircularBufferTests
     /// Verifies that <see cref="ConcurrentCircularBuffer{T}.CopyTo" /> throws ArgumentException when the destination array has a non-zero lower bound.
     /// </summary>
     [TestMethod]
-    public void ICollection_CopyTo_WhenArrayIsNotZeroBased_ShouldThrowException()
+    public void ICollection_CopyTo_WhenArrayIsNotZeroBased_ShouldThrowExactly()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(2);
         buffer.Enqueue(new TestItem(1));
@@ -84,7 +84,7 @@ public partial class ConcurrentCircularBufferTests
     /// Verifies that <see cref="ConcurrentCircularBuffer{T}.CopyTo" /> throws ArgumentNullException when the destination array is null.
     /// </summary>
     [TestMethod]
-    public void ICollection_CopyTo_WhenArrayIsNull_ShouldThrowException()
+    public void ICollection_CopyTo_WhenArrayIsNull_ShouldThrowExactly()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(2);
         buffer.Enqueue(new TestItem(1));
@@ -98,7 +98,7 @@ public partial class ConcurrentCircularBufferTests
     /// Verifies that <see cref="ConcurrentCircularBuffer{T}.CopyTo" /> throws ArgumentException when the destination array is too small to hold all elements.
     /// </summary>
     [TestMethod]
-    public void ICollection_CopyTo_WhenArrayIsTooSmall_ShouldThrowException()
+    public void ICollection_CopyTo_WhenArrayIsTooSmall_ShouldThrowExactly()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(2);
         buffer.Enqueue(new TestItem(1));
@@ -114,7 +114,7 @@ public partial class ConcurrentCircularBufferTests
     /// Verifies that <see cref="ConcurrentCircularBuffer{T}.CopyTo" /> throws ArgumentException when the destination array element type is incompatible with the buffer element type.
     /// </summary>
     [TestMethod]
-    public void ICollection_CopyTo_WhenArrayIsWrongType_ShouldThrowException()
+    public void ICollection_CopyTo_WhenArrayIsWrongType_ShouldThrowExactly()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(2);
         buffer.Enqueue(new TestItem(1));
@@ -189,7 +189,7 @@ public partial class ConcurrentCircularBufferTests
     /// Verifies that <see cref="ConcurrentCircularBuffer{T}.CopyTo" /> throws ArgumentException when the target index equals the array length, leaving no addressable position.
     /// </summary>
     [TestMethod]
-    public void ICollection_CopyTo_WhenIndexEqualsArrayLength_ShouldThrowException()
+    public void ICollection_CopyTo_WhenIndexEqualsArrayLength_ShouldThrowExactly()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(3);
         buffer.Enqueue(new TestItem(1));
@@ -206,7 +206,7 @@ public partial class ConcurrentCircularBufferTests
     /// Verifies that <see cref="ConcurrentCircularBuffer{T}.CopyTo" /> throws ArgumentOutOfRangeException when the target index is negative.
     /// </summary>
     [TestMethod]
-    public void ICollection_CopyTo_WhenIndexIsNegative_ShouldThrowException()
+    public void ICollection_CopyTo_WhenIndexIsNegative_ShouldThrowExactly()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(2);
         buffer.Enqueue(new TestItem(1));
@@ -242,7 +242,7 @@ public partial class ConcurrentCircularBufferTests
     /// Verifies that <see cref="ConcurrentCircularBuffer{T}.CopyTo" /> throws ArgumentException when the target index offset leaves insufficient space for all elements.
     /// </summary>
     [TestMethod]
-    public void ICollection_CopyTo_WhenIndexOffsetLeavesInsufficientSpace_ShouldThrowException()
+    public void ICollection_CopyTo_WhenIndexOffsetLeavesInsufficientSpace_ShouldThrowExactly()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(3);
         buffer.Enqueue(new TestItem(1));

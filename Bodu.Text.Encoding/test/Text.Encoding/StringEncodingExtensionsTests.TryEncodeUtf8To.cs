@@ -45,7 +45,7 @@ public sealed partial class StringEncodingExtensionsTests
     /// throws <see cref="ArgumentNullException" /> when <c>text</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void TryEncodeUtf8To_WhenTextIsNull_ShouldThrowArgumentNullException()
+    public void TryEncodeUtf8To_WhenTextIsNull_ShouldThrowExactly()
     {
         var backing = new byte[64];
 

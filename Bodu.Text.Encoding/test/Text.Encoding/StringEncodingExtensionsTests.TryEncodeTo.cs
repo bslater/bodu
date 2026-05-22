@@ -47,7 +47,7 @@ public sealed partial class StringEncodingExtensionsTests
     /// throws <see cref="ArgumentNullException" /> when <c>text</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void TryEncodeTo_WhenTextIsNull_ShouldThrowArgumentNullException()
+    public void TryEncodeTo_WhenTextIsNull_ShouldThrowExactly()
     {
         var backing = new byte[64];
 
@@ -65,7 +65,7 @@ public sealed partial class StringEncodingExtensionsTests
     /// throws <see cref="ArgumentNullException" /> when <c>encoding</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void TryEncodeTo_WhenEncodingIsNull_ShouldThrowArgumentNullException()
+    public void TryEncodeTo_WhenEncodingIsNull_ShouldThrowExactly()
     {
         var backing = new byte[64];
 

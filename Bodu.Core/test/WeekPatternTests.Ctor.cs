@@ -58,7 +58,7 @@ public partial class WeekPatternTests
     [DataRow(-1)]
     [DataRow(7)]
     [DataRow(99)]
-    public void Ctor_WhenInvalidDayOfWeekProvided_ShouldThrowArgumentOutOfRangeException(int invalidDay)
+    public void Ctor_WhenInvalidDayOfWeekProvided_ShouldThrowExactly(int invalidDay)
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -91,7 +91,7 @@ public partial class WeekPatternTests
     /// <see langword="null" /> string is provided.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenNullStringProvided_ShouldThrowException()
+    public void Ctor_WhenNullStringProvided_ShouldThrowExactly()
     {
         string input = null;
         Assert.ThrowsExactly<ArgumentNullException>(() =>

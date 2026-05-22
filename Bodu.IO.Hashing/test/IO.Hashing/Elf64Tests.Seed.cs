@@ -35,7 +35,7 @@ public partial class Elf64Tests
     /// <see cref="CryptographicUnexpectedOperationException" />.
     /// </summary>
     [TestMethod]
-    public void Seed_WhenSetAfterHashingStarted_ShouldThrow()
+    public void Seed_WhenSetAfterHashingStarted_ShouldThrowExactly()
     {
         Elf64 algorithm = new();
         algorithm.Append(new byte[] { 1, 2, 3 });

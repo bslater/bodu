@@ -49,7 +49,7 @@ public partial class NumericExtensionsTests
     /// <see cref="ArgumentException" /> when the input array is empty (length 0 is not a positive multiple of 2).
     /// </summary>
     [TestMethod]
-    public void ReverseWords_WhenByteArrayIsEmpty_ShouldThrowException() =>
+    public void ReverseWords_WhenByteArrayIsEmpty_ShouldThrowExactly() =>
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
             Array.Empty<byte>().ReverseWords();
@@ -64,7 +64,7 @@ public partial class NumericExtensionsTests
     /// <see cref="ArgumentNullException" /> when the input array is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void ReverseWords_WhenByteArrayIsNull_ShouldThrowException() =>
+    public void ReverseWords_WhenByteArrayIsNull_ShouldThrowExactly() =>
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             ((byte[])null!).ReverseWords();
@@ -121,7 +121,7 @@ public partial class NumericExtensionsTests
     [TestMethod]
     [DataRow(new byte[] { 0x01 })]          // length 1 — odd
     [DataRow(new byte[] { 0x01, 0x02, 0x03 })] // length 3 — odd
-    public void ReverseWords_WhenByteArrayLengthIsOdd_ShouldThrowArgumentException(byte[] bytes) =>
+    public void ReverseWords_WhenByteArrayLengthIsOdd_ShouldThrowExactly(byte[] bytes) =>
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
             bytes.ReverseWords();
@@ -132,7 +132,7 @@ public partial class NumericExtensionsTests
     /// <see cref="ArgumentException" /> when the span is empty.
     /// </summary>
     [TestMethod]
-    public void ReverseWords_WhenSpanIsEmpty_ShouldThrowException() =>
+    public void ReverseWords_WhenSpanIsEmpty_ShouldThrowExactly() =>
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
             Span<byte>.Empty.ReverseWords();
@@ -169,7 +169,7 @@ public partial class NumericExtensionsTests
     [TestMethod]
     [DataRow(new byte[] { 0x01 })]
     [DataRow(new byte[] { 0x01, 0x02, 0x03 })]
-    public void ReverseWords_WhenSpanLengthIsOdd_ShouldThrowArgumentException(byte[] bytes) =>
+    public void ReverseWords_WhenSpanLengthIsOdd_ShouldThrowExactly(byte[] bytes) =>
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
             bytes.AsSpan().ReverseWords();

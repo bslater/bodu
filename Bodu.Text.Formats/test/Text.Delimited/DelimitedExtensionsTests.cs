@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DelimitedExtensionsTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -137,7 +137,7 @@ public sealed class DelimitedExtensionsTests
     /// <see cref="ArgumentNullException" /> when the receiver is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void FormatDelimited_WhenDocumentIsNull_ShouldThrowArgumentNullException()
+    public void FormatDelimited_WhenDocumentIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

@@ -20,7 +20,7 @@ public partial class FiscalWeekQuarterProviderTests
     /// </summary>
     [TestMethod]
 #pragma warning disable CS0618 // intentional: we verify the obsolete overload still throws
-    public void GetQuarterEnd_ObsoleteSingleArgOverload_ShouldThrowNotSupportedException() => Assert.ThrowsExactly<NotSupportedException>(() => s_sunday52.GetQuarterEnd(1));
+    public void GetQuarterEnd_ObsoleteSingleArgOverload_ShouldThrowExactly() => Assert.ThrowsExactly<NotSupportedException>(() => s_sunday52.GetQuarterEnd(1));
 #pragma warning restore CS0618
 
     // -----------------------------------------------------------------------
@@ -189,7 +189,7 @@ public partial class FiscalWeekQuarterProviderTests
     [TestMethod]
     [DataRow(5)]
     [DataRow(100)]
-    public void GetQuarterEnd_WhenQuarterIsAboveValidRange_ShouldThrowArgumentOutOfRangeException(int quarter)
+    public void GetQuarterEnd_WhenQuarterIsAboveValidRange_ShouldThrowExactly(int quarter)
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
             s_sunday52.GetQuarterEnd(quarter, Sunday52FiscalYear));
@@ -202,7 +202,7 @@ public partial class FiscalWeekQuarterProviderTests
     [TestMethod]
     [DataRow(0)]
     [DataRow(-1)]
-    public void GetQuarterEnd_WhenQuarterIsBelowValidRange_ShouldThrowArgumentOutOfRangeException(int quarter)
+    public void GetQuarterEnd_WhenQuarterIsBelowValidRange_ShouldThrowExactly(int quarter)
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
             s_sunday52.GetQuarterEnd(quarter, Sunday52FiscalYear));

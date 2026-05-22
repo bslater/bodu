@@ -40,7 +40,7 @@ public sealed partial class Base16Tests
     /// continues with non-hex characters after the prefix.
     /// </summary>
     [TestMethod]
-    public void Decode_WhenAllowPrefixAndInvalidCharsAfterPrefix_ShouldThrowFormatException()
+    public void Decode_WhenAllowPrefixAndInvalidCharsAfterPrefix_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<FormatException>(() =>
         {
@@ -64,7 +64,7 @@ public sealed partial class Base16Tests
     /// no following <c>x</c>, in the presence of no other content).
     /// </summary>
     [TestMethod]
-    public void Decode_WhenAllowPrefixAndOnlyLeadingZeroPresent_ShouldThrowFormatExceptionForOddDigitCount()
+    public void Decode_WhenAllowPrefixAndOnlyLeadingZeroPresent_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<FormatException>(() =>
         {
@@ -118,7 +118,7 @@ public sealed partial class Base16Tests
     /// non-breaking space; such input is rejected as invalid.
     /// </summary>
     [TestMethod]
-    public void Decode_WhenIgnoreWhitespaceAndNonAsciiWhitespace_ShouldThrowFormatException()
+    public void Decode_WhenIgnoreWhitespaceAndNonAsciiWhitespace_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<FormatException>(() =>
         {
@@ -136,7 +136,7 @@ public sealed partial class Base16Tests
     [DataRow(' ')] // em space
     [DataRow('​')] // zero-width space
     [DataRow('　')] // ideographic space
-    public void Decode_WhenIgnoreWhitespaceAndNonAsciiWhitespaceCharacter_ShouldThrowFormatException(char whitespaceChar)
+    public void Decode_WhenIgnoreWhitespaceAndNonAsciiWhitespaceCharacter_ShouldThrowExactly(char whitespaceChar)
     {
         var input = "DE" + whitespaceChar + "AD";
 
@@ -183,7 +183,7 @@ public sealed partial class Base16Tests
     /// Verifies that strict mode rejects whitespace anywhere in the input.
     /// </summary>
     [TestMethod]
-    public void Decode_WhenStrictAndWhitespacePresent_ShouldThrowFormatException()
+    public void Decode_WhenStrictAndWhitespacePresent_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<FormatException>(() =>
         {

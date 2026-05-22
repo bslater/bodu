@@ -37,7 +37,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     /// <see cref="ArgumentNullException" /> when the algorithm is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public async Task ComputeHashAsync_WhenAlgorithmIsNull_ShouldThrowArgumentNullException()
+    public async Task ComputeHashAsync_WhenAlgorithmIsNull_ShouldThrowExactly()
     {
         NonCryptographicHashAlgorithm? algorithm = null;
         using MemoryStream stream = new(s_sampleData);
@@ -50,7 +50,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     /// Verifies that a negative <paramref name="bufferSize" /> throws <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    public async Task ComputeHashAsync_WhenBufferSizeIsNegative_ShouldThrowArgumentOutOfRangeException()
+    public async Task ComputeHashAsync_WhenBufferSizeIsNegative_ShouldThrowExactly()
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
         using MemoryStream stream = new(s_sampleData);
@@ -63,7 +63,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     /// Verifies that a zero <paramref name="bufferSize" /> throws <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    public async Task ComputeHashAsync_WhenBufferSizeIsZero_ShouldThrowArgumentOutOfRangeException()
+    public async Task ComputeHashAsync_WhenBufferSizeIsZero_ShouldThrowExactly()
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
         using MemoryStream stream = new(s_sampleData);
@@ -140,7 +140,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     /// <see cref="OperationCanceledException" />.
     /// </summary>
     [TestMethod]
-    public async Task ComputeHashAsync_WhenCancellationTriggeredMidStream_ShouldThrowOperationCanceledException()
+    public async Task ComputeHashAsync_WhenCancellationTriggeredMidStream_ShouldThrowExactly()
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
         using CancellationTokenSource cts = new();
@@ -219,7 +219,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     /// <see cref="ArgumentNullException" /> when the source stream is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public async Task ComputeHashAsync_WhenStreamIsNull_ShouldThrowArgumentNullException()
+    public async Task ComputeHashAsync_WhenStreamIsNull_ShouldThrowExactly()
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
 
@@ -234,7 +234,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     /// <see cref="OperationCanceledException" /> when the token is already cancelled before the call.
     /// </summary>
     [TestMethod]
-    public async Task ComputeHashAsync_WhenTokenAlreadyCancelled_ShouldThrowOperationCanceledException()
+    public async Task ComputeHashAsync_WhenTokenAlreadyCancelled_ShouldThrowExactly()
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
         using MemoryStream stream = new(s_sampleData);

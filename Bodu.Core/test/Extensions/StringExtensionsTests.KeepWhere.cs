@@ -51,7 +51,7 @@ public partial class StringExtensionsTests
     /// <see cref="ArgumentNullException" /> for null arguments.
     /// </summary>
     [TestMethod]
-    public void KeepWhere_WhenAnyArgumentIsNull_ShouldThrowArgumentNullException()
+    public void KeepWhere_WhenAnyArgumentIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() => _ = StringExtensions.KeepWhere(null!, char.IsDigit));
         Assert.ThrowsExactly<ArgumentNullException>(() => _ = "hello".KeepWhere(null!));

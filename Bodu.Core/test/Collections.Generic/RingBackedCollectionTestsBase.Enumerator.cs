@@ -13,7 +13,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     /// Verifies that <see cref="AddToTail(TCollection, int)"/> during iteration invalidates the enumerator.
     /// </summary>
     [TestMethod]
-    public void Enumerator_WhenAddToTailCalledDuringIteration_ShouldThrowOnMoveNext()
+    public void Enumerator_WhenAddToTailCalledDuringIteration_ShouldThrowExactly()
     {
         TCollection collection = CreateCollection(5);
         AddToTail(collection, 1);
@@ -30,7 +30,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     /// Verifies that <see cref="Clear(TCollection)"/> during iteration invalidates the enumerator.
     /// </summary>
     [TestMethod]
-    public void Enumerator_WhenClearCalledDuringIteration_ShouldThrowOnMoveNext()
+    public void Enumerator_WhenClearCalledDuringIteration_ShouldThrowExactly()
     {
         TCollection collection = CreateCollection(5);
         AddToTail(collection, 1);
@@ -94,7 +94,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     /// Verifies that the enumerator throws on <c>Reset</c> after mutation.
     /// </summary>
     [TestMethod]
-    public void Enumerator_WhenMutatedThenReset_ShouldThrowOnReset()
+    public void Enumerator_WhenMutatedThenReset_ShouldThrowExactly()
     {
         TCollection collection = CreateCollection(3);
         AddToTail(collection, 1);
@@ -109,7 +109,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     /// Verifies that <see cref="RemoveFromHead(TCollection)"/> during iteration invalidates the enumerator.
     /// </summary>
     [TestMethod]
-    public void Enumerator_WhenRemoveFromHeadCalledDuringIteration_ShouldThrowOnMoveNext()
+    public void Enumerator_WhenRemoveFromHeadCalledDuringIteration_ShouldThrowExactly()
     {
         TCollection collection = CreateCollection(5);
         AddToTail(collection, 1);

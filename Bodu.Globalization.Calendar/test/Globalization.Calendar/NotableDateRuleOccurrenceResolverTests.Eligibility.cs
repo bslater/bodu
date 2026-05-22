@@ -207,7 +207,7 @@ public sealed class NotableDateRuleOccurrenceResolverEligibilityTests
     /// produce empty results.
     /// </summary>
     [TestMethod]
-    public void ResolveOccurrences_WhenAnchorIsMissing_ShouldThrowInvalidOperationException()
+    public void ResolveOccurrences_WhenAnchorIsMissing_ShouldThrowExactly()
     {
         NotableDateRule orphanOffset = new()
         {

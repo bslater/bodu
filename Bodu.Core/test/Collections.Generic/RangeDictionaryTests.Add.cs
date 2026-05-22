@@ -30,7 +30,7 @@ public partial class RangeDictionaryTests
     /// Verifies that adding with a <see langword="null" /> end is rejected.
     /// </summary>
     [TestMethod]
-    public void Add_WhenEndIsNull_ShouldThrowArgumentNullException()
+    public void Add_WhenEndIsNull_ShouldThrowExactly()
     {
         var sut = new RangeDictionary<string, int>();
 
@@ -63,7 +63,7 @@ public partial class RangeDictionaryTests
     /// Verifies that adding a range that engulfs an existing range is rejected.
     /// </summary>
     [TestMethod]
-    public void Add_WhenRangeEngulfsExisting_ShouldThrowArgumentException()
+    public void Add_WhenRangeEngulfsExisting_ShouldThrowExactly()
     {
         RangeDictionary<int, string> sut = CreateDictionary((10, 20, "A"));
 
@@ -77,7 +77,7 @@ public partial class RangeDictionaryTests
     /// Verifies that adding a range fully contained within an existing range is rejected.
     /// </summary>
     [TestMethod]
-    public void Add_WhenRangeIsContainedByExisting_ShouldThrowArgumentException()
+    public void Add_WhenRangeIsContainedByExisting_ShouldThrowExactly()
     {
         RangeDictionary<int, string> sut = CreateDictionary((0, 100, "A"));
 
@@ -91,7 +91,7 @@ public partial class RangeDictionaryTests
     /// Verifies that adding an identical range is rejected.
     /// </summary>
     [TestMethod]
-    public void Add_WhenRangeMatchesExisting_ShouldThrowArgumentException()
+    public void Add_WhenRangeMatchesExisting_ShouldThrowExactly()
     {
         RangeDictionary<int, string> sut = CreateDictionary((0, 10, "A"));
 
@@ -109,7 +109,7 @@ public partial class RangeDictionaryTests
     /// Verifies that adding a range that overlaps the left edge of an existing range is rejected.
     /// </summary>
     [TestMethod]
-    public void Add_WhenRangeOverlapsLeftOfExisting_ShouldThrowArgumentException()
+    public void Add_WhenRangeOverlapsLeftOfExisting_ShouldThrowExactly()
     {
         RangeDictionary<int, string> sut = CreateDictionary((10, 20, "A"));
 
@@ -123,7 +123,7 @@ public partial class RangeDictionaryTests
     /// Verifies that adding a range that overlaps the right edge of an existing range is rejected.
     /// </summary>
     [TestMethod]
-    public void Add_WhenRangeOverlapsRightOfExisting_ShouldThrowArgumentException()
+    public void Add_WhenRangeOverlapsRightOfExisting_ShouldThrowExactly()
     {
         RangeDictionary<int, string> sut = CreateDictionary((10, 20, "A"));
 
@@ -168,7 +168,7 @@ public partial class RangeDictionaryTests
     [TestMethod]
     [DataRow(5, 5)]
     [DataRow(10, 5)]
-    public void Add_WhenStartIsNotLessThanEnd_ShouldThrowArgumentException(int start, int end)
+    public void Add_WhenStartIsNotLessThanEnd_ShouldThrowExactly(int start, int end)
     {
         var sut = new RangeDictionary<int, string>();
 
@@ -185,7 +185,7 @@ public partial class RangeDictionaryTests
     /// Verifies that adding with a <see langword="null" /> start is rejected.
     /// </summary>
     [TestMethod]
-    public void Add_WhenStartIsNull_ShouldThrowArgumentNullException()
+    public void Add_WhenStartIsNull_ShouldThrowExactly()
     {
         var sut = new RangeDictionary<string, int>();
 

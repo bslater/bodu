@@ -21,7 +21,7 @@ public sealed class Isbn10Tests
     /// <see cref="ArgumentOutOfRangeException" /> when the body contains a non-digit character.
     /// </summary>
     [TestMethod]
-    public void Compute_WhenBodyContainsInvalidCharacter_ShouldThrowArgumentOutOfRangeException()
+    public void Compute_WhenBodyContainsInvalidCharacter_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

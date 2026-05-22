@@ -47,7 +47,7 @@ public partial class StringExtensionsTests
     /// <see cref="ArgumentNullException" /> for null arguments.
     /// </summary>
     [TestMethod]
-    public void PrefixLines_WhenAnyArgumentIsNull_ShouldThrowArgumentNullException()
+    public void PrefixLines_WhenAnyArgumentIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() => _ = StringExtensions.PrefixLines(null!, ">"));
         Assert.ThrowsExactly<ArgumentNullException>(() => _ = "hello".PrefixLines(null!));

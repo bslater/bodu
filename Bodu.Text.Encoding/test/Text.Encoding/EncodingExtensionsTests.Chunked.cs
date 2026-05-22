@@ -73,7 +73,7 @@ public sealed partial class EncodingExtensionsTests
     /// throws <see cref="ArgumentNullException" /> when <c>encoder</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void EncodeChunk_WhenEncoderIsNull_ShouldThrowArgumentNullException()
+    public void EncodeChunk_WhenEncoderIsNull_ShouldThrowExactly()
     {
         var backing = new byte[16];
 
@@ -147,7 +147,7 @@ public sealed partial class EncodingExtensionsTests
     /// throws <see cref="ArgumentNullException" /> when <c>decoder</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void DecodeChunk_WhenDecoderIsNull_ShouldThrowArgumentNullException()
+    public void DecodeChunk_WhenDecoderIsNull_ShouldThrowExactly()
     {
         var backing = new char[16];
 

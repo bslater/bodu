@@ -162,7 +162,7 @@ public sealed partial class IEnumerableExtensionsTests_Cache
     /// Verifies that a source exception is propagated to the consumer at the position where it was thrown during the first enumeration.
     /// </summary>
     [TestMethod]
-    public void Cache_WhenSourceThrowsDuringEnumeration_ShouldThrowOnFirstEnumeration()
+    public void Cache_WhenSourceThrowsDuringEnumeration_ShouldThrowExactly()
     {
         // Arrange
         var source = new TrackingEnumerable<int>(ThrowingSequence());
@@ -218,7 +218,7 @@ public sealed partial class IEnumerableExtensionsTests_Cache
     /// Verifies that accessing <c>Current</c> after the enumerator has been exhausted throws <see cref="InvalidOperationException" />.
     /// </summary>
     [TestMethod]
-    public void Enumerator_Current_WhenAfterEnd_ShouldThrowException()
+    public void Enumerator_Current_WhenAfterEnd_ShouldThrowExactly()
     {
         IEnumerable<int> actual = YieldingSequence().Cache();
         IEnumerator<int> enumerator = actual.GetEnumerator();
@@ -237,7 +237,7 @@ public sealed partial class IEnumerableExtensionsTests_Cache
     /// Verifies that accessing <c>Current</c> before the first call to <c>MoveNext</c> throws <see cref="InvalidOperationException" />.
     /// </summary>
     [TestMethod]
-    public void Enumerator_Current_WhenBeforeMoveNext_ShouldThrowException()
+    public void Enumerator_Current_WhenBeforeMoveNext_ShouldThrowExactly()
     {
         IEnumerable<int> actual = YieldingSequence().Cache();
         IEnumerator<int> enumerator = actual.GetEnumerator();
@@ -255,7 +255,7 @@ public sealed partial class IEnumerableExtensionsTests_Cache
     /// Verifies that calling <c>Reset</c> on the enumerator throws <see cref="NotSupportedException" />.
     /// </summary>
     [TestMethod]
-    public void Enumerator_Reset_ShouldThrowException()
+    public void Enumerator_Reset_ShouldThrowExactly()
     {
         IEnumerable<int> actual = YieldingSequence().Cache();
         IEnumerator<int> enumerator = actual.GetEnumerator();

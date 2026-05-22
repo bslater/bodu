@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IEnumerableExtensions.ForEach.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -40,7 +40,7 @@ public sealed partial class IEnumerableExtensionsTests_ForEach
     /// <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void ForEach_WhenSourceIsNull_ShouldThrowArgumentNullException()
+    public void ForEach_WhenSourceIsNull_ShouldThrowExactly()
     {
         IEnumerable<int> source = null!;
 
@@ -55,7 +55,7 @@ public sealed partial class IEnumerableExtensionsTests_ForEach
     /// <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void ForEach_WhenActionIsNull_ShouldThrowArgumentNullException()
+    public void ForEach_WhenActionIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

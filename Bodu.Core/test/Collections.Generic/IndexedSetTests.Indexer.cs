@@ -20,7 +20,7 @@ public partial class IndexedSetTests
     [DataRow(3)]
     [DataRow(int.MaxValue)]
     [DataRow(int.MinValue)]
-    public void Indexer_Get_WhenIndexIsOutOfRange_ShouldThrowArgumentOutOfRangeException(int index)
+    public void Indexer_Get_WhenIndexIsOutOfRange_ShouldThrowExactly(int index)
     {
         IndexedSet<int> sut = CreateSet([1, 2, 3]);
 
@@ -55,7 +55,7 @@ public partial class IndexedSetTests
     [DataRow(-1)]
     [DataRow(3)]
     [DataRow(int.MaxValue)]
-    public void Indexer_Set_WhenIndexIsOutOfRange_ShouldThrowArgumentOutOfRangeException(int index)
+    public void Indexer_Set_WhenIndexIsOutOfRange_ShouldThrowExactly(int index)
     {
         IndexedSet<int> sut = CreateSet([1, 2, 3]);
 
@@ -69,7 +69,7 @@ public partial class IndexedSetTests
     /// Verifies that assigning a value that already exists at a different index throws <see cref="ArgumentException" />.
     /// </summary>
     [TestMethod]
-    public void Indexer_Set_WhenValueExistsAtAnotherIndex_ShouldThrowArgumentException()
+    public void Indexer_Set_WhenValueExistsAtAnotherIndex_ShouldThrowExactly()
     {
         IndexedSet<int> sut = CreateSet([1, 2, 3]);
 
@@ -119,7 +119,7 @@ public partial class IndexedSetTests
     /// <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void Indexer_Set_WhenValueIsNull_ShouldThrowArgumentNullException()
+    public void Indexer_Set_WhenValueIsNull_ShouldThrowExactly()
     {
         IndexedSet<string> sut = CreateSet(["a", "b"]);
 

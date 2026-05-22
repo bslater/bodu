@@ -76,7 +76,7 @@ public partial class RangeDictionaryTests
     /// Verifies that removing with a <see langword="null" /> end is rejected.
     /// </summary>
     [TestMethod]
-    public void Remove_WhenEndIsNull_ShouldThrowArgumentNullException()
+    public void Remove_WhenEndIsNull_ShouldThrowExactly()
     {
         var sut = new RangeDictionary<string, int>();
 
@@ -149,7 +149,7 @@ public partial class RangeDictionaryTests
     [TestMethod]
     [DataRow(5, 5)]
     [DataRow(10, 5)]
-    public void Remove_WhenStartIsNotLessThanEnd_ShouldThrowArgumentException(int start, int end)
+    public void Remove_WhenStartIsNotLessThanEnd_ShouldThrowExactly(int start, int end)
     {
         var sut = new RangeDictionary<int, string>();
 
@@ -166,7 +166,7 @@ public partial class RangeDictionaryTests
     /// Verifies that removing with a <see langword="null" /> start is rejected.
     /// </summary>
     [TestMethod]
-    public void Remove_WhenStartIsNull_ShouldThrowArgumentNullException()
+    public void Remove_WhenStartIsNull_ShouldThrowExactly()
     {
         var sut = new RangeDictionary<string, int>();
 

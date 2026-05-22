@@ -30,7 +30,7 @@ public sealed class NotableDateRangeResolutionCacheTests
     /// Verifies that <see cref="NotableDateRangeResolutionCache.Add" /> rejects a <see langword="null" /> entry.
     /// </summary>
     [TestMethod]
-    public void Add_WhenEntryIsNull_ShouldThrowArgumentNullException()
+    public void Add_WhenEntryIsNull_ShouldThrowExactly()
     {
         NotableDateRangeResolutionCache cache = new();
 

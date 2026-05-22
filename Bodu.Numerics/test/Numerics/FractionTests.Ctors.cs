@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FractionTests.Ctors.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -59,7 +59,7 @@ public partial class FractionTests
     /// <see cref="DivideByZeroException" />.
     /// </summary>
     [TestMethod]
-    public void Constructor_WhenDenominatorIsZero_ShouldThrowDivideByZeroException()
+    public void Constructor_WhenDenominatorIsZero_ShouldThrowExactly()
     {
         _ = Assert.ThrowsExactly<DivideByZeroException>(() =>
         {
@@ -188,7 +188,7 @@ public partial class FractionTests
     /// Verifies that Create throws DivideByZeroException for a zero denominator.
     /// </summary>
     [TestMethod]
-    public void Create_WhenDenominatorIsZero_ShouldThrowDivideByZeroException()
+    public void Create_WhenDenominatorIsZero_ShouldThrowExactly()
     {
         _ = Assert.ThrowsExactly<DivideByZeroException>(() =>
         {
@@ -222,7 +222,7 @@ public partial class FractionTests
     /// Verifies that FromBigInteger throws DivideByZeroException for a zero denominator.
     /// </summary>
     [TestMethod]
-    public void FromBigInteger_WhenDenominatorIsZero_ShouldThrowDivideByZeroException()
+    public void FromBigInteger_WhenDenominatorIsZero_ShouldThrowExactly()
     {
         _ = Assert.ThrowsExactly<DivideByZeroException>(() =>
         {

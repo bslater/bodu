@@ -105,14 +105,14 @@ public partial class WeekPatternTests
     /// <see cref="FormatException" /> when a binary input contains an invalid character.
     /// </summary>
     [TestMethod]
-    public void ParseExact_WhenBinaryInputContainsInvalidCharacter_ShouldThrowException() => Assert.ThrowsExactly<FormatException>(() => { _ = WeekPattern.ParseExact("0111X10", "0"); });
+    public void ParseExact_WhenBinaryInputContainsInvalidCharacter_ShouldThrowExactly() => Assert.ThrowsExactly<FormatException>(() => { _ = WeekPattern.ParseExact("0111X10", "0"); });
 
     /// <summary>
     /// Verifies that <see cref="WeekPattern.ParseExact(string, string)" /> throws
     /// <see cref="FormatException" /> when the format string is empty.
     /// </summary>
     [TestMethod]
-    public void ParseExact_WhenFormatIsEmpty_ShouldThrowException() => Assert.ThrowsExactly<FormatException>(() => { _ = WeekPattern.ParseExact("_M_W_F_", string.Empty); });
+    public void ParseExact_WhenFormatIsEmpty_ShouldThrowExactly() => Assert.ThrowsExactly<FormatException>(() => { _ = WeekPattern.ParseExact("_M_W_F_", string.Empty); });
 
     /// <summary>
     /// Verifies that <see cref="WeekPattern.ParseExact(string, string)" /> correctly parses a
@@ -156,7 +156,7 @@ public partial class WeekPatternTests
     /// <see cref="ArgumentNullException" /> when the format is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void ParseExact_WhenFormatIsNull_ShouldThrowException() => Assert.ThrowsExactly<ArgumentNullException>(() => { _ = WeekPattern.ParseExact("_M_W_F_", null); });
+    public void ParseExact_WhenFormatIsNull_ShouldThrowExactly() => Assert.ThrowsExactly<ArgumentNullException>(() => { _ = WeekPattern.ParseExact("_M_W_F_", null); });
 
     /// <summary>
     /// Verifies that <see cref="WeekPattern.ParseExact(string, string)" /> correctly parses a
@@ -181,14 +181,14 @@ public partial class WeekPatternTests
     /// <see cref="FormatException" /> when the format string is unrecognised.
     /// </summary>
     [TestMethod]
-    public void ParseExact_WhenFormatIsUnrecognised_ShouldThrowException() => Assert.ThrowsExactly<FormatException>(() => { _ = WeekPattern.ParseExact("_M_W_F_", "Z"); });
+    public void ParseExact_WhenFormatIsUnrecognised_ShouldThrowExactly() => Assert.ThrowsExactly<FormatException>(() => { _ = WeekPattern.ParseExact("_M_W_F_", "Z"); });
 
     /// <summary>
     /// Verifies that <see cref="WeekPattern.ParseExact(string, string)" /> throws
     /// <see cref="ArgumentNullException" /> when the input is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void ParseExact_WhenInputIsNull_ShouldThrowException() => Assert.ThrowsExactly<ArgumentNullException>(() => { _ = WeekPattern.ParseExact(null!, "S"); });
+    public void ParseExact_WhenInputIsNull_ShouldThrowExactly() => Assert.ThrowsExactly<ArgumentNullException>(() => { _ = WeekPattern.ParseExact(null!, "S"); });
 
     /// <summary>
     /// Verifies that <see cref="WeekPattern.ParseExact(string, string)" /> throws
@@ -196,7 +196,7 @@ public partial class WeekPatternTests
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(WeekPatternTests.GetInvalidFormatSpecifierTestData), typeof(WeekPatternTests))]
-    public void ParseExact_WhenInvalidFormatSpecifier_ShouldThrowFormatException(string input, string format) => Assert.ThrowsExactly<FormatException>(() => { _ = WeekPattern.ParseExact(input, format); });
+    public void ParseExact_WhenInvalidFormatSpecifier_ShouldThrowExactly(string input, string format) => Assert.ThrowsExactly<FormatException>(() => { _ = WeekPattern.ParseExact(input, format); });
 
     /// <summary>
     /// Verifies that <see cref="WeekPattern.ParseExact(string, string)" /> correctly parses

@@ -61,7 +61,7 @@ public partial class ThrowHelperTests
     /// <see cref="ArgumentOutOfRangeException" /> when the value is <see cref="double.NaN" />.
     /// </summary>
     [TestMethod]
-    public void ThrowIfNotFinite_Double_WhenValueIsNaN_ShouldThrowArgumentOutOfRangeException()
+    public void ThrowIfNotFinite_Double_WhenValueIsNaN_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -74,7 +74,7 @@ public partial class ThrowHelperTests
     /// <see cref="ArgumentOutOfRangeException" /> when the value is <see cref="double.NegativeInfinity" />.
     /// </summary>
     [TestMethod]
-    public void ThrowIfNotFinite_Double_WhenValueIsNegativeInfinity_ShouldThrowArgumentOutOfRangeException()
+    public void ThrowIfNotFinite_Double_WhenValueIsNegativeInfinity_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -87,7 +87,7 @@ public partial class ThrowHelperTests
     /// <see cref="ArgumentOutOfRangeException" /> when the value is <see cref="double.PositiveInfinity" />.
     /// </summary>
     [TestMethod]
-    public void ThrowIfNotFinite_Double_WhenValueIsPositiveInfinity_ShouldThrowArgumentOutOfRangeException()
+    public void ThrowIfNotFinite_Double_WhenValueIsPositiveInfinity_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -144,7 +144,7 @@ public partial class ThrowHelperTests
     /// <see cref="ArgumentOutOfRangeException" /> when the value is <see cref="float.NaN" />.
     /// </summary>
     [TestMethod]
-    public void ThrowIfNotFinite_Float_WhenValueIsNaN_ShouldThrowArgumentOutOfRangeException()
+    public void ThrowIfNotFinite_Float_WhenValueIsNaN_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -157,7 +157,7 @@ public partial class ThrowHelperTests
     /// <see cref="ArgumentOutOfRangeException" /> when the value is <see cref="float.NegativeInfinity" />.
     /// </summary>
     [TestMethod]
-    public void ThrowIfNotFinite_Float_WhenValueIsNegativeInfinity_ShouldThrowArgumentOutOfRangeException()
+    public void ThrowIfNotFinite_Float_WhenValueIsNegativeInfinity_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -170,7 +170,7 @@ public partial class ThrowHelperTests
     /// <see cref="ArgumentOutOfRangeException" /> when the value is <see cref="float.PositiveInfinity" />.
     /// </summary>
     [TestMethod]
-    public void ThrowIfNotFinite_Float_WhenValueIsPositiveInfinity_ShouldThrowArgumentOutOfRangeException()
+    public void ThrowIfNotFinite_Float_WhenValueIsPositiveInfinity_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

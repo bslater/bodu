@@ -22,7 +22,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     /// Verifies that a <see langword="null" /> algorithm raises <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public async Task VerifyHashAsync_WhenAlgorithmIsNull_ShouldThrowArgumentNullException()
+    public async Task VerifyHashAsync_WhenAlgorithmIsNull_ShouldThrowExactly()
     {
         NonCryptographicHashAlgorithm? algorithm = null;
         using MemoryStream stream = new(s_sampleData);
@@ -53,7 +53,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     /// Verifies that a <see langword="null" /> expected hash raises <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public async Task VerifyHashAsync_WhenExpectedHashIsNull_ShouldThrowArgumentNullException()
+    public async Task VerifyHashAsync_WhenExpectedHashIsNull_ShouldThrowExactly()
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
         using MemoryStream stream = new(s_sampleData);
@@ -66,7 +66,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     /// Verifies that a <see langword="null" /> expected hex string raises <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public async Task VerifyHashAsync_WhenExpectedHexIsNull_ShouldThrowArgumentNullException()
+    public async Task VerifyHashAsync_WhenExpectedHexIsNull_ShouldThrowExactly()
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
         using MemoryStream stream = new(s_sampleData);
@@ -138,7 +138,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     /// Verifies that a <see langword="null" /> stream raises <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public async Task VerifyHashAsync_WhenStreamIsNull_ShouldThrowArgumentNullException()
+    public async Task VerifyHashAsync_WhenStreamIsNull_ShouldThrowExactly()
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
 
@@ -200,7 +200,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     /// Verifies that an already-cancelled token causes <see cref="OperationCanceledException" /> before any I/O.
     /// </summary>
     [TestMethod]
-    public async Task VerifyHashAsync_WhenTokenAlreadyCancelled_ShouldThrowOperationCanceledException()
+    public async Task VerifyHashAsync_WhenTokenAlreadyCancelled_ShouldThrowExactly()
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
         using MemoryStream stream = new(s_sampleData);

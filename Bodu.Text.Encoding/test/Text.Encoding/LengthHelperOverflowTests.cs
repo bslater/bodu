@@ -34,7 +34,7 @@ public sealed class LengthHelperOverflowTests
     /// <see cref="OverflowException" /> when the result would not fit in an <see cref="int" />.
     /// </summary>
     [TestMethod]
-    public void Base16_GetEncodedLength_WhenOverflow_ShouldThrowOverflowException()
+    public void Base16_GetEncodedLength_WhenOverflow_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<OverflowException>(() =>
         {
@@ -47,7 +47,7 @@ public sealed class LengthHelperOverflowTests
     /// <see cref="OverflowException" /> when the result would overflow.
     /// </summary>
     [TestMethod]
-    public void Base32_GetEncodedLength_WhenOverflow_ShouldThrowOverflowException()
+    public void Base32_GetEncodedLength_WhenOverflow_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<OverflowException>(() =>
         {
@@ -59,7 +59,7 @@ public sealed class LengthHelperOverflowTests
     /// Verifies that <see cref="Base32.GetMaxDecodedLength(int)" /> throws on overflow.
     /// </summary>
     [TestMethod]
-    public void Base32_GetMaxDecodedLength_WhenOverflow_ShouldThrowOverflowException()
+    public void Base32_GetMaxDecodedLength_WhenOverflow_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<OverflowException>(() =>
         {
@@ -71,7 +71,7 @@ public sealed class LengthHelperOverflowTests
     /// Verifies that <see cref="Base58.GetMaxDecodedLength(int)" /> throws on overflow.
     /// </summary>
     [TestMethod]
-    public void Base58_GetMaxDecodedLength_WhenOverflow_ShouldThrowOverflowException()
+    public void Base58_GetMaxDecodedLength_WhenOverflow_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<OverflowException>(() =>
         {
@@ -84,7 +84,7 @@ public sealed class LengthHelperOverflowTests
     /// (138/100) means overflow kicks in earlier than the other encodings.
     /// </summary>
     [TestMethod]
-    public void Base58_GetMaxEncodedLength_WhenOverflow_ShouldThrowOverflowException()
+    public void Base58_GetMaxEncodedLength_WhenOverflow_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<OverflowException>(() =>
         {
@@ -97,7 +97,7 @@ public sealed class LengthHelperOverflowTests
     /// overflow.
     /// </summary>
     [TestMethod]
-    public void Base64_GetEncodedLength_WhenOverflow_ShouldThrowOverflowException()
+    public void Base64_GetEncodedLength_WhenOverflow_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<OverflowException>(() =>
         {
@@ -109,7 +109,7 @@ public sealed class LengthHelperOverflowTests
     /// Verifies that <see cref="Base64.GetMaxDecodedLength(int)" /> throws on overflow.
     /// </summary>
     [TestMethod]
-    public void Base64_GetMaxDecodedLength_WhenOverflow_ShouldThrowOverflowException()
+    public void Base64_GetMaxDecodedLength_WhenOverflow_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<OverflowException>(() =>
         {
@@ -121,7 +121,7 @@ public sealed class LengthHelperOverflowTests
     /// Verifies that <see cref="Base85.GetMaxDecodedLength(int)" /> throws on overflow.
     /// </summary>
     [TestMethod]
-    public void Base85_GetMaxDecodedLength_WhenOverflow_ShouldThrowOverflowException()
+    public void Base85_GetMaxDecodedLength_WhenOverflow_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<OverflowException>(() =>
         {
@@ -133,7 +133,7 @@ public sealed class LengthHelperOverflowTests
     /// Verifies that <see cref="Base85.GetMaxEncodedLength(int, Base85Variant)" /> throws on overflow.
     /// </summary>
     [TestMethod]
-    public void Base85_GetMaxEncodedLength_WhenOverflow_ShouldThrowOverflowException()
+    public void Base85_GetMaxEncodedLength_WhenOverflow_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<OverflowException>(() =>
         {

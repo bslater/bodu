@@ -14,7 +14,7 @@ public sealed partial class BencodeTests
     /// key twice.
     /// </summary>
     [TestMethod]
-    public void Decode_WhenDictionaryHasDuplicateKeys_ShouldThrowBencodeFormatException()
+    public void Decode_WhenDictionaryHasDuplicateKeys_ShouldThrowExactly()
     {
         BencodeFormatException ex = Assert.ThrowsExactly<BencodeFormatException>(() =>
         {
@@ -30,7 +30,7 @@ public sealed partial class BencodeTests
     /// are not sorted in raw byte order. The input here lists <c>b</c> before <c>a</c>.
     /// </summary>
     [TestMethod]
-    public void Decode_WhenDictionaryKeysOutOfOrder_ShouldThrowBencodeFormatException()
+    public void Decode_WhenDictionaryKeysOutOfOrder_ShouldThrowExactly()
     {
         BencodeFormatException ex = Assert.ThrowsExactly<BencodeFormatException>(() =>
         {

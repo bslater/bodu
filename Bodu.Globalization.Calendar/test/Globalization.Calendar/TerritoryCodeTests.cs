@@ -84,7 +84,7 @@ public sealed class TerritoryCodeTests
     /// the message.
     /// </summary>
     [TestMethod]
-    public void Parse_WhenInputIsInvalid_ShouldThrowFormatExceptionMentioningInput()
+    public void Parse_WhenInputIsInvalid_ShouldThrowExactly()
     {
         var ex = Assert.ThrowsExactly<FormatException>(() => TerritoryCode.Parse("BAD!"));
 

@@ -62,7 +62,7 @@ public partial class NotableDateTimeExtensionsTests
     /// Verifies that supplying a <see langword="null" /> service throws <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void SnapToWorkingDayBackward_WhenServiceIsNull_ShouldThrowArgumentNullException()
+    public void SnapToWorkingDayBackward_WhenServiceIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

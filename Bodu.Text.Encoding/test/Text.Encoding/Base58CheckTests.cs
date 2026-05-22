@@ -48,7 +48,7 @@ public sealed class Base58CheckTests
     /// when passed to <see cref="Base58Check.Decode(ReadOnlySpan{char}, Base58Variant, BaseFormatStyles)" />.
     /// </summary>
     [TestMethod]
-    public void Decode_WhenChecksumIsCorrupted_ShouldThrowFormatException()
+    public void Decode_WhenChecksumIsCorrupted_ShouldThrowExactly()
     {
         // Flip the last character of the Genesis address — almost certainly invalidates the checksum.
         var tampered = GenesisAddress.ToCharArray();
@@ -68,7 +68,7 @@ public sealed class Base58CheckTests
     /// <see cref="FormatException" /> when the input is shorter than the checksum suffix.
     /// </summary>
     [TestMethod]
-    public void Decode_WhenInputTooShortForChecksum_ShouldThrowFormatException()
+    public void Decode_WhenInputTooShortForChecksum_ShouldThrowExactly()
     {
         var ex = Assert.ThrowsExactly<FormatException>(() =>
         {

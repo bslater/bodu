@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FractionTests.Serialization.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -57,7 +57,7 @@ public partial class FractionTests
     /// Verifies that deserializing a malformed JSON fraction string throws <see cref="JsonException" />.
     /// </summary>
     [TestMethod]
-    public void JsonSerialization_WhenStringIsMalformed_ShouldThrowJsonException()
+    public void JsonSerialization_WhenStringIsMalformed_ShouldThrowExactly()
     {
         _ = Assert.ThrowsExactly<JsonException>(() =>
         {
@@ -69,7 +69,7 @@ public partial class FractionTests
     /// Verifies that deserializing a non-string JSON token throws <see cref="JsonException" />.
     /// </summary>
     [TestMethod]
-    public void JsonSerialization_WhenTokenIsNotString_ShouldThrowJsonException()
+    public void JsonSerialization_WhenTokenIsNotString_ShouldThrowExactly()
     {
         _ = Assert.ThrowsExactly<JsonException>(() =>
         {
@@ -108,7 +108,7 @@ public partial class FractionTests
     /// Verifies that FromXml rejects a null argument.
     /// </summary>
     [TestMethod]
-    public void FromXml_WhenArgumentIsNull_ShouldThrowArgumentNullException()
+    public void FromXml_WhenArgumentIsNull_ShouldThrowExactly()
     {
         _ = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

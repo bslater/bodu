@@ -41,7 +41,7 @@ public partial class StringExtensionsTests
     /// <see cref="ArgumentException" /> when <c>oldValue</c> is empty.
     /// </summary>
     [TestMethod]
-    public void ReplaceOrdinalIgnoreCase_WhenOldValueIsEmpty_ShouldThrowArgumentException()
+    public void ReplaceOrdinalIgnoreCase_WhenOldValueIsEmpty_ShouldThrowExactly()
     {
         ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -56,7 +56,7 @@ public partial class StringExtensionsTests
     /// <see cref="ArgumentNullException" /> for null arguments.
     /// </summary>
     [TestMethod]
-    public void ReplaceOrdinalIgnoreCase_WhenAnyArgumentIsNull_ShouldThrowArgumentNullException()
+    public void ReplaceOrdinalIgnoreCase_WhenAnyArgumentIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() => _ = StringExtensions.ReplaceOrdinalIgnoreCase(null!, "x", "y"));
         Assert.ThrowsExactly<ArgumentNullException>(() => _ = "hello".ReplaceOrdinalIgnoreCase(null!, "y"));

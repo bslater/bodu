@@ -16,7 +16,7 @@ public partial class ThrowHelperTests
     /// <see cref="ArgumentNullException" /> when the array is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void ThrowIfIndexOutOfRange_Array_WhenArrayIsNull_ShouldThrowArgumentNullException()
+    public void ThrowIfIndexOutOfRange_Array_WhenArrayIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -33,7 +33,7 @@ public partial class ThrowHelperTests
     [DataRow(6)]          // index > Length
     [DataRow(int.MaxValue)]
     [DataRow(-1)]         // negative index
-    public void ThrowIfIndexOutOfRange_Array_WhenIndexIsInvalid_ShouldThrowArgumentOutOfRangeException(int index)
+    public void ThrowIfIndexOutOfRange_Array_WhenIndexIsInvalid_ShouldThrowExactly(int index)
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -93,7 +93,7 @@ public partial class ThrowHelperTests
     [DataRow(6)]          // index > Length
     [DataRow(int.MaxValue)]
     [DataRow(-1)]         // negative index
-    public void ThrowIfIndexOutOfRange_ReadOnlySpan_WhenIndexIsInvalid_ShouldThrowArgumentOutOfRangeException(int index)
+    public void ThrowIfIndexOutOfRange_ReadOnlySpan_WhenIndexIsInvalid_ShouldThrowExactly(int index)
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -125,7 +125,7 @@ public partial class ThrowHelperTests
     [DataRow(6)]          // index > Length
     [DataRow(int.MaxValue)]
     [DataRow(-1)]         // negative index
-    public void ThrowIfIndexOutOfRange_Span_WhenIndexIsInvalid_ShouldThrowArgumentOutOfRangeException(int index)
+    public void ThrowIfIndexOutOfRange_Span_WhenIndexIsInvalid_ShouldThrowExactly(int index)
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

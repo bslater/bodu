@@ -22,7 +22,7 @@ public sealed partial class Base16Tests
     /// Verifies that <see cref="Base16.GetMaxDecodedLength" /> rejects a negative input.
     /// </summary>
     [TestMethod]
-    public void GetMaxDecodedLength_WhenNegativeInput_ShouldThrowArgumentOutOfRangeException()
+    public void GetMaxDecodedLength_WhenNegativeInput_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

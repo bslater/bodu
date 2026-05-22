@@ -34,7 +34,7 @@ public sealed class EasterSundayNotableDateAlgorithmTests
     [DataRow(10000)]
     [DataRow(int.MaxValue)]
     [TestMethod]
-    public void GetDate_WhenYearGreaterThan9999_ShouldThrowArgumentOutOfRangeException(int year)
+    public void GetDate_WhenYearGreaterThan9999_ShouldThrowExactly(int year)
     {
         var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -738,7 +738,7 @@ public sealed class EasterSundayNotableDateAlgorithmTests
     [DataRow(-1)]
     [DataRow(0)]
     [DataRow(int.MinValue)]
-    public void GetDate_WhenYearInvalid_ShouldThrowArgumentOutOfRangeException(int year)
+    public void GetDate_WhenYearInvalid_ShouldThrowExactly(int year)
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

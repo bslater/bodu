@@ -44,7 +44,7 @@ public partial class ThrowHelperTests
     /// a multiple of the divisor, exercising the generic <c>IBinaryInteger&lt;T&gt;</c> constraint.
     /// </summary>
     [TestMethod]
-    public void ThrowIfNotPositiveMultipleOf_WhenLongValueIsNotMultiple_ShouldThrowArgumentOutOfRangeException()
+    public void ThrowIfNotPositiveMultipleOf_WhenLongValueIsNotMultiple_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -96,7 +96,7 @@ public partial class ThrowHelperTests
     [DataRow(-2, 2)]  // negative value
     [DataRow(7, 2)]   // not a multiple
     [DataRow(5, 3)]   // not a multiple
-    public void ThrowIfNotPositiveMultipleOf_WhenValueIsZeroNegativeOrNotMultiple_ShouldThrowArgumentOutOfRangeException(int value, int divisor)
+    public void ThrowIfNotPositiveMultipleOf_WhenValueIsZeroNegativeOrNotMultiple_ShouldThrowExactly(int value, int divisor)
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

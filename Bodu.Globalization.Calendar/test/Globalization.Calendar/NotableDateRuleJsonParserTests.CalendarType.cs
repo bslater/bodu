@@ -117,7 +117,7 @@ public partial class NotableDateRuleJsonParserTests
     /// <see cref="JsonException" /> before reaching the mapper.
     /// </summary>
     [TestMethod]
-    public void ParseJson_WhenCalendarTypeViolatesSchemaPattern_ShouldThrowJsonException()
+    public void ParseJson_WhenCalendarTypeViolatesSchemaPattern_ShouldThrowExactly()
     {
         const string json = @"{
 			""notableDates"": [

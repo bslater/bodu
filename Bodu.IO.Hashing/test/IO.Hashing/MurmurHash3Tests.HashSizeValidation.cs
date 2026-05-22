@@ -31,7 +31,7 @@ public sealed class MurmurHash3HashSizeValidationTests
     [DataRow(256)]
     [DataRow(-1)]
     [DataRow(int.MaxValue)]
-    public void Ctor_WhenHashSizeIsNotSupported_ShouldThrowArgumentOutOfRangeException(int hashSize)
+    public void Ctor_WhenHashSizeIsNotSupported_ShouldThrowExactly(int hashSize)
     {
         ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

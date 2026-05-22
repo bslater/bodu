@@ -39,7 +39,7 @@ public partial class NumericExtensionsTests
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(GcdArrayEmptyActions))]
-    public void GreatestCommonDivisor_AllArrayOverloads_WhenArrayIsEmpty_ShouldThrowArgumentException(Action action) =>
+    public void GreatestCommonDivisor_AllArrayOverloads_WhenArrayIsEmpty_ShouldThrowExactly(Action action) =>
         Assert.ThrowsExactly<ArgumentException>(action);
 
     /// <summary>
@@ -47,7 +47,7 @@ public partial class NumericExtensionsTests
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(GcdArrayNullActions))]
-    public void GreatestCommonDivisor_AllArrayOverloads_WhenArrayIsNull_ShouldThrowArgumentNullException(Action action) =>
+    public void GreatestCommonDivisor_AllArrayOverloads_WhenArrayIsNull_ShouldThrowExactly(Action action) =>
         Assert.ThrowsExactly<ArgumentNullException>(action);
 
     /// <summary>
@@ -120,7 +120,7 @@ public partial class NumericExtensionsTests
     /// Verifies that <c>GreatestCommonDivisor</c> throws <see cref="ArgumentOutOfRangeException"/> for negative left-hand inputs.
     /// </summary>
     [TestMethod]
-    public void GreatestCommonDivisor_Int_WhenLeftIsNegative_ShouldThrowArgumentOutOfRangeException() =>
+    public void GreatestCommonDivisor_Int_WhenLeftIsNegative_ShouldThrowExactly() =>
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             _ = (-1).GreatestCommonDivisor(10);
@@ -141,7 +141,7 @@ public partial class NumericExtensionsTests
     /// Verifies that <c>GreatestCommonDivisor</c> throws <see cref="ArgumentOutOfRangeException"/> for negative right-hand inputs.
     /// </summary>
     [TestMethod]
-    public void GreatestCommonDivisor_Int_WhenRightIsNegative_ShouldThrowArgumentOutOfRangeException() =>
+    public void GreatestCommonDivisor_Int_WhenRightIsNegative_ShouldThrowExactly() =>
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             _ = 10.GreatestCommonDivisor(-1);
@@ -151,7 +151,7 @@ public partial class NumericExtensionsTests
     /// Verifies that the <see cref="int"/> array overload throws when an element is negative.
     /// </summary>
     [TestMethod]
-    public void GreatestCommonDivisor_IntArray_WhenAnyValueIsNegative_ShouldThrowArgumentOutOfRangeException() =>
+    public void GreatestCommonDivisor_IntArray_WhenAnyValueIsNegative_ShouldThrowExactly() =>
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             _ = new int[] { 6, -2, 8 }.GreatestCommonDivisor();
@@ -161,7 +161,7 @@ public partial class NumericExtensionsTests
     /// Verifies that the <see cref="int"/> array overload throws <see cref="ArgumentException"/> when empty.
     /// </summary>
     [TestMethod]
-    public void GreatestCommonDivisor_IntArray_WhenArrayIsEmpty_ShouldThrowArgumentException() =>
+    public void GreatestCommonDivisor_IntArray_WhenArrayIsEmpty_ShouldThrowExactly() =>
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
             _ = Array.Empty<int>().GreatestCommonDivisor();
@@ -171,7 +171,7 @@ public partial class NumericExtensionsTests
     /// Verifies that the <see cref="int"/> array overload throws <see cref="ArgumentNullException"/> when null.
     /// </summary>
     [TestMethod]
-    public void GreatestCommonDivisor_IntArray_WhenArrayIsNull_ShouldThrowArgumentNullException()
+    public void GreatestCommonDivisor_IntArray_WhenArrayIsNull_ShouldThrowExactly()
     {
         int[]? values = null;
         Assert.ThrowsExactly<ArgumentNullException>(() =>
@@ -227,7 +227,7 @@ public partial class NumericExtensionsTests
     [DataRow(-1L, 10L)]
     [DataRow(10L, -1L)]
     [DataRow(long.MinValue, 10L)]
-    public void GreatestCommonDivisor_Long_WhenNegative_ShouldThrowArgumentOutOfRangeException(long a, long b) =>
+    public void GreatestCommonDivisor_Long_WhenNegative_ShouldThrowExactly(long a, long b) =>
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             _ = a.GreatestCommonDivisor(b);
@@ -244,7 +244,7 @@ public partial class NumericExtensionsTests
     /// Verifies that the <see cref="long"/> array overload rejects a negative element.
     /// </summary>
     [TestMethod]
-    public void GreatestCommonDivisor_LongArray_WhenAnyValueIsNegative_ShouldThrowArgumentOutOfRangeException() =>
+    public void GreatestCommonDivisor_LongArray_WhenAnyValueIsNegative_ShouldThrowExactly() =>
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             _ = new long[] { 6L, -2L, 8L }.GreatestCommonDivisor();
@@ -269,7 +269,7 @@ public partial class NumericExtensionsTests
     [DataRow((short)-1, (short)10)]
     [DataRow((short)10, (short)-1)]
     [DataRow(short.MinValue, (short)10)]
-    public void GreatestCommonDivisor_Short_WhenNegative_ShouldThrowArgumentOutOfRangeException(short a, short b) =>
+    public void GreatestCommonDivisor_Short_WhenNegative_ShouldThrowExactly(short a, short b) =>
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             _ = a.GreatestCommonDivisor(b);
@@ -286,7 +286,7 @@ public partial class NumericExtensionsTests
     /// Verifies that the <see cref="short"/> array overload rejects a negative element.
     /// </summary>
     [TestMethod]
-    public void GreatestCommonDivisor_ShortArray_WhenAnyValueIsNegative_ShouldThrowArgumentOutOfRangeException() =>
+    public void GreatestCommonDivisor_ShortArray_WhenAnyValueIsNegative_ShouldThrowExactly() =>
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             _ = new short[] { 6, -2, 8 }.GreatestCommonDivisor();

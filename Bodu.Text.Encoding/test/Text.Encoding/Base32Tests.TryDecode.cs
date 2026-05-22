@@ -152,7 +152,7 @@ public sealed partial class Base32Tests
     /// <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    public void TryDecode_WhenUndefinedVariant_ShouldThrowArgumentOutOfRangeException()
+    public void TryDecode_WhenUndefinedVariant_ShouldThrowExactly()
     {
         var destination = new byte[16];
 

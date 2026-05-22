@@ -16,7 +16,7 @@ public abstract partial class MultiCharCheckDigitAlgorithmTests<TTest, TAlgorith
     /// <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    public void Append_WhenCharacterIsOutsideInputAlphabet_ShouldThrowArgumentOutOfRangeException()
+    public void Append_WhenCharacterIsOutsideInputAlphabet_ShouldThrowExactly()
     {
         MultiCharCheckDigitAlgorithmSpecification spec = GetSpecification();
         var invalid = spec.InputAlphabet == CheckDigitInputAlphabet.DecimalDigits ? 'A' : '!';
@@ -34,7 +34,7 @@ public abstract partial class MultiCharCheckDigitAlgorithmTests<TTest, TAlgorith
     /// alphabet.
     /// </summary>
     [TestMethod]
-    public void Append_WhenSingleCharacterIsOutsideInputAlphabet_ShouldThrowArgumentOutOfRangeException()
+    public void Append_WhenSingleCharacterIsOutsideInputAlphabet_ShouldThrowExactly()
     {
         MultiCharCheckDigitAlgorithmSpecification spec = GetSpecification();
         var invalid = spec.InputAlphabet == CheckDigitInputAlphabet.DecimalDigits ? 'A' : '!';
@@ -52,7 +52,7 @@ public abstract partial class MultiCharCheckDigitAlgorithmTests<TTest, TAlgorith
     /// span is shorter than <c>CheckLength</c>.
     /// </summary>
     [TestMethod]
-    public void GetCurrentCheckDigits_WhenDestinationTooSmall_ShouldThrowArgumentException()
+    public void GetCurrentCheckDigits_WhenDestinationTooSmall_ShouldThrowExactly()
     {
         TAlgorithm algorithm = CreateAlgorithm();
         var tooSmall = new char[algorithm.CheckLength - 1];

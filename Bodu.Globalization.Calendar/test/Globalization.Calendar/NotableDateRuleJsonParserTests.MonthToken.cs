@@ -88,7 +88,7 @@ public partial class NotableDateRuleJsonParserTests
     /// by schema validation as <see cref="JsonException" /> via the <c>monthOrNumber</c> oneOf constraint.
     /// </summary>
     [TestMethod]
-    public void ParseJson_WhenFixedMonthIsOutOfRangeNumeric_ShouldThrowJsonException()
+    public void ParseJson_WhenFixedMonthIsOutOfRangeNumeric_ShouldThrowExactly()
     {
         const string json = @"{
 			""notableDates"": [
@@ -111,7 +111,7 @@ public partial class NotableDateRuleJsonParserTests
     /// <see cref="JsonException" /> via the <c>monthOrNumber</c> oneOf constraint.
     /// </summary>
     [TestMethod]
-    public void ParseJson_WhenFixedMonthIsZeroNumeric_ShouldThrowJsonException()
+    public void ParseJson_WhenFixedMonthIsZeroNumeric_ShouldThrowExactly()
     {
         const string json = @"{
 			""notableDates"": [
@@ -229,7 +229,7 @@ public partial class NotableDateRuleJsonParserTests
     /// (Gregorian enum names only), matching the XSD's literal type.
     /// </summary>
     [TestMethod]
-    public void ParseJson_WhenDayOfWeekInMonthIsNumericMonth_ShouldThrowJsonException()
+    public void ParseJson_WhenDayOfWeekInMonthIsNumericMonth_ShouldThrowExactly()
     {
         const string json = @"{
 			""notableDates"": [
@@ -252,7 +252,7 @@ public partial class NotableDateRuleJsonParserTests
     /// validation as <see cref="JsonException" /> via the <c>monthName</c> enum constraint.
     /// </summary>
     [TestMethod]
-    public void ParseJson_WhenDayOfWeekInMonthIsOutOfRangeMonth_ShouldThrowJsonException()
+    public void ParseJson_WhenDayOfWeekInMonthIsOutOfRangeMonth_ShouldThrowExactly()
     {
         const string json = @"{
 			""notableDates"": [

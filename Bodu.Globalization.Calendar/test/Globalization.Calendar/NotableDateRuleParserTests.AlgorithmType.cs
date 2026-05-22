@@ -111,7 +111,7 @@ public partial class NotableDateRuleParserTests
     /// assert the schema-level rejection rather than the parser-level fallback.
     /// </summary>
     [TestMethod]
-    public void ParseXml_WhenAdjustmentComparisonDayIsNonNumeric_ShouldThrowSchemaValidationException()
+    public void ParseXml_WhenAdjustmentComparisonDayIsNonNumeric_ShouldThrowExactly()
     {
         const string xml = @"
 			<NotableDates xmlns=""urn:bodu:globalization:calendar"">
@@ -134,7 +134,7 @@ public partial class NotableDateRuleParserTests
     /// <see cref="InvalidOperationException" /> from <c>EnsureUniqueAdjustmentKeys</c>, mentioning the duplicate key.
     /// </summary>
     [TestMethod]
-    public void ParseXml_WhenStandaloneRuleHasDuplicateAdjustmentKeys_ShouldThrowInvalidOperationException()
+    public void ParseXml_WhenStandaloneRuleHasDuplicateAdjustmentKeys_ShouldThrowExactly()
     {
         const string xml = @"
 			<NotableDates xmlns=""urn:bodu:globalization:calendar"">

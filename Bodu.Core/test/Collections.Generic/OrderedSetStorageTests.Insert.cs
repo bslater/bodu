@@ -84,7 +84,7 @@ public partial class OrderedSetStorageTests
     [DataRow(0, -1)]
     [DataRow(0, 3)]
     [DataRow(0, int.MaxValue)]
-    public void Move_WhenNewIndexIsOutOfRange_ShouldThrowArgumentOutOfRangeException(int oldIndex, int newIndex)
+    public void Move_WhenNewIndexIsOutOfRange_ShouldThrowExactly(int oldIndex, int newIndex)
     {
         OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
 
@@ -105,7 +105,7 @@ public partial class OrderedSetStorageTests
     [DataRow(-1, 0)]
     [DataRow(3, 0)]
     [DataRow(int.MaxValue, 0)]
-    public void Move_WhenOldIndexIsOutOfRange_ShouldThrowArgumentOutOfRangeException(int oldIndex, int newIndex)
+    public void Move_WhenOldIndexIsOutOfRange_ShouldThrowExactly(int oldIndex, int newIndex)
     {
         OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
 
@@ -141,7 +141,7 @@ public partial class OrderedSetStorageTests
     [DataRow(-1)]
     [DataRow(2)]
     [DataRow(int.MinValue)]
-    public void ReplaceAt_WhenIndexIsOutOfRange_ShouldThrowArgumentOutOfRangeException(int index)
+    public void ReplaceAt_WhenIndexIsOutOfRange_ShouldThrowExactly(int index)
     {
         OrderedSetStorage<int> sut = CreateStorage([1, 2]);
 
@@ -156,7 +156,7 @@ public partial class OrderedSetStorageTests
     /// <see cref="ArgumentException" />.
     /// </summary>
     [TestMethod]
-    public void ReplaceAt_WhenValueExistsAtAnotherIndex_ShouldThrowArgumentException()
+    public void ReplaceAt_WhenValueExistsAtAnotherIndex_ShouldThrowExactly()
     {
         OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
 
@@ -210,7 +210,7 @@ public partial class OrderedSetStorageTests
     /// Verifies that <see cref="OrderedSetStorage{T}.ReplaceAt(int, T)" /> rejects a <see langword="null" /> value.
     /// </summary>
     [TestMethod]
-    public void ReplaceAt_WhenValueIsNull_ShouldThrowArgumentNullException()
+    public void ReplaceAt_WhenValueIsNull_ShouldThrowExactly()
     {
         OrderedSetStorage<string> sut = CreateStorage(["a", "b"]);
 
@@ -237,7 +237,7 @@ public partial class OrderedSetStorageTests
     /// Verifies that an index strictly greater than <see cref="OrderedSetStorage{T}.Count" /> is rejected.
     /// </summary>
     [TestMethod]
-    public void TryInsert_WhenIndexExceedsCount_ShouldThrowArgumentOutOfRangeException()
+    public void TryInsert_WhenIndexExceedsCount_ShouldThrowExactly()
     {
         OrderedSetStorage<int> sut = CreateStorage([1, 2]);
 
@@ -267,7 +267,7 @@ public partial class OrderedSetStorageTests
     [DataRow(-1)]
     [DataRow(-100)]
     [DataRow(int.MinValue)]
-    public void TryInsert_WhenIndexIsNegative_ShouldThrowArgumentOutOfRangeException(int index)
+    public void TryInsert_WhenIndexIsNegative_ShouldThrowExactly(int index)
     {
         OrderedSetStorage<int> sut = CreateStorage([1, 2]);
 
@@ -337,7 +337,7 @@ public partial class OrderedSetStorageTests
     /// Verifies that <see cref="OrderedSetStorage{T}.TryInsert(int, T)" /> rejects a <see langword="null" /> item.
     /// </summary>
     [TestMethod]
-    public void TryInsert_WhenItemIsNull_ShouldThrowArgumentNullException()
+    public void TryInsert_WhenItemIsNull_ShouldThrowExactly()
     {
         OrderedSetStorage<string> sut = CreateStorage(["a", "b"]);
 

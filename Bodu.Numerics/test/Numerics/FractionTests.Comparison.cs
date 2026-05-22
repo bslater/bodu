@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FractionTests.Comparison.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -37,7 +37,7 @@ public partial class FractionTests
     /// Verifies that comparing with an object of a foreign type throws <see cref="ArgumentException" />.
     /// </summary>
     [TestMethod]
-    public void CompareTo_WhenComparedWithForeignType_ShouldThrowArgumentException()
+    public void CompareTo_WhenComparedWithForeignType_ShouldThrowExactly()
     {
         _ = Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -106,7 +106,7 @@ public partial class FractionTests
     /// Verifies that Clamp rejects a range whose minimum exceeds its maximum.
     /// </summary>
     [TestMethod]
-    public void Clamp_WhenMinExceedsMax_ShouldThrowArgumentException()
+    public void Clamp_WhenMinExceedsMax_ShouldThrowExactly()
     {
         _ = Assert.ThrowsExactly<ArgumentException>(() =>
         {

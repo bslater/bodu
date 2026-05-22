@@ -24,7 +24,7 @@ public sealed class RemainingGapCoverageTests
     /// the destination is exactly one character short.
     /// </summary>
     [TestMethod]
-    public void Base16_EncodeSpan_WhenDestinationOneCharShort_ShouldThrowArgumentException()
+    public void Base16_EncodeSpan_WhenDestinationOneCharShort_ShouldThrowExactly()
     {
         var bytes = new byte[4];
         var destination = new char[7];
@@ -40,7 +40,7 @@ public sealed class RemainingGapCoverageTests
     /// throws when given a <see langword="null" /> writer (covers the null guard).
     /// </summary>
     [TestMethod]
-    public void Base16_EncodeToUtf8_IntoNullBufferWriter_ShouldThrowArgumentNullException()
+    public void Base16_EncodeToUtf8_IntoNullBufferWriter_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -77,7 +77,7 @@ public sealed class RemainingGapCoverageTests
     /// and the UTF-8 variant throw when given a <see langword="null" /> writer.
     /// </summary>
     [TestMethod]
-    public void Base32_BufferWriter_WithNullWriter_ShouldThrowArgumentNullException()
+    public void Base32_BufferWriter_WithNullWriter_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -94,7 +94,7 @@ public sealed class RemainingGapCoverageTests
     /// throws when the destination is too small.
     /// </summary>
     [TestMethod]
-    public void Base32_EncodeSpan_WhenDestinationTooSmall_ShouldThrowArgumentException()
+    public void Base32_EncodeSpan_WhenDestinationTooSmall_ShouldThrowExactly()
     {
         var bytes = new byte[8];
         var destination = new char[4];
@@ -175,7 +175,7 @@ public sealed class RemainingGapCoverageTests
     /// destination is too small (the slow path slow-bail).
     /// </summary>
     [TestMethod]
-    public void Base58_EncodeSpan_WhenDestinationTooSmall_ShouldThrowArgumentException()
+    public void Base58_EncodeSpan_WhenDestinationTooSmall_ShouldThrowExactly()
     {
         var destination = new char[1];
 
@@ -346,7 +346,7 @@ public sealed class RemainingGapCoverageTests
     /// and the UTF-8 variant throw when given a <see langword="null" /> writer.
     /// </summary>
     [TestMethod]
-    public void Base64_BufferWriter_WithNullWriter_ShouldThrowArgumentNullException()
+    public void Base64_BufferWriter_WithNullWriter_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -363,7 +363,7 @@ public sealed class RemainingGapCoverageTests
     /// throws when the destination is too small.
     /// </summary>
     [TestMethod]
-    public void Base64_EncodeSpan_WhenDestinationTooSmall_ShouldThrowArgumentException()
+    public void Base64_EncodeSpan_WhenDestinationTooSmall_ShouldThrowExactly()
     {
         var bytes = new byte[3];
         var destination = new char[2];
@@ -471,7 +471,7 @@ public sealed class RemainingGapCoverageTests
     /// throws when Z85 receives a non-aligned input.
     /// </summary>
     [TestMethod]
-    public void Base85_GetEncodedLength_Z85WithUnalignedInput_ShouldThrowArgumentException()
+    public void Base85_GetEncodedLength_Z85WithUnalignedInput_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -544,7 +544,7 @@ public sealed class RemainingGapCoverageTests
     /// throws for unaligned Z85 input.
     /// </summary>
     [TestMethod]
-    public void Base85_TryEncodeToUtf8_WhenZ85AndUnaligned_ShouldThrowArgumentException()
+    public void Base85_TryEncodeToUtf8_WhenZ85AndUnaligned_ShouldThrowExactly()
     {
         var destination = new byte[10];
 

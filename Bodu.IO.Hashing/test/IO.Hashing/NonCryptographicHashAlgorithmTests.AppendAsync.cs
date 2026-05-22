@@ -18,7 +18,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     /// </summary>
     /// <returns>A task that represents the asynchronous test operation.</returns>
     [TestMethod]
-    public async Task AppendAsync_WhenCancellationRequested_ShouldThrowTaskCanceledException()
+    public async Task AppendAsync_WhenCancellationRequested_ShouldThrowExactly()
     {
         TAlgorithm algorithm = CreateAlgorithm();
         using MemoryStream stream = new(new byte[1024]);
@@ -63,7 +63,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     /// </summary>
     /// <returns>A task that represents the asynchronous test operation.</returns>
     [TestMethod]
-    public async Task AppendAsync_WhenStreamIsNull_ShouldThrowArgumentNullException()
+    public async Task AppendAsync_WhenStreamIsNull_ShouldThrowExactly()
     {
         TAlgorithm algorithm = CreateAlgorithm();
 

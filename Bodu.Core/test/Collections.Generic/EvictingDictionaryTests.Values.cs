@@ -13,7 +13,7 @@ public partial class EvictingDictionaryTests
     /// Verifies that mutating the dictionary through the Values collection is not supported.
     /// </summary>
     [TestMethod]
-    public void Values_Add_ShouldThrowException()
+    public void Values_Add_ShouldThrowExactly()
     {
         var dictionary = new EvictingDictionary<string, int>(3);
         ICollection<int> values = dictionary.Values;

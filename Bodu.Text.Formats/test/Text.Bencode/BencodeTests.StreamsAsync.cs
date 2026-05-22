@@ -17,7 +17,7 @@ public sealed partial class BencodeTests
     /// </summary>
     /// <returns>A task representing the asynchronous test.</returns>
     [TestMethod]
-    public async Task DecodeAsync_WhenCancellationTokenSignalled_ShouldThrowOperationCanceledException()
+    public async Task DecodeAsync_WhenCancellationTokenSignalled_ShouldThrowExactly()
     {
         using CancellationTokenSource cts = new();
         cts.Cancel();
@@ -51,7 +51,7 @@ public sealed partial class BencodeTests
     /// </summary>
     /// <returns>A task representing the asynchronous test.</returns>
     [TestMethod]
-    public async Task DecodeAsync_WhenNotReadable_ShouldThrowArgumentException()
+    public async Task DecodeAsync_WhenNotReadable_ShouldThrowExactly()
     {
         using MemoryStream stream = new();
         stream.Close();
@@ -84,7 +84,7 @@ public sealed partial class BencodeTests
     /// </summary>
     /// <returns>A task representing the asynchronous test.</returns>
     [TestMethod]
-    public async Task EncodeAsync_WhenNotWritable_ShouldThrowArgumentException()
+    public async Task EncodeAsync_WhenNotWritable_ShouldThrowExactly()
     {
         using MemoryStream stream = new(new byte[8], writable: false);
 
