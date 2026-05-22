@@ -21,19 +21,6 @@ public partial class CryptoHelpersTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.ThrowIfAssociatedDataNotProcessed(bool)" /> throws
-    /// <see cref="CryptographicException" /> when the associated-data flag is <see langword="false" />.
-    /// </summary>
-    [TestMethod]
-    public void ThrowIfAssociatedDataNotProcessed_WhenNotProcessed_ShouldThrowExactly()
-    {
-        Assert.ThrowsExactly<CryptographicException>(() =>
-        {
-            CryptoHelpers.ThrowIfAssociatedDataNotProcessed(false);
-        });
-    }
-
-    /// <summary>
     /// Verifies that <see cref="CryptoHelpers.ThrowIfNotPositiveMultipleOf{T}(T, T, string)" /> does not throw when the
     /// value is a positive multiple of the divisor.
     /// </summary>

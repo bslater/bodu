@@ -129,7 +129,7 @@ public partial class ICryptoTransformExtensionsTests
     /// <see cref="ArgumentNullException" /> when <paramref name="cryptoTransform" /> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void Transform_ByteArray_WhenTransformIsNull_ShouldThrowArgumentNullException()
+    public void Transform_ByteArray_WhenTransformIsNull_ShouldThrowExactly()
     {
         ICryptoTransform? transform = null;
 
@@ -142,7 +142,7 @@ public partial class ICryptoTransformExtensionsTests
     /// <see cref="ArgumentNullException" /> when <paramref name="array" /> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void Transform_ByteArray_WhenArrayIsNull_ShouldThrowArgumentNullException()
+    public void Transform_ByteArray_WhenArrayIsNull_ShouldThrowExactly()
     {
         using SimpleReversingCryptoTransform transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
 
@@ -174,7 +174,7 @@ public partial class ICryptoTransformExtensionsTests
     /// <see cref="ArgumentOutOfRangeException" /> when the offset and count combination exceeds the array length.
     /// </summary>
     [TestMethod]
-    public void Transform_ByteArrayRange_WhenOffsetPlusCountExceedsLength_ShouldThrowArgumentException()
+    public void Transform_ByteArrayRange_WhenOffsetPlusCountExceedsLength_ShouldThrowExactly()
     {
         using SimpleReversingCryptoTransform transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
         byte[] data = { 1, 2, 3 };
@@ -188,7 +188,7 @@ public partial class ICryptoTransformExtensionsTests
     /// <see cref="ArgumentNullException" /> when <paramref name="array" /> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void Transform_ByteArrayRange_WhenArrayIsNull_ShouldThrowArgumentNullException()
+    public void Transform_ByteArrayRange_WhenArrayIsNull_ShouldThrowExactly()
     {
         using SimpleReversingCryptoTransform transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
 
@@ -220,7 +220,7 @@ public partial class ICryptoTransformExtensionsTests
     /// <see cref="ArgumentNullException" /> when <paramref name="cryptoTransform" /> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void Transform_Span_WhenTransformIsNull_ShouldThrowArgumentNullException()
+    public void Transform_Span_WhenTransformIsNull_ShouldThrowExactly()
     {
         ICryptoTransform? transform = null;
 
@@ -307,7 +307,7 @@ public partial class ICryptoTransformExtensionsTests
     /// throws <see cref="ArgumentNullException" /> when <paramref name="transform" /> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void Transform_SpanToSpan_WhenTransformIsNull_ShouldThrowArgumentNullException()
+    public void Transform_SpanToSpan_WhenTransformIsNull_ShouldThrowExactly()
     {
         ICryptoTransform? transform = null;
 
@@ -324,7 +324,7 @@ public partial class ICryptoTransformExtensionsTests
     /// throws <see cref="ArgumentException" /> when the destination span is too small to hold the output.
     /// </summary>
     [TestMethod]
-    public void Transform_SpanToSpan_WhenDestinationIsTooSmall_ShouldThrowArgumentException()
+    public void Transform_SpanToSpan_WhenDestinationIsTooSmall_ShouldThrowExactly()
     {
         using SimpleReversingCryptoTransform transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
 
@@ -362,7 +362,7 @@ public partial class ICryptoTransformExtensionsTests
     /// throws <see cref="ArgumentNullException" /> when <paramref name="transform" /> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void Transform_MemoryToMemory_WhenTransformIsNull_ShouldThrowArgumentNullException()
+    public void Transform_MemoryToMemory_WhenTransformIsNull_ShouldThrowExactly()
     {
         ICryptoTransform? transform = null;
 
@@ -379,7 +379,7 @@ public partial class ICryptoTransformExtensionsTests
     /// throws <see cref="ArgumentException" /> when the destination is too small to hold the output.
     /// </summary>
     [TestMethod]
-    public void Transform_MemoryToMemory_WhenDestinationIsTooSmall_ShouldThrowArgumentException()
+    public void Transform_MemoryToMemory_WhenDestinationIsTooSmall_ShouldThrowExactly()
     {
         using SimpleReversingCryptoTransform transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
 
@@ -441,7 +441,7 @@ public partial class ICryptoTransformExtensionsTests
     /// <see cref="ArgumentNullException" /> when <paramref name="transform" /> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void Transform_Stream_WhenTransformIsNull_ShouldThrowArgumentNullException()
+    public void Transform_Stream_WhenTransformIsNull_ShouldThrowExactly()
     {
         ICryptoTransform? transform = null;
         using var source = new MemoryStream(new byte[] { 1, 2, 3, 4 });
@@ -456,7 +456,7 @@ public partial class ICryptoTransformExtensionsTests
     /// <see cref="ArgumentNullException" /> when <paramref name="sourceStream" /> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void Transform_Stream_WhenSourceStreamIsNull_ShouldThrowArgumentNullException()
+    public void Transform_Stream_WhenSourceStreamIsNull_ShouldThrowExactly()
     {
         using SimpleReversingCryptoTransform transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
         using var target = new MemoryStream();
@@ -470,7 +470,7 @@ public partial class ICryptoTransformExtensionsTests
     /// <see cref="ArgumentNullException" /> when <paramref name="targetStream" /> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void Transform_Stream_WhenTargetStreamIsNull_ShouldThrowArgumentNullException()
+    public void Transform_Stream_WhenTargetStreamIsNull_ShouldThrowExactly()
     {
         using SimpleReversingCryptoTransform transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
         using var source = new MemoryStream(new byte[] { 1, 2, 3, 4 });
@@ -484,7 +484,7 @@ public partial class ICryptoTransformExtensionsTests
     /// <see cref="ArgumentOutOfRangeException" /> when <paramref name="bufferSize" /> is zero.
     /// </summary>
     [TestMethod]
-    public void Transform_Stream_WhenBufferSizeIsZero_ShouldThrowArgumentOutOfRangeException()
+    public void Transform_Stream_WhenBufferSizeIsZero_ShouldThrowExactly()
     {
         using SimpleReversingCryptoTransform transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
         using var source = new MemoryStream(new byte[] { 1, 2, 3, 4 });

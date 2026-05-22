@@ -17,7 +17,7 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     /// name.
     /// </summary>
     [TestMethod]
-    public void CreateDecryptor_WhenSetAfterDispose_ShouldThrowObjectDisposedException()
+    public void CreateDecryptor_WhenSetAfterDispose_ShouldThrowExactly()
     {
         TAlgorithm algorithm = CreateAlgorithm();
         algorithm.Dispose();
@@ -36,7 +36,7 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     /// <see cref="ArgumentNullException" /> when the key is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void CreateDecryptor_WhenKeyIsNull_ShouldThrowArgumentNullException()
+    public void CreateDecryptor_WhenKeyIsNull_ShouldThrowExactly()
     {
         using TAlgorithm algorithm = CreateAlgorithm();
 
@@ -56,7 +56,7 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(InvalidKeySizeBytesData))]
-    public void CreateDecryptor_WhenKeyLengthIsInvalid_ShouldThrowCryptographicException(int keySize)
+    public void CreateDecryptor_WhenKeyLengthIsInvalid_ShouldThrowExactly(int keySize)
     {
         if (keySize < 0) return;
 
@@ -77,7 +77,7 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     /// matching the BCL convention for IV-required modes.
     /// </summary>
     [TestMethod]
-    public void CreateDecryptor_WhenIvIsNullInNonEcbMode_ShouldThrowCryptographicException()
+    public void CreateDecryptor_WhenIvIsNullInNonEcbMode_ShouldThrowExactly()
     {
         using TAlgorithm algorithm = CreateAlgorithm();    // default mode is CBC
 
@@ -96,7 +96,7 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(InvalidBlockSizeBytesData))]
-    public void CreateDecryptor_WhenIvLengthIsInvalidInNonEcbMode_ShouldThrowCryptographicException(int blockSize)
+    public void CreateDecryptor_WhenIvLengthIsInvalidInNonEcbMode_ShouldThrowExactly(int blockSize)
     {
         if (blockSize < 0) return;
 
@@ -178,7 +178,7 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(InvalidBlockSizeBytesData))]
-    public void CreateDecryptor_WhenIvLengthIsInvalidInEcbMode_ShouldThrowCryptographicException(int blockSize)
+    public void CreateDecryptor_WhenIvLengthIsInvalidInEcbMode_ShouldThrowExactly(int blockSize)
     {
         if (blockSize < 0) return;
 

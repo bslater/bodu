@@ -28,7 +28,7 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     /// an <see cref="ObjectDisposedException" />.
     /// </summary>
     [TestMethod]
-    public void GenerateIV_WhenSetAfterDispose_ShouldThrowObjectDisposedException()
+    public void GenerateIV_WhenSetAfterDispose_ShouldThrowExactly()
     {
         TAlgorithm algorithm = CreateAlgorithm();
         algorithm.Dispose();

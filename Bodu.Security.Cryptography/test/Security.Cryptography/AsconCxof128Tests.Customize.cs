@@ -13,7 +13,7 @@ public partial class AsconCxof128Tests
     /// <see cref="InvalidOperationException" />.
     /// </summary>
     [TestMethod]
-    public void Customize_WhenCalledTwice_ShouldThrowInvalidOperationException()
+    public void Customize_WhenCalledTwice_ShouldThrowExactly()
     {
         using var sut = new AsconCxof128();
         sut.Customize([0x01]);
@@ -29,7 +29,7 @@ public partial class AsconCxof128Tests
     /// has been called throws <see cref="InvalidOperationException" />.
     /// </summary>
     [TestMethod]
-    public void Customize_AfterAbsorb_ShouldThrowInvalidOperationException()
+    public void Customize_AfterAbsorb_ShouldThrowExactly()
     {
         using var sut = new AsconCxof128();
         sut.Absorb([0x01]);
@@ -45,7 +45,7 @@ public partial class AsconCxof128Tests
     /// <see cref="ObjectDisposedException" />.
     /// </summary>
     [TestMethod]
-    public void Customize_WhenDisposed_ShouldThrowObjectDisposedException()
+    public void Customize_WhenDisposed_ShouldThrowExactly()
     {
         var sut = new AsconCxof128();
         sut.Dispose();

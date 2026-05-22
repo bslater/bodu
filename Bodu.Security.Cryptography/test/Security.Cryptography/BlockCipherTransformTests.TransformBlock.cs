@@ -373,7 +373,7 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
     /// an input count that is not an exact multiple of <see cref="ICryptoTransform.InputBlockSize" />.
     /// </summary>
     [TestMethod]
-    public void TransformBlock_WhenInputCountIsNotMultipleOfInputBlockSize_ShouldThrowCryptographicException()
+    public void TransformBlock_WhenInputCountIsNotMultipleOfInputBlockSize_ShouldThrowExactly()
     {
         using TCryptoTransform transform = CreateAlgorithm();
 
@@ -469,7 +469,7 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
     /// Transform-layer KATs.</param>
     [TestMethod]
     [DynamicData(nameof(KnownAnswerData), DynamicDataDisplayName = nameof(GetKnownAnswerDisplayName))]
-    public void TransformBlock_WhenCalledAfterTransformFinalBlockAndCanReuseTransformIsFalse_ShouldThrowInvalidOperationException(BlockCipherKnownAnswer? answer)
+    public void TransformBlock_WhenCalledAfterTransformFinalBlockAndCanReuseTransformIsFalse_ShouldThrowExactly(BlockCipherKnownAnswer? answer)
     {
         if (answer is null)
         {

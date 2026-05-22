@@ -1005,10 +1005,11 @@ public sealed class CamelliaBlockCipher
             return ((hi << bits) | (lo >> (64 - bits)), (lo << bits) | (hi >> (64 - bits)));
 
         bits -= 64;
-        if (bits == 0)
-            return (lo, hi);
-
-        return ((lo << bits) | (hi >> (64 - bits)), (hi << bits) | (lo >> (64 - bits)));
+        return bits switch
+        {
+            0 => (lo, hi),
+            _ => (lo << bits | hi >> (64 - bits), hi << bits | lo >> (64 - bits))
+        };
     }
 
     /// <summary>

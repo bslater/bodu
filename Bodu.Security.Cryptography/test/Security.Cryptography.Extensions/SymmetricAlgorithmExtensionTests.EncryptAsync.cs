@@ -26,7 +26,7 @@ public partial class SymmetricAlgorithmExtensionTests
     /// Verifies that a negative buffer size raises <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    public async Task EncryptAsync_WhenBufferSizeIsNegative_ShouldThrowArgumentOutOfRangeException()
+    public async Task EncryptAsync_WhenBufferSizeIsNegative_ShouldThrowExactly()
     {
         using SymmetricAlgorithm algorithm = CreateAlgorithm();
         using var input = new MemoryStream();
@@ -44,7 +44,7 @@ public partial class SymmetricAlgorithmExtensionTests
     /// argument to trigger this guard.
     /// </remarks>
     [TestMethod]
-    public async Task EncryptAsync_WhenTargetStreamIsNull_ShouldThrowArgumentNullException()
+    public async Task EncryptAsync_WhenTargetStreamIsNull_ShouldThrowExactly()
     {
         using SymmetricAlgorithm algorithm = CreateAlgorithm();
         using var input = new MemoryStream(new byte[] { 1, 2, 3 });
@@ -263,7 +263,7 @@ public partial class SymmetricAlgorithmExtensionTests
     /// <see cref="TaskCanceledException" />.
     /// </summary>
     [TestMethod]
-    public async Task EncryptAsync_WhenCancelled_ShouldThrowTaskCanceledException()
+    public async Task EncryptAsync_WhenCancelled_ShouldThrowExactly()
     {
         using SymmetricAlgorithm algorithm = CreateAlgorithm();
 
@@ -283,7 +283,7 @@ public partial class SymmetricAlgorithmExtensionTests
     /// <see cref="TaskCanceledException" />).
     /// </summary>
     [TestMethod]
-    public async Task EncryptAsync_WhenCancellationTriggeredMidStream_ShouldThrowOperationCanceledException()
+    public async Task EncryptAsync_WhenCancellationTriggeredMidStream_ShouldThrowExactly()
     {
         using SymmetricAlgorithm algorithm = CreateAlgorithm();
         algorithm.Padding = PaddingMode.None;

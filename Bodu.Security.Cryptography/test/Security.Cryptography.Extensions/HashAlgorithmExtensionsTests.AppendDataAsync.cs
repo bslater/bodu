@@ -19,7 +19,7 @@ public partial class HashAlgorithmExtensionsTests
     /// <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public async Task AppendDataAsync_WhenAlgorithmIsNull_ShouldThrowArgumentNullException()
+    public async Task AppendDataAsync_WhenAlgorithmIsNull_ShouldThrowExactly()
     {
         HashAlgorithm? algorithm = null;
         using var stream = new MemoryStream(SampleData);
@@ -34,7 +34,7 @@ public partial class HashAlgorithmExtensionsTests
     /// <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public async Task AppendDataAsync_WhenStreamIsNull_ShouldThrowArgumentNullException()
+    public async Task AppendDataAsync_WhenStreamIsNull_ShouldThrowExactly()
     {
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
 
@@ -47,7 +47,7 @@ public partial class HashAlgorithmExtensionsTests
     /// <see cref="ArgumentOutOfRangeException" /> when <paramref name="bufferSize" /> is zero.
     /// </summary>
     [TestMethod]
-    public async Task AppendDataAsync_WhenBufferSizeIsZero_ShouldThrowArgumentOutOfRangeException()
+    public async Task AppendDataAsync_WhenBufferSizeIsZero_ShouldThrowExactly()
     {
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         using var stream = new MemoryStream(SampleData);
@@ -62,7 +62,7 @@ public partial class HashAlgorithmExtensionsTests
     /// negative.
     /// </summary>
     [TestMethod]
-    public async Task AppendDataAsync_WhenBufferSizeIsNegative_ShouldThrowArgumentOutOfRangeException()
+    public async Task AppendDataAsync_WhenBufferSizeIsNegative_ShouldThrowExactly()
     {
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         using var stream = new MemoryStream(SampleData);
@@ -280,7 +280,7 @@ public partial class HashAlgorithmExtensionsTests
     /// call.
     /// </summary>
     [TestMethod]
-    public async Task AppendDataAsync_WhenTokenAlreadyCancelled_ShouldThrow()
+    public async Task AppendDataAsync_WhenTokenAlreadyCancelled_ShouldThrowExactly()
     {
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         using var stream = new MemoryStream(SampleData);
@@ -299,7 +299,7 @@ public partial class HashAlgorithmExtensionsTests
     /// <see cref="TaskCanceledException" />).
     /// </summary>
     [TestMethod]
-    public async Task AppendDataAsync_WhenCancellationTriggeredMidStream_ShouldThrow()
+    public async Task AppendDataAsync_WhenCancellationTriggeredMidStream_ShouldThrowExactly()
     {
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         using var cts = new CancellationTokenSource();

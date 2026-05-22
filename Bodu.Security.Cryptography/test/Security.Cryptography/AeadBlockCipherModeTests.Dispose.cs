@@ -60,7 +60,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     /// <see cref="ObjectDisposedException" /> when called on a disposed transform.
     /// </summary>
     [TestMethod]
-    public void Encrypt_WhenCalledAfterDispose_ShouldThrowObjectDisposedException()
+    public void Encrypt_WhenCalledAfterDispose_ShouldThrowExactly()
     {
         TTransform transform = MakeTransform();
         transform.Dispose();
@@ -77,7 +77,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     /// <see cref="ObjectDisposedException" /> when called on a disposed transform.
     /// </summary>
     [TestMethod]
-    public void Decrypt_WhenCalledAfterDispose_ShouldThrowObjectDisposedException()
+    public void Decrypt_WhenCalledAfterDispose_ShouldThrowExactly()
     {
         TTransform transform = MakeTransform();
         transform.Dispose();
@@ -94,7 +94,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     /// <see cref="ObjectDisposedException" /> when called on a disposed transform.
     /// </summary>
     [TestMethod]
-    public void ProcessAssociatedData_WhenCalledAfterDispose_ShouldThrowObjectDisposedException()
+    public void ProcessAssociatedData_WhenCalledAfterDispose_ShouldThrowExactly()
     {
         TTransform transform = MakeTransform();
         transform.Dispose();

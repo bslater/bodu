@@ -86,7 +86,7 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     /// Verifies that a negative offset raises <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    public void ComputeHash_WhenOffsetIsNegative_ShouldThrowArgumentOutOfRangeException()
+    public void ComputeHash_WhenOffsetIsNegative_ShouldThrowExactly()
     {
         using THasher hasher = Construct(Factory, DefaultBlockSize, DefaultFanOut);
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
@@ -99,7 +99,7 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     /// Verifies that a negative count raises <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    public void ComputeHash_WhenCountIsNegative_ShouldThrowArgumentOutOfRangeException()
+    public void ComputeHash_WhenCountIsNegative_ShouldThrowExactly()
     {
         using THasher hasher = Construct(Factory, DefaultBlockSize, DefaultFanOut);
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
@@ -113,7 +113,7 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     /// <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    public void ComputeHash_WhenOffsetPlusCountExceedsArrayLength_ShouldThrowArgumentOutOfRangeException()
+    public void ComputeHash_WhenOffsetPlusCountExceedsArrayLength_ShouldThrowExactly()
     {
         using THasher hasher = Construct(Factory, DefaultBlockSize, DefaultFanOut);
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
@@ -128,7 +128,7 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     /// array as empty input.
     /// </summary>
     [TestMethod]
-    public void ComputeHash_WhenByteArrayIsNull_ShouldThrowArgumentNullException()
+    public void ComputeHash_WhenByteArrayIsNull_ShouldThrowExactly()
     {
         using THasher hasher = Construct(Factory, DefaultBlockSize, DefaultFanOut);
         Assert.ThrowsExactly<ArgumentNullException>(() =>
@@ -143,7 +143,7 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     /// rather than a <see cref="ReadOnlySpan{T}" />-constructor exception keyed to the wrong parameter.
     /// </summary>
     [TestMethod]
-    public void ComputeHash_WhenByteArrayIsNullWithOffsetAndCount_ShouldThrowArgumentNullException()
+    public void ComputeHash_WhenByteArrayIsNullWithOffsetAndCount_ShouldThrowExactly()
     {
         using THasher hasher = Construct(Factory, DefaultBlockSize, DefaultFanOut);
         Assert.ThrowsExactly<ArgumentNullException>(() =>

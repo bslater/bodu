@@ -20,7 +20,7 @@ public partial class ICryptoTransformExtensionsTests
     /// throws <see cref="ArgumentNullException" /> when <paramref name="transform" /> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public async Task TransformAsync_Stream_WhenTransformIsNull_ShouldThrowArgumentNullException()
+    public async Task TransformAsync_Stream_WhenTransformIsNull_ShouldThrowExactly()
     {
         ICryptoTransform? transform = null;
         using var source = new MemoryStream(new byte[] { 1, 2, 3, 4 });
@@ -37,7 +37,7 @@ public partial class ICryptoTransformExtensionsTests
     /// throws <see cref="ArgumentNullException" /> when <paramref name="sourceStream" /> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public async Task TransformAsync_Stream_WhenSourceStreamIsNull_ShouldThrowArgumentNullException()
+    public async Task TransformAsync_Stream_WhenSourceStreamIsNull_ShouldThrowExactly()
     {
         using SimpleReversingCryptoTransform transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
         using var target = new MemoryStream();
@@ -53,7 +53,7 @@ public partial class ICryptoTransformExtensionsTests
     /// throws <see cref="ArgumentNullException" /> when <paramref name="targetStream" /> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public async Task TransformAsync_Stream_WhenTargetStreamIsNull_ShouldThrowArgumentNullException()
+    public async Task TransformAsync_Stream_WhenTargetStreamIsNull_ShouldThrowExactly()
     {
         using SimpleReversingCryptoTransform transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
         using var source = new MemoryStream(new byte[] { 1, 2, 3, 4 });
@@ -69,7 +69,7 @@ public partial class ICryptoTransformExtensionsTests
     /// throws <see cref="ArgumentOutOfRangeException" /> when <paramref name="bufferSize" /> is zero.
     /// </summary>
     [TestMethod]
-    public async Task TransformAsync_Stream_WhenBufferSizeIsZero_ShouldThrowArgumentOutOfRangeException()
+    public async Task TransformAsync_Stream_WhenBufferSizeIsZero_ShouldThrowExactly()
     {
         using SimpleReversingCryptoTransform transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
         using var source = new MemoryStream(new byte[] { 1, 2, 3, 4 });
@@ -86,7 +86,7 @@ public partial class ICryptoTransformExtensionsTests
     /// throws <see cref="ArgumentOutOfRangeException" /> when <paramref name="bufferSize" /> is negative.
     /// </summary>
     [TestMethod]
-    public async Task TransformAsync_Stream_WhenBufferSizeIsNegative_ShouldThrowArgumentOutOfRangeException()
+    public async Task TransformAsync_Stream_WhenBufferSizeIsNegative_ShouldThrowExactly()
     {
         using SimpleReversingCryptoTransform transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
         using var source = new MemoryStream(new byte[] { 1, 2, 3, 4 });
@@ -159,7 +159,7 @@ public partial class ICryptoTransformExtensionsTests
     /// subtype is contractually significant.
     /// </summary>
     [TestMethod]
-    public async Task TransformAsync_Stream_WhenCancelledDuringRead_ShouldThrowTaskCanceledException()
+    public async Task TransformAsync_Stream_WhenCancelledDuringRead_ShouldThrowExactly()
     {
         using SymmetricAlgorithm algorithm = CreateAlgorithm();
         algorithm.Padding = PaddingMode.None;
@@ -183,7 +183,7 @@ public partial class ICryptoTransformExtensionsTests
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(GetValidTransformTestData))]
-    public async Task TransformAsync_Stream_WhenAlreadyCancelled_ShouldThrowTaskCanceledException(KnownAnswerTest kat)
+    public async Task TransformAsync_Stream_WhenAlreadyCancelled_ShouldThrowExactly(KnownAnswerTest kat)
     {
         using var source = new MemoryStream(kat.Input);
         using var target = new MemoryStream();
@@ -233,7 +233,7 @@ public partial class ICryptoTransformExtensionsTests
     /// throws <see cref="ArgumentNullException" /> when <paramref name="transform" /> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public async Task TransformAsync_Memory_WhenTransformIsNull_ShouldThrowArgumentNullException()
+    public async Task TransformAsync_Memory_WhenTransformIsNull_ShouldThrowExactly()
     {
         ICryptoTransform? transform = null;
         var input = new ReadOnlyMemory<byte>(new byte[] { 1, 2, 3, 4 });
@@ -304,7 +304,7 @@ public partial class ICryptoTransformExtensionsTests
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(GetValidTransformTestData))]
-    public async Task TransformAsync_Memory_WhenAlreadyCancelled_ShouldThrowTaskCanceledException(
+    public async Task TransformAsync_Memory_WhenAlreadyCancelled_ShouldThrowExactly(
         KnownAnswerTest kat)
     {
         using SimpleReversingCryptoTransform transform = CreateTransform(kat);
@@ -327,7 +327,7 @@ public partial class ICryptoTransformExtensionsTests
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(GetValidTransformTestData))]
-    public async Task TransformAsync_Memory_WhenDestinationIsTooSmall_ShouldThrowArgumentException(
+    public async Task TransformAsync_Memory_WhenDestinationIsTooSmall_ShouldThrowExactly(
         KnownAnswerTest kat)
     {
         using SimpleReversingCryptoTransform transform = CreateTransform(kat);

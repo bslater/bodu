@@ -14,7 +14,7 @@ public sealed partial class CtsModeTransformTests
     /// length as the input — there is nothing to steal from.
     /// </summary>
     [TestMethod]
-    public void Transform_WhenInputShorterThanOneBlock_ShouldThrow()
+    public void Transform_WhenInputShorterThanOneBlock_ShouldThrowExactly()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
         var iv = new byte[ExpectedBlockSize];
@@ -32,7 +32,7 @@ public sealed partial class CtsModeTransformTests
     /// are no bytes to steal and no output can be produced.
     /// </summary>
     [TestMethod]
-    public void Transform_WhenInputIsEmpty_ShouldThrow()
+    public void Transform_WhenInputIsEmpty_ShouldThrowExactly()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
         var iv = new byte[ExpectedBlockSize];

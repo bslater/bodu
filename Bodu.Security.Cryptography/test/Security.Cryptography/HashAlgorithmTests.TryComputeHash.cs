@@ -104,7 +104,7 @@ namespace Bodu.Security.Cryptography
         /// throws an <see cref="ObjectDisposedException" /> when the algorithm has been disposed.
         /// </summary>
         [TestMethod]
-        public void TryComputeHash_WhenDisposed_ShouldThrowObjectDisposedException()
+        public void TryComputeHash_WhenDisposed_ShouldThrowExactly()
         {
             TAlgorithm algorithm = CreateAlgorithm();
             algorithm.Dispose();

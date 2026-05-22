@@ -78,20 +78,20 @@ namespace Bodu.Security.Cryptography;
 public sealed class GcmSivModeTransform
     : IAeadBlockCipherModeTransform, IDisposable
 {
-    /// <summary>
-    /// Length of the AES-GCM-SIV authentication tag is 128 bits (16 bytes). Byte length derived inline via
-    /// <see cref="TagSizeBits" /> / 8.
-    /// </summary>
-    private const int TagSizeBits = 128;
 
     /// <summary>
     /// Length of the AES-GCM-SIV nonce is 96 bits (12 bytes). Byte length derived inline via
     /// <see cref="NonceSizeBits" /> / 8.
     /// </summary>
     private const int NonceSizeBits = 96;
+    /// <summary>
+    /// Length of the AES-GCM-SIV authentication tag is 128 bits (16 bytes). Byte length derived inline via
+    /// <see cref="TagSizeBits" /> / 8.
+    /// </summary>
+    private const int TagSizeBits = 128;
+    private readonly byte[] _authKey;          // derived K_auth (POLYVAL key)
 
     private readonly IBlockCipher _encCipher;  // cipher keyed with derived K_enc
-    private readonly byte[] _authKey;          // derived K_auth (POLYVAL key)
     private readonly byte[] _nonce;            // 12-byte nonce
     private byte[]? _aad;
     private bool _aadProcessed;
@@ -156,43 +156,6 @@ public sealed class GcmSivModeTransform
     public int TagSize => TagSizeBits;
 
     /// <inheritdoc />
-    public void ProcessAssociatedData(ReadOnlySpan<byte> associatedData)
-    {
-        this.ThrowIfDisposed();
-        CryptoHelpers.ThrowIfAssociatedDataAlreadyProcessed(this._aadProcessed);
-
-        this._aad = associatedData.ToArray();
-        this._aadProcessed = true;
-    }
-
-    /// <inheritdoc />
-    public int Encrypt(ReadOnlySpan<byte> plaintext, Span<byte> output)
-    {
-        this.ThrowIfDisposed();
-        this.ThrowIfCompleted();
-
-        var required = plaintext.Length + (TagSizeBits / 8);
-        CryptoHelpers.ThrowIfOutputBufferTooSmall(output, required);
-        EnsureAadProcessed();
-
-        try
-        {
-            // Tag = E(K_enc, POLYVAL(K_auth, AAD, PT) XOR nonce) with bits [31] and [63] cleared.
-            var tag = ComputeTag(this._aad.AsSpan(), plaintext);
-
-            // Encrypt plaintext with CTR(K_enc) seeded from tag.
-            var ctrIv = BuildCtrIv(tag);
-            CtrEncrypt(plaintext, output[..plaintext.Length], ctrIv);
-            tag.CopyTo(output[plaintext.Length..]);
-            return required;
-        }
-        finally
-        {
-            this._completed = true;
-        }
-    }
-
-    /// <inheritdoc />
     public int Decrypt(ReadOnlySpan<byte> ciphertextWithTag, Span<byte> output)
     {
         this.ThrowIfDisposed();
@@ -243,53 +206,54 @@ public sealed class GcmSivModeTransform
         GC.SuppressFinalize(this);
     }
 
-    /// <summary>
-    /// Throws <see cref="InvalidOperationException" /> if this transform has already encrypted or decrypted a message.
-    /// GCM-SIV transforms are single-use; create a fresh instance per message.
-    /// </summary>
-    private void ThrowIfCompleted() =>
-        CryptoHelpers.ThrowIfAlreadyCompleted(this._completed);
-
-    /// <summary>
-    /// Releases the resources used by this instance.
-    /// </summary>
-    /// <param name="disposing">
-    /// <see langword="true" /> to release managed resources; <see langword="false" /> to release unmanaged resources
-    /// only.
-    /// </param>
-    private void Dispose(bool disposing)
+    /// <inheritdoc />
+    public int Encrypt(ReadOnlySpan<byte> plaintext, Span<byte> output)
     {
-        if (this._disposed)
-            return;
+        this.ThrowIfDisposed();
+        this.ThrowIfCompleted();
 
-        if (disposing)
+        var required = plaintext.Length + (TagSizeBits / 8);
+        CryptoHelpers.ThrowIfOutputBufferTooSmall(output, required);
+        EnsureAadProcessed();
+
+        try
         {
-            if (this._encCipher is IDisposable disposableCipher)
-                disposableCipher.Dispose();
+            // Tag = E(K_enc, POLYVAL(K_auth, AAD, PT) XOR nonce) with bits [31] and [63] cleared.
+            var tag = ComputeTag(this._aad.AsSpan(), plaintext);
 
-            CryptoHelpers.Clear(this._authKey);
-            CryptoHelpers.Clear(this._nonce);
-            CryptoHelpers.ClearAndNullify(ref this._aad);
-
-            this._aadProcessed = false;
+            // Encrypt plaintext with CTR(K_enc) seeded from tag.
+            var ctrIv = BuildCtrIv(tag);
+            CtrEncrypt(plaintext, output[..plaintext.Length], ctrIv);
+            tag.CopyTo(output[plaintext.Length..]);
+            return required;
         }
-
-        this._disposed = true;
+        finally
+        {
+            this._completed = true;
+        }
     }
 
-    // ── Private helpers ────────────────────────────────────────────────────────────────────────
+    /// <inheritdoc />
+    public void ProcessAssociatedData(ReadOnlySpan<byte> associatedData)
+    {
+        this.ThrowIfDisposed();
+        CryptoHelpers.ThrowIfAssociatedDataAlreadyProcessed(this._aadProcessed);
+
+        this._aad = associatedData.ToArray();
+        this._aadProcessed = true;
+    }
 
     /// <summary>
-    /// Ensures the associated-data (AAD) POLYVAL contribution has been finalized exactly once before payload bytes are
-    /// processed; no-op on subsequent invocations.
+    /// Builds the GCM-SIV CTR IV from the tag: set MSB of last byte (bit 127) to 1 to distinguish CTR from POLYVAL
+    /// blocks per RFC 8452 Section 5.
     /// </summary>
-    private void EnsureAadProcessed()
+    /// <param name="tag">The POLYVAL-derived authentication tag.</param>
+    /// <returns>The CTR initialization vector derived from <paramref name="tag" /> per RFC 8452.</returns>
+    private static byte[] BuildCtrIv(byte[] tag)
     {
-        if (!this._aadProcessed)
-        {
-            this._aad = [];
-            this._aadProcessed = true;
-        }
+        var ctrIv = (byte[])tag.Clone();
+        ctrIv[15] |= 0x80; // set bit 127
+        return ctrIv;
     }
 
     /// <summary>
@@ -364,69 +328,42 @@ public sealed class GcmSivModeTransform
     }
 
     /// <summary>
-    /// Computes the GCM-SIV tag per RFC 8452 Section 5.2. POLYVAL(K_auth, len(A)||len(C), A blocks, C blocks) XOR
-    /// nonce, then clear bit 31 and 63, then encrypt with K_enc.
+    /// Multiplies two 128-bit big-endian field elements in GF(2^128) with polynomial x^128 + x^7 + x^2 + x + 1
+    /// (GCM/GHASH field). Shift-and-XOR algorithm.
     /// </summary>
-    /// <param name="aad">The associated authenticated data.</param>
-    /// <param name="plaintext">The plaintext bytes authenticated by the tag.</param>
-    /// <returns>The computed AES-GCM-SIV authentication tag.</returns>
-    private byte[] ComputeTag(ReadOnlySpan<byte> aad, ReadOnlySpan<byte> plaintext)
+    /// <param name="x">The left operand block (16 bytes).</param>
+    /// <param name="h">The hash subkey <c>H</c> (16 bytes).</param>
+    /// <param name="result">The destination block (16 bytes); receives the GF(2<sup>128</sup>) product.</param>
+    private static void GhashMultiply(ReadOnlySpan<byte> x, ReadOnlySpan<byte> h, Span<byte> result)
     {
-        var blockSize = this._encCipher.BlockSize / 8;
+        // Stack-allocate both working buffers. v is a mutable copy of the auth subkey H and must
+        // not escape to the managed heap — stack allocation ensures it is reclaimed with the frame.
+        Span<byte> z = stackalloc byte[16];
+        Span<byte> v = stackalloc byte[16];
+        h.CopyTo(v);
 
-        // POLYVAL accumulation: process AAD blocks, then plaintext blocks, then length block.
-        // polyvalResult holds intermediate MAC state XOR'd with the nonce — cleared in finally.
-        var polyvalResult = new byte[blockSize];
-        try
+        for (var i = 0; i < 16; i++)
         {
-            PolyvalUpdate(polyvalResult, aad);
-            PolyvalUpdate(polyvalResult, plaintext);
+            var xi = x[i];
+            for (var bit = 7; bit >= 0; bit--)
+            {
+                if (((xi >> bit) & 1) == 1)
+                    Xor(z, v, z);
 
-            // Length block: LE64(|A| * 8) || LE64(|P| * 8). Stack-allocated; never reaches the heap.
-            Span<byte> lenBlock = stackalloc byte[blockSize];
-            var aadBits = (ulong)aad.Length * 8;
-            var ptBits = (ulong)plaintext.Length * 8;
-            for (var i = 0; i < 8; i++) lenBlock[i] = (byte)(aadBits >> (8 * i));
-            for (var i = 0; i < 8; i++) lenBlock[8 + i] = (byte)(ptBits >> (8 * i));
-            PolyvalUpdate(polyvalResult, lenBlock);
+                var lsb = (v[15] & 1) == 1;
 
-            // XOR with nonce, clear bit 31 (byte 3 MSB) and bit 63 (byte 7 MSB).
-            for (var i = 0; i < (NonceSizeBits / 8); i++)
-                polyvalResult[i] ^= this._nonce[i];
-            polyvalResult[15] &= 0x7F; // clear bit 127 (RFC calls this bit 31 of the last 32-bit word)
+                // Right-shift v by 1.
+                for (var j = 15; j > 0; j--)
+                    v[j] = (byte)((v[j] >> 1) | (v[j - 1] << 7));
 
-            // Encrypt with K_enc to produce the tag.
-            var tag = new byte[blockSize];
-            this._encCipher.Encrypt(polyvalResult, tag);
-            return tag;
+                v[0] >>= 1;
+
+                // Reduce: if LSB was set, XOR with 0xE1 in MSByte (x^128 + x^7 + x^2 + x + 1).
+                if (lsb) v[0] ^= 0xE1;
+            }
         }
-        finally
-        {
-            CryptoHelpers.Clear(polyvalResult);
-        }
-    }
 
-    /// <summary>
-    /// Accumulates <paramref name="data" /> into the POLYVAL state block-by-block. POLYVAL(H, X) =
-    /// reflect(GHASH(reflect(H), reflect(X))). Internally uses GHASH multiplication on reflected inputs.
-    /// </summary>
-    /// <param name="state">The POLYVAL accumulator (16 bytes); updated in place.</param>
-    /// <param name="data">The input bytes to fold into the POLYVAL state.</param>
-    private void PolyvalUpdate(byte[] state, ReadOnlySpan<byte> data)
-    {
-        const int blockSize = 16;
-
-        // Stack-allocate the per-block scratch buffer so plaintext/AAD fragments never reach the heap.
-        Span<byte> block = stackalloc byte[blockSize];
-        for (var offset = 0; offset < data.Length; offset += blockSize)
-        {
-            var len = Math.Min(blockSize, data.Length - offset);
-            data.Slice(offset, len).CopyTo(block);
-
-            // state ^= block, then multiply by H (authKey) via POLYVAL.
-            Xor(state, block, state);
-            PolyvalMultiply(state, this._authKey, state);
-        }
+        z.CopyTo(result);
     }
 
     /// <summary>
@@ -471,55 +408,57 @@ public sealed class GcmSivModeTransform
     }
 
     /// <summary>
-    /// Multiplies two 128-bit big-endian field elements in GF(2^128) with polynomial x^128 + x^7 + x^2 + x + 1
-    /// (GCM/GHASH field). Shift-and-XOR algorithm.
+    /// Writes the byte-wise XOR of <paramref name="a" /> and <paramref name="b" /> into <paramref name="result" />.
     /// </summary>
-    /// <param name="x">The left operand block (16 bytes).</param>
-    /// <param name="h">The hash subkey <c>H</c> (16 bytes).</param>
-    /// <param name="result">The destination block (16 bytes); receives the GF(2<sup>128</sup>) product.</param>
-    private static void GhashMultiply(ReadOnlySpan<byte> x, ReadOnlySpan<byte> h, Span<byte> result)
+    /// <param name="a">The first operand span.</param>
+    /// <param name="b">The second operand span; must be at least <paramref name="a" />.Length bytes.</param>
+    /// <param name="result">The destination span; must be at least <paramref name="a" />.Length bytes.</param>
+    private static void Xor(ReadOnlySpan<byte> a, ReadOnlySpan<byte> b, Span<byte> result)
     {
-        // Stack-allocate both working buffers. v is a mutable copy of the auth subkey H and must
-        // not escape to the managed heap — stack allocation ensures it is reclaimed with the frame.
-        Span<byte> z = stackalloc byte[16];
-        Span<byte> v = stackalloc byte[16];
-        h.CopyTo(v);
-
-        for (var i = 0; i < 16; i++)
-        {
-            var xi = x[i];
-            for (var bit = 7; bit >= 0; bit--)
-            {
-                if (((xi >> bit) & 1) == 1)
-                    Xor(z, v, z);
-
-                var lsb = (v[15] & 1) == 1;
-
-                // Right-shift v by 1.
-                for (var j = 15; j > 0; j--)
-                    v[j] = (byte)((v[j] >> 1) | (v[j - 1] << 7));
-
-                v[0] >>= 1;
-
-                // Reduce: if LSB was set, XOR with 0xE1 in MSByte (x^128 + x^7 + x^2 + x + 1).
-                if (lsb) v[0] ^= 0xE1;
-            }
-        }
-
-        z.CopyTo(result);
+        for (var i = 0; i < result.Length; i++) result[i] = (byte)(a[i] ^ b[i]);
     }
 
     /// <summary>
-    /// Builds the GCM-SIV CTR IV from the tag: set MSB of last byte (bit 127) to 1 to distinguish CTR from POLYVAL
-    /// blocks per RFC 8452 Section 5.
+    /// Computes the GCM-SIV tag per RFC 8452 Section 5.2. POLYVAL(K_auth, len(A)||len(C), A blocks, C blocks) XOR
+    /// nonce, then clear bit 31 and 63, then encrypt with K_enc.
     /// </summary>
-    /// <param name="tag">The POLYVAL-derived authentication tag.</param>
-    /// <returns>The CTR initialization vector derived from <paramref name="tag" /> per RFC 8452.</returns>
-    private static byte[] BuildCtrIv(byte[] tag)
+    /// <param name="aad">The associated authenticated data.</param>
+    /// <param name="plaintext">The plaintext bytes authenticated by the tag.</param>
+    /// <returns>The computed AES-GCM-SIV authentication tag.</returns>
+    private byte[] ComputeTag(ReadOnlySpan<byte> aad, ReadOnlySpan<byte> plaintext)
     {
-        var ctrIv = (byte[])tag.Clone();
-        ctrIv[15] |= 0x80; // set bit 127
-        return ctrIv;
+        var blockSize = this._encCipher.BlockSize / 8;
+
+        // POLYVAL accumulation: process AAD blocks, then plaintext blocks, then length block.
+        // polyvalResult holds intermediate MAC state XOR'd with the nonce — cleared in finally.
+        var polyvalResult = new byte[blockSize];
+        try
+        {
+            PolyvalUpdate(polyvalResult, aad);
+            PolyvalUpdate(polyvalResult, plaintext);
+
+            // Length block: LE64(|A| * 8) || LE64(|P| * 8). Stack-allocated; never reaches the heap.
+            Span<byte> lenBlock = stackalloc byte[blockSize];
+            var aadBits = (ulong)aad.Length * 8;
+            var ptBits = (ulong)plaintext.Length * 8;
+            for (var i = 0; i < 8; i++) lenBlock[i] = (byte)(aadBits >> (8 * i));
+            for (var i = 0; i < 8; i++) lenBlock[8 + i] = (byte)(ptBits >> (8 * i));
+            PolyvalUpdate(polyvalResult, lenBlock);
+
+            // XOR with nonce, clear bit 31 (byte 3 MSB) and bit 63 (byte 7 MSB).
+            for (var i = 0; i < (NonceSizeBits / 8); i++)
+                polyvalResult[i] ^= this._nonce[i];
+            polyvalResult[15] &= 0x7F; // clear bit 127 (RFC calls this bit 31 of the last 32-bit word)
+
+            // Encrypt with K_enc to produce the tag.
+            var tag = new byte[blockSize];
+            this._encCipher.Encrypt(polyvalResult, tag);
+            return tag;
+        }
+        finally
+        {
+            CryptoHelpers.Clear(polyvalResult);
+        }
     }
 
     /// <summary>
@@ -556,15 +495,76 @@ public sealed class GcmSivModeTransform
     }
 
     /// <summary>
-    /// Writes the byte-wise XOR of <paramref name="a" /> and <paramref name="b" /> into <paramref name="result" />.
+    /// Releases the resources used by this instance.
     /// </summary>
-    /// <param name="a">The first operand span.</param>
-    /// <param name="b">The second operand span; must be at least <paramref name="a" />.Length bytes.</param>
-    /// <param name="result">The destination span; must be at least <paramref name="a" />.Length bytes.</param>
-    private static void Xor(ReadOnlySpan<byte> a, ReadOnlySpan<byte> b, Span<byte> result)
+    /// <param name="disposing">
+    /// <see langword="true" /> to release managed resources; <see langword="false" /> to release unmanaged resources
+    /// only.
+    /// </param>
+    private void Dispose(bool disposing)
     {
-        for (var i = 0; i < result.Length; i++) result[i] = (byte)(a[i] ^ b[i]);
+        if (this._disposed)
+            return;
+
+        if (disposing)
+        {
+            if (this._encCipher is IDisposable disposableCipher)
+                disposableCipher.Dispose();
+
+            CryptoHelpers.Clear(this._authKey);
+            CryptoHelpers.Clear(this._nonce);
+            CryptoHelpers.ClearAndNullify(ref this._aad);
+
+            this._aadProcessed = false;
+        }
+
+        this._disposed = true;
     }
+
+    // ── Private helpers ────────────────────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Ensures the associated-data (AAD) POLYVAL contribution has been finalized exactly once before payload bytes are
+    /// processed; no-op on subsequent invocations.
+    /// </summary>
+    private void EnsureAadProcessed()
+    {
+        if (!this._aadProcessed)
+        {
+            this._aad = [];
+            this._aadProcessed = true;
+        }
+    }
+
+    /// <summary>
+    /// Accumulates <paramref name="data" /> into the POLYVAL state block-by-block. POLYVAL(H, X) =
+    /// reflect(GHASH(reflect(H), reflect(X))). Internally uses GHASH multiplication on reflected inputs.
+    /// </summary>
+    /// <param name="state">The POLYVAL accumulator (16 bytes); updated in place.</param>
+    /// <param name="data">The input bytes to fold into the POLYVAL state.</param>
+    private void PolyvalUpdate(byte[] state, ReadOnlySpan<byte> data)
+    {
+        const int blockSize = 16;
+
+        // Stack-allocate the per-block scratch buffer so plaintext/AAD fragments never reach the heap.
+        Span<byte> block = stackalloc byte[blockSize];
+        for (var offset = 0; offset < data.Length; offset += blockSize)
+        {
+            var len = Math.Min(blockSize, data.Length - offset);
+            data.Slice(offset, len).CopyTo(block);
+
+            // state ^= block, then multiply by H (authKey) via POLYVAL.
+            Xor(state, block, state);
+            PolyvalMultiply(state, this._authKey, state);
+        }
+    }
+
+    /// <summary>
+    /// Throws <see cref="InvalidOperationException" /> if this transform has already encrypted or decrypted a message.
+    /// GCM-SIV transforms are single-use; create a fresh instance per message.
+    /// </summary>
+    private void ThrowIfCompleted() =>
+        CryptoHelpers.ThrowIfAlreadyCompleted(this._completed);
 
     /// <summary>
     /// Throws an <see cref="ObjectDisposedException" /> if the algorithm instance has been disposed.

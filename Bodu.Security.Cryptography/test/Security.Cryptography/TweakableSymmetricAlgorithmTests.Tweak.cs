@@ -14,7 +14,7 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     /// Verifies that accessing <see cref="TweakableSymmetricAlgorithm.Tweak" /> after disposal throws <see cref="ObjectDisposedException" />.
     /// </summary>
     [TestMethod]
-    public void Tweak_WhenAccessedAfterDispose_ShouldThrowObjectDisposedException()
+    public void Tweak_WhenAccessedAfterDispose_ShouldThrowExactly()
     {
         using TAlgorithm algorithm = CreateAlgorithm();
         algorithm.TweakSize = algorithm.LegalTweakSizes[0].MinSize;
@@ -114,7 +114,7 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     /// Verifies that <see cref="TweakableSymmetricAlgorithm.Tweak" /> set to null throws ArgumentNullException.
     /// </summary>
     [TestMethod]
-    public void Tweak_WhenSetToNull_ShouldThrowArgumentNullException()
+    public void Tweak_WhenSetToNull_ShouldThrowExactly()
     {
         using TAlgorithm algorithm = CreateAlgorithm();
 
@@ -132,7 +132,7 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     /// <c>ThrowIfInvalidTweakSize</c> referenced).
     /// </summary>
     [TestMethod]
-    public void Tweak_WhenSetToInvalidSize_ShouldThrowWithCleanMessage()
+    public void Tweak_WhenSetToInvalidSize_ShouldThrowExactly()
     {
         using TAlgorithm algorithm = CreateAlgorithm();
 

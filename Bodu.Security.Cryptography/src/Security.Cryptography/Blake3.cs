@@ -84,27 +84,6 @@ namespace Bodu.Security.Cryptography;
 public sealed class Blake3
     : DeferredFinalBlockHashAlgorithm<Blake3>
 {
-    // ---- domain-separation flags (§2.5 of the BLAKE3 specification) ----
-
-    /// <summary>
-    /// The flag applied to the first compression block of every chunk.
-    /// </summary>
-    private const uint FlagChunkStart = 1u;
-
-    /// <summary>
-    /// The flag applied to the last compression block of every chunk.
-    /// </summary>
-    private const uint FlagChunkEnd = 2u;
-
-    /// <summary>
-    /// The flag applied to every parent (non-leaf) node compression call.
-    /// </summary>
-    private const uint FlagParent = 4u;
-
-    /// <summary>
-    /// The flag applied to the root compression call to enable output extraction.
-    /// </summary>
-    private const uint FlagRoot = 8u;
 
     // ---- structural constants ----
 
@@ -117,6 +96,27 @@ public sealed class Blake3
     /// Size, in bytes, of a single input chunk (leaf of the hash tree).
     /// </summary>
     private const int ChunkSize = 1024;
+
+    /// <summary>
+    /// The flag applied to the last compression block of every chunk.
+    /// </summary>
+    private const uint FlagChunkEnd = 2u;
+    // ---- domain-separation flags (§2.5 of the BLAKE3 specification) ----
+
+    /// <summary>
+    /// The flag applied to the first compression block of every chunk.
+    /// </summary>
+    private const uint FlagChunkStart = 1u;
+
+    /// <summary>
+    /// The flag applied to every parent (non-leaf) node compression call.
+    /// </summary>
+    private const uint FlagParent = 4u;
+
+    /// <summary>
+    /// The flag applied to the root compression call to enable output extraction.
+    /// </summary>
+    private const uint FlagRoot = 8u;
 
     /// <summary>
     /// Output length in bytes.
@@ -181,6 +181,19 @@ public sealed class Blake3
         s_iv.CopyTo(_chunkCv, 0);
     }
 
+    /// <inheritdoc />
+    /// <remarks>
+    /// BLAKE3 has a fixed 256-bit default output; the published name is simply <c>"BLAKE3"</c>.
+    /// </remarks>
+    public override string AlgorithmName
+    {
+        get
+        {
+            this.ThrowIfDisposed();
+            return "BLAKE3";
+        }
+    }
+
     // ---- HashAlgorithm overrides ----
 
     /// <summary>
@@ -198,19 +211,6 @@ public sealed class Blake3
     /// </summary>
     /// <returns><see langword="true" />; the implementation accumulates arbitrary-length input internally.</returns>
     public override bool CanTransformMultipleBlocks => true;
-
-    /// <inheritdoc />
-    /// <remarks>
-    /// BLAKE3 has a fixed 256-bit default output; the published name is simply <c>"BLAKE3"</c>.
-    /// </remarks>
-    public override string AlgorithmName
-    {
-        get
-        {
-            this.ThrowIfDisposed();
-            return "BLAKE3";
-        }
-    }
 
     /// <inheritdoc />
     /// <remarks>
@@ -333,41 +333,6 @@ public sealed class Blake3
         return digest;
     }
 
-    /// <summary>
-    /// Merges the completed intermediate chunk stack with the final chunk chaining value and returns the root chaining
-    /// value.
-    /// </summary>
-    /// <param name="rightCv">
-    /// The chaining value of the final chunk. This value is kept out of <see cref="_cvStack" /> until finalization so
-    /// the last parent merge can be marked with <see cref="FlagRoot" />.
-    /// </param>
-    /// <returns>An 8-element array containing the 256-bit root chaining value of the complete message.</returns>
-    /// <remarks>
-    /// <para>
-    /// Intermediate chunks may already have been folded into balanced subtrees on <see cref="_cvStack" />. Finalization
-    /// differs from normal chunk pushing because the final chunk must not be pre-merged as a non-root parent. Instead,
-    /// the stack is folded into the final chunk from right to left, applying <see cref="FlagRoot" /> to the last parent
-    /// compression.
-    /// </para>
-    /// </remarks>
-    private uint[] MergeStackWithFinalChunk(uint[] rightCv)
-    {
-        var cv = rightCv;
-
-        while (_cvStack.Count > 0)
-        {
-            var lastIdx = _cvStack.Count - 1;
-
-            var leftCv = _cvStack[lastIdx];
-            _cvStack.RemoveAt(lastIdx);
-
-            var isRoot = _cvStack.Count == 0;
-            cv = ParentCv(leftCv, cv, isRoot);
-        }
-
-        return cv;
-    }
-
     // ---- core compression ----
 
     /// <summary>
@@ -464,26 +429,24 @@ public sealed class Blake3
         state[b] = (state[b] ^ state[c]).RotateBitsRightUnchecked(7);
     }
 
-    // ---- block and parent processing ----
-
     /// <summary>
-    /// Reads exactly 64 bytes from <paramref name="block" /> into a 16-element little-endian uint32 word array,
-    /// zero-padding any bytes beyond the actual block length.
+    /// Determines whether the subtrees currently on the stack and the newly completed chunk should be merged, based on
+    /// the binary tree completion invariant.
     /// </summary>
-    /// <param name="block">The raw block bytes to interpret (0–64 bytes).</param>
-    /// <returns>A 16-element array of little-endian uint32 words representing the block.</returns>
-    private static uint[] ReadBlockWords(ReadOnlySpan<byte> block)
+    /// <param name="chunkIdx">The zero-based index of the most recently completed chunk.</param>
+    /// <param name="stackDepth">The current depth of <see cref="_cvStack" />.</param>
+    /// <returns>
+    /// <see langword="true" /> if the top entry on the stack represents a subtree of exactly the same height as the
+    /// subtree rooted at the incoming CV, and therefore the two should be merged into a parent node.
+    /// </returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static bool IsSubtreeComplete(ulong chunkIdx, int stackDepth)
     {
-        Span<byte> padded = stackalloc byte[BlockSize];
-        padded.Clear();
-        block.CopyTo(padded);
-
-        var words = new uint[16];
-
-        for (var i = 0; i < 16; i++)
-            words[i] = BinaryPrimitives.ReadUInt32LittleEndian(padded[(i * 4) ..]);
-
-        return words;
+        // The number of trailing zeros in (chunkIdx + 1) reflects how many full subtree levels
+        // are complete at this point.  Merge whenever that count meets or exceeds the stack depth.
+        var completed = chunkIdx + 1;
+        var trailingZeros = System.Numerics.BitOperations.TrailingZeroCount(completed);
+        return trailingZeros >= stackDepth;
     }
 
     /// <summary>
@@ -515,6 +478,63 @@ public sealed class Blake3
         return [outState[0], outState[1], outState[2], outState[3], outState[4], outState[5], outState[6], outState[7]];
     }
 
+    // ---- block and parent processing ----
+
+    /// <summary>
+    /// Reads exactly 64 bytes from <paramref name="block" /> into a 16-element little-endian uint32 word array,
+    /// zero-padding any bytes beyond the actual block length.
+    /// </summary>
+    /// <param name="block">The raw block bytes to interpret (0–64 bytes).</param>
+    /// <returns>A 16-element array of little-endian uint32 words representing the block.</returns>
+    private static uint[] ReadBlockWords(ReadOnlySpan<byte> block)
+    {
+        Span<byte> padded = stackalloc byte[BlockSize];
+        padded.Clear();
+        block.CopyTo(padded);
+
+        var words = new uint[16];
+
+        for (var i = 0; i < 16; i++)
+            words[i] = BinaryPrimitives.ReadUInt32LittleEndian(padded[(i * 4)..]);
+
+        return words;
+    }
+
+    /// <summary>
+    /// Merges the completed intermediate chunk stack with the final chunk chaining value and returns the root chaining
+    /// value.
+    /// </summary>
+    /// <param name="rightCv">
+    /// The chaining value of the final chunk. This value is kept out of <see cref="_cvStack" /> until finalization so
+    /// the last parent merge can be marked with <see cref="FlagRoot" />.
+    /// </param>
+    /// <returns>An 8-element array containing the 256-bit root chaining value of the complete message.</returns>
+    /// <remarks>
+    /// <para>
+    /// Intermediate chunks may already have been folded into balanced subtrees on <see cref="_cvStack" />. Finalization
+    /// differs from normal chunk pushing because the final chunk must not be pre-merged as a non-root parent. Instead,
+    /// the stack is folded into the final chunk from right to left, applying <see cref="FlagRoot" /> to the last parent
+    /// compression.
+    /// </para>
+    /// </remarks>
+    private uint[] MergeStackWithFinalChunk(uint[] rightCv)
+    {
+        var cv = rightCv;
+
+        while (_cvStack.Count > 0)
+        {
+            var lastIdx = _cvStack.Count - 1;
+
+            var leftCv = _cvStack[lastIdx];
+            _cvStack.RemoveAt(lastIdx);
+
+            var isRoot = _cvStack.Count == 0;
+            cv = ParentCv(leftCv, cv, isRoot);
+        }
+
+        return cv;
+    }
+
     // ---- tree-merging stack helpers ----
 
     /// <summary>
@@ -543,25 +563,5 @@ public sealed class Blake3
         }
 
         _cvStack.Add(cv);
-    }
-
-    /// <summary>
-    /// Determines whether the subtrees currently on the stack and the newly completed chunk should be merged, based on
-    /// the binary tree completion invariant.
-    /// </summary>
-    /// <param name="chunkIdx">The zero-based index of the most recently completed chunk.</param>
-    /// <param name="stackDepth">The current depth of <see cref="_cvStack" />.</param>
-    /// <returns>
-    /// <see langword="true" /> if the top entry on the stack represents a subtree of exactly the same height as the
-    /// subtree rooted at the incoming CV, and therefore the two should be merged into a parent node.
-    /// </returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static bool IsSubtreeComplete(ulong chunkIdx, int stackDepth)
-    {
-        // The number of trailing zeros in (chunkIdx + 1) reflects how many full subtree levels
-        // are complete at this point.  Merge whenever that count meets or exceeds the stack depth.
-        var completed = chunkIdx + 1;
-        var trailingZeros = System.Numerics.BitOperations.TrailingZeroCount(completed);
-        return trailingZeros >= stackDepth;
     }
 }

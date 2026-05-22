@@ -18,7 +18,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
     /// <see cref="AllowsKeyRegenerationOnInitialize" />.
     /// </summary>
     [TestMethod]
-    public void Initialize_WhenKeyValueIsMissing_ShouldThrowCryptographicException()
+    public void Initialize_WhenKeyValueIsMissing_ShouldThrowExactly()
     {
         if (AllowsKeyRegenerationOnInitialize)
         {

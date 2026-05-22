@@ -25,7 +25,7 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     /// an <see cref="ObjectDisposedException" />.
     /// </summary>
     [TestMethod]
-    public void Key_WhenAccessedAfterDispose_ShouldThrowObjectDisposedException()
+    public void Key_WhenAccessedAfterDispose_ShouldThrowExactly()
     {
         TAlgorithm algorithm = CreateAlgorithm();
         algorithm.Dispose();

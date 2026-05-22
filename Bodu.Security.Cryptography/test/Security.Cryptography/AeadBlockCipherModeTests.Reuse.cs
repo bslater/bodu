@@ -27,7 +27,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     /// decrypt operation under the spent state.
     /// </summary>
     [TestMethod]
-    public void Decrypt_AfterEncryptCompleted_ShouldThrowInvalidOperationException()
+    public void Decrypt_AfterEncryptCompleted_ShouldThrowExactly()
     {
         TTransform transform = MakeTransform();
         var plaintext = new byte[ExpectedBlockSize];
@@ -46,7 +46,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     /// spent state.
     /// </summary>
     [TestMethod]
-    public void Encrypt_AfterDecryptCompleted_ShouldThrowInvalidOperationException()
+    public void Encrypt_AfterDecryptCompleted_ShouldThrowExactly()
     {
         var iv = CreateInitializationVector();
         var plaintext = new byte[ExpectedBlockSize];
@@ -81,7 +81,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     /// state contract.
     /// </remarks>
     [TestMethod]
-    public void Encrypt_AfterDecryptTagMismatch_ShouldThrowInvalidOperationException()
+    public void Encrypt_AfterDecryptTagMismatch_ShouldThrowExactly()
     {
         using var cipher = new AesBlockCipherFixture(new byte[16]);
         var iv = CreateInitializationVector();
@@ -112,7 +112,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     /// the spent instance cannot be reused. A fresh transform is required for every message.
     /// </summary>
     [TestMethod]
-    public void Decrypt_AfterDecryptTagMismatch_ShouldThrowInvalidOperationException()
+    public void Decrypt_AfterDecryptTagMismatch_ShouldThrowExactly()
     {
         using var cipher = new AesBlockCipherFixture(new byte[16]);
         var iv = CreateInitializationVector();

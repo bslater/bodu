@@ -24,7 +24,7 @@ public partial class CryptoHelpersTests
     /// <see cref="ArgumentNullException"/> when the IV is <see langword="null"/>.
     /// </summary>
     [TestMethod]
-    public void ThrowIfIvLengthInvalid_WhenIvIsNull_ShouldThrowArgumentNullException()
+    public void ThrowIfIvLengthInvalid_WhenIvIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -41,7 +41,7 @@ public partial class CryptoHelpersTests
     [TestMethod]
     [DataRow(8, 128)]
     [DataRow(32, 128)]
-    public void ThrowIfIvLengthInvalid_WhenLengthMismatches_ShouldThrowArgumentException(int actualBytes, int expectedBits)
+    public void ThrowIfIvLengthInvalid_WhenLengthMismatches_ShouldThrowExactly(int actualBytes, int expectedBits)
     {
         var iv = new byte[actualBytes];
 

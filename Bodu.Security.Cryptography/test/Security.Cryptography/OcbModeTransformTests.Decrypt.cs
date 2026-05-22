@@ -27,7 +27,7 @@ public sealed partial class OcbModeTransformTests
     [TestMethod]
     [DataRow(64, DisplayName = "tagSize = 64 bits")]
     [DataRow(96, DisplayName = "tagSize = 96 bits")]
-    public void Decrypt_WithNonDefaultTagSize_WhenTagTampered_ShouldThrowCryptographicException(int tagSize)
+    public void Decrypt_WithNonDefaultTagSize_WhenTagTampered_ShouldThrowExactly(int tagSize)
     {
         using var cipher = new AesBlockCipherFixture(new byte[16]);
         var iv = new byte[ExpectedBlockSize];
@@ -56,7 +56,7 @@ public sealed partial class OcbModeTransformTests
     /// the received tag.
     /// </remarks>
     [TestMethod]
-    public void Decrypt_WhenTagSizeMismatch_ShouldThrowCryptographicException()
+    public void Decrypt_WhenTagSizeMismatch_ShouldThrowExactly()
     {
         using var cipher = new AesBlockCipherFixture(new byte[16]);
         var iv = new byte[ExpectedBlockSize];

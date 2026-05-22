@@ -20,7 +20,7 @@ public partial class HashAlgorithmExtensionsTests
     /// <see cref="ArgumentNullException" /> when the algorithm argument is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void AppendData_WhenAlgorithmIsNull_ShouldThrowArgumentNullException()
+    public void AppendData_WhenAlgorithmIsNull_ShouldThrowExactly()
     {
         HashAlgorithm? algorithm = null;
 

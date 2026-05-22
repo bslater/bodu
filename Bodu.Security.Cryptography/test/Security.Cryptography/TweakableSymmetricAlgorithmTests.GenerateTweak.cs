@@ -27,7 +27,7 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     /// <see cref="ObjectDisposedException" />.
     /// </summary>
     [TestMethod]
-    public void GenerateTweak_WhenCalledAfterDispose_ShouldThrowObjectDisposedException()
+    public void GenerateTweak_WhenCalledAfterDispose_ShouldThrowExactly()
     {
         TAlgorithm algorithm = CreateAlgorithm();
         algorithm.Dispose();

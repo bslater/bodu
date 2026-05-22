@@ -25,7 +25,7 @@ public partial class CryptoHelpersTests
     /// <see cref="CryptographicException"/> when the supplied success flag is <see langword="false"/>.
     /// </summary>
     [TestMethod]
-    public void ThrowIfHashAlgorithmDestinationTooSmall_WhenFailure_ShouldThrowCryptographicException()
+    public void ThrowIfHashAlgorithmDestinationTooSmall_WhenFailure_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<CryptographicException>(() =>
         {

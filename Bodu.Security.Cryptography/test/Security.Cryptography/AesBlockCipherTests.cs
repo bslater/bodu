@@ -58,7 +58,7 @@ public sealed partial class AesBlockCipherTests
     /// <see cref="ArgumentNullException" />. AES-specific contract not covered by the generic base.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenKeyIsNull_ShouldThrowArgumentNullException()
+    public void Ctor_WhenKeyIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() => new AesBlockCipher(null!));
     }
@@ -77,7 +77,7 @@ public sealed partial class AesBlockCipherTests
     [DataRow(17)]
     [DataRow(31)]
     [DataRow(33)]
-    public void Ctor_WhenKeyLengthIsInvalid_ShouldThrowCryptographicException(int keyLength)
+    public void Ctor_WhenKeyLengthIsInvalid_ShouldThrowExactly(int keyLength)
     {
         var key = new byte[keyLength];
         Assert.ThrowsExactly<CryptographicException>(() => new AesBlockCipher(key));

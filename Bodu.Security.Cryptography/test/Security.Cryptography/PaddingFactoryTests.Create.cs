@@ -15,7 +15,7 @@ public partial class PaddingFactoryTests
     /// <see cref="PaddingMode" /> value with a clean exception message.
     /// </summary>
     [TestMethod]
-    public void Create_WhenPaddingModeIsInvalid_ShouldThrowWithCleanMessage()
+    public void Create_WhenPaddingModeIsInvalid_ShouldThrowExactly()
     {
         CryptographicException ex = Assert.ThrowsExactly<CryptographicException>(() =>
         {
@@ -29,7 +29,7 @@ public partial class PaddingFactoryTests
     /// undefined <see cref="PaddingModeKind" /> value with a clean exception message.
     /// </summary>
     [TestMethod]
-    public void Create_WhenBoduPaddingModeIsInvalid_ShouldThrowWithCleanMessage()
+    public void Create_WhenBoduPaddingModeIsInvalid_ShouldThrowExactly()
     {
         CryptographicException ex = Assert.ThrowsExactly<CryptographicException>((Action)(() =>
         {

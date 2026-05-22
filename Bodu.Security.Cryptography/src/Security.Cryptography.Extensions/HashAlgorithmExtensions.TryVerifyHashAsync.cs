@@ -160,10 +160,9 @@ public static partial class HashAlgorithmExtensions
     {
         ThrowHelper.ThrowIfNull(algorithm);
 
-        if (cancellationToken.IsCancellationRequested)
-            return Task.FromResult(false);
-
-        return Task.FromResult(algorithm.TryVerifyHash(input, expectedHash));
+        return cancellationToken.IsCancellationRequested
+            ? Task.FromResult(false)
+            : Task.FromResult(algorithm.TryVerifyHash(input, expectedHash));
     }
 
     /// <summary>
@@ -200,10 +199,9 @@ public static partial class HashAlgorithmExtensions
     {
         ThrowHelper.ThrowIfNull(algorithm);
 
-        if (cancellationToken.IsCancellationRequested)
-            return Task.FromResult(false);
-
-        return Task.FromResult(algorithm.TryVerifyHash(input, expectedHex));
+        return cancellationToken.IsCancellationRequested
+            ? Task.FromResult(false)
+            : Task.FromResult(algorithm.TryVerifyHash(input, expectedHex));
     }
 
     /// <summary>
@@ -245,9 +243,8 @@ public static partial class HashAlgorithmExtensions
     {
         ThrowHelper.ThrowIfNull(algorithm);
 
-        if (cancellationToken.IsCancellationRequested)
-            return Task.FromResult(false);
-
-        return Task.FromResult(algorithm.TryVerifyHash(input, encoding, expectedHash));
+        return cancellationToken.IsCancellationRequested
+            ? Task.FromResult(false)
+            : Task.FromResult(algorithm.TryVerifyHash(input, encoding, expectedHash));
     }
 }

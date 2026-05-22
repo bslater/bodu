@@ -18,7 +18,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     /// there is no ciphertext and no complete tag to verify.
     /// </summary>
     [TestMethod]
-    public void Decrypt_WhenInputShorterThanTag_ShouldThrowArgumentException()
+    public void Decrypt_WhenInputShorterThanTag_ShouldThrowExactly()
     {
         TTransform transform = MakeTransform();
         var tooShort = new byte[1]; // shorter than TagSize
@@ -33,7 +33,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     /// recovered plaintext.
     /// </summary>
     [TestMethod]
-    public void Decrypt_WhenOutputIsTooSmall_ShouldThrowArgumentException()
+    public void Decrypt_WhenOutputIsTooSmall_ShouldThrowExactly()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
         var iv = CreateInitializationVector();
@@ -60,7 +60,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     /// AEAD transforms are single-use per message; a fresh instance is required for each decrypt.
     /// </summary>
     [TestMethod]
-    public void Decrypt_WhenCalledTwice_ShouldThrowInvalidOperationException()
+    public void Decrypt_WhenCalledTwice_ShouldThrowExactly()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
         var iv = CreateInitializationVector();
@@ -86,7 +86,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     /// <see cref="CryptographicException" />.
     /// </summary>
     [TestMethod]
-    public void Decrypt_WhenCiphertextTampered_ShouldThrowCryptographicException()
+    public void Decrypt_WhenCiphertextTampered_ShouldThrowExactly()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
         var iv = CreateInitializationVector();
@@ -110,7 +110,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     /// <see cref="CryptographicException" />.
     /// </summary>
     [TestMethod]
-    public void Decrypt_WhenTagTampered_ShouldThrowCryptographicException()
+    public void Decrypt_WhenTagTampered_ShouldThrowExactly()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
         var iv = CreateInitializationVector();
@@ -135,7 +135,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     /// depend on the supplied IV.
     /// </summary>
     [TestMethod]
-    public void Decrypt_WithWrongNonce_ShouldThrowCryptographicException()
+    public void Decrypt_WithWrongNonce_ShouldThrowExactly()
     {
         if (!NonceAffectsCiphertext)
         {
@@ -165,7 +165,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     /// throw <see cref="CryptographicException" />, confirming the AAD is bound into the tag.
     /// </summary>
     [TestMethod]
-    public void Decrypt_WhenAadDoesNotMatch_ShouldThrowCryptographicException()
+    public void Decrypt_WhenAadDoesNotMatch_ShouldThrowExactly()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
         var iv = CreateInitializationVector();

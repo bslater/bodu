@@ -28,7 +28,7 @@ public partial class CryptoHelpersTests
     /// <see cref="ArgumentNullException"/> when the key is <see langword="null"/>.
     /// </summary>
     [TestMethod]
-    public void ThrowIfInvalidKeySize_WhenKeyIsNull_ShouldThrowArgumentNullException()
+    public void ThrowIfInvalidKeySize_WhenKeyIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -41,7 +41,7 @@ public partial class CryptoHelpersTests
     /// <see cref="ArgumentNullException"/> when the legal-key-sizes array is <see langword="null"/>.
     /// </summary>
     [TestMethod]
-    public void ThrowIfInvalidKeySize_WhenLegalKeySizesIsNull_ShouldThrowArgumentNullException()
+    public void ThrowIfInvalidKeySize_WhenLegalKeySizesIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -60,7 +60,7 @@ public partial class CryptoHelpersTests
     [TestMethod]
     [DataRow(8, 128)]
     [DataRow(40, 128)]
-    public void ThrowIfInvalidKeySize_WhenKeyHasWrongLength_ShouldThrowCryptographicException(int actualBytes, int expectedBits)
+    public void ThrowIfInvalidKeySize_WhenKeyHasWrongLength_ShouldThrowExactly(int actualBytes, int expectedBits)
     {
         var key = new byte[actualBytes];
 

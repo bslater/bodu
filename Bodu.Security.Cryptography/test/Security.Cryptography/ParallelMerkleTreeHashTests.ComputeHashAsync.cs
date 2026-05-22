@@ -49,7 +49,7 @@ public partial class ParallelMerkleTreeHashTests
     /// because no leaf nodes can be produced from zero bytes.
     /// </summary>
     [TestMethod]
-    public async Task ComputeHashAsync_WhenStreamIsEmpty_ShouldThrowInvalidOperationException()
+    public async Task ComputeHashAsync_WhenStreamIsEmpty_ShouldThrowExactly()
     {
         using var hasher = new ParallelMerkleTreeHash(Factory, DefaultBlockSize, DefaultFanOut);
         await Assert.ThrowsExactlyAsync<InvalidOperationException>(async () =>
@@ -125,7 +125,7 @@ public partial class ParallelMerkleTreeHashTests
     /// <see cref="TaskCanceledException" /> before completing.
     /// </summary>
     [TestMethod]
-    public async Task ComputeHashAsync_WhenTokenAlreadyCancelled_ShouldThrowTaskCanceledException()
+    public async Task ComputeHashAsync_WhenTokenAlreadyCancelled_ShouldThrowExactly()
     {
         using var cts = new CancellationTokenSource();
         cts.Cancel();
@@ -143,7 +143,7 @@ public partial class ParallelMerkleTreeHashTests
     /// <see cref="TaskCanceledException" />.
     /// </summary>
     [TestMethod]
-    public async Task ComputeHashAsync_WhenTokenCancelledMidStream_ShouldThrowTaskCanceledException()
+    public async Task ComputeHashAsync_WhenTokenCancelledMidStream_ShouldThrowExactly()
     {
         using var cts = new CancellationTokenSource();
 
@@ -451,7 +451,7 @@ public partial class ParallelMerkleTreeHashTests
     /// Verifies that a token cancelled before the call causes immediate cancellation.
     /// </summary>
     [TestMethod]
-    public async Task ComputeHashAsync_WhenTokenCancelledBeforeCall_ShouldThrowImmediately()
+    public async Task ComputeHashAsync_WhenTokenCancelledBeforeCall_ShouldThrowExactly()
     {
         using var cts = new CancellationTokenSource();
         await cts.CancelAsync();
@@ -471,7 +471,7 @@ public partial class ParallelMerkleTreeHashTests
     /// correctly when the parent source is cancelled mid-stream.
     /// </summary>
     [TestMethod]
-    public async Task ComputeHashAsync_WhenLinkedTokenCancelled_ShouldThrowTaskCanceledException()
+    public async Task ComputeHashAsync_WhenLinkedTokenCancelled_ShouldThrowExactly()
     {
         using var parent = new CancellationTokenSource();
         using var linked = CancellationTokenSource.CreateLinkedTokenSource(parent.Token);
@@ -532,7 +532,7 @@ public partial class ParallelMerkleTreeHashTests
     /// <see cref="InvalidOperationException" /> and does not return stale data from the prior call.
     /// </summary>
     [TestMethod]
-    public async Task ComputeHashAsync_WhenEmptyStreamFollowsSuccessfulCall_ShouldThrowInvalidOperation()
+    public async Task ComputeHashAsync_WhenEmptyStreamFollowsSuccessfulCall_ShouldThrowExactly()
     {
         using var hasher = new ParallelMerkleTreeHash(Factory, DefaultBlockSize, DefaultFanOut);
         hasher.ComputeHash(MakeData(8));

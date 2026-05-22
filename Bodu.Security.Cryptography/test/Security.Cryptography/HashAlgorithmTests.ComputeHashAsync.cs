@@ -223,7 +223,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// <see cref="ObjectDisposedException" /> before reading from the supplied stream when the algorithm has been disposed.
     /// </summary>
     [TestMethod]
-    public void ComputeHashAsync_WhenAlgorithmDisposed_ShouldThrowSynchronouslyAndNotReadStream()
+    public void ComputeHashAsync_WhenAlgorithmDisposed_ShouldThrowExactly()
     {
         TAlgorithm algorithm = CreateAlgorithm();
         algorithm.Dispose();

@@ -17,7 +17,7 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     /// name.
     /// </summary>
     [TestMethod]
-    public void CreateDecryptor_WhenSetAfterDisposeWithTweak_ShouldThrowObjectDisposedException()
+    public void CreateDecryptor_WhenSetAfterDisposeWithTweak_ShouldThrowExactly()
     {
         TAlgorithm algorithm = CreateAlgorithm();
         algorithm.Dispose();
@@ -36,7 +36,7 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     /// <see cref="ArgumentNullException" /> when the key is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void CreateDecryptor_WhenKeyIsNullWithTweak_ShouldThrowArgumentNullException()
+    public void CreateDecryptor_WhenKeyIsNullWithTweak_ShouldThrowExactly()
     {
         using TAlgorithm algorithm = CreateAlgorithm();
 
@@ -55,7 +55,7 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     /// <see cref="CryptographicException" /> when the IV is <see langword="null" /> in a non-ECB mode.
     /// </summary>
     [TestMethod]
-    public void CreateDecryptor_WhenIvIsNullInNonEcbModeWithTweak_ShouldThrowCryptographicException()
+    public void CreateDecryptor_WhenIvIsNullInNonEcbModeWithTweak_ShouldThrowExactly()
     {
         using TAlgorithm algorithm = CreateAlgorithm();    // default mode is CBC
 
@@ -75,7 +75,7 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(InvalidBlockSizeBytesData))]
-    public void CreateDecryptor_WhenIvLengthIsInvalidInNonEcbModeWithTweak_ShouldThrowCryptographicException(int blockSize)
+    public void CreateDecryptor_WhenIvLengthIsInvalidInNonEcbModeWithTweak_ShouldThrowExactly(int blockSize)
     {
         if (blockSize < 0) return;
 
@@ -98,7 +98,7 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(InvalidBlockSizeBytesData))]
-    public void CreateDecryptor_WhenIvLengthIsInvalidInEcbModeWithTweak_ShouldThrowCryptographicException(int blockSize)
+    public void CreateDecryptor_WhenIvLengthIsInvalidInEcbModeWithTweak_ShouldThrowExactly(int blockSize)
     {
         if (blockSize < 0) return;
 
@@ -121,7 +121,7 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(InvalidKeySizeBytesData))]
-    public void CreateDecryptor_WhenKeyLengthIsInvalidWithTweak_ShouldThrowCryptographicException(int keySize)
+    public void CreateDecryptor_WhenKeyLengthIsInvalidWithTweak_ShouldThrowExactly(int keySize)
     {
         if (keySize < 0) return;
 
@@ -142,7 +142,7 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     /// <see cref="ArgumentNullException" /> when the tweak is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void CreateDecryptor_WhenTweakIsNull_ShouldThrowArgumentNullException()
+    public void CreateDecryptor_WhenTweakIsNull_ShouldThrowExactly()
     {
         using TAlgorithm algorithm = CreateAlgorithm();
 
@@ -174,7 +174,7 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(InvalidTweakSizeBytesData))]
-    public void CreateDecryptor_WhenTweakLengthIsInvalid_ShouldThrowCryptographicException(int tweakSize)
+    public void CreateDecryptor_WhenTweakLengthIsInvalid_ShouldThrowExactly(int tweakSize)
     {
         if (tweakSize < 0) return;
 

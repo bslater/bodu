@@ -22,7 +22,7 @@ public partial class MerkleTreeHashTests
     /// Verifies that a <see langword="null" /> stream raises <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void ComputeHash_WhenStreamIsNull_ShouldThrowArgumentNullException()
+    public void ComputeHash_WhenStreamIsNull_ShouldThrowExactly()
     {
         using MerkleTreeHash hasher = Construct(Factory, DefaultBlockSize, DefaultFanOut);
         Assert.ThrowsExactly<ArgumentNullException>(() => hasher.ComputeHash((Stream)null!));

@@ -223,10 +223,9 @@ public static partial class HashAlgorithmExtensions
         var actualBuffer = ArrayPool<byte>.Shared.Rent(hashLength);
         try
         {
-            if (!algorithm.TryComputeHash(input, actualBuffer.AsSpan(0, hashLength), out var bytesWritten))
-                return false;
-
-            return CryptographicOperations.FixedTimeEquals(actualBuffer.AsSpan(0, bytesWritten), expectedHash);
+            return !algorithm.TryComputeHash(input, actualBuffer.AsSpan(0, hashLength), out var bytesWritten)
+                ? false
+                : CryptographicOperations.FixedTimeEquals(actualBuffer.AsSpan(0, bytesWritten), expectedHash);
         }
         finally
         {

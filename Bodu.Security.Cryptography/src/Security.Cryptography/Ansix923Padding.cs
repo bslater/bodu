@@ -54,7 +54,7 @@ public sealed class Ansix923Padding
     /// </exception>
     public byte[] Pad(ReadOnlySpan<byte> input, int blockSize)
     {
-        ThrowHelper.ThrowIfNotPositiveMultipleOf(blockSize, 8);
+        CryptoHelpers.ThrowIfNotPositiveMultipleOf(blockSize, 8);
 
         var size = blockSize / 8;
         var paddingLength = size - (input.Length % size);
@@ -86,7 +86,7 @@ public sealed class Ansix923Padding
     /// <exception cref="CryptographicException">Thrown if the padding is invalid or malformed.</exception>
     public byte[] Unpad(ReadOnlySpan<byte> input, int blockSize)
     {
-        ThrowHelper.ThrowIfNotPositiveMultipleOf(blockSize, 8);
+        CryptoHelpers.ThrowIfNotPositiveMultipleOf(blockSize, 8);
 
         // Constant-time verification to mitigate CBC padding-oracle attacks.
         var size = blockSize / 8;

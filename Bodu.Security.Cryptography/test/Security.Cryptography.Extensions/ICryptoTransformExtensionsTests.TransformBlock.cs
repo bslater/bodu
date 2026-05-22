@@ -19,7 +19,7 @@ public partial class ICryptoTransformExtensionsTests
     /// <see cref="ArgumentNullException" /> when <paramref name="cryptoTransform" /> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void TransformBlock_WhenTransformIsNull_ShouldThrowArgumentNullException()
+    public void TransformBlock_WhenTransformIsNull_ShouldThrowExactly()
     {
         ICryptoTransform? transform = null;
 
@@ -34,7 +34,7 @@ public partial class ICryptoTransformExtensionsTests
     /// <see cref="ArgumentNullException" /> when <paramref name="array" /> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void TransformBlock_WhenArrayIsNull_ShouldThrowArgumentNullException()
+    public void TransformBlock_WhenArrayIsNull_ShouldThrowExactly()
     {
         using SimpleReversingCryptoTransform transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
 

@@ -361,13 +361,11 @@ public abstract class TweakableSymmetricAlgorithm
     protected void ThrowIfInvalidTweakSize(int bitLength)
     {
         if (!this.ValidTweakSize(bitLength))
-        {
             throw new CryptographicException(
                 string.Format(
                     CryptoResourceStrings.Crypt_Invalid_TweakSize,
                     bitLength,
                     CryptoHelpers.FormatLegalSizes(this.LegalTweakSizes)));
-        }
     }
 
     /// <summary>

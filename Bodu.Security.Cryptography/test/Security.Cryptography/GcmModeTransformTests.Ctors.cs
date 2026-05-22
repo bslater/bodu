@@ -12,7 +12,7 @@ public sealed partial class GcmModeTransformTests
     /// Verifies that a nonce longer than 96 bits is rejected.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenNonceIsTooLong_ShouldThrowArgumentExceptionWithNonceParamName()
+    public void Ctor_WhenNonceIsTooLong_ShouldThrowExactly()
     {
         using IBlockCipher cipher = new MonitoringBlockCipher(ExpectedBlockSize);
 
@@ -28,7 +28,7 @@ public sealed partial class GcmModeTransformTests
     /// Verifies that a block-sized 128-bit value is rejected by the public GCM nonce constructor.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenNonceIsBlockSized_ShouldThrowArgumentExceptionWithNonceParamName()
+    public void Ctor_WhenNonceIsBlockSized_ShouldThrowExactly()
     {
         using IBlockCipher cipher = new MonitoringBlockCipher(ExpectedBlockSize);
 
@@ -57,7 +57,7 @@ public sealed partial class GcmModeTransformTests
     /// Verifies that the span-based constructor rejects a non-96-bit nonce.
     /// </summary>
     [TestMethod]
-    public void Ctor_WithNonceSpan_WhenNonceLengthIsInvalid_ShouldThrowArgumentExceptionWithNonceParamName()
+    public void Ctor_WithNonceSpan_WhenNonceLengthIsInvalid_ShouldThrowExactly()
     {
         using IBlockCipher cipher = new MonitoringBlockCipher(ExpectedBlockSize);
 

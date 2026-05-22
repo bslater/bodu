@@ -38,7 +38,7 @@ public partial class WhirlpoolTests
     /// <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    public void Version_WhenSetToUndefinedValue_ShouldThrowArgumentOutOfRange()
+    public void Version_WhenSetToUndefinedValue_ShouldThrowExactly()
     {
         using Whirlpool algorithm = new();
 
@@ -85,7 +85,7 @@ public partial class WhirlpoolTests
     /// <see cref="ObjectDisposedException" />.
     /// </summary>
     [TestMethod]
-    public void Version_WhenSetAfterDispose_ShouldThrowObjectDisposedException()
+    public void Version_WhenSetAfterDispose_ShouldThrowExactly()
     {
         Whirlpool algorithm = new();
         algorithm.Dispose();
@@ -101,7 +101,7 @@ public partial class WhirlpoolTests
     /// <see cref="ObjectDisposedException" />.
     /// </summary>
     [TestMethod]
-    public void Version_WhenReadAfterDispose_ShouldThrowObjectDisposedException()
+    public void Version_WhenReadAfterDispose_ShouldThrowExactly()
     {
         Whirlpool algorithm = new();
         algorithm.Dispose();

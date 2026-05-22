@@ -15,7 +15,7 @@ public partial class DelegateHashAlgorithmFactoryTests
     /// delegate throws <see cref="ArgumentNullException" /> with the expected parameter name.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenBuilderIsNull_ShouldThrowArgumentNullException()
+    public void Ctor_WhenBuilderIsNull_ShouldThrowExactly()
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

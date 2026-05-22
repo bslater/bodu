@@ -79,7 +79,7 @@ public sealed partial class TwofishAlgorithmTests
     [DataRow(128)]
     [DataRow(192)]
     [DataRow(256)]
-    public void CreateEncryptor_WhenKeyLengthMismatch_ShouldThrowCryptographicException(int keySizeBits)
+    public void CreateEncryptor_WhenKeyLengthMismatch_ShouldThrowExactly(int keySizeBits)
     {
         using Twofish algorithm = CreateAlgorithm();
         algorithm.KeySize = keySizeBits;

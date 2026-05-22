@@ -19,7 +19,7 @@ public partial class ICryptoTransformExtensionsTests
     /// <see cref="ArgumentNullException" /> when <paramref name="cryptoTransform" /> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void TransformFinalBlock_NoInput_WhenTransformIsNull_ShouldThrowArgumentNullException()
+    public void TransformFinalBlock_NoInput_WhenTransformIsNull_ShouldThrowExactly()
     {
         ICryptoTransform? transform = null;
 
@@ -51,7 +51,7 @@ public partial class ICryptoTransformExtensionsTests
     /// <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void TransformFinalBlock_ByteArray_WhenTransformIsNull_ShouldThrowArgumentNullException()
+    public void TransformFinalBlock_ByteArray_WhenTransformIsNull_ShouldThrowExactly()
     {
         ICryptoTransform? transform = null;
 
@@ -64,7 +64,7 @@ public partial class ICryptoTransformExtensionsTests
     /// throws <see cref="ArgumentNullException" /> when <paramref name="array" /> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void TransformFinalBlock_ByteArray_WhenArrayIsNull_ShouldThrowArgumentNullException()
+    public void TransformFinalBlock_ByteArray_WhenArrayIsNull_ShouldThrowExactly()
     {
         using SimpleReversingCryptoTransform transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
 
@@ -112,7 +112,7 @@ public partial class ICryptoTransformExtensionsTests
     /// <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void TransformFinalBlock_ByteArrayOffset_WhenTransformIsNull_ShouldThrowArgumentNullException()
+    public void TransformFinalBlock_ByteArrayOffset_WhenTransformIsNull_ShouldThrowExactly()
     {
         ICryptoTransform? transform = null;
 
@@ -125,7 +125,7 @@ public partial class ICryptoTransformExtensionsTests
     /// throws <see cref="ArgumentNullException" /> when <paramref name="array" /> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void TransformFinalBlock_ByteArrayOffset_WhenArrayIsNull_ShouldThrowArgumentNullException()
+    public void TransformFinalBlock_ByteArrayOffset_WhenArrayIsNull_ShouldThrowExactly()
     {
         using SimpleReversingCryptoTransform transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
 
@@ -138,7 +138,7 @@ public partial class ICryptoTransformExtensionsTests
     /// throws <see cref="ArgumentOutOfRangeException" /> when <paramref name="offset" /> is negative.
     /// </summary>
     [TestMethod]
-    public void TransformFinalBlock_ByteArrayOffset_WhenOffsetIsNegative_ShouldThrowArgumentOutOfRangeException()
+    public void TransformFinalBlock_ByteArrayOffset_WhenOffsetIsNegative_ShouldThrowExactly()
     {
         using SimpleReversingCryptoTransform transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
 
@@ -151,7 +151,7 @@ public partial class ICryptoTransformExtensionsTests
     /// throws <see cref="ArgumentOutOfRangeException" /> when <paramref name="offset" /> exceeds the array bounds.
     /// </summary>
     [TestMethod]
-    public void TransformFinalBlock_ByteArrayOffset_WhenOffsetExceedsBounds_ShouldThrowArgumentOutOfRangeException()
+    public void TransformFinalBlock_ByteArrayOffset_WhenOffsetExceedsBounds_ShouldThrowExactly()
     {
         using SimpleReversingCryptoTransform transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
 
@@ -191,7 +191,7 @@ public partial class ICryptoTransformExtensionsTests
     /// <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void TransformFinalBlock_Span_WhenTransformIsNull_ShouldThrowArgumentNullException()
+    public void TransformFinalBlock_Span_WhenTransformIsNull_ShouldThrowExactly()
     {
         ICryptoTransform? transform = null;
 
@@ -259,7 +259,7 @@ public partial class ICryptoTransformExtensionsTests
     /// <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void TransformFinalBlock_Memory_WhenTransformIsNull_ShouldThrowArgumentNullException()
+    public void TransformFinalBlock_Memory_WhenTransformIsNull_ShouldThrowExactly()
     {
         ICryptoTransform? transform = null;
 

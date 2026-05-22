@@ -132,11 +132,9 @@ internal static partial class CryptoHelpers
         ThrowHelper.ThrowIfZeroOrNegative(divisor);
 
         if ((throwIfZero && span.Length == 0) || span.Length % divisor != 0)
-        {
             throw new CryptographicException(
                 string.Format(CryptoResourceStrings.Crypt_Invalid_InputLengthBlockMultiple, divisor),
                 paramName);
-        }
     }
 
     /// <summary>
@@ -164,11 +162,9 @@ internal static partial class CryptoHelpers
             throw new ArgumentOutOfRangeException(nameof(divisor));
 
         if (value <= T.Zero || value % divisor != T.Zero)
-        {
             throw new CryptographicException(
                 paramName!,
                 string.Format(CryptoResourceStrings.Crypt_Invalid_HashSizePositiveMultipleOf, divisor));
-        }
     }
 
     /// <summary>
@@ -290,13 +286,11 @@ internal static partial class CryptoHelpers
         ThrowHelper.ThrowIfNull(legalBlockSizes);
 
         if (iv.Length != blockSizeBits / 8)
-        {
             throw new CryptographicException(
                 string.Format(
                     CryptoResourceStrings.Crypt_Invalid_IVSize,
                     iv.Length * 8,
                     CryptoHelpers.FormatLegalSizes(legalBlockSizes)));
-        }
     }
 
     /// <summary>
@@ -349,14 +343,12 @@ internal static partial class CryptoHelpers
 
         var keyBits = key.Length * 8;
         if (!IsValidSize(keyBits, legalKeySizes))
-        {
             throw new CryptographicException(
                 string.Format(
                     CryptoResourceStrings.Crypt_Invalid_KeySize,
                     keyBits,
                     CryptoHelpers.FormatLegalSizes(legalKeySizes)),
                 paramKeyName);
-        }
     }
 
     /// <summary>
@@ -381,14 +373,12 @@ internal static partial class CryptoHelpers
         ThrowHelper.ThrowIfNull(legalTweakSizes);
 
         if (tweak.Length != tweakSizeBits / 8)
-        {
             throw new CryptographicException(
                 string.Format(
                     CryptoResourceStrings.Crypt_Invalid_TweakSize,
                     tweak.Length * 8,
                     CryptoHelpers.FormatLegalSizes(legalTweakSizes)),
                 paramTweakName);
-        }
     }
 
     /// <summary>
@@ -413,14 +403,12 @@ internal static partial class CryptoHelpers
         ThrowHelper.ThrowIfNull(legalBlockSizes);
 
         if (value.Length != blockSizeBits / 8)
-        {
             throw new CryptographicException(
                 string.Format(
                     CryptoResourceStrings.Crypt_Invalid_BlockSize,
                     value.Length * 8,
                     CryptoHelpers.FormatLegalSizes(legalBlockSizes)),
                 paramValueName);
-        }
     }
 
     /// <summary>
@@ -437,10 +425,8 @@ internal static partial class CryptoHelpers
     public static void ThrowIfHashAlgorithmDestinationTooSmall(bool success)
     {
         if (!success)
-        {
             throw new CryptographicException(
                 CryptoResourceStrings.Crypt_Invalid_HashAlgorithmDestinationBufferTooSmall);
-        }
     }
 
     /// <summary>

@@ -35,7 +35,7 @@ public partial class CryptoHelpersTests
     /// throws an <see cref="ArgumentException"/> when the input cannot accommodate the authentication tag.
     /// </summary>
     [TestMethod]
-    public void ThrowIfCiphertextTooShort_WhenLengthLessThanTagSize_ShouldThrowArgumentException()
+    public void ThrowIfCiphertextTooShort_WhenLengthLessThanTagSize_ShouldThrowExactly()
     {
         var ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {

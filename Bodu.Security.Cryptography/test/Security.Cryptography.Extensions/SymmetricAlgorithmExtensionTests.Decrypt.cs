@@ -23,7 +23,7 @@ public partial class SymmetricAlgorithmExtensionTests
     /// the algorithm receiver is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void Decrypt_ByteArray_WhenAlgorithmIsNull_ShouldThrowArgumentNullException()
+    public void Decrypt_ByteArray_WhenAlgorithmIsNull_ShouldThrowExactly()
     {
         SymmetricAlgorithm? algorithm = null;
 
@@ -36,7 +36,7 @@ public partial class SymmetricAlgorithmExtensionTests
     /// the input array is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void Decrypt_ByteArray_WhenArrayIsNull_ShouldThrowArgumentNullException()
+    public void Decrypt_ByteArray_WhenArrayIsNull_ShouldThrowExactly()
     {
         using SymmetricAlgorithm algorithm = CreateAlgorithm();
 
@@ -67,7 +67,7 @@ public partial class SymmetricAlgorithmExtensionTests
     /// input array is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void Decrypt_ByteArrayOffset_WhenArrayIsNull_ShouldThrowArgumentNullException()
+    public void Decrypt_ByteArrayOffset_WhenArrayIsNull_ShouldThrowExactly()
     {
         using SymmetricAlgorithm algorithm = CreateAlgorithm();
 
@@ -80,7 +80,7 @@ public partial class SymmetricAlgorithmExtensionTests
     /// the offset is negative.
     /// </summary>
     [TestMethod]
-    public void Decrypt_ByteArrayOffset_WhenOffsetIsNegative_ShouldThrowArgumentOutOfRangeException()
+    public void Decrypt_ByteArrayOffset_WhenOffsetIsNegative_ShouldThrowExactly()
     {
         using SymmetricAlgorithm algorithm = CreateAlgorithm();
         var data = Encoding.UTF8.GetBytes("data");
@@ -94,7 +94,7 @@ public partial class SymmetricAlgorithmExtensionTests
     /// the offset exceeds the array bounds.
     /// </summary>
     [TestMethod]
-    public void Decrypt_ByteArrayOffset_WhenOffsetExceedsBounds_ShouldThrowArgumentOutOfRangeException()
+    public void Decrypt_ByteArrayOffset_WhenOffsetExceedsBounds_ShouldThrowExactly()
     {
         using SymmetricAlgorithm algorithm = CreateAlgorithm();
         var data = new byte[10];
@@ -126,7 +126,7 @@ public partial class SymmetricAlgorithmExtensionTests
     /// input array is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void Decrypt_ByteArrayRange_WhenArrayIsNull_ShouldThrowArgumentNullException()
+    public void Decrypt_ByteArrayRange_WhenArrayIsNull_ShouldThrowExactly()
     {
         using SymmetricAlgorithm algorithm = CreateAlgorithm();
 
@@ -139,7 +139,7 @@ public partial class SymmetricAlgorithmExtensionTests
     /// the offset is negative.
     /// </summary>
     [TestMethod]
-    public void Decrypt_ByteArrayRange_WhenOffsetIsNegative_ShouldThrowArgumentOutOfRangeException()
+    public void Decrypt_ByteArrayRange_WhenOffsetIsNegative_ShouldThrowExactly()
     {
         using SymmetricAlgorithm algorithm = CreateAlgorithm();
         var data = Encoding.UTF8.GetBytes("data");
@@ -153,7 +153,7 @@ public partial class SymmetricAlgorithmExtensionTests
     /// the count is negative.
     /// </summary>
     [TestMethod]
-    public void Decrypt_ByteArrayRange_WhenCountIsNegative_ShouldThrowArgumentOutOfRangeException()
+    public void Decrypt_ByteArrayRange_WhenCountIsNegative_ShouldThrowExactly()
     {
         using SymmetricAlgorithm algorithm = CreateAlgorithm();
         var data = Encoding.UTF8.GetBytes("data");
@@ -167,7 +167,7 @@ public partial class SymmetricAlgorithmExtensionTests
     /// <c>offset + count</c> exceeds the array length.
     /// </summary>
     [TestMethod]
-    public void Decrypt_ByteArrayRange_WhenOffsetPlusCountExceedsLength_ShouldThrowArgumentOutOfRangeException()
+    public void Decrypt_ByteArrayRange_WhenOffsetPlusCountExceedsLength_ShouldThrowExactly()
     {
         using SymmetricAlgorithm algorithm = CreateAlgorithm();
         var data = Encoding.UTF8.GetBytes("data");
@@ -198,7 +198,7 @@ public partial class SymmetricAlgorithmExtensionTests
     /// algorithm receiver is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void Decrypt_Span_WhenAlgorithmIsNull_ShouldThrowArgumentNullException()
+    public void Decrypt_Span_WhenAlgorithmIsNull_ShouldThrowExactly()
     {
         SymmetricAlgorithm? algorithm = null;
 
@@ -246,7 +246,7 @@ public partial class SymmetricAlgorithmExtensionTests
     /// algorithm receiver is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void Decrypt_Memory_WhenAlgorithmIsNull_ShouldThrowArgumentNullException()
+    public void Decrypt_Memory_WhenAlgorithmIsNull_ShouldThrowExactly()
     {
         SymmetricAlgorithm? algorithm = null;
 
@@ -294,7 +294,7 @@ public partial class SymmetricAlgorithmExtensionTests
     /// when the algorithm receiver is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void Decrypt_Stream_WhenAlgorithmIsNull_ShouldThrowArgumentNullException()
+    public void Decrypt_Stream_WhenAlgorithmIsNull_ShouldThrowExactly()
     {
         SymmetricAlgorithm? algorithm = null;
         using var source = new MemoryStream();
@@ -309,7 +309,7 @@ public partial class SymmetricAlgorithmExtensionTests
     /// when the source stream is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void Decrypt_Stream_WhenSourceStreamIsNull_ShouldThrowArgumentNullException()
+    public void Decrypt_Stream_WhenSourceStreamIsNull_ShouldThrowExactly()
     {
         using SymmetricAlgorithm algorithm = CreateAlgorithm();
         using var target = new MemoryStream();
@@ -323,7 +323,7 @@ public partial class SymmetricAlgorithmExtensionTests
     /// when the target stream is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void Decrypt_Stream_WhenTargetStreamIsNull_ShouldThrowArgumentNullException()
+    public void Decrypt_Stream_WhenTargetStreamIsNull_ShouldThrowExactly()
     {
         using SymmetricAlgorithm algorithm = CreateAlgorithm();
         using var source = new MemoryStream();
@@ -358,7 +358,7 @@ public partial class SymmetricAlgorithmExtensionTests
     /// when the source stream is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void Decrypt_StreamWithBufferSize_WhenSourceStreamIsNull_ShouldThrowArgumentNullException()
+    public void Decrypt_StreamWithBufferSize_WhenSourceStreamIsNull_ShouldThrowExactly()
     {
         using SymmetricAlgorithm algorithm = CreateAlgorithm();
         using var target = new MemoryStream();
@@ -372,7 +372,7 @@ public partial class SymmetricAlgorithmExtensionTests
     /// when the buffer size is zero.
     /// </summary>
     [TestMethod]
-    public void Decrypt_StreamWithBufferSize_WhenBufferSizeIsZero_ShouldThrowArgumentOutOfRangeException()
+    public void Decrypt_StreamWithBufferSize_WhenBufferSizeIsZero_ShouldThrowExactly()
     {
         using SymmetricAlgorithm algorithm = CreateAlgorithm();
         using var source = new MemoryStream();

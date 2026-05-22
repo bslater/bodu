@@ -32,7 +32,7 @@ public partial class CryptoHelpersTests
     [DataRow(7, 8)]
     [DataRow(15, 8)]
     [DataRow(33, 16)]
-    public void ThrowIfSpanLengthNotPositiveMultipleOf_WhenSpanIsNotMultiple_ShouldThrowCryptographicException(int length, int divisor)
+    public void ThrowIfSpanLengthNotPositiveMultipleOf_WhenSpanIsNotMultiple_ShouldThrowExactly(int length, int divisor)
     {
         ReadOnlySpan<byte> span = new byte[length];
         var bytes = span.ToArray();
@@ -48,7 +48,7 @@ public partial class CryptoHelpersTests
     /// rejects an empty span by default (<paramref name="throwIfZero"/> defaults to <see langword="true"/>).
     /// </summary>
     [TestMethod]
-    public void ThrowIfSpanLengthNotPositiveMultipleOf_WhenSpanIsEmpty_ShouldThrowCryptographicException()
+    public void ThrowIfSpanLengthNotPositiveMultipleOf_WhenSpanIsEmpty_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
@@ -75,7 +75,7 @@ public partial class CryptoHelpersTests
     [DataRow(0)]
     [DataRow(-1)]
     [DataRow(-8)]
-    public void ThrowIfSpanLengthNotPositiveMultipleOf_WhenDivisorNotPositive_ShouldThrowArgumentOutOfRangeException(int divisor)
+    public void ThrowIfSpanLengthNotPositiveMultipleOf_WhenDivisorNotPositive_ShouldThrowExactly(int divisor)
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

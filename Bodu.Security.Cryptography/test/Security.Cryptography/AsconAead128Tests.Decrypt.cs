@@ -17,7 +17,7 @@ public partial class AsconAead128Tests
     /// when <see cref="AsconAead128.ProcessAssociatedData" /> has not been called.
     /// </summary>
     [TestMethod]
-    public void Decrypt_WhenAadNotProcessed_ShouldThrowInvalidOperationException()
+    public void Decrypt_WhenAadNotProcessed_ShouldThrowExactly()
     {
         using var sut = new AsconAead128(ValidKey, ValidNonce);
         var fakeCtWithTag = new byte[AsconAead128.TagBytes];
@@ -33,7 +33,7 @@ public partial class AsconAead128Tests
     /// when the input is shorter than <see cref="AsconAead128.TagBytes" /> bytes.
     /// </summary>
     [TestMethod]
-    public void Decrypt_WhenInputShorterThanTag_ShouldThrowArgumentException()
+    public void Decrypt_WhenInputShorterThanTag_ShouldThrowExactly()
     {
         using AsconAead128 sut = MakeInstance();
 
@@ -48,7 +48,7 @@ public partial class AsconAead128Tests
     /// when the output buffer is too small to hold the recovered plaintext.
     /// </summary>
     [TestMethod]
-    public void Decrypt_WhenOutputBufferTooSmall_ShouldThrowArgumentException()
+    public void Decrypt_WhenOutputBufferTooSmall_ShouldThrowExactly()
     {
         var plaintext = new byte[16];
         var ciphertext = new byte[plaintext.Length + AsconAead128.TagBytes];
@@ -68,7 +68,7 @@ public partial class AsconAead128Tests
     /// when the instance has been disposed.
     /// </summary>
     [TestMethod]
-    public void Decrypt_WhenDisposed_ShouldThrowObjectDisposedException()
+    public void Decrypt_WhenDisposed_ShouldThrowExactly()
     {
         var sut = new AsconAead128(ValidKey, ValidNonce);
         sut.Dispose();
@@ -86,7 +86,7 @@ public partial class AsconAead128Tests
     /// when one bit of the ciphertext body is flipped.
     /// </summary>
     [TestMethod]
-    public void Decrypt_WhenCiphertextBodyTampered_ShouldThrowCryptographicException()
+    public void Decrypt_WhenCiphertextBodyTampered_ShouldThrowExactly()
     {
         byte[] plaintext = [0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
                              0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10];
@@ -109,7 +109,7 @@ public partial class AsconAead128Tests
     /// when one bit of the authentication tag is flipped.
     /// </summary>
     [TestMethod]
-    public void Decrypt_WhenTagTampered_ShouldThrowCryptographicException()
+    public void Decrypt_WhenTagTampered_ShouldThrowExactly()
     {
         byte[] plaintext = [0xAA, 0xBB, 0xCC, 0xDD];
         var ciphertext = new byte[plaintext.Length + AsconAead128.TagBytes];
@@ -131,7 +131,7 @@ public partial class AsconAead128Tests
     /// when the associated data used during decryption differs from the one used during encryption.
     /// </summary>
     [TestMethod]
-    public void Decrypt_WhenAadMismatch_ShouldThrowCryptographicException()
+    public void Decrypt_WhenAadMismatch_ShouldThrowExactly()
     {
         byte[] aad1 = [0x01, 0x02];
         byte[] aad2 = [0xFF, 0xFF];
@@ -177,7 +177,7 @@ public partial class AsconAead128Tests
     /// Verifies that <see cref="AsconAead128.Decrypt" /> cannot be called more than once after associated data has been processed.
     /// </summary>
     [TestMethod]
-    public void Decrypt_WhenCalledTwiceAfterAssociatedDataProcessed_ShouldThrowInvalidOperationException()
+    public void Decrypt_WhenCalledTwiceAfterAssociatedDataProcessed_ShouldThrowExactly()
     {
         byte[] plaintext = [0x10, 0x20, 0x30, 0x40];
         var ciphertext = new byte[plaintext.Length + AsconAead128.TagBytes];

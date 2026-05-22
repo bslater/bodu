@@ -16,7 +16,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     /// the ciphertext and the authentication tag.
     /// </summary>
     [TestMethod]
-    public void Encrypt_WhenOutputIsTooSmall_ShouldThrowArgumentException()
+    public void Encrypt_WhenOutputIsTooSmall_ShouldThrowExactly()
     {
         TTransform transform = MakeTransform();
         var plaintext = new byte[ExpectedBlockSize];

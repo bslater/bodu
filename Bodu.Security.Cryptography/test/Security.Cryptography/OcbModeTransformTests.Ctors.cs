@@ -64,7 +64,7 @@ public sealed partial class OcbModeTransformTests
     [DataRow(0, DisplayName = "tagSize = 0   (below minimum)")]
     [DataRow(-1, DisplayName = "tagSize = -1  (negative)")]
     [DataRow(-128, DisplayName = "tagSize = -128 (large negative)")]
-    public void Ctor_WithTagSizeBelowMinimum_ShouldThrowArgumentException(int tagSize)
+    public void Ctor_WithTagSizeBelowMinimum_ShouldThrowExactly(int tagSize)
     {
         using var cipher = new AesBlockCipherFixture(new byte[16]);
 
@@ -91,7 +91,7 @@ public sealed partial class OcbModeTransformTests
     [DataRow(256, DisplayName = "tagSize = 256 (double block size)")]
     [DataRow(7, DisplayName = "tagSize = 7   (not a multiple of 8)")]
     [DataRow(12, DisplayName = "tagSize = 12  (not a multiple of 8)")]
-    public void Ctor_WithTagSizeOutsideAllowedRange_ShouldThrowArgumentException(int tagSize)
+    public void Ctor_WithTagSizeOutsideAllowedRange_ShouldThrowExactly(int tagSize)
     {
         using var cipher = new AesBlockCipherFixture(new byte[16]);
 

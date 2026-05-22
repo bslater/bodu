@@ -177,10 +177,9 @@ public abstract partial class Skein<T>
         {
             this.ThrowIfDisposed();
 
-            if (this.KeyValue is null)
-                throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_KeyNotSet);
-
-            return this.KeyValue?.Copy() ?? [];
+            return this.KeyValue is null
+                ? throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_KeyNotSet)
+                : this.KeyValue?.Copy() ?? [];
         }
 
         set
@@ -190,13 +189,11 @@ public abstract partial class Skein<T>
             ThrowHelper.ThrowIfNull(value);
 
             if (value.Length > MaxKeySize / 8)
-            {
                 throw new CryptographicException(
                     string.Format(
                         CryptoResourceStrings.Crypt_Invalid_KeySize,
                         value.Length * 8,
                         $"0..{MaxKeySize}"));
-            }
 
             this.KeyValue = value.Copy();
             this._isChainingValueCached = false;

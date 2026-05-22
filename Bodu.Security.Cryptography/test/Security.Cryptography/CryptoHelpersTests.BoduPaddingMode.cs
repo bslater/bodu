@@ -86,7 +86,7 @@ public partial class CryptoHelpersTests
     /// <c>blockSizeBytes</c> is not positive.
     /// </summary>
     [TestMethod]
-    public void PadBlock_BoduPaddingMode_WhenIso78164AndBlockSizeIsZero_ShouldThrowExactly_UsingByteArray()
+    public void PadBlock_BoduPaddingMode_WhenIso78164AndBlockSizeIsZero_ShouldThrowExactly()
     {
         var input = Convert.FromHexString("01020304");
 
@@ -138,7 +138,7 @@ public partial class CryptoHelpersTests
     /// throws <see cref="ArgumentException" /> when the destination span is too small to hold the padded output.
     /// </summary>
     [TestMethod]
-    public void PadBlock_BoduPaddingMode_WhenIso78164AndDestinationTooSmall_ShouldThrowExactly_UsingSpan()
+    public void PadBlock_BoduPaddingMode_WhenIso78164AndDestinationTooSmall_ShouldThrowExactly()
     {
         var input = Convert.FromHexString("102030");
 
@@ -190,7 +190,7 @@ public partial class CryptoHelpersTests
     /// <c>blockSizeBytes</c> is not positive.
     /// </summary>
     [TestMethod]
-    public void DepadBlock_BoduPaddingMode_WhenIso78164AndBlockSizeIsZero_ShouldThrowExactly_UsingByteArray()
+    public void DepadBlock_BoduPaddingMode_WhenIso78164AndBlockSizeIsZero_ShouldThrowExactly()
     {
         var padded = Convert.FromHexString("1020308000000000");
 
@@ -237,26 +237,10 @@ public partial class CryptoHelpersTests
 
     /// <summary>
     /// Verifies that <see cref="CryptoHelpers.DepadBlock(PaddingModeKind, int, System.ReadOnlySpan{byte}, System.Span{byte})" />
-    /// throws <see cref="ArgumentOutOfRangeException" /> when the block size is not positive.
-    /// </summary>
-    [TestMethod]
-    public void DepadBlock_BoduPaddingMode_WhenIso78164AndBlockSizeIsZero_ShouldThrowExactly_UsingSpan()
-    {
-        var padded = Convert.FromHexString("1020308000000000");
-
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            Span<byte> destination = stackalloc byte[8];
-            _ = CryptoHelpers.DepadBlock(PaddingModeKind.ISO7816_4, 0, padded, destination);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.DepadBlock(PaddingModeKind, int, System.ReadOnlySpan{byte}, System.Span{byte})" />
     /// throws <see cref="CryptographicException" /> when the source is not a positive multiple of the block size.
     /// </summary>
     [TestMethod]
-    public void DepadBlock_BoduPaddingMode_WhenIso78164AndSourceNotBlockAligned_ShouldThrowExactly_UsingSpan()
+    public void DepadBlock_BoduPaddingMode_WhenIso78164AndSourceNotBlockAligned_ShouldThrowExactly()
     {
         var padded = Convert.FromHexString("10203080");
 
@@ -272,7 +256,7 @@ public partial class CryptoHelpersTests
     /// throws <see cref="ArgumentException" /> when the destination span is too small to hold the depadded bytes.
     /// </summary>
     [TestMethod]
-    public void DepadBlock_BoduPaddingMode_WhenIso78164AndDestinationTooSmall_ShouldThrowExactly_UsingSpan()
+    public void DepadBlock_BoduPaddingMode_WhenIso78164AndDestinationTooSmall_ShouldThrowExactly()
     {
         var padded = Convert.FromHexString("1020304050608000");
 

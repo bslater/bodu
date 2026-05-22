@@ -22,7 +22,7 @@ public abstract partial class BlockCipherModeTests<TMode>
     /// presented with an input whose length is not a multiple of the block size.
     /// </summary>
     [TestMethod]
-    public void Transform_WhenInputNotBlockAligned_ShouldThrow()
+    public void Transform_WhenInputNotBlockAligned_ShouldThrowExactly()
     {
         if (!RequiresBlockAlignedInput)
         {
@@ -48,7 +48,7 @@ public abstract partial class BlockCipherModeTests<TMode>
     /// <see cref="ArgumentException" />.
     /// </summary>
     [TestMethod]
-    public void Transform_WhenOutputTooSmall_ShouldThrow()
+    public void Transform_WhenOutputTooSmall_ShouldThrowExactly()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize);
         var iv = CryptoHelpers.GetRandomNonZeroBytes(ExpectedBlockSize);
@@ -252,7 +252,7 @@ public abstract partial class BlockCipherModeTests<TMode>
     /// initial value. Test uses a 1-byte block cipher so the wrap occurs after 256 calls.
     /// </summary>
     [TestMethod]
-    public void Transform_WhenCounterWouldWrap_ShouldThrowCryptographicException()
+    public void Transform_WhenCounterWouldWrap_ShouldThrowExactly()
     {
         if (!GuardsAgainstKeystreamReuse)
         {

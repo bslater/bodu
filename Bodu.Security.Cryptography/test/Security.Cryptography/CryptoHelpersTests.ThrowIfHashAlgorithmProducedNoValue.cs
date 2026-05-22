@@ -43,7 +43,7 @@ public partial class CryptoHelpersTests
     /// <see cref="CryptographicException"/> when the supplied hash is <see langword="null"/>.
     /// </summary>
     [TestMethod]
-    public void ThrowIfHashAlgorithmProducedNoValue_WhenHashIsNull_ShouldThrowCryptographicException()
+    public void ThrowIfHashAlgorithmProducedNoValue_WhenHashIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<CryptographicException>(() =>
         {

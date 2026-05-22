@@ -79,7 +79,7 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     /// <see cref="CryptographicException" /> rather than leaving the algorithm in an invalid configuration.
     /// </summary>
     [TestMethod]
-    public void TweakSize_WhenSetToZero_ShouldThrowCryptographicException()
+    public void TweakSize_WhenSetToZero_ShouldThrowExactly()
     {
         using TAlgorithm algorithm = CreateAlgorithm();
 
@@ -96,7 +96,7 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(InvalidTweakSizeBitsData))]
-    public void TweakSize_WhenSetToInvalidValue_ShouldThrowCryptographicException(int tweakSize)
+    public void TweakSize_WhenSetToInvalidValue_ShouldThrowExactly(int tweakSize)
     {
         using TAlgorithm algorithm = CreateAlgorithm();
 

@@ -14,7 +14,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     /// Associated data must be supplied exactly once before any encryption or decryption.
     /// </summary>
     [TestMethod]
-    public void ProcessAssociatedData_WhenCalledTwice_ShouldThrowInvalidOperationException()
+    public void ProcessAssociatedData_WhenCalledTwice_ShouldThrowExactly()
     {
         TTransform transform = MakeTransform();
         transform.ProcessAssociatedData(new byte[] { 1, 2, 3 });
@@ -33,7 +33,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     /// encrypt or decrypt operation, and associated data must be supplied before that call.
     /// </remarks>
     [TestMethod]
-    public void ProcessAssociatedData_AfterEncrypt_ShouldThrowInvalidOperationException()
+    public void ProcessAssociatedData_AfterEncrypt_ShouldThrowExactly()
     {
         TTransform transform = MakeTransform();
         var plaintext = new byte[ExpectedBlockSize];
@@ -50,7 +50,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     /// <see cref="IAeadBlockCipherModeTransform.Decrypt" /> has been invoked on the same instance.
     /// </summary>
     [TestMethod]
-    public void ProcessAssociatedData_AfterDecrypt_ShouldThrowInvalidOperationException()
+    public void ProcessAssociatedData_AfterDecrypt_ShouldThrowExactly()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
         var iv = CreateInitializationVector();

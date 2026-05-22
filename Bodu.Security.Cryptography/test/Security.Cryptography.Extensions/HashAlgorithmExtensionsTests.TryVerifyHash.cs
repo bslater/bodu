@@ -240,7 +240,7 @@ public partial class HashAlgorithmExtensionsTests
     /// the extension method cannot dispatch without a receiver.
     /// </summary>
     [TestMethod]
-    public void TryVerifyHash_WhenAlgorithmIsNull_ShouldThrowArgumentNullException()
+    public void TryVerifyHash_WhenAlgorithmIsNull_ShouldThrowExactly()
     {
         HashAlgorithm? algorithm = null;
         Assert.ThrowsExactly<ArgumentNullException>(() =>
@@ -255,7 +255,7 @@ public partial class HashAlgorithmExtensionsTests
     /// graceful null-data handling.
     /// </summary>
     [TestMethod]
-    public void TryVerifyHash_WhenAlgorithmAndExpectedHashAreNull_ShouldThrowArgumentNullException()
+    public void TryVerifyHash_WhenAlgorithmAndExpectedHashAreNull_ShouldThrowExactly()
     {
         HashAlgorithm? algorithm = null;
         Assert.ThrowsExactly<ArgumentNullException>(() =>

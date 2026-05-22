@@ -15,7 +15,7 @@ public partial class AsconAead128Tests
     /// <see cref="InvalidOperationException" />.
     /// </summary>
     [TestMethod]
-    public void ProcessAssociatedData_WhenCalledTwice_ShouldThrowInvalidOperationException()
+    public void ProcessAssociatedData_WhenCalledTwice_ShouldThrowExactly()
     {
         using var sut = new AsconAead128(ValidKey, ValidNonce);
         sut.ProcessAssociatedData(ReadOnlySpan<byte>.Empty);
@@ -31,7 +31,7 @@ public partial class AsconAead128Tests
     /// instance throws <see cref="ObjectDisposedException" />.
     /// </summary>
     [TestMethod]
-    public void ProcessAssociatedData_WhenDisposed_ShouldThrowObjectDisposedException()
+    public void ProcessAssociatedData_WhenDisposed_ShouldThrowExactly()
     {
         var sut = new AsconAead128(ValidKey, ValidNonce);
         sut.Dispose();

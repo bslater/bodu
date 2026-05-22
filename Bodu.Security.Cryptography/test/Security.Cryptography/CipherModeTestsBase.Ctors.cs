@@ -26,7 +26,7 @@ public abstract partial class CipherModeTestsBase<TTransform>
     /// <see cref="IvParameterName" />. Skipped for modes that do not accept an initialisation value, such as ECB.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenIvIsNull_ShouldThrowArgumentNullExceptionWithIvParamName()
+    public void Ctor_WhenIvIsNull_ShouldThrowExactly()
     {
         if (!UsesInitializationVector)
         {
@@ -50,7 +50,7 @@ public abstract partial class CipherModeTestsBase<TTransform>
     /// <see cref="IvParameterName" />. Skipped for modes that do not accept an initialisation value, such as ECB.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenIvLengthDoesNotMatchExpectedSize_ShouldThrowArgumentException()
+    public void Ctor_WhenIvLengthDoesNotMatchExpectedSize_ShouldThrowExactly()
     {
         if (!UsesInitializationVector)
         {
@@ -75,7 +75,7 @@ public abstract partial class CipherModeTestsBase<TTransform>
     /// ignores the cipher argument (e.g. SIV, which uses fixed AES keys via the test override).
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenCipherIsNull_ShouldThrowArgumentNullException()
+    public void Ctor_WhenCipherIsNull_ShouldThrowExactly()
     {
         if (!ValidatesCipherArgument)
         {

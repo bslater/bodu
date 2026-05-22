@@ -333,7 +333,7 @@ public sealed class Camellia
     /// </summary>
     /// <param name="key">The key material used to derive the round subkeys.</param>
     /// <returns>An <see cref="IBlockCipher" /> configured for single-block encryption and decryption.</returns>
-    private static IBlockCipher CreateCipher(byte[] key) => new CamelliaBlockCipher(key);
+    private static CamelliaBlockCipher CreateCipher(byte[] key) => new(key);
 
     /// <summary>
     /// Throws an <see cref="ObjectDisposedException" /> if the algorithm instance has been disposed.

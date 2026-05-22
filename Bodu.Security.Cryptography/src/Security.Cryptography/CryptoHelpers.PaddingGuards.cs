@@ -110,12 +110,9 @@ internal static partial class CryptoHelpers
     public static ArraySegment<byte> GetBufferOrThrowIfInaccessible(MemoryStream stream)
     {
         ThrowHelper.ThrowIfNull(stream);
-        if (!stream.TryGetBuffer(out ArraySegment<byte> segment))
-        {
-            throw new InvalidOperationException(
-                CryptoResourceStrings.Op_Invalid_MemoryStreamBufferInaccessible);
-        }
-
-        return segment;
+        return !stream.TryGetBuffer(out ArraySegment<byte> segment)
+            ? throw new InvalidOperationException(
+                CryptoResourceStrings.Op_Invalid_MemoryStreamBufferInaccessible)
+            : segment;
     }
 }

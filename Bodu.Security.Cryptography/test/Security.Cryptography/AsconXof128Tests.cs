@@ -48,7 +48,7 @@ public partial class AsconXof128Tests
     /// <see cref="ArgumentOutOfRangeException" /> when the requested length is zero.
     /// </summary>
     [TestMethod]
-    public void GetHash_WhenLengthIsZero_ShouldThrowArgumentOutOfRangeException()
+    public void GetHash_WhenLengthIsZero_ShouldThrowExactly()
     {
         using var sut = new AsconXof128();
 
@@ -63,7 +63,7 @@ public partial class AsconXof128Tests
     /// <see cref="ArgumentOutOfRangeException" /> when the requested length is negative.
     /// </summary>
     [TestMethod]
-    public void GetHash_WhenLengthIsNegative_ShouldThrowArgumentOutOfRangeException()
+    public void GetHash_WhenLengthIsNegative_ShouldThrowExactly()
     {
         using var sut = new AsconXof128();
 
@@ -80,7 +80,7 @@ public partial class AsconXof128Tests
     /// has been called throws <see cref="InvalidOperationException" />.
     /// </summary>
     [TestMethod]
-    public void Absorb_AfterSqueeze_ShouldThrowInvalidOperationException()
+    public void Absorb_AfterSqueeze_ShouldThrowExactly()
     {
         using var sut = new AsconXof128();
         sut.Squeeze(new byte[8]);
@@ -117,7 +117,7 @@ public partial class AsconXof128Tests
     /// after the instance has been disposed.
     /// </summary>
     [TestMethod]
-    public void Absorb_WhenDisposed_ShouldThrowObjectDisposedException()
+    public void Absorb_WhenDisposed_ShouldThrowExactly()
     {
         var sut = new AsconXof128();
         sut.Dispose();
@@ -133,7 +133,7 @@ public partial class AsconXof128Tests
     /// after the instance has been disposed.
     /// </summary>
     [TestMethod]
-    public void Squeeze_WhenDisposed_ShouldThrowObjectDisposedException()
+    public void Squeeze_WhenDisposed_ShouldThrowExactly()
     {
         var sut = new AsconXof128();
         sut.Dispose();

@@ -19,7 +19,7 @@ public sealed class BufferedBlockHashAlgorithmTests
     /// <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenBlockSizeIsZero_ShouldThrowArgumentOutOfRangeException()
+    public void Ctor_WhenBlockSizeIsZero_ShouldThrowExactly()
     {
         _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -32,7 +32,7 @@ public sealed class BufferedBlockHashAlgorithmTests
     /// <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenBlockSizeIsNegative_ShouldThrowArgumentOutOfRangeException()
+    public void Ctor_WhenBlockSizeIsNegative_ShouldThrowExactly()
     {
         _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -156,7 +156,7 @@ public sealed class BufferedBlockHashAlgorithmTests
     /// array is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void HashCore_WhenArrayIsNull_ShouldThrowArgumentNullException()
+    public void HashCore_WhenArrayIsNull_ShouldThrowExactly()
     {
         using var sut = new MonitoringBufferedBlockHashAlgorithm();
 
@@ -188,7 +188,7 @@ public sealed class BufferedBlockHashAlgorithmTests
     /// algorithm has been disposed.
     /// </summary>
     [TestMethod]
-    public void HashCore_WhenCalledAfterDispose_ShouldThrowObjectDisposedException()
+    public void HashCore_WhenCalledAfterDispose_ShouldThrowExactly()
     {
         var sut = new MonitoringBufferedBlockHashAlgorithm();
         sut.Dispose();

@@ -72,7 +72,7 @@ public sealed class HashAlgorithmHelperBodyTests
     /// flags as a programmer error.
     /// </summary>
     [TestMethod]
-    public void HashData_Span_WhenAlgorithmTryHashFinalReturnsFalseDespiteAdequateBuffer_ShouldThrowInvalidOperationException()
+    public void HashData_Span_WhenAlgorithmTryHashFinalReturnsFalseDespiteAdequateBuffer_ShouldThrowExactly()
     {
         var factory = HashAlgorithmFactory.From(() => new RefusingHashAlgorithm());
 
@@ -106,7 +106,7 @@ public sealed class HashAlgorithmHelperBodyTests
     /// the underlying stream implementation, so the test asserts on the base type.
     /// </summary>
     [TestMethod]
-    public async Task HashDataAsync_WhenAlreadyCancelled_ShouldThrowOperationCanceledException()
+    public async Task HashDataAsync_WhenAlreadyCancelled_ShouldThrowExactly()
     {
         var factory = HashAlgorithmFactory.From<SHA256>(SHA256.Create);
         using var cts = new CancellationTokenSource();

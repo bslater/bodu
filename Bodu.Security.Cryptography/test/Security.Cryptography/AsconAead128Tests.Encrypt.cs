@@ -17,7 +17,7 @@ public partial class AsconAead128Tests
     /// when <see cref="AsconAead128.ProcessAssociatedData" /> has not been called.
     /// </summary>
     [TestMethod]
-    public void Encrypt_WhenAadNotProcessed_ShouldThrowInvalidOperationException()
+    public void Encrypt_WhenAadNotProcessed_ShouldThrowExactly()
     {
         using var sut = new AsconAead128(ValidKey, ValidNonce);
 
@@ -32,7 +32,7 @@ public partial class AsconAead128Tests
     /// when the output buffer is too small to hold the ciphertext plus the authentication tag.
     /// </summary>
     [TestMethod]
-    public void Encrypt_WhenOutputBufferTooSmall_ShouldThrowArgumentException()
+    public void Encrypt_WhenOutputBufferTooSmall_ShouldThrowExactly()
     {
         using AsconAead128 sut = MakeInstance();
         var plaintext = new byte[8];
@@ -48,7 +48,7 @@ public partial class AsconAead128Tests
     /// when the instance has been disposed.
     /// </summary>
     [TestMethod]
-    public void Encrypt_WhenDisposed_ShouldThrowObjectDisposedException()
+    public void Encrypt_WhenDisposed_ShouldThrowExactly()
     {
         var sut = new AsconAead128(ValidKey, ValidNonce);
         sut.Dispose();
@@ -126,7 +126,7 @@ public partial class AsconAead128Tests
     /// Verifies that <see cref="AsconAead128.Encrypt" /> cannot be called more than once after associated data has been processed.
     /// </summary>
     [TestMethod]
-    public void Encrypt_WhenCalledTwiceAfterAssociatedDataProcessed_ShouldThrowInvalidOperationException()
+    public void Encrypt_WhenCalledTwiceAfterAssociatedDataProcessed_ShouldThrowExactly()
     {
         byte[] plaintext = [0x01, 0x02, 0x03, 0x04];
         var output1 = new byte[plaintext.Length + AsconAead128.TagBytes];

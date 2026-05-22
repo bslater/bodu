@@ -35,7 +35,7 @@ public partial class CryptoHelpersTests
     /// <see cref="ArgumentException"/> when the output buffer is smaller than required.
     /// </summary>
     [TestMethod]
-    public void ThrowIfOutputBufferTooSmall_WhenBufferTooSmall_ShouldThrowArgumentException()
+    public void ThrowIfOutputBufferTooSmall_WhenBufferTooSmall_ShouldThrowExactly()
     {
         var ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {

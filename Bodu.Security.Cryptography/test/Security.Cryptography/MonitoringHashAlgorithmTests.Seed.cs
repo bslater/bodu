@@ -34,7 +34,7 @@ public partial class MonitoringHashAlgorithmTests
     /// Verifies that setting <see cref="Elf64.Seed" /> after a algorithm computation has begun throws a <see cref="CryptographicException" />.
     /// </summary>
     [TestMethod]
-    public void Seed_WhenSetAfterHashingStarted_ShouldThrow()
+    public void Seed_WhenSetAfterHashingStarted_ShouldThrowExactly()
     {
         MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         var input = new byte[] { 1, 2, 3 };

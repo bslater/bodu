@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ThreefishBlockCipherTests.Rekey.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -17,7 +17,7 @@ internal sealed partial class ThreefishBlockCipherTests
     /// when the supplied key is shorter than the required key size.
     /// </summary>
     [TestMethod]
-    public void Rekey_WhenKeyIsTooShort_ShouldThrowArgumentException()
+    public void Rekey_WhenKeyIsTooShort_ShouldThrowExactly()
     {
         using var cipher = new Threefish256Cipher(s_validKey256, s_validTweak);
 
@@ -34,7 +34,7 @@ internal sealed partial class ThreefishBlockCipherTests
     /// when the supplied key is longer than the required key size.
     /// </summary>
     [TestMethod]
-    public void Rekey_WhenKeyIsTooLong_ShouldThrowArgumentException()
+    public void Rekey_WhenKeyIsTooLong_ShouldThrowExactly()
     {
         using var cipher = new Threefish256Cipher(s_validKey256, s_validTweak);
 
@@ -51,7 +51,7 @@ internal sealed partial class ThreefishBlockCipherTests
     /// when supplied an empty key.
     /// </summary>
     [TestMethod]
-    public void Rekey_WhenKeyIsEmpty_ShouldThrowArgumentException()
+    public void Rekey_WhenKeyIsEmpty_ShouldThrowExactly()
     {
         using var cipher = new Threefish256Cipher(s_validKey256, s_validTweak);
 
@@ -66,7 +66,7 @@ internal sealed partial class ThreefishBlockCipherTests
     /// when the supplied tweak is shorter than the required 16-byte tweak size.
     /// </summary>
     [TestMethod]
-    public void Rekey_WhenTweakIsTooShort_ShouldThrowArgumentException()
+    public void Rekey_WhenTweakIsTooShort_ShouldThrowExactly()
     {
         using var cipher = new Threefish256Cipher(s_validKey256, s_validTweak);
 
@@ -83,7 +83,7 @@ internal sealed partial class ThreefishBlockCipherTests
     /// when the supplied tweak is longer than the required 16-byte tweak size.
     /// </summary>
     [TestMethod]
-    public void Rekey_WhenTweakIsTooLong_ShouldThrowArgumentException()
+    public void Rekey_WhenTweakIsTooLong_ShouldThrowExactly()
     {
         using var cipher = new Threefish256Cipher(s_validKey256, s_validTweak);
 
@@ -100,7 +100,7 @@ internal sealed partial class ThreefishBlockCipherTests
     /// when supplied an empty tweak.
     /// </summary>
     [TestMethod]
-    public void Rekey_WhenTweakIsEmpty_ShouldThrowArgumentException()
+    public void Rekey_WhenTweakIsEmpty_ShouldThrowExactly()
     {
         using var cipher = new Threefish256Cipher(s_validKey256, s_validTweak);
 
@@ -115,7 +115,7 @@ internal sealed partial class ThreefishBlockCipherTests
     /// when called on a disposed cipher instance.
     /// </summary>
     [TestMethod]
-    public void Rekey_WhenDisposed_ShouldThrowObjectDisposedException()
+    public void Rekey_WhenDisposed_ShouldThrowExactly()
     {
         var cipher = new Threefish256Cipher(s_validKey256, s_validTweak);
         cipher.Dispose();

@@ -56,24 +56,11 @@ public partial class CryptoHelpersTests
 
     /// <summary>
     /// Verifies that <see cref="CryptoHelpers.ClearAndNullify(MemoryStream)"/> throws an
-    /// <see cref="ArgumentNullException"/> when the supplied stream is <see langword="null"/>.
-    /// </summary>
-    [TestMethod]
-    public void ClearAndNullify_MemoryStream_WhenNull_ShouldThrowArgumentNullException()
-    {
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            CryptoHelpers.ClearAndNullify((MemoryStream)null!);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.ClearAndNullify(MemoryStream)"/> throws an
     /// <see cref="InvalidOperationException"/> when the supplied stream was constructed in a mode that suppresses
     /// buffer publication.
     /// </summary>
     [TestMethod]
-    public void ClearAndNullify_MemoryStream_WhenBufferInaccessible_ShouldThrowInvalidOperationException()
+    public void ClearAndNullify_MemoryStream_WhenBufferInaccessible_ShouldThrowExactly()
     {
         var bytes = new byte[] { 0x01, 0x02, 0x03 };
         var stream = new MemoryStream(bytes, index: 0, count: bytes.Length, writable: false, publiclyVisible: false);

@@ -253,7 +253,7 @@ public partial class HashAlgorithmExtensionsTests
     /// complete before the cancellation trigger fires.
     /// </remarks>
     [TestMethod]
-    public async Task VerifyHashAsync_WhenCancellationTriggeredMidStream_ShouldThrowOperationCanceledException()
+    public async Task VerifyHashAsync_WhenCancellationTriggeredMidStream_ShouldThrowExactly()
     {
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         using var cts = new CancellationTokenSource();
@@ -272,7 +272,7 @@ public partial class HashAlgorithmExtensionsTests
     /// throw without attempting any read.
     /// </summary>
     [TestMethod]
-    public async Task VerifyHashAsync_WhenTokenAlreadyCancelled_ShouldThrowOperationCanceledException()
+    public async Task VerifyHashAsync_WhenTokenAlreadyCancelled_ShouldThrowExactly()
     {
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         using var stream = new MemoryStream(SampleData);
@@ -291,7 +291,7 @@ public partial class HashAlgorithmExtensionsTests
     /// Verifies that a null algorithm receiver raises <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public async Task VerifyHashAsync_WhenAlgorithmIsNull_ShouldThrowArgumentNullException()
+    public async Task VerifyHashAsync_WhenAlgorithmIsNull_ShouldThrowExactly()
     {
         HashAlgorithm? algorithm = null;
         using var stream = new MemoryStream(SampleData);
@@ -305,7 +305,7 @@ public partial class HashAlgorithmExtensionsTests
     /// Verifies that a null stream raises <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public async Task VerifyHashAsync_WhenStreamIsNull_ShouldThrowArgumentNullException()
+    public async Task VerifyHashAsync_WhenStreamIsNull_ShouldThrowExactly()
     {
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         await Assert.ThrowsExactlyAsync<ArgumentNullException>(async () =>
@@ -318,7 +318,7 @@ public partial class HashAlgorithmExtensionsTests
     /// Verifies that a null expected byte-array hash raises <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public async Task VerifyHashAsync_WhenExpectedHashIsNull_ShouldThrowArgumentNullException()
+    public async Task VerifyHashAsync_WhenExpectedHashIsNull_ShouldThrowExactly()
     {
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         using var stream = new MemoryStream(SampleData);
@@ -332,7 +332,7 @@ public partial class HashAlgorithmExtensionsTests
     /// Verifies that a null expected hex string raises <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public async Task VerifyHashAsync_WhenExpectedHexIsNull_ShouldThrowArgumentNullException()
+    public async Task VerifyHashAsync_WhenExpectedHexIsNull_ShouldThrowExactly()
     {
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         using var stream = new MemoryStream(SampleData);

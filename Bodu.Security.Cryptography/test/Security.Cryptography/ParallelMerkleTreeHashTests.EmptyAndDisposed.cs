@@ -24,7 +24,7 @@ public partial class ParallelMerkleTreeHashTests
     /// returning an arbitrary "zero-leaves" hash.
     /// </summary>
     [TestMethod]
-    public void ComputeHash_WhenInputIsEmpty_ShouldThrowInvalidOperationException()
+    public void ComputeHash_WhenInputIsEmpty_ShouldThrowExactly()
     {
         using var hasher = new ParallelMerkleTreeHash(Factory, DefaultBlockSize, DefaultFanOut);
         Assert.ThrowsExactly<InvalidOperationException>(() =>
@@ -38,7 +38,7 @@ public partial class ParallelMerkleTreeHashTests
     /// <see cref="ObjectDisposedException" />.
     /// </summary>
     [TestMethod]
-    public void ComputeHash_WhenInstanceIsDisposed_ShouldThrowObjectDisposedException()
+    public void ComputeHash_WhenInstanceIsDisposed_ShouldThrowExactly()
     {
         var hasher = new ParallelMerkleTreeHash(Factory, DefaultBlockSize, DefaultFanOut);
         hasher.Dispose();
@@ -52,7 +52,7 @@ public partial class ParallelMerkleTreeHashTests
     /// <see cref="ObjectDisposedException" />.
     /// </summary>
     [TestMethod]
-    public async Task ComputeHashAsync_WhenInstanceIsDisposed_ShouldThrowObjectDisposedException()
+    public async Task ComputeHashAsync_WhenInstanceIsDisposed_ShouldThrowExactly()
     {
         var hasher = new ParallelMerkleTreeHash(Factory, DefaultBlockSize, DefaultFanOut);
         hasher.Dispose();

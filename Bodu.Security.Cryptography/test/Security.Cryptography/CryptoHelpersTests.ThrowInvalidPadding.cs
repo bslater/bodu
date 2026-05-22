@@ -19,7 +19,7 @@ public partial class CryptoHelpersTests
     [DataRow("ANSI X.923")]
     [DataRow("ISO 10126")]
     [DataRow("ISO/IEC 7816-4")]
-    public void ThrowInvalidPadding_WhenInvoked_ShouldThrowCryptographicExceptionWithScheme(string scheme)
+    public void ThrowInvalidPadding_WhenInvoked_ShouldThrowExactly(string scheme)
     {
         var ex = Assert.ThrowsExactly<CryptographicException>(() =>
         {
@@ -34,7 +34,7 @@ public partial class CryptoHelpersTests
     /// <see cref="ArgumentNullException"/> when the padding scheme is <see langword="null"/>.
     /// </summary>
     [TestMethod]
-    public void ThrowInvalidPadding_WhenSchemeIsNull_ShouldThrowArgumentNullException()
+    public void ThrowInvalidPadding_WhenSchemeIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

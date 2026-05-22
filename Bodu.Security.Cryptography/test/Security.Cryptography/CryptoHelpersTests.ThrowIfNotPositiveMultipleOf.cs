@@ -31,7 +31,7 @@ public partial class CryptoHelpersTests
     [DataRow(7, 8)]
     [DataRow(15, 8)]
     [DataRow(33, 16)]
-    public void ThrowIfNotPositiveMultipleOf_WhenValueIsNotMultiple_ShouldThrowCryptographicException(int value, int divisor)
+    public void ThrowIfNotPositiveMultipleOf_WhenValueIsNotMultiple_ShouldThrowExactly(int value, int divisor)
     {
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
@@ -47,7 +47,7 @@ public partial class CryptoHelpersTests
     [DataRow(0)]
     [DataRow(-1)]
     [DataRow(-8)]
-    public void ThrowIfNotPositiveMultipleOf_WhenValueIsZeroOrNegative_ShouldThrowCryptographicException(int value)
+    public void ThrowIfNotPositiveMultipleOf_WhenValueIsZeroOrNegative_ShouldThrowExactly(int value)
     {
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
@@ -62,7 +62,7 @@ public partial class CryptoHelpersTests
     [TestMethod]
     [DataRow(0)]
     [DataRow(-1)]
-    public void ThrowIfNotPositiveMultipleOf_WhenDivisorIsNotPositive_ShouldThrowArgumentOutOfRangeException(int divisor)
+    public void ThrowIfNotPositiveMultipleOf_WhenDivisorIsNotPositive_ShouldThrowExactly(int divisor)
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

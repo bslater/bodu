@@ -29,7 +29,7 @@ public partial class CryptoHelpersTests
     [DataRow(64)]
     [DataRow(200)]
     [DataRow(1024)]
-    public void ThrowIfInvalidHashSize_WhenSizeIsNotPermitted_ShouldThrowArgumentOutOfRangeException(int size)
+    public void ThrowIfInvalidHashSize_WhenSizeIsNotPermitted_ShouldThrowExactly(int size)
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -42,7 +42,7 @@ public partial class CryptoHelpersTests
     /// <see cref="ArgumentNullException"/> when the permitted-sizes array is <see langword="null"/>.
     /// </summary>
     [TestMethod]
-    public void ThrowIfInvalidHashSize_WhenPermittedListIsNull_ShouldThrowArgumentNullException()
+    public void ThrowIfInvalidHashSize_WhenPermittedListIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

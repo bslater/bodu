@@ -303,11 +303,9 @@ public sealed class AsconAead128
 
         var required = plaintext.Length + TagBytes;
         if (output.Length < required)
-        {
             throw new ArgumentException(
                 string.Format(CryptoResourceStrings.Crypt_Invalid_OutputBufferTooSmall, required),
                 nameof(output));
-        }
 
         try
         {
@@ -317,10 +315,10 @@ public sealed class AsconAead128
             while (inOff + Rate <= plaintext.Length)
             {
                 var p0 = BinaryPrimitives.ReadUInt64LittleEndian(plaintext[inOff..]);
-                var p1 = BinaryPrimitives.ReadUInt64LittleEndian(plaintext[(inOff + 8) ..]);
+                var p1 = BinaryPrimitives.ReadUInt64LittleEndian(plaintext[(inOff + 8)..]);
 
                 BinaryPrimitives.WriteUInt64LittleEndian(output[outOff..], this._state.S0 ^ p0);
-                BinaryPrimitives.WriteUInt64LittleEndian(output[(outOff + 8) ..], this._state.S1 ^ p1);
+                BinaryPrimitives.WriteUInt64LittleEndian(output[(outOff + 8)..], this._state.S1 ^ p1);
 
                 this._state.S0 ^= p0;
                 this._state.S1 ^= p1;
@@ -386,19 +384,15 @@ public sealed class AsconAead128
         this.ThrowIfAadNotProcessed();
 
         if (ciphertextWithTag.Length < TagBytes)
-        {
             throw new ArgumentException(
                 string.Format(CryptoResourceStrings.Crypt_Invalid_CiphertextTooShort, TagBytes),
                 nameof(ciphertextWithTag));
-        }
 
         var ptLen = ciphertextWithTag.Length - TagBytes;
         if (output.Length < ptLen)
-        {
             throw new ArgumentException(
                 string.Format(CryptoResourceStrings.Crypt_Invalid_OutputBufferTooSmall, ptLen),
                 nameof(output));
-        }
 
         try
         {
@@ -411,10 +405,10 @@ public sealed class AsconAead128
             while (cOff + Rate <= ciphertext.Length)
             {
                 var c0 = BinaryPrimitives.ReadUInt64LittleEndian(ciphertext[cOff..]);
-                var c1 = BinaryPrimitives.ReadUInt64LittleEndian(ciphertext[(cOff + 8) ..]);
+                var c1 = BinaryPrimitives.ReadUInt64LittleEndian(ciphertext[(cOff + 8)..]);
 
                 BinaryPrimitives.WriteUInt64LittleEndian(output[pOff..], this._state.S0 ^ c0);
-                BinaryPrimitives.WriteUInt64LittleEndian(output[(pOff + 8) ..], this._state.S1 ^ c1);
+                BinaryPrimitives.WriteUInt64LittleEndian(output[(pOff + 8)..], this._state.S1 ^ c1);
 
                 this._state.S0 = c0;
                 this._state.S1 = c1;
@@ -522,10 +516,7 @@ public sealed class AsconAead128
     /// <exception cref="ArgumentNullException"><paramref name="value" /> is <see langword="null" />.</exception>
     private static ReadOnlySpan<byte> ValidateNotNull(byte[] value, string paramName)
     {
-        if (value is null)
-            throw new ArgumentNullException(paramName);
-
-        return value.AsSpan();
+        return value is null ? throw new ArgumentNullException(paramName) : (ReadOnlySpan<byte>)value.AsSpan();
     }
 
     /// <summary>
@@ -542,6 +533,7 @@ public sealed class AsconAead128
         if (this._disposed)
             throw new ObjectDisposedException(this.GetType().Name);
 #endif
+
 
     /// <summary>
     /// Throws <see cref="InvalidOperationException" /> if this instance has already completed encryption or decryption.

@@ -13,7 +13,7 @@ public partial class CryptoHelpersTests
     /// <see cref="InvalidOperationException"/> when the transform is reported as completed.
     /// </summary>
     [TestMethod]
-    public void ThrowIfAlreadyCompleted_WhenCompleted_ShouldThrowInvalidOperationException()
+    public void ThrowIfAlreadyCompleted_WhenCompleted_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {

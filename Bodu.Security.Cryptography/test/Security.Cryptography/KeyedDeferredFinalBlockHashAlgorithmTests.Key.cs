@@ -31,7 +31,7 @@ public abstract partial class KeyedDeferredFinalBlockHashAlgorithmTests<TTest, T
     /// <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void Key_WhenSetToNull_ShouldThrowArgumentNullException()
+    public void Key_WhenSetToNull_ShouldThrowExactly()
     {
         using TAlgorithm sut = CreateAlgorithm();
 
@@ -47,7 +47,7 @@ public abstract partial class KeyedDeferredFinalBlockHashAlgorithmTests<TTest, T
     /// <see cref="CryptographicException" />.
     /// </summary>
     [TestMethod]
-    public void Key_WhenSetToKeyLongerThanMaximumKeySize_ShouldThrowCryptographicException()
+    public void Key_WhenSetToKeyLongerThanMaximumKeySize_ShouldThrowExactly()
     {
         using TAlgorithm sut = CreateAlgorithm();
 
@@ -129,7 +129,7 @@ public abstract partial class KeyedDeferredFinalBlockHashAlgorithmTests<TTest, T
     /// begun throws <see cref="CryptographicUnexpectedOperationException" />.
     /// </summary>
     [TestMethod]
-    public void Key_WhenSetAfterHashingBegins_ShouldThrowCryptographicUnexpectedOperationException()
+    public void Key_WhenSetAfterHashingBegins_ShouldThrowExactly()
     {
         using TAlgorithm sut = CreateAlgorithm();
         var input = new byte[32];
@@ -146,7 +146,7 @@ public abstract partial class KeyedDeferredFinalBlockHashAlgorithmTests<TTest, T
     /// throws <see cref="ObjectDisposedException" />.
     /// </summary>
     [TestMethod]
-    public void Key_WhenGetOnDisposedInstance_ShouldThrowObjectDisposedException()
+    public void Key_WhenGetOnDisposedInstance_ShouldThrowExactly()
     {
         TAlgorithm sut = CreateAlgorithm();
         sut.Dispose();
@@ -162,7 +162,7 @@ public abstract partial class KeyedDeferredFinalBlockHashAlgorithmTests<TTest, T
     /// throws <see cref="ObjectDisposedException" />.
     /// </summary>
     [TestMethod]
-    public void Key_WhenSetOnDisposedInstance_ShouldThrowObjectDisposedException()
+    public void Key_WhenSetOnDisposedInstance_ShouldThrowExactly()
     {
         TAlgorithm sut = CreateAlgorithm();
         sut.Dispose();

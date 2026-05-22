@@ -357,7 +357,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(HashAlgorithmVariants))]
-    public void Key_WhenAboveMaximumLength_ShouldThrow(TVariant variant)
+    public void Key_WhenAboveMaximumLength_ShouldThrowExactly(TVariant variant)
     {
         if (GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
         {
@@ -387,7 +387,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(HashAlgorithmVariants))]
-    public void Key_WhenBelowMinimumLength_ShouldThrow(TVariant variant)
+    public void Key_WhenBelowMinimumLength_ShouldThrowExactly(TVariant variant)
     {
         if (GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
         {
@@ -416,7 +416,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(HashAlgorithmVariants))]
-    public void Key_WhenSetAfterHashingBegins_ShouldThrow(TVariant variant)
+    public void Key_WhenSetAfterHashingBegins_ShouldThrowExactly(TVariant variant)
     {
         if (GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
         {
@@ -506,7 +506,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(HashAlgorithmVariants))]
-    public void Key_WhenAssignedLongerThanMaximum_ShouldThrowCryptographicException(TVariant variant)
+    public void Key_WhenAssignedLongerThanMaximum_ShouldThrowExactly(TVariant variant)
     {
         if (GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
         {

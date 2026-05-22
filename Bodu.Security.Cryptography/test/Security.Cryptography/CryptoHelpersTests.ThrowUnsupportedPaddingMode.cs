@@ -15,7 +15,7 @@ public partial class CryptoHelpersTests
     /// <see cref="CryptographicException"/> for an undefined <see cref="PaddingMode"/> value.
     /// </summary>
     [TestMethod]
-    public void ThrowUnsupportedPaddingMode_WhenPaddingModeIsUndefined_ShouldThrowCryptographicException()
+    public void ThrowUnsupportedPaddingMode_WhenPaddingModeIsUndefined_ShouldThrowExactly()
     {
         var undefined = (PaddingMode)999;
 
@@ -32,7 +32,7 @@ public partial class CryptoHelpersTests
     /// <see cref="CryptographicException"/> for an undefined <see cref="PaddingModeKind"/> value.
     /// </summary>
     [TestMethod]
-    public void ThrowUnsupportedPaddingMode_WhenBlockPaddingModeIsUndefined_ShouldThrowCryptographicException()
+    public void ThrowUnsupportedPaddingMode_WhenBlockPaddingModeIsUndefined_ShouldThrowExactly()
     {
         var undefined = (PaddingModeKind)999;
 

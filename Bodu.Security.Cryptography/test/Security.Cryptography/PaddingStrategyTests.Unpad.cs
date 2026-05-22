@@ -16,7 +16,7 @@ public abstract partial class PaddingStrategyTests<TPadding>
     /// Strategies that do not validate padding may opt out.
     /// </summary>
     [TestMethod]
-    public void Unpad_WhenPaddingIsCorrupted_ShouldThrowCryptographicExceptionWithCleanMessage()
+    public void Unpad_WhenPaddingIsCorrupted_ShouldThrowExactly()
     {
         if (!ValidatesPaddingOnUnpad || !ValidatesInteriorPaddingOnUnpad || !HasLengthByte)
         {
@@ -46,7 +46,7 @@ public abstract partial class PaddingStrategyTests<TPadding>
     /// Verifies that <c>Unpad</c> rejects a padding-length byte of zero.
     /// </summary>
     [TestMethod]
-    public void Unpad_WhenPaddingLengthByteIsZero_ShouldThrowCryptographicException()
+    public void Unpad_WhenPaddingLengthByteIsZero_ShouldThrowExactly()
     {
         if (!ValidatesPaddingOnUnpad)
         {
@@ -68,7 +68,7 @@ public abstract partial class PaddingStrategyTests<TPadding>
     /// Verifies that <c>Unpad</c> rejects a padding-length byte larger than the block size.
     /// </summary>
     [TestMethod]
-    public void Unpad_WhenPaddingLengthExceedsBlockSize_ShouldThrowCryptographicException()
+    public void Unpad_WhenPaddingLengthExceedsBlockSize_ShouldThrowExactly()
     {
         if (!ValidatesPaddingOnUnpad)
         {

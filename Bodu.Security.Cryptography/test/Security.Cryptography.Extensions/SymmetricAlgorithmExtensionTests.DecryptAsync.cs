@@ -27,7 +27,7 @@ public partial class SymmetricAlgorithmExtensionTests
     /// Verifies that a zero buffer size raises <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    public async Task DecryptAsync_WhenBufferSizeIsZero_ShouldThrowArgumentOutOfRangeException()
+    public async Task DecryptAsync_WhenBufferSizeIsZero_ShouldThrowExactly()
     {
         using SymmetricAlgorithm algorithm = CreateAlgorithm();
         using var input = new MemoryStream();
@@ -41,7 +41,7 @@ public partial class SymmetricAlgorithmExtensionTests
     /// Verifies that a null source stream raises <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public async Task DecryptAsync_WhenSourceStreamIsNull_ShouldThrowArgumentNullException()
+    public async Task DecryptAsync_WhenSourceStreamIsNull_ShouldThrowExactly()
     {
         using SymmetricAlgorithm algorithm = CreateAlgorithm();
         using var output = new MemoryStream();
@@ -58,7 +58,7 @@ public partial class SymmetricAlgorithmExtensionTests
     /// content is irrelevant — a single zeroed block is sufficient.
     /// </remarks>
     [TestMethod]
-    public async Task DecryptAsync_WhenOutputIsNull_ShouldThrowArgumentNullException()
+    public async Task DecryptAsync_WhenOutputIsNull_ShouldThrowExactly()
     {
         using SymmetricAlgorithm algorithm = CreateAlgorithm();
         using var input = new MemoryStream(new byte[algorithm.BlockSize / 8]);
@@ -271,7 +271,7 @@ public partial class SymmetricAlgorithmExtensionTests
     /// <see cref="TaskCanceledException" />.
     /// </summary>
     [TestMethod]
-    public async Task DecryptAsync_WhenCancelled_ShouldThrowTaskCanceledException()
+    public async Task DecryptAsync_WhenCancelled_ShouldThrowExactly()
     {
         using SymmetricAlgorithm algorithm = CreateAlgorithm();
 
@@ -294,7 +294,7 @@ public partial class SymmetricAlgorithmExtensionTests
     /// <see cref="TaskCanceledException" />).
     /// </summary>
     [TestMethod]
-    public async Task DecryptAsync_WhenCancellationTriggeredMidStream_ShouldThrowOperationCanceledException()
+    public async Task DecryptAsync_WhenCancellationTriggeredMidStream_ShouldThrowExactly()
     {
         using SymmetricAlgorithm algorithm = CreateAlgorithm();
         algorithm.Padding = PaddingMode.None;

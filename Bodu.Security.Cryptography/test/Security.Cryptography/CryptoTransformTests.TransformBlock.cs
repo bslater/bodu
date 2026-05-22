@@ -33,7 +33,7 @@ public abstract partial class CryptoTransformTests<TCryptoTransform>
     /// <see cref="ArgumentNullException" /> when <c>inputBuffer</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void TransformBlock_WhenInputBufferIsNull_ShouldThrowArgumentNullException()
+    public void TransformBlock_WhenInputBufferIsNull_ShouldThrowExactly()
     {
         using TCryptoTransform transform = CreateAlgorithm();
         var outputBuffer = new byte[transform.OutputBlockSize];
@@ -51,7 +51,7 @@ public abstract partial class CryptoTransformTests<TCryptoTransform>
     /// <see cref="ArgumentNullException" /> when <c>outputBuffer</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void TransformBlock_WhenOutputBufferIsNull_ShouldThrowArgumentNullException()
+    public void TransformBlock_WhenOutputBufferIsNull_ShouldThrowExactly()
     {
         using TCryptoTransform transform = CreateAlgorithm();
 
@@ -76,7 +76,7 @@ public abstract partial class CryptoTransformTests<TCryptoTransform>
     /// <see cref="ArgumentOutOfRangeException" /> when <c>inputOffset</c> is negative.
     /// </summary>
     [TestMethod]
-    public void TransformBlock_WhenInputOffsetIsNegative_ShouldThrowArgumentException()
+    public void TransformBlock_WhenInputOffsetIsNegative_ShouldThrowExactly()
     {
         using TCryptoTransform transform = CreateAlgorithm();
         var inputBuffer = new byte[transform.InputBlockSize];
@@ -95,7 +95,7 @@ public abstract partial class CryptoTransformTests<TCryptoTransform>
     /// <see cref="ArgumentOutOfRangeException" /> when <c>inputCount</c> is negative.
     /// </summary>
     [TestMethod]
-    public void TransformBlock_WhenInputCountIsNegative_ShouldThrowArgumentException()
+    public void TransformBlock_WhenInputCountIsNegative_ShouldThrowExactly()
     {
         using TCryptoTransform transform = CreateAlgorithm();
         var inputBuffer = new byte[transform.InputBlockSize];
@@ -116,7 +116,7 @@ public abstract partial class CryptoTransformTests<TCryptoTransform>
     /// <c>inputBuffer</c>.
     /// </summary>
     [TestMethod]
-    public void TransformBlock_WhenInputRangeExceedsInputBuffer_ShouldThrowArgumentException()
+    public void TransformBlock_WhenInputRangeExceedsInputBuffer_ShouldThrowExactly()
     {
         using TCryptoTransform transform = CreateAlgorithm();
         var inputBuffer = new byte[transform.InputBlockSize];
@@ -133,7 +133,7 @@ public abstract partial class CryptoTransformTests<TCryptoTransform>
     /// <see cref="ArgumentOutOfRangeException" /> when <c>outputOffset</c> is negative.
     /// </summary>
     [TestMethod]
-    public void TransformBlock_WhenOutputOffsetIsNegative_ShouldThrowArgumentException()
+    public void TransformBlock_WhenOutputOffsetIsNegative_ShouldThrowExactly()
     {
         using TCryptoTransform transform = CreateAlgorithm();
 
@@ -160,7 +160,7 @@ public abstract partial class CryptoTransformTests<TCryptoTransform>
     /// requested <c>outputOffset</c>.
     /// </summary>
     [TestMethod]
-    public void TransformBlock_WhenOutputRangeExceedsOutputBuffer_ShouldThrowArgumentException()
+    public void TransformBlock_WhenOutputRangeExceedsOutputBuffer_ShouldThrowExactly()
     {
         using TCryptoTransform transform = CreateAlgorithm();
 

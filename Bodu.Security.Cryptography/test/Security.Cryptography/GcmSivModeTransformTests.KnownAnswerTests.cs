@@ -104,7 +104,7 @@ string.Empty,                                  // plaintext (hex)
     /// Verifies that <see cref="GcmSivModeTransform.Decrypt" />, when TagIsCorrupted, throws <see cref="CryptographicException" />.
     /// </summary>
     [TestMethod]
-    public void Decrypt_WhenTagIsCorrupted_ShouldThrowCryptographicException()
+    public void Decrypt_WhenTagIsCorrupted_ShouldThrowExactly()
     {
         var masterKey = new byte[16];
         var iv = new byte[16];

@@ -36,7 +36,7 @@ public sealed partial class Iso7816_4PaddingTests
     /// contains no terminator byte.
     /// </summary>
     [TestMethod]
-    public void Unpad_WhenFinalBlockHasNoTerminator_ShouldThrowCryptographicException()
+    public void Unpad_WhenFinalBlockHasNoTerminator_ShouldThrowExactly()
     {
         Iso7816_4Padding padding = CreatePadding();
         var input = new byte[BlockSize];
@@ -49,7 +49,7 @@ public sealed partial class Iso7816_4PaddingTests
     /// after the terminator are non-zero.
     /// </summary>
     [TestMethod]
-    public void Unpad_WhenBytesAfterTerminatorAreNonZero_ShouldThrowCryptographicException()
+    public void Unpad_WhenBytesAfterTerminatorAreNonZero_ShouldThrowExactly()
     {
         Iso7816_4Padding padding = CreatePadding();
 

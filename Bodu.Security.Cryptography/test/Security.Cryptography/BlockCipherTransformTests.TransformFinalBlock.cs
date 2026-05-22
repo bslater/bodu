@@ -110,7 +110,7 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
     /// Transform-layer KATs.</param>
     [TestMethod]
     [DynamicData(nameof(KnownAnswerData), DynamicDataDisplayName = nameof(GetKnownAnswerDisplayName))]
-    public void TransformFinalBlock_WhenCalledAfterTransformFinalBlockAndCanReuseTransformIsFalse_ShouldThrowInvalidOperationException(BlockCipherKnownAnswer? answer)
+    public void TransformFinalBlock_WhenCalledAfterTransformFinalBlockAndCanReuseTransformIsFalse_ShouldThrowExactly(BlockCipherKnownAnswer? answer)
     {
         if (answer is null)
         {

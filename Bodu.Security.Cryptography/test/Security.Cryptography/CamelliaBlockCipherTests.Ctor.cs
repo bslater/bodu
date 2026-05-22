@@ -23,7 +23,7 @@ internal sealed partial class CamelliaBlockCipherTests
     [DataRow(25)]
     [DataRow(31)]
     [DataRow(33)]
-    public void Ctor_WhenKeyLengthIsInvalid_ShouldThrowArgumentException(int keyLength)
+    public void Ctor_WhenKeyLengthIsInvalid_ShouldThrowExactly(int keyLength)
     {
         var key = new byte[keyLength];
 

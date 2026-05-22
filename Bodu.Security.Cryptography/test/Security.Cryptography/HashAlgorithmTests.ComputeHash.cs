@@ -66,7 +66,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// <see cref="HashAlgorithm.ComputeHash(byte[], int, int)" /> is called during an active streaming operation.
     /// </summary>
     [TestMethod]
-    public void Hash_Get_WhenComputeHashCalledAfterTransformBlock_ShouldThrowCryptographicUnexpectedOperationException()
+    public void Hash_Get_WhenComputeHashCalledAfterTransformBlock_ShouldThrowExactly()
     {
         using TAlgorithm algorithm = CreateAlgorithm();
 
@@ -338,7 +338,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// the base <see cref="HashAlgorithm" />).
     /// </summary>
     [TestMethod]
-    public void ComputeHash_WhenDisposed_ShouldThrowObjectDisposedExceptionWithAlgorithmName()
+    public void ComputeHash_WhenDisposed_ShouldThrowExactly()
     {
         using TAlgorithm algorithm = CreateAlgorithm();
         algorithm.Dispose();

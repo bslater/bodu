@@ -25,7 +25,7 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     /// an <see cref="ObjectDisposedException" />.
     /// </summary>
     [TestMethod]
-    public void IV_WhenAccessedAfterDispose_ShouldThrowObjectDisposedException()
+    public void IV_WhenAccessedAfterDispose_ShouldThrowExactly()
     {
         TAlgorithm algorithm = CreateAlgorithm();
         algorithm.Dispose();
@@ -128,7 +128,7 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(InvalidBlockSizeBytesData))]
-    public void CreateEncryptor_WithInvalidIvLength_ShouldThrowArgumentException(int blockSize)
+    public void CreateEncryptor_WithInvalidIvLength_ShouldThrowExactly(int blockSize)
     {
         if (blockSize < 0) return;
 

@@ -54,7 +54,7 @@ public sealed class Iso10126Padding
     /// </exception>
     public byte[] Pad(ReadOnlySpan<byte> input, int blockSize)
     {
-        ThrowHelper.ThrowIfNotPositiveMultipleOf(blockSize, 8);
+        CryptoHelpers.ThrowIfNotPositiveMultipleOf(blockSize, 8);
 
         var size = blockSize / 8;
         var paddingLength = size - (input.Length % size);
@@ -94,7 +94,7 @@ public sealed class Iso10126Padding
     /// <exception cref="CryptographicException">Thrown if the trailing length byte is out of range.</exception>
     public byte[] Unpad(ReadOnlySpan<byte> input, int blockSize)
     {
-        ThrowHelper.ThrowIfNotPositiveMultipleOf(blockSize, 8);
+        CryptoHelpers.ThrowIfNotPositiveMultipleOf(blockSize, 8);
 
         var size = blockSize / 8;
 

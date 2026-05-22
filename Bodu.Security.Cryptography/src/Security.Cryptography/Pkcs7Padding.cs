@@ -59,7 +59,7 @@ public sealed class Pkcs7Padding
     /// </exception>
     public byte[] Pad(ReadOnlySpan<byte> input, int blockSize)
     {
-        ThrowHelper.ThrowIfNotPositiveMultipleOf(blockSize, 8);
+        CryptoHelpers.ThrowIfNotPositiveMultipleOf(blockSize, 8);
 
         var size = blockSize / 8;
         var paddingLength = size - (input.Length % size);
@@ -89,7 +89,7 @@ public sealed class Pkcs7Padding
     /// <exception cref="CryptographicException">Thrown if the padding is invalid or malformed.</exception>
     public byte[] Unpad(ReadOnlySpan<byte> input, int blockSize)
     {
-        ThrowHelper.ThrowIfNotPositiveMultipleOf(blockSize, 8);
+        CryptoHelpers.ThrowIfNotPositiveMultipleOf(blockSize, 8);
 
         var size = blockSize / 8;
 

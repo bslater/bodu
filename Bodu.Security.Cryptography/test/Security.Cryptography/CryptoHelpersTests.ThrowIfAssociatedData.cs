@@ -15,7 +15,7 @@ public partial class CryptoHelpersTests
     /// <see cref="InvalidOperationException"/> when associated data has already been processed.
     /// </summary>
     [TestMethod]
-    public void ThrowIfAssociatedDataAlreadyProcessed_WhenAlreadyProcessed_ShouldThrowInvalidOperationException()
+    public void ThrowIfAssociatedDataAlreadyProcessed_WhenAlreadyProcessed_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
@@ -38,7 +38,7 @@ public partial class CryptoHelpersTests
     /// <see cref="CryptographicException"/> when associated data has not yet been processed.
     /// </summary>
     [TestMethod]
-    public void ThrowIfAssociatedDataNotProcessed_WhenNotProcessed_ShouldThrowCryptographicException()
+    public void ThrowIfAssociatedDataNotProcessed_WhenNotProcessed_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<CryptographicException>(() =>
         {

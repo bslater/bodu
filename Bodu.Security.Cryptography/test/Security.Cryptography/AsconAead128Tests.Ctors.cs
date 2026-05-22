@@ -15,7 +15,7 @@ public partial class AsconAead128Tests
     /// <see cref="ArgumentNullException" /> when the key array is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenKeyIsNull_ShouldThrowArgumentNullException()
+    public void Ctor_WhenKeyIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -28,7 +28,7 @@ public partial class AsconAead128Tests
     /// <see cref="ArgumentNullException" /> when the nonce array is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenNonceIsNull_ShouldThrowArgumentNullException()
+    public void Ctor_WhenNonceIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -41,7 +41,7 @@ public partial class AsconAead128Tests
     /// constructor throws <see cref="ArgumentException" /> when the key is the wrong size.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenKeyIsWrongSize_ShouldThrowArgumentException()
+    public void Ctor_WhenKeyIsWrongSize_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -54,7 +54,7 @@ public partial class AsconAead128Tests
     /// constructor throws <see cref="ArgumentException" /> when the nonce is the wrong size.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenNonceIsWrongSize_ShouldThrowArgumentException()
+    public void Ctor_WhenNonceIsWrongSize_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentException>(() =>
         {

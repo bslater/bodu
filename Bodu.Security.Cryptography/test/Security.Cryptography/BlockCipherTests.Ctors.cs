@@ -113,7 +113,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     /// </param>
     [TestMethod]
     [DynamicData(nameof(GetInvalidKeySizeCtorData), DynamicDataDisplayName = nameof(GetInvalidKeySizeCtorTestDisplayName))]
-    public void Ctor_WhenKeyIsWrongSize_ShouldThrowArgumentException(TVariant variant, byte[] key, byte[] tweak)
+    public void Ctor_WhenKeyIsWrongSize_ShouldThrowExactly(TVariant variant, byte[] key, byte[] tweak)
     {
         BlockCipherSpecification spec = GetSpecification(variant);
         if (!spec.IsTweakable)
@@ -148,7 +148,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     /// <param name="tweak">A tweak buffer whose length is invalid for this cipher.</param>
     [TestMethod]
     [DynamicData(nameof(GetInvalidTweakSizeCtorData), DynamicDataDisplayName = nameof(GetInvalidTweakSizeCtorTestDisplayName))]
-    public void Ctor_WhenTweakIsWrongSize_ShouldThrowArgumentException(TVariant variant, byte[] key, byte[] tweak)
+    public void Ctor_WhenTweakIsWrongSize_ShouldThrowExactly(TVariant variant, byte[] key, byte[] tweak)
     {
         BlockCipherSpecification spec = GetSpecification(variant);
         if (!spec.IsTweakable)

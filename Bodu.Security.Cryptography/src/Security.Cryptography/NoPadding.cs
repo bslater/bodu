@@ -56,7 +56,7 @@ public sealed class NoPadding
     /// </exception>
     public byte[] Pad(ReadOnlySpan<byte> input, int blockSize)
     {
-        ThrowHelper.ThrowIfNotPositiveMultipleOf(blockSize, 8);
+        CryptoHelpers.ThrowIfNotPositiveMultipleOf(blockSize, 8);
 
         var size = blockSize / 8;
         if (input.Length % size != 0)

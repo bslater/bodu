@@ -122,10 +122,9 @@ public sealed class CtsModeTransform
         var fullBlocks = input.Length / blockSize;   // blocks 0..fullBlocks-1 are complete
         var tailBytes = input.Length % blockSize;   // 0 < tailBytes < blockSize
 
-        if (encrypt)
-            return EncryptCts(input, output, fullBlocks, tailBytes, blockSize);
-        else
-            return DecryptCts(input, output, fullBlocks, tailBytes, blockSize);
+        return encrypt
+            ? EncryptCts(input, output, fullBlocks, tailBytes, blockSize)
+            : DecryptCts(input, output, fullBlocks, tailBytes, blockSize);
     }
 
     // ── Private helpers ────────────────────────────────────────────────────────────────────────
@@ -227,7 +226,7 @@ public sealed class CtsModeTransform
 
         // Output: C_n (full block) then C_{n-1} = E[0..tailBytes].
         cn.CopyTo(output[bodyLength..]);
-        e[..tailBytes].CopyTo(output[(bodyLength + blockSize) ..]);
+        e[..tailBytes].CopyTo(output[(bodyLength + blockSize)..]);
 
         return input.Length;
     }
@@ -268,7 +267,7 @@ public sealed class CtsModeTransform
         rawDec[tailBytes..].CopyTo(e[tailBytes..]);
 
         // Step 3: recover P_n = rawDec[0..tailBytes] (the rest was padding from E).
-        rawDec[..tailBytes].CopyTo(output[(bodyLength + blockSize) ..]);
+        rawDec[..tailBytes].CopyTo(output[(bodyLength + blockSize)..]);
 
         // Step 4: CBC-decrypt e to get P_{n-1}.
         Span<byte> block = stackalloc byte[blockSize];

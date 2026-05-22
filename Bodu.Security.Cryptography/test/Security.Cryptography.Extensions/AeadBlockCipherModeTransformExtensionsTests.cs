@@ -46,7 +46,7 @@ public sealed class AeadBlockCipherModeTransformExtensionsTests
     /// throws <see cref="ArgumentNullException" /> when the transform argument is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void EncryptWithAad_WhenTransformIsNull_ShouldThrowArgumentNullException()
+    public void EncryptWithAad_WhenTransformIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -59,7 +59,7 @@ public sealed class AeadBlockCipherModeTransformExtensionsTests
     /// throws <see cref="ArgumentNullException" /> when the transform argument is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void Encrypt_WhenTransformIsNull_ShouldThrowArgumentNullException()
+    public void Encrypt_WhenTransformIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -72,7 +72,7 @@ public sealed class AeadBlockCipherModeTransformExtensionsTests
     /// throws <see cref="ArgumentNullException" /> when the transform argument is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void DecryptWithAad_WhenTransformIsNull_ShouldThrowArgumentNullException()
+    public void DecryptWithAad_WhenTransformIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -85,7 +85,7 @@ public sealed class AeadBlockCipherModeTransformExtensionsTests
     /// throws <see cref="ArgumentNullException" /> when the transform argument is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void Decrypt_WhenTransformIsNull_ShouldThrowArgumentNullException()
+    public void Decrypt_WhenTransformIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -135,7 +135,7 @@ public sealed class AeadBlockCipherModeTransformExtensionsTests
     /// the tag size with <see cref="ArgumentException" /> before the underlying transform is called.
     /// </summary>
     [TestMethod]
-    public void Decrypt_WhenInputShorterThanTag_ShouldThrowArgumentException()
+    public void Decrypt_WhenInputShorterThanTag_ShouldThrowExactly()
     {
         using IAeadBlockCipherModeTransform transform = NewTransform();
         var tooShort = new byte[(transform.TagSize / 8) - 1];

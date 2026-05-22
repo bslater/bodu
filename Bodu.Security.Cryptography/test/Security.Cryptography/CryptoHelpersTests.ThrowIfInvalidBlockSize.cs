@@ -28,7 +28,7 @@ public partial class CryptoHelpersTests
     /// <see cref="ArgumentNullException"/> when the block is <see langword="null"/>.
     /// </summary>
     [TestMethod]
-    public void ThrowIfInvalidBlockSize_WhenBlockIsNull_ShouldThrowArgumentNullException()
+    public void ThrowIfInvalidBlockSize_WhenBlockIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -41,7 +41,7 @@ public partial class CryptoHelpersTests
     /// <see cref="ArgumentNullException"/> when the legal-block-sizes array is <see langword="null"/>.
     /// </summary>
     [TestMethod]
-    public void ThrowIfInvalidBlockSize_WhenLegalBlockSizesIsNull_ShouldThrowArgumentNullException()
+    public void ThrowIfInvalidBlockSize_WhenLegalBlockSizesIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -58,7 +58,7 @@ public partial class CryptoHelpersTests
     [TestMethod]
     [DataRow(8, 128)]
     [DataRow(32, 128)]
-    public void ThrowIfInvalidBlockSize_WhenBlockHasWrongLength_ShouldThrowCryptographicException(int actualBytes, int expectedBits)
+    public void ThrowIfInvalidBlockSize_WhenBlockHasWrongLength_ShouldThrowExactly(int actualBytes, int expectedBits)
     {
         var block = new byte[actualBytes];
 

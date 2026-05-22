@@ -69,7 +69,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// with a zero-length input does not finalise the hash computation.
     /// </summary>
     [TestMethod]
-    public void Hash_Get_WhenOnlyZeroLengthTransformBlockCalled_ShouldThrowCryptographicUnexpectedOperationException()
+    public void Hash_Get_WhenOnlyZeroLengthTransformBlockCalled_ShouldThrowExactly()
     {
         using TAlgorithm algorithm = CreateAlgorithm();
 

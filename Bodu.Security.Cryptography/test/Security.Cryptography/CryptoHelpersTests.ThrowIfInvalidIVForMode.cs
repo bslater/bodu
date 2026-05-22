@@ -42,7 +42,7 @@ public partial class CryptoHelpersTests
     [DataRow(CipherModeKind.CFB)]
     [DataRow(CipherModeKind.OFB)]
     [DataRow(CipherModeKind.CTR)]
-    public void ThrowIfInvalidIVForMode_WhenIVNullAndModeRequiresIV_ShouldThrowCryptographicException(CipherModeKind mode)
+    public void ThrowIfInvalidIVForMode_WhenIVNullAndModeRequiresIV_ShouldThrowExactly(CipherModeKind mode)
     {
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
@@ -55,7 +55,7 @@ public partial class CryptoHelpersTests
     /// throws a <see cref="CryptographicException"/> when the IV byte length does not match the block size in bits.
     /// </summary>
     [TestMethod]
-    public void ThrowIfInvalidIVForMode_WhenIVHasWrongLength_ShouldThrowCryptographicException()
+    public void ThrowIfInvalidIVForMode_WhenIVHasWrongLength_ShouldThrowExactly()
     {
         var iv = new byte[8];
 

@@ -20,7 +20,7 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     /// <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenAlgorithmFactoryIsNull_ShouldThrowArgumentNullException()
+    public void Ctor_WhenAlgorithmFactoryIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() => Construct(null));
     }
@@ -32,7 +32,7 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     [DataRow(0)]
     [DataRow(-1)]
     [DataRow(int.MinValue)]
-    public void Ctor_WhenBlockSizeIsNonPositive_ShouldThrowArgumentOutOfRangeException(int blockSize)
+    public void Ctor_WhenBlockSizeIsNonPositive_ShouldThrowExactly(int blockSize)
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
             Construct(Factory, blockSize: blockSize));
@@ -47,7 +47,7 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     [DataRow(1)]
     [DataRow(-1)]
     [DataRow(int.MinValue)]
-    public void Ctor_WhenFanOutIsBelowTwo_ShouldThrowArgumentOutOfRangeException(int fanOut)
+    public void Ctor_WhenFanOutIsBelowTwo_ShouldThrowExactly(int fanOut)
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
             Construct(Factory, fanOut: fanOut));

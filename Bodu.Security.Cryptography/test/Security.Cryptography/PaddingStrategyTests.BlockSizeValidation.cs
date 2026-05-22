@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Security.Cryptography;
+
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
@@ -32,17 +34,17 @@ public abstract partial class PaddingStrategyTests<TPadding>
 
     /// <summary>
     /// Verifies that calling <see cref="IPaddingStrategy.Pad" /> with <c>blockSize == 0</c> throws
-    /// <see cref="ArgumentOutOfRangeException" /> rather than <see cref="DivideByZeroException" />
+    /// <see cref="CryptographicException" /> rather than <see cref="DivideByZeroException" />
     /// from the modulo expression. Universally applicable — every padding scheme validates
     /// <c>blockSize</c> on <c>Pad</c>.
     /// </summary>
     [TestMethod]
-    public void Pad_WhenBlockSizeIsZero_ShouldThrowArgumentOutOfRangeException()
+    public void Pad_WhenBlockSizeIsZero_ShouldThrowExactly()
     {
         TPadding padding = CreatePadding();
         var input = new byte[BlockSize];
 
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        Assert.ThrowsExactly<CryptographicException>(() =>
         {
             _ = padding.Pad(input, 0);
         });
@@ -50,19 +52,19 @@ public abstract partial class PaddingStrategyTests<TPadding>
 
     /// <summary>
     /// Verifies that calling <see cref="IPaddingStrategy.Pad" /> with a negative <c>blockSize</c>
-    /// throws <see cref="ArgumentOutOfRangeException" /> rather than silently succeeding when the
+    /// throws <see cref="CryptographicException" /> rather than silently succeeding when the
     /// input length happens to be a multiple of <c>|blockSize|</c>.
     /// </summary>
     [TestMethod]
     [DataRow(-1)]
     [DataRow(-16)]
     [DataRow(int.MinValue)]
-    public void Pad_WhenBlockSizeIsNegative_ShouldThrowArgumentOutOfRangeException_fix(int blockSize)
+    public void Pad_WhenBlockSizeIsNegative_ShouldThrowExactly(int blockSize)
     {
         TPadding padding = CreatePadding();
         var input = new byte[BlockSize];
 
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        Assert.ThrowsExactly<CryptographicException>(() =>
         {
             _ = padding.Pad(input, blockSize);
         });
@@ -70,12 +72,12 @@ public abstract partial class PaddingStrategyTests<TPadding>
 
     /// <summary>
     /// Verifies that calling <see cref="IPaddingStrategy.Unpad" /> with <c>blockSize == 0</c>
-    /// throws <see cref="ArgumentOutOfRangeException" /> rather than
+    /// throws <see cref="CryptographicException" /> rather than
     /// <see cref="DivideByZeroException" /> from the unguarded <c>input.Length % blockSize</c>
     /// expression that runs before any explicit block-size validation.
     /// </summary>
     [TestMethod]
-    public void Unpad_WhenBlockSizeIsZero_ShouldThrowArgumentOutOfRangeException()
+    public void Unpad_WhenBlockSizeIsZero_ShouldThrowExactly()
     {
         if (!ValidatesBlockSizeOnUnpad)
         {
@@ -86,7 +88,7 @@ public abstract partial class PaddingStrategyTests<TPadding>
         TPadding padding = CreatePadding();
         var input = new byte[BlockSize];
 
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        Assert.ThrowsExactly<CryptographicException>(() =>
         {
             _ = padding.Unpad(input, 0);
         });
@@ -94,14 +96,14 @@ public abstract partial class PaddingStrategyTests<TPadding>
 
     /// <summary>
     /// Verifies that calling <see cref="IPaddingStrategy.Unpad" /> with a negative <c>blockSize</c>
-    /// throws <see cref="ArgumentOutOfRangeException" /> rather than allowing the modulo arithmetic
+    /// throws <see cref="CryptographicException" /> rather than allowing the modulo arithmetic
     /// to yield a misleading <see cref="System.Security.Cryptography.CryptographicException" /> downstream.
     /// </summary>
     [TestMethod]
     [DataRow(-1)]
     [DataRow(-16)]
     [DataRow(int.MinValue)]
-    public void Unpad_WhenBlockSizeIsNegative_ShouldThrowArgumentOutOfRangeException_fix(int blockSize)
+    public void Unpad_WhenBlockSizeIsNegative_ShouldThrowExactly(int blockSize)
     {
         if (!ValidatesBlockSizeOnUnpad)
         {
@@ -112,7 +114,7 @@ public abstract partial class PaddingStrategyTests<TPadding>
         TPadding padding = CreatePadding();
         var input = new byte[BlockSize];
 
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        Assert.ThrowsExactly<CryptographicException>(() =>
         {
             _ = padding.Unpad(input, blockSize);
         });
@@ -120,7 +122,7 @@ public abstract partial class PaddingStrategyTests<TPadding>
 
     /// <summary>
     /// Verifies that calling <see cref="IPaddingStrategy.Pad" /> with a positive <c>blockSize</c>
-    /// that is not a multiple of 8 throws <see cref="ArgumentOutOfRangeException" />. Values in the
+    /// that is not a multiple of 8 throws <see cref="CryptographicException" />. Values in the
     /// range <c>1..7</c> would otherwise drive the <c>blockSize / 8</c> integer division to zero and
     /// surface a <see cref="DivideByZeroException" /> from the subsequent modulo expression.
     /// </summary>
@@ -129,12 +131,12 @@ public abstract partial class PaddingStrategyTests<TPadding>
     [DataRow(4)]
     [DataRow(7)]
     [DataRow(12)]
-    public void Pad_WhenBlockSizeIsNotMultipleOfEight_ShouldThrowArgumentOutOfRangeException(int blockSize)
+    public void Pad_WhenBlockSizeIsNotMultipleOfEight_ShouldThrowExactly(int blockSize)
     {
         TPadding padding = CreatePadding();
         var input = new byte[BlockSize];
 
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        Assert.ThrowsExactly<CryptographicException>(() =>
         {
             _ = padding.Pad(input, blockSize);
         });
@@ -142,7 +144,7 @@ public abstract partial class PaddingStrategyTests<TPadding>
 
     /// <summary>
     /// Verifies that calling <see cref="IPaddingStrategy.Unpad" /> with a positive <c>blockSize</c>
-    /// that is not a multiple of 8 throws <see cref="ArgumentOutOfRangeException" /> rather than
+    /// that is not a multiple of 8 throws <see cref="CryptographicException" /> rather than
     /// surfacing a <see cref="DivideByZeroException" /> for values in the range <c>1..7</c>.
     /// </summary>
     [TestMethod]
@@ -150,7 +152,7 @@ public abstract partial class PaddingStrategyTests<TPadding>
     [DataRow(4)]
     [DataRow(7)]
     [DataRow(12)]
-    public void Unpad_WhenBlockSizeIsNotMultipleOfEight_ShouldThrowArgumentOutOfRangeException(int blockSize)
+    public void Unpad_WhenBlockSizeIsNotMultipleOfEight_ShouldThrowExactly(int blockSize)
     {
         if (!ValidatesBlockSizeOnUnpad)
         {
@@ -161,7 +163,7 @@ public abstract partial class PaddingStrategyTests<TPadding>
         TPadding padding = CreatePadding();
         var input = new byte[BlockSize];
 
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        Assert.ThrowsExactly<CryptographicException>(() =>
         {
             _ = padding.Unpad(input, blockSize);
         });

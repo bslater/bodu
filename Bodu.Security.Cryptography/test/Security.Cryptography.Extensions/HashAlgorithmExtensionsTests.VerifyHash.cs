@@ -125,7 +125,7 @@ public partial class HashAlgorithmExtensionsTests
     /// <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void VerifyHash_WhenAlgorithmIsNull_ShouldThrowArgumentNullException()
+    public void VerifyHash_WhenAlgorithmIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -138,7 +138,7 @@ public partial class HashAlgorithmExtensionsTests
     /// Verifies that a null expected hash byte array raises <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void VerifyHash_WhenExpectedHashIsNull_ShouldThrowArgumentNullException()
+    public void VerifyHash_WhenExpectedHashIsNull_ShouldThrowExactly()
     {
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         Assert.ThrowsExactly<ArgumentNullException>(() =>
@@ -151,7 +151,7 @@ public partial class HashAlgorithmExtensionsTests
     /// Verifies that a null expected hex string raises <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void VerifyHash_WhenExpectedHexIsNull_ShouldThrowArgumentNullException()
+    public void VerifyHash_WhenExpectedHexIsNull_ShouldThrowExactly()
     {
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         Assert.ThrowsExactly<ArgumentNullException>(() =>
@@ -165,7 +165,7 @@ public partial class HashAlgorithmExtensionsTests
     /// the stream overload.
     /// </summary>
     [TestMethod]
-    public void VerifyHash_WhenStreamExpectedHashIsNull_ShouldThrowArgumentNullException()
+    public void VerifyHash_WhenStreamExpectedHashIsNull_ShouldThrowExactly()
     {
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         using var stream = new MemoryStream(SampleData);
@@ -180,7 +180,7 @@ public partial class HashAlgorithmExtensionsTests
     /// the stream overload.
     /// </summary>
     [TestMethod]
-    public void VerifyHash_WhenStreamExpectedHexIsNull_ShouldThrowArgumentNullException()
+    public void VerifyHash_WhenStreamExpectedHexIsNull_ShouldThrowExactly()
     {
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         using var stream = new MemoryStream(SampleData);
@@ -195,7 +195,7 @@ public partial class HashAlgorithmExtensionsTests
     /// string+encoding overload.
     /// </summary>
     [TestMethod]
-    public void VerifyHash_WhenStringInputIsNull_ShouldThrowArgumentNullException()
+    public void VerifyHash_WhenStringInputIsNull_ShouldThrowExactly()
     {
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         Assert.ThrowsExactly<ArgumentNullException>(() =>
@@ -209,7 +209,7 @@ public partial class HashAlgorithmExtensionsTests
     /// string+encoding overload.
     /// </summary>
     [TestMethod]
-    public void VerifyHash_WhenEncodingIsNull_ShouldThrowArgumentNullException()
+    public void VerifyHash_WhenEncodingIsNull_ShouldThrowExactly()
     {
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         Assert.ThrowsExactly<ArgumentNullException>(() =>
@@ -223,7 +223,7 @@ public partial class HashAlgorithmExtensionsTests
     /// string+encoding overload.
     /// </summary>
     [TestMethod]
-    public void VerifyHash_WhenExpectedHashIsNullForString_ShouldThrowArgumentNullException()
+    public void VerifyHash_WhenExpectedHashIsNullForString_ShouldThrowExactly()
     {
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         Assert.ThrowsExactly<ArgumentNullException>(() =>

@@ -549,37 +549,6 @@ public sealed class SkipjackBlockCipher
     }
 
     /// <summary>
-    /// Reads a big-endian 16-bit unsigned integer from the specified byte span.
-    /// </summary>
-    /// <param name="s">The source byte span.</param>
-    /// <param name="o">The byte offset at which to read.</param>
-    /// <returns>The 16-bit value read in big-endian order.</returns>
-    /// <remarks>
-    /// Skipjack represents each 64-bit block as four big-endian 16-bit words. This helper keeps that convention
-    /// explicit if the block load/store code is later refactored to use helper calls.
-    /// </remarks>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static ushort ReadBE16(ReadOnlySpan<byte> s, int o) =>
-        (ushort)((s[o] << 8) | s[o + 1]);
-
-    /// <summary>
-    /// Writes a 16-bit unsigned integer to the specified byte span in big-endian order.
-    /// </summary>
-    /// <param name="d">The destination byte span.</param>
-    /// <param name="o">The byte offset at which to write.</param>
-    /// <param name="v">The 16-bit value to write.</param>
-    /// <remarks>
-    /// Skipjack represents each 64-bit block as four big-endian 16-bit words. This helper keeps that convention
-    /// explicit if the block load/store code is later refactored to use helper calls.
-    /// </remarks>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static void WriteBE16(Span<byte> d, int o, ushort v)
-    {
-        d[o] = (byte)(v >> 8);
-        d[o + 1] = (byte)v;
-    }
-
-    /// <summary>
     /// Applies the forward Skipjack <c>G</c> permutation to a 16-bit word for the specified round.
     /// </summary>
     /// <param name="k">The zero-based round-key index, in the range 0..31.</param>
