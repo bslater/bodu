@@ -68,13 +68,13 @@ public sealed partial class ConcurrentHashSet<T> :
         ThrowHelper.ThrowIfArrayIsNotZeroBased(array);
         ThrowHelper.ThrowIfNegative(index, nameof(index));
         T[] snapshot = ToArray();
-        ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, index + snapshot.Length);
+        ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, index, snapshot.Length);
 
         try
         {
             Array.Copy(snapshot, 0, array, index, snapshot.Length);
         }
-        catch (ArrayTypeMismatchException ex)
+        catch (Exception ex) when (ex is ArrayTypeMismatchException or InvalidCastException)
         {
             throw new ArgumentException(ResourceStrings.Arg_Invalid_ArrayType, nameof(array), ex);
         }

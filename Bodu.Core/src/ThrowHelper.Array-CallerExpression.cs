@@ -211,6 +211,55 @@ public static partial class ThrowHelper
     }
 
     /// <summary>
+    /// Throws an <see cref="ArgumentNullException" /> if the array is <see langword="null" />, an
+    /// <see cref="ArgumentOutOfRangeException" /> if <paramref name="index" /> is negative, or an
+    /// <see cref="ArgumentException" /> if <paramref name="array" /> does not have enough room from
+    /// <paramref name="index" /> to accommodate <paramref name="requiredLength" /> elements.
+    /// </summary>
+    /// <param name="array">The array to validate. Must not be <see langword="null" />.</param>
+    /// <param name="index">The zero-based starting index within the array.</param>
+    /// <param name="requiredLength">The number of elements required starting from <paramref name="index" />.</param>
+    /// <param name="paramName">
+    /// The name of the array parameter. Supplied automatically by the compiler via
+    /// <see cref="CallerArgumentExpressionAttribute" />.
+    /// </param>
+    /// <param name="indexParamName">
+    /// The name of the index parameter. Supplied automatically by the compiler via
+    /// <see cref="CallerArgumentExpressionAttribute" />.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="array" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="index" /> is negative.</exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <c>array.Length - index</c> is less than <paramref name="requiredLength" />.
+    /// </exception>
+    /// <remarks>
+    /// The available room is computed by subtraction (<c>array.Length - index</c>) rather than by adding
+    /// <paramref name="index" /> and <paramref name="requiredLength" />, so the check cannot be defeated by an
+    /// integer overflow when either operand is large.
+    /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void ThrowIfArrayLengthIsInsufficient(
+        Array? array, int index, int requiredLength,
+        [CallerArgumentExpression(nameof(array))] string? paramName = null,
+        [CallerArgumentExpression(nameof(index))] string? indexParamName = null)
+    {
+        if (array is null)
+            throw new ArgumentNullException(paramName);
+
+        if (index < 0)
+            throw new ArgumentOutOfRangeException(
+                indexParamName,
+                string.Format(CultureInfo.CurrentCulture, s_argOutOfRangeIndexValidRange, paramName));
+
+        if (array.Length - index < requiredLength)
+            throw new ArgumentException(
+                string.Format(CultureInfo.CurrentCulture, s_argInvalidArrayTooShort, requiredLength),
+                paramName);
+    }
+
+    /// <summary>
     /// Throws an <see cref="ArgumentNullException" /> if the array is <see langword="null" />, or an
     /// <see cref="ArgumentException" /> if it has zero length.
     /// </summary>

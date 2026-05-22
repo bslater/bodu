@@ -43,5 +43,5 @@ internal sealed class ConcurrentHashSetDebugView<T>
     /// The display root is hidden so the debugger expands directly into the element list.
     /// </remarks>
     [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
-    public T[] Items => [.. _set];
+    public T[] Items => _set.ToArray();
 }

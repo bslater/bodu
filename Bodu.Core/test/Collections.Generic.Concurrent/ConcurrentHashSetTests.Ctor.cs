@@ -145,4 +145,63 @@ public partial class ConcurrentHashSetTests
         Assert.HasCount(50, results);
         Assert.IsTrue(results.All(s => s.Count == 1));
     }
+
+    /// <summary>
+    /// Verifies that the collection constructor produces an empty set when the source collection is empty.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenSourceIsEmpty_ShouldCreateEmptySet()
+    {
+        var set = new ConcurrentHashSet<int>(Array.Empty<int>());
+
+        Assert.AreEqual(0, set.Count);
+        Assert.IsTrue(set.IsEmpty);
+    }
+
+    /// <summary>
+    /// Verifies that the collection constructor copies a single-element source.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenSourceHasSingleElement_ShouldContainThatElement()
+    {
+        var set = new ConcurrentHashSet<int>(new[] { 42 });
+
+        AssertContainsExactly(set, 42);
+    }
+
+    /// <summary>
+    /// Verifies that the collection constructor copies every element from an <see cref="ICollection{T}" /> source.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenSourceIsGenericCollection_ShouldCopyEveryElement()
+    {
+        var set = new ConcurrentHashSet<int>(new List<int> { 1, 2, 3, 4 });
+
+        AssertContainsExactly(set, 1, 2, 3, 4);
+    }
+
+    /// <summary>
+    /// Verifies that the collection constructor copies every element from a source that exposes
+    /// <see cref="IReadOnlyCollection{T}" /> but not <see cref="ICollection{T}" />.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenSourceIsReadOnlyCollection_ShouldCopyEveryElement()
+    {
+        var set = new ConcurrentHashSet<int>(new Queue<int>(new[] { 5, 6, 7 }));
+
+        AssertContainsExactly(set, 5, 6, 7);
+    }
+
+    /// <summary>
+    /// Verifies that the collection constructor copies every element from a lazily evaluated, non-counted source.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenSourceIsLazyEnumerable_ShouldCopyEveryElement()
+    {
+        IEnumerable<int> source = Enumerable.Range(0, 10).Where(value => value % 2 == 0);
+
+        var set = new ConcurrentHashSet<int>(source);
+
+        AssertContainsExactly(set, 0, 2, 4, 6, 8);
+    }
 }

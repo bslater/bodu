@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+    <IsPublishable>false</IsPublishable>
+
+    <!--
+      This benchmark harness is tooling rather than shipped library code. Opt out of the Bodu
+      XML-documentation analyzers the same way the Bodu.CodeStyle projects do, so the harness
+      is not held to the library documentation policy.
+    -->
+    <BoduCodeStyleAnalyzers>false</BoduCodeStyleAnalyzers>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BenchmarkDotNet" Version="0.14.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../src/Bodu.Core.csproj" />
+  </ItemGroup>
+
+</Project>

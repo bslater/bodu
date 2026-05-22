@@ -65,4 +65,54 @@ public partial class ConcurrentHashSetTests
         Assert.AreEqual(0, set.Count);
         Assert.IsTrue(set.IsEmpty);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentHashSet{T}.Clear" /> never installs a table with fewer buckets than there
+    /// are lock stripes, even when the lock-striping level exceeds the default bucket capacity.
+    /// </summary>
+    [TestMethod]
+    public void Clear_WhenConcurrencyLevelExceedsDefaultCapacity_ShouldKeepBucketCountAtLeastLockCount()
+    {
+        var set = new ConcurrentHashSet<int>(concurrencyLevel: 64, capacity: 4, comparer: null);
+        for (var i = 0; i < 100; i++)
+            set.Add(i);
+
+        set.Clear();
+
+        Assert.IsTrue(
+            set.BucketCount >= set.LockCount,
+            $"Clear left {set.BucketCount} buckets for {set.LockCount} lock stripes.");
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentHashSet{T}.Clear" /> retains the grown bucket count so a previously large
+    /// set is not forced to immediately regrow on reuse.
+    /// </summary>
+    [TestMethod]
+    public void Clear_WhenTableHasGrown_ShouldNotShrinkBelowGrownCapacity()
+    {
+        var set = new ConcurrentHashSet<int>(Enumerable.Range(0, 20_000));
+        int grownBucketCount = set.BucketCount;
+
+        set.Clear();
+
+        Assert.AreEqual(grownBucketCount, set.BucketCount, "Clear must not shrink the bucket table.");
+    }
+
+    /// <summary>
+    /// Verifies that a set whose table has grown remains fully usable after <see cref="ConcurrentHashSet{T}.Clear" />.
+    /// </summary>
+    [TestMethod]
+    public void Clear_WhenTableHasGrown_ShouldRemainFullyUsable()
+    {
+        var set = new ConcurrentHashSet<int>(Enumerable.Range(0, 20_000));
+
+        set.Clear();
+        for (var i = 0; i < 5_000; i++)
+            Assert.IsTrue(set.Add(i), $"Add of key {i} after Clear must succeed.");
+
+        Assert.AreEqual(5_000, set.Count);
+        for (var i = 0; i < 5_000; i++)
+            Assert.IsTrue(set.Contains(i), $"Key {i} was lost after Clear and reuse.");
+    }
 }
