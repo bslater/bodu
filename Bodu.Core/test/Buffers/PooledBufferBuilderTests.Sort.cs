@@ -117,7 +117,7 @@ public partial class PooledBufferBuilderTests
     /// <see cref="ObjectDisposedException"/> after the builder has been disposed.
     /// </summary>
     [TestMethod]
-    public void Sort_WhenDisposed_ShouldThrowExactly()
+    public void Sort_WhenDisposed_ForComparisonOverload_ShouldThrowExactly()
     {
         var builder = new PooledBufferBuilder<int>();
         builder.Dispose();
