@@ -6,6 +6,7 @@
 
 using System.Buffers.Binary;
 using System.Runtime.CompilerServices;
+using System.Runtime.Intrinsics.X86;
 using System.Security.Cryptography;
 using Bodu.Extensions;
 
@@ -80,7 +81,7 @@ namespace Bodu.Security.Cryptography;
 /// </code>
 /// </example>
 /// <seealso cref="Blake2b"/> <seealso cref="Blake3"/>
-public sealed class Blake2s
+public sealed partial class Blake2s
     : KeyedDeferredFinalBlockHashAlgorithm<Blake2s>
 {
     /// <summary>
@@ -244,7 +245,35 @@ public sealed class Blake2s
     /// <param name="isFinal">
     /// <see langword="true" /> if this is the final block; causes the finalization flag word to be inverted.
     /// </param>
+    /// <remarks>
+    /// Dispatches to an AVX-512 vectorised implementation when supported by the host, falling back to a
+    /// scalar reference implementation otherwise. <see cref="Avx512F.VL.IsSupported" /> is a JIT intrinsic
+    /// that folds to a compile-time constant, so the branch carries no runtime cost.
+    /// </remarks>
     protected override void ProcessBlock(ReadOnlySpan<byte> block, ulong totalBytesIncludingThisBlock, bool isFinal)
+    {
+        if (Avx512F.VL.IsSupported)
+        {
+            this.ProcessBlockAvx512(block, totalBytesIncludingThisBlock, isFinal);
+            return;
+        }
+
+        this.ProcessBlockScalar(block, totalBytesIncludingThisBlock, isFinal);
+    }
+
+    /// <summary>
+    /// Compresses a single 64-byte block using the scalar reference BLAKE2s implementation.
+    /// </summary>
+    /// <param name="block">The 64-byte block to compress.</param>
+    /// <param name="totalBytesIncludingThisBlock">The cumulative byte count including this block.</param>
+    /// <param name="isFinal"><see langword="true" /> if this is the final block.</param>
+    /// <remarks>
+    /// Invoked by <see cref="ProcessBlock" /> on hosts without AVX-512 + VL support. Implements the
+    /// reference 16-element working-vector form of the BLAKE2s <c>F</c> compression function directly
+    /// from RFC 7693.
+    /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+    private void ProcessBlockScalar(ReadOnlySpan<byte> block, ulong totalBytesIncludingThisBlock, bool isFinal)
     {
         // Read the 16 message words in little-endian order.
         Span<uint> m = stackalloc uint[16];
