@@ -1,9 +1,10 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ThreefishBlockCipher.512.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace Bodu.Security.Cryptography;
@@ -62,6 +63,26 @@ public sealed class Threefish512Cipher
     /// </summary>
     public const int KeySize = 512;
 
+    // Spec-defined rotation constants for Threefish-512. Declared as named const ints so the JIT can
+    // fold each Mix/Unmix call to a ROL/ROR with an immediate count, and so all 32 values live in one
+    // place rather than being duplicated between Encrypt, Decrypt, and the public RotationSchedule.
+    private const int R0 = 46, R1 = 36, R2 = 19, R3 = 37;
+    private const int R4 = 33, R5 = 27, R6 = 14, R7 = 42;
+    private const int R8 = 17, R9 = 49, R10 = 36, R11 = 39;
+    private const int R12 = 44, R13 = 9, R14 = 54, R15 = 56;
+    private const int R16 = 39, R17 = 30, R18 = 34, R19 = 24;
+    private const int R20 = 13, R21 = 50, R22 = 10, R23 = 17;
+    private const int R24 = 25, R25 = 29, R26 = 39, R27 = 43;
+    private const int R28 = 8, R29 = 35, R30 = 56, R31 = 22;
+
+    private static readonly int[] s_rotationSchedule =
+    [
+        R0, R1, R2, R3, R4, R5, R6, R7,
+        R8, R9, R10, R11, R12, R13, R14, R15,
+        R16, R17, R18, R19, R20, R21, R22, R23,
+        R24, R25, R26, R27, R28, R29, R30, R31,
+    ];
+
     /// <inheritdoc />
     /// <value>Length of the Threefish-512 block is 512 bits (64 bytes).</value>
     public override int BlockSize => 512;
@@ -70,41 +91,7 @@ public sealed class Threefish512Cipher
     protected override int BlockWords => 8;
 
     /// <inheritdoc />
-    protected override int[] RotationSchedule =>
-    [
-        46,
-        36,
-        19,
-        37,
-        33,
-        27,
-        14,
-        42,
-        17,
-        49,
-        36,
-        39,
-        44,
-        9,
-        54,
-        56,
-        39,
-        30,
-        34,
-        24,
-        13,
-        50,
-        10,
-        17,
-        25,
-        29,
-        39,
-        43,
-        8,
-        35,
-        56,
-        22
-    ];
+    protected override int[] RotationSchedule => s_rotationSchedule;
 
     /// <inheritdoc />
     protected override int Rounds => 72;
@@ -122,86 +109,107 @@ public sealed class Threefish512Cipher
     public override void Decrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
         this.ThrowIfDisposed();
-        if (input.Length != this.BlockSize / 8 || output.Length != this.BlockSize / 8)
+        if (input.Length != 64 || output.Length != 64)
         {
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.Crypt_Invalid_BlockLength, this.BlockSize / 8));
+                string.Format(CryptoResourceStrings.Crypt_Invalid_BlockLength, 64));
         }
 
-        Span<ulong> block = stackalloc ulong[this.BlockWords];
-        MemoryMarshal.Cast<byte, ulong>(input).CopyTo(block);
+        // Load the ciphertext block as eight 64-bit little-endian words into registers, skipping the
+        // intermediate stackalloc + MemoryMarshal.Cast + CopyTo trip through the stack the prior
+        // implementation used.
+        ref byte inputRef = ref MemoryMarshal.GetReference(input);
+        ulong b0 = LoadWordLittleEndian(ref inputRef, 0);
+        ulong b1 = LoadWordLittleEndian(ref inputRef, 8);
+        ulong b2 = LoadWordLittleEndian(ref inputRef, 16);
+        ulong b3 = LoadWordLittleEndian(ref inputRef, 24);
+        ulong b4 = LoadWordLittleEndian(ref inputRef, 32);
+        ulong b5 = LoadWordLittleEndian(ref inputRef, 40);
+        ulong b6 = LoadWordLittleEndian(ref inputRef, 48);
+        ulong b7 = LoadWordLittleEndian(ref inputRef, 56);
 
-        var key = this._keySchedule;
-        var tweak = this._tweakSchedule;
-        var rot = this.RotationSchedule;
+        // Capture interior refs to the key and tweak schedule arrays so each subkey-injection access
+        // skips the per-element bounds check that ulong[] indexing would otherwise emit.
+        ref ulong keyRef = ref MemoryMarshal.GetArrayDataReference(this._keySchedule);
+        ref ulong tweakRef = ref MemoryMarshal.GetArrayDataReference(this._tweakSchedule);
 
-        for (var d = (this.Rounds / 4) - 1; d >= 1; d -= 2)
+        for (var d = (72 / 4) - 1; d >= 1; d -= 2)
         {
             int dm9 = d % 9, dm3 = d % 3;
 
-            block[0] -= key[dm9 + 1];
-            block[1] -= key[dm9 + 2];
-            block[2] -= key[dm9 + 3];
-            block[3] -= key[dm9 + 4];
-            block[4] -= key[dm9 + 5];
-            block[5] -= key[dm9 + 6] + tweak[dm3 + 1];
-            block[6] -= key[dm9 + 7] + tweak[dm3 + 2];
-            block[7] -= key[dm9 + 8] + (ulong)(d + 1);
+            b0 -= Unsafe.Add(ref keyRef, dm9 + 1);
+            b1 -= Unsafe.Add(ref keyRef, dm9 + 2);
+            b2 -= Unsafe.Add(ref keyRef, dm9 + 3);
+            b3 -= Unsafe.Add(ref keyRef, dm9 + 4);
+            b4 -= Unsafe.Add(ref keyRef, dm9 + 5);
+            b5 -= Unsafe.Add(ref keyRef, dm9 + 6) + Unsafe.Add(ref tweakRef, dm3 + 1);
+            b6 -= Unsafe.Add(ref keyRef, dm9 + 7) + Unsafe.Add(ref tweakRef, dm3 + 2);
+            b7 -= Unsafe.Add(ref keyRef, dm9 + 8) + (ulong)(d + 1);
 
-            Unmix(ref block[4], ref block[3], rot[31]);
-            Unmix(ref block[2], ref block[5], rot[30]);
-            Unmix(ref block[0], ref block[7], rot[29]);
-            Unmix(ref block[6], ref block[1], rot[28]);
-            Unmix(ref block[2], ref block[7], rot[27]);
-            Unmix(ref block[0], ref block[5], rot[26]);
-            Unmix(ref block[6], ref block[3], rot[25]);
-            Unmix(ref block[4], ref block[1], rot[24]);
-            Unmix(ref block[0], ref block[3], rot[23]);
-            Unmix(ref block[6], ref block[5], rot[22]);
-            Unmix(ref block[4], ref block[7], rot[21]);
-            Unmix(ref block[2], ref block[1], rot[20]);
-            Unmix(ref block[6], ref block[7], rot[19]);
-            Unmix(ref block[4], ref block[5], rot[18]);
-            Unmix(ref block[2], ref block[3], rot[17]);
-            Unmix(ref block[0], ref block[1], rot[16]);
+            Unmix(ref b4, ref b3, R31);
+            Unmix(ref b2, ref b5, R30);
+            Unmix(ref b0, ref b7, R29);
+            Unmix(ref b6, ref b1, R28);
+            Unmix(ref b2, ref b7, R27);
+            Unmix(ref b0, ref b5, R26);
+            Unmix(ref b6, ref b3, R25);
+            Unmix(ref b4, ref b1, R24);
+            Unmix(ref b0, ref b3, R23);
+            Unmix(ref b6, ref b5, R22);
+            Unmix(ref b4, ref b7, R21);
+            Unmix(ref b2, ref b1, R20);
+            Unmix(ref b6, ref b7, R19);
+            Unmix(ref b4, ref b5, R18);
+            Unmix(ref b2, ref b3, R17);
+            Unmix(ref b0, ref b1, R16);
 
-            block[0] -= key[dm9];
-            block[1] -= key[dm9 + 1];
-            block[2] -= key[dm9 + 2];
-            block[3] -= key[dm9 + 3];
-            block[4] -= key[dm9 + 4];
-            block[5] -= key[dm9 + 5] + tweak[dm3];
-            block[6] -= key[dm9 + 6] + tweak[dm3 + 1];
-            block[7] -= key[dm9 + 7] + (ulong)d;
+            b0 -= Unsafe.Add(ref keyRef, dm9);
+            b1 -= Unsafe.Add(ref keyRef, dm9 + 1);
+            b2 -= Unsafe.Add(ref keyRef, dm9 + 2);
+            b3 -= Unsafe.Add(ref keyRef, dm9 + 3);
+            b4 -= Unsafe.Add(ref keyRef, dm9 + 4);
+            b5 -= Unsafe.Add(ref keyRef, dm9 + 5) + Unsafe.Add(ref tweakRef, dm3);
+            b6 -= Unsafe.Add(ref keyRef, dm9 + 6) + Unsafe.Add(ref tweakRef, dm3 + 1);
+            b7 -= Unsafe.Add(ref keyRef, dm9 + 7) + (ulong)d;
 
-            Unmix(ref block[4], ref block[3], rot[15]);
-            Unmix(ref block[2], ref block[5], rot[14]);
-            Unmix(ref block[0], ref block[7], rot[13]);
-            Unmix(ref block[6], ref block[1], rot[12]);
-            Unmix(ref block[2], ref block[7], rot[11]);
-            Unmix(ref block[0], ref block[5], rot[10]);
-            Unmix(ref block[6], ref block[3], rot[9]);
-            Unmix(ref block[4], ref block[1], rot[8]);
-            Unmix(ref block[0], ref block[3], rot[7]);
-            Unmix(ref block[6], ref block[5], rot[6]);
-            Unmix(ref block[4], ref block[7], rot[5]);
-            Unmix(ref block[2], ref block[1], rot[4]);
-            Unmix(ref block[6], ref block[7], rot[3]);
-            Unmix(ref block[4], ref block[5], rot[2]);
-            Unmix(ref block[2], ref block[3], rot[1]);
-            Unmix(ref block[0], ref block[1], rot[0]);
+            Unmix(ref b4, ref b3, R15);
+            Unmix(ref b2, ref b5, R14);
+            Unmix(ref b0, ref b7, R13);
+            Unmix(ref b6, ref b1, R12);
+            Unmix(ref b2, ref b7, R11);
+            Unmix(ref b0, ref b5, R10);
+            Unmix(ref b6, ref b3, R9);
+            Unmix(ref b4, ref b1, R8);
+            Unmix(ref b0, ref b3, R7);
+            Unmix(ref b6, ref b5, R6);
+            Unmix(ref b4, ref b7, R5);
+            Unmix(ref b2, ref b1, R4);
+            Unmix(ref b6, ref b7, R3);
+            Unmix(ref b4, ref b5, R2);
+            Unmix(ref b2, ref b3, R1);
+            Unmix(ref b0, ref b1, R0);
         }
 
-        block[0] -= key[0];
-        block[1] -= key[1];
-        block[2] -= key[2];
-        block[3] -= key[3];
-        block[4] -= key[4];
-        block[5] -= key[5] + tweak[0];
-        block[6] -= key[6] + tweak[1];
-        block[7] -= key[7];
+        b0 -= Unsafe.Add(ref keyRef, 0);
+        b1 -= Unsafe.Add(ref keyRef, 1);
+        b2 -= Unsafe.Add(ref keyRef, 2);
+        b3 -= Unsafe.Add(ref keyRef, 3);
+        b4 -= Unsafe.Add(ref keyRef, 4);
+        b5 -= Unsafe.Add(ref keyRef, 5) + Unsafe.Add(ref tweakRef, 0);
+        b6 -= Unsafe.Add(ref keyRef, 6) + Unsafe.Add(ref tweakRef, 1);
+        b7 -= Unsafe.Add(ref keyRef, 7);
 
-        MemoryMarshal.Cast<ulong, byte>(block).CopyTo(output);
+        // Commit the eight plaintext words to the output buffer in little-endian byte order. On LE
+        // hosts each call lowers to a single unaligned store.
+        ref byte outputRef = ref MemoryMarshal.GetReference(output);
+        StoreWordLittleEndian(ref outputRef, 0, b0);
+        StoreWordLittleEndian(ref outputRef, 8, b1);
+        StoreWordLittleEndian(ref outputRef, 16, b2);
+        StoreWordLittleEndian(ref outputRef, 24, b3);
+        StoreWordLittleEndian(ref outputRef, 32, b4);
+        StoreWordLittleEndian(ref outputRef, 40, b5);
+        StoreWordLittleEndian(ref outputRef, 48, b6);
+        StoreWordLittleEndian(ref outputRef, 56, b7);
     }
 
     /// <summary>
@@ -217,85 +225,101 @@ public sealed class Threefish512Cipher
     public override void Encrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
         this.ThrowIfDisposed();
-        if (input.Length != this.BlockSize / 8 || output.Length != this.BlockSize / 8)
+        if (input.Length != 64 || output.Length != 64)
         {
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.Crypt_Invalid_BlockLength, this.BlockSize / 8));
+                string.Format(CryptoResourceStrings.Crypt_Invalid_BlockLength, 64));
         }
 
-        Span<ulong> block = stackalloc ulong[this.BlockWords];
-        MemoryMarshal.Cast<byte, ulong>(input).CopyTo(block);
+        // Load the plaintext block as eight 64-bit little-endian words into registers.
+        ref byte inputRef = ref MemoryMarshal.GetReference(input);
+        ulong b0 = LoadWordLittleEndian(ref inputRef, 0);
+        ulong b1 = LoadWordLittleEndian(ref inputRef, 8);
+        ulong b2 = LoadWordLittleEndian(ref inputRef, 16);
+        ulong b3 = LoadWordLittleEndian(ref inputRef, 24);
+        ulong b4 = LoadWordLittleEndian(ref inputRef, 32);
+        ulong b5 = LoadWordLittleEndian(ref inputRef, 40);
+        ulong b6 = LoadWordLittleEndian(ref inputRef, 48);
+        ulong b7 = LoadWordLittleEndian(ref inputRef, 56);
 
-        var key = this._keySchedule;
-        var tweak = this._tweakSchedule;
-        var rot = this.RotationSchedule;
+        ref ulong keyRef = ref MemoryMarshal.GetArrayDataReference(this._keySchedule);
+        ref ulong tweakRef = ref MemoryMarshal.GetArrayDataReference(this._tweakSchedule);
 
-        block[0] += key[0];
-        block[1] += key[1];
-        block[2] += key[2];
-        block[3] += key[3];
-        block[4] += key[4];
-        block[5] += key[5] + tweak[0];
-        block[6] += key[6] + tweak[1];
-        block[7] += key[7];
+        // Initial key injection (round 0)
+        b0 += Unsafe.Add(ref keyRef, 0);
+        b1 += Unsafe.Add(ref keyRef, 1);
+        b2 += Unsafe.Add(ref keyRef, 2);
+        b3 += Unsafe.Add(ref keyRef, 3);
+        b4 += Unsafe.Add(ref keyRef, 4);
+        b5 += Unsafe.Add(ref keyRef, 5) + Unsafe.Add(ref tweakRef, 0);
+        b6 += Unsafe.Add(ref keyRef, 6) + Unsafe.Add(ref tweakRef, 1);
+        b7 += Unsafe.Add(ref keyRef, 7);
 
-        for (var d = 1; d < this.Rounds / 4; d += 2)
+        for (var d = 1; d < 72 / 4; d += 2)
         {
             int dm9 = d % 9, dm3 = d % 3;
 
-            Mix(ref block[0], ref block[1], rot[0]);
-            Mix(ref block[2], ref block[3], rot[1]);
-            Mix(ref block[4], ref block[5], rot[2]);
-            Mix(ref block[6], ref block[7], rot[3]);
-            Mix(ref block[2], ref block[1], rot[4]);
-            Mix(ref block[4], ref block[7], rot[5]);
-            Mix(ref block[6], ref block[5], rot[6]);
-            Mix(ref block[0], ref block[3], rot[7]);
-            Mix(ref block[4], ref block[1], rot[8]);
-            Mix(ref block[6], ref block[3], rot[9]);
-            Mix(ref block[0], ref block[5], rot[10]);
-            Mix(ref block[2], ref block[7], rot[11]);
-            Mix(ref block[6], ref block[1], rot[12]);
-            Mix(ref block[0], ref block[7], rot[13]);
-            Mix(ref block[2], ref block[5], rot[14]);
-            Mix(ref block[4], ref block[3], rot[15]);
+            Mix(ref b0, ref b1, R0);
+            Mix(ref b2, ref b3, R1);
+            Mix(ref b4, ref b5, R2);
+            Mix(ref b6, ref b7, R3);
+            Mix(ref b2, ref b1, R4);
+            Mix(ref b4, ref b7, R5);
+            Mix(ref b6, ref b5, R6);
+            Mix(ref b0, ref b3, R7);
+            Mix(ref b4, ref b1, R8);
+            Mix(ref b6, ref b3, R9);
+            Mix(ref b0, ref b5, R10);
+            Mix(ref b2, ref b7, R11);
+            Mix(ref b6, ref b1, R12);
+            Mix(ref b0, ref b7, R13);
+            Mix(ref b2, ref b5, R14);
+            Mix(ref b4, ref b3, R15);
 
-            block[0] += key[dm9];
-            block[1] += key[dm9 + 1];
-            block[2] += key[dm9 + 2];
-            block[3] += key[dm9 + 3];
-            block[4] += key[dm9 + 4];
-            block[5] += key[dm9 + 5] + tweak[dm3];
-            block[6] += key[dm9 + 6] + tweak[dm3 + 1];
-            block[7] += key[dm9 + 7] + (ulong)d;
+            b0 += Unsafe.Add(ref keyRef, dm9);
+            b1 += Unsafe.Add(ref keyRef, dm9 + 1);
+            b2 += Unsafe.Add(ref keyRef, dm9 + 2);
+            b3 += Unsafe.Add(ref keyRef, dm9 + 3);
+            b4 += Unsafe.Add(ref keyRef, dm9 + 4);
+            b5 += Unsafe.Add(ref keyRef, dm9 + 5) + Unsafe.Add(ref tweakRef, dm3);
+            b6 += Unsafe.Add(ref keyRef, dm9 + 6) + Unsafe.Add(ref tweakRef, dm3 + 1);
+            b7 += Unsafe.Add(ref keyRef, dm9 + 7) + (ulong)d;
 
-            Mix(ref block[0], ref block[1], rot[16]);
-            Mix(ref block[2], ref block[3], rot[17]);
-            Mix(ref block[4], ref block[5], rot[18]);
-            Mix(ref block[6], ref block[7], rot[19]);
-            Mix(ref block[2], ref block[1], rot[20]);
-            Mix(ref block[4], ref block[7], rot[21]);
-            Mix(ref block[6], ref block[5], rot[22]);
-            Mix(ref block[0], ref block[3], rot[23]);
-            Mix(ref block[4], ref block[1], rot[24]);
-            Mix(ref block[6], ref block[3], rot[25]);
-            Mix(ref block[0], ref block[5], rot[26]);
-            Mix(ref block[2], ref block[7], rot[27]);
-            Mix(ref block[6], ref block[1], rot[28]);
-            Mix(ref block[0], ref block[7], rot[29]);
-            Mix(ref block[2], ref block[5], rot[30]);
-            Mix(ref block[4], ref block[3], rot[31]);
+            Mix(ref b0, ref b1, R16);
+            Mix(ref b2, ref b3, R17);
+            Mix(ref b4, ref b5, R18);
+            Mix(ref b6, ref b7, R19);
+            Mix(ref b2, ref b1, R20);
+            Mix(ref b4, ref b7, R21);
+            Mix(ref b6, ref b5, R22);
+            Mix(ref b0, ref b3, R23);
+            Mix(ref b4, ref b1, R24);
+            Mix(ref b6, ref b3, R25);
+            Mix(ref b0, ref b5, R26);
+            Mix(ref b2, ref b7, R27);
+            Mix(ref b6, ref b1, R28);
+            Mix(ref b0, ref b7, R29);
+            Mix(ref b2, ref b5, R30);
+            Mix(ref b4, ref b3, R31);
 
-            block[0] += key[dm9 + 1];
-            block[1] += key[dm9 + 2];
-            block[2] += key[dm9 + 3];
-            block[3] += key[dm9 + 4];
-            block[4] += key[dm9 + 5];
-            block[5] += key[dm9 + 6] + tweak[dm3 + 1];
-            block[6] += key[dm9 + 7] + tweak[dm3 + 2];
-            block[7] += key[dm9 + 8] + (ulong)(d + 1);
+            b0 += Unsafe.Add(ref keyRef, dm9 + 1);
+            b1 += Unsafe.Add(ref keyRef, dm9 + 2);
+            b2 += Unsafe.Add(ref keyRef, dm9 + 3);
+            b3 += Unsafe.Add(ref keyRef, dm9 + 4);
+            b4 += Unsafe.Add(ref keyRef, dm9 + 5);
+            b5 += Unsafe.Add(ref keyRef, dm9 + 6) + Unsafe.Add(ref tweakRef, dm3 + 1);
+            b6 += Unsafe.Add(ref keyRef, dm9 + 7) + Unsafe.Add(ref tweakRef, dm3 + 2);
+            b7 += Unsafe.Add(ref keyRef, dm9 + 8) + (ulong)(d + 1);
         }
 
-        MemoryMarshal.Cast<ulong, byte>(block).CopyTo(output);
+        ref byte outputRef = ref MemoryMarshal.GetReference(output);
+        StoreWordLittleEndian(ref outputRef, 0, b0);
+        StoreWordLittleEndian(ref outputRef, 8, b1);
+        StoreWordLittleEndian(ref outputRef, 16, b2);
+        StoreWordLittleEndian(ref outputRef, 24, b3);
+        StoreWordLittleEndian(ref outputRef, 32, b4);
+        StoreWordLittleEndian(ref outputRef, 40, b5);
+        StoreWordLittleEndian(ref outputRef, 48, b6);
+        StoreWordLittleEndian(ref outputRef, 56, b7);
     }
 }
