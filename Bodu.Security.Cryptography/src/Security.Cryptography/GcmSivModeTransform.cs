@@ -126,17 +126,17 @@ public sealed class GcmSivModeTransform
         ThrowHelper.ThrowIfNull(cipherFactory);
         CryptoHelpers.ThrowIfIvLengthInvalid(iv, masterCipher.BlockSize);
 
-        this._nonce = new byte[NonceSizeBits / 8];
-        iv.AsSpan(0, NonceSizeBits / 8).CopyTo(this._nonce);
+        _nonce = new byte[NonceSizeBits / 8];
+        iv.AsSpan(0, NonceSizeBits / 8).CopyTo(_nonce);
 
         // Derive K_auth and K_enc per RFC 8452 Section 4.
         // Each call: E_K(LE32(i) || nonce), take first 8 bytes.
-        (var authKey, var encKeyMaterial) = DeriveKeys(masterCipher, this._nonce);
+        (var authKey, var encKeyMaterial) = DeriveKeys(masterCipher, _nonce);
 
         try
         {
-            this._authKey = authKey;
-            this._encCipher = cipherFactory(encKeyMaterial)
+            _authKey = authKey;
+            _encCipher = cipherFactory(encKeyMaterial)
                 ?? throw new InvalidOperationException(
                     CryptoResourceStrings.Op_Invalid_CipherFactoryReturnedNull);
         }
@@ -158,8 +158,8 @@ public sealed class GcmSivModeTransform
     /// <inheritdoc />
     public int Decrypt(ReadOnlySpan<byte> ciphertextWithTag, Span<byte> output)
     {
-        this.ThrowIfDisposed();
-        this.ThrowIfCompleted();
+        ThrowIfDisposed();
+        ThrowIfCompleted();
 
         CryptoHelpers.ThrowIfCiphertextTooShort(ciphertextWithTag, TagSizeBits / 8);
         var plaintextLength = ciphertextWithTag.Length - (TagSizeBits / 8);
@@ -176,7 +176,7 @@ public sealed class GcmSivModeTransform
             CtrEncrypt(ciphertext, output[..plaintextLength], ctrIv);
 
             // Recompute and verify tag.
-            var expectedTag = ComputeTag(this._aad.AsSpan(), output[..plaintextLength]);
+            var expectedTag = ComputeTag(_aad.AsSpan(), output[..plaintextLength]);
             if (!CryptographicOperations.FixedTimeEquals(expectedTag, receivedTag))
             {
                 CryptoHelpers.Clear(output[..plaintextLength]);
@@ -188,7 +188,7 @@ public sealed class GcmSivModeTransform
         }
         finally
         {
-            this._completed = true;
+            _completed = true;
         }
     }
 
@@ -202,15 +202,15 @@ public sealed class GcmSivModeTransform
     /// </remarks>
     public void Dispose()
     {
-        this.Dispose(disposing: true);
+        Dispose(disposing: true);
         GC.SuppressFinalize(this);
     }
 
     /// <inheritdoc />
     public int Encrypt(ReadOnlySpan<byte> plaintext, Span<byte> output)
     {
-        this.ThrowIfDisposed();
-        this.ThrowIfCompleted();
+        ThrowIfDisposed();
+        ThrowIfCompleted();
 
         var required = plaintext.Length + (TagSizeBits / 8);
         CryptoHelpers.ThrowIfOutputBufferTooSmall(output, required);
@@ -219,7 +219,7 @@ public sealed class GcmSivModeTransform
         try
         {
             // Tag = E(K_enc, POLYVAL(K_auth, AAD, PT) XOR nonce) with bits [31] and [63] cleared.
-            var tag = ComputeTag(this._aad.AsSpan(), plaintext);
+            var tag = ComputeTag(_aad.AsSpan(), plaintext);
 
             // Encrypt plaintext with CTR(K_enc) seeded from tag.
             var ctrIv = BuildCtrIv(tag);
@@ -229,18 +229,18 @@ public sealed class GcmSivModeTransform
         }
         finally
         {
-            this._completed = true;
+            _completed = true;
         }
     }
 
     /// <inheritdoc />
     public void ProcessAssociatedData(ReadOnlySpan<byte> associatedData)
     {
-        this.ThrowIfDisposed();
-        CryptoHelpers.ThrowIfAssociatedDataAlreadyProcessed(this._aadProcessed);
+        ThrowIfDisposed();
+        CryptoHelpers.ThrowIfAssociatedDataAlreadyProcessed(_aadProcessed);
 
-        this._aad = associatedData.ToArray();
-        this._aadProcessed = true;
+        _aad = associatedData.ToArray();
+        _aadProcessed = true;
     }
 
     /// <summary>
@@ -427,7 +427,7 @@ public sealed class GcmSivModeTransform
     /// <returns>The computed AES-GCM-SIV authentication tag.</returns>
     private byte[] ComputeTag(ReadOnlySpan<byte> aad, ReadOnlySpan<byte> plaintext)
     {
-        var blockSize = this._encCipher.BlockSize / 8;
+        var blockSize = _encCipher.BlockSize / 8;
 
         // POLYVAL accumulation: process AAD blocks, then plaintext blocks, then length block.
         // polyvalResult holds intermediate MAC state XOR'd with the nonce — cleared in finally.
@@ -447,12 +447,12 @@ public sealed class GcmSivModeTransform
 
             // XOR with nonce, clear bit 31 (byte 3 MSB) and bit 63 (byte 7 MSB).
             for (var i = 0; i < (NonceSizeBits / 8); i++)
-                polyvalResult[i] ^= this._nonce[i];
+                polyvalResult[i] ^= _nonce[i];
             polyvalResult[15] &= 0x7F; // clear bit 127 (RFC calls this bit 31 of the last 32-bit word)
 
             // Encrypt with K_enc to produce the tag.
             var tag = new byte[blockSize];
-            this._encCipher.Encrypt(polyvalResult, tag);
+            _encCipher.Encrypt(polyvalResult, tag);
             return tag;
         }
         finally
@@ -470,7 +470,7 @@ public sealed class GcmSivModeTransform
     /// <param name="counter">The initial counter block; the low 32 bits are incremented per block per RFC 8452.</param>
     private void CtrEncrypt(ReadOnlySpan<byte> input, Span<byte> output, byte[] counter)
     {
-        var blockSize = this._encCipher.BlockSize / 8;
+        var blockSize = _encCipher.BlockSize / 8;
 
         // Stack-allocate the mutable counter copy so the ephemeral CTR state never reaches the heap.
         Span<byte> ctr = stackalloc byte[blockSize];
@@ -479,7 +479,7 @@ public sealed class GcmSivModeTransform
 
         for (var offset = 0; offset < input.Length; offset += blockSize)
         {
-            this._encCipher.Encrypt(ctr, ks);
+            _encCipher.Encrypt(ctr, ks);
 
             // GCM-SIV CTR increments only the last 32 bits (little-endian), per RFC 8452.
             var lo = (uint)(ctr[12] | (ctr[13] << 8) | (ctr[14] << 16) | (ctr[15] << 24));
@@ -503,22 +503,22 @@ public sealed class GcmSivModeTransform
     /// </param>
     private void Dispose(bool disposing)
     {
-        if (this._disposed)
+        if (_disposed)
             return;
 
         if (disposing)
         {
-            if (this._encCipher is IDisposable disposableCipher)
+            if (_encCipher is IDisposable disposableCipher)
                 disposableCipher.Dispose();
 
-            CryptoHelpers.Clear(this._authKey);
-            CryptoHelpers.Clear(this._nonce);
-            CryptoHelpers.ClearAndNullify(ref this._aad);
+            CryptoHelpers.Clear(_authKey);
+            CryptoHelpers.Clear(_nonce);
+            CryptoHelpers.ClearAndNullify(ref _aad);
 
-            this._aadProcessed = false;
+            _aadProcessed = false;
         }
 
-        this._disposed = true;
+        _disposed = true;
     }
 
     // ── Private helpers ────────────────────────────────────────────────────────────────────────
@@ -529,10 +529,10 @@ public sealed class GcmSivModeTransform
     /// </summary>
     private void EnsureAadProcessed()
     {
-        if (!this._aadProcessed)
+        if (!_aadProcessed)
         {
-            this._aad = [];
-            this._aadProcessed = true;
+            _aad = [];
+            _aadProcessed = true;
         }
     }
 
@@ -555,7 +555,7 @@ public sealed class GcmSivModeTransform
 
             // state ^= block, then multiply by H (authKey) via POLYVAL.
             Xor(state, block, state);
-            PolyvalMultiply(state, this._authKey, state);
+            PolyvalMultiply(state, _authKey, state);
         }
     }
 
@@ -564,7 +564,7 @@ public sealed class GcmSivModeTransform
     /// GCM-SIV transforms are single-use; create a fresh instance per message.
     /// </summary>
     private void ThrowIfCompleted() =>
-        CryptoHelpers.ThrowIfAlreadyCompleted(this._completed);
+        CryptoHelpers.ThrowIfAlreadyCompleted(_completed);
 
     /// <summary>
     /// Throws an <see cref="ObjectDisposedException" /> if the algorithm instance has been disposed.
@@ -575,10 +575,10 @@ public sealed class GcmSivModeTransform
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ThrowIfDisposed() =>
 #if NET8_0_OR_GREATER
-        ObjectDisposedException.ThrowIf(this._disposed, this);
+        ObjectDisposedException.ThrowIf(_disposed, this);
 #else
-        if (this._disposed)
-            throw new ObjectDisposedException(this.GetType().Name);
+        if (_disposed)
+            throw new ObjectDisposedException(GetType().Name);
 #endif
 
 }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ThreefishBlockCipher.1024.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -120,13 +120,13 @@ public sealed partial class Threefish1024Cipher
     /// Thrown if <paramref name="input" /> or <paramref name="output" /> is not 128 bytes.
     /// </exception>
     /// <remarks>
-    /// Dispatches to an AVX-512F vectorised implementation when supported by the host, falling back to a
-    /// scalar register-resident implementation otherwise. <see cref="Avx512F.IsSupported" /> is a JIT
-    /// intrinsic that folds to a compile-time constant, so the branch carries no runtime cost.
+    /// Dispatches to an AVX-512F vectorised implementation when supported by the host, falling back to a scalar
+    /// register-resident implementation otherwise. <see cref="Avx512F.IsSupported" /> is a JIT intrinsic that folds to
+    /// a compile-time constant, so the branch carries no runtime cost.
     /// </remarks>
     public override void Decrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
-        this.ThrowIfDisposed();
+        ThrowIfDisposed();
         if (input.Length != 128 || output.Length != 128)
         {
             throw new ArgumentException(
@@ -135,48 +135,50 @@ public sealed partial class Threefish1024Cipher
 
         if (Avx512F.IsSupported)
         {
-            this.DecryptAvx512(input, output);
+            DecryptAvx512(input, output);
             return;
         }
 
-        this.DecryptScalar(input, output);
+        DecryptScalar(input, output);
     }
 
     /// <summary>
     /// Decrypts a single 128-byte ciphertext block using the scalar register-resident Threefish-1024 implementation.
     /// </summary>
-    /// <param name="input">The 128-byte ciphertext block to decrypt. Caller is responsible for length validation.</param>
+    /// <param name="input">
+    /// The 128-byte ciphertext block to decrypt. Caller is responsible for length validation.
+    /// </param>
     /// <param name="output">The 128-byte buffer to receive the decrypted plaintext block.</param>
     /// <remarks>
-    /// Invoked by <see cref="Decrypt" /> on hosts without AVX-512F support. Operates on sixteen 64-bit words
-    /// held in stack-resident locals — note that the working set exceeds the x64 general-purpose register
-    /// file, so the JIT will spill some words to stack. Even with spills, the elimination of bounds-checked
-    /// Span indexing on every Mix/key access remains a net win versus the prior stackalloc-based path.
+    /// Invoked by <see cref="Decrypt" /> on hosts without AVX-512F support. Operates on sixteen 64-bit words held in
+    /// stack-resident locals — note that the working set exceeds the x64 general-purpose register file, so the JIT will
+    /// spill some words to stack. Even with spills, the elimination of bounds-checked Span indexing on every Mix/key
+    /// access remains a net win versus the prior stackalloc-based path.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     private void DecryptScalar(ReadOnlySpan<byte> input, Span<byte> output)
     {
         // Load the ciphertext block as sixteen 64-bit little-endian words into locals.
-        ref byte inputRef = ref MemoryMarshal.GetReference(input);
-        ulong b0 = LoadWordLittleEndian(ref inputRef, 0);
-        ulong b1 = LoadWordLittleEndian(ref inputRef, 8);
-        ulong b2 = LoadWordLittleEndian(ref inputRef, 16);
-        ulong b3 = LoadWordLittleEndian(ref inputRef, 24);
-        ulong b4 = LoadWordLittleEndian(ref inputRef, 32);
-        ulong b5 = LoadWordLittleEndian(ref inputRef, 40);
-        ulong b6 = LoadWordLittleEndian(ref inputRef, 48);
-        ulong b7 = LoadWordLittleEndian(ref inputRef, 56);
-        ulong b8 = LoadWordLittleEndian(ref inputRef, 64);
-        ulong b9 = LoadWordLittleEndian(ref inputRef, 72);
-        ulong b10 = LoadWordLittleEndian(ref inputRef, 80);
-        ulong b11 = LoadWordLittleEndian(ref inputRef, 88);
-        ulong b12 = LoadWordLittleEndian(ref inputRef, 96);
-        ulong b13 = LoadWordLittleEndian(ref inputRef, 104);
-        ulong b14 = LoadWordLittleEndian(ref inputRef, 112);
-        ulong b15 = LoadWordLittleEndian(ref inputRef, 120);
+        ref var inputRef = ref MemoryMarshal.GetReference(input);
+        var b0 = LoadWordLittleEndian(ref inputRef, 0);
+        var b1 = LoadWordLittleEndian(ref inputRef, 8);
+        var b2 = LoadWordLittleEndian(ref inputRef, 16);
+        var b3 = LoadWordLittleEndian(ref inputRef, 24);
+        var b4 = LoadWordLittleEndian(ref inputRef, 32);
+        var b5 = LoadWordLittleEndian(ref inputRef, 40);
+        var b6 = LoadWordLittleEndian(ref inputRef, 48);
+        var b7 = LoadWordLittleEndian(ref inputRef, 56);
+        var b8 = LoadWordLittleEndian(ref inputRef, 64);
+        var b9 = LoadWordLittleEndian(ref inputRef, 72);
+        var b10 = LoadWordLittleEndian(ref inputRef, 80);
+        var b11 = LoadWordLittleEndian(ref inputRef, 88);
+        var b12 = LoadWordLittleEndian(ref inputRef, 96);
+        var b13 = LoadWordLittleEndian(ref inputRef, 104);
+        var b14 = LoadWordLittleEndian(ref inputRef, 112);
+        var b15 = LoadWordLittleEndian(ref inputRef, 120);
 
-        ref ulong keyRef = ref MemoryMarshal.GetArrayDataReference(this._keySchedule);
-        ref ulong tweakRef = ref MemoryMarshal.GetArrayDataReference(this._tweakSchedule);
+        ref var keyRef = ref MemoryMarshal.GetArrayDataReference(_keySchedule);
+        ref var tweakRef = ref MemoryMarshal.GetArrayDataReference(_tweakSchedule);
 
         for (var d = (80 / 4) - 1; d >= 1; d -= 2)
         {
@@ -306,7 +308,7 @@ public sealed partial class Threefish1024Cipher
         b14 -= Unsafe.Add(ref keyRef, 14) + Unsafe.Add(ref tweakRef, 1);
         b15 -= Unsafe.Add(ref keyRef, 15);
 
-        ref byte outputRef = ref MemoryMarshal.GetReference(output);
+        ref var outputRef = ref MemoryMarshal.GetReference(output);
         StoreWordLittleEndian(ref outputRef, 0, b0);
         StoreWordLittleEndian(ref outputRef, 8, b1);
         StoreWordLittleEndian(ref outputRef, 16, b2);
@@ -336,13 +338,13 @@ public sealed partial class Threefish1024Cipher
     /// Thrown if <paramref name="input" /> or <paramref name="output" /> is not 128 bytes.
     /// </exception>
     /// <remarks>
-    /// Dispatches to an AVX-512F vectorised implementation when supported by the host, falling back to a
-    /// scalar register-resident implementation otherwise. <see cref="Avx512F.IsSupported" /> is a JIT
-    /// intrinsic that folds to a compile-time constant, so the branch carries no runtime cost.
+    /// Dispatches to an AVX-512F vectorised implementation when supported by the host, falling back to a scalar
+    /// register-resident implementation otherwise. <see cref="Avx512F.IsSupported" /> is a JIT intrinsic that folds to
+    /// a compile-time constant, so the branch carries no runtime cost.
     /// </remarks>
     public override void Encrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
-        this.ThrowIfDisposed();
+        ThrowIfDisposed();
         if (input.Length != 128 || output.Length != 128)
         {
             throw new ArgumentException(
@@ -351,45 +353,47 @@ public sealed partial class Threefish1024Cipher
 
         if (Avx512F.IsSupported)
         {
-            this.EncryptAvx512(input, output);
+            EncryptAvx512(input, output);
             return;
         }
 
-        this.EncryptScalar(input, output);
+        EncryptScalar(input, output);
     }
 
     /// <summary>
     /// Encrypts a single 128-byte plaintext block using the scalar register-resident Threefish-1024 implementation.
     /// </summary>
-    /// <param name="input">The 128-byte plaintext block to encrypt. Caller is responsible for length validation.</param>
+    /// <param name="input">
+    /// The 128-byte plaintext block to encrypt. Caller is responsible for length validation.
+    /// </param>
     /// <param name="output">The 128-byte buffer to receive the encrypted ciphertext block.</param>
     /// <remarks>
-    /// Invoked by <see cref="Encrypt" /> on hosts without AVX-512F support. See <see cref="DecryptScalar" />
-    /// for register-pressure notes that apply to the 16-word working set.
+    /// Invoked by <see cref="Encrypt" /> on hosts without AVX-512F support. See <see cref="DecryptScalar" /> for
+    /// register-pressure notes that apply to the 16-word working set.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     private void EncryptScalar(ReadOnlySpan<byte> input, Span<byte> output)
     {
-        ref byte inputRef = ref MemoryMarshal.GetReference(input);
-        ulong b0 = LoadWordLittleEndian(ref inputRef, 0);
-        ulong b1 = LoadWordLittleEndian(ref inputRef, 8);
-        ulong b2 = LoadWordLittleEndian(ref inputRef, 16);
-        ulong b3 = LoadWordLittleEndian(ref inputRef, 24);
-        ulong b4 = LoadWordLittleEndian(ref inputRef, 32);
-        ulong b5 = LoadWordLittleEndian(ref inputRef, 40);
-        ulong b6 = LoadWordLittleEndian(ref inputRef, 48);
-        ulong b7 = LoadWordLittleEndian(ref inputRef, 56);
-        ulong b8 = LoadWordLittleEndian(ref inputRef, 64);
-        ulong b9 = LoadWordLittleEndian(ref inputRef, 72);
-        ulong b10 = LoadWordLittleEndian(ref inputRef, 80);
-        ulong b11 = LoadWordLittleEndian(ref inputRef, 88);
-        ulong b12 = LoadWordLittleEndian(ref inputRef, 96);
-        ulong b13 = LoadWordLittleEndian(ref inputRef, 104);
-        ulong b14 = LoadWordLittleEndian(ref inputRef, 112);
-        ulong b15 = LoadWordLittleEndian(ref inputRef, 120);
+        ref var inputRef = ref MemoryMarshal.GetReference(input);
+        var b0 = LoadWordLittleEndian(ref inputRef, 0);
+        var b1 = LoadWordLittleEndian(ref inputRef, 8);
+        var b2 = LoadWordLittleEndian(ref inputRef, 16);
+        var b3 = LoadWordLittleEndian(ref inputRef, 24);
+        var b4 = LoadWordLittleEndian(ref inputRef, 32);
+        var b5 = LoadWordLittleEndian(ref inputRef, 40);
+        var b6 = LoadWordLittleEndian(ref inputRef, 48);
+        var b7 = LoadWordLittleEndian(ref inputRef, 56);
+        var b8 = LoadWordLittleEndian(ref inputRef, 64);
+        var b9 = LoadWordLittleEndian(ref inputRef, 72);
+        var b10 = LoadWordLittleEndian(ref inputRef, 80);
+        var b11 = LoadWordLittleEndian(ref inputRef, 88);
+        var b12 = LoadWordLittleEndian(ref inputRef, 96);
+        var b13 = LoadWordLittleEndian(ref inputRef, 104);
+        var b14 = LoadWordLittleEndian(ref inputRef, 112);
+        var b15 = LoadWordLittleEndian(ref inputRef, 120);
 
-        ref ulong keyRef = ref MemoryMarshal.GetArrayDataReference(this._keySchedule);
-        ref ulong tweakRef = ref MemoryMarshal.GetArrayDataReference(this._tweakSchedule);
+        ref var keyRef = ref MemoryMarshal.GetArrayDataReference(_keySchedule);
+        ref var tweakRef = ref MemoryMarshal.GetArrayDataReference(_tweakSchedule);
 
         b0 += Unsafe.Add(ref keyRef, 0);
         b1 += Unsafe.Add(ref keyRef, 1);
@@ -513,7 +517,7 @@ public sealed partial class Threefish1024Cipher
             b15 += Unsafe.Add(ref keyRef, dm17 + 16) + (uint)d + 1;
         }
 
-        ref byte outputRef = ref MemoryMarshal.GetReference(output);
+        ref var outputRef = ref MemoryMarshal.GetReference(output);
         StoreWordLittleEndian(ref outputRef, 0, b0);
         StoreWordLittleEndian(ref outputRef, 8, b1);
         StoreWordLittleEndian(ref outputRef, 16, b2);

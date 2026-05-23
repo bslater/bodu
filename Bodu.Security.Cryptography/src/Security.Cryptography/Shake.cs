@@ -160,8 +160,8 @@ public sealed class Shake
     public Shake(int outputBits, int securityLevel)
         : base(ValidateAndComputeRateBits(outputBits, securityLevel))
     {
-        this.HashSizeValue = outputBits;
-        this._securityLevel = securityLevel;
+        HashSizeValue = outputBits;
+        _securityLevel = securityLevel;
     }
 
     /// <summary>
@@ -198,8 +198,8 @@ public sealed class Shake
     {
         get
         {
-            this.ThrowIfDisposed();
-            return $"SHAKE{this._securityLevel}";
+            ThrowIfDisposed();
+            return $"SHAKE{_securityLevel}";
         }
     }
 
@@ -212,8 +212,8 @@ public sealed class Shake
     {
         get
         {
-            this.ThrowIfDisposed();
-            return this._securityLevel;
+            ThrowIfDisposed();
+            return _securityLevel;
         }
     }
 
@@ -236,17 +236,17 @@ public sealed class Shake
     {
         get
         {
-            this.ThrowIfDisposed();
-            return this.HashSizeValue;
+            ThrowIfDisposed();
+            return HashSizeValue;
         }
 
         set
         {
-            this.ThrowIfDisposed();
-            this.ThrowIfInvalidState();
+            ThrowIfDisposed();
+            ThrowIfInvalidState();
             CryptoHelpers.ThrowIfNotPositiveMultipleOf(value, 8);
 
-            this.HashSizeValue = value;
+            HashSizeValue = value;
         }
     }
 
@@ -257,7 +257,7 @@ public sealed class Shake
     public override void Initialize()
     {
         base.Initialize();
-        CryptoHelpers.Clear(this._state);
+        CryptoHelpers.Clear(_state);
     }
 
     /// <summary>
@@ -269,11 +269,11 @@ public sealed class Shake
     /// </param>
     protected override void Dispose(bool disposing)
     {
-        if (this.IsDisposed) return;
+        if (IsDisposed) return;
 
         if (disposing)
         {
-            CryptoHelpers.Clear(this._state);
+            CryptoHelpers.Clear(_state);
         }
 
         base.Dispose(disposing);
@@ -287,25 +287,25 @@ public sealed class Shake
     /// </remarks>
     protected override void HashCore(ReadOnlySpan<byte> source)
     {
-        this.ThrowIfDisposed();
-        Span<byte> rateBuffer = this._residualBlock.Span;
-        var rateBytes = this.BlockSize / 8;
+        ThrowIfDisposed();
+        Span<byte> rateBuffer = _residualBlock.Span;
+        var rateBytes = BlockSize / 8;
 
         while (source.Length > 0)
         {
-            var available = rateBytes - this._residualBytes;
+            var available = rateBytes - _residualBytes;
             var take = Math.Min(available, source.Length);
 
-            source[..take].CopyTo(rateBuffer[this._residualBytes..]);
-            this._residualBytes += take;
+            source[..take].CopyTo(rateBuffer[_residualBytes..]);
+            _residualBytes += take;
             source = source[take..];
 
-            if (this._residualBytes == rateBytes)
+            if (_residualBytes == rateBytes)
             {
-                XorBlockIntoState(rateBuffer, this._state, rateBytes);
-                KeccakF(this._state);
+                XorBlockIntoState(rateBuffer, _state, rateBytes);
+                KeccakF(_state);
                 rateBuffer.Clear();
-                this._residualBytes = 0;
+                _residualBytes = 0;
             }
         }
     }
@@ -319,20 +319,20 @@ public sealed class Shake
     /// </returns>
     protected override byte[] HashFinal()
     {
-        this.ThrowIfDisposed();
-        Span<byte> rateBuffer = this._residualBlock.Span;
-        var rateBytes = this.BlockSize / 8;
+        ThrowIfDisposed();
+        Span<byte> rateBuffer = _residualBlock.Span;
+        var rateBytes = BlockSize / 8;
 
         // Apply multi-rate padding: domain suffix byte at the current buffer position, then 0x80 at the last byte.
-        rateBuffer[this._residualBytes] ^= DomainSuffix;
+        rateBuffer[_residualBytes] ^= DomainSuffix;
         rateBuffer[rateBytes - 1] ^= 0x80;
 
         // Absorb the final padded block into the state.
-        XorBlockIntoState(rateBuffer, this._state, rateBytes);
-        KeccakF(this._state);
+        XorBlockIntoState(rateBuffer, _state, rateBytes);
+        KeccakF(_state);
 
         // Squeeze output bytes from the state (little-endian lane serialization).
-        var outputBytes = this.HashSizeValue / 8;
+        var outputBytes = HashSizeValue / 8;
         var output = new byte[outputBytes];
         var written = 0;
         var remaining = outputBytes;
@@ -340,12 +340,12 @@ public sealed class Shake
         while (remaining > 0)
         {
             var take = Math.Min(remaining, rateBytes);
-            WriteLanesToBytes(this._state, output.AsSpan(written, take));
+            WriteLanesToBytes(_state, output.AsSpan(written, take));
             written += take;
             remaining -= take;
 
             if (remaining > 0)
-                KeccakF(this._state);
+                KeccakF(_state);
         }
 
         return output;

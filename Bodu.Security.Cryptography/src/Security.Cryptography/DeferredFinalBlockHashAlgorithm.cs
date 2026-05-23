@@ -119,32 +119,32 @@ public abstract class DeferredFinalBlockHashAlgorithm<T>
     /// </exception>
     protected override void HashCore(ReadOnlySpan<byte> source)
     {
-        this.ThrowIfDisposed();
+        ThrowIfDisposed();
 
 #if !NET6_0_OR_GREATER
-    if (this._finalized)
+    if (_finalized)
         throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.Crypt_Invalid_AlreadyFinalized);
 #endif
 
         var pos = 0;
         var remaining = source.Length;
-        var blockBytes = this.BlockSize / 8;
-        Span<byte> residualSpan = this._residualBlock.Span;
+        var blockBytes = BlockSize / 8;
+        Span<byte> residualSpan = _residualBlock.Span;
 
         while (remaining > 0)
         {
             // The block that fills the residual buffer must not be compressed at fill time, because it may turn out
             // to be the final block and thus require isFinal: true. Compress it only when we know more data follows.
-            if (this._residualBytes == blockBytes)
+            if (_residualBytes == blockBytes)
             {
-                this.ProcessBlock(residualSpan, this._totalBytes + (ulong)blockBytes, isFinal: false);
-                this._totalBytes += (ulong)blockBytes;
-                this._residualBytes = 0;
+                ProcessBlock(residualSpan, _totalBytes + (ulong)blockBytes, isFinal: false);
+                _totalBytes += (ulong)blockBytes;
+                _residualBytes = 0;
             }
 
-            var canCopy = Math.Min(blockBytes - this._residualBytes, remaining);
-            source.Slice(pos, canCopy).CopyTo(residualSpan[this._residualBytes..]);
-            this._residualBytes += canCopy;
+            var canCopy = Math.Min(blockBytes - _residualBytes, remaining);
+            source.Slice(pos, canCopy).CopyTo(residualSpan[_residualBytes..]);
+            _residualBytes += canCopy;
             pos += canCopy;
             remaining -= canCopy;
         }
@@ -163,22 +163,22 @@ public abstract class DeferredFinalBlockHashAlgorithm<T>
     /// </exception>
     protected override byte[] HashFinal()
     {
-        this.ThrowIfDisposed();
+        ThrowIfDisposed();
 
 #if !NET6_0_OR_GREATER
-    if (this._finalized)
+    if (_finalized)
         throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.Crypt_Invalid_AlreadyFinalized);
 #endif
 
-        Span<byte> residualSpan = this._residualBlock.Span;
+        Span<byte> residualSpan = _residualBlock.Span;
 
-        if (this._residualBytes < this.BlockSize / 8)
-            residualSpan[this._residualBytes..].Clear();
+        if (_residualBytes < BlockSize / 8)
+            residualSpan[_residualBytes..].Clear();
 
-        var counter = this._totalBytes + (ulong)this._residualBytes;
-        this.ProcessBlock(residualSpan, counter, isFinal: true);
+        var counter = _totalBytes + (ulong)_residualBytes;
+        ProcessBlock(residualSpan, counter, isFinal: true);
 
-        return this.ProcessFinalBlock();
+        return ProcessFinalBlock();
     }
 
     /// <summary>

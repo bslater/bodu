@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ThreefishBlockCipher.512.Avx512.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -12,25 +12,24 @@ using System.Runtime.Intrinsics.X86;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// AVX-512 vectorised implementation of <see cref="Threefish512Cipher" />. The eight 64-bit state words are
-/// split across two <see cref="Vector256{T}" /> registers — <c>lo</c> holds the even-position words
-/// <c>(x0, x2, x4, x6)</c> and <c>hi</c> the odd-position words <c>(x1, x3, x5, x7)</c> — and each round
-/// applies a vector add, a per-lane variable rotate (<c>VPROLVQ</c>), an XOR, and a pair of lane shuffles
-/// that realign the registers for the next round's MIX pairing.
+/// AVX-512 vectorised implementation of <see cref="Threefish512Cipher" />. The eight 64-bit state words are split
+/// across two <see cref="Vector256{T}" /> registers — <c>lo</c> holds the even-position words <c>(x0, x2, x4, x6)</c>
+/// and <c>hi</c> the odd-position words <c>(x1, x3, x5, x7)</c> — and each round applies a vector add, a per-lane
+/// variable rotate (<c>VPROLVQ</c>), an XOR, and a pair of lane shuffles that realign the registers for the next
+/// round's MIX pairing.
 /// </summary>
 /// <remarks>
 /// <para>
-/// The per-round word permutation in Threefish-512 has a 4-round cycle: between rounds, the even-position
-/// register rotates its four lanes left by one (<c>VPERMQ</c> with control <c>0x39</c>) and the odd-position
-/// register swaps lanes 1 and 3 (<c>VPERMQ</c> with control <c>0x6C</c>). After four such shuffles both
-/// registers return to canonical layout, which is exactly the layout the subkey injection expects.
+/// The per-round word permutation in Threefish-512 has a 4-round cycle: between rounds, the even-position register
+/// rotates its four lanes left by one (<c>VPERMQ</c> with control <c>0x39</c>) and the odd-position register swaps
+/// lanes 1 and 3 (<c>VPERMQ</c> with control <c>0x6C</c>). After four such shuffles both registers return to canonical
+/// layout, which is exactly the layout the subkey injection expects.
 /// </para>
 /// <para>
-/// Gated on <see cref="Avx512F.VL.IsSupported" /> rather than <see cref="Avx512F.IsSupported" /> because the
-/// variable rotate is invoked on <see cref="Vector256{T}" /> rather than <see cref="Vector512{T}" />, which
-/// requires the AVX-512 Vector Length extensions. AVX-512VL has been bundled with AVX-512F on every
-/// mainstream Intel/AMD CPU shipping it (the only AVX-512F-without-VL parts were the discontinued
-/// Knights Landing / Knights Mill server processors).
+/// Gated on <see cref="Avx512F.VL.IsSupported" /> rather than <see cref="Avx512F.IsSupported" /> because the variable
+/// rotate is invoked on <see cref="Vector256{T}" /> rather than <see cref="Vector512{T}" />, which requires the AVX-512
+/// Vector Length extensions. AVX-512VL has been bundled with AVX-512F on every mainstream Intel/AMD CPU shipping it
+/// (the only AVX-512F-without-VL parts were the discontinued Knights Landing / Knights Mill server processors).
 /// </para>
 /// </remarks>
 public sealed partial class Threefish512Cipher
@@ -65,14 +64,14 @@ public sealed partial class Threefish512Cipher
     {
         // Load the plaintext block as eight 64-bit words held across two Vector256 registers, then
         // deinterleave into lo = (x0, x2, x4, x6) and hi = (x1, x3, x5, x7).
-        ref ulong wordRef = ref Unsafe.As<byte, ulong>(ref MemoryMarshal.GetReference(input));
-        Vector256<ulong> low4 = Vector256.LoadUnsafe(ref wordRef);
-        Vector256<ulong> high4 = Vector256.LoadUnsafe(ref wordRef, 4);
+        ref var wordRef = ref Unsafe.As<byte, ulong>(ref MemoryMarshal.GetReference(input));
+        var low4 = Vector256.LoadUnsafe(ref wordRef);
+        var high4 = Vector256.LoadUnsafe(ref wordRef, 4);
         Vector256<ulong> lo = Avx2.Permute4x64(Avx2.UnpackLow(low4, high4), 0xD8);
         Vector256<ulong> hi = Avx2.Permute4x64(Avx2.UnpackHigh(low4, high4), 0xD8);
 
-        ref ulong keyRef = ref MemoryMarshal.GetArrayDataReference(this._keySchedule);
-        ref ulong tweakRef = ref MemoryMarshal.GetArrayDataReference(this._tweakSchedule);
+        ref var keyRef = ref MemoryMarshal.GetArrayDataReference(_keySchedule);
+        ref var tweakRef = ref MemoryMarshal.GetArrayDataReference(_tweakSchedule);
 
         // Initial subkey injection. In canonical layout, lo lanes correspond to state positions
         // (0, 2, 4, 6) and hi lanes to (1, 3, 5, 7); the tweak applies at positions 5 and 6.
@@ -142,14 +141,14 @@ public sealed partial class Threefish512Cipher
     private void DecryptAvx512(ReadOnlySpan<byte> input, Span<byte> output)
     {
         // Load the ciphertext block in the same canonical layout the Encrypt path produces.
-        ref ulong wordRef = ref Unsafe.As<byte, ulong>(ref MemoryMarshal.GetReference(input));
-        Vector256<ulong> low4 = Vector256.LoadUnsafe(ref wordRef);
-        Vector256<ulong> high4 = Vector256.LoadUnsafe(ref wordRef, 4);
+        ref var wordRef = ref Unsafe.As<byte, ulong>(ref MemoryMarshal.GetReference(input));
+        var low4 = Vector256.LoadUnsafe(ref wordRef);
+        var high4 = Vector256.LoadUnsafe(ref wordRef, 4);
         Vector256<ulong> lo = Avx2.Permute4x64(Avx2.UnpackLow(low4, high4), 0xD8);
         Vector256<ulong> hi = Avx2.Permute4x64(Avx2.UnpackHigh(low4, high4), 0xD8);
 
-        ref ulong keyRef = ref MemoryMarshal.GetArrayDataReference(this._keySchedule);
-        ref ulong tweakRef = ref MemoryMarshal.GetArrayDataReference(this._tweakSchedule);
+        ref var keyRef = ref MemoryMarshal.GetArrayDataReference(_keySchedule);
+        ref var tweakRef = ref MemoryMarshal.GetArrayDataReference(_tweakSchedule);
 
         // Walk the subkey-injection / round groups in reverse. Each inverse-round applies the inverse
         // shuffle first to undo the previous forward shuffle, then UNMIX with the rotation that round
@@ -212,8 +211,8 @@ public sealed partial class Threefish512Cipher
     }
 
     /// <summary>
-    /// Executes one forward Threefish-512 round on the vectorised state and applies the inter-round shuffle
-    /// that realigns the registers for the next round's MIX pairing.
+    /// Executes one forward Threefish-512 round on the vectorised state and applies the inter-round shuffle that
+    /// realigns the registers for the next round's MIX pairing.
     /// </summary>
     /// <param name="lo">The even-position state register, updated in place.</param>
     /// <param name="hi">The odd-position state register, updated in place.</param>
@@ -228,9 +227,8 @@ public sealed partial class Threefish512Cipher
     }
 
     /// <summary>
-    /// Executes one inverse Threefish-512 round on the vectorised state. The inverse shuffle is applied
-    /// before the UNMIX so it undoes the previous forward shuffle, restoring the layout that the original
-    /// MIX operated on.
+    /// Executes one inverse Threefish-512 round on the vectorised state. The inverse shuffle is applied before the
+    /// UNMIX so it undoes the previous forward shuffle, restoring the layout that the original MIX operated on.
     /// </summary>
     /// <param name="lo">The even-position state register, updated in place.</param>
     /// <param name="hi">The odd-position state register, updated in place.</param>
@@ -246,8 +244,8 @@ public sealed partial class Threefish512Cipher
     }
 
     /// <summary>
-    /// Reinterleaves the <c>(lo, hi)</c> vectorised state back into the canonical eight-word byte order and
-    /// writes it to the destination buffer as two unaligned 256-bit stores.
+    /// Reinterleaves the <c>(lo, hi)</c> vectorised state back into the canonical eight-word byte order and writes it
+    /// to the destination buffer as two unaligned 256-bit stores.
     /// </summary>
     /// <param name="destination">A reference to the first byte of the destination buffer.</param>
     /// <param name="lo">The even-position state register holding <c>(x0, x2, x4, x6)</c>.</param>
@@ -262,7 +260,7 @@ public sealed partial class Threefish512Cipher
         Vector256<ulong> outLow4 = Avx2.Permute2x128(unLow, unHigh, 0x20);   // (x0, x1, x2, x3)
         Vector256<ulong> outHigh4 = Avx2.Permute2x128(unLow, unHigh, 0x31);  // (x4, x5, x6, x7)
 
-        ref ulong outRef = ref Unsafe.As<byte, ulong>(ref destination);
+        ref var outRef = ref Unsafe.As<byte, ulong>(ref destination);
         outLow4.StoreUnsafe(ref outRef);
         outHigh4.StoreUnsafe(ref outRef, 4);
     }

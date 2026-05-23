@@ -80,7 +80,7 @@ public sealed class AesBlockCipher
             throw;
         }
 
-        this._aes = aes;
+        _aes = aes;
     }
 
     /// <inheritdoc />
@@ -96,9 +96,9 @@ public sealed class AesBlockCipher
     {
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(input, BlockSizeBits / 8);
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, BlockSizeBits / 8);
-        this.ThrowIfDisposed();
+        ThrowIfDisposed();
 
-        this._aes.EncryptEcb(input, output, PaddingMode.None);
+        _aes.EncryptEcb(input, output, PaddingMode.None);
     }
 
     /// <summary>
@@ -107,10 +107,10 @@ public sealed class AesBlockCipher
     /// </summary>
     public void Dispose()
     {
-        if (!this._disposed)
+        if (!_disposed)
         {
-            this._aes.Dispose();
-            this._disposed = true;
+            _aes.Dispose();
+            _disposed = true;
         }
     }
 
@@ -123,9 +123,9 @@ public sealed class AesBlockCipher
     {
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(input, BlockSizeBits / 8);
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, BlockSizeBits / 8);
-        this.ThrowIfDisposed();
+        ThrowIfDisposed();
 
-        this._aes.DecryptEcb(input, output, PaddingMode.None);
+        _aes.DecryptEcb(input, output, PaddingMode.None);
     }
 
     /// <summary>
@@ -137,10 +137,10 @@ public sealed class AesBlockCipher
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ThrowIfDisposed() =>
 #if NET8_0_OR_GREATER
-        ObjectDisposedException.ThrowIf(this._disposed, this);
+        ObjectDisposedException.ThrowIf(_disposed, this);
 #else
-        if (this._disposed)
-            throw new ObjectDisposedException(this.GetType().Name);
+        if (_disposed)
+            throw new ObjectDisposedException(GetType().Name);
 #endif
 
 }

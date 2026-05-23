@@ -129,7 +129,7 @@ public sealed class Poly1305
     public Poly1305()
         : base(BlockSize, KeySize)
     {
-        this.HashSizeValue = 128;
+        HashSizeValue = 128;
     }
 
     /// <summary>
@@ -167,7 +167,7 @@ public sealed class Poly1305
     {
         get
         {
-            this.ThrowIfDisposed();
+            ThrowIfDisposed();
             return "Poly1305";
         }
     }
@@ -184,14 +184,14 @@ public sealed class Poly1305
     /// </remarks>
     protected override void Dispose(bool disposing)
     {
-        if (this.IsDisposed) return;
+        if (IsDisposed) return;
 
         if (disposing)
         {
-            CryptoHelpers.Clear(this._acc);
-            CryptoHelpers.Clear(this._r);
-            CryptoHelpers.Clear(this._key);
-            CryptoHelpers.Clear(this._s);
+            CryptoHelpers.Clear(_acc);
+            CryptoHelpers.Clear(_r);
+            CryptoHelpers.Clear(_key);
+            CryptoHelpers.Clear(_s);
         }
 
         base.Dispose(disposing);
@@ -218,7 +218,7 @@ public sealed class Poly1305
             padded[block.Length] = 1;
 
         // Load accumulator state
-        ulong h0 = this._acc[0], h1 = this._acc[1], h2 = this._acc[2], h3 = this._acc[3], h4 = this._acc[4];
+        ulong h0 = _acc[0], h1 = _acc[1], h2 = _acc[2], h3 = _acc[3], h4 = _acc[4];
 
         // Convert padded input block into 130-bit number split into 5 26-bit limbs (as per RFC)
         var t0 = BinaryPrimitives.ReadUInt64LittleEndian(padded);
@@ -234,13 +234,13 @@ public sealed class Poly1305
             h4 += 1 << 24;
 
         // Load r and perform 130-bit polynomial multiplication: accumulator * r
-        ulong r0 = this._r[0], r1 = this._r[1], r2 = this._r[2], r3 = this._r[3], r4 = this._r[4];
+        ulong r0 = _r[0], r1 = _r[1], r2 = _r[2], r3 = _r[3], r4 = _r[4];
 
         // Compute limb products with optimized carry structure
-        var t00 = (h0 * r0) + (h1 * this._s[3]) + (h2 * this._s[2]) + (h3 * this._s[1]) + (h4 * this._s[0]);
-        var t01 = (h0 * r1) + (h1 * r0) + (h2 * this._s[3]) + (h3 * this._s[2]) + (h4 * this._s[1]);
-        var t02 = (h0 * r2) + (h1 * r1) + (h2 * r0) + (h3 * this._s[3]) + (h4 * this._s[2]);
-        var t03 = (h0 * r3) + (h1 * r2) + (h2 * r1) + (h3 * r0) + (h4 * this._s[3]);
+        var t00 = (h0 * r0) + (h1 * _s[3]) + (h2 * _s[2]) + (h3 * _s[1]) + (h4 * _s[0]);
+        var t01 = (h0 * r1) + (h1 * r0) + (h2 * _s[3]) + (h3 * _s[2]) + (h4 * _s[1]);
+        var t02 = (h0 * r2) + (h1 * r1) + (h2 * r0) + (h3 * _s[3]) + (h4 * _s[2]);
+        var t03 = (h0 * r3) + (h1 * r2) + (h2 * r1) + (h3 * r0) + (h4 * _s[3]);
         var t04 = (h0 * r4) + (h1 * r3) + (h2 * r2) + (h3 * r1) + (h4 * r0);
 
         // Perform carry propagation and modular reduction mod 2^130 - 5
@@ -256,7 +256,7 @@ public sealed class Poly1305
         h1 += (uint)carry;
 
         // Save accumulator state
-        this._acc[0] = (uint)h0; this._acc[1] = (uint)h1; this._acc[2] = (uint)h2; this._acc[3] = (uint)h3; this._acc[4] = (uint)h4;
+        _acc[0] = (uint)h0; _acc[1] = (uint)h1; _acc[2] = (uint)h2; _acc[3] = (uint)h3; _acc[4] = (uint)h4;
     }
 
     /// <inheritdoc />
@@ -268,7 +268,7 @@ public sealed class Poly1305
     protected override byte[] ProcessFinalBlock()
     {
         // Final modular reduction: canonicalize accumulator to [0..2^130-5]
-        uint h0 = this._acc[0], h1 = this._acc[1], h2 = this._acc[2], h3 = this._acc[3], h4 = this._acc[4];
+        uint h0 = _acc[0], h1 = _acc[1], h2 = _acc[2], h3 = _acc[3], h4 = _acc[4];
 
         // Propagate carries across limbs
         h1 += h0 >> 26; h0 &= Mask26;
@@ -289,19 +289,19 @@ public sealed class Poly1305
         // Otherwise, c starts at -5, which cancels the test addition above.
         var c = ((int)(h4 >> 26) - 1) * 5L;
 
-        c += (long)this._key[0] + (h0 | (h1 << 26));
+        c += (long)_key[0] + (h0 | (h1 << 26));
         BinaryPrimitives.WriteUInt32LittleEndian(tag[..], (uint)c);
         c >>= 32;
 
-        c += (long)this._key[1] + ((h1 >> 6) | (h2 << 20));
+        c += (long)_key[1] + ((h1 >> 6) | (h2 << 20));
         BinaryPrimitives.WriteUInt32LittleEndian(tag[4..], (uint)c);
         c >>= 32;
 
-        c += (long)this._key[2] + ((h2 >> 12) | (h3 << 14));
+        c += (long)_key[2] + ((h2 >> 12) | (h3 << 14));
         BinaryPrimitives.WriteUInt32LittleEndian(tag[8..], (uint)c);
         c >>= 32;
 
-        c += (long)this._key[3] + ((h3 >> 18) | (h4 << 8));
+        c += (long)_key[3] + ((h3 >> 18) | (h4 << 8));
         BinaryPrimitives.WriteUInt32LittleEndian(tag[12..], (uint)c);
 
 #if !NET6_0_OR_GREATER
@@ -310,14 +310,14 @@ public sealed class Poly1305
         // is retained until Dispose so that the framework's automatic re-initialization
         // (invoked by ComputeHash via CaptureHashCodeAndReinitialize) can succeed without
         // tripping the key-set check in Initialize.
-        this._finalized = true;
-        this.State = 2;
+        _finalized = true;
+        State = 2;
 #endif
 
         // Key material is no longer needed — zero it immediately to enforce
         // Poly1305's one-time-use guarantee and limit key exposure in memory.
-        if (this.KeyValue is not null)
-            CryptoHelpers.Clear(this.KeyValue);
+        if (KeyValue is not null)
+            CryptoHelpers.Clear(KeyValue);
 
         return tag.ToArray();
     }
@@ -340,11 +340,11 @@ public sealed class Poly1305
         // Reset accumulator so the next computation starts clean — correct whether this
         // hook runs in response to an explicit Key assignment, from Initialize, or from
         // the constructor's default-key setup.
-        CryptoHelpers.Clear(this._acc);
+        CryptoHelpers.Clear(_acc);
 
         // OnKeyChanged is only invoked by the Key setter and Initialize, both of which guarantee
         // KeyValue is non-null and of the expected length before this point.
-        ReadOnlySpan<byte> key = this.KeyValue!;
+        ReadOnlySpan<byte> key = KeyValue!;
 
         // Load and clamp the first 128 bits of the key as the polynomial 'r' key Clamp 'r' by setting/clearing specific bits to avoid
         // vulnerabilities as per RFC 8439, Section 2.5.1
@@ -354,22 +354,22 @@ public sealed class Poly1305
         var t3 = BinaryPrimitives.ReadUInt32LittleEndian(key[12..]);
 
         // Split 128-bit r into 5 x 26-bit limbs with clamping (see RFC for bitmask values)
-        this._r[0] = t0 & 0x03FFFFFFU;
-        this._r[1] = ((t0 >> 26) | (t1 << 6)) & 0x03FFFF03U;
-        this._r[2] = ((t1 >> 20) | (t2 << 12)) & 0x03FFC0FFU;
-        this._r[3] = ((t2 >> 14) | (t3 << 18)) & 0x03F03FFFU;
-        this._r[4] = (t3 >> 8) & 0x000FFFFFU;
+        _r[0] = t0 & 0x03FFFFFFU;
+        _r[1] = ((t0 >> 26) | (t1 << 6)) & 0x03FFFF03U;
+        _r[2] = ((t1 >> 20) | (t2 << 12)) & 0x03FFC0FFU;
+        _r[3] = ((t2 >> 14) | (t3 << 18)) & 0x03F03FFFU;
+        _r[4] = (t3 >> 8) & 0x000FFFFFU;
 
         // Precompute 5*r[i] values to optimize carry-reduction step later
-        this._s[0] = this._r[1] * 5;
-        this._s[1] = this._r[2] * 5;
-        this._s[2] = this._r[3] * 5;
-        this._s[3] = this._r[4] * 5;
+        _s[0] = _r[1] * 5;
+        _s[1] = _r[2] * 5;
+        _s[2] = _r[3] * 5;
+        _s[3] = _r[4] * 5;
 
         // Load the second half of the key (s), which will be added during final tag computation
-        this._key[0] = BinaryPrimitives.ReadUInt32LittleEndian(key[16..]);
-        this._key[1] = BinaryPrimitives.ReadUInt32LittleEndian(key[20..]);
-        this._key[2] = BinaryPrimitives.ReadUInt32LittleEndian(key[24..]);
-        this._key[3] = BinaryPrimitives.ReadUInt32LittleEndian(key[28..]);
+        _key[0] = BinaryPrimitives.ReadUInt32LittleEndian(key[16..]);
+        _key[1] = BinaryPrimitives.ReadUInt32LittleEndian(key[20..]);
+        _key[2] = BinaryPrimitives.ReadUInt32LittleEndian(key[24..]);
+        _key[3] = BinaryPrimitives.ReadUInt32LittleEndian(key[28..]);
     }
 }

@@ -140,8 +140,8 @@ public sealed partial class Blake2s
     {
         CryptoHelpers.ThrowIfInvalidHashSize(hashSize, s_permittedHashSizes);
 
-        this.HashSizeValue = hashSize;
-        this.InitializeHashState();
+        HashSizeValue = hashSize;
+        InitializeHashState();
     }
 
     /// <inheritdoc />
@@ -158,8 +158,8 @@ public sealed partial class Blake2s
     {
         get
         {
-            this.ThrowIfDisposed();
-            return $"BLAKE2s-{this.HashSizeValue}";
+            ThrowIfDisposed();
+            return $"BLAKE2s-{HashSizeValue}";
         }
     }
 
@@ -185,18 +185,18 @@ public sealed partial class Blake2s
     {
         get
         {
-            this.ThrowIfDisposed();
-            return this.HashSizeValue;
+            ThrowIfDisposed();
+            return HashSizeValue;
         }
 
         set
         {
-            this.ThrowIfDisposed();
-            this.ThrowIfInvalidState();
+            ThrowIfDisposed();
+            ThrowIfInvalidState();
 
             CryptoHelpers.ThrowIfInvalidHashSize(value, s_permittedHashSizes);
 
-            this.HashSizeValue = value;
+            HashSizeValue = value;
         }
     }
 
@@ -221,11 +221,11 @@ public sealed partial class Blake2s
     /// </remarks>
     protected override void Dispose(bool disposing)
     {
-        if (this.IsDisposed) return;
+        if (IsDisposed) return;
 
         if (disposing)
         {
-            CryptoHelpers.Clear(this._h);
+            CryptoHelpers.Clear(_h);
         }
 
         base.Dispose(disposing);
@@ -246,19 +246,19 @@ public sealed partial class Blake2s
     /// <see langword="true" /> if this is the final block; causes the finalization flag word to be inverted.
     /// </param>
     /// <remarks>
-    /// Dispatches to an AVX-512 vectorised implementation when supported by the host, falling back to a
-    /// scalar reference implementation otherwise. <see cref="Avx512F.VL.IsSupported" /> is a JIT intrinsic
-    /// that folds to a compile-time constant, so the branch carries no runtime cost.
+    /// Dispatches to an AVX-512 vectorised implementation when supported by the host, falling back to a scalar
+    /// reference implementation otherwise. <see cref="Avx512F.VL.IsSupported" /> is a JIT intrinsic that folds to a
+    /// compile-time constant, so the branch carries no runtime cost.
     /// </remarks>
     protected override void ProcessBlock(ReadOnlySpan<byte> block, ulong totalBytesIncludingThisBlock, bool isFinal)
     {
         if (Avx512F.VL.IsSupported)
         {
-            this.ProcessBlockAvx512(block, totalBytesIncludingThisBlock, isFinal);
+            ProcessBlockAvx512(block, totalBytesIncludingThisBlock, isFinal);
             return;
         }
 
-        this.ProcessBlockScalar(block, totalBytesIncludingThisBlock, isFinal);
+        ProcessBlockScalar(block, totalBytesIncludingThisBlock, isFinal);
     }
 
     /// <summary>
@@ -268,9 +268,8 @@ public sealed partial class Blake2s
     /// <param name="totalBytesIncludingThisBlock">The cumulative byte count including this block.</param>
     /// <param name="isFinal"><see langword="true" /> if this is the final block.</param>
     /// <remarks>
-    /// Invoked by <see cref="ProcessBlock" /> on hosts without AVX-512 + VL support. Implements the
-    /// reference 16-element working-vector form of the BLAKE2s <c>F</c> compression function directly
-    /// from RFC 7693.
+    /// Invoked by <see cref="ProcessBlock" /> on hosts without AVX-512 + VL support. Implements the reference
+    /// 16-element working-vector form of the BLAKE2s <c>F</c> compression function directly from RFC 7693.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     private void ProcessBlockScalar(ReadOnlySpan<byte> block, ulong totalBytesIncludingThisBlock, bool isFinal)
@@ -283,14 +282,14 @@ public sealed partial class Blake2s
         // Initialize the 16-element working vector.
         Span<uint> v =
         [
-            this._h[0],
-            this._h[1],
-            this._h[2],
-            this._h[3],
-            this._h[4],
-            this._h[5],
-            this._h[6],
-            this._h[7],
+            _h[0],
+            _h[1],
+            _h[2],
+            _h[3],
+            _h[4],
+            _h[5],
+            _h[6],
+            _h[7],
             s_iv[0],
             s_iv[1],
             s_iv[2],
@@ -320,7 +319,7 @@ public sealed partial class Blake2s
 
         // Fold the working vector back into the hash state.
         for (var i = 0; i < 8; i++)
-            this._h[i] ^= v[i] ^ v[i + 8];
+            _h[i] ^= v[i] ^ v[i + 8];
     }
 
     /// <inheritdoc />
@@ -330,7 +329,7 @@ public sealed partial class Blake2s
     /// </remarks>
     protected override byte[] ProcessFinalBlock()
     {
-        var outputBytes = this.HashSizeValue / 8;
+        var outputBytes = HashSizeValue / 8;
         var output = new byte[outputBytes];
         var wordCount = (outputBytes + 3) / 4;
 
@@ -340,12 +339,12 @@ public sealed partial class Blake2s
             Span<byte> wordSpan = output.AsSpan(i * 4, Math.Min(4, outputBytes - (i * 4)));
             if (wordSpan.Length == 4)
             {
-                BinaryPrimitives.WriteUInt32LittleEndian(wordSpan, this._h[i]);
+                BinaryPrimitives.WriteUInt32LittleEndian(wordSpan, _h[i]);
             }
             else
             {
                 // Final word may be a partial write when the output size is not a multiple of 4 bytes.
-                BinaryPrimitives.WriteUInt32LittleEndian(tmp, this._h[i]);
+                BinaryPrimitives.WriteUInt32LittleEndian(tmp, _h[i]);
                 tmp[..wordSpan.Length].CopyTo(wordSpan);
             }
         }
@@ -360,12 +359,12 @@ public sealed partial class Blake2s
     /// </remarks>
     protected override void InitializeHashState()
     {
-        s_iv.CopyTo(this._h, 0);
+        s_iv.CopyTo(_h, 0);
 
         // Parameter block: fan-out=1, max depth=1, digest length=nn, key length=kk.
-        var nn = this.HashSizeValue / 8;
-        var kk = this.KeyValue?.Length ?? 0;
-        this._h[0] ^= 0x01010000U ^ ((uint)kk << 8) ^ (uint)nn;
+        var nn = HashSizeValue / 8;
+        var kk = KeyValue?.Length ?? 0;
+        _h[0] ^= 0x01010000U ^ ((uint)kk << 8) ^ (uint)nn;
     }
 
     /// <summary>

@@ -57,7 +57,7 @@ public sealed class MerkleTreeDiagnostics
     /// <param name="index">The zero-based leaf index.</param>
     /// <param name="hash">The computed leaf hash bytes.</param>
     internal void RecordLeaf(int index, byte[] hash) =>
-        this._nodes.Add(new MerkleTreeDiagnosticNode(
+        _nodes.Add(new MerkleTreeDiagnosticNode(
             Level: 0,
             Index: index,
             IsLeaf: true,
@@ -72,7 +72,7 @@ public sealed class MerkleTreeDiagnostics
     /// <param name="childHashes">Snapshots of the child hash values used as input.</param>
     /// <param name="hash">The resulting parent hash.</param>
     internal void RecordInternal(int level, int index, byte[][] childHashes, byte[] hash) =>
-        this._nodes.Add(new MerkleTreeDiagnosticNode(
+        _nodes.Add(new MerkleTreeDiagnosticNode(
             Level: level,
             Index: index,
             IsLeaf: false,
@@ -90,14 +90,14 @@ public sealed class MerkleTreeDiagnostics
     /// A list of all <see cref="MerkleTreeDiagnosticNode" /> instances recorded during the computation.
     /// </returns>
     public IReadOnlyList<MerkleTreeDiagnosticNode> GetAllNodes() =>
-        this._nodes.OrderBy(n => n.Level).ThenBy(n => n.Index).ToList();
+        _nodes.OrderBy(n => n.Level).ThenBy(n => n.Index).ToList();
 
     /// <summary>
     /// Gets the number of distinct levels recorded in the tree, including the leaf level.
     /// </summary>
     /// <returns>The total number of levels, or zero if no nodes have been recorded.</returns>
     public int GetLevelCount() =>
-        this._nodes.Count == 0 ? 0 : this._nodes.Max(n => n.Level) + 1;
+        _nodes.Count == 0 ? 0 : _nodes.Max(n => n.Level) + 1;
 
     /// <summary>
     /// Returns all nodes at the specified <paramref name="level" />, sorted by index ascending.
@@ -105,14 +105,14 @@ public sealed class MerkleTreeDiagnostics
     /// <param name="level">The zero-based tree level to retrieve. Level 0 is the leaf level.</param>
     /// <returns>A list of nodes at <paramref name="level" />, or an empty list if none exist.</returns>
     public IReadOnlyList<MerkleTreeDiagnosticNode> GetLevel(int level) =>
-        this._nodes.Where(n => n.Level == level).OrderBy(n => n.Index).ToList();
+        _nodes.Where(n => n.Level == level).OrderBy(n => n.Index).ToList();
 
     /// <summary>
     /// Gets the root node — the sole node at the highest recorded level — or <see langword="null" /> if no nodes have
     /// been recorded.
     /// </summary>
     public MerkleTreeDiagnosticNode? Root =>
-        _nodes.IsEmpty ? null : this._nodes.MaxBy(n => n.Level);
+        _nodes.IsEmpty ? null : _nodes.MaxBy(n => n.Level);
 
     // -----------------------------------------------------------------------------------------
     // Validation
@@ -151,7 +151,7 @@ public sealed class MerkleTreeDiagnostics
 
         var issues = new List<string>();
 
-        foreach (MerkleTreeDiagnosticNode? node in this._nodes.Where(n => !n.IsLeaf).OrderBy(n => n.Level).ThenBy(n => n.Index))
+        foreach (MerkleTreeDiagnosticNode? node in _nodes.Where(n => !n.IsLeaf).OrderBy(n => n.Level).ThenBy(n => n.Index))
         {
             var recomputed = CombineHashes(node.ChildHashes, algorithmFactory);
             if (!recomputed.SequenceEqual(node.Hash))
@@ -188,9 +188,9 @@ public sealed class MerkleTreeDiagnostics
     {
         ArgumentNullException.ThrowIfNull(writer);
 
-        IReadOnlyList<MerkleTreeDiagnosticNode> allNodes = this.GetAllNodes();
-        var levelCount = this.GetLevelCount();
-        MerkleTreeDiagnosticNode? root = this.Root;
+        IReadOnlyList<MerkleTreeDiagnosticNode> allNodes = GetAllNodes();
+        var levelCount = GetLevelCount();
+        MerkleTreeDiagnosticNode? root = Root;
 
         // Build a reverse lookup from hex-encoded hash to node, used to annotate child
         // references in the tree display. Duplicate hashes resolve to the lowest-level match.
@@ -218,7 +218,7 @@ public sealed class MerkleTreeDiagnostics
 
         for (var level = 0; level < levelCount; level++)
         {
-            IReadOnlyList<MerkleTreeDiagnosticNode> levelNodes = this.GetLevel(level);
+            IReadOnlyList<MerkleTreeDiagnosticNode> levelNodes = GetLevel(level);
             var isRoot = level == levelCount - 1;
             var label = level == 0 ? "leaf" : "internal";
             var rootTag = isRoot ? "  ★  root" : string.Empty;
@@ -254,7 +254,7 @@ public sealed class MerkleTreeDiagnostics
         // Optional validation summary.
         if (algorithmFactory is not null)
         {
-            var valid = this.Validate(algorithmFactory, out IReadOnlyList<string>? validationErrors);
+            var valid = Validate(algorithmFactory, out IReadOnlyList<string>? validationErrors);
             var internalCount = allNodes.Count(n => !n.IsLeaf);
 
             writer.WriteLine(heavy);

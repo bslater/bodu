@@ -69,13 +69,13 @@ public sealed class EcbModeTransform
     {
         ThrowHelper.ThrowIfNull(cipher);
 
-        this._cipher = cipher;
+        _cipher = cipher;
     }
 
     /// <inheritdoc />
     public int Transform(ReadOnlySpan<byte> input, Span<byte> output, bool encrypt)
     {
-        var blockSize = this._cipher.BlockSize / 8;
+        var blockSize = _cipher.BlockSize / 8;
 
         // Empty input is a no-op, consistent with CbcModeTransform.
         CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(input, blockSize, throwIfZero: false);
@@ -87,9 +87,9 @@ public sealed class EcbModeTransform
             Span<byte> outBlock = output.Slice(offset, blockSize);
 
             if (encrypt)
-                this._cipher.Encrypt(inBlock, outBlock);
+                _cipher.Encrypt(inBlock, outBlock);
             else
-                this._cipher.Decrypt(inBlock, outBlock);
+                _cipher.Decrypt(inBlock, outBlock);
         }
 
         return input.Length;

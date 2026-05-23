@@ -81,8 +81,8 @@ public sealed partial class Whirlpool
         /// <param name="roundKeys">The ten round keys, each holding the round constant in column 0.</param>
         public VariantTables(ulong[] multiplication, ulong[][] roundKeys)
         {
-            this.Multiplication = multiplication;
-            this.RoundKeys = roundKeys;
+            Multiplication = multiplication;
+            RoundKeys = roundKeys;
         }
 
         /// <summary>

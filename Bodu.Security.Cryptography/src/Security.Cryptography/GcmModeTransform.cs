@@ -178,7 +178,7 @@ public sealed class GcmModeTransform
         string parameterName,
         bool useInitialCounterBlock)
     {
-        this._cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
+        _cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
 
         if (cipher.BlockSize != BlockSize)
         {
@@ -206,29 +206,29 @@ public sealed class GcmModeTransform
             }
         }
 
-        this._h = new byte[BlockSize / 8];
-        this._j0 = new byte[BlockSize / 8];
-        this._counter = new byte[BlockSize / 8];
+        _h = new byte[BlockSize / 8];
+        _j0 = new byte[BlockSize / 8];
+        _counter = new byte[BlockSize / 8];
 
         // H = E_K(0¹²⁸).
         Span<byte> zeroBlock = stackalloc byte[BlockSize / 8];
-        this._cipher.Encrypt(zeroBlock, this._h);
+        _cipher.Encrypt(zeroBlock, _h);
 
         // Build J0.
         if (useInitialCounterBlock)
         {
-            nonceOrJ0.CopyTo(this._j0);
+            nonceOrJ0.CopyTo(_j0);
         }
         else
         {
             // J0 = nonce || 0x00000001.
-            nonceOrJ0.CopyTo(this._j0);
-            this._j0[15] = 0x01;
+            nonceOrJ0.CopyTo(_j0);
+            _j0[15] = 0x01;
         }
 
         // CTR counter starts at inc32(J0); J0 itself is reserved for the tag.
-        this._j0.CopyTo(this._counter, 0);
-        IncrementCounter32(this._counter);
+        _j0.CopyTo(_counter, 0);
+        IncrementCounter32(_counter);
     }
 
     /// <inheritdoc />
@@ -242,8 +242,8 @@ public sealed class GcmModeTransform
     /// </exception>
     public int Decrypt(ReadOnlySpan<byte> ciphertextWithTag, Span<byte> output)
     {
-        this.ThrowIfDisposed();
-        this.ThrowIfCompleted();
+        ThrowIfDisposed();
+        ThrowIfCompleted();
 
         if (ciphertextWithTag.Length < DefaultTagSize / 8)
         {
@@ -262,7 +262,7 @@ public sealed class GcmModeTransform
 
         try
         {
-            this.EnsureAssociatedDataProcessed();
+            EnsureAssociatedDataProcessed();
 
             ReadOnlySpan<byte> ciphertext = ciphertextWithTag[..plaintextLength];
             ReadOnlySpan<byte> receivedTag = ciphertextWithTag.Slice(plaintextLength, DefaultTagSize / 8);
@@ -270,7 +270,7 @@ public sealed class GcmModeTransform
             Span<byte> expectedTag = stackalloc byte[DefaultTagSize / 8];
             try
             {
-                this.ComputeTag(this._aad.AsSpan(), ciphertext, expectedTag);
+                ComputeTag(_aad.AsSpan(), ciphertext, expectedTag);
 
                 // Verify before producing plaintext. On failure, zero whatever the caller passed in
                 // so a pre-filled output buffer cannot leak data the caller may have used to seed
@@ -282,7 +282,7 @@ public sealed class GcmModeTransform
                         CryptoResourceStrings.Crypt_Invalid_AuthenticationTagMismatch);
                 }
 
-                this.ApplyCtr(ciphertext, output[..plaintextLength]);
+                ApplyCtr(ciphertext, output[..plaintextLength]);
 
                 return plaintextLength;
             }
@@ -293,7 +293,7 @@ public sealed class GcmModeTransform
         }
         finally
         {
-            this._completed = true;
+            _completed = true;
         }
     }
 
@@ -304,15 +304,15 @@ public sealed class GcmModeTransform
     /// </summary>
     public void Dispose()
     {
-        if (this._disposed) return;
+        if (_disposed) return;
 
-        CryptoHelpers.ClearAndNullify(ref this._h);
-        CryptoHelpers.ClearAndNullify(ref this._j0);
-        CryptoHelpers.ClearAndNullify(ref this._counter);
-        CryptoHelpers.ClearAndNullify(ref this._aad);
+        CryptoHelpers.ClearAndNullify(ref _h);
+        CryptoHelpers.ClearAndNullify(ref _j0);
+        CryptoHelpers.ClearAndNullify(ref _counter);
+        CryptoHelpers.ClearAndNullify(ref _aad);
 
-        this._completed = true;
-        this._disposed = true;
+        _completed = true;
+        _disposed = true;
 
         GC.SuppressFinalize(this);
     }
@@ -324,8 +324,8 @@ public sealed class GcmModeTransform
     /// </exception>
     public int Encrypt(ReadOnlySpan<byte> plaintext, Span<byte> output)
     {
-        this.ThrowIfDisposed();
-        this.ThrowIfCompleted();
+        ThrowIfDisposed();
+        ThrowIfCompleted();
 
         var required = checked(plaintext.Length + (DefaultTagSize / 8));
         if (output.Length < required)
@@ -337,15 +337,15 @@ public sealed class GcmModeTransform
 
         try
         {
-            this.EnsureAssociatedDataProcessed();
+            EnsureAssociatedDataProcessed();
 
             Span<byte> ciphertext = output[..plaintext.Length];
-            this.ApplyCtr(plaintext, ciphertext);
+            ApplyCtr(plaintext, ciphertext);
 
             Span<byte> tag = stackalloc byte[DefaultTagSize / 8];
             try
             {
-                this.ComputeTag(this._aad.AsSpan(), ciphertext, tag);
+                ComputeTag(_aad.AsSpan(), ciphertext, tag);
                 tag.CopyTo(output.Slice(plaintext.Length, DefaultTagSize / 8));
 
                 return required;
@@ -357,7 +357,7 @@ public sealed class GcmModeTransform
         }
         finally
         {
-            this._completed = true;
+            _completed = true;
         }
     }
 
@@ -368,17 +368,17 @@ public sealed class GcmModeTransform
     /// </exception>
     public void ProcessAssociatedData(ReadOnlySpan<byte> associatedData)
     {
-        this.ThrowIfDisposed();
-        this.ThrowIfCompleted();
+        ThrowIfDisposed();
+        ThrowIfCompleted();
 
-        if (this._aadProcessed)
+        if (_aadProcessed)
         {
             throw new InvalidOperationException(
                 CryptoResourceStrings.Crypt_Invalid_AssociatedDataAlreadyProcessed);
         }
 
-        this._aad = associatedData.IsEmpty ? Array.Empty<byte>() : associatedData.ToArray();
-        this._aadProcessed = true;
+        _aad = associatedData.IsEmpty ? Array.Empty<byte>() : associatedData.ToArray();
+        _aadProcessed = true;
     }
 
     /// <summary>
@@ -500,11 +500,11 @@ public sealed class GcmModeTransform
         Span<byte> keystream = stackalloc byte[BlockSize / 8];
         try
         {
-            var counter = this._counter!;
+            var counter = _counter!;
 
             for (var offset = 0; offset < input.Length; offset += BlockSize / 8)
             {
-                this._cipher.Encrypt(counter, keystream);
+                _cipher.Encrypt(counter, keystream);
                 IncrementCounter32(counter);
 
                 var remaining = Math.Min(BlockSize / 8, input.Length - offset);
@@ -533,7 +533,7 @@ public sealed class GcmModeTransform
 
         try
         {
-            ReadOnlySpan<byte> h = this._h!;
+            ReadOnlySpan<byte> h = _h!;
 
             GhashUpdate(y, h, aad);
             GhashUpdate(y, h, ciphertext);
@@ -544,7 +544,7 @@ public sealed class GcmModeTransform
             GhashBlock(y, h, lengthBlock);
 
             // T = y ⊕ E_K(J0).
-            this._cipher.Encrypt(this._j0!, encryptedJ0);
+            _cipher.Encrypt(_j0!, encryptedJ0);
             for (var i = 0; i < BlockSize / 8; i++)
                 destination[i] = (byte)(y[i] ^ encryptedJ0[i]);
         }
@@ -564,10 +564,10 @@ public sealed class GcmModeTransform
     /// </summary>
     private void EnsureAssociatedDataProcessed()
     {
-        if (!this._aadProcessed)
+        if (!_aadProcessed)
         {
-            this._aad = Array.Empty<byte>();
-            this._aadProcessed = true;
+            _aad = Array.Empty<byte>();
+            _aadProcessed = true;
         }
     }
     /// <summary>
@@ -576,7 +576,7 @@ public sealed class GcmModeTransform
     /// </summary>
     private void ThrowIfCompleted()
     {
-        if (this._completed)
+        if (_completed)
         {
             throw new InvalidOperationException(
                 "This GCM transform has already completed and cannot be reused. Create a new instance per message.");
@@ -592,10 +592,10 @@ public sealed class GcmModeTransform
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ThrowIfDisposed() =>
 #if NET8_0_OR_GREATER
-        ObjectDisposedException.ThrowIf(this._disposed, this);
+        ObjectDisposedException.ThrowIf(_disposed, this);
 #else
-        if (this._disposed)
-            throw new ObjectDisposedException(this.GetType().Name);
+        if (_disposed)
+            throw new ObjectDisposedException(GetType().Name);
 #endif
 
 }

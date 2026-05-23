@@ -70,9 +70,9 @@ public sealed class DelegateHashAlgorithmFactory<T> :
     /// </exception>
     public DelegateHashAlgorithmFactory(Func<T> builder)
     {
-        this._builder = builder ?? throw new ArgumentNullException(nameof(builder));
+        _builder = builder ?? throw new ArgumentNullException(nameof(builder));
     }
 
     /// <inheritdoc />
-    public T Create() => this._builder();
+    public T Create() => _builder();
 }

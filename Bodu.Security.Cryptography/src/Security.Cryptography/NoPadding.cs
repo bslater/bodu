@@ -59,14 +59,11 @@ public sealed class NoPadding
         CryptoHelpers.ThrowIfNotPositiveMultipleOf(blockSize, 8);
 
         var size = blockSize / 8;
-        if (input.Length % size != 0)
-        {
-            throw new ArgumentException(
+        return input.Length % size == 0
+            ? input.ToArray()
+            : throw new ArgumentException(
                 CryptoResourceStrings.Arg_Invalid_NoPaddingInputNotAligned,
                 nameof(input));
-        }
-
-        return input.ToArray();
     }
 
     /// <summary>

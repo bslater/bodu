@@ -95,16 +95,16 @@ public abstract class Threefish
     /// </remarks>
     protected Threefish(int blockSizeBits, int tweakSizeBits)
     {
-        this.BlockSizeValue = this.KeySizeValue = blockSizeBits;
-        this.FeedbackSizeValue = 8;
+        BlockSizeValue = KeySizeValue = blockSizeBits;
+        FeedbackSizeValue = 8;
 
-        this.LegalBlockSizesValue = [new KeySizes(blockSizeBits, blockSizeBits, 0)];
-        this.LegalKeySizesValue = [new KeySizes(blockSizeBits, blockSizeBits, 0)];
-        this.LegalTweakSizesValue = [new KeySizes(tweakSizeBits, tweakSizeBits, 0)];
-        this.TweakSizeValue = tweakSizeBits;
+        LegalBlockSizesValue = [new KeySizes(blockSizeBits, blockSizeBits, 0)];
+        LegalKeySizesValue = [new KeySizes(blockSizeBits, blockSizeBits, 0)];
+        LegalTweakSizesValue = [new KeySizes(tweakSizeBits, tweakSizeBits, 0)];
+        TweakSizeValue = tweakSizeBits;
 
-        this.ModeValue = CipherMode.CBC;
-        this.Padding = PaddingMode.PKCS7;
+        ModeValue = CipherMode.CBC;
+        Padding = PaddingMode.PKCS7;
     }
 
     /// <summary>
@@ -123,46 +123,46 @@ public abstract class Threefish
     /// <inheritdoc />
     public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[]? rgbIV, byte[] tweak)
     {
-        this.ThrowIfDisposed();
-        CryptoHelpers.ThrowIfInvalidKeySize(rgbKey, this.KeySize, this.LegalKeySizes);
-        CryptoHelpers.ThrowIfInvalidIVForMode(rgbIV, this.BlockMode, this.BlockSize, this.LegalBlockSizes);
-        CryptoHelpers.ThrowIfInvalidTweakSize(tweak, this.TweakSize, this.LegalTweakSizes);
+        ThrowIfDisposed();
+        CryptoHelpers.ThrowIfInvalidKeySize(rgbKey, KeySize, LegalKeySizes);
+        CryptoHelpers.ThrowIfInvalidIVForMode(rgbIV, BlockMode, BlockSize, LegalBlockSizes);
+        CryptoHelpers.ThrowIfInvalidTweakSize(tweak, TweakSize, LegalTweakSizes);
 
-        ThreefishBlockCipher engine = this.CreateCipher(rgbKey, tweak);
-        return new ThreefishTransform(engine, this.BlockMode, this.Padding, rgbIV, false);
+        ThreefishBlockCipher engine = CreateCipher(rgbKey, tweak);
+        return new ThreefishTransform(engine, BlockMode, Padding, rgbIV, false);
     }
 
     /// <inheritdoc />
     public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[]? rgbIV, byte[] tweak)
     {
-        this.ThrowIfDisposed();
-        CryptoHelpers.ThrowIfInvalidKeySize(rgbKey, this.KeySize, this.LegalKeySizes);
-        CryptoHelpers.ThrowIfInvalidIVForMode(rgbIV, this.BlockMode, this.BlockSize, this.LegalBlockSizes);
-        CryptoHelpers.ThrowIfInvalidTweakSize(tweak, this.TweakSize, this.LegalTweakSizes);
+        ThrowIfDisposed();
+        CryptoHelpers.ThrowIfInvalidKeySize(rgbKey, KeySize, LegalKeySizes);
+        CryptoHelpers.ThrowIfInvalidIVForMode(rgbIV, BlockMode, BlockSize, LegalBlockSizes);
+        CryptoHelpers.ThrowIfInvalidTweakSize(tweak, TweakSize, LegalTweakSizes);
 
-        ThreefishBlockCipher engine = this.CreateCipher(rgbKey, tweak);
-        return new ThreefishTransform(engine, this.BlockMode, this.Padding, rgbIV, true);
+        ThreefishBlockCipher engine = CreateCipher(rgbKey, tweak);
+        return new ThreefishTransform(engine, BlockMode, Padding, rgbIV, true);
     }
 
     /// <inheritdoc />
     public override void GenerateIV()
     {
-        this.ThrowIfDisposed();
-        this.IVValue = CryptoHelpers.GetRandomNonZeroBytes(this.BlockSizeValue / 8);
+        ThrowIfDisposed();
+        IVValue = CryptoHelpers.GetRandomNonZeroBytes(BlockSizeValue / 8);
     }
 
     /// <inheritdoc />
     public override void GenerateKey()
     {
-        this.ThrowIfDisposed();
-        this.KeyValue = CryptoHelpers.GetRandomNonZeroBytes(this.KeySizeValue / 8);
+        ThrowIfDisposed();
+        KeyValue = CryptoHelpers.GetRandomNonZeroBytes(KeySizeValue / 8);
     }
 
     /// <inheritdoc />
     public override void GenerateTweak()
     {
-        this.ThrowIfDisposed();
-        this.TweakValue = CryptoHelpers.GetRandomNonZeroBytes(this.TweakSizeValue / 8);
+        ThrowIfDisposed();
+        TweakValue = CryptoHelpers.GetRandomNonZeroBytes(TweakSizeValue / 8);
     }
 
     /// <inheritdoc />
@@ -172,15 +172,15 @@ public abstract class Threefish
     /// </remarks>
     protected override void Dispose(bool disposing)
     {
-        if (!this._disposed)
+        if (!_disposed)
         {
             if (disposing)
             {
-                CryptoHelpers.Clear(this.KeyValue);
-                CryptoHelpers.Clear(this.IVValue);
+                CryptoHelpers.Clear(KeyValue);
+                CryptoHelpers.Clear(IVValue);
             }
 
-            this._disposed = true;
+            _disposed = true;
         }
 
         base.Dispose(disposing);
@@ -194,10 +194,10 @@ public abstract class Threefish
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ThrowIfDisposed() =>
 #if NET8_0_OR_GREATER
-        ObjectDisposedException.ThrowIf(this._disposed, this);
+        ObjectDisposedException.ThrowIf(_disposed, this);
 #else
-        if (this._disposed)
-            throw new ObjectDisposedException(this.GetType().Name);
+        if (_disposed)
+            throw new ObjectDisposedException(GetType().Name);
 #endif
 
     /// <summary>

@@ -101,8 +101,8 @@ public sealed class Serpent128Cipher
         }
 
         // Expand the supplied 128-, 192-, or 256-bit key into the 33 canonical Serpent round keys.
-        this._roundKeys = new uint[RoundKeyWordCount];
-        BuildRoundKeys(key, this._roundKeys);
+        _roundKeys = new uint[RoundKeyWordCount];
+        BuildRoundKeys(key, _roundKeys);
     }
 
     /// <inheritdoc />
@@ -112,7 +112,7 @@ public sealed class Serpent128Cipher
     /// <inheritdoc />
     public override void Encrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
-        this.ThrowIfDisposed();
+        ThrowIfDisposed();
         if (input.Length != BlockSizeBits / 8 || output.Length != BlockSizeBits / 8)
         {
             throw new ArgumentException(
@@ -126,7 +126,7 @@ public sealed class Serpent128Cipher
         var x2 = BinaryReadUInt32LE(input, 8);
         var x3 = BinaryReadUInt32LE(input, 12);
 
-        var rk = this._roundKeys;
+        var rk = _roundKeys;
 
         // Rounds 0..30: XOR the round key, apply S_r where r cycles modulo 8, then apply the Serpent linear transform.
         // The linear transform is omitted only from the final round.
@@ -168,7 +168,7 @@ public sealed class Serpent128Cipher
     /// <inheritdoc />
     public override void Decrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
-        this.ThrowIfDisposed();
+        ThrowIfDisposed();
         if (input.Length != BlockSizeBits / 8 || output.Length != BlockSizeBits / 8)
         {
             throw new ArgumentException(
@@ -181,7 +181,7 @@ public sealed class Serpent128Cipher
         var x2 = BinaryReadUInt32LE(input, 8);
         var x3 = BinaryReadUInt32LE(input, 12);
 
-        var rk = this._roundKeys;
+        var rk = _roundKeys;
 
         // Reverse the final encryption round: remove post-round key K_32, apply inverse S_31, then remove K_31.
         var kPost = RoundCount * 4;
@@ -222,11 +222,11 @@ public sealed class Serpent128Cipher
     /// <inheritdoc />
     protected override void Dispose(bool disposing)
     {
-        if (this._disposed) return;
+        if (_disposed) return;
 
         // Round keys are derived from secret key material and are zeroed in both disposal paths
         // so they are not retained if the finalizer runs before an explicit Dispose call.
-        CryptoHelpers.Clear(this._roundKeys);
+        CryptoHelpers.Clear(_roundKeys);
 
         base.Dispose(disposing);
     }

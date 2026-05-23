@@ -150,10 +150,10 @@ public abstract class AsconXof<T>
         ThrowHelper.ThrowIfLessThan(absorptionRounds, 1);
         ThrowHelper.ThrowIfGreaterThan(absorptionRounds, 12);
 
-        this._iv0 = iv0; this._iv1 = iv1; this._iv2 = iv2; this._iv3 = iv3; this._iv4 = iv4;
-        this._absorptionRounds = absorptionRounds;
-        this._algorithmName = algorithmName;
-        this.Initialize();
+        _iv0 = iv0; _iv1 = iv1; _iv2 = iv2; _iv3 = iv3; _iv4 = iv4;
+        _absorptionRounds = absorptionRounds;
+        _algorithmName = algorithmName;
+        Initialize();
     }
 
     /// <summary>
@@ -166,8 +166,8 @@ public abstract class AsconXof<T>
     {
         get
         {
-            this.ThrowIfDisposed();
-            return this._algorithmName;
+            ThrowIfDisposed();
+            return _algorithmName;
         }
     }
 
@@ -178,14 +178,14 @@ public abstract class AsconXof<T>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     public virtual void Initialize()
     {
-        this.ThrowIfDisposed();
-        this._state = new AsconState { S0 = this._iv0, S1 = this._iv1, S2 = this._iv2, S3 = this._iv3, S4 = this._iv4 };
-        this._residualBytes = 0;
-        this._squeezing = false;
-        this._squeezeBufOffset = 0;
-        this._squeezeBufAvailable = 0;
-        CryptoHelpers.Clear(this._residualBuffer.AsSpan(0, BlockSize));
-        CryptoHelpers.Clear(this._squeezeBuffer.AsSpan(0, BlockSize));
+        ThrowIfDisposed();
+        _state = new AsconState { S0 = _iv0, S1 = _iv1, S2 = _iv2, S3 = _iv3, S4 = _iv4 };
+        _residualBytes = 0;
+        _squeezing = false;
+        _squeezeBufOffset = 0;
+        _squeezeBufAvailable = 0;
+        CryptoHelpers.Clear(_residualBuffer.AsSpan(0, BlockSize));
+        CryptoHelpers.Clear(_squeezeBuffer.AsSpan(0, BlockSize));
     }
 
     /// <summary>
@@ -199,11 +199,11 @@ public abstract class AsconXof<T>
     /// </exception>
     public virtual void Absorb(ReadOnlySpan<byte> data)
     {
-        this.ThrowIfDisposed();
-        if (this._squeezing)
+        ThrowIfDisposed();
+        if (_squeezing)
             throw new InvalidOperationException(CryptoResourceStrings.Crypt_Invalid_XofSqueezeAfterAbsorb);
 
-        this.ProcessInputBlocks(data);
+        ProcessInputBlocks(data);
     }
 
     /// <summary>
@@ -214,26 +214,26 @@ public abstract class AsconXof<T>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     public void Squeeze(Span<byte> output)
     {
-        this.ThrowIfDisposed();
+        ThrowIfDisposed();
 
-        if (!this._squeezing)
-            this.BeginSqueezing();
+        if (!_squeezing)
+            BeginSqueezing();
 
         var outOff = 0;
         while (outOff < output.Length)
         {
-            if (this._squeezeBufAvailable == 0)
+            if (_squeezeBufAvailable == 0)
             {
-                this._state.Permute(this._absorptionRounds);
-                this._state.SqueezeRate64(this._squeezeBuffer);
-                this._squeezeBufOffset = 0;
-                this._squeezeBufAvailable = BlockSize;
+                _state.Permute(_absorptionRounds);
+                _state.SqueezeRate64(_squeezeBuffer);
+                _squeezeBufOffset = 0;
+                _squeezeBufAvailable = BlockSize;
             }
 
-            var toCopy = Math.Min(this._squeezeBufAvailable, output.Length - outOff);
-            this._squeezeBuffer.AsSpan(this._squeezeBufOffset, toCopy).CopyTo(output[outOff..]);
-            this._squeezeBufOffset += toCopy;
-            this._squeezeBufAvailable -= toCopy;
+            var toCopy = Math.Min(_squeezeBufAvailable, output.Length - outOff);
+            _squeezeBuffer.AsSpan(_squeezeBufOffset, toCopy).CopyTo(output[outOff..]);
+            _squeezeBufOffset += toCopy;
+            _squeezeBufAvailable -= toCopy;
             outOff += toCopy;
         }
     }
@@ -249,11 +249,11 @@ public abstract class AsconXof<T>
     /// </exception>
     public byte[] GetHash(int outputLength)
     {
-        this.ThrowIfDisposed();
+        ThrowIfDisposed();
         ThrowHelper.ThrowIfLessThanOrEqual(outputLength, 0);
 
         var result = new byte[outputLength];
-        this.Squeeze(result);
+        Squeeze(result);
         return result;
     }
 
@@ -286,7 +286,7 @@ public abstract class AsconXof<T>
     /// </summary>
     public void Dispose()
     {
-        this.Dispose(true);
+        Dispose(true);
         GC.SuppressFinalize(this);
     }
 
@@ -299,17 +299,17 @@ public abstract class AsconXof<T>
     /// </param>
     protected virtual void Dispose(bool disposing)
     {
-        if (this._disposed) return;
+        if (_disposed) return;
 
         if (disposing)
         {
-            this._state.Clear();
-            CryptoHelpers.Clear(ref this._state);
-            CryptoHelpers.Clear(this._residualBuffer);
-            CryptoHelpers.Clear(this._squeezeBuffer);
+            _state.Clear();
+            CryptoHelpers.Clear(ref _state);
+            CryptoHelpers.Clear(_residualBuffer);
+            CryptoHelpers.Clear(_squeezeBuffer);
         }
 
-        this._disposed = true;
+        _disposed = true;
     }
 
     /// <summary>
@@ -321,10 +321,10 @@ public abstract class AsconXof<T>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected void ThrowIfDisposed() =>
 #if NET8_0_OR_GREATER
-        ObjectDisposedException.ThrowIf(this._disposed, this);
+        ObjectDisposedException.ThrowIf(_disposed, this);
 #else
-        if (this._disposed)
-            throw new ObjectDisposedException(this.GetType().Name);
+        if (_disposed)
+            throw new ObjectDisposedException(GetType().Name);
 #endif
 
     /// <summary>
@@ -339,12 +339,12 @@ public abstract class AsconXof<T>
     protected void FinalizeAbsorptionPhase()
     {
         Span<byte> pad = stackalloc byte[BlockSize];
-        this._residualBuffer.AsSpan(0, this._residualBytes).CopyTo(pad);
-        pad[this._residualBytes] ^= 0x01;
-        this._state.AbsorbRate64(pad);
-        this._state.Permute(this._absorptionRounds);
-        this._residualBytes = 0;
-        CryptoHelpers.Clear(this._residualBuffer.AsSpan(0, BlockSize));
+        _residualBuffer.AsSpan(0, _residualBytes).CopyTo(pad);
+        pad[_residualBytes] ^= 0x01;
+        _state.AbsorbRate64(pad);
+        _state.Permute(_absorptionRounds);
+        _residualBytes = 0;
+        CryptoHelpers.Clear(_residualBuffer.AsSpan(0, BlockSize));
     }
 
     /// <summary>
@@ -353,7 +353,7 @@ public abstract class AsconXof<T>
     /// </summary>
     /// <param name="value">The value to XOR into <c>S4</c>.</param>
     protected void XorS4(ulong value) =>
-        this._state.S4 ^= value;
+        _state.S4 ^= value;
 
     /// <summary>
     /// Accumulates <paramref name="data" /> into the residual buffer, flushing complete 8-byte blocks into the state.
@@ -363,37 +363,37 @@ public abstract class AsconXof<T>
     {
         var pos = 0;
 
-        if (this._residualBytes > 0)
+        if (_residualBytes > 0)
         {
-            var needed = BlockSize - this._residualBytes;
+            var needed = BlockSize - _residualBytes;
             if (data.Length >= needed)
             {
-                data[..needed].CopyTo(this._residualBuffer.AsSpan(this._residualBytes));
-                this._state.AbsorbRate64(this._residualBuffer);
-                this._state.Permute(this._absorptionRounds);
-                this._residualBytes = 0;
+                data[..needed].CopyTo(_residualBuffer.AsSpan(_residualBytes));
+                _state.AbsorbRate64(_residualBuffer);
+                _state.Permute(_absorptionRounds);
+                _residualBytes = 0;
                 pos += needed;
             }
             else
             {
-                data.CopyTo(this._residualBuffer.AsSpan(this._residualBytes));
-                this._residualBytes += data.Length;
+                data.CopyTo(_residualBuffer.AsSpan(_residualBytes));
+                _residualBytes += data.Length;
                 return;
             }
         }
 
         while (pos + BlockSize <= data.Length)
         {
-            this._state.AbsorbRate64(data.Slice(pos, BlockSize));
-            this._state.Permute(this._absorptionRounds);
+            _state.AbsorbRate64(data.Slice(pos, BlockSize));
+            _state.Permute(_absorptionRounds);
             pos += BlockSize;
         }
 
         var remaining = data.Length - pos;
         if (remaining > 0)
         {
-            data.Slice(pos, remaining).CopyTo(this._residualBuffer.AsSpan(0, remaining));
-            this._residualBytes = remaining;
+            data.Slice(pos, remaining).CopyTo(_residualBuffer.AsSpan(0, remaining));
+            _residualBytes = remaining;
         }
     }
 
@@ -405,18 +405,18 @@ public abstract class AsconXof<T>
     {
         // Apply Ascon padding: 0x01 at the next unused byte in the residual buffer.
         Span<byte> padded = stackalloc byte[BlockSize];
-        this._residualBuffer.AsSpan(0, this._residualBytes).CopyTo(padded);
-        padded[this._residualBytes] ^= 0x01;
+        _residualBuffer.AsSpan(0, _residualBytes).CopyTo(padded);
+        padded[_residualBytes] ^= 0x01;
 
-        this._state.AbsorbRate64(padded);
+        _state.AbsorbRate64(padded);
 
         // Transition permutation: always p12 regardless of absorption round count.
-        this._state.Permute(12);
+        _state.Permute(12);
 
         // Pre-fill the squeeze buffer with the first block (no permutation before it).
-        this._state.SqueezeRate64(this._squeezeBuffer);
-        this._squeezeBufOffset = 0;
-        this._squeezeBufAvailable = BlockSize;
-        this._squeezing = true;
+        _state.SqueezeRate64(_squeezeBuffer);
+        _squeezeBufOffset = 0;
+        _squeezeBufAvailable = BlockSize;
+        _squeezing = true;
     }
 }

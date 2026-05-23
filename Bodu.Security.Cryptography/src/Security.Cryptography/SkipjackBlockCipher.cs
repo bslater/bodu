@@ -371,20 +371,20 @@ public sealed class SkipjackBlockCipher
                 nameof(keyBytes));
         }
 
-        this._key0 = new int[32];
-        this._key1 = new int[32];
-        this._key2 = new int[32];
-        this._key3 = new int[32];
+        _key0 = new int[32];
+        _key1 = new int[32];
+        _key2 = new int[32];
+        _key3 = new int[32];
 
         // Expand the 80-bit Skipjack key into the 32 round-key byte groups consumed by G/H.
         // The specification advances the key byte pointer by four bytes inside G for each round and wraps mod 10.
         // Precomputing these positions gives round k direct access to cv0..cv3 without changing the algorithm.
         for (var i = 0; i < 32; i++)
         {
-            this._key0[i] = keyBytes[((i * 4) + 0) % 10];
-            this._key1[i] = keyBytes[((i * 4) + 1) % 10];
-            this._key2[i] = keyBytes[((i * 4) + 2) % 10];
-            this._key3[i] = keyBytes[((i * 4) + 3) % 10];
+            _key0[i] = keyBytes[((i * 4) + 0) % 10];
+            _key1[i] = keyBytes[((i * 4) + 1) % 10];
+            _key2[i] = keyBytes[((i * 4) + 2) % 10];
+            _key3[i] = keyBytes[((i * 4) + 3) % 10];
         }
     }
 
@@ -412,7 +412,7 @@ public sealed class SkipjackBlockCipher
     {
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(input, BlockSize / 8);
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, BlockSize / 8);
-        this.ThrowIfDisposed();
+        ThrowIfDisposed();
 
         // Ciphertext is emitted by encryption as w1,w2,w3,w4. The inverse formulation loads it as
         // w2,w1,w4,w3 so that the following reverse Rule B/Rule A operations mirror the reference implementation.
@@ -435,7 +435,7 @@ public sealed class SkipjackBlockCipher
                 var tmp = w4;
                 w4 = w3;
                 w3 = w2;
-                w2 = this.H(k, w1);
+                w2 = H(k, w1);
                 w1 = w2 ^ tmp ^ (k + 1);
                 k--;
             }
@@ -446,7 +446,7 @@ public sealed class SkipjackBlockCipher
                 var tmp = w4;
                 w4 = w3;
                 w3 = w1 ^ w2 ^ (k + 1);
-                w2 = this.H(k, w1);
+                w2 = H(k, w1);
                 w1 = tmp;
                 k--;
             }
@@ -464,14 +464,14 @@ public sealed class SkipjackBlockCipher
     /// </summary>
     public void Dispose()
     {
-        if (!this._disposed)
+        if (!_disposed)
         {
-            CryptoHelpers.Clear(this._key0);
-            CryptoHelpers.Clear(this._key1);
-            CryptoHelpers.Clear(this._key2);
-            CryptoHelpers.Clear(this._key3);
+            CryptoHelpers.Clear(_key0);
+            CryptoHelpers.Clear(_key1);
+            CryptoHelpers.Clear(_key2);
+            CryptoHelpers.Clear(_key3);
 
-            this._disposed = true;
+            _disposed = true;
         }
     }
 
@@ -492,7 +492,7 @@ public sealed class SkipjackBlockCipher
     {
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(input, BlockSize / 8);
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, BlockSize / 8);
-        this.ThrowIfDisposed();
+        ThrowIfDisposed();
 
         // Split the 64-bit plaintext block into four big-endian 16-bit words W1..W4, matching the Skipjack
         // reference algorithm's word-oriented round descriptions.
@@ -517,7 +517,7 @@ public sealed class SkipjackBlockCipher
                 var tmp = w4;
                 w4 = w3;
                 w3 = w2;
-                w2 = this.G(k, w1);
+                w2 = G(k, w1);
                 w1 = w2 ^ tmp ^ (k + 1);
                 k++;
             }
@@ -528,7 +528,7 @@ public sealed class SkipjackBlockCipher
                 var tmp = w4;
                 w4 = w3;
                 w3 = w1 ^ w2 ^ (k + 1);
-                w2 = this.G(k, w1);
+                w2 = G(k, w1);
                 w1 = tmp;
                 k++;
             }
@@ -567,10 +567,10 @@ public sealed class SkipjackBlockCipher
         g2 = w & 0xff;
 
         // Four alternating F-table substitutions and XOR feedback steps implement the Skipjack G permutation.
-        g3 = s_ftable[g2 ^ this._key0[k]] ^ g1;
-        g4 = s_ftable[g3 ^ this._key1[k]] ^ g2;
-        g5 = s_ftable[g4 ^ this._key2[k]] ^ g3;
-        g6 = s_ftable[g5 ^ this._key3[k]] ^ g4;
+        g3 = s_ftable[g2 ^ _key0[k]] ^ g1;
+        g4 = s_ftable[g3 ^ _key1[k]] ^ g2;
+        g5 = s_ftable[g4 ^ _key2[k]] ^ g3;
+        g6 = s_ftable[g5 ^ _key3[k]] ^ g4;
 
         return (g5 << 8) + g6;
     }
@@ -599,10 +599,10 @@ public sealed class SkipjackBlockCipher
         var h1 = w & 0xff;
         var h2 = (w >> 8) & 0xff;
 
-        var h3 = s_ftable[h2 ^ this._key3[k]] ^ h1;
-        var h4 = s_ftable[h3 ^ this._key2[k]] ^ h2;
-        var h5 = s_ftable[h4 ^ this._key1[k]] ^ h3;
-        var h6 = s_ftable[h5 ^ this._key0[k]] ^ h4;
+        var h3 = s_ftable[h2 ^ _key3[k]] ^ h1;
+        var h4 = s_ftable[h3 ^ _key2[k]] ^ h2;
+        var h5 = s_ftable[h4 ^ _key1[k]] ^ h3;
+        var h6 = s_ftable[h5 ^ _key0[k]] ^ h4;
 
         return (h6 << 8) + h5;
     }
@@ -616,10 +616,10 @@ public sealed class SkipjackBlockCipher
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ThrowIfDisposed() =>
 #if NET8_0_OR_GREATER
-        ObjectDisposedException.ThrowIf(this._disposed, this);
+        ObjectDisposedException.ThrowIf(_disposed, this);
 #else
-        if (this._disposed)
-            throw new ObjectDisposedException(this.GetType().Name);
+        if (_disposed)
+            throw new ObjectDisposedException(GetType().Name);
 #endif
 
 }

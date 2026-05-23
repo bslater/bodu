@@ -90,9 +90,9 @@ public sealed class CtrModeTransform
         ThrowHelper.ThrowIfNull(cipher);
         CryptoHelpers.ThrowIfIvLengthInvalid(initialCounter, cipher.BlockSize);
 
-        this._cipher = cipher;
-        this._initialCounter = (byte[])initialCounter.Clone();
-        this._counter = (byte[])initialCounter.Clone();
+        _cipher = cipher;
+        _initialCounter = (byte[])initialCounter.Clone();
+        _counter = (byte[])initialCounter.Clone();
     }
 
     /// <inheritdoc />
@@ -100,16 +100,16 @@ public sealed class CtrModeTransform
     {
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, 0, input.Length);
 
-        var blockSize = this._cipher.BlockSize / 8;
+        var blockSize = _cipher.BlockSize / 8;
         Span<byte> keystream = stackalloc byte[blockSize];
 
         for (var offset = 0; offset < input.Length; offset += blockSize)
         {
-            if (this._counterWrapped)
+            if (_counterWrapped)
                 throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_CtrCounterWrapped);
 
-            this._cipher.Encrypt(this._counter, keystream);
-            this.IncrementCounter();
+            _cipher.Encrypt(_counter, keystream);
+            IncrementCounter();
 
             var len = Math.Min(blockSize, input.Length - offset);
             for (var i = 0; i < len; i++)
@@ -129,12 +129,12 @@ public sealed class CtrModeTransform
     /// </remarks>
     public void Dispose()
     {
-        if (this._disposed)
+        if (_disposed)
             return;
 
-        CryptoHelpers.Clear(this._counter);
-        CryptoHelpers.Clear(this._initialCounter);
-        this._disposed = true;
+        CryptoHelpers.Clear(_counter);
+        CryptoHelpers.Clear(_initialCounter);
+        _disposed = true;
         GC.SuppressFinalize(this);
     }
 
@@ -146,11 +146,11 @@ public sealed class CtrModeTransform
     /// </summary>
     private void IncrementCounter()
     {
-        for (var i = this._counter.Length - 1; i >= 0; i--)
-            if (++this._counter[i] != 0) break;
+        for (var i = _counter.Length - 1; i >= 0; i--)
+            if (++_counter[i] != 0) break;
 
         // Wrap detected: counter has returned to its initial value.
-        if (this._counter.AsSpan().SequenceEqual(this._initialCounter))
-            this._counterWrapped = true;
+        if (_counter.AsSpan().SequenceEqual(_initialCounter))
+            _counterWrapped = true;
     }
 }

@@ -107,7 +107,7 @@ public sealed partial class Tiger
     {
         CryptoHelpers.ThrowIfInvalidHashSize(hashSize, s_permittedHashSizes);
 
-        this.HashSizeValue = hashSize;
+        HashSizeValue = hashSize;
     }
 
     /// <summary>
@@ -131,8 +131,8 @@ public sealed partial class Tiger
     {
         get
         {
-            this.ThrowIfDisposed();
-            return $"Tiger/{this.HashSizeValue}";
+            ThrowIfDisposed();
+            return $"Tiger/{HashSizeValue}";
         }
     }
 
@@ -159,17 +159,17 @@ public sealed partial class Tiger
     {
         get
         {
-            this.ThrowIfDisposed();
-            return this.HashSizeValue;
+            ThrowIfDisposed();
+            return HashSizeValue;
         }
 
         set
         {
-            this.ThrowIfDisposed();
-            this.ThrowIfInvalidState();
+            ThrowIfDisposed();
+            ThrowIfInvalidState();
             CryptoHelpers.ThrowIfInvalidHashSize(value, s_permittedHashSizes);
 
-            this.HashSizeValue = value;
+            HashSizeValue = value;
         }
     }
 
@@ -212,17 +212,17 @@ public sealed partial class Tiger
     {
         get
         {
-            this.ThrowIfDisposed();
-            return this._variant;
+            ThrowIfDisposed();
+            return _variant;
         }
 
         set
         {
-            this.ThrowIfDisposed();
-            this.ThrowIfInvalidState();
+            ThrowIfDisposed();
+            ThrowIfInvalidState();
             ThrowHelper.ThrowIfEnumValueIsUndefined(value);
 
-            this._variant = value;
+            _variant = value;
         }
     }
 
@@ -233,9 +233,9 @@ public sealed partial class Tiger
     public override void Initialize()
     {
         base.Initialize();
-        this._state0 = 0x0123456789ABCDEF;
-        this._state1 = 0xFEDCBA9876543210;
-        this._state2 = 0xF096A5B4C3B2E187;
+        _state0 = 0x0123456789ABCDEF;
+        _state1 = 0xFEDCBA9876543210;
+        _state2 = 0xF096A5B4C3B2E187;
     }
 
     /// <summary>
@@ -247,11 +247,11 @@ public sealed partial class Tiger
     /// </param>
     protected override void Dispose(bool disposing)
     {
-        if (this.IsDisposed) return;
+        if (IsDisposed) return;
 
         if (disposing)
         {
-            this._state0 = this._state1 = this._state2 = 0;
+            _state0 = _state1 = _state2 = 0;
         }
 
         base.Dispose(disposing);
@@ -261,7 +261,7 @@ public sealed partial class Tiger
     protected override byte[] PadBlock(ReadOnlySpan<byte> block, ulong messageLength)
     {
         var inputLength = block.Length;
-        var blockBytes = this.BlockSize / 8;
+        var blockBytes = BlockSize / 8;
         var needsSecondBlock = inputLength >= blockBytes - 8;
         var totalLength = needsSecondBlock ? blockBytes * 2 : blockBytes;
 
@@ -274,7 +274,7 @@ public sealed partial class Tiger
         block.CopyTo(padded);
 
         // Write padding byte depending on Tiger variant
-        padded[inputLength] = this._variant == TigerHashingVariant.Tiger ? (byte)0x01 : (byte)0x80;
+        padded[inputLength] = _variant == TigerHashingVariant.Tiger ? (byte)0x01 : (byte)0x80;
 
         // Clear bytes between padding and message length field
         padded.Slice(inputLength + 1, totalLength - inputLength - 1 - 8).Clear();
@@ -291,7 +291,7 @@ public sealed partial class Tiger
     {
         Span<ulong> blockWords = stackalloc ulong[8];
         MemoryMarshal.Cast<byte, ulong>(block).CopyTo(blockWords);
-        this.TransformBlock(blockWords);
+        TransformBlock(blockWords);
     }
 
     /// <summary>
@@ -304,11 +304,11 @@ public sealed partial class Tiger
     protected override byte[] ProcessFinalBlock()
     {
         Span<byte> output = stackalloc byte[MaxOutputBits / 8];
-        BinaryPrimitives.WriteUInt64LittleEndian(output[0..8], this._state0);
-        BinaryPrimitives.WriteUInt64LittleEndian(output[8..16], this._state1);
-        BinaryPrimitives.WriteUInt64LittleEndian(output[16..24], this._state2);
+        BinaryPrimitives.WriteUInt64LittleEndian(output[0..8], _state0);
+        BinaryPrimitives.WriteUInt64LittleEndian(output[8..16], _state1);
+        BinaryPrimitives.WriteUInt64LittleEndian(output[16..24], _state2);
 
-        return output[.. (this.HashSizeValue / 8)].ToArray();
+        return output[.. (HashSizeValue / 8)].ToArray();
     }
 
     /// <summary>
@@ -390,7 +390,7 @@ public sealed partial class Tiger
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void TransformBlock(Span<ulong> blockWords)
     {
-        ulong a = this._state0, b = this._state1, c = this._state2;
+        ulong a = _state0, b = _state1, c = _state2;
 
         DoPass(ref a, ref b, ref c, blockWords, 5);
         KeySchedule(blockWords);
@@ -398,8 +398,8 @@ public sealed partial class Tiger
         KeySchedule(blockWords);
         DoPass(ref b, ref c, ref a, blockWords, 9);
 
-        this._state0 = a ^ this._state0;
-        this._state1 = b - this._state1;
-        this._state2 = c + this._state2;
+        _state0 = a ^ _state0;
+        _state1 = b - _state1;
+        _state2 = c + _state2;
     }
 }

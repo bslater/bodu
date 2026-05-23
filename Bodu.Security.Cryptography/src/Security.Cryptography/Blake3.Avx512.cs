@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Blake3.Avx512.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -12,19 +12,17 @@ using System.Runtime.Intrinsics.X86;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// AVX-512 vectorised implementation of the BLAKE3 compression function. The 16-word working state is
-/// laid out as four <see cref="Vector128{T}" /> rows (<c>a, b, c, d</c>), so the four parallel <c>G</c>
-/// calls in each column step collapse into a single SIMD <c>G</c> operation. The diagonal step reuses
-/// the same kernel by shifting the <c>b, c, d</c> rows by 1/2/3 lanes via <c>PSHUFD</c>, running
-/// <c>G</c>, then shifting back — the canonical ChaCha-style vectorisation pattern that BLAKE3 inherits
-/// from BLAKE2.
+/// AVX-512 vectorised implementation of the BLAKE3 compression function. The 16-word working state is laid out as four
+/// <see cref="Vector128{T}" /> rows (<c>a, b, c, d</c>), so the four parallel <c>G</c> calls in each column step
+/// collapse into a single SIMD <c>G</c> operation. The diagonal step reuses the same kernel by shifting the
+/// <c>b, c, d</c> rows by 1/2/3 lanes via <c>PSHUFD</c>, running <c>G</c>, then shifting back — the canonical
+/// ChaCha-style vectorisation pattern that BLAKE3 inherits from BLAKE2.
 /// </summary>
 /// <remarks>
 /// <para>
-/// Gated on <see cref="Avx512F.VL.IsSupported" /> because the rotations use the AVX-512VL VPRORD variant
-/// on <see cref="Vector128{T}" />. The SIMD <c>G</c> kernel is identical to <see cref="Blake2s" />'s
-/// because BLAKE3 reuses the same four rotation amounts (16, 12, 8, 7); only the round count, message
-/// schedule, and finalization differ.
+/// Gated on <see cref="Avx512F.VL.IsSupported" /> because the rotations use the AVX-512VL VPRORD variant on
+/// <see cref="Vector128{T}" />. The SIMD <c>G</c> kernel is identical to <see cref="Blake2s" />'s because BLAKE3 reuses
+/// the same four rotation amounts (16, 12, 8, 7); only the round count, message schedule, and finalization differ.
 /// </para>
 /// </remarks>
 public sealed partial class Blake3
@@ -32,14 +30,14 @@ public sealed partial class Blake3
     // The four rotation amounts used by Blake3's G function (§2.4 of the BLAKE3 specification). Encoded
     // as broadcast vectors so that Avx512F.VL.RotateRightVariable lowers each rotate to a single
     // VPRORD instruction. Values match Blake2s.
-    private static readonly Vector128<uint> s_ror16 = Vector128.Create((uint)16);
-    private static readonly Vector128<uint> s_ror12 = Vector128.Create((uint)12);
-    private static readonly Vector128<uint> s_ror8 = Vector128.Create((uint)8);
-    private static readonly Vector128<uint> s_ror7 = Vector128.Create((uint)7);
+    private static readonly Vector128<uint> s_ror16 = Vector128.Create(16U);
+    private static readonly Vector128<uint> s_ror12 = Vector128.Create(12U);
+    private static readonly Vector128<uint> s_ror8 = Vector128.Create(8U);
+    private static readonly Vector128<uint> s_ror7 = Vector128.Create(7U);
 
     /// <summary>
-    /// AVX-512 vectorised implementation of the BLAKE3 compression function used when the host supports
-    /// AVX-512F + VL. Returns the same 16-word post-compression state as <see cref="CompressScalar" />.
+    /// AVX-512 vectorised implementation of the BLAKE3 compression function used when the host supports AVX-512F + VL.
+    /// Returns the same 16-word post-compression state as <see cref="CompressScalar" />.
     /// </summary>
     /// <param name="cv">The 8-word input chaining value.</param>
     /// <param name="blockWords">The 16-word message block.</param>
@@ -50,37 +48,37 @@ public sealed partial class Blake3
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     private static uint[] CompressAvx512(uint[] cv, uint[] blockWords, ulong counter, uint blockLen, uint flags)
     {
-        ref uint cvRef = ref MemoryMarshal.GetArrayDataReference(cv);
-        ref uint mRef = ref MemoryMarshal.GetArrayDataReference(blockWords);
+        ref var cvRef = ref MemoryMarshal.GetArrayDataReference(cv);
+        ref var mRef = ref MemoryMarshal.GetArrayDataReference(blockWords);
 
         // Build the four rows of the working state.
         //   a = cv[0..3], b = cv[4..7] (upper half: chaining value)
         //   c = IV[0..3] (lower half row 0: IV)
         //   d = (counter_lo, counter_hi, blockLen, flags) (lower half row 1: domain)
-        Vector128<uint> a = Vector128.Create(
+        var a = Vector128.Create(
             Unsafe.Add(ref cvRef, 0),
             Unsafe.Add(ref cvRef, 1),
             Unsafe.Add(ref cvRef, 2),
             Unsafe.Add(ref cvRef, 3));
-        Vector128<uint> b = Vector128.Create(
+        var b = Vector128.Create(
             Unsafe.Add(ref cvRef, 4),
             Unsafe.Add(ref cvRef, 5),
             Unsafe.Add(ref cvRef, 6),
             Unsafe.Add(ref cvRef, 7));
-        Vector128<uint> c = Vector128.Create(s_iv[0], s_iv[1], s_iv[2], s_iv[3]);
-        Vector128<uint> d = Vector128.Create((uint)counter, (uint)(counter >> 32), blockLen, flags);
+        var c = Vector128.Create(s_iv[0], s_iv[1], s_iv[2], s_iv[3]);
+        var d = Vector128.Create((uint)counter, (uint)(counter >> 32), blockLen, flags);
 
         // Seven rounds, each consisting of a column step followed by a diagonal step. Each step applies
         // the SIMD G kernel once across all four columns / diagonals in parallel.
         for (var round = 0; round < 7; round++)
         {
             // Column step.
-            Vector128<uint> mx = Vector128.Create(
+            var mx = Vector128.Create(
                 Unsafe.Add(ref mRef, s_msgSchedule[round, 0]),
                 Unsafe.Add(ref mRef, s_msgSchedule[round, 2]),
                 Unsafe.Add(ref mRef, s_msgSchedule[round, 4]),
                 Unsafe.Add(ref mRef, s_msgSchedule[round, 6]));
-            Vector128<uint> my = Vector128.Create(
+            var my = Vector128.Create(
                 Unsafe.Add(ref mRef, s_msgSchedule[round, 1]),
                 Unsafe.Add(ref mRef, s_msgSchedule[round, 3]),
                 Unsafe.Add(ref mRef, s_msgSchedule[round, 5]),
@@ -115,12 +113,12 @@ public sealed partial class Blake3
         // distinct from a plain BLAKE2 fold.
         //   state[i]     ^= state[i + 8]   for i in 0..7  →  a ^= c, b ^= d
         //   state[i + 8] ^= cv[i]          for i in 0..7  →  c ^= cv_lo, d ^= cv_hi
-        Vector128<uint> cvLo = Vector128.Create(
+        var cvLo = Vector128.Create(
             Unsafe.Add(ref cvRef, 0),
             Unsafe.Add(ref cvRef, 1),
             Unsafe.Add(ref cvRef, 2),
             Unsafe.Add(ref cvRef, 3));
-        Vector128<uint> cvHi = Vector128.Create(
+        var cvHi = Vector128.Create(
             Unsafe.Add(ref cvRef, 4),
             Unsafe.Add(ref cvRef, 5),
             Unsafe.Add(ref cvRef, 6),
@@ -132,7 +130,7 @@ public sealed partial class Blake3
 
         // Materialise the 16-word output state in canonical row order.
         var state = new uint[16];
-        ref uint outRef = ref MemoryMarshal.GetArrayDataReference(state);
+        ref var outRef = ref MemoryMarshal.GetArrayDataReference(state);
         Unsafe.Add(ref outRef, 0) = a.GetElement(0);
         Unsafe.Add(ref outRef, 1) = a.GetElement(1);
         Unsafe.Add(ref outRef, 2) = a.GetElement(2);
@@ -153,9 +151,9 @@ public sealed partial class Blake3
     }
 
     /// <summary>
-    /// Applies the BLAKE3 <c>G</c> mixing function in parallel across four columns (or four diagonals,
-    /// after the caller has applied the appropriate lane shifts). Identical kernel shape to
-    /// <see cref="Blake2s" /> since BLAKE3 reuses BLAKE2s's rotation amounts.
+    /// Applies the BLAKE3 <c>G</c> mixing function in parallel across four columns (or four diagonals, after the caller
+    /// has applied the appropriate lane shifts). Identical kernel shape to <see cref="Blake2s" /> since BLAKE3 reuses
+    /// BLAKE2s's rotation amounts.
     /// </summary>
     /// <param name="a">The top row of the working state, updated in place.</param>
     /// <param name="b">The second row of the working state, updated in place.</param>

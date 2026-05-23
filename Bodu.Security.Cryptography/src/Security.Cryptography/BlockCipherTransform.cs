@@ -147,10 +147,10 @@ public abstract class BlockCipherTransform
     /// <exception cref="ArgumentNullException"><paramref name="cipher" /> is <see langword="null" />.</exception>
     protected BlockCipherTransform(IBlockCipher cipher, CipherModeKind cipherMode, PaddingMode paddingMode, byte[]? iv, bool encrypt)
     {
-        this._cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
-        this._encrypt = encrypt;
-        this._mode = BlockCipherModeFactory.Create(cipherMode, cipher, iv);
-        this._padding = PaddingFactory.Create(paddingMode);
+        _cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
+        _encrypt = encrypt;
+        _mode = BlockCipherModeFactory.Create(cipherMode, cipher, iv);
+        _padding = PaddingFactory.Create(paddingMode);
     }
 
     /// <summary>
@@ -172,10 +172,10 @@ public abstract class BlockCipherTransform
     /// <exception cref="ArgumentNullException"><paramref name="cipher" /> is <see langword="null" />.</exception>
     protected BlockCipherTransform(IBlockCipher cipher, CipherModeKind cipherMode, PaddingModeKind paddingMode, byte[]? iv, bool encrypt)
     {
-        this._cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
-        this._encrypt = encrypt;
-        this._mode = BlockCipherModeFactory.Create(cipherMode, cipher, iv);
-        this._padding = PaddingFactory.Create(paddingMode);
+        _cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
+        _encrypt = encrypt;
+        _mode = BlockCipherModeFactory.Create(cipherMode, cipher, iv);
+        _padding = PaddingFactory.Create(paddingMode);
     }
 
     /// <inheritdoc />
@@ -189,29 +189,29 @@ public abstract class BlockCipherTransform
     /// The BCL <see cref="ICryptoTransform" /> contract requires this value in <em>bytes</em>; the underlying
     /// <see cref="IBlockCipher.BlockSize" /> is in <em>bits</em>, so we divide by 8.
     /// </remarks>
-    public int InputBlockSize => this._cipher.BlockSize / 8;
+    public int InputBlockSize => _cipher.BlockSize / 8;
 
     /// <inheritdoc />
     /// <remarks>
     /// The BCL <see cref="ICryptoTransform" /> contract requires this value in <em>bytes</em>; the underlying
     /// <see cref="IBlockCipher.BlockSize" /> is in <em>bits</em>, so we divide by 8.
     /// </remarks>
-    public int OutputBlockSize => this._cipher.BlockSize / 8;
+    public int OutputBlockSize => _cipher.BlockSize / 8;
 
     /// <inheritdoc />
     public void Dispose()
     {
-        if (this._disposed)
+        if (_disposed)
             return;
 
-        this.ClearDeferredInput();
+        ClearDeferredInput();
 
         // Cascade disposal to the mode transform so it can zero its chaining vector, counter,
         // tweak, or feedback register before the underlying cipher is released.
-        this._mode.Dispose();
-        this._cipher.Dispose();
+        _mode.Dispose();
+        _cipher.Dispose();
 
-        this._disposed = true;
+        _disposed = true;
         GC.SuppressFinalize(this);
     }
 
@@ -244,8 +244,8 @@ public abstract class BlockCipherTransform
     /// </exception>
     public int TransformBlock(byte[] inputBuffer, int inputOffset, int inputCount, byte[] outputBuffer, int outputOffset)
     {
-        this.ThrowIfDisposed();
-        this.ThrowIfFinalized();
+        ThrowIfDisposed();
+        ThrowIfFinalized();
 
         ThrowHelper.ThrowIfNull(inputBuffer);
         ThrowHelper.ThrowIfNull(outputBuffer);
@@ -258,37 +258,37 @@ public abstract class BlockCipherTransform
         // call must return 0 rather than throw. CryptoStream and similar callers may invoke this
         // path with no buffered data after a flush. Divide BlockSize (bits) by 8 to obtain the
         // byte-length divisor expected by the span helper.
-        CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf<byte>(input, this._cipher.BlockSize / 8, throwIfZero: false);
+        CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf<byte>(input, _cipher.BlockSize / 8, throwIfZero: false);
         Span<byte> output = outputBuffer.AsSpan(outputOffset, inputCount);
-        CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf<byte>(output, this._cipher.BlockSize / 8, throwIfZero: false);
+        CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf<byte>(output, _cipher.BlockSize / 8, throwIfZero: false);
 
-        if (this._encrypt)
-            return this._mode.Transform(input, output, true);
+        if (_encrypt)
+            return _mode.Transform(input, output, true);
 
-        var stripPadding = this._padding.StripsPaddingOnUnpad;
+        var stripPadding = _padding.StripsPaddingOnUnpad;
 
         if (!stripPadding)
-            return this._mode.Transform(input, output, false);
+            return _mode.Transform(input, output, false);
 
-        var combined = Combine(this._deferredInput, input);
-        this.ClearDeferredInput();
+        var combined = Combine(_deferredInput, input);
+        ClearDeferredInput();
 
-        if (combined.Length <= this._cipher.BlockSize / 8)
+        if (combined.Length <= _cipher.BlockSize / 8)
         {
-            this._deferredInput = combined;
+            _deferredInput = combined;
             return 0;
         }
 
-        var bytesToProcess = combined.Length - (this._cipher.BlockSize / 8);
+        var bytesToProcess = combined.Length - (_cipher.BlockSize / 8);
 
         try
         {
-            var bytesWritten = this._mode.Transform(
+            var bytesWritten = _mode.Transform(
                 combined.AsSpan(0, bytesToProcess),
                 output[..bytesToProcess],
                 false);
 
-            this._deferredInput = combined.AsSpan(bytesToProcess).ToArray();
+            _deferredInput = combined.AsSpan(bytesToProcess).ToArray();
             return bytesWritten;
         }
         finally
@@ -317,8 +317,8 @@ public abstract class BlockCipherTransform
     /// </exception>
     public byte[] TransformFinalBlock(byte[] inputBuffer, int inputOffset, int inputCount)
     {
-        this.ThrowIfDisposed();
-        this.ThrowIfFinalized();
+        ThrowIfDisposed();
+        ThrowIfFinalized();
 
         ThrowHelper.ThrowIfNull(inputBuffer);
         CryptoHelpers.ThrowIfArrayOffsetOrCountInvalid(inputBuffer, inputOffset, inputCount);
@@ -327,7 +327,7 @@ public abstract class BlockCipherTransform
 
         try
         {
-            if (this._encrypt)
+            if (_encrypt)
             {
                 // Encrypt path: the padding scheme accepts any input length and emits an
                 // aligned buffer, so the alignment check belongs after Pad — not on the raw
@@ -336,12 +336,12 @@ public abstract class BlockCipherTransform
                 // after the last aligned chunk has been forwarded to TransformBlock), and
                 // PKCS7 / ANSIX923 / ISO10126 / ISO7816-4 always emit a padding block for
                 // empty plaintext too.
-                var padded = this._padding.Pad(input, this._cipher.BlockSize);
+                var padded = _padding.Pad(input, _cipher.BlockSize);
                 var output = new byte[padded.Length];
 
                 try
                 {
-                    this._mode.Transform(padded, output, true);
+                    _mode.Transform(padded, output, true);
                     return output;
                 }
                 finally
@@ -355,18 +355,18 @@ public abstract class BlockCipherTransform
                 // re-attached. Validate the combined length so a malformed final call surfaces
                 // as a CryptographicException with a recognizable message rather than crashing
                 // deeper in the mode transform.
-                var combined = Combine(this._deferredInput, input);
+                var combined = Combine(_deferredInput, input);
                 CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf<byte>(
                     combined,
-                    this._cipher.BlockSize / 8,
+                    _cipher.BlockSize / 8,
                     throwIfZero: false);
 
                 var decrypted = new byte[combined.Length];
 
                 try
                 {
-                    this._mode.Transform(combined, decrypted, false);
-                    return this._padding.Unpad(decrypted, this._cipher.BlockSize);
+                    _mode.Transform(combined, decrypted, false);
+                    return _padding.Unpad(decrypted, _cipher.BlockSize);
                 }
                 finally
                 {
@@ -377,8 +377,8 @@ public abstract class BlockCipherTransform
         }
         finally
         {
-            this.ClearDeferredInput();
-            this._finalized = true;
+            ClearDeferredInput();
+            _finalized = true;
         }
     }
 
@@ -391,10 +391,10 @@ public abstract class BlockCipherTransform
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ThrowIfDisposed() =>
 #if NET8_0_OR_GREATER
-        ObjectDisposedException.ThrowIf(this._disposed, this);
+        ObjectDisposedException.ThrowIf(_disposed, this);
 #else
-        if (this._disposed)
-            throw new ObjectDisposedException(this.GetType().Name);
+        if (_disposed)
+            throw new ObjectDisposedException(GetType().Name);
 #endif
 
     /// <summary>
@@ -406,7 +406,7 @@ public abstract class BlockCipherTransform
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected void ThrowIfFinalized()
     {
-        if (this._finalized)
+        if (_finalized)
             throw new InvalidOperationException(CryptoResourceStrings.Op_Invalid_TransformAlreadyFinalized);
     }
 
@@ -436,5 +436,5 @@ public abstract class BlockCipherTransform
     /// Zeroes and clears any deferred ciphertext block retained for padded decryption.
     /// </summary>
     private void ClearDeferredInput() =>
-        CryptoHelpers.ClearAndNullify(ref this._deferredInput);
+        CryptoHelpers.ClearAndNullify(ref _deferredInput);
 }

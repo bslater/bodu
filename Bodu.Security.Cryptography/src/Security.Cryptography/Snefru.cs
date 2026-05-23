@@ -82,7 +82,7 @@ public abstract partial class Snefru<T>
         CryptoHelpers.ThrowIfInvalidHashSize(hashSize, s_permittedHashSizes);
 
         // _state is zero-filled by `new`; Initialize re-clears it on every reset.
-        this._state = new uint[hashSize >> 5];
+        _state = new uint[hashSize >> 5];
         HashSizeValue = hashSize;
     }
 
@@ -100,8 +100,8 @@ public abstract partial class Snefru<T>
     {
         get
         {
-            this.ThrowIfDisposed();
-            return $"Snefru/{this.HashSizeValue}";
+            ThrowIfDisposed();
+            return $"Snefru/{HashSizeValue}";
         }
     }
 
@@ -112,7 +112,7 @@ public abstract partial class Snefru<T>
     public override void Initialize()
     {
         base.Initialize();
-        CryptoHelpers.Clear(this._state);
+        CryptoHelpers.Clear(_state);
     }
 
     /// <summary>
@@ -124,12 +124,12 @@ public abstract partial class Snefru<T>
     /// </param>
     protected override void Dispose(bool disposing)
     {
-        if (this.IsDisposed) return;
+        if (IsDisposed) return;
 
         if (disposing)
         {
-            CryptoHelpers.Clear(this._buffer);
-            CryptoHelpers.Clear(this._state);
+            CryptoHelpers.Clear(_buffer);
+            CryptoHelpers.Clear(_state);
         }
 
         base.Dispose(disposing);
@@ -159,7 +159,7 @@ public abstract partial class Snefru<T>
     {
         // paddedLength is always ≤ 96 for Snefru128 (2 × 48) and ≤ 64 for Snefru256 (2 × 32),
         // so stackalloc is always safe and appropriately sized here.
-        var paddedLength = 2 * (this.BlockSize / 8);
+        var paddedLength = 2 * (BlockSize / 8);
         Span<byte> padded = stackalloc byte[paddedLength];
         block.CopyTo(padded);
         BinaryPrimitives.WriteUInt64BigEndian(padded[(paddedLength - 8) ..], messageLength << 3);
@@ -177,8 +177,8 @@ public abstract partial class Snefru<T>
     /// </remarks>
     protected override void ProcessBlock(ReadOnlySpan<byte> block)
     {
-        this._state.AsSpan().CopyTo(this._buffer);
-        LoadBlockToBuffer(block, this._buffer.AsSpan(this._state.Length));
+        _state.AsSpan().CopyTo(_buffer);
+        LoadBlockToBuffer(block, _buffer.AsSpan(_state.Length));
 
         for (var round = 0; round < 8; round++)
         {
@@ -189,8 +189,8 @@ public abstract partial class Snefru<T>
             }
         }
 
-        for (var i = 0; i < this._state.Length; i++)
-            this._state[i] ^= this._buffer[Mask - i];
+        for (var i = 0; i < _state.Length; i++)
+            _state[i] ^= _buffer[Mask - i];
     }
 
     /// <summary>
@@ -199,8 +199,8 @@ public abstract partial class Snefru<T>
     /// <returns>The computed hash as a byte array.</returns>
     protected override byte[] ProcessFinalBlock()
     {
-        var output = new byte[this._state.Length * sizeof(uint)];
-        WriteStateBigEndian(this._state, output);
+        var output = new byte[_state.Length * sizeof(uint)];
+        WriteStateBigEndian(_state, output);
 
         return output;
     }
@@ -247,7 +247,7 @@ public abstract partial class Snefru<T>
         // Interior refs bypass bounds checks: next/last are non-monotonic ((kk+1)&15, (kk+15)&15)
         // so the JIT cannot hoist the check out of the loop; sBoxIndex involves a dynamic byte value
         // so the s_constants check is also never elided without this pattern.
-        ref var bufRef = ref MemoryMarshal.GetArrayDataReference(this._buffer);
+        ref var bufRef = ref MemoryMarshal.GetArrayDataReference(_buffer);
         ref var sBoxRef = ref MemoryMarshal.GetArrayDataReference(s_constants);
 
         for (var kk = 0; kk < TotalWords; kk++)
@@ -272,7 +272,7 @@ public abstract partial class Snefru<T>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void RotateWords(int shiftAmount)
     {
-        ref var bufRef = ref MemoryMarshal.GetArrayDataReference(this._buffer);
+        ref var bufRef = ref MemoryMarshal.GetArrayDataReference(_buffer);
         for (var i = 0; i < TotalWords; i++)
             Unsafe.Add(ref bufRef, i) = Unsafe.Add(ref bufRef, i).RotateBitsRightUnchecked(shiftAmount);
     }

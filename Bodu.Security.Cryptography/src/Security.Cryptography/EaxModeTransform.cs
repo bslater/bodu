@@ -111,9 +111,9 @@ public sealed class EaxModeTransform
         ThrowHelper.ThrowIfNull(cipher);
         CryptoHelpers.ThrowIfIvLengthInvalid(iv, cipher.BlockSize);
 
-        this._cipher = cipher;
+        _cipher = cipher;
 
-        this._nonce = (byte[])iv.Clone();
+        _nonce = (byte[])iv.Clone();
     }
 
     /// <inheritdoc />
@@ -123,19 +123,19 @@ public sealed class EaxModeTransform
     /// <inheritdoc />
     public void ProcessAssociatedData(ReadOnlySpan<byte> associatedData)
     {
-        this.ThrowIfDisposed();
+        ThrowIfDisposed();
 
-        CryptoHelpers.ThrowIfAssociatedDataAlreadyProcessed(this._aadProcessed);
+        CryptoHelpers.ThrowIfAssociatedDataAlreadyProcessed(_aadProcessed);
 
-        this._aad = associatedData.ToArray();
-        this._aadProcessed = true;
+        _aad = associatedData.ToArray();
+        _aadProcessed = true;
     }
 
     /// <inheritdoc />
     public int Encrypt(ReadOnlySpan<byte> plaintext, Span<byte> output)
     {
-        this.ThrowIfDisposed();
-        this.ThrowIfCompleted();
+        ThrowIfDisposed();
+        ThrowIfCompleted();
 
         var required = plaintext.Length + DefaultTagSize;
         CryptoHelpers.ThrowIfOutputBufferTooSmall(output, required);
@@ -148,8 +148,8 @@ public sealed class EaxModeTransform
 
         try
         {
-            nPrime = Omac(0, this._nonce);
-            hPrime = Omac(1, this._aad!);
+            nPrime = Omac(0, _nonce);
+            hPrime = Omac(1, _aad!);
 
             // CTR-encrypt plaintext into output[..plaintext.Length] using N' as the initial counter.
             Span<byte> ciphertext = output[..plaintext.Length];
@@ -169,15 +169,15 @@ public sealed class EaxModeTransform
             CryptoHelpers.Clear(nPrime);
             CryptoHelpers.Clear(hPrime);
             CryptoHelpers.Clear(cPrime);
-            this._completed = true;
+            _completed = true;
         }
     }
 
     /// <inheritdoc />
     public int Decrypt(ReadOnlySpan<byte> ciphertextWithTag, Span<byte> output)
     {
-        this.ThrowIfDisposed();
-        this.ThrowIfCompleted();
+        ThrowIfDisposed();
+        ThrowIfCompleted();
 
         CryptoHelpers.ThrowIfCiphertextTooShort(ciphertextWithTag, DefaultTagSize);
 
@@ -196,8 +196,8 @@ public sealed class EaxModeTransform
 
         try
         {
-            nPrime = Omac(0, this._nonce);
-            hPrime = Omac(1, this._aad!);
+            nPrime = Omac(0, _nonce);
+            hPrime = Omac(1, _aad!);
             cPrime = Omac(2, ciphertext);
 
             expectedTag = new byte[DefaultTagSize];
@@ -223,7 +223,7 @@ public sealed class EaxModeTransform
             CryptoHelpers.Clear(cPrime);
             CryptoHelpers.Clear(hPrime);
             CryptoHelpers.Clear(nPrime);
-            this._completed = true;
+            _completed = true;
         }
     }
 
@@ -232,7 +232,7 @@ public sealed class EaxModeTransform
     /// EAX transforms are single-use; create a fresh instance per message.
     /// </summary>
     private void ThrowIfCompleted() =>
-        CryptoHelpers.ThrowIfAlreadyCompleted(this._completed);
+        CryptoHelpers.ThrowIfAlreadyCompleted(_completed);
 
     /// <summary>
     /// Releases the resources used by this instance and clears retained nonce and associated-data state from memory.
@@ -242,7 +242,7 @@ public sealed class EaxModeTransform
     /// </remarks>
     public void Dispose()
     {
-        this.Dispose(disposing: true);
+        Dispose(disposing: true);
         GC.SuppressFinalize(this);
     }
 
@@ -255,18 +255,18 @@ public sealed class EaxModeTransform
     /// </param>
     private void Dispose(bool disposing)
     {
-        if (this._disposed)
+        if (_disposed)
             return;
 
         if (disposing)
         {
-            CryptoHelpers.Clear(this._nonce);
-            CryptoHelpers.ClearAndNullify(ref this._aad);
+            CryptoHelpers.Clear(_nonce);
+            CryptoHelpers.ClearAndNullify(ref _aad);
 
-            this._aadProcessed = false;
+            _aadProcessed = false;
         }
 
-        this._disposed = true;
+        _disposed = true;
     }
 
     // ── Private helpers ────────────────────────────────────────────────────────────────────────
@@ -276,10 +276,10 @@ public sealed class EaxModeTransform
     /// </summary>
     private void EnsureAadProcessed()
     {
-        if (!this._aadProcessed)
+        if (!_aadProcessed)
         {
-            this._aad = [];
-            this._aadProcessed = true;
+            _aad = [];
+            _aadProcessed = true;
         }
     }
 
@@ -289,7 +289,7 @@ public sealed class EaxModeTransform
     /// </summary>
     private byte[] Omac(byte t, ReadOnlySpan<byte> m)
     {
-        var blockSize = this._cipher.BlockSize / 8;
+        var blockSize = _cipher.BlockSize / 8;
         var prefixed = new byte[blockSize + m.Length];
 
         try
@@ -310,7 +310,7 @@ public sealed class EaxModeTransform
     /// </summary>
     private byte[] ComputeCmac(ReadOnlySpan<byte> message)
     {
-        var blockSize = this._cipher.BlockSize / 8;
+        var blockSize = _cipher.BlockSize / 8;
 
         var zeroBlock = new byte[blockSize];
         var l = new byte[blockSize];
@@ -322,7 +322,7 @@ public sealed class EaxModeTransform
         try
         {
             // Subkey generation: K1 = dbl(E(0^n)), K2 = dbl(K1).
-            this._cipher.Encrypt(zeroBlock, l);
+            _cipher.Encrypt(zeroBlock, l);
 
             l.CopyTo(k1, 0);
             Dbl(k1);
@@ -347,7 +347,7 @@ public sealed class EaxModeTransform
                 {
                     message.Slice(blockIdx * blockSize, blockSize).CopyTo(block);
                     Xor(mac, block, mac);
-                    this._cipher.Encrypt(mac, mac);
+                    _cipher.Encrypt(mac, mac);
                 }
                 finally
                 {
@@ -374,7 +374,7 @@ public sealed class EaxModeTransform
             var subkey = lastIsFull ? k1 : k2;
             Xor(lastBlock, subkey, lastBlock);
             Xor(mac, lastBlock, mac);
-            this._cipher.Encrypt(mac, mac);
+            _cipher.Encrypt(mac, mac);
 
             return mac;
         }
@@ -395,7 +395,7 @@ public sealed class EaxModeTransform
     /// </summary>
     private void CtrEncrypt(ReadOnlySpan<byte> input, Span<byte> output, byte[] counter)
     {
-        var blockSize = this._cipher.BlockSize / 8;
+        var blockSize = _cipher.BlockSize / 8;
         var ctr = (byte[])counter.Clone();
         Span<byte> ks = stackalloc byte[blockSize];
 
@@ -403,7 +403,7 @@ public sealed class EaxModeTransform
         {
             for (var offset = 0; offset < input.Length; offset += blockSize)
             {
-                this._cipher.Encrypt(ctr, ks);
+                _cipher.Encrypt(ctr, ks);
 
                 for (var i = ctr.Length - 1; i >= 0; i--)
                     if (++ctr[i] != 0) break;
@@ -455,10 +455,10 @@ public sealed class EaxModeTransform
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ThrowIfDisposed() =>
 #if NET8_0_OR_GREATER
-        ObjectDisposedException.ThrowIf(this._disposed, this);
+        ObjectDisposedException.ThrowIf(_disposed, this);
 #else
-        if (this._disposed)
-            throw new ObjectDisposedException(this.GetType().Name);
+        if (_disposed)
+            throw new ObjectDisposedException(GetType().Name);
 #endif
 
 }

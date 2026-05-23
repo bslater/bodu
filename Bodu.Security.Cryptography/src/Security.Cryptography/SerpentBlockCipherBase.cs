@@ -131,7 +131,7 @@ public abstract partial class SerpentBlockCipherBase
     /// </remarks>
     ~SerpentBlockCipherBase()
     {
-        this.Dispose(false);
+        Dispose(false);
     }
 
     /// <inheritdoc />
@@ -146,7 +146,7 @@ public abstract partial class SerpentBlockCipherBase
     /// <inheritdoc />
     public void Dispose()
     {
-        this.Dispose(true);
+        Dispose(true);
         GC.SuppressFinalize(this);
     }
 
@@ -162,7 +162,7 @@ public abstract partial class SerpentBlockCipherBase
     /// to clear expanded round keys, tweak material, and other sensitive buffers before calling
     /// <c>base.Dispose(disposing)</c>.
     /// </remarks>
-    protected virtual void Dispose(bool disposing) => this._disposed = true;
+    protected virtual void Dispose(bool disposing) => _disposed = true;
 
     /// <summary>
     /// Throws an <see cref="ObjectDisposedException" /> if the algorithm instance has been disposed.
@@ -173,10 +173,10 @@ public abstract partial class SerpentBlockCipherBase
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected void ThrowIfDisposed() =>
 #if NET8_0_OR_GREATER
-        ObjectDisposedException.ThrowIf(this._disposed, this);
+        ObjectDisposedException.ThrowIf(_disposed, this);
 #else
-        if (this._disposed)
-            throw new ObjectDisposedException(this.GetType().Name);
+        if (_disposed)
+            throw new ObjectDisposedException(GetType().Name);
 #endif
 
     /// <summary>

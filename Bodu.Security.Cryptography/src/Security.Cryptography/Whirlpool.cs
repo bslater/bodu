@@ -100,7 +100,7 @@ public sealed partial class Whirlpool
     public Whirlpool()
         : base(BlockSizeBits)
     {
-        this.HashSizeValue = HashSizeBits;
+        HashSizeValue = HashSizeBits;
     }
 
     /// <inheritdoc />
@@ -118,8 +118,8 @@ public sealed partial class Whirlpool
     {
         get
         {
-            this.ThrowIfDisposed();
-            return this._version switch
+            ThrowIfDisposed();
+            return _version switch
             {
                 WhirlpoolVersion.WhirlpoolInfo1 => "Whirlpool-0",
                 WhirlpoolVersion.WhirlpoolInfo2 => "Whirlpool-T",
@@ -151,18 +151,18 @@ public sealed partial class Whirlpool
     {
         get
         {
-            this.ThrowIfDisposed();
-            return this._version;
+            ThrowIfDisposed();
+            return _version;
         }
 
         set
         {
-            this.ThrowIfDisposed();
-            if (this._inputConsumed)
+            ThrowIfDisposed();
+            if (_inputConsumed)
                 throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.Crypt_Invalid_ReconfigurationNotAllowed);
             ThrowHelper.ThrowIfEnumValueIsUndefined(value);
 
-            this._version = value;
+            _version = value;
         }
     }
 
@@ -173,22 +173,22 @@ public sealed partial class Whirlpool
     public override void Initialize()
     {
         base.Initialize();
-        CryptoHelpers.Clear(this._state);
-        this._inputConsumed = false;
+        CryptoHelpers.Clear(_state);
+        _inputConsumed = false;
     }
 
     /// <inheritdoc />
     protected override void HashCore(byte[] array, int ibStart, int cbSize)
     {
         base.HashCore(array, ibStart, cbSize);
-        this._inputConsumed = true;
+        _inputConsumed = true;
     }
 
     /// <inheritdoc />
     protected override void HashCore(ReadOnlySpan<byte> source)
     {
         base.HashCore(source);
-        this._inputConsumed = true;
+        _inputConsumed = true;
     }
 
     /// <summary>
@@ -200,11 +200,11 @@ public sealed partial class Whirlpool
     /// </param>
     protected override void Dispose(bool disposing)
     {
-        if (this.IsDisposed) return;
+        if (IsDisposed) return;
 
         if (disposing)
         {
-            CryptoHelpers.Clear(this._state);
+            CryptoHelpers.Clear(_state);
         }
 
         base.Dispose(disposing);
@@ -238,7 +238,7 @@ public sealed partial class Whirlpool
     /// <inheritdoc />
     protected override void ProcessBlock(ReadOnlySpan<byte> block)
     {
-        VariantTables tables = GetTables(this._version);
+        VariantTables tables = GetTables(_version);
         var mul = tables.Multiplication;
         var rcon = tables.RoundKeys;
 
@@ -253,7 +253,7 @@ public sealed partial class Whirlpool
         for (var i = 0; i < 8; i++)
         {
             message[i] = BinaryPrimitives.ReadUInt64BigEndian(block.Slice(i * 8, 8));
-            key[i] = this._state[i];
+            key[i] = _state[i];
             state[i] = message[i] ^ key[i];
         }
 
@@ -271,7 +271,7 @@ public sealed partial class Whirlpool
 
         // Miyaguchi–Preneel finalization: H_{i+1} = W_{H_i}(M) ⊕ M ⊕ H_i.
         for (var i = 0; i < 8; i++)
-            this._state[i] ^= state[i] ^ message[i];
+            _state[i] ^= state[i] ^ message[i];
     }
 
     /// <inheritdoc />
@@ -279,7 +279,7 @@ public sealed partial class Whirlpool
     {
         var output = new byte[HashSizeBits / 8];
         for (var i = 0; i < 8; i++)
-            BinaryPrimitives.WriteUInt64BigEndian(output.AsSpan(i * 8, 8), this._state[i]);
+            BinaryPrimitives.WriteUInt64BigEndian(output.AsSpan(i * 8, 8), _state[i]);
 
         return output;
     }

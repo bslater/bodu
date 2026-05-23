@@ -126,17 +126,17 @@ public sealed class Blowfish
     public Blowfish()
     {
         // Fixed 64-bit block — Blowfish does not support any other block size.
-        this.BlockSizeValue = BlowFishBlockSize;
-        this.LegalBlockSizesValue = s_blowfishBlockSizes;
+        BlockSizeValue = BlowFishBlockSize;
+        LegalBlockSizesValue = s_blowfishBlockSizes;
 
         // Default to a 128-bit key, which sits in the middle of the permitted 32..448-bit range and matches common
         // expectations for modern symmetric usage.
-        this.KeySizeValue = 128;
-        this.LegalKeySizesValue = s_blowfishKeySizes;
+        KeySizeValue = 128;
+        LegalKeySizesValue = s_blowfishKeySizes;
 
-        this.FeedbackSizeValue = BlockSize;
-        this.ModeValue = CipherMode.CBC;
-        this.PaddingValue = PaddingMode.PKCS7;
+        FeedbackSizeValue = BlockSize;
+        ModeValue = CipherMode.CBC;
+        PaddingValue = PaddingMode.PKCS7;
     }
 
     /// <summary>
@@ -161,17 +161,17 @@ public sealed class Blowfish
     /// </remarks>
     public CipherModeKind BlockMode
     {
-        get => this._blockMode;
+        get => _blockMode;
         set
         {
-            this._blockMode = value;
+            _blockMode = value;
 
             // Keep the inherited Mode in sync where a direct CipherMode equivalent exists. Extended modes without a
             // mapping (e.g. CTR, OFB) intentionally leave ModeValue untouched.
             if (Enum.TryParse<CipherMode>(value.ToString(), out CipherMode mode) &&
                 Enum.IsDefined(mode))
             {
-                this.ModeValue = mode;
+                ModeValue = mode;
             }
         }
     }
@@ -190,12 +190,12 @@ public sealed class Blowfish
     /// </remarks>
     public PaddingModeKind BlockPadding
     {
-        get => this._blockPadding;
+        get => _blockPadding;
         set
         {
-            this._blockPadding = value;
+            _blockPadding = value;
             if (Enum.TryParse<PaddingMode>(value.ToString(), out PaddingMode mode) && Enum.IsDefined(mode))
-                this.PaddingValue = mode;
+                PaddingValue = mode;
         }
     }
 
@@ -211,7 +211,7 @@ public sealed class Blowfish
         {
             base.Padding = value;
             if (Enum.TryParse<PaddingModeKind>(value.ToString(), out PaddingModeKind bpm) && Enum.IsDefined(bpm))
-                this._blockPadding = bpm;
+                _blockPadding = bpm;
         }
     }
 
@@ -245,12 +245,12 @@ public sealed class Blowfish
     /// </exception>
     public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[]? rgbIV)
     {
-        this.ThrowIfDisposed();
-        CryptoHelpers.ThrowIfInvalidKeySize(rgbKey, this.KeySizeValue, this.LegalKeySizes);
-        CryptoHelpers.ThrowIfInvalidIVForMode(rgbIV, this.BlockMode, this.BlockSizeValue, this.LegalBlockSizes);
+        ThrowIfDisposed();
+        CryptoHelpers.ThrowIfInvalidKeySize(rgbKey, KeySizeValue, LegalKeySizes);
+        CryptoHelpers.ThrowIfInvalidIVForMode(rgbIV, BlockMode, BlockSizeValue, LegalBlockSizes);
 
         IBlockCipher engine = CreateCipher(rgbKey);
-        return new BlowfishTransform(engine, this.BlockMode, this.BlockPadding, rgbIV, false);
+        return new BlowfishTransform(engine, BlockMode, BlockPadding, rgbIV, false);
     }
 
     /// <summary>
@@ -277,12 +277,12 @@ public sealed class Blowfish
     /// </exception>
     public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[]? rgbIV)
     {
-        this.ThrowIfDisposed();
-        CryptoHelpers.ThrowIfInvalidKeySize(rgbKey, this.KeySizeValue, this.LegalKeySizes);
-        CryptoHelpers.ThrowIfInvalidIVForMode(rgbIV, this.BlockMode, this.BlockSizeValue, this.LegalBlockSizes);
+        ThrowIfDisposed();
+        CryptoHelpers.ThrowIfInvalidKeySize(rgbKey, KeySizeValue, LegalKeySizes);
+        CryptoHelpers.ThrowIfInvalidIVForMode(rgbIV, BlockMode, BlockSizeValue, LegalBlockSizes);
 
         IBlockCipher engine = CreateCipher(rgbKey);
-        return new BlowfishTransform(engine, this.BlockMode, this.BlockPadding, rgbIV, true);
+        return new BlowfishTransform(engine, BlockMode, BlockPadding, rgbIV, true);
     }
 
     /// <summary>
@@ -304,8 +304,8 @@ public sealed class Blowfish
     /// <exception cref="ObjectDisposedException">The current instance has been disposed.</exception>
     public override void GenerateIV()
     {
-        this.ThrowIfDisposed();
-        this.IVValue = CryptoHelpers.GetRandomNonZeroBytes(this.BlockSizeValue / 8);
+        ThrowIfDisposed();
+        IVValue = CryptoHelpers.GetRandomNonZeroBytes(BlockSizeValue / 8);
     }
 
     /// <summary>
@@ -323,8 +323,8 @@ public sealed class Blowfish
     /// <exception cref="ObjectDisposedException">The current instance has been disposed.</exception>
     public override void GenerateKey()
     {
-        this.ThrowIfDisposed();
-        this.KeyValue = CryptoHelpers.GetRandomNonZeroBytes(this.KeySizeValue / 8);
+        ThrowIfDisposed();
+        KeyValue = CryptoHelpers.GetRandomNonZeroBytes(KeySizeValue / 8);
     }
 
     /// <summary>
@@ -341,16 +341,16 @@ public sealed class Blowfish
     /// </remarks>
     protected override void Dispose(bool disposing)
     {
-        if (!this._disposed)
+        if (!_disposed)
         {
             if (disposing)
             {
                 // Zero sensitive key material and IV buffers so their contents do not linger in managed memory after disposal.
-                CryptoHelpers.Clear(this.Key);
-                CryptoHelpers.Clear(this.IVValue);
+                CryptoHelpers.Clear(Key);
+                CryptoHelpers.Clear(IVValue);
             }
 
-            this._disposed = true;
+            _disposed = true;
         }
 
         base.Dispose(disposing);
@@ -372,10 +372,10 @@ public sealed class Blowfish
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ThrowIfDisposed() =>
 #if NET8_0_OR_GREATER
-        ObjectDisposedException.ThrowIf(this._disposed, this);
+        ObjectDisposedException.ThrowIf(_disposed, this);
 #else
-        if (this._disposed)
-            throw new ObjectDisposedException(this.GetType().Name);
+        if (_disposed)
+            throw new ObjectDisposedException(GetType().Name);
 #endif
 
 }

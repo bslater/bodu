@@ -77,14 +77,14 @@ public sealed class CfbModeTransform
         ThrowHelper.ThrowIfNull(cipher);
         CryptoHelpers.ThrowIfIvLengthInvalid(iv, cipher.BlockSize);
 
-        this._cipher = cipher;
-        this._currentIv = (byte[])iv.Clone();
+        _cipher = cipher;
+        _currentIv = (byte[])iv.Clone();
     }
 
     /// <inheritdoc />
     public int Transform(ReadOnlySpan<byte> input, Span<byte> output, bool encrypt)
     {
-        var blockSize = this._cipher.BlockSize / 8;
+        var blockSize = _cipher.BlockSize / 8;
 
         // Empty input is a no-op, consistent with CbcModeTransform.
         CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(input, blockSize, throwIfZero: false);
@@ -98,7 +98,7 @@ public sealed class CfbModeTransform
             Span<byte> outBlock = output.Slice(offset, blockSize);
 
             // Encrypt the current IV (used as feedback input)
-            this._cipher.Encrypt(this._currentIv, feedback);
+            _cipher.Encrypt(_currentIv, feedback);
 
             if (encrypt)
             {
@@ -107,7 +107,7 @@ public sealed class CfbModeTransform
                     outBlock[i] = (byte)(inBlock[i] ^ feedback[i]);
 
                 // Update IV to current ciphertext block
-                outBlock.CopyTo(this._currentIv);
+                outBlock.CopyTo(_currentIv);
             }
             else
             {
@@ -116,7 +116,7 @@ public sealed class CfbModeTransform
                     outBlock[i] = (byte)(inBlock[i] ^ feedback[i]);
 
                 // Update IV to current ciphertext block
-                inBlock.CopyTo(this._currentIv);
+                inBlock.CopyTo(_currentIv);
             }
         }
 
@@ -133,11 +133,11 @@ public sealed class CfbModeTransform
     /// </remarks>
     public void Dispose()
     {
-        if (this._disposed)
+        if (_disposed)
             return;
 
-        CryptoHelpers.Clear(this._currentIv);
-        this._disposed = true;
+        CryptoHelpers.Clear(_currentIv);
+        _disposed = true;
         GC.SuppressFinalize(this);
     }
 }

@@ -113,12 +113,12 @@ public abstract class SipHash<T>
     {
         CryptoHelpers.ThrowIfInvalidHashSize(hashSize, s_permittedHashSizes);
 
-        this.KeyValue = new byte[KeySize / 8];
-        CryptoHelpers.FillWithRandomNonZeroBytes(this.KeyValue);
-        this._compressionRounds = MinCompressionRounds;
-        this._finalizationRounds = MinFinalizationRounds;
-        this.HashSizeValue = hashSize;
-        this.OnKeyChanged();
+        KeyValue = new byte[KeySize / 8];
+        CryptoHelpers.FillWithRandomNonZeroBytes(KeyValue);
+        _compressionRounds = MinCompressionRounds;
+        _finalizationRounds = MinFinalizationRounds;
+        HashSizeValue = hashSize;
+        OnKeyChanged();
     }
 
     /// <summary>
@@ -148,8 +148,8 @@ public abstract class SipHash<T>
     {
         get
         {
-            this.ThrowIfDisposed();
-            return $"SipHash-{this.CompressionRounds}-{this.FinalizationRounds}-{this.HashSizeValue}";
+            ThrowIfDisposed();
+            return $"SipHash-{CompressionRounds}-{FinalizationRounds}-{HashSizeValue}";
         }
     }
 
@@ -180,17 +180,17 @@ public abstract class SipHash<T>
     {
         get
         {
-            this.ThrowIfDisposed();
-            return this._compressionRounds;
+            ThrowIfDisposed();
+            return _compressionRounds;
         }
 
         set
         {
-            this.ThrowIfDisposed();
-            this.ThrowIfInvalidState();
+            ThrowIfDisposed();
+            ThrowIfInvalidState();
             ThrowHelper.ThrowIfLessThan(value, MinCompressionRounds);
 
-            this._compressionRounds = value;
+            _compressionRounds = value;
         }
     }
 
@@ -215,17 +215,17 @@ public abstract class SipHash<T>
     {
         get
         {
-            this.ThrowIfDisposed();
-            return this._finalizationRounds;
+            ThrowIfDisposed();
+            return _finalizationRounds;
         }
 
         set
         {
-            this.ThrowIfDisposed();
-            this.ThrowIfInvalidState();
+            ThrowIfDisposed();
+            ThrowIfInvalidState();
             ThrowHelper.ThrowIfLessThan(value, MinFinalizationRounds);
 
-            this._finalizationRounds = value;
+            _finalizationRounds = value;
         }
     }
 
@@ -241,13 +241,13 @@ public abstract class SipHash<T>
     /// </remarks>
     protected override void Dispose(bool disposing)
     {
-        if (this.IsDisposed) return;
+        if (IsDisposed) return;
 
         if (disposing)
         {
-            this._v0 = this._v1 = this._v2 = this._v3 = 0;
-            this._compressionRounds = 0;
-            this._finalizationRounds = 0;
+            _v0 = _v1 = _v2 = _v3 = 0;
+            _compressionRounds = 0;
+            _finalizationRounds = 0;
         }
 
         base.Dispose(disposing);
@@ -286,9 +286,9 @@ public abstract class SipHash<T>
     protected override void ProcessBlock(ReadOnlySpan<byte> block)
     {
         var b = BinaryPrimitives.ReadUInt64LittleEndian(block);
-        this._v3 ^= b;
-        this.PerformSipRounds(this._compressionRounds);
-        this._v0 ^= b;
+        _v3 ^= b;
+        PerformSipRounds(_compressionRounds);
+        _v0 ^= b;
     }
 
     /// <summary>
@@ -300,22 +300,22 @@ public abstract class SipHash<T>
     /// </remarks>
     protected override byte[] ProcessFinalBlock()
     {
-        this._v2 ^= (this.HashSizeValue == 64) ? 0xffUL : 0xeeUL;
-        this.PerformSipRounds(this._finalizationRounds);
+        _v2 ^= (HashSizeValue == 64) ? 0xffUL : 0xeeUL;
+        PerformSipRounds(_finalizationRounds);
 
-        var hash = new byte[this.HashSizeValue / 8];
+        var hash = new byte[HashSizeValue / 8];
 
         // First 64-bit output
-        var h0 = this._v0 ^ this._v1 ^ this._v2 ^ this._v3;
+        var h0 = _v0 ^ _v1 ^ _v2 ^ _v3;
         MemoryMarshal.Write(hash.AsSpan(0, 8), in h0);
 
         // Optional second block for SipHash-128
-        if (this.HashSizeValue == 128)
+        if (HashSizeValue == 128)
         {
-            this._v1 ^= 0xdd;
-            this.PerformSipRounds(this._finalizationRounds);
+            _v1 ^= 0xdd;
+            PerformSipRounds(_finalizationRounds);
 
-            var h1 = this._v0 ^ this._v1 ^ this._v2 ^ this._v3;
+            var h1 = _v0 ^ _v1 ^ _v2 ^ _v3;
             MemoryMarshal.Write(hash.AsSpan(8, 8), in h1);
         }
 
@@ -337,14 +337,14 @@ public abstract class SipHash<T>
         // KeyValue is non-null and of the expected length before this point.
         // Use little-endian reads to match the SipHash specification and ProcessBlock; prior code used
         // host-endian BitConverter, which would produce incorrect digests on big-endian hosts.
-        var k0 = BinaryPrimitives.ReadUInt64LittleEndian(this.KeyValue!.AsSpan(0));
-        var k1 = BinaryPrimitives.ReadUInt64LittleEndian(this.KeyValue!.AsSpan(8));
-        this._v0 = s_initialStates[0] ^ k0;
-        this._v1 = s_initialStates[1] ^ k1;
-        this._v2 = s_initialStates[2] ^ k0;
-        this._v3 = s_initialStates[3] ^ k1;
+        var k0 = BinaryPrimitives.ReadUInt64LittleEndian(KeyValue!.AsSpan(0));
+        var k1 = BinaryPrimitives.ReadUInt64LittleEndian(KeyValue!.AsSpan(8));
+        _v0 = s_initialStates[0] ^ k0;
+        _v1 = s_initialStates[1] ^ k1;
+        _v2 = s_initialStates[2] ^ k0;
+        _v3 = s_initialStates[3] ^ k1;
 
-        if (this.HashSizeValue == 128) this._v1 ^= 0xee;
+        if (HashSizeValue == 128) _v1 ^= 0xee;
     }
 
     /// <summary>
@@ -361,7 +361,7 @@ public abstract class SipHash<T>
         Justification = "Grouped state assignments intentionally mirror the four-word SipHash state transition, keeping related state loads and write-backs together as single logical permutation steps.")]
     private void PerformSipRounds(int iterations)
     {
-        ulong r0 = this._v0, r1 = this._v1, r2 = this._v2, r3 = this._v3;
+        ulong r0 = _v0, r1 = _v1, r2 = _v2, r3 = _v3;
 
         for (var i = 0; i < iterations; i++)
         {
@@ -381,6 +381,6 @@ public abstract class SipHash<T>
             r2 = r2.RotateBitsLeftUnchecked(32);
         }
 
-        this._v0 = r0; this._v1 = r1; this._v2 = r2; this._v3 = r3;
+        _v0 = r0; _v1 = r1; _v2 = r2; _v3 = r3;
     }
 }

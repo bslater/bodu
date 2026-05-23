@@ -190,7 +190,7 @@ public sealed partial class Blake3
     {
         get
         {
-            this.ThrowIfDisposed();
+            ThrowIfDisposed();
             return "BLAKE3";
         }
     }
@@ -237,7 +237,7 @@ public sealed partial class Blake3
     /// </remarks>
     protected override void Dispose(bool disposing)
     {
-        if (this.IsDisposed) return;
+        if (IsDisposed) return;
 
         if (disposing)
         {
@@ -355,23 +355,19 @@ public sealed partial class Blake3
     /// value.
     /// </returns>
     /// <remarks>
-    /// Dispatches to an AVX-512 vectorised implementation when supported by the host, falling back to a
-    /// scalar reference implementation otherwise. <see cref="Avx512F.VL.IsSupported" /> is a JIT intrinsic
-    /// that folds to a compile-time constant, so the branch carries no runtime cost.
+    /// Dispatches to an AVX-512 vectorised implementation when supported by the host, falling back to a scalar
+    /// reference implementation otherwise. <see cref="Avx512F.VL.IsSupported" /> is a JIT intrinsic that folds to a
+    /// compile-time constant, so the branch carries no runtime cost.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static uint[] Compress(uint[] cv, uint[] blockWords, ulong counter, uint blockLen, uint flags)
-    {
-        if (Avx512F.VL.IsSupported)
-            return CompressAvx512(cv, blockWords, counter, blockLen, flags);
-
-        return CompressScalar(cv, blockWords, counter, blockLen, flags);
-    }
+    private static uint[] Compress(uint[] cv, uint[] blockWords, ulong counter, uint blockLen, uint flags) =>
+         Avx512F.VL.IsSupported
+            ? CompressAvx512(cv, blockWords, counter, blockLen, flags)
+            : CompressScalar(cv, blockWords, counter, blockLen, flags);
 
     /// <summary>
-    /// Scalar reference implementation of the BLAKE3 compression function used as a fallback on hosts
-    /// without AVX-512 + VL support. Implements §2.4 of the BLAKE3 specification directly on a 16-element
-    /// <see cref="uint" /> array.
+    /// Scalar reference implementation of the BLAKE3 compression function used as a fallback on hosts without AVX-512 +
+    /// VL support. Implements §2.4 of the BLAKE3 specification directly on a 16-element <see cref="uint" /> array.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     private static uint[] CompressScalar(uint[] cv, uint[] blockWords, ulong counter, uint blockLen, uint flags)

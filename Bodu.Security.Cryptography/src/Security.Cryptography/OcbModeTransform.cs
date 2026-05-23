@@ -138,23 +138,23 @@ public sealed class OcbModeTransform
                 nameof(tagSize));
         }
 
-        this._cipher = cipher;
+        _cipher = cipher;
 
-        this._nonce = new byte[NonceSizeBits / 8];
-        iv.AsSpan(0, NonceSizeBits / 8).CopyTo(this._nonce);
+        _nonce = new byte[NonceSizeBits / 8];
+        iv.AsSpan(0, NonceSizeBits / 8).CopyTo(_nonce);
 
-        this._tagLen = tagSize / 8;
+        _tagLen = tagSize / 8;
 
         var blockSize = cipher.BlockSize / 8;
 
         // RFC 7253 §2.1 — Key-dependent constants derived once per key.
         // L_* = ENCIPHER(K, zeros(128)).
         var zeroBlock = new byte[blockSize];
-        this._lStar = new byte[blockSize];
+        _lStar = new byte[blockSize];
 
         try
         {
-            cipher.Encrypt(zeroBlock, this._lStar);
+            cipher.Encrypt(zeroBlock, _lStar);
         }
         finally
         {
@@ -162,43 +162,43 @@ public sealed class OcbModeTransform
         }
 
         // L_$ = double(L_*).
-        this._lDollar = GfDouble(this._lStar);
+        _lDollar = GfDouble(_lStar);
 
         // L[i] = double(L[i-1]), L[0] = double(L_$).
-        this._lArray = new byte[MaxLValues][];
-        this._lArray[0] = GfDouble(this._lDollar);
+        _lArray = new byte[MaxLValues][];
+        _lArray[0] = GfDouble(_lDollar);
 
         for (var i = 1; i < MaxLValues; i++)
-            this._lArray[i] = GfDouble(this._lArray[i - 1]);
+            _lArray[i] = GfDouble(_lArray[i - 1]);
     }
 
     /// <inheritdoc />
     /// <value>The configured OCB authentication-tag size, in bits. Defaults to 128 bits (16 bytes).</value>
-    public int TagSize => this._tagLen * 8;
+    public int TagSize => _tagLen * 8;
 
     /// <inheritdoc />
     public void ProcessAssociatedData(ReadOnlySpan<byte> associatedData)
     {
-        this.ThrowIfDisposed();
+        ThrowIfDisposed();
 
-        CryptoHelpers.ThrowIfAssociatedDataAlreadyProcessed(this._aadProcessed);
+        CryptoHelpers.ThrowIfAssociatedDataAlreadyProcessed(_aadProcessed);
 
-        this._aad = associatedData.ToArray();
-        this._aadProcessed = true;
+        _aad = associatedData.ToArray();
+        _aadProcessed = true;
     }
 
     /// <inheritdoc />
     public int Encrypt(ReadOnlySpan<byte> plaintext, Span<byte> output)
     {
-        this.ThrowIfDisposed();
-        this.ThrowIfCompleted();
+        ThrowIfDisposed();
+        ThrowIfCompleted();
 
-        var required = plaintext.Length + this._tagLen;
+        var required = plaintext.Length + _tagLen;
         CryptoHelpers.ThrowIfOutputBufferTooSmall(output, required);
 
         EnsureAadProcessed();
 
-        var blockSize = this._cipher.BlockSize / 8;
+        var blockSize = _cipher.BlockSize / 8;
 
         byte[]? offset = null;
         byte[]? checksum = null;
@@ -218,11 +218,11 @@ public sealed class OcbModeTransform
             {
                 var src = (blockIdx - 1) * blockSize;
 
-                Xor(offset, this._lArray[Ntz(blockIdx)], offset);
+                Xor(offset, _lArray[Ntz(blockIdx)], offset);
 
                 plaintext.Slice(src, blockSize).CopyTo(block);
                 Xor(block, offset, block);
-                this._cipher.Encrypt(block, block);
+                _cipher.Encrypt(block, block);
                 Xor(block, offset, block);
                 block.CopyTo(output[src..]);
 
@@ -236,11 +236,11 @@ public sealed class OcbModeTransform
 
                 if (lastLen == blockSize)
                 {
-                    Xor(offset, this._lArray[Ntz(m)], offset);
+                    Xor(offset, _lArray[Ntz(m)], offset);
 
                     plaintext.Slice(lastSrc, blockSize).CopyTo(block);
                     Xor(block, offset, block);
-                    this._cipher.Encrypt(block, block);
+                    _cipher.Encrypt(block, block);
                     Xor(block, offset, block);
                     block.CopyTo(output[lastSrc..]);
 
@@ -253,9 +253,9 @@ public sealed class OcbModeTransform
 
                     try
                     {
-                        Xor(offset, this._lStar, offset);
+                        Xor(offset, _lStar, offset);
 
-                        this._cipher.Encrypt(offset, pad);
+                        _cipher.Encrypt(offset, pad);
 
                         for (var i = 0; i < lastLen; i++)
                             output[lastSrc + i] = (byte)(plaintext[lastSrc + i] ^ pad[i]);
@@ -275,14 +275,14 @@ public sealed class OcbModeTransform
 
             tagInput = new byte[blockSize];
 
-            Xor(this._lDollar, offset, tagInput);
+            Xor(_lDollar, offset, tagInput);
             Xor(tagInput, checksum, tagInput);
-            this._cipher.Encrypt(tagInput, tagInput);
+            _cipher.Encrypt(tagInput, tagInput);
 
-            hashResult = ComputeHash(this._aad!);
+            hashResult = ComputeHash(_aad!);
             Xor(tagInput, hashResult, tagInput);
 
-            tagInput.AsSpan(0, this._tagLen).CopyTo(output[plaintext.Length..]);
+            tagInput.AsSpan(0, _tagLen).CopyTo(output[plaintext.Length..]);
 
             return required;
         }
@@ -293,19 +293,19 @@ public sealed class OcbModeTransform
             CryptoHelpers.Clear(block);
             CryptoHelpers.Clear(checksum);
             CryptoHelpers.Clear(offset);
-            this._completed = true;
+            _completed = true;
         }
     }
 
     /// <inheritdoc />
     public int Decrypt(ReadOnlySpan<byte> ciphertextWithTag, Span<byte> output)
     {
-        this.ThrowIfDisposed();
-        this.ThrowIfCompleted();
+        ThrowIfDisposed();
+        ThrowIfCompleted();
 
-        CryptoHelpers.ThrowIfCiphertextTooShort(ciphertextWithTag, this._tagLen);
+        CryptoHelpers.ThrowIfCiphertextTooShort(ciphertextWithTag, _tagLen);
 
-        var plaintextLength = ciphertextWithTag.Length - this._tagLen;
+        var plaintextLength = ciphertextWithTag.Length - _tagLen;
         CryptoHelpers.ThrowIfOutputBufferTooSmall(output, plaintextLength);
 
         EnsureAadProcessed();
@@ -313,7 +313,7 @@ public sealed class OcbModeTransform
         ReadOnlySpan<byte> ciphertext = ciphertextWithTag[..plaintextLength];
         ReadOnlySpan<byte> receivedTag = ciphertextWithTag[plaintextLength..];
 
-        var blockSize = this._cipher.BlockSize / 8;
+        var blockSize = _cipher.BlockSize / 8;
 
         byte[]? offset = null;
         byte[]? checksum = null;
@@ -333,11 +333,11 @@ public sealed class OcbModeTransform
             {
                 var src = (blockIdx - 1) * blockSize;
 
-                Xor(offset, this._lArray[Ntz(blockIdx)], offset);
+                Xor(offset, _lArray[Ntz(blockIdx)], offset);
 
                 ciphertext.Slice(src, blockSize).CopyTo(block);
                 Xor(block, offset, block);
-                this._cipher.Decrypt(block, block);
+                _cipher.Decrypt(block, block);
                 Xor(block, offset, block);
                 block.CopyTo(output[src..]);
 
@@ -351,11 +351,11 @@ public sealed class OcbModeTransform
 
                 if (lastLen == blockSize)
                 {
-                    Xor(offset, this._lArray[Ntz(m)], offset);
+                    Xor(offset, _lArray[Ntz(m)], offset);
 
                     ciphertext.Slice(lastSrc, blockSize).CopyTo(block);
                     Xor(block, offset, block);
-                    this._cipher.Decrypt(block, block);
+                    _cipher.Decrypt(block, block);
                     Xor(block, offset, block);
                     block.CopyTo(output[lastSrc..]);
 
@@ -368,9 +368,9 @@ public sealed class OcbModeTransform
 
                     try
                     {
-                        Xor(offset, this._lStar, offset);
+                        Xor(offset, _lStar, offset);
 
-                        this._cipher.Encrypt(offset, pad);
+                        _cipher.Encrypt(offset, pad);
 
                         for (var i = 0; i < lastLen; i++)
                             output[lastSrc + i] = (byte)(ciphertext[lastSrc + i] ^ pad[i]);
@@ -390,14 +390,14 @@ public sealed class OcbModeTransform
 
             tagInput = new byte[blockSize];
 
-            Xor(this._lDollar, offset, tagInput);
+            Xor(_lDollar, offset, tagInput);
             Xor(tagInput, checksum, tagInput);
-            this._cipher.Encrypt(tagInput, tagInput);
+            _cipher.Encrypt(tagInput, tagInput);
 
-            hashResult = ComputeHash(this._aad!);
+            hashResult = ComputeHash(_aad!);
             Xor(tagInput, hashResult, tagInput);
 
-            if (!CryptographicOperations.FixedTimeEquals(tagInput.AsSpan(0, this._tagLen), receivedTag))
+            if (!CryptographicOperations.FixedTimeEquals(tagInput.AsSpan(0, _tagLen), receivedTag))
             {
                 CryptoHelpers.Clear(output[..plaintextLength]);
                 throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_AuthenticationTagMismatch);
@@ -412,7 +412,7 @@ public sealed class OcbModeTransform
             CryptoHelpers.Clear(block);
             CryptoHelpers.Clear(checksum);
             CryptoHelpers.Clear(offset);
-            this._completed = true;
+            _completed = true;
         }
     }
 
@@ -421,7 +421,7 @@ public sealed class OcbModeTransform
     /// OCB transforms are single-use; create a fresh instance per message.
     /// </summary>
     private void ThrowIfCompleted() =>
-        CryptoHelpers.ThrowIfAlreadyCompleted(this._completed);
+        CryptoHelpers.ThrowIfAlreadyCompleted(_completed);
 
     /// <summary>
     /// Releases the resources used by this instance and clears retained nonce, OCB offset constants, and
@@ -432,7 +432,7 @@ public sealed class OcbModeTransform
     /// </remarks>
     public void Dispose()
     {
-        this.Dispose(disposing: true);
+        Dispose(disposing: true);
         GC.SuppressFinalize(this);
     }
 
@@ -445,24 +445,24 @@ public sealed class OcbModeTransform
     /// </param>
     private void Dispose(bool disposing)
     {
-        if (this._disposed)
+        if (_disposed)
             return;
 
         if (disposing)
         {
-            CryptoHelpers.Clear(this._nonce);
-            CryptoHelpers.Clear(this._lStar);
-            CryptoHelpers.Clear(this._lDollar);
+            CryptoHelpers.Clear(_nonce);
+            CryptoHelpers.Clear(_lStar);
+            CryptoHelpers.Clear(_lDollar);
 
-            foreach (var value in this._lArray)
+            foreach (var value in _lArray)
                 CryptoHelpers.Clear(value);
 
-            CryptoHelpers.ClearAndNullify(ref this._aad);
+            CryptoHelpers.ClearAndNullify(ref _aad);
 
-            this._aadProcessed = false;
+            _aadProcessed = false;
         }
 
-        this._disposed = true;
+        _disposed = true;
     }
 
     // ── Private helpers ────────────────────────────────────────────────────────────────────────
@@ -472,10 +472,10 @@ public sealed class OcbModeTransform
     /// </summary>
     private void EnsureAadProcessed()
     {
-        if (!this._aadProcessed)
+        if (!_aadProcessed)
         {
-            this._aad = [];
-            this._aadProcessed = true;
+            _aad = [];
+            _aadProcessed = true;
         }
     }
 
@@ -485,7 +485,7 @@ public sealed class OcbModeTransform
     /// <returns>The initial <c>Offset_0</c> value derived from the nonce per RFC 7253.</returns>
     private byte[] ComputeInitialOffset()
     {
-        var blockSize = this._cipher.BlockSize / 8;
+        var blockSize = _cipher.BlockSize / 8;
 
         var nonceWord = new byte[blockSize];
         byte[]? ktopInput = null;
@@ -494,9 +494,9 @@ public sealed class OcbModeTransform
 
         try
         {
-            nonceWord[0] = (byte)(((this._tagLen * 8) % 128) << 1);
+            nonceWord[0] = (byte)(((_tagLen * 8) % 128) << 1);
             nonceWord[3] = 0x01;
-            this._nonce.CopyTo(nonceWord, 4);
+            _nonce.CopyTo(nonceWord, 4);
 
             var bottom = nonceWord[blockSize - 1] & 0x3F;
 
@@ -504,7 +504,7 @@ public sealed class OcbModeTransform
             ktopInput[blockSize - 1] &= 0xC0;
 
             ktop = new byte[blockSize];
-            this._cipher.Encrypt(ktopInput, ktop);
+            _cipher.Encrypt(ktopInput, ktop);
 
             stretch = new byte[blockSize + (blockSize / 2)];
             ktop.CopyTo(stretch, 0);
@@ -549,7 +549,7 @@ public sealed class OcbModeTransform
     /// <returns>The HASH value of <paramref name="aad" /> per RFC 7253.</returns>
     private byte[] ComputeHash(ReadOnlySpan<byte> aad)
     {
-        var blockSize = this._cipher.BlockSize / 8;
+        var blockSize = _cipher.BlockSize / 8;
 
         var sum = new byte[blockSize];
 
@@ -571,11 +571,11 @@ public sealed class OcbModeTransform
 
                 if (full)
                 {
-                    Xor(offsetHash, this._lArray[Ntz(blockIdx)], offsetHash);
+                    Xor(offsetHash, _lArray[Ntz(blockIdx)], offsetHash);
 
                     aad.Slice(src, blockSize).CopyTo(block);
                     Xor(block, offsetHash, block);
-                    this._cipher.Encrypt(block, block);
+                    _cipher.Encrypt(block, block);
                     Xor(sum, block, sum);
                 }
                 else
@@ -584,14 +584,14 @@ public sealed class OcbModeTransform
 
                     try
                     {
-                        Xor(offsetHash, this._lStar, offsetHash);
+                        Xor(offsetHash, _lStar, offsetHash);
 
                         aad.Slice(src, blockLen).CopyTo(padBlock);
                         padBlock[blockLen] = 0x80;
 
                         Xor(padBlock, offsetHash, padBlock);
 
-                        this._cipher.Encrypt(padBlock, padBlock);
+                        _cipher.Encrypt(padBlock, padBlock);
                         Xor(sum, padBlock, sum);
                     }
                     finally
@@ -679,10 +679,10 @@ public sealed class OcbModeTransform
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ThrowIfDisposed() =>
 #if NET8_0_OR_GREATER
-        ObjectDisposedException.ThrowIf(this._disposed, this);
+        ObjectDisposedException.ThrowIf(_disposed, this);
 #else
-        if (this._disposed)
-            throw new ObjectDisposedException(this.GetType().Name);
+        if (_disposed)
+            throw new ObjectDisposedException(GetType().Name);
 #endif
 
 }

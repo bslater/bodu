@@ -95,15 +95,15 @@ public sealed class CtsModeTransform
         ThrowHelper.ThrowIfNull(cipher);
         CryptoHelpers.ThrowIfIvLengthInvalid(iv, cipher.BlockSize);
 
-        this._cipher = cipher;
-        this._iv = (byte[])iv.Clone();
-        this._currentIv = (byte[])iv.Clone();
+        _cipher = cipher;
+        _iv = (byte[])iv.Clone();
+        _currentIv = (byte[])iv.Clone();
     }
 
     /// <inheritdoc />
     public int Transform(ReadOnlySpan<byte> input, Span<byte> output, bool encrypt)
     {
-        var blockSize = this._cipher.BlockSize / 8;
+        var blockSize = _cipher.BlockSize / 8;
 
         if (input.Length < blockSize)
         {
@@ -137,7 +137,7 @@ public sealed class CtsModeTransform
     /// <returns>The number of bytes written to <paramref name="output" />.</returns>
     private int EncryptCbc(ReadOnlySpan<byte> input, Span<byte> output)
     {
-        var blockSize = this._cipher.BlockSize / 8;
+        var blockSize = _cipher.BlockSize / 8;
         Span<byte> block = stackalloc byte[blockSize];
 
         for (var offset = 0; offset < input.Length; offset += blockSize)
@@ -146,10 +146,10 @@ public sealed class CtsModeTransform
             Span<byte> outBlock = output.Slice(offset, blockSize);
 
             for (var i = 0; i < blockSize; i++)
-                block[i] = (byte)(inBlock[i] ^ this._currentIv[i]);
+                block[i] = (byte)(inBlock[i] ^ _currentIv[i]);
 
-            this._cipher.Encrypt(block, outBlock);
-            outBlock.CopyTo(this._currentIv);
+            _cipher.Encrypt(block, outBlock);
+            outBlock.CopyTo(_currentIv);
         }
 
         return input.Length;
@@ -163,7 +163,7 @@ public sealed class CtsModeTransform
     /// <returns>The number of bytes written to <paramref name="output" />.</returns>
     private int DecryptCbc(ReadOnlySpan<byte> input, Span<byte> output)
     {
-        var blockSize = this._cipher.BlockSize / 8;
+        var blockSize = _cipher.BlockSize / 8;
         Span<byte> block = stackalloc byte[blockSize];
 
         for (var offset = 0; offset < input.Length; offset += blockSize)
@@ -171,11 +171,11 @@ public sealed class CtsModeTransform
             ReadOnlySpan<byte> inBlock = input.Slice(offset, blockSize);
             Span<byte> outBlock = output.Slice(offset, blockSize);
 
-            this._cipher.Decrypt(inBlock, block);
+            _cipher.Decrypt(inBlock, block);
             for (var i = 0; i < blockSize; i++)
-                outBlock[i] = (byte)(block[i] ^ this._currentIv[i]);
+                outBlock[i] = (byte)(block[i] ^ _currentIv[i]);
 
-            inBlock.CopyTo(this._currentIv);
+            inBlock.CopyTo(_currentIv);
         }
 
         return input.Length;
@@ -209,8 +209,8 @@ public sealed class CtsModeTransform
         // CBC-encrypt the penultimate block: E = CBC_E(P_{n-1}).
         Span<byte> xored = stackalloc byte[blockSize];
         for (var i = 0; i < blockSize; i++)
-            xored[i] = (byte)(penultimate[i] ^ this._currentIv[i]);
-        this._cipher.Encrypt(xored, e);
+            xored[i] = (byte)(penultimate[i] ^ _currentIv[i]);
+        _cipher.Encrypt(xored, e);
 
         // Final partial block: P_n (tailBytes bytes).
         ReadOnlySpan<byte> tail = input.Slice(bodyLength + blockSize, tailBytes);
@@ -222,7 +222,7 @@ public sealed class CtsModeTransform
 
         // C_n = raw_encrypt(padded) — no CBC chain.
         Span<byte> cn = stackalloc byte[blockSize];
-        this._cipher.Encrypt(padded, cn);
+        _cipher.Encrypt(padded, cn);
 
         // Output: C_n (full block) then C_{n-1} = E[0..tailBytes].
         cn.CopyTo(output[bodyLength..]);
@@ -258,7 +258,7 @@ public sealed class CtsModeTransform
 
         // Step 1: raw-decrypt C_n → gives us P_n || E[tailBytes..].
         Span<byte> rawDec = stackalloc byte[blockSize];
-        this._cipher.Decrypt(cn, rawDec);
+        _cipher.Decrypt(cn, rawDec);
 
         // Step 2: reconstruct E (the full encrypted penultimate block).
         // E[0..tailBytes] = C_{n-1} truncated; E[tailBytes..] = rawDec[tailBytes..].
@@ -271,10 +271,10 @@ public sealed class CtsModeTransform
 
         // Step 4: CBC-decrypt e to get P_{n-1}.
         Span<byte> block = stackalloc byte[blockSize];
-        this._cipher.Decrypt(e, block);
+        _cipher.Decrypt(e, block);
         Span<byte> penultimateOut = output.Slice(bodyLength, blockSize);
         for (var i = 0; i < blockSize; i++)
-            penultimateOut[i] = (byte)(block[i] ^ this._currentIv[i]);
+            penultimateOut[i] = (byte)(block[i] ^ _currentIv[i]);
 
         return input.Length;
     }
@@ -289,12 +289,12 @@ public sealed class CtsModeTransform
     /// </remarks>
     public void Dispose()
     {
-        if (this._disposed)
+        if (_disposed)
             return;
 
-        CryptoHelpers.Clear(this._iv);
-        CryptoHelpers.Clear(this._currentIv);
-        this._disposed = true;
+        CryptoHelpers.Clear(_iv);
+        CryptoHelpers.Clear(_currentIv);
+        _disposed = true;
         GC.SuppressFinalize(this);
     }
 }

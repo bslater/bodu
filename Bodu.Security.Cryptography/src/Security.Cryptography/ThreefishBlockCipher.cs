@@ -72,28 +72,28 @@ public abstract partial class ThreefishBlockCipher
     /// </exception>
     private protected ThreefishBlockCipher(ReadOnlySpan<byte> key, ReadOnlySpan<byte> tweak)
     {
-        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(key, this.BlockSize / 8);
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(key, BlockSize / 8);
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(tweak, 16);
 
         // Key schedule initialization: 4 words + parity + duplicated key
-        this._keySchedule = new ulong[(this.BlockWords * 2) + 1];
-        MemoryMarshal.Cast<byte, ulong>(key).CopyTo(this._keySchedule);
+        _keySchedule = new ulong[(BlockWords * 2) + 1];
+        MemoryMarshal.Cast<byte, ulong>(key).CopyTo(_keySchedule);
         var parity = KeyParityValue;
-        for (var i = 0; i < this.BlockWords; i++)
+        for (var i = 0; i < BlockWords; i++)
         {
-            var word = this._keySchedule[i];
+            var word = _keySchedule[i];
             parity ^= word;
-            this._keySchedule[this.BlockWords + 1 + i] = word; // repeat key word
+            _keySchedule[BlockWords + 1 + i] = word; // repeat key word
         }
 
-        this._keySchedule[this.BlockWords] = parity;
+        _keySchedule[BlockWords] = parity;
 
         // Tweak schedule initialization: T0, T1, T2 = T0^T1, then duplicate T0/T1
-        this._tweakSchedule = new ulong[5];
-        MemoryMarshal.Cast<byte, ulong>(tweak).CopyTo(this._tweakSchedule);
-        this._tweakSchedule[2] = this._tweakSchedule[0] ^ this._tweakSchedule[1];
-        this._tweakSchedule[3] = this._tweakSchedule[0];
-        this._tweakSchedule[4] = this._tweakSchedule[1];
+        _tweakSchedule = new ulong[5];
+        MemoryMarshal.Cast<byte, ulong>(tweak).CopyTo(_tweakSchedule);
+        _tweakSchedule[2] = _tweakSchedule[0] ^ _tweakSchedule[1];
+        _tweakSchedule[3] = _tweakSchedule[0];
+        _tweakSchedule[4] = _tweakSchedule[1];
     }
 
     /// <summary>
@@ -101,7 +101,7 @@ public abstract partial class ThreefishBlockCipher
     /// </summary>
     ~ThreefishBlockCipher()
     {
-        this.Dispose(false);
+        Dispose(false);
     }
 
     /// <inheritdoc />
@@ -132,7 +132,7 @@ public abstract partial class ThreefishBlockCipher
     /// <inheritdoc />
     public void Dispose()
     {
-        this.Dispose(true);
+        Dispose(true);
         GC.SuppressFinalize(this);
     }
 
@@ -167,27 +167,27 @@ public abstract partial class ThreefishBlockCipher
     /// </remarks>
     internal void Rekey(ReadOnlySpan<byte> key, ReadOnlySpan<byte> tweak)
     {
-        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(key, this.BlockSize / 8);
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(key, BlockSize / 8);
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(tweak, 16);
-        this.ThrowIfDisposed();
+        ThrowIfDisposed();
 
         // Repopulate the key schedule: [K0..K(n-1), parity, K0..K(n-1)].
-        MemoryMarshal.Cast<byte, ulong>(key).CopyTo(this._keySchedule);
+        MemoryMarshal.Cast<byte, ulong>(key).CopyTo(_keySchedule);
         var parity = KeyParityValue;
-        for (var i = 0; i < this.BlockWords; i++)
+        for (var i = 0; i < BlockWords; i++)
         {
-            var word = this._keySchedule[i];
+            var word = _keySchedule[i];
             parity ^= word;
-            this._keySchedule[this.BlockWords + 1 + i] = word;
+            _keySchedule[BlockWords + 1 + i] = word;
         }
 
-        this._keySchedule[this.BlockWords] = parity;
+        _keySchedule[BlockWords] = parity;
 
         // Repopulate the tweak schedule: [T0, T1, T0^T1, T0, T1].
-        MemoryMarshal.Cast<byte, ulong>(tweak).CopyTo(this._tweakSchedule);
-        this._tweakSchedule[2] = this._tweakSchedule[0] ^ this._tweakSchedule[1];
-        this._tweakSchedule[3] = this._tweakSchedule[0];
-        this._tweakSchedule[4] = this._tweakSchedule[1];
+        MemoryMarshal.Cast<byte, ulong>(tweak).CopyTo(_tweakSchedule);
+        _tweakSchedule[2] = _tweakSchedule[0] ^ _tweakSchedule[1];
+        _tweakSchedule[3] = _tweakSchedule[0];
+        _tweakSchedule[4] = _tweakSchedule[1];
     }
 
     /// <summary>
@@ -226,14 +226,14 @@ public abstract partial class ThreefishBlockCipher
     /// <returns>The 64-bit unsigned integer read from the source, with little-endian semantics.</returns>
     /// <remarks>
     /// On little-endian hosts (the common case for .NET 8 targets) the byte-swap branch folds away and the call
-    /// compiles to a single unaligned 64-bit load. Used by the Threefish variants to materialise block words
-    /// directly into stack-local registers, eliminating the intermediate <c>stackalloc</c> + <c>CopyTo</c> staging
-    /// buffer in the per-block hot path.
+    /// compiles to a single unaligned 64-bit load. Used by the Threefish variants to materialise block words directly
+    /// into stack-local registers, eliminating the intermediate <c>stackalloc</c> + <c>CopyTo</c> staging buffer in the
+    /// per-block hot path.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private protected static ulong LoadWordLittleEndian(ref byte source, nint byteOffset)
     {
-        ulong value = Unsafe.ReadUnaligned<ulong>(ref Unsafe.AddByteOffset(ref source, byteOffset));
+        var value = Unsafe.ReadUnaligned<ulong>(ref Unsafe.AddByteOffset(ref source, byteOffset));
         return BitConverter.IsLittleEndian ? value : BinaryPrimitives.ReverseEndianness(value);
     }
 
@@ -245,9 +245,9 @@ public abstract partial class ThreefishBlockCipher
     /// <param name="byteOffset">The byte offset within the buffer at which to write.</param>
     /// <param name="value">The 64-bit unsigned integer to store.</param>
     /// <remarks>
-    /// On little-endian hosts the byte-swap branch folds away and the call compiles to a single unaligned 64-bit
-    /// store. Mirrors <see cref="LoadWordLittleEndian" /> on the output side, allowing the per-block hot path to
-    /// commit cipher state to the output buffer straight from registers.
+    /// On little-endian hosts the byte-swap branch folds away and the call compiles to a single unaligned 64-bit store.
+    /// Mirrors <see cref="LoadWordLittleEndian" /> on the output side, allowing the per-block hot path to commit cipher
+    /// state to the output buffer straight from registers.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private protected static void StoreWordLittleEndian(ref byte destination, nint byteOffset, ulong value)
@@ -263,15 +263,15 @@ public abstract partial class ThreefishBlockCipher
     /// <param name="disposing">Whether the method was called from <see cref="Dispose()" />.</param>
     protected virtual void Dispose(bool disposing)
     {
-        if (this._disposed) return;
+        if (_disposed) return;
 
         // Key and tweak schedules are owned exclusively by this instance and are zeroed in both
         // the deterministic Dispose() path and the finalizer path so that key material is never
         // retained if the caller omits an explicit Dispose call.
-        CryptoHelpers.Clear(this._keySchedule);
-        CryptoHelpers.Clear(this._tweakSchedule);
+        CryptoHelpers.Clear(_keySchedule);
+        CryptoHelpers.Clear(_tweakSchedule);
 
-        this._disposed = true;
+        _disposed = true;
     }
 
     /// <summary>
@@ -283,10 +283,10 @@ public abstract partial class ThreefishBlockCipher
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected void ThrowIfDisposed() =>
 #if NET8_0_OR_GREATER
-        ObjectDisposedException.ThrowIf(this._disposed, this);
+        ObjectDisposedException.ThrowIf(_disposed, this);
 #else
-        if (this._disposed)
-            throw new ObjectDisposedException(this.GetType().Name);
+        if (_disposed)
+            throw new ObjectDisposedException(GetType().Name);
 #endif
 
 }

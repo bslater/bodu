@@ -73,11 +73,11 @@ public abstract partial class AsconHash<T>
         ThrowHelper.ThrowIfLessThan(absorptionRounds, 1);
         ThrowHelper.ThrowIfGreaterThan(absorptionRounds, 12);
 
-        this._iv0 = iv0; this._iv1 = iv1; this._iv2 = iv2; this._iv3 = iv3; this._iv4 = iv4;
-        this._absorptionRounds = absorptionRounds;
-        this._algorithmName = algorithmName;
-        this.HashSizeValue = 256;
-        this.Initialize();
+        _iv0 = iv0; _iv1 = iv1; _iv2 = iv2; _iv3 = iv3; _iv4 = iv4;
+        _absorptionRounds = absorptionRounds;
+        _algorithmName = algorithmName;
+        HashSizeValue = 256;
+        Initialize();
     }
 
     /// <summary>
@@ -90,8 +90,8 @@ public abstract partial class AsconHash<T>
     {
         get
         {
-            this.ThrowIfDisposed();
-            return this._algorithmName;
+            ThrowIfDisposed();
+            return _algorithmName;
         }
     }
 
@@ -109,8 +109,8 @@ public abstract partial class AsconHash<T>
     public override void Initialize()
     {
         base.Initialize();
-        this._state = new AsconState { S0 = this._iv0, S1 = this._iv1, S2 = this._iv2, S3 = this._iv3, S4 = this._iv4 };
-        this._useP12ForFinalPad = false;
+        _state = new AsconState { S0 = _iv0, S1 = _iv1, S2 = _iv2, S3 = _iv3, S4 = _iv4 };
+        _useP12ForFinalPad = false;
     }
 
     /// <summary>
@@ -122,11 +122,11 @@ public abstract partial class AsconHash<T>
     /// </param>
     protected override void Dispose(bool disposing)
     {
-        if (this.IsDisposed) return;
+        if (IsDisposed) return;
 
         if (disposing)
         {
-            this._state.Clear();
+            _state.Clear();
         }
 
         base.Dispose(disposing);
@@ -153,7 +153,7 @@ public abstract partial class AsconHash<T>
 
         // Signal ProcessBlock to use 12 rounds for this final padded block, which corresponds
         // to the initial squeeze permutation in the reference implementation.
-        this._useP12ForFinalPad = true;
+        _useP12ForFinalPad = true;
         return padded.ToArray();
     }
 
@@ -165,14 +165,14 @@ public abstract partial class AsconHash<T>
     /// <param name="block">The 8-byte input block to absorb. Its length must equal the configured block size.</param>
     protected override void ProcessBlock(ReadOnlySpan<byte> block)
     {
-        this._state.AbsorbRate64(block);
+        _state.AbsorbRate64(block);
 
         // The final padded block must use 12 rounds (Ascon-p12) because it corresponds to the
         // initial permutation of the squeeze phase in the reference algorithm. Regular absorption
         // blocks use _absorptionRounds (12 for HASH256, 8 for HASHA256).
-        var rounds = this._useP12ForFinalPad ? 12 : this._absorptionRounds;
-        this._useP12ForFinalPad = false;
-        this._state.Permute(rounds);
+        var rounds = _useP12ForFinalPad ? 12 : _absorptionRounds;
+        _useP12ForFinalPad = false;
+        _state.Permute(rounds);
     }
 
     /// <summary>
@@ -184,13 +184,13 @@ public abstract partial class AsconHash<T>
     {
         var hash = new byte[32];
 
-        this._state.SqueezeRate64(hash.AsSpan(0, 8));
-        this._state.Permute(this._absorptionRounds);
-        this._state.SqueezeRate64(hash.AsSpan(8, 8));
-        this._state.Permute(this._absorptionRounds);
-        this._state.SqueezeRate64(hash.AsSpan(16, 8));
-        this._state.Permute(this._absorptionRounds);
-        this._state.SqueezeRate64(hash.AsSpan(24, 8));
+        _state.SqueezeRate64(hash.AsSpan(0, 8));
+        _state.Permute(_absorptionRounds);
+        _state.SqueezeRate64(hash.AsSpan(8, 8));
+        _state.Permute(_absorptionRounds);
+        _state.SqueezeRate64(hash.AsSpan(16, 8));
+        _state.Permute(_absorptionRounds);
+        _state.SqueezeRate64(hash.AsSpan(24, 8));
 
         return hash;
     }

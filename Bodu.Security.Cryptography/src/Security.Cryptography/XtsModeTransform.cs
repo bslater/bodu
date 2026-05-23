@@ -97,8 +97,8 @@ public sealed class XtsModeTransform
     /// </exception>
     public XtsModeTransform(IBlockCipher dataCipher, IBlockCipher tweakCipher, byte[] tweak)
     {
-        this._cipher = dataCipher ?? throw new ArgumentNullException(nameof(dataCipher));
-        this._tweakCipher = tweakCipher ?? throw new ArgumentNullException(nameof(tweakCipher));
+        _cipher = dataCipher ?? throw new ArgumentNullException(nameof(dataCipher));
+        _tweakCipher = tweakCipher ?? throw new ArgumentNullException(nameof(tweakCipher));
         if (tweak is null) throw new ArgumentNullException(nameof(tweak));
         if (tweakCipher.BlockSize != dataCipher.BlockSize)
         {
@@ -114,13 +114,13 @@ public sealed class XtsModeTransform
                 nameof(tweak));
         }
 
-        this._tweak = (byte[])tweak.Clone();
+        _tweak = (byte[])tweak.Clone();
     }
 
     /// <inheritdoc />
     public int Transform(ReadOnlySpan<byte> input, Span<byte> output, bool encrypt)
     {
-        var blockSize = this._cipher.BlockSize / 8;
+        var blockSize = _cipher.BlockSize / 8;
 
         // Empty input is a no-op, consistent with CbcModeTransform.
         CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(input, blockSize, throwIfZero: false);
@@ -128,7 +128,7 @@ public sealed class XtsModeTransform
 
         // T_0 = tweakCipher.Encrypt(sector_number)
         Span<byte> T = stackalloc byte[blockSize];
-        this._tweakCipher.Encrypt(this._tweak, T);
+        _tweakCipher.Encrypt(_tweak, T);
 
         Span<byte> buf = stackalloc byte[blockSize];
 
@@ -140,9 +140,9 @@ public sealed class XtsModeTransform
             // XEX: out = cipher(in XOR T) XOR T
             for (var i = 0; i < blockSize; i++) buf[i] = (byte)(inBlock[i] ^ T[i]);
             if (encrypt)
-                this._cipher.Encrypt(buf, outBlock);
+                _cipher.Encrypt(buf, outBlock);
             else
-                this._cipher.Decrypt(buf, outBlock);
+                _cipher.Decrypt(buf, outBlock);
             for (var i = 0; i < blockSize; i++) outBlock[i] ^= T[i];
 
             // Advance tweak: T = α ⊗ T in GF(2^128), little-endian, poly 0x87 reduction.
@@ -162,11 +162,11 @@ public sealed class XtsModeTransform
     /// </remarks>
     public void Dispose()
     {
-        if (this._disposed)
+        if (_disposed)
             return;
 
-        CryptoHelpers.Clear(this._tweak);
-        this._disposed = true;
+        CryptoHelpers.Clear(_tweak);
+        _disposed = true;
         GC.SuppressFinalize(this);
     }
 

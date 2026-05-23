@@ -78,14 +78,14 @@ public sealed class OfbModeTransform
         ThrowHelper.ThrowIfNull(cipher);
         CryptoHelpers.ThrowIfIvLengthInvalid(iv, cipher.BlockSize);
 
-        this._cipher = cipher;
-        this._currentIv = (byte[])iv.Clone();
+        _cipher = cipher;
+        _currentIv = (byte[])iv.Clone();
     }
 
     /// <inheritdoc />
     public int Transform(ReadOnlySpan<byte> input, Span<byte> output, bool encrypt)
     {
-        var blockSize = this._cipher.BlockSize / 8;
+        var blockSize = _cipher.BlockSize / 8;
 
         // Empty input is a no-op, consistent with CbcModeTransform.
         CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(input, blockSize, throwIfZero: false);
@@ -99,14 +99,14 @@ public sealed class OfbModeTransform
             Span<byte> outBlock = output.Slice(offset, blockSize);
 
             // Encrypt the feedback register to generate keystream
-            this._cipher.Encrypt(this._currentIv, keystream);
+            _cipher.Encrypt(_currentIv, keystream);
 
             // XOR keystream with plaintext or ciphertext
             for (var i = 0; i < blockSize; i++)
                 outBlock[i] = (byte)(inBlock[i] ^ keystream[i]);
 
             // Update feedback register with generated keystream
-            keystream.CopyTo(this._currentIv);
+            keystream.CopyTo(_currentIv);
         }
 
         return input.Length;
@@ -122,11 +122,11 @@ public sealed class OfbModeTransform
     /// </remarks>
     public void Dispose()
     {
-        if (this._disposed)
+        if (_disposed)
             return;
 
-        CryptoHelpers.Clear(this._currentIv);
-        this._disposed = true;
+        CryptoHelpers.Clear(_currentIv);
+        _disposed = true;
         GC.SuppressFinalize(this);
     }
 }

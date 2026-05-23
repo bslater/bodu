@@ -142,26 +142,26 @@ public sealed class AsconCxof128
     /// </exception>
     public void Customize(ReadOnlySpan<byte> customization)
     {
-        this.ThrowIfDisposed();
-        if (this._customized || this._absorbed)
+        ThrowIfDisposed();
+        if (_customized || _absorbed)
             throw new InvalidOperationException(CryptoResourceStrings.Crypt_Invalid_XofCustomizationAfterAbsorb);
 
         // Absorb Z through the standard sponge pipeline, then finalize the customization
         // phase with Ascon padding and pb rounds to close the customization domain.
         base.Absorb(customization);
-        this.FinalizeAbsorptionPhase();
+        FinalizeAbsorptionPhase();
 
         // Domain separation: XOR 1 into S4 to distinguish the customized initial state
         // from the message-absorption state (per NIST SP 800-232 Section 2.3).
-        this.XorS4(1UL);
+        XorS4(1UL);
 
-        this._customized = true;
+        _customized = true;
     }
 
     /// <inheritdoc />
     public override void Absorb(ReadOnlySpan<byte> data)
     {
-        this._absorbed = true;
+        _absorbed = true;
         base.Absorb(data);
     }
 
@@ -169,7 +169,7 @@ public sealed class AsconCxof128
     public override void Initialize()
     {
         base.Initialize();
-        this._customized = false;
-        this._absorbed = false;
+        _customized = false;
+        _absorbed = false;
     }
 }

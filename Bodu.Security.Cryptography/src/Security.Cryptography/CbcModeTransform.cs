@@ -78,14 +78,14 @@ public sealed class CbcModeTransform
         ThrowHelper.ThrowIfNull(cipher);
         CryptoHelpers.ThrowIfIvLengthInvalid(iv, cipher.BlockSize);
 
-        this._cipher = cipher;
-        this._currentIv = (byte[])iv.Clone(); // Used to track the evolving IV during transformation
+        _cipher = cipher;
+        _currentIv = (byte[])iv.Clone(); // Used to track the evolving IV during transformation
     }
 
     /// <inheritdoc />
     public int Transform(ReadOnlySpan<byte> input, Span<byte> output, bool encrypt)
     {
-        var blockSize = this._cipher.BlockSize / 8;
+        var blockSize = _cipher.BlockSize / 8;
 
         CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(input, blockSize, throwIfZero: false);
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, 0, input.Length);
@@ -101,25 +101,25 @@ public sealed class CbcModeTransform
             {
                 // Encrypt: XOR input with IV, then encrypt
                 for (var i = 0; i < blockSize; i++)
-                    tempBlock[i] = (byte)(inBlock[i] ^ this._currentIv[i]);
+                    tempBlock[i] = (byte)(inBlock[i] ^ _currentIv[i]);
 
-                this._cipher.Encrypt(tempBlock, outBlock);
+                _cipher.Encrypt(tempBlock, outBlock);
 
                 // Update IV to the current ciphertext block
-                outBlock.CopyTo(this._currentIv);
+                outBlock.CopyTo(_currentIv);
             }
             else
             {
                 // Decrypt: store current ciphertext block, decrypt, then XOR with IV
                 inBlock.CopyTo(tempBlock);
 
-                this._cipher.Decrypt(inBlock, outBlock);
+                _cipher.Decrypt(inBlock, outBlock);
 
                 for (var i = 0; i < blockSize; i++)
-                    outBlock[i] ^= this._currentIv[i];
+                    outBlock[i] ^= _currentIv[i];
 
                 // Update IV to original ciphertext block
-                tempBlock.CopyTo(this._currentIv);
+                tempBlock.CopyTo(_currentIv);
             }
         }
 
@@ -136,11 +136,11 @@ public sealed class CbcModeTransform
     /// </remarks>
     public void Dispose()
     {
-        if (this._disposed)
+        if (_disposed)
             return;
 
-        CryptoHelpers.Clear(this._currentIv);
-        this._disposed = true;
+        CryptoHelpers.Clear(_currentIv);
+        _disposed = true;
         GC.SuppressFinalize(this);
     }
 }

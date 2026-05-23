@@ -96,7 +96,7 @@ public sealed partial class BlowfishBlockCipher
 
         // Blowfish has an intentionally expensive key schedule. Construction completes the full expansion so
         // Encrypt/Decrypt only execute the 16-round block transform.
-        this.InitializeKeySchedule(key);
+        InitializeKeySchedule(key);
     }
 
     /// <inheritdoc />
@@ -106,16 +106,16 @@ public sealed partial class BlowfishBlockCipher
     /// <inheritdoc />
     public void Dispose()
     {
-        if (!this._disposed)
+        if (!_disposed)
         {
             // Securely zero all sensitive key material.
-            CryptoHelpers.Clear(this._p);
-            CryptoHelpers.Clear(this._s0);
-            CryptoHelpers.Clear(this._s1);
-            CryptoHelpers.Clear(this._s2);
-            CryptoHelpers.Clear(this._s3);
+            CryptoHelpers.Clear(_p);
+            CryptoHelpers.Clear(_s0);
+            CryptoHelpers.Clear(_s1);
+            CryptoHelpers.Clear(_s2);
+            CryptoHelpers.Clear(_s3);
 
-            this._disposed = true;
+            _disposed = true;
         }
     }
 
@@ -136,7 +136,7 @@ public sealed partial class BlowfishBlockCipher
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     public void Decrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
-        this.ThrowIfDisposed();
+        ThrowIfDisposed();
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(input, BlockSizeInBytes);
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, BlockSizeInBytes);
 
@@ -145,7 +145,7 @@ public sealed partial class BlowfishBlockCipher
         var xr = BinaryPrimitives.ReadUInt32BigEndian(input[4..]);
 
         // Walk the Feistel network in reverse P-array order.
-        this.DecipherBlock(ref xl, ref xr);
+        DecipherBlock(ref xl, ref xr);
 
         BinaryPrimitives.WriteUInt32BigEndian(output, xl);
         BinaryPrimitives.WriteUInt32BigEndian(output[4..], xr);
@@ -169,7 +169,7 @@ public sealed partial class BlowfishBlockCipher
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     public void Encrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
-        this.ThrowIfDisposed();
+        ThrowIfDisposed();
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(input, BlockSizeInBytes);
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, BlockSizeInBytes);
 
@@ -178,7 +178,7 @@ public sealed partial class BlowfishBlockCipher
         var xr = BinaryPrimitives.ReadUInt32BigEndian(input[4..]);
 
         // Apply the 16-round Feistel network using the fully expanded P-array and S-boxes.
-        this.EncipherBlock(ref xl, ref xr);
+        EncipherBlock(ref xl, ref xr);
 
         BinaryPrimitives.WriteUInt32BigEndian(output, xl);
         BinaryPrimitives.WriteUInt32BigEndian(output[4..], xr);
@@ -198,10 +198,10 @@ public sealed partial class BlowfishBlockCipher
     private uint F(uint x)
     {
         // Interpret the input as four most-significant-byte-first S-box indices.
-        var a = this._s0[(int)(x >> 24)];
-        var b = this._s1[(int)((x >> 16) & 0xFF)];
-        var c = this._s2[(int)((x >> 8) & 0xFF)];
-        var d = this._s3[(int)(x & 0xFF)];
+        var a = _s0[(int)(x >> 24)];
+        var b = _s1[(int)((x >> 16) & 0xFF)];
+        var c = _s2[(int)((x >> 8) & 0xFF)];
+        var d = _s3[(int)(x & 0xFF)];
 
         // Blowfish F: ((S0[a] + S1[b]) xor S2[c]) + S3[d].
         return ((a + b) ^ c) + d;
@@ -224,15 +224,15 @@ public sealed partial class BlowfishBlockCipher
         for (var i = 0; i < FeistelRounds; i++)
         {
             // Round i: XOR the left half with P[i], feed it through F, XOR into the right half, then swap.
-            xl ^= this._p[i];
-            xr ^= this.F(xl);
+            xl ^= _p[i];
+            xr ^= F(xl);
             (xl, xr) = (xr, xl);
         }
 
         // Undo the final swap and apply output whitening with P[16] and P[17].
         (xl, xr) = (xr, xl);
-        xr ^= this._p[16];
-        xl ^= this._p[17];
+        xr ^= _p[16];
+        xl ^= _p[17];
     }
 
     /// <summary>
@@ -251,15 +251,15 @@ public sealed partial class BlowfishBlockCipher
         for (var i = 17; i >= 2; i--)
         {
             // Reverse round i: same F-based Feistel step, with P-array entries consumed backwards.
-            xl ^= this._p[i];
-            xr ^= this.F(xl);
+            xl ^= _p[i];
+            xr ^= F(xl);
             (xl, xr) = (xr, xl);
         }
 
         // Undo the final swap and strip the original input whitening with P[1] and P[0].
         (xl, xr) = (xr, xl);
-        xr ^= this._p[1];
-        xl ^= this._p[0];
+        xr ^= _p[1];
+        xl ^= _p[0];
     }
 
     /// <summary>
@@ -281,11 +281,11 @@ public sealed partial class BlowfishBlockCipher
     private void InitializeKeySchedule(ReadOnlySpan<byte> key)
     {
         // Phase 1: copy the pi-derived initializers into the mutable working arrays.
-        s_initP.CopyTo(this._p, 0);
-        s_initS0.CopyTo(this._s0, 0);
-        s_initS1.CopyTo(this._s1, 0);
-        s_initS2.CopyTo(this._s2, 0);
-        s_initS3.CopyTo(this._s3, 0);
+        s_initP.CopyTo(_p, 0);
+        s_initS0.CopyTo(_s0, 0);
+        s_initS1.CopyTo(_s1, 0);
+        s_initS2.CopyTo(_s2, 0);
+        s_initS3.CopyTo(_s3, 0);
 
         // Phase 2: XOR the P-array entries with successive 32-bit big-endian words derived from the key.
         // If the key is shorter than the required 72 bytes, cycle through it exactly as the Blowfish specification requires.
@@ -302,7 +302,7 @@ public sealed partial class BlowfishBlockCipher
                 keyIndex = (keyIndex + 1) % keyLen;
             }
 
-            this._p[i] ^= word;
+            _p[i] ^= word;
         }
 
         // Phase 3: repeatedly encrypt the evolving all-zero block and replace P/S entries in pairs.
@@ -312,38 +312,38 @@ public sealed partial class BlowfishBlockCipher
 
         for (var i = 0; i < PArrayLength; i += 2)
         {
-            this.EncipherBlock(ref xl, ref xr);
-            this._p[i] = xl;
-            this._p[i + 1] = xr;
+            EncipherBlock(ref xl, ref xr);
+            _p[i] = xl;
+            _p[i + 1] = xr;
         }
 
         // Expand all four S-boxes in P-array order. Each call uses the P-array and any S-box entries already replaced.
         for (var i = 0; i < SBoxLength; i += 2)
         {
-            this.EncipherBlock(ref xl, ref xr);
-            this._s0[i] = xl;
-            this._s0[i + 1] = xr;
+            EncipherBlock(ref xl, ref xr);
+            _s0[i] = xl;
+            _s0[i + 1] = xr;
         }
 
         for (var i = 0; i < SBoxLength; i += 2)
         {
-            this.EncipherBlock(ref xl, ref xr);
-            this._s1[i] = xl;
-            this._s1[i + 1] = xr;
+            EncipherBlock(ref xl, ref xr);
+            _s1[i] = xl;
+            _s1[i + 1] = xr;
         }
 
         for (var i = 0; i < SBoxLength; i += 2)
         {
-            this.EncipherBlock(ref xl, ref xr);
-            this._s2[i] = xl;
-            this._s2[i + 1] = xr;
+            EncipherBlock(ref xl, ref xr);
+            _s2[i] = xl;
+            _s2[i + 1] = xr;
         }
 
         for (var i = 0; i < SBoxLength; i += 2)
         {
-            this.EncipherBlock(ref xl, ref xr);
-            this._s3[i] = xl;
-            this._s3[i + 1] = xr;
+            EncipherBlock(ref xl, ref xr);
+            _s3[i] = xl;
+            _s3[i + 1] = xr;
         }
     }
 
@@ -356,10 +356,10 @@ public sealed partial class BlowfishBlockCipher
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ThrowIfDisposed() =>
 #if NET8_0_OR_GREATER
-        ObjectDisposedException.ThrowIf(this._disposed, this);
+        ObjectDisposedException.ThrowIf(_disposed, this);
 #else
-        if (this._disposed)
-            throw new ObjectDisposedException(this.GetType().Name);
+        if (_disposed)
+            throw new ObjectDisposedException(GetType().Name);
 #endif
 
 }

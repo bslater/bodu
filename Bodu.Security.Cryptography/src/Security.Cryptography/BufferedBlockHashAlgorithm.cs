@@ -189,8 +189,8 @@ public abstract class BufferedBlockHashAlgorithm<T>
     protected BufferedBlockHashAlgorithm(int blockSize)
     {
         ThrowHelper.ThrowIfLessThanOrEqual(blockSize, 0);
-        this.BlockSize = blockSize;
-        this._residualBlock = new byte[blockSize / 8];
+        BlockSize = blockSize;
+        _residualBlock = new byte[blockSize / 8];
     }
 
     /// <summary>
@@ -214,10 +214,10 @@ public abstract class BufferedBlockHashAlgorithm<T>
     /// </remarks>
     public override void Initialize()
     {
-        this.ThrowIfDisposed();
-        this._residualBlock.Span.Clear();
-        this._residualBytes = 0;
-        this._totalBytes = 0UL;
+        ThrowIfDisposed();
+        _residualBlock.Span.Clear();
+        _residualBytes = 0;
+        _totalBytes = 0UL;
     }
 
     /// <summary>
@@ -239,18 +239,18 @@ public abstract class BufferedBlockHashAlgorithm<T>
     /// </remarks>
     protected override void Dispose(bool disposing)
     {
-        if (this._disposed) return;
+        if (_disposed) return;
 
         if (disposing)
         {
-            CryptoHelpers.Clear(this._residualBlock);
-            CryptoHelpers.ClearAndNullify(ref this.HashValue);
-            this._residualBytes = 0;
-            this._totalBytes = 0UL;
-            this.HashSizeValue = 0;
+            CryptoHelpers.Clear(_residualBlock);
+            CryptoHelpers.ClearAndNullify(ref HashValue);
+            _residualBytes = 0;
+            _totalBytes = 0UL;
+            HashSizeValue = 0;
         }
 
-        this._disposed = true;
+        _disposed = true;
         base.Dispose(disposing);
     }
 
@@ -302,15 +302,15 @@ public abstract class BufferedBlockHashAlgorithm<T>
     protected override void HashCore(byte[] array, int ibStart, int cbSize)
     {
         ThrowHelper.ThrowIfNull(array);
-        this.ThrowIfDisposed();
+        ThrowIfDisposed();
         CryptoHelpers.ThrowIfArrayOffsetOrCountInvalid(array, ibStart, cbSize);
 
 #if !NET6_0_OR_GREATER
-        if (this._finalized)
+        if (_finalized)
             throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.Crypt_Invalid_AlreadyFinalized);
 #endif
 
-        this.HashCore(array.AsSpan(ibStart, cbSize));
+        HashCore(array.AsSpan(ibStart, cbSize));
     }
 
     /// <summary>
@@ -320,11 +320,11 @@ public abstract class BufferedBlockHashAlgorithm<T>
     /// <returns><see langword="true" /> once disposal has begun; otherwise <see langword="false" />.</returns>
     /// <remarks>
     /// Derived classes follow the canonical dispose pattern — guard the body of their own <see cref="Dispose(bool)" />
-    /// override with <c>if (this.IsDisposed) return;</c>, clear their own state when <c>disposing</c> is
+    /// override with <c>if (IsDisposed) return;</c>, clear their own state when <c>disposing</c> is
     /// <see langword="true" />, and call <c>base.Dispose(disposing)</c> last. Derived classes must not declare a
     /// private <c>_disposed</c> field of their own — the latch is owned exclusively by this base class.
     /// </remarks>
-    protected bool IsDisposed => this._disposed;
+    protected bool IsDisposed => _disposed;
 
     /// <summary>
     /// Throws an <see cref="ObjectDisposedException" /> if the algorithm instance has been disposed.
@@ -335,10 +335,10 @@ public abstract class BufferedBlockHashAlgorithm<T>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected void ThrowIfDisposed() =>
 #if NET8_0_OR_GREATER
-        ObjectDisposedException.ThrowIf(this._disposed, this);
+        ObjectDisposedException.ThrowIf(_disposed, this);
 #else
-        if (this._disposed)
-            throw new ObjectDisposedException(this.GetType().Name);
+        if (_disposed)
+            throw new ObjectDisposedException(GetType().Name);
 #endif
 
     /// <summary>
@@ -350,7 +350,7 @@ public abstract class BufferedBlockHashAlgorithm<T>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected void ThrowIfInvalidState()
     {
-        if (this.State != 0)
+        if (State != 0)
             throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.Crypt_Invalid_ReconfigurationNotAllowed);
     }
 }

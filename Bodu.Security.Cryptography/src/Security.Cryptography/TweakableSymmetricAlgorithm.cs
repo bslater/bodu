@@ -129,9 +129,9 @@ public abstract class TweakableSymmetricAlgorithm
     /// Override this property in derived types to define custom tweak size support for a specific algorithm.
     /// </remarks>
     public virtual KeySizes[] LegalTweakSizes =>
-        this.LegalTweakSizesValue is null
+        LegalTweakSizesValue is null
             ? []
-            : (KeySizes[])this.LegalTweakSizesValue.Clone();
+            : (KeySizes[])LegalTweakSizesValue.Clone();
 
     /// <summary>
     /// Gets or sets the tweak value for the symmetric algorithm.
@@ -153,23 +153,23 @@ public abstract class TweakableSymmetricAlgorithm
     {
         get
         {
-            this.ThrowIfDisposed();
+            ThrowIfDisposed();
 
-            if (this.TweakValue is null)
-                this.GenerateTweak();
+            if (TweakValue is null)
+                GenerateTweak();
 
-            return (byte[])this.TweakValue!.Clone();
+            return (byte[])TweakValue!.Clone();
         }
 
         set
         {
-            this.ThrowIfDisposed();
+            ThrowIfDisposed();
             ArgumentNullException.ThrowIfNull(value);
 
-            this.ThrowIfInvalidTweakSize(value.Length * 8);
+            ThrowIfInvalidTweakSize(value.Length * 8);
 
-            this.TweakValue = (byte[])value.Clone();
-            this.TweakSizeValue = value.Length * 8;
+            TweakValue = (byte[])value.Clone();
+            TweakSizeValue = value.Length * 8;
         }
     }
 
@@ -192,27 +192,27 @@ public abstract class TweakableSymmetricAlgorithm
     {
         get
         {
-            this.ThrowIfDisposed();
-            return this.TweakSizeValue;
+            ThrowIfDisposed();
+            return TweakSizeValue;
         }
 
         set
         {
-            this.ThrowIfDisposed();
-            this.ThrowIfInvalidTweakSize(value);
+            ThrowIfDisposed();
+            ThrowIfInvalidTweakSize(value);
 
-            this.TweakSizeValue = value;
-            this.TweakValue = null; // Clear previous tweak
+            TweakSizeValue = value;
+            TweakValue = null; // Clear previous tweak
         }
     }
 
     /// <inheritdoc />
     public override ICryptoTransform CreateDecryptor() =>
-        this.CreateDecryptor(this.Key, this.IV, this.Tweak);
+        CreateDecryptor(Key, IV, Tweak);
 
     /// <inheritdoc />
     public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[]? rgbIV) =>
-        this.CreateDecryptor(rgbKey, rgbIV, this.Tweak);
+        CreateDecryptor(rgbKey, rgbIV, Tweak);
 
     /// <summary>
     /// Creates a symmetric decryptor using the specified key, initialization vector (IV), and tweak value.
@@ -236,11 +236,11 @@ public abstract class TweakableSymmetricAlgorithm
 
     /// <inheritdoc />
     public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[]? rgbIV) =>
-        this.CreateEncryptor(rgbKey, rgbIV, this.Tweak);
+        CreateEncryptor(rgbKey, rgbIV, Tweak);
 
     /// <inheritdoc />
     public override ICryptoTransform CreateEncryptor() =>
-        this.CreateEncryptor(this.Key, this.IV, this.Tweak);
+        CreateEncryptor(Key, IV, Tweak);
 
     /// <summary>
     /// Creates a symmetric encryptor using the specified key, initialization vector (IV), and tweak value.
@@ -292,7 +292,7 @@ public abstract class TweakableSymmetricAlgorithm
     /// </remarks>
     public bool ValidTweakSize(int length)
     {
-        foreach (KeySizes size in this.LegalTweakSizes)
+        foreach (KeySizes size in LegalTweakSizes)
         {
             if (length < size.MinSize || length > size.MaxSize)
                 continue;
@@ -310,20 +310,20 @@ public abstract class TweakableSymmetricAlgorithm
     /// <inheritdoc />
     protected override void Dispose(bool disposing)
     {
-        if (!this._disposed)
+        if (!_disposed)
         {
             if (disposing)
             {
-                if (this.TweakValue?.Length > 0)
+                if (TweakValue?.Length > 0)
                 {
-                    CryptoHelpers.Clear(this.TweakValue);
-                    this.TweakValue = [];
+                    CryptoHelpers.Clear(TweakValue);
+                    TweakValue = [];
                 }
 
-                this.TweakSizeValue = 0;
+                TweakSizeValue = 0;
             }
 
-            this._disposed = true;
+            _disposed = true;
         }
 
         base.Dispose(disposing);
@@ -343,7 +343,7 @@ public abstract class TweakableSymmetricAlgorithm
     protected void ThrowIfInvalidTweakSize(byte[] tweak)
     {
         ArgumentNullException.ThrowIfNull(tweak);
-        this.ThrowIfInvalidTweakSize(tweak.Length * 8);
+        ThrowIfInvalidTweakSize(tweak.Length * 8);
     }
 
     /// <summary>
@@ -360,12 +360,12 @@ public abstract class TweakableSymmetricAlgorithm
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected void ThrowIfInvalidTweakSize(int bitLength)
     {
-        if (!this.ValidTweakSize(bitLength))
+        if (!ValidTweakSize(bitLength))
             throw new CryptographicException(
                 string.Format(
                     CryptoResourceStrings.Crypt_Invalid_TweakSize,
                     bitLength,
-                    CryptoHelpers.FormatLegalSizes(this.LegalTweakSizes)));
+                    CryptoHelpers.FormatLegalSizes(LegalTweakSizes)));
     }
 
     /// <summary>
@@ -380,7 +380,7 @@ public abstract class TweakableSymmetricAlgorithm
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected void ThrowIfTweakNotSet()
     {
-        if (this.TweakValue is null || this.TweakValue.Length == 0)
+        if (TweakValue is null || TweakValue.Length == 0)
             throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_TweakNotSet);
     }
 
@@ -393,10 +393,10 @@ public abstract class TweakableSymmetricAlgorithm
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ThrowIfDisposed() =>
 #if NET8_0_OR_GREATER
-        ObjectDisposedException.ThrowIf(this._disposed, this);
+        ObjectDisposedException.ThrowIf(_disposed, this);
 #else
-        if (this._disposed)
-            throw new ObjectDisposedException(this.GetType().Name);
+        if (_disposed)
+            throw new ObjectDisposedException(GetType().Name);
 #endif
 
 }

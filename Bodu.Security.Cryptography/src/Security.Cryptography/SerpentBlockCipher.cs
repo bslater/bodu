@@ -75,10 +75,10 @@ public abstract partial class SerpentBlockCipher
     /// </exception>
     private protected SerpentBlockCipher(ReadOnlySpan<byte> key, ReadOnlySpan<byte> tweak)
     {
-        if (key.Length != this.BlockSize / 8)
+        if (key.Length != BlockSize / 8)
         {
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.Crypt_Invalid_KeySize, key.Length * 8, this.BlockSize),
+                string.Format(CryptoResourceStrings.Crypt_Invalid_KeySize, key.Length * 8, BlockSize),
                 nameof(key));
         }
 
@@ -90,12 +90,12 @@ public abstract partial class SerpentBlockCipher
         }
 
         // Build the five-word tweak cycle used by the per-four-round injection points.
-        this._tweakSchedule = new uint[5];
-        BuildTweakSchedule(tweak, this._tweakSchedule);
+        _tweakSchedule = new uint[5];
+        BuildTweakSchedule(tweak, _tweakSchedule);
 
         // Build one full-width round key for every round plus the final post-S-box whitening key.
-        this._roundKeys = new uint[(this.Rounds + 1) * this.BlockWords];
-        this.BuildRoundKeys(key);
+        _roundKeys = new uint[(Rounds + 1) * BlockWords];
+        BuildRoundKeys(key);
     }
 
     /// <summary>
@@ -120,15 +120,15 @@ public abstract partial class SerpentBlockCipher
     /// <inheritdoc />
     public override void Encrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
-        this.ThrowIfDisposed();
-        if (input.Length != this.BlockSize / 8 || output.Length != this.BlockSize / 8)
+        ThrowIfDisposed();
+        if (input.Length != BlockSize / 8 || output.Length != BlockSize / 8)
         {
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.Crypt_Invalid_BlockLength, this.BlockSize / 8));
+                string.Format(CryptoResourceStrings.Crypt_Invalid_BlockLength, BlockSize / 8));
         }
 
-        var w = this.BlockWords;
-        var rounds = this.Rounds;
+        var w = BlockWords;
+        var rounds = Rounds;
 
         // Load the wide block as little-endian 32-bit words. Canonical Serpent is word-oriented, and the wide-block variants
         // preserve that representation across the expanded state width.
@@ -136,8 +136,8 @@ public abstract partial class SerpentBlockCipher
         for (var i = 0; i < w; i++)
             state[i] = BinaryPrimitives.ReadUInt32LittleEndian(input.Slice(i * 4, 4));
 
-        var rk = this._roundKeys;
-        var tw = this._tweakSchedule;
+        var rk = _roundKeys;
+        var tw = _tweakSchedule;
         var injection = 0;
 
         // All rounds except the final round use the Serpent-style sequence:
@@ -175,23 +175,23 @@ public abstract partial class SerpentBlockCipher
     /// <inheritdoc />
     public override void Decrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
-        this.ThrowIfDisposed();
-        if (input.Length != this.BlockSize / 8 || output.Length != this.BlockSize / 8)
+        ThrowIfDisposed();
+        if (input.Length != BlockSize / 8 || output.Length != BlockSize / 8)
         {
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.Crypt_Invalid_BlockLength, this.BlockSize / 8));
+                string.Format(CryptoResourceStrings.Crypt_Invalid_BlockLength, BlockSize / 8));
         }
 
-        var w = this.BlockWords;
-        var rounds = this.Rounds;
+        var w = BlockWords;
+        var rounds = Rounds;
 
         // Load the ciphertext using the same little-endian word layout used by encryption.
         Span<uint> state = stackalloc uint[w];
         for (var i = 0; i < w; i++)
             state[i] = BinaryPrimitives.ReadUInt32LittleEndian(input.Slice(i * 4, 4));
 
-        var rk = this._roundKeys;
-        var tw = this._tweakSchedule;
+        var rk = _roundKeys;
+        var tw = _tweakSchedule;
 
         // The last encryption tweak injection occurs after the final completed four-round group before the final round.
         // Decryption starts from that counter value and decrements as each injection is removed.
@@ -228,12 +228,12 @@ public abstract partial class SerpentBlockCipher
     /// <inheritdoc />
     protected override void Dispose(bool disposing)
     {
-        if (this._disposed) return;
+        if (_disposed) return;
 
         // Round keys and tweak material are derived from secret inputs and are zeroed in both disposal
         // paths so they are not retained if the finalizer runs before an explicit Dispose call.
-        CryptoHelpers.Clear(this._roundKeys);
-        CryptoHelpers.Clear(this._tweakSchedule);
+        CryptoHelpers.Clear(_roundKeys);
+        CryptoHelpers.Clear(_tweakSchedule);
 
         base.Dispose(disposing);
     }
@@ -427,7 +427,7 @@ public abstract partial class SerpentBlockCipher
     /// </remarks>
     private void BuildRoundKeys(ReadOnlySpan<byte> key)
     {
-        var w = this.BlockWords;
+        var w = BlockWords;
 
         // Seed the widened prekey recurrence with the raw key words. Serpent-1024 has the widest state
         // (32 words = 128 bytes), which is still small enough for stack allocation.
@@ -436,7 +436,7 @@ public abstract partial class SerpentBlockCipher
             seed[i] = BinaryPrimitives.ReadUInt32LittleEndian(key.Slice(i * 4, 4));
 
         // The recurrence emits enough words to cover every full-width round key after the initial seed window.
-        var prekeyLength = w + this._roundKeys.Length;
+        var prekeyLength = w + _roundKeys.Length;
         var prekeysArray = new uint[prekeyLength];
         try
         {
@@ -447,7 +447,7 @@ public abstract partial class SerpentBlockCipher
             // for round r is applied to every group in that round key.
             var groupsPerRoundKey = w / 4;
 
-            for (var r = 0; r <= this.Rounds; r++)
+            for (var r = 0; r <= Rounds; r++)
             {
                 var sboxIndex = KeyScheduleSBoxIndex(r);
                 var roundStart = w + (r * w);
@@ -463,10 +463,10 @@ public abstract partial class SerpentBlockCipher
                     ApplySBox(sboxIndex, ref x0, ref x1, ref x2, ref x3);
 
                     var dst = (r * w) + (g * 4);
-                    this._roundKeys[dst] = x0;
-                    this._roundKeys[dst + 1] = x1;
-                    this._roundKeys[dst + 2] = x2;
-                    this._roundKeys[dst + 3] = x3;
+                    _roundKeys[dst] = x0;
+                    _roundKeys[dst + 1] = x1;
+                    _roundKeys[dst + 2] = x2;
+                    _roundKeys[dst + 3] = x3;
                 }
             }
         }

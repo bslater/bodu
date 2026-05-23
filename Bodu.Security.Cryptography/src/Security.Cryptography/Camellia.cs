@@ -121,15 +121,15 @@ public sealed class Camellia
     /// </remarks>
     public Camellia()
     {
-        this.LegalBlockSizesValue = s_camelliaBlockSizes;
-        this.LegalKeySizesValue = s_camelliaKeySizes;
+        LegalBlockSizesValue = s_camelliaBlockSizes;
+        LegalKeySizesValue = s_camelliaKeySizes;
 
-        this.BlockSizeValue = BlockSizeBits;
-        this.KeySizeValue = 256;
+        BlockSizeValue = BlockSizeBits;
+        KeySizeValue = 256;
 
-        this.FeedbackSizeValue = BlockSizeBits;
-        this.ModeValue = CipherMode.CBC;
-        this.PaddingValue = PaddingMode.PKCS7;
+        FeedbackSizeValue = BlockSizeBits;
+        ModeValue = CipherMode.CBC;
+        PaddingValue = PaddingMode.PKCS7;
     }
 
     /// <summary>
@@ -162,12 +162,12 @@ public sealed class Camellia
     /// </remarks>
     public PaddingModeKind BlockPadding
     {
-        get => this._blockPadding;
+        get => _blockPadding;
         set
         {
-            this._blockPadding = value;
+            _blockPadding = value;
             if (Enum.TryParse<PaddingMode>(value.ToString(), out PaddingMode mode) && Enum.IsDefined(mode))
-                this.PaddingValue = mode;
+                PaddingValue = mode;
         }
     }
 
@@ -183,7 +183,7 @@ public sealed class Camellia
         {
             base.Padding = value;
             if (Enum.TryParse<PaddingModeKind>(value.ToString(), out PaddingModeKind bpm) && Enum.IsDefined(bpm))
-                this._blockPadding = bpm;
+                _blockPadding = bpm;
         }
     }
 
@@ -216,12 +216,12 @@ public sealed class Camellia
     /// </exception>
     public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[]? rgbIV)
     {
-        this.ThrowIfDisposed();
-        CryptoHelpers.ThrowIfInvalidKeySize(rgbKey, this.KeySize, this.LegalKeySizes);
-        CryptoHelpers.ThrowIfInvalidIVForMode(rgbIV, this.BlockMode, this.BlockSize, this.LegalBlockSizes);
+        ThrowIfDisposed();
+        CryptoHelpers.ThrowIfInvalidKeySize(rgbKey, KeySize, LegalKeySizes);
+        CryptoHelpers.ThrowIfInvalidIVForMode(rgbIV, BlockMode, BlockSize, LegalBlockSizes);
 
         IBlockCipher engine = CreateCipher(rgbKey);
-        return new CamelliaTransform(engine, this.BlockMode, this.BlockPadding, rgbIV, false);
+        return new CamelliaTransform(engine, BlockMode, BlockPadding, rgbIV, false);
     }
 
     /// <summary>
@@ -247,12 +247,12 @@ public sealed class Camellia
     /// </exception>
     public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[]? rgbIV)
     {
-        this.ThrowIfDisposed();
-        CryptoHelpers.ThrowIfInvalidKeySize(rgbKey, this.KeySize, this.LegalKeySizes);
-        CryptoHelpers.ThrowIfInvalidIVForMode(rgbIV, this.BlockMode, this.BlockSize, this.LegalBlockSizes);
+        ThrowIfDisposed();
+        CryptoHelpers.ThrowIfInvalidKeySize(rgbKey, KeySize, LegalKeySizes);
+        CryptoHelpers.ThrowIfInvalidIVForMode(rgbIV, BlockMode, BlockSize, LegalBlockSizes);
 
         IBlockCipher engine = CreateCipher(rgbKey);
-        return new CamelliaTransform(engine, this.BlockMode, this.BlockPadding, rgbIV, true);
+        return new CamelliaTransform(engine, BlockMode, BlockPadding, rgbIV, true);
     }
 
     /// <summary>
@@ -272,8 +272,8 @@ public sealed class Camellia
     /// <exception cref="ObjectDisposedException">The current instance has been disposed.</exception>
     public override void GenerateIV()
     {
-        this.ThrowIfDisposed();
-        this.IVValue = CryptoHelpers.GetRandomNonZeroBytes(this.BlockSizeValue / 8);
+        ThrowIfDisposed();
+        IVValue = CryptoHelpers.GetRandomNonZeroBytes(BlockSizeValue / 8);
     }
 
     /// <summary>
@@ -289,8 +289,8 @@ public sealed class Camellia
     /// <exception cref="ObjectDisposedException">The current instance has been disposed.</exception>
     public override void GenerateKey()
     {
-        this.ThrowIfDisposed();
-        this.KeyValue = CryptoHelpers.GetRandomNonZeroBytes(this.KeySizeBytes);
+        ThrowIfDisposed();
+        KeyValue = CryptoHelpers.GetRandomNonZeroBytes(KeySizeBytes);
     }
 
     /// <summary>
@@ -312,8 +312,8 @@ public sealed class Camellia
             if (disposing)
             {
                 // Zero sensitive key material and IV buffers so their contents do not linger in managed memory.
-                CryptoHelpers.Clear(this.KeyValue);
-                CryptoHelpers.Clear(this.IVValue);
+                CryptoHelpers.Clear(KeyValue);
+                CryptoHelpers.Clear(IVValue);
             }
 
             _disposed = true;
@@ -326,7 +326,7 @@ public sealed class Camellia
     /// Gets the configured key size expressed in bytes.
     /// </summary>
     /// <returns>The key size in bytes.</returns>
-    private int KeySizeBytes => this.KeySizeValue / 8;
+    private int KeySizeBytes => KeySizeValue / 8;
 
     /// <summary>
     /// Creates a new <see cref="CamelliaBlockCipher" /> engine initialized with the supplied key.
@@ -344,10 +344,10 @@ public sealed class Camellia
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ThrowIfDisposed() =>
 #if NET8_0_OR_GREATER
-        ObjectDisposedException.ThrowIf(this._disposed, this);
+        ObjectDisposedException.ThrowIf(_disposed, this);
 #else
-        if (this._disposed)
-            throw new ObjectDisposedException(this.GetType().Name);
+        if (_disposed)
+            throw new ObjectDisposedException(GetType().Name);
 #endif
 
 }

@@ -137,14 +137,14 @@ public abstract class BlockHashAlgorithm<T>
     /// </remarks>
     protected override void HashCore(ReadOnlySpan<byte> source)
     {
-        this.ThrowIfDisposed();
+        ThrowIfDisposed();
 
 #if !NET6_0_OR_GREATER
-    if (this._finalized)
+    if (_finalized)
         throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.Crypt_Invalid_AlreadyFinalized);
 #endif
 
-        this.ProcessBlocks(source);
+        ProcessBlocks(source);
     }
 
     /// <summary>
@@ -157,34 +157,34 @@ public abstract class BlockHashAlgorithm<T>
     /// </exception>
     protected override byte[] HashFinal()
     {
-        this.ThrowIfDisposed();
+        ThrowIfDisposed();
 
 #if !NET6_0_OR_GREATER
-    if (this._finalized)
+    if (_finalized)
         throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.Crypt_Invalid_AlreadyFinalized);
 #endif
 
-        if (this.ShouldPadFinalBlock())
+        if (ShouldPadFinalBlock())
         {
-            var finalBlock = this.PadBlock(this._residualBlock.Span[..this._residualBytes], this._totalBytes);
+            var finalBlock = PadBlock(_residualBlock.Span[.._residualBytes], _totalBytes);
 
-            if (this.AllowUnalignedFinalBlock)
+            if (AllowUnalignedFinalBlock)
             {
-                this.ProcessBlock(finalBlock);
+                ProcessBlock(finalBlock);
             }
             else
             {
-                var blockBytes = this.BlockSize / 8;
+                var blockBytes = BlockSize / 8;
                 for (var i = 0; i < finalBlock.Length; i += blockBytes)
-                    this.ProcessBlock(finalBlock.AsSpan(i, blockBytes));
+                    ProcessBlock(finalBlock.AsSpan(i, blockBytes));
             }
         }
-        else if (this._residualBytes > 0)
+        else if (_residualBytes > 0)
         {
-            this.ProcessBlock(this._residualBlock.Span[..this._residualBytes]);
+            ProcessBlock(_residualBlock.Span[.._residualBytes]);
         }
 
-        return this.ProcessFinalBlock();
+        return ProcessFinalBlock();
     }
 
     /// <summary>
@@ -256,29 +256,29 @@ public abstract class BlockHashAlgorithm<T>
     private void ProcessBlocks(ReadOnlySpan<byte> buffer)
     {
         var pos = 0;
-        var blockBytes = this.BlockSize / 8;
-        this._totalBytes += (ulong)buffer.Length;
+        var blockBytes = BlockSize / 8;
+        _totalBytes += (ulong)buffer.Length;
 
-        Span<byte> residualSpan = this._residualBlock.Span;
+        Span<byte> residualSpan = _residualBlock.Span;
 
         // Attempt to fill a partial residual block if it exists
-        if (this._residualBytes > 0)
+        if (_residualBytes > 0)
         {
-            var remaining = blockBytes - this._residualBytes;
+            var remaining = blockBytes - _residualBytes;
 
             if (buffer.Length >= remaining)
             {
                 // Complete residual block and process it
-                buffer.Slice(pos, remaining).CopyTo(residualSpan[this._residualBytes..]);
-                this.ProcessBlock(this._residualBlock.Span);
-                this._residualBytes = 0;
+                buffer.Slice(pos, remaining).CopyTo(residualSpan[_residualBytes..]);
+                ProcessBlock(_residualBlock.Span);
+                _residualBytes = 0;
                 pos += remaining;
             }
             else
             {
                 // Not enough to complete a block, buffer it for later
-                buffer.CopyTo(residualSpan[this._residualBytes..]);
-                this._residualBytes += buffer.Length;
+                buffer.CopyTo(residualSpan[_residualBytes..]);
+                _residualBytes += buffer.Length;
                 return;
             }
         }
@@ -286,13 +286,13 @@ public abstract class BlockHashAlgorithm<T>
         // Process complete blocks from input span
         while (pos + blockBytes <= buffer.Length)
         {
-            this.ProcessBlock(buffer.Slice(pos, blockBytes));
+            ProcessBlock(buffer.Slice(pos, blockBytes));
             pos += blockBytes;
         }
 
         // Buffer any trailing bytes that form an incomplete block
-        this._residualBytes = buffer.Length - pos;
-        if (this._residualBytes > 0)
-            buffer.Slice(pos, this._residualBytes).CopyTo(residualSpan);
+        _residualBytes = buffer.Length - pos;
+        if (_residualBytes > 0)
+            buffer.Slice(pos, _residualBytes).CopyTo(residualSpan);
     }
 }

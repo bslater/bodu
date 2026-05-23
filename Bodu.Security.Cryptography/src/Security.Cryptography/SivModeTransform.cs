@@ -143,8 +143,8 @@ public sealed class SivModeTransform
                 nameof(ctrCipher));
         }
 
-        this._s2vCipher = s2vCipher;
-        this._ctrCipher = ctrCipher;
+        _s2vCipher = s2vCipher;
+        _ctrCipher = ctrCipher;
 
         // iv is intentionally unused — SIV derives its own synthetic IV.
     }
@@ -156,19 +156,19 @@ public sealed class SivModeTransform
     /// <inheritdoc />
     public void ProcessAssociatedData(ReadOnlySpan<byte> associatedData)
     {
-        this.ThrowIfDisposed();
+        ThrowIfDisposed();
 
-        CryptoHelpers.ThrowIfAssociatedDataAlreadyProcessed(this._aadProcessed);
+        CryptoHelpers.ThrowIfAssociatedDataAlreadyProcessed(_aadProcessed);
 
-        this._aad = associatedData.ToArray();
-        this._aadProcessed = true;
+        _aad = associatedData.ToArray();
+        _aadProcessed = true;
     }
 
     /// <inheritdoc />
     public int Encrypt(ReadOnlySpan<byte> plaintext, Span<byte> output)
     {
-        this.ThrowIfDisposed();
-        this.ThrowIfCompleted();
+        ThrowIfDisposed();
+        ThrowIfCompleted();
 
         var required = plaintext.Length + (TagSizeBits / 8);
         CryptoHelpers.ThrowIfOutputBufferTooSmall(output, required);
@@ -181,7 +181,7 @@ public sealed class SivModeTransform
         try
         {
             // SIV = S2V(K1, AAD, plaintext).
-            siv = S2V(this._aad!, plaintext);
+            siv = S2V(_aad!, plaintext);
 
             // Encrypt plaintext with CTR (K2) seeded from SIV with bits 31 and 63 cleared.
             ctrSeed = (byte[])siv.Clone();
@@ -199,15 +199,15 @@ public sealed class SivModeTransform
         {
             CryptoHelpers.Clear(ctrSeed);
             CryptoHelpers.Clear(siv);
-            this._completed = true;
+            _completed = true;
         }
     }
 
     /// <inheritdoc />
     public int Decrypt(ReadOnlySpan<byte> ciphertextWithTag, Span<byte> output)
     {
-        this.ThrowIfDisposed();
-        this.ThrowIfCompleted();
+        ThrowIfDisposed();
+        ThrowIfCompleted();
 
         CryptoHelpers.ThrowIfCiphertextTooShort(ciphertextWithTag, TagSizeBits / 8);
 
@@ -232,7 +232,7 @@ public sealed class SivModeTransform
             CtrEncrypt(ciphertext, output[..plaintextLength], ctrSeed);
 
             // Verify SIV.
-            expectedSiv = S2V(this._aad!, output[..plaintextLength]);
+            expectedSiv = S2V(_aad!, output[..plaintextLength]);
             if (!CryptographicOperations.FixedTimeEquals(expectedSiv, receivedSiv))
             {
                 CryptoHelpers.Clear(output[..plaintextLength]);
@@ -245,7 +245,7 @@ public sealed class SivModeTransform
         {
             CryptoHelpers.Clear(expectedSiv);
             CryptoHelpers.Clear(ctrSeed);
-            this._completed = true;
+            _completed = true;
         }
     }
 
@@ -254,7 +254,7 @@ public sealed class SivModeTransform
     /// SIV transforms are single-use; create a fresh instance per message.
     /// </summary>
     private void ThrowIfCompleted() =>
-        CryptoHelpers.ThrowIfAlreadyCompleted(this._completed);
+        CryptoHelpers.ThrowIfAlreadyCompleted(_completed);
 
     /// <summary>
     /// Releases the resources used by this instance and clears retained associated-data state from memory.
@@ -265,7 +265,7 @@ public sealed class SivModeTransform
     /// </remarks>
     public void Dispose()
     {
-        this.Dispose(disposing: true);
+        Dispose(disposing: true);
         GC.SuppressFinalize(this);
     }
 
@@ -278,16 +278,16 @@ public sealed class SivModeTransform
     /// </param>
     private void Dispose(bool disposing)
     {
-        if (this._disposed)
+        if (_disposed)
             return;
 
         if (disposing)
         {
-            CryptoHelpers.ClearAndNullify(ref this._aad);
-            this._aadProcessed = false;
+            CryptoHelpers.ClearAndNullify(ref _aad);
+            _aadProcessed = false;
         }
 
-        this._disposed = true;
+        _disposed = true;
     }
 
     // ── Private helpers ────────────────────────────────────────────────────────────────────────
@@ -297,10 +297,10 @@ public sealed class SivModeTransform
     /// </summary>
     private void EnsureAadProcessed()
     {
-        if (!this._aadProcessed)
+        if (!_aadProcessed)
         {
-            this._aad = [];
-            this._aadProcessed = true;
+            _aad = [];
+            _aadProcessed = true;
         }
     }
 
@@ -313,7 +313,7 @@ public sealed class SivModeTransform
     /// <returns>The S2V synthetic initialization vector.</returns>
     private byte[] S2V(ReadOnlySpan<byte> aad, ReadOnlySpan<byte> plaintext)
     {
-        var blockSize = this._s2vCipher.BlockSize / 8;
+        var blockSize = _s2vCipher.BlockSize / 8;
 
         var zeroBlock = new byte[blockSize];
         byte[]? d = null;
@@ -382,7 +382,7 @@ public sealed class SivModeTransform
     /// <returns>The 16-byte CMAC tag.</returns>
     private byte[] ComputeCmac(ReadOnlySpan<byte> message)
     {
-        var blockSize = this._s2vCipher.BlockSize / 8;
+        var blockSize = _s2vCipher.BlockSize / 8;
 
         var zeroBlock = new byte[blockSize];
         var l = new byte[blockSize];
@@ -393,7 +393,7 @@ public sealed class SivModeTransform
 
         try
         {
-            this._s2vCipher.Encrypt(zeroBlock, l);
+            _s2vCipher.Encrypt(zeroBlock, l);
 
             l.CopyTo(k1, 0);
             Dbl(k1);
@@ -419,7 +419,7 @@ public sealed class SivModeTransform
                     message.Slice(blockIdx * blockSize, blockSize).CopyTo(block);
 
                     Xor(mac, block, mac);
-                    this._s2vCipher.Encrypt(mac, mac);
+                    _s2vCipher.Encrypt(mac, mac);
                 }
                 finally
                 {
@@ -446,7 +446,7 @@ public sealed class SivModeTransform
 
             Xor(lastBlock, subkey, lastBlock);
             Xor(mac, lastBlock, mac);
-            this._s2vCipher.Encrypt(mac, mac);
+            _s2vCipher.Encrypt(mac, mac);
 
             return mac;
         }
@@ -474,7 +474,7 @@ public sealed class SivModeTransform
     /// <param name="counter">The starting counter block.</param>
     private void CtrEncrypt(ReadOnlySpan<byte> input, Span<byte> output, byte[] counter)
     {
-        var blockSize = this._ctrCipher.BlockSize / 8;
+        var blockSize = _ctrCipher.BlockSize / 8;
         var ctr = (byte[])counter.Clone();
         Span<byte> ks = stackalloc byte[blockSize];
 
@@ -482,7 +482,7 @@ public sealed class SivModeTransform
         {
             for (var offset = 0; offset < input.Length; offset += blockSize)
             {
-                this._ctrCipher.Encrypt(ctr, ks);
+                _ctrCipher.Encrypt(ctr, ks);
 
                 for (var i = ctr.Length - 1; i >= 0; i--)
                     if (++ctr[i] != 0) break;
@@ -538,10 +538,10 @@ public sealed class SivModeTransform
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ThrowIfDisposed() =>
 #if NET8_0_OR_GREATER
-        ObjectDisposedException.ThrowIf(this._disposed, this);
+        ObjectDisposedException.ThrowIf(_disposed, this);
 #else
-        if (this._disposed)
-            throw new ObjectDisposedException(this.GetType().Name);
+        if (_disposed)
+            throw new ObjectDisposedException(GetType().Name);
 #endif
 
 }

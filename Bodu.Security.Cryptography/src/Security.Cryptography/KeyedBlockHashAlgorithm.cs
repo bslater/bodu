@@ -104,7 +104,7 @@ public abstract class KeyedBlockHashAlgorithm<T>
         : base(blockSize)
     {
         ThrowHelper.ThrowIfLessThanOrEqual(keySize, 0);
-        this.KeySizeValue = keySize;
+        KeySizeValue = keySize;
     }
 
     /// <summary>
@@ -137,31 +137,31 @@ public abstract class KeyedBlockHashAlgorithm<T>
     {
         get
         {
-            this.ThrowIfDisposed();
+            ThrowIfDisposed();
 
-            return this.KeyValue is null
+            return KeyValue is null
                 ? throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_KeyNotSet)
-                : this.KeyValue.Copy();
+                : KeyValue?.Copy() ?? [];
         }
 
         set
         {
-            this.ThrowIfDisposed();
-            this.ThrowIfInvalidState();
+            ThrowIfDisposed();
+            ThrowIfInvalidState();
             ThrowHelper.ThrowIfNull(value);
 
-            if (value.Length != this.KeySizeValue / 8)
+            if (value.Length != KeySizeValue / 8)
                 throw new CryptographicException(
                     string.Format(
                         CryptoResourceStrings.Crypt_Invalid_KeySize,
                         value.Length * 8,
-                        this.KeySizeValue));
+                        KeySizeValue));
 
             // Defensive copy ensures external references cannot mutate the internal key.
-            this.KeyValue = value.Copy();
+            KeyValue = value.Copy();
 
             // Allow derived classes to rebuild any key-dependent schedule or state.
-            this.OnKeyChanged();
+            OnKeyChanged();
         }
     }
 
@@ -183,10 +183,10 @@ public abstract class KeyedBlockHashAlgorithm<T>
         // A keyed MAC is unusable without a key. We refuse to silently regenerate one:
         // callers must explicitly set Key (or invoke GenerateKey on subclasses that
         // support it) before re-initialization.
-        if (this.KeyValue is null || this.KeyValue.Length != this.KeySizeValue / 8)
+        if (KeyValue is null || KeyValue.Length != KeySizeValue / 8)
             throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_KeyNotSet);
 
-        this.OnKeyChanged();
+        OnKeyChanged();
     }
 
     /// <summary>
@@ -223,11 +223,11 @@ public abstract class KeyedBlockHashAlgorithm<T>
     /// </remarks>
     protected override void Dispose(bool disposing)
     {
-        if (this.IsDisposed) return;
+        if (IsDisposed) return;
 
         if (disposing)
         {
-            CryptoHelpers.ClearAndNullify(ref this.KeyValue);
+            CryptoHelpers.ClearAndNullify(ref KeyValue);
         }
 
         base.Dispose(disposing);

@@ -132,19 +132,19 @@ public abstract partial class Skein<T>
     {
         CryptoHelpers.ThrowIfInvalidHashSize(hashSizeBits, validHashSizesBits);
 
-        this._cipher = cipher;
-        this.HashSizeValue = hashSizeBits;
+        _cipher = cipher;
+        HashSizeValue = hashSizeBits;
 
         var blockBytes = cipher.BlockSize / 8;
         var stateWords = blockBytes / sizeof(ulong);
-        this._state = new ulong[stateWords];
-        this._initialChainingValue = new ulong[stateWords];
-        this._pendingBlock = new byte[blockBytes];
-        this._ubiCipherOutput = new byte[blockBytes];
+        _state = new ulong[stateWords];
+        _initialChainingValue = new ulong[stateWords];
+        _pendingBlock = new byte[blockBytes];
+        _ubiCipherOutput = new byte[blockBytes];
 
         // Default to the plain-hash profile: empty key means no KEY UBI phase is run. Callers that want the
         // keyed Skein-MAC mode supply a non-empty key via the Key property before hashing.
-        this.KeyValue = [];
+        KeyValue = [];
     }
 
     /// <summary>
@@ -175,17 +175,17 @@ public abstract partial class Skein<T>
     {
         get
         {
-            this.ThrowIfDisposed();
+            ThrowIfDisposed();
 
-            return this.KeyValue is null
+            return KeyValue is null
                 ? throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_KeyNotSet)
-                : this.KeyValue?.Copy() ?? [];
+                : KeyValue?.Copy() ?? [];
         }
 
         set
         {
-            this.ThrowIfDisposed();
-            this.ThrowIfInvalidState();
+            ThrowIfDisposed();
+            ThrowIfInvalidState();
             ThrowHelper.ThrowIfNull(value);
 
             if (value.Length > MaxKeySize / 8)
@@ -195,8 +195,8 @@ public abstract partial class Skein<T>
                         value.Length * 8,
                         $"0..{MaxKeySize}"));
 
-            this.KeyValue = value.Copy();
-            this._isChainingValueCached = false;
+            KeyValue = value.Copy();
+            _isChainingValueCached = false;
         }
     }
 
@@ -209,8 +209,8 @@ public abstract partial class Skein<T>
     {
         get
         {
-            this.ThrowIfDisposed();
-            return $"Skein-{this.BlockSize}-{this.HashSizeValue}";
+            ThrowIfDisposed();
+            return $"Skein-{BlockSize}-{HashSizeValue}";
         }
     }
 
@@ -225,53 +225,53 @@ public abstract partial class Skein<T>
     /// </exception>
     public override void Initialize()
     {
-        this.ThrowIfDisposed();
+        ThrowIfDisposed();
 
-        if (this.KeyValue is null)
+        if (KeyValue is null)
             throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_KeyNotSet);
 
 #if !NET6_0_OR_GREATER
-        this.State = 0;
-        this._finalized = false;
+        State = 0;
+        _finalized = false;
 #endif
-        this._pendingBytes = 0;
-        this._messageBytesProcessed = 0UL;
-        this._hasProcessedAnyMessageBlock = false;
-        CryptoHelpers.Clear(this._pendingBlock);
+        _pendingBytes = 0;
+        _messageBytesProcessed = 0UL;
+        _hasProcessedAnyMessageBlock = false;
+        CryptoHelpers.Clear(_pendingBlock);
 
-        this.EnsureChainingValueInitialized();
-        Array.Copy(this._initialChainingValue, this._state, this._state.Length);
+        EnsureChainingValueInitialized();
+        Array.Copy(_initialChainingValue, _state, _state.Length);
     }
 
     /// <inheritdoc />
     protected override void HashCore(byte[] array, int ibStart, int cbSize)
     {
         ThrowHelper.ThrowIfNull(array);
-        this.ThrowIfDisposed();
+        ThrowIfDisposed();
 
 #if !NET6_0_OR_GREATER
         ThrowHelper.ThrowIfLessThan(ibStart, 0);
         ThrowHelper.ThrowIfLessThan(cbSize, 0);
         ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, ibStart, cbSize);
-        if (this._finalized)
+        if (_finalized)
             throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.Crypt_Invalid_AlreadyFinalized);
 #endif
 
-        this.HashCore(array.AsSpan(ibStart, cbSize));
+        HashCore(array.AsSpan(ibStart, cbSize));
     }
 
     /// <inheritdoc />
     protected override void HashCore(ReadOnlySpan<byte> source)
     {
-        this.ThrowIfDisposed();
+        ThrowIfDisposed();
 
 #if !NET6_0_OR_GREATER
-        if (this._finalized)
+        if (_finalized)
             throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.Crypt_Invalid_AlreadyFinalized);
 #endif
 
-        this.EnsureChainingStateReadyForHashing();
-        this.AbsorbMessage(source);
+        EnsureChainingStateReadyForHashing();
+        AbsorbMessage(source);
     }
 
     /// <summary>
@@ -284,41 +284,41 @@ public abstract partial class Skein<T>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     protected override byte[] HashFinal()
     {
-        this.ThrowIfDisposed();
+        ThrowIfDisposed();
 
 #if !NET6_0_OR_GREATER
-        if (this._finalized)
+        if (_finalized)
             throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.Crypt_Invalid_AlreadyFinalized);
-        this._finalized = true;
-        this.State = 2;
+        _finalized = true;
+        State = 2;
 #endif
 
-        this.EnsureChainingStateReadyForHashing();
+        EnsureChainingStateReadyForHashing();
 
         // Process the final message block. The tweak's position field carries the total number of real message bytes
         // absorbed (excluding any zero padding applied to bring the block up to the Skein state size).
-        var residual = this._pendingBytes;
-        var blockBytes = this.BlockSize / 8;
+        var residual = _pendingBytes;
+        var blockBytes = BlockSize / 8;
         if (residual < blockBytes)
         {
-            CryptoHelpers.Clear(this._pendingBlock.AsSpan(residual, blockBytes - residual));
+            CryptoHelpers.Clear(_pendingBlock.AsSpan(residual, blockBytes - residual));
         }
 
-        this._messageBytesProcessed += (ulong)residual;
-        this.Ubi(
-            this._pendingBlock,
+        _messageBytesProcessed += (ulong)residual;
+        Ubi(
+            _pendingBlock,
             SkeinTweakType.Msg,
-            first: !this._hasProcessedAnyMessageBlock,
+            first: !_hasProcessedAnyMessageBlock,
             final: true,
-            position: this._messageBytesProcessed);
+            position: _messageBytesProcessed);
 
-        var outputBytes = this.HashSizeValue / 8;
+        var outputBytes = HashSizeValue / 8;
         var digest = GC.AllocateUninitializedArray<byte>(outputBytes);
-        this.GenerateOutput(digest);
+        GenerateOutput(digest);
 
-        this._pendingBytes = 0;
-        this._messageBytesProcessed = 0UL;
-        this._hasProcessedAnyMessageBlock = false;
+        _pendingBytes = 0;
+        _messageBytesProcessed = 0UL;
+        _hasProcessedAnyMessageBlock = false;
         return digest;
     }
 
@@ -392,21 +392,21 @@ public abstract partial class Skein<T>
     /// </param>
     protected override void Dispose(bool disposing)
     {
-        if (this.IsDisposed) return;
+        if (IsDisposed) return;
 
         if (disposing)
         {
-            CryptoHelpers.Clear(this._state);
-            CryptoHelpers.Clear(this._initialChainingValue);
-            CryptoHelpers.Clear(this._pendingBlock);
-            CryptoHelpers.Clear(this._ubiCipherOutput);
+            CryptoHelpers.Clear(_state);
+            CryptoHelpers.Clear(_initialChainingValue);
+            CryptoHelpers.Clear(_pendingBlock);
+            CryptoHelpers.Clear(_ubiCipherOutput);
 
-            this._cipher.Dispose();
+            _cipher.Dispose();
 
-            this._isChainingValueCached = false;
-            this._pendingBytes = 0;
-            this._messageBytesProcessed = 0UL;
-            this._hasProcessedAnyMessageBlock = false;
+            _isChainingValueCached = false;
+            _pendingBytes = 0;
+            _messageBytesProcessed = 0UL;
+            _hasProcessedAnyMessageBlock = false;
         }
 
         base.Dispose(disposing);
@@ -418,10 +418,10 @@ public abstract partial class Skein<T>
     /// </summary>
     private void EnsureChainingStateReadyForHashing()
     {
-        if (this._isChainingValueCached)
+        if (_isChainingValueCached)
             return;
 
-        this.EnsureChainingValueInitialized();
-        Array.Copy(this._initialChainingValue, this._state, this._state.Length);
+        EnsureChainingValueInitialized();
+        Array.Copy(_initialChainingValue, _state, _state.Length);
     }
 }

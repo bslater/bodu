@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ThreefishBlockCipher.256.Avx512.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -12,25 +12,24 @@ using System.Runtime.Intrinsics.X86;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// AVX-512 vectorised implementation of <see cref="Threefish256Cipher" />. The four 64-bit state words
-/// are split across two <see cref="Vector128{T}" /> registers — <c>lo</c> holds the even-position words
-/// <c>(b0, b2)</c> and <c>hi</c> the odd-position words <c>(b1, b3)</c>. Each round performs a vector add,
-/// a per-lane variable rotate (<c>VPROLVQ</c>), an XOR, and a single 64-bit lane swap on <c>hi</c> that
-/// realigns it for the next round's MIX pairing.
+/// AVX-512 vectorised implementation of <see cref="Threefish256Cipher" />. The four 64-bit state words are split across
+/// two <see cref="Vector128{T}" /> registers — <c>lo</c> holds the even-position words <c>(b0, b2)</c> and <c>hi</c>
+/// the odd-position words <c>(b1, b3)</c>. Each round performs a vector add, a per-lane variable rotate (<c>VPROLVQ</c>
+/// ), an XOR, and a single 64-bit lane swap on <c>hi</c> that realigns it for the next round's MIX pairing.
 /// </summary>
 /// <remarks>
 /// <para>
-/// Threefish-256 alternates between two MIX pair patterns within a 4-round group: <c>(0,1)(2,3)</c> at
-/// rounds 0 and 2, and <c>(0,3)(2,1)</c> at rounds 1 and 3. With the state split into even/odd halves,
-/// the alternation reduces to a single swap of <c>hi</c>'s two lanes — applied four times in a row, the
-/// swaps cycle back to canonical layout, which is exactly where the subkey injection lands.
+/// Threefish-256 alternates between two MIX pair patterns within a 4-round group: <c>(0,1)(2,3)</c> at rounds 0 and 2,
+/// and <c>(0,3)(2,1)</c> at rounds 1 and 3. With the state split into even/odd halves, the alternation reduces to a
+/// single swap of <c>hi</c>'s two lanes — applied four times in a row, the swaps cycle back to canonical layout, which
+/// is exactly where the subkey injection lands.
 /// </para>
 /// <para>
 /// Gated on <see cref="Avx512F.VL.IsSupported" /> because the per-lane variable rotate runs on
-/// <see cref="Vector128{T}" />. SIMD gain on Threefish-256 is the smallest of the three variants — the
-/// 128-bit working width matches scalar register count and the per-instruction overhead is high relative
-/// to the work — but the implementation keeps the family pattern consistent and provides a measured
-/// reduction in scalar instruction count per round.
+/// <see cref="Vector128{T}" />. SIMD gain on Threefish-256 is the smallest of the three variants — the 128-bit working
+/// width matches scalar register count and the per-instruction overhead is high relative to the work — but the
+/// implementation keeps the family pattern consistent and provides a measured reduction in scalar instruction count per
+/// round.
 /// </para>
 /// </remarks>
 public sealed partial class Threefish256Cipher
@@ -58,16 +57,16 @@ public sealed partial class Threefish256Cipher
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     private void EncryptAvx512(ReadOnlySpan<byte> input, Span<byte> output)
     {
-        ref ulong wordRef = ref Unsafe.As<byte, ulong>(ref MemoryMarshal.GetReference(input));
-        ulong b0 = Unsafe.Add(ref wordRef, 0);
-        ulong b1 = Unsafe.Add(ref wordRef, 1);
-        ulong b2 = Unsafe.Add(ref wordRef, 2);
-        ulong b3 = Unsafe.Add(ref wordRef, 3);
-        Vector128<ulong> lo = Vector128.Create(b0, b2);
-        Vector128<ulong> hi = Vector128.Create(b1, b3);
+        ref var wordRef = ref Unsafe.As<byte, ulong>(ref MemoryMarshal.GetReference(input));
+        var b0 = Unsafe.Add(ref wordRef, 0);
+        var b1 = Unsafe.Add(ref wordRef, 1);
+        var b2 = Unsafe.Add(ref wordRef, 2);
+        var b3 = Unsafe.Add(ref wordRef, 3);
+        var lo = Vector128.Create(b0, b2);
+        var hi = Vector128.Create(b1, b3);
 
-        ref ulong keyRef = ref MemoryMarshal.GetArrayDataReference(this._keySchedule);
-        ref ulong tweakRef = ref MemoryMarshal.GetArrayDataReference(this._tweakSchedule);
+        ref var keyRef = ref MemoryMarshal.GetArrayDataReference(_keySchedule);
+        ref var tweakRef = ref MemoryMarshal.GetArrayDataReference(_tweakSchedule);
 
         // Initial subkey injection. Tweak applies at positions 1 (hi lane 0) and 2 (lo lane 1).
         lo += Vector128.Create(
@@ -111,7 +110,7 @@ public sealed partial class Threefish256Cipher
                 Unsafe.Add(ref keyRef, dm5 + 4) + (ulong)d + 1);
         }
 
-        ref ulong outWordRef = ref Unsafe.As<byte, ulong>(ref MemoryMarshal.GetReference(output));
+        ref var outWordRef = ref Unsafe.As<byte, ulong>(ref MemoryMarshal.GetReference(output));
         Unsafe.Add(ref outWordRef, 0) = lo.GetElement(0);
         Unsafe.Add(ref outWordRef, 1) = hi.GetElement(0);
         Unsafe.Add(ref outWordRef, 2) = lo.GetElement(1);
@@ -126,16 +125,16 @@ public sealed partial class Threefish256Cipher
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     private void DecryptAvx512(ReadOnlySpan<byte> input, Span<byte> output)
     {
-        ref ulong wordRef = ref Unsafe.As<byte, ulong>(ref MemoryMarshal.GetReference(input));
-        ulong b0 = Unsafe.Add(ref wordRef, 0);
-        ulong b1 = Unsafe.Add(ref wordRef, 1);
-        ulong b2 = Unsafe.Add(ref wordRef, 2);
-        ulong b3 = Unsafe.Add(ref wordRef, 3);
-        Vector128<ulong> lo = Vector128.Create(b0, b2);
-        Vector128<ulong> hi = Vector128.Create(b1, b3);
+        ref var wordRef = ref Unsafe.As<byte, ulong>(ref MemoryMarshal.GetReference(input));
+        var b0 = Unsafe.Add(ref wordRef, 0);
+        var b1 = Unsafe.Add(ref wordRef, 1);
+        var b2 = Unsafe.Add(ref wordRef, 2);
+        var b3 = Unsafe.Add(ref wordRef, 3);
+        var lo = Vector128.Create(b0, b2);
+        var hi = Vector128.Create(b1, b3);
 
-        ref ulong keyRef = ref MemoryMarshal.GetArrayDataReference(this._keySchedule);
-        ref ulong tweakRef = ref MemoryMarshal.GetArrayDataReference(this._tweakSchedule);
+        ref var keyRef = ref MemoryMarshal.GetArrayDataReference(_keySchedule);
+        ref var tweakRef = ref MemoryMarshal.GetArrayDataReference(_tweakSchedule);
 
         for (var d = (72 / 4) - 1; d >= 1; d -= 2)
         {
@@ -179,7 +178,7 @@ public sealed partial class Threefish256Cipher
             Unsafe.Add(ref keyRef, 1) + Unsafe.Add(ref tweakRef, 0),
             Unsafe.Add(ref keyRef, 3));
 
-        ref ulong outWordRef = ref Unsafe.As<byte, ulong>(ref MemoryMarshal.GetReference(output));
+        ref var outWordRef = ref Unsafe.As<byte, ulong>(ref MemoryMarshal.GetReference(output));
         Unsafe.Add(ref outWordRef, 0) = lo.GetElement(0);
         Unsafe.Add(ref outWordRef, 1) = hi.GetElement(0);
         Unsafe.Add(ref outWordRef, 2) = lo.GetElement(1);
@@ -187,8 +186,8 @@ public sealed partial class Threefish256Cipher
     }
 
     /// <summary>
-    /// Executes one forward Threefish-256 round on the vectorised state and applies the inter-round
-    /// lane swap that realigns <c>hi</c> for the next round's MIX pairing.
+    /// Executes one forward Threefish-256 round on the vectorised state and applies the inter-round lane swap that
+    /// realigns <c>hi</c> for the next round's MIX pairing.
     /// </summary>
     /// <param name="lo">The even-position state register, updated in place.</param>
     /// <param name="hi">The odd-position state register, updated in place.</param>
@@ -202,9 +201,8 @@ public sealed partial class Threefish256Cipher
     }
 
     /// <summary>
-    /// Executes one inverse Threefish-256 round on the vectorised state. The inverse lane swap is applied
-    /// before the UNMIX so it undoes the previous forward swap, restoring the layout the original MIX
-    /// operated on.
+    /// Executes one inverse Threefish-256 round on the vectorised state. The inverse lane swap is applied before the
+    /// UNMIX so it undoes the previous forward swap, restoring the layout the original MIX operated on.
     /// </summary>
     /// <param name="lo">The even-position state register, updated in place.</param>
     /// <param name="hi">The odd-position state register, updated in place.</param>

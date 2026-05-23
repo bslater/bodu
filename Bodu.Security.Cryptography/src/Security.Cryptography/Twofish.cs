@@ -120,15 +120,15 @@ public sealed class Twofish
     /// </remarks>
     public Twofish()
     {
-        this.BlockSizeValue = BlockSizeBits;
-        this.LegalBlockSizesValue = s_twofishBlockSizes;
+        BlockSizeValue = BlockSizeBits;
+        LegalBlockSizesValue = s_twofishBlockSizes;
 
-        this.KeySizeValue = 256;
-        this.LegalKeySizesValue = s_twofishKeySizes;
+        KeySizeValue = 256;
+        LegalKeySizesValue = s_twofishKeySizes;
 
-        this.FeedbackSizeValue = BlockSizeBits;
-        this.ModeValue = CipherMode.CBC;
-        this.PaddingValue = PaddingMode.PKCS7;
+        FeedbackSizeValue = BlockSizeBits;
+        ModeValue = CipherMode.CBC;
+        PaddingValue = PaddingMode.PKCS7;
     }
 
     /// <summary>
@@ -139,15 +139,15 @@ public sealed class Twofish
     /// </value>
     public CipherModeKind BlockMode
     {
-        get => this._blockMode;
+        get => _blockMode;
         set
         {
-            this._blockMode = value;
+            _blockMode = value;
 
             if (Enum.TryParse<CipherMode>(value.ToString(), out CipherMode mode) &&
                 Enum.IsDefined(mode))
             {
-                this.ModeValue = mode;
+                ModeValue = mode;
             }
         }
     }
@@ -166,12 +166,12 @@ public sealed class Twofish
     /// </remarks>
     public PaddingModeKind BlockPadding
     {
-        get => this._blockPadding;
+        get => _blockPadding;
         set
         {
-            this._blockPadding = value;
+            _blockPadding = value;
             if (Enum.TryParse<PaddingMode>(value.ToString(), out PaddingMode mode) && Enum.IsDefined(mode))
-                this.PaddingValue = mode;
+                PaddingValue = mode;
         }
     }
 
@@ -187,7 +187,7 @@ public sealed class Twofish
         {
             base.Padding = value;
             if (Enum.TryParse<PaddingModeKind>(value.ToString(), out PaddingModeKind bpm) && Enum.IsDefined(bpm))
-                this._blockPadding = bpm;
+                _blockPadding = bpm;
         }
     }
 
@@ -201,51 +201,51 @@ public sealed class Twofish
     /// <inheritdoc />
     public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[]? rgbIV)
     {
-        this.ThrowIfDisposed();
-        CryptoHelpers.ThrowIfInvalidKeySize(rgbKey, this.KeySize, this.LegalKeySizes);
-        CryptoHelpers.ThrowIfInvalidIVForMode(rgbIV, this.BlockMode, this.BlockSize, this.LegalBlockSizes);
+        ThrowIfDisposed();
+        CryptoHelpers.ThrowIfInvalidKeySize(rgbKey, KeySize, LegalKeySizes);
+        CryptoHelpers.ThrowIfInvalidIVForMode(rgbIV, BlockMode, BlockSize, LegalBlockSizes);
 
         IBlockCipher engine = CreateCipher(rgbKey);
-        return new TwofishTransform(engine, this.BlockMode, this.BlockPadding, rgbIV, false);
+        return new TwofishTransform(engine, BlockMode, BlockPadding, rgbIV, false);
     }
 
     /// <inheritdoc />
     public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[]? rgbIV)
     {
-        this.ThrowIfDisposed();
-        CryptoHelpers.ThrowIfInvalidKeySize(rgbKey, this.KeySize, this.LegalKeySizes);
-        CryptoHelpers.ThrowIfInvalidIVForMode(rgbIV, this.BlockMode, this.BlockSize, this.LegalBlockSizes);
+        ThrowIfDisposed();
+        CryptoHelpers.ThrowIfInvalidKeySize(rgbKey, KeySize, LegalKeySizes);
+        CryptoHelpers.ThrowIfInvalidIVForMode(rgbIV, BlockMode, BlockSize, LegalBlockSizes);
 
         IBlockCipher engine = CreateCipher(rgbKey);
-        return new TwofishTransform(engine, this.BlockMode, this.BlockPadding, rgbIV, true);
+        return new TwofishTransform(engine, BlockMode, BlockPadding, rgbIV, true);
     }
 
     /// <inheritdoc />
     public override void GenerateIV()
     {
-        this.ThrowIfDisposed();
-        this.IVValue = CryptoHelpers.GetRandomNonZeroBytes(this.BlockSizeValue / 8);
+        ThrowIfDisposed();
+        IVValue = CryptoHelpers.GetRandomNonZeroBytes(BlockSizeValue / 8);
     }
 
     /// <inheritdoc />
     public override void GenerateKey()
     {
-        this.ThrowIfDisposed();
-        this.KeyValue = CryptoHelpers.GetRandomNonZeroBytes(this.KeySizeValue / 8);
+        ThrowIfDisposed();
+        KeyValue = CryptoHelpers.GetRandomNonZeroBytes(KeySizeValue / 8);
     }
 
     /// <inheritdoc />
     protected override void Dispose(bool disposing)
     {
-        if (!this._disposed)
+        if (!_disposed)
         {
             if (disposing)
             {
-                CryptoHelpers.Clear(this.Key);
-                CryptoHelpers.Clear(this.IVValue!);
+                CryptoHelpers.Clear(Key);
+                CryptoHelpers.Clear(IVValue!);
             }
 
-            this._disposed = true;
+            _disposed = true;
         }
 
         base.Dispose(disposing);
@@ -263,10 +263,10 @@ public sealed class Twofish
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ThrowIfDisposed() =>
 #if NET8_0_OR_GREATER
-        ObjectDisposedException.ThrowIf(this._disposed, this);
+        ObjectDisposedException.ThrowIf(_disposed, this);
 #else
-        if (this._disposed)
-            throw new ObjectDisposedException(this.GetType().Name);
+        if (_disposed)
+            throw new ObjectDisposedException(GetType().Name);
 #endif
 
 }

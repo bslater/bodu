@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Blake2b.Avx512.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -13,18 +13,17 @@ using System.Runtime.Intrinsics.X86;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// AVX-512 vectorised implementation of the BLAKE2b compression function. The 16-element working vector
-/// <c>v</c> is laid out as four <see cref="Vector256{T}" /> rows (<c>a, b, c, d</c>), so the four parallel
-/// <c>G</c> calls in each column step collapse into a single SIMD <c>G</c> operation. The diagonal step
-/// reuses the same kernel by shifting the <c>b, c, d</c> rows by 1/2/3 lanes via <c>VPERMQ</c>, running
-/// <c>G</c>, then shifting back — the canonical ChaCha-style vectorisation pattern Blake2 was designed
-/// around.
+/// AVX-512 vectorised implementation of the BLAKE2b compression function. The 16-element working vector <c>v</c> is
+/// laid out as four <see cref="Vector256{T}" /> rows (<c>a, b, c, d</c>), so the four parallel <c>G</c> calls in each
+/// column step collapse into a single SIMD <c>G</c> operation. The diagonal step reuses the same kernel by shifting the
+/// <c>b, c, d</c> rows by 1/2/3 lanes via <c>VPERMQ</c>, running <c>G</c>, then shifting back — the canonical
+/// ChaCha-style vectorisation pattern Blake2 was designed around.
 /// </summary>
 /// <remarks>
 /// <para>
-/// Gated on <see cref="Avx512F.VL.IsSupported" /> because the rotations use the AVX-512VL VPRORQ variant
-/// on <see cref="Vector256{T}" />. Every modern Intel/AMD CPU that ships AVX-512F also ships VL, so the
-/// gate is effectively equivalent to "any AVX-512 host".
+/// Gated on <see cref="Avx512F.VL.IsSupported" /> because the rotations use the AVX-512VL VPRORQ variant on
+/// <see cref="Vector256{T}" />. Every modern Intel/AMD CPU that ships AVX-512F also ships VL, so the gate is
+/// effectively equivalent to "any AVX-512 host".
 /// </para>
 /// </remarks>
 public sealed partial class Blake2b
@@ -47,10 +46,10 @@ public sealed partial class Blake2b
     {
         // Load the 16 message words. Used to build the per-step (mx, my) gather vectors below.
         Span<ulong> m = stackalloc ulong[16];
-        ref byte blockRef = ref MemoryMarshal.GetReference(block);
+        ref var blockRef = ref MemoryMarshal.GetReference(block);
         if (BitConverter.IsLittleEndian)
         {
-            ref ulong wordRef = ref Unsafe.As<byte, ulong>(ref blockRef);
+            ref var wordRef = ref Unsafe.As<byte, ulong>(ref blockRef);
             for (var i = 0; i < 16; i++)
                 m[i] = Unsafe.Add(ref wordRef, i);
         }
@@ -60,24 +59,24 @@ public sealed partial class Blake2b
                 m[i] = BinaryPrimitives.ReadUInt64LittleEndian(block.Slice(i * 8, 8));
         }
 
-        ref ulong mRef = ref MemoryMarshal.GetReference(m);
+        ref var mRef = ref MemoryMarshal.GetReference(m);
 
         // Build the four rows of the working vector. a/b come from the chaining state; c/d come from the
         // IV with the counter XORed into lane 0 of d (= v[12]) and the finalization flag conditionally
         // inverting lane 2 of d (= v[14]).
-        ref ulong hRef = ref MemoryMarshal.GetArrayDataReference(this._h);
-        Vector256<ulong> a = Vector256.Create(
+        ref var hRef = ref MemoryMarshal.GetArrayDataReference(_h);
+        var a = Vector256.Create(
             Unsafe.Add(ref hRef, 0),
             Unsafe.Add(ref hRef, 1),
             Unsafe.Add(ref hRef, 2),
             Unsafe.Add(ref hRef, 3));
-        Vector256<ulong> b = Vector256.Create(
+        var b = Vector256.Create(
             Unsafe.Add(ref hRef, 4),
             Unsafe.Add(ref hRef, 5),
             Unsafe.Add(ref hRef, 6),
             Unsafe.Add(ref hRef, 7));
-        Vector256<ulong> c = Vector256.Create(s_iv[0], s_iv[1], s_iv[2], s_iv[3]);
-        Vector256<ulong> d = Vector256.Create(
+        var c = Vector256.Create(s_iv[0], s_iv[1], s_iv[2], s_iv[3]);
+        var d = Vector256.Create(
             s_iv[4] ^ totalBytesIncludingThisBlock,
             s_iv[5],
             isFinal ? ~s_iv[6] : s_iv[6],
@@ -92,12 +91,12 @@ public sealed partial class Blake2b
             // Column step: G applied to columns (0,4,8,12), (1,5,9,13), (2,6,10,14), (3,7,11,15) — i.e.
             // each column of the 4x4 v matrix. With a/b/c/d holding rows, lane i of each row is column i,
             // so a single SIMD G covers all four columns.
-            Vector256<ulong> mx = Vector256.Create(
+            var mx = Vector256.Create(
                 Unsafe.Add(ref mRef, s[0]),
                 Unsafe.Add(ref mRef, s[2]),
                 Unsafe.Add(ref mRef, s[4]),
                 Unsafe.Add(ref mRef, s[6]));
-            Vector256<ulong> my = Vector256.Create(
+            var my = Vector256.Create(
                 Unsafe.Add(ref mRef, s[1]),
                 Unsafe.Add(ref mRef, s[3]),
                 Unsafe.Add(ref mRef, s[5]),
@@ -132,12 +131,12 @@ public sealed partial class Blake2b
         // Fold the working vector back into the chaining state: h[i] ^= v[i] ^ v[i + 8]. With a holding
         // v[0..3], b holding v[4..7], c holding v[8..11], and d holding v[12..15], the fold reduces to
         // h[0..3] ^= a ^ c and h[4..7] ^= b ^ d.
-        Vector256<ulong> hLo = Vector256.Create(
+        var hLo = Vector256.Create(
             Unsafe.Add(ref hRef, 0),
             Unsafe.Add(ref hRef, 1),
             Unsafe.Add(ref hRef, 2),
             Unsafe.Add(ref hRef, 3));
-        Vector256<ulong> hHi = Vector256.Create(
+        var hHi = Vector256.Create(
             Unsafe.Add(ref hRef, 4),
             Unsafe.Add(ref hRef, 5),
             Unsafe.Add(ref hRef, 6),
@@ -156,8 +155,8 @@ public sealed partial class Blake2b
     }
 
     /// <summary>
-    /// Applies the BLAKE2b <c>G</c> mixing function in parallel across four columns (or four diagonals,
-    /// after the caller has applied the appropriate lane shifts).
+    /// Applies the BLAKE2b <c>G</c> mixing function in parallel across four columns (or four diagonals, after the
+    /// caller has applied the appropriate lane shifts).
     /// </summary>
     /// <param name="a">The top row of the working vector, updated in place.</param>
     /// <param name="b">The second row of the working vector, updated in place.</param>

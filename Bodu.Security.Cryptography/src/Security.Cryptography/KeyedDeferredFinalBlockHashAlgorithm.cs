@@ -94,7 +94,7 @@ public abstract class KeyedDeferredFinalBlockHashAlgorithm<T>
         : base(blockSize)
     {
         ThrowHelper.ThrowIfLessThanOrEqual(maximumKeySize, 0);
-        this._maximumKeySize = maximumKeySize;
+        _maximumKeySize = maximumKeySize;
     }
 
     /// <summary>
@@ -107,8 +107,8 @@ public abstract class KeyedDeferredFinalBlockHashAlgorithm<T>
     {
         get
         {
-            this.ThrowIfDisposed();
-            return this._maximumKeySize;
+            ThrowIfDisposed();
+            return _maximumKeySize;
         }
     }
 
@@ -149,22 +149,22 @@ public abstract class KeyedDeferredFinalBlockHashAlgorithm<T>
     {
         get
         {
-            this.ThrowIfDisposed();
-            return this.KeyValue?.Copy() ?? [];
+            ThrowIfDisposed();
+            return KeyValue?.Copy() ?? [];
         }
 
         set
         {
-            this.ThrowIfDisposed();
-            this.ThrowIfInvalidState();
+            ThrowIfDisposed();
+            ThrowIfInvalidState();
             ThrowHelper.ThrowIfNull(value);
 
-            if (value.Length > this._maximumKeySize / 8)
+            if (value.Length > _maximumKeySize / 8)
                 throw new CryptographicException(
-                    string.Format(CryptoResourceStrings.Crypt_Invalid_KeySize, value.Length * 8, $"0..{this._maximumKeySize}"));
+                    string.Format(CryptoResourceStrings.Crypt_Invalid_KeySize, value.Length * 8, $"0..{_maximumKeySize}"));
 
-            this.KeyValue = value.Length > 0 ? value.Copy() : null;
-            this.Initialize();
+            KeyValue = value.Length > 0 ? value.Copy() : null;
+            Initialize();
         }
     }
 
@@ -178,10 +178,10 @@ public abstract class KeyedDeferredFinalBlockHashAlgorithm<T>
     public sealed override void Initialize()
     {
         base.Initialize();
-        this.InitializeHashState();
+        InitializeHashState();
 
-        if (this.KeyValue is not null)
-            this.InjectKeyBlock();
+        if (KeyValue is not null)
+            InjectKeyBlock();
     }
 
     /// <summary>
@@ -204,7 +204,7 @@ public abstract class KeyedDeferredFinalBlockHashAlgorithm<T>
     {
         if (disposing)
         {
-            CryptoHelpers.ClearAndNullify(ref this.KeyValue);
+            CryptoHelpers.ClearAndNullify(ref KeyValue);
         }
 
         base.Dispose(disposing);
@@ -217,8 +217,8 @@ public abstract class KeyedDeferredFinalBlockHashAlgorithm<T>
     /// </summary>
     private void InjectKeyBlock()
     {
-        Span<byte> keyBlock = stackalloc byte[this.BlockSize / 8];
-        this.KeyValue!.AsSpan().CopyTo(keyBlock);
-        this.HashCore(keyBlock);
+        Span<byte> keyBlock = stackalloc byte[BlockSize / 8];
+        KeyValue!.AsSpan().CopyTo(keyBlock);
+        HashCore(keyBlock);
     }
 }

@@ -208,12 +208,12 @@ public sealed class ParallelMerkleTreeHash
         int blockSize = 4096,
         int fanOut = 2)
     {
-        this._algorithmFactory = algorithmFactory ?? throw new ArgumentNullException(nameof(algorithmFactory));
-        this._blockSize = blockSize > 0 ? blockSize : throw new ArgumentOutOfRangeException(
+        _algorithmFactory = algorithmFactory ?? throw new ArgumentNullException(nameof(algorithmFactory));
+        _blockSize = blockSize > 0 ? blockSize : throw new ArgumentOutOfRangeException(
                                                         nameof(blockSize),
                                                         string.Format(CryptoResourceStrings.Arg_OutOfRange_BlockSizeMustBeGreaterThan, 0));
-        this._fanOut = fanOut >= 2 ? fanOut : throw new ArgumentOutOfRangeException(nameof(fanOut), CryptoResourceStrings.Arg_OutOfRange_FanOutMinimum);
-        this._blockBuffer = new byte[blockSize];
+        _fanOut = fanOut >= 2 ? fanOut : throw new ArgumentOutOfRangeException(nameof(fanOut), CryptoResourceStrings.Arg_OutOfRange_FanOutMinimum);
+        _blockBuffer = new byte[blockSize];
     }
 
     /// <summary>
@@ -243,25 +243,25 @@ public sealed class ParallelMerkleTreeHash
         CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(input);
-        this.ThrowIfDisposed();
+        ThrowIfDisposed();
 
-        var linked = CancellationTokenSource.CreateLinkedTokenSource(this._cts.Token, cancellationToken);
+        var linked = CancellationTokenSource.CreateLinkedTokenSource(_cts.Token, cancellationToken);
         try
         {
-            this.Reset(diagnostics, linked.Token);
+            Reset(diagnostics, linked.Token);
 
             // Read in chunks larger than one block so that a single ReadAsync can feed several leaves,
             // keeping the I/O system ahead of the hashing pipeline.
-            var readBuffer = ArrayPool<byte>.Shared.Rent(this._blockSize * 8);
+            var readBuffer = ArrayPool<byte>.Shared.Rent(_blockSize * 8);
             try
             {
                 int bytesRead;
                 while ((bytesRead = await input.ReadAsync(readBuffer.AsMemory(0, readBuffer.Length), linked.Token)) > 0)
-                    this.ProcessBytes(readBuffer.AsSpan(0, bytesRead));
+                    ProcessBytes(readBuffer.AsSpan(0, bytesRead));
             }
             catch (Exception)
             {
-                await this.DrainWorkersAsync();
+                await DrainWorkersAsync();
                 throw;
             }
             finally
@@ -269,7 +269,7 @@ public sealed class ParallelMerkleTreeHash
                 ArrayPool<byte>.Shared.Return(readBuffer, clearArray: true);
             }
 
-            return await this.FinalizeAsync();
+            return await FinalizeAsync();
         }
         finally
         {
@@ -290,13 +290,13 @@ public sealed class ParallelMerkleTreeHash
     /// <exception cref="InvalidOperationException">No input data was provided.</exception>
     public byte[] ComputeHash(ReadOnlySpan<byte> data, MerkleTreeDiagnostics? diagnostics = null)
     {
-        this.Reset(diagnostics, this._cts.Token);
-        this.ProcessBytes(data);
+        Reset(diagnostics, _cts.Token);
+        ProcessBytes(data);
 
         // Task.Run escapes any captured synchronization context so that the async workers
         // (which themselves run on thread-pool threads) can complete without deadlocking.
 #pragma warning disable VSTHRD002 // Avoid problematic synchronous waits
-        return Task.Run(this.FinalizeAsync).GetAwaiter().GetResult();
+        return Task.Run(FinalizeAsync).GetAwaiter().GetResult();
 #pragma warning restore VSTHRD002
     }
 
@@ -316,7 +316,7 @@ public sealed class ParallelMerkleTreeHash
     {
         ArgumentNullException.ThrowIfNull(data);
 
-        return this.ComputeHash(new ReadOnlySpan<byte>(data), diagnostics);
+        return ComputeHash(new ReadOnlySpan<byte>(data), diagnostics);
     }
 
     /// <summary>
@@ -341,7 +341,7 @@ public sealed class ParallelMerkleTreeHash
     {
         ArgumentNullException.ThrowIfNull(data);
 
-        return this.ComputeHash(new ReadOnlySpan<byte>(data, offset, count), diagnostics);
+        return ComputeHash(new ReadOnlySpan<byte>(data, offset, count), diagnostics);
     }
 
     // -----------------------------------------------------------------------------------------
@@ -366,22 +366,22 @@ public sealed class ParallelMerkleTreeHash
     /// <param name="activeToken">The cancellation token associated with the current hashing session.</param>
     private void Reset(MerkleTreeDiagnostics? diagnostics, CancellationToken activeToken)
     {
-        this.ThrowIfDisposed();
+        ThrowIfDisposed();
 
         // Discard all channels and workers from the previous computation. By the time Reset is
         // called, FinalizeAsync has already awaited every worker to completion, so clearing these
         // dictionaries releases the completed tasks without risking a concurrent write.
-        this._levelChannels.Clear();
-        this._levelWorkers.Clear();
+        _levelChannels.Clear();
+        _levelWorkers.Clear();
 
-        this._bufferLength = 0;
-        this._leafIndex = 0;
-        this._rootHash = null;
-        this._diagnostics = diagnostics;
-        this._activeToken = activeToken;
+        _bufferLength = 0;
+        _leafIndex = 0;
+        _rootHash = null;
+        _diagnostics = diagnostics;
+        _activeToken = activeToken;
 
         // Recreate level 0 immediately so the producer can submit leaves without waiting.
-        this.EnsureLevelExists(0);
+        EnsureLevelExists(0);
     }
 
     // -----------------------------------------------------------------------------------------
@@ -397,15 +397,15 @@ public sealed class ParallelMerkleTreeHash
     {
         while (!data.IsEmpty)
         {
-            var toWrite = Math.Min(this._blockSize - this._bufferLength, data.Length);
-            data[..toWrite].CopyTo(this._blockBuffer.AsSpan(this._bufferLength));
-            this._bufferLength += toWrite;
+            var toWrite = Math.Min(_blockSize - _bufferLength, data.Length);
+            data[..toWrite].CopyTo(_blockBuffer.AsSpan(_bufferLength));
+            _bufferLength += toWrite;
             data = data[toWrite..];
 
-            if (this._bufferLength == this._blockSize)
+            if (_bufferLength == _blockSize)
             {
-                this.SubmitLeaf(this._blockBuffer, this._blockSize);
-                this._bufferLength = 0;
+                SubmitLeaf(_blockBuffer, _blockSize);
+                _bufferLength = 0;
             }
         }
     }
@@ -418,10 +418,10 @@ public sealed class ParallelMerkleTreeHash
     /// <param name="length">The number of valid bytes in <paramref name="data" />.</param>
     private void SubmitLeaf(byte[] data, int length)
     {
-        var hash = this.HashSpan(data.AsSpan(0, length));
-        this._diagnostics?.RecordLeaf(this._leafIndex, hash);
-        this.WriteToLevel(0, hash);
-        this._leafIndex++;
+        var hash = HashSpan(data.AsSpan(0, length));
+        _diagnostics?.RecordLeaf(_leafIndex, hash);
+        WriteToLevel(0, hash);
+        _leafIndex++;
     }
 
     // -----------------------------------------------------------------------------------------
@@ -438,7 +438,7 @@ public sealed class ParallelMerkleTreeHash
     {
         // TryWrite on an unbounded channel fails only if the channel has already been completed.
         // Under the correct bottom-up shutdown sequence this path must never be reached.
-        if (!this._levelChannels[level].Writer.TryWrite(hash))
+        if (!_levelChannels[level].Writer.TryWrite(hash))
         {
             throw new InvalidOperationException(
                 $"Write to level-{level} channel failed. The channel was completed before all nodes were submitted.");
@@ -453,12 +453,12 @@ public sealed class ParallelMerkleTreeHash
     private void EnsureLevelExists(int level)
     {
         // Fast path — no lock required once the entry is visible in the dictionary.
-        if (this._levelChannels.ContainsKey(level))
+        if (_levelChannels.ContainsKey(level))
             return;
 
-        lock (this._levelCreationLock)
+        lock (_levelCreationLock)
         {
-            if (this._levelChannels.ContainsKey(level))
+            if (_levelChannels.ContainsKey(level))
                 return;
 
             // SingleReader  = this level's worker.
@@ -474,8 +474,8 @@ public sealed class ParallelMerkleTreeHash
             };
 
             var channel = Channel.CreateUnbounded<byte[]>(options);
-            this._levelChannels[level] = channel;
-            this._levelWorkers[level] = Task.Run(() => this.RunLevelWorkerAsync(level, channel, this._activeToken));
+            _levelChannels[level] = channel;
+            _levelWorkers[level] = Task.Run(() => RunLevelWorkerAsync(level, channel, _activeToken));
         }
     }
 
@@ -527,7 +527,7 @@ public sealed class ParallelMerkleTreeHash
     /// </remarks>
     private async Task RunLevelWorkerAsync(int level, Channel<byte[]> channel, CancellationToken token)
     {
-        var pending = new List<byte[]>(this._fanOut);
+        var pending = new List<byte[]>(_fanOut);
         var parentIndex = 0;
 
         // Drain the channel. The worker below runs concurrently, so tree reduction at this
@@ -536,13 +536,13 @@ public sealed class ParallelMerkleTreeHash
         {
             pending.Add(hash);
 
-            if (pending.Count == this._fanOut)
+            if (pending.Count == _fanOut)
             {
-                var parentHash = this.CombineAndHash(pending, level, parentIndex);
+                var parentHash = CombineAndHash(pending, level, parentIndex);
                 parentIndex++;
                 pending.Clear();
-                this.EnsureLevelExists(level + 1);
-                this.WriteToLevel(level + 1, parentHash);
+                EnsureLevelExists(level + 1);
+                WriteToLevel(level + 1, parentHash);
             }
         }
 
@@ -553,17 +553,17 @@ public sealed class ParallelMerkleTreeHash
                 // All nodes were promoted in full groups; nothing left to handle here.
                 break;
 
-            case 1 when !this._levelChannels.ContainsKey(level + 1):
+            case 1 when !_levelChannels.ContainsKey(level + 1):
                 // Single surviving node with no higher level: this is the Merkle root.
-                this._rootHash = pending[0];
+                _rootHash = pending[0];
                 break;
 
             default:
                 // Partial group, or a lone node alongside a pre-existing higher level:
                 // combine and promote so the next worker can make the root determination.
-                var remainderHash = this.CombineAndHash(pending, level, parentIndex);
-                this.EnsureLevelExists(level + 1);
-                this.WriteToLevel(level + 1, remainderHash);
+                var remainderHash = CombineAndHash(pending, level, parentIndex);
+                EnsureLevelExists(level + 1);
+                WriteToLevel(level + 1, remainderHash);
                 break;
         }
     }
@@ -591,16 +591,16 @@ public sealed class ParallelMerkleTreeHash
         // Zero-pad the partial tail block to a full block size before hashing, so that every
         // leaf is the same width regardless of input alignment. The bytes beyond _bufferLength
         // in _blockBuffer are cleared explicitly since the buffer is reused across calls.
-        if (this._bufferLength > 0)
+        if (_bufferLength > 0)
         {
-            CryptoHelpers.Clear(this._blockBuffer.AsSpan(this._bufferLength, this._blockSize - this._bufferLength));
-            this.SubmitLeaf(this._blockBuffer, this._blockSize);
-            this._bufferLength = 0;
+            CryptoHelpers.Clear(_blockBuffer.AsSpan(_bufferLength, _blockSize - _bufferLength));
+            SubmitLeaf(_blockBuffer, _blockSize);
+            _bufferLength = 0;
         }
 
         // Complete → await → advance: each iteration closes one level and waits for its
         // worker to finish all promotions before the next level's channel is closed.
-        for (var level = 0; this._levelChannels.TryGetValue(level, out Channel<byte[]>? channel); level++)
+        for (var level = 0; _levelChannels.TryGetValue(level, out Channel<byte[]>? channel); level++)
         {
             channel.Writer.Complete();
 
@@ -608,11 +608,11 @@ public sealed class ParallelMerkleTreeHash
             // SubmitLeaf. Awaiting it here is correct: sequential bottom-up draining requires
             // that level N finishes before level N+1 is closed.
 #pragma warning disable VSTHRD003 // Avoid awaiting foreign Tasks
-            await this._levelWorkers[level].ConfigureAwait(false);
+            await _levelWorkers[level].ConfigureAwait(false);
 #pragma warning restore VSTHRD003
         }
 
-        return this._rootHash ?? throw new InvalidOperationException(
+        return _rootHash ?? throw new InvalidOperationException(
             CryptoResourceStrings.Op_Invalid_NoInputData);
     }
 
@@ -631,13 +631,13 @@ public sealed class ParallelMerkleTreeHash
     /// <returns>A task that completes when every level worker has drained and exited.</returns>
     private async Task DrainWorkersAsync()
     {
-        for (var level = 0; this._levelChannels.TryGetValue(level, out Channel<byte[]>? channel); level++)
+        for (var level = 0; _levelChannels.TryGetValue(level, out Channel<byte[]>? channel); level++)
         {
             channel.Writer.TryComplete();
 #pragma warning disable VSTHRD003 // Avoid awaiting foreign Tasks
             try
             {
-                await this._levelWorkers[level].ConfigureAwait(false);
+                await _levelWorkers[level].ConfigureAwait(false);
             }
 #pragma warning restore VSTHRD003
             catch
@@ -661,7 +661,7 @@ public sealed class ParallelMerkleTreeHash
     /// <returns>The hash computed by a freshly-created <see cref="HashAlgorithm" />.</returns>
     private byte[] HashSpan(ReadOnlySpan<byte> data)
     {
-        using HashAlgorithm hasher = this._algorithmFactory();
+        using HashAlgorithm hasher = _algorithmFactory();
         var result = new byte[hasher.HashSize / 8];
         CryptoHelpers.ThrowIfHashAlgorithmDestinationTooSmall(
             hasher.TryComputeHash(data, result, out _));
@@ -689,7 +689,7 @@ public sealed class ParallelMerkleTreeHash
     /// <returns>The combined parent hash.</returns>
     private byte[] CombineAndHash(List<byte[]> hashes, int sourceLevel, int parentIndex)
     {
-        using HashAlgorithm hasher = this._algorithmFactory();
+        using HashAlgorithm hasher = _algorithmFactory();
 
         // Feed all but the last child via TransformBlock — purely state accumulation, no output.
         for (var i = 0; i < hashes.Count - 1; i++)
@@ -703,10 +703,10 @@ public sealed class ParallelMerkleTreeHash
         // Snapshot child hashes and record the node only when diagnostics are active.
         // Keeping the snapshot and the recording in the same guarded block makes the
         // nullability relationship self-evident and avoids any suppression operator.
-        if (this._diagnostics is not null)
+        if (_diagnostics is not null)
         {
             var childSnapshots = hashes.ConvertAll(static h => (byte[])h.Clone()).ToArray();
-            this._diagnostics.RecordInternal(sourceLevel + 1, parentIndex, childSnapshots, result);
+            _diagnostics.RecordInternal(sourceLevel + 1, parentIndex, childSnapshots, result);
         }
 
         return result;
@@ -725,18 +725,18 @@ public sealed class ParallelMerkleTreeHash
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ThrowIfDisposed() =>
 #if NET8_0_OR_GREATER
-        ObjectDisposedException.ThrowIf(this._disposed, this);
+        ObjectDisposedException.ThrowIf(_disposed, this);
 #else
-        if (this._disposed)
-            throw new ObjectDisposedException(this.GetType().Name);
+        if (_disposed)
+            throw new ObjectDisposedException(GetType().Name);
 #endif
 
     /// <inheritdoc />
     public void Dispose()
     {
-        if (this._disposed) return;
-        this._disposed = true;
-        this._cts.Cancel();
-        this._cts.Dispose();
+        if (_disposed) return;
+        _disposed = true;
+        _cts.Cancel();
+        _cts.Dispose();
     }
 }

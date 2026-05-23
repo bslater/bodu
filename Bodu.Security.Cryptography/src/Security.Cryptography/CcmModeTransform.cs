@@ -119,10 +119,10 @@ public sealed class CcmModeTransform
     {
         ThrowHelper.ThrowIfNull(cipher);
         CryptoHelpers.ThrowIfIvLengthInvalid(iv, cipher.BlockSize);
-        this._cipher = cipher;
+        _cipher = cipher;
 
-        this._nonce = new byte[NonceSizeBits / 8];
-        iv.AsSpan(0, NonceSizeBits / 8).CopyTo(this._nonce);
+        _nonce = new byte[NonceSizeBits / 8];
+        iv.AsSpan(0, NonceSizeBits / 8).CopyTo(_nonce);
     }
 
     /// <inheritdoc />
@@ -132,18 +132,18 @@ public sealed class CcmModeTransform
     /// <inheritdoc />
     public void ProcessAssociatedData(ReadOnlySpan<byte> associatedData)
     {
-        this.ThrowIfDisposed();
+        ThrowIfDisposed();
 
-        CryptoHelpers.ThrowIfAssociatedDataAlreadyProcessed(this._aadProcessed);
+        CryptoHelpers.ThrowIfAssociatedDataAlreadyProcessed(_aadProcessed);
 
-        this._aad = associatedData.ToArray();
-        this._aadProcessed = true;
+        _aad = associatedData.ToArray();
+        _aadProcessed = true;
     }
 
     /// <inheritdoc />
     public int Encrypt(ReadOnlySpan<byte> plaintext, Span<byte> output)
     {
-        this.ThrowIfDisposed();
+        ThrowIfDisposed();
         ThrowIfCompleted();
 
         var required = plaintext.Length + (TagSizeBits / 8);
@@ -151,19 +151,19 @@ public sealed class CcmModeTransform
 
         EnsureAadProcessed();
 
-        var mac = ComputeCbcMac(this._aad.AsSpan(), plaintext);
+        var mac = ComputeCbcMac(_aad.AsSpan(), plaintext);
         var encTag = XorWithCtrBlock(mac, counterIndex: 0);
 
         EncryptCtr(plaintext, output[..plaintext.Length], startIndex: 1);
         encTag.AsSpan(0, TagSizeBits / 8).CopyTo(output[plaintext.Length..]);
-        this._completed = true;
+        _completed = true;
         return required;
     }
 
     /// <inheritdoc />
     public int Decrypt(ReadOnlySpan<byte> ciphertextWithTag, Span<byte> output)
     {
-        this.ThrowIfDisposed();
+        ThrowIfDisposed();
         ThrowIfCompleted();
 
         CryptoHelpers.ThrowIfCiphertextTooShort(ciphertextWithTag, TagSizeBits / 8);
@@ -178,17 +178,17 @@ public sealed class CcmModeTransform
 
         EncryptCtr(ciphertext, output[..plaintextLength], startIndex: 1);
 
-        var mac = ComputeCbcMac(this._aad.AsSpan(), output[..plaintextLength]);
+        var mac = ComputeCbcMac(_aad.AsSpan(), output[..plaintextLength]);
         var encTag = XorWithCtrBlock(mac, counterIndex: 0);
 
         if (!CryptographicOperations.FixedTimeEquals(encTag.AsSpan(0, TagSizeBits / 8), receivedTag))
         {
             CryptographicOperations.ZeroMemory(output[..plaintextLength]);
-            this._completed = true;
+            _completed = true;
             throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_AuthenticationTagMismatch);
         }
 
-        this._completed = true;
+        _completed = true;
         return plaintextLength;
     }
 
@@ -200,7 +200,7 @@ public sealed class CcmModeTransform
     /// </remarks>
     public void Dispose()
     {
-        this.Dispose(disposing: true);
+        Dispose(disposing: true);
         GC.SuppressFinalize(this);
     }
 
@@ -209,7 +209,7 @@ public sealed class CcmModeTransform
     /// CCM transforms are single-use; create a fresh instance per message.
     /// </summary>
     private void ThrowIfCompleted() =>
-        CryptoHelpers.ThrowIfAlreadyCompleted(this._completed);
+        CryptoHelpers.ThrowIfAlreadyCompleted(_completed);
 
     /// <summary>
     /// Releases the resources used by this instance.
@@ -220,18 +220,18 @@ public sealed class CcmModeTransform
     /// </param>
     private void Dispose(bool disposing)
     {
-        if (this._disposed)
+        if (_disposed)
             return;
 
         if (disposing)
         {
-            CryptoHelpers.Clear(this._nonce);
-            CryptoHelpers.ClearAndNullify(ref this._aad);
+            CryptoHelpers.Clear(_nonce);
+            CryptoHelpers.ClearAndNullify(ref _aad);
 
-            this._aadProcessed = false;
+            _aadProcessed = false;
         }
 
-        this._disposed = true;
+        _disposed = true;
     }
 
     // ── Private helpers ────────────────────────────────────────────────────────────────────────
@@ -242,10 +242,10 @@ public sealed class CcmModeTransform
     /// </summary>
     private void EnsureAadProcessed()
     {
-        if (!this._aadProcessed)
+        if (!_aadProcessed)
         {
-            this._aad = [];
-            this._aadProcessed = true;
+            _aad = [];
+            _aadProcessed = true;
         }
     }
 
@@ -257,14 +257,14 @@ public sealed class CcmModeTransform
     /// <returns>The computed CBC-MAC tag, truncated to the configured tag length.</returns>
     private byte[] ComputeCbcMac(ReadOnlySpan<byte> aad, ReadOnlySpan<byte> plaintext)
     {
-        var blockSize = this._cipher.BlockSize / 8;
+        var blockSize = _cipher.BlockSize / 8;
         var mac = new byte[blockSize];
 
         // Block B0.
         var hasAad = aad.Length > 0;
         var b0 = new byte[blockSize];
         b0[0] = hasAad ? BaseB0WithAad : BaseB0NoAad;
-        this._nonce.CopyTo(b0, 1);
+        _nonce.CopyTo(b0, 1);
 
         // Message length in last 3 bytes (big-endian, q=3).
         var len = (uint)plaintext.Length;
@@ -314,7 +314,7 @@ public sealed class CcmModeTransform
     {
         Span<byte> xored = stackalloc byte[mac.Length];
         for (var i = 0; i < mac.Length; i++) xored[i] = (byte)(mac[i] ^ block[i]);
-        this._cipher.Encrypt(xored, mac);
+        _cipher.Encrypt(xored, mac);
     }
 
     /// <summary>
@@ -325,19 +325,19 @@ public sealed class CcmModeTransform
     /// <returns>A fresh array holding <c>input XOR keystream</c>.</returns>
     private byte[] XorWithCtrBlock(ReadOnlySpan<byte> input, int counterIndex)
     {
-        var blockSize = this._cipher.BlockSize / 8;
+        var blockSize = _cipher.BlockSize / 8;
         var ctr = new byte[blockSize];
 
         ctr[0] = CounterFlagByte;
 
-        this._nonce.CopyTo(ctr, 1);
+        _nonce.CopyTo(ctr, 1);
 
         ctr[15] = (byte)counterIndex;
         ctr[14] = (byte)(counterIndex >> 8);
         ctr[13] = (byte)(counterIndex >> 16);
 
         var ks = new byte[blockSize];
-        this._cipher.Encrypt(ctr, ks);
+        _cipher.Encrypt(ctr, ks);
 
         for (var i = 0; i < Math.Min(input.Length, blockSize); i++)
             ks[i] ^= input[i];
@@ -354,7 +354,7 @@ public sealed class CcmModeTransform
     /// <param name="startIndex">The starting counter-block index in the CTR sequence.</param>
     private void EncryptCtr(ReadOnlySpan<byte> input, Span<byte> output, int startIndex)
     {
-        var blockSize = this._cipher.BlockSize / 8;
+        var blockSize = _cipher.BlockSize / 8;
         Span<byte> ks = stackalloc byte[blockSize];
 
         for (var offset = 0; offset < input.Length; offset += blockSize)
@@ -364,13 +364,13 @@ public sealed class CcmModeTransform
 
             ctr[0] = CounterFlagByte;
 
-            this._nonce.CopyTo(ctr, 1);
+            _nonce.CopyTo(ctr, 1);
 
             ctr[15] = (byte)idx;
             ctr[14] = (byte)(idx >> 8);
             ctr[13] = (byte)(idx >> 16);
 
-            this._cipher.Encrypt(ctr, ks);
+            _cipher.Encrypt(ctr, ks);
 
             var rem = Math.Min(blockSize, input.Length - offset);
 
@@ -388,10 +388,10 @@ public sealed class CcmModeTransform
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ThrowIfDisposed() =>
 #if NET8_0_OR_GREATER
-        ObjectDisposedException.ThrowIf(this._disposed, this);
+        ObjectDisposedException.ThrowIf(_disposed, this);
 #else
-        if (this._disposed)
-            throw new ObjectDisposedException(this.GetType().Name);
+        if (_disposed)
+            throw new ObjectDisposedException(GetType().Name);
 #endif
 
 }

@@ -118,7 +118,7 @@ public sealed class TwofishBlockCipher
                 nameof(key));
         }
 
-        this.InitializeKeySchedule(key);
+        InitializeKeySchedule(key);
     }
 
     /// <inheritdoc />
@@ -127,22 +127,22 @@ public sealed class TwofishBlockCipher
     /// <inheritdoc />
     public void Dispose()
     {
-        if (!this._disposed)
+        if (!_disposed)
         {
-            CryptoHelpers.Clear(this._k);
-            CryptoHelpers.Clear(this._s1);
-            CryptoHelpers.Clear(this._s2);
-            CryptoHelpers.Clear(this._s3);
-            CryptoHelpers.Clear(this._s4);
+            CryptoHelpers.Clear(_k);
+            CryptoHelpers.Clear(_s1);
+            CryptoHelpers.Clear(_s2);
+            CryptoHelpers.Clear(_s3);
+            CryptoHelpers.Clear(_s4);
 
-            this._disposed = true;
+            _disposed = true;
         }
     }
 
     /// <inheritdoc />
     public void Encrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
-        this.ThrowIfDisposed();
+        ThrowIfDisposed();
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(input, Twofish.BlockSizeBits / 8);
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, Twofish.BlockSizeBits / 8);
 
@@ -154,10 +154,10 @@ public sealed class TwofishBlockCipher
         var r3 = BinaryPrimitives.ReadUInt32LittleEndian(input[12..]);
 
         // Input whitening: R0..R3 = P0..P3 xor K0..K3.
-        r0 ^= this._k[0];
-        r1 ^= this._k[1];
-        r2 ^= this._k[2];
-        r3 ^= this._k[3];
+        r0 ^= _k[0];
+        r1 ^= _k[1];
+        r2 ^= _k[2];
+        r3 ^= _k[3];
 
         // Each loop body performs two Twofish rounds. The first half-round pair applies F(R0, R1)
         // to R2/R3; the second applies F(R2, R3) to R0/R1. This preserves the specified Feistel swap
@@ -166,34 +166,34 @@ public sealed class TwofishBlockCipher
         {
             // Round i/2: compute T0 = g(R0) and T1 = g(ROL(R1, 8)), then combine them through
             // the pseudo-Hadamard transform with round subkeys K8+i and K9+i.
-            var t0 = this.G0(r0);
-            var t1 = this.G1(r1);
+            var t0 = G0(r0);
+            var t1 = G1(r1);
 
             // R2 is xor-mixed with F0, then rotated right as defined by the Twofish round function.
-            r2 ^= t0 + t1 + this._k[8 + i];
+            r2 ^= t0 + t1 + _k[8 + i];
             r2 = RotateRight(r2, 1);
 
             // R3 is rotated left before xor-mixing with F1.
             r3 = RotateLeft(r3, 1);
-            r3 ^= t0 + (t1 << 1) + this._k[9 + i];
+            r3 ^= t0 + (t1 << 1) + _k[9 + i];
 
             // Round i/2 + 1: repeat the same F construction on the other word pair.
-            t0 = this.G0(r2);
-            t1 = this.G1(r3);
+            t0 = G0(r2);
+            t1 = G1(r3);
 
-            r0 ^= t0 + t1 + this._k[10 + i];
+            r0 ^= t0 + t1 + _k[10 + i];
             r0 = RotateRight(r0, 1);
 
             r1 = RotateLeft(r1, 1);
-            r1 ^= t0 + (t1 << 1) + this._k[11 + i];
+            r1 ^= t0 + (t1 << 1) + _k[11 + i];
         }
 
         // Output whitening is applied after the final Feistel swap. Twofish emits C0..C3 as
         // R2^K4, R3^K5, R0^K6, R1^K7.
-        r2 ^= this._k[4];
-        r3 ^= this._k[5];
-        r0 ^= this._k[6];
-        r1 ^= this._k[7];
+        r2 ^= _k[4];
+        r3 ^= _k[5];
+        r0 ^= _k[6];
+        r1 ^= _k[7];
 
         BinaryPrimitives.WriteUInt32LittleEndian(output, r2);
         BinaryPrimitives.WriteUInt32LittleEndian(output[4..], r3);
@@ -204,7 +204,7 @@ public sealed class TwofishBlockCipher
     /// <inheritdoc />
     public void Decrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
-        this.ThrowIfDisposed();
+        ThrowIfDisposed();
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(input, Twofish.BlockSizeBits / 8);
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, Twofish.BlockSizeBits / 8);
 
@@ -216,42 +216,42 @@ public sealed class TwofishBlockCipher
         var r1 = BinaryPrimitives.ReadUInt32LittleEndian(input[12..]);
 
         // Remove output whitening before walking the round function backwards.
-        r2 ^= this._k[4];
-        r3 ^= this._k[5];
-        r0 ^= this._k[6];
-        r1 ^= this._k[7];
+        r2 ^= _k[4];
+        r3 ^= _k[5];
+        r0 ^= _k[6];
+        r1 ^= _k[7];
 
         // Invert two encryption rounds at a time, consuming the round subkeys in reverse order.
         for (var i = 0; i < 2 * Rounds; i += 4)
         {
             // Invert the second encryption round of the corresponding pair.
-            var t0 = this.G0(r2);
-            var t1 = this.G1(r3);
+            var t0 = G0(r2);
+            var t1 = G1(r3);
 
             // Undo the encryption order for R0: rotate left first, then remove the xor-mixed F0 value.
             r0 = RotateLeft(r0, 1);
-            r0 ^= t0 + t1 + this._k[38 - i];
+            r0 ^= t0 + t1 + _k[38 - i];
 
             // Undo the encryption order for R1: remove the xor-mixed F1 value, then rotate right.
-            r1 ^= t0 + (t1 << 1) + this._k[39 - i];
+            r1 ^= t0 + (t1 << 1) + _k[39 - i];
             r1 = RotateRight(r1, 1);
 
             // Invert the first encryption round of the corresponding pair.
-            t0 = this.G0(r0);
-            t1 = this.G1(r1);
+            t0 = G0(r0);
+            t1 = G1(r1);
 
             r2 = RotateLeft(r2, 1);
-            r2 ^= t0 + t1 + this._k[36 - i];
+            r2 ^= t0 + t1 + _k[36 - i];
 
-            r3 ^= t0 + (t1 << 1) + this._k[37 - i];
+            r3 ^= t0 + (t1 << 1) + _k[37 - i];
             r3 = RotateRight(r3, 1);
         }
 
         // Remove input whitening to recover P0..P3.
-        r0 ^= this._k[0];
-        r1 ^= this._k[1];
-        r2 ^= this._k[2];
-        r3 ^= this._k[3];
+        r0 ^= _k[0];
+        r1 ^= _k[1];
+        r2 ^= _k[2];
+        r3 ^= _k[3];
 
         BinaryPrimitives.WriteUInt32LittleEndian(output, r0);
         BinaryPrimitives.WriteUInt32LittleEndian(output[4..], r1);
@@ -314,10 +314,10 @@ public sealed class TwofishBlockCipher
         // and the fixed MDS multiplication used by g().
         for (var i = 0; i < SBoxLength; i++)
         {
-            this._s1[i] = HSub((byte)i, s, keyWords, 0);
-            this._s2[i] = HSub((byte)i, s, keyWords, 1);
-            this._s3[i] = HSub((byte)i, s, keyWords, 2);
-            this._s4[i] = HSub((byte)i, s, keyWords, 3);
+            _s1[i] = HSub((byte)i, s, keyWords, 0);
+            _s2[i] = HSub((byte)i, s, keyWords, 1);
+            _s3[i] = HSub((byte)i, s, keyWords, 2);
+            _s4[i] = HSub((byte)i, s, keyWords, 3);
         }
 
         // Generate two expanded key words per iteration. A = h(2i, Me), B = ROL(h(2i+1, Mo), 8),
@@ -328,10 +328,10 @@ public sealed class TwofishBlockCipher
             var b = RotateLeft(H((byte)((2 * i) + 1), mo, keyWords), 8);
 
             a += b;
-            this._k[2 * i] = a;
+            _k[2 * i] = a;
 
             a += b;
-            this._k[(2 * i) + 1] = RotateLeft(a, 9);
+            _k[(2 * i) + 1] = RotateLeft(a, 9);
         }
     }
 
@@ -347,10 +347,10 @@ public sealed class TwofishBlockCipher
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private uint G0(uint x) =>
-        this._s1[x & 0xFF] ^
-        this._s2[(x >> 8) & 0xFF] ^
-        this._s3[(x >> 16) & 0xFF] ^
-        this._s4[(x >> 24) & 0xFF];
+        _s1[x & 0xFF] ^
+        _s2[(x >> 8) & 0xFF] ^
+        _s3[(x >> 16) & 0xFF] ^
+        _s4[(x >> 24) & 0xFF];
 
     /// <summary>
     /// Evaluates the Twofish g() function for the second round input word.
@@ -365,10 +365,10 @@ public sealed class TwofishBlockCipher
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private uint G1(uint x) =>
-        this._s2[x & 0xFF] ^
-        this._s3[(x >> 8) & 0xFF] ^
-        this._s4[(x >> 16) & 0xFF] ^
-        this._s1[(x >> 24) & 0xFF];
+        _s2[x & 0xFF] ^
+        _s3[(x >> 8) & 0xFF] ^
+        _s4[(x >> 16) & 0xFF] ^
+        _s1[(x >> 24) & 0xFF];
 
     /// <summary>
     /// Applies the Twofish h() function to a repeated byte value using the supplied key-word stream.
@@ -568,10 +568,10 @@ public sealed class TwofishBlockCipher
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ThrowIfDisposed() =>
 #if NET8_0_OR_GREATER
-        ObjectDisposedException.ThrowIf(this._disposed, this);
+        ObjectDisposedException.ThrowIf(_disposed, this);
 #else
-        if (this._disposed)
-            throw new ObjectDisposedException(this.GetType().Name);
+        if (_disposed)
+            throw new ObjectDisposedException(GetType().Name);
 #endif
 
 }
