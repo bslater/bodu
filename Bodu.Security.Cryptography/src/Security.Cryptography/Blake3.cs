@@ -6,6 +6,7 @@
 
 using System.Buffers.Binary;
 using System.Runtime.CompilerServices;
+using System.Runtime.Intrinsics.X86;
 using System.Security.Cryptography;
 using Bodu.Extensions;
 
@@ -81,7 +82,7 @@ namespace Bodu.Security.Cryptography;
 /// </code>
 /// </example>
 /// <seealso cref="Blake2b"/> <seealso cref="Blake2s"/>
-public sealed class Blake3
+public sealed partial class Blake3
     : DeferredFinalBlockHashAlgorithm<Blake3>
 {
 
@@ -353,8 +354,27 @@ public sealed class Blake3
     /// A 16-element array containing the post-compression state, whose first eight words form the updated chaining
     /// value.
     /// </returns>
+    /// <remarks>
+    /// Dispatches to an AVX-512 vectorised implementation when supported by the host, falling back to a
+    /// scalar reference implementation otherwise. <see cref="Avx512F.VL.IsSupported" /> is a JIT intrinsic
+    /// that folds to a compile-time constant, so the branch carries no runtime cost.
+    /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static uint[] Compress(uint[] cv, uint[] blockWords, ulong counter, uint blockLen, uint flags)
+    {
+        if (Avx512F.VL.IsSupported)
+            return CompressAvx512(cv, blockWords, counter, blockLen, flags);
+
+        return CompressScalar(cv, blockWords, counter, blockLen, flags);
+    }
+
+    /// <summary>
+    /// Scalar reference implementation of the BLAKE3 compression function used as a fallback on hosts
+    /// without AVX-512 + VL support. Implements §2.4 of the BLAKE3 specification directly on a 16-element
+    /// <see cref="uint" /> array.
+    /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+    private static uint[] CompressScalar(uint[] cv, uint[] blockWords, ulong counter, uint blockLen, uint flags)
     {
         var state = new uint[16];
 
