@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Buffers.Binary;
 using System.Runtime.CompilerServices;
 
 namespace Bodu.Security.Cryptography;
@@ -415,10 +416,10 @@ public sealed class SkipjackBlockCipher
 
         // Ciphertext is emitted by encryption as w1,w2,w3,w4. The inverse formulation loads it as
         // w2,w1,w4,w3 so that the following reverse Rule B/Rule A operations mirror the reference implementation.
-        var w2 = (input[0] << 8) + (input[1] & 0xff);
-        var w1 = (input[2] << 8) + (input[3] & 0xff);
-        var w4 = (input[4] << 8) + (input[5] & 0xff);
-        var w3 = (input[6] << 8) + (input[7] & 0xff);
+        var w2 = (int)BinaryPrimitives.ReadUInt16BigEndian(input);
+        var w1 = (int)BinaryPrimitives.ReadUInt16BigEndian(input[2..]);
+        var w4 = (int)BinaryPrimitives.ReadUInt16BigEndian(input[4..]);
+        var w3 = (int)BinaryPrimitives.ReadUInt16BigEndian(input[6..]);
 
         // Start from round 32. The round counter k is zero-based internally, while the Skipjack counter value
         // inserted into Rule A/Rule B is k + 1.
@@ -452,14 +453,10 @@ public sealed class SkipjackBlockCipher
         }
 
         // Store the recovered plaintext in the Skipjack 4-word big-endian block order.
-        output[0] = (byte)(w2 >> 8);
-        output[1] = (byte)w2;
-        output[2] = (byte)(w1 >> 8);
-        output[3] = (byte)w1;
-        output[4] = (byte)(w4 >> 8);
-        output[5] = (byte)w4;
-        output[6] = (byte)(w3 >> 8);
-        output[7] = (byte)w3;
+        BinaryPrimitives.WriteUInt16BigEndian(output, (ushort)w2);
+        BinaryPrimitives.WriteUInt16BigEndian(output[2..], (ushort)w1);
+        BinaryPrimitives.WriteUInt16BigEndian(output[4..], (ushort)w4);
+        BinaryPrimitives.WriteUInt16BigEndian(output[6..], (ushort)w3);
     }
 
     /// <summary>
@@ -499,10 +496,10 @@ public sealed class SkipjackBlockCipher
 
         // Split the 64-bit plaintext block into four big-endian 16-bit words W1..W4, matching the Skipjack
         // reference algorithm's word-oriented round descriptions.
-        var w1 = (input[0] << 8) + (input[1] & 0xff);
-        var w2 = (input[2] << 8) + (input[3] & 0xff);
-        var w3 = (input[4] << 8) + (input[5] & 0xff);
-        var w4 = (input[6] << 8) + (input[7] & 0xff);
+        var w1 = (int)BinaryPrimitives.ReadUInt16BigEndian(input);
+        var w2 = (int)BinaryPrimitives.ReadUInt16BigEndian(input[2..]);
+        var w3 = (int)BinaryPrimitives.ReadUInt16BigEndian(input[4..]);
+        var w4 = (int)BinaryPrimitives.ReadUInt16BigEndian(input[6..]);
 
         // k is the zero-based round-key index. The Skipjack rule counter value used by the round equations is k + 1.
         var k = 0;
@@ -538,14 +535,10 @@ public sealed class SkipjackBlockCipher
         }
 
         // Store the ciphertext as four big-endian 16-bit words in W1..W4 order.
-        output[0] = (byte)(w1 >> 8);
-        output[1] = (byte)w1;
-        output[2] = (byte)(w2 >> 8);
-        output[3] = (byte)w2;
-        output[4] = (byte)(w3 >> 8);
-        output[5] = (byte)w3;
-        output[6] = (byte)(w4 >> 8);
-        output[7] = (byte)w4;
+        BinaryPrimitives.WriteUInt16BigEndian(output, (ushort)w1);
+        BinaryPrimitives.WriteUInt16BigEndian(output[2..], (ushort)w2);
+        BinaryPrimitives.WriteUInt16BigEndian(output[4..], (ushort)w3);
+        BinaryPrimitives.WriteUInt16BigEndian(output[6..], (ushort)w4);
     }
 
     /// <summary>

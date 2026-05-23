@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Buffers.Binary;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -214,6 +215,46 @@ public abstract partial class ThreefishBlockCipher
         b ^= a;
         b = BitOperations.RotateRight(b, rotation);
         a -= b;
+    }
+
+    /// <summary>
+    /// Loads a 64-bit little-endian word from <paramref name="source" /> at <paramref name="byteOffset" /> bytes from
+    /// the reference, without bounds-checking or alignment requirements on the source buffer.
+    /// </summary>
+    /// <param name="source">A reference to the first byte of the source buffer.</param>
+    /// <param name="byteOffset">The byte offset within the buffer at which to read.</param>
+    /// <returns>The 64-bit unsigned integer read from the source, with little-endian semantics.</returns>
+    /// <remarks>
+    /// On little-endian hosts (the common case for .NET 8 targets) the byte-swap branch folds away and the call
+    /// compiles to a single unaligned 64-bit load. Used by the Threefish variants to materialise block words
+    /// directly into stack-local registers, eliminating the intermediate <c>stackalloc</c> + <c>CopyTo</c> staging
+    /// buffer in the per-block hot path.
+    /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private protected static ulong LoadWordLittleEndian(ref byte source, nint byteOffset)
+    {
+        ulong value = Unsafe.ReadUnaligned<ulong>(ref Unsafe.AddByteOffset(ref source, byteOffset));
+        return BitConverter.IsLittleEndian ? value : BinaryPrimitives.ReverseEndianness(value);
+    }
+
+    /// <summary>
+    /// Stores a 64-bit unsigned integer into <paramref name="destination" /> at <paramref name="byteOffset" /> bytes
+    /// from the reference using little-endian byte order, without bounds-checking or alignment requirements.
+    /// </summary>
+    /// <param name="destination">A reference to the first byte of the destination buffer.</param>
+    /// <param name="byteOffset">The byte offset within the buffer at which to write.</param>
+    /// <param name="value">The 64-bit unsigned integer to store.</param>
+    /// <remarks>
+    /// On little-endian hosts the byte-swap branch folds away and the call compiles to a single unaligned 64-bit
+    /// store. Mirrors <see cref="LoadWordLittleEndian" /> on the output side, allowing the per-block hot path to
+    /// commit cipher state to the output buffer straight from registers.
+    /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private protected static void StoreWordLittleEndian(ref byte destination, nint byteOffset, ulong value)
+    {
+        if (!BitConverter.IsLittleEndian)
+            value = BinaryPrimitives.ReverseEndianness(value);
+        Unsafe.WriteUnaligned(ref Unsafe.AddByteOffset(ref destination, byteOffset), value);
     }
 
     /// <summary>

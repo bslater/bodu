@@ -1,10 +1,12 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ThreefishBlockCipher.256.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Runtime.Intrinsics.X86;
 
 namespace Bodu.Security.Cryptography;
 
@@ -46,7 +48,7 @@ namespace Bodu.Security.Cryptography;
 /// </example>
 /// <seealso href="../guides/cryptography/composing-primitives.html">Composing primitives — direct use vs.
 /// SymmetricAlgorithm</seealso> <seealso cref="Threefish256"/>
-public sealed class Threefish256Cipher
+public sealed partial class Threefish256Cipher
     : ThreefishBlockCipher
 {
     /// <summary>
@@ -62,6 +64,20 @@ public sealed class Threefish256Cipher
     /// </summary>
     public const int KeySize = 256;
 
+    // Spec-defined rotation constants for Threefish-256. Declared as named const ints so the JIT can
+    // fold each Mix/Unmix call to a ROL/ROR with an immediate count, and so all 16 values live in one
+    // place rather than being duplicated between Encrypt, Decrypt, and the public RotationSchedule.
+    private const int R0 = 14, R1 = 16, R2 = 52, R3 = 57;
+    private const int R4 = 23, R5 = 40, R6 = 5, R7 = 37;
+    private const int R8 = 25, R9 = 33, R10 = 46, R11 = 12;
+    private const int R12 = 58, R13 = 22, R14 = 32, R15 = 32;
+
+    private static readonly int[] s_rotationSchedule =
+    [
+        R0, R1, R2, R3, R4, R5, R6, R7,
+        R8, R9, R10, R11, R12, R13, R14, R15,
+    ];
+
     /// <inheritdoc />
     /// <value>Length of the Threefish-256 block is 256 bits (32 bytes).</value>
     public override int BlockSize => 256;
@@ -70,25 +86,7 @@ public sealed class Threefish256Cipher
     protected override int BlockWords => 4;
 
     /// <inheritdoc />
-    protected override int[] RotationSchedule =>
-    [
-        14,
-        16,
-        52,
-        57,
-        23,
-        40,
-        5,
-        37,
-        25,
-        33,
-        46,
-        12,
-        58,
-        22,
-        32,
-        32
-    ];
+    protected override int[] RotationSchedule => s_rotationSchedule;
 
     /// <inheritdoc />
     protected override int Rounds => 72;
@@ -103,67 +101,106 @@ public sealed class Threefish256Cipher
     /// <exception cref="ArgumentException">
     /// Thrown if <paramref name="input" /> or <paramref name="output" /> is not 32 bytes.
     /// </exception>
+    /// <remarks>
+    /// Dispatches to an AVX-512 vectorised implementation when supported by the host, falling back to a
+    /// scalar register-resident implementation otherwise. <see cref="Avx512F.VL.IsSupported" /> is a JIT
+    /// intrinsic that folds to a compile-time constant, so the branch carries no runtime cost.
+    /// </remarks>
     public override void Decrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
         this.ThrowIfDisposed();
-        if (input.Length != this.BlockSize / 8 || output.Length != this.BlockSize / 8)
+        if (input.Length != 32 || output.Length != 32)
         {
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.Crypt_Invalid_BlockLength, this.BlockSize / 8));
+                string.Format(CryptoResourceStrings.Crypt_Invalid_BlockLength, 32));
         }
 
-        Span<ulong> block = stackalloc ulong[this.BlockWords];
-        MemoryMarshal.Cast<byte, ulong>(input).CopyTo(block);
+        if (Avx512F.VL.IsSupported)
+        {
+            this.DecryptAvx512(input, output);
+            return;
+        }
 
-        var key = this._keySchedule;
-        var tweak = this._tweakSchedule;
-        var rot = this.RotationSchedule; // Use indexed rotation constants
+        this.DecryptScalar(input, output);
+    }
 
-        for (var d = (this.Rounds / 4) - 1; d >= 1; d -= 2)
+    /// <summary>
+    /// Decrypts a single 32-byte ciphertext block using the scalar register-resident Threefish-256 implementation.
+    /// </summary>
+    /// <param name="input">The 32-byte ciphertext block to decrypt. Caller is responsible for length validation.</param>
+    /// <param name="output">The 32-byte buffer to receive the decrypted plaintext block.</param>
+    /// <remarks>
+    /// Invoked by <see cref="Decrypt" /> on hosts without AVX-512 + VL support. Operates on four 64-bit words
+    /// held in stack-resident locals, with the key/tweak schedule accessed via interior refs so subkey
+    /// injections skip per-element bounds checks.
+    /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+    private void DecryptScalar(ReadOnlySpan<byte> input, Span<byte> output)
+    {
+        // Load the ciphertext block as four 64-bit little-endian words into registers, skipping the
+        // intermediate stackalloc + MemoryMarshal.Cast + CopyTo trip through the stack the prior
+        // implementation used.
+        ref byte inputRef = ref MemoryMarshal.GetReference(input);
+        ulong b0 = LoadWordLittleEndian(ref inputRef, 0);
+        ulong b1 = LoadWordLittleEndian(ref inputRef, 8);
+        ulong b2 = LoadWordLittleEndian(ref inputRef, 16);
+        ulong b3 = LoadWordLittleEndian(ref inputRef, 24);
+
+        // Capture interior refs to the key and tweak schedule arrays so each subkey-injection access
+        // skips the per-element bounds check that ulong[] indexing would otherwise emit.
+        ref ulong keyRef = ref MemoryMarshal.GetArrayDataReference(this._keySchedule);
+        ref ulong tweakRef = ref MemoryMarshal.GetArrayDataReference(this._tweakSchedule);
+
+        for (var d = (72 / 4) - 1; d >= 1; d -= 2)
         {
             var dm5 = d % 5;
             var dm3 = d % 3;
 
             // Reverse post-round subkey injection
-            block[0] -= key[dm5 + 1];
-            block[1] -= key[dm5 + 2] + tweak[dm3 + 1];
-            block[2] -= key[dm5 + 3] + tweak[dm3 + 2];
-            block[3] -= key[dm5 + 4] + (uint)(d + 1);
+            b0 -= Unsafe.Add(ref keyRef, dm5 + 1);
+            b1 -= Unsafe.Add(ref keyRef, dm5 + 2) + Unsafe.Add(ref tweakRef, dm3 + 1);
+            b2 -= Unsafe.Add(ref keyRef, dm5 + 3) + Unsafe.Add(ref tweakRef, dm3 + 2);
+            b3 -= Unsafe.Add(ref keyRef, dm5 + 4) + (uint)(d + 1);
 
             // Reverse second 4 rounds
-            Unmix(ref block[2], ref block[1], rot[15]);
-            Unmix(ref block[0], ref block[3], rot[14]);
-            Unmix(ref block[2], ref block[3], rot[13]);
-            Unmix(ref block[0], ref block[1], rot[12]);
-            Unmix(ref block[2], ref block[1], rot[11]);
-            Unmix(ref block[0], ref block[3], rot[10]);
-            Unmix(ref block[2], ref block[3], rot[9]);
-            Unmix(ref block[0], ref block[1], rot[8]);
+            Unmix(ref b2, ref b1, R15);
+            Unmix(ref b0, ref b3, R14);
+            Unmix(ref b2, ref b3, R13);
+            Unmix(ref b0, ref b1, R12);
+            Unmix(ref b2, ref b1, R11);
+            Unmix(ref b0, ref b3, R10);
+            Unmix(ref b2, ref b3, R9);
+            Unmix(ref b0, ref b1, R8);
 
             // Reverse mid-round subkey injection
-            block[0] -= key[dm5];
-            block[1] -= key[dm5 + 1] + tweak[dm3];
-            block[2] -= key[dm5 + 2] + tweak[dm3 + 1];
-            block[3] -= key[dm5 + 3] + (uint)d;
+            b0 -= Unsafe.Add(ref keyRef, dm5);
+            b1 -= Unsafe.Add(ref keyRef, dm5 + 1) + Unsafe.Add(ref tweakRef, dm3);
+            b2 -= Unsafe.Add(ref keyRef, dm5 + 2) + Unsafe.Add(ref tweakRef, dm3 + 1);
+            b3 -= Unsafe.Add(ref keyRef, dm5 + 3) + (uint)d;
 
             // Reverse first 4 rounds
-            Unmix(ref block[2], ref block[1], rot[7]);
-            Unmix(ref block[0], ref block[3], rot[6]);
-            Unmix(ref block[2], ref block[3], rot[5]);
-            Unmix(ref block[0], ref block[1], rot[4]);
-            Unmix(ref block[2], ref block[1], rot[3]);
-            Unmix(ref block[0], ref block[3], rot[2]);
-            Unmix(ref block[2], ref block[3], rot[1]);
-            Unmix(ref block[0], ref block[1], rot[0]);
+            Unmix(ref b2, ref b1, R7);
+            Unmix(ref b0, ref b3, R6);
+            Unmix(ref b2, ref b3, R5);
+            Unmix(ref b0, ref b1, R4);
+            Unmix(ref b2, ref b1, R3);
+            Unmix(ref b0, ref b3, R2);
+            Unmix(ref b2, ref b3, R1);
+            Unmix(ref b0, ref b1, R0);
         }
 
         // Final subkey removal (round 0)
-        block[0] -= key[0];
-        block[1] -= key[1] + tweak[0];
-        block[2] -= key[2] + tweak[1];
-        block[3] -= key[3];
+        b0 -= Unsafe.Add(ref keyRef, 0);
+        b1 -= Unsafe.Add(ref keyRef, 1) + Unsafe.Add(ref tweakRef, 0);
+        b2 -= Unsafe.Add(ref keyRef, 2) + Unsafe.Add(ref tweakRef, 1);
+        b3 -= Unsafe.Add(ref keyRef, 3);
 
-        MemoryMarshal.Cast<ulong, byte>(block).CopyTo(output);
+        // Commit the four plaintext words to the output buffer in little-endian byte order.
+        ref byte outputRef = ref MemoryMarshal.GetReference(output);
+        StoreWordLittleEndian(ref outputRef, 0, b0);
+        StoreWordLittleEndian(ref outputRef, 8, b1);
+        StoreWordLittleEndian(ref outputRef, 16, b2);
+        StoreWordLittleEndian(ref outputRef, 24, b3);
     }
 
     /// <summary>
@@ -176,66 +213,99 @@ public sealed class Threefish256Cipher
     /// <exception cref="ArgumentException">
     /// Thrown if <paramref name="input" /> or <paramref name="output" /> is not 32 bytes.
     /// </exception>
+    /// <remarks>
+    /// Dispatches to an AVX-512 vectorised implementation when supported by the host, falling back to a
+    /// scalar register-resident implementation otherwise. <see cref="Avx512F.VL.IsSupported" /> is a JIT
+    /// intrinsic that folds to a compile-time constant, so the branch carries no runtime cost.
+    /// </remarks>
     public override void Encrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
         this.ThrowIfDisposed();
-        if (input.Length != this.BlockSize / 8 || output.Length != this.BlockSize / 8)
+        if (input.Length != 32 || output.Length != 32)
         {
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.Crypt_Invalid_BlockLength, this.BlockSize / 8));
+                string.Format(CryptoResourceStrings.Crypt_Invalid_BlockLength, 32));
         }
 
-        Span<ulong> block = stackalloc ulong[this.BlockWords];
-        MemoryMarshal.Cast<byte, ulong>(input).CopyTo(block);
+        if (Avx512F.VL.IsSupported)
+        {
+            this.EncryptAvx512(input, output);
+            return;
+        }
 
-        var key = this._keySchedule;
-        var tweak = this._tweakSchedule;
-        var rot = this.RotationSchedule;
+        this.EncryptScalar(input, output);
+    }
+
+    /// <summary>
+    /// Encrypts a single 32-byte plaintext block using the scalar register-resident Threefish-256 implementation.
+    /// </summary>
+    /// <param name="input">The 32-byte plaintext block to encrypt. Caller is responsible for length validation.</param>
+    /// <param name="output">The 32-byte buffer to receive the encrypted ciphertext block.</param>
+    /// <remarks>
+    /// Invoked by <see cref="Encrypt" /> on hosts without AVX-512 + VL support. See <see cref="DecryptScalar" />
+    /// for the local-resident state strategy this method mirrors.
+    /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+    private void EncryptScalar(ReadOnlySpan<byte> input, Span<byte> output)
+    {
+        // Load the plaintext block as four 64-bit little-endian words into registers.
+        ref byte inputRef = ref MemoryMarshal.GetReference(input);
+        ulong b0 = LoadWordLittleEndian(ref inputRef, 0);
+        ulong b1 = LoadWordLittleEndian(ref inputRef, 8);
+        ulong b2 = LoadWordLittleEndian(ref inputRef, 16);
+        ulong b3 = LoadWordLittleEndian(ref inputRef, 24);
+
+        ref ulong keyRef = ref MemoryMarshal.GetArrayDataReference(this._keySchedule);
+        ref ulong tweakRef = ref MemoryMarshal.GetArrayDataReference(this._tweakSchedule);
 
         // Initial key injection (round 0)
-        block[0] += key[0x00];
-        block[1] += key[0x01] + tweak[0x00];
-        block[2] += key[0x02] + tweak[0x01];
-        block[3] += key[0x03];
+        b0 += Unsafe.Add(ref keyRef, 0);
+        b1 += Unsafe.Add(ref keyRef, 1) + Unsafe.Add(ref tweakRef, 0);
+        b2 += Unsafe.Add(ref keyRef, 2) + Unsafe.Add(ref tweakRef, 1);
+        b3 += Unsafe.Add(ref keyRef, 3);
 
-        for (var d = 1; d < this.Rounds / 4; d += 2)
+        for (var d = 1; d < 72 / 4; d += 2)
         {
             var dm5 = d % 5;
             var dm3 = d % 3;
 
             // First 4 MIX rounds
-            Mix(ref block[0], ref block[1], rot[0]);
-            Mix(ref block[2], ref block[3], rot[1]);
-            Mix(ref block[0], ref block[3], rot[2]);
-            Mix(ref block[2], ref block[1], rot[3]);
-            Mix(ref block[0], ref block[1], rot[4]);
-            Mix(ref block[2], ref block[3], rot[5]);
-            Mix(ref block[0], ref block[3], rot[6]);
-            Mix(ref block[2], ref block[1], rot[7]);
+            Mix(ref b0, ref b1, R0);
+            Mix(ref b2, ref b3, R1);
+            Mix(ref b0, ref b3, R2);
+            Mix(ref b2, ref b1, R3);
+            Mix(ref b0, ref b1, R4);
+            Mix(ref b2, ref b3, R5);
+            Mix(ref b0, ref b3, R6);
+            Mix(ref b2, ref b1, R7);
 
             // Mid-round subkey injection
-            block[0] += key[dm5];
-            block[1] += key[dm5 + 1] + tweak[dm3];
-            block[2] += key[dm5 + 2] + tweak[dm3 + 1];
-            block[3] += key[dm5 + 3] + (ulong)d;
+            b0 += Unsafe.Add(ref keyRef, dm5);
+            b1 += Unsafe.Add(ref keyRef, dm5 + 1) + Unsafe.Add(ref tweakRef, dm3);
+            b2 += Unsafe.Add(ref keyRef, dm5 + 2) + Unsafe.Add(ref tweakRef, dm3 + 1);
+            b3 += Unsafe.Add(ref keyRef, dm5 + 3) + (ulong)d;
 
             // Second 4 MIX rounds
-            Mix(ref block[0], ref block[1], rot[8]);
-            Mix(ref block[2], ref block[3], rot[9]);
-            Mix(ref block[0], ref block[3], rot[10]);
-            Mix(ref block[2], ref block[1], rot[11]);
-            Mix(ref block[0], ref block[1], rot[12]);
-            Mix(ref block[2], ref block[3], rot[13]);
-            Mix(ref block[0], ref block[3], rot[14]);
-            Mix(ref block[2], ref block[1], rot[15]);
+            Mix(ref b0, ref b1, R8);
+            Mix(ref b2, ref b3, R9);
+            Mix(ref b0, ref b3, R10);
+            Mix(ref b2, ref b1, R11);
+            Mix(ref b0, ref b1, R12);
+            Mix(ref b2, ref b3, R13);
+            Mix(ref b0, ref b3, R14);
+            Mix(ref b2, ref b1, R15);
 
             // Post-round subkey injection
-            block[0] += key[dm5 + 1];
-            block[1] += key[dm5 + 2] + tweak[dm3 + 1];
-            block[2] += key[dm5 + 3] + tweak[dm3 + 2];
-            block[3] += key[dm5 + 4] + (ulong)d + 1;
+            b0 += Unsafe.Add(ref keyRef, dm5 + 1);
+            b1 += Unsafe.Add(ref keyRef, dm5 + 2) + Unsafe.Add(ref tweakRef, dm3 + 1);
+            b2 += Unsafe.Add(ref keyRef, dm5 + 3) + Unsafe.Add(ref tweakRef, dm3 + 2);
+            b3 += Unsafe.Add(ref keyRef, dm5 + 4) + (ulong)d + 1;
         }
 
-        MemoryMarshal.Cast<ulong, byte>(block).CopyTo(output);
+        ref byte outputRef = ref MemoryMarshal.GetReference(output);
+        StoreWordLittleEndian(ref outputRef, 0, b0);
+        StoreWordLittleEndian(ref outputRef, 8, b1);
+        StoreWordLittleEndian(ref outputRef, 16, b2);
+        StoreWordLittleEndian(ref outputRef, 24, b3);
     }
 }

@@ -1,10 +1,12 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ThreefishBlockCipher.1024.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Runtime.Intrinsics.X86;
 
 namespace Bodu.Security.Cryptography;
 
@@ -46,7 +48,7 @@ namespace Bodu.Security.Cryptography;
 /// </example>
 /// <seealso href="../guides/cryptography/composing-primitives.html">Composing primitives — direct use vs.
 /// SymmetricAlgorithm</seealso> <seealso cref="Threefish1024"/>
-public sealed class Threefish1024Cipher
+public sealed partial class Threefish1024Cipher
     : ThreefishBlockCipher
 {
     /// <summary>
@@ -62,6 +64,38 @@ public sealed class Threefish1024Cipher
     /// </summary>
     public const int KeySize = 1024;
 
+    // Spec-defined rotation constants for Threefish-1024. Declared as named const ints so the JIT can
+    // fold each Mix/Unmix call to a ROL/ROR with an immediate count, and so all 64 values live in one
+    // place rather than being duplicated between Encrypt, Decrypt, and the public RotationSchedule.
+    private const int R0 = 24, R1 = 13, R2 = 8, R3 = 47;
+    private const int R4 = 8, R5 = 17, R6 = 22, R7 = 37;
+    private const int R8 = 38, R9 = 19, R10 = 10, R11 = 55;
+    private const int R12 = 49, R13 = 18, R14 = 23, R15 = 52;
+    private const int R16 = 33, R17 = 4, R18 = 51, R19 = 13;
+    private const int R20 = 34, R21 = 41, R22 = 59, R23 = 17;
+    private const int R24 = 5, R25 = 20, R26 = 48, R27 = 41;
+    private const int R28 = 47, R29 = 28, R30 = 16, R31 = 25;
+    private const int R32 = 41, R33 = 9, R34 = 37, R35 = 31;
+    private const int R36 = 12, R37 = 47, R38 = 44, R39 = 30;
+    private const int R40 = 16, R41 = 34, R42 = 56, R43 = 51;
+    private const int R44 = 4, R45 = 53, R46 = 42, R47 = 41;
+    private const int R48 = 31, R49 = 44, R50 = 47, R51 = 46;
+    private const int R52 = 19, R53 = 42, R54 = 44, R55 = 25;
+    private const int R56 = 9, R57 = 48, R58 = 35, R59 = 52;
+    private const int R60 = 23, R61 = 31, R62 = 37, R63 = 20;
+
+    private static readonly int[] s_rotationSchedule =
+    [
+        R0, R1, R2, R3, R4, R5, R6, R7,
+        R8, R9, R10, R11, R12, R13, R14, R15,
+        R16, R17, R18, R19, R20, R21, R22, R23,
+        R24, R25, R26, R27, R28, R29, R30, R31,
+        R32, R33, R34, R35, R36, R37, R38, R39,
+        R40, R41, R42, R43, R44, R45, R46, R47,
+        R48, R49, R50, R51, R52, R53, R54, R55,
+        R56, R57, R58, R59, R60, R61, R62, R63,
+    ];
+
     /// <inheritdoc />
     /// <value>Length of the Threefish-1024 block is 1024 bits (128 bytes).</value>
     public override int BlockSize => 1024;
@@ -70,75 +104,7 @@ public sealed class Threefish1024Cipher
     protected override int BlockWords => 16;
 
     /// <inheritdoc />
-#pragma warning disable SA1137 // Elements should have the same indentation
-    protected override int[] RotationSchedule =>
-    [
-        24,
-        13,
-        8,
-        47,
-        8,
-        17,
-        22,
-        37,
-        38,
-        19,
-        10,
-        55,
-        49,
-        18,
-        23,
-        52,
-        33,
-        4,
-        51,
-        13,
-        34,
-        41,
-        59,
-        17,
-        5,
-        20,
-        48,
-        41,
-        47,
-        28,
-        16,
-        25,
-        41,
-        9,
-        37,
-        31,
-        12,
-        47,
-        44,
-        30,
-        16,
-        34,
-        56,
-        51,
-        4,
-        53,
-        42,
-        41,
-        31,
-        44,
-        47,
-        46,
-        19,
-        42,
-        44,
-        25,
-        9,
-        48,
-        35,
-        52,
-        23,
-        31,
-        37,
-        20
-    ];
-#pragma warning restore SA1137 // Elements should have the same indentation
+    protected override int[] RotationSchedule => s_rotationSchedule;
 
     /// <inheritdoc />
     protected override int Rounds => 80;
@@ -153,151 +119,210 @@ public sealed class Threefish1024Cipher
     /// <exception cref="ArgumentException">
     /// Thrown if <paramref name="input" /> or <paramref name="output" /> is not 128 bytes.
     /// </exception>
+    /// <remarks>
+    /// Dispatches to an AVX-512F vectorised implementation when supported by the host, falling back to a
+    /// scalar register-resident implementation otherwise. <see cref="Avx512F.IsSupported" /> is a JIT
+    /// intrinsic that folds to a compile-time constant, so the branch carries no runtime cost.
+    /// </remarks>
     public override void Decrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
         this.ThrowIfDisposed();
-        if (input.Length != this.BlockSize / 8 || output.Length != this.BlockSize / 8)
+        if (input.Length != 128 || output.Length != 128)
         {
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.Crypt_Invalid_BlockLength, this.BlockSize / 8));
+                string.Format(CryptoResourceStrings.Crypt_Invalid_BlockLength, 128));
         }
 
-        Span<ulong> block = stackalloc ulong[this.BlockWords];
-        MemoryMarshal.Cast<byte, ulong>(input).CopyTo(block);
+        if (Avx512F.IsSupported)
+        {
+            this.DecryptAvx512(input, output);
+            return;
+        }
 
-        var key = this._keySchedule;
-        var tweak = this._tweakSchedule;
-        var rot = this.RotationSchedule;
+        this.DecryptScalar(input, output);
+    }
 
-        for (var d = (this.Rounds / 4) - 1; d >= 1; d -= 2)
+    /// <summary>
+    /// Decrypts a single 128-byte ciphertext block using the scalar register-resident Threefish-1024 implementation.
+    /// </summary>
+    /// <param name="input">The 128-byte ciphertext block to decrypt. Caller is responsible for length validation.</param>
+    /// <param name="output">The 128-byte buffer to receive the decrypted plaintext block.</param>
+    /// <remarks>
+    /// Invoked by <see cref="Decrypt" /> on hosts without AVX-512F support. Operates on sixteen 64-bit words
+    /// held in stack-resident locals — note that the working set exceeds the x64 general-purpose register
+    /// file, so the JIT will spill some words to stack. Even with spills, the elimination of bounds-checked
+    /// Span indexing on every Mix/key access remains a net win versus the prior stackalloc-based path.
+    /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+    private void DecryptScalar(ReadOnlySpan<byte> input, Span<byte> output)
+    {
+        // Load the ciphertext block as sixteen 64-bit little-endian words into locals.
+        ref byte inputRef = ref MemoryMarshal.GetReference(input);
+        ulong b0 = LoadWordLittleEndian(ref inputRef, 0);
+        ulong b1 = LoadWordLittleEndian(ref inputRef, 8);
+        ulong b2 = LoadWordLittleEndian(ref inputRef, 16);
+        ulong b3 = LoadWordLittleEndian(ref inputRef, 24);
+        ulong b4 = LoadWordLittleEndian(ref inputRef, 32);
+        ulong b5 = LoadWordLittleEndian(ref inputRef, 40);
+        ulong b6 = LoadWordLittleEndian(ref inputRef, 48);
+        ulong b7 = LoadWordLittleEndian(ref inputRef, 56);
+        ulong b8 = LoadWordLittleEndian(ref inputRef, 64);
+        ulong b9 = LoadWordLittleEndian(ref inputRef, 72);
+        ulong b10 = LoadWordLittleEndian(ref inputRef, 80);
+        ulong b11 = LoadWordLittleEndian(ref inputRef, 88);
+        ulong b12 = LoadWordLittleEndian(ref inputRef, 96);
+        ulong b13 = LoadWordLittleEndian(ref inputRef, 104);
+        ulong b14 = LoadWordLittleEndian(ref inputRef, 112);
+        ulong b15 = LoadWordLittleEndian(ref inputRef, 120);
+
+        ref ulong keyRef = ref MemoryMarshal.GetArrayDataReference(this._keySchedule);
+        ref ulong tweakRef = ref MemoryMarshal.GetArrayDataReference(this._tweakSchedule);
+
+        for (var d = (80 / 4) - 1; d >= 1; d -= 2)
         {
             int dm17 = d % 17, dm3 = d % 3;
 
-            block[0] -= key[dm17 + 1];
-            block[1] -= key[dm17 + 2];
-            block[2] -= key[dm17 + 3];
-            block[3] -= key[dm17 + 4];
-            block[4] -= key[dm17 + 5];
-            block[5] -= key[dm17 + 6];
-            block[6] -= key[dm17 + 7];
-            block[7] -= key[dm17 + 8];
-            block[8] -= key[dm17 + 9];
-            block[9] -= key[dm17 + 10];
-            block[10] -= key[dm17 + 11];
-            block[11] -= key[dm17 + 12];
-            block[12] -= key[dm17 + 13];
-            block[13] -= key[dm17 + 14] + tweak[dm3 + 1];
-            block[14] -= key[dm17 + 15] + tweak[dm3 + 2];
-            block[15] -= key[dm17 + 16] + (uint)d + 1;
+            b0 -= Unsafe.Add(ref keyRef, dm17 + 1);
+            b1 -= Unsafe.Add(ref keyRef, dm17 + 2);
+            b2 -= Unsafe.Add(ref keyRef, dm17 + 3);
+            b3 -= Unsafe.Add(ref keyRef, dm17 + 4);
+            b4 -= Unsafe.Add(ref keyRef, dm17 + 5);
+            b5 -= Unsafe.Add(ref keyRef, dm17 + 6);
+            b6 -= Unsafe.Add(ref keyRef, dm17 + 7);
+            b7 -= Unsafe.Add(ref keyRef, dm17 + 8);
+            b8 -= Unsafe.Add(ref keyRef, dm17 + 9);
+            b9 -= Unsafe.Add(ref keyRef, dm17 + 10);
+            b10 -= Unsafe.Add(ref keyRef, dm17 + 11);
+            b11 -= Unsafe.Add(ref keyRef, dm17 + 12);
+            b12 -= Unsafe.Add(ref keyRef, dm17 + 13);
+            b13 -= Unsafe.Add(ref keyRef, dm17 + 14) + Unsafe.Add(ref tweakRef, dm3 + 1);
+            b14 -= Unsafe.Add(ref keyRef, dm17 + 15) + Unsafe.Add(ref tweakRef, dm3 + 2);
+            b15 -= Unsafe.Add(ref keyRef, dm17 + 16) + (uint)d + 1;
 
-            Unmix(ref block[12], ref block[7], rot[63]);
-            Unmix(ref block[10], ref block[3], rot[62]);
-            Unmix(ref block[8], ref block[5], rot[61]);
-            Unmix(ref block[14], ref block[1], rot[60]);
-            Unmix(ref block[4], ref block[9], rot[59]);
-            Unmix(ref block[6], ref block[13], rot[58]);
-            Unmix(ref block[2], ref block[11], rot[57]);
-            Unmix(ref block[0], ref block[15], rot[56]);
+            Unmix(ref b12, ref b7, R63);
+            Unmix(ref b10, ref b3, R62);
+            Unmix(ref b8, ref b5, R61);
+            Unmix(ref b14, ref b1, R60);
+            Unmix(ref b4, ref b9, R59);
+            Unmix(ref b6, ref b13, R58);
+            Unmix(ref b2, ref b11, R57);
+            Unmix(ref b0, ref b15, R56);
 
-            Unmix(ref block[10], ref block[9], rot[55]);
-            Unmix(ref block[8], ref block[11], rot[54]);
-            Unmix(ref block[14], ref block[13], rot[53]);
-            Unmix(ref block[12], ref block[15], rot[52]);
-            Unmix(ref block[6], ref block[1], rot[51]);
-            Unmix(ref block[4], ref block[3], rot[50]);
-            Unmix(ref block[2], ref block[5], rot[49]);
-            Unmix(ref block[0], ref block[7], rot[48]);
+            Unmix(ref b10, ref b9, R55);
+            Unmix(ref b8, ref b11, R54);
+            Unmix(ref b14, ref b13, R53);
+            Unmix(ref b12, ref b15, R52);
+            Unmix(ref b6, ref b1, R51);
+            Unmix(ref b4, ref b3, R50);
+            Unmix(ref b2, ref b5, R49);
+            Unmix(ref b0, ref b7, R48);
 
-            Unmix(ref block[8], ref block[1], rot[47]);
-            Unmix(ref block[14], ref block[5], rot[46]);
-            Unmix(ref block[12], ref block[3], rot[45]);
-            Unmix(ref block[10], ref block[7], rot[44]);
-            Unmix(ref block[4], ref block[15], rot[43]);
-            Unmix(ref block[6], ref block[11], rot[42]);
-            Unmix(ref block[2], ref block[13], rot[41]);
-            Unmix(ref block[0], ref block[9], rot[40]);
+            Unmix(ref b8, ref b1, R47);
+            Unmix(ref b14, ref b5, R46);
+            Unmix(ref b12, ref b3, R45);
+            Unmix(ref b10, ref b7, R44);
+            Unmix(ref b4, ref b15, R43);
+            Unmix(ref b6, ref b11, R42);
+            Unmix(ref b2, ref b13, R41);
+            Unmix(ref b0, ref b9, R40);
 
-            Unmix(ref block[14], ref block[15], rot[39]);
-            Unmix(ref block[12], ref block[13], rot[38]);
-            Unmix(ref block[10], ref block[11], rot[37]);
-            Unmix(ref block[8], ref block[9], rot[36]);
-            Unmix(ref block[6], ref block[7], rot[35]);
-            Unmix(ref block[4], ref block[5], rot[34]);
-            Unmix(ref block[2], ref block[3], rot[33]);
-            Unmix(ref block[0], ref block[1], rot[32]);
+            Unmix(ref b14, ref b15, R39);
+            Unmix(ref b12, ref b13, R38);
+            Unmix(ref b10, ref b11, R37);
+            Unmix(ref b8, ref b9, R36);
+            Unmix(ref b6, ref b7, R35);
+            Unmix(ref b4, ref b5, R34);
+            Unmix(ref b2, ref b3, R33);
+            Unmix(ref b0, ref b1, R32);
 
-            block[0] -= key[dm17];
-            block[1] -= key[dm17 + 1];
-            block[2] -= key[dm17 + 2];
-            block[3] -= key[dm17 + 3];
-            block[4] -= key[dm17 + 4];
-            block[5] -= key[dm17 + 5];
-            block[6] -= key[dm17 + 6];
-            block[7] -= key[dm17 + 7];
-            block[8] -= key[dm17 + 8];
-            block[9] -= key[dm17 + 9];
-            block[10] -= key[dm17 + 10];
-            block[11] -= key[dm17 + 11];
-            block[12] -= key[dm17 + 12];
-            block[13] -= key[dm17 + 13] + tweak[dm3];
-            block[14] -= key[dm17 + 14] + tweak[dm3 + 1];
-            block[15] -= key[dm17 + 15] + (uint)d;
+            b0 -= Unsafe.Add(ref keyRef, dm17);
+            b1 -= Unsafe.Add(ref keyRef, dm17 + 1);
+            b2 -= Unsafe.Add(ref keyRef, dm17 + 2);
+            b3 -= Unsafe.Add(ref keyRef, dm17 + 3);
+            b4 -= Unsafe.Add(ref keyRef, dm17 + 4);
+            b5 -= Unsafe.Add(ref keyRef, dm17 + 5);
+            b6 -= Unsafe.Add(ref keyRef, dm17 + 6);
+            b7 -= Unsafe.Add(ref keyRef, dm17 + 7);
+            b8 -= Unsafe.Add(ref keyRef, dm17 + 8);
+            b9 -= Unsafe.Add(ref keyRef, dm17 + 9);
+            b10 -= Unsafe.Add(ref keyRef, dm17 + 10);
+            b11 -= Unsafe.Add(ref keyRef, dm17 + 11);
+            b12 -= Unsafe.Add(ref keyRef, dm17 + 12);
+            b13 -= Unsafe.Add(ref keyRef, dm17 + 13) + Unsafe.Add(ref tweakRef, dm3);
+            b14 -= Unsafe.Add(ref keyRef, dm17 + 14) + Unsafe.Add(ref tweakRef, dm3 + 1);
+            b15 -= Unsafe.Add(ref keyRef, dm17 + 15) + (uint)d;
 
-            Unmix(ref block[12], ref block[7], rot[31]);
-            Unmix(ref block[10], ref block[3], rot[30]);
-            Unmix(ref block[8], ref block[5], rot[29]);
-            Unmix(ref block[14], ref block[1], rot[28]);
-            Unmix(ref block[4], ref block[9], rot[27]);
-            Unmix(ref block[6], ref block[13], rot[26]);
-            Unmix(ref block[2], ref block[11], rot[25]);
-            Unmix(ref block[0], ref block[15], rot[24]);
+            Unmix(ref b12, ref b7, R31);
+            Unmix(ref b10, ref b3, R30);
+            Unmix(ref b8, ref b5, R29);
+            Unmix(ref b14, ref b1, R28);
+            Unmix(ref b4, ref b9, R27);
+            Unmix(ref b6, ref b13, R26);
+            Unmix(ref b2, ref b11, R25);
+            Unmix(ref b0, ref b15, R24);
 
-            Unmix(ref block[10], ref block[9], rot[23]);
-            Unmix(ref block[8], ref block[11], rot[22]);
-            Unmix(ref block[14], ref block[13], rot[21]);
-            Unmix(ref block[12], ref block[15], rot[20]);
-            Unmix(ref block[6], ref block[1], rot[19]);
-            Unmix(ref block[4], ref block[3], rot[18]);
-            Unmix(ref block[2], ref block[5], rot[17]);
-            Unmix(ref block[0], ref block[7], rot[16]);
+            Unmix(ref b10, ref b9, R23);
+            Unmix(ref b8, ref b11, R22);
+            Unmix(ref b14, ref b13, R21);
+            Unmix(ref b12, ref b15, R20);
+            Unmix(ref b6, ref b1, R19);
+            Unmix(ref b4, ref b3, R18);
+            Unmix(ref b2, ref b5, R17);
+            Unmix(ref b0, ref b7, R16);
 
-            Unmix(ref block[8], ref block[1], rot[15]);
-            Unmix(ref block[14], ref block[5], rot[14]);
-            Unmix(ref block[12], ref block[3], rot[13]);
-            Unmix(ref block[10], ref block[7], rot[12]);
-            Unmix(ref block[4], ref block[15], rot[11]);
-            Unmix(ref block[6], ref block[11], rot[10]);
-            Unmix(ref block[2], ref block[13], rot[9]);
-            Unmix(ref block[0], ref block[9], rot[8]);
+            Unmix(ref b8, ref b1, R15);
+            Unmix(ref b14, ref b5, R14);
+            Unmix(ref b12, ref b3, R13);
+            Unmix(ref b10, ref b7, R12);
+            Unmix(ref b4, ref b15, R11);
+            Unmix(ref b6, ref b11, R10);
+            Unmix(ref b2, ref b13, R9);
+            Unmix(ref b0, ref b9, R8);
 
-            Unmix(ref block[14], ref block[15], rot[7]);
-            Unmix(ref block[12], ref block[13], rot[6]);
-            Unmix(ref block[10], ref block[11], rot[5]);
-            Unmix(ref block[8], ref block[9], rot[4]);
-            Unmix(ref block[6], ref block[7], rot[3]);
-            Unmix(ref block[4], ref block[5], rot[2]);
-            Unmix(ref block[2], ref block[3], rot[1]);
-            Unmix(ref block[0], ref block[1], rot[0]);
+            Unmix(ref b14, ref b15, R7);
+            Unmix(ref b12, ref b13, R6);
+            Unmix(ref b10, ref b11, R5);
+            Unmix(ref b8, ref b9, R4);
+            Unmix(ref b6, ref b7, R3);
+            Unmix(ref b4, ref b5, R2);
+            Unmix(ref b2, ref b3, R1);
+            Unmix(ref b0, ref b1, R0);
         }
 
-        block[0] -= key[0];
-        block[1] -= key[1];
-        block[2] -= key[2];
-        block[3] -= key[3];
-        block[4] -= key[4];
-        block[5] -= key[5];
-        block[6] -= key[6];
-        block[7] -= key[7];
-        block[8] -= key[8];
-        block[9] -= key[9];
-        block[10] -= key[10];
-        block[11] -= key[11];
-        block[12] -= key[12];
-        block[13] -= key[13] + tweak[0];
-        block[14] -= key[14] + tweak[1];
-        block[15] -= key[15];
+        b0 -= Unsafe.Add(ref keyRef, 0);
+        b1 -= Unsafe.Add(ref keyRef, 1);
+        b2 -= Unsafe.Add(ref keyRef, 2);
+        b3 -= Unsafe.Add(ref keyRef, 3);
+        b4 -= Unsafe.Add(ref keyRef, 4);
+        b5 -= Unsafe.Add(ref keyRef, 5);
+        b6 -= Unsafe.Add(ref keyRef, 6);
+        b7 -= Unsafe.Add(ref keyRef, 7);
+        b8 -= Unsafe.Add(ref keyRef, 8);
+        b9 -= Unsafe.Add(ref keyRef, 9);
+        b10 -= Unsafe.Add(ref keyRef, 10);
+        b11 -= Unsafe.Add(ref keyRef, 11);
+        b12 -= Unsafe.Add(ref keyRef, 12);
+        b13 -= Unsafe.Add(ref keyRef, 13) + Unsafe.Add(ref tweakRef, 0);
+        b14 -= Unsafe.Add(ref keyRef, 14) + Unsafe.Add(ref tweakRef, 1);
+        b15 -= Unsafe.Add(ref keyRef, 15);
 
-        MemoryMarshal.Cast<ulong, byte>(block).CopyTo(output);
+        ref byte outputRef = ref MemoryMarshal.GetReference(output);
+        StoreWordLittleEndian(ref outputRef, 0, b0);
+        StoreWordLittleEndian(ref outputRef, 8, b1);
+        StoreWordLittleEndian(ref outputRef, 16, b2);
+        StoreWordLittleEndian(ref outputRef, 24, b3);
+        StoreWordLittleEndian(ref outputRef, 32, b4);
+        StoreWordLittleEndian(ref outputRef, 40, b5);
+        StoreWordLittleEndian(ref outputRef, 48, b6);
+        StoreWordLittleEndian(ref outputRef, 56, b7);
+        StoreWordLittleEndian(ref outputRef, 64, b8);
+        StoreWordLittleEndian(ref outputRef, 72, b9);
+        StoreWordLittleEndian(ref outputRef, 80, b10);
+        StoreWordLittleEndian(ref outputRef, 88, b11);
+        StoreWordLittleEndian(ref outputRef, 96, b12);
+        StoreWordLittleEndian(ref outputRef, 104, b13);
+        StoreWordLittleEndian(ref outputRef, 112, b14);
+        StoreWordLittleEndian(ref outputRef, 120, b15);
     }
 
     /// <summary>
@@ -310,144 +335,200 @@ public sealed class Threefish1024Cipher
     /// <exception cref="ArgumentException">
     /// Thrown if <paramref name="input" /> or <paramref name="output" /> is not 128 bytes.
     /// </exception>
+    /// <remarks>
+    /// Dispatches to an AVX-512F vectorised implementation when supported by the host, falling back to a
+    /// scalar register-resident implementation otherwise. <see cref="Avx512F.IsSupported" /> is a JIT
+    /// intrinsic that folds to a compile-time constant, so the branch carries no runtime cost.
+    /// </remarks>
     public override void Encrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
         this.ThrowIfDisposed();
-        if (input.Length != this.BlockSize / 8 || output.Length != this.BlockSize / 8)
+        if (input.Length != 128 || output.Length != 128)
         {
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.Crypt_Invalid_BlockLength, this.BlockSize / 8));
+                string.Format(CryptoResourceStrings.Crypt_Invalid_BlockLength, 128));
         }
 
-        Span<ulong> block = stackalloc ulong[this.BlockWords];
-        MemoryMarshal.Cast<byte, ulong>(input).CopyTo(block);
+        if (Avx512F.IsSupported)
+        {
+            this.EncryptAvx512(input, output);
+            return;
+        }
 
-        var key = this._keySchedule;
-        var tweak = this._tweakSchedule;
-        var rot = this.RotationSchedule;
+        this.EncryptScalar(input, output);
+    }
 
-        block[0] += key[0];
-        block[1] += key[1];
-        block[2] += key[2];
-        block[3] += key[3];
-        block[4] += key[4];
-        block[5] += key[5];
-        block[6] += key[6];
-        block[7] += key[7];
-        block[8] += key[8];
-        block[9] += key[9];
-        block[10] += key[10];
-        block[11] += key[11];
-        block[12] += key[12];
-        block[13] += key[13] + tweak[0];
-        block[14] += key[14] + tweak[1];
-        block[15] += key[15];
+    /// <summary>
+    /// Encrypts a single 128-byte plaintext block using the scalar register-resident Threefish-1024 implementation.
+    /// </summary>
+    /// <param name="input">The 128-byte plaintext block to encrypt. Caller is responsible for length validation.</param>
+    /// <param name="output">The 128-byte buffer to receive the encrypted ciphertext block.</param>
+    /// <remarks>
+    /// Invoked by <see cref="Encrypt" /> on hosts without AVX-512F support. See <see cref="DecryptScalar" />
+    /// for register-pressure notes that apply to the 16-word working set.
+    /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+    private void EncryptScalar(ReadOnlySpan<byte> input, Span<byte> output)
+    {
+        ref byte inputRef = ref MemoryMarshal.GetReference(input);
+        ulong b0 = LoadWordLittleEndian(ref inputRef, 0);
+        ulong b1 = LoadWordLittleEndian(ref inputRef, 8);
+        ulong b2 = LoadWordLittleEndian(ref inputRef, 16);
+        ulong b3 = LoadWordLittleEndian(ref inputRef, 24);
+        ulong b4 = LoadWordLittleEndian(ref inputRef, 32);
+        ulong b5 = LoadWordLittleEndian(ref inputRef, 40);
+        ulong b6 = LoadWordLittleEndian(ref inputRef, 48);
+        ulong b7 = LoadWordLittleEndian(ref inputRef, 56);
+        ulong b8 = LoadWordLittleEndian(ref inputRef, 64);
+        ulong b9 = LoadWordLittleEndian(ref inputRef, 72);
+        ulong b10 = LoadWordLittleEndian(ref inputRef, 80);
+        ulong b11 = LoadWordLittleEndian(ref inputRef, 88);
+        ulong b12 = LoadWordLittleEndian(ref inputRef, 96);
+        ulong b13 = LoadWordLittleEndian(ref inputRef, 104);
+        ulong b14 = LoadWordLittleEndian(ref inputRef, 112);
+        ulong b15 = LoadWordLittleEndian(ref inputRef, 120);
 
-        for (var d = 1; d < this.Rounds / 4; d += 2)
+        ref ulong keyRef = ref MemoryMarshal.GetArrayDataReference(this._keySchedule);
+        ref ulong tweakRef = ref MemoryMarshal.GetArrayDataReference(this._tweakSchedule);
+
+        b0 += Unsafe.Add(ref keyRef, 0);
+        b1 += Unsafe.Add(ref keyRef, 1);
+        b2 += Unsafe.Add(ref keyRef, 2);
+        b3 += Unsafe.Add(ref keyRef, 3);
+        b4 += Unsafe.Add(ref keyRef, 4);
+        b5 += Unsafe.Add(ref keyRef, 5);
+        b6 += Unsafe.Add(ref keyRef, 6);
+        b7 += Unsafe.Add(ref keyRef, 7);
+        b8 += Unsafe.Add(ref keyRef, 8);
+        b9 += Unsafe.Add(ref keyRef, 9);
+        b10 += Unsafe.Add(ref keyRef, 10);
+        b11 += Unsafe.Add(ref keyRef, 11);
+        b12 += Unsafe.Add(ref keyRef, 12);
+        b13 += Unsafe.Add(ref keyRef, 13) + Unsafe.Add(ref tweakRef, 0);
+        b14 += Unsafe.Add(ref keyRef, 14) + Unsafe.Add(ref tweakRef, 1);
+        b15 += Unsafe.Add(ref keyRef, 15);
+
+        for (var d = 1; d < 80 / 4; d += 2)
         {
             int dm17 = d % 17, dm3 = d % 3;
 
-            Mix(ref block[0], ref block[1], rot[0]);
-            Mix(ref block[2], ref block[3], rot[1]);
-            Mix(ref block[4], ref block[5], rot[2]);
-            Mix(ref block[6], ref block[7], rot[3]);
-            Mix(ref block[8], ref block[9], rot[4]);
-            Mix(ref block[10], ref block[11], rot[5]);
-            Mix(ref block[12], ref block[13], rot[6]);
-            Mix(ref block[14], ref block[15], rot[7]);
-            Mix(ref block[0], ref block[9], rot[8]);
-            Mix(ref block[2], ref block[13], rot[9]);
-            Mix(ref block[6], ref block[11], rot[10]);
-            Mix(ref block[4], ref block[15], rot[11]);
-            Mix(ref block[10], ref block[7], rot[12]);
-            Mix(ref block[12], ref block[3], rot[13]);
-            Mix(ref block[14], ref block[5], rot[14]);
-            Mix(ref block[8], ref block[1], rot[15]);
-            Mix(ref block[0], ref block[7], rot[16]);
-            Mix(ref block[2], ref block[5], rot[17]);
-            Mix(ref block[4], ref block[3], rot[18]);
-            Mix(ref block[6], ref block[1], rot[19]);
-            Mix(ref block[12], ref block[15], rot[20]);
-            Mix(ref block[14], ref block[13], rot[21]);
-            Mix(ref block[8], ref block[11], rot[22]);
-            Mix(ref block[10], ref block[9], rot[23]);
-            Mix(ref block[0], ref block[15], rot[24]);
-            Mix(ref block[2], ref block[11], rot[25]);
-            Mix(ref block[6], ref block[13], rot[26]);
-            Mix(ref block[4], ref block[9], rot[27]);
-            Mix(ref block[14], ref block[1], rot[28]);
-            Mix(ref block[8], ref block[5], rot[29]);
-            Mix(ref block[10], ref block[3], rot[30]);
-            Mix(ref block[12], ref block[7], rot[31]);
+            Mix(ref b0, ref b1, R0);
+            Mix(ref b2, ref b3, R1);
+            Mix(ref b4, ref b5, R2);
+            Mix(ref b6, ref b7, R3);
+            Mix(ref b8, ref b9, R4);
+            Mix(ref b10, ref b11, R5);
+            Mix(ref b12, ref b13, R6);
+            Mix(ref b14, ref b15, R7);
+            Mix(ref b0, ref b9, R8);
+            Mix(ref b2, ref b13, R9);
+            Mix(ref b6, ref b11, R10);
+            Mix(ref b4, ref b15, R11);
+            Mix(ref b10, ref b7, R12);
+            Mix(ref b12, ref b3, R13);
+            Mix(ref b14, ref b5, R14);
+            Mix(ref b8, ref b1, R15);
+            Mix(ref b0, ref b7, R16);
+            Mix(ref b2, ref b5, R17);
+            Mix(ref b4, ref b3, R18);
+            Mix(ref b6, ref b1, R19);
+            Mix(ref b12, ref b15, R20);
+            Mix(ref b14, ref b13, R21);
+            Mix(ref b8, ref b11, R22);
+            Mix(ref b10, ref b9, R23);
+            Mix(ref b0, ref b15, R24);
+            Mix(ref b2, ref b11, R25);
+            Mix(ref b6, ref b13, R26);
+            Mix(ref b4, ref b9, R27);
+            Mix(ref b14, ref b1, R28);
+            Mix(ref b8, ref b5, R29);
+            Mix(ref b10, ref b3, R30);
+            Mix(ref b12, ref b7, R31);
 
-            block[0] += key[dm17];
-            block[1] += key[dm17 + 1];
-            block[2] += key[dm17 + 2];
-            block[3] += key[dm17 + 3];
-            block[4] += key[dm17 + 4];
-            block[5] += key[dm17 + 5];
-            block[6] += key[dm17 + 6];
-            block[7] += key[dm17 + 7];
-            block[8] += key[dm17 + 8];
-            block[9] += key[dm17 + 9];
-            block[10] += key[dm17 + 10];
-            block[11] += key[dm17 + 11];
-            block[12] += key[dm17 + 12];
-            block[13] += key[dm17 + 13] + tweak[dm3];
-            block[14] += key[dm17 + 14] + tweak[dm3 + 1];
-            block[15] += key[dm17 + 15] + (uint)d;
+            b0 += Unsafe.Add(ref keyRef, dm17);
+            b1 += Unsafe.Add(ref keyRef, dm17 + 1);
+            b2 += Unsafe.Add(ref keyRef, dm17 + 2);
+            b3 += Unsafe.Add(ref keyRef, dm17 + 3);
+            b4 += Unsafe.Add(ref keyRef, dm17 + 4);
+            b5 += Unsafe.Add(ref keyRef, dm17 + 5);
+            b6 += Unsafe.Add(ref keyRef, dm17 + 6);
+            b7 += Unsafe.Add(ref keyRef, dm17 + 7);
+            b8 += Unsafe.Add(ref keyRef, dm17 + 8);
+            b9 += Unsafe.Add(ref keyRef, dm17 + 9);
+            b10 += Unsafe.Add(ref keyRef, dm17 + 10);
+            b11 += Unsafe.Add(ref keyRef, dm17 + 11);
+            b12 += Unsafe.Add(ref keyRef, dm17 + 12);
+            b13 += Unsafe.Add(ref keyRef, dm17 + 13) + Unsafe.Add(ref tweakRef, dm3);
+            b14 += Unsafe.Add(ref keyRef, dm17 + 14) + Unsafe.Add(ref tweakRef, dm3 + 1);
+            b15 += Unsafe.Add(ref keyRef, dm17 + 15) + (uint)d;
 
-            Mix(ref block[0], ref block[1], rot[32]);
-            Mix(ref block[2], ref block[3], rot[33]);
-            Mix(ref block[4], ref block[5], rot[34]);
-            Mix(ref block[6], ref block[7], rot[35]);
-            Mix(ref block[8], ref block[9], rot[36]);
-            Mix(ref block[10], ref block[11], rot[37]);
-            Mix(ref block[12], ref block[13], rot[38]);
-            Mix(ref block[14], ref block[15], rot[39]);
-            Mix(ref block[0], ref block[9], rot[40]);
-            Mix(ref block[2], ref block[13], rot[41]);
-            Mix(ref block[6], ref block[11], rot[42]);
-            Mix(ref block[4], ref block[15], rot[43]);
-            Mix(ref block[10], ref block[7], rot[44]);
-            Mix(ref block[12], ref block[3], rot[45]);
-            Mix(ref block[14], ref block[5], rot[46]);
-            Mix(ref block[8], ref block[1], rot[47]);
-            Mix(ref block[0], ref block[7], rot[48]);
-            Mix(ref block[2], ref block[5], rot[49]);
-            Mix(ref block[4], ref block[3], rot[50]);
-            Mix(ref block[6], ref block[1], rot[51]);
-            Mix(ref block[12], ref block[15], rot[52]);
-            Mix(ref block[14], ref block[13], rot[53]);
-            Mix(ref block[8], ref block[11], rot[54]);
-            Mix(ref block[10], ref block[9], rot[55]);
-            Mix(ref block[0], ref block[15], rot[56]);
-            Mix(ref block[2], ref block[11], rot[57]);
-            Mix(ref block[6], ref block[13], rot[58]);
-            Mix(ref block[4], ref block[9], rot[59]);
-            Mix(ref block[14], ref block[1], rot[60]);
-            Mix(ref block[8], ref block[5], rot[61]);
-            Mix(ref block[10], ref block[3], rot[62]);
-            Mix(ref block[12], ref block[7], rot[63]);
+            Mix(ref b0, ref b1, R32);
+            Mix(ref b2, ref b3, R33);
+            Mix(ref b4, ref b5, R34);
+            Mix(ref b6, ref b7, R35);
+            Mix(ref b8, ref b9, R36);
+            Mix(ref b10, ref b11, R37);
+            Mix(ref b12, ref b13, R38);
+            Mix(ref b14, ref b15, R39);
+            Mix(ref b0, ref b9, R40);
+            Mix(ref b2, ref b13, R41);
+            Mix(ref b6, ref b11, R42);
+            Mix(ref b4, ref b15, R43);
+            Mix(ref b10, ref b7, R44);
+            Mix(ref b12, ref b3, R45);
+            Mix(ref b14, ref b5, R46);
+            Mix(ref b8, ref b1, R47);
+            Mix(ref b0, ref b7, R48);
+            Mix(ref b2, ref b5, R49);
+            Mix(ref b4, ref b3, R50);
+            Mix(ref b6, ref b1, R51);
+            Mix(ref b12, ref b15, R52);
+            Mix(ref b14, ref b13, R53);
+            Mix(ref b8, ref b11, R54);
+            Mix(ref b10, ref b9, R55);
+            Mix(ref b0, ref b15, R56);
+            Mix(ref b2, ref b11, R57);
+            Mix(ref b6, ref b13, R58);
+            Mix(ref b4, ref b9, R59);
+            Mix(ref b14, ref b1, R60);
+            Mix(ref b8, ref b5, R61);
+            Mix(ref b10, ref b3, R62);
+            Mix(ref b12, ref b7, R63);
 
-            block[0] += key[dm17 + 1];
-            block[1] += key[dm17 + 2];
-            block[2] += key[dm17 + 3];
-            block[3] += key[dm17 + 4];
-            block[4] += key[dm17 + 5];
-            block[5] += key[dm17 + 6];
-            block[6] += key[dm17 + 7];
-            block[7] += key[dm17 + 8];
-            block[8] += key[dm17 + 9];
-            block[9] += key[dm17 + 10];
-            block[10] += key[dm17 + 11];
-            block[11] += key[dm17 + 12];
-            block[12] += key[dm17 + 13];
-            block[13] += key[dm17 + 14] + tweak[dm3 + 1];
-            block[14] += key[dm17 + 15] + tweak[dm3 + 2];
-            block[15] += key[dm17 + 16] + (uint)d + 1;
+            b0 += Unsafe.Add(ref keyRef, dm17 + 1);
+            b1 += Unsafe.Add(ref keyRef, dm17 + 2);
+            b2 += Unsafe.Add(ref keyRef, dm17 + 3);
+            b3 += Unsafe.Add(ref keyRef, dm17 + 4);
+            b4 += Unsafe.Add(ref keyRef, dm17 + 5);
+            b5 += Unsafe.Add(ref keyRef, dm17 + 6);
+            b6 += Unsafe.Add(ref keyRef, dm17 + 7);
+            b7 += Unsafe.Add(ref keyRef, dm17 + 8);
+            b8 += Unsafe.Add(ref keyRef, dm17 + 9);
+            b9 += Unsafe.Add(ref keyRef, dm17 + 10);
+            b10 += Unsafe.Add(ref keyRef, dm17 + 11);
+            b11 += Unsafe.Add(ref keyRef, dm17 + 12);
+            b12 += Unsafe.Add(ref keyRef, dm17 + 13);
+            b13 += Unsafe.Add(ref keyRef, dm17 + 14) + Unsafe.Add(ref tweakRef, dm3 + 1);
+            b14 += Unsafe.Add(ref keyRef, dm17 + 15) + Unsafe.Add(ref tweakRef, dm3 + 2);
+            b15 += Unsafe.Add(ref keyRef, dm17 + 16) + (uint)d + 1;
         }
 
-        MemoryMarshal.Cast<ulong, byte>(block).CopyTo(output);
+        ref byte outputRef = ref MemoryMarshal.GetReference(output);
+        StoreWordLittleEndian(ref outputRef, 0, b0);
+        StoreWordLittleEndian(ref outputRef, 8, b1);
+        StoreWordLittleEndian(ref outputRef, 16, b2);
+        StoreWordLittleEndian(ref outputRef, 24, b3);
+        StoreWordLittleEndian(ref outputRef, 32, b4);
+        StoreWordLittleEndian(ref outputRef, 40, b5);
+        StoreWordLittleEndian(ref outputRef, 48, b6);
+        StoreWordLittleEndian(ref outputRef, 56, b7);
+        StoreWordLittleEndian(ref outputRef, 64, b8);
+        StoreWordLittleEndian(ref outputRef, 72, b9);
+        StoreWordLittleEndian(ref outputRef, 80, b10);
+        StoreWordLittleEndian(ref outputRef, 88, b11);
+        StoreWordLittleEndian(ref outputRef, 96, b12);
+        StoreWordLittleEndian(ref outputRef, 104, b13);
+        StoreWordLittleEndian(ref outputRef, 112, b14);
+        StoreWordLittleEndian(ref outputRef, 120, b15);
     }
 }
