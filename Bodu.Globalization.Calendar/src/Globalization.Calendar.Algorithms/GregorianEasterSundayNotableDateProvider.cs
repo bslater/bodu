@@ -22,6 +22,7 @@ public sealed class GregorianEasterSundayNotableDateProvider
 {
     /// <inheritdoc />
     public override int MinSupportedYear => 1583;
+
     /// <inheritdoc />
     protected override string Name => "Easter Sunday";
 

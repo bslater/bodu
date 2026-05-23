@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConcurrentHashSet.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -436,8 +436,8 @@ public sealed partial class ConcurrentHashSet<T>
     /// </summary>
     /// <remarks>
     /// This operation acquires every internal lock and installs a fresh, empty bucket table, so it is atomic with
-    /// respect to all other operations. The replacement table keeps at least as many buckets as there are lock
-    /// stripes, preserving the invariant that every stripe guards at least one bucket.
+    /// respect to all other operations. The replacement table keeps at least as many buckets as there are lock stripes,
+    /// preserving the invariant that every stripe guards at least one bucket.
     /// </remarks>
     public void Clear()
     {

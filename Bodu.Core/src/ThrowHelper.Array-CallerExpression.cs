@@ -236,8 +236,8 @@ public static partial class ThrowHelper
     /// </exception>
     /// <remarks>
     /// The available room is computed by subtraction (<c>array.Length - index</c>) rather than by adding
-    /// <paramref name="index" /> and <paramref name="requiredLength" />, so the check cannot be defeated by an
-    /// integer overflow when either operand is large.
+    /// <paramref name="index" /> and <paramref name="requiredLength" />, so the check cannot be defeated by an integer
+    /// overflow when either operand is large.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfArrayLengthIsInsufficient(

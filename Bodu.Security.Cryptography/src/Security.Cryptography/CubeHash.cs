@@ -105,8 +105,8 @@ public sealed class CubeHash
     private static readonly int[] s_permittedHashSizes = [224, 256, 384, 512];
 
     /// <summary>
-    /// Gather-index vector for the scatter-by-XOR-8 step: element j receives the value from position
-    /// j^8, swapping the two 256-bit halves of the 512-bit state register.
+    /// Gather-index vector for the scatter-by-XOR-8 step: element j receives the value from position j^8, swapping the
+    /// two 256-bit halves of the 512-bit state register.
     /// </summary>
     private static readonly Vector512<uint> s_permXor8 = Vector512.Create(8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u);
 
@@ -664,9 +664,8 @@ public sealed class CubeHash
     private void InitializeVectors() => this._initializedState.CopyTo(this._state, 0);
 
     /// <summary>
-    /// Executes the specified number of CubeHash transformation rounds on the internal state vector,
-    /// dispatching to an AVX-512F implementation when the hardware supports it and falling back to a
-    /// scalar implementation otherwise.
+    /// Executes the specified number of CubeHash transformation rounds on the internal state vector, dispatching to an
+    /// AVX-512F implementation when the hardware supports it and falling back to a scalar implementation otherwise.
     /// </summary>
     /// <param name="roundCount">The number of rounds to perform.</param>
     private void PerformRounds(int roundCount)
@@ -678,16 +677,16 @@ public sealed class CubeHash
     }
 
     /// <summary>
-    /// Executes the specified number of CubeHash transformation rounds using AVX-512F vector
-    /// instructions. Loads the 32-word state into two 512-bit registers at entry and stores back on
-    /// exit, keeping all round-to-round state in registers. Each scatter-by-XOR permutation becomes
-    /// a single <c>VPERMD</c> instruction and each rotation becomes a single <c>VPROLD</c>.
+    /// Executes the specified number of CubeHash transformation rounds using AVX-512F vector instructions. Loads the
+    /// 32-word state into two 512-bit registers at entry and stores back on exit, keeping all round-to-round state in
+    /// registers. Each scatter-by-XOR permutation becomes a single <c>VPERMD</c> instruction and each rotation becomes
+    /// a single <c>VPROLD</c>.
     /// </summary>
     /// <param name="roundCount">The number of rounds to perform.</param>
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     private void PerformRoundsAvx512(int roundCount)
     {
-        ref uint stateRef = ref MemoryMarshal.GetArrayDataReference(this._state);
+        ref var stateRef = ref MemoryMarshal.GetArrayDataReference(this._state);
 
         Vector512<uint> lower = Vector512.LoadUnsafe(ref stateRef);
         Vector512<uint> upper = Vector512.LoadUnsafe(ref Unsafe.Add(ref stateRef, 16));
@@ -720,8 +719,8 @@ public sealed class CubeHash
     }
 
     /// <summary>
-    /// Executes the specified number of CubeHash transformation rounds using scalar interior-ref
-    /// arithmetic with bounds-check-free accesses. Used as the fallback when AVX-512F is unavailable.
+    /// Executes the specified number of CubeHash transformation rounds using scalar interior-ref arithmetic with
+    /// bounds-check-free accesses. Used as the fallback when AVX-512F is unavailable.
     /// </summary>
     /// <param name="roundCount">The number of rounds to perform.</param>
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
@@ -736,9 +735,9 @@ public sealed class CubeHash
         // sees a constant base per half rather than recomputing (16 + i) on every upper access.
         // tempRef bypasses the per-element bounds checks for the non-monotonic XOR scatter indices
         // (i^8, i^2, i^4, i^1) that the JIT cannot prove stay in-range from a loop-bound alone.
-        ref uint lowerRef = ref MemoryMarshal.GetReference(s);
-        ref uint upperRef = ref Unsafe.Add(ref lowerRef, 16);
-        ref uint tempRef = ref MemoryMarshal.GetReference(temp);
+        ref var lowerRef = ref MemoryMarshal.GetReference(s);
+        ref var upperRef = ref Unsafe.Add(ref lowerRef, 16);
+        ref var tempRef = ref MemoryMarshal.GetReference(temp);
 
         for (var r = 0; r < roundCount; r++)
         {

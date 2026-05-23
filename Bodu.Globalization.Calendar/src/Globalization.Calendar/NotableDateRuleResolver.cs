@@ -29,6 +29,7 @@ internal sealed class NotableDateRuleResolver
     /// An optional algorithm registry consulted for <see cref="DateResolutionStrategy.Algorithm" /> rules.
     /// </summary>
     private readonly INotableDateAlgorithmRegistry? _algorithms;
+
     /// <summary>
     /// A case-insensitive name-keyed lookup of every rule available for resolution, built once at construction.
     /// </summary>

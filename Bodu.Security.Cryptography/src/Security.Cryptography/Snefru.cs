@@ -247,8 +247,8 @@ public abstract partial class Snefru<T>
         // Interior refs bypass bounds checks: next/last are non-monotonic ((kk+1)&15, (kk+15)&15)
         // so the JIT cannot hoist the check out of the loop; sBoxIndex involves a dynamic byte value
         // so the s_constants check is also never elided without this pattern.
-        ref uint bufRef = ref MemoryMarshal.GetArrayDataReference(this._buffer);
-        ref uint sBoxRef = ref MemoryMarshal.GetArrayDataReference(s_constants);
+        ref var bufRef = ref MemoryMarshal.GetArrayDataReference(this._buffer);
+        ref var sBoxRef = ref MemoryMarshal.GetArrayDataReference(s_constants);
 
         for (var kk = 0; kk < TotalWords; kk++)
         {
@@ -258,7 +258,7 @@ public abstract partial class Snefru<T>
             // Flat array layout: each table occupies 256 consecutive entries.
             // Index = (tableIndex << 8) | byteValue, avoiding the double indirection of a jagged array.
             var sBoxIndex = ((baseBox + ((kk >> 1) & 0x01)) << 8) | (int)(Unsafe.Add(ref bufRef, kk) & 0xff);
-            uint sboxEntry = Unsafe.Add(ref sBoxRef, sBoxIndex);
+            var sboxEntry = Unsafe.Add(ref sBoxRef, sBoxIndex);
 
             Unsafe.Add(ref bufRef, next) ^= sboxEntry;
             Unsafe.Add(ref bufRef, last) ^= sboxEntry;
@@ -272,7 +272,7 @@ public abstract partial class Snefru<T>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void RotateWords(int shiftAmount)
     {
-        ref uint bufRef = ref MemoryMarshal.GetArrayDataReference(this._buffer);
+        ref var bufRef = ref MemoryMarshal.GetArrayDataReference(this._buffer);
         for (var i = 0; i < TotalWords; i++)
             Unsafe.Add(ref bufRef, i) = Unsafe.Add(ref bufRef, i).RotateBitsRightUnchecked(shiftAmount);
     }
