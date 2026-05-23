@@ -6,6 +6,7 @@
 
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Runtime.Intrinsics.X86;
 
 namespace Bodu.Security.Cryptography;
 
@@ -47,7 +48,7 @@ namespace Bodu.Security.Cryptography;
 /// </example>
 /// <seealso href="../guides/cryptography/composing-primitives.html">Composing primitives — direct use vs.
 /// SymmetricAlgorithm</seealso> <seealso cref="Threefish1024"/>
-public sealed class Threefish1024Cipher
+public sealed partial class Threefish1024Cipher
     : ThreefishBlockCipher
 {
     /// <summary>
@@ -118,6 +119,11 @@ public sealed class Threefish1024Cipher
     /// <exception cref="ArgumentException">
     /// Thrown if <paramref name="input" /> or <paramref name="output" /> is not 128 bytes.
     /// </exception>
+    /// <remarks>
+    /// Dispatches to an AVX-512F vectorised implementation when supported by the host, falling back to a
+    /// scalar register-resident implementation otherwise. <see cref="Avx512F.IsSupported" /> is a JIT
+    /// intrinsic that folds to a compile-time constant, so the branch carries no runtime cost.
+    /// </remarks>
     public override void Decrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
         this.ThrowIfDisposed();
@@ -127,10 +133,30 @@ public sealed class Threefish1024Cipher
                 string.Format(CryptoResourceStrings.Crypt_Invalid_BlockLength, 128));
         }
 
-        // Load the ciphertext block as sixteen 64-bit little-endian words into locals. The Threefish-1024
-        // working set exceeds the x64 general-purpose register file, so the JIT will spill some words to
-        // stack — but the elimination of bounds-checked Span indexing on every Mix/key access is still a net
-        // win versus the prior stackalloc + MemoryMarshal.Cast approach.
+        if (Avx512F.IsSupported)
+        {
+            this.DecryptAvx512(input, output);
+            return;
+        }
+
+        this.DecryptScalar(input, output);
+    }
+
+    /// <summary>
+    /// Decrypts a single 128-byte ciphertext block using the scalar register-resident Threefish-1024 implementation.
+    /// </summary>
+    /// <param name="input">The 128-byte ciphertext block to decrypt. Caller is responsible for length validation.</param>
+    /// <param name="output">The 128-byte buffer to receive the decrypted plaintext block.</param>
+    /// <remarks>
+    /// Invoked by <see cref="Decrypt" /> on hosts without AVX-512F support. Operates on sixteen 64-bit words
+    /// held in stack-resident locals — note that the working set exceeds the x64 general-purpose register
+    /// file, so the JIT will spill some words to stack. Even with spills, the elimination of bounds-checked
+    /// Span indexing on every Mix/key access remains a net win versus the prior stackalloc-based path.
+    /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+    private void DecryptScalar(ReadOnlySpan<byte> input, Span<byte> output)
+    {
+        // Load the ciphertext block as sixteen 64-bit little-endian words into locals.
         ref byte inputRef = ref MemoryMarshal.GetReference(input);
         ulong b0 = LoadWordLittleEndian(ref inputRef, 0);
         ulong b1 = LoadWordLittleEndian(ref inputRef, 8);
@@ -309,6 +335,11 @@ public sealed class Threefish1024Cipher
     /// <exception cref="ArgumentException">
     /// Thrown if <paramref name="input" /> or <paramref name="output" /> is not 128 bytes.
     /// </exception>
+    /// <remarks>
+    /// Dispatches to an AVX-512F vectorised implementation when supported by the host, falling back to a
+    /// scalar register-resident implementation otherwise. <see cref="Avx512F.IsSupported" /> is a JIT
+    /// intrinsic that folds to a compile-time constant, so the branch carries no runtime cost.
+    /// </remarks>
     public override void Encrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
         this.ThrowIfDisposed();
@@ -318,6 +349,27 @@ public sealed class Threefish1024Cipher
                 string.Format(CryptoResourceStrings.Crypt_Invalid_BlockLength, 128));
         }
 
+        if (Avx512F.IsSupported)
+        {
+            this.EncryptAvx512(input, output);
+            return;
+        }
+
+        this.EncryptScalar(input, output);
+    }
+
+    /// <summary>
+    /// Encrypts a single 128-byte plaintext block using the scalar register-resident Threefish-1024 implementation.
+    /// </summary>
+    /// <param name="input">The 128-byte plaintext block to encrypt. Caller is responsible for length validation.</param>
+    /// <param name="output">The 128-byte buffer to receive the encrypted ciphertext block.</param>
+    /// <remarks>
+    /// Invoked by <see cref="Encrypt" /> on hosts without AVX-512F support. See <see cref="DecryptScalar" />
+    /// for register-pressure notes that apply to the 16-word working set.
+    /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+    private void EncryptScalar(ReadOnlySpan<byte> input, Span<byte> output)
+    {
         ref byte inputRef = ref MemoryMarshal.GetReference(input);
         ulong b0 = LoadWordLittleEndian(ref inputRef, 0);
         ulong b1 = LoadWordLittleEndian(ref inputRef, 8);
