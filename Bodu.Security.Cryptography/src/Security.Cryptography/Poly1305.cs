@@ -112,6 +112,11 @@ public sealed class Poly1305
     // Encrypted nonce
     private readonly uint[] _s = new uint[4];    // Precomputed 5 * r[1..4]
 
+    // Tracks whether ProcessFinalBlock has run for the currently-assigned key. Once set, the instance must
+    // not accept further blocks or finalize again until the caller explicitly assigns a fresh Key —
+    // Poly1305 is a one-time MAC and reusing a (key, accumulator) pair across messages enables forgery.
+    private bool _finalized;
+
     // Polynomial accumulator
 
     /// <summary>
@@ -158,6 +163,23 @@ public sealed class Poly1305
 
     /// <inheritdoc />
     public override bool CanTransformMultipleBlocks => true;
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// Assigning a fresh key clears the one-time-use finalization guard so the same instance may
+    /// authenticate a new message under the new key. Reusing the <em>same</em> key for a second message
+    /// remains a contract violation and is rejected by <see cref="ProcessBlock" /> /
+    /// <see cref="ProcessFinalBlock" />.
+    /// </remarks>
+    public override byte[] Key
+    {
+        get => base.Key;
+        set
+        {
+            base.Key = value;
+            _finalized = false;
+        }
+    }
 
     /// <inheritdoc />
     /// <remarks>
@@ -209,6 +231,9 @@ public sealed class Poly1305
         Justification = "Grouped limb and accumulator assignments intentionally mirror the Poly1305 5-limb arithmetic steps, keeping related state transitions on one line so the implementation remains aligned with the algorithm structure.")]
     protected override void ProcessBlock(ReadOnlySpan<byte> block)
     {
+        if (_finalized)
+            throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_AlreadyFinalized);
+
         const int blockBytes = BlockSize / 8;
 
         // Copy input to 16-byte buffer and append a single '1' byte if block is short (RFC: padding = 1 byte then zeros)
@@ -267,6 +292,9 @@ public sealed class Poly1305
         Justification = "Grouped carry-propagation statements intentionally mirror the Poly1305 limb-normalization and reduction steps, keeping each carry and mask operation together as one logical arithmetic transition.")]
     protected override byte[] ProcessFinalBlock()
     {
+        if (_finalized)
+            throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_AlreadyFinalized);
+
         // Final modular reduction: canonicalize accumulator to [0..2^130-5]
         uint h0 = _acc[0], h1 = _acc[1], h2 = _acc[2], h3 = _acc[3], h4 = _acc[4];
 
@@ -304,18 +332,19 @@ public sealed class Poly1305
         c += (long)_key[3] + ((h3 >> 18) | (h4 << 8));
         BinaryPrimitives.WriteUInt32LittleEndian(tag[12..], (uint)c);
 
-#if !NET6_0_OR_GREATER
-        // Mark the instance as finalized so the base-class HashCore/HashFinal guards
-        // reject subsequent streaming after the MAC has been produced. The key itself
-        // is retained until Dispose so that the framework's automatic re-initialization
-        // (invoked by ComputeHash via CaptureHashCodeAndReinitialize) can succeed without
-        // tripping the key-set check in Initialize.
+        // Mark the instance as finalized so subsequent ProcessBlock / ProcessFinalBlock calls — and the
+        // ProcessBlock invoked by base.Initialize → OnKeyChanged → next ComputeHash — are rejected. The
+        // guard is unconditional across all target frameworks because Poly1305's one-time-key contract is
+        // not defended by HashAlgorithm.State alone (Initialize resets State to 0 after every ComputeHash).
         _finalized = true;
+#if !NET6_0_OR_GREATER
         State = 2;
 #endif
 
-        // Key material is no longer needed — zero it immediately to enforce
-        // Poly1305's one-time-use guarantee and limit key exposure in memory.
+        // Key material is no longer needed — zero it immediately to enforce Poly1305's one-time-use
+        // guarantee and limit key exposure in memory. The buffer is retained (not nullified) so the
+        // framework's automatic re-initialization at the end of ComputeHash does not trip the
+        // key-set check in Initialize.
         if (KeyValue is not null)
             CryptoHelpers.Clear(KeyValue);
 

@@ -16,6 +16,15 @@ public partial class Poly1305Tests
     : KeyedBlockHashAlgorithmTests<Poly1305Tests, Poly1305, SingleTestVariant>
 {
 
+    /// <summary>
+    /// Excludes the <c>_finalized</c> sentinel from the inherited dispose-field-zero test. The flag is
+    /// intentionally retained as <see langword="true" /> across <see cref="HashAlgorithm.Dispose()" /> to
+    /// guarantee that any post-disposal call path observing the field still treats the instance as a spent
+    /// one-time MAC; zeroing it on dispose would be semantically backwards.
+    /// </summary>
+    protected override IReadOnlyCollection<string> ExcludedFieldNames =>
+        new[] { "_finalized" };
+
     private static readonly byte[] Poly1305TestKey = new byte[32]
     {
         0x85, 0xd6, 0xbe, 0x78, 0x57, 0x55, 0x6d, 0x33,

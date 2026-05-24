@@ -19,6 +19,11 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     public void TransformBlock_AfterComputeHashAndInitialize_ShouldNotThrow()
     {
         using TAlgorithm algorithm = CreateAlgorithm();
+        if (!algorithm.CanReuseTransform)
+        {
+            Assert.Inconclusive($"{typeof(TAlgorithm).Name} reports CanReuseTransform=false; reuse across hash cycles is not supported.");
+            return;
+        }
 
         _ = algorithm.ComputeHash(CryptoTestUtilities.SimpleTextAsciiBytes);
         algorithm.Initialize();
