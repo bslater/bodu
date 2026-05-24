@@ -360,6 +360,54 @@ public sealed class PooledBufferBuilder<T> :
     }
 
     /// <summary>
+    /// Attempts to copy the written elements into <paramref name="destination" /> without throwing when the
+    /// destination is too small.
+    /// </summary>
+    /// <param name="destination">The target span to copy into.</param>
+    /// <returns>
+    /// <see langword="true" /> when <paramref name="destination" /> has space for at least
+    /// <see cref="WrittenCount" /> elements and the copy was performed; <see langword="false" /> when the
+    /// destination is too small, in which case nothing is written.
+    /// </returns>
+    /// <remarks>
+    /// Use this overload in code paths that probe the destination size and act on the boolean rather than
+    /// catching <see cref="ArgumentException" /> from <see cref="CopyTo" />.
+    /// </remarks>
+    /// <exception cref="ObjectDisposedException">Thrown if the instance has been disposed.</exception>
+    public bool TryCopyTo(Span<T> destination)
+    {
+        ThrowIfDisposed();
+
+        if (destination.Length < _count)
+            return false;
+
+        _internalBuffer.AsSpan(0, _count).CopyTo(destination);
+        return true;
+    }
+
+    /// <summary>
+    /// Copies the written elements into a freshly allocated array and disposes the builder in a single call.
+    /// </summary>
+    /// <returns>
+    /// A new array of length <see cref="WrittenCount" /> containing the written elements in order. The returned
+    /// array is owned by the caller and is independent of any pooled storage.
+    /// </returns>
+    /// <remarks>
+    /// This is the canonical "build, materialize, release" shortcut for callers that want a managed array and do
+    /// not need to continue mutating the builder. After this call returns, the builder is disposed and any further
+    /// operation on it throws <see cref="ObjectDisposedException" />.
+    /// </remarks>
+    /// <exception cref="ObjectDisposedException">Thrown if the instance has already been disposed.</exception>
+    public T[] ToArrayAndDispose()
+    {
+        ThrowIfDisposed();
+
+        var result = _count == 0 ? Array.Empty<T>() : _internalBuffer.AsSpan(0, _count).ToArray();
+        Dispose();
+        return result;
+    }
+
+    /// <summary>
     /// Returns an <see cref="ArraySegment{T}" /> that aliases the underlying rented array, bounded to the written
     /// region.
     /// </summary>
