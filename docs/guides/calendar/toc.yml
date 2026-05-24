@@ -24,6 +24,8 @@
       href: working-days.md
     - name: Building and extending the service
       href: building-the-service.md
+    - name: Dependency injection
+      href: dependency-injection.md
 - name: Bodu.Globalization.Calendar.Algorithms
   items:
     - name: Date calculation algorithms

@@ -64,7 +64,10 @@ The same flow applies to every other rule — only the strategy in step 2 and th
 | Compute Easter Sunday for any year | <xref:Bodu.Globalization.Calendar.Algorithms.EasterSundayNotableDateAlgorithm>`.Calculate(year)` |
 | Compute Tibetan Losar (Lunar New Year) | <xref:Bodu.Globalization.Calendar.Algorithms.LosarNotableDateAlgorithm>`.Calculate(year)` |
 | Author rules in XML / JSON and load them | <xref:Bodu.Globalization.Calendar.XmlResourceNotableDateRuleProvider> / <xref:Bodu.Globalization.Calendar.JsonResourceNotableDateRuleProvider> |
-| Layer runtime overrides on top of a base rule set | <xref:Bodu.Globalization.Calendar.INotableDateRuleOverrideProvider> |
+| Layer runtime overrides on top of a base rule set | <xref:Bodu.Globalization.Calendar.INotableDateRuleOverrideProvider> / <xref:Bodu.Globalization.Calendar.MutableNotableDateRuleOverrideProvider> |
+| Register the service in an `IServiceCollection`-based host | `services.AddNotableDates(...)` from `Bodu.Globalization.Calendar.DependencyInjection` — see the [dependency-injection guide](../../guides/calendar/dependency-injection.md). |
+| Enumerate the territories / calendar systems covered by the loaded rules | `service.GetSupportedTerritories()` / `service.GetSupportedCalendars()` |
+| Pick up runtime override mutations on a live service | `service.Reload()` |
 | Load rules / algorithms from external assemblies safely | <xref:Bodu.Globalization.Calendar.Plugins.ExternalPluginLoader> + a trust policy |
 | Apply observance adjustments (e.g. holiday-falls-on-weekend → next Monday) | <xref:Bodu.Globalization.Calendar.ObservanceAdjustment> + <xref:Bodu.Globalization.Calendar.AdjustmentHandlerRegistry> |
 | Filter resolved notable dates by category, tag, or date range | <xref:Bodu.Globalization.Calendar.NotableDateFilter>`.ForCategory(...)`, `.WithTag(...)`, `.InDateRange(...)` (combine with `.And` / `.Or`). |
@@ -115,11 +118,15 @@ Region-specific holiday rule providers ship separately in `Bodu.Globalization.Ca
 | Type | Purpose |
 |---|---|
 | <xref:Bodu.Globalization.Calendar.INotableDateAlgorithm>, <xref:Bodu.Globalization.Calendar.INotableDateAlgorithmRegistry>, <xref:Bodu.Globalization.Calendar.NotableDateAlgorithmRegistry> | Pluggable algorithm contract and registry. |
-| <xref:Bodu.Globalization.Calendar.INotableDateProvider>, <xref:Bodu.Globalization.Calendar.INotableDateRuleProvider>, <xref:Bodu.Globalization.Calendar.INotableDateRuleOverrideProvider>, <xref:Bodu.Globalization.Calendar.NotableDateRuleResourceProviderBase> | Rule-source contracts and the base class shared by the built-in resource providers. |
+| <xref:Bodu.Globalization.Calendar.INotableDateProvider>, <xref:Bodu.Globalization.Calendar.INotableDateRuleProvider>, <xref:Bodu.Globalization.Calendar.INotableDateRuleOverrideProvider>, <xref:Bodu.Globalization.Calendar.MutableNotableDateRuleOverrideProvider>, <xref:Bodu.Globalization.Calendar.NotableDateRuleResourceProviderBase> | Rule-source contracts, the runtime-mutable override provider, and the base class shared by the built-in resource providers. |
 | <xref:Bodu.Globalization.Calendar.IAdjustmentHandler>, <xref:Bodu.Globalization.Calendar.AdjustmentHandlerRegistry>, <xref:Bodu.Globalization.Calendar.IAdjustmentHandlerRegistry>, <xref:Bodu.Globalization.Calendar.AdjustmentHandlerContext>, <xref:Bodu.Globalization.Calendar.AdjustmentHandlerResult> | Handler model for adjustments. |
 | <xref:Bodu.Globalization.Calendar.INotableDateCollisionResolver>, <xref:Bodu.Globalization.Calendar.DefaultNotableDateCollisionResolver> | Behavior when multiple rules resolve to the same date. |
 | <xref:Bodu.Globalization.Calendar.INotableDateNameLocalizer> | Pluggable display-name localization. |
 | <xref:Bodu.Globalization.Calendar.IResourcePathResolver>, <xref:Bodu.Globalization.Calendar.ResourcePathResolver>, <xref:Bodu.Globalization.Calendar.ResourcePathResolverOptions> | Resource-path resolution for embedded providers. |
+
+## Dependency injection
+
+The optional `Bodu.Globalization.Calendar.DependencyInjection` companion package wires `INotableDateService` into a `Microsoft.Extensions.DependencyInjection` container via `services.AddNotableDates(...)`, binds [`NotableDateOptions`](xref:Bodu.Globalization.Calendar.DependencyInjection.NotableDateOptions) from `IConfiguration`, exposes the fluent <xref:Bodu.Globalization.Calendar.DependencyInjection.INotableDateServiceBuilder> for layering rule providers and collaborators, and provides a `PostConfigure` hook for projecting from consumer-defined POCOs. See the [dependency-injection guide](../../guides/calendar/dependency-injection.md) for the full walkthrough.
 
 ## Advanced extensibility
 

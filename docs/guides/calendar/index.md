@@ -24,6 +24,7 @@ A **`NotableDateRule`** is an authored recipe — strategy, category, territory,
 | `Bodu.Globalization.Calendar.Plugins` | Plugin host with trust policies for loading rules / algorithms from external assemblies — `ExternalPluginLoader`, `IPluginTrustPolicy`, and the deny-by-default trust policies. | [Building and extending the service — Plugin system](building-the-service.md#plugin-system) |
 | `Bodu.Extensions` | Working-day arithmetic over `DateOnly` and `DateTime` — `IsWorkingDay`, `NextWorkingDay`, `AddWorkingDays`, … (`NotableDateOnlyExtensions`, `NotableDateTimeExtensions`). | [Working-day arithmetic](working-days.md) |
 | `Bodu.Globalization.Calendar.Data.*` | Region-specific public-holiday rule providers shipped in `Bodu.Globalization.Calendar.Data.Americas`, `.Europe`, and `.AsiaPacific` companion packages. | [Calendar data packs](data-packs.md) |
+| `Bodu.Globalization.Calendar.DependencyInjection` | `IServiceCollection.AddNotableDates(...)`, `INotableDateServiceBuilder`, `NotableDateOptions`, and the `PostConfigure` consumer-options projection hook. | [Calendar dependency injection](dependency-injection.md) |
 
 ## Guides
 
@@ -85,7 +86,12 @@ A **`NotableDateRule`** is an authored recipe — strategy, category, territory,
 
 <div class="bodu-card">
   <h3><a href="building-the-service.md">Building and extending the service</a></h3>
-  <p>How to use the registry and factory types — <code>NotableDateAlgorithmRegistry</code>, <code>AdjustmentHandlerRegistry</code>, <code>NotableDateFilter</code> composition, <code>INotableDateRuleOverrideProvider</code>, <code>INotableDateNameLocalizer</code>, <code>INotableDateCollisionResolver</code>, and the plugin system.</p>
+  <p>How to use the registry and factory types — <code>NotableDateAlgorithmRegistry</code>, <code>AdjustmentHandlerRegistry</code>, <code>NotableDateFilter</code> composition, <code>INotableDateRuleOverrideProvider</code>, <code>MutableNotableDateRuleOverrideProvider</code>, <code>INotableDateNameLocalizer</code>, <code>INotableDateCollisionResolver</code>, and the plugin system.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="dependency-injection.md">Calendar dependency injection</a></h3>
+  <p>The <code>Bodu.Globalization.Calendar.DependencyInjection</code> companion package — <code>services.AddNotableDates(...)</code>, the fluent <code>INotableDateServiceBuilder</code>, <code>IConfiguration</code>-bound <code>NotableDateOptions</code>, ambient default wiring, runtime-mutable overrides, and the <code>PostConfigure</code> hook for projecting from consumer-defined POCOs.</p>
 </div>
 
 </div>

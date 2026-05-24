@@ -14,7 +14,11 @@ Reach for this library when a `DateTime.DayOfWeek` check is not enough: when you
 
 - **[Bodu.Globalization.Calendar introduction](~/docs/calendar/index.md)** — namespaces, headline types, scenarios.
 - **[Bodu.Globalization.Calendar getting started](~/docs/calendar/getting-started.md)** — install and minimal samples for algorithms, the service, and working-day arithmetic.
-- **[Bodu.Globalization.Calendar guides](~/guides/calendar/index.md)** — [`NotableDateService`](~/guides/calendar/notable-dates.md), [rule authoring](~/guides/calendar/rule-authoring.md), [date-calculation algorithms](~/guides/calendar/algorithms.md), [companion data packs](~/guides/calendar/data-packs.md).
+- **[Bodu.Globalization.Calendar guides](~/guides/calendar/index.md)** — [`NotableDateService`](~/guides/calendar/notable-dates.md), [rule authoring](~/guides/calendar/rule-authoring.md), [date-calculation algorithms](~/guides/calendar/algorithms.md), [companion data packs](~/guides/calendar/data-packs.md), [dependency injection](~/guides/calendar/dependency-injection.md).
+
+## Companion packages
+
+- [`Bodu.Globalization.Calendar.DependencyInjection`](Bodu.Globalization.Calendar.DependencyInjection.md) — `Microsoft.Extensions.DependencyInjection` integration: `services.AddNotableDates(...)`, the fluent <xref:Bodu.Globalization.Calendar.DependencyInjection.INotableDateServiceBuilder>, bindable [`NotableDateOptions`](xref:Bodu.Globalization.Calendar.DependencyInjection.NotableDateOptions), and the `PostConfigure` consumer-options projection hook.
 
 ## Key types
 
@@ -30,7 +34,7 @@ Reach for this library when a `DateTime.DayOfWeek` check is not enough: when you
 
 - <xref:Bodu.Globalization.Calendar.NotableDateRule> — an immutable rule record describing how a notable date is defined (fixed, day-of-week-in-month, offset, or delegated to a named algorithm).
 - <xref:Bodu.Globalization.Calendar.NotableDateRuleParser>, <xref:Bodu.Globalization.Calendar.NotableDateRuleJsonParser>, <xref:Bodu.Globalization.Calendar.ParsedNotableDateDocument>, <xref:Bodu.Globalization.Calendar.NotableDateRuleUseGroup>, <xref:Bodu.Globalization.Calendar.NotableDateRuleUseDirective>, <xref:Bodu.Globalization.Calendar.NotableDateRuleOverrideBody>, <xref:Bodu.Globalization.Calendar.RuleRemoval> — XML / JSON rule-document model.
-- <xref:Bodu.Globalization.Calendar.INotableDateRuleProvider>, <xref:Bodu.Globalization.Calendar.INotableDateRuleOverrideProvider>, <xref:Bodu.Globalization.Calendar.XmlResourceNotableDateRuleProvider>, <xref:Bodu.Globalization.Calendar.JsonResourceNotableDateRuleProvider>, <xref:Bodu.Globalization.Calendar.NotableDateRuleResourceProviderBase> — plug-points for the rule source (built-in XML / JSON, overlays, custom).
+- <xref:Bodu.Globalization.Calendar.INotableDateRuleProvider>, <xref:Bodu.Globalization.Calendar.INotableDateRuleOverrideProvider>, <xref:Bodu.Globalization.Calendar.MutableNotableDateRuleOverrideProvider>, <xref:Bodu.Globalization.Calendar.XmlResourceNotableDateRuleProvider>, <xref:Bodu.Globalization.Calendar.JsonResourceNotableDateRuleProvider>, <xref:Bodu.Globalization.Calendar.NotableDateRuleResourceProviderBase> — plug-points for the rule source (built-in XML / JSON, overlays, the runtime-mutable override provider, and custom).
 - <xref:Bodu.Globalization.Calendar.INotableDateProvider>, <xref:Bodu.Globalization.Calendar.INotableDateNameLocalizer> — extension surfaces for custom date sources and culture-specific naming.
 - <xref:Bodu.Globalization.Calendar.INotableDateCollisionResolver>, <xref:Bodu.Globalization.Calendar.DefaultNotableDateCollisionResolver> — decide what happens when two rules resolve to the same date.
 - <xref:Bodu.Globalization.Calendar.IResourcePathResolver>, <xref:Bodu.Globalization.Calendar.ResourcePathResolver>, <xref:Bodu.Globalization.Calendar.ResourcePathResolverOptions> — resource-path resolution for embedded providers.

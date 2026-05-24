@@ -353,17 +353,70 @@ var service = new NotableDateService(
     });
 ```
 
-### Cache invalidation after override state changes
+### Cache invalidation and reload
 
-The effective rule list is derived once and cached internally. If override provider state
-changes at runtime (e.g. a database-driven list of company closures is updated), call
-`Invalidate()` to force re-derivation:
+The service maintains two distinct caches:
+
+- The **per-year resolved-date cache** — cleared by `Invalidate()` (all years) or `Invalidate(int year)` (one year). Use these after a configuration change that does not alter the rule set itself (for example, switching the active culture if you also use a localizer that varies output by year).
+- The **effective rule set** — built once at construction from every registered base provider and override provider, and cached on the service. Use `Reload()` to re-query every registered <xref:Bodu.Globalization.Calendar.INotableDateRuleOverrideProvider>, rebuild the merged rule set, and clear the per-year cache in one call.
 
 ```csharp
-// After updating the override source
+// Per-year cache only:
 service.Invalidate();       // clear all years
 service.Invalidate(2026);   // clear one year only
+
+// Effective rule set + per-year cache:
+service.Reload();           // re-snapshot overrides, rebuild merged rules, drop cached years
 ```
+
+Base <xref:Bodu.Globalization.Calendar.INotableDateRuleProvider> sources are *not* re-queried by `Reload()` — they are considered load-time inputs. If you need to swap a base provider you must construct a new service.
+
+### MutableNotableDateRuleOverrideProvider — runtime add / remove
+
+If your application needs to add or remove notable-date rules after the service is alive — for example, a one-off "company closed for stocktake" entry, or rules authored through a CMS — use <xref:Bodu.Globalization.Calendar.MutableNotableDateRuleOverrideProvider>. It is a thread-safe `INotableDateRuleOverrideProvider` with mutation methods and a `Changed` event:
+
+```csharp
+var overrides = new MutableNotableDateRuleOverrideProvider();
+
+var service = new NotableDateService(
+    ruleProviders:    new[] { baseProvider },
+    workingWeek:      WeekPattern.MondayToFriday,
+    options:          new NotableDateServiceOptions { OverrideProviders = new[] { overrides } });
+
+// Wire the auto-reload so mutations take effect on the next query:
+overrides.Changed += (_, _) => service.Reload();
+
+overrides.AddRule(new NotableDateRule
+{
+    Name            = "Stocktake Day",
+    Strategy        = DateResolutionStrategy.Fixed,
+    Category        = NotableDateCategory.Observance,
+    Month           = 6,
+    Day             = 30,
+    IsNonWorkingDay = true,
+});
+
+overrides.RemoveRule(name: "Boxing Day", fromYear: 2026, toYear: 2026);
+overrides.Clear();   // drop every authored addition and removal
+```
+
+`AddRule` / `RemoveRule` / `Clear` each raise `Changed` exactly once. The `Bodu.Globalization.Calendar.DependencyInjection` companion package wires `Changed` to `Reload()` automatically when the mutable provider is registered through its builder (see [Calendar dependency injection](dependency-injection.md)).
+
+### Enumerating supported territories and calendars
+
+The service exposes two discovery methods so consumers can introspect the loaded rule set without having to know the territory / calendar codes up front:
+
+```csharp
+IReadOnlyCollection<string> territories = service.GetSupportedTerritories();
+IReadOnlyCollection<Type>   calendars   = service.GetSupportedCalendars();
+
+foreach (string code in territories)
+{
+    Console.WriteLine($"{code}: {service.GetNotableDates(2026, code).Count} dates in 2026");
+}
+```
+
+Both methods project over the *effective* rule set and refresh after `Reload()`. Rules without an explicit `TerritoryCode` (global rules) contribute no entry; territory codes are deduplicated case-insensitively. The collections are typical inputs for UI pickers and for sanity-checking that a deployed data pack is actually loaded.
 
 ---
 
