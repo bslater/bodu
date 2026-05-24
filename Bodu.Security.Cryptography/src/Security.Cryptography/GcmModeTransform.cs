@@ -57,13 +57,15 @@ namespace Bodu.Security.Cryptography;
 /// with the caller.
 /// </para>
 /// <para>
-/// <strong>Length limits.</strong> SP 800-38D §5.2.1.1 caps the plaintext at <c>2³⁹ − 256</c> bits (≈ 64 GiB) and the
-/// associated data at <c>2⁶⁴ − 1</c> bits per <c>(key, nonce)</c> pair. Both limits are structurally enforced by this
-/// implementation: <see cref="Encrypt" /> / <see cref="Decrypt" /> / <see cref="ProcessAssociatedData" /> accept
-/// <see cref="ReadOnlySpan{Byte}" /> inputs whose length is bounded by <see cref="int.MaxValue" /> (≈ 2 GiB), which
-/// sits far below either spec ceiling. The 32-bit counter is additionally guarded against wrapping past
-/// <c>0xFFFFFFFF</c> — see the <c>Encrypt_WhenCounterWouldWrapPast0xFFFFFFFF</c> test for the boundary case reached
-/// via the test-only constructor.
+/// <strong>Length limits.</strong> SP 800-38D §5.2.1.1 caps the plaintext at <c>2³⁹ − 256</c> bits and the
+/// associated data at <c>2⁶⁴</c> bits per <c>(key, nonce)</c> pair. <see cref="Encrypt" /> / <see cref="Decrypt" />
+/// / <see cref="ProcessAssociatedData" /> all defensively call <c>ValidatePlaintextLength</c> or
+/// <c>ValidateAadLength</c>, which throw <see cref="CryptographicException" /> when the input length would breach
+/// the spec ceiling. Both checks are dead code through the public <see cref="ReadOnlySpan{Byte}" /> surface today
+/// (the <see cref="int" />-typed length caps inputs at ≈ 2 GiB, far below either limit) but document the
+/// invariant at the call site and protect any future surface that admits longer inputs. The 32-bit counter is
+/// separately guarded against wrapping past <c>0xFFFFFFFF</c> — see
+/// <c>Encrypt_WhenCounterWouldWrapPast0xFFFFFFFF</c>.
 /// </para>
 /// <para>
 /// <strong>When to use GCM.</strong> The default modern AEAD mode — single-pass, parallelisable, and
@@ -120,6 +122,18 @@ public sealed class GcmModeTransform
     /// The required GCM nonce size in bits (96 bits = 12 bytes).
     /// </summary>
     private const int NonceSize = 96;
+
+    /// <summary>
+    /// SP 800-38D §5.2.1.1 plaintext length ceiling: <c>2³⁹ − 256</c> bits, expressed in bytes
+    /// (<c>(2³⁹ − 256) / 8 = 68 719 476 704</c>). Internal so tests can validate the constant.
+    /// </summary>
+    internal const long MaxPlaintextBytes = ((1L << 39) - 256) / 8;
+
+    /// <summary>
+    /// SP 800-38D §5.2.1.1 associated-data length ceiling: <c>2⁶⁴</c> bits, expressed in bytes
+    /// (<c>2⁶⁴ / 8 = 2⁶¹ = 2 305 843 009 213 693 952</c>). Internal so tests can validate the constant.
+    /// </summary>
+    internal const long MaxAadBytes = 1L << 61;
 
     private readonly IBlockCipher _cipher;
     private byte[]? _aad;
@@ -250,10 +264,50 @@ public sealed class GcmModeTransform
     /// <value>Length of the GCM authentication tag is 128 bits (16 bytes).</value>
     public int TagSize => DefaultTagSize;
 
+    /// <summary>
+    /// Validates that the supplied plaintext length does not exceed the SP 800-38D §5.2.1.1
+    /// per-(key,nonce) plaintext ceiling of <c>2³⁹ − 256</c> bits. Internal so tests can drive the
+    /// check with synthetic length values that the public int-typed span surface cannot construct.
+    /// </summary>
+    /// <param name="length">The candidate plaintext length in bytes.</param>
+    /// <exception cref="CryptographicException">
+    /// <paramref name="length" /> exceeds <see cref="MaxPlaintextBytes" />.
+    /// </exception>
+    internal static void ValidatePlaintextLength(long length)
+    {
+        if (length > MaxPlaintextBytes)
+        {
+            throw new CryptographicException(
+                $"GCM plaintext length {length} exceeds the SP 800-38D §5.2.1.1 limit of {MaxPlaintextBytes} bytes per (key, nonce) pair.");
+        }
+    }
+
+    /// <summary>
+    /// Validates that the supplied associated-data length does not exceed the SP 800-38D §5.2.1.1
+    /// per-(key,nonce) AAD ceiling of <c>2⁶⁴</c> bits. Internal so tests can drive the check with
+    /// synthetic length values that the public int-typed span surface cannot construct.
+    /// </summary>
+    /// <param name="length">The candidate associated-data length in bytes.</param>
+    /// <exception cref="CryptographicException">
+    /// <paramref name="length" /> exceeds <see cref="MaxAadBytes" />.
+    /// </exception>
+    internal static void ValidateAadLength(long length)
+    {
+        if (length > MaxAadBytes)
+        {
+            throw new CryptographicException(
+                $"GCM associated-data length {length} exceeds the SP 800-38D §5.2.1.1 limit of {MaxAadBytes} bytes per (key, nonce) pair.");
+        }
+    }
+
     /// <inheritdoc />
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     /// <exception cref="InvalidOperationException">
     /// The instance has already encrypted or decrypted a message.
+    /// </exception>
+    /// <exception cref="CryptographicException">
+    /// The implicit plaintext length (<c><paramref name="ciphertextWithTag" />.Length − 16</c>) exceeds the
+    /// SP 800-38D §5.2.1.1 ceiling. Unreachable through the public int-typed span surface today.
     /// </exception>
     public int Decrypt(ReadOnlySpan<byte> ciphertextWithTag, Span<byte> output)
     {
@@ -274,6 +328,8 @@ public sealed class GcmModeTransform
                 string.Format(CryptoResourceStrings.Crypt_Invalid_OutputBufferTooSmall, plaintextLength),
                 nameof(output));
         }
+
+        ValidatePlaintextLength(plaintextLength);
 
         try
         {
@@ -337,6 +393,10 @@ public sealed class GcmModeTransform
     /// <exception cref="InvalidOperationException">
     /// The instance has already encrypted or decrypted a message.
     /// </exception>
+    /// <exception cref="CryptographicException">
+    /// <paramref name="plaintext" /> length exceeds the SP 800-38D §5.2.1.1 ceiling. Unreachable through the
+    /// public int-typed span surface today.
+    /// </exception>
     public int Encrypt(ReadOnlySpan<byte> plaintext, Span<byte> output)
     {
         ThrowIfDisposed();
@@ -349,6 +409,8 @@ public sealed class GcmModeTransform
                 string.Format(CryptoResourceStrings.Crypt_Invalid_OutputBufferTooSmall, required),
                 nameof(output));
         }
+
+        ValidatePlaintextLength(plaintext.Length);
 
         try
         {
@@ -381,6 +443,10 @@ public sealed class GcmModeTransform
     /// <exception cref="InvalidOperationException">
     /// Associated data has already been processed, or the instance has already completed encryption or decryption.
     /// </exception>
+    /// <exception cref="CryptographicException">
+    /// <paramref name="associatedData" /> length exceeds the SP 800-38D §5.2.1.1 ceiling. Unreachable through
+    /// the public int-typed span surface today.
+    /// </exception>
     public void ProcessAssociatedData(ReadOnlySpan<byte> associatedData)
     {
         ThrowIfDisposed();
@@ -391,6 +457,8 @@ public sealed class GcmModeTransform
             throw new InvalidOperationException(
                 CryptoResourceStrings.Crypt_Invalid_AssociatedDataAlreadyProcessed);
         }
+
+        ValidateAadLength(associatedData.Length);
 
         _aad = associatedData.IsEmpty ? Array.Empty<byte>() : associatedData.ToArray();
         _aadProcessed = true;
