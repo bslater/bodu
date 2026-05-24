@@ -18,6 +18,9 @@ public static partial class Delimited
     private static readonly CompositeFormat s_duplicateHeader =
         CompositeFormat.Parse(FormatsResourceStrings.Format_Invalid_DelimitedDuplicateHeader);
 
+    private static readonly CompositeFormat s_fieldCountMismatch =
+        CompositeFormat.Parse(FormatsResourceStrings.Format_Invalid_DelimitedFieldCountMismatch);
+
     private static readonly CompositeFormat s_malformedRecord =
         CompositeFormat.Parse(FormatsResourceStrings.Format_Invalid_DelimitedMalformedRecord);
 
@@ -50,6 +53,18 @@ public static partial class Delimited
     internal static void ThrowMalformedRecord(char unexpected, int lineNumber) =>
         throw new DelimitedFormatException(
             string.Format(CultureInfo.InvariantCulture, s_malformedRecord, unexpected, lineNumber), lineNumber);
+
+    /// <summary>
+    /// Throws a <see cref="DelimitedFormatException" /> when a data row's field count does not match the header.
+    /// </summary>
+    /// <param name="rowLineNumber">The 1-based line on which the data row appears.</param>
+    /// <param name="rowFieldCount">The actual field count of the offending row.</param>
+    /// <param name="headerFieldCount">The field count established by the header row.</param>
+    [DoesNotReturn]
+    internal static void ThrowFieldCountMismatch(int rowLineNumber, int rowFieldCount, int headerFieldCount) =>
+        throw new DelimitedFormatException(
+            string.Format(CultureInfo.InvariantCulture, s_fieldCountMismatch, rowLineNumber, rowFieldCount, headerFieldCount),
+            rowLineNumber);
 
     /// <summary>
     /// Builds the column name-to-index map for a header row according to the configured duplicate-header policy.
@@ -185,6 +200,13 @@ public static partial class Delimited
                     roHeaderIndex = BuildHeaderIndex(headers, _options.DuplicateHeaderBehavior, recordLineNumber);
                     firstRecord = false;
                     continue;
+                }
+
+                if (headers is not null
+                    && _options.FieldCountBehavior == DelimitedFieldCountBehavior.Strict
+                    && fields.Count != headers.Count)
+                {
+                    ThrowFieldCountMismatch(recordLineNumber, fields.Count, headers.Count);
                 }
 
                 firstRecord = false;

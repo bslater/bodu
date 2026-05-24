@@ -213,6 +213,9 @@
   <data name="Format_Invalid_DelimitedDuplicateHeader" xml:space="preserve">
     <value>Duplicate header '{0}' on line {1}.</value>
   </data>
+  <data name="Format_Invalid_DelimitedFieldCountMismatch" xml:space="preserve">
+    <value>Row on line {0} has {1} field(s) but the header row defines {2}.</value>
+  </data>
   <data name="Format_Invalid_DelimitedMalformedRecord" xml:space="preserve">
     <value>Unexpected character '{0}' after closing quote on line {1}.</value>
   </data>

@@ -117,12 +117,15 @@ public sealed class DelimitedRowTests
 
     /// <summary>
     /// Verifies that the string indexer returns <see cref="string.Empty" /> when the header exists but the row
-    /// has fewer fields than the header row.
+    /// has fewer fields than the header row. Ragged rows must be allowed explicitly via
+    /// <see cref="DelimitedFieldCountBehavior.Ragged" /> because the default policy treats short rows as a
+    /// structural error.
     /// </summary>
     [TestMethod]
     public void IndexerString_WhenRowIsShorterThanHeader_ShouldReturnEmptyString()
     {
-        DelimitedDocument doc = Delimited.Parse("a,b,c\n1,2");
+        DelimitedParseOptions options = new() { FieldCountBehavior = DelimitedFieldCountBehavior.Ragged };
+        DelimitedDocument doc = Delimited.Parse("a,b,c\n1,2", options);
 
         Assert.AreEqual(string.Empty, doc.Rows[0]["c"]);
     }

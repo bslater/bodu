@@ -349,6 +349,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Row on line {0} has {1} field(s) but the header row defines {2}..
+        /// </summary>
+        internal static string Format_Invalid_DelimitedFieldCountMismatch {
+            get {
+                return ResourceManager.GetString("Format_Invalid_DelimitedFieldCountMismatch", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Unexpected character &apos;{0}&apos; after closing quote on line {1}..
         /// </summary>
         internal static string Format_Invalid_DelimitedMalformedRecord {

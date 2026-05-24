@@ -106,6 +106,22 @@ public readonly struct DelimitedParseOptions
     public char CommentChar { get; init; } = '#';
 
     /// <summary>
+    /// Gets the policy that controls whether data rows are required to contain exactly as many fields as the
+    /// header row.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// The default value is <see cref="DelimitedFieldCountBehavior.Strict" />, which raises
+    /// <see cref="DelimitedFormatException" /> for any non-header row whose field count differs from the header.
+    /// Use <see cref="DelimitedFieldCountBehavior.Ragged" /> to admit input that legitimately mixes row widths.
+    /// The policy is not enforced when <see cref="HasHeader" /> is <see langword="false" /> because there is no
+    /// reference row.
+    /// </para>
+    /// </remarks>
+    /// <returns>The field-count enforcement policy.</returns>
+    public DelimitedFieldCountBehavior FieldCountBehavior { get; init; } = DelimitedFieldCountBehavior.Strict;
+
+    /// <summary>
     /// Gets the policy that controls how the parser reacts to a character that appears between a closing quote
     /// and the next field delimiter or line terminator.
     /// </summary>
