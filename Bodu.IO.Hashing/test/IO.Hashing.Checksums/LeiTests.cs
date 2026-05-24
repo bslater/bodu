@@ -16,6 +16,16 @@ public sealed class LeiTests
     : MultiCharCheckDigitAlgorithmTests<LeiTests, Lei>
 {
 
+    /// <summary>
+    /// Verifies that <see cref="Lei.IsValid(ReadOnlySpan{char})" /> rejects the empty span. A full-sequence
+    /// validator requires at least the check characters, so an empty input cannot satisfy the algorithm's invariant.
+    /// </summary>
+    [TestMethod]
+    public void IsValid_WhenSequenceIsEmpty_ShouldReturnFalse()
+    {
+        Assert.IsFalse(Lei.IsValid(ReadOnlySpan<char>.Empty));
+    }
+
     /// <inheritdoc />
     protected override string ComputeStatic(ReadOnlySpan<char> body) =>
         Lei.Compute(body);

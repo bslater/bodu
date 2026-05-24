@@ -26,6 +26,24 @@ public partial class BlockNonCryptographicHashAlgorithmTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="BlockNonCryptographicHashAlgorithm{T}.GetCurrentHashCore(System.Span{byte})" />
+    /// accepts a padded final block whose length is not a multiple of
+    /// <see cref="BlockNonCryptographicHashAlgorithm{T}.BlockSizeBytes" /> when the derived implementation opts in
+    /// by setting <c>AllowUnalignedFinalBlock</c> to <see langword="true" />.
+    /// </summary>
+    [TestMethod]
+    public void GetCurrentHash_WhenPadBlockReturnsUnalignedLengthAndAllowUnalignedFinalBlockIsTrue_ShouldComputeHashWithoutThrowing()
+    {
+        AllowedUnalignedPadBlockHasher hasher = new();
+        hasher.Append(new byte[] { 0xAA });
+
+        byte[] hash = hasher.GetCurrentHash();
+
+        Assert.IsNotNull(hash);
+        Assert.AreEqual(4, hash.Length);
+    }
+
+    /// <summary>
     /// A test-only block hasher that returns a padded final block whose length is deliberately not aligned to
     /// <see cref="BlockNonCryptographicHashAlgorithm{T}.BlockSizeBytes" /> and leaves <c>AllowUnalignedFinalBlock</c>
     /// at its default of <see langword="false" /> — exercising the guard added by D4.
@@ -42,6 +60,40 @@ public partial class BlockNonCryptographicHashAlgorithmTests
         protected override UnalignedPadBlockHasher Clone()
         {
             UnalignedPadBlockHasher clone = new();
+            clone.CopyResidualStateFrom(this);
+            return clone;
+        }
+
+        protected override byte[] PadBlock(ReadOnlySpan<byte> block, ulong messageLength) =>
+            new byte[BlockSizeBytes + 1];
+
+        protected override void ProcessBlock(ReadOnlySpan<byte> block)
+        {
+        }
+
+        protected override byte[] ProcessFinalBlock() => new byte[4];
+
+    }
+
+    /// <summary>
+    /// A test-only block hasher that returns a padded final block whose length is deliberately not aligned to
+    /// <see cref="BlockNonCryptographicHashAlgorithm{T}.BlockSizeBytes" /> and opts in via
+    /// <c>AllowUnalignedFinalBlock</c> — exercising the accept path of the same guard.
+    /// </summary>
+    private sealed class AllowedUnalignedPadBlockHasher
+        : BlockNonCryptographicHashAlgorithm<AllowedUnalignedPadBlockHasher>
+    {
+
+        public AllowedUnalignedPadBlockHasher()
+            : base(hashLengthInBytes: 4, blockSize: 4)
+        {
+        }
+
+        protected override bool AllowUnalignedFinalBlock => true;
+
+        protected override AllowedUnalignedPadBlockHasher Clone()
+        {
+            AllowedUnalignedPadBlockHasher clone = new();
             clone.CopyResidualStateFrom(this);
             return clone;
         }
