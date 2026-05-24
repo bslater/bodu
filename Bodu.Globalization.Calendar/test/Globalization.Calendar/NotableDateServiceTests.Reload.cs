@@ -177,6 +177,97 @@ public partial class NotableDateServiceTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="NotableDateService.Reload" /> composes additions from multiple registered override
+    /// providers so each provider's contribution surfaces in the resolved output.
+    /// </summary>
+    [TestMethod]
+    public void Reload_WhenMultipleOverrideProvidersRegistered_ShouldComposeAllContributions()
+    {
+        MutableNotableDateRuleOverrideProvider providerA = new();
+        MutableNotableDateRuleOverrideProvider providerB = new();
+
+        NotableDateService service = new(
+            ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(Fixed("Base", 6, 1)) },
+            workingWeek: WeekPattern.MondayToFriday,
+            options: new NotableDateServiceOptions { OverrideProviders = new INotableDateRuleOverrideProvider[] { providerA, providerB } });
+
+        providerA.AddRule(Fixed("From A", 7, 1));
+        providerB.AddRule(Fixed("From B", 8, 1));
+        service.Reload();
+
+        IReadOnlyList<NotableDate> emitted = service.GetNotableDates(2026);
+        Assert.IsTrue(emitted.Any(n => n.Name == "From A"));
+        Assert.IsTrue(emitted.Any(n => n.Name == "From B"));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="NotableDateService.Reload" /> honours year-scoped removals through the rebuilt
+    /// override snapshot.
+    /// </summary>
+    [TestMethod]
+    public void Reload_WhenYearScopedRemovalAddedAndReloadCalled_ShouldSuppressOnlyMatchingYears()
+    {
+        MutableNotableDateRuleOverrideProvider overrides = new();
+        NotableDateService service = new(
+            ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(Fixed("Holiday", 6, 1)) },
+            workingWeek: WeekPattern.MondayToFriday,
+            options: new NotableDateServiceOptions { OverrideProviders = new[] { overrides } });
+
+        overrides.RemoveRule("Holiday", fromYear: 2026, toYear: 2026);
+        service.Reload();
+
+        Assert.IsTrue(service.GetNotableDates(2025).Any(n => n.Name == "Holiday"));
+        Assert.IsFalse(service.GetNotableDates(2026).Any(n => n.Name == "Holiday"));
+        Assert.IsTrue(service.GetNotableDates(2027).Any(n => n.Name == "Holiday"));
+    }
+
+    /// <summary>
+    /// Verifies that repeated <see cref="NotableDateService.Reload" /> calls are stable — successive reloads do not
+    /// accumulate duplicate additions or removals.
+    /// </summary>
+    [TestMethod]
+    public void Reload_WhenInvokedRepeatedly_ShouldNotAccumulateDuplicateRules()
+    {
+        MutableNotableDateRuleOverrideProvider overrides = new();
+        NotableDateService service = new(
+            ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(Fixed("Base", 6, 1)) },
+            workingWeek: WeekPattern.MondayToFriday,
+            options: new NotableDateServiceOptions { OverrideProviders = new[] { overrides } });
+
+        overrides.AddRule(Fixed("Once", 9, 9));
+
+        service.Reload();
+        service.Reload();
+        service.Reload();
+
+        int matches = service.GetNotableDates(2026).Count(n => n.Name == "Once");
+        Assert.AreEqual(1, matches);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="NotableDateService.Reload" /> drops contributions that have since been cleared from
+    /// the underlying override provider.
+    /// </summary>
+    [TestMethod]
+    public void Reload_WhenOverrideContributionsCleared_ShouldDropThem()
+    {
+        MutableNotableDateRuleOverrideProvider overrides = new();
+        NotableDateService service = new(
+            ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(Fixed("Base", 6, 1)) },
+            workingWeek: WeekPattern.MondayToFriday,
+            options: new NotableDateServiceOptions { OverrideProviders = new[] { overrides } });
+
+        overrides.AddRule(Fixed("Temporary", 7, 1));
+        service.Reload();
+        Assert.IsTrue(service.GetNotableDates(2026).Any(n => n.Name == "Temporary"));
+
+        overrides.Clear();
+        service.Reload();
+
+        Assert.IsFalse(service.GetNotableDates(2026).Any(n => n.Name == "Temporary"));
+    }
+
+    /// <summary>
     /// Verifies that <see cref="MutableNotableDateRuleOverrideProvider.Changed" /> can be wired to
     /// <see cref="NotableDateService.Reload" /> so that mutations propagate without explicit reload calls.
     /// </summary>

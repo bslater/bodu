@@ -128,4 +128,70 @@ public partial class MutableNotableDateRuleOverrideProviderTests
 
         Assert.AreEqual(1, changedCount);
     }
+
+    /// <summary>
+    /// Verifies the scope-binding contract of <see cref="MutableNotableDateRuleOverrideProvider.RemoveRule" /> across
+    /// every combination of year and territory scoping.
+    /// </summary>
+    /// <param name="fromYear">The <c>fromYear</c> argument under test.</param>
+    /// <param name="toYear">The <c>toYear</c> argument under test.</param>
+    /// <param name="territoryCode">The <c>territoryCode</c> argument under test.</param>
+    [TestMethod]
+    [DataRow(null, null, null)]
+    [DataRow(2026, null, null)]
+    [DataRow(null, 2030, null)]
+    [DataRow(2026, 2030, null)]
+    [DataRow(null, null, "AU-NSW")]
+    [DataRow(2026, 2030, "AU-NSW")]
+    [DataRow(null, null, "")]
+    public void RemoveRule_WhenScopedByVariousCombinations_ShouldRecordScopeUnchanged(int? fromYear, int? toYear, string? territoryCode)
+    {
+        MutableNotableDateRuleOverrideProvider provider = new();
+
+        provider.RemoveRule("Target", fromYear, toYear, territoryCode);
+
+        RuleRemoval removal = provider.GetRemovals().Single();
+        Assert.AreEqual("Target", removal.RuleName);
+        Assert.AreEqual(fromYear, removal.FromYear);
+        Assert.AreEqual(toYear, removal.ToYear);
+        Assert.AreEqual(territoryCode, removal.TerritoryCode);
+    }
+
+    /// <summary>
+    /// Verifies that multiple removals authored against the same rule name with differing scopes are kept distinct in
+    /// the snapshot — the provider composes by union, not by replacement.
+    /// </summary>
+    [TestMethod]
+    public void RemoveRule_WhenSameNameWithDifferentScopes_ShouldKeepAllRemovals()
+    {
+        MutableNotableDateRuleOverrideProvider provider = new();
+
+        provider.RemoveRule("Boxing Day", fromYear: 2026, toYear: 2026);
+        provider.RemoveRule("Boxing Day", territoryCode: "AU-NT");
+        provider.RemoveRule("Boxing Day", fromYear: 2030, toYear: 2030, territoryCode: "AU-VIC");
+
+        List<RuleRemoval> removals = provider.GetRemovals().ToList();
+
+        Assert.AreEqual(3, removals.Count);
+        Assert.IsTrue(removals.Any(r => r.FromYear == 2026 && r.ToYear == 2026 && r.TerritoryCode is null));
+        Assert.IsTrue(removals.Any(r => r.FromYear is null && r.TerritoryCode == "AU-NT"));
+        Assert.IsTrue(removals.Any(r => r.FromYear == 2030 && r.TerritoryCode == "AU-VIC"));
+    }
+
+    /// <summary>
+    /// Verifies that a previously captured <see cref="MutableNotableDateRuleOverrideProvider.GetRemovals" /> enumerator
+    /// continues to yield the same snapshot even when the provider is subsequently mutated.
+    /// </summary>
+    [TestMethod]
+    public void RemoveRule_WhenMutatedAfterGetRemovals_ShouldNotInvalidateEarlierSnapshot()
+    {
+        MutableNotableDateRuleOverrideProvider provider = new();
+        provider.RemoveRule("First");
+
+        IEnumerable<RuleRemoval> snapshot = provider.GetRemovals();
+
+        provider.RemoveRule("Second");
+
+        Assert.AreEqual(1, snapshot.Count(), "Snapshot must remain stable under concurrent mutation.");
+    }
 }

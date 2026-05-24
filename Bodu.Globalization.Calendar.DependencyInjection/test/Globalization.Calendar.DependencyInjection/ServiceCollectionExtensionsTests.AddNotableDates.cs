@@ -240,6 +240,81 @@ public partial class ServiceCollectionExtensionsTests
     }
 
     /// <summary>
+    /// Verifies that the configuration overload throws when the section name is whitespace.
+    /// </summary>
+    /// <param name="sectionName">The section name argument under test.</param>
+    [TestMethod]
+    [DataRow("")]
+    [DataRow(" ")]
+    [DataRow("\t")]
+    [DataRow("   ")]
+    public void AddNotableDates_WhenSectionNameIsBlank_ShouldThrowArgumentException(string sectionName)
+    {
+        IServiceCollection services = new ServiceCollection();
+
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            _ = services.AddNotableDates(configuration: null, sectionName: sectionName);
+        });
+
+        Assert.AreEqual("sectionName", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="NotableDateOptions.WorkingDays" /> bound from configuration drives the resolved
+    /// service's <see cref="INotableDateService.WorkingWeek" /> for every named preset.
+    /// </summary>
+    /// <param name="workingDays">The enum member to bind and verify.</param>
+    [TestMethod]
+    [DataRow(nameof(WorkingDaysOfWeek.MondayToFriday))]
+    [DataRow(nameof(WorkingDaysOfWeek.MondayToSaturday))]
+    [DataRow(nameof(WorkingDaysOfWeek.SundayToThursday))]
+    [DataRow(nameof(WorkingDaysOfWeek.SaturdayToWednesday))]
+    public void AddNotableDates_WhenConfigurationBindsKnownWorkingDaysValue_ShouldHonourIt(string workingDays)
+    {
+        WorkingDaysOfWeek expected = Enum.Parse<WorkingDaysOfWeek>(workingDays);
+
+        IConfigurationRoot configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(new Dictionary<string, string?>
+            {
+                ["NotableDates:WorkingDays"] = workingDays,
+            })
+            .Build();
+
+        IServiceCollection services = new ServiceCollection();
+        services.AddNotableDates(configuration);
+
+        using ServiceProvider provider = services.BuildServiceProvider();
+        INotableDateService service = provider.GetRequiredService<INotableDateService>();
+
+        Assert.AreEqual(expected.ToWeekPattern(), service.WorkingWeek);
+    }
+
+    /// <summary>
+    /// Verifies that the resolved <see cref="NotableDateService" /> is disposed when the owning
+    /// <see cref="ServiceProvider" /> is disposed — the container honours <see cref="IDisposable" /> on registered
+    /// singletons.
+    /// </summary>
+    [TestMethod]
+    public void AddNotableDates_WhenServiceProviderDisposed_ShouldDisposeResolvedSingleton()
+    {
+        IServiceCollection services = new ServiceCollection();
+        services.AddNotableDates();
+
+        ServiceProvider provider = services.BuildServiceProvider();
+        INotableDateService service = provider.GetRequiredService<INotableDateService>();
+
+        provider.Dispose();
+
+        // After disposal a subsequent call into the service that touches its internal ThreadLocal must throw, proving
+        // the container called Dispose on the singleton (which disposes the ThreadLocal field).
+        Assert.ThrowsExactly<ObjectDisposedException>(() =>
+        {
+            _ = service.GetNotableDates(2026);
+        });
+    }
+
+    /// <summary>
     /// Verifies that <see cref="MutableNotableDateRuleOverrideProvider" /> registered through the builder is
     /// auto-wired to <see cref="INotableDateService.Reload" /> on its <c>Changed</c> event.
     /// </summary>

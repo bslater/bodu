@@ -103,6 +103,67 @@ public partial class NotableDateServiceBuilderExtensionsTests
     }
 
     /// <summary>
+    /// Verifies that the typed <c>AddOverrideProvider&lt;TOverride&gt;()</c> overload throws when the builder is
+    /// <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void AddOverrideProviderTyped_WhenBuilderIsNull_ShouldThrowArgumentNullException()
+    {
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = NotableDateServiceBuilderExtensions.AddOverrideProvider<EmptyOverrideProvider>(null!);
+        });
+
+        Assert.AreEqual("builder", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that the typed <c>AddOverrideProvider&lt;TOverride&gt;()</c> overload registers the provider as a
+    /// singleton resolvable through the container, and that additions surface via the resolved service.
+    /// </summary>
+    [TestMethod]
+    public void AddOverrideProviderTyped_WhenInvoked_ShouldRegisterProviderResolvedFromContainer()
+    {
+        (IServiceCollection services, INotableDateServiceBuilder builder) = NewBuilder();
+        builder
+            .AddRuleProvider(new InMemoryRuleProvider(Fixed("Base", 6, 1)))
+            .AddOverrideProvider<EmptyOverrideProvider>();
+
+        using ServiceProvider provider = services.BuildServiceProvider();
+        INotableDateService service = provider.GetRequiredService<INotableDateService>();
+
+        // The override provider contributes nothing; the base rule should still resolve unaffected.
+        Assert.IsTrue(service.GetNotableDates(2026).Any(n => n.Name == "Base"));
+    }
+
+    /// <summary>
+    /// Verifies that two <see cref="MutableNotableDateRuleOverrideProvider" /> instances registered via the builder
+    /// are both auto-wired to <see cref="INotableDateService.Reload" />.
+    /// </summary>
+    [TestMethod]
+    public void AddOverrideProvider_WhenMultipleMutableProvidersRegistered_ShouldAutoReloadOnEachProvidersChange()
+    {
+        MutableNotableDateRuleOverrideProvider a = new();
+        MutableNotableDateRuleOverrideProvider b = new();
+
+        (IServiceCollection services, INotableDateServiceBuilder builder) = NewBuilder();
+        builder
+            .AddRuleProvider(new InMemoryRuleProvider(Fixed("Base", 6, 1)))
+            .AddOverrideProvider(a)
+            .AddOverrideProvider(b);
+
+        using ServiceProvider provider = services.BuildServiceProvider();
+        INotableDateService service = provider.GetRequiredService<INotableDateService>();
+
+        a.AddRule(Fixed("From A", 7, 1));
+        b.AddRule(Fixed("From B", 8, 1));
+
+        IReadOnlyList<NotableDate> emitted = service.GetNotableDates(2026);
+        Assert.IsTrue(emitted.Any(n => n.Name == "From A"));
+        Assert.IsTrue(emitted.Any(n => n.Name == "From B"));
+    }
+
+    /// <summary>
     /// Verifies that a <see cref="MutableNotableDateRuleOverrideProvider" /> registered through the builder gets its
     /// <c>Changed</c> event automatically wired to <see cref="INotableDateService.Reload" />.
     /// </summary>
@@ -124,5 +185,18 @@ public partial class NotableDateServiceBuilderExtensionsTests
         overrides.AddRule(Fixed("Live", 9, 9));
 
         Assert.IsTrue(service.GetNotableDates(2026).Any(n => n.Name == "Live"));
+    }
+
+    /// <summary>
+    /// A degenerate <see cref="INotableDateRuleOverrideProvider" /> used by the typed-registration test above. The
+    /// container must be able to instantiate it via its parameterless constructor.
+    /// </summary>
+    private sealed class EmptyOverrideProvider : INotableDateRuleOverrideProvider
+    {
+        /// <inheritdoc />
+        public IEnumerable<NotableDateRule> GetAdditions() => [];
+
+        /// <inheritdoc />
+        public IEnumerable<RuleRemoval> GetRemovals() => [];
     }
 }

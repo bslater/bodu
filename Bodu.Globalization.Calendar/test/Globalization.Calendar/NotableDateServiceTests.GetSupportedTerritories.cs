@@ -113,6 +113,108 @@ public partial class NotableDateServiceTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="NotableDateService.GetSupportedTerritories" /> returns an empty collection when no
+    /// rule providers are registered.
+    /// </summary>
+    [TestMethod]
+    public void GetSupportedTerritories_WhenNoRuleProviders_ShouldReturnEmpty()
+    {
+        NotableDateService service = new(
+            ruleProviders: Array.Empty<INotableDateRuleProvider>(),
+            workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
+
+        Assert.AreEqual(0, service.GetSupportedTerritories().Count);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="NotableDateService.GetSupportedTerritories" /> deduplicates across providers — when
+    /// two providers both contribute rules scoped to the same territory the territory appears once.
+    /// </summary>
+    [TestMethod]
+    public void GetSupportedTerritories_WhenMultipleProvidersContributeSameTerritory_ShouldReportOnce()
+    {
+        NotableDateService service = new(
+            ruleProviders: new[]
+            {
+                (INotableDateRuleProvider)new InMemoryRuleProvider(Fixed("A", 1, 1, territory: "AU")),
+                (INotableDateRuleProvider)new InMemoryRuleProvider(Fixed("B", 2, 1, territory: "AU")),
+            },
+            workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
+
+        IReadOnlyCollection<string> territories = service.GetSupportedTerritories();
+
+        Assert.AreEqual(1, territories.Count);
+        Assert.IsTrue(territories.Contains("AU"));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="NotableDateService.GetSupportedTerritories" /> returns territories in stable,
+    /// case-insensitive sorted order so consumers driving UI pickers see deterministic output.
+    /// </summary>
+    [TestMethod]
+    public void GetSupportedTerritories_WhenMultipleTerritories_ShouldReturnInCaseInsensitiveSortedOrder()
+    {
+        NotableDateService service = new(
+            ruleProviders: new[]
+            {
+                (INotableDateRuleProvider)new InMemoryRuleProvider(
+                    Fixed("z", 1, 1, territory: "ZZ"),
+                    Fixed("c", 2, 1, territory: "CN"),
+                    Fixed("a", 3, 1, territory: "AU-NSW"),
+                    Fixed("b", 4, 1, territory: "AU")),
+            },
+            workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
+
+        List<string> territories = service.GetSupportedTerritories().ToList();
+
+        CollectionAssert.AreEqual(new[] { "AU", "AU-NSW", "CN", "ZZ" }, territories);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="NotableDateService.GetSupportedTerritories" /> returns a snapshot — successive calls
+    /// after <see cref="NotableDateService.Reload" /> reflect the latest effective rule set while the previously
+    /// returned collection is unaffected by subsequent mutations.
+    /// </summary>
+    [TestMethod]
+    public void GetSupportedTerritories_WhenCalledRepeatedlyAroundReload_ShouldReturnFreshSnapshotEachTime()
+    {
+        MutableNotableDateRuleOverrideProvider overrides = new();
+        NotableDateService service = new(
+            ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(Fixed("Base", 1, 1, territory: "AU")) },
+            workingWeek: WeekPattern.MondayToFriday,
+            options: new NotableDateServiceOptions { OverrideProviders = new[] { overrides } });
+
+        IReadOnlyCollection<string> firstSnapshot = service.GetSupportedTerritories();
+        Assert.AreEqual(1, firstSnapshot.Count);
+
+        overrides.AddRule(Fixed("Extra", 2, 1, territory: "NZ"));
+        service.Reload();
+
+        IReadOnlyCollection<string> secondSnapshot = service.GetSupportedTerritories();
+        Assert.AreEqual(2, secondSnapshot.Count);
+        Assert.AreEqual(1, firstSnapshot.Count, "Earlier snapshot must remain a frozen view of its read.");
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="NotableDateService.GetSupportedTerritories" /> elides rules whose territory is empty
+    /// or whitespace-only so that authoring noise does not surface in UI pickers.
+    /// </summary>
+    /// <param name="territory">The territory code authored on the test rule.</param>
+    [TestMethod]
+    [DataRow("")]
+    [DataRow(" ")]
+    [DataRow("\t")]
+    [DataRow("   ")]
+    public void GetSupportedTerritories_WhenTerritoryIsBlank_ShouldElideRule(string territory)
+    {
+        NotableDateService service = new(
+            ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(Fixed("Blank", 1, 1, territory: territory)) },
+            workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
+
+        Assert.AreEqual(0, service.GetSupportedTerritories().Count);
+    }
+
+    /// <summary>
     /// Verifies that <see cref="NotableDateService.GetSupportedTerritories" /> reflects rule suppression via overrides
     /// after <see cref="NotableDateService.Reload" /> has been called.
     /// </summary>

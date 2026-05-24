@@ -627,8 +627,8 @@ public sealed class NotableDateService : INotableDateService, IDisposable
     /// <remarks>
     /// <para>
     /// Projects the effective rule set's <see cref="NotableDateRule.TerritoryCode" /> values through case-insensitive
-    /// distinctness, eliding rules whose territory is <see langword="null" /> or empty. Returned codes preserve their
-    /// authored casing.
+    /// distinctness, eliding rules whose territory is <see langword="null" />, empty, or whitespace. Returned codes
+    /// preserve their authored casing.
     /// </para>
     /// </remarks>
     public IReadOnlyCollection<string> GetSupportedTerritories()
@@ -638,7 +638,7 @@ public sealed class NotableDateService : INotableDateService, IDisposable
 
         foreach (NotableDateRule rule in snapshot)
         {
-            if (!string.IsNullOrEmpty(rule.TerritoryCode))
+            if (!string.IsNullOrWhiteSpace(rule.TerritoryCode))
             {
                 _ = territories.Add(rule.TerritoryCode);
             }

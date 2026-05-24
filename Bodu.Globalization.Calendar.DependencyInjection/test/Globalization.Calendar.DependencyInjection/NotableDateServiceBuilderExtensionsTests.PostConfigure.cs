@@ -143,6 +143,42 @@ public partial class NotableDateServiceBuilderExtensionsTests
     }
 
     /// <summary>
+    /// Verifies that multiple <c>PostConfigure</c> callbacks compose in registration order — each callback runs and
+    /// later callbacks observe earlier callbacks' mutations.
+    /// </summary>
+    [TestMethod]
+    public void PostConfigure_WhenCalledMultipleTimes_ShouldComposeInRegistrationOrder()
+    {
+        IServiceCollection services = new ServiceCollection();
+        services.AddNotableDates()
+            .PostConfigure((_, opts) => opts.DefaultTerritoryCode = "First")
+            .PostConfigure((_, opts) => opts.DefaultTerritoryCode += "+Second")
+            .PostConfigure((_, opts) => opts.DefaultTerritoryCode += "+Third");
+
+        using ServiceProvider provider = services.BuildServiceProvider();
+        NotableDateOptions resolved = provider.GetRequiredService<IOptions<NotableDateOptions>>().Value;
+
+        Assert.AreEqual("First+Second+Third", resolved.DefaultTerritoryCode);
+    }
+
+    /// <summary>
+    /// Verifies that <c>PostConfigure</c> runs even when no <see cref="Microsoft.Extensions.Configuration.IConfiguration" />
+    /// is supplied — the hook is independent of configuration binding.
+    /// </summary>
+    [TestMethod]
+    public void PostConfigure_WhenNoConfigurationSupplied_ShouldStillRun()
+    {
+        IServiceCollection services = new ServiceCollection();
+        services.AddNotableDates()
+            .PostConfigure((_, opts) => opts.DefaultTerritoryCode = "Set-by-postconfigure");
+
+        using ServiceProvider provider = services.BuildServiceProvider();
+        NotableDateOptions resolved = provider.GetRequiredService<IOptions<NotableDateOptions>>().Value;
+
+        Assert.AreEqual("Set-by-postconfigure", resolved.DefaultTerritoryCode);
+    }
+
+    /// <summary>
     /// A marker class used by <c>PostConfigure</c> tests to confirm the callback received an
     /// <see cref="IServiceProvider" />.
     /// </summary>

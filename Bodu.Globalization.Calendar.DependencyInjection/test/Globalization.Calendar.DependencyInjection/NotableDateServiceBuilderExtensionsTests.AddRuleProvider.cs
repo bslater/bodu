@@ -180,6 +180,22 @@ public partial class NotableDateServiceBuilderExtensionsTests
     }
 
     /// <summary>
+    /// Verifies that <c>AddRuleProviders</c> with an empty sequence is a no-op — the resolved service still functions
+    /// and returns no notable dates.
+    /// </summary>
+    [TestMethod]
+    public void AddRuleProviders_WhenSequenceIsEmpty_ShouldResolveServiceWithNoRules()
+    {
+        (IServiceCollection services, INotableDateServiceBuilder builder) = NewBuilder();
+        builder.AddRuleProviders(Array.Empty<INotableDateRuleProvider>());
+
+        using ServiceProvider provider = services.BuildServiceProvider();
+        INotableDateService service = provider.GetRequiredService<INotableDateService>();
+
+        Assert.AreEqual(0, service.GetNotableDates(2026).Count);
+    }
+
+    /// <summary>
     /// A degenerate <see cref="INotableDateRuleProvider" /> used by <c>AddRuleProvider&lt;TProvider&gt;</c> tests.
     /// </summary>
     private sealed class EmptyRuleProvider : INotableDateRuleProvider

@@ -122,6 +122,102 @@ public partial class NotableDateServiceTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="NotableDateService.GetSupportedCalendars" /> returns an empty collection when no rule
+    /// providers are registered.
+    /// </summary>
+    [TestMethod]
+    public void GetSupportedCalendars_WhenNoRuleProviders_ShouldReturnEmpty()
+    {
+        NotableDateService service = new(
+            ruleProviders: Array.Empty<INotableDateRuleProvider>(),
+            workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
+
+        Assert.AreEqual(0, service.GetSupportedCalendars().Count);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="NotableDateService.GetSupportedCalendars" /> deduplicates across providers — when two
+    /// providers both contribute rules referencing the same calendar type the calendar appears once.
+    /// </summary>
+    [TestMethod]
+    public void GetSupportedCalendars_WhenMultipleProvidersShareCalendar_ShouldReportOnce()
+    {
+        NotableDateRule a = new()
+        {
+            Name = "A",
+            Strategy = DateResolutionStrategy.Fixed,
+            Category = NotableDateCategory.Holiday,
+            Month = 1,
+            Day = 1,
+            CalendarType = typeof(GregorianCalendar),
+        };
+        NotableDateRule b = new()
+        {
+            Name = "B",
+            Strategy = DateResolutionStrategy.Fixed,
+            Category = NotableDateCategory.Holiday,
+            Month = 2,
+            Day = 1,
+            CalendarType = typeof(GregorianCalendar),
+        };
+
+        NotableDateService service = new(
+            ruleProviders: new[]
+            {
+                (INotableDateRuleProvider)new InMemoryRuleProvider(a),
+                (INotableDateRuleProvider)new InMemoryRuleProvider(b),
+            },
+            workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
+
+        IReadOnlyCollection<Type> calendars = service.GetSupportedCalendars();
+
+        Assert.AreEqual(1, calendars.Count);
+        Assert.IsTrue(calendars.Contains(typeof(GregorianCalendar)));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="NotableDateService.GetSupportedCalendars" /> returns a fresh snapshot on each call,
+    /// reflecting override additions made between successive reads.
+    /// </summary>
+    [TestMethod]
+    public void GetSupportedCalendars_WhenCalledRepeatedlyAroundReload_ShouldReturnFreshSnapshotEachTime()
+    {
+        MutableNotableDateRuleOverrideProvider overrides = new();
+        NotableDateRule gregorian = new()
+        {
+            Name = "Gregorian",
+            Strategy = DateResolutionStrategy.Fixed,
+            Category = NotableDateCategory.Holiday,
+            Month = 1,
+            Day = 1,
+            CalendarType = typeof(GregorianCalendar),
+        };
+
+        NotableDateService service = new(
+            ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(gregorian) },
+            workingWeek: WeekPattern.MondayToFriday,
+            options: new NotableDateServiceOptions { OverrideProviders = new[] { overrides } });
+
+        IReadOnlyCollection<Type> firstSnapshot = service.GetSupportedCalendars();
+        Assert.AreEqual(1, firstSnapshot.Count);
+
+        overrides.AddRule(new NotableDateRule
+        {
+            Name = "Hebrew",
+            Strategy = DateResolutionStrategy.Fixed,
+            Category = NotableDateCategory.Holiday,
+            Month = 1,
+            Day = 1,
+            CalendarType = typeof(HebrewCalendar),
+        });
+        service.Reload();
+
+        IReadOnlyCollection<Type> secondSnapshot = service.GetSupportedCalendars();
+        Assert.AreEqual(2, secondSnapshot.Count);
+        Assert.AreEqual(1, firstSnapshot.Count, "Earlier snapshot must remain a frozen view of its read.");
+    }
+
+    /// <summary>
     /// Verifies that <see cref="NotableDateService.GetSupportedCalendars" /> reflects override additions after
     /// <see cref="NotableDateService.Reload" /> has been called.
     /// </summary>

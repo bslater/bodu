@@ -29,4 +29,40 @@ public sealed partial class MutableNotableDateRuleOverrideProviderTests
             Month = month,
             Day = day,
         };
+
+    /// <summary>
+    /// Verifies that raising <see cref="MutableNotableDateRuleOverrideProvider.Changed" /> with no subscribers does
+    /// not throw — i.e. the provider null-checks the event field correctly.
+    /// </summary>
+    [TestMethod]
+    public void Mutations_WhenNoChangedSubscribers_ShouldNotThrow()
+    {
+        MutableNotableDateRuleOverrideProvider provider = new();
+
+        provider.AddRule(Fixed("X"));
+        provider.RemoveRule("Y");
+        provider.Clear();
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="MutableNotableDateRuleOverrideProvider.GetAdditions" /> and
+    /// <see cref="MutableNotableDateRuleOverrideProvider.GetRemovals" /> return independent snapshots — mutating one
+    /// list does not perturb a previously captured snapshot of the other.
+    /// </summary>
+    [TestMethod]
+    public void GetAdditionsAndGetRemovals_WhenMutatedAcrossEachOther_ShouldYieldIndependentSnapshots()
+    {
+        MutableNotableDateRuleOverrideProvider provider = new();
+        provider.AddRule(Fixed("Initial Add"));
+        provider.RemoveRule("Initial Remove");
+
+        IEnumerable<NotableDateRule> additionsSnapshot = provider.GetAdditions();
+        IEnumerable<RuleRemoval> removalsSnapshot = provider.GetRemovals();
+
+        provider.AddRule(Fixed("Late Add"));
+        provider.RemoveRule("Late Remove");
+
+        Assert.AreEqual(1, additionsSnapshot.Count(), "Additions snapshot must not see the late-added rule.");
+        Assert.AreEqual(1, removalsSnapshot.Count(), "Removals snapshot must not see the late-added removal.");
+    }
 }
