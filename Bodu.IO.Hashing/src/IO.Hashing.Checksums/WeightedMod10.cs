@@ -99,12 +99,14 @@ internal static class WeightedMod10
     /// </summary>
     /// <param name="digitsIncludingCheck">The complete sequence including the trailing check digit.</param>
     /// <returns>
-    /// <see langword="true" /> if the sequence is empty or evaluates as valid; otherwise, <see langword="false" /> —
-    /// including the case where <paramref name="digitsIncludingCheck" /> contains a character outside the range
+    /// <see langword="true" /> if the sequence evaluates as valid; otherwise, <see langword="false" /> — including the
+    /// case where <paramref name="digitsIncludingCheck" /> is empty or contains a character outside the range
     /// <c>'0'</c> to <c>'9'</c>.
     /// </returns>
     public static bool IsValidAba(ReadOnlySpan<char> digitsIncludingCheck)
     {
+        if (digitsIncludingCheck.IsEmpty) return false;
+
         ReadOnlySpan<int> weights = [1, 7, 3];
         var sum = 0;
         for (int i = digitsIncludingCheck.Length - 1, j = 0; i >= 0; i--, j++)
@@ -124,12 +126,14 @@ internal static class WeightedMod10
     /// </summary>
     /// <param name="digitsIncludingCheck">The complete sequence including the trailing check digit.</param>
     /// <returns>
-    /// <see langword="true" /> if the sequence is empty or evaluates as valid; otherwise, <see langword="false" /> —
-    /// including the case where <paramref name="digitsIncludingCheck" /> contains a character outside the range
+    /// <see langword="true" /> if the sequence evaluates as valid; otherwise, <see langword="false" /> — including the
+    /// case where <paramref name="digitsIncludingCheck" /> is empty or contains a character outside the range
     /// <c>'0'</c> to <c>'9'</c>.
     /// </returns>
     public static bool IsValidIsbn13(ReadOnlySpan<char> digitsIncludingCheck)
     {
+        if (digitsIncludingCheck.IsEmpty) return false;
+
         var sum = 0;
         for (int i = digitsIncludingCheck.Length - 1, j = 0; i >= 0; i--, j++)
         {

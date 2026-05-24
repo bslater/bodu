@@ -101,11 +101,11 @@ public sealed class AbaRoutingNumber
     /// <param name="digitsIncludingCheck">The complete sequence including the trailing check digit.</param>
     /// <returns>
     /// <see langword="true" /> if the sequence is exactly <see cref="SequenceLength" /> digits and evaluates as valid
-    /// under the ABA scheme; otherwise, <see langword="false" /> — including the case where the length is wrong or a
-    /// non-digit character is present.
+    /// under the ABA scheme; otherwise, <see langword="false" /> — including the case where
+    /// <paramref name="digitsIncludingCheck" /> is empty, the length is wrong, or a non-digit character is present.
     /// </returns>
     public static bool IsValid(ReadOnlySpan<char> digitsIncludingCheck) =>
-        digitsIncludingCheck.IsEmpty || (digitsIncludingCheck.Length == SequenceLength && WeightedMod10.IsValidAba(digitsIncludingCheck));
+        digitsIncludingCheck.Length == SequenceLength && WeightedMod10.IsValidAba(digitsIncludingCheck);
 
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<char> digits)

@@ -107,12 +107,12 @@ public sealed class Iban
     /// whitespace or formatting characters.
     /// </param>
     /// <returns>
-    /// <see langword="true" /> if the IBAN is empty, or if it is at least four characters long, alphanumeric, and its
-    /// rearranged decimal expansion has remainder <c>1</c> modulo 97; otherwise, <see langword="false" />.
+    /// <see langword="true" /> if the IBAN is at least four characters long, alphanumeric, and its rearranged decimal
+    /// expansion has remainder <c>1</c> modulo 97; otherwise, <see langword="false" /> — including the case where
+    /// <paramref name="iban" /> is empty.
     /// </returns>
     public static bool IsValid(ReadOnlySpan<char> iban)
     {
-        if (iban.IsEmpty) return true;
         if (iban.Length < 4) return false;
 
         // Positions 2 and 3 must be ASCII decimal digits (the check code).
