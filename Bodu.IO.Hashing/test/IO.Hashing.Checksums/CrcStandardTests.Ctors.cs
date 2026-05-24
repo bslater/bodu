@@ -77,4 +77,85 @@ public partial class CrcStandardTests
         Assert.AreEqual("size", ex.ParamName);
     }
 
+    /// <summary>
+    /// Verifies that constructing a <see cref="CrcStandard" /> with a <paramref name="polynomial" /> that exceeds the
+    /// <paramref name="size" />-bit width mask throws <see cref="ArgumentOutOfRangeException" /> with
+    /// <c>ParamName</c> equal to <c>polynomial</c>.
+    /// </summary>
+    /// <param name="size">The CRC width, in bits.</param>
+    /// <param name="polynomial">A polynomial value that does not fit in <paramref name="size" /> bits.</param>
+    [TestMethod]
+    [DataRow(1, 0x2UL)]
+    [DataRow(3, 0x10UL)]
+    [DataRow(8, 0x100UL)]
+    [DataRow(8, 0x107UL)]
+    [DataRow(16, 0x10000UL)]
+    [DataRow(32, 0x1_0000_0000UL)]
+    [DataRow(63, 0x8000_0000_0000_0000UL)]
+    public void Ctor_WhenPolynomialExceedsWidth_ShouldThrowExactly(int size, ulong polynomial)
+    {
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(
+            () => new CrcStandard("Test", size, polynomial, 0x0UL, false, false, 0x0UL));
+        Assert.AreEqual("polynomial", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that constructing a <see cref="CrcStandard" /> with an <paramref name="initialValue" /> that exceeds
+    /// the <paramref name="size" />-bit width mask throws <see cref="ArgumentOutOfRangeException" /> with
+    /// <c>ParamName</c> equal to <c>initialValue</c>.
+    /// </summary>
+    /// <param name="size">The CRC width, in bits.</param>
+    /// <param name="initialValue">An initial register value that does not fit in <paramref name="size" /> bits.</param>
+    [TestMethod]
+    [DataRow(1, 0x2UL)]
+    [DataRow(8, 0x100UL)]
+    [DataRow(16, 0x10000UL)]
+    [DataRow(32, 0x1_0000_0000UL)]
+    public void Ctor_WhenInitialValueExceedsWidth_ShouldThrowExactly(int size, ulong initialValue)
+    {
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(
+            () => new CrcStandard("Test", size, 0x1UL, initialValue, false, false, 0x0UL));
+        Assert.AreEqual("initialValue", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that constructing a <see cref="CrcStandard" /> with an <paramref name="xOrOut" /> that exceeds the
+    /// <paramref name="size" />-bit width mask throws <see cref="ArgumentOutOfRangeException" /> with
+    /// <c>ParamName</c> equal to <c>xOrOut</c>.
+    /// </summary>
+    /// <param name="size">The CRC width, in bits.</param>
+    /// <param name="xOrOut">A final-XOR value that does not fit in <paramref name="size" /> bits.</param>
+    [TestMethod]
+    [DataRow(1, 0x2UL)]
+    [DataRow(8, 0x100UL)]
+    [DataRow(16, 0x10000UL)]
+    [DataRow(32, 0x1_0000_0000UL)]
+    public void Ctor_WhenXOrOutExceedsWidth_ShouldThrowExactly(int size, ulong xOrOut)
+    {
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(
+            () => new CrcStandard("Test", size, 0x1UL, 0x0UL, false, false, xOrOut));
+        Assert.AreEqual("xOrOut", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that constructing a <see cref="CrcStandard" /> with parameters that exactly fill the width mask
+    /// succeeds — the upper boundary of the permitted range.
+    /// </summary>
+    /// <param name="size">The CRC width, in bits.</param>
+    /// <param name="widthMask">The all-ones value for <paramref name="size" /> bits.</param>
+    [TestMethod]
+    [DataRow(1, 0x1UL)]
+    [DataRow(8, 0xFFUL)]
+    [DataRow(16, 0xFFFFUL)]
+    [DataRow(32, 0xFFFFFFFFUL)]
+    [DataRow(64, ulong.MaxValue)]
+    public void Ctor_WhenParametersFillWidthMask_ShouldNotThrow(int size, ulong widthMask)
+    {
+        CrcStandard standard = new("Test", size, widthMask, widthMask, false, false, widthMask);
+
+        Assert.AreEqual(widthMask, standard.Polynomial);
+        Assert.AreEqual(widthMask, standard.InitialValue);
+        Assert.AreEqual(widthMask, standard.XOrOut);
+    }
+
 }
