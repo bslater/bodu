@@ -285,15 +285,23 @@ public sealed partial class ConcurrentHashSet<T>
     }
 
     /// <summary>
-    /// Gets a value indicating whether the set is empty.
+    /// Gets a value indicating whether the set is empty, observed as an exact point-in-time snapshot.
     /// </summary>
     /// <value><see langword="true" /> if the set contains no elements; otherwise, <see langword="false" />.</value>
     /// <returns>
     /// <see langword="true" /> if the set was empty when the call was made; otherwise, <see langword="false" />.
     /// </returns>
     /// <remarks>
-    /// Reading this property acquires every internal lock. It is cheaper than comparing <see cref="Count" /> against
-    /// zero because it stops at the first non-empty lock region.
+    /// <para>
+    /// Reading this property acquires every internal lock, producing a coherent point-in-time view of the set's
+    /// emptiness. It is cheaper than comparing <see cref="Count" /> against zero because it stops at the first
+    /// non-empty lock region.
+    /// </para>
+    /// <para>
+    /// Use this property when the answer must reflect a true snapshot — for example, before tearing down the set
+    /// or before publishing a "set is drained" event. Prefer <see cref="IsEmptySnapshot" /> when callers need a
+    /// fast, lock-free probe and can tolerate a momentary disagreement with reality under concurrent mutation.
+    /// </para>
     /// </remarks>
     public bool IsEmpty
     {
@@ -360,17 +368,21 @@ public sealed partial class ConcurrentHashSet<T>
     }
 
     /// <summary>
-    /// Gets a value indicating whether the set appears to be empty without acquiring any stripe lock.
+    /// Gets an <strong>approximate</strong> indication of whether the set is empty, computed without acquiring
+    /// any stripe lock. The "Snapshot" suffix denotes a lock-free probe of the per-stripe counters, not a
+    /// guarantee of point-in-time consistency.
     /// </summary>
     /// <returns>
     /// <see langword="true" /> when every per-stripe counter reads as zero at the moment of inspection; otherwise
     /// <see langword="false" />. As with <see cref="ApproximateCount" /> the answer is exact in the absence of
     /// concurrent mutation but may briefly disagree with reality under active <see cref="Add" />/<see cref="Remove" />
-    /// traffic.
+    /// traffic — for example, by returning <see langword="false" /> for a set that is empty by the time the caller
+    /// inspects the result, or vice versa.
     /// </returns>
     /// <remarks>
-    /// Use this property as a fast emptiness probe in hot paths. Prefer <see cref="IsEmpty" /> when the answer must
-    /// reflect a true point-in-time snapshot — for example, before tearing down the set.
+    /// Use this property as a fast emptiness probe in hot paths where occasional staleness is acceptable. Prefer
+    /// <see cref="IsEmpty" /> when the answer must reflect a true point-in-time snapshot — for example, before
+    /// tearing down the set.
     /// </remarks>
     public bool IsEmptySnapshot
     {
