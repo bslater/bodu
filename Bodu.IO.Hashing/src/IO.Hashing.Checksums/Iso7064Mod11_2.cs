@@ -98,13 +98,13 @@ public sealed class Iso7064Mod11_2
     /// </summary>
     /// <param name="valueIncludingCheck">The complete sequence including the trailing check character.</param>
     /// <returns>
-    /// <see langword="true" /> if the sequence is empty or evaluates as valid under MOD 11-2; otherwise,
-    /// <see langword="false" /> — including the case where any non-final character is not a decimal digit or the final
-    /// character is neither a decimal digit nor <c>'X'</c>.
+    /// <see langword="true" /> if the sequence evaluates as valid under MOD 11-2; otherwise, <see langword="false" /> —
+    /// including the case where <paramref name="valueIncludingCheck" /> is empty, any non-final character is not a
+    /// decimal digit, or the final character is neither a decimal digit nor <c>'X'</c>.
     /// </returns>
     public static bool IsValid(ReadOnlySpan<char> valueIncludingCheck)
     {
-        if (valueIncludingCheck.IsEmpty) return true;
+        if (valueIncludingCheck.IsEmpty) return false;
 
         var last = valueIncludingCheck.Length - 1;
         var p = 0;

@@ -58,4 +58,87 @@ public partial class PooledBufferBuilderTests
         builder.Dispose(); // no exception expected
     }
 
+    /// <summary>
+    /// Verifies that <see cref="PooledBufferBuilder{T}.Dispose"/> does not retain references to elements stored in
+    /// the buffer once the strong references held by the test have been dropped. Without clearing on return, the
+    /// pooled array would survive in <see cref="System.Buffers.ArrayPool{T}.Shared"/> with live references that
+    /// the GC could never collect.
+    /// </summary>
+    [TestMethod]
+    public void Dispose_WhenBufferHoldsReferenceItems_ShouldNotRetainReferences()
+    {
+        WeakReference[] weakRefs = CreateAndDisposeBuilder();
+
+        for (var i = 0; i < 3; i++)
+        {
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+        }
+
+        for (var i = 0; i < weakRefs.Length; i++)
+            Assert.IsFalse(weakRefs[i].IsAlive, $"Reference {i} was retained after Dispose.");
+
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
+        static WeakReference[] CreateAndDisposeBuilder()
+        {
+            var builder = new PooledBufferBuilder<object>(initialCapacity: 8);
+            var refs = new WeakReference[5];
+
+            for (var i = 0; i < refs.Length; i++)
+            {
+                var item = new object();
+                refs[i] = new WeakReference(item);
+                builder.Append(item);
+            }
+
+            builder.Dispose();
+            return refs;
+        }
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="PooledBufferBuilder{T}.Reset"/> clears reference slots in the written region so the
+    /// GC can collect the referenced objects even though the rented array is retained for further use.
+    /// </summary>
+    [TestMethod]
+    public void Reset_WhenBufferHoldsReferenceItems_ShouldNotRetainReferences()
+    {
+        WeakReference[] weakRefs;
+        var builder = new PooledBufferBuilder<object>(initialCapacity: 8);
+
+        try
+        {
+            weakRefs = FillAndReset(builder);
+
+            for (var i = 0; i < 3; i++)
+            {
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+            }
+
+            for (var i = 0; i < weakRefs.Length; i++)
+                Assert.IsFalse(weakRefs[i].IsAlive, $"Reference {i} was retained after Reset.");
+        }
+        finally
+        {
+            builder.Dispose();
+        }
+
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
+        static WeakReference[] FillAndReset(PooledBufferBuilder<object> b)
+        {
+            var refs = new WeakReference[5];
+
+            for (var i = 0; i < refs.Length; i++)
+            {
+                var item = new object();
+                refs[i] = new WeakReference(item);
+                b.Append(item);
+            }
+
+            b.Reset();
+            return refs;
+        }
+    }
+
 }

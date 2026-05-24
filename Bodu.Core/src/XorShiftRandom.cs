@@ -54,6 +54,7 @@ public sealed class XorShiftRandom :
     private uint _y;
     private uint _z;
     private uint _w;
+    private readonly Func<uint> _bitsSource;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="XorShiftRandom" /> class using a system-generated seed.
@@ -84,6 +85,9 @@ public sealed class XorShiftRandom :
         _y = seed ^ 0x6C8E9CF5U;
         _z = seed ^ 0x94D049BBU;
         _w = seed ^ 0x5A17D7F9U;
+
+        // Cache one delegate per instance so bounded-int draws do not allocate per call.
+        _bitsSource = NextUInt32;
     }
 
     /// <inheritdoc />
@@ -93,15 +97,18 @@ public sealed class XorShiftRandom :
     public override int Next(int maxValue)
     {
         ThrowHelper.ThrowIfLessThanOrEqual(maxValue, 0);
-        return (int)(NextUInt32() % (uint)maxValue);
+        return (int)BoundedNextUInt32((uint)maxValue, _bitsSource);
     }
 
     /// <inheritdoc />
     public override int Next(int minValue, int maxValue)
     {
         ThrowHelper.ThrowIfGreaterThanOrEqualOther(minValue, maxValue);
-        var range = (uint)(maxValue - minValue);
-        return minValue + (int)(NextUInt32() % range);
+
+        // Compute range in long-space so the subtraction never overflows, even for the
+        // full-int span Next(int.MinValue, int.MaxValue) — every int range fits in uint.
+        var range = (uint)((long)maxValue - (long)minValue);
+        return (int)((long)minValue + BoundedNextUInt32(range, _bitsSource));
     }
 
     /// <inheritdoc />
@@ -125,7 +132,63 @@ public sealed class XorShiftRandom :
     }
 
     /// <inheritdoc />
-    public override double NextDouble() => NextUInt32() / (double)uint.MaxValue;
+    public override double NextDouble() => ScaleToUnitInterval(NextUInt32());
+
+    /// <summary>
+    /// Scales a 32-bit unsigned random value into the half-open unit interval [0.0, 1.0).
+    /// </summary>
+    /// <param name="value">The raw 32-bit pseudo-random value to scale.</param>
+    /// <returns>
+    /// A double-precision value in the range [0.0, 1.0). The upper bound is excluded — when
+    /// <paramref name="value" /> is <see cref="uint.MaxValue" /> the result is strictly less than 1.0.
+    /// </returns>
+    /// <remarks>
+    /// Multiplies by <c>1 / 2^32</c> rather than dividing by <see cref="uint.MaxValue" />. Dividing by
+    /// <see cref="uint.MaxValue" /> yields exactly 1.0 for the largest input, which would violate the
+    /// <see cref="System.Random.NextDouble" /> contract of <c>[0.0, 1.0)</c>.
+    /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static double ScaleToUnitInterval(uint value) =>
+        value * (1.0 / 4294967296.0);
+
+    /// <summary>
+    /// Returns an unbiased pseudo-random <see cref="uint" /> uniformly distributed in
+    /// <c>[0, maxExclusive)</c> using Lemire's debiased bounded-integer method.
+    /// </summary>
+    /// <param name="maxExclusive">The exclusive upper bound. Must be greater than zero.</param>
+    /// <param name="source">A delegate that yields uniformly distributed 32-bit pseudo-random values.</param>
+    /// <returns>An unbiased value in the range <c>[0, maxExclusive)</c>.</returns>
+    /// <remarks>
+    /// <para>
+    /// Implements Daniel Lemire's "Fast Random Integer Generation in an Interval" (ACM TOMS, 2019).
+    /// The wide multiplication plus a rare-reject loop yields a strictly uniform distribution, unlike
+    /// <c>x % maxExclusive</c> which introduces modulo bias whenever <paramref name="maxExclusive" />
+    /// does not evenly divide <c>2^32</c>. The bias is negligible for small ranges but reaches up to
+    /// 50% for ranges close to <c>2^31</c>.
+    /// </para>
+    /// <para>
+    /// The threshold <c>2^32 mod maxExclusive</c> bounds the rejection rate: at most one extra draw is
+    /// expected for each call, and the worst case is well under 50% rejection probability.
+    /// </para>
+    /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static uint BoundedNextUInt32(uint maxExclusive, Func<uint> source)
+    {
+        var product = (ulong)source() * maxExclusive;
+        var lowBits = (uint)product;
+        if (lowBits < maxExclusive)
+        {
+            // threshold = 2^32 mod maxExclusive; lowBits below this are biased and must be redrawn.
+            var threshold = (0u - maxExclusive) % maxExclusive;
+            while (lowBits < threshold)
+            {
+                product = (ulong)source() * maxExclusive;
+                lowBits = (uint)product;
+            }
+        }
+
+        return (uint)(product >> 32);
+    }
 
     /// <summary>
     /// Generates the next 32-bit random number using XOR-shift algorithm.

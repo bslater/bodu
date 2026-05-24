@@ -41,13 +41,13 @@ public abstract partial class CheckDigitAlgorithmTests<TTest, TAlgorithm>
     }
 
     /// <summary>
-    /// Verifies that <c>IsValid</c> accepts the empty span as vacuously valid — the natural limit of the
-    /// algorithm's identity when no digits have been absorbed.
+    /// Verifies that <c>IsValid</c> rejects the empty span. A full-sequence validator requires at least a check
+    /// digit, so an empty input cannot satisfy the algorithm's invariant.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenInputIsEmpty_ShouldReturnTrue()
+    public void IsValid_WhenInputIsEmpty_ShouldReturnFalse()
     {
-        Assert.IsTrue(IsValidStatic([]));
+        Assert.IsFalse(IsValidStatic([]));
     }
     /// <summary>
     /// Verifies that appending the algorithm's own computed check digit to the body always yields a sequence

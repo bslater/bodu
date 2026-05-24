@@ -97,12 +97,14 @@ public sealed partial class Verhoeff
     /// </summary>
     /// <param name="digitsIncludingCheck">The complete sequence including the trailing check digit.</param>
     /// <returns>
-    /// <see langword="true" /> if the sequence is empty or evaluates as valid under Verhoeff; otherwise,
-    /// <see langword="false" /> — including the case where <paramref name="digitsIncludingCheck" /> contains a
-    /// character outside the range <c>'0'</c> to <c>'9'</c>.
+    /// <see langword="true" /> if the sequence evaluates as valid under Verhoeff; otherwise,
+    /// <see langword="false" /> — including the case where <paramref name="digitsIncludingCheck" /> is empty or
+    /// contains a character outside the range <c>'0'</c> to <c>'9'</c>.
     /// </returns>
     public static bool IsValid(ReadOnlySpan<char> digitsIncludingCheck)
     {
+        if (digitsIncludingCheck.IsEmpty) return false;
+
         byte c = 0;
         for (int i = digitsIncludingCheck.Length - 1, j = 0; i >= 0; i--, j++)
         {

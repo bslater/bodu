@@ -243,6 +243,10 @@ public abstract class BlockNonCryptographicHashAlgorithm<T>
             }
             else
             {
+                if (finalBlock.Length % snapshot.BlockSizeBytes != 0)
+                    throw new InvalidOperationException(
+                        $"{nameof(PadBlock)} returned {finalBlock.Length} bytes, which is not a multiple of {nameof(BlockSizeBytes)} ({snapshot.BlockSizeBytes}). Override {nameof(AllowUnalignedFinalBlock)} to permit a non-aligned final block.");
+
                 for (var i = 0; i < finalBlock.Length; i += snapshot.BlockSizeBytes)
                     snapshot.ProcessBlock(finalBlock.AsSpan(i, snapshot.BlockSizeBytes));
             }
@@ -318,10 +322,19 @@ public abstract class BlockNonCryptographicHashAlgorithm<T>
     /// <c>ProcessFullBlock</c>, preserving any incomplete trailing block for a subsequent call.
     /// </summary>
     /// <param name="buffer">The input bytes to feed into the hash.</param>
+    /// <exception cref="InvalidOperationException">
+    /// Appending <paramref name="buffer" /> would cause the cumulative <see cref="TotalLength" /> counter to
+    /// overflow <see cref="ulong.MaxValue" />.
+    /// </exception>
     private void ProcessBlocks(ReadOnlySpan<byte> buffer)
     {
         var pos = 0;
-        TotalLength += (ulong)buffer.Length;
+        var bufferLength = (ulong)buffer.Length;
+        if (bufferLength > ulong.MaxValue - TotalLength)
+            throw new InvalidOperationException(
+                $"Cumulative input length would exceed the {ulong.MaxValue}-byte limit tracked by {nameof(TotalLength)}.");
+
+        TotalLength += bufferLength;
 
         Span<byte> residualSpan = _residualByteBuffer;
 

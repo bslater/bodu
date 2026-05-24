@@ -152,7 +152,7 @@ public sealed class Crc
 
         _standard = crcStandard;
         _hashSizeBits = crcStandard.Size;
-        _lookupTable = GlobalCache.GetLookupTable(crcStandard.Size, crcStandard.Polynomial, crcStandard.ReflectIn);
+        _lookupTable = GlobalCache.GetLookupTableArray(crcStandard.Size, crcStandard.Polynomial, crcStandard.ReflectIn);
         _workingHash = ComputeInitialState();
     }
 
@@ -288,8 +288,9 @@ public sealed class Crc
     /// <remarks>
     /// Reverses finalization on <paramref name="previousHash" /> by undoing the XOR-out and reflection (if applicable),
     /// continues the CRC computation with <paramref name="newData" />, and finalizes the result into
-    /// <paramref name="destination" />. After this call returns, the instance accumulator reflects the finalized state;
-    /// call <see cref="Reset" /> before reusing the instance for a new computation from the initial value.
+    /// <paramref name="destination" />. The computation is performed against a local copy of the CRC state; any
+    /// in-progress incremental state on the instance is preserved and a subsequent
+    /// <see cref="Append(ReadOnlySpan{byte})" /> continues from where the prior <see cref="Append" /> calls left off.
     /// </remarks>
     public bool TryComputeHashFrom(
         ReadOnlySpan<byte> previousHash,
@@ -302,28 +303,29 @@ public sealed class Crc
                 HashingResourceStrings.Arg_Invalid_PreviousHashLengthMismatch,
                 nameof(previousHash));
 
-        // Deserialize prior hash value. The width-byte hash is stored little-endian; read into an 8-byte buffer so
-        // that widths below 64 bits zero-extend cleanly.
-        Span<byte> fullWord = stackalloc byte[sizeof(ulong)];
-        previousHash.CopyTo(fullWord);
-        _workingHash = BinaryPrimitives.ReadUInt64LittleEndian(fullWord);
-
-        // Undo finalization: XOR first, then reflect back to the working-state orientation when the algorithm applies
-        // XOR-reflected output.
-        _workingHash ^= _standard.XOrOut;
-        if (_standard.ReflectIn ^ _standard.ReflectOut)
-            _workingHash = NumericExtensions.ReverseBitsUnchecked(_workingHash, _hashSizeBits);
-
-        // Continue hashing and finalize again.
-        ProcessBlocks(newData);
-
         if (destination.Length < HashLengthInBytes)
         {
             bytesWritten = 0;
             return false;
         }
 
-        var folded = FoldOutputState(_workingHash);
+        // Deserialize prior hash value. The width-byte hash is stored little-endian; read into an 8-byte buffer so
+        // that widths below 64 bits zero-extend cleanly. Work entirely in a local — the instance accumulator is
+        // never touched, so any pending Append state on this instance survives the call unchanged.
+        Span<byte> fullWord = stackalloc byte[sizeof(ulong)];
+        previousHash.CopyTo(fullWord);
+        ulong state = BinaryPrimitives.ReadUInt64LittleEndian(fullWord);
+
+        // Undo finalization: XOR first, then reflect back to the working-state orientation when the algorithm applies
+        // XOR-reflected output.
+        state ^= _standard.XOrOut;
+        if (_standard.ReflectIn ^ _standard.ReflectOut)
+            state = NumericExtensions.ReverseBitsUnchecked(state, _hashSizeBits);
+
+        // Continue hashing using the static helpers so that the instance's _workingHash is not mutated.
+        state = RunProcessBlocks(newData, state, _lookupTable, _hashSizeBits, _standard.ReflectIn);
+
+        var folded = FoldOutputState(state);
         WriteHashBytes(folded, HashLengthInBytes, destination);
         bytesWritten = HashLengthInBytes;
         return true;
@@ -502,17 +504,32 @@ public sealed class Crc
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ProcessBlocks(ReadOnlySpan<byte> data)
     {
-        if (_hashSizeBits >= 8)
+        _workingHash = RunProcessBlocks(data, _workingHash, _lookupTable, _hashSizeBits, _standard.ReflectIn);
+    }
+
+    /// <summary>
+    /// Runs <paramref name="data" /> through the bytewise or bitwise CRC step appropriate to <paramref name="hashSizeBits" />
+    /// and <paramref name="reflectIn" />, threading state through the call by value so the caller chooses where to
+    /// store the result.
+    /// </summary>
+    /// <param name="data">The input bytes to feed into the CRC accumulator.</param>
+    /// <param name="state">The CRC accumulator on entry.</param>
+    /// <param name="table">The lookup table associated with the active polynomial.</param>
+    /// <param name="hashSizeBits">The CRC width, in bits.</param>
+    /// <param name="reflectIn">Whether input bytes are reflected before being processed.</param>
+    /// <returns>The CRC accumulator after consuming <paramref name="data" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static ulong RunProcessBlocks(ReadOnlySpan<byte> data, ulong state, ulong[] table, int hashSizeBits, bool reflectIn)
+    {
+        if (hashSizeBits >= 8)
         {
-            _workingHash = _standard.ReflectIn
-                ? ProcessBytewiseReflected(data, _workingHash, _lookupTable)
-                : ProcessBytewiseNormal(data, _workingHash, _lookupTable, _hashSizeBits - 8);
+            return reflectIn
+                ? ProcessBytewiseReflected(data, state, table)
+                : ProcessBytewiseNormal(data, state, table, hashSizeBits - 8);
         }
-        else
-        {
-            _workingHash = _standard.ReflectIn
-                ? ProcessBitwiseReflected(data, _workingHash, _lookupTable)
-                : ProcessBitwiseNormal(data, _workingHash, _lookupTable, _hashSizeBits - 1);
-        }
+
+        return reflectIn
+            ? ProcessBitwiseReflected(data, state, table)
+            : ProcessBitwiseNormal(data, state, table, hashSizeBits - 1);
     }
 }

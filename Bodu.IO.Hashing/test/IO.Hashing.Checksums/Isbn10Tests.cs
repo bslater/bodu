@@ -40,13 +40,13 @@ public sealed class Isbn10Tests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Isbn10.IsValid(ReadOnlySpan{char})" /> returns <see langword="true" /> for an
-    /// empty span — the documented short-circuit branch.
+    /// Verifies that <see cref="Isbn10.IsValid(ReadOnlySpan{char})" /> rejects the empty span. A full-sequence
+    /// validator requires at least a check character, so an empty input cannot satisfy the algorithm's invariant.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenSequenceIsEmpty_ShouldReturnTrue()
+    public void IsValid_WhenSequenceIsEmpty_ShouldReturnFalse()
     {
-        Assert.IsTrue(Isbn10.IsValid(ReadOnlySpan<char>.Empty));
+        Assert.IsFalse(Isbn10.IsValid(ReadOnlySpan<char>.Empty));
     }
 
     /// <summary>

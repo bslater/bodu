@@ -105,13 +105,12 @@ public sealed class Cusip
     /// </summary>
     /// <param name="valueIncludingCheck">The complete nine-character CUSIP.</param>
     /// <returns>
-    /// <see langword="true" /> if the sequence is empty or evaluates as valid under CUSIP; otherwise,
-    /// <see langword="false" /> — including the case where the length is wrong, any body character is outside the CUSIP
-    /// alphabet, or the check character is not a decimal digit.
+    /// <see langword="true" /> if the sequence evaluates as valid under CUSIP; otherwise, <see langword="false" /> —
+    /// including the case where <paramref name="valueIncludingCheck" /> is empty, the length is wrong, any body
+    /// character is outside the CUSIP alphabet, or the check character is not a decimal digit.
     /// </returns>
     public static bool IsValid(ReadOnlySpan<char> valueIncludingCheck)
     {
-        if (valueIncludingCheck.IsEmpty) return true;
         if (valueIncludingCheck.Length != SequenceLength) return false;
 
         var sum = 0;
