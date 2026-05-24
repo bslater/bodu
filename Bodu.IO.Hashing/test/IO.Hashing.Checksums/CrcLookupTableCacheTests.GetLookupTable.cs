@@ -16,50 +16,53 @@ public partial class CrcLookupTableCacheTests
     [TestMethod]
     public void GetLookupTable_WhenAnyParameterChanges_ShouldReturnDistinctTable()
     {
-        var baseline = _cache.GetLookupTable(32, 0x04C11DB7UL, reflectIn: true);
+        var baseline = _cache.GetLookupTable(32, 0x04C11DB7UL, reflectIn: true).ToArray();
 
-        Assert.AreNotSame(baseline, _cache.GetLookupTable(16, 0x04C11DB7UL, reflectIn: true));
-        Assert.AreNotSame(baseline, _cache.GetLookupTable(32, 0x1EDC6F41UL, reflectIn: true));
-        Assert.AreNotSame(baseline, _cache.GetLookupTable(32, 0x04C11DB7UL, reflectIn: false));
+        CollectionAssert.AreNotEqual(baseline, _cache.GetLookupTable(16, 0x04C11DB7UL, reflectIn: true).ToArray());
+        CollectionAssert.AreNotEqual(baseline, _cache.GetLookupTable(32, 0x1EDC6F41UL, reflectIn: true).ToArray());
+        CollectionAssert.AreNotEqual(baseline, _cache.GetLookupTable(32, 0x04C11DB7UL, reflectIn: false).ToArray());
     }
 
     /// <summary>
-    /// Verifies that concurrent lookups for the same parameters all succeed, exercising the cache's
-    /// thread-safety contract under contention.
+    /// Verifies that concurrent lookups for the same parameters all succeed and return non-empty tables,
+    /// exercising the cache's thread-safety contract under contention.
     /// </summary>
     [TestMethod]
     public void GetLookupTable_WhenCalledConcurrently_ShouldHandleConcurrentAccess()
     {
         var threads = new Task[100];
-        var successFlag = new bool[100];
+        var lengths = new int[100];
 
         for (var i = 0; i < 100; i++)
         {
             var threadIndex = i;
             threads[i] = Task.Run(() =>
             {
-                var result = _cache.GetLookupTable(32, 0x04C11DB7UL, reflectIn: true);
-                successFlag[threadIndex] = result != null;
+                ReadOnlyMemory<ulong> result = _cache.GetLookupTable(32, 0x04C11DB7UL, reflectIn: true);
+                lengths[threadIndex] = result.Length;
             });
         }
 
         Task.WhenAll(threads).Wait();
 
-        foreach (var success in successFlag)
-            Assert.IsTrue(success);
+        foreach (var length in lengths)
+            Assert.AreEqual(256, length);
     }
 
     /// <summary>
-    /// Verifies that repeated lookups with identical parameters return the same shared array reference from the
-    /// cache, so callers observe the precomputed table without paying for repeated allocation or initialisation.
+    /// Verifies that repeated lookups with identical parameters return content-equivalent read-only views and
+    /// observe the same underlying cached array, so callers see the precomputed table without paying for repeated
+    /// allocation or initialisation.
     /// </summary>
     [TestMethod]
     public void GetLookupTable_WhenCalledWithSameParameters_ShouldReturnCachedInstance()
     {
-        var first = _cache.GetLookupTable(32, 0x04C11DB7UL, reflectIn: true);
-        var second = _cache.GetLookupTable(32, 0x04C11DB7UL, reflectIn: true);
+        ReadOnlyMemory<ulong> first = _cache.GetLookupTable(32, 0x04C11DB7UL, reflectIn: true);
+        ReadOnlyMemory<ulong> second = _cache.GetLookupTable(32, 0x04C11DB7UL, reflectIn: true);
 
-        Assert.AreSame(first, second);
+        Assert.IsTrue(System.Runtime.InteropServices.MemoryMarshal.TryGetArray(first, out ArraySegment<ulong> firstSegment));
+        Assert.IsTrue(System.Runtime.InteropServices.MemoryMarshal.TryGetArray(second, out ArraySegment<ulong> secondSegment));
+        Assert.AreSame(firstSegment.Array, secondSegment.Array);
     }
 
     /// <summary>
@@ -72,11 +75,11 @@ public partial class CrcLookupTableCacheTests
         var copy = _cache.GetLookupTable(32, 0x04C11DB7UL, reflectIn: true).ToArray();
         copy[0] = 123456;
 
-        var cached = _cache.GetLookupTable(32, 0x04C11DB7UL, reflectIn: true);
-        Assert.AreNotEqual(123456UL, cached[0]);
+        ReadOnlyMemory<ulong> cached = _cache.GetLookupTable(32, 0x04C11DB7UL, reflectIn: true);
+        Assert.AreNotEqual(123456UL, cached.Span[0]);
     }
     /// <summary>
-    /// Verifies that <see cref="CrcLookupTableCache.GetLookupTable" /> returns a non-null table whose length is
+    /// Verifies that <see cref="CrcLookupTableCache.GetLookupTable" /> returns a table whose length is
     /// <c>2^min(size, 8)</c> for every valid combination of <paramref name="size" />, <paramref name="polynomial" />,
     /// and <paramref name="reflectIn" /> — covering the inclusive boundaries (1-bit and 64-bit), the common
     /// 16/32-bit widths, and the polynomial edge values (zero and all-ones).
@@ -97,9 +100,8 @@ public partial class CrcLookupTableCacheTests
     public void GetLookupTable_WhenParametersAreValid_ShouldReturnTableOfExpectedLength(
         int size, ulong polynomial, bool reflectIn, int expectedLength)
     {
-        var table = _cache.GetLookupTable(size, polynomial, reflectIn);
+        ReadOnlyMemory<ulong> table = _cache.GetLookupTable(size, polynomial, reflectIn);
 
-        Assert.IsNotNull(table);
         Assert.AreEqual(expectedLength, table.Length);
     }
 

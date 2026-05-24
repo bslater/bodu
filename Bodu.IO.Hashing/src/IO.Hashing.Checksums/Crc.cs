@@ -152,7 +152,7 @@ public sealed class Crc
 
         _standard = crcStandard;
         _hashSizeBits = crcStandard.Size;
-        _lookupTable = GlobalCache.GetLookupTable(crcStandard.Size, crcStandard.Polynomial, crcStandard.ReflectIn);
+        _lookupTable = GlobalCache.GetLookupTableArray(crcStandard.Size, crcStandard.Polynomial, crcStandard.ReflectIn);
         _workingHash = ComputeInitialState();
     }
 

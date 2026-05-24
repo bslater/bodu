@@ -77,15 +77,41 @@ public class CrcLookupTableCache
     /// </param>
     /// <param name="polynomial">The CRC polynomial.</param>
     /// <param name="reflectIn"><see langword="true" /> if input bytes are reflected during CRC processing.</param>
-    /// <returns>The shared lookup table array for the supplied parameter set.</returns>
+    /// <returns>
+    /// A read-only view of the shared lookup table for the supplied parameter set. The view wraps the cached array
+    /// directly, so successive calls for the same key observe the same backing storage without further allocation.
+    /// </returns>
     /// <remarks>
-    /// The returned array is shared across all callers with the same parameters and <b>must not</b> be mutated. Callers
-    /// should treat it as read-only.
+    /// The returned view is shared across all callers with the same parameters. Returning
+    /// <see cref="ReadOnlyMemory{T}" /> prevents the caller from mutating the shared backing array at compile time;
+    /// internal callers that require a raw <see cref="ulong" /> array can use
+    /// <see cref="GetLookupTableArray" />.
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="size" /> is outside the supported range.
     /// </exception>
-    public ulong[] GetLookupTable(int size, ulong polynomial, bool reflectIn)
+    public ReadOnlyMemory<ulong> GetLookupTable(int size, ulong polynomial, bool reflectIn) =>
+        GetLookupTableArray(size, polynomial, reflectIn);
+
+    /// <summary>
+    /// Returns the cached lookup table for the specified CRC parameters as the raw <see cref="ulong" /> array used
+    /// by the engine's hot path, building it on first access.
+    /// </summary>
+    /// <param name="size">
+    /// The CRC width in bits (between <see cref="CrcStandard.MinSize" /> and <see cref="CrcStandard.MaxSize" />).
+    /// </param>
+    /// <param name="polynomial">The CRC polynomial.</param>
+    /// <param name="reflectIn"><see langword="true" /> if input bytes are reflected during CRC processing.</param>
+    /// <returns>The shared lookup table array for the supplied parameter set.</returns>
+    /// <remarks>
+    /// Restricted to internal callers so that the assembly's CRC engine can address the table directly without
+    /// allocating a <see cref="ReadOnlyMemory{T}" /> wrapper on every byte of input. External callers must use the
+    /// public <see cref="GetLookupTable" /> overload, which returns a read-only view of the same array.
+    /// </remarks>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="size" /> is outside the supported range.
+    /// </exception>
+    internal ulong[] GetLookupTableArray(int size, ulong polynomial, bool reflectIn)
     {
         ThrowHelper.ThrowIfOutOfRange(size, CrcStandard.MinSize, CrcStandard.MaxSize);
 
