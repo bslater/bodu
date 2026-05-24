@@ -1,6 +1,6 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="DotEnvFormatExceptionTests.cs" company="PlaceholderCompany">
-//     Copyright (c) PlaceholderCompany. All rights reserved.
+// <copyright file="DotEnvFormatExceptionTests.cs" company="Bodu Pty. Ltd.">
+//     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 

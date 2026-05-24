@@ -1,6 +1,6 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="NotableDateServiceBuilderExtensionsTests.AddOverrideProvider.cs" company="PlaceholderCompany">
-//     Copyright (c) PlaceholderCompany. All rights reserved.
+// <copyright file="NotableDateServiceBuilderExtensionsTests.AddOverrideProvider.cs" company="Bodu Pty. Ltd.">
+//     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 

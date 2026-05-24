@@ -42,7 +42,7 @@ Nullable reference types are enabled everywhere. `ImplicitUsings` is enabled for
 - Shared MSBuild configuration lives in `bld/Bodu.props` (Authors, MIT licence, deterministic builds, package metadata, doc-comment warnings as errors — e.g. CS1591).
 - `.editorconfig` lives under `Bodu.Core/src/.editorconfig` and drives formatter settings.
 - Analyzers in use: **StyleCop.Analyzers**, **Roslynator.Analyzers**, **Microsoft.CodeAnalysis.NetAnalyzers**, **AsyncFixer**, **VisualStudio.Threading.Analyzers**. Treat analyzer warnings as actionable — fix rather than suppress unless there is a strong reason.
-- Licence header template: `Bodu.sln.licenseheader` (the `PlaceholderCompany` string is the project template placeholder — preserve the banner exactly as used in existing files).
+- Licence header template: `Bodu.sln.licenseheader` (carries `company="Bodu Pty. Ltd."`, matching `stylecop.json:companyName` — preserve the banner exactly as used in existing files).
 - `.filenesting.json` nests partial-class files: any `<Base>.<Part>.cs` file nests under `<Base>.cs`. Keep partial splits consistent with this pattern.
 - CI: `.github/workflows/docfx-build-publish.yml` builds DocFX documentation on pushes to `master` and publishes to GitHub Pages.
 
@@ -232,8 +232,8 @@ Every `.cs` file begins with the standard banner — preserve the separator line
 
 ```csharp
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="FileName.cs" company="PlaceholderCompany">
-//     Copyright (c) PlaceholderCompany. All rights reserved.
+// <copyright file="FileName.cs" company="Bodu Pty. Ltd.">
+//     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 ```

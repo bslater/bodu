@@ -1,6 +1,6 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Blake3Tests.cs" company="PlaceholderCompany">
-//     Copyright (c) PlaceholderCompany. All rights reserved.
+// <copyright file="Blake3Tests.cs" company="Bodu Pty. Ltd.">
+//     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
@@ -18,7 +18,7 @@ public partial class Blake3Tests
         HashSize = 256,
         LongInputLength = 2048,
         HashBlockSize = 1024,
-        BoundaryLengths = [1, 512, 1024, 1025, 2048],
+        BoundaryLengths = [1, 512, 1024, 1025, 2047, 2048, 2049, 4095, 4096, 4097],
         MinNonZeroBytesForLongInput = 28,
         KnownAnswers = new()
         {

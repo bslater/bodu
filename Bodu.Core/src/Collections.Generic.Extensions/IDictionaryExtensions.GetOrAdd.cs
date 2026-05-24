@@ -1,6 +1,6 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="IDictionaryExtensions.GetOrAdd.cs" company="PlaceholderCompany">
-//     Copyright (c) PlaceholderCompany. All rights reserved.
+// <copyright file="IDictionaryExtensions.GetOrAdd.cs" company="Bodu Pty. Ltd.">
+//     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 

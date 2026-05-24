@@ -1,6 +1,6 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="KeyedBlockHashAlgorithmTests.Key.cs" company="PlaceholderCompany">
-//     Copyright (c) PlaceholderCompany. All rights reserved.
+// <copyright file="KeyedBlockHashAlgorithmTests.Key.cs" company="Bodu Pty. Ltd.">
+//     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
@@ -265,6 +265,11 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
         }
 
         using TAlgorithm algorithm = CreateAlgorithm(variant);
+        if (!algorithm.CanReuseTransform)
+        {
+            Assert.Inconclusive($"{typeof(TAlgorithm).Name} reports CanReuseTransform=false; reusing the same key across two ComputeHash calls is intentionally rejected for one-time MACs.");
+            return;
+        }
 
         var key = GenerateUniqueKey(specification.TestKey.Length);
         algorithm.Key = key;

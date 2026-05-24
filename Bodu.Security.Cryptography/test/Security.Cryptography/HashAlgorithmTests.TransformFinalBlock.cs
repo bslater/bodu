@@ -1,6 +1,6 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="HashAlgorithmTests.TransformFinalBlock.cs" company="PlaceholderCompany">
-//     Copyright (c) PlaceholderCompany. All rights reserved.
+// <copyright file="HashAlgorithmTests.TransformFinalBlock.cs" company="Bodu Pty. Ltd.">
+//     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
@@ -204,6 +204,12 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     public void TransformFinalBlock_WhenCalledTwice_ShouldResetAndProduceValidHashes()
     {
         using TAlgorithm algorithm = CreateAlgorithm();
+        if (!algorithm.CanReuseTransform)
+        {
+            Assert.Inconclusive($"{typeof(TAlgorithm).Name} reports CanReuseTransform=false; sequential TransformFinalBlock cycles on one instance are not supported.");
+            return;
+        }
+
         var buffer = CryptoTestUtilities.SimpleTextAsciiBytes;
 
         // First pass

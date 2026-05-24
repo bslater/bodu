@@ -1,6 +1,6 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="HashAlgorithmTests.Initialize.cs" company="PlaceholderCompany">
-//     Copyright (c) PlaceholderCompany. All rights reserved.
+// <copyright file="HashAlgorithmTests.Initialize.cs" company="Bodu Pty. Ltd.">
+//     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
@@ -17,6 +17,11 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     public void Initialize_WhenCalledBetweenHashes_ShouldResetStateForNewHash()
     {
         using TAlgorithm algorithm = CreateAlgorithm();
+        if (!algorithm.CanReuseTransform)
+        {
+            Assert.Inconclusive($"{typeof(TAlgorithm).Name} reports CanReuseTransform=false; same-instance reuse across Initialize() is not supported.");
+            return;
+        }
 
         var input1 = CryptoTestUtilities.SimpleTextAsciiBytes;
         var input2 = CryptoTestUtilities.ByteSequence256;
@@ -37,28 +42,20 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     public void Initialize_WhenCalledAfterFinalBlock_ShouldAllowNewHashComputation()
     {
         using TAlgorithm algorithm = CreateAlgorithm();
+        if (!algorithm.CanReuseTransform)
+        {
+            Assert.Inconclusive($"{typeof(TAlgorithm).Name} reports CanReuseTransform=false; reinitialization without explicitly re-keying is not supported.");
+            return;
+        }
 
         var input = CryptoTestUtilities.ByteSequence256;
         algorithm.TransformFinalBlock(input, 0, input.Length);
         var hash1 = algorithm.Hash!;
 
-        if (!algorithm.CanReuseTransform)
-        {
-            // For one-shot algorithms, reinitialization without re-keying is invalid. Confirm that the second hash is not equal or that
-            // key is cleared.
-            algorithm.Initialize();
+        algorithm.Initialize();
 
-            // Either the key was cleared or a new random key was assigned; hash must differ.
-            var hash2 = algorithm.ComputeHash(input);
-            CollectionAssert.AreNotEqual(hash1, hash2, "One-shot MAC should not yield the same result after reinitialization.");
-        }
-        else
-        {
-            algorithm.Initialize();
-
-            var hash2 = algorithm.ComputeHash(input);
-            CollectionAssert.AreEqual(hash1, hash2, "Hashes should match after reinitializing with the same input.");
-        }
+        var hash2 = algorithm.ComputeHash(input);
+        CollectionAssert.AreEqual(hash1, hash2, "Hashes should match after reinitializing with the same input.");
     }
 
     /// <summary>

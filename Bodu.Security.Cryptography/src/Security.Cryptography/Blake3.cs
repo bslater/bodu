@@ -1,6 +1,6 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Blake3.cs" company="PlaceholderCompany">
-//     Copyright (c) PlaceholderCompany. All rights reserved.
+// <copyright file="Blake3.cs" company="Bodu Pty. Ltd.">
+//     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
@@ -241,7 +241,14 @@ public sealed partial class Blake3
 
         if (disposing)
         {
+            // List<T>.Clear only drops references; the stored uint[] entries retain their per-subtree
+            // chaining values (derived from message bytes and, in keyed mode, from the key). Zero each
+            // array before clearing the list so the secret-derived state does not survive in heap memory
+            // until the GC collects it.
+            for (var i = 0; i < _cvStack.Count; i++)
+                CryptoHelpers.Clear(_cvStack[i]);
             _cvStack.Clear();
+
             CryptoHelpers.Clear(_chunkCv);
         }
 

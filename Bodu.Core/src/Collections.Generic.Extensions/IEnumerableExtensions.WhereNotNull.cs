@@ -1,6 +1,6 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="IEnumerableExtensions.WhereNotNull.cs" company="PlaceholderCompany">
-//     Copyright (c) PlaceholderCompany. All rights reserved.
+// <copyright file="IEnumerableExtensions.WhereNotNull.cs" company="Bodu Pty. Ltd.">
+//     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 

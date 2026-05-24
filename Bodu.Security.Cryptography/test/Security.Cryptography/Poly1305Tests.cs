@@ -1,6 +1,6 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Poly1305Tests.cs" company="PlaceholderCompany">
-//     Copyright (c) PlaceholderCompany. All rights reserved.
+// <copyright file="Poly1305Tests.cs" company="Bodu Pty. Ltd.">
+//     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
@@ -15,6 +15,15 @@ namespace Bodu.Security.Cryptography;
 public partial class Poly1305Tests
     : KeyedBlockHashAlgorithmTests<Poly1305Tests, Poly1305, SingleTestVariant>
 {
+
+    /// <summary>
+    /// Excludes the <c>_finalized</c> sentinel from the inherited dispose-field-zero test. The flag is
+    /// intentionally retained as <see langword="true" /> across <see cref="HashAlgorithm.Dispose()" /> to
+    /// guarantee that any post-disposal call path observing the field still treats the instance as a spent
+    /// one-time MAC; zeroing it on dispose would be semantically backwards.
+    /// </summary>
+    protected override IReadOnlyCollection<string> ExcludedFieldNames =>
+        new[] { "_finalized" };
 
     private static readonly byte[] Poly1305TestKey = new byte[32]
     {

@@ -1,6 +1,6 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="HashAlgorithmTests.ComputeHash.cs" company="PlaceholderCompany">
-//     Copyright (c) PlaceholderCompany. All rights reserved.
+// <copyright file="HashAlgorithmTests.ComputeHash.cs" company="Bodu Pty. Ltd.">
+//     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
@@ -361,6 +361,12 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     public void ComputeHash_WhenCalled_ShouldAlwaysReturnCorrectHashSize(TVariant variant)
     {
         using TAlgorithm algorithm = CreateAlgorithm(variant);
+        if (!algorithm.CanReuseTransform)
+        {
+            Assert.Inconclusive($"{typeof(TAlgorithm).Name} reports CanReuseTransform=false; this test reuses the same instance for multiple input lengths.");
+            return;
+        }
+
         var expectedBytes = algorithm.HashSize / 8;
 
         foreach (var len in new[] { 0, 1, 4, 5, 12, 13, 24, 25, 100 })
@@ -450,6 +456,11 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     {
         HashAlgorithmSpecification specification = GetSpecification(variant);
         using TAlgorithm algorithm = CreateAlgorithm(variant);
+        if (!algorithm.CanReuseTransform)
+        {
+            Assert.Inconclusive($"{typeof(TAlgorithm).Name} reports CanReuseTransform=false; this test reuses the same instance for two ComputeHash calls.");
+            return;
+        }
 
         var bufferSize = specification.HashBlockSize * 2;
         var inputA = TestHelpers.GenerateRandomNonZeroBytes(bufferSize);

@@ -1,6 +1,6 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="HashAlgorithmTests.TryComputeHash.cs" company="PlaceholderCompany">
-//     Copyright (c) PlaceholderCompany. All rights reserved.
+// <copyright file="HashAlgorithmTests.TryComputeHash.cs" company="Bodu Pty. Ltd.">
+//     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
@@ -88,6 +88,11 @@ namespace Bodu.Security.Cryptography
             var input = CryptoTestUtilities.ByteSequence256;
 
             using TAlgorithm algorithm = CreateAlgorithm();
+            if (!algorithm.CanReuseTransform)
+            {
+                Assert.Inconclusive($"{typeof(TAlgorithm).Name} reports CanReuseTransform=false; the same instance cannot serve two hash computations.");
+                return;
+            }
 
             var hash = algorithm.ComputeHash(input);
             Assert.IsNotNull(algorithm.Hash);

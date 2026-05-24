@@ -1,6 +1,6 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="EaxModeTransform.cs" company="PlaceholderCompany">
-//     Copyright (c) PlaceholderCompany. All rights reserved.
+// <copyright file="EaxModeTransform.cs" company="Bodu Pty. Ltd.">
+//     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
@@ -58,6 +58,14 @@ namespace Bodu.Security.Cryptography;
 /// general-purpose AEAD prefer GCM; for nonce-misuse resistance prefer <see cref="GcmSivModeTransform" /> or
 /// <see cref="SivModeTransform" />; for single-pass AEAD without GCM's catastrophic-on-reuse profile prefer
 /// <see cref="OcbModeTransform" />.
+/// </para>
+/// <para>
+/// <strong>Nonce uniqueness is required.</strong> EAX is not nonce-misuse resistant. Two messages encrypted under
+/// the same <c>(key, nonce)</c> share the same <c>N'</c> seed, so they share the same CTR keystream and an attacker
+/// can recover <c>P1 XOR P2</c>; the per-message OMAC tag inputs also overlap, weakening authentication. Callers
+/// must guarantee that every <c>(key, nonce)</c> pair is used at most once — either via a deterministic per-message
+/// counter or a fresh random nonce drawn from a CSPRNG. If nonce uniqueness cannot be guaranteed, prefer
+/// <see cref="GcmSivModeTransform" /> or <see cref="SivModeTransform" />.
 /// </para>
 /// </remarks>
 /// <example>

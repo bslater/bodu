@@ -1,6 +1,6 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="GcmModeTransform.cs" company="PlaceholderCompany">
-//     Copyright (c) PlaceholderCompany. All rights reserved.
+// <copyright file="GcmModeTransform.cs" company="Bodu Pty. Ltd.">
+//     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
@@ -226,9 +226,15 @@ public sealed class GcmModeTransform
             _j0[15] = 0x01;
         }
 
-        // CTR counter starts at inc32(J0); J0 itself is reserved for the tag.
+        // CTR counter starts at inc32(J0); J0 itself is reserved for the tag. The standard derivation
+        // J0 = nonce || 0x00000001 cannot wrap here; only a test-supplied J0 ending in 0xFFFFFFFF could.
         _j0.CopyTo(_counter, 0);
-        IncrementCounter32(_counter);
+        if (IncrementCounter32(_counter))
+        {
+            throw new ArgumentException(
+                "The initial counter block must not end in 0xFFFFFFFF; inc32(J0) would collide with J0 itself.",
+                parameterName);
+        }
     }
 
     /// <inheritdoc />
@@ -480,21 +486,32 @@ public sealed class GcmModeTransform
 
     /// <summary>
     /// Increments the 32-bit big-endian counter in the last 4 bytes of <paramref name="counter" /> per NIST SP 800-38D
-    /// <c>inc32</c>.
+    /// <c>inc32</c>, and reports whether the increment wrapped past <c>0xFFFFFFFF</c>.
     /// </summary>
     /// <param name="counter">The 16-byte CTR block; its low 32 bits are incremented in place.</param>
-    private static void IncrementCounter32(Span<byte> counter)
+    /// <returns>
+    /// <see langword="true" /> if the increment wrapped from <c>0xFFFFFFFF</c> back to <c>0x00000000</c>;
+    /// otherwise <see langword="false" />. Callers must reject wrap whenever the wrapped counter would be
+    /// used to encrypt another block, because <c>nonce ‖ 0x00000001</c> is reserved as <c>J0</c> for the tag.
+    /// </returns>
+    private static bool IncrementCounter32(Span<byte> counter)
     {
         for (var i = counter.Length - 1; i >= counter.Length - 4; i--)
-            if (++counter[i] != 0) break;
+            if (++counter[i] != 0) return false;
+        return true;
     }
 
     /// <summary>
     /// Applies CTR mode: for each block, computes <c>keystream = E_K(counter)</c>, XORs with input, increments the
-    /// counter.
+    /// counter. Rejects any message whose length would force the 32-bit counter to wrap into <c>J0</c>'s reserved
+    /// value, because reusing <c>E_K(J0)</c> as keystream leaks the GHASH subkey.
     /// </summary>
     /// <param name="input">The input bytes to XOR with the CTR keystream.</param>
     /// <param name="output">The destination span; must be at least <paramref name="input" />.Length bytes.</param>
+    /// <exception cref="CryptographicException">
+    /// The plaintext / ciphertext length would step the GCM counter past <c>0xFFFFFFFF</c> while another block
+    /// remains to be processed (NIST SP 800-38D §5.2.1.1 — at most <c>2^32 − 2</c> blocks per <c>(key, nonce)</c>).
+    /// </exception>
     private void ApplyCtr(ReadOnlySpan<byte> input, Span<byte> output)
     {
         Span<byte> keystream = stackalloc byte[BlockSize / 8];
@@ -505,11 +522,19 @@ public sealed class GcmModeTransform
             for (var offset = 0; offset < input.Length; offset += BlockSize / 8)
             {
                 _cipher.Encrypt(counter, keystream);
-                IncrementCounter32(counter);
 
                 var remaining = Math.Min(BlockSize / 8, input.Length - offset);
                 for (var i = 0; i < remaining; i++)
                     output[offset + i] = (byte)(input[offset + i] ^ keystream[i]);
+
+                // Reject wrap only when the wrapped counter would actually be consumed by another block;
+                // a message that ends exactly at counter 0xFFFFFFFF stays within the GCM contract.
+                bool wrapped = IncrementCounter32(counter);
+                if (wrapped && offset + (BlockSize / 8) < input.Length)
+                {
+                    throw new CryptographicException(
+                        "GCM 32-bit counter would wrap past 0xFFFFFFFF; the message length exceeds the maximum allowed per (key, nonce) pair.");
+                }
             }
         }
         finally
