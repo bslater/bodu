@@ -318,12 +318,13 @@ public sealed partial class CrcStandard
     /// </summary>
     /// <param name="other">The other <see cref="CrcStandard" /> object to compare.</param>
     /// <returns>
-    /// <see langword="true" /> if <paramref name="other" /> has the same <see cref="Name" /> (ordinal comparison) and
-    /// the same parameter set as this instance; otherwise, <see langword="false" />.
+    /// <see langword="true" /> if <paramref name="other" /> has the same identity-bearing parameters
+    /// (<see cref="Size" />, <see cref="Polynomial" />, <see cref="InitialValue" />, <see cref="ReflectIn" />,
+    /// <see cref="ReflectOut" />, and <see cref="XOrOut" />); otherwise, <see langword="false" />.
+    /// <see cref="Name" /> is informational and is intentionally excluded from equality.
     /// </returns>
     public bool Equals(CrcStandard? other)
         => other is not null &&
-           string.Equals(Name, other.Name, StringComparison.Ordinal) &&
            Size == other.Size &&
            Polynomial == other.Polynomial &&
            InitialValue == other.InitialValue &&
@@ -337,5 +338,5 @@ public sealed partial class CrcStandard
 
     /// <inheritdoc />
     public override int GetHashCode()
-        => HashCode.Combine(Name, Size, Polynomial, InitialValue, ReflectIn, ReflectOut, XOrOut);
+        => HashCode.Combine(Size, Polynomial, InitialValue, ReflectIn, ReflectOut, XOrOut);
 }
