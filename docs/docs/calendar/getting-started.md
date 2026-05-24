@@ -15,6 +15,9 @@ dotnet add package Bodu.Globalization.Calendar
 dotnet add package Bodu.Globalization.Calendar.Data.Americas
 dotnet add package Bodu.Globalization.Calendar.Data.Europe
 dotnet add package Bodu.Globalization.Calendar.Data.AsiaPacific
+
+# Optional Microsoft.Extensions.DependencyInjection integration:
+dotnet add package Bodu.Globalization.Calendar.DependencyInjection
 ```
 
 Targets `net8.0`. The base package contains the resolution engine and the built-in algorithms; the data packs contain region-specific rule sets.
@@ -119,7 +122,38 @@ INotableDateService service = new NotableDateService(
     options: new NotableDateServiceOptions { OverrideProviders = [ overrides ] });
 ```
 
-Override providers can add new rules (via `INotableDateRuleProvider.LoadRules`), remove a base rule by name and territory (via `GetRemovals` returning `RuleRemoval` values), or layer adjustment overrides. Implement <xref:Bodu.Globalization.Calendar.INotableDateRuleOverrideProvider> directly, or store overrides in your own XML / JSON file and load them through <xref:Bodu.Globalization.Calendar.XmlResourceNotableDateRuleProvider> / <xref:Bodu.Globalization.Calendar.JsonResourceNotableDateRuleProvider>.
+Override providers can add new rules (via `INotableDateRuleProvider.LoadRules`), remove a base rule by name and territory (via `GetRemovals` returning `RuleRemoval` values), or layer adjustment overrides. Implement <xref:Bodu.Globalization.Calendar.INotableDateRuleOverrideProvider> directly, store overrides in your own XML / JSON file and load them through <xref:Bodu.Globalization.Calendar.XmlResourceNotableDateRuleProvider> / <xref:Bodu.Globalization.Calendar.JsonResourceNotableDateRuleProvider>, or use the runtime-mutable <xref:Bodu.Globalization.Calendar.MutableNotableDateRuleOverrideProvider> when rules need to be added or removed while the service is alive — paired with `service.Reload()` to take effect.
+
+### Register through dependency injection
+
+When the host is an ASP.NET Core application (or any `IServiceCollection`-based composition root), install the optional `Bodu.Globalization.Calendar.DependencyInjection` package and register the service idiomatically:
+
+```csharp
+using Bodu.Globalization.Calendar;
+using Bodu.Globalization.Calendar.Data.AsiaPacific;
+using Bodu.Globalization.Calendar.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
+
+builder.Services
+    .AddNotableDates(builder.Configuration)                       // binds "NotableDates" section
+    .AddRuleProviders(AsiaPacificCalendarData.CreateProviders())
+    .AddOverrideProvider(new MutableNotableDateRuleOverrideProvider())
+    .RegisterAsAmbientDefault();                                  // also assigns NotableDateContext.Default
+```
+
+`appsettings.json`:
+
+```json
+{
+  "NotableDates": {
+    "WorkingDays": "MondayToFriday",
+    "DefaultTerritoryCode": "AU-NSW",
+    "RegisterAsAmbientDefault": true
+  }
+}
+```
+
+See the [Calendar dependency injection guide](../../guides/calendar/dependency-injection.md) for the full builder reference, the `PostConfigure` projection hook for projecting from consumer-defined POCOs, and the runtime-mutable override workflow.
 
 ## Where to go next
 

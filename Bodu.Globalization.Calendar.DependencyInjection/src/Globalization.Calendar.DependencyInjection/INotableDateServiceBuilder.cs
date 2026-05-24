@@ -23,6 +23,21 @@ namespace Bodu.Globalization.Calendar.DependencyInjection;
 /// minimal while remaining trivially extensible by third-party packages.
 /// </para>
 /// </remarks>
+/// <example>
+/// <para>
+/// A typical end-to-end registration with a data pack, runtime overrides, and ambient-default assignment:
+/// </para>
+/// <code>
+///<![CDATA[
+/// services
+///     .AddNotableDates(configuration)
+///     .AddRuleProviders(AsiaPacificCalendarData.CreateProviders())
+///     .AddOverrideProvider(new MutableNotableDateRuleOverrideProvider())
+///     .UseWorkingDays(WorkingDaysOfWeek.MondayToFriday)
+///     .RegisterAsAmbientDefault();
+///]]>
+/// </code>
+/// </example>
 public interface INotableDateServiceBuilder
 {
     /// <summary>

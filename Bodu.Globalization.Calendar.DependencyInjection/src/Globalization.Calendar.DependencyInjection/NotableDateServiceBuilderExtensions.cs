@@ -58,6 +58,16 @@ public static class NotableDateServiceBuilderExtensions
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="builder" /> or <paramref name="provider" /> is <see langword="null" />.
     /// </exception>
+    /// <example>
+    /// <code>
+    ///<![CDATA[
+    /// services.AddNotableDates()
+    ///     .AddRuleProvider(new XmlResourceNotableDateRuleProvider(
+    ///         "MyApp/Calendar/Resources/holidays.xml",
+    ///         new ResourcePathResolver()));
+    ///]]>
+    /// </code>
+    /// </example>
     public static INotableDateServiceBuilder AddRuleProvider(this INotableDateServiceBuilder builder, INotableDateRuleProvider provider)
     {
         ThrowHelper.ThrowIfNull(builder);
@@ -123,6 +133,15 @@ public static class NotableDateServiceBuilderExtensions
     /// Thrown when <paramref name="builder" /> or <paramref name="providers" /> is <see langword="null" />, or when
     /// any element of <paramref name="providers" /> is <see langword="null" />.
     /// </exception>
+    /// <example>
+    /// <code>
+    ///<![CDATA[
+    /// services.AddNotableDates()
+    ///     .AddRuleProviders(AsiaPacificCalendarData.CreateProviders())
+    ///     .AddRuleProviders(EuropeCalendarData.CreateProviders());
+    ///]]>
+    /// </code>
+    /// </example>
     public static INotableDateServiceBuilder AddRuleProviders(
         this INotableDateServiceBuilder builder,
         IEnumerable<INotableDateRuleProvider> providers)
@@ -157,6 +176,31 @@ public static class NotableDateServiceBuilderExtensions
     /// effect without further intervention.
     /// </para>
     /// </remarks>
+    /// <example>
+    /// <para>
+    /// Register a runtime-mutable override and mutate it at any point during the application's lifetime — the
+    /// resolved service auto-reloads on every change.
+    /// </para>
+    /// <code>
+    ///<![CDATA[
+    /// var overrides = new MutableNotableDateRuleOverrideProvider();
+    /// services.AddNotableDates()
+    ///     .AddRuleProviders(AsiaPacificCalendarData.CreateProviders())
+    ///     .AddOverrideProvider(overrides);
+    ///
+    /// // Later, anywhere in the application:
+    /// overrides.AddRule(new NotableDateRule
+    /// {
+    ///     Name = "Company Founding Day",
+    ///     Strategy = DateResolutionStrategy.Fixed,
+    ///     Category = NotableDateCategory.Observance,
+    ///     Month = 6,
+    ///     Day = 15,
+    ///     IsNonWorkingDay = true,
+    /// });
+    ///]]>
+    /// </code>
+    /// </example>
     public static INotableDateServiceBuilder AddOverrideProvider(this INotableDateServiceBuilder builder, INotableDateRuleOverrideProvider provider)
     {
         ThrowHelper.ThrowIfNull(builder);
@@ -315,6 +359,18 @@ public static class NotableDateServiceBuilderExtensions
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="builder" /> or <paramref name="configure" /> is <see langword="null" />.
     /// </exception>
+    /// <example>
+    /// <code>
+    ///<![CDATA[
+    /// services.AddNotableDates()
+    ///     .Configure(opts =>
+    ///     {
+    ///         opts.DefaultTerritoryCode = "AU-NSW";
+    ///         opts.WorkingDays = WorkingDaysOfWeek.MondayToFriday;
+    ///     });
+    ///]]>
+    /// </code>
+    /// </example>
     public static INotableDateServiceBuilder Configure(this INotableDateServiceBuilder builder, Action<NotableDateOptions> configure)
     {
         ThrowHelper.ThrowIfNull(builder);

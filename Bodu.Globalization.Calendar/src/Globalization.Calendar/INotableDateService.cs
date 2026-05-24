@@ -249,6 +249,34 @@ public interface INotableDateService
     /// take effect.
     /// </para>
     /// </remarks>
+    /// <example>
+    /// <para>
+    /// Wire a <see cref="MutableNotableDateRuleOverrideProvider" /> so the service auto-reloads when the provider
+    /// changes:
+    /// </para>
+    /// <code>
+    ///<![CDATA[
+    /// var overrides = new MutableNotableDateRuleOverrideProvider();
+    /// INotableDateService service = new NotableDateService(
+    ///     ruleProviders: AsiaPacificCalendarData.CreateProviders(),
+    ///     workingWeek: WeekPattern.MondayToFriday,
+    ///     options: new NotableDateServiceOptions { OverrideProviders = new[] { overrides } });
+    ///
+    /// overrides.Changed += (_, _) => service.Reload();
+    ///
+    /// overrides.AddRule(new NotableDateRule
+    /// {
+    ///     Name = "Site Maintenance Day",
+    ///     Strategy = DateResolutionStrategy.Fixed,
+    ///     Category = NotableDateCategory.Observance,
+    ///     Month = 3,
+    ///     Day = 28,
+    ///     IsNonWorkingDay = true,
+    /// });
+    /// // New rule is now visible to service.GetNotableDates(...).
+    ///]]>
+    /// </code>
+    /// </example>
     void Reload()
     {
         Invalidate();
@@ -268,6 +296,16 @@ public interface INotableDateService
     /// enumerate query scopes programmatically.
     /// </para>
     /// </remarks>
+    /// <example>
+    /// <code>
+    ///<![CDATA[
+    /// foreach (string code in service.GetSupportedTerritories())
+    /// {
+    ///     Console.WriteLine($"{code}: {service.GetNotableDates(2026, code).Count} notable dates");
+    /// }
+    ///]]>
+    /// </code>
+    /// </example>
     IReadOnlyCollection<string> GetSupportedTerritories() => [];
 
     /// <summary>
@@ -284,5 +322,13 @@ public interface INotableDateService
     /// (for example, separating Gregorian observances from <see cref="SysGlobal.HebrewCalendar" />-anchored ones).
     /// </para>
     /// </remarks>
+    /// <example>
+    /// <code>
+    ///<![CDATA[
+    /// IReadOnlyCollection<Type> calendars = service.GetSupportedCalendars();
+    /// bool hasHebrewRules = calendars.Contains(typeof(System.Globalization.HebrewCalendar));
+    ///]]>
+    /// </code>
+    /// </example>
     IReadOnlyCollection<Type> GetSupportedCalendars() => [];
 }
