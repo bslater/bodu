@@ -160,9 +160,9 @@ public sealed class AsconAead128
     private const int Rate = RateSizeBits / 8;
 
     // IV word for Ascon-AEAD128 (NIST SP 800-232).
-    // Encodes algorithm parameters: key=128 bits, rate=128 bits, pa=12, pb=8.
-    // Source: NIST SP 800-232 / ascon-c constants.h (ASCON_AEAD128_IV).
-    private const ulong IvWord = 0x80800c0800000000UL;
+    // Source: official ascon-c reference (crypto_aead/asconaead128/ref/constants.h, ASCON_128A_IV).
+    // Packed fields (LSB first): variant=1, pa=12 << 16, pb=8 << 20, tagBits=128 << 24, rateBytes=16 << 40.
+    private const ulong IvWord = 0x00001000808c0001UL;
 
     private const int Pa = 12;
     private const int Pb = 8;
@@ -277,7 +277,8 @@ public sealed class AsconAead128
         }
 
         // Domain separation: always applied after AD, even when AD is empty.
-        _state.S4 ^= 1UL;
+        // SP 800-232 / ascon-c DSEP() = SETBYTE(0x80, 7) = 0x80 << 56.
+        _state.S4 ^= 0x8000000000000000UL;
         _aadProcessed = true;
     }
 
@@ -489,17 +490,22 @@ public sealed class AsconAead128
     }
 
     /// <summary>
-    /// Applies the finalization phase: injects the key into words 1 and 2, applies Ascon-p12, and writes the tag from
+    /// Applies the finalization phase: injects the key into words 2 and 3, applies Ascon-p12, and writes the tag from
     /// words 3 and 4 XORed with the key halves.
     /// </summary>
     /// <param name="tag">Destination span for the 16-byte authentication tag.</param>
+    /// <remarks>
+    /// The pre-permute key-XOR targets <c>S2</c> and <c>S3</c> — the words immediately after the rate region (which
+    /// occupies <c>S0</c> and <c>S1</c> for <c>r = 128</c>) — matching the SP 800-232 / ascon-c reference for
+    /// Ascon-AEAD128.
+    /// </remarks>
     private void Finalize(Span<byte> tag)
     {
         var k0 = _key.K0;
         var k1 = _key.K1;
 
-        _state.S1 ^= k0;
-        _state.S2 ^= k1;
+        _state.S2 ^= k0;
+        _state.S3 ^= k1;
         _state.Permute(Pa);
 
         BinaryPrimitives.WriteUInt64LittleEndian(tag, _state.S3 ^ k0);
