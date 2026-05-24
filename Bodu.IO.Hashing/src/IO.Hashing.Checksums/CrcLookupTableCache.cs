@@ -59,15 +59,25 @@ namespace Bodu.IO.Hashing.Checksums;
 /// <seealso cref="Crc"/> <seealso cref="CrcStandard"/> <seealso cref="CrcLookupTableBuilder"/>
 public class CrcLookupTableCache
 {
-    private readonly ConcurrentDictionary<string, ulong[]> _localCache;
+    private readonly ConcurrentDictionary<CrcLookupKey, ulong[]> _localCache;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CrcLookupTableCache" /> class.
     /// </summary>
     public CrcLookupTableCache()
     {
-        _localCache = new ConcurrentDictionary<string, ulong[]>();
+        _localCache = new ConcurrentDictionary<CrcLookupKey, ulong[]>();
     }
+
+    /// <summary>
+    /// Composite key identifying a CRC lookup-table tuple by width, polynomial, and input-reflection flag.
+    /// Used as the dictionary key inside <see cref="CrcLookupTableCache" /> so lookups avoid the string-formatting
+    /// and string-hashing cost that an interpolated key would incur on every call.
+    /// </summary>
+    /// <param name="Size">The CRC width in bits.</param>
+    /// <param name="Polynomial">The CRC polynomial.</param>
+    /// <param name="ReflectIn"><see langword="true" /> if input bytes are reflected during CRC processing.</param>
+    private readonly record struct CrcLookupKey(int Size, ulong Polynomial, bool ReflectIn);
 
     /// <summary>
     /// Returns the cached lookup table for the specified CRC parameters, building it on first access.
@@ -115,7 +125,8 @@ public class CrcLookupTableCache
     {
         ThrowHelper.ThrowIfOutOfRange(size, CrcStandard.MinSize, CrcStandard.MaxSize);
 
-        var cacheKey = $"{size}_{polynomial}_{reflectIn}";
-        return _localCache.GetOrAdd(cacheKey, _ => CrcLookupTableBuilder.BuildLookupTable(size, polynomial, reflectIn));
+        var cacheKey = new CrcLookupKey(size, polynomial, reflectIn);
+        return _localCache.GetOrAdd(cacheKey, static (key) =>
+            CrcLookupTableBuilder.BuildLookupTable(key.Size, key.Polynomial, key.ReflectIn));
     }
 }
