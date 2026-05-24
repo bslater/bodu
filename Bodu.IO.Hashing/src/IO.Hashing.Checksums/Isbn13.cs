@@ -80,9 +80,9 @@ public sealed class Isbn13
     /// </summary>
     /// <param name="digitsIncludingCheck">The complete sequence including the trailing check digit.</param>
     /// <returns>
-    /// <see langword="true" /> if the sequence is empty or evaluates as valid under ISBN-13; otherwise,
-    /// <see langword="false" /> — including the case where <paramref name="digitsIncludingCheck" /> contains a
-    /// character outside the range <c>'0'</c> to <c>'9'</c>.
+    /// <see langword="true" /> if the sequence evaluates as valid under ISBN-13; otherwise, <see langword="false" /> —
+    /// including the case where <paramref name="digitsIncludingCheck" /> is empty or contains a character outside the
+    /// range <c>'0'</c> to <c>'9'</c>.
     /// </returns>
     public static bool IsValid(ReadOnlySpan<char> digitsIncludingCheck) =>
         WeightedMod10.IsValidIsbn13(digitsIncludingCheck);

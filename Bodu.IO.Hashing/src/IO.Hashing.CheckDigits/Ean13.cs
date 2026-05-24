@@ -93,14 +93,10 @@ public sealed class Ean13
     /// <returns>
     /// <see langword="true" /> if the sequence is exactly <see cref="SequenceLength" /> digits and evaluates as valid
     /// under EAN-13; otherwise, <see langword="false" /> — including the case where
-    /// <paramref name="digitsIncludingCheck" /> has the wrong length or contains a non-digit character.
+    /// <paramref name="digitsIncludingCheck" /> is empty, has the wrong length, or contains a non-digit character.
     /// </returns>
-    public static bool IsValid(ReadOnlySpan<char> digitsIncludingCheck)
-    {
-        if (digitsIncludingCheck.IsEmpty) return true;
-        if (digitsIncludingCheck.Length != SequenceLength) return false;
-        return WeightedMod10.IsValidIsbn13(digitsIncludingCheck);
-    }
+    public static bool IsValid(ReadOnlySpan<char> digitsIncludingCheck) =>
+        digitsIncludingCheck.Length == SequenceLength && WeightedMod10.IsValidIsbn13(digitsIncludingCheck);
 
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<char> digits)

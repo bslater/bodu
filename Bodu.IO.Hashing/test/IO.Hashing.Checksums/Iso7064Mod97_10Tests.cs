@@ -42,13 +42,14 @@ public sealed class Iso7064Mod97_10Tests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Iso7064Mod97_10.IsValid(ReadOnlySpan{char})" /> returns <see langword="true" />
-    /// for an empty span — the documented short-circuit branch.
+    /// Verifies that <see cref="Iso7064Mod97_10.IsValid(ReadOnlySpan{char})" /> rejects the empty span. A
+    /// full-sequence validator requires at least the two trailing check characters, so an empty input cannot
+    /// satisfy the algorithm's invariant.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenSequenceIsEmpty_ShouldReturnTrue()
+    public void IsValid_WhenSequenceIsEmpty_ShouldReturnFalse()
     {
-        Assert.IsTrue(Iso7064Mod97_10.IsValid(ReadOnlySpan<char>.Empty));
+        Assert.IsFalse(Iso7064Mod97_10.IsValid(ReadOnlySpan<char>.Empty));
     }
 
     /// <summary>

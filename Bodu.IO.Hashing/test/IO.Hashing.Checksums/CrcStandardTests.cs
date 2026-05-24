@@ -17,11 +17,11 @@ public partial class CrcStandardTests
     private static CrcStandard CreateReference(
         string name = "Test",
         int size = 32,
-        ulong polynomial = 0x04C11DB7UL,
-        ulong initialValue = 0xFFFFFFFFUL,
+        ulong polynomial = 0x1021UL,
+        ulong initialValue = 0xFFFFUL,
         bool reflectIn = true,
         bool reflectOut = true,
-        ulong xOrOut = 0xFFFFFFFFUL)
+        ulong xOrOut = 0xFFFFUL)
         => new(name, size, polynomial, initialValue, reflectIn, reflectOut, xOrOut);
 
 }

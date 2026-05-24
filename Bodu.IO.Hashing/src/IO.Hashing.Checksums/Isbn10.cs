@@ -114,13 +114,12 @@ public sealed class Isbn10
     /// </summary>
     /// <param name="valueIncludingCheck">The complete ten-character sequence.</param>
     /// <returns>
-    /// <see langword="true" /> if the sequence is empty or evaluates as valid under ISBN-10; otherwise,
-    /// <see langword="false" /> — including the case where <paramref name="valueIncludingCheck" /> has the wrong length
-    /// or contains an unrecognized character.
+    /// <see langword="true" /> if the sequence evaluates as valid under ISBN-10; otherwise, <see langword="false" /> —
+    /// including the case where <paramref name="valueIncludingCheck" /> is empty, has the wrong length, or contains an
+    /// unrecognized character.
     /// </returns>
     public static bool IsValid(ReadOnlySpan<char> valueIncludingCheck)
     {
-        if (valueIncludingCheck.IsEmpty) return true;
         if (valueIncludingCheck.Length != SequenceLength) return false;
 
         var sum = 0;

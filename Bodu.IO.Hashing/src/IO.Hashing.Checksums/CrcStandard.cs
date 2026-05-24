@@ -133,12 +133,18 @@ public sealed partial class CrcStandard
     /// <param name="xOrOut">The value to XOR the final output with.</param>
     /// <exception cref="ArgumentException"><paramref name="name" /> is <see langword="null" /> or empty.</exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="size" /> is less than <see cref="MinSize" /> or greater than <see cref="MaxSize" />.
+    /// <paramref name="size" /> is less than <see cref="MinSize" /> or greater than <see cref="MaxSize" />; or
+    /// <paramref name="polynomial" />, <paramref name="initialValue" />, or <paramref name="xOrOut" /> does not fit in
+    /// <paramref name="size" /> bits.
     /// </exception>
     public CrcStandard(string name, int size, ulong polynomial, ulong initialValue, bool reflectIn, bool reflectOut, ulong xOrOut)
     {
         ThrowHelper.ThrowIfNullOrEmpty(name);
         ThrowHelper.ThrowIfOutOfRange(size, MinSize, MaxSize);
+        ulong widthMask = size == 64 ? ulong.MaxValue : (1UL << size) - 1UL;
+        if (polynomial > widthMask) throw new ArgumentOutOfRangeException(nameof(polynomial), polynomial, $"Value must fit in {size} bits (≤ 0x{widthMask:X}).");
+        if (initialValue > widthMask) throw new ArgumentOutOfRangeException(nameof(initialValue), initialValue, $"Value must fit in {size} bits (≤ 0x{widthMask:X}).");
+        if (xOrOut > widthMask) throw new ArgumentOutOfRangeException(nameof(xOrOut), xOrOut, $"Value must fit in {size} bits (≤ 0x{widthMask:X}).");
 
         Name = name;
         Size = size;
@@ -318,12 +324,13 @@ public sealed partial class CrcStandard
     /// </summary>
     /// <param name="other">The other <see cref="CrcStandard" /> object to compare.</param>
     /// <returns>
-    /// <see langword="true" /> if <paramref name="other" /> has the same <see cref="Name" /> (ordinal comparison) and
-    /// the same parameter set as this instance; otherwise, <see langword="false" />.
+    /// <see langword="true" /> if <paramref name="other" /> has the same identity-bearing parameters
+    /// (<see cref="Size" />, <see cref="Polynomial" />, <see cref="InitialValue" />, <see cref="ReflectIn" />,
+    /// <see cref="ReflectOut" />, and <see cref="XOrOut" />); otherwise, <see langword="false" />.
+    /// <see cref="Name" /> is informational and is intentionally excluded from equality.
     /// </returns>
     public bool Equals(CrcStandard? other)
         => other is not null &&
-           string.Equals(Name, other.Name, StringComparison.Ordinal) &&
            Size == other.Size &&
            Polynomial == other.Polynomial &&
            InitialValue == other.InitialValue &&
@@ -337,5 +344,5 @@ public sealed partial class CrcStandard
 
     /// <inheritdoc />
     public override int GetHashCode()
-        => HashCode.Combine(Name, Size, Polynomial, InitialValue, ReflectIn, ReflectOut, XOrOut);
+        => HashCode.Combine(Size, Polynomial, InitialValue, ReflectIn, ReflectOut, XOrOut);
 }

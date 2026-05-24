@@ -95,13 +95,13 @@ public sealed class Iso7064Mod97_10
     /// </summary>
     /// <param name="valueIncludingCheck">The complete sequence including the trailing check code.</param>
     /// <returns>
-    /// <see langword="true" /> if the sequence is empty or evaluates as valid under MOD 97-10; otherwise,
-    /// <see langword="false" /> — including the case where any character is outside the alphanumeric uppercase
-    /// alphabet.
+    /// <see langword="true" /> if the sequence evaluates as valid under MOD 97-10; otherwise, <see langword="false" />
+    /// — including the case where <paramref name="valueIncludingCheck" /> is empty or contains any character outside
+    /// the alphanumeric uppercase alphabet.
     /// </returns>
     public static bool IsValid(ReadOnlySpan<char> valueIncludingCheck)
     {
-        if (valueIncludingCheck.IsEmpty) return true;
+        if (valueIncludingCheck.IsEmpty) return false;
 
         var r = 0;
         for (var i = 0; i < valueIncludingCheck.Length; i++)

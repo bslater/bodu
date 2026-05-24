@@ -98,13 +98,12 @@ public sealed class Isin
     /// </summary>
     /// <param name="valueIncludingCheck">The complete twelve-character ISIN.</param>
     /// <returns>
-    /// <see langword="true" /> if the sequence is empty or evaluates as valid under ISIN; otherwise,
-    /// <see langword="false" /> — including the case where the length is wrong, any body character is outside the
-    /// alphanumeric uppercase alphabet, or the check character is not a decimal digit.
+    /// <see langword="true" /> if the sequence evaluates as valid under ISIN; otherwise, <see langword="false" /> —
+    /// including the case where <paramref name="valueIncludingCheck" /> is empty, the length is wrong, any body
+    /// character is outside the alphanumeric uppercase alphabet, or the check character is not a decimal digit.
     /// </returns>
     public static bool IsValid(ReadOnlySpan<char> valueIncludingCheck)
     {
-        if (valueIncludingCheck.IsEmpty) return true;
         if (valueIncludingCheck.Length != SequenceLength) return false;
 
         // Short-circuit obvious rejections before allocating.
