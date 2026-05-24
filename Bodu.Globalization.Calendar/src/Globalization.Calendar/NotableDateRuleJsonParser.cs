@@ -373,7 +373,7 @@ public static class NotableDateRuleJsonParser
             case DateResolutionStrategy.Fixed:
                 {
                     FixedDto f = dto.Fixed!;
-                    (var monthNum, var monthAlias) = ParseMonthToken(RequireString(f.Month, "month", "fixed"));
+                    (var monthNum, var monthAlias) = ParseMonthToken(RequireString(f.Month, "month", "fixed"), rule.CalendarType);
                     return rule with
                     {
                         Month = monthNum,
@@ -436,7 +436,7 @@ public static class NotableDateRuleJsonParser
             case DateResolutionStrategy.Fixed:
                 {
                     FixedDto f = dto.Fixed!;
-                    (var monthNum, var monthAlias) = ParseMonthToken(RequireString(f.Month, "month", "fixed"));
+                    (var monthNum, var monthAlias) = ParseMonthToken(RequireString(f.Month, "month", "fixed"), body.CalendarType);
                     return body with
                     {
                         Month = monthNum,
@@ -638,12 +638,16 @@ public static class NotableDateRuleJsonParser
 
     /// <summary>
     /// Parses a Fixed-strategy month token, returning either a numeric month or a Hebrew calendar alias.
+    /// Numeric month 13 is accepted only when <paramref name="calendarType" /> is non-null and not
+    /// <see cref="GregorianCalendar" /> — Gregorian rules have at most twelve months, so an authored 13 is treated
+    /// as an error rather than silently accepted.
     /// </summary>
     /// <param name="token">The month token to parse.</param>
+    /// <param name="calendarType">The owning rule's calendar type, or <see langword="null" /> for Gregorian default.</param>
     /// <returns>
     /// A tuple of <c>(numericMonth, alias)</c>: exactly one of the two is non-<see langword="null" />.
     /// </returns>
-    private static (int? numericMonth, string? alias) ParseMonthToken(string token)
+    private static (int? numericMonth, string? alias) ParseMonthToken(string token, Type? calendarType)
     {
         if (string.IsNullOrWhiteSpace(token))
             throw new ArgumentNullException(nameof(token));
@@ -653,7 +657,13 @@ public static class NotableDateRuleJsonParser
 
         if (int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out var numeric)
             && numeric is >= 1 and <= 13)
+        {
+            if (numeric == 13 && IsGregorianContext(calendarType))
+                throw new FormatException(
+                    string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Format_Invalid_MonthValueGregorian, token));
+
             return (numeric, null);
+        }
 
         var simpleHebrew = token switch
         {
@@ -675,6 +685,17 @@ public static class NotableDateRuleJsonParser
             : throw new FormatException(
             string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Format_Invalid_MonthValueHebrew, token));
     }
+
+    /// <summary>
+    /// Returns <see langword="true" /> when the supplied calendar type behaves as the 12-month Gregorian default
+    /// (no calendar type configured, or <see cref="GregorianCalendar" /> selected explicitly).
+    /// </summary>
+    /// <param name="calendarType">The rule's calendar type, or <see langword="null" />.</param>
+    /// <returns>
+    /// <see langword="true" /> if <paramref name="calendarType" /> is null or equals <see cref="GregorianCalendar" />.
+    /// </returns>
+    private static bool IsGregorianContext(Type? calendarType) =>
+        calendarType is null || calendarType == typeof(GregorianCalendar);
 
     /// <summary>
     /// Enforces the per-rule uniqueness invariant on adjustment keys.

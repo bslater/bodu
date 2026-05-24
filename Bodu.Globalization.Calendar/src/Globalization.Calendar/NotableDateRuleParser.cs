@@ -284,7 +284,7 @@ public static class NotableDateRuleParser
     {
         if (body.Strategy == DateResolutionStrategy.Fixed)
         {
-            (var monthNum, var monthAlias) = ParseMonthToken(GetRequiredAttribute(strategyElement, "month"));
+            (var monthNum, var monthAlias) = ParseMonthToken(GetRequiredAttribute(strategyElement, "month"), body.CalendarType);
             return body with
             {
                 Month = monthNum,
@@ -413,7 +413,7 @@ public static class NotableDateRuleParser
     {
         if (rule.Strategy == DateResolutionStrategy.Fixed)
         {
-            (var monthNum, var monthAlias) = ParseMonthToken(GetRequiredAttribute(strategyElement, "month"));
+            (var monthNum, var monthAlias) = ParseMonthToken(GetRequiredAttribute(strategyElement, "month"), rule.CalendarType);
             return rule with
             {
                 Month = monthNum,
@@ -653,11 +653,14 @@ public static class NotableDateRuleParser
     /// </para>
     /// </remarks>
     /// <param name="token">The month token from the XML attribute.</param>
+    /// <param name="calendarType">The owning rule's calendar type, or <see langword="null" /> for Gregorian default.</param>
     /// <returns>
     /// A tuple of <c>(numericMonth, alias)</c>: exactly one of the two is non-<see langword="null" />.
     /// </returns>
-    /// <exception cref="FormatException"><paramref name="token" /> is not a recognized month token.</exception>
-    private static (int? numericMonth, string? alias) ParseMonthToken(string token)
+    /// <exception cref="FormatException"><paramref name="token" /> is not a recognized month token, or month 13 is
+    /// supplied for a Gregorian (default or explicit) calendar context.
+    /// </exception>
+    private static (int? numericMonth, string? alias) ParseMonthToken(string token, Type? calendarType)
     {
         ThrowHelper.ThrowIfNullOrEmpty(token);
 
@@ -666,7 +669,13 @@ public static class NotableDateRuleParser
 
         if (int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out var numeric)
             && numeric is >= 1 and <= 13)
+        {
+            if (numeric == 13 && IsGregorianContext(calendarType))
+                throw new FormatException(
+                    string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Format_Invalid_MonthValueGregorian, token));
+
             return (numeric, null);
+        }
 
         // Hebrew months with a fixed calendar position — always at the same 1-based index.
         var simpleHebrew = token switch
@@ -691,6 +700,18 @@ public static class NotableDateRuleParser
             : throw new FormatException(
             string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Format_Invalid_MonthValueHebrew, token));
     }
+
+    /// <summary>
+    /// Returns <see langword="true" /> when the supplied calendar type behaves as the 12-month Gregorian default
+    /// (no calendar type configured, or <see cref="SysGlobal.GregorianCalendar" /> selected explicitly).
+    /// </summary>
+    /// <param name="calendarType">The rule's calendar type, or <see langword="null" />.</param>
+    /// <returns>
+    /// <see langword="true" /> if <paramref name="calendarType" /> is null or equals
+    /// <see cref="SysGlobal.GregorianCalendar" />.
+    /// </returns>
+    private static bool IsGregorianContext(Type? calendarType) =>
+        calendarType is null || calendarType == typeof(SysGlobal.GregorianCalendar);
 
     // ----------------------------------------------------------------------------
     // Schema validation
