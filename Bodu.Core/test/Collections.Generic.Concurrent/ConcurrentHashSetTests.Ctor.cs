@@ -254,4 +254,23 @@ public partial class ConcurrentHashSetTests
             set.LockCount <= ConcurrentHashSet<int>.MaxDefaultConcurrencyLevel,
             $"Expected default lock count <= {ConcurrentHashSet<int>.MaxDefaultConcurrencyLevel}, got {set.LockCount}.");
     }
+
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentHashSet{T}.ClampDefaultConcurrencyLevel(int)" /> clamps a synthetic
+    /// processor count into the inclusive range <c>[1, MaxDefaultConcurrencyLevel]</c>. Driving the clamp with
+    /// scripted values means the regression net does not depend on the host's actual core count.
+    /// </summary>
+    [TestMethod]
+    [DataRow(-1, 1)]
+    [DataRow(0, 1)]
+    [DataRow(1, 1)]
+    [DataRow(4, 4)]
+    [DataRow(32, 32)]
+    [DataRow(33, 32)]
+    [DataRow(128, 32)]
+    [DataRow(int.MaxValue, 32)]
+    public void ClampDefaultConcurrencyLevel_ShouldClampInputToValidRange(int processorCount, int expected)
+    {
+        Assert.AreEqual(expected, ConcurrentHashSet<int>.ClampDefaultConcurrencyLevel(processorCount));
+    }
 }

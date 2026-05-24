@@ -210,15 +210,26 @@ public sealed partial class ConcurrentHashSet<T>
     }
 
     /// <summary>
-    /// Gets the default number of lock stripes used by the public constructors.
+    /// Gets the default number of lock stripes used by the public constructors. Reads
+    /// <see cref="Environment.ProcessorCount" /> and routes through
+    /// <see cref="ClampDefaultConcurrencyLevel(int)" /> so the clamp logic can be exercised in isolation.
     /// </summary>
-    /// <returns>
-    /// The default lock striping level. Derived from <see cref="Environment.ProcessorCount" /> and clamped to the
-    /// range <c>[1, MaxDefaultConcurrencyLevel]</c> so that high-core machines do not allocate an excessive lock
-    /// array for small sets.
-    /// </returns>
+    /// <returns>The clamped default lock striping level for newly created instances.</returns>
     private static int DefaultConcurrencyLevel =>
-        Math.Clamp(Environment.ProcessorCount, 1, MaxDefaultConcurrencyLevel);
+        ClampDefaultConcurrencyLevel(Environment.ProcessorCount);
+
+    /// <summary>
+    /// Clamps a raw processor count to the range used by <see cref="DefaultConcurrencyLevel" />, guaranteeing at
+    /// least one lock and at most <see cref="MaxDefaultConcurrencyLevel" /> locks regardless of the host machine.
+    /// </summary>
+    /// <param name="processorCount">The raw processor count to clamp.</param>
+    /// <returns>A value in the range <c>[1, MaxDefaultConcurrencyLevel]</c>.</returns>
+    /// <remarks>
+    /// Extracted as a static helper so unit tests can exercise the clamp envelope with synthetic processor counts
+    /// rather than relying on the machine's actual <see cref="Environment.ProcessorCount" />.
+    /// </remarks>
+    internal static int ClampDefaultConcurrencyLevel(int processorCount) =>
+        Math.Clamp(processorCount, 1, MaxDefaultConcurrencyLevel);
 
     /// <summary>
     /// The upper bound applied to <see cref="DefaultConcurrencyLevel" /> so that the lock array stays small on

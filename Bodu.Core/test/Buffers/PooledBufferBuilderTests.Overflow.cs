@@ -80,6 +80,68 @@ public partial class PooledBufferBuilderTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="PooledBufferBuilder{T}.GetMemory" /> throws <see cref="OverflowException" />
+    /// when <c>_count + sizeHint</c> would overflow.
+    /// </summary>
+    [TestMethod]
+    public void GetMemory_WhenCountPlusSizeHintOverflows_ShouldThrowOverflowException()
+    {
+        using var builder = new PooledBufferBuilder<byte>(initialCapacity: 1);
+
+        SetCount(builder, int.MaxValue);
+
+        Assert.ThrowsExactly<OverflowException>(() =>
+        {
+            _ = builder.GetMemory(sizeHint: 1024);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="PooledBufferBuilder{T}.AppendRange(System.Collections.Generic.IEnumerable{T})" />
+    /// throws <see cref="OverflowException" /> on the <see cref="System.Collections.Generic.ICollection{T}" />
+    /// fast path when <c>_count + col.Count</c> would overflow.
+    /// </summary>
+    [TestMethod]
+    public void AppendRange_WhenCollectionFastPathCountPlusOverflows_ShouldThrowOverflowException()
+    {
+        using var builder = new PooledBufferBuilder<byte>(initialCapacity: 1);
+
+        SetCount(builder, int.MaxValue);
+
+        IEnumerable<byte> source = new List<byte> { 1, 2, 3 };
+
+        Assert.ThrowsExactly<OverflowException>(() =>
+        {
+            builder.AppendRange(source);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="PooledBufferBuilder{T}.AppendRange(System.Collections.Generic.IEnumerable{T})" />
+    /// throws <see cref="OverflowException" /> on the lazy <see cref="System.Collections.Generic.IEnumerable{T}" />
+    /// foreach path when <c>_count + 1</c> would overflow at the first iteration.
+    /// </summary>
+    [TestMethod]
+    public void AppendRange_WhenLazyEnumerableForeachOverflows_ShouldThrowOverflowException()
+    {
+        using var builder = new PooledBufferBuilder<byte>(initialCapacity: 1);
+
+        SetCount(builder, int.MaxValue);
+
+        IEnumerable<byte> source = LazyBytes();
+
+        Assert.ThrowsExactly<OverflowException>(() =>
+        {
+            builder.AppendRange(source);
+        });
+
+        static IEnumerable<byte> LazyBytes()
+        {
+            yield return 0;
+        }
+    }
+
+    /// <summary>
     /// Sets the private <c>_count</c> field via reflection so that overflow boundaries can be exercised
     /// without allocating multi-gigabyte arrays. The builder is left in a deliberately inconsistent state
     /// for the duration of the call; only <see cref="PooledBufferBuilder{T}.Dispose" /> is safe afterwards.
