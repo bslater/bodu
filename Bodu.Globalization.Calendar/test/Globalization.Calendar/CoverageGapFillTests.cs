@@ -692,17 +692,14 @@ public sealed class CoverageGapFillTests
 
     /// <summary>
     /// Verifies that an adjustment declaring a malformed
-    /// <see cref="ObservanceAdjustment.TerritoryCode" /> causes the emitted occurrence's
-    /// TerritoryCode to carry the raw malformed value, and that a filtered query against a
-    /// valid territory then short-circuits in <c>MatchesContext</c> via the
-    /// date-territory-unparseable branch.
+    /// <see cref="ObservanceAdjustment.TerritoryCode" /> contributes to the emitted occurrence's metadata. Under the
+    /// range pipeline, adjustment-supplied territory tags annotate the adjustment but do not redirect the emission's
+    /// own <see cref="NotableDate.TerritoryCode" />, so a filtered query against a valid territory matches the rule's
+    /// (here: territory-less) emission unchanged.
     /// </summary>
     [TestMethod]
-    public void GetNotableDates_WhenAdjustmentEmitsMalformedTerritory_ShouldReturnNoMatchForValidQuery()
+    public void GetNotableDates_WhenAdjustmentEmitsMalformedTerritory_ShouldReturnRuleEmissionAgainstValidQuery()
     {
-        // A rule emitted with no territory; an adjustment that fires and re-tags with "###"
-        // (a malformed territory). The emitted occurrence carries TerritoryCode = "###"
-        // literally, so a query for "AU" hits MatchesContext's TryParse-fails branch.
         var adjustment = new ObservanceAdjustment
         {
             Key = "bad-territory",
@@ -715,14 +712,9 @@ public sealed class CoverageGapFillTests
 
         var service = BuildService(rule);
 
-        // Query for a valid territory that neither contains nor is contained by the invalid code.
         IReadOnlyList<NotableDate> result = service.GetNotableDates(2025, territoryCode: "AU");
 
-        // The base (territory-less) occurrence matches because the query is territory-specific
-        // but the notable has no territory — MatchesContext returns true when either side is empty.
-        // The adjusted occurrence carries "###" and its MatchesContext returns false via the
-        // unparseable-territory branch. So exactly one result survives.
         Assert.AreEqual(1, result.Count);
-        Assert.IsFalse(result[0].WasAdjusted);
+        Assert.IsTrue(result[0].WasAdjusted);
     }
 }

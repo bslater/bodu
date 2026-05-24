@@ -136,12 +136,11 @@ public sealed partial class NotableDateServiceTests
     /// <summary>
     /// Verifies that a multi-day span anchored in the previous year, whose tail overlaps the
     /// queried window, is emitted on both paths when the window begins in January and the anchor
-    /// lies in December of the prior year. The legacy <c>(start, end)</c> overload iterates only
-    /// <c>startDate.Year..endDate.Year</c>, so this case is expected to diverge — the pipeline
-    /// will surface the festival span; the legacy engine will not.
+    /// lies in December of the prior year. After pipeline promotion this scenario succeeds
+    /// because <c>GetNotableDates(start, end)</c> now delegates to the same range pipeline that
+    /// materialises prior-year anchors whose multi-day span overlaps the window.
     /// </summary>
     [TestMethod]
-    [Ignore("Re-enabled after pipeline promotion; legacy (start, end) overload misses prior-year anchors.")]
     public void Equivalence_WhenMultiDaySpanCrossesStartBoundaryAcrossYears_ShouldMatch()
     {
         NotableDateRule festival = Fixed("New Year Festival", 12, 28) with { DurationDays = 10 };

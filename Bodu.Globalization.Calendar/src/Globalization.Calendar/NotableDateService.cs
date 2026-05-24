@@ -462,44 +462,36 @@ public sealed class NotableDateService : INotableDateService, IDisposable
 
     /// <inheritdoc />
     public IReadOnlyList<NotableDate> GetNotableDates(int year, string? territoryCode = null, Type? calendarType = null)
-    {
-        IReadOnlyList<NotableDate> perYear = GetOrGenerateYear(year);
-        return ProjectAndOrder(perYear, territoryCode, calendarType);
-    }
+        => ResolveRangeInternal(
+            new DateTime(year, 1, 1),
+            new DateTime(year, 12, 31),
+            filter: null,
+            territoryCode,
+            calendarType,
+            recordWindow: true);
 
     /// <inheritdoc />
     public IReadOnlyList<NotableDate> GetNotableDates(DateTime date, string? territoryCode = null, Type? calendarType = null)
-    {
-        List<NotableDate> results = [];
-
-        // Multi-day spans may have started in the previous year; check both years to cover wrap-around.
-        foreach (var year in new[] { date.Year - 1, date.Year })
-        {
-            if (year < 1)
-                continue;
-
-            IReadOnlyList<NotableDate> perYear = GetOrGenerateYear(year);
-            foreach (NotableDate notable in perYear)
-            {
-                if (!ContainsDay(notable, date.Date))
-                    continue;
-                if (!MatchesContext(notable, territoryCode, calendarType))
-                    continue;
-
-                results.Add(LocaliseIfNeeded(notable));
-            }
-        }
-
-        return _collisionResolver.Resolve(date.Date, results) ?? [];
-    }
+        => ResolveRangeInternal(
+            date.Date,
+            date.Date,
+            filter: null,
+            territoryCode,
+            calendarType,
+            recordWindow: true);
 
     /// <inheritdoc />
     public IReadOnlyList<NotableDate> GetNotableDates(int year, NotableDateFilter filter, string? territoryCode = null, Type? calendarType = null)
     {
         ThrowHelper.ThrowIfNull(filter);
 
-        IReadOnlyList<NotableDate> perYear = GenerateYearFiltered(year, filter);
-        return ProjectAndOrder(perYear, territoryCode, calendarType);
+        return ResolveRangeInternal(
+            new DateTime(year, 1, 1),
+            new DateTime(year, 12, 31),
+            filter,
+            territoryCode,
+            calendarType,
+            recordWindow: true);
     }
 
     /// <inheritdoc />
@@ -508,26 +500,13 @@ public sealed class NotableDateService : INotableDateService, IDisposable
         if (endDate < startDate)
             (startDate, endDate) = (endDate, startDate);
 
-        List<NotableDate> results = [];
-        for (var year = startDate.Year; year <= endDate.Year; year++)
-        {
-            IReadOnlyList<NotableDate> perYear = GetOrGenerateYear(year);
-            foreach (NotableDate notable in perYear)
-            {
-                if (notable.EndDate < startDate.Date || notable.Date > endDate.Date)
-                    continue;
-                if (!MatchesContext(notable, territoryCode, calendarType))
-                    continue;
-
-                results.Add(LocaliseIfNeeded(notable));
-            }
-        }
-
-        // Apply the collision resolver per anchor day so that overlap rules see only same-day results, then concatenate in date order.
-        return [.. results
-            .GroupBy(n => n.Date.Date)
-            .OrderBy(g => g.Key)
-            .SelectMany(g => _collisionResolver.Resolve(g.Key, [.. g]) ?? [])];
+        return ResolveRangeInternal(
+            startDate,
+            endDate,
+            filter: null,
+            territoryCode,
+            calendarType,
+            recordWindow: true);
     }
 
     /// <inheritdoc />
@@ -535,27 +514,13 @@ public sealed class NotableDateService : INotableDateService, IDisposable
     {
         ThrowHelper.ThrowIfNull(filter);
 
-        List<NotableDate> results = [];
-
-        // Multi-day spans may have started in the previous year; check both years to cover wrap-around.
-        foreach (var year in new[] { date.Year - 1, date.Year })
-        {
-            if (year < 1)
-                continue;
-
-            IReadOnlyList<NotableDate> perYear = GenerateYearFiltered(year, filter);
-            foreach (NotableDate notable in perYear)
-            {
-                if (!ContainsDay(notable, date.Date))
-                    continue;
-                if (!MatchesContext(notable, territoryCode, calendarType))
-                    continue;
-
-                results.Add(LocaliseIfNeeded(notable));
-            }
-        }
-
-        return _collisionResolver.Resolve(date.Date, results) ?? [];
+        return ResolveRangeInternal(
+            date.Date,
+            date.Date,
+            filter,
+            territoryCode,
+            calendarType,
+            recordWindow: true);
     }
 
     /// <inheritdoc />
@@ -566,25 +531,13 @@ public sealed class NotableDateService : INotableDateService, IDisposable
         if (endDate < startDate)
             (startDate, endDate) = (endDate, startDate);
 
-        List<NotableDate> results = [];
-        for (var year = startDate.Year; year <= endDate.Year; year++)
-        {
-            IReadOnlyList<NotableDate> perYear = GenerateYearFiltered(year, filter);
-            foreach (NotableDate notable in perYear)
-            {
-                if (notable.EndDate < startDate.Date || notable.Date > endDate.Date)
-                    continue;
-                if (!MatchesContext(notable, territoryCode, calendarType))
-                    continue;
-
-                results.Add(LocaliseIfNeeded(notable));
-            }
-        }
-
-        return [.. results
-            .GroupBy(n => n.Date.Date)
-            .OrderBy(g => g.Key)
-            .SelectMany(g => _collisionResolver.Resolve(g.Key, [.. g]) ?? [])];
+        return ResolveRangeInternal(
+            startDate,
+            endDate,
+            filter,
+            territoryCode,
+            calendarType,
+            recordWindow: true);
     }
 
     /// <inheritdoc />
@@ -705,17 +658,18 @@ public sealed class NotableDateService : INotableDateService, IDisposable
     /// <inheritdoc />
     public bool IsHolidayNonWorkingDay(DateTime date, string? territoryCode = null, Type? calendarType = null)
     {
-        IReadOnlyList<NotableDate> perYear = GetOrGenerateYear(date.Year);
-        foreach (NotableDate notable in perYear)
-        {
-            if (!notable.IsNonWorkingDay)
-                continue;
-            if (!ContainsDay(notable, date.Date))
-                continue;
-            if (!MatchesContext(notable, territoryCode, calendarType))
-                continue;
+        IReadOnlyList<NotableDate> sameDay = ResolveRangeInternal(
+            date.Date,
+            date.Date,
+            filter: null,
+            territoryCode,
+            calendarType,
+            recordWindow: false);
 
-            return true;
+        foreach (NotableDate notable in sameDay)
+        {
+            if (notable.IsNonWorkingDay && ContainsDay(notable, date.Date))
+                return true;
         }
 
         return false;
@@ -751,7 +705,7 @@ public sealed class NotableDateService : INotableDateService, IDisposable
     public bool IsWeekend(DateTime date) => !WorkingWeek.Contains(date.DayOfWeek);
 
     /// <summary>
-    /// Resolves notable dates whose observed date intersects the supplied chronological window using the prototype
+    /// Resolves notable dates whose observed date intersects the supplied chronological window using the
     /// range-resolution pipeline. Collateral dates that originate outside the requested range are admitted when an
     /// observance adjustment rolls them into the window or when an offset rule projects an out-of-window anchor date
     /// inside.
@@ -767,21 +721,37 @@ public sealed class NotableDateService : INotableDateService, IDisposable
     /// <exception cref="ArgumentException">
     /// <paramref name="endDate" /> is earlier than <paramref name="startDate" />.
     /// </exception>
-    /// <remarks>
-    /// <para>
-    /// TODO: Once the prototype is validated against the existing window-based overloads, evaluate promoting this
-    /// method to <see cref="INotableDateService" /> and routing the existing
-    /// <see cref="GetNotableDates(DateTime, DateTime, string?, Type?)" /> and
-    /// <see cref="GetNotableDates(DateTime, DateTime, NotableDateFilter, string?, Type?)" /> overloads through the new
-    /// pipeline.
-    /// </para>
-    /// </remarks>
     public IReadOnlyList<NotableDate> ResolveNotableDatesInRange(
         DateTime startDate,
         DateTime endDate,
         string? territoryCode = null,
         Type? calendarType = null,
         NotableDateFilter? filter = null)
+        => ResolveRangeInternal(startDate, endDate, filter, territoryCode, calendarType, recordWindow: true);
+
+    /// <summary>
+    /// Resolves notable dates for the supplied window through the range pipeline, optionally recording the requested
+    /// window in <see cref="_resolvedWindows" />. This is the canonical implementation shared by
+    /// <see cref="ResolveNotableDatesInRange" /> and the legacy <c>GetNotableDates</c> overloads.
+    /// </summary>
+    /// <param name="startDate">The inclusive start date.</param>
+    /// <param name="endDate">The inclusive end date.</param>
+    /// <param name="filter">The optional filter applied during pipeline resolution.</param>
+    /// <param name="territoryCode">The optional territory context.</param>
+    /// <param name="calendarType">The optional calendar context.</param>
+    /// <param name="recordWindow">
+    /// <see langword="true" /> to add the request window to <see cref="_resolvedWindows" />; <see langword="false" />
+    /// for hot-path predicate queries (for example single-day non-working checks) that should not extend the resolved
+    /// coverage set.
+    /// </param>
+    /// <returns>The resolved notable dates ordered by observed date.</returns>
+    private IReadOnlyList<NotableDate> ResolveRangeInternal(
+        DateTime startDate,
+        DateTime endDate,
+        NotableDateFilter? filter,
+        string? territoryCode,
+        Type? calendarType,
+        bool recordWindow)
     {
         RangeResolution.NotableDateRangeRequest request = new(
             startDate,
@@ -793,12 +763,12 @@ public sealed class NotableDateService : INotableDateService, IDisposable
         RangeResolution.NotableDateRangePipeline pipeline = GetOrBuildRangePipeline();
         IReadOnlyList<NotableDate> resolved = pipeline.Resolve(request);
 
-        // Record the request window so consumers can introspect what the service has been asked to resolve. The window is recorded
-        // regardless of whether a filter was applied — it represents queried coverage, not result coverage. Filtered queries
-        // therefore still extend the known window.
-        lock (_resolvedWindowsGate)
+        if (recordWindow)
         {
-            _resolvedWindows.Add(new DateRange(request.StartDate, request.EndDate));
+            lock (_resolvedWindowsGate)
+            {
+                _resolvedWindows.Add(new DateRange(request.StartDate, request.EndDate));
+            }
         }
 
         List<NotableDate> localized = new(resolved.Count);

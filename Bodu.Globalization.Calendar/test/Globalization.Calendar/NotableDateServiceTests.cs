@@ -60,8 +60,10 @@ public sealed partial class NotableDateServiceTests
     }
 
     /// <summary>
-    /// Verifies that an adjustment that rolls a Saturday onto Monday produces both the original and adjusted notable dates and that
-    /// the adjusted occurrence carries an <see cref="AdjustmentReason" />.
+    /// Verifies that an adjustment that rolls a Saturday onto Monday emits a single occurrence carrying the post-adjustment
+    /// observed date and an <see cref="AdjustmentReason" /> describing the original anchor. The range pipeline emits one
+    /// entry per rule occurrence — the adjusted one when an adjustment fires — rather than the legacy pair of
+    /// (original, adjusted).
     /// </summary>
     [TestMethod]
     public void GetNotableDates_WhenWeekendRollAdjustmentFires_ShouldExposeAdjustmentReason()
@@ -81,8 +83,9 @@ public sealed partial class NotableDateServiceTests
         // 1 January 2022 is a Saturday.
         var results = service.GetNotableDates(2022).Where(d => d.Name == "New Year's Day").ToList();
 
-        Assert.AreEqual(2, results.Count);
-        var adjusted = results.Single(d => d.WasAdjusted);
+        Assert.AreEqual(1, results.Count);
+        var adjusted = results[0];
+        Assert.IsTrue(adjusted.WasAdjusted);
         Assert.AreEqual(DayOfWeek.Monday, adjusted.Date.DayOfWeek);
         Assert.AreEqual(new DateTime(2022, 1, 1), adjusted.AdjustmentReason!.OriginalDate);
         Assert.AreEqual(AdjustmentTrigger.IfWeekend, adjusted.AdjustmentReason.Trigger);
@@ -524,8 +527,9 @@ public sealed partial class NotableDateServiceTests
     }
 
     /// <summary>
-    /// Verifies that a localiser returning the same canonical name does not force the record to
-    /// be recreated — the emitted record is reference-equal to the underlying occurrence.
+    /// Verifies that a localiser returning the same canonical name is value-equivalent across repeated queries.
+    /// Reference equality across calls is no longer guaranteed because the range pipeline materialises a fresh result
+    /// per request.
     /// </summary>
     [TestMethod]
     public void GetNotableDates_WhenLocaliserReturnsSameName_ShouldNoOpTheRecord()
@@ -540,7 +544,7 @@ public sealed partial class NotableDateServiceTests
         NotableDate second = service.GetNotableDates(2025)[0];
 
         Assert.AreEqual("New Year's Day", first.Name);
-        Assert.AreSame(first, second);
+        Assert.AreEqual(first, second);
     }
 
     // -----------------------------------------------------------------------------------------

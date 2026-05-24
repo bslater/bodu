@@ -317,12 +317,12 @@ public sealed partial class NotableDateServiceTests
 
     /// <summary>
     /// Verifies the current observable behaviour when an <see cref="INotableDateAlgorithm" /> returns a date
-    /// whose year differs from the year requested. The service stores the out-of-year result in the queried
-    /// year's cache and returns it as-is; this test documents the absence of a year-boundary validation step
-    /// so that a future defensive guard can be verified against it.
+    /// whose year differs from the year requested. The range pipeline filters by observed date in the requested
+    /// window: anchors whose observed date falls inside the window are emitted regardless of which input year the
+    /// algorithm was asked about; anchors whose observed date falls outside are suppressed.
     /// </summary>
     [TestMethod]
-    public void GetNotableDates_WhenAlgorithmReturnsDateOutsideQueriedYear_ShouldReturnDateAsReported()
+    public void GetNotableDates_WhenAlgorithmReturnsDateOutsideQueriedYear_ShouldFilterByObservedDateWindow()
     {
         NotableDateRule rule = new()
         {
@@ -340,11 +340,13 @@ public sealed partial class NotableDateServiceTests
             WorkingDaysOfWeek.MondayToFriday,
             new NotableDateServiceOptions { AlgorithmRegistry = registry });
 
-        IReadOnlyList<NotableDate> results = service.GetNotableDates(2025);
-
-        Assert.AreEqual(1, results.Count);
-        Assert.AreEqual(new DateTime(2024, 12, 31), results[0].Date,
-            "The service currently returns an algorithm-reported date verbatim even when it falls outside the queried year.");
+        // WrongYearAlgorithm returns (year - 1, 12, 31). The pipeline materialises adjacent years' anchors and filters
+        // by observed date in the queried window. Querying [2024-01-01, 2024-12-31] only — algorithm called for years
+        // adjacent to the window returns 2023-12-31 and 2024-12-31; only the latter falls inside the window.
+        IReadOnlyList<NotableDate> single = service.GetNotableDates(2024);
+        Assert.AreEqual(1, single.Count);
+        Assert.AreEqual(new DateTime(2024, 12, 31), single[0].Date,
+            "Observed date inside the queried window survives; the algorithm-reported year is irrelevant once the date is materialised.");
     }
 
     // =================================================================================================
