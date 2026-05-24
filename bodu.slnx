@@ -2,6 +2,7 @@
   <Folder Name="/Bodu.Text.Formats/">
     <Project Path="Bodu.Text.Formats/src/Bodu.Text.Formats.csproj" />
     <Project Path="Bodu.Text.Formats/test/Bodu.Text.Formats.Test.csproj" />
+    <Project Path="Bodu.Text.Formats/bench/Bodu.Text.Formats.Benchmarks.csproj" />
   </Folder>
   <Folder Name="/Solution Items/">
     <File Path="bld\Bodu.props" />
