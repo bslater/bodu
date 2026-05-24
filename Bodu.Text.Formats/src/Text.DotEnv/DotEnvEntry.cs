@@ -38,15 +38,29 @@ namespace Bodu.Text.DotEnv;
 /// </example>
 public sealed class DotEnvEntry
 {
+    private static readonly IReadOnlyList<DotEnvComment> EmptyComments = Array.Empty<DotEnvComment>();
+
     /// <summary>
-    /// Initializes a new instance of the <see cref="DotEnvEntry" /> class.
+    /// Initializes a new instance of the <see cref="DotEnvEntry" /> class with no associated comments.
     /// </summary>
     /// <param name="key">The validated key name.</param>
     /// <param name="value">The fully processed value string — quotes stripped, escape sequences resolved.</param>
     internal DotEnvEntry(string key, string value)
+        : this(key, value, EmptyComments)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DotEnvEntry" /> class with the supplied leading comments.
+    /// </summary>
+    /// <param name="key">The validated key name.</param>
+    /// <param name="value">The fully processed value string — quotes stripped, escape sequences resolved.</param>
+    /// <param name="leadingComments">The comment lines that precede the entry in source order.</param>
+    internal DotEnvEntry(string key, string value, IReadOnlyList<DotEnvComment> leadingComments)
     {
         Key = key;
         Value = value;
+        LeadingComments = leadingComments;
     }
 
     /// <summary>
@@ -62,6 +76,19 @@ public sealed class DotEnvEntry
     /// The value string with surrounding quotes removed and escape sequences resolved. Never <see langword="null" />.
     /// </returns>
     public string Value { get; }
+
+    /// <summary>
+    /// Gets the comment lines that immediately precede this entry in the source document, in source order.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Populated only when <see cref="DotEnvParseOptions.PreserveComments" /> is <see langword="true" />. The
+    /// collection is empty for entries that have no annotating comments and for documents parsed with
+    /// <c>PreserveComments = false</c>.
+    /// </para>
+    /// </remarks>
+    /// <returns>A non-null read-only list of <see cref="DotEnvComment" /> instances.</returns>
+    public IReadOnlyList<DotEnvComment> LeadingComments { get; }
 
     /// <summary>
     /// Parses <see cref="Value" /> as <typeparamref name="T" /> using <see cref="CultureInfo.InvariantCulture" />.

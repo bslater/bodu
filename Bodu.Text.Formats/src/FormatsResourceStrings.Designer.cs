@@ -70,6 +70,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to DotEnv comment prefix must be '#'..
+        /// </summary>
+        internal static string Arg_Invalid_DotEnvCommentPrefix {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_DotEnvCommentPrefix", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Comment prefix must be '#' or ';'..
         /// </summary>
         internal static string Arg_Invalid_IniCommentPrefix {
