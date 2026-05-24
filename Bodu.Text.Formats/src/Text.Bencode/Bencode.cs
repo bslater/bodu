@@ -183,6 +183,14 @@ public static partial class Bencode
         {
             Parser parser = new(source, options.MaxDepth);
             value = parser.ParseValue();
+
+            if (options.RequireCompleteDocument && parser.Position != source.Length)
+            {
+                value = null;
+                bytesConsumed = 0;
+                return false;
+            }
+
             bytesConsumed = parser.Position;
             return true;
         }

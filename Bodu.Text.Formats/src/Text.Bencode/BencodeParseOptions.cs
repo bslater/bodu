@@ -72,4 +72,22 @@ public readonly struct BencodeParseOptions
             _maxDepth = value;
         }
     }
+
+    /// <summary>
+    /// Gets a value indicating whether <see cref="Bencode.TryDecode(System.ReadOnlySpan{byte}, BencodeParseOptions, out BencodedValue?, out int)" />
+    /// must consume the entire input.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// The default is <see langword="false" />, which preserves the lenient TryDecode contract: a prefix that
+    /// successfully decodes returns <see langword="true" /> with <c>bytesConsumed</c> set to the prefix length,
+    /// and trailing bytes are silently ignored. Set to <see langword="true" /> to require that the entire source
+    /// is consumed by a single value, mirroring the strict behaviour of
+    /// <see cref="Bencode.Decode(System.ReadOnlySpan{byte})" />.
+    /// </para>
+    /// </remarks>
+    /// <returns>
+    /// <see langword="true" /> if TryDecode must consume the full input; otherwise, <see langword="false" />.
+    /// </returns>
+    public bool RequireCompleteDocument { get; init; }
 }
