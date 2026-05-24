@@ -568,15 +568,28 @@ public static class NotableDateRuleParser
     /// <param name="attributeName">The attribute name carrying the type name.</param>
     /// <returns>The resolved <see cref="Type" />, or <see langword="null" /> if the attribute is absent.</returns>
     /// <exception cref="FormatException">
-    /// The attribute is present but does not resolve to a type assignable to <typeparamref name="TBase" />.
+    /// The attribute is present but does not resolve to a CLR type, or the resolved type is not assignable to
+    /// <typeparamref name="TBase" />.
     /// </exception>
     private static Type? ParseOptionalType<TBase>(XElement element, string attributeName)
     {
         var typeName = GetOptionalAttribute(element, attributeName);
         if (string.IsNullOrWhiteSpace(typeName)) return null;
 
-        var type = Type.GetType(typeName, throwOnError: false);
-        return type is not null && typeof(TBase).IsAssignableFrom(type) ? type : null;
+        Type? type = Type.GetType(typeName, throwOnError: false)
+            ?? throw new FormatException(
+                string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Format_Invalid_TypeName, typeName, attributeName));
+
+        if (!typeof(TBase).IsAssignableFrom(type))
+            throw new FormatException(
+                string.Format(
+                    CultureInfo.InvariantCulture,
+                    CalendarResourceStrings.Format_Invalid_TypeNotAssignable,
+                    typeName,
+                    attributeName,
+                    typeof(TBase).FullName));
+
+        return type;
     }
 
     /// <summary>

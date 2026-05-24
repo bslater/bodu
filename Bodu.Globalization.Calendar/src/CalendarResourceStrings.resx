@@ -138,6 +138,12 @@
   <data name="Format_Invalid_TerritoryCode" xml:space="preserve">
     <value>'{0}' is not a valid ISO 3166-1/3166-2 territory code.</value>
   </data>
+  <data name="Format_Invalid_TypeName" xml:space="preserve">
+    <value>Type '{0}' specified for '{1}' could not be resolved.</value>
+  </data>
+  <data name="Format_Invalid_TypeNotAssignable" xml:space="preserve">
+    <value>Type '{0}' specified for '{1}' must derive from '{2}'.</value>
+  </data>
   <data name="Format_Invalid_XmlSchema" xml:space="preserve">
     <value>Schema validation error: {0}</value>
   </data>

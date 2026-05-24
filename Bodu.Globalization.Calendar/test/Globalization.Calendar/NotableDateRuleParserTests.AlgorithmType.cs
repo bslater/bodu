@@ -40,10 +40,11 @@ public partial class NotableDateRuleParserTests
 
     /// <summary>
     /// Verifies that a <c>type</c> attribute whose value cannot be resolved by <see cref="Type.GetType(string, bool)" />
-    /// leaves <see cref="NotableDateRule.AlgorithmType" /> at <see langword="null" /> (no exception is surfaced).
+    /// throws <see cref="FormatException" /> at parse time. Strict-by-default type resolution surfaces authoring
+    /// errors instead of silently dropping the rule's algorithm CLR type.
     /// </summary>
     [TestMethod]
-    public void ParseXml_WhenAlgorithmTypeIsUnresolvable_ShouldLeaveAlgorithmTypeNull()
+    public void ParseXml_WhenAlgorithmTypeIsUnresolvable_ShouldThrowFormatException()
     {
         const string xml = @"
 			<NotableDates xmlns=""urn:bodu:globalization:calendar"">
@@ -54,17 +55,22 @@ public partial class NotableDateRuleParserTests
 				</NotableDate>
 			</NotableDates>";
 
-        NotableDateRule rule = NotableDateRuleParser.ParseXml(xml).Single();
+        FormatException ex = Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = NotableDateRuleParser.ParseXml(xml);
+        });
 
-        Assert.IsNull(rule.AlgorithmType);
+        Assert.IsTrue(ex.Message.Contains("NonExistent.Phantom.Algorithm", StringComparison.Ordinal));
+        Assert.IsTrue(ex.Message.Contains("type", StringComparison.Ordinal));
     }
 
     /// <summary>
     /// Verifies that a <c>type</c> attribute whose value resolves to a CLR type that does not implement
-    /// <see cref="INotableDateAlgorithm" /> leaves <see cref="NotableDateRule.AlgorithmType" /> at <see langword="null" />.
+    /// <see cref="INotableDateAlgorithm" /> throws <see cref="FormatException" /> at parse time, naming both the
+    /// offending type and the expected contract.
     /// </summary>
     [TestMethod]
-    public void ParseXml_WhenAlgorithmTypeDoesNotImplementContract_ShouldLeaveAlgorithmTypeNull()
+    public void ParseXml_WhenAlgorithmTypeDoesNotImplementContract_ShouldThrowFormatException()
     {
         const string xml = @"
 			<NotableDates xmlns=""urn:bodu:globalization:calendar"">
@@ -75,9 +81,13 @@ public partial class NotableDateRuleParserTests
 				</NotableDate>
 			</NotableDates>";
 
-        NotableDateRule rule = NotableDateRuleParser.ParseXml(xml).Single();
+        FormatException ex = Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = NotableDateRuleParser.ParseXml(xml);
+        });
 
-        Assert.IsNull(rule.AlgorithmType);
+        Assert.IsTrue(ex.Message.Contains("System.String", StringComparison.Ordinal));
+        Assert.IsTrue(ex.Message.Contains("INotableDateAlgorithm", StringComparison.Ordinal));
     }
 
     /// <summary>

@@ -624,12 +624,12 @@ public sealed class CoverageGapFillTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="NotableDateRuleParser" /> tolerates a
-    /// <c>algorithmType</c> attribute that names a type which cannot be resolved at runtime,
-    /// leaving <see cref="NotableDateRule.AlgorithmType" /> <see langword="null" />.
+    /// Verifies that <see cref="NotableDateRuleParser" /> throws <see cref="FormatException" /> when an
+    /// <c>algorithmType</c> attribute names a type that cannot be resolved at runtime. Strict-by-default type
+    /// resolution surfaces authoring errors instead of silently dropping the rule's algorithm type.
     /// </summary>
     [TestMethod]
-    public void ParseXml_WhenAlgorithmTypeNameCannotBeResolved_ShouldLeaveTypeNull()
+    public void ParseXml_WhenAlgorithmTypeNameCannotBeResolved_ShouldThrowFormatException()
     {
         var xml = UseDirectiveNamespaceHeader +
             "  <NotableDate name=\"Missing Type Test\">\n" +
@@ -639,10 +639,10 @@ public sealed class CoverageGapFillTests
             "  </NotableDate>\n" +
             "</NotableDates>";
 
-        NotableDateRule rule = NotableDateRuleParser.ParseXml(xml).Single();
-
-        Assert.IsNull(rule.AlgorithmType);
-        Assert.AreEqual("x", rule.AlgorithmKey);
+        Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = NotableDateRuleParser.ParseXml(xml);
+        });
     }
 
     // ---------------------------------------------------------------------------------
