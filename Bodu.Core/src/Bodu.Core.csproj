@@ -15,32 +15,7 @@
     <PropertyGroup Condition="'$(AllowUnsafeBlocks)' == 'true'">
         <DefineConstants>$(DefineConstants);ALLOW_UNSAFE</DefineConstants>
     </PropertyGroup>
-    
-    <!-- Exclude files that are not supported in .NET Standard 2.0 -->
-    <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-        <Compile Remove="Buffers\PooledBufferBuilder*.cs" />
-    </ItemGroup>
-    
-    <!-- Exclude files that are not supported in .NET Standard -->
-    <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' Or '$(TargetFramework)' == 'netstandard2.1'">
-        <Compile Remove="Extensions\DateOnly*.cs" />
-    </ItemGroup>
-    <!--
-    ThrowHelper is split across domain-grouped partial files (Array, Span, String, …) and
-    each domain has a CallerArgumentExpression variant and a NetStandard variant:
-      - ThrowHelper.<Domain>.NetStandard.cs       : compiled for netstandard2.0 and netstandard2.1,
-                                                    where CallerArgumentExpressionAttribute is unavailable.
-      - ThrowHelper.<Domain>.CallerExpression.cs  : compiled for all other targets (net5.0+),
-                                                    where CallerArgumentExpressionAttribute is supported.
-    The wildcards keep new <Domain> partials picked up automatically.
-    -->
-    <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' Or '$(TargetFramework)' == 'netstandard2.1'">
-        <Compile Remove="ThrowHelper.*-CallerExpression.cs" />
-    </ItemGroup>
-    <ItemGroup Condition="'$(TargetFramework)' != 'netstandard2.0' And '$(TargetFramework)' != 'netstandard2.1'">
-        <Compile Remove="ThrowHelper.*-NetStandard.cs" />
-    </ItemGroup>
-    
+
     <ItemGroup>
         <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
             <_Parameter1>Bodu.CoreLib.Test</_Parameter1>
