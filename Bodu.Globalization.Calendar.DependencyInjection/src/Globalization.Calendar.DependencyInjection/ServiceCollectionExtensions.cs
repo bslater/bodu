@@ -94,7 +94,7 @@ public static class ServiceCollectionExtensions
         string sectionName = DefaultConfigurationSection)
     {
         ThrowHelper.ThrowIfNull(services);
-        if (string.IsNullOrWhiteSpace(sectionName)) throw new ArgumentException("Section name must not be blank.", nameof(sectionName));
+        ThrowHelper.ThrowIfNullOrWhiteSpace(sectionName);
 
         services.AddOptions();
 

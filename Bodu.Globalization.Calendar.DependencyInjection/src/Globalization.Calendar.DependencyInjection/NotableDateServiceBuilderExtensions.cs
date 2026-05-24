@@ -151,7 +151,7 @@ public static class NotableDateServiceBuilderExtensions
 
         foreach (INotableDateRuleProvider provider in providers)
         {
-            if (provider is null) throw new ArgumentException("Provider sequence must not contain null elements.", nameof(providers));
+            if (provider is null) throw new ArgumentException(DependencyInjectionResourceStrings.Arg_Invalid_ProviderSequenceContainsNullElement, nameof(providers));
             builder.Services.AddSingleton(provider);
         }
 

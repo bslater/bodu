@@ -131,8 +131,7 @@ public sealed class MutableNotableDateRuleOverrideProvider : INotableDateRuleOve
     /// </remarks>
     public void RemoveRule(string name, int? fromYear = null, int? toYear = null, string? territoryCode = null)
     {
-        ThrowHelper.ThrowIfNull(name);
-        if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("Rule name must not be blank.", nameof(name));
+        ThrowHelper.ThrowIfNullOrWhiteSpace(name);
 
         RuleRemoval removal = new(name, fromYear, toYear, territoryCode);
 
