@@ -123,4 +123,19 @@ public partial class CrcLookupTableCacheTests
         Assert.AreEqual("size", ex.ParamName);
     }
 
+    /// <summary>
+    /// Verifies that the public <see cref="CrcLookupTableCache.GetLookupTable" /> return type is
+    /// <see cref="ReadOnlyMemory{T}" /> of <see cref="ulong" />, so callers receive an immutable view of the
+    /// shared cached table rather than a mutable array reference.
+    /// </summary>
+    [TestMethod]
+    public void GetLookupTable_ReturnType_ShouldBeReadOnlyMemoryOfUlong()
+    {
+        System.Reflection.MethodInfo? method = typeof(CrcLookupTableCache)
+            .GetMethod(nameof(CrcLookupTableCache.GetLookupTable), [typeof(int), typeof(ulong), typeof(bool)]);
+
+        Assert.IsNotNull(method);
+        Assert.AreEqual(typeof(ReadOnlyMemory<ulong>), method!.ReturnType);
+    }
+
 }
