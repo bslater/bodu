@@ -16,6 +16,15 @@
         <DefineConstants>$(DefineConstants);ALLOW_UNSAFE</DefineConstants>
     </PropertyGroup>
 
+    <!--
+      InternalsVisibleTo grants — every entry below was audited and is currently in use:
+        - Bodu.CoreLib.Test            : test project (ConcurrentHashSet internal ctor, ClampDefaultConcurrencyLevel,
+                                         XorShiftRandom ScaleToUnitInterval / BoundedNextUInt32 helpers, etc.).
+        - Bodu.Globalization.Calendar  : DateTimeExtensions.TicksPerDay.
+        - Bodu.Security.Cryptography   : RotateBitsRightUnchecked numeric extensions.
+        - Bodu.IO.Hashing              : ResourceStrings, RotateBitsRightUnchecked.
+      Drop an entry only after a fresh `dotnet build` of the corresponding sibling confirms no internal use.
+    -->
     <ItemGroup>
         <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
             <_Parameter1>Bodu.CoreLib.Test</_Parameter1>
