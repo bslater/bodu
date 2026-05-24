@@ -99,6 +99,12 @@ public sealed partial class Blake3
     private const int ChunkSize = 1024;
 
     /// <summary>
+    /// Maximum possible depth of the chaining-value stack. BLAKE3 supports up to <c>2^54</c> chunks per message, so the
+    /// Merkle tree height is bounded at 54 — any well-formed input fits within this bound.
+    /// </summary>
+    private const int MaxCvStackDepth = 54;
+
+    /// <summary>
     /// The flag applied to the last compression block of every chunk.
     /// </summary>
     private const uint FlagChunkEnd = 2u;
@@ -166,9 +172,23 @@ public sealed partial class Blake3
     private readonly uint[] _chunkCv = new uint[8];
 
     /// <summary>
-    /// Chaining-value stack used to build parent nodes as chunks complete.
+    /// Chaining-value stack used to build parent nodes as chunks complete. Laid out as a flat 8-word slice per level,
+    /// indexed by <see cref="_cvStackDepth" />, so per-level pushes and merges run without per-level array allocations.
     /// </summary>
-    private readonly List<uint[]> _cvStack = [];
+    private readonly uint[] _cvStack = new uint[MaxCvStackDepth * 8];
+
+    /// <summary>
+    /// Current depth of <see cref="_cvStack" /> — the number of 8-word CV slices currently live, with the active top
+    /// slice occupying words <c>[(_cvStackDepth - 1) * 8, _cvStackDepth * 8)</c> when non-zero.
+    /// </summary>
+    private int _cvStackDepth;
+
+    /// <summary>
+    /// Pre-allocated 16-word scratch buffer used by <see cref="ParentCv" /> to assemble the concatenation of a left and
+    /// a right child chaining value before invoking <see cref="Compress" />. Reusing this field removes the per-call
+    /// <c>uint[16]</c> allocation that would otherwise occur at every tree-merge step.
+    /// </summary>
+    private readonly uint[] _parentBlockWords = new uint[16];
 
     // ---- construction ----
 
@@ -222,7 +242,8 @@ public sealed partial class Blake3
     public override void Initialize()
     {
         base.Initialize();
-        _cvStack.Clear();
+        CryptoHelpers.Clear(_cvStack);
+        _cvStackDepth = 0;
         s_iv.CopyTo(_chunkCv, 0);
     }
 
@@ -241,14 +262,12 @@ public sealed partial class Blake3
 
         if (disposing)
         {
-            // List<T>.Clear only drops references; the stored uint[] entries retain their per-subtree
-            // chaining values (derived from message bytes and, in keyed mode, from the key). Zero each
-            // array before clearing the list so the secret-derived state does not survive in heap memory
-            // until the GC collects it.
-            for (var i = 0; i < _cvStack.Count; i++)
-                CryptoHelpers.Clear(_cvStack[i]);
-            _cvStack.Clear();
+            // Zero the flat CV stack buffer in one call so the secret-derived chaining values produced during
+            // streaming do not survive in heap memory until the GC collects.
+            CryptoHelpers.Clear(_cvStack);
+            _cvStackDepth = 0;
 
+            CryptoHelpers.Clear(_parentBlockWords);
             CryptoHelpers.Clear(_chunkCv);
         }
 
@@ -307,7 +326,7 @@ public sealed partial class Blake3
         // FlagRoot is applied on the final block only when no earlier chunks exist on the stack,
         // meaning this is the sole chunk and therefore the root.  For multi-chunk inputs the root
         // merge is deferred to ProcessFinalBlock so that FlagRoot lands on the final parent compression.
-        if (isFinal && _cvStack.Count == 0) flags |= FlagRoot;
+        if (isFinal && _cvStackDepth == 0) flags |= FlagRoot;
 
         var blockWords = ReadBlockWords(block);
         var state = Compress(_chunkCv, blockWords, chunkIndex, blockLen, flags);
@@ -316,8 +335,10 @@ public sealed partial class Blake3
             _chunkCv[i] = state[i];
 
         // Completed non-final chunks are pushed to the stack for pairwise tree merging.
+        // PushChunkCv copies the CV into its merge buffer immediately, so the caller's _chunkCv may be reused for the
+        // next chunk without cloning.
         if (isLastBlock && !isFinal)
-            PushChunkCv((uint[])_chunkCv.Clone(), chunkIndex);
+            PushChunkCv(_chunkCv, chunkIndex);
     }
 
     /// <inheritdoc />
@@ -329,9 +350,12 @@ public sealed partial class Blake3
     /// </remarks>
     protected override byte[] ProcessFinalBlock()
     {
-        var rootCv = _cvStack.Count == 0
-            ? _chunkCv
-            : MergeStackWithFinalChunk(_chunkCv);
+        Span<uint> rootCv = stackalloc uint[8];
+
+        if (_cvStackDepth == 0)
+            _chunkCv.AsSpan(0, 8).CopyTo(rootCv);
+        else
+            MergeStackWithFinalChunk(_chunkCv, rootCv);
 
         var digest = new byte[OutLen];
 
@@ -453,28 +477,8 @@ public sealed partial class Blake3
     }
 
     /// <summary>
-    /// Determines whether the subtrees currently on the stack and the newly completed chunk should be merged, based on
-    /// the binary tree completion invariant.
-    /// </summary>
-    /// <param name="chunkIdx">The zero-based index of the most recently completed chunk.</param>
-    /// <param name="stackDepth">The current depth of <see cref="_cvStack" />.</param>
-    /// <returns>
-    /// <see langword="true" /> if the top entry on the stack represents a subtree of exactly the same height as the
-    /// subtree rooted at the incoming CV, and therefore the two should be merged into a parent node.
-    /// </returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static bool IsSubtreeComplete(ulong chunkIdx, int stackDepth)
-    {
-        // The number of trailing zeros in (chunkIdx + 1) reflects how many full subtree levels
-        // are complete at this point.  Merge whenever that count meets or exceeds the stack depth.
-        var completed = chunkIdx + 1;
-        var trailingZeros = System.Numerics.BitOperations.TrailingZeroCount(completed);
-        return trailingZeros >= stackDepth;
-    }
-
-    /// <summary>
     /// Computes a parent node chaining value by compressing the concatenation of a left and a right child chaining
-    /// value.
+    /// value, writing the 8-word result into <paramref name="output" />.
     /// </summary>
     /// <param name="leftCv">The 8-word chaining value of the left child.</param>
     /// <param name="rightCv">The 8-word chaining value of the right child.</param>
@@ -482,13 +486,18 @@ public sealed partial class Blake3
     /// <see langword="true" /> if this parent node is the root of the hash tree, causing <see cref="FlagRoot" /> to be
     /// applied.
     /// </param>
-    /// <returns>An 8-element array containing the parent node's 256-bit chaining value.</returns>
-    private static uint[] ParentCv(uint[] leftCv, uint[] rightCv, bool isRoot)
+    /// <param name="output">Destination for the resulting 8-word parent chaining value. Must have a length of at least 8.</param>
+    /// <remarks>
+    /// Both inputs are copied into <see cref="_parentBlockWords" /> before any write to <paramref name="output" />, so
+    /// callers may safely alias <paramref name="rightCv" /> with <paramref name="output" /> to fold tree levels in place
+    /// without an intermediate buffer.
+    /// </remarks>
+    private void ParentCv(ReadOnlySpan<uint> leftCv, ReadOnlySpan<uint> rightCv, bool isRoot, Span<uint> output)
     {
-        // The block words for a parent node are the concatenation of the two child CVs.
-        var blockWords = new uint[16];
-        leftCv.AsSpan(0, 8).CopyTo(blockWords.AsSpan(0));
-        rightCv.AsSpan(0, 8).CopyTo(blockWords.AsSpan(8));
+        // Materialise both children into the scratch field BEFORE writing the output span. This is what makes the
+        // (rightCv, output) aliasing in PushChunkCv / MergeStackWithFinalChunk safe.
+        leftCv.CopyTo(_parentBlockWords.AsSpan(0, 8));
+        rightCv.CopyTo(_parentBlockWords.AsSpan(8, 8));
 
         var flags = FlagParent;
 
@@ -496,9 +505,9 @@ public sealed partial class Blake3
             flags |= FlagRoot;
 
         // Parent nodes always use the IV as their chaining value input, counter = 0.
-        var outState = Compress(s_iv, blockWords, 0UL, BlockSize, flags);
+        var outState = Compress(s_iv, _parentBlockWords, 0UL, BlockSize, flags);
 
-        return [outState[0], outState[1], outState[2], outState[3], outState[4], outState[5], outState[6], outState[7]];
+        outState.AsSpan(0, 8).CopyTo(output);
     }
 
     // ---- block and parent processing ----
@@ -524,14 +533,14 @@ public sealed partial class Blake3
     }
 
     /// <summary>
-    /// Merges the completed intermediate chunk stack with the final chunk chaining value and returns the root chaining
-    /// value.
+    /// Merges the completed intermediate chunk stack with the final chunk chaining value and writes the resulting root
+    /// chaining value into <paramref name="output" />.
     /// </summary>
     /// <param name="rightCv">
     /// The chaining value of the final chunk. This value is kept out of <see cref="_cvStack" /> until finalization so
     /// the last parent merge can be marked with <see cref="FlagRoot" />.
     /// </param>
-    /// <returns>An 8-element array containing the 256-bit root chaining value of the complete message.</returns>
+    /// <param name="output">Destination for the 8-word root chaining value. Must have a length of at least 8.</param>
     /// <remarks>
     /// <para>
     /// Intermediate chunks may already have been folded into balanced subtrees on <see cref="_cvStack" />. Finalization
@@ -540,51 +549,72 @@ public sealed partial class Blake3
     /// compression.
     /// </para>
     /// </remarks>
-    private uint[] MergeStackWithFinalChunk(uint[] rightCv)
+    private void MergeStackWithFinalChunk(ReadOnlySpan<uint> rightCv, Span<uint> output)
     {
-        var cv = rightCv;
+        Span<uint> working = stackalloc uint[8];
+        rightCv[..8].CopyTo(working);
 
-        while (_cvStack.Count > 0)
+        while (_cvStackDepth > 0)
         {
-            var lastIdx = _cvStack.Count - 1;
+            _cvStackDepth--;
+            ReadOnlySpan<uint> leftCv = _cvStack.AsSpan(_cvStackDepth * 8, 8);
 
-            var leftCv = _cvStack[lastIdx];
-            _cvStack.RemoveAt(lastIdx);
-
-            var isRoot = _cvStack.Count == 0;
-            cv = ParentCv(leftCv, cv, isRoot);
+            var isRoot = _cvStackDepth == 0;
+            ParentCv(leftCv, working, isRoot, working);
         }
 
-        return cv;
+        working.CopyTo(output);
     }
 
     // ---- tree-merging stack helpers ----
 
     /// <summary>
-    /// Pushes a completed chunk chaining value onto <see cref="_cvStack" />, merging adjacent pairs into parent nodes
-    /// whenever the binary tree structure requires it.
+    /// Pushes a completed chunk chaining value onto <see cref="_cvStack" />, folding the top of the stack into the
+    /// incoming CV whenever a balanced subtree boundary completes at this chunk.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// BLAKE3 uses a Merkle tree with a power-of-two fan-out. The merge condition is: after completing chunk at
-    /// zero-based index <paramref name="chunkIdx" />, merge the top-of-stack entry with the incoming CV while the
-    /// number of trailing zeros in <c>(<paramref name="chunkIdx"/> + 1)</c> is greater than or equal to the current
-    /// stack depth. This ensures that only perfectly balanced subtrees of equal height are merged, maintaining the
-    /// left-to-right ordering of leaves.
+    /// Implements the BLAKE3 push-chunk-chaining-value step from §2.1 of the specification. After completing the chunk
+    /// at zero-based index <paramref name="chunkIdx" /> the total chunk count is <c>(<paramref name="chunkIdx" /> + 1)</c>;
+    /// the algorithm folds one tree level into the incoming CV for each trailing zero bit of that count. Each trailing
+    /// zero indicates a balanced subtree of the corresponding height has just been completed, so the top stack entry
+    /// (its left sibling) is popped and merged with the incoming CV via <see cref="ParentCv" />.
+    /// </para>
+    /// <para>
+    /// After this step the live stack depth equals <c>popcount(<paramref name="chunkIdx"/> + 1)</c>, which is bounded
+    /// at <see cref="MaxCvStackDepth" /> for any well-formed BLAKE3 input.
     /// </para>
     /// </remarks>
     /// <param name="cv">The 8-word chaining value produced by the completed chunk.</param>
     /// <param name="chunkIdx">The zero-based chunk index of the completed chunk.</param>
-    private void PushChunkCv(uint[] cv, ulong chunkIdx)
+    /// <exception cref="InvalidOperationException">
+    /// The stack already holds <see cref="MaxCvStackDepth" /> live levels. This is unreachable for any well-formed
+    /// BLAKE3 input (which is bounded at <c>2^54</c> chunks) and indicates a corrupted streaming state.
+    /// </exception>
+    private void PushChunkCv(ReadOnlySpan<uint> cv, ulong chunkIdx)
     {
-        // Merge while the top-of-stack subtree and the incoming CV form a balanced pair.
-        while (_cvStack.Count > 0 && IsSubtreeComplete(chunkIdx, _cvStack.Count))
+        // Fold the incoming CV into a stack-local working buffer so we can merge in place without allocating an array
+        // per tree level.
+        Span<uint> working = stackalloc uint[8];
+        cv[..8].CopyTo(working);
+
+        // BLAKE3 specifies merging one level for every trailing zero of the post-completion chunk count: each such bit
+        // marks a balanced subtree boundary completing at this chunk.
+        var completed = chunkIdx + 1;
+        var mergeCount = System.Numerics.BitOperations.TrailingZeroCount(completed);
+
+        for (var i = 0; i < mergeCount; i++)
         {
-            var left = _cvStack[^1];
-            _cvStack.RemoveAt(_cvStack.Count - 1);
-            cv = ParentCv(left, cv, isRoot: false);
+            _cvStackDepth--;
+            ReadOnlySpan<uint> left = _cvStack.AsSpan(_cvStackDepth * 8, 8);
+            ParentCv(left, working, isRoot: false, working);
         }
 
-        _cvStack.Add(cv);
+        if (_cvStackDepth >= MaxCvStackDepth)
+            throw new InvalidOperationException(
+                $"BLAKE3 CV stack exceeded its {MaxCvStackDepth}-level maximum tree depth.");
+
+        working.CopyTo(_cvStack.AsSpan(_cvStackDepth * 8, 8));
+        _cvStackDepth++;
     }
 }

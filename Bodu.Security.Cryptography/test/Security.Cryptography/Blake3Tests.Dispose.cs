@@ -4,21 +4,20 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Collections;
 using System.Reflection;
 
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Verifies that <see cref="Blake3.Dispose(bool)" /> clears every per-subtree chaining value held in the
-/// <c>_cvStack</c> rather than just dropping the list container's references.
+/// <c>_cvStack</c> rather than leaving the secret-derived state in heap memory.
 /// </summary>
 public partial class Blake3Tests
 {
     /// <summary>
     /// Verifies that disposing a <see cref="Blake3" /> instance which accumulated chaining values across more
-    /// than one chunk overwrites the contents of every <c>uint[]</c> stored on <c>_cvStack</c> before the list
-    /// itself is cleared. Without this guarantee, the per-chunk chaining values — which are derived from the
+    /// than one chunk overwrites every live word of the <c>_cvStack</c> backing buffer and resets the depth
+    /// counter to zero. Without this guarantee, the per-chunk chaining values — which are derived from the
     /// message and (for keyed hashing) from the key — survive in heap memory until the GC collects them.
     /// </summary>
     [TestMethod]
@@ -33,20 +32,23 @@ public partial class Blake3Tests
         hasher.TransformBlock(input, 0, input.Length, null, 0);
 
         FieldInfo? cvStackField = typeof(Blake3).GetField("_cvStack", BindingFlags.Instance | BindingFlags.NonPublic);
+        FieldInfo? cvStackDepthField = typeof(Blake3).GetField("_cvStackDepth", BindingFlags.Instance | BindingFlags.NonPublic);
         Assert.IsNotNull(cvStackField, "Blake3._cvStack field must exist for this contract test.");
+        Assert.IsNotNull(cvStackDepthField, "Blake3._cvStackDepth field must exist for this contract test.");
 
-        IList stack = (IList)cvStackField.GetValue(hasher)!;
-        Assert.IsTrue(stack.Count > 0, "Precondition: hashing 2049 bytes should push at least one chunk CV.");
-
-        // Capture a strong reference to one of the stored arrays so it survives the list-clear in Dispose,
-        // letting the test inspect its contents after disposal.
-        uint[] capturedCv = (uint[])stack[0]!;
-        Assert.IsTrue(Array.Exists(capturedCv, v => v != 0),
-            "Precondition: stored chunk CV should be non-zero before Dispose.");
+        // _cvStack is a readonly flat uint[] buffer; capturing the reference now lets us inspect its contents
+        // after Dispose because the reference itself is stable across disposal.
+        uint[] stackBuffer = (uint[])cvStackField.GetValue(hasher)!;
+        int depthBeforeDispose = (int)cvStackDepthField.GetValue(hasher)!;
+        Assert.IsTrue(depthBeforeDispose > 0, "Precondition: hashing 2049 bytes should push at least one chunk CV.");
+        Assert.IsTrue(Array.Exists(stackBuffer, v => v != 0),
+            "Precondition: stack buffer should hold non-zero chaining values before Dispose.");
 
         hasher.Dispose();
 
-        Assert.IsTrue(Array.TrueForAll(capturedCv, v => v == 0),
-            "Dispose must zero the contents of every CV array on _cvStack, not just clear the list container.");
+        Assert.IsTrue(Array.TrueForAll(stackBuffer, v => v == 0),
+            "Dispose must zero every word of the _cvStack backing buffer so secret-derived state does not survive in heap memory.");
+        Assert.AreEqual(0, (int)cvStackDepthField.GetValue(hasher)!,
+            "Dispose must reset _cvStackDepth so a reused instance starts from an empty stack.");
     }
 }
