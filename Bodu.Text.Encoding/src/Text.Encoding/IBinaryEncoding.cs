@@ -98,6 +98,12 @@ public interface IBinaryEncoding
     /// <see langword="true" /> when the destination is large enough and the input is valid; otherwise
     /// <see langword="false" />.
     /// </returns>
+    /// <remarks>
+    /// On failure <paramref name="bytesWritten" /> is set to zero and the contents of
+    /// <paramref name="destination" /> are unspecified — the BCL convention shared with
+    /// <see cref="System.Convert.TryFromBase64Chars(System.ReadOnlySpan{char}, System.Span{byte}, out int)" />.
+    /// Callers must not rely on any partial bytes that may have been written before the failure was detected.
+    /// </remarks>
     bool TryDecode(ReadOnlySpan<char> source, Span<byte> destination, out int bytesWritten);
 
     /// <summary>
