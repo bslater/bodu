@@ -13,10 +13,9 @@ namespace Bodu.Globalization.Calendar.RangeResolution;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The pipeline is the prototype replacement for <see cref="NotableDateResolutionEngine" /> and
-/// <see cref="NotableDateResolutionAdjustmentProcessor" />. It is intentionally implemented as a single class so the
-/// four tiers and the adjustment phase are visible together; production code may decompose this into separate
-/// processors.
+/// The pipeline is the canonical resolution path reached through <see cref="NotableDateService.ResolveNotableDatesInRange" />
+/// and the adapted <c>GetNotableDates</c> overloads. It is intentionally implemented as a single class so the four
+/// tiers and the adjustment phase are visible together; production code may decompose this into separate processors.
 /// </para>
 /// <para>
 /// Tiered processing order (each tier reads from the cache populated by earlier tiers):
