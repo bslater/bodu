@@ -299,7 +299,7 @@ public sealed partial class ConcurrentHashSet<T>
     /// </para>
     /// <para>
     /// Use this property when the answer must reflect a true snapshot — for example, before tearing down the set
-    /// or before publishing a "set is drained" event. Prefer <see cref="IsEmptySnapshot" /> when callers need a
+    /// or before publishing a "set is drained" event. Prefer <see cref="IsEmptyApproximate" /> when callers need a
     /// fast, lock-free probe and can tolerate a momentary disagreement with reality under concurrent mutation.
     /// </para>
     /// </remarks>
@@ -369,8 +369,8 @@ public sealed partial class ConcurrentHashSet<T>
 
     /// <summary>
     /// Gets an <strong>approximate</strong> indication of whether the set is empty, computed without acquiring
-    /// any stripe lock. The "Snapshot" suffix denotes a lock-free probe of the per-stripe counters, not a
-    /// guarantee of point-in-time consistency.
+    /// any stripe lock. The "Approximate" suffix matches <see cref="ApproximateCount" /> and signals that the
+    /// answer may briefly disagree with reality under concurrent mutation.
     /// </summary>
     /// <returns>
     /// <see langword="true" /> when every per-stripe counter reads as zero at the moment of inspection; otherwise
@@ -384,7 +384,7 @@ public sealed partial class ConcurrentHashSet<T>
     /// <see cref="IsEmpty" /> when the answer must reflect a true point-in-time snapshot — for example, before
     /// tearing down the set.
     /// </remarks>
-    public bool IsEmptySnapshot
+    public bool IsEmptyApproximate
     {
         get
         {
