@@ -125,7 +125,24 @@ public sealed class XorShiftRandom :
     }
 
     /// <inheritdoc />
-    public override double NextDouble() => NextUInt32() / (double)uint.MaxValue;
+    public override double NextDouble() => ScaleToUnitInterval(NextUInt32());
+
+    /// <summary>
+    /// Scales a 32-bit unsigned random value into the half-open unit interval [0.0, 1.0).
+    /// </summary>
+    /// <param name="value">The raw 32-bit pseudo-random value to scale.</param>
+    /// <returns>
+    /// A double-precision value in the range [0.0, 1.0). The upper bound is excluded — when
+    /// <paramref name="value" /> is <see cref="uint.MaxValue" /> the result is strictly less than 1.0.
+    /// </returns>
+    /// <remarks>
+    /// Multiplies by <c>1 / 2^32</c> rather than dividing by <see cref="uint.MaxValue" />. Dividing by
+    /// <see cref="uint.MaxValue" /> yields exactly 1.0 for the largest input, which would violate the
+    /// <see cref="System.Random.NextDouble" /> contract of <c>[0.0, 1.0)</c>.
+    /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static double ScaleToUnitInterval(uint value) =>
+        value * (1.0 / 4294967296.0);
 
     /// <summary>
     /// Generates the next 32-bit random number using XOR-shift algorithm.
