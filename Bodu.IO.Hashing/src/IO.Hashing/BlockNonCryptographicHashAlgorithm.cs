@@ -243,6 +243,10 @@ public abstract class BlockNonCryptographicHashAlgorithm<T>
             }
             else
             {
+                if (finalBlock.Length % snapshot.BlockSizeBytes != 0)
+                    throw new InvalidOperationException(
+                        $"{nameof(PadBlock)} returned {finalBlock.Length} bytes, which is not a multiple of {nameof(BlockSizeBytes)} ({snapshot.BlockSizeBytes}). Override {nameof(AllowUnalignedFinalBlock)} to permit a non-aligned final block.");
+
                 for (var i = 0; i < finalBlock.Length; i += snapshot.BlockSizeBytes)
                     snapshot.ProcessBlock(finalBlock.AsSpan(i, snapshot.BlockSizeBytes));
             }
