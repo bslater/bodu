@@ -198,6 +198,9 @@
   <data name="Format_Invalid_BencodeUnorderedDictionaryKeys" xml:space="preserve">
     <value>Bencoded dictionary keys must be unique and sorted by raw byte order.</value>
   </data>
+  <data name="Format_Invalid_BencodeNestingTooDeep" xml:space="preserve">
+    <value>Bencoded value nesting exceeds the maximum permitted depth of {0}.</value>
+  </data>
   <data name="Format_Invalid_BencodeUnterminatedDictionary" xml:space="preserve">
     <value>Unterminated bencoded dictionary.</value>
   </data>

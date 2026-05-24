@@ -75,20 +75,37 @@ public static partial class Bencode
     private const byte MinusSign = (byte)'-';
     private const byte StringLengthSeparator = (byte)':';
 
+    private static readonly CompositeFormat s_nestingTooDeep =
+        CompositeFormat.Parse(FormatsResourceStrings.Format_Invalid_BencodeNestingTooDeep);
+
     private static readonly CompositeFormat s_unexpectedToken =
         CompositeFormat.Parse(FormatsResourceStrings.Format_Invalid_BencodeUnexpectedToken);
 
     /// <summary>
-    /// Decodes a complete bencoded document.
+    /// Decodes a complete bencoded document under the default parsing options.
     /// </summary>
     /// <param name="source">The bencoded source bytes.</param>
     /// <returns>The decoded value.</returns>
     /// <exception cref="BencodeFormatException">
-    /// Thrown when <paramref name="source" /> is malformed or contains trailing bytes.
+    /// Thrown when <paramref name="source" /> is malformed, contains trailing bytes, or nests more deeply than
+    /// <see cref="BencodeParseOptions.DefaultMaxDepth" />.
     /// </exception>
-    public static BencodedValue Decode(ReadOnlySpan<byte> source)
+    public static BencodedValue Decode(ReadOnlySpan<byte> source) =>
+        Decode(source, BencodeParseOptions.Default);
+
+    /// <summary>
+    /// Decodes a complete bencoded document using the supplied parsing options.
+    /// </summary>
+    /// <param name="source">The bencoded source bytes.</param>
+    /// <param name="options">Options that control parsing policy, including the maximum permitted nesting depth.</param>
+    /// <returns>The decoded value.</returns>
+    /// <exception cref="BencodeFormatException">
+    /// Thrown when <paramref name="source" /> is malformed, contains trailing bytes, or nests more deeply than
+    /// <see cref="BencodeParseOptions.MaxDepth" />.
+    /// </exception>
+    public static BencodedValue Decode(ReadOnlySpan<byte> source, BencodeParseOptions options)
     {
-        Parser parser = new(source);
+        Parser parser = new(source, options.MaxDepth);
         BencodedValue value = parser.ParseValue();
 
         if (parser.Position != source.Length)
@@ -145,11 +162,26 @@ public static partial class Bencode
     public static bool TryDecode(
         ReadOnlySpan<byte> source,
         [NotNullWhen(true)] out BencodedValue? value,
+        out int bytesConsumed) =>
+        TryDecode(source, BencodeParseOptions.Default, out value, out bytesConsumed);
+
+    /// <summary>
+    /// Attempts to decode a single bencoded value under the supplied parsing options.
+    /// </summary>
+    /// <param name="source">The bencoded source bytes.</param>
+    /// <param name="options">Options that control parsing policy.</param>
+    /// <param name="value">When this method returns, contains the decoded value, when successful.</param>
+    /// <param name="bytesConsumed">When this method returns, contains the number of bytes consumed.</param>
+    /// <returns><see langword="true" /> when a value was decoded; otherwise, <see langword="false" />.</returns>
+    public static bool TryDecode(
+        ReadOnlySpan<byte> source,
+        BencodeParseOptions options,
+        [NotNullWhen(true)] out BencodedValue? value,
         out int bytesConsumed)
     {
         try
         {
-            Parser parser = new(source);
+            Parser parser = new(source, options.MaxDepth);
             value = parser.ParseValue();
             bytesConsumed = parser.Position;
             return true;
@@ -336,10 +368,14 @@ public static partial class Bencode
     private ref struct Parser
     {
         private readonly ReadOnlySpan<byte> _source;
+        private readonly int _maxDepth;
+        private int _depth;
 
-        public Parser(ReadOnlySpan<byte> source)
+        public Parser(ReadOnlySpan<byte> source, int maxDepth)
         {
             this._source = source;
+            this._maxDepth = maxDepth;
+            this._depth = 0;
             Position = 0;
         }
 
@@ -366,8 +402,18 @@ public static partial class Bencode
             }
         }
 
+        private void EnterContainer()
+        {
+            _depth++;
+
+            if (_depth > _maxDepth)
+                throw new BencodeFormatException(
+                    string.Format(CultureInfo.InvariantCulture, s_nestingTooDeep, _maxDepth));
+        }
+
         private BencodedDictionary ParseDictionary()
         {
+            EnterContainer();
             Position++;
 
             List<KeyValuePair<BencodedString, BencodedValue>> values = new();
@@ -381,6 +427,7 @@ public static partial class Bencode
                 if (_source[Position] == EndMarker)
                 {
                     Position++;
+                    _depth--;
                     return new BencodedDictionary(values);
                 }
 
@@ -458,6 +505,7 @@ public static partial class Bencode
 
         private BencodedList ParseList()
         {
+            EnterContainer();
             Position++;
 
             List<BencodedValue> values = new();
@@ -470,6 +518,7 @@ public static partial class Bencode
                 if (_source[Position] == EndMarker)
                 {
                     Position++;
+                    _depth--;
                     return new BencodedList(values);
                 }
 

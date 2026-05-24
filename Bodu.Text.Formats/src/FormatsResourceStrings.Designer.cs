@@ -304,6 +304,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Bencoded value nesting exceeds the maximum permitted depth of {0}..
+        /// </summary>
+        internal static string Format_Invalid_BencodeNestingTooDeep {
+            get {
+                return ResourceManager.GetString("Format_Invalid_BencodeNestingTooDeep", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Unterminated bencoded dictionary..
         /// </summary>
         internal static string Format_Invalid_BencodeUnterminatedDictionary {
