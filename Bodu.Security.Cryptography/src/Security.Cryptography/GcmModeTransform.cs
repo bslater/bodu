@@ -57,6 +57,15 @@ namespace Bodu.Security.Cryptography;
 /// with the caller.
 /// </para>
 /// <para>
+/// <strong>Length limits.</strong> SP 800-38D §5.2.1.1 caps the plaintext at <c>2³⁹ − 256</c> bits (≈ 64 GiB) and the
+/// associated data at <c>2⁶⁴ − 1</c> bits per <c>(key, nonce)</c> pair. Both limits are structurally enforced by this
+/// implementation: <see cref="Encrypt" /> / <see cref="Decrypt" /> / <see cref="ProcessAssociatedData" /> accept
+/// <see cref="ReadOnlySpan{Byte}" /> inputs whose length is bounded by <see cref="int.MaxValue" /> (≈ 2 GiB), which
+/// sits far below either spec ceiling. The 32-bit counter is additionally guarded against wrapping past
+/// <c>0xFFFFFFFF</c> — see the <c>Encrypt_WhenCounterWouldWrapPast0xFFFFFFFF</c> test for the boundary case reached
+/// via the test-only constructor.
+/// </para>
+/// <para>
 /// <strong>When to use GCM.</strong> The default modern AEAD mode — single-pass, parallelisable, and
 /// hardware-accelerated on AES-NI / PCLMULQDQ. The cost is fragility under nonce reuse: a single repeated
 /// <c>(key, nonce)</c> pair leaks the GHASH subkey and forfeits authentication forever. For nonce-misuse resistance
