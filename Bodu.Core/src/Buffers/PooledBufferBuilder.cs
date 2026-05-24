@@ -184,7 +184,7 @@ public sealed class PooledBufferBuilder<T> :
     public void Append(T item)
     {
         ThrowIfDisposed();
-        GrowIfNeeded(_count + 1);
+        GrowIfNeeded(checked(_count + 1));
         _internalBuffer[_count++] = item;
     }
 
@@ -208,7 +208,7 @@ public sealed class PooledBufferBuilder<T> :
 
         if (source is ICollection<T> col)
         {
-            GrowIfNeeded(_count + col.Count);
+            GrowIfNeeded(checked(_count + col.Count));
             col.CopyTo(_internalBuffer, _count);
             _count += col.Count;
             return;
@@ -216,7 +216,7 @@ public sealed class PooledBufferBuilder<T> :
 
         foreach (T item in source)
         {
-            GrowIfNeeded(_count + 1);
+            GrowIfNeeded(checked(_count + 1));
             _internalBuffer[_count++] = item;
         }
     }
@@ -230,7 +230,7 @@ public sealed class PooledBufferBuilder<T> :
     public void AppendRange(ReadOnlySpan<T> source)
     {
         ThrowIfDisposed();
-        GrowIfNeeded(_count + source.Length);
+        GrowIfNeeded(checked(_count + source.Length));
         source.CopyTo(_internalBuffer.AsSpan(_count));
         _count += source.Length;
     }
@@ -276,7 +276,7 @@ public sealed class PooledBufferBuilder<T> :
     {
         ThrowIfDisposed();
         ThrowHelper.ThrowIfNegative(sizeHint);
-        GrowIfNeeded(_count + (sizeHint > 0 ? sizeHint : 1));
+        GrowIfNeeded(checked(_count + (sizeHint > 0 ? sizeHint : 1)));
         return _internalBuffer.AsMemory(_count);
     }
 
@@ -298,7 +298,7 @@ public sealed class PooledBufferBuilder<T> :
     {
         ThrowIfDisposed();
         ThrowHelper.ThrowIfNegative(sizeHint);
-        GrowIfNeeded(_count + (sizeHint > 0 ? sizeHint : 1));
+        GrowIfNeeded(checked(_count + (sizeHint > 0 ? sizeHint : 1)));
         return _internalBuffer.AsSpan(_count);
     }
 
@@ -341,7 +341,7 @@ public sealed class PooledBufferBuilder<T> :
         ThrowIfDisposed();
         ThrowHelper.ThrowIfNegative(count);
 
-        GrowIfNeeded(_count + count);
+        GrowIfNeeded(checked(_count + count));
         _internalBuffer.AsSpan(_count, count).Fill(value);
         _count += count;
     }
