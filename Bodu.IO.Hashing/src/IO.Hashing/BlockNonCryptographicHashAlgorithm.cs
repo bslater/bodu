@@ -318,10 +318,19 @@ public abstract class BlockNonCryptographicHashAlgorithm<T>
     /// <c>ProcessFullBlock</c>, preserving any incomplete trailing block for a subsequent call.
     /// </summary>
     /// <param name="buffer">The input bytes to feed into the hash.</param>
+    /// <exception cref="InvalidOperationException">
+    /// Appending <paramref name="buffer" /> would cause the cumulative <see cref="TotalLength" /> counter to
+    /// overflow <see cref="ulong.MaxValue" />.
+    /// </exception>
     private void ProcessBlocks(ReadOnlySpan<byte> buffer)
     {
         var pos = 0;
-        TotalLength += (ulong)buffer.Length;
+        var bufferLength = (ulong)buffer.Length;
+        if (bufferLength > ulong.MaxValue - TotalLength)
+            throw new InvalidOperationException(
+                $"Cumulative input length would exceed the {ulong.MaxValue}-byte limit tracked by {nameof(TotalLength)}.");
+
+        TotalLength += bufferLength;
 
         Span<byte> residualSpan = _residualByteBuffer;
 
