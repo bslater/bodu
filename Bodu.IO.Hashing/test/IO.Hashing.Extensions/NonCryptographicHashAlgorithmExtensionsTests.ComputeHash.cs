@@ -22,35 +22,64 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     private static readonly byte[] s_emptyHash = BitConverter.GetBytes((uint)0);
 
     /// <summary>
-    /// Verifies that the byte-array overload incorporates any state previously accumulated on the algorithm
-    /// before computing the digest.
+    /// Verifies that the byte-array overload discards any state previously accumulated on the algorithm so the
+    /// returned digest reflects only the supplied buffer — a one-shot computation that mirrors the symmetric
+    /// VerifyHash contract.
     /// </summary>
     [TestMethod]
-    public void ComputeHash_WhenAlgorithmHasPriorState_ForByteArrayOverload_ShouldIncludePriorBytesInHash()
+    public void ComputeHash_WhenAlgorithmHasPriorState_ForByteArrayOverload_ShouldDiscardPriorState()
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
         algorithm.AppendData(new ReadOnlySpan<byte>([100]));
-        var expected = BitConverter.GetBytes((uint)(100 + 1 + 2 + 3 + 4));
 
         var result = algorithm.ComputeHash(s_sampleData);
 
-        CollectionAssert.AreEqual(expected, result);
+        CollectionAssert.AreEqual(s_sampleHash, result);
     }
 
     /// <summary>
-    /// Verifies that the stream overload incorporates any state previously accumulated on the algorithm before
-    /// reading from the stream.
+    /// Verifies that the byte-array range overload discards any state previously accumulated on the algorithm so
+    /// the returned digest reflects only the requested window of the supplied buffer.
     /// </summary>
     [TestMethod]
-    public void ComputeHash_WhenAlgorithmHasPriorState_ForStreamOverload_ShouldIncludePriorBytesInHash()
+    public void ComputeHash_WhenAlgorithmHasPriorState_ForByteArrayRangeOverload_ShouldDiscardPriorState()
+    {
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        algorithm.AppendData(new ReadOnlySpan<byte>([100]));
+
+        var result = algorithm.ComputeHash(s_sampleData, 0, s_sampleData.Length);
+
+        CollectionAssert.AreEqual(s_sampleHash, result);
+    }
+
+    /// <summary>
+    /// Verifies that the span overload discards any state previously accumulated on the algorithm so the returned
+    /// digest reflects only the supplied span.
+    /// </summary>
+    [TestMethod]
+    public void ComputeHash_WhenAlgorithmHasPriorState_ForSpanOverload_ShouldDiscardPriorState()
+    {
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        algorithm.AppendData(new ReadOnlySpan<byte>([100]));
+
+        var result = algorithm.ComputeHash(new ReadOnlySpan<byte>(s_sampleData));
+
+        CollectionAssert.AreEqual(s_sampleHash, result);
+    }
+
+    /// <summary>
+    /// Verifies that the stream overload discards any state previously accumulated on the algorithm so the
+    /// returned digest reflects only the bytes read from the stream.
+    /// </summary>
+    [TestMethod]
+    public void ComputeHash_WhenAlgorithmHasPriorState_ForStreamOverload_ShouldDiscardPriorState()
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
         algorithm.AppendData(new ReadOnlySpan<byte>([50]));
-        var expected = BitConverter.GetBytes((uint)(50 + 1 + 2 + 3 + 4));
 
         var result = algorithm.ComputeHash(new MemoryStream(s_sampleData));
 
-        CollectionAssert.AreEqual(expected, result);
+        CollectionAssert.AreEqual(s_sampleHash, result);
     }
 
     // ─── byte[] overload — argument validation ────────────────────────────────────────────────
