@@ -87,20 +87,20 @@ internal sealed partial class ConfigurationReader
     }
 
     /// <summary>
-    /// Finds the index of the last <c>]</c> on <paramref name="line" />, scanning back past trailing whitespace.
+    /// Finds the index of the last <c>]</c> on <paramref name="line" /> after <paramref name="firstNonWs" />.
+    /// The scan does not stop at trailing non-whitespace — characters after the closing <c>]</c> are evaluated
+    /// separately by the section-header mode, which decides whether they are an inline comment, harmless
+    /// trailing text, or a diagnostic-worthy malformed suffix.
     /// </summary>
     /// <param name="line">The line to scan.</param>
     /// <param name="firstNonWs">The index of the first non-whitespace character on the line.</param>
-    /// <returns>The index of the closing <c>]</c>, or <c>-1</c> when none is found.</returns>
+    /// <returns>The index of the last <c>]</c>, or <c>-1</c> when none is found.</returns>
     private static int FindLastClosingBracket(string line, int firstNonWs)
     {
         for (var i = line.Length - 1; i > firstNonWs; i--)
         {
             if (line[i] == ']')
                 return i;
-
-            if (!char.IsWhiteSpace(line[i]))
-                break;
         }
 
         return -1;

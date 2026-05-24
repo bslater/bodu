@@ -159,11 +159,58 @@ internal sealed partial class ConfigurationReader
         }
 
         ConfigurationSourceLocation headerLoc = new(lineNumber, firstNonWs + 1, lastClose - firstNonWs + 1, path);
+
+        if (!IsTrailingContentAllowed(line, lastClose + 1, _options.SectionHeaderMode))
+        {
+            EmitDiagnostic(
+                ConfigurationDiagnosticSeverity.Error,
+                ConfigurationDiagnosticCode.TrailingContentAfterSectionHeader,
+                ConfigurationResourceStrings.Format_Invalid_TrailingContentAfterSectionHeader,
+                new ConfigurationSourceLocation(lineNumber, lastClose + 2, line.Length - lastClose - 1, path));
+
+            return GetCurrentSection(document);
+        }
+
         IniSection section = ResolveSectionTarget(document, name, headerLoc);
 
         AttachPendingComments(section, _pendingLeadingComments);
 
         return section;
+    }
+
+    /// <summary>
+    /// Returns <see langword="true" /> when the trailing run of characters in <paramref name="line" />
+    /// starting at <paramref name="from" /> is acceptable under <paramref name="mode" />. Trailing whitespace
+    /// is always permitted; a leading <c>#</c> or <c>;</c> after optional whitespace is permitted only when
+    /// the mode is <see cref="ConfigurationSectionHeaderMode.AllowTrailingInlineComment" />; any other
+    /// non-whitespace content is permitted only under <see cref="ConfigurationSectionHeaderMode.Lenient" />.
+    /// </summary>
+    /// <param name="line">The full section-header line being processed.</param>
+    /// <param name="from">The index immediately following the closing <c>]</c>.</param>
+    /// <param name="mode">The configured section-header mode.</param>
+    /// <returns><see langword="true" /> when the trailing content is acceptable.</returns>
+    private static bool IsTrailingContentAllowed(string line, int from, ConfigurationSectionHeaderMode mode)
+    {
+        var firstNonWs = -1;
+        for (var i = from; i < line.Length; i++)
+        {
+            if (!char.IsWhiteSpace(line[i]))
+            {
+                firstNonWs = i;
+                break;
+            }
+        }
+
+        if (firstNonWs < 0)
+            return true;
+
+        return mode switch
+        {
+            ConfigurationSectionHeaderMode.Lenient => true,
+            ConfigurationSectionHeaderMode.AllowTrailingInlineComment => line[firstNonWs] is '#' or ';',
+            ConfigurationSectionHeaderMode.Strict => false,
+            _ => true,
+        };
     }
 
     /// <summary>

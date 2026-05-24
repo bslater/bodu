@@ -65,6 +65,16 @@ public sealed partial class ConfigurationParseOptions
         IniDuplicateSectionBehavior.Preserve;
 
     /// <summary>
+    /// Gets the section-header trailing-content handling mode used by the reader. The default,
+    /// <see cref="ConfigurationSectionHeaderMode.Lenient" />, accepts trailing words silently and matches the
+    /// historical Bodu profile; the EditorConfig-compatible and strict presets use
+    /// <see cref="ConfigurationSectionHeaderMode.Strict" /> instead.
+    /// </summary>
+    /// <returns>The selected section-header mode.</returns>
+    public ConfigurationSectionHeaderMode SectionHeaderMode { get; init; } =
+        ConfigurationSectionHeaderMode.Lenient;
+
+    /// <summary>
     /// Gets the diagnostic routing mode that controls whether recoverable errors throw, are collected on the document,
     /// or are silently ignored.
     /// </summary>
