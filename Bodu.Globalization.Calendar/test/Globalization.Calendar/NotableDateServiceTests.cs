@@ -319,19 +319,19 @@ public sealed partial class NotableDateServiceTests
     // -----------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Verifies that <see cref="NotableDateService.GetNotableDates(DateTime, DateTime, string?, Type?)" />
-    /// swaps start/end when the range is reversed, yielding the same dates either way round.
+    /// Verifies that <see cref="NotableDateService.GetNotableDates(DateTime, DateTime, string?, Type?)" /> accepts a
+    /// well-ordered range without throwing — complementing the strict reversed-range contract pinned in the
+    /// <c>ReversedRange</c> partial.
     /// </summary>
     [TestMethod]
-    public void GetNotableDates_WhenRangeIsReversed_ShouldSwapEndpoints()
+    public void GetNotableDates_WhenRangeIsWellOrdered_ShouldReturnExpectedRange()
     {
         var service = BuildService(Fixed("Midsummer", 6, 21));
 
         var forward = service.GetNotableDates(new DateTime(2025, 6, 1), new DateTime(2025, 6, 30));
-        var reversed = service.GetNotableDates(new DateTime(2025, 6, 30), new DateTime(2025, 6, 1));
 
-        Assert.AreEqual(forward.Count, reversed.Count);
-        Assert.AreEqual(forward[0].Date, reversed[0].Date);
+        Assert.AreEqual(1, forward.Count);
+        Assert.AreEqual(new DateTime(2025, 6, 21), forward[0].Date);
     }
 
     /// <summary>

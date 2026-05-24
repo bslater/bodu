@@ -84,18 +84,19 @@ public partial class NotableDateOnlyExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that swapping the start and end boundaries still yields the same notable-date sequence as the in-order range.
+    /// Verifies that swapping the start and end boundaries throws under the strict reversed-range policy applied across
+    /// every range-accepting public API. Callers must supply a well-ordered range.
     /// </summary>
     [TestMethod]
-    public void EnumerateNotableDates_WhenBoundariesReversed_ShouldYieldSameSequence()
+    public void EnumerateNotableDates_WhenBoundariesReversed_ShouldThrow()
     {
         NotableDateService service = BuildService(
             Fixed("New Year's Day", 1, 1),
             Fixed("Christmas Day", 12, 25));
 
-        NotableDate[] forward = new DateOnly(2026, 1, 1).EnumerateNotableDates(new DateOnly(2026, 12, 31), service).ToArray();
-        NotableDate[] reversed = new DateOnly(2026, 12, 31).EnumerateNotableDates(new DateOnly(2026, 1, 1), service).ToArray();
-
-        CollectionAssert.AreEqual(forward, reversed);
+        Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            _ = new DateOnly(2026, 12, 31).EnumerateNotableDates(new DateOnly(2026, 1, 1), service).ToArray();
+        });
     }
 }

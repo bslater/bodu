@@ -485,18 +485,13 @@ public sealed class NotableDateService : INotableDateService, IDisposable
 
     /// <inheritdoc />
     public IReadOnlyList<NotableDate> GetNotableDates(DateTime startDate, DateTime endDate, string? territoryCode = null, Type? calendarType = null)
-    {
-        if (endDate < startDate)
-            (startDate, endDate) = (endDate, startDate);
-
-        return ResolveRangeInternal(
+        => ResolveRangeInternal(
             startDate,
             endDate,
             filter: null,
             territoryCode,
             calendarType,
             recordWindow: true);
-    }
 
     /// <inheritdoc />
     public IReadOnlyList<NotableDate> GetNotableDates(DateTime date, NotableDateFilter filter, string? territoryCode = null, Type? calendarType = null)
@@ -516,9 +511,6 @@ public sealed class NotableDateService : INotableDateService, IDisposable
     public IReadOnlyList<NotableDate> GetNotableDates(DateTime startDate, DateTime endDate, NotableDateFilter filter, string? territoryCode = null, Type? calendarType = null)
     {
         ThrowHelper.ThrowIfNull(filter);
-
-        if (endDate < startDate)
-            (startDate, endDate) = (endDate, startDate);
 
         return ResolveRangeInternal(
             startDate,
@@ -686,8 +678,14 @@ public sealed class NotableDateService : INotableDateService, IDisposable
     /// <see langword="true" /> when every day in the supplied range is covered by a single resolved window; otherwise,
     /// <see langword="false" />.
     /// </returns>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="endDate" /> is earlier than <paramref name="startDate" />.
+    /// </exception>
     public bool IsRangeResolved(DateTime startDate, DateTime endDate)
     {
+        if (endDate < startDate)
+            throw new ArgumentException(CalendarResourceStrings.Arg_Invalid_EndDateBeforeStartDate, nameof(endDate));
+
         DateRange probe = new(startDate.Date, endDate.Date);
 
         lock (_resolvedWindowsGate)
