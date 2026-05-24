@@ -18,9 +18,9 @@ namespace Bodu.Text.Ini;
 /// callers can catch it alongside other parse failures.
 /// </para>
 /// <para>
-/// <see cref="LineNumber" /> carries the 1-based source line that triggered the failure when the parser was able to
-/// pinpoint it, or <c>0</c> when the error is not associated with a specific line (for example, when the source is
-/// completely empty under a policy that requires at least one section).
+/// <see cref="TextFormatException.LineNumber" /> carries the 1-based source line that triggered the failure when the
+/// parser was able to pinpoint it, or <c>0</c> when the error is not associated with a specific line (for example,
+/// when the source is completely empty under a policy that requires at least one section).
 /// </para>
 /// </remarks>
 /// <example>
@@ -36,7 +36,7 @@ namespace Bodu.Text.Ini;
 ///]]>
 /// </example>
 public sealed class IniFormatException
-    : FormatException
+    : TextFormatException
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="IniFormatException" /> class.
@@ -73,16 +73,7 @@ public sealed class IniFormatException
     /// line.
     /// </param>
     public IniFormatException(string message, int lineNumber)
-        : base(message)
+        : base(message, lineNumber)
     {
-        LineNumber = lineNumber;
     }
-
-    /// <summary>
-    /// Gets the 1-based line number at which the parse error occurred.
-    /// </summary>
-    /// <returns>
-    /// The 1-based line number, or <c>0</c> when the exception is not associated with a specific source line.
-    /// </returns>
-    public int LineNumber { get; }
 }

@@ -49,36 +49,78 @@ public static partial class Base64
             return Array.Empty<byte>();
 
         var rentSize = chars.Length + 4; // headroom for re-padding
-        var scratch = ArrayPool<char>.Shared.Rent(rentSize);
-        byte[]? buffer = null;
+
+        // Stackalloc the scratch buffer for small inputs; fall back to ArrayPool for large inputs. The 256-char
+        // threshold matches a single decoded payload of ~192 bytes, which covers JWTs, OAuth state tokens, and
+        // most short identifiers that dominate Base64 traffic in practice.
+        if (rentSize <= 256)
+        {
+            Span<char> scratch = stackalloc char[256];
+            return DecodeCore(chars, scratch, variant, style);
+        }
+
+        var pooled = ArrayPool<char>.Shared.Rent(rentSize);
 
         try
         {
-            var normalized = NormalizeForDecode(chars, scratch, variant, style);
-            if (normalized < 0)
-                throw new FormatException(EncodingResourceStrings.Format_Invalid_Base64Alphabet);
-
-            buffer = new byte[GetMaxDecodedLength(normalized)];
-            if (!Convert.TryFromBase64Chars(scratch.AsSpan(0, normalized), buffer, out var bytesWritten))
-                throw new FormatException(EncodingResourceStrings.Format_Invalid_Base64);
-
-            if (style.HasFlag(BaseFormatStyles.RequireCanonicalEncoding)
-                && !IsCanonicalEncoding(buffer.AsSpan(0, bytesWritten), scratch.AsSpan(0, normalized)))
-            {
-                throw new FormatException(EncodingResourceStrings.Format_Invalid_Base64NonCanonical);
-            }
-
-            if (bytesWritten == buffer.Length)
-                return buffer;
-
-            var trimmed = new byte[bytesWritten];
-            Buffer.BlockCopy(buffer, 0, trimmed, 0, bytesWritten);
-            return trimmed;
+            return DecodeCore(chars, pooled.AsSpan(0, rentSize), variant, style);
         }
         finally
         {
-            ArrayPool<char>.Shared.Return(scratch);
+            ArrayPool<char>.Shared.Return(pooled);
         }
+    }
+
+    /// <summary>
+    /// Decodes <paramref name="chars" /> using the supplied <paramref name="scratch" /> buffer for normalisation.
+    /// </summary>
+    /// <param name="chars">The encoded character span.</param>
+    /// <param name="scratch">The caller-allocated scratch span; must be at least <paramref name="chars" />.Length + 4 long.</param>
+    /// <param name="variant">The Base64 variant.</param>
+    /// <param name="style">Parsing styles.</param>
+    /// <returns>The decoded byte array.</returns>
+    /// <exception cref="FormatException">Thrown when the input is not valid Base64.</exception>
+    private static byte[] DecodeCore(ReadOnlySpan<char> chars, Span<char> scratch, Base64Variant variant, BaseFormatStyles style)
+    {
+        var normalized = NormalizeForDecode(chars, scratch, variant, style);
+        if (normalized < 0)
+            throw new FormatException(EncodingResourceStrings.Format_Invalid_Base64Alphabet);
+
+        var buffer = new byte[GetExactDecodedLength(scratch[..normalized])];
+        if (!Convert.TryFromBase64Chars(scratch[..normalized], buffer, out var bytesWritten)
+            || bytesWritten != buffer.Length)
+        {
+            throw new FormatException(EncodingResourceStrings.Format_Invalid_Base64);
+        }
+
+        if (style.HasFlag(BaseFormatStyles.RequireCanonicalEncoding)
+            && !IsCanonicalEncoding(buffer.AsSpan(0, bytesWritten), scratch[..normalized]))
+        {
+            throw new FormatException(EncodingResourceStrings.Format_Invalid_Base64NonCanonical);
+        }
+
+        return buffer;
+    }
+
+    /// <summary>
+    /// Returns the exact number of decoded bytes that a normalised, padded Base64 character span will produce —
+    /// the normalised length divided by four times three, less one byte per trailing <c>=</c> padding character.
+    /// </summary>
+    /// <param name="normalized">A normalised Base64 character span whose length is a multiple of four.</param>
+    /// <returns>The exact decoded byte count, never negative.</returns>
+    private static int GetExactDecodedLength(ReadOnlySpan<char> normalized)
+    {
+        var groups = normalized.Length / 4;
+        var padding = 0;
+
+        if (normalized.Length >= 1 && normalized[^1] == PaddingChar)
+        {
+            padding = 1;
+            if (normalized.Length >= 2 && normalized[^2] == PaddingChar)
+                padding = 2;
+        }
+
+        return (groups * 3) - padding;
     }
 
     /// <summary>

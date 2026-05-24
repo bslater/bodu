@@ -18,8 +18,8 @@ namespace Bodu.Text.Delimited;
 /// strict header enforcement is enabled.
 /// </para>
 /// <para>
-/// <see cref="LineNumber" /> carries the 1-based source line on which the parser detected the failure when known, or
-/// <c>0</c> when the line cannot be identified.
+/// <see cref="TextFormatException.LineNumber" /> carries the 1-based source line on which the parser detected the
+/// failure when known, or <c>0</c> when the line cannot be identified.
 /// </para>
 /// </remarks>
 /// <example>
@@ -34,7 +34,7 @@ namespace Bodu.Text.Delimited;
 /// }
 ///]]>
 /// </example>
-public sealed class DelimitedFormatException : FormatException
+public sealed class DelimitedFormatException : TextFormatException
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="DelimitedFormatException" /> class with a default message and no
@@ -72,17 +72,7 @@ public sealed class DelimitedFormatException : FormatException
     /// <param name="message">A message that describes the error.</param>
     /// <param name="lineNumber">The 1-based line number on which the parse error was detected.</param>
     public DelimitedFormatException(string message, int lineNumber)
-        : base(message)
+        : base(message, lineNumber)
     {
-        LineNumber = lineNumber;
     }
-
-    /// <summary>
-    /// Gets the 1-based line number at which the parse error was detected, or <c>0</c> when the error is not associated
-    /// with a specific line.
-    /// </summary>
-    /// <returns>
-    /// A positive integer identifying the source line, or <c>0</c> when the line is unknown or not applicable.
-    /// </returns>
-    public int LineNumber { get; }
 }

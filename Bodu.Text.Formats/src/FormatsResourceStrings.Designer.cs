@@ -70,6 +70,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to DotEnv comment prefix must be '#'..
+        /// </summary>
+        internal static string Arg_Invalid_DotEnvCommentPrefix {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_DotEnvCommentPrefix", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Comment prefix must be '#' or ';'..
         /// </summary>
         internal static string Arg_Invalid_IniCommentPrefix {
@@ -304,6 +313,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Bencoded value nesting exceeds the maximum permitted depth of {0}..
+        /// </summary>
+        internal static string Format_Invalid_BencodeNestingTooDeep {
+            get {
+                return ResourceManager.GetString("Format_Invalid_BencodeNestingTooDeep", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Unterminated bencoded dictionary..
         /// </summary>
         internal static string Format_Invalid_BencodeUnterminatedDictionary {
@@ -327,6 +345,33 @@ namespace Bodu {
         internal static string Format_Invalid_BencodeUnterminatedList {
             get {
                 return ResourceManager.GetString("Format_Invalid_BencodeUnterminatedList", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Duplicate header &apos;{0}&apos; on line {1}..
+        /// </summary>
+        internal static string Format_Invalid_DelimitedDuplicateHeader {
+            get {
+                return ResourceManager.GetString("Format_Invalid_DelimitedDuplicateHeader", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Row on line {0} has {1} field(s) but the header row defines {2}..
+        /// </summary>
+        internal static string Format_Invalid_DelimitedFieldCountMismatch {
+            get {
+                return ResourceManager.GetString("Format_Invalid_DelimitedFieldCountMismatch", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Unexpected character &apos;{0}&apos; after closing quote on line {1}..
+        /// </summary>
+        internal static string Format_Invalid_DelimitedMalformedRecord {
+            get {
+                return ResourceManager.GetString("Format_Invalid_DelimitedMalformedRecord", resourceCulture);
             }
         }
 

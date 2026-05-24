@@ -107,6 +107,7 @@ public static partial class DotEnv
         {
             List<DotEnvEntry> entries = new();
             Dictionary<string, DotEnvEntry> lookup = new(StringComparer.Ordinal);
+            List<DotEnvComment>? pendingComments = null;
 
             while (!IsEmpty)
             {
@@ -125,7 +126,19 @@ public static partial class DotEnv
 
                 if (c == '#')
                 {
-                    SkipToEndOfLine();
+                    int commentLine = _lineNumber;
+                    _remaining = _remaining[1..]; // consume '#'
+                    int len = 0;
+                    while (len < _remaining.Length && _remaining[len] != '\n' && _remaining[len] != '\r')
+                        len++;
+
+                    if (_options.PreserveComments)
+                    {
+                        pendingComments ??= new List<DotEnvComment>();
+                        pendingComments.Add(new DotEnvComment('#', new string(_remaining[..len]), commentLine));
+                    }
+
+                    _remaining = _remaining[len..];
                     SkipLineEnding();
                     continue;
                 }
@@ -167,6 +180,11 @@ public static partial class DotEnv
                     ? ParseDoubleQuotedValue(entryLineNumber)
                     : Current == '\'' ? ParseSingleQuotedValue(entryLineNumber) : ParseUnquotedValue();
 
+                IReadOnlyList<DotEnvComment> leadingComments = pendingComments is null
+                    ? Array.Empty<DotEnvComment>()
+                    : pendingComments.AsReadOnly();
+                pendingComments = null;
+
                 // Apply duplicate key behavior.
                 if (lookup.TryGetValue(key, out DotEnvEntry? existing))
                 {
@@ -180,7 +198,7 @@ public static partial class DotEnv
                             break;
 
                         case DotEnvDuplicateKeyBehavior.LastWins:
-                            DotEnvEntry replacement = new(key, value);
+                            DotEnvEntry replacement = new(key, value, leadingComments);
                             var idx = entries.IndexOf(existing);
                             entries[idx] = replacement;
                             lookup[key] = replacement;
@@ -189,7 +207,7 @@ public static partial class DotEnv
                 }
                 else
                 {
-                    DotEnvEntry entry = new(key, value);
+                    DotEnvEntry entry = new(key, value, leadingComments);
                     entries.Add(entry);
                     lookup[key] = entry;
                 }

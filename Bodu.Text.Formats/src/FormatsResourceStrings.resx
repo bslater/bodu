@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Arg_Invalid_DotEnvCommentPrefix" xml:space="preserve">
+    <value>DotEnv comment prefix must be '#'.</value>
+  </data>
   <data name="Arg_Invalid_DuplicateDictionaryKey" xml:space="preserve">
     <value>The dictionary cannot contain duplicate keys.</value>
   </data>
@@ -198,6 +201,9 @@
   <data name="Format_Invalid_BencodeUnorderedDictionaryKeys" xml:space="preserve">
     <value>Bencoded dictionary keys must be unique and sorted by raw byte order.</value>
   </data>
+  <data name="Format_Invalid_BencodeNestingTooDeep" xml:space="preserve">
+    <value>Bencoded value nesting exceeds the maximum permitted depth of {0}.</value>
+  </data>
   <data name="Format_Invalid_BencodeUnterminatedDictionary" xml:space="preserve">
     <value>Unterminated bencoded dictionary.</value>
   </data>
@@ -206,6 +212,15 @@
   </data>
   <data name="Format_Invalid_BencodeUnterminatedList" xml:space="preserve">
     <value>Unterminated bencoded list.</value>
+  </data>
+  <data name="Format_Invalid_DelimitedDuplicateHeader" xml:space="preserve">
+    <value>Duplicate header '{0}' on line {1}.</value>
+  </data>
+  <data name="Format_Invalid_DelimitedFieldCountMismatch" xml:space="preserve">
+    <value>Row on line {0} has {1} field(s) but the header row defines {2}.</value>
+  </data>
+  <data name="Format_Invalid_DelimitedMalformedRecord" xml:space="preserve">
+    <value>Unexpected character '{0}' after closing quote on line {1}.</value>
   </data>
   <data name="Format_Invalid_DelimitedUnterminatedQuotedField" xml:space="preserve">
     <value>Unterminated quoted field starting on line {0}.</value>

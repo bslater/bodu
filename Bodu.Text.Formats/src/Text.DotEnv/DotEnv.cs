@@ -108,8 +108,8 @@ public static partial class DotEnv
     /// return → <c>\r</c>, <c>$</c> → <c>\$</c>.
     /// </para>
     /// <para>
-    /// Comments and blank lines from the original source are not preserved because they are not part of the object
-    /// model.
+    /// Leading comments captured on each entry through <see cref="DotEnvEntry.LeadingComments" /> are emitted
+    /// before the entry's <c>KEY=VALUE</c> line. Bare blank lines from the original source are not retained.
     /// </para>
     /// </remarks>
     public static string Format(DotEnvDocument document)
@@ -120,6 +120,12 @@ public static partial class DotEnv
 
         foreach (DotEnvEntry entry in document.Entries)
         {
+            foreach (DotEnvComment comment in entry.LeadingComments)
+            {
+                sb.Append(comment.Prefix).Append(comment.Text);
+                sb.AppendLine();
+            }
+
             sb.Append(entry.Key).Append('=');
             AppendFormattedValue(sb, entry.Value);
             sb.AppendLine();
