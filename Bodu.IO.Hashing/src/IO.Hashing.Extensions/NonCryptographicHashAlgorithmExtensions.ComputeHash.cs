@@ -20,14 +20,14 @@ public static partial class NonCryptographicHashAlgorithmExtensions
     /// <param name="buffer">The byte array whose contents are appended to the algorithm.</param>
     /// <returns>A newly allocated byte array containing the computed hash value.</returns>
     /// <remarks>
-    /// This method appends the full contents of <paramref name="buffer" /> to <paramref name="algorithm" />, retrieves
-    /// the resulting hash value, and resets the algorithm by calling
+    /// This method is a one-shot computation: any pending state on <paramref name="algorithm" /> is discarded before
+    /// processing. The full contents of <paramref name="buffer" /> are appended, the resulting hash is retrieved, and
+    /// the algorithm is reset to its initial state on exit via
     /// <see cref="NonCryptographicHashAlgorithm.GetHashAndReset()" />.
     /// </remarks>
     /// <remarks>
-    /// The supplied algorithm instance should normally be in its initial or reset state before this method is called.
-    /// If data has already been appended to the algorithm, the returned hash will represent the previously appended
-    /// data followed by <paramref name="buffer" />.
+    /// Use <see cref="AppendData(NonCryptographicHashAlgorithm, ReadOnlySpan{byte})" /> to incorporate data into the
+    /// running state without resetting.
     /// </remarks>
     /// <remarks>
     /// Non-cryptographic hash algorithms are designed for scenarios such as checksums, hash tables, sharding,
@@ -42,6 +42,7 @@ public static partial class NonCryptographicHashAlgorithmExtensions
         ArgumentNullException.ThrowIfNull(algorithm);
         ArgumentNullException.ThrowIfNull(buffer);
 
+        algorithm.Reset();
         algorithm.Append(buffer);
         return algorithm.GetHashAndReset();
     }
@@ -55,14 +56,14 @@ public static partial class NonCryptographicHashAlgorithmExtensions
     /// <param name="data">The contiguous region of memory whose bytes are appended to the algorithm.</param>
     /// <returns>A newly allocated byte array containing the computed hash value.</returns>
     /// <remarks>
-    /// This method appends the contents of <paramref name="data" /> to <paramref name="algorithm" />, retrieves the
-    /// resulting hash value, and resets the algorithm by calling
+    /// This method is a one-shot computation: any pending state on <paramref name="algorithm" /> is discarded before
+    /// processing. The contents of <paramref name="data" /> are appended, the resulting hash is retrieved, and the
+    /// algorithm is reset to its initial state on exit via
     /// <see cref="NonCryptographicHashAlgorithm.GetHashAndReset()" />.
     /// </remarks>
     /// <remarks>
-    /// The supplied algorithm instance should normally be in its initial or reset state before this method is called.
-    /// If data has already been appended to the algorithm, the returned hash will represent the previously appended
-    /// data followed by <paramref name="data" />.
+    /// Use <see cref="AppendData(NonCryptographicHashAlgorithm, ReadOnlySpan{byte})" /> to incorporate data into the
+    /// running state without resetting.
     /// </remarks>
     /// <remarks>
     /// This overload accepts stack-allocated, array-backed, unmanaged, and sliced memory without requiring the caller
@@ -80,6 +81,7 @@ public static partial class NonCryptographicHashAlgorithmExtensions
     {
         ArgumentNullException.ThrowIfNull(algorithm);
 
+        algorithm.Reset();
         algorithm.Append(data);
         return algorithm.GetHashAndReset();
     }
@@ -98,18 +100,18 @@ public static partial class NonCryptographicHashAlgorithmExtensions
     /// </param>
     /// <returns>A newly allocated byte array containing the computed hash value.</returns>
     /// <remarks>
-    /// This method reads <paramref name="source" /> from its current position until no more bytes are available,
-    /// appends each block of bytes to <paramref name="algorithm" />, retrieves the resulting hash value, and resets the
-    /// algorithm by calling <see cref="NonCryptographicHashAlgorithm.GetHashAndReset()" />.
+    /// This method is a one-shot computation: any pending state on <paramref name="algorithm" /> is discarded before
+    /// reading begins. <paramref name="source" /> is read from its current position until no more bytes are available,
+    /// each block is appended to <paramref name="algorithm" />, the resulting hash is retrieved, and the algorithm is
+    /// reset to its initial state on exit via <see cref="NonCryptographicHashAlgorithm.GetHashAndReset()" />.
     /// </remarks>
     /// <remarks>
     /// The stream is not rewound before hashing and is not closed or disposed when hashing completes. For seekable
     /// streams, the caller is responsible for positioning <paramref name="source" /> before calling this method.
     /// </remarks>
     /// <remarks>
-    /// The supplied algorithm instance should normally be in its initial or reset state before this method is called.
-    /// If data has already been appended to the algorithm, the returned hash will represent the previously appended
-    /// data followed by the bytes read from <paramref name="source" />.
+    /// Use <see cref="AppendData(NonCryptographicHashAlgorithm, Stream, int)" /> to incorporate data into the running
+    /// state without resetting.
     /// </remarks>
     /// <remarks>
     /// The temporary read buffer is rented from <see cref="ArrayPool{T}.Shared" /> and returned when the operation
@@ -139,6 +141,8 @@ public static partial class NonCryptographicHashAlgorithmExtensions
         ArgumentNullException.ThrowIfNull(source);
         ThrowHelper.ThrowIfZeroOrNegative(bufferSize);
 
+        algorithm.Reset();
+
         var buffer = ArrayPool<byte>.Shared.Rent(bufferSize);
         try
         {
@@ -165,14 +169,10 @@ public static partial class NonCryptographicHashAlgorithmExtensions
     /// <param name="count">The number of bytes to append from <paramref name="buffer" />.</param>
     /// <returns>A newly allocated byte array containing the computed hash value.</returns>
     /// <remarks>
-    /// This method appends exactly <paramref name="count" /> bytes from <paramref name="buffer" />, starting at
-    /// <paramref name="offset" />, to <paramref name="algorithm" />. It then retrieves the resulting hash value and
-    /// resets the algorithm by calling <see cref="NonCryptographicHashAlgorithm.GetHashAndReset()" />.
-    /// </remarks>
-    /// <remarks>
-    /// The supplied algorithm instance should normally be in its initial or reset state before this method is called.
-    /// If data has already been appended to the algorithm, the returned hash will represent the previously appended
-    /// data followed by the selected region of <paramref name="buffer" />.
+    /// This method is a one-shot computation: any pending state on <paramref name="algorithm" /> is discarded before
+    /// processing. Exactly <paramref name="count" /> bytes from <paramref name="buffer" />, starting at
+    /// <paramref name="offset" />, are appended; the resulting hash is retrieved and the algorithm is reset to its
+    /// initial state on exit via <see cref="NonCryptographicHashAlgorithm.GetHashAndReset()" />.
     /// </remarks>
     /// <remarks>
     /// Use this overload when the data to hash occupies only a portion of an existing array and an intermediate copy
@@ -199,6 +199,7 @@ public static partial class NonCryptographicHashAlgorithmExtensions
         ArgumentNullException.ThrowIfNull(buffer);
         ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(buffer, offset, count);
 
+        algorithm.Reset();
         algorithm.Append(buffer.AsSpan(offset, count));
         return algorithm.GetHashAndReset();
     }
