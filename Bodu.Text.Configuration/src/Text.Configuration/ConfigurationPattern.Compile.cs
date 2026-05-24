@@ -13,6 +13,18 @@ namespace Bodu.Text.Configuration;
 public sealed partial class ConfigurationPattern
 {
     /// <summary>
+    /// The maximum number of integer alternatives a single <c>{n1..n2}</c> brace expansion is permitted to
+    /// produce. Beyond this, the compiler emits
+    /// <see cref="ConfigurationDiagnosticCode.NumericRangeTooLarge" /> rather than silently allocating a
+    /// regex over hundreds of megabytes of text.
+    /// </summary>
+    /// <remarks>
+    /// EditorConfig in the wild uses ranges like <c>{1..10}</c> or <c>{0..99}</c>; a cap of 10,000 covers
+    /// every realistic configuration use case while preventing pathological inputs from exhausting memory.
+    /// </remarks>
+    internal const int MaxNumericRangeExpansion = 10_000;
+
+    /// <summary>
     /// Translates a glob expression into the equivalent <see cref="Regex" /> pattern, anchored to the start and end of
     /// the input.
     /// </summary>
@@ -316,6 +328,24 @@ public sealed partial class ConfigurationPattern
 
         if (left > right)
             (left, right) = (right, left);
+
+        // Cap expansion to keep pathological ranges (e.g. {1..1000000000}) from allocating gigabytes of regex
+        // text. Long.Subtract is safe here because the range was just normalized so right >= left.
+        var count = right - left + 1;
+        if (count > MaxNumericRangeExpansion)
+        {
+            throw new ConfigurationParseException(new ConfigurationDiagnostic(
+                ConfigurationDiagnosticSeverity.Error,
+                ConfigurationDiagnosticCode.NumericRangeTooLarge,
+                string.Format(
+                    CultureInfo.InvariantCulture,
+                    ConfigurationResourceStrings.Format_Invalid_NumericRangeTooLarge,
+                    leftText,
+                    rightText,
+                    count,
+                    MaxNumericRangeExpansion),
+                ConfigurationSourceLocation.None));
+        }
 
         // Build an alternation over every integer in the range. Acceptable for the modest ranges typical of
         // .editorconfig files (e.g. {1..10}); callers requesting huge ranges will pay the regex compile cost.
