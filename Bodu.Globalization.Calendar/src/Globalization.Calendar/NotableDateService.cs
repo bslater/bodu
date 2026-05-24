@@ -219,8 +219,10 @@ public sealed class NotableDateService : INotableDateService, IDisposable
 
     /// <summary>
     /// The lazily constructed prototype range-resolution pipeline used by <see cref="ResolveNotableDatesInRange" />.
+    /// Marked <see langword="volatile" /> so the fast-path read in <see cref="GetOrBuildRangePipeline" /> reliably
+    /// observes the publication performed inside <see cref="_gate" />.
     /// </summary>
-    private RangeResolution.NotableDateRangePipeline? _rangePipeline;
+    private volatile RangeResolution.NotableDateRangePipeline? _rangePipeline;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="NotableDateService" /> class using the embedded minimal default
@@ -588,11 +590,9 @@ public sealed class NotableDateService : INotableDateService, IDisposable
     /// <inheritdoc />
     public void Invalidate()
     {
-        _yearCache.Clear();
-        _rangePipeline = null;
-        lock (_resolvedWindowsGate)
+        lock (_gate)
         {
-            _resolvedWindows.Clear();
+            InvalidateCachesUnderGate();
         }
     }
 
@@ -609,8 +609,9 @@ public sealed class NotableDateService : INotableDateService, IDisposable
     /// re-queried; their contribution is fixed for the lifetime of the service.
     /// </para>
     /// <para>
-    /// The rebuild is performed under the same gate used by per-year cache writes so that a concurrent reader cannot
-    /// observe a half-applied state. Resolved-window state is cleared identically to <see cref="Invalidate()" />.
+    /// The effective-rule rebuild and the cache/pipeline invalidation are performed atomically under a single
+    /// <c>_gate</c> critical section so that no concurrent reader can observe new effective rules paired with a stale
+    /// year cache or a stale range pipeline. Resolved-window state is cleared identically to <see cref="Invalidate()" />.
     /// </para>
     /// </remarks>
     public void Reload()
@@ -618,9 +619,40 @@ public sealed class NotableDateService : INotableDateService, IDisposable
         lock (_gate)
         {
             (_overrideRemovals, _overrideAdditions, _effectiveRules, _resolver) = BuildOverrideState();
+            InvalidateCachesUnderGate();
         }
+    }
 
-        Invalidate();
+    /// <summary>
+    /// Clears the per-year cache, drops the lazy range pipeline, and resets the resolved-window set. Must be invoked
+    /// while holding <see cref="_gate" /> so the cache reset is coherent with any concurrent effective-rule rebuild.
+    /// </summary>
+    private void InvalidateCachesUnderGate()
+    {
+        _yearCache.Clear();
+        _rangePipeline = null;
+        lock (_resolvedWindowsGate)
+        {
+            _resolvedWindows.Clear();
+        }
+    }
+
+    /// <summary>
+    /// Returns the lazily constructed <see cref="RangeResolution.NotableDateRangePipeline" />, building it under
+    /// <see cref="_gate" /> on first access so it cannot be assembled from rules that <see cref="Reload" /> has already
+    /// swapped out.
+    /// </summary>
+    /// <returns>The current range pipeline, coherent with the effective rule set at the moment of construction.</returns>
+    private RangeResolution.NotableDateRangePipeline GetOrBuildRangePipeline()
+    {
+        RangeResolution.NotableDateRangePipeline? snapshot = _rangePipeline;
+        if (snapshot is not null)
+            return snapshot;
+
+        lock (_gate)
+        {
+            return _rangePipeline ??= BuildRangePipeline();
+        }
     }
 
     /// <inheritdoc />
@@ -758,7 +790,7 @@ public sealed class NotableDateService : INotableDateService, IDisposable
             calendarType,
             filter);
 
-        RangeResolution.NotableDateRangePipeline pipeline = _rangePipeline ??= BuildRangePipeline();
+        RangeResolution.NotableDateRangePipeline pipeline = GetOrBuildRangePipeline();
         IReadOnlyList<NotableDate> resolved = pipeline.Resolve(request);
 
         // Record the request window so consumers can introspect what the service has been asked to resolve. The window is recorded
