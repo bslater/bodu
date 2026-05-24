@@ -55,13 +55,14 @@ internal sealed class ConfigurationResolver
             ApplySection(document.GlobalSection, values);
 
         // Apply sections whose name (interpreted as a glob pattern) matches the target path, in source order.
-        // Last-wins precedence is naturally handled by dictionary overwrite.
+        // Last-wins precedence is naturally handled by dictionary overwrite. The configured PathComparison
+        // controls case sensitivity of the underlying regex match.
         foreach (IniSection section in document.Sections)
         {
             if (string.IsNullOrEmpty(normalizedTarget))
                 continue;
 
-            if (ConfigurationPattern.Compile(section.Name).IsMatch(normalizedTarget))
+            if (ConfigurationPattern.Compile(section.Name, _options.PathComparison).IsMatch(normalizedTarget))
                 ApplySection(section, values);
         }
 
