@@ -18,8 +18,8 @@ namespace Bodu.Text.DotEnv;
 /// encounters a duplicate key under <see cref="DotEnvDuplicateKeyBehavior.Disallowed" />.
 /// </para>
 /// <para>
-/// <see cref="LineNumber" /> carries the 1-based source line on which the parser detected the failure when known, or
-/// <c>0</c> when the line cannot be identified.
+/// <see cref="TextFormatException.LineNumber" /> carries the 1-based source line on which the parser detected the
+/// failure when known, or <c>0</c> when the line cannot be identified.
 /// </para>
 /// </remarks>
 /// <example>
@@ -34,7 +34,7 @@ namespace Bodu.Text.DotEnv;
 /// }
 ///]]>
 /// </example>
-public sealed class DotEnvFormatException : FormatException
+public sealed class DotEnvFormatException : TextFormatException
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="DotEnvFormatException" /> class with a default message and no
@@ -72,17 +72,7 @@ public sealed class DotEnvFormatException : FormatException
     /// <param name="message">A message that describes the error.</param>
     /// <param name="lineNumber">The 1-based line number on which the parse error was detected.</param>
     public DotEnvFormatException(string message, int lineNumber)
-        : base(message)
+        : base(message, lineNumber)
     {
-        LineNumber = lineNumber;
     }
-
-    /// <summary>
-    /// Gets the 1-based line number at which the parse error was detected, or <c>0</c> when the error is not associated
-    /// with a specific line.
-    /// </summary>
-    /// <returns>
-    /// A positive integer identifying the source line, or <c>0</c> when the line is unknown or not applicable.
-    /// </returns>
-    public int LineNumber { get; }
 }

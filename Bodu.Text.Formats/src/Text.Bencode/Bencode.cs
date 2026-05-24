@@ -504,7 +504,7 @@ public static partial class Bencode
             if (!Utf8Parser.TryParse(number, out long value, out var bytesConsumed) ||
                 bytesConsumed != number.Length)
             {
-                throw new BencodeFormatException(FormatsResourceStrings.Format_Invalid_BencodeIntegerOutOfRange);
+                throw new BencodeFormatException(FormatsResourceStrings.Format_Invalid_BencodeIntegerOutOfRange, numberStart);
             }
 
             Position++;
