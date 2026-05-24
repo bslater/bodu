@@ -17,18 +17,6 @@
     <DefineConstants>$(DefineConstants);NET8_0_OR_GREATER</DefineConstants>
   </PropertyGroup>
 
-  <!--
-    EncodingThrowHelper is split into a CallerArgumentExpression variant and a NetStandard variant:
-      - EncodingThrowHelper.*NetStandard.cs       : compiled for netstandard2.0 / netstandard2.1.
-      - EncodingThrowHelper.*CallerExpression.cs  : compiled for all other targets (net5.0+).
-  -->
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' Or '$(TargetFramework)' == 'netstandard2.1'">
-    <Compile Remove="Text.Encoding\EncodingThrowHelper.*CallerExpression.cs" />
-  </ItemGroup>
-  <ItemGroup Condition="'$(TargetFramework)' != 'netstandard2.0' And '$(TargetFramework)' != 'netstandard2.1'">
-    <Compile Remove="Text.Encoding\EncodingThrowHelper.*NetStandard.cs" />
-  </ItemGroup>
-
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
       <_Parameter1>Bodu.Text.Encoding.Test</_Parameter1>
