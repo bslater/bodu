@@ -199,8 +199,8 @@ internal sealed partial class ConfigurationReader
                 case IniDuplicateSectionBehavior.Disallowed:
                     EmitDiagnostic(
                         ConfigurationDiagnosticSeverity.Error,
-                        ConfigurationDiagnosticCode.UnterminatedSectionHeader,
-                        $"Duplicate section pattern '{name}'.",
+                        ConfigurationDiagnosticCode.DuplicateSection,
+                        string.Format(CultureInfo.InvariantCulture, ConfigurationResourceStrings.Format_Invalid_DuplicateSection, name),
                         headerLoc);
                     return existing;
 

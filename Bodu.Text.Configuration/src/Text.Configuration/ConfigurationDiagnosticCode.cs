@@ -73,4 +73,22 @@ public enum ConfigurationDiagnosticCode
     /// A configuration property key was longer than the configured maximum.
     /// </summary>
     KeyTooLong = 11,
+
+    /// <summary>
+    /// A duplicate section header was encountered when <see cref="IniDuplicateSectionBehavior.Disallowed" /> was
+    /// active.
+    /// </summary>
+    DuplicateSection = 12,
+
+    /// <summary>
+    /// A glob expression's numeric range (<c>{n1..n2}</c>) would expand to more alternatives than the parser
+    /// permits.
+    /// </summary>
+    NumericRangeTooLarge = 13,
+
+    /// <summary>
+    /// A configuration section header contained non-whitespace content after the closing <c>]</c> when the
+    /// configured section-header mode did not permit trailing content.
+    /// </summary>
+    TrailingContentAfterSectionHeader = 14,
 }
