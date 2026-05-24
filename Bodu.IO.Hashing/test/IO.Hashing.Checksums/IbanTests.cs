@@ -51,13 +51,14 @@ public sealed class IbanTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Iban.IsValid(ReadOnlySpan{char})" /> returns <see langword="true" /> for an empty
-    /// span — the documented short-circuit branch.
+    /// Verifies that <see cref="Iban.IsValid(ReadOnlySpan{char})" /> rejects the empty span. A full-sequence
+    /// validator requires at least the country-code and check-digit prefix, so an empty input cannot satisfy the
+    /// algorithm's invariant.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenSequenceIsEmpty_ShouldReturnTrue()
+    public void IsValid_WhenSequenceIsEmpty_ShouldReturnFalse()
     {
-        Assert.IsTrue(Iban.IsValid(ReadOnlySpan<char>.Empty));
+        Assert.IsFalse(Iban.IsValid(ReadOnlySpan<char>.Empty));
     }
 
     /// <summary>
