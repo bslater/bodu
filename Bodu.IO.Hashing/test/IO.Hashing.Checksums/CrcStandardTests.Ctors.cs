@@ -46,7 +46,7 @@ public partial class CrcStandardTests
             initialValue: 0xB704CEUL,
             reflectIn: false,
             reflectOut: true,
-            xOrOut: 0xDEADBEEFUL);
+            xOrOut: 0xDEADBEUL);
 
         Assert.AreEqual("Round-Trip", standard.Name);
         Assert.AreEqual(24, standard.Size);
@@ -54,7 +54,7 @@ public partial class CrcStandardTests
         Assert.AreEqual(0xB704CEUL, standard.InitialValue);
         Assert.IsFalse(standard.ReflectIn);
         Assert.IsTrue(standard.ReflectOut);
-        Assert.AreEqual(0xDEADBEEFUL, standard.XOrOut);
+        Assert.AreEqual(0xDEADBEUL, standard.XOrOut);
     }
 
     /// <summary>

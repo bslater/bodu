@@ -35,7 +35,7 @@ public partial class CrcStandardTests
         CrcStandard baseStandard = CreateReference();
 
         Assert.IsFalse(baseStandard.Equals(CreateReference(size: 16)));
-        Assert.IsFalse(baseStandard.Equals(CreateReference(polynomial: 0x1021UL)));
+        Assert.IsFalse(baseStandard.Equals(CreateReference(polynomial: 0x8005UL)));
         Assert.IsFalse(baseStandard.Equals(CreateReference(initialValue: 0UL)));
         Assert.IsFalse(baseStandard.Equals(CreateReference(reflectIn: false)));
         Assert.IsFalse(baseStandard.Equals(CreateReference(reflectOut: false)));

@@ -133,12 +133,18 @@ public sealed partial class CrcStandard
     /// <param name="xOrOut">The value to XOR the final output with.</param>
     /// <exception cref="ArgumentException"><paramref name="name" /> is <see langword="null" /> or empty.</exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="size" /> is less than <see cref="MinSize" /> or greater than <see cref="MaxSize" />.
+    /// <paramref name="size" /> is less than <see cref="MinSize" /> or greater than <see cref="MaxSize" />; or
+    /// <paramref name="polynomial" />, <paramref name="initialValue" />, or <paramref name="xOrOut" /> does not fit in
+    /// <paramref name="size" /> bits.
     /// </exception>
     public CrcStandard(string name, int size, ulong polynomial, ulong initialValue, bool reflectIn, bool reflectOut, ulong xOrOut)
     {
         ThrowHelper.ThrowIfNullOrEmpty(name);
         ThrowHelper.ThrowIfOutOfRange(size, MinSize, MaxSize);
+        ulong widthMask = size == 64 ? ulong.MaxValue : (1UL << size) - 1UL;
+        if (polynomial > widthMask) throw new ArgumentOutOfRangeException(nameof(polynomial), polynomial, $"Value must fit in {size} bits (≤ 0x{widthMask:X}).");
+        if (initialValue > widthMask) throw new ArgumentOutOfRangeException(nameof(initialValue), initialValue, $"Value must fit in {size} bits (≤ 0x{widthMask:X}).");
+        if (xOrOut > widthMask) throw new ArgumentOutOfRangeException(nameof(xOrOut), xOrOut, $"Value must fit in {size} bits (≤ 0x{widthMask:X}).");
 
         Name = name;
         Size = size;
