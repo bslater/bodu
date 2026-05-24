@@ -83,10 +83,10 @@ namespace Bodu.Security.Cryptography;
 /// using Bodu.Security.Cryptography.Extensions;
 ///
 /// using IBlockCipher cipher = new AesBlockCipher(key);
-/// byte[] iv = BuildGcmIv(nonce); // standard 96-bit nonce padded to the cipher block size
-/// using IAeadBlockCipherModeTransform gcm = new GcmModeTransform(cipher, iv);
+/// // GCM takes the 96-bit (12-byte) nonce directly — J0 is derived internally as nonce || 0x00000001.
+/// using IAeadBlockCipherModeTransform gcm = new GcmModeTransform(cipher, nonce);
 /// byte[] sealed_ = gcm.Encrypt(plaintext, associatedData: header);
-/// using IAeadBlockCipherModeTransform dec = new GcmModeTransform(cipher, iv);
+/// using IAeadBlockCipherModeTransform dec = new GcmModeTransform(cipher, nonce);
 /// byte[] recovered = dec.Decrypt(sealed_, associatedData: header);
 ///]]>
 /// </code>
