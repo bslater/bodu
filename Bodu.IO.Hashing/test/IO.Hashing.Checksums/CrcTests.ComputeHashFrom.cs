@@ -238,4 +238,70 @@ public partial class CrcTests
         Assert.AreEqual("previousHash", ex.ParamName);
     }
 
+    /// <summary>
+    /// Verifies that calling <see cref="Crc.ComputeHashFrom(byte[], byte[])" /> on an instance that already has
+    /// in-progress incremental state does not disturb that state. After the resumption call returns, continuing
+    /// to <see cref="Crc.Append" /> on the original instance must produce the same digest as a clean instance
+    /// hashing the full concatenated input from scratch.
+    /// </summary>
+    [TestMethod]
+    public void ComputeHashFrom_WhenInstanceHasInProgressIncrementalState_ShouldNotMutateThatState()
+    {
+        byte[] firstHalf = [0x31, 0x32];
+        byte[] secondHalf = [0x33, 0x34];
+
+        // Establish a clean baseline: hashing first+second in one go.
+        Crc baseline = new(CrcStandard.CRC32_ISOHDLC);
+        baseline.Append(firstHalf);
+        baseline.Append(secondHalf);
+        var baselineDigest = baseline.GetCurrentHash();
+
+        Crc subject = new(CrcStandard.CRC32_ISOHDLC);
+        subject.Append(firstHalf);
+
+        // Resumption call that has no relationship to subject's incremental work.
+        byte[] unrelatedPrevHash = [0xDE, 0xAD, 0xBE, 0xEF];
+        byte[] unrelatedNewData = [0x99];
+        _ = subject.ComputeHashFrom(unrelatedPrevHash, unrelatedNewData);
+
+        // The subject's pending state must survive intact so the second half folds in correctly.
+        subject.Append(secondHalf);
+        var subjectDigest = subject.GetCurrentHash();
+
+        CollectionAssert.AreEqual(baselineDigest, subjectDigest);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Crc.TryComputeHashFrom" /> leaves any in-progress incremental state on the
+    /// instance intact when it returns <see langword="false" /> because <paramref name="destination" /> is too
+    /// small to receive the finalized hash.
+    /// </summary>
+    [TestMethod]
+    public void TryComputeHashFrom_WhenDestinationIsTooSmall_ShouldNotMutateIncrementalState()
+    {
+        byte[] firstHalf = [0x31, 0x32];
+        byte[] secondHalf = [0x33, 0x34];
+
+        // Establish a clean baseline.
+        Crc baseline = new(CrcStandard.CRC32_ISOHDLC);
+        baseline.Append(firstHalf);
+        baseline.Append(secondHalf);
+        var baselineDigest = baseline.GetCurrentHash();
+
+        Crc subject = new(CrcStandard.CRC32_ISOHDLC);
+        subject.Append(firstHalf);
+
+        var previousHash = new byte[subject.HashLengthInBytes];
+        var tooSmallDestination = new byte[subject.HashLengthInBytes - 1];
+        var success = subject.TryComputeHashFrom(previousHash, [0xFF], tooSmallDestination, out var written);
+
+        Assert.IsFalse(success);
+        Assert.AreEqual(0, written);
+
+        subject.Append(secondHalf);
+        var subjectDigest = subject.GetCurrentHash();
+
+        CollectionAssert.AreEqual(baselineDigest, subjectDigest);
+    }
+
 }
