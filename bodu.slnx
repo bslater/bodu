@@ -44,6 +44,7 @@
   <Folder Name="/Bodu.Text.Encoding/">
     <Project Path="Bodu.Text.Encoding\src\Bodu.Text.Encoding.csproj" />
     <Project Path="Bodu.Text.Encoding\test\Bodu.Text.Encoding.Test.csproj" />
+    <Project Path="Bodu.Text.Encoding\bench\Bodu.Text.Encoding.Benchmarks.csproj" />
   </Folder>
   <Folder Name="/Bodu.Text.Configuration/">
     <Project Path="Bodu.Text.Configuration\src\Bodu.Text.Configuration.csproj" />
