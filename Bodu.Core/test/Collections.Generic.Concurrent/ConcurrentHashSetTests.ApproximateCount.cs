@@ -105,42 +105,42 @@ public partial class ConcurrentHashSetTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="ConcurrentHashSet{T}.IsEmptySnapshot"/> reports <see langword="true"/> for a
+    /// Verifies that <see cref="ConcurrentHashSet{T}.IsEmptyApproximate"/> reports <see langword="true"/> for a
     /// fresh set and <see langword="false"/> after a single Add.
     /// </summary>
     [TestMethod]
-    public void IsEmptySnapshot_WhenSetIsEmpty_ShouldReturnTrue()
+    public void IsEmptyApproximate_WhenSetIsEmpty_ShouldReturnTrue()
     {
         var set = new ConcurrentHashSet<int>();
 
-        Assert.IsTrue(set.IsEmptySnapshot);
+        Assert.IsTrue(set.IsEmptyApproximate);
 
         set.Add(1);
-        Assert.IsFalse(set.IsEmptySnapshot);
+        Assert.IsFalse(set.IsEmptyApproximate);
     }
 
     /// <summary>
-    /// Verifies that <see cref="ConcurrentHashSet{T}.IsEmptySnapshot"/> agrees with
+    /// Verifies that <see cref="ConcurrentHashSet{T}.IsEmptyApproximate"/> agrees with
     /// <see cref="ConcurrentHashSet{T}.IsEmpty"/> after the set transitions back to empty via Remove and Clear.
     /// </summary>
     [TestMethod]
-    public void IsEmptySnapshot_WhenSetEmptiedByRemoveOrClear_ShouldReturnTrue()
+    public void IsEmptyApproximate_WhenSetEmptiedByRemoveOrClear_ShouldReturnTrue()
     {
         var set = new ConcurrentHashSet<int>(new[] { 1, 2, 3 });
 
-        Assert.IsFalse(set.IsEmptySnapshot);
+        Assert.IsFalse(set.IsEmptyApproximate);
 
         set.Remove(1);
         set.Remove(2);
         set.Remove(3);
 
-        Assert.IsTrue(set.IsEmptySnapshot);
-        Assert.AreEqual(set.IsEmpty, set.IsEmptySnapshot);
+        Assert.IsTrue(set.IsEmptyApproximate);
+        Assert.AreEqual(set.IsEmpty, set.IsEmptyApproximate);
 
         set.Add(99);
         set.Clear();
 
-        Assert.IsTrue(set.IsEmptySnapshot);
-        Assert.AreEqual(set.IsEmpty, set.IsEmptySnapshot);
+        Assert.IsTrue(set.IsEmptyApproximate);
+        Assert.AreEqual(set.IsEmpty, set.IsEmptyApproximate);
     }
 }

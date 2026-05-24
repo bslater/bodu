@@ -60,7 +60,31 @@ public sealed class XorShiftRandom :
     /// Initializes a new instance of the <see cref="XorShiftRandom" /> class using a system-generated seed.
     /// </summary>
     /// <remarks>
+    /// <para>
     /// The default seed is derived from <see cref="Environment.TickCount" /> at the time of construction.
+    /// </para>
+    /// <para>
+    /// <see cref="Environment.TickCount" /> has finite resolution (commonly ~15.6 ms on Windows, finer on Linux),
+    /// so two <see cref="XorShiftRandom" /> instances created back-to-back within the same tick will observe the
+    /// same seed and therefore yield identical sequences. This is a deliberate trade-off for the cheapest possible
+    /// default seeding on a non-cryptographic PRNG. Callers that require either guarantee should use a different
+    /// constructor:
+    /// </para>
+    /// <list type="bullet">
+    /// <item>
+    /// <description>
+    /// For <em>reproducibility</em> (tests, benchmarks, replayable simulations) use
+    /// <see cref="XorShiftRandom(int)" /> or <see cref="XorShiftRandom(uint)" /> with an explicit seed.
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <description>
+    /// For <em>distinct sequences across many instances</em> derive the seed from
+    /// <see cref="System.Random.Shared" /> (e.g. <c>new XorShiftRandom(Random.Shared.Next())</c>) or, when stronger
+    /// entropy is required, from <see cref="System.Security.Cryptography.RandomNumberGenerator" />.
+    /// </description>
+    /// </item>
+    /// </list>
     /// </remarks>
     public XorShiftRandom()
         : this((uint)Environment.TickCount)
@@ -103,11 +127,12 @@ public sealed class XorShiftRandom :
     /// <inheritdoc />
     public override int Next(int minValue, int maxValue)
     {
-        ThrowHelper.ThrowIfGreaterThanOrEqualOther(minValue, maxValue);
+        ThrowHelper.ThrowIfGreaterThanOther(minValue, maxValue);
 
         // Compute range in long-space so the subtraction never overflows, even for the
         // full-int span Next(int.MinValue, int.MaxValue) — every int range fits in uint.
         var range = (uint)((long)maxValue - (long)minValue);
+        if (range == 0) return minValue;
         return (int)((long)minValue + BoundedNextUInt32(range, _bitsSource));
     }
 

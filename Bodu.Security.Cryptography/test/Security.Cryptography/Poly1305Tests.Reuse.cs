@@ -88,6 +88,63 @@ public partial class Poly1305Tests
     }
 
     /// <summary>
+    /// Verifies that <c>Poly1305.ProcessFinalBlock</c> itself zeros the derived polynomial key schedule
+    /// (<c>_r</c>, <c>_s</c>, <c>_key</c>) and the running accumulator <c>_acc</c> before returning the tag,
+    /// independently of the framework's post-finalize auto-<see cref="HashAlgorithm.Initialize" />.
+    /// </summary>
+    /// <remarks>
+    /// Both <see cref="HashAlgorithm.ComputeHash(byte[])" /> and
+    /// <see cref="HashAlgorithm.TransformFinalBlock(byte[], int, int)" /> invoke
+    /// <see cref="HashAlgorithm.Initialize" /> immediately after <c>HashFinal</c> returns, which on
+    /// Poly1305 re-derives the schedule from the (already-cleared) <c>KeyValue</c>. That makes the end
+    /// state observably all-zero even when <c>ProcessFinalBlock</c> clears nothing itself. To validate the
+    /// in-window clearing this commit adds, the test invokes the protected <c>ProcessFinalBlock</c>
+    /// directly via reflection — bypassing the framework's auto-Initialize so only the clearing performed
+    /// by <c>ProcessFinalBlock</c> itself is observable.
+    /// </remarks>
+    [TestMethod]
+    public void ComputeHash_ShouldClearDerivedKeyScheduleAndAccumulator()
+    {
+        using var poly = new Poly1305 { Key = (byte[])Poly1305TestKey.Clone() };
+        byte[] message = System.Text.Encoding.ASCII.GetBytes("payload");
+
+        // Drive ProcessBlock indirectly via HashCore (which accepts byte[]) to seed _acc with non-zero
+        // state, then invoke the protected ProcessFinalBlock directly via reflection. The HashAlgorithm
+        // pipeline (HashFinal -> Initialize) is bypassed, so the only thing that can zero _r/_s/_key/_acc
+        // is ProcessFinalBlock itself.
+        var hashCore = typeof(HashAlgorithm).GetMethod(
+            "HashCore",
+            BindingFlags.Instance | BindingFlags.NonPublic,
+            new[] { typeof(byte[]), typeof(int), typeof(int) });
+        var processFinalBlock = typeof(Poly1305).GetMethod("ProcessFinalBlock", BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.IsNotNull(hashCore);
+        Assert.IsNotNull(processFinalBlock);
+
+        hashCore.Invoke(poly, new object[] { message, 0, message.Length });
+        _ = processFinalBlock.Invoke(poly, null);
+
+        var rField = typeof(Poly1305).GetField("_r", BindingFlags.Instance | BindingFlags.NonPublic);
+        var sField = typeof(Poly1305).GetField("_s", BindingFlags.Instance | BindingFlags.NonPublic);
+        var keyField = typeof(Poly1305).GetField("_key", BindingFlags.Instance | BindingFlags.NonPublic);
+        var accField = typeof(Poly1305).GetField("_acc", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        Assert.IsNotNull(rField);
+        Assert.IsNotNull(sField);
+        Assert.IsNotNull(keyField);
+        Assert.IsNotNull(accField);
+
+        uint[] rAfter = (uint[])rField.GetValue(poly)!;
+        uint[] sAfter = (uint[])sField.GetValue(poly)!;
+        uint[] keyAfter = (uint[])keyField.GetValue(poly)!;
+        uint[] accAfter = (uint[])accField.GetValue(poly)!;
+
+        Assert.IsTrue(Array.TrueForAll(rAfter, v => v == 0), "ProcessFinalBlock must clear _r.");
+        Assert.IsTrue(Array.TrueForAll(sAfter, v => v == 0), "ProcessFinalBlock must clear _s.");
+        Assert.IsTrue(Array.TrueForAll(keyAfter, v => v == 0), "ProcessFinalBlock must clear _key.");
+        Assert.IsTrue(Array.TrueForAll(accAfter, v => v == 0), "ProcessFinalBlock must clear _acc.");
+    }
+
+    /// <summary>
     /// Verifies that after a hash has been produced, explicitly reassigning <see cref="Poly1305.Key" /> with
     /// a fresh 32-byte key rebuilds the schedule and lets the same instance authenticate a second message
     /// correctly.

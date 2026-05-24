@@ -35,6 +35,18 @@ public static partial class NonCryptographicHashAlgorithmExtensions
     /// <see cref="NonCryptographicHashAlgorithm.GetHashAndReset()" /> completes. Any prior incremental state is
     /// discarded.
     /// </remarks>
+    /// <remarks>
+    /// Non-cryptographic hash algorithms are designed for scenarios such as checksums, hash tables, sharding,
+    /// bucketing, fingerprinting, and accidental-corruption detection. They must not be used for password hashing,
+    /// digital signatures, message authentication, tamper detection, or other security-sensitive purposes.
+    /// </remarks>
+    /// <remarks>
+    /// Comparison uses <see cref="System.MemoryExtensions.SequenceEqual{T}(ReadOnlySpan{T}, ReadOnlySpan{T})" />
+    /// and short-circuits on the first mismatching byte. It is <strong>not</strong> constant-time and must not be
+    /// used to verify an authenticator value supplied by an untrusted caller. For constant-time hash verification
+    /// see the <c>Bodu.Security.Cryptography.HashAlgorithmExtensions.VerifyHash</c> overloads, which rely on
+    /// <see cref="System.Security.Cryptography.CryptographicOperations.FixedTimeEquals(ReadOnlySpan{byte}, ReadOnlySpan{byte})" />.
+    /// </remarks>
     public static bool VerifyHash(this NonCryptographicHashAlgorithm algorithm, byte[] input, byte[] expectedHash)
     {
         ArgumentNullException.ThrowIfNull(algorithm);
@@ -81,6 +93,18 @@ public static partial class NonCryptographicHashAlgorithmExtensions
     /// returns <see langword="false" />.
     /// </para>
     /// </remarks>
+    /// <remarks>
+    /// Non-cryptographic hash algorithms are designed for scenarios such as checksums, hash tables, sharding,
+    /// bucketing, fingerprinting, and accidental-corruption detection. They must not be used for password hashing,
+    /// digital signatures, message authentication, tamper detection, or other security-sensitive purposes.
+    /// </remarks>
+    /// <remarks>
+    /// Comparison uses <see cref="System.MemoryExtensions.SequenceEqual{T}(ReadOnlySpan{T}, ReadOnlySpan{T})" />
+    /// and short-circuits on the first mismatching byte. It is <strong>not</strong> constant-time and must not be
+    /// used to verify an authenticator value supplied by an untrusted caller. For constant-time hash verification
+    /// see the <c>Bodu.Security.Cryptography.HashAlgorithmExtensions.VerifyHash</c> overloads, which rely on
+    /// <see cref="System.Security.Cryptography.CryptographicOperations.FixedTimeEquals(ReadOnlySpan{byte}, ReadOnlySpan{byte})" />.
+    /// </remarks>
     public static bool VerifyHash(this NonCryptographicHashAlgorithm algorithm, byte[] input, string expectedHex)
     {
         ArgumentNullException.ThrowIfNull(algorithm);
@@ -125,6 +149,18 @@ public static partial class NonCryptographicHashAlgorithmExtensions
     /// </exception>
     /// <remarks>
     /// The algorithm state is reset before the stream is read. Any prior incremental state is discarded.
+    /// </remarks>
+    /// <remarks>
+    /// Non-cryptographic hash algorithms are designed for scenarios such as checksums, hash tables, sharding,
+    /// bucketing, fingerprinting, and accidental-corruption detection. They must not be used for password hashing,
+    /// digital signatures, message authentication, tamper detection, or other security-sensitive purposes.
+    /// </remarks>
+    /// <remarks>
+    /// Comparison uses <see cref="System.MemoryExtensions.SequenceEqual{T}(ReadOnlySpan{T}, ReadOnlySpan{T})" />
+    /// and short-circuits on the first mismatching byte. It is <strong>not</strong> constant-time and must not be
+    /// used to verify an authenticator value supplied by an untrusted caller. For constant-time hash verification
+    /// see the <c>Bodu.Security.Cryptography.HashAlgorithmExtensions.VerifyHash</c> overloads, which rely on
+    /// <see cref="System.Security.Cryptography.CryptographicOperations.FixedTimeEquals(ReadOnlySpan{byte}, ReadOnlySpan{byte})" />.
     /// </remarks>
     public static bool VerifyHash(this NonCryptographicHashAlgorithm algorithm, Stream stream, byte[] expectedHash)
     {
@@ -171,6 +207,18 @@ public static partial class NonCryptographicHashAlgorithmExtensions
     /// <see langword="false" />.
     /// </para>
     /// </remarks>
+    /// <remarks>
+    /// Non-cryptographic hash algorithms are designed for scenarios such as checksums, hash tables, sharding,
+    /// bucketing, fingerprinting, and accidental-corruption detection. They must not be used for password hashing,
+    /// digital signatures, message authentication, tamper detection, or other security-sensitive purposes.
+    /// </remarks>
+    /// <remarks>
+    /// Comparison uses <see cref="System.MemoryExtensions.SequenceEqual{T}(ReadOnlySpan{T}, ReadOnlySpan{T})" />
+    /// and short-circuits on the first mismatching byte. It is <strong>not</strong> constant-time and must not be
+    /// used to verify an authenticator value supplied by an untrusted caller. For constant-time hash verification
+    /// see the <c>Bodu.Security.Cryptography.HashAlgorithmExtensions.VerifyHash</c> overloads, which rely on
+    /// <see cref="System.Security.Cryptography.CryptographicOperations.FixedTimeEquals(ReadOnlySpan{byte}, ReadOnlySpan{byte})" />.
+    /// </remarks>
     public static bool VerifyHash(this NonCryptographicHashAlgorithm algorithm, Stream stream, string expectedHex)
     {
         ArgumentNullException.ThrowIfNull(algorithm);
@@ -213,6 +261,18 @@ public static partial class NonCryptographicHashAlgorithmExtensions
     /// The algorithm state is reset before computation and restored to a clean state via
     /// <see cref="NonCryptographicHashAlgorithm.GetHashAndReset()" /> after the digest is produced.
     /// </remarks>
+    /// <remarks>
+    /// Non-cryptographic hash algorithms are designed for scenarios such as checksums, hash tables, sharding,
+    /// bucketing, fingerprinting, and accidental-corruption detection. They must not be used for password hashing,
+    /// digital signatures, message authentication, tamper detection, or other security-sensitive purposes.
+    /// </remarks>
+    /// <remarks>
+    /// Comparison uses <see cref="System.MemoryExtensions.SequenceEqual{T}(ReadOnlySpan{T}, ReadOnlySpan{T})" />
+    /// and short-circuits on the first mismatching byte. It is <strong>not</strong> constant-time and must not be
+    /// used to verify an authenticator value supplied by an untrusted caller. For constant-time hash verification
+    /// see the <c>Bodu.Security.Cryptography.HashAlgorithmExtensions.VerifyHash</c> overloads, which rely on
+    /// <see cref="System.Security.Cryptography.CryptographicOperations.FixedTimeEquals(ReadOnlySpan{byte}, ReadOnlySpan{byte})" />.
+    /// </remarks>
     public static bool VerifyHash(
         this NonCryptographicHashAlgorithm algorithm,
         ReadOnlySpan<byte> input,
@@ -246,6 +306,18 @@ public static partial class NonCryptographicHashAlgorithmExtensions
     /// Delegates to the
     /// <see cref="VerifyHash(NonCryptographicHashAlgorithm, ReadOnlySpan{byte}, ReadOnlySpan{byte})" /> overload.
     /// </remarks>
+    /// <remarks>
+    /// Non-cryptographic hash algorithms are designed for scenarios such as checksums, hash tables, sharding,
+    /// bucketing, fingerprinting, and accidental-corruption detection. They must not be used for password hashing,
+    /// digital signatures, message authentication, tamper detection, or other security-sensitive purposes.
+    /// </remarks>
+    /// <remarks>
+    /// Comparison uses <see cref="System.MemoryExtensions.SequenceEqual{T}(ReadOnlySpan{T}, ReadOnlySpan{T})" />
+    /// and short-circuits on the first mismatching byte. It is <strong>not</strong> constant-time and must not be
+    /// used to verify an authenticator value supplied by an untrusted caller. For constant-time hash verification
+    /// see the <c>Bodu.Security.Cryptography.HashAlgorithmExtensions.VerifyHash</c> overloads, which rely on
+    /// <see cref="System.Security.Cryptography.CryptographicOperations.FixedTimeEquals(ReadOnlySpan{byte}, ReadOnlySpan{byte})" />.
+    /// </remarks>
     public static bool VerifyHash(
         this NonCryptographicHashAlgorithm algorithm,
         ReadOnlyMemory<byte> input,
@@ -276,6 +348,18 @@ public static partial class NonCryptographicHashAlgorithmExtensions
     /// Thrown if <paramref name="algorithm" />, <paramref name="text" />, <paramref name="encoding" />, or
     /// <paramref name="expectedHash" /> is <see langword="null" />.
     /// </exception>
+    /// <remarks>
+    /// Non-cryptographic hash algorithms are designed for scenarios such as checksums, hash tables, sharding,
+    /// bucketing, fingerprinting, and accidental-corruption detection. They must not be used for password hashing,
+    /// digital signatures, message authentication, tamper detection, or other security-sensitive purposes.
+    /// </remarks>
+    /// <remarks>
+    /// Comparison uses <see cref="System.MemoryExtensions.SequenceEqual{T}(ReadOnlySpan{T}, ReadOnlySpan{T})" />
+    /// and short-circuits on the first mismatching byte. It is <strong>not</strong> constant-time and must not be
+    /// used to verify an authenticator value supplied by an untrusted caller. For constant-time hash verification
+    /// see the <c>Bodu.Security.Cryptography.HashAlgorithmExtensions.VerifyHash</c> overloads, which rely on
+    /// <see cref="System.Security.Cryptography.CryptographicOperations.FixedTimeEquals(ReadOnlySpan{byte}, ReadOnlySpan{byte})" />.
+    /// </remarks>
     public static bool VerifyHash(
         this NonCryptographicHashAlgorithm algorithm,
         string text,
