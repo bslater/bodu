@@ -237,4 +237,106 @@ public partial class XorShiftRandomTests
         }
     }
 
+    /// <summary>
+    /// Verifies that <see cref="XorShiftRandom.BoundedNextUInt32(uint, System.Func{uint})" /> rejects a biased
+    /// low-bit sample and redraws from the source. Drives the helper with a scripted source so the rejection
+    /// path is directly observable: for <c>maxExclusive == 3</c>, the input <c>0u</c> yields <c>lowBits == 0</c>
+    /// which is below the rejection threshold of <c>2^32 mod 3 == 1</c> and must be retried.
+    /// </summary>
+    [TestMethod]
+    public void BoundedNextUInt32_WhenLowBitsBelowThreshold_ShouldRejectAndRedraw()
+    {
+        var queue = new Queue<uint>(new[] { 0u, 0x55555556u });
+
+        var actual = XorShiftRandom.BoundedNextUInt32(3u, () => queue.Dequeue());
+
+        Assert.AreEqual(0, queue.Count, "Expected the biased first value to be rejected and the second value consumed.");
+        Assert.AreEqual(1u, actual);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="XorShiftRandom.BoundedNextUInt32(uint, System.Func{uint})" /> returns immediately
+    /// when the first draw lies above the rejection threshold, without consuming additional source values.
+    /// </summary>
+    [TestMethod]
+    public void BoundedNextUInt32_WhenLowBitsAboveThreshold_ShouldReturnFromFirstDraw()
+    {
+        var calls = 0;
+
+        var actual = XorShiftRandom.BoundedNextUInt32(3u, () =>
+        {
+            calls++;
+            return 0x55555556u;
+        });
+
+        Assert.AreEqual(1, calls, "Expected exactly one source call when the first draw is above the rejection threshold.");
+        Assert.AreEqual(1u, actual);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="XorShiftRandom.BoundedNextUInt32(uint, System.Func{uint})" /> always returns a value
+    /// strictly less than <paramref name="maxExclusive" /> across the full uint input space, including the high
+    /// edge where modulo bias would have produced an out-of-range result with the previous implementation.
+    /// </summary>
+    [TestMethod]
+    [DataRow(2u)]
+    [DataRow(3u)]
+    [DataRow(7u)]
+    [DataRow(1000u)]
+    [DataRow((uint)int.MaxValue)]
+    public void BoundedNextUInt32_WhenSourceProducesHighValue_ShouldReturnInRange(uint maxExclusive)
+    {
+        var samples = new[] { uint.MaxValue, uint.MaxValue - 1u, 0u, 1u, 0x80000000u };
+
+        foreach (var sample in samples)
+        {
+            var queue = new Queue<uint>();
+            queue.Enqueue(sample);
+            for (var i = 0; i < 4; i++) queue.Enqueue(0x55555556u); // fallback values for redraws
+
+            var actual = XorShiftRandom.BoundedNextUInt32(maxExclusive, () => queue.Dequeue());
+            Assert.IsTrue(actual < maxExclusive, $"sample={sample:X}, maxExclusive={maxExclusive}, actual={actual}.");
+        }
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="XorShiftRandom.Next(int, int)" /> handles the full-int range
+    /// <c>[int.MinValue, int.MaxValue)</c> without overflow and returns values inside the documented bounds.
+    /// </summary>
+    [TestMethod]
+    public void Next_WhenRangeIsFullInt_ShouldReturnInRangeWithoutOverflow()
+    {
+        var rng = new XorShiftRandom(42);
+
+        for (var i = 0; i < 10_000; i++)
+        {
+            var value = rng.Next(int.MinValue, int.MaxValue);
+            Assert.IsTrue(value >= int.MinValue && value < int.MaxValue, $"value={value} outside [int.MinValue, int.MaxValue).");
+        }
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="XorShiftRandom.Next(int, int)" /> across the full-int range can reach values
+    /// in both the lower and upper halves of <see cref="int" />, guarding against any future regression that
+    /// collapses the range to a half-interval (for example, by truncating the unsigned range to <c>int.MaxValue</c>).
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    public void Next_WhenRangeIsFullInt_ShouldReachBothHalves()
+    {
+        var rng = new XorShiftRandom(42);
+        var sawLower = false;
+        var sawUpper = false;
+
+        for (var i = 0; i < 1_000_000 && (!sawLower || !sawUpper); i++)
+        {
+            var value = rng.Next(int.MinValue, int.MaxValue);
+            if (value < int.MinValue / 2) sawLower = true;
+            if (value > int.MaxValue / 2) sawUpper = true;
+        }
+
+        Assert.IsTrue(sawLower, "Did not observe any value in the lower half of int after 1,000,000 draws.");
+        Assert.IsTrue(sawUpper, "Did not observe any value in the upper half of int after 1,000,000 draws.");
+    }
+
 }

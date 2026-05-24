@@ -45,7 +45,7 @@ namespace Bodu;
 /// </remarks>
 [Serializable]
 [DebuggerDisplay("{ToString(),nq} ({Count} selected)")]
-public partial struct WeekPattern : IEnumerable<DayOfWeek>
+public readonly partial struct WeekPattern : IEnumerable<DayOfWeek>
 {
 #pragma warning disable IDE1006
 
@@ -75,7 +75,7 @@ public partial struct WeekPattern : IEnumerable<DayOfWeek>
     private static readonly char[] WeekdaySymbols = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 #pragma warning restore IDE1006
 
-    private byte _selectedDays;
+    private readonly byte _selectedDays;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="WeekPattern" /> struct with the specified selected days.
@@ -223,17 +223,18 @@ public partial struct WeekPattern : IEnumerable<DayOfWeek>
     public static WeekPattern FromByte(byte value) => new WeekPattern((int)value);
 
     /// <summary>
-    /// Returns an enumerator that yields each selected <see cref="DayOfWeek" /> in Sunday-first order.
+    /// Returns a struct enumerator that yields each selected <see cref="DayOfWeek" /> in Sunday-first order
+    /// without allocating.
     /// </summary>
-    /// <returns>An enumerator over the selected days.</returns>
-    public readonly IEnumerator<DayOfWeek> GetEnumerator()
-    {
-        for (var i = 0; i < 7; i++)
-        {
-            if ((_selectedDays & (ShiftValue << (6 - i))) != 0)
-                yield return (DayOfWeek)i;
-        }
-    }
+    /// <returns>
+    /// A <see cref="Enumerator" /> that iterates the selected days. Returning the struct directly avoids the
+    /// heap allocation that a yield-state-machine enumerator would incur, and the C# <c>foreach</c> pattern
+    /// binds to it via pattern matching without going through <see cref="IEnumerable{T}" />.
+    /// </returns>
+    public Enumerator GetEnumerator() => new Enumerator(_selectedDays);
+
+    /// <inheritdoc />
+    IEnumerator<DayOfWeek> IEnumerable<DayOfWeek>.GetEnumerator() => GetEnumerator();
 
     /// <inheritdoc />
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

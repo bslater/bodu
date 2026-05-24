@@ -78,4 +78,76 @@ public partial class WeekPatternTests
             observed);
     }
 
+    /// <summary>
+    /// Verifies that <see cref="WeekPattern.GetEnumerator" /> returns the public struct type
+    /// <see cref="WeekPattern.Enumerator" /> so that the C# <c>foreach</c> pattern binds to it directly and
+    /// avoids the heap allocation that an interface-typed return would trigger when boxed.
+    /// </summary>
+    [TestMethod]
+    public void GetEnumerator_WhenInvoked_ShouldReturnStructEnumeratorType()
+    {
+        var pattern = WeekPattern.Weekdays;
+
+        WeekPattern.Enumerator enumerator = pattern.GetEnumerator();
+
+        Assert.IsTrue(typeof(WeekPattern.Enumerator).IsValueType);
+        Assert.IsTrue(enumerator.MoveNext());
+    }
+
+    /// <summary>
+    /// Verifies that the struct <see cref="WeekPattern.Enumerator" /> implements <see cref="IEnumerator{T}" /> so
+    /// that callers that need an interface-typed enumerator can still box it explicitly.
+    /// </summary>
+    [TestMethod]
+    public void Enumerator_ShouldImplementIEnumeratorOfDayOfWeek()
+    {
+        Assert.IsTrue(typeof(IEnumerator<DayOfWeek>).IsAssignableFrom(typeof(WeekPattern.Enumerator)));
+        Assert.IsTrue(typeof(IDisposable).IsAssignableFrom(typeof(WeekPattern.Enumerator)));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="WeekPattern.Enumerator.MoveNext" /> walks the selected days and that
+    /// <see cref="WeekPattern.Enumerator.Current" /> reports the most recently yielded day. Drives the enumerator
+    /// directly without using <c>foreach</c> so the contract is observed in isolation.
+    /// </summary>
+    [TestMethod]
+    public void Enumerator_WhenWalkedManually_ShouldYieldExpectedDaysInOrder()
+    {
+        // 0b1010101 → Sun, Tue, Thu, Sat.
+        var pattern = WeekPattern.FromByte(0b1010101);
+        var enumerator = pattern.GetEnumerator();
+        var observed = new List<DayOfWeek>();
+
+        while (enumerator.MoveNext())
+            observed.Add(enumerator.Current);
+
+        CollectionAssert.AreEqual(
+            new[] { DayOfWeek.Sunday, DayOfWeek.Tuesday, DayOfWeek.Thursday, DayOfWeek.Saturday },
+            observed);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="WeekPattern.Enumerator.Reset" /> rewinds the enumerator so a second walk yields
+    /// the same sequence as the first.
+    /// </summary>
+    [TestMethod]
+    public void Enumerator_WhenResetAfterWalk_ShouldRestartFromBeginning()
+    {
+        var pattern = WeekPattern.Weekend;
+        var enumerator = pattern.GetEnumerator();
+
+        var first = DrainEnumerator(ref enumerator);
+        enumerator.Reset();
+        var second = DrainEnumerator(ref enumerator);
+
+        CollectionAssert.AreEqual(first, second);
+
+        static List<DayOfWeek> DrainEnumerator(ref WeekPattern.Enumerator e)
+        {
+            var values = new List<DayOfWeek>();
+            while (e.MoveNext())
+                values.Add(e.Current);
+            return values;
+        }
+    }
 }

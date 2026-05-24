@@ -180,10 +180,12 @@ public sealed partial class ConcurrentHashSet<T>
     /// Initializes a new instance of the <see cref="ConcurrentHashSet{T}" /> class with the specified lock striping
     /// level, initial bucket capacity, and equality comparer.
     /// </summary>
-    /// <param name="concurrencyLevel">The number of lock stripes to allocate.</param>
+    /// <param name="concurrencyLevel">The number of lock stripes to allocate. Must be greater than zero.</param>
     /// <param name="capacity">The initial number of buckets.</param>
     /// <param name="comparer">The element comparer, or <see langword="null" /> to use the default comparer.</param>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> is negative.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="capacity" /> is negative, or <paramref name="concurrencyLevel" /> is less than or equal to zero.
+    /// </exception>
     /// <remarks>
     /// This is the single shared initializer that every public constructor delegates to. The capacity is raised to at
     /// least <paramref name="concurrencyLevel" /> so that every lock guards at least one bucket. It is also visible to
@@ -191,6 +193,7 @@ public sealed partial class ConcurrentHashSet<T>
     /// </remarks>
     internal ConcurrentHashSet(int concurrencyLevel, int capacity, IEqualityComparer<T>? comparer)
     {
+        ThrowHelper.ThrowIfLessThanOrEqual(concurrencyLevel, 0);
         ThrowHelper.ThrowIfNegative(capacity);
 
         if (capacity < concurrencyLevel)
@@ -207,11 +210,33 @@ public sealed partial class ConcurrentHashSet<T>
     }
 
     /// <summary>
-    /// Gets the default number of lock stripes, derived from the number of available processors.
+    /// Gets the default number of lock stripes used by the public constructors. Reads
+    /// <see cref="Environment.ProcessorCount" /> and routes through
+    /// <see cref="ClampDefaultConcurrencyLevel(int)" /> so the clamp logic can be exercised in isolation.
     /// </summary>
-    /// <returns>The default lock striping level for newly created instances.</returns>
+    /// <returns>The clamped default lock striping level for newly created instances.</returns>
     private static int DefaultConcurrencyLevel =>
-        Math.Max(1, Environment.ProcessorCount);
+        ClampDefaultConcurrencyLevel(Environment.ProcessorCount);
+
+    /// <summary>
+    /// Clamps a raw processor count to the range used by <see cref="DefaultConcurrencyLevel" />, guaranteeing at
+    /// least one lock and at most <see cref="MaxDefaultConcurrencyLevel" /> locks regardless of the host machine.
+    /// </summary>
+    /// <param name="processorCount">The raw processor count to clamp.</param>
+    /// <returns>A value in the range <c>[1, MaxDefaultConcurrencyLevel]</c>.</returns>
+    /// <remarks>
+    /// Extracted as a static helper so unit tests can exercise the clamp envelope with synthetic processor counts
+    /// rather than relying on the machine's actual <see cref="Environment.ProcessorCount" />.
+    /// </remarks>
+    internal static int ClampDefaultConcurrencyLevel(int processorCount) =>
+        Math.Clamp(processorCount, 1, MaxDefaultConcurrencyLevel);
+
+    /// <summary>
+    /// The upper bound applied to <see cref="DefaultConcurrencyLevel" /> so that the lock array stays small on
+    /// high-core machines where the typical set is also small. Explicit constructors can request a higher level via
+    /// the internal initializer.
+    /// </summary>
+    internal const int MaxDefaultConcurrencyLevel = 32;
 
     /// <summary>
     /// Gets the equality comparer used to hash and compare elements.
@@ -292,6 +317,74 @@ public sealed partial class ConcurrentHashSet<T>
             {
                 ReleaseLocks(locksAcquired);
             }
+        }
+    }
+
+    /// <summary>
+    /// Gets an approximate element count without acquiring any stripe lock.
+    /// </summary>
+    /// <returns>
+    /// The sum of the per-stripe element counters at the moment of the call. The result is correct when no other
+    /// thread is concurrently mutating the set; under concurrent <see cref="Add" />/<see cref="Remove" /> the
+    /// returned value may not reflect any single coherent point-in-time state.
+    /// </returns>
+    /// <remarks>
+    /// <para>
+    /// Use this property when callers need a fast size estimate — for capacity hints, telemetry, or display — but
+    /// can tolerate values that lag or slightly under- or over-count active writers. Prefer <see cref="Count" />
+    /// when an exact snapshot is required.
+    /// </para>
+    /// <para>
+    /// The read takes no locks, so it never blocks writers and never contends with them. The cost is bounded by
+    /// the number of lock stripes (the current default is at most
+    /// <see cref="MaxDefaultConcurrencyLevel" />), not the number of elements.
+    /// </para>
+    /// </remarks>
+    public int ApproximateCount
+    {
+        get
+        {
+            int[] countPerLock = _tables._countPerLock;
+            var count = 0;
+
+            for (var i = 0; i < countPerLock.Length; i++)
+            {
+                checked
+                {
+                    count += Volatile.Read(ref countPerLock[i]);
+                }
+            }
+
+            return count;
+        }
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether the set appears to be empty without acquiring any stripe lock.
+    /// </summary>
+    /// <returns>
+    /// <see langword="true" /> when every per-stripe counter reads as zero at the moment of inspection; otherwise
+    /// <see langword="false" />. As with <see cref="ApproximateCount" /> the answer is exact in the absence of
+    /// concurrent mutation but may briefly disagree with reality under active <see cref="Add" />/<see cref="Remove" />
+    /// traffic.
+    /// </returns>
+    /// <remarks>
+    /// Use this property as a fast emptiness probe in hot paths. Prefer <see cref="IsEmpty" /> when the answer must
+    /// reflect a true point-in-time snapshot — for example, before tearing down the set.
+    /// </remarks>
+    public bool IsEmptySnapshot
+    {
+        get
+        {
+            int[] countPerLock = _tables._countPerLock;
+
+            for (var i = 0; i < countPerLock.Length; i++)
+            {
+                if (Volatile.Read(ref countPerLock[i]) != 0)
+                    return false;
+            }
+
+            return true;
         }
     }
 
