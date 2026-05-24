@@ -340,6 +340,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Unexpected character &apos;{0}&apos; after closing quote on line {1}..
+        /// </summary>
+        internal static string Format_Invalid_DelimitedMalformedRecord {
+            get {
+                return ResourceManager.GetString("Format_Invalid_DelimitedMalformedRecord", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Unterminated quoted field starting on line {0}..
         /// </summary>
         internal static string Format_Invalid_DelimitedUnterminatedQuotedField {

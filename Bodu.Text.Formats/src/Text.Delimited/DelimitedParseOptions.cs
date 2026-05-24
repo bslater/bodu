@@ -106,6 +106,20 @@ public readonly struct DelimitedParseOptions
     public char CommentChar { get; init; } = '#';
 
     /// <summary>
+    /// Gets the policy that controls how the parser reacts to a character that appears between a closing quote
+    /// and the next field delimiter or line terminator.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// The default value is <see cref="DelimitedMalformedRecordBehavior.Throw" />, which surfaces malformed
+    /// records as <see cref="DelimitedFormatException" />. Use <see cref="DelimitedMalformedRecordBehavior.SkipRecord" />
+    /// to retain the historical lenient behaviour of discarding the remainder of the offending record.
+    /// </para>
+    /// </remarks>
+    /// <returns>The malformed-record resolution policy.</returns>
+    public DelimitedMalformedRecordBehavior MalformedRecordBehavior { get; init; } = DelimitedMalformedRecordBehavior.Throw;
+
+    /// <summary>
     /// Gets the policy that controls how the parser resolves duplicate header names when constructing the
     /// column name-to-index map.
     /// </summary>

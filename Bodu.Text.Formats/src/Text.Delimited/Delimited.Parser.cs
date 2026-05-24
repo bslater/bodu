@@ -18,6 +18,9 @@ public static partial class Delimited
     private static readonly CompositeFormat s_duplicateHeader =
         CompositeFormat.Parse(FormatsResourceStrings.Format_Invalid_DelimitedDuplicateHeader);
 
+    private static readonly CompositeFormat s_malformedRecord =
+        CompositeFormat.Parse(FormatsResourceStrings.Format_Invalid_DelimitedMalformedRecord);
+
     /// <summary>
     /// Throws a <see cref="DelimitedFormatException" /> for an unterminated quoted field.
     /// </summary>
@@ -36,6 +39,17 @@ public static partial class Delimited
     internal static void ThrowDuplicateHeader(string headerName, int lineNumber) =>
         throw new DelimitedFormatException(
             string.Format(CultureInfo.InvariantCulture, s_duplicateHeader, headerName, lineNumber), lineNumber);
+
+    /// <summary>
+    /// Throws a <see cref="DelimitedFormatException" /> for a character that appears after the closing quote of a
+    /// quoted field but before the next delimiter or line terminator.
+    /// </summary>
+    /// <param name="unexpected">The offending character.</param>
+    /// <param name="lineNumber">The 1-based line on which the malformed record was detected.</param>
+    [DoesNotReturn]
+    internal static void ThrowMalformedRecord(char unexpected, int lineNumber) =>
+        throw new DelimitedFormatException(
+            string.Format(CultureInfo.InvariantCulture, s_malformedRecord, unexpected, lineNumber), lineNumber);
 
     /// <summary>
     /// Builds the column name-to-index map for a header row according to the configured duplicate-header policy.
@@ -222,7 +236,10 @@ public static partial class Delimited
                     continue;
                 }
 
-                // Unexpected character after a quoted field — skip to end of record.
+                // Unexpected character after a quoted field. Throw or skip according to the configured policy.
+                if (_options.MalformedRecordBehavior == DelimitedMalformedRecordBehavior.Throw)
+                    ThrowMalformedRecord(Current, _lineNumber);
+
                 SkipToEndOfLine();
                 SkipLineEnding();
                 break;
