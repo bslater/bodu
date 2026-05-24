@@ -15,6 +15,9 @@ public static partial class Delimited
     private static readonly CompositeFormat s_unterminatedQuotedField =
         CompositeFormat.Parse(FormatsResourceStrings.Format_Invalid_DelimitedUnterminatedQuotedField);
 
+    private static readonly CompositeFormat s_duplicateHeader =
+        CompositeFormat.Parse(FormatsResourceStrings.Format_Invalid_DelimitedDuplicateHeader);
+
     /// <summary>
     /// Throws a <see cref="DelimitedFormatException" /> for an unterminated quoted field.
     /// </summary>
@@ -23,6 +26,75 @@ public static partial class Delimited
     internal static void ThrowUnterminatedQuotedField(int lineNumber) =>
         throw new DelimitedFormatException(
             string.Format(CultureInfo.InvariantCulture, s_unterminatedQuotedField, lineNumber), lineNumber);
+
+    /// <summary>
+    /// Throws a <see cref="DelimitedFormatException" /> for a duplicated header name.
+    /// </summary>
+    /// <param name="headerName">The header name that appears more than once.</param>
+    /// <param name="lineNumber">The 1-based line on which the header row appears.</param>
+    [DoesNotReturn]
+    internal static void ThrowDuplicateHeader(string headerName, int lineNumber) =>
+        throw new DelimitedFormatException(
+            string.Format(CultureInfo.InvariantCulture, s_duplicateHeader, headerName, lineNumber), lineNumber);
+
+    /// <summary>
+    /// Builds the column name-to-index map for a header row according to the configured duplicate-header policy.
+    /// </summary>
+    /// <param name="headers">The parsed header field values in source order.</param>
+    /// <param name="behavior">The duplicate-header resolution policy.</param>
+    /// <param name="lineNumber">The 1-based line on which the header row appears.</param>
+    /// <returns>A read-only map from header name to the column index assigned by <paramref name="behavior" />.</returns>
+    /// <exception cref="DelimitedFormatException">
+    /// Thrown when <paramref name="behavior" /> is <see cref="DelimitedDuplicateHeaderBehavior.Throw" /> and any
+    /// header name appears more than once.
+    /// </exception>
+    private static IReadOnlyDictionary<string, int> BuildHeaderIndex(
+        List<string> headers,
+        DelimitedDuplicateHeaderBehavior behavior,
+        int lineNumber)
+    {
+        // First pass: identify duplicate header names so AllowDuplicates can omit them and Throw can fail fast.
+        HashSet<string>? duplicates = null;
+        HashSet<string> seen = new(StringComparer.Ordinal);
+        for (var i = 0; i < headers.Count; i++)
+        {
+            if (!seen.Add(headers[i]))
+            {
+                if (behavior == DelimitedDuplicateHeaderBehavior.Throw)
+                    ThrowDuplicateHeader(headers[i], lineNumber);
+
+                duplicates ??= new HashSet<string>(StringComparer.Ordinal);
+                duplicates.Add(headers[i]);
+            }
+        }
+
+        Dictionary<string, int> map = new(StringComparer.Ordinal);
+
+        switch (behavior)
+        {
+            case DelimitedDuplicateHeaderBehavior.FirstWins:
+                for (var i = 0; i < headers.Count; i++)
+                    _ = map.TryAdd(headers[i], i);
+                break;
+
+            case DelimitedDuplicateHeaderBehavior.AllowDuplicates:
+                for (var i = 0; i < headers.Count; i++)
+                {
+                    if (duplicates is null || !duplicates.Contains(headers[i]))
+                        map[headers[i]] = i;
+                }
+
+                break;
+
+            case DelimitedDuplicateHeaderBehavior.LastWins:
+            default:
+                for (var i = 0; i < headers.Count; i++)
+                    map[headers[i]] = i;
+                break;
+        }
+
+        return map;
+    }
 
     /// <summary>
     /// Provides RFC 4180-style character-by-character parsing over a <see cref="ReadOnlySpan{T}" /> of characters.
@@ -89,18 +161,14 @@ public static partial class Delimited
                 }
 
                 // Parse a full record (one or more fields separated by delimiter).
+                var recordLineNumber = _lineNumber;
                 List<string> fields = ParseRecord(delimiter, quote);
 
                 if (firstRecord && _options.HasHeader)
                 {
                     // First record is the header row.
                     headers = fields;
-                    var headerIndex = new Dictionary<string, int>(StringComparer.Ordinal);
-
-                    for (var i = 0; i < headers.Count; i++)
-                        headerIndex[headers[i]] = i;
-
-                    roHeaderIndex = headerIndex;
+                    roHeaderIndex = BuildHeaderIndex(headers, _options.DuplicateHeaderBehavior, recordLineNumber);
                     firstRecord = false;
                     continue;
                 }

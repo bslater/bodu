@@ -207,6 +207,9 @@
   <data name="Format_Invalid_BencodeUnterminatedList" xml:space="preserve">
     <value>Unterminated bencoded list.</value>
   </data>
+  <data name="Format_Invalid_DelimitedDuplicateHeader" xml:space="preserve">
+    <value>Duplicate header '{0}' on line {1}.</value>
+  </data>
   <data name="Format_Invalid_DelimitedUnterminatedQuotedField" xml:space="preserve">
     <value>Unterminated quoted field starting on line {0}.</value>
   </data>

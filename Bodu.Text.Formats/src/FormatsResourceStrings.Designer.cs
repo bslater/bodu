@@ -331,6 +331,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Duplicate header &apos;{0}&apos; on line {1}..
+        /// </summary>
+        internal static string Format_Invalid_DelimitedDuplicateHeader {
+            get {
+                return ResourceManager.GetString("Format_Invalid_DelimitedDuplicateHeader", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Unterminated quoted field starting on line {0}..
         /// </summary>
         internal static string Format_Invalid_DelimitedUnterminatedQuotedField {

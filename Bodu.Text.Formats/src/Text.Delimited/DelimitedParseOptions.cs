@@ -104,4 +104,17 @@ public readonly struct DelimitedParseOptions
     /// </summary>
     /// <returns>The comment-line start character.</returns>
     public char CommentChar { get; init; } = '#';
+
+    /// <summary>
+    /// Gets the policy that controls how the parser resolves duplicate header names when constructing the
+    /// column name-to-index map.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// The default value is <see cref="DelimitedDuplicateHeaderBehavior.Throw" />, which treats duplicate header
+    /// names as a structural error. Only relevant when <see cref="HasHeader" /> is <see langword="true" />.
+    /// </para>
+    /// </remarks>
+    /// <returns>The duplicate-header resolution policy.</returns>
+    public DelimitedDuplicateHeaderBehavior DuplicateHeaderBehavior { get; init; } = DelimitedDuplicateHeaderBehavior.Throw;
 }
