@@ -103,11 +103,12 @@ public sealed class XorShiftRandom :
     /// <inheritdoc />
     public override int Next(int minValue, int maxValue)
     {
-        ThrowHelper.ThrowIfGreaterThanOrEqualOther(minValue, maxValue);
+        ThrowHelper.ThrowIfGreaterThanOther(minValue, maxValue);
 
         // Compute range in long-space so the subtraction never overflows, even for the
         // full-int span Next(int.MinValue, int.MaxValue) — every int range fits in uint.
         var range = (uint)((long)maxValue - (long)minValue);
+        if (range == 0) return minValue;
         return (int)((long)minValue + BoundedNextUInt32(range, _bitsSource));
     }
 

@@ -208,17 +208,36 @@ public partial class XorShiftRandomTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="XorShiftRandom.Next" />(min, max) throws when min is greater than max.
+    /// Verifies that <see cref="XorShiftRandom.Next(int, int)" /> throws when
+    /// <paramref name="minValue" /> is strictly greater than <paramref name="maxValue" />.
     /// </summary>
     [TestMethod]
-    [DataRow(0, 0)]
     [DataRow(1, 0)]
-    [DataRow(1, 1)]
     [DataRow(10, 5)]
-    public void Next_WithMinGreaterThanMax_ShouldThrowExactly(int minValue, int maxValue)
+    [DataRow(0, -1)]
+    [DataRow(int.MaxValue, int.MinValue)]
+    public void Next_WhenMinGreaterThanMax_ShouldThrowExactly(int minValue, int maxValue)
     {
         var rng = new XorShiftRandom();
         Assert.ThrowsExactly<ArgumentException>(() => rng.Next(minValue, maxValue));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="XorShiftRandom.Next(int, int)" /> returns
+    /// <paramref name="value" /> when invoked with an empty range
+    /// (<c>minValue == maxValue</c>), matching the documented behaviour of
+    /// <see cref="System.Random.Next(int, int)" />.
+    /// </summary>
+    [TestMethod]
+    [DataRow(0)]
+    [DataRow(1)]
+    [DataRow(-1)]
+    [DataRow(int.MinValue)]
+    [DataRow(int.MaxValue)]
+    public void Next_WhenMinEqualsMax_ShouldReturnMinValue(int value)
+    {
+        var rng = new XorShiftRandom(seed: 1234);
+        Assert.AreEqual(value, rng.Next(value, value));
     }
 
     /// <summary>
