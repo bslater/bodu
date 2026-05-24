@@ -230,4 +230,59 @@ public interface INotableDateService
     /// </summary>
     /// <param name="year">The year whose cache entries should be cleared.</param>
     void Invalidate(int year);
+
+    /// <summary>
+    /// Re-queries every registered <see cref="INotableDateRuleOverrideProvider" /> and rebuilds the effective rule set
+    /// so that subsequent queries observe the current additions and removals.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// The default implementation is a no-op suitable for services whose rules are immutable for the lifetime of the
+    /// instance. The canonical <see cref="NotableDateService" /> overrides this method to re-snapshot every override
+    /// provider's <see cref="INotableDateRuleOverrideProvider.GetAdditions" /> and
+    /// <see cref="INotableDateRuleOverrideProvider.GetRemovals" /> contributions, rebuild the merged rule set, and clear
+    /// all cached year results. Base rule providers are <em>not</em> re-queried; they are considered load-time inputs.
+    /// </para>
+    /// <para>
+    /// Call this method after mutating a runtime-mutable override provider (for example,
+    /// <see cref="MutableNotableDateRuleOverrideProvider" />) so that additions and removals authored after construction
+    /// take effect.
+    /// </para>
+    /// </remarks>
+    void Reload()
+    {
+        Invalidate();
+    }
+
+    /// <summary>
+    /// Returns the distinct set of territory codes referenced by the service's effective rule set.
+    /// </summary>
+    /// <returns>
+    /// A read-only collection of every non-empty <see cref="NotableDateRule.TerritoryCode" /> that the loaded providers
+    /// cover, sorted case-insensitively. Rules without an explicit territory (global rules) contribute no entry.
+    /// </returns>
+    /// <remarks>
+    /// <para>
+    /// The default implementation returns an empty collection; concrete services should override it to project over
+    /// their effective rule set. Consumers typically use the returned codes to drive territory pickers in UI or to
+    /// enumerate query scopes programmatically.
+    /// </para>
+    /// </remarks>
+    IReadOnlyCollection<string> GetSupportedTerritories() => [];
+
+    /// <summary>
+    /// Returns the distinct set of calendar types referenced by the service's effective rule set.
+    /// </summary>
+    /// <returns>
+    /// A read-only collection of every non-<see langword="null" /> <see cref="NotableDateRule.CalendarType" /> that the
+    /// loaded providers reference. Rules without an explicit calendar scope contribute no entry.
+    /// </returns>
+    /// <remarks>
+    /// <para>
+    /// The default implementation returns an empty collection; concrete services should override it to project over
+    /// their effective rule set. Consumers typically use the returned types to expose calendar-specific filters
+    /// (for example, separating Gregorian observances from <see cref="SysGlobal.HebrewCalendar" />-anchored ones).
+    /// </para>
+    /// </remarks>
+    IReadOnlyCollection<Type> GetSupportedCalendars() => [];
 }

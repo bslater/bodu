@@ -144,9 +144,10 @@ public sealed class NotableDateService : INotableDateService, IDisposable
     private readonly INotableDateCollisionResolver _collisionResolver;
 
     /// <summary>
-    /// The merged rule set after all overrides have been applied; drives every resolution pass.
+    /// The merged rule set after all overrides have been applied; drives every resolution pass. Rebuilt by
+    /// <see cref="Reload" /> when an <see cref="INotableDateRuleOverrideProvider" /> mutates its contributions.
     /// </summary>
-    private readonly IReadOnlyList<NotableDateRule> _effectiveRules;
+    private IReadOnlyList<NotableDateRule> _effectiveRules;
 
     /// <summary>
     /// Lock protecting write access to <see cref="_yearCache" /> during first-time year generation.
@@ -167,8 +168,9 @@ public sealed class NotableDateService : INotableDateService, IDisposable
     /// Identity-keyed set of every rule contributed by an <see cref="INotableDateRuleOverrideProvider" /> addition.
     /// Used by <see cref="IsRemovedByOverride" /> to exempt override additions from same-name
     /// <see cref="RuleRemoval" /> suppression, so an addition can replace a removed base rule of the same name.
+    /// Rebuilt by <see cref="Reload" /> alongside <see cref="_effectiveRules" />.
     /// </summary>
-    private readonly HashSet<NotableDateRule> _overrideAdditions;
+    private HashSet<NotableDateRule> _overrideAdditions;
 
     /// <summary>
     /// The ordered list of override providers applied on top of the base rule set.
@@ -176,9 +178,11 @@ public sealed class NotableDateService : INotableDateService, IDisposable
     private readonly IReadOnlyList<INotableDateRuleOverrideProvider> _overrideProviders;
 
     /// <summary>
-    /// Snapshot of all override removals, materialized once at construction to avoid re-querying providers per year.
+    /// Snapshot of all override removals, materialized once at construction and refreshed by <see cref="Reload" /> so
+    /// that downstream lookups iterate a materialized list once per rule × year × territory rather than re-invoking
+    /// <see cref="INotableDateRuleOverrideProvider.GetRemovals" /> on every check.
     /// </summary>
-    private readonly IReadOnlyList<RuleRemoval> _overrideRemovals;
+    private IReadOnlyList<RuleRemoval> _overrideRemovals;
 
     /// <summary>
     /// The chronological windows resolved by <see cref="ResolveNotableDatesInRange" /> since the last
@@ -192,9 +196,16 @@ public sealed class NotableDateService : INotableDateService, IDisposable
     private readonly object _resolvedWindowsGate = new();
 
     /// <summary>
-    /// The resolver that turns each rule into an anchor date for a given year.
+    /// The resolver that turns each rule into an anchor date for a given year. Rebuilt by <see cref="Reload" /> when
+    /// the effective rule set changes.
     /// </summary>
-    private readonly NotableDateRuleResolver _resolver;
+    private NotableDateRuleResolver _resolver;
+
+    /// <summary>
+    /// The composed algorithm registry that was supplied to the resolver, retained so <see cref="Reload" /> can
+    /// reconstruct an equivalent resolver against the refreshed rule set.
+    /// </summary>
+    private readonly INotableDateAlgorithmRegistry? _algorithmRegistry;
 
     /// <summary>
     /// The resolver used to locate embedded XML resource files.
@@ -340,28 +351,43 @@ public sealed class NotableDateService : INotableDateService, IDisposable
             .Where(r => r is not null)];
         _overrideProviders = opts.OverrideProviders?.ToList() ?? (IReadOnlyList<INotableDateRuleOverrideProvider>)[];
 
-        // Snapshot every override provider's contributions at construction so that downstream lookups iterate a materialized
-        // list once per rule × year × territory rather than re-invoking GetRemovals / GetAdditions on every check. This pins
-        // the cost of any non-trivial override provider (database-backed, configuration-bound, lazily-enumerated) to a single
-        // call per provider and removes a runaway vector for providers that return fresh, infinite, or expensive enumerables
-        // on each invocation. Materialise additions once into a list so the same instances are reused by ApplyOverrides and
-        // by the addition-identity set below.
-        _overrideRemovals = [.. _overrideProviders.SelectMany(p => p.GetRemovals())];
-        List<NotableDateRule> overrideAdditionList = [.. _overrideProviders.SelectMany(p => p.GetAdditions())];
-
-        // Track the addition instances by reference identity. NotableDateRule is a record with value equality, so a HashSet
-        // keyed on its default equality would treat two unrelated rules with identical property values as the same entry —
-        // ReferenceEqualityComparer ensures we only exempt the specific instances contributed by override providers.
-        _overrideAdditions = new HashSet<NotableDateRule>(overrideAdditionList, ReferenceEqualityComparer.Instance);
-
         WorkingWeek = workingWeek;
         _collisionResolver = opts.CollisionResolver ?? new DefaultNotableDateCollisionResolver();
         _nameLocalizer = opts.NameLocalizer;
         _resourcePathResolver = opts.ResourcePathResolver ?? new ResourcePathResolver();
-
-        _effectiveRules = ApplyOverrides(_baseRules, overrideAdditionList);
-        _resolver = new NotableDateRuleResolver(_effectiveRules, effectiveRegistry);
+        _algorithmRegistry = effectiveRegistry;
         _adjustmentHandlers = opts.AdjustmentHandlers;
+
+        (_overrideRemovals, _overrideAdditions, _effectiveRules, _resolver) = BuildOverrideState();
+    }
+
+    /// <summary>
+    /// Re-queries every registered <see cref="INotableDateRuleOverrideProvider" /> and returns the freshly snapshotted
+    /// override removals, addition identity set, merged effective rule set, and resolver. Shared by the constructor
+    /// and <see cref="Reload" /> so that the two callers cannot drift.
+    /// </summary>
+    /// <returns>
+    /// A tuple comprising the override-derived state needed by the resolution pipeline.
+    /// </returns>
+    /// <remarks>
+    /// <para>
+    /// Snapshotting every override provider's contributions in a single pass pins the cost of any non-trivial override
+    /// provider (database-backed, configuration-bound, lazily-enumerated) to a single call per provider and removes a
+    /// runaway vector for providers that return fresh, infinite, or expensive enumerables on each invocation. Override
+    /// additions are tracked by reference identity because <see cref="NotableDateRule" /> is a record with value
+    /// equality — <see cref="ReferenceEqualityComparer" /> ensures we only exempt the specific instances contributed
+    /// by override providers from same-name <see cref="RuleRemoval" /> suppression.
+    /// </para>
+    /// </remarks>
+    private (IReadOnlyList<RuleRemoval> Removals, HashSet<NotableDateRule> Additions, IReadOnlyList<NotableDateRule> Effective, NotableDateRuleResolver Resolver) BuildOverrideState()
+    {
+        IReadOnlyList<RuleRemoval> removals = [.. _overrideProviders.SelectMany(p => p.GetRemovals())];
+        List<NotableDateRule> additionList = [.. _overrideProviders.SelectMany(p => p.GetAdditions())];
+        HashSet<NotableDateRule> additions = new(additionList, ReferenceEqualityComparer.Instance);
+        IReadOnlyList<NotableDateRule> effective = ApplyOverrides(_baseRules, additionList);
+        NotableDateRuleResolver resolver = new(effective, _algorithmRegistry);
+
+        return (removals, additions, effective, resolver);
     }
 
     /// <summary>
@@ -572,6 +598,77 @@ public sealed class NotableDateService : INotableDateService, IDisposable
 
     /// <inheritdoc />
     public void Invalidate(int year) => _yearCache.TryRemove(year, out _);
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// <para>
+    /// Re-snapshots every registered <see cref="INotableDateRuleOverrideProvider" /> by calling
+    /// <see cref="INotableDateRuleOverrideProvider.GetAdditions" /> and
+    /// <see cref="INotableDateRuleOverrideProvider.GetRemovals" />, rebuilds the merged effective rule set, recreates
+    /// the resolver, and clears all cached year results. Base <see cref="INotableDateRuleProvider" /> sources are not
+    /// re-queried; their contribution is fixed for the lifetime of the service.
+    /// </para>
+    /// <para>
+    /// The rebuild is performed under the same gate used by per-year cache writes so that a concurrent reader cannot
+    /// observe a half-applied state. Resolved-window state is cleared identically to <see cref="Invalidate()" />.
+    /// </para>
+    /// </remarks>
+    public void Reload()
+    {
+        lock (_gate)
+        {
+            (_overrideRemovals, _overrideAdditions, _effectiveRules, _resolver) = BuildOverrideState();
+        }
+
+        Invalidate();
+    }
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// <para>
+    /// Projects the effective rule set's <see cref="NotableDateRule.TerritoryCode" /> values through case-insensitive
+    /// distinctness, eliding rules whose territory is <see langword="null" /> or empty. Returned codes preserve their
+    /// authored casing.
+    /// </para>
+    /// </remarks>
+    public IReadOnlyCollection<string> GetSupportedTerritories()
+    {
+        IReadOnlyList<NotableDateRule> snapshot = _effectiveRules;
+        SortedSet<string> territories = new(StringComparer.OrdinalIgnoreCase);
+
+        foreach (NotableDateRule rule in snapshot)
+        {
+            if (!string.IsNullOrEmpty(rule.TerritoryCode))
+            {
+                _ = territories.Add(rule.TerritoryCode);
+            }
+        }
+
+        return territories;
+    }
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// <para>
+    /// Projects the effective rule set's <see cref="NotableDateRule.CalendarType" /> values through reference
+    /// distinctness, eliding rules whose calendar is <see langword="null" /> (global / unscoped rules).
+    /// </para>
+    /// </remarks>
+    public IReadOnlyCollection<Type> GetSupportedCalendars()
+    {
+        IReadOnlyList<NotableDateRule> snapshot = _effectiveRules;
+        HashSet<Type> calendars = [];
+
+        foreach (NotableDateRule rule in snapshot)
+        {
+            if (rule.CalendarType is not null)
+            {
+                _ = calendars.Add(rule.CalendarType);
+            }
+        }
+
+        return calendars;
+    }
 
     /// <inheritdoc />
     public bool IsHolidayNonWorkingDay(DateTime date, string? territoryCode = null, Type? calendarType = null)
