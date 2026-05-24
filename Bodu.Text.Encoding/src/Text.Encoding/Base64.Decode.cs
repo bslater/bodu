@@ -58,9 +58,12 @@ public static partial class Base64
             if (normalized < 0)
                 throw new FormatException(EncodingResourceStrings.Format_Invalid_Base64Alphabet);
 
-            buffer = new byte[GetMaxDecodedLength(normalized)];
-            if (!Convert.TryFromBase64Chars(scratch.AsSpan(0, normalized), buffer, out var bytesWritten))
+            buffer = new byte[GetExactDecodedLength(scratch.AsSpan(0, normalized))];
+            if (!Convert.TryFromBase64Chars(scratch.AsSpan(0, normalized), buffer, out var bytesWritten)
+                || bytesWritten != buffer.Length)
+            {
                 throw new FormatException(EncodingResourceStrings.Format_Invalid_Base64);
+            }
 
             if (style.HasFlag(BaseFormatStyles.RequireCanonicalEncoding)
                 && !IsCanonicalEncoding(buffer.AsSpan(0, bytesWritten), scratch.AsSpan(0, normalized)))
@@ -68,17 +71,33 @@ public static partial class Base64
                 throw new FormatException(EncodingResourceStrings.Format_Invalid_Base64NonCanonical);
             }
 
-            if (bytesWritten == buffer.Length)
-                return buffer;
-
-            var trimmed = new byte[bytesWritten];
-            Buffer.BlockCopy(buffer, 0, trimmed, 0, bytesWritten);
-            return trimmed;
+            return buffer;
         }
         finally
         {
             ArrayPool<char>.Shared.Return(scratch);
         }
+    }
+
+    /// <summary>
+    /// Returns the exact number of decoded bytes that a normalised, padded Base64 character span will produce —
+    /// the normalised length divided by four times three, less one byte per trailing <c>=</c> padding character.
+    /// </summary>
+    /// <param name="normalized">A normalised Base64 character span whose length is a multiple of four.</param>
+    /// <returns>The exact decoded byte count, never negative.</returns>
+    private static int GetExactDecodedLength(ReadOnlySpan<char> normalized)
+    {
+        var groups = normalized.Length / 4;
+        var padding = 0;
+
+        if (normalized.Length >= 1 && normalized[^1] == PaddingChar)
+        {
+            padding = 1;
+            if (normalized.Length >= 2 && normalized[^2] == PaddingChar)
+                padding = 2;
+        }
+
+        return (groups * 3) - padding;
     }
 
     /// <summary>
