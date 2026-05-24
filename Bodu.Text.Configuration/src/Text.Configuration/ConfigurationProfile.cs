@@ -51,7 +51,11 @@ namespace Bodu.Text.Configuration;
 /// </item>
 /// <item>
 /// <term><c>unset</c> sentinel (<see cref="ConfigurationUnsetValueMode" />)</term>
-/// <description>TreatAsLiteral | RemoveEffectiveValue | TreatAsLiteral | TreatAsLiteral</description>
+/// <description>TreatAsLiteral | RemoveEffectiveValue | RemoveEffectiveValue | TreatAsLiteral</description>
+/// </item>
+/// <item>
+/// <term>Missing path root (<see cref="ConfigurationMissingPathRootMode" />)</term>
+/// <description>UseEmptyRoot | Throw | Throw | UseEmptyRoot</description>
 /// </item>
 /// </list>
 /// </remarks>
