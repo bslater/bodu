@@ -47,12 +47,14 @@ internal sealed class ConfigurationResolver
 
         StringComparer comparer = _options.KeyOptions.KeyComparer;
         Dictionary<string, string?> values = new(comparer);
+        Dictionary<string, ConfigurationResolvedEntry> entries = new(comparer);
 
         var normalizedTarget = targetPath is null ? string.Empty : NormalizePath(targetPath, pathRoot);
 
-        // Apply the global section (preamble) first when enabled.
+        // Apply the global section (preamble) first when enabled. Preamble entries are signalled by passing
+        // a null section pattern through to ApplySection.
         if (_options.ApplyPreambleProperties)
-            ApplySection(document.GlobalSection, values);
+            ApplySection(document.GlobalSection, values, entries, sectionPattern: null);
 
         // Apply sections whose name (interpreted as a glob pattern) matches the target path, in source order.
         // Last-wins precedence is naturally handled by dictionary overwrite. The configured PathComparison
@@ -63,19 +65,27 @@ internal sealed class ConfigurationResolver
                 continue;
 
             if (ConfigurationPattern.Compile(section.Name, _options.PathComparison).IsMatch(normalizedTarget))
-                ApplySection(section, values);
+                ApplySection(section, values, entries, sectionPattern: section.Name);
         }
 
-        return new ConfigurationView(values);
+        return new ConfigurationView(values, entries);
     }
 
     /// <summary>
-    /// Applies the entries of <paramref name="section" /> to <paramref name="values" />, honoring the EditorConfig
-    /// <c>unset</c> sentinel.
+    /// Applies the entries of <paramref name="section" /> to <paramref name="values" /> and
+    /// <paramref name="entries" />, honoring the EditorConfig <c>unset</c> sentinel.
     /// </summary>
     /// <param name="section">The section whose entries are layered onto the resolved values.</param>
     /// <param name="values">The accumulating dictionary of resolved values.</param>
-    private void ApplySection(IniSection section, Dictionary<string, string?> values)
+    /// <param name="entries">The accumulating dictionary of origin metadata per key.</param>
+    /// <param name="sectionPattern">
+    /// The section pattern, or <see langword="null" /> when <paramref name="section" /> is the preamble.
+    /// </param>
+    private void ApplySection(
+        IniSection section,
+        Dictionary<string, string?> values,
+        Dictionary<string, ConfigurationResolvedEntry> entries,
+        string? sectionPattern)
     {
         foreach (IniEntry entry in section.Entries)
         {
@@ -86,10 +96,16 @@ internal sealed class ConfigurationResolver
                 && string.Equals(entry.Value, "unset", StringComparison.OrdinalIgnoreCase))
             {
                 values.Remove(key);
+                entries.Remove(key);
                 continue;
             }
 
             values[key] = entry.Value;
+            entries[key] = new ConfigurationResolvedEntry(
+                key,
+                entry.Value,
+                new ConfigurationSourceLocation(entry.LineNumber, linePosition: 1, length: entry.Key.Length),
+                sectionPattern);
         }
     }
 
