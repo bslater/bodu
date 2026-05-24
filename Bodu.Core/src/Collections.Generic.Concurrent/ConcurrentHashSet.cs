@@ -321,6 +321,74 @@ public sealed partial class ConcurrentHashSet<T>
     }
 
     /// <summary>
+    /// Gets an approximate element count without acquiring any stripe lock.
+    /// </summary>
+    /// <returns>
+    /// The sum of the per-stripe element counters at the moment of the call. The result is correct when no other
+    /// thread is concurrently mutating the set; under concurrent <see cref="Add" />/<see cref="Remove" /> the
+    /// returned value may not reflect any single coherent point-in-time state.
+    /// </returns>
+    /// <remarks>
+    /// <para>
+    /// Use this property when callers need a fast size estimate — for capacity hints, telemetry, or display — but
+    /// can tolerate values that lag or slightly under- or over-count active writers. Prefer <see cref="Count" />
+    /// when an exact snapshot is required.
+    /// </para>
+    /// <para>
+    /// The read takes no locks, so it never blocks writers and never contends with them. The cost is bounded by
+    /// the number of lock stripes (the current default is at most
+    /// <see cref="MaxDefaultConcurrencyLevel" />), not the number of elements.
+    /// </para>
+    /// </remarks>
+    public int ApproximateCount
+    {
+        get
+        {
+            int[] countPerLock = _tables._countPerLock;
+            var count = 0;
+
+            for (var i = 0; i < countPerLock.Length; i++)
+            {
+                checked
+                {
+                    count += Volatile.Read(ref countPerLock[i]);
+                }
+            }
+
+            return count;
+        }
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether the set appears to be empty without acquiring any stripe lock.
+    /// </summary>
+    /// <returns>
+    /// <see langword="true" /> when every per-stripe counter reads as zero at the moment of inspection; otherwise
+    /// <see langword="false" />. As with <see cref="ApproximateCount" /> the answer is exact in the absence of
+    /// concurrent mutation but may briefly disagree with reality under active <see cref="Add" />/<see cref="Remove" />
+    /// traffic.
+    /// </returns>
+    /// <remarks>
+    /// Use this property as a fast emptiness probe in hot paths. Prefer <see cref="IsEmpty" /> when the answer must
+    /// reflect a true point-in-time snapshot — for example, before tearing down the set.
+    /// </remarks>
+    public bool IsEmptySnapshot
+    {
+        get
+        {
+            int[] countPerLock = _tables._countPerLock;
+
+            for (var i = 0; i < countPerLock.Length; i++)
+            {
+                if (Volatile.Read(ref countPerLock[i]) != 0)
+                    return false;
+            }
+
+            return true;
+        }
+    }
+
+    /// <summary>
     /// Adds the specified element to the set.
     /// </summary>
     /// <param name="item">The element to add.</param>
