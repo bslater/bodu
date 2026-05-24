@@ -348,6 +348,14 @@ public sealed class Poly1305
         if (KeyValue is not null)
             CryptoHelpers.Clear(KeyValue);
 
+        // Zero the derived key schedule and accumulator before returning so the tag-producing secret
+        // material is not observable in memory between ProcessFinalBlock and the framework's automatic
+        // re-initialization at the end of ComputeHash. Dispose still clears these as defence in depth.
+        CryptoHelpers.Clear(_r);
+        CryptoHelpers.Clear(_s);
+        CryptoHelpers.Clear(_key);
+        CryptoHelpers.Clear(_acc);
+
         return tag.ToArray();
     }
 

@@ -88,6 +88,46 @@ public partial class Poly1305Tests
     }
 
     /// <summary>
+    /// Verifies that <see cref="HashAlgorithm.ComputeHash(byte[])" /> leaves the derived polynomial key
+    /// schedule (<c>_r</c>, <c>_s</c>, <c>_key</c>) and the running accumulator <c>_acc</c> zeroed once
+    /// finalization completes, without waiting for <see cref="HashAlgorithm.Dispose()" />.
+    /// </summary>
+    /// <remarks>
+    /// Poly1305 is a one-time MAC. Clearing the derived schedule inside <c>ProcessFinalBlock</c> closes the
+    /// window in which the secret <c>r</c> remains live in memory between finalization and disposal. The
+    /// post-finalize auto-Initialize at the end of <c>ComputeHash</c> reseeds the schedule from the now-zero
+    /// <c>KeyValue</c>, so the observable end state is still all-zero — this test pins that contract.
+    /// </remarks>
+    [TestMethod]
+    public void ComputeHash_ShouldClearDerivedKeyScheduleAndAccumulator()
+    {
+        using var poly = new Poly1305 { Key = (byte[])Poly1305TestKey.Clone() };
+        byte[] message = System.Text.Encoding.ASCII.GetBytes("payload");
+
+        _ = poly.ComputeHash(message);
+
+        var rField = typeof(Poly1305).GetField("_r", BindingFlags.Instance | BindingFlags.NonPublic);
+        var sField = typeof(Poly1305).GetField("_s", BindingFlags.Instance | BindingFlags.NonPublic);
+        var keyField = typeof(Poly1305).GetField("_key", BindingFlags.Instance | BindingFlags.NonPublic);
+        var accField = typeof(Poly1305).GetField("_acc", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        Assert.IsNotNull(rField);
+        Assert.IsNotNull(sField);
+        Assert.IsNotNull(keyField);
+        Assert.IsNotNull(accField);
+
+        uint[] rAfter = (uint[])rField.GetValue(poly)!;
+        uint[] sAfter = (uint[])sField.GetValue(poly)!;
+        uint[] keyAfter = (uint[])keyField.GetValue(poly)!;
+        uint[] accAfter = (uint[])accField.GetValue(poly)!;
+
+        Assert.IsTrue(Array.TrueForAll(rAfter, v => v == 0), "ComputeHash must clear _r after finalization.");
+        Assert.IsTrue(Array.TrueForAll(sAfter, v => v == 0), "ComputeHash must clear _s after finalization.");
+        Assert.IsTrue(Array.TrueForAll(keyAfter, v => v == 0), "ComputeHash must clear _key after finalization.");
+        Assert.IsTrue(Array.TrueForAll(accAfter, v => v == 0), "ComputeHash must clear _acc after finalization.");
+    }
+
+    /// <summary>
     /// Verifies that after a hash has been produced, explicitly reassigning <see cref="Poly1305.Key" /> with
     /// a fresh 32-byte key rebuilds the schedule and lets the same instance authenticate a second message
     /// correctly.
