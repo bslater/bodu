@@ -180,10 +180,12 @@ public sealed partial class ConcurrentHashSet<T>
     /// Initializes a new instance of the <see cref="ConcurrentHashSet{T}" /> class with the specified lock striping
     /// level, initial bucket capacity, and equality comparer.
     /// </summary>
-    /// <param name="concurrencyLevel">The number of lock stripes to allocate.</param>
+    /// <param name="concurrencyLevel">The number of lock stripes to allocate. Must be greater than zero.</param>
     /// <param name="capacity">The initial number of buckets.</param>
     /// <param name="comparer">The element comparer, or <see langword="null" /> to use the default comparer.</param>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> is negative.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="capacity" /> is negative, or <paramref name="concurrencyLevel" /> is less than or equal to zero.
+    /// </exception>
     /// <remarks>
     /// This is the single shared initializer that every public constructor delegates to. The capacity is raised to at
     /// least <paramref name="concurrencyLevel" /> so that every lock guards at least one bucket. It is also visible to
@@ -191,6 +193,7 @@ public sealed partial class ConcurrentHashSet<T>
     /// </remarks>
     internal ConcurrentHashSet(int concurrencyLevel, int capacity, IEqualityComparer<T>? comparer)
     {
+        ThrowHelper.ThrowIfLessThanOrEqual(concurrencyLevel, 0);
         ThrowHelper.ThrowIfNegative(capacity);
 
         if (capacity < concurrencyLevel)
@@ -207,11 +210,22 @@ public sealed partial class ConcurrentHashSet<T>
     }
 
     /// <summary>
-    /// Gets the default number of lock stripes, derived from the number of available processors.
+    /// Gets the default number of lock stripes used by the public constructors.
     /// </summary>
-    /// <returns>The default lock striping level for newly created instances.</returns>
+    /// <returns>
+    /// The default lock striping level. Derived from <see cref="Environment.ProcessorCount" /> and clamped to the
+    /// range <c>[1, MaxDefaultConcurrencyLevel]</c> so that high-core machines do not allocate an excessive lock
+    /// array for small sets.
+    /// </returns>
     private static int DefaultConcurrencyLevel =>
-        Math.Max(1, Environment.ProcessorCount);
+        Math.Clamp(Environment.ProcessorCount, 1, MaxDefaultConcurrencyLevel);
+
+    /// <summary>
+    /// The upper bound applied to <see cref="DefaultConcurrencyLevel" /> so that the lock array stays small on
+    /// high-core machines where the typical set is also small. Explicit constructors can request a higher level via
+    /// the internal initializer.
+    /// </summary>
+    internal const int MaxDefaultConcurrencyLevel = 32;
 
     /// <summary>
     /// Gets the equality comparer used to hash and compare elements.
