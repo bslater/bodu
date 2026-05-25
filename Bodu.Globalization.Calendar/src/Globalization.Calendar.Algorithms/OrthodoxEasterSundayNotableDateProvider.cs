@@ -4,7 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Globalization;
+using Bodu.Globalization.Calendar;
 using Bodu.Globalization.Calendar.Algorithms;
 using SysGlobal = System.Globalization;
 
@@ -43,17 +43,8 @@ public sealed class OrthodoxEasterSundayNotableDateProvider
     protected override string? Comment => "Calculated using the Julian computus and projected to a Gregorian DateTime.";
 
     /// <inheritdoc />
-    protected override void ValidateCalendar(SysGlobal.Calendar? calendar)
-    {
-        if (calendar is null or SysGlobal.JulianCalendar)
-        {
-            return;
-        }
-
-        throw new NotSupportedException(
-            string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Op_NotSupported_CalendarType,
-                calendar.GetType().FullName, GetType().Name, typeof(SysGlobal.JulianCalendar).FullName));
-    }
+    protected override void ValidateCalendar(SysGlobal.Calendar? calendar) =>
+        CalendarThrowHelper.ThrowIfUnsupportedCalendarType(calendar, GetType(), typeof(SysGlobal.JulianCalendar));
 
     /// <inheritdoc />
     protected override DateTime CalculateDate(int year)

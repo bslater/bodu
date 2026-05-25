@@ -125,9 +125,7 @@ public sealed class HinduLunarNotableDateAlgorithm
     /// </exception>
     public DateTime? GetDate(int year, SysGlobal.Calendar? calendar = null)
     {
-        if (year < 1)
-            throw new ArgumentOutOfRangeException(nameof(year), CalendarResourceStrings.Arg_OutOfRange_Year);
-        ThrowHelper.ThrowIfGreaterThan(year, 9999);
+        CalendarThrowHelper.ThrowIfYearOutOfRange(year);
 
         // Find the new moon that begins the target lunar month.
         var searchMonth = GetSearchMonth(_month);

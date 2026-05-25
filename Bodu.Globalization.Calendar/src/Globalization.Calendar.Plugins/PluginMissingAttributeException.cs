@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
+
 namespace Bodu.Globalization.Calendar.Plugins;
 
 /// <summary>
@@ -62,7 +64,11 @@ public sealed class PluginMissingAttributeException
     /// candidate in addition to the formatted exception message.
     /// </remarks>
     public PluginMissingAttributeException(string assemblyPath, string reason)
-        : base($"Plugin assembly '{assemblyPath}' is missing a valid NotableDatePluginAttribute: {reason}.")
+        : base(string.Format(
+            CultureInfo.InvariantCulture,
+            CalendarResourceStrings.Op_Invalid_PluginMissingAttributeFormat,
+            assemblyPath,
+            reason))
     {
         AssemblyPath = assemblyPath;
         Reason = reason;

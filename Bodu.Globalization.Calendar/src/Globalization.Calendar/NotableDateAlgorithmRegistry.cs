@@ -86,7 +86,7 @@ public sealed class NotableDateAlgorithmRegistry
     /// </exception>
     public NotableDateAlgorithmRegistry(IEnumerable<KeyValuePair<string, INotableDateAlgorithm>> algorithms)
     {
-        if (algorithms is null) throw new ArgumentNullException(nameof(algorithms));
+        ThrowHelper.ThrowIfNull(algorithms);
 
         foreach (KeyValuePair<string, INotableDateAlgorithm> pair in algorithms)
             Register(pair.Key, pair.Value);
@@ -109,10 +109,8 @@ public sealed class NotableDateAlgorithmRegistry
     /// </exception>
     public NotableDateAlgorithmRegistry Register(string key, INotableDateAlgorithm algorithm)
     {
-        if (string.IsNullOrWhiteSpace(key))
-            throw new ArgumentException(CalendarResourceStrings.Arg_Invalid_KeyNullOrWhiteSpace, nameof(key));
-        if (algorithm is null)
-            throw new ArgumentNullException(nameof(algorithm));
+        CalendarThrowHelper.ThrowIfKeyNullOrWhiteSpace(key);
+        ThrowHelper.ThrowIfNull(algorithm);
 
         lock (_gate)
         {

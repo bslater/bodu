@@ -48,12 +48,10 @@ internal sealed class NotableDateResolutionService
         IAdjustmentHandlerRegistry? adjustmentHandlers = null)
     {
         ArgumentNullException.ThrowIfNull(ruleProviders);
+        CalendarThrowHelper.ThrowIfWorkingWeekUndefined(workingWeek);
 
-        if (!Enum.IsDefined(workingWeek))
-            throw new ArgumentOutOfRangeException(nameof(workingWeek), workingWeek, CalendarResourceStrings.Arg_OutOfRange_WorkingWeekUndefined);
-
-        if (workingWeek == WorkingDaysOfWeek.Custom && weekendProvider is null)
-            throw new ArgumentNullException(nameof(weekendProvider));
+        if (workingWeek == WorkingDaysOfWeek.Custom)
+            ThrowHelper.ThrowIfNull(weekendProvider);
 
         this.EffectiveRules = LoadRules(ruleProviders);
         this._collisionResolver = collisionResolver;

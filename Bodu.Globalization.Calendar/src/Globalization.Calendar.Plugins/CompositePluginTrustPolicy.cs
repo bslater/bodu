@@ -40,7 +40,7 @@ public sealed class CompositePluginTrustPolicy
     /// </exception>
     public CompositePluginTrustPolicy(params IPluginTrustPolicy[] policies)
     {
-        if (policies is null) throw new ArgumentNullException(nameof(policies));
+        ThrowHelper.ThrowIfNull(policies);
         if (policies.Length == 0)
             throw new ArgumentException(CalendarResourceStrings.Arg_Invalid_PoliciesEmpty, nameof(policies));
         foreach (IPluginTrustPolicy? policy in policies)

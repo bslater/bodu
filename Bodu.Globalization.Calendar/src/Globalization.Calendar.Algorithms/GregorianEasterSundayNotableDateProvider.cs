@@ -4,7 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Globalization;
+using Bodu.Globalization.Calendar;
 using Bodu.Globalization.Calendar.Algorithms;
 using SysGlobal = System.Globalization;
 
@@ -36,17 +36,8 @@ public sealed class GregorianEasterSundayNotableDateProvider
     protected override string? Comment => "Calculated using the Gregorian computus.";
 
     /// <inheritdoc />
-    protected override void ValidateCalendar(SysGlobal.Calendar? calendar)
-    {
-        if (calendar is null or SysGlobal.GregorianCalendar)
-        {
-            return;
-        }
-
-        throw new NotSupportedException(
-            string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Op_NotSupported_CalendarType,
-                calendar.GetType().FullName, GetType().Name, typeof(SysGlobal.GregorianCalendar).FullName));
-    }
+    protected override void ValidateCalendar(SysGlobal.Calendar? calendar) =>
+        CalendarThrowHelper.ThrowIfUnsupportedCalendarType(calendar, GetType(), typeof(SysGlobal.GregorianCalendar));
 
     /// <inheritdoc />
     protected override DateTime CalculateDate(int year)

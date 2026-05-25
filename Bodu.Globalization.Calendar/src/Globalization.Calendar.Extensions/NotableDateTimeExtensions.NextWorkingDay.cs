@@ -121,7 +121,7 @@ public static partial class NotableDateTimeExtensions
     {
         ThrowHelper.ThrowIfNull(service);
         ThrowHelper.ThrowIfNegative(count);
-        if (workingWeek.Count == 0) throw new ArgumentOutOfRangeException(nameof(workingWeek), CalendarResourceStrings.Arg_OutOfRange_WorkingWeekEmpty);
+        CalendarThrowHelper.ThrowIfWorkingWeekEmpty(workingWeek);
 
         if (count == 0) return new DateTime(dateTime.Ticks, dateTime.Kind);
 

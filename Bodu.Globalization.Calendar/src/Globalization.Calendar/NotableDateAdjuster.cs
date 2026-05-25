@@ -97,7 +97,7 @@ internal sealed class NotableDateAdjuster
     /// <exception cref="ArgumentNullException"><paramref name="adjustment" /> is <see langword="null" />.</exception>
     public static bool IsInScope(ObservanceAdjustment adjustment, int year, string? territoryCode, Type? calendarType)
     {
-        if (adjustment is null) throw new ArgumentNullException(nameof(adjustment));
+        ThrowHelper.ThrowIfNull(adjustment);
 
         if (adjustment.EffectiveFromYear is { } from && year < from) return false;
         if (adjustment.EffectiveToYear is { } to && year > to) return false;
@@ -156,8 +156,8 @@ internal sealed class NotableDateAdjuster
         string? territoryCode = null,
         Type? calendarType = null)
     {
-        if (adjustment is null) throw new ArgumentNullException(nameof(adjustment));
-        if (rule is null) throw new ArgumentNullException(nameof(rule));
+        ThrowHelper.ThrowIfNull(adjustment);
+        ThrowHelper.ThrowIfNull(rule);
 
         if (!IsInScope(adjustment, originalDate.Year, territoryCode, calendarType))
             return AdjustmentApplyResult.NotActivated(originalDate);

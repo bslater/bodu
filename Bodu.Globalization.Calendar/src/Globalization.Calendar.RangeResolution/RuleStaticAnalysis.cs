@@ -119,7 +119,7 @@ internal sealed class RuleStaticAnalysis
     /// <exception cref="ArgumentNullException"><paramref name="rules" /> is <see langword="null" />.</exception>
     public static RuleStaticAnalysis Build(IReadOnlyList<NotableDateRule> rules)
     {
-        if (rules is null) throw new ArgumentNullException(nameof(rules));
+        ThrowHelper.ThrowIfNull(rules);
 
         Dictionary<string, NotableDateRule> rulesByName = new(StringComparer.OrdinalIgnoreCase);
         foreach (NotableDateRule rule in rules)

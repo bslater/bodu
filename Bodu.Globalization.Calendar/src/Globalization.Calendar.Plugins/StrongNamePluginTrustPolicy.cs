@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
+
 namespace Bodu.Globalization.Calendar.Plugins;
 
 /// <summary>
@@ -42,7 +44,7 @@ public sealed class StrongNamePluginTrustPolicy
     /// </exception>
     public StrongNamePluginTrustPolicy(IEnumerable<string> allowedPublicKeyTokens)
     {
-        if (allowedPublicKeyTokens is null) throw new ArgumentNullException(nameof(allowedPublicKeyTokens));
+        ThrowHelper.ThrowIfNull(allowedPublicKeyTokens);
         _allowedTokens = new HashSet<string>(allowedPublicKeyTokens.Select(NormalizeToken), StringComparer.OrdinalIgnoreCase);
     }
 
@@ -51,12 +53,14 @@ public sealed class StrongNamePluginTrustPolicy
     {
         var tokenBytes = context.AssemblyName.GetPublicKeyToken();
         if (tokenBytes is null || tokenBytes.Length == 0)
-            return new PluginTrustResult(Trusted: false, Reason: "Plugin assembly is not strong-named.");
+            return new PluginTrustResult(Trusted: false, Reason: CalendarResourceStrings.Op_Invalid_PluginNotStrongNamed);
 
         var token = ToHexString(tokenBytes);
         return _allowedTokens.Contains(token)
             ? new PluginTrustResult(Trusted: true, Reason: null)
-            : new PluginTrustResult(Trusted: false, Reason: $"Public-key token '{token}' is not in the allowlist.");
+            : new PluginTrustResult(
+                Trusted: false,
+                Reason: string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Op_Invalid_PluginTokenNotInAllowlistFormat, token));
     }
 
     /// <summary>

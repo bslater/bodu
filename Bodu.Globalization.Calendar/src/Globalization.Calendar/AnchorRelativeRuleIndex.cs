@@ -78,8 +78,7 @@ internal sealed class AnchorRelativeRuleIndex
         int minOffsetDays,
         int maxOffsetDays)
     {
-        if (string.IsNullOrWhiteSpace(anchorRuleName))
-            throw new ArgumentException(CalendarResourceStrings.Arg_Invalid_AnchorRuleNameNullOrWhiteSpace, nameof(anchorRuleName));
+        CalendarThrowHelper.ThrowIfAnchorRuleNameNullOrWhiteSpace(anchorRuleName);
 
         if (minOffsetDays > maxOffsetDays)
             return [];

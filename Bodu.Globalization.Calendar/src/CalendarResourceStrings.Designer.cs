@@ -241,7 +241,7 @@ namespace Bodu {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Year must be greater than or equal to 1..
+        ///   Looks up a localized string similar to Year must be between 1 and 9999..
         /// </summary>
         internal static string Arg_OutOfRange_Year {
             get {
@@ -358,6 +358,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The calculation anchor rule '{0}' could not be found..
+        /// </summary>
+        internal static string Op_Invalid_CalculationAnchorRuleNotFound {
+            get {
+                return ResourceManager.GetString("Op_Invalid_CalculationAnchorRuleNotFound", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Circular dependency detected while resolving notable date rule '{0}': {1}..
         /// </summary>
         internal static string Op_Invalid_CircularDependencyInRule {
@@ -403,6 +412,33 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Failed to activate plugin type '{0}' from assembly '{1}': {2}.
+        /// </summary>
+        internal static string Op_Invalid_PluginActivationFailedFormat {
+            get {
+                return ResourceManager.GetString("Op_Invalid_PluginActivationFailedFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Plugin assembly name is missing..
+        /// </summary>
+        internal static string Op_Invalid_PluginAssemblyNameMissing {
+            get {
+                return ResourceManager.GetString("Op_Invalid_PluginAssemblyNameMissing", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Assembly '{0}' is not in the hash allowlist..
+        /// </summary>
+        internal static string Op_Invalid_PluginAssemblyNotInAllowlistFormat {
+            get {
+                return ResourceManager.GetString("Op_Invalid_PluginAssemblyNotInAllowlistFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to attribute not present on the assembly.
         /// </summary>
         internal static string Op_Invalid_PluginAttributeMissing {
@@ -412,11 +448,83 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Assembly '{0}' hash length mismatch..
+        /// </summary>
+        internal static string Op_Invalid_PluginHashLengthMismatchFormat {
+            get {
+                return ResourceManager.GetString("Op_Invalid_PluginHashLengthMismatchFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Assembly '{0}' hash does not match the pinned value..
+        /// </summary>
+        internal static string Op_Invalid_PluginHashMismatchFormat {
+            get {
+                return ResourceManager.GetString("Op_Invalid_PluginHashMismatchFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Plugin assembly '{0}' is missing a valid NotableDatePluginAttribute: {1}..
+        /// </summary>
+        internal static string Op_Invalid_PluginMissingAttributeFormat {
+            get {
+                return ResourceManager.GetString("Op_Invalid_PluginMissingAttributeFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Plugin assembly is not strong-named..
+        /// </summary>
+        internal static string Op_Invalid_PluginNotStrongNamed {
+            get {
+                return ResourceManager.GetString("Op_Invalid_PluginNotStrongNamed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Plugin assembly '{0}' was rejected by the trust policy: {1}..
+        /// </summary>
+        internal static string Op_Invalid_PluginNotTrustedFormat {
+            get {
+                return ResourceManager.GetString("Op_Invalid_PluginNotTrustedFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to no reason supplied.
+        /// </summary>
+        internal static string Op_Invalid_PluginReasonMissing {
+            get {
+                return ResourceManager.GetString("Op_Invalid_PluginReasonMissing", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Public-key token '{0}' is not in the allowlist..
+        /// </summary>
+        internal static string Op_Invalid_PluginTokenNotInAllowlistFormat {
+            get {
+                return ResourceManager.GetString("Op_Invalid_PluginTokenNotInAllowlistFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to declared plugin type '{0}' does not implement INotableDatePlugin.
         /// </summary>
         internal static string Op_Invalid_PluginTypeMissingInterface {
             get {
                 return ResourceManager.GetString("Op_Invalid_PluginTypeMissingInterface", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;unknown&gt;.
+        /// </summary>
+        internal static string Op_Invalid_PluginUnknownTypeName {
+            get {
+                return ResourceManager.GetString("Op_Invalid_PluginUnknownTypeName", resourceCulture);
             }
         }
 
