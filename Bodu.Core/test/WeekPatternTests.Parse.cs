@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.Kat;
+
 namespace Bodu;
 
 public partial class WeekPatternTests
@@ -92,11 +94,20 @@ public partial class WeekPatternTests
 
     /// <summary>
     /// Verifies that <see cref="WeekPattern.Parse(string)" /> throws <see cref="FormatException" /> for
-    /// all invalid input strings that cannot be auto-detected or parsed.
+    /// every <see cref="InvalidWeekPatternParseKat" /> row produced by
+    /// <see cref="WeekPatternTests.GetTryParseInvalidKats" />. Identical row coverage to the legacy
+    /// <c>GetInvalidParseInputNoFormatTestData</c> source but with named display rows so failures surface
+    /// the offending input rather than an opaque row index.
     /// </summary>
+    /// <param name="kat">The KAT row supplying a malformed no-format input expected to throw.</param>
     [TestMethod]
-    [DynamicData(nameof(WeekPatternTests.GetInvalidParseInputNoFormatTestData), typeof(WeekPatternTests))]
-    public void Parse_WhenInvalidInput_ShouldThrowExactly(string input) => Assert.ThrowsExactly<FormatException>(() => { _ = WeekPattern.Parse(input); });
+    [DynamicData(
+        nameof(WeekPatternTests.GetTryParseInvalidKats),
+        typeof(WeekPatternTests),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void Parse_WhenInvalidInput_ShouldThrowExactly(InvalidWeekPatternParseKat kat) =>
+        Assert.ThrowsExactly<FormatException>(() => { _ = WeekPattern.Parse(kat.Input); });
 
     /// <summary>
     /// Verifies that <see cref="WeekPattern.Parse(string)" /> correctly assigns day indices when the
