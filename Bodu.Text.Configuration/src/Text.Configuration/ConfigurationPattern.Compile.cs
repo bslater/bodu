@@ -38,6 +38,19 @@ public sealed partial class ConfigurationPattern
     internal const int MaxBraceNestingDepth = 32;
 
     /// <summary>
+    /// The maximum number of characters a glob expression may contain. Beyond this, the compiler emits
+    /// <see cref="ConfigurationDiagnosticCode.PatternTooLong" /> rather than allocating a regex source over
+    /// double the pattern length and asking the regex engine to compile it.
+    /// </summary>
+    /// <remarks>
+    /// EditorConfig patterns in the wild rarely exceed 80 characters; even verbose configurations with deeply
+    /// nested alternations and character classes fit comfortably within a few hundred. A cap of 4096 gives
+    /// generous headroom for legitimate use while keeping the maximum allocation in
+    /// <see cref="TranslateToRegex" /> bounded.
+    /// </remarks>
+    internal const int MaxPatternLength = 4096;
+
+    /// <summary>
     /// Translates a glob expression into the equivalent <see cref="Regex" /> pattern, anchored to the start and end of
     /// the input.
     /// </summary>

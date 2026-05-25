@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Collections.Concurrent;
+using System.Globalization;
 using System.Text.RegularExpressions;
 
 namespace Bodu.Text.Configuration;
@@ -141,6 +142,21 @@ public sealed partial class ConfigurationPattern
     public static ConfigurationPattern Compile(string pattern, StringComparison comparison)
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(pattern);
+
+        // Reject pathological lengths before consulting the cache or allocating the regex builder. The cache
+        // is keyed on the pattern string itself, so over-length inputs must never enter it.
+        if (pattern.Length > MaxPatternLength)
+        {
+            throw new ConfigurationParseException(new ConfigurationDiagnostic(
+                ConfigurationDiagnosticSeverity.Error,
+                ConfigurationDiagnosticCode.PatternTooLong,
+                string.Format(
+                    CultureInfo.InvariantCulture,
+                    ConfigurationResourceStrings.Format_Invalid_PatternTooLong,
+                    pattern.Length,
+                    MaxPatternLength),
+                ConfigurationSourceLocation.None));
+        }
 
         (string pattern, StringComparison comparison) key = (pattern, comparison);
         if (CompileCache.TryGetValue(key, out ConfigurationPattern? cached))

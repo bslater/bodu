@@ -133,6 +133,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Glob pattern length {0} exceeds the configured limit of {1}..
+        /// </summary>
+        internal static string Format_Invalid_PatternTooLong {
+            get {
+                return ResourceManager.GetString("Format_Invalid_PatternTooLong", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Configuration section header contains non-whitespace content after the closing &apos;]&apos;..
         /// </summary>
         internal static string Format_Invalid_TrailingContentAfterSectionHeader {

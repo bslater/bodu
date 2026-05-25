@@ -97,4 +97,10 @@ public enum ConfigurationDiagnosticCode
     /// pathological patterns whose recursion or expansion would exhaust resources.
     /// </summary>
     BraceNestingTooDeep = 15,
+
+    /// <summary>
+    /// A glob expression exceeded the maximum length the parser is willing to compile, guarding against
+    /// pathological inputs that would allocate a multi-megabyte regex source.
+    /// </summary>
+    PatternTooLong = 16,
 }
