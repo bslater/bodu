@@ -25,6 +25,32 @@ public sealed partial class ConfigurationPattern
     internal const int MaxNumericRangeExpansion = 10_000;
 
     /// <summary>
+    /// The maximum depth that nested brace alternations (<c>{a,{b,{c,…}}}</c>) may reach in a single glob
+    /// expression. Beyond this, the compiler emits
+    /// <see cref="ConfigurationDiagnosticCode.BraceNestingTooDeep" /> rather than recursing through a
+    /// pathologically deep pattern that risks stack exhaustion or unbounded expansion.
+    /// </summary>
+    /// <remarks>
+    /// EditorConfig in the wild rarely nests beyond two or three levels — patterns like
+    /// <c>*.{cs,{vb,fs}}</c>. A cap of 32 leaves four times the deepest realistic nesting in the existing
+    /// test corpus, which is comfortable for legitimate use while still rejecting clearly pathological input.
+    /// </remarks>
+    internal const int MaxBraceNestingDepth = 32;
+
+    /// <summary>
+    /// The maximum number of characters a glob expression may contain. Beyond this, the compiler emits
+    /// <see cref="ConfigurationDiagnosticCode.PatternTooLong" /> rather than allocating a regex source over
+    /// double the pattern length and asking the regex engine to compile it.
+    /// </summary>
+    /// <remarks>
+    /// EditorConfig patterns in the wild rarely exceed 80 characters; even verbose configurations with deeply
+    /// nested alternations and character classes fit comfortably within a few hundred. A cap of 4096 gives
+    /// generous headroom for legitimate use while keeping the maximum allocation in
+    /// <see cref="TranslateToRegex" /> bounded.
+    /// </remarks>
+    internal const int MaxPatternLength = 4096;
+
+    /// <summary>
     /// Translates a glob expression into the equivalent <see cref="Regex" /> pattern, anchored to the start and end of
     /// the input.
     /// </summary>
@@ -243,6 +269,14 @@ public sealed partial class ConfigurationPattern
     /// <param name="pattern">The glob expression to scan.</param>
     /// <param name="start">The index of the opening <c>{</c>.</param>
     /// <returns>The index of the matching <c>}</c>, or <c>-1</c> when none is found.</returns>
+    /// <exception cref="ConfigurationParseException">
+    /// Brace nesting within the scanned group exceeds <see cref="MaxBraceNestingDepth" />.
+    /// </exception>
+    /// <remarks>
+    /// Tracking the maximum observed depth at each unescaped <c>{</c> bounds the recursion that
+    /// <see cref="TranslateBraceGroup" /> performs into nested alternations; rejecting the pattern here
+    /// prevents stack exhaustion and pathological expansion downstream.
+    /// </remarks>
     private static int FindMatchingBrace(string pattern, int start)
     {
         var depth = 0;
@@ -255,7 +289,21 @@ public sealed partial class ConfigurationPattern
             }
 
             if (pattern[i] == '{')
+            {
                 depth++;
+                if (depth > MaxBraceNestingDepth)
+                {
+                    throw new ConfigurationParseException(new ConfigurationDiagnostic(
+                        ConfigurationDiagnosticSeverity.Error,
+                        ConfigurationDiagnosticCode.BraceNestingTooDeep,
+                        string.Format(
+                            CultureInfo.InvariantCulture,
+                            ConfigurationResourceStrings.Format_Invalid_BraceNestingTooDeep,
+                            depth,
+                            MaxBraceNestingDepth),
+                        ConfigurationSourceLocation.None));
+                }
+            }
             else if (pattern[i] == '}')
             {
                 depth--;

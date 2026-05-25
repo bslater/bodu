@@ -52,10 +52,16 @@
     <Project Path="Bodu.Text.Encoding\test\Bodu.Text.Encoding.Test.csproj" />
   </Folder>
   <Folder Name="/Bodu.Text.Configuration/">
+    <Project Path="Bodu.Text.Configuration/bench/Bodu.Text.Configuration.Benchmarks.csproj">
+      <Build Solution="Debug|*" Project="false" />
+    </Project>
     <Project Path="Bodu.Text.Configuration\src\Bodu.Text.Configuration.csproj" />
     <Project Path="Bodu.Text.Configuration\test\Bodu.Text.Configuration.Test.csproj" />
   </Folder>
   <Folder Name="/Bodu.Extensions.Configuration.Text/">
+    <Project Path="Bodu.Extensions.Configuration.Text/bench/Bodu.Extensions.Configuration.Text.Benchmarks.csproj">
+      <Build Solution="Debug|*" Project="false" />
+    </Project>
     <Project Path="Bodu.Extensions.Configuration.Text\src\Bodu.Extensions.Configuration.Text.csproj" />
     <Project Path="Bodu.Extensions.Configuration.Text\test\Bodu.Extensions.Configuration.Text.Test.csproj" />
   </Folder>

@@ -6,6 +6,16 @@ The EditorConfig-compatible `Microsoft.Extensions.Configuration` provider. This 
 pipeline so consumers can register a `.boduconfig` or `bodu.config` file with the same shape they already
 use for JSON, INI, or XML providers.
 
+## Where to start
+
+- [Documentation index](../docs/docs/extensions-configuration-text/index.md) — high-level overview of how
+  the bridge fits between the document model and `IConfiguration`.
+- [Concepts](../docs/docs/extensions-configuration-text/concepts.md) — what is preserved versus discarded
+  when projecting a `ConfigurationView` into a Microsoft configuration dictionary (comments, source
+  locations, key case, literal colons).
+- [Getting started](../docs/docs/extensions-configuration-text/getting-started.md) — worked samples for
+  the file, stream, and document overloads, plus reload-on-change.
+
 ## API matrix vs `Microsoft.Extensions.Configuration.Json`
 
 | Feature | `Microsoft.Extensions.Configuration.Json` | `Bodu.Extensions.Configuration.Text` |
