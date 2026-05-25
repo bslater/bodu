@@ -75,8 +75,13 @@ namespace Bodu.Globalization.Calendar;
 /// </item>
 /// <item>
 /// <description>
-/// <b>Resolved NotableDate</b> — an immutable <see cref="NotableDate" /> is cached per year.
-/// <see cref="Invalidate()" /> drops all years; <see cref="Invalidate(int)" /> drops a single year.
+/// <b>Resolved NotableDate</b> — every <c>GetNotableDates</c> overload delegates to the
+/// <see cref="RangeResolution.NotableDateRangePipeline" /> (reached publicly through
+/// <see cref="ResolveNotableDatesInRange" />). The pipeline emits exactly one
+/// <see cref="NotableDate" /> per rule occurrence, carrying any <see cref="NotableDate.AdjustmentReason" /> on
+/// the single emitted record rather than producing a (base, adjusted) pair. <see cref="Invalidate()" /> drops
+/// the pipeline and the resolved-window set; <see cref="Invalidate(int)" /> delegates to
+/// <see cref="Invalidate()" />.
 /// </description>
 /// </item>
 /// <item>
@@ -85,6 +90,54 @@ namespace Bodu.Globalization.Calendar;
 /// <see cref="NotableDateFilter" /> composes territory / category / tag predicates;
 /// <c>Bodu.Extensions.NotableDateOnlyExtensions</c> and <c>NotableDateTimeExtensions</c> provide working-day arithmetic
 /// (<c>IsWorkingDay</c>, <c>AddWorkingDays</c>, <c>NextWorkingDay</c>, …).
+/// </description>
+/// </item>
+/// </list>
+/// <para>
+/// <b>Contracts established by the range pipeline.</b> These hold for every public range API on the service:
+/// </para>
+/// <list type="bullet">
+/// <item>
+/// <description>
+/// <b>One emission per rule occurrence.</b> When an <see cref="ObservanceAdjustment" /> activates, the
+/// single emitted <see cref="NotableDate" /> carries the post-adjustment observed date and an
+/// <see cref="AdjustmentReason" /> describing the shift. Multiple activating adjustments resolve last-wins by
+/// ascending <see cref="ObservanceAdjustment.Priority" />.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// <b>Observed-date filtering.</b> Only occurrences whose observed date intersects the requested window are
+/// emitted. Anchors materialised from adjacent years (for cross-year multi-day spans or roll-forward
+/// substitutions) surface when, and only when, their observed date falls inside the window.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// <b>Strict reversed-range policy.</b> Every range-accepting API throws <see cref="ArgumentException" /> when
+/// <c>endDate</c> is earlier than <c>startDate</c>. Callers must supply a well-ordered range.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// <b>Composite rule identity.</b> Override-merge uses a <c>(Name, TerritoryCode, CalendarType)</c> key, so
+/// regional and calendar-system variants of the same named observance coexist as distinct rules. An override
+/// addition replaces a base rule only when all three identity components match exactly.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// <b>Strict parser type resolution.</b> Both <see cref="NotableDateRuleParser" /> and
+/// <see cref="NotableDateRuleJsonParser" /> throw <see cref="FormatException" /> at parse time when a
+/// <c>calendarType</c> or algorithm-type attribute cannot be resolved or does not derive from the expected
+/// base. Numeric month 13 is rejected for Fixed rules in a Gregorian context.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// <b>Atomic Reload.</b> <see cref="Reload" /> rebuilds the effective rule set and invalidates the pipeline /
+/// resolved-window state under a single critical section, so concurrent readers cannot observe new effective
+/// rules paired with a stale pipeline.
 /// </description>
 /// </item>
 /// </list>
