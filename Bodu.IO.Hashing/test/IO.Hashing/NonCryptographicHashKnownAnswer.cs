@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.Kat;
+
 namespace Bodu.IO.Hashing;
 
 /// <summary>
@@ -18,7 +20,7 @@ namespace Bodu.IO.Hashing;
 /// sixteen zero bytes, and the 0x00..0xFE sequence — are already covered by the typed slots on
 /// <see cref="NonCryptographicHashKnownAnswers" /> and should not be duplicated here.
 /// </remarks>
-public sealed record NonCryptographicHashKnownAnswer
+public sealed record NonCryptographicHashKnownAnswer : IKat
 {
 
     /// <summary>Gets the hex-encoded expected digest produced by hashing <see cref="Input" />.</summary>
