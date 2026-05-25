@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="LosarNotableDateAlgorithmTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -7,14 +7,21 @@
 namespace Bodu.Globalization.Calendar.Algorithms;
 
 /// <summary>
-/// Verifies the correctness and boundary behaviour of <see cref="LosarNotableDateAlgorithm" />.
+/// Verifies the Losar-specific behaviour of <see cref="LosarNotableDateAlgorithm" />: known-answer agreement
+/// with the official Tibetan New Year (within a one-day tolerance) and the supported-range property that
+/// every computed date falls in January or February on or after 20 January.
 /// </summary>
 /// <remarks>
 /// <para>
-/// The Losar algorithm returns the first new moon on or after 20 January as an approximation of the Tibetan New Year.
-/// In years where the Tibetan lunisolar calendar inserts an intercalary month before the first month, the algorithm
-/// may return a date approximately one month earlier than the actual Losar. Known-date tests therefore select years
-/// where the algorithm is known to agree with the official Tibetan calendar.
+/// The shared boundary contract (year &lt; 1, year &gt; 9999, null/Gregorian/Julian calendar) is exercised
+/// from <see cref="NotableDateAlgorithmContractTests" /> via the
+/// <see cref="NotableDateAlgorithmKnownAnswers.AllAlgorithmFactories" /> enrollment.
+/// </para>
+/// <para>
+/// The Losar algorithm returns the first new moon on or after 20 January as an approximation of the Tibetan
+/// New Year. In years where the Tibetan lunisolar calendar inserts an intercalary month before the first
+/// month, the algorithm may return a date approximately one month earlier than the actual Losar. Known-date
+/// rows therefore select years where the algorithm is known to agree with the official Tibetan calendar.
 /// </para>
 /// </remarks>
 [TestClass]
@@ -23,66 +30,51 @@ public sealed class LosarNotableDateAlgorithmTests
     private readonly LosarNotableDateAlgorithm _algorithm = new();
 
     /// <summary>
-    /// Verifies that requesting Losar with a year below one throws <see cref="ArgumentOutOfRangeException" />.
+    /// Verifies that Losar returns a date within +/- one day of the known official Tibetan New Year for the
+    /// smoke-tier representative year. Runs on every BVT build.
     /// </summary>
-    [DataRow(0)]
-    [DataRow(-1)]
-    [DataRow(int.MinValue)]
-    [TestMethod]
-    public void GetDate_WhenYearLessThanOne_ShouldThrowExactly(int year)
+    /// <param name="knownAnswer">The Losar known-answer row supplied by
+    /// <see cref="NotableDateAlgorithmKnownAnswers.LosarSmoke" />.</param>
+    [DataTestMethod]
+    [DynamicData(
+        nameof(NotableDateAlgorithmKnownAnswers.LosarSmoke),
+        typeof(NotableDateAlgorithmKnownAnswers),
+        DynamicDataDisplayName = nameof(NotableDateAlgorithmKnownAnswers.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(NotableDateAlgorithmKnownAnswers))]
+    public void GetDate_WhenGivenSmokeRows_ShouldReturnExpectedDateWithinTolerance(NotableDateAlgorithmKnownAnswer knownAnswer)
     {
-        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            _ = _algorithm.GetDate(year);
-        });
-
-        Assert.AreEqual("year", ex.ParamName);
+        AssertKnownAnswerWithinTolerance(knownAnswer);
     }
 
     /// <summary>
-    /// Verifies that requesting Losar with a year above 9999 throws <see cref="ArgumentOutOfRangeException" />
-    /// rather than a raw exception from the <see cref="DateTime" /> constructor.
+    /// Verifies that Losar returns a date within +/- one day of the known official Tibetan New Year for
+    /// every published row where the lunar approximation agrees with the Tibetan calendar. Runs only under
+    /// the Regression tier.
     /// </summary>
-    [DataRow(10000)]
-    [DataRow(int.MaxValue)]
-    [TestMethod]
-    public void GetDate_WhenYearGreaterThan9999_ShouldThrowExactly(int year)
+    /// <param name="knownAnswer">The Losar known-answer row supplied by
+    /// <see cref="NotableDateAlgorithmKnownAnswers.Losar" />.</param>
+    [DataTestMethod]
+    [TestCategory("Regression")]
+    [DynamicData(
+        nameof(NotableDateAlgorithmKnownAnswers.Losar),
+        typeof(NotableDateAlgorithmKnownAnswers),
+        DynamicDataDisplayName = nameof(NotableDateAlgorithmKnownAnswers.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(NotableDateAlgorithmKnownAnswers))]
+    public void GetDate_WhenGivenAllKnownRows_ShouldReturnExpectedDateWithinTolerance(NotableDateAlgorithmKnownAnswer knownAnswer)
     {
-        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            _ = _algorithm.GetDate(year);
-        });
-
-        Assert.AreEqual("year", ex.ParamName);
+        AssertKnownAnswerWithinTolerance(knownAnswer);
     }
 
     /// <summary>
-    /// Verifies that Losar returns a date within ±1 day of the known official Tibetan New Year for years where the
-    /// algorithm agrees with the Tibetan lunisolar calendar. Years where the Tibetan calendar diverges by a full
-    /// intercalary month are excluded.
-    /// </summary>
-    [DataRow(2021, 2, 12)]
-    [DataRow(2024, 2, 10)]
-    [TestMethod]
-    public void GetDate_WhenGivenKnownYears_ShouldFallWithinOneDayOfOfficialDate(int year, int knownMonth, int knownDay)
-    {
-        DateTime? result = _algorithm.GetDate(year);
-        var expected = new DateTime(year, knownMonth, knownDay);
-
-        Assert.IsNotNull(result);
-        var dayDiff = Math.Abs((result!.Value - expected).Days);
-        Assert.IsTrue(dayDiff <= 1,
-            $"Losar {year}: expected within ±1 day of {expected:yyyy-MM-dd}, got {result.Value:yyyy-MM-dd}.");
-    }
-
-    /// <summary>
-    /// Verifies that for every year in the range 1901–2100 the result falls in January or February, consistent
-    /// with the algorithm's definition of the first new moon on or after 20 January.
+    /// Verifies that for every year in the range 1901-2100 the result falls in January or February on or
+    /// after 20 January, consistent with the algorithm's definition of the first new moon on or after that
+    /// search start. This is a structural property of the lunar-approximation, not a known-answer row, and
+    /// therefore stays as a bespoke test.
     /// </summary>
     [TestMethod]
     public void GetDate_WhenIteratingSupportedRange_ShouldAlwaysFallInJanuaryOrFebruary()
     {
-        for (var year = 1901; year <= 2100; year++)
+        for (int year = 1901; year <= 2100; year++)
         {
             DateTime? result = _algorithm.GetDate(year);
 
@@ -95,42 +87,34 @@ public sealed class LosarNotableDateAlgorithmTests
     }
 
     /// <summary>
-    /// Verifies that the returned <see cref="DateTime.Kind" /> is always <see cref="DateTimeKind.Unspecified" />.
+    /// Resolves the supplied known-answer row, runs the algorithm, and asserts the result falls within the
+    /// row's symmetric day-count tolerance of the expected date. Shared by the smoke and full Regression
+    /// test methods so the assertion logic stays in one place.
     /// </summary>
-    [TestMethod]
-    public void GetDate_WhenCalendarIsNull_ShouldReturnUnspecifiedKind()
+    /// <param name="knownAnswer">The row to verify.</param>
+    private static void AssertKnownAnswerWithinTolerance(NotableDateAlgorithmKnownAnswer knownAnswer)
     {
-        DateTime? result = _algorithm.GetDate(2024);
+        INotableDateAlgorithm sut = knownAnswer.Factory();
+        System.Globalization.Calendar? calendar = knownAnswer.CalendarKind switch
+        {
+            AlgorithmCalendarKind.Gregorian => new System.Globalization.GregorianCalendar(),
+            AlgorithmCalendarKind.Julian => new System.Globalization.JulianCalendar(),
+            _ => null,
+        };
 
-        Assert.IsNotNull(result);
-        Assert.AreEqual(DateTimeKind.Unspecified, result!.Value.Kind);
-    }
+        DateTime? result = sut.GetDate(knownAnswer.Year, calendar);
 
-    /// <summary>
-    /// Verifies that supplying an explicit <see cref="System.Globalization.GregorianCalendar" /> matches the default
-    /// (null) calendar path.
-    /// </summary>
-    [TestMethod]
-    public void GetDate_WhenCalendarIsExplicitlyGregorian_ShouldMatchDefaultPath()
-    {
-        DateTime? withDefault = _algorithm.GetDate(2024);
-        DateTime? withGregorian = _algorithm.GetDate(2024, new System.Globalization.GregorianCalendar());
+        Assert.IsNotNull(result, $"{knownAnswer.Algorithm} {knownAnswer.Year}: algorithm returned null.");
 
-        Assert.AreEqual(withDefault, withGregorian);
-    }
+        if (knownAnswer.ToleranceDays == 0)
+        {
+            Assert.AreEqual(knownAnswer.ExpectedDate, result);
+            return;
+        }
 
-    /// <summary>
-    /// Verifies that supplying a <see cref="System.Globalization.JulianCalendar" /> projects the result through the
-    /// non-Gregorian projection branch.
-    /// </summary>
-    [TestMethod]
-    public void GetDate_WhenCalendarIsJulian_ShouldProjectThroughTargetCalendar()
-    {
-        System.Globalization.JulianCalendar julian = new();
-
-        DateTime? result = _algorithm.GetDate(2024, julian);
-
-        Assert.IsNotNull(result);
-        Assert.AreEqual(2024, julian.GetYear(result!.Value));
+        int dayDiff = Math.Abs((result!.Value - knownAnswer.ExpectedDate).Days);
+        Assert.IsTrue(
+            dayDiff <= knownAnswer.ToleranceDays,
+            $"{knownAnswer.Algorithm} {knownAnswer.Year}: expected within +/- {knownAnswer.ToleranceDays} day(s) of {knownAnswer.ExpectedDate:yyyy-MM-dd}, got {result.Value:yyyy-MM-dd} (diff {dayDiff} day(s)).");
     }
 }
