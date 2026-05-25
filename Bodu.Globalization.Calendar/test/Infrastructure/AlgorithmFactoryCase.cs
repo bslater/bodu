@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
+using Bodu.Test.Kat;
 
 namespace Bodu.Globalization.Calendar.Algorithms;
 
@@ -25,8 +26,12 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// <see cref="EasterSundayNotableDateAlgorithm" /> from leaking state between assertions.
 /// </para>
 /// </remarks>
-public sealed record AlgorithmFactoryCase
+public sealed record AlgorithmFactoryCase : IKat
 {
+    /// <inheritdoc />
+    /// <remarks>Returns <see cref="Algorithm" /> so the row participates in <see cref="KatDisplayName" />-driven formatting alongside the existing <see cref="NotableDateAlgorithmKnownAnswers.GetDisplayName" /> path.</remarks>
+    string IKat.Name => Algorithm;
+
     /// <summary>
     /// Gets the short label rendered by <see cref="NotableDateAlgorithmKnownAnswers.GetDisplayName" /> for
     /// rows produced from this case — for example <c>"Losar"</c>, <c>"Easter"</c>, or

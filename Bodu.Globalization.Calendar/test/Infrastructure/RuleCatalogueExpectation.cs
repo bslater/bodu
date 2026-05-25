@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using Bodu.Test.Kat;
 
 namespace Bodu.Globalization.Calendar.Data;
 
@@ -28,8 +29,12 @@ namespace Bodu.Globalization.Calendar.Data;
 /// <c>&lt;Compile Include="..\..\Bodu.Globalization.Calendar\test\Infrastructure\RuleCatalogueExpectation.cs" Link="..." /&gt;</c>.
 /// </para>
 /// </remarks>
-public sealed record RuleCatalogueExpectation
+public sealed record RuleCatalogueExpectation : IKat
 {
+    /// <inheritdoc />
+    /// <remarks>Returns <see cref="Territory" /> so the row participates in <see cref="KatDisplayName" />-driven formatting.</remarks>
+    string IKat.Name => Territory;
+
     /// <summary>
     /// Gets the delegate that materialises the rule provider under test. Invoked once per row.
     /// </summary>

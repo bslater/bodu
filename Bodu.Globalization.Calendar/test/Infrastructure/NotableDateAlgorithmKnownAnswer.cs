@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
+using Bodu.Test.Kat;
 
 namespace Bodu.Globalization.Calendar.Algorithms;
 
@@ -30,8 +31,12 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// <c>"Algorithm | Year | CalendarKind -&gt; ExpectedDate [+/- Nd] [Source]"</c>.
 /// </para>
 /// </remarks>
-public sealed record NotableDateAlgorithmKnownAnswer
+public sealed record NotableDateAlgorithmKnownAnswer : IKat
 {
+    /// <inheritdoc />
+    /// <remarks>Synthesizes a compact <c>"Algorithm Year CalendarKind"</c> label so rows remain distinguishable when surfaced via <see cref="KatDisplayName" />.</remarks>
+    string IKat.Name => $"{Algorithm} {Year} {CalendarKind}";
+
     /// <summary>
     /// Gets the short algorithm label, for example <c>"Easter"</c>, <c>"Losar"</c>, or
     /// <c>"HinduLunar(Diwali)"</c>. Surfaces in the MSTest test explorer via

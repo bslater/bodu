@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using Bodu.Test.Kat;
 
 namespace Bodu.Globalization.Calendar;
 
@@ -28,8 +29,12 @@ namespace Bodu.Globalization.Calendar;
 /// (<c>CollectionAssert.AreEquivalent</c>) so rows do not need to encode the canonical date ordering.
 /// </para>
 /// </remarks>
-public sealed record FilterScenarioKnownAnswer
+public sealed record FilterScenarioKnownAnswer : IKat
 {
+    /// <inheritdoc />
+    /// <remarks>Returns <see cref="Scenario" /> so the row participates in <see cref="KatDisplayName" />-driven formatting alongside the existing <see cref="FilterScenarioAssertions.GetDisplayName" /> path.</remarks>
+    string IKat.Name => Scenario;
+
     /// <summary>
     /// Gets the short scenario label rendered by <see cref="FilterScenarioAssertions.GetDisplayName" /> as
     /// part of the MSTest row entry — for example <c>"CategoryFilter_HolidayOnly"</c> or
