@@ -24,7 +24,7 @@ public abstract class TextDocumentFormatContractTests<TDocument, TOptions>
     /// <param name="text">The raw source text.</param>
     /// <param name="options">The parser options, or <see langword="default" /> to use the format's default options.</param>
     /// <returns>The parsed document.</returns>
-    protected abstract TDocument Parse(string text, TOptions? options = default);
+    protected abstract TDocument Parse(string text, TOptions options = default!);
 
     /// <summary>
     /// Formats <paramref name="document" /> back to its canonical text representation under the supplied
@@ -33,7 +33,7 @@ public abstract class TextDocumentFormatContractTests<TDocument, TOptions>
     /// <param name="document">The document to serialise.</param>
     /// <param name="options">The formatter options, or <see langword="default" /> to use the format's default options.</param>
     /// <returns>The canonical text representation.</returns>
-    protected abstract string Format(TDocument document, TOptions? options = default);
+    protected abstract string Format(TDocument document, TOptions options = default!);
 
     /// <summary>
     /// Returns the positive known-answer vectors for the format under test.
@@ -44,6 +44,8 @@ public abstract class TextDocumentFormatContractTests<TDocument, TOptions>
     /// Returns the negative-vector rows the parser must reject by throwing.
     /// </summary>
     protected abstract IReadOnlyList<InvalidTextDocumentKat<TOptions>> InvalidCases { get; }
+
+#pragma warning disable CA1062 // KAT rows are statically constructed by the test class and not null.
 
     /// <summary>
     /// Returns an equality comparer used by the contract tests to compare parsed documents against
