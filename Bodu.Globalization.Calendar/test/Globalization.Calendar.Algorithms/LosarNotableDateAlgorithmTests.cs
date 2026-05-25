@@ -35,7 +35,7 @@ public sealed class LosarNotableDateAlgorithmTests
     /// </summary>
     /// <param name="knownAnswer">The Losar known-answer row supplied by
     /// <see cref="NotableDateAlgorithmKnownAnswers.LosarSmoke" />.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DynamicData(
         nameof(NotableDateAlgorithmKnownAnswers.LosarSmoke),
         typeof(NotableDateAlgorithmKnownAnswers),
@@ -51,7 +51,7 @@ public sealed class LosarNotableDateAlgorithmTests
     /// </summary>
     /// <param name="knownAnswer">The Losar known-answer row supplied by
     /// <see cref="NotableDateAlgorithmKnownAnswers.Losar" />.</param>
-    [DataTestMethod]
+    [TestMethod]
     [TestCategory("Regression")]
     [DynamicData(
         nameof(NotableDateAlgorithmKnownAnswers.Losar),

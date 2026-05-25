@@ -27,7 +27,7 @@ public sealed class VesakNotableDateAlgorithmTests
     /// </summary>
     /// <param name="knownAnswer">The Vesak known-answer row supplied by
     /// <see cref="NotableDateAlgorithmKnownAnswers.VesakSmoke" />.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DynamicData(
         nameof(NotableDateAlgorithmKnownAnswers.VesakSmoke),
         typeof(NotableDateAlgorithmKnownAnswers),
@@ -42,7 +42,7 @@ public sealed class VesakNotableDateAlgorithmTests
     /// </summary>
     /// <param name="knownAnswer">The Vesak known-answer row supplied by
     /// <see cref="NotableDateAlgorithmKnownAnswers.Vesak" />.</param>
-    [DataTestMethod]
+    [TestMethod]
     [TestCategory("Regression")]
     [DynamicData(
         nameof(NotableDateAlgorithmKnownAnswers.Vesak),

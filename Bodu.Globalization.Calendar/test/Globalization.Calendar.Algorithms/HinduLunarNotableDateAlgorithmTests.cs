@@ -85,7 +85,7 @@ public sealed class HinduLunarNotableDateAlgorithmTests
     /// </summary>
     /// <param name="knownAnswer">The Diwali known-answer row supplied by
     /// <see cref="NotableDateAlgorithmKnownAnswers.HinduLunarDiwaliSmoke" />.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DynamicData(
         nameof(NotableDateAlgorithmKnownAnswers.HinduLunarDiwaliSmoke),
         typeof(NotableDateAlgorithmKnownAnswers),
@@ -100,7 +100,7 @@ public sealed class HinduLunarNotableDateAlgorithmTests
     /// </summary>
     /// <param name="knownAnswer">The Diwali known-answer row supplied by
     /// <see cref="NotableDateAlgorithmKnownAnswers.HinduLunarDiwali" />.</param>
-    [DataTestMethod]
+    [TestMethod]
     [TestCategory("Regression")]
     [DynamicData(
         nameof(NotableDateAlgorithmKnownAnswers.HinduLunarDiwali),
@@ -116,7 +116,7 @@ public sealed class HinduLunarNotableDateAlgorithmTests
     /// </summary>
     /// <param name="knownAnswer">The Holi known-answer row supplied by
     /// <see cref="NotableDateAlgorithmKnownAnswers.HinduLunarHoliSmoke" />.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DynamicData(
         nameof(NotableDateAlgorithmKnownAnswers.HinduLunarHoliSmoke),
         typeof(NotableDateAlgorithmKnownAnswers),
@@ -131,7 +131,7 @@ public sealed class HinduLunarNotableDateAlgorithmTests
     /// </summary>
     /// <param name="knownAnswer">The Holi known-answer row supplied by
     /// <see cref="NotableDateAlgorithmKnownAnswers.HinduLunarHoli" />.</param>
-    [DataTestMethod]
+    [TestMethod]
     [TestCategory("Regression")]
     [DynamicData(
         nameof(NotableDateAlgorithmKnownAnswers.HinduLunarHoli),
@@ -147,7 +147,7 @@ public sealed class HinduLunarNotableDateAlgorithmTests
     /// </summary>
     /// <param name="knownAnswer">The Navaratri known-answer row supplied by
     /// <see cref="NotableDateAlgorithmKnownAnswers.HinduLunarNavaratriSmoke" />.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DynamicData(
         nameof(NotableDateAlgorithmKnownAnswers.HinduLunarNavaratriSmoke),
         typeof(NotableDateAlgorithmKnownAnswers),
@@ -162,7 +162,7 @@ public sealed class HinduLunarNotableDateAlgorithmTests
     /// </summary>
     /// <param name="knownAnswer">The Navaratri known-answer row supplied by
     /// <see cref="NotableDateAlgorithmKnownAnswers.HinduLunarNavaratri" />.</param>
-    [DataTestMethod]
+    [TestMethod]
     [TestCategory("Regression")]
     [DynamicData(
         nameof(NotableDateAlgorithmKnownAnswers.HinduLunarNavaratri),

@@ -27,7 +27,7 @@ public sealed class QingmingNotableDateAlgorithmTests
     /// </summary>
     /// <param name="knownAnswer">The Qingming known-answer row supplied by
     /// <see cref="NotableDateAlgorithmKnownAnswers.QingmingSmoke" />.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DynamicData(
         nameof(NotableDateAlgorithmKnownAnswers.QingmingSmoke),
         typeof(NotableDateAlgorithmKnownAnswers),
@@ -44,7 +44,7 @@ public sealed class QingmingNotableDateAlgorithmTests
     /// </summary>
     /// <param name="knownAnswer">The Qingming known-answer row supplied by
     /// <see cref="NotableDateAlgorithmKnownAnswers.Qingming" />.</param>
-    [DataTestMethod]
+    [TestMethod]
     [TestCategory("Regression")]
     [DynamicData(
         nameof(NotableDateAlgorithmKnownAnswers.Qingming),

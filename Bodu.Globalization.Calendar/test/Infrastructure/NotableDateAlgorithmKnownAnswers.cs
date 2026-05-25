@@ -32,7 +32,7 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// <c>*Smoke</c> providers stay uncategorised and execute on every BVT build.
 /// </para>
 /// </remarks>
-public static class NotableDateAlgorithmKnownAnswers
+public static partial class NotableDateAlgorithmKnownAnswers
 {
     // -----------------------------------------------------------------------------------------------------------
     // Algorithm-factory enrollment (drives the shared boundary contract tests).
@@ -47,6 +47,7 @@ public static class NotableDateAlgorithmKnownAnswers
     /// <see cref="AlgorithmFactoryCase" />.</returns>
     public static IEnumerable<object[]> AllAlgorithmFactories()
     {
+        yield return Factory("Easter", () => new EasterSundayNotableDateAlgorithm());
         yield return Factory("Losar", () => new LosarNotableDateAlgorithm());
         yield return Factory("Vesak", () => new VesakNotableDateAlgorithm());
         yield return Factory("AsalhaPuja", () => new AsalhaPujaNotableDateAlgorithm());

@@ -29,7 +29,7 @@ public sealed class NotableDateAlgorithmContractTests
     /// <see cref="ArgumentOutOfRangeException" /> with <c>year</c> as the parameter name.
     /// </summary>
     /// <param name="algo">The algorithm under test.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DynamicData(
         nameof(NotableDateAlgorithmKnownAnswers.AllAlgorithmFactories),
         typeof(NotableDateAlgorithmKnownAnswers),
@@ -56,7 +56,7 @@ public sealed class NotableDateAlgorithmContractTests
     /// raw exception that <see cref="DateTime" /> would surface from its own constructor.
     /// </summary>
     /// <param name="algo">The algorithm under test.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DynamicData(
         nameof(NotableDateAlgorithmKnownAnswers.AllAlgorithmFactories),
         typeof(NotableDateAlgorithmKnownAnswers),
@@ -83,7 +83,7 @@ public sealed class NotableDateAlgorithmContractTests
     /// observes for the "no calendar supplied" path.
     /// </summary>
     /// <param name="algo">The algorithm under test.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DynamicData(
         nameof(NotableDateAlgorithmKnownAnswers.AllAlgorithmFactories),
         typeof(NotableDateAlgorithmKnownAnswers),
@@ -105,7 +105,7 @@ public sealed class NotableDateAlgorithmContractTests
     /// result the algorithm computes when no calendar is supplied.
     /// </summary>
     /// <param name="algo">The algorithm under test.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DynamicData(
         nameof(NotableDateAlgorithmKnownAnswers.AllAlgorithmFactories),
         typeof(NotableDateAlgorithmKnownAnswers),
@@ -128,7 +128,7 @@ public sealed class NotableDateAlgorithmContractTests
     /// fires.
     /// </summary>
     /// <param name="algo">The algorithm under test.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DynamicData(
         nameof(NotableDateAlgorithmKnownAnswers.AllAlgorithmFactories),
         typeof(NotableDateAlgorithmKnownAnswers),

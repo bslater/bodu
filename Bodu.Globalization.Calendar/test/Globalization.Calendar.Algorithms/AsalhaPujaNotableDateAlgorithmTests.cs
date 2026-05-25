@@ -27,7 +27,7 @@ public sealed class AsalhaPujaNotableDateAlgorithmTests
     /// </summary>
     /// <param name="knownAnswer">The Asalha Puja known-answer row supplied by
     /// <see cref="NotableDateAlgorithmKnownAnswers.AsalhaPujaSmoke" />.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DynamicData(
         nameof(NotableDateAlgorithmKnownAnswers.AsalhaPujaSmoke),
         typeof(NotableDateAlgorithmKnownAnswers),
@@ -43,7 +43,7 @@ public sealed class AsalhaPujaNotableDateAlgorithmTests
     /// </summary>
     /// <param name="knownAnswer">The Asalha Puja known-answer row supplied by
     /// <see cref="NotableDateAlgorithmKnownAnswers.AsalhaPuja" />.</param>
-    [DataTestMethod]
+    [TestMethod]
     [TestCategory("Regression")]
     [DynamicData(
         nameof(NotableDateAlgorithmKnownAnswers.AsalhaPuja),
