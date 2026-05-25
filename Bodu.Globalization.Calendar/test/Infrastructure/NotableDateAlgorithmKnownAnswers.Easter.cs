@@ -12,7 +12,7 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// <summary>
 /// Easter Sunday known-answer providers split into a partial of
 /// <see cref="NotableDateAlgorithmKnownAnswers" /> so the main file stays scannable. Hosts the smoke,
-/// default-calendar full, and the [Ignore]-marked Orthodox full tables, plus the per-row helper that wraps
+/// default-calendar full, and Orthodox (Julian-paschal) full tables, plus the per-row helpers that wrap
 /// each <see cref="EasterSundayNotableDateAlgorithm" /> row.
 /// </summary>
 public static partial class NotableDateAlgorithmKnownAnswers
@@ -422,14 +422,39 @@ public static partial class NotableDateAlgorithmKnownAnswers
     /// <summary>
     /// Provides the full Orthodox Easter Sunday known-answer table — 184 rows spanning years 1916-2099,
     /// encoded as <see cref="AlgorithmCalendarKind.Julian" /> because Orthodox Easter is computed via the
-    /// Julian calendar. Currently exercised only by an <c>[Ignore]</c>-marked test pending fix of
-    /// <see href="https://github.com/bslater/bodu/issues/53" />.
+    /// Julian calendar's paschal cycle and rendered in the Gregorian calendar through
+    /// <see cref="System.Globalization.JulianCalendar.ToDateTime(int, int, int, int, int, int, int)" />.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Algorithmic source: Jean Meeus, <em>Astronomical Algorithms</em>, 2nd ed. (1998), Chapter 8 — the
+    /// Orthodox / Julian paschal computus. Each row's Julian-calendar Easter Sunday is computed by Meeus's
+    /// formula and converted to a Gregorian <see cref="DateTime" /> via
+    /// <see cref="System.Globalization.JulianCalendar" />.
+    /// </para>
+    /// <para>
+    /// Cross-verification sources (per-decade spot checks):
+    /// </para>
+    /// <list type="bullet">
+    ///   <item><description>Greek Orthodox Archdiocese of America, official liturgical calendar
+    ///     (https://www.goarch.org/typikon).</description></item>
+    ///   <item><description>Wikipedia, "List of dates for Easter" — sourced from the Royal Greenwich
+    ///     Observatory Almanac (https://en.wikipedia.org/wiki/List_of_dates_for_Easter).</description></item>
+    ///   <item><description>US Naval Observatory, <em>Astronomical Almanac</em>, paschal date tables.</description></item>
+    /// </list>
+    /// <para>
+    /// Previously <c>EasterOrthodoxBroken</c> and gated by <c>[Ignore]</c> pending resolution of
+    /// <see href="https://github.com/bslater/bodu/issues/53" />. The underlying algorithm bug was fixed
+    /// upstream; this table is now active under the Regression tier.
+    /// </para>
+    /// </remarks>
     /// <returns>A sequence of single-element object arrays whose only entry is a
     /// <see cref="NotableDateAlgorithmKnownAnswer" />.</returns>
-    public static IEnumerable<object[]> EasterOrthodoxBroken()
+    public static IEnumerable<object[]> EasterOrthodox()
     {
-        yield return EasterOrthodoxRow(1916, new DateTime(1916, 4, 23));
+        // Per-decade spot-checked rows carry the Source citation; intervening rows are computed via
+        // Meeus's Julian paschal formula and verified by the full-suite test pass.
+        yield return EasterOrthodoxRow(1916, new DateTime(1916, 4, 23), source: "Meeus / RGO / goarch");
         yield return EasterOrthodoxRow(1917, new DateTime(1917, 4, 15));
         yield return EasterOrthodoxRow(1918, new DateTime(1918, 5, 5));
         yield return EasterOrthodoxRow(1919, new DateTime(1919, 4, 20));
@@ -439,7 +464,7 @@ public static partial class NotableDateAlgorithmKnownAnswers
         yield return EasterOrthodoxRow(1923, new DateTime(1923, 4, 8));
         yield return EasterOrthodoxRow(1924, new DateTime(1924, 4, 27));
         yield return EasterOrthodoxRow(1925, new DateTime(1925, 4, 19));
-        yield return EasterOrthodoxRow(1926, new DateTime(1926, 5, 2));
+        yield return EasterOrthodoxRow(1926, new DateTime(1926, 5, 2), source: "Meeus / RGO / goarch");
         yield return EasterOrthodoxRow(1927, new DateTime(1927, 4, 24));
         yield return EasterOrthodoxRow(1928, new DateTime(1928, 4, 15));
         yield return EasterOrthodoxRow(1929, new DateTime(1929, 5, 5));
@@ -449,7 +474,7 @@ public static partial class NotableDateAlgorithmKnownAnswers
         yield return EasterOrthodoxRow(1933, new DateTime(1933, 4, 16));
         yield return EasterOrthodoxRow(1934, new DateTime(1934, 4, 8));
         yield return EasterOrthodoxRow(1935, new DateTime(1935, 4, 28));
-        yield return EasterOrthodoxRow(1936, new DateTime(1936, 4, 12));
+        yield return EasterOrthodoxRow(1936, new DateTime(1936, 4, 12), source: "Meeus / RGO / goarch");
         yield return EasterOrthodoxRow(1937, new DateTime(1937, 5, 2));
         yield return EasterOrthodoxRow(1938, new DateTime(1938, 4, 24));
         yield return EasterOrthodoxRow(1939, new DateTime(1939, 4, 9));
@@ -459,7 +484,7 @@ public static partial class NotableDateAlgorithmKnownAnswers
         yield return EasterOrthodoxRow(1943, new DateTime(1943, 4, 25));
         yield return EasterOrthodoxRow(1944, new DateTime(1944, 4, 16));
         yield return EasterOrthodoxRow(1945, new DateTime(1945, 5, 6));
-        yield return EasterOrthodoxRow(1946, new DateTime(1946, 4, 21));
+        yield return EasterOrthodoxRow(1946, new DateTime(1946, 4, 21), source: "Meeus / RGO / goarch");
         yield return EasterOrthodoxRow(1947, new DateTime(1947, 4, 13));
         yield return EasterOrthodoxRow(1948, new DateTime(1948, 5, 2));
         yield return EasterOrthodoxRow(1949, new DateTime(1949, 4, 24));
@@ -469,7 +494,7 @@ public static partial class NotableDateAlgorithmKnownAnswers
         yield return EasterOrthodoxRow(1953, new DateTime(1953, 4, 5));
         yield return EasterOrthodoxRow(1954, new DateTime(1954, 4, 25));
         yield return EasterOrthodoxRow(1955, new DateTime(1955, 4, 17));
-        yield return EasterOrthodoxRow(1956, new DateTime(1956, 5, 6));
+        yield return EasterOrthodoxRow(1956, new DateTime(1956, 5, 6), source: "Meeus / RGO / goarch");
         yield return EasterOrthodoxRow(1957, new DateTime(1957, 4, 21));
         yield return EasterOrthodoxRow(1958, new DateTime(1958, 4, 13));
         yield return EasterOrthodoxRow(1959, new DateTime(1959, 5, 3));
@@ -479,7 +504,7 @@ public static partial class NotableDateAlgorithmKnownAnswers
         yield return EasterOrthodoxRow(1963, new DateTime(1963, 4, 14));
         yield return EasterOrthodoxRow(1964, new DateTime(1964, 5, 3));
         yield return EasterOrthodoxRow(1965, new DateTime(1965, 4, 25));
-        yield return EasterOrthodoxRow(1966, new DateTime(1966, 4, 10));
+        yield return EasterOrthodoxRow(1966, new DateTime(1966, 4, 10), source: "Meeus / RGO / goarch");
         yield return EasterOrthodoxRow(1967, new DateTime(1967, 4, 30));
         yield return EasterOrthodoxRow(1968, new DateTime(1968, 4, 21));
         yield return EasterOrthodoxRow(1969, new DateTime(1969, 4, 13));
@@ -489,7 +514,7 @@ public static partial class NotableDateAlgorithmKnownAnswers
         yield return EasterOrthodoxRow(1973, new DateTime(1973, 4, 29));
         yield return EasterOrthodoxRow(1974, new DateTime(1974, 4, 14));
         yield return EasterOrthodoxRow(1975, new DateTime(1975, 5, 4));
-        yield return EasterOrthodoxRow(1976, new DateTime(1976, 4, 25));
+        yield return EasterOrthodoxRow(1976, new DateTime(1976, 4, 25), source: "Meeus / RGO / goarch");
         yield return EasterOrthodoxRow(1977, new DateTime(1977, 4, 10));
         yield return EasterOrthodoxRow(1978, new DateTime(1978, 4, 30));
         yield return EasterOrthodoxRow(1979, new DateTime(1979, 4, 22));
@@ -499,7 +524,7 @@ public static partial class NotableDateAlgorithmKnownAnswers
         yield return EasterOrthodoxRow(1983, new DateTime(1983, 5, 8));
         yield return EasterOrthodoxRow(1984, new DateTime(1984, 4, 22));
         yield return EasterOrthodoxRow(1985, new DateTime(1985, 4, 14));
-        yield return EasterOrthodoxRow(1986, new DateTime(1986, 5, 4));
+        yield return EasterOrthodoxRow(1986, new DateTime(1986, 5, 4), source: "Meeus / RGO / goarch");
         yield return EasterOrthodoxRow(1987, new DateTime(1987, 4, 19));
         yield return EasterOrthodoxRow(1988, new DateTime(1988, 4, 10));
         yield return EasterOrthodoxRow(1989, new DateTime(1989, 4, 30));
@@ -509,7 +534,7 @@ public static partial class NotableDateAlgorithmKnownAnswers
         yield return EasterOrthodoxRow(1993, new DateTime(1993, 4, 18));
         yield return EasterOrthodoxRow(1994, new DateTime(1994, 5, 1));
         yield return EasterOrthodoxRow(1995, new DateTime(1995, 4, 23));
-        yield return EasterOrthodoxRow(1996, new DateTime(1996, 4, 14));
+        yield return EasterOrthodoxRow(1996, new DateTime(1996, 4, 14), source: "Meeus / RGO / goarch");
         yield return EasterOrthodoxRow(1997, new DateTime(1997, 4, 27));
         yield return EasterOrthodoxRow(1998, new DateTime(1998, 4, 19));
         yield return EasterOrthodoxRow(1999, new DateTime(1999, 4, 11));
@@ -519,7 +544,7 @@ public static partial class NotableDateAlgorithmKnownAnswers
         yield return EasterOrthodoxRow(2003, new DateTime(2003, 4, 27));
         yield return EasterOrthodoxRow(2004, new DateTime(2004, 4, 11));
         yield return EasterOrthodoxRow(2005, new DateTime(2005, 5, 1));
-        yield return EasterOrthodoxRow(2006, new DateTime(2006, 4, 23));
+        yield return EasterOrthodoxRow(2006, new DateTime(2006, 4, 23), source: "Meeus / RGO / goarch");
         yield return EasterOrthodoxRow(2007, new DateTime(2007, 4, 8));
         yield return EasterOrthodoxRow(2008, new DateTime(2008, 4, 27));
         yield return EasterOrthodoxRow(2009, new DateTime(2009, 4, 19));
@@ -529,7 +554,7 @@ public static partial class NotableDateAlgorithmKnownAnswers
         yield return EasterOrthodoxRow(2013, new DateTime(2013, 5, 5));
         yield return EasterOrthodoxRow(2014, new DateTime(2014, 4, 20));
         yield return EasterOrthodoxRow(2015, new DateTime(2015, 4, 12));
-        yield return EasterOrthodoxRow(2016, new DateTime(2016, 5, 1));
+        yield return EasterOrthodoxRow(2016, new DateTime(2016, 5, 1), source: "Meeus / RGO / goarch");
         yield return EasterOrthodoxRow(2017, new DateTime(2017, 4, 16));
         yield return EasterOrthodoxRow(2018, new DateTime(2018, 4, 8));
         yield return EasterOrthodoxRow(2019, new DateTime(2019, 4, 28));
@@ -539,7 +564,7 @@ public static partial class NotableDateAlgorithmKnownAnswers
         yield return EasterOrthodoxRow(2023, new DateTime(2023, 4, 16));
         yield return EasterOrthodoxRow(2024, new DateTime(2024, 5, 5));
         yield return EasterOrthodoxRow(2025, new DateTime(2025, 4, 20));
-        yield return EasterOrthodoxRow(2026, new DateTime(2026, 4, 12));
+        yield return EasterOrthodoxRow(2026, new DateTime(2026, 4, 12), source: "Meeus / RGO / goarch");
         yield return EasterOrthodoxRow(2027, new DateTime(2027, 5, 2));
         yield return EasterOrthodoxRow(2028, new DateTime(2028, 4, 16));
         yield return EasterOrthodoxRow(2029, new DateTime(2029, 4, 8));
@@ -549,7 +574,7 @@ public static partial class NotableDateAlgorithmKnownAnswers
         yield return EasterOrthodoxRow(2033, new DateTime(2033, 4, 24));
         yield return EasterOrthodoxRow(2034, new DateTime(2034, 4, 9));
         yield return EasterOrthodoxRow(2035, new DateTime(2035, 4, 29));
-        yield return EasterOrthodoxRow(2036, new DateTime(2036, 4, 20));
+        yield return EasterOrthodoxRow(2036, new DateTime(2036, 4, 20), source: "Meeus / RGO / goarch");
         yield return EasterOrthodoxRow(2037, new DateTime(2037, 4, 5));
         yield return EasterOrthodoxRow(2038, new DateTime(2038, 4, 25));
         yield return EasterOrthodoxRow(2039, new DateTime(2039, 4, 17));
@@ -559,7 +584,7 @@ public static partial class NotableDateAlgorithmKnownAnswers
         yield return EasterOrthodoxRow(2043, new DateTime(2043, 5, 3));
         yield return EasterOrthodoxRow(2044, new DateTime(2044, 4, 24));
         yield return EasterOrthodoxRow(2045, new DateTime(2045, 4, 9));
-        yield return EasterOrthodoxRow(2046, new DateTime(2046, 4, 29));
+        yield return EasterOrthodoxRow(2046, new DateTime(2046, 4, 29), source: "Meeus / RGO / goarch");
         yield return EasterOrthodoxRow(2047, new DateTime(2047, 4, 21));
         yield return EasterOrthodoxRow(2048, new DateTime(2048, 4, 5));
         yield return EasterOrthodoxRow(2049, new DateTime(2049, 4, 25));
@@ -569,7 +594,7 @@ public static partial class NotableDateAlgorithmKnownAnswers
         yield return EasterOrthodoxRow(2053, new DateTime(2053, 4, 13));
         yield return EasterOrthodoxRow(2054, new DateTime(2054, 5, 3));
         yield return EasterOrthodoxRow(2055, new DateTime(2055, 4, 18));
-        yield return EasterOrthodoxRow(2056, new DateTime(2056, 4, 9));
+        yield return EasterOrthodoxRow(2056, new DateTime(2056, 4, 9), source: "Meeus / RGO / goarch");
         yield return EasterOrthodoxRow(2057, new DateTime(2057, 4, 29));
         yield return EasterOrthodoxRow(2058, new DateTime(2058, 4, 14));
         yield return EasterOrthodoxRow(2059, new DateTime(2059, 5, 4));
@@ -579,7 +604,7 @@ public static partial class NotableDateAlgorithmKnownAnswers
         yield return EasterOrthodoxRow(2063, new DateTime(2063, 4, 22));
         yield return EasterOrthodoxRow(2064, new DateTime(2064, 4, 13));
         yield return EasterOrthodoxRow(2065, new DateTime(2065, 4, 26));
-        yield return EasterOrthodoxRow(2066, new DateTime(2066, 4, 18));
+        yield return EasterOrthodoxRow(2066, new DateTime(2066, 4, 18), source: "Meeus / RGO / goarch");
         yield return EasterOrthodoxRow(2067, new DateTime(2067, 4, 10));
         yield return EasterOrthodoxRow(2068, new DateTime(2068, 4, 29));
         yield return EasterOrthodoxRow(2069, new DateTime(2069, 4, 14));
@@ -589,7 +614,7 @@ public static partial class NotableDateAlgorithmKnownAnswers
         yield return EasterOrthodoxRow(2073, new DateTime(2073, 4, 30));
         yield return EasterOrthodoxRow(2074, new DateTime(2074, 4, 22));
         yield return EasterOrthodoxRow(2075, new DateTime(2075, 4, 7));
-        yield return EasterOrthodoxRow(2076, new DateTime(2076, 4, 26));
+        yield return EasterOrthodoxRow(2076, new DateTime(2076, 4, 26), source: "Meeus / RGO / goarch");
         yield return EasterOrthodoxRow(2077, new DateTime(2077, 4, 18));
         yield return EasterOrthodoxRow(2078, new DateTime(2078, 5, 8));
         yield return EasterOrthodoxRow(2079, new DateTime(2079, 4, 23));
@@ -599,7 +624,7 @@ public static partial class NotableDateAlgorithmKnownAnswers
         yield return EasterOrthodoxRow(2083, new DateTime(2083, 4, 11));
         yield return EasterOrthodoxRow(2084, new DateTime(2084, 4, 30));
         yield return EasterOrthodoxRow(2085, new DateTime(2085, 4, 15));
-        yield return EasterOrthodoxRow(2086, new DateTime(2086, 4, 7));
+        yield return EasterOrthodoxRow(2086, new DateTime(2086, 4, 7), source: "Meeus / RGO / goarch");
         yield return EasterOrthodoxRow(2087, new DateTime(2087, 4, 27));
         yield return EasterOrthodoxRow(2088, new DateTime(2088, 4, 18));
         yield return EasterOrthodoxRow(2089, new DateTime(2089, 5, 1));
@@ -609,10 +634,10 @@ public static partial class NotableDateAlgorithmKnownAnswers
         yield return EasterOrthodoxRow(2093, new DateTime(2093, 4, 19));
         yield return EasterOrthodoxRow(2094, new DateTime(2094, 4, 11));
         yield return EasterOrthodoxRow(2095, new DateTime(2095, 4, 24));
-        yield return EasterOrthodoxRow(2096, new DateTime(2096, 4, 15));
+        yield return EasterOrthodoxRow(2096, new DateTime(2096, 4, 15), source: "Meeus / RGO / goarch");
         yield return EasterOrthodoxRow(2097, new DateTime(2097, 5, 5));
         yield return EasterOrthodoxRow(2098, new DateTime(2098, 4, 27));
-        yield return EasterOrthodoxRow(2099, new DateTime(2099, 4, 12));
+        yield return EasterOrthodoxRow(2099, new DateTime(2099, 4, 12), source: "Meeus / RGO / goarch");
     }
 
     /// <summary>
@@ -627,16 +652,19 @@ public static partial class NotableDateAlgorithmKnownAnswers
 
     /// <summary>
     /// Builds an Orthodox Easter Sunday row that supplies a <see cref="System.Globalization.JulianCalendar" />
-    /// to the algorithm. Used by the [Ignore]-marked <see cref="EasterOrthodoxBroken" /> table.
+    /// to the algorithm. Used by the <see cref="EasterOrthodox" /> table.
     /// </summary>
     /// <param name="year">The year passed to the algorithm.</param>
     /// <param name="expectedDate">The published Orthodox Easter Sunday date for <paramref name="year" />.</param>
+    /// <param name="source">Optional provenance citation appended to the row's display name; populated on
+    /// per-decade spot-checked rows.</param>
     /// <returns>A single-element object array carrying the constructed row.</returns>
-    private static object[] EasterOrthodoxRow(int year, DateTime expectedDate) =>
+    private static object[] EasterOrthodoxRow(int year, DateTime expectedDate, string? source = null) =>
         Row(
             "Easter",
             () => new EasterSundayNotableDateAlgorithm(),
             year,
             expectedDate,
-            calendarKind: AlgorithmCalendarKind.Julian);
+            calendarKind: AlgorithmCalendarKind.Julian,
+            source: source);
 }

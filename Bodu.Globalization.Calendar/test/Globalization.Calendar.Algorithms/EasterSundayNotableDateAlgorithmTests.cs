@@ -22,9 +22,10 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// </para>
 /// <para>
 /// Orthodox rows (years 1916-2099) live in
-/// <see cref="NotableDateAlgorithmKnownAnswers.EasterOrthodoxBroken" /> and are exercised by an
-/// <c>[Ignore]</c>-marked test pending fix of
-/// <see href="https://github.com/bslater/bodu/issues/53" />.
+/// <see cref="NotableDateAlgorithmKnownAnswers.EasterOrthodox" /> and run under the Regression tier.
+/// Previously gated by <c>[Ignore]</c> per
+/// <see href="https://github.com/bslater/bodu/issues/53" />; the underlying algorithm bug was resolved
+/// and the gate has been removed.
 /// </para>
 /// </remarks>
 [TestClass]
@@ -64,17 +65,16 @@ public sealed class EasterSundayNotableDateAlgorithmTests
         NotableDateAlgorithmAssertions.AssertResultWithinTolerance(knownAnswer);
 
     /// <summary>
-    /// Verifies that Orthodox Easter Sunday is correctly calculated for years 1916-2099. Currently skipped:
-    /// the algorithm returns incorrect dates (7-35 days earlier than expected) for most Orthodox entries.
-    /// Tracked by <see href="https://github.com/bslater/bodu/issues/53" />.
+    /// Verifies that Orthodox Easter Sunday is correctly calculated for every year in 1916-2099. The
+    /// algorithm computes the Julian paschal date via Meeus's formula and renders it as a Gregorian
+    /// <see cref="DateTime" /> through <see cref="System.Globalization.JulianCalendar.ToDateTime(int, int, int, int, int, int, int)" />.
     /// </summary>
     /// <param name="knownAnswer">The Orthodox Easter known-answer row supplied by
-    /// <see cref="NotableDateAlgorithmKnownAnswers.EasterOrthodoxBroken" />.</param>
+    /// <see cref="NotableDateAlgorithmKnownAnswers.EasterOrthodox" />.</param>
     [TestMethod]
-    [Ignore]
     [TestCategory("Regression")]
     [DynamicData(
-        nameof(NotableDateAlgorithmKnownAnswers.EasterOrthodoxBroken),
+        nameof(NotableDateAlgorithmKnownAnswers.EasterOrthodox),
         typeof(NotableDateAlgorithmKnownAnswers),
         DynamicDataDisplayName = nameof(NotableDateAlgorithmKnownAnswers.GetDisplayName),
         DynamicDataDisplayNameDeclaringType = typeof(NotableDateAlgorithmKnownAnswers))]
