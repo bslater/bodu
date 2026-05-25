@@ -40,5 +40,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\src\Bodu.Core.csproj" />
+    <ProjectReference Include="..\..\Bodu.Test\test\Bodu.Test.csproj" />
   </ItemGroup>
 </Project>

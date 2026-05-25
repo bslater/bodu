@@ -1,8 +1,10 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ThrowHelperTests.AssertGuard.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
+
+using Bodu.Test.Assertions;
 
 namespace Bodu;
 
@@ -10,62 +12,19 @@ public partial class ThrowHelperTests
 {
 
     /// <summary>
-    /// Asserts the standard <see cref="ThrowHelper" /> contract for a single guard invocation: the action either
-    /// completes silently (when <paramref name="expectedExceptionType" /> is <see langword="null" />) or throws
-    /// exactly the requested exception type, optionally with a specific <see cref="ArgumentException.ParamName" />.
+    /// Delegates to <see cref="ExceptionAssert.AssertGuard(string, Action, Type?, string?)" /> so that the
+    /// existing <see cref="ThrowHelper" /> contract test files continue to compile against the same local
+    /// name after the helper was promoted to <c>Bodu.Test</c>.
     /// </summary>
-    /// <param name="testName">A descriptive label used in assertion failure messages so a failing row is identifiable in DataRow output.</param>
+    /// <param name="testName">A descriptive label used in assertion failure messages so a failing row is identifiable in <c>[DynamicData]</c> or <c>[DataRow]</c> output.</param>
     /// <param name="act">The guard invocation under test.</param>
-    /// <param name="expectedExceptionType">
-    /// The exact <see cref="Exception" />-derived type that the guard must throw, or <see langword="null" /> if
-    /// the invocation must complete without throwing.
-    /// </param>
-    /// <param name="expectedParamName">
-    /// When the expected exception derives from <see cref="ArgumentException" />, the value
-    /// <see cref="ArgumentException.ParamName" /> must carry; otherwise ignored.
-    /// </param>
-    /// <remarks>
-    /// <para>
-    /// The helper deliberately accepts a base <see cref="Exception" /> type rather than a generic so that data
-    /// rows can mix multiple expected exception types in a single matrix.
-    /// </para>
-    /// </remarks>
+    /// <param name="expectedExceptionType">The exact <see cref="Exception" />-derived type that the guard must throw, or <see langword="null" /> if the invocation must complete without throwing.</param>
+    /// <param name="expectedParamName">When the expected exception derives from <see cref="ArgumentException" />, the value <see cref="ArgumentException.ParamName" /> must carry; otherwise ignored.</param>
     private static void AssertGuard(
         string testName,
         Action act,
         Type? expectedExceptionType,
-        string? expectedParamName)
-    {
-        if (expectedExceptionType is null)
-        {
-            act();
-            return;
-        }
-
-        Exception? captured = null;
-        try
-        {
-            act();
-        }
-        catch (Exception ex)
-        {
-            captured = ex;
-        }
-
-        Assert.IsNotNull(captured, $"{testName}: expected {expectedExceptionType.Name} but no exception was thrown.");
-        Assert.AreEqual(expectedExceptionType, captured.GetType(), $"{testName}: wrong exception type.");
-
-        if (expectedParamName is not null)
-        {
-            Assert.IsInstanceOfType<ArgumentException>(
-                captured,
-                $"{testName}: expected an ArgumentException-derived type to validate ParamName.");
-
-            Assert.AreEqual(
-                expectedParamName,
-                ((ArgumentException)captured).ParamName,
-                $"{testName}: wrong ParamName.");
-        }
-    }
+        string? expectedParamName) =>
+        ExceptionAssert.AssertGuard(testName, act, expectedExceptionType, expectedParamName);
 
 }
