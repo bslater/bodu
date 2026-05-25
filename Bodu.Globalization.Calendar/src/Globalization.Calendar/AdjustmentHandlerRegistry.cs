@@ -71,7 +71,7 @@ public sealed class AdjustmentHandlerRegistry
     /// </exception>
     public AdjustmentHandlerRegistry(IEnumerable<KeyValuePair<string, IAdjustmentHandler>> handlers)
     {
-        if (handlers is null) throw new ArgumentNullException(nameof(handlers));
+        ThrowHelper.ThrowIfNull(handlers);
 
         foreach (KeyValuePair<string, IAdjustmentHandler> pair in handlers)
             Register(pair.Key, pair.Value);
@@ -91,10 +91,8 @@ public sealed class AdjustmentHandlerRegistry
     /// </exception>
     public AdjustmentHandlerRegistry Register(string key, IAdjustmentHandler handler)
     {
-        if (string.IsNullOrWhiteSpace(key))
-            throw new ArgumentException(CalendarResourceStrings.Arg_Invalid_KeyNullOrWhiteSpace, nameof(key));
-        if (handler is null)
-            throw new ArgumentNullException(nameof(handler));
+        CalendarThrowHelper.ThrowIfKeyNullOrWhiteSpace(key);
+        ThrowHelper.ThrowIfNull(handler);
 
         lock (_gate)
         {

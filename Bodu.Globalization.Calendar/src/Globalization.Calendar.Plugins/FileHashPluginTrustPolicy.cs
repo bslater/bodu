@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
+
 namespace Bodu.Globalization.Calendar.Plugins;
 
 /// <summary>
@@ -42,7 +44,7 @@ public sealed class FileHashPluginTrustPolicy
     /// </exception>
     public FileHashPluginTrustPolicy(IReadOnlyDictionary<string, byte[]> allowedHashesByAssemblyName)
     {
-        if (allowedHashesByAssemblyName is null) throw new ArgumentNullException(nameof(allowedHashesByAssemblyName));
+        ThrowHelper.ThrowIfNull(allowedHashesByAssemblyName);
 
         var normalized = new Dictionary<string, byte[]>(StringComparer.OrdinalIgnoreCase);
         foreach (KeyValuePair<string, byte[]> entry in allowedHashesByAssemblyName)
@@ -63,13 +65,17 @@ public sealed class FileHashPluginTrustPolicy
     {
         var name = context.AssemblyName.Name;
         if (string.IsNullOrEmpty(name))
-            return new PluginTrustResult(Trusted: false, Reason: "Plugin assembly name is missing.");
+            return new PluginTrustResult(Trusted: false, Reason: CalendarResourceStrings.Op_Invalid_PluginAssemblyNameMissing);
 
         if (!_allowedHashesByAssemblyName.TryGetValue(name, out var expected))
-            return new PluginTrustResult(Trusted: false, Reason: $"Assembly '{name}' is not in the hash allowlist.");
+            return new PluginTrustResult(
+                Trusted: false,
+                Reason: string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Op_Invalid_PluginAssemblyNotInAllowlistFormat, name));
 
         if (expected.Length != context.FileHash.Length)
-            return new PluginTrustResult(Trusted: false, Reason: $"Assembly '{name}' hash length mismatch.");
+            return new PluginTrustResult(
+                Trusted: false,
+                Reason: string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Op_Invalid_PluginHashLengthMismatchFormat, name));
 
         // Constant-time comparison is overkill for a plain integrity check, but cheap — use it anyway.
         var diff = 0;
@@ -78,6 +84,8 @@ public sealed class FileHashPluginTrustPolicy
 
         return diff == 0
             ? new PluginTrustResult(Trusted: true, Reason: null)
-            : new PluginTrustResult(Trusted: false, Reason: $"Assembly '{name}' hash does not match the pinned value.");
+            : new PluginTrustResult(
+                Trusted: false,
+                Reason: string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Op_Invalid_PluginHashMismatchFormat, name));
     }
 }

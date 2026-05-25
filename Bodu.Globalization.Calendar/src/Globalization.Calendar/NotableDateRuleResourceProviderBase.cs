@@ -116,7 +116,7 @@ public abstract class NotableDateRuleResourceProviderBase
     {
         _rootResourceName = rootResourceName ?? throw new ArgumentNullException(nameof(rootResourceName));
         _resourcePathResolver = resourcePathResolver ?? throw new ArgumentNullException(nameof(resourcePathResolver));
-        if (assemblies is null) throw new ArgumentNullException(nameof(assemblies));
+        ThrowHelper.ThrowIfNull(assemblies);
 
         Assembly[] snapshot = [.. assemblies];
         if (snapshot.Length == 0) throw new ArgumentException(CalendarResourceStrings.Arg_Invalid_AssemblyChainEmpty, nameof(assemblies));

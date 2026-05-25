@@ -82,8 +82,7 @@ public abstract class EasterSundayNotableDateProviderBase
     /// <inheritdoc />
     public IReadOnlyList<NotableDate> GetDates(int year, SysGlobal.Calendar? calendar = null)
     {
-        ThrowHelper.ThrowIfLessThan(year, 1);
-        ThrowHelper.ThrowIfGreaterThan(year, 9999);
+        CalendarThrowHelper.ThrowIfYearOutOfRange(year);
 
         ValidateCalendar(calendar);
 

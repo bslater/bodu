@@ -47,7 +47,7 @@ internal sealed class NotableDateRuleResolver
     /// </exception>
     public NotableDateRuleResolver(IReadOnlyList<NotableDateRule> rules, INotableDateAlgorithmRegistry? algorithms = null)
     {
-        if (rules is null) throw new ArgumentNullException(nameof(rules));
+        ThrowHelper.ThrowIfNull(rules);
 
         // Build a name-keyed lookup once; rule names are unique within a service. Duplicates collapse silently with the last wins.
         var lookup = new Dictionary<string, NotableDateRule>(StringComparer.OrdinalIgnoreCase);
@@ -100,9 +100,9 @@ internal sealed class NotableDateRuleResolver
     /// </exception>
     public DateTime? ResolveAnchorDate(NotableDateRule rule, int year)
     {
-        return rule is null
-            ? throw new ArgumentNullException(nameof(rule))
-            : ResolveInternal(rule, year, new HashSet<string>(StringComparer.OrdinalIgnoreCase));
+        ThrowHelper.ThrowIfNull(rule);
+
+        return ResolveInternal(rule, year, new HashSet<string>(StringComparer.OrdinalIgnoreCase));
     }
 
     /// <summary>

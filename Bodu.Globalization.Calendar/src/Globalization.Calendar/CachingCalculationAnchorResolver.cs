@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Collections.Concurrent;
+using System.Globalization;
 
 namespace Bodu.Globalization.Calendar;
 
@@ -63,8 +64,7 @@ internal sealed class CachingCalculationAnchorResolver
     /// <inheritdoc />
     public DateTime? Resolve(string anchorRuleName, int year)
     {
-        if (string.IsNullOrWhiteSpace(anchorRuleName))
-            throw new ArgumentException(CalendarResourceStrings.Arg_Invalid_AnchorRuleNameNullOrWhiteSpace, nameof(anchorRuleName));
+        CalendarThrowHelper.ThrowIfAnchorRuleNameNullOrWhiteSpace(anchorRuleName);
 
         CalculationAnchorCacheKey key = new(anchorRuleName, year);
 
@@ -100,7 +100,10 @@ internal sealed class CachingCalculationAnchorResolver
     {
         return !_rulesByName.TryGetValue(key.AnchorRuleName, out NotableDateRule? rule)
             ? throw new InvalidOperationException(
-                $"The calculation anchor rule '{key.AnchorRuleName}' could not be found.")
+                string.Format(
+                    CultureInfo.InvariantCulture,
+                    CalendarResourceStrings.Op_Invalid_CalculationAnchorRuleNotFound,
+                    key.AnchorRuleName))
             : _ruleResolver.ResolveAnchorDate(rule, key.Year);
     }
 }

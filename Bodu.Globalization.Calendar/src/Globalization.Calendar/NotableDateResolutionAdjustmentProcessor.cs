@@ -50,11 +50,10 @@ internal sealed class NotableDateResolutionAdjustmentProcessor
         IAdjustmentHandlerRegistry? handlerRegistry = null,
         INotableDateRuleOccurrenceResolver? occurrenceResolver = null)
     {
-        if (!Enum.IsDefined(workingWeek))
-            throw new ArgumentOutOfRangeException(nameof(workingWeek), workingWeek, CalendarResourceStrings.Arg_OutOfRange_WorkingWeekUndefined);
+        CalendarThrowHelper.ThrowIfWorkingWeekUndefined(workingWeek);
 
-        if (workingWeek == WorkingDaysOfWeek.Custom && weekendProvider is null)
-            throw new ArgumentNullException(nameof(weekendProvider));
+        if (workingWeek == WorkingDaysOfWeek.Custom)
+            ThrowHelper.ThrowIfNull(weekendProvider);
 
         this._workingWeek = workingWeek;
         this._weekendProvider = weekendProvider;

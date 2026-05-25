@@ -736,8 +736,7 @@ public sealed class NotableDateService : INotableDateService, IDisposable
     /// </exception>
     public bool IsRangeResolved(DateTime startDate, DateTime endDate)
     {
-        if (endDate < startDate)
-            throw new ArgumentException(CalendarResourceStrings.Arg_Invalid_EndDateBeforeStartDate, nameof(endDate));
+        CalendarThrowHelper.ThrowIfEndDateBeforeStartDate(startDate, endDate);
 
         DateRange probe = new(startDate.Date, endDate.Date);
 

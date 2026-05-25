@@ -124,7 +124,7 @@
     <value>The working-week pattern is not defined.</value>
   </data>
   <data name="Arg_OutOfRange_Year" xml:space="preserve">
-    <value>Year must be greater than or equal to 1.</value>
+    <value>Year must be between 1 and 9999.</value>
   </data>
   <data name="Format_Invalid_JsonSchema" xml:space="preserve">
     <value>JSON failed schema validation: {0}</value>
@@ -162,6 +162,9 @@
   <data name="Op_Invalid_AnchorRuleNotFound" xml:space="preserve">
     <value>Anchor rule '{0}' referenced by '{1}' was not found.</value>
   </data>
+  <data name="Op_Invalid_CalculationAnchorRuleNotFound" xml:space="preserve">
+    <value>The calculation anchor rule '{0}' could not be found.</value>
+  </data>
   <data name="Op_Invalid_CircularDependencyInRule" xml:space="preserve">
     <value>Circular dependency detected while resolving notable date rule '{0}': {1}.</value>
   </data>
@@ -177,11 +180,44 @@
   <data name="Op_Invalid_MissingRequiredAttribute" xml:space="preserve">
     <value>Missing required attribute '{0}' on element '{1}'.</value>
   </data>
+  <data name="Op_Invalid_PluginActivationFailedFormat" xml:space="preserve">
+    <value>Failed to activate plugin type '{0}' from assembly '{1}': {2}</value>
+  </data>
+  <data name="Op_Invalid_PluginAssemblyNameMissing" xml:space="preserve">
+    <value>Plugin assembly name is missing.</value>
+  </data>
+  <data name="Op_Invalid_PluginAssemblyNotInAllowlistFormat" xml:space="preserve">
+    <value>Assembly '{0}' is not in the hash allowlist.</value>
+  </data>
   <data name="Op_Invalid_PluginAttributeMissing" xml:space="preserve">
     <value>attribute not present on the assembly</value>
   </data>
+  <data name="Op_Invalid_PluginHashLengthMismatchFormat" xml:space="preserve">
+    <value>Assembly '{0}' hash length mismatch.</value>
+  </data>
+  <data name="Op_Invalid_PluginHashMismatchFormat" xml:space="preserve">
+    <value>Assembly '{0}' hash does not match the pinned value.</value>
+  </data>
+  <data name="Op_Invalid_PluginMissingAttributeFormat" xml:space="preserve">
+    <value>Plugin assembly '{0}' is missing a valid NotableDatePluginAttribute: {1}.</value>
+  </data>
+  <data name="Op_Invalid_PluginNotStrongNamed" xml:space="preserve">
+    <value>Plugin assembly is not strong-named.</value>
+  </data>
+  <data name="Op_Invalid_PluginNotTrustedFormat" xml:space="preserve">
+    <value>Plugin assembly '{0}' was rejected by the trust policy: {1}.</value>
+  </data>
+  <data name="Op_Invalid_PluginReasonMissing" xml:space="preserve">
+    <value>no reason supplied</value>
+  </data>
+  <data name="Op_Invalid_PluginTokenNotInAllowlistFormat" xml:space="preserve">
+    <value>Public-key token '{0}' is not in the allowlist.</value>
+  </data>
   <data name="Op_Invalid_PluginTypeMissingInterface" xml:space="preserve">
     <value>declared plugin type '{0}' does not implement INotableDatePlugin</value>
+  </data>
+  <data name="Op_Invalid_PluginUnknownTypeName" xml:space="preserve">
+    <value>&lt;unknown&gt;</value>
   </data>
   <data name="Op_Invalid_ResourcePathEscapesRoot" xml:space="preserve">
     <value>The resource path '{0}' escapes the resource root.</value>

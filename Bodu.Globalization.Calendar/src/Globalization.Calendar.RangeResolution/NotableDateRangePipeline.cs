@@ -150,7 +150,7 @@ internal sealed class NotableDateRangePipeline
     /// </remarks>
     public IReadOnlyList<NotableDate> Resolve(NotableDateRangeRequest request)
     {
-        if (request is null) throw new ArgumentNullException(nameof(request));
+        ThrowHelper.ThrowIfNull(request);
 
         NotableDateRangePlan plan = _planner.Plan(request);
         NotableDateRangeResolutionCache cache = new();

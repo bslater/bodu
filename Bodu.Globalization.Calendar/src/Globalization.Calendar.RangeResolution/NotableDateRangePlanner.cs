@@ -71,7 +71,7 @@ internal sealed class NotableDateRangePlanner
     /// <exception cref="ArgumentNullException"><paramref name="request" /> is <see langword="null" />.</exception>
     public NotableDateRangePlan Plan(NotableDateRangeRequest request)
     {
-        if (request is null) throw new ArgumentNullException(nameof(request));
+        ThrowHelper.ThrowIfNull(request);
 
         // Eligible rules: filtered by static territory, calendar, and filter checks. Year applicability is deferred to per-(rule,
         // year) materialization since FirstYear / LastYear / OccurrenceYears bounds depend on the year being resolved.

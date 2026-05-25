@@ -64,7 +64,7 @@ internal sealed class NotableDateRangeResolutionCache
     /// <exception cref="ArgumentNullException"><paramref name="entry" /> is <see langword="null" />.</exception>
     public void Add(NotableDateCacheEntry entry)
     {
-        if (entry is null) throw new ArgumentNullException(nameof(entry));
+        ThrowHelper.ThrowIfNull(entry);
 
         NotableDateCacheKey key = new(
             entry.Rule.Name,

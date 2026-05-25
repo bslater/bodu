@@ -105,7 +105,7 @@ public static partial class NotableDateOnlyExtensions
     {
         ThrowHelper.ThrowIfNull(service);
         ThrowHelper.ThrowIfNegative(count);
-        if (workingWeek.Count == 0) throw new ArgumentOutOfRangeException(nameof(workingWeek), CalendarResourceStrings.Arg_OutOfRange_WorkingWeekEmpty);
+        CalendarThrowHelper.ThrowIfWorkingWeekEmpty(workingWeek);
 
         if (count == 0) return DateOnly.FromDayNumber(date.DayNumber);
 

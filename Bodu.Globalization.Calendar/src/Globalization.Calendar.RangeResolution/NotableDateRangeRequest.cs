@@ -38,8 +38,7 @@ internal sealed record NotableDateRangeRequest
         DateTime start = startDate.Date;
         DateTime end = endDate.Date;
 
-        if (end < start)
-            throw new ArgumentException(CalendarResourceStrings.Arg_Invalid_EndDateBeforeStartDate, nameof(endDate));
+        CalendarThrowHelper.ThrowIfEndDateBeforeStartDate(start, end, nameof(endDate));
 
         StartDate = start;
         EndDate = end;

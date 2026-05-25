@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
+
 namespace Bodu.Globalization.Calendar.Plugins;
 
 /// <summary>
@@ -59,7 +61,14 @@ public sealed class PluginActivationException
     /// activation target in addition to the formatted exception message.
     /// </remarks>
     public PluginActivationException(string assemblyPath, Type? pluginType, Exception innerException)
-        : base($"Failed to activate plugin type '{pluginType?.FullName ?? "<unknown>"}' from assembly '{assemblyPath}': {innerException.Message}", innerException)
+        : base(
+            string.Format(
+                CultureInfo.InvariantCulture,
+                CalendarResourceStrings.Op_Invalid_PluginActivationFailedFormat,
+                pluginType?.FullName ?? CalendarResourceStrings.Op_Invalid_PluginUnknownTypeName,
+                assemblyPath,
+                innerException.Message),
+            innerException)
     {
         AssemblyPath = assemblyPath;
         PluginType = pluginType;

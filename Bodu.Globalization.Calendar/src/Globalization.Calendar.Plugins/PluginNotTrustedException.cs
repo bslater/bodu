@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
+
 namespace Bodu.Globalization.Calendar.Plugins;
 
 /// <summary>
@@ -62,7 +64,11 @@ public sealed class PluginNotTrustedException
     /// the failed trust evaluation in addition to the formatted exception message.
     /// </remarks>
     public PluginNotTrustedException(string assemblyPath, string? reason)
-        : base($"Plugin assembly '{assemblyPath}' was rejected by the trust policy: {reason ?? "no reason supplied"}.")
+        : base(string.Format(
+            CultureInfo.InvariantCulture,
+            CalendarResourceStrings.Op_Invalid_PluginNotTrustedFormat,
+            assemblyPath,
+            reason ?? CalendarResourceStrings.Op_Invalid_PluginReasonMissing))
     {
         AssemblyPath = assemblyPath;
         Reason = reason;

@@ -137,8 +137,7 @@ public static class NotableDateRuleParser
     /// </exception>
     public static ParsedNotableDateDocument ParseDocument(XDocument document)
     {
-        if (document is null)
-            throw new ArgumentNullException(nameof(document));
+        ThrowHelper.ThrowIfNull(document);
 
         ValidateDocument(document);
         return ParseDocumentInternal(document);
