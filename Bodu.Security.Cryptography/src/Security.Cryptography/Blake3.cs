@@ -85,9 +85,6 @@ namespace Bodu.Security.Cryptography;
 public sealed partial class Blake3
     : DeferredFinalBlockHashAlgorithm<Blake3>
 {
-
-    // ---- structural constants ----
-
     /// <summary>
     /// Size, in bytes, of a single compression input block.
     /// </summary>
@@ -130,8 +127,6 @@ public sealed partial class Blake3
     /// </summary>
     private const int OutLen = 32;
 
-    // ---- initialization vector (first eight words of the SHA-256 IV) ----
-
     /// <summary>
     /// The BLAKE3 initialization vector, taken from the fractional parts of the square roots of the first eight prime
     /// numbers, identical to the SHA-256 IV.
@@ -159,8 +154,6 @@ public sealed partial class Blake3
     };
 #pragma warning restore SA1025 // Code should not contain multiple whitespace in a row
 
-    // ---- streaming state ----
-
     /// <summary>
     /// Running chaining value for the chunk currently being compressed.
     /// </summary>
@@ -178,19 +171,17 @@ public sealed partial class Blake3
     private readonly uint[] _cvStack = new uint[MaxCvStackDepth * 8];
 
     /// <summary>
-    /// Current depth of <see cref="_cvStack" /> — the number of 8-word CV slices currently live, with the active top
-    /// slice occupying words <c>[(_cvStackDepth - 1) * 8, _cvStackDepth * 8)</c> when non-zero.
-    /// </summary>
-    private int _cvStackDepth;
-
-    /// <summary>
     /// Pre-allocated 16-word scratch buffer used by <see cref="ParentCv" /> to assemble the concatenation of a left and
     /// a right child chaining value before invoking <see cref="Compress" />. Reusing this field removes the per-call
     /// <c>uint[16]</c> allocation that would otherwise occur at every tree-merge step.
     /// </summary>
     private readonly uint[] _parentBlockWords = new uint[16];
 
-    // ---- construction ----
+    /// <summary>
+    /// Current depth of <see cref="_cvStack" /> — the number of 8-word CV slices currently live, with the active top
+    /// slice occupying words <c>[(_cvStackDepth - 1) * 8, _cvStackDepth * 8)</c> when non-zero.
+    /// </summary>
+    private int _cvStackDepth;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Blake3" /> class, configured to produce a 256-bit digest.
@@ -214,8 +205,6 @@ public sealed partial class Blake3
             return "BLAKE3";
         }
     }
-
-    // ---- HashAlgorithm overrides ----
 
     /// <summary>
     /// Gets a value indicating whether this transform instance can be reused after a hash operation is completed.
@@ -246,8 +235,6 @@ public sealed partial class Blake3
         _cvStackDepth = 0;
         s_iv.CopyTo(_chunkCv, 0);
     }
-
-    // ---- DeferredFinalBlockHashAlgorithm<T> implementation ----
 
     /// <inheritdoc />
     /// <remarks>
@@ -364,8 +351,6 @@ public sealed partial class Blake3
 
         return digest;
     }
-
-    // ---- core compression ----
 
     /// <summary>
     /// Performs the BLAKE3 compression function, transforming a chaining value and a 16-word message block into a
@@ -486,11 +471,13 @@ public sealed partial class Blake3
     /// <see langword="true" /> if this parent node is the root of the hash tree, causing <see cref="FlagRoot" /> to be
     /// applied.
     /// </param>
-    /// <param name="output">Destination for the resulting 8-word parent chaining value. Must have a length of at least 8.</param>
+    /// <param name="output">
+    /// Destination for the resulting 8-word parent chaining value. Must have a length of at least 8.
+    /// </param>
     /// <remarks>
     /// Both inputs are copied into <see cref="_parentBlockWords" /> before any write to <paramref name="output" />, so
-    /// callers may safely alias <paramref name="rightCv" /> with <paramref name="output" /> to fold tree levels in place
-    /// without an intermediate buffer.
+    /// callers may safely alias <paramref name="rightCv" /> with <paramref name="output" /> to fold tree levels in
+    /// place without an intermediate buffer.
     /// </remarks>
     private void ParentCv(ReadOnlySpan<uint> leftCv, ReadOnlySpan<uint> rightCv, bool isRoot, Span<uint> output)
     {
@@ -509,8 +496,6 @@ public sealed partial class Blake3
 
         outState.AsSpan(0, 8).CopyTo(output);
     }
-
-    // ---- block and parent processing ----
 
     /// <summary>
     /// Reads exactly 64 bytes from <paramref name="block" /> into a 16-element little-endian uint32 word array,
@@ -575,10 +560,11 @@ public sealed partial class Blake3
     /// <remarks>
     /// <para>
     /// Implements the BLAKE3 push-chunk-chaining-value step from §2.1 of the specification. After completing the chunk
-    /// at zero-based index <paramref name="chunkIdx" /> the total chunk count is <c>(<paramref name="chunkIdx" /> + 1)</c>;
-    /// the algorithm folds one tree level into the incoming CV for each trailing zero bit of that count. Each trailing
-    /// zero indicates a balanced subtree of the corresponding height has just been completed, so the top stack entry
-    /// (its left sibling) is popped and merged with the incoming CV via <see cref="ParentCv" />.
+    /// at zero-based index <paramref name="chunkIdx" /> the total chunk count is
+    /// <c>(<paramref name="chunkIdx" /> + 1)</c>; the algorithm folds one tree level into the incoming CV for each
+    /// trailing zero bit of that count. Each trailing zero indicates a balanced subtree of the corresponding height has
+    /// just been completed, so the top stack entry (its left sibling) is popped and merged with the incoming CV via
+    /// <see cref="ParentCv" />.
     /// </para>
     /// <para>
     /// After this step the live stack depth equals <c>popcount(<paramref name="chunkIdx"/> + 1)</c>, which is bounded

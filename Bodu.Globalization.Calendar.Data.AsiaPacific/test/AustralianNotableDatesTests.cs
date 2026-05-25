@@ -42,9 +42,9 @@ public sealed class AustralianNotableDatesTests
     [TestMethod]
     public void GetNotableDates_WhenQueryingAu_ShouldIncludeNationalRules_ForYear2026()
     {
-        var service = BuildAuService();
+        NotableDateService service = BuildAuService();
 
-        var results = service.GetNotableDates(2026, "AU");
+        IReadOnlyList<NotableDate> results = service.GetNotableDates(2026, "AU");
 
         Assert.IsTrue(results.Any(d => d.Name == "New Year's Day" && d.Date == new DateTime(2026, 1, 1)));
         Assert.IsTrue(results.Any(d => d.Name == "Australia Day" && d.Date == new DateTime(2026, 1, 26)));
@@ -63,7 +63,7 @@ public sealed class AustralianNotableDatesTests
     [TestMethod]
     public void GetNotableDates_WhenAustraliaDayFallsOnSunday_ShouldEmitMondaySubstitute()
     {
-        var service = BuildAuService();
+        NotableDateService service = BuildAuService();
 
         var occurrences = service.GetNotableDates(2020, "AU")
             .Where(d => d.Name == "Australia Day")
@@ -84,11 +84,11 @@ public sealed class AustralianNotableDatesTests
     [TestMethod]
     public void GetNotableDates_WhenQueryingAuVic_ShouldIncludeVictoriaLabourDay_AndExcludeNswLabourDay()
     {
-        var service = BuildAuService();
+        NotableDateService service = BuildAuService();
 
-        var results = service.GetNotableDates(2026, "AU-VIC");
+        IReadOnlyList<NotableDate> results = service.GetNotableDates(2026, "AU-VIC");
 
-        var labourDay = results.SingleOrDefault(d => d.Name == "Labour Day");
+        NotableDate? labourDay = results.SingleOrDefault(d => d.Name == "Labour Day");
         Assert.IsNotNull(labourDay);
         Assert.AreEqual("AU-VIC", labourDay!.TerritoryCode);
         Assert.AreEqual(new DateTime(2026, 3, 9), labourDay.Date);
@@ -101,11 +101,11 @@ public sealed class AustralianNotableDatesTests
     [TestMethod]
     public void GetNotableDates_WhenQueryingAuNsw_ShouldIncludeNswLabourDay_AndExcludeVictoriaLabourDay()
     {
-        var service = BuildAuService();
+        NotableDateService service = BuildAuService();
 
-        var results = service.GetNotableDates(2026, "AU-NSW");
+        IReadOnlyList<NotableDate> results = service.GetNotableDates(2026, "AU-NSW");
 
-        var labourDay = results.SingleOrDefault(d => d.Name == "Labour Day");
+        NotableDate? labourDay = results.SingleOrDefault(d => d.Name == "Labour Day");
         Assert.IsNotNull(labourDay);
         Assert.AreEqual("AU-NSW", labourDay!.TerritoryCode);
         Assert.AreEqual(new DateTime(2026, 10, 5), labourDay.Date);
@@ -120,9 +120,9 @@ public sealed class AustralianNotableDatesTests
     [TestMethod]
     public void GetNotableDates_WhenQueryingAu_ShouldPreserveTerritoryCodeOnEveryEntry_ForDelineation()
     {
-        var service = BuildAuService();
+        NotableDateService service = BuildAuService();
 
-        var results = service.GetNotableDates(2026, "AU");
+        IReadOnlyList<NotableDate> results = service.GetNotableDates(2026, "AU");
 
         Assert.IsTrue(results.Count > 0);
         Assert.IsTrue(results.All(d => !string.IsNullOrEmpty(d.TerritoryCode)),
@@ -144,11 +144,11 @@ public sealed class AustralianNotableDatesTests
     [TestMethod]
     public void GetNotableDates_WhenQueryingAuQld_ShouldResolveKingsBirthdayToOctober_ForYear2026()
     {
-        var service = BuildAuService();
+        NotableDateService service = BuildAuService();
 
-        var results = service.GetNotableDates(2026, "AU-QLD");
+        IReadOnlyList<NotableDate> results = service.GetNotableDates(2026, "AU-QLD");
 
-        var kingsBirthday = results.SingleOrDefault(d => d.Name == "King's Birthday");
+        NotableDate? kingsBirthday = results.SingleOrDefault(d => d.Name == "King's Birthday");
         Assert.IsNotNull(kingsBirthday);
         Assert.AreEqual(new DateTime(2026, 10, 5), kingsBirthday!.Date);
     }
@@ -160,9 +160,9 @@ public sealed class AustralianNotableDatesTests
     [TestMethod]
     public void GetNotableDates_WhenQueryingAuAct_ForYear2017_ShouldNotIncludeReconciliationDay()
     {
-        var service = BuildAuService();
+        NotableDateService service = BuildAuService();
 
-        var results = service.GetNotableDates(2017, "AU-ACT");
+        IReadOnlyList<NotableDate> results = service.GetNotableDates(2017, "AU-ACT");
 
         Assert.IsFalse(results.Any(d => d.Name == "Reconciliation Day"));
     }
@@ -173,11 +173,11 @@ public sealed class AustralianNotableDatesTests
     [TestMethod]
     public void GetNotableDates_WhenQueryingAuAct_ForYear2018_ShouldIncludeReconciliationDay()
     {
-        var service = BuildAuService();
+        NotableDateService service = BuildAuService();
 
-        var results = service.GetNotableDates(2018, "AU-ACT");
+        IReadOnlyList<NotableDate> results = service.GetNotableDates(2018, "AU-ACT");
 
-        var reconciliation = results.SingleOrDefault(d => d.Name == "Reconciliation Day");
+        NotableDate? reconciliation = results.SingleOrDefault(d => d.Name == "Reconciliation Day");
         Assert.IsNotNull(reconciliation);
         Assert.AreEqual(new DateTime(2018, 5, 28), reconciliation!.Date);
         Assert.AreEqual(DayOfWeek.Monday, reconciliation.Date.DayOfWeek);
@@ -190,11 +190,11 @@ public sealed class AustralianNotableDatesTests
     [TestMethod]
     public void GetNotableDates_WhenMelbourneCupDay_ForYear2026_ShouldResolveToFirstTuesdayOfNovember()
     {
-        var service = BuildAuService();
+        NotableDateService service = BuildAuService();
 
-        var results = service.GetNotableDates(2026, "AU-VIC");
+        IReadOnlyList<NotableDate> results = service.GetNotableDates(2026, "AU-VIC");
 
-        var melbourneCup = results.SingleOrDefault(d => d.Name == "Melbourne Cup Day");
+        NotableDate? melbourneCup = results.SingleOrDefault(d => d.Name == "Melbourne Cup Day");
         Assert.IsNotNull(melbourneCup);
         Assert.AreEqual(new DateTime(2026, 11, 3), melbourneCup!.Date);
         Assert.AreEqual(DayOfWeek.Tuesday, melbourneCup.Date.DayOfWeek);
@@ -207,7 +207,7 @@ public sealed class AustralianNotableDatesTests
     [TestMethod]
     public void IsNonWorkingDay_WhenBoxingDayOnSaturday_ShouldReturnTrueForSubstituteMonday_ForAuNsw()
     {
-        var service = BuildAuService();
+        NotableDateService service = BuildAuService();
 
         // 26 December 2026 is a Saturday; the next non-weekend day is Monday 28 December.
         Assert.IsTrue(service.IsNonWorkingDay(new DateTime(2026, 12, 28), "AU-NSW"));
@@ -227,9 +227,9 @@ public sealed class AustralianNotableDatesTests
     [DataRow("AU-ACT")]
     public void GetNotableDates_WhenQueryingSubdivisionWithoutSubstitute_ShouldEmitCanonicalAnzacDay_ForYear2026(string subdivision)
     {
-        var service = BuildAuService();
+        NotableDateService service = BuildAuService();
 
-        var anzacDay = service.GetNotableDates(2026, subdivision)
+        NotableDate? anzacDay = service.GetNotableDates(2026, subdivision)
             .SingleOrDefault(d => d.Name == "Anzac Day");
 
         Assert.IsNotNull(anzacDay, $"Anzac Day should be visible to subdivision {subdivision}.");
@@ -246,7 +246,7 @@ public sealed class AustralianNotableDatesTests
     [TestMethod]
     public void GetNotableDates_WhenAnzacDayOnSaturday_ShouldEmitMondaySubstitute_ForAuWa()
     {
-        var service = BuildAuService();
+        NotableDateService service = BuildAuService();
 
         var occurrences = service.GetNotableDates(2020, "AU-WA")
             .Where(d => d.Name == "Anzac Day")
@@ -271,7 +271,7 @@ public sealed class AustralianNotableDatesTests
     [TestMethod]
     public void GetNotableDates_WhenAnzacDayOnSaturdayOutsideTrial_ShouldNotEmitSubstitute_ForAuNsw()
     {
-        var service = BuildAuService();
+        NotableDateService service = BuildAuService();
 
         // 25 April 2020 was a Saturday — outside the NSW 2026–2027 trial window, so the adjustment does not fire.
         var occurrences = service.GetNotableDates(2020, "AU-NSW")
@@ -293,7 +293,7 @@ public sealed class AustralianNotableDatesTests
     [TestMethod]
     public void GetNotableDates_WhenAnzacDayOnSaturday_ShouldEmitMondaySubstitute_ForAuNsw_TrialYear2026()
     {
-        var service = BuildAuService();
+        NotableDateService service = BuildAuService();
 
         var occurrences = service.GetNotableDates(2026, "AU-NSW")
             .Where(d => d.Name == "Anzac Day")
@@ -316,7 +316,7 @@ public sealed class AustralianNotableDatesTests
     [TestMethod]
     public void GetNotableDates_WhenAnzacDayOnSunday_ShouldEmitMondaySubstitute_ForAuNsw_TrialYear2027()
     {
-        var service = BuildAuService();
+        NotableDateService service = BuildAuService();
 
         var occurrences = service.GetNotableDates(2027, "AU-NSW")
             .Where(d => d.Name == "Anzac Day")
@@ -339,7 +339,7 @@ public sealed class AustralianNotableDatesTests
     [TestMethod]
     public void GetNotableDates_WhenAnzacDayOnSunday_ShouldEmitMondaySubstitute_ForAuNt()
     {
-        var service = BuildAuService();
+        NotableDateService service = BuildAuService();
 
         var occurrences = service.GetNotableDates(2021, "AU-NT")
             .Where(d => d.Name == "Anzac Day")
