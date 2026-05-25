@@ -70,39 +70,42 @@ public partial class ThrowHelperTests
     [DataRow('F')]
     public void ThrowIfNotAsciiHexDigit_WhenCharIsUppercaseHexLetter_ShouldNotThrow(char value) => ThrowHelper.ThrowIfNotAsciiHexDigit(value);
     /// <summary>
-    /// Verifies the <see cref="ThrowHelper.ThrowIfNotAsciiHexDigit" /> contract with explicit ParamName
-    /// assertions: ASCII '0'-'9', 'A'-'F', and 'a'-'f' pass; anything else throws
-    /// <see cref="ArgumentOutOfRangeException" /> on "value". Boundary chars on either side of each accepted
-    /// range are tested explicitly.
+    /// Verifies that <see cref="ThrowHelper.ThrowIfNotAsciiHexDigit" /> does not throw — and on the
+    /// ParamName-asserting overload reports nothing — for ASCII hex digits at boundary positions of the
+    /// accepted ranges.
     /// </summary>
     /// <param name="testName">The data-row label.</param>
     /// <param name="value">The character passed to the guard.</param>
-    /// <param name="expectsException">Whether the guard must throw.</param>
     [TestMethod]
-    [DataRow("'0' → pass", '0', false)]
-    [DataRow("'9' → pass", '9', false)]
-    [DataRow("'A' → pass", 'A', false)]
-    [DataRow("'F' → pass", 'F', false)]
-    [DataRow("'a' → pass", 'a', false)]
-    [DataRow("'f' → pass", 'f', false)]
-    [DataRow("'/' (one before '0') → throw on value", '/', true)]
-    [DataRow("':' (one after '9') → throw on value", ':', true)]
-    [DataRow("'@' (one before 'A') → throw on value", '@', true)]
-    [DataRow("'G' (one after 'F') → throw on value", 'G', true)]
-    [DataRow("'`' (one before 'a') → throw on value", '`', true)]
-    [DataRow("'g' (one after 'f') → throw on value", 'g', true)]
-    [DataRow("non-hex letter → throw on value", 'z', true)]
-    public void ThrowIfNotAsciiHexDigit_WhenInvokedWithVariousChars_ShouldFollowContract(
-        string testName, char value, bool expectsException)
-    {
-        Type? expected = expectsException ? typeof(ArgumentOutOfRangeException) : null;
-        var expectedParam = expectsException ? "value" : null;
+    [DataRow("'0'", '0')]
+    [DataRow("'9'", '9')]
+    [DataRow("'A'", 'A')]
+    [DataRow("'F'", 'F')]
+    [DataRow("'a'", 'a')]
+    [DataRow("'f'", 'f')]
+    public void ThrowIfNotAsciiHexDigit_WhenCharIsAccepted_ShouldNotThrowAndReportNothing(string testName, char value) =>
+        AssertGuard(testName, () => ThrowHelper.ThrowIfNotAsciiHexDigit(value, nameof(value)), null, null);
 
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfNotAsciiHexDigit" /> throws
+    /// <see cref="ArgumentOutOfRangeException" /> with <c>ParamName == "value"</c> for boundary characters
+    /// just outside every accepted range and for arbitrary non-hex characters.
+    /// </summary>
+    /// <param name="testName">The data-row label.</param>
+    /// <param name="value">The character passed to the guard.</param>
+    [TestMethod]
+    [DataRow("'/' (one before '0')", '/')]
+    [DataRow("':' (one after '9')", ':')]
+    [DataRow("'@' (one before 'A')", '@')]
+    [DataRow("'G' (one after 'F')", 'G')]
+    [DataRow("'`' (one before 'a')", '`')]
+    [DataRow("'g' (one after 'f')", 'g')]
+    [DataRow("non-hex letter 'z'", 'z')]
+    public void ThrowIfNotAsciiHexDigit_WhenCharIsRejected_ShouldThrowOnValue(string testName, char value) =>
         AssertGuard(
             testName,
             () => ThrowHelper.ThrowIfNotAsciiHexDigit(value, nameof(value)),
-            expected,
-            expectedParam);
-    }
+            typeof(ArgumentOutOfRangeException),
+            "value");
 
 }

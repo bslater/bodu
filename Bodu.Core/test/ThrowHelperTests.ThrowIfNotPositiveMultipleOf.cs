@@ -10,33 +10,37 @@ public partial class ThrowHelperTests
 {
 
     /// <summary>
-    /// Verifies the <see cref="ThrowHelper.ThrowIfNotPositiveMultipleOf{T}" /> contract for the
-    /// <see cref="int" /> instantiation with explicit ParamName assertions: zero, negative, or non-multiple
-    /// values throw <see cref="ArgumentOutOfRangeException" /> on "value"; positive multiples pass.
+    /// Verifies that <see cref="ThrowHelper.ThrowIfNotPositiveMultipleOf{T}" /> does not throw — and on the
+    /// ParamName-asserting overload reports nothing — for accepted positive multiples of the divisor.
     /// </summary>
     /// <param name="testName">The data-row label.</param>
     /// <param name="value">The value passed to the guard.</param>
     /// <param name="divisor">The required divisor.</param>
-    /// <param name="expectsException">Whether the guard must throw.</param>
     [TestMethod]
-    [DataRow("zero → throw on value", 0, 2, true)]
-    [DataRow("negative → throw on value", -2, 2, true)]
-    [DataRow("positive non-multiple → throw on value", 7, 2, true)]
-    [DataRow("positive non-multiple of 3 → throw on value", 5, 3, true)]
-    [DataRow("exact divisor → pass", 2, 2, false)]
-    [DataRow("positive multiple → pass", 9, 3, false)]
-    public void ThrowIfNotPositiveMultipleOf_WhenInvokedWithVariousInputs_ShouldFollowContract(
-        string testName, int value, int divisor, bool expectsException)
-    {
-        Type? expected = expectsException ? typeof(ArgumentOutOfRangeException) : null;
-        var expectedParam = expectsException ? "value" : null;
+    [DataRow("exact divisor", 2, 2)]
+    [DataRow("positive multiple", 9, 3)]
+    public void ThrowIfNotPositiveMultipleOf_WhenValueIsAccepted_ShouldNotThrowAndReportNothing(string testName, int value, int divisor) =>
+        AssertGuard(testName, () => ThrowHelper.ThrowIfNotPositiveMultipleOf(value, divisor, nameof(value)), null, null);
 
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfNotPositiveMultipleOf{T}" /> throws
+    /// <see cref="ArgumentOutOfRangeException" /> with <c>ParamName == "value"</c> for zero, negative
+    /// inputs, and positive integers that are not multiples of the divisor.
+    /// </summary>
+    /// <param name="testName">The data-row label.</param>
+    /// <param name="value">The value passed to the guard.</param>
+    /// <param name="divisor">The required divisor.</param>
+    [TestMethod]
+    [DataRow("zero", 0, 2)]
+    [DataRow("negative", -2, 2)]
+    [DataRow("positive non-multiple", 7, 2)]
+    [DataRow("positive non-multiple of 3", 5, 3)]
+    public void ThrowIfNotPositiveMultipleOf_WhenValueIsRejected_ShouldThrowOnValue(string testName, int value, int divisor) =>
         AssertGuard(
             testName,
             () => ThrowHelper.ThrowIfNotPositiveMultipleOf(value, divisor, nameof(value)),
-            expected,
-            expectedParam);
-    }
+            typeof(ArgumentOutOfRangeException),
+            "value");
 
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfNotPositiveMultipleOf{T}" /> throws

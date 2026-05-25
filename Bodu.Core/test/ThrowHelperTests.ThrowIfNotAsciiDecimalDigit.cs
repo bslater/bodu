@@ -42,34 +42,37 @@ public partial class ThrowHelperTests
         });
     }
     /// <summary>
-    /// Verifies the <see cref="ThrowHelper.ThrowIfNotAsciiDecimalDigit" /> contract with explicit ParamName
-    /// assertions: ASCII '0'-'9' pass; anything outside that range throws
-    /// <see cref="ArgumentOutOfRangeException" /> on "value", including non-ASCII characters.
+    /// Verifies that <see cref="ThrowHelper.ThrowIfNotAsciiDecimalDigit" /> does not throw — and on the
+    /// ParamName-asserting overload reports nothing — for accepted ASCII decimal digits.
     /// </summary>
     /// <param name="testName">The data-row label.</param>
     /// <param name="value">The character passed to the guard.</param>
-    /// <param name="expectsException">Whether the guard must throw.</param>
     [TestMethod]
-    [DataRow("'0' → pass", '0', false)]
-    [DataRow("'5' → pass", '5', false)]
-    [DataRow("'9' → pass", '9', false)]
-    [DataRow("'/' (one before '0') → throw on value", '/', true)]
-    [DataRow("':' (one after '9') → throw on value", ':', true)]
-    [DataRow("uppercase letter → throw on value", 'A', true)]
-    [DataRow("lowercase letter → throw on value", 'a', true)]
-    [DataRow("space → throw on value", ' ', true)]
-    [DataRow("non-ASCII → throw on value", 'é', true)]
-    public void ThrowIfNotAsciiDecimalDigit_WhenInvokedWithVariousChars_ShouldFollowContract(
-        string testName, char value, bool expectsException)
-    {
-        Type? expected = expectsException ? typeof(ArgumentOutOfRangeException) : null;
-        var expectedParam = expectsException ? "value" : null;
+    [DataRow("'0'", '0')]
+    [DataRow("'5'", '5')]
+    [DataRow("'9'", '9')]
+    public void ThrowIfNotAsciiDecimalDigit_WhenCharIsAccepted_ShouldNotThrowAndReportNothing(string testName, char value) =>
+        AssertGuard(testName, () => ThrowHelper.ThrowIfNotAsciiDecimalDigit(value, nameof(value)), null, null);
 
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfNotAsciiDecimalDigit" /> throws
+    /// <see cref="ArgumentOutOfRangeException" /> with <c>ParamName == "value"</c> for characters outside the
+    /// ASCII decimal-digit range.
+    /// </summary>
+    /// <param name="testName">The data-row label.</param>
+    /// <param name="value">The character passed to the guard.</param>
+    [TestMethod]
+    [DataRow("'/' (one before '0')", '/')]
+    [DataRow("':' (one after '9')", ':')]
+    [DataRow("uppercase letter", 'A')]
+    [DataRow("lowercase letter", 'a')]
+    [DataRow("space", ' ')]
+    [DataRow("non-ASCII", 'é')]
+    public void ThrowIfNotAsciiDecimalDigit_WhenCharIsRejected_ShouldThrowOnValue(string testName, char value) =>
         AssertGuard(
             testName,
             () => ThrowHelper.ThrowIfNotAsciiDecimalDigit(value, nameof(value)),
-            expected,
-            expectedParam);
-    }
+            typeof(ArgumentOutOfRangeException),
+            "value");
 
 }

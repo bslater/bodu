@@ -99,33 +99,44 @@ public partial class ThrowHelperTests
         });
     }
     /// <summary>
-    /// Verifies the full <see cref="ThrowHelper.ThrowIfOutOfRange{T}(T, T, T, bool, string)" /> contract
-    /// matrix with explicit ParamName assertions: in-range values pass; out-of-range values throw
-    /// <see cref="ArgumentOutOfRangeException" /> with ParamName "value". Covers inclusive / exclusive
-    /// bounds and boundary equality.
+    /// Verifies that <see cref="ThrowHelper.ThrowIfOutOfRange{T}(T, T, T, bool, string)" /> does not throw —
+    /// and on the ParamName-asserting overload reports nothing — for values inside the requested bounds.
     /// </summary>
     /// <param name="testName">The data-row label.</param>
     /// <param name="value">The value compared against the bounds.</param>
-    /// <param name="min">The inclusive/exclusive minimum.</param>
-    /// <param name="max">The inclusive/exclusive maximum.</param>
+    /// <param name="min">The minimum bound.</param>
+    /// <param name="max">The maximum bound.</param>
     /// <param name="inclusive">Whether the bounds are inclusive.</param>
-    /// <param name="expectsException">Whether the guard must throw.</param>
     [TestMethod]
-    [DataRow("inclusive: equal lower → pass", 6, 6, 10, true, false)]
-    [DataRow("inclusive: equal upper → pass", 10, 6, 10, true, false)]
-    [DataRow("inclusive: below lower → throw", 5, 6, 10, true, true)]
-    [DataRow("inclusive: above upper → throw", 11, 6, 10, true, true)]
-    [DataRow("exclusive: equal lower → throw", 6, 6, 10, false, true)]
-    [DataRow("exclusive: equal upper → throw", 10, 6, 10, false, true)]
-    [DataRow("exclusive: strictly between → pass", 7, 6, 10, false, false)]
-    public void ThrowIfOutOfRange_WhenInvokedWithVariousBounds_ShouldFollowContract(
-        string testName, int value, int min, int max, bool inclusive, bool expectsException)
-    {
-        Type? expected = expectsException ? typeof(ArgumentOutOfRangeException) : null;
-        var expectedParam = expectsException ? "value" : null;
+    [DataRow("inclusive: equal lower", 6, 6, 10, true)]
+    [DataRow("inclusive: equal upper", 10, 6, 10, true)]
+    [DataRow("exclusive: strictly between", 7, 6, 10, false)]
+    public void ThrowIfOutOfRange_WhenValueIsWithinBounds_ShouldNotThrowAndReportNothing(
+        string testName, int value, int min, int max, bool inclusive) =>
+        AssertGuard(testName, () => ThrowHelper.ThrowIfOutOfRange(value, min, max, inclusive, nameof(value)), null, null);
 
-        AssertGuard(testName, () => ThrowHelper.ThrowIfOutOfRange(value, min, max, inclusive, nameof(value)), expected, expectedParam);
-    }
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfOutOfRange{T}(T, T, T, bool, string)" /> throws
+    /// <see cref="ArgumentOutOfRangeException" /> with <c>ParamName == "value"</c> for values outside the
+    /// requested bounds, including boundary equality under exclusive mode.
+    /// </summary>
+    /// <param name="testName">The data-row label.</param>
+    /// <param name="value">The value compared against the bounds.</param>
+    /// <param name="min">The minimum bound.</param>
+    /// <param name="max">The maximum bound.</param>
+    /// <param name="inclusive">Whether the bounds are inclusive.</param>
+    [TestMethod]
+    [DataRow("inclusive: below lower", 5, 6, 10, true)]
+    [DataRow("inclusive: above upper", 11, 6, 10, true)]
+    [DataRow("exclusive: equal lower", 6, 6, 10, false)]
+    [DataRow("exclusive: equal upper", 10, 6, 10, false)]
+    public void ThrowIfOutOfRange_WhenValueIsOutsideBounds_ShouldThrowOnValue(
+        string testName, int value, int min, int max, bool inclusive) =>
+        AssertGuard(
+            testName,
+            () => ThrowHelper.ThrowIfOutOfRange(value, min, max, inclusive, nameof(value)),
+            typeof(ArgumentOutOfRangeException),
+            "value");
 
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfOutOfRange{T}" /> throws for values outside the specified range.

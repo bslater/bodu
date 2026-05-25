@@ -34,31 +34,36 @@ public partial class ThrowHelperTests
     [DataRow(5, 5)]
     public void ThrowIfCountExceedsAvailable_WhenCountIsValid_ShouldNotThrow(int count, int available) => ThrowHelper.ThrowIfCountExceedsAvailable(count, available);
     /// <summary>
-    /// Verifies the contract for <see cref="ThrowHelper.ThrowIfCountExceedsAvailable" />: when the guard
-    /// fails, ParamName must reference the <c>count</c> parameter — the offending caller-supplied input —
-    /// never the <c>available</c> parameter, which is a derived quantity.
+    /// Verifies that <see cref="ThrowHelper.ThrowIfCountExceedsAvailable" /> does not throw — and on the
+    /// ParamName-asserting overload reports nothing — for valid (count, available) pairs including the
+    /// zero-zero and count-equals-available boundaries.
     /// </summary>
     /// <param name="testName">The data-row label.</param>
     /// <param name="count">The count being validated.</param>
     /// <param name="available">The number of available items.</param>
-    /// <param name="expectsException">Whether the guard must throw.</param>
     [TestMethod]
-    [DataRow("count > available → throw on count", 6, 5, true)]
-    [DataRow("negative count → throw on count", -1, 5, true)]
-    [DataRow("count == 0, available == 0 → pass", 0, 0, false)]
-    [DataRow("count == available → pass", 5, 5, false)]
-    [DataRow("count < available → pass", 3, 5, false)]
-    public void ThrowIfCountExceedsAvailable_WhenInvokedWithVariousInputs_ShouldFollowContract(
-        string testName, int count, int available, bool expectsException)
-    {
-        Type? expected = expectsException ? typeof(ArgumentOutOfRangeException) : null;
-        var expectedParam = expectsException ? "count" : null;
+    [DataRow("count == 0, available == 0", 0, 0)]
+    [DataRow("count == available", 5, 5)]
+    [DataRow("count < available", 3, 5)]
+    public void ThrowIfCountExceedsAvailable_WhenCountIsAccepted_ShouldNotThrowAndReportNothing(string testName, int count, int available) =>
+        AssertGuard(testName, () => ThrowHelper.ThrowIfCountExceedsAvailable(count, available, nameof(count)), null, null);
 
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfCountExceedsAvailable" /> throws
+    /// <see cref="ArgumentOutOfRangeException" /> with <c>ParamName == "count"</c> (never <c>"available"</c>)
+    /// when the count exceeds the available budget or is negative.
+    /// </summary>
+    /// <param name="testName">The data-row label.</param>
+    /// <param name="count">The count being validated.</param>
+    /// <param name="available">The number of available items.</param>
+    [TestMethod]
+    [DataRow("count > available", 6, 5)]
+    [DataRow("negative count", -1, 5)]
+    public void ThrowIfCountExceedsAvailable_WhenCountIsRejected_ShouldThrowOnCount(string testName, int count, int available) =>
         AssertGuard(
             testName,
             () => ThrowHelper.ThrowIfCountExceedsAvailable(count, available, nameof(count)),
-            expected,
-            expectedParam);
-    }
+            typeof(ArgumentOutOfRangeException),
+            "count");
 
 }

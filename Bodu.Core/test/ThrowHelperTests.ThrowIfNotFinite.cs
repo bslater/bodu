@@ -10,35 +10,38 @@ public partial class ThrowHelperTests
 {
 
     /// <summary>
-    /// Verifies the <see cref="ThrowHelper.ThrowIfNotFinite(double, string?)" /> contract with explicit
-    /// ParamName assertions: NaN and ±Infinity throw <see cref="ArgumentOutOfRangeException" /> on "value";
-    /// any finite value passes (including zero, denormals, and the boundary <see cref="double.MaxValue" />
-    /// / <see cref="double.MinValue" /> values).
+    /// Verifies that <see cref="ThrowHelper.ThrowIfNotFinite(double, string?)" /> does not throw — and on
+    /// the ParamName-asserting overload reports nothing — for finite <see cref="double" /> values, including
+    /// zero, negative, and boundary values.
     /// </summary>
     /// <param name="testName">The data-row label.</param>
     /// <param name="value">The <see cref="double" /> value passed to the guard.</param>
-    /// <param name="expectsException">Whether the guard must throw.</param>
     [TestMethod]
-    [DataRow("NaN → throw on value", double.NaN, true)]
-    [DataRow("+Infinity → throw on value", double.PositiveInfinity, true)]
-    [DataRow("-Infinity → throw on value", double.NegativeInfinity, true)]
-    [DataRow("zero → pass", 0.0, false)]
-    [DataRow("negative finite → pass", -1.5, false)]
-    [DataRow("MaxValue → pass", double.MaxValue, false)]
-    [DataRow("MinValue → pass", double.MinValue, false)]
-    [DataRow("Epsilon → pass", double.Epsilon, false)]
-    public void ThrowIfNotFinite_Double_WhenInvokedWithVariousValues_ShouldFollowContract(
-        string testName, double value, bool expectsException)
-    {
-        Type? expected = expectsException ? typeof(ArgumentOutOfRangeException) : null;
-        var expectedParam = expectsException ? "value" : null;
+    [DataRow("zero", 0.0)]
+    [DataRow("negative finite", -1.5)]
+    [DataRow("MaxValue", double.MaxValue)]
+    [DataRow("MinValue", double.MinValue)]
+    [DataRow("Epsilon", double.Epsilon)]
+    public void ThrowIfNotFinite_Double_WhenValueIsFinite_ShouldNotThrowAndReportNothing(string testName, double value) =>
+        AssertGuard(testName, () => ThrowHelper.ThrowIfNotFinite(value, nameof(value)), null, null);
 
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfNotFinite(double, string?)" /> throws
+    /// <see cref="ArgumentOutOfRangeException" /> with <c>ParamName == "value"</c> for non-finite
+    /// <see cref="double" /> values.
+    /// </summary>
+    /// <param name="testName">The data-row label.</param>
+    /// <param name="value">The <see cref="double" /> value passed to the guard.</param>
+    [TestMethod]
+    [DataRow("NaN", double.NaN)]
+    [DataRow("+Infinity", double.PositiveInfinity)]
+    [DataRow("-Infinity", double.NegativeInfinity)]
+    public void ThrowIfNotFinite_Double_WhenValueIsNotFinite_ShouldThrowOnValue(string testName, double value) =>
         AssertGuard(
             testName,
             () => ThrowHelper.ThrowIfNotFinite(value, nameof(value)),
-            expected,
-            expectedParam);
-    }
+            typeof(ArgumentOutOfRangeException),
+            "value");
 
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfNotFinite(double, string?)" /> does not throw for finite
@@ -96,32 +99,38 @@ public partial class ThrowHelperTests
     }
 
     /// <summary>
-    /// Same contract matrix as the <see cref="double" /> overload but for the <see cref="float" /> overload.
+    /// Verifies that <see cref="ThrowHelper.ThrowIfNotFinite(float, string?)" /> does not throw — and on the
+    /// ParamName-asserting overload reports nothing — for finite <see cref="float" /> values, including
+    /// zero, negative, and boundary values.
     /// </summary>
     /// <param name="testName">The data-row label.</param>
     /// <param name="value">The <see cref="float" /> value passed to the guard.</param>
-    /// <param name="expectsException">Whether the guard must throw.</param>
     [TestMethod]
-    [DataRow("NaN → throw on value", float.NaN, true)]
-    [DataRow("+Infinity → throw on value", float.PositiveInfinity, true)]
-    [DataRow("-Infinity → throw on value", float.NegativeInfinity, true)]
-    [DataRow("zero → pass", 0.0f, false)]
-    [DataRow("negative finite → pass", -1.5f, false)]
-    [DataRow("MaxValue → pass", float.MaxValue, false)]
-    [DataRow("MinValue → pass", float.MinValue, false)]
-    [DataRow("Epsilon → pass", float.Epsilon, false)]
-    public void ThrowIfNotFinite_Float_WhenInvokedWithVariousValues_ShouldFollowContract(
-        string testName, float value, bool expectsException)
-    {
-        Type? expected = expectsException ? typeof(ArgumentOutOfRangeException) : null;
-        var expectedParam = expectsException ? "value" : null;
+    [DataRow("zero", 0.0f)]
+    [DataRow("negative finite", -1.5f)]
+    [DataRow("MaxValue", float.MaxValue)]
+    [DataRow("MinValue", float.MinValue)]
+    [DataRow("Epsilon", float.Epsilon)]
+    public void ThrowIfNotFinite_Float_WhenValueIsFinite_ShouldNotThrowAndReportNothing(string testName, float value) =>
+        AssertGuard(testName, () => ThrowHelper.ThrowIfNotFinite(value, nameof(value)), null, null);
 
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfNotFinite(float, string?)" /> throws
+    /// <see cref="ArgumentOutOfRangeException" /> with <c>ParamName == "value"</c> for non-finite
+    /// <see cref="float" /> values.
+    /// </summary>
+    /// <param name="testName">The data-row label.</param>
+    /// <param name="value">The <see cref="float" /> value passed to the guard.</param>
+    [TestMethod]
+    [DataRow("NaN", float.NaN)]
+    [DataRow("+Infinity", float.PositiveInfinity)]
+    [DataRow("-Infinity", float.NegativeInfinity)]
+    public void ThrowIfNotFinite_Float_WhenValueIsNotFinite_ShouldThrowOnValue(string testName, float value) =>
         AssertGuard(
             testName,
             () => ThrowHelper.ThrowIfNotFinite(value, nameof(value)),
-            expected,
-            expectedParam);
-    }
+            typeof(ArgumentOutOfRangeException),
+            "value");
 
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfNotFinite(float, string?)" /> does not throw for finite

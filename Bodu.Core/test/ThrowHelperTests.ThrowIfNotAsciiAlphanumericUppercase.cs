@@ -46,37 +46,41 @@ public partial class ThrowHelperTests
         });
     }
     /// <summary>
-    /// Verifies the <see cref="ThrowHelper.ThrowIfNotAsciiAlphanumericUppercase" /> contract with explicit
-    /// ParamName assertions: ASCII '0'-'9' and 'A'-'Z' pass; lowercase letters and anything outside those
-    /// ranges throw <see cref="ArgumentOutOfRangeException" /> on "value".
+    /// Verifies that <see cref="ThrowHelper.ThrowIfNotAsciiAlphanumericUppercase" /> does not throw — and on
+    /// the ParamName-asserting overload reports nothing — for accepted ASCII alphanumeric uppercase
+    /// characters at boundary positions of the accepted ranges.
     /// </summary>
     /// <param name="testName">The data-row label.</param>
     /// <param name="value">The character passed to the guard.</param>
-    /// <param name="expectsException">Whether the guard must throw.</param>
     [TestMethod]
-    [DataRow("'0' → pass", '0', false)]
-    [DataRow("'9' → pass", '9', false)]
-    [DataRow("'A' → pass", 'A', false)]
-    [DataRow("'M' → pass", 'M', false)]
-    [DataRow("'Z' → pass", 'Z', false)]
-    [DataRow("'/' (one before '0') → throw on value", '/', true)]
-    [DataRow("':' (one after '9') → throw on value", ':', true)]
-    [DataRow("'@' (one before 'A') → throw on value", '@', true)]
-    [DataRow("'[' (one after 'Z') → throw on value", '[', true)]
-    [DataRow("lowercase letter → throw on value", 'a', true)]
-    [DataRow("space → throw on value", ' ', true)]
-    [DataRow("non-ASCII uppercase → throw on value", 'Æ', true)]
-    public void ThrowIfNotAsciiAlphanumericUppercase_WhenInvokedWithVariousChars_ShouldFollowContract(
-        string testName, char value, bool expectsException)
-    {
-        Type? expected = expectsException ? typeof(ArgumentOutOfRangeException) : null;
-        var expectedParam = expectsException ? "value" : null;
+    [DataRow("'0'", '0')]
+    [DataRow("'9'", '9')]
+    [DataRow("'A'", 'A')]
+    [DataRow("'M'", 'M')]
+    [DataRow("'Z'", 'Z')]
+    public void ThrowIfNotAsciiAlphanumericUppercase_WhenCharIsAccepted_ShouldNotThrowAndReportNothing(string testName, char value) =>
+        AssertGuard(testName, () => ThrowHelper.ThrowIfNotAsciiAlphanumericUppercase(value, nameof(value)), null, null);
 
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfNotAsciiAlphanumericUppercase" /> throws
+    /// <see cref="ArgumentOutOfRangeException" /> with <c>ParamName == "value"</c> for characters outside the
+    /// accepted ranges, including boundary positions and non-ASCII uppercase letters.
+    /// </summary>
+    /// <param name="testName">The data-row label.</param>
+    /// <param name="value">The character passed to the guard.</param>
+    [TestMethod]
+    [DataRow("'/' (one before '0')", '/')]
+    [DataRow("':' (one after '9')", ':')]
+    [DataRow("'@' (one before 'A')", '@')]
+    [DataRow("'[' (one after 'Z')", '[')]
+    [DataRow("lowercase letter", 'a')]
+    [DataRow("space", ' ')]
+    [DataRow("non-ASCII uppercase", 'Æ')]
+    public void ThrowIfNotAsciiAlphanumericUppercase_WhenCharIsRejected_ShouldThrowOnValue(string testName, char value) =>
         AssertGuard(
             testName,
             () => ThrowHelper.ThrowIfNotAsciiAlphanumericUppercase(value, nameof(value)),
-            expected,
-            expectedParam);
-    }
+            typeof(ArgumentOutOfRangeException),
+            "value");
 
 }
