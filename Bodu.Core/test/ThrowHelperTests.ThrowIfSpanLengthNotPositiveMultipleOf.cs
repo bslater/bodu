@@ -67,39 +67,64 @@ public partial class ThrowHelperTests
         ThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf(span, factor);
     }
     /// <summary>
-    /// Verifies the <see cref="ThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf{T}(System.Span{T}, int, string)" />
-    /// contract for both <see cref="Span{T}" /> and <see cref="ReadOnlySpan{T}" />: a zero-length span or a
-    /// length that is not a positive multiple of the divisor throws <see cref="ArgumentException" /> with
-    /// ParamName "span"; valid positive multiples pass.
+    /// Verifies that <see cref="ThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf{T}(System.Span{T}, int, string)" />
+    /// does not throw — and on the ParamName-asserting overload reports nothing — for both
+    /// <see cref="Span{T}" /> and <see cref="ReadOnlySpan{T}" /> when the span length is a positive multiple
+    /// of the divisor.
     /// </summary>
     /// <param name="testName">The data-row label.</param>
     /// <param name="length">The span length.</param>
     /// <param name="divisor">The required divisor.</param>
-    /// <param name="expectsException">Whether the guard must throw.</param>
     [TestMethod]
-    [DataRow("zero length → throw on span", 0, 4, true)]
-    [DataRow("not a multiple → throw on span", 5, 2, true)]
-    [DataRow("not a multiple of 3 → throw on span", 7, 3, true)]
-    [DataRow("exact divisor → pass", 4, 4, false)]
-    [DataRow("multiple → pass", 12, 4, false)]
-    public void ThrowIfSpanLengthNotPositiveMultipleOf_WhenInvokedWithVariousLengths_ShouldFollowContract(
-        string testName, int length, int divisor, bool expectsException)
+    [DataRow("exact divisor", 4, 4)]
+    [DataRow("multiple", 12, 4)]
+    public void ThrowIfSpanLengthNotPositiveMultipleOf_WhenLengthIsValidMultiple_ShouldNotThrowAndReportNothing(
+        string testName, int length, int divisor)
     {
         var buffer = new int[length];
-        Type? expected = expectsException ? typeof(ArgumentException) : null;
-        var expectedParam = expectsException ? "span" : null;
 
         AssertGuard(
             $"Span<T>: {testName}",
             () => ThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf(buffer.AsSpan(), divisor, paramName: "span"),
-            expected,
-            expectedParam);
+            null,
+            null);
 
         AssertGuard(
             $"ReadOnlySpan<T>: {testName}",
             () => ThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf((ReadOnlySpan<int>)buffer, divisor, paramName: "span"),
-            expected,
-            expectedParam);
+            null,
+            null);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf{T}(System.Span{T}, int, string)" />
+    /// throws <see cref="ArgumentException" /> with <c>ParamName == "span"</c> for both
+    /// <see cref="Span{T}" /> and <see cref="ReadOnlySpan{T}" /> when the span is zero-length or its length
+    /// is not a positive multiple of the divisor.
+    /// </summary>
+    /// <param name="testName">The data-row label.</param>
+    /// <param name="length">The span length.</param>
+    /// <param name="divisor">The required divisor.</param>
+    [TestMethod]
+    [DataRow("zero length", 0, 4)]
+    [DataRow("not a multiple", 5, 2)]
+    [DataRow("not a multiple of 3", 7, 3)]
+    public void ThrowIfSpanLengthNotPositiveMultipleOf_WhenLengthIsInvalid_ShouldThrowOnSpan(
+        string testName, int length, int divisor)
+    {
+        var buffer = new int[length];
+
+        AssertGuard(
+            $"Span<T>: {testName}",
+            () => ThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf(buffer.AsSpan(), divisor, paramName: "span"),
+            typeof(ArgumentException),
+            "span");
+
+        AssertGuard(
+            $"ReadOnlySpan<T>: {testName}",
+            () => ThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf((ReadOnlySpan<int>)buffer, divisor, paramName: "span"),
+            typeof(ArgumentException),
+            "span");
     }
 
 }

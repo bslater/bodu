@@ -73,38 +73,64 @@ public partial class ThrowHelperTests
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(buffer.AsSpan(), expectedLength);
     }
     /// <summary>
-    /// Verifies the <see cref="ThrowHelper.ThrowIfSpanLengthIsNotEqualTo{T}(System.Span{T}, int, string)" />
-    /// contract for both <see cref="Span{T}" /> and <see cref="ReadOnlySpan{T}" />: length mismatch throws
-    /// <see cref="ArgumentException" /> with ParamName "span"; exact match passes.
+    /// Verifies that <see cref="ThrowHelper.ThrowIfSpanLengthIsNotEqualTo{T}(System.Span{T}, int, string)" />
+    /// does not throw — and on the ParamName-asserting overload reports nothing — for both
+    /// <see cref="Span{T}" /> and <see cref="ReadOnlySpan{T}" /> when the span length matches the expected
+    /// length exactly.
     /// </summary>
     /// <param name="testName">The data-row label.</param>
     /// <param name="spanLength">The span length.</param>
     /// <param name="expectedLength">The required exact length.</param>
-    /// <param name="expectsException">Whether the guard must throw.</param>
     [TestMethod]
-    [DataRow("shorter → throw on span", 3, 4, true)]
-    [DataRow("longer → throw on span", 5, 4, true)]
-    [DataRow("empty vs nonzero → throw on span", 0, 4, true)]
-    [DataRow("exact match → pass", 4, 4, false)]
-    [DataRow("both empty → pass", 0, 0, false)]
-    public void ThrowIfSpanLengthIsNotEqualTo_WhenInvokedWithVariousLengths_ShouldFollowContract(
-        string testName, int spanLength, int expectedLength, bool expectsException)
+    [DataRow("exact match", 4, 4)]
+    [DataRow("both empty", 0, 0)]
+    public void ThrowIfSpanLengthIsNotEqualTo_WhenLengthMatches_ShouldNotThrowAndReportNothing(
+        string testName, int spanLength, int expectedLength)
     {
         var buffer = new int[spanLength];
-        Type? expected = expectsException ? typeof(ArgumentException) : null;
-        var expectedParam = expectsException ? "span" : null;
 
         AssertGuard(
             $"Span<T>: {testName}",
             () => ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(buffer.AsSpan(), expectedLength, "span"),
-            expected,
-            expectedParam);
+            null,
+            null);
 
         AssertGuard(
             $"ReadOnlySpan<T>: {testName}",
             () => ThrowHelper.ThrowIfSpanLengthIsNotEqualTo((ReadOnlySpan<int>)buffer, expectedLength, "span"),
-            expected,
-            expectedParam);
+            null,
+            null);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfSpanLengthIsNotEqualTo{T}(System.Span{T}, int, string)" />
+    /// throws <see cref="ArgumentException" /> with <c>ParamName == "span"</c> for both
+    /// <see cref="Span{T}" /> and <see cref="ReadOnlySpan{T}" /> when the span length differs from the
+    /// expected length.
+    /// </summary>
+    /// <param name="testName">The data-row label.</param>
+    /// <param name="spanLength">The span length.</param>
+    /// <param name="expectedLength">The required exact length.</param>
+    [TestMethod]
+    [DataRow("shorter", 3, 4)]
+    [DataRow("longer", 5, 4)]
+    [DataRow("empty vs nonzero", 0, 4)]
+    public void ThrowIfSpanLengthIsNotEqualTo_WhenLengthDiffers_ShouldThrowOnSpan(
+        string testName, int spanLength, int expectedLength)
+    {
+        var buffer = new int[spanLength];
+
+        AssertGuard(
+            $"Span<T>: {testName}",
+            () => ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(buffer.AsSpan(), expectedLength, "span"),
+            typeof(ArgumentException),
+            "span");
+
+        AssertGuard(
+            $"ReadOnlySpan<T>: {testName}",
+            () => ThrowHelper.ThrowIfSpanLengthIsNotEqualTo((ReadOnlySpan<int>)buffer, expectedLength, "span"),
+            typeof(ArgumentException),
+            "span");
     }
 
 }

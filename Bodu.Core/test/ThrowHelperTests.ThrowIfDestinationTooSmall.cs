@@ -57,39 +57,57 @@ public partial class ThrowHelperTests
         });
     }
     /// <summary>
-    /// Verifies the multi-parameter contract for the
-    /// <see cref="ThrowHelper.ThrowIfDestinationTooSmall{TSource, TDestination}(TSource[], TDestination[], string)" />
-    /// array overload: source-null → ANE on the hardcoded <c>source</c> name; destination-null and
-    /// destination-too-small → ArgumentException-derived with ParamName for <c>destination</c>.
+    /// Verifies that <see cref="ThrowHelper.ThrowIfDestinationTooSmall{TSource, TDestination}(TSource[], TDestination[], string)" />
+    /// does not throw — and on the ParamName-asserting overload reports nothing — when the destination
+    /// array is at least as long as the source.
+    /// </summary>
+    /// <param name="testName">The data-row label.</param>
+    /// <param name="sourceLength">Source length.</param>
+    /// <param name="destinationLength">Destination length.</param>
+    [TestMethod]
+    [DataRow("equal lengths", 5, 5)]
+    [DataRow("destination larger", 3, 5)]
+    [DataRow("both empty", 0, 0)]
+    public void ThrowIfDestinationTooSmall_Array_WhenDestinationFits_ShouldNotThrowAndReportNothing(
+        string testName, int sourceLength, int destinationLength)
+    {
+        var source = new int[sourceLength];
+        var destination = new byte[destinationLength];
+
+        AssertGuard(
+            testName,
+            () => ThrowHelper.ThrowIfDestinationTooSmall(source, destination, "destination"),
+            null,
+            null);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfDestinationTooSmall{TSource, TDestination}(TSource[], TDestination[], string)" />
+    /// throws the expected exception type with the expected <c>ParamName</c> when either array is
+    /// <see langword="null" /> or the destination is too short for the source.
     /// </summary>
     /// <param name="testName">The data-row label.</param>
     /// <param name="sourceLength">Source length, or <c>-1</c> to pass null.</param>
     /// <param name="destinationLength">Destination length, or <c>-1</c> to pass null.</param>
-    /// <param name="expectedExceptionTypeName">The thrown exception's short type name, or empty if no throw.</param>
-    /// <param name="expectedParamName">The expected ParamName, or empty if not asserted.</param>
+    /// <param name="expectedExceptionTypeName">The thrown exception's short type name.</param>
+    /// <param name="expectedParamName">The expected ParamName.</param>
     [TestMethod]
     [DataRow("null source → ANE on source", -1, 5, "ArgumentNullException", "source")]
     [DataRow("null destination → ANE on destination", 5, -1, "ArgumentNullException", "destination")]
     [DataRow("destination shorter than source → AE on destination", 5, 3, "ArgumentException", "destination")]
-    [DataRow("equal lengths → pass", 5, 5, "", "")]
-    [DataRow("destination larger → pass", 3, 5, "", "")]
-    [DataRow("both empty → pass", 0, 0, "", "")]
-    public void ThrowIfDestinationTooSmall_Array_WhenInvokedWithVariousInputs_ShouldFollowContract(
+    public void ThrowIfDestinationTooSmall_Array_WhenInputIsRejected_ShouldThrowOnExpectedParam(
         string testName, int sourceLength, int destinationLength, string expectedExceptionTypeName, string expectedParamName)
     {
         var source = sourceLength < 0 ? null : new int[sourceLength];
         var destination = destinationLength < 0 ? null : new byte[destinationLength];
-        Type? expected = expectedExceptionTypeName.Length == 0
-            ? null
-            : Type.GetType($"System.{expectedExceptionTypeName}, System.Private.CoreLib")
-                ?? throw new InvalidOperationException($"Unknown exception type '{expectedExceptionTypeName}'.");
-        var param = expectedParamName.Length == 0 ? null : expectedParamName;
+        Type expected = Type.GetType($"System.{expectedExceptionTypeName}, System.Private.CoreLib")
+            ?? throw new InvalidOperationException($"Unknown exception type '{expectedExceptionTypeName}'.");
 
         AssertGuard(
             testName,
             () => ThrowHelper.ThrowIfDestinationTooSmall(source!, destination!, "destination"),
             expected,
-            param);
+            expectedParamName);
     }
 
     /// <summary>

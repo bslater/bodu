@@ -77,40 +77,67 @@ public partial class ThrowHelperTests
         ThrowHelper.ThrowIfSpanLengthOutOfRange(buffer.AsSpan(), minLength, maxLength);
     }
     /// <summary>
-    /// Verifies the <see cref="ThrowHelper.ThrowIfSpanLengthOutOfRange{T}(System.Span{T}, int, int, string)" />
-    /// contract for both <see cref="Span{T}" /> and <see cref="ReadOnlySpan{T}" />: length below min or above
-    /// max throws <see cref="ArgumentOutOfRangeException" /> with ParamName "span"; in-range passes.
+    /// Verifies that <see cref="ThrowHelper.ThrowIfSpanLengthOutOfRange{T}(System.Span{T}, int, int, string)" />
+    /// does not throw — and on the ParamName-asserting overload reports nothing — for both
+    /// <see cref="Span{T}" /> and <see cref="ReadOnlySpan{T}" /> when the span length is within
+    /// <c>[minLength, maxLength]</c>.
     /// </summary>
     /// <param name="testName">The data-row label.</param>
     /// <param name="spanLength">The span length.</param>
     /// <param name="minLength">Inclusive minimum.</param>
     /// <param name="maxLength">Inclusive maximum.</param>
-    /// <param name="expectsException">Whether the guard must throw.</param>
     [TestMethod]
-    [DataRow("below min → throw on span", 0, 1, 10, true)]
-    [DataRow("above max → throw on span", 11, 1, 10, true)]
-    [DataRow("at min → pass", 1, 1, 10, false)]
-    [DataRow("at max → pass", 10, 1, 10, false)]
-    [DataRow("inside → pass", 5, 1, 10, false)]
-    [DataRow("degenerate single value → pass", 7, 7, 7, false)]
-    public void ThrowIfSpanLengthOutOfRange_WhenInvokedWithVariousLengths_ShouldFollowContract(
-        string testName, int spanLength, int minLength, int maxLength, bool expectsException)
+    [DataRow("at min", 1, 1, 10)]
+    [DataRow("at max", 10, 1, 10)]
+    [DataRow("inside", 5, 1, 10)]
+    [DataRow("degenerate single value", 7, 7, 7)]
+    public void ThrowIfSpanLengthOutOfRange_WhenLengthFits_ShouldNotThrowAndReportNothing(
+        string testName, int spanLength, int minLength, int maxLength)
     {
         var buffer = new int[spanLength];
-        Type? expected = expectsException ? typeof(ArgumentOutOfRangeException) : null;
-        var expectedParam = expectsException ? "span" : null;
 
         AssertGuard(
             $"Span<T>: {testName}",
             () => ThrowHelper.ThrowIfSpanLengthOutOfRange(buffer.AsSpan(), minLength, maxLength, "span"),
-            expected,
-            expectedParam);
+            null,
+            null);
 
         AssertGuard(
             $"ReadOnlySpan<T>: {testName}",
             () => ThrowHelper.ThrowIfSpanLengthOutOfRange((ReadOnlySpan<int>)buffer, minLength, maxLength, "span"),
-            expected,
-            expectedParam);
+            null,
+            null);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfSpanLengthOutOfRange{T}(System.Span{T}, int, int, string)" />
+    /// throws <see cref="ArgumentOutOfRangeException" /> with <c>ParamName == "span"</c> for both
+    /// <see cref="Span{T}" /> and <see cref="ReadOnlySpan{T}" /> when the span length falls outside
+    /// <c>[minLength, maxLength]</c>.
+    /// </summary>
+    /// <param name="testName">The data-row label.</param>
+    /// <param name="spanLength">The span length.</param>
+    /// <param name="minLength">Inclusive minimum.</param>
+    /// <param name="maxLength">Inclusive maximum.</param>
+    [TestMethod]
+    [DataRow("below min", 0, 1, 10)]
+    [DataRow("above max", 11, 1, 10)]
+    public void ThrowIfSpanLengthOutOfRange_WhenLengthIsOutOfRange_ShouldThrowOnSpan(
+        string testName, int spanLength, int minLength, int maxLength)
+    {
+        var buffer = new int[spanLength];
+
+        AssertGuard(
+            $"Span<T>: {testName}",
+            () => ThrowHelper.ThrowIfSpanLengthOutOfRange(buffer.AsSpan(), minLength, maxLength, "span"),
+            typeof(ArgumentOutOfRangeException),
+            "span");
+
+        AssertGuard(
+            $"ReadOnlySpan<T>: {testName}",
+            () => ThrowHelper.ThrowIfSpanLengthOutOfRange((ReadOnlySpan<int>)buffer, minLength, maxLength, "span"),
+            typeof(ArgumentOutOfRangeException),
+            "span");
     }
 
 }

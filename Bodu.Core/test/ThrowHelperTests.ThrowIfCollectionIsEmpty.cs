@@ -76,32 +76,41 @@ public partial class ThrowHelperTests
         });
     }
     /// <summary>
-    /// Verifies the full <see cref="ThrowHelper.ThrowIfCollectionIsEmpty{T}" /> contract matrix with explicit
-    /// ParamName assertions: null collection → <see cref="ArgumentNullException" />, empty collection /
-    /// empty array → <see cref="ArgumentException" />, non-empty collection → no throw.
+    /// Verifies that <see cref="ThrowHelper.ThrowIfCollectionIsEmpty{T}" /> does not throw — and on the
+    /// ParamName-asserting overload reports nothing — for non-empty collections.
     /// </summary>
     /// <param name="testName">The data-row label.</param>
     /// <param name="collection">The collection passed to the guard.</param>
-    /// <param name="expectedExceptionType">The exception type the guard must throw, or <see langword="null" />.</param>
+    [TestMethod]
+    [DynamicData(nameof(ThrowIfCollectionIsEmptyValidContractData))]
+    public void ThrowIfCollectionIsEmpty_WhenCollectionIsAccepted_ShouldNotThrowAndReportNothing(string testName, ICollection<int> collection) =>
+        AssertGuard(testName, () => ThrowHelper.ThrowIfCollectionIsEmpty(collection, nameof(collection)), null, null);
+
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfCollectionIsEmpty{T}" /> throws the expected exception
+    /// type with <c>ParamName == "collection"</c> for null collections and empty collections/arrays.
+    /// </summary>
+    /// <param name="testName">The data-row label.</param>
+    /// <param name="collection">The collection passed to the guard.</param>
+    /// <param name="expectedExceptionType">The exception type the guard must throw.</param>
     /// <param name="expectedParamName">The expected <see cref="ArgumentException.ParamName" />.</param>
     [TestMethod]
-    [DynamicData(nameof(ThrowIfCollectionIsEmptyContractData))]
-    public void ThrowIfCollectionIsEmpty_WhenInvokedWithVariousCollections_ShouldFollowContract(
-        string testName, ICollection<int>? collection, Type? expectedExceptionType, string? expectedParamName)
+    [DynamicData(nameof(ThrowIfCollectionIsEmptyInvalidContractData))]
+    public void ThrowIfCollectionIsEmpty_WhenCollectionIsRejected_ShouldThrowExpected(
+        string testName, ICollection<int>? collection, Type expectedExceptionType, string? expectedParamName) =>
+        AssertGuard(testName, () => ThrowHelper.ThrowIfCollectionIsEmpty(collection!, nameof(collection)), expectedExceptionType, expectedParamName);
+
+    private static IEnumerable<object?[]> ThrowIfCollectionIsEmptyValidContractData()
     {
-        AssertGuard(testName, () =>
-        {
-            ThrowHelper.ThrowIfCollectionIsEmpty(collection!, nameof(collection));
-        }, expectedExceptionType, expectedParamName);
+        yield return new object?[] { "single-element list", new List<int> { 1 } };
+        yield return new object?[] { "multi-element list", new List<int> { 1, 2, 3 } };
     }
 
-    private static IEnumerable<object?[]> ThrowIfCollectionIsEmptyContractData()
+    private static IEnumerable<object?[]> ThrowIfCollectionIsEmptyInvalidContractData()
     {
         yield return new object?[] { "null collection → ArgumentNullException", null, typeof(ArgumentNullException), "collection" };
         yield return new object?[] { "empty List<int> → ArgumentException", new List<int>(), typeof(ArgumentException), "collection" };
         yield return new object?[] { "empty array (ICollection<int>) → ArgumentException", Array.Empty<int>(), typeof(ArgumentException), "collection" };
-        yield return new object?[] { "single-element list → no throw", new List<int> { 1 }, null, null };
-        yield return new object?[] { "multi-element list → no throw", new List<int> { 1, 2, 3 }, null, null };
     }
 
 }
