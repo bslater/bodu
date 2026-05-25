@@ -29,25 +29,31 @@ public partial class ThrowHelperTests
         });
     }
     /// <summary>
-    /// Verifies the full <see cref="ThrowHelper.ThrowIfArrayTypeIsNotCompatible{T}" /> contract for the
-    /// <c>int</c> instantiation: null array → <see cref="ArgumentNullException" />, compatible
-    /// <c>int[]</c> → no throw, incompatible types → <see cref="ArgumentException" />.
+    /// Verifies that <see cref="ThrowHelper.ThrowIfArrayTypeIsNotCompatible{T}" /> does not throw — and on
+    /// the ParamName-asserting overload reports nothing — for arrays whose element type matches
+    /// <c>int</c>.
     /// </summary>
     /// <param name="testName">The data-row label.</param>
     /// <param name="array">The array passed to the guard.</param>
-    /// <param name="expectedExceptionType">The exception type the guard must throw, or <see langword="null" />.</param>
+    [TestMethod]
+    [DynamicData(nameof(ThrowIfArrayTypeIsNotCompatibleValidContractData))]
+    public void ThrowIfArrayTypeIsNotCompatible_WhenArrayIsAccepted_ShouldNotThrowAndReportNothing(string testName, Array array) =>
+        AssertGuard(testName, () => ThrowHelper.ThrowIfArrayTypeIsNotCompatible<int>(array, nameof(array)), null, null);
+
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfArrayTypeIsNotCompatible{T}" /> throws the expected
+    /// exception type with <c>ParamName == "array"</c> for null arrays and arrays whose element type does
+    /// not match <c>int</c>.
+    /// </summary>
+    /// <param name="testName">The data-row label.</param>
+    /// <param name="array">The array passed to the guard.</param>
+    /// <param name="expectedExceptionType">The exception type the guard must throw.</param>
     /// <param name="expectedParamName">The expected <see cref="ArgumentException.ParamName" />.</param>
     [TestMethod]
-    [DynamicData(nameof(ThrowIfArrayTypeIsNotCompatibleContractData))]
-    public void ThrowIfArrayTypeIsNotCompatible_WhenInvokedWithVariousArrays_ShouldFollowContract(
-        string testName, Array? array, Type? expectedExceptionType, string? expectedParamName)
-    {
-        AssertGuard(
-            testName,
-            () => ThrowHelper.ThrowIfArrayTypeIsNotCompatible<int>(array!, nameof(array)),
-            expectedExceptionType,
-            expectedParamName);
-    }
+    [DynamicData(nameof(ThrowIfArrayTypeIsNotCompatibleInvalidContractData))]
+    public void ThrowIfArrayTypeIsNotCompatible_WhenArrayIsRejected_ShouldThrowExpected(
+        string testName, Array? array, Type expectedExceptionType, string? expectedParamName) =>
+        AssertGuard(testName, () => ThrowHelper.ThrowIfArrayTypeIsNotCompatible<int>(array!, nameof(array)), expectedExceptionType, expectedParamName);
 
     private static IEnumerable<object[]> GetCompatibleArrayTypeTestData()
     {
@@ -63,14 +69,18 @@ public partial class ThrowHelperTests
         yield return new object[] { Array.CreateInstance(typeof(object), 2) };
     }
 
-    private static IEnumerable<object?[]> ThrowIfArrayTypeIsNotCompatibleContractData()
+    private static IEnumerable<object?[]> ThrowIfArrayTypeIsNotCompatibleValidContractData()
+    {
+        yield return new object?[] { "matching int[]", new int[5] };
+        yield return new object?[] { "empty int[]", Array.Empty<int>() };
+    }
+
+    private static IEnumerable<object?[]> ThrowIfArrayTypeIsNotCompatibleInvalidContractData()
     {
         yield return new object?[] { "null array → ArgumentNullException", null, typeof(ArgumentNullException), "array" };
         yield return new object?[] { "string[] expected int[] → ArgumentException", new string[3], typeof(ArgumentException), "array" };
         yield return new object?[] { "double[] expected int[] → ArgumentException", new double[3], typeof(ArgumentException), "array" };
         yield return new object?[] { "object[] expected int[] → ArgumentException", new object[3], typeof(ArgumentException), "array" };
-        yield return new object?[] { "matching int[] → no throw", new int[5], null, null };
-        yield return new object?[] { "empty int[] → no throw", Array.Empty<int>(), null, null };
     }
 
 }

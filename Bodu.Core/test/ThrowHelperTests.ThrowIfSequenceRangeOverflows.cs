@@ -10,40 +10,45 @@ public partial class ThrowHelperTests
 {
 
     /// <summary>
-    /// Verifies the boundary matrix for <see cref="ThrowHelper.ThrowIfSequenceRangeOverflows(int, int, string)" />:
-    /// non-overflowing ranges, the exact <c>int.MaxValue</c> endpoint, overflowing ranges, the
-    /// <c>count == 0</c> no-op, and negative-count rows that the implementation must treat as a no-op.
+    /// Verifies that <see cref="ThrowHelper.ThrowIfSequenceRangeOverflows(int, int, string)" /> does not
+    /// throw — and on the ParamName-asserting overload reports nothing — for non-overflowing ranges,
+    /// boundary-equal endpoints, and the <c>count &lt;= 0</c> short-circuit.
     /// </summary>
     /// <param name="testName">The data-row label.</param>
     /// <param name="start">The starting value of the sequence.</param>
     /// <param name="count">The number of elements in the sequence.</param>
-    /// <param name="expectExceptionType">The exception type the guard must throw, or <see cref="string.Empty" /> for no throw.</param>
     [TestMethod]
-    [DataRow("start=0 count=0 → pass", 0, 0, "")]
-    [DataRow("start=0 count=1 → pass", 0, 1, "")]
-    [DataRow("start=MaxValue-1 count=1 lands on MaxValue → pass", int.MaxValue - 1, 1, "")]
-    [DataRow("start=MaxValue count=0 → pass (count == 0 short-circuit)", int.MaxValue, 0, "")]
-    [DataRow("start=MaxValue count=1 lands on MaxValue → pass", int.MaxValue, 1, "")]
-    [DataRow("start=MaxValue-10 count=12 overflows → throw", int.MaxValue - 10, 12, "ArgumentOutOfRangeException")]
-    [DataRow("start=MaxValue-2 count=4 overflows → throw", int.MaxValue - 2, 4, "ArgumentOutOfRangeException")]
-    [DataRow("start=MaxValue count=2 overflows → throw", int.MaxValue, 2, "ArgumentOutOfRangeException")]
-    [DataRow("count=-5 with positive start → pass (count <= 0 short-circuit)", 1000, -5, "")]
-    public void ThrowIfSequenceRangeOverflows_Int32_WhenInvokedWithBoundaryValues_ShouldFollowContract(
-        string testName, int start, int count, string expectExceptionType)
-    {
-        Type? expected = expectExceptionType.Length == 0
-            ? null
-            : Type.GetType($"System.{expectExceptionType}, System.Private.CoreLib")
-              ?? throw new InvalidOperationException($"Unknown exception type '{expectExceptionType}'.");
-
-        var expectedParam = expected is null ? null : "count";
-
+    [DataRow("start=0 count=0", 0, 0)]
+    [DataRow("start=0 count=1", 0, 1)]
+    [DataRow("start=MaxValue-1 count=1 lands on MaxValue", int.MaxValue - 1, 1)]
+    [DataRow("start=MaxValue count=0 (count == 0 short-circuit)", int.MaxValue, 0)]
+    [DataRow("start=MaxValue count=1 lands on MaxValue", int.MaxValue, 1)]
+    [DataRow("count=-5 with positive start (count <= 0 short-circuit)", 1000, -5)]
+    public void ThrowIfSequenceRangeOverflows_Int32_WhenRangeFits_ShouldNotThrowAndReportNothing(string testName, int start, int count) =>
         AssertGuard(
             testName,
             () => ThrowHelper.ThrowIfSequenceRangeOverflows(start, count, nameof(count)),
-            expected,
-            expectedParam);
-    }
+            null,
+            null);
+
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfSequenceRangeOverflows(int, int, string)" /> throws
+    /// <see cref="ArgumentOutOfRangeException" /> with <c>ParamName == "count"</c> for ranges that overflow
+    /// <see cref="int.MaxValue" />.
+    /// </summary>
+    /// <param name="testName">The data-row label.</param>
+    /// <param name="start">The starting value of the sequence.</param>
+    /// <param name="count">The number of elements in the sequence.</param>
+    [TestMethod]
+    [DataRow("start=MaxValue-10 count=12 overflows", int.MaxValue - 10, 12)]
+    [DataRow("start=MaxValue-2 count=4 overflows", int.MaxValue - 2, 4)]
+    [DataRow("start=MaxValue count=2 overflows", int.MaxValue, 2)]
+    public void ThrowIfSequenceRangeOverflows_Int32_WhenRangeOverflows_ShouldThrowOnCount(string testName, int start, int count) =>
+        AssertGuard(
+            testName,
+            () => ThrowHelper.ThrowIfSequenceRangeOverflows(start, count, nameof(count)),
+            typeof(ArgumentOutOfRangeException),
+            "count");
 
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfSequenceRangeOverflows" />, Long, when SumDoesNotExceedLongMax, NotThrow.
