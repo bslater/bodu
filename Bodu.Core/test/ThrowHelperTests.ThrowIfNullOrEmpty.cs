@@ -10,35 +10,41 @@ public partial class ThrowHelperTests
 {
 
     /// <summary>
-    /// Verifies the full <see cref="ThrowHelper.ThrowIfNullOrEmpty" /> contract with explicit ParamName
-    /// assertions: null → <see cref="ArgumentNullException" /> on "value"; empty →
-    /// <see cref="ArgumentException" /> on "value"; non-empty (including whitespace) → pass.
+    /// Verifies that <see cref="ThrowHelper.ThrowIfNullOrEmpty" /> does not throw — and on the
+    /// ParamName-asserting overload reports nothing — for non-empty strings (including whitespace-only
+    /// values; this guard permits whitespace by contract).
     /// </summary>
     /// <param name="testName">The data-row label.</param>
     /// <param name="value">The string passed to the guard.</param>
-    /// <param name="expectedExceptionTypeName">The thrown exception's short type name, or empty if no throw.</param>
-    /// <param name="expectedParamName">The expected ParamName, or empty if not asserted.</param>
     [TestMethod]
-    [DataRow("null → ANE on value", null, "ArgumentNullException", "value")]
-    [DataRow("empty → AE on value", "", "ArgumentException", "value")]
-    [DataRow("whitespace only → pass", "   ", "", "")]
-    [DataRow("tab → pass", "\t", "", "")]
-    [DataRow("single char → pass", "a", "", "")]
-    [DataRow("typical string → pass", "test", "", "")]
-    public void ThrowIfNullOrEmpty_WhenInvokedWithVariousStrings_ShouldFollowContract(
-        string testName, string? value, string expectedExceptionTypeName, string expectedParamName)
+    [DataRow("whitespace only", "   ")]
+    [DataRow("tab", "\t")]
+    [DataRow("single char", "a")]
+    [DataRow("typical string", "test")]
+    public void ThrowIfNullOrEmpty_WhenValueIsNonEmpty_ShouldNotThrowAndReportNothing(string testName, string value) =>
+        AssertGuard(testName, () => ThrowHelper.ThrowIfNullOrEmpty(value, nameof(value)), null, null);
+
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfNullOrEmpty" /> throws <see cref="ArgumentNullException" />
+    /// (when null) or <see cref="ArgumentException" /> (when empty), each with <c>ParamName == "value"</c>.
+    /// </summary>
+    /// <param name="testName">The data-row label.</param>
+    /// <param name="value">The string passed to the guard.</param>
+    /// <param name="expectedExceptionTypeName">The thrown exception's short type name.</param>
+    [TestMethod]
+    [DataRow("null", null, "ArgumentNullException")]
+    [DataRow("empty", "", "ArgumentException")]
+    public void ThrowIfNullOrEmpty_WhenValueIsRejected_ShouldThrowOnValue(
+        string testName, string? value, string expectedExceptionTypeName)
     {
-        Type? expected = expectedExceptionTypeName.Length == 0
-            ? null
-            : Type.GetType($"System.{expectedExceptionTypeName}, System.Private.CoreLib")
-                ?? throw new InvalidOperationException($"Unknown exception type '{expectedExceptionTypeName}'.");
-        var param = expectedParamName.Length == 0 ? null : expectedParamName;
+        Type expected = Type.GetType($"System.{expectedExceptionTypeName}, System.Private.CoreLib")
+            ?? throw new InvalidOperationException($"Unknown exception type '{expectedExceptionTypeName}'.");
 
         AssertGuard(
             testName,
             () => ThrowHelper.ThrowIfNullOrEmpty(value!, nameof(value)),
             expected,
-            param);
+            "value");
     }
 
     /// <summary>
