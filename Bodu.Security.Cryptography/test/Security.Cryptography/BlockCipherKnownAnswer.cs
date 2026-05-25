@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.Kat;
+
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
@@ -83,7 +85,7 @@ namespace Bodu.Security.Cryptography;
 /// kept until authoritative vectors are sourced.
 /// </para>
 /// </remarks>
-public sealed record BlockCipherKnownAnswer
+public sealed record BlockCipherKnownAnswer : IKat
 {
     /// <summary>Gets the semantic name of this test vector used in diagnostic messages.</summary>
     public required string Name { get; init; }
