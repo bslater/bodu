@@ -91,4 +91,10 @@ public enum ConfigurationDiagnosticCode
     /// configured section-header mode did not permit trailing content.
     /// </summary>
     TrailingContentAfterSectionHeader = 14,
+
+    /// <summary>
+    /// A glob expression contained brace alternations nested deeper than the parser permits, guarding against
+    /// pathological patterns whose recursion or expansion would exhaust resources.
+    /// </summary>
+    BraceNestingTooDeep = 15,
 }

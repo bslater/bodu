@@ -171,6 +171,9 @@
   <data name="Format_Invalid_NumericRangeTooLarge" xml:space="preserve">
     <value>Glob numeric range '{0}..{1}' would expand to {2} alternatives, exceeding the configured limit of {3}.</value>
   </data>
+  <data name="Format_Invalid_BraceNestingTooDeep" xml:space="preserve">
+    <value>Glob brace nesting depth {0} exceeds the configured limit of {1}.</value>
+  </data>
   <data name="Format_Invalid_ValueNotConvertible" xml:space="preserve">
     <value>The configuration value for key '{0}' ('{1}') could not be converted to {2}.</value>
   </data>
