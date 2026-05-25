@@ -25,20 +25,22 @@ namespace Bodu.Test.Contracts;
 public abstract class BlockCipherContractTests<TCipher>
 {
     /// <summary>
-    /// Encrypts a single block using <paramref name="key" />.
+    /// Encrypts a single block using <paramref name="key" /> and the row's optional tweak.
     /// </summary>
     /// <param name="key">The cipher key.</param>
     /// <param name="plaintext">The plaintext block to encrypt.</param>
+    /// <param name="tweak">The optional tweak; <see langword="null" /> for non-tweakable ciphers.</param>
     /// <returns>The resulting ciphertext block.</returns>
-    protected abstract byte[] EncryptBlock(byte[] key, byte[] plaintext);
+    protected abstract byte[] EncryptBlock(byte[] key, byte[] plaintext, byte[]? tweak);
 
     /// <summary>
-    /// Decrypts a single block using <paramref name="key" />.
+    /// Decrypts a single block using <paramref name="key" /> and the row's optional tweak.
     /// </summary>
     /// <param name="key">The cipher key.</param>
     /// <param name="ciphertext">The ciphertext block to decrypt.</param>
+    /// <param name="tweak">The optional tweak; <see langword="null" /> for non-tweakable ciphers.</param>
     /// <returns>The resulting plaintext block.</returns>
-    protected abstract byte[] DecryptBlock(byte[] key, byte[] ciphertext);
+    protected abstract byte[] DecryptBlock(byte[] key, byte[] ciphertext, byte[]? tweak);
 
     /// <summary>
     /// Returns the known-answer vectors for the cipher under test.
@@ -55,7 +57,7 @@ public abstract class BlockCipherContractTests<TCipher>
     {
         foreach (BlockCipherKat kat in KnownAnswers)
         {
-            byte[] actual = EncryptBlock(kat.Key, kat.Plaintext);
+            byte[] actual = EncryptBlock(kat.Key, kat.Plaintext, kat.Tweak);
 
             CollectionAssert.AreEqual(
                 kat.Ciphertext,
@@ -73,7 +75,7 @@ public abstract class BlockCipherContractTests<TCipher>
     {
         foreach (BlockCipherKat kat in KnownAnswers)
         {
-            byte[] actual = DecryptBlock(kat.Key, kat.Ciphertext);
+            byte[] actual = DecryptBlock(kat.Key, kat.Ciphertext, kat.Tweak);
 
             CollectionAssert.AreEqual(
                 kat.Plaintext,

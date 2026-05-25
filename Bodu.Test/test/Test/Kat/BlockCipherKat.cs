@@ -16,10 +16,12 @@ namespace Bodu.Test.Kat;
 /// <param name="Plaintext">The plaintext block.</param>
 /// <param name="Ciphertext">The expected ciphertext block from <c>Encrypt(Key, Plaintext)</c>.</param>
 /// <param name="BlockSizeBits">The cipher block size in bits, used by tests that assert the algorithm's declared block size.</param>
+/// <param name="Tweak">The optional tweak input for tweakable block ciphers such as Threefish; <see langword="null" /> for ciphers without a tweak.</param>
 public sealed record BlockCipherKat(
     string Name,
     string Algorithm,
     byte[] Key,
     byte[] Plaintext,
     byte[] Ciphertext,
-    int BlockSizeBits) : IKat;
+    int BlockSizeBits,
+    byte[]? Tweak = null) : IKat;

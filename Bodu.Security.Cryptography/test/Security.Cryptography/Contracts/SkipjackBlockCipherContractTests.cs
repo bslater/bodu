@@ -21,7 +21,7 @@ public sealed class SkipjackBlockCipherContractTests
     : BlockCipherContractTests<SkipjackBlockCipher>
 {
     /// <inheritdoc />
-    protected override byte[] EncryptBlock(byte[] key, byte[] plaintext)
+    protected override byte[] EncryptBlock(byte[] key, byte[] plaintext, byte[]? tweak)
     {
         using SkipjackBlockCipher cipher = new(key);
         byte[] output = new byte[plaintext.Length];
@@ -30,7 +30,7 @@ public sealed class SkipjackBlockCipherContractTests
     }
 
     /// <inheritdoc />
-    protected override byte[] DecryptBlock(byte[] key, byte[] ciphertext)
+    protected override byte[] DecryptBlock(byte[] key, byte[] ciphertext, byte[]? tweak)
     {
         using SkipjackBlockCipher cipher = new(key);
         byte[] output = new byte[ciphertext.Length];
