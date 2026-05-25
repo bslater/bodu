@@ -226,6 +226,43 @@ public sealed partial class NotableDateServiceTests
         Assert.IsTrue(results.Any(r => r.Name == "Sanity Day"), "A throwing handler in one rule must not suppress sibling rules.");
     }
 
+    /// <summary>
+    /// Verifies that when a custom <see cref="IAdjustmentHandler" /> throws
+    /// <see cref="InvalidOperationException" /> from <see cref="IAdjustmentHandler.Apply" />, the range pipeline
+    /// treats the failure the same way as any other handler exception: the adjustment is omitted, the rule's base
+    /// occurrence still surfaces, and the exception is not surfaced to the caller. The pipeline applies uniform
+    /// resilience to handler failures regardless of exception type, leaving authoring problems visible through the
+    /// absence of the expected adjusted date rather than a thrown call.
+    /// </summary>
+    [TestMethod]
+    public void GetNotableDates_WhenCustomAdjustmentHandlerThrowsInvalidOperationException_ShouldOmitAdjustmentAndNotThrow()
+    {
+        NotableDateRule rule = Fixed("Contract Violation", 4, 1, nonWorking: true) with
+        {
+            Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+            {
+                Key = "ioe-handler",
+                Trigger = AdjustmentTrigger.Custom,
+                Action = AdjustmentAction.Custom,
+                HandlerKey = "ioe-handler",
+            }),
+        };
+        NotableDateRule sanity = Fixed("Sanity Day", 6, 15);
+
+        AdjustmentHandlerRegistry handlerRegistry = new AdjustmentHandlerRegistry()
+            .Register("ioe-handler", new InvalidOperationThrowingHandler());
+
+        var service = new NotableDateService(
+            new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(rule, sanity) },
+            WorkingDaysOfWeek.MondayToFriday,
+            new NotableDateServiceOptions { AdjustmentHandlers = handlerRegistry });
+
+        IReadOnlyList<NotableDate> results = service.GetNotableDates(2025);
+
+        Assert.IsTrue(results.Any(r => r.Name == "Contract Violation"), "Base occurrence must survive a throwing IOE handler.");
+        Assert.IsTrue(results.Any(r => r.Name == "Sanity Day"), "Sibling rules must resolve normally.");
+    }
+
     // =================================================================================================
     // Gap 7 — INotableDateAlgorithmRegistry.TryGet() returns true but sets algorithm to null
     // =================================================================================================
@@ -574,6 +611,18 @@ public sealed partial class NotableDateServiceTests
         /// <inheritdoc />
         public AdjustmentHandlerResult Apply(AdjustmentHandlerContext context) =>
             throw new FormatException("handler internal failure");
+    }
+
+    /// <summary>
+    /// <see cref="IAdjustmentHandler" /> that throws <see cref="InvalidOperationException" /> from
+    /// <see cref="Apply" />. Used to pin the propagation contract for IOE-typed handler failures.
+    /// </summary>
+    private sealed class InvalidOperationThrowingHandler
+        : IAdjustmentHandler
+    {
+        /// <inheritdoc />
+        public AdjustmentHandlerResult Apply(AdjustmentHandlerContext context) =>
+            throw new InvalidOperationException("handler contract violation");
     }
 
     /// <summary>
