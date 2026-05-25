@@ -59,6 +59,9 @@
     <Project Path="Bodu.Text.Configuration\test\Bodu.Text.Configuration.Test.csproj" />
   </Folder>
   <Folder Name="/Bodu.Extensions.Configuration.Text/">
+    <Project Path="Bodu.Extensions.Configuration.Text/bench/Bodu.Extensions.Configuration.Text.Benchmarks.csproj">
+      <Build Solution="Debug|*" Project="false" />
+    </Project>
     <Project Path="Bodu.Extensions.Configuration.Text\src\Bodu.Extensions.Configuration.Text.csproj" />
     <Project Path="Bodu.Extensions.Configuration.Text\test\Bodu.Extensions.Configuration.Text.Test.csproj" />
   </Folder>
