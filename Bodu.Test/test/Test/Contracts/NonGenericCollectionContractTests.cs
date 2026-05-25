@@ -51,12 +51,32 @@ public abstract class NonGenericCollectionContractTests<TCollection>
     }
 
     /// <summary>
-    /// Verifies that successive reads of <see cref="ICollection.SyncRoot" /> return the same instance.
+    /// Indicates whether the collection under test supports <see cref="ICollection.SyncRoot" />.
+    /// Concurrent collections (for example <c>ConcurrentCircularBuffer</c>, <c>ConcurrentHashSet</c>)
+    /// intentionally throw <see cref="NotSupportedException" /> from <c>SyncRoot</c> to prevent callers
+    /// from taking the same lock used internally; override and return <see langword="false" /> in such
+    /// subclasses to skip the idempotence assertion and instead verify that the property throws.
+    /// </summary>
+    protected virtual bool SyncRootSupported => true;
+
+    /// <summary>
+    /// Verifies that successive reads of <see cref="ICollection.SyncRoot" /> return the same instance,
+    /// or — when <see cref="SyncRootSupported" /> is <see langword="false" /> — that the property
+    /// throws <see cref="NotSupportedException" />.
     /// </summary>
     [TestMethod]
     public void SyncRoot_WhenReadTwice_ShouldReturnSameInstance()
     {
         TCollection collection = CreateEmpty();
+
+        if (!SyncRootSupported)
+        {
+            Assert.ThrowsExactly<NotSupportedException>(() =>
+            {
+                _ = collection.SyncRoot;
+            });
+            return;
+        }
 
         object syncRoot1 = collection.SyncRoot;
         object syncRoot2 = collection.SyncRoot;
