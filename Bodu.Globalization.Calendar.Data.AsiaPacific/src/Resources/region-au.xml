@@ -106,6 +106,37 @@
       <Tag>NationalHoliday</Tag>
       <Adjustment key="nt-weekend-sub" when="IfWeekend" action="MoveToNextWeekday" />
     </Rule>
+    <!--
+      New South Wales — two-year Anzac Day weekend-substitute trial (2026 and 2027 only).
+
+      Announced 15 February 2026 by the Minns Labor Government (Premier Chris Minns; Industrial Relations Minister
+      Sophie Cotsis) as an additional public holiday on the Monday following Anzac Day when 25 April falls on a
+      weekend. The trial covers exactly two years because Anzac Day falls on Saturday 25 April 2026 and Sunday
+      25 April 2027 — both years produce a substitute Monday (Monday 27 April 2026 and Monday 26 April 2027).
+
+      Under the Public Holidays Act 2010 (NSW) Anzac Day is fixed to 25 April regardless of weekday; the additional
+      Monday is gazetted as a separate public holiday for the trial period. The arrangement brings NSW into line with
+      Western Australia and the ACT for those two years. A review of NSW public holidays commencing in 2027 will
+      consider whether the substitute becomes a permanent fixture; if it does, the adjustment's effective-year window
+      below should be extended (or the bounds removed) accordingly.
+
+      Implementation note: the trial is expressed by bounding the *adjustment* (fromYear/toYear), not the rule. This
+      keeps the rule present in every year so same-name territory shadowing reliably routes AU-NSW queries through
+      the NSW entry; outside the trial window the adjustment is dormant and the rule emits the canonical 25 April
+      base date unchanged. A follow-up engine change to make territory shadowing year-aware would allow rule-level
+      firstYear/lastYear bounds to express the trial more directly.
+
+      Source: https://www.nsw.gov.au/ministerial-releases/minns-labor-government-announces-extra-public-holiday-year
+    -->
+    <Rule name="fixed-apr-25-au-nsw"
+          category="Remembrance"
+          territory="AU-NSW"
+          nonWorking="true"
+          comment="NSW Anzac Day with a weekend-substitute Monday gated to the 2026–2027 trial period.">
+      <Fixed month="April" day="25" />
+      <Tag>NationalHoliday</Tag>
+      <Adjustment key="nsw-2026-2027-weekend-sub" when="IfWeekend" action="MoveToNextWeekday" fromYear="2026" toYear="2027" />
+    </Rule>
   </NotableDate>
 
   <NotableDate name="Boxing Day">
