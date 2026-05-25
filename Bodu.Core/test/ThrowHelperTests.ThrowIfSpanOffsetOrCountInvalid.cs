@@ -58,16 +58,49 @@ public partial class ThrowHelperTests
         });
     }
     /// <summary>
-    /// Verifies the full <see cref="ThrowHelper.ThrowIfSpanOffsetOrCountInvalid{T}(System.Span{T}, int, int, string, string, string)" />
-    /// contract matrix with explicit ParamName disambiguation across the span / offset / count parameters.
-    /// Tests both the <see cref="Span{T}" /> entry point and the canonical
-    /// <see cref="ReadOnlySpan{T}" /> implementation. Spans are value types so there is no null branch.
+    /// Verifies that <see cref="ThrowHelper.ThrowIfSpanOffsetOrCountInvalid{T}(System.Span{T}, int, int, string, string, string)" />
+    /// does not throw — and on the ParamName-asserting overload reports nothing — for both
+    /// <see cref="Span{T}" /> and <see cref="ReadOnlySpan{T}" /> when the <c>(offset, count)</c> window
+    /// fits inside the buffer.
     /// </summary>
     /// <param name="testName">The data-row label.</param>
     /// <param name="bufferLength">The backing buffer length.</param>
     /// <param name="offset">The offset.</param>
     /// <param name="count">The count.</param>
-    /// <param name="expectedExceptionTypeName">The thrown exception's short type name, or empty if no throw is expected.</param>
+    [TestMethod]
+    [DataRow("valid window at start", 5, 0, 5)]
+    [DataRow("valid window in middle", 5, 2, 3)]
+    [DataRow("valid empty slice at end", 5, 5, 0)]
+    public void ThrowIfSpanOffsetOrCountInvalid_Span_WhenInputIsAccepted_ShouldNotThrowAndReportNothing(
+        string testName, int bufferLength, int offset, int count)
+    {
+        var buffer = new int[bufferLength];
+
+        AssertGuard(
+            $"Span<T>: {testName}",
+            () => ThrowHelper.ThrowIfSpanOffsetOrCountInvalid(buffer.AsSpan(), offset, count, "span", "offset", "count"),
+            null,
+            null);
+
+        AssertGuard(
+            $"ReadOnlySpan<T>: {testName}",
+            () => ThrowHelper.ThrowIfSpanOffsetOrCountInvalid((ReadOnlySpan<int>)buffer, offset, count, "span", "offset", "count"),
+            null,
+            null);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfSpanOffsetOrCountInvalid{T}(System.Span{T}, int, int, string, string, string)" />
+    /// throws the expected exception type with the expected <c>ParamName</c> — disambiguating across
+    /// <c>span</c>, <c>offset</c>, and <c>count</c> — for both <see cref="Span{T}" /> and
+    /// <see cref="ReadOnlySpan{T}" /> when offset or count is out of range. Spans are value types so there
+    /// is no null branch.
+    /// </summary>
+    /// <param name="testName">The data-row label.</param>
+    /// <param name="bufferLength">The backing buffer length.</param>
+    /// <param name="offset">The offset.</param>
+    /// <param name="count">The count.</param>
+    /// <param name="expectedExceptionTypeName">The thrown exception's short type name.</param>
     /// <param name="expectedParamName">The expected <see cref="ArgumentException.ParamName" />, or empty if not asserted.</param>
     [TestMethod]
     [DataRow("negative offset → AOORE on offset", 5, -1, 0, "ArgumentOutOfRangeException", "offset")]
@@ -75,16 +108,11 @@ public partial class ThrowHelperTests
     [DataRow("negative count → AOORE on count", 5, 0, -1, "ArgumentOutOfRangeException", "count")]
     [DataRow("count > length → AOORE on count", 5, 0, 6, "ArgumentOutOfRangeException", "count")]
     [DataRow("offset+count > length → ArgumentException", 5, 2, 5, "ArgumentException", "")]
-    [DataRow("valid window at start → pass", 5, 0, 5, "", "")]
-    [DataRow("valid window in middle → pass", 5, 2, 3, "", "")]
-    [DataRow("valid empty slice at end → pass", 5, 5, 0, "", "")]
-    public void ThrowIfSpanOffsetOrCountInvalid_Span_WhenInvokedWithVariousInputs_ShouldFollowContract(
+    public void ThrowIfSpanOffsetOrCountInvalid_Span_WhenInputIsRejected_ShouldThrowOnExpectedParam(
         string testName, int bufferLength, int offset, int count, string expectedExceptionTypeName, string expectedParamName)
     {
-        Type? expected = expectedExceptionTypeName.Length == 0
-            ? null
-            : Type.GetType($"System.{expectedExceptionTypeName}, System.Private.CoreLib")
-                ?? throw new InvalidOperationException($"Unknown exception type '{expectedExceptionTypeName}'.");
+        Type expected = Type.GetType($"System.{expectedExceptionTypeName}, System.Private.CoreLib")
+            ?? throw new InvalidOperationException($"Unknown exception type '{expectedExceptionTypeName}'.");
         var param = expectedParamName.Length == 0 ? null : expectedParamName;
         var buffer = new int[bufferLength];
 
