@@ -48,7 +48,7 @@ public abstract class NotableDateTemporalExtensionContractTests<TDate>
     [TestMethod]
     public void AddWorkingDays_WhenDaysIsZero_ShouldReturnOriginalDate()
     {
-        TDate date = CreateDate(2024, 6, 15);
+        TDate date = CreateDate(2024, 6, 12); // Wednesday — a working day under default Western weekends.
 
         TDate result = AddWorkingDays(date, 0);
 
@@ -56,13 +56,15 @@ public abstract class NotableDateTemporalExtensionContractTests<TDate>
     }
 
     /// <summary>
-    /// Verifies that <see cref="AddWorkingDays" /> is reversible — adding <c>n</c> and then subtracting
-    /// <c>n</c> returns the original date.
+    /// Verifies that <see cref="AddWorkingDays" /> is reversible from a date that is itself a working
+    /// day — adding <c>n</c> and then subtracting <c>n</c> returns the original date. The starting
+    /// date is fixed at a known mid-week Wednesday so the round-trip is well-defined regardless of
+    /// territory-specific holiday tables.
     /// </summary>
     [TestMethod]
-    public void AddWorkingDays_WhenAddedThenSubtractedByN_ShouldReturnOriginalDate()
+    public void AddWorkingDays_WhenStartIsWorkingDayAndAddedThenSubtractedByN_ShouldReturnOriginalDate()
     {
-        TDate date = CreateDate(2024, 6, 15);
+        TDate date = CreateDate(2024, 6, 12); // Wednesday — well clear of any US/UK/AU holiday in early June.
 
         TDate forward = AddWorkingDays(date, 5);
         TDate roundTrip = AddWorkingDays(forward, -5);
@@ -78,7 +80,7 @@ public abstract class NotableDateTemporalExtensionContractTests<TDate>
     [TestMethod]
     public void NextWorkingDay_ShouldReturnDateStrictlyAfterInput()
     {
-        TDate date = CreateDate(2024, 6, 15);
+        TDate date = CreateDate(2024, 6, 12);
 
         TDate result = NextWorkingDay(date);
 
