@@ -594,17 +594,18 @@ public static class NotableDateRuleParser
 
     /// <summary>
     /// Parses <paramref name="monthName" /> as a culture-invariant English month name (e.g. <c>January</c>) or an
-    /// integer month number in the range <c>1</c>–<c>13</c>.
+    /// integer month number in the range <c>1</c>–<c>12</c>.
     /// </summary>
     /// <remarks>
-    /// Integer months are accepted to support non-Gregorian BCL calendar rules (e.g. <c>month="1"</c> on a <c>Fixed</c>
-    /// rule with <c>calendarType="System.Globalization.ChineseLunisolarCalendar"</c>). Lunisolar calendars can carry up
-    /// to 13 months in intercalary years.
+    /// Used for schema-constrained Gregorian month attributes (<c>DayOfWeekInMonth/@month</c>,
+    /// <c>Adjustment/@comparisonMonth</c>) whose XSD type <c>monthName</c> admits only the twelve Gregorian months by
+    /// enumeration. Numeric month 13 belongs to the lunisolar/Hebrew strategy surface and is handled by
+    /// <see cref="ParseMonthToken(string, Type?)" />.
     /// </remarks>
-    /// <param name="monthName">The month token — either an English month name or an integer 1–13.</param>
-    /// <returns>The month number.</returns>
+    /// <param name="monthName">The month token — either an English month name or an integer 1–12.</param>
+    /// <returns>The month number in the range 1–12.</returns>
     /// <exception cref="FormatException">
-    /// <paramref name="monthName" /> is neither a recognized English month name nor an integer in 1–13.
+    /// <paramref name="monthName" /> is neither a recognized English month name nor an integer in 1–12.
     /// </exception>
     private static int ParseMonth(string monthName)
     {
@@ -612,7 +613,7 @@ public static class NotableDateRuleParser
 
         return DateTime.TryParseExact(monthName, "MMMM", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime result)
             ? result.Month
-            : int.TryParse(monthName, NumberStyles.Integer, CultureInfo.InvariantCulture, out var numeric) && numeric is >= 1 and <= 13
+            : int.TryParse(monthName, NumberStyles.Integer, CultureInfo.InvariantCulture, out var numeric) && numeric is >= 1 and <= 12
                 ? numeric
                 : throw new FormatException(string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Format_Invalid_MonthValueGregorian, monthName));
     }

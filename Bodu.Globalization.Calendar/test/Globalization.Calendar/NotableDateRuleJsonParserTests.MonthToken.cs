@@ -399,9 +399,11 @@ public partial class NotableDateRuleJsonParserTests
     }
 
     /// <summary>
-    /// Verifies that every supported string-form numeric month token <c>"1"</c> through <c>"13"</c> resolves to the
-    /// matching integer, exercising the schema's string-numeric pattern branch and <c>ParseMonthToken</c>'s numeric
-    /// alternative.
+    /// Verifies that every supported string-form numeric month token <c>"1"</c> through <c>"12"</c> resolves to the
+    /// matching integer in the default Gregorian context, exercising the schema's string-numeric pattern branch and
+    /// <c>ParseMonthToken</c>'s numeric alternative. The lunisolar-only <c>"13"</c> case is covered separately by
+    /// <see cref="ParseJson_WhenFixedMonthIsMaximumNumericMonth_ShouldReturnNumericMonth" /> with an explicit
+    /// non-Gregorian <c>calendarType</c>.
     /// </summary>
     [TestCategory("Regression")]
     [DataRow("1", 1)]
@@ -416,7 +418,6 @@ public partial class NotableDateRuleJsonParserTests
     [DataRow("10", 10)]
     [DataRow("11", 11)]
     [DataRow("12", 12)]
-    [DataRow("13", 13)]
     [TestMethod]
     public void ParseJson_WhenFixedMonthIsStringNumeric_ShouldReturnExpectedMonth(string monthToken, int expectedMonth)
     {
