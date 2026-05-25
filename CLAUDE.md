@@ -4,38 +4,55 @@ Guidance for AI assistants working in this repository. Read this file before mak
 
 ## Repository Overview
 
-**Bodu** is a multi-project C# utility library solution focused on high-performance, well-documented, framework-style building blocks. The solution (`Bodu.sln`) contains four independent projects:
+**Bodu** is a multi-project C# utility library solution focused on high-performance, well-documented, framework-style building blocks. The solution lives at `bodu.slnx` (Visual Studio's modern solution format — note the `.slnx` extension, not `.sln`) and currently contains **17 projects**, organised by domain:
 
 | Project | Path | Responsibility |
 |---|---|---|
-| `Bodu.Core` | `Bodu.Core/` | Buffers, generic collections (circular buffer, evicting dictionary), extensions, text, XML, argument validation helpers. |
-| `Bodu.IO.Hashing` | `Bodu.IO.Hashing/` | Non-cryptographic hashing built on `System.IO.Hashing.NonCryptographicHashAlgorithm` — Fletcher-16/32/64 and the full RevEng CRC catalogue (CRC-3 … CRC-64). |
-| `Bodu.Security.Cryptography` | `Bodu.Security.Cryptography/` | Block ciphers (Threefish 256/512/1024, Skipjack), keyed and cryptographic hashes (Adler, SipHash, FNV1a, Tiger), crypto helpers. |
-| `Bodu.Globalization.Calendar` | `Bodu.Globalization.Calendar/` | Calendar/notable date calculations (Easter, Lunar New Year) and date resolvers. |
+| `Bodu.Core` | `Bodu.Core/` | Buffers, generic collections (circular buffer, deque, evicting dictionary), extensions, text, XML, argument validation helpers (`ThrowHelper`), `WeekPattern`. |
+| `Bodu.Test` | `Bodu.Test/` | Shared test infrastructure: KAT records (`Bodu.Test.Kat`), assertion helpers (`Bodu.Test.Assertions.ExceptionAssert`), reusable stream mocks (`Bodu.Test.IO`), test category constants (`TestCategories`). Referenced by other test projects. |
+| `Bodu.Numerics` | `Bodu.Numerics/` | `Fraction<T>` (rational arithmetic, parse/format, generic math, UTF-8). |
+| `Bodu.IO.Hashing` | `Bodu.IO.Hashing/` | Non-cryptographic hashing (Fletcher-16/32/64, full RevEng CRC catalogue, check-digit algorithms: Luhn, Damm, ABA, EAN, GTIN, IBAN, ISBN, ISIN, LEI, ISO 7064). |
+| `Bodu.Security.Cryptography` | `Bodu.Security.Cryptography/` | Block ciphers (Threefish 256/512/1024, Skipjack, Blowfish, Twofish, Camellia), AEAD (Ascon), keyed/cryptographic hashes (Skein, BLAKE2, Tiger, SipHash, FNV1a, Adler), crypto transforms, helpers. |
+| `Bodu.Text.Encoding` | `Bodu.Text.Encoding/` | Binary encodings: Base16, Base32, Base58, Base64, Base64Url, Base85 (with variants, formatting options, span/UTF-8 surfaces). |
+| `Bodu.Text.Configuration` | `Bodu.Text.Configuration/` | Bodu text configuration parser/resolver (INI-compatible profile, resolver precedence, typed view getters, write options). |
+| `Bodu.Text.Formats` | `Bodu.Text.Formats/` | Document formats: Bencode, Delimited (RFC 4180 CSV/TSV), DotEnv, INI. |
+| `Bodu.Extensions.Configuration.Text` | `Bodu.Extensions.Configuration.Text/` | Bridge between `Microsoft.Extensions.Configuration` and `Bodu.Text.Configuration`. |
+| `Bodu.Globalization.Calendar` | `Bodu.Globalization.Calendar/` | Notable-date algorithms (Easter / Orthodox Easter / Lunar New Year / Vesak / Asalha Puja / Qingming / Losar / Hindu lunar festivals), rule providers, range resolution, observed-date adjustments, `NotableDateService`. |
+| `Bodu.Globalization.Calendar.Builder` | `Bodu.Globalization.Calendar.Builder/` | Source generator that produces calendar resource assemblies from rule XML/JSON. |
+| `Bodu.Globalization.Calendar.Data.Americas` | `…Calendar.Data.Americas/` | Bundled calendar rules for the Americas territory bundle (e.g. US). |
+| `Bodu.Globalization.Calendar.Data.AsiaPacific` | `…Calendar.Data.AsiaPacific/` | Asia-Pacific bundle (e.g. AU including subdivisions). |
+| `Bodu.Globalization.Calendar.Data.Europe` | `…Calendar.Data.Europe/` | Europe bundle (e.g. GB, FR). |
+| `Bodu.Globalization.Calendar.DependencyInjection` | `…Calendar.DependencyInjection/` | `IServiceCollection` extensions for registering calendar services. |
+| `BouncyCastle.Crypto` | `bc-csharp/crypto/src/` | Third-party vendor reference (used by Cryptography tests for reference vectors). |
+| `docs` | `docs/` | DocFX documentation project. |
+
+A separate solution **`Bodu.CodeStyle/Bodu.CodeStyle.sln`** holds the Bodu code-style analyzers, code fixes, and XML-doc formatter (`Bodu.CodeStyle.XmlDocumentation.{Analyzers,CodeFixes,Core}` plus `Bodu.CodeStyle.Test.Common`). It is **not** referenced by `bodu.slnx` — treat it as an independent unit.
 
 Each project has the layout:
 
 ```
 <Project>/
   src/   # production code, grouped by namespace folder
-  test/  # MSTest project mirroring src structure
+  test/  # MSTest project mirroring src structure (Bodu.Test has only test/)
 ```
 
 ### Target Frameworks
 
-- `Bodu.Core` — `net8.0`
-- `Bodu.IO.Hashing` — `net8.0`
-- `Bodu.Security.Cryptography` — `net8.0`
-- `Bodu.Globalization.Calendar` — `net8.0`
+All projects target `net8.0`.
 
-Nullable reference types are enabled everywhere. `ImplicitUsings` is enabled for `Bodu.IO.Hashing`, Cryptography, and Calendar but **disabled** for `Bodu.Core` — when editing files in `Bodu.Core/`, add explicit `using` directives.
+Nullable reference types are enabled everywhere. `ImplicitUsings` is enabled for most projects but **disabled** for `Bodu.Core` — when editing files in `Bodu.Core/src/`, add explicit `using` directives. Test projects have `ImplicitUsings` enabled and pre-import MSTest via `<Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />`. `Bodu.Core/test/Bodu.Core.Test.csproj` additionally pre-imports `Bodu.Test.Assertions.ExceptionAssert` statically so the shared `AssertGuard(...)` call resolves unqualified across all `ThrowHelperTests.*.cs` partial files.
 
 ## Key Types
 
-- **Bodu.Core**: `CircularBuffer<T>`, `ConcurrentCircularBuffer<T>`, `EvictingDictionary<TKey, TValue>`, `EvictingDictionaryPolicy`, `IRandomGenerator`, `BufferConverter`, `ArrayExtensions`, `BaseEncoding`, `ThrowHelper`.
-- **Bodu.IO.Hashing**: `Fletcher16` / `Fletcher32` / `Fletcher64`, `Crc`, `CrcStandard`, `CrcStandards`, `CrcLookupTableBuilder`, `CrcLookupTableCache`, `BlockNonCryptographicHashAlgorithm<T>`, `IResumableHashAlgorithm`.
-- **Bodu.Security.Cryptography**: `Threefish256` / `Threefish512` / `Threefish1024`, `Adler32`, `SipHash`, `FNV1a`, `Skipjack`, `Tiger`, `CryptoHelpers`.
-- **Bodu.Globalization.Calendar**: `NotableDateService`, `NotableDateResolver`, `NotableDate`, `NotableDateKind`, `EasterSundayNotableDateCalculator`, `LunarNewYearNotableDateCalculator`.
+- **Bodu.Core**: `CircularBuffer<T>`, `ConcurrentCircularBuffer<T>`, `Deque<T>`, `EvictingDictionary<TKey, TValue>`, `IndexedSet<T>`, `IndexedPriorityQueue<TElement, TPriority>`, `ConcurrentHashSet<T>`, `PooledBufferBuilder`, `WeekPattern`, `ThrowHelper`.
+- **Bodu.Numerics**: `Fraction<T>`.
+- **Bodu.IO.Hashing**: `Fletcher16` / `Fletcher32` / `Fletcher64`, `Crc`, `CrcStandard`(s), `CrcLookupTableCache`, `BlockNonCryptographicHashAlgorithm<T>`, `IResumableHashAlgorithm`, check-digit algorithms (`LuhnCheckDigitAlgorithm`, `IbanCheckDigitAlgorithm`, etc.).
+- **Bodu.Security.Cryptography**: `Threefish256` / `Threefish512` / `Threefish1024`, `Skipjack`, `Blowfish`, `Twofish`, `CamelliaEcb`, `Ascon128`, `Skein256/512/1024`, `Blake2b`, `Blake3`, `Tiger`, `SipHash`, `FNV1a`, `Adler32`, `CryptoHelpers`, AEAD modes (EAX, OFB, GCM), block-cipher modes.
+- **Bodu.Text.Encoding**: `Base16`, `Base32`, `Base58`, `Base64`, `Base85`, `BaseFormattingOptions`, `BaseFormatStyles`, variant enums.
+- **Bodu.Text.Configuration**: `ConfigurationDocument`, `ConfigurationParseOptions`, `ConfigurationWriteOptions`, `ConfigurationProfile`, view getters.
+- **Bodu.Text.Formats**: `Bencode` / `BencodedValue`, `Delimited` / `DelimitedParseOptions`, `DotEnv`, `Ini` / `IniDocument` / `IniParseOptions`.
+- **Bodu.Globalization.Calendar**: `NotableDateService`, `INotableDateRuleProvider`, `NotableDate`, `NotableDateKind`, `NotableDateFilter`, `EasterSundayNotableDateAlgorithm`, `LunarNewYearNotableDateAlgorithm`, plus Vesak/Asalha/Qingming/Losar/Hindu lunar variants.
+- **Bodu.Test** (test infrastructure): `IKat`, generic KAT records (`ValidKat<TInput,TExpected>`, `InvalidKat<TInput>`, `RoundTripKat<TValue,TWire>`, `BinaryKat<TInput,TExpected>`, `ExceptionKat<TInput>`, `GuardValidKat<T>`, `GuardInvalidKat<T>`, `EnumerableKat<TInput,TExpected>`, `BinaryEncodingKat`, `InvalidEncodedTextKat`), `KatDisplayName` helper, `ExceptionAssert` (with `ThrowsExactlyWithParamName<T>` and `AssertGuard`), MSTest tier constants in `TestCategories`, reusable stream mocks under `Bodu.Test.IO`.
 
 ## Build & Tooling
 
@@ -49,10 +66,10 @@ Nullable reference types are enabled everywhere. `ImplicitUsings` is enabled for
 ### Common Commands
 
 ```bash
-dotnet build Bodu.sln
-dotnet test  Bodu.sln --settings bvt.runsettings              # default build run (BVT)
-dotnet test  Bodu.sln --settings smoke.runsettings            # smoke only
-dotnet test  Bodu.sln --settings regression.runsettings       # full regression
+dotnet build bodu.slnx
+dotnet test  bodu.slnx --settings bvt.runsettings              # default build run (BVT)
+dotnet test  bodu.slnx --settings smoke.runsettings            # smoke only
+dotnet test  bodu.slnx --settings regression.runsettings       # full regression
 dotnet test  Bodu.Core/test/Bodu.Core.Test.csproj --settings bvt.runsettings
 ```
 
@@ -223,6 +240,30 @@ Assert.IsTrue(ex.InnerException.Message.Contains("Invalid state", StringComparis
 --- relevant message content where useful
 -- For wrapped exceptions, also validate the InnerException chain where that wrapping is intentional and contractually significant.
 -- Keep exception assertions explicit and local to the test; do not hide them behind helper methods unless already established in the test suite.
+
+### Test Consolidation Patterns (KATs and Binary Tests)
+
+Shared test infrastructure lives in `Bodu.Test/test/Test/`:
+
+- **`Bodu.Test.Kat`** namespace — generic KAT (known-answer test) records: `IKat` (marker interface exposing `Name`), `ValidKat<TInput,TExpected>`, `InvalidKat<TInput>`, `RoundTripKat<TValue,TWire>`, `BinaryKat<TInput,TExpected>`, `ExceptionKat<TInput>`, `GuardValidKat<T>`, `GuardInvalidKat<T>`, `EnumerableKat<TInput,TExpected>`, `BinaryEncodingKat`, `InvalidEncodedTextKat`. Plus `KatDisplayName.GetDisplayName(MethodInfo, object?[])` for `[DynamicData(... DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]` wiring so failures show the row's `Name` instead of an opaque index.
+- **`Bodu.Test.Assertions.ExceptionAssert`** — `ThrowsExactlyWithParamName<TException>(action, expectedParamName)` and the `AssertGuard(testName, act, expectedExceptionType, expectedParamName)` matrix helper, plus KAT-aware overloads `AssertGuard<T>(GuardValidKat<T>, Action<T,T,string?>)` and `AssertGuard<T>(GuardInvalidKat<T>, Action<T,T,string?>)`.
+
+Domain-specific KAT records live alongside their tests (each retrofitted with `IKat`):
+
+- `EncodingKnownAnswerVector` (Bodu.Text.Encoding)
+- `BencodeKnownAnswerVector`, `DelimitedKnownAnswerVector`, `DotEnvKnownAnswerVector`, `IniKnownAnswerVector` (Bodu.Text.Formats)
+- `NonCryptographicHashKnownAnswer`, `CheckDigitKnownAnswer`, `MultiCharCheckDigitKnownAnswer`, `MultiCharCheckDigitIsValidKnownAnswer` (Bodu.IO.Hashing)
+- `ConfigurationKat` (Bodu.Text.Configuration)
+- `AeadKnownAnswerVector`, `BlockCipherKnownAnswer`, `HashAlgorithmKnownAnswer`, `KeyedHashAlgorithmKnownAnswer` (Bodu.Security.Cryptography)
+- `AlgorithmFactoryCase`, `NotableDateAlgorithmKnownAnswer`, `FilterScenarioKnownAnswer`, `TerritoryNotableDateKnownAnswer`, `RuleCatalogueExpectation` (Bodu.Globalization.Calendar Infrastructure)
+- `WeekPatternParseKat`, `InvalidWeekPatternParseKat` (Bodu.Core)
+
+Conventions:
+
+- **`[DataRow]` is for primitive scalars only** (int, bool, string, enum). Use `[DynamicData]` with a strongly typed KAT record for byte arrays, expected exception types, options objects, parser state, or object graphs.
+- **Binary tests** — one `[TestMethod]` asserts one observable outcome. Do not write methods like `_ShouldEitherReturnExpectedOrThrow` that branch on a row flag. Split into separate methods over filtered data sources: typically `_ShouldNotThrowAndReportNothing` (pass rows) and `_ShouldThrowOn<Param>` or `_ShouldThrowExpected` (fail rows).
+- Each `[DynamicData]` row should carry a human-readable name (a `Name` field on the KAT record, or the first `testName` parameter on a `[DataRow]`) so failures surface the scenario rather than a row index.
+- Keep KAT-record `Name` synthesis sensible: when multiple fields disambiguate the row (e.g. `{Algorithm} {Year} {CalendarKind}`), implement `IKat.Name` explicitly to compose them.
 
 ## Source File Conventions
 
