@@ -22,36 +22,53 @@ public partial class ThrowHelperTests
         });
     }
     /// <summary>
-    /// Verifies the full <see cref="ThrowHelper.ThrowIfArrayLengthIsNotEqualTo" /> contract with explicit
-    /// ParamName assertions: null array → <see cref="ArgumentNullException" /> on the array parameter;
-    /// length mismatch → <see cref="ArgumentException" /> on the array parameter.
+    /// Verifies that <see cref="ThrowHelper.ThrowIfArrayLengthIsNotEqualTo" /> does not throw — and on the
+    /// ParamName-asserting overload reports nothing — when the array length matches the expected length
+    /// exactly.
+    /// </summary>
+    /// <param name="testName">The data-row label.</param>
+    /// <param name="arrayLength">Length of the array.</param>
+    /// <param name="expectedLength">The required exact length.</param>
+    [TestMethod]
+    [DataRow("exact match", 4, 4)]
+    [DataRow("both empty", 0, 0)]
+    public void ThrowIfArrayLengthIsNotEqualTo_WhenArrayLengthMatches_ShouldNotThrowAndReportNothing(
+        string testName, int arrayLength, int expectedLength)
+    {
+        Array array = new int[arrayLength];
+
+        AssertGuard(
+            testName,
+            () => ThrowHelper.ThrowIfArrayLengthIsNotEqualTo(array, expectedLength, "array"),
+            null,
+            null);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfArrayLengthIsNotEqualTo" /> throws
+    /// <see cref="ArgumentNullException" /> (when null) or <see cref="ArgumentException" /> (when length
+    /// differs), each with <c>ParamName == "array"</c>.
     /// </summary>
     /// <param name="testName">The data-row label.</param>
     /// <param name="arrayLength">Length of the array, or <c>-1</c> to pass <see langword="null" />.</param>
     /// <param name="expectedLength">The required exact length.</param>
-    /// <param name="expectedExceptionTypeName">The thrown exception's short type name, or empty if no throw.</param>
-    /// <param name="expectedParamName">The expected ParamName, or empty if not asserted.</param>
+    /// <param name="expectedExceptionTypeName">The thrown exception's short type name.</param>
     [TestMethod]
-    [DataRow("null array → ANE on array", -1, 4, "ArgumentNullException", "array")]
-    [DataRow("shorter than expected → AE on array", 3, 4, "ArgumentException", "array")]
-    [DataRow("longer than expected → AE on array", 5, 4, "ArgumentException", "array")]
-    [DataRow("exact match → pass", 4, 4, "", "")]
-    [DataRow("both empty → pass", 0, 0, "", "")]
-    public void ThrowIfArrayLengthIsNotEqualTo_WhenInvokedWithVariousInputs_ShouldFollowContract(
-        string testName, int arrayLength, int expectedLength, string expectedExceptionTypeName, string expectedParamName)
+    [DataRow("null array", -1, 4, "ArgumentNullException")]
+    [DataRow("shorter than expected", 3, 4, "ArgumentException")]
+    [DataRow("longer than expected", 5, 4, "ArgumentException")]
+    public void ThrowIfArrayLengthIsNotEqualTo_WhenArrayIsRejected_ShouldThrowOnArray(
+        string testName, int arrayLength, int expectedLength, string expectedExceptionTypeName)
     {
         Array? array = arrayLength < 0 ? null : new int[arrayLength];
-        Type? expected = expectedExceptionTypeName.Length == 0
-            ? null
-            : Type.GetType($"System.{expectedExceptionTypeName}, System.Private.CoreLib")
-                ?? throw new InvalidOperationException($"Unknown exception type '{expectedExceptionTypeName}'.");
-        var param = expectedParamName.Length == 0 ? null : expectedParamName;
+        Type expected = Type.GetType($"System.{expectedExceptionTypeName}, System.Private.CoreLib")
+            ?? throw new InvalidOperationException($"Unknown exception type '{expectedExceptionTypeName}'.");
 
         AssertGuard(
             testName,
             () => ThrowHelper.ThrowIfArrayLengthIsNotEqualTo(array, expectedLength, "array"),
             expected,
-            param);
+            "array");
     }
 
     /// <summary>
