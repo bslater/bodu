@@ -617,10 +617,15 @@ public static class NotableDateRuleJsonParser
     }
 
     /// <summary>
-    /// Parses an English Gregorian month name or numeric month token (1–13).
+    /// Parses an English Gregorian month name or numeric month token (1–12). Used for schema-constrained Gregorian
+    /// month attributes (<c>dayOfWeekInMonth.month</c>, <c>adjustment.comparisonMonth</c>) that admit only the
+    /// twelve Gregorian months by enum.
     /// </summary>
     /// <param name="monthName">The month token to parse.</param>
-    /// <returns>The parsed month number.</returns>
+    /// <returns>The parsed month number in the range 1–12.</returns>
+    /// <exception cref="FormatException">
+    /// <paramref name="monthName" /> is neither a recognized English month name nor an integer in 1–12.
+    /// </exception>
     private static int ParseMonth(string monthName)
     {
         if (string.IsNullOrWhiteSpace(monthName))
@@ -630,7 +635,7 @@ public static class NotableDateRuleJsonParser
             return result.Month;
 
         return int.TryParse(monthName, NumberStyles.Integer, CultureInfo.InvariantCulture, out var numeric)
-            && numeric is >= 1 and <= 13
+            && numeric is >= 1 and <= 12
             ? numeric
             : throw new FormatException(
             string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Format_Invalid_MonthValueGregorian, monthName));

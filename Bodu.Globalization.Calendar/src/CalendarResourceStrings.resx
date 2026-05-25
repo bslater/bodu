@@ -130,7 +130,7 @@
     <value>JSON failed schema validation: {0}</value>
   </data>
   <data name="Format_Invalid_MonthValueGregorian" xml:space="preserve">
-    <value>Invalid month value '{0}'. Expected a full English month name (e.g. 'January') or an integer 1&#x2013;13.</value>
+    <value>Invalid month value '{0}'. Expected a full English month name (e.g. 'January') or an integer 1&#x2013;12.</value>
   </data>
   <data name="Format_Invalid_MonthValueHebrew" xml:space="preserve">
     <value>Invalid month value '{0}'. Expected a full English month name, an integer 1&#x2013;13, or a Hebrew month name.</value>
