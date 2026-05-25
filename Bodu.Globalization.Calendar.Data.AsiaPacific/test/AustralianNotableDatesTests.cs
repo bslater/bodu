@@ -215,11 +215,11 @@ public sealed class AustralianNotableDatesTests
 
     /// <summary>
     /// Verifies that querying any Australian subdivision returns Anzac Day on 25 April 2026 (a Saturday) for the
-    /// subdivisions that do not publish their own narrower rule (NSW, VIC, QLD, SA, TAS, ACT). WA and NT have their
-    /// own subdivision-scoped rules with weekend substitutes — those are exercised separately.
+    /// subdivisions that do not publish their own narrower rule (VIC, QLD, SA, TAS, ACT). NSW, WA, and NT have their
+    /// own subdivision-scoped rules with weekend substitutes — those are exercised separately. The 2026 trial brought
+    /// NSW into this set; prior to the trial NSW was a canonical-AU subdivision.
     /// </summary>
     [TestMethod]
-    [DataRow("AU-NSW")]
     [DataRow("AU-VIC")]
     [DataRow("AU-QLD")]
     [DataRow("AU-SA")]
@@ -262,14 +262,18 @@ public sealed class AustralianNotableDatesTests
     }
 
     /// <summary>
-    /// Verifies that New South Wales does NOT observe a substitute Monday when Anzac Day falls on a Saturday (25 April
-    /// 2020): NSW has no narrower rule, so the canonical AU rule wins and emits the unadjusted Saturday observance.
+    /// Verifies that New South Wales does NOT observe a substitute Monday when Anzac Day falls on a Saturday outside
+    /// the 2026–2027 Minns-government trial. The NSW rule's adjustment is dormant outside the trial window so the
+    /// rule emits the base 25 April observance unchanged. The emission carries the AU-NSW territory code because the
+    /// NSW rule shadows the canonical AU rule whenever it is queried — its adjustment being dormant does not retire
+    /// the rule itself.
     /// </summary>
     [TestMethod]
-    public void GetNotableDates_WhenAnzacDayOnSaturday_ShouldNotEmitSubstitute_ForAuNsw()
+    public void GetNotableDates_WhenAnzacDayOnSaturdayOutsideTrial_ShouldNotEmitSubstitute_ForAuNsw()
     {
         var service = BuildAuService();
 
+        // 25 April 2020 was a Saturday — outside the NSW 2026–2027 trial window, so the adjustment does not fire.
         var occurrences = service.GetNotableDates(2020, "AU-NSW")
             .Where(d => d.Name == "Anzac Day")
             .ToList();
@@ -277,7 +281,54 @@ public sealed class AustralianNotableDatesTests
         Assert.AreEqual(1, occurrences.Count);
         Assert.AreEqual(new DateTime(2020, 4, 25), occurrences[0].Date);
         Assert.IsFalse(occurrences[0].WasAdjusted);
-        Assert.AreEqual("AU", occurrences[0].TerritoryCode);
+        Assert.AreEqual("AU-NSW", occurrences[0].TerritoryCode,
+            "NSW rule wins shadowing in every year; its adjustment-bound trial only controls whether the weekend substitute fires.");
+    }
+
+    /// <summary>
+    /// Verifies that the NSW Anzac Day weekend-substitute trial activates for Saturday 25 April 2026, emitting an
+    /// adjusted Monday 27 April 2026 occurrence scoped to AU-NSW. This is the first year of the two-year trial
+    /// announced by the Minns Labor Government on 15 February 2026.
+    /// </summary>
+    [TestMethod]
+    public void GetNotableDates_WhenAnzacDayOnSaturday_ShouldEmitMondaySubstitute_ForAuNsw_TrialYear2026()
+    {
+        var service = BuildAuService();
+
+        var occurrences = service.GetNotableDates(2026, "AU-NSW")
+            .Where(d => d.Name == "Anzac Day")
+            .OrderBy(d => d.Date)
+            .ToList();
+
+        Assert.AreEqual(1, occurrences.Count);
+        Assert.AreEqual(new DateTime(2026, 4, 27), occurrences[0].Date);
+        Assert.IsTrue(occurrences[0].WasAdjusted);
+        Assert.AreEqual(DayOfWeek.Monday, occurrences[0].Date.DayOfWeek);
+        Assert.AreEqual(new DateTime(2026, 4, 25), occurrences[0].AdjustmentReason!.OriginalDate);
+        Assert.AreEqual("AU-NSW", occurrences[0].TerritoryCode);
+    }
+
+    /// <summary>
+    /// Verifies that the NSW Anzac Day weekend-substitute trial activates for Sunday 25 April 2027, emitting an
+    /// adjusted Monday 26 April 2027 occurrence scoped to AU-NSW. This is the second (and final) year of the trial
+    /// pending the 2027 review of NSW public holidays.
+    /// </summary>
+    [TestMethod]
+    public void GetNotableDates_WhenAnzacDayOnSunday_ShouldEmitMondaySubstitute_ForAuNsw_TrialYear2027()
+    {
+        var service = BuildAuService();
+
+        var occurrences = service.GetNotableDates(2027, "AU-NSW")
+            .Where(d => d.Name == "Anzac Day")
+            .OrderBy(d => d.Date)
+            .ToList();
+
+        Assert.AreEqual(1, occurrences.Count);
+        Assert.AreEqual(new DateTime(2027, 4, 26), occurrences[0].Date);
+        Assert.IsTrue(occurrences[0].WasAdjusted);
+        Assert.AreEqual(DayOfWeek.Monday, occurrences[0].Date.DayOfWeek);
+        Assert.AreEqual(new DateTime(2027, 4, 25), occurrences[0].AdjustmentReason!.OriginalDate);
+        Assert.AreEqual("AU-NSW", occurrences[0].TerritoryCode);
     }
 
     /// <summary>
