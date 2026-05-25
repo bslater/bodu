@@ -166,4 +166,77 @@ public class ConfigurationReaderSectionHeaderTests
 
         Assert.AreEqual(ConfigurationDiagnosticCode.TrailingContentAfterSectionHeader, ex.Diagnostic!.Code);
     }
+
+    /// <summary>
+    /// Verifies that an empty section header <c>[]</c> emits
+    /// <see cref="ConfigurationDiagnosticCode.EmptySectionHeader" /> when diagnostics throw, and that the
+    /// wrapped diagnostic does not masquerade as <see cref="ConfigurationDiagnosticCode.UnterminatedSectionHeader" />.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenSectionHeaderIsEmptyAndThrow_ShouldUseEmptySectionHeaderCode()
+    {
+        ConfigurationParseOptions options = new()
+        {
+            DiagnosticMode = ConfigurationDiagnosticMode.Throw,
+        };
+
+        ConfigurationParseException ex = Assert.ThrowsExactly<ConfigurationParseException>(() =>
+        {
+            _ = ConfigurationDocument.Parse("[]\nkey = value\n", options);
+        });
+
+        Assert.IsNotNull(ex.Diagnostic);
+        Assert.AreEqual(ConfigurationDiagnosticCode.EmptySectionHeader, ex.Diagnostic!.Code);
+    }
+
+    /// <summary>
+    /// Verifies that under collect-diagnostics, an empty section header <c>[]</c> reports
+    /// <see cref="ConfigurationDiagnosticCode.EmptySectionHeader" /> exactly once, the parse continues past
+    /// the malformed header, and no named section is created — subsequent properties fall through to the
+    /// current (global) section rather than into a named section called <c>""</c>.
+    /// </summary>
+    [TestMethod]
+    public void ParseWithDiagnostics_WhenSectionHeaderIsEmptyAndCollect_ShouldReportEmptySectionHeaderAndCreateNoNamedSection()
+    {
+        ConfigurationParseOptions options = new()
+        {
+            DiagnosticMode = ConfigurationDiagnosticMode.Collect,
+        };
+
+        ConfigurationParseResult result = ConfigurationDocument.ParseWithDiagnostics("[]\nkey = value\n", options);
+
+        var emptyCount = 0;
+        foreach (ConfigurationDiagnostic d in result.Diagnostics)
+        {
+            if (d.Code == ConfigurationDiagnosticCode.EmptySectionHeader)
+                emptyCount++;
+
+            Assert.AreNotEqual(ConfigurationDiagnosticCode.UnterminatedSectionHeader, d.Code);
+        }
+
+        Assert.AreEqual(1, emptyCount, "Expected exactly one EmptySectionHeader diagnostic.");
+        Assert.HasCount(0, result.Document.Sections);
+    }
+
+    /// <summary>
+    /// Verifies that an empty section header with trailing whitespace <c>[]   </c> still surfaces
+    /// <see cref="ConfigurationDiagnosticCode.EmptySectionHeader" /> — the empty-name check fires before the
+    /// trailing-content check.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenSectionHeaderIsEmptyAndStrictWithTrailingWhitespace_ShouldUseEmptySectionHeaderCode()
+    {
+        ConfigurationParseOptions options = new()
+        {
+            SectionHeaderMode = ConfigurationSectionHeaderMode.Strict,
+            DiagnosticMode = ConfigurationDiagnosticMode.Throw,
+        };
+
+        ConfigurationParseException ex = Assert.ThrowsExactly<ConfigurationParseException>(() =>
+        {
+            _ = ConfigurationDocument.Parse("[]   \n", options);
+        });
+
+        Assert.AreEqual(ConfigurationDiagnosticCode.EmptySectionHeader, ex.Diagnostic!.Code);
+    }
 }
