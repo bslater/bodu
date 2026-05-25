@@ -10,37 +10,44 @@ public partial class ThrowHelperTests
 {
 
     /// <summary>
-    /// Verifies the full <see cref="ThrowHelper.ThrowIfNullOrWhiteSpace" /> contract with explicit ParamName
-    /// assertions: null → <see cref="ArgumentNullException" /> on "value"; empty or whitespace-only →
-    /// <see cref="ArgumentException" /> on "value"; non-whitespace → pass.
+    /// Verifies that <see cref="ThrowHelper.ThrowIfNullOrWhiteSpace" /> does not throw — and on the
+    /// ParamName-asserting overload reports nothing — when the value contains at least one non-whitespace
+    /// character.
     /// </summary>
     /// <param name="testName">The data-row label.</param>
     /// <param name="value">The string passed to the guard.</param>
-    /// <param name="expectedExceptionTypeName">The thrown exception's short type name, or empty if no throw.</param>
-    /// <param name="expectedParamName">The expected ParamName, or empty if not asserted.</param>
     [TestMethod]
-    [DataRow("null → ANE on value", null, "ArgumentNullException", "value")]
-    [DataRow("empty → AE on value", "", "ArgumentException", "value")]
-    [DataRow("spaces only → AE on value", "   ", "ArgumentException", "value")]
-    [DataRow("tab only → AE on value", "\t", "ArgumentException", "value")]
-    [DataRow("newline only → AE on value", "\n", "ArgumentException", "value")]
-    [DataRow("non-whitespace → pass", "Valid", "", "")]
-    [DataRow("leading whitespace then content → pass", "  trimmed", "", "")]
-    [DataRow("internal space → pass", "middle space", "", "")]
-    public void ThrowIfNullOrWhiteSpace_WhenInvokedWithVariousStrings_ShouldFollowContract(
-        string testName, string? value, string expectedExceptionTypeName, string expectedParamName)
+    [DataRow("non-whitespace", "Valid")]
+    [DataRow("leading whitespace then content", "  trimmed")]
+    [DataRow("internal space", "middle space")]
+    public void ThrowIfNullOrWhiteSpace_WhenValueIsNonWhitespace_ShouldNotThrowAndReportNothing(string testName, string value) =>
+        AssertGuard(testName, () => ThrowHelper.ThrowIfNullOrWhiteSpace(value, nameof(value)), null, null);
+
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfNullOrWhiteSpace" /> throws
+    /// <see cref="ArgumentNullException" /> (when null) or <see cref="ArgumentException" /> (when empty or
+    /// whitespace-only), each with <c>ParamName == "value"</c>.
+    /// </summary>
+    /// <param name="testName">The data-row label.</param>
+    /// <param name="value">The string passed to the guard.</param>
+    /// <param name="expectedExceptionTypeName">The thrown exception's short type name.</param>
+    [TestMethod]
+    [DataRow("null", null, "ArgumentNullException")]
+    [DataRow("empty", "", "ArgumentException")]
+    [DataRow("spaces only", "   ", "ArgumentException")]
+    [DataRow("tab only", "\t", "ArgumentException")]
+    [DataRow("newline only", "\n", "ArgumentException")]
+    public void ThrowIfNullOrWhiteSpace_WhenValueIsRejected_ShouldThrowOnValue(
+        string testName, string? value, string expectedExceptionTypeName)
     {
-        Type? expected = expectedExceptionTypeName.Length == 0
-            ? null
-            : Type.GetType($"System.{expectedExceptionTypeName}, System.Private.CoreLib")
-                ?? throw new InvalidOperationException($"Unknown exception type '{expectedExceptionTypeName}'.");
-        var param = expectedParamName.Length == 0 ? null : expectedParamName;
+        Type expected = Type.GetType($"System.{expectedExceptionTypeName}, System.Private.CoreLib")
+            ?? throw new InvalidOperationException($"Unknown exception type '{expectedExceptionTypeName}'.");
 
         AssertGuard(
             testName,
             () => ThrowHelper.ThrowIfNullOrWhiteSpace(value!, nameof(value)),
             expected,
-            param);
+            "value");
     }
 
     /// <summary>
