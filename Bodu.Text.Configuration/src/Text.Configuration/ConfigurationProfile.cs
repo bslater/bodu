@@ -16,6 +16,48 @@ namespace Bodu.Text.Configuration;
 /// <see cref="ConfigurationResolveOptions" />, and <see cref="ConfigurationWriteOptions" /> exposes a
 /// <c>For(profile)</c> factory which produces an options bag preconfigured for the selected profile.
 /// </para>
+/// <para>
+/// Profiles encode opinionated combinations of orthogonal switches. Mixing them is supported — start from the
+/// closest preset and override the few properties that differ. The behavioural matrix is:
+/// </para>
+/// <list type="table">
+/// <listheader>
+/// <term>Behaviour</term>
+/// <description>Bodu | EditorConfigCompatible | Strict | Relaxed</description>
+/// </listheader>
+/// <item>
+/// <term>Inline comments (<see cref="ConfigurationInlineCommentMode" />)</term>
+/// <description>WhitespaceIntroduced | Disabled | Disabled | WhitespaceIntroduced</description>
+/// </item>
+/// <item>
+/// <term>Duplicate keys (<see cref="Bodu.Text.Ini.IniDuplicateKeyBehavior" />)</term>
+/// <description>LastWins | LastWins | Disallowed | LastWins</description>
+/// </item>
+/// <item>
+/// <term>Duplicate sections (<see cref="Bodu.Text.Ini.IniDuplicateSectionBehavior" />)</term>
+/// <description>Preserve | Preserve | Disallowed | Preserve</description>
+/// </item>
+/// <item>
+/// <term>Section header trailing content (<see cref="ConfigurationSectionHeaderMode" />)</term>
+/// <description>Lenient | Strict | Strict | Lenient</description>
+/// </item>
+/// <item>
+/// <term>Diagnostic routing (<see cref="ConfigurationDiagnosticMode" />)</term>
+/// <description>Throw | Throw | Throw | Collect</description>
+/// </item>
+/// <item>
+/// <term>Preamble contributes to resolved view (<see cref="ConfigurationResolveOptions.ApplyPreambleProperties" />)</term>
+/// <description>Yes | No | Yes | Yes</description>
+/// </item>
+/// <item>
+/// <term><c>unset</c> sentinel (<see cref="ConfigurationUnsetValueMode" />)</term>
+/// <description>TreatAsLiteral | RemoveEffectiveValue | RemoveEffectiveValue | TreatAsLiteral</description>
+/// </item>
+/// <item>
+/// <term>Missing path root (<see cref="ConfigurationMissingPathRootMode" />)</term>
+/// <description>UseEmptyRoot | Throw | Throw | UseEmptyRoot</description>
+/// </item>
+/// </list>
 /// </remarks>
 public enum ConfigurationProfile
 {

@@ -159,11 +159,58 @@ internal sealed partial class ConfigurationReader
         }
 
         ConfigurationSourceLocation headerLoc = new(lineNumber, firstNonWs + 1, lastClose - firstNonWs + 1, path);
+
+        if (!IsTrailingContentAllowed(line, lastClose + 1, _options.SectionHeaderMode))
+        {
+            EmitDiagnostic(
+                ConfigurationDiagnosticSeverity.Error,
+                ConfigurationDiagnosticCode.TrailingContentAfterSectionHeader,
+                ConfigurationResourceStrings.Format_Invalid_TrailingContentAfterSectionHeader,
+                new ConfigurationSourceLocation(lineNumber, lastClose + 2, line.Length - lastClose - 1, path));
+
+            return GetCurrentSection(document);
+        }
+
         IniSection section = ResolveSectionTarget(document, name, headerLoc);
 
         AttachPendingComments(section, _pendingLeadingComments);
 
         return section;
+    }
+
+    /// <summary>
+    /// Returns <see langword="true" /> when the trailing run of characters in <paramref name="line" />
+    /// starting at <paramref name="from" /> is acceptable under <paramref name="mode" />. Trailing whitespace
+    /// is always permitted; a leading <c>#</c> or <c>;</c> after optional whitespace is permitted only when
+    /// the mode is <see cref="ConfigurationSectionHeaderMode.AllowTrailingInlineComment" />; any other
+    /// non-whitespace content is permitted only under <see cref="ConfigurationSectionHeaderMode.Lenient" />.
+    /// </summary>
+    /// <param name="line">The full section-header line being processed.</param>
+    /// <param name="from">The index immediately following the closing <c>]</c>.</param>
+    /// <param name="mode">The configured section-header mode.</param>
+    /// <returns><see langword="true" /> when the trailing content is acceptable.</returns>
+    private static bool IsTrailingContentAllowed(string line, int from, ConfigurationSectionHeaderMode mode)
+    {
+        var firstNonWs = -1;
+        for (var i = from; i < line.Length; i++)
+        {
+            if (!char.IsWhiteSpace(line[i]))
+            {
+                firstNonWs = i;
+                break;
+            }
+        }
+
+        if (firstNonWs < 0)
+            return true;
+
+        return mode switch
+        {
+            ConfigurationSectionHeaderMode.Lenient => true,
+            ConfigurationSectionHeaderMode.AllowTrailingInlineComment => line[firstNonWs] is '#' or ';',
+            ConfigurationSectionHeaderMode.Strict => false,
+            _ => true,
+        };
     }
 
     /// <summary>
@@ -173,43 +220,46 @@ internal sealed partial class ConfigurationReader
     /// <param name="name">The section name parsed from the header.</param>
     /// <param name="headerLoc">The source location of the header, used when emitting diagnostics.</param>
     /// <returns>The existing or newly created section that subsequent properties are added to.</returns>
+    /// <remarks>
+    /// Uses <see cref="IniDocument.TryGetSection(string, out IniSection?)" /> for O(1) duplicate detection
+    /// in <see cref="IniDuplicateSectionBehavior.Disallowed" /> and <see cref="IniDuplicateSectionBehavior.MergeAll" />.
+    /// <see cref="IniDuplicateSectionBehavior.MergeAdjacent" /> checks only the last section in the document,
+    /// which is also O(1). <see cref="IniDuplicateSectionBehavior.Preserve" /> always creates a new section
+    /// and pays no lookup cost.
+    /// </remarks>
     private IniSection ResolveSectionTarget(IniDocument document, string name, ConfigurationSourceLocation headerLoc)
     {
-        // Detect duplicates by scanning the existing sections list rather than a separate lookup, so that
-        // documents constructed under Preserve / MergeAdjacent (which produce multiple sections with the same
-        // name) still allow us to find the last-appended occurrence.
-        IniSection? existing = null;
-        var existingIndex = -1;
-        IEqualityComparer<string> comparer = _options.KeyOptions.CaseSensitive
-            ? StringComparer.Ordinal
-            : StringComparer.OrdinalIgnoreCase;
-        for (var i = 0; i < document.Sections.Count; i++)
+        switch (_options.DuplicateSectionMode)
         {
-            if (comparer.Equals(document.Sections[i].Name, name))
-            {
-                existing = document.Sections[i];
-                existingIndex = i;
-            }
-        }
-
-        if (existing is not null)
-        {
-            switch (_options.DuplicateSectionMode)
-            {
-                case IniDuplicateSectionBehavior.Disallowed:
+            case IniDuplicateSectionBehavior.Disallowed:
+                if (document.TryGetSection(name, out IniSection? disallowedExisting))
+                {
                     EmitDiagnostic(
                         ConfigurationDiagnosticSeverity.Error,
-                        ConfigurationDiagnosticCode.UnterminatedSectionHeader,
-                        $"Duplicate section pattern '{name}'.",
+                        ConfigurationDiagnosticCode.DuplicateSection,
+                        string.Format(CultureInfo.InvariantCulture, ConfigurationResourceStrings.Format_Invalid_DuplicateSection, name),
                         headerLoc);
-                    return existing;
+                    return disallowedExisting;
+                }
 
-                case IniDuplicateSectionBehavior.MergeAll:
-                    return existing;
+                break;
 
-                case IniDuplicateSectionBehavior.MergeAdjacent when existingIndex == document.Sections.Count - 1:
-                    return existing;
-            }
+            case IniDuplicateSectionBehavior.MergeAll:
+                if (document.TryGetSection(name, out IniSection? mergeAllExisting))
+                    return mergeAllExisting;
+
+                break;
+
+            case IniDuplicateSectionBehavior.MergeAdjacent:
+                {
+                    IEqualityComparer<string> comparer = _options.KeyOptions.CaseSensitive
+                        ? StringComparer.Ordinal
+                        : StringComparer.OrdinalIgnoreCase;
+                    if (document.Sections.Count > 0 && comparer.Equals(document.Sections[^1].Name, name))
+                        return document.Sections[^1];
+                }
+
+                break;
         }
 
         IniSection created = new(name, [], _options.KeyOptions.CaseSensitive);
@@ -314,19 +364,8 @@ internal sealed partial class ConfigurationReader
         string? path,
         IniComment? inlineComment = null)
     {
-        IEqualityComparer<string> comparer = _options.KeyOptions.CaseSensitive
-            ? StringComparer.Ordinal
-            : StringComparer.OrdinalIgnoreCase;
-
-        IniEntry? existing = null;
-        foreach (IniEntry e in section.Entries)
-        {
-            if (comparer.Equals(e.Key, rawKey))
-            {
-                existing = e;
-                break;
-            }
-        }
+        // O(1) duplicate detection via IniSection's internal lookup, rather than scanning section.Entries.
+        IniEntry? existing = section.TryGetEntry(rawKey, out IniEntry? found) ? found : null;
 
         ConfigurationSourceLocation loc = new(lineNumber, linePosition + 1, rawKey.Length, path);
 

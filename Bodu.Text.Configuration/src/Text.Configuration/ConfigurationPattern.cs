@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Collections.Concurrent;
 using System.Text.RegularExpressions;
 
 namespace Bodu.Text.Configuration;
@@ -76,6 +77,16 @@ namespace Bodu.Text.Configuration;
 /// </example>
 public sealed partial class ConfigurationPattern
 {
+    /// <summary>
+    /// Maximum number of distinct (pattern, comparison) pairs retained in the shared compile cache before the
+    /// cache is cleared. The cache exists to amortize regex compilation across repeated resolve calls; the
+    /// crude eviction strategy is deliberate — patterns are typically tens, not thousands, and clearing the
+    /// cache on overflow keeps memory bounded without an explicit LRU.
+    /// </summary>
+    private const int CompileCacheCapacity = 512;
+
+    private static readonly ConcurrentDictionary<(string Pattern, StringComparison Comparison), ConfigurationPattern> CompileCache = new();
+
     private readonly Regex _regex;
 
     /// <summary>
@@ -97,7 +108,7 @@ public sealed partial class ConfigurationPattern
     public string Source { get; }
 
     /// <summary>
-    /// Compiles the supplied glob expression.
+    /// Compiles the supplied glob expression using ordinal (case-sensitive) matching.
     /// </summary>
     /// <param name="pattern">The pattern to compile.</param>
     /// <returns>A compiled <see cref="ConfigurationPattern" />.</returns>
@@ -105,14 +116,63 @@ public sealed partial class ConfigurationPattern
     /// <paramref name="pattern" /> is <see langword="null" />, empty, or contains only whitespace.
     /// </exception>
     /// <exception cref="ConfigurationParseException">The pattern contained an unbalanced brace or bracket.</exception>
-    public static ConfigurationPattern Compile(string pattern)
+    public static ConfigurationPattern Compile(string pattern) =>
+        Compile(pattern, StringComparison.Ordinal);
+
+    /// <summary>
+    /// Compiles the supplied glob expression under the requested string comparison. Case-insensitive
+    /// comparisons (<see cref="StringComparison.OrdinalIgnoreCase" />,
+    /// <see cref="StringComparison.InvariantCultureIgnoreCase" />,
+    /// <see cref="StringComparison.CurrentCultureIgnoreCase" />) compile the regex with
+    /// <see cref="RegexOptions.IgnoreCase" />; case-sensitive comparisons do not.
+    /// </summary>
+    /// <param name="pattern">The pattern to compile.</param>
+    /// <param name="comparison">The comparison applied during matching.</param>
+    /// <returns>A compiled <see cref="ConfigurationPattern" />.</returns>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="pattern" /> is <see langword="null" />, empty, or contains only whitespace.
+    /// </exception>
+    /// <exception cref="ConfigurationParseException">The pattern contained an unbalanced brace or bracket.</exception>
+    /// <remarks>
+    /// Compiled patterns are memoized in a bounded process-wide cache so that repeated resolve calls against
+    /// the same document avoid re-walking the glob grammar. The cache key is the pair
+    /// <c>(pattern, comparison)</c>; on overflow the cache is cleared in bulk.
+    /// </remarks>
+    public static ConfigurationPattern Compile(string pattern, StringComparison comparison)
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(pattern);
 
-        var regex = TranslateToRegex(pattern);
+        (string pattern, StringComparison comparison) key = (pattern, comparison);
+        if (CompileCache.TryGetValue(key, out ConfigurationPattern? cached))
+            return cached;
 
-        return new ConfigurationPattern(pattern, new Regex(regex, RegexOptions.CultureInvariant));
+        // Build outside the cache so that a throwing TranslateToRegex (e.g. UnbalancedBrace) does not poison
+        // the dictionary with a faulted Lazy entry.
+        RegexOptions options = RegexOptions.CultureInvariant;
+        if (IsCaseInsensitive(comparison))
+            options |= RegexOptions.IgnoreCase;
+
+        Regex regex = new(TranslateToRegex(pattern), options);
+        ConfigurationPattern compiled = new(pattern, regex);
+
+        if (CompileCache.Count > CompileCacheCapacity)
+            CompileCache.Clear();
+
+        CompileCache.TryAdd(key, compiled);
+        return compiled;
     }
+
+    /// <summary>
+    /// Determines whether the supplied <see cref="StringComparison" /> represents a case-insensitive
+    /// comparison. The three case-insensitive variants map onto <see cref="RegexOptions.IgnoreCase" />; the
+    /// case-sensitive variants leave that flag unset.
+    /// </summary>
+    /// <param name="comparison">The comparison to classify.</param>
+    /// <returns><see langword="true" /> when <paramref name="comparison" /> ignores case.</returns>
+    private static bool IsCaseInsensitive(StringComparison comparison) =>
+        comparison is StringComparison.OrdinalIgnoreCase
+            or StringComparison.CurrentCultureIgnoreCase
+            or StringComparison.InvariantCultureIgnoreCase;
 
     /// <summary>
     /// Determines whether the supplied relative path matches this pattern.

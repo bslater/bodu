@@ -132,6 +132,9 @@
   <data name="Format_Invalid_DuplicateKey" xml:space="preserve">
     <value>Duplicate configuration key '{0}'.</value>
   </data>
+  <data name="Format_Invalid_DuplicateSection" xml:space="preserve">
+    <value>Duplicate configuration section header '{0}'.</value>
+  </data>
   <data name="Format_Invalid_EmptyKey" xml:space="preserve">
     <value>Configuration property key cannot be empty.</value>
   </data>
@@ -161,6 +164,12 @@
   </data>
   <data name="Format_Invalid_UnterminatedSectionHeader" xml:space="preserve">
     <value>Configuration section header is not terminated by ']'.</value>
+  </data>
+  <data name="Format_Invalid_TrailingContentAfterSectionHeader" xml:space="preserve">
+    <value>Configuration section header contains non-whitespace content after the closing ']'.</value>
+  </data>
+  <data name="Format_Invalid_NumericRangeTooLarge" xml:space="preserve">
+    <value>Glob numeric range '{0}..{1}' would expand to {2} alternatives, exceeding the configured limit of {3}.</value>
   </data>
   <data name="Format_Invalid_ValueNotConvertible" xml:space="preserve">
     <value>The configuration value for key '{0}' ('{1}') could not be converted to {2}.</value>

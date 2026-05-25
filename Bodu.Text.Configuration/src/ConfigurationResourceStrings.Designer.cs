@@ -106,6 +106,33 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Duplicate configuration section header &apos;{0}&apos;..
+        /// </summary>
+        internal static string Format_Invalid_DuplicateSection {
+            get {
+                return ResourceManager.GetString("Format_Invalid_DuplicateSection", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Glob numeric range &apos;{0}..{1}&apos; would expand to {2} alternatives, exceeding the configured limit of {3}..
+        /// </summary>
+        internal static string Format_Invalid_NumericRangeTooLarge {
+            get {
+                return ResourceManager.GetString("Format_Invalid_NumericRangeTooLarge", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Configuration section header contains non-whitespace content after the closing &apos;]&apos;..
+        /// </summary>
+        internal static string Format_Invalid_TrailingContentAfterSectionHeader {
+            get {
+                return ResourceManager.GetString("Format_Invalid_TrailingContentAfterSectionHeader", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Configuration property key cannot be empty..
         /// </summary>
         internal static string Format_Invalid_EmptyKey {

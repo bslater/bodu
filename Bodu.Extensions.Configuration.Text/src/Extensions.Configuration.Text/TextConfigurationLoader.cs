@@ -14,6 +14,50 @@ namespace Bodu.Extensions.Configuration.Text;
 /// <see cref="TextConfigurationProvider" /> (file-backed) and <see cref="TextStreamConfigurationProvider" />
 /// (stream-backed). Keeps the two providers' <c>Load</c> implementations in lock-step.
 /// </summary>
+/// <remarks>
+/// <para>
+/// Projection from <see cref="ConfigurationView" /> into <see cref="Microsoft.Extensions.Configuration.IConfiguration" />
+/// is intentionally lossy. The richer document model preserves information that does not survive the flatten
+/// step:
+/// </para>
+/// <list type="bullet">
+/// <item>
+/// <description>
+/// Leading and inline comments are kept on the parsed document but discarded here.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Source locations (line/column/path) are kept on the parsed document and on every diagnostic but are not
+/// projected onto the flattened keys.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Duplicate-section provenance — which matching section "won" for a given key — is collapsed by the
+/// resolver's last-wins precedence and is not exposed.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Key case is normalised: the output dictionary uses
+/// <see cref="StringComparer.OrdinalIgnoreCase" />, matching the Microsoft conventions.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Literal colons inside key segments cannot survive — the colon is the hierarchy delimiter in
+/// <see cref="Microsoft.Extensions.Configuration.IConfiguration" />, so a key like <c>service\:name</c> in the
+/// source document is split into the hierarchy <c>service</c> / <c>name</c> by the configuration system once
+/// flattened.
+/// </description>
+/// </item>
+/// </list>
+/// <para>
+/// Consumers who need any of the discarded metadata should depend on <see cref="ConfigurationDocument" />
+/// directly rather than going through the Microsoft provider bridge.
+/// </para>
+/// </remarks>
 internal static class TextConfigurationLoader
 {
     /// <summary>

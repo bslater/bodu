@@ -49,6 +49,8 @@ namespace Bodu.Text.Configuration;
 /// </example>
 public sealed partial class ConfigurationView : IEnumerable<KeyValuePair<string, string?>>
 {
+    private readonly IReadOnlyDictionary<string, ConfigurationResolvedEntry>? _entries;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="ConfigurationView" /> class over the supplied resolved values.
     /// </summary>
@@ -56,6 +58,20 @@ public sealed partial class ConfigurationView : IEnumerable<KeyValuePair<string,
     internal ConfigurationView(IReadOnlyDictionary<string, string?> values)
     {
         Values = values;
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ConfigurationView" /> class over the supplied resolved values
+    /// together with their origin metadata.
+    /// </summary>
+    /// <param name="values">The resolved configuration values, keyed by canonical configuration key.</param>
+    /// <param name="entries">The resolved-entry metadata for each key in <paramref name="values" />.</param>
+    internal ConfigurationView(
+        IReadOnlyDictionary<string, string?> values,
+        IReadOnlyDictionary<string, ConfigurationResolvedEntry> entries)
+    {
+        Values = values;
+        _entries = entries;
     }
 
     /// <summary>
@@ -120,4 +136,36 @@ public sealed partial class ConfigurationView : IEnumerable<KeyValuePair<string,
 
     /// <inheritdoc />
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+    /// <summary>
+    /// Gets the resolved-entry origin metadata for every key in the view. Returns an empty enumeration when
+    /// the view was constructed without origin tracking (older overload, primarily for test fixtures).
+    /// </summary>
+    /// <returns>Origin metadata per resolved key.</returns>
+    public IEnumerable<ConfigurationResolvedEntry> Entries =>
+        _entries is null ? [] : _entries.Values;
+
+    /// <summary>
+    /// Gets the origin metadata for <paramref name="key" />, or <see langword="null" /> when the key is
+    /// absent from the resolved view or the view was constructed without origin tracking.
+    /// </summary>
+    /// <param name="key">The configuration key in either dotted or colon-delimited form.</param>
+    /// <returns>The resolved entry, or <see langword="null" /> when absent.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
+    public ConfigurationResolvedEntry? GetEntry(string key)
+    {
+        ThrowHelper.ThrowIfNull(key);
+
+        if (_entries is null)
+            return null;
+
+        if (_entries.TryGetValue(key, out ConfigurationResolvedEntry? entry))
+            return entry;
+
+        if (key.IndexOf('.') < 0)
+            return null;
+
+        var normalized = key.Replace('.', ':');
+        return _entries.TryGetValue(normalized, out entry) ? entry : null;
+    }
 }
