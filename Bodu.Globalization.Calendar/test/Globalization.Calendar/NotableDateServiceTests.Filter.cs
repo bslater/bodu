@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateServiceTests.Filter.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -8,6 +8,13 @@ using System.Collections.Immutable;
 
 namespace Bodu.Globalization.Calendar;
 
+/// <summary>
+/// Houses the bespoke filter-integration tests for <see cref="NotableDateService" /> that do not fit the
+/// "year + filter → expected name set" KAT consolidation in
+/// <see cref="NotableDateServiceTests.FilterScenarios" />. The kept tests assert ordering, cache invariants,
+/// exception contracts, adjustment-flag behaviour, count-only data rows, range-/single-date API surface, and
+/// the XML-driven fixtures that share rule definitions with <see cref="NotableDateRuleParserTests" />.
+/// </summary>
 public sealed partial class NotableDateServiceTests
 {
     private static NotableDateRule FixedWithTags(string name, int month, int day, NotableDateCategory category, bool nonWorking, ImmutableHashSet<string> tags) =>
@@ -29,90 +36,13 @@ public sealed partial class NotableDateServiceTests
     }
 
     // --------------------------------------------------------------------------------------
-    // GetNotableDates(year, filter)
+    // GetNotableDates(year, filter) — kept bespoke
     // --------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Verifies that <see cref="INotableDateService.GetNotableDates(int, NotableDateFilter, string?, Type?)" /> returns only dates
-    /// matching the category filter and excludes all others.
-    /// </summary>
-    [TestMethod]
-    public void GetNotableDates_WithYearAndCategoryFilter_ShouldReturnOnlyMatchingCategory()
-    {
-        NotableDateService service = BuildService(
-            Fixed("Holiday A", 1, 1, NotableDateCategory.Holiday),
-            Fixed("Observance B", 3, 15, NotableDateCategory.Observance),
-            Fixed("Holiday C", 12, 25, NotableDateCategory.Holiday));
-
-        var filter = NotableDateFilter.ForCategory(NotableDateCategory.Holiday);
-        IReadOnlyList<NotableDate> results = service.GetNotableDates(2024, filter);
-
-        Assert.AreEqual(2, results.Count);
-        Assert.IsTrue(results.All(d => d.Category == NotableDateCategory.Holiday));
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="INotableDateService.GetNotableDates(int, NotableDateFilter, string?, Type?)" /> returns no dates
-    /// when the filter matches no rules.
-    /// </summary>
-    [TestMethod]
-    public void GetNotableDates_WithYearAndFilterMatchingNoRules_ShouldReturnEmptyList()
-    {
-        NotableDateService service = BuildService(
-            Fixed("Holiday A", 1, 1, NotableDateCategory.Holiday),
-            Fixed("Holiday B", 12, 25, NotableDateCategory.Holiday));
-
-        var filter = NotableDateFilter.ForCategory(NotableDateCategory.Cultural);
-        IReadOnlyList<NotableDate> results = service.GetNotableDates(2024, filter);
-
-        Assert.AreEqual(0, results.Count);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="INotableDateService.GetNotableDates(int, NotableDateFilter, string?, Type?)" /> returns dates
-    /// matching any of the supplied categories when an Or filter is used.
-    /// </summary>
-    [TestMethod]
-    public void GetNotableDates_WithYearAndOrCategoryFilter_ShouldReturnBothMatchingCategories()
-    {
-        NotableDateService service = BuildService(
-            Fixed("Holiday A", 1, 1, NotableDateCategory.Holiday),
-            Fixed("Observance B", 3, 15, NotableDateCategory.Observance),
-            Fixed("Cultural C", 6, 1, NotableDateCategory.Cultural));
-
-        NotableDateFilter filter = NotableDateFilter.ForCategory(NotableDateCategory.Holiday)
-            .Or(NotableDateFilter.ForCategory(NotableDateCategory.Observance));
-
-        IReadOnlyList<NotableDate> results = service.GetNotableDates(2024, filter);
-
-        Assert.AreEqual(2, results.Count);
-        Assert.IsTrue(results.All(d => d.Category == NotableDateCategory.Holiday || d.Category == NotableDateCategory.Observance));
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="INotableDateService.GetNotableDates(int, NotableDateFilter, string?, Type?)" /> returns only dates
-    /// matching all criteria when an And filter is used.
-    /// </summary>
-    [TestMethod]
-    public void GetNotableDates_WithYearAndAndFilter_ShouldReturnIntersection()
-    {
-        NotableDateService service = BuildService(
-            FixedWithTags("Holiday Public", 1, 1, NotableDateCategory.Holiday, nonWorking: true, ImmutableHashSet.Create("Public")),
-            FixedWithTags("Holiday Private", 3, 15, NotableDateCategory.Holiday, nonWorking: false, ImmutableHashSet.Create("Regional")),
-            Fixed("Observance", 6, 1, NotableDateCategory.Observance, nonWorking: true));
-
-        NotableDateFilter filter = NotableDateFilter.ForCategory(NotableDateCategory.Holiday)
-            .And(NotableDateFilter.IsNonWorkingDay());
-
-        IReadOnlyList<NotableDate> results = service.GetNotableDates(2024, filter);
-
-        Assert.AreEqual(1, results.Count);
-        Assert.AreEqual("Holiday Public", results[0].Name);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="INotableDateService.GetNotableDates(int, NotableDateFilter, string?, Type?)" /> returns results
-    /// ordered by anchor date.
+    /// Verifies that <see cref="INotableDateService.GetNotableDates(int, NotableDateFilter, string?, Type?)" />
+    /// returns results ordered by anchor date. The ordering contract cannot be encoded as a set equivalence,
+    /// so the test stays bespoke.
     /// </summary>
     [TestMethod]
     public void GetNotableDates_WithYearAndFilter_ShouldReturnResultsOrderedByDate()
@@ -130,8 +60,8 @@ public sealed partial class NotableDateServiceTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="INotableDateService.GetNotableDates(int, NotableDateFilter, string?, Type?)" /> throws
-    /// <see cref="ArgumentNullException" /> when the filter is <see langword="null" />.
+    /// Verifies that <see cref="INotableDateService.GetNotableDates(int, NotableDateFilter, string?, Type?)" />
+    /// throws <see cref="ArgumentNullException" /> when the filter is <see langword="null" />.
     /// </summary>
     [TestMethod]
     public void GetNotableDates_WithYearAndNullFilter_ShouldThrowExactly()
@@ -145,8 +75,9 @@ public sealed partial class NotableDateServiceTests
     }
 
     /// <summary>
-    /// Verifies that a filtered query does not affect subsequent unfiltered queries, confirming that the per-year cache remains
-    /// intact and returns complete results after a filtered call.
+    /// Verifies that a filtered query does not affect subsequent unfiltered queries, confirming that the
+    /// per-year cache remains intact and returns complete results after a filtered call. The two-call cache
+    /// invariant is a stateful contract that cannot be expressed as a single per-row KAT.
     /// </summary>
     [TestMethod]
     public void GetNotableDates_WithYearAndFilter_ShouldNotPolluteCacheForUnfilteredQuery()
@@ -155,10 +86,7 @@ public sealed partial class NotableDateServiceTests
             Fixed("Holiday A", 1, 1, NotableDateCategory.Holiday),
             Fixed("Observance B", 6, 1, NotableDateCategory.Observance));
 
-        // Filtered call — should only return holidays.
         IReadOnlyList<NotableDate> filtered = service.GetNotableDates(2024, NotableDateFilter.ForCategory(NotableDateCategory.Holiday));
-
-        // Unfiltered call — should return all dates including observances.
         IReadOnlyList<NotableDate> unfiltered = service.GetNotableDates(2024);
 
         Assert.AreEqual(1, filtered.Count);
@@ -171,7 +99,8 @@ public sealed partial class NotableDateServiceTests
 
     /// <summary>
     /// Verifies that <see cref="INotableDateService.GetNotableDates(DateTime, DateTime, NotableDateFilter, string?, Type?)" />
-    /// returns only dates within the range that also match the filter.
+    /// returns only dates within the range that also match the filter. Different API surface from the
+    /// year-based query consolidated by <see cref="FilterScenarios" />.
     /// </summary>
     [TestMethod]
     public void GetNotableDates_WithDateRangeAndCategoryFilter_ShouldReturnMatchingDatesInRange()
@@ -209,8 +138,8 @@ public sealed partial class NotableDateServiceTests
     // --------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Verifies that <see cref="INotableDateService.GetNotableDates(DateTime, NotableDateFilter, string?, Type?)" /> returns the
-    /// notable date on that day when the filter matches.
+    /// Verifies that <see cref="INotableDateService.GetNotableDates(DateTime, NotableDateFilter, string?, Type?)" />
+    /// returns the notable date on that day when the filter matches.
     /// </summary>
     [TestMethod]
     public void GetNotableDates_WithSingleDateAndMatchingFilter_ShouldReturnDate()
@@ -227,8 +156,8 @@ public sealed partial class NotableDateServiceTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="INotableDateService.GetNotableDates(DateTime, NotableDateFilter, string?, Type?)" /> returns an
-    /// empty list when the filter excludes all dates on that day.
+    /// Verifies that <see cref="INotableDateService.GetNotableDates(DateTime, NotableDateFilter, string?, Type?)" />
+    /// returns an empty list when the filter excludes all dates on that day.
     /// </summary>
     [TestMethod]
     public void GetNotableDates_WithSingleDateAndNonMatchingFilter_ShouldReturnEmptyList()
@@ -243,8 +172,8 @@ public sealed partial class NotableDateServiceTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="INotableDateService.GetNotableDates(DateTime, NotableDateFilter, string?, Type?)" /> throws
-    /// <see cref="ArgumentNullException" /> when the filter is <see langword="null" />.
+    /// Verifies that <see cref="INotableDateService.GetNotableDates(DateTime, NotableDateFilter, string?, Type?)" />
+    /// throws <see cref="ArgumentNullException" /> when the filter is <see langword="null" />.
     /// </summary>
     [TestMethod]
     public void GetNotableDates_WithSingleDateAndNullFilter_ShouldThrowExactly()
@@ -258,96 +187,13 @@ public sealed partial class NotableDateServiceTests
     }
 
     // --------------------------------------------------------------------------------------
-    // Tag filter integration
-    // --------------------------------------------------------------------------------------
-
-    /// <summary>
-    /// Verifies that <see cref="NotableDateFilter.WithTag" /> filters service results correctly, returning only dates whose rule
-    /// carries the specified tag.
-    /// </summary>
-    [TestMethod]
-    public void GetNotableDates_WithTagFilter_ShouldReturnOnlyTaggedDates()
-    {
-        NotableDateService service = BuildService(
-            FixedWithTags("Public Holiday", 1, 1, NotableDateCategory.Holiday, nonWorking: true, ImmutableHashSet.Create("Public")),
-            FixedWithTags("Regional Holiday", 6, 1, NotableDateCategory.Holiday, nonWorking: true, ImmutableHashSet.Create("Regional")));
-
-        var filter = NotableDateFilter.WithTag("Public");
-        IReadOnlyList<NotableDate> results = service.GetNotableDates(2024, filter);
-
-        Assert.AreEqual(1, results.Count);
-        Assert.AreEqual("Public Holiday", results[0].Name);
-    }
-
-    // --------------------------------------------------------------------------------------
-    // Name filter integration
-    // --------------------------------------------------------------------------------------
-
-    /// <summary>
-    /// Verifies that <see cref="NotableDateFilter.WithAnyName" /> returns only the named dates from the service.
-    /// </summary>
-    [TestMethod]
-    public void GetNotableDates_WithAnyNameFilter_ShouldReturnOnlyNamedDates()
-    {
-        NotableDateService service = BuildService(
-            Fixed("New Year's Day", 1, 1),
-            Fixed("Easter Sunday", 4, 1),
-            Fixed("Christmas Day", 12, 25));
-
-        var filter = NotableDateFilter.WithAnyName("New Year's Day", "Christmas Day");
-        IReadOnlyList<NotableDate> results = service.GetNotableDates(2024, filter);
-
-        Assert.AreEqual(2, results.Count);
-        Assert.IsTrue(results.All(d => d.Name == "New Year's Day" || d.Name == "Christmas Day"));
-    }
-
-    // --------------------------------------------------------------------------------------
-    // WithMinDuration filter integration
-    // --------------------------------------------------------------------------------------
-
-    /// <summary>
-    /// Verifies that <see cref="NotableDateFilter.WithMinDuration" /> returns only dates whose span equals or
-    /// exceeds the minimum, excluding single-day entries.
-    /// </summary>
-    [TestMethod]
-    public void GetNotableDates_WithYearAndMinDurationFilter_ShouldReturnOnlyMultiDayDates()
-    {
-        NotableDateService service = BuildService(
-            Fixed("Single Day", 1, 1, NotableDateCategory.Holiday),
-            Fixed("Festival", 6, 1, NotableDateCategory.Cultural) with { DurationDays = 7 },
-            Fixed("Long Event", 9, 1, NotableDateCategory.Observance) with { DurationDays = 14 });
-
-        var filter = NotableDateFilter.WithMinDuration(7);
-        IReadOnlyList<NotableDate> results = service.GetNotableDates(2024, filter);
-
-        Assert.AreEqual(2, results.Count);
-        Assert.IsTrue(results.All(d => d.DurationDays >= 7));
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="NotableDateFilter.WithMinDuration" /> with a minimum of one returns every
-    /// date, since all dates span at least one day.
-    /// </summary>
-    [TestMethod]
-    public void GetNotableDates_WithYearAndMinDurationOfOne_ShouldReturnAllDates()
-    {
-        NotableDateService service = BuildService(
-            Fixed("Day A", 1, 1, NotableDateCategory.Holiday),
-            Fixed("Day B", 6, 1, NotableDateCategory.Observance) with { DurationDays = 3 });
-
-        var filter = NotableDateFilter.WithMinDuration(1);
-        IReadOnlyList<NotableDate> results = service.GetNotableDates(2024, filter);
-
-        Assert.AreEqual(2, results.Count);
-    }
-
-    // --------------------------------------------------------------------------------------
-    // WasAdjusted filter integration
+    // WasAdjusted filter — asserts the WasAdjusted flag on the returned occurrence, not just names.
     // --------------------------------------------------------------------------------------
 
     /// <summary>
     /// Verifies that <see cref="NotableDateFilter.WasAdjusted" /> returns only the adjusted occurrence when
-    /// an observance adjustment fires, leaving the unadjusted occurrence out of the results.
+    /// an observance adjustment fires. The assertion checks <c>WasAdjusted</c> and the resolved date on the
+    /// returned <see cref="NotableDate" />, not its name, so the test stays bespoke.
     /// </summary>
     [TestMethod]
     public void GetNotableDates_WithYearAndWasAdjustedFilter_WhenAdjustmentFires_ShouldReturnOnlyAdjustedOccurrence()
@@ -374,7 +220,7 @@ public sealed partial class NotableDateServiceTests
 
     /// <summary>
     /// Verifies that <see cref="NotableDateFilter.WasAdjusted" /> returns an empty list when no adjustment
-    /// fires for the queried year.
+    /// fires for the queried year. Companion to the firing-case test above; kept alongside for proximity.
     /// </summary>
     [TestMethod]
     public void GetNotableDates_WithYearAndWasAdjustedFilter_WhenNoAdjustmentFires_ShouldReturnEmptyList()
@@ -398,105 +244,17 @@ public sealed partial class NotableDateServiceTests
     }
 
     // --------------------------------------------------------------------------------------
-    // AllOf / AnyOf compound filter integration
-    // --------------------------------------------------------------------------------------
-
-    /// <summary>
-    /// Verifies that <see cref="NotableDateFilter.AllOf" /> returns only dates satisfying every supplied
-    /// filter simultaneously.
-    /// </summary>
-    [TestMethod]
-    public void GetNotableDates_WithYearAndAllOfFilter_ShouldReturnIntersection()
-    {
-        NotableDateService service = BuildService(
-            FixedWithTags("Public Holiday", 1, 1, NotableDateCategory.Holiday, nonWorking: true, ImmutableHashSet.Create("Public")),
-            FixedWithTags("Private Holiday", 3, 15, NotableDateCategory.Holiday, nonWorking: false, ImmutableHashSet.Create("Regional")),
-            FixedWithTags("Observance", 6, 1, NotableDateCategory.Observance, nonWorking: true, ImmutableHashSet.Create("Public")));
-
-        var filter = NotableDateFilter.AllOf(
-            NotableDateFilter.ForCategory(NotableDateCategory.Holiday),
-            NotableDateFilter.IsNonWorkingDay(),
-            NotableDateFilter.WithTag("Public"));
-
-        IReadOnlyList<NotableDate> results = service.GetNotableDates(2024, filter);
-
-        Assert.AreEqual(1, results.Count);
-        Assert.AreEqual("Public Holiday", results[0].Name);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="NotableDateFilter.AnyOf" /> returns every date matching at least one of the
-    /// supplied filters.
-    /// </summary>
-    [TestMethod]
-    public void GetNotableDates_WithYearAndAnyOfFilter_ShouldReturnUnion()
-    {
-        NotableDateService service = BuildService(
-            Fixed("Holiday", 1, 1, NotableDateCategory.Holiday),
-            Fixed("Observance", 3, 15, NotableDateCategory.Observance),
-            Fixed("Cultural", 6, 1, NotableDateCategory.Cultural),
-            Fixed("Seasonal", 9, 22, NotableDateCategory.Seasonal));
-
-        var filter = NotableDateFilter.AnyOf(
-            NotableDateFilter.ForCategory(NotableDateCategory.Holiday),
-            NotableDateFilter.ForCategory(NotableDateCategory.Seasonal));
-
-        IReadOnlyList<NotableDate> results = service.GetNotableDates(2024, filter);
-
-        Assert.AreEqual(2, results.Count);
-        Assert.IsTrue(results.All(d => d.Category == NotableDateCategory.Holiday || d.Category == NotableDateCategory.Seasonal));
-    }
-
-    // --------------------------------------------------------------------------------------
-    // WithAllTags / WithAnyTag integration
-    // --------------------------------------------------------------------------------------
-
-    /// <summary>
-    /// Verifies that <see cref="NotableDateFilter.WithAllTags" /> returns only dates whose tag set contains
-    /// every required tag, excluding dates missing any one of them.
-    /// </summary>
-    [TestMethod]
-    public void GetNotableDates_WithYearAndWithAllTagsFilter_ShouldReturnOnlyDatesWithEveryRequiredTag()
-    {
-        NotableDateService service = BuildService(
-            FixedWithTags("Both Tags", 1, 1, NotableDateCategory.Holiday, nonWorking: true, ImmutableHashSet.Create("Public", "Federal")),
-            FixedWithTags("One Tag Only", 6, 1, NotableDateCategory.Holiday, nonWorking: true, ImmutableHashSet.Create("Public")),
-            FixedWithTags("No Tags", 12, 25, NotableDateCategory.Holiday, nonWorking: true, ImmutableHashSet<string>.Empty));
-
-        var filter = NotableDateFilter.WithAllTags("Public", "Federal");
-        IReadOnlyList<NotableDate> results = service.GetNotableDates(2024, filter);
-
-        Assert.AreEqual(1, results.Count);
-        Assert.AreEqual("Both Tags", results[0].Name);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="NotableDateFilter.WithAnyTag" /> returns every date whose tag set contains
-    /// at least one of the accepted tags.
-    /// </summary>
-    [TestMethod]
-    public void GetNotableDates_WithYearAndWithAnyTagFilter_ShouldReturnDatesWithAtLeastOneMatchingTag()
-    {
-        NotableDateService service = BuildService(
-            FixedWithTags("Federal Tag", 1, 1, NotableDateCategory.Holiday, nonWorking: true, ImmutableHashSet.Create("Federal")),
-            FixedWithTags("Regional Tag", 3, 15, NotableDateCategory.Holiday, nonWorking: true, ImmutableHashSet.Create("Regional")),
-            FixedWithTags("Unrelated Tag", 6, 1, NotableDateCategory.Observance, nonWorking: false, ImmutableHashSet.Create("Christian")));
-
-        var filter = NotableDateFilter.WithAnyTag("Federal", "Regional");
-        IReadOnlyList<NotableDate> results = service.GetNotableDates(2024, filter);
-
-        Assert.AreEqual(2, results.Count);
-        Assert.IsTrue(results.All(d => d.Tags.Contains("Federal") || d.Tags.Contains("Regional")));
-    }
-
-    // --------------------------------------------------------------------------------------
-    // ForAnyCategory integration — data-driven
+    // ForAnyCategory — already [DataRow]-driven, asserts count rather than names.
     // --------------------------------------------------------------------------------------
 
     /// <summary>
     /// Verifies that <see cref="NotableDateFilter.ForAnyCategory" /> returns dates belonging to any of the
-    /// supplied categories and excludes all others.
+    /// supplied categories and excludes all others. The assertion checks the result count parameterised
+    /// over <see cref="NotableDateCategory" /> pairs and stays as a focused per-row data table here.
     /// </summary>
+    /// <param name="categoryA">The first category passed to <see cref="NotableDateFilter.ForAnyCategory" />.</param>
+    /// <param name="categoryB">The second category passed to the filter.</param>
+    /// <param name="expectedCount">The expected number of occurrences after filtering.</param>
     [DataRow(NotableDateCategory.Holiday, NotableDateCategory.Observance, 2)]
     [DataRow(NotableDateCategory.Holiday, NotableDateCategory.Cultural, 2)]
     [DataRow(NotableDateCategory.Observance, NotableDateCategory.Seasonal, 2)]
@@ -521,50 +279,6 @@ public sealed partial class NotableDateServiceTests
     }
 
     // --------------------------------------------------------------------------------------
-    // InDateRange standalone integration
-    // --------------------------------------------------------------------------------------
-
-    /// <summary>
-    /// Verifies that a standalone <see cref="NotableDateFilter.InDateRange" /> filter applied to a year
-    /// query returns only dates whose span intersects the supplied range.
-    /// </summary>
-    [TestMethod]
-    public void GetNotableDates_WithYearAndStandaloneInDateRangeFilter_ShouldReturnOnlyDatesInRange()
-    {
-        NotableDateService service = BuildService(
-            Fixed("Jan Holiday", 1, 1, NotableDateCategory.Holiday),
-            Fixed("Jun Holiday", 6, 15, NotableDateCategory.Holiday),
-            Fixed("Dec Holiday", 12, 25, NotableDateCategory.Holiday));
-
-        var filter = NotableDateFilter.InDateRange(new DateTime(2024, 6, 1), new DateTime(2024, 6, 30));
-        IReadOnlyList<NotableDate> results = service.GetNotableDates(2024, filter);
-
-        Assert.AreEqual(1, results.Count);
-        Assert.AreEqual("Jun Holiday", results[0].Name);
-    }
-
-    /// <summary>
-    /// Verifies that combining <see cref="NotableDateFilter.InDateRange" /> with a category filter via
-    /// <see cref="NotableDateFilter.And" /> returns only dates satisfying both constraints.
-    /// </summary>
-    [TestMethod]
-    public void GetNotableDates_WithYearAndInDateRangeAndCategoryFilter_ShouldReturnIntersection()
-    {
-        NotableDateService service = BuildService(
-            Fixed("Jan Holiday", 1, 1, NotableDateCategory.Holiday),
-            Fixed("Jun Holiday", 6, 15, NotableDateCategory.Holiday),
-            Fixed("Jun Observance", 6, 20, NotableDateCategory.Observance));
-
-        NotableDateFilter filter = NotableDateFilter.InDateRange(new DateTime(2024, 6, 1), new DateTime(2024, 6, 30))
-            .And(NotableDateFilter.ForCategory(NotableDateCategory.Holiday));
-
-        IReadOnlyList<NotableDate> results = service.GetNotableDates(2024, filter);
-
-        Assert.AreEqual(1, results.Count);
-        Assert.AreEqual("Jun Holiday", results[0].Name);
-    }
-
-    // --------------------------------------------------------------------------------------
     // XML-driven integration — known static XML fragments from NotableDateRuleParserTests
     // --------------------------------------------------------------------------------------
 
@@ -573,6 +287,9 @@ public sealed partial class NotableDateServiceTests
     /// parsed from a known static XML fragment, confirming that tags authored in XML are honoured by the
     /// filter pipeline.
     /// </summary>
+    /// <param name="tag">The tag passed to <see cref="NotableDateFilter.WithTag" />.</param>
+    /// <param name="expectsDate"><see langword="true" /> when the tag should match the parsed rule;
+    /// <see langword="false" /> when it should not.</param>
     [DataRow("Public", true)]
     [DataRow("Civic", true)]
     [DataRow("PUBLIC", true)]
@@ -582,8 +299,6 @@ public sealed partial class NotableDateServiceTests
     [TestMethod]
     public void GetNotableDates_UsingParsedFixedRuleXml_WithTagFilter_ShouldMatchExpected(string tag, bool expectsDate)
     {
-        // FixedRuleXml defines one Holiday rule (Fixed Jan 1, tags=[Public,Civic], territory=AU-NSW).
-        // occurrenceYears=4 with firstYear=2000 means 2024 is an applicable year.
         NotableDateService service = BuildServiceFromXml(NotableDateRuleParserTests.FixedRuleXml);
         var filter = NotableDateFilter.WithTag(tag);
         IReadOnlyList<NotableDate> results = service.GetNotableDates(2024, filter, territoryCode: "AU-NSW");
@@ -615,9 +330,6 @@ public sealed partial class NotableDateServiceTests
     [TestMethod]
     public void GetNotableDates_UsingParsedMultiRuleXml_WithHolidayCategoryFilter_ShouldContainNewYearsDay()
     {
-        // MultiRuleXml contains: New Year's Day (Fixed, Holiday), Easter Sunday (Algorithm, Observance),
-        // Good Friday (OffsetFromAnchor, Holiday — requires Easter), Anzac Day (Fixed, Remembrance, territory=AU,NZ).
-        // Without an algorithm registry, Easter Sunday and Good Friday resolve to nothing and are dropped.
         NotableDateService service = BuildServiceFromXml(NotableDateRuleParserTests.MultiRuleXml);
         var filter = NotableDateFilter.ForCategory(NotableDateCategory.Holiday);
         IReadOnlyList<NotableDate> results = service.GetNotableDates(2024, filter);
@@ -643,12 +355,11 @@ public sealed partial class NotableDateServiceTests
 
     /// <summary>
     /// Verifies that <see cref="NotableDateFilter.WithAllTags" /> applied to a service built from a known
-    /// XML fragment correctly excludes dates that match only a subset of the required tags.
+    /// XML fragment correctly returns the date when every required tag is present.
     /// </summary>
     [TestMethod]
     public void GetNotableDates_UsingParsedFixedRuleXml_WithAllTagsFilter_WhenBothTagsPresent_ShouldReturnDate()
     {
-        // FixedRuleXml tags are [Public, Civic]; requiring both must still return the date.
         NotableDateService service = BuildServiceFromXml(NotableDateRuleParserTests.FixedRuleXml);
         var filter = NotableDateFilter.WithAllTags("Public", "Civic");
         IReadOnlyList<NotableDate> results = service.GetNotableDates(2024, filter, territoryCode: "AU-NSW");
