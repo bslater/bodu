@@ -181,11 +181,148 @@ public sealed partial class NotableDateServiceTests
             () => NotableDateFilter.InDateRange(new DateTime(2024, 6, 1), new DateTime(2024, 6, 30))
                 .And(NotableDateFilter.ForCategory(NotableDateCategory.Holiday)),
             "Jun Holiday");
+
+        // -------------------------------------------------------------------------------------------------
+        // Range-API overload — uses GetNotableDates(startDate, endDate, filter) via the Query delegate.
+        // -------------------------------------------------------------------------------------------------
+
+        yield return ScenarioWithQuery(
+            "DateRangeAndCategoryFilter_FirstHalfHoliday",
+            () => BuildService(
+                Fixed("Holiday Jan", 1, 1, NotableDateCategory.Holiday),
+                Fixed("Observance Mar", 3, 15, NotableDateCategory.Observance),
+                Fixed("Holiday Dec", 12, 25, NotableDateCategory.Holiday)),
+            () => NotableDateFilter.ForCategory(NotableDateCategory.Holiday),
+            (service, filter) => service.GetNotableDates(new DateTime(2024, 1, 1), new DateTime(2024, 6, 30), filter),
+            "Holiday Jan");
+
+        // -------------------------------------------------------------------------------------------------
+        // Single-date overload — uses GetNotableDates(date, filter) via the Query delegate.
+        // -------------------------------------------------------------------------------------------------
+
+        yield return ScenarioWithQuery(
+            "SingleDateAndMatchingFilter",
+            () => BuildService(
+                Fixed("Holiday A", 1, 1, NotableDateCategory.Holiday),
+                Fixed("Observance B", 1, 1, NotableDateCategory.Observance)),
+            () => NotableDateFilter.ForCategory(NotableDateCategory.Holiday),
+            (service, filter) => service.GetNotableDates(new DateTime(2024, 1, 1), filter),
+            "Holiday A");
+
+        yield return ScenarioWithQuery(
+            "SingleDateAndNonMatchingFilter",
+            () => BuildService(Fixed("Observance B", 1, 1, NotableDateCategory.Observance)),
+            () => NotableDateFilter.ForCategory(NotableDateCategory.Holiday),
+            (service, filter) => service.GetNotableDates(new DateTime(2024, 1, 1), filter));
+
+        // -------------------------------------------------------------------------------------------------
+        // ForAnyCategory — folds the four [DataRow]s of the bespoke count-only test.
+        // Fixture: Holiday / Observance / Cultural / Seasonal.
+        // -------------------------------------------------------------------------------------------------
+
+        Func<NotableDateService> fourCategoryFixture = () => BuildService(
+            Fixed("Holiday", 1, 1, NotableDateCategory.Holiday),
+            Fixed("Observance", 3, 15, NotableDateCategory.Observance),
+            Fixed("Cultural", 6, 1, NotableDateCategory.Cultural),
+            Fixed("Seasonal", 9, 22, NotableDateCategory.Seasonal));
+
+        yield return Scenario(
+            "ForAnyCategory_HolidayOrObservance",
+            fourCategoryFixture,
+            () => NotableDateFilter.ForAnyCategory(NotableDateCategory.Holiday, NotableDateCategory.Observance),
+            "Holiday", "Observance");
+
+        yield return Scenario(
+            "ForAnyCategory_HolidayOrCultural",
+            fourCategoryFixture,
+            () => NotableDateFilter.ForAnyCategory(NotableDateCategory.Holiday, NotableDateCategory.Cultural),
+            "Holiday", "Cultural");
+
+        yield return Scenario(
+            "ForAnyCategory_ObservanceOrSeasonal",
+            fourCategoryFixture,
+            () => NotableDateFilter.ForAnyCategory(NotableDateCategory.Observance, NotableDateCategory.Seasonal),
+            "Observance", "Seasonal");
+
+        yield return Scenario(
+            "ForAnyCategory_RemembranceOrOther_NoMatches",
+            fourCategoryFixture,
+            () => NotableDateFilter.ForAnyCategory(NotableDateCategory.Remembrance, NotableDateCategory.Other));
+
+        // -------------------------------------------------------------------------------------------------
+        // XML-driven scenarios — service built from rule fragments shared with NotableDateRuleParserTests.
+        // The Query delegate threads territoryCode through the year overload where needed.
+        // -------------------------------------------------------------------------------------------------
+
+        Func<NotableDateService> fixedRuleXmlFixture = () => BuildServiceFromXml(NotableDateRuleParserTests.FixedRuleXml);
+
+        // WithTag — folds the six [DataRow]s of the bespoke tag-filter sweep over FixedRuleXml.
+        // FixedRuleXml's single rule is named "Fixed Rule Test" with tags [Public, Civic] (case-insensitive).
+        yield return XmlTagRow("XmlTagFilter_Public", fixedRuleXmlFixture, "Public", "Fixed Rule Test");
+        yield return XmlTagRow("XmlTagFilter_Civic", fixedRuleXmlFixture, "Civic", "Fixed Rule Test");
+        yield return XmlTagRow("XmlTagFilter_PUBLIC_CaseInsensitive", fixedRuleXmlFixture, "PUBLIC", "Fixed Rule Test");
+        yield return XmlTagRow("XmlTagFilter_civic_CaseInsensitive", fixedRuleXmlFixture, "civic", "Fixed Rule Test");
+        yield return XmlTagRow("XmlTagFilter_Regional_NoMatch", fixedRuleXmlFixture, "Regional");
+        yield return XmlTagRow("XmlTagFilter_Religious_NoMatch", fixedRuleXmlFixture, "Religious");
+
+        // WithName — single-name filter against the FixedRuleXml fixture.
+        yield return ScenarioWithQuery(
+            "XmlNameFilter_FixedRuleTest",
+            fixedRuleXmlFixture,
+            () => NotableDateFilter.WithName("Fixed Rule Test"),
+            (service, filter) => service.GetNotableDates(2024, filter, territoryCode: "AU-NSW"),
+            "Fixed Rule Test");
+
+        // WithAllTags — both tags present.
+        yield return ScenarioWithQuery(
+            "XmlAllTagsFilter_PublicAndCivic_BothPresent",
+            fixedRuleXmlFixture,
+            () => NotableDateFilter.WithAllTags("Public", "Civic"),
+            (service, filter) => service.GetNotableDates(2024, filter, territoryCode: "AU-NSW"),
+            "Fixed Rule Test");
+
+        // WithAllTags — one required tag absent.
+        yield return ScenarioWithQuery(
+            "XmlAllTagsFilter_PublicAndReligious_OneAbsent",
+            fixedRuleXmlFixture,
+            () => NotableDateFilter.WithAllTags("Public", "Religious"),
+            (service, filter) => service.GetNotableDates(2024, filter, territoryCode: "AU-NSW"));
+
+        // MultiRuleXml Holiday category — New Year's Day is the only resolvable Holiday because the
+        // Algorithm-strategy Easter Sunday rule fails without a registered algorithm and Good Friday
+        // depends on Easter; Anzac Day is Remembrance, not Holiday.
+        yield return Scenario(
+            "XmlMultiRuleHolidayCategory_OnlyNewYearsDayResolves",
+            () => BuildServiceFromXml(NotableDateRuleParserTests.MultiRuleXml),
+            () => NotableDateFilter.ForCategory(NotableDateCategory.Holiday),
+            "New Year's Day");
     }
 
     /// <summary>
-    /// Wraps a filter scenario in the single-element object array shape <see cref="Microsoft.VisualStudio.TestTools.UnitTesting.DynamicDataAttribute" />
-    /// expects.
+    /// Builds an XML-driven WithTag scenario row that threads the AU-NSW territoryCode through the year
+    /// overload. Used by the six tag-filter rows that exercise the FixedRuleXml fixture.
+    /// </summary>
+    /// <param name="scenario">Row label.</param>
+    /// <param name="serviceFactory">Factory returning the XML-built service.</param>
+    /// <param name="tag">The tag passed to <see cref="NotableDateFilter.WithTag" />.</param>
+    /// <param name="expectedNames">Names the filter should yield (empty for no-match cases).</param>
+    /// <returns>A single-element object array carrying the constructed row.</returns>
+    private static object[] XmlTagRow(
+        string scenario,
+        Func<NotableDateService> serviceFactory,
+        string tag,
+        params string[] expectedNames) =>
+        ScenarioWithQuery(
+            scenario,
+            serviceFactory,
+            () => NotableDateFilter.WithTag(tag),
+            (service, filter) => service.GetNotableDates(2024, filter, territoryCode: "AU-NSW"),
+            expectedNames);
+
+    /// <summary>
+    /// Wraps a filter scenario in the single-element object array shape
+    /// <see cref="Microsoft.VisualStudio.TestTools.UnitTesting.DynamicDataAttribute" /> expects. Uses the
+    /// default <c>GetNotableDates(year, filter)</c> overload at year <c>2024</c>.
     /// </summary>
     /// <param name="scenario">Short scenario label rendered in the row's display name.</param>
     /// <param name="serviceFactory">Factory that constructs the fixture service.</param>
@@ -204,6 +341,35 @@ public sealed partial class NotableDateServiceTests
                 Scenario = scenario,
                 ServiceFactory = serviceFactory,
                 FilterFactory = filterFactory,
+                ExpectedNames = expectedNames,
+            },
+        };
+
+    /// <summary>
+    /// Same as <see cref="Scenario" />, but routes the row through a caller-supplied <paramref name="query" />
+    /// delegate. Used by rows that exercise a non-default <c>GetNotableDates</c> overload (range, single
+    /// date, with territoryCode).
+    /// </summary>
+    /// <param name="scenario">Short scenario label rendered in the row's display name.</param>
+    /// <param name="serviceFactory">Factory that constructs the fixture service.</param>
+    /// <param name="filterFactory">Factory that constructs the filter under test.</param>
+    /// <param name="query">Delegate invoking the desired <c>GetNotableDates</c> overload.</param>
+    /// <param name="expectedNames">The expected holiday name set.</param>
+    /// <returns>A single-element object array carrying the constructed row.</returns>
+    private static object[] ScenarioWithQuery(
+        string scenario,
+        Func<NotableDateService> serviceFactory,
+        Func<NotableDateFilter> filterFactory,
+        Func<NotableDateService, NotableDateFilter, IReadOnlyList<NotableDate>> query,
+        params string[] expectedNames) =>
+        new object[]
+        {
+            new FilterScenarioKnownAnswer
+            {
+                Scenario = scenario,
+                ServiceFactory = serviceFactory,
+                FilterFactory = filterFactory,
+                Query = query,
                 ExpectedNames = expectedNames,
             },
         };

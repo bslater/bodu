@@ -32,14 +32,16 @@ public static class FilterScenarioAssertions
         NotableDateService service = ka.ServiceFactory();
         NotableDateFilter filter = ka.FilterFactory();
 
-        List<string> actualNames = service.GetNotableDates(ka.Year, filter)
-            .Select(d => d.Name)
-            .ToList();
+        IReadOnlyList<NotableDate> results = ka.Query is { } query
+            ? query(service, filter)
+            : service.GetNotableDates(ka.Year, filter);
+
+        List<string> actualNames = results.Select(d => d.Name).ToList();
 
         CollectionAssert.AreEquivalent(
             ka.ExpectedNames.ToList(),
             actualNames,
-            $"Filter scenario '{ka.Scenario}' (year {ka.Year}): expected names [{string.Join(", ", ka.ExpectedNames)}], got [{string.Join(", ", actualNames)}].");
+            $"Filter scenario '{ka.Scenario}': expected names [{string.Join(", ", ka.ExpectedNames)}], got [{string.Join(", ", actualNames)}].");
     }
 
     /// <summary>

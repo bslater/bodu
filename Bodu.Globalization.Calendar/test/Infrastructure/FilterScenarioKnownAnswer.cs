@@ -52,8 +52,19 @@ public sealed record FilterScenarioKnownAnswer
     public required Func<NotableDateFilter> FilterFactory { get; init; }
 
     /// <summary>
-    /// Gets the calendar year passed to <c>GetNotableDates(year, filter)</c>. Defaults to <c>2024</c>;
-    /// scenarios that depend on a specific year (for example weekend-substitute years) override this.
+    /// Gets the optional delegate that invokes the service under test. When <see langword="null" />, the
+    /// default <c>(service, filter) =&gt; service.GetNotableDates(Year, filter)</c> is used. Set this to
+    /// route the row through a different API overload — for example <c>GetNotableDates(startDate, endDate,
+    /// filter)</c>, <c>GetNotableDates(date, filter)</c>, or <c>GetNotableDates(year, filter,
+    /// territoryCode: "AU-NSW")</c>.
+    /// </summary>
+    /// <returns>The query invoker, or <see langword="null" /> to use the default year overload.</returns>
+    public Func<NotableDateService, NotableDateFilter, IReadOnlyList<NotableDate>>? Query { get; init; }
+
+    /// <summary>
+    /// Gets the calendar year passed to the default <c>GetNotableDates(year, filter)</c> overload when
+    /// <see cref="Query" /> is <see langword="null" />. Defaults to <c>2024</c>; scenarios that depend on a
+    /// specific year override this. Ignored when <see cref="Query" /> is set.
     /// </summary>
     /// <returns>The query year.</returns>
     public int Year { get; init; } = 2024;
