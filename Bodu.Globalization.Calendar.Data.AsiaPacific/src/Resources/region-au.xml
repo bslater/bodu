@@ -76,15 +76,35 @@
   </NotableDate>
 
   <NotableDate name="Anzac Day">
-    <Rule name="fixed-apr-25-weekend-roll-au"
+    <!--
+      Canonical Australian observance: 25 April, non-working in every state and territory. The per-subdivision rules
+      below shadow this entry for jurisdictions that observe a Monday substitute when 25 April falls on a weekend; for
+      every other subdivision the canonical rule is selected via same-name territory-shadowing semantics in the planner.
+    -->
+    <Rule name="fixed-apr-25-au"
           category="Remembrance"
           territory="AU"
-          nonWorking="true"
-          comment="Observed on 25 April. WA and NT observe a substitute Monday when Anzac Day falls on a weekend; other states do not shift the observance.">
+          nonWorking="true">
       <Fixed month="April" day="25" />
       <Tag>NationalHoliday</Tag>
-      <Adjustment key="wa-weekend-sub" when="IfWeekend" action="MoveToNextWeekday" territory="AU-WA" />
-      <Adjustment key="nt-weekend-sub" when="IfWeekend" action="MoveToNextWeekday" territory="AU-NT" />
+    </Rule>
+    <Rule name="fixed-apr-25-au-wa"
+          category="Remembrance"
+          territory="AU-WA"
+          nonWorking="true"
+          comment="Western Australia observes a Monday substitute when 25 April falls on a weekend.">
+      <Fixed month="April" day="25" />
+      <Tag>NationalHoliday</Tag>
+      <Adjustment key="wa-weekend-sub" when="IfWeekend" action="MoveToNextWeekday" />
+    </Rule>
+    <Rule name="fixed-apr-25-au-nt"
+          category="Remembrance"
+          territory="AU-NT"
+          nonWorking="true"
+          comment="Northern Territory observes a Monday substitute when 25 April falls on a weekend.">
+      <Fixed month="April" day="25" />
+      <Tag>NationalHoliday</Tag>
+      <Adjustment key="nt-weekend-sub" when="IfWeekend" action="MoveToNextWeekday" />
     </Rule>
   </NotableDate>
 

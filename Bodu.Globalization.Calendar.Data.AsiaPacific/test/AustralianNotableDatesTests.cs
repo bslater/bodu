@@ -48,11 +48,10 @@ public sealed class AustralianNotableDatesTests
 
         Assert.IsTrue(results.Any(d => d.Name == "New Year's Day" && d.Date == new DateTime(2026, 1, 1)));
         Assert.IsTrue(results.Any(d => d.Name == "Australia Day" && d.Date == new DateTime(2026, 1, 26)));
-        // 25 April 2026 is a Saturday; the WA/NT weekend-substitute adjustments fire under the range pipeline so
-        // Anzac Day surfaces at its observed (post-adjustment) date. The Christmas Day rule has an IfNonWorkingDay
-        // weekend-roll adjustment whose trigger activates because Christmas is itself non-working, so it surfaces at
-        // the next non-working day under the pipeline's single-emission contract. Assert each rule's presence by name.
-        Assert.IsTrue(results.Any(d => d.Name == "Anzac Day"));
+        // 25 April 2026 is a Saturday. The canonical AU rule surfaces unchanged for the country-level AU query;
+        // per-state shadowing only applies when the request targets a subdivision (AU-WA / AU-NT) that publishes its
+        // own narrower rule. Christmas Day has its own weekend roll-forward through 26 December.
+        Assert.IsTrue(results.Any(d => d.Name == "Anzac Day" && d.Date == new DateTime(2026, 4, 25) && d.TerritoryCode == "AU"));
         Assert.IsTrue(results.Any(d => d.Name == "Christmas Day"));
     }
 
@@ -215,35 +214,34 @@ public sealed class AustralianNotableDatesTests
     }
 
     /// <summary>
-    /// Verifies that querying any Australian subdivision returns the country-level Anzac Day, demonstrating that the
-    /// territory containment match expands the parent country's rules into every subdivision. Anzac Day on 25 April
-    /// 2026 is a Saturday; under the range pipeline the WA and NT weekend-substitute adjustments fire and the emission
-    /// surfaces at its observed (post-adjustment) date for every parent-containment match.
+    /// Verifies that querying any Australian subdivision returns Anzac Day on 25 April 2026 (a Saturday) for the
+    /// subdivisions that do not publish their own narrower rule (NSW, VIC, QLD, SA, TAS, ACT). WA and NT have their
+    /// own subdivision-scoped rules with weekend substitutes — those are exercised separately.
     /// </summary>
     [TestMethod]
     [DataRow("AU-NSW")]
     [DataRow("AU-VIC")]
     [DataRow("AU-QLD")]
     [DataRow("AU-SA")]
-    [DataRow("AU-WA")]
     [DataRow("AU-TAS")]
-    [DataRow("AU-NT")]
     [DataRow("AU-ACT")]
-    public void GetNotableDates_WhenQueryingAnySubdivision_ShouldIncludeNationalAnzacDay_ForYear2026(string subdivision)
+    public void GetNotableDates_WhenQueryingSubdivisionWithoutSubstitute_ShouldEmitCanonicalAnzacDay_ForYear2026(string subdivision)
     {
         var service = BuildAuService();
 
-        var results = service.GetNotableDates(2026, subdivision);
+        var anzacDay = service.GetNotableDates(2026, subdivision)
+            .SingleOrDefault(d => d.Name == "Anzac Day");
 
-        var anzacDay = results.FirstOrDefault(d => d.Name == "Anzac Day");
         Assert.IsNotNull(anzacDay, $"Anzac Day should be visible to subdivision {subdivision}.");
+        Assert.AreEqual("AU", anzacDay!.TerritoryCode, "Subdivisions without their own substitute rule fall back to the canonical AU rule.");
+        Assert.AreEqual(new DateTime(2026, 4, 25), anzacDay.Date);
+        Assert.IsFalse(anzacDay.WasAdjusted);
     }
 
     /// <summary>
-    /// Verifies that Western Australia observes a substitute Monday when Anzac Day falls on a Saturday (25 April 2020).
-    /// The range pipeline emits a single post-adjustment occurrence per rule, applying last-wins-by-priority across all
-    /// activating adjustments, so the emitted TerritoryCode reflects the rule's owning territory ("AU") rather than an
-    /// adjustment-scoped narrower code.
+    /// Verifies that Western Australia observes a substitute Monday when Anzac Day falls on a Saturday (25 April
+    /// 2020). The AU-WA narrower rule shadows the canonical AU rule for AU-WA queries, so the emission carries the
+    /// AU-WA territory code and the substitute date.
     /// </summary>
     [TestMethod]
     public void GetNotableDates_WhenAnzacDayOnSaturday_ShouldEmitMondaySubstitute_ForAuWa()
@@ -260,17 +258,15 @@ public sealed class AustralianNotableDatesTests
         Assert.IsTrue(occurrences[0].WasAdjusted);
         Assert.AreEqual(DayOfWeek.Monday, occurrences[0].Date.DayOfWeek);
         Assert.AreEqual(new DateTime(2020, 4, 25), occurrences[0].AdjustmentReason!.OriginalDate);
+        Assert.AreEqual("AU-WA", occurrences[0].TerritoryCode);
     }
 
     /// <summary>
-    /// Verifies that querying New South Wales for 2020 returns Anzac Day exactly once. Under the legacy contract this
-    /// asserted "no substitute Monday for AU-NSW"; under the range pipeline the rule's WA/NT-scoped substitutes fire
-    /// regardless of the request territory because adjustment territory annotates the emission rather than gating
-    /// activation — so the single emission carries the substitute date. The single-occurrence contract is preserved,
-    /// but per-territory substitute gating now requires the data pack to split AU/AU-WA/AU-NT into distinct rules.
+    /// Verifies that New South Wales does NOT observe a substitute Monday when Anzac Day falls on a Saturday (25 April
+    /// 2020): NSW has no narrower rule, so the canonical AU rule wins and emits the unadjusted Saturday observance.
     /// </summary>
     [TestMethod]
-    public void GetNotableDates_WhenAnzacDayOnSaturday_ShouldReturnSingleOccurrence_ForAuNsw()
+    public void GetNotableDates_WhenAnzacDayOnSaturday_ShouldNotEmitSubstitute_ForAuNsw()
     {
         var service = BuildAuService();
 
@@ -279,11 +275,15 @@ public sealed class AustralianNotableDatesTests
             .ToList();
 
         Assert.AreEqual(1, occurrences.Count);
+        Assert.AreEqual(new DateTime(2020, 4, 25), occurrences[0].Date);
+        Assert.IsFalse(occurrences[0].WasAdjusted);
+        Assert.AreEqual("AU", occurrences[0].TerritoryCode);
     }
 
     /// <summary>
-    /// Verifies that the Northern Territory observes a substitute Monday when Anzac Day falls on a Sunday (25 April 2021).
-    /// The range pipeline emits a single post-adjustment occurrence.
+    /// Verifies that the Northern Territory observes a substitute Monday when Anzac Day falls on a Sunday (25 April
+    /// 2021). The AU-NT narrower rule shadows the canonical AU rule and emits the substitute Monday tagged with
+    /// AU-NT.
     /// </summary>
     [TestMethod]
     public void GetNotableDates_WhenAnzacDayOnSunday_ShouldEmitMondaySubstitute_ForAuNt()
