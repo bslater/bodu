@@ -136,27 +136,27 @@ public sealed partial class NotableDateServiceTests
             .OrderBy(d => d.Date)
             .ToList();
 
-        Assert.AreEqual(3, layered.Count, "Expected the base occurrence plus one adjusted occurrence per adjustment.");
-        Assert.AreEqual(new DateTime(2022, 1, 1), layered[0].Date);
-        Assert.IsFalse(layered[0].WasAdjusted);
-        Assert.AreEqual(new DateTime(2022, 1, 2), layered[1].Date, "First adjustment: anchor + 1 day.");
-        Assert.AreEqual(new DateTime(2022, 1, 3), layered[2].Date, "Second adjustment: anchor + 2 days, proving it saw the original anchor (Saturday) rather than the prior adjustment's result (Sunday).");
+        // The range pipeline emits one observed occurrence per rule and evaluates each adjustment against the *original*
+        // anchor. With multiple activating adjustments, the highest-priority value (last-wins by ascending Priority) sets
+        // the emitted observed date. Adj1 (priority 10) → anchor+1 = Sun Jan 2; Adj2 (priority 20) → anchor+2 = Mon Jan 3.
+        // Both saw Saturday (the original anchor); the priority-20 result wins.
+        Assert.AreEqual(1, layered.Count, "Pipeline emits a single occurrence per rule; last-wins by priority sets the observed date.");
+        Assert.IsTrue(layered[0].WasAdjusted);
+        Assert.AreEqual(new DateTime(2022, 1, 3), layered[0].Date,
+            "Last-wins: priority-20 adjustment (anchor + 2 days) overwrites priority-10 (anchor + 1 day) and demonstrates each adjustment saw the original Saturday anchor.");
     }
 
     /// <summary>
-    /// Verifies that a <see cref="AdjustmentAction.MoveToNextNonWorkingDay" /> adjustment fired from inside <c>GenerateYear</c>
-    /// does not recurse indefinitely. The adjuster's walk calls the service's <see cref="NotableDateService.IsNonWorkingDay" />
-    /// predicate, which in turn calls <c>GetOrGenerateYear</c> for the same year currently being generated on this thread; a
-    /// thread-local re-entry guard in <c>GetOrGenerateYear</c> short-circuits the recursive call by returning an empty snapshot,
-    /// so the walk reports the first cursor as a working day and terminates immediately.
+    /// Verifies that a <see cref="AdjustmentAction.MoveToNextNonWorkingDay" /> adjustment fired during pipeline materialisation
+    /// emits a bounded-walk result without infinite recursion. The pipeline's generation-local context lets dependent rules
+    /// observe in-flight occurrences without forcing re-entry into the year cache, so the walk terminates on the first working
+    /// candidate.
     /// </summary>
     [TestMethod]
     public void GetNotableDates_WhenMoveToNextNonWorkingDayAdjustmentFiresDuringYearGeneration_ShouldNotRecurseIndefinitely()
     {
-        // 1 January 2025 is a Wednesday. Without the re-entry guard, the walk's first cursor (Thursday) is not a weekend, so
-        // IsNonWorkingDay falls through to GetOrGenerateYear for the same year currently being generated and recurses until the
-        // stack is exhausted. With the guard, that call returns an empty snapshot; Thursday is not a weekend, so IsNonWorkingDay
-        // returns false (working day) and the walk terminates immediately on 2 January (Thursday).
+        // 1 January 2025 is a Wednesday. The walk's first cursor (Thursday 2 Jan) is a weekday, so the bounded walk terminates
+        // there. The pipeline emits a single adjusted occurrence rather than a (base, adjusted) pair.
         NotableDateRule rule = Fixed("Walk Trigger", 1, 1) with
         {
             Adjustments = ImmutableArray.Create(new ObservanceAdjustment
@@ -174,11 +174,9 @@ public sealed partial class NotableDateServiceTests
             .OrderBy(r => r.Date)
             .ToList();
 
-        Assert.AreEqual(2, results.Count, "Expected the base occurrence plus one adjusted occurrence from the bounded walk.");
-        Assert.AreEqual(new DateTime(2025, 1, 1), results[0].Date);
-        Assert.IsFalse(results[0].WasAdjusted);
-        Assert.AreEqual(new DateTime(2025, 1, 2), results[1].Date, "Walk should advance to Thursday 2 January — the re-entry guard returns an empty snapshot, so Thursday is reported as a working day and the walk terminates.");
-        Assert.IsTrue(results[1].WasAdjusted);
+        Assert.AreEqual(1, results.Count, "Expected one adjusted occurrence emitted by the bounded walk.");
+        Assert.AreEqual(new DateTime(2025, 1, 2), results[0].Date, "Walk should advance to Thursday 2 January.");
+        Assert.IsTrue(results[0].WasAdjusted);
     }
 
     /// <summary>
@@ -217,20 +215,16 @@ public sealed partial class NotableDateServiceTests
     }
 
     /// <summary>
-    /// Verifies that a <see cref="AdjustmentAction.MoveToNextNonWorkingDay" /> walk anchored near year-end demonstrably crosses
-    /// the Dec 31 → Jan 1 boundary within the adjuster's 366-day bound and yet does not trigger generation of the next year. A
-    /// counting <see cref="INotableDateAlgorithm" /> attached to a probe rule observes year-generation passes; the test asserts
-    /// the algorithm is invoked exactly once (for the queried year 2025) so that the cross-year recursion vector — present in
-    /// the earlier same-year-only guard — is closed.
+    /// Verifies that a <see cref="AdjustmentAction.MoveToNextNonWorkingDay" /> walk anchored near year-end crosses the
+    /// Dec 31 → Jan 1 boundary and emits the adjusted occurrence on the following January day. The range pipeline
+    /// materialises anchors and dependent adjustments coherently across year boundaries through a generation-local
+    /// context, so the walk reaches Jan 1 2026 without the legacy re-entry guard's empty-snapshot side effect.
     /// </summary>
     [TestMethod]
-    public void GetNotableDates_WhenMoveToNextNonWorkingDayWalkCrossesYearBoundary_ShouldNotGenerateNextYear()
+    public void GetNotableDates_WhenMoveToNextNonWorkingDayWalkCrossesYearBoundary_ShouldEmitAdjustedOccurrenceInNextYear()
     {
-        // 31 December 2025 is a Wednesday. The walk's first cursor is 1 January 2026 (Thursday), which immediately crosses the
-        // year boundary. IsNonWorkingDay calls GetOrGenerateYear(2026); without the cross-year guard that call would open a fresh
-        // GenerateYear pass for 2026 — observable via the counting algorithm — and recurse year-by-year. With the guard, no
-        // nested generation runs: 1 January 2026 is not a weekend so IsNonWorkingDay returns false (working day) and the walk
-        // terminates immediately on that date.
+        // 31 December 2025 is a Wednesday. The walk's first cursor (Thursday 1 Jan 2026) is a working day, so the
+        // bounded walk terminates there and emits a single adjusted occurrence on 1 Jan 2026.
         NotableDateRule walkTrigger = Fixed("Walk Trigger", 12, 31) with
         {
             Adjustments = ImmutableArray.Create(new ObservanceAdjustment
@@ -241,37 +235,20 @@ public sealed partial class NotableDateServiceTests
             }),
         };
 
-        // A Algorithm-strategy probe whose algorithm counts invocations. GenerateYear iterates every rule for the year being
-        // generated and dispatches Algorithm strategy through the registry, so algorithm.GetDate(year) is invoked exactly once
-        // per year-generation pass. The probe returns null so it emits no occurrence and does not pollute the assertions.
-        NotableDateRule probe = new()
-        {
-            Name = "Year Generation Probe",
-            Strategy = DateResolutionStrategy.Algorithm,
-            Category = NotableDateCategory.Other,
-            AlgorithmKey = "probe",
-        };
+        var service = BuildService(walkTrigger);
 
-        var algorithm = new CountingAlgorithm();
-        var registry = new NotableDateAlgorithmRegistry(
-            new[] { new KeyValuePair<string, INotableDateAlgorithm>("probe", algorithm) });
-
-        var service = new NotableDateService(
-            new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(walkTrigger, probe) },
-            WorkingDaysOfWeek.MondayToFriday,
-            new NotableDateServiceOptions { AlgorithmRegistry = registry });
-
-        var walkResults = service.GetNotableDates(2025)
+        // Query a narrow window that contains only the cross-boundary occurrence we want to assert on. The pipeline
+        // filters by observed date; if the test queried a multi-year span, the rule's other anchors (Dec 31 2024,
+        // Dec 31 2026 …) would each contribute their own adjusted occurrences. Limit the window to 2026-01-01 so only
+        // the Dec 31 2025 anchor's adjusted observed date qualifies.
+        var walkResults = service.GetNotableDates(new DateTime(2026, 1, 1), new DateTime(2026, 1, 1))
             .Where(r => r.Name == "Walk Trigger")
             .OrderBy(r => r.Date)
             .ToList();
 
-        Assert.AreEqual(1, algorithm.CallCount, "Year 2026 must not be generated as a side effect of the walk crossing the year boundary; only the queried year 2025 should be materialised.");
-        Assert.AreEqual(2, walkResults.Count, "Expected the base occurrence on 31 December 2025 plus one adjusted occurrence after crossing the year boundary.");
-        Assert.AreEqual(new DateTime(2025, 12, 31), walkResults[0].Date);
-        Assert.IsFalse(walkResults[0].WasAdjusted);
-        Assert.AreEqual(new DateTime(2026, 1, 1), walkResults[1].Date, "Adjusted occurrence should fall on 1 January 2026 (Thursday), demonstrating the walk crossed the year boundary without generating 2026.");
-        Assert.IsTrue(walkResults[1].WasAdjusted);
+        Assert.AreEqual(1, walkResults.Count, "Expected one adjusted occurrence emitted on the post-boundary working day.");
+        Assert.AreEqual(new DateTime(2026, 1, 1), walkResults[0].Date, "Adjusted occurrence should fall on 1 January 2026 (Thursday).");
+        Assert.IsTrue(walkResults[0].WasAdjusted);
     }
 
     /// <summary>

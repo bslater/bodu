@@ -205,7 +205,7 @@ public static class NotableDateRuleJsonParser
             DurationDays = dto.DurationDays,
             Priority = dto.Priority,
             Comment = dto.Comment,
-            CalendarType = ParseOptionalType<SysGlobal.Calendar>(dto.CalendarType),
+            CalendarType = ParseOptionalType<SysGlobal.Calendar>(dto.CalendarType, "calendarType"),
             Strategy = strategy,
             Tags = [.. (dto.Tags ?? []).Where(t => !string.IsNullOrWhiteSpace(t))],
             Adjustments = [.. (dto.Adjustments ?? []).Select(MapAdjustment)],
@@ -260,7 +260,7 @@ public static class NotableDateRuleJsonParser
             FirstYear = dto.FirstYear,
             LastYear = dto.LastYear,
             OccurrenceYears = dto.OccurrenceYears,
-            CalendarType = ParseOptionalType<SysGlobal.Calendar>(dto.CalendarType),
+            CalendarType = ParseOptionalType<SysGlobal.Calendar>(dto.CalendarType, "calendarType"),
             TerritoryCode = dto.Territory,
             IsNonWorkingDay = dto.NonWorking,
             DurationDays = dto.DurationDays ?? 1,
@@ -295,7 +295,7 @@ public static class NotableDateRuleJsonParser
             IsNonWorkingDay = dto.NonWorking,
             OffsetDays = dto.Days ?? 0,
             TerritoryCode = dto.Territory,
-            CalendarType = ParseOptionalType<SysGlobal.Calendar>(dto.CalendarType),
+            CalendarType = ParseOptionalType<SysGlobal.Calendar>(dto.CalendarType, "calendarType"),
             EffectiveFromYear = dto.FromYear,
             EffectiveToYear = dto.ToYear,
             ComparisonDate = ParseOptionalMonthDay(dto.ComparisonMonth, dto.ComparisonDay),
@@ -373,7 +373,7 @@ public static class NotableDateRuleJsonParser
             case DateResolutionStrategy.Fixed:
                 {
                     FixedDto f = dto.Fixed!;
-                    (var monthNum, var monthAlias) = ParseMonthToken(RequireString(f.Month, "month", "fixed"));
+                    (var monthNum, var monthAlias) = ParseMonthToken(RequireString(f.Month, "month", "fixed"), rule.CalendarType);
                     return rule with
                     {
                         Month = monthNum,
@@ -411,7 +411,7 @@ public static class NotableDateRuleJsonParser
                     return rule with
                     {
                         AlgorithmKey = a.Key,
-                        AlgorithmType = ParseOptionalType<INotableDateAlgorithm>(a.Type),
+                        AlgorithmType = ParseOptionalType<INotableDateAlgorithm>(a.Type, "type"),
                         AlgorithmMonth = a.Month,
                         AlgorithmDay = a.Day,
                     };
@@ -436,7 +436,7 @@ public static class NotableDateRuleJsonParser
             case DateResolutionStrategy.Fixed:
                 {
                     FixedDto f = dto.Fixed!;
-                    (var monthNum, var monthAlias) = ParseMonthToken(RequireString(f.Month, "month", "fixed"));
+                    (var monthNum, var monthAlias) = ParseMonthToken(RequireString(f.Month, "month", "fixed"), body.CalendarType);
                     return body with
                     {
                         Month = monthNum,
@@ -474,7 +474,7 @@ public static class NotableDateRuleJsonParser
                     return body with
                     {
                         AlgorithmKey = a.Key,
-                        AlgorithmType = ParseOptionalType<INotableDateAlgorithm>(a.Type),
+                        AlgorithmType = ParseOptionalType<INotableDateAlgorithm>(a.Type, "type"),
                         AlgorithmMonth = a.Month,
                         AlgorithmDay = a.Day,
                     };
@@ -561,20 +561,41 @@ public static class NotableDateRuleJsonParser
     }
 
     /// <summary>
-    /// Resolves <paramref name="typeName" /> to a CLR type assignable to <typeparamref name="TBase" />.
+    /// Resolves <paramref name="typeName" /> to a CLR type assignable to <typeparamref name="TBase" />, throwing on
+    /// an unresolved name or wrong base type. Authoring errors are surfaced at parse time rather than silently
+    /// dropping data, so an unresolvable <c>calendarType</c> or algorithm CLR type fails the parse with a diagnostic.
     /// </summary>
     /// <typeparam name="TBase">The base type the resolved type must be assignable to.</typeparam>
     /// <param name="typeName">The fully qualified type name to resolve, or <see langword="null" />.</param>
+    /// <param name="propertyName">
+    /// The schema property whose value supplied <paramref name="typeName" />, used to compose the diagnostic message.
+    /// </param>
     /// <returns>
-    /// The resolved <see cref="Type" />, or <see langword="null" /> when the name is absent or unresolvable.
+    /// The resolved <see cref="Type" />, or <see langword="null" /> when <paramref name="typeName" /> is absent.
     /// </returns>
-    private static Type? ParseOptionalType<TBase>(string? typeName)
+    /// <exception cref="FormatException">
+    /// <paramref name="typeName" /> is non-empty but cannot be resolved to a CLR type, or the resolved type is not
+    /// assignable to <typeparamref name="TBase" />.
+    /// </exception>
+    private static Type? ParseOptionalType<TBase>(string? typeName, string propertyName)
     {
         if (string.IsNullOrWhiteSpace(typeName))
             return null;
 
-        var type = Type.GetType(typeName, throwOnError: false);
-        return type is not null && typeof(TBase).IsAssignableFrom(type) ? type : null;
+        Type? type = Type.GetType(typeName, throwOnError: false)
+            ?? throw new FormatException(
+                string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Format_Invalid_TypeName, typeName, propertyName));
+
+        if (!typeof(TBase).IsAssignableFrom(type))
+            throw new FormatException(
+                string.Format(
+                    CultureInfo.InvariantCulture,
+                    CalendarResourceStrings.Format_Invalid_TypeNotAssignable,
+                    typeName,
+                    propertyName,
+                    typeof(TBase).FullName));
+
+        return type;
     }
 
     /// <summary>
@@ -617,12 +638,16 @@ public static class NotableDateRuleJsonParser
 
     /// <summary>
     /// Parses a Fixed-strategy month token, returning either a numeric month or a Hebrew calendar alias.
+    /// Numeric month 13 is accepted only when <paramref name="calendarType" /> is non-null and not
+    /// <see cref="GregorianCalendar" /> — Gregorian rules have at most twelve months, so an authored 13 is treated
+    /// as an error rather than silently accepted.
     /// </summary>
     /// <param name="token">The month token to parse.</param>
+    /// <param name="calendarType">The owning rule's calendar type, or <see langword="null" /> for Gregorian default.</param>
     /// <returns>
     /// A tuple of <c>(numericMonth, alias)</c>: exactly one of the two is non-<see langword="null" />.
     /// </returns>
-    private static (int? numericMonth, string? alias) ParseMonthToken(string token)
+    private static (int? numericMonth, string? alias) ParseMonthToken(string token, Type? calendarType)
     {
         if (string.IsNullOrWhiteSpace(token))
             throw new ArgumentNullException(nameof(token));
@@ -632,7 +657,13 @@ public static class NotableDateRuleJsonParser
 
         if (int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out var numeric)
             && numeric is >= 1 and <= 13)
+        {
+            if (numeric == 13 && IsGregorianContext(calendarType))
+                throw new FormatException(
+                    string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Format_Invalid_MonthValueGregorian, token));
+
             return (numeric, null);
+        }
 
         var simpleHebrew = token switch
         {
@@ -654,6 +685,17 @@ public static class NotableDateRuleJsonParser
             : throw new FormatException(
             string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Format_Invalid_MonthValueHebrew, token));
     }
+
+    /// <summary>
+    /// Returns <see langword="true" /> when the supplied calendar type behaves as the 12-month Gregorian default
+    /// (no calendar type configured, or <see cref="GregorianCalendar" /> selected explicitly).
+    /// </summary>
+    /// <param name="calendarType">The rule's calendar type, or <see langword="null" />.</param>
+    /// <returns>
+    /// <see langword="true" /> if <paramref name="calendarType" /> is null or equals <see cref="GregorianCalendar" />.
+    /// </returns>
+    private static bool IsGregorianContext(Type? calendarType) =>
+        calendarType is null || calendarType == typeof(GregorianCalendar);
 
     /// <summary>
     /// Enforces the per-rule uniqueness invariant on adjustment keys.

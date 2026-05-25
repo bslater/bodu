@@ -151,7 +151,11 @@ public sealed class NotableDateServicePluginIntegrationTests
                 Plugins = new[] { plugin },
             });
 
-        IReadOnlyList<NotableDate> results = service.GetNotableDates(2050);
+        // Query the union of both algorithms' resolved years: host.only returns 2050-01-01, harness.static returns 2027-06-15
+        // regardless of input year. The range pipeline filters by observed date, so the query window must span both.
+        IReadOnlyList<NotableDate> results = service.GetNotableDates(
+            new DateTime(2027, 1, 1),
+            new DateTime(2050, 12, 31));
 
         Assert.IsTrue(results.Any(r => r.Name == "Host Only"));
         Assert.IsTrue(results.Any(r => r.Name == "Plugin Only"));

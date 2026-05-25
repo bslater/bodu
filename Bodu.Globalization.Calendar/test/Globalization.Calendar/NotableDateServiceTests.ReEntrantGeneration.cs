@@ -266,37 +266,13 @@ public sealed partial class NotableDateServiceTests
             }),
         };
 
-        // TODO: Re-enable the cross-year known-answer case once the existing NotableDateService is routed through the new
-        // RangeResolution pipeline (see follow-up to PR #188). The case relies on a MoveToNextNonWorkingDay walk crossing a
-        // calendar-year boundary and observing a non-working holiday in the adjacent year, which the existing engine cannot do
-        // because GetOrGenerateYear's re-entry guard blocks every cross-year materialisation while a year is being generated.
-        // The new pipeline already produces the expected Jan 3 substitute — see
-        // NotableDateRangePipelineTests.Resolve_WhenPriorYearHolidayRollsForwardPastBlocker_ShouldEmitObservedDateOnJanuaryThird.
-        ////yield return new object[]
-        ////{
-        ////new ForwardSubstituteKat(
-        ////    "Cross-year substitute should skip weekend and next-year fixed non-working holiday.",
-        ////    2022,
-        ////    new[]
-        ////    {
-        ////        Fixed("Year-End Holiday", 12, 31, nonWorking: true) with
-        ////        {
-        ////            Adjustments = ImmutableArray.Create(CreateForwardSubstituteAdjustment("year-end-substitute")),
-        ////        },
-        ////        Fixed("New Year Second Day", 1, 2, nonWorking: true) with
-        ////        {
-        ////            Adjustments = ImmutableArray.Create(CreateForwardSubstituteAdjustment("new-year-second-day-substitute")),
-        ////        },
-        ////    },
-        ////    new[]
-        ////    {
-        ////        new ExpectedNotableDateKat("Year-End Holiday", new DateTime(2023, 1, 3), WasAdjusted: true),
-        ////    },
-        ////    new[]
-        ////    {
-        ////        new BlockedDateKat("Year-End Holiday", new DateTime(2023, 1, 2)),
-        ////    }),
-        ////};
+        // The cross-year forward-substitute case is not expressible in this KAT framework because the harness queries
+        // GetNotableDates(year) — a single calendar year — while the expected occurrence (Year-End Holiday rolling
+        // past 1 Jan weekend and 2 Jan blocker to land on Mon 3 Jan 2023) carries an observed date in the *following*
+        // year. The pipeline now emits the adjusted occurrence at its observed date and filters to that window, so a
+        // 2022 year query no longer surfaces it. Cross-year roll-forward behaviour is exercised directly by
+        // NotableDateRangePipelineTests.Resolve_WhenPriorYearHolidayRollsForwardPastBlocker_ShouldEmitObservedDateOnJanuaryThird,
+        // which queries the [3 Jan 2023, 3 Jan 2023] window through ResolveNotableDatesInRange.
     }
 
     public static string GetForwardSubstituteDisplayName(MethodInfo methodInfo, object[] data) =>

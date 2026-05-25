@@ -286,6 +286,24 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Type '{0}' specified for '{1}' could not be resolved..
+        /// </summary>
+        internal static string Format_Invalid_TypeName {
+            get {
+                return ResourceManager.GetString("Format_Invalid_TypeName", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Type '{0}' specified for '{1}' must derive from '{2}'..
+        /// </summary>
+        internal static string Format_Invalid_TypeNotAssignable {
+            get {
+                return ResourceManager.GetString("Format_Invalid_TypeNotAssignable", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Schema validation error: {0}.
         /// </summary>
         internal static string Format_Invalid_XmlSchema {

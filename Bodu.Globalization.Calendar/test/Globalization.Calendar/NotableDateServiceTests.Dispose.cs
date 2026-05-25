@@ -12,22 +12,18 @@ namespace Bodu.Globalization.Calendar;
 public partial class NotableDateServiceTests
 {
     /// <summary>
-    /// Verifies that <see cref="NotableDateService.Dispose" /> releases the internal per-thread tracking field so that
-    /// subsequent generation calls fail fast rather than silently consuming a disposed resource.
+    /// Verifies that <see cref="NotableDateService.Dispose" /> may be called and is idempotent — calling it twice does
+    /// not throw.
     /// </summary>
     [TestMethod]
-    public void Dispose_WhenInvoked_ShouldReleaseInternalThreadLocalState()
+    public void Dispose_WhenInvokedTwice_ShouldNotThrow()
     {
         NotableDateService service = new(
             ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(Fixed("Base", 6, 1)) },
             workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 
         service.Dispose();
-
-        Assert.ThrowsExactly<ObjectDisposedException>(() =>
-        {
-            _ = service.GetNotableDates(2026);
-        });
+        service.Dispose();
     }
 
     /// <summary>

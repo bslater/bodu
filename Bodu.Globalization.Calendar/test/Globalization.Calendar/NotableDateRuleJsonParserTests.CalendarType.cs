@@ -65,11 +65,11 @@ public partial class NotableDateRuleJsonParserTests
 
     /// <summary>
     /// Verifies that a <c>calendarType</c> whose value matches the schema's <c>assemblyTypeName</c> pattern but does
-    /// not resolve to a real type leaves <see cref="NotableDateRule.CalendarType" /> at <see langword="null" /> —
-    /// the parser's <c>ParseOptionalType</c> uses <c>throwOnError: false</c> and silently drops unresolvable names.
+    /// not resolve to a real type throws <see cref="FormatException" /> at parse time. Strict-by-default type
+    /// resolution surfaces authoring errors instead of silently dropping the rule's calendar context.
     /// </summary>
     [TestMethod]
-    public void ParseJson_WhenCalendarTypeIsUnknownTypeName_ShouldLeaveCalendarTypeNull()
+    public void ParseJson_WhenCalendarTypeIsUnknownTypeName_ShouldThrowFormatException()
     {
         const string json = @"{
 			""notableDates"": [
@@ -82,18 +82,22 @@ public partial class NotableDateRuleJsonParserTests
 			]
 		}";
 
-        NotableDateRule rule = NotableDateRuleJsonParser.ParseJson(json).Single();
+        FormatException ex = Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = NotableDateRuleJsonParser.ParseJson(json);
+        });
 
-        Assert.IsNull(rule.CalendarType);
+        Assert.IsTrue(ex.Message.Contains("Some.Imaginary.NonexistentCalendar", StringComparison.Ordinal));
+        Assert.IsTrue(ex.Message.Contains("calendarType", StringComparison.Ordinal));
     }
 
     /// <summary>
     /// Verifies that a <c>calendarType</c> whose value resolves to a real <see cref="Type" /> that is not assignable
-    /// to <see cref="Calendar" /> leaves <see cref="NotableDateRule.CalendarType" /> at <see langword="null" /> —
-    /// the parser's <c>ParseOptionalType&lt;Calendar&gt;</c> enforces the base-type constraint silently.
+    /// to <see cref="Calendar" /> throws <see cref="FormatException" /> at parse time, naming both the offending type
+    /// and the expected base type so the author can correct the rule.
     /// </summary>
     [TestMethod]
-    public void ParseJson_WhenCalendarTypeDoesNotDeriveFromCalendar_ShouldLeaveCalendarTypeNull()
+    public void ParseJson_WhenCalendarTypeDoesNotDeriveFromCalendar_ShouldThrowFormatException()
     {
         const string json = @"{
 			""notableDates"": [
@@ -106,9 +110,13 @@ public partial class NotableDateRuleJsonParserTests
 			]
 		}";
 
-        NotableDateRule rule = NotableDateRuleJsonParser.ParseJson(json).Single();
+        FormatException ex = Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = NotableDateRuleJsonParser.ParseJson(json);
+        });
 
-        Assert.IsNull(rule.CalendarType);
+        Assert.IsTrue(ex.Message.Contains("System.String", StringComparison.Ordinal));
+        Assert.IsTrue(ex.Message.Contains("Calendar", StringComparison.Ordinal));
     }
 
     /// <summary>

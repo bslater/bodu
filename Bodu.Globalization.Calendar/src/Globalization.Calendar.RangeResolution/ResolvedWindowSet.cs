@@ -55,15 +55,15 @@ internal sealed class ResolvedWindowSet
             DateTime existingStart = existing.StartDate.Date;
             DateTime existingEnd = existing.EndDate.Date;
 
-            // Disjoint and earlier — keep as-is.
-            if (existingEnd.AddDays(1) < start)
+            // Disjoint and earlier — keep as-is. existingEnd at DateTime.MaxValue cannot be earlier than any start.
+            if (existingEnd < DateTime.MaxValue.Date && existingEnd.AddDays(1) < start)
             {
                 retained.Add(existing);
                 continue;
             }
 
-            // Disjoint and later — keep as-is (we may still be merging earlier ones).
-            if (existingStart > end.AddDays(1))
+            // Disjoint and later — keep as-is. end at DateTime.MaxValue cannot have a window beyond it.
+            if (end < DateTime.MaxValue.Date && existingStart > end.AddDays(1))
             {
                 retained.Add(existing);
                 continue;
