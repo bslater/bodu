@@ -134,23 +134,100 @@ public partial class WeekPatternTests
     public static IEnumerable<object[]> GetInvalidParseInputWithExplicitFormatTestData() =>
         GetInvalidParseInputTestData().Where(o => o[1] != null);
 
-    public static IEnumerable<object[]> GetTryParseExactTestData() =>
+    /// <summary>
+    /// Supplies the <see cref="WeekPatternParseKat" /> rows used by
+    /// <see cref="TryParse_WhenInputIsValid_ShouldReturnTrueAndSetExpectedValue(WeekPatternParseKat)" />.
+    /// Includes every row from <see cref="GetValidParseInputTestData" /> because <c>TryParse</c> accepts
+    /// auto-detect, single-character, and two-character format specifiers alike.
+    /// </summary>
+    /// <returns>Rows wrapping the underlying valid parse data as KAT instances.</returns>
+    public static IEnumerable<object?[]> GetTryParseValidKats() =>
+        GetValidParseInputTestData()
+            .Select(o => new object?[]
+            {
+                new WeekPatternParseKat(
+                    FormatParseKatName((string)o[0], (string?)o[1], (byte)o[2]),
+                    (string)o[0],
+                    (string?)o[1],
+                    (byte)o[2]),
+            });
+
+    /// <summary>
+    /// Supplies the <see cref="InvalidWeekPatternParseKat" /> rows used by
+    /// <see cref="TryParse_WhenInputIsInvalid_ShouldReturnFalseAndSetEmpty(InvalidWeekPatternParseKat)" />.
+    /// Filters <see cref="GetInvalidParseInputTestData" /> to rows whose format is <see langword="null" />
+    /// because the no-format <c>TryParse</c> overload is exercised here.
+    /// </summary>
+    /// <returns>Rows wrapping the no-format invalid parse data as KAT instances.</returns>
+    public static IEnumerable<object?[]> GetTryParseInvalidKats() =>
+        GetInvalidParseInputTestData()
+            .Where(o => o[1] == null)
+            .Select(o => new object?[]
+            {
+                new InvalidWeekPatternParseKat(
+                    FormatInvalidParseKatName((string)o[0], (string?)o[1]),
+                    (string)o[0],
+                    (string?)o[1],
+                    typeof(FormatException)),
+            });
+
+    /// <summary>
+    /// Supplies the <see cref="WeekPatternParseKat" /> rows used by
+    /// <see cref="TryParseExact_WhenInputIsValid_ShouldReturnTrueAndSetExpectedValue(WeekPatternParseKat)" />.
+    /// Filters <see cref="GetValidParseInputTestData" /> to rows that carry an explicit format because
+    /// <c>TryParseExact</c> requires one.
+    /// </summary>
+    /// <returns>Rows wrapping the explicit-format valid parse data as KAT instances.</returns>
+    public static IEnumerable<object?[]> GetTryParseExactValidKats() =>
         GetValidParseInputTestData()
             .Where(o => o[1] != null)
-            .Select(o => new object[] { o[0], o[1], o[2], true })
-        .Union(
-            GetInvalidParseInputTestData()
-                .Select(o => new object[] { o[0], o[1], (byte)0b0000000, false })
-        );
+            .Select(o => new object?[]
+            {
+                new WeekPatternParseKat(
+                    FormatParseKatName((string)o[0], (string?)o[1], (byte)o[2]),
+                    (string)o[0],
+                    (string?)o[1],
+                    (byte)o[2]),
+            });
 
-    public static IEnumerable<object[]> GetTryParseTestData() =>
-        GetValidParseInputTestData()
-            .Select(o => new object[] { o[0], o[2], true })
-        .Union(
-            GetInvalidParseInputTestData()
-                .Where(o => o[1] == null)
-                .Select(o => new object[] { o[0], (byte)0b0000000, false })
-        );
+    /// <summary>
+    /// Supplies the <see cref="InvalidWeekPatternParseKat" /> rows used by
+    /// <see cref="TryParseExact_WhenInputIsInvalid_ShouldReturnFalseAndSetEmpty(InvalidWeekPatternParseKat)" />.
+    /// Includes every row from <see cref="GetInvalidParseInputTestData" /> because <c>TryParseExact</c>
+    /// is exercised with both auto-detect (null format) and explicit formats below.
+    /// </summary>
+    /// <returns>Rows wrapping the invalid parse data as KAT instances.</returns>
+    public static IEnumerable<object?[]> GetTryParseExactInvalidKats() =>
+        GetInvalidParseInputTestData()
+            .Select(o => new object?[]
+            {
+                new InvalidWeekPatternParseKat(
+                    FormatInvalidParseKatName((string)o[0], (string?)o[1]),
+                    (string)o[0],
+                    (string?)o[1],
+                    typeof(FormatException)),
+            });
+
+    /// <summary>
+    /// Builds a short, human-readable label for a <see cref="WeekPatternParseKat" /> row so failures in
+    /// CI and Test Explorer name the scenario rather than showing an opaque row index.
+    /// </summary>
+    /// <param name="input">The input text supplied to the parser.</param>
+    /// <param name="format">The format specifier, or <see langword="null" /> for auto-detect.</param>
+    /// <param name="expected">The expected parsed bitmask.</param>
+    /// <returns>A label of the form <c>"input='<paramref name="input" />' format='<paramref name="format" />' expected=0b…"</c>.</returns>
+    private static string FormatParseKatName(string input, string? format, byte expected) =>
+        $"input='{input}' format='{format ?? "(auto)"}' expected=0b{Convert.ToString(expected, 2).PadLeft(7, '0')}";
+
+    /// <summary>
+    /// Builds a short, human-readable label for an <see cref="InvalidWeekPatternParseKat" /> row so
+    /// failures name the scenario rather than showing an opaque row index.
+    /// </summary>
+    /// <param name="input">The input text supplied to the parser.</param>
+    /// <param name="format">The format specifier, or <see langword="null" /> for auto-detect.</param>
+    /// <returns>A label of the form <c>"input='<paramref name="input" />' format='<paramref name="format" />'"</c>.</returns>
+    private static string FormatInvalidParseKatName(string input, string? format) =>
+        $"input='{input}' format='{format ?? "(auto)"}'";
 
     /// <summary>
     /// Provides a comprehensive set of valid test cases for parsing <see cref="WeekPattern" />.
