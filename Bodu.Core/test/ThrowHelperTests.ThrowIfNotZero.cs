@@ -10,31 +10,51 @@ public partial class ThrowHelperTests
 {
 
     /// <summary>
-    /// Verifies the <see cref="ThrowHelper.ThrowIfNotZero{T}(T, string)" /> contract across <see cref="int" />,
-    /// <see cref="long" />, <see cref="double" />, and <see cref="decimal" />: any non-zero value throws;
-    /// zero passes.
+    /// Verifies that <see cref="ThrowHelper.ThrowIfNotZero{T}(T, string)" /> does not throw — and on the
+    /// ParamName-asserting overload reports nothing — for zero across the <see cref="int" />,
+    /// <see cref="long" />, <see cref="double" />, and <see cref="decimal" /> overloads.
     /// </summary>
     /// <param name="testName">The data-row label.</param>
     /// <param name="kind">The numeric primitive under test.</param>
-    /// <param name="sign">A sentinel: -1 negative, 0 zero, +1 positive.</param>
     [TestMethod]
-    [DataRow("int positive → throw", "int", 1)]
-    [DataRow("int negative → throw", "int", -1)]
-    [DataRow("int zero → pass", "int", 0)]
-    [DataRow("long positive → throw", "long", 1)]
-    [DataRow("long negative → throw", "long", -1)]
-    [DataRow("long zero → pass", "long", 0)]
-    [DataRow("double positive → throw", "double", 1)]
-    [DataRow("double negative → throw", "double", -1)]
-    [DataRow("double zero → pass", "double", 0)]
-    [DataRow("decimal positive → throw", "decimal", 1)]
-    [DataRow("decimal negative → throw", "decimal", -1)]
-    [DataRow("decimal zero → pass", "decimal", 0)]
-    public void ThrowIfNotZero_WhenInvokedAcrossNumericTypes_ShouldFollowContract(string testName, string kind, int sign)
+    [DataRow("int zero", "int")]
+    [DataRow("long zero", "long")]
+    [DataRow("double zero", "double")]
+    [DataRow("decimal zero", "decimal")]
+    public void ThrowIfNotZero_WhenValueIsZero_ShouldNotThrowAndReportNothing(string testName, string kind)
     {
-        Type? expected = sign != 0 ? typeof(ArgumentOutOfRangeException) : null;
-        var expectedParam = sign != 0 ? "value" : null;
+        Action act = kind switch
+        {
+            "int" => () => ThrowHelper.ThrowIfNotZero(0, "value"),
+            "long" => () => ThrowHelper.ThrowIfNotZero(0L, "value"),
+            "double" => () => ThrowHelper.ThrowIfNotZero(0.0, "value"),
+            "decimal" => () => ThrowHelper.ThrowIfNotZero(0m, "value"),
+            _ => () => throw new InvalidOperationException($"Unknown kind '{kind}'."),
+        };
 
+        AssertGuard(testName, act, null, null);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfNotZero{T}(T, string)" /> throws
+    /// <see cref="ArgumentOutOfRangeException" /> with <c>ParamName == "value"</c> for any non-zero value
+    /// across the <see cref="int" />, <see cref="long" />, <see cref="double" />, and <see cref="decimal" />
+    /// overloads.
+    /// </summary>
+    /// <param name="testName">The data-row label.</param>
+    /// <param name="kind">The numeric primitive under test.</param>
+    /// <param name="sign">A sentinel: -1 negative, +1 positive.</param>
+    [TestMethod]
+    [DataRow("int positive", "int", 1)]
+    [DataRow("int negative", "int", -1)]
+    [DataRow("long positive", "long", 1)]
+    [DataRow("long negative", "long", -1)]
+    [DataRow("double positive", "double", 1)]
+    [DataRow("double negative", "double", -1)]
+    [DataRow("decimal positive", "decimal", 1)]
+    [DataRow("decimal negative", "decimal", -1)]
+    public void ThrowIfNotZero_WhenValueIsNotZero_ShouldThrowOnValue(string testName, string kind, int sign)
+    {
         Action act = kind switch
         {
             "int" => () => ThrowHelper.ThrowIfNotZero(sign, "value"),
@@ -44,7 +64,7 @@ public partial class ThrowHelperTests
             _ => () => throw new InvalidOperationException($"Unknown kind '{kind}'."),
         };
 
-        AssertGuard(testName, act, expected, expectedParam);
+        AssertGuard(testName, act, typeof(ArgumentOutOfRangeException), "value");
     }
 
     /// <summary>

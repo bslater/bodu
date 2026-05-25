@@ -10,31 +10,51 @@ public partial class ThrowHelperTests
 {
 
     /// <summary>
-    /// Verifies the <see cref="ThrowHelper.ThrowIfZeroOrNegative{T}(T, string)" /> contract across
-    /// <see cref="int" />, <see cref="long" />, <see cref="double" />, and <see cref="decimal" />: zero and
-    /// negative values throw; positive values pass.
+    /// Verifies that <see cref="ThrowHelper.ThrowIfZeroOrNegative{T}(T, string)" /> does not throw — and on
+    /// the ParamName-asserting overload reports nothing — for positive values across the <see cref="int" />,
+    /// <see cref="long" />, <see cref="double" />, and <see cref="decimal" /> overloads.
     /// </summary>
     /// <param name="testName">The data-row label.</param>
     /// <param name="kind">The numeric primitive under test.</param>
-    /// <param name="sign">A sentinel: -1 negative, 0 zero, +1 positive.</param>
     [TestMethod]
-    [DataRow("int negative → throw", "int", -1)]
-    [DataRow("int zero → throw", "int", 0)]
-    [DataRow("int positive → pass", "int", 1)]
-    [DataRow("long negative → throw", "long", -1)]
-    [DataRow("long zero → throw", "long", 0)]
-    [DataRow("long positive → pass", "long", 1)]
-    [DataRow("double negative → throw", "double", -1)]
-    [DataRow("double zero → throw", "double", 0)]
-    [DataRow("double positive → pass", "double", 1)]
-    [DataRow("decimal negative → throw", "decimal", -1)]
-    [DataRow("decimal zero → throw", "decimal", 0)]
-    [DataRow("decimal positive → pass", "decimal", 1)]
-    public void ThrowIfZeroOrNegative_WhenInvokedAcrossNumericTypes_ShouldFollowContract(string testName, string kind, int sign)
+    [DataRow("int positive", "int")]
+    [DataRow("long positive", "long")]
+    [DataRow("double positive", "double")]
+    [DataRow("decimal positive", "decimal")]
+    public void ThrowIfZeroOrNegative_WhenValueIsPositive_ShouldNotThrowAndReportNothing(string testName, string kind)
     {
-        Type? expected = sign <= 0 ? typeof(ArgumentOutOfRangeException) : null;
-        var expectedParam = sign <= 0 ? "value" : null;
+        Action act = kind switch
+        {
+            "int" => () => ThrowHelper.ThrowIfZeroOrNegative(1, "value"),
+            "long" => () => ThrowHelper.ThrowIfZeroOrNegative(1L, "value"),
+            "double" => () => ThrowHelper.ThrowIfZeroOrNegative(1.0, "value"),
+            "decimal" => () => ThrowHelper.ThrowIfZeroOrNegative(1m, "value"),
+            _ => () => throw new InvalidOperationException($"Unknown kind '{kind}'."),
+        };
 
+        AssertGuard(testName, act, null, null);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfZeroOrNegative{T}(T, string)" /> throws
+    /// <see cref="ArgumentOutOfRangeException" /> with <c>ParamName == "value"</c> for zero and negative
+    /// values across the <see cref="int" />, <see cref="long" />, <see cref="double" />, and
+    /// <see cref="decimal" /> overloads.
+    /// </summary>
+    /// <param name="testName">The data-row label.</param>
+    /// <param name="kind">The numeric primitive under test.</param>
+    /// <param name="sign">A non-positive sentinel: 0 zero, -1 negative.</param>
+    [TestMethod]
+    [DataRow("int zero", "int", 0)]
+    [DataRow("int negative", "int", -1)]
+    [DataRow("long zero", "long", 0)]
+    [DataRow("long negative", "long", -1)]
+    [DataRow("double zero", "double", 0)]
+    [DataRow("double negative", "double", -1)]
+    [DataRow("decimal zero", "decimal", 0)]
+    [DataRow("decimal negative", "decimal", -1)]
+    public void ThrowIfZeroOrNegative_WhenValueIsZeroOrNegative_ShouldThrowOnValue(string testName, string kind, int sign)
+    {
         Action act = kind switch
         {
             "int" => () => ThrowHelper.ThrowIfZeroOrNegative(sign, "value"),
@@ -44,7 +64,7 @@ public partial class ThrowHelperTests
             _ => () => throw new InvalidOperationException($"Unknown kind '{kind}'."),
         };
 
-        AssertGuard(testName, act, expected, expectedParam);
+        AssertGuard(testName, act, typeof(ArgumentOutOfRangeException), "value");
     }
 
     /// <summary>
