@@ -52,6 +52,14 @@ internal sealed class NotableDateRangePipeline
     private readonly WeekPattern _workingWeek;
     private readonly IAdjustmentHandlerRegistry? _handlerRegistry;
     private readonly IReadOnlyList<RuleRemoval> _overrideRemovals;
+
+    /// <summary>
+    /// Removals indexed by rule name (ordinal-ignore-case) so <see cref="IsRemovedByOverride" /> can short-circuit
+    /// to the candidate set for the rule being tested rather than scanning every removal contributed across the
+    /// data pack. Empty when no removals are configured.
+    /// </summary>
+    private readonly Dictionary<string, List<RuleRemoval>> _overrideRemovalsByName;
+
     private readonly IReadOnlySet<NotableDateRule> _overrideAdditions;
 
     /// <summary>
@@ -87,6 +95,21 @@ internal sealed class NotableDateRangePipeline
         _handlerRegistry = handlerRegistry;
         _overrideRemovals = overrideRemovals ?? [];
         _overrideAdditions = overrideAdditions ?? new HashSet<NotableDateRule>(ReferenceEqualityComparer.Instance);
+
+        _overrideRemovalsByName = new Dictionary<string, List<RuleRemoval>>(StringComparer.OrdinalIgnoreCase);
+        foreach (RuleRemoval removal in _overrideRemovals)
+        {
+            if (string.IsNullOrEmpty(removal.RuleName))
+                continue;
+
+            if (!_overrideRemovalsByName.TryGetValue(removal.RuleName, out List<RuleRemoval>? bucket))
+            {
+                bucket = new List<RuleRemoval>(capacity: 1);
+                _overrideRemovalsByName[removal.RuleName] = bucket;
+            }
+
+            bucket.Add(removal);
+        }
     }
 
     /// <summary>
@@ -669,11 +692,14 @@ internal sealed class NotableDateRangePipeline
         if (_overrideAdditions.Contains(rule))
             return false;
 
-        foreach (RuleRemoval removal in _overrideRemovals)
+        if (string.IsNullOrEmpty(rule.Name)
+            || !_overrideRemovalsByName.TryGetValue(rule.Name, out List<RuleRemoval>? candidates))
         {
-            if (!string.Equals(removal.RuleName, rule.Name, StringComparison.OrdinalIgnoreCase))
-                continue;
+            return false;
+        }
 
+        foreach (RuleRemoval removal in candidates)
+        {
             if (removal.FromYear is { } from && year < from) continue;
             if (removal.ToYear is { } to && year > to) continue;
 
