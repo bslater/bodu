@@ -41,10 +41,8 @@ public sealed class LosarNotableDateAlgorithmTests
         typeof(NotableDateAlgorithmKnownAnswers),
         DynamicDataDisplayName = nameof(NotableDateAlgorithmKnownAnswers.GetDisplayName),
         DynamicDataDisplayNameDeclaringType = typeof(NotableDateAlgorithmKnownAnswers))]
-    public void GetDate_WhenGivenSmokeRows_ShouldReturnExpectedDateWithinTolerance(NotableDateAlgorithmKnownAnswer knownAnswer)
-    {
-        AssertKnownAnswerWithinTolerance(knownAnswer);
-    }
+    public void GetDate_WhenGivenSmokeRows_ShouldReturnExpectedDateWithinTolerance(NotableDateAlgorithmKnownAnswer knownAnswer) =>
+        NotableDateAlgorithmAssertions.AssertResultWithinTolerance(knownAnswer);
 
     /// <summary>
     /// Verifies that Losar returns a date within +/- one day of the known official Tibetan New Year for
@@ -60,10 +58,8 @@ public sealed class LosarNotableDateAlgorithmTests
         typeof(NotableDateAlgorithmKnownAnswers),
         DynamicDataDisplayName = nameof(NotableDateAlgorithmKnownAnswers.GetDisplayName),
         DynamicDataDisplayNameDeclaringType = typeof(NotableDateAlgorithmKnownAnswers))]
-    public void GetDate_WhenGivenAllKnownRows_ShouldReturnExpectedDateWithinTolerance(NotableDateAlgorithmKnownAnswer knownAnswer)
-    {
-        AssertKnownAnswerWithinTolerance(knownAnswer);
-    }
+    public void GetDate_WhenGivenAllKnownRows_ShouldReturnExpectedDateWithinTolerance(NotableDateAlgorithmKnownAnswer knownAnswer) =>
+        NotableDateAlgorithmAssertions.AssertResultWithinTolerance(knownAnswer);
 
     /// <summary>
     /// Verifies that for every year in the range 1901-2100 the result falls in January or February on or
@@ -84,37 +80,5 @@ public sealed class LosarNotableDateAlgorithmTests
             Assert.IsTrue(result.Value >= new DateTime(year, 1, 20),
                 $"Expected date on or after 20 January for year {year}, got {result.Value:yyyy-MM-dd}.");
         }
-    }
-
-    /// <summary>
-    /// Resolves the supplied known-answer row, runs the algorithm, and asserts the result falls within the
-    /// row's symmetric day-count tolerance of the expected date. Shared by the smoke and full Regression
-    /// test methods so the assertion logic stays in one place.
-    /// </summary>
-    /// <param name="knownAnswer">The row to verify.</param>
-    private static void AssertKnownAnswerWithinTolerance(NotableDateAlgorithmKnownAnswer knownAnswer)
-    {
-        INotableDateAlgorithm sut = knownAnswer.Factory();
-        System.Globalization.Calendar? calendar = knownAnswer.CalendarKind switch
-        {
-            AlgorithmCalendarKind.Gregorian => new System.Globalization.GregorianCalendar(),
-            AlgorithmCalendarKind.Julian => new System.Globalization.JulianCalendar(),
-            _ => null,
-        };
-
-        DateTime? result = sut.GetDate(knownAnswer.Year, calendar);
-
-        Assert.IsNotNull(result, $"{knownAnswer.Algorithm} {knownAnswer.Year}: algorithm returned null.");
-
-        if (knownAnswer.ToleranceDays == 0)
-        {
-            Assert.AreEqual(knownAnswer.ExpectedDate, result);
-            return;
-        }
-
-        int dayDiff = Math.Abs((result!.Value - knownAnswer.ExpectedDate).Days);
-        Assert.IsTrue(
-            dayDiff <= knownAnswer.ToleranceDays,
-            $"{knownAnswer.Algorithm} {knownAnswer.Year}: expected within +/- {knownAnswer.ToleranceDays} day(s) of {knownAnswer.ExpectedDate:yyyy-MM-dd}, got {result.Value:yyyy-MM-dd} (diff {dayDiff} day(s)).");
     }
 }

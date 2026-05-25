@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="HinduLunarNotableDateAlgorithmTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -7,19 +7,28 @@
 namespace Bodu.Globalization.Calendar.Algorithms;
 
 /// <summary>
-/// Verifies the correctness and boundary behaviour of <see cref="HinduLunarNotableDateAlgorithm" />.
+/// Verifies the Hindu-lunar-specific behaviour of <see cref="HinduLunarNotableDateAlgorithm" />: constructor
+/// validation, per-festival known-answer agreement (within a two-day tolerance) for Diwali, Holi, and
+/// Navaratri, and the supported-range property that every defined <see cref="HinduLunarMonth" /> produces a
+/// non-null date.
 /// </summary>
 /// <remarks>
 /// <para>
-/// Expected dates are taken from widely published Indian panchanga sources. Results from this algorithm may differ
-/// from panchanga-exact dates by zero, one, or occasionally two calendar days due to the approximate tithi calculation
-/// method used. Test assertions therefore allow a tolerance of ±2 days for astronomical festivals.
+/// Expected dates come from widely published Indian panchanga sources. The algorithm's approximate tithi
+/// calculation may differ from panchanga-exact dates by zero, one, or two days; row tolerances therefore
+/// admit a +/- 2 day window.
 /// </para>
 /// <para>
-/// Known-date test rows are restricted to years without an intercalary (Adhik) month immediately preceding the target
-/// Hindu lunar month. In years where such an intercalary month exists, <see cref="HinduLunarNotableDateAlgorithm" />
-/// locates the wrong new-moon lunation and returns a date approximately one synodic month (29–30 days) from the correct
-/// value. Those years are excluded from the parameterised data rows below.
+/// Known-date rows are restricted to years without an intercalary (Adhik) month immediately preceding the
+/// target Hindu lunar month — in those years the algorithm locates the wrong lunation and returns a date
+/// approximately one synodic month from the correct value. Those years are deliberately excluded from each
+/// festival's known-answer table.
+/// </para>
+/// <para>
+/// The shared boundary contract (year &lt; 1, year &gt; 9999, null/Gregorian/Julian calendar) is exercised
+/// from <see cref="NotableDateAlgorithmContractTests" /> via the
+/// <see cref="NotableDateAlgorithmKnownAnswers.AllAlgorithmFactories" /> enrollment, which enrolls a single
+/// Kartik / Krishna / 15 instance because boundary behaviour is independent of the festival arguments.
 /// </para>
 /// </remarks>
 [TestClass]
@@ -54,8 +63,9 @@ public sealed class HinduLunarNotableDateAlgorithmTests
     }
 
     /// <summary>
-    /// Verifies that a tithi outside the range 1–15 throws <see cref="ArgumentOutOfRangeException" />.
+    /// Verifies that a tithi outside the range 1-15 throws <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
+    /// <param name="tithi">The out-of-range tithi value.</param>
     [DataRow(0)]
     [DataRow(16)]
     [TestMethod]
@@ -70,155 +80,104 @@ public sealed class HinduLunarNotableDateAlgorithmTests
     }
 
     /// <summary>
-    /// Verifies that requesting a date with a year below one throws <see cref="ArgumentOutOfRangeException" />.
+    /// Verifies that Diwali (Amavasya of Kartik) falls within +/- 2 days of the published panchanga date for
+    /// the smoke-tier representative year.
     /// </summary>
-    [DataRow(0)]
-    [DataRow(-1)]
-    [TestMethod]
-    public void GetDate_WhenYearLessThanOne_ShouldThrowExactly(int year)
-    {
-        var sut = new HinduLunarNotableDateAlgorithm(HinduLunarMonth.Kartik, HinduPaksha.Krishna, 15);
-
-        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            _ = sut.GetDate(year);
-        });
-
-        Assert.AreEqual("year", ex.ParamName);
-    }
+    /// <param name="knownAnswer">The Diwali known-answer row supplied by
+    /// <see cref="NotableDateAlgorithmKnownAnswers.HinduLunarDiwaliSmoke" />.</param>
+    [DataTestMethod]
+    [DynamicData(
+        nameof(NotableDateAlgorithmKnownAnswers.HinduLunarDiwaliSmoke),
+        typeof(NotableDateAlgorithmKnownAnswers),
+        DynamicDataDisplayName = nameof(NotableDateAlgorithmKnownAnswers.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(NotableDateAlgorithmKnownAnswers))]
+    public void GetDate_WhenDiwali_ShouldFallWithinTwoDaysOfKnownPanchangaDate(NotableDateAlgorithmKnownAnswer knownAnswer) =>
+        NotableDateAlgorithmAssertions.AssertResultWithinTolerance(knownAnswer);
 
     /// <summary>
-    /// Verifies that requesting a date with a year above 9999 throws <see cref="ArgumentOutOfRangeException" />
-    /// rather than a raw exception from the <see cref="DateTime" /> constructor.
+    /// Verifies that Diwali falls within +/- 2 days of the published panchanga date for every row in the
+    /// full known-answer table. Runs only under the Regression tier.
     /// </summary>
-    [DataRow(10000)]
-    [DataRow(int.MaxValue)]
-    [TestMethod]
-    public void GetDate_WhenYearGreaterThan9999_ShouldThrowExactly(int year)
-    {
-        var sut = new HinduLunarNotableDateAlgorithm(HinduLunarMonth.Kartik, HinduPaksha.Krishna, 15);
-
-        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            _ = sut.GetDate(year);
-        });
-
-        Assert.AreEqual("year", ex.ParamName);
-    }
+    /// <param name="knownAnswer">The Diwali known-answer row supplied by
+    /// <see cref="NotableDateAlgorithmKnownAnswers.HinduLunarDiwali" />.</param>
+    [DataTestMethod]
+    [TestCategory("Regression")]
+    [DynamicData(
+        nameof(NotableDateAlgorithmKnownAnswers.HinduLunarDiwali),
+        typeof(NotableDateAlgorithmKnownAnswers),
+        DynamicDataDisplayName = nameof(NotableDateAlgorithmKnownAnswers.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(NotableDateAlgorithmKnownAnswers))]
+    public void GetDate_WhenDiwaliAllRows_ShouldFallWithinTwoDaysOfKnownPanchangaDate(NotableDateAlgorithmKnownAnswer knownAnswer) =>
+        NotableDateAlgorithmAssertions.AssertResultWithinTolerance(knownAnswer);
 
     /// <summary>
-    /// Verifies that Diwali (Amavasya / Krishna Paksha Chaturdashi of Kartik, i.e. the new moon) falls
-    /// within ±2 days of the known panchanga date. Only years without an intercalary Kartik month are included;
-    /// years 2022 and 2023 are excluded because an intercalary month causes the algorithm to locate the wrong
-    /// lunation for those years.
+    /// Verifies that Holi (Purnima of Phalguna) falls within +/- 2 days of the published panchanga date for
+    /// the smoke-tier representative year.
     /// </summary>
-    [DataRow(2024, 11, 1)]
-    [TestMethod]
-    public void GetDate_WhenDiwali_ShouldFallWithinTwoDaysOfKnownPanchangaDate(int year, int knownMonth, int knownDay)
-    {
-        // Diwali is on Amavasya (new moon day) of Kartik: Krishna Paksha, tithi 15 (Amavasya).
-        var sut = new HinduLunarNotableDateAlgorithm(HinduLunarMonth.Kartik, HinduPaksha.Krishna, 15);
-
-        DateTime? result = sut.GetDate(year);
-        var expected = new DateTime(year, knownMonth, knownDay);
-
-        Assert.IsNotNull(result);
-        var dayDiff = Math.Abs((result!.Value - expected).Days);
-        Assert.IsTrue(dayDiff <= 2,
-            $"Diwali {year}: expected within ±2 days of {expected:yyyy-MM-dd}, got {result.Value:yyyy-MM-dd}.");
-    }
+    /// <param name="knownAnswer">The Holi known-answer row supplied by
+    /// <see cref="NotableDateAlgorithmKnownAnswers.HinduLunarHoliSmoke" />.</param>
+    [DataTestMethod]
+    [DynamicData(
+        nameof(NotableDateAlgorithmKnownAnswers.HinduLunarHoliSmoke),
+        typeof(NotableDateAlgorithmKnownAnswers),
+        DynamicDataDisplayName = nameof(NotableDateAlgorithmKnownAnswers.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(NotableDateAlgorithmKnownAnswers))]
+    public void GetDate_WhenHoli_ShouldFallWithinTwoDaysOfKnownPanchangaDate(NotableDateAlgorithmKnownAnswer knownAnswer) =>
+        NotableDateAlgorithmAssertions.AssertResultWithinTolerance(knownAnswer);
 
     /// <summary>
-    /// Verifies that Holi (Purnima of Phalguna — Shukla Paksha, tithi 15) falls within ±2 days of the known date.
-    /// Only years without an intercalary Phalguna month are included; years 2022 and 2024 are excluded because an
-    /// intercalary month causes the algorithm to locate the wrong lunation for those years.
+    /// Verifies that Holi falls within +/- 2 days of the published panchanga date for every row in the full
+    /// known-answer table. Runs only under the Regression tier.
     /// </summary>
-    [DataRow(2023, 3, 7)]
-    [TestMethod]
-    public void GetDate_WhenHoli_ShouldFallWithinTwoDaysOfKnownPanchangaDate(int year, int knownMonth, int knownDay)
-    {
-        // Holi main day (Holika Dahan) is on Purnima (full moon) of Phalguna.
-        var sut = new HinduLunarNotableDateAlgorithm(HinduLunarMonth.Phalguna, HinduPaksha.Shukla, 15);
-
-        DateTime? result = sut.GetDate(year);
-        var expected = new DateTime(year, knownMonth, knownDay);
-
-        Assert.IsNotNull(result);
-        var dayDiff = Math.Abs((result!.Value - expected).Days);
-        Assert.IsTrue(dayDiff <= 2,
-            $"Holi {year}: expected within ±2 days of {expected:yyyy-MM-dd}, got {result.Value:yyyy-MM-dd}.");
-    }
+    /// <param name="knownAnswer">The Holi known-answer row supplied by
+    /// <see cref="NotableDateAlgorithmKnownAnswers.HinduLunarHoli" />.</param>
+    [DataTestMethod]
+    [TestCategory("Regression")]
+    [DynamicData(
+        nameof(NotableDateAlgorithmKnownAnswers.HinduLunarHoli),
+        typeof(NotableDateAlgorithmKnownAnswers),
+        DynamicDataDisplayName = nameof(NotableDateAlgorithmKnownAnswers.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(NotableDateAlgorithmKnownAnswers))]
+    public void GetDate_WhenHoliAllRows_ShouldFallWithinTwoDaysOfKnownPanchangaDate(NotableDateAlgorithmKnownAnswer knownAnswer) =>
+        NotableDateAlgorithmAssertions.AssertResultWithinTolerance(knownAnswer);
 
     /// <summary>
-    /// Verifies that Navaratri start (Shukla Paksha Pratipada of Ashvin, i.e. tithi 1) falls within ±2 days
-    /// of the known panchanga date. Only years without an intercalary Ashvin month are included; years 2023 and
-    /// 2024 are excluded because an intercalary month causes the algorithm to locate the wrong lunation.
+    /// Verifies that Navaratri start (Pratipada of Ashvin) falls within +/- 2 days of the published
+    /// panchanga date for the smoke-tier representative year.
     /// </summary>
-    [DataRow(2022, 9, 26)]
-    [TestMethod]
-    public void GetDate_WhenNavaratri_ShouldFallWithinTwoDaysOfKnownPanchangaDate(int year, int knownMonth, int knownDay)
-    {
-        var sut = new HinduLunarNotableDateAlgorithm(HinduLunarMonth.Ashvin, HinduPaksha.Shukla, 1);
-
-        DateTime? result = sut.GetDate(year);
-        var expected = new DateTime(year, knownMonth, knownDay);
-
-        Assert.IsNotNull(result);
-        var dayDiff = Math.Abs((result!.Value - expected).Days);
-        Assert.IsTrue(dayDiff <= 2,
-            $"Navaratri {year}: expected within ±2 days of {expected:yyyy-MM-dd}, got {result.Value:yyyy-MM-dd}.");
-    }
+    /// <param name="knownAnswer">The Navaratri known-answer row supplied by
+    /// <see cref="NotableDateAlgorithmKnownAnswers.HinduLunarNavaratriSmoke" />.</param>
+    [DataTestMethod]
+    [DynamicData(
+        nameof(NotableDateAlgorithmKnownAnswers.HinduLunarNavaratriSmoke),
+        typeof(NotableDateAlgorithmKnownAnswers),
+        DynamicDataDisplayName = nameof(NotableDateAlgorithmKnownAnswers.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(NotableDateAlgorithmKnownAnswers))]
+    public void GetDate_WhenNavaratri_ShouldFallWithinTwoDaysOfKnownPanchangaDate(NotableDateAlgorithmKnownAnswer knownAnswer) =>
+        NotableDateAlgorithmAssertions.AssertResultWithinTolerance(knownAnswer);
 
     /// <summary>
-    /// Verifies that the returned <see cref="DateTime.Kind" /> is always <see cref="DateTimeKind.Unspecified" />.
+    /// Verifies that Navaratri start falls within +/- 2 days of the published panchanga date for every row
+    /// in the full known-answer table. Runs only under the Regression tier.
     /// </summary>
-    [TestMethod]
-    public void GetDate_WhenCalendarIsNull_ShouldReturnUnspecifiedKind()
-    {
-        var sut = new HinduLunarNotableDateAlgorithm(HinduLunarMonth.Kartik, HinduPaksha.Krishna, 15);
-
-        DateTime? result = sut.GetDate(2024);
-
-        Assert.IsNotNull(result);
-        Assert.AreEqual(DateTimeKind.Unspecified, result!.Value.Kind);
-    }
+    /// <param name="knownAnswer">The Navaratri known-answer row supplied by
+    /// <see cref="NotableDateAlgorithmKnownAnswers.HinduLunarNavaratri" />.</param>
+    [DataTestMethod]
+    [TestCategory("Regression")]
+    [DynamicData(
+        nameof(NotableDateAlgorithmKnownAnswers.HinduLunarNavaratri),
+        typeof(NotableDateAlgorithmKnownAnswers),
+        DynamicDataDisplayName = nameof(NotableDateAlgorithmKnownAnswers.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(NotableDateAlgorithmKnownAnswers))]
+    public void GetDate_WhenNavaratriAllRows_ShouldFallWithinTwoDaysOfKnownPanchangaDate(NotableDateAlgorithmKnownAnswer knownAnswer) =>
+        NotableDateAlgorithmAssertions.AssertResultWithinTolerance(knownAnswer);
 
     /// <summary>
-    /// Verifies that supplying an explicit <see cref="System.Globalization.GregorianCalendar" /> matches the default
-    /// (null) calendar path.
+    /// Verifies that every defined <see cref="HinduLunarMonth" /> resolves a non-null Gregorian date for a
+    /// representative year. Exercises every branch of the private <c>GetSearchMonth</c> switch and ensures
+    /// the algorithm produces a valid result regardless of which lunar month is requested.
     /// </summary>
-    [TestMethod]
-    public void GetDate_WhenCalendarIsExplicitlyGregorian_ShouldMatchDefaultPath()
-    {
-        var sut = new HinduLunarNotableDateAlgorithm(HinduLunarMonth.Kartik, HinduPaksha.Krishna, 15);
-
-        DateTime? withDefault = sut.GetDate(2024);
-        DateTime? withGregorian = sut.GetDate(2024, new System.Globalization.GregorianCalendar());
-
-        Assert.AreEqual(withDefault, withGregorian);
-    }
-
-    /// <summary>
-    /// Verifies that supplying a <see cref="System.Globalization.JulianCalendar" /> projects the result through the
-    /// non-Gregorian projection branch.
-    /// </summary>
-    [TestMethod]
-    public void GetDate_WhenCalendarIsJulian_ShouldProjectThroughTargetCalendar()
-    {
-        var sut = new HinduLunarNotableDateAlgorithm(HinduLunarMonth.Kartik, HinduPaksha.Krishna, 15);
-        System.Globalization.JulianCalendar julian = new();
-
-        DateTime? result = sut.GetDate(2024, julian);
-
-        Assert.IsNotNull(result);
-        Assert.AreEqual(2024, julian.GetYear(result!.Value));
-    }
-
-    /// <summary>
-    /// Verifies that every defined <see cref="HinduLunarMonth" /> resolves a non-null Gregorian date for a representative
-    /// year. This exercises every branch of the private <c>GetSearchMonth</c> switch and ensures the algorithm produces
-    /// a valid result regardless of which lunar month is requested.
-    /// </summary>
+    /// <param name="month">The Hindu lunar month under test.</param>
     [DataRow(HinduLunarMonth.Chaitra)]
     [DataRow(HinduLunarMonth.Vaisakha)]
     [DataRow(HinduLunarMonth.Jyeshtha)]
@@ -242,8 +201,8 @@ public sealed class HinduLunarNotableDateAlgorithmTests
     }
 
     /// <summary>
-    /// Verifies that requesting the <see cref="HinduLunarMonth.Pausha" /> month for year 1 clamps the search year so the
-    /// search is not attempted in year 0, returning a valid date.
+    /// Verifies that requesting the <see cref="HinduLunarMonth.Pausha" /> month for year 1 clamps the search
+    /// year so the search is not attempted in year 0, returning a valid date.
     /// </summary>
     [TestMethod]
     public void GetDate_WhenPaushaRequestedForYearOne_ShouldClampSearchYearAndReturnDate()
