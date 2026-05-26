@@ -26,6 +26,12 @@ namespace Bodu.CodeStyle.XmlDocumentation.Layout;
 /// <c>'.'</c>, or <c>':'</c>) is deliberately not applied — it caused multi-sentence paragraphs to fragment
 /// at every clause even when the line could comfortably absorb more text.
 /// </para>
+/// <para>
+/// Adjacent atoms with no whitespace between them (for example a trailing <c>'.'</c> immediately after an
+/// inline <c>&lt;see /&gt;</c> reference) are treated as a single typographic unit and are never split across
+/// a line boundary, even when the join exceeds the budget. There is no whitespace to absorb such a break and
+/// the resulting orphan-punctuation line is wrong.
+/// </para>
 /// </remarks>
 internal static class DocWrapper
 {
@@ -59,7 +65,11 @@ internal static class DocWrapper
             var hasLeadingSpace = pendingWhitespace && lineAtoms.Count > 0;
             var addedLength = (hasLeadingSpace ? 1 : 0) + atom.Length;
 
-            if (lineAtoms.Count == 0 || lineLength + addedLength <= contentBudget)
+            // Atoms with no preceding whitespace are typographically joined to the previous atom (e.g. a
+            // trailing '.' after </see> or <see ... />) and must not be split across a line boundary even
+            // when the join exceeds the budget — there is no whitespace to absorb the break and an orphan
+            // punctuation line is wrong.
+            if (lineAtoms.Count == 0 || lineLength + addedLength <= contentBudget || !hasLeadingSpace)
             {
                 lineAtoms.Add(new LineAtom(atom, hasLeadingSpace));
                 lineLength += addedLength;
