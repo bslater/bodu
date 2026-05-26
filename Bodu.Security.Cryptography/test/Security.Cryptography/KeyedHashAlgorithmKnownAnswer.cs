@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.Kat;
+
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
@@ -25,7 +27,7 @@ namespace Bodu.Security.Cryptography;
 /// canonical unkeyed mode.
 /// </para>
 /// </remarks>
-public sealed record KeyedHashAlgorithmKnownAnswer
+public sealed record KeyedHashAlgorithmKnownAnswer : IKat
 {
     /// <summary>Gets the semantic name of this test vector used in diagnostic messages.</summary>
     public required string Name { get; init; }

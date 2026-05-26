@@ -127,39 +127,64 @@ public partial class ThrowHelperTests
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(span, offset, count);
     }
     /// <summary>
-    /// Verifies the <see cref="ThrowHelper.ThrowIfSpanLengthIsInsufficient{T}(System.Span{T}, int, string)" />
-    /// two-argument overload contract for both <see cref="Span{T}" /> and <see cref="ReadOnlySpan{T}" />: a span
-    /// shorter than the minimum throws <see cref="ArgumentException" /> with ParamName "span"; equal or longer
-    /// passes.
+    /// Verifies that <see cref="ThrowHelper.ThrowIfSpanLengthIsInsufficient{T}(System.Span{T}, int, string)" />
+    /// does not throw — and on the ParamName-asserting overload reports nothing — for both
+    /// <see cref="Span{T}" /> and <see cref="ReadOnlySpan{T}" /> when the span length meets or exceeds the
+    /// required minimum.
     /// </summary>
     /// <param name="testName">The data-row label.</param>
     /// <param name="spanLength">Span length.</param>
     /// <param name="minimum">Required minimum length.</param>
-    /// <param name="expectsException">Whether the guard must throw.</param>
     [TestMethod]
-    [DataRow("shorter than minimum → throw on span", 2, 3, true)]
-    [DataRow("empty span, positive minimum → throw on span", 0, 1, true)]
-    [DataRow("exactly minimum → pass", 3, 3, false)]
-    [DataRow("longer than minimum → pass", 10, 3, false)]
-    [DataRow("any length, minimum 0 → pass", 5, 0, false)]
-    public void ThrowIfSpanLengthIsInsufficient_TwoArg_WhenInvokedWithVariousInputs_ShouldFollowContract(
-        string testName, int spanLength, int minimum, bool expectsException)
+    [DataRow("exactly minimum", 3, 3)]
+    [DataRow("longer than minimum", 10, 3)]
+    [DataRow("any length, minimum 0", 5, 0)]
+    public void ThrowIfSpanLengthIsInsufficient_TwoArg_WhenLengthFits_ShouldNotThrowAndReportNothing(
+        string testName, int spanLength, int minimum)
     {
         var buffer = new int[spanLength];
-        Type? expected = expectsException ? typeof(ArgumentException) : null;
-        var expectedParam = expectsException ? "span" : null;
 
         AssertGuard(
             $"Span<T>: {testName}",
             () => ThrowHelper.ThrowIfSpanLengthIsInsufficient(buffer.AsSpan(), minimum, "span"),
-            expected,
-            expectedParam);
+            null,
+            null);
 
         AssertGuard(
             $"ReadOnlySpan<T>: {testName}",
             () => ThrowHelper.ThrowIfSpanLengthIsInsufficient((ReadOnlySpan<int>)buffer, minimum, "span"),
-            expected,
-            expectedParam);
+            null,
+            null);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfSpanLengthIsInsufficient{T}(System.Span{T}, int, string)" />
+    /// throws <see cref="ArgumentException" /> with <c>ParamName == "span"</c> for both
+    /// <see cref="Span{T}" /> and <see cref="ReadOnlySpan{T}" /> when the span is shorter than the required
+    /// minimum.
+    /// </summary>
+    /// <param name="testName">The data-row label.</param>
+    /// <param name="spanLength">Span length.</param>
+    /// <param name="minimum">Required minimum length.</param>
+    [TestMethod]
+    [DataRow("shorter than minimum", 2, 3)]
+    [DataRow("empty span, positive minimum", 0, 1)]
+    public void ThrowIfSpanLengthIsInsufficient_TwoArg_WhenLengthIsInsufficient_ShouldThrowOnSpan(
+        string testName, int spanLength, int minimum)
+    {
+        var buffer = new int[spanLength];
+
+        AssertGuard(
+            $"Span<T>: {testName}",
+            () => ThrowHelper.ThrowIfSpanLengthIsInsufficient(buffer.AsSpan(), minimum, "span"),
+            typeof(ArgumentException),
+            "span");
+
+        AssertGuard(
+            $"ReadOnlySpan<T>: {testName}",
+            () => ThrowHelper.ThrowIfSpanLengthIsInsufficient((ReadOnlySpan<int>)buffer, minimum, "span"),
+            typeof(ArgumentException),
+            "span");
     }
 
 }

@@ -1,8 +1,11 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ThrowHelperTests.ThrowIfLessThanOther.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
+
+using Bodu.Test.Assertions;
+using Bodu.Test.Kat;
 
 namespace Bodu;
 
@@ -10,57 +13,91 @@ public partial class ThrowHelperTests
 {
 
     /// <summary>
-    /// Verifies the full <see cref="ThrowHelper.ThrowIfLessThanOther{T}" /> contract matrix with explicit
-    /// ParamName disambiguation: when the guard fails, ParamName must be the name of the <c>value</c>
-    /// parameter, never the <c>other</c> parameter.
+    /// Verifies that <see cref="ThrowHelper.ThrowIfLessThanOther{T}(T, T, string, string)" /> throws
+    /// <see cref="ArgumentException" /> when the value is strictly less than the comparison reference.
     /// </summary>
-    /// <param name="testName">The data-row label.</param>
-    /// <param name="value">The value compared against <paramref name="other" />.</param>
-    /// <param name="other">The comparison reference.</param>
-    /// <param name="expectsException">Whether the guard must throw.</param>
+    /// <param name="kat">The KAT row supplying a value-below-other pair.</param>
     [TestMethod]
-    [DataRow("less → throw on value", -1, 0, true)]
-    [DataRow("less → throw on value (positive other)", 5, 6, true)]
-    [DataRow("equal → pass", 5, 5, false)]
-    [DataRow("greater → pass", 6, 5, false)]
-    [DataRow("MinValue vs MaxValue → throw on value", int.MinValue, int.MaxValue, true)]
-    [DataRow("MaxValue vs MinValue → pass", int.MaxValue, int.MinValue, false)]
-    public void ThrowIfLessThanOther_WhenInvokedWithVariousPairs_ShouldFollowContract(
-        string testName, int value, int other, bool expectsException)
-    {
-        Type? expected = expectsException ? typeof(ArgumentException) : null;
-        var expectedParam = expectsException ? "value" : null;
+    [DynamicData(
+        nameof(ThrowIfLessThanOtherInvalidCases),
+        DynamicDataSourceType.Method,
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void ThrowIfLessThanOther_WhenValueIsLessThanOther_ShouldThrowExactly(GuardInvalidKat<int> kat) =>
+        ExceptionAssert.AssertGuard(
+            kat.Name,
+            () => ThrowHelper.ThrowIfLessThanOther(kat.Value, kat.Other),
+            kat.ExceptionType,
+            expectedParamName: null);
 
-        AssertGuard(
-            testName,
-            () => ThrowHelper.ThrowIfLessThanOther(value, other, nameof(value), "other"),
-            expected,
-            expectedParam);
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfLessThanOther{T}(T, T, string, string)" /> completes
+    /// silently when the value is greater than or equal to the comparison reference.
+    /// </summary>
+    /// <param name="kat">The KAT row supplying a value-at-or-above-other pair.</param>
+    [TestMethod]
+    [DynamicData(
+        nameof(ThrowIfLessThanOtherValidCases),
+        DynamicDataSourceType.Method,
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void ThrowIfLessThanOther_WhenValueIsEqualOrGreaterThanOther_ShouldNotThrow(GuardValidKat<int> kat) =>
+        ThrowHelper.ThrowIfLessThanOther(kat.Value, kat.Other);
+
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfLessThanOther{T}(T, T, string, string)" /> reports the
+    /// <c>value</c> parameter name (never <c>other</c>) on the thrown <see cref="ArgumentException" />.
+    /// </summary>
+    /// <param name="kat">The KAT row supplying a value-below-other pair and the expected <c>ParamName</c>.</param>
+    [TestMethod]
+    [DynamicData(
+        nameof(ThrowIfLessThanOtherParamNameCases),
+        DynamicDataSourceType.Method,
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void ThrowIfLessThanOther_WhenValueIsLessThanOther_ShouldReportParamName(GuardInvalidKat<int> kat) =>
+        ExceptionAssert.AssertGuard(
+            kat.Name,
+            () => ThrowHelper.ThrowIfLessThanOther(kat.Value, kat.Other, kat.ParamName, "other"),
+            kat.ExceptionType,
+            kat.ParamName);
+
+    /// <summary>
+    /// Supplies the <see cref="GuardInvalidKat{Int32}" /> rows used by
+    /// <see cref="ThrowIfLessThanOther_WhenValueIsLessThanOther_ShouldThrowExactly(GuardInvalidKat{Int32})" />.
+    /// </summary>
+    /// <returns>Value/other pairs where the value is strictly less than the comparison reference.</returns>
+    private static IEnumerable<object?[]> ThrowIfLessThanOtherInvalidCases()
+    {
+        yield return new object?[] { new GuardInvalidKat<int>("-1 < 0", -1, 0, typeof(ArgumentException)) };
+        yield return new object?[] { new GuardInvalidKat<int>("5 < 6", 5, 6, typeof(ArgumentException)) };
+        yield return new object?[] { new GuardInvalidKat<int>("0 < 1", 0, 1, typeof(ArgumentException)) };
+        yield return new object?[] { new GuardInvalidKat<int>("MinValue < MaxValue", int.MinValue, int.MaxValue, typeof(ArgumentException)) };
     }
 
     /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfLessThanOther" />, when ValueIsEqualOrGreaterThanOther, NotThrow.
+    /// Supplies the <see cref="GuardValidKat{Int32}" /> rows used by
+    /// <see cref="ThrowIfLessThanOther_WhenValueIsEqualOrGreaterThanOther_ShouldNotThrow(GuardValidKat{Int32})" />.
     /// </summary>
-    [TestMethod]
-    [DataRow(0, 0)]
-    [DataRow(6, 5)]
-    [DataRow(int.MaxValue, int.MinValue)]
-    public void ThrowIfLessThanOther_WhenValueIsEqualOrGreaterThanOther_ShouldNotThrow(int value, int other) => ThrowHelper.ThrowIfLessThanOther(value, other);
+    /// <returns>Value/other pairs where the value is greater than or equal to the comparison reference.</returns>
+    private static IEnumerable<object?[]> ThrowIfLessThanOtherValidCases()
+    {
+        yield return new object?[] { new GuardValidKat<int>("5 == 5", 5, 5) };
+        yield return new object?[] { new GuardValidKat<int>("6 > 5", 6, 5) };
+        yield return new object?[] { new GuardValidKat<int>("0 == 0", 0, 0) };
+        yield return new object?[] { new GuardValidKat<int>("MaxValue > MinValue", int.MaxValue, int.MinValue) };
+    }
 
     /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfLessThanOther" />, when ValueIsLessThanOther, throws <see cref="ArgumentException" />.
+    /// Supplies the <see cref="GuardInvalidKat{Int32}" /> rows used by
+    /// <see cref="ThrowIfLessThanOther_WhenValueIsLessThanOther_ShouldReportParamName(GuardInvalidKat{Int32})" />.
     /// </summary>
-    [TestMethod]
-    [DataRow(-1, 0)]
-    [DataRow(0, 1)]
-    [DataRow(5, 6)]
-    [DataRow(int.MinValue, int.MaxValue)]
-    public void ThrowIfLessThanOther_WhenValueIsLessThanOther_ShouldThrowExactly(int value, int other)
+    /// <returns>Invalid rows whose <c>ParamName</c> the helper must propagate to the thrown exception.</returns>
+    private static IEnumerable<object?[]> ThrowIfLessThanOtherParamNameCases()
     {
-        Assert.ThrowsExactly<ArgumentException>(() =>
-        {
-            ThrowHelper.ThrowIfLessThanOther(value, other);
-        });
+        yield return new object?[] { new GuardInvalidKat<int>("-1 < 0, paramName=value", -1, 0, typeof(ArgumentException), "value") };
+        yield return new object?[] { new GuardInvalidKat<int>("5 < 6, paramName=value", 5, 6, typeof(ArgumentException), "value") };
+        yield return new object?[] { new GuardInvalidKat<int>("MinValue < MaxValue, paramName=value", int.MinValue, int.MaxValue, typeof(ArgumentException), "value") };
     }
 
 }

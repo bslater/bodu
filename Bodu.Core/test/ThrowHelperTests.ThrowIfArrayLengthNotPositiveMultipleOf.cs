@@ -10,26 +10,42 @@ public partial class ThrowHelperTests
 {
 
     /// <summary>
-    /// Verifies the full <see cref="ThrowHelper.ThrowIfArrayLengthNotPositiveMultipleOf" /> contract: null
-    /// array → <see cref="ArgumentNullException" />, zero length → <see cref="ArgumentException" />, valid
-    /// positive multiple → no throw, invalid multiple → <see cref="ArgumentException" />.
+    /// Verifies that <see cref="ThrowHelper.ThrowIfArrayLengthNotPositiveMultipleOf" /> does not throw —
+    /// and on the ParamName-asserting overload reports nothing — for arrays whose length is a positive
+    /// multiple of the divisor.
     /// </summary>
     /// <param name="testName">The data-row label.</param>
     /// <param name="array">The array passed to the guard.</param>
     /// <param name="divisor">The required divisor.</param>
-    /// <param name="expectedExceptionType">The exception type the guard must throw, or <see langword="null" />.</param>
+    [TestMethod]
+    [DynamicData(nameof(ThrowIfArrayLengthNotPositiveMultipleOfValidContractData))]
+    public void ThrowIfArrayLengthNotPositiveMultipleOf_WhenArrayIsAccepted_ShouldNotThrowAndReportNothing(
+        string testName, Array array, int divisor) =>
+        AssertGuard(
+            testName,
+            () => ThrowHelper.ThrowIfArrayLengthNotPositiveMultipleOf(array, divisor, nameof(array)),
+            null,
+            null);
+
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfArrayLengthNotPositiveMultipleOf" /> throws the expected
+    /// exception type with <c>ParamName == "array"</c> for null arrays, zero-length arrays, and arrays whose
+    /// length is not a positive multiple of the divisor.
+    /// </summary>
+    /// <param name="testName">The data-row label.</param>
+    /// <param name="array">The array passed to the guard.</param>
+    /// <param name="divisor">The required divisor.</param>
+    /// <param name="expectedExceptionType">The exception type the guard must throw.</param>
     /// <param name="expectedParamName">The expected <see cref="ArgumentException.ParamName" />.</param>
     [TestMethod]
-    [DynamicData(nameof(ThrowIfArrayLengthNotPositiveMultipleOfContractData))]
-    public void ThrowIfArrayLengthNotPositiveMultipleOf_WhenInvokedWithVariousArrays_ShouldFollowContract(
-        string testName, Array? array, int divisor, Type? expectedExceptionType, string? expectedParamName)
-    {
+    [DynamicData(nameof(ThrowIfArrayLengthNotPositiveMultipleOfInvalidContractData))]
+    public void ThrowIfArrayLengthNotPositiveMultipleOf_WhenArrayIsRejected_ShouldThrowExpected(
+        string testName, Array? array, int divisor, Type expectedExceptionType, string? expectedParamName) =>
         AssertGuard(
             testName,
             () => ThrowHelper.ThrowIfArrayLengthNotPositiveMultipleOf(array!, divisor, nameof(array)),
             expectedExceptionType,
             expectedParamName);
-    }
 
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfArrayLengthNotPositiveMultipleOf" />, when LengthIsNotPositiveMultiple, throws <see cref="ArgumentException" />.
@@ -60,13 +76,17 @@ public partial class ThrowHelperTests
         ThrowHelper.ThrowIfArrayLengthNotPositiveMultipleOf(array, factor);
     }
 
-    private static IEnumerable<object?[]> ThrowIfArrayLengthNotPositiveMultipleOfContractData()
+    private static IEnumerable<object?[]> ThrowIfArrayLengthNotPositiveMultipleOfValidContractData()
+    {
+        yield return new object?[] { "exact divisor length", new int[4], 4 };
+        yield return new object?[] { "valid multiple", new int[12], 4 };
+    }
+
+    private static IEnumerable<object?[]> ThrowIfArrayLengthNotPositiveMultipleOfInvalidContractData()
     {
         yield return new object?[] { "null array → ArgumentNullException", null, 4, typeof(ArgumentNullException), "array" };
         yield return new object?[] { "zero-length array → ArgumentException", Array.Empty<int>(), 4, typeof(ArgumentException), "array" };
         yield return new object?[] { "length not multiple of divisor → ArgumentException", new int[5], 2, typeof(ArgumentException), "array" };
-        yield return new object?[] { "exact divisor length → no throw", new int[4], 4, null, null };
-        yield return new object?[] { "valid multiple → no throw", new int[12], 4, null, null };
     }
 
 }

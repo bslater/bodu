@@ -79,32 +79,42 @@ public partial class ThrowHelperTests
         ThrowHelper.ThrowIfReadOnly(collection);
     }
     /// <summary>
-    /// Verifies the full <see cref="ThrowHelper.ThrowIfReadOnly{T}" /> contract matrix with explicit ParamName
-    /// assertions: null collection → <see cref="ArgumentNullException" />, read-only collection or array →
-    /// <see cref="ArgumentException" />, writable collection → no throw.
+    /// Verifies that <see cref="ThrowHelper.ThrowIfReadOnly{T}" /> does not throw — and on the
+    /// ParamName-asserting overload reports nothing — for writable collections.
     /// </summary>
     /// <param name="testName">The data-row label.</param>
     /// <param name="collection">The collection passed to the guard.</param>
-    /// <param name="expectedExceptionType">The exception type the guard must throw, or <see langword="null" />.</param>
+    [TestMethod]
+    [DynamicData(nameof(ThrowIfReadOnlyValidContractData))]
+    public void ThrowIfReadOnly_WhenCollectionIsAccepted_ShouldNotThrowAndReportNothing(string testName, ICollection<int> collection) =>
+        AssertGuard(testName, () => ThrowHelper.ThrowIfReadOnly(collection, nameof(collection)), null, null);
+
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfReadOnly{T}" /> throws the expected exception type with
+    /// <c>ParamName == "collection"</c> for null collections, read-only collections, and arrays (whose
+    /// <c>ICollection&lt;T&gt;</c> view is read-only).
+    /// </summary>
+    /// <param name="testName">The data-row label.</param>
+    /// <param name="collection">The collection passed to the guard.</param>
+    /// <param name="expectedExceptionType">The exception type the guard must throw.</param>
     /// <param name="expectedParamName">The expected <see cref="ArgumentException.ParamName" />.</param>
     [TestMethod]
-    [DynamicData(nameof(ThrowIfReadOnlyContractData))]
-    public void ThrowIfReadOnly_WhenInvokedWithVariousCollections_ShouldFollowContract(
-        string testName, ICollection<int>? collection, Type? expectedExceptionType, string? expectedParamName)
+    [DynamicData(nameof(ThrowIfReadOnlyInvalidContractData))]
+    public void ThrowIfReadOnly_WhenCollectionIsRejected_ShouldThrowExpected(
+        string testName, ICollection<int>? collection, Type expectedExceptionType, string? expectedParamName) =>
+        AssertGuard(testName, () => ThrowHelper.ThrowIfReadOnly(collection!, nameof(collection)), expectedExceptionType, expectedParamName);
+
+    private static IEnumerable<object?[]> ThrowIfReadOnlyValidContractData()
     {
-        AssertGuard(testName, () =>
-        {
-            ThrowHelper.ThrowIfReadOnly(collection!, nameof(collection));
-        }, expectedExceptionType, expectedParamName);
+        yield return new object?[] { "writable List<int>", new List<int> { 1, 2, 3 } };
+        yield return new object?[] { "empty writable List<int>", new List<int>() };
     }
 
-    private static IEnumerable<object?[]> ThrowIfReadOnlyContractData()
+    private static IEnumerable<object?[]> ThrowIfReadOnlyInvalidContractData()
     {
         yield return new object?[] { "null → ArgumentNullException", null, typeof(ArgumentNullException), "collection" };
         yield return new object?[] { "ReadOnlyCollection → ArgumentException", new ReadOnlyCollection<int>([1, 2]), typeof(ArgumentException), "collection" };
         yield return new object?[] { "array (read-only ICollection view) → ArgumentException", new[] { 1, 2, 3 }, typeof(ArgumentException), "collection" };
-        yield return new object?[] { "writable List<int> → no throw", new List<int> { 1, 2, 3 }, null, null };
-        yield return new object?[] { "empty writable List<int> → no throw", new List<int>(), null, null };
     }
 
 }

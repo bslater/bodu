@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
+using Bodu.Test.Kat;
 
 namespace Bodu.Globalization.Calendar.Data;
 
@@ -30,8 +31,12 @@ namespace Bodu.Globalization.Calendar.Data;
 /// <c>&lt;Compile Include="..\..\Bodu.Globalization.Calendar\test\Infrastructure\TerritoryNotableDateKnownAnswer.cs" Link="..." /&gt;</c>.
 /// </para>
 /// </remarks>
-public sealed record TerritoryNotableDateKnownAnswer
+public sealed record TerritoryNotableDateKnownAnswer : IKat
 {
+    /// <inheritdoc />
+    /// <remarks>Synthesizes a <c>"Territory Year Name"</c> label so the row remains identifiable through <see cref="KatDisplayName" /> even though the public <see cref="Name" /> property carries only the holiday name.</remarks>
+    string IKat.Name => $"{Territory} {Year} {Name}";
+
     /// <summary>
     /// Gets the delegate that materialises the rule provider under test. Invoked once per row so each
     /// assertion runs against a fresh provider instance.

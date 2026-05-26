@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.Kat;
 using Bodu.Text.Encoding;
 
 namespace Bodu.Text.Bencode;
@@ -21,8 +22,12 @@ public sealed record BencodeKnownAnswerVector(
     string Description,
     byte[] EncodedBytes,
     BencodedValue DecodedValue,
-    string? Source = null)
+    string? Source = null) : IKat
 {
+
+    /// <inheritdoc />
+    /// <remarks>Returns <see cref="Description" /> so the row participates in <see cref="KatDisplayName" />-driven display formatting.</remarks>
+    string IKat.Name => Description;
 
     /// <summary>
     /// Builds a vector for a dictionary value.

@@ -7,6 +7,7 @@
 #nullable enable
 
 using System.Collections.ObjectModel;
+using Bodu.Test.Kat;
 
 namespace Bodu.Text.Configuration.Test.Infrastructure;
 
@@ -1000,7 +1001,7 @@ public enum ConfigurationKatOutcome
 /// <summary>
 /// Represents a known-answer test case for Bodu text configuration.
 /// </summary>
-public sealed record ConfigurationKat
+public sealed record ConfigurationKat : IKat
 {
     private ConfigurationKat(
         string id,
@@ -1013,6 +1014,10 @@ public sealed record ConfigurationKat
         Kind = kind;
         Outcome = outcome;
     }
+
+    /// <inheritdoc />
+    /// <remarks>Returns <see cref="Title" /> so the row participates in <see cref="KatDisplayName" />-driven display formatting.</remarks>
+    string IKat.Name => Title;
 
     /// <summary>Gets the stable test identifier.</summary>
     public string Id { get; }

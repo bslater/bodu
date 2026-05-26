@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.Kat;
+
 namespace Bodu.Security.Cryptography.Infrastructure;
 
 /// <summary>
@@ -26,8 +28,18 @@ public sealed record AeadKnownAnswerVector(
     byte[] Plaintext,
     byte[] Ciphertext,
     byte[] Tag,
-    string? Source = null)
+    string? Source = null) : IKat
 {
+    /// <inheritdoc />
+    /// <remarks>
+    /// AEAD KAT files identify rows by their numeric <see cref="Count" /> rather than a textual label, so the
+    /// emitted name embeds <see cref="Count" /> and, when present, the <see cref="Source" /> citation — for
+    /// example <c>"NIST LWC #42"</c>.
+    /// </remarks>
+    string IKat.Name => Source is null
+        ? $"Vector {Count}"
+        : $"{Source} #{Count}";
+
     /// <summary>
     /// Constructs an <see cref="AeadKnownAnswerVector" /> from hex-encoded field values, splitting the trailing
     /// <paramref name="tagLength" /> bytes of the combined ciphertext-plus-tag string off as the authentication tag.

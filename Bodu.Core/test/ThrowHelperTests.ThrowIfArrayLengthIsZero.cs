@@ -37,31 +37,40 @@ public partial class ThrowHelperTests
         });
     }
     /// <summary>
-    /// Verifies the full <see cref="ThrowHelper.ThrowIfArrayLengthIsZero" /> contract matrix: null array →
-    /// <see cref="ArgumentNullException" />, zero-length array → <see cref="ArgumentException" />, non-empty
-    /// array → no throw.
+    /// Verifies that <see cref="ThrowHelper.ThrowIfArrayLengthIsZero" /> does not throw — and on the
+    /// ParamName-asserting overload reports nothing — for non-empty arrays.
     /// </summary>
     /// <param name="testName">The data-row label.</param>
     /// <param name="array">The array passed to the guard.</param>
-    /// <param name="expectedExceptionType">The exception type the guard must throw, or <see langword="null" /> if it must pass.</param>
+    [TestMethod]
+    [DynamicData(nameof(ThrowIfArrayLengthIsZeroValidContractData))]
+    public void ThrowIfArrayLengthIsZero_WhenArrayIsAccepted_ShouldNotThrowAndReportNothing(string testName, Array array) =>
+        AssertGuard(testName, () => ThrowHelper.ThrowIfArrayLengthIsZero(array, nameof(array)), null, null);
+
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfArrayLengthIsZero" /> throws the expected exception type
+    /// with <c>ParamName == "array"</c> for null arrays and zero-length arrays.
+    /// </summary>
+    /// <param name="testName">The data-row label.</param>
+    /// <param name="array">The array passed to the guard.</param>
+    /// <param name="expectedExceptionType">The exception type the guard must throw.</param>
     /// <param name="expectedParamName">The expected <see cref="ArgumentException.ParamName" />.</param>
     [TestMethod]
-    [DynamicData(nameof(ThrowIfArrayLengthIsZeroContractData))]
-    public void ThrowIfArrayLengthIsZero_WhenInvokedWithVariousArrays_ShouldFollowContract(
-        string testName, Array? array, Type? expectedExceptionType, string? expectedParamName)
+    [DynamicData(nameof(ThrowIfArrayLengthIsZeroInvalidContractData))]
+    public void ThrowIfArrayLengthIsZero_WhenArrayIsRejected_ShouldThrowExpected(
+        string testName, Array? array, Type expectedExceptionType, string? expectedParamName) =>
+        AssertGuard(testName, () => ThrowHelper.ThrowIfArrayLengthIsZero(array!, nameof(array)), expectedExceptionType, expectedParamName);
+
+    private static IEnumerable<object?[]> ThrowIfArrayLengthIsZeroValidContractData()
     {
-        AssertGuard(testName, () =>
-        {
-            ThrowHelper.ThrowIfArrayLengthIsZero(array!, nameof(array));
-        }, expectedExceptionType, expectedParamName);
+        yield return new object?[] { "single-element array", new[] { 0 } };
+        yield return new object?[] { "non-empty string array", new[] { "a", "b" } };
     }
 
-    private static IEnumerable<object?[]> ThrowIfArrayLengthIsZeroContractData()
+    private static IEnumerable<object?[]> ThrowIfArrayLengthIsZeroInvalidContractData()
     {
         yield return new object?[] { "null array → ArgumentNullException", null, typeof(ArgumentNullException), "array" };
         yield return new object?[] { "empty array → ArgumentException", Array.Empty<int>(), typeof(ArgumentException), "array" };
-        yield return new object?[] { "single-element array → no throw", new[] { 0 }, null, null };
-        yield return new object?[] { "non-empty string array → no throw", new[] { "a", "b" }, null, null };
     }
 
 }

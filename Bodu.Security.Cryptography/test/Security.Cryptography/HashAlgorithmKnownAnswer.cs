@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.Kat;
+
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
@@ -18,7 +20,7 @@ namespace Bodu.Security.Cryptography;
 /// already covered by the typed slots on <see cref="HashAlgorithmKnownAnswers" /> and should not be duplicated
 /// here.
 /// </remarks>
-public sealed record HashAlgorithmKnownAnswer
+public sealed record HashAlgorithmKnownAnswer : IKat
 {
     /// <summary>Gets the semantic name of this test vector used in diagnostic messages.</summary>
     public required string Name { get; init; }

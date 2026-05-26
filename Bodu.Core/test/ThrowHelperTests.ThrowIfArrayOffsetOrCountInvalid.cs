@@ -10,18 +10,42 @@ public sealed partial class ThrowHelperTests
 {
 
     /// <summary>
-    /// Verifies the full <see cref="ThrowHelper.ThrowIfArrayOffsetOrCountInvalid" /> contract matrix with
-    /// explicit ParamName disambiguation across the array / offset / count parameters. The thrown
-    /// <see cref="ArgumentException" />-derived exception must carry the name of the parameter that actually
-    /// violated the contract — never just the first parameter. This is the critical bug-class the strategy
-    /// flagged for multi-parameter guards.
+    /// Verifies that <see cref="ThrowHelper.ThrowIfArrayOffsetOrCountInvalid" /> does not throw — and on
+    /// the ParamName-asserting overload reports nothing — for valid <c>(array, offset, count)</c> triples
+    /// whose window fits inside the backing array.
+    /// </summary>
+    /// <param name="testName">The data-row label.</param>
+    /// <param name="arrayLength">Length of the array.</param>
+    /// <param name="offset">The offset.</param>
+    /// <param name="count">The count.</param>
+    [TestMethod]
+    [DataRow("valid window at start", 5, 0, 5)]
+    [DataRow("valid window in middle", 5, 2, 3)]
+    [DataRow("valid empty slice at end", 5, 5, 0)]
+    public void ThrowIfArrayOffsetOrCountInvalid_WhenInputIsAccepted_ShouldNotThrowAndReportNothing(
+        string testName, int arrayLength, int offset, int count)
+    {
+        Array array = new int[arrayLength];
+
+        AssertGuard(
+            testName,
+            () => ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(array, offset, count, "array", "offset", "count"),
+            null,
+            null);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfArrayOffsetOrCountInvalid" /> throws the expected
+    /// exception type with the expected <c>ParamName</c> — disambiguating across <c>array</c>,
+    /// <c>offset</c>, and <c>count</c> — for null arrays and out-of-range offset/count values. This is the
+    /// critical disambiguation contract for multi-parameter guards.
     /// </summary>
     /// <param name="testName">The data-row label.</param>
     /// <param name="arrayLength">Length of the array, or <c>-1</c> to pass <see langword="null" />.</param>
     /// <param name="offset">The offset.</param>
     /// <param name="count">The count.</param>
-    /// <param name="expectedExceptionTypeName">The thrown exception's short type name, or empty if no throw is expected.</param>
-    /// <param name="expectedParamName">The expected <see cref="ArgumentException.ParamName" />, or empty if not asserted.</param>
+    /// <param name="expectedExceptionTypeName">The thrown exception's short type name.</param>
+    /// <param name="expectedParamName">The expected <see cref="ArgumentException.ParamName" />, or empty if not asserted (used when the implementation does not designate a single parameter).</param>
     [TestMethod]
     [DataRow("null array → ArgumentNullException on array", -1, 0, 0, "ArgumentNullException", "array")]
     [DataRow("negative offset → AOORE on offset", 5, -1, 0, "ArgumentOutOfRangeException", "offset")]
@@ -29,17 +53,12 @@ public sealed partial class ThrowHelperTests
     [DataRow("negative count → AOORE on count", 5, 0, -1, "ArgumentOutOfRangeException", "count")]
     [DataRow("count > array.Length → AOORE on count", 5, 0, 6, "ArgumentOutOfRangeException", "count")]
     [DataRow("offset+count > array.Length → ArgumentException", 5, 2, 5, "ArgumentException", "")]
-    [DataRow("valid window at start → pass", 5, 0, 5, "", "")]
-    [DataRow("valid window in middle → pass", 5, 2, 3, "", "")]
-    [DataRow("valid empty slice at end → pass", 5, 5, 0, "", "")]
-    public void ThrowIfArrayOffsetOrCountInvalid_WhenInvokedWithVariousInputs_ShouldFollowContract(
+    public void ThrowIfArrayOffsetOrCountInvalid_WhenInputIsRejected_ShouldThrowOnExpectedParam(
         string testName, int arrayLength, int offset, int count, string expectedExceptionTypeName, string expectedParamName)
     {
         Array? array = arrayLength < 0 ? null : new int[arrayLength];
-        Type? expected = expectedExceptionTypeName.Length == 0
-            ? null
-            : Type.GetType($"System.{expectedExceptionTypeName}, System.Private.CoreLib")
-                ?? throw new InvalidOperationException($"Unknown exception type '{expectedExceptionTypeName}'.");
+        Type expected = Type.GetType($"System.{expectedExceptionTypeName}, System.Private.CoreLib")
+            ?? throw new InvalidOperationException($"Unknown exception type '{expectedExceptionTypeName}'.");
         var param = expectedParamName.Length == 0 ? null : expectedParamName;
 
         AssertGuard(

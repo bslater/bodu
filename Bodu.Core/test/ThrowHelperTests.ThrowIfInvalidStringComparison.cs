@@ -10,35 +10,39 @@ public partial class ThrowHelperTests
 {
 
     /// <summary>
-    /// Verifies the <see cref="ThrowHelper.ThrowIfInvalidStringComparison" /> contract with explicit ParamName
-    /// assertions: undefined <see cref="StringComparison" /> values throw on "comparisonType"; the six
-    /// canonical values pass.
+    /// Verifies that <see cref="ThrowHelper.ThrowIfInvalidStringComparison" /> does not throw — and on the
+    /// ParamName-asserting overload reports nothing — for each of the six canonical
+    /// <see cref="StringComparison" /> values.
     /// </summary>
     /// <param name="testName">The data-row label.</param>
     /// <param name="comparison">The <see cref="StringComparison" /> passed to the guard.</param>
-    /// <param name="expectsException">Whether the guard must throw.</param>
     [TestMethod]
-    [DataRow("CurrentCulture → pass", StringComparison.CurrentCulture, false)]
-    [DataRow("CurrentCultureIgnoreCase → pass", StringComparison.CurrentCultureIgnoreCase, false)]
-    [DataRow("InvariantCulture → pass", StringComparison.InvariantCulture, false)]
-    [DataRow("InvariantCultureIgnoreCase → pass", StringComparison.InvariantCultureIgnoreCase, false)]
-    [DataRow("Ordinal → pass", StringComparison.Ordinal, false)]
-    [DataRow("OrdinalIgnoreCase → pass", StringComparison.OrdinalIgnoreCase, false)]
-    [DataRow("undefined 999 → throw on comparisonType", (StringComparison)999, true)]
-    [DataRow("undefined -1 → throw on comparisonType", (StringComparison)(-1), true)]
-    [DataRow("undefined MaxValue → throw on comparisonType", (StringComparison)int.MaxValue, true)]
-    public void ThrowIfInvalidStringComparison_WhenInvokedWithVariousValues_ShouldFollowContract(
-        string testName, StringComparison comparison, bool expectsException)
-    {
-        Type? expected = expectsException ? typeof(ArgumentException) : null;
-        var expectedParam = expectsException ? "comparisonType" : null;
+    [DataRow("CurrentCulture", StringComparison.CurrentCulture)]
+    [DataRow("CurrentCultureIgnoreCase", StringComparison.CurrentCultureIgnoreCase)]
+    [DataRow("InvariantCulture", StringComparison.InvariantCulture)]
+    [DataRow("InvariantCultureIgnoreCase", StringComparison.InvariantCultureIgnoreCase)]
+    [DataRow("Ordinal", StringComparison.Ordinal)]
+    [DataRow("OrdinalIgnoreCase", StringComparison.OrdinalIgnoreCase)]
+    public void ThrowIfInvalidStringComparison_WhenValueIsCanonical_ShouldNotThrowAndReportNothing(string testName, StringComparison comparison) =>
+        AssertGuard(testName, () => ThrowHelper.ThrowIfInvalidStringComparison(comparison, "comparisonType"), null, null);
 
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfInvalidStringComparison" /> throws
+    /// <see cref="ArgumentException" /> with <c>ParamName == "comparisonType"</c> for undefined enum values
+    /// at boundary positions.
+    /// </summary>
+    /// <param name="testName">The data-row label.</param>
+    /// <param name="comparison">The <see cref="StringComparison" /> passed to the guard.</param>
+    [TestMethod]
+    [DataRow("undefined 999", (StringComparison)999)]
+    [DataRow("undefined -1", (StringComparison)(-1))]
+    [DataRow("undefined MaxValue", (StringComparison)int.MaxValue)]
+    public void ThrowIfInvalidStringComparison_WhenValueIsUndefined_ShouldThrowOnComparisonType(string testName, StringComparison comparison) =>
         AssertGuard(
             testName,
             () => ThrowHelper.ThrowIfInvalidStringComparison(comparison, "comparisonType"),
-            expected,
-            expectedParam);
-    }
+            typeof(ArgumentException),
+            "comparisonType");
 
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfInvalidStringComparison" />, when ValueIsInvalid, throws <see cref="ArgumentException" />.

@@ -26,6 +26,7 @@ public partial class ConcurrentCircularBufferTests
     /// the buffer.
     /// </summary>
     [TestMethod]
+    [TestCategory("Stress")]
     public void Indexer_WhenContendedWithEnqueueAndDequeue_ShouldReturnAValueThatExisted()
     {
         const int capacity = 32;
@@ -241,6 +242,7 @@ public partial class ConcurrentCircularBufferTests
     /// consumers, and overwrite-mode togglers concurrently mutate the buffer.
     /// </summary>
     [TestMethod]
+    [TestCategory("Stress")]
     public void StateProperties_WhenReadDuringConcurrentMutation_ShouldRemainInternallyConsistent()
     {
         const int capacity = 32;
@@ -448,6 +450,7 @@ public partial class ConcurrentCircularBufferTests
     /// invariant <c>Count == enqueueSuccesses − logicalRemovals</c> without faults.
     /// </summary>
     [TestMethod]
+    [TestCategory("Stress")]
     [DataRow(10, true)]
     [DataRow(50, true)]
     [DataRow(10, false)]
@@ -654,6 +657,7 @@ public partial class ConcurrentCircularBufferTests
     /// load surfaces only <see cref="InvalidOperationException" /> from throwing enqueues, never any state-corruption exception.
     /// </summary>
     [TestMethod]
+    [TestCategory("Stress")]
     public void StressTest_WhenAllowOverwriteToggledConcurrently_ShouldNeverCorruptState()
     {
         const int capacity = 8;
@@ -906,6 +910,7 @@ public partial class ConcurrentCircularBufferTests
     /// faults and the count stays within bounds.
     /// </summary>
     [TestMethod]
+    [TestCategory("Stress")]
     public void StressTest_WhenCapacityIsMin_ShouldRemainStableUnderMaxContention()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(MinCapacity, allowOverwrite: true);
@@ -1039,6 +1044,7 @@ public partial class ConcurrentCircularBufferTests
     /// maintain count bounds, consistent post-quiescence state, and do not throw.
     /// </summary>
     [TestMethod]
+    [TestCategory("Stress")]
     [DataRow(8, true)]
     [DataRow(8, false)]
     public void StressTest_WhenClearInterleavesConcurrently_ShouldMaintainInvariantsUnderFullLoad(
@@ -1198,6 +1204,7 @@ public partial class ConcurrentCircularBufferTests
     /// items than the buffer capacity.
     /// </summary>
     [TestMethod]
+    [TestCategory("Stress")]
     [DataRow(true)]
     [DataRow(false)]
     public void StressTest_WhenEnumeratingDuringConcurrentMutation_ShouldProduceStableBoundedSnapshots(
@@ -1362,6 +1369,7 @@ public partial class ConcurrentCircularBufferTests
     /// not throw, corrupt event delivery, or prevent workers from terminating.
     /// </summary>
     [TestMethod]
+    [TestCategory("Stress")]
     public void StressTest_WhenEventHandlersSubscribedAndUnsubscribedConcurrently_ShouldDeliverEventsConsistently()
     {
         const int capacity = 4;
@@ -1587,6 +1595,7 @@ public partial class ConcurrentCircularBufferTests
     /// and that all workers terminate within the deadlock timeout without unexpected faults.
     /// </summary>
     [TestMethod]
+    [TestCategory("Stress")]
     public void StressTest_WhenHighConcurrency_ShouldNotDeadlockOrLivelock()
     {
         const int capacity = 64;
@@ -1720,6 +1729,7 @@ public partial class ConcurrentCircularBufferTests
     /// <see cref="InvalidOperationException" /> failures from state-dependent throwing APIs.
     /// </summary>
     [TestMethod]
+    [TestCategory("Stress")]
     [DataRow(true)]
     [DataRow(false)]
     public void StressTest_WhenMixedPublicApiSurfaceIsUsedConcurrently_ShouldOnlyRaiseExpectedExceptions(
@@ -1962,6 +1972,7 @@ public partial class ConcurrentCircularBufferTests
     /// interleaved with live mutations never throw and return arrays of length within capacity.
     /// </summary>
     [TestMethod]
+    [TestCategory("Stress")]
     [DataRow(true)]
     [DataRow(false)]
     public void StressTest_WhenSnapshotOperationsInterleaveWithMutations_ShouldNeverThrowOrCorrupt(
@@ -2108,6 +2119,7 @@ public partial class ConcurrentCircularBufferTests
     /// overwrite mode, <see cref="ConcurrentCircularBuffer{T}.Enqueue" /> never throws.
     /// </summary>
     [TestMethod]
+    [TestCategory("Stress")]
     [DataRow(10, true)]
     [DataRow(10, false)]
     public void StressTest_WhenThrowingApiPathsUsed_ShouldOnlyRaiseExpectedExceptions(
@@ -2303,6 +2315,7 @@ public partial class ConcurrentCircularBufferTests
     /// is under concurrent enqueue, dequeue, and overwrite pressure.
     /// </summary>
     [TestMethod]
+    [TestCategory("Stress")]
     [DataRow(true)]
     [DataRow(false)]
     public void ToArray_WhenUnderConcurrentMutationPressure_ShouldNeverReturnTornGenerationMix(
@@ -2595,6 +2608,7 @@ public partial class ConcurrentCircularBufferTests
     /// dequeue, and overwrite pressure, and never returns an impossible generation value.
     /// </summary>
     [TestMethod]
+    [TestCategory("Stress")]
     public void TryPeek_WhenContendedWithEnqueueDequeueAndOverwrite_ShouldReturnPlausibleValue()
     {
         const int capacity = 32;

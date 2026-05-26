@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.Kat;
+
 namespace Bodu.IO.Hashing.CheckDigits;
 
 /// <summary>
@@ -17,7 +19,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// canonical text form interleaves the country code and check digits ahead of the BBAN, so positive vectors must
 /// reflect that layout rather than the body order absorbed by <c>Append</c>.
 /// </remarks>
-public sealed record MultiCharCheckDigitIsValidKnownAnswer
+public sealed record MultiCharCheckDigitIsValidKnownAnswer : IKat
 {
 
     /// <summary>

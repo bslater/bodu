@@ -4,13 +4,15 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.Kat;
+
 namespace Bodu.IO.Hashing.CheckDigits;
 
 /// <summary>
 /// Represents a single known-answer test vector for a <see cref="MultiCharCheckDigitAlgorithm" />, pairing a body
 /// of alphanumeric characters with the expected multi-character check code produced by the algorithm under test.
 /// </summary>
-public sealed record MultiCharCheckDigitKnownAnswer
+public sealed record MultiCharCheckDigitKnownAnswer : IKat
 {
 
     /// <summary>

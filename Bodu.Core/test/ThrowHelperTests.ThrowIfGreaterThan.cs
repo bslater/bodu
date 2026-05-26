@@ -1,8 +1,11 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ThrowHelperTests.ThrowIfGreaterThan.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
+
+using Bodu.Test.Assertions;
+using Bodu.Test.Kat;
 
 namespace Bodu;
 
@@ -10,53 +13,93 @@ public partial class ThrowHelperTests
 {
 
     /// <summary>
-    /// Verifies the full <see cref="ThrowHelper.ThrowIfGreaterThan{T}" /> contract matrix with explicit
-    /// ParamName assertions: <c>value &gt; max</c> throws <see cref="ArgumentOutOfRangeException" /> with
-    /// ParamName "value"; <c>value &lt;= max</c> passes.
+    /// Verifies that <see cref="ThrowHelper.ThrowIfGreaterThan{T}(T, T, string)" /> throws
+    /// <see cref="ArgumentOutOfRangeException" /> for every <see cref="GuardInvalidKat{Int32}" /> row whose
+    /// value exceeds the supplied maximum.
     /// </summary>
-    /// <param name="testName">The data-row label.</param>
-    /// <param name="value">The value compared against <paramref name="max" />.</param>
-    /// <param name="max">The inclusive maximum.</param>
-    /// <param name="expectsException">Whether the guard must throw.</param>
+    /// <param name="kat">The KAT row supplying a value-exceeds-max pair.</param>
     [TestMethod]
-    [DataRow("equal → pass", 5, 5, false)]
-    [DataRow("less than → pass", 4, 5, false)]
-    [DataRow("greater than → throw", 6, 5, true)]
-    [DataRow("MaxValue vs MaxValue-1 → throw", int.MaxValue, int.MaxValue - 1, true)]
-    [DataRow("MinValue vs MinValue → pass", int.MinValue, int.MinValue, false)]
-    public void ThrowIfGreaterThan_WhenInvokedWithVariousPairs_ShouldFollowContract(
-        string testName, int value, int max, bool expectsException)
-    {
-        Type? expected = expectsException ? typeof(ArgumentOutOfRangeException) : null;
-        var expectedParam = expectsException ? "value" : null;
+    [DynamicData(
+        nameof(ThrowIfGreaterThanInvalidCases),
+        DynamicDataSourceType.Method,
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void ThrowIfGreaterThan_WhenValueExceedsMax_ShouldThrowExactly(GuardInvalidKat<int> kat) =>
+        ExceptionAssert.AssertGuard(
+            kat.Name,
+            () => ThrowHelper.ThrowIfGreaterThan(kat.Value, kat.Other),
+            kat.ExceptionType,
+            expectedParamName: null);
 
-        AssertGuard(testName, () => ThrowHelper.ThrowIfGreaterThan(value, max, nameof(value)), expected, expectedParam);
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfGreaterThan{T}(T, T, string)" /> completes silently when
+    /// the value is less than or equal to the supplied maximum.
+    /// </summary>
+    /// <param name="kat">The KAT row supplying a value-at-or-below-max pair.</param>
+    [TestMethod]
+    [DynamicData(
+        nameof(ThrowIfGreaterThanValidCases),
+        DynamicDataSourceType.Method,
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void ThrowIfGreaterThan_WhenValueIsLessThanOrEqualToMax_ShouldNotThrow(GuardValidKat<int> kat) =>
+        ThrowHelper.ThrowIfGreaterThan(kat.Value, kat.Other);
+
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfGreaterThan{T}(T, T, string)" /> reports the explicitly
+    /// supplied <c>paramName</c> on the thrown <see cref="ArgumentOutOfRangeException" />.
+    /// </summary>
+    /// <param name="kat">The KAT row supplying a value-exceeds-max pair and the expected <c>ParamName</c>.</param>
+    [TestMethod]
+    [DynamicData(
+        nameof(ThrowIfGreaterThanParamNameCases),
+        DynamicDataSourceType.Method,
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void ThrowIfGreaterThan_WhenValueExceedsMax_ShouldReportParamName(GuardInvalidKat<int> kat) =>
+        ExceptionAssert.AssertGuard(
+            kat.Name,
+            () => ThrowHelper.ThrowIfGreaterThan(kat.Value, kat.Other, kat.ParamName),
+            kat.ExceptionType,
+            kat.ParamName);
+
+    /// <summary>
+    /// Supplies the <see cref="GuardInvalidKat{Int32}" /> rows used by
+    /// <see cref="ThrowIfGreaterThan_WhenValueExceedsMax_ShouldThrowExactly(GuardInvalidKat{Int32})" />.
+    /// </summary>
+    /// <returns>Value/max pairs where the value exceeds the maximum and the guard must throw.</returns>
+    private static IEnumerable<object?[]> ThrowIfGreaterThanInvalidCases()
+    {
+        yield return new object?[] { new GuardInvalidKat<int>("6 > 5", 6, 5, typeof(ArgumentOutOfRangeException)) };
+        yield return new object?[] { new GuardInvalidKat<int>("1 > 0", 1, 0, typeof(ArgumentOutOfRangeException)) };
+        yield return new object?[] { new GuardInvalidKat<int>("MaxValue > MaxValue-1", int.MaxValue, int.MaxValue - 1, typeof(ArgumentOutOfRangeException)) };
     }
 
     /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfGreaterThan" />, when ValueIsGreater, throws <see cref="ArgumentOutOfRangeException" />.
+    /// Supplies the <see cref="GuardValidKat{Int32}" /> rows used by
+    /// <see cref="ThrowIfGreaterThan_WhenValueIsLessThanOrEqualToMax_ShouldNotThrow(GuardValidKat{Int32})" />.
     /// </summary>
-    [TestMethod]
-    [DataRow(6, 5)]
-    [DataRow(1, 0)]
-    [DataRow(int.MaxValue, int.MaxValue - 1)]
-    public void ThrowIfGreaterThan_WhenValueIsGreater_ShouldThrowExactly(int value, int max)
+    /// <returns>Value/max pairs where the value is less than or equal to the maximum.</returns>
+    private static IEnumerable<object?[]> ThrowIfGreaterThanValidCases()
     {
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            ThrowHelper.ThrowIfGreaterThan(value, max);
-        });
+        yield return new object?[] { new GuardValidKat<int>("5 == 5", 5, 5) };
+        yield return new object?[] { new GuardValidKat<int>("4 < 5", 4, 5) };
+        yield return new object?[] { new GuardValidKat<int>("MinValue == MinValue", int.MinValue, int.MinValue) };
+        yield return new object?[] { new GuardValidKat<int>("3 == 3", 3, 3) };
+        yield return new object?[] { new GuardValidKat<int>("2 < 3", 2, 3) };
+        yield return new object?[] { new GuardValidKat<int>("0 == 0", 0, 0) };
+        yield return new object?[] { new GuardValidKat<int>("-1 < 0", -1, 0) };
     }
 
     /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfGreaterThan" />, when ValueIsLessThanOrEqualToMax, NotThrow.
+    /// Supplies the <see cref="GuardInvalidKat{Int32}" /> rows used by
+    /// <see cref="ThrowIfGreaterThan_WhenValueExceedsMax_ShouldReportParamName(GuardInvalidKat{Int32})" />.
     /// </summary>
-    [TestMethod]
-    [DataRow(3, 3)]
-    [DataRow(2, 3)]
-    [DataRow(0, 0)]
-    [DataRow(-1, 0)]
-    [DataRow(int.MinValue, int.MinValue)]
-    public void ThrowIfGreaterThan_WhenValueIsLessThanOrEqualToMax_ShouldNotThrow(int value, int max) => ThrowHelper.ThrowIfGreaterThan(value, max);
+    /// <returns>Invalid rows whose <c>ParamName</c> the helper must propagate to the thrown exception.</returns>
+    private static IEnumerable<object?[]> ThrowIfGreaterThanParamNameCases()
+    {
+        yield return new object?[] { new GuardInvalidKat<int>("6 > 5, paramName=value", 6, 5, typeof(ArgumentOutOfRangeException), "value") };
+        yield return new object?[] { new GuardInvalidKat<int>("MaxValue > MaxValue-1, paramName=value", int.MaxValue, int.MaxValue - 1, typeof(ArgumentOutOfRangeException), "value") };
+    }
 
 }

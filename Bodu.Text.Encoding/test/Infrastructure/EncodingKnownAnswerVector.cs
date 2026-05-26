@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.Kat;
+
 namespace Bodu.Text.Encoding;
 
 /// <summary>
@@ -21,8 +23,17 @@ public sealed record EncodingKnownAnswerVector(
     string Description,
     byte[] DecodedBytes,
     string Encoded,
-    string? Source = null)
+    string? Source = null) : IKat
 {
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// Returns <see cref="Description" /> so the row can be surfaced by
+    /// <see cref="KatDisplayName.GetDisplayName" /> when a test method opts in via
+    /// <c>DynamicDataDisplayName</c>. Existing tests that rely on the <see cref="ToString" /> override for
+    /// row naming continue to work unchanged.
+    /// </remarks>
+    string IKat.Name => Description;
 
     /// <summary>
     /// Builds a vector from an ASCII string input, used for the many RFC 4648 §10 examples that express the input

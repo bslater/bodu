@@ -32,32 +32,43 @@ public partial class ThrowHelperTests
         });
     }
     /// <summary>
-    /// Verifies the multi-parameter contract for
-    /// <see cref="ThrowHelper.ThrowIfConditionallyRequiredParameterIsNull{TValue, TCondition}" />: when the
-    /// guard fails because <c>value</c> is <see langword="null" /> under a matching condition, ParamName must
-    /// reference the <c>value</c> parameter, not the condition parameter.
+    /// Verifies that <see cref="ThrowHelper.ThrowIfConditionallyRequiredParameterIsNull{TValue, TCondition}" />
+    /// does not throw — and on the ParamName-asserting overload reports nothing — when the requirement is
+    /// not activated or the value is non-null.
     /// </summary>
     /// <param name="testName">The data-row label.</param>
     /// <param name="value">The value being validated.</param>
     /// <param name="condition">The conditional input.</param>
     /// <param name="matchValue">The condition value that activates the requirement.</param>
-    /// <param name="expectsException">Whether the guard must throw.</param>
     [TestMethod]
-    [DataRow("condition matches and value null → throw on value", null, true, true, true)]
-    [DataRow("condition matches and value non-null → pass", "ok", true, true, false)]
-    [DataRow("condition does not match → pass even with null value", null, true, false, false)]
-    [DataRow("condition does not match → pass even with non-null value", "ok", false, true, false)]
-    public void ThrowIfConditionallyRequiredParameterIsNull_WhenInvokedWithVariousInputs_ShouldFollowContract(
-        string testName, string? value, bool condition, bool matchValue, bool expectsException)
-    {
-        Type? expected = expectsException ? typeof(ArgumentException) : null;
-        var expectedParam = expectsException ? "value" : null;
-
+    [DataRow("condition matches and value non-null", "ok", true, true)]
+    [DataRow("condition does not match (null value)", null, true, false)]
+    [DataRow("condition does not match (non-null value)", "ok", false, true)]
+    public void ThrowIfConditionallyRequiredParameterIsNull_WhenRequirementIsNotViolated_ShouldNotThrowAndReportNothing(
+        string testName, string? value, bool condition, bool matchValue) =>
         AssertGuard(
             testName,
             () => ThrowHelper.ThrowIfConditionallyRequiredParameterIsNull(value, condition, matchValue, nameof(value), "condition"),
-            expected,
-            expectedParam);
-    }
+            null,
+            null);
+
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfConditionallyRequiredParameterIsNull{TValue, TCondition}" />
+    /// throws <see cref="ArgumentException" /> with <c>ParamName == "value"</c> (never <c>"condition"</c>) when
+    /// the condition matches and the value is <see langword="null" />.
+    /// </summary>
+    /// <param name="testName">The data-row label.</param>
+    /// <param name="value">The value being validated.</param>
+    /// <param name="condition">The conditional input.</param>
+    /// <param name="matchValue">The condition value that activates the requirement.</param>
+    [TestMethod]
+    [DataRow("condition matches and value null", null, true, true)]
+    public void ThrowIfConditionallyRequiredParameterIsNull_WhenRequirementIsViolated_ShouldThrowOnValue(
+        string testName, string? value, bool condition, bool matchValue) =>
+        AssertGuard(
+            testName,
+            () => ThrowHelper.ThrowIfConditionallyRequiredParameterIsNull(value, condition, matchValue, nameof(value), "condition"),
+            typeof(ArgumentException),
+            "value");
 
 }

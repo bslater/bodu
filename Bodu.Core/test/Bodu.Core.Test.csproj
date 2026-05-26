@@ -36,9 +36,16 @@
   <!-- Exclude files that are incompatible with netstandard2.0 -->
   <ItemGroup>
     <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
+    <!--
+      Static-import ExceptionAssert so the unqualified AssertGuard(...) calls in the existing
+      ThrowHelperTests partial-class files continue to resolve after the private partial helper was
+      promoted to Bodu.Test in PR 1. Lets the shim file be deleted without touching every call site.
+    -->
+    <Using Include="Bodu.Test.Assertions.ExceptionAssert" Static="true" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\src\Bodu.Core.csproj" />
+    <ProjectReference Include="..\..\Bodu.Test\test\Bodu.Test.csproj" />
   </ItemGroup>
 </Project>

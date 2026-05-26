@@ -10,40 +10,50 @@ public partial class ThrowHelperTests
 {
 
     /// <summary>
-    /// Verifies the full <see cref="ThrowHelper.ThrowIfStringLengthOutOfRange" /> contract with explicit
-    /// ParamName assertions: null → <see cref="ArgumentNullException" /> on "value"; below-min or above-max
-    /// → <see cref="ArgumentOutOfRangeException" /> on "value"; in-range → pass.
+    /// Verifies that <see cref="ThrowHelper.ThrowIfStringLengthOutOfRange" /> does not throw — and on the
+    /// ParamName-asserting overload reports nothing — when the string length is within the inclusive
+    /// <c>[minLength, maxLength]</c> range.
     /// </summary>
     /// <param name="testName">The data-row label.</param>
-    /// <param name="value">The string passed to the guard, or <see langword="null" />.</param>
+    /// <param name="value">The string passed to the guard.</param>
     /// <param name="minLength">Inclusive minimum length.</param>
     /// <param name="maxLength">Inclusive maximum length.</param>
-    /// <param name="expectedExceptionTypeName">The thrown exception's short type name, or empty if no throw.</param>
-    /// <param name="expectedParamName">The expected ParamName, or empty if not asserted.</param>
     [TestMethod]
-    [DataRow("null → ANE on value", null, 2, 10, "ArgumentNullException", "value")]
-    [DataRow("below min → AOORE on value", "a", 2, 10, "ArgumentOutOfRangeException", "value")]
-    [DataRow("empty below min → AOORE on value", "", 1, 5, "ArgumentOutOfRangeException", "value")]
-    [DataRow("above max → AOORE on value", "abcdef", 1, 5, "ArgumentOutOfRangeException", "value")]
-    [DataRow("at min → pass", "ab", 2, 10, "", "")]
-    [DataRow("at max → pass", "abcdefghij", 2, 10, "", "")]
-    [DataRow("inside → pass", "abcde", 2, 10, "", "")]
-    [DataRow("min == 0 with empty → pass", "", 0, 5, "", "")]
-    [DataRow("degenerate single length → pass", "x", 1, 1, "", "")]
-    public void ThrowIfStringLengthOutOfRange_WhenInvokedWithVariousInputs_ShouldFollowContract(
-        string testName, string? value, int minLength, int maxLength, string expectedExceptionTypeName, string expectedParamName)
+    [DataRow("at min", "ab", 2, 10)]
+    [DataRow("at max", "abcdefghij", 2, 10)]
+    [DataRow("inside", "abcde", 2, 10)]
+    [DataRow("min == 0 with empty", "", 0, 5)]
+    [DataRow("degenerate single length", "x", 1, 1)]
+    public void ThrowIfStringLengthOutOfRange_WhenValueFits_ShouldNotThrowAndReportNothing(
+        string testName, string value, int minLength, int maxLength) =>
+        AssertGuard(testName, () => ThrowHelper.ThrowIfStringLengthOutOfRange(value, minLength, maxLength, nameof(value)), null, null);
+
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfStringLengthOutOfRange" /> throws
+    /// <see cref="ArgumentNullException" /> (when null) or <see cref="ArgumentOutOfRangeException" /> (when
+    /// the length falls outside <c>[minLength, maxLength]</c>), each with <c>ParamName == "value"</c>.
+    /// </summary>
+    /// <param name="testName">The data-row label.</param>
+    /// <param name="value">The string passed to the guard.</param>
+    /// <param name="minLength">Inclusive minimum length.</param>
+    /// <param name="maxLength">Inclusive maximum length.</param>
+    /// <param name="expectedExceptionTypeName">The thrown exception's short type name.</param>
+    [TestMethod]
+    [DataRow("null", null, 2, 10, "ArgumentNullException")]
+    [DataRow("below min", "a", 2, 10, "ArgumentOutOfRangeException")]
+    [DataRow("empty below min", "", 1, 5, "ArgumentOutOfRangeException")]
+    [DataRow("above max", "abcdef", 1, 5, "ArgumentOutOfRangeException")]
+    public void ThrowIfStringLengthOutOfRange_WhenValueIsRejected_ShouldThrowOnValue(
+        string testName, string? value, int minLength, int maxLength, string expectedExceptionTypeName)
     {
-        Type? expected = expectedExceptionTypeName.Length == 0
-            ? null
-            : Type.GetType($"System.{expectedExceptionTypeName}, System.Private.CoreLib")
-                ?? throw new InvalidOperationException($"Unknown exception type '{expectedExceptionTypeName}'.");
-        var param = expectedParamName.Length == 0 ? null : expectedParamName;
+        Type expected = Type.GetType($"System.{expectedExceptionTypeName}, System.Private.CoreLib")
+            ?? throw new InvalidOperationException($"Unknown exception type '{expectedExceptionTypeName}'.");
 
         AssertGuard(
             testName,
             () => ThrowHelper.ThrowIfStringLengthOutOfRange(value!, minLength, maxLength, nameof(value)),
             expected,
-            param);
+            "value");
     }
 
     /// <summary>

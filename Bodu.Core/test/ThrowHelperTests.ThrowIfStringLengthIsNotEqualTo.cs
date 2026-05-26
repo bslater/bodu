@@ -10,36 +10,45 @@ public partial class ThrowHelperTests
 {
 
     /// <summary>
-    /// Verifies the full <see cref="ThrowHelper.ThrowIfStringLengthIsNotEqualTo" /> contract with explicit
-    /// ParamName assertions: null → <see cref="ArgumentNullException" /> on "value"; length mismatch →
-    /// <see cref="ArgumentException" /> on "value"; exact match → pass.
+    /// Verifies that <see cref="ThrowHelper.ThrowIfStringLengthIsNotEqualTo" /> does not throw — and on the
+    /// ParamName-asserting overload reports nothing — when the string length matches the expected length
+    /// exactly.
     /// </summary>
     /// <param name="testName">The data-row label.</param>
-    /// <param name="value">The string passed to the guard, or <see langword="null" />.</param>
+    /// <param name="value">The string passed to the guard.</param>
     /// <param name="expectedLength">The required exact length.</param>
-    /// <param name="expectedExceptionTypeName">The thrown exception's short type name, or empty if no throw.</param>
-    /// <param name="expectedParamName">The expected ParamName, or empty if not asserted.</param>
     [TestMethod]
-    [DataRow("null → ANE on value", null, 5, "ArgumentNullException", "value")]
-    [DataRow("shorter → AE on value", "abc", 5, "ArgumentException", "value")]
-    [DataRow("longer → AE on value", "abcdef", 5, "ArgumentException", "value")]
-    [DataRow("empty vs expected 1 → AE on value", "", 1, "ArgumentException", "value")]
-    [DataRow("exact match → pass", "abcde", 5, "", "")]
-    [DataRow("empty vs 0 → pass", "", 0, "", "")]
-    public void ThrowIfStringLengthIsNotEqualTo_WhenInvokedWithVariousInputs_ShouldFollowContract(
-        string testName, string? value, int expectedLength, string expectedExceptionTypeName, string expectedParamName)
+    [DataRow("exact match", "abcde", 5)]
+    [DataRow("empty vs 0", "", 0)]
+    public void ThrowIfStringLengthIsNotEqualTo_WhenValueMatches_ShouldNotThrowAndReportNothing(
+        string testName, string value, int expectedLength) =>
+        AssertGuard(testName, () => ThrowHelper.ThrowIfStringLengthIsNotEqualTo(value, expectedLength, nameof(value)), null, null);
+
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfStringLengthIsNotEqualTo" /> throws
+    /// <see cref="ArgumentNullException" /> (when null) or <see cref="ArgumentException" /> (when length
+    /// differs), each with <c>ParamName == "value"</c>.
+    /// </summary>
+    /// <param name="testName">The data-row label.</param>
+    /// <param name="value">The string passed to the guard.</param>
+    /// <param name="expectedLength">The required exact length.</param>
+    /// <param name="expectedExceptionTypeName">The thrown exception's short type name.</param>
+    [TestMethod]
+    [DataRow("null", null, 5, "ArgumentNullException")]
+    [DataRow("shorter", "abc", 5, "ArgumentException")]
+    [DataRow("longer", "abcdef", 5, "ArgumentException")]
+    [DataRow("empty vs expected 1", "", 1, "ArgumentException")]
+    public void ThrowIfStringLengthIsNotEqualTo_WhenValueIsRejected_ShouldThrowOnValue(
+        string testName, string? value, int expectedLength, string expectedExceptionTypeName)
     {
-        Type? expected = expectedExceptionTypeName.Length == 0
-            ? null
-            : Type.GetType($"System.{expectedExceptionTypeName}, System.Private.CoreLib")
-                ?? throw new InvalidOperationException($"Unknown exception type '{expectedExceptionTypeName}'.");
-        var param = expectedParamName.Length == 0 ? null : expectedParamName;
+        Type expected = Type.GetType($"System.{expectedExceptionTypeName}, System.Private.CoreLib")
+            ?? throw new InvalidOperationException($"Unknown exception type '{expectedExceptionTypeName}'.");
 
         AssertGuard(
             testName,
             () => ThrowHelper.ThrowIfStringLengthIsNotEqualTo(value!, expectedLength, nameof(value)),
             expected,
-            param);
+            "value");
     }
 
     /// <summary>

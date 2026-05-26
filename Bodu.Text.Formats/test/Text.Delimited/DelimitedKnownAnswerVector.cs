@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.Kat;
+
 namespace Bodu.Text.Delimited;
 
 /// <summary>
@@ -32,8 +34,12 @@ public sealed record DelimitedKnownAnswerVector(
     string[] ExpectedHeaders,
     string[][] ExpectedRows,
     DelimitedParseOptions? Options = null,
-    string? Source = null)
+    string? Source = null) : IKat
 {
+    /// <inheritdoc />
+    /// <remarks>Returns <see cref="Description" /> so the row participates in <see cref="KatDisplayName" />-driven display formatting.</remarks>
+    string IKat.Name => Description;
+
     /// <summary>
     /// Returns the human-readable label, used by MSTest's <c>[DynamicData]</c> infrastructure when generating
     /// test names so each row is identifiable in failure output.

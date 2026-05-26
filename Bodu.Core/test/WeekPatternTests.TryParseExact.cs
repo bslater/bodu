@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.Kat;
+
 namespace Bodu;
 
 public partial class WeekPatternTests
@@ -115,21 +117,42 @@ public partial class WeekPatternTests
     }
     /// <summary>
     /// Verifies that <see cref="WeekPattern.TryParseExact(string, string, out WeekPattern)" /> returns
-    /// the expected success flag and value for various valid and invalid combinations of input and format.
+    /// <see langword="true" /> and yields the expected bitmask for every <see cref="WeekPatternParseKat" />
+    /// row produced by <see cref="GetTryParseExactValidKats" />.
     /// </summary>
+    /// <param name="kat">The KAT row supplying the valid input, explicit format, and expected bitmask.</param>
     [TestMethod]
-    [DynamicData(nameof(GetTryParseExactTestData), typeof(WeekPatternTests))]
-    public void TryParseExact_WhenGivenInputAndFormat_ShouldReturnExpectedResultAndParsedValue(
-        string input, string format, byte expected, bool isValid)
+    [DynamicData(
+        nameof(GetTryParseExactValidKats),
+        typeof(WeekPatternTests),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void TryParseExact_WhenInputIsValid_ShouldReturnTrueAndSetExpectedValue(WeekPatternParseKat kat)
     {
-        var success = WeekPattern.TryParseExact(input, format, out WeekPattern actual);
+        bool success = WeekPattern.TryParseExact(kat.Input, kat.Format, out WeekPattern actual);
 
-        Assert.AreEqual(isValid, success);
+        Assert.IsTrue(success);
+        Assert.AreEqual(kat.Expected, (byte)actual);
+    }
 
-        if (success)
-            Assert.AreEqual(expected, actual);
-        else
-            Assert.AreEqual(WeekPattern.Empty, actual);
+    /// <summary>
+    /// Verifies that <see cref="WeekPattern.TryParseExact(string, string, out WeekPattern)" /> returns
+    /// <see langword="false" /> and sets the result to <see cref="WeekPattern.Empty" /> for every
+    /// <see cref="InvalidWeekPatternParseKat" /> row produced by <see cref="GetTryParseExactInvalidKats" />.
+    /// </summary>
+    /// <param name="kat">The KAT row supplying an input/format combination expected to fail parsing.</param>
+    [TestMethod]
+    [DynamicData(
+        nameof(GetTryParseExactInvalidKats),
+        typeof(WeekPatternTests),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void TryParseExact_WhenInputIsInvalid_ShouldReturnFalseAndSetEmpty(InvalidWeekPatternParseKat kat)
+    {
+        bool success = WeekPattern.TryParseExact(kat.Input, kat.Format, out WeekPattern actual);
+
+        Assert.IsFalse(success);
+        Assert.AreEqual(WeekPattern.Empty, actual);
     }
 
     /// <summary>
