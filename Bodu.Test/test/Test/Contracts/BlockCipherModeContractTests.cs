@@ -48,6 +48,14 @@ public abstract class BlockCipherModeContractTests<TCipher>
     protected abstract IReadOnlyList<BlockCipherModeKat> KnownAnswers { get; }
 
     /// <summary>
+    /// Returns the round-trip vectors that the cipher / mode / padding combination must satisfy:
+    /// <c>Decrypt(Encrypt(plaintext)) == plaintext</c>. Default implementation returns an empty list;
+    /// subclasses override when published fixed-ciphertext vectors are unavailable but the
+    /// encrypt/decrypt round-trip is still observable.
+    /// </summary>
+    protected virtual IReadOnlyList<BlockCipherModeKat> RoundTripCases => Array.Empty<BlockCipherModeKat>();
+
+    /// <summary>
     /// Verifies that every <see cref="BlockCipherModeKat" /> row reproduces its expected ciphertext.
     /// </summary>
     [TestMethod]
@@ -78,6 +86,27 @@ public abstract class BlockCipherModeContractTests<TCipher>
                 kat.Plaintext,
                 actual,
                 $"KAT '{kat.Name}': decrypt produced unexpected plaintext.");
+        }
+    }
+
+    /// <summary>
+    /// Verifies that every <see cref="RoundTripCases" /> row satisfies the encrypt-decrypt round-trip
+    /// invariant: <c>Decrypt(Encrypt(plaintext)) == plaintext</c>. Documents that the cipher / mode /
+    /// padding triple is implemented as inverse operations even when published fixed-ciphertext
+    /// vectors are unavailable.
+    /// </summary>
+    [TestMethod]
+    public void RoundTrip_WhenEncryptedThenDecrypted_ShouldReturnPlaintext()
+    {
+        foreach (BlockCipherModeKat kat in RoundTripCases)
+        {
+            byte[] ciphertext = Encrypt(kat.Key, kat.IV, kat.Mode, kat.Padding, kat.Plaintext);
+            byte[] roundTripped = Decrypt(kat.Key, kat.IV, kat.Mode, kat.Padding, ciphertext);
+
+            CollectionAssert.AreEqual(
+                kat.Plaintext,
+                roundTripped,
+                $"Round-trip KAT '{kat.Name}': decrypt of encrypted plaintext did not yield original.");
         }
     }
 }
