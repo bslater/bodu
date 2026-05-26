@@ -26,11 +26,14 @@ Initial release of a new numeric-primitives library. Ships `Fraction<T>`, an imm
 
 - `XmlResourceNotableDateRuleProvider` gains a new constructor accepting an ordered `IEnumerable<Assembly>`. The provider walks the chain when resolving manifest resources, so a `<UseFrom>` directive declared in one assembly can cherry-pick rules from another. The legacy single-assembly constructor is preserved as a thin shim and remains source-compatible.
 - A new embedded `default-minimal.xml` resource carrying a single rule for New Year's Day, so the parameterless `new NotableDateService()` constructor still produces a usable service when no companion data pack is referenced.
+- Resolve-entry metadata API on `NotableDateService` exposes the originating rule, provider, and assembly chain for each resolved occurrence, so consumers can audit *why* a date was produced.
+- Parser policy hooks and a redesigned exception hierarchy let consumers customize how malformed rules are reported and recovered from during parse.
 
 #### Changed
 
 - **Behaviour change — please re-test.** The parameterless `new NotableDateService()` constructor no longer loads the embedded global rule set. It now loads only `default-minimal.xml` (currently New Year's Day). National public-holiday data must be supplied by referencing one of the new `Bodu.Globalization.Calendar.Data.*` companion packages and passing its provider(s) to the full constructor. The constructor signature itself is unchanged, so the source-level surface is preserved; only the rule set produced at runtime has shifted.
 - The `FileNotFoundException_EmbeddedXmlResourceNotFound` diagnostic message now reads `…not found in any of the searched assemblies: {1}.` to remain grammatical when the provider's assembly chain has more than one entry.
+- Calendar exception messages are now centralized in `.resx` resources, so diagnostics localize and stay consistent across providers.
 
 #### Removed
 
@@ -69,3 +72,19 @@ Initial release. Ships embedded notable-date rules for Germany (`DE`), Spain (`E
 Initial release. Ships embedded notable-date rules for Australia (`AU`), China (`CN`), India (`IN`), Japan (`JP`), South Korea (`KR`), Malaysia (`MY`), New Zealand (`NZ`), and Singapore (`SG`). Exposes a static `AsiaPacificCalendarData` factory with per-country and bulk `CreateProviders()` helpers.
 
 > **Note.** Several rules in the Asia-Pacific pack (lunar, Hindu, Islamic, Buddhist) require corresponding `INotableDateAlgorithm` implementations registered with the algorithm registry. Without those registrations, the affected rules silently produce no occurrences; the remaining Western/Gregorian rules behave unaffected.
+
+#### Added
+
+- New South Wales Anzac Day weekend-substitute trial (2026–2027) — when 25 April falls on a weekend, the substitute observance is emitted for the following Monday for the duration of the trial.
+
+### Bodu.Globalization.Calendar.DependencyInjection — 1.0.0
+
+Initial release. Provides `IServiceCollection` extensions for registering `NotableDateService` and its rule providers through the standard `Microsoft.Extensions.DependencyInjection` container. Pairs naturally with the new `Bodu.Globalization.Calendar.Data.*` packs — register the data pack's `CreateProviders()` output as services and resolve `NotableDateService` from the container.
+
+### Bodu.Security.Cryptography — *(unversioned, next minor)*
+
+#### Added
+
+- BLAKE3 implementation, including AVX-512 vectorised fast path on capable hardware.
+- ASCON-AEAD-128 implementation backed by the shared KAT infrastructure.
+- Shared KAT (known-answer test) infrastructure now covers the BLAKE3 and ASCON algorithm families end-to-end.
