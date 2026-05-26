@@ -160,8 +160,5 @@ public sealed class INotableDateServiceDefaultMembersTests
 
         /// <inheritdoc />
         public void Invalidate() => InvalidateCallCount++;
-
-        /// <inheritdoc />
-        public void Invalidate(int year) => InvalidateCallCount++;
     }
 }

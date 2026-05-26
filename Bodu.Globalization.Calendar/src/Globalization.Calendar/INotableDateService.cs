@@ -20,8 +20,8 @@ namespace Bodu.Globalization.Calendar;
 /// <see cref="INotableDateNameLocalizer" /> services to the output.
 /// </para>
 /// <para>
-/// The canonical implementation is <see cref="NotableDateService" />, which supports lazy per-year caching, thread-safe
-/// concurrent access, multi-day event spans, and composable <see cref="NotableDateFilter" /> predicates.
+/// The canonical implementation is <see cref="NotableDateService" />, which supports thread-safe concurrent access,
+/// per-request range-pipeline caching, multi-day event spans, and composable <see cref="NotableDateFilter" /> predicates.
 /// </para>
 /// </remarks>
 /// <example>
@@ -134,8 +134,8 @@ public interface INotableDateService
     /// The filter is applied in two stages. The primary gate is evaluated against each <see cref="NotableDateRule" />
     /// before its date is resolved; rules that fail the primary gate are skipped entirely. The secondary gate is then
     /// evaluated against each materialized <see cref="NotableDate" />, discarding dates that do not satisfy the full
-    /// filter criteria. Filtered queries bypass the per-year cache so that unfiltered queries continue to return
-    /// complete, cached results.
+    /// filter criteria. Filtered queries reuse the same range pipeline as unfiltered queries; the pipeline applies
+    /// the primary gate during materialisation and the secondary gate to each emitted occurrence.
     /// </para>
     /// </remarks>
     /// <param name="year">The year to query.</param>
@@ -168,8 +168,8 @@ public interface INotableDateService
     /// The filter is applied in two stages. The primary gate is evaluated against each <see cref="NotableDateRule" />
     /// before its date is resolved; rules that fail the primary gate are skipped entirely. The secondary gate is then
     /// evaluated against each materialized <see cref="NotableDate" />, discarding dates that do not satisfy the full
-    /// filter criteria. Filtered queries bypass the per-year cache so that unfiltered queries continue to return
-    /// complete, cached results.
+    /// filter criteria. Filtered queries reuse the same range pipeline as unfiltered queries; the pipeline applies
+    /// the primary gate during materialisation and the secondary gate to each emitted occurrence.
     /// </para>
     /// </remarks>
     /// <param name="startDate">The inclusive start of the range.</param>
@@ -202,8 +202,8 @@ public interface INotableDateService
     /// The filter is applied in two stages. The primary gate is evaluated against each <see cref="NotableDateRule" />
     /// before its date is resolved; rules that fail the primary gate are skipped entirely. The secondary gate is then
     /// evaluated against each materialized <see cref="NotableDate" />, discarding dates that do not satisfy the full
-    /// filter criteria. Filtered queries bypass the per-year cache so that unfiltered queries continue to return
-    /// complete, cached results.
+    /// filter criteria. Filtered queries reuse the same range pipeline as unfiltered queries; the pipeline applies
+    /// the primary gate during materialisation and the secondary gate to each emitted occurrence.
     /// </para>
     /// </remarks>
     /// <param name="date">The day to query.</param>
@@ -224,12 +224,6 @@ public interface INotableDateService
     /// definitions, or otherwise changing the inputs that feed rule resolution.
     /// </remarks>
     void Invalidate();
-
-    /// <summary>
-    /// Discards cached notable dates for the supplied year only.
-    /// </summary>
-    /// <param name="year">The year whose cache entries should be cleared.</param>
-    void Invalidate(int year);
 
     /// <summary>
     /// Re-queries every registered <see cref="INotableDateRuleOverrideProvider" /> and rebuilds the effective rule set

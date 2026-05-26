@@ -27,9 +27,9 @@ namespace Bodu.Globalization.Calendar;
 /// territories, and data packs.
 /// </para>
 /// <para>
-/// The service caches resolved notable dates per year. Years are generated lazily on first access and cleared via
-/// <see cref="Invalidate()" /> or <see cref="Invalidate(int)" />. The cache is thread-safe under concurrent reads and
-/// writes.
+/// The service serves every query through the range-resolution pipeline. The pipeline materialises results per
+/// request, merges resolved windows for cross-call coverage tracking, and is cleared via <see cref="Invalidate()" />.
+/// The pipeline and its caches are thread-safe under concurrent reads and writes.
 /// </para>
 /// <para>
 /// Multi-day events are supported: a <see cref="NotableDateRule" /> with <see cref="NotableDateRule.DurationDays" />
@@ -80,8 +80,7 @@ namespace Bodu.Globalization.Calendar;
 /// <see cref="ResolveNotableDatesInRange" />). The pipeline emits exactly one
 /// <see cref="NotableDate" /> per rule occurrence, carrying any <see cref="NotableDate.AdjustmentReason" /> on
 /// the single emitted record rather than producing a (base, adjusted) pair. <see cref="Invalidate()" /> drops
-/// the pipeline and the resolved-window set; <see cref="Invalidate(int)" /> delegates to
-/// <see cref="Invalidate()" />.
+/// the pipeline and the resolved-window set.
 /// </description>
 /// </item>
 /// <item>
@@ -586,16 +585,6 @@ public sealed class NotableDateService : INotableDateService, IDisposable
     /// <inheritdoc />
     /// <remarks>
     /// <para>
-    /// The legacy per-year cache that this overload targeted has been retired. The current implementation delegates
-    /// to <see cref="Invalidate()" /> — selective per-year invalidation no longer exists because the range pipeline
-    /// caches per request rather than per civil year.
-    /// </para>
-    /// </remarks>
-    public void Invalidate(int year) => Invalidate();
-
-    /// <inheritdoc />
-    /// <remarks>
-    /// <para>
     /// Re-snapshots every registered <see cref="INotableDateRuleOverrideProvider" /> by calling
     /// <see cref="INotableDateRuleOverrideProvider.GetAdditions" /> and
     /// <see cref="INotableDateRuleOverrideProvider.GetRemovals" />, rebuilds the merged effective rule set, recreates
@@ -603,9 +592,9 @@ public sealed class NotableDateService : INotableDateService, IDisposable
     /// re-queried; their contribution is fixed for the lifetime of the service.
     /// </para>
     /// <para>
-    /// The effective-rule rebuild and the cache/pipeline invalidation are performed atomically under a single
+    /// The effective-rule rebuild and the pipeline invalidation are performed atomically under a single
     /// <c>_gate</c> critical section so that no concurrent reader can observe new effective rules paired with a stale
-    /// year cache or a stale range pipeline. Resolved-window state is cleared identically to <see cref="Invalidate()" />.
+    /// range pipeline. Resolved-window state is cleared identically to <see cref="Invalidate()" />.
     /// </para>
     /// </remarks>
     public void Reload()
@@ -777,7 +766,7 @@ public sealed class NotableDateService : INotableDateService, IDisposable
     /// <summary>
     /// Resolves notable dates for the supplied window through the range pipeline, optionally recording the requested
     /// window in <see cref="_resolvedWindows" />. This is the canonical implementation shared by
-    /// <see cref="ResolveNotableDatesInRange" /> and the legacy <c>GetNotableDates</c> overloads.
+    /// <see cref="ResolveNotableDatesInRange" /> and every <c>GetNotableDates</c> overload.
     /// </summary>
     /// <param name="startDate">The inclusive start date.</param>
     /// <param name="endDate">The inclusive end date.</param>
