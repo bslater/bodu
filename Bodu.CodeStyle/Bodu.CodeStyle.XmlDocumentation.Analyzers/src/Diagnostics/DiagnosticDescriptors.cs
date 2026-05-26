@@ -109,6 +109,22 @@ internal static class DiagnosticDescriptors
         description: "Requires <code> documentation blocks to wrap their body in a <![CDATA[…]]> section so XML-significant characters and language samples render verbatim, and requires the opener to butt directly against the /// prefix with no separating space.",
         helpLinkUri: HelpLinkBase + "#bodu1405");
 
+    /// <summary>
+    /// Gets the descriptor for <c>BODU1406</c> — a <c>&lt;typeparam&gt;</c> element carries explanatory prose
+    /// that overflows the single-line budget; the trailing sentences should be relocated into a
+    /// <c>&lt;remarks&gt;&lt;para&gt;…&lt;/para&gt;&lt;/remarks&gt;</c> block so the type-parameter description
+    /// remains a single concise statement of what the parameter represents.
+    /// </summary>
+    public static DiagnosticDescriptor XmlDocTypeParamRequiresShortContent { get; } = new DiagnosticDescriptor(
+        id: DiagnosticIds.XmlDocTypeParamRequiresShortContent,
+        title: "XML documentation <typeparam> content overflows the single-line budget",
+        messageFormat: "<typeparam> content overflows the single-line budget per project policy; trailing prose must move to <remarks>",
+        category: Category,
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true,
+        description: "Requires <typeparam> documentation elements to fit on a single line within the comment width. Explanatory prose beyond a concise statement of the type parameter is relocated into a <para> block inside the type-level <remarks>.",
+        helpLinkUri: HelpLinkBase + "#bodu1406");
+
     /// <summary>Gets the immutable collection of every descriptor surfaced by this analyzer.</summary>
     public static ImmutableArray<DiagnosticDescriptor> All { get; } = ImmutableArray.Create(
         XmlDocSummary,
@@ -130,7 +146,8 @@ internal static class DiagnosticDescriptors
         XmlDocParamRef,
         XmlDocTypeParamRef,
         XmlDocCrossCutting,
-        XmlDocCodeRequiresCData);
+        XmlDocCodeRequiresCData,
+        XmlDocTypeParamRequiresShortContent);
 
     private static readonly Dictionary<string, DiagnosticDescriptor> s_byTagName =
         new(StringComparer.Ordinal)

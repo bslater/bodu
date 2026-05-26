@@ -14,7 +14,12 @@ namespace Bodu.Test.Contracts;
 /// <c>TryEncode</c>/<c>TryDecode</c> adapter methods plus <see cref="KnownAnswers" /> and
 /// <see cref="InvalidInputs" /> to plug their encoding into the inherited tests.
 /// </summary>
-/// <typeparam name="TEncoding">The encoding type under test. Carried for documentation only; the contract runs through the adapter delegates.</typeparam>
+/// <typeparam name="TEncoding">The encoding type under test.</typeparam>
+/// <remarks>
+/// <para>
+/// Carried for documentation only; the contract runs through the adapter delegates.
+/// </para>
+/// </remarks>
 public abstract class BinaryEncodingContractTests<TEncoding>
 {
     /// <summary>
