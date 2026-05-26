@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateResolutionServiceDynamicExpansionTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -9,7 +9,7 @@ using System.Collections.Immutable;
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// Tests dynamic blocker expansion in the <see cref="NotableDateResolutionService" />.
+/// Tests cross-year blocker expansion in the public <see cref="NotableDateService" /> range pipeline.
 /// </summary>
 [TestClass]
 public sealed class NotableDateResolutionServiceDynamicExpansionTests
@@ -20,16 +20,13 @@ public sealed class NotableDateResolutionServiceDynamicExpansionTests
     [TestMethod]
     public void Resolve_WhenCrossYearSubstituteConflictsWithNextYearHoliday_ShouldShiftToNextAvailableDate()
     {
-        NotableDateResolutionService service = CreateService(
+        NotableDateService service = CreateService(
             FixedPublicHolidayRule("Year-End Holiday", month: 12, day: 31),
             FixedNonWorkingRule("New Year Second Day", month: 1, day: 2));
 
-        NotableDateResolutionRequest request = new(
+        IReadOnlyList<NotableDate> actual = service.GetNotableDates(
             new DateTime(2022, 12, 1),
-            new DateTime(2023, 3, 31),
-            NotableDateResolutionProjection.AnchorDate);
-
-        IReadOnlyList<NotableDate> actual = service.Resolve(request);
+            new DateTime(2023, 3, 31));
 
         NotableDate observed = actual.Single(date =>
             date.Name == "Year-End Holiday" &&
@@ -49,24 +46,21 @@ public sealed class NotableDateResolutionServiceDynamicExpansionTests
     [TestMethod]
     public void Resolve_WhenExpansionLoadsNextYearBlocker_ShouldNotEmitBlockerToOriginalYearOutput()
     {
-        NotableDateResolutionService service = CreateService(
+        NotableDateService service = CreateService(
             FixedPublicHolidayRule("Year-End Holiday", month: 12, day: 31),
             FixedNonWorkingRule("New Year Second Day", month: 1, day: 2));
 
-        NotableDateResolutionRequest request = new(
-            new DateTime(2022, 1, 1),
-            new DateTime(2022, 12, 31),
-            NotableDateResolutionProjection.AnchorDate);
-
-        IReadOnlyList<NotableDate> actual = service.Resolve(request);
+        IReadOnlyList<NotableDate> actual = service.GetNotableDates(2022);
 
         Assert.IsFalse(actual.Any(date =>
             date.Name == "New Year Second Day" &&
             date.Date == new DateTime(2023, 1, 2)));
     }
 
-    private static NotableDateResolutionService CreateService(params NotableDateRule[] rules) =>
-        new(ruleProviders: new[] { new InMemoryRuleProvider(rules) });
+    private static NotableDateService CreateService(params NotableDateRule[] rules) =>
+        new(
+            ruleProviders: new[] { new InMemoryRuleProvider(rules) },
+            workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 
     private static NotableDateRule FixedPublicHolidayRule(string name, int month, int day) =>
         new()

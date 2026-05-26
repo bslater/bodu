@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateResolutionServiceTests.AdjusterCallbacks.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -9,20 +9,19 @@ using System.Collections.Immutable;
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// Verifies that <see cref="NotableDateResolutionAdjustmentProcessor.CreateAdjuster" /> wires the resolve-by-name
-/// callback to <see cref="NotableDateResolutionWindow.ResolveByName" />: when a <see cref="AdjustmentAction.ReplaceWithNamedDate" />
-/// adjustment fires, the substitute date is fetched through that window callback rather than the legacy
-/// service cache.
+/// Verifies <see cref="AdjustmentAction.ReplaceWithNamedDate" /> behaviour through the public range pipeline.
+/// When the adjustment fires, the substitute date is fetched by the target rule's name; when the named target is
+/// missing, the adjustment falls back to the original anchor date.
 /// </summary>
 [TestClass]
 public sealed class NotableDateResolutionServiceAdjusterCallbacksTests
 {
     /// <summary>
-    /// Verifies that a <see cref="AdjustmentAction.ReplaceWithNamedDate" /> adjustment routes through the window's
-    /// <see cref="NotableDateResolutionWindow.ResolveByName" /> callback to fetch the substitute date by name.
+    /// Verifies that a <see cref="AdjustmentAction.ReplaceWithNamedDate" /> adjustment resolves to the date emitted
+    /// for the named target rule.
     /// </summary>
     [TestMethod]
-    public void Resolve_WhenReplaceWithNamedDateActivates_ShouldUseWindowResolveByNameCallback()
+    public void Resolve_WhenReplaceWithNamedDateActivates_ShouldUseTargetRuleDate()
     {
         NotableDateRule target = new()
         {
@@ -50,9 +49,9 @@ public sealed class NotableDateResolutionServiceAdjusterCallbacksTests
             }),
         };
 
-        NotableDateResolutionService service = new(
+        NotableDateService service = new(
             ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(target, redirect) },
-            workingWeek: WorkingDaysOfWeek.MondayToFriday);
+            workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 
         IReadOnlyList<NotableDate> resolved = service.GetNotableDates(
             new DateTime(2026, 6, 1),
@@ -68,9 +67,8 @@ public sealed class NotableDateResolutionServiceAdjusterCallbacksTests
     }
 
     /// <summary>
-    /// Verifies that the window's <see cref="NotableDateResolutionWindow.ResolveByName" /> returns the original anchor
-    /// when no target rule with the supplied name is present in the window — exercising the fallback branch of
-    /// <see cref="AdjustmentAction.ReplaceWithNamedDate" /> when <c>ResolveByName</c> returns <see langword="null" />.
+    /// Verifies that <see cref="AdjustmentAction.ReplaceWithNamedDate" /> falls back to the original anchor date
+    /// when no rule with the supplied target name exists in the effective rule set.
     /// </summary>
     [TestMethod]
     public void Resolve_WhenReplaceWithNamedDateTargetIsMissing_ShouldFallBackToOriginalDate()
@@ -92,9 +90,9 @@ public sealed class NotableDateResolutionServiceAdjusterCallbacksTests
             }),
         };
 
-        NotableDateResolutionService service = new(
+        NotableDateService service = new(
             ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(redirect) },
-            workingWeek: WorkingDaysOfWeek.MondayToFriday);
+            workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 
         IReadOnlyList<NotableDate> resolved = service.GetNotableDates(
             new DateTime(2026, 6, 1),

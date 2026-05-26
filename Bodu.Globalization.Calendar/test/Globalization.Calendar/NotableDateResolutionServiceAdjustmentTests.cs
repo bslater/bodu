@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateResolutionServiceAdjustmentTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -9,27 +9,24 @@ using System.Collections.Immutable;
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// Tests adjustment behaviour through <see cref="NotableDateResolutionService" />.
+/// Tests adjustment behaviour through the public <see cref="NotableDateService" /> range pipeline.
 /// </summary>
 [TestClass]
 public sealed class NotableDateResolutionServiceAdjustmentTests
 {
     /// <summary>
-    /// Verifies that the new service emits adjacent substitute days for adjacent weekend holidays.
+    /// Verifies that the service emits adjacent substitute days for adjacent weekend holidays.
     /// </summary>
     [TestMethod]
     public void Resolve_WhenAdjacentWeekendHolidaysShiftForward_ShouldAllocateDistinctSubstituteDays()
     {
-        NotableDateResolutionService service = CreateService(
+        NotableDateService service = CreateService(
             FixedPublicHolidayRule("Christmas Day", month: 12, day: 25),
             FixedPublicHolidayRule("Boxing Day", month: 12, day: 26));
 
-        NotableDateResolutionRequest request = new(
+        IReadOnlyList<NotableDate> actual = service.GetNotableDates(
             new DateTime(2021, 12, 24),
-            new DateTime(2021, 12, 31),
-            NotableDateResolutionProjection.ObservedDate);
-
-        IReadOnlyList<NotableDate> actual = service.Resolve(request);
+            new DateTime(2021, 12, 31));
 
         Assert.IsTrue(actual.Any(date =>
             date.Name == "Christmas Day" &&
@@ -48,34 +45,31 @@ public sealed class NotableDateResolutionServiceAdjustmentTests
     }
 
     /// <summary>
-    /// Verifies that both actual and observed occurrences are emitted for an adjusted holiday.
+    /// Verifies that an adjusted holiday emits a single occurrence carrying the post-adjustment date and an
+    /// <see cref="AdjustmentReason" /> describing the original anchor.
     /// </summary>
     [TestMethod]
-    public void Resolve_WhenHolidayIsAdjusted_ShouldReturnActualAndObservedOccurrences()
+    public void Resolve_WhenHolidayIsAdjusted_ShouldEmitSingleAdjustedOccurrence()
     {
-        NotableDateResolutionService service = CreateService(
+        NotableDateService service = CreateService(
             FixedPublicHolidayRule("Christmas Day", month: 12, day: 25));
 
-        NotableDateResolutionRequest request = new(
+        IReadOnlyList<NotableDate> actual = service.GetNotableDates(
             new DateTime(2021, 12, 24),
-            new DateTime(2021, 12, 31),
-            NotableDateResolutionProjection.ObservedDate);
+            new DateTime(2021, 12, 31));
 
-        IReadOnlyList<NotableDate> actual = service.Resolve(request);
+        NotableDate christmas = actual.Single(date => date.Name == "Christmas Day");
 
-        Assert.IsTrue(actual.Any(date =>
-            date.Name == "Christmas Day" &&
-            date.Date == new DateTime(2021, 12, 25) &&
-            !date.WasAdjusted));
-
-        Assert.IsTrue(actual.Any(date =>
-            date.Name == "Christmas Day" &&
-            date.Date == new DateTime(2021, 12, 27) &&
-            date.WasAdjusted));
+        Assert.AreEqual(new DateTime(2021, 12, 27), christmas.Date);
+        Assert.IsTrue(christmas.WasAdjusted);
+        Assert.IsNotNull(christmas.AdjustmentReason);
+        Assert.AreEqual(new DateTime(2021, 12, 25), christmas.AdjustmentReason!.OriginalDate);
     }
 
-    private static NotableDateResolutionService CreateService(params NotableDateRule[] rules) =>
-        new(ruleProviders: new[] { new InMemoryRuleProvider(rules) });
+    private static NotableDateService CreateService(params NotableDateRule[] rules) =>
+        new(
+            ruleProviders: new[] { new InMemoryRuleProvider(rules) },
+            workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 
     private static NotableDateRule FixedPublicHolidayRule(string name, int month, int day) =>
         new()

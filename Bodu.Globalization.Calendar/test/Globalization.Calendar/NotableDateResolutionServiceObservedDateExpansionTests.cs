@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateResolutionServiceObservedDateExpansionTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -9,7 +9,8 @@ using System.Collections.Immutable;
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// Tests observed-date projection for adjusted occurrences whose source anchor falls outside the requested window.
+/// Tests observed-date projection on <see cref="NotableDateService" /> range queries for adjusted occurrences whose
+/// source anchor falls outside the requested window.
 /// </summary>
 [TestClass]
 public sealed class NotableDateResolutionServiceObservedDateExpansionTests
@@ -20,23 +21,20 @@ public sealed class NotableDateResolutionServiceObservedDateExpansionTests
     [TestMethod]
     public void Resolve_WhenObservedDateIsProducedByPreviousYearAnchor_ShouldReturnAdjustedOccurrence()
     {
-        NotableDateResolutionService service = CreateService(
+        NotableDateService service = CreateService(
             FixedPublicHolidayRule("Year-End Holiday", month: 12, day: 31),
             FixedNonWorkingRule("New Year Second Day", month: 1, day: 2));
 
-        NotableDateResolutionRequest request = new(
+        IReadOnlyList<NotableDate> actual = service.GetNotableDates(
             new DateTime(2023, 1, 3),
-            new DateTime(2023, 1, 3),
-            NotableDateResolutionProjection.ObservedDate);
-
-        IReadOnlyList<NotableDate> actual = service.Resolve(request);
+            new DateTime(2023, 1, 3));
 
         Assert.AreEqual(1, actual.Count);
         Assert.AreEqual("Year-End Holiday", actual[0].Name);
         Assert.AreEqual(new DateTime(2023, 1, 3), actual[0].Date);
         Assert.IsTrue(actual[0].WasAdjusted);
         Assert.IsNotNull(actual[0].AdjustmentReason);
-        Assert.AreEqual(new DateTime(2022, 12, 31), actual[0].AdjustmentReason.OriginalDate);
+        Assert.AreEqual(new DateTime(2022, 12, 31), actual[0].AdjustmentReason!.OriginalDate);
     }
 
     /// <summary>
@@ -45,16 +43,13 @@ public sealed class NotableDateResolutionServiceObservedDateExpansionTests
     [TestMethod]
     public void Resolve_WhenObservedDateQueryMaterialisesNextYearBlocker_ShouldNotEmitBlocker()
     {
-        NotableDateResolutionService service = CreateService(
+        NotableDateService service = CreateService(
             FixedPublicHolidayRule("Year-End Holiday", month: 12, day: 31),
             FixedNonWorkingRule("New Year Second Day", month: 1, day: 2));
 
-        NotableDateResolutionRequest request = new(
+        IReadOnlyList<NotableDate> actual = service.GetNotableDates(
             new DateTime(2023, 1, 3),
-            new DateTime(2023, 1, 3),
-            NotableDateResolutionProjection.ObservedDate);
-
-        IReadOnlyList<NotableDate> actual = service.Resolve(request);
+            new DateTime(2023, 1, 3));
 
         Assert.IsFalse(actual.Any(date =>
             date.Name == "New Year Second Day" &&
@@ -68,16 +63,13 @@ public sealed class NotableDateResolutionServiceObservedDateExpansionTests
     [TestMethod]
     public void Resolve_WhenObservedDateDoesNotIntersectAdjustedDate_ShouldNotReturnOccurrence()
     {
-        NotableDateResolutionService service = CreateService(
+        NotableDateService service = CreateService(
             FixedPublicHolidayRule("Year-End Holiday", month: 12, day: 31),
             FixedNonWorkingRule("New Year Second Day", month: 1, day: 2));
 
-        NotableDateResolutionRequest request = new(
+        IReadOnlyList<NotableDate> actual = service.GetNotableDates(
             new DateTime(2023, 1, 4),
-            new DateTime(2023, 1, 4),
-            NotableDateResolutionProjection.ObservedDate);
-
-        IReadOnlyList<NotableDate> actual = service.Resolve(request);
+            new DateTime(2023, 1, 4));
 
         Assert.AreEqual(0, actual.Count);
     }
@@ -88,16 +80,13 @@ public sealed class NotableDateResolutionServiceObservedDateExpansionTests
     [TestMethod]
     public void Resolve_WhenObservedRangeContainsAdjustedDateFromPreviousYearAnchor_ShouldReturnAdjustedOccurrence()
     {
-        NotableDateResolutionService service = CreateService(
+        NotableDateService service = CreateService(
             FixedPublicHolidayRule("Year-End Holiday", month: 12, day: 31),
             FixedNonWorkingRule("New Year Second Day", month: 1, day: 2));
 
-        NotableDateResolutionRequest request = new(
+        IReadOnlyList<NotableDate> actual = service.GetNotableDates(
             new DateTime(2023, 1, 1),
-            new DateTime(2023, 1, 7),
-            NotableDateResolutionProjection.ObservedDate);
-
-        IReadOnlyList<NotableDate> actual = service.Resolve(request);
+            new DateTime(2023, 1, 7));
 
         Assert.IsTrue(actual.Any(date =>
             date.Name == "Year-End Holiday" &&
@@ -105,8 +94,10 @@ public sealed class NotableDateResolutionServiceObservedDateExpansionTests
             date.WasAdjusted));
     }
 
-    private static NotableDateResolutionService CreateService(params NotableDateRule[] rules) =>
-        new(ruleProviders: new[] { new InMemoryRuleProvider(rules) });
+    private static NotableDateService CreateService(params NotableDateRule[] rules) =>
+        new(
+            ruleProviders: new[] { new InMemoryRuleProvider(rules) },
+            workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 
     private static NotableDateRule FixedPublicHolidayRule(string name, int month, int day) =>
         new()
