@@ -53,7 +53,7 @@ public sealed partial class EncodingExtensionsTests
 
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = EncodingExtensions.TryGetChars(null!, new byte[] { 0x68 }, backing, out _);
+            _ = EncodingExtensions.TryGetChars(null!, [0x68], backing, out _);
         });
 
         Assert.AreEqual("encoding", ex.ParamName);
@@ -125,7 +125,7 @@ public sealed partial class EncodingExtensionsTests
 
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = EncodingExtensions.GetCharsExactly(null!, new byte[] { 0x68 }, backing);
+            _ = EncodingExtensions.GetCharsExactly(null!, [0x68], backing);
         });
 
         Assert.AreEqual("encoding", ex.ParamName);

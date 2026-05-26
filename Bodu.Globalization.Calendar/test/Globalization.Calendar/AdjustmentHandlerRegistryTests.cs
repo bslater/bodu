@@ -36,11 +36,11 @@ public sealed class AdjustmentHandlerRegistryTests
         var handlerA = new StubHandler();
         var handlerB = new StubHandler();
 
-        var registry = new AdjustmentHandlerRegistry(new[]
-        {
+        var registry = new AdjustmentHandlerRegistry(
+        [
             new KeyValuePair<string, IAdjustmentHandler>("a", handlerA),
             new KeyValuePair<string, IAdjustmentHandler>("b", handlerB),
-        });
+        ]);
 
         Assert.IsTrue(registry.TryGet("a", out var resolvedA));
         Assert.AreSame(handlerA, resolvedA);

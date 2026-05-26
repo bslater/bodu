@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateServiceTests.GetSupportedTerritories.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -19,7 +19,7 @@ public partial class NotableDateServiceTests
     public void GetSupportedTerritories_WhenAllRulesGlobal_ShouldReturnEmpty()
     {
         NotableDateService service = new(
-            ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(Fixed("Global", 1, 1)) },
+            ruleProviders: [(INotableDateRuleProvider)new InMemoryRuleProvider(Fixed("Global", 1, 1))],
             workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 
         Assert.AreEqual(0, service.GetSupportedTerritories().Count);
@@ -33,14 +33,14 @@ public partial class NotableDateServiceTests
     public void GetSupportedTerritories_WhenRulesAcrossMultipleTerritories_ShouldReturnDistinctSet()
     {
         NotableDateService service = new(
-            ruleProviders: new[]
-            {
+            ruleProviders:
+            [
                 (INotableDateRuleProvider)new InMemoryRuleProvider(
                     Fixed("AU-NSW Holiday", 1, 1, territory: "AU-NSW"),
                     Fixed("AU-NSW Other",   2, 1, territory: "AU-NSW"),
                     Fixed("AU-VIC Holiday", 3, 1, territory: "AU-VIC"),
                     Fixed("US Federal",     7, 4, territory: "US")),
-            },
+            ],
             workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 
         IReadOnlyCollection<string> territories = service.GetSupportedTerritories();
@@ -56,13 +56,13 @@ public partial class NotableDateServiceTests
     public void GetSupportedTerritories_WhenMixedScopedAndGlobalRules_ShouldOnlyReportScopedTerritories()
     {
         NotableDateService service = new(
-            ruleProviders: new[]
-            {
+            ruleProviders:
+            [
                 (INotableDateRuleProvider)new InMemoryRuleProvider(
                     Fixed("Global A", 1, 1),
                     Fixed("Global B", 2, 1),
                     Fixed("Scoped",  3, 1, territory: "AU")),
-            },
+            ],
             workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 
         IReadOnlyCollection<string> territories = service.GetSupportedTerritories();
@@ -79,13 +79,13 @@ public partial class NotableDateServiceTests
     public void GetSupportedTerritories_WhenTerritoryCodesDifferOnlyByCase_ShouldCollapseToOneEntry()
     {
         NotableDateService service = new(
-            ruleProviders: new[]
-            {
+            ruleProviders:
+            [
                 (INotableDateRuleProvider)new InMemoryRuleProvider(
                     Fixed("Upper", 1, 1, territory: "AU"),
                     Fixed("Lower", 2, 1, territory: "au"),
                     Fixed("Mixed", 3, 1, territory: "Au")),
-            },
+            ],
             workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 
         Assert.AreEqual(1, service.GetSupportedTerritories().Count);
@@ -100,9 +100,9 @@ public partial class NotableDateServiceTests
     {
         MutableNotableDateRuleOverrideProvider overrides = new();
         NotableDateService service = new(
-            ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(Fixed("AU Rule", 1, 1, territory: "AU")) },
+            ruleProviders: [(INotableDateRuleProvider)new InMemoryRuleProvider(Fixed("AU Rule", 1, 1, territory: "AU"))],
             workingWeek: WeekPattern.MondayToFriday,
-            options: new NotableDateServiceOptions { OverrideProviders = new[] { overrides } });
+            options: new NotableDateServiceOptions { OverrideProviders = [overrides] });
 
         Assert.IsFalse(service.GetSupportedTerritories().Contains("NZ"));
 
@@ -134,11 +134,11 @@ public partial class NotableDateServiceTests
     public void GetSupportedTerritories_WhenMultipleProvidersContributeSameTerritory_ShouldReportOnce()
     {
         NotableDateService service = new(
-            ruleProviders: new[]
-            {
+            ruleProviders:
+            [
                 (INotableDateRuleProvider)new InMemoryRuleProvider(Fixed("A", 1, 1, territory: "AU")),
                 (INotableDateRuleProvider)new InMemoryRuleProvider(Fixed("B", 2, 1, territory: "AU")),
-            },
+            ],
             workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 
         IReadOnlyCollection<string> territories = service.GetSupportedTerritories();
@@ -155,14 +155,14 @@ public partial class NotableDateServiceTests
     public void GetSupportedTerritories_WhenMultipleTerritories_ShouldReturnInCaseInsensitiveSortedOrder()
     {
         NotableDateService service = new(
-            ruleProviders: new[]
-            {
+            ruleProviders:
+            [
                 (INotableDateRuleProvider)new InMemoryRuleProvider(
                     Fixed("z", 1, 1, territory: "ZZ"),
                     Fixed("c", 2, 1, territory: "CN"),
                     Fixed("a", 3, 1, territory: "AU-NSW"),
                     Fixed("b", 4, 1, territory: "AU")),
-            },
+            ],
             workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 
         List<string> territories = service.GetSupportedTerritories().ToList();
@@ -180,9 +180,9 @@ public partial class NotableDateServiceTests
     {
         MutableNotableDateRuleOverrideProvider overrides = new();
         NotableDateService service = new(
-            ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(Fixed("Base", 1, 1, territory: "AU")) },
+            ruleProviders: [(INotableDateRuleProvider)new InMemoryRuleProvider(Fixed("Base", 1, 1, territory: "AU"))],
             workingWeek: WeekPattern.MondayToFriday,
-            options: new NotableDateServiceOptions { OverrideProviders = new[] { overrides } });
+            options: new NotableDateServiceOptions { OverrideProviders = [overrides] });
 
         IReadOnlyCollection<string> firstSnapshot = service.GetSupportedTerritories();
         Assert.AreEqual(1, firstSnapshot.Count);
@@ -208,7 +208,7 @@ public partial class NotableDateServiceTests
     public void GetSupportedTerritories_WhenTerritoryIsBlank_ShouldElideRule(string territory)
     {
         NotableDateService service = new(
-            ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(Fixed("Blank", 1, 1, territory: territory)) },
+            ruleProviders: [(INotableDateRuleProvider)new InMemoryRuleProvider(Fixed("Blank", 1, 1, territory: territory))],
             workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 
         Assert.AreEqual(0, service.GetSupportedTerritories().Count);
@@ -223,14 +223,14 @@ public partial class NotableDateServiceTests
     {
         MutableNotableDateRuleOverrideProvider overrides = new();
         NotableDateService service = new(
-            ruleProviders: new[]
-            {
+            ruleProviders:
+            [
                 (INotableDateRuleProvider)new InMemoryRuleProvider(
                     Fixed("AU Rule", 1, 1, territory: "AU"),
                     Fixed("NZ Rule", 2, 6, territory: "NZ")),
-            },
+            ],
             workingWeek: WeekPattern.MondayToFriday,
-            options: new NotableDateServiceOptions { OverrideProviders = new[] { overrides } });
+            options: new NotableDateServiceOptions { OverrideProviders = [overrides] });
 
         Assert.IsTrue(service.GetSupportedTerritories().Contains("NZ"));
 

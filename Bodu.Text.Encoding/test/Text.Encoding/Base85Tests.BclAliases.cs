@@ -72,7 +72,7 @@ public sealed partial class Base85Tests
     [TestMethod]
     public void ToBase85String_ForByteArray_ShouldReturnAscii85Output()
     {
-        var actual = Base85.ToBase85String(new byte[] { 0xDE, 0xAD, 0xBE, 0xEF });
+        var actual = Base85.ToBase85String([0xDE, 0xAD, 0xBE, 0xEF]);
 
         Assert.IsFalse(string.IsNullOrEmpty(actual));
         var roundTrip = Base85.FromBase85String(actual);

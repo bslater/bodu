@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TextConfigurationStreamLifetimeTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -7,7 +7,7 @@
 using System.Text;
 using Microsoft.Extensions.Configuration;
 
-namespace Bodu.Extensions.Configuration.Text.Tests;
+namespace Bodu.Extensions.Configuration.Text;
 
 /// <summary>
 /// Pins the lifetime contract of the stream-backed provider: caller-owned streams must remain open and

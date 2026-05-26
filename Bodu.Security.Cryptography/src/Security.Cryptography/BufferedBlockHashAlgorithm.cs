@@ -20,8 +20,8 @@ namespace Bodu.Security.Cryptography;
 /// </typeparam>
 /// <example>
 ///<![CDATA[
-/// // Consume a concrete derivative through the standard HashAlgorithm contract — the base
-/// // class drives the residual buffer and the block-aligned compression loop for you.
+/// Consume a concrete derivative through the standard HashAlgorithm contract — the base
+/// class drives the residual buffer and the block-aligned compression loop for you.
 /// using HashAlgorithm hash = new Blake2b();      // DeferredFinalBlockHashAlgorithm<T>
 /// byte[] digest1 = hash.ComputeHash("hello"u8.ToArray());
 ///

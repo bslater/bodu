@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TextConfigurationDuplicateKeyTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -9,7 +9,7 @@ using Bodu.Text.Configuration;
 using Bodu.Text.Ini;
 using Microsoft.Extensions.Configuration;
 
-namespace Bodu.Extensions.Configuration.Text.Tests;
+namespace Bodu.Extensions.Configuration.Text;
 
 /// <summary>
 /// Pins how the bridge handles duplicate keys and duplicate sections under the Bodu default profile and

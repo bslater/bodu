@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConcurrentHashSetTests.Enumerator.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -14,7 +14,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void GetEnumerator_WhenSetHasElements_ShouldYieldEveryElement()
     {
-        var set = new ConcurrentHashSet<int>(new[] { 1, 2, 3, 4, 5 });
+        var set = new ConcurrentHashSet<int>([1, 2, 3, 4, 5]);
 
         var observed = new List<int>();
         foreach (int item in set)
@@ -43,7 +43,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void GetEnumerator_WhenSetMutatedAfterCreation_ShouldYieldOriginalSnapshot()
     {
-        var set = new ConcurrentHashSet<int>(new[] { 1, 2, 3 });
+        var set = new ConcurrentHashSet<int>([1, 2, 3]);
         ConcurrentHashSet<int>.Enumerator enumerator = set.GetEnumerator();
 
         set.Add(4);
@@ -63,7 +63,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void Enumerator_Reset_ShouldRewindToBeginning()
     {
-        var set = new ConcurrentHashSet<int>(new[] { 10, 20, 30 });
+        var set = new ConcurrentHashSet<int>([10, 20, 30]);
         ConcurrentHashSet<int>.Enumerator enumerator = set.GetEnumerator();
 
         var first = new List<int>();
@@ -87,7 +87,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void Enumerator_Current_BeforeFirstMoveNext_ShouldBeDefault()
     {
-        var set = new ConcurrentHashSet<int>(new[] { 1, 2, 3 });
+        var set = new ConcurrentHashSet<int>([1, 2, 3]);
 
         ConcurrentHashSet<int>.Enumerator enumerator = set.GetEnumerator();
 
@@ -101,7 +101,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void Enumerator_Current_AfterEnumerationEnds_ShouldBeDefault()
     {
-        var set = new ConcurrentHashSet<int>(new[] { 1 });
+        var set = new ConcurrentHashSet<int>([1]);
         ConcurrentHashSet<int>.Enumerator enumerator = set.GetEnumerator();
 
         while (enumerator.MoveNext())
@@ -118,7 +118,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void Enumerator_MoveNext_AfterEnd_ShouldKeepReturningFalse()
     {
-        var set = new ConcurrentHashSet<int>(new[] { 1 });
+        var set = new ConcurrentHashSet<int>([1]);
         ConcurrentHashSet<int>.Enumerator enumerator = set.GetEnumerator();
 
         Assert.IsTrue(enumerator.MoveNext());
@@ -133,7 +133,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void Enumerator_NonGenericCurrent_ShouldExposeCurrentElement()
     {
-        var set = new ConcurrentHashSet<int>(new[] { 42 });
+        var set = new ConcurrentHashSet<int>([42]);
         System.Collections.IEnumerator enumerator = set.GetEnumerator();
 
         Assert.IsTrue(enumerator.MoveNext());
@@ -146,7 +146,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void GetEnumerator_WhenTwoEnumeratorsObtained_ShouldAdvanceIndependently()
     {
-        var set = new ConcurrentHashSet<int>(new[] { 1, 2, 3 });
+        var set = new ConcurrentHashSet<int>([1, 2, 3]);
 
         ConcurrentHashSet<int>.Enumerator first = set.GetEnumerator();
         ConcurrentHashSet<int>.Enumerator second = set.GetEnumerator();
@@ -166,7 +166,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void Enumerator_Dispose_ShouldBeSafeAndIdempotent()
     {
-        var set = new ConcurrentHashSet<int>(new[] { 1, 2 });
+        var set = new ConcurrentHashSet<int>([1, 2]);
         ConcurrentHashSet<int>.Enumerator enumerator = set.GetEnumerator();
 
         enumerator.Dispose();

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConcurrentHashSetTests.CopyTo.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -15,7 +15,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void CopyTo_WhenArrayLargeEnough_ShouldCopyEveryElement()
     {
-        var set = new ConcurrentHashSet<int>(new[] { 1, 2, 3 });
+        var set = new ConcurrentHashSet<int>([1, 2, 3]);
         var array = new int[3];
 
         set.CopyTo(array, 0);
@@ -29,7 +29,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void CopyTo_WhenIndexSupplied_ShouldCopyStartingAtThatIndex()
     {
-        var set = new ConcurrentHashSet<int>(new[] { 1, 2 });
+        var set = new ConcurrentHashSet<int>([1, 2]);
         var array = new int[5];
 
         set.CopyTo(array, 2);
@@ -47,7 +47,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void CopyTo_WhenArrayIsNull_ShouldThrowArgumentNullException()
     {
-        var set = new ConcurrentHashSet<int>(new[] { 1 });
+        var set = new ConcurrentHashSet<int>([1]);
 
         var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -64,7 +64,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void CopyTo_WhenIndexIsNegative_ShouldThrowArgumentOutOfRangeException()
     {
-        var set = new ConcurrentHashSet<int>(new[] { 1 });
+        var set = new ConcurrentHashSet<int>([1]);
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -79,7 +79,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void CopyTo_WhenArrayTooSmall_ShouldThrowArgumentException()
     {
-        var set = new ConcurrentHashSet<int>(new[] { 1, 2, 3 });
+        var set = new ConcurrentHashSet<int>([1, 2, 3]);
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -94,7 +94,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void CopyTo_WhenArrayExactlyFitsAtNonZeroIndex_ShouldCopyEveryElement()
     {
-        var set = new ConcurrentHashSet<int>(new[] { 1, 2, 3 });
+        var set = new ConcurrentHashSet<int>([1, 2, 3]);
         var array = new int[6];
 
         set.CopyTo(array, 3);
@@ -137,7 +137,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void CopyTo_WhenIndexBeyondArrayLength_ShouldThrowArgumentException()
     {
-        var set = new ConcurrentHashSet<int>(new[] { 1, 2, 3 });
+        var set = new ConcurrentHashSet<int>([1, 2, 3]);
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -152,7 +152,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void CopyTo_WhenIndexLeavesInsufficientRoom_ShouldThrowArgumentException()
     {
-        var set = new ConcurrentHashSet<int>(new[] { 1, 2, 3 });
+        var set = new ConcurrentHashSet<int>([1, 2, 3]);
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -167,7 +167,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void CopyTo_WhenIndexPlusCountWouldOverflow_ShouldThrowArgumentException()
     {
-        var set = new ConcurrentHashSet<int>(new[] { 1, 2, 3 });
+        var set = new ConcurrentHashSet<int>([1, 2, 3]);
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {

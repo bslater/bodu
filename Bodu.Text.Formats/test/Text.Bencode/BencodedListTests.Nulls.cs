@@ -18,7 +18,7 @@ public sealed partial class BencodedListTests
     {
         ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
-            _ = new BencodedList(new BencodedValue[] { null! });
+            _ = new BencodedList([null!]);
         });
 
         Assert.AreEqual("items", ex.ParamName);

@@ -49,12 +49,12 @@ public partial class WhirlpoolTests
         Encoding.ASCII.GetBytes("1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678");
 
     /// <inheritdoc />
-    public override IEnumerable<WhirlpoolVersion> GetHashAlgorithmVariants() => new[]
-    {
+    public override IEnumerable<WhirlpoolVersion> GetHashAlgorithmVariants() =>
+    [
         WhirlpoolVersion.WhirlpoolInfo3,
         WhirlpoolVersion.WhirlpoolInfo1,
         WhirlpoolVersion.WhirlpoolInfo2,
-    };
+    ];
 
     /// <inheritdoc />
     protected override HashAlgorithmSpecification GetSpecification(WhirlpoolVersion variant) =>

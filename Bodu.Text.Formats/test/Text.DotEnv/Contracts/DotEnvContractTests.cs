@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DotEnvContractTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -42,8 +42,7 @@ public sealed class DotEnvContractTests
 
     /// <inheritdoc />
     protected override IReadOnlyList<TextDocumentKat<DotEnvDocument, DotEnvParseOptions>> ValidCases { get; } =
-        new TextDocumentKat<DotEnvDocument, DotEnvParseOptions>[]
-    {
+        [
         new(
             Name: "empty document",
             Text: string.Empty,
@@ -59,12 +58,11 @@ public sealed class DotEnvContractTests
             Text: "# leading\nHOST=localhost\nPORT=8080",
             ExpectedDocument: DotEnv.Parse("# leading\nHOST=localhost\nPORT=8080".AsSpan()),
             Options: DotEnvParseOptions.Default),
-    };
+    ];
 
     /// <inheritdoc />
     protected override IReadOnlyList<InvalidTextDocumentKat<DotEnvParseOptions>> InvalidCases { get; } =
-        new InvalidTextDocumentKat<DotEnvParseOptions>[]
-    {
+        [
         new(
             Name: "key starts with digit",
             Text: "1INVALID=value",
@@ -80,7 +78,7 @@ public sealed class DotEnvContractTests
             Text: "KEY=\"unclosed",
             Options: DotEnvParseOptions.Default,
             ExceptionType: typeof(DotEnvFormatException)),
-    };
+    ];
 
     /// <summary>
     /// Compares two <see cref="DotEnvDocument" /> instances by their <see cref="DotEnvEntry.Key" /> /

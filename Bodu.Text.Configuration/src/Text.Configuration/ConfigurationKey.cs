@@ -29,14 +29,14 @@ namespace Bodu.Text.Configuration;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// // Default mapping — split on '.' and ':', case-insensitive comparison.
+/// Default mapping — split on '.' and ':', case-insensitive comparison.
 /// var k1 = new ConfigurationKey("Logging.Level.Default");
 /// var k2 = new ConfigurationKey("logging:level:default");
 /// Console.WriteLine(k1 == k2);              // True — same segment sequence under the default comparer
 /// Console.WriteLine(k1.Path);               // "Logging:Level:Default"
 /// Console.WriteLine(string.Join(",", k1.Segments)); // "Logging,Level,Default"
 ///
-/// // Case-sensitive parsing for hosts that distinguish 'Foo' from 'foo'.
+/// Case-sensitive parsing for hosts that distinguish 'Foo' from 'foo'.
 /// var opts = new ConfigurationKeyOptions { CaseSensitive = true };
 /// var k3   = new ConfigurationKey("Foo:Bar", opts);
 /// var k4   = new ConfigurationKey("foo:bar", opts);

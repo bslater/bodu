@@ -214,8 +214,8 @@ public sealed class NotableDateResolutionServiceTests
     public void Resolve_WhenMultipleDatesFallOnSameDayAndCollisionResolverIsProvided_ShouldApplyCollisionResolver()
     {
         NotableDateResolutionService service = new(
-            ruleProviders: new[]
-            {
+            ruleProviders:
+            [
                 new InMemoryRuleProvider(
                 [
                     FixedRule("Lower Priority", month: 1, day: 1) with
@@ -227,7 +227,7 @@ public sealed class NotableDateResolutionServiceTests
                         Priority = 10,
                     },
                 ]),
-            },
+            ],
             collisionResolver: new FirstByPriorityCollisionResolver());
 
         NotableDateResolutionRequest request = new(
@@ -242,7 +242,7 @@ public sealed class NotableDateResolutionServiceTests
     }
 
     private static NotableDateResolutionService CreateService(params NotableDateRule[] rules) =>
-        new(ruleProviders: new[] { new InMemoryRuleProvider(rules) });
+        new(ruleProviders: [new InMemoryRuleProvider(rules)]);
 
     private static NotableDateRule EasterSundayRule() =>
         new()

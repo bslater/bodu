@@ -26,10 +26,10 @@ public sealed class AeadBlockCipherModeTransformExtensionsTests
 
     private static readonly byte[] AssociatedData = System.Text.Encoding.UTF8.GetBytes("context");
 
-    private static byte[] NewKey() => new byte[16] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 };
+    private static byte[] NewKey() => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
 
-    private static byte[] NewIv() => new byte[16] { 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10, 0x11,
-                                                     0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19 };
+    private static byte[] NewIv() => [ 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10, 0x11,
+                                                     0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19 ];
 
     /// <summary>
     /// Returns a fresh AEAD transform used purely to drive the extension wrappers. CCM is selected

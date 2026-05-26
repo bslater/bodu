@@ -27,12 +27,12 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// // Direct use — most callers reach Easter through NotableDateRule + DateResolutionStrategy.Algorithm
-/// // rather than constructing the algorithm by hand.
+/// Direct use — most callers reach Easter through NotableDateRule + DateResolutionStrategy.Algorithm
+/// rather than constructing the algorithm by hand.
 /// INotableDateAlgorithm easter = new EasterSundayNotableDateAlgorithm();
 /// DateTime? sunday = easter.GetDate(2026, calendar: null);   // 2026-04-05 (Gregorian)
 ///
-/// // Rule-based use — register the algorithm and anchor every dependent observance against it.
+/// Rule-based use — register the algorithm and anchor every dependent observance against it.
 /// var goodFriday = new NotableDateRule
 /// {
 ///     Name         = "Good Friday",

@@ -51,7 +51,7 @@ public partial class TigerTests
     public void Variant_Set_WhenHashingStarted_ShouldThrowExactly()
     {
         using Tiger algorithm = CreateAlgorithm();
-        algorithm.TransformBlock(new byte[] { 1, 2, 3 }, 0, 3, null, 0);
+        algorithm.TransformBlock([1, 2, 3], 0, 3, null, 0);
 
         Assert.ThrowsExactly<CryptographicUnexpectedOperationException>(() =>
         {

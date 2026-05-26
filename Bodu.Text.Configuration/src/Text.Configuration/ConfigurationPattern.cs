@@ -66,12 +66,12 @@ namespace Bodu.Text.Configuration;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// // Compile once, match many times.
+/// Compile once, match many times.
 /// ConfigurationPattern csFiles = ConfigurationPattern.Compile("**/*.cs");
 /// Console.WriteLine(csFiles.IsMatch("src/Foo.cs"));     // true
 /// Console.WriteLine(csFiles.IsMatch("docs/notes.md"));  // false
 ///
-/// // Alternation + numeric range.
+/// Alternation + numeric range.
 /// ConfigurationPattern markup = ConfigurationPattern.Compile("**/*.{md,mdx,txt}");
 /// ConfigurationPattern logs   = ConfigurationPattern.Compile("logs/run-{1..99}.log");
 ///]]>

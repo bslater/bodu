@@ -1,8 +1,8 @@
-﻿// // ---------------------------------------------------------------------------------------------------------------
-// // <copyright file="NotableDateDocumentBuilderTests.cs" company="Bodu Pty. Ltd.">
-// //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
-// // </copyright>
-// // ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="NotableDateDocumentBuilderTests.cs" company="Bodu Pty. Ltd.">
+//     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.Globalization.Calendar.Builder;
 

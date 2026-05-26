@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConfigurationDocumentKatTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -20,8 +20,8 @@ namespace Bodu.Text.Configuration.Kat;
 [TestClass]
 public sealed class ConfigurationDocumentKatTests
 {
-    private static IReadOnlyList<ConfigurationDocumentKat> DocumentKats { get; } = new ConfigurationDocumentKat[]
-    {
+    private static IReadOnlyList<ConfigurationDocumentKat> DocumentKats { get; } =
+    [
         new(
             Name: "wildcard section, single key",
             Text: "[*]\nname = alice\n",
@@ -35,10 +35,10 @@ public sealed class ConfigurationDocumentKatTests
             SectionGlob: "*",
             Key: "missing",
             ExpectedValue: null),
-    };
+    ];
 
-    private static IReadOnlyList<ConfigurationResolverKat> ResolverKats { get; } = new ConfigurationResolverKat[]
-    {
+    private static IReadOnlyList<ConfigurationResolverKat> ResolverKats { get; } =
+    [
         new(
             Name: "wildcard matches any path",
             Text: "[*]\nindent_style = space\n",
@@ -59,11 +59,10 @@ public sealed class ConfigurationDocumentKatTests
             ResolvePath: "README.md",
             Key: "insert_final_newline",
             ExpectedValue: null),
-    };
+    ];
 
     private static IReadOnlyList<ConfigurationViewGetterKat<bool>> BooleanGetterKats { get; } =
-        new ConfigurationViewGetterKat<bool>[]
-    {
+        [
         new(
             Name: "true literal",
             Text: "[*]\nflag = true\n",
@@ -75,11 +74,10 @@ public sealed class ConfigurationDocumentKatTests
             Text: "[*]\nflag = false\n",
             Key: "flag",
             ExpectedValue: false),
-    };
+    ];
 
     private static IReadOnlyList<ConfigurationViewGetterKat<int>> Int32GetterKats { get; } =
-        new ConfigurationViewGetterKat<int>[]
-    {
+        [
         new(
             Name: "positive integer",
             Text: "[*]\nport = 8080\n",
@@ -97,7 +95,7 @@ public sealed class ConfigurationDocumentKatTests
             Text: "[*]\noffset = -42\n",
             Key: "offset",
             ExpectedValue: -42),
-    };
+    ];
 
     /// <summary>
     /// Verifies that each <see cref="ConfigurationDocumentKat" /> row parses to a document whose

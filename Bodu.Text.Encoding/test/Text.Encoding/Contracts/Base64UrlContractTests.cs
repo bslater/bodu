@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base64UrlContractTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -36,20 +36,20 @@ public sealed class Base64UrlContractTests : BinaryEncodingContractTests<object>
         Base64Url.TryDecode(text.AsSpan(), destination, out bytesWritten);
 
     /// <inheritdoc />
-    protected override IReadOnlyList<BinaryEncodingKat> KnownAnswers { get; } = new BinaryEncodingKat[]
-    {
+    protected override IReadOnlyList<BinaryEncodingKat> KnownAnswers { get; } =
+    [
         new("empty", Array.Empty<byte>(), ""),
         new("0xFB 0xFF byte produces hyphen", [0xFB, 0xFF], "-_8"),
         new("0xFF 0xFF 0xFF byte produces underscore", [0xFF, 0xFF, 0xFF], "____"),
         new("ASCII 'foo'", "foo"u8.ToArray(), "Zm9v"),
         new("ASCII 'foobar'", "foobar"u8.ToArray(), "Zm9vYmFy"),
-    };
+    ];
 
     /// <inheritdoc />
-    protected override IReadOnlyList<InvalidEncodedTextKat> InvalidInputs { get; } = new InvalidEncodedTextKat[]
-    {
+    protected override IReadOnlyList<InvalidEncodedTextKat> InvalidInputs { get; } =
+    [
         new("plus is not in URL-safe alphabet", "Zm9+"),
         new("forward-slash is not in URL-safe alphabet", "Zm9/"),
         new("invalid character", "Zm9v!"),
-    };
+    ];
 }

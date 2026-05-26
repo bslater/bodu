@@ -1,14 +1,12 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateServiceBuilderExtensionsTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Globalization.Calendar;
-using Bodu.Globalization.Calendar.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Bodu.DependencyInjection;
+namespace Bodu.Globalization.Calendar.DependencyInjection;
 
 /// <summary>
 /// Verifies the registration semantics of every extension method declared on

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsconXof128ContractTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -23,8 +23,8 @@ public sealed class AsconXof128ContractTests : CryptoHashContractTests<AsconXof1
         AsconXof128.HashData(input, outputLengthBytes);
 
     /// <inheritdoc />
-    protected override IReadOnlyList<CryptoHashKat> KnownAnswers { get; } = new CryptoHashKat[]
-    {
+    protected override IReadOnlyList<CryptoHashKat> KnownAnswers { get; } =
+    [
         new(
             "Ascon-XOF128 empty → 32 bytes",
             Input: Array.Empty<byte>(),
@@ -57,5 +57,5 @@ public sealed class AsconXof128ContractTests : CryptoHashContractTests<AsconXof1
                 "DE779BAC8B73F590374884BF81AD7850A84678736CEB66D18B0D235998D0D972"),
             OutputLengthBytes: 32,
             Key: null),
-    };
+    ];
 }

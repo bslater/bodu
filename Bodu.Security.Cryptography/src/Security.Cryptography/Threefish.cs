@@ -58,7 +58,7 @@ namespace Bodu.Security.Cryptography;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// // Use the recommended general-purpose variant — Threefish-512 over a CTR mode.
+/// Use the recommended general-purpose variant — Threefish-512 over a CTR mode.
 /// using TweakableSymmetricAlgorithm alg = new Threefish512();
 /// alg.GenerateKey();
 /// alg.GenerateIV();

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SkipjackBlockCipherModeContractTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -63,8 +63,8 @@ public sealed class SkipjackBlockCipherModeContractTests
     protected override IReadOnlyList<BlockCipherModeKat> KnownAnswers { get; } = Array.Empty<BlockCipherModeKat>();
 
     /// <inheritdoc />
-    protected override IReadOnlyList<BlockCipherModeKat> RoundTripCases { get; } = new BlockCipherModeKat[]
-    {
+    protected override IReadOnlyList<BlockCipherModeKat> RoundTripCases { get; } =
+    [
         new(
             Name: "ECB / PKCS7 — single full block",
             Algorithm: "Skipjack",
@@ -114,5 +114,5 @@ public sealed class SkipjackBlockCipherModeContractTests
             IV: s_referenceIV,
             Plaintext: s_singleBlockPlaintext,
             Ciphertext: Array.Empty<byte>()),
-    };
+    ];
 }

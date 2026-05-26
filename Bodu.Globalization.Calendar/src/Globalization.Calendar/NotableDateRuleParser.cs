@@ -62,10 +62,10 @@ namespace Bodu.Globalization.Calendar;
 ///     """;
 ///
 /// List<NotableDateRule> rules = NotableDateRuleParser.ParseXml(xml);
-/// // rules[0] is the Fixed Australia Day rule with one weekend-roll adjustment.
-/// // rules[1] is the Algorithm-backed Easter Sunday rule.
+/// rules[0] is the Fixed Australia Day rule with one weekend-roll adjustment.
+/// rules[1] is the Algorithm-backed Easter Sunday rule.
 ///
-/// // When <Use> directives also matter, parse the full document instead:
+/// When <Use> directives also matter, parse the full document instead:
 /// ParsedNotableDateDocument document = NotableDateRuleParser.ParseDocument(xml);
 /// IReadOnlyList<NotableDateRuleUseGroup> imports = document.UseGroups;
 ///]]>

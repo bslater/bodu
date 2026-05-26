@@ -18,11 +18,11 @@ public sealed partial class BencodedDictionaryTests
     {
         ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
-            _ = new BencodedDictionary(new[]
-            {
+            _ = new BencodedDictionary(
+            [
                 new KeyValuePair<BencodedString, BencodedValue>(BencodedString.FromUtf8("k"), new BencodedInteger(1)),
                 new KeyValuePair<BencodedString, BencodedValue>(BencodedString.FromUtf8("k"), new BencodedInteger(2)),
-            });
+            ]);
         });
 
         Assert.AreEqual("items", ex.ParamName);
@@ -51,10 +51,10 @@ public sealed partial class BencodedDictionaryTests
     {
         ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
-            _ = new BencodedDictionary(new[]
-            {
+            _ = new BencodedDictionary(
+            [
                 new KeyValuePair<BencodedString, BencodedValue>(null!, new BencodedInteger(1)),
-            });
+            ]);
         });
 
         Assert.AreEqual("items", ex.ParamName);
@@ -70,10 +70,10 @@ public sealed partial class BencodedDictionaryTests
     {
         ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
-            _ = new BencodedDictionary(new[]
-            {
+            _ = new BencodedDictionary(
+            [
                 new KeyValuePair<BencodedString, BencodedValue>(BencodedString.FromUtf8("k"), null!),
-            });
+            ]);
         });
 
         Assert.AreEqual("items", ex.ParamName);

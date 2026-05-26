@@ -45,8 +45,8 @@ namespace Bodu.IO.Hashing;
 /// using Bodu.IO.Hashing;
 /// using Bodu.IO.Hashing.Extensions;
 ///
-/// // 8-byte (64-bit) Pearson digest assembled from eight permutation passes,
-/// // using one of the canonical lookup tables.
+/// 8-byte (64-bit) Pearson digest assembled from eight permutation passes,
+/// using one of the canonical lookup tables.
 /// var pearson = new Pearson(hashSizeBits: 64, PearsonTableType.Pearson);
 /// byte[] digest = pearson.ComputeHash(System.Text.Encoding.UTF8.GetBytes("payload"));
 ///]]>

@@ -34,14 +34,14 @@ namespace Bodu.Collections.Generic;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// // A counted descending range.
+/// A counted descending range.
 /// foreach (int n in SequenceGenerator.Range(start: 10, stop: 0, step: -2))
 ///     Console.WriteLine(n); // 10, 8, 6, 4, 2
 ///
-/// // A finite repeat.
+/// A finite repeat.
 /// string[] padding = SequenceGenerator.Repeat("--", count: 3).ToArray();
 ///
-/// // A stateful generator producing powers of two while the value fits in a positive int.
+/// A stateful generator producing powers of two while the value fits in a positive int.
 /// IEnumerable<int> powers = SequenceGenerator.NextWhile(
 ///     initialValue: 1,
 ///     conditionHandler: value => value > 0,

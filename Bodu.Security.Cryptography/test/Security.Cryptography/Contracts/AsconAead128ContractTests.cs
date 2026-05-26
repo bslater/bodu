@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsconAead128ContractTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -60,8 +60,8 @@ public sealed class AsconAead128ContractTests : AeadContractTests<AsconAead128>
     }
 
     /// <inheritdoc />
-    protected override IReadOnlyList<AeadKat> KnownAnswers { get; } = new AeadKat[]
-    {
+    protected override IReadOnlyList<AeadKat> KnownAnswers { get; } =
+    [
         // NIST LWC_AEAD_KAT_128_128 Count = 1: empty plaintext, empty AD.
         new(
             Name: "NIST #1: empty PT, empty AD",
@@ -91,11 +91,11 @@ public sealed class AsconAead128ContractTests : AeadContractTests<AsconAead128>
             Plaintext: [0x20],
             Ciphertext: [0x96],
             Tag: Convert.FromHexString("2B8016836C75A7D86866588CA245D886")),
-    };
+    ];
 
     /// <inheritdoc />
-    protected override IReadOnlyList<AeadTamperKat> TamperCases { get; } = new AeadTamperKat[]
-    {
+    protected override IReadOnlyList<AeadTamperKat> TamperCases { get; } =
+    [
         new(
             Name: "tamper ciphertext byte",
             BaseCase: new AeadKat(
@@ -143,5 +143,5 @@ public sealed class AsconAead128ContractTests : AeadContractTests<AsconAead128>
                 Ciphertext: [0xE8],
                 Tag: Convert.FromHexString("DD576ABA1CD3E6FC704DE02AEDB79588")),
             TamperKind: AeadTamperKind.Nonce),
-    };
+    ];
 }

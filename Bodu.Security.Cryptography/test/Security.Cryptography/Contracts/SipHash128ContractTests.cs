@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SipHash128ContractTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -32,8 +32,8 @@ public sealed class SipHash128ContractTests : CryptoHashContractTests<SipHash128
     }
 
     /// <inheritdoc />
-    protected override IReadOnlyList<CryptoHashKat> KnownAnswers { get; } = new CryptoHashKat[]
-    {
+    protected override IReadOnlyList<CryptoHashKat> KnownAnswers { get; } =
+    [
         // Aumasson / Bernstein SipHash 2-4 128-bit reference vector 0: empty input.
         new(
             "empty",
@@ -57,5 +57,5 @@ public sealed class SipHash128ContractTests : CryptoHashContractTests<SipHash128
             ],
             OutputLengthBytes: 16,
             Key: ReferenceKey),
-    };
+    ];
 }

@@ -50,24 +50,24 @@ namespace Bodu.Globalization.Calendar;
 ///<![CDATA[
 /// INotableDateService service = new NotableDateService();
 ///
-/// // Non-working public holidays for New South Wales in 2026:
+/// Non-working public holidays for New South Wales in 2026:
 /// NotableDateFilter filter = NotableDateFilter
 ///     .ForCategory(NotableDateCategory.Public)
 ///     .And(NotableDateFilter.IsNonWorkingDay());
 ///
 /// IReadOnlyList<NotableDate> holidays = service.GetNotableDates(2026, filter, "AU-NSW");
 ///
-/// // Public or cultural dates tagged "Christian":
+/// Public or cultural dates tagged "Christian":
 /// NotableDateFilter christian = NotableDateFilter
 ///     .ForAnyCategory(NotableDateCategory.Public, NotableDateCategory.Cultural)
 ///     .And(NotableDateFilter.WithTag("Christian"));
 ///
-/// // Dates whose span intersects Easter week 2026:
+/// Dates whose span intersects Easter week 2026:
 /// NotableDateFilter easterWeek = NotableDateFilter.InDateRange(
 ///     new DateTime(2026, 4, 5),
 ///     new DateTime(2026, 4, 12));
 ///
-/// // Combine multiple constraints using AllOf:
+/// Combine multiple constraints using AllOf:
 /// NotableDateFilter combined = NotableDateFilter.AllOf(
 ///     NotableDateFilter.ForCategory(NotableDateCategory.Public),
 ///     NotableDateFilter.IsNonWorkingDay(),

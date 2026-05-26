@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConcurrentHashSetTests.ThrowingEnumerables.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -87,7 +87,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void IsSubsetOf_WhenOtherThrowsDuringEnumeration_ShouldPropagateException()
     {
-        var set = new ConcurrentHashSet<int>(new[] { 1 });
+        var set = new ConcurrentHashSet<int>([1]);
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
@@ -102,7 +102,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void IsSupersetOf_WhenOtherThrowsDuringEnumeration_ShouldPropagateException()
     {
-        var set = new ConcurrentHashSet<int>(new[] { 0, 1 });
+        var set = new ConcurrentHashSet<int>([0, 1]);
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
@@ -117,7 +117,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void IsProperSubsetOf_WhenOtherThrowsDuringEnumeration_ShouldPropagateException()
     {
-        var set = new ConcurrentHashSet<int>(new[] { 1 });
+        var set = new ConcurrentHashSet<int>([1]);
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
@@ -132,7 +132,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void IsProperSupersetOf_WhenOtherThrowsDuringEnumeration_ShouldPropagateException()
     {
-        var set = new ConcurrentHashSet<int>(new[] { 1 });
+        var set = new ConcurrentHashSet<int>([1]);
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {

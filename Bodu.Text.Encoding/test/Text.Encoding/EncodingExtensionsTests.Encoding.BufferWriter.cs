@@ -213,7 +213,7 @@ public sealed partial class EncodingExtensionsTests
 
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            EncodingExtensions.WriteChars(null!, new byte[] { 0x68 }, writer);
+            EncodingExtensions.WriteChars(null!, [0x68], writer);
         });
 
         Assert.AreEqual("encoding", ex.ParamName);
@@ -228,7 +228,7 @@ public sealed partial class EncodingExtensionsTests
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            System.Text.Encoding.UTF8.WriteChars(new byte[] { 0x68 }, null!);
+            System.Text.Encoding.UTF8.WriteChars([0x68], null!);
         });
 
         Assert.AreEqual("writer", ex.ParamName);

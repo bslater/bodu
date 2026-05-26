@@ -61,7 +61,7 @@ namespace Bodu.Security.Cryptography;
 /// using System.Security.Cryptography;
 /// using Bodu.Security.Cryptography;
 ///
-/// // XTS uses two independent keys — Key1 for data, Key2 for the tweak. Never share keys.
+/// XTS uses two independent keys — Key1 for data, Key2 for the tweak. Never share keys.
 /// using IBlockCipher data = new AesBlockCipher(key1);
 /// using IBlockCipher tweak = new AesBlockCipher(key2);
 /// byte[] sectorNumber = BitConverter.GetBytes((long)42); // little-endian sector number, padded to block size

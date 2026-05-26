@@ -32,7 +32,7 @@ namespace Bodu.Security.Cryptography;
 /// IPaddingStrategy padding = new Ansix923Padding();
 /// byte[] padded = padding.Pad(plaintext, blockSize: 128); // 128 bits = 16 bytes
 ///
-/// // padded ends with N-1 zero bytes followed by a single byte holding N.
+/// padded ends with N-1 zero bytes followed by a single byte holding N.
 /// byte[] recovered = padding.Unpad(padded, blockSize: 128);
 ///]]>
 /// </code>

@@ -31,7 +31,7 @@ namespace Bodu.Collections.Generic;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// // De-duplicate a stream of tags while keeping the order in which each was first seen.
+/// De-duplicate a stream of tags while keeping the order in which each was first seen.
 /// var tags = new OrderedSet<string>(StringComparer.OrdinalIgnoreCase);
 /// tags.Add("alpha");
 /// tags.Add("beta");
@@ -41,7 +41,7 @@ namespace Bodu.Collections.Generic;
 /// Console.WriteLine(string.Join(", ", tags)); // alpha, beta, gamma
 /// Console.WriteLine(tags[0]);                 // "alpha" — positional read via IReadOnlyList<T>
 ///
-/// // Set algebra returns a new OrderedSet preserving the left operand's order.
+/// Set algebra returns a new OrderedSet preserving the left operand's order.
 /// var diff = new OrderedSet<string>(tags);
 /// diff.ExceptWith(new[] { "beta" });
 ///]]>

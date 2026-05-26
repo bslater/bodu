@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AustralianNotableDatesTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -6,7 +6,7 @@
 
 using Bodu.Extensions;
 
-namespace Bodu.Globalization.Calendar.Data.AsiaPacific.Tests;
+namespace Bodu.Globalization.Calendar.Data;
 
 /// <summary>
 /// Verifies the end-to-end behaviour of the Australia rule catalogue shipped in the Asia-Pacific data pack
@@ -18,7 +18,7 @@ namespace Bodu.Globalization.Calendar.Data.AsiaPacific.Tests;
 public sealed class AustralianNotableDatesTests
 {
     private static readonly string[] s_expectedTerritories =
-    {
+    [
         "AU",
         "AU-ACT",
         "AU-NSW",
@@ -28,7 +28,7 @@ public sealed class AustralianNotableDatesTests
         "AU-TAS",
         "AU-VIC",
         "AU-WA",
-    };
+    ];
 
     /// <summary>
     /// Verifies a smoke-tier subset of the Australia named-holiday occurrences. Runs on every BVT build.
@@ -74,7 +74,7 @@ public sealed class AustralianNotableDatesTests
     public void GetNotableDates_WhenQueryingAu_ShouldPreserveTerritoryCodeOnEveryEntry_ForDelineation()
     {
         NotableDateService service = new(
-            new[] { AsiaPacificCalendarData.CreateAustraliaProvider() },
+            [AsiaPacificCalendarData.CreateAustraliaProvider()],
             WorkingDaysOfWeek.MondayToFriday);
 
         IReadOnlyList<NotableDate> results = service.GetNotableDates(2026, "AU");
@@ -102,7 +102,7 @@ public sealed class AustralianNotableDatesTests
     public void IsNonWorkingDay_WhenBoxingDayOnSaturday_ShouldReturnTrueForSubstituteMonday_ForAuNsw()
     {
         NotableDateService service = new(
-            new[] { AsiaPacificCalendarData.CreateAustraliaProvider() },
+            [AsiaPacificCalendarData.CreateAustraliaProvider()],
             WorkingDaysOfWeek.MondayToFriday);
 
         Assert.IsTrue(service.IsNonWorkingDay(new DateTime(2026, 12, 28), "AU-NSW"));

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Fletcher16ContractTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -24,16 +24,16 @@ public sealed class Fletcher16ContractTests
     protected override Fletcher16 Create() => new();
 
     /// <inheritdoc />
-    protected override IReadOnlyList<HashKat> KnownAnswers { get; } = new HashKat[]
-    {
+    protected override IReadOnlyList<HashKat> KnownAnswers { get; } =
+    [
         new("abcde",        System.Text.Encoding.ASCII.GetBytes("abcde"),      "C8F0", 16),
         new("abcdef",       System.Text.Encoding.ASCII.GetBytes("abcdef"),     "2057", 16),
         new("abcdefgh",     System.Text.Encoding.ASCII.GetBytes("abcdefgh"),   "0627", 16),
-    };
+    ];
 
     /// <inheritdoc />
-    protected override IReadOnlyList<HashStreamingKat> StreamingCases { get; } = new HashStreamingKat[]
-    {
+    protected override IReadOnlyList<HashStreamingKat> StreamingCases { get; } =
+    [
         new(
             "abcdefgh as 1+3+4",
             System.Text.Encoding.ASCII.GetBytes("abcdefgh"),
@@ -44,5 +44,5 @@ public sealed class Fletcher16ContractTests
             System.Text.Encoding.ASCII.GetBytes("abcdefgh"),
             [1, 1, 1, 1, 1, 1, 1, 1],
             "0627"),
-    };
+    ];
 }

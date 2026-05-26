@@ -32,15 +32,15 @@ namespace Bodu.Collections.Extensions;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// // Fibonacci numbers up to 100 — the value bound, not a fixed count.
+/// Fibonacci numbers up to 100 — the value bound, not a fixed count.
 /// foreach (long fib in SequenceGenerator.Fibonacci(min: 0, max: 100))
 ///     Console.WriteLine(fib); // 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89
 ///
-/// // First five Farey-sequence orders of 1/2 .. 1/1.
+/// First five Farey-sequence orders of 1/2 .. 1/1.
 /// foreach ((int n, int d) in SequenceGenerator.Farey(order: 5))
 ///     Console.WriteLine($"{n}/{d}");
 ///
-/// // Look-and-say from "1": "1", "11", "21", "1211", "111221" ...
+/// Look-and-say from "1": "1", "11", "21", "1211", "111221" ...
 /// string[] lookAndSay = SequenceGenerator.LookAndSay(count: 5).ToArray();
 ///]]>
 /// </example>

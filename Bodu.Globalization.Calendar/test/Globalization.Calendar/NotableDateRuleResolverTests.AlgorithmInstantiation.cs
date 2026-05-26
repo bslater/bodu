@@ -30,7 +30,7 @@ public sealed class NotableDateRuleResolverAlgorithmInstantiationTests
             Category = NotableDateCategory.Religious,
         };
 
-        NotableDateRuleResolver resolver = new(new[] { rule });
+        NotableDateRuleResolver resolver = new([rule]);
 
         DateTime? date = resolver.ResolveAnchorDate(rule, 2026);
 
@@ -52,7 +52,7 @@ public sealed class NotableDateRuleResolverAlgorithmInstantiationTests
             AlgorithmType = typeof(JulyFourthAlgorithm),
         };
 
-        NotableDateRuleResolver resolver = new(new[] { rule });
+        NotableDateRuleResolver resolver = new([rule]);
 
         DateTime? date = resolver.ResolveAnchorDate(rule, 2026);
 
@@ -75,7 +75,7 @@ public sealed class NotableDateRuleResolverAlgorithmInstantiationTests
             AlgorithmType = typeof(RequiresTwoArgsAlgorithm),
         };
 
-        NotableDateRuleResolver resolver = new(new[] { rule });
+        NotableDateRuleResolver resolver = new([rule]);
 
         DateTime? date = resolver.ResolveAnchorDate(rule, 2026);
 
@@ -99,7 +99,7 @@ public sealed class NotableDateRuleResolverAlgorithmInstantiationTests
             AlgorithmDay = 17,
         };
 
-        NotableDateRuleResolver resolver = new(new[] { rule });
+        NotableDateRuleResolver resolver = new([rule]);
 
         DateTime? date = resolver.ResolveAnchorDate(rule, 2026);
 
@@ -123,7 +123,7 @@ public sealed class NotableDateRuleResolverAlgorithmInstantiationTests
             AlgorithmDay = 5,
         };
 
-        NotableDateRuleResolver resolver = new(new[] { rule });
+        NotableDateRuleResolver resolver = new([rule]);
 
         DateTime? date = resolver.ResolveAnchorDate(rule, 2026);
 
@@ -147,7 +147,7 @@ public sealed class NotableDateRuleResolverAlgorithmInstantiationTests
             AlgorithmDay = 1,
         };
 
-        NotableDateRuleResolver resolver = new(new[] { rule });
+        NotableDateRuleResolver resolver = new([rule]);
 
         DateTime? date = resolver.ResolveAnchorDate(rule, 2026);
 
@@ -171,7 +171,7 @@ public sealed class NotableDateRuleResolverAlgorithmInstantiationTests
             AlgorithmDay = 7,
         };
 
-        NotableDateRuleResolver resolver = new(new[] { rule });
+        NotableDateRuleResolver resolver = new([rule]);
 
         DateTime? date = resolver.ResolveAnchorDate(rule, 2026);
 
@@ -196,7 +196,7 @@ public sealed class NotableDateRuleResolverAlgorithmInstantiationTests
             AlgorithmDay = 1,
         };
 
-        NotableDateRuleResolver resolver = new(new[] { rule });
+        NotableDateRuleResolver resolver = new([rule]);
 
         DateTime? date = resolver.ResolveAnchorDate(rule, 2026);
 

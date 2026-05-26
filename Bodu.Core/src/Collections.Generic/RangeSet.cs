@@ -27,7 +27,7 @@ namespace Bodu.Collections.Generic;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// // Track disjoint blocks of allocated row IDs. Adjacent and overlapping inserts merge automatically.
+/// Track disjoint blocks of allocated row IDs. Adjacent and overlapping inserts merge automatically.
 /// var allocated = new RangeSet<int>();
 /// allocated.Add(  0,  10);   // [0, 10)
 /// allocated.Add( 20,  30);   // [20, 30)

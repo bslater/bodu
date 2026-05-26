@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Poly1305Tests.Reuse.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -115,12 +115,12 @@ public partial class Poly1305Tests
         var hashCore = typeof(HashAlgorithm).GetMethod(
             "HashCore",
             BindingFlags.Instance | BindingFlags.NonPublic,
-            new[] { typeof(byte[]), typeof(int), typeof(int) });
+            [typeof(byte[]), typeof(int), typeof(int)]);
         var processFinalBlock = typeof(Poly1305).GetMethod("ProcessFinalBlock", BindingFlags.Instance | BindingFlags.NonPublic);
         Assert.IsNotNull(hashCore);
         Assert.IsNotNull(processFinalBlock);
 
-        hashCore.Invoke(poly, new object[] { message, 0, message.Length });
+        hashCore.Invoke(poly, [message, 0, message.Length]);
         _ = processFinalBlock.Invoke(poly, null);
 
         var rField = typeof(Poly1305).GetField("_r", BindingFlags.Instance | BindingFlags.NonPublic);

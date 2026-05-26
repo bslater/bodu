@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateServiceTests.OverrideRemoval.Indexing.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -27,17 +27,17 @@ public partial class NotableDateServiceTests
         // one before finding the targeted removal.
         var removals = Enumerable.Range(0, 1000)
             .Select(i => new RuleRemoval($"Unrelated-{i}"))
-            .Concat(new[] { new RuleRemoval("Targeted Holiday", FromYear: 2026, ToYear: 2026) })
+            .Concat([new RuleRemoval("Targeted Holiday", FromYear: 2026, ToYear: 2026)])
             .ToArray();
 
         TestOverrideProvider provider = new(removals, Array.Empty<NotableDateRule>());
 
         NotableDateService service = new(
-            ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(targeted, untouched) },
+            ruleProviders: [(INotableDateRuleProvider)new InMemoryRuleProvider(targeted, untouched)],
             workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
             options: new NotableDateServiceOptions
             {
-                OverrideProviders = new[] { (INotableDateRuleOverrideProvider)provider },
+                OverrideProviders = [(INotableDateRuleOverrideProvider)provider],
             });
 
         IReadOnlyList<NotableDate> in2026 = service.GetNotableDates(2026, "AU");
@@ -57,15 +57,15 @@ public partial class NotableDateServiceTests
     {
         NotableDateRule rule = Fixed("Mixed Case Holiday", 6, 15, territory: "AU");
         TestOverrideProvider provider = new(
-            removals: new[] { new RuleRemoval("MIXED case HOLIDAY") },
+            removals: [new RuleRemoval("MIXED case HOLIDAY")],
             additions: Array.Empty<NotableDateRule>());
 
         NotableDateService service = new(
-            ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(rule) },
+            ruleProviders: [(INotableDateRuleProvider)new InMemoryRuleProvider(rule)],
             workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
             options: new NotableDateServiceOptions
             {
-                OverrideProviders = new[] { (INotableDateRuleOverrideProvider)provider },
+                OverrideProviders = [(INotableDateRuleOverrideProvider)provider],
             });
 
         Assert.IsFalse(service.GetNotableDates(2026, "AU").Any(n => n.Name == "Mixed Case Holiday"));

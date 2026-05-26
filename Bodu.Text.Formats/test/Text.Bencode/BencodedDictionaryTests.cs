@@ -51,10 +51,9 @@ public sealed partial class BencodedDictionaryTests
     /// </summary>
     /// <returns>An enumerable of two pairs.</returns>
     private static IEnumerable<KeyValuePair<BencodedString, BencodedValue>> CowMooSpamEggs() =>
-        new[]
-        {
+        [
             new KeyValuePair<BencodedString, BencodedValue>(BencodedString.FromUtf8("cow"), BencodedString.FromUtf8("moo")),
             new KeyValuePair<BencodedString, BencodedValue>(BencodedString.FromUtf8("spam"), BencodedString.FromUtf8("eggs")),
-        };
+        ];
 
 }

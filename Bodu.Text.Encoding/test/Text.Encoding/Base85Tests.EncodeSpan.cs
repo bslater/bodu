@@ -222,7 +222,7 @@ public sealed partial class Base85Tests
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
-            _ = Base85.TryEncode(new byte[] { 0x01, 0x02, 0x03 }, destination, out _, Base85Variant.Z85);
+            _ = Base85.TryEncode([0x01, 0x02, 0x03], destination, out _, Base85Variant.Z85);
         });
     }
 

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IEnumerableExtensions.WhereNotNullKatTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -19,8 +19,7 @@ namespace Bodu.Collections.Generic.Extensions;
 public sealed class IEnumerableExtensionsWhereNotNullKatTests
 {
     private static IReadOnlyList<EnumerableKat<string?, string[]>> ReferenceKats { get; } =
-        new EnumerableKat<string?, string[]>[]
-    {
+        [
         new(
             Name: "empty source",
             Source: Array.Empty<string?>(),
@@ -28,23 +27,22 @@ public sealed class IEnumerableExtensionsWhereNotNullKatTests
 
         new(
             Name: "no nulls",
-            Source: new string?[] { "a", "b", "c" },
+            Source: ["a", "b", "c"],
             Expected: ["a", "b", "c"]),
 
         new(
             Name: "interleaved nulls",
-            Source: new string?[] { "a", null, "b", null, "c" },
+            Source: ["a", null, "b", null, "c"],
             Expected: ["a", "b", "c"]),
 
         new(
             Name: "all nulls",
-            Source: new string?[] { null, null, null },
+            Source: [null, null, null],
             Expected: Array.Empty<string>()),
-    };
+    ];
 
     private static IReadOnlyList<EnumerableKat<int?, int[]>> NullableValueKats { get; } =
-        new EnumerableKat<int?, int[]>[]
-    {
+        [
         new(
             Name: "empty source",
             Source: Array.Empty<int?>(),
@@ -52,14 +50,14 @@ public sealed class IEnumerableExtensionsWhereNotNullKatTests
 
         new(
             Name: "interleaved nulls",
-            Source: new int?[] { 1, null, 2, null, 3 },
+            Source: [1, null, 2, null, 3],
             Expected: [1, 2, 3]),
 
         new(
             Name: "duplicates kept",
-            Source: new int?[] { 1, 1, null, 2, 2 },
+            Source: [1, 1, null, 2, 2],
             Expected: [1, 1, 2, 2]),
-    };
+    ];
 
     /// <summary>
     /// Verifies that <see cref="IEnumerableExtensions.WhereNotNull{TSource}(IEnumerable{TSource})" />

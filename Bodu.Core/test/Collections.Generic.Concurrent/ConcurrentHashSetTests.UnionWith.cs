@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConcurrentHashSetTests.UnionWith.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -14,9 +14,9 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void UnionWith_WhenOtherHasNewElements_ShouldAddThemAll()
     {
-        var set = new ConcurrentHashSet<int>(new[] { 1, 2 });
+        var set = new ConcurrentHashSet<int>([1, 2]);
 
-        set.UnionWith(new[] { 2, 3, 4 });
+        set.UnionWith([2, 3, 4]);
 
         AssertContainsExactly(set, 1, 2, 3, 4);
     }
@@ -27,7 +27,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void UnionWith_WhenOtherIsEmpty_ShouldLeaveSetUnchanged()
     {
-        var set = new ConcurrentHashSet<int>(new[] { 1, 2, 3 });
+        var set = new ConcurrentHashSet<int>([1, 2, 3]);
 
         set.UnionWith(Array.Empty<int>());
 
@@ -40,7 +40,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void UnionWith_WhenOtherIsSameInstance_ShouldLeaveSetUnchanged()
     {
-        var set = new ConcurrentHashSet<int>(new[] { 1, 2, 3 });
+        var set = new ConcurrentHashSet<int>([1, 2, 3]);
 
         set.UnionWith(set);
 

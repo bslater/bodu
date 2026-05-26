@@ -243,8 +243,7 @@ public sealed partial class NotableDateServiceTests
         new ForwardSubstituteKat(
             "Same-year adjacent weekend holidays should allocate Monday and Tuesday substitutes.",
             2021,
-            new[]
-            {
+            [
                 Fixed("Christmas Day", 12, 25, nonWorking: true) with
                 {
                     Adjustments = ImmutableArray.Create(CreateForwardSubstituteAdjustment("christmas-substitute")),
@@ -253,17 +252,15 @@ public sealed partial class NotableDateServiceTests
                 {
                     Adjustments = ImmutableArray.Create(CreateForwardSubstituteAdjustment("boxing-day-substitute")),
                 },
-            },
-            new[]
-            {
+            ],
+            [
                 new ExpectedNotableDateKat("Christmas Day", new DateTime(2021, 12, 27), WasAdjusted: true),
                 new ExpectedNotableDateKat("Boxing Day", new DateTime(2021, 12, 28), WasAdjusted: true),
-            },
-            new[]
-            {
+            ],
+            [
                 new BlockedDateKat("Christmas Day", new DateTime(2021, 12, 28)),
                 new BlockedDateKat("Boxing Day", new DateTime(2021, 12, 27)),
-            }),
+            ]),
         };
 
         // The cross-year forward-substitute case is not expressible in this KAT framework because the harness queries

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Fnv132ContractTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -28,19 +28,19 @@ public sealed class Fnv132ContractTests
     protected override string? EmptyInputExpectedHex => "811C9DC5";
 
     /// <inheritdoc />
-    protected override IReadOnlyList<HashKat> KnownAnswers { get; } = new HashKat[]
-    {
+    protected override IReadOnlyList<HashKat> KnownAnswers { get; } =
+    [
         new("ABC",                  System.Text.Encoding.ASCII.GetBytes("ABC"),     "634CAFEB", 32),
         new("quick brown fox",      s_quickBrownFox,                                "E9C86C6E", 32),
-    };
+    ];
 
     /// <inheritdoc />
-    protected override IReadOnlyList<HashStreamingKat> StreamingCases { get; } = new HashStreamingKat[]
-    {
+    protected override IReadOnlyList<HashStreamingKat> StreamingCases { get; } =
+    [
         new(
             "quick brown fox as 10+10+10+13",
             s_quickBrownFox,
             [10, 10, 10, 13],
             "E9C86C6E"),
-    };
+    ];
 }

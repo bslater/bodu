@@ -62,7 +62,7 @@ namespace Bodu.Globalization.Calendar;
 ///     }
 /// }
 ///
-/// // Register and bind to a NotableDateRule via algorithm key:
+/// Register and bind to a NotableDateRule via algorithm key:
 /// NotableDateAlgorithmRegistry registry = new NotableDateAlgorithmRegistry()
 ///     .Register("melbourne-cup", new MelbourneCupAlgorithm());
 ///

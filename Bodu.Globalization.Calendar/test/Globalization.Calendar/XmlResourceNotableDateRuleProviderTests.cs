@@ -170,7 +170,7 @@ public sealed partial class XmlResourceNotableDateRuleProviderTests
         var provider = new XmlResourceNotableDateRuleProvider(
             CommonResource,
             new ResourcePathResolver(),
-            new[] { typeof(XmlResourceNotableDateRuleProviderTests).Assembly, typeof(NotableDateService).Assembly });
+            [typeof(XmlResourceNotableDateRuleProviderTests).Assembly, typeof(NotableDateService).Assembly]);
 
         var rules = provider.LoadRules().ToList();
 

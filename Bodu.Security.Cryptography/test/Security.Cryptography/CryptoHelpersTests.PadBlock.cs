@@ -13,63 +13,63 @@ public partial class CryptoHelpersTests
     /// <summary>
     /// Provides valid input blocks for padding scenarios with expected padded outputs.
     /// </summary>
-    public static IEnumerable<object[]> ValidPaddingCases() => new[]
-    {
+    public static IEnumerable<object[]> ValidPaddingCases() =>
+    [
         // PaddingMode, InputHex, BlockSize, ExpectedHex Typical valid cases
         new object[] { PaddingMode.PKCS7, "102030", 8, "1020300505050505" },
-        new object[] { PaddingMode.ANSIX923, "102030", 8, "1020300000000005" },
-        new object[] { PaddingMode.ISO10126, "102030", 8, "102030????????05" },
-        new object[] { PaddingMode.Zeros, "102030", 8, "1020300000000000" },
-        new object[] { PaddingMode.None, "1020304050607080", 8, "1020304050607080" },
+        [PaddingMode.ANSIX923, "102030", 8, "1020300000000005"],
+        [PaddingMode.ISO10126, "102030", 8, "102030????????05"],
+        [PaddingMode.Zeros, "102030", 8, "1020300000000000"],
+        [PaddingMode.None, "1020304050607080", 8, "1020304050607080"],
 
         // Full block input (PKCS7 adds full block of 8)
-        new object[] { PaddingMode.PKCS7, "1122334455667788", 8, "11223344556677880808080808080808" },
+        [PaddingMode.PKCS7, "1122334455667788", 8, "11223344556677880808080808080808"],
 
         // Full block input (ANSIX923 adds full block of 8)
-        new object[] { PaddingMode.ANSIX923, "1122334455667788", 8, "11223344556677880000000000000008" },
+        [PaddingMode.ANSIX923, "1122334455667788", 8, "11223344556677880000000000000008"],
 
         // Full block input (ISO10126 random 7 + 8)
-        new object[] { PaddingMode.ISO10126, "1122334455667788", 8, "1122334455667788??????????????08" },
+        [PaddingMode.ISO10126, "1122334455667788", 8, "1122334455667788??????????????08"],
 
         // Aligned input (Zeros) – no extra padding applied
-        new object[] { PaddingMode.Zeros, "0001020304050607", 8, "0001020304050607" },
+        [PaddingMode.Zeros, "0001020304050607", 8, "0001020304050607"],
 
         // Aligned input (None)
-        new object[] { PaddingMode.None, "0001020304050607", 8, "0001020304050607" },
+        [PaddingMode.None, "0001020304050607", 8, "0001020304050607"],
 
         // Minimum block size of 1 (PKCS7)
-        new object[] { PaddingMode.PKCS7, string.Empty, 1, "01" },
+        [PaddingMode.PKCS7, string.Empty, 1, "01"],
 
         // Non-power-of-two block size (7)
-        new object[] { PaddingMode.PKCS7, "01", 7, "01060606060606" },
+        [PaddingMode.PKCS7, "01", 7, "01060606060606"],
 
         // Empty input
-        new object[] { PaddingMode.PKCS7, string.Empty, 8, "0808080808080808" }
-    };
+        [PaddingMode.PKCS7, string.Empty, 8, "0808080808080808"]
+    ];
 
     /// <summary>
     /// Provides invalid input configurations for padding logic that are expected to throw exceptions.
     /// </summary>
-    public static IEnumerable<object[]> InvalidPaddingCases() => new[]
-    {
+    public static IEnumerable<object[]> InvalidPaddingCases() =>
+    [
         // PaddingMode, InputHex, BlockSize, ExpectedExceptionType, DestinationSize PaddingMode.None but input not aligned
         new object[] { PaddingMode.None, "01020304", 8, typeof(CryptographicException) },
 
         // Invalid padding mode (enum not defined)
-        new object[] { (PaddingMode)999, "0102", 8, typeof(CryptographicException) },
+        [(PaddingMode)999, "0102", 8, typeof(CryptographicException)],
 
         // Invalid block size (0)
-        new object[] { PaddingMode.PKCS7, "010203", 0, typeof(ArgumentOutOfRangeException) },
+        [PaddingMode.PKCS7, "010203", 0, typeof(ArgumentOutOfRangeException)],
 
         // Invalid block size (negative)
-        new object[] { PaddingMode.PKCS7, "010203", -4 , typeof(ArgumentOutOfRangeException),8},
+        [PaddingMode.PKCS7, "010203", -4 , typeof(ArgumentOutOfRangeException),8],
 
         // Destination span too small for expected padded length
-        new object[] { PaddingMode.PKCS7, "010203", 8, typeof(ArgumentException), 4 },
+        [PaddingMode.PKCS7, "010203", 8, typeof(ArgumentException), 4],
 
         // Destination too small even though input is aligned
-        new object[] { PaddingMode.Zeros, "01020304", 8, typeof(ArgumentException), 4 }
-    };
+        [PaddingMode.Zeros, "01020304", 8, typeof(ArgumentException), 4]
+    ];
 
     /// <summary>
     /// Verifies that PadBlock applies the expected padding bytes and structure for valid input using the byte array overload. For

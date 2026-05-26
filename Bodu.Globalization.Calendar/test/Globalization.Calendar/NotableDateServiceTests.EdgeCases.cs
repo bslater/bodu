@@ -202,7 +202,7 @@ public sealed partial class NotableDateServiceTests
         // Convert the IWeekendDefinitionProvider into the canonical WeekPattern (empty) and use the WeekPattern ctor.
         var workingWeek = new AlwaysWeekendProvider().ToWeekPattern();
         var service = new NotableDateService(
-            new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(rule) },
+            [(INotableDateRuleProvider)new InMemoryRuleProvider(rule)],
             workingWeek);
 
         var results = service.GetNotableDates(2025)

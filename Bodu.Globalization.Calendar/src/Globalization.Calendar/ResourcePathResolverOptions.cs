@@ -24,7 +24,7 @@ namespace Bodu.Globalization.Calendar;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// // Allow resource paths from a plugin's own namespace through the resolver unchanged.
+/// Allow resource paths from a plugin's own namespace through the resolver unchanged.
 /// var options = new ResourcePathResolverOptions
 /// {
 ///     FullyQualifiedResourcePrefixes = new HashSet<string>(StringComparer.Ordinal)

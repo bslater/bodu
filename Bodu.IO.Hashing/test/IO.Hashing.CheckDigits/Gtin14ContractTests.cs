@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Gtin14ContractTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -25,9 +25,9 @@ public sealed class Gtin14ContractTests : CheckDigitContractTests<Gtin14>
         Gtin14.IsValid(fullValue.AsSpan());
 
     /// <inheritdoc />
-    protected override IReadOnlyList<CheckDigitKat> KnownAnswers { get; } = new CheckDigitKat[]
-    {
+    protected override IReadOnlyList<CheckDigitKat> KnownAnswers { get; } =
+    [
         new("GS1 example",   Payload: "1061414100041",   CheckDigit: "5", FullValue: "10614141000415"),
         new("all zeros",     Payload: "0000000000000",   CheckDigit: "0", FullValue: "00000000000000"),
-    };
+    ];
 }

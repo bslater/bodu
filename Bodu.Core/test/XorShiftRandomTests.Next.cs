@@ -265,7 +265,7 @@ public partial class XorShiftRandomTests
     [TestMethod]
     public void BoundedNextUInt32_WhenLowBitsBelowThreshold_ShouldRejectAndRedraw()
     {
-        var queue = new Queue<uint>(new[] { 0u, 0x55555556u });
+        var queue = new Queue<uint>([0u, 0x55555556u]);
 
         var actual = XorShiftRandom.BoundedNextUInt32(3u, () => queue.Dequeue());
 

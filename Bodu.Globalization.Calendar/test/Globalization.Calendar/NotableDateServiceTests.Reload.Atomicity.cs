@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateServiceTests.Reload.Atomicity.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -26,9 +26,9 @@ public partial class NotableDateServiceTests
     {
         MutableNotableDateRuleOverrideProvider overrides = new();
         NotableDateService service = new(
-            ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider() },
+            ruleProviders: [(INotableDateRuleProvider)new InMemoryRuleProvider()],
             workingWeek: WeekPattern.MondayToFriday,
-            options: new NotableDateServiceOptions { OverrideProviders = new[] { overrides } });
+            options: new NotableDateServiceOptions { OverrideProviders = [overrides] });
 
         for (int i = 0; i < 100; i++)
         {
@@ -64,9 +64,9 @@ public partial class NotableDateServiceTests
         overrides.AddRule(Fixed("A:Midyear", 7, 4));
 
         NotableDateService service = new(
-            ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider() },
+            ruleProviders: [(INotableDateRuleProvider)new InMemoryRuleProvider()],
             workingWeek: WeekPattern.MondayToFriday,
-            options: new NotableDateServiceOptions { OverrideProviders = new[] { overrides } });
+            options: new NotableDateServiceOptions { OverrideProviders = [overrides] });
 
         service.Reload();
 

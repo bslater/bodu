@@ -30,7 +30,7 @@ public partial class ByteBufferTests
     public void Add_WhenSpanExceedsRemainingCapacity_ShouldThrowExactly()
     {
         var buffer = new ByteBuffer(2);
-        buffer.Add(new byte[] { 1 }, 0, 1);
+        buffer.Add([1], 0, 1);
         var span = new byte[] { 2, 3 };
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => buffer.Add(span));
     }

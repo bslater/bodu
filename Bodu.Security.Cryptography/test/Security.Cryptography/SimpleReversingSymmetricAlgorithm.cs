@@ -46,7 +46,7 @@ namespace Bodu.Security.Cryptography;
 ///     ciphertext = ms.ToArray();
 /// }
 ///
-/// // Inspect diagnostics after the operation.
+/// Inspect diagnostics after the operation.
 /// Assert.AreEqual(expectedBlockCount, encryptor.Diagnostics.EncryptLog.Count);
 /// </code>
 /// </example>
@@ -74,20 +74,20 @@ public sealed class SimpleReversingSymmetricAlgorithm
     /// </list>
     /// </remarks>
     public static readonly KeySizes[] BlockSizesValue =
-    {
+    [
         new KeySizes(128,  256,  64),
         new KeySizes(448,  576, 128),
         new KeySizes(1024, 2048, 512),
-    };
+    ];
 
     /// <summary>
     /// The legal key sizes supported by this algorithm.
     /// Keys may be any byte-aligned length between 8 and 2048 bits (step 8).
     /// </summary>
     public static readonly KeySizes[] KeySizesValue =
-    {
+    [
         new KeySizes(8, 2048, 8),
-    };
+    ];
 
     // ── Instance fields ───────────────────────────────────────────────────────────────────────
 

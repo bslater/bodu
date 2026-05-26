@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateServiceBuilderExtensionsTests.AddPlugin.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -102,7 +102,7 @@ public partial class NotableDateServiceBuilderExtensionsTests
         /// <param name="rules">The rules wrapped in a single in-memory provider.</param>
         public StubRulePlugin(params NotableDateRule[] rules)
         {
-            _providers = new INotableDateRuleProvider[] { new InMemoryRuleProvider(rules) };
+            _providers = [new InMemoryRuleProvider(rules)];
         }
 
         /// <inheritdoc />

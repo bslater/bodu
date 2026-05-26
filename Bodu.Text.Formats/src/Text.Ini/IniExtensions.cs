@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IniExtensions.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -21,11 +21,11 @@ namespace Bodu.Text.Ini;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// // Parse and round-trip via the receiver-typed extensions.
+/// Parse and round-trip via the receiver-typed extensions.
 /// IniDocument doc = "[database]\nhost=localhost".ParseIni();
 /// string text = doc.FormatIni();
 ///
-/// // Non-throwing variant.
+/// Non-throwing variant.
 /// if (source.ParseIni() is { Sections.Count: > 0 } parsed) { /* ... */ }
 ///]]>
 /// </example>

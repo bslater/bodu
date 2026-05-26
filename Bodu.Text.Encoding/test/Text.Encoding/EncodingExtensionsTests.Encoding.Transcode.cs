@@ -90,9 +90,9 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void EncodingReceiver_Transcode_WhenAnyEncodingIsNull_ShouldThrowExactly()
     {
-        Assert.ThrowsExactly<ArgumentNullException>(() => _ = EncodingExtensions.Transcode(null!, new byte[] { 0x68 }, System.Text.Encoding.Unicode));
-        Assert.ThrowsExactly<ArgumentNullException>(() => _ = System.Text.Encoding.UTF8.Transcode(new byte[] { 0x68 }, null!));
-        Assert.ThrowsExactly<ArgumentNullException>(() => _ = EncodingExtensions.GetTranscodedByteCount(null!, new byte[] { 0x68 }, System.Text.Encoding.Unicode));
-        Assert.ThrowsExactly<ArgumentNullException>(() => _ = System.Text.Encoding.UTF8.GetTranscodedByteCount(new byte[] { 0x68 }, null!));
+        Assert.ThrowsExactly<ArgumentNullException>(() => _ = EncodingExtensions.Transcode(null!, [0x68], System.Text.Encoding.Unicode));
+        Assert.ThrowsExactly<ArgumentNullException>(() => _ = System.Text.Encoding.UTF8.Transcode([0x68], null!));
+        Assert.ThrowsExactly<ArgumentNullException>(() => _ = EncodingExtensions.GetTranscodedByteCount(null!, [0x68], System.Text.Encoding.Unicode));
+        Assert.ThrowsExactly<ArgumentNullException>(() => _ = System.Text.Encoding.UTF8.GetTranscodedByteCount([0x68], null!));
     }
 }

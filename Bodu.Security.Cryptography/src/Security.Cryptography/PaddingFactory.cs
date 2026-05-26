@@ -28,17 +28,17 @@ namespace Bodu.Security.Cryptography;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// // BCL-standard padding mode — covers PKCS7, Zeros, None, ANSI X.923, ISO 10126.
+/// BCL-standard padding mode — covers PKCS7, Zeros, None, ANSI X.923, ISO 10126.
 /// IPaddingStrategy pkcs7 = PaddingFactory.Create(PaddingMode.PKCS7);
 ///
-/// // Extended padding mode — adds ISO/IEC 7816-4 ("one-and-zeros") used by smart cards and SHA-3.
+/// Extended padding mode — adds ISO/IEC 7816-4 ("one-and-zeros") used by smart cards and SHA-3.
 /// IPaddingStrategy iso7816 = PaddingFactory.Create(PaddingModeKind.ISO7816_4);
 ///
-/// // Apply on encryption.
+/// Apply on encryption.
 /// byte[] padded = pkcs7.Pad(plaintext, blockSizeBits: 128);
 ///
-/// // Remove on decryption — Unpad validates the trailer and throws CryptographicException
-/// // if the padding is malformed.
+/// Remove on decryption — Unpad validates the trailer and throws CryptographicException
+/// if the padding is malformed.
 /// byte[] stripped = pkcs7.Unpad(decrypted, blockSizeBits: 128);
 ///]]>
 /// </example>

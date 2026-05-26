@@ -35,13 +35,13 @@ namespace Bodu.Globalization.Calendar;
 /// </para>
 /// <code>
 ///<![CDATA[
-/// // Pull every rule from the global public-holidays resource, unchanged:
+/// Pull every rule from the global public-holidays resource, unchanged:
 /// NotableDateRuleUseGroup global = new NotableDateRuleUseGroup(
 ///     SourceResource: "Bodu/Globalization/Calendar/Resources/global-public.xml",
 ///     UseAll: true,
 ///     Uses: ImmutableArray<NotableDateRuleUseDirective>.Empty);
 ///
-/// // From the AU public-holidays resource, pull only Anzac Day, retargeted to Western Australia:
+/// From the AU public-holidays resource, pull only Anzac Day, retargeted to Western Australia:
 /// NotableDateRuleUseGroup australia = new NotableDateRuleUseGroup(
 ///     SourceResource: "Bodu/Globalization/Calendar/Resources/au-public.xml",
 ///     UseAll: false,
@@ -51,11 +51,11 @@ namespace Bodu.Globalization.Calendar;
 ///             TerritoryCode: "AU-WA",
 ///             IsNonWorkingDay: true)));
 ///
-/// // Equivalent XML:
-/// // <Use source="...global-public.xml" useAll="true" />
-/// // <Use source="...au-public.xml">
-/// //   <Rule sourceName="Anzac Day" territoryCode="AU-WA" isNonWorkingDay="true" />
-/// // </Use>
+/// Equivalent XML:
+/// <Use source="...global-public.xml" useAll="true" />
+/// <Use source="...au-public.xml">
+///   <Rule sourceName="Anzac Day" territoryCode="AU-WA" isNonWorkingDay="true" />
+/// </Use>
 ///]]>
 /// </code>
 /// </example>

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateServiceTests.PipelineEquivalence.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -298,15 +298,15 @@ public sealed partial class NotableDateServiceTests
     {
         NotableDateRule baseRule = Fixed("Holiday", 1, 1);
         TestOverrideProvider provider = new(
-            removals: new[] { new RuleRemoval("Holiday") },
+            removals: [new RuleRemoval("Holiday")],
             additions: Array.Empty<NotableDateRule>());
 
         NotableDateService service = new(
-            new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(baseRule) },
+            [(INotableDateRuleProvider)new InMemoryRuleProvider(baseRule)],
             WorkingDaysOfWeek.MondayToFriday,
             options: new NotableDateServiceOptions
             {
-                OverrideProviders = new[] { (INotableDateRuleOverrideProvider)provider },
+                OverrideProviders = [(INotableDateRuleOverrideProvider)provider],
             });
 
         IReadOnlyList<NotableDate> legacy = service.GetNotableDates(2026);
@@ -326,15 +326,15 @@ public sealed partial class NotableDateServiceTests
         NotableDateRule baseRule = Fixed("Holiday", 1, 1);
         NotableDateRule replacement = Fixed("Holiday", 7, 4);
         TestOverrideProvider provider = new(
-            removals: new[] { new RuleRemoval("Holiday") },
-            additions: new[] { replacement });
+            removals: [new RuleRemoval("Holiday")],
+            additions: [replacement]);
 
         NotableDateService service = new(
-            new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(baseRule) },
+            [(INotableDateRuleProvider)new InMemoryRuleProvider(baseRule)],
             WorkingDaysOfWeek.MondayToFriday,
             options: new NotableDateServiceOptions
             {
-                OverrideProviders = new[] { (INotableDateRuleOverrideProvider)provider },
+                OverrideProviders = [(INotableDateRuleOverrideProvider)provider],
             });
 
         IReadOnlyList<NotableDate> legacy = service.GetNotableDates(2026);

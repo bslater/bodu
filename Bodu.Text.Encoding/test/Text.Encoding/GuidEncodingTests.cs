@@ -72,7 +72,7 @@ public sealed class GuidEncodingTests
     public void Base32_TryDecodeGuid_WhenInputNotSixteenBytes_ShouldReturnFalseAndEmptyGuid()
     {
         // 5-byte payload encodes to "MFRGGZDF" (no padding), well short of 16 bytes.
-        var encoded = Base32.Encode(new byte[] { 0x61, 0x62, 0x63, 0x64, 0x65 });
+        var encoded = Base32.Encode([0x61, 0x62, 0x63, 0x64, 0x65]);
 
         var ok = Base32.TryDecodeGuid(encoded.AsSpan(), out Guid value);
 
@@ -129,7 +129,7 @@ public sealed class GuidEncodingTests
     public void Base58_TryDecodeGuid_WhenInputNotSixteenBytes_ShouldReturnFalseAndEmptyGuid()
     {
         // 4-byte payload encodes to a short Base58 string.
-        var encoded = Base58.Encode(new byte[] { 0xDE, 0xAD, 0xBE, 0xEF });
+        var encoded = Base58.Encode([0xDE, 0xAD, 0xBE, 0xEF]);
 
         var ok = Base58.TryDecodeGuid(encoded.AsSpan(), out Guid value);
 
@@ -186,7 +186,7 @@ public sealed class GuidEncodingTests
     public void Base64_TryDecodeGuid_WhenInputNotSixteenBytes_ShouldReturnFalseAndEmptyGuid()
     {
         // 4-byte payload encodes to "3q2+7w==" — 4 bytes, not 16.
-        var encoded = Base64.Encode(new byte[] { 0xDE, 0xAD, 0xBE, 0xEF });
+        var encoded = Base64.Encode([0xDE, 0xAD, 0xBE, 0xEF]);
 
         var ok = Base64.TryDecodeGuid(encoded.AsSpan(), out Guid value);
 
@@ -276,7 +276,7 @@ public sealed class GuidEncodingTests
     public void Base85_TryDecodeGuid_WhenInputNotSixteenBytes_ShouldReturnFalseAndEmptyGuid()
     {
         // 4-byte payload encodes to a 5-character Ascii85 group, not the 20 chars a GUID would produce.
-        var encoded = Base85.Encode(new byte[] { 0x86, 0x4F, 0xD2, 0x6F });
+        var encoded = Base85.Encode([0x86, 0x4F, 0xD2, 0x6F]);
 
         var ok = Base85.TryDecodeGuid(encoded.AsSpan(), out Guid value);
 

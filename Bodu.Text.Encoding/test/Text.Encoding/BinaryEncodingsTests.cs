@@ -89,7 +89,7 @@ public sealed class BinaryEncodingsTests
     public void Name_AndDescription_ShouldBeNonEmptyForEveryRegisteredEncoding()
     {
         IBinaryEncoding[] encodings =
-        {
+        [
             BinaryEncodings.Base16Lower,
             BinaryEncodings.Base16Upper,
             BinaryEncodings.Base32,
@@ -103,7 +103,7 @@ public sealed class BinaryEncodingsTests
             BinaryEncodings.Base58Ripple,
             BinaryEncodings.Ascii85,
             BinaryEncodings.Z85,
-        };
+        ];
 
         foreach (IBinaryEncoding e in encodings)
         {

@@ -79,7 +79,7 @@ namespace Bodu.Globalization.Calendar;
 ///     }),
 /// };
 ///
-/// // Algorithm-based rule (Easter Monday — offset from Easter Sunday):
+/// Algorithm-based rule (Easter Monday — offset from Easter Sunday):
 /// NotableDateRule easterMonday = new NotableDateRule
 /// {
 ///     Name = "Easter Monday",

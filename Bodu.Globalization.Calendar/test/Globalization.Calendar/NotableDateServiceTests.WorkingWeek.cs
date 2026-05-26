@@ -52,7 +52,7 @@ public sealed partial class NotableDateServiceTests
     public void IsNonWorkingDay_WhenSundayToThursdayWorkingWeek_ShouldTreatFridayAsNonWorking()
     {
         var service = new NotableDateService(
-            new[] { (INotableDateRuleProvider)new InMemoryRuleProvider() },
+            [(INotableDateRuleProvider)new InMemoryRuleProvider()],
             WorkingDaysOfWeek.SundayToThursday);
 
         // 2026-05-15 is a Friday; 2026-05-16 is a Saturday; 2026-05-17 is a Sunday.
@@ -69,7 +69,7 @@ public sealed partial class NotableDateServiceTests
     public void IsWeekend_WhenSundayToThursdayWorkingWeek_ShouldReturnTrueForFridayAndSaturday()
     {
         var service = new NotableDateService(
-            new[] { (INotableDateRuleProvider)new InMemoryRuleProvider() },
+            [(INotableDateRuleProvider)new InMemoryRuleProvider()],
             WorkingDaysOfWeek.SundayToThursday);
 
         Assert.IsTrue(service.IsWeekend(new DateTime(2026, 5, 15)));

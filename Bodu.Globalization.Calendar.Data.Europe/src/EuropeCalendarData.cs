@@ -6,7 +6,7 @@
 
 using System.Reflection;
 
-namespace Bodu.Globalization.Calendar.Data.Europe;
+namespace Bodu.Globalization.Calendar.Data;
 
 /// <summary>
 /// Provides factory entry points for the Europe region calendar data pack — embedded notable-date rules for Germany,
@@ -164,5 +164,5 @@ public static class EuropeCalendarData
         new XmlResourceNotableDateRuleProvider(
             resourceName,
             new ResourcePathResolver(),
-            new[] { DataAssembly, typeof(NotableDateService).Assembly });
+            [DataAssembly, typeof(NotableDateService).Assembly]);
 }

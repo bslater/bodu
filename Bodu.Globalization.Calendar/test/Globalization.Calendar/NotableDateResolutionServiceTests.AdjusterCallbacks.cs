@@ -51,7 +51,7 @@ public sealed class NotableDateResolutionServiceAdjusterCallbacksTests
         };
 
         NotableDateResolutionService service = new(
-            ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(target, redirect) },
+            ruleProviders: [(INotableDateRuleProvider)new InMemoryRuleProvider(target, redirect)],
             workingWeek: WorkingDaysOfWeek.MondayToFriday);
 
         IReadOnlyList<NotableDate> resolved = service.GetNotableDates(
@@ -93,7 +93,7 @@ public sealed class NotableDateResolutionServiceAdjusterCallbacksTests
         };
 
         NotableDateResolutionService service = new(
-            ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(redirect) },
+            ruleProviders: [(INotableDateRuleProvider)new InMemoryRuleProvider(redirect)],
             workingWeek: WorkingDaysOfWeek.MondayToFriday);
 
         IReadOnlyList<NotableDate> resolved = service.GetNotableDates(

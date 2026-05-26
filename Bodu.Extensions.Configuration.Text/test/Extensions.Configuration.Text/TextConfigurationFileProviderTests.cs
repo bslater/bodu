@@ -7,7 +7,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.FileProviders;
 
-namespace Bodu.Extensions.Configuration.Text.Tests;
+namespace Bodu.Extensions.Configuration.Text;
 
 /// <summary>
 /// Verifies the explicit <see cref="IFileProvider" /> overload of <c>AddConfiguration</c>, mirroring

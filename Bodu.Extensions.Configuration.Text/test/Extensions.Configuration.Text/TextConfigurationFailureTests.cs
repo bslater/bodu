@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TextConfigurationFailureTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -8,7 +8,7 @@ using System.Text;
 using Bodu.Text.Configuration;
 using Microsoft.Extensions.Configuration;
 
-namespace Bodu.Extensions.Configuration.Text.Tests;
+namespace Bodu.Extensions.Configuration.Text;
 
 /// <summary>
 /// Verifies that the file and stream provider variants preserve the malformed-file, optional-file, and

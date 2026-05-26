@@ -37,69 +37,60 @@ public partial class NotableDateRuleParserTests
     /// Gets the test cases that pair a minimal XML fragment with the <see cref="AdjustmentTrigger" /> value it encodes
     /// via the <c>when</c> attribute.
     /// </summary>
-    public static IEnumerable<object[]> AdjustmentTriggerCases => new[]
-    {
+    public static IEnumerable<object[]> AdjustmentTriggerCases =>
+    [
         new object[]
         {
             "Always trigger maps to Always",
             BuildAdjustmentXml(@"key=""t"" when=""Always"" action=""None"""),
             AdjustmentTrigger.Always,
         },
-        new object[]
-        {
+        [
             "IfWeekend trigger maps to IfWeekend",
             BuildAdjustmentXml(@"key=""t"" when=""IfWeekend"" action=""None"""),
             AdjustmentTrigger.IfWeekend,
-        },
-        new object[]
-        {
+        ],
+        [
             "IfWeekday trigger maps to IfWeekday",
             BuildAdjustmentXml(@"key=""t"" when=""IfWeekday"" action=""None"""),
             AdjustmentTrigger.IfWeekday,
-        },
-        new object[]
-        {
+        ],
+        [
             "IfLeapYear trigger maps to IfLeapYear",
             BuildAdjustmentXml(@"key=""t"" when=""IfLeapYear"" action=""None"""),
             AdjustmentTrigger.IfLeapYear,
-        },
-        new object[]
-        {
+        ],
+        [
             "IfNonWorkingDay trigger maps to IfNonWorkingDay",
             BuildAdjustmentXml(@"key=""t"" when=""IfNonWorkingDay"" action=""None"""),
             AdjustmentTrigger.IfNonWorkingDay,
-        },
-        new object[]
-        {
+        ],
+        [
             "IfDayOfWeek trigger maps to IfDayOfWeek",
             BuildAdjustmentXml(@"key=""t"" when=""IfDayOfWeek"" action=""None"" dayOfWeek=""Monday"""),
             AdjustmentTrigger.IfDayOfWeek,
-        },
-        new object[]
-        {
+        ],
+        [
             "IfBeforeFixedDate trigger maps to IfBeforeFixedDate",
             BuildAdjustmentXml(@"key=""t"" when=""IfBeforeFixedDate"" action=""None"" comparisonMonth=""January"" comparisonDay=""1"""),
             AdjustmentTrigger.IfBeforeFixedDate,
-        },
-        new object[]
-        {
+        ],
+        [
             "IfAfterFixedDate trigger maps to IfAfterFixedDate",
             BuildAdjustmentXml(@"key=""t"" when=""IfAfterFixedDate"" action=""None"" comparisonMonth=""January"" comparisonDay=""1"""),
             AdjustmentTrigger.IfAfterFixedDate,
-        },
-        new object[]
-        {
+        ],
+        [
             "IfNthOccurrenceInMonth trigger maps to IfNthOccurrenceInMonth",
             BuildAdjustmentXml(@"key=""t"" when=""IfNthOccurrenceInMonth"" action=""None"" dayOfWeek=""Monday"" weekOrdinal=""First"""),
             AdjustmentTrigger.IfNthOccurrenceInMonth,
-        },
-        new object[]
-        {
+        ],
+        [
             "Custom trigger maps to Custom",
             BuildAdjustmentXml(@"key=""t"" when=""Custom"" action=""None"" handlerKey=""my-handler"""),
             AdjustmentTrigger.Custom,
-        },
-    };
+        ],
+    ];
 
     /// <summary>
     /// Verifies that every <see cref="AdjustmentTrigger" /> value is correctly parsed from the <c>when</c> attribute
@@ -123,51 +114,45 @@ public partial class NotableDateRuleParserTests
     /// Gets the test cases that pair a minimal XML fragment with the <see cref="AdjustmentAction" /> value it encodes
     /// via the <c>action</c> attribute.
     /// </summary>
-    public static IEnumerable<object[]> AdjustmentActionCases => new[]
-    {
+    public static IEnumerable<object[]> AdjustmentActionCases =>
+    [
         new object[]
         {
             "None action maps to None",
             BuildAdjustmentXml(@"key=""t"" when=""Always"" action=""None"""),
             AdjustmentAction.None,
         },
-        new object[]
-        {
+        [
             "AddDays action maps to AddDays",
             BuildAdjustmentXml(@"key=""t"" when=""Always"" action=""AddDays"" days=""7"""),
             AdjustmentAction.AddDays,
-        },
-        new object[]
-        {
+        ],
+        [
             "MoveToNextWeekday action maps to MoveToNextWeekday",
             BuildAdjustmentXml(@"key=""t"" when=""Always"" action=""MoveToNextWeekday"""),
             AdjustmentAction.MoveToNextWeekday,
-        },
-        new object[]
-        {
+        ],
+        [
             "MoveToPreviousWeekday action maps to MoveToPreviousWeekday",
             BuildAdjustmentXml(@"key=""t"" when=""Always"" action=""MoveToPreviousWeekday"""),
             AdjustmentAction.MoveToPreviousWeekday,
-        },
-        new object[]
-        {
+        ],
+        [
             "MoveToNextNonWorkingDay action maps to MoveToNextNonWorkingDay",
             BuildAdjustmentXml(@"key=""t"" when=""Always"" action=""MoveToNextNonWorkingDay"""),
             AdjustmentAction.MoveToNextNonWorkingDay,
-        },
-        new object[]
-        {
+        ],
+        [
             "ReplaceWithNamedDate action maps to ReplaceWithNamedDate",
             BuildAdjustmentXml(@"key=""t"" when=""Always"" action=""ReplaceWithNamedDate"" target=""Easter Sunday"""),
             AdjustmentAction.ReplaceWithNamedDate,
-        },
-        new object[]
-        {
+        ],
+        [
             "Custom action maps to Custom",
             BuildAdjustmentXml(@"key=""t"" when=""Always"" action=""Custom"" handlerKey=""my-handler"""),
             AdjustmentAction.Custom,
-        },
-    };
+        ],
+    ];
 
     /// <summary>
     /// Verifies that every <see cref="AdjustmentAction" /> value is correctly parsed from the <c>action</c> attribute
@@ -191,51 +176,45 @@ public partial class NotableDateRuleParserTests
     /// Gets the test cases that pair a minimal XML fragment with the <see cref="DayOfWeek" /> value it encodes via
     /// the <c>dayOfWeek</c> attribute.
     /// </summary>
-    public static IEnumerable<object[]> AdjustmentDayOfWeekCases => new[]
-    {
+    public static IEnumerable<object[]> AdjustmentDayOfWeekCases =>
+    [
         new object[]
         {
             "dayOfWeek Monday maps to DayOfWeek.Monday",
             BuildAdjustmentXml(@"key=""t"" when=""IfDayOfWeek"" action=""None"" dayOfWeek=""Monday"""),
             DayOfWeek.Monday,
         },
-        new object[]
-        {
+        [
             "dayOfWeek Tuesday maps to DayOfWeek.Tuesday",
             BuildAdjustmentXml(@"key=""t"" when=""IfDayOfWeek"" action=""None"" dayOfWeek=""Tuesday"""),
             DayOfWeek.Tuesday,
-        },
-        new object[]
-        {
+        ],
+        [
             "dayOfWeek Wednesday maps to DayOfWeek.Wednesday",
             BuildAdjustmentXml(@"key=""t"" when=""IfDayOfWeek"" action=""None"" dayOfWeek=""Wednesday"""),
             DayOfWeek.Wednesday,
-        },
-        new object[]
-        {
+        ],
+        [
             "dayOfWeek Thursday maps to DayOfWeek.Thursday",
             BuildAdjustmentXml(@"key=""t"" when=""IfDayOfWeek"" action=""None"" dayOfWeek=""Thursday"""),
             DayOfWeek.Thursday,
-        },
-        new object[]
-        {
+        ],
+        [
             "dayOfWeek Friday maps to DayOfWeek.Friday",
             BuildAdjustmentXml(@"key=""t"" when=""IfDayOfWeek"" action=""None"" dayOfWeek=""Friday"""),
             DayOfWeek.Friday,
-        },
-        new object[]
-        {
+        ],
+        [
             "dayOfWeek Saturday maps to DayOfWeek.Saturday",
             BuildAdjustmentXml(@"key=""t"" when=""IfDayOfWeek"" action=""None"" dayOfWeek=""Saturday"""),
             DayOfWeek.Saturday,
-        },
-        new object[]
-        {
+        ],
+        [
             "dayOfWeek Sunday maps to DayOfWeek.Sunday",
             BuildAdjustmentXml(@"key=""t"" when=""IfDayOfWeek"" action=""None"" dayOfWeek=""Sunday"""),
             DayOfWeek.Sunday,
-        },
-    };
+        ],
+    ];
 
     /// <summary>
     /// Verifies that every <see cref="DayOfWeek" /> value is correctly parsed from the <c>dayOfWeek</c> attribute of
@@ -259,45 +238,40 @@ public partial class NotableDateRuleParserTests
     /// Gets the test cases that pair a minimal XML fragment with the <see cref="WeekOfMonthOrdinal" /> value it
     /// encodes via the <c>weekOrdinal</c> attribute.
     /// </summary>
-    public static IEnumerable<object[]> AdjustmentWeekOrdinalCases => new[]
-    {
+    public static IEnumerable<object[]> AdjustmentWeekOrdinalCases =>
+    [
         new object[]
         {
             "weekOrdinal First maps to WeekOfMonthOrdinal.First",
             BuildAdjustmentXml(@"key=""t"" when=""IfNthOccurrenceInMonth"" action=""None"" dayOfWeek=""Monday"" weekOrdinal=""First"""),
             WeekOfMonthOrdinal.First,
         },
-        new object[]
-        {
+        [
             "weekOrdinal Second maps to WeekOfMonthOrdinal.Second",
             BuildAdjustmentXml(@"key=""t"" when=""IfNthOccurrenceInMonth"" action=""None"" dayOfWeek=""Monday"" weekOrdinal=""Second"""),
             WeekOfMonthOrdinal.Second,
-        },
-        new object[]
-        {
+        ],
+        [
             "weekOrdinal Third maps to WeekOfMonthOrdinal.Third",
             BuildAdjustmentXml(@"key=""t"" when=""IfNthOccurrenceInMonth"" action=""None"" dayOfWeek=""Monday"" weekOrdinal=""Third"""),
             WeekOfMonthOrdinal.Third,
-        },
-        new object[]
-        {
+        ],
+        [
             "weekOrdinal Fourth maps to WeekOfMonthOrdinal.Fourth",
             BuildAdjustmentXml(@"key=""t"" when=""IfNthOccurrenceInMonth"" action=""None"" dayOfWeek=""Monday"" weekOrdinal=""Fourth"""),
             WeekOfMonthOrdinal.Fourth,
-        },
-        new object[]
-        {
+        ],
+        [
             "weekOrdinal Fifth maps to WeekOfMonthOrdinal.Fifth",
             BuildAdjustmentXml(@"key=""t"" when=""IfNthOccurrenceInMonth"" action=""None"" dayOfWeek=""Monday"" weekOrdinal=""Fifth"""),
             WeekOfMonthOrdinal.Fifth,
-        },
-        new object[]
-        {
+        ],
+        [
             "weekOrdinal Last maps to WeekOfMonthOrdinal.Last",
             BuildAdjustmentXml(@"key=""t"" when=""IfNthOccurrenceInMonth"" action=""None"" dayOfWeek=""Monday"" weekOrdinal=""Last"""),
             WeekOfMonthOrdinal.Last,
-        },
-    };
+        ],
+    ];
 
     /// <summary>
     /// Verifies that every <see cref="WeekOfMonthOrdinal" /> value is correctly parsed from the <c>weekOrdinal</c>
@@ -321,8 +295,8 @@ public partial class NotableDateRuleParserTests
     /// Gets the test cases that pair a minimal XML fragment with the expected comparison month and day encoded via
     /// the <c>comparisonMonth</c> and <c>comparisonDay</c> attributes.
     /// </summary>
-    public static IEnumerable<object[]> AdjustmentComparisonDateCases => new[]
-    {
+    public static IEnumerable<object[]> AdjustmentComparisonDateCases =>
+    [
         new object[]
         {
             "IfBeforeFixedDate with January 1 maps ComparisonDate",
@@ -330,28 +304,25 @@ public partial class NotableDateRuleParserTests
             1,
             1,
         },
-        new object[]
-        {
+        [
             "IfBeforeFixedDate with June 15 maps ComparisonDate",
             BuildAdjustmentXml(@"key=""t"" when=""IfBeforeFixedDate"" action=""None"" comparisonMonth=""June"" comparisonDay=""15"""),
             6,
             15,
-        },
-        new object[]
-        {
+        ],
+        [
             "IfAfterFixedDate with March 31 maps ComparisonDate",
             BuildAdjustmentXml(@"key=""t"" when=""IfAfterFixedDate"" action=""None"" comparisonMonth=""March"" comparisonDay=""31"""),
             3,
             31,
-        },
-        new object[]
-        {
+        ],
+        [
             "IfAfterFixedDate with December 25 maps ComparisonDate",
             BuildAdjustmentXml(@"key=""t"" when=""IfAfterFixedDate"" action=""None"" comparisonMonth=""December"" comparisonDay=""25"""),
             12,
             25,
-        },
-    };
+        ],
+    ];
 
     /// <summary>
     /// Verifies that the <c>comparisonMonth</c> and <c>comparisonDay</c> attributes of an <c>&lt;Adjustment&gt;</c>
@@ -380,27 +351,25 @@ public partial class NotableDateRuleParserTests
     /// Gets the test cases that pair a minimal XML fragment with the expected <see cref="ObservanceAdjustment.OffsetDays" />
     /// value it encodes via the <c>days</c> attribute.
     /// </summary>
-    public static IEnumerable<object[]> AdjustmentOffsetDaysCases => new[]
-    {
+    public static IEnumerable<object[]> AdjustmentOffsetDaysCases =>
+    [
         new object[]
         {
             "Positive day offset maps OffsetDays to 7",
             BuildAdjustmentXml(@"key=""t"" when=""Always"" action=""AddDays"" days=""7"""),
             7,
         },
-        new object[]
-        {
+        [
             "Negative day offset maps OffsetDays to -3",
             BuildAdjustmentXml(@"key=""t"" when=""Always"" action=""AddDays"" days=""-3"""),
             -3,
-        },
-        new object[]
-        {
+        ],
+        [
             "Zero day offset maps OffsetDays to 0",
             BuildAdjustmentXml(@"key=""t"" when=""Always"" action=""AddDays"" days=""0"""),
             0,
-        },
-    };
+        ],
+    ];
 
     /// <summary>
     /// Verifies that the <c>days</c> attribute of an <c>&lt;Adjustment&gt;</c> XML element is correctly parsed into
@@ -425,21 +394,20 @@ public partial class NotableDateRuleParserTests
     /// Gets the test cases that pair a minimal XML fragment with the expected
     /// <see cref="ObservanceAdjustment.TargetRuleName" /> value it encodes via the <c>target</c> attribute.
     /// </summary>
-    public static IEnumerable<object[]> AdjustmentTargetRuleNameCases => new[]
-    {
+    public static IEnumerable<object[]> AdjustmentTargetRuleNameCases =>
+    [
         new object[]
         {
             "target Easter Sunday maps TargetRuleName",
             BuildAdjustmentXml(@"key=""t"" when=""Always"" action=""ReplaceWithNamedDate"" target=""Easter Sunday"""),
             "Easter Sunday",
         },
-        new object[]
-        {
+        [
             "target New Year's Day maps TargetRuleName",
             BuildAdjustmentXml(@"key=""t"" when=""Always"" action=""ReplaceWithNamedDate"" target=""New Year's Day"""),
             "New Year's Day",
-        },
-    };
+        ],
+    ];
 
     /// <summary>
     /// Verifies that the <c>target</c> attribute of an <c>&lt;Adjustment&gt;</c> XML element is correctly parsed into
@@ -463,21 +431,20 @@ public partial class NotableDateRuleParserTests
     /// Gets the test cases that pair a minimal XML fragment with the expected <see cref="ObservanceAdjustment.HandlerKey" />
     /// value it encodes via the <c>handlerKey</c> attribute, covering both the Custom trigger and Custom action variants.
     /// </summary>
-    public static IEnumerable<object[]> AdjustmentHandlerKeyCases => new[]
-    {
+    public static IEnumerable<object[]> AdjustmentHandlerKeyCases =>
+    [
         new object[]
         {
             "Custom trigger with handlerKey maps HandlerKey",
             BuildAdjustmentXml(@"key=""t"" when=""Custom"" action=""None"" handlerKey=""my-trigger-handler"""),
             "my-trigger-handler",
         },
-        new object[]
-        {
+        [
             "Custom action with handlerKey maps HandlerKey",
             BuildAdjustmentXml(@"key=""t"" when=""Always"" action=""Custom"" handlerKey=""my-action-handler"""),
             "my-action-handler",
-        },
-    };
+        ],
+    ];
 
     /// <summary>
     /// Verifies that the <c>handlerKey</c> attribute of an <c>&lt;Adjustment&gt;</c> XML element is correctly parsed
@@ -502,27 +469,25 @@ public partial class NotableDateRuleParserTests
     /// Gets the test cases that pair a minimal XML fragment with the expected <see cref="ObservanceAdjustment.Key" />
     /// value it encodes via the <c>key</c> attribute.
     /// </summary>
-    public static IEnumerable<object[]> AdjustmentKeyCases => new[]
-    {
+    public static IEnumerable<object[]> AdjustmentKeyCases =>
+    [
         new object[]
         {
             "Key weekend-roll maps Key",
             BuildAdjustmentXml(@"key=""weekend-roll"" when=""Always"" action=""None"""),
             "weekend-roll",
         },
-        new object[]
-        {
+        [
             "Key boxing-day-sub maps Key",
             BuildAdjustmentXml(@"key=""boxing-day-sub"" when=""Always"" action=""None"""),
             "boxing-day-sub",
-        },
-        new object[]
-        {
+        ],
+        [
             "Key anzac-day-wa maps Key",
             BuildAdjustmentXml(@"key=""anzac-day-wa"" when=""Always"" action=""None"""),
             "anzac-day-wa",
-        },
-    };
+        ],
+    ];
 
     /// <summary>
     /// Verifies that the <c>key</c> attribute of an <c>&lt;Adjustment&gt;</c> XML element is correctly parsed into
@@ -546,27 +511,25 @@ public partial class NotableDateRuleParserTests
     /// Gets the test cases that pair a minimal XML fragment with the expected <see cref="ObservanceAdjustment.Priority" />
     /// value it encodes via the <c>priority</c> attribute.
     /// </summary>
-    public static IEnumerable<object[]> AdjustmentPriorityCases => new[]
-    {
+    public static IEnumerable<object[]> AdjustmentPriorityCases =>
+    [
         new object[]
         {
             "Priority 1 maps Priority",
             BuildAdjustmentXml(@"key=""t"" when=""Always"" action=""None"" priority=""1"""),
             1,
         },
-        new object[]
-        {
+        [
             "Priority 50 maps Priority",
             BuildAdjustmentXml(@"key=""t"" when=""Always"" action=""None"" priority=""50"""),
             50,
-        },
-        new object[]
-        {
+        ],
+        [
             "Priority 200 maps Priority",
             BuildAdjustmentXml(@"key=""t"" when=""Always"" action=""None"" priority=""200"""),
             200,
-        },
-    };
+        ],
+    ];
 
     /// <summary>
     /// Verifies that the <c>priority</c> attribute of an <c>&lt;Adjustment&gt;</c> XML element is correctly parsed
@@ -590,27 +553,25 @@ public partial class NotableDateRuleParserTests
     /// Gets the test cases that pair a minimal XML fragment with the expected <see cref="ObservanceAdjustment.TerritoryCode" />
     /// value it encodes via the <c>territory</c> attribute, covering single and comma-separated values.
     /// </summary>
-    public static IEnumerable<object[]> AdjustmentTerritoryCases => new[]
-    {
+    public static IEnumerable<object[]> AdjustmentTerritoryCases =>
+    [
         new object[]
         {
             "Territory AU maps TerritoryCode",
             BuildAdjustmentXml(@"key=""t"" when=""Always"" action=""None"" territory=""AU"""),
             "AU",
         },
-        new object[]
-        {
+        [
             "Territory AU-NSW maps TerritoryCode",
             BuildAdjustmentXml(@"key=""t"" when=""Always"" action=""None"" territory=""AU-NSW"""),
             "AU-NSW",
-        },
-        new object[]
-        {
+        ],
+        [
             "Territory AU-NSW,AU-VIC maps TerritoryCode",
             BuildAdjustmentXml(@"key=""t"" when=""Always"" action=""None"" territory=""AU-NSW,AU-VIC"""),
             "AU-NSW,AU-VIC",
-        },
-    };
+        ],
+    ];
 
     /// <summary>
     /// Verifies that the <c>territory</c> attribute of an <c>&lt;Adjustment&gt;</c> XML element is correctly parsed
@@ -635,15 +596,15 @@ public partial class NotableDateRuleParserTests
     /// Gets the test cases that pair a minimal XML fragment with the expected <see cref="ObservanceAdjustment.CalendarType" />
     /// it encodes via the <c>calendarType</c> attribute.
     /// </summary>
-    public static IEnumerable<object[]> AdjustmentCalendarTypeCases => new[]
-    {
+    public static IEnumerable<object[]> AdjustmentCalendarTypeCases =>
+    [
         new object[]
         {
             "GregorianCalendar calendarType maps CalendarType",
             BuildAdjustmentXml(@"key=""t"" when=""Always"" action=""None"" calendarType=""System.Globalization.GregorianCalendar"""),
             typeof(System.Globalization.GregorianCalendar),
         },
-    };
+    ];
 
     /// <summary>
     /// Verifies that the <c>calendarType</c> attribute of an <c>&lt;Adjustment&gt;</c> XML element is correctly
@@ -668,8 +629,8 @@ public partial class NotableDateRuleParserTests
     /// <see cref="ObservanceAdjustment.EffectiveFromYear" /> and <see cref="ObservanceAdjustment.EffectiveToYear" />
     /// values each encodes via the <c>fromYear</c> and <c>toYear</c> attributes.
     /// </summary>
-    public static IEnumerable<object[]> AdjustmentEffectiveYearCases => new[]
-    {
+    public static IEnumerable<object[]> AdjustmentEffectiveYearCases =>
+    [
         new object[]
         {
             "Both fromYear and toYear set maps effective year bounds",
@@ -677,21 +638,19 @@ public partial class NotableDateRuleParserTests
             (int?)2010,
             (int?)2030,
         },
-        new object[]
-        {
+        [
             "Only fromYear set maps EffectiveFromYear with null EffectiveToYear",
             BuildAdjustmentXml(@"key=""t"" when=""Always"" action=""None"" fromYear=""2015"""),
             (int?)2015,
             (int?)null,
-        },
-        new object[]
-        {
+        ],
+        [
             "Only toYear set maps null EffectiveFromYear with EffectiveToYear",
             BuildAdjustmentXml(@"key=""t"" when=""Always"" action=""None"" toYear=""2025"""),
             (int?)null,
             (int?)2025,
-        },
-    };
+        ],
+    ];
 
     /// <summary>
     /// Verifies that the <c>fromYear</c> and <c>toYear</c> attributes of an <c>&lt;Adjustment&gt;</c> XML element are
@@ -720,21 +679,20 @@ public partial class NotableDateRuleParserTests
     /// Gets the test cases that pair a minimal XML fragment with the expected <see cref="ObservanceAdjustment.IsNonWorkingDay" />
     /// value it encodes via the <c>nonWorking</c> attribute.
     /// </summary>
-    public static IEnumerable<object[]> AdjustmentIsNonWorkingDayCases => new[]
-    {
+    public static IEnumerable<object[]> AdjustmentIsNonWorkingDayCases =>
+    [
         new object[]
         {
             "nonWorking true maps IsNonWorkingDay to true",
             BuildAdjustmentXml(@"key=""t"" when=""Always"" action=""None"" nonWorking=""true"""),
             true,
         },
-        new object[]
-        {
+        [
             "nonWorking false maps IsNonWorkingDay to false",
             BuildAdjustmentXml(@"key=""t"" when=""Always"" action=""None"" nonWorking=""false"""),
             false,
-        },
-    };
+        ],
+    ];
 
     /// <summary>
     /// Verifies that the <c>nonWorking</c> attribute of an <c>&lt;Adjustment&gt;</c> XML element is correctly parsed

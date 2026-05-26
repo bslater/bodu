@@ -7,7 +7,7 @@
 using System.Text;
 using Microsoft.Extensions.Configuration;
 
-namespace Bodu.Extensions.Configuration.Text.Tests;
+namespace Bodu.Extensions.Configuration.Text;
 
 /// <summary>
 /// Verifies that multiple Bodu Text Configuration sources layer in the order they are added, matching the

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base64ContractTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -34,8 +34,8 @@ public sealed class Base64ContractTests : BinaryEncodingContractTests<object>
         Base64.TryDecode(text.AsSpan(), destination, out bytesWritten);
 
     /// <inheritdoc />
-    protected override IReadOnlyList<BinaryEncodingKat> KnownAnswers { get; } = new BinaryEncodingKat[]
-    {
+    protected override IReadOnlyList<BinaryEncodingKat> KnownAnswers { get; } =
+    [
         // RFC 4648 §10 - Base64 reference vectors.
         new("empty",   Array.Empty<byte>(),    ""),
         new("f",       "f"u8.ToArray(),        "Zg=="),
@@ -44,12 +44,12 @@ public sealed class Base64ContractTests : BinaryEncodingContractTests<object>
         new("foob",    "foob"u8.ToArray(),     "Zm9vYg=="),
         new("fooba",   "fooba"u8.ToArray(),    "Zm9vYmE="),
         new("foobar",  "foobar"u8.ToArray(),   "Zm9vYmFy"),
-    };
+    ];
 
     /// <inheritdoc />
-    protected override IReadOnlyList<InvalidEncodedTextKat> InvalidInputs { get; } = new InvalidEncodedTextKat[]
-    {
+    protected override IReadOnlyList<InvalidEncodedTextKat> InvalidInputs { get; } =
+    [
         new("contains '!' (not in Standard alphabet)", "Zm9v!Yg=="),
         new("missing padding",                          "Zm9vYg"),
-    };
+    ];
 }

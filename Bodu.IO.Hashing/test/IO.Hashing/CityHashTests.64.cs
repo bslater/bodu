@@ -19,8 +19,8 @@ public sealed partial class CityHash64Tests
     /// Entries are the documented CityHash64 known-answer sequence for incremental inputs
     /// <c>[]</c>, <c>[0x00]</c>, <c>[0x00, 0x01]</c>, … <c>[0x00 .. 0x0E]</c>.
     /// </remarks>
-    protected override IReadOnlyList<string> GetExpectedHashesForIncrementalInput(SingleTestVariant variant) => new[]
-    {
+    protected override IReadOnlyList<string> GetExpectedHashesForIncrementalInput(SingleTestVariant variant) =>
+    [
         "4F40902F3B6AE19A", "544BE9F5ED5660BE", "758D03ED6546A0C2", "9AA4EBE9223DA194",
         "40E5588989FDBF82", "49C13277E8A9BFB4", "33234AE9D8BCFD92", "A1A6B00DF2BFE0A2",
         "983BE9E8E1135AAD", "4FD84A0E151E3781", "EAFFD6B2B24D709B", "DD3A801D3C2B21F3",
@@ -38,12 +38,12 @@ public sealed partial class CityHash64Tests
         "3F33A4303668A596", "CC4686CDED6841A8", "0EF7FDCCF0E6F167", "B6EAFFEDC684CB84",
         "69DB68798FFC54E9", "036BEFD2C21292B2", "E39B97203B73202F", "EFA6AD777A9230AF",
         "A5DCC75E0FB89AE9", "2EDD8304999C58AC",
-    };
+    ];
     /// <inheritdoc />
     protected override NonCryptographicHashAlgorithmSpecification GetSpecification(SingleTestVariant variant) => new()
     {
         HashLengthInBytes = 8,
-        BoundaryLengths = new[] { 16, 32, 64, 65 },
+        BoundaryLengths = [16, 32, 64, 65],
         MinNonZeroBytesForLongInput = 7,
         KnownAnswers = new()
         {

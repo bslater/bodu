@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConcurrentHashSetTests.DebugView.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -14,7 +14,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void DebugView_Items_ShouldExposeEveryElement()
     {
-        var set = new ConcurrentHashSet<int>(new[] { 1, 2, 3 });
+        var set = new ConcurrentHashSet<int>([1, 2, 3]);
 
         var view = new ConcurrentHashSetDebugView<int>(set);
 

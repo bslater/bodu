@@ -103,7 +103,7 @@ public sealed class BclAliasCoverageTests
     {
         var destination = new byte[8];
 
-        var ok = Base16.TryToHexStringLower(new byte[] { 0xDE, 0xAD, 0xBE, 0xEF }, destination, out var bytesWritten);
+        var ok = Base16.TryToHexStringLower([0xDE, 0xAD, 0xBE, 0xEF], destination, out var bytesWritten);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(8, bytesWritten);
@@ -151,7 +151,7 @@ public sealed class BclAliasCoverageTests
     {
         Assert.ThrowsExactly<FormatException>(() =>
         {
-            _ = Base32.FromBase32String(new byte[] { (byte)'M', (byte)'Z', 0xFF, (byte)'W', (byte)'6', (byte)'Y', (byte)'T', (byte)'B' });
+            _ = Base32.FromBase32String([(byte)'M', (byte)'Z', 0xFF, (byte)'W', (byte)'6', (byte)'Y', (byte)'T', (byte)'B']);
         });
     }
 
@@ -202,7 +202,7 @@ public sealed class BclAliasCoverageTests
     {
         Assert.ThrowsExactly<FormatException>(() =>
         {
-            _ = Base58.FromBase58String(new byte[] { (byte)'0', (byte)'1', (byte)'2' });
+            _ = Base58.FromBase58String([(byte)'0', (byte)'1', (byte)'2']);
         });
     }
 
@@ -216,7 +216,7 @@ public sealed class BclAliasCoverageTests
 
         var encoded = Base58.ToBase58String(bytes, 1, 3);
 
-        Assert.AreEqual(Base58.Encode(new byte[] { 0x01, 0x02, 0x03 }), encoded);
+        Assert.AreEqual(Base58.Encode([0x01, 0x02, 0x03]), encoded);
     }
 
     /// <summary>
@@ -271,7 +271,7 @@ public sealed class BclAliasCoverageTests
     {
         Assert.ThrowsExactly<FormatException>(() =>
         {
-            _ = Base64.FromBase64String(new byte[] { 0xFF, 0xFF, 0xFF, 0xFF });
+            _ = Base64.FromBase64String([0xFF, 0xFF, 0xFF, 0xFF]);
         });
     }
 
@@ -334,7 +334,7 @@ public sealed class BclAliasCoverageTests
     {
         Assert.ThrowsExactly<FormatException>(() =>
         {
-            _ = Base85.FromBase85String(new byte[] { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF });
+            _ = Base85.FromBase85String([0xFF, 0xFF, 0xFF, 0xFF, 0xFF]);
         });
     }
 
@@ -348,7 +348,7 @@ public sealed class BclAliasCoverageTests
 
         var encoded = Base85.ToBase85String(bytes, 1, 4);
 
-        Assert.AreEqual(Base85.Encode(new byte[] { 0x01, 0x02, 0x03, 0x04 }), encoded);
+        Assert.AreEqual(Base85.Encode([0x01, 0x02, 0x03, 0x04]), encoded);
     }
 
     /// <summary>

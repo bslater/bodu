@@ -18,7 +18,7 @@ public partial class CryptoHelpersTests
     [DataRow(512)]
     public void ThrowIfInvalidHashSize_WhenSizeIsPermitted_ShouldNotThrow(int size)
     {
-        CryptoHelpers.ThrowIfInvalidHashSize(size, new[] { 128, 256, 512 });
+        CryptoHelpers.ThrowIfInvalidHashSize(size, [128, 256, 512]);
     }
 
     /// <summary>
@@ -33,7 +33,7 @@ public partial class CryptoHelpersTests
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            CryptoHelpers.ThrowIfInvalidHashSize(size, new[] { 128, 256, 512 });
+            CryptoHelpers.ThrowIfInvalidHashSize(size, [128, 256, 512]);
         });
     }
 
@@ -59,7 +59,7 @@ public partial class CryptoHelpersTests
     {
         var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            CryptoHelpers.ThrowIfInvalidHashSize(64, new[] { 128, 256 });
+            CryptoHelpers.ThrowIfInvalidHashSize(64, [128, 256]);
         });
 
         Assert.IsTrue(ex.Message.Contains("64", StringComparison.Ordinal));

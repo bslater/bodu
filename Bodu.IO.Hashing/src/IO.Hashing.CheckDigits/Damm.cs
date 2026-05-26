@@ -29,13 +29,13 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// // Single-call computation against an in-memory body.
+/// Single-call computation against an in-memory body.
 /// char check = Damm.Compute("572");   // '4'
 ///
-/// // Full-sequence validation — equivalent to checking that the final interim is zero.
+/// Full-sequence validation — equivalent to checking that the final interim is zero.
 /// bool ok = Damm.IsValid("5724");     // true
 ///
-/// // Streaming use when the body is built up incrementally.
+/// Streaming use when the body is built up incrementally.
 /// var algo = new Damm();
 /// algo.Append("572");
 /// char d = algo.GetCurrentCheckDigit(); // '4'

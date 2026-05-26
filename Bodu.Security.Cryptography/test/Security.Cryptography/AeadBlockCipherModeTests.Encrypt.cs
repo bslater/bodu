@@ -143,12 +143,12 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
         var plaintext = new byte[ExpectedBlockSize];
 
         TTransform t1 = MakeTransform((byte[])iv.Clone());
-        t1.ProcessAssociatedData(new byte[] { 0x01 });
+        t1.ProcessAssociatedData([0x01]);
         var out1 = new byte[plaintext.Length + (t1.TagSize / 8)];
         t1.Encrypt(plaintext, out1);
 
         TTransform t2 = MakeTransform((byte[])iv.Clone());
-        t2.ProcessAssociatedData(new byte[] { 0xFF });
+        t2.ProcessAssociatedData([0xFF]);
         var out2 = new byte[plaintext.Length + (t2.TagSize / 8)];
         t2.Encrypt(plaintext, out2);
 

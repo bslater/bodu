@@ -4,7 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Globalization.Calendar.Data.Europe;
+using Bodu.Globalization.Calendar.Data;
 
 namespace Bodu.Globalization.Calendar;
 
@@ -103,7 +103,7 @@ public sealed class NotableDateResolutionServiceProductionEasterTests
             .Register("easter-sunday", new GregorianEasterSundayAlgorithmAdapter());
 
         return new NotableDateResolutionService(
-            ruleProviders: new[] { EuropeCalendarData.CreateUnitedKingdomProvider() },
+            ruleProviders: [EuropeCalendarData.CreateUnitedKingdomProvider()],
             algorithmRegistry: registry,
             workingWeek: WorkingDaysOfWeek.MondayToFriday);
     }

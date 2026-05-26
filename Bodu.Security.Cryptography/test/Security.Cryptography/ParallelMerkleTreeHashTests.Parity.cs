@@ -87,13 +87,13 @@ public partial class ParallelMerkleTreeHashTests
         const int fanOut = 2;
 
         byte[][] inputs =
-        {
+        [
             MakeData(4),
             MakeData(8),
             MakeData(9),
             MakeData(12),
             MakeData(4), // repeat of first — confirms no contamination from longer runs
-        };
+        ];
 
         using var parallel = new ParallelMerkleTreeHash(Factory, blockSize, fanOut);
 

@@ -26,14 +26,14 @@ namespace Bodu.Text.DotEnv;
 ///<![CDATA[
 /// DotEnvDocument doc = DotEnv.Parse(text);
 ///
-/// // Direct lookup — throws KeyNotFoundException when the key is missing.
+/// Direct lookup — throws KeyNotFoundException when the key is missing.
 /// string apiKey = doc["API_KEY"];
 ///
-/// // TryGetValue for optional keys.
+/// TryGetValue for optional keys.
 /// if (doc.TryGetValue("LOG_LEVEL", out string? level))
 ///     Console.WriteLine($"Log level: {level}");
 ///
-/// // Walk every entry in source order.
+/// Walk every entry in source order.
 /// foreach (DotEnvEntry entry in doc.Entries)
 ///     Console.WriteLine($"{entry.Key}={entry.Value}");
 ///]]>

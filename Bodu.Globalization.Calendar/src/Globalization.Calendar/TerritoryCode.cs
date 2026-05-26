@@ -30,21 +30,21 @@ namespace Bodu.Globalization.Calendar;
 /// </para>
 /// <code>
 ///<![CDATA[
-/// // Parse a country-level territory:
+/// Parse a country-level territory:
 /// if (TerritoryCode.TryParse("AU", out TerritoryCode australia))
 ///     Console.WriteLine(australia.Country);        // "AU"
 ///
-/// // Parse a subdivision:
+/// Parse a subdivision:
 /// TerritoryCode nsw = TerritoryCode.Parse("AU-NSW");
 /// Console.WriteLine(nsw.HasSubdivision);           // true
 /// Console.WriteLine(nsw.Subdivision);              // "NSW"
 /// Console.WriteLine(nsw);                          // "AU-NSW"
 ///
-/// // Containment: AU contains AU-NSW but not NZ:
+/// Containment: AU contains AU-NSW but not NZ:
 /// Console.WriteLine(australia.Contains(nsw));      // true
 /// Console.WriteLine(nsw.Contains(australia));      // false
 ///
-/// // Parse a comma-separated list (invalid entries are silently skipped):
+/// Parse a comma-separated list (invalid entries are silently skipped):
 /// IReadOnlyList<TerritoryCode> codes = TerritoryCode.ParseList("AU, AU-NSW, AU-VIC");
 ///]]>
 /// </code>

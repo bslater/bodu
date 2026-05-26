@@ -17,7 +17,7 @@ public partial class ByteBufferTests
     public void AfterCall_ShouldResetIndex()
     {
         var buffer = new ByteBuffer(1);
-        buffer.Add(new byte[] { 1 }, 0, 1);
+        buffer.Add([1], 0, 1);
         buffer.GetBytes();
         Assert.IsTrue(buffer.IsEmpty);
     }
@@ -29,7 +29,7 @@ public partial class ByteBufferTests
     public void GetBytes_WhenBufferIsFull_ShouldReturnBuffer()
     {
         var buffer = new ByteBuffer(2);
-        buffer.Add(new byte[] { 1, 2 }, 0, 2);
+        buffer.Add([1, 2], 0, 2);
         var result = buffer.GetBytes();
         CollectionAssert.AreEqual(new byte[] { 1, 2 }, result);
     }
@@ -41,7 +41,7 @@ public partial class ByteBufferTests
     public void GetBytes_WhenBufferNotFull_ShouldThrowExactly()
     {
         var buffer = new ByteBuffer(3);
-        buffer.Add(new byte[] { 1 }, 0, 1);
+        buffer.Add([1], 0, 1);
         Assert.ThrowsExactly<InvalidOperationException>(() => buffer.GetBytes());
     }
 
@@ -52,7 +52,7 @@ public partial class ByteBufferTests
     public void GetBytes_WhenGetBytesCalledTwice_ShouldThrowExactly()
     {
         var buffer = new ByteBuffer(2);
-        buffer.Add(new byte[] { 1, 2 }, 0, 2);
+        buffer.Add([1, 2], 0, 2);
         var _ = buffer.GetBytes(); // OK
         Assert.ThrowsExactly<InvalidOperationException>(() => buffer.GetBytes());
     }

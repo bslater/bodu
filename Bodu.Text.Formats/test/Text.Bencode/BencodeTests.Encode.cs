@@ -41,11 +41,11 @@ public sealed partial class BencodeTests
     public void Encode_WhenDictionaryWithUnsortedKeysOnConstruction_ShouldEmitSortedKeys()
     {
         // Construct with "spam" before "cow" — the dictionary stores keys sorted, so encode order is canonical.
-        BencodedDictionary dict = new(new[]
-        {
+        BencodedDictionary dict = new(
+        [
             new KeyValuePair<BencodedString, BencodedValue>(BencodedString.FromUtf8("spam"), BencodedString.FromUtf8("eggs")),
             new KeyValuePair<BencodedString, BencodedValue>(BencodedString.FromUtf8("cow"), BencodedString.FromUtf8("moo")),
-        });
+        ]);
 
         var actual = Bencode.Encode(dict);
 
@@ -81,11 +81,11 @@ public sealed partial class BencodeTests
     [TestMethod]
     public void Encode_WhenListWithStringAndInteger_ShouldReturnCanonicalEncoding()
     {
-        BencodedList list = new(new BencodedValue[]
-        {
+        BencodedList list = new(
+        [
             BencodedString.FromUtf8("spam"),
             new BencodedInteger(42),
-        });
+        ]);
 
         var actual = Bencode.Encode(list);
 

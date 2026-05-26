@@ -23,7 +23,7 @@ public abstract partial class BlockHashAlgorithmTests<TTest, TAlgorithm, TVarian
         using TAlgorithm algo = CreateAlgorithm();
         try
         {
-            var tag = algo.ComputeHash(new byte[] { 1, 2, 3, 4, 5 });
+            var tag = algo.ComputeHash([1, 2, 3, 4, 5]);
             Assert.IsNotNull(tag);
         }
         catch (NotImplementedException)

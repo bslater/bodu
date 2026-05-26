@@ -56,7 +56,7 @@ public partial class ICryptoTransformExtensionsTests
         ICryptoTransform? transform = null;
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
-            transform!.TransformFinalBlock(new byte[] { 1, 2, 3, 4 }));
+            transform!.TransformFinalBlock([1, 2, 3, 4]));
     }
 
     /// <summary>
@@ -117,7 +117,7 @@ public partial class ICryptoTransformExtensionsTests
         ICryptoTransform? transform = null;
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
-            transform!.TransformFinalBlock(new byte[] { 1, 2, 3, 4 }, 0));
+            transform!.TransformFinalBlock([1, 2, 3, 4], 0));
     }
 
     /// <summary>
@@ -143,7 +143,7 @@ public partial class ICryptoTransformExtensionsTests
         using SimpleReversingCryptoTransform transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-            transform.TransformFinalBlock(new byte[] { 1, 2, 3, 4 }, -1));
+            transform.TransformFinalBlock([1, 2, 3, 4], -1));
     }
 
     /// <summary>
@@ -156,7 +156,7 @@ public partial class ICryptoTransformExtensionsTests
         using SimpleReversingCryptoTransform transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-            transform.TransformFinalBlock(new byte[] { 1, 2, 3, 4 }, 5));
+            transform.TransformFinalBlock([1, 2, 3, 4], 5));
     }
 
     /// <summary>
@@ -196,7 +196,7 @@ public partial class ICryptoTransformExtensionsTests
         ICryptoTransform? transform = null;
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
-            transform!.TransformFinalBlock((ReadOnlySpan<byte>)new byte[] { 1, 2, 3, 4 }));
+            transform!.TransformFinalBlock((ReadOnlySpan<byte>)[1, 2, 3, 4]));
     }
 
     /// <summary>
@@ -264,7 +264,7 @@ public partial class ICryptoTransformExtensionsTests
         ICryptoTransform? transform = null;
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
-            transform!.TransformFinalBlock(new ReadOnlyMemory<byte>(new byte[] { 1, 2, 3, 4 })));
+            transform!.TransformFinalBlock(new ReadOnlyMemory<byte>([1, 2, 3, 4])));
     }
 
     /// <summary>

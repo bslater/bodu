@@ -7,7 +7,7 @@
 using System.Text;
 using Microsoft.Extensions.Configuration;
 
-namespace Bodu.Extensions.Configuration.Text.Tests;
+namespace Bodu.Extensions.Configuration.Text;
 
 /// <summary>
 /// Verifies that the bridge produces a configuration view compatible with standard

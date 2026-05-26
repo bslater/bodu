@@ -24,8 +24,8 @@ public abstract partial class SnefruTests<TTest, TAlgorithm>
     protected static readonly byte[] SnefruRepeatedDigitsInput =
         Encoding.UTF8.GetBytes("12345678901234567890123456789012345678901234567890123456789012345678901234567890");
 
-    public override IEnumerable<SingleTestVariant> GetHashAlgorithmVariants() => new[]
-    {
+    public override IEnumerable<SingleTestVariant> GetHashAlgorithmVariants() =>
+    [
         SingleTestVariant.Default
-    };
+    ];
 }

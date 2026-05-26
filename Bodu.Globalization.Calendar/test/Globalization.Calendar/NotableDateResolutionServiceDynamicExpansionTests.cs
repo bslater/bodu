@@ -66,7 +66,7 @@ public sealed class NotableDateResolutionServiceDynamicExpansionTests
     }
 
     private static NotableDateResolutionService CreateService(params NotableDateRule[] rules) =>
-        new(ruleProviders: new[] { new InMemoryRuleProvider(rules) });
+        new(ruleProviders: [new InMemoryRuleProvider(rules)]);
 
     private static NotableDateRule FixedPublicHolidayRule(string name, int month, int day) =>
         new()

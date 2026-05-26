@@ -17,7 +17,7 @@ public partial class ByteBufferTests
     public void IsEmpty_WhenBufferIsFull_ShouldReturnFalse()
     {
         var buffer = new ByteBuffer(2);
-        buffer.Add(new byte[] { 1, 2 }, 0, 2);
+        buffer.Add([1, 2], 0, 2);
         Assert.IsFalse(buffer.IsEmpty);
     }
 
@@ -28,7 +28,7 @@ public partial class ByteBufferTests
     public void IsEmpty_WhenBufferReset_ShouldReturnTrue()
     {
         var buffer = new ByteBuffer(4);
-        buffer.Add(new byte[] { 1 }, 0, 1);
+        buffer.Add([1], 0, 1);
         buffer.Initialize();
         Assert.IsTrue(buffer.IsEmpty);
     }
@@ -40,7 +40,7 @@ public partial class ByteBufferTests
     public void IsEmpty_WhenBytesAdded_ShouldReturnFalse()
     {
         var buffer = new ByteBuffer(4);
-        buffer.Add(new byte[] { 1 }, 0, 1);
+        buffer.Add([1], 0, 1);
         Assert.IsFalse(buffer.IsEmpty);
     }
 

@@ -19,9 +19,9 @@ public abstract partial class SipHashTests<TTest, TAlgorithm>
     ];
 
     /// <inheritdocs/>
-    public override IEnumerable<SipHashVariant> GetHashAlgorithmVariants() => new[]
-    {
+    public override IEnumerable<SipHashVariant> GetHashAlgorithmVariants() =>
+    [
         SipHashVariant.SipHash_2_4,
         SipHashVariant.SipHash_4_8
-    };
+    ];
 }

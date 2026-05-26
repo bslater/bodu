@@ -47,8 +47,8 @@ namespace Bodu.Collections.Generic;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// // Dijkstra-style relaxation: the tentative cost of each node is its priority, and an improved
-/// // path arrives as a re-prioritization rather than a duplicate enqueue.
+/// Dijkstra-style relaxation: the tentative cost of each node is its priority, and an improved
+/// path arrives as a re-prioritization rather than a duplicate enqueue.
 /// var queue = new IndexedPriorityQueue<string, int>();
 ///
 /// queue.Enqueue("A", 5);

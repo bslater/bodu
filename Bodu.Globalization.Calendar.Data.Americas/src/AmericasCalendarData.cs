@@ -6,7 +6,7 @@
 
 using System.Reflection;
 
-namespace Bodu.Globalization.Calendar.Data.Americas;
+namespace Bodu.Globalization.Calendar.Data;
 
 /// <summary>
 /// Provides factory entry points for the Americas region calendar data pack — embedded notable-date rules for the
@@ -97,5 +97,5 @@ public static class AmericasCalendarData
         new XmlResourceNotableDateRuleProvider(
             resourceName,
             new ResourcePathResolver(),
-            new[] { DataAssembly, typeof(NotableDateService).Assembly });
+            [DataAssembly, typeof(NotableDateService).Assembly]);
 }

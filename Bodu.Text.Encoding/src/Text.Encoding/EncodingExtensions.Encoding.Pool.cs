@@ -201,12 +201,12 @@ public static partial class EncodingExtensions
     /// </exception>
     /// <example>
     ///<![CDATA[
-    /// // Encode into a pooled buffer, hand the written span to a downstream consumer, then dispose to
-    /// // return the rented array.
+    /// Encode into a pooled buffer, hand the written span to a downstream consumer, then dispose to
+    /// return the rented array.
     /// using PooledBufferBuilder<byte> pooled = System.Text.Encoding.UTF8.GetBytesPooled("hello");
     /// ReadOnlySpan<byte> bytes = pooled.WrittenSpan;
     /// downstream.Process(bytes);
-    /// // Disposed at the end of the using scope — the underlying byte[] returns to ArrayPool<byte>.Shared.
+    /// Disposed at the end of the using scope — the underlying byte[] returns to ArrayPool<byte>.Shared.
     ///]]>
     /// </example>
     public static PooledBufferBuilder<byte> GetBytesPooled(

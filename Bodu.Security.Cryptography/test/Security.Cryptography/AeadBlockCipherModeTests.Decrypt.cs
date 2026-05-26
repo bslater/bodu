@@ -172,12 +172,12 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
         var plaintext = new byte[ExpectedBlockSize];
 
         TTransform encTransform = CreateTransform(cipher, iv);
-        encTransform.ProcessAssociatedData(new byte[] { 0x01, 0x02 });
+        encTransform.ProcessAssociatedData([0x01, 0x02]);
         var buf = new byte[plaintext.Length + (encTransform.TagSize / 8)];
         encTransform.Encrypt(plaintext, buf);
 
         TTransform decTransform = CreateTransform(cipher, iv);
-        decTransform.ProcessAssociatedData(new byte[] { 0xFF, 0xFF }); // different AAD
+        decTransform.ProcessAssociatedData([0xFF, 0xFF]); // different AAD
 
         Assert.ThrowsExactly<CryptographicException>(() =>
             decTransform.Decrypt(buf, new byte[plaintext.Length]),

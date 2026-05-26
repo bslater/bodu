@@ -48,16 +48,16 @@ namespace Bodu.Security.Cryptography;
 /// using System.Security.Cryptography;
 /// using Bodu.Security.Cryptography;
 ///
-/// // Most callers should set SymmetricAlgorithm.Mode = CipherBlockMode.CTR instead of using this directly.
+/// Most callers should set SymmetricAlgorithm.Mode = CipherBlockMode.CTR instead of using this directly.
 /// using IBlockCipher cipher = new AesBlockCipher(key);
 ///
-/// // Initial counter is typically `nonce || zero-counter`; the nonce must never repeat under one key.
+/// Initial counter is typically `nonce || zero-counter`; the nonce must never repeat under one key.
 /// byte[] initialCounter = BuildInitialCounter(nonce);
 /// IBlockCipherModeTransform ctr = new CtrModeTransform(cipher, initialCounter);
 /// byte[] ciphertext = new byte[plaintext.Length];
 /// int written = ctr.Transform(plaintext, ciphertext, encrypt: true);
 ///
-/// // The same call shape decrypts: encrypt: true / encrypt: false produce identical results.
+/// The same call shape decrypts: encrypt: true / encrypt: false produce identical results.
 ///]]>
 /// </code>
 /// </example>

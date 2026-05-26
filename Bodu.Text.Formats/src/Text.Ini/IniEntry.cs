@@ -26,7 +26,7 @@ namespace Bodu.Text.Ini;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// // Build a section programmatically and format it back to text.
+/// Build a section programmatically and format it back to text.
 /// var doc = new IniDocument();
 /// IniSection db = doc.AddSection("database");
 /// db.Add(new IniEntry("host", "localhost"));
@@ -35,7 +35,7 @@ namespace Bodu.Text.Ini;
 ///     InlineComment = new IniComment("default Postgres port"),
 /// });
 ///
-/// // Mutate an existing entry — Key is immutable; Value is not.
+/// Mutate an existing entry — Key is immutable; Value is not.
 /// db["port"].Value = "5433";
 ///
 /// string text = Ini.Format(doc);

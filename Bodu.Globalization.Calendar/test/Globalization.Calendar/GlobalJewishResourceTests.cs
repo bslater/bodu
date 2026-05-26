@@ -24,10 +24,10 @@ public sealed class GlobalJewishResourceTests
     /// <returns>The configured service.</returns>
     private static NotableDateService CreateBareService() =>
         new NotableDateService(
-            ruleProviders: new[]
-            {
+            ruleProviders:
+            [
                 (INotableDateRuleProvider)new XmlResourceNotableDateRuleProvider(JewishResourceName, new ResourcePathResolver()),
-            },
+            ],
             workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 
     /// <summary>

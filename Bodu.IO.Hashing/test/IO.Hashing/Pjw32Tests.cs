@@ -22,8 +22,8 @@ public sealed partial class Pjw32Tests
     /// Entries are the documented PJW-32 known-answer sequence for incremental inputs
     /// <c>[]</c>, <c>[0x00]</c>, <c>[0x00, 0x01]</c>, … <c>[0x00 .. 0x0E]</c>.
     /// </remarks>
-    protected override IReadOnlyList<string> GetExpectedHashesForIncrementalInput(SingleTestVariant variant) => new[]
-    {
+    protected override IReadOnlyList<string> GetExpectedHashesForIncrementalInput(SingleTestVariant variant) =>
+    [
         "00000000", "00000000", "00000001", "00000012",
         "00000123", "00001234", "00012345", "00123456",
         "01234567", "02345679", "0345679B", "045679B9",
@@ -33,14 +33,14 @@ public sealed partial class Pjw32Tests
         "09EC0D2B", "0EC0D2C1", "0C0D2C27", "00D2C286",
         "0D2C287B", "02C287C1", "0C287C2F", "0287C302",
         "087C303D", "07C303F8",
-    };
+    ];
 
     /// <inheritdoc />
     protected override NonCryptographicHashAlgorithmSpecification GetSpecification(SingleTestVariant variant) =>
         new()
         {
             HashLengthInBytes = 4,
-            BoundaryLengths = new[] { 1, 8, 16, 64 },
+            BoundaryLengths = [1, 8, 16, 64],
             LongInputLength = 200,
             MinNonZeroBytesForLongInput = 2,
             KnownAnswers = new()

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateServiceTests.RuleIdentity.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -27,16 +27,16 @@ public partial class NotableDateServiceTests
         NotableDateRule nzAddition = Fixed("Labour Day", 10, 26, territory: "NZ");
 
         NotableDateService service = new(
-            ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(auBase) },
+            ruleProviders: [(INotableDateRuleProvider)new InMemoryRuleProvider(auBase)],
             workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
             options: new NotableDateServiceOptions
             {
-                OverrideProviders = new[]
-                {
+                OverrideProviders =
+                [
                     (INotableDateRuleOverrideProvider)new TestOverrideProvider(
                         removals: Array.Empty<RuleRemoval>(),
-                        additions: new[] { nzAddition }),
-                },
+                        additions: [nzAddition]),
+                ],
             });
 
         var auResult = service.GetNotableDates(2026, "AU-VIC")
@@ -69,16 +69,16 @@ public partial class NotableDateServiceTests
         { CalendarType = typeof(JulianCalendar) };
 
         NotableDateService service = new(
-            ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(gregorianChristmas) },
+            ruleProviders: [(INotableDateRuleProvider)new InMemoryRuleProvider(gregorianChristmas)],
             workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
             options: new NotableDateServiceOptions
             {
-                OverrideProviders = new[]
-                {
+                OverrideProviders =
+                [
                     (INotableDateRuleOverrideProvider)new TestOverrideProvider(
                         removals: Array.Empty<RuleRemoval>(),
-                        additions: new[] { julianChristmas }),
-                },
+                        additions: [julianChristmas]),
+                ],
             });
 
         // Query a Gregorian window wide enough to include both calendars' Dec 25 observances. Julian Dec 25 2026
@@ -118,16 +118,16 @@ public partial class NotableDateServiceTests
         { CalendarType = typeof(GregorianCalendar) };
 
         NotableDateService service = new(
-            ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(baseRule) },
+            ruleProviders: [(INotableDateRuleProvider)new InMemoryRuleProvider(baseRule)],
             workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
             options: new NotableDateServiceOptions
             {
-                OverrideProviders = new[]
-                {
+                OverrideProviders =
+                [
                     (INotableDateRuleOverrideProvider)new TestOverrideProvider(
                         removals: Array.Empty<RuleRemoval>(),
-                        additions: new[] { replacement }),
-                },
+                        additions: [replacement]),
+                ],
             });
 
         var result = service.GetNotableDates(2026, "AU", calendarType: typeof(GregorianCalendar))
@@ -151,19 +151,19 @@ public partial class NotableDateServiceTests
         NotableDateRule auReplacement = Fixed("Holiday", 7, 4, territory: "AU");
 
         NotableDateService service = new(
-            ruleProviders: new[]
-            {
+            ruleProviders:
+            [
                 (INotableDateRuleProvider)new InMemoryRuleProvider(auBase, nzBase),
-            },
+            ],
             workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
             options: new NotableDateServiceOptions
             {
-                OverrideProviders = new[]
-                {
+                OverrideProviders =
+                [
                     (INotableDateRuleOverrideProvider)new TestOverrideProvider(
                         removals: Array.Empty<RuleRemoval>(),
-                        additions: new[] { auReplacement }),
-                },
+                        additions: [auReplacement]),
+                ],
             });
 
         var auResult = service.GetNotableDates(2026, "AU")

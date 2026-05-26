@@ -22,10 +22,10 @@ namespace Bodu.Text.DotEnv;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// // Default behaviour — wide compatibility with .env conventions.
+/// Default behaviour — wide compatibility with .env conventions.
 /// DotEnvDocument doc = DotEnv.Parse(text);
 ///
-/// // Strict ingest: reject duplicate keys and disallow inline comments.
+/// Strict ingest: reject duplicate keys and disallow inline comments.
 /// var options = new DotEnvParseOptions
 /// {
 ///     DuplicateKeyBehavior = DotEnvDuplicateKeyBehavior.Disallowed,

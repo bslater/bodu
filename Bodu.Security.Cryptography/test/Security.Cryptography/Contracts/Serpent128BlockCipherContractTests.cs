@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Serpent128BlockCipherContractTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -39,8 +39,8 @@ public sealed class Serpent128BlockCipherContractTests
     }
 
     /// <inheritdoc />
-    protected override IReadOnlyList<BlockCipherKat> KnownAnswers { get; } = new BlockCipherKat[]
-    {
+    protected override IReadOnlyList<BlockCipherKat> KnownAnswers { get; } =
+    [
         new(
             Name: "Serpent-128 zero-key zero-plaintext",
             Algorithm: "Serpent-128",
@@ -56,5 +56,5 @@ public sealed class Serpent128BlockCipherContractTests
             Plaintext: new byte[16],
             Ciphertext: Convert.FromHexString("264E5481EFF42A4606ABDA06C0BFDA3D"),
             BlockSizeBits: 128),
-    };
+    ];
 }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeStreamRoundTripContractTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -38,8 +38,7 @@ public sealed class BencodeStreamRoundTripContractTests
 
     /// <inheritdoc />
     protected override IReadOnlyList<BinaryKat<BencodedValue, BencodedValue>> ValidCases { get; } =
-        new BinaryKat<BencodedValue, BencodedValue>[]
-    {
+        [
         new(
             Name: "integer 0",
             Input: new BencodedInteger(0),
@@ -64,5 +63,5 @@ public sealed class BencodeStreamRoundTripContractTests
             Name: "empty byte string",
             Input: new BencodedString(Array.Empty<byte>()),
             Expected: new BencodedString(Array.Empty<byte>())),
-    };
+    ];
 }

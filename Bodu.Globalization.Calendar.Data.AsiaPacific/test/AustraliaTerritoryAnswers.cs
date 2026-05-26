@@ -1,19 +1,16 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AustraliaTerritoryAnswers.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-
-namespace Bodu.Globalization.Calendar.Data.AsiaPacific.Tests;
+namespace Bodu.Globalization.Calendar.Data;
 
 /// <summary>
-/// Provides <see cref="Microsoft.VisualStudio.TestTools.UnitTesting.DynamicDataAttribute" /> data sources for
-/// the Australia rule catalogue shipped in the Asia-Pacific data pack. Each row encodes a single
-/// (territory, year, holiday) expectation — including weekend substitutes, subdivision shadowing, and the
-/// <c>firstYear</c>-suppressed Reconciliation Day case.
+/// Provides <see cref="Microsoft.VisualStudio.TestTools.UnitTesting.DynamicDataAttribute" /> data sources for the
+/// Australia rule catalogue shipped in the Asia-Pacific data pack. Each row encodes a single (territory, year, holiday)
+/// expectation — including weekend substitutes, subdivision shadowing, and the <c>firstYear</c>-suppressed
+/// Reconciliation Day case.
 /// </summary>
 public static class AustraliaTerritoryAnswers
 {
@@ -27,8 +24,9 @@ public static class AustraliaTerritoryAnswers
     /// <summary>
     /// Provides the smoke-tier subset of Australia named-holiday occurrences. Runs on every BVT build.
     /// </summary>
-    /// <returns>A sequence of single-element object arrays whose only entry is a
-    /// <see cref="TerritoryNotableDateKnownAnswer" />.</returns>
+    /// <returns>
+    /// A sequence of single-element object arrays whose only entry is a <see cref="TerritoryNotableDateKnownAnswer" />.
+    /// </returns>
     public static IEnumerable<object[]> NamedHolidayOccurrencesSmoke()
     {
         yield return Row(new TerritoryNotableDateKnownAnswer
@@ -51,13 +49,14 @@ public static class AustraliaTerritoryAnswers
     }
 
     /// <summary>
-    /// Provides the full Australia named-holiday occurrence table. Covers national fixed-date rules,
-    /// subdivision-scoped shadowing (NSW vs VIC Labour Day, AU-WA / AU-NT / AU-NSW Anzac Day weekend
-    /// substitutes), the Queensland King's Birthday October placement, Melbourne Cup Day, the
-    /// <c>firstYear</c>-suppressed Reconciliation Day, and the NSW Anzac Day 2026-2027 trial.
+    /// Provides the full Australia named-holiday occurrence table. Covers national fixed-date rules, subdivision-scoped
+    /// shadowing (NSW vs VIC Labour Day, AU-WA / AU-NT / AU-NSW Anzac Day weekend substitutes), the Queensland King's
+    /// Birthday October placement, Melbourne Cup Day, the <c>firstYear</c>-suppressed Reconciliation Day, and the NSW
+    /// Anzac Day 2026-2027 trial.
     /// </summary>
-    /// <returns>A sequence of single-element object arrays whose only entry is a
-    /// <see cref="TerritoryNotableDateKnownAnswer" />.</returns>
+    /// <returns>
+    /// A sequence of single-element object arrays whose only entry is a <see cref="TerritoryNotableDateKnownAnswer" />.
+    /// </returns>
     public static IEnumerable<object[]> NamedHolidayOccurrences()
     {
         // National fixed-date holidays for AU 2026 (none collide with a weekend).
@@ -251,10 +250,10 @@ public static class AustraliaTerritoryAnswers
     }
 
     /// <summary>
-    /// Wraps a known-answer row in the single-element object array shape <see cref="Microsoft.VisualStudio.TestTools.UnitTesting.DynamicDataAttribute" />
-    /// expects.
+    /// Wraps a known-answer row in the single-element object array shape
+    /// <see cref="Microsoft.VisualStudio.TestTools.UnitTesting.DynamicDataAttribute" /> expects.
     /// </summary>
     /// <param name="row">The row to wrap.</param>
     /// <returns>A single-element object array carrying the row.</returns>
-    private static object[] Row(TerritoryNotableDateKnownAnswer row) => new object[] { row };
+    private static object[] Row(TerritoryNotableDateKnownAnswer row) => [row];
 }

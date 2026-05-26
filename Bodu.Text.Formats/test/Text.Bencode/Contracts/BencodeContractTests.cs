@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeContractTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -29,8 +29,7 @@ public sealed class BencodeContractTests
 
     /// <inheritdoc />
     protected override IReadOnlyList<BinaryDocumentKat<BencodedValue, BencodeParseOptions>> ValidCases { get; } =
-        new BinaryDocumentKat<BencodedValue, BencodeParseOptions>[]
-    {
+        [
         new(
             Name: "integer 42",
             Payload: "i42e"u8.ToArray(),
@@ -60,12 +59,11 @@ public sealed class BencodeContractTests
             Payload: "0:"u8.ToArray(),
             ExpectedDocument: new BencodedString(Array.Empty<byte>()),
             Options: BencodeParseOptions.Default),
-    };
+    ];
 
     /// <inheritdoc />
     protected override IReadOnlyList<InvalidBinaryDocumentKat<BencodeParseOptions>> InvalidCases { get; } =
-        new InvalidBinaryDocumentKat<BencodeParseOptions>[]
-    {
+        [
         new(
             Name: "integer missing terminator",
             Payload: "i42"u8.ToArray(),
@@ -83,5 +81,5 @@ public sealed class BencodeContractTests
             Payload: "10:abc"u8.ToArray(),
             Options: BencodeParseOptions.Default,
             ExceptionType: typeof(BencodeFormatException)),
-    };
+    ];
 }

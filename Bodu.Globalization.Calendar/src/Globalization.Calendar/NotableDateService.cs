@@ -148,13 +148,13 @@ namespace Bodu.Globalization.Calendar;
 /// </para>
 /// <code>
 ///<![CDATA[
-/// // Simplest construction — loads only the embedded New Year's Day rule:
+/// Simplest construction — loads only the embedded New Year's Day rule:
 /// NotableDateService service = new NotableDateService();
 ///
-/// // All notable dates for New South Wales in 2026 (requires the Asia-Pacific data pack):
+/// All notable dates for New South Wales in 2026 (requires the Asia-Pacific data pack):
 /// IReadOnlyList<NotableDate> dates = service.GetNotableDates(2026, territoryCode: "AU-NSW");
 ///
-/// // Full construction with a custom XML rule file and algorithm registry:
+/// Full construction with a custom XML rule file and algorithm registry:
 /// var registry = new NotableDateAlgorithmRegistry()
 ///     .Register("easter-sunday", new GregorianEasterSundayNotableDateProvider());
 ///
@@ -165,7 +165,7 @@ namespace Bodu.Globalization.Calendar;
 ///     workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
 ///     options: new NotableDateServiceOptions { AlgorithmRegistry = registry });
 ///
-/// // Invalidate the cache when runtime overrides change:
+/// Invalidate the cache when runtime overrides change:
 /// service.Invalidate();
 ///]]>
 /// </code>
@@ -340,7 +340,7 @@ public sealed class NotableDateService : INotableDateService, IDisposable
     /// WeekPattern workingWeek = provider.ToWeekPattern();
     /// var service = new NotableDateService(ruleProviders, workingWeek);
     ///
-    /// // With advanced configuration:
+    /// With advanced configuration:
     /// var options = new NotableDateServiceOptions
     /// {
     ///     OverrideProviders = new[] { myOverrideProvider },

@@ -59,7 +59,7 @@ namespace Bodu.Globalization.Calendar;
 /// </para>
 /// <code>
 ///<![CDATA[
-/// // The resource is stored as "MyApp/Calendar/Resources/custom-rules.xml" in the assembly manifest:
+/// The resource is stored as "MyApp/Calendar/Resources/custom-rules.xml" in the assembly manifest:
 /// var provider = new XmlResourceNotableDateRuleProvider(
 ///     "MyApp/Calendar/Resources/custom-rules.xml",
 ///     new ResourcePathResolver());
@@ -68,14 +68,14 @@ namespace Bodu.Globalization.Calendar;
 ///     ruleProviders: new[] { provider },
 ///     workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 ///
-/// // Load from a specific assembly (for example, a companion data assembly):
+/// Load from a specific assembly (for example, a companion data assembly):
 /// Assembly resourceAssembly = Assembly.Load("MyApp.Resources");
 /// var crossAssemblyProvider = new XmlResourceNotableDateRuleProvider(
 ///     "MyApp/Calendar/Resources/custom-rules.xml",
 ///     new ResourcePathResolver(),
 ///     assembly: resourceAssembly);
 ///
-/// // Load from a chain of assemblies (data pack first, main library as fallback for <UseFrom> targets):
+/// Load from a chain of assemblies (data pack first, main library as fallback for <UseFrom> targets):
 /// var packProvider = new XmlResourceNotableDateRuleProvider(
 ///     "MyApp/Calendar/Resources/region-us.xml",
 ///     new ResourcePathResolver(),

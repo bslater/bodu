@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base32ContractTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -36,8 +36,8 @@ public sealed class Base32ContractTests : BinaryEncodingContractTests<object>
         Base32.TryDecode(text.AsSpan(), destination, out bytesWritten);
 
     /// <inheritdoc />
-    protected override IReadOnlyList<BinaryEncodingKat> KnownAnswers { get; } = new BinaryEncodingKat[]
-    {
+    protected override IReadOnlyList<BinaryEncodingKat> KnownAnswers { get; } =
+    [
         // RFC 4648 §10 - Base32 reference vectors.
         new("empty",   Array.Empty<byte>(),    ""),
         new("f",       "f"u8.ToArray(),        "MY======"),
@@ -46,14 +46,14 @@ public sealed class Base32ContractTests : BinaryEncodingContractTests<object>
         new("foob",    "foob"u8.ToArray(),     "MZXW6YQ="),
         new("fooba",   "fooba"u8.ToArray(),    "MZXW6YTB"),
         new("foobar",  "foobar"u8.ToArray(),   "MZXW6YTBOI======"),
-    };
+    ];
 
     /// <inheritdoc />
-    protected override IReadOnlyList<InvalidEncodedTextKat> InvalidInputs { get; } = new InvalidEncodedTextKat[]
-    {
+    protected override IReadOnlyList<InvalidEncodedTextKat> InvalidInputs { get; } =
+    [
         // Characters '8' and '9' fall outside the RFC 4648 Base32 alphabet (which uses A-Z and 2-7).
         new("contains '8'", "M8YYY==="),
         new("contains '9'", "MZ9Q===="),
         new("contains '$'", "MZX$===="),
-    };
+    ];
 }

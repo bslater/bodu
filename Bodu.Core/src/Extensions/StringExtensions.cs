@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringExtensions.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -32,14 +32,14 @@ namespace Bodu.Extensions;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// // Sanitise then truncate user input for a log line.
+/// Sanitise then truncate user input for a log line.
 /// string? raw = request?.Title;
 /// string display = raw.TrimToNull()?.CollapseWhitespace().Truncate(80, "…") ?? "(untitled)";
 ///
-/// // Build a slug for a URL.
+/// Build a slug for a URL.
 /// string slug = "Hello, World! — café".ToSlug();   // "hello-world-cafe"
 ///
-/// // Round-trip identifiers between conventions.
+/// Round-trip identifiers between conventions.
 /// string pascal = "user_account_id".ToPascalCase(); // "UserAccountId"
 /// string snake  = "UserAccountId".ToSnakeCase();    // "user_account_id"
 ///]]>

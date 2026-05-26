@@ -27,7 +27,7 @@ namespace Bodu.Text.Configuration;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// // Surface every diagnostic the reader produced and tag any errors for caller attention.
+/// Surface every diagnostic the reader produced and tag any errors for caller attention.
 /// foreach (ConfigurationDiagnostic d in result.Diagnostics)
 /// {
 ///     Console.WriteLine(d); // "Warning DuplicateKey at line 12, column 3: ..."
@@ -35,7 +35,7 @@ namespace Bodu.Text.Configuration;
 ///         hasErrors = true;
 /// }
 ///
-/// // Build one directly — useful when a host integrates Bodu diagnostics into its own pipeline.
+/// Build one directly — useful when a host integrates Bodu diagnostics into its own pipeline.
 /// var diag = new ConfigurationDiagnostic(
 ///     ConfigurationDiagnosticSeverity.Warning,
 ///     ConfigurationDiagnosticCode.UnknownKey,

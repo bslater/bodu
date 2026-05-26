@@ -41,26 +41,26 @@ namespace Bodu.Collections.Generic;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// // Create an evicting dictionary with capacity for 2 items using LRU eviction.
+/// Create an evicting dictionary with capacity for 2 items using LRU eviction.
 /// var cache = new EvictingDictionary<string, int>(capacity: 2, EvictingDictionaryPolicy.LeastRecentlyUsed);
 ///
-/// // Add two entries.
+/// Add two entries.
 /// cache["A"] = 1;
 /// cache["B"] = 2;
 ///
-/// // Touch "A" to mark it as recently used.
+/// Touch "A" to mark it as recently used.
 /// cache.Touch("A");
 ///
-/// // Add a third entry; "B" is now the least recently used and will be evicted.
+/// Add a third entry; "B" is now the least recently used and will be evicted.
 /// cache["C"] = 3;
 ///
-/// // Dictionary now contains: { "A": 1, "C": 3 }
+/// Dictionary now contains: { "A": 1, "C": 3 }
 /// foreach (var kvp in cache)
 ///     Console.WriteLine($"{kvp.Key} = {kvp.Value}");
 ///
-/// // Output:
-/// // A = 1
-/// // C = 3
+/// Output:
+/// A = 1
+/// C = 3
 ///]]>
 /// </code>
 /// </example>

@@ -46,7 +46,7 @@ namespace Bodu.IO.Hashing.Checksums;
 /// using Bodu.IO.Hashing.Checksums;
 /// using Bodu.IO.Hashing.Extensions;
 ///
-/// // 32-bit Fletcher checksum of a packet payload.
+/// 32-bit Fletcher checksum of a packet payload.
 /// var fletcher = new Fletcher32();
 /// byte[] checksum = fletcher.ComputeHash(payload);
 ///]]>

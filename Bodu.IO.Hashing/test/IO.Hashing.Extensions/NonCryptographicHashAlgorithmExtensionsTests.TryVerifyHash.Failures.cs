@@ -160,7 +160,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
         ReadOnlySpan<byte> input = s_sampleData;
-        ReadOnlySpan<byte> wrongLength = new byte[] { 0x00, 0x00 };
+        ReadOnlySpan<byte> wrongLength = [0x00, 0x00];
 
         Assert.IsFalse(algorithm.TryVerifyHash(input, wrongLength));
     }

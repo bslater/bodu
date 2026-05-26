@@ -47,7 +47,7 @@ public sealed class RuleStaticAnalysisTests
     [TestMethod]
     public void Build_WhenFixedRule_ShouldClassifyAsFixedTier()
     {
-        var analysis = RuleStaticAnalysis.Build(new[] { Fixed("Christmas Day", 12, 25) });
+        var analysis = RuleStaticAnalysis.Build([Fixed("Christmas Day", 12, 25)]);
 
         RuleStaticProfile profile = analysis.Profiles.Single();
         Assert.AreEqual(RuleTier.Fixed, profile.Tier);
@@ -61,7 +61,7 @@ public sealed class RuleStaticAnalysisTests
     [TestMethod]
     public void Build_WhenAlgorithmicRule_ShouldClassifyAsAlgorithmicTierWithSelfAsRootAnchor()
     {
-        var analysis = RuleStaticAnalysis.Build(new[] { Algorithmic("Easter Sunday", "easter-sunday") });
+        var analysis = RuleStaticAnalysis.Build([Algorithmic("Easter Sunday", "easter-sunday")]);
 
         RuleStaticProfile profile = analysis.Profiles.Single();
         Assert.AreEqual(RuleTier.Algorithmic, profile.Tier);
@@ -76,10 +76,10 @@ public sealed class RuleStaticAnalysisTests
     public void Build_WhenOffsetRuleAnchoredToFixedRule_ShouldClassifyAsOffsetFromFixedTier()
     {
         NotableDateRule[] rules =
-        {
+        [
             Fixed("Christmas Day", 12, 25),
             Offset("Boxing Day", "Christmas Day", 1),
-        };
+        ];
 
         var analysis = RuleStaticAnalysis.Build(rules);
 
@@ -96,10 +96,10 @@ public sealed class RuleStaticAnalysisTests
     public void Build_WhenOffsetRuleAnchoredToAlgorithmicRule_ShouldClassifyAsOffsetFromAlgorithmicTier()
     {
         NotableDateRule[] rules =
-        {
+        [
             Algorithmic("Easter Sunday", "easter-sunday"),
             Offset("Start of Lent", "Easter Sunday", -46),
-        };
+        ];
 
         var analysis = RuleStaticAnalysis.Build(rules);
 
@@ -116,11 +116,11 @@ public sealed class RuleStaticAnalysisTests
     public void Build_WhenOffsetChainResolvesToAlgorithmicRoot_ShouldFlattenToRootAnchorAndAggregateOffset()
     {
         NotableDateRule[] rules =
-        {
+        [
             Algorithmic("Easter Sunday", "easter-sunday"),
             Offset("Easter Monday", "Easter Sunday", 1),
             Offset("Day After Easter Monday", "Easter Monday", 1),
-        };
+        ];
 
         var analysis = RuleStaticAnalysis.Build(rules);
 
@@ -137,12 +137,12 @@ public sealed class RuleStaticAnalysisTests
     public void GetDependents_WhenAnchorHasOffsetDescendants_ShouldReturnAllDescendants()
     {
         NotableDateRule[] rules =
-        {
+        [
             Algorithmic("Easter Sunday", "easter-sunday"),
             Offset("Start of Lent", "Easter Sunday", -46),
             Offset("Palm Sunday", "Easter Sunday", -7),
             Offset("Easter Monday", "Easter Sunday", 1),
-        };
+        ];
 
         var analysis = RuleStaticAnalysis.Build(rules);
 
@@ -175,7 +175,7 @@ public sealed class RuleStaticAnalysisTests
             DurationDays = 7,
         };
 
-        var analysis = RuleStaticAnalysis.Build(new[] { rollForward, longSpan });
+        var analysis = RuleStaticAnalysis.Build([rollForward, longSpan]);
 
         RuleStaticProfile rollProfile = analysis.Profiles.Single(p => p.Rule.Name == "New Year's Day");
         RuleStaticProfile spanProfile = analysis.Profiles.Single(p => p.Rule.Name == "Festival Week");
@@ -208,7 +208,7 @@ public sealed class RuleStaticAnalysisTests
             }),
         };
 
-        var analysis = RuleStaticAnalysis.Build(new[] { custom });
+        var analysis = RuleStaticAnalysis.Build([custom]);
 
         Assert.AreEqual(90, analysis.GlobalFringeReach,
             "Author-declared MaxAdjustmentReachDays should set the analysis's global fringe reach.");
@@ -235,7 +235,7 @@ public sealed class RuleStaticAnalysisTests
             }),
         };
 
-        var analysis = RuleStaticAnalysis.Build(new[] { custom });
+        var analysis = RuleStaticAnalysis.Build([custom]);
 
         Assert.AreEqual(31, analysis.GlobalFringeReach);
     }
@@ -261,7 +261,7 @@ public sealed class RuleStaticAnalysisTests
             }),
         };
 
-        var analysis = RuleStaticAnalysis.Build(new[] { misdeclared });
+        var analysis = RuleStaticAnalysis.Build([misdeclared]);
 
         Assert.AreEqual(5, analysis.GlobalFringeReach);
     }
@@ -273,10 +273,10 @@ public sealed class RuleStaticAnalysisTests
     [TestMethod]
     public void Build_WhenOffsetRuleReferencesMissingAnchor_ShouldDegradeToFixedTier()
     {
-        var analysis = RuleStaticAnalysis.Build(new[]
-        {
+        var analysis = RuleStaticAnalysis.Build(
+        [
             Offset("Orphaned", "Does Not Exist", 1),
-        });
+        ]);
 
         RuleStaticProfile profile = analysis.Profiles.Single();
         Assert.AreEqual(RuleTier.Fixed, profile.Tier);

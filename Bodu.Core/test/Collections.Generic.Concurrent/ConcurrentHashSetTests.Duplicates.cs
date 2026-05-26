@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConcurrentHashSetTests.Duplicates.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -15,9 +15,9 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void UnionWith_WhenOtherHasDuplicates_ShouldAddEachDistinctElementOnce()
     {
-        var set = new ConcurrentHashSet<int>(new[] { 1 });
+        var set = new ConcurrentHashSet<int>([1]);
 
-        set.UnionWith(new[] { 2, 2, 3, 3, 3 });
+        set.UnionWith([2, 2, 3, 3, 3]);
 
         AssertContainsExactly(set, 1, 2, 3);
     }
@@ -29,9 +29,9 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void IntersectWith_WhenOtherHasDuplicates_ShouldTreatOtherAsSet()
     {
-        var set = new ConcurrentHashSet<int>(new[] { 1, 2, 3, 4 });
+        var set = new ConcurrentHashSet<int>([1, 2, 3, 4]);
 
-        set.IntersectWith(new[] { 2, 2, 3, 3 });
+        set.IntersectWith([2, 2, 3, 3]);
 
         AssertContainsExactly(set, 2, 3);
     }
@@ -43,9 +43,9 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void ExceptWith_WhenOtherHasDuplicates_ShouldRemoveEachDistinctElement()
     {
-        var set = new ConcurrentHashSet<int>(new[] { 1, 2, 3, 4 });
+        var set = new ConcurrentHashSet<int>([1, 2, 3, 4]);
 
-        set.ExceptWith(new[] { 2, 2, 3, 3 });
+        set.ExceptWith([2, 2, 3, 3]);
 
         AssertContainsExactly(set, 1, 4);
     }
@@ -57,9 +57,9 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void SymmetricExceptWith_WhenOtherHasDuplicates_ShouldTreatOtherAsSet()
     {
-        var set = new ConcurrentHashSet<int>(new[] { 1, 2, 3 });
+        var set = new ConcurrentHashSet<int>([1, 2, 3]);
 
-        set.SymmetricExceptWith(new[] { 2, 2, 4, 4 });
+        set.SymmetricExceptWith([2, 2, 4, 4]);
 
         AssertContainsExactly(set, 1, 3, 4);
     }
@@ -71,9 +71,9 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void IsProperSubsetOf_WhenOtherHasDuplicates_ShouldUseDistinctCount()
     {
-        var set = new ConcurrentHashSet<int>(new[] { 1, 2 });
+        var set = new ConcurrentHashSet<int>([1, 2]);
 
-        Assert.IsFalse(set.IsProperSubsetOf(new[] { 1, 2, 2, 2, 2 }));
+        Assert.IsFalse(set.IsProperSubsetOf([1, 2, 2, 2, 2]));
     }
 
     /// <summary>
@@ -83,8 +83,8 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void IsProperSupersetOf_WhenOtherHasDuplicates_ShouldUseDistinctCount()
     {
-        var set = new ConcurrentHashSet<int>(new[] { 1, 2, 3 });
+        var set = new ConcurrentHashSet<int>([1, 2, 3]);
 
-        Assert.IsTrue(set.IsProperSupersetOf(new[] { 1, 1, 1 }));
+        Assert.IsTrue(set.IsProperSupersetOf([1, 1, 1]));
     }
 }

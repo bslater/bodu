@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConcurrentHashSetTests.NonGenericInterfaces.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -16,7 +16,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void ICollectionCount_ShouldReportElementCount()
     {
-        ICollection collection = new ConcurrentHashSet<int>(new[] { 1, 2, 3 });
+        ICollection collection = new ConcurrentHashSet<int>([1, 2, 3]);
 
         Assert.AreEqual(3, collection.Count);
     }
@@ -52,7 +52,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void ICollectionCopyTo_WhenArrayCompatible_ShouldCopyEveryElement()
     {
-        ICollection collection = new ConcurrentHashSet<int>(new[] { 1, 2, 3 });
+        ICollection collection = new ConcurrentHashSet<int>([1, 2, 3]);
         var array = new int[3];
 
         collection.CopyTo(array, 0);
@@ -67,7 +67,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void ICollectionCopyTo_WhenArrayIsNull_ShouldThrowArgumentNullException()
     {
-        ICollection collection = new ConcurrentHashSet<int>(new[] { 1 });
+        ICollection collection = new ConcurrentHashSet<int>([1]);
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -82,7 +82,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void ICollectionCopyTo_WhenArrayIsMultidimensional_ShouldThrowArgumentException()
     {
-        ICollection collection = new ConcurrentHashSet<int>(new[] { 1 });
+        ICollection collection = new ConcurrentHashSet<int>([1]);
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -97,7 +97,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void ICollectionCopyTo_WhenArrayElementTypeIncompatible_ShouldThrowArgumentException()
     {
-        ICollection collection = new ConcurrentHashSet<int>(new[] { 1, 2 });
+        ICollection collection = new ConcurrentHashSet<int>([1, 2]);
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -111,7 +111,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void ICollectionCopyTo_WhenIndexSupplied_ShouldCopyStartingAtThatIndex()
     {
-        ICollection collection = new ConcurrentHashSet<int>(new[] { 7, 8 });
+        ICollection collection = new ConcurrentHashSet<int>([7, 8]);
         var array = new int[5];
 
         collection.CopyTo(array, 2);
@@ -129,7 +129,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void ICollectionCopyTo_WhenIndexIsNegative_ShouldThrowArgumentOutOfRangeException()
     {
-        ICollection collection = new ConcurrentHashSet<int>(new[] { 1 });
+        ICollection collection = new ConcurrentHashSet<int>([1]);
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -144,7 +144,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void ICollectionCopyTo_WhenArrayTooSmall_ShouldThrowArgumentException()
     {
-        ICollection collection = new ConcurrentHashSet<int>(new[] { 1, 2, 3 });
+        ICollection collection = new ConcurrentHashSet<int>([1, 2, 3]);
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -159,7 +159,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void ICollectionCopyTo_WhenIndexLeavesInsufficientRoom_ShouldThrowArgumentException()
     {
-        ICollection collection = new ConcurrentHashSet<int>(new[] { 1, 2, 3 });
+        ICollection collection = new ConcurrentHashSet<int>([1, 2, 3]);
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -174,7 +174,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void ICollectionCopyTo_WhenArrayExactlyFits_ShouldCopyEveryElement()
     {
-        ICollection collection = new ConcurrentHashSet<int>(new[] { 1, 2, 3 });
+        ICollection collection = new ConcurrentHashSet<int>([1, 2, 3]);
         var array = new int[3];
 
         collection.CopyTo(array, 0);
@@ -204,7 +204,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void ICollectionCopyTo_WhenIndexPlusCountWouldOverflow_ShouldThrowArgumentException()
     {
-        ICollection collection = new ConcurrentHashSet<int>(new[] { 1, 2, 3 });
+        ICollection collection = new ConcurrentHashSet<int>([1, 2, 3]);
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -219,7 +219,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void ICollectionCopyTo_WhenElementCannotCastToDestination_ShouldThrowArgumentException()
     {
-        ICollection collection = new ConcurrentHashSet<object>(new object[] { new object() });
+        ICollection collection = new ConcurrentHashSet<object>([new object()]);
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {

@@ -33,8 +33,8 @@ public sealed partial class CityHash128Tests
     /// No published incremental KAT vectors are bundled; returning an empty sequence marks the harness's
     /// incremental test as inconclusive rather than asserting against unknown expected values.
     /// </remarks>
-    protected override IReadOnlyList<string> GetExpectedHashesForIncrementalInput(SingleTestVariant variant) => new[]
-    {
+    protected override IReadOnlyList<string> GetExpectedHashesForIncrementalInput(SingleTestVariant variant) =>
+    [
         "2B9AC064FC9DF03D291EE592C340B53C", "F9695DD6F90C794E9A770C0F87F644EC", "DE208A3BF647422908EB129DD9AC37D8", "0D999578154BD8AD8E55F1DD84662B5F",
         "3F55E779B57139435AC0E87992AEDCCB", "EC2E0150C16836EF3B64B93A3F1FCBE3", "7CD2A549B17F2B6A01BD9958B5E38E8B", "0B19A402F2279B4DBD20564924D913A7",
         "E62C19028B788854CE097E37A21AF104", "38A59D76E4D8746A9874903347D2B8AB", "1DD914311672404EF0B9A1E59D77B657", "7BBC7E2FF090D9D4F49CB3EA4FF52BE7",
@@ -68,12 +68,12 @@ public sealed partial class CityHash128Tests
         "9167BA134C6765604AF63404FC77FAB6", "1EEFF45B0383559479013343F61F56F6", "8F46994D392AC0B6419E0735B9FF74A6", "3692505FB49CE764E401A2CA1DA9120E",
         "5030F26B8D6F1C84C86CAB43CD836A3D", "9C271F508B9DC839FF2E45A656163D54", "9D1447BC1943DBC092FBD633EAC34615", "D10849E2F9B48F422DACB77830D2E661",
         "67519245A7347F98A22F83E3FB62E9D7", "45F105EF364B231B8E841DA7DFD1ED18",
-    };
+    ];
     /// <inheritdoc />
     protected override NonCryptographicHashAlgorithmSpecification GetSpecification(SingleTestVariant variant) => new()
     {
         HashLengthInBytes = 16,
-        BoundaryLengths = new[] { 16, 64, 128, 256 },
+        BoundaryLengths = [16, 64, 128, 256],
         MinNonZeroBytesForLongInput = 14,
         KnownAnswers = new()
         {

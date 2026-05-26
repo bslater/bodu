@@ -28,7 +28,7 @@ namespace Bodu.Globalization.Calendar.Builder;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// // Build a notable date with two rules — one for the pre-1900 observance and one for the modern era.
+/// Build a notable date with two rules — one for the pre-1900 observance and one for the modern era.
 /// var doc = new NotableDateDocumentBuilder()
 ///     .AddDate("Australia Day", date => date
 ///         .AddRule(rule => rule

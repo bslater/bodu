@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConcurrentHashSetTests.IEnumerable.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -17,7 +17,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void GenericGetEnumerator_WhenAccessedThroughInterface_ShouldYieldEveryElement()
     {
-        IEnumerable<int> set = new ConcurrentHashSet<int>(new[] { 1, 2, 3 });
+        IEnumerable<int> set = new ConcurrentHashSet<int>([1, 2, 3]);
 
         var observed = new List<int>();
         foreach (int item in set)
@@ -33,7 +33,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void NonGenericGetEnumerator_WhenAccessedThroughInterface_ShouldYieldEveryElement()
     {
-        IEnumerable set = new ConcurrentHashSet<int>(new[] { 1, 2, 3 });
+        IEnumerable set = new ConcurrentHashSet<int>([1, 2, 3]);
 
         var observed = new List<int>();
         foreach (object? item in set)
@@ -62,7 +62,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void Enumerable_WhenUsedWithLinq_ShouldProjectElements()
     {
-        var set = new ConcurrentHashSet<int>(new[] { 1, 2, 3, 4 });
+        var set = new ConcurrentHashSet<int>([1, 2, 3, 4]);
 
         Assert.AreEqual(10, set.Sum());
         Assert.AreEqual(2, set.Count(value => value % 2 == 0));

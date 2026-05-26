@@ -47,7 +47,7 @@ public sealed class NotableDateResolutionAdjustmentProcessorWindowExpansionTests
                 new DateTime(2022, 12, 30),
                 new DateTime(2022, 12, 31),
                 NotableDateResolutionProjection.AnchorDate),
-            new[] { occurrence });
+            [occurrence]);
 
         // AnchorDate projection emits the adjusted date even though it landed beyond the request end.
         Assert.IsTrue(window.OutputDates.Any(d => d.WasAdjusted && d.Date.Year == 2023),
@@ -88,7 +88,7 @@ public sealed class NotableDateResolutionAdjustmentProcessorWindowExpansionTests
                 new DateTime(2022, 1, 1),
                 new DateTime(2022, 1, 5),
                 NotableDateResolutionProjection.AnchorDate),
-            new[] { occurrence });
+            [occurrence]);
 
         // AnchorDate projection emits the adjusted date even though it landed before the request start.
         Assert.IsTrue(window.OutputDates.Any(d => d.WasAdjusted && d.Date.Year == 2021),
@@ -127,7 +127,7 @@ public sealed class NotableDateResolutionAdjustmentProcessorWindowExpansionTests
                 new DateTime(2024, 6, 1),
                 new DateTime(2024, 6, 30),
                 NotableDateResolutionProjection.ObservedDate),
-            new[] { occurrence });
+            [occurrence]);
 
         Assert.AreEqual(1, window.OutputDates.Count);
         Assert.IsFalse(window.OutputDates[0].WasAdjusted);

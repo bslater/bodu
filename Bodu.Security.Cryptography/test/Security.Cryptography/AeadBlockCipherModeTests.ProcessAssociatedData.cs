@@ -17,10 +17,10 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     public void ProcessAssociatedData_WhenCalledTwice_ShouldThrowExactly()
     {
         TTransform transform = MakeTransform();
-        transform.ProcessAssociatedData(new byte[] { 1, 2, 3 });
+        transform.ProcessAssociatedData([1, 2, 3]);
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
-            transform.ProcessAssociatedData(new byte[] { 4, 5, 6 }));
+            transform.ProcessAssociatedData([4, 5, 6]));
     }
 
     /// <summary>
@@ -40,7 +40,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
         transform.Encrypt(plaintext, new byte[plaintext.Length + (transform.TagSize / 8)]);
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
-            transform.ProcessAssociatedData(new byte[] { 0x01, 0x02, 0x03 }),
+            transform.ProcessAssociatedData([0x01, 0x02, 0x03]),
             "ProcessAssociatedData must throw after Encrypt has been called on the same instance.");
     }
 
@@ -64,7 +64,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
         dec.Decrypt(ct, new byte[plaintext.Length]);
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
-            dec.ProcessAssociatedData(new byte[] { 0x01, 0x02, 0x03 }),
+            dec.ProcessAssociatedData([0x01, 0x02, 0x03]),
             "ProcessAssociatedData must throw after Decrypt has been called on the same instance.");
     }
 }

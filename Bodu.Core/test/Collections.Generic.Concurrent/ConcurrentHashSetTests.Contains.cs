@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConcurrentHashSetTests.Contains.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -15,7 +15,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void Contains_WhenElementPresent_ShouldReturnTrue()
     {
-        var set = new ConcurrentHashSet<int>(new[] { 1, 2, 3 });
+        var set = new ConcurrentHashSet<int>([1, 2, 3]);
 
         Assert.IsTrue(set.Contains(2));
     }
@@ -27,7 +27,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void Contains_WhenElementAbsent_ShouldReturnFalse()
     {
-        var set = new ConcurrentHashSet<int>(new[] { 1, 2, 3 });
+        var set = new ConcurrentHashSet<int>([1, 2, 3]);
 
         Assert.IsFalse(set.Contains(99));
     }
@@ -50,7 +50,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void Contains_WhenElementRemoved_ShouldReturnFalse()
     {
-        var set = new ConcurrentHashSet<int>(new[] { 5 });
+        var set = new ConcurrentHashSet<int>([5]);
         set.Remove(5);
 
         Assert.IsFalse(set.Contains(5));

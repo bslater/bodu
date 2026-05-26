@@ -1,16 +1,14 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateOptionsTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Globalization.Calendar;
-using Bodu.Globalization.Calendar.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace Bodu.DependencyInjection;
+namespace Bodu.Globalization.Calendar.DependencyInjection;
 
 /// <summary>
 /// Verifies the defaults and <see cref="IConfiguration" />-binding round-trip semantics of

@@ -37,11 +37,11 @@ public sealed class NotableDateAlgorithmRegistryTests
         var easter = new StaticAlgorithm(new DateTime(2026, 4, 5));
         var lunar = new StaticAlgorithm(new DateTime(2026, 2, 17));
 
-        var registry = new NotableDateAlgorithmRegistry(new[]
-        {
+        var registry = new NotableDateAlgorithmRegistry(
+        [
             new KeyValuePair<string, INotableDateAlgorithm>("easter", easter),
             new KeyValuePair<string, INotableDateAlgorithm>("lunar", lunar),
-        });
+        ]);
 
         Assert.IsTrue(registry.TryGet("easter", out var resolvedEaster));
         Assert.AreSame(easter, resolvedEaster);

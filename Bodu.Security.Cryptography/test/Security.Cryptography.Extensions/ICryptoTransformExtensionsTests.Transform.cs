@@ -104,8 +104,8 @@ public partial class ICryptoTransformExtensionsTests
         TransformMode mode,
         PaddingMode padding = PaddingMode.None,
         int blockSizeBits = 128)
-        => new object[]
-        {
+        =>
+        [
             new KnownAnswerTest
             {
                 Name           = name,
@@ -118,7 +118,7 @@ public partial class ICryptoTransformExtensionsTests
                     ["Mode"]      = mode,
                 }
             }
-        };
+        ];
 
     // ---------------------------------------------------------------------------------------------------------------
     // Transform(byte[])
@@ -134,7 +134,7 @@ public partial class ICryptoTransformExtensionsTests
         ICryptoTransform? transform = null;
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
-            transform!.Transform(new byte[] { 1, 2, 3, 4 }));
+            transform!.Transform([1, 2, 3, 4]));
     }
 
     /// <summary>
@@ -177,7 +177,7 @@ public partial class ICryptoTransformExtensionsTests
     public void Transform_ByteArrayRange_WhenOffsetPlusCountExceedsLength_ShouldThrowExactly()
     {
         using SimpleReversingCryptoTransform transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
-        byte[] data = { 1, 2, 3 };
+        byte[] data = [1, 2, 3];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
             transform.Transform(data, 2, 2));
@@ -225,7 +225,7 @@ public partial class ICryptoTransformExtensionsTests
         ICryptoTransform? transform = null;
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
-            transform!.Transform((ReadOnlySpan<byte>)new byte[] { 1, 2, 3, 4 }));
+            transform!.Transform((ReadOnlySpan<byte>)[1, 2, 3, 4]));
     }
 
     /// <summary>
@@ -313,7 +313,7 @@ public partial class ICryptoTransformExtensionsTests
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            ReadOnlySpan<byte> input = new byte[] { 1, 2, 3, 4 };
+            ReadOnlySpan<byte> input = [1, 2, 3, 4];
             Span<byte> dest = new byte[64];
             transform!.Transform(input, dest);
         });
@@ -330,7 +330,7 @@ public partial class ICryptoTransformExtensionsTests
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
-            ReadOnlySpan<byte> input = new byte[] { 1, 2, 3, 4 };
+            ReadOnlySpan<byte> input = [1, 2, 3, 4];
             Span<byte> tooSmall = new byte[1];
             transform.Transform(input, tooSmall);
         });
@@ -368,7 +368,7 @@ public partial class ICryptoTransformExtensionsTests
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            var input = new ReadOnlyMemory<byte>(new byte[] { 1, 2, 3, 4 });
+            var input = new ReadOnlyMemory<byte>([1, 2, 3, 4]);
             var dest = new Memory<byte>(new byte[64]);
             transform!.Transform(input, dest);
         });
@@ -385,7 +385,7 @@ public partial class ICryptoTransformExtensionsTests
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
-            var input = new ReadOnlyMemory<byte>(new byte[] { 1, 2, 3, 4 });
+            var input = new ReadOnlyMemory<byte>([1, 2, 3, 4]);
             var tooSmall = new Memory<byte>(new byte[1]);
             transform.Transform(input, tooSmall);
         });
@@ -444,7 +444,7 @@ public partial class ICryptoTransformExtensionsTests
     public void Transform_Stream_WhenTransformIsNull_ShouldThrowExactly()
     {
         ICryptoTransform? transform = null;
-        using var source = new MemoryStream(new byte[] { 1, 2, 3, 4 });
+        using var source = new MemoryStream([1, 2, 3, 4]);
         using var target = new MemoryStream();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
@@ -473,7 +473,7 @@ public partial class ICryptoTransformExtensionsTests
     public void Transform_Stream_WhenTargetStreamIsNull_ShouldThrowExactly()
     {
         using SimpleReversingCryptoTransform transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
-        using var source = new MemoryStream(new byte[] { 1, 2, 3, 4 });
+        using var source = new MemoryStream([1, 2, 3, 4]);
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
             transform.Transform(source, null!, 16));
@@ -487,7 +487,7 @@ public partial class ICryptoTransformExtensionsTests
     public void Transform_Stream_WhenBufferSizeIsZero_ShouldThrowExactly()
     {
         using SimpleReversingCryptoTransform transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
-        using var source = new MemoryStream(new byte[] { 1, 2, 3, 4 });
+        using var source = new MemoryStream([1, 2, 3, 4]);
         using var target = new MemoryStream();
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>

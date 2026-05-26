@@ -25,19 +25,19 @@ namespace Bodu;
 /// </para>
 /// <code language="csharp">
 ///<![CDATA[
-/// // Build a pattern for Monday, Wednesday, and Friday
+/// Build a pattern for Monday, Wednesday, and Friday
 /// var pattern = WeekPattern.Empty
 ///     .With(DayOfWeek.Monday)
 ///     .With(DayOfWeek.Wednesday)
 ///     .With(DayOfWeek.Friday);
 ///
-/// // Check membership
+/// Check membership
 /// bool hasFriday = pattern.Contains(DayOfWeek.Friday); // true
 ///
-/// // Count selected days
+/// Count selected days
 /// int count = pattern.Count; // 3
 ///
-/// // Enumerate selected days
+/// Enumerate selected days
 /// foreach (DayOfWeek day in pattern)
 ///     Console.WriteLine(day);
 ///]]>

@@ -142,7 +142,7 @@ public sealed partial class Base58Tests
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            _ = Base58.Encode(new byte[] { 0x01 }, (Base58Variant)99);
+            _ = Base58.Encode([0x01], (Base58Variant)99);
         });
     }
 

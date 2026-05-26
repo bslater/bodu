@@ -29,7 +29,7 @@ namespace Bodu.Collections.Generic;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// // Tax-bracket lookup: ranges are half-open and must not overlap.
+/// Tax-bracket lookup: ranges are half-open and must not overlap.
 /// var brackets = new RangeDictionary<decimal, decimal>
 /// {
 ///     {     0m,  18_200m, 0.00m },
@@ -40,7 +40,7 @@ namespace Bodu.Collections.Generic;
 /// if (brackets.TryGetValue(50_000m, out decimal rate))
 ///     Console.WriteLine($"Rate: {rate:P0}"); // Rate: 30%
 ///
-/// // Adjacent ranges are allowed; an overlapping insertion throws ArgumentException.
+/// Adjacent ranges are allowed; an overlapping insertion throws ArgumentException.
 /// brackets.Add(135_000m, 190_000m, 0.37m);
 ///]]>
 /// </example>

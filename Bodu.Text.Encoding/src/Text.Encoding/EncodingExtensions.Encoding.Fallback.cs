@@ -15,7 +15,7 @@ public static partial class EncodingExtensions
     /// </summary>
     /// <example>
     ///<![CDATA[
-    /// // Configure a single call-site to fail fast on bad input without mutating the global default.
+    /// Configure a single call-site to fail fast on bad input without mutating the global default.
     /// System.Text.Encoding strictAscii = System.Text.Encoding.ASCII.WithExceptionFallbacks();
     /// try
     /// {

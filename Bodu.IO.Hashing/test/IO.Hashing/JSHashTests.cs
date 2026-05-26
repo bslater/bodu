@@ -22,8 +22,8 @@ public sealed partial class JSHashTests
     /// Entries are the documented JSHash known-answer sequence for incremental inputs
     /// <c>[]</c>, <c>[0x00]</c>, <c>[0x00, 0x01]</c>, … <c>[0x00 .. 0x0E]</c>.
     /// </remarks>
-    protected override IReadOnlyList<string> GetExpectedHashesForIncrementalInput(SingleTestVariant variant) => new[]
-    {
+    protected override IReadOnlyList<string> GetExpectedHashesForIncrementalInput(SingleTestVariant variant) =>
+    [
         "A7C6674E", "2E00F5AE", "E245A8A4", "58889A1A",
         "41256D43", "35D4123D", "87EF8D8C", "40836C38",
         "970BC723", "5A3E14A2", "85E418C9", "4E2D7A9C",
@@ -33,14 +33,14 @@ public sealed partial class JSHashTests
         "A3A266F0", "835F8BB8", "DA970587", "8AF67185",
         "77B8EA4A", "6E05FB3A", "566AE454", "250F22E5",
         "AD67A838", "06689F1B",
-    };
+    ];
 
     /// <inheritdoc />
     protected override NonCryptographicHashAlgorithmSpecification GetSpecification(SingleTestVariant variant) =>
         new()
         {
             HashLengthInBytes = 4,
-            BoundaryLengths = new[] { 1, 8, 16, 64 },
+            BoundaryLengths = [1, 8, 16, 64],
             LongInputLength = 200,
             MinNonZeroBytesForLongInput = 2,
             KnownAnswers = new()

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConcurrentHashSetTests.Remove.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -14,7 +14,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void Remove_WhenElementPresent_ShouldReturnTrueAndDeleteElement()
     {
-        var set = new ConcurrentHashSet<int>(new[] { 1, 2, 3 });
+        var set = new ConcurrentHashSet<int>([1, 2, 3]);
 
         Assert.IsTrue(set.Remove(2));
         Assert.AreEqual(2, set.Count);
@@ -27,7 +27,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void Remove_WhenElementAbsent_ShouldReturnFalse()
     {
-        var set = new ConcurrentHashSet<int>(new[] { 1, 2, 3 });
+        var set = new ConcurrentHashSet<int>([1, 2, 3]);
 
         Assert.IsFalse(set.Remove(99));
         Assert.AreEqual(3, set.Count);
@@ -51,7 +51,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void Remove_WhenChainHasMultipleElements_ShouldKeepRemainingElementsReachable()
     {
-        var set = new ConcurrentHashSet<int>(new[] { 10, 20, 30, 40, 50 });
+        var set = new ConcurrentHashSet<int>([10, 20, 30, 40, 50]);
 
         Assert.IsTrue(set.Remove(10));
         Assert.IsTrue(set.Remove(30));

@@ -1,10 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateServiceBuilderExtensionsTests.PostConfigure.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Globalization.Calendar;
 using Bodu.Globalization.Calendar.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

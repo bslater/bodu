@@ -57,13 +57,13 @@ public partial class MonitoringHashAlgorithmTests
     protected override MonitoringHashAlgorithm CreateAlgorithm(SingleTestVariant variant) => new MonitoringHashAlgorithm();
 
     /// <inheritdoc />
-    protected override IReadOnlyList<string> GetExpectedHashesForIncrementalInput(SingleTestVariant variant) => new[]
-    {
+    protected override IReadOnlyList<string> GetExpectedHashesForIncrementalInput(SingleTestVariant variant) =>
+    [
         "00000000", "00000000", "01000000", "03000000",
         "06000000", "0A000000", "0F000000", "15000000",
         "1C000000", "24000000", "2D000000", "37000000",
         "42000000", "4E000000", "5B000000", "69000000",
         "78000000", "88000000",
-    };
+    ];
 
 }

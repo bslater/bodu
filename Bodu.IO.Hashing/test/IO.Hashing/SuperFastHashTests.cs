@@ -22,8 +22,8 @@ public sealed partial class SuperFastHashTests
     /// Entries are the SuperFastHash digests, in little-endian byte order, for incremental inputs
     /// <c>[]</c>, <c>[0x00]</c>, <c>[0x00, 0x01]</c>, … <c>[0x00 .. 0x0E]</c>.
     /// </remarks>
-    protected override IReadOnlyList<string> GetExpectedHashesForIncrementalInput(SingleTestVariant variant) => new[]
-    {
+    protected override IReadOnlyList<string> GetExpectedHashesForIncrementalInput(SingleTestVariant variant) =>
+    [
         "00000000", "5A595355", "94A0EA00", "7C80828E",
         "EF71151F", "0A834E96", "623C7A3D", "2794B36B",
         "AA876FB6", "92324598", "5CF6B891", "9F18F1ED",
@@ -33,14 +33,14 @@ public sealed partial class SuperFastHashTests
         "E10FCC8B", "90DE679A", "4DD83D7C", "8D5D51E9",
         "8049846A", "079327F6", "F205D9F7", "93E73D87",
         "C208C649", "F7740CC5",
-    };
+    ];
 
     /// <inheritdoc />
     protected override NonCryptographicHashAlgorithmSpecification GetSpecification(SingleTestVariant variant) =>
         new()
         {
             HashLengthInBytes = 4,
-            BoundaryLengths = new[] { 1, 2, 3, 4, 5, 7, 8, 16, 64 },
+            BoundaryLengths = [1, 2, 3, 4, 5, 7, 8, 16, 64],
             LongInputLength = 200,
             MinNonZeroBytesForLongInput = 2,
             KnownAnswers = new()

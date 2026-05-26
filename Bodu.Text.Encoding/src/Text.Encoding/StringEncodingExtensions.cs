@@ -23,15 +23,15 @@ namespace Bodu.Text.Encoding;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// // Fluent encoding of a string variable.
+/// Fluent encoding of a string variable.
 /// byte[] utf8       = "héllo".ToUtf8Bytes();
 /// byte[] withBom    = "héllo".ToBytesWithPreamble(new System.Text.UTF8Encoding(true));
 ///
-/// // Pool-backed encoding for a network send.
+/// Pool-backed encoding for a network send.
 /// using PooledBufferBuilder<byte> pooled = jsonPayload.GetUtf8BytesPooled();
 /// await socket.SendAsync(pooled.WrittenMemory, SocketFlags.None);
 ///
-/// // Pipeline integration.
+/// Pipeline integration.
 /// "key=value\n".WriteUtf8To(pipeWriter);
 ///]]>
 /// </example>

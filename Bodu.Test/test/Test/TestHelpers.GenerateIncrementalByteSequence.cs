@@ -39,7 +39,7 @@ public static partial class TestHelpers
     /// <example>
     /// <code>
     /// byte[] bytes = GenerateIncrementalByteSequence(0x10, 4);
-    /// // Produces: { 0x10, 0x11, 0x12, 0x13 }
+    /// Produces: { 0x10, 0x11, 0x12, 0x13 }
     /// </code>
     /// </example>
     public static byte[] GenerateIncrementalByteSequence(byte start, int count)
@@ -83,7 +83,7 @@ public static partial class TestHelpers
     /// <example>
     /// <code>
     /// byte[] bytes = GenerateRepeatingIncrementalByteSequence(0xFE, 4);
-    /// // Produces: { 0xFE, 0xFF, 0x00, 0x01 }
+    /// Produces: { 0xFE, 0xFF, 0x00, 0x01 }
     /// </code>
     /// </example>
     public static byte[] GenerateRepeatingIncrementalByteSequence(byte start, int count)

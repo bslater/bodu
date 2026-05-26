@@ -32,7 +32,7 @@ namespace Bodu.Globalization.Calendar.Plugins;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// // Production: pin every trusted plugin by SHA-256.
+/// Production: pin every trusted plugin by SHA-256.
 /// IPluginTrustPolicy policy = new FileHashPluginTrustPolicy(
 ///     new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
 ///     {

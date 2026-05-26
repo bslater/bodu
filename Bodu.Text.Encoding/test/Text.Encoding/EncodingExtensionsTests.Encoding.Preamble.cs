@@ -158,7 +158,7 @@ public sealed partial class EncodingExtensionsTests
     {
         System.Text.Encoding utf8NoBom = new System.Text.UTF8Encoding(false);
 
-        Assert.IsFalse(utf8NoBom.StartsWithPreamble(new byte[] { 0xEF, 0xBB, 0xBF }));
+        Assert.IsFalse(utf8NoBom.StartsWithPreamble([0xEF, 0xBB, 0xBF]));
     }
 
     /// <summary>
@@ -309,9 +309,9 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void PreambleExtensions_WhenEncodingIsNull_ShouldThrowExactly()
     {
-        Assert.ThrowsExactly<ArgumentNullException>(() => EncodingExtensions.StartsWithPreamble(null!, new byte[] { 0x68 }));
-        Assert.ThrowsExactly<ArgumentNullException>(() => _ = EncodingExtensions.StripPreamble(null!, new byte[] { 0x68 }));
-        Assert.ThrowsExactly<ArgumentNullException>(() => _ = EncodingExtensions.GetStringSkippingPreamble(null!, new byte[] { 0x68 }));
+        Assert.ThrowsExactly<ArgumentNullException>(() => EncodingExtensions.StartsWithPreamble(null!, [0x68]));
+        Assert.ThrowsExactly<ArgumentNullException>(() => _ = EncodingExtensions.StripPreamble(null!, [0x68]));
+        Assert.ThrowsExactly<ArgumentNullException>(() => _ = EncodingExtensions.GetStringSkippingPreamble(null!, [0x68]));
         Assert.ThrowsExactly<ArgumentNullException>(() => _ = EncodingExtensions.GetByteCountWithPreamble(null!, SampleText));
         Assert.ThrowsExactly<ArgumentNullException>(() => _ = EncodingExtensions.GetBytesWithPreamble(null!, SampleText));
         Assert.ThrowsExactly<ArgumentNullException>(() => _ = EncodingExtensions.GetBytesWithPreamble(null!, SampleText, new byte[64]));

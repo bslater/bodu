@@ -13,7 +13,7 @@ namespace Bodu.Text.Encoding;
 public sealed partial class BinaryEncodingExtensionsTests
 {
 
-    private static readonly byte[] CanonicalBytes = new byte[] { 0xDE, 0xAD, 0xBE, 0xEF };
+    private static readonly byte[] CanonicalBytes = [0xDE, 0xAD, 0xBE, 0xEF];
 
     /// <summary>
     /// Verifies that <see cref="BinaryEncodingExtensions.Decode(string, IBinaryEncoding)" /> dispatches through an

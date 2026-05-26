@@ -7,7 +7,7 @@
 using System.Text;
 using Microsoft.Extensions.Configuration;
 
-namespace Bodu.Extensions.Configuration.Text.Tests;
+namespace Bodu.Extensions.Configuration.Text;
 
 /// <summary>
 /// Verifies array-index key parity with <c>Microsoft.Extensions.Configuration.Json</c>: the Bodu source

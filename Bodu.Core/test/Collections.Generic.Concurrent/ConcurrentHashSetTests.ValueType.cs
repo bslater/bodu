@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConcurrentHashSetTests.ValueType.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -58,14 +58,14 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void ValueType_WhenElementTypeIsInt_ShouldSupportSetAlgebra()
     {
-        var set = new ConcurrentHashSet<int>(new[] { 1, 2, 3 });
+        var set = new ConcurrentHashSet<int>([1, 2, 3]);
 
-        set.UnionWith(new[] { 3, 4 });
+        set.UnionWith([3, 4]);
         AssertContainsExactly(set, 1, 2, 3, 4);
 
-        set.IntersectWith(new[] { 2, 3, 4, 5 });
+        set.IntersectWith([2, 3, 4, 5]);
         AssertContainsExactly(set, 2, 3, 4);
 
-        Assert.IsTrue(set.IsSubsetOf(new[] { 1, 2, 3, 4, 5 }));
+        Assert.IsTrue(set.IsSubsetOf([1, 2, 3, 4, 5]));
     }
 }

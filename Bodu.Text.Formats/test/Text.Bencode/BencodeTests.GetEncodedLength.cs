@@ -77,11 +77,11 @@ public sealed partial class BencodeTests
     [TestMethod]
     public void GetEncodedLength_WhenListOfStringAndInteger_ShouldSumChildSizes()
     {
-        BencodedList list = new(new BencodedValue[]
-        {
+        BencodedList list = new(
+        [
             BencodedString.FromUtf8("spam"),
             new BencodedInteger(42),
-        });
+        ]);
 
         Assert.AreEqual(Bytes("l4:spami42ee").Length, Bencode.GetEncodedLength(list));
     }

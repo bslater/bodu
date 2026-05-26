@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TwofishBlockCipherContractTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -38,8 +38,8 @@ public sealed class TwofishBlockCipherContractTests
     }
 
     /// <inheritdoc />
-    protected override IReadOnlyList<BlockCipherKat> KnownAnswers { get; } = new BlockCipherKat[]
-    {
+    protected override IReadOnlyList<BlockCipherKat> KnownAnswers { get; } =
+    [
         new(
             Name: "Twofish-128 I=1: zero key, zero plaintext",
             Algorithm: "Twofish-128",
@@ -87,5 +87,5 @@ public sealed class TwofishBlockCipherContractTests
             Plaintext: Convert.FromHexString("C5A3E7CEE0F1B7260528A68FB4EA05F2"),
             Ciphertext: Convert.FromHexString("43D5CEC327B24AB90AD34A79D0469151"),
             BlockSizeBits: 128),
-    };
+    ];
 }

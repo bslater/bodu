@@ -40,7 +40,7 @@ public sealed class NotableDateResolutionAdjustmentProcessorEmissionContractTest
         processor.ApplyAdjustments(
             window,
             Request(new DateTime(2024, 12, 20), new DateTime(2024, 12, 31)),
-            new[] { occurrence });
+            [occurrence]);
 
         IReadOnlyList<NotableDate> emitted = window.OutputDates;
 
@@ -81,7 +81,7 @@ public sealed class NotableDateResolutionAdjustmentProcessorEmissionContractTest
         processor.ApplyAdjustments(
             window,
             Request(new DateTime(2024, 6, 1), new DateTime(2024, 6, 30)),
-            new[] { occurrence });
+            [occurrence]);
 
         IReadOnlyList<NotableDate> emitted = window.OutputDates;
 
@@ -116,7 +116,7 @@ public sealed class NotableDateResolutionAdjustmentProcessorEmissionContractTest
                 new DateTime(2022, 12, 1),
                 new DateTime(2022, 12, 31),
                 NotableDateResolutionProjection.AnchorDate),
-            new[] { occurrence });
+            [occurrence]);
 
         IReadOnlyList<NotableDate> emitted = window.OutputDates;
 
@@ -146,7 +146,7 @@ public sealed class NotableDateResolutionAdjustmentProcessorEmissionContractTest
         processor.ApplyAdjustments(
             window,
             Request(new DateTime(2022, 12, 1), new DateTime(2022, 12, 31)),
-            new[] { occurrence });
+            [occurrence]);
 
         IReadOnlyList<NotableDate> emitted = window.OutputDates;
 
@@ -199,7 +199,7 @@ public sealed class NotableDateResolutionAdjustmentProcessorEmissionContractTest
                     new DateTime(2024, 1, 1),
                     new DateTime(2024, 1, 31),
                     (NotableDateResolutionProjection)999),
-                new[] { occurrence });
+                [occurrence]);
         });
     }
 
@@ -227,7 +227,7 @@ public sealed class NotableDateResolutionAdjustmentProcessorEmissionContractTest
         processor.ApplyAdjustments(
             window,
             Request(new DateTime(2024, 6, 1), new DateTime(2024, 6, 30)),
-            new[] { occurrence });
+            [occurrence]);
 
         NotableDate adjusted = window.OutputDates.Single(d => d.WasAdjusted);
 

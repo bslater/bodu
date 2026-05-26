@@ -48,12 +48,12 @@ public sealed partial class BencodeTests
     [TestMethod]
     public void Encode_WhenDictionaryConstructedWithUnsortedKeys_ShouldEmitSortedOutput()
     {
-        BencodedDictionary dict = new(new[]
-        {
+        BencodedDictionary dict = new(
+        [
             new KeyValuePair<BencodedString, BencodedValue>(BencodedString.FromUtf8("zebra"), new BencodedInteger(1)),
             new KeyValuePair<BencodedString, BencodedValue>(BencodedString.FromUtf8("alpha"), new BencodedInteger(2)),
             new KeyValuePair<BencodedString, BencodedValue>(BencodedString.FromUtf8("mango"), new BencodedInteger(3)),
-        });
+        ]);
 
         var encoded = Bencode.Encode(dict);
 

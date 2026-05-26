@@ -33,7 +33,7 @@ namespace Bodu.Extensions.Configuration.Text;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// // Strongly-typed options bound to the "Logging" section produced by AddConfiguration.
+/// Strongly-typed options bound to the "Logging" section produced by AddConfiguration.
 /// public sealed class LoggingOptions
 /// {
 ///     public string Level { get; init; } = "Information";
@@ -43,16 +43,16 @@ namespace Bodu.Extensions.Configuration.Text;
 /// var builder = WebApplication.CreateBuilder(args);
 /// builder.Configuration.AddConfiguration("appsettings.boduconfig");
 ///
-/// // Bind by section name against the configuration root.
+/// Bind by section name against the configuration root.
 /// builder.Services.AddConfigurationOptions<LoggingOptions>(
 ///     builder.Configuration,
 ///     sectionName: "Logging");
 ///
-/// // Or bind a pre-resolved section directly.
+/// Or bind a pre-resolved section directly.
 /// IConfigurationSection logging = builder.Configuration.GetSection("Logging");
 /// builder.Services.AddConfigurationOptions<LoggingOptions>(logging);
 ///
-/// // Consumed via constructor injection.
+/// Consumed via constructor injection.
 /// public sealed class HomeController(IOptions<LoggingOptions> options) { /* options.Value.Level */ }
 ///]]>
 /// </example>

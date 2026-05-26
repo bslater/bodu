@@ -52,9 +52,9 @@ namespace Bodu.Globalization.Calendar;
 ///
 /// ParsedNotableDateDocument document = NotableDateRuleParser.ParseDocument(xml);
 ///
-/// // document.UseGroups[0].SourceResource == ".../global-public.xml"
-/// // document.UseGroups[0].Uses[0].SourceRuleName == "New Year's Day"
-/// // document.LocalRules[0].Name == "Australia Day"
+/// document.UseGroups[0].SourceResource == ".../global-public.xml"
+/// document.UseGroups[0].Uses[0].SourceRuleName == "New Year's Day"
+/// document.LocalRules[0].Name == "Australia Day"
 ///]]>
 /// </code>
 /// </example>

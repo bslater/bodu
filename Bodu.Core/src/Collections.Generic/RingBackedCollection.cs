@@ -79,9 +79,9 @@ namespace Bodu.Collections.Generic;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// // The common surface is consumed through a concrete derivative — CircularBuffer<T> here.
-/// // The same Count, Capacity, IsEmpty, indexer, ToArray, and TrimExcess members are available
-/// // on every RingBackedCollection<T> subtype.
+/// The common surface is consumed through a concrete derivative — CircularBuffer<T> here.
+/// The same Count, Capacity, IsEmpty, indexer, ToArray, and TrimExcess members are available
+/// on every RingBackedCollection<T> subtype.
 /// RingBackedCollection<int> ring = new CircularBuffer<int>(capacity: 4);
 /// ((CircularBuffer<int>)ring).Enqueue(10);
 /// ((CircularBuffer<int>)ring).Enqueue(20);

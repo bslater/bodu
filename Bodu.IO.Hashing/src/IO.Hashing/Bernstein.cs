@@ -47,11 +47,11 @@ namespace Bodu.IO.Hashing;
 /// using Bodu.IO.Hashing;
 /// using Bodu.IO.Hashing.Extensions;
 ///
-/// // Default djb2 with the canonical 5381 seed.
+/// Default djb2 with the canonical 5381 seed.
 /// var djb2 = new Bernstein();
 /// byte[] digest = djb2.ComputeHash(System.Text.Encoding.UTF8.GetBytes("symbol"));
 ///
-/// // XOR-modified djb2a, generally better distribution.
+/// XOR-modified djb2a, generally better distribution.
 /// var djb2a = new Bernstein { UseModifiedAlgorithm = true };
 /// byte[] digestA = djb2a.ComputeHash(System.Text.Encoding.UTF8.GetBytes("symbol"));
 ///]]>

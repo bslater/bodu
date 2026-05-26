@@ -31,11 +31,11 @@ public sealed partial class BencodedListTests
     [TestMethod]
     public void Constructor_WhenEnumerableProvided_ShouldExposeItems()
     {
-        BencodedList list = new(new BencodedValue[]
-        {
+        BencodedList list = new(
+        [
             BencodedString.FromUtf8("spam"),
             new BencodedInteger(42),
-        });
+        ]);
 
         Assert.AreEqual(2, list.Count);
         Assert.IsInstanceOfType<BencodedString>(list.Items[0]);
@@ -50,7 +50,7 @@ public sealed partial class BencodedListTests
     public void Indexer_WhenAccessed_ShouldReturnSameInstanceAsItems()
     {
         BencodedInteger expected = new(7);
-        BencodedList list = new(new BencodedValue[] { expected });
+        BencodedList list = new([expected]);
 
         Assert.AreSame(expected, list[0]);
         Assert.AreSame(list.Items[0], list[0]);
@@ -63,7 +63,7 @@ public sealed partial class BencodedListTests
     [TestMethod]
     public void Indexer_WhenIndexIsNegative_ShouldThrowExactly()
     {
-        BencodedList list = new(new BencodedValue[] { new BencodedInteger(1) });
+        BencodedList list = new([new BencodedInteger(1)]);
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -78,7 +78,7 @@ public sealed partial class BencodedListTests
     [TestMethod]
     public void Indexer_WhenIndexIsBeyondCount_ShouldThrowExactly()
     {
-        BencodedList list = new(new BencodedValue[] { new BencodedInteger(1) });
+        BencodedList list = new([new BencodedInteger(1)]);
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

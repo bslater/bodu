@@ -19,8 +19,8 @@ public sealed partial class Adler64Tests
     /// Entries are the documented Adler-64 known-answer sequence for incremental inputs
     /// <c>[]</c>, <c>[0x00]</c>, <c>[0x00, 0x01]</c>, … <c>[0x00 .. 0x0E]</c>.
     /// </remarks>
-    protected override IReadOnlyList<string> GetExpectedHashesForIncrementalInput(SingleTestVariant variant) => new[]
-    {
+    protected override IReadOnlyList<string> GetExpectedHashesForIncrementalInput(SingleTestVariant variant) =>
+    [
         "0000000000000001", "0000000100000001", "0000000300000002", "0000000700000004",
         "0000000E00000007", "000000190000000B", "0000002900000010", "0000003F00000016",
         "0000005C0000001D", "0000008100000025", "000000AF0000002E", "000000E700000038",
@@ -38,7 +38,7 @@ public sealed partial class Adler64Tests
         "0000728400000605", "000078C10000063D", "00007F3700000676", "000085E7000006B0",
         "00008CD2000006EB", "000093F900000727", "00009B5D00000764", "0000A2FF000007A2",
         "0000AAE0000007E1", "0000B30100000821",
-    };
+    ];
     /// <inheritdoc />
     protected override NonCryptographicHashAlgorithmSpecification GetSpecification(SingleTestVariant variant) => new()
     {
@@ -53,8 +53,8 @@ public sealed partial class Adler64Tests
             // Long-input regression vectors for issue #127 — expected digests are the canonical
             // Adler-64 values (modulus 4294967291) for the (byte)(i & 0xFF) sequence at each
             // length, derived from the per-byte spec.
-            Additional = new[]
-            {
+            Additional =
+            [
                 new NonCryptographicHashKnownAnswer
                 {
                     Name = "ModuloByte1K",
@@ -67,7 +67,7 @@ public sealed partial class Adler64Tests
                     Input = AdlerSimdRegressionInputs.ModuloByte8K,
                     ExpectedHex = "FC5D7000000FF001",
                 },
-            },
+            ],
         },
     };
 

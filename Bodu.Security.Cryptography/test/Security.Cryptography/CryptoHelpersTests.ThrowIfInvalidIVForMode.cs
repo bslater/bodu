@@ -10,7 +10,7 @@ namespace Bodu.Security.Cryptography;
 
 public partial class CryptoHelpersTests
 {
-    private static readonly KeySizes[] LegalBlockSizes = new[] { new KeySizes(128, 128, 0) };
+    private static readonly KeySizes[] LegalBlockSizes = [new KeySizes(128, 128, 0)];
 
     /// <summary>
     /// Verifies that <see cref="CryptoHelpers.ThrowIfInvalidIVForMode(byte[], CipherModeKind, int, KeySizes[], string)"/>

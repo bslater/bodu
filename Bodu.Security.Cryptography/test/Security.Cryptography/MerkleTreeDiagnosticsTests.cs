@@ -80,11 +80,11 @@ public sealed class MerkleTreeDiagnosticsTests
     {
         var diagnostics = new MerkleTreeDiagnostics();
 
-        diagnostics.RecordInternal(level: 1, index: 1, childHashes: [[0x01], [0x02]], hash: new byte[] { 0xAA });
-        diagnostics.RecordLeaf(index: 2, hash: new byte[] { 0x33 });
-        diagnostics.RecordInternal(level: 1, index: 0, childHashes: [[0x03], [0x04]], hash: new byte[] { 0xBB });
-        diagnostics.RecordLeaf(index: 0, hash: new byte[] { 0x11 });
-        diagnostics.RecordLeaf(index: 1, hash: new byte[] { 0x22 });
+        diagnostics.RecordInternal(level: 1, index: 1, childHashes: [[0x01], [0x02]], hash: [0xAA]);
+        diagnostics.RecordLeaf(index: 2, hash: [0x33]);
+        diagnostics.RecordInternal(level: 1, index: 0, childHashes: [[0x03], [0x04]], hash: [0xBB]);
+        diagnostics.RecordLeaf(index: 0, hash: [0x11]);
+        diagnostics.RecordLeaf(index: 1, hash: [0x22]);
 
         IReadOnlyList<MerkleTreeDiagnosticNode> nodes = diagnostics.GetAllNodes();
         var ordered = nodes.Select(n => (n.Level, n.Index)).ToList();
@@ -107,9 +107,9 @@ public sealed class MerkleTreeDiagnosticsTests
     {
         var diagnostics = new MerkleTreeDiagnostics();
 
-        diagnostics.RecordLeaf(index: 1, hash: new byte[] { 0x11 });
-        diagnostics.RecordInternal(level: 1, index: 0, childHashes: [[0x01]], hash: new byte[] { 0xAA });
-        diagnostics.RecordLeaf(index: 0, hash: new byte[] { 0x10 });
+        diagnostics.RecordLeaf(index: 1, hash: [0x11]);
+        diagnostics.RecordInternal(level: 1, index: 0, childHashes: [[0x01]], hash: [0xAA]);
+        diagnostics.RecordLeaf(index: 0, hash: [0x10]);
 
         IReadOnlyList<MerkleTreeDiagnosticNode> level0 = diagnostics.GetLevel(0);
         IReadOnlyList<MerkleTreeDiagnosticNode> level1 = diagnostics.GetLevel(1);
@@ -131,10 +131,10 @@ public sealed class MerkleTreeDiagnosticsTests
     {
         var diagnostics = new MerkleTreeDiagnostics();
 
-        diagnostics.RecordLeaf(index: 0, hash: new byte[] { 0x10 });
-        diagnostics.RecordLeaf(index: 1, hash: new byte[] { 0x11 });
-        diagnostics.RecordInternal(level: 1, index: 0, childHashes: [[0x10], [0x11]], hash: new byte[] { 0xAA });
-        diagnostics.RecordInternal(level: 2, index: 0, childHashes: [[0xAA]], hash: new byte[] { 0xFF });
+        diagnostics.RecordLeaf(index: 0, hash: [0x10]);
+        diagnostics.RecordLeaf(index: 1, hash: [0x11]);
+        diagnostics.RecordInternal(level: 1, index: 0, childHashes: [[0x10], [0x11]], hash: [0xAA]);
+        diagnostics.RecordInternal(level: 2, index: 0, childHashes: [[0xAA]], hash: [0xFF]);
 
         Assert.AreEqual(2, diagnostics.Root!.Level);
         Assert.AreEqual(0xFF, diagnostics.Root.Hash[0]);
@@ -196,8 +196,8 @@ public sealed class MerkleTreeDiagnosticsTests
     public void Validate_WhenOnlyLeavesRecorded_ShouldReturnTrue()
     {
         var diagnostics = new MerkleTreeDiagnostics();
-        diagnostics.RecordLeaf(0, new byte[] { 0x01 });
-        diagnostics.RecordLeaf(1, new byte[] { 0x02 });
+        diagnostics.RecordLeaf(0, [0x01]);
+        diagnostics.RecordLeaf(1, [0x02]);
 
         var ok = diagnostics.Validate(SHA256.Create, out IReadOnlyList<string>? errors);
 
@@ -286,10 +286,10 @@ public sealed class MerkleTreeDiagnosticsTests
     {
         var diagnostics = new MerkleTreeDiagnostics();
 
-        diagnostics.RecordLeaf(0, new byte[] { 0x01 });
-        diagnostics.RecordLeaf(1, new byte[] { 0x02 });
+        diagnostics.RecordLeaf(0, [0x01]);
+        diagnostics.RecordLeaf(1, [0x02]);
         diagnostics.RecordInternal(level: 1, index: 0, childHashes: [[0x01], [0x02]],
-            hash: new byte[] { 0xFF, 0xFF, 0xFF });
+            hash: [0xFF, 0xFF, 0xFF]);
 
         var writer = new StringWriter();
         diagnostics.WriteTo(writer, SHA256.Create);

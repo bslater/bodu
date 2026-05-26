@@ -32,7 +32,7 @@ public sealed class NotableDateRuleResourceProviderBaseAssemblyChainTests
         XmlResourceNotableDateRuleProvider provider = new(
             "Definitely/Not/Real/missing.xml",
             new ResourcePathResolver(),
-            new[] { first, second });
+            [first, second]);
 
         FileNotFoundException ex = Assert.ThrowsExactly<FileNotFoundException>(() =>
         {
@@ -59,7 +59,7 @@ public sealed class NotableDateRuleResourceProviderBaseAssemblyChainTests
         XmlResourceNotableDateRuleProvider provider = new(
             "Definitely/Not/Real/missing.xml",
             new ResourcePathResolver(),
-            new[] { sole });
+            [sole]);
 
         FileNotFoundException ex = Assert.ThrowsExactly<FileNotFoundException>(() =>
         {
@@ -102,7 +102,7 @@ public sealed class NotableDateRuleResourceProviderBaseAssemblyChainTests
             _ = new XmlResourceNotableDateRuleProvider(
                 "any.xml",
                 new ResourcePathResolver(),
-                new Assembly[] { real, null! });
+                [real, null!]);
         });
 
         Assert.AreEqual("assemblies", ex.ParamName);

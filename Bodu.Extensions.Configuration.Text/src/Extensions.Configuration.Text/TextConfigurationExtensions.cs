@@ -63,16 +63,16 @@ namespace Bodu.Extensions.Configuration.Text;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// // 1. Canonical ASP.NET / Generic Host registration in Program.cs.
+/// 1. Canonical ASP.NET / Generic Host registration in Program.cs.
 /// var builder = WebApplication.CreateBuilder(args);
 /// builder.Configuration
 ///     .AddConfiguration("appsettings.boduconfig", optional: true, reloadOnChange: true)
 ///     .AddConfiguration("appsettings.boduconfig", targetPath: "src/Foo.cs"); // path-aware view
 ///
-/// // 2. Convention discovery — probes .boduconfig, then bodu.config.
+/// 2. Convention discovery — probes .boduconfig, then bodu.config.
 /// builder.Configuration.AddConfiguration(optional: true, reloadOnChange: true);
 ///
-/// // 3. Lambda overload — pin every option, including parse/resolve behaviour.
+/// 3. Lambda overload — pin every option, including parse/resolve behaviour.
 /// builder.Configuration.AddConfiguration(source =>
 /// {
 ///     source.Path           = "app.boduconfig";
@@ -86,11 +86,11 @@ namespace Bodu.Extensions.Configuration.Text;
 ///     };
 /// });
 ///
-/// // 4. In-memory stream — handy in unit tests.
+/// 4. In-memory stream — handy in unit tests.
 /// using var ms = new MemoryStream(Encoding.UTF8.GetBytes("[*]\nLogging:Level=Debug\n"));
 /// builder.Configuration.AddConfiguration(ms);
 ///
-/// // 5. Pre-parsed document — share one parse across multiple builders.
+/// 5. Pre-parsed document — share one parse across multiple builders.
 /// IniDocument doc = ConfigurationDocument.Parse(text);
 /// builder.Configuration.AddConfiguration(doc, targetPath: "src/Foo.cs");
 ///]]>

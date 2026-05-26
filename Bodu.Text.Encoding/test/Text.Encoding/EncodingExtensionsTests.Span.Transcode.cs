@@ -58,7 +58,7 @@ public sealed partial class EncodingExtensionsTests
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = ((ReadOnlySpan<byte>)new byte[] { 0x68 }).Transcode(null!, System.Text.Encoding.Unicode);
+            _ = ((ReadOnlySpan<byte>)[0x68]).Transcode(null!, System.Text.Encoding.Unicode);
         });
 
         Assert.AreEqual("sourceEncoding", ex.ParamName);
@@ -73,7 +73,7 @@ public sealed partial class EncodingExtensionsTests
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = ((ReadOnlySpan<byte>)new byte[] { 0x68 }).Transcode(System.Text.Encoding.UTF8, null!);
+            _ = ((ReadOnlySpan<byte>)[0x68]).Transcode(System.Text.Encoding.UTF8, null!);
         });
 
         Assert.AreEqual("destinationEncoding", ex.ParamName);
@@ -147,7 +147,7 @@ public sealed partial class EncodingExtensionsTests
 
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = ((ReadOnlySpan<byte>)new byte[] { 0x68 }).TranscodeTo(null!, System.Text.Encoding.Unicode, backing);
+            _ = ((ReadOnlySpan<byte>)[0x68]).TranscodeTo(null!, System.Text.Encoding.Unicode, backing);
         });
 
         Assert.AreEqual("sourceEncoding", ex.ParamName);

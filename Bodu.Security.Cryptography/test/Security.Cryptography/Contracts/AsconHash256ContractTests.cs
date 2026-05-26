@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsconHash256ContractTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -26,8 +26,8 @@ public sealed class AsconHash256ContractTests : CryptoHashContractTests<AsconHas
     }
 
     /// <inheritdoc />
-    protected override IReadOnlyList<CryptoHashKat> KnownAnswers { get; } = new CryptoHashKat[]
-    {
+    protected override IReadOnlyList<CryptoHashKat> KnownAnswers { get; } =
+    [
         new(
             "Ascon-Hash256 empty",
             Input: Array.Empty<byte>(),
@@ -48,5 +48,5 @@ public sealed class AsconHash256ContractTests : CryptoHashContractTests<AsconHas
             ExpectedDigest: Convert.FromHexString("23414503BF4BDE7AD0E85AEC94C22AE2D7CD807996B537F9564FC2974053F139"),
             OutputLengthBytes: 32,
             Key: null),
-    };
+    ];
 }

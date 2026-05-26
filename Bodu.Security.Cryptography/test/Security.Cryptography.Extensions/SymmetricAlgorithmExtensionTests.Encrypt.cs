@@ -28,7 +28,7 @@ public partial class SymmetricAlgorithmExtensionTests
         SymmetricAlgorithm? algorithm = null;
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
-            algorithm!.Encrypt(new byte[] { 1, 2, 3 }));
+            algorithm!.Encrypt([1, 2, 3]));
     }
 
     /// <summary>
@@ -219,7 +219,7 @@ public partial class SymmetricAlgorithmExtensionTests
         SymmetricAlgorithm? algorithm = null;
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
-            algorithm!.Encrypt((ReadOnlySpan<byte>)new byte[] { 1, 2, 3, 4 }));
+            algorithm!.Encrypt((ReadOnlySpan<byte>)[1, 2, 3, 4]));
     }
 
     /// <summary>
@@ -281,7 +281,7 @@ public partial class SymmetricAlgorithmExtensionTests
         SymmetricAlgorithm? algorithm = null;
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
-            algorithm!.Encrypt(new ReadOnlyMemory<byte>(new byte[] { 1, 2, 3, 4 })));
+            algorithm!.Encrypt(new ReadOnlyMemory<byte>([1, 2, 3, 4])));
     }
 
     /// <summary>

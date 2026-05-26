@@ -32,7 +32,7 @@ namespace Bodu.Globalization.Calendar;
 ///     workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
 ///     options: new NotableDateServiceOptions { AdjustmentHandlers = handlers });
 ///
-/// // A rule's adjustment can now reference the handler by key:
+/// A rule's adjustment can now reference the handler by key:
 /// ObservanceAdjustment custom = new ObservanceAdjustment
 /// {
 ///     Key = "avoid-anzac",

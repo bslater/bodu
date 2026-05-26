@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CamelliaBlockCipherContractTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -38,8 +38,8 @@ public sealed class CamelliaBlockCipherContractTests
     }
 
     /// <inheritdoc />
-    protected override IReadOnlyList<BlockCipherKat> KnownAnswers { get; } = new BlockCipherKat[]
-    {
+    protected override IReadOnlyList<BlockCipherKat> KnownAnswers { get; } =
+    [
         new(
             Name: "Camellia-128 RFC 3713 reference",
             Algorithm: "Camellia-128",
@@ -63,5 +63,5 @@ public sealed class CamelliaBlockCipherContractTests
             Plaintext: new byte[16],
             Ciphertext: Convert.FromHexString("6C227F749319A3AA7DA235A9BBA05A2C"),
             BlockSizeBits: 128),
-    };
+    ];
 }

@@ -33,8 +33,8 @@ public sealed partial class NotableDateRangePipelineScenarioTests
         NotableDateRule addedRule = MakeFixedRule("Added Holiday", 9, 1);
 
         NotableDateService service = BuildServiceWithOverrides(
-            baseRules: new[] { baseRule },
-            additions: new[] { addedRule },
+            baseRules: [baseRule],
+            additions: [addedRule],
             removals: Array.Empty<RuleRemoval>());
 
         IReadOnlyList<NotableDate> resolved = service.ResolveNotableDatesInRange(
@@ -56,15 +56,15 @@ public sealed partial class NotableDateRangePipelineScenarioTests
         NotableDateRule addB = MakeFixedRule("Added B", 8, 1);
 
         NotableDateService service = new(
-            ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(baseRule) },
+            ruleProviders: [(INotableDateRuleProvider)new InMemoryRuleProvider(baseRule)],
             workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
             options: new NotableDateServiceOptions
             {
-                OverrideProviders = new INotableDateRuleOverrideProvider[]
-                {
-                    new StaticOverrideProvider(additions: new[] { addA }),
-                    new StaticOverrideProvider(additions: new[] { addB }),
-                },
+                OverrideProviders =
+                [
+                    new StaticOverrideProvider(additions: [addA]),
+                    new StaticOverrideProvider(additions: [addB]),
+                ],
             });
 
         IReadOnlyList<NotableDate> resolved = service.ResolveNotableDatesInRange(
@@ -91,9 +91,9 @@ public sealed partial class NotableDateRangePipelineScenarioTests
         NotableDateRule drop = MakeFixedRule("Drop", 7, 4);
 
         NotableDateService service = BuildServiceWithOverrides(
-            baseRules: new[] { keep, drop },
+            baseRules: [keep, drop],
             additions: Array.Empty<NotableDateRule>(),
-            removals: new[] { new RuleRemoval(RuleName: "Drop") });
+            removals: [new RuleRemoval(RuleName: "Drop")]);
 
         IReadOnlyList<NotableDate> resolved = service.ResolveNotableDatesInRange(
             new DateTime(2026, 1, 1),
@@ -118,9 +118,9 @@ public sealed partial class NotableDateRangePipelineScenarioTests
         NotableDateRule rule = MakeFixedRule("Scoped", 7, 4);
 
         NotableDateService service = BuildServiceWithOverrides(
-            baseRules: new[] { rule },
+            baseRules: [rule],
             additions: Array.Empty<NotableDateRule>(),
-            removals: new[] { new RuleRemoval(RuleName: "Scoped", FromYear: 2024, ToYear: 2026) });
+            removals: [new RuleRemoval(RuleName: "Scoped", FromYear: 2024, ToYear: 2026)]);
 
         IReadOnlyList<NotableDate> resolved = service.ResolveNotableDatesInRange(
             new DateTime(year, 1, 1),
@@ -150,9 +150,9 @@ public sealed partial class NotableDateRangePipelineScenarioTests
         };
 
         NotableDateService service = BuildServiceWithOverrides(
-            baseRules: new[] { shared },
+            baseRules: [shared],
             additions: Array.Empty<NotableDateRule>(),
-            removals: new[] { new RuleRemoval(RuleName: "Cross-Border Holiday", TerritoryCode: "AU") });
+            removals: [new RuleRemoval(RuleName: "Cross-Border Holiday", TerritoryCode: "AU")]);
 
         IReadOnlyList<NotableDate> resolvedAu = service.ResolveNotableDatesInRange(
             new DateTime(2026, 7, 1),
@@ -203,9 +203,9 @@ public sealed partial class NotableDateRangePipelineScenarioTests
         };
 
         NotableDateService service = BuildServiceWithOverrides(
-            baseRules: new[] { baseRule },
-            additions: new[] { replacementRule },
-            removals: new[] { new RuleRemoval("Public Holiday") });
+            baseRules: [baseRule],
+            additions: [replacementRule],
+            removals: [new RuleRemoval("Public Holiday")]);
 
         IReadOnlyList<NotableDate> resolved = service.ResolveNotableDatesInRange(
             new DateTime(2026, 1, 1),
@@ -446,7 +446,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
             }
         });
 
-        Task.WaitAll(resolveTasks.Concat(new[] { invalidateTask }).ToArray());
+        Task.WaitAll(resolveTasks.Concat([invalidateTask]).ToArray());
 
         Assert.AreEqual(0, exceptions.Count,
             $"Concurrent Invalidate / Resolve must not surface any exceptions; got: {string.Join("; ", exceptions.Select(e => $"{e.GetType().Name}: {e.Message}"))}.");
@@ -468,14 +468,14 @@ public sealed partial class NotableDateRangePipelineScenarioTests
         NotableDateService service = BuildService(MakeFixedRule("Annual", 6, 15));
 
         // Five widely-disjoint windows, each at least 10 years apart so they cannot merge.
-        (DateTime Start, DateTime End)[] windows = new[]
-        {
+        (DateTime Start, DateTime End)[] windows =
+        [
             (new DateTime(1900, 1, 1), new DateTime(1900, 12, 31)),
             (new DateTime(1950, 1, 1), new DateTime(1950, 12, 31)),
             (new DateTime(2000, 1, 1), new DateTime(2000, 12, 31)),
             (new DateTime(2050, 1, 1), new DateTime(2050, 12, 31)),
             (new DateTime(2099, 1, 1), new DateTime(2099, 12, 31)),
-        };
+        ];
 
         Task[] tasks = windows.Select(w => Task.Run(() => service.ResolveNotableDatesInRange(w.Start, w.End))).ToArray();
         Task.WaitAll(tasks);
@@ -543,7 +543,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
             IsNonWorkingDay = true,
         };
 
-        NotableDateRule[] rules = new[] { christmas, newYears, independence, labourDayUS };
+        NotableDateRule[] rules = [christmas, newYears, independence, labourDayUS];
         NotableDateService service = BuildService(rules);
 
         IReadOnlyList<NotableDate> resolved = service.ResolveNotableDatesInRange(
@@ -587,14 +587,14 @@ public sealed partial class NotableDateRangePipelineScenarioTests
         IReadOnlyList<NotableDateRule> additions,
         IReadOnlyList<RuleRemoval> removals) =>
         new(
-            ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(baseRules.ToArray()) },
+            ruleProviders: [(INotableDateRuleProvider)new InMemoryRuleProvider(baseRules.ToArray())],
             workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
             options: new NotableDateServiceOptions
             {
-                OverrideProviders = new INotableDateRuleOverrideProvider[]
-                {
+                OverrideProviders =
+                [
                     new StaticOverrideProvider(additions, removals),
-                },
+                ],
             });
 
     /// <summary>

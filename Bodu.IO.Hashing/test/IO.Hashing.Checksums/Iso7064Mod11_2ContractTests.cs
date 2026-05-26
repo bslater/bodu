@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Iso7064Mod11_2ContractTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -26,10 +26,10 @@ public sealed class Iso7064Mod11_2ContractTests : CheckDigitContractTests<Iso706
         Iso7064Mod11_2.IsValid(fullValue.AsSpan());
 
     /// <inheritdoc />
-    protected override IReadOnlyList<CheckDigitKat> KnownAnswers { get; } = new CheckDigitKat[]
-    {
+    protected override IReadOnlyList<CheckDigitKat> KnownAnswers { get; } =
+    [
         new("ISO 7064 standard example", Payload: "0794",       CheckDigit: "0", FullValue: "07940"),
         new("single zero",               Payload: "0",          CheckDigit: "1", FullValue: "01"),
         new("longer numeric",            Payload: "1234567890", CheckDigit: "8", FullValue: "12345678908"),
-    };
+    ];
 }

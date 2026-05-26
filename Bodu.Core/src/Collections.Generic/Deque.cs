@@ -89,14 +89,14 @@ namespace Bodu.Collections.Generic;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// // Growable double-ended queue (the default).
+/// Growable double-ended queue (the default).
 /// var deque = new Deque<int>();
 /// deque.AddLast(2);
 /// deque.AddFirst(1);
 /// deque.AddLast(3);                  // contents: 1, 2, 3
 /// int head = deque.RemoveFirst();    // 1
 ///
-/// // Fixed-capacity queue: rejects adds when full.
+/// Fixed-capacity queue: rejects adds when full.
 /// var bounded = new Deque<int>(capacity: 8, allowGrow: false);
 /// for (int i = 0; i < 8; i++) bounded.AddLast(i);
 /// bool added = bounded.TryAddLast(8); // false — bounded is full

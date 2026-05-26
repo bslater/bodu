@@ -149,7 +149,7 @@ public sealed partial class EncodingExtensionsTests
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             Span<char> destination = backing;
-            destination.ThrowIfTooSmallForDecoding(new byte[] { 0x68 }, null!);
+            destination.ThrowIfTooSmallForDecoding([0x68], null!);
         });
 
         Assert.AreEqual("encoding", ex.ParamName);

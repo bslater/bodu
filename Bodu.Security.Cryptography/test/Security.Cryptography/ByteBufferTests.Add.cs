@@ -17,10 +17,10 @@ public partial class ByteBufferTests
     public void Add_WhenAddedInChunks_ShouldReachFullCorrectly()
     {
         var buffer = new ByteBuffer(4);
-        Assert.IsFalse(buffer.Add(new byte[] { 1 }, 0, 1));
-        Assert.IsFalse(buffer.Add(new byte[] { 2 }, 0, 1));
-        Assert.IsFalse(buffer.Add(new byte[] { 3 }, 0, 1));
-        Assert.IsTrue(buffer.Add(new byte[] { 4 }, 0, 1)); // now full
+        Assert.IsFalse(buffer.Add([1], 0, 1));
+        Assert.IsFalse(buffer.Add([2], 0, 1));
+        Assert.IsFalse(buffer.Add([3], 0, 1));
+        Assert.IsTrue(buffer.Add([4], 0, 1)); // now full
     }
 
     /// <summary>
@@ -40,7 +40,7 @@ public partial class ByteBufferTests
     public void Add_WhenBufferIsFilled_ShouldReturnTrue()
     {
         var buffer = new ByteBuffer(2);
-        var result = buffer.Add(new byte[] { 1, 2 }, 0, 2);
+        var result = buffer.Add([1, 2], 0, 2);
         Assert.IsTrue(result);
     }
 
@@ -51,8 +51,8 @@ public partial class ByteBufferTests
     public void Add_WhenCountExceedsRemainingCapacity_ShouldThrowExactly()
     {
         var buffer = new ByteBuffer(2);
-        buffer.Add(new byte[] { 1 }, 0, 1);
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => buffer.Add(new byte[] { 2, 3 }, 0, 2));
+        buffer.Add([1], 0, 1);
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => buffer.Add([2, 3], 0, 2));
     }
 
     /// <summary>
@@ -72,7 +72,7 @@ public partial class ByteBufferTests
     public void Add_WhenCountIsZero_ShouldNotChangeState()
     {
         var buffer = new ByteBuffer(4);
-        buffer.Add(new byte[] { 1 }, 0, 0);
+        buffer.Add([1], 0, 0);
         Assert.AreEqual(0, buffer.Count);
         Assert.IsTrue(buffer.IsEmpty);
     }
@@ -104,7 +104,7 @@ public partial class ByteBufferTests
     public void Add_WhenValidBytesAdded_ShouldReturnFalseUntilFull()
     {
         var buffer = new ByteBuffer(4);
-        var result = buffer.Add(new byte[] { 1, 2 }, 0, 2);
+        var result = buffer.Add([1, 2], 0, 2);
         Assert.IsFalse(result);
     }
 }

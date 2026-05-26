@@ -34,7 +34,7 @@ namespace Bodu.Globalization.Calendar.Builder;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// // Fixed-date rule — Christmas Day with a weekend roll-forward adjustment.
+/// Fixed-date rule — Christmas Day with a weekend roll-forward adjustment.
 /// rule
 ///     .Category(NotableDateCategory.Public)
 ///     .Fixed(month: 12, day: 25)
@@ -46,18 +46,18 @@ namespace Bodu.Globalization.Calendar.Builder;
 ///         .Action(AdjustmentAction.MoveToNextMonday)
 ///         .NonWorking(true));
 ///
-/// // Day-of-week-in-month rule — the second Monday of October.
+/// Day-of-week-in-month rule — the second Monday of October.
 /// rule
 ///     .Category(NotableDateCategory.Public)
 ///     .DayOfWeekInMonth(month: 10, DayOfWeek.Monday, WeekOfMonthOrdinal.Second)
 ///     .TerritoryCode("AU");
 ///
-/// // Algorithm-anchored rule — Easter Sunday via the registered "easter" algorithm.
+/// Algorithm-anchored rule — Easter Sunday via the registered "easter" algorithm.
 /// rule
 ///     .Category(NotableDateCategory.Religious)
 ///     .Algorithm(algorithmKey: "easter");
 ///
-/// // Offset-from-anchor rule — Good Friday is Easter Sunday minus two days.
+/// Offset-from-anchor rule — Good Friday is Easter Sunday minus two days.
 /// rule
 ///     .Category(NotableDateCategory.Public)
 ///     .OffsetFromAnchor(anchorName: "Easter Sunday", offsetDays: -2);

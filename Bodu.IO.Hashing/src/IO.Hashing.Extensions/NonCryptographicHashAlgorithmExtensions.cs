@@ -72,15 +72,15 @@ namespace Bodu.IO.Hashing.Extensions;
 /// using System.IO.Hashing;
 /// using Bodu.IO.Hashing.Extensions;
 ///
-/// // 1. One-shot hash of a byte buffer using xxHash64.
+/// 1. One-shot hash of a byte buffer using xxHash64.
 /// var xx = new XxHash64();
 /// byte[] digest = xx.ComputeHash(File.ReadAllBytes("payload.bin"));
 ///
-/// // 2. Stream-hash a large file without loading it into memory.
+/// 2. Stream-hash a large file without loading it into memory.
 /// using FileStream fs = File.OpenRead("payload.bin"); 
 /// byte[] streamDigest = xx.ComputeHash(fs);
 ///
-/// // 3. Verify a downloaded artefact against an expected hex digest, without throwing on a malformed string.
+/// 3. Verify a downloaded artefact against an expected hex digest, without throwing on a malformed string.
 /// var crc = new Crc32();
 /// if (crc.TryVerifyHash(File.ReadAllBytes("artefact.zip"), expectedHex: "deadbeef"))
 ///     Console.WriteLine("artefact verified");

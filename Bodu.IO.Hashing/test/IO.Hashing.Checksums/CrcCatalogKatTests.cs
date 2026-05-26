@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CrcCatalogKatTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -28,8 +28,8 @@ public sealed class CrcCatalogKatTests
 {
     private static readonly byte[] CheckInput = Encoding.ASCII.GetBytes("123456789");
 
-    private static IReadOnlyList<CrcCatalogKat> Kats { get; } = new CrcCatalogKat[]
-    {
+    private static IReadOnlyList<CrcCatalogKat> Kats { get; } =
+    [
         new(
             Name: "CRC-32/ISO-HDLC",
             Width: 32,
@@ -79,7 +79,7 @@ public sealed class CrcCatalogKatTests
             RefOut: false,
             XorOut: 0x00UL,
             Check: 0xF4UL),
-    };
+    ];
 
     /// <summary>
     /// Verifies that every <see cref="CrcCatalogKat" /> row, when used to construct a custom

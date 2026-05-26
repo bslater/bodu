@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Skein512ContractTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -25,8 +25,8 @@ public sealed class Skein512ContractTests : CryptoHashContractTests<Skein512>
     }
 
     /// <inheritdoc />
-    protected override IReadOnlyList<CryptoHashKat> KnownAnswers { get; } = new CryptoHashKat[]
-    {
+    protected override IReadOnlyList<CryptoHashKat> KnownAnswers { get; } =
+    [
         new(
             "Skein-512-512 empty",
             Input: Array.Empty<byte>(),
@@ -35,5 +35,5 @@ public sealed class Skein512ContractTests : CryptoHashContractTests<Skein512>
                 "1FCA7903D06564FEA7A2D3730DBDB80C1F85562DFCC070334EA4D1D9E72CBA7A"),
             OutputLengthBytes: 64,
             Key: null),
-    };
+    ];
 }

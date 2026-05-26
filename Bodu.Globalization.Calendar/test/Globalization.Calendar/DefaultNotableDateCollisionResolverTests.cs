@@ -51,7 +51,7 @@ public sealed class DefaultNotableDateCollisionResolverTests
         NotableDate other = Create("O", NotableDateCategory.Other);
         NotableDate none = Create("N", NotableDateCategory.None);
 
-        IReadOnlyList<NotableDate> result = _resolver.Resolve(Anchor, new[] { cultural, other, holiday, none });
+        IReadOnlyList<NotableDate> result = _resolver.Resolve(Anchor, [cultural, other, holiday, none]);
 
         CollectionAssert.AreEqual(
             new[] { none, holiday, cultural, other },
@@ -69,7 +69,7 @@ public sealed class DefaultNotableDateCollisionResolverTests
         NotableDate alpha = Create("ALPHA", NotableDateCategory.Holiday);
         NotableDate charlie = Create("Charlie", NotableDateCategory.Holiday);
 
-        IReadOnlyList<NotableDate> result = _resolver.Resolve(Anchor, new[] { bravo, alpha, charlie });
+        IReadOnlyList<NotableDate> result = _resolver.Resolve(Anchor, [bravo, alpha, charlie]);
 
         CollectionAssert.AreEqual(
             new[] { alpha, bravo, charlie },
@@ -86,7 +86,7 @@ public sealed class DefaultNotableDateCollisionResolverTests
         NotableDate first = Create("Same", NotableDateCategory.Cultural);
         NotableDate duplicate = Create("Same", NotableDateCategory.Cultural);
 
-        IReadOnlyList<NotableDate> result = _resolver.Resolve(Anchor, new[] { first, duplicate });
+        IReadOnlyList<NotableDate> result = _resolver.Resolve(Anchor, [first, duplicate]);
 
         Assert.AreEqual(1, result.Count);
     }
@@ -100,7 +100,7 @@ public sealed class DefaultNotableDateCollisionResolverTests
         NotableDate holiday = Create("Same", NotableDateCategory.Holiday);
         NotableDate cultural = Create("Same", NotableDateCategory.Cultural);
 
-        IReadOnlyList<NotableDate> result = _resolver.Resolve(Anchor, new[] { cultural, holiday });
+        IReadOnlyList<NotableDate> result = _resolver.Resolve(Anchor, [cultural, holiday]);
 
         Assert.AreEqual(2, result.Count);
         Assert.AreSame(holiday, result[0]);

@@ -149,7 +149,7 @@ public sealed class NotableDateResolutionServiceConvenienceApiTests
     }
 
     private static NotableDateResolutionService CreateService(params NotableDateRule[] rules) =>
-        new(ruleProviders: new[] { new InMemoryRuleProvider(rules) });
+        new(ruleProviders: [new InMemoryRuleProvider(rules)]);
 
     private static NotableDateRule FixedRule(string name, int month, int day) =>
         new()

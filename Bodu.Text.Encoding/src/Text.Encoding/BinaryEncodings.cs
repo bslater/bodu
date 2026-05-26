@@ -24,7 +24,7 @@ namespace Bodu.Text.Encoding;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// // Pre-bound singleton — no allocation per call.
+/// Pre-bound singleton — no allocation per call.
 /// IBinaryEncoding hex    = BinaryEncodings.Base16Upper;
 /// IBinaryEncoding jwt    = BinaryEncodings.Base64UrlSafe;
 /// IBinaryEncoding bitcoin = BinaryEncodings.Base58;
@@ -32,7 +32,7 @@ namespace Bodu.Text.Encoding;
 /// string encoded = jwt.Encode(payload);
 /// byte[] decoded = jwt.Decode(encoded);
 ///
-/// // Look up by name — accepts canonical names and well-known aliases.
+/// Look up by name — accepts canonical names and well-known aliases.
 /// IBinaryEncoding fromConfig = BinaryEncodings.Get(appConfig["encoding"] ?? "base64");
 /// IBinaryEncoding fromAlias  = BinaryEncodings.Get("hex");           // same as Base16Lower
 ///]]>

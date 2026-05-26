@@ -27,16 +27,16 @@ namespace Bodu.Text.Encoding;
 ///<![CDATA[
 /// byte[] data = "hello"u8.ToArray();
 ///
-/// // RFC 4648 Standard Base32 (default).
+/// RFC 4648 Standard Base32 (default).
 /// string standard = Base32.Encode(data);                                      // "NBSWY3DP"
 ///
-/// // Crockford Base32 — human-friendly alphabet, no padding.
+/// Crockford Base32 — human-friendly alphabet, no padding.
 /// string crockford = Base32.Encode(data, Base32Variant.Crockford);
 ///
-/// // RFC 4648 base32hex — preserves sort order with binary keys.
+/// RFC 4648 base32hex — preserves sort order with binary keys.
 /// string base32hex = Base32.Encode(data, Base32Variant.HexExtended);
 ///
-/// // Round-trip.
+/// Round-trip.
 /// byte[] roundtrip = Base32.Decode(standard);
 ///]]>
 /// </example>

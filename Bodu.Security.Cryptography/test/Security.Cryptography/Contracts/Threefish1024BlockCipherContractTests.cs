@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Threefish1024BlockCipherContractTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -38,8 +38,8 @@ public sealed class Threefish1024BlockCipherContractTests
     }
 
     /// <inheritdoc />
-    protected override IReadOnlyList<BlockCipherKat> KnownAnswers { get; } = new BlockCipherKat[]
-    {
+    protected override IReadOnlyList<BlockCipherKat> KnownAnswers { get; } =
+    [
         new(
             Name: "Threefish-1024 zero key, zero tweak, zero plaintext",
             Algorithm: "Threefish-1024",
@@ -69,7 +69,7 @@ public sealed class Threefish1024BlockCipherContractTests
                 "3313F4150A5716B30ED5F569288AE974CE2B4347926FCE57DE44512177DD7CDE"),
             BlockSizeBits: 1024,
             Tweak: IncrementalBytes(0x00, 16)),
-    };
+    ];
 
     private static byte[] IncrementalBytes(byte start, int length)
     {

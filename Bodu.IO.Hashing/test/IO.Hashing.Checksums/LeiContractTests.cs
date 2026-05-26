@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="LeiContractTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -27,9 +27,9 @@ public sealed class LeiContractTests : MultiCharCheckDigitContractTests<Lei>
         Lei.IsValid(fullValue.AsSpan());
 
     /// <inheritdoc />
-    protected override IReadOnlyList<CheckDigitKat> KnownAnswers { get; } = new CheckDigitKat[]
-    {
+    protected override IReadOnlyList<CheckDigitKat> KnownAnswers { get; } =
+    [
         new("GLEIF example",   Payload: "54930084UKLVMY22DS", CheckDigit: "16", FullValue: "54930084UKLVMY22DS16"),
         new("numeric body",    Payload: "123456789012345678", CheckDigit: "88", FullValue: "12345678901234567888"),
-    };
+    ];
 }

@@ -24,12 +24,12 @@ public sealed class Base58CheckTests
     /// The 21-byte payload represented by <see cref="GenesisAddress" /> — a version byte (0x00) followed by the
     /// 20-byte HASH-160 of the Genesis block public key.
     /// </summary>
-    private static readonly byte[] GenesisPayload = new byte[]
-    {
+    private static readonly byte[] GenesisPayload =
+    [
         0x00,
         0x62, 0xE9, 0x07, 0xB1, 0x5C, 0xBF, 0x27, 0xD5, 0x42, 0x53,
         0x99, 0xEB, 0xF6, 0xF0, 0xFB, 0x50, 0xEB, 0xB8, 0x8F, 0x18,
-    };
+    ];
 
     /// <summary>
     /// Verifies that <see cref="Base58Check.Decode(ReadOnlySpan{char}, Base58Variant, BaseFormatStyles)" /> recovers

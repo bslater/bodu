@@ -26,8 +26,8 @@ public partial class NotableDateServiceTests
         NotableDateRule added = Fixed("Added", 9, 9);
 
         NotableDateService service = BuildServiceWithOverride(
-            new[] { baseRule },
-            additions: new[] { added },
+            [baseRule],
+            additions: [added],
             removals: Array.Empty<RuleRemoval>());
 
         IReadOnlyList<NotableDate> emitted = service.GetNotableDates(2026);
@@ -46,8 +46,8 @@ public partial class NotableDateServiceTests
         NotableDateRule replacement = Fixed("Holiday", 8, 1);
 
         NotableDateService service = BuildServiceWithOverride(
-            new[] { baseRule },
-            additions: new[] { replacement },
+            [baseRule],
+            additions: [replacement],
             removals: Array.Empty<RuleRemoval>());
 
         IReadOnlyList<NotableDate> emitted = service.GetNotableDates(2026);
@@ -66,9 +66,9 @@ public partial class NotableDateServiceTests
         NotableDateRule baseRule = Fixed("Holiday", 6, 1);
 
         NotableDateService service = BuildServiceWithOverride(
-            new[] { baseRule },
+            [baseRule],
             additions: Array.Empty<NotableDateRule>(),
-            removals: new[] { new RuleRemoval("Holiday", FromYear: 2026, ToYear: 2026) });
+            removals: [new RuleRemoval("Holiday", FromYear: 2026, ToYear: 2026)]);
 
         Assert.IsTrue(service.GetNotableDates(2025).Any(n => n.Name == "Holiday"));
         Assert.IsFalse(service.GetNotableDates(2026).Any(n => n.Name == "Holiday"));
@@ -86,9 +86,9 @@ public partial class NotableDateServiceTests
         NotableDateRule ntRule = Fixed("Picnic Day", 8, 5, territory: "AU-NT");
 
         NotableDateService service = BuildServiceWithOverride(
-            new[] { nswRule, ntRule },
+            [nswRule, ntRule],
             additions: Array.Empty<NotableDateRule>(),
-            removals: new[] { new RuleRemoval("Picnic Day", TerritoryCode: "AU-NT") });
+            removals: [new RuleRemoval("Picnic Day", TerritoryCode: "AU-NT")]);
 
         IReadOnlyList<NotableDate> nswResults = service.GetNotableDates(2026, territoryCode: "AU-NSW");
         IReadOnlyList<NotableDate> ntResults = service.GetNotableDates(2026, territoryCode: "AU-NT");
@@ -161,9 +161,9 @@ public partial class NotableDateServiceTests
         NotableDateRule baseRule = Fixed("Live", 7, 4);
 
         NotableDateService service = BuildServiceWithOverride(
-            new[] { baseRule },
+            [baseRule],
             additions: Array.Empty<NotableDateRule>(),
-            removals: new[] { new RuleRemoval("Unknown") });
+            removals: [new RuleRemoval("Unknown")]);
 
         IReadOnlyList<NotableDate> emitted = service.GetNotableDates(2026);
 
@@ -175,10 +175,10 @@ public partial class NotableDateServiceTests
         IReadOnlyList<NotableDateRule> additions,
         IReadOnlyList<RuleRemoval> removals) =>
         new(
-            ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(baseRules.ToArray()) },
+            ruleProviders: [(INotableDateRuleProvider)new InMemoryRuleProvider(baseRules.ToArray())],
             workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
             options: new NotableDateServiceOptions
             {
-                OverrideProviders = new[] { (INotableDateRuleOverrideProvider)new TestOverrideProvider(removals, additions) },
+                OverrideProviders = [(INotableDateRuleOverrideProvider)new TestOverrideProvider(removals, additions)],
             });
 }

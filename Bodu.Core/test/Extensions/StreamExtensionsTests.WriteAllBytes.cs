@@ -46,7 +46,7 @@ public partial class StreamExtensionsTests
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            stream.WriteAllBytes(new byte[] { 1, 2, 3 });
+            stream.WriteAllBytes([1, 2, 3]);
         });
     }
 }

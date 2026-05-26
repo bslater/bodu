@@ -32,7 +32,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// // Use a concrete derivative through the abstract surface — IBAN emits a two-digit check.
+/// Use a concrete derivative through the abstract surface — IBAN emits a two-digit check.
 /// MultiCharCheckDigitAlgorithm algo = new Iban();
 /// algo.Append("GBWEST12345698765432");                 // country code + BBAN
 ///

@@ -7,7 +7,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.FileProviders;
 
-namespace Bodu.Extensions.Configuration.Text.Tests;
+namespace Bodu.Extensions.Configuration.Text;
 
 /// <summary>
 /// Verifies that <c>reloadOnChange</c> behaviour propagates through the bridge, including reload-token signal

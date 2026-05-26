@@ -26,7 +26,7 @@ public sealed partial class NotableDateServiceTests
     public void Ctor_WhenRuleProviderLoadRulesReturnsNull_ShouldTreatNullAsEmptyAndYieldNoNotableDates()
     {
         var service = new NotableDateService(
-            new[] { (INotableDateRuleProvider)new NullReturningRuleProvider() },
+            [(INotableDateRuleProvider)new NullReturningRuleProvider()],
             WorkingDaysOfWeek.MondayToFriday);
 
         IReadOnlyList<NotableDate> results = service.GetNotableDates(2025);
@@ -49,7 +49,7 @@ public sealed partial class NotableDateServiceTests
         NotableDateRule sanity = Fixed("Sanity Day", 6, 15);
 
         var service = new NotableDateService(
-            new[] { (INotableDateRuleProvider)new NullElementRuleProvider(sanity) },
+            [(INotableDateRuleProvider)new NullElementRuleProvider(sanity)],
             WorkingDaysOfWeek.MondayToFriday);
 
         IReadOnlyList<NotableDate> results = service.GetNotableDates(2025);
@@ -178,7 +178,7 @@ public sealed partial class NotableDateServiceTests
             .Register("null-handler", new NullResultHandler());
 
         var service = new NotableDateService(
-            new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(rule) },
+            [(INotableDateRuleProvider)new InMemoryRuleProvider(rule)],
             WorkingDaysOfWeek.MondayToFriday,
             new NotableDateServiceOptions { AdjustmentHandlers = handlerRegistry });
 
@@ -216,7 +216,7 @@ public sealed partial class NotableDateServiceTests
             .Register("throwing-handler", new ThrowingHandler());
 
         var service = new NotableDateService(
-            new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(rule, sanity) },
+            [(INotableDateRuleProvider)new InMemoryRuleProvider(rule, sanity)],
             WorkingDaysOfWeek.MondayToFriday,
             new NotableDateServiceOptions { AdjustmentHandlers = handlerRegistry });
 
@@ -253,7 +253,7 @@ public sealed partial class NotableDateServiceTests
             .Register("ioe-handler", new InvalidOperationThrowingHandler());
 
         var service = new NotableDateService(
-            new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(rule, sanity) },
+            [(INotableDateRuleProvider)new InMemoryRuleProvider(rule, sanity)],
             WorkingDaysOfWeek.MondayToFriday,
             new NotableDateServiceOptions { AdjustmentHandlers = handlerRegistry });
 
@@ -287,7 +287,7 @@ public sealed partial class NotableDateServiceTests
         NotableDateRule sanity = Fixed("Sanity Day", 6, 15);
 
         var service = new NotableDateService(
-            new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(algorithmRule, sanity) },
+            [(INotableDateRuleProvider)new InMemoryRuleProvider(algorithmRule, sanity)],
             WorkingDaysOfWeek.MondayToFriday,
             new NotableDateServiceOptions { AlgorithmRegistry = new NullAlgorithmRegistry() });
 
@@ -312,7 +312,7 @@ public sealed partial class NotableDateServiceTests
     public void GetNotableDates_WhenCollisionResolverReturnsNull_ShouldReturnEmptyListAndNotThrow()
     {
         var service = new NotableDateService(
-            new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(Fixed("Any Holiday", 6, 15)) },
+            [(INotableDateRuleProvider)new InMemoryRuleProvider(Fixed("Any Holiday", 6, 15))],
             WorkingDaysOfWeek.MondayToFriday,
             new NotableDateServiceOptions { CollisionResolver = new NullReturningCollisionResolver() });
 
@@ -338,7 +338,7 @@ public sealed partial class NotableDateServiceTests
         NotableDateRule rule = Fixed("Christmas Day", 12, 25);
 
         var service = new NotableDateService(
-            new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(rule) },
+            [(INotableDateRuleProvider)new InMemoryRuleProvider(rule)],
             WorkingDaysOfWeek.MondayToFriday,
             new NotableDateServiceOptions { NameLocalizer = new DelegateLocaliser((_, _) => null!) });
 
@@ -370,10 +370,10 @@ public sealed partial class NotableDateServiceTests
         };
 
         var registry = new NotableDateAlgorithmRegistry(
-            new[] { new KeyValuePair<string, INotableDateAlgorithm>("wrong-year", new WrongYearAlgorithm()) });
+            [new KeyValuePair<string, INotableDateAlgorithm>("wrong-year", new WrongYearAlgorithm())]);
 
         var service = new NotableDateService(
-            new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(rule) },
+            [(INotableDateRuleProvider)new InMemoryRuleProvider(rule)],
             WorkingDaysOfWeek.MondayToFriday,
             new NotableDateServiceOptions { AlgorithmRegistry = registry });
 
@@ -424,7 +424,7 @@ public sealed partial class NotableDateServiceTests
         var service = new NotableDateService(
             ruleProviders: Array.Empty<INotableDateRuleProvider>(),
             workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
-            options: new NotableDateServiceOptions { Plugins = new[] { (INotableDatePlugin)new NullProvidersRulePlugin() } });
+            options: new NotableDateServiceOptions { Plugins = [(INotableDatePlugin)new NullProvidersRulePlugin()] });
 
         Assert.AreEqual(0, service.GetNotableDates(2025).Count);
     }
@@ -441,7 +441,7 @@ public sealed partial class NotableDateServiceTests
         var service = new NotableDateService(
             ruleProviders: Array.Empty<INotableDateRuleProvider>(),
             workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
-            options: new NotableDateServiceOptions { Plugins = new[] { (INotableDatePlugin)new NullAlgorithmsPlugin() } });
+            options: new NotableDateServiceOptions { Plugins = [(INotableDatePlugin)new NullAlgorithmsPlugin()] });
 
         Assert.AreEqual(0, service.GetNotableDates(2025).Count);
     }
@@ -465,11 +465,11 @@ public sealed partial class NotableDateServiceTests
         var ex = Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
             _ = new NotableDateService(
-                new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(Fixed("Holiday", 1, 1)) },
+                [(INotableDateRuleProvider)new InMemoryRuleProvider(Fixed("Holiday", 1, 1))],
                 WorkingDaysOfWeek.MondayToFriday,
                 new NotableDateServiceOptions
                 {
-                    OverrideProviders = new[] { (INotableDateRuleOverrideProvider)overrideProvider },
+                    OverrideProviders = [(INotableDateRuleOverrideProvider)overrideProvider],
                 });
         });
 

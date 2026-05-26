@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DelimitedContractTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -33,8 +33,7 @@ public sealed class DelimitedContractTests
 
     /// <inheritdoc />
     protected override IReadOnlyList<TextDocumentKat<DelimitedDocument, DelimitedParseOptions>> ValidCases { get; } =
-        new TextDocumentKat<DelimitedDocument, DelimitedParseOptions>[]
-    {
+        [
         new(
             Name: "single header row",
             Text: "name",
@@ -50,18 +49,17 @@ public sealed class DelimitedContractTests
             Text: "field\n\"a,b\"",
             ExpectedDocument: Delimited.Parse("field\n\"a,b\"".AsSpan()),
             Options: DelimitedParseOptions.Default),
-    };
+    ];
 
     /// <inheritdoc />
     protected override IReadOnlyList<InvalidTextDocumentKat<DelimitedParseOptions>> InvalidCases { get; } =
-        new InvalidTextDocumentKat<DelimitedParseOptions>[]
-    {
+        [
         new(
             Name: "unterminated quoted field",
             Text: "name\n\"unclosed",
             Options: DelimitedParseOptions.Default,
             ExceptionType: typeof(DelimitedFormatException)),
-    };
+    ];
 
     /// <summary>
     /// Compares two <see cref="DelimitedDocument" /> instances by header sequence and row field
