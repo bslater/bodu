@@ -502,6 +502,10 @@ public sealed class NotableDateService : INotableDateService, IDisposable
     public void Dispose() => GC.SuppressFinalize(this);
 
     /// <inheritdoc />
+    /// <remarks>
+    /// Convenience wrapper over <see cref="ResolveNotableDatesInRange" /> that supplies January 1 through
+    /// December 31 of <paramref name="year" /> as the range.
+    /// </remarks>
     public IReadOnlyList<NotableDate> GetNotableDates(int year, string? territoryCode = null, Type? calendarType = null)
         => ResolveRangeInternal(
             new DateTime(year, 1, 1),
@@ -512,6 +516,10 @@ public sealed class NotableDateService : INotableDateService, IDisposable
             recordWindow: true);
 
     /// <inheritdoc />
+    /// <remarks>
+    /// Convenience wrapper over <see cref="ResolveNotableDatesInRange" /> that supplies the supplied day as both
+    /// the start and end of the range.
+    /// </remarks>
     public IReadOnlyList<NotableDate> GetNotableDates(DateTime date, string? territoryCode = null, Type? calendarType = null)
         => ResolveRangeInternal(
             date.Date,
@@ -522,6 +530,10 @@ public sealed class NotableDateService : INotableDateService, IDisposable
             recordWindow: true);
 
     /// <inheritdoc />
+    /// <remarks>
+    /// Convenience wrapper over <see cref="ResolveNotableDatesInRange" /> that supplies January 1 through
+    /// December 31 of <paramref name="year" /> as the range.
+    /// </remarks>
     public IReadOnlyList<NotableDate> GetNotableDates(int year, NotableDateFilter filter, string? territoryCode = null, Type? calendarType = null)
     {
         ThrowHelper.ThrowIfNull(filter);
@@ -536,6 +548,10 @@ public sealed class NotableDateService : INotableDateService, IDisposable
     }
 
     /// <inheritdoc />
+    /// <remarks>
+    /// Convenience wrapper over <see cref="ResolveNotableDatesInRange" /> that passes the supplied range through
+    /// unchanged.
+    /// </remarks>
     public IReadOnlyList<NotableDate> GetNotableDates(DateTime startDate, DateTime endDate, string? territoryCode = null, Type? calendarType = null)
         => ResolveRangeInternal(
             startDate,
@@ -546,6 +562,10 @@ public sealed class NotableDateService : INotableDateService, IDisposable
             recordWindow: true);
 
     /// <inheritdoc />
+    /// <remarks>
+    /// Convenience wrapper over <see cref="ResolveNotableDatesInRange" /> that supplies the supplied day as both
+    /// the start and end of the range.
+    /// </remarks>
     public IReadOnlyList<NotableDate> GetNotableDates(DateTime date, NotableDateFilter filter, string? territoryCode = null, Type? calendarType = null)
     {
         ThrowHelper.ThrowIfNull(filter);
@@ -560,6 +580,10 @@ public sealed class NotableDateService : INotableDateService, IDisposable
     }
 
     /// <inheritdoc />
+    /// <remarks>
+    /// Convenience wrapper over <see cref="ResolveNotableDatesInRange" /> that passes the supplied range through
+    /// unchanged.
+    /// </remarks>
     public IReadOnlyList<NotableDate> GetNotableDates(DateTime startDate, DateTime endDate, NotableDateFilter filter, string? territoryCode = null, Type? calendarType = null)
     {
         ThrowHelper.ThrowIfNull(filter);
@@ -755,6 +779,14 @@ public sealed class NotableDateService : INotableDateService, IDisposable
     /// <exception cref="ArgumentException">
     /// <paramref name="endDate" /> is earlier than <paramref name="startDate" />.
     /// </exception>
+    /// <remarks>
+    /// <para>
+    /// This method is the canonical resolution entry point on the service. Every <c>GetNotableDates</c> overload
+    /// is a thin wrapper that translates its arguments into an <c>(start, end)</c> range and delegates here: the
+    /// year overload supplies <c>(new DateTime(year, 1, 1), new DateTime(year, 12, 31))</c>, the single-day overload
+    /// supplies <c>(date.Date, date.Date)</c>, and the range overloads pass their arguments through unchanged.
+    /// </para>
+    /// </remarks>
     public IReadOnlyList<NotableDate> ResolveNotableDatesInRange(
         DateTime startDate,
         DateTime endDate,
