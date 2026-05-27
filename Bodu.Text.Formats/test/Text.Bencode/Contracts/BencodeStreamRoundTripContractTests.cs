@@ -4,8 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Text.Formats.Contracts;
 using Bodu.Test.Kat;
+using Bodu.Text.Formats.Contracts;
 
 namespace Bodu.Text.Bencode.Contracts;
 

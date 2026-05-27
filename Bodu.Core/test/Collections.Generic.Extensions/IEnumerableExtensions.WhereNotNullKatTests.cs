@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Test.Kat;
 
 namespace Bodu.Collections.Generic.Extensions;
 

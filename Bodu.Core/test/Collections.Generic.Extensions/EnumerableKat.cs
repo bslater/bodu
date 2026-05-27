@@ -1,10 +1,12 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EnumerableKat.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Test.Kat;
+using Bodu.Test.Kat;
+
+namespace Bodu.Collections.Generic.Extensions;
 
 /// <summary>
 /// Represents a known-answer test row for extension methods over <see cref="IEnumerable{T}" /> where the source may be
