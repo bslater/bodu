@@ -13,7 +13,12 @@ namespace Bodu.Test.Contracts;
 /// MOD 97-10, IBAN, LEI, …). Concrete subclasses override <see cref="Compute" />, <see cref="IsValid" />,
 /// and <see cref="KnownAnswers" /> to plug their algorithm into the inherited tests.
 /// </summary>
-/// <typeparam name="TAlgorithm">The algorithm type under test. Carried for documentation only.</typeparam>
+/// <typeparam name="TAlgorithm">The algorithm type under test.</typeparam>
+/// <remarks>
+/// <para>
+/// Carried for documentation only.
+/// </para>
+/// </remarks>
 public abstract class MultiCharCheckDigitContractTests<TAlgorithm>
 {
     /// <summary>

@@ -69,7 +69,7 @@ public sealed class DiagnosticDescriptorsTests
     [TestMethod]
     public void All_ShouldContainEveryKnownDescriptor()
     {
-        Assert.AreEqual(20, DiagnosticDescriptors.All.Length);
+        Assert.AreEqual(21, DiagnosticDescriptors.All.Length);
     }
 
     /// <summary>
@@ -81,6 +81,21 @@ public sealed class DiagnosticDescriptorsTests
         DiagnosticDescriptor descriptor = DiagnosticDescriptors.XmlDocCodeRequiresCData;
 
         Assert.AreEqual("BODU1405", descriptor.Id);
+        Assert.AreEqual("Documentation", descriptor.Category);
+        Assert.AreEqual(DiagnosticSeverity.Warning, descriptor.DefaultSeverity);
+        Assert.IsTrue(descriptor.IsEnabledByDefault);
+    }
+
+    /// <summary>
+    /// Verifies that the BODU1406 (typeparam-requires-short-content) descriptor exposes the documented
+    /// identifier and metadata.
+    /// </summary>
+    [TestMethod]
+    public void XmlDocTypeParamRequiresShortContent_ShouldExposeDocumentedMetadata()
+    {
+        DiagnosticDescriptor descriptor = DiagnosticDescriptors.XmlDocTypeParamRequiresShortContent;
+
+        Assert.AreEqual("BODU1406", descriptor.Id);
         Assert.AreEqual("Documentation", descriptor.Category);
         Assert.AreEqual(DiagnosticSeverity.Warning, descriptor.DefaultSeverity);
         Assert.IsTrue(descriptor.IsEnabledByDefault);

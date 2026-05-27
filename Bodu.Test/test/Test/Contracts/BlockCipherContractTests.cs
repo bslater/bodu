@@ -13,13 +13,16 @@ namespace Bodu.Test.Contracts;
 /// override <see cref="EncryptBlock" />, <see cref="DecryptBlock" />, and <see cref="KnownAnswers" /> to
 /// plug their cipher into the inherited tests.
 /// </summary>
-/// <typeparam name="TCipher">The cipher type under test. Carried for documentation only — the contract is exercised through delegate adapter methods rather than the concrete API.</typeparam>
+/// <typeparam name="TCipher">The cipher type under test.</typeparam>
 /// <remarks>
 /// <para>
 /// The base targets the raw block layer (no mode, no padding): for each <see cref="BlockCipherKat" /> the
 /// runner encrypts the plaintext using the supplied key and asserts the ciphertext matches, then decrypts
 /// the ciphertext and asserts the plaintext matches. Encrypt and decrypt assertions are split into
 /// separate <c>[TestMethod]</c>s so a failure points at exactly one direction.
+/// </para>
+/// <para>
+/// Carried for documentation only — the contract is exercised through delegate adapter methods rather than the concrete API.
 /// </para>
 /// </remarks>
 public abstract class BlockCipherContractTests<TCipher>

@@ -14,12 +14,15 @@ namespace Bodu.Test.Contracts;
 /// <see cref="IsValid" />, and <see cref="KnownAnswers" /> to plug their algorithm into the inherited
 /// tests.
 /// </summary>
-/// <typeparam name="TAlgorithm">The algorithm type under test. Carried for documentation only.</typeparam>
+/// <typeparam name="TAlgorithm">The algorithm type under test.</typeparam>
 /// <remarks>
 /// <para>
 /// The base targets the static <c>Compute</c> / <c>IsValid</c> surface most check-digit algorithms
 /// expose. Append/streaming and Reset coverage stays in each algorithm's bespoke partials because the
 /// state-machine semantics differ between algorithms.
+/// </para>
+/// <para>
+/// Carried for documentation only.
 /// </para>
 /// </remarks>
 public abstract class CheckDigitContractTests<TAlgorithm>
