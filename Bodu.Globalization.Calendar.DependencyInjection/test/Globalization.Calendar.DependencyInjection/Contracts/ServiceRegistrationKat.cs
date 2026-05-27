@@ -1,12 +1,13 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ServiceRegistrationKat.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.Kat;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Bodu.Test.Kat;
+namespace Bodu.Globalization.Calendar.DependencyInjection.Contracts;
 
 /// <summary>
 /// Represents a known-answer test row for a dependency-injection service registration: the registration delegate, the

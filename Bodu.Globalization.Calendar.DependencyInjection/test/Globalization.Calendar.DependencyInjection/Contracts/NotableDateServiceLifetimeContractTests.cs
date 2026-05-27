@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Test.Contracts;
-using Bodu.Test.Kat;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Bodu.Globalization.Calendar.DependencyInjection.Contracts;

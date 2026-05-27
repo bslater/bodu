@@ -4,10 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Test.Kat;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Bodu.Test.Contracts;
+namespace Bodu.Globalization.Calendar.DependencyInjection.Contracts;
 
 /// <summary>
 /// Reusable behavioural contract test base for dependency-injection service-registration scenarios.
