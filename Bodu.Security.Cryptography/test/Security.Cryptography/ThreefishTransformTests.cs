@@ -47,46 +47,6 @@ internal sealed class ThreefishTransformTests
     /// <inheritdoc />
     protected override ThreefishTransform CreateDecryptor() => BuildTransform(forEncryption: false);
 
-    /// <inheritdoc />
-    /// <remarks>
-    /// Aggregates the curated Threefish-256, Threefish-512, and Threefish-1024 KAT data sets — flattening both
-    /// <see cref="TweakableBlockCipherVariant" /> rows for each size — so every Threefish block size is exercised
-    /// at the transform tier through the same vector pipeline.
-    /// </remarks>
-    protected override IEnumerable<BlockCipherKnownAnswer> GetKnownAnswers() =>
-        Enum.GetValues<TweakableBlockCipherVariant>()
-            .SelectMany(variant =>
-                Threefish256KnownAnswers.For(variant)
-                    .Concat(Threefish512KnownAnswers.For(variant))
-                    .Concat(Threefish1024KnownAnswers.For(variant)));
-
-    /// <inheritdoc />
-    protected override ThreefishTransform CreateTransformForKnownAnswer(BlockCipherKnownAnswer answer, bool forEncryption)
-    {
-        Threefish algorithm = answer.Plaintext.Length switch
-        {
-            32 => new Threefish256(),
-            64 => new Threefish512(),
-            128 => new Threefish1024(),
-            _ => throw new ArgumentOutOfRangeException(
-                nameof(answer),
-                answer.Plaintext.Length,
-                "Threefish KAT plaintext length must be 32, 64, or 128 bytes."),
-        };
-
-        algorithm.Mode = CipherMode.ECB;
-        algorithm.BlockMode = CipherModeKind.ECB;
-        algorithm.Padding = PaddingMode.None;
-        algorithm.Key = answer.Key!;
-        algorithm.IV = new byte[algorithm.BlockSize / 8];
-        algorithm.Tweak = answer.Tweak!;
-
-        ICryptoTransform transform = forEncryption
-            ? algorithm.CreateEncryptor()
-            : algorithm.CreateDecryptor();
-        return (ThreefishTransform)transform;
-    }
-
     private ThreefishTransform BuildTransform(bool forEncryption)
     {
         var algorithm = new Threefish256

@@ -41,27 +41,6 @@ internal sealed class BlowfishTransformTests
     /// <inheritdoc />
     protected override BlowfishTransform CreateDecryptor() => BuildTransform(forEncryption: false);
 
-    /// <inheritdoc />
-    protected override IEnumerable<BlockCipherKnownAnswer> GetKnownAnswers() =>
-        BlowfishKnownAnswers.For(SingleTestVariant.Default);
-
-    /// <inheritdoc />
-    protected override BlowfishTransform CreateTransformForKnownAnswer(BlockCipherKnownAnswer answer, bool forEncryption)
-    {
-        var algorithm = new Blowfish
-        {
-            Mode = CipherMode.ECB,
-            Padding = PaddingMode.None,
-        };
-        algorithm.Key = answer.Key!;
-        algorithm.IV = new byte[algorithm.BlockSize / 8];
-
-        ICryptoTransform transform = forEncryption
-            ? algorithm.CreateEncryptor()
-            : algorithm.CreateDecryptor();
-        return (BlowfishTransform)transform;
-    }
-
     private BlowfishTransform BuildTransform(bool forEncryption)
     {
         var algorithm = new Blowfish

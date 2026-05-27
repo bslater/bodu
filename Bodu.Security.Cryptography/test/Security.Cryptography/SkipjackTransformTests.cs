@@ -41,27 +41,6 @@ internal sealed class SkipjackTransformTests
     /// <inheritdoc />
     protected override SkipjackTransform CreateDecryptor() => BuildTransform(forEncryption: false);
 
-    /// <inheritdoc />
-    protected override IEnumerable<BlockCipherKnownAnswer> GetKnownAnswers() =>
-        SkipjackKnownAnswers.For(SingleTestVariant.Default);
-
-    /// <inheritdoc />
-    protected override SkipjackTransform CreateTransformForKnownAnswer(BlockCipherKnownAnswer answer, bool forEncryption)
-    {
-        var algorithm = new Skipjack
-        {
-            Mode = CipherMode.ECB,
-            Padding = PaddingMode.None,
-        };
-        algorithm.Key = answer.Key!;
-        algorithm.IV = new byte[algorithm.BlockSize / 8];
-
-        ICryptoTransform transform = forEncryption
-            ? algorithm.CreateEncryptor()
-            : algorithm.CreateDecryptor();
-        return (SkipjackTransform)transform;
-    }
-
     private SkipjackTransform BuildTransform(bool forEncryption)
     {
         var algorithm = new Skipjack

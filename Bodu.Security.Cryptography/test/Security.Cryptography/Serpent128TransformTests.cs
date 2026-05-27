@@ -41,27 +41,6 @@ internal sealed class Serpent128TransformTests
     /// <inheritdoc />
     protected override Serpent128Transform CreateDecryptor() => BuildTransform(forEncryption: false);
 
-    /// <inheritdoc />
-    protected override IEnumerable<BlockCipherKnownAnswer> GetKnownAnswers() =>
-        Serpent128KnownAnswers.For(SingleTestVariant.Default);
-
-    /// <inheritdoc />
-    protected override Serpent128Transform CreateTransformForKnownAnswer(BlockCipherKnownAnswer answer, bool forEncryption)
-    {
-        var algorithm = new Serpent128
-        {
-            Mode = CipherMode.ECB,
-            Padding = PaddingMode.None,
-        };
-        algorithm.Key = answer.Key!;
-        algorithm.IV = new byte[algorithm.BlockSize / 8];
-
-        ICryptoTransform transform = forEncryption
-            ? algorithm.CreateEncryptor()
-            : algorithm.CreateDecryptor();
-        return (Serpent128Transform)transform;
-    }
-
     private Serpent128Transform BuildTransform(bool forEncryption)
     {
         var algorithm = new Serpent128

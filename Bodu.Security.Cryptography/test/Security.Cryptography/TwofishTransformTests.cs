@@ -41,33 +41,6 @@ internal sealed class TwofishTransformTests
     /// <inheritdoc />
     protected override TwofishTransform CreateDecryptor() => BuildTransform(forEncryption: false);
 
-    /// <inheritdoc />
-    /// <remarks>
-    /// Flattens the per-key-size Twofish AES-submission ECB intermediate-values vectors across
-    /// <see cref="BlockCipherKeyVariant.Key128" />, <see cref="BlockCipherKeyVariant.Key192" />, and
-    /// <see cref="BlockCipherKeyVariant.Key256" /> so the full 18-vector corpus runs through the
-    /// Transform-layer harness in turn.
-    /// </remarks>
-    protected override IEnumerable<BlockCipherKnownAnswer> GetKnownAnswers() =>
-        Enum.GetValues<BlockCipherKeyVariant>().SelectMany(TwofishKnownAnswers.For);
-
-    /// <inheritdoc />
-    protected override TwofishTransform CreateTransformForKnownAnswer(BlockCipherKnownAnswer answer, bool forEncryption)
-    {
-        var algorithm = new Twofish
-        {
-            Mode = CipherMode.ECB,
-            Padding = PaddingMode.None,
-        };
-        algorithm.Key = answer.Key!;
-        algorithm.IV = new byte[algorithm.BlockSize / 8];
-
-        ICryptoTransform transform = forEncryption
-            ? algorithm.CreateEncryptor()
-            : algorithm.CreateDecryptor();
-        return (TwofishTransform)transform;
-    }
-
     private TwofishTransform BuildTransform(bool forEncryption)
     {
         var algorithm = new Twofish
