@@ -5,9 +5,9 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Security.Cryptography;
-using Bodu.Test.Kat;
+using Bodu.Security.Cryptography.Infrastructure;
 
-namespace Bodu.Test.Contracts;
+namespace Bodu.Security.Cryptography.Contracts;
 
 /// <summary>
 /// Reusable behavioural contract test base for a symmetric block cipher operating in a chosen mode of

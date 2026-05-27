@@ -4,9 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Test.Kat;
+using Bodu.Security.Cryptography.Infrastructure;
 
-namespace Bodu.Test.Contracts;
+namespace Bodu.Security.Cryptography.Contracts;
 
 /// <summary>
 /// Reusable behavioural contract test base for a cryptographic hash, keyed hash, or extendable-output

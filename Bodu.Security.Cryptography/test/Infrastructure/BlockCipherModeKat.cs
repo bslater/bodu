@@ -1,12 +1,13 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BlockCipherModeKat.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Security.Cryptography;
+using Bodu.Test.Kat;
 
-namespace Bodu.Test.Kat;
+namespace Bodu.Security.Cryptography.Infrastructure;
 
 /// <summary>
 /// Represents a single known-answer test row for a symmetric block cipher operating in a given mode of operation with a

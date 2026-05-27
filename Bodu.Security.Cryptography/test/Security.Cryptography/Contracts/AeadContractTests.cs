@@ -4,9 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Test.Kat;
+using Bodu.Security.Cryptography.Infrastructure;
 
-namespace Bodu.Test.Contracts;
+namespace Bodu.Security.Cryptography.Contracts;
 
 /// <summary>
 /// Reusable behavioural contract test base for an authenticated-encryption (AEAD) algorithm. Concrete

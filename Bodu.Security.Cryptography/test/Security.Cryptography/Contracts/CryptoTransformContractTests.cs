@@ -6,7 +6,7 @@
 
 using System.Security.Cryptography;
 
-namespace Bodu.Test.Contracts;
+namespace Bodu.Security.Cryptography.Contracts;
 
 /// <summary>
 /// Reusable behavioural contract test base for an <see cref="ICryptoTransform" /> implementation.
