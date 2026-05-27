@@ -4,7 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Test.Contracts;
+using Bodu.Text.Formats.Contracts;
 using Bodu.Test.Kat;
 
 namespace Bodu.Text.Bencode.Contracts;

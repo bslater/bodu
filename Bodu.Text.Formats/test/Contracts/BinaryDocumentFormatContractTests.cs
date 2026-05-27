@@ -4,9 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Test.Kat;
-
-namespace Bodu.Test.Contracts;
+namespace Bodu.Text.Formats.Contracts;
 
 /// <summary>
 /// Reusable behavioural contract test base for a binary-document format with a decode/encode pair

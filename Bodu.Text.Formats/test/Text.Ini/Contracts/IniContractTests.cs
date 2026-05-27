@@ -4,8 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Test.Contracts;
-using Bodu.Test.Kat;
+using Bodu.Text.Formats.Contracts;
 
 namespace Bodu.Text.Ini.Contracts;
 

@@ -6,7 +6,7 @@
 
 using Bodu.Test.Kat;
 
-namespace Bodu.Test.Contracts;
+namespace Bodu.Text.Formats.Contracts;
 
 /// <summary>
 /// Reusable behavioural contract test base for the streaming surface of a format with a write/read pair
