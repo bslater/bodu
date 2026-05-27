@@ -4,7 +4,7 @@ Forward-looking plan for the **Bodu** C# utility library. Pairs with
 [`CHANGELOG.md`](CHANGELOG.md) (what shipped) and [`CLAUDE.md`](CLAUDE.md)
 (repository conventions for contributors).
 
-*Last updated: 2026-05-26.*
+*Last updated: 2026-05-27.*
 
 ## How to read this
 
@@ -84,6 +84,24 @@ proposals can be closed quickly.
   mainstream formats.
 - **Shipping the `Plugin*.TestAssembly` projects as packages.** Those
   exist purely to exercise the calendar plugin loader in tests.
+- **Duplicating algorithms already shipped in the .NET BCL or
+  Microsoft's first-party `System.*` NuGet packages.** Where the
+  framework ships a stable equivalent, consumers should use it
+  directly rather than a Bodu type. Concretely, the roadmap will not
+  re-implement: `System.Security.Cryptography.ChaCha20Poly1305`,
+  `HKDF`, `Rfc2898DeriveBytes.Pbkdf2`, `Shake128` / `Shake256`,
+  `CShake128` / `CShake256`, `Kmac128` / `Kmac256` /
+  `KmacXof128` / `KmacXof256`; `System.IO.Hashing.XxHash32` /
+  `XxHash64` / `XxHash3` / `XxHash128`; `System.Buffers.Text.Base64` /
+  `Base64Url`; `Convert.ToHexString` / `FromHexString`. Bodu only
+  takes on algorithms with a genuine BCL gap — extended-nonce or raw
+  cipher variants, configurable algorithm catalogues, encodings
+  Microsoft has not shipped, or KDFs the BCL team has explicitly
+  declined (Argon2, scrypt). Pre-existing types in the repository
+  that overlap with later BCL additions (the legacy `Shake` internal
+  primitive, the single-polynomial `Crc32` paths covered by
+  `System.IO.Hashing.Crc32`) are kept for source compatibility but
+  are not extended.
 
 ## Active focus
 
@@ -98,9 +116,10 @@ With that pass closed, the active focus shifts to:
 
 1. Cut the five `[Unreleased]` packages above.
 2. Begin the per-project items below in roadmap order. Calendar
-   algorithm gaps (Islamic, Hebrew, Persian) and crypto AEAD parity
-   (ChaCha20-Poly1305 family) are the highest-leverage opening moves —
-   they unblock data-pack expansion and close visible AEAD gaps.
+   algorithm gaps (Islamic, Hebrew, Persian) and the raw ChaCha20 /
+   XChaCha20 family in crypto are the highest-leverage opening moves —
+   they unblock data-pack expansion and close the visible
+   stream-cipher gaps that the BCL's `ChaCha20Poly1305` does not.
 
 ## Per-project roadmap
 
@@ -123,14 +142,18 @@ Current state: mature; 152 src / 484 test files. Threefish 256/512/1024,
 Skipjack, Blowfish, Twofish, Camellia, Ascon, Skein, BLAKE2/3, Tiger,
 SipHash plus EAX/OFB/GCM/OCB/SIV modes.
 
-- **Add ChaCha20, ChaCha20-Poly1305, and XChaCha20.** Visible AEAD gap
-  next to the existing Ascon/GCM/EAX/OCB/SIV surface — ChaCha20-Poly1305
-  is the canonical modern stream-AEAD pairing.
-- **Add KMAC and cSHAKE** on top of the existing SHAKE surface, to
-  finish the SHA-3 family.
-- **Add KDFs: Argon2, scrypt, HKDF.** No KDF surface today; downstream
-  consumers cannot build password storage or key derivation without
-  taking a second dependency.
+- **Add raw ChaCha20 and the XChaCha20 / XChaCha20-Poly1305 family.**
+  ChaCha20-Poly1305 itself ships in the BCL as
+  `System.Security.Cryptography.ChaCha20Poly1305` (.NET 6+); the gap
+  is the raw ChaCha20 stream cipher (needed for libsodium-, Noise-,
+  and age-style protocols) and the extended-nonce XChaCha20 variants,
+  which Microsoft has not shipped.
+- **Add password-hashing KDFs: Argon2 and scrypt.** No
+  password-hashing surface today. `HKDF` and `Pbkdf2` are already in
+  `System.Security.Cryptography` and are not in scope. Argon2 and
+  scrypt are the real gap — Microsoft has explicitly declined to ship
+  Argon2 because only OpenSSL implements it among the supported OS
+  crypto providers.
 - Finalise the AVX-512 fast paths shipped for BLAKE2/BLAKE3/Threefish
   behind a documented capability-detection contract, so consumers can
   reason about when SIMD paths engage and how to disable them in
@@ -142,9 +165,6 @@ Current state: mature; 79 src / 209 test files. Fletcher 16/32/64, full
 RevEng CRC catalogue (112 standards), check-digit algorithms (Luhn,
 Damm, ABA, EAN, GTIN, IBAN, ISBN, ISIN, LEI, ISO 7064).
 
-- **Add xxHash3 and xxHash128.** The catalogue carries CityHash,
-  MurmurHash3, and FNV but no xxHash — the most common modern fast hash
-  in active use.
 - **Expand check digits**: Verhoeff, Gumm, Mod-43, and a
   ULID/Crockford32 check-digit. The existing set is strong on financial
   identifiers; these fill the rest of the common catalogue.
@@ -152,6 +172,15 @@ Damm, ABA, EAN, GTIN, IBAN, ISBN, ISIN, LEI, ISO 7064).
   `System.IO.Hashing.NonCryptographicHashAlgorithm` shape uniformly.
   Some types inherit from it, others expose bespoke surfaces — the mix
   is a documentation hazard.
+- **Document the `System.IO.Hashing` interop story.** xxHash
+  (`XxHash32` / `XxHash64` / `XxHash3` / `XxHash128`) and the
+  single-polynomial `Crc32` / `Crc64` (ISO 3309) ship in Microsoft's
+  `System.IO.Hashing` package; consumers should reach for those first.
+  The headline value of this project is the full RevEng CRC catalogue
+  (112 named polynomials across CRC-8 / CRC-16 / CRC-32 / CRC-64),
+  the legacy non-cryptographic family (FNV, MurmurHash3, CityHash,
+  Fletcher, Pearson, Bernstein, etc.), and the check-digit family —
+  none of which are in the BCL.
 
 ### `Bodu.Text.Encoding`
 
@@ -216,9 +245,11 @@ Current state: bridge layer; 7 src / 19 test files. Connects
 Current state: new; 16 src / 18 test files. Ships `Fraction<T>` only.
 
 - **Ship `Fraction<T>` 1.0** per `[Unreleased]`.
-- **Add `Interval<T>` / `Range<T>`** arithmetic over `INumber<T>`.
-  Natural companion to `Fraction<T>` and gives the package a second
-  header type.
+- **Add `Interval<T>`** arithmetic over `INumber<T>` — closed/open
+  bounds, intersection/union, contains, length. Natural companion to
+  `Fraction<T>` and gives the package a second header type. Use
+  `Interval<T>`, not `Range<T>`: `System.Range` is the existing BCL
+  slicing type and the names would collide for consumers.
 - **Add fixed-point `Money<TCurrency>`** with proper rounding and
   currency-tagging. Re-uses `Fraction<T>` internally for exact
   decimal computation.
