@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TwofishTransformTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -16,14 +16,30 @@ namespace Bodu.Security.Cryptography;
 internal sealed class TwofishTransformTests
     : BlockCipherTransformTests<TwofishTransformTests, TwofishTransform>
 {
-    /// <inheritdoc />
-    protected override TwofishTransform CreateAlgorithm()
+    private readonly byte[] _key;
+    private readonly byte[] _iv;
+
+    /// <summary>
+    /// Initializes a new instance with a freshly generated key and IV cached so that
+    /// <see cref="CreateEncryptor" /> and <see cref="CreateDecryptor" /> produce paired transforms.
+    /// </summary>
+    public TwofishTransformTests()
     {
-        var algorithm = new Twofish();
-        algorithm.GenerateKey();
-        algorithm.GenerateIV();
-        return (TwofishTransform)algorithm.CreateEncryptor(algorithm.Key, algorithm.IV);
+        using var seed = new Twofish();
+        seed.GenerateKey();
+        seed.GenerateIV();
+        _key = seed.Key;
+        _iv = seed.IV;
     }
+
+    /// <inheritdoc />
+    protected override TwofishTransform CreateAlgorithm() => CreateEncryptor();
+
+    /// <inheritdoc />
+    protected override TwofishTransform CreateEncryptor() => BuildTransform(forEncryption: true);
+
+    /// <inheritdoc />
+    protected override TwofishTransform CreateDecryptor() => BuildTransform(forEncryption: false);
 
     /// <inheritdoc />
     /// <remarks>
@@ -45,6 +61,22 @@ internal sealed class TwofishTransformTests
         };
         algorithm.Key = answer.Key!;
         algorithm.IV = new byte[algorithm.BlockSize / 8];
+
+        ICryptoTransform transform = forEncryption
+            ? algorithm.CreateEncryptor()
+            : algorithm.CreateDecryptor();
+        return (TwofishTransform)transform;
+    }
+
+    private TwofishTransform BuildTransform(bool forEncryption)
+    {
+        var algorithm = new Twofish
+        {
+            Mode = CipherMode.ECB,
+            Padding = PaddingMode.PKCS7,
+            Key = _key,
+            IV = _iv,
+        };
 
         ICryptoTransform transform = forEncryption
             ? algorithm.CreateEncryptor()

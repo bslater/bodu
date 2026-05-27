@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CamelliaTransformTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -16,14 +16,30 @@ namespace Bodu.Security.Cryptography;
 internal sealed class CamelliaTransformTests
     : BlockCipherTransformTests<CamelliaTransformTests, CamelliaTransform>
 {
-    /// <inheritdoc />
-    protected override CamelliaTransform CreateAlgorithm()
+    private readonly byte[] _key;
+    private readonly byte[] _iv;
+
+    /// <summary>
+    /// Initializes a new instance with a freshly generated key and IV cached so that
+    /// <see cref="CreateEncryptor" /> and <see cref="CreateDecryptor" /> produce paired transforms.
+    /// </summary>
+    public CamelliaTransformTests()
     {
-        var algorithm = new Camellia();
-        algorithm.GenerateKey();
-        algorithm.GenerateIV();
-        return (CamelliaTransform)algorithm.CreateEncryptor(algorithm.Key, algorithm.IV);
+        using var seed = new Camellia();
+        seed.GenerateKey();
+        seed.GenerateIV();
+        _key = seed.Key;
+        _iv = seed.IV;
     }
+
+    /// <inheritdoc />
+    protected override CamelliaTransform CreateAlgorithm() => CreateEncryptor();
+
+    /// <inheritdoc />
+    protected override CamelliaTransform CreateEncryptor() => BuildTransform(forEncryption: true);
+
+    /// <inheritdoc />
+    protected override CamelliaTransform CreateDecryptor() => BuildTransform(forEncryption: false);
 
     /// <inheritdoc />
     /// <remarks>
@@ -44,6 +60,22 @@ internal sealed class CamelliaTransformTests
         };
         algorithm.Key = answer.Key!;
         algorithm.IV = new byte[algorithm.BlockSize / 8];
+
+        ICryptoTransform transform = forEncryption
+            ? algorithm.CreateEncryptor()
+            : algorithm.CreateDecryptor();
+        return (CamelliaTransform)transform;
+    }
+
+    private CamelliaTransform BuildTransform(bool forEncryption)
+    {
+        var algorithm = new Camellia
+        {
+            Mode = CipherMode.ECB,
+            Padding = PaddingMode.PKCS7,
+            Key = _key,
+            IV = _iv,
+        };
 
         ICryptoTransform transform = forEncryption
             ? algorithm.CreateEncryptor()
