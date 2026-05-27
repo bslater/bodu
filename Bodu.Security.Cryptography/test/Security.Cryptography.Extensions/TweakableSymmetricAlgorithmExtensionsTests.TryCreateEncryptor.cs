@@ -133,7 +133,7 @@ public partial class TweakableSymmetricAlgorithmExtensionsTests
         var iv = new byte[algorithm.BlockSize / 8];
         var tweak = new byte[algorithm.TweakSize / 8];
 
-        var result = algorithm.TryCreateEncryptor(key, iv, tweak, out ICryptoTransform transform);
+        var result = algorithm.TryCreateEncryptor(key, iv, tweak, out ICryptoTransform? transform);
         Assert.IsTrue(result);
         Assert.IsNotNull(transform);
     }

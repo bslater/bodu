@@ -16,7 +16,7 @@ public sealed partial class EcbModeTransformTests
     public void Transform_WhenDecrypting_ShouldDecryptEachBlockIndependently()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA); // XOR cipher
-        EcbModeTransform transform = CreateTransform(cipher, iv: null); // ECB ignores IV
+        EcbModeTransform transform = CreateTransform(cipher, iv: null!); // ECB ignores IV
 
         var original = Enumerable.Range(0, ExpectedBlockSize * 2).Select(i => (byte)i).ToArray();
         var encrypted = original.Select(b => (byte)(b ^ 0xAA)).ToArray();
@@ -34,7 +34,7 @@ public sealed partial class EcbModeTransformTests
     public void Transform_WhenEncrypting_ShouldEncryptEachBlockIndependently()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA); // Applies XOR with 0xAA per byte
-        EcbModeTransform transform = CreateTransform(cipher, iv: null); // ECB ignores IV
+        EcbModeTransform transform = CreateTransform(cipher, iv: null!); // ECB ignores IV
 
         var plaintext = Enumerable.Range(0, ExpectedBlockSize * 2).Select(i => (byte)i).ToArray();
         var output = new byte[plaintext.Length];
@@ -56,7 +56,7 @@ public sealed partial class EcbModeTransformTests
     public void Transform_WhenPlaintextBlocksAreIdentical_ShouldProduceIdenticalCipherTextBlocks()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
-        EcbModeTransform transform = CreateTransform(cipher, iv: null);
+        EcbModeTransform transform = CreateTransform(cipher, iv: null!);
 
         // Two identical plaintext blocks
         var block = Enumerable.Range(0, ExpectedBlockSize).Select(i => (byte)i).ToArray();

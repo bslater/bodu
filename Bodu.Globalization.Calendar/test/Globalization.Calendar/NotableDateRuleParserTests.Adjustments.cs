@@ -642,12 +642,12 @@ public partial class NotableDateRuleParserTests
             "Only fromYear set maps EffectiveFromYear with null EffectiveToYear",
             BuildAdjustmentXml(@"key=""t"" when=""Always"" action=""None"" fromYear=""2015"""),
             (int?)2015,
-            (int?)null,
+            (int?)null!,
         ],
         [
             "Only toYear set maps null EffectiveFromYear with EffectiveToYear",
             BuildAdjustmentXml(@"key=""t"" when=""Always"" action=""None"" toYear=""2025"""),
-            (int?)null,
+            (int?)null!,
             (int?)2025,
         ],
     ];

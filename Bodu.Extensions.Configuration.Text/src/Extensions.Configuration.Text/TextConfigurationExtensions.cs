@@ -309,7 +309,7 @@ public static class TextConfigurationExtensions
     /// <summary>
     /// Adds an already-parsed <see cref="IniDocument" /> to the configuration. The document is resolved against
     /// <paramref name="targetPath" /> and the resulting key/value map is added via
-    /// <see cref="MemoryConfigurationBuilderExtensions.AddInMemoryCollection" />.
+    /// <see cref="MemoryConfigurationBuilderExtensions.AddInMemoryCollection(IConfigurationBuilder, IEnumerable{KeyValuePair{string, string?}}?)" />.
     /// </summary>
     /// <param name="builder">The configuration builder.</param>
     /// <param name="document">The pre-parsed configuration document.</param>

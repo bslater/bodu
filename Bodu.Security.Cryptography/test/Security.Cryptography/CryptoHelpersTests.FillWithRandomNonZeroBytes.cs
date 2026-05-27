@@ -88,7 +88,7 @@ public partial class CryptoHelpersTests
     [TestMethod]
     public void FillWithRandomNonZeroBytes_WhenBufferIsNull_ShouldThrowExactly()
     {
-        Assert.ThrowsExactly<ArgumentNullException>(() => CryptoHelpers.FillWithRandomNonZeroBytes(null));
+        Assert.ThrowsExactly<ArgumentNullException>(() => CryptoHelpers.FillWithRandomNonZeroBytes(null!));
     }
 
     /// <summary>
