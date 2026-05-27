@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Security.Cryptography;
-
 namespace Bodu.Security.Cryptography;
 
 [TestClass]
@@ -20,20 +18,8 @@ public partial class SimpleReversingSymmetricAlgorithmTests
         algorithm.BlockMode = mode;
 
     /// <inheritdoc />
-    protected override IEnumerable<BlockCipherKnownAnswer> GetKnownAnswers() =>
-        SimpleReversingKnownAnswers.For(SingleTestVariant.Default);
-
-
-    /// <inheritdoc />
-    protected override SimpleReversingSymmetricAlgorithm CreateAlgorithmForKnownAnswer(BlockCipherKnownAnswer answer)
-    {
-        var algorithm = SimpleReversingSymmetricAlgorithm.Create();
-        algorithm.BlockMode = CipherModeKind.ECB;
-        algorithm.Padding = PaddingMode.None;
-        algorithm.Key = answer.Key!;
-        algorithm.IV = new byte[algorithm.BlockSize / 8];
-        return algorithm;
-    }
+    protected override CipherModeKind GetBlockMode(SimpleReversingSymmetricAlgorithm algorithm) =>
+        algorithm.BlockMode;
 
     /// <inheritdoc />
     protected override SymmetricAlgorithmSpecification GetSpecification() =>

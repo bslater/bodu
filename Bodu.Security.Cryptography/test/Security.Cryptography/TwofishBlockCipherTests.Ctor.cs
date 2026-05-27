@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TwofishBlockCipherTests.Ctor.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -9,8 +9,10 @@ namespace Bodu.Security.Cryptography;
 internal sealed partial class TwofishBlockCipherTests
 {
     /// <summary>
-    /// Verifies that constructing <see cref="TwofishBlockCipher" /> with a key length that is not 16, 24,
-    /// or 32 bytes throws <see cref="ArgumentException" />.
+    /// Verifies that constructing <see cref="TwofishBlockCipher" /> with a key length that is not 16, 24, or
+    /// 32 bytes throws <see cref="ArgumentException" />. The exception type is Bodu-specific and varies across
+    /// cipher families (AES throws <see cref="System.Security.Cryptography.CryptographicException" />), so this
+    /// negative-path coverage stays on the concrete test class rather than the shared base.
     /// </summary>
     [TestMethod]
     [DataRow(0)]
@@ -29,21 +31,5 @@ internal sealed partial class TwofishBlockCipherTests
         {
             using var _ = new TwofishBlockCipher(key);
         });
-    }
-
-    /// <summary>
-    /// Verifies that constructing <see cref="TwofishBlockCipher" /> with each valid key length (16, 24,
-    /// and 32 bytes) succeeds without throwing.
-    /// </summary>
-    [TestMethod]
-    [DataRow(16)]
-    [DataRow(24)]
-    [DataRow(32)]
-    public void Ctor_WhenKeyLengthIsValid_ShouldNotThrow(int keyLength)
-    {
-        var key = new byte[keyLength];
-
-        using var cipher = new TwofishBlockCipher(key);
-        Assert.IsNotNull(cipher);
     }
 }

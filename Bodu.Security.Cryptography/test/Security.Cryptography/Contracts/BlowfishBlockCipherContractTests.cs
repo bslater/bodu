@@ -13,7 +13,7 @@ namespace Bodu.Security.Cryptography.Contracts;
 /// using Eric Young's published 16-round Blowfish ECB vectors (transcribed from <c>vectors-2.txt</c>
 /// hosted on Schneier's site). Bespoke Blowfish coverage (key-schedule edge cases, padding modes,
 /// stream-mode transforms) remains in the existing <c>BlowfishBlockCipherTests.*</c> and
-/// <c>BlowfishAlgorithmTests.*</c> partials.
+/// <c>BlowfishTests.*</c> partials.
 /// </summary>
 [TestClass]
 public sealed class BlowfishBlockCipherContractTests

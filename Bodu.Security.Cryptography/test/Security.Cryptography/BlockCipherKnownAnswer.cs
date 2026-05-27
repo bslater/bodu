@@ -16,48 +16,21 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// <see cref="BlockCipherKnownAnswer" /> is the keystone of the cipher test architecture. The same vector
-/// data flows through three independent test layers, anchoring observable behaviour at every level of the
-/// public surface:
+/// KAT byte-level assertion lives at a single tier: <see cref="BlockCipherTests{TTest, TCipher, TVariant}" />.
+/// Each per-cipher test class overrides <c>GetKnownAnswers(variant)</c> to surface the curated vectors and
+/// <c>CreateBlockCipherForAnswer(answer)</c> to construct an engine seeded with the row's key (and tweak,
+/// where applicable); the base class drives encrypt / decrypt assertions against the row's expected
+/// ciphertext. The transform-tier and algorithm-tier suites instead exercise their public contracts plus a
+/// generic round-trip — cipher correctness flows up through delegation rather than through duplicate KAT
+/// byte-equality checks.
 /// </para>
-/// <list type="bullet">
-/// <item>
-/// <description>
-/// <b>Block-cipher layer</b> — driven by <see cref="BlockCipherTests{TTest, TCipher, TVariant}" />. Each
-/// per-cipher test class overrides two simple hooks: <c>GetKnownAnswers(variant)</c> returns the curated
-/// vector list, and <c>CreateBlockCipherForAnswer(answer)</c> constructs an engine that applies the row's
-/// key and (where applicable) tweak. The base class wires those hooks together via
-/// <c>AdaptKnownAnswers</c> to drive the encrypt and decrypt assertions; concrete classes need only
-/// override <c>GetKnownAnswerTests</c> directly when their vectors are runtime-generated rather than
-/// static (for example the wide-block Serpent self-referential regression rows).
-/// </description>
-/// </item>
-/// <item>
-/// <description>
-/// <b>Transform layer</b> — driven by <see cref="BlockCipherTransformTests{TTest, TCryptoTransform}" /> via
-/// the <c>GetKnownAnswers</c> + <c>CreateTransformForKnownAnswer</c> hooks. Each per-cipher transform test
-/// class returns the same vector list, and the harness runs
-/// <c>ICryptoTransform.TransformFinalBlock(plaintext)</c> in raw single-block ECB mode so the result must
-/// match the vector's ciphertext byte-for-byte.
-/// </description>
-/// </item>
-/// <item>
-/// <description>
-/// <b>Algorithm layer</b> — driven by <see cref="SymmetricAlgorithmTests{TTest, TAlgorithm}" /> via the
-/// <c>GetKnownAnswers</c> + <c>CreateAlgorithmForKnownAnswer</c> hooks. The harness configures the public
-/// <c>SymmetricAlgorithm</c> instance with the vector's <see cref="Key" /> (and <see cref="Tweak" /> for
-/// tweakable algorithms), calls <c>CreateEncryptor()</c> / <c>CreateDecryptor()</c>, and asserts the same
-/// plaintext-to-ciphertext mapping holds through the consumer-facing API.
-/// </description>
-/// </item>
-/// </list>
 /// <para>
-/// Vectors are stored as named static fields in a per-cipher static class — for example
-/// <c>SkipjackKnownAnswers</c>, <c>CamelliaKnownAnswers</c>, <c>Threefish256KnownAnswers</c> — and exposed
-/// via a <c>For(variant)</c> accessor whose <c>variant</c> parameter is one of <c>SingleTestVariant</c>,
+/// Vectors are colocated with their consumer test class as a <c>*.KnownAnswers.cs</c> partial — for example
+/// <see cref="SkipjackBlockCipherTests" />, <see cref="CamelliaBlockCipherTests" />,
+/// <see cref="Threefish256CipherTests" /> — and exposed through a private <c>KnownAnswersFor(variant)</c>
+/// accessor whose <c>variant</c> parameter is one of <see cref="SingleTestVariant" />,
 /// <see cref="BlockCipherKeyVariant" />, or <see cref="TweakableBlockCipherVariant" /> depending on what
-/// configuration shape the family supports. Each layer's KAT-driven test method consumes the same
-/// accessor, so a single curated vector list anchors every layer of coverage for that cipher.
+/// configuration shape the family supports.
 /// </para>
 /// <para>
 /// When <see cref="Key" /> is <see langword="null" /> the harness falls back to the variant's default
@@ -65,7 +38,8 @@ namespace Bodu.Security.Cryptography;
 /// non-tweakable cipher families and should be left <see langword="null" /> for them.
 /// </para>
 /// <para>
-/// <b>Minimum vector set.</b> Every cipher's <c>&lt;Cipher&gt;KnownAnswers</c> file should contain at least:
+/// <b>Minimum vector set.</b> Every cipher's <c>*BlockCipherTests.KnownAnswers.cs</c> (or
+/// <c>*CipherTests.KnownAnswers.cs</c>) partial should contain at least:
 /// </para>
 /// <list type="bullet">
 /// <item><description>An all-zero key, all-zero plaintext row — basic regression sanity.</description></item>
@@ -79,10 +53,9 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// <b>Gap policy.</b> When a cipher has no published reference vectors, do <i>not</i> fabricate in-tree
 /// regression baselines as a substitute. Instead, file a GitHub tracking issue and reference it from a
-/// <c>TODO(gh-NNN):</c> comment in the per-cipher <c>&lt;Cipher&gt;KnownAnswers</c> file's
-/// <c>&lt;remarks&gt;</c>. This keeps the gap visible and the test data honest about its provenance.
-/// In-tree regression baselines that pre-date this policy should be tagged with their tracking issue and
-/// kept until authoritative vectors are sourced.
+/// <c>TODO(gh-NNN):</c> comment in the per-cipher partial's <c>&lt;remarks&gt;</c>. This keeps the gap
+/// visible and the test data honest about its provenance. In-tree regression baselines that pre-date this
+/// policy should be tagged with their tracking issue and kept until authoritative vectors are sourced.
 /// </para>
 /// </remarks>
 public sealed record BlockCipherKnownAnswer : IKat
