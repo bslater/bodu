@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Serpent256Tests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -13,14 +13,10 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 [TestClass]
 public partial class Serpent256Tests
-    : TweakableSymmetricAlgorithmTests<Serpent256Tests, Serpent256>
+    : SerpentTests<Serpent256Tests, Serpent256>
 {
     /// <inheritdoc />
     protected override Serpent256 CreateAlgorithm() => new Serpent256();
-
-    /// <inheritdoc />
-    protected override void SetBlockMode(Serpent256 algorithm, CipherModeKind mode) =>
-        algorithm.BlockMode = mode;
 
     /// <inheritdoc />
     protected override TweakableSymmetricAlgorithmSpecification GetSpecification() =>
