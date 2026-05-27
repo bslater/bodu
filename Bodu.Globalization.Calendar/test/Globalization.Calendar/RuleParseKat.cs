@@ -1,10 +1,12 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RuleParseKat.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Test.Kat;
+using Bodu.Test.Kat;
+
+namespace Bodu.Globalization.Calendar;
 
 /// <summary>
 /// Represents a known-answer test row for a calendar rule-document parser (XML, JSON, or other). The

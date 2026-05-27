@@ -5,7 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Extensions;
-using Bodu.Test.Contracts;
 
 namespace Bodu.Globalization.Calendar.Extensions.Contracts;
 

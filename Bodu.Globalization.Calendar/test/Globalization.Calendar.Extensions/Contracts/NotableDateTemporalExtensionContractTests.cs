@@ -4,7 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Test.Contracts;
+namespace Bodu.Globalization.Calendar.Extensions.Contracts;
 
 /// <summary>
 /// Reusable behavioural contract test base for the temporal extension methods that operate on
