@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConcurrentHashSetTests.ToArray.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -25,7 +25,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void ToArray_WhenSetHasElements_ShouldReturnEveryElement()
     {
-        var set = new ConcurrentHashSet<int>(new[] { 1, 2, 3, 4 });
+        var set = new ConcurrentHashSet<int>([1, 2, 3, 4]);
 
         CollectionAssert.AreEquivalent(new[] { 1, 2, 3, 4 }, set.ToArray());
     }
@@ -37,7 +37,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void ToArray_WhenReturnedArrayMutated_ShouldNotAffectSet()
     {
-        var set = new ConcurrentHashSet<int>(new[] { 1, 2, 3 });
+        var set = new ConcurrentHashSet<int>([1, 2, 3]);
 
         int[] array = set.ToArray();
         array[0] = 999;
@@ -53,7 +53,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void ToArray_WhenSetMutatedAfterCall_ShouldNotChangeReturnedArray()
     {
-        var set = new ConcurrentHashSet<int>(new[] { 1, 2, 3 });
+        var set = new ConcurrentHashSet<int>([1, 2, 3]);
 
         int[] array = set.ToArray();
         set.Add(4);

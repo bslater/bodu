@@ -1,13 +1,10 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="UnitedStatesTerritoryAnswers.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-
-namespace Bodu.Globalization.Calendar.Data.Americas.Tests;
+namespace Bodu.Globalization.Calendar.Data;
 
 /// <summary>
 /// Provides <see cref="Microsoft.VisualStudio.TestTools.UnitTesting.DynamicDataAttribute" /> data sources for
@@ -32,8 +29,8 @@ public static class UnitedStatesTerritoryAnswers
             {
                 ProviderFactory = UsProvider,
                 Territory = "US",
-                Includes = new[]
-                {
+                Includes =
+                [
                     "New Year's Day",
                     "Valentine's Day",
                     "Halloween",
@@ -42,14 +39,14 @@ public static class UnitedStatesTerritoryAnswers
                     "Christmas Day",
                     "Independence Day",
                     "Thanksgiving",
-                },
-                Excludes = new[]
-                {
+                ],
+                Excludes =
+                [
                     "Easter Monday",
                     "Whit Monday",
                     "International Workers' Day",
                     "All Saints' Day",
-                },
+                ],
             },
         };
     }

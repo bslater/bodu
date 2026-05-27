@@ -47,7 +47,7 @@ public partial class SymmetricAlgorithmExtensionTests
     public async Task EncryptAsync_WhenTargetStreamIsNull_ShouldThrowExactly()
     {
         using SymmetricAlgorithm algorithm = CreateAlgorithm();
-        using var input = new MemoryStream(new byte[] { 1, 2, 3 });
+        using var input = new MemoryStream([1, 2, 3]);
 
         await Assert.ThrowsExactlyAsync<ArgumentNullException>(() =>
             algorithm.EncryptAsync(input, null!));

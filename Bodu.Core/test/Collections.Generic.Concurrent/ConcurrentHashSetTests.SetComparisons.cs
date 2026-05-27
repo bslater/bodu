@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConcurrentHashSetTests.SetComparisons.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -15,10 +15,10 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void IsSubsetOf_ShouldReportSubsetRelationship()
     {
-        Assert.IsTrue(new ConcurrentHashSet<int>(new[] { 1, 2 }).IsSubsetOf(new[] { 1, 2, 3 }));
-        Assert.IsTrue(new ConcurrentHashSet<int>(new[] { 1, 2 }).IsSubsetOf(new[] { 1, 2 }));
-        Assert.IsTrue(new ConcurrentHashSet<int>().IsSubsetOf(new[] { 1 }));
-        Assert.IsFalse(new ConcurrentHashSet<int>(new[] { 1, 2, 3 }).IsSubsetOf(new[] { 1, 2 }));
+        Assert.IsTrue(new ConcurrentHashSet<int>([1, 2]).IsSubsetOf([1, 2, 3]));
+        Assert.IsTrue(new ConcurrentHashSet<int>([1, 2]).IsSubsetOf([1, 2]));
+        Assert.IsTrue(new ConcurrentHashSet<int>().IsSubsetOf([1]));
+        Assert.IsFalse(new ConcurrentHashSet<int>([1, 2, 3]).IsSubsetOf([1, 2]));
     }
 
     /// <summary>
@@ -27,10 +27,10 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void IsSupersetOf_ShouldReportSupersetRelationship()
     {
-        Assert.IsTrue(new ConcurrentHashSet<int>(new[] { 1, 2, 3 }).IsSupersetOf(new[] { 1, 2 }));
-        Assert.IsTrue(new ConcurrentHashSet<int>(new[] { 1, 2 }).IsSupersetOf(new[] { 1, 2 }));
-        Assert.IsTrue(new ConcurrentHashSet<int>(new[] { 1 }).IsSupersetOf(Array.Empty<int>()));
-        Assert.IsFalse(new ConcurrentHashSet<int>(new[] { 1, 2 }).IsSupersetOf(new[] { 1, 2, 3 }));
+        Assert.IsTrue(new ConcurrentHashSet<int>([1, 2, 3]).IsSupersetOf([1, 2]));
+        Assert.IsTrue(new ConcurrentHashSet<int>([1, 2]).IsSupersetOf([1, 2]));
+        Assert.IsTrue(new ConcurrentHashSet<int>([1]).IsSupersetOf(Array.Empty<int>()));
+        Assert.IsFalse(new ConcurrentHashSet<int>([1, 2]).IsSupersetOf([1, 2, 3]));
     }
 
     /// <summary>
@@ -40,9 +40,9 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void IsProperSubsetOf_ShouldRequireStrictSubset()
     {
-        Assert.IsTrue(new ConcurrentHashSet<int>(new[] { 1, 2 }).IsProperSubsetOf(new[] { 1, 2, 3 }));
-        Assert.IsFalse(new ConcurrentHashSet<int>(new[] { 1, 2 }).IsProperSubsetOf(new[] { 1, 2 }));
-        Assert.IsFalse(new ConcurrentHashSet<int>(new[] { 1, 2, 3 }).IsProperSubsetOf(new[] { 1, 2 }));
+        Assert.IsTrue(new ConcurrentHashSet<int>([1, 2]).IsProperSubsetOf([1, 2, 3]));
+        Assert.IsFalse(new ConcurrentHashSet<int>([1, 2]).IsProperSubsetOf([1, 2]));
+        Assert.IsFalse(new ConcurrentHashSet<int>([1, 2, 3]).IsProperSubsetOf([1, 2]));
     }
 
     /// <summary>
@@ -52,9 +52,9 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void IsProperSupersetOf_ShouldRequireStrictSuperset()
     {
-        Assert.IsTrue(new ConcurrentHashSet<int>(new[] { 1, 2, 3 }).IsProperSupersetOf(new[] { 1, 2 }));
-        Assert.IsFalse(new ConcurrentHashSet<int>(new[] { 1, 2 }).IsProperSupersetOf(new[] { 1, 2 }));
-        Assert.IsFalse(new ConcurrentHashSet<int>(new[] { 1, 2 }).IsProperSupersetOf(new[] { 1, 2, 3 }));
+        Assert.IsTrue(new ConcurrentHashSet<int>([1, 2, 3]).IsProperSupersetOf([1, 2]));
+        Assert.IsFalse(new ConcurrentHashSet<int>([1, 2]).IsProperSupersetOf([1, 2]));
+        Assert.IsFalse(new ConcurrentHashSet<int>([1, 2]).IsProperSupersetOf([1, 2, 3]));
     }
 
     /// <summary>
@@ -63,9 +63,9 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void Overlaps_ShouldReportSharedElements()
     {
-        Assert.IsTrue(new ConcurrentHashSet<int>(new[] { 1, 2, 3 }).Overlaps(new[] { 3, 4, 5 }));
-        Assert.IsFalse(new ConcurrentHashSet<int>(new[] { 1, 2, 3 }).Overlaps(new[] { 4, 5, 6 }));
-        Assert.IsFalse(new ConcurrentHashSet<int>().Overlaps(new[] { 1 }));
+        Assert.IsTrue(new ConcurrentHashSet<int>([1, 2, 3]).Overlaps([3, 4, 5]));
+        Assert.IsFalse(new ConcurrentHashSet<int>([1, 2, 3]).Overlaps([4, 5, 6]));
+        Assert.IsFalse(new ConcurrentHashSet<int>().Overlaps([1]));
     }
 
     /// <summary>
@@ -75,10 +75,10 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void SetEquals_ShouldCompareMembershipIgnoringOrderAndDuplicates()
     {
-        Assert.IsTrue(new ConcurrentHashSet<int>(new[] { 1, 2, 3 }).SetEquals(new[] { 3, 2, 1 }));
-        Assert.IsTrue(new ConcurrentHashSet<int>(new[] { 1, 2, 3 }).SetEquals(new[] { 1, 1, 2, 3, 3 }));
-        Assert.IsFalse(new ConcurrentHashSet<int>(new[] { 1, 2, 3 }).SetEquals(new[] { 1, 2 }));
-        Assert.IsFalse(new ConcurrentHashSet<int>(new[] { 1, 2 }).SetEquals(new[] { 1, 2, 3 }));
+        Assert.IsTrue(new ConcurrentHashSet<int>([1, 2, 3]).SetEquals([3, 2, 1]));
+        Assert.IsTrue(new ConcurrentHashSet<int>([1, 2, 3]).SetEquals([1, 1, 2, 3, 3]));
+        Assert.IsFalse(new ConcurrentHashSet<int>([1, 2, 3]).SetEquals([1, 2]));
+        Assert.IsFalse(new ConcurrentHashSet<int>([1, 2]).SetEquals([1, 2, 3]));
     }
 
     /// <summary>
@@ -105,7 +105,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void SetComparisons_WhenComparedWithSelf_ShouldReportReflexiveResults()
     {
-        var set = new ConcurrentHashSet<int>(new[] { 1, 2, 3 });
+        var set = new ConcurrentHashSet<int>([1, 2, 3]);
 
         Assert.IsTrue(set.IsSubsetOf(set));
         Assert.IsTrue(set.IsSupersetOf(set));
@@ -124,11 +124,11 @@ public partial class ConcurrentHashSetTests
     {
         var empty = new ConcurrentHashSet<int>();
 
-        Assert.IsTrue(empty.IsSubsetOf(new[] { 1, 2 }));
+        Assert.IsTrue(empty.IsSubsetOf([1, 2]));
         Assert.IsTrue(empty.IsSubsetOf(Array.Empty<int>()));
-        Assert.IsTrue(empty.IsProperSubsetOf(new[] { 1 }));
+        Assert.IsTrue(empty.IsProperSubsetOf([1]));
         Assert.IsFalse(empty.IsProperSubsetOf(Array.Empty<int>()));
-        Assert.IsFalse(empty.Overlaps(new[] { 1, 2 }));
+        Assert.IsFalse(empty.Overlaps([1, 2]));
         Assert.IsTrue(empty.SetEquals(Array.Empty<int>()));
     }
 }

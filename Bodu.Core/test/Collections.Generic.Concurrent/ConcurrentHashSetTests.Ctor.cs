@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConcurrentHashSetTests.Ctor.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -82,7 +82,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void Ctor_WhenSourceSupplied_ShouldContainDistinctElements()
     {
-        var set = new ConcurrentHashSet<int>(new[] { 1, 2, 3, 4 });
+        var set = new ConcurrentHashSet<int>([1, 2, 3, 4]);
 
         AssertContainsExactly(set, 1, 2, 3, 4);
     }
@@ -93,7 +93,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void Ctor_WhenSourceContainsDuplicates_ShouldCollapseToDistinctElements()
     {
-        var set = new ConcurrentHashSet<int>(new[] { 7, 7, 7, 8, 8, 9 });
+        var set = new ConcurrentHashSet<int>([7, 7, 7, 8, 8, 9]);
 
         AssertContainsExactly(set, 7, 8, 9);
     }
@@ -105,7 +105,7 @@ public partial class ConcurrentHashSetTests
     public void Ctor_WhenSourceSuppliedWithComparer_ShouldDeduplicateUsingComparer()
     {
         var set = new ConcurrentHashSet<string>(
-            new[] { "alpha", "ALPHA", "Alpha", "beta" },
+            ["alpha", "ALPHA", "Alpha", "beta"],
             StringComparer.OrdinalIgnoreCase);
 
         Assert.AreEqual(2, set.Count);
@@ -138,7 +138,7 @@ public partial class ConcurrentHashSetTests
 
         Parallel.For(0, 50, i =>
         {
-            var set = new ConcurrentHashSet<int>(new[] { i });
+            var set = new ConcurrentHashSet<int>([i]);
             results.Add(set);
         });
 
@@ -164,7 +164,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void Ctor_WhenSourceHasSingleElement_ShouldContainThatElement()
     {
-        var set = new ConcurrentHashSet<int>(new[] { 42 });
+        var set = new ConcurrentHashSet<int>([42]);
 
         AssertContainsExactly(set, 42);
     }
@@ -187,7 +187,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void Ctor_WhenSourceIsReadOnlyCollection_ShouldCopyEveryElement()
     {
-        var set = new ConcurrentHashSet<int>(new Queue<int>(new[] { 5, 6, 7 }));
+        var set = new ConcurrentHashSet<int>(new Queue<int>([5, 6, 7]));
 
         AssertContainsExactly(set, 5, 6, 7);
     }

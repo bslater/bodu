@@ -40,7 +40,7 @@ public sealed partial class NotableDateServiceTests
     }
 
     private static NotableDateService BuildService(params NotableDateRule[] rules) =>
-        new(new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(rules) }, WorkingDaysOfWeek.MondayToFriday);
+        new([(INotableDateRuleProvider)new InMemoryRuleProvider(rules)], WorkingDaysOfWeek.MondayToFriday);
 
     /// <summary>
     /// Verifies that querying a year returns every notable date defined for that year in chronological order.
@@ -169,15 +169,15 @@ public sealed partial class NotableDateServiceTests
     {
         var baseRule = Fixed("Holiday", 1, 1);
         var override_ = new TestOverrideProvider(
-            removals: new[] { new RuleRemoval("Holiday", FromYear: 2025, ToYear: 2025) },
+            removals: [new RuleRemoval("Holiday", FromYear: 2025, ToYear: 2025)],
             additions: Array.Empty<NotableDateRule>());
 
         var service = new NotableDateService(
-            new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(baseRule) },
+            [(INotableDateRuleProvider)new InMemoryRuleProvider(baseRule)],
             WorkingDaysOfWeek.MondayToFriday,
             options: new NotableDateServiceOptions
             {
-                OverrideProviders = new[] { (INotableDateRuleOverrideProvider)override_ },
+                OverrideProviders = [(INotableDateRuleOverrideProvider)override_],
             });
 
         Assert.AreEqual(0, service.GetNotableDates(2025).Count);
@@ -193,14 +193,14 @@ public sealed partial class NotableDateServiceTests
         var addition = Fixed("Royal Wedding", 5, 19, NotableDateCategory.Cultural);
         var override_ = new TestOverrideProvider(
             removals: Array.Empty<RuleRemoval>(),
-            additions: new[] { addition });
+            additions: [addition]);
 
         var service = new NotableDateService(
-            new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(Fixed("Holiday", 1, 1)) },
+            [(INotableDateRuleProvider)new InMemoryRuleProvider(Fixed("Holiday", 1, 1))],
             WorkingDaysOfWeek.MondayToFriday,
             options: new NotableDateServiceOptions
             {
-                OverrideProviders = new[] { (INotableDateRuleOverrideProvider)override_ },
+                OverrideProviders = [(INotableDateRuleOverrideProvider)override_],
             });
 
         var results = service.GetNotableDates(2025);
@@ -392,14 +392,14 @@ public sealed partial class NotableDateServiceTests
     {
         var baseRule = Fixed("Holiday", 1, 1);
         var removal = new RuleRemoval("Holiday", FromYear: 2024, ToYear: 2025);
-        var provider = new TestOverrideProvider(new[] { removal }, Array.Empty<NotableDateRule>());
+        var provider = new TestOverrideProvider([removal], Array.Empty<NotableDateRule>());
 
         var service = new NotableDateService(
-            new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(baseRule) },
+            [(INotableDateRuleProvider)new InMemoryRuleProvider(baseRule)],
             WorkingDaysOfWeek.MondayToFriday,
             options: new NotableDateServiceOptions
             {
-                OverrideProviders = new[] { (INotableDateRuleOverrideProvider)provider },
+                OverrideProviders = [(INotableDateRuleOverrideProvider)provider],
             });
 
         var count = service.GetNotableDates(year).Count(r => r.Name == "Holiday");
@@ -422,14 +422,14 @@ public sealed partial class NotableDateServiceTests
     {
         var baseRule = Fixed("Picnic", 8, 4, territory: ruleTerritory);
         var removal = new RuleRemoval("Picnic", TerritoryCode: removalTerritory);
-        var provider = new TestOverrideProvider(new[] { removal }, Array.Empty<NotableDateRule>());
+        var provider = new TestOverrideProvider([removal], Array.Empty<NotableDateRule>());
 
         var service = new NotableDateService(
-            new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(baseRule) },
+            [(INotableDateRuleProvider)new InMemoryRuleProvider(baseRule)],
             WorkingDaysOfWeek.MondayToFriday,
             options: new NotableDateServiceOptions
             {
-                OverrideProviders = new[] { (INotableDateRuleOverrideProvider)provider },
+                OverrideProviders = [(INotableDateRuleOverrideProvider)provider],
             });
 
         var count = service.GetNotableDates(2025, territoryCode: ruleTerritory).Count(r => r.Name == "Picnic");
@@ -447,14 +447,14 @@ public sealed partial class NotableDateServiceTests
     {
         var baseRule = Fixed("Holiday", 1, 1);
         var removal = new RuleRemoval("Holiday", TerritoryCode: "AU-NSW");
-        var provider = new TestOverrideProvider(new[] { removal }, Array.Empty<NotableDateRule>());
+        var provider = new TestOverrideProvider([removal], Array.Empty<NotableDateRule>());
 
         var service = new NotableDateService(
-            new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(baseRule) },
+            [(INotableDateRuleProvider)new InMemoryRuleProvider(baseRule)],
             WorkingDaysOfWeek.MondayToFriday,
             options: new NotableDateServiceOptions
             {
-                OverrideProviders = new[] { (INotableDateRuleOverrideProvider)provider },
+                OverrideProviders = [(INotableDateRuleOverrideProvider)provider],
             });
 
         var count = service.GetNotableDates(2025).Count(r => r.Name == "Holiday");
@@ -471,14 +471,14 @@ public sealed partial class NotableDateServiceTests
     {
         var baseRule = Fixed("Picnic", 8, 4, territory: "AU-NSW");
         var removal = new RuleRemoval("Picnic", TerritoryCode: "NOT-A-REAL-CODE-!");
-        var provider = new TestOverrideProvider(new[] { removal }, Array.Empty<NotableDateRule>());
+        var provider = new TestOverrideProvider([removal], Array.Empty<NotableDateRule>());
 
         var service = new NotableDateService(
-            new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(baseRule) },
+            [(INotableDateRuleProvider)new InMemoryRuleProvider(baseRule)],
             WorkingDaysOfWeek.MondayToFriday,
             options: new NotableDateServiceOptions
             {
-                OverrideProviders = new[] { (INotableDateRuleOverrideProvider)provider },
+                OverrideProviders = [(INotableDateRuleOverrideProvider)provider],
             });
 
         IReadOnlyList<NotableDate> result = service.GetNotableDates(2025, territoryCode: "AU-NSW");
@@ -499,7 +499,7 @@ public sealed partial class NotableDateServiceTests
     {
         var localiser = new DelegateLocaliser((notable, culture) => "Jour de l'An");
         var service = new NotableDateService(
-            new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(Fixed("New Year's Day", 1, 1)) },
+            [(INotableDateRuleProvider)new InMemoryRuleProvider(Fixed("New Year's Day", 1, 1))],
             WorkingDaysOfWeek.MondayToFriday,
             options: new NotableDateServiceOptions { NameLocalizer = localiser });
 
@@ -518,7 +518,7 @@ public sealed partial class NotableDateServiceTests
     {
         var localiser = new DelegateLocaliser((notable, culture) => notable.Name);
         var service = new NotableDateService(
-            new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(Fixed("New Year's Day", 1, 1)) },
+            [(INotableDateRuleProvider)new InMemoryRuleProvider(Fixed("New Year's Day", 1, 1))],
             WorkingDaysOfWeek.MondayToFriday,
             options: new NotableDateServiceOptions { NameLocalizer = localiser });
 

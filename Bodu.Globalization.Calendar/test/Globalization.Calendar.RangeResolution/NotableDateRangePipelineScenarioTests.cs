@@ -805,7 +805,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
             : null;
 
         return new NotableDateService(
-            ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(rules) },
+            ruleProviders: [(INotableDateRuleProvider)new InMemoryRuleProvider(rules)],
             workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
             options: new NotableDateServiceOptions { AlgorithmRegistry = registry });
     }

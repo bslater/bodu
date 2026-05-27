@@ -20,11 +20,11 @@ namespace Bodu.Text.Encoding;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// // Encode a JWT segment — URL-safe alphabet, no padding.
+/// Encode a JWT segment — URL-safe alphabet, no padding.
 /// byte[] header   = "{\"alg\":\"HS256\",\"typ\":\"JWT\"}"u8.ToArray();
 /// string segment  = Base64Url.Encode(header);                                  // "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
 ///
-/// // Decoder accepts inputs both with and without trailing '=' padding.
+/// Decoder accepts inputs both with and without trailing '=' padding.
 /// byte[] roundtrip = Base64Url.Decode(segment);
 /// byte[] padded    = Base64Url.Decode("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9==");
 ///]]>

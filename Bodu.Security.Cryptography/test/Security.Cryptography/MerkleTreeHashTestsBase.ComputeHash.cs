@@ -312,7 +312,7 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     [TestMethod]
     public void ComputeHash_WhenSingleFullBlock_ShouldReturnLeafHashAsRoot()
     {
-        byte[] data = { 1, 2, 3, 4 };
+        byte[] data = [1, 2, 3, 4];
         var expected = BitConverter.GetBytes((uint)10);
 
         using THasher hasher = Construct(Factory, blockSize: 4, fanOut: 2);
@@ -326,7 +326,7 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     [TestMethod]
     public void ComputeHash_WhenTwoFullBlocks_ShouldCombineIntoRoot()
     {
-        byte[] data = { 1, 2, 3, 4, 5, 6, 7, 8 };
+        byte[] data = [1, 2, 3, 4, 5, 6, 7, 8];
         var expected = BitConverter.GetBytes((uint)36);
 
         using THasher hasher = Construct(Factory, blockSize: 4, fanOut: 2);
@@ -340,7 +340,7 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     [TestMethod]
     public void ComputeHash_WhenPartialTailBlock_ShouldZeroPadAndProduceCorrectRoot()
     {
-        byte[] data = { 1, 2, 3, 4, 5 };
+        byte[] data = [1, 2, 3, 4, 5];
         var expected = BitConverter.GetBytes((uint)15);
 
         using THasher hasher = Construct(Factory, blockSize: 4, fanOut: 2);
@@ -354,7 +354,7 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     [TestMethod]
     public void ComputeHash_WhenThreeLeavesWithFanOutTwo_ShouldProduceCorrectTwoLevelRoot()
     {
-        byte[] data = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
+        byte[] data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
         var expected = BitConverter.GetBytes((uint)78);
 
         using THasher hasher = Construct(Factory, blockSize: 4, fanOut: 2);
@@ -368,7 +368,7 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     [TestMethod]
     public void ComputeHash_WhenThreeLeavesWithFanOutThree_ShouldReduceInOneStep()
     {
-        byte[] data = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
+        byte[] data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
         var expected = BitConverter.GetBytes((uint)78);
 
         using THasher hasher = Construct(Factory, blockSize: 4, fanOut: 3);
@@ -382,7 +382,7 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     [TestMethod]
     public void ComputeHash_WhenBlockSizeIsOne_ShouldTreatEachByteAsLeaf()
     {
-        byte[] data = { 10, 20, 30, 40 };
+        byte[] data = [10, 20, 30, 40];
         var expected = BitConverter.GetBytes((uint)100);
 
         using THasher hasher = Construct(Factory, blockSize: 1, fanOut: 2);
@@ -396,7 +396,7 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     [TestMethod]
     public void ComputeHash_WhenSingleByteInput_ShouldZeroPadAndReturnLeafAsRoot()
     {
-        byte[] data = { 7 };
+        byte[] data = [7];
         var expected = BitConverter.GetBytes((uint)7);
 
         using THasher hasher = Construct(Factory, blockSize: 4, fanOut: 2);
@@ -410,7 +410,7 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     [TestMethod]
     public void ComputeHash_WhenNineBytesWithFanOutThree_ShouldReduceAllThreeLeavesInOneStep()
     {
-        byte[] data = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+        byte[] data = [1, 2, 3, 4, 5, 6, 7, 8, 9];
         var expected = BitConverter.GetBytes((uint)45);
 
         using THasher hasher = Construct(Factory, blockSize: 4, fanOut: 3);
@@ -616,13 +616,13 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
         using THasher hasher = Construct(Factory, blockSize: 4, fanOut: 2);
 
         // First call leaves a partial tail of {5} in any pooled buffer.
-        var first = ComputeHash(hasher, new byte[] { 1, 2, 3, 4, 5 });
+        var first = ComputeHash(hasher, [1, 2, 3, 4, 5]);
 
         // Second call: same prefix, no tail. Must equal a one-leaf root.
-        var second = ComputeHash(hasher, new byte[] { 1, 2, 3, 4 });
+        var second = ComputeHash(hasher, [1, 2, 3, 4]);
 
-        var expectedFirst = ComputeAdditiveRoot(new byte[] { 1, 2, 3, 4, 5 }, 4, 2);
-        var expectedSecond = ComputeAdditiveRoot(new byte[] { 1, 2, 3, 4 }, 4, 2);
+        var expectedFirst = ComputeAdditiveRoot([1, 2, 3, 4, 5], 4, 2);
+        var expectedSecond = ComputeAdditiveRoot([1, 2, 3, 4], 4, 2);
 
         CollectionAssert.AreEqual(expectedFirst, first, "First result wrong.");
         CollectionAssert.AreEqual(expectedSecond, second, "Old tail bytes leaked into second call.");
@@ -658,7 +658,7 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     [TestMethod]
     public void ComputeHash_WhenInputLengthAlternatesBetweenCalls_ShouldProduceCorrectResultEachTime()
     {
-        int[] lengths = { 4, 12, 5, 8, 9, 4 };
+        int[] lengths = [4, 12, 5, 8, 9, 4];
 
         using THasher hasher = Construct(Factory, DefaultBlockSize, DefaultFanOut);
 

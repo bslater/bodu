@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FractionParseFormatContractTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -33,21 +33,19 @@ public sealed class FractionParseFormatContractTests : ParseFormatContractTests<
 
     /// <inheritdoc />
     protected override IReadOnlyList<ValidKat<string, Fraction<int>>> ValidCases { get; } =
-        new ValidKat<string, Fraction<int>>[]
-    {
+        [
         new("zero",          Input: "0",        Expected: new Fraction<int>(0, 1)),
         new("one half",      Input: "1/2",      Expected: new Fraction<int>(1, 2)),
         new("five eighths",  Input: "5/8",      Expected: new Fraction<int>(5, 8)),
         new("negative",      Input: "-3/4",     Expected: new Fraction<int>(-3, 4)),
-    };
+    ];
 
     /// <inheritdoc />
     protected override IReadOnlyList<InvalidKat<string>> InvalidCases { get; } =
-        new InvalidKat<string>[]
-    {
+        [
         new("not a fraction",        Input: "abc",      ExceptionType: typeof(FormatException)),
         new("denominator missing",   Input: "1/",       ExceptionType: typeof(FormatException)),
         new("numerator missing",     Input: "/2",       ExceptionType: typeof(FormatException)),
         new("denominator non-numeric", Input: "1/x",    ExceptionType: typeof(FormatException)),
-    };
+    ];
 }

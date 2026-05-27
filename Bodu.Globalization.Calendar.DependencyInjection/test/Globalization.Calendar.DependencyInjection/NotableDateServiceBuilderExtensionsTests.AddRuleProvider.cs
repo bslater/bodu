@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateServiceBuilderExtensionsTests.AddRuleProvider.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -8,7 +8,7 @@ using Bodu.Globalization.Calendar;
 using Bodu.Globalization.Calendar.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Bodu.DependencyInjection;
+namespace Bodu.Globalization.Calendar.DependencyInjection;
 
 public partial class NotableDateServiceBuilderExtensionsTests
 {
@@ -96,12 +96,12 @@ public partial class NotableDateServiceBuilderExtensionsTests
     public void AddRuleProviders_WhenSequenceSupplied_ShouldRegisterEveryProvider()
     {
         (IServiceCollection services, INotableDateServiceBuilder builder) = NewBuilder();
-        builder.AddRuleProviders(new INotableDateRuleProvider[]
-        {
+        builder.AddRuleProviders(
+        [
             new InMemoryRuleProvider(Fixed("From A", 1, 1)),
             new InMemoryRuleProvider(Fixed("From B", 2, 1)),
             new InMemoryRuleProvider(Fixed("From C", 3, 1)),
-        });
+        ]);
 
         using ServiceProvider provider = services.BuildServiceProvider();
         INotableDateService service = provider.GetRequiredService<INotableDateService>();
@@ -138,11 +138,11 @@ public partial class NotableDateServiceBuilderExtensionsTests
 
         ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
-            _ = builder.AddRuleProviders(new INotableDateRuleProvider[]
-            {
+            _ = builder.AddRuleProviders(
+            [
                 new InMemoryRuleProvider(Fixed("X")),
                 null!,
-            });
+            ]);
         });
 
         Assert.AreEqual("providers", ex.ParamName);

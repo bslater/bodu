@@ -57,11 +57,11 @@ namespace Bodu.Security.Cryptography;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// // Consume through a concrete derivative — the base class drives buffering and finalization.
+/// Consume through a concrete derivative — the base class drives buffering and finalization.
 /// using HashAlgorithm hash = new Tiger();      // 512-bit block, 192-bit digest
 /// byte[] digest = hash.ComputeHash("hello"u8.ToArray());
 ///
-/// // Or feed input incrementally via the standard streaming surface.
+/// Or feed input incrementally via the standard streaming surface.
 /// using HashAlgorithm streaming = new Tiger();
 /// streaming.TransformBlock(buffer1, 0, buffer1.Length, null, 0);
 /// streaming.TransformBlock(buffer2, 0, buffer2.Length, null, 0);

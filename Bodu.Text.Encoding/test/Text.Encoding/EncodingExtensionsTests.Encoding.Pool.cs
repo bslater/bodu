@@ -103,7 +103,7 @@ public sealed partial class EncodingExtensionsTests
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = EncodingExtensions.GetCharsRented(null!, new byte[] { 0x68 }, out _);
+            _ = EncodingExtensions.GetCharsRented(null!, [0x68], out _);
         });
 
         Assert.AreEqual("encoding", ex.ParamName);
@@ -163,7 +163,7 @@ public sealed partial class EncodingExtensionsTests
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = EncodingExtensions.GetCharsOwner(null!, new byte[] { 0x68 });
+            _ = EncodingExtensions.GetCharsOwner(null!, [0x68]);
         });
 
         Assert.AreEqual("encoding", ex.ParamName);
@@ -249,7 +249,7 @@ public sealed partial class EncodingExtensionsTests
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = EncodingExtensions.GetCharsPooled(null!, new byte[] { 0x68 });
+            _ = EncodingExtensions.GetCharsPooled(null!, [0x68]);
         });
 
         Assert.AreEqual("encoding", ex.ParamName);

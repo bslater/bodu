@@ -23,7 +23,7 @@ public partial class ICryptoTransformExtensionsTests
     public async Task TransformAsync_Stream_WhenTransformIsNull_ShouldThrowExactly()
     {
         ICryptoTransform? transform = null;
-        using var source = new MemoryStream(new byte[] { 1, 2, 3, 4 });
+        using var source = new MemoryStream([1, 2, 3, 4]);
         using var target = new MemoryStream();
 
         await Assert.ThrowsExactlyAsync<ArgumentNullException>(async () =>
@@ -56,7 +56,7 @@ public partial class ICryptoTransformExtensionsTests
     public async Task TransformAsync_Stream_WhenTargetStreamIsNull_ShouldThrowExactly()
     {
         using SimpleReversingCryptoTransform transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
-        using var source = new MemoryStream(new byte[] { 1, 2, 3, 4 });
+        using var source = new MemoryStream([1, 2, 3, 4]);
 
         await Assert.ThrowsExactlyAsync<ArgumentNullException>(async () =>
         {
@@ -72,7 +72,7 @@ public partial class ICryptoTransformExtensionsTests
     public async Task TransformAsync_Stream_WhenBufferSizeIsZero_ShouldThrowExactly()
     {
         using SimpleReversingCryptoTransform transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
-        using var source = new MemoryStream(new byte[] { 1, 2, 3, 4 });
+        using var source = new MemoryStream([1, 2, 3, 4]);
         using var target = new MemoryStream();
 
         await Assert.ThrowsExactlyAsync<ArgumentOutOfRangeException>(async () =>
@@ -89,7 +89,7 @@ public partial class ICryptoTransformExtensionsTests
     public async Task TransformAsync_Stream_WhenBufferSizeIsNegative_ShouldThrowExactly()
     {
         using SimpleReversingCryptoTransform transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
-        using var source = new MemoryStream(new byte[] { 1, 2, 3, 4 });
+        using var source = new MemoryStream([1, 2, 3, 4]);
         using var target = new MemoryStream();
 
         await Assert.ThrowsExactlyAsync<ArgumentOutOfRangeException>(async () =>
@@ -236,7 +236,7 @@ public partial class ICryptoTransformExtensionsTests
     public async Task TransformAsync_Memory_WhenTransformIsNull_ShouldThrowExactly()
     {
         ICryptoTransform? transform = null;
-        var input = new ReadOnlyMemory<byte>(new byte[] { 1, 2, 3, 4 });
+        var input = new ReadOnlyMemory<byte>([1, 2, 3, 4]);
         var destination = new Memory<byte>(new byte[64]);
 
         await Assert.ThrowsExactlyAsync<ArgumentNullException>(async () =>

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateServiceBuilderExtensions.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -49,8 +49,8 @@ namespace Bodu.Globalization.Calendar.DependencyInjection;
 public static class NotableDateServiceBuilderExtensions
 {
     /// <summary>
-    /// Adds an <see cref="INotableDateRuleProvider" /> instance to the builder so that it contributes base rules to
-    /// the resolved <see cref="INotableDateService" />.
+    /// Adds an <see cref="INotableDateRuleProvider" /> instance to the builder so that it contributes base rules to the
+    /// resolved <see cref="INotableDateService" />.
     /// </summary>
     /// <param name="builder">The builder. Must not be <see langword="null" />.</param>
     /// <param name="provider">The rule provider. Must not be <see langword="null" />.</param>
@@ -188,7 +188,7 @@ public static class NotableDateServiceBuilderExtensions
     ///     .AddRuleProviders(AsiaPacificCalendarData.CreateProviders())
     ///     .AddOverrideProvider(overrides);
     ///
-    /// // Later, anywhere in the application:
+    /// Later, anywhere in the application:
     /// overrides.AddRule(new NotableDateRule
     /// {
     ///     Name = "Company Founding Day",
@@ -211,8 +211,8 @@ public static class NotableDateServiceBuilderExtensions
     }
 
     /// <summary>
-    /// Adds an <see cref="INotableDateRuleOverrideProvider" /> type as a singleton so that it is materialised lazily
-    /// by the container.
+    /// Adds an <see cref="INotableDateRuleOverrideProvider" /> type as a singleton so that it is materialised lazily by
+    /// the container.
     /// </summary>
     /// <typeparam name="TOverride">The override provider type to register.</typeparam>
     /// <param name="builder">The builder. Must not be <see langword="null" />.</param>
@@ -347,8 +347,8 @@ public static class NotableDateServiceBuilderExtensions
     }
 
     /// <summary>
-    /// Layers an additional configuration callback onto <see cref="NotableDateOptions" /> so that programmatic
-    /// settings overlay any value bound from <see cref="Microsoft.Extensions.Configuration.IConfiguration" />.
+    /// Layers an additional configuration callback onto <see cref="NotableDateOptions" /> so that programmatic settings
+    /// overlay any value bound from <see cref="Microsoft.Extensions.Configuration.IConfiguration" />.
     /// </summary>
     /// <param name="builder">The builder. Must not be <see langword="null" />.</param>
     /// <param name="configure">
@@ -430,8 +430,7 @@ public static class NotableDateServiceBuilderExtensions
     }
 
     /// <summary>
-    /// Overrides the working-week preset that the resolved <see cref="INotableDateService" /> classifies dates
-    /// against.
+    /// Overrides the working-week preset that the resolved <see cref="INotableDateService" /> classifies dates against.
     /// </summary>
     /// <param name="builder">The builder. Must not be <see langword="null" />.</param>
     /// <param name="workingDays">The working-week preset.</param>

@@ -452,7 +452,7 @@ public sealed class RemainingGapCoverageTests
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
-            _ = Base85.EncodeToUtf8(new byte[] { 1, 2, 3 }, Base85Variant.Z85);
+            _ = Base85.EncodeToUtf8([1, 2, 3], Base85Variant.Z85);
         });
     }
 
@@ -475,7 +475,7 @@ public sealed class RemainingGapCoverageTests
     {
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
-            _ = Base85.GetEncodedLength(new byte[] { 0x01, 0x02, 0x03 }, Base85Variant.Z85);
+            _ = Base85.GetEncodedLength([0x01, 0x02, 0x03], Base85Variant.Z85);
         });
     }
 
@@ -550,7 +550,7 @@ public sealed class RemainingGapCoverageTests
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
-            _ = Base85.TryEncodeToUtf8(new byte[] { 1, 2, 3 }, destination, out _, Base85Variant.Z85);
+            _ = Base85.TryEncodeToUtf8([1, 2, 3], destination, out _, Base85Variant.Z85);
         });
     }
 

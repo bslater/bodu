@@ -31,13 +31,13 @@ namespace Bodu.IO.Hashing.Checksums;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// // Single-call computation against the 12-digit body.
+/// Single-call computation against the 12-digit body.
 /// char check = Isbn13.Compute("978030640615");   // '7'
 ///
-/// // Full-sequence validation.
+/// Full-sequence validation.
 /// bool ok = Isbn13.IsValid("9780306406157");     // true
 ///
-/// // Streaming use when the body is built up incrementally.
+/// Streaming use when the body is built up incrementally.
 /// var algo = new Isbn13();
 /// algo.Append("978030640615");
 /// char d = algo.GetCurrentCheckDigit();          // '7'

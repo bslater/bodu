@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConcurrentHashSetTests.Exceptions.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -89,7 +89,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void Exceptions_CopyTo_WhenDestinationInvalid_ShouldThrow()
     {
-        var set = new ConcurrentHashSet<int>(new[] { 1, 2, 3 });
+        var set = new ConcurrentHashSet<int>([1, 2, 3]);
 
         Assert.AreEqual("array", Assert.ThrowsExactly<ArgumentNullException>(() => set.CopyTo(null!, 0)).ParamName);
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => set.CopyTo(new int[3], -1));
@@ -116,7 +116,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void Exceptions_NonGenericCopyTo_WhenDestinationInvalid_ShouldThrow()
     {
-        System.Collections.ICollection set = new ConcurrentHashSet<int>(new[] { 1, 2 });
+        System.Collections.ICollection set = new ConcurrentHashSet<int>([1, 2]);
 
         Assert.ThrowsExactly<ArgumentNullException>(() => set.CopyTo(null!, 0));
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => set.CopyTo(new int[2], -1));

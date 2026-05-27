@@ -25,11 +25,11 @@ namespace Bodu.Text.Bencode;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// // Construct from raw bytes or from a UTF-8 string.
+/// Construct from raw bytes or from a UTF-8 string.
 /// var hash  = new BencodedString(infoHashBytes);
 /// var label = BencodedString.FromUtf8("comment");
 ///
-/// // Inspect the payload — Bytes for raw, GetUtf8String only when text is expected.
+/// Inspect the payload — Bytes for raw, GetUtf8String only when text is expected.
 /// ReadOnlySpan<byte> raw  = hash.Bytes.Span;
 /// string             text = label.GetUtf8String();   // "comment"
 ///]]>

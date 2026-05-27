@@ -33,12 +33,12 @@ namespace Bodu.Globalization.Calendar;
 /// </para>
 /// <code>
 ///<![CDATA[
-/// // Compose the registry once at start-up:
+/// Compose the registry once at start-up:
 /// NotableDateAlgorithmRegistry registry = new NotableDateAlgorithmRegistry()
 ///     .Register("easter-sunday",   new GregorianEasterSundayNotableDateProvider())
 ///     .Register("orthodox-easter", new OrthodoxEasterSundayNotableDateProvider());
 ///
-/// // Author a rule that resolves through the algorithm:
+/// Author a rule that resolves through the algorithm:
 /// NotableDateRule easterSunday = new NotableDateRule
 /// {
 ///     Name = "Easter Sunday",
@@ -48,7 +48,7 @@ namespace Bodu.Globalization.Calendar;
 ///     Tags = ImmutableHashSet.Create("Christian", "Easter"),
 /// };
 ///
-/// // Wire registry into the service so DateResolutionStrategy.Algorithm rules can be resolved:
+/// Wire registry into the service so DateResolutionStrategy.Algorithm rules can be resolved:
 /// NotableDateService service = new NotableDateService(
 ///     ruleProviders: new[] { new InMemoryRuleProvider(new[] { easterSunday }) },
 ///     workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,

@@ -27,7 +27,7 @@ public sealed class BinaryEncodingsCoverageTests
     public void AllAdapters_ShouldExposeNameAndDescription()
     {
         IBinaryEncoding[] encodings =
-        {
+        [
             BinaryEncodings.Base16Lower,
             BinaryEncodings.Base16Upper,
             BinaryEncodings.Base32,
@@ -41,7 +41,7 @@ public sealed class BinaryEncodingsCoverageTests
             BinaryEncodings.Base64UrlSafe,
             BinaryEncodings.Ascii85,
             BinaryEncodings.Z85,
-        };
+        ];
 
         foreach (IBinaryEncoding encoding in encodings)
         {

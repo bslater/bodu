@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="PooledBufferBuilderKatTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -17,20 +17,20 @@ namespace Bodu.Buffers;
 [TestClass]
 public sealed class PooledBufferBuilderKatTests
 {
-    private static IReadOnlyList<BufferWriteKat> WriteKats { get; } = new BufferWriteKat[]
-    {
+    private static IReadOnlyList<BufferWriteKat> WriteKats { get; } =
+    [
         new(Name: "single item",       InitialCapacity: 16, Append: [42],                  ExpectedCount: 1),
         new(Name: "three items",       InitialCapacity: 16, Append: [1, 2, 3],             ExpectedCount: 3),
         new(Name: "fills capacity",    InitialCapacity: 4,  Append: [10, 20, 30, 40],      ExpectedCount: 4),
-    };
+    ];
 
     // ArrayPool may round up the rented buffer size, so the "ExpectsGrowth = false" rows are framed
     // around the actual rented capacity rather than the requested initialCapacity.
-    private static IReadOnlyList<BufferCapacityKat> CapacityKats { get; } = new BufferCapacityKat[]
-    {
+    private static IReadOnlyList<BufferCapacityKat> CapacityKats { get; } =
+    [
         new(Name: "small append into 256 builder",   InitialCapacity: 256,  AppendCount: 4,    ExpectsGrowth: false),
         new(Name: "append exceeds 256 capacity",     InitialCapacity: 256,  AppendCount: 1024, ExpectsGrowth: true),
-    };
+    ];
 
     /// <summary>
     /// Verifies that each <see cref="BufferWriteKat" /> row leaves the builder with the expected

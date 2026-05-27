@@ -88,11 +88,11 @@ namespace Bodu.Globalization.Calendar.Builder;
 ///             .NonWorking()
 ///             .OffsetFromAnchor("Easter Sunday", 1)));
 ///
-/// // Persist as XML or JSON.
+/// Persist as XML or JSON.
 /// string xml = builder.ToXml();
 /// string json = builder.ToJson();
 ///
-/// // Or pass directly to the service.
+/// Or pass directly to the service.
 /// NotableDateService service = new(new[] { builder.ToProvider() });
 ///]]>
 /// </code>

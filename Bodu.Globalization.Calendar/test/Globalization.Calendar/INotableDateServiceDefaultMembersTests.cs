@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="INotableDateServiceDefaultMembersTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -76,11 +76,11 @@ public sealed class INotableDateServiceDefaultMembersTests
         DateTime date = new(2026, 6, 1);
         INotableDateService service = new MinimalNotableDateService
         {
-            DatesForSingleDay = new[]
-            {
+            DatesForSingleDay =
+            [
                 new NotableDate { Date = date, Name = "X", Category = NotableDateCategory.Holiday, IsNonWorkingDay = false },
                 new NotableDate { Date = date, Name = "Y", Category = NotableDateCategory.Holiday, IsNonWorkingDay = true },
-            },
+            ],
         };
 
         Assert.IsTrue(service.IsHolidayNonWorkingDay(date));
@@ -96,10 +96,10 @@ public sealed class INotableDateServiceDefaultMembersTests
         DateTime date = new(2026, 6, 1);
         INotableDateService service = new MinimalNotableDateService
         {
-            DatesForSingleDay = new[]
-            {
+            DatesForSingleDay =
+            [
                 new NotableDate { Date = date, Name = "X", Category = NotableDateCategory.Holiday, IsNonWorkingDay = false },
-            },
+            ],
         };
 
         Assert.IsFalse(service.IsHolidayNonWorkingDay(date));

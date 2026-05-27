@@ -28,7 +28,7 @@ namespace Bodu.Extensions.Configuration.Text;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// // Diagnostic introspection: locate the Bodu stream provider after the configuration root has been built.
+/// Diagnostic introspection: locate the Bodu stream provider after the configuration root has been built.
 /// IConfigurationRoot root = builder.Build();
 /// TextStreamConfigurationProvider? bodu = root.Providers
 ///     .OfType<TextStreamConfigurationProvider>()

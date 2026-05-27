@@ -39,7 +39,7 @@ namespace Bodu.Xml.Linq;
 ///
 /// var ns = new XmlNamespaceResolver(doc.Root!);
 ///
-/// // Look up by local name without re-stating the namespace at every call site.
+/// Look up by local name without re-stating the namespace at every call site.
 /// XElement? book  = ns.Element(doc.Root!, "book");
 /// XElement? title = ns.Element(book!,     "title");
 /// Console.WriteLine(title?.Value); // Foundation

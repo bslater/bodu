@@ -100,7 +100,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
         transform.Dispose();
 
         Assert.ThrowsExactly<ObjectDisposedException>(() =>
-            transform.ProcessAssociatedData(new byte[] { 0x01, 0x02, 0x03 }));
+            transform.ProcessAssociatedData([0x01, 0x02, 0x03]));
     }
 
     // ── Sensitive field clearing ──────────────────────────────────────────────────────────────
@@ -127,7 +127,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
 
         TTransform transform = MakeTransform();
 
-        transform.ProcessAssociatedData(new byte[] { 0x01, 0x02, 0x03, 0x04 });
+        transform.ProcessAssociatedData([0x01, 0x02, 0x03, 0x04]);
 
         var plaintext = new byte[ExpectedBlockSize];
         var output = new byte[plaintext.Length + (transform.TagSize / 8)];

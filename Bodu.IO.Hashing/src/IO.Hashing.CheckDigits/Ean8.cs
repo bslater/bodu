@@ -27,13 +27,13 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// // Single-call computation against the 7-digit body.
+/// Single-call computation against the 7-digit body.
 /// char check = Ean8.Compute("7351353");   // '7'
 ///
-/// // Full-sequence validation.
+/// Full-sequence validation.
 /// bool ok = Ean8.IsValid("73513537");     // true
 ///
-/// // Streaming use when the body is built up incrementally.
+/// Streaming use when the body is built up incrementally.
 /// var algo = new Ean8();
 /// algo.Append("7351353");
 /// char d = algo.GetCurrentCheckDigit();   // '7'

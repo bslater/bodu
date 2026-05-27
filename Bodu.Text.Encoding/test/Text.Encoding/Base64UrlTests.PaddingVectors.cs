@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base64UrlTests.PaddingVectors.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -111,7 +111,7 @@ public sealed class Base64UrlTests_PaddingVectors
     [TestMethod]
     public void Encode_ShouldOmitPaddingAndMatchUnderlyingVariant()
     {
-        byte[] source = new byte[] { 0x01 };
+        byte[] source = [0x01];
 
         string actual = Base64Url.Encode(source);
         string viaVariant = Base64.Encode(source, Base64Variant.UrlSafe);

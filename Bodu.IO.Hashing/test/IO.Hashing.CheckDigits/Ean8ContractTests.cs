@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Ean8ContractTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -25,9 +25,9 @@ public sealed class Ean8ContractTests : CheckDigitContractTests<Ean8>
         Ean8.IsValid(fullValue.AsSpan());
 
     /// <inheritdoc />
-    protected override IReadOnlyList<CheckDigitKat> KnownAnswers { get; } = new CheckDigitKat[]
-    {
+    protected override IReadOnlyList<CheckDigitKat> KnownAnswers { get; } =
+    [
         new("Wikipedia EAN-8",  Payload: "7351353", CheckDigit: "7", FullValue: "73513537"),
         new("all zeros",        Payload: "0000000", CheckDigit: "0", FullValue: "00000000"),
-    };
+    ];
 }

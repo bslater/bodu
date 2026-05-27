@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="UnitedStatesCalendarDataKatTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -6,7 +6,7 @@
 
 using Bodu.Test.Kat;
 
-namespace Bodu.Globalization.Calendar.Data.Americas.Tests;
+namespace Bodu.Globalization.Calendar.Data;
 
 /// <summary>
 /// Drives <see cref="CalendarDataKat" /> rows against the public Americas calendar service surface,
@@ -17,8 +17,8 @@ namespace Bodu.Globalization.Calendar.Data.Americas.Tests;
 [TestClass]
 public sealed class UnitedStatesCalendarDataKatTests
 {
-    private static IReadOnlyList<CalendarDataKat> Kats { get; } = new CalendarDataKat[]
-    {
+    private static IReadOnlyList<CalendarDataKat> Kats { get; } =
+    [
         // Independence Day 2025 is Friday — no weekend substitute applies.
         new(
             Name: "US Independence Day 2025 (Friday, no substitute)",
@@ -37,7 +37,7 @@ public sealed class UnitedStatesCalendarDataKatTests
             Year: 2026,
             NotableDateName: "Independence Day",
             ExpectedDate: new DateOnly(2026, 7, 6)),
-    };
+    ];
 
     /// <summary>
     /// Verifies that each <see cref="CalendarDataKat" /> row drives the public US data provider to its

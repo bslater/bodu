@@ -24,10 +24,10 @@ namespace Bodu.Text.Delimited;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// // Strict RFC 4180 CSV with a header row.
+/// Strict RFC 4180 CSV with a header row.
 /// DelimitedDocument csv = Delimited.Parse(text);
 ///
-/// // Tab-separated, no header, allow # comments.
+/// Tab-separated, no header, allow # comments.
 /// var tsv = new DelimitedParseOptions
 /// {
 ///     Delimiter         = '\t',

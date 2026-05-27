@@ -23,7 +23,7 @@ public abstract partial class FletcherTests<TTest, TAlgorithm>
     public void PadBlock_WhenInvokedDirectly_ShouldReturnSingleByteBlockWithResidualPrefix()
     {
         PaddingFletcher fletcher = new();
-        byte[] residual = { 0xAA };
+        byte[] residual = [0xAA];
 
         var padded = fletcher.PadBlockExposed(residual, messageLength: 1);
 

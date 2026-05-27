@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateServiceTests.Reload.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -21,7 +21,7 @@ public partial class NotableDateServiceTests
     {
         NotableDateRule baseRule = Fixed("Base", 6, 1);
         NotableDateService service = new(
-            ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(baseRule) },
+            ruleProviders: [(INotableDateRuleProvider)new InMemoryRuleProvider(baseRule)],
             workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 
         IReadOnlyList<NotableDate> before = service.GetNotableDates(2026);
@@ -45,9 +45,9 @@ public partial class NotableDateServiceTests
         MutableNotableDateRuleOverrideProvider overrides = new();
 
         NotableDateService service = new(
-            ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(baseRule) },
+            ruleProviders: [(INotableDateRuleProvider)new InMemoryRuleProvider(baseRule)],
             workingWeek: WeekPattern.MondayToFriday,
-            options: new NotableDateServiceOptions { OverrideProviders = new[] { overrides } });
+            options: new NotableDateServiceOptions { OverrideProviders = [overrides] });
 
         Assert.IsFalse(service.GetNotableDates(2026).Any(n => n.Name == "Late Addition"));
 
@@ -69,9 +69,9 @@ public partial class NotableDateServiceTests
         MutableNotableDateRuleOverrideProvider overrides = new();
 
         NotableDateService service = new(
-            ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(baseRule) },
+            ruleProviders: [(INotableDateRuleProvider)new InMemoryRuleProvider(baseRule)],
             workingWeek: WeekPattern.MondayToFriday,
-            options: new NotableDateServiceOptions { OverrideProviders = new[] { overrides } });
+            options: new NotableDateServiceOptions { OverrideProviders = [overrides] });
 
         Assert.IsTrue(service.GetNotableDates(2026).Any(n => n.Name == "Holiday"));
 
@@ -92,9 +92,9 @@ public partial class NotableDateServiceTests
         MutableNotableDateRuleOverrideProvider overrides = new();
 
         NotableDateService service = new(
-            ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(baseRule) },
+            ruleProviders: [(INotableDateRuleProvider)new InMemoryRuleProvider(baseRule)],
             workingWeek: WeekPattern.MondayToFriday,
-            options: new NotableDateServiceOptions { OverrideProviders = new[] { overrides } });
+            options: new NotableDateServiceOptions { OverrideProviders = [overrides] });
 
         IReadOnlyList<NotableDate> firstQuery = service.GetNotableDates(2026);
 
@@ -117,9 +117,9 @@ public partial class NotableDateServiceTests
         MutableNotableDateRuleOverrideProvider overrides = new();
 
         NotableDateService service = new(
-            ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(baseRule) },
+            ruleProviders: [(INotableDateRuleProvider)new InMemoryRuleProvider(baseRule)],
             workingWeek: WeekPattern.MondayToFriday,
-            options: new NotableDateServiceOptions { OverrideProviders = new[] { overrides } });
+            options: new NotableDateServiceOptions { OverrideProviders = [overrides] });
 
         overrides.AddRule(Fixed("First", 9, 1));
         service.Reload();
@@ -146,9 +146,9 @@ public partial class NotableDateServiceTests
         MutableNotableDateRuleOverrideProvider overrides = new();
 
         NotableDateService service = new(
-            ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(baseRule) },
+            ruleProviders: [(INotableDateRuleProvider)new InMemoryRuleProvider(baseRule)],
             workingWeek: WeekPattern.MondayToFriday,
-            options: new NotableDateServiceOptions { OverrideProviders = new[] { overrides } });
+            options: new NotableDateServiceOptions { OverrideProviders = [overrides] });
 
         using CancellationTokenSource cts = new();
         Task readerA = Task.Run(() =>
@@ -173,7 +173,7 @@ public partial class NotableDateServiceTests
         }
 
         cts.Cancel();
-        Task.WaitAll(new[] { readerA, readerB }, TimeSpan.FromSeconds(5));
+        Task.WaitAll([readerA, readerB], TimeSpan.FromSeconds(5));
     }
 
     /// <summary>
@@ -187,9 +187,9 @@ public partial class NotableDateServiceTests
         MutableNotableDateRuleOverrideProvider providerB = new();
 
         NotableDateService service = new(
-            ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(Fixed("Base", 6, 1)) },
+            ruleProviders: [(INotableDateRuleProvider)new InMemoryRuleProvider(Fixed("Base", 6, 1))],
             workingWeek: WeekPattern.MondayToFriday,
-            options: new NotableDateServiceOptions { OverrideProviders = new INotableDateRuleOverrideProvider[] { providerA, providerB } });
+            options: new NotableDateServiceOptions { OverrideProviders = [providerA, providerB] });
 
         providerA.AddRule(Fixed("From A", 7, 1));
         providerB.AddRule(Fixed("From B", 8, 1));
@@ -209,9 +209,9 @@ public partial class NotableDateServiceTests
     {
         MutableNotableDateRuleOverrideProvider overrides = new();
         NotableDateService service = new(
-            ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(Fixed("Holiday", 6, 1)) },
+            ruleProviders: [(INotableDateRuleProvider)new InMemoryRuleProvider(Fixed("Holiday", 6, 1))],
             workingWeek: WeekPattern.MondayToFriday,
-            options: new NotableDateServiceOptions { OverrideProviders = new[] { overrides } });
+            options: new NotableDateServiceOptions { OverrideProviders = [overrides] });
 
         overrides.RemoveRule("Holiday", fromYear: 2026, toYear: 2026);
         service.Reload();
@@ -230,9 +230,9 @@ public partial class NotableDateServiceTests
     {
         MutableNotableDateRuleOverrideProvider overrides = new();
         NotableDateService service = new(
-            ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(Fixed("Base", 6, 1)) },
+            ruleProviders: [(INotableDateRuleProvider)new InMemoryRuleProvider(Fixed("Base", 6, 1))],
             workingWeek: WeekPattern.MondayToFriday,
-            options: new NotableDateServiceOptions { OverrideProviders = new[] { overrides } });
+            options: new NotableDateServiceOptions { OverrideProviders = [overrides] });
 
         overrides.AddRule(Fixed("Once", 9, 9));
 
@@ -253,9 +253,9 @@ public partial class NotableDateServiceTests
     {
         MutableNotableDateRuleOverrideProvider overrides = new();
         NotableDateService service = new(
-            ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(Fixed("Base", 6, 1)) },
+            ruleProviders: [(INotableDateRuleProvider)new InMemoryRuleProvider(Fixed("Base", 6, 1))],
             workingWeek: WeekPattern.MondayToFriday,
-            options: new NotableDateServiceOptions { OverrideProviders = new[] { overrides } });
+            options: new NotableDateServiceOptions { OverrideProviders = [overrides] });
 
         overrides.AddRule(Fixed("Temporary", 7, 1));
         service.Reload();
@@ -278,9 +278,9 @@ public partial class NotableDateServiceTests
         MutableNotableDateRuleOverrideProvider overrides = new();
 
         NotableDateService service = new(
-            ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(baseRule) },
+            ruleProviders: [(INotableDateRuleProvider)new InMemoryRuleProvider(baseRule)],
             workingWeek: WeekPattern.MondayToFriday,
-            options: new NotableDateServiceOptions { OverrideProviders = new[] { overrides } });
+            options: new NotableDateServiceOptions { OverrideProviders = [overrides] });
 
         overrides.Changed += (_, _) => service.Reload();
 

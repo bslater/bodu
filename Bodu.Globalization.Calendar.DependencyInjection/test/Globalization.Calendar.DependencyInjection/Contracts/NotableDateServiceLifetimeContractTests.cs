@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateServiceLifetimeContractTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -20,13 +20,13 @@ namespace Bodu.Globalization.Calendar.DependencyInjection.Contracts;
 public sealed class NotableDateServiceLifetimeContractTests : ServiceLifetimeContractTests
 {
     /// <inheritdoc />
-    protected override IReadOnlyList<ServiceRegistrationKat> Registrations { get; } = new ServiceRegistrationKat[]
-    {
+    protected override IReadOnlyList<ServiceRegistrationKat> Registrations { get; } =
+    [
         new(
             Name: "AddNotableDates registers INotableDateService as singleton",
             Register: services => services.AddNotableDates(),
             ServiceType: typeof(INotableDateService),
             ExpectedLifetime: ServiceLifetime.Singleton,
             ShouldResolve: true),
-    };
+    ];
 }

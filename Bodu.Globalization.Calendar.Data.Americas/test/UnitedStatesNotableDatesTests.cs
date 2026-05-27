@@ -1,12 +1,10 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="UnitedStatesNotableDatesTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Extensions;
-
-namespace Bodu.Globalization.Calendar.Data.Americas.Tests;
+namespace Bodu.Globalization.Calendar.Data;
 
 /// <summary>
 /// Verifies that the United States rule catalogue shipped in the Americas data pack flattens correctly
@@ -97,7 +95,7 @@ public sealed class UnitedStatesNotableDatesTests
     public void GetNotableDates_WhenServiceLoadedWithUnitedStatesProvider_ShouldNotIncludeOtherRegions()
     {
         NotableDateService service = new(
-            new[] { AmericasCalendarData.CreateUnitedStatesProvider() },
+            [AmericasCalendarData.CreateUnitedStatesProvider()],
             WorkingDaysOfWeek.MondayToFriday);
 
         List<NotableDate> bastille = service.GetNotableDates(2026, "FR").Where(d => d.Name == "Bastille Day").ToList();

@@ -6,7 +6,7 @@
 
 using System.Reflection;
 
-namespace Bodu.Globalization.Calendar.Data.AsiaPacific;
+namespace Bodu.Globalization.Calendar.Data;
 
 /// <summary>
 /// Provides factory entry points for the Asia-Pacific region calendar data pack — embedded notable-date rules for
@@ -166,5 +166,5 @@ public static class AsiaPacificCalendarData
         new XmlResourceNotableDateRuleProvider(
             resourceName,
             new ResourcePathResolver(),
-            new[] { DataAssembly, typeof(NotableDateService).Assembly });
+            [DataAssembly, typeof(NotableDateService).Assembly]);
 }

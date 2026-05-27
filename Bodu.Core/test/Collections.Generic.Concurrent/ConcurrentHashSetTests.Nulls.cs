@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConcurrentHashSetTests.Nulls.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -85,7 +85,7 @@ public partial class ConcurrentHashSetTests
 
         var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            set.UnionWith(new string[] { "a", null!, "b" });
+            set.UnionWith(["a", null!, "b"]);
         });
 
         Assert.AreEqual("item", ex.ParamName);
@@ -102,7 +102,7 @@ public partial class ConcurrentHashSetTests
 
         var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            set.IntersectWith(new string[] { "a", null!, "b" });
+            set.IntersectWith(["a", null!, "b"]);
         });
 
         Assert.AreEqual("item", ex.ParamName);
@@ -119,7 +119,7 @@ public partial class ConcurrentHashSetTests
 
         var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            set.ExceptWith(new string[] { "a", null!, "b" });
+            set.ExceptWith(["a", null!, "b"]);
         });
 
         Assert.AreEqual("item", ex.ParamName);
@@ -136,7 +136,7 @@ public partial class ConcurrentHashSetTests
 
         var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            set.SymmetricExceptWith(new string[] { "a", null!, "b" });
+            set.SymmetricExceptWith(["a", null!, "b"]);
         });
 
         Assert.AreEqual("item", ex.ParamName);
@@ -149,11 +149,11 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void IsSubsetOf_WhenOtherContainsNull_ShouldThrowArgumentNullExceptionForItem()
     {
-        var set = new ConcurrentHashSet<string>(new[] { "x" });
+        var set = new ConcurrentHashSet<string>(["x"]);
 
         var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            set.IsSubsetOf(new string[] { "a", null!, "b" });
+            set.IsSubsetOf(["a", null!, "b"]);
         });
 
         Assert.AreEqual("item", ex.ParamName);
@@ -170,7 +170,7 @@ public partial class ConcurrentHashSetTests
 
         var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            set.IsSubsetOf(new string[] { "a", null!, "b" });
+            set.IsSubsetOf(["a", null!, "b"]);
         });
 
         Assert.AreEqual("item", ex.ParamName);
@@ -183,11 +183,11 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void IsSupersetOf_WhenOtherContainsNull_ShouldThrowArgumentNullExceptionForItem()
     {
-        var set = new ConcurrentHashSet<string>(new[] { "a" });
+        var set = new ConcurrentHashSet<string>(["a"]);
 
         var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            set.IsSupersetOf(new string[] { "a", null!, "b" });
+            set.IsSupersetOf(["a", null!, "b"]);
         });
 
         Assert.AreEqual("item", ex.ParamName);
@@ -204,7 +204,7 @@ public partial class ConcurrentHashSetTests
 
         var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            set.IsProperSubsetOf(new string[] { "a", null!, "b" });
+            set.IsProperSubsetOf(["a", null!, "b"]);
         });
 
         Assert.AreEqual("item", ex.ParamName);
@@ -221,7 +221,7 @@ public partial class ConcurrentHashSetTests
 
         var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            set.IsProperSupersetOf(new string[] { "a", null!, "b" });
+            set.IsProperSupersetOf(["a", null!, "b"]);
         });
 
         Assert.AreEqual("item", ex.ParamName);
@@ -238,7 +238,7 @@ public partial class ConcurrentHashSetTests
 
         var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            set.Overlaps(new string[] { "a", null!, "b" });
+            set.Overlaps(["a", null!, "b"]);
         });
 
         Assert.AreEqual("item", ex.ParamName);
@@ -255,7 +255,7 @@ public partial class ConcurrentHashSetTests
 
         var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            set.SetEquals(new string[] { "a", null!, "b" });
+            set.SetEquals(["a", null!, "b"]);
         });
 
         Assert.AreEqual("item", ex.ParamName);

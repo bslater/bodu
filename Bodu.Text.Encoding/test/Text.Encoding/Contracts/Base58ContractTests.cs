@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base58ContractTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -41,21 +41,21 @@ public sealed class Base58ContractTests : BinaryEncodingContractTests<object>
         Base58.TryDecode(text.AsSpan(), destination, out bytesWritten);
 
     /// <inheritdoc />
-    protected override IReadOnlyList<BinaryEncodingKat> KnownAnswers { get; } = new BinaryEncodingKat[]
-    {
+    protected override IReadOnlyList<BinaryEncodingKat> KnownAnswers { get; } =
+    [
         new("single zero byte", [0x00], "1"),
         new("two zero bytes", [0x00, 0x00], "11"),
         new("zero-prefixed payload", [0x00, 0x01], "12"),
         new("single 0x39 byte", [0x39], "z"),
         new("ASCII 'Hello'", "Hello"u8.ToArray(), "9Ajdvzr"),
-    };
+    ];
 
     /// <inheritdoc />
-    protected override IReadOnlyList<InvalidEncodedTextKat> InvalidInputs { get; } = new InvalidEncodedTextKat[]
-    {
+    protected override IReadOnlyList<InvalidEncodedTextKat> InvalidInputs { get; } =
+    [
         new("zero digit not in alphabet", "10"),
         new("capital O not in alphabet", "9OAjdvzr"),
         new("capital I not in alphabet", "9Ajdvzr0I"),
         new("lowercase l not in alphabet", "9Ajldvzr"),
-    };
+    ];
 }

@@ -34,7 +34,7 @@ public sealed class NotableDateRuleResolverHebrewAliasTests
             SweepCalendarYears = true,
         };
 
-        NotableDateRuleResolver resolver = new(new[] { rule });
+        NotableDateRuleResolver resolver = new([rule]);
 
         DateTime? date = resolver.ResolveAnchorDate(rule, 2026);
 
@@ -66,7 +66,7 @@ public sealed class NotableDateRuleResolverHebrewAliasTests
             SweepCalendarYears = true,
         };
 
-        NotableDateRuleResolver resolver = new(new[] { rule });
+        NotableDateRuleResolver resolver = new([rule]);
 
         DateTime? date = resolver.ResolveAnchorDate(rule, 2026);
 
@@ -92,7 +92,7 @@ public sealed class NotableDateRuleResolverHebrewAliasTests
             SweepCalendarYears = true,
         };
 
-        NotableDateRuleResolver resolver = new(new[] { rule });
+        NotableDateRuleResolver resolver = new([rule]);
 
         DateTime? date = resolver.ResolveAnchorDate(rule, 2026);
 
@@ -116,7 +116,7 @@ public sealed class NotableDateRuleResolverHebrewAliasTests
             SweepCalendarYears = true,
         };
 
-        NotableDateRuleResolver resolver = new(new[] { rule });
+        NotableDateRuleResolver resolver = new([rule]);
 
         DateTime? date = resolver.ResolveAnchorDate(rule, 2026);
 
@@ -141,7 +141,7 @@ public sealed class NotableDateRuleResolverHebrewAliasTests
             SweepCalendarYears = true,
         };
 
-        NotableDateRuleResolver resolver = new(new[] { rule });
+        NotableDateRuleResolver resolver = new([rule]);
 
         DateTime? date = resolver.ResolveAnchorDate(rule, 2026);
 
@@ -181,7 +181,7 @@ public sealed class NotableDateRuleResolverHebrewAliasTests
             SweepCalendarYears = true,
         };
 
-        NotableDateRuleResolver resolver = new(new[] { rule });
+        NotableDateRuleResolver resolver = new([rule]);
 
         // Both calendar years scanned by the sweep are exercised — 5786 (regular) supplies the false-branch arms,
         // 5787 (leap) supplies the true-branch arms.
@@ -209,7 +209,7 @@ public sealed class NotableDateRuleResolverHebrewAliasTests
             SweepCalendarYears = true,
         };
 
-        NotableDateRuleResolver resolver = new(new[] { rule });
+        NotableDateRuleResolver resolver = new([rule]);
 
         DateTime? date = resolver.ResolveAnchorDate(rule, 2027);
 

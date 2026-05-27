@@ -4,7 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Globalization.Calendar.Data.Americas.Tests;
+namespace Bodu.Globalization.Calendar.Data;
 
 /// <summary>
 /// Verifies the public surface of <see cref="AmericasCalendarData" /> — that each per-country factory produces a flattened rule

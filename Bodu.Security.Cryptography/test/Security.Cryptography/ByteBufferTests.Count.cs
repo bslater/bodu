@@ -17,7 +17,7 @@ public partial class ByteBufferTests
     public void Count_WhenBytesAdded_ShouldReturnCorrectCount()
     {
         var buffer = new ByteBuffer(4);
-        buffer.Add(new byte[] { 1, 2 }, 0, 2);
+        buffer.Add([1, 2], 0, 2);
         Assert.AreEqual(2, buffer.Count);
     }
 
@@ -38,7 +38,7 @@ public partial class ByteBufferTests
     public void Count_WhenReset_ShouldReturnZero()
     {
         var buffer = new ByteBuffer(4);
-        buffer.Add(new byte[] { 1, 2 }, 0, 2);
+        buffer.Add([1, 2], 0, 2);
         buffer.Initialize();
         Assert.AreEqual(0, buffer.Count);
     }

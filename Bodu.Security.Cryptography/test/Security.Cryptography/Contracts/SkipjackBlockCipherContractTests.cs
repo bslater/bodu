@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SkipjackBlockCipherContractTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -39,8 +39,8 @@ public sealed class SkipjackBlockCipherContractTests
     }
 
     /// <inheritdoc />
-    protected override IReadOnlyList<BlockCipherKat> KnownAnswers { get; } = new BlockCipherKat[]
-    {
+    protected override IReadOnlyList<BlockCipherKat> KnownAnswers { get; } =
+    [
         new(
             Name: "FIPS 185 §8 canonical vector",
             Algorithm: "Skipjack",
@@ -72,5 +72,5 @@ public sealed class SkipjackBlockCipherContractTests
             Plaintext: Convert.FromHexString("0000000000000000"),
             Ciphertext: Convert.FromHexString("F76307829359FC11"),
             BlockSizeBits: 64),
-    };
+    ];
 }

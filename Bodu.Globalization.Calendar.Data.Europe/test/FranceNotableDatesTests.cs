@@ -1,10 +1,10 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FranceNotableDatesTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Globalization.Calendar.Data.Europe.Tests;
+namespace Bodu.Globalization.Calendar.Data;
 
 /// <summary>
 /// Verifies that the France rule catalogue shipped in the Europe data pack flattens correctly through

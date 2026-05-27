@@ -45,7 +45,7 @@ public static partial class SequenceGenerator
     /// <example>
     /// <code language="csharp">
     ///<![CDATA[
-    /// // Adapt an external pull-style API into an IEnumerable<T> pipeline.
+    /// Adapt an external pull-style API into an IEnumerable<T> pipeline.
     /// IEnumerable<int> randomBytes = SequenceGenerator.Factory(() =>
     /// {
     ///     var rng = new Random(42);

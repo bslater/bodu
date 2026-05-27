@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateServiceTests.FilterScenarios.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -334,8 +334,7 @@ public sealed partial class NotableDateServiceTests
         Func<NotableDateService> serviceFactory,
         Func<NotableDateFilter> filterFactory,
         params string[] expectedNames) =>
-        new object[]
-        {
+        [
             new FilterScenarioKnownAnswer
             {
                 Scenario = scenario,
@@ -343,7 +342,7 @@ public sealed partial class NotableDateServiceTests
                 FilterFactory = filterFactory,
                 ExpectedNames = expectedNames,
             },
-        };
+        ];
 
     /// <summary>
     /// Same as <see cref="Scenario" />, but routes the row through a caller-supplied <paramref name="query" />
@@ -362,8 +361,7 @@ public sealed partial class NotableDateServiceTests
         Func<NotableDateFilter> filterFactory,
         Func<NotableDateService, NotableDateFilter, IReadOnlyList<NotableDate>> query,
         params string[] expectedNames) =>
-        new object[]
-        {
+        [
             new FilterScenarioKnownAnswer
             {
                 Scenario = scenario,
@@ -372,5 +370,5 @@ public sealed partial class NotableDateServiceTests
                 Query = query,
                 ExpectedNames = expectedNames,
             },
-        };
+        ];
 }

@@ -26,18 +26,18 @@ namespace Bodu.Globalization.Calendar.Plugins;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// // Production policy: pin SHA-256 hashes for every trusted plugin assembly.
+/// Production policy: pin SHA-256 hashes for every trusted plugin assembly.
 /// IPluginTrustPolicy policy = new FileHashPluginTrustPolicy(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
 /// {
 ///     ["AcmeHolidayPack.dll"] = "3a7bd3...e92f",
 /// });
 ///
-/// // Compose multiple policies — every child must return trusted.
+/// Compose multiple policies — every child must return trusted.
 /// IPluginTrustPolicy composed = new CompositePluginTrustPolicy(
 ///     new StrongNamePluginTrustPolicy(allowedTokens: new[] { "31bf3856ad364e35" }),
 ///     policy);
 ///
-/// // Custom one-off rule via the delegating policy.
+/// Custom one-off rule via the delegating policy.
 /// IPluginTrustPolicy noNetwork = new DelegatingPluginTrustPolicy(ctx =>
 ///     ctx.AssemblyPath.StartsWith(allowedDirectory, StringComparison.OrdinalIgnoreCase)
 ///         ? new PluginTrustResult(true, null)

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="KatDisplayNameTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -26,7 +26,7 @@ public sealed class KatDisplayNameTests
         MethodInfo method = typeof(KatDisplayNameTests).GetMethod(nameof(GetDisplayName_WhenFirstElementIsKat_ShouldReturnNamedRow))!;
         BinaryKat<int, bool> kat = new("sample-row", 1, true);
 
-        string actual = KatDisplayName.GetDisplayName(method, new object?[] { kat });
+        string actual = KatDisplayName.GetDisplayName(method, [kat]);
 
         Assert.AreEqual($"{method.Name}(sample-row)", actual);
     }
@@ -40,7 +40,7 @@ public sealed class KatDisplayNameTests
     {
         MethodInfo method = typeof(KatDisplayNameTests).GetMethod(nameof(GetDisplayName_WhenFirstElementIsNotKat_ShouldReturnMethodName))!;
 
-        string actual = KatDisplayName.GetDisplayName(method, new object?[] { 42, "not-a-kat" });
+        string actual = KatDisplayName.GetDisplayName(method, [42, "not-a-kat"]);
 
         Assert.AreEqual(method.Name, actual);
     }
@@ -68,7 +68,7 @@ public sealed class KatDisplayNameTests
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = KatDisplayName.GetDisplayName(null!, new object?[] { new BinaryKat<int, bool>("row", 0, false) });
+            _ = KatDisplayName.GetDisplayName(null!, [new BinaryKat<int, bool>("row", 0, false)]);
         });
     }
 }

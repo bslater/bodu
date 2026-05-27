@@ -16,8 +16,8 @@ public sealed partial class BencodedStringTests
     [TestMethod]
     public void GetHashCode_WhenSameBytes_ShouldReturnSameHash()
     {
-        BencodedString a = new(new byte[] { 0xDE, 0xAD });
-        BencodedString b = new(new byte[] { 0xDE, 0xAD });
+        BencodedString a = new([0xDE, 0xAD]);
+        BencodedString b = new([0xDE, 0xAD]);
 
         Assert.AreEqual(a.GetHashCode(), b.GetHashCode());
     }
@@ -28,8 +28,8 @@ public sealed partial class BencodedStringTests
     [TestMethod]
     public void TypedEquals_WhenDifferentBytes_ShouldReturnFalse()
     {
-        BencodedString a = new(new byte[] { 0xDE, 0xAD });
-        BencodedString b = new(new byte[] { 0xBE, 0xEF });
+        BencodedString a = new([0xDE, 0xAD]);
+        BencodedString b = new([0xBE, 0xEF]);
 
         Assert.IsFalse(a.Equals(b));
     }
@@ -41,7 +41,7 @@ public sealed partial class BencodedStringTests
     [TestMethod]
     public void TypedEquals_WhenOtherIsNull_ShouldReturnFalse()
     {
-        BencodedString a = new(new byte[] { 0xDE, 0xAD });
+        BencodedString a = new([0xDE, 0xAD]);
 
         Assert.IsFalse(a.Equals((BencodedString?)null));
     }
@@ -52,8 +52,8 @@ public sealed partial class BencodedStringTests
     [TestMethod]
     public void TypedEquals_WhenSameBytes_ShouldReturnTrue()
     {
-        BencodedString a = new(new byte[] { 0xDE, 0xAD });
-        BencodedString b = new(new byte[] { 0xDE, 0xAD });
+        BencodedString a = new([0xDE, 0xAD]);
+        BencodedString b = new([0xDE, 0xAD]);
 
         Assert.IsTrue(a.Equals(b));
     }

@@ -84,7 +84,7 @@ public partial class MonitoringHashAlgorithmTests
     {
         var algorithm = new MonitoringHashAlgorithm { Seed = 10 };
 
-        _ = algorithm.ComputeHash(new byte[] { 0x01, 0x02 });
+        _ = algorithm.ComputeHash([0x01, 0x02]);
         algorithm.Initialize();
 
         var fresh = algorithm.ComputeHash(Array.Empty<byte>());

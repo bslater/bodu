@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateServiceBuilderExtensionsTests.AddOverrideProvider.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -8,7 +8,7 @@ using Bodu.Globalization.Calendar;
 using Bodu.Globalization.Calendar.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Bodu.DependencyInjection;
+namespace Bodu.Globalization.Calendar.DependencyInjection;
 
 public partial class NotableDateServiceBuilderExtensionsTests
 {
@@ -53,7 +53,7 @@ public partial class NotableDateServiceBuilderExtensionsTests
         builder
             .AddRuleProvider(new InMemoryRuleProvider(Fixed("Base", 6, 1)))
             .AddOverrideProvider(new StaticOverrideProvider(
-                additions: new[] { Fixed("Override Add", 7, 1) },
+                additions: [Fixed("Override Add", 7, 1)],
                 removals: Array.Empty<RuleRemoval>()));
 
         using ServiceProvider provider = services.BuildServiceProvider();
@@ -74,7 +74,7 @@ public partial class NotableDateServiceBuilderExtensionsTests
             .AddRuleProvider(new InMemoryRuleProvider(Fixed("Suppress Me", 6, 1)))
             .AddOverrideProvider(new StaticOverrideProvider(
                 additions: Array.Empty<NotableDateRule>(),
-                removals: new[] { new RuleRemoval("Suppress Me") }));
+                removals: [new RuleRemoval("Suppress Me")]));
 
         using ServiceProvider provider = services.BuildServiceProvider();
         INotableDateService service = provider.GetRequiredService<INotableDateService>();
@@ -91,8 +91,8 @@ public partial class NotableDateServiceBuilderExtensionsTests
         (IServiceCollection services, INotableDateServiceBuilder builder) = NewBuilder();
         builder
             .AddRuleProvider(new InMemoryRuleProvider(Fixed("Base", 6, 1)))
-            .AddOverrideProvider(new StaticOverrideProvider(new[] { Fixed("First Override", 7, 1) }, Array.Empty<RuleRemoval>()))
-            .AddOverrideProvider(new StaticOverrideProvider(new[] { Fixed("Second Override", 8, 1) }, Array.Empty<RuleRemoval>()));
+            .AddOverrideProvider(new StaticOverrideProvider([Fixed("First Override", 7, 1)], Array.Empty<RuleRemoval>()))
+            .AddOverrideProvider(new StaticOverrideProvider([Fixed("Second Override", 8, 1)], Array.Empty<RuleRemoval>()));
 
         using ServiceProvider provider = services.BuildServiceProvider();
         INotableDateService service = provider.GetRequiredService<INotableDateService>();

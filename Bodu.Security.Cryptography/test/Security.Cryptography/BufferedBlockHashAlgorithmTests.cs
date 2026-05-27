@@ -77,7 +77,7 @@ public sealed class BufferedBlockHashAlgorithmTests
     public void Initialize_WhenCalledAfterSeededState_ShouldClearResidualAndCounters()
     {
         using var sut = new MonitoringBufferedBlockHashAlgorithm(8);
-        sut.SeedResidualState(new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 }, residualBytes: 5, totalBytes: 256UL);
+        sut.SeedResidualState([1, 2, 3, 4, 5, 6, 7, 8], residualBytes: 5, totalBytes: 256UL);
 
         sut.Initialize();
 
@@ -142,7 +142,7 @@ public sealed class BufferedBlockHashAlgorithmTests
     public void Dispose_WhenCalled_ShouldClearResidualAndCounters()
     {
         var sut = new MonitoringBufferedBlockHashAlgorithm(8);
-        sut.SeedResidualState(new byte[] { 9, 9, 9, 9, 9, 9, 9, 9 }, residualBytes: 8, totalBytes: 128UL);
+        sut.SeedResidualState([9, 9, 9, 9, 9, 9, 9, 9], residualBytes: 8, totalBytes: 128UL);
 
         sut.Dispose();
 

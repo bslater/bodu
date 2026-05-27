@@ -345,7 +345,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
 
         ObjectDisposedException ex = Assert.ThrowsExactly<ObjectDisposedException>(() =>
         {
-            algorithm.ComputeHash(new byte[] { 1, 2, 3 });
+            algorithm.ComputeHash([1, 2, 3]);
         });
 
         Assert.AreEqual(typeof(TAlgorithm).FullName, ex.ObjectName,
@@ -563,7 +563,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     public void ComputeHash_WhenStreamThrowsDuringRead_ShouldPropagateException()
     {
         using TAlgorithm algorithm = CreateAlgorithm();
-        using var stream = new FaultingStream(new byte[0], 0);
+        using var stream = new FaultingStream([], 0);
 
         Assert.ThrowsExactly<IOException>(() =>
         {

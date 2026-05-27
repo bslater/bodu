@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConcurrentHashSetTests.Hashing.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -80,7 +80,7 @@ public partial class ConcurrentHashSetTests
     public void Hashing_WhenHashCodesAreExtreme_ShouldStoreAndRetrieveEveryElement()
     {
         var set = new ConcurrentHashSet<int>();
-        int[] values = { int.MinValue, int.MaxValue, -1, 0, 1, int.MinValue + 1, int.MaxValue - 1 };
+        int[] values = [int.MinValue, int.MaxValue, -1, 0, 1, int.MinValue + 1, int.MaxValue - 1];
 
         foreach (int value in values)
             Assert.IsTrue(set.Add(value));

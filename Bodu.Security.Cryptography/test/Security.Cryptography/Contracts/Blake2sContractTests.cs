@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Blake2sContractTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -27,8 +27,8 @@ public sealed class Blake2sContractTests : CryptoHashContractTests<Blake2s>
     }
 
     /// <inheritdoc />
-    protected override IReadOnlyList<CryptoHashKat> KnownAnswers { get; } = new CryptoHashKat[]
-    {
+    protected override IReadOnlyList<CryptoHashKat> KnownAnswers { get; } =
+    [
         new(
             "BLAKE2s-256 empty",
             Input: Array.Empty<byte>(),
@@ -56,5 +56,5 @@ public sealed class Blake2sContractTests : CryptoHashContractTests<Blake2s>
             ExpectedDigest: Convert.FromHexString("64550D6FFE2C0A01A14ABA1EADE0200C"),
             OutputLengthBytes: 16,
             Key: null),
-    };
+    ];
 }

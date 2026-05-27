@@ -32,17 +32,17 @@ namespace Bodu.Globalization.Calendar;
 ///<![CDATA[
 /// INotableDateService service = new NotableDateService();
 ///
-/// // All notable dates for Australia in 2026, ordered by date:
+/// All notable dates for Australia in 2026, ordered by date:
 /// IReadOnlyList<NotableDate> dates = service.GetNotableDates(2026, territoryCode: "AU");
 ///
-/// // Only non-working public holidays in Australia:
+/// Only non-working public holidays in Australia:
 /// NotableDateFilter filter = NotableDateFilter
 ///     .ForCategory(NotableDateCategory.Public)
 ///     .And(NotableDateFilter.IsNonWorkingDay());
 ///
 /// IReadOnlyList<NotableDate> holidays = service.GetNotableDates(2026, filter, "AU");
 ///
-/// // Test whether Christmas Day 2026 is a non-working day for New South Wales:
+/// Test whether Christmas Day 2026 is a non-working day for New South Wales:
 /// bool isNonWorking = service.IsNonWorkingDay(new DateTime(2026, 12, 25), "AU-NSW");
 ///]]>
 /// </code>
@@ -267,7 +267,7 @@ public interface INotableDateService
     ///     Day = 28,
     ///     IsNonWorkingDay = true,
     /// });
-    /// // New rule is now visible to service.GetNotableDates(...).
+    /// New rule is now visible to service.GetNotableDates(...).
     ///]]>
     /// </code>
     /// </example>

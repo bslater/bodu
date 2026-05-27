@@ -31,7 +31,7 @@ public sealed class NotableDateServicePluginIntegrationTests
         var service = new NotableDateService(
             ruleProviders: Array.Empty<INotableDateRuleProvider>(),
             workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
-            options: new NotableDateServiceOptions { Plugins = new[] { plugin } });
+            options: new NotableDateServiceOptions { Plugins = [plugin] });
 
         // Plugin1's HarnessPlugin contributes "Harness Test Day" on 15 June with territory "ZZ".
         var results = service.GetNotableDates(2030, "ZZ");
@@ -61,9 +61,9 @@ public sealed class NotableDateServicePluginIntegrationTests
         };
 
         var service = new NotableDateService(
-            ruleProviders: new[] { new InMemoryRuleProvider(consumerRule) },
+            ruleProviders: [new InMemoryRuleProvider(consumerRule)],
             workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
-            options: new NotableDateServiceOptions { Plugins = new[] { plugin } });
+            options: new NotableDateServiceOptions { Plugins = [plugin] });
 
         var results = service.GetNotableDates(2027);
         var resolved = results.SingleOrDefault(r => r.Name == "Test Plugin Algorithm Day");
@@ -97,12 +97,12 @@ public sealed class NotableDateServicePluginIntegrationTests
         };
 
         var service = new NotableDateService(
-            ruleProviders: new[] { new InMemoryRuleProvider(consumerRule) },
+            ruleProviders: [new InMemoryRuleProvider(consumerRule)],
             workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
             options: new NotableDateServiceOptions
             {
                 AlgorithmRegistry = hostRegistry,
-                Plugins = new[] { plugin },
+                Plugins = [plugin],
             });
 
         var resolved = service.GetNotableDates(2099).SingleOrDefault(r => r.Name == "Composite Test Day");
@@ -143,12 +143,12 @@ public sealed class NotableDateServicePluginIntegrationTests
         };
 
         var service = new NotableDateService(
-            ruleProviders: new[] { new InMemoryRuleProvider(hostOnlyRule, pluginOnlyRule) },
+            ruleProviders: [new InMemoryRuleProvider(hostOnlyRule, pluginOnlyRule)],
             workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
             options: new NotableDateServiceOptions
             {
                 AlgorithmRegistry = hostRegistry,
-                Plugins = new[] { plugin },
+                Plugins = [plugin],
             });
 
         // Query the union of both algorithms' resolved years: host.only returns 2050-01-01, harness.static returns 2027-06-15
@@ -185,12 +185,12 @@ public sealed class NotableDateServicePluginIntegrationTests
         };
 
         var service = new NotableDateService(
-            ruleProviders: new[] { new InMemoryRuleProvider(orphan) },
+            ruleProviders: [new InMemoryRuleProvider(orphan)],
             workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
             options: new NotableDateServiceOptions
             {
                 AlgorithmRegistry = hostRegistry,
-                Plugins = new[] { plugin },
+                Plugins = [plugin],
             });
 
         IReadOnlyList<NotableDate> results = service.GetNotableDates(2050);

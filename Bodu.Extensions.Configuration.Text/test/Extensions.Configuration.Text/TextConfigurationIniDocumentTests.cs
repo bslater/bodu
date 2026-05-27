@@ -9,7 +9,7 @@ using Bodu.Text.Configuration;
 using Bodu.Text.Ini;
 using Microsoft.Extensions.Configuration;
 
-namespace Bodu.Extensions.Configuration.Text.Tests;
+namespace Bodu.Extensions.Configuration.Text;
 
 /// <summary>
 /// Verifies that the in-memory <see cref="IniDocument" /> overload of <c>AddConfiguration</c> resolves a

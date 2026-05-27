@@ -28,15 +28,15 @@ namespace Bodu.Text.Encoding;
 ///<![CDATA[
 /// byte[] data = { 0xDE, 0xAD, 0xBE, 0xEF };
 ///
-/// // Canonical lower-case hex.
+/// Canonical lower-case hex.
 /// string lower = Base16.Encode(data);                                           // "deadbeef"
 ///
-/// // Upper-case with the "0x" prefix and byte spacing — useful for diagnostic output.
+/// Upper-case with the "0x" prefix and byte spacing — useful for diagnostic output.
 /// string pretty = Base16.Encode(data, BaseFormattingOptions.UpperCase
 ///                                    | BaseFormattingOptions.IncludePrefix
 ///                                    | BaseFormattingOptions.InsertSpacing);    // "0xDE AD BE EF"
 ///
-/// // Lenient decoding — accepts the "0x" prefix and embedded whitespace.
+/// Lenient decoding — accepts the "0x" prefix and embedded whitespace.
 /// byte[] roundtrip = Base16.Decode(pretty,
 ///     BaseFormatStyles.AllowPrefix | BaseFormatStyles.IgnoreWhitespace);
 ///]]>

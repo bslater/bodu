@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Fletcher64ContractTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -30,15 +30,15 @@ public sealed class Fletcher64ContractTests
     protected override string? EmptyInputExpectedHex => "0000000000000000";
 
     /// <inheritdoc />
-    protected override IReadOnlyList<HashKat> KnownAnswers { get; } = new HashKat[]
-    {
+    protected override IReadOnlyList<HashKat> KnownAnswers { get; } =
+    [
         new("ABC",                  System.Text.Encoding.ASCII.GetBytes("ABC"),     "0000018A000000C6", 64),
         new("quick brown fox",      s_quickBrownFox,                                "00015BA200000FD9", 64),
-    };
+    ];
 
     /// <inheritdoc />
-    protected override IReadOnlyList<HashStreamingKat> StreamingCases { get; } = new HashStreamingKat[]
-    {
+    protected override IReadOnlyList<HashStreamingKat> StreamingCases { get; } =
+    [
         new(
             "quick brown fox as 12+12+12+7",
             s_quickBrownFox,
@@ -49,5 +49,5 @@ public sealed class Fletcher64ContractTests
             s_quickBrownFox,
             Enumerable.Repeat(1, s_quickBrownFox.Length).ToArray(),
             "00015BA200000FD9"),
-    };
+    ];
 }

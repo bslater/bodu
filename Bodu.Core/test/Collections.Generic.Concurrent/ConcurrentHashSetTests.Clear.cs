@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConcurrentHashSetTests.Clear.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -14,7 +14,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void Clear_WhenSetHasElements_ShouldRemoveEveryElement()
     {
-        var set = new ConcurrentHashSet<int>(new[] { 1, 2, 3, 4 });
+        var set = new ConcurrentHashSet<int>([1, 2, 3, 4]);
 
         set.Clear();
 
@@ -43,7 +43,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void Clear_WhenFollowedByAdd_ShouldAcceptNewElements()
     {
-        var set = new ConcurrentHashSet<int>(new[] { 1, 2, 3 });
+        var set = new ConcurrentHashSet<int>([1, 2, 3]);
 
         set.Clear();
 

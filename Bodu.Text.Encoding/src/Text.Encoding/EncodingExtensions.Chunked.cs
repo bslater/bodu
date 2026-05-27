@@ -42,7 +42,7 @@ public static partial class EncodingExtensions
     /// </exception>
     /// <example>
     ///<![CDATA[
-    /// // Encode a long string into a buffer writer one chunk at a time.
+    /// Encode a long string into a buffer writer one chunk at a time.
     /// ReadOnlySpan<char> source = text.AsSpan();
     /// System.Text.Encoder encoder = System.Text.Encoding.UTF8.GetEncoder();
     ///

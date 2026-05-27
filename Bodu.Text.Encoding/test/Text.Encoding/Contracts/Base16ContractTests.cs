@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base16ContractTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -43,21 +43,21 @@ public sealed class Base16ContractTests : BinaryEncodingContractTests<object>
         Base16.TryDecode(text.AsSpan(), destination, out bytesWritten);
 
     /// <inheritdoc />
-    protected override IReadOnlyList<BinaryEncodingKat> KnownAnswers { get; } = new BinaryEncodingKat[]
-    {
+    protected override IReadOnlyList<BinaryEncodingKat> KnownAnswers { get; } =
+    [
         new("empty", Array.Empty<byte>(), ""),
         new("single zero", [0x00], "00"),
         new("0xDE 0xAD", [0xDE, 0xAD], "DEAD"),
         new("0xDE 0xAD 0xBE 0xEF", [0xDE, 0xAD, 0xBE, 0xEF], "DEADBEEF"),
         new("ASCII 'foo'", "foo"u8.ToArray(), "666F6F"),
         new("ASCII 'foobar'", "foobar"u8.ToArray(), "666F6F626172"),
-    };
+    ];
 
     /// <inheritdoc />
-    protected override IReadOnlyList<InvalidEncodedTextKat> InvalidInputs { get; } = new InvalidEncodedTextKat[]
-    {
+    protected override IReadOnlyList<InvalidEncodedTextKat> InvalidInputs { get; } =
+    [
         new("odd-length input", "DEA"),
         new("non-hex character", "DEAG"),
         new("space inside", "DE AD"),
-    };
+    ];
 }

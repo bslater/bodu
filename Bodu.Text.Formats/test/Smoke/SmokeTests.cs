@@ -45,11 +45,11 @@ public sealed class SmokeTests
     [TestCategory(TestCategories.Smoke)]
     public void BencodedDictionary_Construct_ShouldExposeOrderedItems()
     {
-        BencodedDictionary dict = new(new[]
-        {
+        BencodedDictionary dict = new(
+        [
             new KeyValuePair<BencodedString, BencodedValue>(BencodedString.FromUtf8("cow"), BencodedString.FromUtf8("moo")),
             new KeyValuePair<BencodedString, BencodedValue>(BencodedString.FromUtf8("spam"), BencodedString.FromUtf8("eggs")),
-        });
+        ]);
 
         var orderedKeys = dict.GetOrderedItems()
             .Select(pair => pair.Key.GetUtf8String())
@@ -80,11 +80,11 @@ public sealed class SmokeTests
     [TestCategory(TestCategories.Smoke)]
     public void BencodedList_Construct_ShouldExposeItems()
     {
-        BencodedList list = new(new BencodedValue[]
-        {
+        BencodedList list = new(
+        [
             BencodedString.FromUtf8("spam"),
             new BencodedInteger(42),
-        });
+        ]);
 
         Assert.AreEqual(2, list.Count);
     }
@@ -109,8 +109,8 @@ public sealed class SmokeTests
     [TestCategory(TestCategories.Smoke)]
     public void BencodedStringComparer_OrdinalCompare_ShouldOrderByRawBytes()
     {
-        BencodedString a = new(new byte[] { 0xAA });
-        BencodedString b = new(new byte[] { 0xAA, 0xBB });
+        BencodedString a = new([0xAA]);
+        BencodedString b = new([0xAA, 0xBB]);
 
         Assert.IsTrue(BencodedStringComparer.Ordinal.Compare(a, b) < 0);
     }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DependencyInjectionResourceStrings.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -25,7 +25,8 @@ internal static class DependencyInjectionResourceStrings
 {
     /// <summary>
     /// A sequence-typed parameter (for example, the <c>providers</c> argument to
-    /// <see cref="NotableDateServiceBuilderExtensions.AddRuleProviders" />) contained a <see langword="null" /> element.
+    /// <see cref="NotableDateServiceBuilderExtensions.AddRuleProviders" />) contained a <see langword="null" />
+    /// element.
     /// </summary>
     internal const string Arg_Invalid_ProviderSequenceContainsNullElement = "The provider sequence must not contain null elements.";
 }

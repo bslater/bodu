@@ -25,15 +25,15 @@ public partial class NotableDateServiceTests
         NotableDateRule lateRule = Fixed("Substitute Holiday", 7, 1);
 
         NotableDateService service = new(
-            ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider() },
+            ruleProviders: [(INotableDateRuleProvider)new InMemoryRuleProvider()],
             workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
             options: new NotableDateServiceOptions
             {
-                OverrideProviders = new INotableDateRuleOverrideProvider[]
-                {
-                    new TestOverrideProvider(removals: Array.Empty<RuleRemoval>(), additions: new[] { earlyRule }),
-                    new TestOverrideProvider(removals: Array.Empty<RuleRemoval>(), additions: new[] { lateRule }),
-                },
+                OverrideProviders =
+                [
+                    new TestOverrideProvider(removals: Array.Empty<RuleRemoval>(), additions: [earlyRule]),
+                    new TestOverrideProvider(removals: Array.Empty<RuleRemoval>(), additions: [lateRule]),
+                ],
             });
 
         IReadOnlyList<NotableDate> emitted = service.GetNotableDates(2026);

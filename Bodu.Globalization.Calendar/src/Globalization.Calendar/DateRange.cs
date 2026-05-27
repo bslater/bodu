@@ -26,7 +26,7 @@ namespace Bodu.Globalization.Calendar;
 /// Console.WriteLine(year.DayCount);                               // 365
 /// Console.WriteLine(year.Contains(new DateTime(2026, 7, 15)));    // True
 ///
-/// // Inverted ranges are tolerated but produce empty results.
+/// Inverted ranges are tolerated but produce empty results.
 /// var inverted = new DateRange(new DateTime(2026, 12, 31), new DateTime(2026, 1, 1));
 /// Console.WriteLine(inverted.IsValid);                            // False
 /// Console.WriteLine(inverted.DayCount);                           // 0

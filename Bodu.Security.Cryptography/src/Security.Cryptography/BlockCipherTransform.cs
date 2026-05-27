@@ -65,23 +65,23 @@ namespace Bodu.Security.Cryptography;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// // Most consumers never touch BlockCipherTransform directly — it is surfaced as the
-/// // ICryptoTransform returned by every Bodu SymmetricAlgorithm. Typical usage:
+/// Most consumers never touch BlockCipherTransform directly — it is surfaced as the
+/// ICryptoTransform returned by every Bodu SymmetricAlgorithm. Typical usage:
 /// using SymmetricAlgorithm alg = new Twofish();
 /// alg.GenerateKey();
 /// alg.GenerateIV();
 /// alg.Mode    = CipherMode.CBC;
 /// alg.Padding = PaddingMode.PKCS7;
 ///
-/// // CreateEncryptor returns a BlockCipherTransform under the hood — a one-shot
-/// // ICryptoTransform that pairs the block cipher with the configured mode and padding.
+/// CreateEncryptor returns a BlockCipherTransform under the hood — a one-shot
+/// ICryptoTransform that pairs the block cipher with the configured mode and padding.
 /// using ICryptoTransform encryptor = alg.CreateEncryptor();
 /// using var output = new MemoryStream();
 /// using (var cs = new CryptoStream(output, encryptor, CryptoStreamMode.Write))
 ///     cs.Write(plaintext, 0, plaintext.Length);
 /// byte[] ciphertext = output.ToArray();
 ///
-/// // Reuse requires a fresh transform — BlockCipherTransform.CanReuseTransform is false.
+/// Reuse requires a fresh transform — BlockCipherTransform.CanReuseTransform is false.
 ///]]>
 /// </example>
 /// <seealso cref="IBlockCipher"/> <seealso cref="IBlockCipherModeTransform"/> <seealso cref="IPaddingStrategy"/>

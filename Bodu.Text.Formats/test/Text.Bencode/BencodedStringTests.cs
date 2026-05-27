@@ -34,7 +34,7 @@ public sealed partial class BencodedStringTests
     [TestMethod]
     public void Constructor_WhenByteArrayProvided_ShouldStoreCopy()
     {
-        byte[] source = { 0xDE, 0xAD, 0xBE, 0xEF };
+        byte[] source = [0xDE, 0xAD, 0xBE, 0xEF];
 
         BencodedString value = new(source);
 
@@ -74,7 +74,7 @@ public sealed partial class BencodedStringTests
     [TestMethod]
     public void Length_WhenBytesProvided_ShouldReturnByteCount()
     {
-        BencodedString value = new(new byte[] { 1, 2, 3, 4, 5 });
+        BencodedString value = new([1, 2, 3, 4, 5]);
 
         Assert.AreEqual(5, value.Length);
     }

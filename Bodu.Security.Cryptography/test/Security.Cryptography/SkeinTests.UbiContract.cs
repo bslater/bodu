@@ -68,7 +68,7 @@ public abstract partial class SkeinTests<TTest, TAlgorithm, TVariant>
 
         var words = algorithm.GetInitialChainingValueWords();
 
-        int[] permitted = { 4, 8, 16 };
+        int[] permitted = [4, 8, 16];
         Assert.IsTrue(System.Array.IndexOf(permitted, words.Length) >= 0,
             $"Skein chaining value must be 4, 8, or 16 ulongs (state size in 64-bit words); got {words.Length}.");
     }

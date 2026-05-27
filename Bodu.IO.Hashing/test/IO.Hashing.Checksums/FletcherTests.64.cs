@@ -19,8 +19,8 @@ public sealed partial class Fletcher64Tests
     /// Entries are the documented Fletcher-64 known-answer sequence for incremental inputs
     /// <c>[]</c>, <c>[0x00]</c>, <c>[0x00, 0x01]</c>, … <c>[0x00 .. 0x1E]</c>.
     /// </remarks>
-    protected override IReadOnlyList<string> GetExpectedHashesForIncrementalInput(SingleTestVariant variant) => new[]
-    {
+    protected override IReadOnlyList<string> GetExpectedHashesForIncrementalInput(SingleTestVariant variant) =>
+    [
         "0000000000000000", "0000000000000000", "0000000100000001", "0000000400000003",
         "0000000A00000006", "000000140000000A", "000000230000000F", "0000003800000015",
         "000000540000001C", "0000007800000024", "000000A50000002D", "000000DC00000037",
@@ -38,7 +38,7 @@ public sealed partial class Fletcher64Tests
         "0000724C00000604", "000078880000063C", "00007EFD00000675", "000085AC000006AF",
         "00008C96000006EA", "000093BC00000726", "00009B1F00000763", "0000A2C0000007A1",
         "0000AAA0000007E0", "0000B2C000000820",
-    };
+    ];
     /// <inheritdoc />
     protected override NonCryptographicHashAlgorithmSpecification GetSpecification(SingleTestVariant variant) =>
         new()

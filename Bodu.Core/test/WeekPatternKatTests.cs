@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="WeekPatternKatTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -18,38 +18,34 @@ namespace Bodu;
 public sealed class WeekPatternKatTests
 {
     private static IReadOnlyList<ValidKat<WeekPattern, string>> FormatKats { get; } =
-        new ValidKat<WeekPattern, string>[]
-    {
+        [
         new("empty",                      Input: WeekPattern.Empty,    Expected: "_______"),
         new("all days",                   Input: WeekPattern.AllDays,  Expected: "SMTWTFS"),
         new("weekdays (Sunday-first)",    Input: WeekPattern.Weekdays, Expected: "_MTWTF_"),
         new("weekend (Sunday-first)",     Input: WeekPattern.Weekend,  Expected: "S_____S"),
-    };
+    ];
 
     private static IReadOnlyList<ValidKat<(WeekPattern Left, WeekPattern Right), WeekPattern>> AndKats { get; } =
-        new ValidKat<(WeekPattern Left, WeekPattern Right), WeekPattern>[]
-    {
+        [
         new("any & Empty → Empty",            Input: (WeekPattern.AllDays,  WeekPattern.Empty),    Expected: WeekPattern.Empty),
         new("self & self → self",             Input: (WeekPattern.Weekdays, WeekPattern.Weekdays), Expected: WeekPattern.Weekdays),
         new("Weekdays & Weekend → Empty",     Input: (WeekPattern.Weekdays, WeekPattern.Weekend),  Expected: WeekPattern.Empty),
-    };
+    ];
 
     private static IReadOnlyList<ValidKat<(WeekPattern Left, WeekPattern Right), WeekPattern>> OrKats { get; } =
-        new ValidKat<(WeekPattern Left, WeekPattern Right), WeekPattern>[]
-    {
+        [
         new("any | Empty → original",         Input: (WeekPattern.Weekdays, WeekPattern.Empty),    Expected: WeekPattern.Weekdays),
         new("self | self → self",             Input: (WeekPattern.Weekend,  WeekPattern.Weekend),  Expected: WeekPattern.Weekend),
         new("Weekdays | Weekend → AllDays",   Input: (WeekPattern.Weekdays, WeekPattern.Weekend),  Expected: WeekPattern.AllDays),
-    };
+    ];
 
     private static IReadOnlyList<ValidKat<WeekPattern, WeekPattern>> ComplementKats { get; } =
-        new ValidKat<WeekPattern, WeekPattern>[]
-    {
+        [
         new("~Empty → AllDays",     Input: WeekPattern.Empty,    Expected: WeekPattern.AllDays),
         new("~AllDays → Empty",     Input: WeekPattern.AllDays,  Expected: WeekPattern.Empty),
         new("~Weekdays → Weekend",  Input: WeekPattern.Weekdays, Expected: WeekPattern.Weekend),
         new("~Weekend → Weekdays",  Input: WeekPattern.Weekend,  Expected: WeekPattern.Weekdays),
-    };
+    ];
 
     /// <summary>
     /// Verifies that <see cref="WeekPattern" />.<c>ToString("S")</c> reproduces the canonical

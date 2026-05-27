@@ -19,8 +19,8 @@ public sealed partial class CityHash32Tests
     /// Entries are the documented CityHash32 known-answer sequence for incremental inputs
     /// <c>[]</c>, <c>[0x00]</c>, <c>[0x00, 0x01]</c>, … <c>[0x00 .. 0x0E]</c>.
     /// </remarks>
-    protected override IReadOnlyList<string> GetExpectedHashesForIncrementalInput(SingleTestVariant variant) => new[]
-    {
+    protected override IReadOnlyList<string> GetExpectedHashesForIncrementalInput(SingleTestVariant variant) =>
+    [
         "7AD156DC", "5427A9C0", "B678162A", "E292C9D7",
         "32116E61", "D4376EFE", "7E894551", "5D84EACF",
         "D6D20FEB", "E0D6D37C", "5022E514", "28A11D93",
@@ -30,7 +30,7 @@ public sealed partial class CityHash32Tests
         "A46ACF60", "78DF6D2E", "60DFA517", "A4390110",
         "318167EF", "7D7058C1", "571DD9D3", "285334E4",
         "15339468", "9E6D4EE1",
-    };
+    ];
     /// <inheritdoc />
     protected override NonCryptographicHashAlgorithmSpecification GetSpecification(SingleTestVariant variant) => new()
     {

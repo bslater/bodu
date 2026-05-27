@@ -26,8 +26,8 @@ namespace Bodu.Globalization.Calendar.Plugins;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// // Minimal rule-contributing plugin. The plugin assembly also carries
-/// // [assembly: NotableDatePlugin(typeof(AcmePlugin))] so ExternalPluginLoader can find it.
+/// Minimal rule-contributing plugin. The plugin assembly also carries
+/// [assembly: NotableDatePlugin(typeof(AcmePlugin))] so ExternalPluginLoader can find it.
 /// public sealed class AcmePlugin : INotableDatePlugin, INotableDateRulePlugin
 /// {
 ///     public string  Name    => "Acme Holiday Pack";

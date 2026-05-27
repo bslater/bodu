@@ -56,7 +56,7 @@ public partial class WhirlpoolTests
     public void Version_WhenSetAfterHashingStarted_ShouldThrowExactly()
     {
         using Whirlpool algorithm = new();
-        algorithm.TransformBlock(new byte[] { 1, 2, 3 }, 0, 3, null, 0);
+        algorithm.TransformBlock([1, 2, 3], 0, 3, null, 0);
 
         Assert.ThrowsExactly<CryptographicUnexpectedOperationException>(() =>
         {
@@ -72,7 +72,7 @@ public partial class WhirlpoolTests
     public void Version_WhenSetAfterInitialize_ShouldBeAccepted()
     {
         using Whirlpool algorithm = new();
-        algorithm.TransformBlock(new byte[] { 1, 2, 3 }, 0, 3, null, 0);
+        algorithm.TransformBlock([1, 2, 3], 0, 3, null, 0);
         algorithm.Initialize();
 
         algorithm.Version = WhirlpoolVersion.WhirlpoolInfo2;

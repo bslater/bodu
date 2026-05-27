@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateRuleParserKatTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -20,8 +20,8 @@ public sealed class NotableDateRuleParserKatTests
 {
     private const string s_namespaceDeclaration = " xmlns=\"urn:bodu:globalization:calendar\"";
 
-    private static IReadOnlyList<RuleParseKat<int>> ValidKats { get; } = new RuleParseKat<int>[]
-    {
+    private static IReadOnlyList<RuleParseKat<int>> ValidKats { get; } =
+    [
         new(
             Name: "empty document yields zero local rules",
             Input: $"<NotableDates{s_namespaceDeclaration} />",
@@ -50,10 +50,10 @@ public sealed class NotableDateRuleParserKatTests
                 "</NotableDates>",
             Format: "xml",
             Expected: 2),
-    };
+    ];
 
-    private static IReadOnlyList<InvalidRuleParseKat> InvalidKats { get; } = new InvalidRuleParseKat[]
-    {
+    private static IReadOnlyList<InvalidRuleParseKat> InvalidKats { get; } =
+    [
         new(
             Name: "empty payload",
             Input: string.Empty,
@@ -65,7 +65,7 @@ public sealed class NotableDateRuleParserKatTests
             Input: "   ",
             Format: "xml",
             ExceptionType: typeof(ArgumentNullException)),
-    };
+    ];
 
     /// <summary>
     /// Verifies that every <see cref="RuleParseKat{TDocument}" /> row parses to a document whose

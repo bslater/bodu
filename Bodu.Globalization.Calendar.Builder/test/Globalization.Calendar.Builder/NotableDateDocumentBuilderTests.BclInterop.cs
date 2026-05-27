@@ -1,8 +1,8 @@
-﻿// // ---------------------------------------------------------------------------------------------------------------
-// // <copyright file="NotableDateDocumentBuilderTests.BclInterop.cs" company="Bodu Pty. Ltd.">
-// //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
-// // </copyright>
-// // ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="NotableDateDocumentBuilderTests.BclInterop.cs" company="Bodu Pty. Ltd.">
+//     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
 using System.Reflection;

@@ -304,7 +304,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
         registry.Register("always-null", new AlwaysNullAlgorithm());
 
         NotableDateService service = new(
-            ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(anchor, dependent) },
+            ruleProviders: [(INotableDateRuleProvider)new InMemoryRuleProvider(anchor, dependent)],
             workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
             options: new NotableDateServiceOptions { AlgorithmRegistry = registry });
 
@@ -332,7 +332,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
         };
 
         NotableDateService service = new(
-            ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(rule) },
+            ruleProviders: [(INotableDateRuleProvider)new InMemoryRuleProvider(rule)],
             workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
             options: new NotableDateServiceOptions { AlgorithmRegistry = new NotableDateAlgorithmRegistry() });
 
@@ -497,7 +497,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
         };
 
         NotableDateService service = new(
-            ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(rule) },
+            ruleProviders: [(INotableDateRuleProvider)new InMemoryRuleProvider(rule)],
             workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
             options: new NotableDateServiceOptions { AdjustmentHandlers = new AdjustmentHandlerRegistry() });
 
@@ -541,7 +541,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
         handlers.Register("thrower", new ThrowingAdjustmentHandler());
 
         NotableDateService service = new(
-            ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(rule) },
+            ruleProviders: [(INotableDateRuleProvider)new InMemoryRuleProvider(rule)],
             workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
             options: new NotableDateServiceOptions { AdjustmentHandlers = handlers });
 
@@ -653,7 +653,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
         registry.Register("thrower", new ThrowingAlgorithm());
 
         NotableDateService service = new(
-            ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(rule) },
+            ruleProviders: [(INotableDateRuleProvider)new InMemoryRuleProvider(rule)],
             workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
             options: new NotableDateServiceOptions { AlgorithmRegistry = registry });
 

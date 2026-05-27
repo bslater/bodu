@@ -4,7 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Globalization.Calendar.Data.AsiaPacific.Tests;
+namespace Bodu.Globalization.Calendar.Data;
 
 /// <summary>
 /// Verifies the public surface of <see cref="AsiaPacificCalendarData" /> — that

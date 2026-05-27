@@ -25,7 +25,7 @@ public partial class HashAlgorithmExtensionsTests
         HashAlgorithm? algorithm = null;
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
-            algorithm!.AppendData(new ReadOnlySpan<byte>(new byte[] { 1, 2, 3 })));
+            algorithm!.AppendData(new ReadOnlySpan<byte>([1, 2, 3])));
     }
 
     // ─── Accumulation behaviour ───────────────────────────────────────────────────────────────
@@ -53,7 +53,7 @@ public partial class HashAlgorithmExtensionsTests
     {
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
 
-        algorithm.AppendData(new ReadOnlySpan<byte>(new byte[] { 0xFF }));
+        algorithm.AppendData(new ReadOnlySpan<byte>([0xFF]));
         algorithm.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
 
         var expected = BitConverter.GetBytes((uint)0xFF);
@@ -68,7 +68,7 @@ public partial class HashAlgorithmExtensionsTests
     public void AppendData_WhenSpanContainsData_ShouldContributeToFinalHash()
     {
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
-        byte[] data = { 1, 2, 3, 4 };
+        byte[] data = [1, 2, 3, 4];
 
         algorithm.AppendData(new ReadOnlySpan<byte>(data));
         algorithm.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
@@ -86,8 +86,8 @@ public partial class HashAlgorithmExtensionsTests
     {
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
 
-        algorithm.AppendData(new ReadOnlySpan<byte>(new byte[] { 10, 20 }));
-        algorithm.AppendData(new ReadOnlySpan<byte>(new byte[] { 30, 40 }));
+        algorithm.AppendData(new ReadOnlySpan<byte>([10, 20]));
+        algorithm.AppendData(new ReadOnlySpan<byte>([30, 40]));
         algorithm.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
 
         var expected = BitConverter.GetBytes((uint)(10 + 20 + 30 + 40));
@@ -103,7 +103,7 @@ public partial class HashAlgorithmExtensionsTests
     [TestMethod]
     public void AppendData_WhenHashFinalised_ShouldMatchComputeHash()
     {
-        byte[] data = { 5, 10, 15, 20 };
+        byte[] data = [5, 10, 15, 20];
 
         byte[] expected;
         using (MonitoringHashAlgorithm reference = CreateAlgorithm())
@@ -127,7 +127,7 @@ public partial class HashAlgorithmExtensionsTests
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         var before = algorithm.HashCoreCallCount;
 
-        algorithm.AppendData(new ReadOnlySpan<byte>(new byte[] { 1, 2, 3 }));
+        algorithm.AppendData(new ReadOnlySpan<byte>([1, 2, 3]));
 
         Assert.AreEqual(before + 1, algorithm.HashCoreCallCount);
     }

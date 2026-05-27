@@ -57,7 +57,7 @@ public partial class CryptoHelpersTests
     {
         // MemoryStream constructed from a byte[] without the publiclyVisible flag does not expose
         // its underlying buffer through TryGetBuffer.
-        var stream = new MemoryStream(new byte[] { 1, 2, 3 }, writable: true);
+        var stream = new MemoryStream([1, 2, 3], writable: true);
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {

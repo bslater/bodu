@@ -26,7 +26,7 @@ public sealed class HashAlgorithmHelperBodyTests
         var factory = HashAlgorithmFactory.From<SHA256>(SHA256.Create);
         Span<byte> destination = stackalloc byte[32];
 
-        var result = HashAlgorithmHelper.TryHashData(factory, new byte[] { 1, 2, 3, 4 }, destination, out var bytesWritten);
+        var result = HashAlgorithmHelper.TryHashData(factory, [1, 2, 3, 4], destination, out var bytesWritten);
 
         Assert.IsTrue(result);
         Assert.AreEqual(32, bytesWritten);
@@ -42,7 +42,7 @@ public sealed class HashAlgorithmHelperBodyTests
         var factory = HashAlgorithmFactory.From<SHA256>(SHA256.Create);
         Span<byte> destination = stackalloc byte[8];
 
-        var result = HashAlgorithmHelper.TryHashData(factory, new byte[] { 1, 2, 3 }, destination, out var bytesWritten);
+        var result = HashAlgorithmHelper.TryHashData(factory, [1, 2, 3], destination, out var bytesWritten);
 
         Assert.IsFalse(result);
         Assert.AreEqual(0, bytesWritten);
@@ -58,7 +58,7 @@ public sealed class HashAlgorithmHelperBodyTests
     {
         var factory = HashAlgorithmFactory.From(() => new ShortHashAlgorithm());
 
-        var result = HashAlgorithmHelper.HashData(factory, new byte[] { 1, 2, 3 });
+        var result = HashAlgorithmHelper.HashData(factory, [1, 2, 3]);
 
         Assert.AreEqual(ShortHashAlgorithm.ActualBytes, result.Length);
     }
@@ -78,7 +78,7 @@ public sealed class HashAlgorithmHelperBodyTests
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
-            _ = HashAlgorithmHelper.HashData(factory, new byte[] { 1, 2, 3 });
+            _ = HashAlgorithmHelper.HashData(factory, [1, 2, 3]);
         });
     }
 
@@ -111,7 +111,7 @@ public sealed class HashAlgorithmHelperBodyTests
         var factory = HashAlgorithmFactory.From<SHA256>(SHA256.Create);
         using var cts = new CancellationTokenSource();
         cts.Cancel();
-        using var stream = new MemoryStream(new byte[] { 1, 2, 3 });
+        using var stream = new MemoryStream([1, 2, 3]);
 
         try
         {

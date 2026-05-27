@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConcurrentHashSetTests.IsEmpty.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -38,7 +38,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void IsEmpty_WhenLastElementRemoved_ShouldBeTrue()
     {
-        var set = new ConcurrentHashSet<int>(new[] { 1 });
+        var set = new ConcurrentHashSet<int>([1]);
         set.Remove(1);
 
         Assert.IsTrue(set.IsEmpty);
@@ -51,7 +51,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void IsEmpty_WhenSetCleared_ShouldBeTrue()
     {
-        var set = new ConcurrentHashSet<int>(new[] { 1, 2, 3 });
+        var set = new ConcurrentHashSet<int>([1, 2, 3]);
         set.Clear();
 
         Assert.IsTrue(set.IsEmpty);

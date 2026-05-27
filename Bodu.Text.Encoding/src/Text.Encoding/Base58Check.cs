@@ -26,14 +26,14 @@ namespace Bodu.Text.Encoding;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// // Build a Bitcoin P2PKH address: 0x00 version byte + 20-byte hash160.
+/// Build a Bitcoin P2PKH address: 0x00 version byte + 20-byte hash160.
 /// byte[] payload = new byte[21];
 /// payload[0] = 0x00;                                          // mainnet version
 /// hash160.CopyTo(payload.AsSpan(1));                          // 20-byte RIPEMD-160(SHA-256(pubkey))
 ///
 /// string address = Base58Check.Encode(payload);               // "1BvBMSEYstWetqTFn5Au4m4GFg7xJaNVN2" (example)
 ///
-/// // Decoder verifies the trailing checksum and strips it; throws on mismatch.
+/// Decoder verifies the trailing checksum and strips it; throws on mismatch.
 /// byte[] decoded = Base58Check.Decode(address);               // 21 bytes — original version + hash160
 ///]]>
 /// </example>

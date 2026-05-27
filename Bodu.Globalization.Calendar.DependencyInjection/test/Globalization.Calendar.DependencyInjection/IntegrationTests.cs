@@ -1,15 +1,13 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IntegrationTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Globalization.Calendar;
-using Bodu.Globalization.Calendar.Data.AsiaPacific;
-using Bodu.Globalization.Calendar.DependencyInjection;
+using Bodu.Globalization.Calendar.Data;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Bodu.DependencyInjection;
+namespace Bodu.Globalization.Calendar.DependencyInjection;
 
 /// <summary>
 /// Verifies the end-to-end composition path of the DI package — registering an Asia-Pacific data pack, querying

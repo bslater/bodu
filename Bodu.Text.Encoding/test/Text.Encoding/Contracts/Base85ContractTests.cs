@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base85ContractTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -35,19 +35,19 @@ public sealed class Base85ContractTests : BinaryEncodingContractTests<object>
         Base85.TryDecode(text.AsSpan(), destination, out bytesWritten, Base85Variant.Ascii85);
 
     /// <inheritdoc />
-    protected override IReadOnlyList<BinaryEncodingKat> KnownAnswers { get; } = new BinaryEncodingKat[]
-    {
+    protected override IReadOnlyList<BinaryEncodingKat> KnownAnswers { get; } =
+    [
         new("empty", Array.Empty<byte>(), ""),
         new("four zero bytes (z shortcut)", [0x00, 0x00, 0x00, 0x00], "z"),
         new("Wikipedia 'Man '", [0x4D, 0x61, 0x6E, 0x20], "9jqo^"),
         new("four 0xFF bytes (boundary)", [0xFF, 0xFF, 0xFF, 0xFF], "s8W-!"),
-    };
+    ];
 
     /// <inheritdoc />
-    protected override IReadOnlyList<InvalidEncodedTextKat> InvalidInputs { get; } = new InvalidEncodedTextKat[]
-    {
+    protected override IReadOnlyList<InvalidEncodedTextKat> InvalidInputs { get; } =
+    [
         new("character above alphabet upper bound", "9jqov"),
         new("misplaced 'z' shortcut", "9jz"),
         new("single trailing character", "9"),
-    };
+    ];
 }

@@ -19,8 +19,8 @@ public sealed partial class Adler32Tests
     /// Entries are the documented Adler-32 known-answer sequence for incremental inputs
     /// <c>[]</c>, <c>[0x00]</c>, <c>[0x00, 0x01]</c>, … <c>[0x00 .. 0x0E]</c>.
     /// </remarks>
-    protected override IReadOnlyList<string> GetExpectedHashesForIncrementalInput(SingleTestVariant variant) => new[]
-    {
+    protected override IReadOnlyList<string> GetExpectedHashesForIncrementalInput(SingleTestVariant variant) =>
+    [
         "00000001", "00010001", "00030002", "00070004",
         "000E0007", "0019000B", "00290010", "003F0016",
         "005C001D", "00810025", "00AF002E", "00E70038",
@@ -30,7 +30,7 @@ public sealed partial class Adler32Tests
         "09140115", "0A41012D", "0B870146", "0CE70160",
         "0E62017B", "0FF90197", "11AD01B4", "137F01D2",
         "157001F1", "17810211",
-    };
+    ];
     /// <inheritdoc />
     protected override NonCryptographicHashAlgorithmSpecification GetSpecification(SingleTestVariant variant) => new()
     {
@@ -45,8 +45,8 @@ public sealed partial class Adler32Tests
             // Long-input regression vectors for issue #127 — the buggy SIMD branch was not
             // exercised by any pre-existing KAT (all < 512 bytes). Expected digests are the
             // canonical zlib Adler-32 values for the (byte)(i & 0xFF) sequence at each length.
-            Additional = new[]
-            {
+            Additional =
+            [
                 new NonCryptographicHashKnownAnswer
                 {
                     Name = "ModuloByte1K",
@@ -59,7 +59,7 @@ public sealed partial class Adler32Tests
                     Input = AdlerSimdRegressionInputs.ModuloByte8K,
                     ExpectedHex = "3A54F0E2",
                 },
-            },
+            ],
         },
     };
 

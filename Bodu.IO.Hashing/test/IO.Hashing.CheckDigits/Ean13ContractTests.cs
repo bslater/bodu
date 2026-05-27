@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Ean13ContractTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -25,9 +25,9 @@ public sealed class Ean13ContractTests : CheckDigitContractTests<Ean13>
         Ean13.IsValid(fullValue.AsSpan());
 
     /// <inheritdoc />
-    protected override IReadOnlyList<CheckDigitKat> KnownAnswers { get; } = new CheckDigitKat[]
-    {
+    protected override IReadOnlyList<CheckDigitKat> KnownAnswers { get; } =
+    [
         new("Wikipedia EAN-13",   Payload: "501234567890", CheckDigit: "0", FullValue: "5012345678900"),
         new("book ISBN shape",    Payload: "978030640615", CheckDigit: "7", FullValue: "9780306406157"),
-    };
+    ];
 }

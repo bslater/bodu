@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TigerContractTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -30,8 +30,8 @@ public sealed class TigerContractTests : CryptoHashContractTests<Tiger>
     }
 
     /// <inheritdoc />
-    protected override IReadOnlyList<CryptoHashKat> KnownAnswers { get; } = new CryptoHashKat[]
-    {
+    protected override IReadOnlyList<CryptoHashKat> KnownAnswers { get; } =
+    [
         new(
             "Tiger1 empty",
             Input: Array.Empty<byte>(),
@@ -52,5 +52,5 @@ public sealed class TigerContractTests : CryptoHashContractTests<Tiger>
             ExpectedDigest: Convert.FromHexString("6D12A41E72E644F017B6F0E2F7B44C6285F06DD5D2C5B075"),
             OutputLengthBytes: 24,
             Key: null),
-    };
+    ];
 }

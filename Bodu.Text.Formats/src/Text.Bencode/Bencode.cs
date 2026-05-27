@@ -50,7 +50,7 @@ namespace Bodu.Text.Bencode;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// // Decode a BitTorrent-style dictionary and inspect a known field.
+/// Decode a BitTorrent-style dictionary and inspect a known field.
 /// byte[] payload = File.ReadAllBytes("example.torrent");
 /// BencodedValue root = Bencode.Decode(payload);
 ///
@@ -61,7 +61,7 @@ namespace Bodu.Text.Bencode;
 ///     Console.WriteLine(url.GetUtf8String());
 /// }
 ///
-/// // Round-trip: encode the value back to bytes.
+/// Round-trip: encode the value back to bytes.
 /// int length = Bencode.GetEncodedLength(root);
 /// byte[] reencoded = Bencode.Encode(root);
 ///]]>

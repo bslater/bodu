@@ -52,7 +52,7 @@ public static partial class SequenceGenerator
     /// <example>
     /// <code language="csharp">
     ///<![CDATA[
-    /// // Approximate π by summing the first hundred terms whose magnitude is at least 1e-3.
+    /// Approximate π by summing the first hundred terms whose magnitude is at least 1e-3.
     /// double partial = 0;
     /// foreach (double term in SequenceGenerator.Leibniz(1e-3, 1.1).Take(100))
     ///     partial += term;

@@ -70,7 +70,7 @@ public sealed partial class PearsonTests
         {
             HashLengthInBytes = 1,
             MinNonZeroBytesForLongInput = 1,
-            BoundaryLengths = new[] { 1, 8, 16, 64 },
+            BoundaryLengths = [1, 8, 16, 64],
             LongInputLength = 200,
             KnownAnswers = variant switch
             {

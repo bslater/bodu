@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Isbn13ContractTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -26,10 +26,10 @@ public sealed class Isbn13ContractTests : CheckDigitContractTests<Isbn13>
         Isbn13.IsValid(fullValue.AsSpan());
 
     /// <inheritdoc />
-    protected override IReadOnlyList<CheckDigitKat> KnownAnswers { get; } = new CheckDigitKat[]
-    {
+    protected override IReadOnlyList<CheckDigitKat> KnownAnswers { get; } =
+    [
         new("Wikipedia ISBN-13",   Payload: "978030640615", CheckDigit: "7", FullValue: "9780306406157"),
         new("Knuth Volume 1",      Payload: "978020137962", CheckDigit: "4", FullValue: "9780201379624"),
         new("all zeros",           Payload: "000000000000", CheckDigit: "0", FullValue: "0000000000000"),
-    };
+    ];
 }

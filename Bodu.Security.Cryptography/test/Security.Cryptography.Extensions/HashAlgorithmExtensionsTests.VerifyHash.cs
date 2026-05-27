@@ -30,7 +30,7 @@ public partial class HashAlgorithmExtensionsTests
     public void VerifyHash_WhenByteArrayMatches_ShouldReturnTrue()
     {
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
-        byte[] input = { 1, 2, 3, 4 };
+        byte[] input = [1, 2, 3, 4];
         var expected = BitConverter.GetBytes((uint)(1 + 2 + 3 + 4));
         Assert.IsTrue(algorithm.VerifyHash(input, expected));
     }
@@ -42,7 +42,7 @@ public partial class HashAlgorithmExtensionsTests
     public void VerifyHash_WhenByteArrayMatchesHex_ShouldReturnTrue()
     {
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
-        byte[] input = { 10, 10 };
+        byte[] input = [10, 10];
         var expectedHex = Convert.ToHexString(BitConverter.GetBytes((uint)20));
         Assert.IsTrue(algorithm.VerifyHash(input, expectedHex));
     }
@@ -55,7 +55,7 @@ public partial class HashAlgorithmExtensionsTests
     public void VerifyHash_WhenSpanAndMemoryMatch_ShouldReturnTrue()
     {
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
-        ReadOnlySpan<byte> input = new byte[] { 6, 6 };
+        ReadOnlySpan<byte> input = [6, 6];
         ReadOnlyMemory<byte> memory = input.ToArray();
         var expected = BitConverter.GetBytes((uint)12);
 
@@ -88,7 +88,7 @@ public partial class HashAlgorithmExtensionsTests
     public void VerifyHash_WhenStreamMatchesHash_ShouldReturnTrue()
     {
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
-        using var stream = new MemoryStream(new byte[] { 5, 5, 5 });
+        using var stream = new MemoryStream([5, 5, 5]);
         var expected = BitConverter.GetBytes((uint)15);
         Assert.IsTrue(algorithm.VerifyHash(stream, expected));
     }

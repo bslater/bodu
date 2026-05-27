@@ -29,7 +29,7 @@ namespace Bodu.Security.Cryptography.Extensions;
 public partial class HashAlgorithmExtensionsTests
 {
     /// <summary>Deterministic sample input whose additive byte sum is 10.</summary>
-    private static readonly byte[] SampleData = { 1, 2, 3, 4 };
+    private static readonly byte[] SampleData = [1, 2, 3, 4];
 
     /// <summary>Expected hash of <see cref="SampleData" /> (byte sum = 10, little-endian uint).</summary>
     private static readonly byte[] SampleHash = BitConverter.GetBytes((uint)(1 + 2 + 3 + 4));

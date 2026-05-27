@@ -13,10 +13,10 @@ namespace Bodu.Security.Cryptography;
 public partial class Snefru128Tests
     : Security.Cryptography.SnefruTests<Snefru128Tests, Snefru128>
 {
-    public override IEnumerable<SingleTestVariant> GetHashAlgorithmVariants() => new[]
-    {
+    public override IEnumerable<SingleTestVariant> GetHashAlgorithmVariants() =>
+    [
         SingleTestVariant.Default
-    };
+    ];
 
     /// <inheritdoc />
     protected override HashAlgorithmSpecification GetSpecification(SingleTestVariant variant) => new()
@@ -48,13 +48,13 @@ public partial class Snefru128Tests
 
     protected override Snefru128 CreateAlgorithm(SingleTestVariant variant) => new Snefru128();
 
-    protected override IReadOnlyList<string> GetExpectedHashesForIncrementalInput(SingleTestVariant variant) => new[]
-    {
+    protected override IReadOnlyList<string> GetExpectedHashesForIncrementalInput(SingleTestVariant variant) =>
+    [
         "AA2532A1422095F6E8DBFF85FD6EF2BC", "7DFE4B884ACBCE230EEAAC73DE1A6E7E", "909BD105BA9534D89AB51D8D8ABAECC6", "7FD12E780DFCED473C2E9EB400CB9C3A",
         "B7407A7142728644B691FDF727CAC6D0", "3AB81D7C50FC0978BF7D9E1E73DE3D6D", "FCC962B5441AD38232740D2B9C103959", "C512EDF6CD760397F5A07D08839702C4",
         "414EE6E6C09B2EFA188B0BDD482B73B3", "04C66200906F654BFC1C778F4A9E5510", "D50E046AD9FA976555E80FC519F9CDF4", "3327FF18EE26268F94D42540D70CB7F2",
         "9C1E8886122851777D3A00FD7C66C7B7", "A095699139C344B59ED5114AFAE2F6F0", "2E553868E7A65615A722D6DB5124EDFC", "C572F4B011238DC58E44EFA290BDDDB2",
         "B7A3BF8A0A82812281AE90281CAC7D69", "F769214420AF44A3D7A0846788B9E503",
-    };
+    ];
 
 }

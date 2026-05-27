@@ -32,9 +32,9 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// // Direct use — most callers reach Qingming through a NotableDateRule using
-/// // DateResolutionStrategy.Algorithm and an AlgorithmKey of "qingming" rather than
-/// // constructing this type by hand.
+/// Direct use — most callers reach Qingming through a NotableDateRule using
+/// DateResolutionStrategy.Algorithm and an AlgorithmKey of "qingming" rather than
+/// constructing this type by hand.
 /// INotableDateAlgorithm qingming = new QingmingNotableDateAlgorithm();
 /// DateTime? date = qingming.GetDate(2026, calendar: null);   // 2026-04-04 or 2026-04-05
 ///]]>

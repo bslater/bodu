@@ -70,7 +70,7 @@ public partial class ParallelMerkleTreeHashTests
         };
 
         using var hasher = new ParallelMerkleTreeHash(countingFactory, blockSize: 4, fanOut: 2);
-        hasher.ComputeHash(new byte[] { 1, 2, 3, 4 });
+        hasher.ComputeHash([1, 2, 3, 4]);
 
         Assert.AreEqual(1, factoryCalls,
             "A single-block input should invoke the factory exactly once (one leaf, no internal node).");
@@ -517,7 +517,7 @@ public partial class ParallelMerkleTreeHashTests
         //   Leaf 0: sum=10 → { 10,0,0,0 }
         //   Leaf 1: sum=26 → { 26,0,0,0 }
         //   Root:   sum({ 10,0,0,0, 26,0,0,0 }) = 36 → { 36,0,0,0 }
-        byte[] data = { 1, 2, 3, 4, 5, 6, 7, 8 };
+        byte[] data = [1, 2, 3, 4, 5, 6, 7, 8];
 
         var capturedLeafHashes = new ConcurrentBag<uint>();
         var capturedInternalSums = new ConcurrentBag<uint>();
@@ -572,7 +572,7 @@ public partial class ParallelMerkleTreeHashTests
         //   Leaf 0: { 1,2,3,4 } → sum=10
         //   Leaf 1: { 5,0,0,0 } padded → sum=5 (padding contributes 0)
         //   Root: hash({ 10,0,0,0, 5,0,0,0 }) = 15 → { 15,0,0,0 }
-        byte[] data = { 1, 2, 3, 4, 5 };
+        byte[] data = [1, 2, 3, 4, 5];
         var expected = BitConverter.GetBytes((uint)15);
 
         var totalInputByteSum = 1 + 2 + 3 + 4 + 5;

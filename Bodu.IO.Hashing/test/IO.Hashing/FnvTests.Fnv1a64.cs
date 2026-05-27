@@ -19,8 +19,8 @@ public sealed partial class Fnv1a64Tests
     /// Entries are the documented FNV-1a 64-bit known-answer sequence for incremental inputs
     /// <c>[]</c>, <c>[0x00]</c>, <c>[0x00, 0x01]</c>, … <c>[0x00 .. 0x0E]</c>.
     /// </remarks>
-    protected override IReadOnlyList<string> GetExpectedHashesForIncrementalInput(SingleTestVariant variant) => new[]
-    {
+    protected override IReadOnlyList<string> GetExpectedHashesForIncrementalInput(SingleTestVariant variant) =>
+    [
         "CBF29CE484222325", "AF63BD4C8601B7DF", "08328707B4EB6E3A", "D949AA186C0C4928",
         "4475327F98E05411", "3378E3D0C52EDFAF", "A54AC5BF0EA60DDE", "841BDBA5E4298608",
         "A4DC49E2B28ECB7D", "B11D013568A3B7CF", "9800D3C0CE314572", "7AAD489E5DB90AE8",
@@ -38,7 +38,7 @@ public sealed partial class Fnv1a64Tests
         "A17F99D97962286D", "CDFAC18941CA886F", "CB9F323ACB25AA22", "252C71E7310006C8",
         "2A8C7ED8430BCEE9", "588A5E79ED1073EF", "83925B2DD2F4CDD6", "867ED6DD75F9E138",
         "8368214F77995EE5", "E34F3F08399BD25F",
-    };
+    ];
     /// <inheritdoc />
     protected override NonCryptographicHashAlgorithmSpecification GetSpecification(SingleTestVariant variant) => new()
     {

@@ -59,7 +59,7 @@ public sealed class NotableDateResolutionServiceDynamicExpansionTests
 
     private static NotableDateService CreateService(params NotableDateRule[] rules) =>
         new(
-            ruleProviders: new[] { new InMemoryRuleProvider(rules) },
+            ruleProviders: [new InMemoryRuleProvider(rules)],
             workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 
     private static NotableDateRule FixedPublicHolidayRule(string name, int month, int day) =>

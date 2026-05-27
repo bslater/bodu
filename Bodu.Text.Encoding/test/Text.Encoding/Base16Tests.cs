@@ -26,7 +26,7 @@ public sealed partial class Base16Tests
     /// <summary>
     /// A canonical four-byte input used as the reference vector across encode/decode round-trip tests.
     /// </summary>
-    private static readonly byte[] CanonicalBytes = new byte[] { 0xDE, 0xAD, 0xBE, 0xEF };
+    private static readonly byte[] CanonicalBytes = [0xDE, 0xAD, 0xBE, 0xEF];
 
     /// <summary>
     /// Returns a curated byte pattern used in round-trip and regression tests.

@@ -33,12 +33,12 @@ namespace Bodu.Text.Configuration;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// // Parse and resolve a configuration file for a specific target path.
+/// Parse and resolve a configuration file for a specific target path.
 /// IniDocument         doc    = ConfigurationDocument.Parse(text);
 /// ConfigurationView view = doc.Resolve("src/Foo.cs");
 /// int indent = view.GetInt32("format:indent:size", 4);
 ///
-/// // Collect every diagnostic instead of failing on the first issue.
+/// Collect every diagnostic instead of failing on the first issue.
 /// var opts = new ConfigurationParseOptions
 /// {
 ///     Profile        = ConfigurationProfile.Bodu,

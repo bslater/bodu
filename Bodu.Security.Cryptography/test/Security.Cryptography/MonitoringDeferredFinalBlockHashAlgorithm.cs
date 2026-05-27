@@ -73,5 +73,5 @@ public sealed class MonitoringDeferredFinalBlockHashAlgorithm
 
     /// <inheritdoc />
     protected override byte[] ProcessFinalBlock() =>
-        new byte[] { (byte)this.ProcessBlockInvocations.Count };
+        [(byte)this.ProcessBlockInvocations.Count];
 }

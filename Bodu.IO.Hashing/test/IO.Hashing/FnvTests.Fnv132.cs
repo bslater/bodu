@@ -19,8 +19,8 @@ public sealed partial class Fnv132Tests
     /// Entries are the documented FNV-1 32-bit known-answer sequence for incremental inputs
     /// <c>[]</c>, <c>[0x00]</c>, <c>[0x00, 0x01]</c>, … <c>[0x00 .. 0x0E]</c>.
     /// </remarks>
-    protected override IReadOnlyList<string> GetExpectedHashesForIncrementalInput(SingleTestVariant variant) => new[]
-    {
+    protected override IReadOnlyList<string> GetExpectedHashesForIncrementalInput(SingleTestVariant variant) =>
+    [
         "811C9DC5", "050C5D1F", "117697CC", "49B0F626",
         "27937DD1", "1E2F1007", "8B163B00", "F3FEE106",
         "203C3C75", "33D32C27", "BC6E816C", "0DF5BD0E",
@@ -30,7 +30,7 @@ public sealed partial class Fnv132Tests
         "CA4E6655", "CE6B17D7", "C996876C", "C3F72F1E",
         "9C1F2C21", "E61277EF", "1E12CD20", "7798E97E",
         "C3B79145", "5EF9AFBF",
-    };
+    ];
     /// <inheritdoc />
     protected override NonCryptographicHashAlgorithmSpecification GetSpecification(SingleTestVariant variant) => new()
     {

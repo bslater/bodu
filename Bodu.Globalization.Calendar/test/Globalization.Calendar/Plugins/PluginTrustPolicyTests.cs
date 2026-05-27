@@ -16,7 +16,7 @@ namespace Bodu.Globalization.Calendar.Plugins;
 [TestClass]
 public sealed class PluginTrustPolicyTests
 {
-    private static readonly byte[] SampleHash = { 0x01, 0x02, 0x03, 0x04 };
+    private static readonly byte[] SampleHash = [0x01, 0x02, 0x03, 0x04];
     private const string SampleAssemblyName = "Acme.Holidays";
 
     /// <summary>
@@ -26,7 +26,7 @@ public sealed class PluginTrustPolicyTests
     public void AllowAllPluginTrustPolicy_ShouldAlwaysReturnTrusted()
     {
         var policy = new AllowAllPluginTrustPolicy();
-        var context = new PluginTrustContext("/tmp/anything.dll", new AssemblyName("Anything"), new byte[0]);
+        var context = new PluginTrustContext("/tmp/anything.dll", new AssemblyName("Anything"), []);
 
         var result = policy.Evaluate(context);
 
@@ -91,7 +91,7 @@ public sealed class PluginTrustPolicyTests
     [TestMethod]
     public void StrongNamePluginTrustPolicy_WhenAssemblyNotStrongNamed_ShouldReturnUntrusted()
     {
-        var policy = new StrongNamePluginTrustPolicy(new[] { "abcdef1234567890" });
+        var policy = new StrongNamePluginTrustPolicy(["abcdef1234567890"]);
         var context = new PluginTrustContext("/tmp/plain.dll", new AssemblyName("Plain.Assembly"), SampleHash);
 
         var result = policy.Evaluate(context);
@@ -113,7 +113,7 @@ public sealed class PluginTrustPolicyTests
         var assemblyName = new AssemblyName("Signed.Assembly");
         assemblyName.SetPublicKeyToken(token);
 
-        var policy = new StrongNamePluginTrustPolicy(new[] { tokenHex.ToUpperInvariant() });
+        var policy = new StrongNamePluginTrustPolicy([tokenHex.ToUpperInvariant()]);
         var context = new PluginTrustContext("/tmp/signed.dll", assemblyName, SampleHash);
 
         var result = policy.Evaluate(context);
@@ -132,7 +132,7 @@ public sealed class PluginTrustPolicyTests
         var assemblyName = new AssemblyName("Signed.Assembly");
         assemblyName.SetPublicKeyToken(token);
 
-        var policy = new StrongNamePluginTrustPolicy(new[] { "deadbeef12345678" });
+        var policy = new StrongNamePluginTrustPolicy(["deadbeef12345678"]);
         var context = new PluginTrustContext("/tmp/signed.dll", assemblyName, SampleHash);
 
         var result = policy.Evaluate(context);
@@ -306,7 +306,7 @@ public sealed class PluginTrustPolicyTests
     {
         var allowlist = new Dictionary<string, byte[]>(StringComparer.OrdinalIgnoreCase)
         {
-            ["Good"] = new byte[] { 1, 2, 3 },
+            ["Good"] = [1, 2, 3],
         };
         var policy = new FileHashPluginTrustPolicy(allowlist);
         var context = new PluginTrustContext("/tmp/x.dll", new AssemblyName("Good"), SampleHash);
@@ -340,7 +340,7 @@ public sealed class PluginTrustPolicyTests
     [TestMethod]
     public void StrongNamePluginTrustPolicy_WhenAllowlistHasMixedCaseAndNullEntries_ShouldNormaliseWithoutThrowing()
     {
-        _ = new StrongNamePluginTrustPolicy(new[] { "  AbCdEf1234567890  ", null! });
+        _ = new StrongNamePluginTrustPolicy(["  AbCdEf1234567890  ", null!]);
 
         // Reaching this line implies the normalisation succeeded for both entries.
         Assert.IsTrue(true);

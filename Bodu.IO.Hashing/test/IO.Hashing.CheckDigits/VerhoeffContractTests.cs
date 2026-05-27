@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="VerhoeffContractTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -26,10 +26,10 @@ public sealed class VerhoeffContractTests : CheckDigitContractTests<Verhoeff>
         Verhoeff.IsValid(fullValue.AsSpan());
 
     /// <inheritdoc />
-    protected override IReadOnlyList<CheckDigitKat> KnownAnswers { get; } = new CheckDigitKat[]
-    {
+    protected override IReadOnlyList<CheckDigitKat> KnownAnswers { get; } =
+    [
         new("single zero",       Payload: "0",     CheckDigit: "4", FullValue: "04"),
         new("Wikipedia example", Payload: "236",   CheckDigit: "3", FullValue: "2363"),
         new("ascending 1..5",    Payload: "12345", CheckDigit: "1", FullValue: "123451"),
-    };
+    ];
 }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateServiceTests.GetSupportedCalendars.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -21,7 +21,7 @@ public partial class NotableDateServiceTests
     public void GetSupportedCalendars_WhenAllRulesGlobal_ShouldReturnEmpty()
     {
         NotableDateService service = new(
-            ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(Fixed("Global", 1, 1)) },
+            ruleProviders: [(INotableDateRuleProvider)new InMemoryRuleProvider(Fixed("Global", 1, 1))],
             workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 
         Assert.AreEqual(0, service.GetSupportedCalendars().Count);
@@ -54,7 +54,7 @@ public partial class NotableDateServiceTests
         };
 
         NotableDateService service = new(
-            ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(gregorian, hebrew) },
+            ruleProviders: [(INotableDateRuleProvider)new InMemoryRuleProvider(gregorian, hebrew)],
             workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 
         IReadOnlyCollection<Type> calendars = service.GetSupportedCalendars();
@@ -79,7 +79,7 @@ public partial class NotableDateServiceTests
         };
 
         NotableDateService service = new(
-            ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(gregorian, Fixed("Global", 2, 1)) },
+            ruleProviders: [(INotableDateRuleProvider)new InMemoryRuleProvider(gregorian, Fixed("Global", 2, 1))],
             workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 
         IReadOnlyCollection<Type> calendars = service.GetSupportedCalendars();
@@ -115,7 +115,7 @@ public partial class NotableDateServiceTests
         };
 
         NotableDateService service = new(
-            ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(a, b) },
+            ruleProviders: [(INotableDateRuleProvider)new InMemoryRuleProvider(a, b)],
             workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 
         Assert.AreEqual(1, service.GetSupportedCalendars().Count);
@@ -162,11 +162,11 @@ public partial class NotableDateServiceTests
         };
 
         NotableDateService service = new(
-            ruleProviders: new[]
-            {
+            ruleProviders:
+            [
                 (INotableDateRuleProvider)new InMemoryRuleProvider(a),
                 (INotableDateRuleProvider)new InMemoryRuleProvider(b),
-            },
+            ],
             workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 
         IReadOnlyCollection<Type> calendars = service.GetSupportedCalendars();
@@ -194,9 +194,9 @@ public partial class NotableDateServiceTests
         };
 
         NotableDateService service = new(
-            ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(gregorian) },
+            ruleProviders: [(INotableDateRuleProvider)new InMemoryRuleProvider(gregorian)],
             workingWeek: WeekPattern.MondayToFriday,
-            options: new NotableDateServiceOptions { OverrideProviders = new[] { overrides } });
+            options: new NotableDateServiceOptions { OverrideProviders = [overrides] });
 
         IReadOnlyCollection<Type> firstSnapshot = service.GetSupportedCalendars();
         Assert.AreEqual(1, firstSnapshot.Count);
@@ -235,9 +235,9 @@ public partial class NotableDateServiceTests
             CalendarType = typeof(GregorianCalendar),
         };
         NotableDateService service = new(
-            ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(gregorian) },
+            ruleProviders: [(INotableDateRuleProvider)new InMemoryRuleProvider(gregorian)],
             workingWeek: WeekPattern.MondayToFriday,
-            options: new NotableDateServiceOptions { OverrideProviders = new[] { overrides } });
+            options: new NotableDateServiceOptions { OverrideProviders = [overrides] });
 
         Assert.IsFalse(service.GetSupportedCalendars().Contains(typeof(HebrewCalendar)));
 

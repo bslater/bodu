@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base58CheckTests.InvalidInput.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -18,12 +18,12 @@ public sealed class Base58CheckTests_InvalidInput
     /// The 21-byte Bitcoin Genesis block payload (version byte plus HASH-160 of Satoshi's public key) — kept in
     /// sync with the constant in <see cref="Base58CheckTests" />.
     /// </summary>
-    private static readonly byte[] GenesisPayload = new byte[]
-    {
+    private static readonly byte[] GenesisPayload =
+    [
         0x00,
         0x62, 0xE9, 0x07, 0xB1, 0x5C, 0xBF, 0x27, 0xD5, 0x42, 0x53,
         0x99, 0xEB, 0xF6, 0xF0, 0xFB, 0x50, 0xEB, 0xB8, 0x8F, 0x18,
-    };
+    ];
 
     /// <summary>
     /// Produces a Base58Check string whose payload byte at <paramref name="index" /> has been XORed with

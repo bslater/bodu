@@ -77,7 +77,7 @@ public sealed partial class BencodeTests
             {
                 0 => new BencodedInteger(rng.NextInt64()),
                 1 => BencodedString.FromUtf8($"v{rng.Next(10000)}"),
-                _ => new BencodedList(new BencodedValue[] { new BencodedInteger(rng.Next()), BencodedString.FromUtf8($"x{rng.Next()}") }),
+                _ => new BencodedList([new BencodedInteger(rng.Next()), BencodedString.FromUtf8($"x{rng.Next()}")]),
             };
             pairs.Add(new KeyValuePair<BencodedString, BencodedValue>(key, value));
         }

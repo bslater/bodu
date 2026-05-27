@@ -24,8 +24,8 @@ public sealed class NotableDateRangePipelineTestsOverrideRemoval
         NotableDateRule drop = BuildFixedRule("Drop", 7, 4);
 
         NotableDateRangePipeline pipeline = BuildPipeline(
-            rules: new[] { keep, drop },
-            removals: new[] { new RuleRemoval("Drop") });
+            rules: [keep, drop],
+            removals: [new RuleRemoval("Drop")]);
 
         IReadOnlyList<NotableDate> emitted = pipeline.Resolve(new NotableDateRangeRequest(
             new DateTime(2026, 1, 1),
@@ -44,8 +44,8 @@ public sealed class NotableDateRangePipelineTestsOverrideRemoval
         NotableDateRule rule = BuildFixedRule("Scoped", 7, 4);
 
         NotableDateRangePipeline pipeline = BuildPipeline(
-            rules: new[] { rule },
-            removals: new[] { new RuleRemoval("Scoped", FromYear: 2025, ToYear: 2026) });
+            rules: [rule],
+            removals: [new RuleRemoval("Scoped", FromYear: 2025, ToYear: 2026)]);
 
         IReadOnlyList<NotableDate> emitted = pipeline.Resolve(new NotableDateRangeRequest(
             new DateTime(2024, 1, 1),
@@ -78,8 +78,8 @@ public sealed class NotableDateRangePipelineTestsOverrideRemoval
         };
 
         NotableDateRangePipeline pipeline = BuildPipeline(
-            rules: new[] { rule },
-            removals: new[] { new RuleRemoval("Shared Holiday", TerritoryCode: "AU") });
+            rules: [rule],
+            removals: [new RuleRemoval("Shared Holiday", TerritoryCode: "AU")]);
 
         IReadOnlyList<NotableDate> emittedAu = pipeline.Resolve(new NotableDateRangeRequest(
             new DateTime(2026, 4, 1),
@@ -104,8 +104,8 @@ public sealed class NotableDateRangePipelineTestsOverrideRemoval
         NotableDateRule rule = BuildFixedRule("Live", 6, 1);
 
         NotableDateRangePipeline pipeline = BuildPipeline(
-            rules: new[] { rule },
-            removals: new[] { new RuleRemoval("Different") });
+            rules: [rule],
+            removals: [new RuleRemoval("Different")]);
 
         IReadOnlyList<NotableDate> emitted = pipeline.Resolve(new NotableDateRangeRequest(
             new DateTime(2026, 6, 1),
@@ -124,8 +124,8 @@ public sealed class NotableDateRangePipelineTestsOverrideRemoval
         NotableDateRule rule = BuildFixedRule("Global", 3, 3);
 
         NotableDateRangePipeline pipeline = BuildPipeline(
-            rules: new[] { rule },
-            removals: new[] { new RuleRemoval("Global", TerritoryCode: "AU") });
+            rules: [rule],
+            removals: [new RuleRemoval("Global", TerritoryCode: "AU")]);
 
         IReadOnlyList<NotableDate> emitted = pipeline.Resolve(new NotableDateRangeRequest(
             new DateTime(2026, 3, 1),

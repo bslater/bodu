@@ -10,7 +10,7 @@ namespace Bodu.Security.Cryptography;
 
 public partial class CryptoHelpersTests
 {
-    private static readonly KeySizes[] LegalKeySizes = new[] { new KeySizes(128, 256, 64) };
+    private static readonly KeySizes[] LegalKeySizes = [new KeySizes(128, 256, 64)];
 
     /// <summary>
     /// Verifies that <see cref="CryptoHelpers.ThrowIfInvalidKeySize(byte[], int, KeySizes[], string)"/> does not

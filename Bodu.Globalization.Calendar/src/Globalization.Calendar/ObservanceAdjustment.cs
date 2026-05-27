@@ -52,7 +52,7 @@ namespace Bodu.Globalization.Calendar;
 ///     IsNonWorkingDay = true,
 /// };
 ///
-/// // In Western Australia only, move ANZAC Day observance from Sunday to Monday:
+/// In Western Australia only, move ANZAC Day observance from Sunday to Monday:
 /// ObservanceAdjustment waSubstitute = new ObservanceAdjustment
 /// {
 ///     Key = "anzac-day-wa-sub",

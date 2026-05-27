@@ -33,7 +33,7 @@ public sealed class NotableDateRuleResolverLeapMonthSkipTests
             SkipLeapMonth = true,
         };
 
-        NotableDateRuleResolver resolver = new(new[] { rule });
+        NotableDateRuleResolver resolver = new([rule]);
 
         DateTime? date = resolver.ResolveAnchorDate(rule, 2024);
 
@@ -59,7 +59,7 @@ public sealed class NotableDateRuleResolverLeapMonthSkipTests
             SkipLeapMonth = true,
         };
 
-        NotableDateRuleResolver resolver = new(new[] { rule });
+        NotableDateRuleResolver resolver = new([rule]);
 
         DateTime? date = resolver.ResolveAnchorDate(rule, 2023);
 
@@ -84,7 +84,7 @@ public sealed class NotableDateRuleResolverLeapMonthSkipTests
             SkipLeapMonth = true,
         };
 
-        NotableDateRuleResolver resolver = new(new[] { rule });
+        NotableDateRuleResolver resolver = new([rule]);
 
         DateTime? date = resolver.ResolveAnchorDate(rule, 2024);
 
@@ -109,7 +109,7 @@ public sealed class NotableDateRuleResolverLeapMonthSkipTests
             SkipLeapMonth = true,
         };
 
-        NotableDateRuleResolver resolver = new(new[] { rule });
+        NotableDateRuleResolver resolver = new([rule]);
 
         DateTime? date = resolver.ResolveAnchorDate(rule, 2024);
 
@@ -134,7 +134,7 @@ public sealed class NotableDateRuleResolverLeapMonthSkipTests
             SkipLeapMonth = true,
         };
 
-        NotableDateRuleResolver resolver = new(new[] { rule });
+        NotableDateRuleResolver resolver = new([rule]);
 
         // ChineseLunisolarCalendar.MinSupportedDateTime is 1901; year 1800 is outside the range.
         DateTime? date = resolver.ResolveAnchorDate(rule, 1800);

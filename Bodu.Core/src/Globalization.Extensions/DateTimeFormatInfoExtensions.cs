@@ -37,10 +37,10 @@ namespace Bodu.Globalization.Extensions;
 /// var enUs = CultureInfo.GetCultureInfo("en-US").DateTimeFormat;
 ///
 /// DayOfWeek lastInBritain = enGb.LastDayOfWeek();
-/// // => DayOfWeek.Sunday (en-GB starts on Monday, so the week ends on Sunday)
+/// => DayOfWeek.Sunday (en-GB starts on Monday, so the week ends on Sunday)
 ///
 /// DayOfWeek lastInAmerica = enUs.LastDayOfWeek();
-/// // => DayOfWeek.Saturday (en-US starts on Sunday, so the week ends on Saturday)
+/// => DayOfWeek.Saturday (en-US starts on Sunday, so the week ends on Saturday)
 ///]]>
 /// </code>
 /// </example>

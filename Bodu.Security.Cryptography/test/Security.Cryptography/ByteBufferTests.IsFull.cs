@@ -17,7 +17,7 @@ public partial class ByteBufferTests
     public void IsFull_WhenBufferFilledExactly_ShouldReturnTrue()
     {
         var buffer = new ByteBuffer(2);
-        buffer.Add(new byte[] { 1, 2 }, 0, 2);
+        buffer.Add([1, 2], 0, 2);
         Assert.IsTrue(buffer.IsFull);
     }
 
@@ -28,7 +28,7 @@ public partial class ByteBufferTests
     public void IsFull_WhenBufferHasRoomRemaining_ShouldReturnFalse()
     {
         var buffer = new ByteBuffer(3);
-        buffer.Add(new byte[] { 1 }, 0, 1);
+        buffer.Add([1], 0, 1);
         Assert.IsFalse(buffer.IsFull);
     }
 
@@ -49,7 +49,7 @@ public partial class ByteBufferTests
     public void IsFull_WhenResetAfterFull_ShouldReturnFalse()
     {
         var buffer = new ByteBuffer(1);
-        buffer.Add(new byte[] { 1 }, 0, 1);
+        buffer.Add([1], 0, 1);
         buffer.Initialize();
         Assert.IsFalse(buffer.IsFull);
     }

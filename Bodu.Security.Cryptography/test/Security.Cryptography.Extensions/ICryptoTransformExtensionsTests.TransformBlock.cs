@@ -25,7 +25,7 @@ public partial class ICryptoTransformExtensionsTests
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            transform!.TransformBlock(new byte[] { 1, 2, 3, 4 });
+            transform!.TransformBlock([1, 2, 3, 4]);
         });
     }
 

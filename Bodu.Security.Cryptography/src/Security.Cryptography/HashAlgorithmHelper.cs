@@ -35,7 +35,7 @@ namespace Bodu.Security.Cryptography;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// // Configured SipHash-2-4 factory; the configuration applies to every call to HashData.
+/// Configured SipHash-2-4 factory; the configuration applies to every call to HashData.
 /// var factory = HashAlgorithmFactory.From(() => new SipHash64
 /// {
 ///     Key = key,

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="WeekPatternParseFormatContractTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -32,20 +32,18 @@ public sealed class WeekPatternParseFormatContractTests : ParseFormatContractTes
 
     /// <inheritdoc />
     protected override IReadOnlyList<ValidKat<string, WeekPattern>> ValidCases { get; } =
-        new ValidKat<string, WeekPattern>[]
-    {
+        [
         new("all days off (Sunday-first)",  Input: "_______",  Expected: WeekPattern.Empty),
         new("all days on (Sunday-first)",   Input: "SMTWTFS",  Expected: WeekPattern.AllDays),
         new("weekdays (Sunday-first)",      Input: "_MTWTF_",  Expected: WeekPattern.Weekdays),
         new("weekends (Sunday-first)",      Input: "S_____S",  Expected: WeekPattern.Weekend),
-    };
+    ];
 
     /// <inheritdoc />
     protected override IReadOnlyList<InvalidKat<string>> InvalidCases { get; } =
-        new InvalidKat<string>[]
-    {
+        [
         new("contains unrecognised character", Input: "SMTWTFX", ExceptionType: typeof(FormatException)),
         new("too short",                       Input: "SMTWTF",  ExceptionType: typeof(FormatException)),
         new("too long",                        Input: "SMTWTFSS", ExceptionType: typeof(FormatException)),
-    };
+    ];
 }

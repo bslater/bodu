@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateAlgorithmKnownAnswers.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -284,10 +284,9 @@ public static partial class NotableDateAlgorithmKnownAnswers
     /// <param name="factory">The delegate that constructs a fresh algorithm instance.</param>
     /// <returns>A single-element object array carrying the constructed case.</returns>
     private static object[] Factory(string algorithm, Func<INotableDateAlgorithm> factory) =>
-        new object[]
-        {
+        [
             new AlgorithmFactoryCase { Algorithm = algorithm, Factory = factory },
-        };
+        ];
 
     /// <summary>
     /// Builds a single-element object array wrapping a <see cref="NotableDateAlgorithmKnownAnswer" /> row.
@@ -308,8 +307,7 @@ public static partial class NotableDateAlgorithmKnownAnswers
         int toleranceDays = 0,
         AlgorithmCalendarKind calendarKind = AlgorithmCalendarKind.Default,
         string? source = null) =>
-        new object[]
-        {
+        [
             new NotableDateAlgorithmKnownAnswer
             {
                 Algorithm = algorithm,
@@ -320,7 +318,7 @@ public static partial class NotableDateAlgorithmKnownAnswers
                 ToleranceDays = toleranceDays,
                 Source = source,
             },
-        };
+        ];
 
     /// <summary>Builds a Losar row (one-day tolerance).</summary>
     /// <param name="year">The year passed to the algorithm.</param>

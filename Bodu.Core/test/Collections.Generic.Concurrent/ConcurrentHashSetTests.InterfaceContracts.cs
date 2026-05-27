@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConcurrentHashSetTests.InterfaceContracts.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -41,7 +41,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void ICollectionT_ContainsRemoveClear_ShouldBehaveThroughInterface()
     {
-        ICollection<int> set = new ConcurrentHashSet<int>(new[] { 1, 2, 3 });
+        ICollection<int> set = new ConcurrentHashSet<int>([1, 2, 3]);
 
         Assert.IsTrue(set.Contains(2));
         Assert.IsTrue(set.Remove(2));
@@ -58,7 +58,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void ICollectionT_CopyTo_ShouldCopyEveryElementThroughInterface()
     {
-        ICollection<int> set = new ConcurrentHashSet<int>(new[] { 1, 2, 3 });
+        ICollection<int> set = new ConcurrentHashSet<int>([1, 2, 3]);
         var array = new int[3];
 
         set.CopyTo(array, 0);
@@ -86,14 +86,14 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void ISet_BulkOperations_ShouldBehaveThroughInterface()
     {
-        ISet<int> set = new ConcurrentHashSet<int>(new[] { 1, 2, 3 });
+        ISet<int> set = new ConcurrentHashSet<int>([1, 2, 3]);
 
-        set.UnionWith(new[] { 3, 4 });
-        set.ExceptWith(new[] { 1 });
+        set.UnionWith([3, 4]);
+        set.ExceptWith([1]);
 
-        Assert.IsTrue(set.SetEquals(new[] { 2, 3, 4 }));
-        Assert.IsTrue(set.IsSupersetOf(new[] { 2, 4 }));
-        Assert.IsTrue(set.Overlaps(new[] { 4, 99 }));
+        Assert.IsTrue(set.SetEquals([2, 3, 4]));
+        Assert.IsTrue(set.IsSupersetOf([2, 4]));
+        Assert.IsTrue(set.Overlaps([4, 99]));
     }
 
     /// <summary>
@@ -103,7 +103,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void IReadOnlyCollection_ShouldExposeCountAndElementsThroughInterface()
     {
-        IReadOnlyCollection<int> set = new ConcurrentHashSet<int>(new[] { 1, 2, 3, 4 });
+        IReadOnlyCollection<int> set = new ConcurrentHashSet<int>([1, 2, 3, 4]);
 
         Assert.AreEqual(4, set.Count);
         CollectionAssert.AreEquivalent(new[] { 1, 2, 3, 4 }, set.ToList());
@@ -116,7 +116,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void ICollectionT_WhenConsumedAsCollectionContract_ShouldRoundTrip()
     {
-        ICollection<int> source = new ConcurrentHashSet<int>(new[] { 5, 6, 7 });
+        ICollection<int> source = new ConcurrentHashSet<int>([5, 6, 7]);
 
         var copy = new List<int>(source);
 

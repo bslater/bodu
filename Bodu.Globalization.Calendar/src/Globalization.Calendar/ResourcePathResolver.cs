@@ -30,17 +30,17 @@ namespace Bodu.Globalization.Calendar;
 ///<![CDATA[
 /// IResourcePathResolver resolver = new ResourcePathResolver();
 ///
-/// // Relative resolution — sibling document:
+/// Relative resolution — sibling document:
 /// string result = resolver.Resolve(
 ///     "/Bodu/Globalization/Calendar/Resources/au-all.xml",
 ///     "../regions/au-nsw.xml");
-/// // result: "/Bodu/Globalization/Calendar/regions/au-nsw.xml"
+/// result: "/Bodu/Globalization/Calendar/regions/au-nsw.xml"
 ///
-/// // Absolute child path (leading slash) — resolved as-is:
+/// Absolute child path (leading slash) — resolved as-is:
 /// string abs = resolver.Resolve(
 ///     "/Bodu/Globalization/Calendar/Resources/au-all.xml",
 ///     "/Bodu/Globalization/Calendar/Resources/global-public.xml");
-/// // abs: "/Bodu/Globalization/Calendar/Resources/global-public.xml"
+/// abs: "/Bodu/Globalization/Calendar/Resources/global-public.xml"
 ///]]>
 /// </code>
 /// </example>

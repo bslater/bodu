@@ -28,7 +28,7 @@ public partial class SymmetricAlgorithmExtensionTests
         SymmetricAlgorithm? algorithm = null;
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
-            algorithm!.Decrypt(new byte[] { 1, 2, 3, 4 }));
+            algorithm!.Decrypt([1, 2, 3, 4]));
     }
 
     /// <summary>
@@ -203,7 +203,7 @@ public partial class SymmetricAlgorithmExtensionTests
         SymmetricAlgorithm? algorithm = null;
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
-            algorithm!.Decrypt((ReadOnlySpan<byte>)new byte[] { 1, 2, 3, 4 }));
+            algorithm!.Decrypt((ReadOnlySpan<byte>)[1, 2, 3, 4]));
     }
 
     /// <summary>
@@ -251,7 +251,7 @@ public partial class SymmetricAlgorithmExtensionTests
         SymmetricAlgorithm? algorithm = null;
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
-            algorithm!.Decrypt(new ReadOnlyMemory<byte>(new byte[] { 1, 2, 3, 4 })));
+            algorithm!.Decrypt(new ReadOnlyMemory<byte>([1, 2, 3, 4])));
     }
 
     /// <summary>

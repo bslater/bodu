@@ -113,7 +113,7 @@ public partial class ConcurrentCircularBufferTests
     // Parallel.For(0, Environment.ProcessorCount * 2, _ => { try { while (!cts.IsCancellationRequested) { // Non-throwing enqueue
     // avoids pathological spinning under extreme contention buffer.TryEnqueue(new TestItem(0)); buffer.TryDequeue(out TestItem? _);
 
-    // // Tiny pause helps fairness between threads; avoids starvation Thread.SpinWait(20); } } catch (Exception ex) { errors.Add(ex); } });
+    // Tiny pause helps fairness between threads; avoids starvation Thread.SpinWait(20); } } catch (Exception ex) { errors.Add(ex); } });
 
     //    Assert.AreEqual(0, errors.Count, "No exceptions are expected under capacity==1 churn.");
     //    Assert.IsTrue(buffer.Count >= 0 && buffer.Count <= 1, "Count must stay within [0,1].");

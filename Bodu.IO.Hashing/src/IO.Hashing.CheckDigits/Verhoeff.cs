@@ -29,13 +29,13 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// // Single-call computation against an in-memory body.
+/// Single-call computation against an in-memory body.
 /// char check = Verhoeff.Compute("236");   // '3'
 ///
-/// // Full-sequence validation.
+/// Full-sequence validation.
 /// bool ok = Verhoeff.IsValid("2363");     // true
 ///
-/// // Streaming use when the body is built up incrementally.
+/// Streaming use when the body is built up incrementally.
 /// var algo = new Verhoeff();
 /// algo.Append("236");
 /// char d = algo.GetCurrentCheckDigit();   // '3'

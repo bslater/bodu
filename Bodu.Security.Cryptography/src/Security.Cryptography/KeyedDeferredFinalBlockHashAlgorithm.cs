@@ -44,14 +44,14 @@ namespace Bodu.Security.Cryptography;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// // BLAKE2b in keyed MAC mode — the key is optional and may be up to MaximumKeySize bits.
+/// BLAKE2b in keyed MAC mode — the key is optional and may be up to MaximumKeySize bits.
 /// byte[] key = new byte[32];
 /// RandomNumberGenerator.Fill(key);
 ///
 /// using var mac = new Blake2b { Key = key };
 /// byte[] tag = mac.ComputeHash("message"u8.ToArray());
 ///
-/// // Or use the same type unkeyed for a plain BLAKE2b digest.
+/// Or use the same type unkeyed for a plain BLAKE2b digest.
 /// using var digest = new Blake2b();
 /// byte[] hash = digest.ComputeHash("message"u8.ToArray());
 ///]]>

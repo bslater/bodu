@@ -182,7 +182,7 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     [TestMethod]
     public void ComputeHash_RealAlgorithm_KnownAnswer_Sha256_TwoLeafTree()
     {
-        byte[] data = { 1, 2, 3, 4, 5, 6, 7, 8 };
+        byte[] data = [1, 2, 3, 4, 5, 6, 7, 8];
         var expected = ComputeSha256MerkleRoot(data, blockSize: 4, fanOut: 2);
 
         using THasher hasher = Construct(Sha256Factory, blockSize: 4, fanOut: 2);

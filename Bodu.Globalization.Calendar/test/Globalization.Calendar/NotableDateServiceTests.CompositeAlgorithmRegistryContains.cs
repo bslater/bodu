@@ -90,7 +90,7 @@ public sealed class NotableDateServiceCompositeAlgorithmRegistryContainsTests
             compositeType,
             BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public,
             binder: null,
-            args: new object[] { primary, fallback },
+            args: [primary, fallback],
             culture: null)
             ?? throw new InvalidOperationException("Failed to instantiate CompositeAlgorithmRegistry.");
 

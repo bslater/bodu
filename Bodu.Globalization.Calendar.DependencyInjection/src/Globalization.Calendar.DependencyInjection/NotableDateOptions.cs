@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateOptions.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -8,7 +8,8 @@ namespace Bodu.Globalization.Calendar.DependencyInjection;
 
 /// <summary>
 /// Provides the bindable options bag consumed by
-/// <see cref="ServiceCollectionExtensions.AddNotableDates(Microsoft.Extensions.DependencyInjection.IServiceCollection, Microsoft.Extensions.Configuration.IConfiguration?, string)" />.
+/// <see cref="ServiceCollectionExtensions.AddNotableDates(Microsoft.Extensions.DependencyInjection.IServiceCollection, Microsoft.Extensions.Configuration.IConfiguration?, string)" />
+/// .
 /// </summary>
 /// <remarks>
 /// <para>
@@ -30,15 +31,8 @@ namespace Bodu.Globalization.Calendar.DependencyInjection;
 /// <para>
 /// Binding from <c>appsettings.json</c>:
 /// </para>
-/// <code language="json">
-/// {
-///   "NotableDates": {
-///     "WorkingDays": "MondayToFriday",
-///     "DefaultTerritoryCode": "AU-NSW",
-///     "RegisterAsAmbientDefault": true
-///   }
-/// }
-/// </code>
+/// <code language="json"> { "NotableDates": { "WorkingDays": "MondayToFriday", "DefaultTerritoryCode": "AU-NSW",
+/// "RegisterAsAmbientDefault": true } } </code>
 /// </example>
 public sealed class NotableDateOptions
 {
@@ -101,9 +95,7 @@ public sealed class NotableDateOptions
     /// <see langword="true" /> to assign the resolved service to the ambient context; otherwise
     /// <see langword="false" />. Defaults to <see langword="false" />.
     /// </value>
-    /// <returns>
-    /// The configured ambient-default toggle.
-    /// </returns>
+    /// <returns>The configured ambient-default toggle.</returns>
     /// <remarks>
     /// <para>
     /// Assignment happens exactly once, the first time the <see cref="INotableDateService" /> singleton is resolved

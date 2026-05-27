@@ -65,7 +65,7 @@ public sealed class NotableDateResolutionEngineAddDaysWithinRangeTests
 
     private static NotableDateService BuildService() =>
         new(
-            ruleProviders: new[] { (INotableDateRuleProvider)new EmptyRuleProvider() },
+            ruleProviders: [(INotableDateRuleProvider)new EmptyRuleProvider()],
             workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 
     private sealed class EmptyRuleProvider

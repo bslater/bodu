@@ -76,7 +76,7 @@ namespace Bodu.Collections.Generic;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// // Sliding window of the three most recent samples — overwrite-on-full is the default.
+/// Sliding window of the three most recent samples — overwrite-on-full is the default.
 /// var window = new CircularBuffer<int>(capacity: 3);
 /// window.Enqueue(1);
 /// window.Enqueue(2);
@@ -84,7 +84,7 @@ namespace Bodu.Collections.Generic;
 /// window.Enqueue(4); // evicts 1; ItemEvicted fires with value 1
 /// Console.WriteLine(window.Peek()); // 2 (oldest remaining)
 ///
-/// // Fixed FIFO queue that rejects further pushes when full.
+/// Fixed FIFO queue that rejects further pushes when full.
 /// var bounded = new CircularBuffer<int>(capacity: 2, allowOverwrite: false);
 /// bounded.Enqueue(10);
 /// bounded.Enqueue(20);

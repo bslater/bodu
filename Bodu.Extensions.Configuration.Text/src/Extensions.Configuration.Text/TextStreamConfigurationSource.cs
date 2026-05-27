@@ -30,7 +30,7 @@ namespace Bodu.Extensions.Configuration.Text;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// // Test-time configuration from an in-memory string.
+/// Test-time configuration from an in-memory string.
 /// const string ConfigText = """
 ///     [*]
 ///     Logging:Level = Debug

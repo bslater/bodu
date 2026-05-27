@@ -179,8 +179,8 @@ public sealed class NotableDateResolutionServiceTests
     public void Resolve_WhenMultipleDatesFallOnSameDayAndCollisionResolverIsProvided_ShouldApplyCollisionResolver()
     {
         NotableDateService service = new(
-            ruleProviders: new[]
-            {
+            ruleProviders:
+            [
                 new InMemoryRuleProvider(
                 [
                     FixedRule("Lower Priority", month: 1, day: 1) with
@@ -192,7 +192,7 @@ public sealed class NotableDateResolutionServiceTests
                         Priority = 10,
                     },
                 ]),
-            },
+            ],
             workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
             options: new NotableDateServiceOptions
             {
@@ -213,7 +213,7 @@ public sealed class NotableDateResolutionServiceTests
             .Register(typeof(CountingEasterAlgorithm).FullName!, new CountingEasterAlgorithm());
 
         return new NotableDateService(
-            ruleProviders: new[] { new InMemoryRuleProvider(rules) },
+            ruleProviders: [new InMemoryRuleProvider(rules)],
             workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
             options: new NotableDateServiceOptions { AlgorithmRegistry = registry });
     }

@@ -492,8 +492,8 @@ public sealed partial class NotableDateRangePipelineScenarioTests
     /// tag set, name, duration, and non-working flag so individual filters can be observed selecting precise subsets.
     /// </summary>
     /// <returns>The fixture rules.</returns>
-    private static NotableDateRule[] FilterFixtureRules() => new[]
-    {
+    private static NotableDateRule[] FilterFixtureRules() =>
+    [
         new NotableDateRule
         {
             Name = "Christmas Day",
@@ -583,5 +583,5 @@ public sealed partial class NotableDateRangePipelineScenarioTests
                 IsNonWorkingDay = true,
             }),
         },
-    };
+    ];
 }

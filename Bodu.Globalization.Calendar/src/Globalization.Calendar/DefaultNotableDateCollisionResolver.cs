@@ -40,8 +40,8 @@ namespace Bodu.Globalization.Calendar;
 ///                           Category = NotableDateCategory.Remembrance },
 ///     });
 ///
-/// // resolved[0].Name == "Anzac Day"     (Remembrance has the lower category ordinal)
-/// // resolved[1].Name == "Easter Sunday"
+/// resolved[0].Name == "Anzac Day"     (Remembrance has the lower category ordinal)
+/// resolved[1].Name == "Easter Sunday"
 ///]]>
 /// </code>
 /// </example>

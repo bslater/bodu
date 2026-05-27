@@ -47,7 +47,7 @@ public sealed partial class EncodingExtensionsTests
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = ((ReadOnlySpan<byte>)new byte[] { 0x68 }).GetDecodedCharCount(null!);
+            _ = ((ReadOnlySpan<byte>)[0x68]).GetDecodedCharCount(null!);
         });
 
         Assert.AreEqual("encoding", ex.ParamName);
@@ -93,7 +93,7 @@ public sealed partial class EncodingExtensionsTests
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = ((ReadOnlySpan<byte>)new byte[] { 0x68 }).ToChars(null!);
+            _ = ((ReadOnlySpan<byte>)[0x68]).ToChars(null!);
         });
 
         Assert.AreEqual("encoding", ex.ParamName);
@@ -136,7 +136,7 @@ public sealed partial class EncodingExtensionsTests
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = ((ReadOnlySpan<byte>)new byte[] { 0x68 }).DecodeToString(null!);
+            _ = ((ReadOnlySpan<byte>)[0x68]).DecodeToString(null!);
         });
 
         Assert.AreEqual("encoding", ex.ParamName);
@@ -187,7 +187,7 @@ public sealed partial class EncodingExtensionsTests
 
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = ((ReadOnlySpan<byte>)new byte[] { 0x68 }).DecodeTo(null!, backing);
+            _ = ((ReadOnlySpan<byte>)[0x68]).DecodeTo(null!, backing);
         });
 
         Assert.AreEqual("encoding", ex.ParamName);
@@ -258,7 +258,7 @@ public sealed partial class EncodingExtensionsTests
 
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = ((ReadOnlySpan<byte>)new byte[] { 0x68 }).DecodeExactlyTo(null!, backing);
+            _ = ((ReadOnlySpan<byte>)[0x68]).DecodeExactlyTo(null!, backing);
         });
 
         Assert.AreEqual("encoding", ex.ParamName);
@@ -311,7 +311,7 @@ public sealed partial class EncodingExtensionsTests
 
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = ((ReadOnlySpan<byte>)new byte[] { 0x68 }).TryDecodeTo(null!, backing, out _);
+            _ = ((ReadOnlySpan<byte>)[0x68]).TryDecodeTo(null!, backing, out _);
         });
 
         Assert.AreEqual("encoding", ex.ParamName);

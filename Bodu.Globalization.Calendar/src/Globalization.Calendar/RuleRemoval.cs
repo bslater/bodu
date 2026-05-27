@@ -29,18 +29,18 @@ namespace Bodu.Globalization.Calendar;
 /// </para>
 /// <code>
 ///<![CDATA[
-/// // Suppress Boxing Day for the 2026 calendar year only:
+/// Suppress Boxing Day for the 2026 calendar year only:
 /// RuleRemoval boxingDay2026 = new RuleRemoval(
 ///     RuleName: "Boxing Day",
 ///     FromYear: 2026,
 ///     ToYear: 2026);
 ///
-/// // Permanently remove Picnic Day for Northern Territory only (other AU subdivisions unaffected):
+/// Permanently remove Picnic Day for Northern Territory only (other AU subdivisions unaffected):
 /// RuleRemoval picnicDayNT = new RuleRemoval(
 ///     RuleName: "Picnic Day",
 ///     TerritoryCode: "AU-NT");
 ///
-/// // Returned from an INotableDateRuleOverrideProvider:
+/// Returned from an INotableDateRuleOverrideProvider:
 /// public IEnumerable<RuleRemoval> GetRemovals()
 /// {
 ///     yield return boxingDay2026;

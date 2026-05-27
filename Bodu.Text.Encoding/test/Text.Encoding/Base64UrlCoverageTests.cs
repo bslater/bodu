@@ -16,7 +16,7 @@ namespace Bodu.Text.Encoding;
 public sealed class Base64UrlCoverageTests
 {
 
-    private static readonly byte[] Payload = new byte[] { 0xFB, 0xFF, 0xFE, 0x00 };
+    private static readonly byte[] Payload = [0xFB, 0xFF, 0xFE, 0x00];
 
     /// <summary>
     /// Verifies that <see cref="Base64Url.Decode(ReadOnlySpan{char})" /> round-trips an encoded payload.
@@ -64,7 +64,7 @@ public sealed class Base64UrlCoverageTests
     {
         Assert.ThrowsExactly<FormatException>(() =>
         {
-            _ = Base64Url.Decode(new byte[] { 0xFF, 0xFF, 0xFF, 0xFF });
+            _ = Base64Url.Decode([0xFF, 0xFF, 0xFF, 0xFF]);
         });
     }
 

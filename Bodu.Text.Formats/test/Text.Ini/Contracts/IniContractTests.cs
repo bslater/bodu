@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IniContractTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -31,8 +31,8 @@ public sealed class IniContractTests
     protected override IEqualityComparer<IniDocument> DocumentComparer { get; } = new SectionNameComparer();
 
     /// <inheritdoc />
-    protected override IReadOnlyList<TextDocumentKat<IniDocument, IniParseOptions>> ValidCases { get; } = new TextDocumentKat<IniDocument, IniParseOptions>[]
-    {
+    protected override IReadOnlyList<TextDocumentKat<IniDocument, IniParseOptions>> ValidCases { get; } =
+    [
         new(
             Name: "empty document",
             Text: string.Empty,
@@ -41,17 +41,17 @@ public sealed class IniContractTests
             Name: "single section with one key",
             Text: "[section]\nkey=value",
             ExpectedDocument: BuildSingleSection("section", "key", "value")),
-    };
+    ];
 
     /// <inheritdoc />
-    protected override IReadOnlyList<InvalidTextDocumentKat<IniParseOptions>> InvalidCases { get; } = new InvalidTextDocumentKat<IniParseOptions>[]
-    {
+    protected override IReadOnlyList<InvalidTextDocumentKat<IniParseOptions>> InvalidCases { get; } =
+    [
         new(
             Name: "section header missing closing bracket",
             Text: "[unclosed",
             Options: default,
             ExceptionType: typeof(IniFormatException)),
-    };
+    ];
 
     private static IniDocument BuildSingleSection(string sectionName, string key, string value)
     {

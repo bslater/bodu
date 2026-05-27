@@ -36,12 +36,12 @@ namespace Bodu.Globalization.Calendar;
 /// </para>
 /// <code>
 ///<![CDATA[
-/// // In Program.cs / Startup.cs:
+/// In Program.cs / Startup.cs:
 /// NotableDateContext.Default = new NotableDateService(
 ///     ruleProviders: new[] { AustraliaCalendarData.CreateProvider() },
 ///     workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 ///
-/// // Anywhere downstream:
+/// Anywhere downstream:
 /// DateTime nextWorkingDay = DateTime.Today.NextWorkingDay(territoryCode: "AU-NSW");
 ///]]>
 /// </code>

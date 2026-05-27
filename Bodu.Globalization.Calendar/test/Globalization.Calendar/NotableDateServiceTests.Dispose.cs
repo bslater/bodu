@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateServiceTests.Dispose.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -19,7 +19,7 @@ public partial class NotableDateServiceTests
     public void Dispose_WhenInvokedTwice_ShouldNotThrow()
     {
         NotableDateService service = new(
-            ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(Fixed("Base", 6, 1)) },
+            ruleProviders: [(INotableDateRuleProvider)new InMemoryRuleProvider(Fixed("Base", 6, 1))],
             workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 
         service.Dispose();

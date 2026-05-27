@@ -42,11 +42,11 @@ public static partial class DateTimeExtensions
     /// var start    = new DateTime(2025, 7, 7, 9, 0, 0);             // 09:00
     /// var interval = TimeSpan.FromHours(1);                          // every hour
     ///
-    /// // before is between two occurrences — returns the occurrence at 10:00
+    /// before is between two occurrences — returns the occurrence at 10:00
     /// var before1  = new DateTime(2025, 7, 7, 10, 45, 0);            // 10:45
     /// var prev1    = start.PreviousOccurrence(interval, before1);    // → 10:00
     ///
-    /// // before falls exactly on an occurrence — returns the one before it
+    /// before falls exactly on an occurrence — returns the one before it
     /// var before2  = new DateTime(2025, 7, 7, 11, 0, 0);             // 11:00 (on boundary)
     /// var prev2    = start.PreviousOccurrence(interval, before2);    // → 10:00
     ///]]>

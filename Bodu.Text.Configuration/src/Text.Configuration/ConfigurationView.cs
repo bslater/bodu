@@ -35,14 +35,14 @@ namespace Bodu.Text.Configuration;
 /// IniDocument           doc  = ConfigurationDocument.Parse(text);
 /// ConfigurationView view = doc.Resolve("src/Foo.cs");
 ///
-/// // Indexer lookup — colon and dotted forms are equivalent.
+/// Indexer lookup — colon and dotted forms are equivalent.
 /// string? level = view["logging:level:default"];
 /// string? alt   = view["logging.level.default"]; // same value
 ///
-/// // Typed convenience accessors on the view.
+/// Typed convenience accessors on the view.
 /// int indent = view.GetInt32("format:indent:size", fallback: 4);
 ///
-/// // Enumeration yields canonical colon-delimited keys.
+/// Enumeration yields canonical colon-delimited keys.
 /// foreach (KeyValuePair<string, string?> kv in view)
 ///     Console.WriteLine($"{kv.Key} = {kv.Value}");
 ///]]>

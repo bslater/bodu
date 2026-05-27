@@ -1,38 +1,36 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TerritoryNotableDateAssertions.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using Bodu.Extensions;
 
 namespace Bodu.Globalization.Calendar.Data;
 
 /// <summary>
 /// Provides the shared assertion routines and <c>DynamicDataDisplayName</c> helper that every
-/// <see cref="TerritoryNotableDateKnownAnswer" /> and <see cref="RuleCatalogueExpectation" /> driven test
-/// consumes across the three calendar Data test projects.
+/// <see cref="TerritoryNotableDateKnownAnswer" /> and <see cref="RuleCatalogueExpectation" /> driven test consumes
+/// across the three calendar Data test projects.
 /// </summary>
 public static class TerritoryNotableDateAssertions
 {
     /// <summary>
-    /// Constructs a <see cref="NotableDateService" /> from the row's <see cref="TerritoryNotableDateKnownAnswer.ProviderFactory" />,
-    /// queries <c>GetNotableDates(Year, Territory)</c>, filters by <see cref="TerritoryNotableDateKnownAnswer.Name" />,
-    /// and asserts the expected occurrence (or absence) per the row's flags.
+    /// Constructs a <see cref="NotableDateService" /> from the row's
+    /// <see cref="TerritoryNotableDateKnownAnswer.ProviderFactory" />, queries <c>GetNotableDates(Year, Territory)</c>,
+    /// filters by <see cref="TerritoryNotableDateKnownAnswer.Name" />, and asserts the expected occurrence (or absence)
+    /// per the row's flags.
     /// </summary>
     /// <param name="ka">The known-answer row to verify.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="ka" /> is
-    /// <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="ka" /> is <see langword="null" />.
+    /// </exception>
     public static void AssertExpectedOccurrence(TerritoryNotableDateKnownAnswer ka)
     {
         ArgumentNullException.ThrowIfNull(ka);
 
         NotableDateService service = new(
-            new[] { ka.ProviderFactory() },
+            [ka.ProviderFactory()],
             WorkingDaysOfWeek.MondayToFriday);
 
         string expectedTerritory = ka.ExpectedTerritoryCode ?? ka.Territory;
@@ -82,13 +80,14 @@ public static class TerritoryNotableDateAssertions
     }
 
     /// <summary>
-    /// Invokes the row's <see cref="RuleCatalogueExpectation.ProviderFactory" />, materialises the flattened
-    /// rule-name set via <c>LoadRules()</c>, and asserts that every entry in <see cref="RuleCatalogueExpectation.Includes" />
-    /// is present and every entry in <see cref="RuleCatalogueExpectation.Excludes" /> is absent.
+    /// Invokes the row's <see cref="RuleCatalogueExpectation.ProviderFactory" />, materialises the flattened rule-name
+    /// set via <c>LoadRules()</c>, and asserts that every entry in <see cref="RuleCatalogueExpectation.Includes" /> is
+    /// present and every entry in <see cref="RuleCatalogueExpectation.Excludes" /> is absent.
     /// </summary>
     /// <param name="expectation">The catalogue expectation to verify.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="expectation" /> is
-    /// <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="expectation" /> is <see langword="null" />.
+    /// </exception>
     public static void AssertRuleCatalogue(RuleCatalogueExpectation expectation)
     {
         ArgumentNullException.ThrowIfNull(expectation);
@@ -113,13 +112,15 @@ public static class TerritoryNotableDateAssertions
     }
 
     /// <summary>
-    /// Renders a <see cref="TerritoryNotableDateKnownAnswer" /> or <see cref="RuleCatalogueExpectation" />
-    /// row as the MSTest display name. Occurrence rows render as
-    /// <c>"AU-NSW | 2026 | Anzac Day -&gt; 2026-04-27 [adjusted from 2026-04-25]"</c>; catalogue rows render
-    /// as <c>"US | includes 8, excludes 4"</c>.
+    /// Renders a <see cref="TerritoryNotableDateKnownAnswer" /> or <see cref="RuleCatalogueExpectation" /> row as the
+    /// MSTest display name. Occurrence rows render as
+    /// <c>"AU-NSW | 2026 | Anzac Day -&gt; 2026-04-27 [adjusted from 2026-04-25]"</c>; catalogue rows render as
+    /// <c>"US | includes 8, excludes 4"</c>.
     /// </summary>
-    /// <param name="methodInfo">The test method under discovery. Unused; required by
-    /// <see cref="Microsoft.VisualStudio.TestTools.UnitTesting.DynamicDataAttribute" />.</param>
+    /// <param name="methodInfo">
+    /// The test method under discovery. Unused; required by
+    /// <see cref="Microsoft.VisualStudio.TestTools.UnitTesting.DynamicDataAttribute" />.
+    /// </param>
     /// <param name="data">The single-element row produced by one of the provider methods.</param>
     /// <returns>An ASCII display name no longer than ~100 characters.</returns>
     public static string GetDisplayName(MethodInfo methodInfo, object[] data)
@@ -136,9 +137,9 @@ public static class TerritoryNotableDateAssertions
     }
 
     /// <summary>
-    /// Formats a <see cref="TerritoryNotableDateKnownAnswer" /> row as a pipe-separated, ASCII-only display
-    /// name. Suffixes "[absent]" when the row encodes a non-existence assertion, "[adjusted from ...]" when
-    /// the row encodes a weekend substitute, and the note when populated.
+    /// Formats a <see cref="TerritoryNotableDateKnownAnswer" /> row as a pipe-separated, ASCII-only display name.
+    /// Suffixes "[absent]" when the row encodes a non-existence assertion, "[adjusted from ...]" when the row encodes a
+    /// weekend substitute, and the note when populated.
     /// </summary>
     /// <param name="ka">The row to format.</param>
     /// <returns>The rendered display name.</returns>

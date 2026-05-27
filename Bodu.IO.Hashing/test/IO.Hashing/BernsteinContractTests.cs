@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BernsteinContractTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -28,19 +28,19 @@ public sealed class BernsteinContractTests
     protected override string? EmptyInputExpectedHex => "00001505";
 
     /// <inheritdoc />
-    protected override IReadOnlyList<HashKat> KnownAnswers { get; } = new HashKat[]
-    {
+    protected override IReadOnlyList<HashKat> KnownAnswers { get; } =
+    [
         new("ABC",                  System.Text.Encoding.ASCII.GetBytes("ABC"),     "0B87D02B", 32),
         new("quick brown fox",      s_quickBrownFox,                                "34CC38DE", 32),
-    };
+    ];
 
     /// <inheritdoc />
-    protected override IReadOnlyList<HashStreamingKat> StreamingCases { get; } = new HashStreamingKat[]
-    {
+    protected override IReadOnlyList<HashStreamingKat> StreamingCases { get; } =
+    [
         new(
             "quick brown fox as 10+10+10+13",
             s_quickBrownFox,
             [10, 10, 10, 13],
             "34CC38DE"),
-    };
+    ];
 }

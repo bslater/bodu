@@ -153,7 +153,7 @@ public sealed partial class EncodingExtensionsTests
 
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = EncodingExtensions.DecodeChunk(null!, new byte[] { 0x68 }, backing, false, out _, out _);
+            _ = EncodingExtensions.DecodeChunk(null!, [0x68], backing, false, out _, out _);
         });
 
         Assert.AreEqual("decoder", ex.ParamName);

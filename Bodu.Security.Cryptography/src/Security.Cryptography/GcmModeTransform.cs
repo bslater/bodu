@@ -94,7 +94,7 @@ namespace Bodu.Security.Cryptography;
 /// using Bodu.Security.Cryptography.Extensions;
 ///
 /// using IBlockCipher cipher = new AesBlockCipher(key);
-/// // GCM takes the 96-bit (12-byte) nonce directly — J0 is derived internally as nonce || 0x00000001.
+/// GCM takes the 96-bit (12-byte) nonce directly — J0 is derived internally as nonce || 0x00000001.
 /// using IAeadBlockCipherModeTransform gcm = new GcmModeTransform(cipher, nonce);
 /// byte[] sealed_ = gcm.Encrypt(plaintext, associatedData: header);
 /// using IAeadBlockCipherModeTransform dec = new GcmModeTransform(cipher, nonce);

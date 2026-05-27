@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConcurrentHashSetTests.ApproximateCount.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -126,7 +126,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void IsEmptyApproximate_WhenSetEmptiedByRemoveOrClear_ShouldReturnTrue()
     {
-        var set = new ConcurrentHashSet<int>(new[] { 1, 2, 3 });
+        var set = new ConcurrentHashSet<int>([1, 2, 3]);
 
         Assert.IsFalse(set.IsEmptyApproximate);
 

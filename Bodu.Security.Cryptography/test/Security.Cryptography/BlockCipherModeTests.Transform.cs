@@ -261,7 +261,7 @@ public abstract partial class BlockCipherModeTests<TMode>
         }
 
         var cipher = new MonitoringBlockCipher(1);
-        TMode transform = CreateTransform(cipher, new byte[1] { 0 });
+        TMode transform = CreateTransform(cipher, [0]);
 
         var inputBlock = new byte[1];
         var outputBlock = new byte[1];

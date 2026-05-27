@@ -8,7 +8,7 @@ using System.Text;
 using Bodu.Text.Configuration;
 using Microsoft.Extensions.Configuration;
 
-namespace Bodu.Extensions.Configuration.Text.Tests;
+namespace Bodu.Extensions.Configuration.Text;
 
 /// <summary>
 /// Verifies the stream-based <c>AddConfiguration</c> overloads that mirror

@@ -30,8 +30,8 @@ public sealed class BencodedStringComparerTests
     [TestMethod]
     public void Compare_WhenDifferingBytes_ShouldOrderByFirstDifference()
     {
-        BencodedString a = new(new byte[] { 0xAA, 0x00 });
-        BencodedString b = new(new byte[] { 0xAA, 0x01 });
+        BencodedString a = new([0xAA, 0x00]);
+        BencodedString b = new([0xAA, 0x01]);
 
         Assert.IsTrue(BencodedStringComparer.Ordinal.Compare(a, b) < 0);
     }
@@ -42,8 +42,8 @@ public sealed class BencodedStringComparerTests
     [TestMethod]
     public void Compare_WhenEqualBytes_ShouldReturnZero()
     {
-        BencodedString a = new(new byte[] { 0xAA, 0xBB });
-        BencodedString b = new(new byte[] { 0xAA, 0xBB });
+        BencodedString a = new([0xAA, 0xBB]);
+        BencodedString b = new([0xAA, 0xBB]);
 
         Assert.AreEqual(0, BencodedStringComparer.Ordinal.Compare(a, b));
     }
@@ -54,8 +54,8 @@ public sealed class BencodedStringComparerTests
     [TestMethod]
     public void Compare_WhenPrefix_ShouldOrderShorterFirst()
     {
-        BencodedString a = new(new byte[] { 0xAA });
-        BencodedString b = new(new byte[] { 0xAA, 0xBB });
+        BencodedString a = new([0xAA]);
+        BencodedString b = new([0xAA, 0xBB]);
 
         Assert.IsTrue(BencodedStringComparer.Ordinal.Compare(a, b) < 0);
         Assert.IsTrue(BencodedStringComparer.Ordinal.Compare(b, a) > 0);
@@ -68,7 +68,7 @@ public sealed class BencodedStringComparerTests
     [TestMethod]
     public void Compare_WhenXIsNull_ShouldReturnNegative()
     {
-        var result = BencodedStringComparer.Ordinal.Compare(null, new BencodedString(new byte[] { 0x01 }));
+        var result = BencodedStringComparer.Ordinal.Compare(null, new BencodedString([0x01]));
 
         Assert.IsTrue(result < 0);
     }
@@ -80,7 +80,7 @@ public sealed class BencodedStringComparerTests
     [TestMethod]
     public void Compare_WhenYIsNull_ShouldReturnPositive()
     {
-        var result = BencodedStringComparer.Ordinal.Compare(new BencodedString(new byte[] { 0x01 }), null);
+        var result = BencodedStringComparer.Ordinal.Compare(new BencodedString([0x01]), null);
 
         Assert.IsTrue(result > 0);
     }
@@ -92,8 +92,8 @@ public sealed class BencodedStringComparerTests
     [TestMethod]
     public void Equals_WhenSameBytes_ShouldReturnTrue()
     {
-        BencodedString a = new(new byte[] { 0x01 });
-        BencodedString b = new(new byte[] { 0x01 });
+        BencodedString a = new([0x01]);
+        BencodedString b = new([0x01]);
 
         Assert.IsTrue(BencodedStringComparer.Ordinal.Equals(a, b));
     }
@@ -118,8 +118,8 @@ public sealed class BencodedStringComparerTests
     [TestMethod]
     public void GetHashCode_WhenSameBytes_ShouldReturnSameHash()
     {
-        BencodedString a = new(new byte[] { 0x01, 0x02 });
-        BencodedString b = new(new byte[] { 0x01, 0x02 });
+        BencodedString a = new([0x01, 0x02]);
+        BencodedString b = new([0x01, 0x02]);
 
         Assert.AreEqual(BencodedStringComparer.Ordinal.GetHashCode(a), BencodedStringComparer.Ordinal.GetHashCode(b));
     }

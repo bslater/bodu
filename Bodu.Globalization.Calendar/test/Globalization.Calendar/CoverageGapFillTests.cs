@@ -57,7 +57,7 @@ public sealed class CoverageGapFillTests
     }
 
     private static NotableDateService BuildService(params NotableDateRule[] rules) =>
-        new(new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(rules) }, WorkingDaysOfWeek.MondayToFriday);
+        new([(INotableDateRuleProvider)new InMemoryRuleProvider(rules)], WorkingDaysOfWeek.MondayToFriday);
 
     // ---------------------------------------------------------------------------------
     // NotableDateService: branch coverage
@@ -125,7 +125,7 @@ public sealed class CoverageGapFillTests
             .Register("null-key", new NullAlgorithm());
 
         var service = new NotableDateService(
-            new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(rule) },
+            [(INotableDateRuleProvider)new InMemoryRuleProvider(rule)],
             WorkingDaysOfWeek.MondayToFriday,
             new NotableDateServiceOptions { AlgorithmRegistry = nullAlgorithmRegistry });
 
@@ -169,17 +169,17 @@ public sealed class CoverageGapFillTests
     public void GetNotableDates_WhenRemovalNameDoesNotMatchAnyRule_ShouldLeaveAllRulesIntact()
     {
         var service = new NotableDateService(
-            new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(FixedRule("Real", 1, 1)) },
+            [(INotableDateRuleProvider)new InMemoryRuleProvider(FixedRule("Real", 1, 1))],
             WorkingDaysOfWeek.MondayToFriday,
             new NotableDateServiceOptions
             {
-                OverrideProviders = new[]
-                {
+                OverrideProviders =
+                [
                     (INotableDateRuleOverrideProvider)new OverrideProvider
                     {
-                        Removals = new[] { new RuleRemoval("Irrelevant") },
+                        Removals = [new RuleRemoval("Irrelevant")],
                     },
-                },
+                ],
             });
 
         IReadOnlyList<NotableDate> result = service.GetNotableDates(2025);
@@ -198,17 +198,17 @@ public sealed class CoverageGapFillTests
     {
         // Global rule: no TerritoryCode on the rule → ExpandTerritories yields a single null.
         var service = new NotableDateService(
-            new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(FixedRule("Global", 1, 1)) },
+            [(INotableDateRuleProvider)new InMemoryRuleProvider(FixedRule("Global", 1, 1))],
             WorkingDaysOfWeek.MondayToFriday,
             new NotableDateServiceOptions
             {
-                OverrideProviders = new[]
-                {
+                OverrideProviders =
+                [
                     (INotableDateRuleOverrideProvider)new OverrideProvider
                     {
-                        Removals = new[] { new RuleRemoval("Global", TerritoryCode: "AU") },
+                        Removals = [new RuleRemoval("Global", TerritoryCode: "AU")],
                     },
-                },
+                ],
             });
 
         IReadOnlyList<NotableDate> result = service.GetNotableDates(2025);
@@ -225,17 +225,17 @@ public sealed class CoverageGapFillTests
     public void GetNotableDates_WhenRemovalTerritoryIsMalformed_ShouldLeaveRuleIntact()
     {
         var service = new NotableDateService(
-            new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(FixedRule("Picnic", 8, 4, territory: "AU-NSW")) },
+            [(INotableDateRuleProvider)new InMemoryRuleProvider(FixedRule("Picnic", 8, 4, territory: "AU-NSW"))],
             WorkingDaysOfWeek.MondayToFriday,
             new NotableDateServiceOptions
             {
-                OverrideProviders = new[]
-                {
+                OverrideProviders =
+                [
                     (INotableDateRuleOverrideProvider)new OverrideProvider
                     {
-                        Removals = new[] { new RuleRemoval("Picnic", TerritoryCode: "MALFORMED!!") },
+                        Removals = [new RuleRemoval("Picnic", TerritoryCode: "MALFORMED!!")],
                     },
-                },
+                ],
             });
 
         IReadOnlyList<NotableDate> result = service.GetNotableDates(2025, territoryCode: "AU-NSW");
@@ -433,7 +433,7 @@ public sealed class CoverageGapFillTests
             OffsetDays = 1,
         };
 
-        var resolver = new NotableDateRuleResolver(new[] { anchor, offset });
+        var resolver = new NotableDateRuleResolver([anchor, offset]);
 
         Assert.IsNull(resolver.ResolveAnchorDate(offset, 2025));
     }
@@ -455,10 +455,10 @@ public sealed class CoverageGapFillTests
         // only when plugins contribute algorithms. We simulate that via a plugin double.
         var hostRegistry = new NotableDateAlgorithmRegistry(); // empty host
 
-        var plugin = new StaticAlgorithmPlugin(new[]
-        {
+        var plugin = new StaticAlgorithmPlugin(
+        [
             new KeyValuePair<string, INotableDateAlgorithm>("plugin-only-key", new FixedAlgorithm(new DateTime(2030, 7, 1))),
-        });
+        ]);
 
         var rule = new NotableDateRule
         {
@@ -469,12 +469,12 @@ public sealed class CoverageGapFillTests
         };
 
         var service = new NotableDateService(
-            ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(rule) },
+            ruleProviders: [(INotableDateRuleProvider)new InMemoryRuleProvider(rule)],
             workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
             options: new NotableDateServiceOptions
             {
                 AlgorithmRegistry = hostRegistry,
-                Plugins = new[] { (INotableDatePlugin)plugin },
+                Plugins = [(INotableDatePlugin)plugin],
             });
 
         NotableDate resolved = service.GetNotableDates(2030).Single();

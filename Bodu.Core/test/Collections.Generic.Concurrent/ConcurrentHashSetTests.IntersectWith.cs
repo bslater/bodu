@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConcurrentHashSetTests.IntersectWith.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -15,9 +15,9 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void IntersectWith_WhenCollectionsOverlap_ShouldKeepOnlyCommonElements()
     {
-        var set = new ConcurrentHashSet<int>(new[] { 1, 2, 3, 4 });
+        var set = new ConcurrentHashSet<int>([1, 2, 3, 4]);
 
-        set.IntersectWith(new[] { 2, 3, 5 });
+        set.IntersectWith([2, 3, 5]);
 
         AssertContainsExactly(set, 2, 3);
     }
@@ -28,9 +28,9 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void IntersectWith_WhenCollectionsAreDisjoint_ShouldEmptyTheSet()
     {
-        var set = new ConcurrentHashSet<int>(new[] { 1, 2, 3 });
+        var set = new ConcurrentHashSet<int>([1, 2, 3]);
 
-        set.IntersectWith(new[] { 7, 8, 9 });
+        set.IntersectWith([7, 8, 9]);
 
         Assert.AreEqual(0, set.Count);
     }
@@ -41,7 +41,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void IntersectWith_WhenOtherIsEmpty_ShouldEmptyTheSet()
     {
-        var set = new ConcurrentHashSet<int>(new[] { 1, 2, 3 });
+        var set = new ConcurrentHashSet<int>([1, 2, 3]);
 
         set.IntersectWith(Array.Empty<int>());
 
@@ -54,7 +54,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void IntersectWith_WhenOtherIsSameInstance_ShouldLeaveSetUnchanged()
     {
-        var set = new ConcurrentHashSet<int>(new[] { 1, 2, 3 });
+        var set = new ConcurrentHashSet<int>([1, 2, 3]);
 
         set.IntersectWith(set);
 

@@ -46,15 +46,15 @@ namespace Bodu.Extensions;
 ///<![CDATA[
 /// var dt = new DateTime(2025, 4, 30, 14, 35, 0, DateTimeKind.Utc);
 ///
-/// // Snap to the start and end of the same day, preserving Kind.
+/// Snap to the start and end of the same day, preserving Kind.
 /// DateTime startOfDay = dt.StartOfDay(); // 2025-04-30T00:00:00Z
 /// DateTime endOfDay = dt.EndOfDay(); // 2025-04-30T23:59:59.9999999Z
 ///
-/// // ISO 8601 week-of-year and matching ISO year.
+/// ISO 8601 week-of-year and matching ISO year.
 /// int isoWeek = dt.IsoWeekOfYear(); // 18
 /// int isoYear = dt.IsoYear(); // 2025
 ///
-/// // Walk to the first Monday strictly after this date.
+/// Walk to the first Monday strictly after this date.
 /// DateTime nextMonday = dt.NextDateOfWeek(DayOfWeek.Monday); // 2025-05-05T14:35:00Z
 ///]]>
 /// </code>

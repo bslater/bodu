@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="HashAlgorithmExtensionsKatTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -20,8 +20,8 @@ namespace Bodu.Security.Cryptography;
 public sealed class HashAlgorithmExtensionsKatTests
 {
     // SHA-256 known answers — public test vectors from FIPS 180-4 / RFC 6234.
-    private static IReadOnlyList<HashExtensionKat> Kats { get; } = new HashExtensionKat[]
-    {
+    private static IReadOnlyList<HashExtensionKat> Kats { get; } =
+    [
         new(
             Name: "SHA-256 empty",
             Input: Array.Empty<byte>(),
@@ -31,7 +31,7 @@ public sealed class HashAlgorithmExtensionsKatTests
             Name: "SHA-256 'abc'",
             Input: System.Text.Encoding.ASCII.GetBytes("abc"),
             ExpectedHash: Convert.FromHexString("BA7816BF8F01CFEA414140DE5DAE2223B00361A396177A9CB410FF61F20015AD")),
-    };
+    ];
 
     /// <summary>
     /// Verifies that every <see cref="HashExtensionKat" /> row passes

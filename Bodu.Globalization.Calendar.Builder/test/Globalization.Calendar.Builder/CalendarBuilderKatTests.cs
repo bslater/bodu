@@ -1,13 +1,12 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CalendarBuilderKatTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Globalization.Calendar;
 using Bodu.Test.Kat;
 
-namespace Bodu.Globalization.Calendar.Builder.Tests;
+namespace Bodu.Globalization.Calendar.Builder;
 
 /// <summary>
 /// Drives <see cref="CalendarBuilderOutputKat" /> and <see cref="CalendarBuilderInvalidKat" /> against
@@ -32,8 +31,8 @@ public sealed class CalendarBuilderKatTests
         .ToXDocument()
         .ToString();
 
-    private static IReadOnlyList<CalendarBuilderOutputKat> OutputKats { get; } = new CalendarBuilderOutputKat[]
-    {
+    private static IReadOnlyList<CalendarBuilderOutputKat> OutputKats { get; } =
+    [
         new(
             Name: "single static rule",
             SourceInput: s_singleStaticRule,
@@ -45,10 +44,10 @@ public sealed class CalendarBuilderKatTests
             SourceInput: s_twoStaticRules,
             ExpectedResourceName: "notable-dates",
             ExpectedRuleCount: 2),
-    };
+    ];
 
-    private static IReadOnlyList<CalendarBuilderInvalidKat> InvalidKats { get; } = new CalendarBuilderInvalidKat[]
-    {
+    private static IReadOnlyList<CalendarBuilderInvalidKat> InvalidKats { get; } =
+    [
         new(
             Name: "empty XML payload",
             SourceInput: "",
@@ -60,7 +59,7 @@ public sealed class CalendarBuilderKatTests
             SourceInput: "not valid xml",
             ExpectedDiagnosticId: "BC001",
             MessageContains: null),
-    };
+    ];
 
     /// <summary>
     /// Verifies that each <see cref="CalendarBuilderOutputKat" /> row, when parsed back through the

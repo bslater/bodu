@@ -35,13 +35,13 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// // Single-call computation against an in-memory body.
+/// Single-call computation against an in-memory body.
 /// char check = Luhn.Compute("7992739871");   // '3'
 ///
-/// // Full-sequence validation.
+/// Full-sequence validation.
 /// bool ok = Luhn.IsValid("79927398713");     // true
 ///
-/// // Streaming use when the body is built up incrementally.
+/// Streaming use when the body is built up incrementally.
 /// var algo = new Luhn();
 /// algo.Append("7992739871");
 /// char d = algo.GetCurrentCheckDigit();      // '3'

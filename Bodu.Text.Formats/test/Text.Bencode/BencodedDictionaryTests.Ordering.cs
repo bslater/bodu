@@ -18,14 +18,14 @@ public sealed partial class BencodedDictionaryTests
     [TestMethod]
     public void GetOrderedItems_ShouldOrderByRawByteNotByUtf8Codepoint()
     {
-        BencodedString tilde = new(new byte[] { 0x7E });
-        BencodedString eAccent = new(new byte[] { 0xC3, 0xA9 });
+        BencodedString tilde = new([0x7E]);
+        BencodedString eAccent = new([0xC3, 0xA9]);
 
-        BencodedDictionary dict = new(new[]
-        {
+        BencodedDictionary dict = new(
+        [
             new KeyValuePair<BencodedString, BencodedValue>(eAccent, new BencodedInteger(1)),
             new KeyValuePair<BencodedString, BencodedValue>(tilde, new BencodedInteger(2)),
-        });
+        ]);
 
         var orderedKeys = dict.GetOrderedItems()
             .Select(pair => pair.Key.Bytes.ToArray())
@@ -42,12 +42,12 @@ public sealed partial class BencodedDictionaryTests
     [TestMethod]
     public void GetOrderedItems_WhenKeysSuppliedOutOfOrder_ShouldEnumerateSortedByRawBytes()
     {
-        BencodedDictionary dict = new(new[]
-        {
+        BencodedDictionary dict = new(
+        [
             new KeyValuePair<BencodedString, BencodedValue>(BencodedString.FromUtf8("spam"), new BencodedInteger(2)),
             new KeyValuePair<BencodedString, BencodedValue>(BencodedString.FromUtf8("cow"), new BencodedInteger(1)),
             new KeyValuePair<BencodedString, BencodedValue>(BencodedString.FromUtf8("apple"), new BencodedInteger(3)),
-        });
+        ]);
 
         var orderedKeys = dict.GetOrderedItems()
             .Select(pair => pair.Key.GetUtf8String())

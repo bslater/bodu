@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RangeResolutionKatTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -18,8 +18,8 @@ namespace Bodu.Globalization.Calendar.RangeResolution;
 [TestClass]
 public sealed class RangeResolutionKatTests
 {
-    private static IReadOnlyList<RangeResolutionKat> Kats { get; } = new RangeResolutionKat[]
-    {
+    private static IReadOnlyList<RangeResolutionKat> Kats { get; } =
+    [
         new(
             Name: "New Year falls within 2024 calendar year",
             Start: new DateOnly(2024, 1, 1),
@@ -46,7 +46,7 @@ public sealed class RangeResolutionKatTests
             Calendar: "Gregorian",
             RuleNames: ["New Year"],
             ExpectedDates: Array.Empty<DateOnly>()),
-    };
+    ];
 
     /// <summary>
     /// Verifies that each <see cref="RangeResolutionKat" /> row drives

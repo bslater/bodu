@@ -228,17 +228,17 @@ public sealed class ExternalPluginLoaderTests
 
         var unnamed = new System.Reflection.AssemblyName { Name = string.Empty };
         var unnamedResult =
-            (System.Reflection.Assembly?)resolve!.Invoke(null, new object?[] { defaultContext, unnamed });
+            (System.Reflection.Assembly?)resolve!.Invoke(null, [defaultContext, unnamed]);
         Assert.IsNull(unnamedResult);
 
         var calendarAssemblyName = typeof(NotableDateService).Assembly.GetName();
         var hostResult =
-            (System.Reflection.Assembly?)resolve.Invoke(null, new object?[] { defaultContext, calendarAssemblyName });
+            (System.Reflection.Assembly?)resolve.Invoke(null, [defaultContext, calendarAssemblyName]);
         Assert.AreSame(typeof(NotableDateService).Assembly, hostResult);
 
         var unknownName = new System.Reflection.AssemblyName("Definitely.Not.Loaded.Assembly.Name");
         var unknownResult =
-            (System.Reflection.Assembly?)resolve.Invoke(null, new object?[] { defaultContext, unknownName });
+            (System.Reflection.Assembly?)resolve.Invoke(null, [defaultContext, unknownName]);
         Assert.IsNull(unknownResult);
     }
 }

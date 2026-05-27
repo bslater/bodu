@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IsinContractTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -26,10 +26,10 @@ public sealed class IsinContractTests : CheckDigitContractTests<Isin>
         Isin.IsValid(fullValue.AsSpan());
 
     /// <inheritdoc />
-    protected override IReadOnlyList<CheckDigitKat> KnownAnswers { get; } = new CheckDigitKat[]
-    {
+    protected override IReadOnlyList<CheckDigitKat> KnownAnswers { get; } =
+    [
         new("Apple US ISIN",      Payload: "US037833100", CheckDigit: "5", FullValue: "US0378331005"),
         new("British GB ISIN",    Payload: "GB000263494", CheckDigit: "6", FullValue: "GB0002634946"),
         new("all-zero numeric",   Payload: "00000000000", CheckDigit: "0", FullValue: "000000000000"),
-    };
+    ];
 }

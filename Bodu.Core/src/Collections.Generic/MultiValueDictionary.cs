@@ -51,7 +51,7 @@ namespace Bodu.Collections.Generic;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// // Multiple values under a single key — values are retained in insertion order.
+/// Multiple values under a single key — values are retained in insertion order.
 /// var map = new MultiValueDictionary<string, int>();
 /// map.Add("odd",  1);
 /// map.Add("odd",  3);
@@ -60,11 +60,11 @@ namespace Bodu.Collections.Generic;
 /// Console.WriteLine(map.Count);    // 3 — total key-value entries
 /// Console.WriteLine(map.KeyCount); // 2 — distinct keys
 ///
-/// // The indexer returns a live read-only view; absent keys yield an empty list rather than throwing.
+/// The indexer returns a live read-only view; absent keys yield an empty list rather than throwing.
 /// foreach (int value in map["odd"])
 ///     Console.WriteLine(value);
 ///
-/// // Flatten into one KeyValuePair per stored value.
+/// Flatten into one KeyValuePair per stored value.
 /// foreach (KeyValuePair<string, int> pair in map.Flatten())
 ///     Console.WriteLine($"{pair.Key}: {pair.Value}");
 ///]]>

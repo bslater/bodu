@@ -83,31 +83,31 @@ public sealed class SimpleReversingTweakableSymmetricAlgorithm
     /// </list>
     /// </remarks>
     public static readonly KeySizes[] BlockSizesValue =
-    {
+    [
         new KeySizes(128,  256,  64),
         new KeySizes(448,  576, 128),
         new KeySizes(1024, 2048, 512),
-    };
+    ];
 
     /// <summary>
     /// The legal key sizes supported by this algorithm.
     /// Keys may be any byte-aligned length between 8 and 2048 bits (step 8).
     /// </summary>
     public static readonly KeySizes[] KeySizesValue =
-    {
+    [
         new KeySizes(8, 2048, 8),
-    };
+    ];
 
     /// <summary>
     /// The legal tweak sizes supported by this algorithm. Tweak sizes mirror the legal block sizes,
     /// allowing tests to exercise matching, mismatched, and cycling tweak configurations.
     /// </summary>
     public static readonly KeySizes[] TweakSizesValue =
-    {
+    [
         new KeySizes(128,  256,  64),
         new KeySizes(448,  576, 128),
         new KeySizes(1024, 2048, 512),
-    };
+    ];
 
     // ── Instance fields ───────────────────────────────────────────────────────────────────────
 

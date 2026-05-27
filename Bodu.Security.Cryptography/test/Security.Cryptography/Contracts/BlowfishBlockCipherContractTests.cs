@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BlowfishBlockCipherContractTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -39,8 +39,8 @@ public sealed class BlowfishBlockCipherContractTests
     }
 
     /// <inheritdoc />
-    protected override IReadOnlyList<BlockCipherKat> KnownAnswers { get; } = new BlockCipherKat[]
-    {
+    protected override IReadOnlyList<BlockCipherKat> KnownAnswers { get; } =
+    [
         new(
             Name: "Key=0000000000000000, PT=0000000000000000",
             Algorithm: "Blowfish",
@@ -80,5 +80,5 @@ public sealed class BlowfishBlockCipherContractTests
             Plaintext: Convert.FromHexString("01A1D6D039776742"),
             Ciphertext: Convert.FromHexString("59C68245EB05282B"),
             BlockSizeBits: 64),
-    };
+    ];
 }

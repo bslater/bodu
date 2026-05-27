@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringEncodingExtensions.ToUtf8Bytes.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -18,7 +18,7 @@ public static partial class StringEncodingExtensions
     /// </exception>
     /// <example>
     ///<![CDATA[
-    /// // Convert a configuration value to UTF-8 bytes for hashing.
+    /// Convert a configuration value to UTF-8 bytes for hashing.
     /// byte[] payload = "client-secret".ToUtf8Bytes();
     /// byte[] hash    = SHA256.HashData(payload);
     ///]]>

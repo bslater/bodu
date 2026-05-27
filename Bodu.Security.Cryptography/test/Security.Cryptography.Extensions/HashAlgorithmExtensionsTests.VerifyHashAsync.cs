@@ -212,7 +212,7 @@ public partial class HashAlgorithmExtensionsTests
     public async Task VerifyHashAsync_WhenUsingMonitoringStream_ShouldTrackReadsAndReturnTrue()
     {
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
-        using var baseStream = new MemoryStream(new byte[] { 2, 3 });
+        using var baseStream = new MemoryStream([2, 3]);
         using var monitored = new MonitoringStream(baseStream);
         var expected = BitConverter.GetBytes((uint)5); // additive hash of { 2, 3 }
 

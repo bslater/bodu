@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConcurrentHashSetTests.SymmetricExceptWith.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -15,9 +15,9 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void SymmetricExceptWith_WhenCollectionsOverlap_ShouldKeepElementsInExactlyOne()
     {
-        var set = new ConcurrentHashSet<int>(new[] { 1, 2, 3 });
+        var set = new ConcurrentHashSet<int>([1, 2, 3]);
 
-        set.SymmetricExceptWith(new[] { 2, 3, 4, 5 });
+        set.SymmetricExceptWith([2, 3, 4, 5]);
 
         AssertContainsExactly(set, 1, 4, 5);
     }
@@ -29,7 +29,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void SymmetricExceptWith_WhenOtherIsEmpty_ShouldLeaveSetUnchanged()
     {
-        var set = new ConcurrentHashSet<int>(new[] { 1, 2, 3 });
+        var set = new ConcurrentHashSet<int>([1, 2, 3]);
 
         set.SymmetricExceptWith(Array.Empty<int>());
 
@@ -43,9 +43,9 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void SymmetricExceptWith_WhenCollectionsAreDisjoint_ShouldAddEveryOtherElement()
     {
-        var set = new ConcurrentHashSet<int>(new[] { 1, 2 });
+        var set = new ConcurrentHashSet<int>([1, 2]);
 
-        set.SymmetricExceptWith(new[] { 3, 4 });
+        set.SymmetricExceptWith([3, 4]);
 
         AssertContainsExactly(set, 1, 2, 3, 4);
     }
@@ -56,7 +56,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void SymmetricExceptWith_WhenOtherIsSameInstance_ShouldEmptyTheSet()
     {
-        var set = new ConcurrentHashSet<int>(new[] { 1, 2, 3 });
+        var set = new ConcurrentHashSet<int>([1, 2, 3]);
 
         set.SymmetricExceptWith(set);
 

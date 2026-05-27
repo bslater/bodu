@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DammContractTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -26,11 +26,11 @@ public sealed class DammContractTests : CheckDigitContractTests<Damm>
         Damm.IsValid(fullValue.AsSpan());
 
     /// <inheritdoc />
-    protected override IReadOnlyList<CheckDigitKat> KnownAnswers { get; } = new CheckDigitKat[]
-    {
+    protected override IReadOnlyList<CheckDigitKat> KnownAnswers { get; } =
+    [
         new("single zero",        Payload: "0",      CheckDigit: "0", FullValue: "00"),
         new("single one",         Payload: "1",      CheckDigit: "3", FullValue: "13"),
         new("Wikipedia example",  Payload: "572",    CheckDigit: "4", FullValue: "5724"),
         new("ascending 1..5",     Payload: "12345",  CheckDigit: "9", FullValue: "123459"),
-    };
+    ];
 }

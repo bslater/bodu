@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Threefish512BlockCipherContractTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -38,8 +38,8 @@ public sealed class Threefish512BlockCipherContractTests
     }
 
     /// <inheritdoc />
-    protected override IReadOnlyList<BlockCipherKat> KnownAnswers { get; } = new BlockCipherKat[]
-    {
+    protected override IReadOnlyList<BlockCipherKat> KnownAnswers { get; } =
+    [
         new(
             Name: "Threefish-512 zero key, zero tweak, zero plaintext",
             Algorithm: "Threefish-512",
@@ -63,7 +63,7 @@ public sealed class Threefish512BlockCipherContractTests
                 "272A0A8D99463504784420EA18C9A725AF11DFFEA10162348927673D5C1CAF3D"),
             BlockSizeBits: 512,
             Tweak: IncrementalBytes(0x00, 16)),
-    };
+    ];
 
     private static byte[] IncrementalBytes(byte start, int length)
     {
