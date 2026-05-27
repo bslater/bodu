@@ -33,7 +33,7 @@ public partial class NotableDateRuleParserTests
     [TestMethod]
     public void ParseXml_WhenInputIsNullOrWhitespace_ShouldThrowExactly(string? xml)
     {
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = NotableDateRuleParser.ParseXml(xml!);
         });
@@ -49,7 +49,7 @@ public partial class NotableDateRuleParserTests
     [TestMethod]
     public void ParseXml_WhenXDocumentIsNull_ShouldThrowExactly()
     {
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = NotableDateRuleParser.ParseXml((XDocument)null!);
         });
@@ -96,7 +96,7 @@ public partial class NotableDateRuleParserTests
     [TestMethod]
     public void ParseDocument_WhenInputIsNullOrWhitespace_ShouldThrowExactly(string? xml)
     {
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = NotableDateRuleParser.ParseDocument(xml!);
         });
@@ -178,7 +178,7 @@ public partial class NotableDateRuleParserTests
 				</NotableDate>
 			</NotableDates>";
 
-        var ex = Assert.ThrowsExactly<InvalidOperationException>(() =>
+        InvalidOperationException ex = Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
             _ = NotableDateRuleParser.ParseXml(duplicateKeyXml);
         });

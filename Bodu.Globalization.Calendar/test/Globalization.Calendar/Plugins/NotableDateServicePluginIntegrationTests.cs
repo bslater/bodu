@@ -26,7 +26,7 @@ public sealed class NotableDateServicePluginIntegrationTests
     public void GetNotableDates_WhenPluginContributesFixedRule_ShouldIncludeItInResults()
     {
         var loader = new ExternalPluginLoader(new AllowAllPluginTrustPolicy());
-        var plugin = loader.Load(Plugin1Path);
+        INotableDatePlugin plugin = loader.Load(Plugin1Path);
 
         var service = new NotableDateService(
             ruleProviders: Array.Empty<INotableDateRuleProvider>(),
@@ -34,7 +34,7 @@ public sealed class NotableDateServicePluginIntegrationTests
             options: new NotableDateServiceOptions { Plugins = [plugin] });
 
         // Plugin1's HarnessPlugin contributes "Harness Test Day" on 15 June with territory "ZZ".
-        var results = service.GetNotableDates(2030, "ZZ");
+        IReadOnlyList<NotableDate> results = service.GetNotableDates(2030, "ZZ");
 
         Assert.IsTrue(results.Any(r => r.Name == "Harness Test Day" && r.Date == new DateTime(2030, 6, 15)));
     }
@@ -48,7 +48,7 @@ public sealed class NotableDateServicePluginIntegrationTests
     public void GetNotableDates_WhenRuleUsesPluginAlgorithm_ShouldResolveDateViaPluginRegistration()
     {
         var loader = new ExternalPluginLoader(new AllowAllPluginTrustPolicy());
-        var plugin = loader.Load(Plugin1Path);
+        INotableDatePlugin plugin = loader.Load(Plugin1Path);
 
         // Consumer-authored rule that relies on the plugin's algorithm registration ("harness.static"), which
         // Plugin1 hard-codes to return 15 June 2027.
@@ -65,8 +65,8 @@ public sealed class NotableDateServicePluginIntegrationTests
             workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
             options: new NotableDateServiceOptions { Plugins = [plugin] });
 
-        var results = service.GetNotableDates(2027);
-        var resolved = results.SingleOrDefault(r => r.Name == "Test Plugin Algorithm Day");
+        IReadOnlyList<NotableDate> results = service.GetNotableDates(2027);
+        NotableDate? resolved = results.SingleOrDefault(r => r.Name == "Test Plugin Algorithm Day");
 
         Assert.IsNotNull(resolved);
         Assert.AreEqual(new DateTime(2027, 6, 15), resolved!.Date);
@@ -81,11 +81,11 @@ public sealed class NotableDateServicePluginIntegrationTests
     public void GetNotableDates_WhenHostAndPluginCollideOnAlgorithmKey_ShouldPreferHostRegistration()
     {
         var loader = new ExternalPluginLoader(new AllowAllPluginTrustPolicy());
-        var plugin = loader.Load(Plugin1Path);
+        INotableDatePlugin plugin = loader.Load(Plugin1Path);
 
         // Plugin1's algorithm returns 2027-06-15 under key "harness.static". Host registers a
         // different algorithm under the same key; host should win.
-        var hostRegistry = new NotableDateAlgorithmRegistry()
+        NotableDateAlgorithmRegistry hostRegistry = new NotableDateAlgorithmRegistry()
             .Register("harness.static", new HostOverrideAlgorithm(new DateTime(2099, 1, 1)));
 
         var consumerRule = new NotableDateRule
@@ -105,7 +105,7 @@ public sealed class NotableDateServicePluginIntegrationTests
                 Plugins = [plugin],
             });
 
-        var resolved = service.GetNotableDates(2099).SingleOrDefault(r => r.Name == "Composite Test Day");
+        NotableDate? resolved = service.GetNotableDates(2099).SingleOrDefault(r => r.Name == "Composite Test Day");
 
         Assert.IsNotNull(resolved);
         Assert.AreEqual(new DateTime(2099, 1, 1), resolved!.Date);
@@ -120,11 +120,11 @@ public sealed class NotableDateServicePluginIntegrationTests
     public void CompositeAlgorithmRegistry_ShouldReportContainsFromEitherLayer()
     {
         var loader = new ExternalPluginLoader(new AllowAllPluginTrustPolicy());
-        var plugin = loader.Load(Plugin1Path);
+        INotableDatePlugin plugin = loader.Load(Plugin1Path);
 
         // Host provides "host.only"; plugin provides "harness.static". The composite should
         // Contains both.
-        var hostRegistry = new NotableDateAlgorithmRegistry()
+        NotableDateAlgorithmRegistry hostRegistry = new NotableDateAlgorithmRegistry()
             .Register("host.only", new HostOverrideAlgorithm(new DateTime(2050, 1, 1)));
 
         var hostOnlyRule = new NotableDateRule
@@ -170,9 +170,9 @@ public sealed class NotableDateServicePluginIntegrationTests
     public void CompositeAlgorithmRegistry_WhenKeyMissingFromBothLayers_ShouldEmitNoOccurrence()
     {
         var loader = new ExternalPluginLoader(new AllowAllPluginTrustPolicy());
-        var plugin = loader.Load(Plugin1Path);
+        INotableDatePlugin plugin = loader.Load(Plugin1Path);
 
-        var hostRegistry = new NotableDateAlgorithmRegistry()
+        NotableDateAlgorithmRegistry hostRegistry = new NotableDateAlgorithmRegistry()
             .Register("host.only", new HostOverrideAlgorithm(new DateTime(2050, 1, 1)));
 
         // The consumer rule targets an algorithm key that exists on neither layer.

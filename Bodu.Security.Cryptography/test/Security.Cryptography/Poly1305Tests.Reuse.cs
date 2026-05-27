@@ -56,10 +56,10 @@ public partial class Poly1305Tests
     {
         var poly = new Poly1305 { Key = (byte[])Poly1305TestKey.Clone() };
 
-        var rField = typeof(Poly1305).GetField("_r", BindingFlags.Instance | BindingFlags.NonPublic);
-        var sField = typeof(Poly1305).GetField("_s", BindingFlags.Instance | BindingFlags.NonPublic);
-        var keyField = typeof(Poly1305).GetField("_key", BindingFlags.Instance | BindingFlags.NonPublic);
-        var accField = typeof(Poly1305).GetField("_acc", BindingFlags.Instance | BindingFlags.NonPublic);
+        FieldInfo? rField = typeof(Poly1305).GetField("_r", BindingFlags.Instance | BindingFlags.NonPublic);
+        FieldInfo? sField = typeof(Poly1305).GetField("_s", BindingFlags.Instance | BindingFlags.NonPublic);
+        FieldInfo? keyField = typeof(Poly1305).GetField("_key", BindingFlags.Instance | BindingFlags.NonPublic);
+        FieldInfo? accField = typeof(Poly1305).GetField("_acc", BindingFlags.Instance | BindingFlags.NonPublic);
 
         Assert.IsNotNull(rField);
         Assert.IsNotNull(sField);
@@ -112,21 +112,21 @@ public partial class Poly1305Tests
         // state, then invoke the protected ProcessFinalBlock directly via reflection. The HashAlgorithm
         // pipeline (HashFinal -> Initialize) is bypassed, so the only thing that can zero _r/_s/_key/_acc
         // is ProcessFinalBlock itself.
-        var hashCore = typeof(HashAlgorithm).GetMethod(
+        MethodInfo? hashCore = typeof(HashAlgorithm).GetMethod(
             "HashCore",
             BindingFlags.Instance | BindingFlags.NonPublic,
             [typeof(byte[]), typeof(int), typeof(int)]);
-        var processFinalBlock = typeof(Poly1305).GetMethod("ProcessFinalBlock", BindingFlags.Instance | BindingFlags.NonPublic);
+        MethodInfo? processFinalBlock = typeof(Poly1305).GetMethod("ProcessFinalBlock", BindingFlags.Instance | BindingFlags.NonPublic);
         Assert.IsNotNull(hashCore);
         Assert.IsNotNull(processFinalBlock);
 
         hashCore.Invoke(poly, [message, 0, message.Length]);
         _ = processFinalBlock.Invoke(poly, null);
 
-        var rField = typeof(Poly1305).GetField("_r", BindingFlags.Instance | BindingFlags.NonPublic);
-        var sField = typeof(Poly1305).GetField("_s", BindingFlags.Instance | BindingFlags.NonPublic);
-        var keyField = typeof(Poly1305).GetField("_key", BindingFlags.Instance | BindingFlags.NonPublic);
-        var accField = typeof(Poly1305).GetField("_acc", BindingFlags.Instance | BindingFlags.NonPublic);
+        FieldInfo? rField = typeof(Poly1305).GetField("_r", BindingFlags.Instance | BindingFlags.NonPublic);
+        FieldInfo? sField = typeof(Poly1305).GetField("_s", BindingFlags.Instance | BindingFlags.NonPublic);
+        FieldInfo? keyField = typeof(Poly1305).GetField("_key", BindingFlags.Instance | BindingFlags.NonPublic);
+        FieldInfo? accField = typeof(Poly1305).GetField("_acc", BindingFlags.Instance | BindingFlags.NonPublic);
 
         Assert.IsNotNull(rField);
         Assert.IsNotNull(sField);

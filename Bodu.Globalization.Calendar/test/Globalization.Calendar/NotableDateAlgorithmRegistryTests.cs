@@ -24,7 +24,7 @@ public sealed class NotableDateAlgorithmRegistryTests
         var registry = new NotableDateAlgorithmRegistry();
 
         Assert.IsFalse(registry.Contains("any"));
-        Assert.IsFalse(registry.TryGet("any", out var algorithm));
+        Assert.IsFalse(registry.TryGet("any", out INotableDateAlgorithm? algorithm));
         Assert.IsNull(algorithm);
     }
 
@@ -43,9 +43,9 @@ public sealed class NotableDateAlgorithmRegistryTests
             new KeyValuePair<string, INotableDateAlgorithm>("lunar", lunar),
         ]);
 
-        Assert.IsTrue(registry.TryGet("easter", out var resolvedEaster));
+        Assert.IsTrue(registry.TryGet("easter", out INotableDateAlgorithm? resolvedEaster));
         Assert.AreSame(easter, resolvedEaster);
-        Assert.IsTrue(registry.TryGet("lunar", out var resolvedLunar));
+        Assert.IsTrue(registry.TryGet("lunar", out INotableDateAlgorithm? resolvedLunar));
         Assert.AreSame(lunar, resolvedLunar);
     }
 
@@ -56,7 +56,7 @@ public sealed class NotableDateAlgorithmRegistryTests
     [TestMethod]
     public void Ctor_WhenAlgorithmsIsNull_ShouldThrowExactly()
     {
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = new NotableDateAlgorithmRegistry(null!);
         });
@@ -76,7 +76,7 @@ public sealed class NotableDateAlgorithmRegistryTests
     {
         var registry = new NotableDateAlgorithmRegistry();
 
-        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             _ = registry.Register(key!, new StaticAlgorithm(DateTime.Today));
         });
@@ -93,7 +93,7 @@ public sealed class NotableDateAlgorithmRegistryTests
     {
         var registry = new NotableDateAlgorithmRegistry();
 
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = registry.Register("key", null!);
         });
@@ -116,7 +116,7 @@ public sealed class NotableDateAlgorithmRegistryTests
         registry.Register("Key", algorithm);
 
         Assert.IsTrue(registry.Contains(lookupKey));
-        Assert.IsTrue(registry.TryGet(lookupKey, out var resolved));
+        Assert.IsTrue(registry.TryGet(lookupKey, out INotableDateAlgorithm? resolved));
         Assert.AreSame(algorithm, resolved);
     }
 
@@ -135,7 +135,7 @@ public sealed class NotableDateAlgorithmRegistryTests
         registry.Register("actual", new StaticAlgorithm(DateTime.Today));
 
         Assert.IsFalse(registry.Contains(key!));
-        Assert.IsFalse(registry.TryGet(key!, out var algorithm));
+        Assert.IsFalse(registry.TryGet(key!, out INotableDateAlgorithm? algorithm));
         Assert.IsNull(algorithm);
     }
 
@@ -151,7 +151,7 @@ public sealed class NotableDateAlgorithmRegistryTests
 
         registry.Register("key", original).Register("key", replacement);
 
-        Assert.IsTrue(registry.TryGet("key", out var resolved));
+        Assert.IsTrue(registry.TryGet("key", out INotableDateAlgorithm? resolved));
         Assert.AreSame(replacement, resolved);
     }
 

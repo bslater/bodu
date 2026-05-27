@@ -75,7 +75,7 @@ public sealed class ResourcePathResolverTests
     {
         IResourcePathResolver resolver = new ResourcePathResolver();
 
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = resolver.Resolve(null!, "child.xml");
         });
@@ -96,7 +96,7 @@ public sealed class ResourcePathResolverTests
     {
         IResourcePathResolver resolver = new ResourcePathResolver();
 
-        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             _ = resolver.Resolve(documentPath, "child.xml");
         });
@@ -114,7 +114,7 @@ public sealed class ResourcePathResolverTests
     {
         IResourcePathResolver resolver = new ResourcePathResolver();
 
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = resolver.Resolve("/some/document.xml", null!);
         });
@@ -135,7 +135,7 @@ public sealed class ResourcePathResolverTests
     {
         IResourcePathResolver resolver = new ResourcePathResolver();
 
-        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             _ = resolver.Resolve("/some/document.xml", childPath);
         });

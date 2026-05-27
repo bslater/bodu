@@ -402,7 +402,7 @@ public sealed class PooledBufferBuilder<T> :
     {
         ThrowIfDisposed();
 
-        var result = _count == 0 ? Array.Empty<T>() : _internalBuffer.AsSpan(0, _count).ToArray();
+        T[] result = _count == 0 ? Array.Empty<T>() : _internalBuffer.AsSpan(0, _count).ToArray();
         Dispose();
         return result;
     }

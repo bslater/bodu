@@ -55,7 +55,7 @@ public sealed class Base58CheckTests
         tampered[^1] = tampered[^1] == 'a' ? 'b' : 'a';
         var tamperedAddress = new string(tampered);
 
-        var ex = Assert.ThrowsExactly<FormatException>(() =>
+        FormatException ex = Assert.ThrowsExactly<FormatException>(() =>
         {
             _ = Base58Check.Decode(tamperedAddress.AsSpan());
         });
@@ -70,7 +70,7 @@ public sealed class Base58CheckTests
     [TestMethod]
     public void Decode_WhenInputTooShortForChecksum_ShouldThrowExactly()
     {
-        var ex = Assert.ThrowsExactly<FormatException>(() =>
+        FormatException ex = Assert.ThrowsExactly<FormatException>(() =>
         {
             _ = Base58Check.Decode("1".AsSpan());
         });

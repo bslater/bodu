@@ -26,7 +26,7 @@ public sealed class TweakableSymmetricAlgorithmProtectedHelperTests
     {
         using var algorithm = new BareTweakableAlgorithm();
 
-        var result = algorithm.LegalTweakSizes;
+        KeySizes[] result = algorithm.LegalTweakSizes;
 
         Assert.IsNotNull(result);
         Assert.AreEqual(0, result.Length);
@@ -44,8 +44,8 @@ public sealed class TweakableSymmetricAlgorithmProtectedHelperTests
             new KeySizes(128, 128, 0),
         ]);
 
-        var first = algorithm.LegalTweakSizes;
-        var second = algorithm.LegalTweakSizes;
+        KeySizes[] first = algorithm.LegalTweakSizes;
+        KeySizes[] second = algorithm.LegalTweakSizes;
 
         Assert.AreNotSame(first, second);
         Assert.AreEqual(1, first.Length);

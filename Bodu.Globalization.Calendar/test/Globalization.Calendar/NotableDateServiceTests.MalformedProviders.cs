@@ -82,7 +82,7 @@ public sealed partial class NotableDateServiceTests
         };
         NotableDateRule sanity = Fixed("Sanity Day", 6, 15);
 
-        var service = BuildService(badMonth, sanity);
+        NotableDateService service = BuildService(badMonth, sanity);
 
         IReadOnlyList<NotableDate> results = service.GetNotableDates(2025);
 
@@ -109,7 +109,7 @@ public sealed partial class NotableDateServiceTests
         };
         NotableDateRule sanity = Fixed("Sanity Day", 6, 15);
 
-        var service = BuildService(badDay, sanity);
+        NotableDateService service = BuildService(badDay, sanity);
 
         IReadOnlyList<NotableDate> results = service.GetNotableDates(2025);
 
@@ -142,7 +142,7 @@ public sealed partial class NotableDateServiceTests
         };
         NotableDateRule sanity = Fixed("Sanity Day", 6, 15);
 
-        var service = BuildService(anchor, overflow, sanity);
+        NotableDateService service = BuildService(anchor, overflow, sanity);
 
         IReadOnlyList<NotableDate> results = service.GetNotableDates(2025);
 
@@ -398,7 +398,7 @@ public sealed partial class NotableDateServiceTests
     [TestMethod]
     public void GetNotableDates_WhenDateRangeSpansMultipleDecades_ShouldCompleteAndNotThrow()
     {
-        var service = BuildService(Fixed("Annual Day", 6, 15));
+        NotableDateService service = BuildService(Fixed("Annual Day", 6, 15));
 
         IReadOnlyList<NotableDate> results = service.GetNotableDates(
             new DateTime(2000, 1, 1),
@@ -462,7 +462,7 @@ public sealed partial class NotableDateServiceTests
         var overrideProvider = new ThrowingRemovalsProvider(
             new InvalidOperationException("removal source unavailable"));
 
-        var ex = Assert.ThrowsExactly<InvalidOperationException>(() =>
+        InvalidOperationException ex = Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
             _ = new NotableDateService(
                 [(INotableDateRuleProvider)new InMemoryRuleProvider(Fixed("Holiday", 1, 1))],
@@ -499,7 +499,7 @@ public sealed partial class NotableDateServiceTests
         };
         NotableDateRule sanity = Fixed("Sanity Day", 6, 15);
 
-        var service = BuildService(blankAnchor, sanity);
+        NotableDateService service = BuildService(blankAnchor, sanity);
 
         IReadOnlyList<NotableDate> results = service.GetNotableDates(2025);
 

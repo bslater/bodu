@@ -49,7 +49,7 @@ public sealed class BclAliasCoverageTests
     [TestMethod]
     public void Base16_FromHexString_Utf8WithInvalidChar_ShouldThrowExactly()
     {
-        var ex = Assert.ThrowsExactly<FormatException>(() =>
+        FormatException ex = Assert.ThrowsExactly<FormatException>(() =>
         {
             _ = Base16.FromHexString(System.Text.Encoding.ASCII.GetBytes("DEADXZ01"));
         });
@@ -64,7 +64,7 @@ public sealed class BclAliasCoverageTests
     [TestMethod]
     public void Base16_FromHexString_Utf8WithOddLength_ShouldThrowExactly()
     {
-        var ex = Assert.ThrowsExactly<FormatException>(() =>
+        FormatException ex = Assert.ThrowsExactly<FormatException>(() =>
         {
             _ = Base16.FromHexString(System.Text.Encoding.ASCII.GetBytes("DEADBE0"));
         });

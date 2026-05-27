@@ -39,7 +39,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void DebugView_Ctor_WhenSetIsNull_ShouldThrowArgumentNullException()
     {
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = new ConcurrentHashSetDebugView<int>(null!);
         });

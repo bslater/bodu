@@ -39,7 +39,7 @@ public sealed class EasterSundayNotableDateProviderBaseTests
     {
         var provider = new DefaultTestProvider();
 
-        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             _ = provider.GetDates(year);
         });

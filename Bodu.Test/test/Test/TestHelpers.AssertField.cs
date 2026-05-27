@@ -111,7 +111,7 @@ public static partial class TestHelpers
 
             if (genericDef == typeof(Memory<>))
             {
-                var toArrayMethod = fieldType.GetMethod(nameof(Memory<byte>.ToArray))!;
+                MethodInfo toArrayMethod = fieldType.GetMethod(nameof(Memory<byte>.ToArray))!;
                 var memoryArray = (Array)toArrayMethod.Invoke(value, null)!;
 
                 var defaultElement = Activator.CreateInstance(fieldType.GetGenericArguments()[0]);

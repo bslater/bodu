@@ -19,7 +19,7 @@ public partial class AsconAead128Tests
     [TestMethod]
     public void Encrypt_WhenAadNotProcessed_ShouldThrowExactly()
     {
-        using var sut = new AsconAead128(ValidKey, ValidNonce);
+        using var sut = new AsconAead128(s_validKey, s_validNonce);
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
@@ -50,7 +50,7 @@ public partial class AsconAead128Tests
     [TestMethod]
     public void Encrypt_WhenDisposed_ShouldThrowExactly()
     {
-        var sut = new AsconAead128(ValidKey, ValidNonce);
+        var sut = new AsconAead128(s_validKey, s_validNonce);
         sut.Dispose();
 
         Assert.ThrowsExactly<ObjectDisposedException>(() =>
@@ -184,7 +184,7 @@ public partial class AsconAead128Tests
     [TestMethod]
     public void Encrypt_WhenDisposedBeforeAadProcessed_ShouldThrowExactly()
     {
-        var sut = new AsconAead128(ValidKey, ValidNonce);
+        var sut = new AsconAead128(s_validKey, s_validNonce);
         sut.Dispose();
 
         Assert.ThrowsExactly<ObjectDisposedException>(() =>

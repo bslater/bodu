@@ -17,7 +17,7 @@ public partial class AsconAead128Tests
     [TestMethod]
     public void TagSize_ShouldReturn128()
     {
-        using var sut = new AsconAead128(ValidKey, ValidNonce);
+        using var sut = new AsconAead128(s_validKey, s_validNonce);
         Assert.AreEqual(128, sut.TagSize);
     }
 }

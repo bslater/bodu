@@ -57,7 +57,7 @@ public partial class CryptoHelpersTests
     [TestMethod]
     public void ThrowIfInvalidHashSize_WhenSizeIsRejected_ShouldIncludeSizeAndValidSizesInMessage()
     {
-        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             CryptoHelpers.ThrowIfInvalidHashSize(64, [128, 256]);
         });

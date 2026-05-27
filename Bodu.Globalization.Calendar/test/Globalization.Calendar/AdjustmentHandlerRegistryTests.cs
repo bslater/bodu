@@ -42,9 +42,9 @@ public sealed class AdjustmentHandlerRegistryTests
             new KeyValuePair<string, IAdjustmentHandler>("b", handlerB),
         ]);
 
-        Assert.IsTrue(registry.TryGet("a", out var resolvedA));
+        Assert.IsTrue(registry.TryGet("a", out IAdjustmentHandler? resolvedA));
         Assert.AreSame(handlerA, resolvedA);
-        Assert.IsTrue(registry.TryGet("b", out var resolvedB));
+        Assert.IsTrue(registry.TryGet("b", out IAdjustmentHandler? resolvedB));
         Assert.AreSame(handlerB, resolvedB);
     }
 
@@ -55,7 +55,7 @@ public sealed class AdjustmentHandlerRegistryTests
     [TestMethod]
     public void Ctor_WhenHandlersIsNull_ShouldThrowExactly()
     {
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = new AdjustmentHandlerRegistry(null!);
         });
@@ -75,7 +75,7 @@ public sealed class AdjustmentHandlerRegistryTests
     {
         var registry = new AdjustmentHandlerRegistry();
 
-        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             _ = registry.Register(key!, new StubHandler());
         });
@@ -92,7 +92,7 @@ public sealed class AdjustmentHandlerRegistryTests
     {
         var registry = new AdjustmentHandlerRegistry();
 
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = registry.Register("key", null!);
         });
@@ -114,7 +114,7 @@ public sealed class AdjustmentHandlerRegistryTests
         var handler = new StubHandler();
         registry.Register("Key", handler);
 
-        Assert.IsTrue(registry.TryGet(lookupKey, out var resolved));
+        Assert.IsTrue(registry.TryGet(lookupKey, out IAdjustmentHandler? resolved));
         Assert.AreSame(handler, resolved);
     }
 
@@ -149,7 +149,7 @@ public sealed class AdjustmentHandlerRegistryTests
 
         registry.Register("key", original).Register("key", replacement);
 
-        Assert.IsTrue(registry.TryGet("key", out var resolved));
+        Assert.IsTrue(registry.TryGet("key", out IAdjustmentHandler? resolved));
         Assert.AreSame(replacement, resolved);
     }
 

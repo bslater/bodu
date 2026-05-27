@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsconAead128Tests.KnownAnswerTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -32,12 +32,12 @@ public partial class AsconAead128Tests
     /// <exception cref="InvalidOperationException">The embedded KAT resource cannot be located.</exception>
     private static IEnumerable<object[]> AsconAead128ReferenceVectors()
     {
-        using var stream = typeof(AsconAead128Tests).Assembly.GetManifestResourceStream(KatResourceName)
+        using Stream stream = typeof(AsconAead128Tests).Assembly.GetManifestResourceStream(KatResourceName)
             ?? throw new InvalidOperationException(
                 $"Embedded resource '{KatResourceName}' is not present in the test assembly. " +
                 "Check the <EmbeddedResource> entry in Bodu.Security.Cryptography.Test.csproj.");
 
-        foreach (var vector in NistLwcKatReader.Read(stream, tagLength: 16, source: KatSource))
+        foreach (AeadKnownAnswerVector vector in NistLwcKatReader.Read(stream, tagLength: 16, source: KatSource))
             yield return new object[] { vector };
     }
 
@@ -58,7 +58,7 @@ public partial class AsconAead128Tests
     /// </summary>
     /// <param name="vector">The KAT vector under test.</param>
     [TestMethod]
-    [DynamicData(nameof(AsconAead128ReferenceVectors), DynamicDataSourceType.Method, DynamicDataDisplayName = nameof(GetKatVectorDisplayName))]
+    [DynamicData(nameof(AsconAead128ReferenceVectors), DynamicDataDisplayName = nameof(GetKatVectorDisplayName))]
     [TestCategory("Regression")]
     public void EncryptAndDecrypt_WhenGivenNistKatVector_ShouldMatchExpectedCiphertextTagAndPlaintext(AeadKnownAnswerVector vector)
     {

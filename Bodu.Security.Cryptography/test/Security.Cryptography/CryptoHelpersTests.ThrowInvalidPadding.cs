@@ -21,7 +21,7 @@ public partial class CryptoHelpersTests
     [DataRow("ISO/IEC 7816-4")]
     public void ThrowInvalidPadding_WhenInvoked_ShouldThrowExactly(string scheme)
     {
-        var ex = Assert.ThrowsExactly<CryptographicException>(() =>
+        CryptographicException ex = Assert.ThrowsExactly<CryptographicException>(() =>
         {
             CryptoHelpers.ThrowInvalidPadding(scheme);
         });

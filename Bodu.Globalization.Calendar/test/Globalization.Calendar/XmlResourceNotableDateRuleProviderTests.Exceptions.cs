@@ -25,7 +25,7 @@ public sealed partial class XmlResourceNotableDateRuleProviderTests
     [TestMethod]
     public void Ctor_WhenResourcePathResolverIsNull_ShouldThrowExactly()
     {
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = new XmlResourceNotableDateRuleProvider(CommonResource, null!);
         });
@@ -68,7 +68,7 @@ public sealed partial class XmlResourceNotableDateRuleProviderTests
             "Bodu/Globalization/Calendar/Resources/Imaginary.xml",
             new ResourcePathResolver());
 
-        var ex = Assert.ThrowsExactly<FileNotFoundException>(() =>
+        FileNotFoundException ex = Assert.ThrowsExactly<FileNotFoundException>(() =>
         {
             _ = provider.LoadRules().ToList();
         });

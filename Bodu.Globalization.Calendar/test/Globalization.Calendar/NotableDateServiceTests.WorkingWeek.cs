@@ -84,7 +84,7 @@ public sealed partial class NotableDateServiceTests
     [TestMethod]
     public void IsHolidayNonWorkingDay_WhenSaturdayWithoutHoliday_ShouldReturnFalse()
     {
-        var service = BuildService();
+        NotableDateService service = BuildService();
 
         // 2025-01-04 is a Saturday with no holiday under the minimal rule set.
         Assert.IsTrue(service.IsNonWorkingDay(new DateTime(2025, 1, 4)));
@@ -98,7 +98,7 @@ public sealed partial class NotableDateServiceTests
     [TestMethod]
     public void IsHolidayNonWorkingDay_WhenHolidayOnDay_ShouldReturnTrue()
     {
-        var service = BuildService(Fixed("Christmas Day", 12, 25, nonWorking: true));
+        NotableDateService service = BuildService(Fixed("Christmas Day", 12, 25, nonWorking: true));
 
         Assert.IsTrue(service.IsHolidayNonWorkingDay(new DateTime(2025, 12, 25)));
     }
@@ -110,7 +110,7 @@ public sealed partial class NotableDateServiceTests
     [TestMethod]
     public void IsHolidayNonWorkingDay_WhenObservanceOnlyHoliday_ShouldReturnFalse()
     {
-        var service = BuildService(Fixed("Earth Day", 4, 22, nonWorking: false));
+        NotableDateService service = BuildService(Fixed("Earth Day", 4, 22, nonWorking: false));
 
         Assert.IsFalse(service.IsHolidayNonWorkingDay(new DateTime(2025, 4, 22)));
     }

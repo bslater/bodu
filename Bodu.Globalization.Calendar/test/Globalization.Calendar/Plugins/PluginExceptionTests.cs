@@ -119,7 +119,7 @@ public sealed class PluginExceptionTests
     [TestMethod]
     public void DelegatingPluginTrustPolicy_WhenEvaluatorIsNull_ShouldThrowExactly()
     {
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = new DelegatingPluginTrustPolicy(null!);
         });

@@ -37,7 +37,7 @@ public sealed class GlobalJewishResourceTests
     [TestMethod]
     public void GetNotableDates_WhenLoadingGlobalJewishWithoutRegistry_ShouldResolveAllSevenHolidays()
     {
-        var service = CreateBareService();
+        NotableDateService service = CreateBareService();
 
         var resolvedNames = service.GetNotableDates(2024)
             .Select(r => r.Name)
@@ -71,7 +71,7 @@ public sealed class GlobalJewishResourceTests
     [TestMethod]
     public void GetNotableDates_WhenLoadingGlobalJewish_ShouldYieldKnownAnchorDates(int year, string holiday, int expectedMonth, int expectedDay)
     {
-        var service = CreateBareService();
+        NotableDateService service = CreateBareService();
 
         NotableDate? resolved = service.GetNotableDates(year)
             .FirstOrDefault(r => string.Equals(r.Name, holiday, StringComparison.OrdinalIgnoreCase));
@@ -94,7 +94,7 @@ public sealed class GlobalJewishResourceTests
     [TestMethod]
     public void GetNotableDates_WhenLoadingGlobalJewish_ShouldPreserveAuthoredDurationDays(string holiday, int expectedDuration)
     {
-        var service = CreateBareService();
+        NotableDateService service = CreateBareService();
 
         NotableDate? resolved = service.GetNotableDates(2024)
             .FirstOrDefault(r => string.Equals(r.Name, holiday, StringComparison.OrdinalIgnoreCase));

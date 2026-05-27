@@ -115,7 +115,7 @@ public partial class EvictingDictionaryTests
     public void CopyTo_WhenDictionaryIsEmpty_ShouldNotCopyAnything()
     {
         var dictionary = new EvictingDictionary<string, int>(2);
-        var target = Array.Empty<KeyValuePair<string, int>>();
+        KeyValuePair<string, int>[] target = Array.Empty<KeyValuePair<string, int>>();
         dictionary.CopyTo(target, 0);
     }
 

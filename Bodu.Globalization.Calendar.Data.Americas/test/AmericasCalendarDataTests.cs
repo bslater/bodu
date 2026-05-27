@@ -45,7 +45,7 @@ public sealed class AmericasCalendarDataTests
     [TestMethod]
     public void CreateProvider_WhenResourceNameIsNull_ShouldThrowExactly()
     {
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = AmericasCalendarData.CreateProvider(null!);
         });

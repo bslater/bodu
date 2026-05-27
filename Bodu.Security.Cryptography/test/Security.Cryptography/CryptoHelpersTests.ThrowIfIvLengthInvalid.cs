@@ -45,7 +45,7 @@ public partial class CryptoHelpersTests
     {
         var iv = new byte[actualBytes];
 
-        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             CryptoHelpers.ThrowIfIvLengthInvalid(iv, expectedBits);
         });

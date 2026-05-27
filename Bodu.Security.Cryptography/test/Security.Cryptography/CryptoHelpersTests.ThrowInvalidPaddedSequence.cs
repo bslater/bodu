@@ -21,7 +21,7 @@ public partial class CryptoHelpersTests
     public void ThrowInvalidPaddedSequence_WhenInvoked_ShouldThrowExactly(
         string scheme, string paramName)
     {
-        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             CryptoHelpers.ThrowInvalidPaddedSequence(scheme, paramName);
         });
@@ -51,7 +51,7 @@ public partial class CryptoHelpersTests
     [TestMethod]
     public void ThrowInvalidPaddedSequence_WhenParamNameIsNull_ShouldThrowExactly()
     {
-        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             CryptoHelpers.ThrowInvalidPaddedSequence("PKCS#7", null!);
         });

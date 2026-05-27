@@ -19,7 +19,7 @@ public partial class CryptoHelpersTests
     {
         var undefined = (PaddingMode)999;
 
-        var ex = Assert.ThrowsExactly<CryptographicException>(() =>
+        CryptographicException ex = Assert.ThrowsExactly<CryptographicException>(() =>
         {
             CryptoHelpers.ThrowUnsupportedPaddingMode(undefined);
         });
@@ -36,7 +36,7 @@ public partial class CryptoHelpersTests
     {
         var undefined = (PaddingModeKind)999;
 
-        var ex = Assert.ThrowsExactly<CryptographicException>(() =>
+        CryptographicException ex = Assert.ThrowsExactly<CryptographicException>(() =>
         {
             CryptoHelpers.ThrowUnsupportedPaddingMode(undefined);
         });

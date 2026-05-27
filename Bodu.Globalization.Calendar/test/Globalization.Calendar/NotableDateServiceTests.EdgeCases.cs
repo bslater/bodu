@@ -37,7 +37,7 @@ public sealed partial class NotableDateServiceTests
         };
         NotableDateRule sanity = Fixed("Sanity Day", 6, 15);
 
-        var service = BuildService(ruleA, ruleB, sanity);
+        NotableDateService service = BuildService(ruleA, ruleB, sanity);
 
         IReadOnlyList<NotableDate> results = service.GetNotableDates(2025);
 
@@ -63,7 +63,7 @@ public sealed partial class NotableDateServiceTests
         };
         NotableDateRule sanity = Fixed("Sanity Day", 6, 15);
 
-        var service = BuildService(selfRef, sanity);
+        NotableDateService service = BuildService(selfRef, sanity);
 
         IReadOnlyList<NotableDate> results = service.GetNotableDates(2025);
 
@@ -89,7 +89,7 @@ public sealed partial class NotableDateServiceTests
         };
         NotableDateRule sanity = Fixed("Sanity Day", 6, 15);
 
-        var service = BuildService(dangling, sanity);
+        NotableDateService service = BuildService(dangling, sanity);
 
         IReadOnlyList<NotableDate> results = service.GetNotableDates(2025);
 
@@ -129,7 +129,7 @@ public sealed partial class NotableDateServiceTests
                 }),
         };
 
-        var service = BuildService(rule);
+        NotableDateService service = BuildService(rule);
 
         var layered = service.GetNotableDates(2022)
             .Where(d => d.Name == "Layered Holiday")
@@ -167,7 +167,7 @@ public sealed partial class NotableDateServiceTests
             }),
         };
 
-        var service = BuildService(rule);
+        NotableDateService service = BuildService(rule);
 
         var results = service.GetNotableDates(2025)
             .Where(r => r.Name == "Walk Trigger")
@@ -235,7 +235,7 @@ public sealed partial class NotableDateServiceTests
             }),
         };
 
-        var service = BuildService(walkTrigger);
+        NotableDateService service = BuildService(walkTrigger);
 
         // Query a narrow window that contains only the cross-boundary occurrence we want to assert on. The pipeline
         // filters by observed date; if the test queried a multi-year span, the rule's other anchors (Dec 31 2024,

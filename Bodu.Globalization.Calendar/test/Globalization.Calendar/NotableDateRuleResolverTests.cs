@@ -45,7 +45,7 @@ public sealed class NotableDateRuleResolverTests
     {
         var resolver = new NotableDateRuleResolver([FixedRule("New Year's Day", 1, 1)]);
 
-        var date = resolver.ResolveAnchorDate(FixedRule("New Year's Day", 1, 1), 2026);
+        DateTime? date = resolver.ResolveAnchorDate(FixedRule("New Year's Day", 1, 1), 2026);
 
         Assert.AreEqual(new DateTime(2026, 1, 1), date);
     }
@@ -56,7 +56,7 @@ public sealed class NotableDateRuleResolverTests
     [TestMethod]
     public void ResolveAnchorDate_WhenYearBeforeFirstYear_ShouldReturnNull()
     {
-        var rule = FixedRule("Future Holiday", 1, 1, firstYear: 2030);
+        NotableDateRule rule = FixedRule("Future Holiday", 1, 1, firstYear: 2030);
         var resolver = new NotableDateRuleResolver([rule]);
 
         Assert.IsNull(resolver.ResolveAnchorDate(rule, 2025));
@@ -68,7 +68,7 @@ public sealed class NotableDateRuleResolverTests
     [TestMethod]
     public void ResolveAnchorDate_WhenYearAfterLastYear_ShouldReturnNull()
     {
-        var rule = FixedRule("Sunset Holiday", 1, 1, lastYear: 2020);
+        NotableDateRule rule = FixedRule("Sunset Holiday", 1, 1, lastYear: 2020);
         var resolver = new NotableDateRuleResolver([rule]);
 
         Assert.IsNull(resolver.ResolveAnchorDate(rule, 2025));
@@ -81,7 +81,7 @@ public sealed class NotableDateRuleResolverTests
     [TestMethod]
     public void ResolveAnchorDate_WhenOccurrenceYearsSetAndYearOnCadence_ShouldReturnDate()
     {
-        var rule = FixedRule("Olympics", 7, 1, firstYear: 2024, occurrenceYears: 4);
+        NotableDateRule rule = FixedRule("Olympics", 7, 1, firstYear: 2024, occurrenceYears: 4);
         var resolver = new NotableDateRuleResolver([rule]);
 
         Assert.IsNotNull(resolver.ResolveAnchorDate(rule, 2024));
@@ -94,7 +94,7 @@ public sealed class NotableDateRuleResolverTests
     [TestMethod]
     public void ResolveAnchorDate_WhenOccurrenceYearsSetAndYearOffCadence_ShouldReturnNull()
     {
-        var rule = FixedRule("Olympics", 7, 1, firstYear: 2024, occurrenceYears: 4);
+        NotableDateRule rule = FixedRule("Olympics", 7, 1, firstYear: 2024, occurrenceYears: 4);
         var resolver = new NotableDateRuleResolver([rule]);
 
         Assert.IsNull(resolver.ResolveAnchorDate(rule, 2025));
@@ -107,11 +107,11 @@ public sealed class NotableDateRuleResolverTests
     [TestMethod]
     public void ResolveAnchorDate_WhenOffsetFromAnchorRule_ShouldResolveThroughAnchor()
     {
-        var anchor = FixedRule("Anchor", 4, 10);
-        var offset = OffsetRule("Two Days Earlier", "Anchor", -2);
+        NotableDateRule anchor = FixedRule("Anchor", 4, 10);
+        NotableDateRule offset = OffsetRule("Two Days Earlier", "Anchor", -2);
         var resolver = new NotableDateRuleResolver([anchor, offset]);
 
-        var date = resolver.ResolveAnchorDate(offset, 2025);
+        DateTime? date = resolver.ResolveAnchorDate(offset, 2025);
 
         Assert.AreEqual(new DateTime(2025, 4, 8), date);
     }
@@ -122,7 +122,7 @@ public sealed class NotableDateRuleResolverTests
     [TestMethod]
     public void ResolveAnchorDate_WhenAnchorMissing_ShouldThrowExactly()
     {
-        var offset = OffsetRule("Orphan", "Missing Anchor", -1);
+        NotableDateRule offset = OffsetRule("Orphan", "Missing Anchor", -1);
         var resolver = new NotableDateRuleResolver([offset]);
 
         Assert.ThrowsExactly<InvalidOperationException>(() => resolver.ResolveAnchorDate(offset, 2025));
@@ -135,8 +135,8 @@ public sealed class NotableDateRuleResolverTests
     [TestMethod]
     public void ResolveAnchorDate_WhenCircularChain_ShouldThrowExactly()
     {
-        var a = OffsetRule("A", "B", 1);
-        var b = OffsetRule("B", "A", 1);
+        NotableDateRule a = OffsetRule("A", "B", 1);
+        NotableDateRule b = OffsetRule("B", "A", 1);
         var resolver = new NotableDateRuleResolver([a, b]);
 
         Assert.ThrowsExactly<InvalidOperationException>(() => resolver.ResolveAnchorDate(a, 2025));
@@ -160,7 +160,7 @@ public sealed class NotableDateRuleResolverTests
 
         var resolver = new NotableDateRuleResolver([rule]);
 
-        var date = resolver.ResolveAnchorDate(rule, 2025);
+        DateTime? date = resolver.ResolveAnchorDate(rule, 2025);
 
         Assert.AreEqual(new DateTime(2025, 5, 11), date);
     }
@@ -179,12 +179,12 @@ public sealed class NotableDateRuleResolverTests
             AlgorithmKey = "static",
         };
 
-        var registry = new NotableDateAlgorithmRegistry()
+        NotableDateAlgorithmRegistry registry = new NotableDateAlgorithmRegistry()
             .Register("static", new StaticAlgorithm(new DateTime(2025, 6, 15)));
 
         var resolver = new NotableDateRuleResolver([rule], registry);
 
-        var date = resolver.ResolveAnchorDate(rule, 2025);
+        DateTime? date = resolver.ResolveAnchorDate(rule, 2025);
 
         Assert.AreEqual(new DateTime(2025, 6, 15), date);
     }
@@ -215,7 +215,7 @@ public sealed class NotableDateRuleResolverTests
     [TestMethod]
     public void IsApplicable_WhenOccurrenceYearsAndYearOffCadence_ShouldReturnFalse()
     {
-        var rule = FixedRule("Quadrennial", 1, 1, firstYear: 2000, occurrenceYears: 4);
+        NotableDateRule rule = FixedRule("Quadrennial", 1, 1, firstYear: 2000, occurrenceYears: 4);
 
         Assert.IsTrue(NotableDateRuleResolver.IsApplicable(rule, 2000));
         Assert.IsTrue(NotableDateRuleResolver.IsApplicable(rule, 2004));
@@ -233,7 +233,7 @@ public sealed class NotableDateRuleResolverTests
     [TestMethod]
     public void Ctor_WhenRulesIsNull_ShouldThrowExactly()
     {
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = new NotableDateRuleResolver(null!);
         });
@@ -250,7 +250,7 @@ public sealed class NotableDateRuleResolverTests
     {
         var resolver = new NotableDateRuleResolver(Array.Empty<NotableDateRule>());
 
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = resolver.ResolveAnchorDate(null!, 2025);
         });
@@ -273,7 +273,7 @@ public sealed class NotableDateRuleResolverTests
         };
         var resolver = new NotableDateRuleResolver([rule]);
 
-        var ex = Assert.ThrowsExactly<NotSupportedException>(() =>
+        NotSupportedException ex = Assert.ThrowsExactly<NotSupportedException>(() =>
         {
             _ = resolver.ResolveAnchorDate(rule, 2025);
         });
@@ -360,7 +360,7 @@ public sealed class NotableDateRuleResolverTests
     [TestMethod]
     public void ResolveAnchorDate_WhenOffsetFromAnchorHasNoOffsetDays_ShouldReturnNull()
     {
-        var anchor = FixedRule("Anchor", 4, 10);
+        NotableDateRule anchor = FixedRule("Anchor", 4, 10);
         var offset = new NotableDateRule
         {
             Name = "Derived",
@@ -381,8 +381,8 @@ public sealed class NotableDateRuleResolverTests
     [TestMethod]
     public void ResolveAnchorDate_WhenOffsetFromAnchorAnchorNotApplicable_ShouldReturnNull()
     {
-        var anchor = FixedRule("Anchor", 4, 10, firstYear: 2030);
-        var offset = OffsetRule("Derived", "Anchor", 1);
+        NotableDateRule anchor = FixedRule("Anchor", 4, 10, firstYear: 2030);
+        NotableDateRule offset = OffsetRule("Derived", "Anchor", 1);
         var resolver = new NotableDateRuleResolver([anchor, offset]);
 
         Assert.IsNull(resolver.ResolveAnchorDate(offset, 2025));
@@ -425,7 +425,7 @@ public sealed class NotableDateRuleResolverTests
             AlgorithmKey = "key",
             AlgorithmType = typeof(FixedJuneAlgorithm),
         };
-        var registry = new NotableDateAlgorithmRegistry()
+        NotableDateAlgorithmRegistry registry = new NotableDateAlgorithmRegistry()
             .Register("key", new StaticAlgorithm(new DateTime(2025, 3, 15)));
         var resolver = new NotableDateRuleResolver([rule], registry);
 
@@ -473,7 +473,7 @@ public sealed class NotableDateRuleResolverTests
             Month = 4,
             Day = 10,
         };
-        var offset = OffsetRule("Derived", "RealAnchor", 1);
+        NotableDateRule offset = OffsetRule("Derived", "RealAnchor", 1);
         var resolver = new NotableDateRuleResolver([unindexedAnchor, offset]);
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>

@@ -64,7 +64,7 @@ public sealed class JsonResourceNotableDateRuleProviderTests
     [TestMethod]
     public void Ctor_WhenResourcePathResolverIsNull_ShouldThrowExactly()
     {
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = new JsonResourceNotableDateRuleProvider(SourceJson, null!);
         });
@@ -84,7 +84,7 @@ public sealed class JsonResourceNotableDateRuleProviderTests
             new ResourcePathResolver(),
             Assembly.GetExecutingAssembly());
 
-        var ex = Assert.ThrowsExactly<FileNotFoundException>(() =>
+        FileNotFoundException ex = Assert.ThrowsExactly<FileNotFoundException>(() =>
         {
             _ = provider.LoadRules().ToList();
         });

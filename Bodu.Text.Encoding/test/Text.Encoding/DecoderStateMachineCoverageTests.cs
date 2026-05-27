@@ -27,7 +27,7 @@ public sealed class DecoderStateMachineCoverageTests
     public void Base32_Decode_WhenPaddingCountMismatch_ShouldThrowExactly()
     {
         // 5 data chars + 11 padding chars = 16 total (multiple of 8) but expected padding for 5 data is 3, not 11.
-        var ex = Assert.ThrowsExactly<FormatException>(() =>
+        FormatException ex = Assert.ThrowsExactly<FormatException>(() =>
         {
             _ = Base32.Decode("MZXW6===========".AsSpan());
         });
@@ -41,7 +41,7 @@ public sealed class DecoderStateMachineCoverageTests
     [TestMethod]
     public void Base32_Decode_WhenPaddingFollowedByDataChar_ShouldThrowExactly()
     {
-        var ex = Assert.ThrowsExactly<FormatException>(() =>
+        FormatException ex = Assert.ThrowsExactly<FormatException>(() =>
         {
             _ = Base32.Decode("MZ=A====".AsSpan());
         });
@@ -56,7 +56,7 @@ public sealed class DecoderStateMachineCoverageTests
     [TestMethod]
     public void Base32_Decode_WhenTerminalQuantumIsOneDataChar_ShouldThrowExactly()
     {
-        var ex = Assert.ThrowsExactly<FormatException>(() =>
+        FormatException ex = Assert.ThrowsExactly<FormatException>(() =>
         {
             _ = Base32.Decode("M=======".AsSpan());
         });
@@ -72,7 +72,7 @@ public sealed class DecoderStateMachineCoverageTests
     [TestMethod]
     public void Base32_Decode_WhenTotalSymbolsNotMultipleOfEight_ShouldThrowExactly()
     {
-        var ex = Assert.ThrowsExactly<FormatException>(() =>
+        FormatException ex = Assert.ThrowsExactly<FormatException>(() =>
         {
             _ = Base32.Decode("MZXW6Y".AsSpan());
         });
@@ -181,7 +181,7 @@ public sealed class DecoderStateMachineCoverageTests
     public void Base58_Decode_WhenCharAboveLookupRange_ShouldThrowExactly()
     {
         // 'ÿ' is past the 128-entry lookup table.
-        var ex = Assert.ThrowsExactly<FormatException>(() =>
+        FormatException ex = Assert.ThrowsExactly<FormatException>(() =>
         {
             _ = Base58.Decode("AÿA".AsSpan());
         });
@@ -283,7 +283,7 @@ public sealed class DecoderStateMachineCoverageTests
     public void Base85_Decode_WhenCharAboveLookupRange_ShouldThrowExactly()
     {
         // 'ÿ' is past the 128-entry Ascii85 lookup table.
-        var ex = Assert.ThrowsExactly<FormatException>(() =>
+        FormatException ex = Assert.ThrowsExactly<FormatException>(() =>
         {
             _ = Base85.Decode("aÿa".AsSpan());
         });
@@ -301,7 +301,7 @@ public sealed class DecoderStateMachineCoverageTests
     {
         // 'u' is alphabet index 84 (max). A 4-char trailing group "uuuu" accumulates to 52200624; padding with one
         // more 'u' gives 52200624 * 85 + 84 = 4437053124 which exceeds uint.MaxValue.
-        var ex = Assert.ThrowsExactly<FormatException>(() =>
+        FormatException ex = Assert.ThrowsExactly<FormatException>(() =>
         {
             _ = Base85.Decode("uuuu".AsSpan());
         });

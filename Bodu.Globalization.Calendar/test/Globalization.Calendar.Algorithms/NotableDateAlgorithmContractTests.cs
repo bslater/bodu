@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateAlgorithmContractTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -41,7 +41,7 @@ public sealed class NotableDateAlgorithmContractTests
 
         foreach (int year in new[] { 0, -1, int.MinValue })
         {
-            var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+            ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
             {
                 _ = sut.GetDate(year, null);
             });
@@ -68,7 +68,7 @@ public sealed class NotableDateAlgorithmContractTests
 
         foreach (int year in new[] { 10000, int.MaxValue })
         {
-            var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+            ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
             {
                 _ = sut.GetDate(year, null);
             });

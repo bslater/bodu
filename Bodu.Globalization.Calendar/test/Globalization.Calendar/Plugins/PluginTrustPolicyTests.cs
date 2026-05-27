@@ -28,7 +28,7 @@ public sealed class PluginTrustPolicyTests
         var policy = new AllowAllPluginTrustPolicy();
         var context = new PluginTrustContext("/tmp/anything.dll", new AssemblyName("Anything"), []);
 
-        var result = policy.Evaluate(context);
+        PluginTrustResult result = policy.Evaluate(context);
 
         Assert.IsTrue(result.Trusted);
         Assert.IsNull(result.Reason);
@@ -45,7 +45,7 @@ public sealed class PluginTrustPolicyTests
             new Dictionary<string, byte[]> { [SampleAssemblyName] = SampleHash });
         var context = new PluginTrustContext("/tmp/acme.dll", new AssemblyName(SampleAssemblyName), SampleHash);
 
-        var result = policy.Evaluate(context);
+        PluginTrustResult result = policy.Evaluate(context);
 
         Assert.IsTrue(result.Trusted);
     }
@@ -62,7 +62,7 @@ public sealed class PluginTrustPolicyTests
         var tamperedHash = new byte[] { 0x01, 0x02, 0x03, 0xFF };
         var context = new PluginTrustContext("/tmp/acme.dll", new AssemblyName(SampleAssemblyName), tamperedHash);
 
-        var result = policy.Evaluate(context);
+        PluginTrustResult result = policy.Evaluate(context);
 
         Assert.IsFalse(result.Trusted);
         Assert.IsNotNull(result.Reason);
@@ -79,7 +79,7 @@ public sealed class PluginTrustPolicyTests
             new Dictionary<string, byte[]> { [SampleAssemblyName] = SampleHash });
         var context = new PluginTrustContext("/tmp/other.dll", new AssemblyName("Other.Assembly"), SampleHash);
 
-        var result = policy.Evaluate(context);
+        PluginTrustResult result = policy.Evaluate(context);
 
         Assert.IsFalse(result.Trusted);
     }
@@ -94,7 +94,7 @@ public sealed class PluginTrustPolicyTests
         var policy = new StrongNamePluginTrustPolicy(["abcdef1234567890"]);
         var context = new PluginTrustContext("/tmp/plain.dll", new AssemblyName("Plain.Assembly"), SampleHash);
 
-        var result = policy.Evaluate(context);
+        PluginTrustResult result = policy.Evaluate(context);
 
         Assert.IsFalse(result.Trusted);
         StringAssert.Contains(result.Reason!, "not strong-named");
@@ -116,7 +116,7 @@ public sealed class PluginTrustPolicyTests
         var policy = new StrongNamePluginTrustPolicy([tokenHex.ToUpperInvariant()]);
         var context = new PluginTrustContext("/tmp/signed.dll", assemblyName, SampleHash);
 
-        var result = policy.Evaluate(context);
+        PluginTrustResult result = policy.Evaluate(context);
 
         Assert.IsTrue(result.Trusted);
     }
@@ -135,7 +135,7 @@ public sealed class PluginTrustPolicyTests
         var policy = new StrongNamePluginTrustPolicy(["deadbeef12345678"]);
         var context = new PluginTrustContext("/tmp/signed.dll", assemblyName, SampleHash);
 
-        var result = policy.Evaluate(context);
+        PluginTrustResult result = policy.Evaluate(context);
 
         Assert.IsFalse(result.Trusted);
         StringAssert.Contains(result.Reason!, "0123456789abcdef");
@@ -150,7 +150,7 @@ public sealed class PluginTrustPolicyTests
         var policy = new CompositePluginTrustPolicy(new AllowAllPluginTrustPolicy(), new AllowAllPluginTrustPolicy());
         var context = new PluginTrustContext("/tmp/anything.dll", new AssemblyName("Anything"), SampleHash);
 
-        var result = policy.Evaluate(context);
+        PluginTrustResult result = policy.Evaluate(context);
 
         Assert.IsTrue(result.Trusted);
     }
@@ -166,7 +166,7 @@ public sealed class PluginTrustPolicyTests
         var policy = new CompositePluginTrustPolicy(new AllowAllPluginTrustPolicy(), rejecting, new AllowAllPluginTrustPolicy());
         var context = new PluginTrustContext("/tmp/anything.dll", new AssemblyName("Anything"), SampleHash);
 
-        var result = policy.Evaluate(context);
+        PluginTrustResult result = policy.Evaluate(context);
 
         Assert.IsFalse(result.Trusted);
         Assert.AreEqual("child-reason", result.Reason);
@@ -196,7 +196,7 @@ public sealed class PluginTrustPolicyTests
         });
         var context = new PluginTrustContext("/tmp/x.dll", new AssemblyName("X"), SampleHash);
 
-        var result = policy.Evaluate(context);
+        PluginTrustResult result = policy.Evaluate(context);
 
         Assert.IsNotNull(observed);
         Assert.AreEqual(context.AssemblyPath, observed!.Value.AssemblyPath);
@@ -215,7 +215,7 @@ public sealed class PluginTrustPolicyTests
     [TestMethod]
     public void CompositePluginTrustPolicy_WhenPoliciesArrayIsNull_ShouldThrowExactly()
     {
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = new CompositePluginTrustPolicy(null!);
         });
@@ -230,7 +230,7 @@ public sealed class PluginTrustPolicyTests
     [TestMethod]
     public void CompositePluginTrustPolicy_WhenPoliciesArrayContainsNullElement_ShouldThrowExactly()
     {
-        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             _ = new CompositePluginTrustPolicy(new AllowAllPluginTrustPolicy(), null!);
         });
@@ -245,7 +245,7 @@ public sealed class PluginTrustPolicyTests
     [TestMethod]
     public void FileHashPluginTrustPolicy_WhenAllowedHashesIsNull_ShouldThrowExactly()
     {
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = new FileHashPluginTrustPolicy(null!);
         });
@@ -324,7 +324,7 @@ public sealed class PluginTrustPolicyTests
     [TestMethod]
     public void StrongNamePluginTrustPolicy_WhenAllowlistIsNull_ShouldThrowExactly()
     {
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = new StrongNamePluginTrustPolicy(null!);
         });

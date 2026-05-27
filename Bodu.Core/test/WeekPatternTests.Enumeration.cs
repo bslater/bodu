@@ -86,7 +86,7 @@ public partial class WeekPatternTests
     [TestMethod]
     public void GetEnumerator_WhenInvoked_ShouldReturnStructEnumeratorType()
     {
-        var pattern = WeekPattern.Weekdays;
+        WeekPattern pattern = WeekPattern.Weekdays;
 
         WeekPattern.Enumerator enumerator = pattern.GetEnumerator();
 
@@ -115,7 +115,7 @@ public partial class WeekPatternTests
     {
         // 0b1010101 → Sun, Tue, Thu, Sat.
         var pattern = WeekPattern.FromByte(0b1010101);
-        var enumerator = pattern.GetEnumerator();
+        WeekPattern.Enumerator enumerator = pattern.GetEnumerator();
         var observed = new List<DayOfWeek>();
 
         while (enumerator.MoveNext())
@@ -133,12 +133,12 @@ public partial class WeekPatternTests
     [TestMethod]
     public void Enumerator_WhenResetAfterWalk_ShouldRestartFromBeginning()
     {
-        var pattern = WeekPattern.Weekend;
-        var enumerator = pattern.GetEnumerator();
+        WeekPattern pattern = WeekPattern.Weekend;
+        WeekPattern.Enumerator enumerator = pattern.GetEnumerator();
 
-        var first = DrainEnumerator(ref enumerator);
+        List<DayOfWeek> first = DrainEnumerator(ref enumerator);
         enumerator.Reset();
-        var second = DrainEnumerator(ref enumerator);
+        List<DayOfWeek> second = DrainEnumerator(ref enumerator);
 
         CollectionAssert.AreEqual(first, second);
 

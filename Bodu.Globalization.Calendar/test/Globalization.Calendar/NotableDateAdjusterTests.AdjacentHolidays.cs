@@ -103,7 +103,7 @@ public sealed partial class NotableDateAdjusterTests
         bool expectedActivated,
         DateTime expectedDate)
     {
-        var adjuster = CreateAdjuster(
+        NotableDateAdjuster adjuster = CreateAdjuster(
             isNonWorking: (d, t, c) =>
                 d.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday
                 || Array.Exists(claimedObservances, obs => obs.Date == d.Date));

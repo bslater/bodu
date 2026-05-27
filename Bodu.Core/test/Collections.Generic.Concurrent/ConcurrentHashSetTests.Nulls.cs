@@ -17,7 +17,7 @@ public partial class ConcurrentHashSetTests
     {
         var set = new ConcurrentHashSet<string>();
 
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             set.Add(null!);
         });
@@ -34,7 +34,7 @@ public partial class ConcurrentHashSetTests
     {
         var set = new ConcurrentHashSet<string>();
 
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             set.Remove(null!);
         });
@@ -51,7 +51,7 @@ public partial class ConcurrentHashSetTests
     {
         var set = new ConcurrentHashSet<string>();
 
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             set.Contains(null!);
         });
@@ -83,7 +83,7 @@ public partial class ConcurrentHashSetTests
     {
         var set = new ConcurrentHashSet<string>();
 
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             set.UnionWith(["a", null!, "b"]);
         });
@@ -100,7 +100,7 @@ public partial class ConcurrentHashSetTests
     {
         var set = new ConcurrentHashSet<string>();
 
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             set.IntersectWith(["a", null!, "b"]);
         });
@@ -117,7 +117,7 @@ public partial class ConcurrentHashSetTests
     {
         var set = new ConcurrentHashSet<string>();
 
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             set.ExceptWith(["a", null!, "b"]);
         });
@@ -134,7 +134,7 @@ public partial class ConcurrentHashSetTests
     {
         var set = new ConcurrentHashSet<string>();
 
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             set.SymmetricExceptWith(["a", null!, "b"]);
         });
@@ -151,7 +151,7 @@ public partial class ConcurrentHashSetTests
     {
         var set = new ConcurrentHashSet<string>(["x"]);
 
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             set.IsSubsetOf(["a", null!, "b"]);
         });
@@ -168,7 +168,7 @@ public partial class ConcurrentHashSetTests
     {
         var set = new ConcurrentHashSet<string>();
 
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             set.IsSubsetOf(["a", null!, "b"]);
         });
@@ -185,7 +185,7 @@ public partial class ConcurrentHashSetTests
     {
         var set = new ConcurrentHashSet<string>(["a"]);
 
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             set.IsSupersetOf(["a", null!, "b"]);
         });
@@ -202,7 +202,7 @@ public partial class ConcurrentHashSetTests
     {
         var set = new ConcurrentHashSet<string>();
 
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             set.IsProperSubsetOf(["a", null!, "b"]);
         });
@@ -219,7 +219,7 @@ public partial class ConcurrentHashSetTests
     {
         var set = new ConcurrentHashSet<string>();
 
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             set.IsProperSupersetOf(["a", null!, "b"]);
         });
@@ -236,7 +236,7 @@ public partial class ConcurrentHashSetTests
     {
         var set = new ConcurrentHashSet<string>();
 
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             set.Overlaps(["a", null!, "b"]);
         });
@@ -253,7 +253,7 @@ public partial class ConcurrentHashSetTests
     {
         var set = new ConcurrentHashSet<string>();
 
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             set.SetEquals(["a", null!, "b"]);
         });

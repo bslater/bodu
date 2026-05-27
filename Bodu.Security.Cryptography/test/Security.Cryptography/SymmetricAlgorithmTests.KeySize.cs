@@ -17,7 +17,7 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     public void KeySize_WhenAccessed_ShouldNotBeDefault()
     {
         using TAlgorithm algorithm = CreateAlgorithm();
-        var specification = GetSpecification();
+        SymmetricAlgorithmSpecification specification = GetSpecification();
         Assert.AreEqual(specification.DefaultKeySizeBits, algorithm.KeySize);
     }
 

@@ -22,7 +22,7 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
         TAlgorithm algorithm = CreateAlgorithm();
         algorithm.Dispose();
 
-        var ex = Assert.ThrowsExactly<ObjectDisposedException>(() =>
+        ObjectDisposedException ex = Assert.ThrowsExactly<ObjectDisposedException>(() =>
         {
             _ = algorithm.CreateEncryptor();
         });

@@ -16,7 +16,7 @@ public partial class NotableDateRuleJsonParserTests
     [TestMethod]
     public void ParseJson_WhenFixedRule_ShouldPopulateName()
     {
-        var rule = NotableDateRuleJsonParser.ParseJson(FixedRuleJson).Single();
+        NotableDateRule rule = NotableDateRuleJsonParser.ParseJson(FixedRuleJson).Single();
 
         Assert.AreEqual("Fixed Rule Test", rule.Name);
     }
@@ -27,7 +27,7 @@ public partial class NotableDateRuleJsonParserTests
     [TestMethod]
     public void ParseJson_WhenFixedRule_ShouldPopulateStrategy()
     {
-        var rule = NotableDateRuleJsonParser.ParseJson(FixedRuleJson).Single();
+        NotableDateRule rule = NotableDateRuleJsonParser.ParseJson(FixedRuleJson).Single();
 
         Assert.AreEqual(DateResolutionStrategy.Fixed, rule.Strategy);
     }
@@ -38,7 +38,7 @@ public partial class NotableDateRuleJsonParserTests
     [TestMethod]
     public void ParseJson_WhenFixedRule_ShouldPopulateCategory()
     {
-        var rule = NotableDateRuleJsonParser.ParseJson(FixedRuleJson).Single();
+        NotableDateRule rule = NotableDateRuleJsonParser.ParseJson(FixedRuleJson).Single();
 
         Assert.AreEqual(NotableDateCategory.Holiday, rule.Category);
     }
@@ -49,7 +49,7 @@ public partial class NotableDateRuleJsonParserTests
     [TestMethod]
     public void ParseJson_WhenFixedRule_ShouldPopulateYearWindow()
     {
-        var rule = NotableDateRuleJsonParser.ParseJson(FixedRuleJson).Single();
+        NotableDateRule rule = NotableDateRuleJsonParser.ParseJson(FixedRuleJson).Single();
 
         Assert.AreEqual(2000, rule.FirstYear);
         Assert.AreEqual(2100, rule.LastYear);
@@ -61,7 +61,7 @@ public partial class NotableDateRuleJsonParserTests
     [TestMethod]
     public void ParseJson_WhenFixedRule_ShouldPopulateOccurrenceYears()
     {
-        var rule = NotableDateRuleJsonParser.ParseJson(FixedRuleJson).Single();
+        NotableDateRule rule = NotableDateRuleJsonParser.ParseJson(FixedRuleJson).Single();
 
         Assert.AreEqual(4, rule.OccurrenceYears);
     }
@@ -72,7 +72,7 @@ public partial class NotableDateRuleJsonParserTests
     [TestMethod]
     public void ParseJson_WhenFixedRule_ShouldPopulateDurationDays()
     {
-        var rule = NotableDateRuleJsonParser.ParseJson(FixedRuleJson).Single();
+        NotableDateRule rule = NotableDateRuleJsonParser.ParseJson(FixedRuleJson).Single();
 
         Assert.AreEqual(1, rule.DurationDays);
     }
@@ -83,7 +83,7 @@ public partial class NotableDateRuleJsonParserTests
     [TestMethod]
     public void ParseJson_WhenFixedRule_ShouldPopulatePriority()
     {
-        var rule = NotableDateRuleJsonParser.ParseJson(FixedRuleJson).Single();
+        NotableDateRule rule = NotableDateRuleJsonParser.ParseJson(FixedRuleJson).Single();
 
         Assert.AreEqual(5, rule.Priority);
     }
@@ -94,7 +94,7 @@ public partial class NotableDateRuleJsonParserTests
     [TestMethod]
     public void ParseJson_WhenFixedRule_ShouldPopulateIsNonWorkingDay()
     {
-        var rule = NotableDateRuleJsonParser.ParseJson(FixedRuleJson).Single();
+        NotableDateRule rule = NotableDateRuleJsonParser.ParseJson(FixedRuleJson).Single();
 
         Assert.IsTrue(rule.IsNonWorkingDay);
     }
@@ -105,7 +105,7 @@ public partial class NotableDateRuleJsonParserTests
     [TestMethod]
     public void ParseJson_WhenFixedRule_ShouldPopulateTerritoryCode()
     {
-        var rule = NotableDateRuleJsonParser.ParseJson(FixedRuleJson).Single();
+        NotableDateRule rule = NotableDateRuleJsonParser.ParseJson(FixedRuleJson).Single();
 
         Assert.AreEqual("AU-NSW", rule.TerritoryCode);
     }
@@ -116,7 +116,7 @@ public partial class NotableDateRuleJsonParserTests
     [TestMethod]
     public void ParseJson_WhenFixedRule_ShouldPopulateCalendarType()
     {
-        var rule = NotableDateRuleJsonParser.ParseJson(FixedRuleJson).Single();
+        NotableDateRule rule = NotableDateRuleJsonParser.ParseJson(FixedRuleJson).Single();
 
         Assert.AreEqual(typeof(System.Globalization.GregorianCalendar), rule.CalendarType);
     }
@@ -127,7 +127,7 @@ public partial class NotableDateRuleJsonParserTests
     [TestMethod]
     public void ParseJson_WhenFixedRule_ShouldPopulateComment()
     {
-        var rule = NotableDateRuleJsonParser.ParseJson(FixedRuleJson).Single();
+        NotableDateRule rule = NotableDateRuleJsonParser.ParseJson(FixedRuleJson).Single();
 
         Assert.AreEqual("Fixed rule comment.", rule.Comment);
     }
@@ -138,7 +138,7 @@ public partial class NotableDateRuleJsonParserTests
     [TestMethod]
     public void ParseJson_WhenFixedRule_ShouldPopulateTags()
     {
-        var rule = NotableDateRuleJsonParser.ParseJson(FixedRuleJson).Single();
+        NotableDateRule rule = NotableDateRuleJsonParser.ParseJson(FixedRuleJson).Single();
 
         Assert.AreEqual(2, rule.Tags.Count);
         Assert.IsTrue(rule.Tags.Contains("Public"));
@@ -151,7 +151,7 @@ public partial class NotableDateRuleJsonParserTests
     [TestMethod]
     public void ParseJson_WhenFixedRule_ShouldPopulateDayAndMonth()
     {
-        var rule = NotableDateRuleJsonParser.ParseJson(FixedRuleJson).Single();
+        NotableDateRule rule = NotableDateRuleJsonParser.ParseJson(FixedRuleJson).Single();
 
         Assert.AreEqual(1, rule.Day);
         Assert.AreEqual(1, rule.Month);
@@ -163,7 +163,7 @@ public partial class NotableDateRuleJsonParserTests
     [TestMethod]
     public void ParseJson_WhenDayOfWeekInMonthRule_ShouldPopulateStrategyFields()
     {
-        var rule = NotableDateRuleJsonParser.ParseJson(DayOfWeekInMonthRuleJson).Single();
+        NotableDateRule rule = NotableDateRuleJsonParser.ParseJson(DayOfWeekInMonthRuleJson).Single();
 
         Assert.AreEqual(DateResolutionStrategy.DayOfWeekInMonth, rule.Strategy);
         Assert.AreEqual(5, rule.Month);
@@ -177,7 +177,7 @@ public partial class NotableDateRuleJsonParserTests
     [TestMethod]
     public void ParseJson_WhenAlgorithmRule_ShouldPopulateAlgorithmKey()
     {
-        var rule = NotableDateRuleJsonParser.ParseJson(AlgorithmRuleJson).Single();
+        NotableDateRule rule = NotableDateRuleJsonParser.ParseJson(AlgorithmRuleJson).Single();
 
         Assert.AreEqual(DateResolutionStrategy.Algorithm, rule.Strategy);
         Assert.AreEqual("easter-sunday", rule.AlgorithmKey);
@@ -189,7 +189,7 @@ public partial class NotableDateRuleJsonParserTests
     [TestMethod]
     public void ParseJson_WhenOffsetFromAnchorRule_ShouldPopulateAnchorAndOffset()
     {
-        var rule = NotableDateRuleJsonParser.ParseJson(OffsetFromAnchorRuleJson).Single();
+        NotableDateRule rule = NotableDateRuleJsonParser.ParseJson(OffsetFromAnchorRuleJson).Single();
 
         Assert.AreEqual(DateResolutionStrategy.OffsetFromAnchor, rule.Strategy);
         Assert.AreEqual("Easter Sunday", rule.AnchorRuleName);
@@ -202,7 +202,7 @@ public partial class NotableDateRuleJsonParserTests
     [TestMethod]
     public void ParseJson_WhenMultiRuleJson_ShouldReturnAllRules()
     {
-        var rules = NotableDateRuleJsonParser.ParseJson(MultiRuleJson);
+        List<NotableDateRule> rules = NotableDateRuleJsonParser.ParseJson(MultiRuleJson);
 
         Assert.AreEqual(4, rules.Count);
         CollectionAssert.AreEquivalent(
@@ -217,7 +217,7 @@ public partial class NotableDateRuleJsonParserTests
     [TestMethod]
     public void ParseDocument_WhenCherryPickJson_ShouldExposeUseGroups()
     {
-        var document = NotableDateRuleJsonParser.ParseDocument(CherryPickJson);
+        ParsedNotableDateDocument document = NotableDateRuleJsonParser.ParseDocument(CherryPickJson);
 
         Assert.AreEqual(2, document.UseGroups.Length);
         Assert.AreEqual("Bodu.Globalization.Calendar.Resources.Common.xml", document.UseGroups[0].SourceResource);
@@ -234,7 +234,7 @@ public partial class NotableDateRuleJsonParserTests
     [TestMethod]
     public void ParseDocument_WhenUseAllJson_ShouldSetUseAllFlag()
     {
-        var document = NotableDateRuleJsonParser.ParseDocument(UseAllJson);
+        ParsedNotableDateDocument document = NotableDateRuleJsonParser.ParseDocument(UseAllJson);
 
         Assert.AreEqual(1, document.UseGroups.Length);
         Assert.IsTrue(document.UseGroups[0].UseAll);
@@ -248,7 +248,7 @@ public partial class NotableDateRuleJsonParserTests
     [TestMethod]
     public void ParseJson_WhenCategoryIsReligious_ShouldReturnReligiousCategory()
     {
-        var rule = NotableDateRuleJsonParser.ParseJson(ReligiousRuleJson).Single();
+        NotableDateRule rule = NotableDateRuleJsonParser.ParseJson(ReligiousRuleJson).Single();
 
         Assert.AreEqual(NotableDateCategory.Religious, rule.Category);
     }
@@ -260,7 +260,7 @@ public partial class NotableDateRuleJsonParserTests
     [TestMethod]
     public void ParseJson_WhenCategoryIsCivic_ShouldReturnCivicCategory()
     {
-        var rule = NotableDateRuleJsonParser.ParseJson(CivicRuleJson).Single();
+        NotableDateRule rule = NotableDateRuleJsonParser.ParseJson(CivicRuleJson).Single();
 
         Assert.AreEqual(NotableDateCategory.Civic, rule.Category);
     }
@@ -272,10 +272,10 @@ public partial class NotableDateRuleJsonParserTests
     [TestMethod]
     public void ParseJson_WhenAdjustmentPresent_ShouldPopulateAdjustmentFields()
     {
-        var rule = NotableDateRuleJsonParser.ParseJson(FixedRuleJson).Single();
+        NotableDateRule rule = NotableDateRuleJsonParser.ParseJson(FixedRuleJson).Single();
 
         Assert.AreEqual(1, rule.Adjustments.Length);
-        var adjustment = rule.Adjustments[0];
+        ObservanceAdjustment adjustment = rule.Adjustments[0];
         Assert.AreEqual("weekend-roll", adjustment.Key);
         Assert.AreEqual(AdjustmentTrigger.IfWeekend, adjustment.Trigger);
         Assert.AreEqual(AdjustmentAction.MoveToNextWeekday, adjustment.Action);

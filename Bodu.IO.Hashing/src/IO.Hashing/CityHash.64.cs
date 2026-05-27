@@ -183,8 +183,8 @@ public sealed class CityHash64
             BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(len - 48)) + (ulong)len,
             BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(len - 24)));
 
-        var (v0, v1) = WeakHashLen32WithSeeds(s.Slice(len - 64), (ulong)len, z);
-        var (w0, w1) = WeakHashLen32WithSeeds(s.Slice(len - 32), y + K1, x);
+        (ulong v0, ulong v1) = WeakHashLen32WithSeeds(s.Slice(len - 64), (ulong)len, z);
+        (ulong w0, ulong w1) = WeakHashLen32WithSeeds(s.Slice(len - 32), y + K1, x);
 
         // Fold the first 8 bytes of the head into x to anchor the start of the input.
         x = (x * K1) + BinaryPrimitives.ReadUInt64LittleEndian(s);

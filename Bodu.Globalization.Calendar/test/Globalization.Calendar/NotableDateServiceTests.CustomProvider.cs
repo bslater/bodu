@@ -115,7 +115,7 @@ public sealed partial class NotableDateServiceTests
     {
         var provider = new ThrowingRuleProvider(new InvalidOperationException("broken"));
 
-        var ex = Assert.ThrowsExactly<InvalidOperationException>(() =>
+        InvalidOperationException ex = Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
             _ = new NotableDateService(
                 [(INotableDateRuleProvider)provider],

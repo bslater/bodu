@@ -37,7 +37,7 @@ public partial class CryptoHelpersTests
     [TestMethod]
     public void ThrowIfCiphertextTooShort_WhenLengthLessThanTagSize_ShouldThrowExactly()
     {
-        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             ReadOnlySpan<byte> input = stackalloc byte[4];
             CryptoHelpers.ThrowIfCiphertextTooShort(input, 16);

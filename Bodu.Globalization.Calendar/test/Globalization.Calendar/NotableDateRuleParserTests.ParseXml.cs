@@ -17,7 +17,7 @@ public partial class NotableDateRuleParserTests
     [TestMethod]
     public void ParseXml_WhenFixedRule_ShouldPopulateName()
     {
-        var rule = NotableDateRuleParser.ParseXml(FixedRuleXml).Single();
+        NotableDateRule rule = NotableDateRuleParser.ParseXml(FixedRuleXml).Single();
 
         Assert.AreEqual("Fixed Rule Test", rule.Name);
     }
@@ -28,7 +28,7 @@ public partial class NotableDateRuleParserTests
     [TestMethod]
     public void ParseXml_WhenFixedRule_ShouldPopulateStrategy()
     {
-        var rule = NotableDateRuleParser.ParseXml(FixedRuleXml).Single();
+        NotableDateRule rule = NotableDateRuleParser.ParseXml(FixedRuleXml).Single();
 
         Assert.AreEqual(DateResolutionStrategy.Fixed, rule.Strategy);
     }
@@ -39,7 +39,7 @@ public partial class NotableDateRuleParserTests
     [TestMethod]
     public void ParseXml_WhenFixedRule_ShouldPopulateCategory()
     {
-        var rule = NotableDateRuleParser.ParseXml(FixedRuleXml).Single();
+        NotableDateRule rule = NotableDateRuleParser.ParseXml(FixedRuleXml).Single();
 
         Assert.AreEqual(NotableDateCategory.Holiday, rule.Category);
     }
@@ -51,7 +51,7 @@ public partial class NotableDateRuleParserTests
     [TestMethod]
     public void ParseXml_WhenCategoryIsReligious_ShouldReturnReligiousCategory()
     {
-        var rule = NotableDateRuleParser.ParseXml(ReligiousRuleXml).Single();
+        NotableDateRule rule = NotableDateRuleParser.ParseXml(ReligiousRuleXml).Single();
 
         Assert.AreEqual(NotableDateCategory.Religious, rule.Category);
     }
@@ -63,7 +63,7 @@ public partial class NotableDateRuleParserTests
     [TestMethod]
     public void ParseXml_WhenCategoryIsCivic_ShouldReturnCivicCategory()
     {
-        var rule = NotableDateRuleParser.ParseXml(CivicRuleXml).Single();
+        NotableDateRule rule = NotableDateRuleParser.ParseXml(CivicRuleXml).Single();
 
         Assert.AreEqual(NotableDateCategory.Civic, rule.Category);
     }
@@ -74,7 +74,7 @@ public partial class NotableDateRuleParserTests
     [TestMethod]
     public void ParseXml_WhenFixedRule_ShouldPopulateYearWindow()
     {
-        var rule = NotableDateRuleParser.ParseXml(FixedRuleXml).Single();
+        NotableDateRule rule = NotableDateRuleParser.ParseXml(FixedRuleXml).Single();
 
         Assert.AreEqual(2000, rule.FirstYear);
         Assert.AreEqual(2100, rule.LastYear);
@@ -86,7 +86,7 @@ public partial class NotableDateRuleParserTests
     [TestMethod]
     public void ParseXml_WhenFixedRule_ShouldPopulateOccurrenceYears()
     {
-        var rule = NotableDateRuleParser.ParseXml(FixedRuleXml).Single();
+        NotableDateRule rule = NotableDateRuleParser.ParseXml(FixedRuleXml).Single();
 
         Assert.AreEqual(4, rule.OccurrenceYears);
     }
@@ -97,7 +97,7 @@ public partial class NotableDateRuleParserTests
     [TestMethod]
     public void ParseXml_WhenFixedRule_ShouldPopulateDurationDays()
     {
-        var rule = NotableDateRuleParser.ParseXml(FixedRuleXml).Single();
+        NotableDateRule rule = NotableDateRuleParser.ParseXml(FixedRuleXml).Single();
 
         Assert.AreEqual(1, rule.DurationDays);
     }
@@ -108,7 +108,7 @@ public partial class NotableDateRuleParserTests
     [TestMethod]
     public void ParseXml_WhenFixedRule_ShouldPopulatePriority()
     {
-        var rule = NotableDateRuleParser.ParseXml(FixedRuleXml).Single();
+        NotableDateRule rule = NotableDateRuleParser.ParseXml(FixedRuleXml).Single();
 
         Assert.AreEqual(5, rule.Priority);
     }
@@ -119,7 +119,7 @@ public partial class NotableDateRuleParserTests
     [TestMethod]
     public void ParseXml_WhenFixedRule_ShouldPopulateIsNonWorkingDay()
     {
-        var rule = NotableDateRuleParser.ParseXml(FixedRuleXml).Single();
+        NotableDateRule rule = NotableDateRuleParser.ParseXml(FixedRuleXml).Single();
 
         Assert.IsTrue(rule.IsNonWorkingDay);
     }
@@ -130,7 +130,7 @@ public partial class NotableDateRuleParserTests
     [TestMethod]
     public void ParseXml_WhenFixedRule_ShouldPopulateTerritoryCode()
     {
-        var rule = NotableDateRuleParser.ParseXml(FixedRuleXml).Single();
+        NotableDateRule rule = NotableDateRuleParser.ParseXml(FixedRuleXml).Single();
 
         Assert.AreEqual("AU-NSW", rule.TerritoryCode);
     }
@@ -141,7 +141,7 @@ public partial class NotableDateRuleParserTests
     [TestMethod]
     public void ParseXml_WhenFixedRule_ShouldPopulateCalendarType()
     {
-        var rule = NotableDateRuleParser.ParseXml(FixedRuleXml).Single();
+        NotableDateRule rule = NotableDateRuleParser.ParseXml(FixedRuleXml).Single();
 
         Assert.AreEqual(typeof(System.Globalization.GregorianCalendar), rule.CalendarType);
     }
@@ -152,7 +152,7 @@ public partial class NotableDateRuleParserTests
     [TestMethod]
     public void ParseXml_WhenFixedRule_ShouldPopulateComment()
     {
-        var rule = NotableDateRuleParser.ParseXml(FixedRuleXml).Single();
+        NotableDateRule rule = NotableDateRuleParser.ParseXml(FixedRuleXml).Single();
 
         Assert.AreEqual("Fixed rule comment.", rule.Comment);
     }
@@ -163,7 +163,7 @@ public partial class NotableDateRuleParserTests
     [TestMethod]
     public void ParseXml_WhenFixedRule_ShouldPopulateTags()
     {
-        var rule = NotableDateRuleParser.ParseXml(FixedRuleXml).Single();
+        NotableDateRule rule = NotableDateRuleParser.ParseXml(FixedRuleXml).Single();
 
         Assert.AreEqual(2, rule.Tags.Count);
         Assert.IsTrue(rule.Tags.Contains("Public"));
@@ -176,7 +176,7 @@ public partial class NotableDateRuleParserTests
     [TestMethod]
     public void ParseXml_WhenFixedRule_ShouldPopulateDayAndMonth()
     {
-        var rule = NotableDateRuleParser.ParseXml(FixedRuleXml).Single();
+        NotableDateRule rule = NotableDateRuleParser.ParseXml(FixedRuleXml).Single();
 
         Assert.AreEqual(1, rule.Day);
         Assert.AreEqual(1, rule.Month);
@@ -188,7 +188,7 @@ public partial class NotableDateRuleParserTests
     [TestMethod]
     public void ParseXml_WhenDayOfWeekInMonthRule_ShouldPopulateStrategyFields()
     {
-        var rule = NotableDateRuleParser.ParseXml(DayOfWeekInMonthRuleXml).Single();
+        NotableDateRule rule = NotableDateRuleParser.ParseXml(DayOfWeekInMonthRuleXml).Single();
 
         Assert.AreEqual(DateResolutionStrategy.DayOfWeekInMonth, rule.Strategy);
         Assert.AreEqual(5, rule.Month);
@@ -202,7 +202,7 @@ public partial class NotableDateRuleParserTests
     [TestMethod]
     public void ParseXml_WhenAlgorithmRule_ShouldPopulateAlgorithmKey()
     {
-        var rule = NotableDateRuleParser.ParseXml(AlgorithmRuleXml).Single();
+        NotableDateRule rule = NotableDateRuleParser.ParseXml(AlgorithmRuleXml).Single();
 
         Assert.AreEqual(DateResolutionStrategy.Algorithm, rule.Strategy);
         Assert.AreEqual("easter-sunday", rule.AlgorithmKey);
@@ -214,7 +214,7 @@ public partial class NotableDateRuleParserTests
     [TestMethod]
     public void ParseXml_WhenOffsetFromAnchorRule_ShouldPopulateAnchorAndOffset()
     {
-        var rule = NotableDateRuleParser.ParseXml(OffsetFromAnchorRuleXml).Single();
+        NotableDateRule rule = NotableDateRuleParser.ParseXml(OffsetFromAnchorRuleXml).Single();
 
         Assert.AreEqual(DateResolutionStrategy.OffsetFromAnchor, rule.Strategy);
         Assert.AreEqual("Easter Sunday", rule.AnchorRuleName);
@@ -227,7 +227,7 @@ public partial class NotableDateRuleParserTests
     [TestMethod]
     public void ParseXml_WhenMultiRuleXml_ShouldReturnAllRules()
     {
-        var rules = NotableDateRuleParser.ParseXml(MultiRuleXml);
+        List<NotableDateRule> rules = NotableDateRuleParser.ParseXml(MultiRuleXml);
 
         Assert.AreEqual(4, rules.Count);
         CollectionAssert.AreEquivalent(
@@ -253,7 +253,7 @@ public partial class NotableDateRuleParserTests
     {
         var document = XDocument.Parse(FixedRuleXml);
 
-        var rule = NotableDateRuleParser.ParseXml(document).Single();
+        NotableDateRule rule = NotableDateRuleParser.ParseXml(document).Single();
 
         Assert.AreEqual("Fixed Rule Test", rule.Name);
         Assert.AreEqual(DateResolutionStrategy.Fixed, rule.Strategy);

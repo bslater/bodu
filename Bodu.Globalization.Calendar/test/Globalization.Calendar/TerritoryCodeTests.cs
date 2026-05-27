@@ -32,7 +32,7 @@ public sealed class TerritoryCodeTests
     [TestMethod]
     public void TryParse_WhenInputIsValid_ShouldReturnCanonicalForm(string input, string expectedCountry, string? expectedSubdivision)
     {
-        Assert.IsTrue(TerritoryCode.TryParse(input, out var result));
+        Assert.IsTrue(TerritoryCode.TryParse(input, out TerritoryCode result));
         Assert.AreEqual(expectedCountry, result.Country);
         Assert.AreEqual(expectedSubdivision, result.Subdivision);
         Assert.AreEqual(expectedSubdivision is not null, result.HasSubdivision);
@@ -86,7 +86,7 @@ public sealed class TerritoryCodeTests
     [TestMethod]
     public void Parse_WhenInputIsInvalid_ShouldThrowExactly()
     {
-        var ex = Assert.ThrowsExactly<FormatException>(() => TerritoryCode.Parse("BAD!"));
+        FormatException ex = Assert.ThrowsExactly<FormatException>(() => TerritoryCode.Parse("BAD!"));
 
         Assert.IsTrue(ex.Message.Contains("BAD!", StringComparison.Ordinal));
     }
@@ -123,7 +123,7 @@ public sealed class TerritoryCodeTests
     [TestMethod]
     public void ParseList_WhenMixedValidAndInvalid_ShouldReturnValidEntriesOnly()
     {
-        var list = TerritoryCode.ParseList("AU, NZ, BAD!, US-CA");
+        IReadOnlyList<TerritoryCode> list = TerritoryCode.ParseList("AU, NZ, BAD!, US-CA");
 
         Assert.AreEqual(3, list.Count);
         Assert.AreEqual("AU", list[0].ToString());

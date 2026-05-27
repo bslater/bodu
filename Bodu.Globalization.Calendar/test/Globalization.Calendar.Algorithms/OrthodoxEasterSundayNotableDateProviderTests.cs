@@ -62,7 +62,7 @@ public sealed class OrthodoxEasterSundayNotableDateProviderTests
     [TestMethod]
     public void GetDates_WhenCalendarIsGregorian_ShouldThrowExactly()
     {
-        var ex = Assert.ThrowsExactly<NotSupportedException>(() =>
+        NotSupportedException ex = Assert.ThrowsExactly<NotSupportedException>(() =>
         {
             _ = _provider.GetDates(2026, new SysGlob.GregorianCalendar());
         });

@@ -38,7 +38,7 @@ public sealed class Serpent128Tests
     {
         using var algorithm = new Serpent128();
 
-        var initialFrameworkMode = algorithm.Mode;
+        CipherMode initialFrameworkMode = algorithm.Mode;
         algorithm.BlockMode = CipherModeKind.CTR;
 
         Assert.AreEqual(CipherModeKind.CTR, algorithm.BlockMode);
@@ -70,7 +70,7 @@ public sealed class Serpent128Tests
     {
         using var algorithm = new Serpent128();
 
-        var initialFrameworkPadding = algorithm.Padding;
+        PaddingMode initialFrameworkPadding = algorithm.Padding;
         algorithm.BlockPadding = PaddingModeKind.ISO7816_4;
 
         Assert.AreEqual(PaddingModeKind.ISO7816_4, algorithm.BlockPadding);

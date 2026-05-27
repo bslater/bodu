@@ -103,7 +103,7 @@ public partial class NotableDateRuleParserTests
         string xmlFragment,
         AdjustmentTrigger expectedTrigger)
     {
-        var rule = NotableDateRuleParser.ParseXml(xmlFragment).Single();
+        NotableDateRule rule = NotableDateRuleParser.ParseXml(xmlFragment).Single();
 
         Assert.AreEqual(expectedTrigger, rule.Adjustments.Single().Trigger);
     }
@@ -165,7 +165,7 @@ public partial class NotableDateRuleParserTests
         string xmlFragment,
         AdjustmentAction expectedAction)
     {
-        var rule = NotableDateRuleParser.ParseXml(xmlFragment).Single();
+        NotableDateRule rule = NotableDateRuleParser.ParseXml(xmlFragment).Single();
 
         Assert.AreEqual(expectedAction, rule.Adjustments.Single().Action);
     }
@@ -227,7 +227,7 @@ public partial class NotableDateRuleParserTests
         string xmlFragment,
         DayOfWeek expectedDayOfWeek)
     {
-        var rule = NotableDateRuleParser.ParseXml(xmlFragment).Single();
+        NotableDateRule rule = NotableDateRuleParser.ParseXml(xmlFragment).Single();
 
         Assert.AreEqual(expectedDayOfWeek, rule.Adjustments.Single().DayOfWeek);
     }
@@ -284,7 +284,7 @@ public partial class NotableDateRuleParserTests
         string xmlFragment,
         WeekOfMonthOrdinal expectedOrdinal)
     {
-        var rule = NotableDateRuleParser.ParseXml(xmlFragment).Single();
+        NotableDateRule rule = NotableDateRuleParser.ParseXml(xmlFragment).Single();
 
         Assert.AreEqual(expectedOrdinal, rule.Adjustments.Single().WeekOrdinal);
     }
@@ -337,7 +337,7 @@ public partial class NotableDateRuleParserTests
         int expectedMonth,
         int expectedDay)
     {
-        var rule = NotableDateRuleParser.ParseXml(xmlFragment).Single();
+        NotableDateRule rule = NotableDateRuleParser.ParseXml(xmlFragment).Single();
         DateTime? comparisonDate = rule.Adjustments.Single().ComparisonDate;
 
         Assert.IsNotNull(comparisonDate);
@@ -383,7 +383,7 @@ public partial class NotableDateRuleParserTests
         string xmlFragment,
         int expectedOffset)
     {
-        var rule = NotableDateRuleParser.ParseXml(xmlFragment).Single();
+        NotableDateRule rule = NotableDateRuleParser.ParseXml(xmlFragment).Single();
 
         Assert.AreEqual(expectedOffset, rule.Adjustments.Single().OffsetDays);
     }
@@ -420,7 +420,7 @@ public partial class NotableDateRuleParserTests
         string xmlFragment,
         string expectedTargetRuleName)
     {
-        var rule = NotableDateRuleParser.ParseXml(xmlFragment).Single();
+        NotableDateRule rule = NotableDateRuleParser.ParseXml(xmlFragment).Single();
 
         Assert.AreEqual(expectedTargetRuleName, rule.Adjustments.Single().TargetRuleName);
     }
@@ -458,7 +458,7 @@ public partial class NotableDateRuleParserTests
         string xmlFragment,
         string expectedHandlerKey)
     {
-        var rule = NotableDateRuleParser.ParseXml(xmlFragment).Single();
+        NotableDateRule rule = NotableDateRuleParser.ParseXml(xmlFragment).Single();
 
         Assert.AreEqual(expectedHandlerKey, rule.Adjustments.Single().HandlerKey);
     }
@@ -500,7 +500,7 @@ public partial class NotableDateRuleParserTests
         string xmlFragment,
         string expectedKey)
     {
-        var rule = NotableDateRuleParser.ParseXml(xmlFragment).Single();
+        NotableDateRule rule = NotableDateRuleParser.ParseXml(xmlFragment).Single();
 
         Assert.AreEqual(expectedKey, rule.Adjustments.Single().Key);
     }
@@ -542,7 +542,7 @@ public partial class NotableDateRuleParserTests
         string xmlFragment,
         int expectedPriority)
     {
-        var rule = NotableDateRuleParser.ParseXml(xmlFragment).Single();
+        NotableDateRule rule = NotableDateRuleParser.ParseXml(xmlFragment).Single();
 
         Assert.AreEqual(expectedPriority, rule.Adjustments.Single().Priority);
     }
@@ -585,7 +585,7 @@ public partial class NotableDateRuleParserTests
         string xmlFragment,
         string expectedTerritory)
     {
-        var rule = NotableDateRuleParser.ParseXml(xmlFragment).Single();
+        NotableDateRule rule = NotableDateRuleParser.ParseXml(xmlFragment).Single();
 
         Assert.AreEqual(expectedTerritory, rule.Adjustments.Single().TerritoryCode);
     }
@@ -617,7 +617,7 @@ public partial class NotableDateRuleParserTests
         string xmlFragment,
         Type expectedCalendarType)
     {
-        var rule = NotableDateRuleParser.ParseXml(xmlFragment).Single();
+        NotableDateRule rule = NotableDateRuleParser.ParseXml(xmlFragment).Single();
 
         Assert.AreEqual(expectedCalendarType, rule.Adjustments.Single().CalendarType);
     }
@@ -666,7 +666,7 @@ public partial class NotableDateRuleParserTests
         int? expectedFromYear,
         int? expectedToYear)
     {
-        var rule = NotableDateRuleParser.ParseXml(xmlFragment).Single();
+        NotableDateRule rule = NotableDateRuleParser.ParseXml(xmlFragment).Single();
         ObservanceAdjustment adjustment = rule.Adjustments.Single();
 
         Assert.AreEqual(expectedFromYear, adjustment.EffectiveFromYear);
@@ -706,7 +706,7 @@ public partial class NotableDateRuleParserTests
         string xmlFragment,
         bool expectedIsNonWorkingDay)
     {
-        var rule = NotableDateRuleParser.ParseXml(xmlFragment).Single();
+        NotableDateRule rule = NotableDateRuleParser.ParseXml(xmlFragment).Single();
 
         Assert.AreEqual(expectedIsNonWorkingDay, rule.Adjustments.Single().IsNonWorkingDay);
     }

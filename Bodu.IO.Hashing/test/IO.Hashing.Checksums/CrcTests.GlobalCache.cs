@@ -51,7 +51,7 @@ public partial class CrcTests
         CrcLookupTableCache cache = Crc.GlobalCache;
         Assert.IsNotNull(cache);
 
-        var table = cache.GetLookupTable(32, 0x04C11DB7UL, reflectIn: true);
+        ReadOnlyMemory<ulong> table = cache.GetLookupTable(32, 0x04C11DB7UL, reflectIn: true);
         Assert.IsNotNull(table);
         Assert.AreEqual(256, table.Length);
     }

@@ -19,7 +19,7 @@ public partial class AsconAead128Tests
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = new AsconAead128(null!, ValidNonce);
+            _ = new AsconAead128(null!, s_validNonce);
         });
     }
 
@@ -32,7 +32,7 @@ public partial class AsconAead128Tests
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = new AsconAead128(ValidKey, null!);
+            _ = new AsconAead128(s_validKey, null!);
         });
     }
 
@@ -45,7 +45,7 @@ public partial class AsconAead128Tests
     {
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
-            _ = new AsconAead128(new byte[15], ValidNonce);
+            _ = new AsconAead128(new byte[15], s_validNonce);
         });
     }
 
@@ -58,7 +58,7 @@ public partial class AsconAead128Tests
     {
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
-            _ = new AsconAead128(ValidKey, new byte[15]);
+            _ = new AsconAead128(s_validKey, new byte[15]);
         });
     }
 }

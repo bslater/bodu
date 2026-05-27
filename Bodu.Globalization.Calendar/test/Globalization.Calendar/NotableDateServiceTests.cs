@@ -48,11 +48,11 @@ public sealed partial class NotableDateServiceTests
     [TestMethod]
     public void GetNotableDates_WhenQueryingYear_ShouldReturnChronologicalDates()
     {
-        var service = BuildService(
+        NotableDateService service = BuildService(
             Fixed("New Year's Day", 1, 1),
             Fixed("Christmas Day", 12, 25));
 
-        var results = service.GetNotableDates(2026);
+        IReadOnlyList<NotableDate> results = service.GetNotableDates(2026);
 
         Assert.AreEqual(2, results.Count);
         Assert.AreEqual(new DateTime(2026, 1, 1), results[0].Date);
@@ -68,7 +68,7 @@ public sealed partial class NotableDateServiceTests
     [TestMethod]
     public void GetNotableDates_WhenWeekendRollAdjustmentFires_ShouldExposeAdjustmentReason()
     {
-        var rule = Fixed("New Year's Day", 1, 1, nonWorking: true) with
+        NotableDateRule rule = Fixed("New Year's Day", 1, 1, nonWorking: true) with
         {
             Adjustments = ImmutableArray.Create(new ObservanceAdjustment
             {
@@ -78,13 +78,13 @@ public sealed partial class NotableDateServiceTests
             }),
         };
 
-        var service = BuildService(rule);
+        NotableDateService service = BuildService(rule);
 
         // 1 January 2022 is a Saturday.
         var results = service.GetNotableDates(2022).Where(d => d.Name == "New Year's Day").ToList();
 
         Assert.AreEqual(1, results.Count);
-        var adjusted = results[0];
+        NotableDate adjusted = results[0];
         Assert.IsTrue(adjusted.WasAdjusted);
         Assert.AreEqual(DayOfWeek.Monday, adjusted.Date.DayOfWeek);
         Assert.AreEqual(new DateTime(2022, 1, 1), adjusted.AdjustmentReason!.OriginalDate);
@@ -97,10 +97,10 @@ public sealed partial class NotableDateServiceTests
     [TestMethod]
     public void GetNotableDates_WhenMultiDaySpanCoversQueryDay_ShouldReturnSpan()
     {
-        var span = Fixed("Festival", 6, 1) with { DurationDays = 5 };
-        var service = BuildService(span);
+        NotableDateRule span = Fixed("Festival", 6, 1) with { DurationDays = 5 };
+        NotableDateService service = BuildService(span);
 
-        var results = service.GetNotableDates(new DateTime(2025, 6, 3));
+        IReadOnlyList<NotableDate> results = service.GetNotableDates(new DateTime(2025, 6, 3));
 
         Assert.AreEqual(1, results.Count);
         Assert.AreEqual("Festival", results[0].Name);
@@ -114,7 +114,7 @@ public sealed partial class NotableDateServiceTests
     [TestMethod]
     public void IsNonWorkingDay_WhenSaturday_ShouldReturnTrue()
     {
-        var service = BuildService();
+        NotableDateService service = BuildService();
 
         Assert.IsTrue(service.IsNonWorkingDay(new DateTime(2025, 1, 4)));
     }
@@ -126,7 +126,7 @@ public sealed partial class NotableDateServiceTests
     [TestMethod]
     public void IsNonWorkingDay_WhenNotableHolidayOnDay_ShouldReturnTrue()
     {
-        var service = BuildService(Fixed("Christmas Day", 12, 25, nonWorking: true));
+        NotableDateService service = BuildService(Fixed("Christmas Day", 12, 25, nonWorking: true));
 
         Assert.IsTrue(service.IsNonWorkingDay(new DateTime(2025, 12, 25)));
     }
@@ -137,11 +137,11 @@ public sealed partial class NotableDateServiceTests
     [TestMethod]
     public void GetNotableDates_WhenTerritoryMatchesSubdivision_ShouldReturnRule()
     {
-        var rule = Fixed("Picnic Day", 8, 4, territory: "AU-NT");
-        var service = BuildService(rule);
+        NotableDateRule rule = Fixed("Picnic Day", 8, 4, territory: "AU-NT");
+        NotableDateService service = BuildService(rule);
 
-        var auNt = service.GetNotableDates(2025, territoryCode: "AU-NT");
-        var au = service.GetNotableDates(2025, territoryCode: "AU");
+        IReadOnlyList<NotableDate> auNt = service.GetNotableDates(2025, territoryCode: "AU-NT");
+        IReadOnlyList<NotableDate> au = service.GetNotableDates(2025, territoryCode: "AU");
 
         Assert.AreEqual(1, auNt.Count);
         Assert.AreEqual(1, au.Count);
@@ -153,10 +153,10 @@ public sealed partial class NotableDateServiceTests
     [TestMethod]
     public void GetNotableDates_WhenTerritoryUnrelated_ShouldExcludeRule()
     {
-        var rule = Fixed("Bastille Day", 7, 14, territory: "FR");
-        var service = BuildService(rule);
+        NotableDateRule rule = Fixed("Bastille Day", 7, 14, territory: "FR");
+        NotableDateService service = BuildService(rule);
 
-        var us = service.GetNotableDates(2025, territoryCode: "US");
+        IReadOnlyList<NotableDate> us = service.GetNotableDates(2025, territoryCode: "US");
 
         Assert.AreEqual(0, us.Count);
     }
@@ -167,7 +167,7 @@ public sealed partial class NotableDateServiceTests
     [TestMethod]
     public void GetNotableDates_WhenOverrideRemovesRuleForYear_ShouldExcludeRule()
     {
-        var baseRule = Fixed("Holiday", 1, 1);
+        NotableDateRule baseRule = Fixed("Holiday", 1, 1);
         var override_ = new TestOverrideProvider(
             removals: [new RuleRemoval("Holiday", FromYear: 2025, ToYear: 2025)],
             additions: Array.Empty<NotableDateRule>());
@@ -190,7 +190,7 @@ public sealed partial class NotableDateServiceTests
     [TestMethod]
     public void GetNotableDates_WhenOverrideAddsRule_ShouldExposeRule()
     {
-        var addition = Fixed("Royal Wedding", 5, 19, NotableDateCategory.Cultural);
+        NotableDateRule addition = Fixed("Royal Wedding", 5, 19, NotableDateCategory.Cultural);
         var override_ = new TestOverrideProvider(
             removals: Array.Empty<RuleRemoval>(),
             additions: [addition]);
@@ -203,7 +203,7 @@ public sealed partial class NotableDateServiceTests
                 OverrideProviders = [(INotableDateRuleOverrideProvider)override_],
             });
 
-        var results = service.GetNotableDates(2025);
+        IReadOnlyList<NotableDate> results = service.GetNotableDates(2025);
         Assert.IsTrue(results.Any(r => r.Name == "Royal Wedding"));
     }
 
@@ -219,7 +219,7 @@ public sealed partial class NotableDateServiceTests
     [TestMethod]
     public void Ctor_WhenRuleProvidersIsNull_ShouldThrowExactly()
     {
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = new NotableDateService(
                 ruleProviders: null!,
@@ -288,8 +288,8 @@ public sealed partial class NotableDateServiceTests
     {
         var service = new NotableDateService();
 
-        var newYears = service.GetNotableDates(new DateTime(2026, 1, 1));
-        var july4 = service.GetNotableDates(new DateTime(2026, 7, 4));
+        IReadOnlyList<NotableDate> newYears = service.GetNotableDates(new DateTime(2026, 1, 1));
+        IReadOnlyList<NotableDate> july4 = service.GetNotableDates(new DateTime(2026, 7, 4));
 
         Assert.IsTrue(newYears.Any(d => d.Name == "New Year's Day"));
         Assert.IsFalse(july4.Any(d => d.Name == "Independence Day"),
@@ -308,9 +308,9 @@ public sealed partial class NotableDateServiceTests
     [TestMethod]
     public void GetNotableDates_WhenRangeIsWellOrdered_ShouldReturnExpectedRange()
     {
-        var service = BuildService(Fixed("Midsummer", 6, 21));
+        NotableDateService service = BuildService(Fixed("Midsummer", 6, 21));
 
-        var forward = service.GetNotableDates(new DateTime(2025, 6, 1), new DateTime(2025, 6, 30));
+        IReadOnlyList<NotableDate> forward = service.GetNotableDates(new DateTime(2025, 6, 1), new DateTime(2025, 6, 30));
 
         Assert.AreEqual(1, forward.Count);
         Assert.AreEqual(new DateTime(2025, 6, 21), forward[0].Date);
@@ -324,8 +324,8 @@ public sealed partial class NotableDateServiceTests
     public void GetNotableDates_WhenSpanWrapsOverYearBoundary_ShouldReturnSpanFromPreviousYear()
     {
         // A 10-day festival starting 28 December 2024 extends into 6 January 2025.
-        var rule = Fixed("New Year Festival", 12, 28) with { DurationDays = 10 };
-        var service = BuildService(rule);
+        NotableDateRule rule = Fixed("New Year Festival", 12, 28) with { DurationDays = 10 };
+        NotableDateService service = BuildService(rule);
 
         IReadOnlyList<NotableDate> januaryQuery = service.GetNotableDates(new DateTime(2025, 1, 2));
 
@@ -340,7 +340,7 @@ public sealed partial class NotableDateServiceTests
     [TestMethod]
     public void GetNotableDates_WhenQueryingSingleDayOfYear1_ShouldNotThrow()
     {
-        var service = BuildService(Fixed("Anchor", 1, 2));
+        NotableDateService service = BuildService(Fixed("Anchor", 1, 2));
 
         IReadOnlyList<NotableDate> result = service.GetNotableDates(new DateTime(1, 1, 2));
 
@@ -355,7 +355,7 @@ public sealed partial class NotableDateServiceTests
     public void GetNotableDates_WhenCalendarTypeFilterDoesNotMatchRule_ShouldExcludeRule()
     {
         NotableDateRule gregorian = Fixed("Christmas", 12, 25) with { CalendarType = typeof(GregorianCalendar) };
-        var service = BuildService(gregorian);
+        NotableDateService service = BuildService(gregorian);
 
         IReadOnlyList<NotableDate> julianResult = service.GetNotableDates(2025, calendarType: typeof(JulianCalendar));
 
@@ -368,7 +368,7 @@ public sealed partial class NotableDateServiceTests
     [TestMethod]
     public void GetNotableDates_WhenRequestedTerritoryIsMalformed_ShouldReturnEmpty()
     {
-        var service = BuildService(Fixed("Holiday", 1, 1, territory: "AU-NSW"));
+        NotableDateService service = BuildService(Fixed("Holiday", 1, 1, territory: "AU-NSW"));
 
         IReadOnlyList<NotableDate> result = service.GetNotableDates(2025, territoryCode: "BAD!");
 
@@ -390,7 +390,7 @@ public sealed partial class NotableDateServiceTests
     [TestMethod]
     public void Overrides_RuleRemoval_YearBounds(int year, bool expectedSuppressed)
     {
-        var baseRule = Fixed("Holiday", 1, 1);
+        NotableDateRule baseRule = Fixed("Holiday", 1, 1);
         var removal = new RuleRemoval("Holiday", FromYear: 2024, ToYear: 2025);
         var provider = new TestOverrideProvider([removal], Array.Empty<NotableDateRule>());
 
@@ -420,7 +420,7 @@ public sealed partial class NotableDateServiceTests
     [TestMethod]
     public void Overrides_RuleRemoval_TerritoryScope(string removalTerritory, string ruleTerritory, bool expectedSuppressed)
     {
-        var baseRule = Fixed("Picnic", 8, 4, territory: ruleTerritory);
+        NotableDateRule baseRule = Fixed("Picnic", 8, 4, territory: ruleTerritory);
         var removal = new RuleRemoval("Picnic", TerritoryCode: removalTerritory);
         var provider = new TestOverrideProvider([removal], Array.Empty<NotableDateRule>());
 
@@ -445,7 +445,7 @@ public sealed partial class NotableDateServiceTests
     [TestMethod]
     public void Overrides_RuleRemoval_WhenRemovalTerritoryButRuleHasNone_ShouldNotSuppress()
     {
-        var baseRule = Fixed("Holiday", 1, 1);
+        NotableDateRule baseRule = Fixed("Holiday", 1, 1);
         var removal = new RuleRemoval("Holiday", TerritoryCode: "AU-NSW");
         var provider = new TestOverrideProvider([removal], Array.Empty<NotableDateRule>());
 
@@ -469,7 +469,7 @@ public sealed partial class NotableDateServiceTests
     [TestMethod]
     public void Overrides_WhenRemovalTerritoryIsMalformed_ShouldNotSuppress()
     {
-        var baseRule = Fixed("Picnic", 8, 4, territory: "AU-NSW");
+        NotableDateRule baseRule = Fixed("Picnic", 8, 4, territory: "AU-NSW");
         var removal = new RuleRemoval("Picnic", TerritoryCode: "NOT-A-REAL-CODE-!");
         var provider = new TestOverrideProvider([removal], Array.Empty<NotableDateRule>());
 
@@ -540,7 +540,7 @@ public sealed partial class NotableDateServiceTests
     [TestMethod]
     public void Invalidate_WhenNoYearSpecified_ShouldClearAllYears()
     {
-        var service = BuildService(Fixed("Holiday", 1, 1));
+        NotableDateService service = BuildService(Fixed("Holiday", 1, 1));
         _ = service.GetNotableDates(2025);
         _ = service.GetNotableDates(2026);
 

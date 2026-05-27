@@ -68,7 +68,7 @@ public partial class ConcurrentHashSetTests
     [DataRow(-1000)]
     public void Ctor_WhenCapacityIsNegative_ShouldThrowArgumentOutOfRangeException(int capacity)
     {
-        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             _ = new ConcurrentHashSet<int>(capacity);
         });
@@ -120,7 +120,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void Ctor_WhenSourceIsNull_ShouldThrowArgumentNullException()
     {
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = new ConcurrentHashSet<int>(collection: null!);
         });
@@ -216,7 +216,7 @@ public partial class ConcurrentHashSetTests
     [DataRow(-1000)]
     public void Ctor_WhenConcurrencyLevelIsZeroOrNegative_ShouldThrowArgumentOutOfRangeException(int concurrencyLevel)
     {
-        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             _ = new ConcurrentHashSet<int>(concurrencyLevel, capacity: 16, comparer: null);
         });

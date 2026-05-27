@@ -17,7 +17,7 @@ public partial class NotableDateRuleParserTests
     [TestMethod]
     public void ParseDocument_WhenUseFromPresent_ShouldExposeGroupsInOrder()
     {
-        var doc = NotableDateRuleParser.ParseDocument(CherryPickXml);
+        ParsedNotableDateDocument doc = NotableDateRuleParser.ParseDocument(CherryPickXml);
 
         Assert.AreEqual(2, doc.UseGroups.Length);
         Assert.AreEqual("Bodu.Globalization.Calendar.Resources.Common.xml", doc.UseGroups[0].SourceResource);
@@ -31,9 +31,9 @@ public partial class NotableDateRuleParserTests
     [TestMethod]
     public void ParseDocument_WhenUseDirectivesPresent_ShouldExposeScalarOverrides()
     {
-        var doc = NotableDateRuleParser.ParseDocument(CherryPickXml);
+        ParsedNotableDateDocument doc = NotableDateRuleParser.ParseDocument(CherryPickXml);
 
-        var common = doc.UseGroups[0];
+        NotableDateRuleUseGroup common = doc.UseGroups[0];
         Assert.AreEqual(2, common.Uses.Length);
         Assert.IsFalse(common.UseAll);
         Assert.AreEqual("New Year's Day", common.Uses[0].SourceRuleName);
@@ -41,7 +41,7 @@ public partial class NotableDateRuleParserTests
         Assert.AreEqual("Halloween", common.Uses[1].SourceRuleName);
         Assert.IsNull(common.Uses[1].TerritoryCode);
 
-        var christian = doc.UseGroups[1];
+        NotableDateRuleUseGroup christian = doc.UseGroups[1];
         Assert.AreEqual(1, christian.Uses.Length);
         Assert.AreEqual("Christmas Day", christian.Uses[0].SourceRuleName);
         Assert.AreEqual("Christmas", christian.Uses[0].LocalName);
@@ -56,7 +56,7 @@ public partial class NotableDateRuleParserTests
     [TestMethod]
     public void ParseDocument_WhenUseAllPresent_ShouldFlagGroupAsWildcard()
     {
-        var doc = NotableDateRuleParser.ParseDocument(UseAllXml);
+        ParsedNotableDateDocument doc = NotableDateRuleParser.ParseDocument(UseAllXml);
 
         Assert.AreEqual(1, doc.UseGroups.Length);
         Assert.IsTrue(doc.UseGroups[0].UseAll);
@@ -70,7 +70,7 @@ public partial class NotableDateRuleParserTests
     [TestMethod]
     public void ParseDocument_WhenLocalRulesPresent_ShouldExposeLocalRules()
     {
-        var doc = NotableDateRuleParser.ParseDocument(CherryPickXml);
+        ParsedNotableDateDocument doc = NotableDateRuleParser.ParseDocument(CherryPickXml);
 
         Assert.AreEqual(1, doc.LocalRules.Length);
         Assert.AreEqual("Independence Day", doc.LocalRules[0].Name);
@@ -86,7 +86,7 @@ public partial class NotableDateRuleParserTests
     {
         var document = XDocument.Parse(FixedRuleXml);
 
-        var parsed = NotableDateRuleParser.ParseDocument(document);
+        ParsedNotableDateDocument parsed = NotableDateRuleParser.ParseDocument(document);
 
         Assert.AreEqual(1, parsed.LocalRules.Length);
         Assert.AreEqual("Fixed Rule Test", parsed.LocalRules[0].Name);
@@ -99,7 +99,7 @@ public partial class NotableDateRuleParserTests
     [TestMethod]
     public void ParseDocument_WhenXDocumentIsNull_ShouldThrowExactly()
     {
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = NotableDateRuleParser.ParseDocument((XDocument)null!);
         });

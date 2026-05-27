@@ -72,7 +72,7 @@ public sealed class CoverageGapFillTests
     [TestMethod]
     public void IsNonWorkingDay_WhenNotableIsNonWorkingButTerritoryFilterExcludes_ShouldReturnFalse()
     {
-        var service = BuildService(FixedRule("Picnic", 8, 4, nonWorking: true, territory: "AU-NSW"));
+        NotableDateService service = BuildService(FixedRule("Picnic", 8, 4, nonWorking: true, territory: "AU-NSW"));
 
         Assert.IsFalse(service.IsNonWorkingDay(new DateTime(2025, 8, 4), territoryCode: "NZ"));
     }
@@ -96,9 +96,9 @@ public sealed class CoverageGapFillTests
             AnchorRuleName = "DoesNotExist",
             OffsetDays = 1,
         };
-        var good = FixedRule("Good", 1, 1);
+        NotableDateRule good = FixedRule("Good", 1, 1);
 
-        var service = BuildService(missingAnchor, good);
+        NotableDateService service = BuildService(missingAnchor, good);
 
         IReadOnlyList<NotableDate> result = service.GetNotableDates(2025);
 
@@ -121,7 +121,7 @@ public sealed class CoverageGapFillTests
             Category = NotableDateCategory.Observance,
             AlgorithmKey = "null-key",
         };
-        var nullAlgorithmRegistry = new NotableDateAlgorithmRegistry()
+        NotableDateAlgorithmRegistry nullAlgorithmRegistry = new NotableDateAlgorithmRegistry()
             .Register("null-key", new NullAlgorithm());
 
         var service = new NotableDateService(
@@ -151,9 +151,9 @@ public sealed class CoverageGapFillTests
             OffsetDays = 5,
             EffectiveFromYear = 2099,
         };
-        var rule = FixedRule("Holiday", 1, 1, adjustments: ImmutableArray.Create(outOfScope));
+        NotableDateRule rule = FixedRule("Holiday", 1, 1, adjustments: ImmutableArray.Create(outOfScope));
 
-        var service = BuildService(rule);
+        NotableDateService service = BuildService(rule);
 
         IReadOnlyList<NotableDate> result = service.GetNotableDates(2025).Where(r => r.Name == "Holiday").ToList();
 
@@ -252,9 +252,9 @@ public sealed class CoverageGapFillTests
     [TestMethod]
     public void GetNotableDates_WhenRuleTerritoryIsMalformed_ShouldBeExcludedFromFilteredQuery()
     {
-        var malformed = FixedRule("Bad Territory", 5, 5, territory: "###");
+        NotableDateRule malformed = FixedRule("Bad Territory", 5, 5, territory: "###");
 
-        var service = BuildService(malformed);
+        NotableDateService service = BuildService(malformed);
 
         // Note: TerritoryCode.ParseList filters invalid entries, so ExpandTerritories yields no
         // territories and the rule is never emitted. That still exercises the malformed-territory
@@ -363,7 +363,7 @@ public sealed class CoverageGapFillTests
     [TestMethod]
     public void Apply_WhenActionIsCustomAndTriggerIsNotCustom_ShouldDispatchToHandler()
     {
-        var registry = new AdjustmentHandlerRegistry()
+        AdjustmentHandlerRegistry registry = new AdjustmentHandlerRegistry()
             .Register("custom-action-shift", new ShiftByOneWeekHandler());
         var adjuster = new NotableDateAdjuster(
             isWeekend: _ => false,
@@ -396,7 +396,7 @@ public sealed class CoverageGapFillTests
     [TestMethod]
     public void Apply_WhenOverrideBodyHasOutOfEnumStrategy_ShouldLeaveRuleUnchanged()
     {
-        var source = FixedRule("Seed", 1, 1);
+        NotableDateRule source = FixedRule("Seed", 1, 1);
         var directive = new NotableDateRuleUseDirective(
             SourceRuleName: source.Name,
             OverrideBody: new NotableDateRuleOverrideBody
@@ -423,7 +423,7 @@ public sealed class CoverageGapFillTests
     [TestMethod]
     public void ResolveAnchorDate_WhenOffsetAnchorReturnsNull_ShouldReturnNull()
     {
-        var anchor = FixedRule("Anchor", 4, 10) with { LastYear = 2000 };
+        NotableDateRule anchor = FixedRule("Anchor", 4, 10) with { LastYear = 2000 };
         var offset = new NotableDateRule
         {
             Name = "Derived",
@@ -549,8 +549,8 @@ public sealed class CoverageGapFillTests
             "  </UseFrom>\n" +
             "</NotableDates>";
 
-        var doc = NotableDateRuleParser.ParseDocument(xml);
-        var body = doc.UseGroups[0].Uses[0].OverrideBody!;
+        ParsedNotableDateDocument doc = NotableDateRuleParser.ParseDocument(xml);
+        NotableDateRuleOverrideBody body = doc.UseGroups[0].Uses[0].OverrideBody!;
 
         Assert.AreEqual(DateResolutionStrategy.Fixed, body.Strategy);
         Assert.AreEqual(3, body.Month);
@@ -571,8 +571,8 @@ public sealed class CoverageGapFillTests
             "  </UseFrom>\n" +
             "</NotableDates>";
 
-        var doc = NotableDateRuleParser.ParseDocument(xml);
-        var body = doc.UseGroups[0].Uses[0].OverrideBody!;
+        ParsedNotableDateDocument doc = NotableDateRuleParser.ParseDocument(xml);
+        NotableDateRuleOverrideBody body = doc.UseGroups[0].Uses[0].OverrideBody!;
 
         Assert.AreEqual(DateResolutionStrategy.DayOfWeekInMonth, body.Strategy);
         Assert.AreEqual(5, body.Month);
@@ -594,8 +594,8 @@ public sealed class CoverageGapFillTests
             "  </UseFrom>\n" +
             "</NotableDates>";
 
-        var doc = NotableDateRuleParser.ParseDocument(xml);
-        var body = doc.UseGroups[0].Uses[0].OverrideBody!;
+        ParsedNotableDateDocument doc = NotableDateRuleParser.ParseDocument(xml);
+        NotableDateRuleOverrideBody body = doc.UseGroups[0].Uses[0].OverrideBody!;
 
         Assert.AreEqual(DateResolutionStrategy.OffsetFromAnchor, body.Strategy);
         Assert.AreEqual("Easter Sunday", body.AnchorRuleName);
@@ -616,8 +616,8 @@ public sealed class CoverageGapFillTests
             "  </UseFrom>\n" +
             "</NotableDates>";
 
-        var doc = NotableDateRuleParser.ParseDocument(xml);
-        var body = doc.UseGroups[0].Uses[0].OverrideBody!;
+        ParsedNotableDateDocument doc = NotableDateRuleParser.ParseDocument(xml);
+        NotableDateRuleOverrideBody body = doc.UseGroups[0].Uses[0].OverrideBody!;
 
         Assert.AreEqual(DateResolutionStrategy.Algorithm, body.Strategy);
         Assert.AreEqual("easter-sunday", body.AlgorithmKey);
@@ -660,7 +660,7 @@ public sealed class CoverageGapFillTests
     {
         var groupA = new NotableDateRuleUseGroup("res", UseAll: false, ImmutableArray<NotableDateRuleUseDirective>.Empty);
         var groupB = new NotableDateRuleUseGroup("res2", UseAll: false, ImmutableArray<NotableDateRuleUseDirective>.Empty);
-        var rule = FixedRule("X", 1, 1);
+        NotableDateRule rule = FixedRule("X", 1, 1);
 
         var sharedGroups = ImmutableArray.Create(groupA);
         var sharedRules = ImmutableArray.Create(rule);
@@ -708,9 +708,9 @@ public sealed class CoverageGapFillTests
             OffsetDays = 7,
             TerritoryCode = "###",
         };
-        var rule = FixedRule("Holiday", 1, 1, adjustments: ImmutableArray.Create(adjustment));
+        NotableDateRule rule = FixedRule("Holiday", 1, 1, adjustments: ImmutableArray.Create(adjustment));
 
-        var service = BuildService(rule);
+        NotableDateService service = BuildService(rule);
 
         IReadOnlyList<NotableDate> result = service.GetNotableDates(2025, territoryCode: "AU");
 

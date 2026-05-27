@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConcurrentHashSet.ISet.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -92,7 +92,7 @@ public sealed partial class ConcurrentHashSet<T> :
         if (ReferenceEquals(other, this))
             return;
 
-        var retained = CreateValidatedSet(other);
+        HashSet<T> retained = CreateValidatedSet(other);
         foreach (T item in ToArray())
         {
             if (!retained.Contains(item))
@@ -170,7 +170,7 @@ public sealed partial class ConcurrentHashSet<T> :
     {
         ThrowHelper.ThrowIfNull(other);
 
-        var otherSet = CreateValidatedSet(other);
+        HashSet<T> otherSet = CreateValidatedSet(other);
         T[] snapshot = ToArray();
         if (snapshot.Length == 0)
             return true;
@@ -230,7 +230,7 @@ public sealed partial class ConcurrentHashSet<T> :
         ThrowHelper.ThrowIfNull(other);
 
         T[] snapshot = ToArray();
-        var otherSet = CreateValidatedSet(other);
+        HashSet<T> otherSet = CreateValidatedSet(other);
 
         if (snapshot.Length >= otherSet.Count)
             return false;
@@ -262,7 +262,7 @@ public sealed partial class ConcurrentHashSet<T> :
     {
         ThrowHelper.ThrowIfNull(other);
 
-        var otherSet = CreateValidatedSet(other);
+        HashSet<T> otherSet = CreateValidatedSet(other);
         T[] snapshot = ToArray();
 
         if (snapshot.Length <= otherSet.Count)
@@ -322,7 +322,7 @@ public sealed partial class ConcurrentHashSet<T> :
     {
         ThrowHelper.ThrowIfNull(other);
 
-        var otherSet = CreateValidatedSet(other);
+        HashSet<T> otherSet = CreateValidatedSet(other);
         T[] snapshot = ToArray();
 
         if (snapshot.Length != otherSet.Count)

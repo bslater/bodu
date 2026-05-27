@@ -35,14 +35,15 @@ public static class KatDisplayName
     /// <c>"{methodInfo.Name}({kat.Name})"</c> when the first element of <paramref name="data" /> implements
     /// <see cref="IKat" />; otherwise <paramref name="methodInfo" />.<see cref="MemberInfo.Name" />.
     /// </returns>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="methodInfo" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown if <paramref name="methodInfo" /> is <see langword="null" />.
+    /// </exception>
     public static string GetDisplayName(MethodInfo methodInfo, object?[] data)
     {
         ArgumentNullException.ThrowIfNull(methodInfo);
 
-        if (data is { Length: > 0 } && data[0] is IKat kat)
-            return $"{methodInfo.Name}({kat.Name})";
-
-        return methodInfo.Name;
+        return data is { Length: > 0 } && data[0] is IKat kat
+            ? $"{methodInfo.Name}({kat.Name})"
+            : methodInfo.Name;
     }
 }

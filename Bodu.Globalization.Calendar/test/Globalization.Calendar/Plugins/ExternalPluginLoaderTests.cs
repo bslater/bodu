@@ -4,6 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Reflection;
+using System.Runtime.Loader;
+
 namespace Bodu.Globalization.Calendar.Plugins;
 
 /// <summary>
@@ -32,7 +35,7 @@ public sealed class ExternalPluginLoaderTests
 
         var loader = new ExternalPluginLoader(new AllowAllPluginTrustPolicy());
 
-        var plugin = loader.Load(Plugin1Path);
+        INotableDatePlugin plugin = loader.Load(Plugin1Path);
 
         Assert.IsNotNull(plugin);
         Assert.AreEqual("Bodu.Test.Harness.Plugin1", plugin.Name);
@@ -47,7 +50,7 @@ public sealed class ExternalPluginLoaderTests
     public void Load_WhenPluginImplementsBothSplitInterfaces_ShouldExposeBothRulesAndAlgorithms()
     {
         var loader = new ExternalPluginLoader(new AllowAllPluginTrustPolicy());
-        var plugin = loader.Load(Plugin1Path);
+        INotableDatePlugin plugin = loader.Load(Plugin1Path);
 
         var rulePlugin = plugin as INotableDateRulePlugin;
         Assert.IsNotNull(rulePlugin, "Test plugin should implement INotableDateRulePlugin.");
@@ -72,7 +75,7 @@ public sealed class ExternalPluginLoaderTests
         var rejecting = new DelegatingPluginTrustPolicy(_ => new PluginTrustResult(false, "unit-test-rejection"));
         var loader = new ExternalPluginLoader(rejecting);
 
-        var thrown = Assert.ThrowsExactly<PluginNotTrustedException>(() => _ = loader.Load(Plugin1Path));
+        PluginNotTrustedException thrown = Assert.ThrowsExactly<PluginNotTrustedException>(() => _ = loader.Load(Plugin1Path));
 
         StringAssert.Contains(thrown.Message, "unit-test-rejection");
         Assert.AreEqual("unit-test-rejection", thrown.Reason);
@@ -89,7 +92,7 @@ public sealed class ExternalPluginLoaderTests
 
         var loader = new ExternalPluginLoader(new AllowAllPluginTrustPolicy());
 
-        var thrown = Assert.ThrowsExactly<PluginMissingAttributeException>(() => _ = loader.Load(Plugin2Path));
+        PluginMissingAttributeException thrown = Assert.ThrowsExactly<PluginMissingAttributeException>(() => _ = loader.Load(Plugin2Path));
 
         StringAssert.Contains(thrown.Message, "NotableDatePluginAttribute");
     }
@@ -146,7 +149,7 @@ public sealed class ExternalPluginLoaderTests
         Assert.IsTrue(File.Exists(Plugin3Path), $"Plugin3 assembly not found at '{Plugin3Path}'.");
         var loader = new ExternalPluginLoader(new AllowAllPluginTrustPolicy());
 
-        var ex = Assert.ThrowsExactly<PluginActivationException>(() => _ = loader.Load(Plugin3Path));
+        PluginActivationException ex = Assert.ThrowsExactly<PluginActivationException>(() => _ = loader.Load(Plugin3Path));
 
         Assert.AreEqual(Plugin3Path, ex.AssemblyPath);
         Assert.IsNotNull(ex.PluginType);
@@ -178,7 +181,7 @@ public sealed class ExternalPluginLoaderTests
         Assert.IsTrue(File.Exists(Plugin4Path), $"Plugin4 assembly not found at '{Plugin4Path}'.");
         var loader = new ExternalPluginLoader(new AllowAllPluginTrustPolicy());
 
-        var ex = Assert.ThrowsExactly<PluginMissingAttributeException>(() => _ = loader.Load(Plugin4Path));
+        PluginMissingAttributeException ex = Assert.ThrowsExactly<PluginMissingAttributeException>(() => _ = loader.Load(Plugin4Path));
 
         Assert.AreEqual(Plugin4Path, ex.AssemblyPath);
         Assert.IsTrue(ex.Reason.Contains("INotableDatePlugin", StringComparison.Ordinal));
@@ -219,19 +222,19 @@ public sealed class ExternalPluginLoaderTests
     [TestMethod]
     public void ResolveFromHostOrAlongside_ShouldFavourHostAssemblyAndTolerateUnnamedRequests()
     {
-        var resolve = typeof(ExternalPluginLoader).GetMethod(
+        MethodInfo? resolve = typeof(ExternalPluginLoader).GetMethod(
             "ResolveFromHostOrAlongside",
             System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic);
         Assert.IsNotNull(resolve, "ResolveFromHostOrAlongside was not found on ExternalPluginLoader.");
 
-        var defaultContext = System.Runtime.Loader.AssemblyLoadContext.Default;
+        AssemblyLoadContext defaultContext = System.Runtime.Loader.AssemblyLoadContext.Default;
 
         var unnamed = new System.Reflection.AssemblyName { Name = string.Empty };
         var unnamedResult =
             (System.Reflection.Assembly?)resolve!.Invoke(null, [defaultContext, unnamed]);
         Assert.IsNull(unnamedResult);
 
-        var calendarAssemblyName = typeof(NotableDateService).Assembly.GetName();
+        AssemblyName calendarAssemblyName = typeof(NotableDateService).Assembly.GetName();
         var hostResult =
             (System.Reflection.Assembly?)resolve.Invoke(null, [defaultContext, calendarAssemblyName]);
         Assert.AreSame(typeof(NotableDateService).Assembly, hostResult);

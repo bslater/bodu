@@ -35,7 +35,7 @@ public sealed class XmlResourceFixtureTests
             new ResourcePathResolver(),
             TestAssembly);
 
-        var ex = Assert.ThrowsExactly<InvalidOperationException>(() =>
+        InvalidOperationException ex = Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
             _ = provider.LoadRules().ToList();
         });
@@ -76,7 +76,7 @@ public sealed class XmlResourceFixtureTests
             new ResourcePathResolver(),
             TestAssembly);
 
-        var ex = Assert.ThrowsExactly<InvalidOperationException>(() =>
+        InvalidOperationException ex = Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
             _ = provider.LoadRules().ToList();
         });
@@ -120,8 +120,8 @@ public sealed class XmlResourceFixtureTests
         var rules = provider.LoadRules().Where(r => r.Name == "King's Birthday").ToList();
 
         Assert.AreEqual(2, rules.Count);
-        var october = rules.Single(r => r.RuleName == "October Variant");
-        var june = rules.Single(r => r.RuleName == "June Variant");
+        NotableDateRule october = rules.Single(r => r.RuleName == "October Variant");
+        NotableDateRule june = rules.Single(r => r.RuleName == "June Variant");
 
         Assert.AreEqual("AU-QLD", october.TerritoryCode);
         Assert.AreEqual(50, october.Priority);
@@ -146,7 +146,7 @@ public sealed class XmlResourceFixtureTests
         var rules = provider.LoadRules().Where(r => r.Name == "King's Birthday").ToList();
 
         Assert.AreEqual(1, rules.Count);
-        var only = rules[0];
+        NotableDateRule only = rules[0];
         Assert.AreEqual("Single NT Variant", only.RuleName);
         Assert.AreEqual("AU-NT", only.TerritoryCode);
         Assert.IsTrue(only.Tags.Contains("ClearedAndReplaced"));

@@ -250,7 +250,7 @@ public partial class NotableDateRuleJsonParserTests
     [TestMethod]
     public void ParseJson_WhenDocumentIsValid_ShouldRoundTripThroughSchema()
     {
-        var rules = NotableDateRuleJsonParser.ParseJson(MultiRuleJson);
+        List<NotableDateRule> rules = NotableDateRuleJsonParser.ParseJson(MultiRuleJson);
 
         Assert.AreEqual(4, rules.Count);
     }

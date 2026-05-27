@@ -21,7 +21,7 @@ internal sealed partial class ThreefishBlockCipherTests
     {
         using var cipher = new Threefish256Cipher(s_validKey256, s_validTweak);
 
-        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             cipher.Rekey(new byte[31], s_validTweak);
         });
@@ -38,7 +38,7 @@ internal sealed partial class ThreefishBlockCipherTests
     {
         using var cipher = new Threefish256Cipher(s_validKey256, s_validTweak);
 
-        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             cipher.Rekey(new byte[33], s_validTweak);
         });
@@ -70,7 +70,7 @@ internal sealed partial class ThreefishBlockCipherTests
     {
         using var cipher = new Threefish256Cipher(s_validKey256, s_validTweak);
 
-        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             cipher.Rekey(s_validKey256, new byte[15]);
         });
@@ -87,7 +87,7 @@ internal sealed partial class ThreefishBlockCipherTests
     {
         using var cipher = new Threefish256Cipher(s_validKey256, s_validTweak);
 
-        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             cipher.Rekey(s_validKey256, new byte[17]);
         });

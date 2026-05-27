@@ -37,7 +37,7 @@ public partial class CryptoHelpersTests
     [TestMethod]
     public void ThrowIfOutputBufferTooSmall_WhenBufferTooSmall_ShouldThrowExactly()
     {
-        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             Span<byte> buffer = stackalloc byte[4];
             CryptoHelpers.ThrowIfOutputBufferTooSmall(buffer, 8);
@@ -53,7 +53,7 @@ public partial class CryptoHelpersTests
     [TestMethod]
     public void ThrowIfOutputBufferTooSmall_WhenBufferTooSmall_ShouldIncludeRequiredSizeInMessage()
     {
-        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             Span<byte> buffer = stackalloc byte[4];
             CryptoHelpers.ThrowIfOutputBufferTooSmall(buffer, 16);

@@ -19,7 +19,7 @@ public partial class CryptoHelpersTests
         stream.WriteByte(0x01);
         stream.WriteByte(0x02);
 
-        var segment = CryptoHelpers.GetBufferOrThrowIfInaccessible(stream);
+        ArraySegment<byte> segment = CryptoHelpers.GetBufferOrThrowIfInaccessible(stream);
 
         Assert.IsNotNull(segment.Array);
         Assert.AreEqual(2, segment.Count);
@@ -36,7 +36,7 @@ public partial class CryptoHelpersTests
     {
         using var stream = new MemoryStream();
 
-        var segment = CryptoHelpers.GetBufferOrThrowIfInaccessible(stream);
+        ArraySegment<byte> segment = CryptoHelpers.GetBufferOrThrowIfInaccessible(stream);
 
         Assert.AreEqual(0, segment.Count);
     }

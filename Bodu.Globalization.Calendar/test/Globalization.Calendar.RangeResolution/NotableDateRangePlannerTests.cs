@@ -154,7 +154,7 @@ public sealed class NotableDateRangePlannerTests
     {
         var analysis = RuleStaticAnalysis.Build(Array.Empty<NotableDateRule>());
 
-        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             _ = new NotableDateRangePlanner(analysis, fringeDays: -1);
         });

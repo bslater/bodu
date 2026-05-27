@@ -47,7 +47,7 @@ public sealed partial class NotableDateServiceTests
     {
         NotableDateService service = BuildService(Fixed("Holiday A", 1, 1));
 
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = service.GetNotableDates(2024, (NotableDateFilter)null!);
         });
@@ -64,7 +64,7 @@ public sealed partial class NotableDateServiceTests
     {
         NotableDateService service = BuildService(Fixed("Holiday A", 1, 1));
 
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = service.GetNotableDates(
                 new DateTime(2024, 1, 1),
@@ -84,7 +84,7 @@ public sealed partial class NotableDateServiceTests
     {
         NotableDateService service = BuildService(Fixed("Holiday A", 1, 1));
 
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = service.GetNotableDates(new DateTime(2024, 1, 1), (NotableDateFilter)null!);
         });

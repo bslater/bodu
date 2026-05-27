@@ -74,7 +74,7 @@ public sealed class CanonicalEncodingTests
     [TestMethod]
     public void Base32_Decode_WhenNonCanonicalInputAndRequireCanonical_ShouldThrowExactly()
     {
-        var ex = Assert.ThrowsExactly<FormatException>(() =>
+        FormatException ex = Assert.ThrowsExactly<FormatException>(() =>
         {
             _ = Base32.Decode("MZ======".AsSpan(), Base32Variant.Standard, BaseFormatStyles.RequireCanonicalEncoding);
         });
@@ -169,7 +169,7 @@ public sealed class CanonicalEncodingTests
     [TestMethod]
     public void Base64_Decode_WhenNonCanonicalInputAndRequireCanonical_ShouldThrowExactly()
     {
-        var ex = Assert.ThrowsExactly<FormatException>(() =>
+        FormatException ex = Assert.ThrowsExactly<FormatException>(() =>
         {
             _ = Base64.Decode("Zh==".AsSpan(), Base64Variant.Standard, BaseFormatStyles.RequireCanonicalEncoding);
         });

@@ -23,7 +23,7 @@ public sealed class HashAlgorithmHelperBodyTests
     [TestMethod]
     public void TryHashData_WhenDestinationFits_ShouldReturnTrue()
     {
-        var factory = HashAlgorithmFactory.From<SHA256>(SHA256.Create);
+        DelegateHashAlgorithmFactory<SHA256> factory = HashAlgorithmFactory.From<SHA256>(SHA256.Create);
         Span<byte> destination = stackalloc byte[32];
 
         var result = HashAlgorithmHelper.TryHashData(factory, [1, 2, 3, 4], destination, out var bytesWritten);
@@ -39,7 +39,7 @@ public sealed class HashAlgorithmHelperBodyTests
     [TestMethod]
     public void TryHashData_WhenDestinationTooSmall_ShouldReturnFalse()
     {
-        var factory = HashAlgorithmFactory.From<SHA256>(SHA256.Create);
+        DelegateHashAlgorithmFactory<SHA256> factory = HashAlgorithmFactory.From<SHA256>(SHA256.Create);
         Span<byte> destination = stackalloc byte[8];
 
         var result = HashAlgorithmHelper.TryHashData(factory, [1, 2, 3], destination, out var bytesWritten);
@@ -56,7 +56,7 @@ public sealed class HashAlgorithmHelperBodyTests
     [TestMethod]
     public void HashData_Span_WhenAlgorithmWritesFewerBytesThanReported_ShouldTrimResult()
     {
-        var factory = HashAlgorithmFactory.From(() => new ShortHashAlgorithm());
+        DelegateHashAlgorithmFactory<ShortHashAlgorithm> factory = HashAlgorithmFactory.From(() => new ShortHashAlgorithm());
 
         var result = HashAlgorithmHelper.HashData(factory, [1, 2, 3]);
 
@@ -74,7 +74,7 @@ public sealed class HashAlgorithmHelperBodyTests
     [TestMethod]
     public void HashData_Span_WhenAlgorithmTryHashFinalReturnsFalseDespiteAdequateBuffer_ShouldThrowExactly()
     {
-        var factory = HashAlgorithmFactory.From(() => new RefusingHashAlgorithm());
+        DelegateHashAlgorithmFactory<RefusingHashAlgorithm> factory = HashAlgorithmFactory.From(() => new RefusingHashAlgorithm());
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
@@ -89,7 +89,7 @@ public sealed class HashAlgorithmHelperBodyTests
     [TestMethod]
     public async Task HashDataAsync_Stream_ShouldMatchSpanOverloadForSameContent()
     {
-        var factory = HashAlgorithmFactory.From<SHA256>(SHA256.Create);
+        DelegateHashAlgorithmFactory<SHA256> factory = HashAlgorithmFactory.From<SHA256>(SHA256.Create);
         var input = Enumerable.Range(0, 4096).Select(i => (byte)(i & 0xFF)).ToArray();
 
         var viaSpan = HashAlgorithmHelper.HashData(factory, input);
@@ -108,7 +108,7 @@ public sealed class HashAlgorithmHelperBodyTests
     [TestMethod]
     public async Task HashDataAsync_WhenAlreadyCancelled_ShouldThrowExactly()
     {
-        var factory = HashAlgorithmFactory.From<SHA256>(SHA256.Create);
+        DelegateHashAlgorithmFactory<SHA256> factory = HashAlgorithmFactory.From<SHA256>(SHA256.Create);
         using var cts = new CancellationTokenSource();
         cts.Cancel();
         using var stream = new MemoryStream([1, 2, 3]);

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="HinduLunarNotableDateAlgorithmTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -40,7 +40,7 @@ public sealed class HinduLunarNotableDateAlgorithmTests
     [TestMethod]
     public void Ctor_WhenMonthIsUndefined_ShouldThrowExactly()
     {
-        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             _ = new HinduLunarNotableDateAlgorithm((HinduLunarMonth)99, HinduPaksha.Shukla, 1);
         });
@@ -54,7 +54,7 @@ public sealed class HinduLunarNotableDateAlgorithmTests
     [TestMethod]
     public void Ctor_WhenPakshaIsUndefined_ShouldThrowExactly()
     {
-        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             _ = new HinduLunarNotableDateAlgorithm(HinduLunarMonth.Kartik, (HinduPaksha)99, 1);
         });
@@ -71,7 +71,7 @@ public sealed class HinduLunarNotableDateAlgorithmTests
     [TestMethod]
     public void Ctor_WhenTithiOutOfRange_ShouldThrowExactly(int tithi)
     {
-        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             _ = new HinduLunarNotableDateAlgorithm(HinduLunarMonth.Kartik, HinduPaksha.Krishna, tithi);
         });

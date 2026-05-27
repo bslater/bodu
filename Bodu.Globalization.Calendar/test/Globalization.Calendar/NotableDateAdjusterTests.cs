@@ -43,7 +43,7 @@ public sealed partial class NotableDateAdjusterTests
     [TestMethod]
     public void Apply_WhenAlwaysAddDays_ShouldShiftDate()
     {
-        var adjuster = CreateAdjuster();
+        NotableDateAdjuster adjuster = CreateAdjuster();
         var adjustment = new ObservanceAdjustment
         {
             Key = "test",
@@ -52,7 +52,7 @@ public sealed partial class NotableDateAdjusterTests
             OffsetDays = 3,
         };
 
-        var result = adjuster.Apply(adjustment, SampleRule(), new DateTime(2025, 1, 1));
+        AdjustmentApplyResult result = adjuster.Apply(adjustment, SampleRule(), new DateTime(2025, 1, 1));
 
         Assert.IsTrue(result.Activated);
         Assert.AreEqual(new DateTime(2025, 1, 4), result.AdjustedDate);
@@ -65,7 +65,7 @@ public sealed partial class NotableDateAdjusterTests
     [TestMethod]
     public void Apply_WhenSaturdayAndIfWeekend_ShouldMoveToMonday()
     {
-        var adjuster = CreateAdjuster();
+        NotableDateAdjuster adjuster = CreateAdjuster();
         var adjustment = new ObservanceAdjustment
         {
             Key = "test",
@@ -74,7 +74,7 @@ public sealed partial class NotableDateAdjusterTests
         };
 
         var saturday = new DateTime(2026, 1, 3);
-        var result = adjuster.Apply(adjustment, SampleRule(), saturday);
+        AdjustmentApplyResult result = adjuster.Apply(adjustment, SampleRule(), saturday);
 
         Assert.IsTrue(result.Activated);
         Assert.AreEqual(DayOfWeek.Monday, result.AdjustedDate.DayOfWeek);
@@ -86,7 +86,7 @@ public sealed partial class NotableDateAdjusterTests
     [TestMethod]
     public void Apply_WhenTuesdayAndIfWeekend_ShouldNotActivate()
     {
-        var adjuster = CreateAdjuster();
+        NotableDateAdjuster adjuster = CreateAdjuster();
         var adjustment = new ObservanceAdjustment
         {
             Key = "test",
@@ -94,7 +94,7 @@ public sealed partial class NotableDateAdjusterTests
             Action = AdjustmentAction.MoveToNextWeekday,
         };
 
-        var result = adjuster.Apply(adjustment, SampleRule(), new DateTime(2025, 1, 7));
+        AdjustmentApplyResult result = adjuster.Apply(adjustment, SampleRule(), new DateTime(2025, 1, 7));
 
         Assert.IsFalse(result.Activated);
     }
@@ -105,7 +105,7 @@ public sealed partial class NotableDateAdjusterTests
     [TestMethod]
     public void Apply_WhenIfDayOfWeekMatches_ShouldActivate()
     {
-        var adjuster = CreateAdjuster();
+        NotableDateAdjuster adjuster = CreateAdjuster();
         var adjustment = new ObservanceAdjustment
         {
             Key = "test",
@@ -116,7 +116,7 @@ public sealed partial class NotableDateAdjusterTests
         };
 
         var friday = new DateTime(2025, 1, 3);
-        var result = adjuster.Apply(adjustment, SampleRule(), friday);
+        AdjustmentApplyResult result = adjuster.Apply(adjustment, SampleRule(), friday);
 
         Assert.IsTrue(result.Activated);
         Assert.AreEqual(new DateTime(2025, 1, 4), result.AdjustedDate);
@@ -128,7 +128,7 @@ public sealed partial class NotableDateAdjusterTests
     [TestMethod]
     public void Apply_WhenIfNonWorkingDayPredicateReturnsTrue_ShouldActivate()
     {
-        var adjuster = CreateAdjuster(isNonWorking: (d, t, c) => true);
+        NotableDateAdjuster adjuster = CreateAdjuster(isNonWorking: (d, t, c) => true);
         var adjustment = new ObservanceAdjustment
         {
             Key = "test",
@@ -137,7 +137,7 @@ public sealed partial class NotableDateAdjusterTests
             OffsetDays = 2,
         };
 
-        var result = adjuster.Apply(adjustment, SampleRule(), new DateTime(2025, 1, 1));
+        AdjustmentApplyResult result = adjuster.Apply(adjustment, SampleRule(), new DateTime(2025, 1, 1));
 
         Assert.IsTrue(result.Activated);
         Assert.AreEqual(new DateTime(2025, 1, 3), result.AdjustedDate);
@@ -149,7 +149,7 @@ public sealed partial class NotableDateAdjusterTests
     [TestMethod]
     public void Apply_WhenIfLeapYearAndYearIsLeap_ShouldActivate()
     {
-        var adjuster = CreateAdjuster();
+        NotableDateAdjuster adjuster = CreateAdjuster();
         var adjustment = new ObservanceAdjustment
         {
             Key = "test",
@@ -157,8 +157,8 @@ public sealed partial class NotableDateAdjusterTests
             Action = AdjustmentAction.None,
         };
 
-        var leap = adjuster.Apply(adjustment, SampleRule(), new DateTime(2024, 2, 29));
-        var common = adjuster.Apply(adjustment, SampleRule(), new DateTime(2025, 2, 28));
+        AdjustmentApplyResult leap = adjuster.Apply(adjustment, SampleRule(), new DateTime(2024, 2, 29));
+        AdjustmentApplyResult common = adjuster.Apply(adjustment, SampleRule(), new DateTime(2025, 2, 28));
 
         Assert.IsTrue(leap.Activated);
         Assert.IsFalse(common.Activated);
@@ -170,7 +170,7 @@ public sealed partial class NotableDateAdjusterTests
     [TestMethod]
     public void Apply_WhenIfBeforeFixedDate_ShouldUseProjectedYear()
     {
-        var adjuster = CreateAdjuster();
+        NotableDateAdjuster adjuster = CreateAdjuster();
         var adjustment = new ObservanceAdjustment
         {
             Key = "test",
@@ -180,8 +180,8 @@ public sealed partial class NotableDateAdjusterTests
             ComparisonDate = new DateTime(2000, 6, 1),
         };
 
-        var early = adjuster.Apply(adjustment, SampleRule(), new DateTime(2030, 5, 10));
-        var late = adjuster.Apply(adjustment, SampleRule(), new DateTime(2030, 6, 10));
+        AdjustmentApplyResult early = adjuster.Apply(adjustment, SampleRule(), new DateTime(2030, 5, 10));
+        AdjustmentApplyResult late = adjuster.Apply(adjustment, SampleRule(), new DateTime(2030, 6, 10));
 
         Assert.IsTrue(early.Activated);
         Assert.IsFalse(late.Activated);
@@ -194,7 +194,7 @@ public sealed partial class NotableDateAdjusterTests
     [TestMethod]
     public void Apply_WhenIfNthOccurrenceInMonth_ShouldRespectOrdinal()
     {
-        var adjuster = CreateAdjuster();
+        NotableDateAdjuster adjuster = CreateAdjuster();
         var adjustment = new ObservanceAdjustment
         {
             Key = "test",
@@ -204,8 +204,8 @@ public sealed partial class NotableDateAdjusterTests
         };
 
         // 8 January 2025 is the second day-of-week-ordinal slot.
-        var second = adjuster.Apply(adjustment, SampleRule(), new DateTime(2025, 1, 8));
-        var first = adjuster.Apply(adjustment, SampleRule(), new DateTime(2025, 1, 1));
+        AdjustmentApplyResult second = adjuster.Apply(adjustment, SampleRule(), new DateTime(2025, 1, 8));
+        AdjustmentApplyResult first = adjuster.Apply(adjustment, SampleRule(), new DateTime(2025, 1, 1));
 
         Assert.IsTrue(second.Activated);
         Assert.IsFalse(first.Activated);
@@ -220,7 +220,7 @@ public sealed partial class NotableDateAdjusterTests
     {
         // isNonWorking returns true for Sat/Sun. Walk starts from a Saturday (4 Jan 2025);
         // the next cursor is Sunday (non-working, skipped), then Monday (working) — the first eligible day.
-        var adjuster = CreateAdjuster(
+        NotableDateAdjuster adjuster = CreateAdjuster(
             isNonWorking: (d, t, c) => d.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday);
 
         var adjustment = new ObservanceAdjustment
@@ -231,7 +231,7 @@ public sealed partial class NotableDateAdjusterTests
         };
 
         var saturday = new DateTime(2025, 1, 4); // Sat
-        var result = adjuster.Apply(adjustment, SampleRule(), saturday);
+        AdjustmentApplyResult result = adjuster.Apply(adjustment, SampleRule(), saturday);
 
         Assert.IsTrue(result.Activated);
         Assert.AreEqual(DayOfWeek.Monday, result.AdjustedDate.DayOfWeek);
@@ -244,7 +244,7 @@ public sealed partial class NotableDateAdjusterTests
     public void Apply_WhenReplaceWithNamedDate_ShouldUseResolverCallback()
     {
         var target = new DateTime(2025, 12, 26);
-        var adjuster = CreateAdjuster(resolveByName: (name, year, t, c) =>
+        NotableDateAdjuster adjuster = CreateAdjuster(resolveByName: (name, year, t, c) =>
             string.Equals(name, "Boxing Day", StringComparison.OrdinalIgnoreCase) ? target : null);
 
         var adjustment = new ObservanceAdjustment
@@ -255,7 +255,7 @@ public sealed partial class NotableDateAdjusterTests
             TargetRuleName = "Boxing Day",
         };
 
-        var result = adjuster.Apply(adjustment, SampleRule(), new DateTime(2025, 12, 25));
+        AdjustmentApplyResult result = adjuster.Apply(adjustment, SampleRule(), new DateTime(2025, 12, 25));
 
         Assert.IsTrue(result.Activated);
         Assert.AreEqual(target, result.AdjustedDate);
@@ -267,10 +267,10 @@ public sealed partial class NotableDateAdjusterTests
     [TestMethod]
     public void Apply_WhenCustomTrigger_ShouldUseHandlerRegistry()
     {
-        var registry = new AdjustmentHandlerRegistry()
+        AdjustmentHandlerRegistry registry = new AdjustmentHandlerRegistry()
             .Register("shift-by-five", new ShiftByFiveDaysHandler());
 
-        var adjuster = CreateAdjuster(handlers: registry);
+        NotableDateAdjuster adjuster = CreateAdjuster(handlers: registry);
         var adjustment = new ObservanceAdjustment
         {
             Key = "test",
@@ -279,7 +279,7 @@ public sealed partial class NotableDateAdjusterTests
             HandlerKey = "shift-by-five",
         };
 
-        var result = adjuster.Apply(adjustment, SampleRule(), new DateTime(2025, 6, 1));
+        AdjustmentApplyResult result = adjuster.Apply(adjustment, SampleRule(), new DateTime(2025, 6, 1));
 
         Assert.IsTrue(result.Activated);
         Assert.AreEqual(new DateTime(2025, 6, 6), result.AdjustedDate);
@@ -370,9 +370,9 @@ public sealed partial class NotableDateAdjusterTests
     [TestMethod]
     public void Apply_WhenAdjustmentIsNull_ShouldThrowExactly()
     {
-        var adjuster = CreateAdjuster();
+        NotableDateAdjuster adjuster = CreateAdjuster();
 
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = adjuster.Apply(null!, SampleRule(), new DateTime(2025, 1, 1));
         });
@@ -388,7 +388,7 @@ public sealed partial class NotableDateAdjusterTests
     [TestMethod]
     public void Apply_WhenRuleIsNull_ShouldThrowExactly()
     {
-        var adjuster = CreateAdjuster();
+        NotableDateAdjuster adjuster = CreateAdjuster();
         var adjustment = new ObservanceAdjustment
         {
             Key = "k",
@@ -396,7 +396,7 @@ public sealed partial class NotableDateAdjusterTests
             Action = AdjustmentAction.None,
         };
 
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = adjuster.Apply(adjustment, null!, new DateTime(2025, 1, 1));
         });
@@ -412,7 +412,7 @@ public sealed partial class NotableDateAdjusterTests
     [TestMethod]
     public void IsInScope_WhenAdjustmentIsNull_ShouldThrowExactly()
     {
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = NotableDateAdjuster.IsInScope(null!, 2025, null, null);
         });
@@ -427,7 +427,7 @@ public sealed partial class NotableDateAdjusterTests
     [TestMethod]
     public void Ctor_WhenIsWeekendIsNull_ShouldThrowExactly()
     {
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = new NotableDateAdjuster(
                 isWeekend: null!,
@@ -445,7 +445,7 @@ public sealed partial class NotableDateAdjusterTests
     [TestMethod]
     public void Ctor_WhenIsNonWorkingDayIsNull_ShouldThrowExactly()
     {
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = new NotableDateAdjuster(
                 isWeekend: _ => false,
@@ -480,7 +480,7 @@ public sealed partial class NotableDateAdjusterTests
             ? new AdjustmentHandlerRegistry().Register("other-key", new ShiftByFiveDaysHandler())
             : null;
 
-        var adjuster = CreateAdjuster(handlers: registry);
+        NotableDateAdjuster adjuster = CreateAdjuster(handlers: registry);
         var adjustment = new ObservanceAdjustment
         {
             Key = "k",
@@ -490,7 +490,7 @@ public sealed partial class NotableDateAdjusterTests
         };
 
         var original = new DateTime(2025, 6, 1);
-        var result = adjuster.Apply(adjustment, SampleRule(), original);
+        AdjustmentApplyResult result = adjuster.Apply(adjustment, SampleRule(), original);
 
         Assert.IsFalse(result.Activated);
         Assert.AreEqual(original, result.AdjustedDate);
@@ -503,8 +503,8 @@ public sealed partial class NotableDateAdjusterTests
     [TestMethod]
     public void Apply_WhenCustomTriggerAndHandlerDeclinesActivation_ShouldReturnNotActivated()
     {
-        var registry = new AdjustmentHandlerRegistry().Register("decline", new DeclineHandler());
-        var adjuster = CreateAdjuster(handlers: registry);
+        AdjustmentHandlerRegistry registry = new AdjustmentHandlerRegistry().Register("decline", new DeclineHandler());
+        NotableDateAdjuster adjuster = CreateAdjuster(handlers: registry);
         var adjustment = new ObservanceAdjustment
         {
             Key = "k",
@@ -514,7 +514,7 @@ public sealed partial class NotableDateAdjusterTests
         };
 
         var original = new DateTime(2025, 6, 1);
-        var result = adjuster.Apply(adjustment, SampleRule(), original);
+        AdjustmentApplyResult result = adjuster.Apply(adjustment, SampleRule(), original);
 
         Assert.IsFalse(result.Activated);
         Assert.AreEqual(original, result.AdjustedDate);
@@ -527,10 +527,10 @@ public sealed partial class NotableDateAdjusterTests
     [TestMethod]
     public void Apply_WhenCustomHandlerReturnsNonWorkingOverride_ShouldForwardToResult()
     {
-        var registry = new AdjustmentHandlerRegistry().Register(
+        AdjustmentHandlerRegistry registry = new AdjustmentHandlerRegistry().Register(
             "flag-non-working",
             new FlagNonWorkingHandler());
-        var adjuster = CreateAdjuster(handlers: registry);
+        NotableDateAdjuster adjuster = CreateAdjuster(handlers: registry);
         var adjustment = new ObservanceAdjustment
         {
             Key = "k",
@@ -540,7 +540,7 @@ public sealed partial class NotableDateAdjusterTests
             IsNonWorkingDay = false,
         };
 
-        var result = adjuster.Apply(adjustment, SampleRule(), new DateTime(2025, 6, 1));
+        AdjustmentApplyResult result = adjuster.Apply(adjustment, SampleRule(), new DateTime(2025, 6, 1));
 
         Assert.IsTrue(result.Activated);
         Assert.IsTrue(result.IsNonWorkingOverride);
@@ -558,7 +558,7 @@ public sealed partial class NotableDateAdjusterTests
     public void Apply_WhenMoveToNextNonWorkingDayPredicateNeverMatches_ShouldReturnOriginal()
     {
         // isNonWorking always returns true — every day is non-working — so no working day is ever found.
-        var adjuster = CreateAdjuster(isNonWorking: (d, t, c) => true);
+        NotableDateAdjuster adjuster = CreateAdjuster(isNonWorking: (d, t, c) => true);
         var adjustment = new ObservanceAdjustment
         {
             Key = "k",
@@ -567,7 +567,7 @@ public sealed partial class NotableDateAdjusterTests
         };
 
         var original = new DateTime(2025, 6, 1);
-        var result = adjuster.Apply(adjustment, SampleRule(), original);
+        AdjustmentApplyResult result = adjuster.Apply(adjustment, SampleRule(), original);
 
         Assert.IsTrue(result.Activated);
         Assert.AreEqual(original, result.AdjustedDate);
@@ -584,7 +584,7 @@ public sealed partial class NotableDateAdjusterTests
     [TestMethod]
     public void Apply_WhenReplaceWithNamedDateAndTargetIsMissing_ShouldReturnOriginal(string? target)
     {
-        var adjuster = CreateAdjuster(resolveByName: (name, year, t, c) => new DateTime(year, 12, 26));
+        NotableDateAdjuster adjuster = CreateAdjuster(resolveByName: (name, year, t, c) => new DateTime(year, 12, 26));
         var adjustment = new ObservanceAdjustment
         {
             Key = "k",
@@ -594,7 +594,7 @@ public sealed partial class NotableDateAdjusterTests
         };
 
         var original = new DateTime(2025, 6, 1);
-        var result = adjuster.Apply(adjustment, SampleRule(), original);
+        AdjustmentApplyResult result = adjuster.Apply(adjustment, SampleRule(), original);
 
         Assert.IsTrue(result.Activated);
         Assert.AreEqual(original, result.AdjustedDate);
@@ -608,7 +608,7 @@ public sealed partial class NotableDateAdjusterTests
     [TestMethod]
     public void Apply_WhenReplaceWithNamedDateAndResolverIsNull_ShouldReturnOriginal()
     {
-        var adjuster = CreateAdjuster(resolveByName: null);
+        NotableDateAdjuster adjuster = CreateAdjuster(resolveByName: null);
         var adjustment = new ObservanceAdjustment
         {
             Key = "k",
@@ -618,7 +618,7 @@ public sealed partial class NotableDateAdjusterTests
         };
 
         var original = new DateTime(2025, 6, 1);
-        var result = adjuster.Apply(adjustment, SampleRule(), original);
+        AdjustmentApplyResult result = adjuster.Apply(adjustment, SampleRule(), original);
 
         Assert.IsTrue(result.Activated);
         Assert.AreEqual(original, result.AdjustedDate);
@@ -631,7 +631,7 @@ public sealed partial class NotableDateAdjusterTests
     [TestMethod]
     public void Apply_WhenReplaceWithNamedDateAndResolverReturnsNull_ShouldReturnOriginal()
     {
-        var adjuster = CreateAdjuster(resolveByName: (name, year, t, c) => null);
+        NotableDateAdjuster adjuster = CreateAdjuster(resolveByName: (name, year, t, c) => null);
         var adjustment = new ObservanceAdjustment
         {
             Key = "k",
@@ -641,7 +641,7 @@ public sealed partial class NotableDateAdjusterTests
         };
 
         var original = new DateTime(2025, 6, 1);
-        var result = adjuster.Apply(adjustment, SampleRule(), original);
+        AdjustmentApplyResult result = adjuster.Apply(adjustment, SampleRule(), original);
 
         Assert.IsTrue(result.Activated);
         Assert.AreEqual(original, result.AdjustedDate);
@@ -654,7 +654,7 @@ public sealed partial class NotableDateAdjusterTests
     [TestMethod]
     public void Apply_WhenActionIsNone_ShouldActivateWithoutChangingDate()
     {
-        var adjuster = CreateAdjuster();
+        NotableDateAdjuster adjuster = CreateAdjuster();
         var adjustment = new ObservanceAdjustment
         {
             Key = "k",
@@ -663,7 +663,7 @@ public sealed partial class NotableDateAdjusterTests
         };
 
         var original = new DateTime(2025, 6, 1);
-        var result = adjuster.Apply(adjustment, SampleRule(), original);
+        AdjustmentApplyResult result = adjuster.Apply(adjustment, SampleRule(), original);
 
         Assert.IsTrue(result.Activated);
         Assert.AreEqual(original, result.AdjustedDate);
@@ -676,7 +676,7 @@ public sealed partial class NotableDateAdjusterTests
     [TestMethod]
     public void Apply_WhenSundayAndMoveToPreviousWeekday_ShouldYieldFriday()
     {
-        var adjuster = CreateAdjuster();
+        NotableDateAdjuster adjuster = CreateAdjuster();
         var adjustment = new ObservanceAdjustment
         {
             Key = "k",
@@ -685,7 +685,7 @@ public sealed partial class NotableDateAdjusterTests
         };
 
         var sunday = new DateTime(2026, 1, 4);
-        var result = adjuster.Apply(adjustment, SampleRule(), sunday);
+        AdjustmentApplyResult result = adjuster.Apply(adjustment, SampleRule(), sunday);
 
         Assert.IsTrue(result.Activated);
         Assert.AreEqual(DayOfWeek.Friday, result.AdjustedDate.DayOfWeek);
@@ -706,7 +706,7 @@ public sealed partial class NotableDateAdjusterTests
     [TestMethod]
     public void Apply_IfWeekdayTrigger_ShouldActivateOnlyOnWeekdays(string dateIso, bool expectedActivation)
     {
-        var adjuster = CreateAdjuster();
+        NotableDateAdjuster adjuster = CreateAdjuster();
         var adjustment = new ObservanceAdjustment
         {
             Key = "k",
@@ -714,7 +714,7 @@ public sealed partial class NotableDateAdjusterTests
             Action = AdjustmentAction.None,
         };
 
-        var result = adjuster.Apply(adjustment, SampleRule(), DateTime.Parse(dateIso));
+        AdjustmentApplyResult result = adjuster.Apply(adjustment, SampleRule(), DateTime.Parse(dateIso));
 
         Assert.AreEqual(expectedActivation, result.Activated);
     }
@@ -730,7 +730,7 @@ public sealed partial class NotableDateAdjusterTests
     [TestMethod]
     public void Apply_IfAfterFixedDateTrigger_ShouldActivateOnStrictlyAfter(string originalIso, bool expectedActivation)
     {
-        var adjuster = CreateAdjuster();
+        NotableDateAdjuster adjuster = CreateAdjuster();
         var adjustment = new ObservanceAdjustment
         {
             Key = "k",
@@ -740,7 +740,7 @@ public sealed partial class NotableDateAdjusterTests
             ComparisonDate = new DateTime(2000, 6, 1),
         };
 
-        var result = adjuster.Apply(adjustment, SampleRule(), DateTime.Parse(originalIso));
+        AdjustmentApplyResult result = adjuster.Apply(adjustment, SampleRule(), DateTime.Parse(originalIso));
 
         Assert.AreEqual(expectedActivation, result.Activated);
     }
@@ -753,7 +753,7 @@ public sealed partial class NotableDateAdjusterTests
     [TestMethod]
     public void Apply_WhenIfDayOfWeekAndDayOfWeekIsNull_ShouldNotActivate()
     {
-        var adjuster = CreateAdjuster();
+        NotableDateAdjuster adjuster = CreateAdjuster();
         var adjustment = new ObservanceAdjustment
         {
             Key = "k",
@@ -762,7 +762,7 @@ public sealed partial class NotableDateAdjusterTests
             DayOfWeek = null,
         };
 
-        var result = adjuster.Apply(adjustment, SampleRule(), new DateTime(2025, 6, 2));
+        AdjustmentApplyResult result = adjuster.Apply(adjustment, SampleRule(), new DateTime(2025, 6, 2));
 
         Assert.IsFalse(result.Activated);
     }
@@ -774,7 +774,7 @@ public sealed partial class NotableDateAdjusterTests
     [TestMethod]
     public void Apply_WhenIfNthOccurrenceAndOrdinalIsNull_ShouldNotActivate()
     {
-        var adjuster = CreateAdjuster();
+        NotableDateAdjuster adjuster = CreateAdjuster();
         var adjustment = new ObservanceAdjustment
         {
             Key = "k",
@@ -783,7 +783,7 @@ public sealed partial class NotableDateAdjusterTests
             WeekOrdinal = null,
         };
 
-        var result = adjuster.Apply(adjustment, SampleRule(), new DateTime(2025, 1, 8));
+        AdjustmentApplyResult result = adjuster.Apply(adjustment, SampleRule(), new DateTime(2025, 1, 8));
 
         Assert.IsFalse(result.Activated);
     }
@@ -798,7 +798,7 @@ public sealed partial class NotableDateAdjusterTests
     [TestMethod]
     public void Apply_WhenFixedDateTriggerAndComparisonIsNull_ShouldNotActivate(AdjustmentTrigger trigger)
     {
-        var adjuster = CreateAdjuster();
+        NotableDateAdjuster adjuster = CreateAdjuster();
         var adjustment = new ObservanceAdjustment
         {
             Key = "k",
@@ -807,7 +807,7 @@ public sealed partial class NotableDateAdjusterTests
             ComparisonDate = null,
         };
 
-        var result = adjuster.Apply(adjustment, SampleRule(), new DateTime(2025, 6, 1));
+        AdjustmentApplyResult result = adjuster.Apply(adjustment, SampleRule(), new DateTime(2025, 6, 1));
 
         Assert.IsFalse(result.Activated);
     }
@@ -820,7 +820,7 @@ public sealed partial class NotableDateAdjusterTests
     [TestMethod]
     public void Apply_WhenIfBeforeFixedDateAndComparisonIsFeb29InNonLeapYear_ShouldClampDayAndNotThrow()
     {
-        var adjuster = CreateAdjuster();
+        NotableDateAdjuster adjuster = CreateAdjuster();
         var adjustment = new ObservanceAdjustment
         {
             Key = "k",
@@ -831,9 +831,9 @@ public sealed partial class NotableDateAdjusterTests
         };
 
         // Original in a non-leap year before 28 February ⇒ should activate; on/after 28 Feb ⇒ no.
-        var before = adjuster.Apply(adjustment, SampleRule(), new DateTime(2025, 2, 15));
-        var onClamped = adjuster.Apply(adjustment, SampleRule(), new DateTime(2025, 2, 28));
-        var after = adjuster.Apply(adjustment, SampleRule(), new DateTime(2025, 3, 1));
+        AdjustmentApplyResult before = adjuster.Apply(adjustment, SampleRule(), new DateTime(2025, 2, 15));
+        AdjustmentApplyResult onClamped = adjuster.Apply(adjustment, SampleRule(), new DateTime(2025, 2, 28));
+        AdjustmentApplyResult after = adjuster.Apply(adjustment, SampleRule(), new DateTime(2025, 3, 1));
 
         Assert.IsTrue(before.Activated);
         Assert.IsFalse(onClamped.Activated);

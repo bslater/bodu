@@ -64,7 +64,7 @@ public sealed class GregorianEasterSundayNotableDateProviderTests
     [TestMethod]
     public void GetDates_WhenCalendarIsJulian_ShouldThrowExactly()
     {
-        var ex = Assert.ThrowsExactly<NotSupportedException>(() =>
+        NotSupportedException ex = Assert.ThrowsExactly<NotSupportedException>(() =>
         {
             _ = _provider.GetDates(2026, new SysGlob.JulianCalendar());
         });

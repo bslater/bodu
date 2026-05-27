@@ -25,7 +25,7 @@ public partial class NotableDateServiceTests
 
         // 1000 unrelated removals across distinct rule names so the linear-scan baseline would have to skip every
         // one before finding the targeted removal.
-        var removals = Enumerable.Range(0, 1000)
+        RuleRemoval[] removals = Enumerable.Range(0, 1000)
             .Select(i => new RuleRemoval($"Unrelated-{i}"))
             .Concat([new RuleRemoval("Targeted Holiday", FromYear: 2026, ToYear: 2026)])
             .ToArray();

@@ -88,7 +88,7 @@ public sealed partial class XmlResourceNotableDateRuleProviderTests
     [TestMethod]
     public void Ctor_WhenXmlResourceNameIsNull_ShouldThrowExactly()
     {
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = new XmlResourceNotableDateRuleProvider(null!, new ResourcePathResolver());
         });
@@ -119,7 +119,7 @@ public sealed partial class XmlResourceNotableDateRuleProviderTests
     [TestMethod]
     public void Ctor_WhenAssemblyChainIsNull_ShouldThrowExactly()
     {
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = new XmlResourceNotableDateRuleProvider(CommonResource, new ResourcePathResolver(), (IEnumerable<Assembly>)null!);
         });
@@ -133,7 +133,7 @@ public sealed partial class XmlResourceNotableDateRuleProviderTests
     [TestMethod]
     public void Ctor_WhenAssemblyChainIsEmpty_ShouldThrowExactly()
     {
-        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             _ = new XmlResourceNotableDateRuleProvider(CommonResource, new ResourcePathResolver(), Array.Empty<Assembly>());
         });
@@ -148,7 +148,7 @@ public sealed partial class XmlResourceNotableDateRuleProviderTests
     [TestMethod]
     public void Ctor_WhenAssemblyChainContainsNull_ShouldThrowExactly()
     {
-        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             _ = new XmlResourceNotableDateRuleProvider(
                 CommonResource,

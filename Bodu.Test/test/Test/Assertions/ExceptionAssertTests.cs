@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExceptionAssertTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -114,7 +114,7 @@ public sealed class ExceptionAssertTests
     [TestMethod]
     public void AssertGuard_WithGuardValidKat_ShouldInvokeHelperAndPass()
     {
-        bool invoked = false;
+        var invoked = false;
         GuardValidKat<int> kat = new("distinct values", 1, 2);
 
         ExceptionAssert.AssertGuard(kat, (value, other, _) =>

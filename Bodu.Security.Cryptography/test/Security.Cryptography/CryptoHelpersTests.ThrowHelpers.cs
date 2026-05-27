@@ -103,7 +103,7 @@ public partial class CryptoHelpersTests
     public void ThrowIfInvalidBlockSize_WhenLengthMatches_ShouldNotThrow()
     {
         var value = new byte[8];
-        var legal = new[] { new KeySizes(64, 64, 0) };
+        KeySizes[] legal = new[] { new KeySizes(64, 64, 0) };
 
         CryptoHelpers.ThrowIfInvalidBlockSize(value, 64, legal);
     }
@@ -115,7 +115,7 @@ public partial class CryptoHelpersTests
     [TestMethod]
     public void ThrowIfInvalidBlockSize_WhenValueIsNull_ShouldThrowExactly()
     {
-        var legal = new[] { new KeySizes(64, 64, 0) };
+        KeySizes[] legal = new[] { new KeySizes(64, 64, 0) };
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -146,7 +146,7 @@ public partial class CryptoHelpersTests
     public void ThrowIfInvalidBlockSize_WhenLengthDoesNotMatch_ShouldThrowExactly()
     {
         var value = new byte[6];
-        var legal = new[] { new KeySizes(64, 64, 0) };
+        KeySizes[] legal = new[] { new KeySizes(64, 64, 0) };
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
@@ -181,7 +181,7 @@ public partial class CryptoHelpersTests
     [TestMethod]
     public void FormatLegalSizes_WhenSkipSizeIsZero_ShouldFormatMinSizeOnly()
     {
-        var keySizes = new[] { new KeySizes(128, 256, 0) };
+        KeySizes[] keySizes = new[] { new KeySizes(128, 256, 0) };
 
         Assert.AreEqual("128", CryptoHelpers.FormatLegalSizes(keySizes));
     }
@@ -193,7 +193,7 @@ public partial class CryptoHelpersTests
     [TestMethod]
     public void FormatLegalSizes_WhenSkipSizeIsPositive_ShouldFormatAllAllowedSizes()
     {
-        var keySizes = new[] { new KeySizes(128, 256, 64) };
+        KeySizes[] keySizes = new[] { new KeySizes(128, 256, 64) };
 
         Assert.AreEqual("128, 192, 256", CryptoHelpers.FormatLegalSizes(keySizes));
     }
@@ -205,7 +205,7 @@ public partial class CryptoHelpersTests
     [TestMethod]
     public void FormatLegalSizes_WhenMultipleOverlappingEntries_ShouldReturnDistinctOrderedValues()
     {
-        var keySizes = new[]
+        KeySizes[] keySizes = new[]
         {
             new KeySizes(256, 256, 0),
             new KeySizes(128, 192, 64),

@@ -63,8 +63,8 @@ public sealed class UseDirectiveInheritanceTests
             "  </UseFrom>\n" +
             "</NotableDates>";
 
-        var document = NotableDateRuleParser.ParseDocument(xml);
-        var directive = document.UseGroups[0].Uses[0];
+        ParsedNotableDateDocument document = NotableDateRuleParser.ParseDocument(xml);
+        NotableDateRuleUseDirective directive = document.UseGroups[0].Uses[0];
 
         Assert.AreEqual("New Year's Day", directive.SourceRuleName);
         Assert.IsTrue(directive.ClearAdjustments);
@@ -93,7 +93,7 @@ public sealed class UseDirectiveInheritanceTests
             "  </UseFrom>\n" +
             "</NotableDates>";
 
-        var directive = NotableDateRuleParser.ParseDocument(xml).UseGroups[0].Uses[0];
+        NotableDateRuleUseDirective directive = NotableDateRuleParser.ParseDocument(xml).UseGroups[0].Uses[0];
 
         Assert.IsNotNull(directive.OverrideBody);
         Assert.IsNull(directive.OverrideBody!.Strategy);
@@ -131,13 +131,13 @@ public sealed class UseDirectiveInheritanceTests
     [TestMethod]
     public void Apply_WhenDirectiveHasNoOverrideBody_ShouldApplyFlatAttributesOnly()
     {
-        var source = SampleSourceRule();
+        NotableDateRule source = SampleSourceRule();
         var directive = new NotableDateRuleUseDirective(
             SourceRuleName: source.Name,
             TerritoryCode: "AU",
             IsNonWorkingDay: true);
 
-        var merged = NotableDateRuleMerger.Apply(source, directive);
+        NotableDateRule merged = NotableDateRuleMerger.Apply(source, directive);
 
         Assert.AreEqual("AU", merged.TerritoryCode);
         Assert.AreEqual(true, merged.IsNonWorkingDay);
@@ -152,7 +152,7 @@ public sealed class UseDirectiveInheritanceTests
     [TestMethod]
     public void Apply_WhenOverrideBodyAddsTag_ShouldUnionWithInheritedTags()
     {
-        var source = SampleSourceRule() with { Tags = ImmutableHashSet.Create(StringComparer.OrdinalIgnoreCase, "Christian") };
+        NotableDateRule source = SampleSourceRule() with { Tags = ImmutableHashSet.Create(StringComparer.OrdinalIgnoreCase, "Christian") };
         var directive = new NotableDateRuleUseDirective(
             SourceRuleName: source.Name,
             OverrideBody: new NotableDateRuleOverrideBody
@@ -160,7 +160,7 @@ public sealed class UseDirectiveInheritanceTests
                 Tags = ImmutableArray.Create("NationalHoliday"),
             });
 
-        var merged = NotableDateRuleMerger.Apply(source, directive);
+        NotableDateRule merged = NotableDateRuleMerger.Apply(source, directive);
 
         CollectionAssert.AreEquivalent(new[] { "Christian", "NationalHoliday" }, merged.Tags.ToArray());
     }
@@ -178,7 +178,7 @@ public sealed class UseDirectiveInheritanceTests
             Trigger = AdjustmentTrigger.IfWeekend,
             Action = AdjustmentAction.MoveToNextWeekday,
         };
-        var source = SampleSourceRule() with { Adjustments = ImmutableArray.Create(inherited) };
+        NotableDateRule source = SampleSourceRule() with { Adjustments = ImmutableArray.Create(inherited) };
 
         var overrideAdjustment = new ObservanceAdjustment
         {
@@ -193,7 +193,7 @@ public sealed class UseDirectiveInheritanceTests
                 Adjustments = ImmutableArray.Create(overrideAdjustment),
             });
 
-        var merged = NotableDateRuleMerger.Apply(source, directive);
+        NotableDateRule merged = NotableDateRuleMerger.Apply(source, directive);
 
         Assert.AreEqual(1, merged.Adjustments.Length);
         Assert.AreEqual(AdjustmentAction.MoveToPreviousWeekday, merged.Adjustments[0].Action);
@@ -211,7 +211,7 @@ public sealed class UseDirectiveInheritanceTests
             Trigger = AdjustmentTrigger.IfWeekend,
             Action = AdjustmentAction.MoveToNextWeekday,
         };
-        var source = SampleSourceRule() with { Adjustments = ImmutableArray.Create(inherited) };
+        NotableDateRule source = SampleSourceRule() with { Adjustments = ImmutableArray.Create(inherited) };
 
         var extra = new ObservanceAdjustment
         {
@@ -226,7 +226,7 @@ public sealed class UseDirectiveInheritanceTests
                 Adjustments = ImmutableArray.Create(extra),
             });
 
-        var merged = NotableDateRuleMerger.Apply(source, directive);
+        NotableDateRule merged = NotableDateRuleMerger.Apply(source, directive);
 
         Assert.AreEqual(2, merged.Adjustments.Length);
         Assert.AreEqual("weekend-roll", merged.Adjustments[0].Key);
@@ -246,7 +246,7 @@ public sealed class UseDirectiveInheritanceTests
             Trigger = AdjustmentTrigger.IfWeekend,
             Action = AdjustmentAction.MoveToNextWeekday,
         };
-        var source = SampleSourceRule() with { Adjustments = ImmutableArray.Create(inherited) };
+        NotableDateRule source = SampleSourceRule() with { Adjustments = ImmutableArray.Create(inherited) };
 
         var custom = new ObservanceAdjustment
         {
@@ -262,7 +262,7 @@ public sealed class UseDirectiveInheritanceTests
                 Adjustments = ImmutableArray.Create(custom),
             });
 
-        var merged = NotableDateRuleMerger.Apply(source, directive);
+        NotableDateRule merged = NotableDateRuleMerger.Apply(source, directive);
 
         Assert.AreEqual(1, merged.Adjustments.Length);
         Assert.AreEqual("custom", merged.Adjustments[0].Key);
@@ -275,7 +275,7 @@ public sealed class UseDirectiveInheritanceTests
     [TestMethod]
     public void Apply_WhenClearTagsTrue_ShouldReplaceInheritedTags()
     {
-        var source = SampleSourceRule() with
+        NotableDateRule source = SampleSourceRule() with
         {
             Tags = ImmutableHashSet.Create(StringComparer.OrdinalIgnoreCase, "Christian", "Easter"),
         };
@@ -287,7 +287,7 @@ public sealed class UseDirectiveInheritanceTests
                 Tags = ImmutableArray.Create("Secular"),
             });
 
-        var merged = NotableDateRuleMerger.Apply(source, directive);
+        NotableDateRule merged = NotableDateRuleMerger.Apply(source, directive);
 
         CollectionAssert.AreEquivalent(new[] { "Secular" }, merged.Tags.ToArray());
     }
@@ -298,7 +298,7 @@ public sealed class UseDirectiveInheritanceTests
     [TestMethod]
     public void Apply_WhenOverrideBodyHasNoStrategy_ShouldKeepInheritedStrategy()
     {
-        var source = SampleSourceRule();
+        NotableDateRule source = SampleSourceRule();
         var directive = new NotableDateRuleUseDirective(
             SourceRuleName: source.Name,
             OverrideBody: new NotableDateRuleOverrideBody
@@ -306,7 +306,7 @@ public sealed class UseDirectiveInheritanceTests
                 TerritoryCode = "AU",
             });
 
-        var merged = NotableDateRuleMerger.Apply(source, directive);
+        NotableDateRule merged = NotableDateRuleMerger.Apply(source, directive);
 
         Assert.AreEqual(source.Strategy, merged.Strategy);
         Assert.AreEqual(source.Month, merged.Month);
@@ -320,7 +320,7 @@ public sealed class UseDirectiveInheritanceTests
     [TestMethod]
     public void Apply_WhenOverrideBodyDeclaresNewStrategy_ShouldReplaceAndClearStaleFields()
     {
-        var source = SampleSourceRule(); // Fixed strategy with Month=1, Day=1
+        NotableDateRule source = SampleSourceRule(); // Fixed strategy with Month=1, Day=1
         var directive = new NotableDateRuleUseDirective(
             SourceRuleName: source.Name,
             OverrideBody: new NotableDateRuleOverrideBody
@@ -331,7 +331,7 @@ public sealed class UseDirectiveInheritanceTests
                 WeekOrdinal = WeekOfMonthOrdinal.First,
             });
 
-        var merged = NotableDateRuleMerger.Apply(source, directive);
+        NotableDateRule merged = NotableDateRuleMerger.Apply(source, directive);
 
         Assert.AreEqual(DateResolutionStrategy.DayOfWeekInMonth, merged.Strategy);
         Assert.AreEqual(1, merged.Month);
@@ -347,7 +347,7 @@ public sealed class UseDirectiveInheritanceTests
     [TestMethod]
     public void Apply_WhenFlatAndBodyBothSpecifyTerritory_ShouldUseBody()
     {
-        var source = SampleSourceRule();
+        NotableDateRule source = SampleSourceRule();
         var directive = new NotableDateRuleUseDirective(
             SourceRuleName: source.Name,
             TerritoryCode: "AU",
@@ -356,7 +356,7 @@ public sealed class UseDirectiveInheritanceTests
                 TerritoryCode = "NZ",
             });
 
-        var merged = NotableDateRuleMerger.Apply(source, directive);
+        NotableDateRule merged = NotableDateRuleMerger.Apply(source, directive);
 
         Assert.AreEqual("NZ", merged.TerritoryCode);
     }
@@ -517,7 +517,7 @@ public sealed class UseDirectiveInheritanceTests
             "  </UseFrom>\n" +
             "</NotableDates>";
 
-        var directive = NotableDateRuleParser.ParseDocument(xml).UseGroups[0].Uses[0];
+        NotableDateRuleUseDirective directive = NotableDateRuleParser.ParseDocument(xml).UseGroups[0].Uses[0];
 
         Assert.IsNotNull(directive.OverrideBody);
         Assert.AreEqual("Australian Christmas Day With Non-Working-Day Roll", directive.OverrideBody!.RuleName);
@@ -540,7 +540,7 @@ public sealed class UseDirectiveInheritanceTests
             "  </NotableDate>\n" +
             "</NotableDates>";
 
-        var rule = NotableDateRuleParser.ParseXml(xml).Single();
+        NotableDateRule rule = NotableDateRuleParser.ParseXml(xml).Single();
 
         Assert.AreEqual("King's Birthday", rule.Name);
         Assert.AreEqual("Second Monday In June King's Birthday (NSW)", rule.RuleName);
@@ -560,7 +560,7 @@ public sealed class UseDirectiveInheritanceTests
             "  </UseFrom>\n" +
             "</NotableDates>";
 
-        var uses = NotableDateRuleParser.ParseDocument(xml).UseGroups[0].Uses;
+        ImmutableArray<NotableDateRuleUseDirective> uses = NotableDateRuleParser.ParseDocument(xml).UseGroups[0].Uses;
 
         Assert.IsTrue(uses[0].ClearInherited);
         Assert.IsFalse(uses[1].ClearInherited);
@@ -577,12 +577,12 @@ public sealed class UseDirectiveInheritanceTests
     [TestMethod]
     public void Apply_WhenBodyDeclaresRuleName_ShouldPropagateToMergedRule()
     {
-        var source = SampleSourceRule() with { RuleName = "Source Rule Identifier" };
+        NotableDateRule source = SampleSourceRule() with { RuleName = "Source Rule Identifier" };
         var directive = new NotableDateRuleUseDirective(
             SourceRuleName: source.Name,
             OverrideBody: new NotableDateRuleOverrideBody { RuleName = "Override Rule Identifier" });
 
-        var merged = NotableDateRuleMerger.Apply(source, directive);
+        NotableDateRule merged = NotableDateRuleMerger.Apply(source, directive);
 
         Assert.AreEqual("Override Rule Identifier", merged.RuleName);
     }
@@ -594,12 +594,12 @@ public sealed class UseDirectiveInheritanceTests
     [TestMethod]
     public void Apply_WhenBodyOmitsRuleName_ShouldPreserveInheritedRuleName()
     {
-        var source = SampleSourceRule() with { RuleName = "Source Rule Identifier" };
+        NotableDateRule source = SampleSourceRule() with { RuleName = "Source Rule Identifier" };
         var directive = new NotableDateRuleUseDirective(
             SourceRuleName: source.Name,
             OverrideBody: new NotableDateRuleOverrideBody { TerritoryCode = "AU" });
 
-        var merged = NotableDateRuleMerger.Apply(source, directive);
+        NotableDateRule merged = NotableDateRuleMerger.Apply(source, directive);
 
         Assert.AreEqual("Source Rule Identifier", merged.RuleName);
     }

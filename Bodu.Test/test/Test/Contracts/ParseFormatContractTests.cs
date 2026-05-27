@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ParseFormatContractTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -106,7 +106,7 @@ public abstract class ParseFormatContractTests<T>
     {
         foreach (InvalidKat<string> kat in InvalidCases)
         {
-            bool success = TryParse(kat.Input, format: null, provider: null, out _);
+            var success = TryParse(kat.Input, format: null, provider: null, out _);
 
             Assert.IsFalse(success, $"Invalid KAT '{kat.Name}': TryParse must return false.");
         }
@@ -121,7 +121,7 @@ public abstract class ParseFormatContractTests<T>
         foreach (ValidKat<string, T> kat in ValidCases)
         {
             T parsed = Parse(kat.Input);
-            string text = Format(parsed);
+            var text = Format(parsed);
             T again = Parse(text);
 
             Assert.AreEqual(parsed, again, $"KAT '{kat.Name}': round-trip lost value identity.");

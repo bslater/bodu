@@ -37,8 +37,8 @@ public partial class NotableDateRuleJsonParserTests
 			} ]
 		}";
 
-        var document = NotableDateRuleJsonParser.ParseDocument(json);
-        var directive = document.UseGroups.Single().Uses.Single();
+        ParsedNotableDateDocument document = NotableDateRuleJsonParser.ParseDocument(json);
+        NotableDateRuleUseDirective directive = document.UseGroups.Single().Uses.Single();
 
         Assert.IsNotNull(directive.OverrideBody);
         Assert.AreEqual(DateResolutionStrategy.Fixed, directive.OverrideBody!.Strategy);
@@ -68,8 +68,8 @@ public partial class NotableDateRuleJsonParserTests
 			} ]
 		}";
 
-        var document = NotableDateRuleJsonParser.ParseDocument(json);
-        var body = document.UseGroups.Single().Uses.Single().OverrideBody!;
+        ParsedNotableDateDocument document = NotableDateRuleJsonParser.ParseDocument(json);
+        NotableDateRuleOverrideBody body = document.UseGroups.Single().Uses.Single().OverrideBody!;
 
         Assert.IsTrue(body.SkipLeapMonth);
         Assert.IsTrue(body.SweepCalendarYears);
@@ -96,8 +96,8 @@ public partial class NotableDateRuleJsonParserTests
 			} ]
 		}";
 
-        var document = NotableDateRuleJsonParser.ParseDocument(json);
-        var body = document.UseGroups.Single().Uses.Single().OverrideBody!;
+        ParsedNotableDateDocument document = NotableDateRuleJsonParser.ParseDocument(json);
+        NotableDateRuleOverrideBody body = document.UseGroups.Single().Uses.Single().OverrideBody!;
 
         Assert.IsNull(body.Month);
         Assert.AreEqual("Nisan", body.CalendarMonthAlias);
@@ -123,8 +123,8 @@ public partial class NotableDateRuleJsonParserTests
 			} ]
 		}";
 
-        var document = NotableDateRuleJsonParser.ParseDocument(json);
-        var body = document.UseGroups.Single().Uses.Single().OverrideBody!;
+        ParsedNotableDateDocument document = NotableDateRuleJsonParser.ParseDocument(json);
+        NotableDateRuleOverrideBody body = document.UseGroups.Single().Uses.Single().OverrideBody!;
 
         Assert.AreEqual(DateResolutionStrategy.OffsetFromAnchor, body.Strategy);
         Assert.AreEqual("Easter Sunday", body.AnchorRuleName);
@@ -151,8 +151,8 @@ public partial class NotableDateRuleJsonParserTests
 			} ]
 		}";
 
-        var document = NotableDateRuleJsonParser.ParseDocument(json);
-        var body = document.UseGroups.Single().Uses.Single().OverrideBody!;
+        ParsedNotableDateDocument document = NotableDateRuleJsonParser.ParseDocument(json);
+        NotableDateRuleOverrideBody body = document.UseGroups.Single().Uses.Single().OverrideBody!;
 
         Assert.AreEqual(DateResolutionStrategy.DayOfWeekInMonth, body.Strategy);
         Assert.AreEqual(9, body.Month);
@@ -180,8 +180,8 @@ public partial class NotableDateRuleJsonParserTests
 			} ]
 		}";
 
-        var document = NotableDateRuleJsonParser.ParseDocument(json);
-        var body = document.UseGroups.Single().Uses.Single().OverrideBody!;
+        ParsedNotableDateDocument document = NotableDateRuleJsonParser.ParseDocument(json);
+        NotableDateRuleOverrideBody body = document.UseGroups.Single().Uses.Single().OverrideBody!;
 
         Assert.AreEqual(DateResolutionStrategy.Algorithm, body.Strategy);
         Assert.AreEqual("easter-sunday", body.AlgorithmKey);
@@ -204,8 +204,8 @@ public partial class NotableDateRuleJsonParserTests
 			} ]
 		}";
 
-        var document = NotableDateRuleJsonParser.ParseDocument(json);
-        var body = document.UseGroups.Single().Uses.Single().OverrideBody!;
+        ParsedNotableDateDocument document = NotableDateRuleJsonParser.ParseDocument(json);
+        NotableDateRuleOverrideBody body = document.UseGroups.Single().Uses.Single().OverrideBody!;
 
         Assert.IsNull(body.Strategy);
         Assert.AreEqual("US", body.TerritoryCode);
@@ -257,8 +257,8 @@ public partial class NotableDateRuleJsonParserTests
 			} ]
 		}";
 
-        var document = NotableDateRuleJsonParser.ParseDocument(json);
-        var body = document.UseGroups.Single().Uses.Single().OverrideBody!;
+        ParsedNotableDateDocument document = NotableDateRuleJsonParser.ParseDocument(json);
+        NotableDateRuleOverrideBody body = document.UseGroups.Single().Uses.Single().OverrideBody!;
 
         Assert.AreEqual(2, body.Tags.Length);
         CollectionAssert.AreEquivalent(new[] { "Public", "Federal" }, body.Tags.ToArray());
@@ -287,8 +287,8 @@ public partial class NotableDateRuleJsonParserTests
 			} ]
 		}";
 
-        var document = NotableDateRuleJsonParser.ParseDocument(json);
-        var body = document.UseGroups.Single().Uses.Single().OverrideBody!;
+        ParsedNotableDateDocument document = NotableDateRuleJsonParser.ParseDocument(json);
+        NotableDateRuleOverrideBody body = document.UseGroups.Single().Uses.Single().OverrideBody!;
 
         Assert.AreEqual(1, body.Adjustments.Length);
         Assert.AreEqual("weekend-roll", body.Adjustments[0].Key);
@@ -355,8 +355,8 @@ public partial class NotableDateRuleJsonParserTests
 			} ]
 		}";
 
-        var document = NotableDateRuleJsonParser.ParseDocument(json);
-        var body = document.UseGroups.Single().Uses.Single().OverrideBody!;
+        ParsedNotableDateDocument document = NotableDateRuleJsonParser.ParseDocument(json);
+        NotableDateRuleOverrideBody body = document.UseGroups.Single().Uses.Single().OverrideBody!;
 
         Assert.AreEqual(NotableDateCategory.Holiday, body.Category);
         Assert.AreEqual("AU", body.TerritoryCode);
@@ -389,8 +389,8 @@ public partial class NotableDateRuleJsonParserTests
 			} ]
 		}";
 
-        var document = NotableDateRuleJsonParser.ParseDocument(json);
-        var directive = document.UseGroups.Single().Uses.Single();
+        ParsedNotableDateDocument document = NotableDateRuleJsonParser.ParseDocument(json);
+        NotableDateRuleUseDirective directive = document.UseGroups.Single().Uses.Single();
 
         Assert.IsTrue(directive.ClearTags);
         Assert.IsTrue(directive.ClearAdjustments);
@@ -411,8 +411,8 @@ public partial class NotableDateRuleJsonParserTests
 			} ]
 		}";
 
-        var document = NotableDateRuleJsonParser.ParseDocument(json);
-        var directive = document.UseGroups.Single().Uses.Single();
+        ParsedNotableDateDocument document = NotableDateRuleJsonParser.ParseDocument(json);
+        NotableDateRuleUseDirective directive = document.UseGroups.Single().Uses.Single();
 
         Assert.IsFalse(directive.ClearTags);
         Assert.IsFalse(directive.ClearAdjustments);
@@ -470,8 +470,8 @@ public partial class NotableDateRuleJsonParserTests
 			} ]
 		}";
 
-        var document = NotableDateRuleJsonParser.ParseDocument(json);
-        var directive = document.UseGroups.Single().Uses.Single();
+        ParsedNotableDateDocument document = NotableDateRuleJsonParser.ParseDocument(json);
+        NotableDateRuleUseDirective directive = document.UseGroups.Single().Uses.Single();
 
         Assert.IsNull(directive.OverrideBody);
     }

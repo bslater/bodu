@@ -19,16 +19,16 @@ namespace Bodu.Security.Cryptography;
 [TestClass]
 public partial class AsconAead128Tests
 {
-    private static readonly byte[] ValidKey = new byte[AsconAead128.KeyBytes];
-    private static readonly byte[] ValidNonce = new byte[AsconAead128.NonceBytes];
+    private static readonly byte[] s_validKey = new byte[AsconAead128.KeyBytes];
+    private static readonly byte[] s_validNonce = new byte[AsconAead128.NonceBytes];
 
     static AsconAead128Tests()
     {
-        for (var i = 0; i < ValidKey.Length; i++) ValidKey[i] = (byte)i;
-        for (var i = 0; i < ValidNonce.Length; i++) ValidNonce[i] = (byte)(i + 0x10);
+        for (var i = 0; i < s_validKey.Length; i++) s_validKey[i] = (byte)i;
+        for (var i = 0; i < s_validNonce.Length; i++) s_validNonce[i] = (byte)(i + 0x10);
     }
 
-    private static readonly string[] DisposableFieldExclusions =
+    private static readonly string[] s_disposableFieldExclusions =
     [
         // Disposal state flags are allowed to remain non-default.
         "_disposed",
@@ -49,7 +49,7 @@ public partial class AsconAead128Tests
     public static IEnumerable<object[]> GetDisposableFields() =>
         TestHelpers.GetFieldInfoForType<AsconAead128>(
             excludeReadOnly: false,
-            excludeFields: DisposableFieldExclusions);
+            excludeFields: s_disposableFieldExclusions);
 
     /// <summary>
     /// Creates a fresh <see cref="AsconAead128" /> instance using the shared test key and nonce,
@@ -60,7 +60,7 @@ public partial class AsconAead128Tests
     /// <returns>An <see cref="AsconAead128" /> instance ready for encryption or decryption.</returns>
     private static AsconAead128 MakeInstance(ReadOnlySpan<byte> aad = default)
     {
-        var instance = new AsconAead128(ValidKey, ValidNonce);
+        var instance = new AsconAead128(s_validKey, s_validNonce);
         instance.ProcessAssociatedData(aad);
         return instance;
     }
