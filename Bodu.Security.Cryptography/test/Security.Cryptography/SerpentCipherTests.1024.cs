@@ -1,5 +1,5 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Serpent512CipherTests.cs" company="Bodu Pty. Ltd.">
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="SerpentCipherTests.1024.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -9,19 +9,20 @@ using Bodu.Test;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Concrete test class exercising the wide-block tweakable <see cref="Serpent512Cipher" /> engine.
+/// Concrete test class exercising the wide-block tweakable <see cref="Serpent1024Cipher" /> engine through the
+/// shared <see cref="SerpentCipherTests{TTest, TCipher}" /> harness.
 /// </summary>
 /// <remarks>
 /// <para>
-/// Serpent-512 is a non-standard construction with no externally published reference vectors. The KAT rows used here are
+/// Serpent-1024 is a non-standard construction with no externally published reference vectors. The KAT rows used here are
 /// cross-validated against an independent Python port of the wide-block round function (see
 /// <c>tools/cipher-vectors/wide_serpent.py</c>), which is hand-translated from the C# source and exercises the same Serpent
 /// S-boxes, bitsliced linear transform, prekey recurrence, cross-lane rotation, and five-word tweak schedule.
 /// </para>
 /// </remarks>
 [TestClass]
-internal sealed partial class Serpent512CipherTests
-    : BlockCipherTests<Serpent512CipherTests, Serpent512Cipher, TweakableBlockCipherVariant>
+internal sealed partial class Serpent1024CipherTests
+    : SerpentCipherTests<Serpent1024CipherTests, Serpent1024Cipher>
 {
     /// <inheritdoc />
     protected override BlockCipherSpecification GetSpecification(TweakableBlockCipherVariant variant) =>
@@ -29,35 +30,28 @@ internal sealed partial class Serpent512CipherTests
         {
             TweakableBlockCipherVariant.ZeroedKeyAndTweak => new()
             {
-                BlockSize = 64,
-                KeySize = 64,
+                BlockSize = 128,
+                KeySize = 128,
                 TweakSize = 16,
-                TestKey = new byte[64],
+                TestKey = new byte[128],
                 TestTweak = new byte[16],
             },
             TweakableBlockCipherVariant.DefaultKeyAndTweak => new()
             {
-                BlockSize = 64,
-                KeySize = 64,
+                BlockSize = 128,
+                KeySize = 128,
                 TweakSize = 16,
-                TestKey = TestHelpers.GenerateIncrementalByteSequence(0x10, 64),
+                TestKey = TestHelpers.GenerateIncrementalByteSequence(0x10, 128),
                 TestTweak = TestHelpers.GenerateIncrementalByteSequence(0, 16),
             },
             _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, null),
         };
 
     /// <inheritdoc />
-    protected override Serpent512Cipher CreateBlockCipher(TweakableBlockCipherVariant variant)
-    {
-        BlockCipherSpecification specification = GetSpecification(variant);
-        return new Serpent512Cipher(specification.TestKey, specification.TestTweak);
-    }
+    protected override Serpent1024Cipher CreateCipher(byte[] key, byte[] tweak) =>
+        new Serpent1024Cipher(key, tweak);
 
     /// <inheritdoc />
     protected override IReadOnlyList<BlockCipherKnownAnswer> GetKnownAnswers(TweakableBlockCipherVariant variant) =>
         KnownAnswersFor(variant);
-
-    /// <inheritdoc />
-    protected override IBlockCipher CreateBlockCipherForAnswer(BlockCipherKnownAnswer answer) =>
-        new Serpent512Cipher(answer.Key!, answer.Tweak!);
 }

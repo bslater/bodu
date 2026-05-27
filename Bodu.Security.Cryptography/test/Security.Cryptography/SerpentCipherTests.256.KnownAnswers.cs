@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Serpent256CipherTests.KnownAnswers.cs" company="Bodu Pty. Ltd.">
+// <copyright file="SerpentCipherTests.256.KnownAnswers.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
