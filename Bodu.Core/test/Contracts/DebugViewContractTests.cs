@@ -7,7 +7,7 @@
 using System.Diagnostics;
 using System.Reflection;
 
-namespace Bodu.Test.Contracts;
+namespace Bodu.Collections.Generic.Contracts;
 
 /// <summary>
 /// Reusable behavioural contract test base for the debugger-display surface of a collection. Concrete

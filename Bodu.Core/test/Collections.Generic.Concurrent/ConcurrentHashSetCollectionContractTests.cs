@@ -5,7 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Collections.Generic.Concurrent;
-using Bodu.Test.Contracts;
+using Bodu.Collections.Generic.Contracts;
 
 namespace Bodu.Collections.Generic.Concurrent.Contracts;
 

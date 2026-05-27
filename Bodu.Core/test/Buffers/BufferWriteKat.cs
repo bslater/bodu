@@ -1,10 +1,12 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BufferWriteKat.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Test.Kat;
+using Bodu.Test.Kat;
+
+namespace Bodu.Buffers;
 
 /// <summary>
 /// Represents a known-answer test row for a pooled-buffer write scenario: a starting capacity, an append payload, and

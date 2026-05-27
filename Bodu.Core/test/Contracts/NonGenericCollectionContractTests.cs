@@ -6,7 +6,7 @@
 
 using System.Collections;
 
-namespace Bodu.Test.Contracts;
+namespace Bodu.Collections.Generic.Contracts;
 
 /// <summary>
 /// Reusable behavioural contract test base for the non-generic <see cref="ICollection" /> surface that

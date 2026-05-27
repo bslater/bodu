@@ -1,10 +1,12 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BufferCapacityKat.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Test.Kat;
+using Bodu.Test.Kat;
+
+namespace Bodu.Buffers;
 
 /// <summary>
 /// Represents a known-answer test row for pooled-buffer capacity behaviour: a starting capacity, an append size that
