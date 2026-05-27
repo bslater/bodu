@@ -5,8 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.IO.Hashing.Checksums;
-using Bodu.Test.Contracts;
-using Bodu.Test.Kat;
 
 namespace Bodu.IO.Hashing.Contracts;
 

@@ -4,9 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Test.Kat;
-
-namespace Bodu.Test.Contracts;
+namespace Bodu.IO.Hashing.Contracts;
 
 /// <summary>
 /// Reusable behavioural contract test base for a multi-character check-digit algorithm (ISO 7064

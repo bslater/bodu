@@ -5,9 +5,8 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.IO.Hashing;
-using Bodu.Test.Kat;
 
-namespace Bodu.Test.Contracts;
+namespace Bodu.IO.Hashing.Contracts;
 
 /// <summary>
 /// Reusable behavioural contract test base for a <see cref="NonCryptographicHashAlgorithm" /> implementation.

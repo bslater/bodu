@@ -1,10 +1,12 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CheckDigitKat.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Test.Kat;
+using Bodu.Test.Kat;
+
+namespace Bodu.IO.Hashing.Contracts;
 
 /// <summary>
 /// Represents a known-answer test row for a check-digit algorithm (Luhn, Damm, ABA, EAN, GTIN, IBAN, ISBN, ISIN, LEI,
