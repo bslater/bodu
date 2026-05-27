@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateResolutionServiceConvenienceApiTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -9,18 +9,20 @@ using System.Collections.Immutable;
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// Tests the API-compatible convenience members on <see cref="NotableDateResolutionService" />.
+/// Tests the convenience overloads on <see cref="NotableDateService" />: the year overload, single-day overload,
+/// date-range overload, and <see cref="NotableDateService.IsNonWorkingDay" />.
 /// </summary>
 [TestClass]
 public sealed class NotableDateResolutionServiceConvenienceApiTests
 {
     /// <summary>
-    /// Verifies that a year query uses anchor-date projection and returns adjusted dates produced by anchors in that year.
+    /// Verifies that the year overload returns occurrences whose observed date falls within the supplied civil year,
+    /// matching the equivalent <c>(Jan 1, Dec 31)</c> range query under the same pipeline.
     /// </summary>
     [TestMethod]
-    public void GetNotableDates_WhenYearRequested_ShouldReturnDatesAnchoredInYear()
+    public void GetNotableDates_WhenYearRequested_ShouldReturnDatesObservedInYear()
     {
-        NotableDateResolutionService service = CreateService(
+        NotableDateService service = CreateService(
             FixedPublicHolidayRule("Year-End Holiday", month: 12, day: 31),
             FixedNonWorkingRule("New Year Second Day", month: 1, day: 2));
 
@@ -31,24 +33,24 @@ public sealed class NotableDateResolutionServiceConvenienceApiTests
             date.Date == new DateTime(2022, 12, 31) &&
             !date.WasAdjusted));
 
-        Assert.IsTrue(actual.Any(date =>
+        // The adjusted observation falls on 2023-01-03 — outside 2022, so it is not emitted by the year overload.
+        Assert.IsFalse(actual.Any(date =>
             date.Name == "Year-End Holiday" &&
-            date.Date == new DateTime(2023, 1, 3) &&
-            date.WasAdjusted));
+            date.Date == new DateTime(2023, 1, 3)));
 
+        // New Year Second Day is anchored in 2023, so the 2022 year overload does not emit it.
         Assert.IsFalse(actual.Any(date =>
             date.Name == "New Year Second Day" &&
             date.Date == new DateTime(2023, 1, 2)));
     }
 
     /// <summary>
-    /// Verifies that a single-date query uses observed-date projection and can return an adjusted date from a previous-year
-    /// anchor.
+    /// Verifies that a single-date query returns an adjusted observation produced by a previous-year anchor.
     /// </summary>
     [TestMethod]
     public void GetNotableDates_WhenObservedDateRequested_ShouldReturnAdjustedOccurrenceFromPreviousYearAnchor()
     {
-        NotableDateResolutionService service = CreateService(
+        NotableDateService service = CreateService(
             FixedPublicHolidayRule("Year-End Holiday", month: 12, day: 31),
             FixedNonWorkingRule("New Year Second Day", month: 1, day: 2));
 
@@ -61,12 +63,12 @@ public sealed class NotableDateResolutionServiceConvenienceApiTests
     }
 
     /// <summary>
-    /// Verifies that a date-range query uses observed-date projection.
+    /// Verifies that a date-range query returns multi-day spans whose observed dates intersect the requested window.
     /// </summary>
     [TestMethod]
     public void GetNotableDates_WhenObservedRangeRequested_ShouldReturnDatesIntersectingRange()
     {
-        NotableDateResolutionService service = CreateService(
+        NotableDateService service = CreateService(
             FixedRule("Religious Festival", month: 6, day: 10) with
             {
                 DurationDays = 5,
@@ -85,12 +87,13 @@ public sealed class NotableDateResolutionServiceConvenienceApiTests
     }
 
     /// <summary>
-    /// Verifies that single-date query honours the supplied territory context.
+    /// Verifies that a single-date query honours the supplied territory context, returning subdivision-scoped rules
+    /// when the requested territory is the parent.
     /// </summary>
     [TestMethod]
     public void GetNotableDates_WhenTerritoryMatchesSubdivision_ShouldReturnScopedOccurrence()
     {
-        NotableDateResolutionService service = CreateService(
+        NotableDateService service = CreateService(
             FixedRule("NSW Observance", month: 8, day: 5) with
             {
                 TerritoryCode = "AU-NSW",
@@ -111,9 +114,9 @@ public sealed class NotableDateResolutionServiceConvenienceApiTests
     [TestMethod]
     public void IsNonWorkingDay_WhenDateIsWeekend_ShouldReturnTrue()
     {
-        NotableDateResolutionService service = CreateService();
+        NotableDateService service = CreateService();
 
-        var actual = service.IsNonWorkingDay(new DateTime(2024, 1, 6));
+        bool actual = service.IsNonWorkingDay(new DateTime(2024, 1, 6));
 
         Assert.IsTrue(actual);
     }
@@ -124,11 +127,11 @@ public sealed class NotableDateResolutionServiceConvenienceApiTests
     [TestMethod]
     public void IsNonWorkingDay_WhenDateIsObservedSubstituteHoliday_ShouldReturnTrue()
     {
-        NotableDateResolutionService service = CreateService(
+        NotableDateService service = CreateService(
             FixedPublicHolidayRule("Year-End Holiday", month: 12, day: 31),
             FixedNonWorkingRule("New Year Second Day", month: 1, day: 2));
 
-        var actual = service.IsNonWorkingDay(new DateTime(2023, 1, 3));
+        bool actual = service.IsNonWorkingDay(new DateTime(2023, 1, 3));
 
         Assert.IsTrue(actual);
     }
@@ -139,17 +142,19 @@ public sealed class NotableDateResolutionServiceConvenienceApiTests
     [TestMethod]
     public void IsNonWorkingDay_WhenDateIsOrdinaryWeekday_ShouldReturnFalse()
     {
-        NotableDateResolutionService service = CreateService(
+        NotableDateService service = CreateService(
             FixedPublicHolidayRule("Year-End Holiday", month: 12, day: 31),
             FixedNonWorkingRule("New Year Second Day", month: 1, day: 2));
 
-        var actual = service.IsNonWorkingDay(new DateTime(2023, 1, 4));
+        bool actual = service.IsNonWorkingDay(new DateTime(2023, 1, 4));
 
         Assert.IsFalse(actual);
     }
 
-    private static NotableDateResolutionService CreateService(params NotableDateRule[] rules) =>
-        new(ruleProviders: [new InMemoryRuleProvider(rules)]);
+    private static NotableDateService CreateService(params NotableDateRule[] rules) =>
+        new(
+            ruleProviders: [new InMemoryRuleProvider(rules)],
+            workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 
     private static NotableDateRule FixedRule(string name, int month, int day) =>
         new()

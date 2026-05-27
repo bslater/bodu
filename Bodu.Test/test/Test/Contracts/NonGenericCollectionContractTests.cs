@@ -13,13 +13,16 @@ namespace Bodu.Test.Contracts;
 /// most BCL-compatible collections implement implicitly. Concrete subclasses override
 /// <see cref="CreateEmpty" /> and <see cref="Create" /> to plug their type into the inherited tests.
 /// </summary>
-/// <typeparam name="TCollection">The collection type under test. Must implement <see cref="ICollection" />.</typeparam>
+/// <typeparam name="TCollection">The collection type under test.</typeparam>
 /// <remarks>
 /// <para>
 /// Covers <see cref="ICollection.Count" />, <see cref="ICollection.IsSynchronized" />,
 /// <see cref="ICollection.SyncRoot" /> idempotence, and <see cref="ICollection.CopyTo" /> to a
 /// <see cref="Array" /> destination. Skips concurrency-stress tests — those remain concrete on the
 /// implementing type.
+/// </para>
+/// <para>
+/// Must implement <see cref="ICollection" />.
 /// </para>
 /// </remarks>
 public abstract class NonGenericCollectionContractTests<TCollection>

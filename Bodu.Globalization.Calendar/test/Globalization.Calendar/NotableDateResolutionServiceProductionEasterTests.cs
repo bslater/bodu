@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateResolutionServiceProductionEasterTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -9,7 +9,8 @@ using Bodu.Globalization.Calendar.Data;
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// Tests the new resolution service against production XML rules that depend on the real Gregorian Easter algorithm.
+/// Tests the public <see cref="NotableDateService" /> against production XML rules that depend on the real Gregorian
+/// Easter algorithm.
 /// </summary>
 [TestClass]
 public sealed class NotableDateResolutionServiceProductionEasterTests
@@ -21,7 +22,7 @@ public sealed class NotableDateResolutionServiceProductionEasterTests
     [TestMethod]
     public void GetNotableDates_WhenUsingProductionGbXml_ShouldResolveGregorianEasterRelativeDates_ForYear2024()
     {
-        NotableDateResolutionService service = BuildUnitedKingdomResolutionService();
+        NotableDateService service = BuildUnitedKingdomService();
 
         IReadOnlyList<NotableDate> actual = service.GetNotableDates(2024, territoryCode: "GB");
 
@@ -35,7 +36,7 @@ public sealed class NotableDateResolutionServiceProductionEasterTests
     [TestMethod]
     public void GetNotableDates_WhenUsingProductionGbXml_ShouldResolveGregorianEasterRelativeDates_ForYear2025()
     {
-        NotableDateResolutionService service = BuildUnitedKingdomResolutionService();
+        NotableDateService service = BuildUnitedKingdomService();
 
         IReadOnlyList<NotableDate> actual = service.GetNotableDates(2025, territoryCode: "GB");
 
@@ -49,7 +50,7 @@ public sealed class NotableDateResolutionServiceProductionEasterTests
     [TestMethod]
     public void GetNotableDates_WhenQueryingProductionGbEasterMondayObservedDate_ShouldReturnEasterMonday()
     {
-        NotableDateResolutionService service = BuildUnitedKingdomResolutionService();
+        NotableDateService service = BuildUnitedKingdomService();
 
         IReadOnlyList<NotableDate> actual = service.GetNotableDates(
             new DateTime(2024, 4, 1),
@@ -70,7 +71,7 @@ public sealed class NotableDateResolutionServiceProductionEasterTests
     [TestMethod]
     public void GetNotableDates_WhenQueryingProductionGbGoodFridayObservedDate_ShouldResolveFromLaterEasterAnchor()
     {
-        NotableDateResolutionService service = BuildUnitedKingdomResolutionService();
+        NotableDateService service = BuildUnitedKingdomService();
 
         IReadOnlyList<NotableDate> actual = service.GetNotableDates(
             new DateTime(2024, 3, 29),
@@ -97,15 +98,15 @@ public sealed class NotableDateResolutionServiceProductionEasterTests
         Assert.AreEqual(new DateTime(2026, 4, 5), algorithm.GetDate(2026));
     }
 
-    private static NotableDateResolutionService BuildUnitedKingdomResolutionService()
+    private static NotableDateService BuildUnitedKingdomService()
     {
         NotableDateAlgorithmRegistry registry = new NotableDateAlgorithmRegistry()
             .Register("easter-sunday", new GregorianEasterSundayAlgorithmAdapter());
 
-        return new NotableDateResolutionService(
+        return new NotableDateService(
             ruleProviders: [EuropeCalendarData.CreateUnitedKingdomProvider()],
-            algorithmRegistry: registry,
-            workingWeek: WorkingDaysOfWeek.MondayToFriday);
+            workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
+            options: new NotableDateServiceOptions { AlgorithmRegistry = registry });
     }
 
     private static void AssertContains(

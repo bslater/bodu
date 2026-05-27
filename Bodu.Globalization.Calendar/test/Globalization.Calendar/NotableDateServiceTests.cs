@@ -162,24 +162,6 @@ public sealed partial class NotableDateServiceTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="NotableDateService.Invalidate(int)" /> clears only the targeted year's cache.
-    /// </summary>
-    [TestMethod]
-    public void Invalidate_WhenYearSpecified_ShouldOnlyClearThatYear()
-    {
-        var service = BuildService(Fixed("Holiday", 1, 1));
-
-        _ = service.GetNotableDates(2025);
-        _ = service.GetNotableDates(2026);
-
-        service.Invalidate(2025);
-
-        // Re-querying both years should still succeed; we only verify the call does not throw and returns expected counts.
-        Assert.AreEqual(1, service.GetNotableDates(2025).Count);
-        Assert.AreEqual(1, service.GetNotableDates(2026).Count);
-    }
-
-    /// <summary>
     /// Verifies that an override provider can suppress a base rule for a specific year window.
     /// </summary>
     [TestMethod]

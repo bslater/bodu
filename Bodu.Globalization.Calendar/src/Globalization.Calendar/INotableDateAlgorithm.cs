@@ -32,8 +32,8 @@ namespace Bodu.Globalization.Calendar;
 /// <para>
 /// Implementations should be deterministic, side-effect-free, and safe to invoke concurrently. The same algorithm
 /// instance may be consulted by multiple rules (for example "Easter Sunday", "Easter Monday" via offset, and "Good
-/// Friday" via offset all share a single Computus implementation) and by multiple threads when filtered queries bypass
-/// the per-year cache.
+/// Friday" via offset all share a single Computus implementation) and by multiple threads when the service serves
+/// concurrent range requests.
 /// </para>
 /// <para>
 /// Return <see langword="null" /> for years the algorithm cannot service — for example when a calendar is supplied that

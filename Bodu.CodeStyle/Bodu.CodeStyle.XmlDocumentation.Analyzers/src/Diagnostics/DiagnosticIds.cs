@@ -84,4 +84,11 @@ internal static class DiagnosticIds
     /// <c>&lt;![CDATA[…]]&gt;</c> section as its first non-whitespace child.
     /// </summary>
     public const string XmlDocCodeRequiresCData = "BODU1405";
+
+    /// <summary>
+    /// The diagnostic identifier reported when a <c>&lt;typeparam&gt;</c> documentation element carries
+    /// explanatory prose that overflows the single-line budget and should be relocated into a
+    /// <c>&lt;remarks&gt;&lt;para&gt;…&lt;/para&gt;&lt;/remarks&gt;</c> block.
+    /// </summary>
+    public const string XmlDocTypeParamRequiresShortContent = "BODU1406";
 }
