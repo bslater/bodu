@@ -4,8 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Test.Contracts;
-using Bodu.Test.Kat;
+using Bodu.IO.Hashing.Contracts;
 
 namespace Bodu.IO.Hashing.CheckDigits.Contracts;
 

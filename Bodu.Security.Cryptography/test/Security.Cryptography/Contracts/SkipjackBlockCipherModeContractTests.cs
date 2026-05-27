@@ -5,8 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Security.Cryptography;
-using Bodu.Test.Contracts;
-using Bodu.Test.Kat;
+using Bodu.Security.Cryptography.Infrastructure;
 
 namespace Bodu.Security.Cryptography.Contracts;
 

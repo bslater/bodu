@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Test.Contracts;
 
 namespace Bodu.Collections.Generic.Contracts;
 

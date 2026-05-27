@@ -5,7 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Text;
-using Bodu.Test.Kat;
+using Bodu.IO.Hashing.Contracts;
 
 namespace Bodu.IO.Hashing.Checksums;
 

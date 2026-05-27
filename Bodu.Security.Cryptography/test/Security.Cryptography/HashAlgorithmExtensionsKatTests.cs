@@ -6,7 +6,7 @@
 
 using System.Security.Cryptography;
 using Bodu.Security.Cryptography.Extensions;
-using Bodu.Test.Kat;
+using Bodu.Security.Cryptography.Infrastructure;
 
 namespace Bodu.Security.Cryptography;
 
