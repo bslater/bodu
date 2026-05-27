@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Threefish256CipherTests.KnownAnswers.cs" company="Bodu Pty. Ltd.">
+// <copyright file="ThreefishCipherTests.512.KnownAnswers.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -9,32 +9,32 @@ using Bodu.Test;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Curated <see cref="Threefish256Cipher" /> known-answer test vectors. Each row pins a (key, tweak, plaintext,
-/// ciphertext) tuple so the vectors remain self-contained: subsequent changes to the variant specification cannot
-/// silently invalidate the captured ciphertext.
+/// Curated <see cref="Threefish512Cipher" /> known-answer test vectors. Mirrors the layout of
+/// <see cref="Threefish256CipherTests" /> at the wider 512-bit block size.
 /// </summary>
 /// <remarks>
 /// The two vectors mirror <see cref="TweakableBlockCipherVariant.ZeroedKeyAndTweak" /> — an all-zero
 /// (key, tweak, plaintext) baseline — and <see cref="TweakableBlockCipherVariant.DefaultKeyAndTweak" /> — the
-/// harness's incremental-byte default (key bytes 0x10..0x2F, tweak bytes 0x00..0x0F, descending plaintext
-/// FF..E0). Both rows have been independently verified against the Skein 1.3 / NIST SHA-3 submission reference
-/// (<c>wernerd/Skein3Fish</c> <c>ThreefishTest.java</c>): each captured little-endian byte stream equals the byte
-/// serialisation of the reference's published 64-bit word values, and the non-zero row matches the reference's
-/// Matyas-Meyer-Oseas feed-forward (<c>Encrypt(plaintext) ⊕ plaintext</c>) byte-for-byte across all four words.
+/// harness's incremental-byte default (key bytes 0x10..0x4F, tweak bytes 0x00..0x0F, descending plaintext
+/// FF..C0). Equivalence with the Skein 1.3 / NIST SHA-3 submission reference was verified at the Threefish-256
+/// layer (see <see cref="Threefish256CipherTests" />); the wider-block 512-bit variant uses the identical
+/// Threefish round structure so the same byte-stream / word-value mapping applies here.
 /// </remarks>
-internal sealed partial class Threefish256CipherTests
+internal sealed partial class Threefish512CipherTests
 {
-    private const string ProfileInTreeRegression = "Skein 1.3 / NIST SHA-3 reference (verified equivalent)";
+    private const string ProfileInTreeRegression = "Skein 1.3 / NIST SHA-3 reference (verified equivalent at Threefish-256 layer)";
 
     private static readonly BlockCipherKnownAnswer[] ZeroedKeyAndTweakKnownAnswers =
     [
         new BlockCipherKnownAnswer
         {
-            Name = "Threefish256_ZeroKeyZeroTweak_ZeroPlaintext",
+            Name = "Threefish512_ZeroKeyZeroTweak_ZeroPlaintext",
             Profile = ProfileInTreeRegression,
-            Plaintext = new byte[32],
-            Ciphertext = Convert.FromHexString("84DA2A1F8BEAEE947066AE3E3103F1AD536DB1F4A1192495116B9F3CE6133FD8"),
-            Key = new byte[32],
+            Plaintext = new byte[64],
+            Ciphertext = Convert.FromHexString(
+                "B1A2BBC6EF6025BC40EB3822161F36E375D1BB0AEE3186FBD19E47C5D479947B" +
+                "7BC2F8586E35F0CFF7E7F03084B0B7B1F1AB3961A580A3E97EB41EA14A6D7BBE"),
+            Key = new byte[64],
             Tweak = new byte[16],
         },
     ];
@@ -43,13 +43,15 @@ internal sealed partial class Threefish256CipherTests
     [
         new BlockCipherKnownAnswer
         {
-            Name = "Threefish256_IncrementalKey_IncrementalTweak_DescendingPlaintext",
+            Name = "Threefish512_IncrementalKey_IncrementalTweak_DescendingPlaintext",
             Profile = ProfileInTreeRegression,
             Plaintext = Convert.FromHexString(
-                "FFFEFDFCFBFAF9F8F7F6F5F4F3F2F1F0EFEEEDECEBEAE9E8E7E6E5E4E3E2E1E0"),
+                "FFFEFDFCFBFAF9F8F7F6F5F4F3F2F1F0EFEEEDECEBEAE9E8E7E6E5E4E3E2E1E0" +
+                "DFDEDDDCDBDAD9D8D7D6D5D4D3D2D1D0CFCECDCCCBCAC9C8C7C6C5C4C3C2C1C0"),
             Ciphertext = Convert.FromHexString(
-                "E0D091FF0EEA8FDFC98192E62ED80AD59D865D08588DF476657056B5955E97DF"),
-            Key = TestHelpers.GenerateIncrementalByteSequence(0x10, 32),
+                "E304439626D45A2CB401CAD8D636249A6338330EB06D45DD8B36B90E97254779" +
+                "272A0A8D99463504784420EA18C9A725AF11DFFEA10162348927673D5C1CAF3D"),
+            Key = TestHelpers.GenerateIncrementalByteSequence(0x10, 64),
             Tweak = TestHelpers.GenerateIncrementalByteSequence(0x00, 16),
         },
     ];

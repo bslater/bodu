@@ -1,5 +1,5 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Threefish1024CipherTests.cs" company="Bodu Pty. Ltd.">
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="ThreefishCipherTests.1024.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -10,12 +10,12 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Concrete test class exercising <see cref="Threefish1024Cipher" /> at the block-cipher tier through the shared
-/// <see cref="BlockCipherTests{TTest, TCipher, TVariant}" /> harness, parameterised over
+/// <see cref="ThreefishCipherTests{TTest, TCipher}" /> harness, parameterised over
 /// <see cref="TweakableBlockCipherVariant" />.
 /// </summary>
 [TestClass]
 internal sealed partial class Threefish1024CipherTests
-    : BlockCipherTests<Threefish1024CipherTests, Threefish1024Cipher, TweakableBlockCipherVariant>
+    : ThreefishCipherTests<Threefish1024CipherTests, Threefish1024Cipher>
 {
     /// <inheritdoc />
     protected override BlockCipherSpecification GetSpecification(TweakableBlockCipherVariant variant) =>
@@ -41,17 +41,10 @@ internal sealed partial class Threefish1024CipherTests
         };
 
     /// <inheritdoc />
-    protected override Threefish1024Cipher CreateBlockCipher(TweakableBlockCipherVariant variant)
-    {
-        BlockCipherSpecification spec = GetSpecification(variant);
-        return new Threefish1024Cipher(spec.TestKey, spec.TestTweak);
-    }
+    protected override Threefish1024Cipher CreateCipher(byte[] key, byte[] tweak) =>
+        new Threefish1024Cipher(key, tweak);
 
     /// <inheritdoc />
     protected override IReadOnlyList<BlockCipherKnownAnswer> GetKnownAnswers(TweakableBlockCipherVariant variant) =>
         KnownAnswersFor(variant);
-
-    /// <inheritdoc />
-    protected override IBlockCipher CreateBlockCipherForAnswer(BlockCipherKnownAnswer answer) =>
-        new Threefish1024Cipher(answer.Key!, answer.Tweak!);
 }
