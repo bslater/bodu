@@ -24,4 +24,8 @@ public abstract partial class ThreefishTests<TTest, TAlgorithm>
     /// <inheritdoc />
     protected sealed override void SetBlockMode(TAlgorithm algorithm, CipherModeKind mode) =>
         algorithm.BlockMode = mode;
+
+    /// <inheritdoc />
+    protected sealed override CipherModeKind GetBlockMode(TAlgorithm algorithm) =>
+        algorithm.BlockMode;
 }

@@ -22,6 +22,10 @@ public sealed partial class CamelliaTests
         algorithm.BlockMode = mode;
 
     /// <inheritdoc />
+    protected override CipherModeKind GetBlockMode(Camellia algorithm) =>
+        algorithm.BlockMode;
+
+    /// <inheritdoc />
     protected override SymmetricAlgorithmSpecification GetSpecification() =>
         new SymmetricAlgorithmSpecification
         {

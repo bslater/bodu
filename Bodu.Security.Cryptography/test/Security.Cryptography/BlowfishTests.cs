@@ -22,6 +22,10 @@ public sealed partial class BlowfishTests
         algorithm.BlockMode = mode;
 
     /// <inheritdoc />
+    protected override CipherModeKind GetBlockMode(Blowfish algorithm) =>
+        algorithm.BlockMode;
+
+    /// <inheritdoc />
     protected override SymmetricAlgorithmSpecification GetSpecification() =>
         new SymmetricAlgorithmSpecification
         {

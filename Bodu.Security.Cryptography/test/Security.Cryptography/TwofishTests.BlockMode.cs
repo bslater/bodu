@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TwofishTests.BlockMode.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -11,35 +11,11 @@ namespace Bodu.Security.Cryptography;
 public sealed partial class TwofishTests
 {
     /// <summary>
-    /// Verifies that <see cref="Twofish.BlockMode" /> defaults to <see cref="CipherModeKind.CBC" /> when the
-    /// algorithm is first created.
-    /// </summary>
-    [TestMethod]
-    public void BlockMode_WhenDefault_ShouldBeCbc()
-    {
-        using Twofish algorithm = CreateAlgorithm();
-        Assert.AreEqual(CipherModeKind.CBC, algorithm.BlockMode);
-    }
-
-    /// <summary>
-    /// Verifies that setting <see cref="Twofish.BlockMode" /> persists and is returned by the next get.
-    /// </summary>
-    [TestMethod]
-    [DataRow(CipherModeKind.ECB)]
-    [DataRow(CipherModeKind.CBC)]
-    [DataRow(CipherModeKind.CFB)]
-    [DataRow(CipherModeKind.OFB)]
-    [DataRow(CipherModeKind.CTR)]
-    public void BlockMode_WhenSet_ShouldReturnSameValueOnGet(CipherModeKind mode)
-    {
-        using Twofish algorithm = CreateAlgorithm();
-        algorithm.BlockMode = mode;
-        Assert.AreEqual(mode, algorithm.BlockMode);
-    }
-
-    /// <summary>
     /// Verifies that setting <see cref="Twofish.BlockMode" /> to a value that maps to a standard
     /// <see cref="CipherMode" /> (ECB, CBC, CFB, OFB) also updates <see cref="SymmetricAlgorithm.Mode" />.
+    /// This Mode-synchronisation behaviour is Twofish-specific and is not part of the broader
+    /// <c>BlockMode</c> contract shared by other Bodu ciphers (e.g. Serpent / Threefish use a plain
+    /// auto-property and do not sync to <see cref="SymmetricAlgorithm.Mode" />).
     /// </summary>
     [TestMethod]
     [DataRow(CipherModeKind.ECB, CipherMode.ECB)]
@@ -56,6 +32,7 @@ public sealed partial class TwofishTests
     /// <summary>
     /// Verifies that setting <see cref="Twofish.BlockMode" /> to a value with no <see cref="CipherMode" />
     /// equivalent (CTR, XTS, OCB, EAX, SIV) does not update <see cref="SymmetricAlgorithm.Mode" />.
+    /// Counterpart to <see cref="BlockMode_WhenSetToMappableValue_ShouldSynchronizeModeProperty" />.
     /// </summary>
     [TestMethod]
     [DataRow(CipherModeKind.CTR)]

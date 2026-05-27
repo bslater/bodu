@@ -22,6 +22,10 @@ public sealed partial class TwofishTests
         algorithm.BlockMode = mode;
 
     /// <inheritdoc />
+    protected override CipherModeKind GetBlockMode(Twofish algorithm) =>
+        algorithm.BlockMode;
+
+    /// <inheritdoc />
     protected override SymmetricAlgorithmSpecification GetSpecification() =>
         new SymmetricAlgorithmSpecification
         {

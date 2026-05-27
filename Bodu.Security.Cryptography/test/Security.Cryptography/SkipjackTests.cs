@@ -18,6 +18,10 @@ public sealed partial class SkipjackTests
         algorithm.BlockMode = mode;
 
     /// <inheritdoc />
+    protected override CipherModeKind GetBlockMode(Skipjack algorithm) =>
+        algorithm.BlockMode;
+
+    /// <inheritdoc />
     protected override SymmetricAlgorithmSpecification GetSpecification() =>
         new SymmetricAlgorithmSpecification
         {

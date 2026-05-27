@@ -18,6 +18,10 @@ public partial class SimpleReversingSymmetricAlgorithmTests
         algorithm.BlockMode = mode;
 
     /// <inheritdoc />
+    protected override CipherModeKind GetBlockMode(SimpleReversingSymmetricAlgorithm algorithm) =>
+        algorithm.BlockMode;
+
+    /// <inheritdoc />
     protected override SymmetricAlgorithmSpecification GetSpecification() =>
         new SymmetricAlgorithmSpecification
         {

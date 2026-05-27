@@ -209,4 +209,21 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
         using ICryptoTransform transform = algorithm.CreateEncryptor(key, iv);
         Assert.IsNotNull(transform);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="SymmetricAlgorithm.CreateEncryptor(byte[], byte[])" /> succeeds and returns a
+    /// non-null transform for every legal key size declared by the specification.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(LegalKeySizeBitsData))]
+    public void CreateEncryptor_WithEachValidKeySize_ShouldSucceed(int keySizeBits)
+    {
+        using TAlgorithm algorithm = CreateAlgorithm();
+        algorithm.KeySize = keySizeBits;
+        algorithm.GenerateKey();
+        algorithm.GenerateIV();
+
+        using ICryptoTransform transform = algorithm.CreateEncryptor(algorithm.Key, algorithm.IV);
+        Assert.IsNotNull(transform);
+    }
 }
