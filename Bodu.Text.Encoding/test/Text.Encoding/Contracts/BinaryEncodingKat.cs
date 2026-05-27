@@ -1,10 +1,12 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BinaryEncodingKat.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Test.Kat;
+using Bodu.Test.Kat;
+
+namespace Bodu.Text.Encoding.Contracts;
 
 /// <summary>
 /// Represents a known-answer test row for a binary encoding (Base16, Base32, Base58, Base64, Base85, hex, etc.) that
@@ -23,10 +25,9 @@ namespace Bodu.Test.Kat;
 /// </param>
 /// <remarks>
 /// <para>
-/// Lives in <c>Bodu.Test</c> so that any test project that consumes byte-string encoding KATs can adopt the shared
-/// shape. Projects that already ship their own domain-specific record (for example <c>EncodingKnownAnswerVector</c> in
-/// <c>Bodu.Text.Encoding</c>) may continue to use those — both shapes implement <see cref="IKat" /> so the choice is
-/// one of convenience rather than capability.
+/// Lives alongside the contract test base it parameterises. Projects that already ship a domain-specific record (for
+/// example <see cref="EncodingKnownAnswerVector" />) may continue to use those — both shapes implement <see cref="IKat" />
+/// so the choice is one of convenience rather than capability.
 /// </para>
 /// </remarks>
 public sealed record BinaryEncodingKat(

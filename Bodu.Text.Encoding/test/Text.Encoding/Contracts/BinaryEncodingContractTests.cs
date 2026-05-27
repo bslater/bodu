@@ -4,9 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Test.Kat;
-
-namespace Bodu.Test.Contracts;
+namespace Bodu.Text.Encoding.Contracts;
 
 /// <summary>
 /// Reusable behavioural contract test base for a binary encoding (Base16, Base32, Base58, Base64,
