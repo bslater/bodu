@@ -1,14 +1,16 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="HashExtensionKat.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Test.Kat;
+using Bodu.Test.Kat;
+
+namespace Bodu.Security.Cryptography.Infrastructure;
 
 /// <summary>
 /// Represents a known-answer test row for the hashing extension surface (synchronous and asynchronous append, compute,
-/// verify, try-verify methods exposed by <c>Bodu.IO.Hashing.Extensions</c>).
+/// verify, try-verify methods exposed by <c>Bodu.Security.Cryptography.Extensions</c>).
 /// </summary>
 /// <param name="Name">The short label that identifies the row in failure diagnostics.</param>
 /// <param name="Input">The raw byte payload.</param>
