@@ -1,5 +1,5 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Threefish256Tests.cs" company="Bodu Pty. Ltd.">
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="ThreefishTests.256.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -13,14 +13,10 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 [TestClass]
 public sealed partial class Threefish256Tests
-    : TweakableSymmetricAlgorithmTests<Threefish256Tests, Threefish256>
+    : ThreefishTests<Threefish256Tests, Threefish256>
 {
     /// <inheritdoc />
     protected override Threefish256 CreateAlgorithm() => Threefish256.Create();
-
-    /// <inheritdoc />
-    protected override void SetBlockMode(Threefish256 algorithm, CipherModeKind mode) =>
-        algorithm.BlockMode = mode;
 
     /// <inheritdoc />
     protected override TweakableSymmetricAlgorithmSpecification GetSpecification() =>
