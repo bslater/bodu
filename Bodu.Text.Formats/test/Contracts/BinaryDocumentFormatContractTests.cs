@@ -59,7 +59,7 @@ public abstract class BinaryDocumentFormatContractTests<TDocument, TOptions>
     {
         foreach (BinaryDocumentKat<TDocument, TOptions> kat in ValidCases)
         {
-            TDocument actual = Decode(kat.Payload, kat.Options);
+            TDocument actual = Decode(kat.Payload, kat.Options!);
 
             Assert.IsTrue(
                 DocumentComparer.Equals(kat.ExpectedDocument, actual),
@@ -79,7 +79,7 @@ public abstract class BinaryDocumentFormatContractTests<TDocument, TOptions>
             Exception? captured = null;
             try
             {
-                _ = Decode(kat.Payload, kat.Options);
+                _ = Decode(kat.Payload, kat.Options!);
             }
             catch (Exception ex)
             {
@@ -100,9 +100,9 @@ public abstract class BinaryDocumentFormatContractTests<TDocument, TOptions>
     {
         foreach (BinaryDocumentKat<TDocument, TOptions> kat in ValidCases)
         {
-            TDocument first = Decode(kat.Payload, kat.Options);
-            byte[] reEncoded = Encode(first, kat.Options);
-            TDocument again = Decode(reEncoded, kat.Options);
+            TDocument first = Decode(kat.Payload, kat.Options!);
+            byte[] reEncoded = Encode(first, kat.Options!);
+            TDocument again = Decode(reEncoded, kat.Options!);
 
             Assert.IsTrue(
                 DocumentComparer.Equals(first, again),

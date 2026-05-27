@@ -60,7 +60,7 @@ public abstract class TextDocumentFormatContractTests<TDocument, TOptions>
     {
         foreach (TextDocumentKat<TDocument, TOptions> kat in ValidCases)
         {
-            TDocument actual = Parse(kat.Text, kat.Options);
+            TDocument actual = Parse(kat.Text, kat.Options!);
 
             Assert.IsTrue(
                 DocumentComparer.Equals(kat.ExpectedDocument, actual),
@@ -80,7 +80,7 @@ public abstract class TextDocumentFormatContractTests<TDocument, TOptions>
             Exception? captured = null;
             try
             {
-                _ = Parse(kat.Text, kat.Options);
+                _ = Parse(kat.Text, kat.Options!);
             }
             catch (Exception ex)
             {
@@ -106,9 +106,9 @@ public abstract class TextDocumentFormatContractTests<TDocument, TOptions>
     {
         foreach (TextDocumentKat<TDocument, TOptions> kat in ValidCases)
         {
-            TDocument first = Parse(kat.Text, kat.Options);
-            string serialised = Format(first, kat.Options);
-            TDocument again = Parse(serialised, kat.Options);
+            TDocument first = Parse(kat.Text, kat.Options!);
+            string serialised = Format(first, kat.Options!);
+            TDocument again = Parse(serialised, kat.Options!);
 
             Assert.IsTrue(
                 DocumentComparer.Equals(first, again),

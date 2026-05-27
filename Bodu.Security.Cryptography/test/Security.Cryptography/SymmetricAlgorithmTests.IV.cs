@@ -43,7 +43,7 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     public void IV_WhenSetToNull_ShouldThrowExactly()
     {
         using TAlgorithm algorithm = CreateAlgorithm();
-        Assert.ThrowsExactly<ArgumentNullException>(() => algorithm.IV = null);
+        Assert.ThrowsExactly<ArgumentNullException>(() => algorithm.IV = null!);
     }
 
     /// <summary>
