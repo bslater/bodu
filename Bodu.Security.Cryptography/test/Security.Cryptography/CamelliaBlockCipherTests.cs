@@ -44,7 +44,7 @@ internal sealed partial class CamelliaBlockCipherTests
 
     /// <inheritdoc />
     protected override IReadOnlyList<BlockCipherKnownAnswer> GetKnownAnswers(BlockCipherKeyVariant variant) =>
-        CamelliaKnownAnswers.For(variant);
+        KnownAnswersFor(variant);
 
     /// <inheritdoc />
     protected override IBlockCipher CreateBlockCipherForAnswer(BlockCipherKnownAnswer answer) =>

@@ -1,5 +1,5 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="SkipjackKnownAnswers.cs" company="Bodu Pty. Ltd.">
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="SkipjackBlockCipherTests.KnownAnswers.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -7,36 +7,26 @@
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Holds the curated <see cref="SkipjackBlockCipher" /> known-answer test vectors used by
-/// <see cref="SkipjackBlockCipherTests" />. Each vector encrypts an all-zero 64-bit plaintext under a
-/// single-bit-set 80-bit key; the expected ciphertexts are reproduced from the NSA Skipjack reference
-/// implementation declassified in 1998 and standardised in FIPS PUB 185.
+/// Curated <see cref="SkipjackBlockCipher" /> known-answer test vectors. Each vector encrypts an all-zero 64-bit
+/// plaintext under a single-bit-set 80-bit key; the expected ciphertexts are reproduced from the NSA Skipjack
+/// reference implementation declassified in 1998 and standardised in FIPS PUB 185.
 /// </summary>
 /// <remarks>
-/// <para>
-/// The corpus combines two well-established sources: the three single-bit-key avalanche cases that accompany
-/// the original NSA Skipjack reference, and the canonical Section 8 worked example published in FIPS PUB 185.
-/// Together they exercise both key-schedule sanity (avalanche) and the published reference round-trip,
-/// sufficient to detect any divergence in round-key byte ordering or the Rule&#160;A / Rule&#160;B alternation.
-/// </para>
+/// The corpus combines two well-established sources: the three single-bit-key avalanche cases that accompany the
+/// original NSA Skipjack reference, and the canonical Section 8 worked example published in FIPS PUB 185.
+/// Together they exercise both key-schedule sanity (avalanche) and the published reference round-trip, sufficient
+/// to detect any divergence in round-key byte ordering or the Rule&#160;A / Rule&#160;B alternation.
 /// </remarks>
 /// <seealso href="https://csrc.nist.gov/csrc/media/publications/fips/185/archive/1994-02-09/documents/fips185.pdf">FIPS PUB 185 — Escrowed Encryption Standard (Skipjack)</seealso>
-internal static class SkipjackKnownAnswers
+internal sealed partial class SkipjackBlockCipherTests
 {
-    /// <summary>
-    /// Returns the curated KAT vectors for <paramref name="variant" />. Skipjack exposes a single
-    /// configuration (80-bit key, 64-bit block) so the variant parameter is reserved for parity with
-    /// other cipher families and currently always yields the same set.
-    /// </summary>
-    public static IReadOnlyList<BlockCipherKnownAnswer> For(SingleTestVariant variant) => Default;
-
     private const string AllZeroPlaintext = "0000000000000000";
 
     private const string ProfileNsaReference = "NSA Skipjack reference (declassified 1998)";
 
     private const string ProfileFips185 = "FIPS PUB 185 Section 8";
 
-    private static readonly BlockCipherKnownAnswer[] Default =
+    private static readonly BlockCipherKnownAnswer[] DefaultKnownAnswers =
     [
         new BlockCipherKnownAnswer
         {
@@ -71,4 +61,11 @@ internal static class SkipjackKnownAnswers
             Key = Convert.FromHexString("00998877665544332211"),
         },
     ];
+
+    /// <summary>
+    /// Returns the curated KAT vectors for <paramref name="variant" />. Skipjack exposes a single configuration
+    /// (80-bit key, 64-bit block) so the variant parameter is reserved for parity with other cipher families and
+    /// currently always yields the same set.
+    /// </summary>
+    private static IReadOnlyList<BlockCipherKnownAnswer> KnownAnswersFor(SingleTestVariant variant) => DefaultKnownAnswers;
 }

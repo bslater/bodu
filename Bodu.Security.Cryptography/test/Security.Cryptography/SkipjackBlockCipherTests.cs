@@ -29,7 +29,7 @@ internal sealed partial class SkipjackBlockCipherTests
 
     /// <inheritdoc />
     protected override IReadOnlyList<BlockCipherKnownAnswer> GetKnownAnswers(SingleTestVariant variant) =>
-        SkipjackKnownAnswers.For(variant);
+        KnownAnswersFor(variant);
 
     /// <inheritdoc />
     protected override IBlockCipher CreateBlockCipherForAnswer(BlockCipherKnownAnswer answer) =>

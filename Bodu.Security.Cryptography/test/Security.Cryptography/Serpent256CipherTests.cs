@@ -20,7 +20,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// </remarks>
 [TestClass]
-internal sealed class Serpent256CipherTests
+internal sealed partial class Serpent256CipherTests
     : BlockCipherTests<Serpent256CipherTests, Serpent256Cipher, TweakableBlockCipherVariant>
 {
     /// <inheritdoc />
@@ -55,7 +55,7 @@ internal sealed class Serpent256CipherTests
 
     /// <inheritdoc />
     protected override IReadOnlyList<BlockCipherKnownAnswer> GetKnownAnswers(TweakableBlockCipherVariant variant) =>
-        Serpent256KnownAnswers.For(variant);
+        KnownAnswersFor(variant);
 
     /// <inheritdoc />
     protected override IBlockCipher CreateBlockCipherForAnswer(BlockCipherKnownAnswer answer) =>

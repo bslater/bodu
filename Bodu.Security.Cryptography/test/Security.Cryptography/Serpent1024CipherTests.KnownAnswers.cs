@@ -1,5 +1,5 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Serpent1024KnownAnswers.cs" company="Bodu Pty. Ltd.">
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="Serpent1024CipherTests.KnownAnswers.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -9,43 +9,31 @@ using Bodu.Test;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Holds the curated <see cref="Serpent1024Cipher" /> known-answer test vectors used by
-/// <see cref="Serpent1024CipherTests" />. Each row pins a (key, tweak, plaintext, ciphertext) tuple so the
-/// vectors remain self-contained: subsequent changes to the wide-block construction cannot silently
-/// invalidate the captured ciphertext.
+/// Curated <see cref="Serpent1024Cipher" /> known-answer test vectors. Each row pins a (key, tweak, plaintext,
+/// ciphertext) tuple so the vectors remain self-contained: subsequent changes to the wide-block construction
+/// cannot silently invalidate the captured ciphertext.
 /// </summary>
 /// <remarks>
 /// <para>
 /// Serpent-1024 is a non-standard tweakable Serpent construction developed for this library — it has no
-/// externally published reference vectors. The captured ciphertexts were cross-validated against an
-/// independent Python port of the wide-block round function (see <c>tools/cipher-vectors/wide_serpent.py</c>),
-/// which is hand-translated from the C# source and exercises the same Serpent S-boxes, bitsliced linear
-/// transform, prekey recurrence, cross-lane rotation, and five-word tweak schedule. Both implementations
-/// agree on the rows below.
+/// externally published reference vectors. The captured ciphertexts were cross-validated against an independent
+/// Python port of the wide-block round function (see <c>tools/cipher-vectors/wide_serpent.py</c>), which is
+/// hand-translated from the C# source and exercises the same Serpent S-boxes, bitsliced linear transform, prekey
+/// recurrence, cross-lane rotation, and five-word tweak schedule. Both implementations agree on the rows below.
 /// </para>
 /// <para>
 /// The two vectors mirror <see cref="TweakableBlockCipherVariant.ZeroedKeyAndTweak" /> — an all-zero
-/// (key, tweak, plaintext) baseline — and <see cref="TweakableBlockCipherVariant.DefaultKeyAndTweak" /> —
-/// the harness's incremental-byte default (key bytes 0x10..0x8F, tweak bytes 0x00..0x0F, descending
-/// plaintext FF..80).
+/// (key, tweak, plaintext) baseline — and <see cref="TweakableBlockCipherVariant.DefaultKeyAndTweak" /> — the
+/// harness's incremental-byte default (key bytes 0x10..0x8F, tweak bytes 0x00..0x0F, descending plaintext
+/// FF..80).
 /// </para>
 /// </remarks>
-internal static class Serpent1024KnownAnswers
+internal sealed partial class Serpent1024CipherTests
 {
-    /// <summary>
-    /// Returns the curated KAT vector for <paramref name="variant" />.
-    /// </summary>
-    public static IReadOnlyList<BlockCipherKnownAnswer> For(TweakableBlockCipherVariant variant) => variant switch
-    {
-        TweakableBlockCipherVariant.ZeroedKeyAndTweak => ZeroedKeyAndTweak,
-        TweakableBlockCipherVariant.DefaultKeyAndTweak => DefaultKeyAndTweak,
-        _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, null),
-    };
-
     private const string ProfileCrossValidated =
         "Cross-validated against tools/cipher-vectors/wide_serpent.py (independent Python port)";
 
-    private static readonly BlockCipherKnownAnswer[] ZeroedKeyAndTweak =
+    private static readonly BlockCipherKnownAnswer[] ZeroedKeyAndTweakKnownAnswers =
     [
         new BlockCipherKnownAnswer
         {
@@ -62,7 +50,7 @@ internal static class Serpent1024KnownAnswers
         },
     ];
 
-    private static readonly BlockCipherKnownAnswer[] DefaultKeyAndTweak =
+    private static readonly BlockCipherKnownAnswer[] DefaultKeyAndTweakKnownAnswers =
     [
         new BlockCipherKnownAnswer
         {
@@ -82,4 +70,14 @@ internal static class Serpent1024KnownAnswers
             Tweak = TestHelpers.GenerateIncrementalByteSequence(0x00, 16),
         },
     ];
+
+    /// <summary>
+    /// Returns the curated KAT vector for <paramref name="variant" />.
+    /// </summary>
+    private static IReadOnlyList<BlockCipherKnownAnswer> KnownAnswersFor(TweakableBlockCipherVariant variant) => variant switch
+    {
+        TweakableBlockCipherVariant.ZeroedKeyAndTweak => ZeroedKeyAndTweakKnownAnswers,
+        TweakableBlockCipherVariant.DefaultKeyAndTweak => DefaultKeyAndTweakKnownAnswers,
+        _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, null),
+    };
 }

@@ -1,5 +1,5 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="BlowfishKnownAnswers.cs" company="Bodu Pty. Ltd.">
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="BlowfishBlockCipherTests.KnownAnswers.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -7,29 +7,21 @@
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Holds the curated <see cref="BlowfishBlockCipher" /> known-answer test vectors used by
-/// <see cref="BlowfishBlockCipherTests" />. Vectors are transcribed from Eric Young's published
-/// Blowfish test set hosted on Bruce Schneier's site, which is the canonical reference for the
-/// 16-round Blowfish ECB cipher with 64-bit keys.
+/// Curated <see cref="BlowfishBlockCipher" /> known-answer test vectors. Transcribed from Eric Young's published
+/// Blowfish test set hosted on Bruce Schneier's site, which is the canonical reference for the 16-round Blowfish
+/// ECB cipher with 64-bit keys.
 /// </summary>
 /// <remarks>
-/// All vectors target standard 16-round Blowfish in raw single-block ECB mode with a 64-bit key.
-/// They cover the all-zero key/plaintext, the all-ones key/plaintext, and a small set of
-/// representative key/plaintext pairings published in the reference document.
+/// All vectors target standard 16-round Blowfish in raw single-block ECB mode with a 64-bit key. They cover the
+/// all-zero key/plaintext, the all-ones key/plaintext, and a small set of representative key/plaintext pairings
+/// published in the reference document.
 /// </remarks>
 /// <seealso href="https://www.schneier.com/wp-content/uploads/2015/12/vectors-2.txt">vectors-2.txt — Eric Young Blowfish vectors</seealso>
-internal static class BlowfishKnownAnswers
+internal sealed partial class BlowfishBlockCipherTests
 {
-    /// <summary>
-    /// Returns the curated KAT vectors for <paramref name="variant" />. Blowfish exposes a single
-    /// configuration in this test suite (64-bit key, 64-bit block) so the variant parameter is
-    /// reserved for parity with other cipher families and currently always yields the same set.
-    /// </summary>
-    public static IReadOnlyList<BlockCipherKnownAnswer> For(SingleTestVariant variant) => Default;
-
     private const string ProfileSchneierVectors = "Eric Young / Schneier vectors-2.txt";
 
-    private static readonly BlockCipherKnownAnswer[] Default =
+    private static readonly BlockCipherKnownAnswer[] DefaultKnownAnswers =
     [
         new BlockCipherKnownAnswer
         {
@@ -80,4 +72,11 @@ internal static class BlowfishKnownAnswers
             Key = Convert.FromHexString("7CA110454A1A6E57"),
         },
     ];
+
+    /// <summary>
+    /// Returns the curated KAT vectors for <paramref name="variant" />. Blowfish exposes a single configuration in
+    /// this test suite (64-bit key, 64-bit block) so the variant parameter is reserved for parity with other cipher
+    /// families and currently always yields the same set.
+    /// </summary>
+    private static IReadOnlyList<BlockCipherKnownAnswer> KnownAnswersFor(SingleTestVariant variant) => DefaultKnownAnswers;
 }

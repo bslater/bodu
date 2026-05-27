@@ -1,5 +1,5 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="CamelliaKnownAnswers.cs" company="Bodu Pty. Ltd.">
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="CamelliaBlockCipherTests.KnownAnswers.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -7,48 +7,35 @@
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Holds the curated <see cref="CamelliaBlockCipher" /> known-answer test vectors used by
-/// <see cref="CamelliaBlockCipherTests" />, transcribed verbatim from RFC 3713 Appendix A. Each per-variant
-/// collection is keyed on a <see cref="BlockCipherKeyVariant" /> value so the test fixture can attach the
-/// correct row to that variant's specification.
+/// Curated <see cref="CamelliaBlockCipher" /> known-answer test vectors. Transcribed verbatim from RFC 3713
+/// Appendix A. Each per-variant collection is keyed on a <see cref="BlockCipherKeyVariant" /> value so the test
+/// fixture can attach the correct row to that variant's specification.
 /// </summary>
 /// <remarks>
 /// <para>
-/// All vectors target single-block ECB encryption with no padding or IV — the raw block primitive contract.
-/// The plaintext is identical across all three key sizes (RFC 3713 reuses the same 128-bit input); only the
-/// key length and ciphertext differ. The keys themselves share the same 128-bit prefix and append further
-/// bytes for 192- and 256-bit variants, exactly as published in the RFC.
+/// All vectors target single-block ECB encryption with no padding or IV — the raw block primitive contract. The
+/// plaintext is identical across all three key sizes (RFC 3713 reuses the same 128-bit input); only the key
+/// length and ciphertext differ. The keys themselves share the same 128-bit prefix and append further bytes for
+/// 192- and 256-bit variants, exactly as published in the RFC.
 /// </para>
 /// <para>
-/// Additional vectors include RFC 5528 Camellia-CTR keystream rows projected onto the raw block
-/// primitive contract: each counter block is used as the plaintext block and the corresponding
-/// keystream block is used as the expected ciphertext. These rows exercise repeated use of the
-/// same expanded key schedule without depending on locally generated expected values.
+/// Additional vectors include RFC 5528 Camellia-CTR keystream rows projected onto the raw block primitive
+/// contract: each counter block is used as the plaintext block and the corresponding keystream block is used as
+/// the expected ciphertext. These rows exercise repeated use of the same expanded key schedule without depending
+/// on locally generated expected values.
 /// </para>
 /// </remarks>
 /// <seealso href="https://datatracker.ietf.org/doc/html/rfc3713#appendix-A">RFC 3713 Appendix A — Camellia test vectors</seealso>
 /// <seealso href="https://datatracker.ietf.org/doc/html/rfc5528#section-4.1">RFC 5528 Section 4.1 — Camellia-CTR test vectors</seealso>
-internal static class CamelliaKnownAnswers
+internal sealed partial class CamelliaBlockCipherTests
 {
-    /// <summary>
-    /// Returns the curated KAT vectors for <paramref name="variant" />. RFC 3713 publishes one vector per
-    /// key size; future expansions may add additional rows without changing the calling shape.
-    /// </summary>
-    public static IReadOnlyList<BlockCipherKnownAnswer> For(BlockCipherKeyVariant variant) => variant switch
-    {
-        BlockCipherKeyVariant.Key128 => Key128,
-        BlockCipherKeyVariant.Key192 => Key192,
-        BlockCipherKeyVariant.Key256 => Key256,
-        _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, null),
-    };
+    private const string CamelliaPlaintext = "0123456789ABCDEFFEDCBA9876543210";
 
-    private const string Plaintext = "0123456789ABCDEFFEDCBA9876543210";
+    private const string CamelliaKey128Hex = "0123456789ABCDEFFEDCBA9876543210";
 
-    private const string Key128Hex = "0123456789ABCDEFFEDCBA9876543210";
+    private const string CamelliaKey192Hex = CamelliaKey128Hex + "0011223344556677";
 
-    private const string Key192Hex = Key128Hex + "0011223344556677";
-
-    private const string Key256Hex = Key192Hex + "8899AABBCCDDEEFF";
+    private const string CamelliaKey256Hex = CamelliaKey192Hex + "8899AABBCCDDEEFF";
 
     private const string ProfileRfc3713 = "RFC 3713 Appendix A";
 
@@ -56,15 +43,15 @@ internal static class CamelliaKnownAnswers
 
     private const string ProfileRfc5528 = "RFC 5528 Section 4.1 Camellia-CTR keystream";
 
-    private static readonly BlockCipherKnownAnswer[] Key128 =
+    private static readonly BlockCipherKnownAnswer[] Key128KnownAnswers =
     [
         new BlockCipherKnownAnswer
         {
             Name = "Camellia128_Rfc3713_A1",
             Profile = ProfileRfc3713,
-            Plaintext = Convert.FromHexString(Plaintext),
+            Plaintext = Convert.FromHexString(CamelliaPlaintext),
             Ciphertext = Convert.FromHexString("67673138549669730857065648EABE43"),
-            Key = Convert.FromHexString(Key128Hex),
+            Key = Convert.FromHexString(CamelliaKey128Hex),
         },
         new BlockCipherKnownAnswer
         {
@@ -108,15 +95,15 @@ internal static class CamelliaKnownAnswers
         },
     ];
 
-    private static readonly BlockCipherKnownAnswer[] Key192 =
+    private static readonly BlockCipherKnownAnswer[] Key192KnownAnswers =
     [
         new BlockCipherKnownAnswer
         {
             Name = "Camellia192_Rfc3713_A2",
             Profile = ProfileRfc3713,
-            Plaintext = Convert.FromHexString(Plaintext),
+            Plaintext = Convert.FromHexString(CamelliaPlaintext),
             Ciphertext = Convert.FromHexString("B4993401B3E996F84EE5CEE7D79B09B9"),
-            Key = Convert.FromHexString(Key192Hex),
+            Key = Convert.FromHexString(CamelliaKey192Hex),
         },
         new BlockCipherKnownAnswer
         {
@@ -144,15 +131,15 @@ internal static class CamelliaKnownAnswers
         },
     ];
 
-    private static readonly BlockCipherKnownAnswer[] Key256 =
+    private static readonly BlockCipherKnownAnswer[] Key256KnownAnswers =
     [
         new BlockCipherKnownAnswer
         {
             Name = "Camellia256_Rfc3713_A3",
             Profile = ProfileRfc3713,
-            Plaintext = Convert.FromHexString(Plaintext),
+            Plaintext = Convert.FromHexString(CamelliaPlaintext),
             Ciphertext = Convert.FromHexString("9ACC237DFF16D76C20EF7C919E3A7509"),
-            Key = Convert.FromHexString(Key256Hex),
+            Key = Convert.FromHexString(CamelliaKey256Hex),
         },
         new BlockCipherKnownAnswer
         {
@@ -179,4 +166,16 @@ internal static class CamelliaKnownAnswers
             Key = Convert.FromHexString("FF7A617CE69148E4F1726E2F43581DE2AA62D9F805532EDFF1EED687FB54153D"),
         },
     ];
+
+    /// <summary>
+    /// Returns the curated KAT vectors for <paramref name="variant" />. RFC 3713 publishes one vector per key
+    /// size; the Camellia-CTR rows from RFC 5528 supplement those for repeated-key coverage.
+    /// </summary>
+    private static IReadOnlyList<BlockCipherKnownAnswer> KnownAnswersFor(BlockCipherKeyVariant variant) => variant switch
+    {
+        BlockCipherKeyVariant.Key128 => Key128KnownAnswers,
+        BlockCipherKeyVariant.Key192 => Key192KnownAnswers,
+        BlockCipherKeyVariant.Key256 => Key256KnownAnswers,
+        _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, null),
+    };
 }

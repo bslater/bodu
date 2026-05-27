@@ -1,5 +1,5 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Threefish512KnownAnswers.cs" company="Bodu Pty. Ltd.">
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="Threefish512CipherTests.KnownAnswers.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -9,34 +9,22 @@ using Bodu.Test;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Holds the curated <see cref="Threefish512Cipher" /> known-answer test vectors used by
-/// <see cref="Threefish512CipherTests" />. Mirrors the layout of <see cref="Threefish256KnownAnswers" /> at
-/// the wider 512-bit block size.
+/// Curated <see cref="Threefish512Cipher" /> known-answer test vectors. Mirrors the layout of
+/// <see cref="Threefish256CipherTests" /> at the wider 512-bit block size.
 /// </summary>
 /// <remarks>
 /// The two vectors mirror <see cref="TweakableBlockCipherVariant.ZeroedKeyAndTweak" /> — an all-zero
-/// (key, tweak, plaintext) baseline — and <see cref="TweakableBlockCipherVariant.DefaultKeyAndTweak" /> —
-/// the harness's incremental-byte default (key bytes 0x10..0x4F, tweak bytes 0x00..0x0F, descending
-/// plaintext FF..C0). Equivalence with the Skein 1.3 / NIST SHA-3 submission reference was verified at
-/// the Threefish-256 layer (see <see cref="Threefish256KnownAnswers" />); the wider-block 512-bit
-/// variant uses the identical Threefish round structure so the same byte-stream / word-value mapping
-/// applies here.
+/// (key, tweak, plaintext) baseline — and <see cref="TweakableBlockCipherVariant.DefaultKeyAndTweak" /> — the
+/// harness's incremental-byte default (key bytes 0x10..0x4F, tweak bytes 0x00..0x0F, descending plaintext
+/// FF..C0). Equivalence with the Skein 1.3 / NIST SHA-3 submission reference was verified at the Threefish-256
+/// layer (see <see cref="Threefish256CipherTests" />); the wider-block 512-bit variant uses the identical
+/// Threefish round structure so the same byte-stream / word-value mapping applies here.
 /// </remarks>
-internal static class Threefish512KnownAnswers
+internal sealed partial class Threefish512CipherTests
 {
-    /// <summary>
-    /// Returns the curated KAT vector for <paramref name="variant" />.
-    /// </summary>
-    public static IReadOnlyList<BlockCipherKnownAnswer> For(TweakableBlockCipherVariant variant) => variant switch
-    {
-        TweakableBlockCipherVariant.ZeroedKeyAndTweak => ZeroedKeyAndTweak,
-        TweakableBlockCipherVariant.DefaultKeyAndTweak => DefaultKeyAndTweak,
-        _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, null),
-    };
-
     private const string ProfileInTreeRegression = "Skein 1.3 / NIST SHA-3 reference (verified equivalent at Threefish-256 layer)";
 
-    private static readonly BlockCipherKnownAnswer[] ZeroedKeyAndTweak =
+    private static readonly BlockCipherKnownAnswer[] ZeroedKeyAndTweakKnownAnswers =
     [
         new BlockCipherKnownAnswer
         {
@@ -51,7 +39,7 @@ internal static class Threefish512KnownAnswers
         },
     ];
 
-    private static readonly BlockCipherKnownAnswer[] DefaultKeyAndTweak =
+    private static readonly BlockCipherKnownAnswer[] DefaultKeyAndTweakKnownAnswers =
     [
         new BlockCipherKnownAnswer
         {
@@ -67,4 +55,14 @@ internal static class Threefish512KnownAnswers
             Tweak = TestHelpers.GenerateIncrementalByteSequence(0x00, 16),
         },
     ];
+
+    /// <summary>
+    /// Returns the curated KAT vector for <paramref name="variant" />.
+    /// </summary>
+    private static IReadOnlyList<BlockCipherKnownAnswer> KnownAnswersFor(TweakableBlockCipherVariant variant) => variant switch
+    {
+        TweakableBlockCipherVariant.ZeroedKeyAndTweak => ZeroedKeyAndTweakKnownAnswers,
+        TweakableBlockCipherVariant.DefaultKeyAndTweak => DefaultKeyAndTweakKnownAnswers,
+        _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, null),
+    };
 }

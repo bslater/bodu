@@ -1,5 +1,5 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Serpent128KnownAnswers.cs" company="Bodu Pty. Ltd.">
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="Serpent128CipherTests.KnownAnswers.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -7,41 +7,34 @@
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Holds the curated <see cref="Serpent128Cipher" /> known-answer test vectors used by
-/// <see cref="Serpent128CipherTests" />. The corpus is transcribed verbatim from the Serpent NESSIE submission
-/// by Ross Anderson, Eli Biham, and Lars Knudsen — the same vectors that accompanied the AES candidate
+/// Curated <see cref="Serpent128Cipher" /> known-answer test vectors. Transcribed verbatim from the Serpent NESSIE
+/// submission by Ross Anderson, Eli Biham, and Lars Knudsen — the same vectors that accompanied the AES candidate
 /// submission and are echoed across every interoperable Serpent implementation.
 /// </summary>
 /// <remarks>
 /// <para>
-/// All vectors pin the byte-order and key-schedule conventions to the canonical Serpent layout from the
-/// reference submission: little-endian word packing and no external IP/FP permutation.
+/// All vectors pin the byte-order and key-schedule conventions to the canonical Serpent layout from the reference
+/// submission: little-endian word packing and no external IP/FP permutation.
 /// </para>
 /// <para>
 /// Serpent-128 is non-tweakable and exposes a single configuration, so the accessor uses
-/// <see cref="SingleTestVariant" />. The wide-block Serpent variants (256 / 512 / 1024) are tweakable
-/// experimental constructions and live in their own KAT files.
+/// <see cref="SingleTestVariant" />. The wide-block Serpent variants (256 / 512 / 1024) are tweakable experimental
+/// constructions and live in their own partials.
 /// </para>
 /// <para>
-/// The corpus combines five 128-bit-key entries from the NESSIE submission's <c>BlockCipherVectorTest</c>
-/// fixture (tests 0, 1, 2, 9, and 10 — the entries whose key length is 16 bytes) with one additional row
-/// capturing the encryption of the AES standard plaintext under the incrementing-byte key. Together they
-/// exercise the all-zero baseline, the high-bit avalanche case, a self-similar repeating-byte key/plaintext,
-/// and the two AES-standard reverse-engineered vectors that round-trip the canonical AES test pattern.
+/// The corpus combines five 128-bit-key entries from the NESSIE submission's <c>BlockCipherVectorTest</c> fixture
+/// (tests 0, 1, 2, 9, and 10 — the entries whose key length is 16 bytes) with one additional row capturing the
+/// encryption of the AES standard plaintext under the incrementing-byte key. Together they exercise the all-zero
+/// baseline, the high-bit avalanche case, a self-similar repeating-byte key/plaintext, and the two AES-standard
+/// reverse-engineered vectors that round-trip the canonical AES test pattern.
 /// </para>
 /// </remarks>
 /// <seealso href="https://www.cl.cam.ac.uk/~rja14/serpent.html">Serpent home page (Anderson / Biham / Knudsen)</seealso>
-internal static class Serpent128KnownAnswers
+internal sealed partial class Serpent128CipherTests
 {
-    /// <summary>
-    /// Returns the curated KAT vectors for <paramref name="variant" />. Serpent-128 publishes a single
-    /// configuration; the variant parameter is reserved for parity with other non-variant cipher families.
-    /// </summary>
-    public static IReadOnlyList<BlockCipherKnownAnswer> For(SingleTestVariant variant) => Default;
-
     private const string ProfileNessie = "Serpent NESSIE submission (Anderson / Biham / Knudsen)";
 
-    private static readonly BlockCipherKnownAnswer[] Default =
+    private static readonly BlockCipherKnownAnswer[] DefaultKnownAnswers =
     [
         new BlockCipherKnownAnswer
         {
@@ -92,4 +85,10 @@ internal static class Serpent128KnownAnswers
             Key = Convert.FromHexString("000102030405060708090A0B0C0D0E0F"),
         },
     ];
+
+    /// <summary>
+    /// Returns the curated KAT vectors for <paramref name="variant" />. Serpent-128 publishes a single
+    /// configuration; the variant parameter is reserved for parity with other non-variant cipher families.
+    /// </summary>
+    private static IReadOnlyList<BlockCipherKnownAnswer> KnownAnswersFor(SingleTestVariant variant) => DefaultKnownAnswers;
 }

@@ -14,7 +14,7 @@ namespace Bodu.Security.Cryptography;
 /// <see cref="TweakableBlockCipherVariant" />.
 /// </summary>
 [TestClass]
-internal sealed class Threefish512CipherTests
+internal sealed partial class Threefish512CipherTests
     : BlockCipherTests<Threefish512CipherTests, Threefish512Cipher, TweakableBlockCipherVariant>
 {
     /// <inheritdoc />
@@ -49,7 +49,7 @@ internal sealed class Threefish512CipherTests
 
     /// <inheritdoc />
     protected override IReadOnlyList<BlockCipherKnownAnswer> GetKnownAnswers(TweakableBlockCipherVariant variant) =>
-        Threefish512KnownAnswers.For(variant);
+        KnownAnswersFor(variant);
 
     /// <inheritdoc />
     protected override IBlockCipher CreateBlockCipherForAnswer(BlockCipherKnownAnswer answer) =>
