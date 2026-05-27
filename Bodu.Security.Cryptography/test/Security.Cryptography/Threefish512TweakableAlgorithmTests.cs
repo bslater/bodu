@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Security.Cryptography;
-
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
@@ -34,24 +32,4 @@ public sealed partial class Threefish512TweakableAlgorithmTests
             DefaultTweakSizeBits = 128,
             LegalTweakSizesBits = [128],
         };
-
-    /// <inheritdoc />
-    /// <remarks>
-    /// Flattens both <see cref="TweakableBlockCipherVariant" /> values for the curated Threefish-512 KAT data set
-    /// so each variant runs through the algorithm-tier <c>CreateEncryptor</c> / <c>CreateDecryptor</c> pipeline.
-    /// </remarks>
-    protected override IEnumerable<BlockCipherKnownAnswer> GetKnownAnswers() =>
-        Enum.GetValues<TweakableBlockCipherVariant>().SelectMany(Threefish512KnownAnswers.For);
-
-    /// <inheritdoc />
-    protected override Threefish512 CreateAlgorithmForKnownAnswer(BlockCipherKnownAnswer answer)
-    {
-        var algorithm = Threefish512.Create();
-        algorithm.Mode = CipherMode.ECB;
-        algorithm.Padding = PaddingMode.None;
-        algorithm.Key = answer.Key!;
-        algorithm.IV = new byte[algorithm.BlockSize / 8];
-        algorithm.Tweak = answer.Tweak!;
-        return algorithm;
-    }
 }

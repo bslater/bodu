@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Security.Cryptography;
-
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
@@ -33,19 +31,4 @@ public sealed partial class BlowfishAlgorithmTests
                 .Select(i => i * 8)
                 .ToArray(),
         };
-
-    /// <inheritdoc />
-    protected override IEnumerable<BlockCipherKnownAnswer> GetKnownAnswers() =>
-        BlowfishKnownAnswers.For(SingleTestVariant.Default);
-
-    /// <inheritdoc />
-    protected override Blowfish CreateAlgorithmForKnownAnswer(BlockCipherKnownAnswer answer)
-    {
-        var algorithm = Blowfish.Create();
-        algorithm.Mode = CipherMode.ECB;
-        algorithm.Padding = PaddingMode.None;
-        algorithm.Key = answer.Key!;
-        algorithm.IV = new byte[algorithm.BlockSize / 8];
-        return algorithm;
-    }
 }
