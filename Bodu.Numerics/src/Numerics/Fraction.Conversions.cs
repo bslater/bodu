@@ -1,6 +1,6 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Fraction.Conversions.cs" company="Bodu Pty. Ltd.">
-//     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
+//     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
@@ -16,7 +16,7 @@ public readonly partial struct Fraction<T>
     /// <param name="value">The integer value to lift into a rational value.</param>
     /// <returns>A <see cref="Fraction{T}" /> with denominator one.</returns>
     public static implicit operator Fraction<T>(T value) =>
-        new Fraction<T>(value);
+        new(value);
 
     /// <summary>
     /// Converts a <see cref="decimal" /> to its exact rational representation.
@@ -256,7 +256,7 @@ public readonly partial struct Fraction<T>
     /// </exception>
     public Fraction<TOther> As<TOther>()
         where TOther : IBinaryInteger<TOther> =>
-        new Fraction<TOther>(TOther.CreateChecked(_numerator), TOther.CreateChecked(Denominator));
+        new(TOther.CreateChecked(_numerator), TOther.CreateChecked(Denominator));
 
     /// <summary>
     /// Decomposes a finite <see cref="double" /> into the exact numerator and denominator of its rational value.
@@ -269,10 +269,10 @@ public readonly partial struct Fraction<T>
         if (!double.IsFinite(value))
             throw new ArgumentException("Only finite values can be converted to a fraction.", nameof(value));
 
-        long bits = BitConverter.DoubleToInt64Bits(value);
-        bool negative = bits < 0;
-        int exponent = (int)((bits >> 52) & 0x7FF);
-        long mantissa = bits & 0xFFFFFFFFFFFFF;
+        var bits = BitConverter.DoubleToInt64Bits(value);
+        var negative = bits < 0;
+        var exponent = (int)((bits >> 52) & 0x7FF);
+        var mantissa = bits & 0xFFFFFFFFFFFFF;
 
         if (exponent == 0)
             exponent++;
@@ -297,13 +297,13 @@ public readonly partial struct Fraction<T>
     /// <returns>The exact numerator and denominator of <paramref name="value" />.</returns>
     private static (BigInteger Numerator, BigInteger Denominator) DecimalToRational(decimal value)
     {
-        int[] bits = decimal.GetBits(value);
+        var bits = decimal.GetBits(value);
         BigInteger mantissa = (new BigInteger((uint)bits[2]) << 64)
             | (new BigInteger((uint)bits[1]) << 32)
             | new BigInteger((uint)bits[0]);
 
-        bool negative = (bits[3] & unchecked((int)0x80000000)) != 0;
-        int scale = (bits[3] >> 16) & 0xFF;
+        var negative = (bits[3] & unchecked((int)0x80000000)) != 0;
+        var scale = (bits[3] >> 16) & 0xFF;
 
         if (negative)
             mantissa = -mantissa;

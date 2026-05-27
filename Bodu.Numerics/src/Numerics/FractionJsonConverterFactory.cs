@@ -1,6 +1,6 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FractionJsonConverterFactory.cs" company="Bodu Pty. Ltd.">
-//     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
+//     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
@@ -46,7 +46,7 @@ public sealed class FractionJsonConverterFactory : JsonConverterFactory
 
         Type componentType = typeToConvert.GetGenericArguments()[0];
         Type converterType = typeof(FractionJsonConverter<>).MakeGenericType(componentType);
-        object converter = Activator.CreateInstance(converterType)
+        var converter = Activator.CreateInstance(converterType)
             ?? throw new InvalidOperationException($"Unable to create a JSON converter for '{typeToConvert}'.");
 
         return (JsonConverter)converter;

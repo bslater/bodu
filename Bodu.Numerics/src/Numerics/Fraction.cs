@@ -1,6 +1,6 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Fraction.cs" company="Bodu Pty. Ltd.">
-//     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
+//     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
@@ -103,8 +103,8 @@ public readonly partial struct Fraction<T>
         if (T.IsZero(denominator))
             throw new DivideByZeroException("The denominator of a fraction must not be zero.");
 
-        BigInteger n = BigInteger.CreateChecked(numerator);
-        BigInteger d = BigInteger.CreateChecked(denominator);
+        var n = BigInteger.CreateChecked(numerator);
+        var d = BigInteger.CreateChecked(denominator);
 
         if (d.Sign < 0)
         {
@@ -112,7 +112,7 @@ public readonly partial struct Fraction<T>
             d = -d;
         }
 
-        BigInteger g = BigInteger.GreatestCommonDivisor(n, d);
+        var g = BigInteger.GreatestCommonDivisor(n, d);
         if (g > BigInteger.One)
         {
             n /= g;
@@ -144,14 +144,14 @@ public readonly partial struct Fraction<T>
     /// </summary>
     /// <returns>The rational value <c>0/1</c>.</returns>
     public static Fraction<T> Zero =>
-        new Fraction<T>(T.Zero, T.One, canonical: true);
+        new(T.Zero, T.One, canonical: true);
 
     /// <summary>
     /// Gets a <see cref="Fraction{T}" /> representing the value one.
     /// </summary>
     /// <returns>The rational value <c>1/1</c>.</returns>
     public static Fraction<T> One =>
-        new Fraction<T>(T.One, T.One, canonical: true);
+        new(T.One, T.One, canonical: true);
 
     /// <summary>
     /// Gets a <see cref="Fraction{T}" /> representing the value negative one.
@@ -243,7 +243,7 @@ public readonly partial struct Fraction<T>
     /// Thrown if the canonical numerator or denominator cannot be represented by <typeparamref name="T" />.
     /// </exception>
     public static Fraction<T> Create(T numerator, T denominator) =>
-        new Fraction<T>(numerator, denominator);
+        new(numerator, denominator);
 
     /// <summary>
     /// Attempts to create a canonical <see cref="Fraction{T}" /> from the specified numerator and denominator.
@@ -303,8 +303,8 @@ public readonly partial struct Fraction<T>
         if (T.IsZero(left) || T.IsZero(right))
             return T.Zero;
 
-        BigInteger a = BigInteger.Abs(BigInteger.CreateChecked(left));
-        BigInteger b = BigInteger.Abs(BigInteger.CreateChecked(right));
+        var a = BigInteger.Abs(BigInteger.CreateChecked(left));
+        var b = BigInteger.Abs(BigInteger.CreateChecked(right));
         BigInteger result = a / BigInteger.GreatestCommonDivisor(a, b) * b;
 
         return T.CreateChecked(result);
@@ -331,7 +331,7 @@ public readonly partial struct Fraction<T>
             denominator = -denominator;
         }
 
-        BigInteger g = BigInteger.GreatestCommonDivisor(numerator, denominator);
+        var g = BigInteger.GreatestCommonDivisor(numerator, denominator);
         if (g > BigInteger.One)
         {
             numerator /= g;
@@ -395,7 +395,7 @@ public readonly partial struct Fraction<T>
     private static T InvokeExtreme(string methodName)
     {
         MethodInfo? definition = typeof(Fraction<T>).GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Static);
-        object? extreme = definition!.MakeGenericMethod(typeof(T)).Invoke(null, null);
+        var extreme = definition!.MakeGenericMethod(typeof(T)).Invoke(null, null);
         return (T)extreme!;
     }
 

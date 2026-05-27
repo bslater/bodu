@@ -1,6 +1,6 @@
-// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Fraction.GenericMath.cs" company="Bodu Pty. Ltd.">
-//     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
+﻿// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="Fraction.GenericMath.cs" company="PlaceholderCompany">
+//     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
@@ -160,12 +160,11 @@ public readonly partial struct Fraction<T> :
     {
         try
         {
-            if (value.IsInteger)
-                result = TOther.CreateChecked(value.BigNumerator);
-            else if (typeof(TOther) == typeof(decimal))
-                result = TOther.CreateChecked(value.ToDecimal());
-            else
-                result = TOther.CreateChecked(value.ToDouble());
+            result = value.IsInteger
+                ? TOther.CreateChecked(value.BigNumerator)
+                : typeof(TOther) == typeof(decimal)
+                    ? TOther.CreateChecked(value.ToDecimal())
+                    : TOther.CreateChecked(value.ToDouble());
 
             return true;
         }
@@ -272,7 +271,7 @@ public readonly partial struct Fraction<T> :
             return false;
         }
 
-        double approximation = double.CreateChecked(value);
+        var approximation = double.CreateChecked(value);
         if (!double.IsFinite(approximation))
         {
             result = default;
@@ -321,14 +320,14 @@ public readonly partial struct Fraction<T> :
     /// <returns>The argument with the greater magnitude.</returns>
     private static Fraction<T> MaxMagnitudeInternal(Fraction<T> x, Fraction<T> y)
     {
-        int comparison = Compare(x.Abs(), y.Abs());
-        if (comparison > 0)
-            return x;
-
-        if (comparison < 0)
-            return y;
-
-        return x.Sign >= y.Sign ? x : y;
+        var comparison = Compare(x.Abs(), y.Abs());
+        return comparison > 0
+            ? x
+            : comparison < 0
+                ? y
+                : x.Sign >= y.Sign
+                    ? x
+                    : y;
     }
 
     /// <summary>
@@ -339,14 +338,14 @@ public readonly partial struct Fraction<T> :
     /// <returns>The argument with the smaller magnitude.</returns>
     private static Fraction<T> MinMagnitudeInternal(Fraction<T> x, Fraction<T> y)
     {
-        int comparison = Compare(x.Abs(), y.Abs());
-        if (comparison < 0)
-            return x;
-
-        if (comparison > 0)
-            return y;
-
-        return x.Sign <= y.Sign ? x : y;
+        var comparison = Compare(x.Abs(), y.Abs());
+        return comparison < 0
+            ? x
+            : comparison > 0
+                ? y
+                : x.Sign <= y.Sign
+                    ? x
+                    : y;
     }
 }
 

@@ -1,6 +1,6 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Fraction.Arithmetic.cs" company="Bodu Pty. Ltd.">
-//     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
+//     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
@@ -89,10 +89,9 @@ public readonly partial struct Fraction<T>
     /// </exception>
     public Fraction<T> Reciprocal()
     {
-        if (IsZero)
-            throw new DivideByZeroException("Cannot compute the reciprocal of zero.");
-
-        return FromBigInteger(BigDenominator, BigNumerator);
+        return !IsZero
+            ? FromBigInteger(BigDenominator, BigNumerator)
+            : throw new DivideByZeroException("Cannot compute the reciprocal of zero.");
     }
 
     /// <summary>
@@ -119,13 +118,12 @@ public readonly partial struct Fraction<T>
             if (IsZero)
                 throw new DivideByZeroException("Cannot raise zero to a negative power.");
 
-            long magnitude = -(long)exponent;
-            if (magnitude > int.MaxValue)
-                throw new OverflowException("The magnitude of the exponent is too large to evaluate.");
-
-            return FromBigInteger(
-                BigInteger.Pow(BigDenominator, (int)magnitude),
-                BigInteger.Pow(BigNumerator, (int)magnitude));
+            var magnitude = -(long)exponent;
+            return magnitude <= int.MaxValue
+                ? FromBigInteger(
+                    BigInteger.Pow(BigDenominator, (int)magnitude),
+                    BigInteger.Pow(BigNumerator, (int)magnitude))
+                : throw new OverflowException("The magnitude of the exponent is too large to evaluate.");
         }
 
         return FromBigInteger(

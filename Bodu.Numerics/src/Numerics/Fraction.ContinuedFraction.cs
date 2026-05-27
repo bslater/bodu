@@ -1,6 +1,6 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Fraction.ContinuedFraction.cs" company="Bodu Pty. Ltd.">
-//     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
+//     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
@@ -20,7 +20,7 @@ public readonly partial struct Fraction<T>
     /// </returns>
     public T[] ToContinuedFraction()
     {
-        List<T> coefficients = new List<T>();
+        var coefficients = new List<T>();
 
         BigInteger n = BigNumerator;
         BigInteger d = BigDenominator;
@@ -32,7 +32,7 @@ public readonly partial struct Fraction<T>
             (n, d) = (d, n - (a * d));
         }
 
-        return coefficients.ToArray();
+        return [.. coefficients];
     }
 
     /// <summary>
@@ -59,14 +59,14 @@ public readonly partial struct Fraction<T>
         if (coefficients.Length == 0)
             throw new ArgumentException("At least one coefficient is required.", nameof(coefficients));
 
-        for (int i = 1; i < coefficients.Length; i++)
+        for (var i = 1; i < coefficients.Length; i++)
         {
             if (T.IsZero(coefficients[i]) || T.IsNegative(coefficients[i]))
                 throw new ArgumentOutOfRangeException(nameof(coefficients), "Coefficients after the first must be strictly positive.");
         }
 
-        Fraction<T> result = new Fraction<T>(coefficients[^1]);
-        for (int i = coefficients.Length - 2; i >= 0; i--)
+        var result = new Fraction<T>(coefficients[^1]);
+        for (var i = coefficients.Length - 2; i >= 0; i--)
         {
             result = new Fraction<T>(coefficients[i]) + result.Reciprocal();
         }
@@ -95,7 +95,7 @@ public readonly partial struct Fraction<T>
         if (T.IsZero(maxDenominator) || T.IsNegative(maxDenominator))
             throw new ArgumentOutOfRangeException(nameof(maxDenominator), "The denominator limit must be at least one.");
 
-        BigInteger limit = BigInteger.CreateChecked(maxDenominator);
+        var limit = BigInteger.CreateChecked(maxDenominator);
         if (BigDenominator <= limit)
             return this;
 
@@ -206,7 +206,7 @@ public readonly partial struct Fraction<T>
     /// </remarks>
     private static Fraction<T> ApproximateCore(BigInteger numerator, BigInteger denominator, T maxDenominator)
     {
-        Fraction<BigInteger> exact = new Fraction<BigInteger>(numerator, denominator);
+        var exact = new Fraction<BigInteger>(numerator, denominator);
         Fraction<BigInteger> limited = exact.LimitDenominator(BigInteger.CreateChecked(maxDenominator));
 
         return FromBigInteger(limited.Numerator, limited.Denominator);
@@ -220,7 +220,7 @@ public readonly partial struct Fraction<T>
     /// <returns>The floored quotient of <paramref name="dividend" /> divided by <paramref name="divisor" />.</returns>
     private static BigInteger FloorDivide(BigInteger dividend, BigInteger divisor)
     {
-        BigInteger quotient = BigInteger.DivRem(dividend, divisor, out BigInteger remainder);
+        var quotient = BigInteger.DivRem(dividend, divisor, out BigInteger remainder);
         if (!remainder.IsZero && remainder.Sign != divisor.Sign)
             quotient -= BigInteger.One;
 

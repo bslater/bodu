@@ -1,6 +1,6 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Fraction.Operators.cs" company="Bodu Pty. Ltd.">
-//     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
+//     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
@@ -33,10 +33,12 @@ public readonly partial struct Fraction<T>
     /// <exception cref="OverflowException">
     /// Thrown if the canonical result does not fit <typeparamref name="T" />.
     /// </exception>
-    public static Fraction<T> operator +(Fraction<T> left, Fraction<T> right) =>
-        FromBigInteger(
+    public static Fraction<T> operator +(Fraction<T> left, Fraction<T> right)
+    {
+        return FromBigInteger(
             (left.BigNumerator * right.BigDenominator) + (right.BigNumerator * left.BigDenominator),
             left.BigDenominator * right.BigDenominator);
+    }
 
     /// <summary>
     /// Subtracts one rational value from another.
@@ -47,10 +49,12 @@ public readonly partial struct Fraction<T>
     /// <exception cref="OverflowException">
     /// Thrown if the canonical result does not fit <typeparamref name="T" />.
     /// </exception>
-    public static Fraction<T> operator -(Fraction<T> left, Fraction<T> right) =>
-        FromBigInteger(
+    public static Fraction<T> operator -(Fraction<T> left, Fraction<T> right)
+    {
+        return FromBigInteger(
             (left.BigNumerator * right.BigDenominator) - (right.BigNumerator * left.BigDenominator),
             left.BigDenominator * right.BigDenominator);
+    }
 
     /// <summary>
     /// Multiplies two rational values.
@@ -61,10 +65,12 @@ public readonly partial struct Fraction<T>
     /// <exception cref="OverflowException">
     /// Thrown if the canonical result does not fit <typeparamref name="T" />.
     /// </exception>
-    public static Fraction<T> operator *(Fraction<T> left, Fraction<T> right) =>
-        FromBigInteger(
+    public static Fraction<T> operator *(Fraction<T> left, Fraction<T> right)
+    {
+        return FromBigInteger(
             left.BigNumerator * right.BigNumerator,
             left.BigDenominator * right.BigDenominator);
+    }
 
     /// <summary>
     /// Divides one rational value by another.
@@ -78,12 +84,11 @@ public readonly partial struct Fraction<T>
     /// </exception>
     public static Fraction<T> operator /(Fraction<T> left, Fraction<T> right)
     {
-        if (right.IsZero)
-            throw new DivideByZeroException("Cannot divide a fraction by zero.");
-
-        return FromBigInteger(
-            left.BigNumerator * right.BigDenominator,
-            left.BigDenominator * right.BigNumerator);
+        return !right.IsZero
+            ? FromBigInteger(
+                left.BigNumerator * right.BigDenominator,
+                left.BigDenominator * right.BigNumerator)
+            : throw new DivideByZeroException("Cannot divide a fraction by zero.");
     }
 
     /// <summary>
@@ -119,16 +124,20 @@ public readonly partial struct Fraction<T>
     /// <exception cref="OverflowException">
     /// Thrown if the negated numerator cannot be represented by <typeparamref name="T" />.
     /// </exception>
-    public static Fraction<T> operator -(Fraction<T> value) =>
-        FromBigInteger(-value.BigNumerator, value.BigDenominator);
+    public static Fraction<T> operator -(Fraction<T> value)
+    {
+        return FromBigInteger(-value.BigNumerator, value.BigDenominator);
+    }
 
     /// <summary>
     /// Returns the rational value unchanged.
     /// </summary>
     /// <param name="value">The value to return.</param>
     /// <returns>The unmodified <paramref name="value" />.</returns>
-    public static Fraction<T> operator +(Fraction<T> value) =>
-        value;
+    public static Fraction<T> operator +(Fraction<T> value)
+    {
+        return value;
+    }
 
     /// <summary>
     /// Returns the rational value increased by one.
@@ -138,8 +147,10 @@ public readonly partial struct Fraction<T>
     /// <exception cref="OverflowException">
     /// Thrown if the canonical result does not fit <typeparamref name="T" />.
     /// </exception>
-    public static Fraction<T> operator ++(Fraction<T> value) =>
-        value + One;
+    public static Fraction<T> operator ++(Fraction<T> value)
+    {
+        return value + One;
+    }
 
     /// <summary>
     /// Returns the rational value decreased by one.
@@ -149,8 +160,10 @@ public readonly partial struct Fraction<T>
     /// <exception cref="OverflowException">
     /// Thrown if the canonical result does not fit <typeparamref name="T" />.
     /// </exception>
-    public static Fraction<T> operator --(Fraction<T> value) =>
-        value - One;
+    public static Fraction<T> operator --(Fraction<T> value)
+    {
+        return value - One;
+    }
 
     /// <summary>
     /// Determines whether two rational values are equal.
@@ -158,8 +171,10 @@ public readonly partial struct Fraction<T>
     /// <param name="left">The first value.</param>
     /// <param name="right">The second value.</param>
     /// <returns><see langword="true" /> if the values are equal; otherwise, <see langword="false" />.</returns>
-    public static bool operator ==(Fraction<T> left, Fraction<T> right) =>
-        left.Equals(right);
+    public static bool operator ==(Fraction<T> left, Fraction<T> right)
+    {
+        return left.Equals(right);
+    }
 
     /// <summary>
     /// Determines whether two rational values are unequal.
@@ -167,8 +182,10 @@ public readonly partial struct Fraction<T>
     /// <param name="left">The first value.</param>
     /// <param name="right">The second value.</param>
     /// <returns><see langword="true" /> if the values are unequal; otherwise, <see langword="false" />.</returns>
-    public static bool operator !=(Fraction<T> left, Fraction<T> right) =>
-        !left.Equals(right);
+    public static bool operator !=(Fraction<T> left, Fraction<T> right)
+    {
+        return !left.Equals(right);
+    }
 
     /// <summary>
     /// Determines whether one rational value is less than another.
@@ -179,8 +196,10 @@ public readonly partial struct Fraction<T>
     /// <see langword="true" /> if <paramref name="left" /> is less than <paramref name="right" />; otherwise,
     /// <see langword="false" />.
     /// </returns>
-    public static bool operator <(Fraction<T> left, Fraction<T> right) =>
-        Compare(left, right) < 0;
+    public static bool operator <(Fraction<T> left, Fraction<T> right)
+    {
+        return Compare(left, right) < 0;
+    }
 
     /// <summary>
     /// Determines whether one rational value is less than or equal to another.
@@ -191,8 +210,10 @@ public readonly partial struct Fraction<T>
     /// <see langword="true" /> if <paramref name="left" /> is less than or equal to <paramref name="right" />;
     /// otherwise, <see langword="false" />.
     /// </returns>
-    public static bool operator <=(Fraction<T> left, Fraction<T> right) =>
-        Compare(left, right) <= 0;
+    public static bool operator <=(Fraction<T> left, Fraction<T> right)
+    {
+        return Compare(left, right) <= 0;
+    }
 
     /// <summary>
     /// Determines whether one rational value is greater than another.
@@ -203,8 +224,10 @@ public readonly partial struct Fraction<T>
     /// <see langword="true" /> if <paramref name="left" /> is greater than <paramref name="right" />; otherwise,
     /// <see langword="false" />.
     /// </returns>
-    public static bool operator >(Fraction<T> left, Fraction<T> right) =>
-        Compare(left, right) > 0;
+    public static bool operator >(Fraction<T> left, Fraction<T> right)
+    {
+        return Compare(left, right) > 0;
+    }
 
     /// <summary>
     /// Determines whether one rational value is greater than or equal to another.
@@ -215,6 +238,8 @@ public readonly partial struct Fraction<T>
     /// <see langword="true" /> if <paramref name="left" /> is greater than or equal to <paramref name="right" />;
     /// otherwise, <see langword="false" />.
     /// </returns>
-    public static bool operator >=(Fraction<T> left, Fraction<T> right) =>
-        Compare(left, right) >= 0;
+    public static bool operator >=(Fraction<T> left, Fraction<T> right)
+    {
+        return Compare(left, right) >= 0;
+    }
 }

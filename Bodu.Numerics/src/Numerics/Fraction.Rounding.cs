@@ -1,6 +1,6 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Fraction.Rounding.cs" company="Bodu Pty. Ltd.">
-//     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
+//     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
@@ -53,7 +53,7 @@ public readonly partial struct Fraction<T>
         BigInteger denominator = BigDenominator;
         BigInteger floor = FloorDivide(BigNumerator, denominator);
         BigInteger remainder = BigNumerator - (floor * denominator);
-        int comparison = (remainder * 2).CompareTo(denominator);
+        var comparison = (remainder * 2).CompareTo(denominator);
 
         BigInteger rounded = comparison switch
         {

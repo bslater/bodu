@@ -1,6 +1,6 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Fraction.IComparable.cs" company="Bodu Pty. Ltd.">
-//     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
+//     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
@@ -34,13 +34,11 @@ public readonly partial struct Fraction<T> :
     /// </exception>
     public int CompareTo(object? obj)
     {
-        if (obj is null)
-            return 1;
-
-        if (obj is Fraction<T> other)
-            return Compare(this, other);
-
-        throw new ArgumentException($"Object must be of type {typeof(Fraction<T>)}.", nameof(obj));
+        return obj is null
+            ? 1
+            : obj is Fraction<T> other
+                ? Compare(this, other)
+                : throw new ArgumentException($"Object must be of type {typeof(Fraction<T>)}.", nameof(obj));
     }
 
     /// <summary>
@@ -85,11 +83,12 @@ public readonly partial struct Fraction<T> :
     /// </exception>
     public static Fraction<T> Clamp(Fraction<T> value, Fraction<T> min, Fraction<T> max)
     {
-        if (Compare(min, max) > 0) throw new ArgumentException("The minimum bound must not exceed the maximum bound.", nameof(min));
-
-        if (Compare(value, min) < 0)
-            return min;
-
-        return Compare(value, max) > 0 ? max : value;
+        return Compare(min, max) <= 0
+            ? Compare(value, min) < 0
+                ? min
+                : Compare(value, max) > 0
+                    ? max
+                    : value
+            : throw new ArgumentException("The minimum bound must not exceed the maximum bound.", nameof(min));
     }
 }

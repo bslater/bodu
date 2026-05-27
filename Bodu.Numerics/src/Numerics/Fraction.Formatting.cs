@@ -1,6 +1,6 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Fraction.Formatting.cs" company="Bodu Pty. Ltd.">
-//     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
+//     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
@@ -76,7 +76,7 @@ public readonly partial struct Fraction<T> :
     /// <exception cref="FormatException">Thrown if <paramref name="format" /> is not a supported specifier.</exception>
     public bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format, IFormatProvider? provider)
     {
-        string text = Format(format, provider);
+        var text = Format(format, provider);
         if (text.Length <= destination.Length)
         {
             text.CopyTo(destination);
@@ -99,7 +99,7 @@ public readonly partial struct Fraction<T> :
     /// <exception cref="FormatException">Thrown if <paramref name="format" /> is not a supported specifier.</exception>
     public bool TryFormat(Span<byte> utf8Destination, out int bytesWritten, ReadOnlySpan<char> format, IFormatProvider? provider)
     {
-        string text = Format(format, provider);
+        var text = Format(format, provider);
         return Encoding.UTF8.TryGetBytes(text, utf8Destination, out bytesWritten);
     }
 
@@ -147,7 +147,7 @@ public readonly partial struct Fraction<T> :
     /// <exception cref="FormatException">Thrown if <paramref name="format" /> is not a supported specifier.</exception>
     private string Format(ReadOnlySpan<char> format, IFormatProvider? provider)
     {
-        char specifier = format.IsEmpty ? 'G' : char.ToUpperInvariant(format[0]);
+        var specifier = format.IsEmpty ? 'G' : char.ToUpperInvariant(format[0]);
 
         return specifier switch
         {
@@ -155,7 +155,7 @@ public readonly partial struct Fraction<T> :
             'M' => FormatMixed(provider),
             'U' => FormatUnicode(provider),
             'P' => FormatPercent(provider),
-            _ => throw new FormatException($"The format string '{format.ToString()}' is not supported."),
+            _ => throw new FormatException($"The format string '{format}' is not supported."),
         };
     }
 
@@ -182,7 +182,7 @@ public readonly partial struct Fraction<T> :
         if (denominator.IsOne)
             return numerator.ToString(provider);
 
-        BigInteger magnitude = BigInteger.Abs(numerator);
+        var magnitude = BigInteger.Abs(numerator);
         if (magnitude < denominator)
             return $"{numerator.ToString(provider)}/{denominator.ToString(provider)}";
 
@@ -205,16 +205,16 @@ public readonly partial struct Fraction<T> :
         if (denominator.IsOne)
             return numerator.ToString(provider);
 
-        BigInteger magnitude = BigInteger.Abs(numerator);
+        var magnitude = BigInteger.Abs(numerator);
         BigInteger whole = magnitude / denominator;
         BigInteger remainder = magnitude % denominator;
 
         if (denominator <= 16
             && remainder >= BigInteger.One
-            && s_vulgarFractions.TryGetValue(((int)remainder, (int)denominator), out char glyph))
+            && s_vulgarFractions.TryGetValue(((int)remainder, (int)denominator), out var glyph))
         {
-            string sign = numerator.Sign < 0 ? "-" : string.Empty;
-            string wholePart = whole.IsZero ? string.Empty : whole.ToString(provider);
+            var sign = numerator.Sign < 0 ? "-" : string.Empty;
+            var wholePart = whole.IsZero ? string.Empty : whole.ToString(provider);
             return $"{sign}{wholePart}{glyph}";
         }
 
@@ -231,7 +231,7 @@ public readonly partial struct Fraction<T> :
         BigInteger scaledNumerator = BigNumerator * 100;
         BigInteger denominator = BigDenominator;
 
-        BigInteger divisor = BigInteger.GreatestCommonDivisor(BigInteger.Abs(scaledNumerator), denominator);
+        var divisor = BigInteger.GreatestCommonDivisor(BigInteger.Abs(scaledNumerator), denominator);
         if (divisor > BigInteger.One)
         {
             scaledNumerator /= divisor;

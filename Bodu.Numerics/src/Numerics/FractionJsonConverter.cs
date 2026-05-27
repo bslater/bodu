@@ -1,6 +1,6 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FractionJsonConverter.cs" company="Bodu Pty. Ltd.">
-//     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
+//     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
@@ -38,7 +38,7 @@ public sealed class FractionJsonConverter<T> : JsonConverter<Fraction<T>>
         if (reader.TokenType != JsonTokenType.String)
             throw new JsonException("Expected a JSON string containing a fraction.");
 
-        string text = reader.GetString() ?? throw new JsonException("Expected a non-null fraction string.");
+        var text = reader.GetString() ?? throw new JsonException("Expected a non-null fraction string.");
 
         try
         {

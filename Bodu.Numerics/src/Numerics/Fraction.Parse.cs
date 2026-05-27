@@ -1,6 +1,6 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Fraction.Parse.cs" company="Bodu Pty. Ltd.">
-//     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
+//     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
@@ -72,10 +72,9 @@ public readonly partial struct Fraction<T> :
     /// <exception cref="FormatException">Thrown if <paramref name="s" /> is not a valid fraction.</exception>
     public static Fraction<T> Parse(ReadOnlySpan<char> s, IFormatProvider? provider)
     {
-        if (!TryParseCore(s, provider, out Fraction<T> result))
-            throw new FormatException($"The input string '{s.ToString()}' was not in a correct fraction format.");
-
-        return result;
+        return TryParseCore(s, provider, out Fraction<T> result)
+            ? result
+            : throw new FormatException($"The input string '{s}' was not in a correct fraction format.");
     }
 
     /// <summary>
@@ -130,7 +129,7 @@ public readonly partial struct Fraction<T> :
         if (s.IsEmpty)
             return false;
 
-        bool percent = s[^1] == '%';
+        var percent = s[^1] == '%';
         if (percent)
         {
             s = s[..^1].Trim();
@@ -138,7 +137,7 @@ public readonly partial struct Fraction<T> :
                 return false;
         }
 
-        bool negative = false;
+        var negative = false;
         if (s[0] == '-')
         {
             negative = true;
@@ -201,7 +200,7 @@ public readonly partial struct Fraction<T> :
             return true;
         }
 
-        int slash = s.IndexOf('/');
+        var slash = s.IndexOf('/');
         if (slash < 0)
             return BigInteger.TryParse(s, NumberStyles.None, provider, out numerator);
 
@@ -213,7 +212,7 @@ public readonly partial struct Fraction<T> :
         if (!BigInteger.TryParse(rightText, NumberStyles.None, provider, out denominator))
             return false;
 
-        int space = leftText.IndexOfAny(' ', '\t');
+        var space = leftText.IndexOfAny(' ', '\t');
         if (space < 0)
             return BigInteger.TryParse(leftText, NumberStyles.None, provider, out numerator);
 
@@ -221,7 +220,9 @@ public readonly partial struct Fraction<T> :
         ReadOnlySpan<char> fractionPart = leftText.Slice(space + 1).Trim();
         if (!BigInteger.TryParse(wholePart, NumberStyles.None, provider, out BigInteger mixedWhole)
             || !BigInteger.TryParse(fractionPart, NumberStyles.None, provider, out BigInteger mixedNumerator))
+        {
             return false;
+        }
 
         numerator = (mixedWhole * denominator) + mixedNumerator;
         return true;
