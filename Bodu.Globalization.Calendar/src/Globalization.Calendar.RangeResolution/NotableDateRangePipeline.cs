@@ -671,8 +671,7 @@ internal sealed class NotableDateRangePipeline
 
     /// <summary>
     /// Determines whether any configured <see cref="RuleRemoval" /> suppresses the supplied rule for the supplied civil
-    /// year and territory context. Mirrors the suppression semantics applied by the legacy
-    /// <c>NotableDateService.GenerateYear</c> path so override removals behave consistently across both pipelines.
+    /// year and territory context.
     /// </summary>
     /// <param name="rule">The rule under consideration.</param>
     /// <param name="year">The civil year being materialized.</param>

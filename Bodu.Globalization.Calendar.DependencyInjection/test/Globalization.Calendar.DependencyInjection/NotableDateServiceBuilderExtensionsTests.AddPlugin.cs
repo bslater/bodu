@@ -9,7 +9,7 @@ using Bodu.Globalization.Calendar.DependencyInjection;
 using Bodu.Globalization.Calendar.Plugins;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Bodu.DependencyInjection;
+namespace Bodu.Globalization.Calendar.DependencyInjection;
 
 public partial class NotableDateServiceBuilderExtensionsTests
 {

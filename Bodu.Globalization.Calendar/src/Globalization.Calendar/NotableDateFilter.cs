@@ -37,9 +37,9 @@ namespace Bodu.Globalization.Calendar;
 /// skipped only if every branch's primary gate returns <see langword="false" />.
 /// </para>
 /// <para>
-/// <b>Caching</b>: Filtered queries bypass the per-year cache maintained by <see cref="NotableDateService" /> so that
-/// unfiltered queries continue to receive complete, correctly cached results. The primary gate optimization therefore
-/// applies on every filtered call rather than only on the first (cold) access.
+/// <b>Evaluation</b>: Filtered queries are served by the same range pipeline as unfiltered ones. The primary gate
+/// is evaluated during rule materialisation so non-matching rules contribute no work; the secondary gate is evaluated
+/// against each emitted occurrence.
 /// </para>
 /// </remarks>
 /// <example>

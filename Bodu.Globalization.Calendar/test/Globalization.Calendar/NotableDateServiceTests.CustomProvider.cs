@@ -165,9 +165,9 @@ public sealed partial class NotableDateServiceTests
     }
 
     /// <summary>
-    /// Verifies that clearing the per-year cache via <see cref="NotableDateService.Invalidate()" /> and
-    /// <see cref="NotableDateService.Invalidate(int)" /> does not trigger a further call to
-    /// <see cref="INotableDateRuleProvider.LoadRules" />; the loaded rule set is retained across invalidations.
+    /// Verifies that clearing the range pipeline via <see cref="NotableDateService.Invalidate()" /> does not trigger
+    /// a further call to <see cref="INotableDateRuleProvider.LoadRules" />; the loaded rule set is retained across
+    /// invalidations.
     /// </summary>
     [TestMethod]
     public void Invalidate_WhenServiceUsesCustomProvider_ShouldNotReloadProviderRules()
@@ -181,7 +181,7 @@ public sealed partial class NotableDateServiceTests
         _ = service.GetNotableDates(2025);
         service.Invalidate();
         _ = service.GetNotableDates(2025);
-        service.Invalidate(2025);
+        service.Invalidate();
         _ = service.GetNotableDates(2025);
 
         Assert.AreEqual(1, provider.LoadRulesCallCount);
