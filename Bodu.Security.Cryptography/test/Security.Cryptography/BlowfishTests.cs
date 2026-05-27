@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="BlowfishAlgorithmTests.cs" company="Bodu Pty. Ltd.">
+// <copyright file="BlowfishTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -11,8 +11,8 @@ namespace Bodu.Security.Cryptography;
 /// suite, verifying constructor defaults, key and IV generation, encryptor and decryptor creation, and disposal behaviour.
 /// </summary>
 [TestClass]
-public sealed partial class BlowfishAlgorithmTests
-    : SymmetricAlgorithmTests<BlowfishAlgorithmTests, Blowfish>
+public sealed partial class BlowfishTests
+    : SymmetricAlgorithmTests<BlowfishTests, Blowfish>
 {
     /// <inheritdoc />
     protected override Blowfish CreateAlgorithm() => Blowfish.Create();

@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="SkipjackAlgorithmTests.cs" company="Bodu Pty. Ltd.">
+// <copyright file="SkipjackTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -7,8 +7,8 @@
 namespace Bodu.Security.Cryptography;
 
 [TestClass]
-public sealed partial class SkipjackAlgorithmTests
-    : SymmetricAlgorithmTests<SkipjackAlgorithmTests, Skipjack>
+public sealed partial class SkipjackTests
+    : SymmetricAlgorithmTests<SkipjackTests, Skipjack>
 {
     /// <inheritdoc />
     protected override Skipjack CreateAlgorithm() => new Skipjack();

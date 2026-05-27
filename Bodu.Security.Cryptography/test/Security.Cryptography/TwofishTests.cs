@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="TwofishAlgorithmTests.cs" company="Bodu Pty. Ltd.">
+// <copyright file="TwofishTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -11,8 +11,8 @@ namespace Bodu.Security.Cryptography;
 /// suite, verifying constructor defaults, key and IV generation, encryptor and decryptor creation, and disposal behaviour.
 /// </summary>
 [TestClass]
-public sealed partial class TwofishAlgorithmTests
-    : SymmetricAlgorithmTests<TwofishAlgorithmTests, Twofish>
+public sealed partial class TwofishTests
+    : SymmetricAlgorithmTests<TwofishTests, Twofish>
 {
     /// <inheritdoc />
     protected override Twofish CreateAlgorithm() => Twofish.Create();

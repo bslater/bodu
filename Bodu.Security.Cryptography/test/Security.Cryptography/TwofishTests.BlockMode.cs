@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="TwofishAlgorithmTests.BlockMode.cs" company="Bodu Pty. Ltd.">
+// <copyright file="TwofishTests.BlockMode.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -8,7 +8,7 @@ using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
 
-public sealed partial class TwofishAlgorithmTests
+public sealed partial class TwofishTests
 {
     /// <summary>
     /// Verifies that <see cref="Twofish.BlockMode" /> defaults to <see cref="CipherModeKind.CBC" /> when the

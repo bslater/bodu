@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Serpent256TweakableAlgorithmTests.cs" company="Bodu Pty. Ltd.">
+// <copyright file="Serpent256Tests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -12,8 +12,8 @@ namespace Bodu.Security.Cryptography;
 /// semantics for the 256-bit wide-block Serpent variant.
 /// </summary>
 [TestClass]
-public partial class Serpent256TweakableAlgorithmTests
-    : TweakableSymmetricAlgorithmTests<Serpent256TweakableAlgorithmTests, Serpent256>
+public partial class Serpent256Tests
+    : TweakableSymmetricAlgorithmTests<Serpent256Tests, Serpent256>
 {
     /// <inheritdoc />
     protected override Serpent256 CreateAlgorithm() => new Serpent256();

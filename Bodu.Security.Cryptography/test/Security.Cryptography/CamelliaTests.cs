@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="CamelliaAlgorithmTests.cs" company="Bodu Pty. Ltd.">
+// <copyright file="CamelliaTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -11,8 +11,8 @@ namespace Bodu.Security.Cryptography;
 /// suite, verifying constructor defaults, key and IV generation, encryptor and decryptor creation, and disposal behaviour.
 /// </summary>
 [TestClass]
-public sealed partial class CamelliaAlgorithmTests
-    : SymmetricAlgorithmTests<CamelliaAlgorithmTests, Camellia>
+public sealed partial class CamelliaTests
+    : SymmetricAlgorithmTests<CamelliaTests, Camellia>
 {
     /// <inheritdoc />
     protected override Camellia CreateAlgorithm() => new Camellia();

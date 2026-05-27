@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Threefish512TweakableAlgorithmTests.cs" company="Bodu Pty. Ltd.">
+// <copyright file="Threefish512Tests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -9,11 +9,11 @@ namespace Bodu.Security.Cryptography;
 /// <summary>
 /// Exercises the <see cref="TweakableSymmetricAlgorithmTests{TTest, TAlgorithm}" /> base test suite against
 /// <see cref="Threefish512" /> — validating tweak property behaviour, defensive copies, invalid-size handling,
-/// disposal semantics, and the curated <see cref="Threefish512KnownAnswers" /> data set at the algorithm tier.
+/// disposal semantics, and the curated <see cref="Threefish512CipherTests" /> data set at the algorithm tier.
 /// </summary>
 [TestClass]
-public sealed partial class Threefish512TweakableAlgorithmTests
-    : TweakableSymmetricAlgorithmTests<Threefish512TweakableAlgorithmTests, Threefish512>
+public sealed partial class Threefish512Tests
+    : TweakableSymmetricAlgorithmTests<Threefish512Tests, Threefish512>
 {
     /// <inheritdoc />
     protected override Threefish512 CreateAlgorithm() => Threefish512.Create();
