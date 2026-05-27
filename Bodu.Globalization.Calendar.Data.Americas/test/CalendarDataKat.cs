@@ -1,10 +1,12 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CalendarDataKat.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Test.Kat;
+using Bodu.Test.Kat;
+
+namespace Bodu.Globalization.Calendar.Data;
 
 /// <summary>
 /// Represents a known-answer test row that validates a calendar data package through the public calendar service: a
