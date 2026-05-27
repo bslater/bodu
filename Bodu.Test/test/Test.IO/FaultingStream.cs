@@ -7,20 +7,19 @@
 namespace Bodu.Test.IO;
 
 /// <summary>
-/// A <see cref="MemoryStream" /> wrapper that throws <see cref="IOException" /> once a
-/// configurable number of bytes have been successfully read, simulating a mid-stream
-/// connection drop, disk error, or network interruption.
+/// A <see cref="MemoryStream" /> wrapper that throws <see cref="IOException" /> once a configurable number of bytes
+/// have been successfully read, simulating a mid-stream connection drop, disk error, or network interruption.
 /// </summary>
 /// <remarks>
 /// <para>
-/// All reads up to the <see cref="ThrowAfterBytes" /> threshold succeed normally. The next
-/// read call after the threshold has been reached throws <see cref="IOException" /> on every
-/// subsequent invocation, so the consumer cannot recover from the same instance.
+/// All reads up to the <see cref="ThrowAfterBytes" /> threshold succeed normally. The next read call after the
+/// threshold has been reached throws <see cref="IOException" /> on every subsequent invocation, so the consumer cannot
+/// recover from the same instance.
 /// </para>
 /// <para>
-/// Use this stream in tests that verify error propagation — confirming that a consumer
-/// forwards the exception to its caller without deadlocking any internal workers or leaving
-/// the consumer in an inconsistent state that prevents reuse.
+/// Use this stream in tests that verify error propagation — confirming that a consumer forwards the exception to its
+/// caller without deadlocking any internal workers or leaving the consumer in an inconsistent state that prevents
+/// reuse.
 /// </para>
 /// <para>
 /// This class is intended exclusively for test harness use and must not appear in production code.
@@ -36,9 +35,8 @@ public sealed class FaultingStream
     /// </summary>
     /// <param name="data">The byte array to expose as a stream.</param>
     /// <param name="throwAfterBytes">
-    /// The number of bytes that may be read successfully before the stream begins throwing
-    /// <see cref="IOException" />. Must be non-negative. A value of zero causes every read to
-    /// throw immediately.
+    /// The number of bytes that may be read successfully before the stream begins throwing <see cref="IOException" />.
+    /// Must be non-negative. A value of zero causes every read to throw immediately.
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="data" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="throwAfterBytes" /> is negative.</exception>

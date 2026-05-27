@@ -4,11 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Globalization.Calendar;
-using Bodu.Globalization.Calendar.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Bodu.DependencyInjection;
+namespace Bodu.Globalization.Calendar.DependencyInjection;
 
 public partial class NotableDateServiceBuilderExtensionsTests
 {
@@ -54,12 +52,12 @@ public partial class NotableDateServiceBuilderExtensionsTests
             .AddRuleProvider(new InMemoryRuleProvider(Fixed("Base", 6, 1)))
             .AddOverrideProvider(new StaticOverrideProvider(
                 additions: [Fixed("Override Add", 7, 1)],
-                removals: Array.Empty<RuleRemoval>()));
+                removals: []));
 
         using ServiceProvider provider = services.BuildServiceProvider();
         INotableDateService service = provider.GetRequiredService<INotableDateService>();
 
-        Assert.IsTrue(service.GetNotableDates(2026).Any(n => n.Name == "Override Add"));
+        Assert.Contains(n => n.Name == "Override Add", service.GetNotableDates(2026));
     }
 
     /// <summary>
@@ -73,13 +71,13 @@ public partial class NotableDateServiceBuilderExtensionsTests
         builder
             .AddRuleProvider(new InMemoryRuleProvider(Fixed("Suppress Me", 6, 1)))
             .AddOverrideProvider(new StaticOverrideProvider(
-                additions: Array.Empty<NotableDateRule>(),
+                additions: [],
                 removals: [new RuleRemoval("Suppress Me")]));
 
         using ServiceProvider provider = services.BuildServiceProvider();
         INotableDateService service = provider.GetRequiredService<INotableDateService>();
 
-        Assert.IsFalse(service.GetNotableDates(2026).Any(n => n.Name == "Suppress Me"));
+        Assert.DoesNotContain(n => n.Name == "Suppress Me", service.GetNotableDates(2026));
     }
 
     /// <summary>
@@ -91,15 +89,15 @@ public partial class NotableDateServiceBuilderExtensionsTests
         (IServiceCollection services, INotableDateServiceBuilder builder) = NewBuilder();
         builder
             .AddRuleProvider(new InMemoryRuleProvider(Fixed("Base", 6, 1)))
-            .AddOverrideProvider(new StaticOverrideProvider([Fixed("First Override", 7, 1)], Array.Empty<RuleRemoval>()))
-            .AddOverrideProvider(new StaticOverrideProvider([Fixed("Second Override", 8, 1)], Array.Empty<RuleRemoval>()));
+            .AddOverrideProvider(new StaticOverrideProvider([Fixed("First Override", 7, 1)], []))
+            .AddOverrideProvider(new StaticOverrideProvider([Fixed("Second Override", 8, 1)], []));
 
         using ServiceProvider provider = services.BuildServiceProvider();
         INotableDateService service = provider.GetRequiredService<INotableDateService>();
 
         IReadOnlyList<NotableDate> emitted = service.GetNotableDates(2026);
-        Assert.IsTrue(emitted.Any(n => n.Name == "First Override"));
-        Assert.IsTrue(emitted.Any(n => n.Name == "Second Override"));
+        Assert.Contains(n => n.Name == "First Override", emitted);
+        Assert.Contains(n => n.Name == "Second Override", emitted);
     }
 
     /// <summary>
@@ -133,7 +131,7 @@ public partial class NotableDateServiceBuilderExtensionsTests
         INotableDateService service = provider.GetRequiredService<INotableDateService>();
 
         // The override provider contributes nothing; the base rule should still resolve unaffected.
-        Assert.IsTrue(service.GetNotableDates(2026).Any(n => n.Name == "Base"));
+        Assert.Contains(n => n.Name == "Base", service.GetNotableDates(2026));
     }
 
     /// <summary>
@@ -159,8 +157,8 @@ public partial class NotableDateServiceBuilderExtensionsTests
         b.AddRule(Fixed("From B", 8, 1));
 
         IReadOnlyList<NotableDate> emitted = service.GetNotableDates(2026);
-        Assert.IsTrue(emitted.Any(n => n.Name == "From A"));
-        Assert.IsTrue(emitted.Any(n => n.Name == "From B"));
+        Assert.Contains(n => n.Name == "From A", emitted);
+        Assert.Contains(n => n.Name == "From B", emitted);
     }
 
     /// <summary>
@@ -180,11 +178,11 @@ public partial class NotableDateServiceBuilderExtensionsTests
         using ServiceProvider provider = services.BuildServiceProvider();
         INotableDateService service = provider.GetRequiredService<INotableDateService>();
 
-        Assert.IsFalse(service.GetNotableDates(2026).Any(n => n.Name == "Live"));
+        Assert.DoesNotContain(n => n.Name == "Live", service.GetNotableDates(2026));
 
         overrides.AddRule(Fixed("Live", 9, 9));
 
-        Assert.IsTrue(service.GetNotableDates(2026).Any(n => n.Name == "Live"));
+        Assert.Contains(n => n.Name == "Live", service.GetNotableDates(2026));
     }
 
     /// <summary>

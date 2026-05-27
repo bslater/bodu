@@ -7,7 +7,8 @@
 namespace Bodu.Test.IO;
 
 /// <summary>
-/// A stream that produces predictable pseudo-random data based on position. Used for testing hashing over streaming input. 
+/// A stream that produces predictable pseudo-random data based on position. Used for testing hashing over streaming
+/// input.
 /// </summary>
 public class IncrementingByteStream
     : System.IO.Stream

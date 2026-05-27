@@ -7,8 +7,8 @@
 namespace Bodu.Test.IO;
 
 /// <summary>
-/// A stream wrapper that monitors and records all read operations performed on the innerStream stream. Useful for verifying stream
-/// access patterns during asynchronous hash computations.
+/// A stream wrapper that monitors and records all read operations performed on the innerStream stream. Useful for
+/// verifying stream access patterns during asynchronous hash computations.
 /// </summary>
 public sealed class MonitoringStream
     : System.IO.Stream
@@ -88,8 +88,8 @@ public sealed class MonitoringStream
     /// Returns the contents of the underlying stream as a byte array.
     /// </summary>
     /// <remarks>
-    /// If the underlying stream supports seeking, this method reads the entire content without affecting the current position. If not,
-    /// a <see cref="NotSupportedException" /> is thrown.
+    /// If the underlying stream supports seeking, this method reads the entire content without affecting the current
+    /// position. If not, a <see cref="NotSupportedException" /> is thrown.
     /// </remarks>
     /// <returns>A byte array containing the full content of the inner stream.</returns>
     /// <exception cref="NotSupportedException">Thrown if the inner stream does not support seeking.</exception>

@@ -7,23 +7,40 @@
 namespace Bodu.Test.IO;
 
 /// <summary>
-/// A writable <see cref="Stream" /> wrapper that records whether write and disposal operations
-/// were performed synchronously or asynchronously. Use in tests that assert async extension
-/// methods honour the correct async I/O and disposal contracts.
+/// A writable <see cref="Stream" /> wrapper that records whether write and disposal operations were performed
+/// synchronously or asynchronously. Use in tests that assert async extension methods honour the correct async I/O and
+/// disposal contracts.
 /// </summary>
 /// <remarks>
 /// <para>
 /// Specifically tracks:
 /// </para>
 /// <list type="bullet">
-///   <item><description><see cref="SyncWriteCount" /> — number of calls to the synchronous <see cref="Write(byte[], int, int)" /> path.</description></item>
-///   <item><description><see cref="AsyncWriteCount" /> — number of calls to the asynchronous <see cref="WriteAsync(Memory{byte}, CancellationToken)" /> path.</description></item>
-///   <item><description><see cref="SyncDisposeCalled" /> — whether <see cref="Dispose" /> was called (via <c>Dispose(true)</c>).</description></item>
-///   <item><description><see cref="AsyncDisposeCalled" /> — whether <see cref="DisposeAsync" /> was called.</description></item>
+/// <item>
+/// <description>
+/// <see cref="SyncWriteCount" /> — number of calls to the synchronous <see cref="Write(byte[], int, int)" /> path.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// <see cref="AsyncWriteCount" /> — number of calls to the asynchronous
+/// <see cref="WriteAsync(Memory{byte}, CancellationToken)" /> path.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// <see cref="SyncDisposeCalled" /> — whether <see cref="Dispose" /> was called (via <c>Dispose(true)</c>).
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// <see cref="AsyncDisposeCalled" /> — whether <see cref="DisposeAsync" /> was called.
+/// </description>
+/// </item>
 /// </list>
 /// <para>
-/// Reads and seeks are forwarded to the underlying stream without tracking, since the disposal
-/// verification contract concerns write and cleanup paths only.
+/// Reads and seeks are forwarded to the underlying stream without tracking, since the disposal verification contract
+/// concerns write and cleanup paths only.
 /// </para>
 /// </remarks>
 public sealed class DisposalTrackingStream
@@ -42,19 +59,29 @@ public sealed class DisposalTrackingStream
         _inner = inner ?? throw new ArgumentNullException(nameof(inner));
     }
 
-    /// <summary>Gets a value indicating whether <see cref="Dispose()" /> was invoked on this instance.</summary>
+    /// <summary>
+    /// Gets a value indicating whether <see cref="Dispose()" /> was invoked on this instance.
+    /// </summary>
     public bool SyncDisposeCalled { get; private set; }
 
-    /// <summary>Gets a value indicating whether <see cref="DisposeAsync()" /> was invoked on this instance.</summary>
+    /// <summary>
+    /// Gets a value indicating whether <see cref="DisposeAsync()" /> was invoked on this instance.
+    /// </summary>
     public bool AsyncDisposeCalled { get; private set; }
 
-    /// <summary>Gets the number of times <see cref="Write(byte[], int, int)" /> was called.</summary>
+    /// <summary>
+    /// Gets the number of times <see cref="Write(byte[], int, int)" /> was called.
+    /// </summary>
     public int SyncWriteCount { get; private set; }
 
-    /// <summary>Gets the number of times <see cref="WriteAsync(Memory{byte}, CancellationToken)" /> was called.</summary>
+    /// <summary>
+    /// Gets the number of times <see cref="WriteAsync(Memory{byte}, CancellationToken)" /> was called.
+    /// </summary>
     public int AsyncWriteCount { get; private set; }
 
-    /// <summary>Gets the content written to the underlying stream as a byte array.</summary>
+    /// <summary>
+    /// Gets the content written to the underlying stream as a byte array.
+    /// </summary>
     /// <returns>A byte array containing all data written to the backing stream.</returns>
     public byte[] ToArray() =>
         _inner is MemoryStream ms ? ms.ToArray() : throw new NotSupportedException("ToArray requires a MemoryStream backing store.");

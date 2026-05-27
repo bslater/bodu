@@ -4,11 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Globalization.Calendar;
-using Bodu.Globalization.Calendar.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Bodu.DependencyInjection;
+namespace Bodu.Globalization.Calendar.DependencyInjection;
 
 public partial class NotableDateServiceBuilderExtensionsTests
 {
@@ -70,7 +68,7 @@ public partial class NotableDateServiceBuilderExtensionsTests
         using ServiceProvider provider = services.BuildServiceProvider();
         INotableDateService service = provider.GetRequiredService<INotableDateService>();
 
-        Assert.IsTrue(service.GetNotableDates(2026).Any(n => n.Name == "Lazy"));
+        Assert.Contains(n => n.Name == "Lazy", service.GetNotableDates(2026));
     }
 
     /// <summary>
@@ -86,7 +84,7 @@ public partial class NotableDateServiceBuilderExtensionsTests
         INotableDateService service = provider.GetRequiredService<INotableDateService>();
 
         // The resolved service composes the empty provider — query must succeed and return no rules.
-        Assert.AreEqual(0, service.GetNotableDates(2026).Count);
+        Assert.IsEmpty(service.GetNotableDates(2026));
     }
 
     /// <summary>
@@ -107,9 +105,9 @@ public partial class NotableDateServiceBuilderExtensionsTests
         INotableDateService service = provider.GetRequiredService<INotableDateService>();
 
         IReadOnlyList<NotableDate> emitted = service.GetNotableDates(2026);
-        Assert.IsTrue(emitted.Any(n => n.Name == "From A"));
-        Assert.IsTrue(emitted.Any(n => n.Name == "From B"));
-        Assert.IsTrue(emitted.Any(n => n.Name == "From C"));
+        Assert.Contains(n => n.Name == "From A", emitted);
+        Assert.Contains(n => n.Name == "From B", emitted);
+        Assert.Contains(n => n.Name == "From C", emitted);
     }
 
     /// <summary>
@@ -162,8 +160,8 @@ public partial class NotableDateServiceBuilderExtensionsTests
         INotableDateService service = provider.GetRequiredService<INotableDateService>();
 
         IReadOnlyList<NotableDate> emitted = service.GetNotableDates(2026);
-        Assert.IsTrue(emitted.Any(n => n.Name == "First"));
-        Assert.IsTrue(emitted.Any(n => n.Name == "Second"));
+        Assert.Contains(n => n.Name == "First", emitted);
+        Assert.Contains(n => n.Name == "Second", emitted);
     }
 
     /// <summary>
@@ -187,12 +185,12 @@ public partial class NotableDateServiceBuilderExtensionsTests
     public void AddRuleProviders_WhenSequenceIsEmpty_ShouldResolveServiceWithNoRules()
     {
         (IServiceCollection services, INotableDateServiceBuilder builder) = NewBuilder();
-        builder.AddRuleProviders(Array.Empty<INotableDateRuleProvider>());
+        builder.AddRuleProviders([]);
 
         using ServiceProvider provider = services.BuildServiceProvider();
         INotableDateService service = provider.GetRequiredService<INotableDateService>();
 
-        Assert.AreEqual(0, service.GetNotableDates(2026).Count);
+        Assert.IsEmpty(service.GetNotableDates(2026));
     }
 
     /// <summary>

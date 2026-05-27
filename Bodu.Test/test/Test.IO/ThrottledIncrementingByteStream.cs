@@ -15,7 +15,8 @@ public sealed class ThrottledIncrementingByteStream
     private readonly int throttleDelayMs;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ThrottledIncrementingByteStream" /> class with the specified total number of bytes.
+    /// Initializes a new instance of the <see cref="ThrottledIncrementingByteStream" /> class with the specified total
+    /// number of bytes.
     /// </summary>
     /// <param name="size">The total number of bytes the stream will return.</param>
     public ThrottledIncrementingByteStream(int size, int readDelay = 1000)

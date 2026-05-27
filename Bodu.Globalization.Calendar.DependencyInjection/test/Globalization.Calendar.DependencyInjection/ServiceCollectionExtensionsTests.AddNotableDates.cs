@@ -1,17 +1,15 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ServiceCollectionExtensionsTests.AddNotableDates.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Extensions;
-using Bodu.Globalization.Calendar;
-using Bodu.Globalization.Calendar.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace Bodu.DependencyInjection;
+namespace Bodu.Globalization.Calendar.DependencyInjection;
 
 public partial class ServiceCollectionExtensionsTests
 {
@@ -76,7 +74,7 @@ public partial class ServiceCollectionExtensionsTests
         INotableDateService service = provider.GetRequiredService<INotableDateService>();
 
         Assert.IsNotNull(service);
-        Assert.AreEqual(0, service.GetNotableDates(2026).Count);
+        Assert.IsEmpty(service.GetNotableDates(2026));
     }
 
     /// <summary>
@@ -143,7 +141,7 @@ public partial class ServiceCollectionExtensionsTests
         using ServiceProvider provider = services.BuildServiceProvider();
         INotableDateService service = provider.GetRequiredService<INotableDateService>();
 
-        Assert.IsTrue(service.GetNotableDates(2026).Any(n => n.Name == "Custom Day"));
+        Assert.Contains(n => n.Name == "Custom Day", service.GetNotableDates(2026));
     }
 
     /// <summary>
@@ -332,10 +330,10 @@ public partial class ServiceCollectionExtensionsTests
         INotableDateService service = provider.GetRequiredService<INotableDateService>();
 
         // No mutations yet — the override rule must not appear.
-        Assert.IsFalse(service.GetNotableDates(2026).Any(n => n.Name == "Auto"));
+        Assert.DoesNotContain(n => n.Name == "Auto", service.GetNotableDates(2026));
 
         overrides.AddRule(Fixed("Auto", 7, 1));
 
-        Assert.IsTrue(service.GetNotableDates(2026).Any(n => n.Name == "Auto"));
+        Assert.Contains(n => n.Name == "Auto", service.GetNotableDates(2026));
     }
 }

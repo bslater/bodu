@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BlockCipherModeKat.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -9,9 +9,9 @@ using System.Security.Cryptography;
 namespace Bodu.Test.Kat;
 
 /// <summary>
-/// Represents a single known-answer test row for a symmetric block cipher operating in a given mode of
-/// operation with a given padding scheme. Carries every parameter required to reproduce the ciphertext
-/// from the key and the initialisation vector.
+/// Represents a single known-answer test row for a symmetric block cipher operating in a given mode of operation with a
+/// given padding scheme. Carries every parameter required to reproduce the ciphertext from the key and the
+/// initialisation vector.
 /// </summary>
 /// <param name="Name">The short label that identifies the row in failure diagnostics.</param>
 /// <param name="Algorithm">The cipher identifier (for example <c>"Threefish-256"</c>, <c>"Blowfish"</c>).</param>

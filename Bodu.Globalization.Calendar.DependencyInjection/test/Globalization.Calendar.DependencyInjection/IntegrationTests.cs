@@ -33,8 +33,8 @@ public sealed class IntegrationTests
 
         IReadOnlyList<NotableDate> dates2026 = service.GetNotableDates(2026, territoryCode: "AU-NSW");
 
-        Assert.IsTrue(dates2026.Count > 0, "Expected at least one notable date for AU-NSW in 2026.");
-        Assert.IsTrue(dates2026.Any(n => n.Date == new DateTime(2026, 1, 1)), "Expected New Year's Day in the AU-NSW set for 2026.");
+        Assert.IsNotEmpty(dates2026, "Expected at least one notable date for AU-NSW in 2026.");
+        Assert.Contains(n => n.Date == new DateTime(2026, 1, 1), dates2026, "Expected New Year's Day in the AU-NSW set for 2026.");
     }
 
     /// <summary>
@@ -53,8 +53,8 @@ public sealed class IntegrationTests
 
         IReadOnlyCollection<string> territories = service.GetSupportedTerritories();
 
-        Assert.IsTrue(territories.Any(t => t.StartsWith("AU", StringComparison.OrdinalIgnoreCase)), "Expected at least one AU-* territory.");
-        Assert.IsTrue(territories.Any(t => t.StartsWith("NZ", StringComparison.OrdinalIgnoreCase)), "Expected at least one NZ-* territory.");
+        Assert.Contains(t => t.StartsWith("AU", StringComparison.OrdinalIgnoreCase), territories, "Expected at least one AU-* territory.");
+        Assert.Contains(t => t.StartsWith("NZ", StringComparison.OrdinalIgnoreCase), territories, "Expected at least one NZ-* territory.");
     }
 
     /// <summary>
@@ -74,7 +74,7 @@ public sealed class IntegrationTests
         using ServiceProvider provider = services.BuildServiceProvider();
         INotableDateService service = provider.GetRequiredService<INotableDateService>();
 
-        Assert.IsFalse(service.GetNotableDates(2026, "AU-NSW").Any(n => n.Name == "Company Day"));
+        Assert.DoesNotContain(n => n.Name == "Company Day", service.GetNotableDates(2026, "AU-NSW"));
 
         overrides.AddRule(new NotableDateRule
         {
@@ -87,6 +87,6 @@ public sealed class IntegrationTests
             TerritoryCode = "AU-NSW",
         });
 
-        Assert.IsTrue(service.GetNotableDates(2026, "AU-NSW").Any(n => n.Name == "Company Day" && n.Date == new DateTime(2026, 6, 15)));
+        Assert.Contains(n => n.Name == "Company Day" && n.Date == new DateTime(2026, 6, 15), service.GetNotableDates(2026, "AU-NSW"));
     }
 }

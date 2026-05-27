@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EnumerableKat.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -7,8 +7,8 @@
 namespace Bodu.Test.Kat;
 
 /// <summary>
-/// Represents a known-answer test row for extension methods over <see cref="IEnumerable{T}" /> where the
-/// source may be empty, singleton, multi-item, duplicated, lazy, or throwing.
+/// Represents a known-answer test row for extension methods over <see cref="IEnumerable{T}" /> where the source may be
+/// empty, singleton, multi-item, duplicated, lazy, or throwing.
 /// </summary>
 /// <typeparam name="TInput">The element type of the source sequence.</typeparam>
 /// <typeparam name="TExpected">The type of the expected result produced by the extension under test.</typeparam>

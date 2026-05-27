@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="InvalidRuleParseKat.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -7,9 +7,8 @@
 namespace Bodu.Test.Kat;
 
 /// <summary>
-/// Represents a negative-vector known-answer test row for a calendar rule-document parser: a malformed
-/// source string the parser must reject, the format identifier, and the exception type the throwing
-/// overload must raise.
+/// Represents a negative-vector known-answer test row for a calendar rule-document parser: a malformed source string
+/// the parser must reject, the format identifier, and the exception type the throwing overload must raise.
 /// </summary>
 /// <param name="Name">The short label that identifies the row in failure diagnostics.</param>
 /// <param name="Input">The malformed source text.</param>

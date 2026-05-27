@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="KatDisplayName.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -10,19 +10,18 @@ namespace Bodu.Test.Kat;
 
 /// <summary>
 /// Produces scenario-named display strings for MSTest <c>[DynamicData]</c> rows whose first element is an
-/// <see cref="IKat" /> instance, so that failures in CI and Test Explorer name the scenario rather than
-/// showing an opaque row index.
+/// <see cref="IKat" /> instance, so that failures in CI and Test Explorer name the scenario rather than showing an
+/// opaque row index.
 /// </summary>
 /// <remarks>
 /// <para>
-/// Wire this helper to a test method via the <c>DynamicDataDisplayName</c> argument of the
-/// <c>DynamicData</c> attribute. The signature matches the MSTest contract
-/// <c>static string (MethodInfo methodInfo, object?[] data)</c>.
+/// Wire this helper to a test method via the <c>DynamicDataDisplayName</c> argument of the <c>DynamicData</c>
+/// attribute. The signature matches the MSTest contract <c>static string (MethodInfo methodInfo, object?[] data)</c>.
 /// </para>
 /// <para>
-/// When the first element of <paramref name="data" /> implements <see cref="IKat" />, the returned string
-/// is <c>"{methodName}({kat.Name})"</c>; otherwise the method name is returned unchanged. This allows the
-/// helper to be applied uniformly even on test methods whose rows are not all KATs.
+/// When the first element of <paramref name="data" /> implements <see cref="IKat" />, the returned string is
+/// <c>"{methodName}({kat.Name})"</c>; otherwise the method name is returned unchanged. This allows the helper to be
+/// applied uniformly even on test methods whose rows are not all KATs.
 /// </para>
 /// </remarks>
 public static class KatDisplayName

@@ -4,12 +4,10 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Globalization.Calendar;
-using Bodu.Globalization.Calendar.DependencyInjection;
 using Bodu.Globalization.Calendar.Plugins;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Bodu.DependencyInjection;
+namespace Bodu.Globalization.Calendar.DependencyInjection;
 
 public partial class NotableDateServiceBuilderExtensionsTests
 {
@@ -56,7 +54,7 @@ public partial class NotableDateServiceBuilderExtensionsTests
         using ServiceProvider provider = services.BuildServiceProvider();
         INotableDateService service = provider.GetRequiredService<INotableDateService>();
 
-        Assert.IsTrue(service.GetNotableDates(2026).Any(n => n.Name == "Plugin Day"));
+        Assert.Contains(n => n.Name == "Plugin Day", service.GetNotableDates(2026));
     }
 
     /// <summary>

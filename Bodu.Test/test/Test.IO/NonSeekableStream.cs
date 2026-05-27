@@ -7,19 +7,19 @@
 namespace Bodu.Test.IO;
 
 /// <summary>
-/// A read-only, non-seekable stream wrapper that forwards reads to an inner
-/// <see cref="MemoryStream" /> while explicitly disabling all seek operations.
+/// A read-only, non-seekable stream wrapper that forwards reads to an inner <see cref="MemoryStream" /> while
+/// explicitly disabling all seek operations.
 /// </summary>
 /// <remarks>
 /// <para>
-/// <see cref="CanSeek" /> returns <see langword="false" /> and both <see cref="Position" /> and
-/// <see cref="Length" /> throw <see cref="NotSupportedException" />, matching the contract of
-/// streams such as <see cref="System.Net.Sockets.NetworkStream" /> or a raw pipe endpoint. Any attempt to call
-/// <see cref="Seek" /> or set <see cref="Position" /> also throws.
+/// <see cref="CanSeek" /> returns <see langword="false" /> and both <see cref="Position" /> and <see cref="Length" />
+/// throw <see cref="NotSupportedException" />, matching the contract of streams such as
+/// <see cref="System.Net.Sockets.NetworkStream" /> or a raw pipe endpoint. Any attempt to call <see cref="Seek" /> or
+/// set <see cref="Position" /> also throws.
 /// </para>
 /// <para>
-/// Use this stream in tests that verify a consumer never calls seek-related members on its
-/// input stream — confirming compatibility with sources that can only be read sequentially.
+/// Use this stream in tests that verify a consumer never calls seek-related members on its input stream — confirming
+/// compatibility with sources that can only be read sequentially.
 /// </para>
 /// <para>
 /// This class is intended exclusively for test harness use and must not appear in production code.
@@ -31,8 +31,7 @@ public sealed class NonSeekableStream
     private readonly MemoryStream inner;
 
     /// <summary>
-    /// Initialises a new instance of <see cref="NonSeekableStream" /> backed by
-    /// <paramref name="data" />.
+    /// Initialises a new instance of <see cref="NonSeekableStream" /> backed by <paramref name="data" />.
     /// </summary>
     /// <param name="data">The byte array to expose as a forward-only readable stream.</param>
     /// <exception cref="ArgumentNullException"><paramref name="data" /> is <see langword="null" />.</exception>

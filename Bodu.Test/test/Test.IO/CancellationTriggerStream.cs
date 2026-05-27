@@ -7,9 +7,8 @@
 namespace Bodu.Test.IO;
 
 /// <summary>
-/// A stream wrapper that cancels a <see cref="CancellationTokenSource" /> after a specified
-/// number of successful reads, enabling deterministic cancellation testing without relying
-/// on timing.
+/// A stream wrapper that cancels a <see cref="CancellationTokenSource" /> after a specified number of successful reads,
+/// enabling deterministic cancellation testing without relying on timing.
 /// </summary>
 public sealed class CancellationTriggerStream :
     System.IO.Stream
@@ -25,9 +24,9 @@ public sealed class CancellationTriggerStream :
     /// <param name="inner">The underlying stream to read from.</param>
     /// <param name="cts">The cancellation token source to cancel after the specified number of reads.</param>
     /// <param name="cancelAfterRead">
-    ///   The number of successful reads (returning &gt; 0 bytes) after which <paramref name="cts" />
-    ///   is cancelled. The cancellation fires after the read completes, so subsequent calls to
-    ///   <c>ReadAsync</c> detect the cancelled token before invoking the next synchronous read.
+    /// The number of successful reads (returning &gt; 0 bytes) after which <paramref name="cts" /> is cancelled. The
+    /// cancellation fires after the read completes, so subsequent calls to <c>ReadAsync</c> detect the cancelled token
+    /// before invoking the next synchronous read.
     /// </param>
     public CancellationTriggerStream(Stream inner, CancellationTokenSource cts, int cancelAfterRead)
     {

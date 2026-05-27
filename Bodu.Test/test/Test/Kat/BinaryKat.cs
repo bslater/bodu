@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BinaryKat.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -17,10 +17,11 @@ namespace Bodu.Test.Kat;
 /// <param name="Expected">The expected outcome.</param>
 /// <remarks>
 /// <para>
-/// <see cref="BinaryKat{TInput, TExpected}" /> is intentionally distinct from <see cref="ValidKat{TInput, TExpected}" />
-/// to communicate intent at call sites: <see cref="ValidKat{TInput, TExpected}" /> is used where the system
-/// under test produces a domain result (parsed value, decoded bytes, computed hash) and <see cref="BinaryKat{TInput, TExpected}" />
-/// is used where the assertion is a single yes/no observation (validation predicate result, capacity-change flag).
+/// <see cref="BinaryKat{TInput, TExpected}" /> is intentionally distinct from
+/// <see cref="ValidKat{TInput, TExpected}" /> to communicate intent at call sites:
+/// <see cref="ValidKat{TInput, TExpected}" /> is used where the system under test produces a domain result (parsed
+/// value, decoded bytes, computed hash) and <see cref="BinaryKat{TInput, TExpected}" /> is used where the assertion is
+/// a single yes/no observation (validation predicate result, capacity-change flag).
 /// </para>
 /// </remarks>
 public sealed record BinaryKat<TInput, TExpected>(
