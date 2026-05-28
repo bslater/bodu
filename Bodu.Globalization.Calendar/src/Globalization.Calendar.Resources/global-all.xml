@@ -109,4 +109,8 @@
     <UseAll />
   </UseFrom>
 
+  <UseFrom resource="./global-persian.xml">
+    <UseAll />
+  </UseFrom>
+
 </NotableDates>

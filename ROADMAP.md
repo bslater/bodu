@@ -4,7 +4,7 @@ Forward-looking plan for the **Bodu** C# utility library. Pairs with
 [`CHANGELOG.md`](CHANGELOG.md) (what shipped) and [`CLAUDE.md`](CLAUDE.md)
 (repository conventions for contributors).
 
-*Last updated: 2026-05-27.*
+*Last updated: 2026-05-28.*
 
 ## How to read this
 
@@ -115,11 +115,15 @@ single-TFM `net8.0` Core, intentional `InternalsVisibleTo` set.
 With that pass closed, the active focus shifts to:
 
 1. Cut the five `[Unreleased]` packages above.
-2. Begin the per-project items below in roadmap order. Calendar
-   algorithm gaps (Islamic, Hebrew, Persian) and the raw ChaCha20 /
-   XChaCha20 family in crypto are the highest-leverage opening moves —
-   they unblock data-pack expansion and close the visible
-   stream-cipher gaps that the BCL's `ChaCha20Poly1305` does not.
+2. Begin the per-project items below in roadmap order. The raw
+   ChaCha20 / XChaCha20 family in crypto is now the highest-leverage
+   opening move: it closes the visible stream-cipher gaps that the
+   BCL's `ChaCha20Poly1305` does not. Hebrew, tabular Hijri, Umm
+   al-Qura, and Persian (Solar Hijri) notable-date coverage has
+   landed via XML resources resolved against the BCL
+   `HebrewCalendar` / `HijriCalendar` / `UmAlQuraCalendar` /
+   `PersianCalendar` and the existing `sweepCalendarYears`
+   resolver — no custom algorithm code was required.
 
 ## Per-project roadmap
 
@@ -259,12 +263,25 @@ Current state: new; 16 src / 18 test files. Ships `Fraction<T>` only.
 Current state: mature; 161 src / 202 test files. Easter (Western and
 Orthodox), Lunar New Year, Vesak, Asalha Puja, Qingming, Losar, Hindu
 lunar festivals, rule providers, observed-date adjustments,
-`NotableDateService`.
+`NotableDateService`. Hebrew, tabular Hijri, Umm al-Qura, and Persian
+(Solar Hijri) observances ship as XML resources resolved against the
+BCL `HebrewCalendar` / `HijriCalendar` / `UmAlQuraCalendar` /
+`PersianCalendar` plus the `sweepCalendarYears` resolver — no custom
+algorithm classes were needed.
 
-- **Add Islamic (Hijri civil and Umm al-Qura), Hebrew, and Persian
-  (Solar Hijri) notable-date algorithms.** Clear gap alongside the
-  existing Eastern catalogue. Unblocks the Asia-Pacific data pack's
-  Ramadan/Eid rules and the proposed Middle East pack.
+- **Add observation-based algorithm variants for the four lunar /
+  solar-Hijri families** where the BCL's tabular calculation can
+  diverge from the announced civil date by one day: Saudi-observed
+  crescent sighting (Umm al-Qura tabular vs Royal Court announcement),
+  Tehran-observed vernal equinox (PersianCalendar tabular vs Iranian
+  civil calendar at the cycle boundaries circa year 1488 / 1525 AP).
+  These are opt-in alternatives to the tabular resources, not
+  replacements.
+- **Ship the Hebcal-aligned Hebrew regression test catalogue** —
+  a multi-decade table for cross-validating the existing
+  `HebrewCalendar` results against `hebcal.com`. Six years (2020–2025)
+  shipped; extend to a 50-year sweep once the regression-tier surface
+  area justifies the maintenance cost.
 - **Add `IAsyncEnumerable<NotableDate>` projections** for streaming
   large date-range queries (e.g. fiscal calendars across many years).
 - **Promote the plugin loader** (today exercised only by the 4
@@ -320,8 +337,12 @@ MY, NZ, SG.
   exist; the rest of the region needs the same treatment.
 - **Add multi-day Chinese New Year expansion** and Lunar New Year
   regional variants. Today the rule fires for the single primary date.
-- **Ship Ramadan and Eid** via the new Hijri algorithm once
-  `Bodu.Globalization.Calendar` adds it.
+- **Wire territory rules to `global-islamic-umm-al-qura.xml`** for
+  Saudi-aligned jurisdictions where the Royal Court's Eid
+  announcements drive the local public-holiday calendar (currently
+  Malaysia and Singapore rules cherry-pick from tabular
+  `global-islamic.xml`; both have explicit subdivisions that follow
+  Saudi sighting).
 
 ### `Bodu.Globalization.Calendar.Data.Europe`
 
@@ -341,20 +362,22 @@ IT, NL, SE.
 
 Does not yet exist. v1 set: ZA, NG, KE, EG, MA, GH, ET.
 
-- **Create the package** and ship the v1 country set.
-- Egypt and Morocco need the Hijri algorithm; depend on the Calendar
-  algorithm work landing first.
-- Ethiopia uses the Ge'ez calendar — may need its own algorithm in
-  `Bodu.Globalization.Calendar` before this pack can fully cover it.
+- **Create the package** and ship the v1 country set. Islamic
+  observances are unblocked (`global-islamic.xml` for tabular,
+  `global-islamic-umm-al-qura.xml` for Saudi-aligned).
+- Ethiopia uses the Ge'ez calendar — may need its own algorithm
+  (or BCL coverage check) in `Bodu.Globalization.Calendar` before
+  this pack can fully cover it.
 
 ### `Bodu.Globalization.Calendar.Data.MiddleEast` *(proposed)*
 
 Does not yet exist. v1 set: SA, AE, IL, TR, IR, JO, QA.
 
-- **Create the package** once Hijri, Hebrew, and Persian (Solar Hijri)
-  algorithms ship in `Bodu.Globalization.Calendar`.
-- IL needs Hebrew calendar support; IR needs Solar Hijri; the Gulf
-  states need Hijri.
+- **Create the package.** Calendar dependencies are now all in place:
+  Saudi/UAE/Qatar/Jordan can wire `global-islamic-umm-al-qura.xml`,
+  IL can wire `global-jewish.xml`, IR can wire `global-persian.xml`,
+  TR can wire tabular `global-islamic.xml` (Diyanet uses tabular
+  rather than Saudi sighting).
 
 ### `Bodu.Test` *(shared test infrastructure)*
 

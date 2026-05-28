@@ -13,7 +13,7 @@ namespace Bodu.Globalization.Calendar;
 /// <see cref="INotableDateAlgorithmRegistry" />.
 /// </summary>
 [TestClass]
-public sealed class GlobalJewishResourceTests
+public sealed partial class GlobalJewishResourceTests
 {
     private const string JewishResourceName = "Bodu/Globalization/Calendar/Resources/global-jewish.xml";
 
