@@ -267,7 +267,10 @@ lunar festivals, rule providers, observed-date adjustments,
 (Solar Hijri) observances ship as XML resources resolved against the
 BCL `HebrewCalendar` / `HijriCalendar` / `UmAlQuraCalendar` /
 `PersianCalendar` plus the `sweepCalendarYears` resolver — no custom
-algorithm classes were needed.
+algorithm classes were needed. The Fixed-strategy calendar-year sweep
+is documented end-to-end in
+`docs/guides/calendar/non-gregorian-calendars.md` with worked examples
+for each supported calendar family.
 
 - **Add observation-based algorithm variants for the four lunar /
   solar-Hijri families** where the BCL's tabular calculation can
@@ -277,11 +280,13 @@ algorithm classes were needed.
   civil calendar at the cycle boundaries circa year 1488 / 1525 AP).
   These are opt-in alternatives to the tabular resources, not
   replacements.
-- **Ship the Hebcal-aligned Hebrew regression test catalogue** —
-  a multi-decade table for cross-validating the existing
-  `HebrewCalendar` results against `hebcal.com`. Six years (2020–2025)
-  shipped; extend to a 50-year sweep once the regression-tier surface
-  area justifies the maintenance cost.
+- **Extend the Hebcal-aligned Hebrew regression catalogue** from the
+  six-year (2020–2025) starter set already shipping in
+  `GlobalJewishResourceTests.Regression` to a full 50-year sweep once
+  the regression-tier surface area justifies the maintenance cost.
+  Same shape is owed to the Saudi Umm al-Qura calendar (versus
+  ummulqura.org.sa) and the Persian calendar (versus the Iranian civil
+  calendar table from the Astronomical Applications Department).
 - **Add `IAsyncEnumerable<NotableDate>` projections** for streaming
   large date-range queries (e.g. fiscal calendars across many years).
 - **Promote the plugin loader** (today exercised only by the 4
