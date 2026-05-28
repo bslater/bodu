@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Serpent128TransformTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -16,29 +16,40 @@ namespace Bodu.Security.Cryptography;
 internal sealed class Serpent128TransformTests
     : BlockCipherTransformTests<Serpent128TransformTests, Serpent128Transform>
 {
-    /// <inheritdoc />
-    protected override Serpent128Transform CreateAlgorithm()
+    private readonly byte[] _key;
+    private readonly byte[] _iv;
+
+    /// <summary>
+    /// Initializes a new instance with a freshly generated key and IV cached so that
+    /// <see cref="CreateEncryptor" /> and <see cref="CreateDecryptor" /> produce paired transforms.
+    /// </summary>
+    public Serpent128TransformTests()
     {
-        var algorithm = new Serpent128();
-        algorithm.GenerateKey();
-        algorithm.GenerateIV();
-        return (Serpent128Transform)algorithm.CreateEncryptor(algorithm.Key, algorithm.IV);
+        using var seed = new Serpent128();
+        seed.GenerateKey();
+        seed.GenerateIV();
+        _key = seed.Key;
+        _iv = seed.IV;
     }
 
     /// <inheritdoc />
-    protected override IEnumerable<BlockCipherKnownAnswer> GetKnownAnswers() =>
-        Serpent128KnownAnswers.For(SingleTestVariant.Default);
+    protected override Serpent128Transform CreateAlgorithm() => CreateEncryptor();
 
     /// <inheritdoc />
-    protected override Serpent128Transform CreateTransformForKnownAnswer(BlockCipherKnownAnswer answer, bool forEncryption)
+    protected override Serpent128Transform CreateEncryptor() => BuildTransform(forEncryption: true);
+
+    /// <inheritdoc />
+    protected override Serpent128Transform CreateDecryptor() => BuildTransform(forEncryption: false);
+
+    private Serpent128Transform BuildTransform(bool forEncryption)
     {
         var algorithm = new Serpent128
         {
             Mode = CipherMode.ECB,
-            Padding = PaddingMode.None,
+            Padding = PaddingMode.PKCS7,
+            Key = _key,
+            IV = _iv,
         };
-        algorithm.Key = answer.Key!;
-        algorithm.IV = new byte[algorithm.BlockSize / 8];
 
         ICryptoTransform transform = forEncryption
             ? algorithm.CreateEncryptor()

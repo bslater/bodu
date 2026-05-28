@@ -38,4 +38,10 @@ public record SymmetricAlgorithmSpecification
     /// Defaults to <see cref="PaddingMode.PKCS7" />.
     /// </summary>
     public PaddingMode DefaultPadding { get; init; } = PaddingMode.PKCS7;
+
+    /// <summary>
+    /// Gets the expected default cipher block mode on a freshly constructed instance, read through the
+    /// algorithm's Bodu-specific <c>BlockMode</c> property. Defaults to <see cref="CipherModeKind.CBC" />.
+    /// </summary>
+    public CipherModeKind DefaultBlockMode { get; init; } = CipherModeKind.CBC;
 }

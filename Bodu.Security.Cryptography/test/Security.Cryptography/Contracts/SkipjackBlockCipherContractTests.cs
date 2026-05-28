@@ -13,7 +13,7 @@ namespace Bodu.Security.Cryptography.Contracts;
 /// the canonical FIPS PUB 185 Section 8 worked example plus the NSA Skipjack reference single-bit-key
 /// avalanche vectors. The contract base verifies encrypt and decrypt directions independently; bespoke
 /// Skipjack tests (round-key inspection, padding modes, transform lifecycle) live in the existing
-/// <c>SkipjackBlockCipherTests.*</c> and <c>SkipjackAlgorithmTests.*</c> partials.
+/// <c>SkipjackBlockCipherTests.*</c> and <c>SkipjackTests.*</c> partials.
 /// </summary>
 [TestClass]
 public sealed class SkipjackBlockCipherContractTests

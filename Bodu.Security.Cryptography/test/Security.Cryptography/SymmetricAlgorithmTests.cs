@@ -41,6 +41,16 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     protected abstract void SetBlockMode(TAlgorithm algorithm, CipherModeKind mode);
 
     /// <summary>
+    /// Reads the current cipher block mode from <paramref name="algorithm"/>. Mirrors
+    /// <see cref="SetBlockMode" /> on the read side so base-class tests can assert
+    /// <see cref="CipherModeKind" /> values without depending on a property surface that only exists on
+    /// concrete cipher types.
+    /// </summary>
+    /// <param name="algorithm">The algorithm instance to read from.</param>
+    /// <returns>The current <see cref="CipherModeKind" /> value.</returns>
+    protected abstract CipherModeKind GetBlockMode(TAlgorithm algorithm);
+
+    /// <summary>
     /// Convenience wrapper around <see cref="SetBlockMode(TAlgorithm, CipherModeKind)" /> that applies
     /// <see cref="CipherModeKind.ECB" />.
     /// </summary>
