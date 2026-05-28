@@ -8,9 +8,9 @@ The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/
 
 ### Bodu.Numerics — 1.0.0
 
-Initial release of a new numeric-primitives library. Ships `Fraction<T>`, an immutable exact-rational value type generic over any `IBinaryInteger<T>` backing component — use a fixed-width type such as `int` or `long` for compact storage, or `BigInteger` for arithmetic that never overflows.
+Initial release of a new numeric-primitives library. Ships two header types: `Fraction<T>`, an immutable exact-rational value type generic over any `IBinaryInteger<T>` backing component; and `Interval<T>`, an immutable bounded interval generic over any `INumber<T>` endpoint type.
 
-#### Added
+#### Added — `Fraction<T>`
 
 - `Fraction<T>` is always held in canonical form (strictly positive denominator, sign on the numerator, fully reduced). Arithmetic is exact: intermediate results are evaluated with `BigInteger` precision and narrowed back to `T`, throwing `OverflowException` when a fixed-width component cannot represent the canonical result.
 - Arithmetic and comparison operators, named arithmetic methods (`Add`, `Negate`, `Abs`, `Reciprocal`, `Pow`, `Remainder`), and `GreatestCommonDivisor` / `LeastCommonMultiple` helpers.
@@ -19,6 +19,14 @@ Initial release of a new numeric-primitives library. Ships `Fraction<T>`, an imm
 - Parsing of integer, ratio, mixed-number, Unicode vulgar-fraction, and percent forms across `string`, `ReadOnlySpan<char>`, and UTF-8 inputs (`IParsable`, `ISpanParsable`, `IUtf8SpanParsable`); formatting with general, mixed (`M`), Unicode (`U`), and percent (`P`) specifiers (`IFormattable`, `ISpanFormattable`, `IUtf8SpanFormattable`).
 - The full generic-math surface — `INumber<Fraction<T>>`, `INumberBase<Fraction<T>>`, `ISignedNumber<Fraction<T>>` — so `Fraction<T>` composes with `INumber<T>`-constrained code.
 - XML serialization (`IXmlSerializable`) and `System.Text.Json` support through a converter that round-trips the value as its `numerator/denominator` string form.
+
+#### Added — `Interval<T>`
+
+- Immutable bounded interval `Interval<T>` generic over any `INumber<T>` endpoint type — `int`, `long`, `double`, `decimal`, `BigInteger`, or any consumer-defined numeric type. Endpoint inclusivity is independent on each side: closed-closed `[a, b]`, open-open `(a, b)`, closed-open `[a, b)`, and open-closed `(a, b]`.
+- Static factory methods (`Interval<T>.Closed`, `Open`, `ClosedOpen`, `OpenClosed`, `Singleton`, `Empty`) plus a non-generic `Interval` helper class that infers `T` from its arguments (`Interval.Closed(1, 5)`).
+- Set algebra: `Contains(T)`, `Contains(Interval<T>)`, `Overlaps`, `Intersect`, and `TryUnion`. `TryUnion` succeeds when the operands are overlapping or adjacent and the result is a single contiguous interval; it returns `false` for disjoint operands rather than producing two intervals.
+- `IsEmpty`, `IsDegenerate`, and `Length` (the algebraic length, equal to `Upper - Lower` for non-empty intervals and `T.Zero` for empty ones). All empty intervals compare equal to `Empty` regardless of the bounds used to construct them.
+- ISO 31-11 bracket-notation formatting via `ToString()`, `IFormattable`, `ISpanFormattable`, and `IUtf8SpanFormattable`; matching parsing via `IParsable<Interval<T>>` and `ISpanParsable<Interval<T>>`. Empty intervals format and parse as the U+2205 EMPTY SET glyph.
 
 ### Bodu.Globalization.Calendar — 1.1.0
 

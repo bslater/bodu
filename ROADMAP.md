@@ -246,14 +246,17 @@ Current state: bridge layer; 7 src / 19 test files. Connects
 
 ### `Bodu.Numerics`
 
-Current state: new; 16 src / 18 test files. Ships `Fraction<T>` only.
+Current state: new; 24 src / 26 test files. Ships `Fraction<T>` and
+`Interval<T>`.
 
-- **Ship `Fraction<T>` 1.0** per `[Unreleased]`.
-- **Add `Interval<T>`** arithmetic over `INumber<T>` — closed/open
-  bounds, intersection/union, contains, length. Natural companion to
-  `Fraction<T>` and gives the package a second header type. Use
-  `Interval<T>`, not `Range<T>`: `System.Range` is the existing BCL
-  slicing type and the names would collide for consumers.
+- **Ship the 1.0 package** per `[Unreleased]` — covers both
+  `Fraction<T>` and the new `Interval<T>` header type.
+- **Extend `Interval<T>` with the gaps from 1.0**: unbounded /
+  half-bounded intervals (the current type is always bounded);
+  `Difference` / `SymmetricDifference` returning disjoint-interval
+  sets; algebraic operators (`|` for union, `&` for intersection)
+  when both operands are guaranteed contiguous. The 1.0 surface
+  intentionally ships only the contiguous-result subset.
 - **Add fixed-point `Money<TCurrency>`** with proper rounding and
   currency-tagging. Re-uses `Fraction<T>` internally for exact
   decimal computation.
@@ -476,8 +479,9 @@ warnings the rollout surfaces as part of that release's QA pass.
 ### Documentation parity
 
 Every shipping project should have a `docs/guides/<project>/` entry.
-Most do; `Bodu.Numerics` is the obvious gap. Bring it to parity before
-shipping `Bodu.Numerics` 1.0.
+The `Bodu.Numerics` directory has an overview and a dedicated
+`Interval<T>` article; a per-feature `Fraction<T>` article is still
+owed before the 1.0 ships.
 
 ## Proposing changes to this file
 
