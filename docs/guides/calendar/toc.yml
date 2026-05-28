@@ -16,6 +16,8 @@
       href: adjustment-rules.md
     - name: The resolution pipeline
       href: resolution-pipeline.md
+    - name: Working with non-Gregorian calendars
+      href: non-gregorian-calendars.md
 - name: Bodu.Globalization.Calendar — Patterns
   items:
     - name: Holiday patterns and examples
