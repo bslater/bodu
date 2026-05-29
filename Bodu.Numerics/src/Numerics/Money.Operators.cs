@@ -20,7 +20,7 @@ public readonly partial struct Money<TCurrency>
     /// <see cref="Convert{TTarget}(decimal, MidpointRounding)" /> when the operands are in different currencies.
     /// </remarks>
     public static Money<TCurrency> operator +(Money<TCurrency> left, Money<TCurrency> right) =>
-        new Money<TCurrency>(left._amount + right._amount, normalized: true);
+        Money<TCurrency>.FromNormalizedAmount(left._amount + right._amount);
 
     /// <summary>
     /// Subtracts one monetary value from another, where both are denominated in the same currency.
@@ -29,7 +29,7 @@ public readonly partial struct Money<TCurrency>
     /// <param name="right">The subtrahend.</param>
     /// <returns>The difference <c>left - right</c>.</returns>
     public static Money<TCurrency> operator -(Money<TCurrency> left, Money<TCurrency> right) =>
-        new Money<TCurrency>(left._amount - right._amount, normalized: true);
+        Money<TCurrency>.FromNormalizedAmount(left._amount - right._amount);
 
     /// <summary>
     /// Negates a monetary value.
@@ -37,7 +37,7 @@ public readonly partial struct Money<TCurrency>
     /// <param name="value">The amount to negate.</param>
     /// <returns>A <see cref="Money{TCurrency}" /> whose amount is the negation of <paramref name="value" />.</returns>
     public static Money<TCurrency> operator -(Money<TCurrency> value) =>
-        new Money<TCurrency>(-value._amount, normalized: true);
+        Money<TCurrency>.FromNormalizedAmount(-value._amount);
 
     /// <summary>
     /// Returns the operand unchanged.

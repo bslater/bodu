@@ -43,7 +43,7 @@ public readonly partial struct Money<TCurrency>
         for (int i = 0; i < parts; i++)
         {
             long share = basePer + (i < residualMagnitude ? sign : 0);
-            result[i] = new Money<TCurrency>(share / factor, normalized: true);
+            result[i] = Money<TCurrency>.FromNormalizedAmount(share / factor);
         }
 
         return result;
@@ -117,7 +117,7 @@ public readonly partial struct Money<TCurrency>
 
         Money<TCurrency>[] result = new Money<TCurrency>[ratios.Length];
         for (int i = 0; i < ratios.Length; i++)
-            result[i] = new Money<TCurrency>(shares[i] / factor, normalized: true);
+            result[i] = Money<TCurrency>.FromNormalizedAmount(shares[i] / factor);
 
         return result;
     }

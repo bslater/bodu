@@ -50,7 +50,7 @@ public readonly partial struct Money<TCurrency>
         ThrowHelper.ThrowIfNegative(decimals);
         ThrowHelper.ThrowIfGreaterThan(decimals, TCurrency.MinorUnits);
 
-        return new Money<TCurrency>(decimal.Round(_amount, decimals, rounding), normalized: true);
+        return Money<TCurrency>.FromNormalizedAmount(decimal.Round(_amount, decimals, rounding));
     }
 
     /// <summary>

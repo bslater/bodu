@@ -57,5 +57,5 @@ public readonly partial struct Money<TCurrency>
     /// </summary>
     /// <returns>A <see cref="Money{TCurrency}" /> whose amount is <c>|Amount|</c>.</returns>
     public Money<TCurrency> Abs =>
-        new Money<TCurrency>(Math.Abs(_amount), normalized: true);
+        Money<TCurrency>.FromNormalizedAmount(Math.Abs(_amount));
 }

@@ -62,7 +62,7 @@ public readonly partial struct Money<TCurrency>
     /// </remarks>
     public Money(decimal amount)
     {
-        _amount = decimal.Round(amount, TCurrency.MinorUnits, MidpointRounding.ToEven);
+        _amount = decimal.Round(amount, ValidatedMinorUnits, MidpointRounding.ToEven);
     }
 
     /// <summary>
@@ -73,7 +73,7 @@ public readonly partial struct Money<TCurrency>
     /// <param name="rounding">The rule used to round midpoint values.</param>
     public Money(decimal amount, MidpointRounding rounding)
     {
-        _amount = decimal.Round(amount, TCurrency.MinorUnits, rounding);
+        _amount = decimal.Round(amount, ValidatedMinorUnits, rounding);
     }
 
     /// <summary>
@@ -81,12 +81,57 @@ public readonly partial struct Money<TCurrency>
     /// bypassing normalization.
     /// </summary>
     /// <param name="amount">The pre-rounded monetary amount.</param>
-    /// <param name="normalized">
-    /// A discriminator that selects the no-normalization initialization path. The value itself is not inspected.
+    /// <param name="_">
+    /// A typed tag that selects the no-normalization initialization path. The value itself is not inspected.
     /// </param>
-    private Money(decimal amount, bool normalized)
+    private Money(decimal amount, NormalizedTag _)
     {
-        _ = normalized;
         _amount = amount;
+    }
+
+    /// <summary>
+    /// Creates a <see cref="Money{TCurrency}" /> from an amount that is already rounded to
+    /// <c>TCurrency.MinorUnits</c>, bypassing the normalization step.
+    /// </summary>
+    /// <param name="amount">The already-normalized amount.</param>
+    /// <returns>A <see cref="Money{TCurrency}" /> wrapping <paramref name="amount" />.</returns>
+    /// <remarks>
+    /// This is the internal fast path used by arithmetic operators, allocation, and conversion to avoid a
+    /// redundant <see cref="decimal.Round(decimal, int, MidpointRounding)" /> after every operation when the
+    /// caller already guarantees minor-unit precision. External callers should use the public constructors.
+    /// </remarks>
+    internal static Money<TCurrency> FromNormalizedAmount(decimal amount) =>
+        new(amount, default(NormalizedTag));
+
+    /// <summary>
+    /// Validates that <c>TCurrency.MinorUnits</c> is within the inclusive range <c>[0, 28]</c> that
+    /// <see cref="decimal.Round(decimal, int, MidpointRounding)" /> accepts.
+    /// </summary>
+    /// <returns>The validated minor-unit precision.</returns>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when <c>TCurrency.MinorUnits</c> is negative or greater than the 28-decimal-digit precision of
+    /// <see cref="decimal" />. The exception message names the offending <typeparamref name="TCurrency" /> type.
+    /// </exception>
+    private static int ValidatedMinorUnits
+    {
+        get
+        {
+            int value = TCurrency.MinorUnits;
+            if ((uint)value > 28u)
+            {
+                throw new InvalidOperationException(
+                    $"{typeof(TCurrency).FullName}.{nameof(ICurrency.MinorUnits)} must be between 0 and 28, but reported {value}.");
+            }
+
+            return value;
+        }
+    }
+
+    /// <summary>
+    /// A typed discriminator that selects the no-normalization initialization path on the private
+    /// <see cref="Money{TCurrency}" /> constructor invoked from <see cref="FromNormalizedAmount(decimal)" />.
+    /// </summary>
+    private readonly struct NormalizedTag
+    {
     }
 }
