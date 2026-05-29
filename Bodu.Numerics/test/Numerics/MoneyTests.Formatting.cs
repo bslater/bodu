@@ -139,4 +139,174 @@ public partial class MoneyTests
         Assert.IsTrue(ok);
         Assert.AreEqual("USD 19.99", System.Text.Encoding.UTF8.GetString(buffer[..written]));
     }
+
+    /// <summary>
+    /// Verifies that the <c>"L"</c> specifier uses the culture's native currency symbol when the culture's
+    /// region currency matches <typeparamref name="TCurrency" />.
+    /// </summary>
+    [TestMethod]
+    public void ToString_WhenLSpecifierAndCultureMatchesUsd_ShouldUseDollarSymbol()
+    {
+        Money<USD> money = new Money<USD>(1234.56m);
+
+        string result = money.ToString("L", new CultureInfo("en-US"));
+
+        Assert.AreEqual("$1,234.56", result);
+    }
+
+    /// <summary>
+    /// Verifies that the <c>"L"</c> specifier uses the culture's pattern (symbol after amount with grouping
+    /// dots and a comma decimal) when formatting EUR with a German locale.
+    /// </summary>
+    [TestMethod]
+    public void ToString_WhenLSpecifierAndCultureMatchesEur_ShouldUseEuroSymbolInLocalePattern()
+    {
+        Money<EUR> money = new Money<EUR>(1234.56m);
+
+        string result = money.ToString("L", new CultureInfo("de-DE"));
+
+        // de-DE: "1.234,56 €" — symbol after amount, comma decimal, period grouping.
+        StringAssert.Contains(result, "€");
+        StringAssert.Contains(result, "1.234,56");
+    }
+
+    /// <summary>
+    /// Verifies that the <c>"L"</c> specifier substitutes the ISO code in place of the locale's symbol when the
+    /// currencies differ, keeping the locale's number formatting.
+    /// </summary>
+    [TestMethod]
+    public void ToString_WhenLSpecifierAndCultureMismatchedPrefix_ShouldSubstituteIsoBeforeAmount()
+    {
+        Money<JPY> money = new Money<JPY>(1234m);
+
+        string result = money.ToString("L", new CultureInfo("en-US"));
+
+        Assert.AreEqual("JPY 1,234", result);
+    }
+
+    /// <summary>
+    /// Verifies that the <c>"L"</c> specifier places the ISO code after the amount in cultures whose currency
+    /// pattern is suffix-based.
+    /// </summary>
+    [TestMethod]
+    public void ToString_WhenLSpecifierAndCultureMismatchedSuffix_ShouldSubstituteIsoAfterAmount()
+    {
+        Money<USD> money = new Money<USD>(1234.56m);
+
+        string result = money.ToString("L", new CultureInfo("de-DE"));
+
+        Assert.AreEqual("1.234,56 USD", result);
+    }
+
+    /// <summary>
+    /// Verifies that the <c>"L"</c> specifier honors the currency's minor-unit precision rather than the
+    /// culture's default, so JPY formats with zero decimal digits even under en-US.
+    /// </summary>
+    [TestMethod]
+    public void ToString_WhenLSpecifierAndJpyUnderEnUs_ShouldRespectCurrencyMinorUnits()
+    {
+        Money<JPY> money = new Money<JPY>(2500m);
+
+        string result = money.ToString("L", new CultureInfo("en-US"));
+
+        Assert.AreEqual("JPY 2,500", result);
+    }
+
+    /// <summary>
+    /// Verifies that the <c>"L"</c> specifier overrides both the culture's and the currency's natural precision
+    /// when an explicit fractional-digit count is supplied.
+    /// </summary>
+    [TestMethod]
+    public void ToString_WhenLSpecifierAndExplicitPrecisionZero_ShouldRoundToWholeUnits()
+    {
+        Money<USD> money = new Money<USD>(19.99m);
+
+        string result = money.ToString("L0", new CultureInfo("en-US"));
+
+        Assert.AreEqual("$20", result);
+    }
+
+    /// <summary>
+    /// Verifies that the <c>"L"</c> specifier falls back to the ISO-code substitution path for neutral cultures
+    /// (no region available) such as <c>"en"</c>.
+    /// </summary>
+    [TestMethod]
+    public void ToString_WhenLSpecifierAndNeutralCulture_ShouldFallBackToIsoSubstitution()
+    {
+        Money<USD> money = new Money<USD>(19.99m);
+
+        string result = money.ToString("L", CultureInfo.InvariantCulture);
+
+        Assert.AreEqual("USD 19.99", result);
+    }
+
+    /// <summary>
+    /// Verifies that the <c>"~"</c> prefix elides the ISO code in the default <c>"C"</c> path when the culture's
+    /// currency matches <typeparamref name="TCurrency" />.
+    /// </summary>
+    [TestMethod]
+    public void ToString_WhenTildeCAndCultureMatches_ShouldElideIsoCode()
+    {
+        Money<USD> money = new Money<USD>(1234.56m);
+
+        string result = money.ToString("~C", new CultureInfo("en-US"));
+
+        Assert.AreEqual("1,234.56", result);
+    }
+
+    /// <summary>
+    /// Verifies that the <c>"~"</c> prefix keeps the ISO code when the culture's currency does not match
+    /// <typeparamref name="TCurrency" />, preserving disambiguation in mixed-currency contexts.
+    /// </summary>
+    [TestMethod]
+    public void ToString_WhenTildeCAndCultureMismatched_ShouldKeepIsoCode()
+    {
+        Money<JPY> money = new Money<JPY>(1234m);
+
+        string result = money.ToString("~C", new CultureInfo("en-US"));
+
+        Assert.AreEqual("JPY 1,234", result);
+    }
+
+    /// <summary>
+    /// Verifies that the <c>"~"</c> prefix on the <c>"L"</c> specifier elides the locale's symbol when the
+    /// culture's currency matches.
+    /// </summary>
+    [TestMethod]
+    public void ToString_WhenTildeLAndCultureMatches_ShouldElideSymbol()
+    {
+        Money<USD> money = new Money<USD>(19.99m);
+
+        string result = money.ToString("~L", new CultureInfo("en-US"));
+
+        Assert.AreEqual("19.99", result);
+    }
+
+    /// <summary>
+    /// Verifies that the <c>"~"</c> prefix on <c>"L"</c> still emits the ISO code in the mismatched-currency
+    /// case so the value is never ambiguous.
+    /// </summary>
+    [TestMethod]
+    public void ToString_WhenTildeLAndCultureMismatched_ShouldStillEmitIsoCode()
+    {
+        Money<JPY> money = new Money<JPY>(1234m);
+
+        string result = money.ToString("~L", new CultureInfo("en-US"));
+
+        Assert.AreEqual("JPY 1,234", result);
+    }
+
+    /// <summary>
+    /// Verifies that the <c>"~"</c> prefix combines with an explicit precision suffix.
+    /// </summary>
+    [TestMethod]
+    public void ToString_WhenTildeCWithExplicitPrecisionAndCultureMatches_ShouldUseElidedFormWithPrecision()
+    {
+        Money<USD> money = new Money<USD>(19.99m);
+
+        string result = money.ToString("~C0", new CultureInfo("en-US"));
+
+        Assert.AreEqual("20", result);
+    }
 }
+

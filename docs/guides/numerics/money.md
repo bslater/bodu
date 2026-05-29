@@ -195,9 +195,11 @@ Supported format specifiers:
 |-----------|------------------------------|
 | `null`, `""`, `"G"`, `"C"` | ISO code + grouped number at minor-unit precision |
 | `"C4"`, `"G0"` | ISO code + grouped number with explicit precision |
+| `"L"` | Locale-aware: culture's native currency symbol when matched, ISO code substituted into the locale's pattern when mismatched |
 | `"N"` | Grouped number only, no ISO code |
 | `"F"`, `"D"` | Bare number without grouping or ISO code |
 | `"N4"`, `"F0"` | Same as above with explicit precision |
+| Prefix `"~"` on `C`/`G`/`L` | Elide the currency designator when the culture's currency matches `TCurrency` |
 
 ```csharp
 var m = new Money<USD>(1234.56m);
@@ -211,6 +213,70 @@ m.ToString("F0", CultureInfo.InvariantCulture);   // "1235"
 `Money<TCurrency>` implements `IFormattable`, `ISpanFormattable`, and
 `IUtf8SpanFormattable`, so it composes with the high-performance
 formatting APIs in modern .NET.
+
+### Locale-aware formatting with `L`
+
+The `L` specifier renders the amount through the culture's native
+`NumberFormatInfo.CurrencyPositivePattern` — symbol position,
+decimal separator, grouping separator, and parenthesised negatives
+all follow what the locale would do for `decimal.ToString("C")`. The
+catch is the currency symbol itself: the locale picks a symbol from
+its own currency, not yours. To stay unambiguous, `L` substitutes the
+ISO code when the locale's currency differs from `TCurrency`:
+
+```csharp
+var usd = new Money<USD>(1234.56m);
+var jpy = new Money<JPY>(1234m);
+var eur = new Money<EUR>(1234.56m);
+
+// Culture's region currency matches — use the local symbol:
+usd.ToString("L", new CultureInfo("en-US"));   // "$1,234.56"
+jpy.ToString("L", new CultureInfo("ja-JP"));   // "¥1,234"
+eur.ToString("L", new CultureInfo("de-DE"));   // "1.234,56 €"
+eur.ToString("L", new CultureInfo("fr-FR"));   // "1 234,56 €"
+
+// Currencies differ — substitute the ISO code in the locale's slot:
+jpy.ToString("L", new CultureInfo("en-US"));   // "JPY 1,234"
+usd.ToString("L", new CultureInfo("de-DE"));   // "1.234,56 USD"
+```
+
+The currency's minor-unit precision wins over the locale's
+`CurrencyDecimalDigits`, so `Money<JPY>` always formats with zero
+fractional digits and `Money<BHD>` always with three, regardless of
+the culture's defaults. Explicit precision suffixes (`"L0"`, `"L4"`)
+override both.
+
+The current culture's region is unreachable from a `CultureInfo`
+that has no country (neutral cultures such as `"en"`, `"fr"`) and
+from `CultureInfo.InvariantCulture`; in those cases `L` falls back
+to the ISO-substitution form, which always works regardless of
+region.
+
+### Eliding the currency when redundant
+
+Prefixing any of `C`, `G`, or `L` with `~` drops the currency
+designator *only when the culture already implies it* — useful for
+logs and exports where the active culture is uniform and the ISO
+code adds noise on every line, but you still want a guard against a
+stray foreign-currency value sneaking through:
+
+```csharp
+var usd = new Money<USD>(1234.56m);
+var jpy = new Money<JPY>(1234m);
+
+usd.ToString("~C", new CultureInfo("en-US"));   // "1,234.56"    — elided
+jpy.ToString("~C", new CultureInfo("en-US"));   // "JPY 1,234"   — kept
+
+usd.ToString("~L", new CultureInfo("en-US"));   // "19.99"       — elided
+jpy.ToString("~L", new CultureInfo("en-US"));   // "JPY 1,234"   — kept
+```
+
+The "matches" test uses `RegionInfo.ISOCurrencySymbol` for the
+culture passed to the formatter (not `CultureInfo.CurrentCulture`
+unless that's what was passed). Neutral cultures and the invariant
+culture never match, so `~` is safe to apply unconditionally — when
+the formatter has no region context, the ISO code stays in the
+output.
 
 ## Parsing
 
