@@ -27,6 +27,12 @@ public sealed class NOK : ICurrency
     public static int MinorUnits => 2;
 
     /// <summary>
+    /// Gets the smallest cash denomination of the currency, in the major unit.
+    /// </summary>
+    /// <returns>The cash-rounding increment.</returns>
+    public static decimal CashRoundingIncrement => 1m;
+
+    /// <summary>
     /// Prevents instantiation of the <see cref="NOK" /> tag type.
     /// </summary>
     private NOK()

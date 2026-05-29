@@ -131,6 +131,15 @@ internal static class Program
         builder.AppendLine("/// </summary>");
         builder.AppendLine("/// <remarks>");
         builder.Append("/// ISO 4217 numeric code <c>").Append(currency.Numeric.ToString(CultureInfo.InvariantCulture)).Append("</c>; minor-unit precision <c>").Append(currency.MinorUnits.ToString(CultureInfo.InvariantCulture)).AppendLine("</c>.");
+        if (currency.IsHistoric)
+        {
+            builder.Append("/// Historic — demonetized");
+            if (!string.IsNullOrEmpty(currency.DemonetizedOn))
+                builder.Append(" on ").Append(currency.DemonetizedOn);
+            if (!string.IsNullOrEmpty(currency.SuccessorIsoCode))
+                builder.Append(", replaced by ").Append(currency.SuccessorIsoCode);
+            builder.AppendLine(".");
+        }
         builder.AppendLine("/// </remarks>");
         builder.Append("public sealed class ").Append(currency.Iso).AppendLine(" : ICurrency");
         builder.AppendLine("{");
@@ -145,6 +154,58 @@ internal static class Program
         builder.AppendLine("    /// </summary>");
         builder.AppendLine("    /// <returns>The currency's minor-unit precision.</returns>");
         builder.Append("    public static int MinorUnits => ").Append(currency.MinorUnits.ToString(CultureInfo.InvariantCulture)).AppendLine(";");
+
+        if (currency.CashRoundingIncrement is { } increment && increment != 0m)
+        {
+            builder.AppendLine();
+            builder.AppendLine("    /// <summary>");
+            builder.AppendLine("    /// Gets the smallest cash denomination of the currency, in the major unit.");
+            builder.AppendLine("    /// </summary>");
+            builder.AppendLine("    /// <returns>The cash-rounding increment.</returns>");
+            builder.Append("    public static decimal CashRoundingIncrement => ")
+                .Append(increment.ToString("0.################", CultureInfo.InvariantCulture))
+                .AppendLine("m;");
+        }
+
+        if (currency.IsHistoric)
+        {
+            builder.AppendLine();
+            builder.AppendLine("    /// <summary>");
+            builder.AppendLine("    /// Gets a value indicating that the currency has been demonetized.");
+            builder.AppendLine("    /// </summary>");
+            builder.AppendLine("    /// <returns><see langword=\"true\" /> — this is a historic currency.</returns>");
+            builder.AppendLine("    public static bool IsHistoric => true;");
+
+            if (!string.IsNullOrEmpty(currency.DemonetizedOn))
+            {
+                builder.AppendLine();
+                builder.AppendLine("    /// <summary>");
+                builder.AppendLine("    /// Gets the date the currency was withdrawn from circulation.");
+                builder.AppendLine("    /// </summary>");
+                builder.AppendLine("    /// <returns>The demonetization date.</returns>");
+                builder.Append("    public static global::System.DateOnly? DemonetizedOn => new global::System.DateOnly(");
+                var date = global::System.DateOnly.ParseExact(currency.DemonetizedOn, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                builder.Append(date.Year.ToString(CultureInfo.InvariantCulture))
+                    .Append(", ")
+                    .Append(date.Month.ToString(CultureInfo.InvariantCulture))
+                    .Append(", ")
+                    .Append(date.Day.ToString(CultureInfo.InvariantCulture))
+                    .AppendLine(");");
+            }
+
+            if (!string.IsNullOrEmpty(currency.SuccessorIsoCode))
+            {
+                builder.AppendLine();
+                builder.AppendLine("    /// <summary>");
+                builder.AppendLine("    /// Gets the ISO 4217 alphabetic code of the currency that replaced this one.");
+                builder.AppendLine("    /// </summary>");
+                builder.AppendLine("    /// <returns>The successor currency's ISO code.</returns>");
+                builder.Append("    public static string? SuccessorIsoCode => \"")
+                    .Append(currency.SuccessorIsoCode)
+                    .AppendLine("\";");
+            }
+        }
+
         builder.AppendLine();
         builder.AppendLine("    /// <summary>");
         builder.Append("    /// Prevents instantiation of the <see cref=\"").Append(currency.Iso).AppendLine("\" /> tag type.");
@@ -180,5 +241,9 @@ internal static class Program
         public int Numeric { get; init; }
         public int MinorUnits { get; init; }
         public string Name { get; init; } = string.Empty;
+        public decimal? CashRoundingIncrement { get; init; }
+        public bool IsHistoric { get; init; }
+        public string? DemonetizedOn { get; init; }
+        public string? SuccessorIsoCode { get; init; }
     }
 }

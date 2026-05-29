@@ -66,11 +66,11 @@ public class CurrencyCatalogueTests
     }
 
     /// <summary>
-    /// Verifies that the catalogue contains at least 150 entries so the source-generator is in sync with
-    /// <c>currencies.json</c>.
+    /// Verifies that the catalogue contains the full set of shipped tag types so the source generator is in
+    /// sync with <c>currencies.json</c>.
     /// </summary>
     [TestMethod]
-    public void Catalogue_WhenEnumeratedViaReflection_ShouldContainAtLeastOneHundredFiftyTypes()
+    public void Catalogue_WhenEnumeratedViaReflection_ShouldContainAtLeastOneHundredEightyTypes()
     {
         int count = typeof(USD).Assembly
             .GetTypes()
@@ -78,6 +78,6 @@ public class CurrencyCatalogueTests
                 && typeof(ICurrency).IsAssignableFrom(t))
             .Count();
 
-        Assert.IsTrue(count >= 150, $"Expected at least 150 currency tag types, found {count}.");
+        Assert.IsTrue(count >= 180, $"Expected at least 180 currency tag types, found {count}.");
     }
 }
