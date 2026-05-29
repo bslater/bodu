@@ -53,6 +53,14 @@ public readonly partial struct Money<TCurrency>
     /// <param name="left">The amount.</param>
     /// <param name="right">The scalar multiplier.</param>
     /// <returns>The product, rounded to <c>TCurrency.MinorUnits</c> using banker's rounding.</returns>
+    /// <remarks>
+    /// Every scalar multiplication rounds at the call site, so a chain of multiplications can accumulate
+    /// rounding error. For chains where the intermediate precision matters (compound interest, tax stacking,
+    /// rate-conversion percentages), perform the calculation through <see cref="ToFraction" /> and snap to
+    /// <see cref="Money{TCurrency}" /> only once, at the end, via
+    /// <see cref="FromFraction(Fraction{System.Numerics.BigInteger}, MidpointRounding)" /> or the
+    /// <see cref="MultiplyExact(Fraction{System.Numerics.BigInteger}, MidpointRounding)" /> shortcut.
+    /// </remarks>
     public static Money<TCurrency> operator *(Money<TCurrency> left, decimal right) =>
         new Money<TCurrency>(left._amount * right);
 
@@ -73,8 +81,16 @@ public readonly partial struct Money<TCurrency>
     /// <returns>The quotient, rounded to <c>TCurrency.MinorUnits</c> using banker's rounding.</returns>
     /// <exception cref="DivideByZeroException">Thrown when <paramref name="right" /> is zero.</exception>
     /// <remarks>
-    /// Scalar division rounds at every call. To divide an amount into shares while preserving the total exactly, use
-    /// <see cref="Money{TCurrency}.Allocate(int)" /> or <see cref="Money{TCurrency}.Allocate(ReadOnlySpan{decimal})" />.
+    /// <para>
+    /// Scalar division rounds at every call. To divide an amount into shares while preserving the total exactly,
+    /// use <see cref="Money{TCurrency}.Allocate(int)" /> or
+    /// <see cref="Money{TCurrency}.Allocate(ReadOnlySpan{decimal})" />.
+    /// </para>
+    /// <para>
+    /// For chains involving division that must avoid per-step rounding drift, perform the calculation through
+    /// <see cref="ToFraction" /> and snap back to <see cref="Money{TCurrency}" /> only at the final step via
+    /// <see cref="FromFraction(Fraction{System.Numerics.BigInteger}, MidpointRounding)" />.
+    /// </para>
     /// </remarks>
     public static Money<TCurrency> operator /(Money<TCurrency> left, decimal right) =>
         new Money<TCurrency>(left._amount / right);

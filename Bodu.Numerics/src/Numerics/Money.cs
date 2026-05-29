@@ -18,6 +18,13 @@ namespace Bodu.Numerics;
 /// </typeparam>
 /// <remarks>
 /// <para>
+/// <see cref="Money{TCurrency}" /> represents a <b>settlement-grade</b> monetary value — an amount already
+/// rounded to the currency's minor-unit precision and ready to be posted to a ledger, displayed to a user, or
+/// serialized to storage. It is deliberately not a calculation type: every operation that produces a
+/// <see cref="Money{TCurrency}" /> returns a value that respects <c>TCurrency.MinorUnits</c>, so chained
+/// scalar operations round at each step rather than accumulating sub-minor-unit precision.
+/// </para>
+/// <para>
 /// The amount is stored as a <see cref="decimal" /> rounded on construction to <c>TCurrency.MinorUnits</c> using
 /// banker's rounding (<see cref="MidpointRounding.ToEven" />). Two <see cref="Money{TCurrency}" /> values that
 /// represent the same monetary amount compare equal regardless of the input expressions that produced them.
@@ -30,12 +37,16 @@ namespace Bodu.Numerics;
 /// </para>
 /// <para>
 /// Scalar multiplication and division round their result to <c>TCurrency.MinorUnits</c>. For chains where rounding
-/// at each step would accumulate error — compound interest, unit-rate products, percentages — convert to
-/// <see cref="Fraction{T}" /> with <see cref="ToFraction" />, perform the exact computation, and convert back with
-/// <see cref="FromFraction(Fraction{System.Numerics.BigInteger}, MidpointRounding)" />.
+/// at each step would accumulate error — compound interest, unit-rate products, percentages — perform the
+/// calculation in <see cref="Fraction{T}" /> via <see cref="ToFraction" />, then snap to
+/// <see cref="Money{TCurrency}" /> only at the final settlement boundary with
+/// <see cref="FromFraction(Fraction{System.Numerics.BigInteger}, MidpointRounding)" /> or the
+/// <see cref="MultiplyExact(Fraction{System.Numerics.BigInteger}, MidpointRounding)" /> shortcut.
 /// </para>
 /// <para>
-/// The default value (<c>default(Money&lt;TCurrency&gt;)</c>) represents zero of the given currency.
+/// The default value (<c>default(Money&lt;TCurrency&gt;)</c>) represents zero of the given currency without
+/// invoking the rounding constructor, so it is safe even when <typeparamref name="TCurrency" /> reports
+/// invalid minor-unit metadata.
 /// </para>
 /// </remarks>
 [Serializable]
@@ -55,11 +66,22 @@ public readonly partial struct Money<TCurrency>
     /// </summary>
     /// <param name="amount">The monetary amount in the major unit of <typeparamref name="TCurrency" />.</param>
     /// <remarks>
-    /// The supplied amount is rounded to the currency's minor-unit precision; for example,
-    /// <c>new Money&lt;USD&gt;(1.235m)</c> is stored as <c>1.24m</c> and <c>new Money&lt;JPY&gt;(99.6m)</c> is stored
-    /// as <c>100m</c>. To round with a different rule, use the
-    /// <see cref="Money{TCurrency}(decimal, MidpointRounding)" /> overload.
+    /// <para>
+    /// The supplied amount is rounded to the currency's minor-unit precision using banker's rounding —
+    /// midpoint values round toward the nearer even final digit, in both directions. For example,
+    /// <c>new Money&lt;USD&gt;(1.225m)</c> is stored as <c>1.22m</c> (down toward the even hundredth <c>2</c>)
+    /// while <c>new Money&lt;USD&gt;(1.235m)</c> is stored as <c>1.24m</c> (up toward the even hundredth <c>4</c>).
+    /// Non-midpoint values round in the natural direction: <c>new Money&lt;JPY&gt;(99.6m)</c> is stored as
+    /// <c>100m</c>.
+    /// </para>
+    /// <para>
+    /// To round with a different rule, use the <see cref="Money{TCurrency}(decimal, MidpointRounding)" /> overload.
+    /// </para>
     /// </remarks>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when <c>TCurrency.MinorUnits</c> is outside the inclusive range <c>[0, 28]</c> accepted by
+    /// <see cref="decimal.Round(decimal, int, MidpointRounding)" />.
+    /// </exception>
     public Money(decimal amount)
     {
         _amount = decimal.Round(amount, ValidatedMinorUnits, MidpointRounding.ToEven);

@@ -44,6 +44,26 @@ public readonly partial struct Money<TCurrency>
         _amount == 0m;
 
     /// <summary>
+    /// Gets a value indicating whether this instance is strictly greater than zero.
+    /// </summary>
+    /// <returns>
+    /// <see langword="true" /> when <see cref="Amount" /> is positive; <see langword="false" /> when it is zero
+    /// or negative.
+    /// </returns>
+    public bool IsPositive =>
+        _amount > 0m;
+
+    /// <summary>
+    /// Gets a value indicating whether this instance is strictly less than zero.
+    /// </summary>
+    /// <returns>
+    /// <see langword="true" /> when <see cref="Amount" /> is negative; <see langword="false" /> when it is zero
+    /// or positive.
+    /// </returns>
+    public bool IsNegative =>
+        _amount < 0m;
+
+    /// <summary>
     /// Gets the sign of this instance.
     /// </summary>
     /// <returns>

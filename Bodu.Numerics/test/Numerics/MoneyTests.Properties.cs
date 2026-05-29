@@ -66,4 +66,52 @@ public partial class MoneyTests
         Assert.IsTrue(default(Money<USD>).IsZero);
         Assert.IsFalse(new Money<USD>(0.01m).IsZero);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="Money{TCurrency}.IsPositive" /> returns <see langword="true" /> only for amounts
+    /// strictly greater than zero.
+    /// </summary>
+    [TestMethod]
+    [DataRow(0.01, true)]
+    [DataRow(1234.56, true)]
+    [DataRow(0.0, false)]
+    [DataRow(-0.01, false)]
+    [DataRow(-1234.56, false)]
+    public void IsPositive_WhenAccessed_ShouldReflectSign(double amount, bool expected)
+    {
+        Money<USD> money = new Money<USD>((decimal)amount);
+
+        Assert.AreEqual(expected, money.IsPositive);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Money{TCurrency}.IsNegative" /> returns <see langword="true" /> only for amounts
+    /// strictly less than zero.
+    /// </summary>
+    [TestMethod]
+    [DataRow(-0.01, true)]
+    [DataRow(-1234.56, true)]
+    [DataRow(0.0, false)]
+    [DataRow(0.01, false)]
+    [DataRow(1234.56, false)]
+    public void IsNegative_WhenAccessed_ShouldReflectSign(double amount, bool expected)
+    {
+        Money<USD> money = new Money<USD>((decimal)amount);
+
+        Assert.AreEqual(expected, money.IsNegative);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Money{TCurrency}.IsPositive" /> and <see cref="Money{TCurrency}.IsNegative" />
+    /// are both <see langword="false" /> at zero — the boundary value belongs to neither half-line.
+    /// </summary>
+    [TestMethod]
+    public void IsPositiveAndIsNegative_WhenZero_ShouldBothReturnFalse()
+    {
+        Money<USD> zero = Money<USD>.Zero;
+
+        Assert.IsFalse(zero.IsPositive);
+        Assert.IsFalse(zero.IsNegative);
+        Assert.IsTrue(zero.IsZero);
+    }
 }
