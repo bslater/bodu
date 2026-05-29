@@ -126,4 +126,177 @@ public partial class MoneyTests
         Assert.IsTrue(small <= new Money<USD>(1m));
         Assert.IsTrue(small >= new Money<USD>(1m));
     }
+
+    /// <summary>
+    /// Verifies that addition throws <see cref="OverflowException" /> when the sum exceeds the range of
+    /// <see cref="decimal" />.
+    /// </summary>
+    [TestMethod]
+    public void Addition_WhenResultExceedsDecimalRange_ShouldThrowOverflowException()
+    {
+        Money<USD> max = new Money<USD>(decimal.MaxValue);
+        Money<USD> one = new Money<USD>(1m);
+
+        Assert.ThrowsExactly<OverflowException>(() =>
+        {
+            _ = max + one;
+        });
+    }
+
+    /// <summary>
+    /// Verifies that subtraction throws <see cref="OverflowException" /> when the difference falls below
+    /// <see cref="decimal.MinValue" />.
+    /// </summary>
+    [TestMethod]
+    public void Subtraction_WhenResultExceedsDecimalRange_ShouldThrowOverflowException()
+    {
+        Money<USD> min = new Money<USD>(decimal.MinValue);
+        Money<USD> one = new Money<USD>(1m);
+
+        Assert.ThrowsExactly<OverflowException>(() =>
+        {
+            _ = min - one;
+        });
+    }
+
+    /// <summary>
+    /// Verifies that scalar multiplication throws <see cref="OverflowException" /> when the product falls
+    /// outside the range of <see cref="decimal" />.
+    /// </summary>
+    [TestMethod]
+    public void Multiplication_WhenResultExceedsDecimalRange_ShouldThrowOverflowException()
+    {
+        Money<USD> large = new Money<USD>(decimal.MaxValue / 2m);
+
+        Assert.ThrowsExactly<OverflowException>(() =>
+        {
+            _ = large * 3m;
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Money{TCurrency}.Multiply(decimal)" /> matches the <c>*</c> operator output for
+    /// banker's-rounded results.
+    /// </summary>
+    [TestMethod]
+    public void Multiply_WhenDefaultRounding_ShouldMatchOperator()
+    {
+        Money<USD> money = new Money<USD>(1m);
+
+        Assert.AreEqual(money * 1.225m, money.Multiply(1.225m));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Money{TCurrency}.Multiply(decimal, MidpointRounding)" /> applies the supplied
+    /// rounding rule, diverging from the operator at midpoint values.
+    /// </summary>
+    [TestMethod]
+    public void Multiply_WhenAwayFromZeroSpecified_ShouldRoundMidpointAwayFromZero()
+    {
+        Money<USD> money = new Money<USD>(1m);
+
+        Money<USD> banker = money.Multiply(1.225m);                                      // 1.225 → 1.22 (down to even)
+        Money<USD> awayFromZero = money.Multiply(1.225m, MidpointRounding.AwayFromZero); // 1.225 → 1.23
+
+        Assert.AreEqual(new Money<USD>(1.22m), banker);
+        Assert.AreEqual(new Money<USD>(1.23m), awayFromZero);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Money{TCurrency}.Divide(decimal)" /> matches the <c>/</c> operator output for
+    /// banker's-rounded results.
+    /// </summary>
+    [TestMethod]
+    public void Divide_WhenDefaultRounding_ShouldMatchOperator()
+    {
+        Money<USD> money = new Money<USD>(10m);
+
+        Assert.AreEqual(money / 8m, money.Divide(8m));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Money{TCurrency}.Divide(decimal, MidpointRounding)" /> applies the supplied
+    /// rounding rule.
+    /// </summary>
+    [TestMethod]
+    public void Divide_WhenAwayFromZeroSpecified_ShouldRoundMidpointAwayFromZero()
+    {
+        Money<USD> money = new Money<USD>(1m);
+
+        Money<USD> banker = money.Divide(8m);                                       // 0.125 → 0.12 (down to even)
+        Money<USD> awayFromZero = money.Divide(8m, MidpointRounding.AwayFromZero);  // 0.125 → 0.13
+
+        Assert.AreEqual(new Money<USD>(0.12m), banker);
+        Assert.AreEqual(new Money<USD>(0.13m), awayFromZero);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Money{TCurrency}.Divide(decimal, MidpointRounding)" /> throws
+    /// <see cref="DivideByZeroException" /> when the divisor is zero.
+    /// </summary>
+    [TestMethod]
+    public void Divide_WhenDivisorIsZero_ShouldThrowDivideByZeroException()
+    {
+        Money<USD> money = new Money<USD>(10m);
+
+        Assert.ThrowsExactly<DivideByZeroException>(() =>
+        {
+            _ = money.Divide(0m, MidpointRounding.AwayFromZero);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Money{TCurrency}.RatioTo(Money{TCurrency})" /> returns the dimensionless ratio
+    /// of two same-currency amounts.
+    /// </summary>
+    [TestMethod]
+    public void RatioTo_WhenSameCurrencyAmounts_ShouldReturnDecimalRatio()
+    {
+        Money<USD> ten = new Money<USD>(10m);
+        Money<USD> four = new Money<USD>(4m);
+
+        Assert.AreEqual(2.5m, ten.RatioTo(four));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Money{TCurrency}.RatioTo(Money{TCurrency})" /> throws
+    /// <see cref="DivideByZeroException" /> when the denominator amount is zero.
+    /// </summary>
+    [TestMethod]
+    public void RatioTo_WhenRightAmountIsZero_ShouldThrowDivideByZeroException()
+    {
+        Money<USD> ten = new Money<USD>(10m);
+
+        Assert.ThrowsExactly<DivideByZeroException>(() =>
+        {
+            _ = ten.RatioTo(Money<USD>.Zero);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that the <c>Money / Money</c> operator throws <see cref="DivideByZeroException" /> when the
+    /// right-hand amount is zero, consistent with <see cref="RatioTo(Money{TCurrency})" />.
+    /// </summary>
+    [TestMethod]
+    public void Operator_WhenMoneyDividedByZeroValuedMoney_ShouldThrowDivideByZeroException()
+    {
+        Money<USD> ten = new Money<USD>(10m);
+
+        Assert.ThrowsExactly<DivideByZeroException>(() =>
+        {
+            _ = ten / Money<USD>.Zero;
+        });
+    }
+
+    /// <summary>
+    /// Verifies that the unary plus operator returns the operand unchanged.
+    /// </summary>
+    [TestMethod]
+    public void UnaryPlus_WhenApplied_ShouldReturnSameValue()
+    {
+        Money<USD> money = new Money<USD>(12.34m);
+
+        Assert.AreEqual(money, +money);
+    }
 }
+
