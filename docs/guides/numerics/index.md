@@ -17,6 +17,12 @@ types covering common but missing gaps in the .NET BCL:
   independent open or closed endpoints on each side and full set
   algebra. Use it for guarded numeric ranges, validation predicates,
   bucketing, and reservation-style overlap checks.
+- **[`Money<TCurrency>`](xref:Bodu.Numerics.Money`1)** — an immutable
+  monetary amount whose currency is encoded at the type level via an
+  `ICurrency` tag, so cross-currency arithmetic fails the build rather
+  than running with the wrong unit at runtime. Ships with the active
+  ISO 4217 catalogue, allocation, exact-arithmetic round-trip, JSON,
+  and strict parsing.
 
 Both types are `readonly struct`, value-equatable, allocation-free in
 their common paths, and integrate with the generic-math interfaces
@@ -26,9 +32,15 @@ that ship in .NET 8+.
 
 - [Working with `Interval<T>`](interval.md) — endpoint inclusivity,
   set operations, parsing and formatting.
+- [Working with `Money<TCurrency>`](money.md) — type-parameter
+  currency, allocation, conversion, exact-arithmetic chains,
+  formatting and parsing.
 
 ## See also
 
 - [`Fraction<T>` API reference](xref:Bodu.Numerics.Fraction`1)
 - [`Interval<T>` API reference](xref:Bodu.Numerics.Interval`1)
 - [`Interval` static factory helpers](xref:Bodu.Numerics.Interval)
+- [`Money<TCurrency>` API reference](xref:Bodu.Numerics.Money`1)
+- [`Money` static factory helpers](xref:Bodu.Numerics.Money)
+- [`ICurrency` interface](xref:Bodu.Numerics.ICurrency)

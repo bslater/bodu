@@ -246,20 +246,26 @@ Current state: bridge layer; 7 src / 19 test files. Connects
 
 ### `Bodu.Numerics`
 
-Current state: new; 24 src / 26 test files. Ships `Fraction<T>` and
-`Interval<T>`.
+Current state: new. Ships `Fraction<T>`, `Interval<T>`, and the
+type-parameterised `Money<TCurrency>` with the active ISO 4217
+catalogue.
 
-- **Ship the 1.0 package** per `[Unreleased]` — covers both
-  `Fraction<T>` and the new `Interval<T>` header type.
+- **Ship the 1.0 package** per `[Unreleased]` — covers `Fraction<T>`,
+  `Interval<T>`, and `Money<TCurrency>`.
 - **Extend `Interval<T>` with the gaps from 1.0**: unbounded /
   half-bounded intervals (the current type is always bounded);
   `Difference` / `SymmetricDifference` returning disjoint-interval
   sets; algebraic operators (`|` for union, `&` for intersection)
   when both operands are guaranteed contiguous. The 1.0 surface
   intentionally ships only the contiguous-result subset.
-- **Add fixed-point `Money<TCurrency>`** with proper rounding and
-  currency-tagging. Re-uses `Fraction<T>` internally for exact
-  decimal computation.
+- **Extend `Money<TCurrency>` with the gaps from 1.0**: a runtime-tagged
+  `MoneyValue` for "currency unknown until deserialization" scenarios
+  (foreign-exchange engines, generic accounting systems where the
+  currency is data, not part of the type); a `MoneyBag` aggregate for
+  mixed-currency portfolios; `CashRoundingIncrement` on `ICurrency` to
+  support cash-rounded currencies (CHF, post-penny CAD totals) via a
+  `RoundToCash()` method; historic-currency entries on the catalogue
+  (DEM, ITL, ZWL) with `IsHistoric` / validity-date metadata.
 
 ### `Bodu.Globalization.Calendar`
 

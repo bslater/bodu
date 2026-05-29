@@ -11,8 +11,8 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
     <Version>1.0.0</Version>
-    <Description>Numeric value primitives for .NET. Provides Fraction&lt;T&gt;, a generic exact-rational number type backed by any IBinaryInteger&lt;T&gt;, and Interval&lt;T&gt;, an immutable bounded interval over any INumber&lt;T&gt; with independent open or closed endpoints and full set algebra.</Description>
-    <PackageTags>bodu;numerics;fraction;rational;ratio;bigrational;interval;range;math</PackageTags>
+    <Description>Numeric value primitives for .NET. Provides Fraction&lt;T&gt;, a generic exact-rational number type backed by any IBinaryInteger&lt;T&gt;; Interval&lt;T&gt;, an immutable bounded interval over any INumber&lt;T&gt; with independent open or closed endpoints and full set algebra; and Money&lt;TCurrency&gt;, an immutable monetary amount whose currency is encoded at the type level via an ICurrency tag, shipping with the active ISO 4217 catalogue.</Description>
+    <PackageTags>bodu;numerics;fraction;rational;ratio;bigrational;interval;range;money;currency;iso4217;math</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>

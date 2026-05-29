@@ -8,7 +8,7 @@ The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/
 
 ### Bodu.Numerics — 1.0.0
 
-Initial release of a new numeric-primitives library. Ships two header types: `Fraction<T>`, an immutable exact-rational value type generic over any `IBinaryInteger<T>` backing component; and `Interval<T>`, an immutable bounded interval generic over any `INumber<T>` endpoint type.
+Initial release of a new numeric-primitives library. Ships three header types: `Fraction<T>`, an immutable exact-rational value type generic over any `IBinaryInteger<T>` backing component; `Interval<T>`, an immutable bounded interval generic over any `INumber<T>` endpoint type; and `Money<TCurrency>`, an immutable monetary amount whose currency is encoded at the type level via an `ICurrency` tag.
 
 #### Added — `Fraction<T>`
 
@@ -27,6 +27,18 @@ Initial release of a new numeric-primitives library. Ships two header types: `Fr
 - Set algebra: `Contains(T)`, `Contains(Interval<T>)`, `Overlaps`, `Intersect`, and `TryUnion`. `TryUnion` succeeds when the operands are overlapping or adjacent and the result is a single contiguous interval; it returns `false` for disjoint operands rather than producing two intervals.
 - `IsEmpty`, `IsDegenerate`, and `Length` (the algebraic length, equal to `Upper - Lower` for non-empty intervals and `T.Zero` for empty ones). All empty intervals compare equal to `Empty` regardless of the bounds used to construct them.
 - ISO 31-11 bracket-notation formatting via `ToString()`, `IFormattable`, `ISpanFormattable`, and `IUtf8SpanFormattable`; matching parsing via `IParsable<Interval<T>>` and `ISpanParsable<Interval<T>>`. Empty intervals format and parse as the U+2205 EMPTY SET glyph.
+
+#### Added — `Money<TCurrency>`
+
+- Immutable monetary value `Money<TCurrency>` with the currency encoded as a type parameter via an `ICurrency` tag. Cross-currency arithmetic (`Money<USD> + Money<JPY>`) is a compile error, not a runtime exception; cross-currency conversion is available exclusively through the explicit `Convert<TTarget>(rate, rounding)` method. The amount is stored as a `decimal` rounded on construction to `TCurrency.MinorUnits` using banker's rounding (default), with a constructor overload for any other `MidpointRounding` rule.
+- Same-currency arithmetic and comparison operators (`+`, `-`, unary `-`, `<`, `<=`, `>`, `>=`, `==`, `!=`); scalar multiplication and division (`Money<T> * decimal`, `Money<T> / decimal`) that round the result to the currency's minor-unit precision; and dimensionless ratio (`Money<T> / Money<T> → decimal`). `IEquatable<Money<TCurrency>>`, `IComparable<Money<TCurrency>>`, and `IComparable` are implemented; the boxed `Equals(object)` returns `false` for a cross-currency instance and `IComparable.CompareTo(object)` throws `ArgumentException` for one.
+- `Allocate(int parts)` and `Allocate(ReadOnlySpan<decimal> ratios)` distribute an amount as integer minor-unit shares that sum exactly to the original. The residual is sign-stable (negative amounts produce negative shares) and zero-ratio slots are honored.
+- Exact-arithmetic escape via `ToFraction()` / `FromFraction(Fraction<BigInteger>, MidpointRounding)` / `MultiplyExact(Fraction<BigInteger>, MidpointRounding)` so chained calculations can defer rounding to the final conversion back to `Money`.
+- Formatting through `IFormattable`, `ISpanFormattable`, and `IUtf8SpanFormattable`. The default (`"G"` or `"C"`) renders the ISO code followed by the amount at minor-unit precision with culture-aware grouping (e.g. `"USD 1,234.56"`, `"JPY 100"`, `"BHD 12.345"`); `"N"` strips the ISO code; `"F"` / `"D"` strip the ISO code and grouping. All specifiers accept an explicit precision suffix (`"C4"`, `"F0"`).
+- Strict parsing via `IParsable<Money<TCurrency>>` and `ISpanParsable<Money<TCurrency>>`. A bare decimal, `"<ISO> <decimal>"`, or `"<decimal> <ISO>"` is accepted; an ISO code that does not match `TCurrency.IsoCode` exactly throws `FormatException`. Currency symbols (`$`, `¥`) are rejected because they are ambiguous across currencies.
+- `System.Text.Json` support through `MoneyJsonConverterFactory`, serializing each amount as `{ "amount": <number>, "currency": "<ISO>" }`. Deserialization verifies the `"currency"` field matches `TCurrency.IsoCode` and throws `JsonException` on mismatch.
+- Non-generic `Money` static helper with `Of<TCurrency>(decimal)`, `Of<TCurrency>(decimal, MidpointRounding)`, and `Zero<TCurrency>()` so the type parameter need not be written twice at call sites.
+- Currency catalogue covering the ~150 active ISO 4217 currencies under `Bodu.Numerics.Currencies` (`USD`, `EUR`, `GBP`, `JPY`, `BHD`, `KWD`, etc.). Tag types are source-generated from `Bodu.Numerics/src/Numerics/Currencies/currencies.json` by `tools/CurrencyCatalogueGenerator`; consumers add custom currencies by implementing `ICurrency` directly.
 
 ### Bodu.Globalization.Calendar — 1.1.0
 
