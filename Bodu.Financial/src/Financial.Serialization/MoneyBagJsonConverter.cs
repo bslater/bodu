@@ -58,10 +58,7 @@ public sealed class MoneyBagJsonConverter
         if (reader.TokenType != JsonTokenType.StartObject)
             throw new JsonException(FinancialResourceStrings.Json_Invalid_ExpectedObject_MoneyBag);
 
-        if (_policy == FinancialJsonPolicy.Compact)
-            return ReadCompactBalances(ref reader);
-
-        return ReadWrappedBalances(ref reader);
+        return _policy == FinancialJsonPolicy.Compact ? ReadCompactBalances(ref reader) : ReadWrappedBalances(ref reader);
     }
 
     /// <inheritdoc />

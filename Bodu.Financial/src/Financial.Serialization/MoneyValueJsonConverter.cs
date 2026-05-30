@@ -84,16 +84,13 @@ public sealed class MoneyValueJsonConverter
             throw new JsonException(FinancialResourceStrings.Json_Invalid_ExpectedCompactString_MoneyValue);
 
         var text = reader.GetString()!;
-        if (!MoneyValue.TryParse(text.AsSpan(), CultureInfo.InvariantCulture, out MoneyValue result))
-        {
-            throw new JsonException(
+        return !MoneyValue.TryParse(text.AsSpan(), CultureInfo.InvariantCulture, out MoneyValue result)
+            ? throw new JsonException(
                 string.Format(
                     CultureInfo.InvariantCulture,
                     FinancialResourceStrings.Json_Invalid_CompactMoneyValueForm,
-                    text));
-        }
-
-        return result;
+                    text))
+            : result;
     }
 
     /// <summary>
@@ -173,15 +170,12 @@ public sealed class MoneyValueJsonConverter
 
         // Pre-validate the ISO shape so a malformed code surfaces as JsonException rather than the
         // ArgumentException that the MoneyValue constructor would otherwise raise.
-        if (currency.Length != 3
+        return currency.Length != 3
             || !char.IsAsciiLetterUpper(currency[0])
             || !char.IsAsciiLetterUpper(currency[1])
-            || !char.IsAsciiLetterUpper(currency[2]))
-        {
-            throw new JsonException(FinancialResourceStrings.Arg_Invalid_IsoCodeShape);
-        }
-
-        return new MoneyValue(amount.Value, currency);
+            || !char.IsAsciiLetterUpper(currency[2])
+            ? throw new JsonException(FinancialResourceStrings.Arg_Invalid_IsoCodeShape)
+            : new MoneyValue(amount.Value, currency);
     }
 
     /// <summary>

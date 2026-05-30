@@ -73,10 +73,9 @@ public readonly partial struct Money<TCurrency> :
         if (obj is null)
             return 1;
 
-        if (obj is Money<TCurrency> other)
-            return CompareTo(other);
-
-        throw new ArgumentException(
+        return obj is Money<TCurrency> other
+            ? CompareTo(other)
+            : throw new ArgumentException(
             string.Format(
                 CultureInfo.InvariantCulture,
                 FinancialResourceStrings.Arg_Invalid_MoneyObject,

@@ -22,18 +22,15 @@ public readonly partial struct MoneyValue
     public Money<TCurrency> ToTyped<TCurrency>()
         where TCurrency : ICurrency
     {
-        if (!string.Equals(IsoCode, CurrencyMetadata<TCurrency>.Value.IsoCode, StringComparison.Ordinal))
-        {
-            throw new InvalidOperationException(
+        return !string.Equals(IsoCode, CurrencyMetadata<TCurrency>.Value.IsoCode, StringComparison.Ordinal)
+            ? throw new InvalidOperationException(
                 string.Format(
                     CultureInfo.InvariantCulture,
                     FinancialResourceStrings.Op_Invalid_CannotConvertMoneyValueToTyped,
                     IsoCode,
                     typeof(TCurrency).Name,
-                    CurrencyMetadata<TCurrency>.Value.IsoCode));
-        }
-
-        return new Money<TCurrency>(_amount);
+                    CurrencyMetadata<TCurrency>.Value.IsoCode))
+            : new Money<TCurrency>(_amount);
     }
 
     /// <summary>

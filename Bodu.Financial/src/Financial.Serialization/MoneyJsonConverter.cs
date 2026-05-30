@@ -116,17 +116,14 @@ public sealed class MoneyJsonConverter<TCurrency>
         }
 
         var text = reader.GetString()!;
-        if (!Money<TCurrency>.TryParse(text.AsSpan(), CultureInfo.InvariantCulture, out Money<TCurrency> result))
-        {
-            throw new JsonException(
+        return !Money<TCurrency>.TryParse(text.AsSpan(), CultureInfo.InvariantCulture, out Money<TCurrency> result)
+            ? throw new JsonException(
                 string.Format(
                     CultureInfo.InvariantCulture,
                     FinancialResourceStrings.Json_Invalid_CompactMoneyForm,
                     text,
-                    typeof(TCurrency).Name));
-        }
-
-        return result;
+                    typeof(TCurrency).Name))
+            : result;
     }
 
     /// <summary>
@@ -210,17 +207,14 @@ public sealed class MoneyJsonConverter<TCurrency>
             currency = currency.Trim().ToUpperInvariant();
 
         var expectedIso = CurrencyMetadata<TCurrency>.Value.IsoCode;
-        if (!string.Equals(currency, expectedIso, StringComparison.Ordinal))
-        {
-            throw new JsonException(
+        return !string.Equals(currency, expectedIso, StringComparison.Ordinal)
+            ? throw new JsonException(
                 string.Format(
                     CultureInfo.InvariantCulture,
                     FinancialResourceStrings.Json_Invalid_CurrencyMismatch,
                     currency,
-                    expectedIso));
-        }
-
-        return new Money<TCurrency>(amount.Value);
+                    expectedIso))
+            : new Money<TCurrency>(amount.Value);
     }
 
     /// <summary>

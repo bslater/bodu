@@ -145,10 +145,9 @@ public readonly partial struct Money<TCurrency>
         }
 
         var quotient = BigInteger.DivRem(numerator, denominator, out BigInteger remainder);
-        if (remainder.IsZero)
-            return quotient;
-
-        return rounding switch
+        return remainder.IsZero
+            ? quotient
+            : rounding switch
         {
             MidpointRounding.ToZero => quotient,
 
@@ -193,10 +192,9 @@ public readonly partial struct Money<TCurrency>
 
         var roundAway = cmp > 0 || (cmp == 0 && (tiesAwayFromZero || !quotient.IsEven));
 
-        if (!roundAway)
-            return quotient;
-
-        return numerator.Sign >= 0
+        return !roundAway
+            ? quotient
+            : numerator.Sign >= 0
             ? quotient + BigInteger.One
             : quotient - BigInteger.One;
     }

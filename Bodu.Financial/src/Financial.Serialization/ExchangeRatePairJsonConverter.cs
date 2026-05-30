@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRatePairJsonConverter.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -15,10 +15,10 @@ namespace Bodu.Financial.Serialization;
 /// </summary>
 /// <remarks>
 /// <para>
-/// <see cref="FinancialJsonPolicy.Strict" /> and <see cref="FinancialJsonPolicy.Lenient" /> use the canonical
-/// object form <c>{ "from": "USD", "to": "JPY" }</c>; Lenient additionally normalises lowercase ISO codes to
-/// uppercase and trims surrounding whitespace. <see cref="FinancialJsonPolicy.Compact" /> uses the slash-separated
-/// string form <c>"USD/JPY"</c>.
+/// <see cref="FinancialJsonPolicy.Strict" /> and <see cref="FinancialJsonPolicy.Lenient" /> use the canonical object
+/// form <c>{ "from": "USD", "to": "JPY" }</c>; Lenient additionally normalises lowercase ISO codes to uppercase and
+/// trims surrounding whitespace. <see cref="FinancialJsonPolicy.Compact" /> uses the slash-separated string form
+/// <c>"USD/JPY"</c>.
 /// </para>
 /// </remarks>
 public sealed class ExchangeRatePairJsonConverter
@@ -39,8 +39,8 @@ public sealed class ExchangeRatePairJsonConverter
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ExchangeRatePairJsonConverter" /> class configured for the
-    /// supplied <paramref name="policy" />.
+    /// Initializes a new instance of the <see cref="ExchangeRatePairJsonConverter" /> class configured for the supplied
+    /// <paramref name="policy" />.
     /// </summary>
     /// <param name="policy">The serialization policy.</param>
     /// <exception cref="ArgumentOutOfRangeException">
@@ -183,11 +183,10 @@ public sealed class ExchangeRatePairJsonConverter
     /// <returns>The string value.</returns>
     private static string ReadIsoString(ref Utf8JsonReader reader, string propertyName)
     {
-        if (reader.TokenType != JsonTokenType.String)
-            throw new JsonException(
-                string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Json_Invalid_PropertyMustBeString, propertyName));
-
-        return reader.GetString()!;
+        return reader.TokenType != JsonTokenType.String
+            ? throw new JsonException(
+                string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Json_Invalid_PropertyMustBeString, propertyName))
+            : reader.GetString()!;
     }
 
     /// <summary>

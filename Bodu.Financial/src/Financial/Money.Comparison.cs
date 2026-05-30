@@ -38,12 +38,11 @@ public readonly partial struct Money<TCurrency>
     /// <exception cref="ArgumentException"><paramref name="min" /> is greater than <paramref name="max" />.</exception>
     public static Money<TCurrency> Clamp(Money<TCurrency> value, Money<TCurrency> min, Money<TCurrency> max)
     {
-        if (min._amount > max._amount)
-            throw new ArgumentException(
+        return min._amount > max._amount
+            ? throw new ArgumentException(
                 string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Arg_Invalid_ClampMinGreaterThanMax, min, max),
-                nameof(min));
-
-        return value._amount < min._amount
+                nameof(min))
+            : value._amount < min._amount
             ? min
             : value._amount > max._amount
                 ? max

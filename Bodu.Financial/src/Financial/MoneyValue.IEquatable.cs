@@ -46,17 +46,14 @@ public readonly partial struct MoneyValue :
     /// <exception cref="InvalidOperationException">The operands have different ISO codes.</exception>
     public int CompareTo(MoneyValue other)
     {
-        if (!string.Equals(IsoCode, other.IsoCode, StringComparison.Ordinal))
-        {
-            throw new InvalidOperationException(
+        return !string.Equals(IsoCode, other.IsoCode, StringComparison.Ordinal)
+            ? throw new InvalidOperationException(
                 string.Format(
                     CultureInfo.InvariantCulture,
                     FinancialResourceStrings.Op_Invalid_MoneyValueCompareSameCurrencyRequired,
                     IsoCode,
-                    other.IsoCode));
-        }
-
-        return _amount.CompareTo(other._amount);
+                    other.IsoCode))
+            : _amount.CompareTo(other._amount);
     }
 
     /// <summary>
@@ -68,8 +65,9 @@ public readonly partial struct MoneyValue :
     public int CompareTo(object? obj)
     {
         if (obj is null) return 1;
-        if (obj is MoneyValue other) return CompareTo(other);
-        throw new ArgumentException(FinancialResourceStrings.Arg_Invalid_MoneyValueObject, nameof(obj));
+        return obj is MoneyValue other
+            ? CompareTo(other)
+            : throw new ArgumentException(FinancialResourceStrings.Arg_Invalid_MoneyValueObject, nameof(obj));
     }
 
     /// <summary>

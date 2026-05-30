@@ -52,10 +52,9 @@ public sealed class FixedExchangeRateTable : IExchangeRateProvider
         if (_rates.TryGetValue((fromIsoCode, toIsoCode), out var direct))
             return direct;
 
-        if (_rates.TryGetValue((toIsoCode, fromIsoCode), out var inverse) && inverse != 0m)
-            return 1m / inverse;
-
-        throw new KeyNotFoundException(
+        return _rates.TryGetValue((toIsoCode, fromIsoCode), out var inverse) && inverse != 0m
+            ? 1m / inverse
+            : throw new KeyNotFoundException(
             string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.IO_KeyNotFound_ExchangeRate, fromIsoCode, toIsoCode));
     }
 }

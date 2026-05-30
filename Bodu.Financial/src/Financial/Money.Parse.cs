@@ -41,15 +41,14 @@ public readonly partial struct Money<TCurrency> :
     /// <exception cref="FormatException">Thrown when <paramref name="s" /> is not a valid representation.</exception>
     public static Money<TCurrency> Parse(ReadOnlySpan<char> s, IFormatProvider? provider)
     {
-        if (!TryParse(s, provider, out Money<TCurrency> result))
-            throw new FormatException(
+        return !TryParse(s, provider, out Money<TCurrency> result)
+            ? throw new FormatException(
                 string.Format(
                     CultureInfo.InvariantCulture,
                     FinancialResourceStrings.Format_Invalid_MoneyString,
                     s.ToString(),
-                    typeof(TCurrency).Name));
-
-        return result;
+                    typeof(TCurrency).Name))
+            : result;
     }
 
     /// <summary>

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateJsonConverter.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -21,21 +21,21 @@ namespace Bodu.Financial.Serialization;
 /// <item>
 /// <description>
 /// <see cref="FinancialJsonPolicy.Strict" /> emits the full canonical object
-/// <c>{ "from", "to", "date", "rate", "provider", "isInverted" }</c> in declaration order and rejects malformed
-/// inputs (non-string ISO codes, non-numeric rate, missing fields, duplicate fields, currency-mismatch shape).
+/// <c>{ "from", "to", "date", "rate", "provider", "isInverted" }</c> in declaration order and rejects malformed inputs
+/// (non-string ISO codes, non-numeric rate, missing fields, duplicate fields, currency-mismatch shape).
 /// </description>
 /// </item>
 /// <item>
 /// <description>
-/// <see cref="FinancialJsonPolicy.Lenient" /> shares the Strict shape but normalises lowercase ISO codes to
-/// uppercase and trims surrounding whitespace before validation. Intended for ingesting external feeds.
+/// <see cref="FinancialJsonPolicy.Lenient" /> shares the Strict shape but normalises lowercase ISO codes to uppercase
+/// and trims surrounding whitespace before validation. Intended for ingesting external feeds.
 /// </description>
 /// </item>
 /// <item>
 /// <description>
 /// <see cref="FinancialJsonPolicy.Compact" /> emits a smaller object that combines the currencies into a single
-/// <c>"pair": "FROM/TO"</c> property, drops <c>isInverted</c> when it is <see langword="false" />, and uses ISO
-/// date string for <c>date</c>. Reads accept both the canonical and compact shapes (presence of <c>"pair"</c> or
+/// <c>"pair": "FROM/TO"</c> property, drops <c>isInverted</c> when it is <see langword="false" />, and uses ISO date
+/// string for <c>date</c>. Reads accept both the canonical and compact shapes (presence of <c>"pair"</c> or
 /// <c>"from"</c>/<c>"to"</c> selects the shape).
 /// </description>
 /// </item>
@@ -219,13 +219,10 @@ public sealed class ExchangeRateJsonConverter
 
         var text = reader.GetString()!;
         var slashIndex = text.IndexOf('/');
-        if (slashIndex <= 0 || slashIndex >= text.Length - 1 || text.LastIndexOf('/') != slashIndex)
-        {
-            throw new JsonException(
-                string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Json_Invalid_CompactExchangeRatePairForm, text));
-        }
-
-        return (text[..slashIndex], text[(slashIndex + 1)..]);
+        return slashIndex <= 0 || slashIndex >= text.Length - 1 || text.LastIndexOf('/') != slashIndex
+            ? throw new JsonException(
+                string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Json_Invalid_CompactExchangeRatePairForm, text))
+            : ((string From, string To))(text[..slashIndex], text[(slashIndex + 1)..]);
     }
 
     /// <summary>
@@ -236,15 +233,15 @@ public sealed class ExchangeRateJsonConverter
     /// <returns>The string value.</returns>
     private static string ReadStringProperty(ref Utf8JsonReader reader, string propertyName)
     {
-        if (reader.TokenType != JsonTokenType.String)
-            throw new JsonException(
+        return reader.TokenType == JsonTokenType.String
+            ? reader.GetString()!
+            : throw new JsonException(
                 string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Json_Invalid_PropertyMustBeString, propertyName));
-        return reader.GetString()!;
     }
 
     /// <summary>
-    /// Reads a numeric property as a <see cref="decimal" />, accepting both number and string tokens (string is
-    /// parsed under invariant culture).
+    /// Reads a numeric property as a <see cref="decimal" />, accepting both number and string tokens (string is parsed
+    /// under invariant culture).
     /// </summary>
     /// <param name="reader">The reader positioned at the value.</param>
     /// <param name="propertyName">The originating property name (used in the error message).</param>
@@ -278,14 +275,11 @@ public sealed class ExchangeRateJsonConverter
                 string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Json_Invalid_PropertyMustBeDateString, propertyName));
 
         var text = reader.GetString();
-        if (text is null
-            || !DateOnly.TryParseExact(text, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsed))
-        {
-            throw new JsonException(
+        return text is not null
+            && DateOnly.TryParseExact(text, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateOnly parsed)
+            ? parsed
+            : throw new JsonException(
                 string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Json_Invalid_PropertyMustBeDateString, propertyName));
-        }
-
-        return parsed;
     }
 
     /// <summary>
@@ -296,11 +290,10 @@ public sealed class ExchangeRateJsonConverter
     /// <returns>The boolean value.</returns>
     private static bool ReadBoolProperty(ref Utf8JsonReader reader, string propertyName)
     {
-        if (reader.TokenType is JsonTokenType.True or JsonTokenType.False)
-            return reader.GetBoolean();
-
-        throw new JsonException(
-            string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Json_Invalid_PropertyMustBeBoolean, propertyName));
+        return reader.TokenType is JsonTokenType.True or JsonTokenType.False
+            ? reader.GetBoolean()
+            : throw new JsonException(
+                string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Json_Invalid_PropertyMustBeBoolean, propertyName));
     }
 
     /// <summary>

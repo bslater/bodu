@@ -155,17 +155,14 @@ public sealed partial class MoneyBag
     private static decimal ValidateRate(Func<string, string, decimal> rateLookup, string from, string to)
     {
         var rate = rateLookup(from, to);
-        if (rate <= 0m)
-        {
-            throw new InvalidOperationException(
+        return rate <= 0m
+            ? throw new InvalidOperationException(
                 string.Format(
                     CultureInfo.InvariantCulture,
                     FinancialResourceStrings.Op_Invalid_RateNotStrictlyPositive,
                     from,
                     to,
-                    rate));
-        }
-
-        return rate;
+                    rate))
+            : rate;
     }
 }
