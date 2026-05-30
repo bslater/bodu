@@ -11,7 +11,7 @@ using System.Text.Json;
 namespace Bodu.Tools.CurrencyCatalogueGenerator;
 
 /// <summary>
-/// Reads currencies.json and emits one C# tag file per ISO 4217 entry under the Bodu.Numerics Currencies folder.
+/// Reads currencies.json and emits one C# tag file per ISO 4217 entry under the Bodu.Financial Currencies folder.
 /// </summary>
 internal static class Program
 {
@@ -28,8 +28,8 @@ internal static class Program
     private static int Main(string[] args)
     {
         string repoRoot = LocateRepoRoot();
-        string inputPath = Path.Combine(repoRoot, "Bodu.Numerics", "src", "Numerics", "Currencies", "currencies.json");
-        string outputDir = Path.Combine(repoRoot, "Bodu.Numerics", "src", "Numerics", "Currencies");
+        string inputPath = Path.Combine(repoRoot, "Bodu.Financial", "src", "Currencies", "currencies.json");
+        string outputDir = Path.Combine(repoRoot, "Bodu.Financial", "src", "Currencies");
 
         if (!File.Exists(inputPath))
         {
@@ -103,21 +103,21 @@ internal static class Program
     {
         StringBuilder builder = new();
         builder.Append(FileHeader);
-        builder.AppendLine("namespace Bodu.Numerics.Currencies;");
+        builder.AppendLine("namespace Bodu.Financial.Currencies;");
         builder.AppendLine();
         builder.AppendLine("using global::System.Collections.Generic;");
         builder.AppendLine();
         builder.AppendLine("/// <summary>");
         builder.AppendLine("/// Source-generated registration list of the shipped currency catalogue, consumed by");
-        builder.AppendLine("/// <see cref=\"Bodu.Numerics.CurrencyRegistry\" /> at static-constructor time.");
+        builder.AppendLine("/// <see cref=\"Bodu.Financial.CurrencyRegistry\" /> at static-constructor time.");
         builder.AppendLine("/// </summary>");
         builder.AppendLine("internal static class GeneratedCurrencyRegistration");
         builder.AppendLine("{");
         builder.AppendLine("    /// <summary>");
-        builder.AppendLine("    /// Enumerates the shipped <see cref=\"Bodu.Numerics.CurrencyInfo\" /> entries.");
+        builder.AppendLine("    /// Enumerates the shipped <see cref=\"Bodu.Financial.CurrencyInfo\" /> entries.");
         builder.AppendLine("    /// </summary>");
-        builder.AppendLine("    /// <returns>One entry per currency tag type under <c>Bodu.Numerics.Currencies</c>.</returns>");
-        builder.AppendLine("    public static IEnumerable<global::Bodu.Numerics.CurrencyInfo> All()");
+        builder.AppendLine("    /// <returns>One entry per currency tag type under <c>Bodu.Financial.Currencies</c>.</returns>");
+        builder.AppendLine("    public static IEnumerable<global::Bodu.Financial.CurrencyInfo> All()");
         builder.AppendLine("    {");
 
         foreach (CurrencyEntry currency in catalogue.Currencies)
@@ -145,7 +145,7 @@ internal static class Program
                 ? "null"
                 : $"\"{currency.SuccessorIsoCode}\"";
 
-            builder.Append("        yield return new global::Bodu.Numerics.CurrencyInfo(\"")
+            builder.Append("        yield return new global::Bodu.Financial.CurrencyInfo(\"")
                 .Append(currency.Iso)
                 .Append("\", ")
                 .Append(currency.MinorUnits.ToString(CultureInfo.InvariantCulture))
@@ -205,7 +205,7 @@ internal static class Program
     {
         StringBuilder builder = new();
         builder.Append(FileHeader);
-        builder.AppendLine("namespace Bodu.Numerics.Currencies;");
+        builder.AppendLine("namespace Bodu.Financial.Currencies;");
         builder.AppendLine();
         builder.AppendLine("/// <summary>");
         builder.Append("/// Identifies ").Append(currency.Iso).Append(" (").Append(currency.Name).AppendLine(") at the type-system level.");

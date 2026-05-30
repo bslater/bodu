@@ -48,7 +48,8 @@ immediate publishing target. Five packages are queued:
 
 | Package | Version | Notes |
 | --- | --- | --- |
-| `Bodu.Numerics` | 1.0.0 | Initial release. `Fraction<T>` over any `IBinaryInteger<T>`. |
+| `Bodu.Numerics` | 1.0.0 | Initial release. `Fraction<T>` over any `IBinaryInteger<T>` and `Interval<T>` over any `INumber<T>`. |
+| `Bodu.Financial` | 1.0.0 | Initial release. `Money<TCurrency>`, `MoneyValue`, `MoneyBag`, the ISO 4217 catalogue, and the timeless + dated FX provider stack. References `Bodu.Numerics`. |
 | `Bodu.Globalization.Calendar` | 1.1.0 | Multi-assembly rule resolution; embedded `region-*.xml` resources removed. **Behavioural change** — parameterless `NotableDateService()` no longer ships every region's rules; consumers must reference a data pack. |
 | `Bodu.Globalization.Calendar.Data.Americas` | 1.0.0 | Initial release. US and CA. |
 | `Bodu.Globalization.Calendar.Data.AsiaPacific` | 1.0.0 | Initial release. AU, CN, IN, JP, KR, MY, NZ, SG. |
@@ -56,14 +57,14 @@ immediate publishing target. Five packages are queued:
 
 **Release order.** The four Calendar packages must release together, as
 Calendar 1.1.0 is the breaking change that necessitates the data packs.
-`Bodu.Numerics` 1.0.0 can ship independently and should go first to
+`Bodu.Numerics` 1.0.0 / `Bodu.Financial` 1.0.0 can ship independently and should go first to
 exercise the package-validation pipeline on a brand-new package ID.
 
 **Versioning policy.** SemVer per package. Breaking changes inside a
 single package bump the package's own major. Coordinated releases (like
 this one) bump independently — Calendar 1.1.0 does not force Calendar
 .Data.* to be 1.1.0 of their own. Git tags follow `<package>/<version>`,
-e.g. `Bodu.Numerics/v1.0.0`.
+e.g. `Bodu.Numerics/v1.0.0` or `Bodu.Financial/v1.0.0`.
 
 ## Non-goals
 
@@ -246,23 +247,33 @@ Current state: bridge layer; 7 src / 19 test files. Connects
 
 ### `Bodu.Numerics`
 
-Current state: new. Ships `Fraction<T>`, `Interval<T>`,
-`Money<TCurrency>` with the full active + historic ISO 4217 catalogue
-(~185 tag types), the runtime-tagged `MoneyValue`, the
-multi-currency `MoneyBag` aggregate, `CurrencyRegistry` for runtime
-ISO-to-metadata lookup, and the `IExchangeRateProvider` abstraction
-with a `FixedExchangeRateTable` implementation.
+Current state: new. Ships `Fraction<T>` and `Interval<T>`. Money,
+currency, and FX types live in the companion `Bodu.Financial`
+package below.
 
-- **Ship the 1.0 package** per `[Unreleased]` — covers `Fraction<T>`,
-  `Interval<T>`, the full `Money<TCurrency>` / `MoneyValue` /
-  `MoneyBag` triad, cash rounding, historic currencies, and FX
-  conversion.
+- **Ship the 1.0 package** per `[Unreleased]` — covers `Fraction<T>`
+  and `Interval<T>`.
 - **Extend `Interval<T>` with the gaps from 1.0**: unbounded /
   half-bounded intervals (the current type is always bounded);
   `Difference` / `SymmetricDifference` returning disjoint-interval
   sets; algebraic operators (`|` for union, `&` for intersection)
   when both operands are guaranteed contiguous. The 1.0 surface
   intentionally ships only the contiguous-result subset.
+
+### `Bodu.Financial`
+
+Current state: new. Split out of `Bodu.Numerics` before the v1
+release. Ships `Money<TCurrency>` with the full active + historic
+ISO 4217 catalogue (~185 tag types), the runtime-tagged
+`MoneyValue`, the multi-currency `MoneyBag` aggregate,
+`CurrencyRegistry` for runtime ISO-to-metadata lookup, the timeless
+`IExchangeRateProvider` with `FixedExchangeRateTable`, and the dated
+FX stack (`IDatedExchangeRateProvider`, `FixedDatedExchangeRateTable`,
+`CompositeDatedExchangeRateProvider`, `ExchangeRateSeries`,
+`DatedExchangeRateProviderAdapter`). References `Bodu.Numerics` for
+the exact-arithmetic escape hatch through `Fraction<BigInteger>`.
+
+- **Ship the 1.0 package** per `[Unreleased]`.
 
 Possible v1.1:
 
@@ -271,10 +282,14 @@ Possible v1.1:
   `MoneyValue`. The operator signatures already enforce the
   type-parameter case; the analyzer would catch the rarer cases
   involving generic helpers.
-- **Time-series exchange-rate provider** — `IExchangeRateProvider`
-  is the abstraction; a historical-rate store with observation
-  policy (last-observed, T-day rate, mid-market against bid/ask)
-  could ship as a separate `Bodu.Numerics.Fx` package.
+- **Time-series exchange-rate provider with historical observation
+  store** — `IDatedExchangeRateProvider` is the abstraction;
+  consumer-facing historical-rate sources (ECB, FRED, RBA) could
+  ship as separate companion packages.
+- **`Bodu.Financial.Xml`** child package if XML serialisation
+  support is needed. Kept opt-in because `System.Xml.Serialization`
+  carries heavier dependencies than the always-present
+  `System.Text.Json`.
 - **MoneyBag mutable builder** if benchmarks show hot-path
   per-operation allocation cost; the immutable bag is sufficient
   for the documented v1 workloads.

@@ -36,11 +36,15 @@
     <Project Path="Bodu.IO.Hashing\test\Bodu.IO.Hashing.Test.csproj" />
   </Folder>
   <Folder Name="/Bodu.Numerics/">
-    <Project Path="Bodu.Numerics\bench\Bodu.Numerics.Benchmarks.csproj">
-      <Build Solution="Debug|*" Project="false" />
-    </Project>
     <Project Path="Bodu.Numerics\src\Bodu.Numerics.csproj" />
     <Project Path="Bodu.Numerics\test\Bodu.Numerics.Test.csproj" />
+  </Folder>
+  <Folder Name="/Bodu.Financial/">
+    <Project Path="Bodu.Financial\bench\Bodu.Financial.Benchmarks.csproj">
+      <Build Solution="Debug|*" Project="false" />
+    </Project>
+    <Project Path="Bodu.Financial\src\Bodu.Financial.csproj" />
+    <Project Path="Bodu.Financial\test\Bodu.Financial.Test.csproj" />
   </Folder>
   <Folder Name="/Bodu.Security.Cryptography/">
     <Project Path="Bodu.Security.Cryptography\src\Bodu.Security.Cryptography.csproj" />
