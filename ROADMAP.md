@@ -246,26 +246,38 @@ Current state: bridge layer; 7 src / 19 test files. Connects
 
 ### `Bodu.Numerics`
 
-Current state: new. Ships `Fraction<T>`, `Interval<T>`, and the
-type-parameterised `Money<TCurrency>` with the active ISO 4217
-catalogue.
+Current state: new. Ships `Fraction<T>`, `Interval<T>`,
+`Money<TCurrency>` with the full active + historic ISO 4217 catalogue
+(~185 tag types), the runtime-tagged `MoneyValue`, the
+multi-currency `MoneyBag` aggregate, `CurrencyRegistry` for runtime
+ISO-to-metadata lookup, and the `IExchangeRateProvider` abstraction
+with a `FixedExchangeRateTable` implementation.
 
 - **Ship the 1.0 package** per `[Unreleased]` — covers `Fraction<T>`,
-  `Interval<T>`, and `Money<TCurrency>`.
+  `Interval<T>`, the full `Money<TCurrency>` / `MoneyValue` /
+  `MoneyBag` triad, cash rounding, historic currencies, and FX
+  conversion.
 - **Extend `Interval<T>` with the gaps from 1.0**: unbounded /
   half-bounded intervals (the current type is always bounded);
   `Difference` / `SymmetricDifference` returning disjoint-interval
   sets; algebraic operators (`|` for union, `&` for intersection)
   when both operands are guaranteed contiguous. The 1.0 surface
   intentionally ships only the contiguous-result subset.
-- **Extend `Money<TCurrency>` with the gaps from 1.0**: a runtime-tagged
-  `MoneyValue` for "currency unknown until deserialization" scenarios
-  (foreign-exchange engines, generic accounting systems where the
-  currency is data, not part of the type); a `MoneyBag` aggregate for
-  mixed-currency portfolios; `CashRoundingIncrement` on `ICurrency` to
-  support cash-rounded currencies (CHF, post-penny CAD totals) via a
-  `RoundToCash()` method; historic-currency entries on the catalogue
-  (DEM, ITL, ZWL) with `IsHistoric` / validity-date metadata.
+
+Possible v1.1:
+
+- **Cross-currency Roslyn analyzer** for `Money<T1> + Money<T2>` to
+  catch attempted compile-time mixing in code that bridges through
+  `MoneyValue`. The operator signatures already enforce the
+  type-parameter case; the analyzer would catch the rarer cases
+  involving generic helpers.
+- **Time-series exchange-rate provider** — `IExchangeRateProvider`
+  is the abstraction; a historical-rate store with observation
+  policy (last-observed, T-day rate, mid-market against bid/ask)
+  could ship as a separate `Bodu.Numerics.Fx` package.
+- **MoneyBag mutable builder** if benchmarks show hot-path
+  per-operation allocation cost; the immutable bag is sufficient
+  for the documented v1 workloads.
 
 ### `Bodu.Globalization.Calendar`
 

@@ -20,9 +20,14 @@ types covering common but missing gaps in the .NET BCL:
 - **[`Money<TCurrency>`](xref:Bodu.Numerics.Money`1)** — an immutable
   monetary amount whose currency is encoded at the type level via an
   `ICurrency` tag, so cross-currency arithmetic fails the build rather
-  than running with the wrong unit at runtime. Ships with the active
-  ISO 4217 catalogue, allocation, exact-arithmetic round-trip, JSON,
-  and strict parsing.
+  than running with the wrong unit at runtime. Pair it with
+  **[`MoneyValue`](xref:Bodu.Numerics.MoneyValue)** for the
+  runtime-tagged equivalent and
+  **[`MoneyBag`](xref:Bodu.Numerics.MoneyBag)** for mixed-currency
+  portfolios. Ships with ~180 active and historic ISO 4217 currency
+  tags, cash rounding, allocation, exact-arithmetic round-trip,
+  JSON, strict parsing, and an `IExchangeRateProvider` abstraction
+  for FX conversion.
 
 Both types are `readonly struct`, value-equatable, allocation-free in
 their common paths, and integrate with the generic-math interfaces
@@ -42,5 +47,9 @@ that ship in .NET 8+.
 - [`Interval<T>` API reference](xref:Bodu.Numerics.Interval`1)
 - [`Interval` static factory helpers](xref:Bodu.Numerics.Interval)
 - [`Money<TCurrency>` API reference](xref:Bodu.Numerics.Money`1)
+- [`MoneyValue` API reference](xref:Bodu.Numerics.MoneyValue)
+- [`MoneyBag` API reference](xref:Bodu.Numerics.MoneyBag)
+- [`CurrencyRegistry`](xref:Bodu.Numerics.CurrencyRegistry)
+- [`IExchangeRateProvider`](xref:Bodu.Numerics.IExchangeRateProvider)
 - [`Money` static factory helpers](xref:Bodu.Numerics.Money)
 - [`ICurrency` interface](xref:Bodu.Numerics.ICurrency)

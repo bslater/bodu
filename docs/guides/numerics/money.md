@@ -309,14 +309,218 @@ The deserializer verifies the `"currency"` field matches
 between the persisted currency and the code's expectation surfaces as
 an error rather than a silent re-interpretation.
 
+## Cash rounding
+
+A handful of currencies round physical cash transactions to a coarser
+increment than their electronic minor unit. Switzerland's 5-rappen
+coin, Canada's 5-cent cash totals (after the penny was withdrawn in
+2013), Australia's 5-cent cash totals (since 1992), New Zealand's
+10-cent rounding (since 2006), and Sweden/Norway's whole-krone cash
+rounding all fall into this bucket.
+
+The shipped catalogue surfaces the convention through
+`ICurrency.CashRoundingIncrement` (the smallest denomination in the
+major unit, or `0m` when no special rounding applies). `RoundToCash()`
+snaps an amount to the nearest multiple of that increment using
+banker's rounding by default:
+
+```csharp
+Money<CHF>(12.34m).RoundToCash();    // CHF 12.35
+Money<NZD>(5.07m).RoundToCash();     // NZD 5.10
+Money<USD>(19.99m).RoundToCash();    // USD 19.99 — no-op, no cash increment
+```
+
+Pass `MidpointRounding.AwayFromZero` to round midpoints up instead of
+toward the nearest even denomination:
+
+```csharp
+Money<NZD>(5.05m).RoundToCash();                                // NZD 5.00 (banker's down to even)
+Money<NZD>(5.05m).RoundToCash(MidpointRounding.AwayFromZero);   // NZD 5.10
+```
+
+Cash rounding is for physical cash totals only — electronic
+transactions retain the full `MinorUnits` precision. Use the method at
+the point where the total becomes a cash payment, not at every
+intermediate step.
+
+## Historic currencies
+
+The shipped catalogue includes ~29 demonetized currencies — the
+twenty Euro-zone predecessors (ATS, BEF, CYP, DEM, EEK, ESP, FIM,
+FRF, GRD, HRK, IEP, ITL, LTL, LUF, LVL, MTL, NLG, PTE, SIT, SKK) plus
+nine other notable replacements (AZM, GHC, MZM, ROL, SRG, TMM, VEB,
+VEF, ZWL). They participate in arithmetic and formatting like any
+other currency so legacy data remains processable; the difference is
+that `IsHistoric`, `DemonetizedOn`, and `SuccessorIsoCode` carry the
+withdrawal metadata:
+
+```csharp
+Money<DEM>.IsHistoric;            // true
+Money<DEM>.DemonetizedOn;         // 2002-02-28
+Money<DEM>.SuccessorIsoCode;      // "EUR"
+
+// Arithmetic still works normally:
+Money<DEM> total = new Money<DEM>(100m) + new Money<DEM>(50m);   // DEM 150.00
+```
+
+For runtime processing of legacy ledgers — for example, validating
+that an imported journal entry's currency was active on its posting
+date — read the metadata from `CurrencyRegistry`:
+
+```csharp
+CurrencyInfo info = CurrencyRegistry.Get(entry.IsoCode);
+if (info.IsHistoric && entry.PostedOn > info.DemonetizedOn)
+    throw new InvalidOperationException(
+        $"{entry.IsoCode} was demonetized {info.DemonetizedOn:d} (replaced by {info.SuccessorIsoCode}).");
+```
+
+## Runtime-tagged amounts: `MoneyValue`
+
+`MoneyValue` is the runtime-tagged sister of `Money<TCurrency>`. The
+currency is carried as a string field rather than a type parameter,
+so the same code path handles any ISO code at runtime — useful for
+deserialisation, generic invoicing engines, and FX systems where the
+currency comes from data, not type.
+
+```csharp
+MoneyValue invoice = JsonSerializer.Deserialize<MoneyValue>(payload)!;
+// invoice could be "USD 19.99", "EUR 19.99", or "JPY 200" — same code.
+```
+
+Arithmetic semantics match `Money<T>` but cross-currency operations
+throw `InvalidOperationException` at runtime instead of failing the
+build:
+
+```csharp
+MoneyValue usd = new MoneyValue(10m, "USD");
+MoneyValue eur = new MoneyValue(10m, "EUR");
+
+MoneyValue total = usd + new MoneyValue(5m, "USD");   // OK
+total = usd + eur;                                     // throws InvalidOperationException
+```
+
+Bridge to and from a typed `Money<T>` when the boundary is known:
+
+```csharp
+Money<USD> typed = runtime.ToTyped<USD>();                 // throws on mismatch
+bool ok = runtime.TryToTyped(out Money<USD> result);       // safe, returns false on mismatch
+MoneyValue runtime = MoneyValue.FromTyped(new Money<USD>(19.99m));
+```
+
+`MoneyValue` rounds to the registry's `MinorUnits` for the supplied
+ISO code on construction. Custom currencies not in the catalogue can
+be pre-registered (see [Custom currencies](#custom-currencies)) so
+the rounding follows your declared precision.
+
+## Mixed-currency portfolios: `MoneyBag`
+
+`MoneyBag` aggregates per-currency balances. Useful for tracking
+ledger positions across currencies without silently merging them:
+
+```csharp
+MoneyBag wallet = MoneyBag.Empty
+    .Add(new Money<USD>(100m))
+    .Add(new Money<EUR>(50m))
+    .Add(new Money<JPY>(10_000m));
+
+wallet.GetBalance<USD>();           // Money<USD> 100.00
+wallet.GetBalance("EUR");           // MoneyValue { 50, "EUR" }
+wallet.Count;                       // 3
+```
+
+Operators chain naturally:
+
+```csharp
+MoneyBag updated = wallet
+    + new MoneyValue(25m, "USD")
+    - new MoneyValue(10m, "EUR");
+```
+
+Bags are immutable; every operation returns a new bag. Zero balances
+are pruned automatically.
+
+To convert the bag to a single target currency, supply an
+`IExchangeRateProvider`:
+
+```csharp
+Dictionary<(string From, string To), decimal> rates = new()
+{
+    { ("EUR", "USD"), 1.10m },
+    { ("JPY", "USD"), 0.0067m },
+};
+FixedExchangeRateTable table = new(rates);
+
+Money<USD> totalInUsd = wallet.ConvertTo<USD>(table);
+// 100 + 50×1.10 + 10000×0.0067 = $222.00
+```
+
+`FixedExchangeRateTable` short-circuits same-currency lookups to `1`
+and falls back to the inverse rate `1 / rate` when only the reverse
+pair is in the table, so a typical "USD → X" set of rates is enough
+to convert in both directions.
+
+## Custom currencies
+
+Implement `ICurrency` directly to add a currency that isn't in the
+shipped catalogue:
+
+```csharp
+public sealed class DOGE : ICurrency
+{
+    public static string IsoCode => "DOGE";
+    public static int    MinorUnits => 8;
+    private DOGE() { }
+}
+```
+
+Register it with `CurrencyRegistry` so `MoneyValue` and `MoneyBag`
+round to the right precision when they see the ISO code at runtime:
+
+```csharp
+CurrencyRegistry.Register(
+    new CurrencyInfo(IsoCode: "DOGE", MinorUnits: 8,
+        CashRoundingIncrement: 0m, IsHistoric: false,
+        DemonetizedOn: null, SuccessorIsoCode: null));
+
+Money<DOGE> tip = new Money<DOGE>(0.12345678m);
+MoneyValue runtime = JsonSerializer.Deserialize<MoneyValue>(
+    """{ "amount": 0.12345678, "currency": "DOGE" }""");
+```
+
+## JSON wire shape
+
+`Money<TCurrency>` and `MoneyValue` both serialise as:
+
+```json
+{ "amount": 19.99, "currency": "USD" }
+```
+
+Deserialisation on `Money<TCurrency>` rejects payloads whose
+`"currency"` field does not match `TCurrency.IsoCode` —
+currency drift surfaces as `JsonException`, not as a silently
+re-interpreted amount. `MoneyValue` accepts any ISO code (and rounds
+to the registry's `MinorUnits` for that code).
+
+`MoneyBag` uses a `{ "balances": { ... } }` wrapper:
+
+```json
+{ "balances": { "USD": 100.00, "EUR": 50.00, "JPY": 10000 } }
+```
+
+Amounts are emitted as JSON numbers; the reader also accepts string
+amounts to round-trip large values through systems that lack
+arbitrary-precision number support.
+
 ## When not to use `Money<TCurrency>`
 
 - **Calculations that genuinely span unknown currencies.** When you
   cannot fix the currency at the type-system level (for example, a
   generic invoicing engine that handles arbitrary user-supplied
-  currencies), the type-parameter form does not help. Use the
-  `Fraction<BigInteger>` exact-arithmetic path or model the currency
-  at the entity layer.
+  currencies), use `MoneyValue` instead — the trade-off is runtime
+  cross-currency checks rather than compile-time ones.
+- **Mixed-currency totals.** Use `MoneyBag` and a single
+  `ConvertTo<TTarget>` call at the boundary where the total is
+  materialised.
 - **Storage of foreign-exchange spot rates or other ratios.** Use
   `Fraction<BigInteger>` directly — those values are dimensionless
   and benefit from exact rational arithmetic.
@@ -329,6 +533,10 @@ an error rather than a silent re-interpretation.
 ## See also
 
 - [`Money<TCurrency>` API reference](xref:Bodu.Numerics.Money`1)
+- [`MoneyValue` API reference](xref:Bodu.Numerics.MoneyValue)
+- [`MoneyBag` API reference](xref:Bodu.Numerics.MoneyBag)
+- [`CurrencyRegistry`](xref:Bodu.Numerics.CurrencyRegistry)
+- [`IExchangeRateProvider`](xref:Bodu.Numerics.IExchangeRateProvider)
 - [`Money` static factory helpers](xref:Bodu.Numerics.Money)
 - [`ICurrency` interface](xref:Bodu.Numerics.ICurrency)
 - [`Fraction<T>` API reference](xref:Bodu.Numerics.Fraction`1) — the
