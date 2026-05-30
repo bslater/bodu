@@ -131,20 +131,13 @@ public readonly partial struct Money<TCurrency>
     /// Thrown when the scaled minor-unit count exceeds the range of a 64-bit signed integer.
     /// </exception>
     private static long ToMinorUnits(decimal amount) =>
-        decimal.ToInt64(amount * MinorUnitFactor());
+        decimal.ToInt64(amount * CurrencyMetadata<TCurrency>.Value.MinorUnitFactor);
 
     /// <summary>
     /// Returns the scale factor that converts between the major unit and the minor unit of
-    /// <typeparamref name="TCurrency" />.
+    /// <typeparamref name="TCurrency" />, as cached by the validated metadata descriptor.
     /// </summary>
-    /// <returns><c>10^TCurrency.MinorUnits</c> as a <see cref="decimal" />.</returns>
-    private static decimal MinorUnitFactor()
-    {
-        decimal factor = 1m;
-        int minorUnits = TCurrency.MinorUnits;
-        for (int i = 0; i < minorUnits; i++)
-            factor *= 10m;
-
-        return factor;
-    }
+    /// <returns><c>10^MinorUnits</c> as a <see cref="decimal" />.</returns>
+    private static decimal MinorUnitFactor() =>
+        CurrencyMetadata<TCurrency>.Value.MinorUnitFactor;
 }

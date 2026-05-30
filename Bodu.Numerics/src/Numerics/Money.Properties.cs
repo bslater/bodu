@@ -19,15 +19,17 @@ public readonly partial struct Money<TCurrency>
     /// Gets the ISO 4217 alphabetic code of <typeparamref name="TCurrency" />.
     /// </summary>
     /// <returns>The currency code, such as <c>"USD"</c>.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when <typeparamref name="TCurrency" /> reports invalid metadata.</exception>
     public static string IsoCode =>
-        TCurrency.IsoCode;
+        CurrencyMetadata<TCurrency>.Value.IsoCode;
 
     /// <summary>
     /// Gets the minor-unit precision of <typeparamref name="TCurrency" />.
     /// </summary>
     /// <returns>The non-negative number of fractional digits the currency uses.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when <typeparamref name="TCurrency" /> reports invalid metadata.</exception>
     public static int MinorUnits =>
-        TCurrency.MinorUnits;
+        CurrencyMetadata<TCurrency>.Value.MinorUnits;
 
     /// <summary>
     /// Gets the rounded monetary amount in the major unit of <typeparamref name="TCurrency" />.

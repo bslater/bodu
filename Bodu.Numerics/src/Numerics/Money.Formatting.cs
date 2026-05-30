@@ -105,12 +105,13 @@ public readonly partial struct Money<TCurrency> :
             cursor = 1;
         }
 
+        CurrencyMetadataDescriptor metadata = CurrencyMetadata<TCurrency>.Value;
         char specifier;
         int decimals;
         if (cursor >= format.Length)
         {
             specifier = 'G';
-            decimals = TCurrency.MinorUnits;
+            decimals = metadata.MinorUnits;
         }
         else
         {
@@ -119,13 +120,13 @@ public readonly partial struct Money<TCurrency> :
 
             if (cursor >= format.Length)
             {
-                decimals = TCurrency.MinorUnits;
+                decimals = metadata.MinorUnits;
             }
             else
             {
                 ReadOnlySpan<char> precisionPart = format[cursor..];
                 if (!int.TryParse(precisionPart, NumberStyles.None, CultureInfo.InvariantCulture, out decimals)
-                    || decimals < 0)
+                    || decimals < 0 || decimals > MaxDisplayPrecision)
                 {
                     throw new FormatException($"The format string '{format.ToString()}' is not supported.");
                 }
@@ -141,7 +142,7 @@ public readonly partial struct Money<TCurrency> :
             case 'C':
                 if (elideIfMatched && CultureMatchesCurrency(effectiveProvider))
                     return _amount.ToString("N" + decimalsSuffix, effectiveProvider);
-                return string.Concat(TCurrency.IsoCode, " ", _amount.ToString("N" + decimalsSuffix, effectiveProvider));
+                return string.Concat(metadata.IsoCode, " ", _amount.ToString("N" + decimalsSuffix, effectiveProvider));
 
             case 'L':
                 bool matches = CultureMatchesCurrency(effectiveProvider);
@@ -149,7 +150,7 @@ public readonly partial struct Money<TCurrency> :
                     return _amount.ToString("N" + decimalsSuffix, effectiveProvider);
                 return matches
                     ? FormatLocaleNative(decimals, effectiveProvider)
-                    : FormatLocaleMismatch(decimalsSuffix, effectiveProvider);
+                    : FormatLocaleMismatch(metadata.IsoCode, decimals, effectiveProvider);
 
             case 'N':
                 return _amount.ToString("N" + decimalsSuffix, effectiveProvider);
@@ -162,6 +163,14 @@ public readonly partial struct Money<TCurrency> :
                 throw new FormatException($"The format string '{format.ToString()}' is not supported.");
         }
     }
+
+    /// <summary>
+    /// The maximum explicit display precision accepted by the format parser, matching <see cref="decimal" />'s
+    /// 28-digit native precision. Precisions above this either produce nonsense output or, for pathological
+    /// values like <see cref="int.MaxValue" />, exhaust resources in the underlying <c>decimal.ToString</c>
+    /// call.
+    /// </summary>
+    private const int MaxDisplayPrecision = 28;
 
     /// <summary>
     /// Formats this amount using the supplied string specifier, delegating to the span-based implementation.
@@ -189,26 +198,56 @@ public readonly partial struct Money<TCurrency> :
     }
 
     /// <summary>
-    /// Renders the amount with the ISO 4217 code substituted for the culture's currency symbol, placed in the
-    /// position the culture's <see cref="NumberFormatInfo.CurrencyPositivePattern" /> indicates.
+    /// Renders the amount with the ISO 4217 code substituted for the culture's currency symbol, honouring both
+    /// the culture's <see cref="NumberFormatInfo.CurrencyPositivePattern" /> and
+    /// <see cref="NumberFormatInfo.CurrencyNegativePattern" /> via a cloned <see cref="NumberFormatInfo" />.
     /// </summary>
-    /// <param name="decimalsSuffix">The decimal-place count as a string suffix for the <c>"N"</c> format specifier.</param>
+    /// <param name="isoCode">The validated ISO code to substitute as the currency symbol.</param>
+    /// <param name="decimals">The decimal-place count.</param>
     /// <param name="provider">The culture used to render the numeric portion.</param>
     /// <returns>An unambiguous representation pairing the locale's number formatting with the ISO code.</returns>
     /// <remarks>
     /// The mismatch path keeps the locale's decimal and grouping separators (so 1,234.56 in en-US becomes
-    /// 1.234,56 in de-DE) but substitutes the ISO code for the symbol because the culture's symbol would denote a
-    /// different currency. A regular space — not a non-breaking space — separates the code from the digits, so the
-    /// output remains readable in plain-text contexts that do not render U+00A0.
+    /// 1.234,56 in de-DE) and uses the locale's positive- and negative-currency patterns — for example, en-US's
+    /// negative-pattern <c>($n)</c> applies to a mismatched-currency negative as <c>(JPY 1,234)</c>.
     /// </remarks>
-    private string FormatLocaleMismatch(string decimalsSuffix, IFormatProvider provider)
+    private string FormatLocaleMismatch(string isoCode, int decimals, IFormatProvider provider)
     {
         NumberFormatInfo source = NumberFormatInfo.GetInstance(provider);
+        NumberFormatInfo nfi = (NumberFormatInfo)source.Clone();
+        nfi.CurrencyDecimalDigits = decimals;
+
         bool isoBeforeAmount = source.CurrencyPositivePattern is 0 or 2;
-        string numberPart = _amount.ToString("N" + decimalsSuffix, provider);
-        return isoBeforeAmount
-            ? string.Concat(TCurrency.IsoCode, " ", numberPart)
-            : string.Concat(numberPart, " ", TCurrency.IsoCode);
+        if (isoBeforeAmount)
+        {
+            nfi.CurrencySymbol = isoCode + " ";
+            nfi.CurrencyPositivePattern = 0;
+            nfi.CurrencyNegativePattern = source.CurrencyNegativePattern switch
+            {
+                14 => 0,    // ($ n) → ($n) with space in symbol
+                9 => 1,     // -$ n → -$n
+                12 => 2,    // $ -n → $-n
+                11 => 3,    // $ n- → $n-
+                0 or 1 or 2 or 3 => source.CurrencyNegativePattern,
+                _ => 1,     // sensible default when the locale's negative pattern is amount-first
+            };
+        }
+        else
+        {
+            nfi.CurrencySymbol = " " + isoCode;
+            nfi.CurrencyPositivePattern = 1;
+            nfi.CurrencyNegativePattern = source.CurrencyNegativePattern switch
+            {
+                15 => 4,    // (n $) → (n$)
+                8 => 5,     // -n $ → -n$
+                13 => 6,    // n- $ → n-$
+                10 => 7,    // n $- → n$-
+                4 or 5 or 6 or 7 => source.CurrencyNegativePattern,
+                _ => 5,     // sensible default when the locale's negative pattern is amount-last
+            };
+        }
+
+        return _amount.ToString("C", nfi);
     }
 
     /// <summary>
@@ -232,7 +271,7 @@ public readonly partial struct Money<TCurrency> :
         try
         {
             RegionInfo region = new RegionInfo(culture.Name);
-            return string.Equals(region.ISOCurrencySymbol, TCurrency.IsoCode, StringComparison.Ordinal);
+            return string.Equals(region.ISOCurrencySymbol, CurrencyMetadata<TCurrency>.Value.IsoCode, StringComparison.Ordinal);
         }
         catch (ArgumentException)
         {

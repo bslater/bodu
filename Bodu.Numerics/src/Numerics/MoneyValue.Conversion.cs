@@ -15,15 +15,15 @@ public readonly partial struct MoneyValue
     /// <typeparam name="TCurrency">The target currency type.</typeparam>
     /// <returns>The strongly-typed monetary value.</returns>
     /// <exception cref="InvalidOperationException">
-    /// The instance's <see cref="IsoCode" /> does not match <c>TCurrency.IsoCode</c>.
+    /// The instance's <see cref="IsoCode" /> does not match the ISO code of <typeparamref name="TCurrency" />.
     /// </exception>
     public Money<TCurrency> ToTyped<TCurrency>()
         where TCurrency : ICurrency
     {
-        if (!string.Equals(IsoCode, TCurrency.IsoCode, StringComparison.Ordinal))
+        if (!string.Equals(IsoCode, CurrencyMetadata<TCurrency>.Value.IsoCode, StringComparison.Ordinal))
         {
             throw new InvalidOperationException(
-                $"Cannot convert MoneyValue with currency '{IsoCode}' to Money<{typeof(TCurrency).Name}> (currency '{TCurrency.IsoCode}').");
+                $"Cannot convert MoneyValue with currency '{IsoCode}' to Money<{typeof(TCurrency).Name}> (currency '{CurrencyMetadata<TCurrency>.Value.IsoCode}').");
         }
 
         return new Money<TCurrency>(_amount);
@@ -38,7 +38,7 @@ public readonly partial struct MoneyValue
     public bool TryToTyped<TCurrency>(out Money<TCurrency> result)
         where TCurrency : ICurrency
     {
-        if (string.Equals(IsoCode, TCurrency.IsoCode, StringComparison.Ordinal))
+        if (string.Equals(IsoCode, CurrencyMetadata<TCurrency>.Value.IsoCode, StringComparison.Ordinal))
         {
             result = new Money<TCurrency>(_amount);
             return true;
@@ -56,7 +56,7 @@ public readonly partial struct MoneyValue
     /// <returns>The runtime-tagged equivalent.</returns>
     public static MoneyValue FromTyped<TCurrency>(Money<TCurrency> money)
         where TCurrency : ICurrency =>
-        FromNormalized(money.Amount, TCurrency.IsoCode);
+        FromNormalized(money.Amount, CurrencyMetadata<TCurrency>.Value.IsoCode);
 
     /// <summary>
     /// Converts this amount to a different currency at the supplied exchange rate, rounding to the target
@@ -84,7 +84,8 @@ public readonly partial struct MoneyValue
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="exchangeRate" /> is negative.</exception>
     public MoneyValue Convert(string targetIsoCode, decimal exchangeRate, MidpointRounding rounding)
     {
-        ThrowHelper.ThrowIfNegative(exchangeRate);
+        if (exchangeRate <= 0m)
+            throw new ArgumentOutOfRangeException(nameof(exchangeRate), exchangeRate, "Exchange rate must be strictly positive.");
         return new MoneyValue(_amount * exchangeRate, targetIsoCode, rounding);
     }
 
@@ -111,7 +112,8 @@ public readonly partial struct MoneyValue
     public Money<TTarget> Convert<TTarget>(decimal exchangeRate, MidpointRounding rounding)
         where TTarget : ICurrency
     {
-        ThrowHelper.ThrowIfNegative(exchangeRate);
+        if (exchangeRate <= 0m)
+            throw new ArgumentOutOfRangeException(nameof(exchangeRate), exchangeRate, "Exchange rate must be strictly positive.");
         return new Money<TTarget>(_amount * exchangeRate, rounding);
     }
 }

@@ -79,12 +79,14 @@ public readonly partial struct Money<TCurrency>
     /// </para>
     /// </remarks>
     /// <exception cref="InvalidOperationException">
-    /// Thrown when <c>TCurrency.MinorUnits</c> is outside the inclusive range <c>[0, 28]</c> accepted by
-    /// <see cref="decimal.Round(decimal, int, MidpointRounding)" />.
+    /// Thrown when <typeparamref name="TCurrency" /> reports invalid metadata — an <see cref="ICurrency.IsoCode" />
+    /// that is not exactly three uppercase ASCII letters, an <see cref="ICurrency.MinorUnits" /> outside the
+    /// inclusive range <c>[0, 28]</c>, or a <see cref="ICurrency.CashRoundingIncrement" /> that is negative or
+    /// finer than the currency's minor-unit precision.
     /// </exception>
     public Money(decimal amount)
     {
-        _amount = decimal.Round(amount, ValidatedMinorUnits, MidpointRounding.ToEven);
+        _amount = decimal.Round(amount, CurrencyMetadata<TCurrency>.Value.MinorUnits, MidpointRounding.ToEven);
     }
 
     /// <summary>
@@ -93,9 +95,10 @@ public readonly partial struct Money<TCurrency>
     /// </summary>
     /// <param name="amount">The monetary amount in the major unit of <typeparamref name="TCurrency" />.</param>
     /// <param name="rounding">The rule used to round midpoint values.</param>
+    /// <exception cref="InvalidOperationException">Thrown when <typeparamref name="TCurrency" /> reports invalid metadata.</exception>
     public Money(decimal amount, MidpointRounding rounding)
     {
-        _amount = decimal.Round(amount, ValidatedMinorUnits, rounding);
+        _amount = decimal.Round(amount, CurrencyMetadata<TCurrency>.Value.MinorUnits, rounding);
     }
 
     /// <summary>
@@ -120,34 +123,26 @@ public readonly partial struct Money<TCurrency>
     /// <remarks>
     /// This is the internal fast path used by arithmetic operators, allocation, and conversion to avoid a
     /// redundant <see cref="decimal.Round(decimal, int, MidpointRounding)" /> after every operation when the
-    /// caller already guarantees minor-unit precision. External callers should use the public constructors.
+    /// caller already guarantees minor-unit precision. A <see cref="System.Diagnostics.Debug.Assert(bool, string)" />
+    /// guards the invariant in DEBUG builds so misuse fails noisily during development. External callers should
+    /// use the public constructors.
     /// </remarks>
-    internal static Money<TCurrency> FromNormalizedAmount(decimal amount) =>
-        new(amount, default(NormalizedTag));
+    internal static Money<TCurrency> FromNormalizedAmount(decimal amount)
+    {
+        System.Diagnostics.Debug.Assert(
+            IsAtMinorUnitPrecision(amount),
+            $"FromNormalizedAmount called with non-normalized amount {amount} for {typeof(TCurrency).Name} (MinorUnits={CurrencyMetadata<TCurrency>.Value.MinorUnits}).");
+        return new(amount, default(NormalizedTag));
+    }
 
     /// <summary>
-    /// Validates that <c>TCurrency.MinorUnits</c> is within the inclusive range <c>[0, 28]</c> that
-    /// <see cref="decimal.Round(decimal, int, MidpointRounding)" /> accepts.
+    /// Determines whether <paramref name="amount" /> already sits at <typeparamref name="TCurrency" />'s
+    /// minor-unit precision (no finer fractional digits).
     /// </summary>
-    /// <returns>The validated minor-unit precision.</returns>
-    /// <exception cref="InvalidOperationException">
-    /// Thrown when <c>TCurrency.MinorUnits</c> is negative or greater than the 28-decimal-digit precision of
-    /// <see cref="decimal" />. The exception message names the offending <typeparamref name="TCurrency" /> type.
-    /// </exception>
-    private static int ValidatedMinorUnits
-    {
-        get
-        {
-            int value = TCurrency.MinorUnits;
-            if ((uint)value > 28u)
-            {
-                throw new InvalidOperationException(
-                    $"{typeof(TCurrency).FullName}.{nameof(ICurrency.MinorUnits)} must be between 0 and 28, but reported {value}.");
-            }
-
-            return value;
-        }
-    }
+    /// <param name="amount">The amount to test.</param>
+    /// <returns><see langword="true" /> when the amount is at minor-unit precision.</returns>
+    private static bool IsAtMinorUnitPrecision(decimal amount) =>
+        decimal.Round(amount, CurrencyMetadata<TCurrency>.Value.MinorUnits, MidpointRounding.ToEven) == amount;
 
     /// <summary>
     /// A typed discriminator that selects the no-normalization initialization path on the private

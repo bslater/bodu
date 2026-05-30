@@ -252,7 +252,7 @@ public sealed partial class MoneyBag :
     /// <returns>The typed balance, or <see langword="null" /> when the bag has no entry for that currency.</returns>
     public Money<TCurrency>? GetBalance<TCurrency>()
         where TCurrency : ICurrency =>
-        _balances.TryGetValue(TCurrency.IsoCode, out decimal amount)
+        _balances.TryGetValue(CurrencyMetadata<TCurrency>.Value.IsoCode, out decimal amount)
             ? new Money<TCurrency>(amount)
             : null;
 

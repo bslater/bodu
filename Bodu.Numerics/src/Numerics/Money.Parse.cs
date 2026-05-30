@@ -80,27 +80,29 @@ public readonly partial struct Money<TCurrency> :
         if (trimmed.IsEmpty)
             return false;
 
-        string isoCode = TCurrency.IsoCode;
-        ReadOnlySpan<char> numericPart = trimmed;
+        string isoCode = CurrencyMetadata<TCurrency>.Value.IsoCode;
+        ReadOnlySpan<char> numericPart;
 
-        // ISO prefix: "USD 19.99".
-        if (trimmed.Length > isoCode.Length
-            && trimmed.StartsWith(isoCode, StringComparison.Ordinal)
-            && char.IsWhiteSpace(trimmed[isoCode.Length]))
+        // Grammar:
+        //   amount               → bare decimal
+        //   isoCode WS+ amount   → ISO-prefixed decimal
+        //   amount WS+ isoCode   → ISO-suffixed decimal
+        // where WS is a single ASCII space (no tab, no NBSP). Currency symbols ($, ¥) are rejected — they are
+        // ambiguous across currencies and consumers needing locale-aware parsing should pre-strip.
+        if (TryStripIsoPrefix(trimmed, isoCode, out numericPart)
+            || TryStripIsoSuffix(trimmed, isoCode, out numericPart))
         {
-            numericPart = trimmed[(isoCode.Length + 1)..].TrimStart();
+            // ISO-tagged form — proceed to numeric parse.
         }
-        else if (trimmed.Length > isoCode.Length
-            && trimmed.EndsWith(isoCode, StringComparison.Ordinal)
-            && char.IsWhiteSpace(trimmed[^(isoCode.Length + 1)]))
+        else if (HasIsoShapedToken(trimmed))
         {
-            // ISO suffix: "19.99 USD".
-            numericPart = trimmed[..^(isoCode.Length + 1)].TrimEnd();
-        }
-        else if (ContainsLetter(trimmed))
-        {
-            // Any letters present that aren't the matching ISO code → reject.
+            // Letters are present and they don't match the expected ISO code at either end (or the format is
+            // otherwise non-grammatical, e.g. "USD19.99" without space, "$19.99", "NaN"). Reject.
             return false;
+        }
+        else
+        {
+            numericPart = trimmed;
         }
 
         if (numericPart.IsEmpty)
@@ -121,15 +123,63 @@ public readonly partial struct Money<TCurrency> :
     }
 
     /// <summary>
-    /// Determines whether <paramref name="s" /> contains any ASCII letter.
+    /// Strips a leading <paramref name="isoCode" /> followed by a single space from <paramref name="trimmed" />,
+    /// returning the remaining numeric portion.
+    /// </summary>
+    /// <param name="trimmed">The trimmed input span.</param>
+    /// <param name="isoCode">The expected ISO code.</param>
+    /// <param name="numericPart">The numeric portion when the prefix matched.</param>
+    /// <returns><see langword="true" /> when the input had the expected ISO-prefix shape.</returns>
+    private static bool TryStripIsoPrefix(ReadOnlySpan<char> trimmed, string isoCode, out ReadOnlySpan<char> numericPart)
+    {
+        if (trimmed.Length > isoCode.Length
+            && trimmed.StartsWith(isoCode, StringComparison.Ordinal)
+            && trimmed[isoCode.Length] == ' ')
+        {
+            numericPart = trimmed[(isoCode.Length + 1)..];
+            return true;
+        }
+
+        numericPart = default;
+        return false;
+    }
+
+    /// <summary>
+    /// Strips a trailing <paramref name="isoCode" /> preceded by a single space from <paramref name="trimmed" />.
+    /// </summary>
+    /// <param name="trimmed">The trimmed input span.</param>
+    /// <param name="isoCode">The expected ISO code.</param>
+    /// <param name="numericPart">The numeric portion when the suffix matched.</param>
+    /// <returns><see langword="true" /> when the input had the expected ISO-suffix shape.</returns>
+    private static bool TryStripIsoSuffix(ReadOnlySpan<char> trimmed, string isoCode, out ReadOnlySpan<char> numericPart)
+    {
+        if (trimmed.Length > isoCode.Length
+            && trimmed.EndsWith(isoCode, StringComparison.Ordinal)
+            && trimmed[^(isoCode.Length + 1)] == ' ')
+        {
+            numericPart = trimmed[..^(isoCode.Length + 1)];
+            return true;
+        }
+
+        numericPart = default;
+        return false;
+    }
+
+    /// <summary>
+    /// Determines whether <paramref name="s" /> contains any character that is not a digit, sign, or
+    /// number-format glyph permitted by <see cref="NumberStyles.Number" />. Used as a fast rejection check —
+    /// the production parser delegates to <see cref="decimal.TryParse(ReadOnlySpan{char}, NumberStyles, IFormatProvider, out decimal)" />
+    /// to make the final accept/reject decision on the numeric portion.
     /// </summary>
     /// <param name="s">The text to scan.</param>
-    /// <returns><see langword="true" /> if any letter is present; otherwise <see langword="false" />.</returns>
-    private static bool ContainsLetter(ReadOnlySpan<char> s)
+    /// <returns><see langword="true" /> if any letter or symbol is present.</returns>
+    private static bool HasIsoShapedToken(ReadOnlySpan<char> s)
     {
         foreach (char c in s)
         {
             if (char.IsLetter(c))
+                return true;
+            if (c == '$' || c == '£' || c == '¥' || c == '€' || c == '¤')
                 return true;
         }
 

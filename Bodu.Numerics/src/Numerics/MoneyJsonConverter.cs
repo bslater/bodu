@@ -41,6 +41,8 @@ public sealed class MoneyJsonConverter<TCurrency> : JsonConverter<Money<TCurrenc
 
         decimal? amount = null;
         string? currency = null;
+        bool amountSeen = false;
+        bool currencySeen = false;
 
         while (reader.Read())
         {
@@ -56,6 +58,10 @@ public sealed class MoneyJsonConverter<TCurrency> : JsonConverter<Money<TCurrenc
 
             if (string.Equals(propertyName, "amount", StringComparison.OrdinalIgnoreCase))
             {
+                if (amountSeen)
+                    throw new JsonException("The JSON object contains a duplicate 'amount' property.");
+                amountSeen = true;
+
                 if (reader.TokenType == JsonTokenType.String)
                 {
                     string? text = reader.GetString();
@@ -75,6 +81,10 @@ public sealed class MoneyJsonConverter<TCurrency> : JsonConverter<Money<TCurrenc
             }
             else if (string.Equals(propertyName, "currency", StringComparison.OrdinalIgnoreCase))
             {
+                if (currencySeen)
+                    throw new JsonException("The JSON object contains a duplicate 'currency' property.");
+                currencySeen = true;
+
                 if (reader.TokenType != JsonTokenType.String)
                     throw new JsonException("The 'currency' property must be a string.");
 
@@ -92,10 +102,11 @@ public sealed class MoneyJsonConverter<TCurrency> : JsonConverter<Money<TCurrenc
         if (currency is null)
             throw new JsonException("The JSON object is missing the required 'currency' property.");
 
-        if (!string.Equals(currency, TCurrency.IsoCode, StringComparison.Ordinal))
+        string expectedIso = CurrencyMetadata<TCurrency>.Value.IsoCode;
+        if (!string.Equals(currency, expectedIso, StringComparison.Ordinal))
         {
             throw new JsonException(
-                $"The JSON 'currency' value '{currency}' does not match the expected currency '{TCurrency.IsoCode}'.");
+                $"The JSON 'currency' value '{currency}' does not match the expected currency '{expectedIso}'.");
         }
 
         return new Money<TCurrency>(amount.Value);
@@ -113,7 +124,7 @@ public sealed class MoneyJsonConverter<TCurrency> : JsonConverter<Money<TCurrenc
 
         writer.WriteStartObject();
         writer.WriteNumber("amount", value.Amount);
-        writer.WriteString("currency", TCurrency.IsoCode);
+        writer.WriteString("currency", CurrencyMetadata<TCurrency>.Value.IsoCode);
         writer.WriteEndObject();
     }
 }

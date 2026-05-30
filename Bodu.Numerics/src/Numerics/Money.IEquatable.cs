@@ -35,12 +35,14 @@ public readonly partial struct Money<TCurrency> :
         obj is Money<TCurrency> other && Equals(other);
 
     /// <summary>
-    /// Returns a hash code that mixes the currency code into the amount so that values with the same numeric amount
-    /// but different currencies produce distinct hashes.
+    /// Returns a hash code consistent with <see cref="Equals(Money{TCurrency})" /> — combining the closed
+    /// generic type identity (not the runtime <see cref="ICurrency.IsoCode" /> string) with the amount so
+    /// hashing matches equality even when two different currency tag types share an ISO code or when a custom
+    /// tag mutates its reported code.
     /// </summary>
     /// <returns>A 32-bit hash code suitable for use in hash-based collections.</returns>
     public override int GetHashCode() =>
-        HashCode.Combine(TCurrency.IsoCode, _amount);
+        HashCode.Combine(typeof(TCurrency), _amount);
 
     /// <summary>
     /// Compares this instance to <paramref name="other" /> by amount.

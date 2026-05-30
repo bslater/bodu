@@ -20,7 +20,7 @@ public readonly partial struct Money<TCurrency>
     /// <see cref="RoundToCash(MidpointRounding)" /> is a no-op for the currency.
     /// </remarks>
     public static decimal CashRoundingIncrement =>
-        TCurrency.CashRoundingIncrement;
+        CurrencyMetadata<TCurrency>.Value.CashRoundingIncrement;
 
     /// <summary>
     /// Rounds this amount to the nearest physical cash denomination of <typeparamref name="TCurrency" /> using
@@ -53,12 +53,15 @@ public readonly partial struct Money<TCurrency>
     /// </returns>
     public Money<TCurrency> RoundToCash(MidpointRounding rounding)
     {
-        decimal increment = TCurrency.CashRoundingIncrement;
+        CurrencyMetadataDescriptor metadata = CurrencyMetadata<TCurrency>.Value;
+        decimal increment = metadata.CashRoundingIncrement;
         if (increment == 0m)
             return this;
 
+        // increment is validated to be representable at MinorUnits, so multiplier × increment is also at
+        // MinorUnit precision and can take the FromNormalizedAmount fast path without a second rounding step.
         decimal multiplier = decimal.Round(_amount / increment, 0, rounding);
-        return new Money<TCurrency>(multiplier * increment, rounding);
+        return FromNormalizedAmount(multiplier * increment);
     }
 
     /// <summary>
@@ -68,14 +71,14 @@ public readonly partial struct Money<TCurrency>
     /// <see langword="true" /> when the currency is a historic predecessor; otherwise <see langword="false" />.
     /// </returns>
     public static bool IsHistoric =>
-        TCurrency.IsHistoric;
+        CurrencyMetadata<TCurrency>.Value.IsHistoric;
 
     /// <summary>
     /// Gets the date <typeparamref name="TCurrency" /> was withdrawn from circulation, if known.
     /// </summary>
     /// <returns>The demonetization date, or <see langword="null" /> when the currency is active or the date is unknown.</returns>
     public static DateOnly? DemonetizedOn =>
-        TCurrency.DemonetizedOn;
+        CurrencyMetadata<TCurrency>.Value.DemonetizedOn;
 
     /// <summary>
     /// Gets the ISO 4217 alphabetic code of the currency that replaced <typeparamref name="TCurrency" />, when
@@ -86,5 +89,5 @@ public readonly partial struct Money<TCurrency>
     /// successor.
     /// </returns>
     public static string? SuccessorIsoCode =>
-        TCurrency.SuccessorIsoCode;
+        CurrencyMetadata<TCurrency>.Value.SuccessorIsoCode;
 }

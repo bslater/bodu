@@ -17,15 +17,23 @@ public readonly partial struct Money<TCurrency>
     /// <typeparam name="TTarget">The destination currency.</typeparam>
     /// <param name="exchangeRate">
     /// The exchange rate, expressed as units of <typeparamref name="TTarget" /> per single unit of
-    /// <typeparamref name="TCurrency" />.
+    /// <typeparamref name="TCurrency" />. Must be strictly positive.
     /// </param>
     /// <param name="rounding">The midpoint-rounding rule applied when narrowing to the target precision.</param>
     /// <returns>The converted monetary amount in <typeparamref name="TTarget" />.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="exchangeRate" /> is negative.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="exchangeRate" /> is zero or negative. A zero rate is treated as a programmer
+    /// error in real FX code; for the rare legitimate scalar-zero case, construct the destination amount
+    /// directly.
+    /// </exception>
+    /// <exception cref="OverflowException">
+    /// Thrown when <c>amount × exchangeRate</c> falls outside the range of <see cref="decimal" />.
+    /// </exception>
     public Money<TTarget> Convert<TTarget>(decimal exchangeRate, MidpointRounding rounding = MidpointRounding.ToEven)
         where TTarget : ICurrency
     {
-        ThrowHelper.ThrowIfNegative(exchangeRate);
+        if (exchangeRate <= 0m)
+            throw new ArgumentOutOfRangeException(nameof(exchangeRate), exchangeRate, "Exchange rate must be strictly positive.");
 
         return new Money<TTarget>(_amount * exchangeRate, rounding);
     }
@@ -48,7 +56,7 @@ public readonly partial struct Money<TCurrency>
     public Money<TCurrency> Round(int decimals, MidpointRounding rounding = MidpointRounding.ToEven)
     {
         ThrowHelper.ThrowIfNegative(decimals);
-        ThrowHelper.ThrowIfGreaterThan(decimals, TCurrency.MinorUnits);
+        ThrowHelper.ThrowIfGreaterThan(decimals, CurrencyMetadata<TCurrency>.Value.MinorUnits);
 
         return Money<TCurrency>.FromNormalizedAmount(decimal.Round(_amount, decimals, rounding));
     }
@@ -68,15 +76,26 @@ public readonly partial struct Money<TCurrency>
         Fraction<BigInteger>.FromDecimal(_amount);
 
     /// <summary>
-    /// Creates a <see cref="Money{TCurrency}" /> from an exact rational value, rounding to the currency's minor-unit
-    /// precision using the specified rule.
+    /// Creates a <see cref="Money{TCurrency}" /> from an exact rational value, rounding to the currency's
+    /// minor-unit precision using the specified rule. The rounding is performed directly in <see cref="BigInteger" />
+    /// arithmetic without an intermediate <see cref="decimal" /> step, so values that exceed
+    /// <see cref="decimal" />'s 28-digit precision retain their exact rounding direction.
     /// </summary>
     /// <param name="value">The exact amount.</param>
     /// <param name="rounding">The midpoint-rounding rule.</param>
     /// <returns>The rounded monetary amount.</returns>
-    /// <exception cref="OverflowException">Thrown when <paramref name="value" /> cannot be represented as a <see cref="decimal" />.</exception>
-    public static Money<TCurrency> FromFraction(Fraction<BigInteger> value, MidpointRounding rounding = MidpointRounding.ToEven) =>
-        new Money<TCurrency>(value.ToDecimal(), rounding);
+    /// <exception cref="OverflowException">Thrown when the rounded result cannot be represented as a <see cref="decimal" />.</exception>
+    public static Money<TCurrency> FromFraction(Fraction<BigInteger> value, MidpointRounding rounding = MidpointRounding.ToEven)
+    {
+        CurrencyMetadataDescriptor metadata = CurrencyMetadata<TCurrency>.Value;
+        BigInteger numerator = value.Numerator;
+        BigInteger denominator = value.Denominator;
+
+        BigInteger scaledNumerator = numerator * BigInteger.Pow(10, metadata.MinorUnits);
+        BigInteger roundedMinorUnits = DivideRound(scaledNumerator, denominator, rounding);
+        decimal amount = (decimal)roundedMinorUnits / metadata.MinorUnitFactor;
+        return FromNormalizedAmount(amount);
+    }
 
     /// <summary>
     /// Multiplies this amount by an exact rational factor and rounds the result to the currency's minor-unit
@@ -88,8 +107,60 @@ public readonly partial struct Money<TCurrency>
     /// <exception cref="OverflowException">Thrown when the result cannot be represented as a <see cref="decimal" />.</exception>
     /// <remarks>
     /// Equivalent to <c>FromFraction(ToFraction() * factor, rounding)</c> but expresses the common
-    /// multiply-then-round pattern in a single call.
+    /// multiply-then-round pattern in a single call. Inherits the exact <see cref="BigInteger" /> rounding
+    /// behaviour of <see cref="FromFraction(Fraction{BigInteger}, MidpointRounding)" />.
     /// </remarks>
     public Money<TCurrency> MultiplyExact(Fraction<BigInteger> factor, MidpointRounding rounding = MidpointRounding.ToEven) =>
         FromFraction(ToFraction() * factor, rounding);
+
+    /// <summary>
+    /// Divides <paramref name="numerator" /> by <paramref name="denominator" /> as <see cref="BigInteger" />
+    /// arithmetic and rounds the quotient to an integer using <paramref name="rounding" />.
+    /// </summary>
+    /// <param name="numerator">The dividend.</param>
+    /// <param name="denominator">The divisor; must be non-zero.</param>
+    /// <param name="rounding">The midpoint-rounding rule.</param>
+    /// <returns>The rounded integer quotient.</returns>
+    private static BigInteger DivideRound(BigInteger numerator, BigInteger denominator, MidpointRounding rounding)
+    {
+        if (denominator.Sign < 0)
+        {
+            numerator = -numerator;
+            denominator = -denominator;
+        }
+
+        BigInteger quotient = BigInteger.DivRem(numerator, denominator, out BigInteger remainder);
+        if (remainder.IsZero)
+            return quotient;
+
+        BigInteger absDoubleRem = BigInteger.Abs(remainder) * 2;
+        int cmp = absDoubleRem.CompareTo(denominator);
+        int sign = numerator.Sign;
+
+        bool roundAway;
+        if (cmp < 0)
+        {
+            roundAway = false;
+        }
+        else if (cmp > 0)
+        {
+            roundAway = true;
+        }
+        else
+        {
+            roundAway = rounding switch
+            {
+                MidpointRounding.AwayFromZero => true,
+                MidpointRounding.ToZero => false,
+                MidpointRounding.ToPositiveInfinity => sign > 0,
+                MidpointRounding.ToNegativeInfinity => sign < 0,
+                _ => !quotient.IsEven,
+            };
+        }
+
+        if (!roundAway)
+            return quotient;
+
+        return sign >= 0 ? quotient + BigInteger.One : quotient - BigInteger.One;
+    }
 }
