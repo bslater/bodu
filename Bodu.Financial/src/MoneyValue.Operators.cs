@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
+
 namespace Bodu.Financial;
 
 public readonly partial struct MoneyValue
@@ -184,13 +186,17 @@ public readonly partial struct MoneyValue
         if (string.IsNullOrEmpty(left.IsoCode) || string.IsNullOrEmpty(right.IsoCode))
         {
             throw new InvalidOperationException(
-                "MoneyValue operations require both operands to carry a currency; default(MoneyValue) is not a valid operand.");
+                FinancialResourceStrings.Op_Invalid_MoneyValueRequiresCurrency);
         }
 
         if (!string.Equals(left.IsoCode, right.IsoCode, StringComparison.Ordinal))
         {
             throw new InvalidOperationException(
-                $"MoneyValue operations require the same currency; got '{left.IsoCode}' and '{right.IsoCode}'.");
+                string.Format(
+                    CultureInfo.InvariantCulture,
+                    FinancialResourceStrings.Op_Invalid_MoneyValueSameCurrencyRequired,
+                    left.IsoCode,
+                    right.IsoCode));
         }
     }
 }

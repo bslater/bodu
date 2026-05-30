@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
+
 namespace Bodu.Financial;
 
 public readonly partial struct Money<TCurrency> :
@@ -75,7 +77,10 @@ public readonly partial struct Money<TCurrency> :
             return CompareTo(other);
 
         throw new ArgumentException(
-            $"Object must be a Money<{typeof(TCurrency).Name}>.",
+            string.Format(
+                CultureInfo.InvariantCulture,
+                FinancialResourceStrings.Arg_Invalid_MoneyObject,
+                typeof(TCurrency).Name),
             nameof(obj));
     }
 

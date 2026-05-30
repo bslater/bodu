@@ -42,7 +42,12 @@ public readonly partial struct Money<TCurrency> :
     public static Money<TCurrency> Parse(ReadOnlySpan<char> s, IFormatProvider? provider)
     {
         if (!TryParse(s, provider, out Money<TCurrency> result))
-            throw new FormatException($"The input '{s}' is not a valid Money<{typeof(TCurrency).Name}> representation.");
+            throw new FormatException(
+                string.Format(
+                    CultureInfo.InvariantCulture,
+                    FinancialResourceStrings.Format_Invalid_MoneyString,
+                    s.ToString(),
+                    typeof(TCurrency).Name));
 
         return result;
     }

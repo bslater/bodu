@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Diagnostics;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 
 namespace Bodu.Financial;
@@ -64,7 +65,7 @@ public sealed class ExchangeRateSeries
         string provider,
         IEnumerable<(DateOnly Date, decimal Rate)> rates)
     {
-        ExchangeRateValidation.RequireProvider(provider);
+        FinancialThrowHelper.ThrowIfNullOrWhiteSpaceProvider(provider);
         ThrowHelper.ThrowIfNull(rates);
 
         Pair = pair;
@@ -73,7 +74,7 @@ public sealed class ExchangeRateSeries
         List<(DateOnly Date, decimal Rate)> buffer = new(rates);
 
         if (buffer.Count == 0)
-            throw new ArgumentException("Series must contain at least one rate.", nameof(rates));
+            throw new ArgumentException(FinancialResourceStrings.Arg_Invalid_RateSeriesEmpty, nameof(rates));
 
         for (var i = 0; i < buffer.Count; i++)
         {
@@ -82,7 +83,7 @@ public sealed class ExchangeRateSeries
                 throw new ArgumentOutOfRangeException(
                     nameof(rates),
                     buffer[i].Rate,
-                    "Rate must be greater than zero.");
+                    FinancialResourceStrings.Arg_OutOfRange_RateNotPositive);
             }
         }
 
@@ -93,7 +94,10 @@ public sealed class ExchangeRateSeries
             if (buffer[i].Date == buffer[i - 1].Date)
             {
                 throw new ArgumentException(
-                    $"Series contains duplicate date {buffer[i].Date:yyyy-MM-dd}.",
+                    string.Format(
+                        CultureInfo.InvariantCulture,
+                        FinancialResourceStrings.Arg_Invalid_RateSeriesDuplicateDate,
+                        buffer[i].Date),
                     nameof(rates));
             }
         }

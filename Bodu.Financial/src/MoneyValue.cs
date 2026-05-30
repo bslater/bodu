@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Diagnostics;
+using System.Globalization;
 using System.Text.Json.Serialization;
 
 namespace Bodu.Financial;
@@ -99,7 +100,11 @@ public readonly partial struct MoneyValue
         if (isoCode.Length != 3)
         {
             throw new ArgumentException(
-                $"ISO 4217 code must be exactly three letters, but '{isoCode}' has {isoCode.Length}.",
+                string.Format(
+                    CultureInfo.InvariantCulture,
+                    FinancialResourceStrings.Arg_Invalid_IsoCodeLength,
+                    isoCode,
+                    isoCode.Length),
                 nameof(isoCode));
         }
 
@@ -109,7 +114,11 @@ public readonly partial struct MoneyValue
             if (c is < 'A' or > 'Z')
             {
                 throw new ArgumentException(
-                    $"ISO 4217 code must be three uppercase ASCII letters, but '{isoCode}' contains '{c}'.",
+                    string.Format(
+                        CultureInfo.InvariantCulture,
+                        FinancialResourceStrings.Arg_Invalid_IsoCodeNonAscii,
+                        isoCode,
+                        c),
                     nameof(isoCode));
             }
         }

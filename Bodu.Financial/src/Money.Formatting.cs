@@ -176,7 +176,8 @@ public readonly partial struct Money<TCurrency> :
                 if (!int.TryParse(precisionPart, NumberStyles.None, CultureInfo.InvariantCulture, out decimals)
                     || decimals < 0 || decimals > MaxDisplayPrecision)
                 {
-                    throw new FormatException($"The format string '{format}' is not supported.");
+                    throw new FormatException(
+                        string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Format_Invalid_FormatSpecifier, format.ToString()));
                 }
             }
         }
@@ -208,7 +209,8 @@ public readonly partial struct Money<TCurrency> :
                 return _amount.ToString("F" + decimalsSuffix, effectiveProvider);
 
             default:
-                throw new FormatException($"The format string '{format}' is not supported.");
+                throw new FormatException(
+                    string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Format_Invalid_FormatSpecifier, format.ToString()));
         }
     }
 

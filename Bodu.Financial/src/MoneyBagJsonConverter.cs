@@ -27,7 +27,7 @@ public sealed class MoneyBagJsonConverter : JsonConverter<MoneyBag>
     public override MoneyBag Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         if (reader.TokenType != JsonTokenType.StartObject)
-            throw new JsonException("Expected a JSON object containing a MoneyBag.");
+            throw new JsonException(FinancialResourceStrings.Json_Invalid_ExpectedObject_MoneyBag);
 
         List<MoneyValue> entries = new();
 
@@ -37,16 +37,16 @@ public sealed class MoneyBagJsonConverter : JsonConverter<MoneyBag>
                 break;
 
             if (reader.TokenType != JsonTokenType.PropertyName)
-                throw new JsonException("Expected a JSON property name.");
+                throw new JsonException(FinancialResourceStrings.Json_Invalid_ExpectedPropertyName);
 
             var propertyName = reader.GetString()!;
             if (!reader.Read())
-                throw new JsonException("Unexpected end of JSON.");
+                throw new JsonException(FinancialResourceStrings.Json_Invalid_UnexpectedEnd);
 
             if (string.Equals(propertyName, "balances", StringComparison.OrdinalIgnoreCase))
             {
                 if (reader.TokenType != JsonTokenType.StartObject)
-                    throw new JsonException("The 'balances' property must be a JSON object.");
+                    throw new JsonException(FinancialResourceStrings.Json_Invalid_BalancesMustBeObject);
 
                 while (reader.Read())
                 {
@@ -54,11 +54,11 @@ public sealed class MoneyBagJsonConverter : JsonConverter<MoneyBag>
                         break;
 
                     if (reader.TokenType != JsonTokenType.PropertyName)
-                        throw new JsonException("Expected a JSON property name inside 'balances'.");
+                        throw new JsonException(FinancialResourceStrings.Json_Invalid_ExpectedPropertyNameInBalances);
 
                     var iso = reader.GetString()!;
                     if (!reader.Read())
-                        throw new JsonException("Unexpected end of JSON inside 'balances'.");
+                        throw new JsonException(FinancialResourceStrings.Json_Invalid_UnexpectedEndInBalances);
 
                     decimal amount;
                     if (reader.TokenType == JsonTokenType.Number)
@@ -69,11 +69,13 @@ public sealed class MoneyBagJsonConverter : JsonConverter<MoneyBag>
                     {
                         var text = reader.GetString();
                         if (text is null || !decimal.TryParse(text, NumberStyles.Number, CultureInfo.InvariantCulture, out amount))
-                            throw new JsonException($"The balance for '{iso}' must be a number.");
+                            throw new JsonException(
+                                string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Json_Invalid_BalanceMustBeNumber, iso));
                     }
                     else
                     {
-                        throw new JsonException($"The balance for '{iso}' must be a number.");
+                        throw new JsonException(
+                            string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Json_Invalid_BalanceMustBeNumber, iso));
                     }
 
                     entries.Add(new MoneyValue(amount, iso));

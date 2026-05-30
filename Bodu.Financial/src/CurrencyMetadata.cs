@@ -1,8 +1,10 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CurrencyMetadata.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
+
+using System.Globalization;
 
 namespace Bodu.Financial;
 
@@ -52,7 +54,12 @@ internal static class CurrencyMetadata<TCurrency>
         if ((uint)minorUnits > 28u)
         {
             throw new InvalidOperationException(
-                $"{typeof(TCurrency).FullName}.{nameof(ICurrency.MinorUnits)} must be between 0 and 28, but reported {minorUnits}.");
+                string.Format(
+                    CultureInfo.InvariantCulture,
+                    FinancialResourceStrings.Op_Invalid_CurrencyMinorUnitsOutOfRange,
+                    typeof(TCurrency).FullName,
+                    nameof(ICurrency.MinorUnits),
+                    minorUnits));
         }
 
         var minorUnitFactor = ComputeMinorUnitFactor(minorUnits);
@@ -61,7 +68,12 @@ internal static class CurrencyMetadata<TCurrency>
         if (cashIncrement < 0m)
         {
             throw new InvalidOperationException(
-                $"{typeof(TCurrency).FullName}.{nameof(ICurrency.CashRoundingIncrement)} must be non-negative, but reported {cashIncrement}.");
+                string.Format(
+                    CultureInfo.InvariantCulture,
+                    FinancialResourceStrings.Op_Invalid_CurrencyCashRoundingNegative,
+                    typeof(TCurrency).FullName,
+                    nameof(ICurrency.CashRoundingIncrement),
+                    cashIncrement));
         }
 
         if (cashIncrement != 0m)
@@ -70,7 +82,13 @@ internal static class CurrencyMetadata<TCurrency>
             if (scaled != decimal.Truncate(scaled))
             {
                 throw new InvalidOperationException(
-                    $"{typeof(TCurrency).FullName}.{nameof(ICurrency.CashRoundingIncrement)} ({cashIncrement}) is finer than the currency's {minorUnits}-minor-unit precision.");
+                    string.Format(
+                        CultureInfo.InvariantCulture,
+                        FinancialResourceStrings.Op_Invalid_CurrencyCashRoundingTooFine,
+                        typeof(TCurrency).FullName,
+                        nameof(ICurrency.CashRoundingIncrement),
+                        cashIncrement,
+                        minorUnits));
             }
         }
 
@@ -101,13 +119,23 @@ internal static class CurrencyMetadata<TCurrency>
         if (value is null)
         {
             throw new InvalidOperationException(
-                $"{typeof(TCurrency).FullName}.{memberName} must be a three-letter uppercase ISO 4217 code, but reported null.");
+                string.Format(
+                    CultureInfo.InvariantCulture,
+                    FinancialResourceStrings.Op_Invalid_CurrencyIsoCodeNull,
+                    typeof(TCurrency).FullName,
+                    memberName));
         }
 
         if (value.Length != 3)
         {
             throw new InvalidOperationException(
-                $"{typeof(TCurrency).FullName}.{memberName} must be exactly three letters, but reported '{value}' ({value.Length} characters).");
+                string.Format(
+                    CultureInfo.InvariantCulture,
+                    FinancialResourceStrings.Op_Invalid_CurrencyIsoCodeLength,
+                    typeof(TCurrency).FullName,
+                    memberName,
+                    value,
+                    value.Length));
         }
 
         for (var i = 0; i < 3; i++)
@@ -116,7 +144,12 @@ internal static class CurrencyMetadata<TCurrency>
             if (c is < 'A' or > 'Z')
             {
                 throw new InvalidOperationException(
-                    $"{typeof(TCurrency).FullName}.{memberName} must be uppercase ASCII letters, but reported '{value}'.");
+                    string.Format(
+                        CultureInfo.InvariantCulture,
+                        FinancialResourceStrings.Op_Invalid_CurrencyIsoCodeNonAscii,
+                        typeof(TCurrency).FullName,
+                        memberName,
+                        value));
             }
         }
     }

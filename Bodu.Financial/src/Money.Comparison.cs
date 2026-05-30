@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
+
 namespace Bodu.Financial;
 
 public readonly partial struct Money<TCurrency>
@@ -37,7 +39,9 @@ public readonly partial struct Money<TCurrency>
     public static Money<TCurrency> Clamp(Money<TCurrency> value, Money<TCurrency> min, Money<TCurrency> max)
     {
         if (min._amount > max._amount)
-            throw new ArgumentException($"Min ({min}) must be ≤ Max ({max}).", nameof(min));
+            throw new ArgumentException(
+                string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Arg_Invalid_ClampMinGreaterThanMax, min, max),
+                nameof(min));
 
         return value._amount < min._amount
             ? min

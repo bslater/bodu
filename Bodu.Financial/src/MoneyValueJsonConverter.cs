@@ -27,7 +27,7 @@ public sealed class MoneyValueJsonConverter : JsonConverter<MoneyValue>
     public override MoneyValue Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         if (reader.TokenType != JsonTokenType.StartObject)
-            throw new JsonException("Expected a JSON object containing a MoneyValue.");
+            throw new JsonException(FinancialResourceStrings.Json_Invalid_ExpectedObject_MoneyValue);
 
         decimal? amount = null;
         string? currency = null;
@@ -40,23 +40,23 @@ public sealed class MoneyValueJsonConverter : JsonConverter<MoneyValue>
                 break;
 
             if (reader.TokenType != JsonTokenType.PropertyName)
-                throw new JsonException("Expected a JSON property name.");
+                throw new JsonException(FinancialResourceStrings.Json_Invalid_ExpectedPropertyName);
 
             var propertyName = reader.GetString()!;
             if (!reader.Read())
-                throw new JsonException("Unexpected end of JSON.");
+                throw new JsonException(FinancialResourceStrings.Json_Invalid_UnexpectedEnd);
 
             if (string.Equals(propertyName, "amount", StringComparison.OrdinalIgnoreCase))
             {
                 if (amountSeen)
-                    throw new JsonException("The JSON object contains a duplicate 'amount' property.");
+                    throw new JsonException(FinancialResourceStrings.Json_Invalid_DuplicateAmount);
                 amountSeen = true;
 
                 if (reader.TokenType == JsonTokenType.String)
                 {
                     var text = reader.GetString();
                     if (text is null || !decimal.TryParse(text, NumberStyles.Number, CultureInfo.InvariantCulture, out var parsed))
-                        throw new JsonException("The 'amount' property must be a number.");
+                        throw new JsonException(FinancialResourceStrings.Json_Invalid_AmountMustBeNumber);
                     amount = parsed;
                 }
                 else if (reader.TokenType == JsonTokenType.Number)
@@ -65,17 +65,17 @@ public sealed class MoneyValueJsonConverter : JsonConverter<MoneyValue>
                 }
                 else
                 {
-                    throw new JsonException("The 'amount' property must be a number.");
+                    throw new JsonException(FinancialResourceStrings.Json_Invalid_AmountMustBeNumber);
                 }
             }
             else if (string.Equals(propertyName, "currency", StringComparison.OrdinalIgnoreCase))
             {
                 if (currencySeen)
-                    throw new JsonException("The JSON object contains a duplicate 'currency' property.");
+                    throw new JsonException(FinancialResourceStrings.Json_Invalid_DuplicateCurrency);
                 currencySeen = true;
 
                 if (reader.TokenType != JsonTokenType.String)
-                    throw new JsonException("The 'currency' property must be a string.");
+                    throw new JsonException(FinancialResourceStrings.Json_Invalid_CurrencyMustBeString);
                 currency = reader.GetString();
             }
             else
@@ -85,10 +85,10 @@ public sealed class MoneyValueJsonConverter : JsonConverter<MoneyValue>
         }
 
         if (amount is null)
-            throw new JsonException("The JSON object is missing the required 'amount' property.");
+            throw new JsonException(FinancialResourceStrings.Json_Invalid_MissingAmount);
 
         if (currency is null)
-            throw new JsonException("The JSON object is missing the required 'currency' property.");
+            throw new JsonException(FinancialResourceStrings.Json_Invalid_MissingCurrency);
 
         return new MoneyValue(amount.Value, currency);
     }

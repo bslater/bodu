@@ -6,6 +6,7 @@
 
 using System.Collections.Concurrent;
 using System.Collections.Frozen;
+using System.Globalization;
 using Bodu.Financial.Currencies;
 
 namespace Bodu.Financial;
@@ -106,7 +107,8 @@ public static class CurrencyRegistry
 
         return TryGet(isoCode, out CurrencyInfo? info)
             ? info!
-            : throw new KeyNotFoundException($"Currency '{isoCode}' is not registered.");
+            : throw new KeyNotFoundException(
+                string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.IO_KeyNotFound_Currency, isoCode));
     }
 
     /// <summary>
@@ -136,7 +138,7 @@ public static class CurrencyRegistry
         if (!s_custom.TryAdd(info.IsoCode, info))
         {
             throw new InvalidOperationException(
-                $"A custom currency is already registered under '{info.IsoCode}'.");
+                string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Op_Invalid_DuplicateCustomCurrency, info.IsoCode));
         }
     }
 

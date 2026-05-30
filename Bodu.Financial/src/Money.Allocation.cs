@@ -73,19 +73,11 @@ public readonly partial struct Money<TCurrency>
     /// </exception>
     public Money<TCurrency>[] Allocate(ReadOnlySpan<decimal> ratios)
     {
-        if (ratios.IsEmpty)
-            throw new ArgumentException("At least one ratio must be supplied.", nameof(ratios));
+        FinancialThrowHelper.ThrowIfAllocationRatiosInvalid(ratios);
 
         var totalWeight = 0m;
         for (var i = 0; i < ratios.Length; i++)
-        {
-            if (ratios[i] < 0m)
-                throw new ArgumentException("Ratios must not be negative.", nameof(ratios));
             totalWeight += ratios[i];
-        }
-
-        if (totalWeight == 0m)
-            throw new ArgumentException("At least one ratio must be strictly positive.", nameof(ratios));
 
         var minorTotalSigned = ToMinorUnits(_amount);
         long sign = minorTotalSigned >= 0 ? 1 : -1;

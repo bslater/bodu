@@ -83,11 +83,7 @@ public sealed partial class MoneyBag
     {
         ThrowHelper.ThrowIfNull(rates);
 
-        if (policy is not MoneyBagConversionRoundingPolicy.SumRawThenRound
-            and not MoneyBagConversionRoundingPolicy.RoundEachCurrencyThenSum)
-        {
-            throw new ArgumentOutOfRangeException(nameof(policy), policy, "Unsupported MoneyBag conversion rounding policy.");
-        }
+        FinancialThrowHelper.ThrowIfMoneyBagRoundingPolicyUndefined(policy);
 
         var targetIso = CurrencyMetadata<TTarget>.Value.IsoCode;
         List<MoneyBagConversionLine> lines = new(_balances.Count);

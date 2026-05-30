@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -46,7 +47,8 @@ public sealed class MoneyJsonConverterFactory : JsonConverterFactory
         Type currencyType = typeToConvert.GetGenericArguments()[0];
         Type converterType = typeof(MoneyJsonConverter<>).MakeGenericType(currencyType);
         var converter = Activator.CreateInstance(converterType)
-            ?? throw new InvalidOperationException($"Unable to create a JSON converter for '{typeToConvert}'.");
+            ?? throw new InvalidOperationException(
+                string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Op_Invalid_UnableToCreateConverter, typeToConvert));
 
         return (JsonConverter)converter;
     }

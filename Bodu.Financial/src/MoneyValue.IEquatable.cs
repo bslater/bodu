@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
+
 namespace Bodu.Financial;
 
 public readonly partial struct MoneyValue :
@@ -47,7 +49,11 @@ public readonly partial struct MoneyValue :
         if (!string.Equals(IsoCode, other.IsoCode, StringComparison.Ordinal))
         {
             throw new InvalidOperationException(
-                $"MoneyValue comparison requires the same currency; got '{IsoCode}' and '{other.IsoCode}'.");
+                string.Format(
+                    CultureInfo.InvariantCulture,
+                    FinancialResourceStrings.Op_Invalid_MoneyValueCompareSameCurrencyRequired,
+                    IsoCode,
+                    other.IsoCode));
         }
 
         return _amount.CompareTo(other._amount);
@@ -63,7 +69,7 @@ public readonly partial struct MoneyValue :
     {
         if (obj is null) return 1;
         if (obj is MoneyValue other) return CompareTo(other);
-        throw new ArgumentException("Object must be a MoneyValue.", nameof(obj));
+        throw new ArgumentException(FinancialResourceStrings.Arg_Invalid_MoneyValueObject, nameof(obj));
     }
 
     /// <summary>

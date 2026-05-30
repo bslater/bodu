@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
+
 namespace Bodu.Financial;
 
 /// <summary>
@@ -53,6 +55,7 @@ public sealed class FixedExchangeRateTable : IExchangeRateProvider
         if (_rates.TryGetValue((toIsoCode, fromIsoCode), out var inverse) && inverse != 0m)
             return 1m / inverse;
 
-        throw new KeyNotFoundException($"No exchange rate available for {fromIsoCode} → {toIsoCode}.");
+        throw new KeyNotFoundException(
+            string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.IO_KeyNotFound_ExchangeRate, fromIsoCode, toIsoCode));
     }
 }

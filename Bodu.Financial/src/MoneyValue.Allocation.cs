@@ -47,19 +47,11 @@ public readonly partial struct MoneyValue
     /// <exception cref="ArgumentException">The ratios are empty, contain a negative value, or sum to zero.</exception>
     public MoneyValue[] Allocate(ReadOnlySpan<decimal> ratios)
     {
-        if (ratios.IsEmpty)
-            throw new ArgumentException("At least one ratio must be supplied.", nameof(ratios));
+        FinancialThrowHelper.ThrowIfAllocationRatiosInvalid(ratios);
 
         var totalWeight = 0m;
         for (var i = 0; i < ratios.Length; i++)
-        {
-            if (ratios[i] < 0m)
-                throw new ArgumentException("Ratios must not be negative.", nameof(ratios));
             totalWeight += ratios[i];
-        }
-
-        if (totalWeight == 0m)
-            throw new ArgumentException("At least one ratio must be strictly positive.", nameof(ratios));
 
         var factor = MinorUnitFactor();
         var minorTotal = decimal.ToInt64(_amount * factor);

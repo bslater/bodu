@@ -34,8 +34,8 @@ public readonly record struct ExchangeRatePair
     /// </exception>
     public ExchangeRatePair(string fromIsoCode, string toIsoCode)
     {
-        ExchangeRateValidation.RequireIsoCode(fromIsoCode);
-        ExchangeRateValidation.RequireIsoCode(toIsoCode);
+        FinancialThrowHelper.ThrowIfNotValidIsoCode(fromIsoCode);
+        FinancialThrowHelper.ThrowIfNotValidIsoCode(toIsoCode);
 
         FromIsoCode = fromIsoCode;
         ToIsoCode = toIsoCode;

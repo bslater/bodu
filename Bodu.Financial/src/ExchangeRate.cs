@@ -52,9 +52,9 @@ public readonly record struct ExchangeRate
         string provider,
         bool isInverted = false)
     {
-        ExchangeRateValidation.RequireIsoCode(fromIsoCode);
-        ExchangeRateValidation.RequireIsoCode(toIsoCode);
-        ExchangeRateValidation.RequireProvider(provider);
+        FinancialThrowHelper.ThrowIfNotValidIsoCode(fromIsoCode);
+        FinancialThrowHelper.ThrowIfNotValidIsoCode(toIsoCode);
+        FinancialThrowHelper.ThrowIfNullOrWhiteSpaceProvider(provider);
         ThrowHelper.ThrowIfZeroOrNegative(rate);
 
         FromIsoCode = fromIsoCode;

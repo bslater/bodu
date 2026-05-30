@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Collections.Frozen;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 
 namespace Bodu.Financial;
@@ -67,7 +68,14 @@ public sealed class FixedDatedExchangeRateTable : IDatedExchangeRateProvider
         return TryGetRate(fromIsoCode, toIsoCode, date, options, out ExchangeRateLookupResult result)
             ? result
             : throw new KeyNotFoundException(
-            $"No exchange rate available for {fromIsoCode} -> {toIsoCode} on {date:yyyy-MM-dd} using {options.DateResolution} within {options.ToleranceDays} day(s).");
+                string.Format(
+                    CultureInfo.InvariantCulture,
+                    FinancialResourceStrings.IO_KeyNotFound_DatedExchangeRate,
+                    fromIsoCode,
+                    toIsoCode,
+                    date,
+                    options.DateResolution,
+                    options.ToleranceDays));
     }
 
     /// <inheritdoc />
@@ -78,8 +86,8 @@ public sealed class FixedDatedExchangeRateTable : IDatedExchangeRateProvider
         ExchangeRateLookupOptions options,
         out ExchangeRateLookupResult result)
     {
-        ExchangeRateValidation.RequireIsoCode(fromIsoCode);
-        ExchangeRateValidation.RequireIsoCode(toIsoCode);
+        FinancialThrowHelper.ThrowIfNotValidIsoCode(fromIsoCode);
+        FinancialThrowHelper.ThrowIfNotValidIsoCode(toIsoCode);
         options.Validate();
 
         if (options.AllowSameCurrencyIdentityRate &&
@@ -133,7 +141,13 @@ public sealed class FixedDatedExchangeRateTable : IDatedExchangeRateProvider
             else if (!string.Equals(bucket.Provider, observation.Provider, StringComparison.Ordinal))
             {
                 throw new ArgumentException(
-                    $"Pair {pair.FromIsoCode}/{pair.ToIsoCode} has rates from multiple providers ('{bucket.Provider}' and '{observation.Provider}'); use a composite provider to combine sources.",
+                    string.Format(
+                        CultureInfo.InvariantCulture,
+                        FinancialResourceStrings.Arg_Invalid_RateSeriesProviderConflict,
+                        pair.FromIsoCode,
+                        pair.ToIsoCode,
+                        bucket.Provider,
+                        observation.Provider),
                     nameof(rates));
             }
 

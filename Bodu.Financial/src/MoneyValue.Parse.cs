@@ -37,7 +37,8 @@ public readonly partial struct MoneyValue :
     public static MoneyValue Parse(ReadOnlySpan<char> s, IFormatProvider? provider)
     {
         if (!TryParse(s, provider, out MoneyValue result))
-            throw new FormatException($"The input '{s}' is not a valid MoneyValue representation.");
+            throw new FormatException(
+                string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Format_Invalid_MoneyValueString, s.ToString()));
         return result;
     }
 

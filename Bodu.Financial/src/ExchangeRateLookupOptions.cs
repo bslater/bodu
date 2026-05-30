@@ -121,7 +121,7 @@ public readonly record struct ExchangeRateLookupOptions(
         if (DateResolution == ExchangeRateDateResolution.Exact && ToleranceDays != 0)
         {
             throw new ArgumentException(
-                "ToleranceDays must be zero when DateResolution is Exact.",
+                FinancialResourceStrings.Arg_Invalid_LookupToleranceWithExactResolution,
                 nameof(ToleranceDays));
         }
     }

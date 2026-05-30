@@ -63,7 +63,7 @@ public sealed partial class MoneyBag :
         {
             var iso = balance.IsoCode;
             if (string.IsNullOrEmpty(iso))
-                throw new ArgumentException("Every balance must carry a non-empty ISO code; default(MoneyValue) is not a valid balance.", nameof(balances));
+                throw new ArgumentException(FinancialResourceStrings.Arg_Invalid_BalanceMissingIsoCode, nameof(balances));
 
             if (_balances.TryGetValue(iso, out var existing))
                 _balances[iso] = existing + balance.Amount;
@@ -151,7 +151,7 @@ public sealed partial class MoneyBag :
     {
         var iso = amount.IsoCode;
         if (string.IsNullOrEmpty(iso))
-            throw new ArgumentException("MoneyValue must carry a non-empty ISO code.", nameof(amount));
+            throw new ArgumentException(FinancialResourceStrings.Arg_Invalid_MoneyValueMissingIsoCode, nameof(amount));
 
         if (amount.IsZero)
             return this;

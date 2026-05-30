@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
+
 namespace Bodu.Financial;
 
 public sealed partial class MoneyBag
@@ -98,11 +100,7 @@ public sealed partial class MoneyBag
     private Money<TTarget> ConvertCore<TTarget>(Func<string, string, decimal> rateLookup, MoneyBagConversionRoundingPolicy policy)
         where TTarget : ICurrency
     {
-        if (policy is not MoneyBagConversionRoundingPolicy.SumRawThenRound
-            and not MoneyBagConversionRoundingPolicy.RoundEachCurrencyThenSum)
-        {
-            throw new ArgumentOutOfRangeException(nameof(policy), policy, "Unsupported MoneyBag conversion rounding policy.");
-        }
+        FinancialThrowHelper.ThrowIfMoneyBagRoundingPolicyUndefined(policy);
 
         var targetIso = CurrencyMetadata<TTarget>.Value.IsoCode;
 
@@ -160,7 +158,12 @@ public sealed partial class MoneyBag
         if (rate <= 0m)
         {
             throw new InvalidOperationException(
-                $"Exchange rate for {from} → {to} must be strictly positive; rate provider returned {rate}.");
+                string.Format(
+                    CultureInfo.InvariantCulture,
+                    FinancialResourceStrings.Op_Invalid_RateNotStrictlyPositive,
+                    from,
+                    to,
+                    rate));
         }
 
         return rate;

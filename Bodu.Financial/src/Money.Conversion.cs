@@ -32,8 +32,7 @@ public readonly partial struct Money<TCurrency>
     public Money<TTarget> Convert<TTarget>(decimal exchangeRate, MidpointRounding rounding = MidpointRounding.ToEven)
         where TTarget : ICurrency
     {
-        if (exchangeRate <= 0m)
-            throw new ArgumentOutOfRangeException(nameof(exchangeRate), exchangeRate, "Exchange rate must be strictly positive.");
+        FinancialThrowHelper.ThrowIfExchangeRateNotPositive(exchangeRate);
 
         return new Money<TTarget>(_amount * exchangeRate, rounding);
     }
@@ -165,7 +164,7 @@ public readonly partial struct Money<TCurrency>
             MidpointRounding.ToEven =>
                 RoundNearest(numerator, denominator, quotient, remainder, tiesAwayFromZero: false),
 
-            _ => throw new ArgumentOutOfRangeException(nameof(rounding), rounding, "Unsupported midpoint-rounding mode."),
+            _ => throw new ArgumentOutOfRangeException(nameof(rounding), rounding, FinancialResourceStrings.Arg_OutOfRange_UnsupportedMidpointRounding),
         };
     }
 

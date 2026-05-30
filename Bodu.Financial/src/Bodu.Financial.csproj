@@ -26,4 +26,16 @@
     <ProjectReference Include="..\..\Bodu.Numerics\src\Bodu.Numerics.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EmbeddedResource Update="FinancialResourceStrings.resx">
+      <LastGenOutput>FinancialResourceStrings.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <Compile Update="FinancialResourceStrings.Designer.cs">
+      <DependentUpon>FinancialResourceStrings.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+  </ItemGroup>
+
 </Project>

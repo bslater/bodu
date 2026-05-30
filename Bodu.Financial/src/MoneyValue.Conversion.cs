@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
+
 namespace Bodu.Financial;
 
 public readonly partial struct MoneyValue
@@ -23,7 +25,12 @@ public readonly partial struct MoneyValue
         if (!string.Equals(IsoCode, CurrencyMetadata<TCurrency>.Value.IsoCode, StringComparison.Ordinal))
         {
             throw new InvalidOperationException(
-                $"Cannot convert MoneyValue with currency '{IsoCode}' to Money<{typeof(TCurrency).Name}> (currency '{CurrencyMetadata<TCurrency>.Value.IsoCode}').");
+                string.Format(
+                    CultureInfo.InvariantCulture,
+                    FinancialResourceStrings.Op_Invalid_CannotConvertMoneyValueToTyped,
+                    IsoCode,
+                    typeof(TCurrency).Name,
+                    CurrencyMetadata<TCurrency>.Value.IsoCode));
         }
 
         return new Money<TCurrency>(_amount);
@@ -87,8 +94,7 @@ public readonly partial struct MoneyValue
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="exchangeRate" /> is negative.</exception>
     public MoneyValue Convert(string targetIsoCode, decimal exchangeRate, MidpointRounding rounding)
     {
-        if (exchangeRate <= 0m)
-            throw new ArgumentOutOfRangeException(nameof(exchangeRate), exchangeRate, "Exchange rate must be strictly positive.");
+        FinancialThrowHelper.ThrowIfExchangeRateNotPositive(exchangeRate);
         return new MoneyValue(_amount * exchangeRate, targetIsoCode, rounding);
     }
 
@@ -115,8 +121,7 @@ public readonly partial struct MoneyValue
     public Money<TTarget> Convert<TTarget>(decimal exchangeRate, MidpointRounding rounding)
         where TTarget : ICurrency
     {
-        if (exchangeRate <= 0m)
-            throw new ArgumentOutOfRangeException(nameof(exchangeRate), exchangeRate, "Exchange rate must be strictly positive.");
+        FinancialThrowHelper.ThrowIfExchangeRateNotPositive(exchangeRate);
         return new Money<TTarget>(_amount * exchangeRate, rounding);
     }
 }

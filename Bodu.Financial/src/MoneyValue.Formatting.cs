@@ -105,7 +105,7 @@ public readonly partial struct MoneyValue :
             else
             {
                 if (!int.TryParse(format[1..], NumberStyles.None, CultureInfo.InvariantCulture, out decimals) || decimals < 0)
-                    throw new FormatException($"The format string '{format}' is not supported.");
+                    FinancialThrowHelper.ThrowFormatSpecifierUnsupported(format);
             }
         }
 
@@ -117,7 +117,8 @@ public readonly partial struct MoneyValue :
             'G' or 'C' => string.Concat(IsoCode, " ", _amount.ToString("N" + suffix, effective)),
             'N' => _amount.ToString("N" + suffix, effective),
             'F' or 'D' => _amount.ToString("F" + suffix, effective),
-            _ => throw new FormatException($"The format string '{format}' is not supported."),
+            _ => throw new FormatException(
+                string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Format_Invalid_FormatSpecifier, format.ToString())),
         };
     }
 

@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
+
 namespace Bodu.Financial;
 
 /// <summary>
@@ -41,12 +43,14 @@ public sealed class CompositeDatedExchangeRateProvider : IDatedExchangeRateProvi
         IDatedExchangeRateProvider[] snapshot = [.. providers];
 
         if (snapshot.Length == 0)
-            throw new ArgumentException("At least one provider is required.", nameof(providers));
+            throw new ArgumentException(FinancialResourceStrings.Arg_Invalid_CompositeNoProviders, nameof(providers));
 
         for (var i = 0; i < snapshot.Length; i++)
         {
             if (snapshot[i] is null)
-                throw new ArgumentNullException(nameof(providers), $"Provider at index {i} is null.");
+                throw new ArgumentNullException(
+                    nameof(providers),
+                    string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Arg_Null_ProviderAtIndex, i));
         }
 
         _providers = snapshot;
@@ -62,7 +66,13 @@ public sealed class CompositeDatedExchangeRateProvider : IDatedExchangeRateProvi
         return TryGetRate(fromIsoCode, toIsoCode, date, options, out ExchangeRateLookupResult result)
             ? result
             : throw new KeyNotFoundException(
-            $"No exchange rate available for {fromIsoCode} -> {toIsoCode} on {date:yyyy-MM-dd} across {_providers.Length} provider(s).");
+                string.Format(
+                    CultureInfo.InvariantCulture,
+                    FinancialResourceStrings.IO_KeyNotFound_CompositeExchangeRate,
+                    fromIsoCode,
+                    toIsoCode,
+                    date,
+                    _providers.Length));
     }
 
     /// <inheritdoc />
