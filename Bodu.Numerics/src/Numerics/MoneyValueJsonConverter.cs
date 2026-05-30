@@ -31,6 +31,8 @@ public sealed class MoneyValueJsonConverter : JsonConverter<MoneyValue>
 
         decimal? amount = null;
         string? currency = null;
+        bool amountSeen = false;
+        bool currencySeen = false;
 
         while (reader.Read())
         {
@@ -46,6 +48,10 @@ public sealed class MoneyValueJsonConverter : JsonConverter<MoneyValue>
 
             if (string.Equals(propertyName, "amount", StringComparison.OrdinalIgnoreCase))
             {
+                if (amountSeen)
+                    throw new JsonException("The JSON object contains a duplicate 'amount' property.");
+                amountSeen = true;
+
                 if (reader.TokenType == JsonTokenType.String)
                 {
                     string? text = reader.GetString();
@@ -64,6 +70,10 @@ public sealed class MoneyValueJsonConverter : JsonConverter<MoneyValue>
             }
             else if (string.Equals(propertyName, "currency", StringComparison.OrdinalIgnoreCase))
             {
+                if (currencySeen)
+                    throw new JsonException("The JSON object contains a duplicate 'currency' property.");
+                currencySeen = true;
+
                 if (reader.TokenType != JsonTokenType.String)
                     throw new JsonException("The 'currency' property must be a string.");
                 currency = reader.GetString();

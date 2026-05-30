@@ -64,11 +64,21 @@ public readonly partial struct MoneyValue
     /// <param name="isoCode">The ISO 4217 three-letter alphabetic code identifying the currency.</param>
     /// <param name="rounding">The midpoint-rounding rule applied when normalising to the minor-unit precision.</param>
     /// <exception cref="ArgumentNullException"><paramref name="isoCode" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentException"><paramref name="isoCode" /> is empty or whitespace.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="isoCode" /> is not exactly three uppercase ASCII letters — empty, whitespace, the wrong
+    /// length, lowercase, or contains non-letter characters.
+    /// </exception>
+    /// <remarks>
+    /// Currency integrity matches <see cref="Money{TCurrency}" />: the ISO code is validated to ISO 4217's
+    /// three-uppercase-ASCII-letters shape regardless of whether the code is in <see cref="CurrencyRegistry" />.
+    /// For codes that are registered, the amount is rounded to the registry's <c>MinorUnits</c>; for codes
+    /// that are valid in shape but not registered, the amount is stored at its source precision so consumer
+    /// code that handles custom or test currencies still works.
+    /// </remarks>
     public MoneyValue(decimal amount, string isoCode, MidpointRounding rounding)
     {
         ThrowHelper.ThrowIfNull(isoCode);
-        if (string.IsNullOrWhiteSpace(isoCode)) throw new ArgumentException("ISO code must not be empty.", nameof(isoCode));
+        ValidateIsoCode(isoCode);
 
         _isoCode = isoCode;
         if (CurrencyRegistry.TryGet(isoCode, out CurrencyInfo? info) && info is not null)
@@ -78,6 +88,34 @@ public readonly partial struct MoneyValue
         else
         {
             _amount = amount;
+        }
+    }
+
+    /// <summary>
+    /// Validates that <paramref name="isoCode" /> is exactly three uppercase ASCII letters.
+    /// </summary>
+    /// <param name="isoCode">The candidate ISO code.</param>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="isoCode" /> is not exactly three uppercase ASCII letters.
+    /// </exception>
+    private static void ValidateIsoCode(string isoCode)
+    {
+        if (isoCode.Length != 3)
+        {
+            throw new ArgumentException(
+                $"ISO 4217 code must be exactly three letters, but '{isoCode}' has {isoCode.Length}.",
+                nameof(isoCode));
+        }
+
+        for (int i = 0; i < 3; i++)
+        {
+            char c = isoCode[i];
+            if (c < 'A' || c > 'Z')
+            {
+                throw new ArgumentException(
+                    $"ISO 4217 code must be three uppercase ASCII letters, but '{isoCode}' contains '{c}'.",
+                    nameof(isoCode));
+            }
         }
     }
 

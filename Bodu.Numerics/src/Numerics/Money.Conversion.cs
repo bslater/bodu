@@ -121,8 +121,18 @@ public readonly partial struct Money<TCurrency>
     /// <param name="denominator">The divisor; must be non-zero.</param>
     /// <param name="rounding">The midpoint-rounding rule.</param>
     /// <returns>The rounded integer quotient.</returns>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="rounding" /> is not a defined value.</exception>
+    /// <remarks>
+    /// Directed modes (<see cref="MidpointRounding.ToZero" />, <see cref="MidpointRounding.ToPositiveInfinity" />,
+    /// <see cref="MidpointRounding.ToNegativeInfinity" />) apply to every non-zero remainder, not only at
+    /// midpoints. Midpoint-only modes (<see cref="MidpointRounding.AwayFromZero" />,
+    /// <see cref="MidpointRounding.ToEven" />) defer to the nearest-rounding helper.
+    /// </remarks>
     private static BigInteger DivideRound(BigInteger numerator, BigInteger denominator, MidpointRounding rounding)
     {
+        if (denominator.IsZero)
+            throw new DivideByZeroException();
+
         if (denominator.Sign < 0)
         {
             numerator = -numerator;
@@ -133,34 +143,54 @@ public readonly partial struct Money<TCurrency>
         if (remainder.IsZero)
             return quotient;
 
+        return rounding switch
+        {
+            MidpointRounding.ToZero => quotient,
+
+            MidpointRounding.ToPositiveInfinity =>
+                numerator.Sign > 0 ? quotient + BigInteger.One : quotient,
+
+            MidpointRounding.ToNegativeInfinity =>
+                numerator.Sign < 0 ? quotient - BigInteger.One : quotient,
+
+            MidpointRounding.AwayFromZero =>
+                RoundNearest(numerator, denominator, quotient, remainder, tiesAwayFromZero: true),
+
+            MidpointRounding.ToEven =>
+                RoundNearest(numerator, denominator, quotient, remainder, tiesAwayFromZero: false),
+
+            _ => throw new ArgumentOutOfRangeException(nameof(rounding), rounding, "Unsupported midpoint-rounding mode."),
+        };
+    }
+
+    /// <summary>
+    /// Rounds the quotient to the nearest integer based on the magnitude of the remainder, with midpoint
+    /// ties broken by <paramref name="tiesAwayFromZero" /> (true for <see cref="MidpointRounding.AwayFromZero" />,
+    /// false for <see cref="MidpointRounding.ToEven" />).
+    /// </summary>
+    /// <param name="numerator">The original dividend (its sign determines round-away direction).</param>
+    /// <param name="denominator">The positive divisor.</param>
+    /// <param name="quotient">The truncated quotient from <see cref="BigInteger.DivRem" />.</param>
+    /// <param name="remainder">The non-zero remainder.</param>
+    /// <param name="tiesAwayFromZero">Whether to round midpoints away from zero (true) or to the nearest even (false).</param>
+    /// <returns>The rounded integer.</returns>
+    private static BigInteger RoundNearest(
+        BigInteger numerator,
+        BigInteger denominator,
+        BigInteger quotient,
+        BigInteger remainder,
+        bool tiesAwayFromZero)
+    {
         BigInteger absDoubleRem = BigInteger.Abs(remainder) * 2;
         int cmp = absDoubleRem.CompareTo(denominator);
-        int sign = numerator.Sign;
 
-        bool roundAway;
-        if (cmp < 0)
-        {
-            roundAway = false;
-        }
-        else if (cmp > 0)
-        {
-            roundAway = true;
-        }
-        else
-        {
-            roundAway = rounding switch
-            {
-                MidpointRounding.AwayFromZero => true,
-                MidpointRounding.ToZero => false,
-                MidpointRounding.ToPositiveInfinity => sign > 0,
-                MidpointRounding.ToNegativeInfinity => sign < 0,
-                _ => !quotient.IsEven,
-            };
-        }
+        bool roundAway = cmp > 0 || (cmp == 0 && (tiesAwayFromZero || !quotient.IsEven));
 
         if (!roundAway)
             return quotient;
 
-        return sign >= 0 ? quotient + BigInteger.One : quotient - BigInteger.One;
+        return numerator.Sign >= 0
+            ? quotient + BigInteger.One
+            : quotient - BigInteger.One;
     }
 }

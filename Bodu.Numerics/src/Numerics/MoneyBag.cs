@@ -65,7 +65,7 @@ public sealed partial class MoneyBag :
         {
             string iso = balance.IsoCode;
             if (string.IsNullOrEmpty(iso))
-                continue;
+                throw new ArgumentException("Every balance must carry a non-empty ISO code; default(MoneyValue) is not a valid balance.", nameof(balances));
 
             if (_balances.TryGetValue(iso, out decimal existing))
                 _balances[iso] = existing + balance.Amount;
@@ -117,9 +117,14 @@ public sealed partial class MoneyBag :
     /// <summary>
     /// Gets a read-only snapshot of the balance dictionary keyed by ISO code.
     /// </summary>
-    /// <returns>The balances.</returns>
+    /// <returns>
+    /// A genuinely read-only view of the balances. The returned dictionary is a
+    /// <see cref="System.Collections.ObjectModel.ReadOnlyDictionary{TKey, TValue}" /> wrapper around the
+    /// internal storage, so a consumer cannot bypass immutability by casting the result back to
+    /// <see cref="Dictionary{TKey, TValue}" /> and mutating it.
+    /// </returns>
     public IReadOnlyDictionary<string, decimal> Balances =>
-        _balances;
+        new System.Collections.ObjectModel.ReadOnlyDictionary<string, decimal>(_balances);
 
     /// <summary>
     /// Enumerates the non-zero balances in ISO-code lexicographic order.

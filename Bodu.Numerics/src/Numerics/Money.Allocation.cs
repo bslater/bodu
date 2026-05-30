@@ -59,8 +59,9 @@ public readonly partial struct Money<TCurrency>
     /// </param>
     /// <returns>
     /// An array of <see cref="Money{TCurrency}" /> values whose length equals <paramref name="ratios" />.<see cref="ReadOnlySpan{T}.Length" />
-    /// and whose sum equals this instance. Any residual minor units are distributed across the positive-ratio
-    /// shares from the start of the array.
+    /// and whose sum equals this instance. Residual minor units are distributed by the
+    /// <i>largest-remainder method</i> — each slot receives one extra unit in descending order of its
+    /// fractional remainder, with ties broken by stable input order. Zero-ratio slots never receive residual.
     /// </returns>
     /// <exception cref="ArgumentException">Thrown when <paramref name="ratios" /> is empty, contains a negative element, or sums to zero.</exception>
     /// <exception cref="OverflowException">
@@ -82,42 +83,55 @@ public readonly partial struct Money<TCurrency>
         if (totalWeight == 0m)
             throw new ArgumentException("At least one ratio must be strictly positive.", nameof(ratios));
 
-        long minorTotal = ToMinorUnits(_amount);
+        long minorTotalSigned = ToMinorUnits(_amount);
+        long sign = minorTotalSigned >= 0 ? 1 : -1;
+        long minorTotal = Math.Abs(minorTotalSigned);
         decimal factor = MinorUnitFactor();
 
+        // Compute floored shares over absolute minor units; track each slot's fractional remainder so the
+        // residual can go to the slot with the largest remainder (Hamilton method).
         long[] shares = new long[ratios.Length];
+        decimal[] remainders = new decimal[ratios.Length];
         long allocated = 0;
         for (int i = 0; i < ratios.Length; i++)
         {
-            decimal exactShare = minorTotal * ratios[i] / totalWeight;
-            long flooredShare = (long)decimal.Truncate(exactShare);
-            shares[i] = flooredShare;
-            allocated += flooredShare;
+            decimal exact = minorTotal * ratios[i] / totalWeight;
+            decimal floored = decimal.Truncate(exact);
+            shares[i] = (long)floored;
+            remainders[i] = exact - floored;
+            allocated += shares[i];
         }
 
         long residual = minorTotal - allocated;
-        long sign = residual >= 0 ? 1 : -1;
-        long residualMagnitude = Math.Abs(residual);
-
-        if (residualMagnitude > 0)
+        if (residual > 0)
         {
-            int cursor = 0;
-            long distributed = 0;
-            while (distributed < residualMagnitude)
-            {
-                if (ratios[cursor] > 0m)
-                {
-                    shares[cursor] += sign;
-                    distributed++;
-                }
+            // Sort indices by (descending remainder, ascending index) so ties fall back to stable input order.
+            int[] order = new int[ratios.Length];
+            for (int i = 0; i < ratios.Length; i++)
+                order[i] = i;
 
-                cursor = (cursor + 1) % ratios.Length;
+            // Local capture to allow Array.Sort with span.
+            decimal[] remaindersLocal = remainders;
+            Array.Sort(order, (a, b) =>
+            {
+                int cmp = remaindersLocal[b].CompareTo(remaindersLocal[a]);
+                return cmp != 0 ? cmp : a.CompareTo(b);
+            });
+
+            long distributed = 0;
+            for (int k = 0; k < order.Length && distributed < residual; k++)
+            {
+                int idx = order[k];
+                if (ratios[idx] <= 0m)
+                    continue;     // never give residual to a zero-ratio slot
+                shares[idx]++;
+                distributed++;
             }
         }
 
         Money<TCurrency>[] result = new Money<TCurrency>[ratios.Length];
         for (int i = 0; i < ratios.Length; i++)
-            result[i] = Money<TCurrency>.FromNormalizedAmount(shares[i] / factor);
+            result[i] = Money<TCurrency>.FromNormalizedAmount(sign * shares[i] / factor);
 
         return result;
     }

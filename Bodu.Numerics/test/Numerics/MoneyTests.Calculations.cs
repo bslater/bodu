@@ -29,7 +29,7 @@ public partial class MoneyTests
     [DataRow(1.99, 7.0, 13.93)]       // 1.99 × 7 = 13.93 exactly
     [DataRow(10.0, 0.175, 1.75)]      // 10 × 17.5% = 1.75
     [DataRow(1.00, 0.0825, 0.08)]     // 1.00 × 8.25% = 0.0825 → 0.08 (banker's: down to even)
-    [DataRow(1.00, 0.0875, 0.09)]     // 1.00 × 8.75% = 0.0875 → 0.09 (banker's: up to even... 8 is even, .875 rounds to .88? wait)
+    [DataRow(1.00, 0.0875, 0.09)]     // 1.00 × 8.75% = 0.0875 → 0.09 (4th decimal is 7, > 5 → rounds up at 2 dp)
     [DataRow(0.0, 100.0, 0.0)]
     [DataRow(-100.0, 0.10, -10.0)]
     public void Multiplication_WhenUsd_ShouldRoundToTwoDecimals(double amount, double scalar, double expected)

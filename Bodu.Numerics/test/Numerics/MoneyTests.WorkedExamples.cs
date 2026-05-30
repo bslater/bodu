@@ -255,7 +255,7 @@ public partial class MoneyTests
     [DataRow(100.00, 0.92, 92.00)]
     [DataRow(50.00, 0.92, 46.00)]
     [DataRow(1234.56, 1.10, 1358.02)]     // 1234.56 × 1.10 = 1358.016 → 1358.02 banker's (1 is odd)
-    [DataRow(0.05, 0.92, 0.05)]           // 0.046 → 0.05 banker's (4 even... wait .046 → .05 because 5 > round)
+    [DataRow(0.05, 0.92, 0.05)]           // 0.05 × 0.92 = 0.0460; rounds to 0.05 at EUR's 2-dp precision (6 > 5)
     public void Fx_WhenConvertingUsdToEur_ShouldRoundToEurPrecision(double amount, double rate, double expected)
     {
         Money<USD> source = new Money<USD>((decimal)amount);
@@ -315,7 +315,7 @@ public partial class MoneyTests
         Fraction<BigInteger> dpsExact = Fraction<BigInteger>.Create(4275, 10000);    // 0.4275 exactly
 
         // The naive path constructs Money<USD> with the DPS first — losing the 4th decimal to rounding.
-        Money<USD> naiveDps = new Money<USD>(0.4275m);                               // → 0.43 (banker's: .5 rounds to even .4? no wait .4275 → 4th decimal is 5, rounds to even 8 → .43? actually decimal.Round(.4275, 2) = 0.42 or 0.43? digits are 4,2,7,5 — at position 3 we have 7, > 5, rounds up → 0.43)
+        Money<USD> naiveDps = new Money<USD>(0.4275m);                               // → 0.43 (digit at position 3 is 7 → rounds up at 2 dp)
         Money<USD> naivePayout = naiveDps * shares;                                  // 0.43 × 250 = 107.50
 
         // The exact path multiplies through Fraction<BigInteger> and rounds only at settlement.

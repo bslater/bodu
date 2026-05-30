@@ -151,13 +151,23 @@ public readonly partial struct MoneyValue
     }
 
     /// <summary>
-    /// Asserts that two operands share the same ISO code, throwing otherwise.
+    /// Asserts that both operands carry a non-empty ISO code (i.e. neither is a default-initialised value) and
+    /// that the two codes match.
     /// </summary>
     /// <param name="left">The first operand.</param>
     /// <param name="right">The second operand.</param>
-    /// <exception cref="InvalidOperationException">The operands have different ISO codes.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// Either operand carries no ISO code (a default-initialised <see cref="MoneyValue" />), or the two codes
+    /// differ.
+    /// </exception>
     private static void EnsureSameCurrency(MoneyValue left, MoneyValue right)
     {
+        if (string.IsNullOrEmpty(left.IsoCode) || string.IsNullOrEmpty(right.IsoCode))
+        {
+            throw new InvalidOperationException(
+                "MoneyValue operations require both operands to carry a currency; default(MoneyValue) is not a valid operand.");
+        }
+
         if (!string.Equals(left.IsoCode, right.IsoCode, StringComparison.Ordinal))
         {
             throw new InvalidOperationException(
