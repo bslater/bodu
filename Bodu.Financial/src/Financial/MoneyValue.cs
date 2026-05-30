@@ -4,10 +4,10 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Financial.Serialization;
 using System.Diagnostics;
 using System.Globalization;
 using System.Text.Json.Serialization;
+using Bodu.Financial.Serialization;
 
 namespace Bodu.Financial;
 

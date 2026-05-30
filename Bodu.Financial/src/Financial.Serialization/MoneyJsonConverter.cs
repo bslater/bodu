@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyJsonConverter.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -34,7 +34,8 @@ namespace Bodu.Financial.Serialization;
 /// <item>
 /// <description>
 /// <see cref="FinancialJsonPolicy.Compact" /> — string form <c>"19.99 USD"</c>; reads accept either ISO-prefix or
-/// ISO-suffix arrangement and reuse <see cref="Money{TCurrency}.TryParse(ReadOnlySpan{char}, IFormatProvider?, out Money{TCurrency})" />.
+/// ISO-suffix arrangement and reuse
+/// <see cref="Money{TCurrency}.TryParse(ReadOnlySpan{char}, IFormatProvider?, out Money{TCurrency})" />.
 /// </description>
 /// </item>
 /// </list>
@@ -58,8 +59,8 @@ public sealed class MoneyJsonConverter<TCurrency>
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="MoneyJsonConverter{TCurrency}" /> class configured for the
-    /// supplied <paramref name="policy" />.
+    /// Initializes a new instance of the <see cref="MoneyJsonConverter{TCurrency}" /> class configured for the supplied
+    /// <paramref name="policy" />.
     /// </summary>
     /// <param name="policy">The serialization policy.</param>
     /// <exception cref="ArgumentOutOfRangeException">
@@ -134,8 +135,8 @@ public sealed class MoneyJsonConverter<TCurrency>
     /// <param name="reader">The reader positioned at the value to convert.</param>
     /// <returns>The deserialized monetary amount.</returns>
     /// <exception cref="JsonException">
-    /// Thrown when the JSON is not an object, is missing one of the expected properties, or carries a
-    /// <c>"currency"</c> code that does not match <typeparamref name="TCurrency" />.
+    /// Thrown when the JSON is not an object, is missing one of the expected properties, or carries a <c>"currency"</c>
+    /// code that does not match <typeparamref name="TCurrency" />.
     /// </exception>
     private Money<TCurrency> ReadObject(ref Utf8JsonReader reader)
     {

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FinancialJsonSerializerOptionsExtensions.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -25,12 +25,8 @@ public static class FinancialJsonSerializerOptionsExtensions
     /// The serialization policy applied to every registered converter. Defaults to
     /// <see cref="FinancialJsonPolicy.Strict" />.
     /// </param>
-    /// <returns>
-    /// The same <paramref name="options" /> instance, so calls can be chained inline.
-    /// </returns>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="options" /> is <see langword="null" />.
-    /// </exception>
+    /// <returns>The same <paramref name="options" /> instance, so calls can be chained inline.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="options" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="policy" /> is not a defined <see cref="FinancialJsonPolicy" /> value.
     /// </exception>
@@ -41,8 +37,8 @@ public static class FinancialJsonSerializerOptionsExtensions
     /// <remarks>
     /// <para>
     /// Converters registered on <see cref="JsonSerializerOptions.Converters" /> take precedence over the
-    /// <c>[JsonConverter]</c> attribute that ships on the monetary types, so calling this method overrides the
-    /// default attribute-driven policy for the lifetime of <paramref name="options" />.
+    /// <c>[JsonConverter]</c> attribute that ships on the monetary types, so calling this method overrides the default
+    /// attribute-driven policy for the lifetime of <paramref name="options" />.
     /// </para>
     /// <para>
     /// Use the <see cref="FinancialJsonPolicy.Strict" /> policy for ledger / persistence data, the

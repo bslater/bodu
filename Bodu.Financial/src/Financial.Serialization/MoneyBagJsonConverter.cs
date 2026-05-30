@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyBagJsonConverter.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -15,10 +15,10 @@ namespace Bodu.Financial.Serialization;
 /// </summary>
 /// <remarks>
 /// <para>
-/// <see cref="FinancialJsonPolicy.Strict" /> and <see cref="FinancialJsonPolicy.Lenient" /> use the canonical
-/// wrapper form <c>{ "balances": { "AUD": 12.34, "USD": 56.78 } }</c>. <see cref="FinancialJsonPolicy.Compact" />
-/// drops the wrapper and emits a flat ISO-code-to-amount map (<c>{ "AUD": 12.34, "USD": 56.78 }</c>); this is the
-/// natural minimal shape when the consumer already knows the payload is a bag.
+/// <see cref="FinancialJsonPolicy.Strict" /> and <see cref="FinancialJsonPolicy.Lenient" /> use the canonical wrapper
+/// form <c>{ "balances": { "AUD": 12.34, "USD": 56.78 } }</c>. <see cref="FinancialJsonPolicy.Compact" /> drops the
+/// wrapper and emits a flat ISO-code-to-amount map (<c>{ "AUD": 12.34, "USD": 56.78 }</c>); this is the natural minimal
+/// shape when the consumer already knows the payload is a bag.
 /// </para>
 /// </remarks>
 public sealed class MoneyBagJsonConverter

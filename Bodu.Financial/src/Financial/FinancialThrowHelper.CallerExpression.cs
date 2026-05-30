@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FinancialThrowHelper.CallerExpression.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -143,8 +143,7 @@ internal static partial class FinancialThrowHelper
     }
 
     /// <summary>
-    /// Throws when <paramref name="policy" /> is not a defined <see cref="Serialization.FinancialJsonPolicy" />
-    /// member.
+    /// Throws when <paramref name="policy" /> is not a defined <see cref="Serialization.FinancialJsonPolicy" /> member.
     /// </summary>
     /// <param name="policy">The policy value to validate.</param>
     /// <param name="paramName">The parameter name reported in the exception; inferred from the call site.</param>

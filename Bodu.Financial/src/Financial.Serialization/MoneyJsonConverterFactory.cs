@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyJsonConverterFactory.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -19,8 +19,8 @@ namespace Bodu.Financial.Serialization;
 /// so monetary values serialize through <see cref="System.Text.Json" /> without any explicit converter registration.
 /// The attribute path defaults to <see cref="FinancialJsonPolicy.Strict" />; consumers who need a different policy
 /// register an additional factory via
-/// <see cref="FinancialJsonSerializerOptionsExtensions.AddFinancialJsonConverters" />, which takes precedence over
-/// the type-level attribute.
+/// <see cref="FinancialJsonSerializerOptionsExtensions.AddFinancialJsonConverters" />, which takes precedence over the
+/// type-level attribute.
 /// </remarks>
 public sealed class MoneyJsonConverterFactory
     : JsonConverterFactory

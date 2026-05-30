@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyValueJsonConverter.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -11,9 +11,9 @@ using System.Text.Json.Serialization;
 namespace Bodu.Financial.Serialization;
 
 /// <summary>
-/// Converts a <see cref="MoneyValue" /> to and from JSON using the policy supplied at construction. Mirrors the
-/// shape vocabulary of <see cref="MoneyJsonConverter{TCurrency}" /> so a single
-/// <see cref="FinancialJsonPolicy" /> selection produces a coherent on-the-wire format across the monetary types.
+/// Converts a <see cref="MoneyValue" /> to and from JSON using the policy supplied at construction. Mirrors the shape
+/// vocabulary of <see cref="MoneyJsonConverter{TCurrency}" /> so a single <see cref="FinancialJsonPolicy" /> selection
+/// produces a coherent on-the-wire format across the monetary types.
 /// </summary>
 public sealed class MoneyValueJsonConverter
     : JsonConverter<MoneyValue>
@@ -101,9 +101,7 @@ public sealed class MoneyValueJsonConverter
     /// </summary>
     /// <param name="reader">The reader positioned at the value to convert.</param>
     /// <returns>The deserialized value.</returns>
-    /// <exception cref="JsonException">
-    /// Thrown when the JSON shape is invalid.
-    /// </exception>
+    /// <exception cref="JsonException">Thrown when the JSON shape is invalid.</exception>
     private MoneyValue ReadObject(ref Utf8JsonReader reader)
     {
         if (reader.TokenType != JsonTokenType.StartObject)
