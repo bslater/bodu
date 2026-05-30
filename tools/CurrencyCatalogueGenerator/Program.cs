@@ -68,6 +68,21 @@ internal static class Program
             existing.Remove(fileName);
         }
 
+        const string registrationFileName = "GeneratedCurrencyRegistration.cs";
+        string registrationPath = Path.Combine(outputDir, registrationFileName);
+        string registrationSource = BuildRegistrationSource(catalogue);
+        if (File.Exists(registrationPath) && File.ReadAllText(registrationPath) == registrationSource)
+        {
+            unchanged++;
+        }
+        else
+        {
+            File.WriteAllText(registrationPath, registrationSource);
+            written++;
+        }
+
+        existing.Remove(registrationFileName);
+
         foreach (string stale in existing)
         {
             if (string.Equals(stale, "currencies.json", StringComparison.Ordinal))
@@ -82,6 +97,72 @@ internal static class Program
 
         Console.WriteLine($"Done. Wrote {written}, left {unchanged} unchanged, removed {existing.Count}.");
         return 0;
+    }
+
+    private static string BuildRegistrationSource(Catalogue catalogue)
+    {
+        StringBuilder builder = new();
+        builder.Append(FileHeader);
+        builder.AppendLine("namespace Bodu.Numerics.Currencies;");
+        builder.AppendLine();
+        builder.AppendLine("using global::System.Collections.Generic;");
+        builder.AppendLine();
+        builder.AppendLine("/// <summary>");
+        builder.AppendLine("/// Source-generated registration list of the shipped currency catalogue, consumed by");
+        builder.AppendLine("/// <see cref=\"Bodu.Numerics.CurrencyRegistry\" /> at static-constructor time.");
+        builder.AppendLine("/// </summary>");
+        builder.AppendLine("internal static class GeneratedCurrencyRegistration");
+        builder.AppendLine("{");
+        builder.AppendLine("    /// <summary>");
+        builder.AppendLine("    /// Enumerates the shipped <see cref=\"Bodu.Numerics.CurrencyInfo\" /> entries.");
+        builder.AppendLine("    /// </summary>");
+        builder.AppendLine("    /// <returns>One entry per currency tag type under <c>Bodu.Numerics.Currencies</c>.</returns>");
+        builder.AppendLine("    public static IEnumerable<global::Bodu.Numerics.CurrencyInfo> All()");
+        builder.AppendLine("    {");
+
+        foreach (CurrencyEntry currency in catalogue.Currencies)
+        {
+            string cashIncrement = (currency.CashRoundingIncrement ?? 0m)
+                .ToString("0.################", CultureInfo.InvariantCulture);
+
+            string demonetizedExpr;
+            if (currency.IsHistoric && !string.IsNullOrEmpty(currency.DemonetizedOn))
+            {
+                global::System.DateOnly date = global::System.DateOnly.ParseExact(
+                    currency.DemonetizedOn,
+                    "yyyy-MM-dd",
+                    CultureInfo.InvariantCulture);
+                demonetizedExpr = $"new global::System.DateOnly({date.Year.ToString(CultureInfo.InvariantCulture)}, " +
+                    $"{date.Month.ToString(CultureInfo.InvariantCulture)}, " +
+                    $"{date.Day.ToString(CultureInfo.InvariantCulture)})";
+            }
+            else
+            {
+                demonetizedExpr = "null";
+            }
+
+            string successorExpr = string.IsNullOrEmpty(currency.SuccessorIsoCode)
+                ? "null"
+                : $"\"{currency.SuccessorIsoCode}\"";
+
+            builder.Append("        yield return new global::Bodu.Numerics.CurrencyInfo(\"")
+                .Append(currency.Iso)
+                .Append("\", ")
+                .Append(currency.MinorUnits.ToString(CultureInfo.InvariantCulture))
+                .Append(", ")
+                .Append(cashIncrement)
+                .Append("m, ")
+                .Append(currency.IsHistoric ? "true" : "false")
+                .Append(", ")
+                .Append(demonetizedExpr)
+                .Append(", ")
+                .Append(successorExpr)
+                .AppendLine(");");
+        }
+
+        builder.AppendLine("    }");
+        builder.AppendLine("}");
+        return builder.ToString();
     }
 
     private static Catalogue ReadCatalogue(string path)
