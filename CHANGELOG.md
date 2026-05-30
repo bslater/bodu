@@ -124,6 +124,7 @@ Initial release. Provides `IServiceCollection` extensions for registering `Notab
 #### Added
 
 - `Verhoeff` check-digit algorithm (dihedral group D5), detecting all single-digit substitution errors and all adjacent-digit transpositions. Exposes the same static `Compute` / `IsValid` and streaming `Append` / `GetCurrentCheckDigit` / `Reset` surface as the other check-digit algorithms.
+- `Gumm` check-digit algorithm — H. Peter Gumm's 1985 dihedral-group method (independent co-discovery of Verhoeff's result), detecting all single-digit substitution errors and all adjacent-digit transpositions. Instantiated over D5 with the transform `T(e,x) = (e, e(2−x)+1)` applied at alternating positions; a Regression test exhaustively verifies both detection guarantees over every body of length 1–4.
 - `Code39Mod43` check-character algorithm — the modulo-43 self-check defined by the Code 39 (Code 3 of 9) barcode symbology, over the forty-three-symbol alphabet (`'0'`–`'9'`, `'A'`–`'Z'`, and `'-' '.' ' ' '$' '/' '+' '%'`).
 - `Crockford32` check-symbol algorithm — Douglas Crockford's Base32 modulo-37 check symbol (the scheme commonly paired with ULID), with case-insensitive decoding, the `'I'`/`'L'`→1 and `'O'`→0 aliases, and the five check-only symbols `'*' '~' '$' '=' 'U'` for the values 32–36.
 - `CheckDigitInputAlphabet` and `CheckDigitOutputAlphabet` gain `Code39`, `CrockfordBase32`, and `CrockfordBase32Check` members so the new algorithms can declare their alphabets.
