@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyValue.Properties.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -25,14 +25,19 @@ public readonly partial struct MoneyValue
     /// <summary>
     /// Gets the minor-unit precision of the currency, as reported by <see cref="CurrencyRegistry" />.
     /// </summary>
-    /// <returns>The number of fractional digits of the currency's minor unit, or zero when the currency is unknown to the registry.</returns>
+    /// <returns>
+    /// The number of fractional digits of the currency's minor unit, or zero when the currency is unknown to the
+    /// registry.
+    /// </returns>
     public int MinorUnits =>
         CurrencyRegistry.TryGet(IsoCode, out CurrencyInfo? info) ? info!.MinorUnits : 0;
 
     /// <summary>
     /// Gets a value indicating whether this amount is zero.
     /// </summary>
-    /// <returns><see langword="true" /> when <see cref="Amount" /> is zero; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when <see cref="Amount" /> is zero; otherwise <see langword="false" />.
+    /// </returns>
     public bool IsZero =>
         _amount == 0m;
 

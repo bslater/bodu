@@ -1,13 +1,11 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyBag.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Collections;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Text.Json.Serialization;
 
 namespace Bodu.Financial;
@@ -18,12 +16,12 @@ namespace Bodu.Financial;
 /// <remarks>
 /// <para>
 /// <see cref="MoneyBag" /> is the multi-currency aggregate used to model portfolios, ledger totals that span
-/// currencies, FX positions, or any other context where amounts in different currencies must be tracked
-/// together but not silently merged. Zero balances are pruned automatically on every operation.
+/// currencies, FX positions, or any other context where amounts in different currencies must be tracked together but
+/// not silently merged. Zero balances are pruned automatically on every operation.
 /// </para>
 /// <para>
-/// Enumeration yields one <see cref="MoneyValue" /> per non-zero currency, in ISO-code lexicographic order so
-/// the iteration is stable and reproducible across runs.
+/// Enumeration yields one <see cref="MoneyValue" /> per non-zero currency, in ISO-code lexicographic order so the
+/// iteration is stable and reproducible across runs.
 /// </para>
 /// </remarks>
 [DebuggerDisplay("{Count} currencies")]
@@ -43,7 +41,7 @@ public sealed partial class MoneyBag :
     private readonly Dictionary<string, decimal> _balances;
 
     /// <summary>
-    /// Initializes an empty <see cref="MoneyBag" />.
+    /// Initializes a new instance of the <see cref="MoneyBag" /> class.
     /// </summary>
     public MoneyBag()
     {
@@ -51,8 +49,8 @@ public sealed partial class MoneyBag :
     }
 
     /// <summary>
-    /// Initializes a <see cref="MoneyBag" /> from a sequence of <see cref="MoneyValue" /> balances, summing
-    /// amounts with the same ISO code.
+    /// Initializes a new instance of the <see cref="MoneyBag" /> class from a sequence of <see cref="MoneyValue" />
+    /// balances, summing amounts with the same ISO code.
     /// </summary>
     /// <param name="balances">The starting balances.</param>
     /// <exception cref="ArgumentNullException"><paramref name="balances" /> is <see langword="null" />.</exception>
@@ -63,11 +61,11 @@ public sealed partial class MoneyBag :
         _balances = new Dictionary<string, decimal>(StringComparer.Ordinal);
         foreach (MoneyValue balance in balances)
         {
-            string iso = balance.IsoCode;
+            var iso = balance.IsoCode;
             if (string.IsNullOrEmpty(iso))
                 throw new ArgumentException("Every balance must carry a non-empty ISO code; default(MoneyValue) is not a valid balance.", nameof(balances));
 
-            if (_balances.TryGetValue(iso, out decimal existing))
+            if (_balances.TryGetValue(iso, out var existing))
                 _balances[iso] = existing + balance.Amount;
             else
                 _balances[iso] = balance.Amount;
@@ -86,13 +84,14 @@ public sealed partial class MoneyBag :
 
         if (toRemove is not null)
         {
-            foreach (string iso in toRemove)
+            foreach (var iso in toRemove)
                 _balances.Remove(iso);
         }
     }
 
     /// <summary>
-    /// Initializes a bag from an already-built dictionary (internal fast path used by mutators).
+    /// Initializes a new instance of the <see cref="MoneyBag" /> class from an already-built dictionary (internal fast
+    /// path used by mutators).
     /// </summary>
     /// <param name="source">The balance dictionary the new bag takes ownership of.</param>
     private MoneyBag(Dictionary<string, decimal> source)
@@ -119,8 +118,8 @@ public sealed partial class MoneyBag :
     /// </summary>
     /// <returns>
     /// A genuinely read-only view of the balances. The returned dictionary is a
-    /// <see cref="System.Collections.ObjectModel.ReadOnlyDictionary{TKey, TValue}" /> wrapper around the
-    /// internal storage, so a consumer cannot bypass immutability by casting the result back to
+    /// <see cref="System.Collections.ObjectModel.ReadOnlyDictionary{TKey, TValue}" /> wrapper around the internal
+    /// storage, so a consumer cannot bypass immutability by casting the result back to
     /// <see cref="Dictionary{TKey, TValue}" /> and mutating it.
     /// </returns>
     public IReadOnlyDictionary<string, decimal> Balances =>
@@ -145,10 +144,12 @@ public sealed partial class MoneyBag :
     /// </summary>
     /// <param name="amount">The amount to add.</param>
     /// <returns>The updated bag.</returns>
-    /// <exception cref="ArgumentException"><paramref name="amount" /> has no ISO code (default-initialised).</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="amount" /> has no ISO code (default-initialised).
+    /// </exception>
     public MoneyBag Add(MoneyValue amount)
     {
-        string iso = amount.IsoCode;
+        var iso = amount.IsoCode;
         if (string.IsNullOrEmpty(iso))
             throw new ArgumentException("MoneyValue must carry a non-empty ISO code.", nameof(amount));
 
@@ -156,9 +157,9 @@ public sealed partial class MoneyBag :
             return this;
 
         Dictionary<string, decimal> copy = new(_balances, StringComparer.Ordinal);
-        if (copy.TryGetValue(iso, out decimal existing))
+        if (copy.TryGetValue(iso, out var existing))
         {
-            decimal sum = existing + amount.Amount;
+            var sum = existing + amount.Amount;
             if (sum == 0m)
                 copy.Remove(iso);
             else
@@ -218,9 +219,9 @@ public sealed partial class MoneyBag :
         Dictionary<string, decimal> copy = new(_balances, StringComparer.Ordinal);
         foreach (KeyValuePair<string, decimal> entry in other._balances)
         {
-            if (copy.TryGetValue(entry.Key, out decimal existing))
+            if (copy.TryGetValue(entry.Key, out var existing))
             {
-                decimal sum = existing + entry.Value;
+                var sum = existing + entry.Value;
                 if (sum == 0m)
                     copy.Remove(entry.Key);
                 else
@@ -236,8 +237,8 @@ public sealed partial class MoneyBag :
     }
 
     /// <summary>
-    /// Returns the balance for the currency identified by <paramref name="isoCode" />, or <see langword="null" />
-    /// when the bag has no entry for that currency.
+    /// Returns the balance for the currency identified by <paramref name="isoCode" />, or <see langword="null" /> when
+    /// the bag has no entry for that currency.
     /// </summary>
     /// <param name="isoCode">The ISO 4217 code.</param>
     /// <returns>The runtime-tagged balance, or <see langword="null" /> when absent.</returns>
@@ -245,7 +246,7 @@ public sealed partial class MoneyBag :
     public MoneyValue? GetBalance(string isoCode)
     {
         ThrowHelper.ThrowIfNull(isoCode);
-        return _balances.TryGetValue(isoCode, out decimal amount)
+        return _balances.TryGetValue(isoCode, out var amount)
             ? MoneyValue.FromNormalized(amount, isoCode)
             : null;
     }
@@ -257,7 +258,7 @@ public sealed partial class MoneyBag :
     /// <returns>The typed balance, or <see langword="null" /> when the bag has no entry for that currency.</returns>
     public Money<TCurrency>? GetBalance<TCurrency>()
         where TCurrency : ICurrency =>
-        _balances.TryGetValue(CurrencyMetadata<TCurrency>.Value.IsoCode, out decimal amount)
+        _balances.TryGetValue(CurrencyMetadata<TCurrency>.Value.IsoCode, out var amount)
             ? new Money<TCurrency>(amount)
             : null;
 
@@ -274,7 +275,7 @@ public sealed partial class MoneyBag :
 
         foreach (KeyValuePair<string, decimal> entry in _balances)
         {
-            if (!other._balances.TryGetValue(entry.Key, out decimal otherAmount))
+            if (!other._balances.TryGetValue(entry.Key, out var otherAmount))
                 return false;
             if (entry.Value != otherAmount)
                 return false;
@@ -341,8 +342,10 @@ public sealed partial class MoneyBag :
     /// <param name="left">The first bag.</param>
     /// <param name="right">The second bag.</param>
     /// <returns><see langword="true" /> when equal.</returns>
-    public static bool operator ==(MoneyBag? left, MoneyBag? right) =>
-        left is null ? right is null : left.Equals(right);
+    public static bool operator ==(MoneyBag? left, MoneyBag? right)
+    {
+        return left is null ? right is null : left.Equals(right);
+    }
 
     /// <summary>
     /// Determines whether two bags differ.
@@ -350,6 +353,8 @@ public sealed partial class MoneyBag :
     /// <param name="left">The first bag.</param>
     /// <param name="right">The second bag.</param>
     /// <returns><see langword="true" /> when they differ.</returns>
-    public static bool operator !=(MoneyBag? left, MoneyBag? right) =>
-        !(left == right);
+    public static bool operator !=(MoneyBag? left, MoneyBag? right)
+    {
+        return !(left == right);
+    }
 }

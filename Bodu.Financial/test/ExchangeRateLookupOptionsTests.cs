@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateLookupOptionsTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -35,7 +35,7 @@ public partial class ExchangeRateLookupOptionsTests
     [TestMethod]
     public void PreviousWithin_WhenCalled_ShouldReturnOptionsWithPreviousPolicyAndTolerance()
     {
-        ExchangeRateLookupOptions options = ExchangeRateLookupOptions.PreviousWithin(5);
+        var options = ExchangeRateLookupOptions.PreviousWithin(5);
 
         Assert.AreEqual(ExchangeRateDateResolution.PreviousOnOrBefore, options.DateResolution);
         Assert.AreEqual(5, options.ToleranceDays);
@@ -48,7 +48,7 @@ public partial class ExchangeRateLookupOptionsTests
     [TestMethod]
     public void NextWithin_WhenCalled_ShouldReturnOptionsWithNextPolicyAndTolerance()
     {
-        ExchangeRateLookupOptions options = ExchangeRateLookupOptions.NextWithin(3);
+        var options = ExchangeRateLookupOptions.NextWithin(3);
 
         Assert.AreEqual(ExchangeRateDateResolution.NextOnOrAfter, options.DateResolution);
         Assert.AreEqual(3, options.ToleranceDays);
@@ -61,7 +61,7 @@ public partial class ExchangeRateLookupOptionsTests
     [TestMethod]
     public void NearestWithin_WhenCalled_ShouldReturnOptionsWithNearestPreferPreviousPolicy()
     {
-        ExchangeRateLookupOptions options = ExchangeRateLookupOptions.NearestWithin(7);
+        var options = ExchangeRateLookupOptions.NearestWithin(7);
 
         Assert.AreEqual(ExchangeRateDateResolution.NearestPreferPrevious, options.DateResolution);
         Assert.AreEqual(7, options.ToleranceDays);
@@ -108,7 +108,7 @@ public partial class ExchangeRateLookupOptionsTests
         ExchangeRateLookupOptions options = new((ExchangeRateDateResolution)999);
 
         ExceptionAssert.ThrowsExactlyWithParamName<ArgumentOutOfRangeException>(
-            () => options.Validate(),
+            options.Validate,
             "DateResolution");
     }
 
@@ -121,7 +121,7 @@ public partial class ExchangeRateLookupOptionsTests
         ExchangeRateLookupOptions options = new(ExchangeRateDateResolution.PreviousOnOrBefore, -1);
 
         ExceptionAssert.ThrowsExactlyWithParamName<ArgumentOutOfRangeException>(
-            () => options.Validate(),
+            options.Validate,
             "ToleranceDays");
     }
 
@@ -135,7 +135,7 @@ public partial class ExchangeRateLookupOptionsTests
         ExchangeRateLookupOptions options = new(ExchangeRateDateResolution.Exact, 1);
 
         ExceptionAssert.ThrowsExactlyWithParamName<ArgumentException>(
-            () => options.Validate(),
+            options.Validate,
             "ToleranceDays");
     }
 }

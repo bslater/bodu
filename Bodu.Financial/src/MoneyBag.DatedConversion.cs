@@ -1,19 +1,16 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyBag.DatedConversion.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Bodu.Financial;
 
 public sealed partial class MoneyBag
 {
     /// <summary>
-    /// Converts the entire bag to a single target currency by resolving every non-target balance through a
-    /// dated provider at the supplied valuation date and options. Uses the
+    /// Converts the entire bag to a single target currency by resolving every non-target balance through a dated
+    /// provider at the supplied valuation date and options. Uses the
     /// <see cref="MoneyBagConversionRoundingPolicy.SumRawThenRound" /> policy.
     /// </summary>
     /// <typeparam name="TTarget">The destination currency type.</typeparam>
@@ -22,14 +19,16 @@ public sealed partial class MoneyBag
     /// <param name="options">The lookup rules supplied to every lookup.</param>
     /// <returns>The aggregated <see cref="Money{TTarget}" /> total.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="rates" /> is <see langword="null" />.</exception>
-    /// <exception cref="KeyNotFoundException">No rate is available for one of the bag's currencies under <paramref name="options" />.</exception>
+    /// <exception cref="KeyNotFoundException">
+    /// No rate is available for one of the bag's currencies under <paramref name="options" />.
+    /// </exception>
     public Money<TTarget> ConvertTo<TTarget>(IDatedExchangeRateProvider rates, DateOnly date, ExchangeRateLookupOptions options)
         where TTarget : ICurrency =>
         ConvertTo<TTarget>(rates, date, options, MoneyBagConversionRoundingPolicy.SumRawThenRound);
 
     /// <summary>
-    /// Converts the entire bag to a single target currency through a dated provider, using the supplied
-    /// rounding policy.
+    /// Converts the entire bag to a single target currency through a dated provider, using the supplied rounding
+    /// policy.
     /// </summary>
     /// <typeparam name="TTarget">The destination currency type.</typeparam>
     /// <param name="rates">The dated provider that resolves each rate.</param>
@@ -39,7 +38,9 @@ public sealed partial class MoneyBag
     /// <returns>The aggregated <see cref="Money{TTarget}" /> total.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="rates" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="policy" /> is not a defined value.</exception>
-    /// <exception cref="KeyNotFoundException">No rate is available for one of the bag's currencies under <paramref name="options" />.</exception>
+    /// <exception cref="KeyNotFoundException">
+    /// No rate is available for one of the bag's currencies under <paramref name="options" />.
+    /// </exception>
     public Money<TTarget> ConvertTo<TTarget>(
         IDatedExchangeRateProvider rates,
         DateOnly date,
@@ -55,8 +56,8 @@ public sealed partial class MoneyBag
     }
 
     /// <summary>
-    /// Converts the entire bag to a single target currency and returns the audit metadata describing which
-    /// observation was used for each per-currency line.
+    /// Converts the entire bag to a single target currency and returns the audit metadata describing which observation
+    /// was used for each per-currency line.
     /// </summary>
     /// <typeparam name="TTarget">The destination currency type.</typeparam>
     /// <param name="rates">The dated provider that resolves each rate.</param>
@@ -70,7 +71,9 @@ public sealed partial class MoneyBag
     /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="rates" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="policy" /> is not a defined value.</exception>
-    /// <exception cref="KeyNotFoundException">No rate is available for one of the bag's currencies under <paramref name="options" />.</exception>
+    /// <exception cref="KeyNotFoundException">
+    /// No rate is available for one of the bag's currencies under <paramref name="options" />.
+    /// </exception>
     public MoneyBagConversionAudit<TTarget> ConvertToWithAudit<TTarget>(
         IDatedExchangeRateProvider rates,
         DateOnly date,
@@ -86,14 +89,14 @@ public sealed partial class MoneyBag
             throw new ArgumentOutOfRangeException(nameof(policy), policy, "Unsupported MoneyBag conversion rounding policy.");
         }
 
-        string targetIso = CurrencyMetadata<TTarget>.Value.IsoCode;
+        var targetIso = CurrencyMetadata<TTarget>.Value.IsoCode;
         List<MoneyBagConversionLine> lines = new(_balances.Count);
 
         // Enumerate in ISO-lexicographic order so per-line audit output is stable and matches bag iteration.
         IEnumerable<KeyValuePair<string, decimal>> ordered =
             _balances.OrderBy(p => p.Key, StringComparer.Ordinal);
 
-        decimal rawTotal = 0m;
+        var rawTotal = 0m;
         Money<TTarget> roundedTotal = Money<TTarget>.Zero;
         foreach (KeyValuePair<string, decimal> entry in ordered)
         {
@@ -135,8 +138,8 @@ public sealed partial class MoneyBag
 /// <param name="SourceIsoCode">The source-currency ISO code for this line.</param>
 /// <param name="SourceAmount">The bag's raw decimal balance for that source.</param>
 /// <param name="Rate">
-/// The exchange-rate lookup result used for the conversion, or <see langword="null" /> when the source already
-/// matches the target currency (identity pass-through).
+/// The exchange-rate lookup result used for the conversion, or <see langword="null" /> when the source already matches
+/// the target currency (identity pass-through).
 /// </param>
 /// <param name="RawConvertedAmount">
 /// The unrounded contribution to the aggregated total — <c>SourceAmount × Rate</c> for cross-currency lines or

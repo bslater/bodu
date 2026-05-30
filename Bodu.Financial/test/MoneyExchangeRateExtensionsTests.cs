@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyExchangeRateExtensionsTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -14,10 +14,10 @@ public partial class MoneyExchangeRateExtensionsTests
 {
     private static readonly DateOnly s_d1 = new(2024, 1, 3);
 
-    private static FixedDatedExchangeRateTable BuildProvider() => new(new[]
-    {
+    private static FixedDatedExchangeRateTable BuildProvider() => new(
+    [
         new ExchangeRate("USD", "AUD", s_d1, 1.50m, "RBA"),
-    });
+    ]);
 
     /// <summary>
     /// Verifies that <see cref="MoneyExchangeRateExtensions.ConvertTo" /> converts the supplied amount through the
@@ -100,7 +100,7 @@ public partial class MoneyExchangeRateExtensionsTests
     public void ConvertTo_WhenRateMissing_ShouldThrowKeyNotFoundException()
     {
         Money<Bodu.Financial.Currencies.USD> amount = new(100m);
-        FixedDatedExchangeRateTable empty = new(Array.Empty<ExchangeRate>());
+        FixedDatedExchangeRateTable empty = new([]);
 
         _ = Assert.ThrowsExactly<KeyNotFoundException>(() =>
             amount.ConvertTo<Bodu.Financial.Currencies.USD, Bodu.Financial.Currencies.JPY>(

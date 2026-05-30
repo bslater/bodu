@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyValue.Parse.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -37,7 +37,7 @@ public readonly partial struct MoneyValue :
     public static MoneyValue Parse(ReadOnlySpan<char> s, IFormatProvider? provider)
     {
         if (!TryParse(s, provider, out MoneyValue result))
-            throw new FormatException($"The input '{s.ToString()}' is not a valid MoneyValue representation.");
+            throw new FormatException($"The input '{s}' is not a valid MoneyValue representation.");
         return result;
     }
 
@@ -46,7 +46,9 @@ public readonly partial struct MoneyValue :
     /// </summary>
     /// <param name="s">The text to parse.</param>
     /// <param name="provider">The culture provider.</param>
-    /// <param name="result">When this method returns <see langword="true" />, the parsed value; otherwise the default.</param>
+    /// <param name="result">
+    /// When this method returns <see langword="true" />, the parsed value; otherwise the default.
+    /// </param>
     /// <returns><see langword="true" /> on success.</returns>
     public static bool TryParse(string? s, IFormatProvider? provider, out MoneyValue result)
     {
@@ -78,7 +80,7 @@ public readonly partial struct MoneyValue :
         if (trimmed.Length >= 5 && trimmed[3] == ' '
             && IsUppercaseAscii(trimmed[0]) && IsUppercaseAscii(trimmed[1]) && IsUppercaseAscii(trimmed[2]))
         {
-            string iso = trimmed[..3].ToString();
+            var iso = trimmed[..3].ToString();
             ReadOnlySpan<char> numericPart = trimmed[4..].TrimStart();
             return TryComposeWithCulture(numericPart, iso, provider, out result);
         }
@@ -87,7 +89,7 @@ public readonly partial struct MoneyValue :
         if (trimmed.Length >= 5 && trimmed[^4] == ' '
             && IsUppercaseAscii(trimmed[^3]) && IsUppercaseAscii(trimmed[^2]) && IsUppercaseAscii(trimmed[^1]))
         {
-            string iso = trimmed[^3..].ToString();
+            var iso = trimmed[^3..].ToString();
             ReadOnlySpan<char> numericPart = trimmed[..^4].TrimEnd();
             return TryComposeWithCulture(numericPart, iso, provider, out result);
         }
@@ -110,7 +112,7 @@ public readonly partial struct MoneyValue :
         if (numericPart.IsEmpty) return false;
 
         IFormatProvider effective = provider ?? CultureInfo.CurrentCulture;
-        if (!decimal.TryParse(numericPart, NumberStyles.Number | NumberStyles.AllowLeadingSign, effective, out decimal amount))
+        if (!decimal.TryParse(numericPart, NumberStyles.Number | NumberStyles.AllowLeadingSign, effective, out var amount))
             return false;
 
         result = new MoneyValue(amount, iso);
@@ -123,5 +125,5 @@ public readonly partial struct MoneyValue :
     /// <param name="c">The character to test.</param>
     /// <returns><see langword="true" /> when <paramref name="c" /> is in [A-Z].</returns>
     private static bool IsUppercaseAscii(char c) =>
-        c >= 'A' && c <= 'Z';
+        c is >= 'A' and <= 'Z';
 }

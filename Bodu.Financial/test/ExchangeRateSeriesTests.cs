@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateSeriesTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -50,11 +50,11 @@ public partial class ExchangeRateSeriesTests
 
         ExchangeRateSeries series = new(s_usdAud, "RBA", unsorted);
 
-        bool found = series.TryGetRate(
+        var found = series.TryGetRate(
             new DateOnly(2024, 1, 3),
             ExchangeRateLookupOptions.Exact,
             out _,
-            out decimal rate);
+            out var rate);
 
         Assert.IsTrue(found);
         Assert.AreEqual(1.51m, rate);
@@ -99,7 +99,7 @@ public partial class ExchangeRateSeriesTests
         ExceptionAssert.ThrowsExactlyWithParamName<ArgumentException>(
             () =>
             {
-                _ = new ExchangeRateSeries(s_usdAud, "RBA", Array.Empty<(DateOnly, decimal)>());
+                _ = new ExchangeRateSeries(s_usdAud, "RBA", []);
             },
             "rates");
     }
@@ -113,7 +113,7 @@ public partial class ExchangeRateSeriesTests
         ExceptionAssert.ThrowsExactlyWithParamName<ArgumentOutOfRangeException>(
             () =>
             {
-                _ = new ExchangeRateSeries(s_usdAud, "RBA", new[] { (new DateOnly(2024, 1, 1), 0m) });
+                _ = new ExchangeRateSeries(s_usdAud, "RBA", [(new DateOnly(2024, 1, 1), 0m)]);
             },
             "rates");
     }
@@ -127,7 +127,7 @@ public partial class ExchangeRateSeriesTests
         ExceptionAssert.ThrowsExactlyWithParamName<ArgumentOutOfRangeException>(
             () =>
             {
-                _ = new ExchangeRateSeries(s_usdAud, "RBA", new[] { (new DateOnly(2024, 1, 1), -1m) });
+                _ = new ExchangeRateSeries(s_usdAud, "RBA", [(new DateOnly(2024, 1, 1), -1m)]);
             },
             "rates");
     }

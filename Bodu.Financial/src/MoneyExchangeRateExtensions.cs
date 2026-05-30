@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyExchangeRateExtensions.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -22,10 +22,16 @@ public static class MoneyExchangeRateExtensions
     /// <param name="provider">The dated provider that resolves the exchange rate.</param>
     /// <param name="date">The valuation date.</param>
     /// <param name="options">The lookup rules to apply.</param>
-    /// <param name="rounding">The rounding mode applied to the converted amount. Defaults to <see cref="MidpointRounding.ToEven" />.</param>
+    /// <param name="rounding">
+    /// The rounding mode applied to the converted amount. Defaults to <see cref="MidpointRounding.ToEven" />.
+    /// </param>
     /// <returns>The converted amount as a <see cref="Money{TTarget}" />.</returns>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="provider" /> is <see langword="null" />.</exception>
-    /// <exception cref="KeyNotFoundException">Thrown if no rate is available for the requested pair under the supplied options.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown if <paramref name="provider" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="KeyNotFoundException">
+    /// Thrown if no rate is available for the requested pair under the supplied options.
+    /// </exception>
     public static Money<TTarget> ConvertTo<TSource, TTarget>(
         this Money<TSource> amount,
         IDatedExchangeRateProvider provider,
@@ -56,10 +62,18 @@ public static class MoneyExchangeRateExtensions
     /// <param name="provider">The dated provider that resolves the exchange rate.</param>
     /// <param name="date">The valuation date.</param>
     /// <param name="options">The lookup rules to apply.</param>
-    /// <param name="rounding">The rounding mode applied to the converted amount. Defaults to <see cref="MidpointRounding.ToEven" />.</param>
-    /// <returns>A <see cref="MoneyConversionResult{TSource, TTarget}" /> containing the source, target, and rate metadata.</returns>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="provider" /> is <see langword="null" />.</exception>
-    /// <exception cref="KeyNotFoundException">Thrown if no rate is available for the requested pair under the supplied options.</exception>
+    /// <param name="rounding">
+    /// The rounding mode applied to the converted amount. Defaults to <see cref="MidpointRounding.ToEven" />.
+    /// </param>
+    /// <returns>
+    /// A <see cref="MoneyConversionResult{TSource, TTarget}" /> containing the source, target, and rate metadata.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown if <paramref name="provider" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="KeyNotFoundException">
+    /// Thrown if no rate is available for the requested pair under the supplied options.
+    /// </exception>
     public static MoneyConversionResult<TSource, TTarget> ConvertToWithRate<TSource, TTarget>(
         this Money<TSource> amount,
         IDatedExchangeRateProvider provider,

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CurrencyCatalogueStrictTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -33,7 +33,7 @@ public class CurrencyCatalogueStrictTests
     /// </summary>
     /// <param name="entry">The catalogue entry under test.</param>
     [TestMethod]
-    [DynamicData(nameof(CurrencyEntries), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(CurrencyEntries))]
     public void Catalogue_WhenComparingShippedTagAgainstSource_ShouldMatch(CatalogueEntry entry)
     {
         Type? type = typeof(USD).Assembly.GetType($"Bodu.Financial.Currencies.{entry.Iso}");
@@ -50,25 +50,25 @@ public class CurrencyCatalogueStrictTests
         // on the implementing class.
         Type moneyType = typeof(Money<>).MakeGenericType(type);
 
-        string actualIso = (string)moneyType.GetProperty("IsoCode", BindingFlags.Public | BindingFlags.Static)!.GetValue(null)!;
+        var actualIso = (string)moneyType.GetProperty("IsoCode", BindingFlags.Public | BindingFlags.Static)!.GetValue(null)!;
         Assert.AreEqual(entry.Iso, actualIso, $"{entry.Iso}.IsoCode mismatch.");
 
-        int actualMinorUnits = (int)moneyType.GetProperty("MinorUnits", BindingFlags.Public | BindingFlags.Static)!.GetValue(null)!;
+        var actualMinorUnits = (int)moneyType.GetProperty("MinorUnits", BindingFlags.Public | BindingFlags.Static)!.GetValue(null)!;
         Assert.AreEqual(entry.MinorUnits, actualMinorUnits, $"{entry.Iso}.MinorUnits mismatch.");
 
-        decimal actualCashIncrement = (decimal)moneyType.GetProperty("CashRoundingIncrement", BindingFlags.Public | BindingFlags.Static)!.GetValue(null)!;
+        var actualCashIncrement = (decimal)moneyType.GetProperty("CashRoundingIncrement", BindingFlags.Public | BindingFlags.Static)!.GetValue(null)!;
         Assert.AreEqual(entry.CashRoundingIncrement ?? 0m, actualCashIncrement, $"{entry.Iso}.CashRoundingIncrement mismatch.");
 
-        bool actualIsHistoric = (bool)moneyType.GetProperty("IsHistoric", BindingFlags.Public | BindingFlags.Static)!.GetValue(null)!;
+        var actualIsHistoric = (bool)moneyType.GetProperty("IsHistoric", BindingFlags.Public | BindingFlags.Static)!.GetValue(null)!;
         Assert.AreEqual(entry.IsHistoric, actualIsHistoric, $"{entry.Iso}.IsHistoric mismatch.");
 
-        DateOnly? actualDemonetizedOn = (DateOnly?)moneyType.GetProperty("DemonetizedOn", BindingFlags.Public | BindingFlags.Static)!.GetValue(null);
+        var actualDemonetizedOn = (DateOnly?)moneyType.GetProperty("DemonetizedOn", BindingFlags.Public | BindingFlags.Static)!.GetValue(null);
         DateOnly? expectedDemonetizedOn = entry.DemonetizedOn is null
             ? null
             : DateOnly.ParseExact(entry.DemonetizedOn, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
         Assert.AreEqual(expectedDemonetizedOn, actualDemonetizedOn, $"{entry.Iso}.DemonetizedOn mismatch.");
 
-        string? actualSuccessor = (string?)moneyType.GetProperty("SuccessorIsoCode", BindingFlags.Public | BindingFlags.Static)!.GetValue(null);
+        var actualSuccessor = (string?)moneyType.GetProperty("SuccessorIsoCode", BindingFlags.Public | BindingFlags.Static)!.GetValue(null);
         Assert.AreEqual(entry.SuccessorIsoCode, actualSuccessor, $"{entry.Iso}.SuccessorIsoCode mismatch.");
     }
 
@@ -88,7 +88,7 @@ public class CurrencyCatalogueStrictTests
             .Select(t => t.Name);
 
         List<string> unexpected = new();
-        foreach (string code in actual)
+        foreach (var code in actual)
         {
             if (!expected.Contains(code))
                 unexpected.Add(code);
@@ -121,7 +121,7 @@ public class CurrencyCatalogueStrictTests
         Dictionary<string, int> counts = new(StringComparer.Ordinal);
         foreach (CatalogueEntry entry in LoadCatalogue())
         {
-            counts.TryGetValue(entry.Iso, out int count);
+            counts.TryGetValue(entry.Iso, out var count);
             counts[entry.Iso] = count + 1;
         }
 
@@ -135,8 +135,8 @@ public class CurrencyCatalogueStrictTests
     /// <returns>The parsed catalogue entries.</returns>
     private static List<CatalogueEntry> LoadCatalogue()
     {
-        string path = ResolveCataloguePath();
-        string json = File.ReadAllText(path);
+        var path = ResolveCataloguePath();
+        var json = File.ReadAllText(path);
         JsonSerializerOptions options = new()
         {
             ReadCommentHandling = JsonCommentHandling.Skip,

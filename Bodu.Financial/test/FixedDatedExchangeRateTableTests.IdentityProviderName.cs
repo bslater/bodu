@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FixedDatedExchangeRateTableTests.IdentityProviderName.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -15,10 +15,10 @@ public partial class FixedDatedExchangeRateTableTests
     [TestMethod]
     public void IdentityProviderName_WhenExposedPublicly_ShouldBeAccessibleAndMatchSyntheticRateProvider()
     {
-        FixedDatedExchangeRateTable table = new(new[]
-        {
+        FixedDatedExchangeRateTable table = new(
+        [
             new ExchangeRate("USD", "AUD", new DateOnly(2024, 1, 3), 1.50m, "RBA"),
-        });
+        ]);
 
         ExchangeRateLookupResult result = table.GetRate("USD", "USD", new DateOnly(2024, 6, 30), ExchangeRateLookupOptions.Exact);
 

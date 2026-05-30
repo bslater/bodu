@@ -1,11 +1,10 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FixedDatedExchangeRateTable.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Collections.Frozen;
-using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
 namespace Bodu.Financial;
@@ -22,15 +21,15 @@ namespace Bodu.Financial;
 /// </para>
 /// <para>
 /// Lookups perform two levels of binary search — a <see cref="FrozenDictionary{TKey, TValue}" /> probe for the pair,
-/// then an <see cref="Array.BinarySearch{T}(T[], T)" /> over the series' date array — and allocate no managed memory
-/// on success or failure.
+/// then an <see cref="Array.BinarySearch{T}(T[], T)" /> over the series' date array — and allocate no managed memory on
+/// success or failure.
 /// </para>
 /// </remarks>
 public sealed class FixedDatedExchangeRateTable : IDatedExchangeRateProvider
 {
     /// <summary>
-    /// The label used as the provider name on synthetic same-currency identity results. Exposed publicly so
-    /// audit consumers can filter by it without depending on a magic-string literal.
+    /// The label used as the provider name on synthetic same-currency identity results. Exposed publicly so audit
+    /// consumers can filter by it without depending on a magic-string literal.
     /// </summary>
     public const string IdentityProviderName = "Identity";
 
@@ -44,7 +43,9 @@ public sealed class FixedDatedExchangeRateTable : IDatedExchangeRateProvider
     /// observations.
     /// </summary>
     /// <param name="rates">The exchange-rate observations to store, in any order.</param>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="rates" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown if <paramref name="rates" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentException">
     /// Thrown if <paramref name="rates" /> contains rates for the same currency pair from differing providers, or if
     /// two rates share the same pair and date.
@@ -63,10 +64,9 @@ public sealed class FixedDatedExchangeRateTable : IDatedExchangeRateProvider
         DateOnly date,
         ExchangeRateLookupOptions options)
     {
-        if (TryGetRate(fromIsoCode, toIsoCode, date, options, out ExchangeRateLookupResult result))
-            return result;
-
-        throw new KeyNotFoundException(
+        return TryGetRate(fromIsoCode, toIsoCode, date, options, out ExchangeRateLookupResult result)
+            ? result
+            : throw new KeyNotFoundException(
             $"No exchange rate available for {fromIsoCode} -> {toIsoCode} on {date:yyyy-MM-dd} using {options.DateResolution} within {options.ToleranceDays} day(s).");
     }
 
@@ -114,8 +114,8 @@ public sealed class FixedDatedExchangeRateTable : IDatedExchangeRateProvider
     /// <param name="rates">The observations to group.</param>
     /// <returns>A frozen mapping from currency pair to series.</returns>
     /// <exception cref="ArgumentException">
-    /// Thrown if observations for the same pair carry differing provider identifiers, or if duplicate dates are detected
-    /// while building any series.
+    /// Thrown if observations for the same pair carry differing provider identifiers, or if duplicate dates are
+    /// detected while building any series.
     /// </exception>
     private static FrozenDictionary<ExchangeRatePair, ExchangeRateSeries> BuildSeries(IEnumerable<ExchangeRate> rates)
     {
@@ -157,8 +157,8 @@ public sealed class FixedDatedExchangeRateTable : IDatedExchangeRateProvider
     /// <param name="requestedDate">The original requested date.</param>
     /// <param name="options">The lookup options to apply.</param>
     /// <param name="isInverted">
-    /// <see langword="true" /> if <paramref name="pair" /> is the inverse of the originally requested pair, in which case
-    /// the returned rate is inverted before being reported back to the caller.
+    /// <see langword="true" /> if <paramref name="pair" /> is the inverse of the originally requested pair, in which
+    /// case the returned rate is inverted before being reported back to the caller.
     /// </param>
     /// <param name="result">When this method returns <see langword="true" />, the resolved lookup result.</param>
     /// <returns><see langword="true" /> if a rate was resolved; otherwise <see langword="false" />.</returns>
@@ -176,20 +176,20 @@ public sealed class FixedDatedExchangeRateTable : IDatedExchangeRateProvider
             return false;
         }
 
-        if (!series.TryGetRate(requestedDate, options, out DateOnly resolvedDate, out decimal rawRate))
+        if (!series.TryGetRate(requestedDate, options, out DateOnly resolvedDate, out var rawRate))
         {
             result = default;
             return false;
         }
 
-        decimal resolvedRate = isInverted ? 1m / rawRate : rawRate;
+        var resolvedRate = isInverted ? 1m / rawRate : rawRate;
 
-        string reportedFrom = isInverted ? pair.ToIsoCode : pair.FromIsoCode;
-        string reportedTo = isInverted ? pair.FromIsoCode : pair.ToIsoCode;
+        var reportedFrom = isInverted ? pair.ToIsoCode : pair.FromIsoCode;
+        var reportedTo = isInverted ? pair.FromIsoCode : pair.ToIsoCode;
 
         ExchangeRate rate = new(reportedFrom, reportedTo, resolvedDate, resolvedRate, series.Provider, isInverted);
 
-        int offsetDays = Math.Abs(resolvedDate.DayNumber - requestedDate.DayNumber);
+        var offsetDays = Math.Abs(resolvedDate.DayNumber - requestedDate.DayNumber);
         result = new ExchangeRateLookupResult(rate, requestedDate, options.DateResolution, offsetDays);
         return true;
     }

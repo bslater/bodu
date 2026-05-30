@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRatePair.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -13,15 +13,15 @@ namespace Bodu.Financial;
 /// </summary>
 /// <remarks>
 /// <para>
-/// A pair is a strongly typed key intended for use in dictionaries and lookup tables. Compared to a raw tuple of strings,
-/// it centralises validation and makes the directional meaning of each code obvious at the call site.
+/// A pair is a strongly typed key intended for use in dictionaries and lookup tables. Compared to a raw tuple of
+/// strings, it centralises validation and makes the directional meaning of each code obvious at the call site.
 /// </para>
 /// </remarks>
 [DebuggerDisplay("{FromIsoCode,nq}/{ToIsoCode,nq}")]
 public readonly record struct ExchangeRatePair
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="ExchangeRatePair" /> struct.
+    /// Initializes a new instance of the <see cref="ExchangeRatePair" /> class.
     /// </summary>
     /// <param name="fromIsoCode">The source-currency ISO-style code (three uppercase ASCII letters).</param>
     /// <param name="toIsoCode">The destination-currency ISO-style code (three uppercase ASCII letters).</param>

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FixedDatedExchangeRateTableTests.SameCurrency.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -15,9 +15,9 @@ public partial class FixedDatedExchangeRateTableTests
     [TestMethod]
     public void TryGetRate_WhenSameCurrencyAndIdentityEnabled_ShouldReturnIdentityRate()
     {
-        FixedDatedExchangeRateTable table = new(Array.Empty<ExchangeRate>());
+        FixedDatedExchangeRateTable table = new([]);
 
-        bool found = table.TryGetRate(
+        var found = table.TryGetRate(
             "USD",
             "USD",
             s_d1,
@@ -39,13 +39,13 @@ public partial class FixedDatedExchangeRateTableTests
     [TestMethod]
     public void TryGetRate_WhenSameCurrencyAndIdentityDisabled_ShouldFallThroughToTable()
     {
-        FixedDatedExchangeRateTable table = new(Array.Empty<ExchangeRate>());
+        FixedDatedExchangeRateTable table = new([]);
 
         ExchangeRateLookupOptions options = new(
             ExchangeRateDateResolution.Exact,
             AllowSameCurrencyIdentityRate: false);
 
-        bool found = table.TryGetRate("USD", "USD", s_d1, options, out _);
+        var found = table.TryGetRate("USD", "USD", s_d1, options, out _);
 
         Assert.IsFalse(found);
     }

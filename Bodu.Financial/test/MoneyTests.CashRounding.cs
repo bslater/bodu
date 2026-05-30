@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyTests.CashRounding.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -104,10 +104,10 @@ public partial class MoneyTests
     [TestMethod]
     public void RoundToCash_WhenCurrencyHasNoCashIncrement_ShouldReturnUnchangedAmount()
     {
-        Money<USD> usd = new Money<USD>(19.99m);
-        Money<JPY> jpy = new Money<JPY>(99m);
-        Money<EUR> eur = new Money<EUR>(12.34m);
-        Money<BHD> bhd = new Money<BHD>(12.345m);
+        var usd = new Money<USD>(19.99m);
+        var jpy = new Money<JPY>(99m);
+        var eur = new Money<EUR>(12.34m);
+        var bhd = new Money<BHD>(12.345m);
 
         Assert.AreEqual(usd, usd.RoundToCash());
         Assert.AreEqual(jpy, jpy.RoundToCash());

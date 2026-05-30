@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyTests.Parse.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -17,7 +17,7 @@ public partial class MoneyTests
     [TestMethod]
     public void Parse_WhenBareDecimal_ShouldReturnAmount()
     {
-        Money<USD> result = Money<USD>.Parse("19.99", CultureInfo.InvariantCulture);
+        var result = Money<USD>.Parse("19.99", CultureInfo.InvariantCulture);
 
         Assert.AreEqual(new Money<USD>(19.99m), result);
     }
@@ -28,7 +28,7 @@ public partial class MoneyTests
     [TestMethod]
     public void Parse_WhenIsoCodePrefix_ShouldReturnAmount()
     {
-        Money<USD> result = Money<USD>.Parse("USD 19.99", CultureInfo.InvariantCulture);
+        var result = Money<USD>.Parse("USD 19.99", CultureInfo.InvariantCulture);
 
         Assert.AreEqual(new Money<USD>(19.99m), result);
     }
@@ -39,7 +39,7 @@ public partial class MoneyTests
     [TestMethod]
     public void Parse_WhenIsoCodeSuffix_ShouldReturnAmount()
     {
-        Money<USD> result = Money<USD>.Parse("19.99 USD", CultureInfo.InvariantCulture);
+        var result = Money<USD>.Parse("19.99 USD", CultureInfo.InvariantCulture);
 
         Assert.AreEqual(new Money<USD>(19.99m), result);
     }
@@ -75,7 +75,7 @@ public partial class MoneyTests
     [TestMethod]
     public void TryParse_WhenInputNull_ShouldReturnFalse()
     {
-        bool ok = Money<USD>.TryParse((string?)null, CultureInfo.InvariantCulture, out Money<USD> result);
+        var ok = Money<USD>.TryParse((string?)null, CultureInfo.InvariantCulture, out Money<USD> result);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(default(Money<USD>), result);
@@ -104,10 +104,10 @@ public partial class MoneyTests
     [DataRow(0.01)]
     public void Parse_WhenRoundTrippingToString_ShouldRecoverOriginal(double amount)
     {
-        Money<USD> original = new Money<USD>((decimal)amount);
+        var original = new Money<USD>((decimal)amount);
 
-        string formatted = original.ToString(null, CultureInfo.InvariantCulture);
-        Money<USD> recovered = Money<USD>.Parse(formatted, CultureInfo.InvariantCulture);
+        var formatted = original.ToString(null, CultureInfo.InvariantCulture);
+        var recovered = Money<USD>.Parse(formatted, CultureInfo.InvariantCulture);
 
         Assert.AreEqual(original, recovered);
     }

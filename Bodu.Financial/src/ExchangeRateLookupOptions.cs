@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateLookupOptions.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -48,11 +48,15 @@ public readonly record struct ExchangeRateLookupOptions(
     /// Returns a configuration that resolves to the most recent rate on or before the requested date, within
     /// <paramref name="toleranceDays" />.
     /// </summary>
-    /// <param name="toleranceDays">The maximum permitted distance, in days, between requested and resolved dates.</param>
+    /// <param name="toleranceDays">
+    /// The maximum permitted distance, in days, between requested and resolved dates.
+    /// </param>
     /// <returns>
     /// An <see cref="ExchangeRateLookupOptions" /> with <see cref="ExchangeRateDateResolution.PreviousOnOrBefore" />.
     /// </returns>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="toleranceDays" /> is negative.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown if <paramref name="toleranceDays" /> is negative.
+    /// </exception>
     public static ExchangeRateLookupOptions PreviousWithin(int toleranceDays)
     {
         ThrowHelper.ThrowIfNegative(toleranceDays);
@@ -63,11 +67,15 @@ public readonly record struct ExchangeRateLookupOptions(
     /// Returns a configuration that resolves to the earliest rate on or after the requested date, within
     /// <paramref name="toleranceDays" />.
     /// </summary>
-    /// <param name="toleranceDays">The maximum permitted distance, in days, between requested and resolved dates.</param>
+    /// <param name="toleranceDays">
+    /// The maximum permitted distance, in days, between requested and resolved dates.
+    /// </param>
     /// <returns>
     /// An <see cref="ExchangeRateLookupOptions" /> with <see cref="ExchangeRateDateResolution.NextOnOrAfter" />.
     /// </returns>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="toleranceDays" /> is negative.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown if <paramref name="toleranceDays" /> is negative.
+    /// </exception>
     public static ExchangeRateLookupOptions NextWithin(int toleranceDays)
     {
         ThrowHelper.ThrowIfNegative(toleranceDays);
@@ -78,11 +86,16 @@ public readonly record struct ExchangeRateLookupOptions(
     /// Returns a configuration that resolves to the closest available date within <paramref name="toleranceDays" />,
     /// preferring the previous date on ties.
     /// </summary>
-    /// <param name="toleranceDays">The maximum permitted distance, in days, between requested and resolved dates.</param>
+    /// <param name="toleranceDays">
+    /// The maximum permitted distance, in days, between requested and resolved dates.
+    /// </param>
     /// <returns>
-    /// An <see cref="ExchangeRateLookupOptions" /> with <see cref="ExchangeRateDateResolution.NearestPreferPrevious" />.
+    /// An <see cref="ExchangeRateLookupOptions" /> with <see cref="ExchangeRateDateResolution.NearestPreferPrevious" />
+    /// .
     /// </returns>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="toleranceDays" /> is negative.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown if <paramref name="toleranceDays" /> is negative.
+    /// </exception>
     public static ExchangeRateLookupOptions NearestWithin(int toleranceDays)
     {
         ThrowHelper.ThrowIfNegative(toleranceDays);

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateLookupResult.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -32,6 +32,8 @@ public readonly record struct ExchangeRateLookupResult(
     /// <summary>
     /// Gets a value indicating whether the resolved rate is observed on the requested date.
     /// </summary>
-    /// <returns><see langword="true" /> when <see cref="OffsetDays" /> is zero; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when <see cref="OffsetDays" /> is zero; otherwise <see langword="false" />.
+    /// </returns>
     public bool IsExactDate => OffsetDays == 0;
 }

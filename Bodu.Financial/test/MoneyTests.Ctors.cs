@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyTests.Ctors.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -17,7 +17,7 @@ public partial class MoneyTests
     [TestMethod]
     public void Constructor_WhenAmountHasExcessPrecision_ShouldRoundToMinorUnits()
     {
-        Money<USD> money = new Money<USD>(1.235m);
+        var money = new Money<USD>(1.235m);
 
         Assert.AreEqual(1.24m, money.Amount);
     }
@@ -28,7 +28,7 @@ public partial class MoneyTests
     [TestMethod]
     public void Constructor_WhenZeroMinorUnitCurrency_ShouldRoundToWholeUnits()
     {
-        Money<JPY> money = new Money<JPY>(99.6m);
+        var money = new Money<JPY>(99.6m);
 
         Assert.AreEqual(100m, money.Amount);
     }
@@ -39,7 +39,7 @@ public partial class MoneyTests
     [TestMethod]
     public void Constructor_WhenThreeMinorUnitCurrency_ShouldRoundToThreeDecimalPlaces()
     {
-        Money<BHD> money = new Money<BHD>(12.3456m);
+        var money = new Money<BHD>(12.3456m);
 
         Assert.AreEqual(12.346m, money.Amount);
     }
@@ -50,7 +50,7 @@ public partial class MoneyTests
     [TestMethod]
     public void Constructor_WhenAwayFromZeroRequested_ShouldRoundUpAtMidpoint()
     {
-        Money<USD> money = new Money<USD>(1.235m, MidpointRounding.AwayFromZero);
+        var money = new Money<USD>(1.235m, MidpointRounding.AwayFromZero);
 
         Assert.AreEqual(1.24m, money.Amount);
     }
@@ -74,8 +74,8 @@ public partial class MoneyTests
     [TestMethod]
     public void Of_WhenCalled_ShouldMatchConstructor()
     {
-        Money<USD> viaHelper = Money.Of<USD>(19.99m);
-        Money<USD> viaCtor = new Money<USD>(19.99m);
+        var viaHelper = Money.Of<USD>(19.99m);
+        var viaCtor = new Money<USD>(19.99m);
 
         Assert.AreEqual(viaCtor, viaHelper);
     }
@@ -86,7 +86,7 @@ public partial class MoneyTests
     [TestMethod]
     public void Zero_WhenCalled_ShouldReturnZero()
     {
-        Money<USD> zero = Money.Zero<USD>();
+        var zero = Money.Zero<USD>();
 
         Assert.IsTrue(zero.IsZero);
     }

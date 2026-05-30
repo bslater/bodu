@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -50,7 +50,7 @@ public partial class ExchangeRateTests
     {
         ExchangeRate rate = new("USD", "AUD", s_sampleDate, 1.5m, "RBA");
 
-        decimal converted = rate.Convert(100m);
+        var converted = rate.Convert(100m);
 
         Assert.AreEqual(150m, converted);
     }
@@ -118,7 +118,7 @@ public partial class ExchangeRateTests
     [DataRow("-100")]
     public void Constructor_WhenRateIsNotPositive_ShouldThrowArgumentOutOfRangeException(string value)
     {
-        decimal rate = decimal.Parse(value, System.Globalization.CultureInfo.InvariantCulture);
+        var rate = decimal.Parse(value, System.Globalization.CultureInfo.InvariantCulture);
 
         ExceptionAssert.ThrowsExactlyWithParamName<ArgumentOutOfRangeException>(
             () =>

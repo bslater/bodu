@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FixedDatedExchangeRateTableTests.Inverse.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -22,7 +22,7 @@ public partial class FixedDatedExchangeRateTableTests
 
         FixedDatedExchangeRateTable table = new(direct);
 
-        bool found = table.TryGetRate(
+        var found = table.TryGetRate(
             "AUD",
             "USD",
             s_d1,
@@ -52,9 +52,9 @@ public partial class FixedDatedExchangeRateTableTests
 
         FixedDatedExchangeRateTable table = new(rates);
 
-        ExchangeRateLookupOptions previousTwoDays = ExchangeRateLookupOptions.PreviousWithin(2);
+        var previousTwoDays = ExchangeRateLookupOptions.PreviousWithin(2);
 
-        bool found = table.TryGetRate(
+        var found = table.TryGetRate(
             "AUD",
             "USD",
             new DateOnly(2024, 1, 11),

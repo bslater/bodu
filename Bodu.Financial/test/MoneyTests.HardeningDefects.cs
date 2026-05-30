@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyTests.HardeningDefects.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -205,7 +205,7 @@ public partial class MoneyTests
     [TestMethod]
     public void Convert_WhenExchangeRateIsZero_ShouldThrowArgumentOutOfRangeException()
     {
-        Money<USD> source = new Money<USD>(100m);
+        var source = new Money<USD>(100m);
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -234,10 +234,10 @@ public partial class MoneyTests
     public void FromFraction_WhenJustAboveMinorUnitMidpoint_ShouldRoundUpNotDouble()
     {
         BigInteger numerator = BigInteger.Pow(10, 25) * 1225 + 1;
-        BigInteger denominator = BigInteger.Pow(10, 28);
-        Fraction<BigInteger> value = Fraction<BigInteger>.Create(numerator, denominator);
+        var denominator = BigInteger.Pow(10, 28);
+        var value = Fraction<BigInteger>.Create(numerator, denominator);
 
-        Money<USD> result = Money<USD>.FromFraction(value);
+        var result = Money<USD>.FromFraction(value);
 
         Assert.AreEqual(new Money<USD>(1.23m), result);
     }
@@ -250,10 +250,10 @@ public partial class MoneyTests
     public void FromFraction_WhenJustBelowMinorUnitMidpoint_ShouldRoundDownNotDouble()
     {
         BigInteger numerator = BigInteger.Pow(10, 25) * 1235 - 1;
-        BigInteger denominator = BigInteger.Pow(10, 28);
-        Fraction<BigInteger> value = Fraction<BigInteger>.Create(numerator, denominator);
+        var denominator = BigInteger.Pow(10, 28);
+        var value = Fraction<BigInteger>.Create(numerator, denominator);
 
-        Money<USD> result = Money<USD>.FromFraction(value);
+        var result = Money<USD>.FromFraction(value);
 
         // 1.2349999999999999999999999999 — exact rounds to 1.23 banker's; the buggy path would land on
         // 1.235 (decimal-precision quantisation) and then on 1.24.
@@ -268,11 +268,11 @@ public partial class MoneyTests
     public void FromFraction_WhenExactMidpoint_ShouldRoundToEven()
     {
         // 1.225 → 1.22 (even ends in 2)
-        Fraction<BigInteger> below = Fraction<BigInteger>.Create(1225, 1000);
+        var below = Fraction<BigInteger>.Create(1225, 1000);
         Assert.AreEqual(new Money<USD>(1.22m), Money<USD>.FromFraction(below));
 
         // 1.235 → 1.24 (even ends in 4)
-        Fraction<BigInteger> above = Fraction<BigInteger>.Create(1235, 1000);
+        var above = Fraction<BigInteger>.Create(1235, 1000);
         Assert.AreEqual(new Money<USD>(1.24m), Money<USD>.FromFraction(above));
     }
 
@@ -310,8 +310,8 @@ public partial class MoneyTests
     [TestMethod]
     public void GetHashCode_WhenTwoCurrencyTagsShareIsoCode_ShouldDifferByType()
     {
-        Money<TestUsdAlpha> alpha = new Money<TestUsdAlpha>(10m);
-        Money<TestUsdBeta> beta = new Money<TestUsdBeta>(10m);
+        var alpha = new Money<TestUsdAlpha>(10m);
+        var beta = new Money<TestUsdBeta>(10m);
 
         Assert.AreNotEqual(alpha.GetHashCode(), beta.GetHashCode());
     }
@@ -333,7 +333,7 @@ public partial class MoneyTests
     [DataRow("C2147483647")]
     public void ToString_WhenPrecisionExceedsDecimalNativePrecision_ShouldThrowFormatException(string format)
     {
-        Money<USD> money = new Money<USD>(1m);
+        var money = new Money<USD>(1m);
 
         Assert.ThrowsExactly<FormatException>(() =>
         {
@@ -356,10 +356,10 @@ public partial class MoneyTests
     [TestMethod]
     public void ToString_WhenLSpecifierMismatchedCultureNegativeAmount_ShouldHonorCultureNegativePattern()
     {
-        Money<JPY> money = new Money<JPY>(-1234m);
-        CultureInfo culture = new CultureInfo("en-US");
+        var money = new Money<JPY>(-1234m);
+        var culture = new CultureInfo("en-US");
 
-        string actual = money.ToString("L", culture);
+        var actual = money.ToString("L", culture);
 
         // The pre-fix buggy form was a plain "N"-formatted number with the ISO code prepended in the
         // positive-pattern slot, ignoring the negative pattern entirely.
@@ -367,12 +367,12 @@ public partial class MoneyTests
 
         // Self-consistency: output must equal the BCL's "C" format using the same symbol-substitution +
         // pattern-normalisation strategy the production code uses.
-        NumberFormatInfo nfi = (NumberFormatInfo)culture.NumberFormat.Clone();
+        var nfi = (NumberFormatInfo)culture.NumberFormat.Clone();
         nfi.CurrencyDecimalDigits = 0;
-        bool isoBeforeAmount = culture.NumberFormat.CurrencyPositivePattern is 0 or 2;
+        var isoBeforeAmount = culture.NumberFormat.CurrencyPositivePattern is 0 or 2;
         nfi.CurrencySymbol = isoBeforeAmount ? "JPY " : " JPY";
         nfi.CurrencyPositivePattern = isoBeforeAmount ? 0 : 1;
-        string expected = (-1234m).ToString("C", nfi);
+        var expected = (-1234m).ToString("C", nfi);
         Assert.IsTrue(
             actual == expected
                 || actual.Contains("JPY", StringComparison.Ordinal),
@@ -385,9 +385,9 @@ public partial class MoneyTests
     [TestMethod]
     public void ToString_WhenLSpecifierMismatchedCulturePositiveAmount_ShouldStayInsertedSlot()
     {
-        Money<JPY> money = new Money<JPY>(1234m);
+        var money = new Money<JPY>(1234m);
 
-        string actual = money.ToString("L", new CultureInfo("en-US"));
+        var actual = money.ToString("L", new CultureInfo("en-US"));
 
         Assert.AreEqual("JPY 1,234", actual);
     }
@@ -403,7 +403,7 @@ public partial class MoneyTests
     [TestMethod]
     public void JsonDeserialize_WhenAmountPropertyDuplicated_ShouldThrowJsonException()
     {
-        string json = "{\"amount\":10,\"amount\":20,\"currency\":\"USD\"}";
+        var json = "{\"amount\":10,\"amount\":20,\"currency\":\"USD\"}";
 
         Assert.ThrowsExactly<JsonException>(() =>
         {
@@ -417,7 +417,7 @@ public partial class MoneyTests
     [TestMethod]
     public void JsonDeserialize_WhenCurrencyPropertyDuplicated_ShouldThrowJsonException()
     {
-        string json = "{\"amount\":10,\"currency\":\"USD\",\"currency\":\"JPY\"}";
+        var json = "{\"amount\":10,\"currency\":\"USD\",\"currency\":\"JPY\"}";
 
         Assert.ThrowsExactly<JsonException>(() =>
         {

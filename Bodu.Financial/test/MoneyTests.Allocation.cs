@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyTests.Allocation.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -35,7 +35,7 @@ public partial class MoneyTests
     [DataRow(0.05, 100)]
     public void Allocate_WhenSumProperty_ShouldPreserveOriginalAmount(double amount, int parts)
     {
-        Money<USD> original = new Money<USD>((decimal)amount);
+        var original = new Money<USD>((decimal)amount);
 
         Money<USD>[] shares = original.Allocate(parts);
 
@@ -82,7 +82,7 @@ public partial class MoneyTests
     [DataRow(-1)]
     public void Allocate_WhenPartsNotPositive_ShouldThrowArgumentOutOfRangeException(int parts)
     {
-        Money<USD> money = new Money<USD>(10m);
+        var money = new Money<USD>(10m);
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -96,8 +96,8 @@ public partial class MoneyTests
     [TestMethod]
     public void Allocate_WhenGivenRatios_ShouldDistributeProportionally()
     {
-        Money<USD> revenue = new Money<USD>(100m);
-        decimal[] ratios = { 1m, 1m, 2m };
+        var revenue = new Money<USD>(100m);
+        decimal[] ratios = [1m, 1m, 2m];
 
         Money<USD>[] shares = revenue.Allocate(ratios);
 
@@ -117,8 +117,8 @@ public partial class MoneyTests
     [TestMethod]
     public void Allocate_WhenZeroRatioMixedWithPositive_ShouldYieldZeroForZeroRatio()
     {
-        Money<USD> revenue = new Money<USD>(0.07m);
-        decimal[] ratios = { 1m, 0m, 1m };
+        var revenue = new Money<USD>(0.07m);
+        decimal[] ratios = [1m, 0m, 1m];
 
         Money<USD>[] shares = revenue.Allocate(ratios);
 
@@ -136,8 +136,8 @@ public partial class MoneyTests
     [TestMethod]
     public void Allocate_WhenRatiosEmpty_ShouldThrowArgumentException()
     {
-        Money<USD> money = new Money<USD>(10m);
-        decimal[] ratios = Array.Empty<decimal>();
+        var money = new Money<USD>(10m);
+        var ratios = Array.Empty<decimal>();
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -151,8 +151,8 @@ public partial class MoneyTests
     [TestMethod]
     public void Allocate_WhenNegativeRatio_ShouldThrowArgumentException()
     {
-        Money<USD> money = new Money<USD>(10m);
-        decimal[] ratios = { 1m, -1m, 2m };
+        var money = new Money<USD>(10m);
+        decimal[] ratios = [1m, -1m, 2m];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -166,8 +166,8 @@ public partial class MoneyTests
     [TestMethod]
     public void Allocate_WhenRatiosAllZero_ShouldThrowArgumentException()
     {
-        Money<USD> money = new Money<USD>(10m);
-        decimal[] ratios = { 0m, 0m, 0m };
+        var money = new Money<USD>(10m);
+        decimal[] ratios = [0m, 0m, 0m];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {

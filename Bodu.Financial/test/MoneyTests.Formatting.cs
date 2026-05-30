@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyTests.Formatting.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -18,7 +18,7 @@ public partial class MoneyTests
     [TestMethod]
     public void ToString_WhenDefault_ShouldReturnIsoCodeAndAmountAtMinorUnitPrecision()
     {
-        Money<USD> money = new Money<USD>(1234.56m);
+        var money = new Money<USD>(1234.56m);
 
         Assert.AreEqual("USD 1,234.56", money.ToString(null, CultureInfo.InvariantCulture));
     }
@@ -29,7 +29,7 @@ public partial class MoneyTests
     [TestMethod]
     public void ToString_WhenJpy_ShouldFormatWithoutFractionalDigits()
     {
-        Money<JPY> money = new Money<JPY>(100m);
+        var money = new Money<JPY>(100m);
 
         Assert.AreEqual("JPY 100", money.ToString(null, CultureInfo.InvariantCulture));
     }
@@ -40,7 +40,7 @@ public partial class MoneyTests
     [TestMethod]
     public void ToString_WhenBhd_ShouldFormatWithThreeFractionalDigits()
     {
-        Money<BHD> money = new Money<BHD>(12.345m);
+        var money = new Money<BHD>(12.345m);
 
         Assert.AreEqual("BHD 12.345", money.ToString(null, CultureInfo.InvariantCulture));
     }
@@ -51,7 +51,7 @@ public partial class MoneyTests
     [TestMethod]
     public void ToString_WhenNSpecifier_ShouldOmitIsoCode()
     {
-        Money<USD> money = new Money<USD>(1234.56m);
+        var money = new Money<USD>(1234.56m);
 
         Assert.AreEqual("1,234.56", money.ToString("N", CultureInfo.InvariantCulture));
     }
@@ -62,7 +62,7 @@ public partial class MoneyTests
     [TestMethod]
     public void ToString_WhenFSpecifier_ShouldOmitGroupingSeparators()
     {
-        Money<USD> money = new Money<USD>(1234.56m);
+        var money = new Money<USD>(1234.56m);
 
         Assert.AreEqual("1234.56", money.ToString("F", CultureInfo.InvariantCulture));
     }
@@ -73,7 +73,7 @@ public partial class MoneyTests
     [TestMethod]
     public void ToString_WhenExplicitPrecision_ShouldUseSuppliedDigitCount()
     {
-        Money<USD> money = new Money<USD>(19.99m);
+        var money = new Money<USD>(19.99m);
 
         Assert.AreEqual("USD 19.9900", money.ToString("C4", CultureInfo.InvariantCulture));
         Assert.AreEqual("19.99", money.ToString("F2", CultureInfo.InvariantCulture));
@@ -86,7 +86,7 @@ public partial class MoneyTests
     [TestMethod]
     public void ToString_WhenSpecifierUnknown_ShouldThrowFormatException()
     {
-        Money<USD> money = new Money<USD>(1m);
+        var money = new Money<USD>(1m);
 
         Assert.ThrowsExactly<FormatException>(() =>
         {
@@ -100,10 +100,10 @@ public partial class MoneyTests
     [TestMethod]
     public void TryFormat_WhenSpanLargeEnough_ShouldWriteSameTextAsToString()
     {
-        Money<USD> money = new Money<USD>(19.99m);
+        var money = new Money<USD>(19.99m);
         Span<char> buffer = stackalloc char[32];
 
-        bool ok = money.TryFormat(buffer, out int written, default, CultureInfo.InvariantCulture);
+        var ok = money.TryFormat(buffer, out var written, default, CultureInfo.InvariantCulture);
 
         Assert.IsTrue(ok);
         Assert.AreEqual("USD 19.99", buffer[..written].ToString());
@@ -116,10 +116,10 @@ public partial class MoneyTests
     [TestMethod]
     public void TryFormat_WhenSpanTooSmall_ShouldReturnFalse()
     {
-        Money<USD> money = new Money<USD>(19.99m);
+        var money = new Money<USD>(19.99m);
         Span<char> buffer = stackalloc char[3];
 
-        bool ok = money.TryFormat(buffer, out int written, default, CultureInfo.InvariantCulture);
+        var ok = money.TryFormat(buffer, out var written, default, CultureInfo.InvariantCulture);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(0, written);
@@ -131,10 +131,10 @@ public partial class MoneyTests
     [TestMethod]
     public void TryFormatUtf8_WhenSpanLargeEnough_ShouldWriteSameBytesAsToString()
     {
-        Money<USD> money = new Money<USD>(19.99m);
+        var money = new Money<USD>(19.99m);
         Span<byte> buffer = stackalloc byte[32];
 
-        bool ok = money.TryFormat(buffer, out int written, default, CultureInfo.InvariantCulture);
+        var ok = money.TryFormat(buffer, out var written, default, CultureInfo.InvariantCulture);
 
         Assert.IsTrue(ok);
         Assert.AreEqual("USD 19.99", System.Text.Encoding.UTF8.GetString(buffer[..written]));
@@ -147,9 +147,9 @@ public partial class MoneyTests
     [TestMethod]
     public void ToString_WhenLSpecifierAndCultureMatchesUsd_ShouldUseDollarSymbol()
     {
-        Money<USD> money = new Money<USD>(1234.56m);
+        var money = new Money<USD>(1234.56m);
 
-        string result = money.ToString("L", new CultureInfo("en-US"));
+        var result = money.ToString("L", new CultureInfo("en-US"));
 
         Assert.AreEqual("$1,234.56", result);
     }
@@ -161,9 +161,9 @@ public partial class MoneyTests
     [TestMethod]
     public void ToString_WhenLSpecifierAndCultureMatchesEur_ShouldUseEuroSymbolInLocalePattern()
     {
-        Money<EUR> money = new Money<EUR>(1234.56m);
+        var money = new Money<EUR>(1234.56m);
 
-        string result = money.ToString("L", new CultureInfo("de-DE"));
+        var result = money.ToString("L", new CultureInfo("de-DE"));
 
         // de-DE: "1.234,56 €" — symbol after amount, comma decimal, period grouping.
         StringAssert.Contains(result, "€");
@@ -177,9 +177,9 @@ public partial class MoneyTests
     [TestMethod]
     public void ToString_WhenLSpecifierAndCultureMismatchedPrefix_ShouldSubstituteIsoBeforeAmount()
     {
-        Money<JPY> money = new Money<JPY>(1234m);
+        var money = new Money<JPY>(1234m);
 
-        string result = money.ToString("L", new CultureInfo("en-US"));
+        var result = money.ToString("L", new CultureInfo("en-US"));
 
         Assert.AreEqual("JPY 1,234", result);
     }
@@ -191,9 +191,9 @@ public partial class MoneyTests
     [TestMethod]
     public void ToString_WhenLSpecifierAndCultureMismatchedSuffix_ShouldSubstituteIsoAfterAmount()
     {
-        Money<USD> money = new Money<USD>(1234.56m);
+        var money = new Money<USD>(1234.56m);
 
-        string result = money.ToString("L", new CultureInfo("de-DE"));
+        var result = money.ToString("L", new CultureInfo("de-DE"));
 
         Assert.AreEqual("1.234,56 USD", result);
     }
@@ -205,9 +205,9 @@ public partial class MoneyTests
     [TestMethod]
     public void ToString_WhenLSpecifierAndJpyUnderEnUs_ShouldRespectCurrencyMinorUnits()
     {
-        Money<JPY> money = new Money<JPY>(2500m);
+        var money = new Money<JPY>(2500m);
 
-        string result = money.ToString("L", new CultureInfo("en-US"));
+        var result = money.ToString("L", new CultureInfo("en-US"));
 
         Assert.AreEqual("JPY 2,500", result);
     }
@@ -219,9 +219,9 @@ public partial class MoneyTests
     [TestMethod]
     public void ToString_WhenLSpecifierAndExplicitPrecisionZero_ShouldRoundToWholeUnits()
     {
-        Money<USD> money = new Money<USD>(19.99m);
+        var money = new Money<USD>(19.99m);
 
-        string result = money.ToString("L0", new CultureInfo("en-US"));
+        var result = money.ToString("L0", new CultureInfo("en-US"));
 
         Assert.AreEqual("$20", result);
     }
@@ -233,9 +233,9 @@ public partial class MoneyTests
     [TestMethod]
     public void ToString_WhenLSpecifierAndNeutralCulture_ShouldFallBackToIsoSubstitution()
     {
-        Money<USD> money = new Money<USD>(19.99m);
+        var money = new Money<USD>(19.99m);
 
-        string result = money.ToString("L", CultureInfo.InvariantCulture);
+        var result = money.ToString("L", CultureInfo.InvariantCulture);
 
         Assert.AreEqual("USD 19.99", result);
     }
@@ -247,9 +247,9 @@ public partial class MoneyTests
     [TestMethod]
     public void ToString_WhenTildeCAndCultureMatches_ShouldElideIsoCode()
     {
-        Money<USD> money = new Money<USD>(1234.56m);
+        var money = new Money<USD>(1234.56m);
 
-        string result = money.ToString("~C", new CultureInfo("en-US"));
+        var result = money.ToString("~C", new CultureInfo("en-US"));
 
         Assert.AreEqual("1,234.56", result);
     }
@@ -261,9 +261,9 @@ public partial class MoneyTests
     [TestMethod]
     public void ToString_WhenTildeCAndCultureMismatched_ShouldKeepIsoCode()
     {
-        Money<JPY> money = new Money<JPY>(1234m);
+        var money = new Money<JPY>(1234m);
 
-        string result = money.ToString("~C", new CultureInfo("en-US"));
+        var result = money.ToString("~C", new CultureInfo("en-US"));
 
         Assert.AreEqual("JPY 1,234", result);
     }
@@ -275,9 +275,9 @@ public partial class MoneyTests
     [TestMethod]
     public void ToString_WhenTildeLAndCultureMatches_ShouldElideSymbol()
     {
-        Money<USD> money = new Money<USD>(19.99m);
+        var money = new Money<USD>(19.99m);
 
-        string result = money.ToString("~L", new CultureInfo("en-US"));
+        var result = money.ToString("~L", new CultureInfo("en-US"));
 
         Assert.AreEqual("19.99", result);
     }
@@ -289,9 +289,9 @@ public partial class MoneyTests
     [TestMethod]
     public void ToString_WhenTildeLAndCultureMismatched_ShouldStillEmitIsoCode()
     {
-        Money<JPY> money = new Money<JPY>(1234m);
+        var money = new Money<JPY>(1234m);
 
-        string result = money.ToString("~L", new CultureInfo("en-US"));
+        var result = money.ToString("~L", new CultureInfo("en-US"));
 
         Assert.AreEqual("JPY 1,234", result);
     }
@@ -302,9 +302,9 @@ public partial class MoneyTests
     [TestMethod]
     public void ToString_WhenTildeCWithExplicitPrecisionAndCultureMatches_ShouldUseElidedFormWithPrecision()
     {
-        Money<USD> money = new Money<USD>(19.99m);
+        var money = new Money<USD>(19.99m);
 
-        string result = money.ToString("~C0", new CultureInfo("en-US"));
+        var result = money.ToString("~C0", new CultureInfo("en-US"));
 
         Assert.AreEqual("20", result);
     }

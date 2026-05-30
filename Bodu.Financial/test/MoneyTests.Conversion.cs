@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyTests.Conversion.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -20,7 +20,7 @@ public partial class MoneyTests
     [TestMethod]
     public void Convert_WhenUsdToJpy_ShouldApplyRateAndRoundToTargetPrecision()
     {
-        Money<USD> usd = new Money<USD>(10m);
+        var usd = new Money<USD>(10m);
 
         Money<JPY> jpy = usd.Convert<JPY>(155.5m);
 
@@ -34,7 +34,7 @@ public partial class MoneyTests
     [TestMethod]
     public void Convert_WhenExchangeRateNegative_ShouldThrowArgumentOutOfRangeException()
     {
-        Money<USD> usd = new Money<USD>(10m);
+        var usd = new Money<USD>(10m);
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -49,7 +49,7 @@ public partial class MoneyTests
     [TestMethod]
     public void Round_WhenLowerThanMinorUnits_ShouldCoarsenPrecision()
     {
-        Money<USD> money = new Money<USD>(19.99m);
+        var money = new Money<USD>(19.99m);
 
         Money<USD> whole = money.Round(0);
 
@@ -63,7 +63,7 @@ public partial class MoneyTests
     [TestMethod]
     public void Round_WhenDecimalsExceedsMinorUnits_ShouldThrowArgumentOutOfRangeException()
     {
-        Money<USD> money = new Money<USD>(19.99m);
+        var money = new Money<USD>(19.99m);
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -78,10 +78,10 @@ public partial class MoneyTests
     [TestMethod]
     public void Fraction_WhenRoundTripped_ShouldPreserveValue()
     {
-        Money<USD> original = new Money<USD>(19.99m);
+        var original = new Money<USD>(19.99m);
 
-        Fraction<BigInteger> rational = original.ToFraction();
-        Money<USD> recovered = Money<USD>.FromFraction(rational);
+        var rational = original.ToFraction();
+        var recovered = Money<USD>.FromFraction(rational);
 
         Assert.AreEqual(original, recovered);
     }
@@ -93,8 +93,8 @@ public partial class MoneyTests
     [TestMethod]
     public void MultiplyExact_WhenAppliedToOneThird_ShouldRoundOnceAtEnd()
     {
-        Money<USD> dollar = new Money<USD>(1m);
-        Fraction<BigInteger> third = Fraction<BigInteger>.Create(1, 3);
+        var dollar = new Money<USD>(1m);
+        var third = Fraction<BigInteger>.Create(1, 3);
 
         Money<USD> result = dollar.MultiplyExact(third);
 

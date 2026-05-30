@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateSeries.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -16,12 +16,12 @@ namespace Bodu.Financial;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The collection is immutable after construction. Internally it stores observations as two parallel sorted arrays
-/// — a <see cref="DateOnly" /> array of observation dates and a <see cref="decimal" /> array of rates — so that the
-/// binary search at lookup time touches only the compact (4 bytes per element) date array. Compared with
+/// The collection is immutable after construction. Internally it stores observations as two parallel sorted arrays — a
+/// <see cref="DateOnly" /> array of observation dates and a <see cref="decimal" /> array of rates — so that the binary
+/// search at lookup time touches only the compact (4 bytes per element) date array. Compared with
 /// <see cref="System.Collections.Generic.SortedDictionary{TKey, TValue}" /> this gives substantially better cache
-/// locality, no per-node allocation, and predictable hot-path performance for the multi-year daily series typical of
-/// FX data.
+/// locality, no per-node allocation, and predictable hot-path performance for the multi-year daily series typical of FX
+/// data.
 /// </para>
 /// <para>
 /// Instances are safe to share across threads after construction because all read paths only touch read-only arrays.
@@ -46,13 +46,19 @@ public sealed class ExchangeRateSeries
     /// </summary>
     /// <param name="pair">The currency pair this series describes.</param>
     /// <param name="provider">The non-empty identifier of the publishing source.</param>
-    /// <param name="rates">The observations to include. Must contain at least one entry and must not contain duplicate dates.</param>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="provider" /> or <paramref name="rates" /> is <see langword="null" />.</exception>
+    /// <param name="rates">
+    /// The observations to include. Must contain at least one entry and must not contain duplicate dates.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown if <paramref name="provider" /> or <paramref name="rates" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentException">
     /// Thrown if <paramref name="provider" /> is empty or white-space, if <paramref name="rates" /> is empty, or if it
     /// contains duplicate dates.
     /// </exception>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown if any rate in <paramref name="rates" /> is zero or negative.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown if any rate in <paramref name="rates" /> is zero or negative.
+    /// </exception>
     public ExchangeRateSeries(
         ExchangeRatePair pair,
         string provider,
@@ -69,7 +75,7 @@ public sealed class ExchangeRateSeries
         if (buffer.Count == 0)
             throw new ArgumentException("Series must contain at least one rate.", nameof(rates));
 
-        for (int i = 0; i < buffer.Count; i++)
+        for (var i = 0; i < buffer.Count; i++)
         {
             if (buffer[i].Rate <= 0m)
             {
@@ -82,7 +88,7 @@ public sealed class ExchangeRateSeries
 
         buffer.Sort(static (a, b) => a.Date.CompareTo(b.Date));
 
-        for (int i = 1; i < buffer.Count; i++)
+        for (var i = 1; i < buffer.Count; i++)
         {
             if (buffer[i].Date == buffer[i - 1].Date)
             {
@@ -95,7 +101,7 @@ public sealed class ExchangeRateSeries
         _dates = new DateOnly[buffer.Count];
         _rates = new decimal[buffer.Count];
 
-        for (int i = 0; i < buffer.Count; i++)
+        for (var i = 0; i < buffer.Count; i++)
         {
             _dates[i] = buffer[i].Date;
             _rates[i] = buffer[i].Rate;
@@ -133,7 +139,9 @@ public sealed class ExchangeRateSeries
     /// When this method returns <see langword="true" />, the rate observed on <paramref name="resolvedDate" />;
     /// otherwise <see langword="default" />.
     /// </param>
-    /// <returns><see langword="true" /> if a rate was resolved within tolerance; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> if a rate was resolved within tolerance; otherwise <see langword="false" />.
+    /// </returns>
     /// <remarks>
     /// <para>
     /// The resolution algorithm performs a single <see cref="Array.BinarySearch{T}(T[], T)" /> over the date array. On
@@ -154,9 +162,9 @@ public sealed class ExchangeRateSeries
         options.Validate();
 
         DateOnly[] dates = _dates;
-        decimal[] rates = _rates;
+        var rates = _rates;
 
-        int index = Array.BinarySearch(dates, requestedDate);
+        var index = Array.BinarySearch(dates, requestedDate);
 
         if (index >= 0)
         {
@@ -172,17 +180,17 @@ public sealed class ExchangeRateSeries
             return false;
         }
 
-        int next = ~index;
-        int previous = next - 1;
+        var next = ~index;
+        var previous = next - 1;
 
-        if (!TrySelectCandidate(dates, requestedDate, options.DateResolution, previous, next, out int candidate))
+        if (!TrySelectCandidate(dates, requestedDate, options.DateResolution, previous, next, out var candidate))
         {
             resolvedDate = default;
             rate = default;
             return false;
         }
 
-        int offsetDays = Math.Abs(dates[candidate].DayNumber - requestedDate.DayNumber);
+        var offsetDays = Math.Abs(dates[candidate].DayNumber - requestedDate.DayNumber);
 
         if (offsetDays > options.ToleranceDays)
         {
@@ -216,8 +224,8 @@ public sealed class ExchangeRateSeries
         int next,
         out int candidate)
     {
-        bool hasPrevious = previous >= 0;
-        bool hasNext = next < dates.Length;
+        var hasPrevious = previous >= 0;
+        var hasNext = next < dates.Length;
 
         switch (resolution)
         {
@@ -248,7 +256,8 @@ public sealed class ExchangeRateSeries
     }
 
     /// <summary>
-    /// Selects the nearest candidate index, honouring the tie-break preference encoded in <paramref name="resolution" />.
+    /// Selects the nearest candidate index, honouring the tie-break preference encoded in
+    /// <paramref name="resolution" />.
     /// </summary>
     /// <param name="dates">The series date array.</param>
     /// <param name="requestedDate">The date the caller originally requested.</param>
@@ -288,9 +297,9 @@ public sealed class ExchangeRateSeries
             return true;
         }
 
-        int requestedDay = requestedDate.DayNumber;
-        int previousDistance = requestedDay - dates[previous].DayNumber;
-        int nextDistance = dates[next].DayNumber - requestedDay;
+        var requestedDay = requestedDate.DayNumber;
+        var previousDistance = requestedDay - dates[previous].DayNumber;
+        var nextDistance = dates[next].DayNumber - requestedDay;
 
         if (previousDistance < nextDistance)
         {

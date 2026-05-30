@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FixedDatedExchangeRateTableTests.TryGetRate.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -24,7 +24,7 @@ public partial class FixedDatedExchangeRateTableTests
     {
         FixedDatedExchangeRateTable table = new(kat.Rates);
 
-        bool actual = table.TryGetRate(
+        var actual = table.TryGetRate(
             kat.FromIsoCode,
             kat.ToIsoCode,
             kat.RequestedDate,

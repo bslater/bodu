@@ -1,10 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateSeriesTests.TryGetRate.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Linq;
 using Bodu.Financial.Kat;
 using Bodu.Test.Kat;
 
@@ -23,14 +22,12 @@ public partial class ExchangeRateSeriesTests
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void TryGetRate_WhenDateResolutionPolicyApplied_ShouldMatchExpectedOutcome(ExchangeRateDateResolutionKat kat)
     {
-        (DateOnly Date, decimal Rate)[] rates = kat.AvailableDates
-            .Select((date, index) => (date, 1m + (index * 0.01m)))
-            .ToArray();
+        (DateOnly Date, decimal Rate)[] rates = [.. kat.AvailableDates.Select((date, index) => (date, 1m + (index * 0.01m)))];
 
         ExchangeRateSeries series = new(new ExchangeRatePair("USD", "AUD"), "RBA", rates);
         ExchangeRateLookupOptions options = new(kat.Resolution, kat.ToleranceDays);
 
-        bool actual = series.TryGetRate(kat.RequestedDate, options, out DateOnly resolved, out _);
+        var actual = series.TryGetRate(kat.RequestedDate, options, out DateOnly resolved, out _);
 
         Assert.AreEqual(kat.ExpectedSuccess, actual);
 
@@ -184,7 +181,7 @@ public partial class ExchangeRateSeriesTests
             new DateOnly(2024, 1, 1),
             ExchangeRateDateResolution.Nearest,
             10,
-            new[] { new DateOnly(2024, 1, 5) },
+            [new DateOnly(2024, 1, 5)],
             new DateOnly(2024, 1, 5),
             true)];
 
@@ -193,7 +190,7 @@ public partial class ExchangeRateSeriesTests
             new DateOnly(2024, 1, 10),
             ExchangeRateDateResolution.Nearest,
             10,
-            new[] { new DateOnly(2024, 1, 5) },
+            [new DateOnly(2024, 1, 5)],
             new DateOnly(2024, 1, 5),
             true)];
 
@@ -211,7 +208,7 @@ public partial class ExchangeRateSeriesTests
             DateOnly.MinValue,
             ExchangeRateDateResolution.Exact,
             0,
-            new[] { DateOnly.MinValue, new DateOnly(2024, 1, 5) },
+            [DateOnly.MinValue, new DateOnly(2024, 1, 5)],
             DateOnly.MinValue,
             true)];
 
@@ -220,7 +217,7 @@ public partial class ExchangeRateSeriesTests
             DateOnly.MaxValue,
             ExchangeRateDateResolution.Exact,
             0,
-            new[] { new DateOnly(2024, 1, 5), DateOnly.MaxValue },
+            [new DateOnly(2024, 1, 5), DateOnly.MaxValue],
             DateOnly.MaxValue,
             true)];
 
@@ -229,7 +226,7 @@ public partial class ExchangeRateSeriesTests
             new DateOnly(2024, 2, 29),
             ExchangeRateDateResolution.Exact,
             0,
-            new[] { new DateOnly(2024, 2, 28), new DateOnly(2024, 2, 29), new DateOnly(2024, 3, 1) },
+            [new DateOnly(2024, 2, 28), new DateOnly(2024, 2, 29), new DateOnly(2024, 3, 1)],
             new DateOnly(2024, 2, 29),
             true)];
     }
@@ -272,11 +269,11 @@ public partial class ExchangeRateSeriesTests
     {
         ExchangeRateSeries series = new(s_usdAud, "RBA", SampleRates());
 
-        bool found = series.TryGetRate(
+        var found = series.TryGetRate(
             new DateOnly(2024, 1, 5),
             ExchangeRateLookupOptions.Exact,
             out DateOnly resolved,
-            out decimal rate);
+            out var rate);
 
         Assert.IsTrue(found);
         Assert.AreEqual(new DateOnly(2024, 1, 5), resolved);

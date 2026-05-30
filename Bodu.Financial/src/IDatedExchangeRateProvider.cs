@@ -1,10 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IDatedExchangeRateProvider.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System.Diagnostics.CodeAnalysis;
 
 namespace Bodu.Financial;
 
@@ -15,8 +13,9 @@ namespace Bodu.Financial;
 /// <remarks>
 /// <para>
 /// Implementations are expected to validate their string and option arguments and throw rather than return failure when
-/// inputs are invalid. The distinction between <see cref="GetRate(string, string, DateOnly, ExchangeRateLookupOptions)" />
-/// and <see cref="TryGetRate(string, string, DateOnly, ExchangeRateLookupOptions, out ExchangeRateLookupResult)" /> is
+/// inputs are invalid. The distinction between
+/// <see cref="GetRate(string, string, DateOnly, ExchangeRateLookupOptions)" /> and
+/// <see cref="TryGetRate(string, string, DateOnly, ExchangeRateLookupOptions, out ExchangeRateLookupResult)" /> is
 /// reserved for the case where no rate is available for an otherwise valid request: the former throws
 /// <see cref="KeyNotFoundException" />, the latter returns <see langword="false" /> without allocating.
 /// </para>
@@ -42,7 +41,9 @@ public interface IDatedExchangeRateProvider
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown if <paramref name="options" /> contains a negative tolerance or an undefined enum value.
     /// </exception>
-    /// <exception cref="KeyNotFoundException">Thrown if no rate is available for the request under the supplied options.</exception>
+    /// <exception cref="KeyNotFoundException">
+    /// Thrown if no rate is available for the request under the supplied options.
+    /// </exception>
     ExchangeRateLookupResult GetRate(
         string fromIsoCode,
         string toIsoCode,
@@ -51,7 +52,8 @@ public interface IDatedExchangeRateProvider
 
     /// <summary>
     /// Attempts to resolve the exchange rate from <paramref name="fromIsoCode" /> to <paramref name="toIsoCode" /> on
-    /// <paramref name="date" /> under <paramref name="options" />, returning a flag indicating whether a rate was found.
+    /// <paramref name="date" /> under <paramref name="options" />, returning a flag indicating whether a rate was
+    /// found.
     /// </summary>
     /// <param name="fromIsoCode">The source-currency ISO-style code.</param>
     /// <param name="toIsoCode">The destination-currency ISO-style code.</param>

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyTests.MinorUnitsAndComparison.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -53,7 +53,7 @@ public partial class MoneyTests
     [DataRow(1_000_000_000_000L)]
     public void MinorUnits_WhenRoundTripped_ShouldRecoverOriginal(long minorUnits)
     {
-        long recovered = Money<USD>.FromMinorUnits(minorUnits).ToMinorUnits();
+        var recovered = Money<USD>.FromMinorUnits(minorUnits).ToMinorUnits();
 
         Assert.AreEqual(minorUnits, recovered);
     }
@@ -64,7 +64,7 @@ public partial class MoneyTests
     [TestMethod]
     public void TryToMinorUnits_WhenInRange_ShouldReturnTrueAndExpectedValue()
     {
-        bool ok = new Money<USD>(19.99m).TryToMinorUnits(out long result);
+        var ok = new Money<USD>(19.99m).TryToMinorUnits(out var result);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(1999L, result);
@@ -77,9 +77,9 @@ public partial class MoneyTests
     [TestMethod]
     public void TryToMinorUnits_WhenScaledValueOverflowsLong_ShouldReturnFalse()
     {
-        Money<USD> huge = new Money<USD>(decimal.MaxValue / 2m);
+        var huge = new Money<USD>(decimal.MaxValue / 2m);
 
-        bool ok = huge.TryToMinorUnits(out long result);
+        var ok = huge.TryToMinorUnits(out var result);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(0L, result);
@@ -95,8 +95,8 @@ public partial class MoneyTests
     [TestMethod]
     public void Min_WhenLeftLessThanRight_ShouldReturnLeft()
     {
-        Money<USD> a = new Money<USD>(5m);
-        Money<USD> b = new Money<USD>(10m);
+        var a = new Money<USD>(5m);
+        var b = new Money<USD>(10m);
 
         Assert.AreEqual(a, Money<USD>.Min(a, b));
         Assert.AreEqual(a, Money<USD>.Min(b, a));
@@ -108,8 +108,8 @@ public partial class MoneyTests
     [TestMethod]
     public void Min_WhenOperandsEqual_ShouldReturnLeft()
     {
-        Money<USD> a = new Money<USD>(5m);
-        Money<USD> b = new Money<USD>(5m);
+        var a = new Money<USD>(5m);
+        var b = new Money<USD>(5m);
 
         Assert.AreEqual(a, Money<USD>.Min(a, b));
     }
@@ -120,8 +120,8 @@ public partial class MoneyTests
     [TestMethod]
     public void Max_WhenLeftGreaterThanRight_ShouldReturnLeft()
     {
-        Money<USD> a = new Money<USD>(10m);
-        Money<USD> b = new Money<USD>(5m);
+        var a = new Money<USD>(10m);
+        var b = new Money<USD>(5m);
 
         Assert.AreEqual(a, Money<USD>.Max(a, b));
         Assert.AreEqual(a, Money<USD>.Max(b, a));
@@ -133,9 +133,9 @@ public partial class MoneyTests
     [TestMethod]
     public void Clamp_WhenValueInsideRange_ShouldReturnValueUnchanged()
     {
-        Money<USD> value = new Money<USD>(50m);
-        Money<USD> min = new Money<USD>(0m);
-        Money<USD> max = new Money<USD>(100m);
+        var value = new Money<USD>(50m);
+        var min = new Money<USD>(0m);
+        var max = new Money<USD>(100m);
 
         Assert.AreEqual(value, Money<USD>.Clamp(value, min, max));
     }
@@ -147,8 +147,8 @@ public partial class MoneyTests
     [TestMethod]
     public void Clamp_WhenValueOutsideRange_ShouldSnapToBound()
     {
-        Money<USD> min = new Money<USD>(0m);
-        Money<USD> max = new Money<USD>(100m);
+        var min = new Money<USD>(0m);
+        var max = new Money<USD>(100m);
 
         Assert.AreEqual(min, Money<USD>.Clamp(new Money<USD>(-50m), min, max));
         Assert.AreEqual(max, Money<USD>.Clamp(new Money<USD>(200m), min, max));
@@ -160,8 +160,8 @@ public partial class MoneyTests
     [TestMethod]
     public void Clamp_WhenMinGreaterThanMax_ShouldThrowArgumentException()
     {
-        Money<USD> min = new Money<USD>(100m);
-        Money<USD> max = new Money<USD>(0m);
+        var min = new Money<USD>(100m);
+        var max = new Money<USD>(0m);
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -189,7 +189,7 @@ public partial class MoneyTests
     [DataRow("Infinity")]
     public void TryParse_WhenInputMalformed_ShouldReturnFalse(string input)
     {
-        bool ok = Money<USD>.TryParse(input, System.Globalization.CultureInfo.InvariantCulture, out _);
+        var ok = Money<USD>.TryParse(input, System.Globalization.CultureInfo.InvariantCulture, out _);
 
         Assert.IsFalse(ok, $"Expected '{input}' to fail parsing.");
     }

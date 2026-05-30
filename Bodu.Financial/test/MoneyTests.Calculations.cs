@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyTests.Calculations.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -89,7 +89,7 @@ public partial class MoneyTests
     [DataRow(-1.235, -1.24)]
     public void Constructor_WhenAmountAtMidpoint_ShouldRoundToNearestEven(double amount, double expectedAmount)
     {
-        Money<USD> money = new Money<USD>((decimal)amount);
+        var money = new Money<USD>((decimal)amount);
 
         Assert.AreEqual((decimal)expectedAmount, money.Amount);
     }
@@ -106,7 +106,7 @@ public partial class MoneyTests
     [DataRow(-1.235, -1.24)]
     public void Constructor_WhenAmountAtMidpointAndAwayFromZero_ShouldRoundAwayFromZero(double amount, double expectedAmount)
     {
-        Money<USD> money = new Money<USD>((decimal)amount, MidpointRounding.AwayFromZero);
+        var money = new Money<USD>((decimal)amount, MidpointRounding.AwayFromZero);
 
         Assert.AreEqual((decimal)expectedAmount, money.Amount);
     }
@@ -119,11 +119,11 @@ public partial class MoneyTests
     /// Verifies that an additive chain of itemised same-currency amounts produces the expected ledger total.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(InvoiceTotalCases), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(InvoiceTotalCases))]
     public void Addition_WhenSummingItemisedAmountsForUsd_ShouldMatchExpectedTotal(double[] amounts, double expected)
     {
         Money<USD> total = Money<USD>.Zero;
-        foreach (double a in amounts)
+        foreach (var a in amounts)
             total += new Money<USD>((decimal)a);
 
         Assert.AreEqual(new Money<USD>((decimal)expected), total);
@@ -174,7 +174,7 @@ public partial class MoneyTests
     [DataRow(1234.56, 0.20, 246.91, 1481.47)] // .20 × 1234.56 = 246.912 → 246.91; net + tax = 1481.47
     public void TaxComputation_WhenComputingGstUsd_ShouldRoundAndCompose(double net, double rate, double expectedTax, double expectedGross)
     {
-        Money<USD> netMoney = new Money<USD>((decimal)net);
+        var netMoney = new Money<USD>((decimal)net);
         Money<USD> tax = netMoney * (decimal)rate;
         Money<USD> gross = netMoney + tax;
 
@@ -191,13 +191,13 @@ public partial class MoneyTests
     /// share-by-share output with the residual distributed from the start of the array.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(AllocationCases), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(AllocationCases))]
     public void Allocate_WhenEqualPartsUsd_ShouldProduceExpectedShareTable(double amount, int parts, double[] expectedShares)
     {
         Money<USD>[] shares = new Money<USD>((decimal)amount).Allocate(parts);
 
         Assert.AreEqual(expectedShares.Length, shares.Length);
-        for (int i = 0; i < expectedShares.Length; i++)
+        for (var i = 0; i < expectedShares.Length; i++)
         {
             Assert.AreEqual(new Money<USD>((decimal)expectedShares[i]), shares[i], $"Share index {i}");
         }
@@ -221,12 +221,12 @@ public partial class MoneyTests
 
     private static double[] EquallyDistributedShares(double amount, int parts)
     {
-        decimal cents = decimal.Round((decimal)amount * 100m, 0);
-        long total = (long)cents;
-        long basePer = total / parts;
-        long residual = total - (basePer * parts);
-        double[] result = new double[parts];
-        for (int i = 0; i < parts; i++)
+        var cents = decimal.Round((decimal)amount * 100m, 0);
+        var total = (long)cents;
+        var basePer = total / parts;
+        var residual = total - (basePer * parts);
+        var result = new double[parts];
+        for (var i = 0; i < parts; i++)
             result[i] = (double)((basePer + (i < residual ? 1 : 0)) / 100m);
         return result;
     }
@@ -236,16 +236,16 @@ public partial class MoneyTests
     /// across positive, negative, and mixed-zero ratios.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(RatioAllocationCases), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(RatioAllocationCases))]
     public void Allocate_WhenRatioBasedUsd_ShouldDistributeProportionallyAndPreserveTotal(double amount, double[] ratios, double[] expectedShares)
     {
-        decimal[] ratioDecimals = Array.ConvertAll(ratios, r => (decimal)r);
+        var ratioDecimals = Array.ConvertAll(ratios, r => (decimal)r);
 
         Money<USD>[] shares = new Money<USD>((decimal)amount).Allocate(ratioDecimals);
 
         Assert.AreEqual(expectedShares.Length, shares.Length);
         Money<USD> sum = Money<USD>.Zero;
-        for (int i = 0; i < expectedShares.Length; i++)
+        for (var i = 0; i < expectedShares.Length; i++)
         {
             Assert.AreEqual(new Money<USD>((decimal)expectedShares[i]), shares[i], $"Share index {i}");
             sum += shares[i];
@@ -285,7 +285,7 @@ public partial class MoneyTests
     [DataRow(0.0, 5)]
     public void Allocate_WhenAnyEqualPartsUsd_ShouldSumToOriginal(double amount, int parts)
     {
-        Money<USD> original = new Money<USD>((decimal)amount);
+        var original = new Money<USD>((decimal)amount);
 
         Money<USD>[] shares = original.Allocate(parts);
 
@@ -311,16 +311,16 @@ public partial class MoneyTests
     {
         Type currencyType = ResolveCurrencyType(iso);
         Type moneyType = typeof(Money<>).MakeGenericType(currencyType);
-        object original = Activator.CreateInstance(moneyType, (decimal)amount)!;
+        var original = Activator.CreateInstance(moneyType, (decimal)amount)!;
 
-        Array shares = (Array)moneyType
-            .GetMethod("Allocate", new[] { typeof(int) })!
-            .Invoke(original, new object?[] { parts })!;
+        var shares = (Array)moneyType
+            .GetMethod("Allocate", [typeof(int)])!
+            .Invoke(original, [parts])!;
 
-        object sum = Activator.CreateInstance(moneyType)!;
+        var sum = Activator.CreateInstance(moneyType)!;
         System.Reflection.MethodInfo addOp = moneyType.GetMethod("op_Addition")!;
-        foreach (object? share in shares)
-            sum = addOp.Invoke(null, new object?[] { sum, share })!;
+        foreach (var share in shares)
+            sum = addOp.Invoke(null, [sum, share])!;
 
         Assert.AreEqual(original, sum);
     }
@@ -340,7 +340,7 @@ public partial class MoneyTests
     [DataRow(1234.56, 158.42, 195579.0)]   // 1234.56 × 158.42 = 195578.9952 → 195579 at JPY's 0 dp
     public void Convert_WhenUsdToJpy_ShouldRoundToZeroMinorUnits(double amount, double rate, double expected)
     {
-        Money<USD> source = new Money<USD>((decimal)amount);
+        var source = new Money<USD>((decimal)amount);
 
         Money<JPY> target = source.Convert<JPY>((decimal)rate);
 
@@ -356,7 +356,7 @@ public partial class MoneyTests
     [DataRow(1.00, 0.3795, 0.380)]         // 0.3795 → 0.380 (banker's, up to even? actually 0.3795 → 0.380 since 9 is odd, but next even is 0; rounds to 0.380)
     public void Convert_WhenUsdToBhd_ShouldRoundToThreeMinorUnits(double amount, double rate, double expected)
     {
-        Money<USD> source = new Money<USD>((decimal)amount);
+        var source = new Money<USD>((decimal)amount);
 
         Money<BHD> target = source.Convert<BHD>((decimal)rate);
 
@@ -370,7 +370,7 @@ public partial class MoneyTests
     [TestMethod]
     public void Convert_WhenRoundTrippingUsdToJpyAndBack_ShouldTrackIntermediateTruncation()
     {
-        Money<USD> original = new Money<USD>(100.00m);
+        var original = new Money<USD>(100.00m);
 
         Money<JPY> intermediate = original.Convert<JPY>(155.49m);
         Money<USD> recovered = intermediate.Convert<USD>(1m / 155.49m);
@@ -395,8 +395,8 @@ public partial class MoneyTests
     [DataRow(0.10, 1, 3, 0.03)]          // 0.10 × 1/3 = 0.0333... → 0.03
     public void MultiplyExact_WhenAppliedToExactFraction_ShouldRoundOnce(double amount, int numerator, int denominator, double expected)
     {
-        Money<USD> money = new Money<USD>((decimal)amount);
-        Fraction<BigInteger> factor = Fraction<BigInteger>.Create(numerator, denominator);
+        var money = new Money<USD>((decimal)amount);
+        var factor = Fraction<BigInteger>.Create(numerator, denominator);
 
         Money<USD> result = money.MultiplyExact(factor);
 
@@ -410,14 +410,14 @@ public partial class MoneyTests
     [TestMethod]
     public void MultiplyExact_WhenDividingByThreeThenMultiplyingBack_ShouldNotDriftLikeScalarChain()
     {
-        Money<USD> principal = new Money<USD>(100m);
+        var principal = new Money<USD>(100m);
 
         // Scalar-rounded chain — 100 / 3 = 33.33 (rounded) × 3 = 99.99 (drifts a cent).
         Money<USD> naive = principal / 3m * 3m;
 
         // Exact chain — one rounding event at the end.
         Fraction<BigInteger> exact = principal.ToFraction() / Fraction<BigInteger>.Create(3, 1) * Fraction<BigInteger>.Create(3, 1);
-        Money<USD> exactResult = Money<USD>.FromFraction(exact);
+        var exactResult = Money<USD>.FromFraction(exact);
 
         Assert.AreEqual(principal, exactResult);
         Assert.AreEqual(new Money<USD>(99.99m), naive);
@@ -435,15 +435,15 @@ public partial class MoneyTests
     [TestMethod]
     public void CompoundInterest_WhenTwelveMonthsAtFivePercentApr_ShouldMatchTextbookResult()
     {
-        Money<USD> principal = new Money<USD>(1000m);
-        Fraction<BigInteger> monthlyRate = Fraction<BigInteger>.Create(5, 1200);          // 5% / 12 months
+        var principal = new Money<USD>(1000m);
+        var monthlyRate = Fraction<BigInteger>.Create(5, 1200);          // 5% / 12 months
         Fraction<BigInteger> growth = Fraction<BigInteger>.One + monthlyRate;             // 1 + r
 
-        Fraction<BigInteger> balance = principal.ToFraction();
-        for (int i = 0; i < 12; i++)
+        var balance = principal.ToFraction();
+        for (var i = 0; i < 12; i++)
             balance *= growth;
 
-        Money<USD> result = Money<USD>.FromFraction(balance);
+        var result = Money<USD>.FromFraction(balance);
 
         // 1000 × (1 + 5/1200)^12 = 1051.1618978...
         // banker's-round to 1051.16
@@ -465,7 +465,7 @@ public partial class MoneyTests
     [DataRow(-1234.56, -1)]
     public void Sign_WhenInspected_ShouldReportExpectedSign(double amount, int expectedSign)
     {
-        Money<USD> money = new Money<USD>((decimal)amount);
+        var money = new Money<USD>((decimal)amount);
 
         Assert.AreEqual(expectedSign, money.Sign);
         Assert.AreEqual(amount == 0.0, money.IsZero);
@@ -482,7 +482,7 @@ public partial class MoneyTests
     [DataRow(-1234.56)]
     public void Abs_WhenAnyAmount_ShouldBeNonNegativeAndIdempotent(double amount)
     {
-        Money<USD> money = new Money<USD>((decimal)amount);
+        var money = new Money<USD>((decimal)amount);
 
         Money<USD> abs = money.Abs;
         Money<USD> absAgain = abs.Abs;
@@ -504,14 +504,14 @@ public partial class MoneyTests
     [TestMethod]
     public void RepeatedMultiplication_WhenChainedThirteenTimes_ShouldDriftFromSingleEquivalent()
     {
-        Money<USD> start = new Money<USD>(100m);
-        decimal factor = 1.01m;
+        var start = new Money<USD>(100m);
+        var factor = 1.01m;
 
         Money<USD> chained = start;
-        for (int i = 0; i < 13; i++)
-            chained = chained * factor;
+        for (var i = 0; i < 13; i++)
+            chained *= factor;
 
-        Money<USD> oneShot = new Money<USD>(start.Amount * (decimal)Math.Pow((double)factor, 13));
+        var oneShot = new Money<USD>(start.Amount * (decimal)Math.Pow((double)factor, 13));
 
         // 100 × 1.01^13 = 113.80932... → 113.81; chained version may drift by a cent.
         Assert.AreEqual(new Money<USD>(113.81m), oneShot);

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateDateResolution.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -12,8 +12,8 @@ namespace Bodu.Financial;
 /// <remarks>
 /// <para>
 /// The selected resolution interacts with <see cref="ExchangeRateLookupOptions.ToleranceDays" /> to bound how far a
-/// fallback date may be from the requested date. <see cref="Exact" /> never falls back and therefore requires a tolerance
-/// of zero.
+/// fallback date may be from the requested date. <see cref="Exact" /> never falls back and therefore requires a
+/// tolerance of zero.
 /// </para>
 /// <para>
 /// For accounting and tax workflows where silently selecting a future rate is undesirable, prefer
@@ -44,15 +44,15 @@ public enum ExchangeRateDateResolution
 
     /// <summary>
     /// The available rate whose date is closest to the requested date is used; if the previous and next dates are
-    /// equally close, the previous date wins. When the two candidates have <i>different</i> distances, the closer
-    /// one is selected regardless of preference — the preference applies only at exact ties.
+    /// equally close, the previous date wins. When the two candidates have <i>different</i> distances, the closer one
+    /// is selected regardless of preference — the preference applies only at exact ties.
     /// </summary>
     NearestPreferPrevious = 4,
 
     /// <summary>
     /// The available rate whose date is closest to the requested date is used; if the previous and next dates are
-    /// equally close, the next date wins. When the two candidates have <i>different</i> distances, the closer one
-    /// is selected regardless of preference — the preference applies only at exact ties.
+    /// equally close, the next date wins. When the two candidates have <i>different</i> distances, the closer one is
+    /// selected regardless of preference — the preference applies only at exact ties.
     /// </summary>
     NearestPreferNext = 5,
 }

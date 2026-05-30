@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IExchangeRateProvider.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -10,9 +10,9 @@ namespace Bodu.Financial;
 /// Source of foreign-exchange rates used to convert between currencies.
 /// </summary>
 /// <remarks>
-/// Implementations decide where rates come from: a static table, a daily snapshot, a live ticker, a mid-market
-/// computed from bid/ask, and so on. Consumers of <see cref="MoneyBag.ConvertTo{TTarget}(IExchangeRateProvider)" />
-/// only need the abstract <see cref="GetRate(string, string)" /> contract.
+/// Implementations decide where rates come from: a static table, a daily snapshot, a live ticker, a mid-market computed
+/// from bid/ask, and so on. Consumers of <see cref="MoneyBag.ConvertTo{TTarget}(IExchangeRateProvider)" /> only need
+/// the abstract <see cref="GetRate(string, string)" /> contract.
 /// </remarks>
 public interface IExchangeRateProvider
 {

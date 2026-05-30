@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DatedExchangeRateProviderAdapterTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -20,10 +20,10 @@ public partial class DatedExchangeRateProviderAdapterTests
     [TestMethod]
     public void GetRate_WhenInnerHasRate_ShouldReturnRateValue()
     {
-        FixedDatedExchangeRateTable inner = new(new[]
-        {
+        FixedDatedExchangeRateTable inner = new(
+        [
             new ExchangeRate("USD", "AUD", s_d1, 1.50m, "RBA"),
-        });
+        ]);
         DatedExchangeRateProviderAdapter adapter = new(inner, s_d1, ExchangeRateLookupOptions.Exact);
 
         Assert.AreEqual(1.50m, adapter.GetRate("USD", "AUD"));
@@ -36,7 +36,7 @@ public partial class DatedExchangeRateProviderAdapterTests
     [TestMethod]
     public void GetRate_WhenInnerHasNoRate_ShouldThrowKeyNotFoundException()
     {
-        FixedDatedExchangeRateTable inner = new(Array.Empty<ExchangeRate>());
+        FixedDatedExchangeRateTable inner = new([]);
         DatedExchangeRateProviderAdapter adapter = new(inner, s_d1, ExchangeRateLookupOptions.Exact);
 
         _ = Assert.ThrowsExactly<KeyNotFoundException>(() => adapter.GetRate("USD", "AUD"));
@@ -62,7 +62,7 @@ public partial class DatedExchangeRateProviderAdapterTests
     [TestMethod]
     public void Constructor_WhenOptionsInvalid_ShouldThrowArgumentException()
     {
-        FixedDatedExchangeRateTable inner = new(Array.Empty<ExchangeRate>());
+        FixedDatedExchangeRateTable inner = new([]);
 
         _ = Assert.ThrowsExactly<ArgumentException>(() =>
         {

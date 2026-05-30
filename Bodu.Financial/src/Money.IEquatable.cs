@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Money.IEquatable.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -28,17 +28,16 @@ public readonly partial struct Money<TCurrency> :
     /// </summary>
     /// <param name="obj">The object to compare against.</param>
     /// <returns>
-    /// <see langword="true" /> when <paramref name="obj" /> is a <see cref="Money{TCurrency}" /> over the same
-    /// currency and equal in amount; otherwise <see langword="false" />.
+    /// <see langword="true" /> when <paramref name="obj" /> is a <see cref="Money{TCurrency}" /> over the same currency
+    /// and equal in amount; otherwise <see langword="false" />.
     /// </returns>
     public override bool Equals(object? obj) =>
         obj is Money<TCurrency> other && Equals(other);
 
     /// <summary>
-    /// Returns a hash code consistent with <see cref="Equals(Money{TCurrency})" /> — combining the closed
-    /// generic type identity (not the runtime <see cref="ICurrency.IsoCode" /> string) with the amount so
-    /// hashing matches equality even when two different currency tag types share an ISO code or when a custom
-    /// tag mutates its reported code.
+    /// Returns a hash code consistent with <see cref="Equals(Money{TCurrency})" /> — combining the closed generic type
+    /// identity (not the runtime <see cref="ICurrency.IsoCode" /> string) with the amount so hashing matches equality
+    /// even when two different currency tag types share an ISO code or when a custom tag mutates its reported code.
     /// </summary>
     /// <returns>A 32-bit hash code suitable for use in hash-based collections.</returns>
     public override int GetHashCode() =>
@@ -59,7 +58,10 @@ public readonly partial struct Money<TCurrency> :
     /// Compares this instance to <paramref name="obj" /> when it is a same-currency <see cref="Money{TCurrency}" />.
     /// </summary>
     /// <param name="obj">The boxed value to compare against.</param>
-    /// <returns>The result of <see cref="CompareTo(Money{TCurrency})" /> when <paramref name="obj" /> matches; the comparison rules of <see cref="IComparable" /> when <paramref name="obj" /> is <see langword="null" />.</returns>
+    /// <returns>
+    /// The result of <see cref="CompareTo(Money{TCurrency})" /> when <paramref name="obj" /> matches; the comparison
+    /// rules of <see cref="IComparable" /> when <paramref name="obj" /> is <see langword="null" />.
+    /// </returns>
     /// <exception cref="ArgumentException">
     /// Thrown when <paramref name="obj" /> is not a <see cref="Money{TCurrency}" /> over the same
     /// <typeparamref name="TCurrency" />.
@@ -83,8 +85,10 @@ public readonly partial struct Money<TCurrency> :
     /// <param name="left">The first value.</param>
     /// <param name="right">The second value.</param>
     /// <returns><see langword="true" /> when the two are equal; otherwise <see langword="false" />.</returns>
-    public static bool operator ==(Money<TCurrency> left, Money<TCurrency> right) =>
-        left.Equals(right);
+    public static bool operator ==(Money<TCurrency> left, Money<TCurrency> right)
+    {
+        return left.Equals(right);
+    }
 
     /// <summary>
     /// Determines whether two monetary values differ in amount.
@@ -92,6 +96,8 @@ public readonly partial struct Money<TCurrency> :
     /// <param name="left">The first value.</param>
     /// <param name="right">The second value.</param>
     /// <returns><see langword="true" /> when the two differ; otherwise <see langword="false" />.</returns>
-    public static bool operator !=(Money<TCurrency> left, Money<TCurrency> right) =>
-        !left.Equals(right);
+    public static bool operator !=(Money<TCurrency> left, Money<TCurrency> right)
+    {
+        return !left.Equals(right);
+    }
 }

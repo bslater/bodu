@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CurrencyCatalogueTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -58,8 +58,8 @@ public class CurrencyCatalogueTests
     [DataRow(typeof(CLP), "CLP", 0)]
     public void ShippedCurrencies_WhenAccessedReflectively_ShouldReportExpectedMetadata(Type currencyType, string expectedIso, int expectedMinorUnits)
     {
-        string iso = (string)currencyType.GetProperty("IsoCode", BindingFlags.Public | BindingFlags.Static)!.GetValue(null)!;
-        int minorUnits = (int)currencyType.GetProperty("MinorUnits", BindingFlags.Public | BindingFlags.Static)!.GetValue(null)!;
+        var iso = (string)currencyType.GetProperty("IsoCode", BindingFlags.Public | BindingFlags.Static)!.GetValue(null)!;
+        var minorUnits = (int)currencyType.GetProperty("MinorUnits", BindingFlags.Public | BindingFlags.Static)!.GetValue(null)!;
 
         Assert.AreEqual(expectedIso, iso);
         Assert.AreEqual(expectedMinorUnits, minorUnits);
@@ -72,7 +72,7 @@ public class CurrencyCatalogueTests
     [TestMethod]
     public void Catalogue_WhenEnumeratedViaReflection_ShouldContainAtLeastOneHundredEightyTypes()
     {
-        int count = typeof(USD).Assembly
+        var count = typeof(USD).Assembly
             .GetTypes()
             .Where(t => t.Namespace == "Bodu.Financial.Currencies"
                 && typeof(ICurrency).IsAssignableFrom(t))

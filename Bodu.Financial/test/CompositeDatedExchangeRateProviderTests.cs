@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CompositeDatedExchangeRateProviderTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -21,13 +21,13 @@ public partial class CompositeDatedExchangeRateProviderTests
     [TestCategory(TestCategories.Smoke)]
     public void TryGetRate_WhenSingleInnerProvider_ShouldDelegateAndReturn()
     {
-        FixedDatedExchangeRateTable inner = new(new[]
-        {
+        FixedDatedExchangeRateTable inner = new(
+        [
             new ExchangeRate("USD", "AUD", s_d1, 1.50m, "RBA"),
-        });
-        CompositeDatedExchangeRateProvider composite = new(new[] { (IDatedExchangeRateProvider)inner });
+        ]);
+        CompositeDatedExchangeRateProvider composite = new([(IDatedExchangeRateProvider)inner]);
 
-        bool found = composite.TryGetRate(
+        var found = composite.TryGetRate(
             "USD",
             "AUD",
             s_d1,
@@ -46,14 +46,14 @@ public partial class CompositeDatedExchangeRateProviderTests
     [TestMethod]
     public void TryGetRate_WhenFirstProviderMisses_ShouldFallThroughToSecond()
     {
-        FixedDatedExchangeRateTable first = new(Array.Empty<ExchangeRate>());
-        FixedDatedExchangeRateTable second = new(new[]
-        {
+        FixedDatedExchangeRateTable first = new([]);
+        FixedDatedExchangeRateTable second = new(
+        [
             new ExchangeRate("USD", "AUD", s_d1, 1.50m, "ECB"),
-        });
-        CompositeDatedExchangeRateProvider composite = new(new IDatedExchangeRateProvider[] { first, second });
+        ]);
+        CompositeDatedExchangeRateProvider composite = new([first, second]);
 
-        bool found = composite.TryGetRate(
+        var found = composite.TryGetRate(
             "USD",
             "AUD",
             s_d1,
@@ -70,17 +70,17 @@ public partial class CompositeDatedExchangeRateProviderTests
     [TestMethod]
     public void TryGetRate_WhenBothProvidersHaveRate_ShouldReturnFirstProviderResult()
     {
-        FixedDatedExchangeRateTable first = new(new[]
-        {
+        FixedDatedExchangeRateTable first = new(
+        [
             new ExchangeRate("USD", "AUD", s_d1, 1.50m, "RBA"),
-        });
-        FixedDatedExchangeRateTable second = new(new[]
-        {
+        ]);
+        FixedDatedExchangeRateTable second = new(
+        [
             new ExchangeRate("USD", "AUD", s_d1, 1.60m, "ECB"),
-        });
-        CompositeDatedExchangeRateProvider composite = new(new IDatedExchangeRateProvider[] { first, second });
+        ]);
+        CompositeDatedExchangeRateProvider composite = new([first, second]);
 
-        bool found = composite.TryGetRate(
+        var found = composite.TryGetRate(
             "USD",
             "AUD",
             s_d1,
@@ -99,17 +99,17 @@ public partial class CompositeDatedExchangeRateProviderTests
     [TestMethod]
     public void TryGetRate_WhenFirstProviderHasFallbackAndSecondHasExact_ShouldUseFirst()
     {
-        FixedDatedExchangeRateTable first = new(new[]
-        {
+        FixedDatedExchangeRateTable first = new(
+        [
             new ExchangeRate("USD", "AUD", new DateOnly(2024, 1, 1), 1.40m, "RBA"),
-        });
-        FixedDatedExchangeRateTable second = new(new[]
-        {
+        ]);
+        FixedDatedExchangeRateTable second = new(
+        [
             new ExchangeRate("USD", "AUD", new DateOnly(2024, 1, 3), 1.50m, "ECB"),
-        });
-        CompositeDatedExchangeRateProvider composite = new(new IDatedExchangeRateProvider[] { first, second });
+        ]);
+        CompositeDatedExchangeRateProvider composite = new([first, second]);
 
-        bool found = composite.TryGetRate(
+        var found = composite.TryGetRate(
             "USD",
             "AUD",
             new DateOnly(2024, 1, 3),
@@ -126,10 +126,10 @@ public partial class CompositeDatedExchangeRateProviderTests
     [TestMethod]
     public void TryGetRate_WhenAllProvidersMiss_ShouldReturnFalse()
     {
-        FixedDatedExchangeRateTable empty = new(Array.Empty<ExchangeRate>());
-        CompositeDatedExchangeRateProvider composite = new(new IDatedExchangeRateProvider[] { empty, empty });
+        FixedDatedExchangeRateTable empty = new([]);
+        CompositeDatedExchangeRateProvider composite = new([empty, empty]);
 
-        bool found = composite.TryGetRate(
+        var found = composite.TryGetRate(
             "USD",
             "AUD",
             s_d1,
@@ -146,8 +146,8 @@ public partial class CompositeDatedExchangeRateProviderTests
     [TestMethod]
     public void GetRate_WhenAllProvidersMiss_ShouldThrowKeyNotFoundException()
     {
-        FixedDatedExchangeRateTable empty = new(Array.Empty<ExchangeRate>());
-        CompositeDatedExchangeRateProvider composite = new(new IDatedExchangeRateProvider[] { empty });
+        FixedDatedExchangeRateTable empty = new([]);
+        CompositeDatedExchangeRateProvider composite = new([empty]);
 
         _ = Assert.ThrowsExactly<KeyNotFoundException>(() =>
             composite.GetRate("USD", "AUD", s_d1, ExchangeRateLookupOptions.Exact));
@@ -162,7 +162,7 @@ public partial class CompositeDatedExchangeRateProviderTests
         ExceptionAssert.ThrowsExactlyWithParamName<ArgumentException>(
             () =>
             {
-                _ = new CompositeDatedExchangeRateProvider(Array.Empty<IDatedExchangeRateProvider>());
+                _ = new CompositeDatedExchangeRateProvider([]);
             },
             "providers");
     }
@@ -190,7 +190,7 @@ public partial class CompositeDatedExchangeRateProviderTests
         ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(
             () =>
             {
-                _ = new CompositeDatedExchangeRateProvider(new IDatedExchangeRateProvider[] { null! });
+                _ = new CompositeDatedExchangeRateProvider([null!]);
             },
             "providers");
     }

@@ -1,10 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyTests.ReassessmentDefects.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Collections.Generic;
 using System.Numerics;
 using System.Text.Json;
 using Bodu.Financial.Currencies;
@@ -30,9 +29,9 @@ public partial class MoneyTests
     [TestMethod]
     public void FromFraction_WhenToZeroOnNonMidpointPositive_ShouldTruncateToZero()
     {
-        Fraction<BigInteger> value = Fraction<BigInteger>.Create(1209, 1000);
+        var value = Fraction<BigInteger>.Create(1209, 1000);
 
-        Money<USD> result = Money<USD>.FromFraction(value, MidpointRounding.ToZero);
+        var result = Money<USD>.FromFraction(value, MidpointRounding.ToZero);
 
         Assert.AreEqual(new Money<USD>(1.20m), result);
     }
@@ -44,9 +43,9 @@ public partial class MoneyTests
     [TestMethod]
     public void FromFraction_WhenToZeroOnNonMidpointNegative_ShouldTruncateToZero()
     {
-        Fraction<BigInteger> value = Fraction<BigInteger>.Create(-1209, 1000);
+        var value = Fraction<BigInteger>.Create(-1209, 1000);
 
-        Money<USD> result = Money<USD>.FromFraction(value, MidpointRounding.ToZero);
+        var result = Money<USD>.FromFraction(value, MidpointRounding.ToZero);
 
         Assert.AreEqual(new Money<USD>(-1.20m), result);
     }
@@ -58,9 +57,9 @@ public partial class MoneyTests
     [TestMethod]
     public void FromFraction_WhenToPositiveInfinityOnNonMidpointPositive_ShouldRoundUp()
     {
-        Fraction<BigInteger> value = Fraction<BigInteger>.Create(1201, 1000);
+        var value = Fraction<BigInteger>.Create(1201, 1000);
 
-        Money<USD> result = Money<USD>.FromFraction(value, MidpointRounding.ToPositiveInfinity);
+        var result = Money<USD>.FromFraction(value, MidpointRounding.ToPositiveInfinity);
 
         Assert.AreEqual(new Money<USD>(1.21m), result);
     }
@@ -72,9 +71,9 @@ public partial class MoneyTests
     [TestMethod]
     public void FromFraction_WhenToPositiveInfinityOnNegative_ShouldRoundTowardZero()
     {
-        Fraction<BigInteger> value = Fraction<BigInteger>.Create(-1209, 1000);
+        var value = Fraction<BigInteger>.Create(-1209, 1000);
 
-        Money<USD> result = Money<USD>.FromFraction(value, MidpointRounding.ToPositiveInfinity);
+        var result = Money<USD>.FromFraction(value, MidpointRounding.ToPositiveInfinity);
 
         Assert.AreEqual(new Money<USD>(-1.20m), result);
     }
@@ -86,9 +85,9 @@ public partial class MoneyTests
     [TestMethod]
     public void FromFraction_WhenToNegativeInfinityOnPositive_ShouldRoundTowardZero()
     {
-        Fraction<BigInteger> value = Fraction<BigInteger>.Create(1209, 1000);
+        var value = Fraction<BigInteger>.Create(1209, 1000);
 
-        Money<USD> result = Money<USD>.FromFraction(value, MidpointRounding.ToNegativeInfinity);
+        var result = Money<USD>.FromFraction(value, MidpointRounding.ToNegativeInfinity);
 
         Assert.AreEqual(new Money<USD>(1.20m), result);
     }
@@ -100,9 +99,9 @@ public partial class MoneyTests
     [TestMethod]
     public void FromFraction_WhenToNegativeInfinityOnNegative_ShouldRoundAwayToMoreNegative()
     {
-        Fraction<BigInteger> value = Fraction<BigInteger>.Create(-1201, 1000);
+        var value = Fraction<BigInteger>.Create(-1201, 1000);
 
-        Money<USD> result = Money<USD>.FromFraction(value, MidpointRounding.ToNegativeInfinity);
+        var result = Money<USD>.FromFraction(value, MidpointRounding.ToNegativeInfinity);
 
         Assert.AreEqual(new Money<USD>(-1.21m), result);
     }
@@ -119,7 +118,7 @@ public partial class MoneyTests
     [TestMethod]
     public void FromFraction_WhenMidpointRoundingValueIsUndefined_ShouldThrowArgumentOutOfRangeException()
     {
-        Fraction<BigInteger> value = Fraction<BigInteger>.Create(1225, 1000);
+        var value = Fraction<BigInteger>.Create(1225, 1000);
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -140,8 +139,8 @@ public partial class MoneyTests
     [TestMethod]
     public void Allocate_WhenSmallAmountAcrossUnequalRatios_ShouldGiveResidualToLargestRemainder()
     {
-        Money<USD> revenue = new Money<USD>(0.05m);
-        decimal[] ratios = { 1m, 1m, 100m };
+        var revenue = new Money<USD>(0.05m);
+        decimal[] ratios = [1m, 1m, 100m];
 
         Money<USD>[] shares = revenue.Allocate(ratios);
 
@@ -156,8 +155,8 @@ public partial class MoneyTests
     [TestMethod]
     public void Allocate_WhenLargestRatioFirst_ShouldGiveResidualToFirstSlot()
     {
-        Money<USD> revenue = new Money<USD>(0.05m);
-        decimal[] ratios = { 100m, 1m, 1m };
+        var revenue = new Money<USD>(0.05m);
+        decimal[] ratios = [100m, 1m, 1m];
 
         Money<USD>[] shares = revenue.Allocate(ratios);
 
@@ -173,8 +172,8 @@ public partial class MoneyTests
     [TestMethod]
     public void Allocate_WhenFractionalRemaindersTie_ShouldUseStableInputOrder()
     {
-        Money<USD> revenue = new Money<USD>(0.02m);
-        decimal[] ratios = { 1m, 1m, 1m };
+        var revenue = new Money<USD>(0.02m);
+        decimal[] ratios = [1m, 1m, 1m];
 
         Money<USD>[] shares = revenue.Allocate(ratios);
 
@@ -196,8 +195,8 @@ public partial class MoneyTests
     [TestMethod]
     public void Allocate_WhenNegativeAmountAcrossUnequalRatios_ShouldMirrorPositiveLargestRemainder()
     {
-        Money<USD> loss = new Money<USD>(-0.05m);
-        decimal[] ratios = { 1m, 1m, 100m };
+        var loss = new Money<USD>(-0.05m);
+        decimal[] ratios = [1m, 1m, 100m];
 
         Money<USD>[] shares = loss.Allocate(ratios);
 
@@ -217,7 +216,7 @@ public partial class MoneyTests
     [TestMethod]
     public void Balances_WhenCastToMutableAndMutated_ShouldNotAffectBagState()
     {
-        MoneyBag bag = new MoneyBag(new[] { new MoneyValue(100m, "USD") });
+        var bag = new MoneyBag([new MoneyValue(100m, "USD")]);
 
         IReadOnlyDictionary<string, decimal> balances = bag.Balances;
 
@@ -225,7 +224,7 @@ public partial class MoneyTests
         // fail (an ICollection wrapper) or the mutation must not propagate (a snapshot copy).
         if (balances is Dictionary<string, decimal> exposed)
         {
-            decimal originalUsd = bag.Balances["USD"];
+            var originalUsd = bag.Balances["USD"];
             try
             {
                 exposed["USD"] = -999_999_999m;
@@ -347,7 +346,7 @@ public partial class MoneyTests
     [TestMethod]
     public void MoneyBagConstructor_WhenBalanceCarriesEmptyIsoCode_ShouldThrowArgumentException()
     {
-        MoneyValue[] entries = { new MoneyValue(100m, "USD"), default };
+        MoneyValue[] entries = [new MoneyValue(100m, "USD"), default];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -396,7 +395,7 @@ public partial class MoneyTests
     [TestMethod]
     public void MoneyValueArithmetic_WhenOneOperandIsDefault_ShouldThrowInvalidOperationException()
     {
-        MoneyValue real = new MoneyValue(100m, "USD");
+        var real = new MoneyValue(100m, "USD");
         MoneyValue empty = default;
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
@@ -416,7 +415,7 @@ public partial class MoneyTests
     [TestMethod]
     public void MoneyValueJsonDeserialize_WhenAmountPropertyDuplicated_ShouldThrowJsonException()
     {
-        string json = "{\"amount\":10,\"amount\":20,\"currency\":\"USD\"}";
+        var json = "{\"amount\":10,\"amount\":20,\"currency\":\"USD\"}";
 
         Assert.ThrowsExactly<JsonException>(() =>
         {
@@ -430,7 +429,7 @@ public partial class MoneyTests
     [TestMethod]
     public void MoneyValueJsonDeserialize_WhenCurrencyPropertyDuplicated_ShouldThrowJsonException()
     {
-        string json = "{\"amount\":10,\"currency\":\"USD\",\"currency\":\"EUR\"}";
+        var json = "{\"amount\":10,\"currency\":\"USD\",\"currency\":\"EUR\"}";
 
         Assert.ThrowsExactly<JsonException>(() =>
         {

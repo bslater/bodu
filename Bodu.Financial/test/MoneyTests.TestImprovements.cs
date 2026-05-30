@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyTests.TestImprovements.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -85,11 +85,11 @@ public partial class MoneyTests
     [TestMethod]
     public void TryFormat_WhenDestinationLengthExactlyMatchesRequired_ShouldSucceed()
     {
-        Money<USD> money = new Money<USD>(19.99m);
-        string expected = money.ToString(null, CultureInfo.InvariantCulture);
+        var money = new Money<USD>(19.99m);
+        var expected = money.ToString(null, CultureInfo.InvariantCulture);
         Span<char> buffer = stackalloc char[expected.Length];
 
-        bool ok = money.TryFormat(buffer, out int written, default, CultureInfo.InvariantCulture);
+        var ok = money.TryFormat(buffer, out var written, default, CultureInfo.InvariantCulture);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(expected.Length, written);
@@ -103,11 +103,11 @@ public partial class MoneyTests
     [TestMethod]
     public void TryFormat_WhenDestinationOneCharShort_ShouldReturnFalse()
     {
-        Money<USD> money = new Money<USD>(19.99m);
-        string expected = money.ToString(null, CultureInfo.InvariantCulture);
+        var money = new Money<USD>(19.99m);
+        var expected = money.ToString(null, CultureInfo.InvariantCulture);
         Span<char> buffer = stackalloc char[expected.Length - 1];
 
-        bool ok = money.TryFormat(buffer, out int written, default, CultureInfo.InvariantCulture);
+        var ok = money.TryFormat(buffer, out var written, default, CultureInfo.InvariantCulture);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(0, written);
@@ -119,10 +119,10 @@ public partial class MoneyTests
     [TestMethod]
     public void TryFormat_WhenDestinationLengthZero_ShouldReturnFalse()
     {
-        Money<USD> money = new Money<USD>(19.99m);
-        Span<char> buffer = Span<char>.Empty;
+        var money = new Money<USD>(19.99m);
+        Span<char> buffer = [];
 
-        bool ok = money.TryFormat(buffer, out int written, default, CultureInfo.InvariantCulture);
+        var ok = money.TryFormat(buffer, out var written, default, CultureInfo.InvariantCulture);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(0, written);
@@ -135,12 +135,12 @@ public partial class MoneyTests
     [TestMethod]
     public void TryFormatUtf8_WhenDestinationExactlyMatchesByteLength_ShouldSucceed()
     {
-        Money<USD> money = new Money<USD>(19.99m);
-        string expected = money.ToString(null, CultureInfo.InvariantCulture);
-        int byteLength = System.Text.Encoding.UTF8.GetByteCount(expected);
+        var money = new Money<USD>(19.99m);
+        var expected = money.ToString(null, CultureInfo.InvariantCulture);
+        var byteLength = System.Text.Encoding.UTF8.GetByteCount(expected);
         Span<byte> buffer = stackalloc byte[byteLength];
 
-        bool ok = money.TryFormat(buffer, out int written, default, CultureInfo.InvariantCulture);
+        var ok = money.TryFormat(buffer, out var written, default, CultureInfo.InvariantCulture);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(byteLength, written);
@@ -152,12 +152,12 @@ public partial class MoneyTests
     [TestMethod]
     public void TryFormatUtf8_WhenDestinationOneByteShort_ShouldReturnFalse()
     {
-        Money<USD> money = new Money<USD>(19.99m);
-        string expected = money.ToString(null, CultureInfo.InvariantCulture);
-        int byteLength = System.Text.Encoding.UTF8.GetByteCount(expected);
+        var money = new Money<USD>(19.99m);
+        var expected = money.ToString(null, CultureInfo.InvariantCulture);
+        var byteLength = System.Text.Encoding.UTF8.GetByteCount(expected);
         Span<byte> buffer = stackalloc byte[byteLength - 1];
 
-        bool ok = money.TryFormat(buffer, out int written, default, CultureInfo.InvariantCulture);
+        var ok = money.TryFormat(buffer, out var written, default, CultureInfo.InvariantCulture);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(0, written);
@@ -174,7 +174,7 @@ public partial class MoneyTests
     [TestMethod]
     public void Allocate_WhenScaledMinorUnitsOverflowLong_ShouldThrowOverflowException()
     {
-        Money<USD> huge = new Money<USD>(decimal.MaxValue / 2m);
+        var huge = new Money<USD>(decimal.MaxValue / 2m);
 
         Assert.ThrowsExactly<OverflowException>(() =>
         {
@@ -190,7 +190,7 @@ public partial class MoneyTests
     public void Allocate_WhenAmountIsNearLongLimit_ShouldSucceedAndPreserveSum()
     {
         // long.MaxValue ≈ 9.22 × 10^18. For USD (2 dp), that supports up to ~9.22 × 10^16 dollars.
-        Money<USD> nearLimit = new Money<USD>(90_000_000_000_000_000m);
+        var nearLimit = new Money<USD>(90_000_000_000_000_000m);
 
         Money<USD>[] shares = nearLimit.Allocate(7);
 
@@ -209,12 +209,12 @@ public partial class MoneyTests
     public void Allocate_WhenRandomisedSweep_ShouldAlwaysPreserveSum()
     {
         Random rng = new(20260530);
-        for (int i = 0; i < 500; i++)
+        for (var i = 0; i < 500; i++)
         {
-            int sign = rng.Next(0, 3) - 1;    // -1, 0, 1
-            decimal cents = rng.Next(0, 1_000_001) * 0.01m * sign;
-            int parts = rng.Next(1, 50);
-            Money<USD> original = new Money<USD>(cents);
+            var sign = rng.Next(0, 3) - 1;    // -1, 0, 1
+            var cents = rng.Next(0, 1_000_001) * 0.01m * sign;
+            var parts = rng.Next(1, 50);
+            var original = new Money<USD>(cents);
 
             Money<USD>[] shares = original.Allocate(parts);
 
@@ -233,18 +233,18 @@ public partial class MoneyTests
     public void Allocate_WhenRatioBasedRandomisedSweep_ShouldAlwaysPreserveSum()
     {
         Random rng = new(20260530);
-        for (int i = 0; i < 200; i++)
+        for (var i = 0; i < 200; i++)
         {
-            decimal cents = rng.Next(-1_000_000, 1_000_001) * 0.01m;
-            int slotCount = rng.Next(2, 11);
-            decimal[] ratios = new decimal[slotCount];
-            for (int j = 0; j < slotCount; j++)
+            var cents = rng.Next(-1_000_000, 1_000_001) * 0.01m;
+            var slotCount = rng.Next(2, 11);
+            var ratios = new decimal[slotCount];
+            for (var j = 0; j < slotCount; j++)
                 ratios[j] = rng.Next(0, 10);
 
             if (ratios.All(r => r == 0m))
                 ratios[0] = 1m;     // guarantee at least one positive ratio
 
-            Money<USD> original = new Money<USD>(cents);
+            var original = new Money<USD>(cents);
 
             Money<USD>[] shares = original.Allocate(ratios);
 

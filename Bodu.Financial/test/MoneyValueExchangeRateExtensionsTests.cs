@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyValueExchangeRateExtensionsTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -23,11 +23,11 @@ public class MoneyValueExchangeRateExtensionsTests
     /// Returns the shared test rate table.
     /// </summary>
     /// <returns>A provider with EUR/USD=1.10, JPY/USD=0.0067, USD/EUR=0.9091 (for inverse coverage).</returns>
-    private static IDatedExchangeRateProvider BuildProvider() => new FixedDatedExchangeRateTable(new[]
-    {
+    private static IDatedExchangeRateProvider BuildProvider() => new FixedDatedExchangeRateTable(
+    [
         new ExchangeRate("EUR", "USD", s_asOf, 1.10m, "RBA"),
         new ExchangeRate("JPY", "USD", s_asOf, 0.0067m, "RBA"),
-    });
+    ]);
 
     /// <summary>
     /// Verifies that the runtime-tagged dated convert path produces the expected target amount across a matrix
@@ -151,11 +151,11 @@ public class MoneyValueExchangeRateExtensionsTests
     [TestMethod]
     public void ConvertTo_WhenAwayFromZeroRequested_ShouldRoundMidpointAway()
     {
-        IDatedExchangeRateProvider rates = new FixedDatedExchangeRateTable(new[]
-        {
+        IDatedExchangeRateProvider rates = new FixedDatedExchangeRateTable(
+        [
             // 1.225 EUR/USD; 1 EUR × 1.225 = 1.225 → midpoint rounds to 1.22 banker's, 1.23 AwayFromZero.
             new ExchangeRate("EUR", "USD", s_asOf, 1.225m, "Bench"),
-        });
+        ]);
 
         MoneyValue source = new(1m, "EUR");
 

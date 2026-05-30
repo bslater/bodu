@@ -1,10 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FixedExchangeRateTable.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System.Collections.Generic;
 
 namespace Bodu.Financial;
 
@@ -13,9 +11,9 @@ namespace Bodu.Financial;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Same-currency lookups return <c>1m</c> without consulting the table. When a direct (from, to) pair is
-/// missing the provider also tries the inverse (to, from) pair and, if found, returns <c>1 / rate</c>. This is
-/// the convention most FX feeds use to keep the table minimal.
+/// Same-currency lookups return <c>1m</c> without consulting the table. When a direct (from, to) pair is missing the
+/// provider also tries the inverse (to, from) pair and, if found, returns <c>1 / rate</c>. This is the convention most
+/// FX feeds use to keep the table minimal.
 /// </para>
 /// <para>
 /// The table is immutable after construction; consumers wanting live rates should implement
@@ -30,7 +28,7 @@ public sealed class FixedExchangeRateTable : IExchangeRateProvider
     private readonly IReadOnlyDictionary<(string From, string To), decimal> _rates;
 
     /// <summary>
-    /// Initializes a new <see cref="FixedExchangeRateTable" /> from the supplied dictionary.
+    /// Initializes a new instance of the <see cref="FixedExchangeRateTable" /> class from the supplied dictionary.
     /// </summary>
     /// <param name="rates">The rate table.</param>
     /// <exception cref="ArgumentNullException"><paramref name="rates" /> is <see langword="null" />.</exception>
@@ -49,10 +47,10 @@ public sealed class FixedExchangeRateTable : IExchangeRateProvider
         if (string.Equals(fromIsoCode, toIsoCode, StringComparison.Ordinal))
             return 1m;
 
-        if (_rates.TryGetValue((fromIsoCode, toIsoCode), out decimal direct))
+        if (_rates.TryGetValue((fromIsoCode, toIsoCode), out var direct))
             return direct;
 
-        if (_rates.TryGetValue((toIsoCode, fromIsoCode), out decimal inverse) && inverse != 0m)
+        if (_rates.TryGetValue((toIsoCode, fromIsoCode), out var inverse) && inverse != 0m)
             return 1m / inverse;
 
         throw new KeyNotFoundException($"No exchange rate available for {fromIsoCode} → {toIsoCode}.");

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyValue.Conversion.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -9,8 +9,8 @@ namespace Bodu.Financial;
 public readonly partial struct MoneyValue
 {
     /// <summary>
-    /// Converts this <see cref="MoneyValue" /> to a strongly-typed <see cref="Money{TCurrency}" /> when the
-    /// runtime currency matches <typeparamref name="TCurrency" />.
+    /// Converts this <see cref="MoneyValue" /> to a strongly-typed <see cref="Money{TCurrency}" /> when the runtime
+    /// currency matches <typeparamref name="TCurrency" />.
     /// </summary>
     /// <typeparam name="TCurrency">The target currency type.</typeparam>
     /// <returns>The strongly-typed monetary value.</returns>
@@ -59,27 +59,30 @@ public readonly partial struct MoneyValue
         FromNormalized(money.Amount, CurrencyMetadata<TCurrency>.Value.IsoCode);
 
     /// <summary>
-    /// Converts this amount to a different currency at the supplied exchange rate, rounding to the target
-    /// currency's minor-unit precision.
+    /// Converts this amount to a different currency at the supplied exchange rate, rounding to the target currency's
+    /// minor-unit precision.
     /// </summary>
     /// <param name="targetIsoCode">The ISO 4217 code of the destination currency.</param>
     /// <param name="exchangeRate">The rate, expressed as units of the destination per unit of the source.</param>
     /// <returns>The converted <see cref="MoneyValue" />.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="targetIsoCode" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="targetIsoCode" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentException"><paramref name="targetIsoCode" /> is empty or whitespace.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="exchangeRate" /> is negative.</exception>
     public MoneyValue Convert(string targetIsoCode, decimal exchangeRate) =>
         Convert(targetIsoCode, exchangeRate, MidpointRounding.ToEven);
 
     /// <summary>
-    /// Converts this amount to a different currency at the supplied exchange rate, using the specified rounding
-    /// rule.
+    /// Converts this amount to a different currency at the supplied exchange rate, using the specified rounding rule.
     /// </summary>
     /// <param name="targetIsoCode">The ISO 4217 code of the destination currency.</param>
     /// <param name="exchangeRate">The rate, expressed as units of the destination per unit of the source.</param>
     /// <param name="rounding">The midpoint-rounding rule applied at the target precision.</param>
     /// <returns>The converted <see cref="MoneyValue" />.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="targetIsoCode" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="targetIsoCode" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentException"><paramref name="targetIsoCode" /> is empty or whitespace.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="exchangeRate" /> is negative.</exception>
     public MoneyValue Convert(string targetIsoCode, decimal exchangeRate, MidpointRounding rounding)
@@ -101,8 +104,8 @@ public readonly partial struct MoneyValue
         Convert<TTarget>(exchangeRate, MidpointRounding.ToEven);
 
     /// <summary>
-    /// Converts this amount to a strongly-typed <see cref="Money{TTarget}" /> at the supplied exchange rate,
-    /// using the specified rounding rule.
+    /// Converts this amount to a strongly-typed <see cref="Money{TTarget}" /> at the supplied exchange rate, using the
+    /// specified rounding rule.
     /// </summary>
     /// <typeparam name="TTarget">The destination currency type.</typeparam>
     /// <param name="exchangeRate">The rate, expressed as units of the destination per unit of the source.</param>

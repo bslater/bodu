@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyConversionResult.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -14,7 +14,10 @@ namespace Bodu.Financial;
 /// <typeparam name="TTarget">The destination currency.</typeparam>
 /// <param name="SourceAmount">The original source amount.</param>
 /// <param name="TargetAmount">The converted, rounded target amount.</param>
-/// <param name="ExchangeRate">The full lookup result, including provider, dates, and inversion flag, used to compute <paramref name="TargetAmount" />.</param>
+/// <param name="ExchangeRate">
+/// The full lookup result, including provider, dates, and inversion flag, used to compute
+/// <paramref name="TargetAmount" />.
+/// </param>
 public readonly record struct MoneyConversionResult<TSource, TTarget>(
     Money<TSource> SourceAmount,
     Money<TTarget> TargetAmount,

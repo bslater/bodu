@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyBagTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -33,14 +33,14 @@ public partial class MoneyBagTests
     public void Constructor_WhenGivenBalances_ShouldSumByCurrencyAndPruneZeros()
     {
         MoneyValue[] entries =
-        {
+        [
             new(100m, "USD"),
             new(50m, "EUR"),
             new(-100m, "USD"),    // cancels the USD entry
             new(25m, "EUR"),      // sums with the prior EUR entry
-        };
+        ];
 
-        MoneyBag bag = new MoneyBag(entries);
+        var bag = new MoneyBag(entries);
 
         Assert.AreEqual(1, bag.Count);
         Assert.AreEqual(new MoneyValue(75m, "EUR"), bag.GetBalance("EUR"));
@@ -119,8 +119,8 @@ public partial class MoneyBagTests
     [TestMethod]
     public void Combine_WhenTwoBagsShareCurrency_ShouldSumPerCurrency()
     {
-        MoneyBag left = new MoneyBag(new[] { new MoneyValue(100m, "USD"), new MoneyValue(50m, "EUR") });
-        MoneyBag right = new MoneyBag(new[] { new MoneyValue(25m, "USD"), new MoneyValue(75m, "JPY") });
+        var left = new MoneyBag([new MoneyValue(100m, "USD"), new MoneyValue(50m, "EUR")]);
+        var right = new MoneyBag([new MoneyValue(25m, "USD"), new MoneyValue(75m, "JPY")]);
 
         MoneyBag combined = left.Combine(right);
 
@@ -171,15 +171,15 @@ public partial class MoneyBagTests
     [TestMethod]
     public void Enumeration_WhenIterated_ShouldYieldEntriesInIsoOrder()
     {
-        MoneyBag bag = new MoneyBag(new[]
-        {
+        var bag = new MoneyBag(
+        [
             new MoneyValue(1m, "USD"),
             new MoneyValue(2m, "EUR"),
             new MoneyValue(3m, "AUD"),
             new MoneyValue(4m, "JPY"),
-        });
+        ]);
 
-        List<string> codes = bag.Select(v => v.IsoCode).ToList();
+        var codes = bag.Select(v => v.IsoCode).ToList();
 
         Assert.AreEqual(4, codes.Count);
         Assert.AreEqual("AUD", codes[0]);
@@ -236,7 +236,7 @@ public partial class MoneyBagTests
             { ("EUR", "USD"), 1.10m },
             { ("JPY", "USD"), 0.0067m },
         };
-        FixedExchangeRateTable table = new FixedExchangeRateTable(rates);
+        var table = new FixedExchangeRateTable(rates);
 
         Money<USD> total = bag.ConvertTo<USD>(table);
 
@@ -275,10 +275,10 @@ public partial class MoneyBagTests
         {
             { ("USD", "EUR"), 0.92m },
         };
-        FixedExchangeRateTable table = new FixedExchangeRateTable(rates);
+        var table = new FixedExchangeRateTable(rates);
 
-        decimal usdToEur = table.GetRate("USD", "EUR");
-        decimal eurToUsd = table.GetRate("EUR", "USD");
+        var usdToEur = table.GetRate("USD", "EUR");
+        var eurToUsd = table.GetRate("EUR", "USD");
 
         Assert.AreEqual(0.92m, usdToEur);
         Assert.AreEqual(1m / 0.92m, eurToUsd);
@@ -290,7 +290,7 @@ public partial class MoneyBagTests
     [TestMethod]
     public void FixedRateTable_WhenSameCurrency_ShouldReturnOne()
     {
-        FixedExchangeRateTable table = new FixedExchangeRateTable(new Dictionary<(string, string), decimal>());
+        var table = new FixedExchangeRateTable(new Dictionary<(string, string), decimal>());
 
         Assert.AreEqual(1m, table.GetRate("USD", "USD"));
     }
@@ -301,7 +301,7 @@ public partial class MoneyBagTests
     [TestMethod]
     public void FixedRateTable_WhenPairAbsent_ShouldThrowKeyNotFoundException()
     {
-        FixedExchangeRateTable table = new FixedExchangeRateTable(new Dictionary<(string, string), decimal>());
+        var table = new FixedExchangeRateTable(new Dictionary<(string, string), decimal>());
 
         Assert.ThrowsExactly<KeyNotFoundException>(() =>
         {
@@ -319,7 +319,7 @@ public partial class MoneyBagTests
             .Add(new MoneyValue(100m, "USD"))
             .Add(new MoneyValue(50m, "EUR"));
 
-        string json = JsonSerializer.Serialize(original);
+        var json = JsonSerializer.Serialize(original);
         MoneyBag? recovered = JsonSerializer.Deserialize<MoneyBag>(json);
 
         Assert.IsNotNull(recovered);

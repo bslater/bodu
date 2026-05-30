@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Money.Allocation.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -9,16 +9,18 @@ namespace Bodu.Financial;
 public readonly partial struct Money<TCurrency>
 {
     /// <summary>
-    /// Distributes this amount as evenly as possible across <paramref name="parts" /> shares, in a way that the
-    /// shares sum exactly to the original amount.
+    /// Distributes this amount as evenly as possible across <paramref name="parts" /> shares, in a way that the shares
+    /// sum exactly to the original amount.
     /// </summary>
     /// <param name="parts">The number of shares to allocate. Must be greater than zero.</param>
     /// <returns>
-    /// An array of <paramref name="parts" /> <see cref="Money{TCurrency}" /> values whose sum equals this instance.
-    /// Any residual minor units are distributed one per share from the start of the array, preserving the sign of
-    /// the original amount.
+    /// An array of <paramref name="parts" /> <see cref="Money{TCurrency}" /> values whose sum equals this instance. Any
+    /// residual minor units are distributed one per share from the start of the array, preserving the sign of the
+    /// original amount.
     /// </returns>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="parts" /> is less than or equal to zero.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="parts" /> is less than or equal to zero.
+    /// </exception>
     /// <exception cref="OverflowException">
     /// Thrown when the scaled minor-unit count exceeds the range of a 64-bit signed integer.
     /// </exception>
@@ -32,17 +34,17 @@ public readonly partial struct Money<TCurrency>
     {
         ThrowHelper.ThrowIfLessThanOrEqual(parts, 0);
 
-        long minorTotal = ToMinorUnits(_amount);
-        long basePer = minorTotal / parts;
-        long residual = minorTotal - (basePer * parts);
+        var minorTotal = ToMinorUnits(_amount);
+        var basePer = minorTotal / parts;
+        var residual = minorTotal - (basePer * parts);
         long sign = residual >= 0 ? 1 : -1;
-        long residualMagnitude = Math.Abs(residual);
+        var residualMagnitude = Math.Abs(residual);
 
-        decimal factor = MinorUnitFactor();
-        Money<TCurrency>[] result = new Money<TCurrency>[parts];
-        for (int i = 0; i < parts; i++)
+        var factor = MinorUnitFactor();
+        var result = new Money<TCurrency>[parts];
+        for (var i = 0; i < parts; i++)
         {
-            long share = basePer + (i < residualMagnitude ? sign : 0);
+            var share = basePer + (i < residualMagnitude ? sign : 0);
             result[i] = Money<TCurrency>.FromNormalizedAmount(share / factor);
         }
 
@@ -58,12 +60,14 @@ public readonly partial struct Money<TCurrency>
     /// produce a zero share.
     /// </param>
     /// <returns>
-    /// An array of <see cref="Money{TCurrency}" /> values whose length equals <paramref name="ratios" />.<see cref="ReadOnlySpan{T}.Length" />
-    /// and whose sum equals this instance. Residual minor units are distributed by the
-    /// <i>largest-remainder method</i> — each slot receives one extra unit in descending order of its
-    /// fractional remainder, with ties broken by stable input order. Zero-ratio slots never receive residual.
+    /// An array of <see cref="Money{TCurrency}" /> values whose length equals <paramref name="ratios" />.
+    /// <see cref="ReadOnlySpan{T}.Length" /> and whose sum equals this instance. Residual minor units are distributed
+    /// by the <i>largest-remainder method</i> — each slot receives one extra unit in descending order of its fractional
+    /// remainder, with ties broken by stable input order. Zero-ratio slots never receive residual.
     /// </returns>
-    /// <exception cref="ArgumentException">Thrown when <paramref name="ratios" /> is empty, contains a negative element, or sums to zero.</exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="ratios" /> is empty, contains a negative element, or sums to zero.
+    /// </exception>
     /// <exception cref="OverflowException">
     /// Thrown when the scaled minor-unit count exceeds the range of a 64-bit signed integer.
     /// </exception>
@@ -72,8 +76,8 @@ public readonly partial struct Money<TCurrency>
         if (ratios.IsEmpty)
             throw new ArgumentException("At least one ratio must be supplied.", nameof(ratios));
 
-        decimal totalWeight = 0m;
-        for (int i = 0; i < ratios.Length; i++)
+        var totalWeight = 0m;
+        for (var i = 0; i < ratios.Length; i++)
         {
             if (ratios[i] < 0m)
                 throw new ArgumentException("Ratios must not be negative.", nameof(ratios));
@@ -83,45 +87,45 @@ public readonly partial struct Money<TCurrency>
         if (totalWeight == 0m)
             throw new ArgumentException("At least one ratio must be strictly positive.", nameof(ratios));
 
-        long minorTotalSigned = ToMinorUnits(_amount);
+        var minorTotalSigned = ToMinorUnits(_amount);
         long sign = minorTotalSigned >= 0 ? 1 : -1;
-        long minorTotal = Math.Abs(minorTotalSigned);
-        decimal factor = MinorUnitFactor();
+        var minorTotal = Math.Abs(minorTotalSigned);
+        var factor = MinorUnitFactor();
 
         // Compute floored shares over absolute minor units; track each slot's fractional remainder so the
         // residual can go to the slot with the largest remainder (Hamilton method).
-        long[] shares = new long[ratios.Length];
-        decimal[] remainders = new decimal[ratios.Length];
+        var shares = new long[ratios.Length];
+        var remainders = new decimal[ratios.Length];
         long allocated = 0;
-        for (int i = 0; i < ratios.Length; i++)
+        for (var i = 0; i < ratios.Length; i++)
         {
-            decimal exact = minorTotal * ratios[i] / totalWeight;
-            decimal floored = decimal.Truncate(exact);
+            var exact = minorTotal * ratios[i] / totalWeight;
+            var floored = decimal.Truncate(exact);
             shares[i] = (long)floored;
             remainders[i] = exact - floored;
             allocated += shares[i];
         }
 
-        long residual = minorTotal - allocated;
+        var residual = minorTotal - allocated;
         if (residual > 0)
         {
             // Sort indices by (descending remainder, ascending index) so ties fall back to stable input order.
-            int[] order = new int[ratios.Length];
-            for (int i = 0; i < ratios.Length; i++)
+            var order = new int[ratios.Length];
+            for (var i = 0; i < ratios.Length; i++)
                 order[i] = i;
 
             // Local capture to allow Array.Sort with span.
-            decimal[] remaindersLocal = remainders;
+            var remaindersLocal = remainders;
             Array.Sort(order, (a, b) =>
             {
-                int cmp = remaindersLocal[b].CompareTo(remaindersLocal[a]);
+                var cmp = remaindersLocal[b].CompareTo(remaindersLocal[a]);
                 return cmp != 0 ? cmp : a.CompareTo(b);
             });
 
             long distributed = 0;
-            for (int k = 0; k < order.Length && distributed < residual; k++)
+            for (var k = 0; k < order.Length && distributed < residual; k++)
             {
-                int idx = order[k];
+                var idx = order[k];
                 if (ratios[idx] <= 0m)
                     continue;     // never give residual to a zero-ratio slot
                 shares[idx]++;
@@ -129,8 +133,8 @@ public readonly partial struct Money<TCurrency>
             }
         }
 
-        Money<TCurrency>[] result = new Money<TCurrency>[ratios.Length];
-        for (int i = 0; i < ratios.Length; i++)
+        var result = new Money<TCurrency>[ratios.Length];
+        for (var i = 0; i < ratios.Length; i++)
             result[i] = Money<TCurrency>.FromNormalizedAmount(sign * shares[i] / factor);
 
         return result;

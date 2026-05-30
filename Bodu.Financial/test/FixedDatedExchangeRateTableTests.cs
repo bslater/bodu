@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FixedDatedExchangeRateTableTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -28,7 +28,7 @@ public partial class FixedDatedExchangeRateTableTests
     {
         FixedDatedExchangeRateTable table = new(SingleRate());
 
-        bool found = table.TryGetRate(
+        var found = table.TryGetRate(
             "USD",
             "AUD",
             s_d1,
@@ -105,7 +105,7 @@ public partial class FixedDatedExchangeRateTableTests
     [TestMethod]
     public void GetRate_WhenNoRateAvailable_ShouldThrowKeyNotFoundException()
     {
-        FixedDatedExchangeRateTable table = new(Array.Empty<ExchangeRate>());
+        FixedDatedExchangeRateTable table = new([]);
 
         _ = Assert.ThrowsExactly<KeyNotFoundException>(() =>
             table.GetRate("USD", "AUD", s_d1, ExchangeRateLookupOptions.Exact));

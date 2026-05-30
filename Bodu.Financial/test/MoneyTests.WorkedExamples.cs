@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyTests.WorkedExamples.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -29,7 +29,7 @@ public partial class MoneyTests
     [TestMethod]
     public void Hospitality_WhenComputingRestaurantBillWithTipOnPreTaxSubtotal_ShouldMatchExpectedTotal()
     {
-        Money<USD> subtotal = new Money<USD>(54.30m);
+        var subtotal = new Money<USD>(54.30m);
         Money<USD> tax = subtotal * 0.10m;
         Money<USD> tipOnNet = subtotal * 0.18m;
 
@@ -47,7 +47,7 @@ public partial class MoneyTests
     [TestMethod]
     public void Hospitality_WhenTippingOnTaxInclusiveTotal_ShouldDifferFromPreTaxTippingByExpectedDelta()
     {
-        Money<USD> subtotal = new Money<USD>(50.00m);
+        var subtotal = new Money<USD>(50.00m);
         Money<USD> taxedTotal = subtotal + subtotal * 0.10m;     // 50 + 5 = 55
 
         Money<USD> tipOnNet = subtotal * 0.20m;                  // 10.00
@@ -69,9 +69,9 @@ public partial class MoneyTests
     [TestMethod]
     public void Retail_WhenExtractingTenPercentGstFromTaxInclusiveLines_ShouldRecoverNetAndTax()
     {
-        Money<AUD> line1 = new Money<AUD>(4.50m);
-        Money<AUD> line2 = new Money<AUD>(12.00m);
-        Money<AUD> line3 = new Money<AUD>(3.30m);
+        var line1 = new Money<AUD>(4.50m);
+        var line2 = new Money<AUD>(12.00m);
+        var line3 = new Money<AUD>(3.30m);
 
         Money<AUD> gross = line1 + line2 + line3;       // 19.80
         Money<AUD> gst = gross / 11m;                   // 19.80 / 11 = 1.80 exactly
@@ -90,7 +90,7 @@ public partial class MoneyTests
     [TestMethod]
     public void Retail_WhenApplyingSequentialDiscountsOnEvenAmount_ShouldMatchCombinedCalculation()
     {
-        Money<USD> list = new Money<USD>(100.00m);
+        var list = new Money<USD>(100.00m);
 
         Money<USD> sequential = (list * 0.90m) * 0.95m;          // 100 → 90 → 85.50
         Money<USD> combined = list * (0.90m * 0.95m);            // 100 × 0.855 = 85.50
@@ -107,7 +107,7 @@ public partial class MoneyTests
     [TestMethod]
     public void Retail_WhenSequentialDiscountsCauseIntermediateRounding_ShouldDriftFromSingleShot()
     {
-        Money<USD> list = new Money<USD>(33.33m);
+        var list = new Money<USD>(33.33m);
 
         Money<USD> sequential = (list * 0.95m) * 0.90m;          // 33.33×0.95=31.66 (rounded), ×0.90=28.49
         Money<USD> combined = list * (0.95m * 0.90m);            // 33.33×0.855=28.49715 → 28.50
@@ -132,7 +132,7 @@ public partial class MoneyTests
     [DataRow(100.00, 208000.00)]
     public void Payroll_WhenAnnualisingHourlyWage_ShouldMatchFortyHourFiftyTwoWeekConvention(double hourly, double expectedAnnual)
     {
-        Money<USD> hourlyRate = new Money<USD>((decimal)hourly);
+        var hourlyRate = new Money<USD>((decimal)hourly);
 
         Money<USD> annual = hourlyRate * 40m * 52m;
 
@@ -146,8 +146,8 @@ public partial class MoneyTests
     [TestMethod]
     public void Payroll_WhenOvertimeAccrual_ShouldSumBaseAndOnePointFiveTimeAboveForty()
     {
-        Money<USD> hourly = new Money<USD>(20.00m);
-        decimal hoursWorked = 47m;
+        var hourly = new Money<USD>(20.00m);
+        var hoursWorked = 47m;
 
         Money<USD> basePay = hourly * 40m;
         Money<USD> overtimePay = hourly * 1.5m * (hoursWorked - 40m);
@@ -173,7 +173,7 @@ public partial class MoneyTests
     [DataRow(0.00, 0.05, 3, 0.00, 0.00)]                 // zero principal accrues no interest
     public void Banking_WhenSimpleInterest_ShouldMatchFormula(double principal, double rate, int years, double expectedInterest, double expectedFinal)
     {
-        Money<USD> p = new Money<USD>((decimal)principal);
+        var p = new Money<USD>((decimal)principal);
 
         Money<USD> interest = p * (decimal)rate * years;
         Money<USD> finalAmount = p + interest;
@@ -190,7 +190,7 @@ public partial class MoneyTests
     [TestMethod]
     public void Banking_WhenCompoundInterestAnnualThreeYears_ShouldMatchTextbook()
     {
-        Money<USD> principal = new Money<USD>(1000.00m);
+        var principal = new Money<USD>(1000.00m);
 
         Money<USD> year1 = principal * 1.05m;        // 1050.00
         Money<USD> year2 = year1 * 1.05m;            // 1102.50
@@ -209,11 +209,11 @@ public partial class MoneyTests
     [TestMethod]
     public void Banking_WhenCompoundInterestComputedExactly_ShouldAgreeWithScalarChainAtFiveByThree()
     {
-        Money<USD> principal = new Money<USD>(1000.00m);
+        var principal = new Money<USD>(1000.00m);
 
-        Fraction<BigInteger> growth = Fraction<BigInteger>.Create(105, 100);
+        var growth = Fraction<BigInteger>.Create(105, 100);
         Fraction<BigInteger> rational = principal.ToFraction() * growth * growth * growth;
-        Money<USD> exact = Money<USD>.FromFraction(rational);
+        var exact = Money<USD>.FromFraction(rational);
 
         Money<USD> scalar = principal * 1.05m * 1.05m * 1.05m;
 
@@ -232,9 +232,9 @@ public partial class MoneyTests
     [TestMethod]
     public void Mortgage_WhenFirstPaymentBreakdown_ShouldSplitInterestAndPrincipalCorrectly()
     {
-        Money<USD> openingBalance = new Money<USD>(300_000m);
-        decimal monthlyRate = 0.00375m;                     // 4.5% APR / 12
-        Money<USD> monthlyPayment = new Money<USD>(1520.06m);
+        var openingBalance = new Money<USD>(300_000m);
+        var monthlyRate = 0.00375m;                     // 4.5% APR / 12
+        var monthlyPayment = new Money<USD>(1520.06m);
 
         Money<USD> interestPortion = openingBalance * monthlyRate;       // 1,125.00 exactly
         Money<USD> principalPortion = monthlyPayment - interestPortion;
@@ -260,7 +260,7 @@ public partial class MoneyTests
     [DataRow(0.05, 0.92, 0.05)]           // 0.05 × 0.92 = 0.0460; rounds to 0.05 at EUR's 2-dp precision (6 > 5)
     public void Fx_WhenConvertingUsdToEur_ShouldRoundToEurPrecision(double amount, double rate, double expected)
     {
-        Money<USD> source = new Money<USD>((decimal)amount);
+        var source = new Money<USD>((decimal)amount);
 
         Money<EUR> target = source.Convert<EUR>((decimal)rate);
 
@@ -274,9 +274,9 @@ public partial class MoneyTests
     [TestMethod]
     public void Fx_WhenRoundTrippingUsdToEurAndBack_ShouldRecoverOriginalAmount()
     {
-        Money<USD> original = new Money<USD>(100.00m);
-        decimal usdToEur = 0.92m;
-        decimal eurToUsd = 1.0869565m;                  // 1/0.92 truncated; multiplied back, rounds to 100.00
+        var original = new Money<USD>(100.00m);
+        var usdToEur = 0.92m;
+        var eurToUsd = 1.0869565m;                  // 1/0.92 truncated; multiplied back, rounds to 100.00
 
         Money<EUR> intermediate = original.Convert<EUR>(usdToEur);
         Money<USD> recovered = intermediate.Convert<USD>(eurToUsd);
@@ -292,8 +292,8 @@ public partial class MoneyTests
     [TestMethod]
     public void Fx_WhenRateProducesSubMinorUnitResult_ShouldRoundToZeroAtDestination()
     {
-        Money<USD> dust = new Money<USD>(0.01m);
-        decimal rate = 0.001m;                          // 0.01 × 0.001 = 0.00001
+        var dust = new Money<USD>(0.01m);
+        var rate = 0.001m;                          // 0.01 × 0.001 = 0.00001
 
         Money<JPY> result = dust.Convert<JPY>(rate);
 
@@ -313,15 +313,15 @@ public partial class MoneyTests
     public void Investing_WhenComputingDividendPayoutAtSubCentDps_ShouldUseMultiplyExactForCorrectTotal()
     {
         // Shares: 250. Declared dividend per share: $0.4275 (sub-cent precision).
-        int shares = 250;
-        Fraction<BigInteger> dpsExact = Fraction<BigInteger>.Create(4275, 10000);    // 0.4275 exactly
+        var shares = 250;
+        var dpsExact = Fraction<BigInteger>.Create(4275, 10000);    // 0.4275 exactly
 
         // The naive path constructs Money<USD> with the DPS first — losing the 4th decimal to rounding.
-        Money<USD> naiveDps = new Money<USD>(0.4275m);                               // → 0.43 (digit at position 3 is 7 → rounds up at 2 dp)
+        var naiveDps = new Money<USD>(0.4275m);                               // → 0.43 (digit at position 3 is 7 → rounds up at 2 dp)
         Money<USD> naivePayout = naiveDps * shares;                                  // 0.43 × 250 = 107.50
 
         // The exact path multiplies through Fraction<BigInteger> and rounds only at settlement.
-        Money<USD> exactPayout = Money<USD>.FromFraction(dpsExact * Fraction<BigInteger>.Create(shares, 1));
+        var exactPayout = Money<USD>.FromFraction(dpsExact * Fraction<BigInteger>.Create(shares, 1));
 
         Assert.AreEqual(new Money<USD>(107.50m), naivePayout);
         Assert.AreEqual(new Money<USD>(106.88m), exactPayout);                       // 106.875 → 106.88 (banker's: 7 odd, neighbour 8 even)
@@ -362,7 +362,7 @@ public partial class MoneyTests
     [TestMethod]
     public void EdgeCase_WhenSingleCentTransaction_ShouldRoundTripWithoutLoss()
     {
-        Money<USD> cent = new Money<USD>(0.01m);
+        var cent = new Money<USD>(0.01m);
 
         Money<USD> doubled = cent + cent;
         Money<USD> back = doubled - cent;
@@ -400,7 +400,7 @@ public partial class MoneyTests
     [DataRow(1234567.89)]
     public void EdgeCase_WhenAllocatingAcrossSinglePart_ShouldReturnSingletonWithOriginalAmount(double amount)
     {
-        Money<USD> original = new Money<USD>((decimal)amount);
+        var original = new Money<USD>((decimal)amount);
 
         Money<USD>[] shares = original.Allocate(1);
 
@@ -434,9 +434,9 @@ public partial class MoneyTests
     [TestMethod]
     public void EdgeCase_WhenApplyingTenPercentTaxAcrossMinorUnitCategories_ShouldRoundAtEachCurrencysPrecision()
     {
-        Money<JPY> jpy = new Money<JPY>(99m);
-        Money<USD> usd = new Money<USD>(99m);
-        Money<BHD> bhd = new Money<BHD>(99m);
+        var jpy = new Money<JPY>(99m);
+        var usd = new Money<USD>(99m);
+        var bhd = new Money<BHD>(99m);
 
         Money<JPY> jpyTax = jpy * 0.10m;    // 9.9 → 10 banker's (9.9 → 10 since 0 is even, but 9.9 is not midpoint; just round nearest)
         Money<USD> usdTax = usd * 0.10m;    // 9.90 exactly
@@ -471,13 +471,13 @@ public partial class MoneyTests
     [TestMethod]
     public void EdgeCase_WhenSplittingDollarIntoThirdsAndMultiplyingBack_ShouldDriftScalarButNotFraction()
     {
-        Money<USD> original = new Money<USD>(1.00m);
+        var original = new Money<USD>(1.00m);
 
         Money<USD> scalarBack = (original / 3m) * 3m;        // 0.33 × 3 = 0.99
 
-        Fraction<BigInteger> third = Fraction<BigInteger>.Create(1, 3);
+        var third = Fraction<BigInteger>.Create(1, 3);
         Fraction<BigInteger> exactBack = original.ToFraction() * third * Fraction<BigInteger>.Create(3, 1);
-        Money<USD> fractionBack = Money<USD>.FromFraction(exactBack);
+        var fractionBack = Money<USD>.FromFraction(exactBack);
 
         Assert.AreEqual(new Money<USD>(0.99m), scalarBack);
         Assert.AreEqual(original, fractionBack);
@@ -490,7 +490,7 @@ public partial class MoneyTests
     [TestMethod]
     public void EdgeCase_WhenAllocatingOneDollarAcrossSevenParts_ShouldSumExactly()
     {
-        Money<USD> dollar = new Money<USD>(1.00m);
+        var dollar = new Money<USD>(1.00m);
 
         Money<USD>[] shares = dollar.Allocate(7);
 
@@ -518,14 +518,14 @@ public partial class MoneyTests
     [TestMethod]
     public void EdgeCase_WhenInflationAdjustingTenYearsAtThreePercent_ShouldRecoverTextbookRealValue()
     {
-        Money<USD> nominal = new Money<USD>(1000m);
+        var nominal = new Money<USD>(1000m);
 
-        Fraction<BigInteger> oneOverGrowth = Fraction<BigInteger>.Create(100, 103);
-        Fraction<BigInteger> rational = nominal.ToFraction();
-        for (int i = 0; i < 10; i++)
+        var oneOverGrowth = Fraction<BigInteger>.Create(100, 103);
+        var rational = nominal.ToFraction();
+        for (var i = 0; i < 10; i++)
             rational *= oneOverGrowth;
 
-        Money<USD> real = Money<USD>.FromFraction(rational);
+        var real = Money<USD>.FromFraction(rational);
 
         // 1000 / (1.03)^10 = 1000 / 1.343916379... = 744.0939...; banker's-rounds to 744.09.
         Assert.AreEqual(new Money<USD>(744.09m), real);
@@ -542,10 +542,10 @@ public partial class MoneyTests
     [TestMethod]
     public void EdgeCase_WhenSummingThreeMillidinarsRepeatedly_ShouldStayAtMillidinarPrecision()
     {
-        Money<BHD> milli = new Money<BHD>(0.001m);
+        var milli = new Money<BHD>(0.001m);
 
         Money<BHD> sum = Money<BHD>.Zero;
-        for (int i = 0; i < 1000; i++)
+        for (var i = 0; i < 1000; i++)
             sum += milli;
 
         Assert.AreEqual(new Money<BHD>(1.000m), sum);
@@ -558,7 +558,7 @@ public partial class MoneyTests
     [TestMethod]
     public void EdgeCase_WhenConvertingBhdToUsdAtFractionalCentRate_ShouldRoundToUsdPrecision()
     {
-        Money<BHD> source = new Money<BHD>(1.000m);
+        var source = new Money<BHD>(1.000m);
 
         Money<USD> target = source.Convert<USD>(2.6535m);    // 2.6535 → 2.65 in USD precision
 

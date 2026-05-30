@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyJsonConverter.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -16,8 +16,8 @@ namespace Bodu.Financial;
 /// <typeparam name="TCurrency">The currency type identifier.</typeparam>
 /// <remarks>
 /// The amount is serialized as a JSON object with two properties — <c>"amount"</c> (a JSON number) and
-/// <c>"currency"</c> (the ISO 4217 code). Deserialization rejects payloads whose <c>"currency"</c> field does not
-/// match <typeparamref name="TCurrency" />.<see cref="ICurrency.IsoCode" />, surfacing currency drift as a
+/// <c>"currency"</c> (the ISO 4217 code). Deserialization rejects payloads whose <c>"currency"</c> field does not match
+/// <typeparamref name="TCurrency" />.<see cref="ICurrency.IsoCode" />, surfacing currency drift as a
 /// <see cref="JsonException" /> rather than silently converting amounts across currencies.
 /// </remarks>
 public sealed class MoneyJsonConverter<TCurrency> : JsonConverter<Money<TCurrency>>
@@ -31,8 +31,8 @@ public sealed class MoneyJsonConverter<TCurrency> : JsonConverter<Money<TCurrenc
     /// <param name="options">The serializer options in effect.</param>
     /// <returns>The deserialized monetary amount.</returns>
     /// <exception cref="JsonException">
-    /// Thrown when the JSON is not an object, is missing one of the expected properties, or carries a
-    /// <c>"currency"</c> code that does not match <typeparamref name="TCurrency" />.
+    /// Thrown when the JSON is not an object, is missing one of the expected properties, or carries a <c>"currency"</c>
+    /// code that does not match <typeparamref name="TCurrency" />.
     /// </exception>
     public override Money<TCurrency> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
@@ -41,8 +41,8 @@ public sealed class MoneyJsonConverter<TCurrency> : JsonConverter<Money<TCurrenc
 
         decimal? amount = null;
         string? currency = null;
-        bool amountSeen = false;
-        bool currencySeen = false;
+        var amountSeen = false;
+        var currencySeen = false;
 
         while (reader.Read())
         {
@@ -52,7 +52,7 @@ public sealed class MoneyJsonConverter<TCurrency> : JsonConverter<Money<TCurrenc
             if (reader.TokenType != JsonTokenType.PropertyName)
                 throw new JsonException("Expected a JSON property name.");
 
-            string propertyName = reader.GetString()!;
+            var propertyName = reader.GetString()!;
             if (!reader.Read())
                 throw new JsonException("Unexpected end of JSON.");
 
@@ -64,8 +64,8 @@ public sealed class MoneyJsonConverter<TCurrency> : JsonConverter<Money<TCurrenc
 
                 if (reader.TokenType == JsonTokenType.String)
                 {
-                    string? text = reader.GetString();
-                    if (text is null || !decimal.TryParse(text, NumberStyles.Number, CultureInfo.InvariantCulture, out decimal parsed))
+                    var text = reader.GetString();
+                    if (text is null || !decimal.TryParse(text, NumberStyles.Number, CultureInfo.InvariantCulture, out var parsed))
                         throw new JsonException("The 'amount' property must be a number.");
 
                     amount = parsed;
@@ -102,7 +102,7 @@ public sealed class MoneyJsonConverter<TCurrency> : JsonConverter<Money<TCurrenc
         if (currency is null)
             throw new JsonException("The JSON object is missing the required 'currency' property.");
 
-        string expectedIso = CurrencyMetadata<TCurrency>.Value.IsoCode;
+        var expectedIso = CurrencyMetadata<TCurrency>.Value.IsoCode;
         if (!string.Equals(currency, expectedIso, StringComparison.Ordinal))
         {
             throw new JsonException(

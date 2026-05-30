@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateValidation.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -21,10 +21,12 @@ internal static class ExchangeRateValidation
     /// <param name="paramName">
     /// The name of the originating parameter. Captured automatically by the compiler when omitted.
     /// </param>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="value" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown if <paramref name="value" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentException">
-    /// Thrown if <paramref name="value" /> is not exactly three characters long or contains any character that is not an
-    /// uppercase ASCII letter.
+    /// Thrown if <paramref name="value" /> is not exactly three characters long or contains any character that is not
+    /// an uppercase ASCII letter.
     /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void RequireIsoCode(
@@ -51,7 +53,9 @@ internal static class ExchangeRateValidation
     /// <param name="paramName">
     /// The name of the originating parameter. Captured automatically by the compiler when omitted.
     /// </param>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="value" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown if <paramref name="value" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentException">
     /// Thrown if <paramref name="value" /> is empty or contains only white-space characters.
     /// </exception>

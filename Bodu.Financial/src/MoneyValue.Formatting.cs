@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyValue.Formatting.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -49,7 +49,7 @@ public readonly partial struct MoneyValue :
     /// <returns><see langword="true" /> if the span was large enough.</returns>
     public bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format, IFormatProvider? provider)
     {
-        string text = Format(format, provider);
+        var text = Format(format, provider);
         if (text.Length <= destination.Length)
         {
             text.AsSpan().CopyTo(destination);
@@ -71,7 +71,7 @@ public readonly partial struct MoneyValue :
     /// <returns><see langword="true" /> if the span was large enough.</returns>
     public bool TryFormat(Span<byte> utf8Destination, out int bytesWritten, ReadOnlySpan<char> format, IFormatProvider? provider)
     {
-        string text = Format(format, provider);
+        var text = Format(format, provider);
         return Encoding.UTF8.TryGetBytes(text, utf8Destination, out bytesWritten);
     }
 
@@ -79,7 +79,10 @@ public readonly partial struct MoneyValue :
     /// Formats this amount according to the supplied specifier, mirroring the vocabulary of
     /// <see cref="Money{TCurrency}" />.
     /// </summary>
-    /// <param name="format">The format specifier (<c>null</c>, <c>G</c>, <c>C</c>, <c>N</c>, <c>F</c>, <c>D</c> with optional precision suffix).</param>
+    /// <param name="format">
+    /// The format specifier (<c>null</c>, <c>G</c>, <c>C</c>, <c>N</c>, <c>F</c>, <c>D</c> with optional precision
+    /// suffix).
+    /// </param>
     /// <param name="provider">The culture used for the numeric portion.</param>
     /// <returns>The formatted string.</returns>
     /// <exception cref="FormatException">The format specifier is not supported.</exception>
@@ -102,19 +105,19 @@ public readonly partial struct MoneyValue :
             else
             {
                 if (!int.TryParse(format[1..], NumberStyles.None, CultureInfo.InvariantCulture, out decimals) || decimals < 0)
-                    throw new FormatException($"The format string '{format.ToString()}' is not supported.");
+                    throw new FormatException($"The format string '{format}' is not supported.");
             }
         }
 
         IFormatProvider effective = provider ?? CultureInfo.CurrentCulture;
-        string suffix = decimals.ToString(CultureInfo.InvariantCulture);
+        var suffix = decimals.ToString(CultureInfo.InvariantCulture);
 
         return specifier switch
         {
             'G' or 'C' => string.Concat(IsoCode, " ", _amount.ToString("N" + suffix, effective)),
             'N' => _amount.ToString("N" + suffix, effective),
             'F' or 'D' => _amount.ToString("F" + suffix, effective),
-            _ => throw new FormatException($"The format string '{format.ToString()}' is not supported."),
+            _ => throw new FormatException($"The format string '{format}' is not supported."),
         };
     }
 

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyValueTests.Core.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -25,7 +25,7 @@ public partial class MoneyValueTests
     [DataRow("XQX", 1.234567, 1.234567)]   // unknown currency — no rounding
     public void Constructor_WhenAmountHasExcessPrecision_ShouldRoundToCurrencyMinorUnits(string iso, double amount, double expected)
     {
-        MoneyValue money = new MoneyValue((decimal)amount, iso);
+        var money = new MoneyValue((decimal)amount, iso);
 
         Assert.AreEqual((decimal)expected, money.Amount);
         Assert.AreEqual(iso, money.IsoCode);
@@ -37,8 +37,8 @@ public partial class MoneyValueTests
     [TestMethod]
     public void Constructor_WhenAwayFromZeroRequested_ShouldRoundMidpointAwayFromZero()
     {
-        MoneyValue banker = new MoneyValue(1.225m, "USD");
-        MoneyValue awayFromZero = new MoneyValue(1.225m, "USD", MidpointRounding.AwayFromZero);
+        var banker = new MoneyValue(1.225m, "USD");
+        var awayFromZero = new MoneyValue(1.225m, "USD", MidpointRounding.AwayFromZero);
 
         Assert.AreEqual(1.22m, banker.Amount);
         Assert.AreEqual(1.23m, awayFromZero.Amount);
@@ -97,7 +97,7 @@ public partial class MoneyValueTests
     [DataRow("XQR", 0)]    // unknown — registry returns 0
     public void MinorUnits_WhenInspected_ShouldMatchRegistry(string iso, int expected)
     {
-        MoneyValue money = new MoneyValue(0m, iso);
+        var money = new MoneyValue(0m, iso);
 
         Assert.AreEqual(expected, money.MinorUnits);
     }
@@ -111,7 +111,7 @@ public partial class MoneyValueTests
     [DataRow(-0.01, false, true, false)]
     public void SignProperties_WhenInspected_ShouldClassifyAmount(double amount, bool expectedPositive, bool expectedNegative, bool expectedZero)
     {
-        MoneyValue money = new MoneyValue((decimal)amount, "USD");
+        var money = new MoneyValue((decimal)amount, "USD");
 
         Assert.AreEqual(expectedPositive, money.IsPositive);
         Assert.AreEqual(expectedNegative, money.IsNegative);
@@ -124,7 +124,7 @@ public partial class MoneyValueTests
     [TestMethod]
     public void Abs_WhenNegative_ShouldReturnUnsignedAmount()
     {
-        MoneyValue negative = new MoneyValue(-19.99m, "USD");
+        var negative = new MoneyValue(-19.99m, "USD");
 
         MoneyValue abs = negative.Abs;
 
@@ -138,7 +138,7 @@ public partial class MoneyValueTests
     [TestMethod]
     public void Zero_WhenCalled_ShouldReturnZeroAmountInCurrency()
     {
-        MoneyValue zero = MoneyValue.Zero("EUR");
+        var zero = MoneyValue.Zero("EUR");
 
         Assert.IsTrue(zero.IsZero);
         Assert.AreEqual("EUR", zero.IsoCode);
@@ -154,8 +154,8 @@ public partial class MoneyValueTests
     [TestMethod]
     public void Addition_WhenSameCurrency_ShouldReturnSum()
     {
-        MoneyValue a = new MoneyValue(10.50m, "USD");
-        MoneyValue b = new MoneyValue(5.25m, "USD");
+        var a = new MoneyValue(10.50m, "USD");
+        var b = new MoneyValue(5.25m, "USD");
 
         MoneyValue sum = a + b;
 
@@ -168,8 +168,8 @@ public partial class MoneyValueTests
     [TestMethod]
     public void Addition_WhenDifferentCurrencies_ShouldThrowInvalidOperationException()
     {
-        MoneyValue usd = new MoneyValue(10m, "USD");
-        MoneyValue eur = new MoneyValue(10m, "EUR");
+        var usd = new MoneyValue(10m, "USD");
+        var eur = new MoneyValue(10m, "EUR");
 
         InvalidOperationException ex = Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
@@ -186,8 +186,8 @@ public partial class MoneyValueTests
     [TestMethod]
     public void Subtraction_WhenDifferentCurrencies_ShouldThrowInvalidOperationException()
     {
-        MoneyValue usd = new MoneyValue(10m, "USD");
-        MoneyValue eur = new MoneyValue(10m, "EUR");
+        var usd = new MoneyValue(10m, "USD");
+        var eur = new MoneyValue(10m, "EUR");
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
@@ -201,7 +201,7 @@ public partial class MoneyValueTests
     [TestMethod]
     public void Multiplication_WhenScalar_ShouldRoundToCurrencyMinorUnits()
     {
-        MoneyValue price = new MoneyValue(0.95m, "USD");
+        var price = new MoneyValue(0.95m, "USD");
 
         MoneyValue result = price * 3m;
 
@@ -214,7 +214,7 @@ public partial class MoneyValueTests
     [TestMethod]
     public void Division_WhenScalar_ShouldRoundToCurrencyMinorUnits()
     {
-        MoneyValue total = new MoneyValue(10m, "USD");
+        var total = new MoneyValue(10m, "USD");
 
         MoneyValue share = total / 3m;
 
@@ -227,8 +227,8 @@ public partial class MoneyValueTests
     [TestMethod]
     public void DivisionMoneyValueByMoneyValue_WhenSameCurrency_ShouldReturnDecimalRatio()
     {
-        MoneyValue ten = new MoneyValue(10m, "USD");
-        MoneyValue four = new MoneyValue(4m, "USD");
+        var ten = new MoneyValue(10m, "USD");
+        var four = new MoneyValue(4m, "USD");
 
         Assert.AreEqual(2.5m, ten / four);
     }
@@ -239,8 +239,8 @@ public partial class MoneyValueTests
     [TestMethod]
     public void DivisionMoneyValueByMoneyValue_WhenDifferentCurrencies_ShouldThrowInvalidOperationException()
     {
-        MoneyValue usd = new MoneyValue(10m, "USD");
-        MoneyValue eur = new MoneyValue(10m, "EUR");
+        var usd = new MoneyValue(10m, "USD");
+        var eur = new MoneyValue(10m, "EUR");
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
@@ -254,8 +254,8 @@ public partial class MoneyValueTests
     [TestMethod]
     public void Comparison_WhenDifferentCurrencies_ShouldThrowInvalidOperationException()
     {
-        MoneyValue usd = new MoneyValue(10m, "USD");
-        MoneyValue eur = new MoneyValue(10m, "EUR");
+        var usd = new MoneyValue(10m, "USD");
+        var eur = new MoneyValue(10m, "EUR");
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
@@ -273,8 +273,8 @@ public partial class MoneyValueTests
     [TestMethod]
     public void Equals_WhenSameCurrencyAndAmount_ShouldReturnTrue()
     {
-        MoneyValue a = new MoneyValue(19.99m, "USD");
-        MoneyValue b = new MoneyValue(19.99m, "USD");
+        var a = new MoneyValue(19.99m, "USD");
+        var b = new MoneyValue(19.99m, "USD");
 
         Assert.IsTrue(a.Equals(b));
         Assert.IsTrue(a == b);
@@ -286,8 +286,8 @@ public partial class MoneyValueTests
     [TestMethod]
     public void Equals_WhenDifferentCurrencies_ShouldReturnFalse()
     {
-        MoneyValue usd = new MoneyValue(10m, "USD");
-        MoneyValue eur = new MoneyValue(10m, "EUR");
+        var usd = new MoneyValue(10m, "USD");
+        var eur = new MoneyValue(10m, "EUR");
 
         Assert.IsFalse(usd.Equals(eur));
         Assert.IsFalse(usd == eur);
@@ -299,8 +299,8 @@ public partial class MoneyValueTests
     [TestMethod]
     public void GetHashCode_WhenDifferentCurrencies_ShouldDiffer()
     {
-        int usd = new MoneyValue(10m, "USD").GetHashCode();
-        int eur = new MoneyValue(10m, "EUR").GetHashCode();
+        var usd = new MoneyValue(10m, "USD").GetHashCode();
+        var eur = new MoneyValue(10m, "EUR").GetHashCode();
 
         Assert.AreNotEqual(usd, eur);
     }
@@ -311,8 +311,8 @@ public partial class MoneyValueTests
     [TestMethod]
     public void CompareTo_WhenSameCurrency_ShouldOrderByAmount()
     {
-        MoneyValue small = new MoneyValue(1m, "USD");
-        MoneyValue large = new MoneyValue(2m, "USD");
+        var small = new MoneyValue(1m, "USD");
+        var large = new MoneyValue(2m, "USD");
 
         Assert.IsTrue(small.CompareTo(large) < 0);
         Assert.IsTrue(large.CompareTo(small) > 0);
@@ -325,8 +325,8 @@ public partial class MoneyValueTests
     [TestMethod]
     public void CompareTo_WhenDifferentCurrency_ShouldThrowInvalidOperationException()
     {
-        MoneyValue usd = new MoneyValue(10m, "USD");
-        MoneyValue eur = new MoneyValue(10m, "EUR");
+        var usd = new MoneyValue(10m, "USD");
+        var eur = new MoneyValue(10m, "EUR");
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
@@ -344,7 +344,7 @@ public partial class MoneyValueTests
     [TestMethod]
     public void ToTyped_WhenCurrencyMatches_ShouldReturnTypedMoney()
     {
-        MoneyValue runtime = new MoneyValue(19.99m, "USD");
+        var runtime = new MoneyValue(19.99m, "USD");
 
         Money<USD> typed = runtime.ToTyped<USD>();
 
@@ -357,7 +357,7 @@ public partial class MoneyValueTests
     [TestMethod]
     public void ToTyped_WhenCurrencyMismatches_ShouldThrowInvalidOperationException()
     {
-        MoneyValue runtime = new MoneyValue(19.99m, "EUR");
+        var runtime = new MoneyValue(19.99m, "EUR");
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
@@ -371,9 +371,9 @@ public partial class MoneyValueTests
     [TestMethod]
     public void TryToTyped_WhenCurrencyMismatches_ShouldReturnFalse()
     {
-        MoneyValue runtime = new MoneyValue(19.99m, "EUR");
+        var runtime = new MoneyValue(19.99m, "EUR");
 
-        bool ok = runtime.TryToTyped(out Money<USD> result);
+        var ok = runtime.TryToTyped(out Money<USD> result);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(default(Money<USD>), result);
@@ -385,9 +385,9 @@ public partial class MoneyValueTests
     [TestMethod]
     public void FromTyped_WhenCalled_ShouldYieldEquivalentRuntimeValue()
     {
-        Money<USD> typed = new Money<USD>(19.99m);
+        var typed = new Money<USD>(19.99m);
 
-        MoneyValue runtime = MoneyValue.FromTyped(typed);
+        var runtime = MoneyValue.FromTyped(typed);
 
         Assert.AreEqual("USD", runtime.IsoCode);
         Assert.AreEqual(19.99m, runtime.Amount);
@@ -399,7 +399,7 @@ public partial class MoneyValueTests
     [TestMethod]
     public void Convert_WhenRuntimeIsoTarget_ShouldRoundAtTargetCurrencyPrecision()
     {
-        MoneyValue usd = new MoneyValue(100m, "USD");
+        var usd = new MoneyValue(100m, "USD");
 
         MoneyValue jpy = usd.Convert("JPY", 155.5m);
 
@@ -413,7 +413,7 @@ public partial class MoneyValueTests
     [TestMethod]
     public void Convert_WhenTypedTarget_ShouldReturnTypedMoney()
     {
-        MoneyValue usd = new MoneyValue(100m, "USD");
+        var usd = new MoneyValue(100m, "USD");
 
         Money<JPY> jpy = usd.Convert<JPY>(155.5m);
 
@@ -426,7 +426,7 @@ public partial class MoneyValueTests
     [TestMethod]
     public void Convert_WhenRateNegative_ShouldThrowArgumentOutOfRangeException()
     {
-        MoneyValue usd = new MoneyValue(100m, "USD");
+        var usd = new MoneyValue(100m, "USD");
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -458,7 +458,7 @@ public partial class MoneyValueTests
     [TestMethod]
     public void Allocate_WhenRatioBased_ShouldDistributeProportionally()
     {
-        decimal[] ratios = { 1m, 1m, 2m };
+        decimal[] ratios = [1m, 1m, 2m];
 
         MoneyValue[] shares = new MoneyValue(100m, "USD").Allocate(ratios);
 
@@ -473,7 +473,7 @@ public partial class MoneyValueTests
     [TestMethod]
     public void Allocate_WhenPartsZero_ShouldThrowArgumentOutOfRangeException()
     {
-        MoneyValue money = new MoneyValue(10m, "USD");
+        var money = new MoneyValue(10m, "USD");
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -491,9 +491,9 @@ public partial class MoneyValueTests
     [TestMethod]
     public void ToString_WhenDefault_ShouldRenderIsoCodeAndAmount()
     {
-        MoneyValue money = new MoneyValue(1234.56m, "USD");
+        var money = new MoneyValue(1234.56m, "USD");
 
-        string text = money.ToString(null, System.Globalization.CultureInfo.InvariantCulture);
+        var text = money.ToString(null, System.Globalization.CultureInfo.InvariantCulture);
 
         Assert.AreEqual("USD 1,234.56", text);
     }
@@ -504,9 +504,9 @@ public partial class MoneyValueTests
     [TestMethod]
     public void ToString_WhenNSpecifier_ShouldOmitIsoCode()
     {
-        MoneyValue money = new MoneyValue(1234.56m, "USD");
+        var money = new MoneyValue(1234.56m, "USD");
 
-        string text = money.ToString("N", System.Globalization.CultureInfo.InvariantCulture);
+        var text = money.ToString("N", System.Globalization.CultureInfo.InvariantCulture);
 
         Assert.AreEqual("1,234.56", text);
     }
@@ -521,7 +521,7 @@ public partial class MoneyValueTests
     [TestMethod]
     public void Parse_WhenIsoPrefix_ShouldReturnAmount()
     {
-        MoneyValue result = MoneyValue.Parse("USD 19.99", System.Globalization.CultureInfo.InvariantCulture);
+        var result = MoneyValue.Parse("USD 19.99", System.Globalization.CultureInfo.InvariantCulture);
 
         Assert.AreEqual(new MoneyValue(19.99m, "USD"), result);
     }
@@ -532,7 +532,7 @@ public partial class MoneyValueTests
     [TestMethod]
     public void Parse_WhenIsoSuffix_ShouldReturnAmount()
     {
-        MoneyValue result = MoneyValue.Parse("19.99 USD", System.Globalization.CultureInfo.InvariantCulture);
+        var result = MoneyValue.Parse("19.99 USD", System.Globalization.CultureInfo.InvariantCulture);
 
         Assert.AreEqual(new MoneyValue(19.99m, "USD"), result);
     }
@@ -543,7 +543,7 @@ public partial class MoneyValueTests
     [TestMethod]
     public void Parse_WhenBareDecimal_ShouldFail()
     {
-        bool ok = MoneyValue.TryParse("19.99", System.Globalization.CultureInfo.InvariantCulture, out _);
+        var ok = MoneyValue.TryParse("19.99", System.Globalization.CultureInfo.InvariantCulture, out _);
 
         Assert.IsFalse(ok);
     }
@@ -557,10 +557,10 @@ public partial class MoneyValueTests
     [DataRow("EUR", -100.50)]
     public void RoundTrip_WhenToStringThenParse_ShouldRecoverOriginal(string iso, double amount)
     {
-        MoneyValue original = new MoneyValue((decimal)amount, iso);
+        var original = new MoneyValue((decimal)amount, iso);
 
-        string text = original.ToString(null, System.Globalization.CultureInfo.InvariantCulture);
-        MoneyValue recovered = MoneyValue.Parse(text, System.Globalization.CultureInfo.InvariantCulture);
+        var text = original.ToString(null, System.Globalization.CultureInfo.InvariantCulture);
+        var recovered = MoneyValue.Parse(text, System.Globalization.CultureInfo.InvariantCulture);
 
         Assert.AreEqual(original, recovered);
     }
@@ -575,9 +575,9 @@ public partial class MoneyValueTests
     [TestMethod]
     public void Json_WhenSerialised_ShouldEmitAmountAndCurrencyFields()
     {
-        MoneyValue money = new MoneyValue(19.99m, "USD");
+        var money = new MoneyValue(19.99m, "USD");
 
-        string json = JsonSerializer.Serialize(money);
+        var json = JsonSerializer.Serialize(money);
 
         Assert.AreEqual("{\"amount\":19.99,\"currency\":\"USD\"}", json);
     }
@@ -588,9 +588,9 @@ public partial class MoneyValueTests
     [TestMethod]
     public void Json_WhenRoundTripped_ShouldPreserveValue()
     {
-        MoneyValue original = new MoneyValue(123.45m, "EUR");
+        var original = new MoneyValue(123.45m, "EUR");
 
-        string json = JsonSerializer.Serialize(original);
+        var json = JsonSerializer.Serialize(original);
         MoneyValue recovered = JsonSerializer.Deserialize<MoneyValue>(json);
 
         Assert.AreEqual(original, recovered);
@@ -602,7 +602,7 @@ public partial class MoneyValueTests
     [TestMethod]
     public void Json_WhenCurrencyMissing_ShouldThrowJsonException()
     {
-        string json = "{\"amount\":19.99}";
+        var json = "{\"amount\":19.99}";
 
         Assert.ThrowsExactly<JsonException>(() =>
         {

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyTests.Equality.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -16,8 +16,8 @@ public partial class MoneyTests
     [TestMethod]
     public void Equals_WhenSameAmount_ShouldReturnTrue()
     {
-        Money<USD> a = new Money<USD>(19.99m);
-        Money<USD> b = new Money<USD>(19.99m);
+        var a = new Money<USD>(19.99m);
+        var b = new Money<USD>(19.99m);
 
         Assert.IsTrue(a.Equals(b));
         Assert.IsTrue(a == b);
@@ -29,8 +29,8 @@ public partial class MoneyTests
     [TestMethod]
     public void Equals_WhenAmountDiffersBeforeNormalization_ShouldNormalizeAndReturnTrue()
     {
-        Money<USD> a = new Money<USD>(19.99m);
-        Money<USD> b = new Money<USD>(19.9900m);
+        var a = new Money<USD>(19.99m);
+        var b = new Money<USD>(19.9900m);
 
         Assert.AreEqual(a, b);
     }
@@ -63,8 +63,8 @@ public partial class MoneyTests
     [TestMethod]
     public void GetHashCode_WhenSameAmountDifferentCurrency_ShouldDifferInMostCases()
     {
-        int hashUsd = new Money<USD>(5m).GetHashCode();
-        int hashJpy = new Money<JPY>(5m).GetHashCode();
+        var hashUsd = new Money<USD>(5m).GetHashCode();
+        var hashJpy = new Money<JPY>(5m).GetHashCode();
 
         Assert.AreNotEqual(hashUsd, hashJpy);
     }
@@ -75,8 +75,8 @@ public partial class MoneyTests
     [TestMethod]
     public void CompareTo_WhenSameCurrency_ShouldOrderByAmount()
     {
-        Money<USD> small = new Money<USD>(1m);
-        Money<USD> large = new Money<USD>(2m);
+        var small = new Money<USD>(1m);
+        var large = new Money<USD>(2m);
 
         Assert.IsTrue(small.CompareTo(large) < 0);
         Assert.IsTrue(large.CompareTo(small) > 0);
@@ -90,7 +90,7 @@ public partial class MoneyTests
     [TestMethod]
     public void NonGenericCompareTo_WhenComparandIsNull_ShouldReturnOne()
     {
-        Money<USD> money = new Money<USD>(1m);
+        var money = new Money<USD>(1m);
 
         Assert.AreEqual(1, ((IComparable)money).CompareTo(null));
     }
@@ -102,7 +102,7 @@ public partial class MoneyTests
     [TestMethod]
     public void NonGenericCompareTo_WhenComparandDiffersInCurrency_ShouldThrowArgumentException()
     {
-        Money<USD> usd = new Money<USD>(1m);
+        var usd = new Money<USD>(1m);
         object jpy = new Money<JPY>(1m);
 
         Assert.ThrowsExactly<ArgumentException>(() =>

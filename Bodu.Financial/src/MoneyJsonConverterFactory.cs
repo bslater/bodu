@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyJsonConverterFactory.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -23,8 +23,8 @@ public sealed class MoneyJsonConverterFactory : JsonConverterFactory
     /// </summary>
     /// <param name="typeToConvert">The candidate type.</param>
     /// <returns>
-    /// <see langword="true" /> if <paramref name="typeToConvert" /> is a closed <see cref="Money{TCurrency}" />
-    /// type; otherwise <see langword="false" />.
+    /// <see langword="true" /> if <paramref name="typeToConvert" /> is a closed <see cref="Money{TCurrency}" /> type;
+    /// otherwise <see langword="false" />.
     /// </returns>
     public override bool CanConvert(Type typeToConvert) =>
         typeToConvert is { IsGenericType: true }
@@ -36,7 +36,9 @@ public sealed class MoneyJsonConverterFactory : JsonConverterFactory
     /// <param name="typeToConvert">The closed <see cref="Money{TCurrency}" /> type to convert.</param>
     /// <param name="options">The serializer options in effect.</param>
     /// <returns>A converter for <paramref name="typeToConvert" />.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="typeToConvert" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="typeToConvert" /> is <see langword="null" />.
+    /// </exception>
     public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options)
     {
         ThrowHelper.ThrowIfNull(typeToConvert);

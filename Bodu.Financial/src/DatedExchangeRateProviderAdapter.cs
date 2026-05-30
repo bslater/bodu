@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DatedExchangeRateProviderAdapter.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -40,7 +40,9 @@ public sealed class DatedExchangeRateProviderAdapter : IExchangeRateProvider
     /// <param name="inner">The underlying dated provider to delegate to.</param>
     /// <param name="date">The valuation date pinned to every lookup.</param>
     /// <param name="options">The lookup options pinned to every lookup.</param>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="inner" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown if <paramref name="inner" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown if <paramref name="options" /> contains an undefined enum value or a negative tolerance.
     /// </exception>

@@ -1,10 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyBagTests.DatedConvert.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Collections.Generic;
 using Bodu.Financial.Currencies;
 
 namespace Bodu.Financial;
@@ -20,12 +19,12 @@ public partial class MoneyBagTests
     /// Builds a fixture provider with EUR/USD = 1.10, JPY/USD = 0.0067, GBP/USD = 1.25 observed on <see cref="s_asOf" />.
     /// </summary>
     /// <returns>The provider.</returns>
-    private static IDatedExchangeRateProvider BuildDatedProvider() => new FixedDatedExchangeRateTable(new[]
-    {
+    private static IDatedExchangeRateProvider BuildDatedProvider() => new FixedDatedExchangeRateTable(
+    [
         new ExchangeRate("EUR", "USD", s_asOf, 1.10m, "RBA"),
         new ExchangeRate("JPY", "USD", s_asOf, 0.0067m, "RBA"),
         new ExchangeRate("GBP", "USD", s_asOf, 1.25m, "RBA"),
-    });
+    ]);
 
     /// <summary>
     /// Verifies that the dated <see cref="MoneyBag.ConvertTo{TTarget}(IDatedExchangeRateProvider, DateOnly, ExchangeRateLookupOptions)" />
@@ -56,11 +55,11 @@ public partial class MoneyBagTests
     {
         // Use unregistered currency tags (valid ISO shape, not in the catalogue) so MoneyValue preserves the
         // sub-cent source precision — same trick as the timeless-rate test.
-        IDatedExchangeRateProvider rates = new FixedDatedExchangeRateTable(new[]
-        {
+        IDatedExchangeRateProvider rates = new FixedDatedExchangeRateTable(
+        [
             new ExchangeRate("XQT", "USD", s_asOf, 1m, "Test"),
             new ExchangeRate("XQU", "USD", s_asOf, 1m, "Test"),
-        });
+        ]);
 
         MoneyBag bag = MoneyBag.Empty
             .Add(new MoneyValue(0.005m, "XQT"))
@@ -78,10 +77,10 @@ public partial class MoneyBagTests
     [TestMethod]
     public void DatedConvertTo_WhenResolutionPolicyAppliesFallback_ShouldUseEarlierObservation()
     {
-        IDatedExchangeRateProvider rates = new FixedDatedExchangeRateTable(new[]
-        {
+        IDatedExchangeRateProvider rates = new FixedDatedExchangeRateTable(
+        [
             new ExchangeRate("EUR", "USD", new DateOnly(2024, 6, 28), 1.10m, "RBA"),
-        });
+        ]);
 
         MoneyBag bag = MoneyBag.Empty.Add(new Money<EUR>(100m));
 
@@ -97,10 +96,10 @@ public partial class MoneyBagTests
     [TestMethod]
     public void DatedConvertTo_WhenRateUnavailable_ShouldThrowKeyNotFoundException()
     {
-        IDatedExchangeRateProvider rates = new FixedDatedExchangeRateTable(new[]
-        {
+        IDatedExchangeRateProvider rates = new FixedDatedExchangeRateTable(
+        [
             new ExchangeRate("EUR", "USD", s_asOf, 1.10m, "RBA"),
-        });
+        ]);
 
         MoneyBag bag = MoneyBag.Empty
             .Add(new Money<EUR>(100m))

@@ -1,10 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CompositeDatedExchangeRateProvider.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System.Collections.Generic;
 
 namespace Bodu.Financial;
 
@@ -32,19 +30,20 @@ public sealed class CompositeDatedExchangeRateProvider : IDatedExchangeRateProvi
     /// </summary>
     /// <param name="providers">The providers to consult, in priority order.</param>
     /// <exception cref="ArgumentNullException">
-    /// Thrown if <paramref name="providers" /> or any element of <paramref name="providers" /> is <see langword="null" />.
+    /// Thrown if <paramref name="providers" /> or any element of <paramref name="providers" /> is
+    /// <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">Thrown if <paramref name="providers" /> is empty.</exception>
     public CompositeDatedExchangeRateProvider(IEnumerable<IDatedExchangeRateProvider> providers)
     {
         ThrowHelper.ThrowIfNull(providers);
 
-        IDatedExchangeRateProvider[] snapshot = providers.ToArray();
+        IDatedExchangeRateProvider[] snapshot = [.. providers];
 
         if (snapshot.Length == 0)
             throw new ArgumentException("At least one provider is required.", nameof(providers));
 
-        for (int i = 0; i < snapshot.Length; i++)
+        for (var i = 0; i < snapshot.Length; i++)
         {
             if (snapshot[i] is null)
                 throw new ArgumentNullException(nameof(providers), $"Provider at index {i} is null.");
@@ -60,10 +59,9 @@ public sealed class CompositeDatedExchangeRateProvider : IDatedExchangeRateProvi
         DateOnly date,
         ExchangeRateLookupOptions options)
     {
-        if (TryGetRate(fromIsoCode, toIsoCode, date, options, out ExchangeRateLookupResult result))
-            return result;
-
-        throw new KeyNotFoundException(
+        return TryGetRate(fromIsoCode, toIsoCode, date, options, out ExchangeRateLookupResult result)
+            ? result
+            : throw new KeyNotFoundException(
             $"No exchange rate available for {fromIsoCode} -> {toIsoCode} on {date:yyyy-MM-dd} across {_providers.Length} provider(s).");
     }
 
@@ -77,7 +75,7 @@ public sealed class CompositeDatedExchangeRateProvider : IDatedExchangeRateProvi
     {
         IDatedExchangeRateProvider[] providers = _providers;
 
-        for (int i = 0; i < providers.Length; i++)
+        for (var i = 0; i < providers.Length; i++)
         {
             if (providers[i].TryGetRate(fromIsoCode, toIsoCode, date, options, out result))
                 return true;

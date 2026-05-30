@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyTests.Properties.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -41,7 +41,7 @@ public partial class MoneyTests
     [DataRow(5.00, 1)]
     public void Sign_WhenAccessed_ShouldReturnAmountSign(double amount, int expectedSign)
     {
-        Money<USD> money = new Money<USD>((decimal)amount);
+        var money = new Money<USD>((decimal)amount);
 
         Assert.AreEqual(expectedSign, money.Sign);
     }
@@ -52,7 +52,7 @@ public partial class MoneyTests
     [TestMethod]
     public void Abs_WhenAccessed_ShouldReturnAbsoluteAmount()
     {
-        Money<USD> negative = new Money<USD>(-19.99m);
+        var negative = new Money<USD>(-19.99m);
 
         Assert.AreEqual(new Money<USD>(19.99m), negative.Abs);
     }
@@ -79,7 +79,7 @@ public partial class MoneyTests
     [DataRow(-1234.56, false)]
     public void IsPositive_WhenAccessed_ShouldReflectSign(double amount, bool expected)
     {
-        Money<USD> money = new Money<USD>((decimal)amount);
+        var money = new Money<USD>((decimal)amount);
 
         Assert.AreEqual(expected, money.IsPositive);
     }
@@ -96,7 +96,7 @@ public partial class MoneyTests
     [DataRow(1234.56, false)]
     public void IsNegative_WhenAccessed_ShouldReflectSign(double amount, bool expected)
     {
-        Money<USD> money = new Money<USD>((decimal)amount);
+        var money = new Money<USD>((decimal)amount);
 
         Assert.AreEqual(expected, money.IsNegative);
     }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyTests.Operators.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -16,8 +16,8 @@ public partial class MoneyTests
     [TestMethod]
     public void Addition_WhenSameCurrency_ShouldReturnSum()
     {
-        Money<USD> a = new Money<USD>(10.50m);
-        Money<USD> b = new Money<USD>(5.25m);
+        var a = new Money<USD>(10.50m);
+        var b = new Money<USD>(5.25m);
 
         Assert.AreEqual(new Money<USD>(15.75m), a + b);
     }
@@ -28,8 +28,8 @@ public partial class MoneyTests
     [TestMethod]
     public void Subtraction_WhenSameCurrency_ShouldReturnDifference()
     {
-        Money<USD> a = new Money<USD>(10.50m);
-        Money<USD> b = new Money<USD>(5.25m);
+        var a = new Money<USD>(10.50m);
+        var b = new Money<USD>(5.25m);
 
         Assert.AreEqual(new Money<USD>(5.25m), a - b);
     }
@@ -40,7 +40,7 @@ public partial class MoneyTests
     [TestMethod]
     public void UnaryNegation_WhenApplied_ShouldNegateAmount()
     {
-        Money<USD> money = new Money<USD>(19.99m);
+        var money = new Money<USD>(19.99m);
 
         Assert.AreEqual(new Money<USD>(-19.99m), -money);
     }
@@ -51,7 +51,7 @@ public partial class MoneyTests
     [TestMethod]
     public void Multiplication_WhenScalar_ShouldScaleAndRoundToMinorUnits()
     {
-        Money<USD> price = new Money<USD>(0.95m);
+        var price = new Money<USD>(0.95m);
 
         Money<USD> result = price * 3m;
 
@@ -64,7 +64,7 @@ public partial class MoneyTests
     [TestMethod]
     public void Multiplication_WhenScalarOnLeft_ShouldBeCommutative()
     {
-        Money<USD> price = new Money<USD>(2m);
+        var price = new Money<USD>(2m);
 
         Assert.AreEqual(price * 3m, 3m * price);
     }
@@ -75,7 +75,7 @@ public partial class MoneyTests
     [TestMethod]
     public void Division_WhenScalar_ShouldReturnRoundedQuotient()
     {
-        Money<USD> total = new Money<USD>(10m);
+        var total = new Money<USD>(10m);
 
         Money<USD> share = total / 3m;
 
@@ -88,10 +88,10 @@ public partial class MoneyTests
     [TestMethod]
     public void Division_WhenTwoMoneyValues_ShouldReturnDimensionlessRatio()
     {
-        Money<USD> a = new Money<USD>(10m);
-        Money<USD> b = new Money<USD>(4m);
+        var a = new Money<USD>(10m);
+        var b = new Money<USD>(4m);
 
-        decimal ratio = a / b;
+        var ratio = a / b;
 
         Assert.AreEqual(2.5m, ratio);
     }
@@ -102,7 +102,7 @@ public partial class MoneyTests
     [TestMethod]
     public void Division_WhenScalarIsZero_ShouldThrowDivideByZeroException()
     {
-        Money<USD> money = new Money<USD>(10m);
+        var money = new Money<USD>(10m);
 
         Assert.ThrowsExactly<DivideByZeroException>(() =>
         {
@@ -116,8 +116,8 @@ public partial class MoneyTests
     [TestMethod]
     public void ComparisonOperators_WhenSameCurrency_ShouldOrderByAmount()
     {
-        Money<USD> small = new Money<USD>(1m);
-        Money<USD> large = new Money<USD>(2m);
+        var small = new Money<USD>(1m);
+        var large = new Money<USD>(2m);
 
         Assert.IsTrue(small < large);
         Assert.IsTrue(small <= large);
@@ -134,8 +134,8 @@ public partial class MoneyTests
     [TestMethod]
     public void Addition_WhenResultExceedsDecimalRange_ShouldThrowOverflowException()
     {
-        Money<USD> max = new Money<USD>(decimal.MaxValue);
-        Money<USD> one = new Money<USD>(1m);
+        var max = new Money<USD>(decimal.MaxValue);
+        var one = new Money<USD>(1m);
 
         Assert.ThrowsExactly<OverflowException>(() =>
         {
@@ -150,8 +150,8 @@ public partial class MoneyTests
     [TestMethod]
     public void Subtraction_WhenResultExceedsDecimalRange_ShouldThrowOverflowException()
     {
-        Money<USD> min = new Money<USD>(decimal.MinValue);
-        Money<USD> one = new Money<USD>(1m);
+        var min = new Money<USD>(decimal.MinValue);
+        var one = new Money<USD>(1m);
 
         Assert.ThrowsExactly<OverflowException>(() =>
         {
@@ -166,7 +166,7 @@ public partial class MoneyTests
     [TestMethod]
     public void Multiplication_WhenResultExceedsDecimalRange_ShouldThrowOverflowException()
     {
-        Money<USD> large = new Money<USD>(decimal.MaxValue / 2m);
+        var large = new Money<USD>(decimal.MaxValue / 2m);
 
         Assert.ThrowsExactly<OverflowException>(() =>
         {
@@ -181,7 +181,7 @@ public partial class MoneyTests
     [TestMethod]
     public void Multiply_WhenDefaultRounding_ShouldMatchOperator()
     {
-        Money<USD> money = new Money<USD>(1m);
+        var money = new Money<USD>(1m);
 
         Assert.AreEqual(money * 1.225m, money.Multiply(1.225m));
     }
@@ -193,7 +193,7 @@ public partial class MoneyTests
     [TestMethod]
     public void Multiply_WhenAwayFromZeroSpecified_ShouldRoundMidpointAwayFromZero()
     {
-        Money<USD> money = new Money<USD>(1m);
+        var money = new Money<USD>(1m);
 
         Money<USD> banker = money.Multiply(1.225m);                                      // 1.225 → 1.22 (down to even)
         Money<USD> awayFromZero = money.Multiply(1.225m, MidpointRounding.AwayFromZero); // 1.225 → 1.23
@@ -209,7 +209,7 @@ public partial class MoneyTests
     [TestMethod]
     public void Divide_WhenDefaultRounding_ShouldMatchOperator()
     {
-        Money<USD> money = new Money<USD>(10m);
+        var money = new Money<USD>(10m);
 
         Assert.AreEqual(money / 8m, money.Divide(8m));
     }
@@ -221,7 +221,7 @@ public partial class MoneyTests
     [TestMethod]
     public void Divide_WhenAwayFromZeroSpecified_ShouldRoundMidpointAwayFromZero()
     {
-        Money<USD> money = new Money<USD>(1m);
+        var money = new Money<USD>(1m);
 
         Money<USD> banker = money.Divide(8m);                                       // 0.125 → 0.12 (down to even)
         Money<USD> awayFromZero = money.Divide(8m, MidpointRounding.AwayFromZero);  // 0.125 → 0.13
@@ -237,7 +237,7 @@ public partial class MoneyTests
     [TestMethod]
     public void Divide_WhenDivisorIsZero_ShouldThrowDivideByZeroException()
     {
-        Money<USD> money = new Money<USD>(10m);
+        var money = new Money<USD>(10m);
 
         Assert.ThrowsExactly<DivideByZeroException>(() =>
         {
@@ -252,8 +252,8 @@ public partial class MoneyTests
     [TestMethod]
     public void RatioTo_WhenSameCurrencyAmounts_ShouldReturnDecimalRatio()
     {
-        Money<USD> ten = new Money<USD>(10m);
-        Money<USD> four = new Money<USD>(4m);
+        var ten = new Money<USD>(10m);
+        var four = new Money<USD>(4m);
 
         Assert.AreEqual(2.5m, ten.RatioTo(four));
     }
@@ -265,7 +265,7 @@ public partial class MoneyTests
     [TestMethod]
     public void RatioTo_WhenRightAmountIsZero_ShouldThrowDivideByZeroException()
     {
-        Money<USD> ten = new Money<USD>(10m);
+        var ten = new Money<USD>(10m);
 
         Assert.ThrowsExactly<DivideByZeroException>(() =>
         {
@@ -280,7 +280,7 @@ public partial class MoneyTests
     [TestMethod]
     public void Operator_WhenMoneyDividedByZeroValuedMoney_ShouldThrowDivideByZeroException()
     {
-        Money<USD> ten = new Money<USD>(10m);
+        var ten = new Money<USD>(10m);
 
         Assert.ThrowsExactly<DivideByZeroException>(() =>
         {
@@ -294,7 +294,7 @@ public partial class MoneyTests
     [TestMethod]
     public void UnaryPlus_WhenApplied_ShouldReturnSameValue()
     {
-        Money<USD> money = new Money<USD>(12.34m);
+        var money = new Money<USD>(12.34m);
 
         Assert.AreEqual(money, +money);
     }

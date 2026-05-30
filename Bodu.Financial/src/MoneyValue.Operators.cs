@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyValue.Operators.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -14,12 +14,8 @@ public readonly partial struct MoneyValue
     /// <param name="left">The first amount.</param>
     /// <param name="right">The second amount.</param>
     /// <returns>The sum of <paramref name="left" /> and <paramref name="right" />.</returns>
-    /// <exception cref="InvalidOperationException">
-    /// The operands have different ISO codes.
-    /// </exception>
-    /// <exception cref="OverflowException">
-    /// The sum falls outside the range of <see cref="decimal" />.
-    /// </exception>
+    /// <exception cref="InvalidOperationException">The operands have different ISO codes.</exception>
+    /// <exception cref="OverflowException">The sum falls outside the range of <see cref="decimal" />.</exception>
     public static MoneyValue operator +(MoneyValue left, MoneyValue right)
     {
         EnsureSameCurrency(left, right);
@@ -33,7 +29,9 @@ public readonly partial struct MoneyValue
     /// <param name="right">The subtrahend.</param>
     /// <returns>The difference.</returns>
     /// <exception cref="InvalidOperationException">The operands have different ISO codes.</exception>
-    /// <exception cref="OverflowException">The difference falls outside the range of <see cref="decimal" />.</exception>
+    /// <exception cref="OverflowException">
+    /// The difference falls outside the range of <see cref="decimal" />.
+    /// </exception>
     public static MoneyValue operator -(MoneyValue left, MoneyValue right)
     {
         EnsureSameCurrency(left, right);
@@ -45,16 +43,20 @@ public readonly partial struct MoneyValue
     /// </summary>
     /// <param name="value">The amount to negate.</param>
     /// <returns>A <see cref="MoneyValue" /> with the same ISO code and negated amount.</returns>
-    public static MoneyValue operator -(MoneyValue value) =>
-        FromNormalized(-value._amount, value.IsoCode);
+    public static MoneyValue operator -(MoneyValue value)
+    {
+        return FromNormalized(-value._amount, value.IsoCode);
+    }
 
     /// <summary>
     /// Returns the operand unchanged.
     /// </summary>
     /// <param name="value">The amount.</param>
     /// <returns>The unchanged value.</returns>
-    public static MoneyValue operator +(MoneyValue value) =>
-        value;
+    public static MoneyValue operator +(MoneyValue value)
+    {
+        return value;
+    }
 
     /// <summary>
     /// Multiplies a monetary value by a scalar, rounding to the currency's minor-unit precision.
@@ -62,8 +64,10 @@ public readonly partial struct MoneyValue
     /// <param name="left">The amount.</param>
     /// <param name="right">The scalar.</param>
     /// <returns>The product.</returns>
-    public static MoneyValue operator *(MoneyValue left, decimal right) =>
-        new(left._amount * right, left.IsoCode);
+    public static MoneyValue operator *(MoneyValue left, decimal right)
+    {
+        return new(left._amount * right, left.IsoCode);
+    }
 
     /// <summary>
     /// Multiplies a scalar by a monetary value.
@@ -71,8 +75,10 @@ public readonly partial struct MoneyValue
     /// <param name="left">The scalar.</param>
     /// <param name="right">The amount.</param>
     /// <returns>The product.</returns>
-    public static MoneyValue operator *(decimal left, MoneyValue right) =>
-        new(left * right._amount, right.IsoCode);
+    public static MoneyValue operator *(decimal left, MoneyValue right)
+    {
+        return new(left * right._amount, right.IsoCode);
+    }
 
     /// <summary>
     /// Divides a monetary value by a scalar.
@@ -81,8 +87,10 @@ public readonly partial struct MoneyValue
     /// <param name="right">The scalar divisor.</param>
     /// <returns>The quotient.</returns>
     /// <exception cref="DivideByZeroException"><paramref name="right" /> is zero.</exception>
-    public static MoneyValue operator /(MoneyValue left, decimal right) =>
-        new(left._amount / right, left.IsoCode);
+    public static MoneyValue operator /(MoneyValue left, decimal right)
+    {
+        return new(left._amount / right, left.IsoCode);
+    }
 
     /// <summary>
     /// Returns the dimensionless ratio of two monetary values in the same currency.
@@ -103,7 +111,10 @@ public readonly partial struct MoneyValue
     /// </summary>
     /// <param name="left">The first amount.</param>
     /// <param name="right">The second amount.</param>
-    /// <returns><see langword="true" /> when <paramref name="left" /> is less than <paramref name="right" />; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when <paramref name="left" /> is less than <paramref name="right" />; otherwise
+    /// <see langword="false" />.
+    /// </returns>
     /// <exception cref="InvalidOperationException">The operands have different ISO codes.</exception>
     public static bool operator <(MoneyValue left, MoneyValue right)
     {
@@ -116,7 +127,10 @@ public readonly partial struct MoneyValue
     /// </summary>
     /// <param name="left">The first amount.</param>
     /// <param name="right">The second amount.</param>
-    /// <returns><see langword="true" /> when <paramref name="left" /> is less than or equal to <paramref name="right" />; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when <paramref name="left" /> is less than or equal to <paramref name="right" />;
+    /// otherwise <see langword="false" />.
+    /// </returns>
     /// <exception cref="InvalidOperationException">The operands have different ISO codes.</exception>
     public static bool operator <=(MoneyValue left, MoneyValue right)
     {
@@ -129,7 +143,10 @@ public readonly partial struct MoneyValue
     /// </summary>
     /// <param name="left">The first amount.</param>
     /// <param name="right">The second amount.</param>
-    /// <returns><see langword="true" /> when <paramref name="left" /> is greater than <paramref name="right" />; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when <paramref name="left" /> is greater than <paramref name="right" />; otherwise
+    /// <see langword="false" />.
+    /// </returns>
     /// <exception cref="InvalidOperationException">The operands have different ISO codes.</exception>
     public static bool operator >(MoneyValue left, MoneyValue right)
     {
@@ -142,7 +159,10 @@ public readonly partial struct MoneyValue
     /// </summary>
     /// <param name="left">The first amount.</param>
     /// <param name="right">The second amount.</param>
-    /// <returns><see langword="true" /> when <paramref name="left" /> is greater than or equal to <paramref name="right" />; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when <paramref name="left" /> is greater than or equal to <paramref name="right" />;
+    /// otherwise <see langword="false" />.
+    /// </returns>
     /// <exception cref="InvalidOperationException">The operands have different ISO codes.</exception>
     public static bool operator >=(MoneyValue left, MoneyValue right)
     {
@@ -151,14 +171,13 @@ public readonly partial struct MoneyValue
     }
 
     /// <summary>
-    /// Asserts that both operands carry a non-empty ISO code (i.e. neither is a default-initialised value) and
-    /// that the two codes match.
+    /// Asserts that both operands carry a non-empty ISO code (i.e. neither is a default-initialised value) and that the
+    /// two codes match.
     /// </summary>
     /// <param name="left">The first operand.</param>
     /// <param name="right">The second operand.</param>
     /// <exception cref="InvalidOperationException">
-    /// Either operand carries no ISO code (a default-initialised <see cref="MoneyValue" />), or the two codes
-    /// differ.
+    /// Either operand carries no ISO code (a default-initialised <see cref="MoneyValue" />), or the two codes differ.
     /// </exception>
     private static void EnsureSameCurrency(MoneyValue left, MoneyValue right)
     {

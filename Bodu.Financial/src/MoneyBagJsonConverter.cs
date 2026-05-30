@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyBagJsonConverter.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -11,8 +11,8 @@ using System.Text.Json.Serialization;
 namespace Bodu.Financial;
 
 /// <summary>
-/// Serialises <see cref="MoneyBag" /> as a JSON object with a <c>"balances"</c> property holding an object map
-/// of ISO code to amount.
+/// Serialises <see cref="MoneyBag" /> as a JSON object with a <c>"balances"</c> property holding an object map of ISO
+/// code to amount.
 /// </summary>
 public sealed class MoneyBagJsonConverter : JsonConverter<MoneyBag>
 {
@@ -39,7 +39,7 @@ public sealed class MoneyBagJsonConverter : JsonConverter<MoneyBag>
             if (reader.TokenType != JsonTokenType.PropertyName)
                 throw new JsonException("Expected a JSON property name.");
 
-            string propertyName = reader.GetString()!;
+            var propertyName = reader.GetString()!;
             if (!reader.Read())
                 throw new JsonException("Unexpected end of JSON.");
 
@@ -56,7 +56,7 @@ public sealed class MoneyBagJsonConverter : JsonConverter<MoneyBag>
                     if (reader.TokenType != JsonTokenType.PropertyName)
                         throw new JsonException("Expected a JSON property name inside 'balances'.");
 
-                    string iso = reader.GetString()!;
+                    var iso = reader.GetString()!;
                     if (!reader.Read())
                         throw new JsonException("Unexpected end of JSON inside 'balances'.");
 
@@ -67,7 +67,7 @@ public sealed class MoneyBagJsonConverter : JsonConverter<MoneyBag>
                     }
                     else if (reader.TokenType == JsonTokenType.String)
                     {
-                        string? text = reader.GetString();
+                        var text = reader.GetString();
                         if (text is null || !decimal.TryParse(text, NumberStyles.Number, CultureInfo.InvariantCulture, out amount))
                             throw new JsonException($"The balance for '{iso}' must be a number.");
                     }

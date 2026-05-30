@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyTests.HistoricCurrency.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -51,9 +51,9 @@ public partial class MoneyTests
     {
         Type currencyType = typeof(USD).Assembly.GetType($"Bodu.Financial.Currencies.{iso}")!;
 
-        bool isHistoric = (bool)currencyType.GetProperty("IsHistoric", BindingFlags.Public | BindingFlags.Static)!.GetValue(null)!;
-        DateOnly? demonetizedOn = (DateOnly?)currencyType.GetProperty("DemonetizedOn", BindingFlags.Public | BindingFlags.Static)!.GetValue(null);
-        string? successor = (string?)currencyType.GetProperty("SuccessorIsoCode", BindingFlags.Public | BindingFlags.Static)!.GetValue(null);
+        var isHistoric = (bool)currencyType.GetProperty("IsHistoric", BindingFlags.Public | BindingFlags.Static)!.GetValue(null)!;
+        var demonetizedOn = (DateOnly?)currencyType.GetProperty("DemonetizedOn", BindingFlags.Public | BindingFlags.Static)!.GetValue(null);
+        var successor = (string?)currencyType.GetProperty("SuccessorIsoCode", BindingFlags.Public | BindingFlags.Static)!.GetValue(null);
 
         Assert.IsTrue(isHistoric, $"{iso} should report IsHistoric=true.");
         Assert.AreEqual(DateOnly.Parse(expectedDemonetized, System.Globalization.CultureInfo.InvariantCulture), demonetizedOn);
@@ -67,8 +67,8 @@ public partial class MoneyTests
     [TestMethod]
     public void HistoricCurrency_WhenUsedInArithmetic_ShouldBehaveLikeAnyOtherCurrency()
     {
-        Money<DEM> a = new Money<DEM>(100m);
-        Money<DEM> b = new Money<DEM>(50m);
+        var a = new Money<DEM>(100m);
+        var b = new Money<DEM>(50m);
 
         Money<DEM> sum = a + b;
         Money<DEM> doubled = a * 2m;
@@ -84,8 +84,8 @@ public partial class MoneyTests
     [TestMethod]
     public void HistoricCurrency_WhenItalianLiraOrSpanishPeseta_ShouldRoundToWholeUnits()
     {
-        Money<ITL> lira = new Money<ITL>(1234.56m);
-        Money<ESP> peseta = new Money<ESP>(99.9m);
+        var lira = new Money<ITL>(1234.56m);
+        var peseta = new Money<ESP>(99.9m);
 
         Assert.AreEqual(1235m, lira.Amount);     // 1234.56 → 1235 banker's
         Assert.AreEqual(100m, peseta.Amount);    // 99.9 → 100 (not midpoint)

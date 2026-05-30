@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyValueJsonConverter.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -11,8 +11,8 @@ using System.Text.Json.Serialization;
 namespace Bodu.Financial;
 
 /// <summary>
-/// Serialises <see cref="MoneyValue" /> as a JSON object with <c>"amount"</c> and <c>"currency"</c> fields,
-/// matching the shape used by <see cref="Money{TCurrency}" />.
+/// Serialises <see cref="MoneyValue" /> as a JSON object with <c>"amount"</c> and <c>"currency"</c> fields, matching
+/// the shape used by <see cref="Money{TCurrency}" />.
 /// </summary>
 public sealed class MoneyValueJsonConverter : JsonConverter<MoneyValue>
 {
@@ -31,8 +31,8 @@ public sealed class MoneyValueJsonConverter : JsonConverter<MoneyValue>
 
         decimal? amount = null;
         string? currency = null;
-        bool amountSeen = false;
-        bool currencySeen = false;
+        var amountSeen = false;
+        var currencySeen = false;
 
         while (reader.Read())
         {
@@ -42,7 +42,7 @@ public sealed class MoneyValueJsonConverter : JsonConverter<MoneyValue>
             if (reader.TokenType != JsonTokenType.PropertyName)
                 throw new JsonException("Expected a JSON property name.");
 
-            string propertyName = reader.GetString()!;
+            var propertyName = reader.GetString()!;
             if (!reader.Read())
                 throw new JsonException("Unexpected end of JSON.");
 
@@ -54,8 +54,8 @@ public sealed class MoneyValueJsonConverter : JsonConverter<MoneyValue>
 
                 if (reader.TokenType == JsonTokenType.String)
                 {
-                    string? text = reader.GetString();
-                    if (text is null || !decimal.TryParse(text, NumberStyles.Number, CultureInfo.InvariantCulture, out decimal parsed))
+                    var text = reader.GetString();
+                    if (text is null || !decimal.TryParse(text, NumberStyles.Number, CultureInfo.InvariantCulture, out var parsed))
                         throw new JsonException("The 'amount' property must be a number.");
                     amount = parsed;
                 }

@@ -1,17 +1,14 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CurrencyMetadata.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
-using System.Numerics;
-
 namespace Bodu.Financial;
 
 /// <summary>
-/// Once-per-closed-generic validated metadata for an <see cref="ICurrency" /> tag. Lazily computed and cached
-/// in a static field so the validation runs at most once per <typeparamref name="TCurrency" />.
+/// Once-per-closed-generic validated metadata for an <see cref="ICurrency" /> tag. Lazily computed and cached in a
+/// static field so the validation runs at most once per <typeparamref name="TCurrency" />.
 /// </summary>
 /// <typeparam name="TCurrency">The currency tag type.</typeparam>
 /// <remarks>
@@ -25,10 +22,10 @@ internal static class CurrencyMetadata<TCurrency>
 {
     /// <summary>
     /// Lazy-initialised descriptor. Using <see cref="Lazy{T}" /> with the default
-    /// <see cref="System.Threading.LazyThreadSafetyMode.ExecutionAndPublication" /> mode means a validation
-    /// failure surfaces as the original <see cref="InvalidOperationException" /> rather than being wrapped in a
-    /// <see cref="TypeInitializationException" /> by the runtime's static-field initialiser, and the cached
-    /// exception is rethrown directly on every subsequent access.
+    /// <see cref="System.Threading.LazyThreadSafetyMode.ExecutionAndPublication" /> mode means a validation failure
+    /// surfaces as the original <see cref="InvalidOperationException" /> rather than being wrapped in a
+    /// <see cref="TypeInitializationException" /> by the runtime's static-field initialiser, and the cached exception
+    /// is rethrown directly on every subsequent access.
     /// </summary>
     private static readonly Lazy<CurrencyMetadataDescriptor> s_value = new(Validate);
 
@@ -48,19 +45,19 @@ internal static class CurrencyMetadata<TCurrency>
     /// </exception>
     private static CurrencyMetadataDescriptor Validate()
     {
-        string isoCode = TCurrency.IsoCode;
+        var isoCode = TCurrency.IsoCode;
         ValidateIsoCode(isoCode, nameof(ICurrency.IsoCode));
 
-        int minorUnits = TCurrency.MinorUnits;
+        var minorUnits = TCurrency.MinorUnits;
         if ((uint)minorUnits > 28u)
         {
             throw new InvalidOperationException(
                 $"{typeof(TCurrency).FullName}.{nameof(ICurrency.MinorUnits)} must be between 0 and 28, but reported {minorUnits}.");
         }
 
-        decimal minorUnitFactor = ComputeMinorUnitFactor(minorUnits);
+        var minorUnitFactor = ComputeMinorUnitFactor(minorUnits);
 
-        decimal cashIncrement = TCurrency.CashRoundingIncrement;
+        var cashIncrement = TCurrency.CashRoundingIncrement;
         if (cashIncrement < 0m)
         {
             throw new InvalidOperationException(
@@ -69,7 +66,7 @@ internal static class CurrencyMetadata<TCurrency>
 
         if (cashIncrement != 0m)
         {
-            decimal scaled = cashIncrement * minorUnitFactor;
+            var scaled = cashIncrement * minorUnitFactor;
             if (scaled != decimal.Truncate(scaled))
             {
                 throw new InvalidOperationException(
@@ -77,7 +74,7 @@ internal static class CurrencyMetadata<TCurrency>
             }
         }
 
-        string? successorIsoCode = TCurrency.SuccessorIsoCode;
+        var successorIsoCode = TCurrency.SuccessorIsoCode;
         if (successorIsoCode is not null)
             ValidateIsoCode(successorIsoCode, nameof(ICurrency.SuccessorIsoCode));
 
@@ -96,7 +93,9 @@ internal static class CurrencyMetadata<TCurrency>
     /// </summary>
     /// <param name="value">The candidate ISO code.</param>
     /// <param name="memberName">The member name to include in the exception message.</param>
-    /// <exception cref="InvalidOperationException">The code is null, the wrong length, or contains non-uppercase-letter characters.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// The code is null, the wrong length, or contains non-uppercase-letter characters.
+    /// </exception>
     private static void ValidateIsoCode(string value, string memberName)
     {
         if (value is null)
@@ -111,10 +110,10 @@ internal static class CurrencyMetadata<TCurrency>
                 $"{typeof(TCurrency).FullName}.{memberName} must be exactly three letters, but reported '{value}' ({value.Length} characters).");
         }
 
-        for (int i = 0; i < 3; i++)
+        for (var i = 0; i < 3; i++)
         {
-            char c = value[i];
-            if (c < 'A' || c > 'Z')
+            var c = value[i];
+            if (c is < 'A' or > 'Z')
             {
                 throw new InvalidOperationException(
                     $"{typeof(TCurrency).FullName}.{memberName} must be uppercase ASCII letters, but reported '{value}'.");
@@ -129,8 +128,8 @@ internal static class CurrencyMetadata<TCurrency>
     /// <returns>The scale factor.</returns>
     private static decimal ComputeMinorUnitFactor(int minorUnits)
     {
-        decimal factor = 1m;
-        for (int i = 0; i < minorUnits; i++)
+        var factor = 1m;
+        for (var i = 0; i < minorUnits; i++)
             factor *= 10m;
         return factor;
     }

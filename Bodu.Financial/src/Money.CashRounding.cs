@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Money.CashRounding.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -23,44 +23,44 @@ public readonly partial struct Money<TCurrency>
         CurrencyMetadata<TCurrency>.Value.CashRoundingIncrement;
 
     /// <summary>
-    /// Rounds this amount to the nearest physical cash denomination of <typeparamref name="TCurrency" /> using
-    /// banker's rounding.
+    /// Rounds this amount to the nearest physical cash denomination of <typeparamref name="TCurrency" /> using banker's
+    /// rounding.
     /// </summary>
     /// <returns>
-    /// A <see cref="Money{TCurrency}" /> whose amount is the nearest multiple of
-    /// <see cref="CashRoundingIncrement" />, or this instance unchanged when the currency does not declare a
-    /// cash-rounding increment.
+    /// A <see cref="Money{TCurrency}" /> whose amount is the nearest multiple of <see cref="CashRoundingIncrement" />,
+    /// or this instance unchanged when the currency does not declare a cash-rounding increment.
     /// </returns>
     /// <remarks>
     /// Cash rounding applies to physical cash totals only; electronic transactions retain the full
-    /// <see cref="MinorUnits" /> precision. For Switzerland (CHF, 5-rappen rounding), Canada (CAD, 5-cent cash
-    /// rounding since 2013), Australia (AUD, 5-cent cash rounding since 1992), and other currencies whose
-    /// smallest circulating coin is larger than <c>10^-MinorUnits</c>, this method snaps to the cash
-    /// denomination — for example, <c>CHF 12.34</c> rounds to <c>CHF 12.35</c>.
+    /// <see cref="MinorUnits" /> precision. For Switzerland (CHF, 5-rappen rounding), Canada (CAD, 5-cent cash rounding
+    /// since 2013), Australia (AUD, 5-cent cash rounding since 1992), and other currencies whose smallest circulating
+    /// coin is larger than <c>10^-MinorUnits</c>, this method snaps to the cash denomination — for example,
+    /// <c>CHF 12.34</c> rounds to <c>CHF 12.35</c>.
     /// </remarks>
     public Money<TCurrency> RoundToCash() =>
         RoundToCash(MidpointRounding.ToEven);
 
     /// <summary>
-    /// Rounds this amount to the nearest physical cash denomination of <typeparamref name="TCurrency" /> using
-    /// the specified midpoint-rounding rule.
+    /// Rounds this amount to the nearest physical cash denomination of <typeparamref name="TCurrency" /> using the
+    /// specified midpoint-rounding rule.
     /// </summary>
-    /// <param name="rounding">The midpoint-rounding rule applied when the amount sits exactly between two cash denominations.</param>
+    /// <param name="rounding">
+    /// The midpoint-rounding rule applied when the amount sits exactly between two cash denominations.
+    /// </param>
     /// <returns>
-    /// A <see cref="Money{TCurrency}" /> whose amount is the nearest multiple of
-    /// <see cref="CashRoundingIncrement" />, or this instance unchanged when the currency does not declare a
-    /// cash-rounding increment.
+    /// A <see cref="Money{TCurrency}" /> whose amount is the nearest multiple of <see cref="CashRoundingIncrement" />,
+    /// or this instance unchanged when the currency does not declare a cash-rounding increment.
     /// </returns>
     public Money<TCurrency> RoundToCash(MidpointRounding rounding)
     {
         CurrencyMetadataDescriptor metadata = CurrencyMetadata<TCurrency>.Value;
-        decimal increment = metadata.CashRoundingIncrement;
+        var increment = metadata.CashRoundingIncrement;
         if (increment == 0m)
             return this;
 
         // increment is validated to be representable at MinorUnits, so multiplier × increment is also at
         // MinorUnit precision and can take the FromNormalizedAmount fast path without a second rounding step.
-        decimal multiplier = decimal.Round(_amount / increment, 0, rounding);
+        var multiplier = decimal.Round(_amount / increment, 0, rounding);
         return FromNormalizedAmount(multiplier * increment);
     }
 
@@ -76,7 +76,9 @@ public readonly partial struct Money<TCurrency>
     /// <summary>
     /// Gets the date <typeparamref name="TCurrency" /> was withdrawn from circulation, if known.
     /// </summary>
-    /// <returns>The demonetization date, or <see langword="null" /> when the currency is active or the date is unknown.</returns>
+    /// <returns>
+    /// The demonetization date, or <see langword="null" /> when the currency is active or the date is unknown.
+    /// </returns>
     public static DateOnly? DemonetizedOn =>
         CurrencyMetadata<TCurrency>.Value.DemonetizedOn;
 

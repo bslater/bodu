@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyTests.Serialization.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -18,9 +18,9 @@ public partial class MoneyTests
     [TestMethod]
     public void JsonSerialize_WhenCalled_ShouldEmitAmountAndCurrencyFields()
     {
-        Money<USD> money = new Money<USD>(19.99m);
+        var money = new Money<USD>(19.99m);
 
-        string json = JsonSerializer.Serialize(money);
+        var json = JsonSerializer.Serialize(money);
 
         Assert.AreEqual("{\"amount\":19.99,\"currency\":\"USD\"}", json);
     }
@@ -31,9 +31,9 @@ public partial class MoneyTests
     [TestMethod]
     public void JsonRoundTrip_WhenCalled_ShouldPreserveValue()
     {
-        Money<USD> original = new Money<USD>(123.45m);
+        var original = new Money<USD>(123.45m);
 
-        string json = JsonSerializer.Serialize(original);
+        var json = JsonSerializer.Serialize(original);
         Money<USD> recovered = JsonSerializer.Deserialize<Money<USD>>(json);
 
         Assert.AreEqual(original, recovered);
@@ -46,7 +46,7 @@ public partial class MoneyTests
     [TestMethod]
     public void JsonDeserialize_WhenCurrencyMismatch_ShouldThrowJsonException()
     {
-        string json = "{\"amount\":19.99,\"currency\":\"JPY\"}";
+        var json = "{\"amount\":19.99,\"currency\":\"JPY\"}";
 
         Assert.ThrowsExactly<JsonException>(() =>
         {
@@ -60,7 +60,7 @@ public partial class MoneyTests
     [TestMethod]
     public void JsonDeserialize_WhenAmountMissing_ShouldThrowJsonException()
     {
-        string json = "{\"currency\":\"USD\"}";
+        var json = "{\"currency\":\"USD\"}";
 
         Assert.ThrowsExactly<JsonException>(() =>
         {
@@ -74,7 +74,7 @@ public partial class MoneyTests
     [TestMethod]
     public void JsonDeserialize_WhenCurrencyMissing_ShouldThrowJsonException()
     {
-        string json = "{\"amount\":19.99}";
+        var json = "{\"amount\":19.99}";
 
         Assert.ThrowsExactly<JsonException>(() =>
         {
@@ -88,7 +88,7 @@ public partial class MoneyTests
     [TestMethod]
     public void JsonDeserialize_WhenPropertyNamesCasedDifferently_ShouldStillSucceed()
     {
-        string json = "{\"Amount\":19.99,\"Currency\":\"USD\"}";
+        var json = "{\"Amount\":19.99,\"Currency\":\"USD\"}";
 
         Money<USD> result = JsonSerializer.Deserialize<Money<USD>>(json);
 

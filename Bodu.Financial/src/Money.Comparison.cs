@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Money.Comparison.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -39,8 +39,10 @@ public readonly partial struct Money<TCurrency>
         if (min._amount > max._amount)
             throw new ArgumentException($"Min ({min}) must be ≤ Max ({max}).", nameof(min));
 
-        if (value._amount < min._amount) return min;
-        if (value._amount > max._amount) return max;
-        return value;
+        return value._amount < min._amount
+            ? min
+            : value._amount > max._amount
+                ? max
+                : value;
     }
 }

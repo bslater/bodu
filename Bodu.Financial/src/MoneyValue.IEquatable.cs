@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyValue.IEquatable.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -15,7 +15,9 @@ public readonly partial struct MoneyValue :
     /// Determines whether two instances are equal in both currency and amount.
     /// </summary>
     /// <param name="other">The other value.</param>
-    /// <returns><see langword="true" /> when both ISO code and amount match; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when both ISO code and amount match; otherwise <see langword="false" />.
+    /// </returns>
     public bool Equals(MoneyValue other) =>
         _amount == other._amount && string.Equals(IsoCode, other.IsoCode, StringComparison.Ordinal);
 
@@ -70,8 +72,10 @@ public readonly partial struct MoneyValue :
     /// <param name="left">The first value.</param>
     /// <param name="right">The second value.</param>
     /// <returns><see langword="true" /> when equal; otherwise <see langword="false" />.</returns>
-    public static bool operator ==(MoneyValue left, MoneyValue right) =>
-        left.Equals(right);
+    public static bool operator ==(MoneyValue left, MoneyValue right)
+    {
+        return left.Equals(right);
+    }
 
     /// <summary>
     /// Determines whether two values differ.
@@ -79,6 +83,8 @@ public readonly partial struct MoneyValue :
     /// <param name="left">The first value.</param>
     /// <param name="right">The second value.</param>
     /// <returns><see langword="true" /> when they differ; otherwise <see langword="false" />.</returns>
-    public static bool operator !=(MoneyValue left, MoneyValue right) =>
-        !left.Equals(right);
+    public static bool operator !=(MoneyValue left, MoneyValue right)
+    {
+        return !left.Equals(right);
+    }
 }
