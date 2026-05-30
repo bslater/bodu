@@ -166,16 +166,17 @@ SipHash plus EAX/OFB/GCM/OCB/SIV modes.
 
 ### `Bodu.IO.Hashing`
 
-Current state: mature; 79 src / 216 test files. Fletcher 16/32/64, full
+Current state: mature; 83 src / 223 test files. Fletcher 16/32/64, full
 RevEng CRC catalogue (112 standards), check-digit algorithms (Luhn,
-Damm, Verhoeff, ABA, EAN, GTIN, IBAN, ISBN, ISIN, LEI, ISO 7064).
+Damm, Verhoeff, Gumm, Code 39 mod 43, Crockford Base32, ABA, EAN, GTIN,
+IBAN, ISBN, ISIN, LEI, ISO 7064).
 
-- **Expand check digits**: Gumm, Mod-43, and a ULID/Crockford32
-  check-digit. Verhoeff has shipped (`Verhoeff` in
-  `IO.Hashing.CheckDigits`, detecting all single-digit and
-  adjacent-transposition errors); these remaining algorithms fill the
-  rest of the common catalogue. The existing set is strong on financial
-  identifiers.
+- The **check-digit expansion has landed**: Verhoeff and Gumm (both
+  detecting all single-digit and adjacent-transposition errors), the
+  Code 39 modulo-43 barcode check character, and the Crockford Base32
+  modulo-37 check symbol (ULID-style) all ship in
+  `IO.Hashing.CheckDigits`. Remaining catalogue gaps are minor; the
+  family is now strong on financial, barcode, and identifier schemes.
 - Unify every algorithm behind the BCL
   `System.IO.Hashing.NonCryptographicHashAlgorithm` shape uniformly.
   Some types inherit from it, others expose bespoke surfaces — the mix
