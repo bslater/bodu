@@ -4,83 +4,57 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Collections.Frozen;
 using System.Collections.Generic;
 
 namespace Bodu.Numerics;
 
 /// <summary>
-/// Provides a timeless, dictionary-backed implementation of <see cref="IExchangeRateProvider" /> that stores a single
-/// rate per currency pair.
+/// An <see cref="IExchangeRateProvider" /> backed by a fixed dictionary of (from, to) → rate mappings.
 /// </summary>
 /// <remarks>
 /// <para>
-/// Same-currency lookups return the identity rate <c>1</c>, and when the directly-keyed pair is missing the table falls
-/// back to the inverse pair (returning the reciprocal). For dated lookups with auditable metadata, use
-/// <see cref="FixedDatedExchangeRateTable" /> in conjunction with <see cref="IDatedExchangeRateProvider" /> instead.
+/// Same-currency lookups return <c>1m</c> without consulting the table. When a direct (from, to) pair is
+/// missing the provider also tries the inverse (to, from) pair and, if found, returns <c>1 / rate</c>. This is
+/// the convention most FX feeds use to keep the table minimal.
+/// </para>
+/// <para>
+/// The table is immutable after construction; consumers wanting live rates should implement
+/// <see cref="IExchangeRateProvider" /> directly.
 /// </para>
 /// </remarks>
 public sealed class FixedExchangeRateTable : IExchangeRateProvider
 {
     /// <summary>
-    /// The pair-keyed rate store, frozen after construction.
+    /// The underlying rate table keyed by (source, destination) ISO code pairs.
     /// </summary>
-    private readonly FrozenDictionary<ExchangeRatePair, decimal> _rates;
+    private readonly IReadOnlyDictionary<(string From, string To), decimal> _rates;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="FixedExchangeRateTable" /> class from the supplied pair/rate pairs.
+    /// Initializes a new <see cref="FixedExchangeRateTable" /> from the supplied dictionary.
     /// </summary>
-    /// <param name="rates">The pair/rate observations to store.</param>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="rates" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentException">Thrown if <paramref name="rates" /> contains duplicate pair keys.</exception>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown if any rate is zero or negative.</exception>
-    public FixedExchangeRateTable(IEnumerable<KeyValuePair<ExchangeRatePair, decimal>> rates)
+    /// <param name="rates">The rate table.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="rates" /> is <see langword="null" />.</exception>
+    public FixedExchangeRateTable(IReadOnlyDictionary<(string From, string To), decimal> rates)
     {
         ThrowHelper.ThrowIfNull(rates);
-
-        Dictionary<ExchangeRatePair, decimal> buffer = new();
-
-        foreach (KeyValuePair<ExchangeRatePair, decimal> entry in rates)
-        {
-            if (entry.Value <= 0m)
-            {
-                throw new ArgumentOutOfRangeException(
-                    nameof(rates),
-                    entry.Value,
-                    $"Rate for {entry.Key.FromIsoCode}/{entry.Key.ToIsoCode} must be greater than zero.");
-            }
-
-            if (!buffer.TryAdd(entry.Key, entry.Value))
-            {
-                throw new ArgumentException(
-                    $"Duplicate pair {entry.Key.FromIsoCode}/{entry.Key.ToIsoCode} supplied.",
-                    nameof(rates));
-            }
-        }
-
-        _rates = buffer.ToFrozenDictionary();
+        _rates = rates;
     }
 
     /// <inheritdoc />
     public decimal GetRate(string fromIsoCode, string toIsoCode)
     {
-        ExchangeRateValidation.RequireIsoCode(fromIsoCode);
-        ExchangeRateValidation.RequireIsoCode(toIsoCode);
+        ThrowHelper.ThrowIfNull(fromIsoCode);
+        ThrowHelper.ThrowIfNull(toIsoCode);
 
         if (string.Equals(fromIsoCode, toIsoCode, StringComparison.Ordinal))
             return 1m;
 
-        ExchangeRatePair direct = new(fromIsoCode, toIsoCode);
+        if (_rates.TryGetValue((fromIsoCode, toIsoCode), out decimal direct))
+            return direct;
 
-        if (_rates.TryGetValue(direct, out decimal rate))
-            return rate;
+        if (_rates.TryGetValue((toIsoCode, fromIsoCode), out decimal inverse) && inverse != 0m)
+            return 1m / inverse;
 
-        ExchangeRatePair inverse = direct.Inverse();
-
-        if (_rates.TryGetValue(inverse, out decimal inverseRate))
-            return 1m / inverseRate;
-
-        throw new KeyNotFoundException(
-            $"No exchange rate available for {fromIsoCode} -> {toIsoCode}.");
+        throw new KeyNotFoundException($"No exchange rate available for {fromIsoCode} → {toIsoCode}.");
     }
 }

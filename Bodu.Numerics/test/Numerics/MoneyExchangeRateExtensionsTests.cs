@@ -27,9 +27,9 @@ public partial class MoneyExchangeRateExtensionsTests
     [TestCategory(TestCategories.Smoke)]
     public void ConvertTo_WhenRateAvailable_ShouldReturnConvertedAmount()
     {
-        Money<TestCurrencies.Usd> amount = new(100m);
+        Money<Bodu.Numerics.Currencies.USD> amount = new(100m);
 
-        Money<TestCurrencies.Aud> converted = amount.ConvertTo<TestCurrencies.Usd, TestCurrencies.Aud>(
+        Money<Bodu.Numerics.Currencies.AUD> converted = amount.ConvertTo<Bodu.Numerics.Currencies.USD, Bodu.Numerics.Currencies.AUD>(
             BuildProvider(),
             s_d1,
             ExchangeRateLookupOptions.Exact);
@@ -44,9 +44,9 @@ public partial class MoneyExchangeRateExtensionsTests
     [TestMethod]
     public void ConvertToWithRate_WhenRateAvailable_ShouldReturnConvertedAmountAndMetadata()
     {
-        Money<TestCurrencies.Usd> amount = new(100m);
+        Money<Bodu.Numerics.Currencies.USD> amount = new(100m);
 
-        MoneyConversionResult<TestCurrencies.Usd, TestCurrencies.Aud> result = amount.ConvertToWithRate<TestCurrencies.Usd, TestCurrencies.Aud>(
+        MoneyConversionResult<Bodu.Numerics.Currencies.USD, Bodu.Numerics.Currencies.AUD> result = amount.ConvertToWithRate<Bodu.Numerics.Currencies.USD, Bodu.Numerics.Currencies.AUD>(
             BuildProvider(),
             s_d1,
             ExchangeRateLookupOptions.Exact);
@@ -65,9 +65,9 @@ public partial class MoneyExchangeRateExtensionsTests
     [TestMethod]
     public void ConvertTo_WhenUsingInverseRate_ShouldReturnReciprocalConversion()
     {
-        Money<TestCurrencies.Aud> amount = new(150m);
+        Money<Bodu.Numerics.Currencies.AUD> amount = new(150m);
 
-        Money<TestCurrencies.Usd> converted = amount.ConvertTo<TestCurrencies.Aud, TestCurrencies.Usd>(
+        Money<Bodu.Numerics.Currencies.USD> converted = amount.ConvertTo<Bodu.Numerics.Currencies.AUD, Bodu.Numerics.Currencies.USD>(
             BuildProvider(),
             s_d1,
             ExchangeRateLookupOptions.Exact);
@@ -82,9 +82,9 @@ public partial class MoneyExchangeRateExtensionsTests
     [TestMethod]
     public void ConvertTo_WhenSameCurrency_ShouldReturnOriginalAmount()
     {
-        Money<TestCurrencies.Usd> amount = new(100m);
+        Money<Bodu.Numerics.Currencies.USD> amount = new(100m);
 
-        Money<TestCurrencies.Usd> converted = amount.ConvertTo<TestCurrencies.Usd, TestCurrencies.Usd>(
+        Money<Bodu.Numerics.Currencies.USD> converted = amount.ConvertTo<Bodu.Numerics.Currencies.USD, Bodu.Numerics.Currencies.USD>(
             BuildProvider(),
             s_d1,
             ExchangeRateLookupOptions.Exact);
@@ -99,11 +99,11 @@ public partial class MoneyExchangeRateExtensionsTests
     [TestMethod]
     public void ConvertTo_WhenRateMissing_ShouldThrowKeyNotFoundException()
     {
-        Money<TestCurrencies.Usd> amount = new(100m);
+        Money<Bodu.Numerics.Currencies.USD> amount = new(100m);
         FixedDatedExchangeRateTable empty = new(Array.Empty<ExchangeRate>());
 
         _ = Assert.ThrowsExactly<KeyNotFoundException>(() =>
-            amount.ConvertTo<TestCurrencies.Usd, TestCurrencies.Jpy>(
+            amount.ConvertTo<Bodu.Numerics.Currencies.USD, Bodu.Numerics.Currencies.JPY>(
                 empty,
                 s_d1,
                 new ExchangeRateLookupOptions(ExchangeRateDateResolution.Exact, AllowSameCurrencyIdentityRate: false)));
@@ -116,10 +116,10 @@ public partial class MoneyExchangeRateExtensionsTests
     [TestMethod]
     public void ConvertTo_WhenProviderIsNull_ShouldThrowArgumentNullException()
     {
-        Money<TestCurrencies.Usd> amount = new(100m);
+        Money<Bodu.Numerics.Currencies.USD> amount = new(100m);
 
         ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(
-            () => amount.ConvertTo<TestCurrencies.Usd, TestCurrencies.Aud>(
+            () => amount.ConvertTo<Bodu.Numerics.Currencies.USD, Bodu.Numerics.Currencies.AUD>(
                 null!,
                 s_d1,
                 ExchangeRateLookupOptions.Exact),
@@ -133,10 +133,10 @@ public partial class MoneyExchangeRateExtensionsTests
     [TestMethod]
     public void ConvertToWithRate_WhenProviderIsNull_ShouldThrowArgumentNullException()
     {
-        Money<TestCurrencies.Usd> amount = new(100m);
+        Money<Bodu.Numerics.Currencies.USD> amount = new(100m);
 
         ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(
-            () => amount.ConvertToWithRate<TestCurrencies.Usd, TestCurrencies.Aud>(
+            () => amount.ConvertToWithRate<Bodu.Numerics.Currencies.USD, Bodu.Numerics.Currencies.AUD>(
                 null!,
                 s_d1,
                 ExchangeRateLookupOptions.Exact),

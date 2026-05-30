@@ -133,10 +133,17 @@ any adjustments are applied.
 
 ### Fixed
 
+For Gregorian rules (`CalendarType` is `null`):
 `new DateTime(year, Month, Day)` — direct construction. No calculation required.
 
 An invalid combination (e.g. `Month=2, Day=29` in a non-leap year) causes the rule to return
 no date for that year. The resolver treats this as `null` and skips the rule.
+
+For rules authored against a non-Gregorian calendar (`CalendarType` is non-null), the
+resolver projects the authored (month, day) tuple through the target calendar — typically
+via the calendar-year sweep described in the [Calendar-system sweep](#calendar-system-sweep)
+section below. See [Working with non-Gregorian calendars](non-gregorian-calendars.md) for
+the per-calendar decision tree.
 
 ### DayOfWeekInMonth
 
@@ -178,14 +185,27 @@ month or day within the target calendar system to compute (e.g.
 
 ### Calendar-system sweep
 
-When `SweepCalendarYears = true`, the resolver also evaluates the rule against the adjacent
-Gregorian years (year − 1 and year + 1) projected through the calendar system. This is
-required for lunisolar rules (e.g. Chinese New Year) that can produce a Gregorian date in
-either of two consecutive years. Results that fall outside the target Gregorian year are
-discarded; only dates within the target year are kept.
+When `SweepCalendarYears = true` and `CalendarType` is non-null, the resolver routes through
+`ResolveCalendarYearSweep`:
 
-When `SkipLeapMonth = true`, occurrences whose month in the target calendar system is an
-intercalary (leap) month are suppressed.
+1. Determine the **calendar year** that contains 1 January of the requested **Gregorian
+   year** via `cal.GetYear(new DateTime(year, 1, 1))`.
+2. Evaluate the authored (month, day) — resolving any Hebrew `CalendarMonthAlias` against
+   the candidate year's leap-year state — against that calendar year and the next.
+3. Project each candidate through `cal.ToDateTime(...)` and accept the first result whose
+   Gregorian year matches the requested year.
+
+This is required for every supported non-Gregorian calendar except `ChineseLunisolarCalendar`,
+because their year numbering does not match the Gregorian year. When both candidate calendar
+years contain a valid occurrence in the requested Gregorian year — possible for fast-drifting
+lunar calendars such as Hijri and Umm al-Qura, where the same month can fall in the same
+Gregorian year twice approximately every 33 years — the chronologically earlier occurrence
+is returned.
+
+When `SkipLeapMonth = true` (Chinese lunisolar only), the resolver maps the conventional
+ordinal lunar month to the calendar's consecutive month numbering by advancing past any
+intercalary leap month that precedes it. See [Working with non-Gregorian
+calendars](non-gregorian-calendars.md) for worked examples and per-calendar guidance.
 
 ---
 

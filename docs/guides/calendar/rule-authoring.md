@@ -215,6 +215,20 @@ Each `<Rule>` contains exactly one strategy element:
 <Fixed month="December" day="25" />
 ```
 
+For rules authored against a non-Gregorian calendar (`calendarType` set on the parent
+`<Rule>`), additional attributes control how the calendar's month/day projects to a
+Gregorian date — `sweepCalendarYears="true"` for Hijri, Umm al-Qura, Hebrew, and Persian;
+`skipLeapMonth="true"` for Chinese lunisolar. See
+[Working with non-Gregorian calendars](non-gregorian-calendars.md) for a per-calendar
+authoring checklist and worked examples.
+
+```xml
+<!-- Ramadan: 1 Ramadan in the Umm al-Qura calendar -->
+<Rule name="ramadan" calendarType="System.Globalization.UmAlQuraCalendar">
+  <Fixed month="9" day="1" sweepCalendarYears="true" />
+</Rule>
+```
+
 **`<DayOfWeekInMonth>`** — nth occurrence of a weekday in a month:
 
 ```xml

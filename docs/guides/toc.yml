@@ -136,6 +136,13 @@
       items:
         - name: Calendar data packs
           href: calendar/data-packs.md
+- name: Bodu.Numerics
+  href: numerics/
+  items:
+    - name: Overview
+      href: numerics/index.md
+    - name: Working with Interval&lt;T&gt;
+      href: numerics/interval.md
 - name: Bodu.Text.Encoding
   href: text-encoding/
   items:

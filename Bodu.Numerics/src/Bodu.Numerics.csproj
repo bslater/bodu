@@ -11,8 +11,8 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
     <Version>1.0.0</Version>
-    <Description>Numeric value primitives for .NET. Provides Fraction&lt;T&gt;, a generic exact-rational number type backed by any IBinaryInteger&lt;T&gt;.</Description>
-    <PackageTags>bodu;numerics;fraction;rational;ratio;bigrational;math</PackageTags>
+    <Description>Numeric value primitives for .NET. Provides Fraction&lt;T&gt;, a generic exact-rational number type backed by any IBinaryInteger&lt;T&gt;; Interval&lt;T&gt;, an immutable bounded interval over any INumber&lt;T&gt;; and a comprehensive money type set built around Money&lt;TCurrency&gt; (type-parameter currency), MoneyValue (runtime-tagged), MoneyBag (mixed-currency portfolios), CurrencyRegistry (runtime ISO lookup), and IExchangeRateProvider for FX. Ships the full active + historic ISO 4217 catalogue, cash rounding (CHF/AUD/CAD/NZD/SEK/NOK), and an exact-arithmetic escape hatch through Fraction&lt;BigInteger&gt;.</Description>
+    <PackageTags>bodu;numerics;fraction;rational;ratio;bigrational;interval;range;money;currency;iso4217;forex;fx;math</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>

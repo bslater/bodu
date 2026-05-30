@@ -83,7 +83,7 @@ Prefer `AlgorithmKey` over `AlgorithmType` — key-based lookup is simpler and m
 | Field | Type | Default | Description |
 |---|---|---|---|
 | `TerritoryCode` | `TerritoryCode?` | `null` | ISO 3166-1 alpha-2 country code or ISO 3166-2 subdivision code this rule applies to. `null` means the rule applies globally. See [TerritoryCode scoping](#territorycode-scoping) below. |
-| `CalendarType` | `string?` | `null` | Calendar system identifier (e.g. `"Gregorian"`, `"Chinese"`, `"Hebrew"`). Filters results when the caller passes a calendar type to `GetNotableDates`. |
+| `CalendarType` | `Type?` | `null` | The `System.Globalization.Calendar`-derived type the rule's `Month` and `Day` are authored against (e.g. `System.Globalization.HijriCalendar`, `System.Globalization.HebrewCalendar`, `System.Globalization.PersianCalendar`, `System.Globalization.UmAlQuraCalendar`, `System.Globalization.ChineseLunisolarCalendar`). When `null`, the rule is Gregorian and the resolver constructs the date directly without calendar conversion. See [Working with non-Gregorian calendars](non-gregorian-calendars.md). |
 | `FirstYear` | `int?` | `null` | Inclusive first year the rule is active. Rules outside the year bounds are skipped. |
 | `LastYear` | `int?` | `null` | Inclusive last year the rule is active. |
 | `OccurrenceYears` | `ImmutableHashSet<int>` | empty | Explicit set of years this rule applies to. When non-empty, the rule is only resolved for years in the set, regardless of `FirstYear` / `LastYear`. Useful for jubilee events or irregular one-off observances. |
@@ -97,13 +97,16 @@ Prefer `AlgorithmKey` over `AlgorithmType` — key-based lookup is simpler and m
 
 ### Calendar-system fields
 
-These fields are relevant only for rules that operate against non-Gregorian calendar systems.
+These fields are relevant only for Fixed-strategy rules whose `CalendarType` is non-null
+(i.e. authored against a non-Gregorian calendar). See
+[Working with non-Gregorian calendars](non-gregorian-calendars.md) for the full pipeline
+behaviour and worked examples.
 
 | Field | Type | Default | Description |
 |---|---|---|---|
-| `SweepCalendarYears` | `bool` | `false` | When `true`, the resolver also checks the adjacent Gregorian years for the target calendar year. Required for lunisolar dates (e.g. Chinese New Year) that can fall in either of two Gregorian years. |
-| `SkipLeapMonth` | `bool` | `false` | When `true`, the resolver skips occurrences that fall in an intercalary (leap) month of a lunisolar calendar. |
-| `CalendarMonthAlias` | `string?` | `null` | Alternate month name used for display or matching in calendar-specific contexts. |
+| `SweepCalendarYears` | `bool` | `false` | When `true`, the resolver evaluates the rule's authored (month, day) against both candidate **calendar** years that overlap the requested **Gregorian** year, returning the first projection whose Gregorian year matches the request. Required for `HijriCalendar`, `UmAlQuraCalendar`, `HebrewCalendar`, and `PersianCalendar` — every supported non-Gregorian calendar except `ChineseLunisolarCalendar`. Ignored when `CalendarType` is `null` or `GregorianCalendar`. |
+| `SkipLeapMonth` | `bool` | `false` | When `true` and `CalendarType` is `ChineseLunisolarCalendar`, the resolver maps the conventional ordinal lunar month to the calendar's consecutive month numbering by advancing past any intercalary leap month that precedes it. Used for festivals such as the Dragon Boat Festival defined against the conventional fifth lunar month. |
+| `CalendarMonthAlias` | `string?` | `null` | Hebrew-only stable month name (e.g. `"Tishri"`, `"LastAdar"`, `"Nisan"`) used in place of a numeric `Month`. The resolver maps the alias to the correct numeric month for each candidate Hebrew year, handling the leap-year renumbering of Adar / Nisan / Iyar / Sivan / Tammuz / Av / Elul automatically. Only consulted by the calendar-year sweep path. |
 
 ### Adjustments
 

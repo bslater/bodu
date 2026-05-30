@@ -74,8 +74,10 @@
     <None Remove="Globalization.Calendar.Resources\global-food.xml" />
     <None Remove="Globalization.Calendar.Resources\global-hindu.xml" />
     <None Remove="Globalization.Calendar.Resources\global-islamic.xml" />
+    <None Remove="Globalization.Calendar.Resources\global-islamic-umm-al-qura.xml" />
     <None Remove="Globalization.Calendar.Resources\global-jewish.xml" />
     <None Remove="Globalization.Calendar.Resources\global-lunar.xml" />
+    <None Remove="Globalization.Calendar.Resources\global-persian.xml" />
     <None Remove="Globalization.Calendar.Resources\global-science.xml" />
   </ItemGroup>
 
@@ -111,8 +113,10 @@
     <EmbeddedResource Include="Globalization.Calendar.Resources\global-food.xml" />
     <EmbeddedResource Include="Globalization.Calendar.Resources\global-hindu.xml" />
     <EmbeddedResource Include="Globalization.Calendar.Resources\global-islamic.xml" />
+    <EmbeddedResource Include="Globalization.Calendar.Resources\global-islamic-umm-al-qura.xml" />
     <EmbeddedResource Include="Globalization.Calendar.Resources\global-jewish.xml" />
     <EmbeddedResource Include="Globalization.Calendar.Resources\global-lunar.xml" />
+    <EmbeddedResource Include="Globalization.Calendar.Resources\global-persian.xml" />
     <EmbeddedResource Include="Globalization.Calendar.Resources\global-science.xml" />
   </ItemGroup>
 

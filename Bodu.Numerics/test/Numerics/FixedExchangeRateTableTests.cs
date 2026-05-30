@@ -5,17 +5,16 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Test;
-using Bodu.Test.Assertions;
 
 namespace Bodu.Numerics;
 
 [TestClass]
 public partial class FixedExchangeRateTableTests
 {
-    private static FixedExchangeRateTable BuildTable() => new(new[]
+    private static FixedExchangeRateTable BuildTable() => new(new Dictionary<(string From, string To), decimal>
     {
-        new KeyValuePair<ExchangeRatePair, decimal>(new ExchangeRatePair("USD", "AUD"), 1.50m),
-        new KeyValuePair<ExchangeRatePair, decimal>(new ExchangeRatePair("EUR", "AUD"), 1.60m),
+        [("USD", "AUD")] = 1.50m,
+        [("EUR", "AUD")] = 1.60m,
     });
 
     /// <summary>
@@ -65,64 +64,27 @@ public partial class FixedExchangeRateTableTests
     }
 
     /// <summary>
-    /// Verifies that the constructor rejects duplicate pair keys.
-    /// </summary>
-    [TestMethod]
-    public void Constructor_WhenDuplicatePair_ShouldThrowArgumentException()
-    {
-        ExceptionAssert.ThrowsExactlyWithParamName<ArgumentException>(
-            () =>
-            {
-                _ = new FixedExchangeRateTable(new[]
-                {
-                    new KeyValuePair<ExchangeRatePair, decimal>(new ExchangeRatePair("USD", "AUD"), 1.50m),
-                    new KeyValuePair<ExchangeRatePair, decimal>(new ExchangeRatePair("USD", "AUD"), 1.55m),
-                });
-            },
-            "rates");
-    }
-
-    /// <summary>
-    /// Verifies that the constructor rejects zero or negative rates.
-    /// </summary>
-    [TestMethod]
-    public void Constructor_WhenRateIsNotPositive_ShouldThrowArgumentOutOfRangeException()
-    {
-        ExceptionAssert.ThrowsExactlyWithParamName<ArgumentOutOfRangeException>(
-            () =>
-            {
-                _ = new FixedExchangeRateTable(new[]
-                {
-                    new KeyValuePair<ExchangeRatePair, decimal>(new ExchangeRatePair("USD", "AUD"), 0m),
-                });
-            },
-            "rates");
-    }
-
-    /// <summary>
-    /// Verifies that the constructor rejects a <see langword="null" /> input enumerable.
+    /// Verifies that the constructor rejects a <see langword="null" /> rates dictionary.
     /// </summary>
     [TestMethod]
     public void Constructor_WhenRatesIsNull_ShouldThrowArgumentNullException()
     {
-        ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(
-            () =>
-            {
-                _ = new FixedExchangeRateTable(null!);
-            },
-            "rates");
+        _ = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = new FixedExchangeRateTable((IReadOnlyDictionary<(string From, string To), decimal>)null!);
+        });
     }
 
     /// <summary>
-    /// Verifies that invalid ISO codes throw <see cref="ArgumentException" />.
+    /// Verifies that <see cref="FixedExchangeRateTable.GetRate" /> throws when either ISO code argument is
+    /// <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void GetRate_WhenFromIsoCodeMalformed_ShouldThrowArgumentException()
+    public void GetRate_WhenAnyIsoCodeIsNull_ShouldThrowArgumentNullException()
     {
         FixedExchangeRateTable table = BuildTable();
 
-        ExceptionAssert.ThrowsExactlyWithParamName<ArgumentException>(
-            () => table.GetRate("usd", "AUD"),
-            "fromIsoCode");
+        _ = Assert.ThrowsExactly<ArgumentNullException>(() => table.GetRate(null!, "AUD"));
+        _ = Assert.ThrowsExactly<ArgumentNullException>(() => table.GetRate("USD", null!));
     }
 }

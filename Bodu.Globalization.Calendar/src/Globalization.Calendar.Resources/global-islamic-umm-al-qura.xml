@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Islamic (Hijri) calendar notable-date resource — Umm al-Qura variant.
+
+  This resource declares the same six observances as global-islamic.xml but
+  resolves them against System.Globalization.UmAlQuraCalendar, the Saudi
+  Arabian government's official Hijri calendar maintained by the King
+  Abdulaziz City for Science and Technology (KACST). It is the calendar of
+  record for Saudi Arabia, Bahrain, Qatar, the United Arab Emirates, and
+  most of the Arabian Peninsula, and it is the calendar against which the
+  Royal Court announces official Eid dates.
+
+  Umm al-Qura is a published lookup calendar — KACST publishes the start of
+  each Hijri month based on lunar visibility criteria observed from Mecca
+  rather than a fixed arithmetic rule. As a result it can differ from the
+  tabular HijriCalendar used by global-islamic.xml by up to one day in
+  either direction. Both resources are shipped: consumers who want
+  tabular/portable Hijri dates use global-islamic.xml, and consumers
+  serving the Gulf region (or specifically requesting Saudi-aligned dates)
+  use this resource.
+
+  All rules use the Fixed strategy with calendarType set to
+  System.Globalization.UmAlQuraCalendar and sweepCalendarYears="true".
+  Resolution semantics — earlier occurrence when a date falls in the
+  Gregorian year twice, null when it does not fall at all — are identical
+  to global-islamic.xml.
+
+  Source for KAT verification: published Umm al-Qura calendar
+  (ummulqura.org.sa) cross-checked against System.Globalization.UmAlQuraCalendar.
+-->
+<NotableDates xmlns="urn:bodu:globalization:calendar"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <NotableDate name="Ramadan">
+    <Rule name="fixed-uaq-09-01"
+          category="Religious"
+          durationDays="30"
+          calendarType="System.Globalization.UmAlQuraCalendar"
+          comment="The ninth month of the Islamic lunar calendar, resolved against the Saudi Arabian Umm al-Qura calendar. Observed by Muslims worldwide as a month of fasting (sawm), prayer, reflection, and community. The fast runs from dawn (Fajr) to sunset (Maghrib) each day. The month lasts 29 or 30 days depending on the lunar cycle; durationDays=30 represents the maximum span. Use this rule instead of global-islamic.xml when the consumer requires Saudi-aligned start dates (e.g. Gulf-state public-holiday calendars).">
+      <Fixed month="9" day="1" sweepCalendarYears="true" />
+      <Tag>IslamicCalendar</Tag>
+      <Tag>UmmAlQura</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Eid al-Fitr">
+    <Rule name="fixed-uaq-10-01"
+          category="Religious"
+          durationDays="3"
+          calendarType="System.Globalization.UmAlQuraCalendar"
+          comment="The Festival of Breaking the Fast (1 Shawwal), resolved against the Saudi Umm al-Qura calendar. One of the two major Islamic festivals (Eid). Observed with communal prayers, feasting, Zakat al-Fitr, and gift exchange. A public holiday across the Gulf, typically lasting three days as announced by the Royal Court. This rule is the Gulf-aligned counterpart to the tabular variant in global-islamic.xml.">
+      <Fixed month="10" day="1" sweepCalendarYears="true" />
+      <Tag>IslamicCalendar</Tag>
+      <Tag>UmmAlQura</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Eid al-Adha">
+    <Rule name="fixed-uaq-12-10"
+          category="Religious"
+          durationDays="4"
+          calendarType="System.Globalization.UmAlQuraCalendar"
+          comment="The Festival of Sacrifice (10 Dhul Hijja), resolved against the Saudi Umm al-Qura calendar. Coincides with the completion of the Hajj pilgrimage. Commemorates Ibrahim's willingness to sacrifice his son in obedience to God. Observed with communal prayers, the ritual slaughter of livestock, and distribution of meat to family, friends, and those in need. A public holiday in the Gulf typically lasting four days as announced by the Royal Court.">
+      <Fixed month="12" day="10" sweepCalendarYears="true" />
+      <Tag>IslamicCalendar</Tag>
+      <Tag>UmmAlQura</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Islamic New Year">
+    <Rule name="fixed-uaq-01-01"
+          category="Religious"
+          calendarType="System.Globalization.UmAlQuraCalendar"
+          comment="Hijri New Year (Ra's as-Sanah al-Hijriyyah), 1 Muharram, resolved against the Saudi Umm al-Qura calendar. Marks the anniversary of the Prophet Muhammad's migration (Hijra) from Mecca to Medina in 622 CE. A public holiday in many Muslim-majority countries.">
+      <Fixed month="1" day="1" sweepCalendarYears="true" />
+      <Tag>IslamicCalendar</Tag>
+      <Tag>UmmAlQura</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Day of Ashura">
+    <Rule name="fixed-uaq-01-10"
+          category="Religious"
+          calendarType="System.Globalization.UmAlQuraCalendar"
+          comment="Yawm Ashura, 10 Muharram, resolved against the Saudi Umm al-Qura calendar. For Sunni Muslims a recommended fast commemorating Moses' fast in gratitude for the Israelites' deliverance; for Shia Muslims a major day of mourning commemorating the martyrdom of Hussein ibn Ali at the Battle of Karbala (61 AH / 680 CE).">
+      <Fixed month="1" day="10" sweepCalendarYears="true" />
+      <Tag>IslamicCalendar</Tag>
+      <Tag>UmmAlQura</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Mawlid al-Nabi">
+    <Rule name="fixed-uaq-03-12"
+          category="Religious"
+          calendarType="System.Globalization.UmAlQuraCalendar"
+          comment="The Prophet's Birthday (Mawlid an-Nabawi), 12 Rabi al-Awwal in Sunni tradition, resolved against the Saudi Umm al-Qura calendar. Commemorates the birth of the Prophet Muhammad. A public holiday in many Muslim-majority countries; not observed by some denominations that consider it an innovation (bid'ah). Saudi Arabia itself does not observe Mawlid as a national holiday, but the date is given here for completeness for jurisdictions that follow Umm al-Qura but observe Mawlid.">
+      <Fixed month="3" day="12" sweepCalendarYears="true" />
+      <Tag>IslamicCalendar</Tag>
+      <Tag>UmmAlQura</Tag>
+    </Rule>
+  </NotableDate>
+
+</NotableDates>
