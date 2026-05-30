@@ -159,6 +159,9 @@
   <data name="Json_Invalid_BalancesMustBeObject" xml:space="preserve">
     <value>The 'balances' property must be a JSON object.</value>
   </data>
+  <data name="Json_Invalid_CompactExchangeRatePairForm" xml:space="preserve">
+    <value>The JSON string '{0}' is not a valid compact ExchangeRatePair form.</value>
+  </data>
   <data name="Json_Invalid_CompactMoneyForm" xml:space="preserve">
     <value>The JSON string '{0}' is not a valid compact Money&lt;{1}&gt; form.</value>
   </data>
@@ -174,14 +177,26 @@
   <data name="Json_Invalid_DuplicateAmount" xml:space="preserve">
     <value>The JSON object contains a duplicate 'amount' property.</value>
   </data>
+  <data name="Json_Invalid_DuplicateProperty" xml:space="preserve">
+    <value>The JSON object contains a duplicate '{0}' property.</value>
+  </data>
   <data name="Json_Invalid_DuplicateCurrency" xml:space="preserve">
     <value>The JSON object contains a duplicate 'currency' property.</value>
+  </data>
+  <data name="Json_Invalid_ExpectedCompactString_ExchangeRatePair" xml:space="preserve">
+    <value>Expected a JSON string in compact ExchangeRatePair form (e.g. "USD/JPY").</value>
   </data>
   <data name="Json_Invalid_ExpectedCompactString_Money" xml:space="preserve">
     <value>Expected a JSON string in compact Money&lt;{0}&gt; form (e.g. "19.99 USD").</value>
   </data>
   <data name="Json_Invalid_ExpectedCompactString_MoneyValue" xml:space="preserve">
     <value>Expected a JSON string in compact MoneyValue form (e.g. "19.99 USD").</value>
+  </data>
+  <data name="Json_Invalid_ExpectedObject_ExchangeRate" xml:space="preserve">
+    <value>Expected a JSON object containing an ExchangeRate.</value>
+  </data>
+  <data name="Json_Invalid_ExpectedObject_ExchangeRatePair" xml:space="preserve">
+    <value>Expected a JSON object containing an ExchangeRatePair.</value>
   </data>
   <data name="Json_Invalid_ExpectedObject_Money" xml:space="preserve">
     <value>Expected a JSON object containing a Money amount.</value>
@@ -203,6 +218,21 @@
   </data>
   <data name="Json_Invalid_MissingCurrency" xml:space="preserve">
     <value>The JSON object is missing the required 'currency' property.</value>
+  </data>
+  <data name="Json_Invalid_MissingRequiredProperty" xml:space="preserve">
+    <value>The JSON object is missing the required '{0}' property.</value>
+  </data>
+  <data name="Json_Invalid_PropertyMustBeBoolean" xml:space="preserve">
+    <value>The '{0}' property must be a boolean.</value>
+  </data>
+  <data name="Json_Invalid_PropertyMustBeDateString" xml:space="preserve">
+    <value>The '{0}' property must be an ISO date string (yyyy-MM-dd).</value>
+  </data>
+  <data name="Json_Invalid_PropertyMustBeNumber" xml:space="preserve">
+    <value>The '{0}' property must be a number.</value>
+  </data>
+  <data name="Json_Invalid_PropertyMustBeString" xml:space="preserve">
+    <value>The '{0}' property must be a string.</value>
   </data>
   <data name="Json_Invalid_UnexpectedEnd" xml:space="preserve">
     <value>Unexpected end of JSON.</value>

@@ -5,6 +5,8 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Diagnostics;
+using System.Text.Json.Serialization;
+using Bodu.Financial.Serialization;
 
 namespace Bodu.Financial;
 
@@ -18,6 +20,7 @@ namespace Bodu.Financial;
 /// </para>
 /// </remarks>
 [DebuggerDisplay("{FromIsoCode,nq}/{ToIsoCode,nq}")]
+[JsonConverter(typeof(ExchangeRatePairJsonConverter))]
 public readonly record struct ExchangeRatePair
 {
     /// <summary>

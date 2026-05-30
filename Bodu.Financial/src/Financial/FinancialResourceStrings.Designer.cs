@@ -349,6 +349,15 @@ namespace Bodu.Financial {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The JSON string &apos;{0}&apos; is not a valid compact ExchangeRatePair form..
+        /// </summary>
+        internal static string Json_Invalid_CompactExchangeRatePairForm {
+            get {
+                return ResourceManager.GetString("Json_Invalid_CompactExchangeRatePairForm", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The JSON string &apos;{0}&apos; is not a valid compact Money&lt;{1}&gt; form..
         /// </summary>
         internal static string Json_Invalid_CompactMoneyForm {
@@ -392,7 +401,16 @@ namespace Bodu.Financial {
                 return ResourceManager.GetString("Json_Invalid_DuplicateAmount", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to The JSON object contains a duplicate &apos;{0}&apos; property..
+        /// </summary>
+        internal static string Json_Invalid_DuplicateProperty {
+            get {
+                return ResourceManager.GetString("Json_Invalid_DuplicateProperty", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to The JSON object contains a duplicate &apos;currency&apos; property..
         /// </summary>
@@ -402,6 +420,15 @@ namespace Bodu.Financial {
             }
         }
         
+        /// <summary>
+        ///   Looks up a localized string similar to Expected a JSON string in compact ExchangeRatePair form (e.g. &quot;USD/JPY&quot;)..
+        /// </summary>
+        internal static string Json_Invalid_ExpectedCompactString_ExchangeRatePair {
+            get {
+                return ResourceManager.GetString("Json_Invalid_ExpectedCompactString_ExchangeRatePair", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Expected a JSON string in compact Money&lt;{0}&gt; form (e.g. &quot;19.99 USD&quot;)..
         /// </summary>
@@ -417,6 +444,24 @@ namespace Bodu.Financial {
         internal static string Json_Invalid_ExpectedCompactString_MoneyValue {
             get {
                 return ResourceManager.GetString("Json_Invalid_ExpectedCompactString_MoneyValue", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Expected a JSON object containing an ExchangeRate..
+        /// </summary>
+        internal static string Json_Invalid_ExpectedObject_ExchangeRate {
+            get {
+                return ResourceManager.GetString("Json_Invalid_ExpectedObject_ExchangeRate", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Expected a JSON object containing an ExchangeRatePair..
+        /// </summary>
+        internal static string Json_Invalid_ExpectedObject_ExchangeRatePair {
+            get {
+                return ResourceManager.GetString("Json_Invalid_ExpectedObject_ExchangeRatePair", resourceCulture);
             }
         }
 
@@ -482,7 +527,52 @@ namespace Bodu.Financial {
                 return ResourceManager.GetString("Json_Invalid_MissingCurrency", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to The JSON object is missing the required &apos;{0}&apos; property..
+        /// </summary>
+        internal static string Json_Invalid_MissingRequiredProperty {
+            get {
+                return ResourceManager.GetString("Json_Invalid_MissingRequiredProperty", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;{0}&apos; property must be a boolean..
+        /// </summary>
+        internal static string Json_Invalid_PropertyMustBeBoolean {
+            get {
+                return ResourceManager.GetString("Json_Invalid_PropertyMustBeBoolean", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;{0}&apos; property must be an ISO date string (yyyy-MM-dd)..
+        /// </summary>
+        internal static string Json_Invalid_PropertyMustBeDateString {
+            get {
+                return ResourceManager.GetString("Json_Invalid_PropertyMustBeDateString", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;{0}&apos; property must be a number..
+        /// </summary>
+        internal static string Json_Invalid_PropertyMustBeNumber {
+            get {
+                return ResourceManager.GetString("Json_Invalid_PropertyMustBeNumber", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;{0}&apos; property must be a string..
+        /// </summary>
+        internal static string Json_Invalid_PropertyMustBeString {
+            get {
+                return ResourceManager.GetString("Json_Invalid_PropertyMustBeString", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Unexpected end of JSON..
         /// </summary>
