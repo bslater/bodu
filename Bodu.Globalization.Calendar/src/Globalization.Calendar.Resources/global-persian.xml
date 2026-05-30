@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Persian (Solar Hijri) calendar notable-date resource.
+
+  This resource declares the principal civil and cultural observances of
+  the Persian (Solar Hijri / Jalali) calendar — the official civil calendar
+  of Iran and Afghanistan. The Persian calendar is a solar calendar
+  anchored to the vernal equinox observed at the central meridian of Iran:
+  the new year (Nowruz) falls on the day containing the equinox, which is
+  typically 20 or 21 March in the Gregorian calendar.
+
+  All rules use the Fixed strategy with calendarType set to
+  System.Globalization.PersianCalendar and sweepCalendarYears="true". The
+  resolver determines the Persian year that contains 1 January of the
+  requested Gregorian year, checks that year and the next, and returns the
+  first candidate whose Gregorian year matches. Although the Persian year
+  starts in March, sweepCalendarYears is still required: without it the
+  resolver would treat the Gregorian year number as a Persian year number
+  and resolve into the 7th century CE (Persian year 2024 is roughly
+  Gregorian 2645).
+
+  Note: System.Globalization.PersianCalendar implements the 33-year
+  intercalation cycle adopted in .NET, which yields the correct
+  vernal-equinox-aligned date for the years that matter to most consumers
+  (roughly 1925 CE through 2088 CE). For years outside that window or for
+  applications that require Tehran-observed equinox dates that occasionally
+  differ from the tabular calculation by one day, a dedicated algorithm
+  should be authored instead.
+
+  Source for KAT verification: Iranian Astronomical Applications
+  Department / time.ir cross-checked against
+  System.Globalization.PersianCalendar.
+-->
+<NotableDates xmlns="urn:bodu:globalization:calendar"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <NotableDate name="Nowruz">
+    <Rule name="fixed-persian-01-01"
+          category="Cultural"
+          durationDays="13"
+          calendarType="System.Globalization.PersianCalendar"
+          comment="The Persian New Year. Falls on 1 Farvardin, the day containing the vernal equinox at the central meridian of Iran (typically 20 or 21 March). Officially observed as a public holiday in Iran, Afghanistan, Tajikistan, Azerbaijan, and other Central Asian and Caucasian states with Persian cultural heritage, and recognised by UNESCO on the Representative List of the Intangible Cultural Heritage of Humanity. The 13-day duration captures the traditional Nowruz holiday period, which culminates in Sizdah Bedar (Nature's Day) on 13 Farvardin.">
+      <Fixed month="1" day="1" sweepCalendarYears="true" />
+      <Tag>PersianCalendar</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Sizdah Bedar">
+    <Rule name="fixed-persian-01-13"
+          category="Cultural"
+          calendarType="System.Globalization.PersianCalendar"
+          comment="Nature's Day. The thirteenth and final day of the Nowruz holiday period, observed on 13 Farvardin. Traditionally celebrated by spending the day outdoors with family, picnicking, and disposing of the sabzeh (sprouted greens) from the Haft-sin Nowruz table by casting it into running water. A public holiday in Iran and recognised in other Persian-cultural-heritage countries.">
+      <Fixed month="1" day="13" sweepCalendarYears="true" />
+      <Tag>PersianCalendar</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Yalda Night">
+    <Rule name="fixed-persian-09-30"
+          category="Cultural"
+          calendarType="System.Globalization.PersianCalendar"
+          comment="Shab-e Yalda, the longest night of the year. Observed on 30 Azar — the last day of the autumn season, immediately preceding the winter solstice. Traditionally celebrated by family gatherings that last past midnight, with readings from the poetry of Hafez, the eating of pomegranates and watermelons, and the lighting of candles. The Gregorian date falls on 20 or 21 December depending on the year. Not a public holiday but one of the most widely observed cultural observances in Iran and across Persian-heritage communities. Anchored to the calendar day on which the longest night begins.">
+      <Fixed month="9" day="30" sweepCalendarYears="true" />
+      <Tag>PersianCalendar</Tag>
+    </Rule>
+  </NotableDate>
+
+</NotableDates>
