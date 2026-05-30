@@ -143,6 +143,34 @@ internal static partial class FinancialThrowHelper
     }
 
     /// <summary>
+    /// Throws when <paramref name="policy" /> is not a defined <see cref="Serialization.FinancialJsonPolicy" />
+    /// member.
+    /// </summary>
+    /// <param name="policy">The policy value to validate.</param>
+    /// <param name="paramName">The parameter name reported in the exception; inferred from the call site.</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="policy" /> is not a defined value.
+    /// </exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static void ThrowIfFinancialJsonPolicyUndefined(
+        Serialization.FinancialJsonPolicy policy,
+        [CallerArgumentExpression(nameof(policy))] string? paramName = null)
+    {
+        if (policy is not Serialization.FinancialJsonPolicy.Strict
+            and not Serialization.FinancialJsonPolicy.Lenient
+            and not Serialization.FinancialJsonPolicy.Compact)
+        {
+            throw new ArgumentOutOfRangeException(
+                paramName,
+                policy,
+                string.Format(
+                    CultureInfo.InvariantCulture,
+                    FinancialResourceStrings.Op_Invalid_FinancialJsonPolicyUndefined,
+                    policy));
+        }
+    }
+
+    /// <summary>
     /// Throws a <see cref="FormatException" /> reporting that <paramref name="format" /> is not a supported specifier.
     /// </summary>
     /// <param name="format">The unsupported format specifier supplied by the caller.</param>

@@ -159,6 +159,12 @@
   <data name="Json_Invalid_BalancesMustBeObject" xml:space="preserve">
     <value>The 'balances' property must be a JSON object.</value>
   </data>
+  <data name="Json_Invalid_CompactMoneyForm" xml:space="preserve">
+    <value>The JSON string '{0}' is not a valid compact Money&lt;{1}&gt; form.</value>
+  </data>
+  <data name="Json_Invalid_CompactMoneyValueForm" xml:space="preserve">
+    <value>The JSON string '{0}' is not a valid compact MoneyValue form.</value>
+  </data>
   <data name="Json_Invalid_CurrencyMismatch" xml:space="preserve">
     <value>The JSON 'currency' value '{0}' does not match the expected currency '{1}'.</value>
   </data>
@@ -170,6 +176,12 @@
   </data>
   <data name="Json_Invalid_DuplicateCurrency" xml:space="preserve">
     <value>The JSON object contains a duplicate 'currency' property.</value>
+  </data>
+  <data name="Json_Invalid_ExpectedCompactString_Money" xml:space="preserve">
+    <value>Expected a JSON string in compact Money&lt;{0}&gt; form (e.g. "19.99 USD").</value>
+  </data>
+  <data name="Json_Invalid_ExpectedCompactString_MoneyValue" xml:space="preserve">
+    <value>Expected a JSON string in compact MoneyValue form (e.g. "19.99 USD").</value>
   </data>
   <data name="Json_Invalid_ExpectedObject_Money" xml:space="preserve">
     <value>Expected a JSON object containing a Money amount.</value>
@@ -221,6 +233,9 @@
   </data>
   <data name="Op_Invalid_DuplicateCustomCurrency" xml:space="preserve">
     <value>A custom currency is already registered under '{0}'.</value>
+  </data>
+  <data name="Op_Invalid_FinancialJsonPolicyUndefined" xml:space="preserve">
+    <value>Unsupported FinancialJsonPolicy value '{0}'.</value>
   </data>
   <data name="Op_Invalid_MoneyValueCompareSameCurrencyRequired" xml:space="preserve">
     <value>MoneyValue comparison requires the same currency; got '{0}' and '{1}'.</value>

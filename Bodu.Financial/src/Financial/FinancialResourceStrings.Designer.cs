@@ -349,6 +349,24 @@ namespace Bodu.Financial {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The JSON string &apos;{0}&apos; is not a valid compact Money&lt;{1}&gt; form..
+        /// </summary>
+        internal static string Json_Invalid_CompactMoneyForm {
+            get {
+                return ResourceManager.GetString("Json_Invalid_CompactMoneyForm", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The JSON string &apos;{0}&apos; is not a valid compact MoneyValue form..
+        /// </summary>
+        internal static string Json_Invalid_CompactMoneyValueForm {
+            get {
+                return ResourceManager.GetString("Json_Invalid_CompactMoneyValueForm", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The JSON &apos;currency&apos; value &apos;{0}&apos; does not match the expected currency &apos;{1}&apos;..
         /// </summary>
         internal static string Json_Invalid_CurrencyMismatch {
@@ -384,6 +402,24 @@ namespace Bodu.Financial {
             }
         }
         
+        /// <summary>
+        ///   Looks up a localized string similar to Expected a JSON string in compact Money&lt;{0}&gt; form (e.g. &quot;19.99 USD&quot;)..
+        /// </summary>
+        internal static string Json_Invalid_ExpectedCompactString_Money {
+            get {
+                return ResourceManager.GetString("Json_Invalid_ExpectedCompactString_Money", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Expected a JSON string in compact MoneyValue form (e.g. &quot;19.99 USD&quot;)..
+        /// </summary>
+        internal static string Json_Invalid_ExpectedCompactString_MoneyValue {
+            get {
+                return ResourceManager.GetString("Json_Invalid_ExpectedCompactString_MoneyValue", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Expected a JSON object containing a Money amount..
         /// </summary>
@@ -534,6 +570,15 @@ namespace Bodu.Financial {
         internal static string Op_Invalid_DuplicateCustomCurrency {
             get {
                 return ResourceManager.GetString("Op_Invalid_DuplicateCustomCurrency", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Unsupported FinancialJsonPolicy value &apos;{0}&apos;..
+        /// </summary>
+        internal static string Op_Invalid_FinancialJsonPolicyUndefined {
+            get {
+                return ResourceManager.GetString("Op_Invalid_FinancialJsonPolicyUndefined", resourceCulture);
             }
         }
         

@@ -160,7 +160,7 @@ public class CurrencyCatalogueStrictTests
         while (dir is not null)
         {
             if (File.Exists(Path.Combine(dir.FullName, "bodu.slnx")))
-                return Path.Combine(dir.FullName, "Bodu.Financial", "src", "Currencies", "currencies.json");
+                return Path.Combine(dir.FullName, "Bodu.Financial", "src", "Financial.Currencies", "currencies.json");
             dir = dir.Parent;
         }
 
