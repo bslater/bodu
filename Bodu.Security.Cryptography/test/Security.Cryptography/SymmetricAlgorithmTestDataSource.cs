@@ -67,13 +67,19 @@ internal static class SymmetricAlgorithmTestDataSource
     /// <param name="type">The type to evaluate.</param>
     /// <returns>
     /// <see langword="true" /> when <paramref name="type" /> is a non-abstract, non-generic class that
-    /// derives from <see cref="SymmetricAlgorithm" /> and exposes a public parameterless constructor;
-    /// otherwise <see langword="false" />.
+    /// derives from <see cref="SymmetricAlgorithm" />, is not a stream cipher (does not implement
+    /// <see cref="IStreamCipherAlgorithm" />), and exposes a public parameterless constructor; otherwise
+    /// <see langword="false" />.
     /// </returns>
+    /// <remarks>
+    /// Stream ciphers such as <see cref="ChaCha20" /> are excluded because the padding- and mode-conformance
+    /// suites driven by this data source have no meaning for an additive stream cipher.
+    /// </remarks>
     private static bool IsConstructibleSymmetricAlgorithm(Type type) =>
         type.IsClass
         && !type.IsAbstract
         && !type.IsGenericTypeDefinition
         && typeof(SymmetricAlgorithm).IsAssignableFrom(type)
+        && !typeof(IStreamCipherAlgorithm).IsAssignableFrom(type)
         && type.GetConstructor(Type.EmptyTypes) is not null;
 }

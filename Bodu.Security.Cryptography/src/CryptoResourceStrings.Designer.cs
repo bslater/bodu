@@ -295,6 +295,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The stream cipher block counter has wrapped to its initial value. Continuing would reuse the keystream..
+        /// </summary>
+        internal static string Crypt_Invalid_StreamCounterExhausted {
+            get {
+                return ResourceManager.GetString("Crypt_Invalid_StreamCounterExhausted", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The hash algorithm's destination buffer was too small..
         /// </summary>
         internal static string Crypt_Invalid_HashAlgorithmDestinationBufferTooSmall {
