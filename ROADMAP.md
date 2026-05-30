@@ -4,7 +4,7 @@ Forward-looking plan for the **Bodu** C# utility library. Pairs with
 [`CHANGELOG.md`](CHANGELOG.md) (what shipped) and [`CLAUDE.md`](CLAUDE.md)
 (repository conventions for contributors).
 
-*Last updated: 2026-05-28.*
+*Last updated: 2026-05-30.*
 
 ## How to read this
 
@@ -166,13 +166,17 @@ SipHash plus EAX/OFB/GCM/OCB/SIV modes.
 
 ### `Bodu.IO.Hashing`
 
-Current state: mature; 79 src / 209 test files. Fletcher 16/32/64, full
+Current state: mature; 83 src / 223 test files. Fletcher 16/32/64, full
 RevEng CRC catalogue (112 standards), check-digit algorithms (Luhn,
-Damm, ABA, EAN, GTIN, IBAN, ISBN, ISIN, LEI, ISO 7064).
+Damm, Verhoeff, Gumm, Code 39 mod 43, Crockford Base32, ABA, EAN, GTIN,
+IBAN, ISBN, ISIN, LEI, ISO 7064).
 
-- **Expand check digits**: Verhoeff, Gumm, Mod-43, and a
-  ULID/Crockford32 check-digit. The existing set is strong on financial
-  identifiers; these fill the rest of the common catalogue.
+- The **check-digit expansion has landed**: Verhoeff and Gumm (both
+  detecting all single-digit and adjacent-transposition errors), the
+  Code 39 modulo-43 barcode check character, and the Crockford Base32
+  modulo-37 check symbol (ULID-style) all ship in
+  `IO.Hashing.CheckDigits`. Remaining catalogue gaps are minor; the
+  family is now strong on financial, barcode, and identifier schemes.
 - Unify every algorithm behind the BCL
   `System.IO.Hashing.NonCryptographicHashAlgorithm` shape uniformly.
   Some types inherit from it, others expose bespoke surfaces — the mix
@@ -438,8 +442,10 @@ test helpers. Not published.
 ### `Bodu.CodeStyle` *(separate solution)*
 
 Current state: independent analyzer / code-fix solution, not in
-`bodu.slnx`. Provides `BODU1001`–`BODU1018` and `BODU1040` analyzer
-codes plus an XML-doc formatter.
+`bodu.slnx`. Provides the `BODU1001`–`BODU1019` documentation-shape
+analyzers, `BODU1039`–`BODU1041`, and the `BODU11xx`–`BODU14xx` XML-doc
+wrap/formatting series (most recently `BODU1406` for overlong
+`<typeparam>` content), plus an XML-doc formatter.
 
 - **Document each analyzer code** under `docs/codestyle/` with a
   one-page entry: rule, rationale, examples, suppression guidance.

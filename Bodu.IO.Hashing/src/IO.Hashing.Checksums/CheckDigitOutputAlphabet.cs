@@ -27,4 +27,16 @@ public enum CheckDigitOutputAlphabet
     /// ten in schemes such as ISBN-10 and ISO 7064 MOD 11-2.
     /// </summary>
     DecimalDigitsOrX,
+
+    /// <summary>
+    /// The full forty-three-symbol Code 39 alphabet: the decimal digits, the uppercase Latin letters, and the symbols
+    /// <c>'-'</c>, <c>'.'</c>, space, <c>'$'</c>, <c>'/'</c>, <c>'+'</c>, and <c>'%'</c>.
+    /// </summary>
+    Code39,
+
+    /// <summary>
+    /// The thirty-seven-symbol Crockford Base32 check alphabet: the thirty-two encoding symbols plus the five
+    /// check-only symbols <c>'*'</c> (32), <c>'~'</c> (33), <c>'$'</c> (34), <c>'='</c> (35), and <c>'U'</c> (36).
+    /// </summary>
+    CrockfordBase32Check,
 }
