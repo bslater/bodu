@@ -110,5 +110,14 @@ public readonly record struct ExchangeRate
     /// </summary>
     /// <param name="amount">The amount in <see cref="FromIsoCode" /> to convert.</param>
     /// <returns>The converted amount in <see cref="ToIsoCode" />, unrounded.</returns>
+    /// <remarks>
+    /// Rounding is intentionally deferred to the money boundary so the rate object stays decoupled from the
+    /// destination currency's minor-unit precision. Use
+    /// <see cref="MoneyExchangeRateExtensions.ConvertTo{TSource, TTarget}(Money{TSource}, IDatedExchangeRateProvider, DateOnly, ExchangeRateLookupOptions, MidpointRounding)" />,
+    /// <see cref="MoneyValueExchangeRateExtensions.ConvertTo(MoneyValue, IDatedExchangeRateProvider, string, DateOnly, ExchangeRateLookupOptions, MidpointRounding)" />,
+    /// or
+    /// <see cref="Money{TCurrency}.Convert{TTarget}(decimal, MidpointRounding)" /> to apply rounding at the
+    /// destination precision.
+    /// </remarks>
     public decimal Convert(decimal amount) => amount * Rate;
 }

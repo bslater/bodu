@@ -29,9 +29,10 @@ namespace Bodu.Numerics;
 public sealed class FixedDatedExchangeRateTable : IDatedExchangeRateProvider
 {
     /// <summary>
-    /// The label used as the provider name on synthetic same-currency identity results.
+    /// The label used as the provider name on synthetic same-currency identity results. Exposed publicly so
+    /// audit consumers can filter by it without depending on a magic-string literal.
     /// </summary>
-    internal const string IdentityProviderName = "Identity";
+    public const string IdentityProviderName = "Identity";
 
     /// <summary>
     /// The per-pair series store, frozen after construction for fast read-only access.

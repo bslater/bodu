@@ -14,7 +14,7 @@ namespace Bodu.Numerics;
 /// and JSON serialisation.
 /// </summary>
 [TestClass]
-public class MoneyBagTests
+public partial class MoneyBagTests
 {
     /// <summary>
     /// Verifies that <see cref="MoneyBag.Empty" /> has no balances.
