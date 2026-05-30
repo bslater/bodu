@@ -8,13 +8,14 @@ using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Bodu.Financial;
+namespace Bodu.Financial.Serialization;
 
 /// <summary>
 /// Serialises <see cref="MoneyBag" /> as a JSON object with a <c>"balances"</c> property holding an object map of ISO
 /// code to amount.
 /// </summary>
-public sealed class MoneyBagJsonConverter : JsonConverter<MoneyBag>
+public sealed class MoneyBagJsonConverter
+    : JsonConverter<MoneyBag>
 {
     /// <summary>
     /// Reads a <see cref="MoneyBag" /> from JSON.

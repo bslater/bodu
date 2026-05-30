@@ -8,7 +8,7 @@ using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Bodu.Financial;
+namespace Bodu.Financial.Serialization;
 
 /// <summary>
 /// Converts a <see cref="Money{TCurrency}" /> to and from its JSON object representation.
@@ -20,7 +20,8 @@ namespace Bodu.Financial;
 /// <typeparamref name="TCurrency" />.<see cref="ICurrency.IsoCode" />, surfacing currency drift as a
 /// <see cref="JsonException" /> rather than silently converting amounts across currencies.
 /// </remarks>
-public sealed class MoneyJsonConverter<TCurrency> : JsonConverter<Money<TCurrency>>
+public sealed class MoneyJsonConverter<TCurrency>
+    : JsonConverter<Money<TCurrency>>
     where TCurrency : ICurrency
 {
     /// <summary>

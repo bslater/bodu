@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Serialization;
 using System.Diagnostics;
 using System.Text.Json.Serialization;
 

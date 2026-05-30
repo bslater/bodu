@@ -8,13 +8,14 @@ using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Bodu.Financial;
+namespace Bodu.Financial.Serialization;
 
 /// <summary>
 /// Serialises <see cref="MoneyValue" /> as a JSON object with <c>"amount"</c> and <c>"currency"</c> fields, matching
 /// the shape used by <see cref="Money{TCurrency}" />.
 /// </summary>
-public sealed class MoneyValueJsonConverter : JsonConverter<MoneyValue>
+public sealed class MoneyValueJsonConverter
+    : JsonConverter<MoneyValue>
 {
     /// <summary>
     /// Reads a <see cref="MoneyValue" /> from its JSON object representation.

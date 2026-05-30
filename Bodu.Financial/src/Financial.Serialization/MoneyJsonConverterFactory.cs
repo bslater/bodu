@@ -8,7 +8,7 @@ using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Bodu.Financial;
+namespace Bodu.Financial.Serialization;
 
 /// <summary>
 /// Creates <see cref="MoneyJsonConverter{TCurrency}" /> instances for closed <see cref="Money{TCurrency}" /> types.
@@ -17,7 +17,8 @@ namespace Bodu.Financial;
 /// This factory is referenced by the <see cref="JsonConverterAttribute" /> applied to <see cref="Money{TCurrency}" />,
 /// so monetary values serialize through <see cref="System.Text.Json" /> without any explicit converter registration.
 /// </remarks>
-public sealed class MoneyJsonConverterFactory : JsonConverterFactory
+public sealed class MoneyJsonConverterFactory
+    : JsonConverterFactory
 {
     /// <summary>
     /// Determines whether this factory can create a converter for the specified type.

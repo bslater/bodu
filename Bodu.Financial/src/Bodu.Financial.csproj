@@ -5,7 +5,7 @@
     <LangVersion>latest</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <RootNamespace>Bodu.Financial</RootNamespace>
+    <RootNamespace>Bodu</RootNamespace>
     <AssemblyName>$(MSBuildProjectName)</AssemblyName>
     <OutputType>Library</OutputType>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -27,11 +27,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="FinancialResourceStrings.resx">
+    <EmbeddedResource Update="Financial\FinancialResourceStrings.resx">
       <LastGenOutput>FinancialResourceStrings.Designer.cs</LastGenOutput>
       <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
-    <Compile Update="FinancialResourceStrings.Designer.cs">
+    <Compile Update="Financial\FinancialResourceStrings.Designer.cs">
       <DependentUpon>FinancialResourceStrings.resx</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
