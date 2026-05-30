@@ -4,7 +4,7 @@ Forward-looking plan for the **Bodu** C# utility library. Pairs with
 [`CHANGELOG.md`](CHANGELOG.md) (what shipped) and [`CLAUDE.md`](CLAUDE.md)
 (repository conventions for contributors).
 
-*Last updated: 2026-05-30.*
+*Last updated: 2026-05-30. ChaCha20 / XChaCha20 shipped; Salsa20 / XSalsa20, Rabbit, and HC-128 added to the stream-cipher plan.*
 
 ## How to read this
 
@@ -117,9 +117,12 @@ With that pass closed, the active focus shifts to:
 
 1. Cut the five `[Unreleased]` packages above.
 2. Begin the per-project items below in roadmap order. The raw
-   ChaCha20 / XChaCha20 family in crypto is now the highest-leverage
-   opening move: it closes the visible stream-cipher gaps that the
-   BCL's `ChaCha20Poly1305` does not. Hebrew, tabular Hijri, Umm
+   ChaCha20 / XChaCha20 family in crypto — the highest-leverage
+   opening move — **has landed**: it closes the visible stream-cipher
+   gaps that the BCL's `ChaCha20Poly1305` does not, and establishes the
+   reusable `IStreamCipher` / `StreamCipherTransform` abstraction that
+   the Salsa20 / XSalsa20, Rabbit, and HC-128 expansion now builds on.
+   Hebrew, tabular Hijri, Umm
    al-Qura, and Persian (Solar Hijri) notable-date coverage has
    landed via XML resources resolved against the BCL
    `HebrewCalendar` / `HijriCalendar` / `UmAlQuraCalendar` /
@@ -147,12 +150,33 @@ Current state: mature; 152 src / 484 test files. Threefish 256/512/1024,
 Skipjack, Blowfish, Twofish, Camellia, Ascon, Skein, BLAKE2/3, Tiger,
 SipHash plus EAX/OFB/GCM/OCB/SIV modes.
 
-- **Add raw ChaCha20 and the XChaCha20 / XChaCha20-Poly1305 family.**
-  ChaCha20-Poly1305 itself ships in the BCL as
-  `System.Security.Cryptography.ChaCha20Poly1305` (.NET 6+); the gap
-  is the raw ChaCha20 stream cipher (needed for libsodium-, Noise-,
-  and age-style protocols) and the extended-nonce XChaCha20 variants,
-  which Microsoft has not shipped.
+- **Raw ChaCha20 and XChaCha20 have landed.** `ChaCha20` (RFC 8439)
+  and the extended-nonce `XChaCha20` (`draft-irtf-cfrg-xchacha`) ship
+  as confidentiality-only stream ciphers — the gap the BCL's
+  `System.Security.Cryptography.ChaCha20Poly1305` does not fill (raw
+  keystream for libsodium-, Noise-, and age-style protocols, plus the
+  192-bit nonce). They introduced a reusable stream-cipher abstraction
+  that parallels the block-cipher stack: `IStreamCipher` (raw
+  keystream primitive), the abstract `StreamCipherTransform`
+  (`ICryptoTransform` glue owning keystream carry, self-inverse XOR,
+  and 32-bit counter-overflow protection), and an `IStreamCipherAlgorithm`
+  marker so stream ciphers opt out of block padding/mode suites. The
+  remaining ChaCha-family gap is the **XChaCha20-Poly1305 AEAD**, which
+  composes this engine with the existing `Poly1305` MAC.
+- **Expand the stream-cipher family: Salsa20 / XSalsa20, Rabbit, and
+  HC-128.** Build on the `IStreamCipher` / `StreamCipherTransform`
+  abstraction shipped with ChaCha20. Salsa20 (Bernstein, eSTREAM; the
+  RFC 7914 §8 Salsa20/8 core vector covers only the scrypt core) and
+  its extended-nonce XSalsa20 (HSalsa20 subkey + Salsa20, mirroring the
+  HChaCha20 / XChaCha20 relationship) come first; Rabbit (RFC 4503,
+  the one RFC-specified cipher in this group, with Appendix A/B
+  conformance and debug vectors) and HC-128 (eSTREAM final portfolio,
+  reference-harness vectors) follow. Each ships KAT-driven tests
+  against its published/reference vectors, round-trip and segmentation
+  tests, partial-block and argument-validation coverage, and reset /
+  dispose state-clearing tests. All four are raw, confidentiality-only
+  primitives: nonce-reuse and unauthenticated-ciphertext warnings are
+  required in their XML docs, and AEAD remains the recommended default.
 - **Add password-hashing KDFs: Argon2 and scrypt.** No
   password-hashing surface today. `HKDF` and `Pbkdf2` are already in
   `System.Security.Cryptography` and are not in scope. Argon2 and
