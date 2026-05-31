@@ -1,10 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Rabbit.cs" company="Bodu Pty. Ltd.">
-//     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
+//     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
 
@@ -13,30 +11,35 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Rabbit is a high-speed additive stream cipher and an eSTREAM software-portfolio finalist. It uses a 128-bit key and a
-/// 64-bit IV to drive an evolving internal state that emits a keystream XORed with the plaintext. This class exposes the
-/// <em>raw</em>, confidentiality-only cipher with no authentication; for new designs prefer an AEAD construction.
+/// Rabbit is a high-speed additive stream cipher and an eSTREAM software-portfolio finalist. It uses a 128-bit key and
+/// a 64-bit IV to drive an evolving internal state that emits a keystream XORed with the plaintext. This class exposes
+/// the <em>raw</em>, confidentiality-only cipher with no authentication; for new designs prefer an AEAD construction.
 /// </para>
 /// <para>
 /// Like the other stream ciphers in this library it is self-inverse:
-/// <see cref="SymmetricStreamAlgorithm.CreateEncryptor()" /> and <see cref="SymmetricStreamAlgorithm.CreateDecryptor()" />
-/// are interchangeable. The IV is supplied through the <see cref="SymmetricStreamAlgorithm.Nonce" /> property.
+/// <see cref="SymmetricStreamAlgorithm.CreateEncryptor()" /> and
+/// <see cref="SymmetricStreamAlgorithm.CreateDecryptor()" /> are interchangeable. The IV is supplied through the
+/// <see cref="SymmetricStreamAlgorithm.Nonce" /> property.
 /// </para>
 /// <para>
 /// <strong>Parameters at a glance.</strong>
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <description>Key size: 128 bits (16 bytes).</description>
+/// <description>
+/// Key size: 128 bits (16 bytes).
+/// </description>
 /// </item>
 /// <item>
-/// <description>Nonce (IV) size: 64 bits (8 bytes).</description>
+/// <description>
+/// Nonce (IV) size: 64 bits (8 bytes).
+/// </description>
 /// </item>
 /// </list>
 /// <para>
-/// <strong>Nonce reuse is catastrophic.</strong> A given <c>(key, IV)</c> pair must encrypt at most one message; reusing
-/// it reveals the XOR of the plaintexts. Rabbit has no seekable counter, so a message is encrypted as one forward
-/// keystream sequence.
+/// <strong>Nonce reuse is catastrophic.</strong> A given <c>(key, IV)</c> pair must encrypt at most one message;
+/// reusing it reveals the XOR of the plaintexts. Rabbit has no seekable counter, so a message is encrypted as one
+/// forward keystream sequence.
 /// </para>
 /// </remarks>
 /// <example>
@@ -54,9 +57,7 @@ namespace Bodu.Security.Cryptography;
 /// </code>
 /// </example>
 /// <seealso href="https://www.rfc-editor.org/rfc/rfc4503">RFC 4503 — A Description of the Rabbit Stream Cipher
-/// Algorithm</seealso>
-/// <seealso cref="ChaCha20" />
-/// <seealso cref="Salsa20" />
+/// Algorithm</seealso> <seealso cref="ChaCha20" /> <seealso cref="Salsa20" />
 public sealed class Rabbit
     : SymmetricStreamAlgorithm
 {

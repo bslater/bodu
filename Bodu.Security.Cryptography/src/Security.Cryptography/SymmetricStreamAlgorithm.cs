@@ -1,10 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SymmetricStreamAlgorithm.cs" company="Bodu Pty. Ltd.">
-//     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
+//     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
@@ -36,8 +35,7 @@ namespace Bodu.Security.Cryptography;
 /// message with <see cref="GenerateNonce" /> (or supply one explicitly) and never repeat it under the same key.
 /// </para>
 /// </remarks>
-/// <seealso cref="IStreamCipher" />
-/// <seealso cref="StreamCipherTransform" />
+/// <seealso cref="IStreamCipher" /> <seealso cref="StreamCipherTransform" />
 public abstract class SymmetricStreamAlgorithm
     : IDisposable
 {
@@ -71,7 +69,9 @@ public abstract class SymmetricStreamAlgorithm
     /// <param name="defaultKeySizeBits">The default key size, in bits, used by <see cref="GenerateKey" />.</param>
     /// <param name="legalKeySizes">The legal key sizes the cipher accepts. Must not be <see langword="null" />.</param>
     /// <param name="nonceSizeBits">The required nonce size, in bits.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="legalKeySizes" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="legalKeySizes" /> is <see langword="null" />.
+    /// </exception>
     /// <remarks>
     /// Use this overload for ciphers that accept more than one key length (for example Salsa20, which accepts 128-bit
     /// and 256-bit keys).
@@ -89,9 +89,13 @@ public abstract class SymmetricStreamAlgorithm
     /// Gets or sets the key size, in bits.
     /// </summary>
     /// <value>The key size, in bits. The default is the cipher's default key size.</value>
-    /// <returns>The number of bits the current <see cref="Key" /> contains, or will contain when next generated.</returns>
+    /// <returns>
+    /// The number of bits the current <see cref="Key" /> contains, or will contain when next generated.
+    /// </returns>
     /// <exception cref="ObjectDisposedException">This instance has been disposed.</exception>
-    /// <exception cref="CryptographicException">The assigned value is not one of the <see cref="LegalKeySizes" />.</exception>
+    /// <exception cref="CryptographicException">
+    /// The assigned value is not one of the <see cref="LegalKeySizes" />.
+    /// </exception>
     /// <remarks>
     /// Assigning a new key size discards any key material previously held by <see cref="Key" />; the next read of
     /// <see cref="Key" /> generates a fresh key of the new size.
@@ -162,8 +166,8 @@ public abstract class SymmetricStreamAlgorithm
     /// The length of the assigned value is not one of the <see cref="LegalKeySizes" />.
     /// </exception>
     /// <remarks>
-    /// Reading this property generates a random key of <see cref="KeySize" /> bits on first access if none has been set.
-    /// Both the getter and setter copy the array so callers cannot mutate the cipher's key through an alias.
+    /// Reading this property generates a random key of <see cref="KeySize" /> bits on first access if none has been
+    /// set. Both the getter and setter copy the array so callers cannot mutate the cipher's key through an alias.
     /// </remarks>
     public byte[] Key
     {
@@ -196,7 +200,9 @@ public abstract class SymmetricStreamAlgorithm
     /// <returns>A new array containing the nonce; the cipher retains its own private copy.</returns>
     /// <exception cref="ObjectDisposedException">This instance has been disposed.</exception>
     /// <exception cref="ArgumentNullException">The assigned value is <see langword="null" />.</exception>
-    /// <exception cref="CryptographicException">The length of the assigned value is not <see cref="NonceSize" /> bits.</exception>
+    /// <exception cref="CryptographicException">
+    /// The length of the assigned value is not <see cref="NonceSize" /> bits.
+    /// </exception>
     /// <remarks>
     /// Reading this property generates a random nonce of <see cref="NonceSize" /> bits on first access if none has been
     /// set. A nonce must never be reused under the same key; see the type remarks.
@@ -240,7 +246,7 @@ public abstract class SymmetricStreamAlgorithm
         ThrowIfDisposed();
 
         CryptoHelpers.ClearAndNullify(ref _key);
-        _key = CryptoHelpers.GetRandomBytes(_keySizeBits / 8);
+        _key = CryptoHelpers.GetRandomNonZeroBytes(_keySizeBits / 8);
     }
 
     /// <summary>
@@ -252,7 +258,7 @@ public abstract class SymmetricStreamAlgorithm
         ThrowIfDisposed();
 
         CryptoHelpers.ClearAndNullify(ref _nonce);
-        _nonce = CryptoHelpers.GetRandomBytes(_nonceSizeBits / 8);
+        _nonce = CryptoHelpers.GetRandomNonZeroBytes(_nonceSizeBits / 8);
     }
 
     /// <summary>
@@ -274,7 +280,9 @@ public abstract class SymmetricStreamAlgorithm
     /// <param name="nonce">The nonce. Must not be <see langword="null" />.</param>
     /// <returns>An <see cref="ICryptoTransform" /> that XORs data with the cipher keystream.</returns>
     /// <exception cref="ObjectDisposedException">This instance has been disposed.</exception>
-    /// <exception cref="ArgumentNullException"><paramref name="key" /> or <paramref name="nonce" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="key" /> or <paramref name="nonce" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="CryptographicException">The key or nonce length is invalid.</exception>
     /// <remarks>
     /// The supplied values are used as-is for this transform and do not alter the cipher's <see cref="Key" /> or
@@ -303,7 +311,9 @@ public abstract class SymmetricStreamAlgorithm
     /// <param name="nonce">The nonce. Must not be <see langword="null" />.</param>
     /// <returns>An <see cref="ICryptoTransform" /> that XORs data with the cipher keystream.</returns>
     /// <exception cref="ObjectDisposedException">This instance has been disposed.</exception>
-    /// <exception cref="ArgumentNullException"><paramref name="key" /> or <paramref name="nonce" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="key" /> or <paramref name="nonce" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="CryptographicException">The key or nonce length is invalid.</exception>
     /// <remarks>
     /// The supplied values are used as-is for this transform and do not alter the cipher's <see cref="Key" /> or
@@ -329,7 +339,9 @@ public abstract class SymmetricStreamAlgorithm
     /// <param name="nonce">The nonce. Must not be <see langword="null" />.</param>
     /// <returns>An <see cref="ICryptoTransform" /> that XORs data with the cipher keystream.</returns>
     /// <exception cref="ObjectDisposedException">This instance has been disposed.</exception>
-    /// <exception cref="ArgumentNullException"><paramref name="key" /> or <paramref name="nonce" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="key" /> or <paramref name="nonce" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="CryptographicException">The key or nonce length is invalid.</exception>
     /// <remarks>
     /// The supplied values are used as-is for this transform and do not alter the cipher's <see cref="Key" /> or
@@ -372,8 +384,8 @@ public abstract class SymmetricStreamAlgorithm
     /// Releases the unmanaged resources used by the instance and, optionally, the managed resources.
     /// </summary>
     /// <param name="disposing">
-    /// <see langword="true" /> to release both managed and unmanaged resources; <see langword="false" /> to release only
-    /// unmanaged resources.
+    /// <see langword="true" /> to release both managed and unmanaged resources; <see langword="false" /> to release
+    /// only unmanaged resources.
     /// </param>
     protected virtual void Dispose(bool disposing)
     {

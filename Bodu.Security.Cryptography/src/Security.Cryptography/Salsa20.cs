@@ -1,42 +1,48 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Salsa20.cs" company="Bodu Pty. Ltd.">
-//     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
+//     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
 using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Provides a managed implementation of the Salsa20 stream cipher specified by Daniel J. Bernstein. This class cannot be
-/// inherited.
+/// Provides a managed implementation of the Salsa20 stream cipher specified by Daniel J. Bernstein. This class cannot
+/// be inherited.
 /// </summary>
 /// <remarks>
 /// <para>
 /// Salsa20 is an additive stream cipher and an eSTREAM software-portfolio finalist. It uses a 128- or 256-bit key, a
-/// 64-bit nonce, and a 64-bit block counter to generate a keystream that is XORed with the plaintext. This class exposes
-/// the <em>raw</em>, confidentiality-only cipher with no authentication; for new designs prefer an AEAD construction, or
-/// the closely related <see cref="ChaCha20" /> which has largely superseded Salsa20.
+/// 64-bit nonce, and a 64-bit block counter to generate a keystream that is XORed with the plaintext. This class
+/// exposes the <em>raw</em>, confidentiality-only cipher with no authentication; for new designs prefer an AEAD
+/// construction, or the closely related <see cref="ChaCha20" /> which has largely superseded Salsa20.
 /// </para>
 /// <para>
 /// Like the other stream ciphers in this library it is self-inverse:
-/// <see cref="SymmetricStreamAlgorithm.CreateEncryptor()" /> and <see cref="SymmetricStreamAlgorithm.CreateDecryptor()" />
-/// are interchangeable. The nonce is supplied through the <see cref="SymmetricStreamAlgorithm.Nonce" /> property.
+/// <see cref="SymmetricStreamAlgorithm.CreateEncryptor()" /> and
+/// <see cref="SymmetricStreamAlgorithm.CreateDecryptor()" /> are interchangeable. The nonce is supplied through the
+/// <see cref="SymmetricStreamAlgorithm.Nonce" /> property.
 /// </para>
 /// <para>
 /// <strong>Parameters at a glance.</strong>
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <description>Key size: 128 or 256 bits (16 or 32 bytes); 256-bit is the default.</description>
+/// <description>
+/// Key size: 128 or 256 bits (16 or 32 bytes); 256-bit is the default.
+/// </description>
 /// </item>
 /// <item>
-/// <description>Nonce (IV) size: 64 bits (8 bytes).</description>
+/// <description>
+/// Nonce (IV) size: 64 bits (8 bytes).
+/// </description>
 /// </item>
 /// <item>
-/// <description>Block counter: 64-bit, starting at <see cref="InitialCounter" /> (default 0).</description>
+/// <description>
+/// Block counter: 64-bit, starting at <see cref="InitialCounter" /> (default 0).
+/// </description>
 /// </item>
 /// </list>
 /// <para>
@@ -60,8 +66,7 @@ namespace Bodu.Security.Cryptography;
 /// </code>
 /// </example>
 /// <seealso href="https://cr.yp.to/snuffle/spec.pdf">Salsa20 specification (Bernstein, 2005)</seealso>
-/// <seealso cref="XSalsa20" />
-/// <seealso cref="ChaCha20" />
+/// <seealso cref="XSalsa20" /> <seealso cref="ChaCha20" />
 public sealed class Salsa20
     : SymmetricStreamAlgorithm
 {
@@ -82,7 +87,8 @@ public sealed class Salsa20
     /// </summary>
     /// <remarks>
     /// The default configuration uses a 256-bit key and a 64-bit nonce, with the block counter starting at 0. Assign
-    /// <see cref="SymmetricStreamAlgorithm.KeySize" /> to 128 before generating or supplying a key to use a 128-bit key.
+    /// <see cref="SymmetricStreamAlgorithm.KeySize" /> to 128 before generating or supplying a key to use a 128-bit
+    /// key.
     /// </remarks>
     public Salsa20()
         : base(DefaultKeySizeBits, s_keySizes, NonceSizeBits)

@@ -1,6 +1,6 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base16Tests.Nulls.cs" company="Bodu Pty. Ltd.">
-//     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
+//     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 

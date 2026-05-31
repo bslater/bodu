@@ -1,6 +1,6 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Poly1305Tests.Reuse.cs" company="Bodu Pty. Ltd.">
-//     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
+//     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 

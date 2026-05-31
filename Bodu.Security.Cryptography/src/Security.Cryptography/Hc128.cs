@@ -1,10 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Hc128.cs" company="Bodu Pty. Ltd.">
-//     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
+//     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
 
@@ -21,24 +19,30 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// Like the other stream ciphers in this library it is self-inverse:
-/// <see cref="SymmetricStreamAlgorithm.CreateEncryptor()" /> and <see cref="SymmetricStreamAlgorithm.CreateDecryptor()" />
-/// are interchangeable. The IV is supplied through the <see cref="SymmetricStreamAlgorithm.Nonce" /> property.
+/// <see cref="SymmetricStreamAlgorithm.CreateEncryptor()" /> and
+/// <see cref="SymmetricStreamAlgorithm.CreateDecryptor()" /> are interchangeable. The IV is supplied through the
+/// <see cref="SymmetricStreamAlgorithm.Nonce" /> property.
 /// </para>
 /// <para>
 /// <strong>Parameters at a glance.</strong>
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <description>Key size: 128 bits (16 bytes).</description>
+/// <description>
+/// Key size: 128 bits (16 bytes).
+/// </description>
 /// </item>
 /// <item>
-/// <description>Nonce (IV) size: 128 bits (16 bytes).</description>
+/// <description>
+/// Nonce (IV) size: 128 bits (16 bytes).
+/// </description>
 /// </item>
 /// </list>
 /// <para>
-/// <strong>Nonce reuse is catastrophic.</strong> A given <c>(key, IV)</c> pair must encrypt at most one message; reusing
-/// it reveals the XOR of the plaintexts. HC-128 has a relatively expensive per-instance initialization (it warms up two
-/// 512-word tables), so reuse one configured instance across a single message rather than re-creating it per block.
+/// <strong>Nonce reuse is catastrophic.</strong> A given <c>(key, IV)</c> pair must encrypt at most one message;
+/// reusing it reveals the XOR of the plaintexts. HC-128 has a relatively expensive per-instance initialization (it
+/// warms up two 512-word tables), so reuse one configured instance across a single message rather than re-creating it
+/// per block.
 /// </para>
 /// </remarks>
 /// <example>
@@ -56,8 +60,7 @@ namespace Bodu.Security.Cryptography;
 /// </code>
 /// </example>
 /// <seealso href="https://www.ecrypt.eu.org/stream/hc256pf.html">HC-128 (eSTREAM software portfolio)</seealso>
-/// <seealso cref="ChaCha20" />
-/// <seealso cref="Rabbit" />
+/// <seealso cref="ChaCha20" /> <seealso cref="Rabbit" />
 public sealed class Hc128
     : SymmetricStreamAlgorithm
 {

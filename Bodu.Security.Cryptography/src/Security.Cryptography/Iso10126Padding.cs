@@ -1,6 +1,6 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Iso10126Padding.cs" company="Bodu Pty. Ltd.">
-//     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
+//     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
@@ -108,6 +108,6 @@ public sealed class Iso10126Padding
         if (padLen < 1 || padLen > size)
             CryptoHelpers.ThrowInvalidPadding("ISO 10126");
 
-        return input[.. (length - padLen)].ToArray();
+        return input[..(length - padLen)].ToArray();
     }
 }

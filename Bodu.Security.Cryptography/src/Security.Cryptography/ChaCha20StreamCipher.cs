@@ -1,10 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ChaCha20StreamCipher.cs" company="Bodu Pty. Ltd.">
-//     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
+//     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
 using System.Buffers.Binary;
 using System.Numerics;
 using System.Runtime.CompilerServices;
@@ -31,12 +30,9 @@ namespace Bodu.Security.Cryptography;
 /// original state and serialized little-endian.
 /// </para>
 /// </remarks>
-/// <seealso href="https://www.rfc-editor.org/rfc/rfc8439">RFC 8439 — ChaCha20 and Poly1305 for IETF
-/// Protocols</seealso>
+/// <seealso href="https://www.rfc-editor.org/rfc/rfc8439">RFC 8439 — ChaCha20 and Poly1305 for IETF Protocols</seealso>
 /// <seealso href="https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-xchacha">draft-irtf-cfrg-xchacha — XChaCha:
-/// eXtended-nonce ChaCha and AEAD_XChaCha20_Poly1305</seealso>
-/// <seealso cref="ChaCha20" />
-/// <seealso cref="XChaCha20" />
+/// eXtended-nonce ChaCha and AEAD_XChaCha20_Poly1305</seealso> <seealso cref="ChaCha20" /> <seealso cref="XChaCha20" />
 internal sealed class ChaCha20StreamCipher
     : IStreamCipher
 {
@@ -94,7 +90,7 @@ internal sealed class ChaCha20StreamCipher
     /// </remarks>
     internal ChaCha20StreamCipher(ReadOnlySpan<byte> key, ReadOnlySpan<byte> nonce, uint initialCounter)
     {
-        for (int i = 0; i < 8; i++)
+        for (var i = 0; i < 8; i++)
             _key[i] = BinaryPrimitives.ReadUInt32LittleEndian(key.Slice(i * 4, 4));
 
         _nonce0 = BinaryPrimitives.ReadUInt32LittleEndian(nonce.Slice(0, 4));
@@ -116,7 +112,7 @@ internal sealed class ChaCha20StreamCipher
         if (_counterExhausted)
             throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_StreamCounterExhausted);
 
-        uint counter = _counter;
+        var counter = _counter;
 
         // Advance the counter, latching exhaustion once it wraps back to the initial value so the next call
         // fails instead of silently reusing keystream.
@@ -135,7 +131,7 @@ internal sealed class ChaCha20StreamCipher
         uint x8 = j8, x9 = j9, x10 = j10, x11 = j11;
         uint x12 = j12, x13 = j13, x14 = j14, x15 = j15;
 
-        for (int i = 0; i < Rounds; i += 2)
+        for (var i = 0; i < Rounds; i += 2)
         {
             // Column round.
             QuarterRound(ref x0, ref x4, ref x8, ref x12);
@@ -177,27 +173,27 @@ internal sealed class ChaCha20StreamCipher
     /// <param name="nonce">The first 16 bytes (128 bits) of the 24-byte XChaCha20 nonce.</param>
     /// <param name="subkey">A span of at least 32 bytes that receives the derived subkey.</param>
     /// <remarks>
-    /// HChaCha20 runs the ChaCha20 round function over a state seeded with the constant, key, and 128-bit nonce, but
-    /// — unlike the keystream block function — does <em>not</em> add the original state back in. The subkey is the
+    /// HChaCha20 runs the ChaCha20 round function over a state seeded with the constant, key, and 128-bit nonce, but —
+    /// unlike the keystream block function — does <em>not</em> add the original state back in. The subkey is the
     /// concatenation of the first and last four words of the transformed state.
     /// </remarks>
     internal static void HChaCha20(ReadOnlySpan<byte> key, ReadOnlySpan<byte> nonce, Span<byte> subkey)
     {
         uint x0 = Sigma0, x1 = Sigma1, x2 = Sigma2, x3 = Sigma3;
-        uint x4 = BinaryPrimitives.ReadUInt32LittleEndian(key.Slice(0, 4));
-        uint x5 = BinaryPrimitives.ReadUInt32LittleEndian(key.Slice(4, 4));
-        uint x6 = BinaryPrimitives.ReadUInt32LittleEndian(key.Slice(8, 4));
-        uint x7 = BinaryPrimitives.ReadUInt32LittleEndian(key.Slice(12, 4));
-        uint x8 = BinaryPrimitives.ReadUInt32LittleEndian(key.Slice(16, 4));
-        uint x9 = BinaryPrimitives.ReadUInt32LittleEndian(key.Slice(20, 4));
-        uint x10 = BinaryPrimitives.ReadUInt32LittleEndian(key.Slice(24, 4));
-        uint x11 = BinaryPrimitives.ReadUInt32LittleEndian(key.Slice(28, 4));
-        uint x12 = BinaryPrimitives.ReadUInt32LittleEndian(nonce.Slice(0, 4));
-        uint x13 = BinaryPrimitives.ReadUInt32LittleEndian(nonce.Slice(4, 4));
-        uint x14 = BinaryPrimitives.ReadUInt32LittleEndian(nonce.Slice(8, 4));
-        uint x15 = BinaryPrimitives.ReadUInt32LittleEndian(nonce.Slice(12, 4));
+        var x4 = BinaryPrimitives.ReadUInt32LittleEndian(key.Slice(0, 4));
+        var x5 = BinaryPrimitives.ReadUInt32LittleEndian(key.Slice(4, 4));
+        var x6 = BinaryPrimitives.ReadUInt32LittleEndian(key.Slice(8, 4));
+        var x7 = BinaryPrimitives.ReadUInt32LittleEndian(key.Slice(12, 4));
+        var x8 = BinaryPrimitives.ReadUInt32LittleEndian(key.Slice(16, 4));
+        var x9 = BinaryPrimitives.ReadUInt32LittleEndian(key.Slice(20, 4));
+        var x10 = BinaryPrimitives.ReadUInt32LittleEndian(key.Slice(24, 4));
+        var x11 = BinaryPrimitives.ReadUInt32LittleEndian(key.Slice(28, 4));
+        var x12 = BinaryPrimitives.ReadUInt32LittleEndian(nonce.Slice(0, 4));
+        var x13 = BinaryPrimitives.ReadUInt32LittleEndian(nonce.Slice(4, 4));
+        var x14 = BinaryPrimitives.ReadUInt32LittleEndian(nonce.Slice(8, 4));
+        var x15 = BinaryPrimitives.ReadUInt32LittleEndian(nonce.Slice(12, 4));
 
-        for (int i = 0; i < Rounds; i += 2)
+        for (var i = 0; i < Rounds; i += 2)
         {
             QuarterRound(ref x0, ref x4, ref x8, ref x12);
             QuarterRound(ref x1, ref x5, ref x9, ref x13);

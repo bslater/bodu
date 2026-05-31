@@ -1,10 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RabbitStreamCipher.cs" company="Bodu Pty. Ltd.">
-//     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
+//     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
 using System.Buffers.Binary;
 using System.Numerics;
 using System.Runtime.CompilerServices;
@@ -19,16 +18,16 @@ namespace Bodu.Security.Cryptography;
 /// Rabbit binds a 128-bit key and an optional 64-bit IV at construction and produces 16-byte keystream blocks on demand
 /// through <see cref="NextKeystreamBlock(Span{byte})" />. Unlike ChaCha20 and Salsa20 it has no seekable block counter:
 /// its keystream is the output of an evolving internal state (eight 32-bit state variables and eight 32-bit counters
-/// driven by a coupled non-linear next-state function), so blocks must be produced strictly in sequence. This is exactly
-/// the contract the engine-owns-advancement <see cref="IStreamCipher" /> interface expresses.
+/// driven by a coupled non-linear next-state function), so blocks must be produced strictly in sequence. This is
+/// exactly the contract the engine-owns-advancement <see cref="IStreamCipher" /> interface expresses.
 /// </para>
 /// <para>
 /// The implementation follows the RFC 4503 octet conventions exactly: the key and IV are interpreted as big-endian
 /// integers split into 16-bit subkeys (I2OSP), and each keystream block is serialized as the big-endian (I2OSP)
 /// representation of the 128-bit extraction value. This reproduces the RFC 4503 Appendix A conformance vectors and the
-/// Appendix B internal-state debugging vectors byte-for-byte. (Note that some implementations — for example Crypto++ and
-/// libtomcrypt — use a self-consistent little-endian convention whose key, IV, and keystream octets are byte-reversed
-/// relative to the RFC.)
+/// Appendix B internal-state debugging vectors byte-for-byte. (Note that some implementations — for example Crypto++
+/// and libtomcrypt — use a self-consistent little-endian convention whose key, IV, and keystream octets are
+/// byte-reversed relative to the RFC.)
 /// </para>
 /// <para>
 /// Key setup expands the key into the state and counter variables, iterates the next-state function four times, and
@@ -38,8 +37,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// </remarks>
 /// <seealso href="https://www.rfc-editor.org/rfc/rfc4503">RFC 4503 — A Description of the Rabbit Stream Cipher
-/// Algorithm</seealso>
-/// <seealso cref="Rabbit" />
+/// Algorithm</seealso> <seealso cref="Rabbit" />
 internal sealed partial class RabbitStreamCipher
     : IStreamCipher
 {
@@ -129,13 +127,17 @@ internal sealed partial class RabbitStreamCipher
         _disposed = true;
     }
 
-    /// <summary>Gets the low 16 bits of a word.</summary>
+    /// <summary>
+    /// Gets the low 16 bits of a word.
+    /// </summary>
     /// <param name="w">The word.</param>
     /// <returns><c>w &amp; 0xFFFF</c>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static uint Lo(uint w) => w & 0xFFFF;
 
-    /// <summary>Gets the high 16 bits of a word, shifted down.</summary>
+    /// <summary>
+    /// Gets the high 16 bits of a word, shifted down.
+    /// </summary>
     /// <param name="w">The word.</param>
     /// <returns><c>w &gt;&gt; 16</c>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -151,7 +153,7 @@ internal sealed partial class RabbitStreamCipher
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static uint SubKey(ReadOnlySpan<byte> key, int index)
     {
-        int offset = 14 - (index * 2);
+        var offset = 14 - (index * 2);
         return (uint)((key[offset] << 8) | key[offset + 1]);
     }
 
@@ -165,7 +167,7 @@ internal sealed partial class RabbitStreamCipher
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static uint IvWord(ReadOnlySpan<byte> nonce, int index)
     {
-        int offset = 6 - (index * 2);
+        var offset = 6 - (index * 2);
         return (uint)((nonce[offset] << 8) | nonce[offset + 1]);
     }
 
@@ -177,7 +179,7 @@ internal sealed partial class RabbitStreamCipher
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static uint G(uint u)
     {
-        ulong square = (ulong)u * u;
+        var square = (ulong)u * u;
         return (uint)(square ^ (square >> 32));
     }
 
@@ -189,11 +191,11 @@ internal sealed partial class RabbitStreamCipher
     {
         ExpandKey(key);
 
-        for (int i = 0; i < 4; i++)
+        for (var i = 0; i < 4; i++)
             NextState();
 
         // Re-key the counters from the iterated state.
-        for (int i = 0; i < 8; i++)
+        for (var i = 0; i < 8; i++)
             _c[i] ^= _x[(i + 4) & 7];
     }
 
@@ -205,7 +207,7 @@ internal sealed partial class RabbitStreamCipher
     {
         MixIv(nonce);
 
-        for (int i = 0; i < 4; i++)
+        for (var i = 0; i < 4; i++)
             NextState();
     }
 
@@ -229,7 +231,8 @@ internal sealed partial class RabbitStreamCipher
     }
 
     /// <summary>
-    /// Advances the counter system and the eight state variables by one Rabbit next-state iteration (RFC 4503 §2.4–2.5).
+    /// Advances the counter system and the eight state variables by one Rabbit next-state iteration (RFC 4503
+    /// §2.4–2.5).
     /// </summary>
     private void NextState()
     {
@@ -249,14 +252,14 @@ internal sealed partial class RabbitStreamCipher
             _c[7] = c7 + A1 + (_c[6] < c6 ? 1u : 0u);
             _carry = _c[7] < c7 ? 1u : 0u;
 
-            uint g0 = G(_x[0] + _c[0]);
-            uint g1 = G(_x[1] + _c[1]);
-            uint g2 = G(_x[2] + _c[2]);
-            uint g3 = G(_x[3] + _c[3]);
-            uint g4 = G(_x[4] + _c[4]);
-            uint g5 = G(_x[5] + _c[5]);
-            uint g6 = G(_x[6] + _c[6]);
-            uint g7 = G(_x[7] + _c[7]);
+            var g0 = G(_x[0] + _c[0]);
+            var g1 = G(_x[1] + _c[1]);
+            var g2 = G(_x[2] + _c[2]);
+            var g3 = G(_x[3] + _c[3]);
+            var g4 = G(_x[4] + _c[4]);
+            var g5 = G(_x[5] + _c[5]);
+            var g6 = G(_x[6] + _c[6]);
+            var g7 = G(_x[7] + _c[7]);
 
             _x[0] = g0 + BitOperations.RotateLeft(g7, 16) + BitOperations.RotateLeft(g6, 16);
             _x[1] = g1 + BitOperations.RotateLeft(g0, 8) + g7;

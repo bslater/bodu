@@ -1,23 +1,23 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="XSalsa20.cs" company="Bodu Pty. Ltd.">
-//     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
+//     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
 using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Provides a managed implementation of the extended-nonce XSalsa20 stream cipher specified by Daniel J. Bernstein. This
-/// class cannot be inherited.
+/// Provides a managed implementation of the extended-nonce XSalsa20 stream cipher specified by Daniel J. Bernstein.
+/// This class cannot be inherited.
 /// </summary>
 /// <remarks>
 /// <para>
-/// XSalsa20 extends Salsa20 from a 64-bit nonce to a 192-bit nonce. The longer nonce is large enough to choose at random
-/// per message without meaningful collision risk, which makes XSalsa20 the safer default for protocols that cannot
-/// guarantee a unique 64-bit counter — the construction underlying NaCl / libsodium's <c>crypto_stream_xsalsa20</c>.
+/// XSalsa20 extends Salsa20 from a 64-bit nonce to a 192-bit nonce. The longer nonce is large enough to choose at
+/// random per message without meaningful collision risk, which makes XSalsa20 the safer default for protocols that
+/// cannot guarantee a unique 64-bit counter — the construction underlying NaCl / libsodium's
+/// <c>crypto_stream_xsalsa20</c>.
 /// </para>
 /// <para>
 /// The construction is a thin shell over Salsa20: the first 128 bits of the 192-bit nonce are combined with the key via
@@ -31,18 +31,24 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <description>Key size: 256 bits (32 bytes).</description>
+/// <description>
+/// Key size: 256 bits (32 bytes).
+/// </description>
 /// </item>
 /// <item>
-/// <description>Nonce (IV) size: 192 bits (24 bytes).</description>
+/// <description>
+/// Nonce (IV) size: 192 bits (24 bytes).
+/// </description>
 /// </item>
 /// <item>
-/// <description>Block counter: 64-bit, starting at <see cref="InitialCounter" /> (default 0).</description>
+/// <description>
+/// Block counter: 64-bit, starting at <see cref="InitialCounter" /> (default 0).
+/// </description>
 /// </item>
 /// </list>
 /// <para>
-/// Like Salsa20 this is the <em>raw</em>, confidentiality-only cipher and is self-inverse. For authenticated encryption,
-/// pair it with a MAC such as <see cref="Poly1305" />.
+/// Like Salsa20 this is the <em>raw</em>, confidentiality-only cipher and is self-inverse. For authenticated
+/// encryption, pair it with a MAC such as <see cref="Poly1305" />.
 /// </para>
 /// </remarks>
 /// <example>

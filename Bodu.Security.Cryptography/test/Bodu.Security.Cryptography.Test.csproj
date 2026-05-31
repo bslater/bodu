@@ -12,10 +12,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Security.Cryptography\SymmetricAlgorithmTests.Specification.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <EmbeddedResource Include="Security.Cryptography\AsconAead128.LWC_AEAD_KAT_128_128.txt" />
   </ItemGroup>
 

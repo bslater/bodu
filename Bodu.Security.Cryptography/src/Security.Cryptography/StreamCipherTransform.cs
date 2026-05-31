@@ -1,10 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StreamCipherTransform.cs" company="Bodu Pty. Ltd.">
-//     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
+//     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 
@@ -38,8 +37,8 @@ namespace Bodu.Security.Cryptography;
 /// </list>
 /// <para>
 /// Keystream sequencing and any keystream-exhaustion guard live in the engine, which owns its counter or internal
-/// state; the transform simply pulls the next block via <see cref="IStreamCipher.NextKeystreamBlock(Span{byte})" /> when
-/// the carried block is consumed.
+/// state; the transform simply pulls the next block via <see cref="IStreamCipher.NextKeystreamBlock(Span{byte})" />
+/// when the carried block is consumed.
 /// </para>
 /// <para>
 /// Because <see cref="InputBlockSize" /> and <see cref="OutputBlockSize" /> are both one byte, the BCL imposes no
@@ -51,8 +50,7 @@ namespace Bodu.Security.Cryptography;
 /// <see langword="false" /> and further transform calls throw.
 /// </para>
 /// </remarks>
-/// <seealso cref="IStreamCipher" />
-/// <seealso cref="BlockCipherTransform" />
+/// <seealso cref="IStreamCipher" /> <seealso cref="BlockCipherTransform" />
 internal sealed class StreamCipherTransform
     : ICryptoTransform
 {
@@ -138,9 +136,10 @@ internal sealed class StreamCipherTransform
     /// <paramref name="outputBuffer" /> are the same array and the read and write ranges partially overlap.
     /// </exception>
     /// <remarks>
-    /// When <paramref name="inputBuffer" /> and <paramref name="outputBuffer" /> are the same array, only exact in-place
-    /// transformation (identical offsets) or fully disjoint ranges are supported. A partial overlap is rejected because
-    /// the keystream is applied forward byte by byte, so a write into not-yet-read input would corrupt the result.
+    /// When <paramref name="inputBuffer" /> and <paramref name="outputBuffer" /> are the same array, only exact
+    /// in-place transformation (identical offsets) or fully disjoint ranges are supported. A partial overlap is
+    /// rejected because the keystream is applied forward byte by byte, so a write into not-yet-read input would corrupt
+    /// the result.
     /// </remarks>
     public int TransformBlock(byte[] inputBuffer, int inputOffset, int inputCount, byte[] outputBuffer, int outputOffset)
     {
@@ -192,7 +191,7 @@ internal sealed class StreamCipherTransform
         CryptoHelpers.ThrowIfArrayOffsetOrCountInvalid(inputBuffer, inputOffset, inputCount);
 
         // No overlap check is needed: a fresh output array is allocated here, so it can never alias the input buffer.
-        byte[] output = new byte[inputCount];
+        var output = new byte[inputCount];
 
         try
         {
@@ -220,9 +219,9 @@ internal sealed class StreamCipherTransform
     /// </remarks>
     private void Apply(ReadOnlySpan<byte> input, Span<byte> output)
     {
-        int blockSize = _cipher.BlockSize;
+        var blockSize = _cipher.BlockSize;
 
-        for (int i = 0; i < input.Length; i++)
+        for (var i = 0; i < input.Length; i++)
         {
             if (_keystreamOffset == blockSize)
             {

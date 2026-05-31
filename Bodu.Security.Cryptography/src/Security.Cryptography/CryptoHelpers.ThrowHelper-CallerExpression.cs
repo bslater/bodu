@@ -1,6 +1,6 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CryptoHelpers.ThrowHelper.CallerExpression.cs" company="Bodu Pty. Ltd.">
-//     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
+//     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
@@ -367,7 +367,7 @@ internal static partial class CryptoHelpers
         byte[]? nonce, int expectedBytes,
         [CallerArgumentExpression(nameof(nonce))] string? paramName = null)
     {
-        int actualBits = (nonce?.Length ?? 0) * 8;
+        var actualBits = (nonce?.Length ?? 0) * 8;
         if (nonce is null || nonce.Length != expectedBytes)
         {
             throw new CryptographicException(

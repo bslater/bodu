@@ -1,6 +1,6 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CcmModeTransform.cs" company="Bodu Pty. Ltd.">
-//     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
+//     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
@@ -56,8 +56,8 @@ namespace Bodu.Security.Cryptography;
 /// <see cref="GcmSivModeTransform" /> or <see cref="SivModeTransform" />.
 /// </para>
 /// <para>
-/// <strong>Nonce uniqueness is required.</strong> CCM is not nonce-misuse resistant. Reusing a <c>(key, nonce)</c>
-/// pair across two messages reuses the CTR keystream and lets an attacker XOR the two ciphertexts to recover
+/// <strong>Nonce uniqueness is required.</strong> CCM is not nonce-misuse resistant. Reusing a <c>(key, nonce)</c> pair
+/// across two messages reuses the CTR keystream and lets an attacker XOR the two ciphertexts to recover
 /// <c>P1 XOR P2</c>; CBC-MAC chains from the same starting state are also exposed, which weakens authentication.
 /// Callers must guarantee that every <c>(key, nonce)</c> pair is used at most once — typically via a per-message
 /// counter or a fresh random 96-bit value drawn from a CSPRNG. If nonce uniqueness cannot be guaranteed prefer

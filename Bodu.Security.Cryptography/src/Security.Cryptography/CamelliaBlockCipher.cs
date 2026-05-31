@@ -1,6 +1,6 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CamelliaBlockCipher.cs" company="Bodu Pty. Ltd.">
-//     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
+//     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
@@ -158,7 +158,7 @@ public sealed class CamelliaBlockCipher
     public CamelliaBlockCipher(ReadOnlySpan<byte> key)
     {
         var keyBits = key.Length * 8;
-        if (keyBits is not(Key128SizeBits or Key192SizeBits or Key256SizeBits))
+        if (keyBits is not (Key128SizeBits or Key192SizeBits or Key256SizeBits))
         {
             throw new ArgumentException(
                 CryptoResourceStrings.Arg_Invalid_CamelliaKeyLength,

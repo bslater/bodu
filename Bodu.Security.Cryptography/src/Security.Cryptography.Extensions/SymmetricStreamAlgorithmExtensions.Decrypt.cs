@@ -1,6 +1,6 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SymmetricStreamAlgorithmExtensions.Decrypt.cs" company="Bodu Pty. Ltd.">
-//     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
+//     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
@@ -21,7 +21,8 @@ public static partial class SymmetricStreamAlgorithmExtensions
     /// </exception>
     /// <remarks>
     /// Because an additive stream cipher is self-inverse, this performs the identical XOR operation as
-    /// <see cref="Encrypt(SymmetricStreamAlgorithm, byte[])" />. Equivalent to calling <c>Decrypt(array, 0, array.Length)</c>.
+    /// <see cref="Encrypt(SymmetricStreamAlgorithm, byte[])" />. Equivalent to calling
+    /// <c>Decrypt(array, 0, array.Length)</c>.
     /// </remarks>
     public static byte[] Decrypt(this SymmetricStreamAlgorithm algorithm, byte[] array)
     {
@@ -110,7 +111,9 @@ public static partial class SymmetricStreamAlgorithmExtensions
     /// </summary>
     /// <param name="algorithm">The stream cipher to use. Must not be <see langword="null" />.</param>
     /// <param name="sourceStream">The stream to read ciphertext from. Must not be <see langword="null" />.</param>
-    /// <param name="targetStream">The stream to write the decrypted output to. Must not be <see langword="null" />.</param>
+    /// <param name="targetStream">
+    /// The stream to write the decrypted output to. Must not be <see langword="null" />.
+    /// </param>
     /// <returns>The total number of ciphertext bytes read from <paramref name="sourceStream" />.</returns>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="algorithm" />, <paramref name="sourceStream" />, or <paramref name="targetStream" /> is
@@ -125,14 +128,18 @@ public static partial class SymmetricStreamAlgorithmExtensions
     /// </summary>
     /// <param name="algorithm">The stream cipher to use. Must not be <see langword="null" />.</param>
     /// <param name="sourceStream">The stream to read ciphertext from. Must not be <see langword="null" />.</param>
-    /// <param name="targetStream">The stream to write the decrypted output to. Must not be <see langword="null" />.</param>
+    /// <param name="targetStream">
+    /// The stream to write the decrypted output to. Must not be <see langword="null" />.
+    /// </param>
     /// <param name="bufferSize">The size, in bytes, of the read buffer.</param>
     /// <returns>The total number of ciphertext bytes read from <paramref name="sourceStream" />.</returns>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="algorithm" />, <paramref name="sourceStream" />, or <paramref name="targetStream" /> is
     /// <see langword="null" />.
     /// </exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="bufferSize" /> is less than or equal to zero.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="bufferSize" /> is less than or equal to zero.
+    /// </exception>
     public static int Decrypt(this SymmetricStreamAlgorithm algorithm, Stream sourceStream, Stream targetStream, int bufferSize)
     {
         ThrowHelper.ThrowIfNull(algorithm);

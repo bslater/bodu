@@ -1,11 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="XChaCha20.cs" company="Bodu Pty. Ltd.">
-//     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
+//     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
-using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
@@ -25,21 +23,27 @@ namespace Bodu.Security.Cryptography;
 /// via HChaCha20 to derive a 256-bit subkey, and the cipher then runs as ordinary ChaCha20 under that subkey with a
 /// 96-bit nonce formed as four zero bytes followed by the remaining 64 bits of the original nonce. All keystream
 /// generation, partial-block carry, and counter-overflow protection are inherited from the shared
-/// <see cref="StreamCipherTransform" />
-/// / <see cref="ChaCha20StreamCipher" /> stack, so XChaCha20 contains no duplicate cipher logic.
+/// <see cref="StreamCipherTransform" /> / <see cref="ChaCha20StreamCipher" /> stack, so XChaCha20 contains no duplicate
+/// cipher logic.
 /// </para>
 /// <para>
 /// <strong>Parameters at a glance.</strong>
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <description>Key size: 256 bits (32 bytes).</description>
+/// <description>
+/// Key size: 256 bits (32 bytes).
+/// </description>
 /// </item>
 /// <item>
-/// <description>Nonce (IV) size: 192 bits (24 bytes).</description>
+/// <description>
+/// Nonce (IV) size: 192 bits (24 bytes).
+/// </description>
 /// </item>
 /// <item>
-/// <description>Block counter: 32-bit, starting at <see cref="InitialCounter" /> (default 0).</description>
+/// <description>
+/// Block counter: 32-bit, starting at <see cref="InitialCounter" /> (default 0).
+/// </description>
 /// </item>
 /// </list>
 /// <para>
@@ -62,8 +66,7 @@ namespace Bodu.Security.Cryptography;
 /// </code>
 /// </example>
 /// <seealso href="https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-xchacha">draft-irtf-cfrg-xchacha — XChaCha:
-/// eXtended-nonce ChaCha and AEAD_XChaCha20_Poly1305</seealso>
-/// <seealso cref="ChaCha20" />
+/// eXtended-nonce ChaCha and AEAD_XChaCha20_Poly1305</seealso> <seealso cref="ChaCha20" />
 public sealed class XChaCha20
     : SymmetricStreamAlgorithm
 {
@@ -113,9 +116,9 @@ public sealed class XChaCha20
 
     /// <inheritdoc />
     /// <remarks>
-    /// Derives a 256-bit subkey from the key and the first 128 bits of the nonce via HChaCha20, then returns an ordinary
-    /// ChaCha20 engine under that subkey with a 96-bit nonce formed as four zero bytes followed by the trailing 64 bits
-    /// of the extended nonce.
+    /// Derives a 256-bit subkey from the key and the first 128 bits of the nonce via HChaCha20, then returns an
+    /// ordinary ChaCha20 engine under that subkey with a 96-bit nonce formed as four zero bytes followed by the
+    /// trailing 64 bits of the extended nonce.
     /// </remarks>
     protected override IStreamCipher CreateStreamCipher(byte[] key, byte[] nonce)
     {

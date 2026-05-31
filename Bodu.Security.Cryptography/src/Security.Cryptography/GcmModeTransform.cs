@@ -1,6 +1,6 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="GcmModeTransform.cs" company="Bodu Pty. Ltd.">
-//     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
+//     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
@@ -57,15 +57,14 @@ namespace Bodu.Security.Cryptography;
 /// with the caller.
 /// </para>
 /// <para>
-/// <strong>Length limits.</strong> SP 800-38D §5.2.1.1 caps the plaintext at <c>2³⁹ − 256</c> bits and the
-/// associated data at <c>2⁶⁴</c> bits per <c>(key, nonce)</c> pair. <see cref="Encrypt" /> / <see cref="Decrypt" />
-/// / <see cref="ProcessAssociatedData" /> all defensively call <c>ValidatePlaintextLength</c> or
-/// <c>ValidateAadLength</c>, which throw <see cref="CryptographicException" /> when the input length would breach
-/// the spec ceiling. Both checks are dead code through the public <see cref="ReadOnlySpan{Byte}" /> surface today
-/// (the <see cref="int" />-typed length caps inputs at ≈ 2 GiB, far below either limit) but document the
-/// invariant at the call site and protect any future surface that admits longer inputs. The 32-bit counter is
-/// separately guarded against wrapping past <c>0xFFFFFFFF</c> — see
-/// <c>Encrypt_WhenCounterWouldWrapPast0xFFFFFFFF</c>.
+/// <strong>Length limits.</strong> SP 800-38D §5.2.1.1 caps the plaintext at <c>2³⁹ − 256</c> bits and the associated
+/// data at <c>2⁶⁴</c> bits per <c>(key, nonce)</c> pair. <see cref="Encrypt" /> / <see cref="Decrypt" /> /
+/// <see cref="ProcessAssociatedData" /> all defensively call <c>ValidatePlaintextLength</c> or <c>ValidateAadLength</c>
+/// , which throw <see cref="CryptographicException" /> when the input length would breach the spec ceiling. Both checks
+/// are dead code through the public <see cref="ReadOnlySpan{Byte}" /> surface today (the <see cref="int" />-typed
+/// length caps inputs at ≈ 2 GiB, far below either limit) but document the invariant at the call site and protect any
+/// future surface that admits longer inputs. The 32-bit counter is separately guarded against wrapping past
+/// <c>0xFFFFFFFF</c> — see <c>Encrypt_WhenCounterWouldWrapPast0xFFFFFFFF</c>.
 /// </para>
 /// <para>
 /// <strong>When to use GCM.</strong> The default modern AEAD mode — single-pass, parallelisable, and
@@ -124,14 +123,14 @@ public sealed class GcmModeTransform
     private const int NonceSize = 96;
 
     /// <summary>
-    /// SP 800-38D §5.2.1.1 plaintext length ceiling: <c>2³⁹ − 256</c> bits, expressed in bytes
-    /// (<c>(2³⁹ − 256) / 8 = 68 719 476 704</c>). Internal so tests can validate the constant.
+    /// SP 800-38D §5.2.1.1 plaintext length ceiling: <c>2³⁹ − 256</c> bits, expressed in bytes (
+    /// <c>(2³⁹ − 256) / 8 = 68 719 476 704</c>). Internal so tests can validate the constant.
     /// </summary>
     internal const long MaxPlaintextBytes = ((1L << 39) - 256) / 8;
 
     /// <summary>
-    /// SP 800-38D §5.2.1.1 associated-data length ceiling: <c>2⁶⁴</c> bits, expressed in bytes
-    /// (<c>2⁶⁴ / 8 = 2⁶¹ = 2 305 843 009 213 693 952</c>). Internal so tests can validate the constant.
+    /// SP 800-38D §5.2.1.1 associated-data length ceiling: <c>2⁶⁴</c> bits, expressed in bytes (
+    /// <c>2⁶⁴ / 8 = 2⁶¹ = 2 305 843 009 213 693 952</c>). Internal so tests can validate the constant.
     /// </summary>
     internal const long MaxAadBytes = 1L << 61;
 
@@ -265,9 +264,9 @@ public sealed class GcmModeTransform
     public int TagSize => DefaultTagSize;
 
     /// <summary>
-    /// Validates that the supplied plaintext length does not exceed the SP 800-38D §5.2.1.1
-    /// per-(key,nonce) plaintext ceiling of <c>2³⁹ − 256</c> bits. Internal so tests can drive the
-    /// check with synthetic length values that the public int-typed span surface cannot construct.
+    /// Validates that the supplied plaintext length does not exceed the SP 800-38D §5.2.1.1 per-(key,nonce) plaintext
+    /// ceiling of <c>2³⁹ − 256</c> bits. Internal so tests can drive the check with synthetic length values that the
+    /// public int-typed span surface cannot construct.
     /// </summary>
     /// <param name="length">The candidate plaintext length in bytes.</param>
     /// <exception cref="CryptographicException">
@@ -283,9 +282,9 @@ public sealed class GcmModeTransform
     }
 
     /// <summary>
-    /// Validates that the supplied associated-data length does not exceed the SP 800-38D §5.2.1.1
-    /// per-(key,nonce) AAD ceiling of <c>2⁶⁴</c> bits. Internal so tests can drive the check with
-    /// synthetic length values that the public int-typed span surface cannot construct.
+    /// Validates that the supplied associated-data length does not exceed the SP 800-38D §5.2.1.1 per-(key,nonce) AAD
+    /// ceiling of <c>2⁶⁴</c> bits. Internal so tests can drive the check with synthetic length values that the public
+    /// int-typed span surface cannot construct.
     /// </summary>
     /// <param name="length">The candidate associated-data length in bytes.</param>
     /// <exception cref="CryptographicException">
@@ -306,8 +305,8 @@ public sealed class GcmModeTransform
     /// The instance has already encrypted or decrypted a message.
     /// </exception>
     /// <exception cref="CryptographicException">
-    /// The implicit plaintext length (<c><paramref name="ciphertextWithTag" />.Length − 16</c>) exceeds the
-    /// SP 800-38D §5.2.1.1 ceiling. Unreachable through the public int-typed span surface today.
+    /// The implicit plaintext length (<c><paramref name="ciphertextWithTag" />.Length − 16</c>) exceeds the SP 800-38D
+    /// §5.2.1.1 ceiling. Unreachable through the public int-typed span surface today.
     /// </exception>
     public int Decrypt(ReadOnlySpan<byte> ciphertextWithTag, Span<byte> output)
     {
@@ -394,8 +393,8 @@ public sealed class GcmModeTransform
     /// The instance has already encrypted or decrypted a message.
     /// </exception>
     /// <exception cref="CryptographicException">
-    /// <paramref name="plaintext" /> length exceeds the SP 800-38D §5.2.1.1 ceiling. Unreachable through the
-    /// public int-typed span surface today.
+    /// <paramref name="plaintext" /> length exceeds the SP 800-38D §5.2.1.1 ceiling. Unreachable through the public
+    /// int-typed span surface today.
     /// </exception>
     public int Encrypt(ReadOnlySpan<byte> plaintext, Span<byte> output)
     {
@@ -444,8 +443,8 @@ public sealed class GcmModeTransform
     /// Associated data has already been processed, or the instance has already completed encryption or decryption.
     /// </exception>
     /// <exception cref="CryptographicException">
-    /// <paramref name="associatedData" /> length exceeds the SP 800-38D §5.2.1.1 ceiling. Unreachable through
-    /// the public int-typed span surface today.
+    /// <paramref name="associatedData" /> length exceeds the SP 800-38D §5.2.1.1 ceiling. Unreachable through the
+    /// public int-typed span surface today.
     /// </exception>
     public void ProcessAssociatedData(ReadOnlySpan<byte> associatedData)
     {
@@ -567,9 +566,9 @@ public sealed class GcmModeTransform
     /// </summary>
     /// <param name="counter">The 16-byte CTR block; its low 32 bits are incremented in place.</param>
     /// <returns>
-    /// <see langword="true" /> if the increment wrapped from <c>0xFFFFFFFF</c> back to <c>0x00000000</c>;
-    /// otherwise <see langword="false" />. Callers must reject wrap whenever the wrapped counter would be
-    /// used to encrypt another block, because <c>nonce ‖ 0x00000001</c> is reserved as <c>J0</c> for the tag.
+    /// <see langword="true" /> if the increment wrapped from <c>0xFFFFFFFF</c> back to <c>0x00000000</c>; otherwise
+    /// <see langword="false" />. Callers must reject wrap whenever the wrapped counter would be used to encrypt another
+    /// block, because <c>nonce ‖ 0x00000001</c> is reserved as <c>J0</c> for the tag.
     /// </returns>
     private static bool IncrementCounter32(Span<byte> counter)
     {
@@ -586,8 +585,8 @@ public sealed class GcmModeTransform
     /// <param name="input">The input bytes to XOR with the CTR keystream.</param>
     /// <param name="output">The destination span; must be at least <paramref name="input" />.Length bytes.</param>
     /// <exception cref="CryptographicException">
-    /// The plaintext / ciphertext length would step the GCM counter past <c>0xFFFFFFFF</c> while another block
-    /// remains to be processed (NIST SP 800-38D §5.2.1.1 — at most <c>2^32 − 2</c> blocks per <c>(key, nonce)</c>).
+    /// The plaintext / ciphertext length would step the GCM counter past <c>0xFFFFFFFF</c> while another block remains
+    /// to be processed (NIST SP 800-38D §5.2.1.1 — at most <c>2^32 − 2</c> blocks per <c>(key, nonce)</c>).
     /// </exception>
     private void ApplyCtr(ReadOnlySpan<byte> input, Span<byte> output)
     {
@@ -606,7 +605,7 @@ public sealed class GcmModeTransform
 
                 // Reject wrap only when the wrapped counter would actually be consumed by another block;
                 // a message that ends exactly at counter 0xFFFFFFFF stays within the GCM contract.
-                bool wrapped = IncrementCounter32(counter);
+                var wrapped = IncrementCounter32(counter);
                 if (wrapped && offset + (BlockSize / 8) < input.Length)
                 {
                     throw new CryptographicException(

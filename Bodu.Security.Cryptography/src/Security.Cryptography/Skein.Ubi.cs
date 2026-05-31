@@ -1,6 +1,6 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Skein.Ubi.cs" company="Bodu Pty. Ltd.">
-//     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
+//     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
@@ -88,7 +88,7 @@ public abstract partial class Skein<T>
             | (final ? 1UL << 63 : 0UL);
 
         BinaryPrimitives.WriteUInt64LittleEndian(destination, position);
-        BinaryPrimitives.WriteUInt64LittleEndian(destination[sizeof(ulong) ..], t1);
+        BinaryPrimitives.WriteUInt64LittleEndian(destination[sizeof(ulong)..], t1);
     }
 
     /// <summary>

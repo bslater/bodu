@@ -1,11 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ChaCha20.cs" company="Bodu Pty. Ltd.">
-//     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
+//     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
-using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
@@ -32,13 +30,19 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <description>Key size: 256 bits (32 bytes).</description>
+/// <description>
+/// Key size: 256 bits (32 bytes).
+/// </description>
 /// </item>
 /// <item>
-/// <description>Nonce (IV) size: 96 bits (12 bytes).</description>
+/// <description>
+/// Nonce (IV) size: 96 bits (12 bytes).
+/// </description>
 /// </item>
 /// <item>
-/// <description>Block counter: 32-bit, starting at <see cref="InitialCounter" /> (default 0).</description>
+/// <description>
+/// Block counter: 32-bit, starting at <see cref="InitialCounter" /> (default 0).
+/// </description>
 /// </item>
 /// </list>
 /// <para>
@@ -69,8 +73,7 @@ namespace Bodu.Security.Cryptography;
 ///]]>
 /// </code>
 /// </example>
-/// <seealso href="https://www.rfc-editor.org/rfc/rfc8439">RFC 8439 — ChaCha20 and Poly1305 for IETF
-/// Protocols</seealso>
+/// <seealso href="https://www.rfc-editor.org/rfc/rfc8439">RFC 8439 — ChaCha20 and Poly1305 for IETF Protocols</seealso>
 /// <seealso cref="XChaCha20" />
 public sealed class ChaCha20
     : SymmetricStreamAlgorithm

@@ -1,6 +1,6 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Poly1305.cs" company="Bodu Pty. Ltd.">
-//     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
+//     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
@@ -166,10 +166,9 @@ public sealed class Poly1305
 
     /// <inheritdoc />
     /// <remarks>
-    /// Assigning a fresh key clears the one-time-use finalization guard so the same instance may
-    /// authenticate a new message under the new key. Reusing the <em>same</em> key for a second message
-    /// remains a contract violation and is rejected by <see cref="ProcessBlock" /> /
-    /// <see cref="ProcessFinalBlock" />.
+    /// Assigning a fresh key clears the one-time-use finalization guard so the same instance may authenticate a new
+    /// message under the new key. Reusing the <em>same</em> key for a second message remains a contract violation and
+    /// is rejected by <see cref="ProcessBlock" /> / <see cref="ProcessFinalBlock" />.
     /// </remarks>
     public override byte[] Key
     {

@@ -1,6 +1,6 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SymmetricStreamAlgorithmExtensions.Encrypt.cs" company="Bodu Pty. Ltd.">
-//     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
+//     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
@@ -109,7 +109,9 @@ public static partial class SymmetricStreamAlgorithmExtensions
     /// </summary>
     /// <param name="algorithm">The stream cipher to use. Must not be <see langword="null" />.</param>
     /// <param name="sourceStream">The stream to read plaintext from. Must not be <see langword="null" />.</param>
-    /// <param name="targetStream">The stream to write the encrypted output to. Must not be <see langword="null" />.</param>
+    /// <param name="targetStream">
+    /// The stream to write the encrypted output to. Must not be <see langword="null" />.
+    /// </param>
     /// <returns>The total number of plaintext bytes read from <paramref name="sourceStream" />.</returns>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="algorithm" />, <paramref name="sourceStream" />, or <paramref name="targetStream" /> is
@@ -124,14 +126,18 @@ public static partial class SymmetricStreamAlgorithmExtensions
     /// </summary>
     /// <param name="algorithm">The stream cipher to use. Must not be <see langword="null" />.</param>
     /// <param name="sourceStream">The stream to read plaintext from. Must not be <see langword="null" />.</param>
-    /// <param name="targetStream">The stream to write the encrypted output to. Must not be <see langword="null" />.</param>
+    /// <param name="targetStream">
+    /// The stream to write the encrypted output to. Must not be <see langword="null" />.
+    /// </param>
     /// <param name="bufferSize">The size, in bytes, of the read buffer.</param>
     /// <returns>The total number of plaintext bytes read from <paramref name="sourceStream" />.</returns>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="algorithm" />, <paramref name="sourceStream" />, or <paramref name="targetStream" /> is
     /// <see langword="null" />.
     /// </exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="bufferSize" /> is less than or equal to zero.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="bufferSize" /> is less than or equal to zero.
+    /// </exception>
     public static int Encrypt(this SymmetricStreamAlgorithm algorithm, Stream sourceStream, Stream targetStream, int bufferSize)
     {
         ThrowHelper.ThrowIfNull(algorithm);

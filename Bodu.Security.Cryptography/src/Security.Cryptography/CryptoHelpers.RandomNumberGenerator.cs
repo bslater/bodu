@@ -1,6 +1,6 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CryptoHelpers.RandomNumberGenerator.cs" company="Bodu Pty. Ltd.">
-//     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
+//     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
@@ -135,8 +135,8 @@ internal static partial class CryptoHelpers
     }
 
     /// <summary>
-    /// Fills the provided span with cryptographically secure random bytes, drawn uniformly over the full
-    /// <c>0x00</c>–<c>0xFF</c> range.
+    /// Fills the provided span with cryptographically secure random bytes, drawn uniformly over the full <c>0x00</c>–
+    /// <c>0xFF</c> range.
     /// </summary>
     /// <param name="buffer">The span to fill.</param>
     /// <remarks>
