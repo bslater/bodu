@@ -181,7 +181,7 @@ public partial class OrderedSetStorageTests
         OrderedSetStorage<int> sut = CreateStorage([1, 2]);
         var versionBefore = sut._version;
 
-        var added = sut.AddRange(Array.Empty<int>());
+        var added = sut.AddRange([]);
 
         Assert.AreEqual(0, added);
         Assert.AreEqual(versionBefore, sut._version);

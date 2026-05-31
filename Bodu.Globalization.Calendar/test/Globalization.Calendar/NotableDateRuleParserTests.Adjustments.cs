@@ -39,12 +39,11 @@ public partial class NotableDateRuleParserTests
     /// </summary>
     public static IEnumerable<object[]> AdjustmentTriggerCases =>
     [
-        new object[]
-        {
+        [
             "Always trigger maps to Always",
             BuildAdjustmentXml(@"key=""t"" when=""Always"" action=""None"""),
             AdjustmentTrigger.Always,
-        },
+        ],
         [
             "IfWeekend trigger maps to IfWeekend",
             BuildAdjustmentXml(@"key=""t"" when=""IfWeekend"" action=""None"""),
@@ -116,12 +115,11 @@ public partial class NotableDateRuleParserTests
     /// </summary>
     public static IEnumerable<object[]> AdjustmentActionCases =>
     [
-        new object[]
-        {
+        [
             "None action maps to None",
             BuildAdjustmentXml(@"key=""t"" when=""Always"" action=""None"""),
             AdjustmentAction.None,
-        },
+        ],
         [
             "AddDays action maps to AddDays",
             BuildAdjustmentXml(@"key=""t"" when=""Always"" action=""AddDays"" days=""7"""),
@@ -178,12 +176,11 @@ public partial class NotableDateRuleParserTests
     /// </summary>
     public static IEnumerable<object[]> AdjustmentDayOfWeekCases =>
     [
-        new object[]
-        {
+        [
             "dayOfWeek Monday maps to DayOfWeek.Monday",
             BuildAdjustmentXml(@"key=""t"" when=""IfDayOfWeek"" action=""None"" dayOfWeek=""Monday"""),
             DayOfWeek.Monday,
-        },
+        ],
         [
             "dayOfWeek Tuesday maps to DayOfWeek.Tuesday",
             BuildAdjustmentXml(@"key=""t"" when=""IfDayOfWeek"" action=""None"" dayOfWeek=""Tuesday"""),
@@ -240,12 +237,11 @@ public partial class NotableDateRuleParserTests
     /// </summary>
     public static IEnumerable<object[]> AdjustmentWeekOrdinalCases =>
     [
-        new object[]
-        {
+        [
             "weekOrdinal First maps to WeekOfMonthOrdinal.First",
             BuildAdjustmentXml(@"key=""t"" when=""IfNthOccurrenceInMonth"" action=""None"" dayOfWeek=""Monday"" weekOrdinal=""First"""),
             WeekOfMonthOrdinal.First,
-        },
+        ],
         [
             "weekOrdinal Second maps to WeekOfMonthOrdinal.Second",
             BuildAdjustmentXml(@"key=""t"" when=""IfNthOccurrenceInMonth"" action=""None"" dayOfWeek=""Monday"" weekOrdinal=""Second"""),
@@ -297,13 +293,12 @@ public partial class NotableDateRuleParserTests
     /// </summary>
     public static IEnumerable<object[]> AdjustmentComparisonDateCases =>
     [
-        new object[]
-        {
+        [
             "IfBeforeFixedDate with January 1 maps ComparisonDate",
             BuildAdjustmentXml(@"key=""t"" when=""IfBeforeFixedDate"" action=""None"" comparisonMonth=""January"" comparisonDay=""1"""),
             1,
             1,
-        },
+        ],
         [
             "IfBeforeFixedDate with June 15 maps ComparisonDate",
             BuildAdjustmentXml(@"key=""t"" when=""IfBeforeFixedDate"" action=""None"" comparisonMonth=""June"" comparisonDay=""15"""),
@@ -353,12 +348,11 @@ public partial class NotableDateRuleParserTests
     /// </summary>
     public static IEnumerable<object[]> AdjustmentOffsetDaysCases =>
     [
-        new object[]
-        {
+        [
             "Positive day offset maps OffsetDays to 7",
             BuildAdjustmentXml(@"key=""t"" when=""Always"" action=""AddDays"" days=""7"""),
             7,
-        },
+        ],
         [
             "Negative day offset maps OffsetDays to -3",
             BuildAdjustmentXml(@"key=""t"" when=""Always"" action=""AddDays"" days=""-3"""),
@@ -396,12 +390,11 @@ public partial class NotableDateRuleParserTests
     /// </summary>
     public static IEnumerable<object[]> AdjustmentTargetRuleNameCases =>
     [
-        new object[]
-        {
+        [
             "target Easter Sunday maps TargetRuleName",
             BuildAdjustmentXml(@"key=""t"" when=""Always"" action=""ReplaceWithNamedDate"" target=""Easter Sunday"""),
             "Easter Sunday",
-        },
+        ],
         [
             "target New Year's Day maps TargetRuleName",
             BuildAdjustmentXml(@"key=""t"" when=""Always"" action=""ReplaceWithNamedDate"" target=""New Year's Day"""),
@@ -433,12 +426,11 @@ public partial class NotableDateRuleParserTests
     /// </summary>
     public static IEnumerable<object[]> AdjustmentHandlerKeyCases =>
     [
-        new object[]
-        {
+        [
             "Custom trigger with handlerKey maps HandlerKey",
             BuildAdjustmentXml(@"key=""t"" when=""Custom"" action=""None"" handlerKey=""my-trigger-handler"""),
             "my-trigger-handler",
-        },
+        ],
         [
             "Custom action with handlerKey maps HandlerKey",
             BuildAdjustmentXml(@"key=""t"" when=""Always"" action=""Custom"" handlerKey=""my-action-handler"""),
@@ -471,12 +463,11 @@ public partial class NotableDateRuleParserTests
     /// </summary>
     public static IEnumerable<object[]> AdjustmentKeyCases =>
     [
-        new object[]
-        {
+        [
             "Key weekend-roll maps Key",
             BuildAdjustmentXml(@"key=""weekend-roll"" when=""Always"" action=""None"""),
             "weekend-roll",
-        },
+        ],
         [
             "Key boxing-day-sub maps Key",
             BuildAdjustmentXml(@"key=""boxing-day-sub"" when=""Always"" action=""None"""),
@@ -513,12 +504,11 @@ public partial class NotableDateRuleParserTests
     /// </summary>
     public static IEnumerable<object[]> AdjustmentPriorityCases =>
     [
-        new object[]
-        {
+        [
             "Priority 1 maps Priority",
             BuildAdjustmentXml(@"key=""t"" when=""Always"" action=""None"" priority=""1"""),
             1,
-        },
+        ],
         [
             "Priority 50 maps Priority",
             BuildAdjustmentXml(@"key=""t"" when=""Always"" action=""None"" priority=""50"""),
@@ -555,12 +545,11 @@ public partial class NotableDateRuleParserTests
     /// </summary>
     public static IEnumerable<object[]> AdjustmentTerritoryCases =>
     [
-        new object[]
-        {
+        [
             "Territory AU maps TerritoryCode",
             BuildAdjustmentXml(@"key=""t"" when=""Always"" action=""None"" territory=""AU"""),
             "AU",
-        },
+        ],
         [
             "Territory AU-NSW maps TerritoryCode",
             BuildAdjustmentXml(@"key=""t"" when=""Always"" action=""None"" territory=""AU-NSW"""),
@@ -598,12 +587,11 @@ public partial class NotableDateRuleParserTests
     /// </summary>
     public static IEnumerable<object[]> AdjustmentCalendarTypeCases =>
     [
-        new object[]
-        {
+        [
             "GregorianCalendar calendarType maps CalendarType",
             BuildAdjustmentXml(@"key=""t"" when=""Always"" action=""None"" calendarType=""System.Globalization.GregorianCalendar"""),
             typeof(System.Globalization.GregorianCalendar),
-        },
+        ],
     ];
 
     /// <summary>
@@ -631,13 +619,12 @@ public partial class NotableDateRuleParserTests
     /// </summary>
     public static IEnumerable<object[]> AdjustmentEffectiveYearCases =>
     [
-        new object[]
-        {
+        [
             "Both fromYear and toYear set maps effective year bounds",
             BuildAdjustmentXml(@"key=""t"" when=""Always"" action=""None"" fromYear=""2010"" toYear=""2030"""),
             (int?)2010,
             (int?)2030,
-        },
+        ],
         [
             "Only fromYear set maps EffectiveFromYear with null EffectiveToYear",
             BuildAdjustmentXml(@"key=""t"" when=""Always"" action=""None"" fromYear=""2015"""),
@@ -681,12 +668,11 @@ public partial class NotableDateRuleParserTests
     /// </summary>
     public static IEnumerable<object[]> AdjustmentIsNonWorkingDayCases =>
     [
-        new object[]
-        {
+        [
             "nonWorking true maps IsNonWorkingDay to true",
             BuildAdjustmentXml(@"key=""t"" when=""Always"" action=""None"" nonWorking=""true"""),
             true,
-        },
+        ],
         [
             "nonWorking false maps IsNonWorkingDay to false",
             BuildAdjustmentXml(@"key=""t"" when=""Always"" action=""None"" nonWorking=""false"""),

@@ -51,7 +51,7 @@ public sealed partial class Base16Tests
     /// for an empty input.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenEmpty_ShouldReturnTrue() => Assert.IsTrue(Base16.IsValid(ReadOnlySpan<char>.Empty));
+    public void IsValid_WhenEmpty_ShouldReturnTrue() => Assert.IsTrue(Base16.IsValid([]));
 
     /// <summary>
     /// Verifies that <see cref="Base16.IsValid(ReadOnlySpan{char}, BaseFormatStyles)" /> returns <see langword="false" />

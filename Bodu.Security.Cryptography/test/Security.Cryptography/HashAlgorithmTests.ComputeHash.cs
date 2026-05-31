@@ -115,7 +115,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
 
         using var algorithm = (TAlgorithm)constructor.Invoke([hashSize.Value]);
 
-        var hash = algorithm.ComputeHash(Array.Empty<byte>());
+        var hash = algorithm.ComputeHash([]);
 
         Assert.AreNotEqual(0, hash.Length, "The computed digest should not be empty.");
 
@@ -493,7 +493,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
         _ = algorithm.TransformBlock(block1, 0, block1.Length, null, 0);
         _ = algorithm.TransformBlock(block2, 0, block2.Length, null, 0);
 
-        var actual = algorithm.ComputeHash(Array.Empty<byte>());
+        var actual = algorithm.ComputeHash([]);
 
         CollectionAssert.AreEqual(expected, actual);
     }
@@ -521,7 +521,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     public void ComputeHash_WhenStreamIsEmpty_ShouldReturnExpectedEmptyHash()
     {
         using TAlgorithm algorithm = CreateAlgorithm();
-        using var stream = new MemoryStream(Array.Empty<byte>());
+        using var stream = new MemoryStream([]);
 
         var actual = algorithm.ComputeHash(stream);
 

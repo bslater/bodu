@@ -11,12 +11,12 @@ public sealed class KnownAnswerTest
     /// <summary>
     /// Gets or sets the expected output from the algorithm (hash or ciphertext).
     /// </summary>
-    public byte[] ExpectedOutput { get; init; } = Array.Empty<byte>();
+    public byte[] ExpectedOutput { get; init; } = [];
 
     /// <summary>
     /// Gets or sets the input message to be hashed or encrypted.
     /// </summary>
-    public byte[] Input { get; init; } = Array.Empty<byte>();
+    public byte[] Input { get; init; } = [];
 
     /// <summary>
     /// Gets or sets the name of the test case (e.g., "Empty Input", "ABC", "Block Size Input").

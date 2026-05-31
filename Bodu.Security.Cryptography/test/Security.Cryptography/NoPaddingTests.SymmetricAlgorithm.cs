@@ -29,7 +29,7 @@ public sealed partial class NoPaddingTests
     {
         using SymmetricAlgorithm algorithm = CreateConfiguredAlgorithm(algorithmType, PaddingMode.None);
 
-        var cipherText = EncryptThroughCryptoStream(algorithm, System.Array.Empty<byte>());
+        var cipherText = EncryptThroughCryptoStream(algorithm, []);
 
         Assert.AreEqual(0, cipherText.Length,
             $"Empty plaintext under None on {algorithmType.Name} should produce an empty ciphertext (no padding added).");

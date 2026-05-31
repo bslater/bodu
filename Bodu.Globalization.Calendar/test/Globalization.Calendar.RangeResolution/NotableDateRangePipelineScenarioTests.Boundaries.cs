@@ -490,7 +490,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
             Month = 1,
             Day = 1,
             IsNonWorkingDay = true,
-            Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+            Adjustments = [new ObservanceAdjustment
             {
                 Key = "shift-1000",
                 Trigger = AdjustmentTrigger.Always,
@@ -498,7 +498,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
                 OffsetDays = 1000,
                 IsNonWorkingDay = true,
                 MaxAdjustmentReachDays = 1000,
-            }),
+            }],
         };
 
         NotableDateService service = BuildService(rule);

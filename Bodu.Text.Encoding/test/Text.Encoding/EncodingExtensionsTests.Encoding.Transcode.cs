@@ -45,7 +45,7 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void GetTranscodedByteCount_WhenInputIsEmpty_ShouldReturnZero()
     {
-        var actual = System.Text.Encoding.UTF8.GetTranscodedByteCount(ReadOnlySpan<byte>.Empty, System.Text.Encoding.Unicode);
+        var actual = System.Text.Encoding.UTF8.GetTranscodedByteCount([], System.Text.Encoding.Unicode);
 
         Assert.AreEqual(0, actual);
     }

@@ -25,14 +25,13 @@ public sealed partial class NotableDateAdjusterTests
     public static IEnumerable<object[]> AdjacentHolidayCases =>
     [
 		// ── Christmas + Boxing Day both on weekend (2021) ─────────────────────────────
-		new object[]
-        {
+		[
             "Christmas Saturday: walks past Sunday to Monday",
             new DateTime(2021, 12, 25), // Saturday
 			Array.Empty<DateTime>(),
             true,
             new DateTime(2021, 12, 27), // Monday
-		},
+		],
         [
             "Boxing Day Sunday: Monday free, stops on Monday",
             new DateTime(2021, 12, 26), // Sunday

@@ -97,7 +97,7 @@ public partial class ICryptoTransformExtensionsTests
     {
         using SimpleReversingCryptoTransform transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
 
-        var result = transform.TransformFinalBlock(Array.Empty<byte>());
+        var result = transform.TransformFinalBlock([]);
 
         Assert.IsNotNull(result);
     }
@@ -224,7 +224,7 @@ public partial class ICryptoTransformExtensionsTests
     {
         using SimpleReversingCryptoTransform transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
 
-        var result = transform.TransformFinalBlock(ReadOnlySpan<byte>.Empty);
+        var result = transform.TransformFinalBlock([]);
 
         Assert.IsNotNull(result);
     }

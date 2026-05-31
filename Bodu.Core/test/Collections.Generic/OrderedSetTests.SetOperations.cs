@@ -31,7 +31,7 @@ public partial class OrderedSetTests
     {
         OrderedSet<int> sut = CreateSet([1, 2, 3]);
 
-        sut.ExceptWith(Array.Empty<int>());
+        sut.ExceptWith([]);
 
         CollectionAssert.AreEqual(new[] { 1, 2, 3 }, SnapshotByIndexer(sut));
     }
@@ -102,7 +102,7 @@ public partial class OrderedSetTests
     {
         OrderedSet<int> sut = CreateSet([1, 2, 3]);
 
-        sut.IntersectWith(Array.Empty<int>());
+        sut.IntersectWith([]);
 
         Assert.AreEqual(0, sut.Count);
     }
@@ -195,7 +195,7 @@ public partial class OrderedSetTests
     {
         OrderedSet<int> sut = CreateSet([1, 2, 3]);
 
-        sut.SymmetricExceptWith(Array.Empty<int>());
+        sut.SymmetricExceptWith([]);
 
         CollectionAssert.AreEqual(new[] { 1, 2, 3 }, SnapshotByIndexer(sut));
     }
@@ -273,7 +273,7 @@ public partial class OrderedSetTests
     {
         OrderedSet<int> sut = CreateSet([1, 2, 3]);
 
-        sut.UnionWith(Array.Empty<int>());
+        sut.UnionWith([]);
 
         CollectionAssert.AreEqual(new[] { 1, 2, 3 }, SnapshotByIndexer(sut));
     }

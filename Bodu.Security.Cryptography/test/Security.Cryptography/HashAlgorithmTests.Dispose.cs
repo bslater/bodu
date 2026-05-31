@@ -147,7 +147,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
         }
 
         using TAlgorithm instance = CreateAlgorithm();
-        instance.ComputeHash(Array.Empty<byte>());
+        instance.ComputeHash([]);
         instance.Dispose();
 
         var value = field.GetValue(instance);
@@ -169,7 +169,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
 
         Assert.ThrowsExactly<ObjectDisposedException>(() =>
         {
-            _ = algorithm.ComputeHash(Array.Empty<byte>(), 0, 0);
+            _ = algorithm.ComputeHash([], 0, 0);
         });
     }
 

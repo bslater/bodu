@@ -34,7 +34,7 @@ public partial class NotableDateServiceTests
     public void Dispose_WhenInvokedOnNewService_ShouldNotThrow()
     {
         NotableDateService service = new(
-            ruleProviders: Array.Empty<INotableDateRuleProvider>(),
+            ruleProviders: [],
             workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 
         service.Dispose();

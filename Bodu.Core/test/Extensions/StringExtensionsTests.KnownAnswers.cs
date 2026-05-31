@@ -36,8 +36,8 @@ public partial class StringExtensionsTests
 
         WordCasingOptions casing = new()
         {
-            Acronyms = kat.Acronyms ?? Array.Empty<string>(),
-            MinorWords = kat.MinorWords ?? Array.Empty<string>(),
+            Acronyms = kat.Acronyms ?? [],
+            MinorWords = kat.MinorWords ?? [],
             Culture = culture,
             PreserveAcronyms = kat.PreserveExistingAcronyms,
             PreserveMixedCaseWords = kat.PreserveMixedCaseWords,

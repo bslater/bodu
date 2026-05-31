@@ -4,11 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Globalization.Calendar;
-using Bodu.Globalization.Calendar.Algorithms;
 using SysGlobal = System.Globalization;
 
-namespace Bodu.Globalization.Calendar.Providers;
+namespace Bodu.Globalization.Calendar.Algorithms;
 
 /// <summary>
 /// Resolves Gregorian Easter Sunday dates.

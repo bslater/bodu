@@ -45,7 +45,7 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void ToMatrix_WhenInnerArraysAreEmpty_ShouldProduceZeroColumnMatrix()
     {
-        int[][] source = [Array.Empty<int>(), Array.Empty<int>()];
+        int[][] source = [[], []];
 
         var result = source.ToMatrix(transpose: false);
 
@@ -60,7 +60,7 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void ToMatrix_WhenInnerArraysAreEmptyAndTransposed_ShouldProduceZeroRowMatrix()
     {
-        int[][] source = [Array.Empty<int>(), Array.Empty<int>()];
+        int[][] source = [[], []];
 
         var result = source.ToMatrix(transpose: true);
 

@@ -64,7 +64,7 @@ public sealed partial class Base64Tests
     /// Verifies that <see cref="Base64.IsValid" /> returns <see langword="true" /> for empty input.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenEmpty_ShouldReturnTrue() => Assert.IsTrue(Base64.IsValid(ReadOnlySpan<char>.Empty));
+    public void IsValid_WhenEmpty_ShouldReturnTrue() => Assert.IsTrue(Base64.IsValid([]));
 
     /// <summary>
     /// Regression: verifies that <see cref="Base64.IsValid" /> rejects excessive padding even in strict mode.

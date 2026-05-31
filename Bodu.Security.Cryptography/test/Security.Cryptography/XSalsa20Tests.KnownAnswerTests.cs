@@ -4,12 +4,12 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Security.Cryptography;
 
 using System.Security.Cryptography;
 using System.Text;
 using Bodu.Security.Cryptography.Contracts;
 
+namespace Bodu.Security.Cryptography;
 /// <summary>
 /// Locks the <see cref="XSalsa20" /> extended-nonce stream cipher and its HSalsa20 subkey-derivation core against the
 /// published NaCl / libsodium known-answer test vectors, and inherits the shared

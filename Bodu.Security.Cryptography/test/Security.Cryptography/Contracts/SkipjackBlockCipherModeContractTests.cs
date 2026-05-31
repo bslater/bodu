@@ -72,7 +72,7 @@ public sealed class SkipjackBlockCipherModeContractTests
             Key: s_referenceKey,
             IV: s_referenceIV,
             Plaintext: s_singleBlockPlaintext,
-            Ciphertext: Array.Empty<byte>()),
+            Ciphertext: []),
 
         new(
             Name: "CBC / PKCS7 — single full block",
@@ -82,7 +82,7 @@ public sealed class SkipjackBlockCipherModeContractTests
             Key: s_referenceKey,
             IV: s_referenceIV,
             Plaintext: s_singleBlockPlaintext,
-            Ciphertext: Array.Empty<byte>()),
+            Ciphertext: []),
 
         new(
             Name: "CBC / PKCS7 — two full blocks",
@@ -92,7 +92,7 @@ public sealed class SkipjackBlockCipherModeContractTests
             Key: s_referenceKey,
             IV: s_referenceIV,
             Plaintext: s_twoBlockPlaintext,
-            Ciphertext: Array.Empty<byte>()),
+            Ciphertext: []),
 
         new(
             Name: "CBC / None — two full blocks (no padding)",
@@ -102,7 +102,7 @@ public sealed class SkipjackBlockCipherModeContractTests
             Key: s_referenceKey,
             IV: s_referenceIV,
             Plaintext: s_twoBlockPlaintext,
-            Ciphertext: Array.Empty<byte>()),
+            Ciphertext: []),
 
         new(
             Name: "CFB / None — single full block",
@@ -112,6 +112,6 @@ public sealed class SkipjackBlockCipherModeContractTests
             Key: s_referenceKey,
             IV: s_referenceIV,
             Plaintext: s_singleBlockPlaintext,
-            Ciphertext: Array.Empty<byte>()),
+            Ciphertext: []),
     ];
 }

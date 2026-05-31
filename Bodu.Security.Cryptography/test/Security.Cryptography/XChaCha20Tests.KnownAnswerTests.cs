@@ -4,12 +4,12 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Security.Cryptography;
 
 using System.Reflection;
 using System.Security.Cryptography;
 using Bodu.Security.Cryptography.Contracts;
 
+namespace Bodu.Security.Cryptography;
 /// <summary>
 /// Locks the <see cref="XChaCha20" /> extended-nonce stream cipher and its HChaCha20 subkey-derivation core against the
 /// published <c>draft-irtf-cfrg-xchacha</c> known-answer test vectors, and inherits the shared

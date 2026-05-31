@@ -73,7 +73,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     {
         using TAlgorithm algorithm = CreateAlgorithm();
 
-        _ = algorithm.TransformBlock(Array.Empty<byte>(), 0, 0, null, 0);
+        _ = algorithm.TransformBlock([], 0, 0, null, 0);
 
         Assert.ThrowsExactly<CryptographicUnexpectedOperationException>(() =>
         {

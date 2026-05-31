@@ -47,7 +47,7 @@ public sealed class Iso7064Mod97_10Tests
     /// satisfy the algorithm's invariant.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenSequenceIsEmpty_ShouldReturnFalse() => Assert.IsFalse(Iso7064Mod97_10.IsValid(ReadOnlySpan<char>.Empty));
+    public void IsValid_WhenSequenceIsEmpty_ShouldReturnFalse() => Assert.IsFalse(Iso7064Mod97_10.IsValid([]));
 
     /// <summary>
     /// Verifies that <see cref="Iso7064Mod97_10.IsValid(ReadOnlySpan{char})" /> accepts a sequence whose body is

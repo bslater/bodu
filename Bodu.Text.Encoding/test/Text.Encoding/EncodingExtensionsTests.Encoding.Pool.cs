@@ -39,10 +39,10 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void GetBytesRented_WhenSpanIsEmpty_ShouldReturnEmptyArrayWithZeroWritten()
     {
-        var rented = System.Text.Encoding.UTF8.GetBytesRented(ReadOnlySpan<char>.Empty, out var written);
+        var rented = System.Text.Encoding.UTF8.GetBytesRented([], out var written);
 
         Assert.AreEqual(0, written);
-        Assert.AreSame(Array.Empty<byte>(), rented);
+        Assert.AreSame([], rented);
     }
 
     /// <summary>
@@ -88,10 +88,10 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void GetCharsRented_WhenSpanIsEmpty_ShouldReturnEmptyArrayWithZeroWritten()
     {
-        var rented = System.Text.Encoding.UTF8.GetCharsRented(ReadOnlySpan<byte>.Empty, out var written);
+        var rented = System.Text.Encoding.UTF8.GetCharsRented([], out var written);
 
         Assert.AreEqual(0, written);
-        Assert.AreSame(Array.Empty<char>(), rented);
+        Assert.AreSame([], rented);
     }
 
     /// <summary>
@@ -191,7 +191,7 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void GetBytesPooled_WhenSpanIsEmpty_ShouldReturnEmptyBuilder()
     {
-        using PooledBufferBuilder<byte> builder = System.Text.Encoding.UTF8.GetBytesPooled(ReadOnlySpan<char>.Empty);
+        using PooledBufferBuilder<byte> builder = System.Text.Encoding.UTF8.GetBytesPooled([]);
 
         Assert.AreEqual(0, builder.WrittenCount);
         Assert.IsTrue(builder.IsEmpty);
@@ -234,7 +234,7 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void GetCharsPooled_WhenSpanIsEmpty_ShouldReturnEmptyBuilder()
     {
-        using PooledBufferBuilder<char> builder = System.Text.Encoding.UTF8.GetCharsPooled(ReadOnlySpan<byte>.Empty);
+        using PooledBufferBuilder<char> builder = System.Text.Encoding.UTF8.GetCharsPooled([]);
 
         Assert.AreEqual(0, builder.WrittenCount);
         Assert.IsTrue(builder.IsEmpty);

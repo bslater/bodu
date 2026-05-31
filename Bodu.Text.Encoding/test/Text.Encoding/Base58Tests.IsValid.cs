@@ -44,7 +44,7 @@ public sealed partial class Base58Tests
     /// Verifies that <see cref="Base58.IsValid" /> returns <see langword="true" /> for empty input.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenEmpty_ShouldReturnTrue() => Assert.IsTrue(Base58.IsValid(ReadOnlySpan<char>.Empty));
+    public void IsValid_WhenEmpty_ShouldReturnTrue() => Assert.IsTrue(Base58.IsValid([]));
 
     /// <summary>
     /// Verifies that <see cref="Base58.IsValid" /> returns <see langword="false" /> for excluded ambiguous

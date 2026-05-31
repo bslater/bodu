@@ -176,7 +176,7 @@ public sealed class AlphanumericTests
     /// empty span without throwing.
     /// </summary>
     [TestMethod]
-    public void ValidateAlphanumeric_WhenSpanIsEmpty_ShouldNotThrow() => Alphanumeric.ValidateAlphanumeric(ReadOnlySpan<char>.Empty, "value");
+    public void ValidateAlphanumeric_WhenSpanIsEmpty_ShouldNotThrow() => Alphanumeric.ValidateAlphanumeric([], "value");
 
     // ─── ValidateCusip ────────────────────────────────────────────────────────────────────────
 
@@ -219,6 +219,6 @@ public sealed class AlphanumericTests
     /// without throwing.
     /// </summary>
     [TestMethod]
-    public void ValidateCusip_WhenSpanIsEmpty_ShouldNotThrow() => Alphanumeric.ValidateCusip(ReadOnlySpan<char>.Empty, "value");
+    public void ValidateCusip_WhenSpanIsEmpty_ShouldNotThrow() => Alphanumeric.ValidateCusip([], "value");
 
 }

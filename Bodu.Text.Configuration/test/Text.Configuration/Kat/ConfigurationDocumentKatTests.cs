@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Test.Kat;
 using Bodu.Text.Ini;
 
 namespace Bodu.Text.Configuration.Kat;

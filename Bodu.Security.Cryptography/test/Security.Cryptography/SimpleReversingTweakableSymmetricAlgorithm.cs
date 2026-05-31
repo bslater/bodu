@@ -129,8 +129,8 @@ public sealed class SimpleReversingTweakableSymmetricAlgorithm
 
     // ── Instance fields ───────────────────────────────────────────────────────────────────────
 
-    private bool disposed;
-    private CipherModeKind blockMode = CipherModeKind.CBC;
+    private bool _disposed;
+    private CipherModeKind _blockMode = CipherModeKind.CBC;
 
     // ── Constructor ───────────────────────────────────────────────────────────────────────────
 
@@ -173,13 +173,13 @@ public sealed class SimpleReversingTweakableSymmetricAlgorithm
         get
         {
             ThrowIfDisposed();
-            return blockMode;
+            return _blockMode;
         }
 
         set
         {
             ThrowIfDisposed();
-            blockMode = value;
+            _blockMode = value;
 
             // Keep the inherited ModeValue in sync for callers that inspect it directly.
             if (Enum.TryParse<CipherMode>(value.ToString(), out CipherMode mode) && Enum.IsDefined(mode))
@@ -223,7 +223,7 @@ public sealed class SimpleReversingTweakableSymmetricAlgorithm
 
         return new SimpleReversingCryptoTransform(
             CreateCipher(rgbKey, BlockSizeBytes, tweak),
-            blockMode, PaddingValue, rgbIV, encrypt: true);
+            _blockMode, PaddingValue, rgbIV, encrypt: true);
     }
 
     /// <summary>
@@ -253,7 +253,7 @@ public sealed class SimpleReversingTweakableSymmetricAlgorithm
 
         return new SimpleReversingCryptoTransform(
             CreateCipher(rgbKey, BlockSizeBytes, tweak),
-            blockMode, PaddingValue, rgbIV, encrypt: false);
+            _blockMode, PaddingValue, rgbIV, encrypt: false);
     }
 
     // ── Key, IV, and tweak generation ─────────────────────────────────────────────────────────
@@ -308,7 +308,7 @@ public sealed class SimpleReversingTweakableSymmetricAlgorithm
     /// </remarks>
     protected override void Dispose(bool disposing)
     {
-        if (!disposed)
+        if (!_disposed)
         {
             if (disposing)
             {
@@ -317,7 +317,7 @@ public sealed class SimpleReversingTweakableSymmetricAlgorithm
                 // TweakValue is zeroed by TweakableSymmetricAlgorithm.Dispose via base.Dispose below.
             }
 
-            disposed = true;
+            _disposed = true;
         }
 
         base.Dispose(disposing);
@@ -349,7 +349,7 @@ public sealed class SimpleReversingTweakableSymmetricAlgorithm
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ThrowIfDisposed() =>
 #if NET8_0_OR_GREATER
-        ObjectDisposedException.ThrowIf(disposed, this);
+        ObjectDisposedException.ThrowIf(_disposed, this);
 #else
         if (this.disposed) throw new ObjectDisposedException(nameof(SimpleReversingTweakableSymmetricAlgorithm));
 #endif

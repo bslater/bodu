@@ -36,7 +36,7 @@ public sealed partial class Pkcs7PaddingTests
         using SymmetricAlgorithm algorithm = CreateConfiguredAlgorithm(algorithmType, PaddingMode.PKCS7);
         var blockBytes = algorithm.BlockSize / 8;
 
-        var cipherText = algorithm.Encrypt(System.ReadOnlySpan<byte>.Empty);
+        var cipherText = algorithm.Encrypt([]);
 
         Assert.AreEqual(blockBytes, cipherText.Length,
             $"PKCS7-padded empty input on {algorithmType.Name} should produce exactly one block of ciphertext.");
@@ -63,7 +63,7 @@ public sealed partial class Pkcs7PaddingTests
         var blockBytes = algorithm.BlockSize / 8;
 
         using ICryptoTransform transform = algorithm.CreateEncryptor();
-        var result = transform.TransformFinalBlock(System.Array.Empty<byte>(), 0, 0);
+        var result = transform.TransformFinalBlock([], 0, 0);
 
         Assert.AreEqual(blockBytes, result.Length,
             $"TransformFinalBlock with zero-length input under PKCS7 on {algorithmType.Name} " +
@@ -89,7 +89,7 @@ public sealed partial class Pkcs7PaddingTests
         using ICryptoTransform transform = algorithm.CreateEncryptor();
         var outputBuffer = new byte[blockBytes];
 
-        var written = transform.TransformBlock(System.Array.Empty<byte>(), 0, 0, outputBuffer, 0);
+        var written = transform.TransformBlock([], 0, 0, outputBuffer, 0);
 
         Assert.AreEqual(0, written,
             $"TransformBlock with inputCount == 0 on {algorithmType.Name} must return 0 rather than throw.");

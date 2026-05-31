@@ -71,7 +71,7 @@ public partial class PooledBufferBuilderTests
         var destination = new[] { 7, 8, 9 };
 
         var copied = builder.TryCopyTo(destination);
-        var copiedToEmpty = builder.TryCopyTo(Span<int>.Empty);
+        var copiedToEmpty = builder.TryCopyTo([]);
 
         Assert.IsTrue(copied);
         Assert.IsTrue(copiedToEmpty);

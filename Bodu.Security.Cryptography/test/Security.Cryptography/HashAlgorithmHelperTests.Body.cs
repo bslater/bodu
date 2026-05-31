@@ -180,7 +180,7 @@ public sealed class HashAlgorithmHelperBodyTests
 
         protected override void HashCore(byte[] array, int ibStart, int cbSize) { }
 
-        protected override byte[] HashFinal() => Array.Empty<byte>();
+        protected override byte[] HashFinal() => [];
 
         protected override bool TryHashFinal(Span<byte> destination, out int bytesWritten)
         {

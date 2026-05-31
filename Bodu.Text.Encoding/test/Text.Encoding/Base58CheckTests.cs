@@ -141,7 +141,7 @@ public sealed class Base58CheckTests
     [TestMethod]
     public void RoundTrip_ForEmptyPayload_ShouldRecoverEmptyArray()
     {
-        var encoded = Base58Check.Encode(ReadOnlySpan<byte>.Empty);
+        var encoded = Base58Check.Encode([]);
         var decoded = Base58Check.Decode(encoded.AsSpan());
 
         Assert.AreEqual(0, decoded.Length);

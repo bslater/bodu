@@ -26,7 +26,7 @@ public abstract partial class SkeinTests<TTest, TAlgorithm, TVariant>
     public void GetInitialChainingValueWords_WhenCalledTwice_ShouldReturnIdenticalContent()
     {
         using var algorithm = new TAlgorithm();
-        algorithm.Key = System.Array.Empty<byte>();
+        algorithm.Key = [];
 
         var first = algorithm.GetInitialChainingValueWords();
         var second = algorithm.GetInitialChainingValueWords();
@@ -42,7 +42,7 @@ public abstract partial class SkeinTests<TTest, TAlgorithm, TVariant>
     public void GetInitialChainingValueWords_ShouldReturnDefensiveCopy()
     {
         using var algorithm = new TAlgorithm();
-        algorithm.Key = System.Array.Empty<byte>();
+        algorithm.Key = [];
 
         var first = algorithm.GetInitialChainingValueWords();
         first[0] = 0xDEADBEEFDEADBEEFUL;
@@ -64,7 +64,7 @@ public abstract partial class SkeinTests<TTest, TAlgorithm, TVariant>
     public void GetInitialChainingValueWords_ShouldReturnStateSizedWordArray()
     {
         using var algorithm = new TAlgorithm();
-        algorithm.Key = System.Array.Empty<byte>();
+        algorithm.Key = [];
 
         var words = algorithm.GetInitialChainingValueWords();
 
@@ -83,7 +83,7 @@ public abstract partial class SkeinTests<TTest, TAlgorithm, TVariant>
     {
         using var algorithm = new TAlgorithm();
 
-        algorithm.Key = System.Array.Empty<byte>();
+        algorithm.Key = [];
         var unkeyed = algorithm.GetInitialChainingValueWords();
 
         algorithm.Key = SkeinTestKey;

@@ -110,15 +110,16 @@ public sealed partial class NotableDateServiceTests
         // original anchor, the second adjustment evaluates IfWeekend on the Saturday and yields Monday (anchor + 2).
         NotableDateRule rule = Fixed("Layered Holiday", 1, 1, nonWorking: true) with
         {
-            Adjustments = ImmutableArray.Create(
+            Adjustments =
+            [
                 new ObservanceAdjustment
-                {
-                    Key = "always-plus-one",
-                    Trigger = AdjustmentTrigger.Always,
-                    Action = AdjustmentAction.AddDays,
-                    OffsetDays = 1,
-                    Priority = 10,
-                },
+                        {
+                            Key = "always-plus-one",
+                            Trigger = AdjustmentTrigger.Always,
+                            Action = AdjustmentAction.AddDays,
+                            OffsetDays = 1,
+                            Priority = 10,
+                        },
                 new ObservanceAdjustment
                 {
                     Key = "weekend-plus-two",
@@ -126,7 +127,8 @@ public sealed partial class NotableDateServiceTests
                     Action = AdjustmentAction.AddDays,
                     OffsetDays = 2,
                     Priority = 20,
-                }),
+                },
+            ],
         };
 
         NotableDateService service = BuildService(rule);
@@ -159,12 +161,12 @@ public sealed partial class NotableDateServiceTests
         // there. The pipeline emits a single adjusted occurrence rather than a (base, adjusted) pair.
         NotableDateRule rule = Fixed("Walk Trigger", 1, 1) with
         {
-            Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+            Adjustments = [new ObservanceAdjustment
             {
                 Key = "walk",
                 Trigger = AdjustmentTrigger.Always,
                 Action = AdjustmentAction.MoveToNextNonWorkingDay,
-            }),
+            }],
         };
 
         NotableDateService service = BuildService(rule);
@@ -190,12 +192,12 @@ public sealed partial class NotableDateServiceTests
     {
         NotableDateRule rule = Fixed("Unreachable Shift", 1, 1) with
         {
-            Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+            Adjustments = [new ObservanceAdjustment
             {
                 Key = "always-next-non-working",
                 Trigger = AdjustmentTrigger.Always,
                 Action = AdjustmentAction.MoveToNextNonWorkingDay,
-            }),
+            }],
         };
 
         // Every day is a weekend, so IsNonWorkingDay always returns true; the walk never finds a working day and falls back.
@@ -227,12 +229,12 @@ public sealed partial class NotableDateServiceTests
         // bounded walk terminates there and emits a single adjusted occurrence on 1 Jan 2026.
         NotableDateRule walkTrigger = Fixed("Walk Trigger", 12, 31) with
         {
-            Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+            Adjustments = [new ObservanceAdjustment
             {
                 Key = "walk",
                 Trigger = AdjustmentTrigger.Always,
                 Action = AdjustmentAction.MoveToNextNonWorkingDay,
-            }),
+            }],
         };
 
         NotableDateService service = BuildService(walkTrigger);

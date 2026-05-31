@@ -10,7 +10,7 @@ namespace Bodu.Security.Cryptography;
 
 public partial class CryptoHelpersTests
 {
-    private static readonly KeySizes[] LegalBlockSizesForBlockSize = [new KeySizes(128, 128, 0)];
+    private static readonly KeySizes[] s_legalBlockSizesForBlockSize = [new KeySizes(128, 128, 0)];
 
     /// <summary>
     /// Verifies that <see cref="CryptoHelpers.ThrowIfInvalidBlockSize(byte[], int, KeySizes[], string)"/> does not
@@ -20,7 +20,7 @@ public partial class CryptoHelpersTests
     public void ThrowIfInvalidBlockSize_WhenBlockSizeMatches_ShouldNotThrow()
     {
         var block = new byte[16];
-        CryptoHelpers.ThrowIfInvalidBlockSize(block, 128, LegalBlockSizesForBlockSize);
+        CryptoHelpers.ThrowIfInvalidBlockSize(block, 128, s_legalBlockSizesForBlockSize);
     }
 
     /// <summary>
@@ -32,7 +32,7 @@ public partial class CryptoHelpersTests
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            CryptoHelpers.ThrowIfInvalidBlockSize(null!, 128, LegalBlockSizesForBlockSize);
+            CryptoHelpers.ThrowIfInvalidBlockSize(null!, 128, s_legalBlockSizesForBlockSize);
         });
     }
 
@@ -64,7 +64,7 @@ public partial class CryptoHelpersTests
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
-            CryptoHelpers.ThrowIfInvalidBlockSize(block, expectedBits, LegalBlockSizesForBlockSize);
+            CryptoHelpers.ThrowIfInvalidBlockSize(block, expectedBits, s_legalBlockSizesForBlockSize);
         });
     }
 }

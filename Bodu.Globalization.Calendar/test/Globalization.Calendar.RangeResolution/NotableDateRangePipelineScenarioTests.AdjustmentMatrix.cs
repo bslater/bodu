@@ -222,10 +222,10 @@ public sealed partial class NotableDateRangePipelineScenarioTests
             Month = 7,
             Day = 7,
             IsNonWorkingDay = false,
-            Adjustments = ImmutableArray.Create(MakeAddOneDayAdjustment() with
+            Adjustments = [MakeAddOneDayAdjustment() with
             {
                 Trigger = AdjustmentTrigger.IfNonWorkingDay,
-            }),
+            }],
         };
 
         NotableDateService service = BuildService(blocker, probe);
@@ -254,10 +254,10 @@ public sealed partial class NotableDateRangePipelineScenarioTests
             Month = 7,
             Day = 7, // Tue 7 Jul 2026 — a regular working day.
             IsNonWorkingDay = false,
-            Adjustments = ImmutableArray.Create(MakeAddOneDayAdjustment() with
+            Adjustments = [MakeAddOneDayAdjustment() with
             {
                 Trigger = AdjustmentTrigger.IfNonWorkingDay,
-            }),
+            }],
         };
 
         NotableDateService service = BuildService(probe);
@@ -373,7 +373,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
             OffsetDays = 0,
         };
 
-        NotableDateRule probe = MakeProbeRule(2026, 7, 1, ImmutableArray.Create(adjustment));
+        NotableDateRule probe = MakeProbeRule(2026, 7, 1, [adjustment]);
         NotableDateService service = BuildService(probe);
 
         IReadOnlyList<NotableDate> resolved = service.ResolveNotableDatesInRange(
@@ -398,11 +398,11 @@ public sealed partial class NotableDateRangePipelineScenarioTests
             year: 2026,
             month: 7,
             day: 1,
-            adjustments: ImmutableArray.Create(MakeAddOneDayAdjustment() with
+            adjustments: [MakeAddOneDayAdjustment() with
             {
                 Trigger = AdjustmentTrigger.Always,
                 Action = AdjustmentAction.MoveToNextNonWorkingDay,
-            }));
+            }]);
 
         NotableDateService noBlockerService = BuildService(withoutBlockers);
         NotableDate noBlockerEmission = noBlockerService.ResolveNotableDatesInRange(
@@ -455,12 +455,12 @@ public sealed partial class NotableDateRangePipelineScenarioTests
             Month = 7,
             Day = 1,
             IsNonWorkingDay = true,
-            Adjustments = ImmutableArray.Create(MakeAddOneDayAdjustment() with
+            Adjustments = [MakeAddOneDayAdjustment() with
             {
                 Trigger = AdjustmentTrigger.Always,
                 Action = AdjustmentAction.ReplaceWithNamedDate,
                 TargetRuleName = "Target",
-            }),
+            }],
         };
 
         NotableDateService service = BuildService(target, replacement);
@@ -501,15 +501,16 @@ public sealed partial class NotableDateRangePipelineScenarioTests
             Month = 12,
             Day = 25,
             IsNonWorkingDay = true,
-            Adjustments = ImmutableArray.Create(
+            Adjustments =
+            [
                 MakeAddOneDayAdjustment() with
-                {
-                    Key = "first",
-                    Priority = 10,
-                    Trigger = AdjustmentTrigger.IfWeekday,
-                    Action = AdjustmentAction.AddDays,
-                    OffsetDays = 1,
-                },
+                        {
+                            Key = "first",
+                            Priority = 10,
+                            Trigger = AdjustmentTrigger.IfWeekday,
+                            Action = AdjustmentAction.AddDays,
+                            OffsetDays = 1,
+                        },
                 MakeAddOneDayAdjustment() with
                 {
                     Key = "second",
@@ -517,7 +518,8 @@ public sealed partial class NotableDateRangePipelineScenarioTests
                     Trigger = AdjustmentTrigger.IfWeekday,
                     Action = AdjustmentAction.AddDays,
                     OffsetDays = 3,
-                }),
+                },
+            ],
         };
 
         NotableDateService service = BuildService(probe);
@@ -550,15 +552,16 @@ public sealed partial class NotableDateRangePipelineScenarioTests
             Month = 12,
             Day = 26,
             IsNonWorkingDay = true,
-            Adjustments = ImmutableArray.Create(
+            Adjustments =
+            [
                 MakeAddOneDayAdjustment() with
-                {
-                    Key = "weekday-only",
-                    Priority = 10,
-                    Trigger = AdjustmentTrigger.IfWeekday,
-                    Action = AdjustmentAction.AddDays,
-                    OffsetDays = 1,
-                },
+                        {
+                            Key = "weekday-only",
+                            Priority = 10,
+                            Trigger = AdjustmentTrigger.IfWeekday,
+                            Action = AdjustmentAction.AddDays,
+                            OffsetDays = 1,
+                        },
                 MakeAddOneDayAdjustment() with
                 {
                     Key = "weekend-only",
@@ -566,7 +569,8 @@ public sealed partial class NotableDateRangePipelineScenarioTests
                     Trigger = AdjustmentTrigger.IfWeekend,
                     Action = AdjustmentAction.AddDays,
                     OffsetDays = 2,
-                }),
+                },
+            ],
         };
 
         NotableDateService service = BuildService(probe);
@@ -643,7 +647,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
     /// <param name="expectedActivation">Whether the adjustment is expected to fire.</param>
     private static void AssertCustomAdjustmentActivation(ObservanceAdjustment adjustment, DateTime anchor, bool expectedActivation)
     {
-        NotableDateRule probe = MakeProbeRule(anchor.Year, anchor.Month, anchor.Day, ImmutableArray.Create(adjustment));
+        NotableDateRule probe = MakeProbeRule(anchor.Year, anchor.Month, anchor.Day, [adjustment]);
         NotableDateService service = BuildService(probe);
 
         // Window covers the anchor and any potential AddDays(+1) shift. Always extend at least one day past the anchor so the
@@ -677,7 +681,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
     /// <param name="expectedAdjusted">The expected adjusted date.</param>
     private static void AssertActionShiftDate(ObservanceAdjustment adjustment, DateTime anchor, DateTime expectedAdjusted)
     {
-        NotableDateRule probe = MakeProbeRule(anchor.Year, anchor.Month, anchor.Day, ImmutableArray.Create(adjustment));
+        NotableDateRule probe = MakeProbeRule(anchor.Year, anchor.Month, anchor.Day, [adjustment]);
         NotableDateService service = BuildService(probe);
 
         DateTime windowStart = anchor < expectedAdjusted ? anchor : expectedAdjusted;

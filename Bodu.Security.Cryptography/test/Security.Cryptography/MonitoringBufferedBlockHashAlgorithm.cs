@@ -144,5 +144,5 @@ public sealed class MonitoringBufferedBlockHashAlgorithm
 
     /// <inheritdoc />
     protected override byte[] HashFinal() =>
-        Array.Empty<byte>();
+        [];
 }

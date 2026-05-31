@@ -229,14 +229,14 @@ public sealed partial class NotableDateRangePipelineScenarioTests
             FirstYear = year,
             LastYear = year,
             IsNonWorkingDay = true,
-            Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+            Adjustments = [new ObservanceAdjustment
             {
                 Key = "leap-year-shift",
                 Trigger = AdjustmentTrigger.IfLeapYear,
                 Action = AdjustmentAction.AddDays,
                 OffsetDays = 1,
                 IsNonWorkingDay = true,
-            }),
+            }],
         };
 
         NotableDateService service = BuildService(rule);
@@ -289,14 +289,14 @@ public sealed partial class NotableDateRangePipelineScenarioTests
             Day = day,
             FirstYear = year,
             LastYear = year,
-            Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+            Adjustments = [new ObservanceAdjustment
             {
                 Key = "before-feb-29",
                 Trigger = AdjustmentTrigger.IfBeforeFixedDate,
                 ComparisonDate = new DateTime(2024, 2, 29), // Year is replaced at evaluation; needs to be a leap year for this constructor to succeed.
                 Action = AdjustmentAction.AddDays,
                 OffsetDays = 1,
-            }),
+            }],
         };
 
         NotableDateService service = BuildService(rule);
@@ -372,13 +372,13 @@ public sealed partial class NotableDateRangePipelineScenarioTests
             Month = 2,
             Day = 29,
             IsNonWorkingDay = true,
-            Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+            Adjustments = [new ObservanceAdjustment
             {
                 Key = "weekend-substitute",
                 Trigger = AdjustmentTrigger.IfWeekend,
                 Action = AdjustmentAction.MoveToNextNonWorkingDay,
                 IsNonWorkingDay = true,
-            }),
+            }],
         };
 
         NotableDateService service = BuildService(rule);
@@ -408,13 +408,13 @@ public sealed partial class NotableDateRangePipelineScenarioTests
             Month = 2,
             Day = 29,
             IsNonWorkingDay = true,
-            Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+            Adjustments = [new ObservanceAdjustment
             {
                 Key = "weekend-substitute",
                 Trigger = AdjustmentTrigger.IfWeekend,
                 Action = AdjustmentAction.MoveToNextNonWorkingDay,
                 IsNonWorkingDay = true,
-            }),
+            }],
         };
 
         NotableDateService service = BuildService(rule);

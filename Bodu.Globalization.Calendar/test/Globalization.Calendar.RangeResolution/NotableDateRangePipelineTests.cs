@@ -90,13 +90,13 @@ public sealed class NotableDateRangePipelineTests
             Month = 12,
             Day = 31,
             IsNonWorkingDay = true,
-            Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+            Adjustments = [new ObservanceAdjustment
             {
                 Key = "weekend-substitute",
                 Trigger = AdjustmentTrigger.IfWeekend,
                 Action = AdjustmentAction.MoveToNextNonWorkingDay,
                 IsNonWorkingDay = true,
-            }),
+            }],
         };
 
         NotableDateRule secondJan = new()
@@ -203,13 +203,13 @@ public sealed class NotableDateRangePipelineTests
             Month = 12,
             Day = 31,
             IsNonWorkingDay = true,
-            Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+            Adjustments = [new ObservanceAdjustment
             {
                 Key = "weekend-substitute",
                 Trigger = AdjustmentTrigger.IfWeekend,
                 Action = AdjustmentAction.MoveToNextNonWorkingDay,
                 IsNonWorkingDay = true,
-            }),
+            }],
         };
 
         NotableDateRule secondJan = new()
@@ -260,13 +260,13 @@ public sealed class NotableDateRangePipelineTests
             Month = 12,
             Day = 31,
             IsNonWorkingDay = true,
-            Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+            Adjustments = [new ObservanceAdjustment
             {
                 Key = "weekend-substitute",
                 Trigger = AdjustmentTrigger.IfWeekend,
                 Action = AdjustmentAction.MoveToNextNonWorkingDay,
                 IsNonWorkingDay = true,
-            }),
+            }],
         };
 
         NotableDateRule secondJan = new()
@@ -322,14 +322,14 @@ public sealed class NotableDateRangePipelineTests
             AnchorRuleName = "Year-End Anchor",
             OffsetDays = 1,
             IsNonWorkingDay = true,
-            Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+            Adjustments = [new ObservanceAdjustment
             {
                 Key = "shift-5",
                 Trigger = AdjustmentTrigger.Always,
                 Action = AdjustmentAction.AddDays,
                 OffsetDays = 5,
                 IsNonWorkingDay = true,
-            }),
+            }],
         };
 
         NotableDateService service = new(
@@ -407,14 +407,14 @@ public sealed class NotableDateRangePipelineTests
             Month = 12,
             Day = 1,
             IsNonWorkingDay = true,
-            Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+            Adjustments = [new ObservanceAdjustment
             {
                 Key = "shift-60",
                 Trigger = AdjustmentTrigger.Always,
                 Action = AdjustmentAction.AddDays,
                 OffsetDays = 60,
                 IsNonWorkingDay = true,
-            }),
+            }],
         };
 
         NotableDateService service = new(
@@ -456,7 +456,7 @@ public sealed class NotableDateRangePipelineTests
             Month = 11,
             Day = 1,
             IsNonWorkingDay = true,
-            Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+            Adjustments = [new ObservanceAdjustment
             {
                 Key = "ninety-day-shift",
                 Trigger = AdjustmentTrigger.Custom,
@@ -464,7 +464,7 @@ public sealed class NotableDateRangePipelineTests
                 HandlerKey = "ninety-day-shift",
                 MaxAdjustmentReachDays = shiftDays,
                 IsNonWorkingDay = true,
-            }),
+            }],
         };
 
         NotableDateService service = new(

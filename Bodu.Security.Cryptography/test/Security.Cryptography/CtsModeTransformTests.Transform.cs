@@ -38,7 +38,7 @@ public sealed partial class CtsModeTransformTests
         var iv = new byte[ExpectedBlockSize];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
-            CreateTransform(cipher, iv).Transform(Array.Empty<byte>(), Array.Empty<byte>(), encrypt: true),
+            CreateTransform(cipher, iv).Transform([], [], encrypt: true),
             "CTS must throw ArgumentException for empty input.");
     }
 

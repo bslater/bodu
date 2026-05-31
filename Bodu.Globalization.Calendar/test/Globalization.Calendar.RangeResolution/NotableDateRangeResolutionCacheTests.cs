@@ -321,7 +321,7 @@ public sealed class NotableDateRangeResolutionCacheTests
             IsNonWorkingDay = isNonWorking,
             TerritoryCode = territory,
             CalendarType = calendarType,
-            Tags = ImmutableHashSet<string>.Empty,
+            Tags = [],
         };
 
         return new NotableDateCacheEntry(profile, year, notable, state);

@@ -46,7 +46,7 @@ public sealed partial class EncodingExtensionsTests
     {
         var actual = ReadOnlySpan<byte>.Empty.Transcode(System.Text.Encoding.UTF8, System.Text.Encoding.Unicode);
 
-        Assert.AreSame(Array.Empty<byte>(), actual);
+        Assert.AreSame([], actual);
     }
 
     /// <summary>

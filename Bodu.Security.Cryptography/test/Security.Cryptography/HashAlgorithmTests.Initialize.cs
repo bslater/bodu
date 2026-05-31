@@ -110,7 +110,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
         algorithm.TransformBlock(CryptoTestUtilities.ByteSequence256, 0, 128, null, 0);
         algorithm.Initialize();
 
-        _ = algorithm.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
+        _ = algorithm.TransformFinalBlock([], 0, 0);
 
         CollectionAssert.AreEqual(ExpectedEmptyInputHash, algorithm.Hash);
     }

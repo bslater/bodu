@@ -33,7 +33,7 @@ public sealed partial class Base64Tests
     [DataRow(Base64Variant.Mime)]
     public void Encode_WhenEmptyByteArray_ShouldReturnEmptyString(Base64Variant variant)
     {
-        var actual = Base64.Encode(Array.Empty<byte>(), variant);
+        var actual = Base64.Encode([], variant);
 
         Assert.AreEqual(string.Empty, actual);
     }
@@ -45,13 +45,13 @@ public sealed partial class Base64Tests
     [TestMethod]
     public void TryDecode_WhenSourceIsEmpty_ShouldReturnTrueAndZeroBytesRegardlessOfDestination()
     {
-        Assert.IsTrue(Base64.TryDecode(ReadOnlySpan<char>.Empty, new byte[1], out var t1));
+        Assert.IsTrue(Base64.TryDecode([], new byte[1], out var t1));
         Assert.AreEqual(0, t1);
 
-        Assert.IsTrue(Base64.TryDecode(ReadOnlySpan<char>.Empty, Array.Empty<byte>(), out var t2));
+        Assert.IsTrue(Base64.TryDecode([], [], out var t2));
         Assert.AreEqual(0, t2);
 
-        Assert.IsTrue(Base64.TryDecode(ReadOnlySpan<char>.Empty, new byte[100], out var t3));
+        Assert.IsTrue(Base64.TryDecode([], new byte[100], out var t3));
         Assert.AreEqual(0, t3);
     }
 
@@ -62,13 +62,13 @@ public sealed partial class Base64Tests
     [TestMethod]
     public void TryEncode_WhenSourceIsEmpty_ShouldReturnTrueAndZeroCharsRegardlessOfDestination()
     {
-        Assert.IsTrue(Base64.TryEncode(ReadOnlySpan<byte>.Empty, new char[1], out var t1));
+        Assert.IsTrue(Base64.TryEncode([], new char[1], out var t1));
         Assert.AreEqual(0, t1);
 
-        Assert.IsTrue(Base64.TryEncode(ReadOnlySpan<byte>.Empty, Array.Empty<char>(), out var t2));
+        Assert.IsTrue(Base64.TryEncode([], [], out var t2));
         Assert.AreEqual(0, t2);
 
-        Assert.IsTrue(Base64.TryEncode(ReadOnlySpan<byte>.Empty, new char[100], out var t3));
+        Assert.IsTrue(Base64.TryEncode([], new char[100], out var t3));
         Assert.AreEqual(0, t3);
     }
 

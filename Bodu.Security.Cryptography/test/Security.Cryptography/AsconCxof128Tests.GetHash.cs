@@ -19,7 +19,7 @@ public partial class AsconCxof128Tests
         byte[] message = [0x01, 0x02, 0x03, 0x04];
 
         using var cxof = new AsconCxof128();
-        cxof.Customize(ReadOnlySpan<byte>.Empty);
+        cxof.Customize([]);
         cxof.Absorb(message);
         var cxofOutput = cxof.GetHash(32);
 

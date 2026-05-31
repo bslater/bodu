@@ -118,7 +118,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     public async Task ComputeHashAsync_WhenStreamIsEmpty_ShouldReturnExpectedHash()
     {
         using TAlgorithm algorithm = CreateAlgorithm();
-        using var stream = new MemoryStream(Array.Empty<byte>());
+        using var stream = new MemoryStream([]);
 
         var actual = await algorithm.ComputeHashAsync(stream);
 

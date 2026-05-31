@@ -45,7 +45,7 @@ public sealed class Code39Mod43Tests
     /// Verifies that <see cref="Code39Mod43.IsValid(ReadOnlySpan{char})" /> rejects the empty span.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenSequenceIsEmpty_ShouldReturnFalse() => Assert.IsFalse(Code39Mod43.IsValid(ReadOnlySpan<char>.Empty));
+    public void IsValid_WhenSequenceIsEmpty_ShouldReturnFalse() => Assert.IsFalse(Code39Mod43.IsValid([]));
 
     /// <summary>
     /// Verifies that <see cref="Code39Mod43.IsValid(ReadOnlySpan{char})" /> rejects a sequence whose body contains

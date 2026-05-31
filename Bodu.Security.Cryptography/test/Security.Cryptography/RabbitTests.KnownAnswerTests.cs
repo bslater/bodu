@@ -4,12 +4,12 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Security.Cryptography;
 
 using System.Reflection;
 using System.Security.Cryptography;
 using Bodu.Security.Cryptography.Contracts;
 
+namespace Bodu.Security.Cryptography;
 /// <summary>
 /// Locks the <see cref="Rabbit" /> stream cipher against the published RFC 4503 Appendix A conformance vectors and
 /// Appendix B internal-state debugging vectors, and inherits the shared

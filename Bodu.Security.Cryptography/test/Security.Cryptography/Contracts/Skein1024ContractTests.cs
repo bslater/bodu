@@ -28,7 +28,7 @@ public sealed class Skein1024ContractTests : CryptoHashContractTests<Skein1024>
     [
         new(
             "Skein-1024-1024 empty",
-            Input: Array.Empty<byte>(),
+            Input: [],
             ExpectedDigest: Convert.FromHexString(
                 "0FFF9563BB3279289227AC77D319B6FFF8D7E9F09DA1247B72A0A265CD6D2A62" +
                 "645AD547ED8193DB48CFF847C06494A03F55666D3B47EB4C20456C9373C86297" +

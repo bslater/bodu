@@ -29,7 +29,7 @@ public sealed class AsconHash256ContractTests : CryptoHashContractTests<AsconHas
     [
         new(
             "Ascon-Hash256 empty",
-            Input: Array.Empty<byte>(),
+            Input: [],
             ExpectedDigest: Convert.FromHexString("0B3BE5850F2F6B98CAF29F8FDEA89B64A1FA70AA249B8F839BD53BAA304D92B2"),
             OutputLengthBytes: 32,
             Key: null),

@@ -163,7 +163,7 @@ public static partial class Base58
         }
 
         var decoded = value.IsZero
-            ? Array.Empty<byte>()
+            ? []
             : value.ToByteArray(isUnsigned: true, isBigEndian: true);
 
         if (leadingZeros == 0)

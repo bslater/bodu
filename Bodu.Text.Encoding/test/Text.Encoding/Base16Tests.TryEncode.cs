@@ -118,7 +118,7 @@ public sealed partial class Base16Tests
     {
         var destination = new char[4];
 
-        var ok = Base16.TryEncode(ReadOnlySpan<byte>.Empty, destination, out var charsWritten);
+        var ok = Base16.TryEncode([], destination, out var charsWritten);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(0, charsWritten);

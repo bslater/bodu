@@ -63,7 +63,7 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
         byte[] ciphertext;
         using (ICryptoTransform encryptor = algorithm.CreateEncryptor())
         {
-            ciphertext = encryptor.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
+            ciphertext = encryptor.TransformFinalBlock([], 0, 0);
         }
 
         byte[] recovered;

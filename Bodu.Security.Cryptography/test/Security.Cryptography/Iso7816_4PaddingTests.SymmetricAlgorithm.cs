@@ -32,7 +32,7 @@ public sealed partial class Iso7816_4PaddingTests
         using SymmetricAlgorithm algorithm = CreateConfiguredAlgorithm(algorithmType, PaddingModeKind.ISO7816_4);
         var blockBytes = algorithm.BlockSize / 8;
 
-        var cipherText = EncryptThroughCryptoStream(algorithm, System.Array.Empty<byte>());
+        var cipherText = EncryptThroughCryptoStream(algorithm, []);
 
         Assert.AreEqual(blockBytes, cipherText.Length,
             $"Empty plaintext under ISO7816-4 on {algorithmType.Name} should produce exactly one block of padded ciphertext.");

@@ -188,8 +188,8 @@ public interface IAeadBlockCipherModeTransform
     /// </exception>
     /// <remarks>
     /// <para>
-    /// <strong>Authentication failure contract.</strong> All implementations honour the same observable guarantee
-    /// on tag mismatch: <see cref="CryptographicException" /> is thrown and no plaintext is released to the caller.
+    /// <strong>Authentication failure contract.</strong> All implementations honour the same observable guarantee on
+    /// tag mismatch: <see cref="CryptographicException" /> is thrown and no plaintext is released to the caller.
     /// Implementations achieve this in one of two ways:
     /// </para>
     /// <list type="bullet">

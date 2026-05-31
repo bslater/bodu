@@ -31,7 +31,7 @@ public sealed partial class Ansix923PaddingTests
         using SymmetricAlgorithm algorithm = CreateConfiguredAlgorithm(algorithmType, PaddingMode.ANSIX923);
         var blockBytes = algorithm.BlockSize / 8;
 
-        var cipherText = EncryptThroughCryptoStream(algorithm, System.Array.Empty<byte>());
+        var cipherText = EncryptThroughCryptoStream(algorithm, []);
 
         Assert.AreEqual(blockBytes, cipherText.Length,
             $"Empty plaintext under ANSIX923 on {algorithmType.Name} should produce exactly one block of padded ciphertext.");

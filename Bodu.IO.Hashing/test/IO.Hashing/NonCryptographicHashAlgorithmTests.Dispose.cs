@@ -35,7 +35,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
 
         Assert.ThrowsExactly<ObjectDisposedException>(() =>
         {
-            algorithm.Append(ReadOnlySpan<byte>.Empty);
+            algorithm.Append([]);
         });
     }
 

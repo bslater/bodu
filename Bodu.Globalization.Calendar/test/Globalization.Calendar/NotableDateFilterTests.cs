@@ -33,7 +33,7 @@ public sealed partial class NotableDateFilterTests
             Month = 1,
             Day = 1,
             IsNonWorkingDay = isNonWorkingDay,
-            Tags = tags ?? ImmutableHashSet<string>.Empty,
+            Tags = tags ?? [],
             DurationDays = durationDays,
         };
 
@@ -51,7 +51,7 @@ public sealed partial class NotableDateFilterTests
             Date = date ?? new DateTime(2024, 1, 1),
             Category = category,
             IsNonWorkingDay = isNonWorkingDay,
-            Tags = tags ?? ImmutableHashSet<string>.Empty,
+            Tags = tags ?? [],
             DurationDays = durationDays,
             AdjustmentReason = adjustmentReason,
         };
@@ -178,7 +178,7 @@ public sealed partial class NotableDateFilterTests
     public void WithTag_WhenRuleHasMatchingTag_IsRuleEligibleReturnsTrue()
     {
         var filter = NotableDateFilter.WithTag("Public");
-        NotableDateRule rule = MakeRule(tags: ImmutableHashSet.Create("public", "Federal"));
+        NotableDateRule rule = MakeRule(tags: ["public", "Federal"]);
 
         Assert.IsTrue(filter.IsRuleEligible(rule));
     }
@@ -190,7 +190,7 @@ public sealed partial class NotableDateFilterTests
     public void WithTag_WhenRuleDoesNotHaveTag_IsRuleEligibleReturnsFalse()
     {
         var filter = NotableDateFilter.WithTag("Public");
-        NotableDateRule rule = MakeRule(tags: ImmutableHashSet.Create("Christian"));
+        NotableDateRule rule = MakeRule(tags: ["Christian"]);
 
         Assert.IsFalse(filter.IsRuleEligible(rule));
     }
@@ -203,7 +203,7 @@ public sealed partial class NotableDateFilterTests
     public void WithTag_WhenDateHasMatchingTag_IsMatchReturnsTrue()
     {
         var filter = NotableDateFilter.WithTag("Federal");
-        NotableDate date = MakeDate(tags: ImmutableHashSet.Create("FEDERAL"));
+        NotableDate date = MakeDate(tags: ["FEDERAL"]);
 
         Assert.IsTrue(filter.IsMatch(date));
     }
@@ -246,7 +246,7 @@ public sealed partial class NotableDateFilterTests
     public void WithAnyTag_WhenRuleHasAtLeastOneMatchingTag_IsRuleEligibleReturnsTrue()
     {
         var filter = NotableDateFilter.WithAnyTag("Public", "Federal");
-        NotableDateRule rule = MakeRule(tags: ImmutableHashSet.Create("Christian", "Public"));
+        NotableDateRule rule = MakeRule(tags: ["Christian", "Public"]);
 
         Assert.IsTrue(filter.IsRuleEligible(rule));
     }
@@ -259,7 +259,7 @@ public sealed partial class NotableDateFilterTests
     public void WithAnyTag_WhenRuleHasNoMatchingTag_IsRuleEligibleReturnsFalse()
     {
         var filter = NotableDateFilter.WithAnyTag("Public", "Federal");
-        NotableDateRule rule = MakeRule(tags: ImmutableHashSet.Create("Christian"));
+        NotableDateRule rule = MakeRule(tags: ["Christian"]);
 
         Assert.IsFalse(filter.IsRuleEligible(rule));
     }
@@ -276,7 +276,7 @@ public sealed partial class NotableDateFilterTests
     public void WithAllTags_WhenRuleHasAllRequiredTags_IsRuleEligibleReturnsTrue()
     {
         var filter = NotableDateFilter.WithAllTags("Public", "Christian");
-        NotableDateRule rule = MakeRule(tags: ImmutableHashSet.Create("Christian", "Public", "Federal"));
+        NotableDateRule rule = MakeRule(tags: ["Christian", "Public", "Federal"]);
 
         Assert.IsTrue(filter.IsRuleEligible(rule));
     }
@@ -288,7 +288,7 @@ public sealed partial class NotableDateFilterTests
     public void WithAllTags_WhenRuleIsMissingARequiredTag_IsRuleEligibleReturnsFalse()
     {
         var filter = NotableDateFilter.WithAllTags("Public", "Federal");
-        NotableDateRule rule = MakeRule(tags: ImmutableHashSet.Create("Public"));
+        NotableDateRule rule = MakeRule(tags: ["Public"]);
 
         Assert.IsFalse(filter.IsRuleEligible(rule));
     }
@@ -571,7 +571,7 @@ public sealed partial class NotableDateFilterTests
     {
         NotableDateFilter filter = NotableDateFilter.ForCategory(NotableDateCategory.Holiday)
             .And(NotableDateFilter.WithTag("Public"));
-        NotableDateRule rule = MakeRule(category: NotableDateCategory.Holiday, tags: ImmutableHashSet.Create("Public"));
+        NotableDateRule rule = MakeRule(category: NotableDateCategory.Holiday, tags: ["Public"]);
 
         Assert.IsTrue(filter.IsRuleEligible(rule));
     }
@@ -584,7 +584,7 @@ public sealed partial class NotableDateFilterTests
     {
         NotableDateFilter filter = NotableDateFilter.ForCategory(NotableDateCategory.Holiday)
             .And(NotableDateFilter.WithTag("Public"));
-        NotableDateRule rule = MakeRule(category: NotableDateCategory.Observance, tags: ImmutableHashSet.Create("Public"));
+        NotableDateRule rule = MakeRule(category: NotableDateCategory.Observance, tags: ["Public"]);
 
         Assert.IsFalse(filter.IsRuleEligible(rule));
     }
@@ -597,7 +597,7 @@ public sealed partial class NotableDateFilterTests
     {
         NotableDateFilter filter = NotableDateFilter.ForCategory(NotableDateCategory.Holiday)
             .And(NotableDateFilter.WithTag("Public"));
-        NotableDateRule rule = MakeRule(category: NotableDateCategory.Holiday, tags: ImmutableHashSet.Create("Christian"));
+        NotableDateRule rule = MakeRule(category: NotableDateCategory.Holiday, tags: ["Christian"]);
 
         Assert.IsFalse(filter.IsRuleEligible(rule));
     }
@@ -731,7 +731,7 @@ public sealed partial class NotableDateFilterTests
         NotableDate date = MakeDate(
             category: NotableDateCategory.Holiday,
             isNonWorkingDay: true,
-            tags: ImmutableHashSet.Create("Public"));
+            tags: ["Public"]);
 
         Assert.IsTrue(filter.IsMatch(date));
     }
@@ -825,17 +825,17 @@ public sealed partial class NotableDateFilterTests
         NotableDate matching = MakeDate(
             category: NotableDateCategory.Observance,
             isNonWorkingDay: true,
-            tags: ImmutableHashSet.Create("Public", "Religious"));
+            tags: ["Public", "Religious"]);
 
         NotableDate wrongCategory = MakeDate(
             category: NotableDateCategory.Cultural,
             isNonWorkingDay: true,
-            tags: ImmutableHashSet.Create("Public"));
+            tags: ["Public"]);
 
         NotableDate notNonWorking = MakeDate(
             category: NotableDateCategory.Holiday,
             isNonWorkingDay: false,
-            tags: ImmutableHashSet.Create("Public"));
+            tags: ["Public"]);
 
         Assert.IsTrue(filter.IsMatch(matching));
         Assert.IsFalse(filter.IsMatch(wrongCategory));

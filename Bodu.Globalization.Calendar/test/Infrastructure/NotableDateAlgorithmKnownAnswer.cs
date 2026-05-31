@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
 using Bodu.Test.Kat;
 
 namespace Bodu.Globalization.Calendar.Algorithms;

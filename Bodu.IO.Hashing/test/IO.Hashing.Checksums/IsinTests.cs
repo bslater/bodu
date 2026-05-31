@@ -53,7 +53,7 @@ public sealed class IsinTests
     /// validator requires at least a check digit, so an empty input cannot satisfy the algorithm's invariant.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenSequenceIsEmpty_ShouldReturnFalse() => Assert.IsFalse(Isin.IsValid(ReadOnlySpan<char>.Empty));
+    public void IsValid_WhenSequenceIsEmpty_ShouldReturnFalse() => Assert.IsFalse(Isin.IsValid([]));
 
     /// <summary>
     /// Verifies that <see cref="Isin.IsValid(ReadOnlySpan{char})" /> rejects a sequence whose length is not

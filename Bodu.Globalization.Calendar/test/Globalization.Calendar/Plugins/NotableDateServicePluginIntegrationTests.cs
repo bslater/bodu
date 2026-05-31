@@ -29,7 +29,7 @@ public sealed class NotableDateServicePluginIntegrationTests
         INotableDatePlugin plugin = loader.Load(Plugin1Path);
 
         var service = new NotableDateService(
-            ruleProviders: Array.Empty<INotableDateRuleProvider>(),
+            ruleProviders: [],
             workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
             options: new NotableDateServiceOptions { Plugins = [plugin] });
 

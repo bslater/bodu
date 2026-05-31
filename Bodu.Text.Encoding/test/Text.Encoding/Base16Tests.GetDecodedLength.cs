@@ -60,7 +60,7 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void GetDecodedLength_WhenInputIsValid_ShouldStillReturnExpectedCount()
     {
-        Assert.AreEqual(0, Base16.GetDecodedLength(ReadOnlySpan<char>.Empty));
+        Assert.AreEqual(0, Base16.GetDecodedLength([]));
         Assert.AreEqual(4, Base16.GetDecodedLength("DEADBEEF".AsSpan()));
         Assert.AreEqual(4, Base16.GetDecodedLength("deadbeef".AsSpan()));
         Assert.AreEqual(4, Base16.GetDecodedLength("0xDEADBEEF".AsSpan(), BaseFormatStyles.AllowPrefix));

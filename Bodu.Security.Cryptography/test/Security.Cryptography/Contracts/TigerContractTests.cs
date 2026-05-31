@@ -33,7 +33,7 @@ public sealed class TigerContractTests : CryptoHashContractTests<Tiger>
     [
         new(
             "Tiger1 empty",
-            Input: Array.Empty<byte>(),
+            Input: [],
             ExpectedDigest: Convert.FromHexString("3293AC630C13F0245F92BBB1766E16167A4E58492DDE73F3"),
             OutputLengthBytes: 24,
             Key: null),

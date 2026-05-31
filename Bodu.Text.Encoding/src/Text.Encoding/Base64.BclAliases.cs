@@ -47,7 +47,7 @@ public static partial class Base64
     public static byte[] FromBase64String(ReadOnlySpan<byte> utf8Source)
     {
         if (utf8Source.IsEmpty)
-            return Array.Empty<byte>();
+            return [];
 
         var destination = new byte[GetMaxDecodedLength(utf8Source.Length)];
         OperationStatus status = DecodeFromUtf8(utf8Source, destination, out _, out var bytesWritten, Base64Variant.Standard, BaseFormatStyles.IgnoreWhitespace, isFinalBlock: true);

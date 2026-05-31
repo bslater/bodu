@@ -21,8 +21,8 @@ public sealed class IEnumerableExtensionsWhereNotNullKatTests
         [
         new(
             Name: "empty source",
-            Source: Array.Empty<string?>(),
-            Expected: Array.Empty<string>()),
+            Source: [],
+            Expected: []),
 
         new(
             Name: "no nulls",
@@ -37,15 +37,15 @@ public sealed class IEnumerableExtensionsWhereNotNullKatTests
         new(
             Name: "all nulls",
             Source: [null, null, null],
-            Expected: Array.Empty<string>()),
+            Expected: []),
     ];
 
     private static IReadOnlyList<EnumerableKat<int?, int[]>> NullableValueKats { get; } =
         [
         new(
             Name: "empty source",
-            Source: Array.Empty<int?>(),
-            Expected: Array.Empty<int>()),
+            Source: [],
+            Expected: []),
 
         new(
             Name: "interleaved nulls",

@@ -37,7 +37,7 @@ public partial class MonitoringHashAlgorithmTests
     public void Ctor_ShouldReturnZeroHash_WhenNoInputProcessed()
     {
         using var algorithm = new MonitoringHashAlgorithm();
-        var result = algorithm.ComputeHash(Array.Empty<byte>());
+        var result = algorithm.ComputeHash([]);
         CollectionAssert.AreEqual(new byte[] { 0, 0, 0, 0 }, result);
     }
 }

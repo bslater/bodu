@@ -50,7 +50,7 @@ public sealed class IbanTests
     /// algorithm's invariant.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenSequenceIsEmpty_ShouldReturnFalse() => Assert.IsFalse(Iban.IsValid(ReadOnlySpan<char>.Empty));
+    public void IsValid_WhenSequenceIsEmpty_ShouldReturnFalse() => Assert.IsFalse(Iban.IsValid([]));
 
     /// <summary>
     /// Verifies that <see cref="Iban.IsValid(ReadOnlySpan{char})" /> rejects sequences shorter than four

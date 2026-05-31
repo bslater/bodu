@@ -42,7 +42,7 @@ public sealed class BufferWriterTests
     {
         ArrayBufferWriter<char> writer = new();
 
-        var written = Base16.Encode(ReadOnlySpan<byte>.Empty, writer);
+        var written = Base16.Encode([], writer);
 
         Assert.AreEqual(0, written);
         Assert.AreEqual(0, writer.WrittenCount);
@@ -147,7 +147,7 @@ public sealed class BufferWriterTests
     {
         ArrayBufferWriter<byte> writer = new();
 
-        var written = Base58.EncodeToUtf8(ReadOnlySpan<byte>.Empty, writer);
+        var written = Base58.EncodeToUtf8([], writer);
 
         Assert.AreEqual(0, written);
         Assert.AreEqual(0, writer.WrittenCount);
@@ -255,7 +255,7 @@ public sealed class BufferWriterTests
     {
         ArrayBufferWriter<byte> writer = new();
 
-        var written = Base85.EncodeToUtf8(ReadOnlySpan<byte>.Empty, writer);
+        var written = Base85.EncodeToUtf8([], writer);
 
         Assert.AreEqual(0, written);
         Assert.AreEqual(0, writer.WrittenCount);

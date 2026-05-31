@@ -124,7 +124,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void Ctor_WhenCollectionIsEmpty_ShouldBeEmpty()
     {
-        var sut = new OrderedSet<int>(Array.Empty<int>());
+        var sut = new OrderedSet<int>([]);
 
         Assert.AreEqual(0, sut.Count);
     }

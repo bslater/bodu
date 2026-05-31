@@ -108,14 +108,13 @@ public sealed class NotableDateResolutionServiceObservedDateExpansionTests
             Month = month,
             Day = day,
             IsNonWorkingDay = true,
-            Adjustments = ImmutableArray.Create(
-                new ObservanceAdjustment
+            Adjustments = [new ObservanceAdjustment
                 {
                     Key = "weekend-substitute",
                     Trigger = AdjustmentTrigger.IfWeekend,
                     Action = AdjustmentAction.MoveToNextNonWorkingDay,
                     IsNonWorkingDay = true,
-                }),
+                }],
         };
 
     private static NotableDateRule FixedNonWorkingRule(string name, int month, int day) =>
@@ -127,7 +126,7 @@ public sealed class NotableDateResolutionServiceObservedDateExpansionTests
             Month = month,
             Day = day,
             IsNonWorkingDay = true,
-            Adjustments = ImmutableArray<ObservanceAdjustment>.Empty,
+            Adjustments = [],
         };
 
     private sealed class InMemoryRuleProvider

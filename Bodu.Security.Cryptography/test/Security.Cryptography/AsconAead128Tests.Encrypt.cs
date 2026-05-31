@@ -23,7 +23,7 @@ public partial class AsconAead128Tests
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
-            sut.Encrypt(Array.Empty<byte>(), new byte[AsconAead128.TagBytes]);
+            sut.Encrypt([], new byte[AsconAead128.TagBytes]);
         });
     }
 
@@ -55,7 +55,7 @@ public partial class AsconAead128Tests
 
         Assert.ThrowsExactly<ObjectDisposedException>(() =>
         {
-            sut.Encrypt(Array.Empty<byte>(), new byte[AsconAead128.TagBytes]);
+            sut.Encrypt([], new byte[AsconAead128.TagBytes]);
         });
     }
 
@@ -89,7 +89,7 @@ public partial class AsconAead128Tests
         using AsconAead128 sut = MakeInstance();
         var output = new byte[AsconAead128.TagBytes];
 
-        var written = sut.Encrypt(ReadOnlySpan<byte>.Empty, output);
+        var written = sut.Encrypt([], output);
 
         Assert.AreEqual(AsconAead128.TagBytes, written);
 
@@ -189,7 +189,7 @@ public partial class AsconAead128Tests
 
         Assert.ThrowsExactly<ObjectDisposedException>(() =>
         {
-            sut.Encrypt(Array.Empty<byte>(), new byte[AsconAead128.TagBytes]);
+            sut.Encrypt([], new byte[AsconAead128.TagBytes]);
         });
     }
 

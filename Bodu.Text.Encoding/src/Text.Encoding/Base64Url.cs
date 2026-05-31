@@ -62,7 +62,7 @@ public static class Base64Url
     public static byte[] Decode(ReadOnlySpan<byte> utf8Source)
     {
         if (utf8Source.IsEmpty)
-            return Array.Empty<byte>();
+            return [];
 
         var destination = new byte[Base64.GetMaxDecodedLength(utf8Source.Length)];
         OperationStatus status = Base64.DecodeFromUtf8(

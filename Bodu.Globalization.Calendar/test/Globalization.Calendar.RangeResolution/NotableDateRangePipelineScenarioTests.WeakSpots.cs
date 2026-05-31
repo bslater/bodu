@@ -364,14 +364,14 @@ public sealed partial class NotableDateRangePipelineScenarioTests
             FirstYear = 2026,
             LastYear = 2026,
             IsNonWorkingDay = true,
-            Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+            Adjustments = [new ObservanceAdjustment
             {
                 Key = "missing-target",
                 Trigger = AdjustmentTrigger.Always,
                 Action = AdjustmentAction.ReplaceWithNamedDate,
                 TargetRuleName = "Does Not Exist",
                 IsNonWorkingDay = true,
-            }),
+            }],
         };
 
         NotableDateService service = BuildService(rule);
@@ -406,14 +406,14 @@ public sealed partial class NotableDateRangePipelineScenarioTests
             FirstYear = 2026,
             LastYear = 2026,
             IsNonWorkingDay = true,
-            Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+            Adjustments = [new ObservanceAdjustment
             {
                 Key = "missing-target",
                 Trigger = AdjustmentTrigger.Always,
                 Action = AdjustmentAction.ReplaceWithNamedDate,
                 TargetRuleName = targetRuleName,
                 IsNonWorkingDay = true,
-            }),
+            }],
         };
 
         NotableDateService service = BuildService(rule);
@@ -447,14 +447,14 @@ public sealed partial class NotableDateRangePipelineScenarioTests
             FirstYear = 2026,
             LastYear = 2026,
             IsNonWorkingDay = true,
-            Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+            Adjustments = [new ObservanceAdjustment
             {
                 Key = "no-handler-key",
                 Trigger = AdjustmentTrigger.Custom,
                 Action = AdjustmentAction.AddDays,
                 OffsetDays = 5,
                 IsNonWorkingDay = true,
-            }),
+            }],
         };
 
         NotableDateService service = BuildService(rule);
@@ -485,7 +485,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
             FirstYear = 2026,
             LastYear = 2026,
             IsNonWorkingDay = true,
-            Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+            Adjustments = [new ObservanceAdjustment
             {
                 Key = "missing-handler",
                 Trigger = AdjustmentTrigger.Custom,
@@ -493,7 +493,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
                 HandlerKey = "never-registered",
                 OffsetDays = 5,
                 IsNonWorkingDay = true,
-            }),
+            }],
         };
 
         NotableDateService service = new(
@@ -527,14 +527,14 @@ public sealed partial class NotableDateRangePipelineScenarioTests
             FirstYear = 2026,
             LastYear = 2026,
             IsNonWorkingDay = true,
-            Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+            Adjustments = [new ObservanceAdjustment
             {
                 Key = "throwing",
                 Trigger = AdjustmentTrigger.Custom,
                 Action = AdjustmentAction.Custom,
                 HandlerKey = "thrower",
                 IsNonWorkingDay = true,
-            }),
+            }],
         };
 
         AdjustmentHandlerRegistry handlers = new();
@@ -612,14 +612,14 @@ public sealed partial class NotableDateRangePipelineScenarioTests
             FirstYear = 9999,
             LastYear = 9999,
             IsNonWorkingDay = true,
-            Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+            Adjustments = [new ObservanceAdjustment
             {
                 Key = "overflow",
                 Trigger = AdjustmentTrigger.Always,
                 Action = AdjustmentAction.AddDays,
                 OffsetDays = 100, // 30 Dec 9999 + 100 = year 10000 → overflow
                 IsNonWorkingDay = true,
-            }),
+            }],
         };
 
         NotableDateService service = BuildService(rule);

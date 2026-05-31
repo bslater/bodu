@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Security.Cryptography;
-
 namespace Bodu.Security.Cryptography.Contracts;
 
 public abstract partial class SymmetricStreamAlgorithmContractTests<TCipher>

@@ -153,7 +153,7 @@ public sealed partial class Base32Tests
     [TestMethod]
     public void EncodeToUtf8_WhenEmpty_ShouldReturnEmptyArray()
     {
-        var actual = Base32.EncodeToUtf8(ReadOnlySpan<byte>.Empty);
+        var actual = Base32.EncodeToUtf8([]);
 
         Assert.AreEqual(0, actual.Length);
     }

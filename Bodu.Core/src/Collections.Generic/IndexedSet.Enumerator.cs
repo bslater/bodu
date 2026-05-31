@@ -66,7 +66,7 @@ public sealed partial class IndexedSet<T>
         public readonly T Current => _current;
 
         /// <inheritdoc />
-        object IEnumerator.Current => Current;
+        readonly object IEnumerator.Current => Current;
 
         /// <inheritdoc />
         public bool MoveNext()

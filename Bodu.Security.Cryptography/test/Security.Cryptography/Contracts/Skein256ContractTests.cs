@@ -29,7 +29,7 @@ public sealed class Skein256ContractTests : CryptoHashContractTests<Skein256>
     [
         new(
             "Skein-256-256 empty",
-            Input: Array.Empty<byte>(),
+            Input: [],
             ExpectedDigest: Convert.FromHexString("C8877087DA56E072870DAA843F176E9453115929094C3A40C463A196C29BF7BA"),
             OutputLengthBytes: 32,
             Key: null),

@@ -31,7 +31,7 @@ public sealed partial class Iso10126PaddingTests
         using SymmetricAlgorithm algorithm = CreateConfiguredAlgorithm(algorithmType, PaddingMode.ISO10126);
         var blockBytes = algorithm.BlockSize / 8;
 
-        var cipherText = EncryptThroughCryptoStream(algorithm, System.Array.Empty<byte>());
+        var cipherText = EncryptThroughCryptoStream(algorithm, []);
 
         Assert.AreEqual(blockBytes, cipherText.Length,
             $"Empty plaintext under ISO10126 on {algorithmType.Name} should produce exactly one block of padded ciphertext.");

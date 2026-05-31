@@ -70,12 +70,12 @@ public sealed partial class NotableDateServiceTests
     {
         NotableDateRule rule = Fixed("New Year's Day", 1, 1, nonWorking: true) with
         {
-            Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+            Adjustments = [new ObservanceAdjustment
             {
                 Key = "test",
                 Trigger = AdjustmentTrigger.IfWeekend,
                 Action = AdjustmentAction.MoveToNextWeekday,
-            }),
+            }],
         };
 
         NotableDateService service = BuildService(rule);
@@ -170,7 +170,7 @@ public sealed partial class NotableDateServiceTests
         NotableDateRule baseRule = Fixed("Holiday", 1, 1);
         var override_ = new TestOverrideProvider(
             removals: [new RuleRemoval("Holiday", FromYear: 2025, ToYear: 2025)],
-            additions: Array.Empty<NotableDateRule>());
+            additions: []);
 
         var service = new NotableDateService(
             [(INotableDateRuleProvider)new InMemoryRuleProvider(baseRule)],
@@ -192,7 +192,7 @@ public sealed partial class NotableDateServiceTests
     {
         NotableDateRule addition = Fixed("Royal Wedding", 5, 19, NotableDateCategory.Cultural);
         var override_ = new TestOverrideProvider(
-            removals: Array.Empty<RuleRemoval>(),
+            removals: [],
             additions: [addition]);
 
         var service = new NotableDateService(
@@ -242,7 +242,7 @@ public sealed partial class NotableDateServiceTests
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             _ = new NotableDateService(
-                Array.Empty<INotableDateRuleProvider>(),
+                [],
                 (WorkingDaysOfWeek)undefined);
         });
     }
@@ -258,7 +258,7 @@ public sealed partial class NotableDateServiceTests
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
             _ = new NotableDateService(
-                Array.Empty<INotableDateRuleProvider>(),
+                [],
                 WorkingDaysOfWeek.Custom);
         });
     }
@@ -392,7 +392,7 @@ public sealed partial class NotableDateServiceTests
     {
         NotableDateRule baseRule = Fixed("Holiday", 1, 1);
         var removal = new RuleRemoval("Holiday", FromYear: 2024, ToYear: 2025);
-        var provider = new TestOverrideProvider([removal], Array.Empty<NotableDateRule>());
+        var provider = new TestOverrideProvider([removal], []);
 
         var service = new NotableDateService(
             [(INotableDateRuleProvider)new InMemoryRuleProvider(baseRule)],
@@ -422,7 +422,7 @@ public sealed partial class NotableDateServiceTests
     {
         NotableDateRule baseRule = Fixed("Picnic", 8, 4, territory: ruleTerritory);
         var removal = new RuleRemoval("Picnic", TerritoryCode: removalTerritory);
-        var provider = new TestOverrideProvider([removal], Array.Empty<NotableDateRule>());
+        var provider = new TestOverrideProvider([removal], []);
 
         var service = new NotableDateService(
             [(INotableDateRuleProvider)new InMemoryRuleProvider(baseRule)],
@@ -447,7 +447,7 @@ public sealed partial class NotableDateServiceTests
     {
         NotableDateRule baseRule = Fixed("Holiday", 1, 1);
         var removal = new RuleRemoval("Holiday", TerritoryCode: "AU-NSW");
-        var provider = new TestOverrideProvider([removal], Array.Empty<NotableDateRule>());
+        var provider = new TestOverrideProvider([removal], []);
 
         var service = new NotableDateService(
             [(INotableDateRuleProvider)new InMemoryRuleProvider(baseRule)],
@@ -471,7 +471,7 @@ public sealed partial class NotableDateServiceTests
     {
         NotableDateRule baseRule = Fixed("Picnic", 8, 4, territory: "AU-NSW");
         var removal = new RuleRemoval("Picnic", TerritoryCode: "NOT-A-REAL-CODE-!");
-        var provider = new TestOverrideProvider([removal], Array.Empty<NotableDateRule>());
+        var provider = new TestOverrideProvider([removal], []);
 
         var service = new NotableDateService(
             [(INotableDateRuleProvider)new InMemoryRuleProvider(baseRule)],

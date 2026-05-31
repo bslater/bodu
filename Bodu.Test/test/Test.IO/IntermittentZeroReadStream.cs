@@ -27,7 +27,7 @@ namespace Bodu.Test.IO;
 /// This class is intended exclusively for test harness use.
 /// </para>
 /// </remarks>
-public sealed class IntermittentZeroReadStream 
+public sealed class IntermittentZeroReadStream
     : System.IO.MemoryStream
 {
     private readonly int stallEveryN;

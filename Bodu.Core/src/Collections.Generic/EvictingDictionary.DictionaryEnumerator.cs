@@ -46,16 +46,16 @@ public partial class EvictingDictionary<TKey, TValue>
         public object Current => Entry;
 
         /// <inheritdoc />
-        public DictionaryEntry Entry => new(_inner.Current.Key!, _inner.Current.Value);
+        public readonly DictionaryEntry Entry => new(_inner.Current.Key!, _inner.Current.Value);
 
         /// <inheritdoc />
-        public object Key => _inner.Current.Key!;
+        public readonly object Key => _inner.Current.Key!;
 
         /// <inheritdoc />
-        public object? Value => _inner.Current.Value;
+        public readonly object? Value => _inner.Current.Value;
 
         /// <inheritdoc />
-        public bool MoveNext() => _inner.MoveNext();
+        public readonly bool MoveNext() => _inner.MoveNext();
 
         /// <inheritdoc />
         public void Reset()

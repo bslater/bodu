@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Collections.Generic;
 using Bodu.Test.Assertions;
 using Bodu.Test.Kat;
 

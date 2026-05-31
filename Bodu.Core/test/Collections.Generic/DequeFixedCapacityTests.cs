@@ -15,9 +15,6 @@ namespace Bodu.Collections.Generic;
 public partial class DequeFixedCapacityTests
     : DoubleEndedRingCollectionTestsBase<DequeFixedCapacityTests, Deque<int>>
 {
-
-    private const int DefaultCapacity = 16;
-
     /// <inheritdoc />
     protected override bool IsFixedCapacity => true;
 

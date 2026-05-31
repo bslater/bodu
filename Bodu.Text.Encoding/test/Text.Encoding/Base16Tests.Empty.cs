@@ -15,7 +15,7 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void Decode_WhenEmptySpan_ShouldReturnEmptyByteArray()
     {
-        var actual = Base16.Decode(ReadOnlySpan<char>.Empty);
+        var actual = Base16.Decode([]);
 
         Assert.AreEqual(0, actual.Length);
     }
@@ -38,7 +38,7 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void Encode_WhenEmptyAndIncludePrefix_ShouldReturnPrefixOnly()
     {
-        var actual = Base16.Encode(ReadOnlySpan<byte>.Empty, BaseFormattingOptions.IncludePrefix);
+        var actual = Base16.Encode([], BaseFormattingOptions.IncludePrefix);
 
         Assert.AreEqual("0x", actual);
     }
@@ -48,7 +48,7 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void Encode_WhenEmptyByteArray_ShouldReturnEmptyString()
     {
-        var actual = Base16.Encode(Array.Empty<byte>());
+        var actual = Base16.Encode([]);
 
         Assert.AreEqual(string.Empty, actual);
     }
@@ -64,13 +64,13 @@ public sealed partial class Base16Tests
         var zero = Array.Empty<byte>();
         var huge = new byte[1000];
 
-        Assert.IsTrue(Base16.TryDecode(ReadOnlySpan<char>.Empty, tiny, out var bytesTiny));
+        Assert.IsTrue(Base16.TryDecode([], tiny, out var bytesTiny));
         Assert.AreEqual(0, bytesTiny);
 
-        Assert.IsTrue(Base16.TryDecode(ReadOnlySpan<char>.Empty, zero, out var bytesZero));
+        Assert.IsTrue(Base16.TryDecode([], zero, out var bytesZero));
         Assert.AreEqual(0, bytesZero);
 
-        Assert.IsTrue(Base16.TryDecode(ReadOnlySpan<char>.Empty, huge, out var bytesHuge));
+        Assert.IsTrue(Base16.TryDecode([], huge, out var bytesHuge));
         Assert.AreEqual(0, bytesHuge);
     }
 
@@ -85,13 +85,13 @@ public sealed partial class Base16Tests
         var zero = Array.Empty<char>();
         var huge = new char[1000];
 
-        Assert.IsTrue(Base16.TryEncode(ReadOnlySpan<byte>.Empty, tiny, out var charsTiny));
+        Assert.IsTrue(Base16.TryEncode([], tiny, out var charsTiny));
         Assert.AreEqual(0, charsTiny);
 
-        Assert.IsTrue(Base16.TryEncode(ReadOnlySpan<byte>.Empty, zero, out var charsZero));
+        Assert.IsTrue(Base16.TryEncode([], zero, out var charsZero));
         Assert.AreEqual(0, charsZero);
 
-        Assert.IsTrue(Base16.TryEncode(ReadOnlySpan<byte>.Empty, huge, out var charsHuge));
+        Assert.IsTrue(Base16.TryEncode([], huge, out var charsHuge));
         Assert.AreEqual(0, charsHuge);
     }
 

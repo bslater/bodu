@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
 using System.Globalization;
 
 namespace Bodu.Extensions;
@@ -38,7 +37,7 @@ public partial class DateOnlyExtensionsTests
         {
             CultureInfo.CurrentCulture = DateTimeExtensionsTests.TestCulture;
             var input = new DateOnly(2024, 4, 18); // Thursday
-                                                        // Backtrack to previous Wednesday → 2024-04-17
+                                                   // Backtrack to previous Wednesday → 2024-04-17
             var expected = new DateOnly(2024, 4, 17);
 
             DateOnly actual = input.FirstDateOfWeek((CultureInfo?)null);

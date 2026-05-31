@@ -22,7 +22,7 @@ public abstract partial class CryptoTransformTests<TCryptoTransform>
 
         Assert.ThrowsExactly<ObjectDisposedException>(() =>
         {
-            transform.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
+            transform.TransformFinalBlock([], 0, 0);
         });
     }
 

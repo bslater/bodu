@@ -36,7 +36,7 @@ public sealed class SipHash128ContractTests : CryptoHashContractTests<SipHash128
         // Aumasson / Bernstein SipHash 2-4 128-bit reference vector 0: empty input.
         new(
             "empty",
-            Input: Array.Empty<byte>(),
+            Input: [],
             ExpectedDigest:
             [
                 0xA3, 0x81, 0x7F, 0x04, 0xBA, 0x25, 0xA8, 0xE6,

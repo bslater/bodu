@@ -176,7 +176,7 @@ internal sealed class SimpleReversingBlockCipher
 
         CryptoHelpers.Clear(this.Key);
         CryptographicOperations.ZeroMemory(Key);
-        Key = Array.Empty<byte>();
+        Key = [];
 
         if (tweak is not null)
         {

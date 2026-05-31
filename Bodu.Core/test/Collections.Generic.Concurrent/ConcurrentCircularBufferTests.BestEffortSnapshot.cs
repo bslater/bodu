@@ -160,7 +160,7 @@ public partial class ConcurrentCircularBufferTests
             BindingFlags.Instance | BindingFlags.NonPublic)
             ?? throw new InvalidOperationException("BestEffortSnapshot method not found.");
 
-        return (T[])method.Invoke(buffer, Array.Empty<object>())!;
+        return (T[])method.Invoke(buffer, [])!;
     }
 
 }

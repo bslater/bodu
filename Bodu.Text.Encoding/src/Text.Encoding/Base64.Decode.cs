@@ -46,7 +46,7 @@ public static partial class Base64
         EnsureValidVariant(variant);
 
         if (chars.IsEmpty)
-            return Array.Empty<byte>();
+            return [];
 
         var rentSize = chars.Length + 4; // headroom for re-padding
 

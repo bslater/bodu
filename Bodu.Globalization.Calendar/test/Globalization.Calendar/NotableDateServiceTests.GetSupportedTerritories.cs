@@ -120,7 +120,7 @@ public partial class NotableDateServiceTests
     public void GetSupportedTerritories_WhenNoRuleProviders_ShouldReturnEmpty()
     {
         NotableDateService service = new(
-            ruleProviders: Array.Empty<INotableDateRuleProvider>(),
+            ruleProviders: [],
             workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 
         Assert.AreEqual(0, service.GetSupportedTerritories().Count);

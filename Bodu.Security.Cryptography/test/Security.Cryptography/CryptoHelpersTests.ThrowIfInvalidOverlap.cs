@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CryptoHelpersTests.ThrowIfInvalidOverlap.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -134,7 +134,7 @@ public partial class CryptoHelpersTests
     {
         var buffer = new byte[16];
 
-        CryptoHelpers.ThrowIfInvalidOverlap(ReadOnlySpan<byte>.Empty, buffer.AsSpan());
+        CryptoHelpers.ThrowIfInvalidOverlap([], buffer.AsSpan());
     }
 
     /// <summary>
@@ -145,6 +145,6 @@ public partial class CryptoHelpersTests
     {
         var buffer = new byte[16];
 
-        CryptoHelpers.ThrowIfInvalidOverlap(buffer.AsSpan(), Span<byte>.Empty);
+        CryptoHelpers.ThrowIfInvalidOverlap(buffer.AsSpan(), []);
     }
 }
