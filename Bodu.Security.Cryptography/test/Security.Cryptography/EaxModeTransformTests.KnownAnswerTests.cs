@@ -138,7 +138,7 @@ public sealed partial class EaxModeTransformTests
 
     [TestMethod]
 
-    [DynamicData(nameof(EaxKatVectors), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(EaxKatVectors))]
     public void Encrypt_WithEaxPaperVector_ShouldProduceExpectedCiphertextAndTag(
         string description, byte[] key, byte[] iv, byte[] aad,
         byte[] plaintext, byte[] expectedCiphertext, byte[] expectedTag)
@@ -146,7 +146,7 @@ public sealed partial class EaxModeTransformTests
 
     [TestMethod]
 
-    [DynamicData(nameof(EaxKatVectors), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(EaxKatVectors))]
     public void Decrypt_WithEaxPaperVector_ShouldRecoverOriginalPlaintext(
         string description, byte[] key, byte[] iv, byte[] aad,
         byte[] plaintext, byte[] expectedCiphertext, byte[] expectedTag)

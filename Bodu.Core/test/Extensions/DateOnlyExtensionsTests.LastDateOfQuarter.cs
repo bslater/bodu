@@ -102,7 +102,7 @@ public partial class DateOnlyExtensionsTests
     /// Verifies that the parameterless <see cref="DateOnlyExtensions.LastDateOfQuarter(DateOnly)" /> overload returns the January-to-December quarter end for the given input.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests.LastDateOfQuarterDateTimeJanuaryDecemberTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DateTimeExtensionsTests.LastDateOfQuarterDateTimeJanuaryDecemberTestData), typeof(DateTimeExtensionsTests))]
     public void LastDateOfQuarter_WhenUsingDateOnly_ShouldReturnExpectedStartOfCalendarQuarter(DateTime inputDateTime, DateTime expectedDateTime)
     {
         var input = DateOnly.FromDateTime(inputDateTime);
@@ -160,7 +160,7 @@ public partial class DateOnlyExtensionsTests
     /// Verifies that <see cref="DateOnlyExtensions.LastDateOfQuarter(DateOnly, CalendarQuarterDefinition)" /> returns the expected quarter-end <see cref="DateOnly" /> for each supported <see cref="CalendarQuarterDefinition" /> boundary.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests.LastDateOfQuarterDateTimeTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DateTimeExtensionsTests.LastDateOfQuarterDateTimeTestData), typeof(DateTimeExtensionsTests))]
     public void LastDateOfQuarter_WhenUsingQuarterDefinition_ShouldReturnExpectedDate(DateTime inputDateTime, CalendarQuarterDefinition definition, DateTime expectedDateTime)
     {
         var input = DateOnly.FromDateTime(inputDateTime);

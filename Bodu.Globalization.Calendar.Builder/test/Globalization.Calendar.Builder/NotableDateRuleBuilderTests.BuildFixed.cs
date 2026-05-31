@@ -52,7 +52,7 @@ public partial class NotableDateRuleBuilderTests
     /// Verifies that each fixed Hebrew month alias resolves through the alias switch to its numeric month value
     /// with <see cref="NotableDateRule.CalendarMonthAlias" /> cleared.
     /// </summary>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("Tishri", 1)]
     [DataRow("Heshvan", 2)]
     [DataRow("Kislev", 3)]

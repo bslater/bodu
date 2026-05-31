@@ -199,7 +199,7 @@ public partial class DateTimeExtensionsTests
     /// Verifies that <see cref="DateTimeExtensions.FirstDateOfQuarter" /> returns the correct date using a valid quarter provider.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests.ValidQuarterProvider.FirstDateOfQuarterTestData), typeof(DateTimeExtensionsTests.ValidQuarterProvider), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DateTimeExtensionsTests.ValidQuarterProvider.FirstDateOfQuarterTestData), typeof(DateTimeExtensionsTests.ValidQuarterProvider))]
     public void FirstDateOfQuarter_WhenUsingValidQuarterProvider_ShouldReturnExpectedDate(DateTime input, DateTime expected)
     {
         var provider = new ValidQuarterProvider();

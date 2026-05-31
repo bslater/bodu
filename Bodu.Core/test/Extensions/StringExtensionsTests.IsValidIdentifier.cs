@@ -39,8 +39,8 @@ public partial class StringExtensionsTests
     /// </summary>
     /// <param name="value">The candidate string.</param>
     /// <param name="expected">Whether the candidate is expected to be a valid identifier.</param>
-    [DataTestMethod]
-    [DynamicData(nameof(GetIsValidIdentifierCases), DynamicDataSourceType.Method)]
+    [TestMethod]
+    [DynamicData(nameof(GetIsValidIdentifierCases))]
     public void IsValidIdentifier_WhenInvoked_ShouldReturnExpected(string value, bool expected) => Assert.AreEqual(expected, value.IsValidIdentifier());
 
     /// <summary>

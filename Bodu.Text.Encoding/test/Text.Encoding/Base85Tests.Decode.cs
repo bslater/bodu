@@ -14,8 +14,8 @@ public sealed partial class Base85Tests
     /// every Adobe Ascii85 Known Answer Test vector.
     /// </summary>
     /// <param name="vector">A KAT vector.</param>
-    [DataTestMethod]
-    [DynamicData(nameof(Base85KnownAnswerVectors.Ascii85Vectors), typeof(Base85KnownAnswerVectors), DynamicDataSourceType.Method)]
+    [TestMethod]
+    [DynamicData(nameof(Base85KnownAnswerVectors.Ascii85Vectors), typeof(Base85KnownAnswerVectors))]
     public void Decode_ForAscii85KnownAnswerVector_ShouldRecoverBytes(EncodingKnownAnswerVector vector)
     {
         var actual = Base85.Decode(vector.Encoded, Base85Variant.Ascii85);
@@ -28,8 +28,8 @@ public sealed partial class Base85Tests
     /// <see cref="Base85KnownAnswerVectors.Ascii85NegativeVectors" /> with the expected exception type.
     /// </summary>
     /// <param name="vector">A negative KAT vector.</param>
-    [DataTestMethod]
-    [DynamicData(nameof(Base85KnownAnswerVectors.Ascii85NegativeVectors), typeof(Base85KnownAnswerVectors), DynamicDataSourceType.Method)]
+    [TestMethod]
+    [DynamicData(nameof(Base85KnownAnswerVectors.Ascii85NegativeVectors), typeof(Base85KnownAnswerVectors))]
     public void Decode_ForAscii85KnownMalformedInput_ShouldThrowExactly(EncodingNegativeDecodeVector vector)
     {
         Exception? actual = null;
@@ -52,8 +52,8 @@ public sealed partial class Base85Tests
     /// every Z85 Known Answer Test vector.
     /// </summary>
     /// <param name="vector">A KAT vector.</param>
-    [DataTestMethod]
-    [DynamicData(nameof(Base85KnownAnswerVectors.Z85Vectors), typeof(Base85KnownAnswerVectors), DynamicDataSourceType.Method)]
+    [TestMethod]
+    [DynamicData(nameof(Base85KnownAnswerVectors.Z85Vectors), typeof(Base85KnownAnswerVectors))]
     public void Decode_ForZ85KnownAnswerVector_ShouldRecoverBytes(EncodingKnownAnswerVector vector)
     {
         var actual = Base85.Decode(vector.Encoded, Base85Variant.Z85);
@@ -66,8 +66,8 @@ public sealed partial class Base85Tests
     /// <see cref="Base85KnownAnswerVectors.Z85NegativeVectors" /> with the expected exception type.
     /// </summary>
     /// <param name="vector">A negative KAT vector.</param>
-    [DataTestMethod]
-    [DynamicData(nameof(Base85KnownAnswerVectors.Z85NegativeVectors), typeof(Base85KnownAnswerVectors), DynamicDataSourceType.Method)]
+    [TestMethod]
+    [DynamicData(nameof(Base85KnownAnswerVectors.Z85NegativeVectors), typeof(Base85KnownAnswerVectors))]
     public void Decode_ForZ85KnownMalformedInput_ShouldThrowExactly(EncodingNegativeDecodeVector vector)
     {
         Exception? actual = null;

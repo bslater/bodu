@@ -19,7 +19,7 @@ public partial class DateOnlyExtensionsTests
     /// Verifies that <see cref="DateOnlyExtensions.DayOfWeekOccurrenceInMonth" />, when Called, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests.DayOfWeekOccurrenceInMonthTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DateTimeExtensionsTests.DayOfWeekOccurrenceInMonthTestData), typeof(DateTimeExtensionsTests))]
     public void DayOfWeekOccurrenceInMonth_WhenCalled_ShouldReturnExpectedOrdinal(DateTime inputDateTime, WeekOfMonthOrdinal expected)
     {
         var input = DateOnly.FromDateTime(inputDateTime);

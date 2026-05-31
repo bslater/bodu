@@ -45,7 +45,7 @@ public partial class Blake3Tests
     /// <param name="inputLen">The length, in bytes, of the deterministic reference input.</param>
     /// <param name="expectedHex">The expected 32-byte digest, encoded as a lowercase hex string.</param>
     [TestMethod]
-    [DynamicData(nameof(Blake3ReferenceVectors), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(Blake3ReferenceVectors))]
     [TestCategory("Regression")]
     public void ComputeHash_WhenGivenOfficialBlake3ReferenceVector_ShouldMatchExpectedDigest(int inputLen, string expectedHex)
     {

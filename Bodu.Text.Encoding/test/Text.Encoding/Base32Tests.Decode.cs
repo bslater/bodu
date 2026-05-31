@@ -14,8 +14,8 @@ public sealed partial class Base32Tests
     /// variant recovers the bytes for every RFC 4648 §10 base32hex vector.
     /// </summary>
     /// <param name="vector">A KAT vector.</param>
-    [DataTestMethod]
-    [DynamicData(nameof(Base32KnownAnswerVectors.HexExtendedRfc4648Vectors), typeof(Base32KnownAnswerVectors), DynamicDataSourceType.Method)]
+    [TestMethod]
+    [DynamicData(nameof(Base32KnownAnswerVectors.HexExtendedRfc4648Vectors), typeof(Base32KnownAnswerVectors))]
     public void Decode_ForHexExtendedRfc4648KnownAnswerVector_ShouldRecoverBytes(EncodingKnownAnswerVector vector)
     {
         var actual = Base32.Decode(vector.Encoded, Base32Variant.HexExtended);
@@ -29,8 +29,8 @@ public sealed partial class Base32Tests
     /// expected exception type.
     /// </summary>
     /// <param name="vector">A negative KAT vector.</param>
-    [DataTestMethod]
-    [DynamicData(nameof(Base32KnownAnswerVectors.StandardNegativeVectors), typeof(Base32KnownAnswerVectors), DynamicDataSourceType.Method)]
+    [TestMethod]
+    [DynamicData(nameof(Base32KnownAnswerVectors.StandardNegativeVectors), typeof(Base32KnownAnswerVectors))]
     public void Decode_ForStandardKnownMalformedInput_ShouldThrowExactly(EncodingNegativeDecodeVector vector)
     {
         Exception? actual = null;
@@ -53,8 +53,8 @@ public sealed partial class Base32Tests
     /// recovers the bytes for every RFC 4648 §10 Known Answer Test vector.
     /// </summary>
     /// <param name="vector">A KAT vector.</param>
-    [DataTestMethod]
-    [DynamicData(nameof(Base32KnownAnswerVectors.StandardRfc4648Vectors), typeof(Base32KnownAnswerVectors), DynamicDataSourceType.Method)]
+    [TestMethod]
+    [DynamicData(nameof(Base32KnownAnswerVectors.StandardRfc4648Vectors), typeof(Base32KnownAnswerVectors))]
     public void Decode_ForStandardRfc4648KnownAnswerVector_ShouldRecoverBytes(EncodingKnownAnswerVector vector)
     {
         var actual = Base32.Decode(vector.Encoded, Base32Variant.Standard);
@@ -208,7 +208,7 @@ public sealed partial class Base32Tests
     /// </summary>
     /// <param name="encoded">The Base32 encoded input.</param>
     /// <param name="expected">The expected decoded ASCII string.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("", "")]
     [DataRow("MY======", "f")]
     [DataRow("MZXQ====", "fo")]
@@ -254,8 +254,8 @@ public sealed partial class Base32Tests
     /// <see langword="false" /> for every malformed Standard variant input.
     /// </summary>
     /// <param name="vector">A negative KAT vector.</param>
-    [DataTestMethod]
-    [DynamicData(nameof(Base32KnownAnswerVectors.StandardNegativeVectors), typeof(Base32KnownAnswerVectors), DynamicDataSourceType.Method)]
+    [TestMethod]
+    [DynamicData(nameof(Base32KnownAnswerVectors.StandardNegativeVectors), typeof(Base32KnownAnswerVectors))]
     public void IsValid_ForStandardKnownMalformedInput_ShouldReturnFalse(EncodingNegativeDecodeVector vector)
     {
         Assert.IsFalse(Base32.IsValid(vector.MalformedInput.AsSpan(), Base32Variant.Standard),

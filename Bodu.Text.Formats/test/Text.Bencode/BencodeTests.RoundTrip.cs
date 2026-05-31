@@ -19,7 +19,7 @@ public sealed partial class BencodeTests
     /// <see cref="BencodeKnownAnswerVectors.AllPositiveVectors" />.</param>
     [TestMethod]
     [TestCategory(TestCategories.Regression)]
-    [DynamicData(nameof(BencodeKnownAnswerVectors.AllPositiveVectors), typeof(BencodeKnownAnswerVectors), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(BencodeKnownAnswerVectors.AllPositiveVectors), typeof(BencodeKnownAnswerVectors))]
     public void DecodeThenEncode_ForPositiveVector_ShouldReproduceCanonicalBytes(BencodeKnownAnswerVector vector)
     {
         BencodedValue decoded = Bencode.Decode(vector.EncodedBytes);

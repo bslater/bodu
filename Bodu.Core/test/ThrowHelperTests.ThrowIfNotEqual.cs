@@ -20,7 +20,6 @@ public partial class ThrowHelperTests
     [TestMethod]
     [DynamicData(
         nameof(ThrowIfNotEqualIntValidCases),
-        DynamicDataSourceType.Method,
         DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void ThrowIfNotEqual_WhenIntValuesAreEqual_ShouldNotThrow(GuardValidKat<int> kat) =>
@@ -35,7 +34,6 @@ public partial class ThrowHelperTests
     [TestMethod]
     [DynamicData(
         nameof(ThrowIfNotEqualIntInvalidCases),
-        DynamicDataSourceType.Method,
         DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void ThrowIfNotEqual_WhenIntValuesAreNotEqual_ShouldThrowExactly(GuardInvalidKat<int> kat) =>
@@ -53,7 +51,6 @@ public partial class ThrowHelperTests
     [TestMethod]
     [DynamicData(
         nameof(ThrowIfNotEqualStringValidCases),
-        DynamicDataSourceType.Method,
         DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void ThrowIfNotEqual_WhenStringValuesAreEqual_ShouldNotThrow(GuardValidKat<string> kat) =>
@@ -68,7 +65,6 @@ public partial class ThrowHelperTests
     [TestMethod]
     [DynamicData(
         nameof(ThrowIfNotEqualStringInvalidCases),
-        DynamicDataSourceType.Method,
         DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void ThrowIfNotEqual_WhenStringValuesAreNotEqual_ShouldThrowExactly(GuardInvalidKat<string> kat) =>
@@ -86,7 +82,6 @@ public partial class ThrowHelperTests
     [TestMethod]
     [DynamicData(
         nameof(ThrowIfNotEqualParamNameCases),
-        DynamicDataSourceType.Method,
         DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void ThrowIfNotEqual_WhenValuesAreNotEqual_ShouldReportParamName(GuardInvalidKat<int> kat) =>

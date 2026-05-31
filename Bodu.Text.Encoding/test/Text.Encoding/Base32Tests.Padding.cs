@@ -15,7 +15,7 @@ public sealed partial class Base32Tests
     /// </summary>
     /// <param name="byteCount">The input length.</param>
     /// <param name="expectedPaddingCount">The expected count of trailing <c>=</c>.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(1, 6)]
     [DataRow(2, 4)]
     [DataRow(3, 3)]
@@ -43,7 +43,7 @@ public sealed partial class Base32Tests
     /// across input sizes and padding modes.
     /// </summary>
     /// <param name="omitPadding">Whether to omit padding.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(false)]
     [DataRow(true)]
     public void GetEncodedLength_ShouldMatchActualEncodedLengthAcrossInputs(bool omitPadding)

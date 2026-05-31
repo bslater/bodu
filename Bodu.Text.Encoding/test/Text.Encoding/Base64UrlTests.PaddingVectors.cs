@@ -117,7 +117,7 @@ public sealed class Base64UrlTests_PaddingVectors
         var viaVariant = Base64.Encode(source, Base64Variant.UrlSafe);
 
         Assert.AreEqual("AQ", actual);
-        Assert.AreEqual(actual, viaVariant);
+        Assert.AreEqual(viaVariant, actual);
     }
 
     /// <summary>

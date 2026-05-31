@@ -35,7 +35,7 @@ public sealed partial class Base58Tests
     /// sizes and patterns.
     /// </summary>
     /// <param name="variant">The Base58 variant.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(Base58Variant.BitcoinFlickr)]
     [DataRow(Base58Variant.Ripple)]
     public void RoundTrip_ForEveryVariantAcrossLengths_ShouldRecoverOriginalBytes(Base58Variant variant)

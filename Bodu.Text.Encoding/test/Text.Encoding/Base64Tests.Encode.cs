@@ -14,8 +14,8 @@ public sealed partial class Base64Tests
     /// Standard variant reproduces every RFC 4648 §10 Known Answer Test vector.
     /// </summary>
     /// <param name="vector">A KAT vector.</param>
-    [DataTestMethod]
-    [DynamicData(nameof(Base64KnownAnswerVectors.StandardRfc4648Vectors), typeof(Base64KnownAnswerVectors), DynamicDataSourceType.Method)]
+    [TestMethod]
+    [DynamicData(nameof(Base64KnownAnswerVectors.StandardRfc4648Vectors), typeof(Base64KnownAnswerVectors))]
     public void Encode_ForStandardRfc4648KnownAnswerVector_ShouldMatch(EncodingKnownAnswerVector vector)
     {
         var actual = Base64.Encode(vector.DecodedBytes, Base64Variant.Standard);
@@ -28,8 +28,8 @@ public sealed partial class Base64Tests
     /// URL-safe variant produces the URL-safe alphabet form (and omits padding by default).
     /// </summary>
     /// <param name="vector">A URL-safe KAT vector.</param>
-    [DataTestMethod]
-    [DynamicData(nameof(Base64KnownAnswerVectors.UrlSafeVectors), typeof(Base64KnownAnswerVectors), DynamicDataSourceType.Method)]
+    [TestMethod]
+    [DynamicData(nameof(Base64KnownAnswerVectors.UrlSafeVectors), typeof(Base64KnownAnswerVectors))]
     public void Encode_ForUrlSafeKnownAnswerVector_ShouldMatch(EncodingKnownAnswerVector vector)
     {
         var actual = Base64.Encode(vector.DecodedBytes, Base64Variant.UrlSafe);
@@ -107,7 +107,7 @@ public sealed partial class Base64Tests
     /// </summary>
     /// <param name="input">The input ASCII string.</param>
     /// <param name="expected">The expected Base64 output.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("", "")]
     [DataRow("f", "Zg==")]
     [DataRow("fo", "Zm8=")]

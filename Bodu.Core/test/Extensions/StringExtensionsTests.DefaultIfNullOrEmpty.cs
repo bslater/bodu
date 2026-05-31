@@ -29,8 +29,8 @@ public partial class StringExtensionsTests
     /// <param name="value">The candidate string.</param>
     /// <param name="defaultValue">The fallback value.</param>
     /// <param name="expected">The expected return value.</param>
-    [DataTestMethod]
-    [DynamicData(nameof(GetDefaultIfNullOrEmptyCases), DynamicDataSourceType.Method)]
+    [TestMethod]
+    [DynamicData(nameof(GetDefaultIfNullOrEmptyCases))]
     public void DefaultIfNullOrEmpty_WhenInvoked_ShouldReturnExpected(string? value, string defaultValue, string expected) => Assert.AreEqual(expected, value.DefaultIfNullOrEmpty(defaultValue));
 
     /// <summary>

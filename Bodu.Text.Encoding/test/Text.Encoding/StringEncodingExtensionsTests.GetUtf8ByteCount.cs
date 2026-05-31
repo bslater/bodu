@@ -26,8 +26,8 @@ public sealed partial class StringEncodingExtensionsTests
     /// byte count for representative input strings.
     /// </summary>
     /// <param name="text">The string under test.</param>
-    [DataTestMethod]
-    [DynamicData(nameof(GetUtf8ByteCountCases), DynamicDataSourceType.Method)]
+    [TestMethod]
+    [DynamicData(nameof(GetUtf8ByteCountCases))]
     public void GetUtf8ByteCount_WhenInvoked_ShouldMatchBclUtf8(string text) => Assert.AreEqual(System.Text.Encoding.UTF8.GetByteCount(text), text.GetUtf8ByteCount());
 
     /// <summary>

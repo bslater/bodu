@@ -14,7 +14,7 @@ public sealed partial class Base58Tests
     /// <c>I</c>, and <c>l</c>.
     /// </summary>
     /// <param name="excluded">An ambiguous character that is not in the Bitcoin alphabet.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow('0')]
     [DataRow('O')]
     [DataRow('I')]

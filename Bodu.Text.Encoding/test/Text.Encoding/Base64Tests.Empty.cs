@@ -13,7 +13,7 @@ public sealed partial class Base64Tests
     /// Verifies that decoding an empty string returns an empty byte array for every variant.
     /// </summary>
     /// <param name="variant">The variant.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(Base64Variant.Standard)]
     [DataRow(Base64Variant.UrlSafe)]
     [DataRow(Base64Variant.Mime)]
@@ -27,7 +27,7 @@ public sealed partial class Base64Tests
     /// Verifies that encoding an empty byte array returns <see cref="string.Empty" /> for every variant.
     /// </summary>
     /// <param name="variant">The variant.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(Base64Variant.Standard)]
     [DataRow(Base64Variant.UrlSafe)]
     [DataRow(Base64Variant.Mime)]

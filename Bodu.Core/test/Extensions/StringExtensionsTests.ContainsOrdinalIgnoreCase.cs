@@ -31,8 +31,8 @@ public partial class StringExtensionsTests
     /// <param name="value">The candidate string.</param>
     /// <param name="valueToFind">The substring to find.</param>
     /// <param name="expected">The expected return value.</param>
-    [DataTestMethod]
-    [DynamicData(nameof(GetContainsOrdinalIgnoreCaseCases), DynamicDataSourceType.Method)]
+    [TestMethod]
+    [DynamicData(nameof(GetContainsOrdinalIgnoreCaseCases))]
     public void ContainsOrdinalIgnoreCase_WhenInvoked_ShouldReturnExpected(string value, string valueToFind, bool expected) => Assert.AreEqual(expected, value.ContainsOrdinalIgnoreCase(valueToFind));
 
     /// <summary>

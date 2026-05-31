@@ -95,7 +95,7 @@ public sealed partial class NotableDateAdjusterTests
     /// observance has already claimed the immediately following weekday.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(AdjacentHolidayCases), DynamicDataSourceType.Property, DynamicDataDisplayName = nameof(GetAdjacentHolidayDisplayName))]
+    [DynamicData(nameof(AdjacentHolidayCases), DynamicDataDisplayName = nameof(GetAdjacentHolidayDisplayName))]
     public void Apply_WhenHolidayOnWeekend_ShouldProduceCorrectObservanceDate(
         string displayName,
         DateTime holidayDate,

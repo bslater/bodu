@@ -13,7 +13,7 @@ public sealed partial class Base32Tests
     /// Verifies that decoding an empty string returns an empty byte array for every variant.
     /// </summary>
     /// <param name="variant">The Base32 variant.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(Base32Variant.Standard)]
     [DataRow(Base32Variant.HexExtended)]
     [DataRow(Base32Variant.Crockford)]
@@ -28,7 +28,7 @@ public sealed partial class Base32Tests
     /// Verifies that encoding an empty byte array returns <see cref="string.Empty" /> for every variant.
     /// </summary>
     /// <param name="variant">The Base32 variant.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(Base32Variant.Standard)]
     [DataRow(Base32Variant.HexExtended)]
     [DataRow(Base32Variant.Crockford)]

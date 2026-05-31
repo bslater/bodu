@@ -19,14 +19,14 @@ public partial class DateOnlyExtensionsTests
     [DynamicData(nameof(DateTimeExtensionsTests.LastDateOfWeekCultureInfoTestData), typeof(DateTimeExtensionsTests))]
     public void LastDateOfWeek_WhenCultureIsNull_ShouldUseCurrentCulture(DateTime inputDateTime, CultureInfo culture, DateTime expectedDateTime)
     {
-        var originalCulture = CultureInfo.CurrentCulture;
+        CultureInfo originalCulture = CultureInfo.CurrentCulture;
         try
         {
             CultureInfo.CurrentCulture = culture;
             var input = DateOnly.FromDateTime(inputDateTime);
             var expected = DateOnly.FromDateTime(expectedDateTime);
 
-            var actual = input.LastDateOfWeek((CultureInfo?)null);
+            DateOnly actual = input.LastDateOfWeek((CultureInfo?)null);
 
             Assert.AreEqual(expected, actual, $"Failed for culture: {culture.Name}");
         }
@@ -46,7 +46,7 @@ public partial class DateOnlyExtensionsTests
         var input = DateOnly.FromDateTime(inputDateTime);
         var expected = DateOnly.FromDateTime(expectedDateTime);
 
-        var actual = input.LastDateOfWeek(culture);
+        DateOnly actual = input.LastDateOfWeek(culture);
 
         Assert.AreEqual(expected, actual);
     }
@@ -72,8 +72,8 @@ public partial class DateOnlyExtensionsTests
     [TestMethod]
     public void LastDateOfWeek_WhenNearMaxValue_ShouldReturnValidResult()
     {
-        var date = DateOnly.MaxValue.AddDays(-6); // 9999-12-25
-        var actual = date.LastDateOfWeek(WorkingDaysOfWeek.MondayToFriday);
+        DateOnly date = DateOnly.MaxValue.AddDays(-6); // 9999-12-25
+        DateOnly actual = date.LastDateOfWeek(WorkingDaysOfWeek.MondayToFriday);
 
         Assert.IsTrue(actual <= DateOnly.MaxValue);
         Assert.AreEqual(DayOfWeek.Sunday, actual.DayOfWeek);
@@ -85,8 +85,8 @@ public partial class DateOnlyExtensionsTests
     [TestMethod]
     public void LastDateOfWeek_WhenResultExceedsMaxValue_ShouldThrowExactly()
     {
-        var nearMax = DateOnly.MaxValue.AddDays(-1); // e.g., Dec 30, 9999
-        var weekend = WorkingDaysOfWeek.MondayToFriday; // Start of week = Monday → end = Sunday
+        DateOnly nearMax = DateOnly.MaxValue.AddDays(-1); // e.g., Dec 30, 9999
+        WorkingDaysOfWeek weekend = WorkingDaysOfWeek.MondayToFriday; // Start of week = Monday → end = Sunday
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -101,7 +101,7 @@ public partial class DateOnlyExtensionsTests
     public void LastDateOfWeek_WhenUsingMaxValue_ShouldSucceed()
     {
         DateOnly max = DateOnly.MaxValue;
-        var actual = max.LastDateOfWeek(new CultureInfo("fa-IR")); // Friday is last day of week
+        DateOnly actual = max.LastDateOfWeek(new CultureInfo("fa-IR")); // Friday is last day of week
 
         Assert.AreEqual(max, actual);
     }
@@ -127,7 +127,7 @@ public partial class DateOnlyExtensionsTests
     {
         var input = DateOnly.FromDateTime(inputDateTime);
         var expected = DateOnly.FromDateTime(expectedDateTime);
-        var actual = input.LastDateOfWeek(weekend);
+        DateOnly actual = input.LastDateOfWeek(weekend);
         Assert.AreEqual(expected, actual);
     }
 

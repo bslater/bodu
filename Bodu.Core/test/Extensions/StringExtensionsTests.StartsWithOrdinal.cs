@@ -28,8 +28,8 @@ public partial class StringExtensionsTests
     /// <param name="value">The candidate string.</param>
     /// <param name="valueToFind">The prefix to find.</param>
     /// <param name="expected">The expected return value.</param>
-    [DataTestMethod]
-    [DynamicData(nameof(GetStartsWithOrdinalCases), DynamicDataSourceType.Method)]
+    [TestMethod]
+    [DynamicData(nameof(GetStartsWithOrdinalCases))]
     public void StartsWithOrdinal_WhenInvoked_ShouldReturnExpected(string value, string valueToFind, bool expected) => Assert.AreEqual(expected, value.StartsWithOrdinal(valueToFind));
 
     /// <summary>

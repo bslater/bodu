@@ -14,7 +14,7 @@ public sealed partial class EncodingExtensionsTests
     /// </summary>
     /// <param name="emitBom">Whether to construct the UTF-8 encoding with a preamble.</param>
     /// <param name="expected">The expected return value.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(true, true)]
     [DataRow(false, false)]
     public void HasPreamble_ShouldReflectEncodingConfiguration(bool emitBom, bool expected)
@@ -45,7 +45,7 @@ public sealed partial class EncodingExtensionsTests
     /// </summary>
     /// <param name="codePage">The codepage of the encoding under test.</param>
     /// <param name="expected">The expected preamble length.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(65001, 3)]
     [DataRow(1200, 2)]
     [DataRow(1201, 2)]
@@ -286,7 +286,7 @@ public sealed partial class EncodingExtensionsTests
     /// </summary>
     /// <param name="extra">Extra capacity added to the required buffer length (negative to undersize).</param>
     /// <param name="expectedOk">Whether the call is expected to succeed.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(0, true)]
     [DataRow(1, true)]
     [DataRow(-1, false)]

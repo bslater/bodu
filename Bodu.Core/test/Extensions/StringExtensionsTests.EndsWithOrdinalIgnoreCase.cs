@@ -28,8 +28,8 @@ public partial class StringExtensionsTests
     /// <param name="value">The candidate string.</param>
     /// <param name="valueToFind">The suffix to find.</param>
     /// <param name="expected">The expected return value.</param>
-    [DataTestMethod]
-    [DynamicData(nameof(GetEndsWithOrdinalIgnoreCaseCases), DynamicDataSourceType.Method)]
+    [TestMethod]
+    [DynamicData(nameof(GetEndsWithOrdinalIgnoreCaseCases))]
     public void EndsWithOrdinalIgnoreCase_WhenInvoked_ShouldReturnExpected(string value, string valueToFind, bool expected) => Assert.AreEqual(expected, value.EndsWithOrdinalIgnoreCase(valueToFind));
 
     /// <summary>

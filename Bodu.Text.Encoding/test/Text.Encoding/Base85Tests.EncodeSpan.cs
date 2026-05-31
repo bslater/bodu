@@ -56,7 +56,7 @@ public sealed partial class Base85Tests
 
         var written = Base85.Encode(zeros, destination, Base85Variant.Ascii85, BaseFormattingOptions.IncludePrefix);
 
-        Assert.AreEqual(actualLength, written);
+        Assert.AreEqual(written, actualLength);
         Assert.AreEqual("<~zz~>", new string(destination, 0, written));
     }
 
@@ -123,7 +123,7 @@ public sealed partial class Base85Tests
 
         var written = Base85.Encode(zeros, destination, Base85Variant.Ascii85);
 
-        Assert.AreEqual(actualLength, written);
+        Assert.AreEqual(written, actualLength);
         Assert.AreEqual("z", new string(destination, 0, written));
     }
 
@@ -159,7 +159,7 @@ public sealed partial class Base85Tests
         var ok = Base85.TryEncode(zeros, destination, out var written, Base85Variant.Ascii85, BaseFormattingOptions.IncludePrefix);
 
         Assert.IsTrue(ok);
-        Assert.AreEqual(actualLength, written);
+        Assert.AreEqual(written, actualLength);
         Assert.AreEqual("<~zz~>", new string(destination, 0, written));
     }
 

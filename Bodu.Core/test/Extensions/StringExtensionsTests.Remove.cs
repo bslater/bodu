@@ -28,8 +28,8 @@ public partial class StringExtensionsTests
     /// <param name="valueToRemove">The substring to remove.</param>
     /// <param name="comparison">The comparison.</param>
     /// <param name="expected">The expected return value.</param>
-    [DataTestMethod]
-    [DynamicData(nameof(GetRemoveCases), DynamicDataSourceType.Method)]
+    [TestMethod]
+    [DynamicData(nameof(GetRemoveCases))]
     public void Remove_WhenInvoked_ShouldReturnExpected(string value, string valueToRemove, StringComparison comparison, string expected) => Assert.AreEqual(expected, value.Remove(valueToRemove, comparison));
 
     /// <summary>

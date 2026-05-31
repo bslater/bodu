@@ -13,7 +13,7 @@ public sealed partial class Base58Tests
     /// Verifies that decoding an empty string returns an empty byte array.
     /// </summary>
     /// <param name="variant">The Base58 variant.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(Base58Variant.BitcoinFlickr)]
     [DataRow(Base58Variant.Ripple)]
     public void Decode_WhenEmptyString_ShouldReturnEmptyByteArray(Base58Variant variant)
@@ -26,7 +26,7 @@ public sealed partial class Base58Tests
     /// Verifies that encoding an empty byte array returns <see cref="string.Empty" />.
     /// </summary>
     /// <param name="variant">The Base58 variant.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(Base58Variant.BitcoinFlickr)]
     [DataRow(Base58Variant.Ripple)]
     public void Encode_WhenEmptyByteArray_ShouldReturnEmptyString(Base58Variant variant)

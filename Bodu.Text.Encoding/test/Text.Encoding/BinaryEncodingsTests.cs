@@ -19,7 +19,7 @@ public sealed class BinaryEncodingsTests
     /// </summary>
     /// <param name="alias">An alias for an encoding.</param>
     /// <param name="canonical">The canonical name the alias must resolve to.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("hex", "base16-lower")]
     [DataRow("HEX", "base16-lower")]
     [DataRow("base16", "base16-lower")]
@@ -115,7 +115,7 @@ public sealed class BinaryEncodingsTests
     /// Verifies that every pre-configured encoding round-trips a canonical input.
     /// </summary>
     /// <param name="encodingName">The encoding name resolved via <see cref="BinaryEncodings.Get(string)" />.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("base16-lower")]
     [DataRow("base16-upper")]
     [DataRow("base32")]

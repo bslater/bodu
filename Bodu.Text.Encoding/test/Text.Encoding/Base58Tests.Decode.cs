@@ -14,8 +14,8 @@ public sealed partial class Base58Tests
     /// every Bitcoin Core Known Answer Test vector for the Bitcoin/Flickr alphabet.
     /// </summary>
     /// <param name="vector">A KAT vector.</param>
-    [DataTestMethod]
-    [DynamicData(nameof(Base58KnownAnswerVectors.BitcoinFlickrVectors), typeof(Base58KnownAnswerVectors), DynamicDataSourceType.Method)]
+    [TestMethod]
+    [DynamicData(nameof(Base58KnownAnswerVectors.BitcoinFlickrVectors), typeof(Base58KnownAnswerVectors))]
     public void Decode_ForBitcoinFlickrKnownAnswerVector_ShouldRecoverBytes(EncodingKnownAnswerVector vector)
     {
         var actual = Base58.Decode(vector.Encoded, Base58Variant.BitcoinFlickr);
@@ -28,8 +28,8 @@ public sealed partial class Base58Tests
     /// <see cref="Base58KnownAnswerVectors.BitcoinFlickrNegativeVectors" /> with the expected exception type.
     /// </summary>
     /// <param name="vector">A negative KAT vector.</param>
-    [DataTestMethod]
-    [DynamicData(nameof(Base58KnownAnswerVectors.BitcoinFlickrNegativeVectors), typeof(Base58KnownAnswerVectors), DynamicDataSourceType.Method)]
+    [TestMethod]
+    [DynamicData(nameof(Base58KnownAnswerVectors.BitcoinFlickrNegativeVectors), typeof(Base58KnownAnswerVectors))]
     public void Decode_ForBitcoinFlickrKnownMalformedInput_ShouldThrowExactly(EncodingNegativeDecodeVector vector)
     {
         Exception? actual = null;
@@ -52,7 +52,7 @@ public sealed partial class Base58Tests
     /// </summary>
     /// <param name="encoded">The Base58 input.</param>
     /// <param name="expectedHex">The expected decoded bytes expressed as hex.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("1", "00")]
     [DataRow("11", "0000")]
     [DataRow("12", "0001")]
@@ -168,8 +168,8 @@ public sealed partial class Base58Tests
     /// <see langword="false" /> for every malformed Bitcoin/Flickr input.
     /// </summary>
     /// <param name="vector">A negative KAT vector.</param>
-    [DataTestMethod]
-    [DynamicData(nameof(Base58KnownAnswerVectors.BitcoinFlickrNegativeVectors), typeof(Base58KnownAnswerVectors), DynamicDataSourceType.Method)]
+    [TestMethod]
+    [DynamicData(nameof(Base58KnownAnswerVectors.BitcoinFlickrNegativeVectors), typeof(Base58KnownAnswerVectors))]
     public void IsValid_ForBitcoinFlickrKnownMalformedInput_ShouldReturnFalse(EncodingNegativeDecodeVector vector)
     {
         Assert.IsFalse(Base58.IsValid(vector.MalformedInput.AsSpan(), Base58Variant.BitcoinFlickr),

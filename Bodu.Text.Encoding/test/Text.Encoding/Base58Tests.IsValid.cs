@@ -51,7 +51,7 @@ public sealed partial class Base58Tests
     /// characters.
     /// </summary>
     /// <param name="excluded">An excluded ambiguous character.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow('0')]
     [DataRow('O')]
     [DataRow('I')]

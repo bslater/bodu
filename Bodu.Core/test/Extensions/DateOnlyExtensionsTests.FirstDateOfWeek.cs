@@ -33,7 +33,7 @@ public partial class DateOnlyExtensionsTests
     [TestMethod]
     public void FirstDateOfWeek_WhenCultureIsNull_ShouldUseCurrentCulture()
     {
-        var originalCulture = CultureInfo.CurrentCulture;
+        CultureInfo originalCulture = CultureInfo.CurrentCulture;
         try
         {
             CultureInfo.CurrentCulture = DateTimeExtensionsTests.TestCulture;
@@ -54,10 +54,10 @@ public partial class DateOnlyExtensionsTests
     /// Verifies that the parameterless <see cref="DateOnlyExtensions.FirstDateOfWeek(DateOnly)" /> overload uses <see cref="CultureInfo.CurrentCulture" /> to determine the week start.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests.FirstDateOfWeekCultureInfoTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DateTimeExtensionsTests.FirstDateOfWeekCultureInfoTestData), typeof(DateTimeExtensionsTests))]
     public void FirstDateOfWeek_WhenCurrentCultureSet_ShouldReturnExpectedStart(DateTime inputDateTime, CultureInfo culture, DateTime expectedDateTime)
     {
-        var originalCulture = CultureInfo.CurrentCulture;
+        CultureInfo originalCulture = CultureInfo.CurrentCulture;
 
         try
         {
@@ -120,8 +120,8 @@ public partial class DateOnlyExtensionsTests
     [TestMethod]
     public void FirstDateOfWeek_WhenNearMinValue_ShouldReturnValidResult()
     {
-        var date = DateOnly.MinValue.AddDays(6); // 0001-01-07
-        var actual = date.FirstDateOfWeek(WorkingDaysOfWeek.MondayToFriday);
+        DateOnly date = DateOnly.MinValue.AddDays(6); // 0001-01-07
+        DateOnly actual = date.FirstDateOfWeek(WorkingDaysOfWeek.MondayToFriday);
 
         Assert.IsTrue(actual >= DateOnly.MinValue);
         Assert.AreEqual(DayOfWeek.Monday, actual.DayOfWeek);
@@ -133,8 +133,8 @@ public partial class DateOnlyExtensionsTests
     [TestMethod]
     public void FirstDateOfWeek_WhenResultUnderflowsMinValue_ShouldThrowExactly()
     {
-        var nearMin = DateOnly.MinValue.AddDays(1); // e.g., Jan 2, 0001
-        var weekend = WorkingDaysOfWeek.SundayToThursday; // Start of week = Sunday → offset = -1
+        DateOnly nearMin = DateOnly.MinValue.AddDays(1); // e.g., Jan 2, 0001
+        WorkingDaysOfWeek weekend = WorkingDaysOfWeek.SundayToThursday; // Start of week = Sunday → offset = -1
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -152,7 +152,7 @@ public partial class DateOnlyExtensionsTests
         var input = DateOnly.FromDateTime(inputDateTime);
         var expected = DateOnly.FromDateTime(expectedDateTime);
 
-        var actual = input.FirstDateOfWeek(weekend);
+        DateOnly actual = input.FirstDateOfWeek(weekend);
 
         Assert.AreEqual(expected, actual);
     }
