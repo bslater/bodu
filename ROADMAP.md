@@ -4,7 +4,7 @@ Forward-looking plan for the **Bodu** C# utility library. Pairs with
 [`CHANGELOG.md`](CHANGELOG.md) (what shipped) and [`CLAUDE.md`](CLAUDE.md)
 (repository conventions for contributors).
 
-*Last updated: 2026-05-30. ChaCha20 / XChaCha20 shipped; Salsa20 / XSalsa20, Rabbit, and HC-128 added to the stream-cipher plan.*
+*Last updated: 2026-05-30. ChaCha20 / XChaCha20 and Salsa20 / XSalsa20 shipped on the shared StreamCipherAlgorithm base; Rabbit and HC-128 remain on the stream-cipher plan.*
 
 ## How to read this
 
@@ -164,19 +164,28 @@ SipHash plus EAX/OFB/GCM/OCB/SIV modes.
   remaining ChaCha-family gap is the **XChaCha20-Poly1305 AEAD**, which
   composes this engine with the existing `Poly1305` MAC.
 - **Expand the stream-cipher family: Salsa20 / XSalsa20, Rabbit, and
-  HC-128.** Build on the `IStreamCipher` / `StreamCipherTransform`
-  abstraction shipped with ChaCha20. Salsa20 (Bernstein, eSTREAM; the
-  RFC 7914 §8 Salsa20/8 core vector covers only the scrypt core) and
-  its extended-nonce XSalsa20 (HSalsa20 subkey + Salsa20, mirroring the
-  HChaCha20 / XChaCha20 relationship) come first; Rabbit (RFC 4503,
-  the one RFC-specified cipher in this group, with Appendix A/B
-  conformance and debug vectors) and HC-128 (eSTREAM final portfolio,
-  reference-harness vectors) follow. Each ships KAT-driven tests
-  against its published/reference vectors, round-trip and segmentation
-  tests, partial-block and argument-validation coverage, and reset /
-  dispose state-clearing tests. All four are raw, confidentiality-only
-  primitives: nonce-reuse and unauthenticated-ciphertext warnings are
-  required in their XML docs, and AEAD remains the recommended default.
+  HC-128.** Build on the `StreamCipherAlgorithm` base and the shared
+  `IStreamCipher` / `StreamCipherTransform` stack shipped with ChaCha20,
+  with concrete tests inheriting the common
+  `StreamCipherAlgorithmTests` contract. **Salsa20 and XSalsa20 have
+  landed** — Salsa20 over 128- and 256-bit keys (verified against the
+  eSTREAM and Crypto++/ECRYPT vectors plus the 131,072-byte long-stream
+  XOR digest) and its extended-nonce XSalsa20 (HSalsa20 subkey +
+  Salsa20, mirroring HChaCha20 / XChaCha20; verified against the NaCl
+  `crypto_core_hsalsa20` and XSalsa20 vectors). Still to come: Rabbit
+  (RFC 4503, the one RFC-specified cipher in this group, with
+  Appendix A/B conformance and debug vectors) and HC-128 (eSTREAM
+  final portfolio, reference-harness vectors), whose evolving internal
+  state — rather than a seekable block counter — is already accommodated
+  by the engine-owns-advancement `NextKeystreamBlock` contract. All are
+  raw, confidentiality-only primitives: nonce-reuse and
+  unauthenticated-ciphertext warnings are required in their XML docs,
+  and AEAD remains the recommended default.
+- **Add the XChaCha20-Poly1305 / XSalsa20-Poly1305 AEAD constructions.**
+  The raw ciphers above plus the existing `Poly1305` MAC are the
+  building blocks. Neither extended-nonce AEAD ships in the BCL (only
+  the 12-byte-nonce `System.Security.Cryptography.ChaCha20Poly1305`
+  does), so both remain genuine gaps.
 - **Add password-hashing KDFs: Argon2 and scrypt.** No
   password-hashing surface today. `HKDF` and `Pbkdf2` are already in
   `System.Security.Cryptography` and are not in scope. Argon2 and
