@@ -98,4 +98,148 @@ public sealed class SmokeTests
 
         Assert.AreEqual(8, digest.Length);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="Bodu.Security.Cryptography.ChaCha20" /> performs a successful encrypt / decrypt
+    /// round-trip under a freshly generated key and nonce.
+    /// </summary>
+    [TestMethod]
+    public void ChaCha20_EncryptDecryptRoundTrip_ShouldRecoverPlaintext()
+    {
+        using var algorithm = Bodu.Security.Cryptography.ChaCha20.Create();
+        algorithm.GenerateKey();
+        algorithm.GenerateIV();
+
+        var plaintext = Encoding.UTF8.GetBytes("Smoke test for ChaCha20.");
+
+        byte[] ciphertext;
+        using (ICryptoTransform encryptor = algorithm.CreateEncryptor())
+            ciphertext = encryptor.TransformFinalBlock(plaintext, 0, plaintext.Length);
+
+        byte[] roundTrip;
+        using (ICryptoTransform decryptor = algorithm.CreateDecryptor())
+            roundTrip = decryptor.TransformFinalBlock(ciphertext, 0, ciphertext.Length);
+
+        CollectionAssert.AreEqual(plaintext, roundTrip);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Bodu.Security.Cryptography.XChaCha20" /> performs a successful encrypt / decrypt
+    /// round-trip under a freshly generated key and 192-bit nonce.
+    /// </summary>
+    [TestMethod]
+    public void XChaCha20_EncryptDecryptRoundTrip_ShouldRecoverPlaintext()
+    {
+        using var algorithm = Bodu.Security.Cryptography.XChaCha20.Create();
+        algorithm.GenerateKey();
+        algorithm.GenerateIV();
+
+        var plaintext = Encoding.UTF8.GetBytes("Smoke test for XChaCha20.");
+
+        byte[] ciphertext;
+        using (ICryptoTransform encryptor = algorithm.CreateEncryptor())
+            ciphertext = encryptor.TransformFinalBlock(plaintext, 0, plaintext.Length);
+
+        byte[] roundTrip;
+        using (ICryptoTransform decryptor = algorithm.CreateDecryptor())
+            roundTrip = decryptor.TransformFinalBlock(ciphertext, 0, ciphertext.Length);
+
+        CollectionAssert.AreEqual(plaintext, roundTrip);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Bodu.Security.Cryptography.Salsa20" /> performs a successful encrypt / decrypt
+    /// round-trip under a freshly generated key and nonce.
+    /// </summary>
+    [TestMethod]
+    public void Salsa20_EncryptDecryptRoundTrip_ShouldRecoverPlaintext()
+    {
+        using var algorithm = Bodu.Security.Cryptography.Salsa20.Create();
+        algorithm.GenerateKey();
+        algorithm.GenerateIV();
+
+        var plaintext = Encoding.UTF8.GetBytes("Smoke test for Salsa20.");
+
+        byte[] ciphertext;
+        using (ICryptoTransform encryptor = algorithm.CreateEncryptor())
+            ciphertext = encryptor.TransformFinalBlock(plaintext, 0, plaintext.Length);
+
+        byte[] roundTrip;
+        using (ICryptoTransform decryptor = algorithm.CreateDecryptor())
+            roundTrip = decryptor.TransformFinalBlock(ciphertext, 0, ciphertext.Length);
+
+        CollectionAssert.AreEqual(plaintext, roundTrip);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Bodu.Security.Cryptography.XSalsa20" /> performs a successful encrypt / decrypt
+    /// round-trip under a freshly generated key and 192-bit nonce.
+    /// </summary>
+    [TestMethod]
+    public void XSalsa20_EncryptDecryptRoundTrip_ShouldRecoverPlaintext()
+    {
+        using var algorithm = Bodu.Security.Cryptography.XSalsa20.Create();
+        algorithm.GenerateKey();
+        algorithm.GenerateIV();
+
+        var plaintext = Encoding.UTF8.GetBytes("Smoke test for XSalsa20.");
+
+        byte[] ciphertext;
+        using (ICryptoTransform encryptor = algorithm.CreateEncryptor())
+            ciphertext = encryptor.TransformFinalBlock(plaintext, 0, plaintext.Length);
+
+        byte[] roundTrip;
+        using (ICryptoTransform decryptor = algorithm.CreateDecryptor())
+            roundTrip = decryptor.TransformFinalBlock(ciphertext, 0, ciphertext.Length);
+
+        CollectionAssert.AreEqual(plaintext, roundTrip);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Bodu.Security.Cryptography.Rabbit" /> performs a successful encrypt / decrypt
+    /// round-trip under a freshly generated key and 64-bit IV.
+    /// </summary>
+    [TestMethod]
+    public void Rabbit_EncryptDecryptRoundTrip_ShouldRecoverPlaintext()
+    {
+        using var algorithm = Bodu.Security.Cryptography.Rabbit.Create();
+        algorithm.GenerateKey();
+        algorithm.GenerateIV();
+
+        var plaintext = Encoding.UTF8.GetBytes("Smoke test for Rabbit.");
+
+        byte[] ciphertext;
+        using (ICryptoTransform encryptor = algorithm.CreateEncryptor())
+            ciphertext = encryptor.TransformFinalBlock(plaintext, 0, plaintext.Length);
+
+        byte[] roundTrip;
+        using (ICryptoTransform decryptor = algorithm.CreateDecryptor())
+            roundTrip = decryptor.TransformFinalBlock(ciphertext, 0, ciphertext.Length);
+
+        CollectionAssert.AreEqual(plaintext, roundTrip);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Bodu.Security.Cryptography.Hc128" /> performs a successful encrypt / decrypt
+    /// round-trip under a freshly generated key and 128-bit IV.
+    /// </summary>
+    [TestMethod]
+    public void Hc128_EncryptDecryptRoundTrip_ShouldRecoverPlaintext()
+    {
+        using var algorithm = Bodu.Security.Cryptography.Hc128.Create();
+        algorithm.GenerateKey();
+        algorithm.GenerateIV();
+
+        var plaintext = Encoding.UTF8.GetBytes("Smoke test for HC-128.");
+
+        byte[] ciphertext;
+        using (ICryptoTransform encryptor = algorithm.CreateEncryptor())
+            ciphertext = encryptor.TransformFinalBlock(plaintext, 0, plaintext.Length);
+
+        byte[] roundTrip;
+        using (ICryptoTransform decryptor = algorithm.CreateDecryptor())
+            roundTrip = decryptor.TransformFinalBlock(ciphertext, 0, ciphertext.Length);
+
+        CollectionAssert.AreEqual(plaintext, roundTrip);
+    }
 }

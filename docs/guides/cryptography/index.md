@@ -4,9 +4,9 @@ title: Bodu.Security.Cryptography guides
 
 # Bodu.Security.Cryptography guides
 
-Recipe-style walk-throughs for **Bodu.Security.Cryptography**, organized by the type hierarchy of the library: foundations → standard ciphers → tweakable ciphers → AEAD → cryptographic hashes → keyed hashes → ASCON.
+Recipe-style walk-throughs for **Bodu.Security.Cryptography**, organized by the type hierarchy of the library: foundations → standard ciphers → tweakable ciphers → stream ciphers → AEAD → cryptographic hashes → keyed hashes → ASCON.
 
-If you have not yet installed the package or want the high-level shape of the library, start with the [Bodu.Security.Cryptography introduction](../../docs/cryptography/index.md) and the [getting-started page](../../docs/cryptography/getting-started.md). Not sure which primitive to use? The introduction's *shape of the library* section maps the five subfamilies and explains how they differ.
+If you have not yet installed the package or want the high-level shape of the library, start with the [Bodu.Security.Cryptography introduction](../../docs/cryptography/index.md) and the [getting-started page](../../docs/cryptography/getting-started.md). Not sure which primitive to use? The introduction's *shape of the library* section maps the six subfamilies and explains how they differ.
 
 For the auto-generated API reference, see the [Bodu.Security.Cryptography namespace page](../../apidoc/Bodu.Security.Cryptography.md). For non-cryptographic checksums and fingerprints, see the [Bodu.IO.Hashing guides](../io-hashing/).
 
@@ -61,6 +61,19 @@ For the auto-generated API reference, see the [Bodu.Security.Cryptography namesp
 | `Threefish512` | 512 bits (64 B) | 512 bits (64 B) | 128 bits (16 B) | [Using Threefish-512](threefish-512.md) |
 | `Threefish1024` | 1024 bits (128 B) | 1024 bits (128 B) | 128 bits (16 B) | [Using Threefish-1024](threefish-1024.md) |
 | `Serpent256` / `Serpent512` / `Serpent1024` | 256 / 512 / 1024 bits | matching key | 128 bits | (no dedicated guide — non-standard wide-block constructions; see API reference) |
+
+## Symmetric ciphers — Stream
+
+Raw, confidentiality-only XOR keystream ciphers — **no authentication**; pair with a MAC or prefer AEAD. See [Using stream ciphers](stream-ciphers.md).
+
+| Cipher | Key | Nonce / IV | Notes |
+|---|---|---|---|
+| `ChaCha20` | 256 bits (32 B) | 96 bits (12 B) | RFC 8439; the modern default. |
+| `XChaCha20` | 256 bits (32 B) | 192 bits (24 B) | Extended nonce — safe to choose at random. |
+| `Salsa20` | 128 / 256 bits | 64 bits (8 B) | eSTREAM; 64-bit nonce needs a counter. |
+| `XSalsa20` | 256 bits (32 B) | 192 bits (24 B) | Extended-nonce Salsa20 (NaCl). |
+| `Rabbit` | 128 bits (16 B) | 64 bits (8 B) | RFC 4503; evolving-state (no seekable counter). |
+| `Hc128` | 128 bits (16 B) | 128 bits (16 B) | eSTREAM; expensive table-based setup. |
 
 ## Symmetric ciphers — AEAD
 

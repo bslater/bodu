@@ -8,7 +8,7 @@ uid: Bodu.Security.Cryptography
 
 **Bodu.Security.Cryptography** is a self-contained collection of managed block-cipher, cipher-mode, padding, AEAD, keyed-hash, cryptographic-hash, and Merkle-tree implementations that plug into the standard .NET cryptography contracts (<xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType> and <xref:System.Security.Cryptography.SymmetricAlgorithm?displayProperty=nameWithType>), plus Bodu's <xref:Bodu.Security.Cryptography.TweakableSymmetricAlgorithm> and <xref:Bodu.Security.Cryptography.IBlockCipher>.
 
-Reach for this library when you need a tweakable block cipher that isn't in the BCL (Threefish, wide-block Serpent), a managed implementation of an AES-finalist cipher (Camellia, Twofish, Serpent, Blowfish, Skipjack), authenticated-encryption mode transforms for AES (GCM / CCM / OCB / EAX / SIV / GCM-SIV), the ASCON family (Hash256, HashA256, XOF128, CXOF128, AEAD128), a keyed hash for hash-table protection or message authentication (SipHash, Poly1305), a cryptographic digest with a specific design lineage (Tiger, CubeHash, Snefru, Whirlpool, BLAKE2/3, Skein, Shake), or a Merkle-tree hash for streaming integrity with per-chunk verifiability.
+Reach for this library when you need a tweakable block cipher that isn't in the BCL (Threefish, wide-block Serpent), a managed implementation of an AES-finalist cipher (Camellia, Twofish, Serpent, Blowfish, Skipjack), a software stream cipher (ChaCha20, XChaCha20, Salsa20, XSalsa20, Rabbit, HC-128), authenticated-encryption mode transforms for AES (GCM / CCM / OCB / EAX / SIV / GCM-SIV), the ASCON family (Hash256, HashA256, XOF128, CXOF128, AEAD128), a keyed hash for hash-table protection or message authentication (SipHash, Poly1305), a cryptographic digest with a specific design lineage (Tiger, CubeHash, Snefru, Whirlpool, BLAKE2/3, Skein, Shake), or a Merkle-tree hash for streaming integrity with per-chunk verifiability.
 
 For non-cryptographic checksums and hash-table hashes (CRC, Fletcher, Adler, FNV, CityHash, MurmurHash3, Pearson, classic string hashes) see the companion <xref:Bodu.IO.Hashing> package, which is built on <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?displayProperty=nameWithType>.
 
@@ -16,7 +16,7 @@ For non-cryptographic checksums and hash-table hashes (CRC, Fletcher, Adler, FNV
 
 - **[Bodu.Security.Cryptography introduction](~/docs/cryptography/index.md)** — namespaces, headline types, scenarios.
 - **[Bodu.Security.Cryptography getting started](~/docs/cryptography/getting-started.md)** — install and minimal samples for ciphers, AEAD, keyed hashes, and digests.
-- **[Bodu.Security.Cryptography guides](~/guides/cryptography/index.md)** — encryption basics, cipher modes, padding, composing primitives, AEAD modes, keyed and cryptographic hashing, the ASCON family.
+- **[Bodu.Security.Cryptography guides](~/guides/cryptography/index.md)** — encryption basics, cipher modes, padding, composing primitives, stream ciphers, AEAD modes, keyed and cryptographic hashing, the ASCON family.
 - **[Bodu.IO.Hashing introduction](~/docs/io-hashing/index.md)** — the sibling library, for non-cryptographic checksums and fingerprints (no adversary model).
 
 ## Key types
@@ -33,6 +33,15 @@ For non-cryptographic checksums and hash-table hashes (CRC, Fletcher, Adler, FNV
 
 - <xref:Bodu.Security.Cryptography.Threefish256>, <xref:Bodu.Security.Cryptography.Threefish512>, <xref:Bodu.Security.Cryptography.Threefish1024> — 256 / 512 / 1024-bit blocks and keys, all with a 128-bit tweak. Threefish-512 is the recommended general-purpose variant; Threefish-256 underpins Skein-256.
 - <xref:Bodu.Security.Cryptography.Serpent256>, <xref:Bodu.Security.Cryptography.Serpent512>, <xref:Bodu.Security.Cryptography.Serpent1024> — wide-block tweakable Serpent constructions (non-standard).
+
+**Stream ciphers** (<xref:Bodu.Security.Cryptography.StreamCipherAlgorithm> lifecycle — a `SymmetricAlgorithm` with no block mode or padding; the nonce is the `IV`. Self-inverse and **confidentiality-only — no authentication**)
+
+- <xref:Bodu.Security.Cryptography.ChaCha20> — 256-bit key, 96-bit nonce, 32-bit counter (Bernstein; RFC 8439). The modern default.
+- <xref:Bodu.Security.Cryptography.XChaCha20> — 256-bit key, 192-bit nonce; extended-nonce ChaCha20 via an HChaCha20 subkey, so the nonce can be chosen at random.
+- <xref:Bodu.Security.Cryptography.Salsa20> — 128- or 256-bit key, 64-bit nonce, 64-bit counter (Bernstein; eSTREAM).
+- <xref:Bodu.Security.Cryptography.XSalsa20> — 256-bit key, 192-bit nonce; extended-nonce Salsa20 (NaCl / libsodium).
+- <xref:Bodu.Security.Cryptography.Rabbit> — 128-bit key, 64-bit IV (RFC 4503; eSTREAM). Evolving internal state, no seekable counter.
+- <xref:Bodu.Security.Cryptography.Hc128> — 128-bit key, 128-bit IV (Wu; eSTREAM). Table-based with an expensive setup.
 
 **Cipher composition** — block-cipher contracts, mode transforms, padding strategies
 
@@ -97,6 +106,7 @@ ulong slot = BitConverter.ToUInt64(sip.ComputeHash(data));
   - <xref:Bodu.Security.Cryptography.Snefru128> and <xref:Bodu.Security.Cryptography.Snefru256> are cryptanalytically broken — interop / research only.
   - <xref:Bodu.Security.Cryptography.SipHash64> is keyed and collision-resistant but short-output; use it for hash-table protection and message authentication over small inputs, not as a drop-in for a MAC like HMAC-SHA256.
   - <xref:Bodu.Security.Cryptography.Tiger> is a classic cryptographic hash. Prefer BCL-provided SHA-2 / SHA-3 for new designs; use Tiger for interoperability with existing Tiger-based systems.
+  - The stream ciphers (<xref:Bodu.Security.Cryptography.ChaCha20>, <xref:Bodu.Security.Cryptography.XChaCha20>, <xref:Bodu.Security.Cryptography.Salsa20>, <xref:Bodu.Security.Cryptography.XSalsa20>, <xref:Bodu.Security.Cryptography.Rabbit>, <xref:Bodu.Security.Cryptography.Hc128>) are **raw and unauthenticated**. A `(key, nonce)` pair must encrypt at most one message — reuse reveals the XOR of the plaintexts — and ciphertext integrity is not protected. Pair them with a MAC (encrypt-then-MAC with <xref:Bodu.Security.Cryptography.Poly1305>) or prefer an AEAD construction. A 64-bit nonce (`Salsa20`, `Rabbit`) is too short to choose randomly; use a counter, or an extended-nonce variant (`XChaCha20` / `XSalsa20`).
   - For error-detection and hash-table distribution (CRC, Fletcher, Adler, FNV, CityHash, MurmurHash3, Pearson, and the classic short hashes) use the non-cryptographic types in <xref:Bodu.IO.Hashing>.
 - **Thread safety.** Instances of the cipher and hash types follow the standard .NET convention: **not thread-safe** during a single `TransformBlock` / `ComputeHash` / encryption session. Create one instance per logical operation, or synchronize externally. AEAD mode transforms (`GcmModeTransform`, etc.) are **single-use per message** — construct a fresh transform on the encrypt side and another on the decrypt side.
 - **Allocation discipline.** Hot-path types allocate their working buffers in the constructor and reuse them; `CryptoHelpers.ClearIfNotNull` (and equivalents) zero secret material at disposal time.

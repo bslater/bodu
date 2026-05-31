@@ -134,7 +134,7 @@ Non-cryptographic hashing — fingerprints, checksums, and check digits — buil
 
 ## Bodu.Security.Cryptography
 
-Cryptographic primitives with a formal adversary model — block ciphers, AEAD constructions, keyed and unkeyed hashes — derived from the standard BCL base classes (`SymmetricAlgorithm`, `HashAlgorithm`).
+Cryptographic primitives with a formal adversary model — block ciphers, stream ciphers, AEAD constructions, keyed and unkeyed hashes — derived from the standard BCL base classes (`SymmetricAlgorithm`, `HashAlgorithm`).
 
 <div class="bodu-cards">
 
@@ -211,6 +211,17 @@ Cryptographic primitives with a formal adversary model — block ciphers, AEAD c
 </div>
 
 `Serpent256` / `Serpent512` / `Serpent1024` are wide-block tweakable Serpent constructions — non-standard, see the [API reference](../apidoc/Bodu.Security.Cryptography.md) for their parameters.
+
+### Symmetric ciphers — Stream
+
+<div class="bodu-cards">
+
+<div class="bodu-card">
+  <h3><a href="cryptography/stream-ciphers.md">Using stream ciphers</a></h3>
+  <p>ChaCha20, XChaCha20, Salsa20, XSalsa20, Rabbit, HC-128 — raw XOR keystream ciphers (no block, no padding). Confidentiality only; pair with a MAC or prefer AEAD.</p>
+</div>
+
+</div>
 
 ### Symmetric ciphers — AEAD
 
