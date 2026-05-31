@@ -218,4 +218,28 @@ public sealed class SmokeTests
 
         CollectionAssert.AreEqual(plaintext, roundTrip);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="Bodu.Security.Cryptography.Hc128" /> performs a successful encrypt / decrypt
+    /// round-trip under a freshly generated key and 128-bit IV.
+    /// </summary>
+    [TestMethod]
+    public void Hc128_EncryptDecryptRoundTrip_ShouldRecoverPlaintext()
+    {
+        using var algorithm = Bodu.Security.Cryptography.Hc128.Create();
+        algorithm.GenerateKey();
+        algorithm.GenerateIV();
+
+        var plaintext = Encoding.UTF8.GetBytes("Smoke test for HC-128.");
+
+        byte[] ciphertext;
+        using (ICryptoTransform encryptor = algorithm.CreateEncryptor())
+            ciphertext = encryptor.TransformFinalBlock(plaintext, 0, plaintext.Length);
+
+        byte[] roundTrip;
+        using (ICryptoTransform decryptor = algorithm.CreateDecryptor())
+            roundTrip = decryptor.TransformFinalBlock(ciphertext, 0, ciphertext.Length);
+
+        CollectionAssert.AreEqual(plaintext, roundTrip);
+    }
 }
