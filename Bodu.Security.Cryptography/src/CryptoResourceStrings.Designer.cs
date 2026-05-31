@@ -448,7 +448,7 @@ namespace Bodu {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The input and output buffers refer to the same array but partially overlap. A stream-cipher transform supports only exact in-place transformation (identical offsets) or fully disjoint buffers..
+        ///   Looks up a localized string similar to The input and output buffers partially overlap. Cryptographic transforms support only exact in-place transformation (identical start and length) or fully disjoint buffers..
         /// </summary>
         internal static string Crypt_Invalid_PartialBufferOverlap {
             get {

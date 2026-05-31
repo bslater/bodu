@@ -151,17 +151,15 @@ internal sealed class StreamCipherTransform
         CryptoHelpers.ThrowIfArrayOffsetOrCountInvalid(inputBuffer, inputOffset, inputCount);
         CryptoHelpers.ThrowIfArrayOffsetOrCountInvalid(outputBuffer, outputOffset, inputCount);
 
-        // Forward byte-by-byte XOR is safe for exact in-place (equal offsets) and disjoint ranges, but a partial
-        // same-array overlap would let an earlier write clobber input that has not been read yet.
-        if (ReferenceEquals(inputBuffer, outputBuffer)
-            && inputCount > 0
-            && inputOffset != outputOffset
-            && RangesOverlap(inputOffset, outputOffset, inputCount))
-        {
-            throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_PartialBufferOverlap);
-        }
+        ReadOnlySpan<byte> input = inputBuffer.AsSpan(inputOffset, inputCount);
+        Span<byte> output = outputBuffer.AsSpan(outputOffset, inputCount);
 
-        Apply(inputBuffer.AsSpan(inputOffset, inputCount), outputBuffer.AsSpan(outputOffset, inputCount));
+        // Forward byte-by-byte XOR is safe for exact in-place (input and output cover the same memory) and for
+        // fully disjoint ranges, but a partial overlap would let an earlier write clobber input that has not yet
+        // been read.
+        CryptoHelpers.ThrowIfInvalidOverlap(input, output);
+
+        Apply(input, output);
         return inputCount;
     }
 
@@ -232,19 +230,6 @@ internal sealed class StreamCipherTransform
             output[i] = (byte)(input[i] ^ _keystream[_keystreamOffset++]);
         }
     }
-
-    /// <summary>
-    /// Determines whether two equal-length ranges within the same array overlap.
-    /// </summary>
-    /// <param name="offsetA">The start offset of the first range.</param>
-    /// <param name="offsetB">The start offset of the second range.</param>
-    /// <param name="count">The length, in elements, shared by both ranges.</param>
-    /// <returns>
-    /// <see langword="true" /> if the ranges <c>[offsetA, offsetA + count)</c> and <c>[offsetB, offsetB + count)</c>
-    /// share any element; otherwise, <see langword="false" />.
-    /// </returns>
-    private static bool RangesOverlap(int offsetA, int offsetB, int count) =>
-        offsetA < offsetB + count && offsetB < offsetA + count;
 
     /// <summary>
     /// Throws an <see cref="ObjectDisposedException" /> if this transform has been disposed.

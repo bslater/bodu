@@ -89,6 +89,7 @@ public sealed class CbcModeTransform
 
         CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(input, blockSize, throwIfZero: false);
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, 0, input.Length);
+        CryptoHelpers.ThrowIfInvalidOverlap(input, output);
 
         Span<byte> tempBlock = stackalloc byte[blockSize];
 

@@ -89,6 +89,7 @@ public sealed class CfbModeTransform
         // Empty input is a no-op, consistent with CbcModeTransform.
         CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(input, blockSize, throwIfZero: false);
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, 0, input.Length);
+        CryptoHelpers.ThrowIfInvalidOverlap(input, output);
 
         Span<byte> feedback = stackalloc byte[blockSize];
 
