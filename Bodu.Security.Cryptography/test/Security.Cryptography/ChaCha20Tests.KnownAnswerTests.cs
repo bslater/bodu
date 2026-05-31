@@ -8,21 +8,26 @@ namespace Bodu.Security.Cryptography;
 
 using System.Reflection;
 using System.Security.Cryptography;
-using Bodu.Security.Cryptography.Contracts;
 
 /// <summary>
 /// Locks the <see cref="ChaCha20" /> stream cipher against the published RFC 8439 known-answer test vectors, and
-/// inherits the shared <see cref="SymmetricStreamAlgorithmContractTests{TCipher}" /> behavioural contract.
+/// inherits the shared <see cref="SymmetricStreamAlgorithmTests{TTest, TAlgorithm}" /> behavioural contract.
 /// </summary>
 [TestClass]
-public sealed class ChaCha20Tests
-    : SymmetricStreamAlgorithmContractTests<ChaCha20>
+public sealed partial class ChaCha20Tests
+    : SymmetricStreamAlgorithmTests<ChaCha20Tests, ChaCha20>
 {
     /// <inheritdoc />
-    protected override int ExpectedKeySizeBits => 256;
+    protected override ChaCha20 CreateAlgorithm() => new();
 
     /// <inheritdoc />
-    protected override int ExpectedNonceSizeBits => 96;
+    protected override SymmetricStreamAlgorithmSpecification GetSpecification() =>
+        new()
+        {
+            DefaultKeySizeBits = 256,
+            NonceSizeBits = 96,
+            LegalKeySizesBits = [256],
+        };
 
     /// <summary>
     /// Represents one ChaCha20 encryption known-answer test row, expressed as continuous hex strings.
