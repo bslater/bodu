@@ -261,6 +261,7 @@ public abstract class BlockCipherTransform
         CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf<byte>(input, _cipher.BlockSize / 8, throwIfZero: false);
         Span<byte> output = outputBuffer.AsSpan(outputOffset, inputCount);
         CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf<byte>(output, _cipher.BlockSize / 8, throwIfZero: false);
+        CryptoHelpers.ThrowIfInvalidOverlap(input, output);
 
         if (_encrypt)
             return _mode.Transform(input, output, true);

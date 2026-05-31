@@ -99,6 +99,7 @@ public sealed class CtrModeTransform
     public int Transform(ReadOnlySpan<byte> input, Span<byte> output, bool encrypt)
     {
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, 0, input.Length);
+        CryptoHelpers.ThrowIfInvalidOverlap(input, output);
 
         var blockSize = _cipher.BlockSize / 8;
         Span<byte> keystream = stackalloc byte[blockSize];

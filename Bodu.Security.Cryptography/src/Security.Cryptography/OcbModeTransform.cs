@@ -298,6 +298,12 @@ public sealed class OcbModeTransform
     }
 
     /// <inheritdoc />
+    /// <remarks>
+    /// <strong>Authentication pattern: verify-before-release.</strong> The OCB3 tag is recomputed from the offsets,
+    /// checksum, and AAD hash, then compared in constant time before the per-block decryption is applied to
+    /// <paramref name="output" />; no plaintext byte is ever written when authentication fails. See
+    /// <see cref="IAeadBlockCipherModeTransform.Decrypt" /> for the library-wide failure contract.
+    /// </remarks>
     public int Decrypt(ReadOnlySpan<byte> ciphertextWithTag, Span<byte> output)
     {
         ThrowIfDisposed();

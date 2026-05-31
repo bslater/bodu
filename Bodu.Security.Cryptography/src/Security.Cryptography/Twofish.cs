@@ -224,14 +224,14 @@ public sealed class Twofish
     public override void GenerateIV()
     {
         ThrowIfDisposed();
-        IVValue = CryptoHelpers.GetRandomNonZeroBytes(BlockSizeValue / 8);
+        IVValue = CryptoHelpers.GetRandomBytes(BlockSizeValue / 8);
     }
 
     /// <inheritdoc />
     public override void GenerateKey()
     {
         ThrowIfDisposed();
-        KeyValue = CryptoHelpers.GetRandomNonZeroBytes(KeySizeValue / 8);
+        KeyValue = CryptoHelpers.GetRandomBytes(KeySizeValue / 8);
     }
 
     /// <inheritdoc />

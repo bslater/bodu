@@ -125,6 +125,7 @@ public sealed class XtsModeTransform
         // Empty input is a no-op, consistent with CbcModeTransform.
         CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(input, blockSize, throwIfZero: false);
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, 0, input.Length);
+        CryptoHelpers.ThrowIfInvalidOverlap(input, output);
 
         // T_0 = tweakCipher.Encrypt(sector_number)
         Span<byte> T = stackalloc byte[blockSize];

@@ -113,6 +113,7 @@ public sealed class CtsModeTransform
         }
 
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, 0, input.Length);
+        CryptoHelpers.ThrowIfInvalidOverlap(input, output);
 
         // If perfectly block-aligned (or exactly one block), use plain CBC — no stealing needed.
         if (input.Length % blockSize == 0)

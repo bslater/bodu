@@ -114,7 +114,7 @@ public abstract class SipHash<T>
         CryptoHelpers.ThrowIfInvalidHashSize(hashSize, s_permittedHashSizes);
 
         KeyValue = new byte[KeySize / 8];
-        CryptoHelpers.FillWithRandomNonZeroBytes(KeyValue);
+        CryptoHelpers.FillWithRandomBytes(KeyValue);
         _compressionRounds = MinCompressionRounds;
         _finalizationRounds = MinFinalizationRounds;
         HashSizeValue = hashSize;

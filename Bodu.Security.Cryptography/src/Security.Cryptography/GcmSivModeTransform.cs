@@ -156,6 +156,14 @@ public sealed class GcmSivModeTransform
     public int TagSize => TagSizeBits;
 
     /// <inheritdoc />
+    /// <remarks>
+    /// <strong>Authentication pattern: write-then-clear.</strong> The candidate plaintext is decrypted into
+    /// <paramref name="output" /> first because the synthetic IV used by AES-GCM-SIV is derived over the plaintext.
+    /// The tag is then compared in constant time; on mismatch <paramref name="output" /> is zeroed via
+    /// <see cref="CryptoHelpers.Clear" /> and <see cref="CryptographicException" /> is thrown — no plaintext is
+    /// observable to the caller. See <see cref="IAeadBlockCipherModeTransform.Decrypt" /> for the library-wide
+    /// failure contract.
+    /// </remarks>
     public int Decrypt(ReadOnlySpan<byte> ciphertextWithTag, Span<byte> output)
     {
         ThrowIfDisposed();

@@ -308,6 +308,12 @@ public sealed class GcmModeTransform
     /// The implicit plaintext length (<c><paramref name="ciphertextWithTag" />.Length − 16</c>) exceeds the SP 800-38D
     /// §5.2.1.1 ceiling. Unreachable through the public int-typed span surface today.
     /// </exception>
+    /// <remarks>
+    /// <strong>Authentication pattern: verify-before-release.</strong> The GHASH-derived tag is compared in constant
+    /// time before the CTR decryption stream is applied to <paramref name="output" />; no plaintext byte is ever
+    /// written when authentication fails. See <see cref="IAeadBlockCipherModeTransform.Decrypt" /> for the
+    /// library-wide failure contract.
+    /// </remarks>
     public int Decrypt(ReadOnlySpan<byte> ciphertextWithTag, Span<byte> output)
     {
         ThrowIfDisposed();

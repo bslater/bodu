@@ -273,7 +273,7 @@ public sealed class Camellia
     public override void GenerateIV()
     {
         ThrowIfDisposed();
-        IVValue = CryptoHelpers.GetRandomNonZeroBytes(BlockSizeValue / 8);
+        IVValue = CryptoHelpers.GetRandomBytes(BlockSizeValue / 8);
     }
 
     /// <summary>
@@ -290,7 +290,7 @@ public sealed class Camellia
     public override void GenerateKey()
     {
         ThrowIfDisposed();
-        KeyValue = CryptoHelpers.GetRandomNonZeroBytes(KeySizeBytes);
+        KeyValue = CryptoHelpers.GetRandomBytes(KeySizeBytes);
     }
 
     /// <summary>

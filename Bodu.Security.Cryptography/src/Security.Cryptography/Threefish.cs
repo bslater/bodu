@@ -148,21 +148,21 @@ public abstract class Threefish
     public override void GenerateIV()
     {
         ThrowIfDisposed();
-        IVValue = CryptoHelpers.GetRandomNonZeroBytes(BlockSizeValue / 8);
+        IVValue = CryptoHelpers.GetRandomBytes(BlockSizeValue / 8);
     }
 
     /// <inheritdoc />
     public override void GenerateKey()
     {
         ThrowIfDisposed();
-        KeyValue = CryptoHelpers.GetRandomNonZeroBytes(KeySizeValue / 8);
+        KeyValue = CryptoHelpers.GetRandomBytes(KeySizeValue / 8);
     }
 
     /// <inheritdoc />
     public override void GenerateTweak()
     {
         ThrowIfDisposed();
-        TweakValue = CryptoHelpers.GetRandomNonZeroBytes(TweakSizeValue / 8);
+        TweakValue = CryptoHelpers.GetRandomBytes(TweakSizeValue / 8);
     }
 
     /// <inheritdoc />

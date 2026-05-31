@@ -186,5 +186,33 @@ public interface IAeadBlockCipherModeTransform
     /// The instance has already encrypted or decrypted a message, including after a previous tag-mismatch failure. AEAD
     /// transforms are single-use per message — construct a fresh instance.
     /// </exception>
+    /// <remarks>
+    /// <para>
+    /// <strong>Authentication failure contract.</strong> All implementations honour the same observable guarantee
+    /// on tag mismatch: <see cref="CryptographicException" /> is thrown and no plaintext is released to the caller.
+    /// Implementations achieve this in one of two ways:
+    /// </para>
+    /// <list type="bullet">
+    /// <item>
+    /// <description>
+    /// <em>Verify-before-release.</em> The tag is compared in constant time before any plaintext byte is written to
+    /// <paramref name="output" />. Used by GCM, CCM, EAX, and OCB.
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <description>
+    /// <em>Write-then-clear.</em> The candidate plaintext is streamed into <paramref name="output" /> first because the
+    /// algorithm's structure requires the transform to complete before the tag can be computed. The tag is then
+    /// compared in constant time; on mismatch <paramref name="output" /> is zeroed via
+    /// <see cref="CryptographicOperations.ZeroMemory" /> before the exception is thrown. Used by Ascon-AEAD-128 and
+    /// GCM-SIV.
+    /// </description>
+    /// </item>
+    /// </list>
+    /// <para>
+    /// In both cases the API is strictly one-shot: a failed decryption invalidates the instance, and subsequent calls
+    /// throw <see cref="InvalidOperationException" />. Construct a fresh instance per message.
+    /// </para>
+    /// </remarks>
     int Decrypt(ReadOnlySpan<byte> ciphertextWithTag, Span<byte> output);
 }
