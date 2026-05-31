@@ -25,6 +25,10 @@
       href: threefish-512.md
     - name: Using Threefish-1024
       href: threefish-1024.md
+- name: Symmetric ciphers — Stream
+  items:
+    - name: Using stream ciphers
+      href: stream-ciphers.md
 - name: Symmetric ciphers — AEAD
   items:
     - name: AEAD modes (AES + transform)

@@ -56,6 +56,22 @@ byte[] roundtrip  = cipher.Decrypt(ciphertext);
 
 Encrypting the same plaintext under the same key with a *different* tweak yields an entirely independent ciphertext — useful for disk encryption (sector number as tweak) or per-record encryption.
 
+### Stream cipher — ChaCha20
+
+```csharp
+using Bodu.Security.Cryptography;
+using Bodu.Security.Cryptography.Extensions;
+
+using var cipher = new ChaCha20();
+cipher.GenerateKey();               // 32-byte key
+cipher.GenerateIV();                // 12-byte nonce — unique per message
+
+byte[] ciphertext = cipher.Encrypt(plaintext);
+byte[] roundtrip  = cipher.Decrypt(ciphertext);   // self-inverse
+```
+
+Swap `ChaCha20` for `XChaCha20`, `Salsa20`, `XSalsa20`, `Rabbit`, or `Hc128` — the lifecycle is identical (no block mode or padding). These are **raw, confidentiality-only** ciphers: never reuse a `(key, nonce)` pair, and pair with a MAC such as `Poly1305` or prefer an AEAD construction when you need integrity.
+
 ### AEAD — AES-GCM via `AesBlockCipher` + `GcmModeTransform`
 
 ```csharp

@@ -14,13 +14,13 @@ The library lives in two namespaces: `Bodu.Security.Cryptography` for primitives
 
 Every algorithm here is designed against a formal **adversary model**: it must be computationally infeasible for an attacker — even one who knows the algorithm, observes many inputs and outputs, and chooses inputs adaptively — to forge, invert, or find collisions. That is the line between this package and [Bodu.IO.Hashing](../io-hashing/index.md), whose fingerprints and checksums carry *no* adversary model and must never be used where an attacker can choose the input.
 
-The package contains five subfamilies. They share BCL base classes but differ structurally in what they consume and produce:
+The package contains six subfamilies. They share BCL base classes but differ structurally in what they consume and produce:
 
 ![Structural input and output comparison across the cryptographic families](../../images/diagrams/algorithm-io-model.svg)
 
 - **Cryptographic hash** — a one-way function compressing arbitrary input to a fixed digest, with pre-image, second-pre-image, and collision resistance. Three structural shapes: *plain digest* (fixed output), *extendable output* (XOF — squeeze any number of bytes), and *tree* (parallel leaves combined into a verifiable root). Use for content addressing, integrity verification, and signature inputs — not for authentication on its own.
 - **Keyed hash / MAC** — a secret key plus a message yields an authentication tag that no one can forge without the key. Two subtypes: a reusable *PRF* (SipHash — one key authenticates many messages) and a *one-time authenticator* (Poly1305 — the key must never be reused).
-- **Symmetric cipher** — reversible encryption under a key, in three subtypes: a *standard block cipher*; a *tweakable block cipher*, where a public **tweak** gives per-record or per-sector domain separation without re-keying; and *AEAD*, which encrypts and authenticates in a single pass.
+- **Symmetric cipher** — reversible encryption under a key, in four subtypes: a *standard block cipher*; a *tweakable block cipher*, where a public **tweak** gives per-record or per-sector domain separation without re-keying; a *stream cipher*, which XORs a key/nonce-derived keystream over data of any length (raw confidentiality, no authentication); and *AEAD*, which encrypts and authenticates in a single pass.
 
 > **Keyed hash vs cipher.** Both take a key, but they serve opposite purposes. A cipher transforms plaintext to ciphertext and back without summarizing; a MAC summarizes a message into a fixed-size tag without encrypting. Use both together — encrypt-then-MAC, or an AEAD mode — when you need confidentiality *and* integrity.
 
@@ -50,6 +50,18 @@ The package contains five subfamilies. They share BCL base classes but differ st
 | <xref:Bodu.Security.Cryptography.Serpent256> | 256 bits | 256 bits | 128 bits | Wide-block tweakable Serpent — non-standard construction. |
 | <xref:Bodu.Security.Cryptography.Serpent512> | 512 bits | 512 bits | 128 bits | Wide-block tweakable Serpent — non-standard construction. |
 | <xref:Bodu.Security.Cryptography.Serpent1024> | 1024 bits | 1024 bits | 128 bits | Wide-block tweakable Serpent — non-standard construction. |
+
+### Stream ciphers
+*<xref:Bodu.Security.Cryptography.StreamCipherAlgorithm> lifecycle (a `SymmetricAlgorithm` with no block mode or padding): configure `Key` and `IV` (the nonce), then `CreateEncryptor()` / `Encrypt`. Self-inverse and raw — **confidentiality only, no authentication**. Never reuse a `(key, nonce)` pair; pair with a MAC or prefer AEAD.*
+
+| Type | Key | Nonce / IV | Notes |
+|---|---|---|---|
+| <xref:Bodu.Security.Cryptography.ChaCha20> | 256 bits | 96 bits | Bernstein (RFC 8439); the modern default. |
+| <xref:Bodu.Security.Cryptography.XChaCha20> | 256 bits | 192 bits | Extended-nonce ChaCha20 — nonce safe to choose at random. |
+| <xref:Bodu.Security.Cryptography.Salsa20> | 128 / 256 bits | 64 bits | Bernstein (eSTREAM); 64-bit nonce requires a counter. |
+| <xref:Bodu.Security.Cryptography.XSalsa20> | 256 bits | 192 bits | Extended-nonce Salsa20 (NaCl / libsodium). |
+| <xref:Bodu.Security.Cryptography.Rabbit> | 128 bits | 64 bits | RFC 4503; evolving internal state (no seekable counter). |
+| <xref:Bodu.Security.Cryptography.Hc128> | 128 bits | 128 bits | Wu (eSTREAM); table-based, expensive setup. |
 
 ### Cipher composition (modes, padding, AEAD transforms)
 *Lower-level building blocks that the `SymmetricAlgorithm` wrappers compose internally — also usable directly via <xref:Bodu.Security.Cryptography.IBlockCipher> for pairing AES with the AEAD mode transforms.*
@@ -129,9 +141,10 @@ The package contains five subfamilies. They share BCL base classes but differ st
 |---|---|
 | Encrypt a message under a key | `Threefish512`, `Camellia`, `Twofish`, `Serpent128`, `Blowfish`, `Skipjack` |
 | Per-record / per-sector encryption without re-keying | `Threefish256` / `Threefish512` / `Threefish1024` with `Tweak` |
+| Stream encryption of arbitrary-length data (no padding) | `ChaCha20`, `XChaCha20`, `Salsa20`, `XSalsa20`, `Rabbit`, `Hc128` |
 | Authenticated encryption (encrypt + integrity in one) | `AesBlockCipher` + `GcmModeTransform`, `AsconAead128` |
 | Hash-table flooding defense | `SipHash64` / `SipHash128` |
-| One-time authenticator (e.g. paired with ChaCha20) | `Poly1305` |
+| One-time authenticator (e.g. paired with `ChaCha20`) | `Poly1305` |
 | Cryptographic digest for content addressing | `Tiger`, `CubeHash`, `AsconHash256`, `Blake2b`, `Whirlpool`, `Skein512` |
 | Variable-length output | `AsconXof128`, `AsconCxof128`, `Shake`, `Blake3` |
 | Tree / Merkle hashing for verifiable inclusion proofs | `MerkleTreeHash`, `ParallelMerkleTreeHash` |
