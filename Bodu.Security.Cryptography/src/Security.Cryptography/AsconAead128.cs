@@ -378,6 +378,14 @@ public sealed class AsconAead128
     /// <paramref name="output" /> is too small.
     /// </exception>
     /// <exception cref="CryptographicException">The authentication tag did not match.</exception>
+    /// <remarks>
+    /// <strong>Authentication pattern: write-then-clear.</strong> Ascon-AEAD-128 streams plaintext into
+    /// <paramref name="output" /> as it processes the ciphertext because the duplex sponge derives the tag from the
+    /// final state; the tag is then compared in constant time, and on mismatch
+    /// <see cref="CryptographicOperations.ZeroMemory" /> clears the plaintext-length region of
+    /// <paramref name="output" /> before <see cref="CryptographicException" /> is thrown — no plaintext is observable
+    /// to the caller.
+    /// </remarks>
     public int Decrypt(ReadOnlySpan<byte> ciphertextWithTag, Span<byte> output)
     {
         ThrowIfDisposed();
