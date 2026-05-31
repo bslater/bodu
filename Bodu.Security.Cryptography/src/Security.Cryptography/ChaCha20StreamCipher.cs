@@ -8,6 +8,7 @@ using System;
 using System.Buffers.Binary;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
 
@@ -17,11 +18,11 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The cipher binds a 256-bit key and a 96-bit nonce at construction and produces 64-byte keystream blocks on demand
-/// through <see cref="GenerateKeystreamBlock(uint, Span{byte})" />. It is a pure keystream generator and never observes
-/// plaintext; <see cref="StreamCipherTransform" /> combines the keystream with the message by XOR. This mirrors the
-/// role <see cref="TwofishBlockCipher" /> plays for the block-cipher stack, and is the stream-cipher analogue of
-/// <see cref="CtrModeTransform" />.
+/// The cipher binds a 256-bit key, a 96-bit nonce, and an initial block counter at construction and produces 64-byte
+/// keystream blocks on demand through <see cref="NextKeystreamBlock(Span{byte})" />. It is a pure keystream generator
+/// and never observes plaintext; <see cref="StreamCipherTransform" /> combines the keystream with the message by XOR.
+/// This mirrors the role <see cref="TwofishBlockCipher" /> plays for the block-cipher stack, and is the stream-cipher
+/// analogue of <see cref="CtrModeTransform" />.
 /// </para>
 /// <para>
 /// The round function follows RFC 8439 Section 2 exactly: a 4×4 matrix of 32-bit little-endian words seeded with the
@@ -75,18 +76,23 @@ internal sealed class ChaCha20StreamCipher
     private readonly uint _nonce0;
     private readonly uint _nonce1;
     private readonly uint _nonce2;
+    private readonly uint _initialCounter;
+    private uint _counter;
+    private bool _counterExhausted;
     private bool _disposed;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ChaCha20StreamCipher" /> class from the supplied key and nonce.
+    /// Initializes a new instance of the <see cref="ChaCha20StreamCipher" /> class from the supplied key, nonce, and
+    /// initial block counter.
     /// </summary>
     /// <param name="key">The 32-byte (256-bit) key.</param>
     /// <param name="nonce">The 12-byte (96-bit) nonce.</param>
+    /// <param name="initialCounter">The block counter for the first keystream block.</param>
     /// <remarks>
     /// The key and nonce are expanded into little-endian 32-bit words and copied into the engine; the caller's buffers
     /// are not retained. The caller is responsible for validating the lengths.
     /// </remarks>
-    internal ChaCha20StreamCipher(ReadOnlySpan<byte> key, ReadOnlySpan<byte> nonce)
+    internal ChaCha20StreamCipher(ReadOnlySpan<byte> key, ReadOnlySpan<byte> nonce, uint initialCounter)
     {
         for (int i = 0; i < 8; i++)
             _key[i] = BinaryPrimitives.ReadUInt32LittleEndian(key.Slice(i * 4, 4));
@@ -94,15 +100,29 @@ internal sealed class ChaCha20StreamCipher
         _nonce0 = BinaryPrimitives.ReadUInt32LittleEndian(nonce.Slice(0, 4));
         _nonce1 = BinaryPrimitives.ReadUInt32LittleEndian(nonce.Slice(4, 4));
         _nonce2 = BinaryPrimitives.ReadUInt32LittleEndian(nonce.Slice(8, 4));
+
+        _initialCounter = initialCounter;
+        _counter = initialCounter;
     }
 
     /// <inheritdoc />
     public int BlockSize => BlockSizeBytes;
 
     /// <inheritdoc />
-    public void GenerateKeystreamBlock(uint counter, Span<byte> destination)
+    public void NextKeystreamBlock(Span<byte> destination)
     {
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(destination, 0, BlockSizeBytes);
+
+        if (_counterExhausted)
+            throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_StreamCounterExhausted);
+
+        uint counter = _counter;
+
+        // Advance the counter, latching exhaustion once it wraps back to the initial value so the next call
+        // fails instead of silently reusing keystream.
+        _counter++;
+        if (_counter == _initialCounter)
+            _counterExhausted = true;
 
         // Initial state: constants | key | counter | nonce.
         uint j0 = Sigma0, j1 = Sigma1, j2 = Sigma2, j3 = Sigma3;

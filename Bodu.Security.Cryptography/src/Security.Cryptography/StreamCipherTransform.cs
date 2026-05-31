@@ -11,15 +11,15 @@ using System.Security.Cryptography;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Provides a base implementation of <see cref="ICryptoTransform" /> for additive stream ciphers that produce a
-/// key- and nonce-dependent keystream in fixed-size blocks via an <see cref="IStreamCipher" /> engine.
+/// Provides the <see cref="ICryptoTransform" /> implementation for additive stream ciphers, XOR-ing data with the
+/// keystream produced by an <see cref="IStreamCipher" /> engine. This class cannot be inherited.
 /// </summary>
 /// <remarks>
 /// <para>
 /// This is the stream-cipher counterpart to <see cref="BlockCipherTransform" />. It turns the low-level
 /// <see cref="IStreamCipher" /> primitive into the <see cref="ICryptoTransform" /> contract that
-/// <see cref="CryptoStream" /> and <c>SymmetricAlgorithm.CreateEncryptor()</c> expect, and centralizes the three
-/// concerns that every additive stream cipher shares:
+/// <see cref="CryptoStream" /> and <c>SymmetricAlgorithm.CreateEncryptor()</c> expect, and centralizes the two
+/// concerns shared by every additive stream cipher:
 /// </para>
 /// <list type="bullet">
 /// <item>
@@ -35,14 +35,12 @@ namespace Bodu.Security.Cryptography;
 /// keystream advances by exactly the number of bytes consumed, never re-using or skipping keystream.
 /// </description>
 /// </item>
-/// <item>
-/// <description>
-/// <strong>Counter-overflow protection.</strong> The 32-bit block counter is tracked across the whole operation; if it
-/// would wrap past its maximum the transform throws <see cref="CryptographicException" /> rather than silently reusing
-/// earlier keystream — the same hazard guarded by <see cref="CtrModeTransform" />.
-/// </description>
-/// </item>
 /// </list>
+/// <para>
+/// Keystream sequencing and any keystream-exhaustion guard live in the engine, which owns its counter or internal
+/// state; the transform simply pulls the next block via <see cref="IStreamCipher.NextKeystreamBlock(Span{byte})" /> when
+/// the carried block is consumed.
+/// </para>
 /// <para>
 /// Because <see cref="InputBlockSize" /> and <see cref="OutputBlockSize" /> are both one byte, the BCL imposes no
 /// alignment requirement on callers and <see cref="TransformBlock" /> accepts any length.
@@ -50,22 +48,18 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// A <see cref="StreamCipherTransform" /> represents a single one-shot operation. After
 /// <see cref="TransformFinalBlock" /> completes the instance is finalized; <see cref="CanReuseTransform" /> is
-/// <see langword="false" /> and further transform calls throw. Derived classes need only supply a constructor that
-/// forwards an initialized <see cref="IStreamCipher" /> engine and the initial block counter.
+/// <see langword="false" /> and further transform calls throw.
 /// </para>
 /// </remarks>
 /// <seealso cref="IStreamCipher" />
 /// <seealso cref="BlockCipherTransform" />
-public abstract class StreamCipherTransform
+internal sealed class StreamCipherTransform
     : ICryptoTransform
 {
     private readonly IStreamCipher _cipher;
     private readonly byte[] _keystream;
-    private readonly uint _initialCounter;
 
-    private uint _counter;
     private int _keystreamOffset;
-    private bool _counterExhausted;
     private bool _disposed;
     private bool _finalized;
 
@@ -76,18 +70,15 @@ public abstract class StreamCipherTransform
     /// The configured <see cref="IStreamCipher" /> engine, with its key and nonce already bound. Must not be
     /// <see langword="null" />. Ownership transfers to this transform, which disposes the engine.
     /// </param>
-    /// <param name="initialCounter">The block counter for the first keystream block.</param>
     /// <exception cref="ArgumentNullException"><paramref name="cipher" /> is <see langword="null" />.</exception>
-    protected StreamCipherTransform(IStreamCipher cipher, uint initialCounter)
+    internal StreamCipherTransform(IStreamCipher cipher)
     {
         ThrowHelper.ThrowIfNull(cipher);
 
         _cipher = cipher;
-        _initialCounter = initialCounter;
-        _counter = initialCounter;
         _keystream = new byte[cipher.BlockSize];
 
-        // Force the first Apply call to generate a fresh keystream block.
+        // Force the first Apply call to pull a fresh keystream block from the engine.
         _keystreamOffset = cipher.BlockSize;
     }
 
@@ -198,18 +189,17 @@ public abstract class StreamCipherTransform
     }
 
     /// <summary>
-    /// XORs <paramref name="input" /> with the cipher keystream into <paramref name="output" />, generating and
-    /// carrying keystream blocks as needed.
+    /// XORs <paramref name="input" /> with the cipher keystream into <paramref name="output" />, pulling and carrying
+    /// keystream blocks from the engine as needed.
     /// </summary>
     /// <param name="input">The bytes to transform.</param>
     /// <param name="output">The destination span, the same length as <paramref name="input" />.</param>
     /// <exception cref="CryptographicException">
-    /// The block counter would advance past <see cref="uint.MaxValue" />, which would reuse a previously emitted
-    /// keystream block.
+    /// The engine's keystream is exhausted (for example, a fixed-width block counter would wrap and reuse keystream).
     /// </exception>
     /// <remarks>
     /// Any keystream left over from a previous call is consumed first so that the keystream advances by exactly the
-    /// number of bytes processed. A new block is generated only when the carried block is exhausted.
+    /// number of bytes processed. A new block is pulled from the engine only when the carried block is exhausted.
     /// </remarks>
     private void Apply(ReadOnlySpan<byte> input, Span<byte> output)
     {
@@ -219,17 +209,8 @@ public abstract class StreamCipherTransform
         {
             if (_keystreamOffset == blockSize)
             {
-                if (_counterExhausted)
-                    throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_StreamCounterExhausted);
-
-                _cipher.GenerateKeystreamBlock(_counter, _keystream);
+                _cipher.NextKeystreamBlock(_keystream);
                 _keystreamOffset = 0;
-
-                // Advance the counter, latching exhaustion once it wraps back to the initial value so the
-                // next block boundary fails instead of silently reusing keystream.
-                _counter++;
-                if (_counter == _initialCounter)
-                    _counterExhausted = true;
             }
 
             output[i] = (byte)(input[i] ^ _keystream[_keystreamOffset++]);

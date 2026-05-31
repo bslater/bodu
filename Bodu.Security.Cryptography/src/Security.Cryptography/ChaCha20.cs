@@ -23,9 +23,9 @@ namespace Bodu.Security.Cryptography;
 /// age-style protocols that build their own authentication layer or use ChaCha20 as a keystream primitive.
 /// </para>
 /// <para>
-/// Like the BCL stream constructions, this cipher is self-inverse: <see cref="CreateEncryptor(byte[], byte[])" /> and
-/// <see cref="CreateDecryptor(byte[], byte[])" /> are interchangeable. The nonce is supplied as the
-/// <see cref="SymmetricAlgorithm.IV" />.
+/// Like the BCL stream constructions, this cipher is self-inverse:
+/// <see cref="SymmetricAlgorithm.CreateEncryptor()" /> and <see cref="SymmetricAlgorithm.CreateDecryptor()" /> are
+/// interchangeable. The nonce is supplied as the <see cref="SymmetricAlgorithm.IV" />.
 /// </para>
 /// <para>
 /// <strong>Parameters at a glance.</strong>
@@ -51,9 +51,8 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// <strong>Note on <see cref="SymmetricAlgorithm.BlockSize" />.</strong> A stream cipher has no block. To integrate
 /// with the <see cref="SymmetricAlgorithm" /> contract this class reports its block size as the 96-bit nonce length so
-/// that
-/// <see cref="SymmetricAlgorithm.IV" /> handling and <see cref="GenerateIV" /> behave naturally. The actual transform
-/// processes data one byte at a time and imposes no alignment requirement on callers.
+/// that <see cref="SymmetricAlgorithm.IV" /> handling and <see cref="SymmetricAlgorithm.GenerateIV" /> behave naturally.
+/// The actual transform processes data one byte at a time and imposes no alignment requirement on callers.
 /// </para>
 /// </remarks>
 /// <example>
@@ -75,7 +74,7 @@ namespace Bodu.Security.Cryptography;
 /// Protocols</seealso>
 /// <seealso cref="XChaCha20" />
 public sealed class ChaCha20
-    : SymmetricAlgorithm, IStreamCipherAlgorithm
+    : StreamCipherAlgorithm
 {
     /// <summary>
     /// The required ChaCha20 key size, in bits (256).
@@ -87,11 +86,6 @@ public sealed class ChaCha20
     /// </summary>
     internal const int NonceSizeBits = ChaCha20StreamCipher.NonceSizeBytes * 8;
 
-    private static readonly KeySizes[] s_keySizes = [new KeySizes(KeySizeBits, KeySizeBits, 0)];
-    private static readonly KeySizes[] s_nonceSizes = [new KeySizes(NonceSizeBits, NonceSizeBits, 0)];
-
-    private bool _disposed;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="ChaCha20" /> class with default parameters.
     /// </summary>
@@ -99,16 +93,8 @@ public sealed class ChaCha20
     /// The default configuration uses a 256-bit key and a 96-bit nonce, with the block counter starting at 0.
     /// </remarks>
     public ChaCha20()
+        : base(KeySizeBits, NonceSizeBits)
     {
-        KeySizeValue = KeySizeBits;
-        LegalKeySizesValue = s_keySizes;
-
-        BlockSizeValue = NonceSizeBits;
-        LegalBlockSizesValue = s_nonceSizes;
-
-        // A stream cipher has no cipher mode or padding; these base values are inert but kept sane.
-        ModeValue = CipherMode.CBC;
-        PaddingValue = PaddingMode.None;
     }
 
     /// <summary>
@@ -131,72 +117,6 @@ public sealed class ChaCha20
         new();
 
     /// <inheritdoc />
-    public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[]? rgbIV) =>
-        CreateTransform(rgbKey, rgbIV);
-
-    /// <inheritdoc />
-    public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[]? rgbIV) =>
-        CreateTransform(rgbKey, rgbIV);
-
-    /// <inheritdoc />
-    public override void GenerateKey()
-    {
-        ThrowIfDisposed();
-        KeyValue = CryptoHelpers.GetRandomNonZeroBytes(KeySizeValue / 8);
-    }
-
-    /// <inheritdoc />
-    public override void GenerateIV()
-    {
-        ThrowIfDisposed();
-        IVValue = CryptoHelpers.GetRandomNonZeroBytes(BlockSizeValue / 8);
-    }
-
-    /// <inheritdoc />
-    protected override void Dispose(bool disposing)
-    {
-        if (!_disposed)
-        {
-            if (disposing)
-            {
-                CryptoHelpers.Clear(KeyValue);
-                CryptoHelpers.Clear(IVValue);
-            }
-
-            _disposed = true;
-        }
-
-        base.Dispose(disposing);
-    }
-
-    /// <summary>
-    /// Validates the key and nonce, builds the ChaCha20 engine, and returns a self-inverse stream transform.
-    /// </summary>
-    /// <param name="rgbKey">The 256-bit key.</param>
-    /// <param name="rgbIV">The 96-bit nonce.</param>
-    /// <returns>An <see cref="ICryptoTransform" /> that XORs data with the ChaCha20 keystream.</returns>
-    /// <exception cref="ObjectDisposedException">This instance has been disposed.</exception>
-    /// <exception cref="CryptographicException">The key or nonce length is invalid.</exception>
-    private ICryptoTransform CreateTransform(byte[] rgbKey, byte[]? rgbIV)
-    {
-        ThrowIfDisposed();
-        CryptoHelpers.ThrowIfInvalidKeySize(rgbKey, KeySize, LegalKeySizes);
-        ChaCha20Helpers.ThrowIfInvalidNonceSize(rgbIV, ChaCha20StreamCipher.NonceSizeBytes);
-
-        var engine = new ChaCha20StreamCipher(rgbKey, rgbIV);
-        return new ChaCha20Transform(engine, InitialCounter);
-    }
-
-    /// <summary>
-    /// Throws an <see cref="ObjectDisposedException" /> if this instance has been disposed.
-    /// </summary>
-    /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void ThrowIfDisposed() =>
-#if NET8_0_OR_GREATER
-        ObjectDisposedException.ThrowIf(_disposed, this);
-#else
-        if (_disposed)
-            throw new ObjectDisposedException(GetType().Name);
-#endif
+    protected override IStreamCipher CreateStreamCipher(byte[] key, byte[] nonce) =>
+        new ChaCha20StreamCipher(key, nonce, InitialCounter);
 }

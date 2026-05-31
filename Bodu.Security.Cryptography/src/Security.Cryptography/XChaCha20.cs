@@ -65,7 +65,7 @@ namespace Bodu.Security.Cryptography;
 /// eXtended-nonce ChaCha and AEAD_XChaCha20_Poly1305</seealso>
 /// <seealso cref="ChaCha20" />
 public sealed class XChaCha20
-    : SymmetricAlgorithm, IStreamCipherAlgorithm
+    : StreamCipherAlgorithm
 {
     /// <summary>
     /// The required XChaCha20 key size, in bits (256).
@@ -73,19 +73,14 @@ public sealed class XChaCha20
     internal const int KeySizeBits = ChaCha20StreamCipher.KeySizeBytes * 8;
 
     /// <summary>
-    /// The XChaCha20 extended nonce size, in bits (192).
-    /// </summary>
-    internal const int NonceSizeBits = NonceSizeBytes * 8;
-
-    /// <summary>
     /// The XChaCha20 extended nonce size, in bytes (24).
     /// </summary>
     internal const int NonceSizeBytes = 24;
 
-    private static readonly KeySizes[] s_keySizes = [new KeySizes(KeySizeBits, KeySizeBits, 0)];
-    private static readonly KeySizes[] s_nonceSizes = [new KeySizes(NonceSizeBits, NonceSizeBits, 0)];
-
-    private bool _disposed;
+    /// <summary>
+    /// The XChaCha20 extended nonce size, in bits (192).
+    /// </summary>
+    internal const int NonceSizeBits = NonceSizeBytes * 8;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="XChaCha20" /> class with default parameters.
@@ -94,15 +89,8 @@ public sealed class XChaCha20
     /// The default configuration uses a 256-bit key and a 192-bit nonce, with the block counter starting at 0.
     /// </remarks>
     public XChaCha20()
+        : base(KeySizeBits, NonceSizeBits)
     {
-        KeySizeValue = KeySizeBits;
-        LegalKeySizesValue = s_keySizes;
-
-        BlockSizeValue = NonceSizeBits;
-        LegalBlockSizesValue = s_nonceSizes;
-
-        ModeValue = CipherMode.CBC;
-        PaddingValue = PaddingMode.None;
     }
 
     /// <summary>
@@ -124,89 +112,26 @@ public sealed class XChaCha20
         new();
 
     /// <inheritdoc />
-    public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[]? rgbIV) =>
-        CreateTransform(rgbKey, rgbIV);
-
-    /// <inheritdoc />
-    public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[]? rgbIV) =>
-        CreateTransform(rgbKey, rgbIV);
-
-    /// <inheritdoc />
-    public override void GenerateKey()
+    /// <remarks>
+    /// Derives a 256-bit subkey from the key and the first 128 bits of the nonce via HChaCha20, then returns an ordinary
+    /// ChaCha20 engine under that subkey with a 96-bit nonce formed as four zero bytes followed by the trailing 64 bits
+    /// of the extended nonce.
+    /// </remarks>
+    protected override IStreamCipher CreateStreamCipher(byte[] key, byte[] nonce)
     {
-        ThrowIfDisposed();
-        KeyValue = CryptoHelpers.GetRandomNonZeroBytes(KeySizeValue / 8);
-    }
-
-    /// <inheritdoc />
-    public override void GenerateIV()
-    {
-        ThrowIfDisposed();
-        IVValue = CryptoHelpers.GetRandomNonZeroBytes(BlockSizeValue / 8);
-    }
-
-    /// <inheritdoc />
-    protected override void Dispose(bool disposing)
-    {
-        if (!_disposed)
-        {
-            if (disposing)
-            {
-                CryptoHelpers.Clear(KeyValue);
-                CryptoHelpers.Clear(IVValue);
-            }
-
-            _disposed = true;
-        }
-
-        base.Dispose(disposing);
-    }
-
-    /// <summary>
-    /// Validates the key and nonce, derives the HChaCha20 subkey, builds the ChaCha20 engine, and returns a
-    /// self-inverse stream transform.
-    /// </summary>
-    /// <param name="rgbKey">The 256-bit key.</param>
-    /// <param name="rgbIV">The 192-bit extended nonce.</param>
-    /// <returns>An <see cref="ICryptoTransform" /> that XORs data with the XChaCha20 keystream.</returns>
-    /// <exception cref="ObjectDisposedException">This instance has been disposed.</exception>
-    /// <exception cref="CryptographicException">The key or nonce length is invalid.</exception>
-    private ICryptoTransform CreateTransform(byte[] rgbKey, byte[]? rgbIV)
-    {
-        ThrowIfDisposed();
-        CryptoHelpers.ThrowIfInvalidKeySize(rgbKey, KeySize, LegalKeySizes);
-        ChaCha20Helpers.ThrowIfInvalidNonceSize(rgbIV, NonceSizeBytes);
-
-        // Derive the 256-bit subkey from the key and the first 128 bits of the nonce.
         Span<byte> subkey = stackalloc byte[ChaCha20StreamCipher.KeySizeBytes];
-
-        // The ChaCha20 nonce is 4 zero bytes followed by the trailing 64 bits of the XChaCha20 nonce.
         Span<byte> chachaNonce = stackalloc byte[ChaCha20StreamCipher.NonceSizeBytes];
 
         try
         {
-            ChaCha20StreamCipher.HChaCha20(rgbKey, rgbIV.AsSpan(0, ChaCha20StreamCipher.HChaChaNonceSizeBytes), subkey);
-            rgbIV.AsSpan(ChaCha20StreamCipher.HChaChaNonceSizeBytes, 8).CopyTo(chachaNonce.Slice(4, 8));
+            ChaCha20StreamCipher.HChaCha20(key, nonce.AsSpan(0, ChaCha20StreamCipher.HChaChaNonceSizeBytes), subkey);
+            nonce.AsSpan(ChaCha20StreamCipher.HChaChaNonceSizeBytes, 8).CopyTo(chachaNonce.Slice(4, 8));
 
-            var engine = new ChaCha20StreamCipher(subkey, chachaNonce);
-            return new ChaCha20Transform(engine, InitialCounter);
+            return new ChaCha20StreamCipher(subkey, chachaNonce, InitialCounter);
         }
         finally
         {
             CryptographicOperations.ZeroMemory(subkey);
         }
     }
-
-    /// <summary>
-    /// Throws an <see cref="ObjectDisposedException" /> if this instance has been disposed.
-    /// </summary>
-    /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void ThrowIfDisposed() =>
-#if NET8_0_OR_GREATER
-        ObjectDisposedException.ThrowIf(_disposed, this);
-#else
-        if (_disposed)
-            throw new ObjectDisposedException(GetType().Name);
-#endif
 }
