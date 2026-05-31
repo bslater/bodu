@@ -146,4 +146,52 @@ public sealed class SmokeTests
 
         CollectionAssert.AreEqual(plaintext, roundTrip);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="Bodu.Security.Cryptography.Salsa20" /> performs a successful encrypt / decrypt
+    /// round-trip under a freshly generated key and nonce.
+    /// </summary>
+    [TestMethod]
+    public void Salsa20_EncryptDecryptRoundTrip_ShouldRecoverPlaintext()
+    {
+        using var algorithm = Bodu.Security.Cryptography.Salsa20.Create();
+        algorithm.GenerateKey();
+        algorithm.GenerateIV();
+
+        var plaintext = Encoding.UTF8.GetBytes("Smoke test for Salsa20.");
+
+        byte[] ciphertext;
+        using (ICryptoTransform encryptor = algorithm.CreateEncryptor())
+            ciphertext = encryptor.TransformFinalBlock(plaintext, 0, plaintext.Length);
+
+        byte[] roundTrip;
+        using (ICryptoTransform decryptor = algorithm.CreateDecryptor())
+            roundTrip = decryptor.TransformFinalBlock(ciphertext, 0, ciphertext.Length);
+
+        CollectionAssert.AreEqual(plaintext, roundTrip);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Bodu.Security.Cryptography.XSalsa20" /> performs a successful encrypt / decrypt
+    /// round-trip under a freshly generated key and 192-bit nonce.
+    /// </summary>
+    [TestMethod]
+    public void XSalsa20_EncryptDecryptRoundTrip_ShouldRecoverPlaintext()
+    {
+        using var algorithm = Bodu.Security.Cryptography.XSalsa20.Create();
+        algorithm.GenerateKey();
+        algorithm.GenerateIV();
+
+        var plaintext = Encoding.UTF8.GetBytes("Smoke test for XSalsa20.");
+
+        byte[] ciphertext;
+        using (ICryptoTransform encryptor = algorithm.CreateEncryptor())
+            ciphertext = encryptor.TransformFinalBlock(plaintext, 0, plaintext.Length);
+
+        byte[] roundTrip;
+        using (ICryptoTransform decryptor = algorithm.CreateDecryptor())
+            roundTrip = decryptor.TransformFinalBlock(ciphertext, 0, ciphertext.Length);
+
+        CollectionAssert.AreEqual(plaintext, roundTrip);
+    }
 }

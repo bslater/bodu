@@ -44,8 +44,8 @@ public abstract class StreamCipherAlgorithm
     private bool _disposed;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="StreamCipherAlgorithm" /> class with the specified key and nonce
-    /// sizes.
+    /// Initializes a new instance of the <see cref="StreamCipherAlgorithm" /> class with a single fixed key size and a
+    /// fixed nonce size.
     /// </summary>
     /// <param name="keySizeBits">The required key size, in bits.</param>
     /// <param name="nonceSizeBits">The required nonce (IV) size, in bits.</param>
@@ -55,9 +55,26 @@ public abstract class StreamCipherAlgorithm
     /// <see cref="SymmetricAlgorithm.Padding" /> values are inert.
     /// </remarks>
     protected StreamCipherAlgorithm(int keySizeBits, int nonceSizeBits)
+        : this(keySizeBits, [new KeySizes(keySizeBits, keySizeBits, 0)], nonceSizeBits)
     {
-        KeySizeValue = keySizeBits;
-        LegalKeySizesValue = [new KeySizes(keySizeBits, keySizeBits, 0)];
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="StreamCipherAlgorithm" /> class with a default key size, an explicit
+    /// set of legal key sizes, and a fixed nonce size.
+    /// </summary>
+    /// <param name="defaultKeySizeBits">The default key size, in bits, used by <see cref="GenerateKey" />.</param>
+    /// <param name="legalKeySizes">The legal key sizes the cipher accepts.</param>
+    /// <param name="nonceSizeBits">The required nonce (IV) size, in bits.</param>
+    /// <remarks>
+    /// Use this overload for ciphers that accept more than one key length (for example Salsa20, which accepts 128-bit
+    /// and 256-bit keys). A stream cipher exposes no cipher mode or padding; the inherited
+    /// <see cref="SymmetricAlgorithm.Mode" /> and <see cref="SymmetricAlgorithm.Padding" /> values are inert.
+    /// </remarks>
+    protected StreamCipherAlgorithm(int defaultKeySizeBits, KeySizes[] legalKeySizes, int nonceSizeBits)
+    {
+        KeySizeValue = defaultKeySizeBits;
+        LegalKeySizesValue = legalKeySizes;
 
         BlockSizeValue = nonceSizeBits;
         LegalBlockSizesValue = [new KeySizes(nonceSizeBits, nonceSizeBits, 0)];
