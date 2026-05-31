@@ -23,9 +23,9 @@ namespace Bodu.Security.Cryptography;
 /// age-style protocols that build their own authentication layer or use ChaCha20 as a keystream primitive.
 /// </para>
 /// <para>
-/// Like the BCL stream constructions, this cipher is self-inverse:
-/// <see cref="SymmetricAlgorithm.CreateEncryptor()" /> and <see cref="SymmetricAlgorithm.CreateDecryptor()" /> are
-/// interchangeable. The nonce is supplied as the <see cref="SymmetricAlgorithm.IV" />.
+/// This cipher is self-inverse: <see cref="SymmetricStreamAlgorithm.CreateEncryptor()" /> and
+/// <see cref="SymmetricStreamAlgorithm.CreateDecryptor()" /> are interchangeable. The nonce is supplied through the
+/// <see cref="SymmetricStreamAlgorithm.Nonce" /> property.
 /// </para>
 /// <para>
 /// <strong>Parameters at a glance.</strong>
@@ -49,10 +49,9 @@ namespace Bodu.Security.Cryptography;
 /// a single nonce).
 /// </para>
 /// <para>
-/// <strong>Note on <see cref="SymmetricAlgorithm.BlockSize" />.</strong> A stream cipher has no block. To integrate
-/// with the <see cref="SymmetricAlgorithm" /> contract this class reports its block size as the 96-bit nonce length so
-/// that <see cref="SymmetricAlgorithm.IV" /> handling and <see cref="SymmetricAlgorithm.GenerateIV" /> behave naturally.
-/// The actual transform processes data one byte at a time and imposes no alignment requirement on callers.
+/// <strong>No cipher block.</strong> A stream cipher has no block, mode, or padding. The transform processes data one
+/// byte at a time and imposes no alignment requirement on callers, so it composes naturally with
+/// <see cref="CryptoStream" /> and any other consumer of the <see cref="ICryptoTransform" /> contract.
 /// </para>
 /// </remarks>
 /// <example>
@@ -64,7 +63,7 @@ namespace Bodu.Security.Cryptography;
 ///
 /// using var chacha = new ChaCha20();
 /// chacha.GenerateKey(); // 256-bit
-/// chacha.GenerateIV();  // 96-bit nonce
+/// chacha.GenerateNonce(); // 96-bit nonce
 /// byte[] ciphertext = chacha.Encrypt(plaintext);
 /// byte[] roundTrip  = chacha.Decrypt(ciphertext);
 ///]]>
@@ -74,7 +73,7 @@ namespace Bodu.Security.Cryptography;
 /// Protocols</seealso>
 /// <seealso cref="XChaCha20" />
 public sealed class ChaCha20
-    : StreamCipherAlgorithm
+    : SymmetricStreamAlgorithm
 {
     /// <summary>
     /// The required ChaCha20 key size, in bits (256).
@@ -113,7 +112,7 @@ public sealed class ChaCha20
     /// Creates a new <see cref="ChaCha20" /> instance with default parameters.
     /// </summary>
     /// <returns>A new <see cref="ChaCha20" /> instance.</returns>
-    public static new ChaCha20 Create() =>
+    public static ChaCha20 Create() =>
         new();
 
     /// <inheritdoc />

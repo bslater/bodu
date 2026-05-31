@@ -22,8 +22,8 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// Like the other stream ciphers in this library it is self-inverse:
-/// <see cref="SymmetricAlgorithm.CreateEncryptor()" /> and <see cref="SymmetricAlgorithm.CreateDecryptor()" /> are
-/// interchangeable. The nonce is supplied as the <see cref="SymmetricAlgorithm.IV" />.
+/// <see cref="SymmetricStreamAlgorithm.CreateEncryptor()" /> and <see cref="SymmetricStreamAlgorithm.CreateDecryptor()" />
+/// are interchangeable. The nonce is supplied through the <see cref="SymmetricStreamAlgorithm.Nonce" /> property.
 /// </para>
 /// <para>
 /// <strong>Parameters at a glance.</strong>
@@ -53,7 +53,7 @@ namespace Bodu.Security.Cryptography;
 ///
 /// using var salsa = new Salsa20();
 /// salsa.GenerateKey(); // 256-bit
-/// salsa.GenerateIV();  // 64-bit nonce
+/// salsa.GenerateNonce(); // 64-bit nonce
 /// byte[] ciphertext = salsa.Encrypt(plaintext);
 /// byte[] roundTrip  = salsa.Decrypt(ciphertext);
 ///]]>
@@ -63,7 +63,7 @@ namespace Bodu.Security.Cryptography;
 /// <seealso cref="XSalsa20" />
 /// <seealso cref="ChaCha20" />
 public sealed class Salsa20
-    : StreamCipherAlgorithm
+    : SymmetricStreamAlgorithm
 {
     /// <summary>
     /// The default Salsa20 key size, in bits (256).
@@ -82,7 +82,7 @@ public sealed class Salsa20
     /// </summary>
     /// <remarks>
     /// The default configuration uses a 256-bit key and a 64-bit nonce, with the block counter starting at 0. Assign
-    /// <see cref="SymmetricAlgorithm.KeySize" /> to 128 before generating or supplying a key to use a 128-bit key.
+    /// <see cref="SymmetricStreamAlgorithm.KeySize" /> to 128 before generating or supplying a key to use a 128-bit key.
     /// </remarks>
     public Salsa20()
         : base(DefaultKeySizeBits, s_keySizes, NonceSizeBits)
@@ -104,7 +104,7 @@ public sealed class Salsa20
     /// Creates a new <see cref="Salsa20" /> instance with default parameters.
     /// </summary>
     /// <returns>A new <see cref="Salsa20" /> instance.</returns>
-    public static new Salsa20 Create() =>
+    public static Salsa20 Create() =>
         new();
 
     /// <inheritdoc />

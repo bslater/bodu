@@ -18,7 +18,7 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// This is the stream-cipher counterpart to <see cref="BlockCipherTransform" />. It turns the low-level
 /// <see cref="IStreamCipher" /> primitive into the <see cref="ICryptoTransform" /> contract that
-/// <see cref="CryptoStream" /> and <c>SymmetricAlgorithm.CreateEncryptor()</c> expect, and centralizes the two
+/// <see cref="CryptoStream" /> and <c>SymmetricStreamAlgorithm.CreateEncryptor()</c> expect, and centralizes the two
 /// concerns shared by every additive stream cipher:
 /// </para>
 /// <list type="bullet">

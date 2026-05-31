@@ -53,7 +53,7 @@ namespace Bodu.Security.Cryptography;
 ///
 /// using var xsalsa = new XSalsa20();
 /// xsalsa.GenerateKey(); // 256-bit
-/// xsalsa.GenerateIV();  // 192-bit nonce — safe to choose at random
+/// xsalsa.GenerateNonce(); // 192-bit nonce — safe to choose at random
 /// byte[] ciphertext = xsalsa.Encrypt(plaintext);
 /// byte[] roundTrip  = xsalsa.Decrypt(ciphertext);
 ///]]>
@@ -62,7 +62,7 @@ namespace Bodu.Security.Cryptography;
 /// <seealso href="https://cr.yp.to/snuffle/xsalsa-20081128.pdf">Extending the Salsa20 nonce (Bernstein, 2008)</seealso>
 /// <seealso cref="Salsa20" />
 public sealed class XSalsa20
-    : StreamCipherAlgorithm
+    : SymmetricStreamAlgorithm
 {
     /// <summary>
     /// The required XSalsa20 key size, in bits (256).
@@ -105,7 +105,7 @@ public sealed class XSalsa20
     /// Creates a new <see cref="XSalsa20" /> instance with default parameters.
     /// </summary>
     /// <returns>A new <see cref="XSalsa20" /> instance.</returns>
-    public static new XSalsa20 Create() =>
+    public static XSalsa20 Create() =>
         new();
 
     /// <inheritdoc />

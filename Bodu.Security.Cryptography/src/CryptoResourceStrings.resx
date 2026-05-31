@@ -136,12 +136,6 @@
   <data name="Crypt_Invalid_CtrCounterWrapped" xml:space="preserve">
     <value>The CTR counter has wrapped to its initial value. Continuing would reuse the keystream.</value>
   </data>
-  <data name="Crypt_Invalid_StreamCipherMode" xml:space="preserve">
-    <value>The cipher mode '{0}' is not supported. A stream cipher always operates in ECB-equivalent mode.</value>
-  </data>
-  <data name="Crypt_Invalid_StreamCipherPadding" xml:space="preserve">
-    <value>The padding mode '{0}' is not supported. A stream cipher applies no padding.</value>
-  </data>
   <data name="Crypt_Invalid_StreamCounterExhausted" xml:space="preserve">
     <value>The stream cipher block counter has wrapped to its initial value. Continuing would reuse the keystream.</value>
   </data>
