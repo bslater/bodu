@@ -55,7 +55,7 @@ namespace Bodu.Security.Cryptography;
 ///
 /// using var xchacha = new XChaCha20();
 /// xchacha.GenerateKey(); // 256-bit
-/// xchacha.GenerateIV();  // 192-bit nonce — safe to choose at random
+/// xchacha.GenerateNonce(); // 192-bit nonce — safe to choose at random
 /// byte[] ciphertext = xchacha.Encrypt(plaintext);
 /// byte[] roundTrip  = xchacha.Decrypt(ciphertext);
 ///]]>
@@ -65,7 +65,7 @@ namespace Bodu.Security.Cryptography;
 /// eXtended-nonce ChaCha and AEAD_XChaCha20_Poly1305</seealso>
 /// <seealso cref="ChaCha20" />
 public sealed class XChaCha20
-    : StreamCipherAlgorithm
+    : SymmetricStreamAlgorithm
 {
     /// <summary>
     /// The required XChaCha20 key size, in bits (256).
@@ -108,7 +108,7 @@ public sealed class XChaCha20
     /// Creates a new <see cref="XChaCha20" /> instance with default parameters.
     /// </summary>
     /// <returns>A new <see cref="XChaCha20" /> instance.</returns>
-    public static new XChaCha20 Create() =>
+    public static XChaCha20 Create() =>
         new();
 
     /// <inheritdoc />

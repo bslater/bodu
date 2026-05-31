@@ -352,6 +352,31 @@ internal static partial class CryptoHelpers
     }
 
     /// <summary>
+    /// Throws a <see cref="CryptographicException" /> if the supplied nonce is <see langword="null" /> or does not have
+    /// the exact required byte length.
+    /// </summary>
+    /// <param name="nonce">The nonce supplied as the algorithm IV.</param>
+    /// <param name="expectedBytes">The required nonce length, in bytes.</param>
+    /// <param name="paramName">The name of the nonce parameter. Supplied automatically by the compiler.</param>
+    /// <exception cref="CryptographicException">
+    /// Thrown when <paramref name="nonce" /> is <see langword="null" /> or its length is not
+    /// <paramref name="expectedBytes" />.
+    /// </exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void ThrowIfInvalidNonceSize(
+        byte[]? nonce, int expectedBytes,
+        [CallerArgumentExpression(nameof(nonce))] string? paramName = null)
+    {
+        int actualBits = (nonce?.Length ?? 0) * 8;
+        if (nonce is null || nonce.Length != expectedBytes)
+        {
+            throw new CryptographicException(
+                string.Format(CryptoResourceStrings.Crypt_Invalid_IVSize, actualBits, expectedBytes * 8),
+                paramName);
+        }
+    }
+
+    /// <summary>
     /// Throws a <see cref="CryptographicException" /> if the byte length of <paramref name="tweak" /> does not equal
     /// <paramref name="tweakSizeBits" /> / 8.
     /// </summary>

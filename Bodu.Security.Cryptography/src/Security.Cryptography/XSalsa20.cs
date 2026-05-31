@@ -53,7 +53,7 @@ namespace Bodu.Security.Cryptography;
 ///
 /// using var xsalsa = new XSalsa20();
 /// xsalsa.GenerateKey(); // 256-bit
-/// xsalsa.GenerateIV();  // 192-bit nonce — safe to choose at random
+/// xsalsa.GenerateNonce(); // 192-bit nonce — safe to choose at random
 /// byte[] ciphertext = xsalsa.Encrypt(plaintext);
 /// byte[] roundTrip  = xsalsa.Decrypt(ciphertext);
 ///]]>
@@ -62,7 +62,7 @@ namespace Bodu.Security.Cryptography;
 /// <seealso href="https://cr.yp.to/snuffle/xsalsa-20081128.pdf">Extending the Salsa20 nonce (Bernstein, 2008)</seealso>
 /// <seealso cref="Salsa20" />
 public sealed class XSalsa20
-    : StreamCipherAlgorithm
+    : SymmetricStreamAlgorithm
 {
     /// <summary>
     /// The required XSalsa20 key size, in bits (256).
@@ -105,7 +105,7 @@ public sealed class XSalsa20
     /// Creates a new <see cref="XSalsa20" /> instance with default parameters.
     /// </summary>
     /// <returns>A new <see cref="XSalsa20" /> instance.</returns>
-    public static new XSalsa20 Create() =>
+    public static XSalsa20 Create() =>
         new();
 
     /// <inheritdoc />
@@ -116,7 +116,10 @@ public sealed class XSalsa20
     protected override IStreamCipher CreateStreamCipher(byte[] key, byte[] nonce)
     {
         Span<byte> subkey = stackalloc byte[Salsa20StreamCipher.KeySize256Bytes];
-        byte[] salsaNonce = new byte[Salsa20StreamCipher.NonceSizeBytes];
+
+        // The derived Salsa20 nonce is not secret; it lives on the stack only to avoid a heap allocation. The engine
+        // constructor copies it synchronously, so the span need not outlive this call.
+        Span<byte> salsaNonce = stackalloc byte[Salsa20StreamCipher.NonceSizeBytes];
 
         try
         {
@@ -127,6 +130,7 @@ public sealed class XSalsa20
         }
         finally
         {
+            // The derived subkey is secret key material and must be wiped once the engine has consumed it.
             CryptographicOperations.ZeroMemory(subkey);
         }
     }

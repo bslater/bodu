@@ -29,7 +29,7 @@ namespace Bodu.Security.Cryptography;
 /// <strong>How this fits with the rest of the library.</strong> <see cref="IStreamCipher" /> is the stream-cipher
 /// counterpart to <see cref="IBlockCipher" />. A <see cref="StreamCipherTransform" /> wraps it to satisfy the
 /// <see cref="System.Security.Cryptography.ICryptoTransform" /> contract, and a
-/// <see cref="StreamCipherAlgorithm" /> composes the two so callers can use it through a <c>CryptoStream</c> like any
+/// <see cref="SymmetricStreamAlgorithm" /> composes the two so callers can use it through a <c>CryptoStream</c> like any
 /// other algorithm in this library.
 /// </para>
 /// <para>

@@ -21,8 +21,8 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// Like the other stream ciphers in this library it is self-inverse:
-/// <see cref="SymmetricAlgorithm.CreateEncryptor()" /> and <see cref="SymmetricAlgorithm.CreateDecryptor()" /> are
-/// interchangeable. The IV is supplied as the <see cref="SymmetricAlgorithm.IV" />.
+/// <see cref="SymmetricStreamAlgorithm.CreateEncryptor()" /> and <see cref="SymmetricStreamAlgorithm.CreateDecryptor()" />
+/// are interchangeable. The IV is supplied through the <see cref="SymmetricStreamAlgorithm.Nonce" /> property.
 /// </para>
 /// <para>
 /// <strong>Parameters at a glance.</strong>
@@ -32,7 +32,7 @@ namespace Bodu.Security.Cryptography;
 /// <description>Key size: 128 bits (16 bytes).</description>
 /// </item>
 /// <item>
-/// <description>IV size: 128 bits (16 bytes).</description>
+/// <description>Nonce (IV) size: 128 bits (16 bytes).</description>
 /// </item>
 /// </list>
 /// <para>
@@ -49,7 +49,7 @@ namespace Bodu.Security.Cryptography;
 ///
 /// using var hc128 = new Hc128();
 /// hc128.GenerateKey(); // 128-bit
-/// hc128.GenerateIV();  // 128-bit IV
+/// hc128.GenerateNonce(); // 128-bit IV
 /// byte[] ciphertext = hc128.Encrypt(plaintext);
 /// byte[] roundTrip  = hc128.Decrypt(ciphertext);
 ///]]>
@@ -59,7 +59,7 @@ namespace Bodu.Security.Cryptography;
 /// <seealso cref="ChaCha20" />
 /// <seealso cref="Rabbit" />
 public sealed class Hc128
-    : StreamCipherAlgorithm
+    : SymmetricStreamAlgorithm
 {
     /// <summary>
     /// The required HC-128 key size, in bits (128).
@@ -86,7 +86,7 @@ public sealed class Hc128
     /// Creates a new <see cref="Hc128" /> instance with default parameters.
     /// </summary>
     /// <returns>A new <see cref="Hc128" /> instance.</returns>
-    public static new Hc128 Create() =>
+    public static Hc128 Create() =>
         new();
 
     /// <inheritdoc />

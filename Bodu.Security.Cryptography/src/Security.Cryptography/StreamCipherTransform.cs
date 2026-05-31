@@ -18,7 +18,7 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// This is the stream-cipher counterpart to <see cref="BlockCipherTransform" />. It turns the low-level
 /// <see cref="IStreamCipher" /> primitive into the <see cref="ICryptoTransform" /> contract that
-/// <see cref="CryptoStream" /> and <c>SymmetricAlgorithm.CreateEncryptor()</c> expect, and centralizes the two
+/// <see cref="CryptoStream" /> and <c>SymmetricStreamAlgorithm.CreateEncryptor()</c> expect, and centralizes the two
 /// concerns shared by every additive stream cipher:
 /// </para>
 /// <list type="bullet">
@@ -134,8 +134,14 @@ internal sealed class StreamCipherTransform
     /// <paramref name="inputBuffer" /> or <paramref name="outputBuffer" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="CryptographicException">
-    /// The block counter would overflow, which would reuse keystream.
+    /// The block counter would overflow, which would reuse keystream; or <paramref name="inputBuffer" /> and
+    /// <paramref name="outputBuffer" /> are the same array and the read and write ranges partially overlap.
     /// </exception>
+    /// <remarks>
+    /// When <paramref name="inputBuffer" /> and <paramref name="outputBuffer" /> are the same array, only exact in-place
+    /// transformation (identical offsets) or fully disjoint ranges are supported. A partial overlap is rejected because
+    /// the keystream is applied forward byte by byte, so a write into not-yet-read input would corrupt the result.
+    /// </remarks>
     public int TransformBlock(byte[] inputBuffer, int inputOffset, int inputCount, byte[] outputBuffer, int outputOffset)
     {
         ThrowIfDisposed();
@@ -145,6 +151,16 @@ internal sealed class StreamCipherTransform
         ThrowHelper.ThrowIfNull(outputBuffer);
         CryptoHelpers.ThrowIfArrayOffsetOrCountInvalid(inputBuffer, inputOffset, inputCount);
         CryptoHelpers.ThrowIfArrayOffsetOrCountInvalid(outputBuffer, outputOffset, inputCount);
+
+        // Forward byte-by-byte XOR is safe for exact in-place (equal offsets) and disjoint ranges, but a partial
+        // same-array overlap would let an earlier write clobber input that has not been read yet.
+        if (ReferenceEquals(inputBuffer, outputBuffer)
+            && inputCount > 0
+            && inputOffset != outputOffset
+            && RangesOverlap(inputOffset, outputOffset, inputCount))
+        {
+            throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_PartialBufferOverlap);
+        }
 
         Apply(inputBuffer.AsSpan(inputOffset, inputCount), outputBuffer.AsSpan(outputOffset, inputCount));
         return inputCount;
@@ -175,6 +191,7 @@ internal sealed class StreamCipherTransform
         ThrowHelper.ThrowIfNull(inputBuffer);
         CryptoHelpers.ThrowIfArrayOffsetOrCountInvalid(inputBuffer, inputOffset, inputCount);
 
+        // No overlap check is needed: a fresh output array is allocated here, so it can never alias the input buffer.
         byte[] output = new byte[inputCount];
 
         try
@@ -216,6 +233,19 @@ internal sealed class StreamCipherTransform
             output[i] = (byte)(input[i] ^ _keystream[_keystreamOffset++]);
         }
     }
+
+    /// <summary>
+    /// Determines whether two equal-length ranges within the same array overlap.
+    /// </summary>
+    /// <param name="offsetA">The start offset of the first range.</param>
+    /// <param name="offsetB">The start offset of the second range.</param>
+    /// <param name="count">The length, in elements, shared by both ranges.</param>
+    /// <returns>
+    /// <see langword="true" /> if the ranges <c>[offsetA, offsetA + count)</c> and <c>[offsetB, offsetB + count)</c>
+    /// share any element; otherwise, <see langword="false" />.
+    /// </returns>
+    private static bool RangesOverlap(int offsetA, int offsetB, int count) =>
+        offsetA < offsetB + count && offsetB < offsetA + count;
 
     /// <summary>
     /// Throws an <see cref="ObjectDisposedException" /> if this transform has been disposed.

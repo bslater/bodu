@@ -108,7 +108,7 @@ public sealed class SmokeTests
     {
         using var algorithm = Bodu.Security.Cryptography.ChaCha20.Create();
         algorithm.GenerateKey();
-        algorithm.GenerateIV();
+        algorithm.GenerateNonce();
 
         var plaintext = Encoding.UTF8.GetBytes("Smoke test for ChaCha20.");
 
@@ -132,7 +132,7 @@ public sealed class SmokeTests
     {
         using var algorithm = Bodu.Security.Cryptography.XChaCha20.Create();
         algorithm.GenerateKey();
-        algorithm.GenerateIV();
+        algorithm.GenerateNonce();
 
         var plaintext = Encoding.UTF8.GetBytes("Smoke test for XChaCha20.");
 
@@ -156,7 +156,7 @@ public sealed class SmokeTests
     {
         using var algorithm = Bodu.Security.Cryptography.Salsa20.Create();
         algorithm.GenerateKey();
-        algorithm.GenerateIV();
+        algorithm.GenerateNonce();
 
         var plaintext = Encoding.UTF8.GetBytes("Smoke test for Salsa20.");
 
@@ -180,7 +180,7 @@ public sealed class SmokeTests
     {
         using var algorithm = Bodu.Security.Cryptography.XSalsa20.Create();
         algorithm.GenerateKey();
-        algorithm.GenerateIV();
+        algorithm.GenerateNonce();
 
         var plaintext = Encoding.UTF8.GetBytes("Smoke test for XSalsa20.");
 
@@ -204,7 +204,7 @@ public sealed class SmokeTests
     {
         using var algorithm = Bodu.Security.Cryptography.Rabbit.Create();
         algorithm.GenerateKey();
-        algorithm.GenerateIV();
+        algorithm.GenerateNonce();
 
         var plaintext = Encoding.UTF8.GetBytes("Smoke test for Rabbit.");
 
@@ -228,7 +228,7 @@ public sealed class SmokeTests
     {
         using var algorithm = Bodu.Security.Cryptography.Hc128.Create();
         algorithm.GenerateKey();
-        algorithm.GenerateIV();
+        algorithm.GenerateNonce();
 
         var plaintext = Encoding.UTF8.GetBytes("Smoke test for HC-128.");
 

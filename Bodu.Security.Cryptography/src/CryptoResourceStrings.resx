@@ -190,6 +190,9 @@
   <data name="Crypt_Invalid_PartialBlock" xml:space="preserve">
     <value>The input data is not a complete block.</value>
   </data>
+  <data name="Crypt_Invalid_PartialBufferOverlap" xml:space="preserve">
+    <value>The input and output buffers refer to the same array but partially overlap. A stream-cipher transform supports only exact in-place transformation (identical offsets) or fully disjoint buffers.</value>
+  </data>
   <data name="Crypt_Invalid_PropertyValue" xml:space="preserve">
     <value>The specified value for '{0}' is not supported by this algorithm.</value>
   </data>

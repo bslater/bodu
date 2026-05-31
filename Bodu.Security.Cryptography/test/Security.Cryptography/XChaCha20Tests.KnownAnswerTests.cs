@@ -8,16 +8,23 @@ namespace Bodu.Security.Cryptography;
 
 using System.Reflection;
 using System.Security.Cryptography;
+using Bodu.Security.Cryptography.Contracts;
 
 /// <summary>
 /// Locks the <see cref="XChaCha20" /> extended-nonce stream cipher and its HChaCha20 subkey-derivation core against the
 /// published <c>draft-irtf-cfrg-xchacha</c> known-answer test vectors, and inherits the shared
-/// <see cref="StreamCipherAlgorithmTests{TTest, TAlgorithm}" /> behavioural contract.
+/// <see cref="SymmetricStreamAlgorithmContractTests{TCipher}" /> behavioural contract.
 /// </summary>
 [TestClass]
 public sealed class XChaCha20Tests
-    : StreamCipherAlgorithmTests<XChaCha20Tests, XChaCha20>
+    : SymmetricStreamAlgorithmContractTests<XChaCha20>
 {
+    /// <inheritdoc />
+    protected override int ExpectedKeySizeBits => 256;
+
+    /// <inheritdoc />
+    protected override int ExpectedNonceSizeBits => 192;
+
     /// <summary>
     /// Represents one HChaCha20 block-function known-answer test row.
     /// </summary>
@@ -239,4 +246,27 @@ public sealed class XChaCha20Tests
             "XChaCha20 keystream must equal ChaCha20 under the HChaCha20-derived subkey.");
     }
 
+    /// <summary>
+    /// Verifies that <see cref="XChaCha20.InitialCounter" /> is captured when the transform is created, so mutating it
+    /// on the algorithm afterwards does not change an already-created transform's keystream.
+    /// </summary>
+    [TestMethod]
+    public void CreateEncryptor_WhenInitialCounterChangedAfterCreation_ShouldUseCapturedCounter()
+    {
+        byte[] key = new byte[32];
+        byte[] nonce = new byte[24];
+        byte[] plaintext = new byte[128];
+
+        using var cipher = new XChaCha20 { InitialCounter = 5 };
+        using ICryptoTransform transform = cipher.CreateEncryptor(key, nonce);
+        cipher.InitialCounter = 9;
+        byte[] actual = transform.TransformFinalBlock(plaintext, 0, plaintext.Length);
+
+        using var reference = new XChaCha20 { InitialCounter = 5 };
+        using ICryptoTransform referenceTransform = reference.CreateEncryptor(key, nonce);
+        byte[] expected = referenceTransform.TransformFinalBlock(plaintext, 0, plaintext.Length);
+
+        CollectionAssert.AreEqual(expected, actual,
+            "The transform must use the counter captured at creation, not the algorithm's later value.");
+    }
 }

@@ -457,6 +457,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The input and output buffers refer to the same array but partially overlap. A stream-cipher transform supports only exact in-place transformation (identical offsets) or fully disjoint buffers..
+        /// </summary>
+        internal static string Crypt_Invalid_PartialBufferOverlap {
+            get {
+                return ResourceManager.GetString("Crypt_Invalid_PartialBufferOverlap", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The specified value for '{0}' is not supported by this algorithm..
         /// </summary>
         internal static string Crypt_Invalid_PropertyValue {

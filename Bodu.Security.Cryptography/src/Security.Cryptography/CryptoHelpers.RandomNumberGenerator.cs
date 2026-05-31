@@ -135,6 +135,55 @@ internal static partial class CryptoHelpers
     }
 
     /// <summary>
+    /// Fills the provided span with cryptographically secure random bytes, drawn uniformly over the full
+    /// <c>0x00</c>–<c>0xFF</c> range.
+    /// </summary>
+    /// <param name="buffer">The span to fill.</param>
+    /// <remarks>
+    /// Unlike <see cref="FillWithRandomNonZeroBytes(Span{byte})" />, no byte value is excluded, so the result is an
+    /// unbiased uniform sample. Use this for key and nonce generation, where every byte value is a legal input.
+    /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static void FillWithRandomBytes(Span<byte> buffer)
+    {
+#if NETSTANDARD2_0
+        using (var rng = RandomNumberGenerator.Create())
+        {
+            byte[] temp = new byte[buffer.Length];
+            try
+            {
+                rng.GetBytes(temp);
+                temp.CopyTo(buffer);
+            }
+            finally
+            {
+                Array.Clear(temp, 0, temp.Length);
+            }
+        }
+#else
+        RandomNumberGenerator.Fill(buffer);
+#endif
+    }
+
+    /// <summary>
+    /// Returns a new byte array filled with cryptographically secure random bytes, drawn uniformly over the full
+    /// <c>0x00</c>–<c>0xFF</c> range.
+    /// </summary>
+    /// <param name="length">The number of random bytes to generate. Must be greater than zero.</param>
+    /// <returns>A <see cref="byte" /> array of the specified length containing uniformly random bytes.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="length" /> is less than or equal to zero.
+    /// </exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static byte[] GetRandomBytes(int length)
+    {
+        ThrowHelper.ThrowIfLessThanOrEqual(length, 0);
+        var buffer = GC.AllocateUninitializedArray<byte>(length);
+        FillWithRandomBytes(buffer.AsSpan());
+        return buffer;
+    }
+
+    /// <summary>
     /// Fills the specified span with random bytes, excluding the given <paramref name="forbidden" /> byte.
     /// </summary>
     /// <param name="forbidden">The byte value to exclude from the result.</param>

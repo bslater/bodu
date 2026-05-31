@@ -19,8 +19,8 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// Like the other stream ciphers in this library it is self-inverse:
-/// <see cref="SymmetricAlgorithm.CreateEncryptor()" /> and <see cref="SymmetricAlgorithm.CreateDecryptor()" /> are
-/// interchangeable. The IV is supplied as the <see cref="SymmetricAlgorithm.IV" />.
+/// <see cref="SymmetricStreamAlgorithm.CreateEncryptor()" /> and <see cref="SymmetricStreamAlgorithm.CreateDecryptor()" />
+/// are interchangeable. The IV is supplied through the <see cref="SymmetricStreamAlgorithm.Nonce" /> property.
 /// </para>
 /// <para>
 /// <strong>Parameters at a glance.</strong>
@@ -30,7 +30,7 @@ namespace Bodu.Security.Cryptography;
 /// <description>Key size: 128 bits (16 bytes).</description>
 /// </item>
 /// <item>
-/// <description>IV size: 64 bits (8 bytes).</description>
+/// <description>Nonce (IV) size: 64 bits (8 bytes).</description>
 /// </item>
 /// </list>
 /// <para>
@@ -47,7 +47,7 @@ namespace Bodu.Security.Cryptography;
 ///
 /// using var rabbit = new Rabbit();
 /// rabbit.GenerateKey(); // 128-bit
-/// rabbit.GenerateIV();  // 64-bit IV
+/// rabbit.GenerateNonce(); // 64-bit IV
 /// byte[] ciphertext = rabbit.Encrypt(plaintext);
 /// byte[] roundTrip  = rabbit.Decrypt(ciphertext);
 ///]]>
@@ -58,7 +58,7 @@ namespace Bodu.Security.Cryptography;
 /// <seealso cref="ChaCha20" />
 /// <seealso cref="Salsa20" />
 public sealed class Rabbit
-    : StreamCipherAlgorithm
+    : SymmetricStreamAlgorithm
 {
     /// <summary>
     /// The required Rabbit key size, in bits (128).
@@ -85,7 +85,7 @@ public sealed class Rabbit
     /// Creates a new <see cref="Rabbit" /> instance with default parameters.
     /// </summary>
     /// <returns>A new <see cref="Rabbit" /> instance.</returns>
-    public static new Rabbit Create() =>
+    public static Rabbit Create() =>
         new();
 
     /// <inheritdoc />
