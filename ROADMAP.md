@@ -173,9 +173,9 @@ SipHash plus EAX/OFB/GCM/OCB/SIV modes.
     extended-nonce **XSalsa20** (HSalsa20 subkey + Salsa20, mirroring
     HChaCha20 / XChaCha20; NaCl `crypto_core_hsalsa20` and XSalsa20
     vectors).
-  - **Rabbit** (RFC 4503; Appendix A.1/A.2 vectors in the little-endian
-    octet convention used by the RFC reference, Crypto++, and
-    libtomcrypt).
+  - **Rabbit** (RFC 4503; conformant to the RFC's I2OSP / big-endian
+    octet convention, verified against the Appendix A.1/A.2 keystream
+    vectors and the Appendix B internal-state debugging vectors).
   - **HC-128** (eSTREAM software portfolio; the canonical key=0/IV=0 and
     key=0x80../IV=0 vectors).
 
