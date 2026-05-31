@@ -136,6 +136,12 @@
   <data name="Crypt_Invalid_CtrCounterWrapped" xml:space="preserve">
     <value>The CTR counter has wrapped to its initial value. Continuing would reuse the keystream.</value>
   </data>
+  <data name="Crypt_Invalid_StreamCipherMode" xml:space="preserve">
+    <value>The cipher mode '{0}' is not supported. A stream cipher always operates in ECB-equivalent mode.</value>
+  </data>
+  <data name="Crypt_Invalid_StreamCipherPadding" xml:space="preserve">
+    <value>The padding mode '{0}' is not supported. A stream cipher applies no padding.</value>
+  </data>
   <data name="Crypt_Invalid_StreamCounterExhausted" xml:space="preserve">
     <value>The stream cipher block counter has wrapped to its initial value. Continuing would reuse the keystream.</value>
   </data>
@@ -189,6 +195,9 @@
   </data>
   <data name="Crypt_Invalid_PartialBlock" xml:space="preserve">
     <value>The input data is not a complete block.</value>
+  </data>
+  <data name="Crypt_Invalid_PartialBufferOverlap" xml:space="preserve">
+    <value>The input and output buffers refer to the same array but partially overlap. A stream-cipher transform supports only exact in-place transformation (identical offsets) or fully disjoint buffers.</value>
   </data>
   <data name="Crypt_Invalid_PropertyValue" xml:space="preserve">
     <value>The specified value for '{0}' is not supported by this algorithm.</value>

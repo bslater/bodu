@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 
@@ -51,8 +52,8 @@ public abstract class StreamCipherAlgorithm
     /// <param name="nonceSizeBits">The required nonce (IV) size, in bits.</param>
     /// <remarks>
     /// The legal key and block (nonce) sizes are fixed to the single supplied size. A stream cipher exposes no cipher
-    /// mode or padding; the inherited <see cref="SymmetricAlgorithm.Mode" /> and
-    /// <see cref="SymmetricAlgorithm.Padding" /> values are inert.
+    /// mode or padding; <see cref="Mode" /> is fixed to <see cref="CipherMode.ECB" /> and <see cref="Padding" /> to
+    /// <see cref="PaddingMode.None" />, and assigning any other value throws <see cref="CryptographicException" />.
     /// </remarks>
     protected StreamCipherAlgorithm(int keySizeBits, int nonceSizeBits)
         : this(keySizeBits, [new KeySizes(keySizeBits, keySizeBits, 0)], nonceSizeBits)
@@ -68,8 +69,9 @@ public abstract class StreamCipherAlgorithm
     /// <param name="nonceSizeBits">The required nonce (IV) size, in bits.</param>
     /// <remarks>
     /// Use this overload for ciphers that accept more than one key length (for example Salsa20, which accepts 128-bit
-    /// and 256-bit keys). A stream cipher exposes no cipher mode or padding; the inherited
-    /// <see cref="SymmetricAlgorithm.Mode" /> and <see cref="SymmetricAlgorithm.Padding" /> values are inert.
+    /// and 256-bit keys). A stream cipher exposes no cipher mode or padding; <see cref="Mode" /> is fixed to
+    /// <see cref="CipherMode.ECB" /> and <see cref="Padding" /> to <see cref="PaddingMode.None" />, and assigning any
+    /// other value throws <see cref="CryptographicException" />.
     /// </remarks>
     protected StreamCipherAlgorithm(int defaultKeySizeBits, KeySizes[] legalKeySizes, int nonceSizeBits)
     {
@@ -79,9 +81,22 @@ public abstract class StreamCipherAlgorithm
         BlockSizeValue = nonceSizeBits;
         LegalBlockSizesValue = [new KeySizes(nonceSizeBits, nonceSizeBits, 0)];
 
-        ModeValue = CipherMode.CBC;
+        ModeValue = CipherMode.ECB;
         PaddingValue = PaddingMode.None;
     }
+
+    /// <summary>
+    /// Gets the required nonce size, in bits.
+    /// </summary>
+    /// <value>The nonce size, in bits.</value>
+    /// <returns>The number of bits a valid nonce must contain.</returns>
+    /// <remarks>
+    /// The nonce is supplied through <see cref="SymmetricAlgorithm.IV" />. To satisfy the framework's IV-length
+    /// handling the nonce size is also reported as the <see cref="SymmetricAlgorithm.BlockSize" />, so
+    /// <see cref="NonceSize" /> always equals <see cref="SymmetricAlgorithm.BlockSize" /> for a stream cipher. This
+    /// property exists to name the concept unambiguously; a stream cipher has no block in the block-cipher sense.
+    /// </remarks>
+    public int NonceSize => BlockSizeValue;
 
     /// <summary>
     /// Gets the required nonce length, in bytes.
@@ -89,6 +104,55 @@ public abstract class StreamCipherAlgorithm
     /// <value>The nonce length, in bytes.</value>
     /// <returns>The number of bytes a valid nonce must contain.</returns>
     protected int NonceLengthInBytes => BlockSizeValue / 8;
+
+    /// <summary>
+    /// Gets or sets the cipher mode. A stream cipher has no chaining or feedback mode, so this is fixed to
+    /// <see cref="CipherMode.ECB" />.
+    /// </summary>
+    /// <value>Always <see cref="CipherMode.ECB" />.</value>
+    /// <returns><see cref="CipherMode.ECB" />, the only mode an additive stream cipher supports.</returns>
+    /// <exception cref="CryptographicException">A value other than <see cref="CipherMode.ECB" /> is assigned.</exception>
+    /// <remarks>
+    /// A stream cipher does not chain blocks, so no block-cipher mode applies. <see cref="CipherMode.ECB" /> is reported
+    /// as the least misleading sentinel because it implies no feedback or chaining. Assigning any other value throws
+    /// rather than silently accepting an inert setting.
+    /// </remarks>
+    public override CipherMode Mode
+    {
+        get => CipherMode.ECB;
+        set
+        {
+            if (value != CipherMode.ECB)
+                throw new CryptographicException(
+                    string.Format(CultureInfo.InvariantCulture, CryptoResourceStrings.Crypt_Invalid_StreamCipherMode, value));
+
+            ModeValue = CipherMode.ECB;
+        }
+    }
+
+    /// <summary>
+    /// Gets or sets the padding mode. A stream cipher imposes no block alignment, so this is fixed to
+    /// <see cref="PaddingMode.None" />.
+    /// </summary>
+    /// <value>Always <see cref="PaddingMode.None" />.</value>
+    /// <returns><see cref="PaddingMode.None" />, the only padding an additive stream cipher supports.</returns>
+    /// <exception cref="CryptographicException">A value other than <see cref="PaddingMode.None" /> is assigned.</exception>
+    /// <remarks>
+    /// An additive stream cipher processes data one byte at a time and never pads. Assigning any padding mode other than
+    /// <see cref="PaddingMode.None" /> throws rather than silently accepting an inert setting.
+    /// </remarks>
+    public override PaddingMode Padding
+    {
+        get => PaddingMode.None;
+        set
+        {
+            if (value != PaddingMode.None)
+                throw new CryptographicException(
+                    string.Format(CultureInfo.InvariantCulture, CryptoResourceStrings.Crypt_Invalid_StreamCipherPadding, value));
+
+            PaddingValue = PaddingMode.None;
+        }
+    }
 
     /// <inheritdoc />
     public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[]? rgbIV) =>
@@ -102,14 +166,14 @@ public abstract class StreamCipherAlgorithm
     public override void GenerateKey()
     {
         ThrowIfDisposed();
-        KeyValue = CryptoHelpers.GetRandomNonZeroBytes(KeySizeValue / 8);
+        KeyValue = CryptoHelpers.GetRandomBytes(KeySizeValue / 8);
     }
 
     /// <inheritdoc />
     public override void GenerateIV()
     {
         ThrowIfDisposed();
-        IVValue = CryptoHelpers.GetRandomNonZeroBytes(BlockSizeValue / 8);
+        IVValue = CryptoHelpers.GetRandomBytes(BlockSizeValue / 8);
     }
 
     /// <summary>
@@ -166,7 +230,7 @@ public abstract class StreamCipherAlgorithm
     {
         ThrowIfDisposed();
         CryptoHelpers.ThrowIfInvalidKeySize(rgbKey, KeySize, LegalKeySizes);
-        ChaCha20Helpers.ThrowIfInvalidNonceSize(rgbIV, NonceLengthInBytes);
+        CryptoHelpers.ThrowIfInvalidNonceSize(rgbIV, NonceLengthInBytes);
 
         // ThrowIfInvalidNonceSize guarantees rgbIV is non-null past this point.
         IStreamCipher engine = CreateStreamCipher(rgbKey, rgbIV!);

@@ -295,6 +295,24 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The cipher mode '{0}' is not supported. A stream cipher always operates in ECB-equivalent mode..
+        /// </summary>
+        internal static string Crypt_Invalid_StreamCipherMode {
+            get {
+                return ResourceManager.GetString("Crypt_Invalid_StreamCipherMode", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The padding mode '{0}' is not supported. A stream cipher applies no padding..
+        /// </summary>
+        internal static string Crypt_Invalid_StreamCipherPadding {
+            get {
+                return ResourceManager.GetString("Crypt_Invalid_StreamCipherPadding", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The stream cipher block counter has wrapped to its initial value. Continuing would reuse the keystream..
         /// </summary>
         internal static string Crypt_Invalid_StreamCounterExhausted {
@@ -453,6 +471,15 @@ namespace Bodu {
         internal static string Crypt_Invalid_PartialBlock {
             get {
                 return ResourceManager.GetString("Crypt_Invalid_PartialBlock", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The input and output buffers refer to the same array but partially overlap. A stream-cipher transform supports only exact in-place transformation (identical offsets) or fully disjoint buffers..
+        /// </summary>
+        internal static string Crypt_Invalid_PartialBufferOverlap {
+            get {
+                return ResourceManager.GetString("Crypt_Invalid_PartialBufferOverlap", resourceCulture);
             }
         }
 

@@ -161,6 +161,17 @@ internal static partial class CryptoHelpers
                 paramKeyName);
     }
 
+    public static void ThrowIfInvalidNonceSize(byte[]? nonce, int expectedBytes, string? paramName = null)
+    {
+        int actualBits = (nonce?.Length ?? 0) * 8;
+        if (nonce is null || nonce.Length != expectedBytes)
+        {
+            throw new CryptographicException(
+                string.Format(CryptoResourceStrings.Crypt_Invalid_IVSize, actualBits, expectedBytes * 8),
+                paramName);
+        }
+    }
+
     public static void ThrowIfInvalidTweakSize(byte[] tweak, int tweakSizeBits, KeySizes[] legalTweakSizes, string? paramTweakName = null)
     {
         ThrowHelper.ThrowIfNull(tweak);
