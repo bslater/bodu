@@ -10,10 +10,12 @@ using System.Reflection;
 using System.Security.Cryptography;
 
 /// <summary>
-/// Locks the <see cref="ChaCha20" /> stream cipher against the published RFC 8439 known-answer test vectors.
+/// Locks the <see cref="ChaCha20" /> stream cipher against the published RFC 8439 known-answer test vectors, and
+/// inherits the shared <see cref="StreamCipherAlgorithmTests{TTest, TAlgorithm}" /> behavioural contract.
 /// </summary>
 [TestClass]
 public sealed class ChaCha20Tests
+    : StreamCipherAlgorithmTests<ChaCha20Tests, ChaCha20>
 {
     /// <summary>
     /// Represents one ChaCha20 encryption known-answer test row, expressed as continuous hex strings.
@@ -172,72 +174,4 @@ public sealed class ChaCha20Tests
             "ChaCha20 keystream must match the BCL ChaCha20Poly1305 keystream (counter = 1).");
     }
 
-    /// <summary>
-    /// Verifies that encrypting in arbitrary, non-block-aligned segments yields the same result as a one-shot
-    /// transform, confirming the partial-block keystream carry is correct.
-    /// </summary>
-    [TestMethod]
-    public void TransformBlock_WhenInputIsSegmented_ShouldMatchOneShotTransform()
-    {
-        byte[] key = RandomNumberGenerator.GetBytes(32);
-        byte[] nonce = RandomNumberGenerator.GetBytes(12);
-        byte[] plaintext = RandomNumberGenerator.GetBytes(1000);
-
-        byte[] oneShot;
-        using (var cipher = new ChaCha20())
-        using (ICryptoTransform e = cipher.CreateEncryptor(key, nonce))
-            oneShot = e.TransformFinalBlock(plaintext, 0, plaintext.Length);
-
-        byte[] segmented = new byte[plaintext.Length];
-        using (var cipher = new ChaCha20())
-        using (ICryptoTransform e = cipher.CreateEncryptor(key, nonce))
-        {
-            int offset = 0;
-            foreach (int chunk in new[] { 1, 63, 64, 65, 127, 200, 0 })
-            {
-                int count = Math.Min(chunk, plaintext.Length - offset);
-                offset += e.TransformBlock(plaintext, offset, count, segmented, offset);
-            }
-
-            byte[] tail = e.TransformFinalBlock(plaintext, offset, plaintext.Length - offset);
-            tail.CopyTo(segmented.AsSpan(offset));
-        }
-
-        CollectionAssert.AreEqual(oneShot, segmented,
-            "Segmented ChaCha20 transform must equal the one-shot transform.");
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="ChaCha20.CreateEncryptor(byte[], byte[])" /> rejects a key whose length is not
-    /// 32 bytes with a <see cref="CryptographicException" />.
-    /// </summary>
-    [TestMethod]
-    public void CreateEncryptor_WhenKeyLengthIsInvalid_ShouldThrowCryptographicException()
-    {
-        using var cipher = new ChaCha20();
-        byte[] shortKey = new byte[31];
-        byte[] nonce = new byte[12];
-
-        Assert.ThrowsExactly<CryptographicException>(() =>
-        {
-            _ = cipher.CreateEncryptor(shortKey, nonce);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="ChaCha20.CreateEncryptor(byte[], byte[])" /> rejects a nonce whose length is not
-    /// 12 bytes with a <see cref="CryptographicException" />.
-    /// </summary>
-    [TestMethod]
-    public void CreateEncryptor_WhenNonceLengthIsInvalid_ShouldThrowCryptographicException()
-    {
-        using var cipher = new ChaCha20();
-        byte[] key = new byte[32];
-        byte[] longNonce = new byte[24];
-
-        Assert.ThrowsExactly<CryptographicException>(() =>
-        {
-            _ = cipher.CreateEncryptor(key, longNonce);
-        });
-    }
 }

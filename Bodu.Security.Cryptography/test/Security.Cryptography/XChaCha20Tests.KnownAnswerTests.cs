@@ -11,10 +11,12 @@ using System.Security.Cryptography;
 
 /// <summary>
 /// Locks the <see cref="XChaCha20" /> extended-nonce stream cipher and its HChaCha20 subkey-derivation core against the
-/// published <c>draft-irtf-cfrg-xchacha</c> known-answer test vectors.
+/// published <c>draft-irtf-cfrg-xchacha</c> known-answer test vectors, and inherits the shared
+/// <see cref="StreamCipherAlgorithmTests{TTest, TAlgorithm}" /> behavioural contract.
 /// </summary>
 [TestClass]
 public sealed class XChaCha20Tests
+    : StreamCipherAlgorithmTests<XChaCha20Tests, XChaCha20>
 {
     /// <summary>
     /// Represents one HChaCha20 block-function known-answer test row.
@@ -237,20 +239,4 @@ public sealed class XChaCha20Tests
             "XChaCha20 keystream must equal ChaCha20 under the HChaCha20-derived subkey.");
     }
 
-    /// <summary>
-    /// Verifies that <see cref="XChaCha20.CreateEncryptor(byte[], byte[])" /> rejects a nonce whose length is not
-    /// 24 bytes with a <see cref="CryptographicException" />.
-    /// </summary>
-    [TestMethod]
-    public void CreateEncryptor_WhenNonceLengthIsInvalid_ShouldThrowCryptographicException()
-    {
-        using var cipher = new XChaCha20();
-        byte[] key = new byte[32];
-        byte[] shortNonce = new byte[12];
-
-        Assert.ThrowsExactly<CryptographicException>(() =>
-        {
-            _ = cipher.CreateEncryptor(key, shortNonce);
-        });
-    }
 }
