@@ -30,7 +30,7 @@ namespace Bodu.Security.Cryptography;
 /// <description>Key size: 128 bits (16 bytes).</description>
 /// </item>
 /// <item>
-/// <description>IV size: 64 bits (8 bytes).</description>
+/// <description>Nonce (IV) size: 64 bits (8 bytes).</description>
 /// </item>
 /// </list>
 /// <para>

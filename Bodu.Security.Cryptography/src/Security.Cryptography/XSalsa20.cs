@@ -116,7 +116,10 @@ public sealed class XSalsa20
     protected override IStreamCipher CreateStreamCipher(byte[] key, byte[] nonce)
     {
         Span<byte> subkey = stackalloc byte[Salsa20StreamCipher.KeySize256Bytes];
-        byte[] salsaNonce = new byte[Salsa20StreamCipher.NonceSizeBytes];
+
+        // The derived Salsa20 nonce is not secret; it lives on the stack only to avoid a heap allocation. The engine
+        // constructor copies it synchronously, so the span need not outlive this call.
+        Span<byte> salsaNonce = stackalloc byte[Salsa20StreamCipher.NonceSizeBytes];
 
         try
         {
@@ -127,6 +130,7 @@ public sealed class XSalsa20
         }
         finally
         {
+            // The derived subkey is secret key material and must be wiped once the engine has consumed it.
             CryptographicOperations.ZeroMemory(subkey);
         }
     }
