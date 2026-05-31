@@ -23,6 +23,14 @@ namespace Bodu.Security.Cryptography;
 /// the contract the engine-owns-advancement <see cref="IStreamCipher" /> interface expresses.
 /// </para>
 /// <para>
+/// The implementation follows the RFC 4503 octet conventions exactly: the key and IV are interpreted as big-endian
+/// integers split into 16-bit subkeys (I2OSP), and each keystream block is serialized as the big-endian (I2OSP)
+/// representation of the 128-bit extraction value. This reproduces the RFC 4503 Appendix A conformance vectors and the
+/// Appendix B internal-state debugging vectors byte-for-byte. (Note that some implementations — for example Crypto++ and
+/// libtomcrypt — use a self-consistent little-endian convention whose key, IV, and keystream octets are byte-reversed
+/// relative to the RFC.)
+/// </para>
+/// <para>
 /// Key setup expands the key into the state and counter variables, iterates the next-state function four times, and
 /// re-keys the counters from the state. When an IV is supplied, IV setup mixes the 64-bit IV into a working copy of the
 /// counters and iterates four more times; the master state from key setup is preserved so that many IVs can be derived
@@ -32,7 +40,7 @@ namespace Bodu.Security.Cryptography;
 /// <seealso href="https://www.rfc-editor.org/rfc/rfc4503">RFC 4503 — A Description of the Rabbit Stream Cipher
 /// Algorithm</seealso>
 /// <seealso cref="Rabbit" />
-internal sealed class RabbitStreamCipher
+internal sealed partial class RabbitStreamCipher
     : IStreamCipher
 {
     /// <summary>
@@ -101,16 +109,12 @@ internal sealed class RabbitStreamCipher
 
         NextState();
 
-        // Extract 128 bits: each output word combines a state word with cross-word halves (RFC 4503 §2.6).
-        uint s0 = _x[0] ^ (_x[5] >> 16) ^ (_x[3] << 16);
-        uint s1 = _x[2] ^ (_x[7] >> 16) ^ (_x[5] << 16);
-        uint s2 = _x[4] ^ (_x[1] >> 16) ^ (_x[7] << 16);
-        uint s3 = _x[6] ^ (_x[3] >> 16) ^ (_x[1] << 16);
-
-        BinaryPrimitives.WriteUInt32LittleEndian(destination.Slice(0, 4), s0);
-        BinaryPrimitives.WriteUInt32LittleEndian(destination.Slice(4, 4), s1);
-        BinaryPrimitives.WriteUInt32LittleEndian(destination.Slice(8, 4), s2);
-        BinaryPrimitives.WriteUInt32LittleEndian(destination.Slice(12, 4), s3);
+        // Extract 128 bits (RFC 4503 §2.6) and serialize as the big-endian (I2OSP) representation of S, most
+        // significant word first. S[127..112] = X6[31..16] ^ X1[15..0], down to S[15..0] = X0[15..0] ^ X5[31..16].
+        BinaryPrimitives.WriteUInt32BigEndian(destination.Slice(0, 4), ((Hi(_x[6]) ^ Lo(_x[1])) << 16) | (Lo(_x[6]) ^ Hi(_x[3])));
+        BinaryPrimitives.WriteUInt32BigEndian(destination.Slice(4, 4), ((Hi(_x[4]) ^ Lo(_x[7])) << 16) | (Lo(_x[4]) ^ Hi(_x[1])));
+        BinaryPrimitives.WriteUInt32BigEndian(destination.Slice(8, 4), ((Hi(_x[2]) ^ Lo(_x[5])) << 16) | (Lo(_x[2]) ^ Hi(_x[7])));
+        BinaryPrimitives.WriteUInt32BigEndian(destination.Slice(12, 4), ((Hi(_x[0]) ^ Lo(_x[3])) << 16) | (Lo(_x[0]) ^ Hi(_x[5])));
     }
 
     /// <inheritdoc />
@@ -123,6 +127,46 @@ internal sealed class RabbitStreamCipher
         Array.Clear(_c, 0, _c.Length);
         _carry = 0;
         _disposed = true;
+    }
+
+    /// <summary>Gets the low 16 bits of a word.</summary>
+    /// <param name="w">The word.</param>
+    /// <returns><c>w &amp; 0xFFFF</c>.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static uint Lo(uint w) => w & 0xFFFF;
+
+    /// <summary>Gets the high 16 bits of a word, shifted down.</summary>
+    /// <param name="w">The word.</param>
+    /// <returns><c>w &gt;&gt; 16</c>.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static uint Hi(uint w) => w >> 16;
+
+    /// <summary>
+    /// Reads the big-endian 16-bit subkey at the given subkey index from a 16-byte key, where subkey 0 is the
+    /// least-significant 16 bits of the 128-bit big-endian key integer (RFC 4503 I2OSP convention).
+    /// </summary>
+    /// <param name="key">The 16-byte key.</param>
+    /// <param name="index">The subkey index, 0–7.</param>
+    /// <returns>The 16-bit subkey value.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static uint SubKey(ReadOnlySpan<byte> key, int index)
+    {
+        int offset = 14 - (index * 2);
+        return (uint)((key[offset] << 8) | key[offset + 1]);
+    }
+
+    /// <summary>
+    /// Reads the big-endian 16-bit IV subword at the given index from an 8-byte IV, where subword 0 is the
+    /// least-significant 16 bits of the 64-bit big-endian IV integer.
+    /// </summary>
+    /// <param name="nonce">The 8-byte IV.</param>
+    /// <param name="index">The subword index, 0–3.</param>
+    /// <returns>The 16-bit IV subword value.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static uint IvWord(ReadOnlySpan<byte> nonce, int index)
+    {
+        int offset = 6 - (index * 2);
+        return (uint)((nonce[offset] << 8) | nonce[offset + 1]);
     }
 
     /// <summary>
@@ -143,30 +187,7 @@ internal sealed class RabbitStreamCipher
     /// <param name="key">The 16-byte key.</param>
     private void KeySetup(ReadOnlySpan<byte> key)
     {
-        uint k0 = BinaryPrimitives.ReadUInt32LittleEndian(key.Slice(0, 4));
-        uint k1 = BinaryPrimitives.ReadUInt32LittleEndian(key.Slice(4, 4));
-        uint k2 = BinaryPrimitives.ReadUInt32LittleEndian(key.Slice(8, 4));
-        uint k3 = BinaryPrimitives.ReadUInt32LittleEndian(key.Slice(12, 4));
-
-        _x[0] = k0;
-        _x[2] = k1;
-        _x[4] = k2;
-        _x[6] = k3;
-        _x[1] = (k3 << 16) | (k2 >> 16);
-        _x[3] = (k0 << 16) | (k3 >> 16);
-        _x[5] = (k1 << 16) | (k0 >> 16);
-        _x[7] = (k2 << 16) | (k1 >> 16);
-
-        _c[0] = BitOperations.RotateLeft(k2, 16);
-        _c[2] = BitOperations.RotateLeft(k3, 16);
-        _c[4] = BitOperations.RotateLeft(k0, 16);
-        _c[6] = BitOperations.RotateLeft(k1, 16);
-        _c[1] = (k0 & 0xFFFF0000) | (k1 & 0xFFFF);
-        _c[3] = (k1 & 0xFFFF0000) | (k2 & 0xFFFF);
-        _c[5] = (k2 & 0xFFFF0000) | (k3 & 0xFFFF);
-        _c[7] = (k3 & 0xFFFF0000) | (k0 & 0xFFFF);
-
-        _carry = 0;
+        ExpandKey(key);
 
         for (int i = 0; i < 4; i++)
             NextState();
@@ -182,22 +203,29 @@ internal sealed class RabbitStreamCipher
     /// <param name="nonce">The 8-byte IV.</param>
     private void IvSetup(ReadOnlySpan<byte> nonce)
     {
-        uint i0 = BinaryPrimitives.ReadUInt32LittleEndian(nonce.Slice(0, 4));
-        uint i2 = BinaryPrimitives.ReadUInt32LittleEndian(nonce.Slice(4, 4));
-        uint i1 = (i0 >> 16) | (i2 & 0xFFFF0000);
-        uint i3 = (i2 << 16) | (i0 & 0x0000FFFF);
-
-        _c[0] ^= i0;
-        _c[1] ^= i1;
-        _c[2] ^= i2;
-        _c[3] ^= i3;
-        _c[4] ^= i0;
-        _c[5] ^= i1;
-        _c[6] ^= i2;
-        _c[7] ^= i3;
+        MixIv(nonce);
 
         for (int i = 0; i < 4; i++)
             NextState();
+    }
+
+    /// <summary>
+    /// Mixes the 64-bit IV into the eight counters (the XOR step of RFC 4503 §3.2), without iterating the next-state
+    /// function.
+    /// </summary>
+    /// <param name="nonce">The 8-byte IV.</param>
+    private void MixIv(ReadOnlySpan<byte> nonce)
+    {
+        uint iv0 = IvWord(nonce, 0), iv1 = IvWord(nonce, 1), iv2 = IvWord(nonce, 2), iv3 = IvWord(nonce, 3);
+
+        _c[0] ^= (iv1 << 16) | iv0;
+        _c[1] ^= (iv3 << 16) | iv1;
+        _c[2] ^= (iv3 << 16) | iv2;
+        _c[3] ^= (iv2 << 16) | iv0;
+        _c[4] ^= (iv1 << 16) | iv0;
+        _c[5] ^= (iv3 << 16) | iv1;
+        _c[6] ^= (iv3 << 16) | iv2;
+        _c[7] ^= (iv2 << 16) | iv0;
     }
 
     /// <summary>
