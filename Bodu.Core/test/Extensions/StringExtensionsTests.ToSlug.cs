@@ -33,10 +33,7 @@ public partial class StringExtensionsTests
     /// <param name="expected">The expected return value.</param>
     [DataTestMethod]
     [DynamicData(nameof(GetToSlugCases), DynamicDataSourceType.Method)]
-    public void ToSlug_WhenInvoked_ShouldReturnExpected(string value, string expected)
-    {
-        Assert.AreEqual(expected, value.ToSlug());
-    }
+    public void ToSlug_WhenInvoked_ShouldReturnExpected(string value, string expected) => Assert.AreEqual(expected, value.ToSlug());
 
     /// <summary>
     /// Verifies that <see cref="StringExtensions.ToSlug(string, SlugOptions)" /> strips accented Latin
@@ -114,18 +111,12 @@ public partial class StringExtensionsTests
     /// <see cref="ArgumentNullException" /> when <c>value</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void ToSlug_WhenInputIsNull_ShouldThrowExactly()
-    {
-        Assert.ThrowsExactly<ArgumentNullException>(() => _ = StringExtensions.ToSlug(null!));
-    }
+    public void ToSlug_WhenInputIsNull_ShouldThrowExactly() => Assert.ThrowsExactly<ArgumentNullException>(() => _ = StringExtensions.ToSlug(null!));
 
     /// <summary>
     /// Verifies that <see cref="StringExtensions.ToSlug(string, SlugOptions)" /> throws
     /// <see cref="ArgumentNullException" /> when <c>options</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void ToSlug_WhenOptionsIsNull_ShouldThrowExactly()
-    {
-        Assert.ThrowsExactly<ArgumentNullException>(() => _ = "hello".ToSlug(null!));
-    }
+    public void ToSlug_WhenOptionsIsNull_ShouldThrowExactly() => Assert.ThrowsExactly<ArgumentNullException>(() => _ = "hello".ToSlug(null!));
 }

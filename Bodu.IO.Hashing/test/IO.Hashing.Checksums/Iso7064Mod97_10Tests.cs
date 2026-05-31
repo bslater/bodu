@@ -47,21 +47,16 @@ public sealed class Iso7064Mod97_10Tests
     /// satisfy the algorithm's invariant.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenSequenceIsEmpty_ShouldReturnFalse()
-    {
-        Assert.IsFalse(Iso7064Mod97_10.IsValid(ReadOnlySpan<char>.Empty));
-    }
+    public void IsValid_WhenSequenceIsEmpty_ShouldReturnFalse() => Assert.IsFalse(Iso7064Mod97_10.IsValid(ReadOnlySpan<char>.Empty));
 
     /// <summary>
     /// Verifies that <see cref="Iso7064Mod97_10.IsValid(ReadOnlySpan{char})" /> accepts a sequence whose body is
     /// purely numeric.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenSequenceUsesNumericBody_ShouldReturnTrue()
-    {
+    public void IsValid_WhenSequenceUsesNumericBody_ShouldReturnTrue() =>
         // 79444 — published worked example for MOD 97-10.
         Assert.IsTrue(Iso7064Mod97_10.IsValid("79444".AsSpan()));
-    }
 
     /// <inheritdoc />
     protected override string ComputeStatic(ReadOnlySpan<char> body) =>

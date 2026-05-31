@@ -15,13 +15,13 @@ public readonly partial struct WeekPattern
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Returned by <see cref="WeekPattern.GetEnumerator" /> and bound directly by the C# <c>foreach</c> pattern,
-    /// so iterating a <see cref="WeekPattern" /> requires no heap allocation. Accessing the enumerator through
+    /// Returned by <see cref="WeekPattern.GetEnumerator" /> and bound directly by the C# <c>foreach</c> pattern, so
+    /// iterating a <see cref="WeekPattern" /> requires no heap allocation. Accessing the enumerator through
     /// <see cref="IEnumerator{T}" /> or <see cref="IEnumerator" /> boxes this struct as a one-off cost.
     /// </para>
     /// <para>
-    /// The enumerator captures the underlying bitmask at construction; the source <see cref="WeekPattern" /> is
-    /// a value type and immutable, so the snapshot semantics are exact.
+    /// The enumerator captures the underlying bitmask at construction; the source <see cref="WeekPattern" /> is a value
+    /// type and immutable, so the snapshot semantics are exact.
     /// </para>
     /// </remarks>
     public struct Enumerator : IEnumerator<DayOfWeek>

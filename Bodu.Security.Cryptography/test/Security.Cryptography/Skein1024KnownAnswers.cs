@@ -7,12 +7,12 @@
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Holds the curated <see cref="Skein1024" /> known-answer test vectors, transcribed verbatim from the Skein 1.3 /
-/// NIST CD <c>skein_golden_kat.txt</c> reference distribution.
+/// Holds the curated <see cref="Skein1024" /> known-answer test vectors, transcribed verbatim from the Skein 1.3 / NIST
+/// CD <c>skein_golden_kat.txt</c> reference distribution.
 /// </summary>
 /// <remarks>
-/// Skein-1024-1024 ships with a richer message-length set covering empty, one-byte, one-block, and two-block
-/// messages. The 384- and 512-bit truncations carry one 1024-bit incrementing-message vector each.
+/// Skein-1024-1024 ships with a richer message-length set covering empty, one-byte, one-block, and two-block messages.
+/// The 384- and 512-bit truncations carry one 1024-bit incrementing-message vector each.
 /// </remarks>
 internal static class Skein1024KnownAnswers
 {

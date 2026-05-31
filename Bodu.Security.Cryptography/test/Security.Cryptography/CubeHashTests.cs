@@ -23,7 +23,7 @@ public partial class CubeHashTests
     };
 
     /// <inheritdoc />
-    protected override CubeHash CreateAlgorithm() => new CubeHash();
+    protected override CubeHash CreateAlgorithm() => new();
 
     /// <summary>
     /// Verifies that constructing a <see cref="CubeHash"/> with an unsupported hash size throws

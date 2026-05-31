@@ -120,7 +120,7 @@ public abstract class CollectionContractTests<TCollection, TItem>
         TItem item = CreateItem(0);
         TCollection collection = Create(item);
 
-        bool removed = collection.Remove(item);
+        var removed = collection.Remove(item);
 
         Assert.IsTrue(removed);
         Assert.AreEqual(0, collection.Count);
@@ -138,7 +138,7 @@ public abstract class CollectionContractTests<TCollection, TItem>
         TItem absent = CreateItem(1);
         TCollection collection = Create(present);
 
-        bool removed = collection.Remove(absent);
+        var removed = collection.Remove(absent);
 
         Assert.IsFalse(removed);
         Assert.AreEqual(1, collection.Count);
@@ -166,11 +166,11 @@ public abstract class CollectionContractTests<TCollection, TItem>
     {
         TItem[] source = [CreateItem(0), CreateItem(1), CreateItem(2)];
         TCollection collection = Create(source);
-        TItem[] destination = new TItem[source.Length + 2];
+        var destination = new TItem[source.Length + 2];
 
         collection.CopyTo(destination, 1);
 
-        for (int i = 0; i < source.Length; i++)
+        for (var i = 0; i < source.Length; i++)
         {
             Assert.IsTrue(collection.Contains(destination[i + 1]));
         }
@@ -187,7 +187,7 @@ public abstract class CollectionContractTests<TCollection, TItem>
         TItem[] source = [CreateItem(0), CreateItem(1), CreateItem(2)];
         TCollection collection = Create(source);
 
-        int observed = 0;
+        var observed = 0;
         foreach (TItem item in collection)
         {
             Assert.IsTrue(collection.Contains(item));

@@ -54,7 +54,7 @@ public partial class Blake3Tests
             input[i] = (byte)(i % 251);
 
         using var hasher = new Blake3();
-        byte[] actual = hasher.ComputeHash(input);
+        var actual = hasher.ComputeHash(input);
 
         Assert.AreEqual(expectedHex, Convert.ToHexString(actual).ToLowerInvariant(),
             $"BLAKE3 digest for input_len={inputLen} must match the official reference vector.");

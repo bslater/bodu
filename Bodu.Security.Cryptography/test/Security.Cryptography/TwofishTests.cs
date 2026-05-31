@@ -27,7 +27,7 @@ public sealed partial class TwofishTests
 
     /// <inheritdoc />
     protected override SymmetricAlgorithmSpecification GetSpecification() =>
-        new SymmetricAlgorithmSpecification
+        new()
         {
             BlockSizeBits = 128,
             DefaultKeySizeBits = 256,

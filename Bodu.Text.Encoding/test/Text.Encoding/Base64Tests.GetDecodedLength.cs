@@ -59,10 +59,7 @@ public sealed partial class Base64Tests
     /// length.
     /// </summary>
     [TestMethod]
-    public void GetEncodedLength_WithoutOptionsOverload_ShouldReturnStandardLength()
-    {
-        Assert.AreEqual(8, Base64.GetEncodedLength(6));
-    }
+    public void GetEncodedLength_WithoutOptionsOverload_ShouldReturnStandardLength() => Assert.AreEqual(8, Base64.GetEncodedLength(6));
 
     /// <summary>
     /// Verifies that <see cref="Base64.GetEncodedLength(int, Base64Variant)" /> reflects the variant default padding

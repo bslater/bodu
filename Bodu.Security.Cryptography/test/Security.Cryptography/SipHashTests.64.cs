@@ -49,7 +49,7 @@ public partial class SipHash64Tests
     };
 
     /// <inheritdoc />
-    protected override SipHash64 CreateAlgorithm() => new SipHash64
+    protected override SipHash64 CreateAlgorithm() => new()
     {
         Key = SipHashTestKey,
         CompressionRounds = 2,

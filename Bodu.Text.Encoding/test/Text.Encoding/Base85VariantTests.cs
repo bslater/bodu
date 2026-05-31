@@ -17,10 +17,7 @@ public sealed class Base85VariantTests
     /// Verifies that <see cref="Base85Variant.Ascii85" /> is the default value.
     /// </summary>
     [TestMethod]
-    public void Ascii85_ShouldBeDefaultValue()
-    {
-        Assert.AreEqual(default, Base85Variant.Ascii85);
-    }
+    public void Ascii85_ShouldBeDefaultValue() => Assert.AreEqual(default, Base85Variant.Ascii85);
 
     /// <summary>
     /// Verifies that the variants declare stable numerical values.

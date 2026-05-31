@@ -30,10 +30,7 @@ public partial class StringExtensionsTests
     /// <param name="expected">The expected return value.</param>
     [DataTestMethod]
     [DynamicData(nameof(GetToSentenceCaseCases), DynamicDataSourceType.Method)]
-    public void ToSentenceCase_WhenInvoked_ShouldReturnExpected(string value, string expected)
-    {
-        Assert.AreEqual(expected, value.ToSentenceCase());
-    }
+    public void ToSentenceCase_WhenInvoked_ShouldReturnExpected(string value, string expected) => Assert.AreEqual(expected, value.ToSentenceCase());
 
     /// <summary>
     /// Verifies that
@@ -53,8 +50,5 @@ public partial class StringExtensionsTests
     /// <see cref="ArgumentNullException" /> when <c>value</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void ToSentenceCase_WhenInputIsNull_ShouldThrowExactly()
-    {
-        Assert.ThrowsExactly<ArgumentNullException>(() => _ = StringExtensions.ToSentenceCase(null!));
-    }
+    public void ToSentenceCase_WhenInputIsNull_ShouldThrowExactly() => Assert.ThrowsExactly<ArgumentNullException>(() => _ = StringExtensions.ToSentenceCase(null!));
 }

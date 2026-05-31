@@ -22,7 +22,7 @@ public sealed class Threefish512BlockCipherContractTests
     protected override byte[] EncryptBlock(byte[] key, byte[] plaintext, byte[]? tweak)
     {
         using Threefish512Cipher cipher = new(key, tweak!);
-        byte[] output = new byte[plaintext.Length];
+        var output = new byte[plaintext.Length];
         cipher.Encrypt(plaintext, output);
         return output;
     }
@@ -31,7 +31,7 @@ public sealed class Threefish512BlockCipherContractTests
     protected override byte[] DecryptBlock(byte[] key, byte[] ciphertext, byte[]? tweak)
     {
         using Threefish512Cipher cipher = new(key, tweak!);
-        byte[] output = new byte[ciphertext.Length];
+        var output = new byte[ciphertext.Length];
         cipher.Decrypt(ciphertext, output);
         return output;
     }
@@ -66,8 +66,8 @@ public sealed class Threefish512BlockCipherContractTests
 
     private static byte[] IncrementalBytes(byte start, int length)
     {
-        byte[] result = new byte[length];
-        for (int i = 0; i < length; i++)
+        var result = new byte[length];
+        for (var i = 0; i < length; i++)
             result[i] = (byte)(start + i);
         return result;
     }

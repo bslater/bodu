@@ -44,7 +44,7 @@ public partial class ConfigurationPatternTests
     [TestMethod]
     public void Compile_WhenNumericRangeIsWithinCap_ShouldCompileAndMatch()
     {
-        ConfigurationPattern pattern = ConfigurationPattern.Compile("file-{1..50}.txt");
+        var pattern = ConfigurationPattern.Compile("file-{1..50}.txt");
 
         for (var i = 1; i <= 50; i++)
             Assert.IsTrue(pattern.IsMatch($"file-{i}.txt"), $"expected match for {i}");
@@ -60,7 +60,7 @@ public partial class ConfigurationPatternTests
     [TestMethod]
     public void Compile_WhenNumericRangeIsSingleValue_ShouldMatchOnlyThatValue()
     {
-        ConfigurationPattern pattern = ConfigurationPattern.Compile("file-{5..5}.txt");
+        var pattern = ConfigurationPattern.Compile("file-{5..5}.txt");
 
         Assert.IsTrue(pattern.IsMatch("file-5.txt"));
         Assert.IsFalse(pattern.IsMatch("file-4.txt"));
@@ -75,7 +75,7 @@ public partial class ConfigurationPatternTests
     [TestMethod]
     public void Compile_WhenNegativeRangeIsModest_ShouldCompileAndMatch()
     {
-        ConfigurationPattern pattern = ConfigurationPattern.Compile("offset-{-3..3}.log");
+        var pattern = ConfigurationPattern.Compile("offset-{-3..3}.log");
 
         for (var i = -3; i <= 3; i++)
             Assert.IsTrue(pattern.IsMatch($"offset-{i}.log"), $"expected match for {i}");

@@ -61,9 +61,9 @@ public sealed class PooledBufferBuilderKatTests
         foreach (BufferCapacityKat kat in CapacityKats)
         {
             using PooledBufferBuilder<int> builder = new(kat.InitialCapacity);
-            int initialCapacity = builder.Capacity;
+            var initialCapacity = builder.Capacity;
 
-            for (int i = 0; i < kat.AppendCount; i++)
+            for (var i = 0; i < kat.AppendCount; i++)
                 builder.Append(i);
 
             if (kat.ExpectsGrowth)

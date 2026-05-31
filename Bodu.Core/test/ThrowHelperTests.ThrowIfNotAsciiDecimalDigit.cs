@@ -18,10 +18,7 @@ public partial class ThrowHelperTests
     [DataRow('1')]
     [DataRow('5')]
     [DataRow('9')]
-    public void ThrowIfNotAsciiDecimalDigit_WhenCharIsDigit_ShouldNotThrow(char value)
-    {
-        ThrowHelper.ThrowIfNotAsciiDecimalDigit(value);
-    }
+    public void ThrowIfNotAsciiDecimalDigit_WhenCharIsDigit_ShouldNotThrow(char value) => ThrowHelper.ThrowIfNotAsciiDecimalDigit(value);
 
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfNotAsciiDecimalDigit" /> throws

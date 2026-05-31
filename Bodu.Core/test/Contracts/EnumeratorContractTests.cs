@@ -61,7 +61,7 @@ public abstract class EnumeratorContractTests<TEnumerable, TItem>
         TEnumerable source = Create(items);
 
         using IEnumerator<TItem> enumerator = source.GetEnumerator();
-        int observed = 0;
+        var observed = 0;
         while (enumerator.MoveNext())
         {
             observed++;

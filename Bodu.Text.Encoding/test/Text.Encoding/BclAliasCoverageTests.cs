@@ -89,10 +89,7 @@ public sealed class BclAliasCoverageTests
     /// Verifies that <see cref="Base16.ToHexStringLower(ReadOnlySpan{byte})" /> produces lower-case hex.
     /// </summary>
     [TestMethod]
-    public void Base16_ToHexStringLower_Span_ShouldReturnLowerCaseHex()
-    {
-        Assert.AreEqual("deadbeef", Base16.ToHexStringLower(new byte[] { 0xDE, 0xAD, 0xBE, 0xEF }.AsSpan()));
-    }
+    public void Base16_ToHexStringLower_Span_ShouldReturnLowerCaseHex() => Assert.AreEqual("deadbeef", Base16.ToHexStringLower(new byte[] { 0xDE, 0xAD, 0xBE, 0xEF }.AsSpan()));
 
     /// <summary>
     /// Verifies that <see cref="Base16.TryToHexStringLower(ReadOnlySpan{byte}, Span{byte}, out int)" /> writes
@@ -355,10 +352,7 @@ public sealed class BclAliasCoverageTests
     /// Verifies that <see cref="Base85.ToBase85String(ReadOnlySpan{byte})" /> aliases the canonical encoder.
     /// </summary>
     [TestMethod]
-    public void Base85_ToBase85String_Span_ShouldMatchCanonicalEncoder()
-    {
-        Assert.AreEqual(Base85.Encode(SamplePayload), Base85.ToBase85String(SamplePayload.AsSpan()));
-    }
+    public void Base85_ToBase85String_Span_ShouldMatchCanonicalEncoder() => Assert.AreEqual(Base85.Encode(SamplePayload), Base85.ToBase85String(SamplePayload.AsSpan()));
 
     /// <summary>
     /// Verifies that <see cref="Base85.TryToBase85String(ReadOnlySpan{byte}, Span{byte}, out int)" /> writes UTF-8

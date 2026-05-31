@@ -25,7 +25,7 @@ public sealed partial class Base64Tests
     [DataRow("AQIDBAUG", 6)]
     public void Decode_ShouldReturnArrayOfExactDecodedLength(string input, int expectedLength)
     {
-        byte[] decoded = Base64.Decode(input.AsSpan());
+        var decoded = Base64.Decode(input.AsSpan());
 
         Assert.AreEqual(expectedLength, decoded.Length);
     }
@@ -38,7 +38,7 @@ public sealed partial class Base64Tests
     [TestMethod]
     public void Decode_WhenUrlSafeAndUnpadded_ShouldReturnArrayOfExactDecodedLength()
     {
-        byte[] decoded = Base64.Decode("AQ".AsSpan(), Base64Variant.UrlSafe);
+        var decoded = Base64.Decode("AQ".AsSpan(), Base64Variant.UrlSafe);
 
         Assert.AreEqual(1, decoded.Length);
     }

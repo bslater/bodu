@@ -37,8 +37,5 @@ public partial class StringExtensionsTests
     /// <param name="expected">The expected return value.</param>
     [DataTestMethod]
     [DynamicData(nameof(GetEqualsOrdinalIgnoreCaseCases), DynamicDataSourceType.Method)]
-    public void EqualsOrdinalIgnoreCase_WhenInvoked_ShouldReturnExpected(string? value, string? other, bool expected)
-    {
-        Assert.AreEqual(expected, value.EqualsOrdinalIgnoreCase(other));
-    }
+    public void EqualsOrdinalIgnoreCase_WhenInvoked_ShouldReturnExpected(string? value, string? other, bool expected) => Assert.AreEqual(expected, value.EqualsOrdinalIgnoreCase(other));
 }

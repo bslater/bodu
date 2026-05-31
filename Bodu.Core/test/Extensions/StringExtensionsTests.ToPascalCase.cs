@@ -32,18 +32,12 @@ public partial class StringExtensionsTests
     /// <param name="expected">The expected return value.</param>
     [DataTestMethod]
     [DynamicData(nameof(GetToPascalCaseCases), DynamicDataSourceType.Method)]
-    public void ToPascalCase_WhenInvoked_ShouldReturnExpected(string value, string expected)
-    {
-        Assert.AreEqual(expected, value.ToPascalCase());
-    }
+    public void ToPascalCase_WhenInvoked_ShouldReturnExpected(string value, string expected) => Assert.AreEqual(expected, value.ToPascalCase());
 
     /// <summary>
     /// Verifies that <see cref="StringExtensions.ToPascalCase(string)" /> throws
     /// <see cref="ArgumentNullException" /> when <c>value</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void ToPascalCase_WhenInputIsNull_ShouldThrowExactly()
-    {
-        Assert.ThrowsExactly<ArgumentNullException>(() => _ = StringExtensions.ToPascalCase(null!));
-    }
+    public void ToPascalCase_WhenInputIsNull_ShouldThrowExactly() => Assert.ThrowsExactly<ArgumentNullException>(() => _ = StringExtensions.ToPascalCase(null!));
 }

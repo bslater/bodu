@@ -33,15 +33,15 @@ public static partial class StreamExtensions
 
         if (stream.CanSeek)
         {
-            long remaining = stream.Length - stream.Position;
+            var remaining = stream.Length - stream.Position;
             if (remaining <= 0L)
                 return Array.Empty<byte>();
 
             if (remaining <= int.MaxValue)
             {
-                int count = (int)remaining;
-                byte[] buffer = new byte[count];
-                int offset = 0;
+                var count = (int)remaining;
+                var buffer = new byte[count];
+                var offset = 0;
 
                 int read;
                 while (offset < count && (read = stream.Read(buffer, offset, count - offset)) > 0)

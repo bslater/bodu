@@ -57,13 +57,13 @@ public readonly partial struct WeekPattern : IEnumerable<DayOfWeek>
     /// <summary>
     /// Represents a <see cref="WeekPattern" /> with Monday through Friday selected.
     /// </summary>
-    public static readonly WeekPattern Weekdays = new WeekPattern(
+    public static readonly WeekPattern Weekdays = new(
         DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday);
 
     /// <summary>
     /// Represents a <see cref="WeekPattern" /> with Saturday and Sunday selected.
     /// </summary>
-    public static readonly WeekPattern Weekend = new WeekPattern(DayOfWeek.Saturday, DayOfWeek.Sunday);
+    public static readonly WeekPattern Weekend = new(DayOfWeek.Saturday, DayOfWeek.Sunday);
 
 #pragma warning restore IDE1006
 
@@ -220,18 +220,18 @@ public readonly partial struct WeekPattern : IEnumerable<DayOfWeek>
     /// </param>
     /// <returns>A <see cref="WeekPattern" /> corresponding to the supplied bitmask.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="value" /> exceeds 127.</exception>
-    public static WeekPattern FromByte(byte value) => new WeekPattern((int)value);
+    public static WeekPattern FromByte(byte value) => new((int)value);
 
     /// <summary>
-    /// Returns a struct enumerator that yields each selected <see cref="DayOfWeek" /> in Sunday-first order
-    /// without allocating.
+    /// Returns a struct enumerator that yields each selected <see cref="DayOfWeek" /> in Sunday-first order without
+    /// allocating.
     /// </summary>
     /// <returns>
-    /// A <see cref="Enumerator" /> that iterates the selected days. Returning the struct directly avoids the
-    /// heap allocation that a yield-state-machine enumerator would incur, and the C# <c>foreach</c> pattern
-    /// binds to it via pattern matching without going through <see cref="IEnumerable{T}" />.
+    /// A <see cref="Enumerator" /> that iterates the selected days. Returning the struct directly avoids the heap
+    /// allocation that a yield-state-machine enumerator would incur, and the C# <c>foreach</c> pattern binds to it via
+    /// pattern matching without going through <see cref="IEnumerable{T}" />.
     /// </returns>
-    public Enumerator GetEnumerator() => new Enumerator(_selectedDays);
+    public Enumerator GetEnumerator() => new(_selectedDays);
 
     /// <inheritdoc />
     IEnumerator<DayOfWeek> IEnumerable<DayOfWeek>.GetEnumerator() => GetEnumerator();

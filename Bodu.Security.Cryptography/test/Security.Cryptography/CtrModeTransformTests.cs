@@ -12,7 +12,7 @@ public sealed partial class CtrModeTransformTests
 {
     /// <inheritdoc />
     protected override CtrModeTransform CreateTransform(IBlockCipher cipher, byte[] iv)
-        => new CtrModeTransform(cipher, iv);
+        => new(cipher, iv);
 
     /// <inheritdoc />
     /// <remarks>

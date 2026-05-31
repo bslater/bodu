@@ -12,13 +12,17 @@ namespace Bodu.Security.Cryptography.Infrastructure;
 /// Represents a single authenticated-encryption known-answer test (KAT) vector — the inputs (key, nonce, associated
 /// data, plaintext) and the expected outputs (ciphertext and authentication tag) for one AEAD trial.
 /// </summary>
-/// <param name="Count">The vector number from the source file (typically 1-based, matching the NIST/LWC convention).</param>
+/// <param name="Count">
+/// The vector number from the source file (typically 1-based, matching the NIST/LWC convention).
+/// </param>
 /// <param name="Key">The encryption key.</param>
 /// <param name="Nonce">The nonce (also called IV) used for this trial.</param>
 /// <param name="AssociatedData">The associated data; empty when the trial has no AAD.</param>
 /// <param name="Plaintext">The plaintext input; empty when the trial has no payload.</param>
 /// <param name="Ciphertext">The expected ciphertext, excluding the authentication tag.</param>
-/// <param name="Tag">The expected authentication tag (typically 16 bytes for the AEAD primitives in this project).</param>
+/// <param name="Tag">
+/// The expected authentication tag (typically 16 bytes for the AEAD primitives in this project).
+/// </param>
 /// <param name="Source">Optional human-readable citation of the source document or file.</param>
 public sealed record AeadKnownAnswerVector(
     int Count,
@@ -32,9 +36,9 @@ public sealed record AeadKnownAnswerVector(
 {
     /// <inheritdoc />
     /// <remarks>
-    /// AEAD KAT files identify rows by their numeric <see cref="Count" /> rather than a textual label, so the
-    /// emitted name embeds <see cref="Count" /> and, when present, the <see cref="Source" /> citation — for
-    /// example <c>"NIST LWC #42"</c>.
+    /// AEAD KAT files identify rows by their numeric <see cref="Count" /> rather than a textual label, so the emitted
+    /// name embeds <see cref="Count" /> and, when present, the <see cref="Source" /> citation — for example
+    /// <c>"NIST LWC #42"</c>.
     /// </remarks>
     string IKat.Name => Source is null
         ? $"Vector {Count}"
@@ -49,10 +53,17 @@ public sealed record AeadKnownAnswerVector(
     /// <param name="nonceHex">The nonce as a hex string.</param>
     /// <param name="associatedDataHex">The associated data as a hex string; empty when none.</param>
     /// <param name="plaintextHex">The plaintext as a hex string; empty when none.</param>
-    /// <param name="ciphertextWithTagHex">The concatenation of expected ciphertext and tag as a single hex string.</param>
-    /// <param name="tagLength">The number of trailing bytes in <paramref name="ciphertextWithTagHex" /> that form the tag.</param>
+    /// <param name="ciphertextWithTagHex">
+    /// The concatenation of expected ciphertext and tag as a single hex string.
+    /// </param>
+    /// <param name="tagLength">
+    /// The number of trailing bytes in <paramref name="ciphertextWithTagHex" /> that form the tag.
+    /// </param>
     /// <param name="source">Optional human-readable citation of the source document or file.</param>
-    /// <returns>A new <see cref="AeadKnownAnswerVector" /> with the trailing bytes of <paramref name="ciphertextWithTagHex" /> split off as the tag.</returns>
+    /// <returns>
+    /// A new <see cref="AeadKnownAnswerVector" /> with the trailing bytes of <paramref name="ciphertextWithTagHex" />
+    /// split off as the tag.
+    /// </returns>
     public static AeadKnownAnswerVector FromHex(
         int count,
         string keyHex,

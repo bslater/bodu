@@ -29,8 +29,8 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     }
 
     /// <summary>
-    /// Verifies that the default-seed overload throws <see cref="ArgumentNullException"/> when the accumulator function is
-    /// <see langword="null"/>.
+    /// Verifies that the default-seed overload throws <see cref="ArgumentNullException" /> when the accumulator
+    /// function is <see langword="null" />.
     /// </summary>
     [TestMethod]
     public void Aggregate_WhenFuncIsNull_ForDefaultSeedOverload_ShouldThrowExactly()
@@ -65,8 +65,8 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     }
 
     /// <summary>
-    /// Verifies that the 3-function no-index overload throws <see cref="ArgumentNullException"/> when any accumulator function is
-    /// <see langword="null"/>.
+    /// Verifies that the 3-function no-index overload throws <see cref="ArgumentNullException" /> when any accumulator
+    /// function is <see langword="null" />.
     /// </summary>
     [TestMethod]
     public void Aggregate_WhenFuncIsNull_ForThreeFuncNoIndex_ShouldThrowExactly()
@@ -86,8 +86,8 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     }
 
     /// <summary>
-    /// Verifies that the 2-function no-index overload throws <see cref="ArgumentNullException"/> when either accumulator function is
-    /// <see langword="null"/>.
+    /// Verifies that the 2-function no-index overload throws <see cref="ArgumentNullException" /> when either
+    /// accumulator function is <see langword="null" />.
     /// </summary>
     [TestMethod]
     public void Aggregate_WhenFuncIsNull_ForTwoFuncNoIndex_ShouldThrowExactly()
@@ -109,8 +109,8 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     }
 
     /// <summary>
-    /// Verifies that the 2-function with-index overload throws <see cref="ArgumentNullException"/> when either accumulator function is
-    /// <see langword="null"/>.
+    /// Verifies that the 2-function with-index overload throws <see cref="ArgumentNullException" /> when either
+    /// accumulator function is <see langword="null" />.
     /// </summary>
     [TestMethod]
     public void Aggregate_WhenFuncIsNull_ForTwoFuncWithIndex_ShouldThrowExactly()
@@ -132,8 +132,9 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     }
 
     /// <summary>
-    /// Verifies that the default-seed overload applies the accumulator function starting from <see langword="default"/> and uses the
-    /// first element as the first running value passed to <paramref name="func"/>.
+    /// Verifies that the default-seed overload applies the accumulator function starting from
+    /// <see langword="default" /> and uses the first element as the first running value passed to
+    /// <paramref name="func" />.
     /// </summary>
     [TestMethod]
     public void Aggregate_WhenInvoked_ForDefaultSeedOverload_ShouldStartFromDefault()
@@ -238,8 +239,8 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     }
 
     /// <summary>
-    /// Verifies that the 3-function with-index overload passes the same monotonically increasing zero-based index to all three
-    /// accumulator functions for each element.
+    /// Verifies that the 3-function with-index overload passes the same monotonically increasing zero-based index to
+    /// all three accumulator functions for each element.
     /// </summary>
     [TestMethod]
     public void Aggregate_WhenInvoked_ForThreeFuncWithIndex_ShouldShareMonotonicIndexAcrossFuncs()
@@ -302,8 +303,8 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     }
 
     /// <summary>
-    /// Verifies that the 2-function with-index overload passes the same monotonically increasing zero-based index to both accumulator
-    /// functions for each element.
+    /// Verifies that the 2-function with-index overload passes the same monotonically increasing zero-based index to
+    /// both accumulator functions for each element.
     /// </summary>
     [TestMethod]
     public void Aggregate_WhenInvoked_ForTwoFuncWithIndex_ShouldShareMonotonicIndexAcrossFuncs()
@@ -323,7 +324,8 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     }
 
     /// <summary>
-    /// Verifies that the 2-function with-index with-selector overload combines index-aware accumulation with result projection.
+    /// Verifies that the 2-function with-index with-selector overload combines index-aware accumulation with result
+    /// projection.
     /// </summary>
     [TestMethod]
     public void Aggregate_WhenInvoked_ForTwoFuncWithIndexAndSelector_ShouldTransformTuple()
@@ -396,8 +398,8 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     }
 
     /// <summary>
-    /// Verifies that the 3-function with-selector overload throws <see cref="ArgumentNullException"/> when the result selector is
-    /// <see langword="null"/>.
+    /// Verifies that the 3-function with-selector overload throws <see cref="ArgumentNullException" /> when the result
+    /// selector is <see langword="null" />.
     /// </summary>
     [TestMethod]
     public void Aggregate_WhenResultSelectorIsNull_ForThreeFuncWithSelector_ShouldThrowExactly()
@@ -419,8 +421,8 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     }
 
     /// <summary>
-    /// Verifies that the 2-function with-selector overload throws <see cref="ArgumentNullException"/> when the result selector is
-    /// <see langword="null"/>.
+    /// Verifies that the 2-function with-selector overload throws <see cref="ArgumentNullException" /> when the result
+    /// selector is <see langword="null" />.
     /// </summary>
     [TestMethod]
     public void Aggregate_WhenResultSelectorIsNull_ForTwoFuncWithSelector_ShouldThrowExactly()
@@ -451,7 +453,8 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     }
 
     /// <summary>
-    /// Verifies that the default-seed overload throws <see cref="InvalidOperationException"/> when the source sequence is empty.
+    /// Verifies that the default-seed overload throws <see cref="InvalidOperationException" /> when the source sequence
+    /// is empty.
     /// </summary>
     [TestMethod]
     public void Aggregate_WhenSourceIsEmpty_ForDefaultSeedOverload_ShouldThrowExactly()
@@ -467,8 +470,8 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     }
 
     /// <summary>
-    /// Verifies that the seeded overload returns the seed unchanged when the source sequence is empty and does not invoke the
-    /// accumulator.
+    /// Verifies that the seeded overload returns the seed unchanged when the source sequence is empty and does not
+    /// invoke the accumulator.
     /// </summary>
     [TestMethod]
     public void Aggregate_WhenSourceIsEmpty_ForSeededOverload_ShouldReturnSeedUnchanged()
@@ -549,7 +552,8 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     }
 
     /// <summary>
-    /// Verifies that the seeded overload throws <see cref="ArgumentNullException"/> when the source sequence is <see langword="null"/>.
+    /// Verifies that the seeded overload throws <see cref="ArgumentNullException" /> when the source sequence is
+    /// <see langword="null" />.
     /// </summary>
     [TestMethod]
     public void Aggregate_WhenSourceIsNull_ForSeededOverload_ShouldThrowExactly()
@@ -565,8 +569,8 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     }
 
     /// <summary>
-    /// Verifies that the 3-function no-index overload throws <see cref="ArgumentNullException"/> when the source sequence is
-    /// <see langword="null"/>.
+    /// Verifies that the 3-function no-index overload throws <see cref="ArgumentNullException" /> when the source
+    /// sequence is <see langword="null" />.
     /// </summary>
     [TestMethod]
     public void Aggregate_WhenSourceIsNull_ForThreeFuncNoIndex_ShouldThrowExactly()
@@ -586,8 +590,8 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     }
 
     /// <summary>
-    /// Verifies that the 3-function with-index overload throws <see cref="ArgumentNullException"/> when the source sequence is
-    /// <see langword="null"/>.
+    /// Verifies that the 3-function with-index overload throws <see cref="ArgumentNullException" /> when the source
+    /// sequence is <see langword="null" />.
     /// </summary>
     [TestMethod]
     public void Aggregate_WhenSourceIsNull_ForThreeFuncWithIndex_ShouldThrowExactly()
@@ -607,8 +611,8 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     }
 
     /// <summary>
-    /// Verifies that the 2-function no-index overload throws <see cref="ArgumentNullException"/> when the source sequence is
-    /// <see langword="null"/>.
+    /// Verifies that the 2-function no-index overload throws <see cref="ArgumentNullException" /> when the source
+    /// sequence is <see langword="null" />.
     /// </summary>
     [TestMethod]
     public void Aggregate_WhenSourceIsNull_ForTwoFuncNoIndex_ShouldThrowExactly()
@@ -624,8 +628,8 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     }
 
     /// <summary>
-    /// Verifies that the 2-function with-index overload throws <see cref="ArgumentNullException"/> when the source sequence is
-    /// <see langword="null"/>.
+    /// Verifies that the 2-function with-index overload throws <see cref="ArgumentNullException" /> when the source
+    /// sequence is <see langword="null" />.
     /// </summary>
     [TestMethod]
     public void Aggregate_WhenSourceIsNull_ForTwoFuncWithIndex_ShouldThrowExactly()

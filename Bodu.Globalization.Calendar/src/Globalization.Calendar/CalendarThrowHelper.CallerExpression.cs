@@ -141,9 +141,15 @@ internal static partial class CalendarThrowHelper
     /// Throws a <see cref="NotSupportedException" /> when <paramref name="calendar" /> is not <see langword="null" />
     /// and is not an instance of <paramref name="supportedCalendarType" />.
     /// </summary>
-    /// <param name="calendar">The calendar to validate; <see langword="null" /> is accepted as the provider default.</param>
-    /// <param name="providerType">The Easter provider type that issued the validation, used in the exception message.</param>
-    /// <param name="supportedCalendarType">The single calendar type accepted by <paramref name="providerType" />.</param>
+    /// <param name="calendar">
+    /// The calendar to validate; <see langword="null" /> is accepted as the provider default.
+    /// </param>
+    /// <param name="providerType">
+    /// The Easter provider type that issued the validation, used in the exception message.
+    /// </param>
+    /// <param name="supportedCalendarType">
+    /// The single calendar type accepted by <paramref name="providerType" />.
+    /// </param>
     /// <exception cref="NotSupportedException">
     /// Thrown when <paramref name="calendar" /> is not <see langword="null" /> and is not assignable to
     /// <paramref name="supportedCalendarType" />.

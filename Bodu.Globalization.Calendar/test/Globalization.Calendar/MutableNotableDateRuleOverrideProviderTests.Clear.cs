@@ -40,7 +40,7 @@ public partial class MutableNotableDateRuleOverrideProviderTests
         provider.RemoveRule("X");
         provider.RemoveRule("Y");
 
-        int changedCount = 0;
+        var changedCount = 0;
         provider.Changed += (_, _) => changedCount++;
 
         provider.Clear();
@@ -56,7 +56,7 @@ public partial class MutableNotableDateRuleOverrideProviderTests
     public void Clear_WhenEmpty_ShouldStillRaiseChangedOnce()
     {
         MutableNotableDateRuleOverrideProvider provider = new();
-        int changedCount = 0;
+        var changedCount = 0;
         provider.Changed += (_, _) => changedCount++;
 
         provider.Clear();

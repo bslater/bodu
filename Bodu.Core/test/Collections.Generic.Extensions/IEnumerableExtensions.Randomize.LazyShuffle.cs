@@ -10,9 +10,10 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
 {
 
     /// <summary>
-    /// Verifies that <see cref="IEnumerableExtensions.Randomize{T}(IEnumerable{T}, RandomizationMode, IRandomGenerator?, int?)" /> with
-    /// <see cref="RandomizationMode.LazyShuffle" /> and a non-positive count yields an empty sequence (covers the early
-    /// <c>yield break</c> branch in <c>LazyShuffle</c>).
+    /// Verifies that
+    /// <see cref="IEnumerableExtensions.Randomize{T}(IEnumerable{T}, RandomizationMode, IRandomGenerator?, int?)" />
+    /// with <see cref="RandomizationMode.LazyShuffle" /> and a non-positive count yields an empty sequence (covers the
+    /// early <c>yield break</c> branch in <c>LazyShuffle</c>).
     /// </summary>
     [TestMethod]
     public void Randomize_LazyShuffle_WhenCountIsZero_ShouldYieldEmptySequence()

@@ -39,8 +39,8 @@ public sealed class IListExtensionsTests_ReplaceAll
     }
 
     /// <summary>
-    /// Verifies that the <c>IEqualityComparer&lt;T&gt;</c> overload throws <see cref="ArgumentNullException"/>
-    /// when the list is <see langword="null"/>.
+    /// Verifies that the <c>IEqualityComparer&lt;T&gt;</c> overload throws <see cref="ArgumentNullException" /> when
+    /// the list is <see langword="null" />.
     /// </summary>
     [TestMethod]
     public void ReplaceAll_WithComparer_WhenListIsNull_ShouldThrowExactly()
@@ -68,7 +68,8 @@ public sealed class IListExtensionsTests_ReplaceAll
     }
 
     /// <summary>
-    /// Verifies that <c>ReplaceAll(oldItem, newItem)</c> throws <see cref="ArgumentNullException"/> when the list is <see langword="null"/>.
+    /// Verifies that <c>ReplaceAll(oldItem, newItem)</c> throws <see cref="ArgumentNullException" /> when the list is
+    /// <see langword="null" />.
     /// </summary>
     [TestMethod]
     public void ReplaceAll_WithDefaultEquality_WhenListIsNull_ShouldThrowExactly()
@@ -95,7 +96,8 @@ public sealed class IListExtensionsTests_ReplaceAll
     }
 
     /// <summary>
-    /// Verifies that <c>ReplaceAll(oldItem, newItem)</c> returns <c>0</c> and leaves the list unchanged when no element matches.
+    /// Verifies that <c>ReplaceAll(oldItem, newItem)</c> returns <c>0</c> and leaves the list unchanged when no element
+    /// matches.
     /// </summary>
     [TestMethod]
     public void ReplaceAll_WithDefaultEquality_WhenNoMatches_ShouldReturnZeroAndLeaveListUnchanged()
@@ -109,7 +111,8 @@ public sealed class IListExtensionsTests_ReplaceAll
     }
 
     /// <summary>
-    /// Verifies that <c>ReplaceAll</c> treats <see langword="null"/> equality consistently when the element type is a reference type.
+    /// Verifies that <c>ReplaceAll</c> treats <see langword="null" /> equality consistently when the element type is a
+    /// reference type.
     /// </summary>
     [TestMethod]
     public void ReplaceAll_WithDefaultEquality_WhenReplacingNullReferences_ShouldReplaceAll()
@@ -123,7 +126,8 @@ public sealed class IListExtensionsTests_ReplaceAll
     }
 
     /// <summary>
-    /// Verifies that passing a <see langword="null"/> comparer falls back to <see cref="EqualityComparer{T}.Default"/>.
+    /// Verifies that passing a <see langword="null" /> comparer falls back to
+    /// <see cref="EqualityComparer{T}.Default" />.
     /// </summary>
     [TestMethod]
     public void ReplaceAll_WithNullComparer_ShouldFallBackToDefaultEquality()
@@ -137,7 +141,8 @@ public sealed class IListExtensionsTests_ReplaceAll
     }
 
     /// <summary>
-    /// Verifies that <c>ReplaceAll(newItem, predicate)</c> throws <see cref="ArgumentNullException"/> when the list is <see langword="null"/>.
+    /// Verifies that <c>ReplaceAll(newItem, predicate)</c> throws <see cref="ArgumentNullException" /> when the list is
+    /// <see langword="null" />.
     /// </summary>
     [TestMethod]
     public void ReplaceAll_WithPredicate_WhenListIsNull_ShouldThrowExactly()
@@ -165,7 +170,8 @@ public sealed class IListExtensionsTests_ReplaceAll
     }
 
     /// <summary>
-    /// Verifies that <c>ReplaceAll(newItem, predicate)</c> throws <see cref="ArgumentNullException"/> when the predicate is <see langword="null"/>.
+    /// Verifies that <c>ReplaceAll(newItem, predicate)</c> throws <see cref="ArgumentNullException" /> when the
+    /// predicate is <see langword="null" />.
     /// </summary>
     [TestMethod]
     public void ReplaceAll_WithPredicate_WhenPredicateIsNull_ShouldThrowExactly()
@@ -180,8 +186,8 @@ public sealed class IListExtensionsTests_ReplaceAll
     }
 
     /// <summary>
-    /// Verifies that <c>ReplaceAll(newItem, predicate)</c> does not loop indefinitely when the predicate also
-    /// matches <paramref name="newItem"/>, because each slot is tested exactly once.
+    /// Verifies that <c>ReplaceAll(newItem, predicate)</c> does not loop indefinitely when the predicate also matches
+    /// <paramref name="newItem" />, because each slot is tested exactly once.
     /// </summary>
     [TestMethod]
     public void ReplaceAll_WithPredicate_WhenPredicateMatchesNewItem_ShouldNotInfiniteLoop()

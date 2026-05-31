@@ -74,7 +74,7 @@ public abstract class MurmurHash3<T>
 {
     private static readonly int[] s_validHashSizes = [32, 128];
 
-    private readonly MemoryStream _inputBuffer = new MemoryStream();
+    private readonly MemoryStream _inputBuffer = new();
     private bool _disposed;
 
     /// <summary>

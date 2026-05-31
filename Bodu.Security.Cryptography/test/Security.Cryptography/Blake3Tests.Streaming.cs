@@ -49,14 +49,14 @@ public partial class Blake3Tests
     [DataRow(65537)]
     public void ChunkingPattern_ShouldNotAffectDigest_AcrossChunkAndTreeBoundaries(int inputLength)
     {
-        byte[] input = BuildDeterministicInput(inputLength);
+        var input = BuildDeterministicInput(inputLength);
 
         byte[] oneShotHash;
         using (var hasher = new Blake3())
             oneShotHash = hasher.ComputeHash(input);
 
-        byte[] byteAtATimeHash = HashByteByByte(input);
-        byte[] randomChunkHash = HashWithPseudoRandomChunks(input, seed: 1337);
+        var byteAtATimeHash = HashByteByByte(input);
+        var randomChunkHash = HashWithPseudoRandomChunks(input, seed: 1337);
 
         CollectionAssert.AreEqual(oneShotHash, byteAtATimeHash,
             $"One-shot vs byte-at-a-time digests diverged for input length {inputLength}.");
@@ -66,10 +66,10 @@ public partial class Blake3Tests
 
     private static byte[] BuildDeterministicInput(int length)
     {
-        byte[] buffer = new byte[length];
+        var buffer = new byte[length];
         // Same generator pattern as the official BLAKE3 test_vectors.json corpus would expose, but kept
         // local to this test so the assertion is purely an internal consistency check.
-        for (int i = 0; i < length; i++)
+        for (var i = 0; i < length; i++)
             buffer[i] = (byte)((i * 251) & 0xFF);
         return buffer;
     }
@@ -77,8 +77,8 @@ public partial class Blake3Tests
     private static byte[] HashByteByByte(byte[] input)
     {
         using var hasher = new Blake3();
-        byte[] one = new byte[1];
-        for (int i = 0; i < input.Length; i++)
+        var one = new byte[1];
+        for (var i = 0; i < input.Length; i++)
         {
             one[0] = input[i];
             hasher.TransformBlock(one, 0, 1, null, 0);
@@ -91,12 +91,12 @@ public partial class Blake3Tests
     {
         var rng = new Random(seed);
         using var hasher = new Blake3();
-        int offset = 0;
+        var offset = 0;
         while (offset < input.Length)
         {
             // 0–127 byte chunks straddle the 64-byte block and the 1024-byte chunk boundary at irregular
             // intervals, which is what the tree-merge logic must tolerate.
-            int chunk = Math.Min(rng.Next(0, 128), input.Length - offset);
+            var chunk = Math.Min(rng.Next(0, 128), input.Length - offset);
             if (chunk == 0) continue;
             hasher.TransformBlock(input, offset, chunk, null, 0);
             offset += chunk;

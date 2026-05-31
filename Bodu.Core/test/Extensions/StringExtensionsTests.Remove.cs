@@ -30,10 +30,7 @@ public partial class StringExtensionsTests
     /// <param name="expected">The expected return value.</param>
     [DataTestMethod]
     [DynamicData(nameof(GetRemoveCases), DynamicDataSourceType.Method)]
-    public void Remove_WhenInvoked_ShouldReturnExpected(string value, string valueToRemove, StringComparison comparison, string expected)
-    {
-        Assert.AreEqual(expected, value.Remove(valueToRemove, comparison));
-    }
+    public void Remove_WhenInvoked_ShouldReturnExpected(string value, string valueToRemove, StringComparison comparison, string expected) => Assert.AreEqual(expected, value.Remove(valueToRemove, comparison));
 
     /// <summary>
     /// Verifies that <see cref="StringExtensions.Remove(string, string, StringComparison)" /> throws

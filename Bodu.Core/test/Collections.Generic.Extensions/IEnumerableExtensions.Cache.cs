@@ -15,19 +15,22 @@ public sealed partial class IEnumerableExtensionsTests_Cache
 {
 
     /// <summary>
-    /// Verifies that <see cref="IEnumerableExtensions.Cache{T}" /> defers execution until the returned sequence is enumerated.
+    /// Verifies that <see cref="IEnumerableExtensions.Cache{T}" /> defers execution until the returned sequence is
+    /// enumerated.
     /// </summary>
     [TestMethod]
     public void Cache_ShouldDeferExecution() => AssertExecutionIsDeferred("Cache", s => s.Cache(), YieldingSequence());
 
     /// <summary>
-    /// Verifies that <see cref="IEnumerableExtensions.Cache{T}" /> begins enumerating its source only when the consumer requests an item.
+    /// Verifies that <see cref="IEnumerableExtensions.Cache{T}" /> begins enumerating its source only when the consumer
+    /// requests an item.
     /// </summary>
     [TestMethod]
     public void Cache_ShouldEnumerateOnDemand() => AssertExecutionOccursOnEnumeration("Cache", s => s.Cache(), YieldingSequence());
 
     /// <summary>
-    /// Verifies that a cached sequence enumerated concurrently from multiple threads yields the same complete result to every reader.
+    /// Verifies that a cached sequence enumerated concurrently from multiple threads yields the same complete result to
+    /// every reader.
     /// </summary>
     [TestMethod]
     public void Cache_WhenEnumeratedFromMultipleThreads_ShouldReturnConsistentResults()
@@ -43,7 +46,8 @@ public sealed partial class IEnumerableExtensionsTests_Cache
     }
 
     /// <summary>
-    /// Verifies that enumerating a cached sequence twice yields the same items and the underlying source is only enumerated once.
+    /// Verifies that enumerating a cached sequence twice yields the same items and the underlying source is only
+    /// enumerated once.
     /// </summary>
     [TestMethod]
     public void Cache_WhenEnumeratedTwice_ShouldEnumerateSourceOnlyOnce()
@@ -58,7 +62,8 @@ public sealed partial class IEnumerableExtensionsTests_Cache
     }
 
     /// <summary>
-    /// Verifies that interrupting an in-progress enumeration still caches the items already emitted, and a fresh enumeration completes the source without re-pulling the cached prefix.
+    /// Verifies that interrupting an in-progress enumeration still caches the items already emitted, and a fresh
+    /// enumeration completes the source without re-pulling the cached prefix.
     /// </summary>
     [TestMethod]
     public void Cache_WhenEnumerationIsInterrupted_ShouldCachePartialResults()
@@ -78,7 +83,8 @@ public sealed partial class IEnumerableExtensionsTests_Cache
     }
 
     /// <summary>
-    /// Verifies that calling <see cref="IEnumerableExtensions.Cache{T}" /> on an already-cached sequence returns the same instance (idempotent).
+    /// Verifies that calling <see cref="IEnumerableExtensions.Cache{T}" /> on an already-cached sequence returns the
+    /// same instance (idempotent).
     /// </summary>
     [TestMethod]
     public void Cache_WhenSourceIsAlreadyCached_ShouldReturnSameInstance()
@@ -90,7 +96,8 @@ public sealed partial class IEnumerableExtensionsTests_Cache
     }
 
     /// <summary>
-    /// Verifies that <see cref="IEnumerableExtensions.Cache{T}" /> short-circuits and returns the source instance when it already implements <see cref="ICollection{T}" />.
+    /// Verifies that <see cref="IEnumerableExtensions.Cache{T}" /> short-circuits and returns the source instance when
+    /// it already implements <see cref="ICollection{T}" />.
     /// </summary>
     [TestMethod]
     public void Cache_WhenSourceIsCollection_ShouldReturnSameInstance()
@@ -114,7 +121,8 @@ public sealed partial class IEnumerableExtensionsTests_Cache
     }
 
     /// <summary>
-    /// Verifies that <see cref="IEnumerableExtensions.Cache{T}" /> short-circuits and returns the source instance when it already implements <see cref="IReadOnlyCollection{T}" />.
+    /// Verifies that <see cref="IEnumerableExtensions.Cache{T}" /> short-circuits and returns the source instance when
+    /// it already implements <see cref="IReadOnlyCollection{T}" />.
     /// </summary>
     [TestMethod]
     public void Cache_WhenSourceIsReadOnlyCollection_ShouldReturnSameInstance()
@@ -159,7 +167,8 @@ public sealed partial class IEnumerableExtensionsTests_Cache
     }
 
     /// <summary>
-    /// Verifies that a source exception is propagated to the consumer at the position where it was thrown during the first enumeration.
+    /// Verifies that a source exception is propagated to the consumer at the position where it was thrown during the
+    /// first enumeration.
     /// </summary>
     [TestMethod]
     public void Cache_WhenSourceThrowsDuringEnumeration_ShouldThrowExactly()
@@ -184,7 +193,8 @@ public sealed partial class IEnumerableExtensionsTests_Cache
     }
 
     /// <summary>
-    /// Verifies that disposing the cached sequence releases its internal cache and enumerator, so a subsequent <see cref="IEnumerableExtensions.Cache{T}" /> call begins a fresh enumeration.
+    /// Verifies that disposing the cached sequence releases its internal cache and enumerator, so a subsequent
+    /// <see cref="IEnumerableExtensions.Cache{T}" /> call begins a fresh enumeration.
     /// </summary>
     [TestMethod]
     public void Dispose_ShouldClearCacheAndEnumerator()
@@ -215,7 +225,8 @@ public sealed partial class IEnumerableExtensionsTests_Cache
     }
 
     /// <summary>
-    /// Verifies that accessing <c>Current</c> after the enumerator has been exhausted throws <see cref="InvalidOperationException" />.
+    /// Verifies that accessing <c>Current</c> after the enumerator has been exhausted throws
+    /// <see cref="InvalidOperationException" />.
     /// </summary>
     [TestMethod]
     public void Enumerator_Current_WhenAfterEnd_ShouldThrowExactly()
@@ -234,7 +245,8 @@ public sealed partial class IEnumerableExtensionsTests_Cache
     }
 
     /// <summary>
-    /// Verifies that accessing <c>Current</c> before the first call to <c>MoveNext</c> throws <see cref="InvalidOperationException" />.
+    /// Verifies that accessing <c>Current</c> before the first call to <c>MoveNext</c> throws
+    /// <see cref="InvalidOperationException" />.
     /// </summary>
     [TestMethod]
     public void Enumerator_Current_WhenBeforeMoveNext_ShouldThrowExactly()

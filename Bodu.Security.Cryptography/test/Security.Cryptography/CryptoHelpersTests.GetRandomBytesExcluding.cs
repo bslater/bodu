@@ -12,10 +12,7 @@ public partial class CryptoHelpersTests
     /// Verifies that <see cref="CryptoHelpers.GetRandomBytesExcluding" /> throws ArgumentOutOfRangeException when length is invalid.
     /// </summary>
     [TestMethod]
-    public void GetRandomBytesExcluding_WhenLengthIsLessThanOrEqualToZero_ShouldThrowExactly()
-    {
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => CryptoHelpers.GetRandomBytesExcluding(0x01, 0));
-    }
+    public void GetRandomBytesExcluding_WhenLengthIsLessThanOrEqualToZero_ShouldThrowExactly() => Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => CryptoHelpers.GetRandomBytesExcluding(0x01, 0));
 
     /// <summary>
     /// Verifies that <see cref="CryptoHelpers.GetRandomBytesExcluding" /> returns an array that does not contain the forbidden byte.

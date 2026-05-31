@@ -15,11 +15,11 @@ public sealed partial class BencodeTests
     [TestMethod]
     public void Decode_WhenIntegerEqualsLongMaxValue_ShouldReturnLongMaxValue()
     {
-        byte[] payload = Bytes("i9223372036854775807e");
+        var payload = Bytes("i9223372036854775807e");
 
         BencodedValue value = Bencode.Decode(payload);
 
-        BencodedInteger integer = (BencodedInteger)value;
+        var integer = (BencodedInteger)value;
         Assert.AreEqual(long.MaxValue, integer.Value);
     }
 
@@ -32,7 +32,7 @@ public sealed partial class BencodeTests
     [TestMethod]
     public void Decode_WhenIntegerIsOneGreaterThanLongMaxValue_ShouldThrowBencodeFormatException()
     {
-        byte[] payload = Bytes("i9223372036854775808e");
+        var payload = Bytes("i9223372036854775808e");
 
         Assert.ThrowsExactly<BencodeFormatException>(() =>
         {
@@ -47,7 +47,7 @@ public sealed partial class BencodeTests
     [TestMethod]
     public void Decode_WhenIntegerIsOneLessThanLongMinValue_ShouldThrowBencodeFormatException()
     {
-        byte[] payload = Bytes("i-9223372036854775809e");
+        var payload = Bytes("i-9223372036854775809e");
 
         Assert.ThrowsExactly<BencodeFormatException>(() =>
         {

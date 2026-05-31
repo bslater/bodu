@@ -119,7 +119,9 @@ public sealed class HinduLunarNotableDateAlgorithm
     /// date cannot be determined. The returned <see cref="DateTime.Kind" /> is always
     /// <see cref="DateTimeKind.Unspecified" />.
     /// </returns>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="year" /> is less than 1 or greater than 9999.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="year" /> is less than 1 or greater than 9999.
+    /// </exception>
     /// <exception cref="NotSupportedException">
     /// Thrown when the specified <paramref name="calendar" /> type is unsupported.
     /// </exception>

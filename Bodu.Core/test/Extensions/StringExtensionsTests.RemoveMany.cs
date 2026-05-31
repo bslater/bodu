@@ -39,10 +39,7 @@ public partial class StringExtensionsTests
     /// <see cref="ArgumentException" /> when any entry is empty.
     /// </summary>
     [TestMethod]
-    public void RemoveMany_WhenAnyEntryIsEmpty_ShouldThrowExactly()
-    {
-        Assert.ThrowsExactly<ArgumentException>(() => _ = "hello".RemoveMany("x", string.Empty));
-    }
+    public void RemoveMany_WhenAnyEntryIsEmpty_ShouldThrowExactly() => Assert.ThrowsExactly<ArgumentException>(() => _ = "hello".RemoveMany("x", string.Empty));
 
     /// <summary>
     /// Verifies that <see cref="StringExtensions.RemoveMany(string, string[])" /> throws

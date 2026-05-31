@@ -20,7 +20,7 @@ public partial class FractionTests
     [DataRow(9, 6, 3, 2)]
     public void Constructor_WhenGivenReducibleComponents_ShouldNormalizeToLowestTerms(int numerator, int denominator, int expectedNumerator, int expectedDenominator)
     {
-        Fraction<int> value = new Fraction<int>(numerator, denominator);
+        var value = new Fraction<int>(numerator, denominator);
 
         Assert.AreEqual(expectedNumerator, value.Numerator);
         Assert.AreEqual(expectedDenominator, value.Denominator);
@@ -35,7 +35,7 @@ public partial class FractionTests
     [DataRow(-3, 4, -3, 4)]
     public void Constructor_WhenGivenNegativeDenominator_ShouldMoveSignToNumerator(int numerator, int denominator, int expectedNumerator, int expectedDenominator)
     {
-        Fraction<int> value = new Fraction<int>(numerator, denominator);
+        var value = new Fraction<int>(numerator, denominator);
 
         Assert.AreEqual(expectedNumerator, value.Numerator);
         Assert.AreEqual(expectedDenominator, value.Denominator);
@@ -47,7 +47,7 @@ public partial class FractionTests
     [TestMethod]
     public void Constructor_WhenNumeratorIsZero_ShouldProduceCanonicalZero()
     {
-        Fraction<int> value = new Fraction<int>(0, 5);
+        var value = new Fraction<int>(0, 5);
 
         Assert.AreEqual(0, value.Numerator);
         Assert.AreEqual(1, value.Denominator);
@@ -73,7 +73,7 @@ public partial class FractionTests
     [TestMethod]
     public void Constructor_WhenGivenSingleInteger_ShouldProduceWholeNumber()
     {
-        Fraction<int> value = new Fraction<int>(7);
+        var value = new Fraction<int>(7);
 
         Assert.AreEqual(7, value.Numerator);
         Assert.AreEqual(1, value.Denominator);
@@ -100,8 +100,8 @@ public partial class FractionTests
     [TestMethod]
     public void Constructor_WhenBackedByBigInteger_ShouldNormalizeLargeComponents()
     {
-        BigInteger large = BigInteger.Pow(10, 40);
-        Fraction<BigInteger> value = new Fraction<BigInteger>(large * 2, large * 4);
+        var large = BigInteger.Pow(10, 40);
+        var value = new Fraction<BigInteger>(large * 2, large * 4);
 
         Assert.AreEqual(BigInteger.One, value.Numerator);
         Assert.AreEqual((BigInteger)2, value.Denominator);
@@ -113,7 +113,7 @@ public partial class FractionTests
     [TestMethod]
     public void Deconstruct_WhenCalled_ShouldYieldCanonicalComponents()
     {
-        (int numerator, int denominator) = new Fraction<int>(6, 8);
+        (var numerator, var denominator) = new Fraction<int>(6, 8);
 
         Assert.AreEqual(3, numerator);
         Assert.AreEqual(4, denominator);
@@ -128,7 +128,7 @@ public partial class FractionTests
     [DataRow(3, 4, 1)]
     public void Sign_WhenInspected_ShouldReflectTheValueSign(int numerator, int denominator, int expectedSign)
     {
-        Fraction<int> value = new Fraction<int>(numerator, denominator);
+        var value = new Fraction<int>(numerator, denominator);
 
         Assert.AreEqual(expectedSign, value.Sign);
     }
@@ -158,7 +158,7 @@ public partial class FractionTests
     [DataRow(1000000, 1, 1000000, 1)]
     public void Constructor_WhenGivenComponents_ShouldNormalizeToKnownAnswer(int numerator, int denominator, int expectedNumerator, int expectedDenominator)
     {
-        Fraction<int> value = new Fraction<int>(numerator, denominator);
+        var value = new Fraction<int>(numerator, denominator);
 
         Assert.AreEqual(expectedNumerator, value.Numerator);
         Assert.AreEqual(expectedDenominator, value.Denominator);
@@ -179,10 +179,7 @@ public partial class FractionTests
     /// Verifies that Create produces the same canonical value as the constructor.
     /// </summary>
     [TestMethod]
-    public void Create_WhenGivenComponents_ShouldReturnCanonicalValue()
-    {
-        Assert.AreEqual(new Fraction<int>(1, 2), Fraction<int>.Create(2, 4));
-    }
+    public void Create_WhenGivenComponents_ShouldReturnCanonicalValue() => Assert.AreEqual(new Fraction<int>(1, 2), Fraction<int>.Create(2, 4));
 
     /// <summary>
     /// Verifies that Create throws DivideByZeroException for a zero denominator.
@@ -213,10 +210,7 @@ public partial class FractionTests
     /// Verifies that FromBigInteger reduces large components to a canonical value.
     /// </summary>
     [TestMethod]
-    public void FromBigInteger_WhenGivenComponents_ShouldReturnReducedValue()
-    {
-        Assert.AreEqual(new Fraction<int>(1, 2), Fraction<int>.FromBigInteger(50, 100));
-    }
+    public void FromBigInteger_WhenGivenComponents_ShouldReturnReducedValue() => Assert.AreEqual(new Fraction<int>(1, 2), Fraction<int>.FromBigInteger(50, 100));
 
     /// <summary>
     /// Verifies that FromBigInteger throws DivideByZeroException for a zero denominator.
@@ -234,10 +228,7 @@ public partial class FractionTests
     /// Verifies that TryFromBigInteger reports failure when the result exceeds the backing type range.
     /// </summary>
     [TestMethod]
-    public void TryFromBigInteger_WhenResultExceedsFixedWidthRange_ShouldReturnFalse()
-    {
-        Assert.IsFalse(Fraction<int>.TryFromBigInteger(BigInteger.Pow(10, 20), BigInteger.One, out _));
-    }
+    public void TryFromBigInteger_WhenResultExceedsFixedWidthRange_ShouldReturnFalse() => Assert.IsFalse(Fraction<int>.TryFromBigInteger(BigInteger.Pow(10, 20), BigInteger.One, out _));
 
     /// <summary>
     /// Verifies that TryFromDecimal converts an exact decimal and reports overflow as failure.

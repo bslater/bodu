@@ -106,15 +106,18 @@ internal sealed class NotableDateRuleResolver
     }
 
     /// <summary>
-    /// Resolves a <see cref="DateResolutionStrategy.Fixed" /> rule authored against a non-Gregorian calendar whose
-    /// year boundaries do not align with the Gregorian year, by checking the two calendar years that overlap the
-    /// requested Gregorian year and returning the candidate whose projection falls within that Gregorian year.
+    /// Resolves a <see cref="DateResolutionStrategy.Fixed" /> rule authored against a non-Gregorian calendar whose year
+    /// boundaries do not align with the Gregorian year, by checking the two calendar years that overlap the requested
+    /// Gregorian year and returning the candidate whose projection falls within that Gregorian year.
     /// </summary>
     /// <param name="rule">
-    /// The rule to resolve. The rule's <see cref="NotableDateRule.Month" /> (or <see cref="NotableDateRule.CalendarMonthAlias" />
-    /// for Hebrew rules) supplies the target calendar month; <see cref="NotableDateRule.Day" /> supplies the day.
+    /// The rule to resolve. The rule's <see cref="NotableDateRule.Month" /> (or
+    /// <see cref="NotableDateRule.CalendarMonthAlias" /> for Hebrew rules) supplies the target calendar month;
+    /// <see cref="NotableDateRule.Day" /> supplies the day.
     /// </param>
-    /// <param name="year">The requested Gregorian year. All candidates whose Gregorian year does not equal this value are discarded.</param>
+    /// <param name="year">
+    /// The requested Gregorian year. All candidates whose Gregorian year does not equal this value are discarded.
+    /// </param>
     /// <param name="cal">
     /// The target calendar instance (typically <see cref="System.Globalization.HijriCalendar" />,
     /// <see cref="System.Globalization.UmAlQuraCalendar" />, <see cref="System.Globalization.HebrewCalendar" />, or
@@ -133,103 +136,102 @@ internal sealed class NotableDateRuleResolver
     /// <b>Algorithm.</b> The sweep proceeds in four steps:
     /// </para>
     /// <list type="number">
-    ///   <item>
-    ///     <description>
-    ///       Determine the lower-bound calendar year — the calendar year in which 1 January of the requested
-    ///       Gregorian year falls. For example, 1 January 2024 falls in Hijri year 1445 AH, Hebrew year 5784,
-    ///       and Persian year 1402.
-    ///     </description>
-    ///   </item>
-    ///   <item>
-    ///     <description>
-    ///       Iterate over the two candidate calendar years (lower-bound and lower-bound + 1). One pass covers
-    ///       the calendar year that started in the previous Gregorian year and is still active; the other
-    ///       covers the calendar year that starts during the requested Gregorian year.
-    ///     </description>
-    ///   </item>
-    ///   <item>
-    ///     <description>
-    ///       For each candidate calendar year, resolve the target month number. When <see cref="NotableDateRule.CalendarMonthAlias" />
-    ///       is set (Hebrew rules), the alias is mapped through <see cref="ResolveHebrewMonthAlias" />, which
-    ///       accounts for the leap-year-dependent renumbering of Adar / Nisan / Iyar / Sivan / Tammuz / Av / Elul.
-    ///       The alias returns <c>-1</c> when the named month does not exist in the candidate year (for example
-    ///       Adar II in a non-leap Hebrew year), in which case the candidate year is skipped.
-    ///     </description>
-    ///   </item>
-    ///   <item>
-    ///     <description>
-    ///       Convert (calendar-year, month, day) to a Gregorian <see cref="DateTime" /> via
-    ///       <see cref="System.Globalization.Calendar.ToDateTime(int, int, int, int, int, int, int)" /> and accept
-    ///       it only when the resulting Gregorian year equals <paramref name="year" />. The first accepted
-    ///       candidate is returned, ensuring that when both calendar years contain a valid occurrence in the
-    ///       same Gregorian year, the chronologically earlier one wins.
-    ///     </description>
-    ///   </item>
+    /// <item>
+    /// <description>
+    /// Determine the lower-bound calendar year — the calendar year in which 1 January of the requested Gregorian year
+    /// falls. For example, 1 January 2024 falls in Hijri year 1445 AH, Hebrew year 5784, and Persian year 1402.
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <description>
+    /// Iterate over the two candidate calendar years (lower-bound and lower-bound + 1). One pass covers the calendar
+    /// year that started in the previous Gregorian year and is still active; the other covers the calendar year that
+    /// starts during the requested Gregorian year.
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <description>
+    /// For each candidate calendar year, resolve the target month number. When
+    /// <see cref="NotableDateRule.CalendarMonthAlias" /> is set (Hebrew rules), the alias is mapped through
+    /// <see cref="ResolveHebrewMonthAlias" />, which accounts for the leap-year-dependent renumbering of Adar / Nisan /
+    /// Iyar / Sivan / Tammuz / Av / Elul. The alias returns <c>-1</c> when the named month does not exist in the
+    /// candidate year (for example Adar II in a non-leap Hebrew year), in which case the candidate year is skipped.
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <description>
+    /// Convert (calendar-year, month, day) to a Gregorian <see cref="DateTime" /> via
+    /// <see cref="System.Globalization.Calendar.ToDateTime(int, int, int, int, int, int, int)" /> and accept it only
+    /// when the resulting Gregorian year equals <paramref name="year" />. The first accepted candidate is returned,
+    /// ensuring that when both calendar years contain a valid occurrence in the same Gregorian year, the
+    /// chronologically earlier one wins.
+    /// </description>
+    /// </item>
     /// </list>
     /// <para>
     /// <b>Guards.</b> The sweep tolerates several conditions without throwing:
     /// </para>
     /// <list type="bullet">
-    ///   <item>
-    ///     <description>
-    ///       Gregorian year outside the calendar's supported range — <see cref="System.Globalization.Calendar.GetYear" />
-    ///       throws <see cref="ArgumentOutOfRangeException" /> and the sweep returns <see langword="null" />.
-    ///     </description>
-    ///   </item>
-    ///   <item>
-    ///     <description>
-    ///       Day exceeds the month length in a candidate year (e.g. day 30 of a 29-day Hijri month) — the
-    ///       candidate year is skipped, the other candidate year is still evaluated.
-    ///     </description>
-    ///   </item>
-    ///   <item>
-    ///     <description>
-    ///       Hebrew month alias resolves to <c>-1</c> in a candidate year — the candidate year is skipped.
-    ///     </description>
-    ///   </item>
-    ///   <item>
-    ///     <description>
-    ///       Calendar-to-Gregorian conversion throws <see cref="ArgumentOutOfRangeException" /> — the candidate
-    ///       year is skipped.
-    ///     </description>
-    ///   </item>
+    /// <item>
+    /// <description>
+    /// Gregorian year outside the calendar's supported range — <see cref="System.Globalization.Calendar.GetYear" />
+    /// throws <see cref="ArgumentOutOfRangeException" /> and the sweep returns <see langword="null" />.
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <description>
+    /// Day exceeds the month length in a candidate year (e.g. day 30 of a 29-day Hijri month) — the candidate year is
+    /// skipped, the other candidate year is still evaluated.
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <description>
+    /// Hebrew month alias resolves to <c>-1</c> in a candidate year — the candidate year is skipped.
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <description>
+    /// Calendar-to-Gregorian conversion throws <see cref="ArgumentOutOfRangeException" /> — the candidate year is
+    /// skipped.
+    /// </description>
+    /// </item>
     /// </list>
     /// <para>
     /// <b>Why both years are needed.</b> Non-Gregorian calendar years drift relative to the Gregorian year:
     /// </para>
     /// <list type="bullet">
-    ///   <item>
-    ///     <description>
-    ///       The Islamic (Hijri) calendar is purely lunar and roughly 11 days shorter than the Gregorian year, so
-    ///       any given Hijri month migrates earlier in the Gregorian year by ~11 days each year — meaning two
-    ///       Hijri new-year days can fall in the same Gregorian year approximately every 33 years.
-    ///     </description>
-    ///   </item>
-    ///   <item>
-    ///     <description>
-    ///       The Hebrew calendar is lunisolar with intercalary months; its year starts in September or October
-    ///       (Rosh Hashanah). Hebrew dates between Rosh Hashanah and 31 December belong to the calendar year that
-    ///       started in the same Gregorian year; Hebrew dates between 1 January and the next Rosh Hashanah belong
-    ///       to the calendar year that started in the previous Gregorian year.
-    ///     </description>
-    ///   </item>
-    ///   <item>
-    ///     <description>
-    ///       The Umm al-Qura calendar shares Hijri's lunar drift and ships the Saudi Arabian government's
-    ///       observation-corrected month starts; its sweep behavior is identical to Hijri.
-    ///     </description>
-    ///   </item>
-    ///   <item>
-    ///     <description>
-    ///       The Persian (Solar Hijri) calendar's year starts at the vernal equinox (~20 March). Persian-year
-    ///       numbers are offset by ~621 from Gregorian-year numbers, so the sweep is required even though the
-    ///       year-to-year drift in the Gregorian calendar is small.
-    ///     </description>
-    ///   </item>
+    /// <item>
+    /// <description>
+    /// The Islamic (Hijri) calendar is purely lunar and roughly 11 days shorter than the Gregorian year, so any given
+    /// Hijri month migrates earlier in the Gregorian year by ~11 days each year — meaning two Hijri new-year days can
+    /// fall in the same Gregorian year approximately every 33 years.
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <description>
+    /// The Hebrew calendar is lunisolar with intercalary months; its year starts in September or October (Rosh
+    /// Hashanah). Hebrew dates between Rosh Hashanah and 31 December belong to the calendar year that started in the
+    /// same Gregorian year; Hebrew dates between 1 January and the next Rosh Hashanah belong to the calendar year that
+    /// started in the previous Gregorian year.
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <description>
+    /// The Umm al-Qura calendar shares Hijri's lunar drift and ships the Saudi Arabian government's
+    /// observation-corrected month starts; its sweep behavior is identical to Hijri.
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <description>
+    /// The Persian (Solar Hijri) calendar's year starts at the vernal equinox (~20 March). Persian-year numbers are
+    /// offset by ~621 from Gregorian-year numbers, so the sweep is required even though the year-to-year drift in the
+    /// Gregorian calendar is small.
+    /// </description>
+    /// </item>
     /// </list>
     /// <para>
-    /// See the <c>Bodu.Globalization.Calendar — Reference / Working with non-Gregorian calendars</c> DocFX article
-    /// for worked examples and authoring guidance.
+    /// See the <c>Bodu.Globalization.Calendar — Reference / Working with non-Gregorian calendars</c> DocFX article for
+    /// worked examples and authoring guidance.
     /// </para>
     /// </remarks>
     private static DateTime? ResolveCalendarYearSweep(NotableDateRule rule, int year, System.Globalization.Calendar cal, int day)

@@ -18,7 +18,7 @@ public sealed partial class BencodeTests
     /// <returns>The encoded byte buffer.</returns>
     private static byte[] BuildNestedLists(int depth)
     {
-        byte[] bytes = new byte[depth * 2];
+        var bytes = new byte[depth * 2];
         for (var i = 0; i < depth; i++)
             bytes[i] = (byte)'l';
 
@@ -37,7 +37,7 @@ public sealed partial class BencodeTests
     [TestMethod]
     public void Decode_WhenNestingExceedsDefaultMaxDepth_ShouldThrowBencodeFormatException()
     {
-        byte[] payload = BuildNestedLists(1024);
+        var payload = BuildNestedLists(1024);
 
         Assert.ThrowsExactly<BencodeFormatException>(() =>
         {
@@ -53,7 +53,7 @@ public sealed partial class BencodeTests
     public void Decode_WhenNestingExceedsConfiguredMaxDepth_ShouldThrowBencodeFormatException()
     {
         BencodeParseOptions options = new() { MaxDepth = 4 };
-        byte[] payload = BuildNestedLists(5);
+        var payload = BuildNestedLists(5);
 
         Assert.ThrowsExactly<BencodeFormatException>(() =>
         {
@@ -68,7 +68,7 @@ public sealed partial class BencodeTests
     public void Decode_WhenNestingEqualsConfiguredMaxDepth_ShouldSucceed()
     {
         BencodeParseOptions options = new() { MaxDepth = 4 };
-        byte[] payload = BuildNestedLists(4);
+        var payload = BuildNestedLists(4);
 
         BencodedValue value = Bencode.Decode(payload, options);
 
@@ -83,9 +83,9 @@ public sealed partial class BencodeTests
     [TestMethod]
     public void TryDecode_WhenNestingExceedsDefaultMaxDepth_ShouldReturnFalse()
     {
-        byte[] payload = BuildNestedLists(1024);
+        var payload = BuildNestedLists(1024);
 
-        bool success = Bencode.TryDecode(payload, out BencodedValue? value, out int bytesConsumed);
+        var success = Bencode.TryDecode(payload, out BencodedValue? value, out var bytesConsumed);
 
         Assert.IsFalse(success);
         Assert.IsNull(value);

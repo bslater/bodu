@@ -26,10 +26,7 @@ public abstract partial class CityHashTests<TTest, TAlgorithm>
     [DataRow(129)]
     [DataRow(256)]
     [DataRow(-1)]
-    public void Ctor_WhenHashSizeIsInvalid_ShouldThrowExactly(int hashSize)
-    {
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => _ = new TestCityHash(hashSize));
-    }
+    public void Ctor_WhenHashSizeIsInvalid_ShouldThrowExactly(int hashSize) => Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => _ = new TestCityHash(hashSize));
 
     /// <summary>
     /// Verifies that the base-class constructor succeeds for each supported hash size: 32, 64, and 128 bits.

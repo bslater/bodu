@@ -44,10 +44,7 @@ public partial class BlockNonCryptographicHashAlgorithmTests
             return output;
         }
 
-        protected override void ProcessBlock(ReadOnlySpan<byte> block)
-        {
-            Blocks.Add(block.ToArray());
-        }
+        protected override void ProcessBlock(ReadOnlySpan<byte> block) => Blocks.Add(block.ToArray());
 
         protected override byte[] ProcessFinalBlock() => new byte[4];
 

@@ -12,5 +12,5 @@ public sealed partial class EaxModeTransformTests
 {
     /// <inheritdoc />
     protected override EaxModeTransform CreateTransform(IBlockCipher cipher, byte[] iv)
-        => new EaxModeTransform(cipher, iv);
+        => new(cipher, iv);
 }

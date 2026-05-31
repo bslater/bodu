@@ -44,9 +44,9 @@ public partial class Snefru128Tests
     };
 
     /// <inheritdoc />
-    protected override Snefru128 CreateAlgorithm() => new Snefru128();
+    protected override Snefru128 CreateAlgorithm() => new();
 
-    protected override Snefru128 CreateAlgorithm(SingleTestVariant variant) => new Snefru128();
+    protected override Snefru128 CreateAlgorithm(SingleTestVariant variant) => new();
 
     protected override IReadOnlyList<string> GetExpectedHashesForIncrementalInput(SingleTestVariant variant) =>
     [

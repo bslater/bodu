@@ -11,17 +11,16 @@ using Bodu.Globalization.Calendar.Plugins;
 namespace Bodu.Globalization.Calendar.Plugin3.TestAssembly;
 
 /// <summary>
-/// Test-only plugin whose constructor throws. Exercises the
-/// <see cref="PluginActivationException" /> path in <see cref="ExternalPluginLoader" /> where
-/// <c>Activator.CreateInstance</c> fails after the plugin passes the trust and attribute
-/// checks.
+/// Test-only plugin whose constructor throws. Exercises the <see cref="PluginActivationException" /> path in
+/// <see cref="ExternalPluginLoader" /> where <c>Activator.CreateInstance</c> fails after the plugin passes the trust
+/// and attribute checks.
 /// </summary>
 public sealed class ThrowingConstructorPlugin
     : INotableDatePlugin
 {
     /// <summary>
-    /// Always throws <see cref="InvalidOperationException" /> on construction so the loader
-    /// surfaces a <see cref="PluginActivationException" /> wrapping the cause.
+    /// Always throws <see cref="InvalidOperationException" /> on construction so the loader surfaces a
+    /// <see cref="PluginActivationException" /> wrapping the cause.
     /// </summary>
     public ThrowingConstructorPlugin()
     {

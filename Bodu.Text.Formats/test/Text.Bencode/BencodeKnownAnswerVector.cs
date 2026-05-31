@@ -11,13 +11,15 @@ namespace Bodu.Text.Bencode;
 
 /// <summary>
 /// Represents a positive Known Answer Test (KAT) vector sourced from a published specification or reference
-/// implementation. A vector pairs an encoded bencode byte sequence with the canonical <see cref="BencodedValue" />
-/// it represents so that data-driven tests can verify <see cref="Bencode" /> against authoritative references.
+/// implementation. A vector pairs an encoded bencode byte sequence with the canonical <see cref="BencodedValue" /> it
+/// represents so that data-driven tests can verify <see cref="Bencode" /> against authoritative references.
 /// </summary>
 /// <param name="Description">A short human-readable label identifying the vector.</param>
 /// <param name="EncodedBytes">The canonical encoded form.</param>
 /// <param name="DecodedValue">The decoded value that round-trips with <paramref name="EncodedBytes" />.</param>
-/// <param name="Source">The citation for the vector's origin (specification clause, reference implementation, etc.).</param>
+/// <param name="Source">
+/// The citation for the vector's origin (specification clause, reference implementation, etc.).
+/// </param>
 public sealed record BencodeKnownAnswerVector(
     string Description,
     byte[] EncodedBytes,
@@ -26,7 +28,10 @@ public sealed record BencodeKnownAnswerVector(
 {
 
     /// <inheritdoc />
-    /// <remarks>Returns <see cref="Description" /> so the row participates in <see cref="KatDisplayName" />-driven display formatting.</remarks>
+    /// <remarks>
+    /// Returns <see cref="Description" /> so the row participates in <see cref="KatDisplayName" />-driven display
+    /// formatting.
+    /// </remarks>
     string IKat.Name => Description;
 
     /// <summary>
@@ -46,8 +51,9 @@ public sealed record BencodeKnownAnswerVector(
     /// <c>Bodu.Text.Encoding</c>.
     /// </summary>
     /// <param name="description">A short label.</param>
-    /// <param name="encodedHex">The encoded form expressed as a hex string (e.g. <c>"323aff00"</c> for
-    /// <c>2:\xFF\x00</c>).</param>
+    /// <param name="encodedHex">
+    /// The encoded form expressed as a hex string (e.g. <c>"323aff00"</c> for <c>2:\xFF\x00</c>).
+    /// </param>
     /// <param name="value">The decoded value that round-trips with the bytes.</param>
     /// <param name="source">The citation.</param>
     /// <returns>A KAT vector with <paramref name="encodedHex" /> resolved to its byte representation.</returns>

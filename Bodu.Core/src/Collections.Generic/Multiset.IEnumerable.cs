@@ -22,7 +22,7 @@ public sealed partial class Multiset<T>
     /// invalidates the enumerator. The next call to <see cref="Enumerator.MoveNext" /> or
     /// <see cref="Enumerator.Reset" /> throws <see cref="InvalidOperationException" />.
     /// </remarks>
-    public Enumerator GetEnumerator() => new Enumerator(this);
+    public Enumerator GetEnumerator() => new(this);
 
     /// <inheritdoc />
     IEnumerator<T> IEnumerable<T>.GetEnumerator() => new Enumerator(this);

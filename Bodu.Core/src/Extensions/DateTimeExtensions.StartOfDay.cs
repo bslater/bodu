@@ -35,5 +35,5 @@ public static partial class DateTimeExtensions
     ///]]>
     /// </code>
     /// </remarks>
-    public static DateTime StartOfDay(this DateTime dateTime) => new DateTime(TruncateToDateTicks(dateTime), dateTime.Kind);
+    public static DateTime StartOfDay(this DateTime dateTime) => new(TruncateToDateTicks(dateTime), dateTime.Kind);
 }

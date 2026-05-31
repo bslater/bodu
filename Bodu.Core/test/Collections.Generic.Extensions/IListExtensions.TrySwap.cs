@@ -13,8 +13,7 @@ public sealed partial class IListExtensionsTests_TrySwap
 {
 
     /// <summary>
-    /// Provides valid <c>TrySwap</c> scenarios covering adjacent, non-adjacent, endpoint, and
-    /// same-index no-op swaps.
+    /// Provides valid <c>TrySwap</c> scenarios covering adjacent, non-adjacent, endpoint, and same-index no-op swaps.
     /// </summary>
     public static IEnumerable<object[]> GetTrySwapTestCases() =>
     [
@@ -25,8 +24,8 @@ public sealed partial class IListExtensionsTests_TrySwap
     ];
 
     /// <summary>
-    /// Verifies that <c>TrySwap</c> swaps elements at the specified indices and returns <see langword="true" />
-    /// across adjacent, non-adjacent, endpoint, and same-index cases.
+    /// Verifies that <c>TrySwap</c> swaps elements at the specified indices and returns <see langword="true" /> across
+    /// adjacent, non-adjacent, endpoint, and same-index cases.
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(GetTrySwapTestCases))]
@@ -45,7 +44,8 @@ public sealed partial class IListExtensionsTests_TrySwap
     }
 
     /// <summary>
-    /// Verifies that <c>TrySwap</c> returns <see langword="false" /> without mutating the list when either index is out of range.
+    /// Verifies that <c>TrySwap</c> returns <see langword="false" /> without mutating the list when either index is out
+    /// of range.
     /// </summary>
     [TestMethod]
     [DataRow(-1, 0, DisplayName = "Negative indexA")]
@@ -78,7 +78,8 @@ public sealed partial class IListExtensionsTests_TrySwap
     }
 
     /// <summary>
-    /// Verifies that <c>TrySwap</c> on an empty list always returns <see langword="false" /> and does not mutate the list.
+    /// Verifies that <c>TrySwap</c> on an empty list always returns <see langword="false" /> and does not mutate the
+    /// list.
     /// </summary>
     [TestMethod]
     public void TrySwap_WhenListIsEmpty_ShouldReturnFalse()
@@ -90,8 +91,8 @@ public sealed partial class IListExtensionsTests_TrySwap
     }
 
     /// <summary>
-    /// Verifies that <c>TrySwap</c> works with a non-<see cref="List{T}"/> <see cref="IList{T}"/> implementation
-    /// (<see cref="Collection{T}"/>), exercising the general path through the list interface.
+    /// Verifies that <c>TrySwap</c> works with a non-<see cref="List{T}" /> <see cref="IList{T}" /> implementation (
+    /// <see cref="Collection{T}" />), exercising the general path through the list interface.
     /// </summary>
     [TestMethod]
     public void TrySwap_WhenListIsNotSystemList_ShouldSwapElements()
@@ -105,7 +106,8 @@ public sealed partial class IListExtensionsTests_TrySwap
     }
 
     /// <summary>
-    /// Verifies that <c>TrySwap</c> throws <see cref="ArgumentNullException" /> when the list is <see langword="null" />.
+    /// Verifies that <c>TrySwap</c> throws <see cref="ArgumentNullException" /> when the list is
+    /// <see langword="null" />.
     /// </summary>
     [TestMethod]
     public void TrySwap_WhenListIsNull_ShouldThrowExactly()

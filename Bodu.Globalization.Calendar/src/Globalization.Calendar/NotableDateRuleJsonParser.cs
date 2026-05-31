@@ -561,9 +561,9 @@ public static class NotableDateRuleJsonParser
     }
 
     /// <summary>
-    /// Resolves <paramref name="typeName" /> to a CLR type assignable to <typeparamref name="TBase" />, throwing on
-    /// an unresolved name or wrong base type. Authoring errors are surfaced at parse time rather than silently
-    /// dropping data, so an unresolvable <c>calendarType</c> or algorithm CLR type fails the parse with a diagnostic.
+    /// Resolves <paramref name="typeName" /> to a CLR type assignable to <typeparamref name="TBase" />, throwing on an
+    /// unresolved name or wrong base type. Authoring errors are surfaced at parse time rather than silently dropping
+    /// data, so an unresolvable <c>calendarType</c> or algorithm CLR type fails the parse with a diagnostic.
     /// </summary>
     /// <typeparam name="TBase">The base type the resolved type must be assignable to.</typeparam>
     /// <param name="typeName">The fully qualified type name to resolve, or <see langword="null" />.</param>
@@ -618,8 +618,8 @@ public static class NotableDateRuleJsonParser
 
     /// <summary>
     /// Parses an English Gregorian month name or numeric month token (1–12). Used for schema-constrained Gregorian
-    /// month attributes (<c>dayOfWeekInMonth.month</c>, <c>adjustment.comparisonMonth</c>) that admit only the
-    /// twelve Gregorian months by enum.
+    /// month attributes (<c>dayOfWeekInMonth.month</c>, <c>adjustment.comparisonMonth</c>) that admit only the twelve
+    /// Gregorian months by enum.
     /// </summary>
     /// <param name="monthName">The month token to parse.</param>
     /// <returns>The parsed month number in the range 1–12.</returns>
@@ -642,13 +642,15 @@ public static class NotableDateRuleJsonParser
     }
 
     /// <summary>
-    /// Parses a Fixed-strategy month token, returning either a numeric month or a Hebrew calendar alias.
-    /// Numeric month 13 is accepted only when <paramref name="calendarType" /> is non-null and not
-    /// <see cref="GregorianCalendar" /> — Gregorian rules have at most twelve months, so an authored 13 is treated
-    /// as an error rather than silently accepted.
+    /// Parses a Fixed-strategy month token, returning either a numeric month or a Hebrew calendar alias. Numeric month
+    /// 13 is accepted only when <paramref name="calendarType" /> is non-null and not <see cref="GregorianCalendar" /> —
+    /// Gregorian rules have at most twelve months, so an authored 13 is treated as an error rather than silently
+    /// accepted.
     /// </summary>
     /// <param name="token">The month token to parse.</param>
-    /// <param name="calendarType">The owning rule's calendar type, or <see langword="null" /> for Gregorian default.</param>
+    /// <param name="calendarType">
+    /// The owning rule's calendar type, or <see langword="null" /> for Gregorian default.
+    /// </param>
     /// <returns>
     /// A tuple of <c>(numericMonth, alias)</c>: exactly one of the two is non-<see langword="null" />.
     /// </returns>
@@ -692,8 +694,8 @@ public static class NotableDateRuleJsonParser
     }
 
     /// <summary>
-    /// Returns <see langword="true" /> when the supplied calendar type behaves as the 12-month Gregorian default
-    /// (no calendar type configured, or <see cref="GregorianCalendar" /> selected explicitly).
+    /// Returns <see langword="true" /> when the supplied calendar type behaves as the 12-month Gregorian default (no
+    /// calendar type configured, or <see cref="GregorianCalendar" /> selected explicitly).
     /// </summary>
     /// <param name="calendarType">The rule's calendar type, or <see langword="null" />.</param>
     /// <returns>

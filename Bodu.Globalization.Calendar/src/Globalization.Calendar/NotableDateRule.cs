@@ -184,10 +184,9 @@ public sealed record NotableDateRule
     public int? OccurrenceYears { get; init; }
 
     /// <summary>
-    /// Gets the <see cref="System.Globalization.Calendar" />-derived CLR type the rule's
-    /// <see cref="Month" /> and <see cref="Day" /> are authored against. The resolver activates this type via its
-    /// parameterless constructor and uses it to project the authored (month, day) tuple to a Gregorian
-    /// <see cref="DateTime" />.
+    /// Gets the <see cref="System.Globalization.Calendar" />-derived CLR type the rule's <see cref="Month" /> and
+    /// <see cref="Day" /> are authored against. The resolver activates this type via its parameterless constructor and
+    /// uses it to project the authored (month, day) tuple to a Gregorian <see cref="DateTime" />.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -198,19 +197,20 @@ public sealed record NotableDateRule
     /// When set to a BCL calendar type — for example <see cref="SysGlobal.HijriCalendar" />,
     /// <see cref="SysGlobal.UmAlQuraCalendar" />, <see cref="SysGlobal.HebrewCalendar" />,
     /// <see cref="SysGlobal.PersianCalendar" />, or <see cref="SysGlobal.ChineseLunisolarCalendar" /> — the resolver
-    /// instantiates the calendar once per resolution and calls <see cref="System.Globalization.Calendar.ToDateTime(int, int, int, int, int, int, int)" />
-    /// on the projected (calendar-year, month, day) tuple. The chosen calendar year depends on
-    /// <see cref="SweepCalendarYears" /> and on whether <see cref="SkipLeapMonth" /> is set for lunisolar calendars.
+    /// instantiates the calendar once per resolution and calls
+    /// <see cref="System.Globalization.Calendar.ToDateTime(int, int, int, int, int, int, int)" /> on the projected
+    /// (calendar-year, month, day) tuple. The chosen calendar year depends on <see cref="SweepCalendarYears" /> and on
+    /// whether <see cref="SkipLeapMonth" /> is set for lunisolar calendars.
     /// </para>
     /// <para>
-    /// The type must declare a public parameterless constructor; configurable calendar variants
-    /// (e.g. <see cref="SysGlobal.HijriCalendar.HijriAdjustment" />) use their default settings. For Saudi-aligned
-    /// dates that diverge from the tabular Hijri default, use <see cref="SysGlobal.UmAlQuraCalendar" /> rather than
-    /// adjusting <see cref="SysGlobal.HijriCalendar" />.
+    /// The type must declare a public parameterless constructor; configurable calendar variants (e.g.
+    /// <see cref="SysGlobal.HijriCalendar.HijriAdjustment" />) use their default settings. For Saudi-aligned dates that
+    /// diverge from the tabular Hijri default, use <see cref="SysGlobal.UmAlQuraCalendar" /> rather than adjusting
+    /// <see cref="SysGlobal.HijriCalendar" />.
     /// </para>
     /// <para>
-    /// See the <c>Working with non-Gregorian calendars</c> DocFX article for a per-calendar reference of which
-    /// flags must accompany <see cref="CalendarType" /> on a Fixed rule.
+    /// See the <c>Working with non-Gregorian calendars</c> DocFX article for a per-calendar reference of which flags
+    /// must accompany <see cref="CalendarType" /> on a Fixed rule.
     /// </para>
     /// </remarks>
     /// <returns>
@@ -322,41 +322,41 @@ public sealed record NotableDateRule
     /// <b>When sweep is required, by calendar:</b>
     /// </para>
     /// <list type="bullet">
-    ///   <item>
-    ///     <description>
-    ///       <see cref="SysGlobal.HijriCalendar" /> and <see cref="SysGlobal.UmAlQuraCalendar" /> — required.
-    ///       The lunar year is ~11 days shorter than the Gregorian year, so the same Hijri month can fall in
-    ///       different Gregorian years for adjacent Hijri years.
-    ///     </description>
-    ///   </item>
-    ///   <item>
-    ///     <description>
-    ///       <see cref="SysGlobal.HebrewCalendar" /> — required. The lunisolar year starts in September or
-    ///       October (Rosh Hashanah), so Hebrew months from Tishri through Elul straddle two Gregorian years.
-    ///     </description>
-    ///   </item>
-    ///   <item>
-    ///     <description>
-    ///       <see cref="SysGlobal.PersianCalendar" /> — required. Although the Persian year starts on
-    ///       ~20 March (close to a Gregorian quarter boundary), Persian year numbers are offset by ~621 from
-    ///       Gregorian year numbers. Without the sweep, the resolver would interpret the requested Gregorian
-    ///       year as the Persian year and project into the wrong era.
-    ///     </description>
-    ///   </item>
-    ///   <item>
-    ///     <description>
-    ///       <see cref="SysGlobal.ChineseLunisolarCalendar" /> — uses the sibling <see cref="SkipLeapMonth" />
-    ///       path rather than the sweep; the calendar's year numbering already aligns with the Gregorian year
-    ///       for the new-year date, but ordinal lunar months need leap-month skipping.
-    ///     </description>
-    ///   </item>
-    ///   <item>
-    ///     <description>
-    ///       <see cref="SysGlobal.GregorianCalendar" /> (or <see cref="CalendarType" /> = <see langword="null" />)
-    ///       — ignored. Gregorian rules construct the date directly from <see cref="Month" /> and
-    ///       <see cref="Day" /> without sweep involvement.
-    ///     </description>
-    ///   </item>
+    /// <item>
+    /// <description>
+    /// <see cref="SysGlobal.HijriCalendar" /> and <see cref="SysGlobal.UmAlQuraCalendar" /> — required. The lunar year
+    /// is ~11 days shorter than the Gregorian year, so the same Hijri month can fall in different Gregorian years for
+    /// adjacent Hijri years.
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <description>
+    /// <see cref="SysGlobal.HebrewCalendar" /> — required. The lunisolar year starts in September or October (Rosh
+    /// Hashanah), so Hebrew months from Tishri through Elul straddle two Gregorian years.
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <description>
+    /// <see cref="SysGlobal.PersianCalendar" /> — required. Although the Persian year starts on ~20 March (close to a
+    /// Gregorian quarter boundary), Persian year numbers are offset by ~621 from Gregorian year numbers. Without the
+    /// sweep, the resolver would interpret the requested Gregorian year as the Persian year and project into the wrong
+    /// era.
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <description>
+    /// <see cref="SysGlobal.ChineseLunisolarCalendar" /> — uses the sibling <see cref="SkipLeapMonth" /> path rather
+    /// than the sweep; the calendar's year numbering already aligns with the Gregorian year for the new-year date, but
+    /// ordinal lunar months need leap-month skipping.
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <description>
+    /// <see cref="SysGlobal.GregorianCalendar" /> (or <see cref="CalendarType" /> = <see langword="null" />) — ignored.
+    /// Gregorian rules construct the date directly from <see cref="Month" /> and <see cref="Day" /> without sweep
+    /// involvement.
+    /// </description>
+    /// </item>
     /// </list>
     /// <para>
     /// Setting this flag on a Fixed rule without a <see cref="CalendarType" /> is a no-op: the resolver only routes

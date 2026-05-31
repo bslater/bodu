@@ -45,7 +45,8 @@ public interface INotableDateServiceBuilder
     /// </summary>
     /// <returns>
     /// The service collection passed to
-    /// <see cref="ServiceCollectionExtensions.AddNotableDates(Microsoft.Extensions.DependencyInjection.IServiceCollection, Microsoft.Extensions.Configuration.IConfiguration?, string)" />.
+    /// <see cref="ServiceCollectionExtensions.AddNotableDates(Microsoft.Extensions.DependencyInjection.IServiceCollection, Microsoft.Extensions.Configuration.IConfiguration?, string)" />
+    /// .
     /// </returns>
     IServiceCollection Services { get; }
 }

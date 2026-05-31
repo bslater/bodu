@@ -7,8 +7,8 @@
 namespace Bodu.Text.Configuration.Infrastructure;
 
 /// <summary>
-/// Disposable wrapper around a single temporary file. Writes initial content on creation and deletes the file
-/// on disposal so individual tests do not leak files into the temp directory.
+/// Disposable wrapper around a single temporary file. Writes initial content on creation and deletes the file on
+/// disposal so individual tests do not leak files into the temp directory.
 /// </summary>
 internal sealed class TempFileScope : IDisposable
 {
@@ -33,8 +33,8 @@ internal sealed class TempFileScope : IDisposable
 
     /// <summary>
     /// Gets the directory that contains the temporary file. Useful when constructing a
-    /// <see cref="Microsoft.Extensions.FileProviders.PhysicalFileProvider" /> for tests that exercise the
-    /// configuration bridge.
+    /// <see cref="Microsoft.Extensions.FileProviders.PhysicalFileProvider" /> for tests that exercise the configuration
+    /// bridge.
     /// </summary>
     internal string Directory => System.IO.Path.GetDirectoryName(this.Path)!;
 

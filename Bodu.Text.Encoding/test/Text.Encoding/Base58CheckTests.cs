@@ -111,10 +111,7 @@ public sealed class Base58CheckTests
     /// cryptographically valid Base58Check encoding.
     /// </summary>
     [TestMethod]
-    public void IsValid_ForGenesisAddress_ShouldReturnTrue()
-    {
-        Assert.IsTrue(Base58Check.IsValid(GenesisAddress.AsSpan()));
-    }
+    public void IsValid_ForGenesisAddress_ShouldReturnTrue() => Assert.IsTrue(Base58Check.IsValid(GenesisAddress.AsSpan()));
 
     /// <summary>
     /// Verifies that <see cref="Base58Check.IsValid" /> returns <see langword="false" /> when the checksum bytes are
@@ -134,11 +131,9 @@ public sealed class Base58CheckTests
     /// length is shorter than the checksum length.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenInputTooShortForChecksum_ShouldReturnFalse()
-    {
+    public void IsValid_WhenInputTooShortForChecksum_ShouldReturnFalse() =>
         // A single "1" decodes to a single zero byte — fewer bytes than the 4-byte checksum suffix.
         Assert.IsFalse(Base58Check.IsValid("1".AsSpan()));
-    }
 
     /// <summary>
     /// Verifies that an empty payload round-trips — the encoded form is the Base58 of the 4-byte checksum alone.

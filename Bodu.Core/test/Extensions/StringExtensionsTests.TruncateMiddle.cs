@@ -31,20 +31,14 @@ public partial class StringExtensionsTests
     /// <param name="expected">The expected return value.</param>
     [DataTestMethod]
     [DynamicData(nameof(GetTruncateMiddleCases), DynamicDataSourceType.Method)]
-    public void TruncateMiddle_WhenInvoked_ShouldReturnExpected(string value, int maxLength, string separator, string expected)
-    {
-        Assert.AreEqual(expected, value.TruncateMiddle(maxLength, separator));
-    }
+    public void TruncateMiddle_WhenInvoked_ShouldReturnExpected(string value, int maxLength, string separator, string expected) => Assert.AreEqual(expected, value.TruncateMiddle(maxLength, separator));
 
     /// <summary>
     /// Verifies that <see cref="StringExtensions.TruncateMiddle(string, int, string)" /> throws
     /// <see cref="ArgumentOutOfRangeException" /> when <c>maxLength</c> is smaller than the separator.
     /// </summary>
     [TestMethod]
-    public void TruncateMiddle_WhenMaxLengthIsSmallerThanSeparator_ShouldThrowExactly()
-    {
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => _ = "hello".TruncateMiddle(2, "..."));
-    }
+    public void TruncateMiddle_WhenMaxLengthIsSmallerThanSeparator_ShouldThrowExactly() => Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => _ = "hello".TruncateMiddle(2, "..."));
 
     /// <summary>
     /// Verifies that <see cref="StringExtensions.TruncateMiddle(string, int, string)" /> throws

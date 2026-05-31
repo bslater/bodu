@@ -75,7 +75,7 @@ public abstract class BinaryEncodingContractTests<TEncoding>
     {
         foreach (BinaryEncodingKat kat in KnownAnswers)
         {
-            string actual = Encode(kat.Bytes);
+            var actual = Encode(kat.Bytes);
 
             Assert.AreEqual(kat.Encoded, actual, $"KAT '{kat.Name}': encode produced unexpected text.");
         }
@@ -90,7 +90,7 @@ public abstract class BinaryEncodingContractTests<TEncoding>
     {
         foreach (BinaryEncodingKat kat in KnownAnswers)
         {
-            byte[] actual = Decode(kat.Encoded);
+            var actual = Decode(kat.Encoded);
 
             CollectionAssert.AreEqual(kat.Bytes, actual, $"KAT '{kat.Name}': decode produced unexpected bytes.");
         }
@@ -105,7 +105,7 @@ public abstract class BinaryEncodingContractTests<TEncoding>
     {
         foreach (BinaryEncodingKat kat in KnownAnswers)
         {
-            byte[] roundTripped = Decode(Encode(kat.Bytes));
+            var roundTripped = Decode(Encode(kat.Bytes));
 
             CollectionAssert.AreEqual(kat.Bytes, roundTripped, $"KAT '{kat.Name}': round-trip lost bytes.");
         }
@@ -125,7 +125,7 @@ public abstract class BinaryEncodingContractTests<TEncoding>
 
             Span<char> destination = new char[kat.Encoded.Length - 1];
 
-            bool success = TryEncode(kat.Bytes, destination, out _);
+            var success = TryEncode(kat.Bytes, destination, out _);
 
             Assert.IsFalse(success, $"KAT '{kat.Name}': TryEncode must return false when destination is too small.");
         }
@@ -143,7 +143,7 @@ public abstract class BinaryEncodingContractTests<TEncoding>
             // Use a generous destination so the failure is from text-validation, not buffer sizing.
             Span<byte> destination = new byte[kat.Encoded.Length + 32];
 
-            bool success = TryDecode(kat.Encoded, destination, out _);
+            var success = TryDecode(kat.Encoded, destination, out _);
 
             Assert.IsFalse(success, $"Invalid KAT '{kat.Name}': TryDecode must return false for malformed text.");
         }

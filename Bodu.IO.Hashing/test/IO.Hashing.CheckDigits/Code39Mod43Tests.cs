@@ -45,20 +45,14 @@ public sealed class Code39Mod43Tests
     /// Verifies that <see cref="Code39Mod43.IsValid(ReadOnlySpan{char})" /> rejects the empty span.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenSequenceIsEmpty_ShouldReturnFalse()
-    {
-        Assert.IsFalse(Code39Mod43.IsValid(ReadOnlySpan<char>.Empty));
-    }
+    public void IsValid_WhenSequenceIsEmpty_ShouldReturnFalse() => Assert.IsFalse(Code39Mod43.IsValid(ReadOnlySpan<char>.Empty));
 
     /// <summary>
     /// Verifies that <see cref="Code39Mod43.IsValid(ReadOnlySpan{char})" /> rejects a sequence whose body contains
     /// a character outside the Code 39 alphabet.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenBodyContainsInvalidCharacter_ShouldReturnFalse()
-    {
-        Assert.IsFalse(Code39Mod43.IsValid("CODE#39W".AsSpan()));
-    }
+    public void IsValid_WhenBodyContainsInvalidCharacter_ShouldReturnFalse() => Assert.IsFalse(Code39Mod43.IsValid("CODE#39W".AsSpan()));
 
     /// <inheritdoc />
     protected override char ComputeStatic(ReadOnlySpan<char> body) =>

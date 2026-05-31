@@ -13,10 +13,7 @@ public sealed partial class Base16Tests
     /// Verifies that <see cref="Base16.GetMaxDecodedLength" /> returns half of the character count (rounded down).
     /// </summary>
     [TestMethod]
-    public void GetMaxDecodedLength_WhenEvenCharCount_ShouldReturnHalf()
-    {
-        Assert.AreEqual(4, Base16.GetMaxDecodedLength(8));
-    }
+    public void GetMaxDecodedLength_WhenEvenCharCount_ShouldReturnHalf() => Assert.AreEqual(4, Base16.GetMaxDecodedLength(8));
 
     /// <summary>
     /// Verifies that <see cref="Base16.GetMaxDecodedLength" /> rejects a negative input.
@@ -35,18 +32,12 @@ public sealed partial class Base16Tests
     /// form a complete byte).
     /// </summary>
     [TestMethod]
-    public void GetMaxDecodedLength_WhenOddCharCount_ShouldRoundDown()
-    {
-        Assert.AreEqual(2, Base16.GetMaxDecodedLength(5));
-    }
+    public void GetMaxDecodedLength_WhenOddCharCount_ShouldRoundDown() => Assert.AreEqual(2, Base16.GetMaxDecodedLength(5));
 
     /// <summary>
     /// Verifies that <see cref="Base16.GetMaxDecodedLength" /> returns zero for an empty input.
     /// </summary>
     [TestMethod]
-    public void GetMaxDecodedLength_WhenZero_ShouldReturnZero()
-    {
-        Assert.AreEqual(0, Base16.GetMaxDecodedLength(0));
-    }
+    public void GetMaxDecodedLength_WhenZero_ShouldReturnZero() => Assert.AreEqual(0, Base16.GetMaxDecodedLength(0));
 
 }

@@ -34,20 +34,14 @@ public sealed class Isbn10Tests
     /// character outside the decimal-digit alphabet.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenBodyContainsLetter_ShouldReturnFalse()
-    {
-        Assert.IsFalse(Isbn10.IsValid("0306A06152".AsSpan()));
-    }
+    public void IsValid_WhenBodyContainsLetter_ShouldReturnFalse() => Assert.IsFalse(Isbn10.IsValid("0306A06152".AsSpan()));
 
     /// <summary>
     /// Verifies that <see cref="Isbn10.IsValid(ReadOnlySpan{char})" /> rejects the empty span. A full-sequence
     /// validator requires at least a check character, so an empty input cannot satisfy the algorithm's invariant.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenSequenceIsEmpty_ShouldReturnFalse()
-    {
-        Assert.IsFalse(Isbn10.IsValid(ReadOnlySpan<char>.Empty));
-    }
+    public void IsValid_WhenSequenceIsEmpty_ShouldReturnFalse() => Assert.IsFalse(Isbn10.IsValid(ReadOnlySpan<char>.Empty));
 
     /// <summary>
     /// Verifies that <see cref="Isbn10.IsValid(ReadOnlySpan{char})" /> rejects a sequence whose length is not
@@ -65,10 +59,7 @@ public sealed class Isbn10Tests
     /// sentinel appears somewhere other than the final check position.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenXAppearsInBody_ShouldReturnFalse()
-    {
-        Assert.IsFalse(Isbn10.IsValid("X306406152".AsSpan()));
-    }
+    public void IsValid_WhenXAppearsInBody_ShouldReturnFalse() => Assert.IsFalse(Isbn10.IsValid("X306406152".AsSpan()));
 
     /// <inheritdoc />
     protected override char ComputeStatic(ReadOnlySpan<char> body) =>

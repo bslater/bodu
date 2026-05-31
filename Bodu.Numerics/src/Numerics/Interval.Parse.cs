@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Interval.Parse.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -19,8 +19,12 @@ public readonly partial struct Interval<T> :
     /// <param name="s">The text to parse — for example <c>"[1, 5)"</c>, <c>"(0, 1)"</c>, or <c>"∅"</c>.</param>
     /// <param name="provider">The culture used to parse each endpoint.</param>
     /// <returns>The parsed interval.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="s" /> is <see langword="null" />.</exception>
-    /// <exception cref="FormatException">Thrown when <paramref name="s" /> is not a valid interval representation.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="s" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="FormatException">
+    /// Thrown when <paramref name="s" /> is not a valid interval representation.
+    /// </exception>
     public static Interval<T> Parse(string s, IFormatProvider? provider)
     {
         ArgumentNullException.ThrowIfNull(s);
@@ -33,11 +37,13 @@ public readonly partial struct Interval<T> :
     /// <param name="s">The text to parse — for example <c>"[1, 5)"</c>, <c>"(0, 1)"</c>, or <c>"∅"</c>.</param>
     /// <param name="provider">The culture used to parse each endpoint.</param>
     /// <returns>The parsed interval.</returns>
-    /// <exception cref="FormatException">Thrown when <paramref name="s" /> is not a valid interval representation.</exception>
+    /// <exception cref="FormatException">
+    /// Thrown when <paramref name="s" /> is not a valid interval representation.
+    /// </exception>
     public static Interval<T> Parse(ReadOnlySpan<char> s, IFormatProvider? provider)
     {
         if (!TryParse(s, provider, out Interval<T> value))
-            throw new FormatException($"The value '{s.ToString()}' is not a valid {nameof(Interval<T>)}<{typeof(T).Name}> representation.");
+            throw new FormatException($"The value '{s}' is not a valid {nameof(Interval<T>)}<{typeof(T).Name}> representation.");
 
         return value;
     }
@@ -95,8 +101,8 @@ public readonly partial struct Interval<T> :
             return false;
         }
 
-        char openBracket = trimmed[0];
-        char closeBracket = trimmed[^1];
+        var openBracket = trimmed[0];
+        var closeBracket = trimmed[^1];
 
         bool lowerInclusive;
         switch (openBracket)
@@ -119,7 +125,7 @@ public readonly partial struct Interval<T> :
         }
 
         ReadOnlySpan<char> body = trimmed[1..^1];
-        int commaIndex = body.IndexOf(',');
+        var commaIndex = body.IndexOf(',');
         if (commaIndex < 0)
         {
             result = default;

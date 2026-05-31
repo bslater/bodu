@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Interval.Properties.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -52,19 +52,19 @@ public readonly partial struct Interval<T>
     /// An interval is empty when its bounds cannot admit any value. Two cases produce an empty interval:
     /// </para>
     /// <list type="bullet">
-    ///   <item>
-    ///     <description>
-    ///       <see cref="Lower" /> is strictly greater than <see cref="Upper" /> — the bounds are inverted.
-    ///     </description>
-    ///   </item>
-    ///   <item>
-    ///     <description>
-    ///       <see cref="Lower" /> equals <see cref="Upper" /> and at least one endpoint is open — for example
-    ///       <c>(5, 5]</c>, <c>[5, 5)</c>, and <c>(5, 5)</c> are all empty because no value of
-    ///       <typeparamref name="T" /> can satisfy both endpoint constraints. <c>[5, 5]</c> is non-empty and
-    ///       represents the single point <c>5</c>; see <see cref="IsDegenerate" />.
-    ///     </description>
-    ///   </item>
+    /// <item>
+    /// <description>
+    /// <see cref="Lower" /> is strictly greater than <see cref="Upper" /> — the bounds are inverted.
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <description>
+    /// <see cref="Lower" /> equals <see cref="Upper" /> and at least one endpoint is open — for example <c>(5, 5]</c>,
+    /// <c>[5, 5)</c>, and <c>(5, 5)</c> are all empty because no value of <typeparamref name="T" /> can satisfy both
+    /// endpoint constraints. <c>[5, 5]</c> is non-empty and represents the single point <c>5</c>; see
+    /// <see cref="IsDegenerate" />.
+    /// </description>
+    /// </item>
     /// </list>
     /// </remarks>
     /// <returns><see langword="true" /> when the interval is empty; otherwise <see langword="false" />.</returns>
@@ -83,8 +83,8 @@ public readonly partial struct Interval<T>
     }
 
     /// <summary>
-    /// Gets a value indicating whether the interval represents a single point — a closed-closed interval whose
-    /// lower and upper endpoints are equal.
+    /// Gets a value indicating whether the interval represents a single point — a closed-closed interval whose lower
+    /// and upper endpoints are equal.
     /// </summary>
     /// <returns>
     /// <see langword="true" /> when <see cref="Lower" /> equals <see cref="Upper" /> and both
@@ -99,22 +99,23 @@ public readonly partial struct Interval<T>
     /// </summary>
     /// <remarks>
     /// <para>
-    /// For non-empty intervals, the length is computed as <c>Upper - Lower</c> regardless of endpoint inclusion.
-    /// This matches the Lebesgue measure for continuous numeric types (<see cref="double" />,
-    /// <see cref="decimal" />): the measure of <c>[1, 2]</c>, <c>(1, 2)</c>, <c>[1, 2)</c>, and <c>(1, 2]</c>
-    /// is the same value <c>1</c>.
+    /// For non-empty intervals, the length is computed as <c>Upper - Lower</c> regardless of endpoint inclusion. This
+    /// matches the Lebesgue measure for continuous numeric types (<see cref="double" />, <see cref="decimal" />): the
+    /// measure of <c>[1, 2]</c>, <c>(1, 2)</c>, <c>[1, 2)</c>, and <c>(1, 2]</c> is the same value <c>1</c>.
     /// </para>
     /// <para>
-    /// For integer types, callers wanting the count of integers contained in the interval should compute it
-    /// directly from <see cref="Lower" />, <see cref="Upper" />, <see cref="LowerInclusive" />, and
-    /// <see cref="UpperInclusive" /> — endpoint inclusion matters for that semantic, and this property does not
-    /// model it.
+    /// For integer types, callers wanting the count of integers contained in the interval should compute it directly
+    /// from <see cref="Lower" />, <see cref="Upper" />, <see cref="LowerInclusive" />, and
+    /// <see cref="UpperInclusive" /> — endpoint inclusion matters for that semantic, and this property does not model
+    /// it.
     /// </para>
     /// <para>
     /// For empty intervals, the length is <see cref="INumberBase{TSelf}.Zero" />.
     /// </para>
     /// </remarks>
-    /// <returns>The non-negative length of the interval, or <see cref="INumberBase{TSelf}.Zero" /> when empty.</returns>
+    /// <returns>
+    /// The non-negative length of the interval, or <see cref="INumberBase{TSelf}.Zero" /> when empty.
+    /// </returns>
     public T Length =>
         IsEmpty ? T.Zero : _upper - _lower;
 }

@@ -62,7 +62,7 @@ public sealed class QingmingNotableDateAlgorithmTests
     [TestMethod]
     public void GetDate_WhenIteratingSupportedRange_ShouldAlwaysFallBetweenApril3And6()
     {
-        for (int year = 1901; year <= 2100; year++)
+        for (var year = 1901; year <= 2100; year++)
         {
             DateTime? result = _algorithm.GetDate(year);
 

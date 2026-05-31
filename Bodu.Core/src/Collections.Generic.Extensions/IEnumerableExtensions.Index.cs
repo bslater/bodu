@@ -39,7 +39,7 @@ public static partial class IEnumerableExtensions
 
         static IEnumerable<(int Index, TSource Item)> Iterator(IEnumerable<TSource> sequence)
         {
-            int index = 0;
+            var index = 0;
             foreach (TSource item in sequence)
                 yield return (index++, item);
         }

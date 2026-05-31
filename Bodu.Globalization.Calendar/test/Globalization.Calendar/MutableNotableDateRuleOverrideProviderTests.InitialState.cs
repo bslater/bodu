@@ -38,7 +38,7 @@ public partial class MutableNotableDateRuleOverrideProviderTests
     public void Changed_WhenNoMutationPerformed_ShouldNotBeRaised()
     {
         MutableNotableDateRuleOverrideProvider provider = new();
-        int changedCount = 0;
+        var changedCount = 0;
         provider.Changed += (_, _) => changedCount++;
 
         _ = provider.GetAdditions().ToList();

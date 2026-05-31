@@ -10,20 +10,20 @@ using System.Collections.Generic;
 namespace Bodu.Globalization.Calendar.Algorithms;
 
 /// <summary>
-/// Easter Sunday known-answer providers split into a partial of
-/// <see cref="NotableDateAlgorithmKnownAnswers" /> so the main file stays scannable. Hosts the smoke,
-/// default-calendar full, and Orthodox (Julian-paschal) full tables, plus the per-row helpers that wrap
-/// each <see cref="EasterSundayNotableDateAlgorithm" /> row.
+/// Easter Sunday known-answer providers split into a partial of <see cref="NotableDateAlgorithmKnownAnswers" /> so the
+/// main file stays scannable. Hosts the smoke, default-calendar full, and Orthodox (Julian-paschal) full tables, plus
+/// the per-row helpers that wrap each <see cref="EasterSundayNotableDateAlgorithm" /> row.
 /// </summary>
 public static partial class NotableDateAlgorithmKnownAnswers
 {
     /// <summary>
     /// Provides the smoke subset of Easter Sunday known-answer rows. Five representative years spanning the
-    /// Julian/Gregorian transition era to the late 21st century, matched exactly against published almanac
-    /// dates with the default (Gregorian) calendar.
+    /// Julian/Gregorian transition era to the late 21st century, matched exactly against published almanac dates with
+    /// the default (Gregorian) calendar.
     /// </summary>
-    /// <returns>A sequence of single-element object arrays whose only entry is a
-    /// <see cref="NotableDateAlgorithmKnownAnswer" />.</returns>
+    /// <returns>
+    /// A sequence of single-element object arrays whose only entry is a <see cref="NotableDateAlgorithmKnownAnswer" />.
+    /// </returns>
     public static IEnumerable<object[]> EasterSmoke()
     {
         yield return EasterRow(1700, new DateTime(1700, 4, 11));
@@ -34,11 +34,12 @@ public static partial class NotableDateAlgorithmKnownAnswers
     }
 
     /// <summary>
-    /// Provides the full default-calendar Easter Sunday known-answer table — 376 rows spanning years
-    /// 1700-2093, matched exactly against published almanac dates with the default (Gregorian) calendar.
+    /// Provides the full default-calendar Easter Sunday known-answer table — 376 rows spanning years 1700-2093, matched
+    /// exactly against published almanac dates with the default (Gregorian) calendar.
     /// </summary>
-    /// <returns>A sequence of single-element object arrays whose only entry is a
-    /// <see cref="NotableDateAlgorithmKnownAnswer" />.</returns>
+    /// <returns>
+    /// A sequence of single-element object arrays whose only entry is a <see cref="NotableDateAlgorithmKnownAnswer" />.
+    /// </returns>
     public static IEnumerable<object[]> EasterDefault()
     {
         yield return EasterRow(1700, new DateTime(1700, 4, 11));
@@ -420,36 +421,47 @@ public static partial class NotableDateAlgorithmKnownAnswers
     }
 
     /// <summary>
-    /// Provides the full Orthodox Easter Sunday known-answer table — 184 rows spanning years 1916-2099,
-    /// encoded as <see cref="AlgorithmCalendarKind.Julian" /> because Orthodox Easter is computed via the
-    /// Julian calendar's paschal cycle and rendered in the Gregorian calendar through
+    /// Provides the full Orthodox Easter Sunday known-answer table — 184 rows spanning years 1916-2099, encoded as
+    /// <see cref="AlgorithmCalendarKind.Julian" /> because Orthodox Easter is computed via the Julian calendar's
+    /// paschal cycle and rendered in the Gregorian calendar through
     /// <see cref="System.Globalization.JulianCalendar.ToDateTime(int, int, int, int, int, int, int)" />.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Algorithmic source: Jean Meeus, <em>Astronomical Algorithms</em>, 2nd ed. (1998), Chapter 8 — the
-    /// Orthodox / Julian paschal computus. Each row's Julian-calendar Easter Sunday is computed by Meeus's
-    /// formula and converted to a Gregorian <see cref="DateTime" /> via
-    /// <see cref="System.Globalization.JulianCalendar" />.
+    /// Algorithmic source: Jean Meeus, <em>Astronomical Algorithms</em>, 2nd ed. (1998), Chapter 8 — the Orthodox /
+    /// Julian paschal computus. Each row's Julian-calendar Easter Sunday is computed by Meeus's formula and converted
+    /// to a Gregorian <see cref="DateTime" /> via <see cref="System.Globalization.JulianCalendar" />.
     /// </para>
     /// <para>
     /// Cross-verification sources (per-decade spot checks):
     /// </para>
     /// <list type="bullet">
-    ///   <item><description>Greek Orthodox Archdiocese of America, official liturgical calendar
-    ///     (https://www.goarch.org/typikon).</description></item>
-    ///   <item><description>Wikipedia, "List of dates for Easter" — sourced from the Royal Greenwich
-    ///     Observatory Almanac (https://en.wikipedia.org/wiki/List_of_dates_for_Easter).</description></item>
-    ///   <item><description>US Naval Observatory, <em>Astronomical Almanac</em>, paschal date tables.</description></item>
+    /// <item>
+    /// <description>
+    /// Greek Orthodox Archdiocese of America, official liturgical calendar (https://www.goarch.org/typikon).
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <description>
+    /// Wikipedia, "List of dates for Easter" — sourced from the Royal Greenwich Observatory Almanac
+    /// (https://en.wikipedia.org/wiki/List_of_dates_for_Easter).
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <description>
+    /// US Naval Observatory, <em>Astronomical Almanac</em>, paschal date tables.
+    /// </description>
+    /// </item>
     /// </list>
     /// <para>
     /// Previously <c>EasterOrthodoxBroken</c> and gated by <c>[Ignore]</c> pending resolution of
-    /// <see href="https://github.com/bslater/bodu/issues/53" />. The underlying algorithm bug was fixed
-    /// upstream; this table is now active under the Regression tier.
+    /// <see href="https://github.com/bslater/bodu/issues/53" />. The underlying algorithm bug was fixed upstream; this
+    /// table is now active under the Regression tier.
     /// </para>
     /// </remarks>
-    /// <returns>A sequence of single-element object arrays whose only entry is a
-    /// <see cref="NotableDateAlgorithmKnownAnswer" />.</returns>
+    /// <returns>
+    /// A sequence of single-element object arrays whose only entry is a <see cref="NotableDateAlgorithmKnownAnswer" />.
+    /// </returns>
     public static IEnumerable<object[]> EasterOrthodox()
     {
         // Per-decade spot-checked rows carry the Source citation; intervening rows are computed via
@@ -644,20 +656,22 @@ public static partial class NotableDateAlgorithmKnownAnswers
     /// Builds an Easter Sunday row that exercises the algorithm's default (Gregorian) calendar path.
     /// </summary>
     /// <param name="year">The year passed to the algorithm.</param>
-    /// <param name="expectedDate">The published Easter Sunday date for <paramref name="year" /> under the
-    /// Gregorian calendar.</param>
+    /// <param name="expectedDate">
+    /// The published Easter Sunday date for <paramref name="year" /> under the Gregorian calendar.
+    /// </param>
     /// <returns>A single-element object array carrying the constructed row.</returns>
     private static object[] EasterRow(int year, DateTime expectedDate) =>
         Row("Easter", () => new EasterSundayNotableDateAlgorithm(), year, expectedDate);
 
     /// <summary>
-    /// Builds an Orthodox Easter Sunday row that supplies a <see cref="System.Globalization.JulianCalendar" />
-    /// to the algorithm. Used by the <see cref="EasterOrthodox" /> table.
+    /// Builds an Orthodox Easter Sunday row that supplies a <see cref="System.Globalization.JulianCalendar" /> to the
+    /// algorithm. Used by the <see cref="EasterOrthodox" /> table.
     /// </summary>
     /// <param name="year">The year passed to the algorithm.</param>
     /// <param name="expectedDate">The published Orthodox Easter Sunday date for <paramref name="year" />.</param>
-    /// <param name="source">Optional provenance citation appended to the row's display name; populated on
-    /// per-decade spot-checked rows.</param>
+    /// <param name="source">
+    /// Optional provenance citation appended to the row's display name; populated on per-decade spot-checked rows.
+    /// </param>
     /// <returns>A single-element object array carrying the constructed row.</returns>
     private static object[] EasterOrthodoxRow(int year, DateTime expectedDate, string? source = null) =>
         Row(

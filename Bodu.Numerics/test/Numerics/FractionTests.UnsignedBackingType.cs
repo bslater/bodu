@@ -14,7 +14,7 @@ public partial class FractionTests
     [TestMethod]
     public void Constructor_WhenBackedByUnsignedType_ShouldNormalizeNonNegativeComponents()
     {
-        Fraction<uint> value = new Fraction<uint>(6, 8);
+        var value = new Fraction<uint>(6, 8);
 
         Assert.AreEqual(3u, value.Numerator);
         Assert.AreEqual(4u, value.Denominator);
@@ -60,10 +60,7 @@ public partial class FractionTests
     /// Verifies that negating zero is permitted even for an unsigned backing type.
     /// </summary>
     [TestMethod]
-    public void Negate_WhenBackedByUnsignedTypeAndZero_ShouldReturnZero()
-    {
-        Assert.AreEqual(Fraction<uint>.Zero, Fraction<uint>.Zero.Negate());
-    }
+    public void Negate_WhenBackedByUnsignedTypeAndZero_ShouldReturnZero() => Assert.AreEqual(Fraction<uint>.Zero, Fraction<uint>.Zero.Negate());
 
     /// <summary>
     /// Verifies that subtraction producing a negative result throws <see cref="OverflowException" /> for an

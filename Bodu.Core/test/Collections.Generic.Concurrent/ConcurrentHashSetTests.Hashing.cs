@@ -82,10 +82,10 @@ public partial class ConcurrentHashSetTests
         var set = new ConcurrentHashSet<int>();
         int[] values = [int.MinValue, int.MaxValue, -1, 0, 1, int.MinValue + 1, int.MaxValue - 1];
 
-        foreach (int value in values)
+        foreach (var value in values)
             Assert.IsTrue(set.Add(value));
 
-        foreach (int value in values)
+        foreach (var value in values)
             Assert.IsTrue(set.Contains(value), $"Element {value} was not found.");
 
         Assert.AreEqual(values.Length, set.Count);

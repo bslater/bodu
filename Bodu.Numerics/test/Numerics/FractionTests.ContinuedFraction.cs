@@ -31,9 +31,9 @@ public partial class FractionTests
     [DataRow(355, 113)]
     public void ContinuedFraction_WhenRoundTripped_ShouldReproduceOriginal(int numerator, int denominator)
     {
-        Fraction<int> original = new Fraction<int>(numerator, denominator);
+        var original = new Fraction<int>(numerator, denominator);
 
-        Fraction<int> roundTripped = Fraction<int>.FromContinuedFraction(original.ToContinuedFraction());
+        var roundTripped = Fraction<int>.FromContinuedFraction(original.ToContinuedFraction());
 
         Assert.AreEqual(original, roundTripped);
     }
@@ -81,7 +81,7 @@ public partial class FractionTests
     [TestMethod]
     public void LimitDenominator_WhenApproximatingPi_ShouldReturnKnownConvergents()
     {
-        Fraction<long> pi = Fraction<long>.FromDouble(Math.PI);
+        var pi = Fraction<long>.FromDouble(Math.PI);
 
         Assert.AreEqual(new Fraction<long>(22, 7), pi.LimitDenominator(10));
         Assert.AreEqual(new Fraction<long>(311, 99), pi.LimitDenominator(100));
@@ -95,7 +95,7 @@ public partial class FractionTests
     [TestMethod]
     public void LimitDenominator_WhenDenominatorWithinLimit_ShouldReturnSameValue()
     {
-        Fraction<int> value = new Fraction<int>(1, 2);
+        var value = new Fraction<int>(1, 2);
 
         Assert.AreEqual(value, value.LimitDenominator(10));
     }
@@ -129,7 +129,7 @@ public partial class FractionTests
     [DataRow(-3, 1, "-3")]
     public void ToContinuedFraction_WhenExpanded_ShouldYieldKnownCoefficients(int numerator, int denominator, string expected)
     {
-        int[] coefficients = new Fraction<int>(numerator, denominator).ToContinuedFraction();
+        var coefficients = new Fraction<int>(numerator, denominator).ToContinuedFraction();
 
         CollectionAssert.AreEqual(ParseCoefficients(expected), coefficients);
     }
@@ -148,7 +148,7 @@ public partial class FractionTests
     [DataRow("5", 5, 1)]
     public void FromContinuedFraction_WhenGivenKnownCoefficients_ShouldReturnExpectedValue(string coefficients, int en, int ed)
     {
-        Fraction<int> value = Fraction<int>.FromContinuedFraction(ParseCoefficients(coefficients));
+        var value = Fraction<int>.FromContinuedFraction(ParseCoefficients(coefficients));
 
         Assert.AreEqual(new Fraction<int>(en, ed), value);
     }
@@ -157,10 +157,7 @@ public partial class FractionTests
     /// Verifies that a single-coefficient continued fraction reconstructs a whole number.
     /// </summary>
     [TestMethod]
-    public void FromContinuedFraction_WhenGivenSingleCoefficient_ShouldReturnWholeNumber()
-    {
-        Assert.AreEqual(new Fraction<int>(-3, 1), Fraction<int>.FromContinuedFraction(-3));
-    }
+    public void FromContinuedFraction_WhenGivenSingleCoefficient_ShouldReturnWholeNumber() => Assert.AreEqual(new Fraction<int>(-3, 1), Fraction<int>.FromContinuedFraction(-3));
 
     /// <summary>
     /// Verifies that <see cref="Fraction{T}.LimitDenominator" /> returns an exact rational unchanged when its
@@ -172,7 +169,7 @@ public partial class FractionTests
     [DataRow(-5, 8, 8)]
     public void LimitDenominator_WhenDenominatorDoesNotExceedLimit_ShouldReturnInputValue(int numerator, int denominator, int limit)
     {
-        Fraction<int> value = new Fraction<int>(numerator, denominator);
+        var value = new Fraction<int>(numerator, denominator);
 
         Assert.AreEqual(value, value.LimitDenominator(limit));
     }
@@ -193,28 +190,19 @@ public partial class FractionTests
     /// Verifies that Approximate finds a best fraction even when the exact value would overflow the backing type.
     /// </summary>
     [TestMethod]
-    public void Approximate_WhenExactValueOverflowsBackingType_ShouldStillFindBestApproximation()
-    {
-        Assert.AreEqual(new Fraction<int>(311, 99), Fraction<int>.Approximate(Math.PI, 100));
-    }
+    public void Approximate_WhenExactValueOverflowsBackingType_ShouldStillFindBestApproximation() => Assert.AreEqual(new Fraction<int>(311, 99), Fraction<int>.Approximate(Math.PI, 100));
 
     /// <summary>
     /// Verifies that Approximate produces a best rational approximation of a decimal value.
     /// </summary>
     [TestMethod]
-    public void Approximate_WhenGivenDecimal_ShouldReturnBestApproximation()
-    {
-        Assert.AreEqual(new Fraction<int>(1, 3), Fraction<int>.Approximate(0.3333m, 10));
-    }
+    public void Approximate_WhenGivenDecimal_ShouldReturnBestApproximation() => Assert.AreEqual(new Fraction<int>(1, 3), Fraction<int>.Approximate(0.3333m, 10));
 
     /// <summary>
     /// Verifies that Approximate parses a numeric string and approximates the parsed value.
     /// </summary>
     [TestMethod]
-    public void Approximate_WhenGivenString_ShouldParseAndApproximate()
-    {
-        Assert.AreEqual(new Fraction<int>(1, 2), Fraction<int>.Approximate("0.5", 10, CultureInfo.InvariantCulture));
-    }
+    public void Approximate_WhenGivenString_ShouldParseAndApproximate() => Assert.AreEqual(new Fraction<int>(1, 2), Fraction<int>.Approximate("0.5", 10, CultureInfo.InvariantCulture));
 
     /// <summary>
     /// Verifies that Approximate rejects a denominator limit below one.

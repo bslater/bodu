@@ -31,7 +31,7 @@ public partial class Poly1305Tests
     public void ComputeHash_WhenCalledTwiceWithoutNewKey_ShouldThrow()
     {
         using var poly = new Poly1305 { Key = (byte[])Poly1305TestKey.Clone() };
-        byte[] message = System.Text.Encoding.ASCII.GetBytes("first message");
+        var message = System.Text.Encoding.ASCII.GetBytes("first message");
 
         _ = poly.ComputeHash(message);
 
@@ -66,9 +66,9 @@ public partial class Poly1305Tests
         Assert.IsNotNull(keyField);
         Assert.IsNotNull(accField);
 
-        uint[] rBefore = ((uint[])rField.GetValue(poly)!).ToArray();
-        uint[] sBefore = ((uint[])sField.GetValue(poly)!).ToArray();
-        uint[] keyBefore = ((uint[])keyField.GetValue(poly)!).ToArray();
+        var rBefore = ((uint[])rField.GetValue(poly)!).ToArray();
+        var sBefore = ((uint[])sField.GetValue(poly)!).ToArray();
+        var keyBefore = ((uint[])keyField.GetValue(poly)!).ToArray();
 
         Assert.IsTrue(Array.Exists(rBefore, v => v != 0), "Precondition: derived _r should be non-zero before Dispose.");
         Assert.IsTrue(Array.Exists(sBefore, v => v != 0), "Precondition: derived _s should be non-zero before Dispose.");
@@ -76,10 +76,10 @@ public partial class Poly1305Tests
 
         poly.Dispose();
 
-        uint[] rAfter = (uint[])rField.GetValue(poly)!;
-        uint[] sAfter = (uint[])sField.GetValue(poly)!;
-        uint[] keyAfter = (uint[])keyField.GetValue(poly)!;
-        uint[] accAfter = (uint[])accField.GetValue(poly)!;
+        var rAfter = (uint[])rField.GetValue(poly)!;
+        var sAfter = (uint[])sField.GetValue(poly)!;
+        var keyAfter = (uint[])keyField.GetValue(poly)!;
+        var accAfter = (uint[])accField.GetValue(poly)!;
 
         Assert.IsTrue(Array.TrueForAll(rAfter, v => v == 0), "Dispose must clear _r.");
         Assert.IsTrue(Array.TrueForAll(sAfter, v => v == 0), "Dispose must clear _s.");
@@ -106,7 +106,7 @@ public partial class Poly1305Tests
     public void ComputeHash_ShouldClearDerivedKeyScheduleAndAccumulator()
     {
         using var poly = new Poly1305 { Key = (byte[])Poly1305TestKey.Clone() };
-        byte[] message = System.Text.Encoding.ASCII.GetBytes("payload");
+        var message = System.Text.Encoding.ASCII.GetBytes("payload");
 
         // Drive ProcessBlock indirectly via HashCore (which accepts byte[]) to seed _acc with non-zero
         // state, then invoke the protected ProcessFinalBlock directly via reflection. The HashAlgorithm
@@ -133,10 +133,10 @@ public partial class Poly1305Tests
         Assert.IsNotNull(keyField);
         Assert.IsNotNull(accField);
 
-        uint[] rAfter = (uint[])rField.GetValue(poly)!;
-        uint[] sAfter = (uint[])sField.GetValue(poly)!;
-        uint[] keyAfter = (uint[])keyField.GetValue(poly)!;
-        uint[] accAfter = (uint[])accField.GetValue(poly)!;
+        var rAfter = (uint[])rField.GetValue(poly)!;
+        var sAfter = (uint[])sField.GetValue(poly)!;
+        var keyAfter = (uint[])keyField.GetValue(poly)!;
+        var accAfter = (uint[])accField.GetValue(poly)!;
 
         Assert.IsTrue(Array.TrueForAll(rAfter, v => v == 0), "ProcessFinalBlock must clear _r.");
         Assert.IsTrue(Array.TrueForAll(sAfter, v => v == 0), "ProcessFinalBlock must clear _s.");
@@ -152,16 +152,16 @@ public partial class Poly1305Tests
     [TestMethod]
     public void ComputeHash_WhenKeyIsReassignedBetweenMessages_ShouldAllowNewMessage()
     {
-        byte[] message = System.Text.Encoding.ASCII.GetBytes("payload");
+        var message = System.Text.Encoding.ASCII.GetBytes("payload");
 
         using var poly = new Poly1305 { Key = (byte[])Poly1305TestKey.Clone() };
-        byte[] firstTag = poly.ComputeHash(message);
+        var firstTag = poly.ComputeHash(message);
 
-        byte[] freshKey = new byte[32];
+        var freshKey = new byte[32];
         RandomNumberGenerator.Fill(freshKey);
         poly.Key = freshKey;
 
-        byte[] secondTag = poly.ComputeHash(message);
+        var secondTag = poly.ComputeHash(message);
 
         Assert.AreEqual(16, firstTag.Length);
         Assert.AreEqual(16, secondTag.Length);

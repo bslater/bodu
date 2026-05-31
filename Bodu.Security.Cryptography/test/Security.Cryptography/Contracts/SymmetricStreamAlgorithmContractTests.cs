@@ -93,7 +93,7 @@ public abstract partial class SymmetricStreamAlgorithmContractTests<TCipher>
     /// <returns>The same <paramref name="buffer" />, filled.</returns>
     private static byte[] FillSequential(byte[] buffer, int seed)
     {
-        for (int i = 0; i < buffer.Length; i++)
+        for (var i = 0; i < buffer.Length; i++)
             buffer[i] = (byte)(seed + i);
 
         return buffer;

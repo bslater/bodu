@@ -97,7 +97,9 @@ public static partial class Bencode
     /// Decodes a complete bencoded document using the supplied parsing options.
     /// </summary>
     /// <param name="source">The bencoded source bytes.</param>
-    /// <param name="options">Options that control parsing policy, including the maximum permitted nesting depth.</param>
+    /// <param name="options">
+    /// Options that control parsing policy, including the maximum permitted nesting depth.
+    /// </param>
     /// <returns>The decoded value.</returns>
     /// <exception cref="BencodeFormatException">
     /// Thrown when <paramref name="source" /> is malformed, contains trailing bytes, or nests more deeply than

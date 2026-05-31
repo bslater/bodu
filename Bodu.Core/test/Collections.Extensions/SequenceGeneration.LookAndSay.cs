@@ -11,7 +11,8 @@ public class LookAndSayTests
 {
 
     /// <summary>
-    /// Verifies that <see cref="SequenceGenerator.LookAndSay" /> throws <see cref="ArgumentOutOfRangeException" /> when count is below 1.
+    /// Verifies that <see cref="SequenceGenerator.LookAndSay" /> throws <see cref="ArgumentOutOfRangeException" /> when
+    /// count is below 1.
     /// </summary>
     [TestMethod]
     [DataRow(0)]
@@ -46,7 +47,8 @@ public class LookAndSayTests
     }
 
     /// <summary>
-    /// Verifies that each term in the Look-and-Say sequence has length not less than the previous term, matching the monotonic growth property.
+    /// Verifies that each term in the Look-and-Say sequence has length not less than the previous term, matching the
+    /// monotonic growth property.
     /// </summary>
     [TestMethod]
     public void LookAndSay_WhenEnumerated_ShouldProduceNonDecreasingLengths()

@@ -24,7 +24,7 @@ public partial class FractionTests
         int ceiling,
         int truncate)
     {
-        Fraction<int> value = new Fraction<int>(numerator, denominator);
+        var value = new Fraction<int>(numerator, denominator);
 
         Assert.AreEqual(new Fraction<int>(floor), value.Floor(), nameof(value.Floor));
         Assert.AreEqual(new Fraction<int>(ceiling), value.Ceiling(), nameof(value.Ceiling));
@@ -41,10 +41,7 @@ public partial class FractionTests
     [DataRow(7, 2, 4)]
     [DataRow(7, 4, 2)]
     [DataRow(-5, 2, -2)]
-    public void Round_WhenUsingDefaultMode_ShouldRoundToNearestEven(int numerator, int denominator, int expected)
-    {
-        Assert.AreEqual(new Fraction<int>(expected), new Fraction<int>(numerator, denominator).Round());
-    }
+    public void Round_WhenUsingDefaultMode_ShouldRoundToNearestEven(int numerator, int denominator, int expected) => Assert.AreEqual(new Fraction<int>(expected), new Fraction<int>(numerator, denominator).Round());
 
     /// <summary>
     /// Verifies that Round honors the supplied midpoint rule for a halfway value.
@@ -55,10 +52,7 @@ public partial class FractionTests
     [DataRow(MidpointRounding.ToNegativeInfinity, 2)]
     [DataRow(MidpointRounding.ToPositiveInfinity, 3)]
     [DataRow(MidpointRounding.ToEven, 2)]
-    public void Round_WhenValueIsHalfway_ShouldHonorMidpointRule(MidpointRounding mode, int expected)
-    {
-        Assert.AreEqual(new Fraction<int>(expected), new Fraction<int>(5, 2).Round(mode));
-    }
+    public void Round_WhenValueIsHalfway_ShouldHonorMidpointRule(MidpointRounding mode, int expected) => Assert.AreEqual(new Fraction<int>(expected), new Fraction<int>(5, 2).Round(mode));
 
     /// <summary>
     /// Verifies that Round rejects an undefined midpoint rule.
@@ -87,7 +81,7 @@ public partial class FractionTests
         int fractionNumerator,
         int fractionDenominator)
     {
-        Fraction<int> value = new Fraction<int>(numerator, denominator);
+        var value = new Fraction<int>(numerator, denominator);
 
         Assert.AreEqual(whole, value.GetWholePart(), nameof(value.GetWholePart));
         Assert.AreEqual(new Fraction<int>(fractionNumerator, fractionDenominator), value.GetFractionalPart());
@@ -103,7 +97,7 @@ public partial class FractionTests
     [TestMethod]
     public void Deconstruct_WhenSplitIntoMixedParts_ShouldYieldSignedComponents()
     {
-        (int whole, int numerator, int denominator) = new Fraction<int>(-7, 4);
+        (var whole, var numerator, var denominator) = new Fraction<int>(-7, 4);
 
         Assert.AreEqual(-1, whole);
         Assert.AreEqual(-3, numerator);

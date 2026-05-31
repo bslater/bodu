@@ -13,8 +13,8 @@ public sealed partial class IEnumerableExtensionsTests_Cache
 
     /// <summary>
     /// Verifies that the cached sequence captures and re-throws an exception thrown by the source's
-    /// <see cref="IEnumerable{T}.GetEnumerator" /> on first enumeration, then re-throws the same captured exception on subsequent
-    /// enumerations rather than re-invoking the failing source.
+    /// <see cref="IEnumerable{T}.GetEnumerator" /> on first enumeration, then re-throws the same captured exception on
+    /// subsequent enumerations rather than re-invoking the failing source.
     /// </summary>
     [TestMethod]
     public void Cache_WhenSourceGetEnumeratorThrows_ShouldCaptureAndRethrowOnSubsequentEnumerations()
@@ -40,8 +40,9 @@ public sealed partial class IEnumerableExtensionsTests_Cache
     }
 
     /// <summary>
-    /// A source whose <see cref="IEnumerable{T}.GetEnumerator" /> always throws <see cref="InvalidOperationException" />, counting the
-    /// number of invocations so the test can assert that the failure is captured and re-used by the cache.
+    /// A source whose <see cref="IEnumerable{T}.GetEnumerator" /> always throws
+    /// <see cref="InvalidOperationException" />, counting the number of invocations so the test can assert that the
+    /// failure is captured and re-used by the cache.
     /// </summary>
     private sealed class ThrowingSource
         : IEnumerable<int>

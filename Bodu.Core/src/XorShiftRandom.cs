@@ -64,24 +64,23 @@ public sealed class XorShiftRandom :
     /// The default seed is derived from <see cref="Environment.TickCount" /> at the time of construction.
     /// </para>
     /// <para>
-    /// <see cref="Environment.TickCount" /> has finite resolution (commonly ~15.6 ms on Windows, finer on Linux),
-    /// so two <see cref="XorShiftRandom" /> instances created back-to-back within the same tick will observe the
-    /// same seed and therefore yield identical sequences. This is a deliberate trade-off for the cheapest possible
-    /// default seeding on a non-cryptographic PRNG. Callers that require either guarantee should use a different
-    /// constructor:
+    /// <see cref="Environment.TickCount" /> has finite resolution (commonly ~15.6 ms on Windows, finer on Linux), so
+    /// two <see cref="XorShiftRandom" /> instances created back-to-back within the same tick will observe the same seed
+    /// and therefore yield identical sequences. This is a deliberate trade-off for the cheapest possible default
+    /// seeding on a non-cryptographic PRNG. Callers that require either guarantee should use a different constructor:
     /// </para>
     /// <list type="bullet">
     /// <item>
     /// <description>
-    /// For <em>reproducibility</em> (tests, benchmarks, replayable simulations) use
-    /// <see cref="XorShiftRandom(int)" /> or <see cref="XorShiftRandom(uint)" /> with an explicit seed.
+    /// For <em>reproducibility</em> (tests, benchmarks, replayable simulations) use <see cref="XorShiftRandom(int)" />
+    /// or <see cref="XorShiftRandom(uint)" /> with an explicit seed.
     /// </description>
     /// </item>
     /// <item>
     /// <description>
-    /// For <em>distinct sequences across many instances</em> derive the seed from
-    /// <see cref="System.Random.Shared" /> (e.g. <c>new XorShiftRandom(Random.Shared.Next())</c>) or, when stronger
-    /// entropy is required, from <see cref="System.Security.Cryptography.RandomNumberGenerator" />.
+    /// For <em>distinct sequences across many instances</em> derive the seed from <see cref="System.Random.Shared" />
+    /// (e.g. <c>new XorShiftRandom(Random.Shared.Next())</c>) or, when stronger entropy is required, from
+    /// <see cref="System.Security.Cryptography.RandomNumberGenerator" />.
     /// </description>
     /// </item>
     /// </list>
@@ -136,7 +135,8 @@ public sealed class XorShiftRandom :
     }
 
     /// <summary>
-    /// Returns a random integer in the half-open interval <c>[<paramref name="minValue" />, <paramref name="maxValue" />)</c>.
+    /// Returns a random integer in the half-open interval
+    /// <c>[<paramref name="minValue" />, <paramref name="maxValue" />)</c>.
     /// </summary>
     /// <param name="minValue">The inclusive lower bound of the random number to be generated.</param>
     /// <param name="maxValue">The exclusive upper bound of the random number to be generated.</param>
@@ -149,16 +149,15 @@ public sealed class XorShiftRandom :
     /// </exception>
     /// <remarks>
     /// <para>
-    /// Matches the contract of <see cref="System.Random.Next(int, int)" />, including its handling of an empty
-    /// range: when <paramref name="minValue" /> equals <paramref name="maxValue" /> the method returns
-    /// <paramref name="minValue" /> without throwing. Only a strictly inverted range
-    /// (<paramref name="minValue" /> &gt; <paramref name="maxValue" />) raises
-    /// <see cref="ArgumentException" />.
+    /// Matches the contract of <see cref="System.Random.Next(int, int)" />, including its handling of an empty range:
+    /// when <paramref name="minValue" /> equals <paramref name="maxValue" /> the method returns
+    /// <paramref name="minValue" /> without throwing. Only a strictly inverted range (<paramref name="minValue" /> &gt;
+    /// <paramref name="maxValue" />) raises <see cref="ArgumentException" />.
     /// </para>
     /// <para>
-    /// The full <see cref="int" /> span <c>Next(int.MinValue, int.MaxValue)</c> is supported — the range is
-    /// computed in 64-bit space so the subtraction never overflows, and bounded generation uses Lemire-style
-    /// rejection rather than modulo to avoid modulo-bias.
+    /// The full <see cref="int" /> span <c>Next(int.MinValue, int.MaxValue)</c> is supported — the range is computed in
+    /// 64-bit space so the subtraction never overflows, and bounded generation uses Lemire-style rejection rather than
+    /// modulo to avoid modulo-bias.
     /// </para>
     /// </remarks>
     public override int Next(int minValue, int maxValue)
@@ -200,8 +199,8 @@ public sealed class XorShiftRandom :
     /// </summary>
     /// <param name="value">The raw 32-bit pseudo-random value to scale.</param>
     /// <returns>
-    /// A double-precision value in the range [0.0, 1.0). The upper bound is excluded — when
-    /// <paramref name="value" /> is <see cref="uint.MaxValue" /> the result is strictly less than 1.0.
+    /// A double-precision value in the range [0.0, 1.0). The upper bound is excluded — when <paramref name="value" />
+    /// is <see cref="uint.MaxValue" /> the result is strictly less than 1.0.
     /// </returns>
     /// <remarks>
     /// Multiplies by <c>1 / 2^32</c> rather than dividing by <see cref="uint.MaxValue" />. Dividing by
@@ -213,23 +212,22 @@ public sealed class XorShiftRandom :
         value * (1.0 / 4294967296.0);
 
     /// <summary>
-    /// Returns an unbiased pseudo-random <see cref="uint" /> uniformly distributed in
-    /// <c>[0, maxExclusive)</c> using Lemire's debiased bounded-integer method.
+    /// Returns an unbiased pseudo-random <see cref="uint" /> uniformly distributed in <c>[0, maxExclusive)</c> using
+    /// Lemire's debiased bounded-integer method.
     /// </summary>
     /// <param name="maxExclusive">The exclusive upper bound. Must be greater than zero.</param>
     /// <param name="source">A delegate that yields uniformly distributed 32-bit pseudo-random values.</param>
     /// <returns>An unbiased value in the range <c>[0, maxExclusive)</c>.</returns>
     /// <remarks>
     /// <para>
-    /// Implements Daniel Lemire's "Fast Random Integer Generation in an Interval" (ACM TOMS, 2019).
-    /// The wide multiplication plus a rare-reject loop yields a strictly uniform distribution, unlike
-    /// <c>x % maxExclusive</c> which introduces modulo bias whenever <paramref name="maxExclusive" />
-    /// does not evenly divide <c>2^32</c>. The bias is negligible for small ranges but reaches up to
-    /// 50% for ranges close to <c>2^31</c>.
+    /// Implements Daniel Lemire's "Fast Random Integer Generation in an Interval" (ACM TOMS, 2019). The wide
+    /// multiplication plus a rare-reject loop yields a strictly uniform distribution, unlike <c>x % maxExclusive</c>
+    /// which introduces modulo bias whenever <paramref name="maxExclusive" /> does not evenly divide <c>2^32</c>. The
+    /// bias is negligible for small ranges but reaches up to 50% for ranges close to <c>2^31</c>.
     /// </para>
     /// <para>
-    /// The threshold <c>2^32 mod maxExclusive</c> bounds the rejection rate: at most one extra draw is
-    /// expected for each call, and the worst case is well under 50% rejection probability.
+    /// The threshold <c>2^32 mod maxExclusive</c> bounds the rejection rate: at most one extra draw is expected for
+    /// each call, and the worst case is well under 50% rejection probability.
     /// </para>
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

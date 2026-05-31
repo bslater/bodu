@@ -35,5 +35,5 @@ public static partial class DateTimeExtensions
     ///]]>
     /// </code>
     /// </remarks>
-    public static DateTime EndOfDay(this DateTime dateTime) => new DateTime(TruncateToDateTicks(dateTime) + (TicksPerDay - 1), dateTime.Kind);
+    public static DateTime EndOfDay(this DateTime dateTime) => new(TruncateToDateTicks(dateTime) + (TicksPerDay - 1), dateTime.Kind);
 }

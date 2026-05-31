@@ -33,7 +33,10 @@ namespace Bodu.Globalization.Calendar.Data;
 public sealed record TerritoryNotableDateKnownAnswer : IKat
 {
     /// <inheritdoc />
-    /// <remarks>Synthesizes a <c>"Territory Year Name"</c> label so the row remains identifiable through <see cref="KatDisplayName" /> even though the public <see cref="Name" /> property carries only the holiday name.</remarks>
+    /// <remarks>
+    /// Synthesizes a <c>"Territory Year Name"</c> label so the row remains identifiable through
+    /// <see cref="KatDisplayName" /> even though the public <see cref="Name" /> property carries only the holiday name.
+    /// </remarks>
     string IKat.Name => $"{Territory} {Year} {Name}";
 
     /// <summary>

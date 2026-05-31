@@ -20,7 +20,7 @@ public partial class MutableNotableDateRuleOverrideProviderTests
 
         provider.AddRule(rule);
 
-        List<NotableDateRule> additions = provider.GetAdditions().ToList();
+        var additions = provider.GetAdditions().ToList();
         Assert.AreEqual(1, additions.Count);
         Assert.AreSame(rule, additions[0]);
     }
@@ -58,7 +58,7 @@ public partial class MutableNotableDateRuleOverrideProviderTests
         provider.AddRule(second);
         provider.AddRule(third);
 
-        List<NotableDateRule> additions = provider.GetAdditions().ToList();
+        var additions = provider.GetAdditions().ToList();
         CollectionAssert.AreEqual(new[] { first, second, third }, additions);
     }
 
@@ -70,7 +70,7 @@ public partial class MutableNotableDateRuleOverrideProviderTests
     public void AddRule_WhenCalled_ShouldRaiseChangedExactlyOnce()
     {
         MutableNotableDateRuleOverrideProvider provider = new();
-        int changedCount = 0;
+        var changedCount = 0;
         provider.Changed += (_, _) => changedCount++;
 
         provider.AddRule(Fixed("X"));

@@ -72,8 +72,8 @@ internal sealed class ConfigurationResolver
     }
 
     /// <summary>
-    /// Applies the entries of <paramref name="section" /> to <paramref name="values" /> and
-    /// <paramref name="entries" />, honoring the EditorConfig <c>unset</c> sentinel.
+    /// Applies the entries of <paramref name="section" /> to <paramref name="values" /> and <paramref name="entries" />
+    /// , honoring the EditorConfig <c>unset</c> sentinel.
     /// </summary>
     /// <param name="section">The section whose entries are layered onto the resolved values.</param>
     /// <param name="values">The accumulating dictionary of resolved values.</param>

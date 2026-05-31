@@ -81,7 +81,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     private static byte[] BuildArbitraryBlock(int length, int offset)
     {
         var buffer = new byte[length];
-        for (int i = 0; i < length; i++)
+        for (var i = 0; i < length; i++)
             buffer[i] = (byte)(offset + i);
         return buffer;
     }

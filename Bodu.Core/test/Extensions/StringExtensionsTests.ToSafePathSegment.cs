@@ -55,10 +55,7 @@ public partial class StringExtensionsTests
     /// empty input.
     /// </summary>
     [TestMethod]
-    public void ToSafePathSegment_WhenInputIsEmpty_ShouldReturnSingleUnderscore()
-    {
-        Assert.AreEqual("_", string.Empty.ToSafePathSegment());
-    }
+    public void ToSafePathSegment_WhenInputIsEmpty_ShouldReturnSingleUnderscore() => Assert.AreEqual("_", string.Empty.ToSafePathSegment());
 
     /// <summary>
     /// Verifies that <see cref="StringExtensions.ToSafePathSegment(string)" /> throws

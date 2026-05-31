@@ -31,10 +31,7 @@ public partial class StringExtensionsTests
     /// every access.
     /// </summary>
     [TestMethod]
-    public void WordCasingOptions_Default_ShouldReturnSharedInstance()
-    {
-        Assert.AreSame(WordCasingOptions.Default, WordCasingOptions.Default);
-    }
+    public void WordCasingOptions_Default_ShouldReturnSharedInstance() => Assert.AreSame(WordCasingOptions.Default, WordCasingOptions.Default);
 
     /// <summary>
     /// Verifies that an object initialiser on <see cref="WordCasingOptions" /> overrides the targeted
@@ -75,8 +72,5 @@ public partial class StringExtensionsTests
     /// access.
     /// </summary>
     [TestMethod]
-    public void SlugOptions_Default_ShouldReturnSharedInstance()
-    {
-        Assert.AreSame(SlugOptions.Default, SlugOptions.Default);
-    }
+    public void SlugOptions_Default_ShouldReturnSharedInstance() => Assert.AreSame(SlugOptions.Default, SlugOptions.Default);
 }

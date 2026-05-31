@@ -59,7 +59,7 @@ public sealed class VesakNotableDateAlgorithmTests
     [TestMethod]
     public void GetDate_WhenIteratingSupportedRange_ShouldAlwaysFallInMayOrEarlyJune()
     {
-        for (int year = 1901; year <= 2100; year++)
+        for (var year = 1901; year <= 2100; year++)
         {
             DateTime? result = _algorithm.GetDate(year);
 

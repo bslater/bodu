@@ -7,10 +7,9 @@
 namespace Bodu.Security.Cryptography.Infrastructure;
 
 /// <summary>
-/// Parses NIST Lightweight Cryptography (LWC) AEAD known-answer test files in the <c>.rsp</c>-style format used by
-/// the official ASCON and NIST submission packages. Each vector occupies six labelled lines —
-/// <c>Count</c>, <c>Key</c>, <c>Nonce</c>, <c>PT</c>, <c>AD</c>, <c>CT</c> — and is separated from the next by one or
-/// more blank lines.
+/// Parses NIST Lightweight Cryptography (LWC) AEAD known-answer test files in the <c>.rsp</c>-style format used by the
+/// official ASCON and NIST submission packages. Each vector occupies six labelled lines — <c>Count</c>, <c>Key</c>,
+/// <c>Nonce</c>, <c>PT</c>, <c>AD</c>, <c>CT</c> — and is separated from the next by one or more blank lines.
 /// </summary>
 public static class NistLwcKatReader
 {
@@ -18,8 +17,8 @@ public static class NistLwcKatReader
     /// Reads NIST LWC AEAD known-answer test vectors from <paramref name="stream" />.
     /// </summary>
     /// <param name="stream">
-    /// A readable text stream containing the KAT data. Lines may be in any line-ending convention. Lines beginning
-    /// with <c>#</c> are treated as comments and ignored, as are blank lines between records.
+    /// A readable text stream containing the KAT data. Lines may be in any line-ending convention. Lines beginning with
+    /// <c>#</c> are treated as comments and ignored, as are blank lines between records.
     /// </param>
     /// <param name="tagLength">
     /// The number of trailing bytes of the <c>CT</c> field that form the authentication tag. The KAT files in this
@@ -27,7 +26,9 @@ public static class NistLwcKatReader
     /// </param>
     /// <param name="source">Optional human-readable citation propagated into each emitted vector.</param>
     /// <returns>The parsed vectors, one per <c>Count</c> record, yielded in source order.</returns>
-    /// <exception cref="FormatException">A record is missing one of the six required fields, or a value is malformed.</exception>
+    /// <exception cref="FormatException">
+    /// A record is missing one of the six required fields, or a value is malformed.
+    /// </exception>
     public static IEnumerable<AeadKnownAnswerVector> Read(Stream stream, int tagLength = 16, string? source = null)
     {
         using var reader = new StreamReader(stream);

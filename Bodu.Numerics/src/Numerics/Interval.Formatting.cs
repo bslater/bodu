@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Interval.Formatting.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -31,10 +31,12 @@ public readonly partial struct Interval<T> :
         Format(default, CultureInfo.CurrentCulture);
 
     /// <summary>
-    /// Returns a string representation of this interval using the endpoint format specifier
-    /// <paramref name="format" /> applied to <see cref="Lower" /> and <see cref="Upper" />.
+    /// Returns a string representation of this interval using the endpoint format specifier <paramref name="format" />
+    /// applied to <see cref="Lower" /> and <see cref="Upper" />.
     /// </summary>
-    /// <param name="format">A format specifier accepted by <typeparamref name="T" /> (e.g. <c>"F2"</c>, <c>"N"</c>).</param>
+    /// <param name="format">
+    /// A format specifier accepted by <typeparamref name="T" /> (e.g. <c>"F2"</c>, <c>"N"</c>).
+    /// </param>
     /// <returns>The interval text with each endpoint formatted by <paramref name="format" />.</returns>
     public string ToString(string? format) =>
         Format(format, CultureInfo.CurrentCulture);
@@ -44,7 +46,10 @@ public readonly partial struct Interval<T> :
     /// </summary>
     /// <param name="format">A format specifier accepted by <typeparamref name="T" />.</param>
     /// <param name="formatProvider">The culture used to render each endpoint.</param>
-    /// <returns>The interval text with each endpoint formatted by <paramref name="format" /> under <paramref name="formatProvider" />.</returns>
+    /// <returns>
+    /// The interval text with each endpoint formatted by <paramref name="format" /> under
+    /// <paramref name="formatProvider" />.
+    /// </returns>
     public string ToString(string? format, IFormatProvider? formatProvider) =>
         Format(format, formatProvider);
 
@@ -61,7 +66,7 @@ public readonly partial struct Interval<T> :
     /// </returns>
     public bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format, IFormatProvider? provider)
     {
-        string text = Format(format.IsEmpty ? null : format.ToString(), provider);
+        var text = Format(format.IsEmpty ? null : format.ToString(), provider);
         if (text.Length <= destination.Length)
         {
             text.AsSpan().CopyTo(destination);
@@ -86,14 +91,16 @@ public readonly partial struct Interval<T> :
     /// </returns>
     public bool TryFormat(Span<byte> utf8Destination, out int bytesWritten, ReadOnlySpan<char> format, IFormatProvider? provider)
     {
-        string text = Format(format.IsEmpty ? null : format.ToString(), provider);
+        var text = Format(format.IsEmpty ? null : format.ToString(), provider);
         return Encoding.UTF8.TryGetBytes(text, utf8Destination, out bytesWritten);
     }
 
     /// <summary>
     /// Renders the interval to a string using the supplied endpoint format and culture.
     /// </summary>
-    /// <param name="format">The format specifier applied to each endpoint, or <see langword="null" /> for the default.</param>
+    /// <param name="format">
+    /// The format specifier applied to each endpoint, or <see langword="null" /> for the default.
+    /// </param>
     /// <param name="provider">The culture used to render each endpoint.</param>
     /// <returns>The bracketed interval text or the empty-set glyph.</returns>
     private string Format(string? format, IFormatProvider? provider)
@@ -101,10 +108,10 @@ public readonly partial struct Interval<T> :
         if (IsEmpty)
             return EmptyText;
 
-        char lowerBracket = LowerInclusive ? '[' : '(';
-        char upperBracket = UpperInclusive ? ']' : ')';
-        string lowerText = ((IFormattable)_lower).ToString(format, provider);
-        string upperText = ((IFormattable)_upper).ToString(format, provider);
+        var lowerBracket = LowerInclusive ? '[' : '(';
+        var upperBracket = UpperInclusive ? ']' : ')';
+        var lowerText = ((IFormattable)_lower).ToString(format, provider);
+        var upperText = ((IFormattable)_upper).ToString(format, provider);
         return string.Concat(lowerBracket.ToString(), lowerText, ", ", upperText, upperBracket.ToString());
     }
 }

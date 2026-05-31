@@ -92,7 +92,7 @@ public partial class ConcurrentHashSetTests
     public void Clear_WhenTableHasGrown_ShouldNotShrinkBelowGrownCapacity()
     {
         var set = new ConcurrentHashSet<int>(Enumerable.Range(0, 20_000));
-        int grownBucketCount = set.BucketCount;
+        var grownBucketCount = set.BucketCount;
 
         set.Clear();
 

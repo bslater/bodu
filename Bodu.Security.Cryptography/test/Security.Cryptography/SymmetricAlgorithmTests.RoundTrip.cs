@@ -30,7 +30,7 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
         algorithm.GenerateKey();
         algorithm.GenerateIV();
 
-        byte[] plaintext = BuildIncrementingPlaintext(algorithm.BlockSize / 8 * 4);
+        var plaintext = BuildIncrementingPlaintext(algorithm.BlockSize / 8 * 4);
 
         byte[] ciphertext;
         using (ICryptoTransform encryptor = algorithm.CreateEncryptor())
@@ -89,14 +89,14 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
         algorithm.GenerateKey();
         algorithm.GenerateIV();
 
-        int blockBytes = algorithm.BlockSize / 8;
+        var blockBytes = algorithm.BlockSize / 8;
         if (blockBytes <= 1)
         {
             Assert.Inconclusive("The algorithm has a one-byte block size and cannot produce a shorter partial block.");
             return;
         }
 
-        byte[] plaintext = BuildIncrementingPlaintext(blockBytes - 1);
+        var plaintext = BuildIncrementingPlaintext(blockBytes - 1);
 
         byte[] ciphertext;
         using (ICryptoTransform encryptor = algorithm.CreateEncryptor())
@@ -116,7 +116,7 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     private static byte[] BuildIncrementingPlaintext(int length)
     {
         var buffer = new byte[length];
-        for (int i = 0; i < length; i++)
+        for (var i = 0; i < length; i++)
             buffer[i] = (byte)i;
         return buffer;
     }

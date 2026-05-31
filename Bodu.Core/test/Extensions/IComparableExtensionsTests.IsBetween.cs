@@ -49,10 +49,7 @@ public partial class IComparableExtensionsTests
         string value,
         string? lower,
         string? upper,
-        bool expected)
-    {
-        Assert.AreEqual(expected, value.IsBetween(lower, upper));
-    }
+        bool expected) => Assert.AreEqual(expected, value.IsBetween(lower, upper));
 
     /// <summary>
     /// Verifies that <c>IsBetween</c> works correctly with a reference type (string) using natural ordering.

@@ -33,10 +33,7 @@ public partial class RangeSetTests
     /// </summary>
     /// <param name="set">The set under test.</param>
     /// <param name="expected">The expected ordered list of half-open ranges.</param>
-    private static void AssertContents(RangeSet<int> set, params (int Start, int End)[] expected)
-    {
-        CollectionAssert.AreEqual(expected, Snapshot(set));
-    }
+    private static void AssertContents(RangeSet<int> set, params (int Start, int End)[] expected) => CollectionAssert.AreEqual(expected, Snapshot(set));
 
     /// <summary>
     /// Creates a <see cref="RangeSet{T}" /> seeded with the specified <c>(start, end)</c> tuples.

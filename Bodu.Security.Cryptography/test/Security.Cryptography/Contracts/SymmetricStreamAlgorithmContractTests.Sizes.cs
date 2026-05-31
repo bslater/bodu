@@ -33,7 +33,7 @@ public abstract partial class SymmetricStreamAlgorithmContractTests<TCipher>
         using TCipher cipher = CreateAlgorithm();
         KeySizes[] legal = cipher.LegalKeySizes;
 
-        bool covered = false;
+        var covered = false;
         foreach (KeySizes size in legal)
         {
             if (cipher.KeySize < size.MinSize || cipher.KeySize > size.MaxSize)
@@ -96,9 +96,9 @@ public abstract partial class SymmetricStreamAlgorithmContractTests<TCipher>
         using TCipher cipher = CreateAlgorithm();
         cipher.GenerateKey();
 
-        byte[] first = cipher.Key;
+        var first = cipher.Key;
         first[0] ^= 0xFF;
-        byte[] second = cipher.Key;
+        var second = cipher.Key;
 
         Assert.AreNotEqual(first[0], second[0]);
     }
@@ -111,7 +111,7 @@ public abstract partial class SymmetricStreamAlgorithmContractTests<TCipher>
     public void Nonce_WhenSetToInvalidLength_ShouldThrowCryptographicException()
     {
         using TCipher cipher = CreateAlgorithm();
-        byte[] wrongNonce = new byte[NonceLengthBytes + 1];
+        var wrongNonce = new byte[NonceLengthBytes + 1];
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
@@ -127,7 +127,7 @@ public abstract partial class SymmetricStreamAlgorithmContractTests<TCipher>
     public void Key_WhenSetToInvalidLength_ShouldThrowCryptographicException()
     {
         using TCipher cipher = CreateAlgorithm();
-        byte[] shortKey = new byte[KeyLengthBytes - 1];
+        var shortKey = new byte[KeyLengthBytes - 1];
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {

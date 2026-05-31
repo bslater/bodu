@@ -28,7 +28,7 @@ public partial class MerkleTreeHashTests
     /// <inheritdoc />
     protected override MerkleTreeHash Construct(
         Func<HashAlgorithm>? factory, int? blockSize = null, int? fanOut = null) =>
-        new MerkleTreeHash(
+        new(
             factory!,
             blockSize: blockSize ?? MerkleTestData.DefaultBlockSize,
             fanOut: fanOut ?? MerkleTestData.DefaultFanOut);

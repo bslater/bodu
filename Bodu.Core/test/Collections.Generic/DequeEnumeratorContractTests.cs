@@ -18,7 +18,7 @@ public sealed class DequeEnumeratorContractTests
     protected override Deque<int> Create(params int[] items)
     {
         Deque<int> deque = new();
-        foreach (int item in items)
+        foreach (var item in items)
             deque.AddLast(item);
         return deque;
     }

@@ -39,7 +39,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
     /// constructor parameters, clamping, or post-initialisation setup).
     /// </remarks>
     protected override TAlgorithm CreateAlgorithm() =>
-        new TAlgorithm
+        new()
         {
             Key = ((KeyedAlgorithmSpecification)GetSpecification(DefaultVariant)).TestKey
         };
@@ -59,7 +59,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
     /// parameters, key clamping, key normalisation, or post-initialisation setup.
     /// </remarks>
     protected virtual TAlgorithm CreateAlgorithm(byte[] key) =>
-        new TAlgorithm
+        new()
         {
             Key = key
         };

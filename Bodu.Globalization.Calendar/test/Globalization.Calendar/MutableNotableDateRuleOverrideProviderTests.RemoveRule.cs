@@ -19,7 +19,7 @@ public partial class MutableNotableDateRuleOverrideProviderTests
 
         provider.RemoveRule("Boxing Day");
 
-        List<RuleRemoval> removals = provider.GetRemovals().ToList();
+        var removals = provider.GetRemovals().ToList();
         Assert.AreEqual(1, removals.Count);
         Assert.AreEqual("Boxing Day", removals[0].RuleName);
         Assert.IsNull(removals[0].FromYear);
@@ -109,7 +109,7 @@ public partial class MutableNotableDateRuleOverrideProviderTests
         provider.RemoveRule("B");
         provider.RemoveRule("C");
 
-        List<RuleRemoval> removals = provider.GetRemovals().ToList();
+        var removals = provider.GetRemovals().ToList();
         CollectionAssert.AreEqual(new[] { "A", "B", "C" }, removals.Select(r => r.RuleName).ToList());
     }
 
@@ -121,7 +121,7 @@ public partial class MutableNotableDateRuleOverrideProviderTests
     public void RemoveRule_WhenCalled_ShouldRaiseChangedExactlyOnce()
     {
         MutableNotableDateRuleOverrideProvider provider = new();
-        int changedCount = 0;
+        var changedCount = 0;
         provider.Changed += (_, _) => changedCount++;
 
         provider.RemoveRule("X");
@@ -170,7 +170,7 @@ public partial class MutableNotableDateRuleOverrideProviderTests
         provider.RemoveRule("Boxing Day", territoryCode: "AU-NT");
         provider.RemoveRule("Boxing Day", fromYear: 2030, toYear: 2030, territoryCode: "AU-VIC");
 
-        List<RuleRemoval> removals = provider.GetRemovals().ToList();
+        var removals = provider.GetRemovals().ToList();
 
         Assert.AreEqual(3, removals.Count);
         Assert.IsTrue(removals.Any(r => r.FromYear == 2026 && r.ToYear == 2026 && r.TerritoryCode is null));

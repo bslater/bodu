@@ -32,10 +32,10 @@ public abstract partial class SymmetricStreamAlgorithmContractTests<TCipher>
     {
         using TCipher cipher = CreateAlgorithm();
         cipher.GenerateNonce();
-        byte[] first = (byte[])cipher.Nonce.Clone();
+        var first = (byte[])cipher.Nonce.Clone();
 
         cipher.GenerateNonce();
-        byte[] second = cipher.Nonce;
+        var second = cipher.Nonce;
 
         CollectionAssert.AreNotEqual(first, second);
     }

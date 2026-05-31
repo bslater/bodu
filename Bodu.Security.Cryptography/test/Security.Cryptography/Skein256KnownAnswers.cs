@@ -7,15 +7,15 @@
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Holds the curated <see cref="Skein256" /> known-answer test vectors, transcribed verbatim from the Skein 1.3 /
-/// NIST CD <c>skein_golden_kat.txt</c> reference distribution. Each per-variant collection is keyed on a
+/// Holds the curated <see cref="Skein256" /> known-answer test vectors, transcribed verbatim from the Skein 1.3 / NIST
+/// CD <c>skein_golden_kat.txt</c> reference distribution. Each per-variant collection is keyed on a
 /// <see cref="Skein256TestVariant" /> value so the test fixture can attach the correct rows to that variant's
 /// specification.
 /// </summary>
 /// <remarks>
 /// The non-canonical truncations (Skein-256-160, -224) ship with a single 1024-bit message in the reference KAT;
-/// Skein-256-256 ships with a richer set spanning empty, single-byte, one-block and two-block messages. Skein-256
-/// with a 128-bit output has no published KAT vectors in the NIST CD distribution and so contributes no rows.
+/// Skein-256-256 ships with a richer set spanning empty, single-byte, one-block and two-block messages. Skein-256 with
+/// a 128-bit output has no published KAT vectors in the NIST CD distribution and so contributes no rows.
 /// </remarks>
 internal static class Skein256KnownAnswers
 {

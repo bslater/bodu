@@ -12,10 +12,9 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Each call to <see cref="RecordEncrypt" /> or <see cref="RecordDecrypt" /> appends a
-/// <see cref="BlockOperation" /> entry to the appropriate log. Tests can then assert on the number of
-/// blocks processed, the exact byte content of each input and output block, and the sequencing of
-/// encrypt vs. decrypt calls.
+/// Each call to <see cref="RecordEncrypt" /> or <see cref="RecordDecrypt" /> appends a <see cref="BlockOperation" />
+/// entry to the appropriate log. Tests can then assert on the number of blocks processed, the exact byte content of
+/// each input and output block, and the sequencing of encrypt vs. decrypt calls.
 /// </para>
 /// <para>
 /// This class is not thread-safe. Use a separate instance per test case.
@@ -128,7 +127,8 @@ public sealed class SimpleReversingDiagnostics
     }
 
     /// <summary>
-    /// Represents a single block-level cipher or transform operation captured by <see cref="SimpleReversingDiagnostics" />.
+    /// Represents a single block-level cipher or transform operation captured by
+    /// <see cref="SimpleReversingDiagnostics" />.
     /// </summary>
     public sealed class BlockOperation
     {
@@ -146,22 +146,34 @@ public sealed class SimpleReversingDiagnostics
             Timestamp = DateTimeOffset.UtcNow;
         }
 
-        /// <summary>Gets a snapshot of the input bytes presented to the operation.</summary>
+        /// <summary>
+        /// Gets a snapshot of the input bytes presented to the operation.
+        /// </summary>
         public byte[] Input { get; }
 
-        /// <summary>Gets a snapshot of the output bytes produced by the operation.</summary>
+        /// <summary>
+        /// Gets a snapshot of the output bytes produced by the operation.
+        /// </summary>
         public byte[] Output { get; }
 
-        /// <summary>Gets the zero-based ordinal of this operation within its log.</summary>
+        /// <summary>
+        /// Gets the zero-based ordinal of this operation within its log.
+        /// </summary>
         public int SequenceNumber { get; }
 
-        /// <summary>Gets the UTC timestamp at which this operation was recorded.</summary>
+        /// <summary>
+        /// Gets the UTC timestamp at which this operation was recorded.
+        /// </summary>
         public DateTimeOffset Timestamp { get; }
 
-        /// <summary>Gets the number of input bytes in this operation.</summary>
+        /// <summary>
+        /// Gets the number of input bytes in this operation.
+        /// </summary>
         public int InputLength => Input.Length;
 
-        /// <summary>Gets the number of output bytes in this operation.</summary>
+        /// <summary>
+        /// Gets the number of output bytes in this operation.
+        /// </summary>
         public int OutputLength => Output.Length;
 
         /// <inheritdoc />

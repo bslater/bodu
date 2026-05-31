@@ -58,10 +58,7 @@ public sealed partial class AesBlockCipherTests
     /// <see cref="ArgumentNullException" />. AES-specific contract not covered by the generic base.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenKeyIsNull_ShouldThrowExactly()
-    {
-        Assert.ThrowsExactly<ArgumentNullException>(() => new AesBlockCipher(null!));
-    }
+    public void Ctor_WhenKeyIsNull_ShouldThrowExactly() => Assert.ThrowsExactly<ArgumentNullException>(() => new AesBlockCipher(null!));
 
     /// <summary>
     /// Verifies that construction fails with <see cref="CryptographicException" /> when the supplied

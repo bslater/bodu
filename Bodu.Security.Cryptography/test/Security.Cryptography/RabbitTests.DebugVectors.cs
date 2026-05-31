@@ -92,7 +92,7 @@ public sealed partial class RabbitTests
     {
         Assert.AreEqual(expected.Length, actual.Count, "Unexpected number of inner-state checkpoints.");
 
-        for (int i = 0; i < expected.Length; i++)
+        for (var i = 0; i < expected.Length; i++)
         {
             StateCheckpoint want = expected[i];
             RabbitStreamCipher.StateCheckpoint got = actual[i];

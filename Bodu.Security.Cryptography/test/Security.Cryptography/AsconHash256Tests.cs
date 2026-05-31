@@ -44,7 +44,7 @@ public partial class AsconHash256Tests
     protected override HashAlgorithmSpecification GetSpecification(SingleTestVariant variant) => Specification;
 
     /// <inheritdoc />
-    protected override AsconHash256 CreateAlgorithm(SingleTestVariant variant) => new AsconHash256();
+    protected override AsconHash256 CreateAlgorithm(SingleTestVariant variant) => new();
 
     /// <inheritdoc />
     protected override IReadOnlyList<string> GetExpectedHashesForIncrementalInput(SingleTestVariant variant) =>

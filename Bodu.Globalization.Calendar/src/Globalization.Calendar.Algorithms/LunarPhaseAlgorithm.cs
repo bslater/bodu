@@ -26,7 +26,7 @@ internal static class LunarPhaseAlgorithm
     /// The J2000.0 epoch expressed as a <see cref="DateTime" /> (2000-01-01T12:00:00, kind unspecified), equal to JDE
     /// 2451545.0.
     /// </summary>
-    private static readonly DateTime s_j2000Epoch = new DateTime(2000, 1, 1, 12, 0, 0, DateTimeKind.Unspecified);
+    private static readonly DateTime s_j2000Epoch = new(2000, 1, 1, 12, 0, 0, DateTimeKind.Unspecified);
 
     /// <summary>
     /// The mean synodic month length in days (IAU value), used to advance the lunation index between search attempts.

@@ -31,8 +31,8 @@ using Bodu.Test.Kat;
 namespace Bodu.IO.Hashing.CheckDigits;
 
 /// <summary>
-/// Represents a single known-answer test vector for a <see cref="CheckDigitAlgorithm" />, pairing a body of
-/// decimal digits with the expected check digit produced by the algorithm under test.
+/// Represents a single known-answer test vector for a <see cref="CheckDigitAlgorithm" />, pairing a body of decimal
+/// digits with the expected check digit produced by the algorithm under test.
 /// </summary>
 public sealed record CheckDigitKnownAnswer : IKat
 {

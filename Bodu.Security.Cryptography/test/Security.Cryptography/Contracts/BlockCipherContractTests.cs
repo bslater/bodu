@@ -60,7 +60,7 @@ public abstract class BlockCipherContractTests<TCipher>
     {
         foreach (BlockCipherKat kat in KnownAnswers)
         {
-            byte[] actual = EncryptBlock(kat.Key, kat.Plaintext, kat.Tweak);
+            var actual = EncryptBlock(kat.Key, kat.Plaintext, kat.Tweak);
 
             CollectionAssert.AreEqual(
                 kat.Ciphertext,
@@ -78,7 +78,7 @@ public abstract class BlockCipherContractTests<TCipher>
     {
         foreach (BlockCipherKat kat in KnownAnswers)
         {
-            byte[] actual = DecryptBlock(kat.Key, kat.Ciphertext, kat.Tweak);
+            var actual = DecryptBlock(kat.Key, kat.Ciphertext, kat.Tweak);
 
             CollectionAssert.AreEqual(
                 kat.Plaintext,

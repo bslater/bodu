@@ -70,9 +70,9 @@ public class CrcLookupTableCache
     }
 
     /// <summary>
-    /// Composite key identifying a CRC lookup-table tuple by width, polynomial, and input-reflection flag.
-    /// Used as the dictionary key inside <see cref="CrcLookupTableCache" /> so lookups avoid the string-formatting
-    /// and string-hashing cost that an interpolated key would incur on every call.
+    /// Composite key identifying a CRC lookup-table tuple by width, polynomial, and input-reflection flag. Used as the
+    /// dictionary key inside <see cref="CrcLookupTableCache" /> so lookups avoid the string-formatting and
+    /// string-hashing cost that an interpolated key would incur on every call.
     /// </summary>
     /// <param name="Size">The CRC width in bits.</param>
     /// <param name="Polynomial">The CRC polynomial.</param>
@@ -94,8 +94,7 @@ public class CrcLookupTableCache
     /// <remarks>
     /// The returned view is shared across all callers with the same parameters. Returning
     /// <see cref="ReadOnlyMemory{T}" /> prevents the caller from mutating the shared backing array at compile time;
-    /// internal callers that require a raw <see cref="ulong" /> array can use
-    /// <see cref="GetLookupTableArray" />.
+    /// internal callers that require a raw <see cref="ulong" /> array can use <see cref="GetLookupTableArray" />.
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="size" /> is outside the supported range.
@@ -104,8 +103,8 @@ public class CrcLookupTableCache
         GetLookupTableArray(size, polynomial, reflectIn);
 
     /// <summary>
-    /// Returns the cached lookup table for the specified CRC parameters as the raw <see cref="ulong" /> array used
-    /// by the engine's hot path, building it on first access.
+    /// Returns the cached lookup table for the specified CRC parameters as the raw <see cref="ulong" /> array used by
+    /// the engine's hot path, building it on first access.
     /// </summary>
     /// <param name="size">
     /// The CRC width in bits (between <see cref="CrcStandard.MinSize" /> and <see cref="CrcStandard.MaxSize" />).

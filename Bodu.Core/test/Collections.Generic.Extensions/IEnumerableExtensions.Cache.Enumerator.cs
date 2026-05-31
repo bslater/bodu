@@ -39,8 +39,8 @@ public sealed partial class IEnumerableExtensionsTests_Cache
     }
 
     /// <summary>
-    /// Verifies that calling <c>Dispose</c> on the enumerator does not throw and does not invalidate subsequent enumerator instances
-    /// obtained from the same cached source.
+    /// Verifies that calling <c>Dispose</c> on the enumerator does not throw and does not invalidate subsequent
+    /// enumerator instances obtained from the same cached source.
     /// </summary>
     [TestMethod]
     public void Enumerator_Dispose_ShouldBeIdempotentAndNotAffectOtherEnumerators()
@@ -99,8 +99,8 @@ public sealed partial class IEnumerableExtensionsTests_Cache
     }
 
     /// <summary>
-    /// Verifies that the non-generic <see cref="IEnumerable.GetEnumerator" /> on a cached sequence returns an enumerator that walks all
-    /// emitted values.
+    /// Verifies that the non-generic <see cref="IEnumerable.GetEnumerator" /> on a cached sequence returns an
+    /// enumerator that walks all emitted values.
     /// </summary>
     [TestMethod]
     public void Enumerator_NonGenericGetEnumerator_ShouldEnumerateAllValues()
@@ -122,7 +122,8 @@ public sealed partial class IEnumerableExtensionsTests_Cache
     }
 
     /// <summary>
-    /// Verifies that two independent enumerators share the cached buffer once it has been populated, and observe the same values.
+    /// Verifies that two independent enumerators share the cached buffer once it has been populated, and observe the
+    /// same values.
     /// </summary>
     [TestMethod]
     public void Enumerator_WhenObtainedTwice_ShouldYieldIdenticalValuesFromCache()
@@ -145,8 +146,8 @@ public sealed partial class IEnumerableExtensionsTests_Cache
     }
 
     /// <summary>
-    /// Verifies that an enumerator obtained from a cached sequence after the underlying source produced no elements yields no items
-    /// and immediately reports end-of-sequence.
+    /// Verifies that an enumerator obtained from a cached sequence after the underlying source produced no elements
+    /// yields no items and immediately reports end-of-sequence.
     /// </summary>
     [TestMethod]
     public void Enumerator_WhenSourceIsEmpty_ShouldYieldNothing()

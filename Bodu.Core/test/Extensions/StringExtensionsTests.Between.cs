@@ -35,10 +35,7 @@ public partial class StringExtensionsTests
     /// <param name="expected">The expected return value.</param>
     [DataTestMethod]
     [DynamicData(nameof(GetBetweenCases), DynamicDataSourceType.Method)]
-    public void Between_WhenInvoked_ShouldReturnExpected(string value, string start, string end, StringComparison comparison, string? expected)
-    {
-        Assert.AreEqual(expected, value.Between(start, end, comparison));
-    }
+    public void Between_WhenInvoked_ShouldReturnExpected(string value, string start, string end, StringComparison comparison, string? expected) => Assert.AreEqual(expected, value.Between(start, end, comparison));
 
     /// <summary>
     /// Verifies that <see cref="StringExtensions.Between(string, string, string, StringComparison)" /> throws

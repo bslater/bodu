@@ -31,7 +31,9 @@ namespace Bodu.Globalization.Calendar.Data;
 public sealed record RuleCatalogueExpectation : IKat
 {
     /// <inheritdoc />
-    /// <remarks>Returns <see cref="Territory" /> so the row participates in <see cref="KatDisplayName" />-driven formatting.</remarks>
+    /// <remarks>
+    /// Returns <see cref="Territory" /> so the row participates in <see cref="KatDisplayName" />-driven formatting.
+    /// </remarks>
     string IKat.Name => Territory;
 
     /// <summary>

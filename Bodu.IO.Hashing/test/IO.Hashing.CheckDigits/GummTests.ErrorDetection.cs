@@ -21,11 +21,11 @@ public sealed partial class GummTests
     {
         foreach (var body in EnumerateBodies(1, 4))
         {
-            char[] full = (body + Gumm.Compute(body.AsSpan())).ToCharArray();
+            var full = (body + Gumm.Compute(body.AsSpan())).ToCharArray();
 
             for (var i = 0; i < full.Length; i++)
             {
-                char original = full[i];
+                var original = full[i];
                 for (var d = '0'; d <= '9'; d++)
                 {
                     if (d == original) continue;
@@ -52,7 +52,7 @@ public sealed partial class GummTests
     {
         foreach (var body in EnumerateBodies(1, 4))
         {
-            char[] full = (body + Gumm.Compute(body.AsSpan())).ToCharArray();
+            var full = (body + Gumm.Compute(body.AsSpan())).ToCharArray();
 
             for (var i = 0; i < full.Length - 1; i++)
             {

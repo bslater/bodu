@@ -73,10 +73,7 @@ public sealed class Base64UrlCoverageTests
     /// variant call.
     /// </summary>
     [TestMethod]
-    public void Encode_ArrayOverload_ShouldMatchBase64UrlSafeVariant()
-    {
-        Assert.AreEqual(Base64.Encode(Payload, Base64Variant.UrlSafe), Base64Url.Encode(Payload));
-    }
+    public void Encode_ArrayOverload_ShouldMatchBase64UrlSafeVariant() => Assert.AreEqual(Base64.Encode(Payload, Base64Variant.UrlSafe), Base64Url.Encode(Payload));
 
     /// <summary>
     /// Verifies that <see cref="Base64Url.Encode(ReadOnlySpan{byte})" /> produces the same URL-safe output as the

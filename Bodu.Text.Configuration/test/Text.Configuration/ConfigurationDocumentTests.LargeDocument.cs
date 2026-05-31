@@ -38,7 +38,7 @@ public partial class ConfigurationDocumentTests
                 builder.Append("key").Append(j).Append(" = value").Append(j).Append('\n');
         }
 
-        Stopwatch stopwatch = Stopwatch.StartNew();
+        var stopwatch = Stopwatch.StartNew();
         IniDocument doc = ConfigurationDocument.Parse(builder.ToString());
         stopwatch.Stop();
 
@@ -64,7 +64,7 @@ public partial class ConfigurationDocumentTests
         for (var i = 0; i < entryCount; i++)
             builder.Append("key").Append(i).Append(" = value").Append(i).Append('\n');
 
-        Stopwatch stopwatch = Stopwatch.StartNew();
+        var stopwatch = Stopwatch.StartNew();
         IniDocument doc = ConfigurationDocument.Parse(builder.ToString());
         stopwatch.Stop();
 

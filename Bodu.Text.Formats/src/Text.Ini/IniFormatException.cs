@@ -19,8 +19,8 @@ namespace Bodu.Text.Ini;
 /// </para>
 /// <para>
 /// <see cref="TextFormatException.LineNumber" /> carries the 1-based source line that triggered the failure when the
-/// parser was able to pinpoint it, or <c>0</c> when the error is not associated with a specific line (for example,
-/// when the source is completely empty under a policy that requires at least one section).
+/// parser was able to pinpoint it, or <c>0</c> when the error is not associated with a specific line (for example, when
+/// the source is completely empty under a policy that requires at least one section).
 /// </para>
 /// </remarks>
 /// <example>

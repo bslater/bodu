@@ -17,10 +17,7 @@ public sealed class Base64VariantTests
     /// Verifies that <see cref="Base64Variant.Standard" /> is the default value (numerical zero).
     /// </summary>
     [TestMethod]
-    public void Standard_ShouldBeDefaultValue()
-    {
-        Assert.AreEqual(default, Base64Variant.Standard);
-    }
+    public void Standard_ShouldBeDefaultValue() => Assert.AreEqual(default, Base64Variant.Standard);
 
     /// <summary>
     /// Verifies that the variants declare the documented numerical values so persisted enum values stay stable.

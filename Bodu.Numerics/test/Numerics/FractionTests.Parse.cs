@@ -24,7 +24,7 @@ public partial class FractionTests
     [DataRow("75%", 3, 4)]
     public void Parse_WhenGivenSupportedForm_ShouldReturnExpectedValue(string text, int expectedNumerator, int expectedDenominator)
     {
-        Fraction<int> value = Fraction<int>.Parse(text);
+        var value = Fraction<int>.Parse(text);
 
         Assert.AreEqual(new Fraction<int>(expectedNumerator, expectedDenominator), value);
     }
@@ -64,7 +64,7 @@ public partial class FractionTests
     [TestMethod]
     public void TryParse_WhenGivenValidInput_ShouldReturnTrueAndValue()
     {
-        bool parsed = Fraction<int>.TryParse("5/8", out Fraction<int> value);
+        var parsed = Fraction<int>.TryParse("5/8", out Fraction<int> value);
 
         Assert.IsTrue(parsed);
         Assert.AreEqual(new Fraction<int>(5, 8), value);
@@ -79,7 +79,7 @@ public partial class FractionTests
     [DataRow(null)]
     public void TryParse_WhenGivenInvalidInput_ShouldReturnFalse(string? text)
     {
-        bool parsed = Fraction<int>.TryParse(text, out Fraction<int> value);
+        var parsed = Fraction<int>.TryParse(text, out Fraction<int> value);
 
         Assert.IsFalse(parsed);
         Assert.AreEqual(Fraction<int>.Zero, value);
@@ -91,7 +91,7 @@ public partial class FractionTests
     [TestMethod]
     public void TryParse_WhenValueExceedsFixedWidthRange_ShouldReturnFalse()
     {
-        bool parsed = Fraction<int>.TryParse("9999999999/1", out _);
+        var parsed = Fraction<int>.TryParse("9999999999/1", out _);
 
         Assert.IsFalse(parsed);
     }
@@ -113,10 +113,7 @@ public partial class FractionTests
     [DataRow("0%", 0, 1)]
     [DataRow("  -3 / 4  ", -3, 4)]
     [DataRow("100/300", 1, 3)]
-    public void Parse_WhenGivenKnownForm_ShouldReturnExpectedValue(string text, int en, int ed)
-    {
-        Assert.AreEqual(new Fraction<int>(en, ed), Fraction<int>.Parse(text));
-    }
+    public void Parse_WhenGivenKnownForm_ShouldReturnExpectedValue(string text, int en, int ed) => Assert.AreEqual(new Fraction<int>(en, ed), Fraction<int>.Parse(text));
 
     /// <summary>
     /// Verifies that every supported Unicode vulgar-fraction glyph parses to its rational value.
@@ -141,10 +138,7 @@ public partial class FractionTests
     [DataRow("⅞", 7, 8)]
     [DataRow("⅑", 1, 9)]
     [DataRow("⅒", 1, 10)]
-    public void Parse_WhenGivenVulgarGlyph_ShouldReturnExpectedValue(string text, int en, int ed)
-    {
-        Assert.AreEqual(new Fraction<int>(en, ed), Fraction<int>.Parse(text));
-    }
+    public void Parse_WhenGivenVulgarGlyph_ShouldReturnExpectedValue(string text, int en, int ed) => Assert.AreEqual(new Fraction<int>(en, ed), Fraction<int>.Parse(text));
 
     /// <summary>
     /// Verifies that parsing rejects a wide table of malformed input.
@@ -184,11 +178,11 @@ public partial class FractionTests
     [DataRow(-11, 8)]
     public void Parse_WhenRoundTrippingEveryFormat_ShouldReproduceValue(int numerator, int denominator)
     {
-        Fraction<int> value = new Fraction<int>(numerator, denominator);
+        var value = new Fraction<int>(numerator, denominator);
 
-        foreach (string format in new[] { "G", "M", "U", "P" })
+        foreach (var format in new[] { "G", "M", "U", "P" })
         {
-            string text = value.ToString(format, System.Globalization.CultureInfo.InvariantCulture);
+            var text = value.ToString(format, System.Globalization.CultureInfo.InvariantCulture);
             Assert.AreEqual(value, Fraction<int>.Parse(text, System.Globalization.CultureInfo.InvariantCulture), format);
         }
     }
@@ -203,7 +197,7 @@ public partial class FractionTests
     [DataRow("-1 -1/2")]
     public void TryParse_WhenMagnitudeComponentIsSigned_ShouldReturnFalse(string text)
     {
-        bool parsed = Fraction<int>.TryParse(text, out Fraction<int> result);
+        var parsed = Fraction<int>.TryParse(text, out Fraction<int> result);
 
         Assert.IsFalse(parsed);
         Assert.AreEqual(Fraction<int>.Zero, result);

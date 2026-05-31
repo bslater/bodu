@@ -16,7 +16,9 @@ namespace Bodu.Globalization.Calendar.DependencyInjection;
 /// <remarks>
 /// <para>
 /// The type is internal to the assembly — consumers see only the <see cref="INotableDateServiceBuilder" /> interface
-/// returned from <see cref="ServiceCollectionExtensions.AddNotableDates(IServiceCollection, Microsoft.Extensions.Configuration.IConfiguration?, string)" />.
+/// returned from
+/// <see cref="ServiceCollectionExtensions.AddNotableDates(IServiceCollection, Microsoft.Extensions.Configuration.IConfiguration?, string)" />
+/// .
 /// </para>
 /// </remarks>
 internal sealed class NotableDateServiceBuilder : INotableDateServiceBuilder

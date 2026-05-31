@@ -165,7 +165,7 @@ public partial class NotableDateServiceTests
             ],
             workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 
-        List<string> territories = service.GetSupportedTerritories().ToList();
+        var territories = service.GetSupportedTerritories().ToList();
 
         CollectionAssert.AreEqual(new[] { "AU", "AU-NSW", "CN", "ZZ" }, territories);
     }

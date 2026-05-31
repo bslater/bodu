@@ -11,17 +11,17 @@ using Bodu.IO.Hashing.Checksums;
 namespace Bodu.IO.Hashing.CheckDigits;
 
 /// <summary>
-/// Computes the check symbol of a Crockford Base32 encoded value using the <c>modulo 37</c> scheme defined by
-/// Douglas Crockford. This class cannot be inherited.
+/// Computes the check symbol of a Crockford Base32 encoded value using the <c>modulo 37</c> scheme defined by Douglas
+/// Crockford. This class cannot be inherited.
 /// </summary>
 /// <remarks>
 /// <para>
-/// Crockford's Base32 specification defines an optional trailing check symbol equal to the encoded integer value
-/// taken modulo 37. The body is decoded as a Base32 number using the thirty-two-symbol Crockford alphabet
-/// (<c>'0'</c>–<c>'9'</c> and <c>'A'</c>–<c>'Z'</c> excluding <c>'I'</c>, <c>'L'</c>, <c>'O'</c>, and <c>'U'</c>);
-/// decoding is case-insensitive and treats <c>'I'</c>/<c>'L'</c> as <c>1</c> and <c>'O'</c> as <c>0</c>. The
-/// running value is reduced modulo 37 by Horner's method, so arbitrarily long inputs are processed without
-/// arbitrary-precision arithmetic.
+/// Crockford's Base32 specification defines an optional trailing check symbol equal to the encoded integer value taken
+/// modulo 37. The body is decoded as a Base32 number using the thirty-two-symbol Crockford alphabet (<c>'0'</c>–
+/// <c>'9'</c> and <c>'A'</c>–<c>'Z'</c> excluding <c>'I'</c>, <c>'L'</c>, <c>'O'</c>, and <c>'U'</c>); decoding is
+/// case-insensitive and treats <c>'I'</c>/<c>'L'</c> as <c>1</c> and <c>'O'</c> as <c>0</c>. The running value is
+/// reduced modulo 37 by Horner's method, so arbitrarily long inputs are processed without arbitrary-precision
+/// arithmetic.
 /// </para>
 /// <para>
 /// Because the modulus 37 is prime and exceeds the alphabet size, five additional check-only symbols represent the
@@ -110,9 +110,8 @@ public sealed class Crockford32
     /// <param name="valueIncludingCheck">The complete sequence including the trailing check symbol.</param>
     /// <returns>
     /// <see langword="true" /> if the sequence evaluates as valid under the Crockford Base32 modulo-37 scheme;
-    /// otherwise, <see langword="false" /> — including the case where <paramref name="valueIncludingCheck" /> is
-    /// empty, contains a body character outside the Crockford Base32 alphabet, or ends with an unrecognized check
-    /// symbol.
+    /// otherwise, <see langword="false" /> — including the case where <paramref name="valueIncludingCheck" /> is empty,
+    /// contains a body character outside the Crockford Base32 alphabet, or ends with an unrecognized check symbol.
     /// </returns>
     public static bool IsValid(ReadOnlySpan<char> valueIncludingCheck)
     {
@@ -155,7 +154,9 @@ public sealed class Crockford32
     /// Decodes a Crockford Base32 body character to its value, or <c>-1</c> when it is outside the alphabet.
     /// </summary>
     /// <param name="ch">The character to decode. Decoding is case-insensitive.</param>
-    /// <returns>The value in the range 0 to 31, or <c>-1</c> when <paramref name="ch" /> is not a body symbol.</returns>
+    /// <returns>
+    /// The value in the range 0 to 31, or <c>-1</c> when <paramref name="ch" /> is not a body symbol.
+    /// </returns>
     private static int TryDecodeBody(char ch)
     {
         if ((uint)(ch - '0') <= 9u) return ch - '0';
@@ -189,7 +190,9 @@ public sealed class Crockford32
     /// check-only symbols (32 to 36), or <c>-1</c> when it is unrecognized.
     /// </summary>
     /// <param name="ch">The character to decode. Decoding is case-insensitive.</param>
-    /// <returns>The value in the range 0 to 36, or <c>-1</c> when <paramref name="ch" /> is not a check symbol.</returns>
+    /// <returns>
+    /// The value in the range 0 to 36, or <c>-1</c> when <paramref name="ch" /> is not a check symbol.
+    /// </returns>
     private static int TryDecodeCheck(char ch)
     {
         var value = TryDecodeBody(ch);
@@ -212,7 +215,9 @@ public sealed class Crockford32
     /// <param name="ch">The character to decode.</param>
     /// <param name="paramName">The parameter name reported in the exception.</param>
     /// <returns>The value in the range 0 to 31.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="ch" /> is not a body symbol.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="ch" /> is not a body symbol.
+    /// </exception>
     private static int DecodeBody(char ch, string paramName)
     {
         var value = TryDecodeBody(ch);

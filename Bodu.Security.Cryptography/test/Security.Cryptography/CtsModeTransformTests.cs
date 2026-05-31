@@ -11,7 +11,7 @@ public sealed partial class CtsModeTransformTests
     : BlockCipherModeTests<CtsModeTransform>
 {
     protected override CtsModeTransform CreateTransform(IBlockCipher cipher, byte[] iv)
-        => new CtsModeTransform(cipher, iv);
+        => new(cipher, iv);
 
     /// <summary>
     /// CTS explicitly accepts non-block-aligned input — that is its primary purpose. The base-class

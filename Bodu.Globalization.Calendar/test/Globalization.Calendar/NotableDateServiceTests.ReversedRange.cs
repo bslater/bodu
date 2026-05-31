@@ -37,7 +37,7 @@ public partial class NotableDateServiceTests
     public void GetNotableDates_WhenRangeIsReversed_WithFilter_ShouldThrow()
     {
         NotableDateService service = BuildService(Fixed("Midsummer", 6, 21));
-        NotableDateFilter holidayFilter = NotableDateFilter.ForAnyCategory(NotableDateCategory.Holiday);
+        var holidayFilter = NotableDateFilter.ForAnyCategory(NotableDateCategory.Holiday);
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {

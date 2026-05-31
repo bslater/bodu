@@ -9,33 +9,39 @@ using Bodu.Test.Kat;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Represents a single known-answer test vector for a keyed hash family — a named input payload paired with an
-/// optional per-row key, an optional descriptive profile tag, and the expected hex-encoded digest produced by the
-/// algorithm under test for the specification's selected variant.
+/// Represents a single known-answer test vector for a keyed hash family — a named input payload paired with an optional
+/// per-row key, an optional descriptive profile tag, and the expected hex-encoded digest produced by the algorithm
+/// under test for the specification's selected variant.
 /// </summary>
 /// <remarks>
 /// <para>
 /// Instances populate <see cref="KeyedHashAlgorithmKnownAnswers.Vectors" /> on the keyed-hash specification. The
-/// per-row <see cref="Key" /> lets a single algorithm variant span multiple keyed test cases — for example, the
-/// Skein 1.3 / NIST CD <c>random+MAC</c> KAT entries, where every vector carries its own randomly chosen MAC key
-/// of varying length.
+/// per-row <see cref="Key" /> lets a single algorithm variant span multiple keyed test cases — for example, the Skein
+/// 1.3 / NIST CD <c>random+MAC</c> KAT entries, where every vector carries its own randomly chosen MAC key of varying
+/// length.
 /// </para>
 /// <para>
 /// When <see cref="Key" /> is <see langword="null" /> the harness uses the variant's default key from
-/// <see cref="KeyedAlgorithmSpecification.TestKey" />. When <see cref="Key" /> is an empty array the harness
-/// assigns the empty-key sentinel that variable-length-optional-key algorithms (Skein, BLAKE2) treat as the
-/// canonical unkeyed mode.
+/// <see cref="KeyedAlgorithmSpecification.TestKey" />. When <see cref="Key" /> is an empty array the harness assigns
+/// the empty-key sentinel that variable-length-optional-key algorithms (Skein, BLAKE2) treat as the canonical unkeyed
+/// mode.
 /// </para>
 /// </remarks>
 public sealed record KeyedHashAlgorithmKnownAnswer : IKat
 {
-    /// <summary>Gets the semantic name of this test vector used in diagnostic messages.</summary>
+    /// <summary>
+    /// Gets the semantic name of this test vector used in diagnostic messages.
+    /// </summary>
     public required string Name { get; init; }
 
-    /// <summary>Gets the raw input bytes to feed to the algorithm.</summary>
+    /// <summary>
+    /// Gets the raw input bytes to feed to the algorithm.
+    /// </summary>
     public required byte[] Input { get; init; }
 
-    /// <summary>Gets the hex-encoded expected digest produced by hashing <see cref="Input" /> with this row's key.</summary>
+    /// <summary>
+    /// Gets the hex-encoded expected digest produced by hashing <see cref="Input" /> with this row's key.
+    /// </summary>
     public required string ExpectedHex { get; init; }
 
     /// <summary>

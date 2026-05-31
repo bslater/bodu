@@ -176,10 +176,7 @@ public sealed class PluginTrustPolicyTests
     /// Verifies that <see cref="CompositePluginTrustPolicy" /> throws when constructed with an empty policy array.
     /// </summary>
     [TestMethod]
-    public void CompositePluginTrustPolicy_WhenConstructedEmpty_ShouldThrowExactly()
-    {
-        Assert.ThrowsExactly<ArgumentException>(() => _ = new CompositePluginTrustPolicy());
-    }
+    public void CompositePluginTrustPolicy_WhenConstructedEmpty_ShouldThrowExactly() => Assert.ThrowsExactly<ArgumentException>(() => _ = new CompositePluginTrustPolicy());
 
     /// <summary>
     /// Verifies that <see cref="DelegatingPluginTrustPolicy" /> forwards the context to its callback verbatim and returns the

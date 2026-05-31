@@ -36,10 +36,7 @@ public partial class EnumExtensionsTests
     /// Verifies that <c>HasAllFlags</c> returns <see langword="true" /> when the flags argument has no bits set.
     /// </summary>
     [TestMethod]
-    public void HasAllFlags_WhenFlagsIsNone_ShouldReturnTrue()
-    {
-        Assert.IsTrue(IntFlags.A.HasAllFlags(IntFlags.None));
-    }
+    public void HasAllFlags_WhenFlagsIsNone_ShouldReturnTrue() => Assert.IsTrue(IntFlags.A.HasAllFlags(IntFlags.None));
 
     /// <summary>
     /// Verifies that <c>HasAllFlags</c> evaluates a bit beyond the 32-bit range for a <see cref="long" />-backed

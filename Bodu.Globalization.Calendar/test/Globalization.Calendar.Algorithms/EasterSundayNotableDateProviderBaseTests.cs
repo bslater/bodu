@@ -145,7 +145,7 @@ public sealed class EasterSundayNotableDateProviderBaseTests
             // Accept any calendar.
         }
 
-        protected override DateTime CalculateDate(int year) => new DateTime(year, 4, 5, 0, 0, 0, DateTimeKind.Unspecified);
+        protected override DateTime CalculateDate(int year) => new(year, 4, 5, 0, 0, 0, DateTimeKind.Unspecified);
     }
 
     /// <summary>
@@ -172,7 +172,7 @@ public sealed class EasterSundayNotableDateProviderBaseTests
             // Accept any calendar.
         }
 
-        protected override DateTime CalculateDate(int year) => new DateTime(year, 4, 5, 0, 0, 0, DateTimeKind.Unspecified);
+        protected override DateTime CalculateDate(int year) => new(year, 4, 5, 0, 0, 0, DateTimeKind.Unspecified);
     }
 
     /// <summary>

@@ -17,7 +17,7 @@ public partial class ConfigurationPatternTests
     [TestMethod]
     public void Compile_WhenAlternationIsNestedTwoLevels_ShouldMatchEachExpandedAlternative()
     {
-        ConfigurationPattern pattern = ConfigurationPattern.Compile("file.{a,{b,c},d}.log");
+        var pattern = ConfigurationPattern.Compile("file.{a,{b,c},d}.log");
 
         Assert.IsTrue(pattern.IsMatch("file.a.log"));
         Assert.IsTrue(pattern.IsMatch("file.b.log"));
@@ -33,7 +33,7 @@ public partial class ConfigurationPatternTests
     [TestMethod]
     public void Compile_WhenAlternationIsNestedThreeLevels_ShouldMatchEachExpandedLeaf()
     {
-        ConfigurationPattern pattern = ConfigurationPattern.Compile("x.{a,{b,{c,d}}}.y");
+        var pattern = ConfigurationPattern.Compile("x.{a,{b,{c,d}}}.y");
 
         Assert.IsTrue(pattern.IsMatch("x.a.y"));
         Assert.IsTrue(pattern.IsMatch("x.b.y"));
@@ -49,7 +49,7 @@ public partial class ConfigurationPatternTests
     [TestMethod]
     public void Compile_WhenAlternationContainsNestedNumericRange_ShouldMatchEachAlternative()
     {
-        ConfigurationPattern pattern = ConfigurationPattern.Compile("run.{init,{1..3}}.log");
+        var pattern = ConfigurationPattern.Compile("run.{init,{1..3}}.log");
 
         Assert.IsTrue(pattern.IsMatch("run.init.log"));
         Assert.IsTrue(pattern.IsMatch("run.1.log"));
@@ -75,7 +75,7 @@ public partial class ConfigurationPatternTests
         for (var i = 0; i < 8; i++) source.Append('}');
         source.Append(".suffix");
 
-        ConfigurationPattern pattern = ConfigurationPattern.Compile(source.ToString());
+        var pattern = ConfigurationPattern.Compile(source.ToString());
 
         // Both endpoints of the expansion should match.
         Assert.IsTrue(pattern.IsMatch("prefix.a.suffix"));
@@ -104,7 +104,7 @@ public partial class ConfigurationPatternTests
     [TestMethod]
     public void Compile_WhenBraceIsEscaped_ShouldTreatAsLiteralCharacter()
     {
-        ConfigurationPattern pattern = ConfigurationPattern.Compile(@"foo\{bar");
+        var pattern = ConfigurationPattern.Compile(@"foo\{bar");
 
         Assert.IsTrue(pattern.IsMatch("foo{bar"));
         Assert.IsFalse(pattern.IsMatch("foobar"));

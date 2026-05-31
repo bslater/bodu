@@ -11,11 +11,9 @@ using Bodu.Globalization.Calendar.Plugins;
 namespace Bodu.Globalization.Calendar.Plugin4.TestAssembly;
 
 /// <summary>
-/// Test-only type deliberately declared as the plugin entry-point via
-/// <c>NotableDatePluginAttribute</c> but does not implement
-/// <see cref="INotableDatePlugin" />. Exercises the attribute-present-but-wrong-type branch
-/// in <see cref="ExternalPluginLoader" />, which surfaces as a
-/// <see cref="PluginMissingAttributeException" />.
+/// Test-only type deliberately declared as the plugin entry-point via <c>NotableDatePluginAttribute</c> but does not
+/// implement <see cref="INotableDatePlugin" />. Exercises the attribute-present-but-wrong-type branch in
+/// <see cref="ExternalPluginLoader" />, which surfaces as a <see cref="PluginMissingAttributeException" />.
 /// </summary>
 public sealed class NotAPlugin
 {

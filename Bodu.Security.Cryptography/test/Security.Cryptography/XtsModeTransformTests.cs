@@ -31,7 +31,7 @@ public sealed partial class XtsModeTransformTests
     /// pair of ciphers. KAT tests instantiate XtsModeTransform directly with two real AES ciphers.
     /// </remarks>
     protected override XtsModeTransform CreateTransform(IBlockCipher cipher, byte[] iv)
-        => new XtsModeTransform(
+        => new(
             dataCipher: cipher,
             tweakCipher: new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0x55),
             tweak: iv);

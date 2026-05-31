@@ -13,26 +13,25 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// <para>
 /// The Gumm algorithm was presented by H. Peter Gumm in 1985 (<i>A New Class of Check-Digit Methods for Arbitrary
 /// Number Systems</i>, IEEE Transactions on Information Theory, 31(1), 102–105). Like the Verhoeff scheme it was
-/// discovered independently of, it detects <b>all</b> single-digit substitution errors and <b>all</b> transpositions
-/// of adjacent digits — including the <c>aa</c> ↔ <c>bb</c> twin cases — using a single decimal check digit.
+/// discovered independently of, it detects <b>all</b> single-digit substitution errors and <b>all</b> transpositions of
+/// adjacent digits — including the <c>aa</c> ↔ <c>bb</c> twin cases — using a single decimal check digit.
 /// </para>
 /// <para>
-/// The method operates in the dihedral group <i>D</i><sub>5</sub> (the symmetries of a regular pentagon, of order
-/// 10). Each digit position carries a permutation of the group; Gumm's contribution over Verhoeff is that these
-/// alternate between the identity and a single transform <c>T</c> rather than requiring position-dependent powers of
-/// a permutation, which is simpler both conceptually and to implement.
+/// The method operates in the dihedral group <i>D</i><sub>5</sub> (the symmetries of a regular pentagon, of order 10).
+/// Each digit position carries a permutation of the group; Gumm's contribution over Verhoeff is that these alternate
+/// between the identity and a single transform <c>T</c> rather than requiring position-dependent powers of a
+/// permutation, which is simpler both conceptually and to implement.
 /// </para>
 /// <para>
 /// This implementation instantiates Gumm's construction over <i>D</i><sub>5</sub> with the transform
-/// <c>T(e, x) = (e, e(2 − x) + 1)</c> and applies the identity permutation at even positions (counted from the
-/// right, so the trailing check digit) and <c>T</c> at odd positions. Both transform parameters are nonzero modulo
-/// 5, which is the condition under which Gumm's anti-symmetry lemma holds and every adjacent transposition is
-/// detected. A sequence (body followed by its check digit) is valid if and only if the accumulated group element is
-/// the identity.
+/// <c>T(e, x) = (e, e(2 − x) + 1)</c> and applies the identity permutation at even positions (counted from the right,
+/// so the trailing check digit) and <c>T</c> at odd positions. Both transform parameters are nonzero modulo 5, which is
+/// the condition under which Gumm's anti-symmetry lemma holds and every adjacent transposition is detected. A sequence
+/// (body followed by its check digit) is valid if and only if the accumulated group element is the identity.
 /// </para>
 /// <para>
-/// <b>Worked example.</b> For the body <c>"236"</c>, the computed check digit is <c>'9'</c>, and the resulting
-/// sequence <c>"2369"</c> is therefore valid under this instantiation.
+/// <b>Worked example.</b> For the body <c>"236"</c>, the computed check digit is <c>'9'</c>, and the resulting sequence
+/// <c>"2369"</c> is therefore valid under this instantiation.
 /// </para>
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for
 /// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
@@ -160,10 +159,12 @@ public sealed partial class Gumm
         Array.Clear(_c);
 
     /// <summary>
-    /// Maps a digit value to its permuted group element for the given absolute position from the right: the identity
-    /// at even positions and the transform <c>T</c> at odd positions.
+    /// Maps a digit value to its permuted group element for the given absolute position from the right: the identity at
+    /// even positions and the transform <c>T</c> at odd positions.
     /// </summary>
-    /// <param name="position">The absolute position from the right, where the trailing check digit is position 0.</param>
+    /// <param name="position">
+    /// The absolute position from the right, where the trailing check digit is position 0.
+    /// </param>
     /// <param name="value">The digit value in the range 0 to 9.</param>
     /// <returns>The group element index in the range 0 to 9.</returns>
     private static byte Permute(int position, int value) =>

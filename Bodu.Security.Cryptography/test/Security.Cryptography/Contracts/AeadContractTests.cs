@@ -75,7 +75,7 @@ public abstract class AeadContractTests<TAead>
     {
         foreach (AeadKat kat in KnownAnswers)
         {
-            (byte[] ciphertext, _) = Encrypt(kat.Key, kat.Nonce, kat.AssociatedData, kat.Plaintext);
+            (var ciphertext, _) = Encrypt(kat.Key, kat.Nonce, kat.AssociatedData, kat.Plaintext);
 
             CollectionAssert.AreEqual(
                 kat.Ciphertext,
@@ -93,7 +93,7 @@ public abstract class AeadContractTests<TAead>
     {
         foreach (AeadKat kat in KnownAnswers)
         {
-            (_, byte[] tag) = Encrypt(kat.Key, kat.Nonce, kat.AssociatedData, kat.Plaintext);
+            (_, var tag) = Encrypt(kat.Key, kat.Nonce, kat.AssociatedData, kat.Plaintext);
 
             CollectionAssert.AreEqual(
                 kat.Tag,
@@ -111,7 +111,7 @@ public abstract class AeadContractTests<TAead>
     {
         foreach (AeadKat kat in KnownAnswers)
         {
-            byte[] actual = Decrypt(kat.Key, kat.Nonce, kat.AssociatedData, kat.Ciphertext, kat.Tag);
+            var actual = Decrypt(kat.Key, kat.Nonce, kat.AssociatedData, kat.Ciphertext, kat.Tag);
 
             CollectionAssert.AreEqual(
                 kat.Plaintext,
@@ -130,11 +130,11 @@ public abstract class AeadContractTests<TAead>
         foreach (AeadTamperKat tamper in TamperCases)
         {
             AeadKat baseKat = tamper.BaseCase;
-            byte[] key = (byte[])baseKat.Key.Clone();
-            byte[] nonce = (byte[])baseKat.Nonce.Clone();
-            byte[] associatedData = (byte[])baseKat.AssociatedData.Clone();
-            byte[] ciphertext = (byte[])baseKat.Ciphertext.Clone();
-            byte[] tag = (byte[])baseKat.Tag.Clone();
+            var key = (byte[])baseKat.Key.Clone();
+            var nonce = (byte[])baseKat.Nonce.Clone();
+            var associatedData = (byte[])baseKat.AssociatedData.Clone();
+            var ciphertext = (byte[])baseKat.Ciphertext.Clone();
+            var tag = (byte[])baseKat.Tag.Clone();
 
             switch (tamper.TamperKind)
             {
@@ -170,7 +170,7 @@ public abstract class AeadContractTests<TAead>
                     break;
             }
 
-            bool threw = false;
+            var threw = false;
             try
             {
                 _ = Decrypt(key, nonce, associatedData, ciphertext, tag);

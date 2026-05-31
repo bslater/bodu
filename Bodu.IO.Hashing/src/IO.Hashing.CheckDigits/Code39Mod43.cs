@@ -11,25 +11,25 @@ using Bodu.IO.Hashing.Checksums;
 namespace Bodu.IO.Hashing.CheckDigits;
 
 /// <summary>
-/// Computes the check character of a Code 39 (also known as Code 3 of 9) symbol string using the
-/// <c>modulo 43</c> scheme. This class cannot be inherited.
+/// Computes the check character of a Code 39 (also known as Code 3 of 9) symbol string using the <c>modulo 43</c>
+/// scheme. This class cannot be inherited.
 /// </summary>
 /// <remarks>
 /// <para>
-/// The Code 39 modulo-43 check character is the optional self-checking symbol defined by the Code 39 barcode
-/// symbology. Each body character is mapped to its ordinal value in the forty-three-symbol Code 39 alphabet —
-/// <c>'0'</c>–<c>'9'</c> as 0–9, <c>'A'</c>–<c>'Z'</c> as 10–35, and the seven symbols <c>'-'</c>, <c>'.'</c>,
-/// space, <c>'$'</c>, <c>'/'</c>, <c>'+'</c>, and <c>'%'</c> as 36–42. The values are summed, reduced modulo 43,
-/// and the result is mapped back to the alphabet to produce a single trailing check character.
+/// The Code 39 modulo-43 check character is the optional self-checking symbol defined by the Code 39 barcode symbology.
+/// Each body character is mapped to its ordinal value in the forty-three-symbol Code 39 alphabet — <c>'0'</c>–
+/// <c>'9'</c> as 0–9, <c>'A'</c>–<c>'Z'</c> as 10–35, and the seven symbols <c>'-'</c>, <c>'.'</c>, space, <c>'$'</c>,
+/// <c>'/'</c>, <c>'+'</c>, and <c>'%'</c> as 36–42. The values are summed, reduced modulo 43, and the result is mapped
+/// back to the alphabet to produce a single trailing check character.
 /// </para>
 /// <para>
-/// The scheme detects all single-character substitution errors. Because the underlying combiner is a commutative
-/// sum, it does <b>not</b> detect every adjacent transposition; payloads that require transposition coverage
-/// should prefer <see cref="Verhoeff" /> or <see cref="Damm" /> over a decimal body.
+/// The scheme detects all single-character substitution errors. Because the underlying combiner is a commutative sum,
+/// it does <b>not</b> detect every adjacent transposition; payloads that require transposition coverage should prefer
+/// <see cref="Verhoeff" /> or <see cref="Damm" /> over a decimal body.
 /// </para>
 /// <para>
-/// <b>Worked example.</b> For the body <c>"CODE39"</c> the character values are 12, 24, 13, 14, 3, and 9, summing
-/// to 75; 75 mod 43 is 32, which maps to <c>'W'</c>. The resulting string <c>"CODE39W"</c> is therefore valid.
+/// <b>Worked example.</b> For the body <c>"CODE39"</c> the character values are 12, 24, 13, 14, 3, and 9, summing to
+/// 75; 75 mod 43 is 32, which maps to <c>'W'</c>. The resulting string <c>"CODE39W"</c> is therefore valid.
 /// </para>
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for
 /// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
@@ -97,14 +97,14 @@ public sealed class Code39Mod43
     }
 
     /// <summary>
-    /// Determines whether the supplied sequence, comprising a body followed by a trailing Code 39 check character,
-    /// is consistent.
+    /// Determines whether the supplied sequence, comprising a body followed by a trailing Code 39 check character, is
+    /// consistent.
     /// </summary>
     /// <param name="valueIncludingCheck">The complete sequence including the trailing check character.</param>
     /// <returns>
     /// <see langword="true" /> if the sequence evaluates as valid under the Code 39 modulo-43 scheme; otherwise,
-    /// <see langword="false" /> — including the case where <paramref name="valueIncludingCheck" /> is empty or
-    /// contains any character outside the Code 39 alphabet.
+    /// <see langword="false" /> — including the case where <paramref name="valueIncludingCheck" /> is empty or contains
+    /// any character outside the Code 39 alphabet.
     /// </returns>
     public static bool IsValid(ReadOnlySpan<char> valueIncludingCheck)
     {
@@ -147,7 +147,9 @@ public sealed class Code39Mod43
     /// Maps a Code 39 character to its ordinal value, or <c>-1</c> when the character is outside the alphabet.
     /// </summary>
     /// <param name="ch">The character to map.</param>
-    /// <returns>The value in the range 0 to 42, or <c>-1</c> when <paramref name="ch" /> is not a Code 39 character.</returns>
+    /// <returns>
+    /// The value in the range 0 to 42, or <c>-1</c> when <paramref name="ch" /> is not a Code 39 character.
+    /// </returns>
     private static int TryValueOf(char ch)
     {
         if ((uint)(ch - '0') <= 9u) return ch - '0';
@@ -172,7 +174,9 @@ public sealed class Code39Mod43
     /// <param name="ch">The character to map.</param>
     /// <param name="paramName">The parameter name reported in the exception.</param>
     /// <returns>The value in the range 0 to 42.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="ch" /> is not a Code 39 character.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="ch" /> is not a Code 39 character.
+    /// </exception>
     private static int ValueOf(char ch, string paramName)
     {
         var value = TryValueOf(ch);

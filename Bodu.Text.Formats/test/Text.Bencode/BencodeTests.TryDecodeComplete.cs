@@ -16,9 +16,9 @@ public sealed partial class BencodeTests
     [TestMethod]
     public void TryDecode_WhenTrailingBytesAndDefault_ShouldReturnTrueWithPrefixBytesConsumed()
     {
-        byte[] payload = Bytes("i1eXYZ");
+        var payload = Bytes("i1eXYZ");
 
-        bool success = Bencode.TryDecode(payload, out BencodedValue? value, out int bytesConsumed);
+        var success = Bencode.TryDecode(payload, out BencodedValue? value, out var bytesConsumed);
 
         Assert.IsTrue(success);
         Assert.IsNotNull(value);
@@ -34,9 +34,9 @@ public sealed partial class BencodeTests
     public void TryDecode_WhenTrailingBytesAndRequireComplete_ShouldReturnFalse()
     {
         BencodeParseOptions options = new() { RequireCompleteDocument = true };
-        byte[] payload = Bytes("i1eXYZ");
+        var payload = Bytes("i1eXYZ");
 
-        bool success = Bencode.TryDecode(payload, options, out BencodedValue? value, out int bytesConsumed);
+        var success = Bencode.TryDecode(payload, options, out BencodedValue? value, out var bytesConsumed);
 
         Assert.IsFalse(success);
         Assert.IsNull(value);
@@ -52,9 +52,9 @@ public sealed partial class BencodeTests
     public void TryDecode_WhenInputFullyConsumedAndRequireComplete_ShouldReturnTrue()
     {
         BencodeParseOptions options = new() { RequireCompleteDocument = true };
-        byte[] payload = Bytes("i1e");
+        var payload = Bytes("i1e");
 
-        bool success = Bencode.TryDecode(payload, options, out BencodedValue? value, out int bytesConsumed);
+        var success = Bencode.TryDecode(payload, options, out BencodedValue? value, out var bytesConsumed);
 
         Assert.IsTrue(success);
         Assert.IsNotNull(value);

@@ -101,7 +101,7 @@ public abstract class BinaryDocumentFormatContractTests<TDocument, TOptions>
         foreach (BinaryDocumentKat<TDocument, TOptions> kat in ValidCases)
         {
             TDocument first = Decode(kat.Payload, kat.Options!);
-            byte[] reEncoded = Encode(first, kat.Options!);
+            var reEncoded = Encode(first, kat.Options!);
             TDocument again = Decode(reEncoded, kat.Options!);
 
             Assert.IsTrue(

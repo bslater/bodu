@@ -56,7 +56,9 @@ public sealed class MonitoringBufferedBlockHashAlgorithm
     /// <summary>
     /// Initialises a new instance with the specified block size.
     /// </summary>
-    /// <param name="blockSize">The block size, in bytes, to forward to the base constructor (converted to bits).</param>
+    /// <param name="blockSize">
+    /// The block size, in bytes, to forward to the base constructor (converted to bits).
+    /// </param>
     public MonitoringBufferedBlockHashAlgorithm(int blockSize)
         : base(blockSize * 8)
     {
@@ -83,14 +85,16 @@ public sealed class MonitoringBufferedBlockHashAlgorithm
     /// <summary>
     /// Gets a defensive copy of the residual buffer for test assertion purposes.
     /// </summary>
-    /// <returns>A new byte array of length <see cref="ConfiguredBlockSize" /> containing the current residual bytes.</returns>
+    /// <returns>
+    /// A new byte array of length <see cref="ConfiguredBlockSize" /> containing the current residual bytes.
+    /// </returns>
     public byte[] ResidualBufferSnapshot => this._residualBlock.ToArray();
 
     /// <summary>
     /// Public test seam exposing the protected
-    /// <see cref="System.Security.Cryptography.HashAlgorithm.HashCore(byte[], int, int)" /> overload so tests may
-    /// drive it directly without going through <c>ComputeHash</c> (which performs its own validation before reaching
-    /// the override).
+    /// <see cref="System.Security.Cryptography.HashAlgorithm.HashCore(byte[], int, int)" /> overload so tests may drive
+    /// it directly without going through <c>ComputeHash</c> (which performs its own validation before reaching the
+    /// override).
     /// </summary>
     /// <param name="array">The input byte array.</param>
     /// <param name="ibStart">The start index in <paramref name="array" />.</param>
@@ -99,10 +103,13 @@ public sealed class MonitoringBufferedBlockHashAlgorithm
         this.HashCore(array, ibStart, cbSize);
 
     /// <summary>
-    /// Seeds the residual buffer to a known state so tests may verify that <see cref="BufferedBlockHashAlgorithm{T}.Initialize" />
-    /// and <see cref="BufferedBlockHashAlgorithm{T}.Dispose(bool)" /> clear it.
+    /// Seeds the residual buffer to a known state so tests may verify that
+    /// <see cref="BufferedBlockHashAlgorithm{T}.Initialize" /> and
+    /// <see cref="BufferedBlockHashAlgorithm{T}.Dispose(bool)" /> clear it.
     /// </summary>
-    /// <param name="data">The bytes to copy into the residual buffer. Must not exceed the configured block size.</param>
+    /// <param name="data">
+    /// The bytes to copy into the residual buffer. Must not exceed the configured block size.
+    /// </param>
     /// <param name="residualBytes">The residual byte count to record.</param>
     /// <param name="totalBytes">The total byte count to record.</param>
     public void SeedResidualState(byte[] data, int residualBytes, ulong totalBytes)
@@ -133,10 +140,7 @@ public sealed class MonitoringBufferedBlockHashAlgorithm
     }
 
     /// <inheritdoc />
-    protected override void HashCore(ReadOnlySpan<byte> source)
-    {
-        this.CapturedSpanLengths.Add(source.Length);
-    }
+    protected override void HashCore(ReadOnlySpan<byte> source) => this.CapturedSpanLengths.Add(source.Length);
 
     /// <inheritdoc />
     protected override byte[] HashFinal() =>

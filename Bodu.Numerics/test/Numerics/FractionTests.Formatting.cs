@@ -18,10 +18,7 @@ public partial class FractionTests
     [DataRow(-3, 4, "-3/4")]
     [DataRow(6, 2, "3")]
     [DataRow(0, 5, "0")]
-    public void ToString_WhenUsingDefaultFormat_ShouldRenderRatioOrInteger(int numerator, int denominator, string expected)
-    {
-        Assert.AreEqual(expected, new Fraction<int>(numerator, denominator).ToString());
-    }
+    public void ToString_WhenUsingDefaultFormat_ShouldRenderRatioOrInteger(int numerator, int denominator, string expected) => Assert.AreEqual(expected, new Fraction<int>(numerator, denominator).ToString());
 
     /// <summary>
     /// Verifies that the mixed-number format separates the whole and fractional parts.
@@ -30,10 +27,7 @@ public partial class FractionTests
     [DataRow(7, 4, "1 3/4")]
     [DataRow(-7, 4, "-1 3/4")]
     [DataRow(3, 4, "3/4")]
-    public void ToString_WhenUsingMixedFormat_ShouldSeparateWholeAndFraction(int numerator, int denominator, string expected)
-    {
-        Assert.AreEqual(expected, new Fraction<int>(numerator, denominator).ToString("M"));
-    }
+    public void ToString_WhenUsingMixedFormat_ShouldSeparateWholeAndFraction(int numerator, int denominator, string expected) => Assert.AreEqual(expected, new Fraction<int>(numerator, denominator).ToString("M"));
 
     /// <summary>
     /// Verifies that the Unicode format renders a vulgar-fraction glyph when one exists.
@@ -43,19 +37,13 @@ public partial class FractionTests
     [DataRow(1, 2, "½")]
     [DataRow(7, 4, "1¾")]
     [DataRow(-3, 4, "-¾")]
-    public void ToString_WhenUsingUnicodeFormat_ShouldRenderVulgarGlyph(int numerator, int denominator, string expected)
-    {
-        Assert.AreEqual(expected, new Fraction<int>(numerator, denominator).ToString("U"));
-    }
+    public void ToString_WhenUsingUnicodeFormat_ShouldRenderVulgarGlyph(int numerator, int denominator, string expected) => Assert.AreEqual(expected, new Fraction<int>(numerator, denominator).ToString("U"));
 
     /// <summary>
     /// Verifies that the Unicode format falls back to the mixed-number form when no glyph exists.
     /// </summary>
     [TestMethod]
-    public void ToString_WhenUsingUnicodeFormatWithoutGlyph_ShouldFallBackToMixed()
-    {
-        Assert.AreEqual("5/9", new Fraction<int>(5, 9).ToString("U"));
-    }
+    public void ToString_WhenUsingUnicodeFormatWithoutGlyph_ShouldFallBackToMixed() => Assert.AreEqual("5/9", new Fraction<int>(5, 9).ToString("U"));
 
     /// <summary>
     /// Verifies that the percent format scales the value by one hundred and appends a percent sign.
@@ -63,10 +51,7 @@ public partial class FractionTests
     [TestMethod]
     [DataRow(3, 4, "75%")]
     [DataRow(1, 3, "100/3%")]
-    public void ToString_WhenUsingPercentFormat_ShouldScaleByOneHundred(int numerator, int denominator, string expected)
-    {
-        Assert.AreEqual(expected, new Fraction<int>(numerator, denominator).ToString("P"));
-    }
+    public void ToString_WhenUsingPercentFormat_ShouldScaleByOneHundred(int numerator, int denominator, string expected) => Assert.AreEqual(expected, new Fraction<int>(numerator, denominator).ToString("P"));
 
     /// <summary>
     /// Verifies that an unsupported format specifier throws <see cref="FormatException" />.
@@ -89,7 +74,7 @@ public partial class FractionTests
     {
         Span<char> buffer = stackalloc char[16];
 
-        bool formatted = new Fraction<int>(3, 4).TryFormat(buffer, out int written, default, null);
+        var formatted = new Fraction<int>(3, 4).TryFormat(buffer, out var written, default, null);
 
         Assert.IsTrue(formatted);
         Assert.AreEqual("3/4", new string(buffer[..written]));
@@ -105,9 +90,9 @@ public partial class FractionTests
     [DataRow("P")]
     public void ToString_WhenRoundTrippedThroughParse_ShouldReproduceValue(string format)
     {
-        Fraction<int> value = new Fraction<int>(7, 4);
+        var value = new Fraction<int>(7, 4);
 
-        string text = value.ToString(format, CultureInfo.InvariantCulture);
+        var text = value.ToString(format, CultureInfo.InvariantCulture);
 
         Assert.AreEqual(value, Fraction<int>.Parse(text, CultureInfo.InvariantCulture));
     }
@@ -125,10 +110,7 @@ public partial class FractionTests
     [DataRow(100, 7, "100/7")]
     [DataRow(-100, 7, "-100/7")]
     [DataRow(6, 3, "2")]
-    public void ToString_WhenUsingDefaultFormat_ShouldRenderKnownAnswers(int numerator, int denominator, string expected)
-    {
-        Assert.AreEqual(expected, new Fraction<int>(numerator, denominator).ToString());
-    }
+    public void ToString_WhenUsingDefaultFormat_ShouldRenderKnownAnswers(int numerator, int denominator, string expected) => Assert.AreEqual(expected, new Fraction<int>(numerator, denominator).ToString());
 
     /// <summary>
     /// Verifies that the mixed-number format renders known answers for a wide table of values.
@@ -144,10 +126,7 @@ public partial class FractionTests
     [DataRow(-5, 3, "-1 2/3")]
     [DataRow(4, 1, "4")]
     [DataRow(0, 1, "0")]
-    public void ToString_WhenUsingMixedFormat_ShouldRenderKnownAnswers(int numerator, int denominator, string expected)
-    {
-        Assert.AreEqual(expected, new Fraction<int>(numerator, denominator).ToString("M"));
-    }
+    public void ToString_WhenUsingMixedFormat_ShouldRenderKnownAnswers(int numerator, int denominator, string expected) => Assert.AreEqual(expected, new Fraction<int>(numerator, denominator).ToString("M"));
 
     /// <summary>
     /// Verifies that the Unicode format renders known answers for a wide table of values.
@@ -166,10 +145,7 @@ public partial class FractionTests
     [DataRow(5, 2, "2½")]
     [DataRow(3, 1, "3")]
     [DataRow(5, 9, "5/9")]
-    public void ToString_WhenUsingUnicodeFormat_ShouldRenderKnownAnswers(int numerator, int denominator, string expected)
-    {
-        Assert.AreEqual(expected, new Fraction<int>(numerator, denominator).ToString("U"));
-    }
+    public void ToString_WhenUsingUnicodeFormat_ShouldRenderKnownAnswers(int numerator, int denominator, string expected) => Assert.AreEqual(expected, new Fraction<int>(numerator, denominator).ToString("U"));
 
     /// <summary>
     /// Verifies that the percent format renders known answers for a wide table of values.
@@ -186,10 +162,7 @@ public partial class FractionTests
     [DataRow(1, 8, "25/2%")]
     [DataRow(1, 3, "100/3%")]
     [DataRow(1, 6, "50/3%")]
-    public void ToString_WhenUsingPercentFormat_ShouldRenderKnownAnswers(int numerator, int denominator, string expected)
-    {
-        Assert.AreEqual(expected, new Fraction<int>(numerator, denominator).ToString("P"));
-    }
+    public void ToString_WhenUsingPercentFormat_ShouldRenderKnownAnswers(int numerator, int denominator, string expected) => Assert.AreEqual(expected, new Fraction<int>(numerator, denominator).ToString("P"));
 
     /// <summary>
     /// Verifies that the named formatting methods match their format-specifier equivalents.
@@ -197,7 +170,7 @@ public partial class FractionTests
     [TestMethod]
     public void NamedFormatMethods_WhenInvoked_ShouldMatchFormatSpecifiers()
     {
-        Fraction<int> value = new Fraction<int>(7, 4);
+        var value = new Fraction<int>(7, 4);
         CultureInfo culture = CultureInfo.InvariantCulture;
 
         Assert.AreEqual(value.ToString("M", culture), value.ToMixedString(culture));
@@ -212,7 +185,7 @@ public partial class FractionTests
     [TestMethod]
     public void NamedFormatMethods_WhenFormattingKnownValue_ShouldReturnExpectedText()
     {
-        Fraction<int> value = new Fraction<int>(7, 4);
+        var value = new Fraction<int>(7, 4);
 
         Assert.AreEqual("1 3/4", value.ToMixedString(CultureInfo.InvariantCulture));
         Assert.AreEqual("1¾", value.ToUnicodeString(CultureInfo.InvariantCulture));

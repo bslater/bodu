@@ -64,10 +64,7 @@ public sealed partial class Base64Tests
     /// Verifies that <see cref="Base64.IsValid" /> returns <see langword="true" /> for empty input.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenEmpty_ShouldReturnTrue()
-    {
-        Assert.IsTrue(Base64.IsValid(ReadOnlySpan<char>.Empty));
-    }
+    public void IsValid_WhenEmpty_ShouldReturnTrue() => Assert.IsTrue(Base64.IsValid(ReadOnlySpan<char>.Empty));
 
     /// <summary>
     /// Regression: verifies that <see cref="Base64.IsValid" /> rejects excessive padding even in strict mode.
@@ -84,19 +81,13 @@ public sealed partial class Base64Tests
     /// Verifies that <see cref="Base64.IsValid" /> returns <see langword="false" /> for invalid characters.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenInvalidCharacter_ShouldReturnFalse()
-    {
-        Assert.IsFalse(Base64.IsValid("Zm@v".AsSpan()));
-    }
+    public void IsValid_WhenInvalidCharacter_ShouldReturnFalse() => Assert.IsFalse(Base64.IsValid("Zm@v".AsSpan()));
 
     /// <summary>
     /// Verifies that <see cref="Base64.IsValid" /> in the MIME variant accepts embedded whitespace implicitly.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenMimeVariantWithLineBreaks_ShouldAcceptWhitespace()
-    {
-        Assert.IsTrue(Base64.IsValid("Zm9v\r\nYmFy".AsSpan(), Base64Variant.Mime));
-    }
+    public void IsValid_WhenMimeVariantWithLineBreaks_ShouldAcceptWhitespace() => Assert.IsTrue(Base64.IsValid("Zm9v\r\nYmFy".AsSpan(), Base64Variant.Mime));
 
     /// <summary>
     /// Regression: verifies that <see cref="Base64.IsValid" /> rejects single-symbol terminal quantum
@@ -113,19 +104,13 @@ public sealed partial class Base64Tests
     /// Verifies that <see cref="Base64.IsValid" /> returns <see langword="true" /> for canonical Standard input.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenStandardCanonicalInput_ShouldReturnTrue()
-    {
-        Assert.IsTrue(Base64.IsValid("Zm9vYmFy".AsSpan()));
-    }
+    public void IsValid_WhenStandardCanonicalInput_ShouldReturnTrue() => Assert.IsTrue(Base64.IsValid("Zm9vYmFy".AsSpan()));
 
     /// <summary>
     /// Verifies that <see cref="Base64.IsValid" /> in the Standard variant rejects <c>-</c> and <c>_</c>.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenStandardVariantRejectsUrlSafeSymbols_ShouldReturnFalse()
-    {
-        Assert.IsFalse(Base64.IsValid("-__-".AsSpan(), Base64Variant.Standard));
-    }
+    public void IsValid_WhenStandardVariantRejectsUrlSafeSymbols_ShouldReturnFalse() => Assert.IsFalse(Base64.IsValid("-__-".AsSpan(), Base64Variant.Standard));
 
     /// <summary>
     /// Verifies that <see cref="Base64.IsValid" /> in the UrlSafe variant rejects <c>+</c> and <c>/</c>.

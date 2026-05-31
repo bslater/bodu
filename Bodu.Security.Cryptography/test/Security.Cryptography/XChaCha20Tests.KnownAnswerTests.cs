@@ -178,11 +178,11 @@ public sealed class XChaCha20Tests
     public void HChaCha20_WhenGivenKnownVector_ShouldDeriveExpectedSubkey(
         string keyHex, string nonce16Hex, string subkeyHex, string displayName)
     {
-        byte[] key = Convert.FromHexString(keyHex);
-        byte[] nonce = Convert.FromHexString(nonce16Hex);
-        byte[] expected = Convert.FromHexString(subkeyHex);
+        var key = Convert.FromHexString(keyHex);
+        var nonce = Convert.FromHexString(nonce16Hex);
+        var expected = Convert.FromHexString(subkeyHex);
 
-        byte[] subkey = new byte[32];
+        var subkey = new byte[32];
         ChaCha20StreamCipher.HChaCha20(key, nonce, subkey);
 
         CollectionAssert.AreEqual(expected, subkey, $"HChaCha20 subkey mismatch for {displayName}.");
@@ -202,14 +202,14 @@ public sealed class XChaCha20Tests
     public void CreateEncryptor_WhenGivenDraftKeystreamVector_ShouldMatchExpected(
         string keyHex, string nonce24Hex, uint counter, string keystreamHex, string displayName)
     {
-        byte[] key = Convert.FromHexString(keyHex);
-        byte[] nonce = Convert.FromHexString(nonce24Hex);
-        byte[] expected = Convert.FromHexString(keystreamHex);
-        byte[] zeros = new byte[expected.Length];
+        var key = Convert.FromHexString(keyHex);
+        var nonce = Convert.FromHexString(nonce24Hex);
+        var expected = Convert.FromHexString(keystreamHex);
+        var zeros = new byte[expected.Length];
 
         using var cipher = new XChaCha20 { InitialCounter = counter };
         using ICryptoTransform encryptor = cipher.CreateEncryptor(key, nonce);
-        byte[] keystream = encryptor.TransformFinalBlock(zeros, 0, zeros.Length);
+        var keystream = encryptor.TransformFinalBlock(zeros, 0, zeros.Length);
 
         CollectionAssert.AreEqual(expected, keystream, $"XChaCha20 keystream mismatch for {displayName}.");
     }
@@ -221,9 +221,9 @@ public sealed class XChaCha20Tests
     [TestMethod]
     public void CreateEncryptor_WhenComparedToDerivedChaCha20_ShouldProduceSameKeystream()
     {
-        byte[] key = RandomNumberGenerator.GetBytes(32);
-        byte[] nonce = RandomNumberGenerator.GetBytes(24);
-        byte[] zeros = new byte[256];
+        var key = RandomNumberGenerator.GetBytes(32);
+        var nonce = RandomNumberGenerator.GetBytes(24);
+        var zeros = new byte[256];
 
         // XChaCha20 directly.
         byte[] xActual;
@@ -232,9 +232,9 @@ public sealed class XChaCha20Tests
             xActual = e.TransformFinalBlock(zeros, 0, zeros.Length);
 
         // ChaCha20 under the derived subkey with nonce = 0x00000000 || nonce[16..24].
-        byte[] subkey = new byte[32];
+        var subkey = new byte[32];
         ChaCha20StreamCipher.HChaCha20(key, nonce.AsSpan(0, 16), subkey);
-        byte[] chachaNonce = new byte[12];
+        var chachaNonce = new byte[12];
         nonce.AsSpan(16, 8).CopyTo(chachaNonce.AsSpan(4));
 
         byte[] cActual;
@@ -253,18 +253,18 @@ public sealed class XChaCha20Tests
     [TestMethod]
     public void CreateEncryptor_WhenInitialCounterChangedAfterCreation_ShouldUseCapturedCounter()
     {
-        byte[] key = new byte[32];
-        byte[] nonce = new byte[24];
-        byte[] plaintext = new byte[128];
+        var key = new byte[32];
+        var nonce = new byte[24];
+        var plaintext = new byte[128];
 
         using var cipher = new XChaCha20 { InitialCounter = 5 };
         using ICryptoTransform transform = cipher.CreateEncryptor(key, nonce);
         cipher.InitialCounter = 9;
-        byte[] actual = transform.TransformFinalBlock(plaintext, 0, plaintext.Length);
+        var actual = transform.TransformFinalBlock(plaintext, 0, plaintext.Length);
 
         using var reference = new XChaCha20 { InitialCounter = 5 };
         using ICryptoTransform referenceTransform = reference.CreateEncryptor(key, nonce);
-        byte[] expected = referenceTransform.TransformFinalBlock(plaintext, 0, plaintext.Length);
+        var expected = referenceTransform.TransformFinalBlock(plaintext, 0, plaintext.Length);
 
         CollectionAssert.AreEqual(expected, actual,
             "The transform must use the counter captured at creation, not the algorithm's later value.");

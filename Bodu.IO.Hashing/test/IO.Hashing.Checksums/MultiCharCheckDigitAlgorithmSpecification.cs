@@ -9,13 +9,13 @@ using Bodu.IO.Hashing.CheckDigits;
 namespace Bodu.IO.Hashing.Checksums;
 
 /// <summary>
-/// Describes the expected observable properties of a <see cref="MultiCharCheckDigitAlgorithm" /> implementation
-/// for use in behavioural and known-answer tests.
+/// Describes the expected observable properties of a <see cref="MultiCharCheckDigitAlgorithm" /> implementation for use
+/// in behavioural and known-answer tests.
 /// </summary>
 /// <remarks>
 /// Instances are supplied by derived test classes via
-/// <see cref="MultiCharCheckDigitAlgorithmTests{TTest, TAlgorithm}.GetSpecification" /> and drive assertions
-/// common across every algorithm sharing the multi-character base.
+/// <see cref="MultiCharCheckDigitAlgorithmTests{TTest, TAlgorithm}.GetSpecification" /> and drive assertions common
+/// across every algorithm sharing the multi-character base.
 /// </remarks>
 public sealed record MultiCharCheckDigitAlgorithmSpecification
 {
@@ -33,8 +33,8 @@ public sealed record MultiCharCheckDigitAlgorithmSpecification
     public required int CheckLength { get; init; }
 
     /// <summary>
-    /// Gets the check code expected for an empty body, or <see langword="null" /> to indicate that the algorithm
-    /// throws on empty input.
+    /// Gets the check code expected for an empty body, or <see langword="null" /> to indicate that the algorithm throws
+    /// on empty input.
     /// </summary>
     /// <returns>A string of length <see cref="CheckLength" />, or <see langword="null" />.</returns>
     public string? EmptyCheckDigits { get; init; }

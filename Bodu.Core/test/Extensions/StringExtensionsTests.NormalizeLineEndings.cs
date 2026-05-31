@@ -36,10 +36,7 @@ public partial class StringExtensionsTests
     /// <param name="expected">The expected return value.</param>
     [DataTestMethod]
     [DynamicData(nameof(GetNormalizeLineEndingsCases), DynamicDataSourceType.Method)]
-    public void NormalizeLineEndings_WhenInvoked_ShouldReturnExpected(string value, string newline, string expected)
-    {
-        Assert.AreEqual(expected, value.NormalizeLineEndings(newline));
-    }
+    public void NormalizeLineEndings_WhenInvoked_ShouldReturnExpected(string value, string newline, string expected) => Assert.AreEqual(expected, value.NormalizeLineEndings(newline));
 
     /// <summary>
     /// Verifies that <see cref="StringExtensions.NormalizeLineEndings(string, string)" /> treats CRLF as a

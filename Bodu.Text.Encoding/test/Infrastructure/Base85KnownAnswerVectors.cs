@@ -7,9 +7,9 @@
 namespace Bodu.Text.Encoding;
 
 /// <summary>
-/// Provides Known Answer Test vectors for Base85 encoding. Ascii85 vectors are sourced from the Adobe Tech Note
-/// 5045 examples (notably the Wikipedia-documented "Man " opening of the Leviathan quote). Z85 vectors are
-/// sourced from RFC 32 (ZeroMQ).
+/// Provides Known Answer Test vectors for Base85 encoding. Ascii85 vectors are sourced from the Adobe Tech Note 5045
+/// examples (notably the Wikipedia-documented "Man " opening of the Leviathan quote). Z85 vectors are sourced from RFC
+/// 32 (ZeroMQ).
 /// </summary>
 public static class Base85KnownAnswerVectors
 {

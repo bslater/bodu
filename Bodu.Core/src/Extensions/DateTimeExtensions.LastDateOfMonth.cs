@@ -36,7 +36,7 @@ public static partial class DateTimeExtensions
     ///]]>
     /// </code>
     /// </remarks>
-    public static DateTime LastDateOfMonth(this DateTime dateTime) => new DateTime(GetLastDateOfMonthTicks(dateTime), dateTime.Kind);
+    public static DateTime LastDateOfMonth(this DateTime dateTime) => new(GetLastDateOfMonthTicks(dateTime), dateTime.Kind);
 
     /// <summary>
     /// Returns a new <see cref="DateTime" /> representing the last day of the specified calendar month and year.

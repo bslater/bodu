@@ -29,7 +29,7 @@ public partial class FractionTests
     [TestMethod]
     public void Default_WhenUsedInArithmetic_ShouldBehaveAsZero()
     {
-        Fraction<int> half = new Fraction<int>(1, 2);
+        var half = new Fraction<int>(1, 2);
 
         Assert.AreEqual(half, default(Fraction<int>) + half);
         Assert.AreEqual(-half, default(Fraction<int>) - half);
@@ -54,10 +54,7 @@ public partial class FractionTests
     /// Verifies that expanding a default-initialized fraction yields the continued fraction of zero.
     /// </summary>
     [TestMethod]
-    public void Default_WhenExpandedToContinuedFraction_ShouldYieldZero()
-    {
-        CollectionAssert.AreEqual(new[] { 0 }, default(Fraction<int>).ToContinuedFraction());
-    }
+    public void Default_WhenExpandedToContinuedFraction_ShouldYieldZero() => CollectionAssert.AreEqual(new[] { 0 }, default(Fraction<int>).ToContinuedFraction());
 
     /// <summary>
     /// Verifies that taking the reciprocal of a default-initialized fraction throws

@@ -129,7 +129,7 @@ public partial class WeekPatternTests
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void TryParseExact_WhenInputIsValid_ShouldReturnTrueAndSetExpectedValue(WeekPatternParseKat kat)
     {
-        bool success = WeekPattern.TryParseExact(kat.Input, kat.Format, out WeekPattern actual);
+        var success = WeekPattern.TryParseExact(kat.Input, kat.Format, out WeekPattern actual);
 
         Assert.IsTrue(success);
         Assert.AreEqual(kat.Expected, (byte)actual);
@@ -149,7 +149,7 @@ public partial class WeekPatternTests
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void TryParseExact_WhenInputIsInvalid_ShouldReturnFalseAndSetEmpty(InvalidWeekPatternParseKat kat)
     {
-        bool success = WeekPattern.TryParseExact(kat.Input, kat.Format, out WeekPattern actual);
+        var success = WeekPattern.TryParseExact(kat.Input, kat.Format, out WeekPattern actual);
 
         Assert.IsFalse(success);
         Assert.AreEqual(WeekPattern.Empty, actual);

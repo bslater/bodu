@@ -13,8 +13,9 @@ public sealed partial class IEnumerableExtensionsTests_RecursiveSelectInternal
 {
 
     /// <summary>
-    /// Verifies that <see cref="IEnumerableExtensions.RecursiveSelectInternal{TSource,TResult}" /> short-circuits at the top of the
-    /// outer foreach via the line-279 check when <c>state.ExitRequested</c> is set before evaluation reaches the next sibling element.
+    /// Verifies that <see cref="IEnumerableExtensions.RecursiveSelectInternal{TSource,TResult}" /> short-circuits at
+    /// the top of the outer foreach via the line-279 check when <c>state.ExitRequested</c> is set before evaluation
+    /// reaches the next sibling element.
     /// </summary>
     [TestMethod]
     public void RecursiveSelectInternal_WhenExitRequestedFires_ShouldStopBeforeNextSibling()
@@ -40,16 +41,18 @@ public sealed partial class IEnumerableExtensionsTests_RecursiveSelectInternal
         CollectionAssert.AreEqual(new[] { "A" }, actual);
     }
     /// <summary>
-    /// Verifies that <see cref="IEnumerableExtensions.RecursiveSelectInternal{TSource,TResult}" /> short-circuits inside the inner
-    /// recursive consumption loop via the <c>state.ExitRequested</c> check (line 315-316) when the flag is flipped to <see langword="true" />
-    /// after the child iterator yields its first value.
+    /// Verifies that <see cref="IEnumerableExtensions.RecursiveSelectInternal{TSource,TResult}" /> short-circuits
+    /// inside the inner recursive consumption loop via the <c>state.ExitRequested</c> check (line 315-316) when the
+    /// flag is flipped to <see langword="true" /> after the child iterator yields its first value.
     /// </summary>
     /// <remarks>
-    /// The recursion control delegate returns <see cref="RecursiveSelectControl.YieldAndRecurse" /> for the parent so that the iterator
-    /// enters the recurse-children branch, and returns <see cref="RecursiveSelectControl.YieldOnly" /> for the child while flipping
-    /// <see cref="IEnumerableExtensions.RecursionState.ExitRequested" /> to <see langword="true" /> as a side effect. As a result the
-    /// child is yielded to the outer iterator, the outer iterator observes the elevated flag on the next iteration of its inner-foreach
-    /// over the child enumerator, and short-circuits at the inner check before yielding the child onward.
+    /// The recursion control delegate returns <see cref="RecursiveSelectControl.YieldAndRecurse" /> for the parent so
+    /// that the iterator enters the recurse-children branch, and returns
+    /// <see cref="RecursiveSelectControl.YieldOnly" /> for the child while flipping
+    /// <see cref="IEnumerableExtensions.RecursionState.ExitRequested" /> to <see langword="true" /> as a side effect.
+    /// As a result the child is yielded to the outer iterator, the outer iterator observes the elevated flag on the
+    /// next iteration of its inner-foreach over the child enumerator, and short-circuits at the inner check before
+    /// yielding the child onward.
     /// </remarks>
     [TestMethod]
     public void RecursiveSelectInternal_WhenStateExitsAfterChildYields_ShouldYieldBreakAtInnerCheck()
@@ -94,8 +97,8 @@ public sealed partial class IEnumerableExtensionsTests_RecursiveSelectInternal
 
     /// <summary>
     /// Verifies that <see cref="IEnumerableExtensions.RecursiveSelectInternal{TSource,TResult}" /> initialises a fresh
-    /// <see cref="IEnumerableExtensions.RecursionState" /> when one is not supplied, so two independent enumerations of the same source
-    /// produce identical output.
+    /// <see cref="IEnumerableExtensions.RecursionState" /> when one is not supplied, so two independent enumerations of
+    /// the same source produce identical output.
     /// </summary>
     [TestMethod]
     public void RecursiveSelectInternal_WhenStateIsNotSupplied_ShouldInitialiseFreshState()

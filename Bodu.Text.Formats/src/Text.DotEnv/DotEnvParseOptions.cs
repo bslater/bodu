@@ -83,21 +83,21 @@ public readonly struct DotEnvParseOptions
     public bool AllowInlineComments { get; init; } = true;
 
     /// <summary>
-    /// Gets a value indicating whether full-line <c>#</c> comments are retained as trivia attached to the next
-    /// entry through <see cref="DotEnvEntry.LeadingComments" />.
+    /// Gets a value indicating whether full-line <c>#</c> comments are retained as trivia attached to the next entry
+    /// through <see cref="DotEnvEntry.LeadingComments" />.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// When <see langword="true" /> (the default), the parser accumulates pending comment lines and attaches them
-    /// to the next <see cref="DotEnvEntry" /> in source order. <see cref="DotEnv.Format(DotEnvDocument)" /> then
-    /// emits the leading comments before each entry, so simple comment-annotated <c>.env</c> files round-trip
-    /// without losing their structure. Set to <see langword="false" /> to discard comments and treat the parsed
-    /// document strictly as a data model.
+    /// When <see langword="true" /> (the default), the parser accumulates pending comment lines and attaches them to
+    /// the next <see cref="DotEnvEntry" /> in source order. <see cref="DotEnv.Format(DotEnvDocument)" /> then emits the
+    /// leading comments before each entry, so simple comment-annotated <c>.env</c> files round-trip without losing
+    /// their structure. Set to <see langword="false" /> to discard comments and treat the parsed document strictly as a
+    /// data model.
     /// </para>
     /// </remarks>
     /// <returns>
-    /// <see langword="true" /> if leading comments are preserved on entries; otherwise, <see langword="false" />.
-    /// The default is <see langword="true" />.
+    /// <see langword="true" /> if leading comments are preserved on entries; otherwise, <see langword="false" />. The
+    /// default is <see langword="true" />.
     /// </returns>
     public bool PreserveComments { get; init; } = true;
 }

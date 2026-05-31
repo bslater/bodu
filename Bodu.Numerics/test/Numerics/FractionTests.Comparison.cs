@@ -14,9 +14,9 @@ public partial class FractionTests
     [TestMethod]
     public void CompareTo_WhenOrderingAcrossSigns_ShouldReturnExpectedRelativeOrder()
     {
-        Fraction<int> negative = new Fraction<int>(-1, 2);
+        var negative = new Fraction<int>(-1, 2);
         Fraction<int> zero = Fraction<int>.Zero;
-        Fraction<int> positive = new Fraction<int>(1, 3);
+        var positive = new Fraction<int>(1, 3);
 
         Assert.IsTrue(negative.CompareTo(zero) < 0);
         Assert.IsTrue(zero.CompareTo(positive) < 0);
@@ -28,10 +28,7 @@ public partial class FractionTests
     /// Verifies that comparing with a <see langword="null" /> object sorts the value after <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void CompareTo_WhenComparedWithNullObject_ShouldReturnPositive()
-    {
-        Assert.IsTrue(new Fraction<int>(1, 2).CompareTo(null) > 0);
-    }
+    public void CompareTo_WhenComparedWithNullObject_ShouldReturnPositive() => Assert.IsTrue(new Fraction<int>(1, 2).CompareTo(null) > 0);
 
     /// <summary>
     /// Verifies that comparing with an object of a foreign type throws <see cref="ArgumentException" />.
@@ -78,8 +75,8 @@ public partial class FractionTests
     [TestMethod]
     public void CompareMinMax_WhenGivenTwoValues_ShouldReturnExpectedResults()
     {
-        Fraction<int> low = new Fraction<int>(1, 3);
-        Fraction<int> high = new Fraction<int>(1, 2);
+        var low = new Fraction<int>(1, 3);
+        var high = new Fraction<int>(1, 2);
 
         Assert.IsTrue(Fraction<int>.Compare(low, high) < 0);
         Assert.IsTrue(Fraction<int>.Compare(high, low) > 0);

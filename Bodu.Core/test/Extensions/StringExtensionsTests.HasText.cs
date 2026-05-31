@@ -37,8 +37,5 @@ public partial class StringExtensionsTests
     /// <param name="expected">Whether the string is expected to be considered as containing text.</param>
     [DataTestMethod]
     [DynamicData(nameof(GetHasTextCases), DynamicDataSourceType.Method)]
-    public void HasText_WhenInvoked_ShouldReturnExpected(string? value, bool expected)
-    {
-        Assert.AreEqual(expected, value.HasText());
-    }
+    public void HasText_WhenInvoked_ShouldReturnExpected(string? value, bool expected) => Assert.AreEqual(expected, value.HasText());
 }

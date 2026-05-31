@@ -10,8 +10,8 @@ public sealed partial class IEnumerableExtensionsTests_ContainsAny
 {
 
     /// <summary>
-    /// Verifies that <c>ContainsAny</c> returns <see langword="false" /> via the build-from-items branch when there is no overlap and
-    /// source is a non-collection lazy iterator.
+    /// Verifies that <c>ContainsAny</c> returns <see langword="false" /> via the build-from-items branch when there is
+    /// no overlap and source is a non-collection lazy iterator.
     /// </summary>
     [TestMethod]
     public void ContainsAny_WhenSourceIsLazyAndItemsHaveNoOverlap_ShouldReturnFalse()
@@ -28,8 +28,8 @@ public sealed partial class IEnumerableExtensionsTests_ContainsAny
         }
     }
     /// <summary>
-    /// Verifies that <c>ContainsAny</c> returns <see langword="false" /> via the source-is-smaller branch when there is no overlap
-    /// between source and items.
+    /// Verifies that <c>ContainsAny</c> returns <see langword="false" /> via the source-is-smaller branch when there is
+    /// no overlap between source and items.
     /// </summary>
     [TestMethod]
     public void ContainsAny_WhenSourceIsSmallerAndNoOverlap_ShouldReturnFalse()

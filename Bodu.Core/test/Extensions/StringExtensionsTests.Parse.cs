@@ -13,20 +13,14 @@ public partial class StringExtensionsTests
     /// invariant culture.
     /// </summary>
     [TestMethod]
-    public void Parse_OfInt_WhenInputIsValid_ShouldReturnParsedValue()
-    {
-        Assert.AreEqual(42, "42".Parse<int>());
-    }
+    public void Parse_OfInt_WhenInputIsValid_ShouldReturnParsedValue() => Assert.AreEqual(42, "42".Parse<int>());
 
     /// <summary>
     /// Verifies that <see cref="StringExtensions.Parse{T}(string)" /> parses a double using the invariant
     /// decimal separator regardless of the current culture.
     /// </summary>
     [TestMethod]
-    public void Parse_OfDouble_WhenInputUsesInvariantSeparator_ShouldReturnParsedValue()
-    {
-        Assert.AreEqual(3.14, "3.14".Parse<double>(), 1e-9);
-    }
+    public void Parse_OfDouble_WhenInputUsesInvariantSeparator_ShouldReturnParsedValue() => Assert.AreEqual(3.14, "3.14".Parse<double>(), 1e-9);
 
     /// <summary>
     /// Verifies that <see cref="StringExtensions.Parse{T}(string)" /> throws <see cref="FormatException" />
@@ -97,10 +91,7 @@ public partial class StringExtensionsTests
     /// Verifies that <see cref="StringExtensions.ParseSpan{T}(string)" /> returns the parsed integer.
     /// </summary>
     [TestMethod]
-    public void ParseSpan_OfInt_WhenInputIsValid_ShouldReturnParsedValue()
-    {
-        Assert.AreEqual(42, "42".ParseSpan<int>());
-    }
+    public void ParseSpan_OfInt_WhenInputIsValid_ShouldReturnParsedValue() => Assert.AreEqual(42, "42".ParseSpan<int>());
 
     /// <summary>
     /// Verifies that <see cref="StringExtensions.ParseSpan{T}(string)" /> throws

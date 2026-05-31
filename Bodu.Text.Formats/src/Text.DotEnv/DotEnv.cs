@@ -108,8 +108,8 @@ public static partial class DotEnv
     /// return → <c>\r</c>, <c>$</c> → <c>\$</c>.
     /// </para>
     /// <para>
-    /// Leading comments captured on each entry through <see cref="DotEnvEntry.LeadingComments" /> are emitted
-    /// before the entry's <c>KEY=VALUE</c> line. Bare blank lines from the original source are not retained.
+    /// Leading comments captured on each entry through <see cref="DotEnvEntry.LeadingComments" /> are emitted before
+    /// the entry's <c>KEY=VALUE</c> line. Bare blank lines from the original source are not retained.
     /// </para>
     /// </remarks>
     public static string Format(DotEnvDocument document)

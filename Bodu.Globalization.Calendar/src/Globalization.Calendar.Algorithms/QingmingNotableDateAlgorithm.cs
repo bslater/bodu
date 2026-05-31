@@ -52,7 +52,7 @@ public sealed class QingmingNotableDateAlgorithm
     /// The J2000.0 epoch expressed as a <see cref="DateTime" /> (2000-01-01T12:00:00 UT, kind unspecified), equal to
     /// JDE 2451545.0.
     /// </summary>
-    private static readonly DateTime s_j2000Epoch = new DateTime(2000, 1, 1, 12, 0, 0, DateTimeKind.Unspecified);
+    private static readonly DateTime s_j2000Epoch = new(2000, 1, 1, 12, 0, 0, DateTimeKind.Unspecified);
 
     /// <summary>
     /// Computes the date of the Qingming solar term for the specified year.
@@ -69,7 +69,9 @@ public sealed class QingmingNotableDateAlgorithm
     /// A <see cref="DateTime" /> representing the date of Qingming in the specified calendar system. The returned
     /// <see cref="DateTime.Kind" /> is always <see cref="DateTimeKind.Unspecified" />.
     /// </returns>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="year" /> is less than 1 or greater than 9999.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="year" /> is less than 1 or greater than 9999.
+    /// </exception>
     /// <exception cref="NotSupportedException">
     /// Thrown when the specified <paramref name="calendar" /> type is unsupported.
     /// </exception>

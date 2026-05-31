@@ -23,7 +23,7 @@ public sealed partial class GlobalJewishResourceTests
     /// </summary>
     /// <returns>The configured service.</returns>
     private static NotableDateService CreateBareService() =>
-        new NotableDateService(
+        new(
             ruleProviders:
             [
                 (INotableDateRuleProvider)new XmlResourceNotableDateRuleProvider(JewishResourceName, new ResourcePathResolver()),

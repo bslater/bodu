@@ -11,7 +11,8 @@ public class LeibnizTests
 {
 
     /// <summary>
-    /// Verifies that <see cref="SequenceGenerator.Leibniz" /> stops yielding once a term's magnitude reaches the exclusive upper bound.
+    /// Verifies that <see cref="SequenceGenerator.Leibniz" /> stops yielding once a term's magnitude reaches the
+    /// exclusive upper bound.
     /// </summary>
     [TestMethod]
     public void Leibniz_WhenFirstTermExceedsMax_ShouldReturnEmptySequence()
@@ -22,7 +23,8 @@ public class LeibnizTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="SequenceGenerator.Leibniz" /> throws <see cref="ArgumentOutOfRangeException" /> when max is negative.
+    /// Verifies that <see cref="SequenceGenerator.Leibniz" /> throws <see cref="ArgumentOutOfRangeException" /> when
+    /// max is negative.
     /// </summary>
     [TestMethod]
     public void Leibniz_WhenMaxIsNegative_ShouldThrowExactly()
@@ -34,7 +36,8 @@ public class LeibnizTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="SequenceGenerator.Leibniz" /> throws <see cref="ArgumentException" /> when min is greater than max.
+    /// Verifies that <see cref="SequenceGenerator.Leibniz" /> throws <see cref="ArgumentException" /> when min is
+    /// greater than max.
     /// </summary>
     [TestMethod]
     public void Leibniz_WhenMinIsGreaterThanMax_ShouldThrowExactly()
@@ -45,7 +48,8 @@ public class LeibnizTests
         });
     }
     /// <summary>
-    /// Verifies that <see cref="SequenceGenerator.Leibniz" /> throws <see cref="ArgumentOutOfRangeException" /> when min is negative.
+    /// Verifies that <see cref="SequenceGenerator.Leibniz" /> throws <see cref="ArgumentOutOfRangeException" /> when
+    /// min is negative.
     /// </summary>
     [TestMethod]
     public void Leibniz_WhenMinIsNegative_ShouldThrowExactly()
@@ -71,7 +75,8 @@ public class LeibnizTests
     }
 
     /// <summary>
-    /// Verifies that the first three terms of the Leibniz series are 1, -1/3 and 1/5 with the natural alternating sign pattern.
+    /// Verifies that the first three terms of the Leibniz series are 1, -1/3 and 1/5 with the natural alternating sign
+    /// pattern.
     /// </summary>
     [TestMethod]
     public void Leibniz_WhenWindowCoversFirstTerms_ShouldReturnExpectedAlternatingSigns()
@@ -85,9 +90,9 @@ public class LeibnizTests
     }
 
     /// <summary>
-    /// Verifies that the magnitudes of the emitted terms always sit within the [min, max) window when both bounds straddle the
-    /// emitted term sequence — the lower bound filters terms with smaller magnitude, the upper bound is large enough that the
-    /// generator does not terminate before yielding the requested number of items.
+    /// Verifies that the magnitudes of the emitted terms always sit within the [min, max) window when both bounds
+    /// straddle the emitted term sequence — the lower bound filters terms with smaller magnitude, the upper bound is
+    /// large enough that the generator does not terminate before yielding the requested number of items.
     /// </summary>
     [TestMethod]
     public void Leibniz_WhenWindowExcludesSmallTerms_ShouldSkipThemAndYieldOnlyLargerMagnitudes()

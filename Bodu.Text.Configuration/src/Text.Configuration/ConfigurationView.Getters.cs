@@ -177,21 +177,20 @@ public sealed partial class ConfigurationView
     }
 
     /// <summary>
-    /// Gets the boolean value for <paramref name="key" /> using EditorConfig conventions (<c>true</c> or
-    /// <c>false</c>, case-insensitive).
+    /// Gets the boolean value for <paramref name="key" /> using EditorConfig conventions (<c>true</c> or <c>false</c>,
+    /// case-insensitive).
     /// </summary>
     /// <param name="key">The configuration key.</param>
     /// <returns>The parsed boolean value.</returns>
     /// <exception cref="KeyNotFoundException">The key is absent.</exception>
     /// <exception cref="FormatException">The value cannot be parsed.</exception>
     /// <remarks>
-    /// Accepted: <c>true</c>, <c>True</c>, <c>TRUE</c>, <c>false</c>, <c>False</c>, <c>FALSE</c> and any
-    /// other case variation. Surrounding whitespace is tolerated by the underlying
-    /// <see cref="bool.TryParse(string, out bool)" />.
+    /// Accepted: <c>true</c>, <c>True</c>, <c>TRUE</c>, <c>false</c>, <c>False</c>, <c>FALSE</c> and any other case
+    /// variation. Surrounding whitespace is tolerated by the underlying <see cref="bool.TryParse(string, out bool)" />.
     /// <para>
-    /// Rejected: <c>yes</c>, <c>no</c>, <c>on</c>, <c>off</c>, <c>1</c>, <c>0</c>. EditorConfig 0.17.2 uses
-    /// only the <c>true</c>/<c>false</c> literals; broadening the set would conflict with the spec. Callers
-    /// who want a relaxed parser should write their own using <see cref="GetString(string)" />.
+    /// Rejected: <c>yes</c>, <c>no</c>, <c>on</c>, <c>off</c>, <c>1</c>, <c>0</c>. EditorConfig 0.17.2 uses only the
+    /// <c>true</c>/<c>false</c> literals; broadening the set would conflict with the spec. Callers who want a relaxed
+    /// parser should write their own using <see cref="GetString(string)" />.
     /// </para>
     /// </remarks>
     public bool GetBoolean(string key)
@@ -252,15 +251,15 @@ public sealed partial class ConfigurationView
     /// <exception cref="KeyNotFoundException">The key is absent.</exception>
     /// <exception cref="FormatException">The value cannot be parsed as the enum.</exception>
     /// <remarks>
-    /// Enum names are parsed case-insensitively. Numeric values are accepted only when they correspond to a
-    /// declared enum member — undefined integers (e.g. <c>severity = 99</c> for a three-member enum) are
-    /// rejected with <see cref="FormatException" /> rather than producing a synthetic value.
+    /// Enum names are parsed case-insensitively. Numeric values are accepted only when they correspond to a declared
+    /// enum member — undefined integers (e.g. <c>severity = 99</c> for a three-member enum) are rejected with
+    /// <see cref="FormatException" /> rather than producing a synthetic value.
     /// <para>
-    /// Combined values for <see cref="FlagsAttribute" />-decorated enums are also rejected unless the
-    /// combined value itself is a declared member — the underlying
-    /// <see cref="Enum.IsDefined(System.Type, object)" /> guard treats <c>Read, Write</c> as undefined when
-    /// only the individual flags are declared. Callers who need combined-flag parsing should call
-    /// <see cref="Enum.Parse(System.Type, string, bool)" /> against <see cref="GetString(string)" /> instead.
+    /// Combined values for <see cref="FlagsAttribute" />-decorated enums are also rejected unless the combined value
+    /// itself is a declared member — the underlying <see cref="Enum.IsDefined(System.Type, object)" /> guard treats
+    /// <c>Read, Write</c> as undefined when only the individual flags are declared. Callers who need combined-flag
+    /// parsing should call <see cref="Enum.Parse(System.Type, string, bool)" /> against
+    /// <see cref="GetString(string)" /> instead.
     /// </para>
     /// </remarks>
     public TEnum GetEnum<TEnum>(string key)

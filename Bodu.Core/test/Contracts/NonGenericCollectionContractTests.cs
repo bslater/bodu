@@ -81,8 +81,8 @@ public abstract class NonGenericCollectionContractTests<TCollection>
             return;
         }
 
-        object syncRoot1 = collection.SyncRoot;
-        object syncRoot2 = collection.SyncRoot;
+        var syncRoot1 = collection.SyncRoot;
+        var syncRoot2 = collection.SyncRoot;
 
         Assert.AreSame(syncRoot1, syncRoot2);
     }
@@ -108,7 +108,7 @@ public abstract class NonGenericCollectionContractTests<TCollection>
     public void CopyTo_WhenDestinationLargeEnough_ShouldNotThrow()
     {
         TCollection collection = Create();
-        Array destination = Array.CreateInstance(typeof(object), collection.Count + 4);
+        var destination = Array.CreateInstance(typeof(object), collection.Count + 4);
 
         collection.CopyTo(destination, 2);
     }

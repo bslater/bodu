@@ -142,7 +142,7 @@ public sealed class EasterSundayNotableDateAlgorithmTests
     [TestMethod]
     public void GetDate_WhenCalledTwice_ShouldReturnCachedResult()
     {
-        int year = 2026;
+        var year = 2026;
 
         DateTime? firstCall = _algorithm.GetDate(year, null);
         DateTime? secondCall = _algorithm.GetDate(year, null);

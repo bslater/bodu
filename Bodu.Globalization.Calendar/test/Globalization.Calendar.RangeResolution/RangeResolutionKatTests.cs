@@ -68,8 +68,8 @@ public sealed class RangeResolutionKatTests
 
         foreach (RangeResolutionKat kat in Kats)
         {
-            DateTime start = kat.Start.ToDateTime(TimeOnly.MinValue);
-            DateTime end = kat.End.ToDateTime(TimeOnly.MaxValue);
+            var start = kat.Start.ToDateTime(TimeOnly.MinValue);
+            var end = kat.End.ToDateTime(TimeOnly.MaxValue);
 
             IReadOnlyList<NotableDate> results = service.GetNotableDates(start, end);
             IEnumerable<DateOnly> filtered = results

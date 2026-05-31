@@ -26,80 +26,56 @@ public partial class StringExtensionsTests
     /// leading acronym while capitalising subsequent acronym words.
     /// </summary>
     [TestMethod]
-    public void ToCamelCase_WhenGivenAcronymOptions_ShouldDecomposeAdjacentAcronyms()
-    {
-        Assert.AreEqual("jsonRpcApi", "JSONRPCAPI".ToCamelCase(AcronymAwareOptions()));
-    }
+    public void ToCamelCase_WhenGivenAcronymOptions_ShouldDecomposeAdjacentAcronyms() => Assert.AreEqual("jsonRpcApi", "JSONRPCAPI".ToCamelCase(AcronymAwareOptions()));
 
     /// <summary>
     /// Verifies that <see cref="StringExtensions.ToCamelCase(string, WordCasingOptions)" /> emits a
     /// non-leading mixed-case word verbatim.
     /// </summary>
     [TestMethod]
-    public void ToCamelCase_WhenWordIsMixedCase_ShouldPreserveNonLeadingMixedCaseWord()
-    {
-        Assert.AreEqual("theiPhone", "the iPhone".ToCamelCase(AcronymAwareOptions()));
-    }
+    public void ToCamelCase_WhenWordIsMixedCase_ShouldPreserveNonLeadingMixedCaseWord() => Assert.AreEqual("theiPhone", "the iPhone".ToCamelCase(AcronymAwareOptions()));
 
     /// <summary>
     /// Verifies that <see cref="StringExtensions.ToPascalCase(string, WordCasingOptions)" /> preserves a
     /// recognised mixed-case word verbatim.
     /// </summary>
     [TestMethod]
-    public void ToPascalCase_WhenWordIsMixedCase_ShouldPreserveMixedCaseWord()
-    {
-        Assert.AreEqual("OAuthTokenExchange", "OAuth token exchange".ToPascalCase(AcronymAwareOptions()));
-    }
+    public void ToPascalCase_WhenWordIsMixedCase_ShouldPreserveMixedCaseWord() => Assert.AreEqual("OAuthTokenExchange", "OAuth token exchange".ToPascalCase(AcronymAwareOptions()));
 
     /// <summary>
     /// Verifies that <see cref="StringExtensions.ToSnakeCase(string, WordCasingOptions)" /> lower-cases every
     /// word including acronyms.
     /// </summary>
     [TestMethod]
-    public void ToSnakeCase_WhenGivenAcronymOptions_ShouldLowerCaseAcronyms()
-    {
-        Assert.AreEqual("http_response_code", "HTTPResponseCode".ToSnakeCase(AcronymAwareOptions()));
-    }
+    public void ToSnakeCase_WhenGivenAcronymOptions_ShouldLowerCaseAcronyms() => Assert.AreEqual("http_response_code", "HTTPResponseCode".ToSnakeCase(AcronymAwareOptions()));
 
     /// <summary>
     /// Verifies that <see cref="StringExtensions.ToKebabCase(string, WordCasingOptions)" /> lower-cases every
     /// word and joins with hyphens.
     /// </summary>
     [TestMethod]
-    public void ToKebabCase_WhenGivenAcronymOptions_ShouldJoinLowerCaseWords()
-    {
-        Assert.AreEqual("json-rpc-api", "JSONRPCAPI".ToKebabCase(AcronymAwareOptions()));
-    }
+    public void ToKebabCase_WhenGivenAcronymOptions_ShouldJoinLowerCaseWords() => Assert.AreEqual("json-rpc-api", "JSONRPCAPI".ToKebabCase(AcronymAwareOptions()));
 
     /// <summary>
     /// Verifies that <see cref="StringExtensions.ToConstantCase(string, WordCasingOptions)" /> upper-cases
     /// every word and joins with underscores.
     /// </summary>
     [TestMethod]
-    public void ToConstantCase_WhenGivenAcronymOptions_ShouldUpperCaseWords()
-    {
-        Assert.AreEqual("HTTP_RESPONSE_CODE", "HTTPResponseCode".ToConstantCase(AcronymAwareOptions()));
-    }
+    public void ToConstantCase_WhenGivenAcronymOptions_ShouldUpperCaseWords() => Assert.AreEqual("HTTP_RESPONSE_CODE", "HTTPResponseCode".ToConstantCase(AcronymAwareOptions()));
 
     /// <summary>
     /// Verifies that <see cref="StringExtensions.ToDotCase(string, WordCasingOptions)" /> lower-cases every
     /// word and joins with periods.
     /// </summary>
     [TestMethod]
-    public void ToDotCase_WhenGivenAcronymOptions_ShouldJoinLowerCaseWords()
-    {
-        Assert.AreEqual("customer.display.name", "CustomerDisplayName".ToDotCase(AcronymAwareOptions()));
-    }
+    public void ToDotCase_WhenGivenAcronymOptions_ShouldJoinLowerCaseWords() => Assert.AreEqual("customer.display.name", "CustomerDisplayName".ToDotCase(AcronymAwareOptions()));
 
     /// <summary>
     /// Verifies that <see cref="StringExtensions.ToTrainCase(string, WordCasingOptions)" /> capitalises every
     /// word and joins with hyphens.
     /// </summary>
     [TestMethod]
-    public void ToTrainCase_WhenGivenAcronymOptions_ShouldCapitaliseWords()
-    {
-        Assert.AreEqual("Json-Rpc-Api", "JSONRPCAPI".ToTrainCase(AcronymAwareOptions()));
-    }
+    public void ToTrainCase_WhenGivenAcronymOptions_ShouldCapitaliseWords() => Assert.AreEqual("Json-Rpc-Api", "JSONRPCAPI".ToTrainCase(AcronymAwareOptions()));
 
     /// <summary>
     /// Verifies that <see cref="StringExtensions.ToTitleCase(string, WordCasingOptions)" /> canonicalises a

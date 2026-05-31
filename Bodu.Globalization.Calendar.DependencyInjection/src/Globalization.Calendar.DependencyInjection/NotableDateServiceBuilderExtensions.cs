@@ -24,8 +24,8 @@ namespace Bodu.Globalization.Calendar.DependencyInjection;
 /// <item>
 /// <description>
 /// <b>Provider registration</b> — <c>AddRuleProvider</c>, <c>AddRuleProviders</c>, <c>AddOverrideProvider</c>,
-/// <c>AddPlugin</c> register collaborators that will be resolved via <see cref="IEnumerable{T}" /> injection at
-/// service construction time. Multiple calls accumulate.
+/// <c>AddPlugin</c> register collaborators that will be resolved via <see cref="IEnumerable{T}" /> injection at service
+/// construction time. Multiple calls accumulate.
 /// </description>
 /// </item>
 /// <item>
@@ -38,10 +38,9 @@ namespace Bodu.Globalization.Calendar.DependencyInjection;
 /// <item>
 /// <description>
 /// <b>Options shaping</b> — <c>Configure</c> and <c>PostConfigure</c> shape the bindable
-/// <see cref="NotableDateOptions" /> instance. <c>PostConfigure</c> is the hook for projecting from
-/// consumer-defined POCOs registered separately through the standard
-/// <see cref="OptionsServiceCollectionExtensions.Configure{TOptions}(IServiceCollection, Action{TOptions})" />
-/// surface.
+/// <see cref="NotableDateOptions" /> instance. <c>PostConfigure</c> is the hook for projecting from consumer-defined
+/// POCOs registered separately through the standard
+/// <see cref="OptionsServiceCollectionExtensions.Configure{TOptions}(IServiceCollection, Action{TOptions})" /> surface.
 /// </description>
 /// </item>
 /// </list>
@@ -130,8 +129,8 @@ public static class NotableDateServiceBuilderExtensions
     /// </param>
     /// <returns>The same builder, for chaining.</returns>
     /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="builder" /> or <paramref name="providers" /> is <see langword="null" />, or when
-    /// any element of <paramref name="providers" /> is <see langword="null" />.
+    /// Thrown when <paramref name="builder" /> or <paramref name="providers" /> is <see langword="null" />, or when any
+    /// element of <paramref name="providers" /> is <see langword="null" />.
     /// </exception>
     /// <example>
     /// <code>
@@ -178,8 +177,8 @@ public static class NotableDateServiceBuilderExtensions
     /// </remarks>
     /// <example>
     /// <para>
-    /// Register a runtime-mutable override and mutate it at any point during the application's lifetime — the
-    /// resolved service auto-reloads on every change.
+    /// Register a runtime-mutable override and mutate it at any point during the application's lifetime — the resolved
+    /// service auto-reloads on every change.
     /// </para>
     /// <code>
     ///<![CDATA[
@@ -475,8 +474,8 @@ public static class NotableDateServiceBuilderExtensions
     /// <remarks>
     /// <para>
     /// <see cref="IPostConfigureOptions{TOptions}" /> has no built-in IServiceProvider-aware overload, so we capture
-    /// the provider at registration time (via the factory invoked when the adapter singleton is materialised) and
-    /// hand it to the consumer callback on each post-configure invocation.
+    /// the provider at registration time (via the factory invoked when the adapter singleton is materialised) and hand
+    /// it to the consumer callback on each post-configure invocation.
     /// </para>
     /// </remarks>
     private sealed class PostConfigureOptionsWithProvider : IPostConfigureOptions<NotableDateOptions>
@@ -503,9 +502,6 @@ public static class NotableDateServiceBuilderExtensions
         }
 
         /// <inheritdoc />
-        public void PostConfigure(string? name, NotableDateOptions options)
-        {
-            _configure(_serviceProvider, options);
-        }
+        public void PostConfigure(string? name, NotableDateOptions options) => _configure(_serviceProvider, options);
     }
 }

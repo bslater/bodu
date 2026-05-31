@@ -129,12 +129,12 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
 
         using (TCryptoTransform encryptor = CreateEncryptor())
         {
-            int blockSize = encryptor.InputBlockSize;
+            var blockSize = encryptor.InputBlockSize;
             plaintext = BuildIncrementingPlaintext(blockSize * 3);
 
             var streamed = new byte[plaintext.Length + blockSize];
-            int written = encryptor.TransformBlock(plaintext, 0, blockSize * 2, streamed, 0);
-            byte[] tail = encryptor.TransformFinalBlock(plaintext, blockSize * 2, blockSize);
+            var written = encryptor.TransformBlock(plaintext, 0, blockSize * 2, streamed, 0);
+            var tail = encryptor.TransformFinalBlock(plaintext, blockSize * 2, blockSize);
             Buffer.BlockCopy(tail, 0, streamed, written, tail.Length);
 
             ciphertext = new byte[written + tail.Length];
@@ -153,7 +153,7 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
     private static byte[] BuildIncrementingPlaintext(int length)
     {
         var buffer = new byte[length];
-        for (int i = 0; i < length; i++)
+        for (var i = 0; i < length; i++)
             buffer[i] = (byte)i;
         return buffer;
     }

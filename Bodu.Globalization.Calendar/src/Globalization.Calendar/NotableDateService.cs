@@ -27,9 +27,9 @@ namespace Bodu.Globalization.Calendar;
 /// territories, and data packs.
 /// </para>
 /// <para>
-/// The service serves every query through the range-resolution pipeline. The pipeline materialises results per
-/// request, merges resolved windows for cross-call coverage tracking, and is cleared via <see cref="Invalidate()" />.
-/// The pipeline and its caches are thread-safe under concurrent reads and writes.
+/// The service serves every query through the range-resolution pipeline. The pipeline materialises results per request,
+/// merges resolved windows for cross-call coverage tracking, and is cleared via <see cref="Invalidate()" />. The
+/// pipeline and its caches are thread-safe under concurrent reads and writes.
 /// </para>
 /// <para>
 /// Multi-day events are supported: a <see cref="NotableDateRule" /> with <see cref="NotableDateRule.DurationDays" />
@@ -77,10 +77,9 @@ namespace Bodu.Globalization.Calendar;
 /// <description>
 /// <b>Resolved NotableDate</b> — every <c>GetNotableDates</c> overload delegates to the
 /// <see cref="RangeResolution.NotableDateRangePipeline" /> (reached publicly through
-/// <see cref="ResolveNotableDatesInRange" />). The pipeline emits exactly one
-/// <see cref="NotableDate" /> per rule occurrence, carrying any <see cref="NotableDate.AdjustmentReason" /> on
-/// the single emitted record rather than producing a (base, adjusted) pair. <see cref="Invalidate()" /> drops
-/// the pipeline and the resolved-window set.
+/// <see cref="ResolveNotableDatesInRange" />). The pipeline emits exactly one <see cref="NotableDate" /> per rule
+/// occurrence, carrying any <see cref="NotableDate.AdjustmentReason" /> on the single emitted record rather than
+/// producing a (base, adjusted) pair. <see cref="Invalidate()" /> drops the pipeline and the resolved-window set.
 /// </description>
 /// </item>
 /// <item>
@@ -98,17 +97,17 @@ namespace Bodu.Globalization.Calendar;
 /// <list type="bullet">
 /// <item>
 /// <description>
-/// <b>One emission per rule occurrence.</b> When an <see cref="ObservanceAdjustment" /> activates, the
-/// single emitted <see cref="NotableDate" /> carries the post-adjustment observed date and an
-/// <see cref="AdjustmentReason" /> describing the shift. Multiple activating adjustments resolve last-wins by
-/// ascending <see cref="ObservanceAdjustment.Priority" />.
+/// <b>One emission per rule occurrence.</b> When an <see cref="ObservanceAdjustment" /> activates, the single emitted
+/// <see cref="NotableDate" /> carries the post-adjustment observed date and an <see cref="AdjustmentReason" />
+/// describing the shift. Multiple activating adjustments resolve last-wins by ascending
+/// <see cref="ObservanceAdjustment.Priority" />.
 /// </description>
 /// </item>
 /// <item>
 /// <description>
-/// <b>Observed-date filtering.</b> Only occurrences whose observed date intersects the requested window are
-/// emitted. Anchors materialised from adjacent years (for cross-year multi-day spans or roll-forward
-/// substitutions) surface when, and only when, their observed date falls inside the window.
+/// <b>Observed-date filtering.</b> Only occurrences whose observed date intersects the requested window are emitted.
+/// Anchors materialised from adjacent years (for cross-year multi-day spans or roll-forward substitutions) surface
+/// when, and only when, their observed date falls inside the window.
 /// </description>
 /// </item>
 /// <item>
@@ -119,24 +118,24 @@ namespace Bodu.Globalization.Calendar;
 /// </item>
 /// <item>
 /// <description>
-/// <b>Composite rule identity.</b> Override-merge uses a <c>(Name, TerritoryCode, CalendarType)</c> key, so
-/// regional and calendar-system variants of the same named observance coexist as distinct rules. An override
-/// addition replaces a base rule only when all three identity components match exactly.
+/// <b>Composite rule identity.</b> Override-merge uses a <c>(Name, TerritoryCode, CalendarType)</c> key, so regional
+/// and calendar-system variants of the same named observance coexist as distinct rules. An override addition replaces a
+/// base rule only when all three identity components match exactly.
 /// </description>
 /// </item>
 /// <item>
 /// <description>
 /// <b>Strict parser type resolution.</b> Both <see cref="NotableDateRuleParser" /> and
 /// <see cref="NotableDateRuleJsonParser" /> throw <see cref="FormatException" /> at parse time when a
-/// <c>calendarType</c> or algorithm-type attribute cannot be resolved or does not derive from the expected
-/// base. Numeric month 13 is rejected for Fixed rules in a Gregorian context.
+/// <c>calendarType</c> or algorithm-type attribute cannot be resolved or does not derive from the expected base.
+/// Numeric month 13 is rejected for Fixed rules in a Gregorian context.
 /// </description>
 /// </item>
 /// <item>
 /// <description>
 /// <b>Atomic Reload.</b> <see cref="Reload" /> rebuilds the effective rule set and invalidates the pipeline /
-/// resolved-window state under a single critical section, so concurrent readers cannot observe new effective
-/// rules paired with a stale pipeline.
+/// resolved-window state under a single critical section, so concurrent readers cannot observe new effective rules
+/// paired with a stale pipeline.
 /// </description>
 /// </item>
 /// </list>
@@ -408,20 +407,18 @@ public sealed class NotableDateService : INotableDateService, IDisposable
 
     /// <summary>
     /// Re-queries every registered <see cref="INotableDateRuleOverrideProvider" /> and returns the freshly snapshotted
-    /// override removals, addition identity set, merged effective rule set, and resolver. Shared by the constructor
-    /// and <see cref="Reload" /> so that the two callers cannot drift.
+    /// override removals, addition identity set, merged effective rule set, and resolver. Shared by the constructor and
+    /// <see cref="Reload" /> so that the two callers cannot drift.
     /// </summary>
-    /// <returns>
-    /// A tuple comprising the override-derived state needed by the resolution pipeline.
-    /// </returns>
+    /// <returns>A tuple comprising the override-derived state needed by the resolution pipeline.</returns>
     /// <remarks>
     /// <para>
     /// Snapshotting every override provider's contributions in a single pass pins the cost of any non-trivial override
     /// provider (database-backed, configuration-bound, lazily-enumerated) to a single call per provider and removes a
     /// runaway vector for providers that return fresh, infinite, or expensive enumerables on each invocation. Override
     /// additions are tracked by reference identity because <see cref="NotableDateRule" /> is a record with value
-    /// equality — <see cref="ReferenceEqualityComparer" /> ensures we only exempt the specific instances contributed
-    /// by override providers from same-name <see cref="RuleRemoval" /> suppression.
+    /// equality — <see cref="ReferenceEqualityComparer" /> ensures we only exempt the specific instances contributed by
+    /// override providers from same-name <see cref="RuleRemoval" /> suppression.
     /// </para>
     /// </remarks>
     private (IReadOnlyList<RuleRemoval> Removals, HashSet<NotableDateRule> Additions, IReadOnlyList<NotableDateRule> Effective, NotableDateRuleResolver Resolver) BuildOverrideState()
@@ -496,15 +493,15 @@ public sealed class NotableDateService : INotableDateService, IDisposable
 
     /// <summary>
     /// Releases resources owned by the service. The current implementation has no unmanaged or disposable state to
-    /// release; the method is retained on <see cref="IDisposable" /> for forward compatibility and so callers that
-    /// own the service can still wrap it in <c>using</c> blocks.
+    /// release; the method is retained on <see cref="IDisposable" /> for forward compatibility and so callers that own
+    /// the service can still wrap it in <c>using</c> blocks.
     /// </summary>
     public void Dispose() => GC.SuppressFinalize(this);
 
     /// <inheritdoc />
     /// <remarks>
-    /// Convenience wrapper over <see cref="ResolveNotableDatesInRange" /> that supplies January 1 through
-    /// December 31 of <paramref name="year" /> as the range.
+    /// Convenience wrapper over <see cref="ResolveNotableDatesInRange" /> that supplies January 1 through December 31
+    /// of <paramref name="year" /> as the range.
     /// </remarks>
     public IReadOnlyList<NotableDate> GetNotableDates(int year, string? territoryCode = null, Type? calendarType = null)
         => ResolveRangeInternal(
@@ -517,8 +514,8 @@ public sealed class NotableDateService : INotableDateService, IDisposable
 
     /// <inheritdoc />
     /// <remarks>
-    /// Convenience wrapper over <see cref="ResolveNotableDatesInRange" /> that supplies the supplied day as both
-    /// the start and end of the range.
+    /// Convenience wrapper over <see cref="ResolveNotableDatesInRange" /> that supplies the supplied day as both the
+    /// start and end of the range.
     /// </remarks>
     public IReadOnlyList<NotableDate> GetNotableDates(DateTime date, string? territoryCode = null, Type? calendarType = null)
         => ResolveRangeInternal(
@@ -531,8 +528,8 @@ public sealed class NotableDateService : INotableDateService, IDisposable
 
     /// <inheritdoc />
     /// <remarks>
-    /// Convenience wrapper over <see cref="ResolveNotableDatesInRange" /> that supplies January 1 through
-    /// December 31 of <paramref name="year" /> as the range.
+    /// Convenience wrapper over <see cref="ResolveNotableDatesInRange" /> that supplies January 1 through December 31
+    /// of <paramref name="year" /> as the range.
     /// </remarks>
     public IReadOnlyList<NotableDate> GetNotableDates(int year, NotableDateFilter filter, string? territoryCode = null, Type? calendarType = null)
     {
@@ -563,8 +560,8 @@ public sealed class NotableDateService : INotableDateService, IDisposable
 
     /// <inheritdoc />
     /// <remarks>
-    /// Convenience wrapper over <see cref="ResolveNotableDatesInRange" /> that supplies the supplied day as both
-    /// the start and end of the range.
+    /// Convenience wrapper over <see cref="ResolveNotableDatesInRange" /> that supplies the supplied day as both the
+    /// start and end of the range.
     /// </remarks>
     public IReadOnlyList<NotableDate> GetNotableDates(DateTime date, NotableDateFilter filter, string? territoryCode = null, Type? calendarType = null)
     {
@@ -616,9 +613,9 @@ public sealed class NotableDateService : INotableDateService, IDisposable
     /// re-queried; their contribution is fixed for the lifetime of the service.
     /// </para>
     /// <para>
-    /// The effective-rule rebuild and the pipeline invalidation are performed atomically under a single
-    /// <c>_gate</c> critical section so that no concurrent reader can observe new effective rules paired with a stale
-    /// range pipeline. Resolved-window state is cleared identically to <see cref="Invalidate()" />.
+    /// The effective-rule rebuild and the pipeline invalidation are performed atomically under a single <c>_gate</c>
+    /// critical section so that no concurrent reader can observe new effective rules paired with a stale range
+    /// pipeline. Resolved-window state is cleared identically to <see cref="Invalidate()" />.
     /// </para>
     /// </remarks>
     public void Reload()
@@ -648,7 +645,9 @@ public sealed class NotableDateService : INotableDateService, IDisposable
     /// <see cref="_gate" /> on first access so it cannot be assembled from rules that <see cref="Reload" /> has already
     /// swapped out.
     /// </summary>
-    /// <returns>The current range pipeline, coherent with the effective rule set at the moment of construction.</returns>
+    /// <returns>
+    /// The current range pipeline, coherent with the effective rule set at the moment of construction.
+    /// </returns>
     private RangeResolution.NotableDateRangePipeline GetOrBuildRangePipeline()
     {
         RangeResolution.NotableDateRangePipeline? snapshot = _rangePipeline;
@@ -781,9 +780,9 @@ public sealed class NotableDateService : INotableDateService, IDisposable
     /// </exception>
     /// <remarks>
     /// <para>
-    /// This method is the canonical resolution entry point on the service. Every <c>GetNotableDates</c> overload
-    /// is a thin wrapper that translates its arguments into an <c>(start, end)</c> range and delegates here: the
-    /// year overload supplies <c>(new DateTime(year, 1, 1), new DateTime(year, 12, 31))</c>, the single-day overload
+    /// This method is the canonical resolution entry point on the service. Every <c>GetNotableDates</c> overload is a
+    /// thin wrapper that translates its arguments into an <c>(start, end)</c> range and delegates here: the year
+    /// overload supplies <c>(new DateTime(year, 1, 1), new DateTime(year, 12, 31))</c>, the single-day overload
     /// supplies <c>(date.Date, date.Date)</c>, and the range overloads pass their arguments through unchanged.
     /// </para>
     /// </remarks>
@@ -857,11 +856,11 @@ public sealed class NotableDateService : INotableDateService, IDisposable
     /// </param>
     /// <returns>The rule list after all additions have been applied.</returns>
     /// <remarks>
-    /// Additions are layered on top of the base rule set using a composite (name, territory, calendar type) key so
-    /// that regional and calendar-system variants of the same notable date (for example, multiple Labour Day variants
-    /// across Australian states, or Gregorian and Julian Christmas observances) survive instead of collapsing into a
-    /// single entry. An addition only replaces a base rule when all three identity components match exactly.
-    /// Removals are evaluated per (year, territory) downstream so they can be scoped to specific years and territories.
+    /// Additions are layered on top of the base rule set using a composite (name, territory, calendar type) key so that
+    /// regional and calendar-system variants of the same notable date (for example, multiple Labour Day variants across
+    /// Australian states, or Gregorian and Julian Christmas observances) survive instead of collapsing into a single
+    /// entry. An addition only replaces a base rule when all three identity components match exactly. Removals are
+    /// evaluated per (year, territory) downstream so they can be scoped to specific years and territories.
     /// </remarks>
     private static ImmutableArray<NotableDateRule> ApplyOverrides(
         ImmutableArray<NotableDateRule> baseRules,
@@ -894,10 +893,10 @@ public sealed class NotableDateService : INotableDateService, IDisposable
     /// A tuple containing the normalized rule name, territory code, and calendar type used as the dictionary key.
     /// </returns>
     /// <remarks>
-    /// Rules are keyed by name, territory, and calendar type so that regional variants and calendar-system variants
-    /// of the same named date remain distinct during override application. A <see langword="null" /> name or
-    /// territory is normalized to <see cref="string.Empty" />; calendar type is preserved verbatim (<see langword="null" />
-    /// is its own bucket).
+    /// Rules are keyed by name, territory, and calendar type so that regional variants and calendar-system variants of
+    /// the same named date remain distinct during override application. A <see langword="null" /> name or territory is
+    /// normalized to <see cref="string.Empty" />; calendar type is preserved verbatim (<see langword="null" /> is its
+    /// own bucket).
     /// </remarks>
     private static (string Name, string Territory, Type? CalendarType) CompositeKey(NotableDateRule rule)
         => (rule.Name ?? string.Empty, rule.TerritoryCode ?? string.Empty, rule.CalendarType);

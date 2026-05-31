@@ -16,10 +16,7 @@ public sealed partial class Base85Tests
     [TestMethod]
     [DataRow(Base85Variant.Ascii85)]
     [DataRow(Base85Variant.Z85)]
-    public void Decode_WhenEmptyString_ShouldReturnEmptyByteArray(Base85Variant variant)
-    {
-        Assert.AreEqual(0, Base85.Decode(string.Empty, variant).Length);
-    }
+    public void Decode_WhenEmptyString_ShouldReturnEmptyByteArray(Base85Variant variant) => Assert.AreEqual(0, Base85.Decode(string.Empty, variant).Length);
     /// <summary>
     /// Verifies that encoding an empty byte array returns <see cref="string.Empty" />.
     /// </summary>
@@ -27,10 +24,7 @@ public sealed partial class Base85Tests
     [TestMethod]
     [DataRow(Base85Variant.Ascii85)]
     [DataRow(Base85Variant.Z85)]
-    public void Encode_WhenEmptyByteArray_ShouldReturnEmptyString(Base85Variant variant)
-    {
-        Assert.AreEqual(string.Empty, Base85.Encode(Array.Empty<byte>(), variant));
-    }
+    public void Encode_WhenEmptyByteArray_ShouldReturnEmptyString(Base85Variant variant) => Assert.AreEqual(string.Empty, Base85.Encode(Array.Empty<byte>(), variant));
 
     /// <summary>
     /// Verifies that <see cref="Base85.TryEncode" /> and <see cref="Base85.TryDecode" /> with empty source return

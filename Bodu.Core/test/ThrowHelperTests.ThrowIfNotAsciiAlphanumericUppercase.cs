@@ -20,10 +20,7 @@ public partial class ThrowHelperTests
     [DataRow('A')]
     [DataRow('M')]
     [DataRow('Z')]
-    public void ThrowIfNotAsciiAlphanumericUppercase_WhenCharIsAccepted_ShouldNotThrow(char value)
-    {
-        ThrowHelper.ThrowIfNotAsciiAlphanumericUppercase(value);
-    }
+    public void ThrowIfNotAsciiAlphanumericUppercase_WhenCharIsAccepted_ShouldNotThrow(char value) => ThrowHelper.ThrowIfNotAsciiAlphanumericUppercase(value);
 
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfNotAsciiAlphanumericUppercase" /> throws

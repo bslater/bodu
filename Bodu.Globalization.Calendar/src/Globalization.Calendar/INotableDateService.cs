@@ -21,7 +21,8 @@ namespace Bodu.Globalization.Calendar;
 /// </para>
 /// <para>
 /// The canonical implementation is <see cref="NotableDateService" />, which supports thread-safe concurrent access,
-/// per-request range-pipeline caching, multi-day event spans, and composable <see cref="NotableDateFilter" /> predicates.
+/// per-request range-pipeline caching, multi-day event spans, and composable <see cref="NotableDateFilter" />
+/// predicates.
 /// </para>
 /// </remarks>
 /// <example>
@@ -134,8 +135,8 @@ public interface INotableDateService
     /// The filter is applied in two stages. The primary gate is evaluated against each <see cref="NotableDateRule" />
     /// before its date is resolved; rules that fail the primary gate are skipped entirely. The secondary gate is then
     /// evaluated against each materialized <see cref="NotableDate" />, discarding dates that do not satisfy the full
-    /// filter criteria. Filtered queries reuse the same range pipeline as unfiltered queries; the pipeline applies
-    /// the primary gate during materialisation and the secondary gate to each emitted occurrence.
+    /// filter criteria. Filtered queries reuse the same range pipeline as unfiltered queries; the pipeline applies the
+    /// primary gate during materialisation and the secondary gate to each emitted occurrence.
     /// </para>
     /// </remarks>
     /// <param name="year">The year to query.</param>
@@ -168,8 +169,8 @@ public interface INotableDateService
     /// The filter is applied in two stages. The primary gate is evaluated against each <see cref="NotableDateRule" />
     /// before its date is resolved; rules that fail the primary gate are skipped entirely. The secondary gate is then
     /// evaluated against each materialized <see cref="NotableDate" />, discarding dates that do not satisfy the full
-    /// filter criteria. Filtered queries reuse the same range pipeline as unfiltered queries; the pipeline applies
-    /// the primary gate during materialisation and the secondary gate to each emitted occurrence.
+    /// filter criteria. Filtered queries reuse the same range pipeline as unfiltered queries; the pipeline applies the
+    /// primary gate during materialisation and the secondary gate to each emitted occurrence.
     /// </para>
     /// </remarks>
     /// <param name="startDate">The inclusive start of the range.</param>
@@ -202,8 +203,8 @@ public interface INotableDateService
     /// The filter is applied in two stages. The primary gate is evaluated against each <see cref="NotableDateRule" />
     /// before its date is resolved; rules that fail the primary gate are skipped entirely. The secondary gate is then
     /// evaluated against each materialized <see cref="NotableDate" />, discarding dates that do not satisfy the full
-    /// filter criteria. Filtered queries reuse the same range pipeline as unfiltered queries; the pipeline applies
-    /// the primary gate during materialisation and the secondary gate to each emitted occurrence.
+    /// filter criteria. Filtered queries reuse the same range pipeline as unfiltered queries; the pipeline applies the
+    /// primary gate during materialisation and the secondary gate to each emitted occurrence.
     /// </para>
     /// </remarks>
     /// <param name="date">The day to query.</param>
@@ -234,13 +235,14 @@ public interface INotableDateService
     /// The default implementation is a no-op suitable for services whose rules are immutable for the lifetime of the
     /// instance. The canonical <see cref="NotableDateService" /> overrides this method to re-snapshot every override
     /// provider's <see cref="INotableDateRuleOverrideProvider.GetAdditions" /> and
-    /// <see cref="INotableDateRuleOverrideProvider.GetRemovals" /> contributions, rebuild the merged rule set, and clear
-    /// all cached year results. Base rule providers are <em>not</em> re-queried; they are considered load-time inputs.
+    /// <see cref="INotableDateRuleOverrideProvider.GetRemovals" /> contributions, rebuild the merged rule set, and
+    /// clear all cached year results. Base rule providers are <em>not</em> re-queried; they are considered load-time
+    /// inputs.
     /// </para>
     /// <para>
     /// Call this method after mutating a runtime-mutable override provider (for example,
-    /// <see cref="MutableNotableDateRuleOverrideProvider" />) so that additions and removals authored after construction
-    /// take effect.
+    /// <see cref="MutableNotableDateRuleOverrideProvider" />) so that additions and removals authored after
+    /// construction take effect.
     /// </para>
     /// </remarks>
     /// <example>
@@ -271,10 +273,7 @@ public interface INotableDateService
     ///]]>
     /// </code>
     /// </example>
-    void Reload()
-    {
-        Invalidate();
-    }
+    void Reload() => Invalidate();
 
     /// <summary>
     /// Returns the distinct set of territory codes referenced by the service's effective rule set.
@@ -312,8 +311,8 @@ public interface INotableDateService
     /// <remarks>
     /// <para>
     /// The default implementation returns an empty collection; concrete services should override it to project over
-    /// their effective rule set. Consumers typically use the returned types to expose calendar-specific filters
-    /// (for example, separating Gregorian observances from <see cref="SysGlobal.HebrewCalendar" />-anchored ones).
+    /// their effective rule set. Consumers typically use the returned types to expose calendar-specific filters (for
+    /// example, separating Gregorian observances from <see cref="SysGlobal.HebrewCalendar" />-anchored ones).
     /// </para>
     /// </remarks>
     /// <example>

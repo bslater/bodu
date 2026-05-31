@@ -144,8 +144,7 @@ internal static partial class CryptoHelpers
     /// unbiased uniform sample. Use this for key and nonce generation, where every byte value is a legal input.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static void FillWithRandomBytes(Span<byte> buffer)
-    {
+    internal static void FillWithRandomBytes(Span<byte> buffer) =>
 #if NETSTANDARD2_0
         using (var rng = RandomNumberGenerator.Create())
         {
@@ -163,7 +162,7 @@ internal static partial class CryptoHelpers
 #else
         RandomNumberGenerator.Fill(buffer);
 #endif
-    }
+
 
     /// <summary>
     /// Returns a new byte array filled with cryptographically secure random bytes, drawn uniformly over the full

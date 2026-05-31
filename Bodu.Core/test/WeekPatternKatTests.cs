@@ -56,7 +56,7 @@ public sealed class WeekPatternKatTests
     {
         foreach (ValidKat<WeekPattern, string> kat in FormatKats)
         {
-            string actual = kat.Input.ToString("S", null);
+            var actual = kat.Input.ToString("S", null);
 
             Assert.AreEqual(
                 kat.Expected,

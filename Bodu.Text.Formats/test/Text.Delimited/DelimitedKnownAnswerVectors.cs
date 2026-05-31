@@ -7,8 +7,8 @@
 namespace Bodu.Text.Delimited;
 
 /// <summary>
-/// Provides Known Answer Test vectors for the RFC 4180 delimited-text format. Each provider method yields rows
-/// in the shape expected by MSTest's <c>[DynamicData]</c> attribute.
+/// Provides Known Answer Test vectors for the RFC 4180 delimited-text format. Each provider method yields rows in the
+/// shape expected by MSTest's <c>[DynamicData]</c> attribute.
 /// </summary>
 public static class DelimitedKnownAnswerVectors
 {
@@ -28,8 +28,8 @@ public static class DelimitedKnownAnswerVectors
     }
 
     /// <summary>
-    /// Returns vectors derived from RFC 4180 §2, covering each normative rule and widely-adopted dialect
-    /// extensions (LF-only line endings, TSV, bare CR, Unicode content).
+    /// Returns vectors derived from RFC 4180 §2, covering each normative rule and widely-adopted dialect extensions
+    /// (LF-only line endings, TSV, bare CR, Unicode content).
     /// </summary>
     /// <returns>A sequence suitable for <c>[DynamicData]</c>.</returns>
     public static IEnumerable<object[]> Rfc4180Vectors()

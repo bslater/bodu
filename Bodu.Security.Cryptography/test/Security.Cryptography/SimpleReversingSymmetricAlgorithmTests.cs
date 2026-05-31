@@ -11,7 +11,7 @@ public partial class SimpleReversingSymmetricAlgorithmTests
     : SymmetricAlgorithmTests<SimpleReversingSymmetricAlgorithmTests, SimpleReversingSymmetricAlgorithm>
 {
     /// <inheritdoc />
-    protected override SimpleReversingSymmetricAlgorithm CreateAlgorithm() => new SimpleReversingSymmetricAlgorithm();
+    protected override SimpleReversingSymmetricAlgorithm CreateAlgorithm() => new();
 
     /// <inheritdoc />
     protected override void SetBlockMode(SimpleReversingSymmetricAlgorithm algorithm, CipherModeKind mode) =>
@@ -23,7 +23,7 @@ public partial class SimpleReversingSymmetricAlgorithmTests
 
     /// <inheritdoc />
     protected override SymmetricAlgorithmSpecification GetSpecification() =>
-        new SymmetricAlgorithmSpecification
+        new()
         {
             BlockSizeBits = 128,
             DefaultKeySizeBits = 128,

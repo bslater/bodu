@@ -30,10 +30,7 @@ public partial class StringExtensionsTests
     /// <param name="expected">The expected return value.</param>
     [DataTestMethod]
     [DynamicData(nameof(GetAfterLastCases), DynamicDataSourceType.Method)]
-    public void AfterLast_WhenInvoked_ShouldReturnExpected(string value, string marker, StringComparison comparison, string? expected)
-    {
-        Assert.AreEqual(expected, value.AfterLast(marker, comparison));
-    }
+    public void AfterLast_WhenInvoked_ShouldReturnExpected(string value, string marker, StringComparison comparison, string? expected) => Assert.AreEqual(expected, value.AfterLast(marker, comparison));
 
     /// <summary>
     /// Verifies that <see cref="StringExtensions.AfterLast(string, string, StringComparison)" /> throws

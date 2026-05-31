@@ -57,7 +57,7 @@ public sealed class SuperFastHash
 {
     private const int HashLength = 4;
 
-    private readonly MemoryStream _buffer = new MemoryStream();
+    private readonly MemoryStream _buffer = new();
     private bool _disposed;
 
     /// <summary>

@@ -90,7 +90,10 @@ public readonly struct IniComment : IEquatable<IniComment>
     /// <param name="left">The first comment.</param>
     /// <param name="right">The second comment.</param>
     /// <returns><see langword="true" /> when the comments are equal.</returns>
-    public static bool operator ==(IniComment left, IniComment right) => left.Equals(right);
+    public static bool operator ==(IniComment left, IniComment right)
+    {
+        return left.Equals(right);
+    }
 
     /// <summary>
     /// Determines whether two comments are not equal.
@@ -98,5 +101,8 @@ public readonly struct IniComment : IEquatable<IniComment>
     /// <param name="left">The first comment.</param>
     /// <param name="right">The second comment.</param>
     /// <returns><see langword="true" /> when the comments differ.</returns>
-    public static bool operator !=(IniComment left, IniComment right) => !left.Equals(right);
+    public static bool operator !=(IniComment left, IniComment right)
+    {
+        return !left.Equals(right);
+    }
 }

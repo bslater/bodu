@@ -60,10 +60,7 @@ public sealed partial class Base85Tests
     /// Ascii85 input containing embedded whitespace — drives the whitespace-skip branch.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenAscii85IgnoreWhitespaceAndInputContainsWhitespace_ShouldReturnTrue()
-    {
-        Assert.IsTrue(Base85.IsValid("9jq o^".AsSpan(), Base85Variant.Ascii85, BaseFormatStyles.IgnoreWhitespace));
-    }
+    public void IsValid_WhenAscii85IgnoreWhitespaceAndInputContainsWhitespace_ShouldReturnTrue() => Assert.IsTrue(Base85.IsValid("9jq o^".AsSpan(), Base85Variant.Ascii85, BaseFormatStyles.IgnoreWhitespace));
 
     /// <summary>
     /// Verifies that <see cref="Base85.IsValid" /> returns <see langword="false" /> for an input containing a
@@ -71,11 +68,9 @@ public sealed partial class Base85Tests
     /// independently of the <c>lookup[c] &lt; 0</c> branch.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenAscii85InputContainsCharAboveLookupRange_ShouldReturnFalse()
-    {
+    public void IsValid_WhenAscii85InputContainsCharAboveLookupRange_ShouldReturnFalse() =>
         // 'ÿ' (U+00FF) is past the 128-entry Ascii85 lookup.
         Assert.IsFalse(Base85.IsValid("9jqÿo".AsSpan()));
-    }
 
     /// <summary>
     /// Regression: verifies that <see cref="Base85.IsValid" /> now performs full structural validation. A trailing
@@ -94,29 +89,20 @@ public sealed partial class Base85Tests
     /// Ascii85.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenAscii85ZShortcut_ShouldReturnTrue()
-    {
-        Assert.IsTrue(Base85.IsValid("zz".AsSpan()));
-    }
+    public void IsValid_WhenAscii85ZShortcut_ShouldReturnTrue() => Assert.IsTrue(Base85.IsValid("zz".AsSpan()));
 
     /// <summary>
     /// Regression: verifies that <see cref="Base85.IsValid" /> rejects a misplaced <c>z</c> shortcut. The shortcut
     /// may only appear at a 5-char group boundary.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenAscii85ZShortcutInsideGroup_ShouldReturnFalse()
-    {
-        Assert.IsFalse(Base85.IsValid("9jz".AsSpan()));
-    }
+    public void IsValid_WhenAscii85ZShortcutInsideGroup_ShouldReturnFalse() => Assert.IsFalse(Base85.IsValid("9jz".AsSpan()));
 
     /// <summary>
     /// Verifies that <see cref="Base85.IsValid" /> returns <see langword="false" /> for an invalid character.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenInvalidCharacter_ShouldReturnFalse()
-    {
-        Assert.IsFalse(Base85.IsValid("\x01\x02".AsSpan()));
-    }
+    public void IsValid_WhenInvalidCharacter_ShouldReturnFalse() => Assert.IsFalse(Base85.IsValid("\x01\x02".AsSpan()));
 
     /// <summary>
     /// Verifies that <see cref="Base85.IsValid" /> for the Z85 variant ignores
@@ -124,10 +110,7 @@ public sealed partial class Base85Tests
     /// invalid characters under Z85.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenZ85AndAllowPrefix_ShouldStillRejectDelimiters()
-    {
-        Assert.IsFalse(Base85.IsValid("<~HelloWorld~>".AsSpan(), Base85Variant.Z85, BaseFormatStyles.AllowPrefix));
-    }
+    public void IsValid_WhenZ85AndAllowPrefix_ShouldStillRejectDelimiters() => Assert.IsFalse(Base85.IsValid("<~HelloWorld~>".AsSpan(), Base85Variant.Z85, BaseFormatStyles.AllowPrefix));
 
     /// <summary>
     /// Regression: verifies that <see cref="Base85.IsValid" /> for Z85 requires the symbol count to be a multiple

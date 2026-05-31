@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Interval.IEquatable.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -9,9 +9,9 @@ namespace Bodu.Numerics;
 public readonly partial struct Interval<T> : IEquatable<Interval<T>>
 {
     /// <summary>
-    /// Determines whether this interval equals <paramref name="other" /> as a set — same lower endpoint, same
-    /// upper endpoint, and matching inclusivity on each side. Any two empty intervals are equal regardless of
-    /// the bounds used to construct them.
+    /// Determines whether this interval equals <paramref name="other" /> as a set — same lower endpoint, same upper
+    /// endpoint, and matching inclusivity on each side. Any two empty intervals are equal regardless of the bounds used
+    /// to construct them.
     /// </summary>
     /// <param name="other">The interval to compare against.</param>
     /// <returns>
@@ -43,8 +43,8 @@ public readonly partial struct Interval<T> : IEquatable<Interval<T>>
         obj is Interval<T> other && Equals(other);
 
     /// <summary>
-    /// Returns a hash code consistent with <see cref="Equals(Interval{T})" />. All empty intervals share the
-    /// same hash; non-empty intervals hash on their endpoints and inclusivity flags.
+    /// Returns a hash code consistent with <see cref="Equals(Interval{T})" />. All empty intervals share the same hash;
+    /// non-empty intervals hash on their endpoints and inclusivity flags.
     /// </summary>
     /// <returns>A 32-bit hash code suitable for use in hash-based collections.</returns>
     public override int GetHashCode() =>
@@ -56,8 +56,10 @@ public readonly partial struct Interval<T> : IEquatable<Interval<T>>
     /// <param name="left">The first interval.</param>
     /// <param name="right">The second interval.</param>
     /// <returns><see langword="true" /> when the intervals are equal; otherwise <see langword="false" />.</returns>
-    public static bool operator ==(Interval<T> left, Interval<T> right) =>
-        left.Equals(right);
+    public static bool operator ==(Interval<T> left, Interval<T> right)
+    {
+        return left.Equals(right);
+    }
 
     /// <summary>
     /// Determines whether two intervals are not equal as sets. See <see cref="Equals(Interval{T})" />.
@@ -65,6 +67,8 @@ public readonly partial struct Interval<T> : IEquatable<Interval<T>>
     /// <param name="left">The first interval.</param>
     /// <param name="right">The second interval.</param>
     /// <returns><see langword="true" /> when the intervals differ; otherwise <see langword="false" />.</returns>
-    public static bool operator !=(Interval<T> left, Interval<T> right) =>
-        !left.Equals(right);
+    public static bool operator !=(Interval<T> left, Interval<T> right)
+    {
+        return !left.Equals(right);
+    }
 }

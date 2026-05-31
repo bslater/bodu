@@ -18,10 +18,7 @@ public partial class CryptoHelpersTests
     [DataRow(8, 8)]
     [DataRow(16, 8)]
     [DataRow(64, 32)]
-    public void ThrowIfNotPositiveMultipleOf_WhenValueIsValidMultiple_ShouldNotThrow(int value, int divisor)
-    {
-        CryptoHelpers.ThrowIfNotPositiveMultipleOf(value, divisor);
-    }
+    public void ThrowIfNotPositiveMultipleOf_WhenValueIsValidMultiple_ShouldNotThrow(int value, int divisor) => CryptoHelpers.ThrowIfNotPositiveMultipleOf(value, divisor);
 
     /// <summary>
     /// Verifies that <see cref="CryptoHelpers.ThrowIfNotPositiveMultipleOf{T}(T, T, string)"/> throws a

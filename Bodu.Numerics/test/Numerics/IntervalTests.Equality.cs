@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IntervalTests.Equality.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -14,8 +14,8 @@ public partial class IntervalTests
     [TestMethod]
     public void Equals_WhenStructurallyIdentical_ShouldReturnTrue()
     {
-        Interval<int> a = Interval<int>.ClosedOpen(1, 5);
-        Interval<int> b = Interval<int>.ClosedOpen(1, 5);
+        var a = Interval<int>.ClosedOpen(1, 5);
+        var b = Interval<int>.ClosedOpen(1, 5);
 
         Assert.IsTrue(a.Equals(b));
         Assert.IsTrue(a == b);
@@ -41,9 +41,9 @@ public partial class IntervalTests
     public void Equals_WhenBothEmpty_ShouldReturnTrueRegardlessOfBounds()
     {
         Interval<int> a = Interval<int>.Empty;
-        Interval<int> b = new Interval<int>(5, 1, true, true);       // inverted bounds
-        Interval<int> c = new Interval<int>(5, 5, false, false);     // equal bounds, both open
-        Interval<int> d = new Interval<int>(100, 50, false, true);   // very different bounds
+        var b = new Interval<int>(5, 1, true, true);       // inverted bounds
+        var c = new Interval<int>(5, 5, false, false);     // equal bounds, both open
+        var d = new Interval<int>(100, 50, false, true);   // very different bounds
 
         Assert.IsTrue(a.Equals(b));
         Assert.IsTrue(a.Equals(c));
@@ -71,7 +71,7 @@ public partial class IntervalTests
     [TestMethod]
     public void Equals_WhenComparedToObject_ShouldReturnExpected()
     {
-        Interval<int> a = Interval<int>.Closed(1, 5);
+        var a = Interval<int>.Closed(1, 5);
 
         Assert.IsTrue(a.Equals((object)Interval<int>.Closed(1, 5)));
         Assert.IsFalse(a.Equals((object?)null));

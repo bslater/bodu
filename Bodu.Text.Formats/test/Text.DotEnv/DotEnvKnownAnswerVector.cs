@@ -9,8 +9,8 @@ using Bodu.Test.Kat;
 namespace Bodu.Text.DotEnv;
 
 /// <summary>
-/// Represents a positive Known Answer Test (KAT) vector for the DotEnv format. A vector pairs a raw source string
-/// with the expected parsed state — an ordered sequence of key/value entries — so that data-driven tests can verify
+/// Represents a positive Known Answer Test (KAT) vector for the DotEnv format. A vector pairs a raw source string with
+/// the expected parsed state — an ordered sequence of key/value entries — so that data-driven tests can verify
 /// <see cref="DotEnv" /> against the dotenv community specification and common-practice inputs.
 /// </summary>
 /// <param name="Description">A short human-readable label identifying the vector.</param>
@@ -21,10 +21,12 @@ namespace Bodu.Text.DotEnv;
 /// whitespace trimming.
 /// </param>
 /// <param name="Options">
-/// The parse options to apply. <see langword="null" /> indicates that <see cref="DotEnvParseOptions.Default" />
-/// should be used.
+/// The parse options to apply. <see langword="null" /> indicates that <see cref="DotEnvParseOptions.Default" /> should
+/// be used.
 /// </param>
-/// <param name="Source">The citation for the vector's origin (specification clause, reference implementation, etc.).</param>
+/// <param name="Source">
+/// The citation for the vector's origin (specification clause, reference implementation, etc.).
+/// </param>
 public sealed record DotEnvKnownAnswerVector(
     string Description,
     string Input,
@@ -33,12 +35,15 @@ public sealed record DotEnvKnownAnswerVector(
     string? Source = null) : IKat
 {
     /// <inheritdoc />
-    /// <remarks>Returns <see cref="Description" /> so the row participates in <see cref="KatDisplayName" />-driven display formatting.</remarks>
+    /// <remarks>
+    /// Returns <see cref="Description" /> so the row participates in <see cref="KatDisplayName" />-driven display
+    /// formatting.
+    /// </remarks>
     string IKat.Name => Description;
 
     /// <summary>
-    /// Returns the human-readable label, used by MSTest's <c>[DynamicData]</c> infrastructure when generating
-    /// test names so each row is identifiable in failure output.
+    /// Returns the human-readable label, used by MSTest's <c>[DynamicData]</c> infrastructure when generating test
+    /// names so each row is identifiable in failure output.
     /// </summary>
     /// <returns>The description, optionally suffixed with the citation in square brackets.</returns>
     public override string ToString() =>

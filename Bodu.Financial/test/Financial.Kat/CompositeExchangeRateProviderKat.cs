@@ -17,8 +17,12 @@ namespace Bodu.Financial.Kat;
 /// <param name="ToIsoCode">The destination-currency code passed to the composite provider.</param>
 /// <param name="RequestedDate">The date the caller asks about.</param>
 /// <param name="Options">The lookup options supplied to the composite provider.</param>
-/// <param name="ProviderRates">A jagged array, one entry per inner provider, supplying that provider's observations.</param>
-/// <param name="ExpectedSuccess"><see langword="true" /> when the lookup should succeed; otherwise <see langword="false" />.</param>
+/// <param name="ProviderRates">
+/// A jagged array, one entry per inner provider, supplying that provider's observations.
+/// </param>
+/// <param name="ExpectedSuccess">
+/// <see langword="true" /> when the lookup should succeed; otherwise <see langword="false" />.
+/// </param>
 /// <param name="ExpectedRate">The expected returned rate value when successful.</param>
 /// <param name="ExpectedProvider">The expected provider identifier carried by the result rate.</param>
 /// <param name="ExpectedResolvedDate">The expected resolved date when successful.</param>

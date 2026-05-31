@@ -36,7 +36,8 @@ public class FibonacciTests
     }
 
     /// <summary>
-    /// Verifies that all Fibonacci numbers generated are non-negative when the upper limit is <see cref="long.MaxValue" />.
+    /// Verifies that all Fibonacci numbers generated are non-negative when the upper limit is
+    /// <see cref="long.MaxValue" />.
     /// </summary>
     [TestMethod]
     public void Fibonacci_WhenMaxIsLongMaxValue_ShouldContainOnlyNonNegativeValues()
@@ -95,7 +96,8 @@ public class FibonacciTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Fibonacci.Fibonacci" /> returns a single matching value when the range bounds exactly one value.
+    /// Verifies that <see cref="Fibonacci.Fibonacci" /> returns a single matching value when the range bounds exactly
+    /// one value.
     /// </summary>
     [TestMethod]
     public void Fibonacci_WhenRangeBoundsSingleValue_ShouldReturnThatValue()

@@ -14,7 +14,7 @@ namespace Bodu.Globalization.Calendar;
 public sealed class DefaultNotableDateCollisionResolverTests
 {
     private readonly DefaultNotableDateCollisionResolver _resolver = new();
-    private static readonly DateTime Anchor = new DateTime(2026, 1, 1);
+    private static readonly DateTime Anchor = new(2026, 1, 1);
 
     /// <summary>
     /// Verifies that a <see langword="null" /> overlapping list returns an empty result without
@@ -108,7 +108,7 @@ public sealed class DefaultNotableDateCollisionResolverTests
     }
 
     private static NotableDate Create(string name, NotableDateCategory category) =>
-        new NotableDate
+        new()
         {
             Date = Anchor,
             Name = name,

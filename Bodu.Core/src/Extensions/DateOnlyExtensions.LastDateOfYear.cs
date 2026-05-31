@@ -30,5 +30,5 @@ public static partial class DateOnlyExtensions
     ///]]>
     /// </code>
     /// </remarks>
-    public static DateOnly LastDateOfYear(this DateOnly date) => new DateOnly(date.Year, 12, 31);
+    public static DateOnly LastDateOfYear(this DateOnly date) => new(date.Year, 12, 31);
 }

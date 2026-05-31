@@ -59,10 +59,7 @@ public partial class CryptoHelpersTests
     /// <see langword="null"/>.
     /// </summary>
     [TestMethod]
-    public void Clear_ByteArray_WhenNull_ShouldNotThrow()
-    {
-        CryptoHelpers.Clear((byte[]?)null);
-    }
+    public void Clear_ByteArray_WhenNull_ShouldNotThrow() => CryptoHelpers.Clear((byte[]?)null);
 
     /// <summary>
     /// Verifies that <see cref="CryptoHelpers.Clear{T}(T[])"/> zeroes the contents of the supplied unmanaged array.
@@ -83,10 +80,7 @@ public partial class CryptoHelpersTests
     /// <see langword="null"/>.
     /// </summary>
     [TestMethod]
-    public void Clear_GenericArray_WhenNull_ShouldNotThrow()
-    {
-        CryptoHelpers.Clear<ulong>(null!);
-    }
+    public void Clear_GenericArray_WhenNull_ShouldNotThrow() => CryptoHelpers.Clear<ulong>(null!);
 
     /// <summary>
     /// Verifies that <see cref="CryptoHelpers.Clear{T}(ref T)"/> zeroes the bytes of the supplied unmanaged value.

@@ -8,8 +8,7 @@ namespace Bodu.Text.DotEnv;
 
 /// <summary>
 /// Provides Known Answer Test vectors for the DotEnv format sourced from the dotenv community specification and
-/// common-practice inputs. Each provider yields rows in the shape expected by MSTest's <c>[DynamicData]</c>
-/// attribute.
+/// common-practice inputs. Each provider yields rows in the shape expected by MSTest's <c>[DynamicData]</c> attribute.
 /// </summary>
 public static class DotEnvKnownAnswerVectors
 {
@@ -19,8 +18,7 @@ public static class DotEnvKnownAnswerVectors
     private const string Spec = "dotenv community specification";
 
     /// <summary>
-    /// Returns the concatenation of all positive vector providers, used by round-trip and comprehensive
-    /// property tests.
+    /// Returns the concatenation of all positive vector providers, used by round-trip and comprehensive property tests.
     /// </summary>
     /// <returns>A sequence suitable for <c>[DynamicData]</c>.</returns>
     public static IEnumerable<object[]> AllVectors()
@@ -30,9 +28,9 @@ public static class DotEnvKnownAnswerVectors
     }
 
     /// <summary>
-    /// Returns positive vectors derived from the dotenv community specification, covering unquoted and quoted
-    /// values, escape sequences, blank lines, comments, the <c>export</c> prefix, inline comments, multiline
-    /// values, line continuations, CRLF line endings, and common real-world patterns.
+    /// Returns positive vectors derived from the dotenv community specification, covering unquoted and quoted values,
+    /// escape sequences, blank lines, comments, the <c>export</c> prefix, inline comments, multiline values, line
+    /// continuations, CRLF line endings, and common real-world patterns.
     /// </summary>
     /// <returns>A sequence suitable for <c>[DynamicData]</c>.</returns>
     public static IEnumerable<object[]> SpecVectors()

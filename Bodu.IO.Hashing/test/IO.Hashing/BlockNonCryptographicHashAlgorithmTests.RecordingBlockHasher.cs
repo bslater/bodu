@@ -39,10 +39,7 @@ public partial class BlockNonCryptographicHashAlgorithmTests
         protected override byte[] PadBlock(ReadOnlySpan<byte> block, ulong messageLength)
             => throw new InvalidOperationException("PadBlock should not be reached: ShouldPadFinalBlock is false.");
 
-        protected override void ProcessBlock(ReadOnlySpan<byte> block)
-        {
-            Blocks.Add(block.ToArray());
-        }
+        protected override void ProcessBlock(ReadOnlySpan<byte> block) => Blocks.Add(block.ToArray());
 
         protected override byte[] ProcessFinalBlock() => new byte[4];
 

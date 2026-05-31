@@ -13,18 +13,12 @@ public partial class StringExtensionsTests
     /// while removing punctuation and whitespace.
     /// </summary>
     [TestMethod]
-    public void KeepLettersAndDigits_WhenInputContainsMixedCategories_ShouldRetainAlphanumericOnly()
-    {
-        Assert.AreEqual("abc123XYZ", "abc 123 XYZ!".KeepLettersAndDigits());
-    }
+    public void KeepLettersAndDigits_WhenInputContainsMixedCategories_ShouldRetainAlphanumericOnly() => Assert.AreEqual("abc123XYZ", "abc 123 XYZ!".KeepLettersAndDigits());
 
     /// <summary>
     /// Verifies that <see cref="StringExtensions.KeepLettersAndDigits(string)" /> throws
     /// <see cref="ArgumentNullException" /> when <c>value</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void KeepLettersAndDigits_WhenInputIsNull_ShouldThrowExactly()
-    {
-        Assert.ThrowsExactly<ArgumentNullException>(() => _ = StringExtensions.KeepLettersAndDigits(null!));
-    }
+    public void KeepLettersAndDigits_WhenInputIsNull_ShouldThrowExactly() => Assert.ThrowsExactly<ArgumentNullException>(() => _ = StringExtensions.KeepLettersAndDigits(null!));
 }

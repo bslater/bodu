@@ -138,16 +138,16 @@ public sealed partial class ConfigurationView : IEnumerable<KeyValuePair<string,
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
     /// <summary>
-    /// Gets the resolved-entry origin metadata for every key in the view. Returns an empty enumeration when
-    /// the view was constructed without origin tracking (older overload, primarily for test fixtures).
+    /// Gets the resolved-entry origin metadata for every key in the view. Returns an empty enumeration when the view
+    /// was constructed without origin tracking (older overload, primarily for test fixtures).
     /// </summary>
     /// <returns>Origin metadata per resolved key.</returns>
     public IEnumerable<ConfigurationResolvedEntry> Entries =>
         _entries is null ? [] : _entries.Values;
 
     /// <summary>
-    /// Gets the origin metadata for <paramref name="key" />, or <see langword="null" /> when the key is
-    /// absent from the resolved view or the view was constructed without origin tracking.
+    /// Gets the origin metadata for <paramref name="key" />, or <see langword="null" /> when the key is absent from the
+    /// resolved view or the view was constructed without origin tracking.
     /// </summary>
     /// <param name="key">The configuration key in either dotted or colon-delimited form.</param>
     /// <returns>The resolved entry, or <see langword="null" /> when absent.</returns>

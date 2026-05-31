@@ -32,7 +32,7 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
         algorithm.GenerateIV();
         algorithm.GenerateTweak();
 
-        byte[] plaintext = BuildIncrementingPlaintext(algorithm.BlockSize / 8 * 3);
+        var plaintext = BuildIncrementingPlaintext(algorithm.BlockSize / 8 * 3);
 
         byte[] ciphertext;
         using (ICryptoTransform encryptor = algorithm.CreateEncryptor())
@@ -52,7 +52,7 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     private static byte[] BuildIncrementingPlaintext(int length)
     {
         var buffer = new byte[length];
-        for (int i = 0; i < length; i++)
+        for (var i = 0; i < length; i++)
             buffer[i] = (byte)i;
         return buffer;
     }

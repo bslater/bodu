@@ -201,7 +201,8 @@ public partial class IEnumerableExtensionsTests_RecursiveSelect
     public void RecursiveSelect_WhenCalled_ShouldDeferExecution(EnumerableTestPlan<Node> testCase) => AssertExecutionIsDeferred(testCase.Name, testCase.Invoke, testCase.Source);
 
     /// <summary>
-    /// Verifies that calling RecursiveSelect throws <see cref="ArgumentNullException" /> when the child selector delegate is <c>null</c>.
+    /// Verifies that calling RecursiveSelect throws <see cref="ArgumentNullException" /> when the child selector
+    /// delegate is <c>null</c>.
     /// </summary>
     [TestMethod]
     public void RecursiveSelect_WhenChildSelectorIsNull_ShouldThrowExactly()
@@ -214,7 +215,8 @@ public partial class IEnumerableExtensionsTests_RecursiveSelect
     }
 
     /// <summary>
-    /// Verifies that <see cref="IEnumerableExtensions.RecursiveSelect" /> handles null child collections gracefully by skipping recursion.
+    /// Verifies that <see cref="IEnumerableExtensions.RecursiveSelect" /> handles null child collections gracefully by
+    /// skipping recursion.
     /// </summary>
     [TestMethod]
     public void RecursiveSelect_WhenChildSelectorReturnsNull_ShouldSkipChildren()
@@ -258,7 +260,8 @@ public partial class IEnumerableExtensionsTests_RecursiveSelect
     }
 
     /// <summary>
-    /// Verifies that calling RecursiveSelect throws <see cref="ArgumentNullException" /> when the source sequence is <c>null</c>.
+    /// Verifies that calling RecursiveSelect throws <see cref="ArgumentNullException" /> when the source sequence is
+    /// <c>null</c>.
     /// </summary>
     [TestMethod]
     public void RecursiveSelect_WhenSourceIsNull_ShouldThrowExactly()
@@ -270,7 +273,8 @@ public partial class IEnumerableExtensionsTests_RecursiveSelect
     }
 
     /// <summary>
-    /// Verifies that <see cref="IEnumerableExtensions.RecursiveSelect" /> works with an empty source collection and produces no output.
+    /// Verifies that <see cref="IEnumerableExtensions.RecursiveSelect" /> works with an empty source collection and
+    /// produces no output.
     /// </summary>
     [TestMethod]
     public void RecursiveSelect_WithEmptySource_ShouldReturnEmpty()
@@ -281,7 +285,8 @@ public partial class IEnumerableExtensionsTests_RecursiveSelect
     }
 
     /// <summary>
-    /// Verifies that RecursiveSelect throws <see cref="ArgumentNullException" /> when the depth-aware selector delegate is <c>null</c>.
+    /// Verifies that RecursiveSelect throws <see cref="ArgumentNullException" /> when the depth-aware selector delegate
+    /// is <c>null</c>.
     /// </summary>
     [TestMethod]
     public void RecursiveSelect_WithIndexAndDepthSelector_WhenSelectorIsNull_ShouldThrowExactly()
@@ -296,7 +301,8 @@ public partial class IEnumerableExtensionsTests_RecursiveSelect
     }
 
     /// <summary>
-    /// Verifies that RecursiveSelect throws <see cref="ArgumentNullException" /> when the indexed selector delegate is <c>null</c>.
+    /// Verifies that RecursiveSelect throws <see cref="ArgumentNullException" /> when the indexed selector delegate is
+    /// <c>null</c>.
     /// </summary>
     [TestMethod]
     public void RecursiveSelect_WithIndexSelector_WhenSelectorIsNull_ShouldThrowExactly()
@@ -311,7 +317,8 @@ public partial class IEnumerableExtensionsTests_RecursiveSelect
     }
 
     /// <summary>
-    /// Verifies that RecursiveSelect throws <see cref="ArgumentNullException" /> when the recursion control delegate is <c>null</c>.
+    /// Verifies that RecursiveSelect throws <see cref="ArgumentNullException" /> when the recursion control delegate is
+    /// <c>null</c>.
     /// </summary>
     [TestMethod]
     public void RecursiveSelect_WithRecursionControl_WhenRecursionControlIsNull_ShouldThrowExactly()
@@ -327,8 +334,8 @@ public partial class IEnumerableExtensionsTests_RecursiveSelect
     }
 
     /// <summary>
-    /// Verifies that RecursiveSelect throws <see cref="ArgumentNullException" /> when the recursion control delegate is supplied but
-    /// the selector is <c>null</c>.
+    /// Verifies that RecursiveSelect throws <see cref="ArgumentNullException" /> when the recursion control delegate is
+    /// supplied but the selector is <c>null</c>.
     /// </summary>
     [TestMethod]
     public void RecursiveSelect_WithRecursionControl_WhenSelectorIsNull_ShouldThrowExactly()
@@ -344,8 +351,8 @@ public partial class IEnumerableExtensionsTests_RecursiveSelect
     }
 
     /// <summary>
-    /// Verifies that RecursiveSelect throws <see cref="ArgumentNullException" /> when the element selector delegate is <c>null</c> in
-    /// the two-parameter overload.
+    /// Verifies that RecursiveSelect throws <see cref="ArgumentNullException" /> when the element selector delegate is
+    /// <c>null</c> in the two-parameter overload.
     /// </summary>
     [TestMethod]
     public void RecursiveSelect_WithSelector_WhenSelectorIsNull_ShouldThrowExactly()

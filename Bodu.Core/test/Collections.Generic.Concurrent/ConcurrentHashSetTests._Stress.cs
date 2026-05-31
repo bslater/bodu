@@ -39,7 +39,7 @@ public partial class ConcurrentHashSetTests
             StartWorker(() =>
             {
                 startGate.Wait();
-                int baseKey = workerId * keysPerWorker;
+                var baseKey = workerId * keysPerWorker;
 
                 try
                 {
@@ -160,7 +160,7 @@ public partial class ConcurrentHashSetTests
                 {
                     while (!cts.Token.IsCancellationRequested)
                     {
-                        int key = random.Next(keySpace);
+                        var key = random.Next(keySpace);
                         switch (random.Next(3))
                         {
                             case 0:
@@ -191,7 +191,7 @@ public partial class ConcurrentHashSetTests
         var completed = Task.WaitAll(tasks, 60_000);
 
         var finalCount = set.Count;
-        int[] snapshot = set.ToArray();
+        var snapshot = set.ToArray();
 
         TestContext.WriteLine(
             $"Operations={operations}, Faults={faults}, FinalCount={finalCount}, " +
@@ -235,7 +235,7 @@ public partial class ConcurrentHashSetTests
                 {
                     while (!cts.Token.IsCancellationRequested)
                     {
-                        int key = random.Next(keySpace);
+                        var key = random.Next(keySpace);
                         if (random.Next(2) == 0)
                             set.Add(key);
                         else
@@ -259,9 +259,9 @@ public partial class ConcurrentHashSetTests
                 {
                     while (!cts.Token.IsCancellationRequested)
                     {
-                        int[] snapshot = set.ToArray();
+                        var snapshot = set.ToArray();
                         var seen = new HashSet<int>();
-                        foreach (int value in snapshot)
+                        foreach (var value in snapshot)
                         {
                             if (value < 0 || value >= keySpace || !seen.Add(value))
                                 Interlocked.Increment(ref coherenceViolations);
@@ -366,7 +366,7 @@ public partial class ConcurrentHashSetTests
         var completed = Task.WaitAll(tasks, 60_000);
 
         var finalCount = set.Count;
-        int[] snapshot = set.ToArray();
+        var snapshot = set.ToArray();
 
         TestContext.WriteLine(
             $"AddOperations={addOperations}, ClearOperations={clearOperations}, Faults={faults}, " +
@@ -404,7 +404,7 @@ public partial class ConcurrentHashSetTests
             StartWorker(() =>
             {
                 startGate.Wait();
-                int baseKey = adderId * keysPerAdder;
+                var baseKey = adderId * keysPerAdder;
 
                 try
                 {
@@ -432,7 +432,7 @@ public partial class ConcurrentHashSetTests
                         set.Contains(random.Next(totalKeys));
 
                         var enumerated = 0;
-                        foreach (int _ in set)
+                        foreach (var _ in set)
                             enumerated++;
 
                         Interlocked.Increment(ref readerOperations);
@@ -486,7 +486,7 @@ public partial class ConcurrentHashSetTests
             StartWorker(() =>
             {
                 startGate.Wait();
-                long baseKey = (long)threadId * keysPerThread;
+                var baseKey = (long)threadId * keysPerThread;
 
                 try
                 {
@@ -542,7 +542,7 @@ public partial class ConcurrentHashSetTests
             StartWorker(() =>
             {
                 startGate.Wait();
-                int baseKey = workerId * keysPerWorker;
+                var baseKey = workerId * keysPerWorker;
 
                 try
                 {
@@ -606,7 +606,7 @@ public partial class ConcurrentHashSetTests
             StartWorker(() =>
             {
                 startGate.Wait();
-                int baseKey = adderId * keysPerAdder;
+                var baseKey = adderId * keysPerAdder;
 
                 try
                 {
@@ -631,7 +631,7 @@ public partial class ConcurrentHashSetTests
                 {
                     while (!cts.Token.IsCancellationRequested)
                     {
-                        int stableKey = -(random.Next(stableKeyCount) + 1);
+                        var stableKey = -(random.Next(stableKeyCount) + 1);
                         if (!set.Contains(stableKey))
                             Interlocked.Increment(ref falseNegatives);
 
@@ -691,7 +691,7 @@ public partial class ConcurrentHashSetTests
                 {
                     while (!cts.Token.IsCancellationRequested)
                     {
-                        int key = random.Next(keySpace);
+                        var key = random.Next(keySpace);
                         if (random.Next(2) == 0)
                             set.Add(key);
                         else
@@ -716,7 +716,7 @@ public partial class ConcurrentHashSetTests
                 {
                     while (!cts.Token.IsCancellationRequested)
                     {
-                        int[] other = Enumerable.Range(0, 20).Select(n => random.Next(keySpace)).ToArray();
+                        var other = Enumerable.Range(0, 20).Select(n => random.Next(keySpace)).ToArray();
                         switch (random.Next(4))
                         {
                             case 0:
@@ -752,7 +752,7 @@ public partial class ConcurrentHashSetTests
         var completed = Task.WaitAll(tasks, 60_000);
 
         var finalCount = set.Count;
-        int[] snapshot = set.ToArray();
+        var snapshot = set.ToArray();
 
         TestContext.WriteLine(
             $"BulkOperations={bulkOperations}, Faults={faults}, FinalCount={finalCount}, " +
@@ -794,7 +794,7 @@ public partial class ConcurrentHashSetTests
                 {
                     while (!cts.Token.IsCancellationRequested)
                     {
-                        int key = random.Next(keySpace);
+                        var key = random.Next(keySpace);
                         if (random.Next(2) == 0)
                             set.Add(key);
                         else
@@ -819,7 +819,7 @@ public partial class ConcurrentHashSetTests
                 {
                     while (!cts.Token.IsCancellationRequested)
                     {
-                        int[] other = Enumerable.Range(0, 20).Select(n => random.Next(keySpace)).ToArray();
+                        var other = Enumerable.Range(0, 20).Select(n => random.Next(keySpace)).ToArray();
                         switch (random.Next(6))
                         {
                             case 0:
@@ -900,7 +900,7 @@ public partial class ConcurrentHashSetTests
                 {
                     while (!cts.Token.IsCancellationRequested)
                     {
-                        int[] other = Enumerable.Range(0, 20).Select(n => random.Next(keySpace)).ToArray();
+                        var other = Enumerable.Range(0, 20).Select(n => random.Next(keySpace)).ToArray();
                         if (random.Next(2) == 0)
                             set.UnionWith(other);
                         else
@@ -946,7 +946,7 @@ public partial class ConcurrentHashSetTests
         var completed = Task.WaitAll(tasks, 60_000);
 
         var finalCount = set.Count;
-        int[] snapshot = set.ToArray();
+        var snapshot = set.ToArray();
 
         TestContext.WriteLine(
             $"BulkOperations={bulkOperations}, ClearOperations={clearOperations}, Faults={faults}, " +
@@ -1013,9 +1013,9 @@ public partial class ConcurrentHashSetTests
                 {
                     while (!cts.Token.IsCancellationRequested)
                     {
-                        int[] snapshot = set.ToArray();
+                        var snapshot = set.ToArray();
                         var seen = new HashSet<int>();
-                        foreach (int value in snapshot)
+                        foreach (var value in snapshot)
                         {
                             if (value < 0 || value >= keySpace || !seen.Add(value))
                                 Interlocked.Increment(ref coherenceViolations);

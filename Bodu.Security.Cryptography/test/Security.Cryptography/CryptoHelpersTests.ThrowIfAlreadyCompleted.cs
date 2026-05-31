@@ -26,8 +26,5 @@ public partial class CryptoHelpersTests
     /// transform is not yet completed.
     /// </summary>
     [TestMethod]
-    public void ThrowIfAlreadyCompleted_WhenNotCompleted_ShouldNotThrow()
-    {
-        CryptoHelpers.ThrowIfAlreadyCompleted(false);
-    }
+    public void ThrowIfAlreadyCompleted_WhenNotCompleted_ShouldNotThrow() => CryptoHelpers.ThrowIfAlreadyCompleted(false);
 }

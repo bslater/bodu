@@ -10,9 +10,11 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
 {
 
     /// <summary>
-    /// Verifies that <see cref="IEnumerableExtensions.Randomize{T}(IEnumerable{T}, RandomizationMode, IRandomGenerator?, int?)" /> with
-    /// <see cref="RandomizationMode.BufferAll" /> handles a lazy iterator that does not implement <see cref="IReadOnlyCollection{T}" />,
-    /// forcing the <c>AppendRange</c> fall-back branch in <c>RandomizeBuffered</c>.
+    /// Verifies that
+    /// <see cref="IEnumerableExtensions.Randomize{T}(IEnumerable{T}, RandomizationMode, IRandomGenerator?, int?)" />
+    /// with <see cref="RandomizationMode.BufferAll" /> handles a lazy iterator that does not implement
+    /// <see cref="IReadOnlyCollection{T}" />, forcing the <c>AppendRange</c> fall-back branch in
+    /// <c>RandomizeBuffered</c>.
     /// </summary>
     [TestMethod]
     public void Randomize_BufferAll_WhenSourceIsLazyIterator_ShouldReturnPermutationOfElements()

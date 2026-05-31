@@ -7,8 +7,8 @@
 namespace Bodu.Text.Encoding;
 
 /// <summary>
-/// Provides Known Answer Test vectors for Base32 encodings, sourced from RFC 4648 §10 (Standard alphabet),
-/// RFC 4648 §10 (base32hex / HexExtended), and the Crockford Base32 specification.
+/// Provides Known Answer Test vectors for Base32 encodings, sourced from RFC 4648 §10 (Standard alphabet), RFC 4648 §10
+/// (base32hex / HexExtended), and the Crockford Base32 specification.
 /// </summary>
 public static class Base32KnownAnswerVectors
 {

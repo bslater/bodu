@@ -13,9 +13,10 @@ public sealed partial class IEnumerableExtensionsTests_Cache
 {
 
     /// <summary>
-    /// Verifies that the private <c>CacheEnumerable&lt;T&gt;</c> constructor throws <see cref="ArgumentNullException" /> with the
-    /// expected parameter name when the source argument is <see langword="null" />, exercising the constructor's null guard
-    /// directly (independently of the public <see cref="IEnumerableExtensions.Cache{T}" /> overload's switch-expression null branch).
+    /// Verifies that the private <c>CacheEnumerable&lt;T&gt;</c> constructor throws
+    /// <see cref="ArgumentNullException" /> with the expected parameter name when the source argument is
+    /// <see langword="null" />, exercising the constructor's null guard directly (independently of the public
+    /// <see cref="IEnumerableExtensions.Cache{T}" /> overload's switch-expression null branch).
     /// </summary>
     [TestMethod]
     public void CacheEnumerableCtor_WhenSourceIsNull_ShouldThrowExactly()
@@ -38,9 +39,9 @@ public sealed partial class IEnumerableExtensionsTests_Cache
     }
 
     /// <summary>
-    /// Verifies that disposing a cached sequence after it has been fully materialised resets the wrapper's internal initialisation
-    /// state, so that a fresh <see cref="IEnumerable{T}.GetEnumerator" /> call after the dispose triggers a brand-new source
-    /// enumeration rather than returning the previously cached prefix.
+    /// Verifies that disposing a cached sequence after it has been fully materialised resets the wrapper's internal
+    /// initialisation state, so that a fresh <see cref="IEnumerable{T}.GetEnumerator" /> call after the dispose
+    /// triggers a brand-new source enumeration rather than returning the previously cached prefix.
     /// </summary>
     [TestMethod]
     public void Dispose_AfterFullEnumeration_ShouldReinitialiseFromSourceOnNextEnumeration()
@@ -68,8 +69,8 @@ public sealed partial class IEnumerableExtensionsTests_Cache
     }
 
     /// <summary>
-    /// Verifies that disposing a cached sequence before any element has been requested releases the wrapper's state without
-    /// throwing — the constructor-only state must be safe to release even when initialisation has not begun.
+    /// Verifies that disposing a cached sequence before any element has been requested releases the wrapper's state
+    /// without throwing — the constructor-only state must be safe to release even when initialisation has not begun.
     /// </summary>
     [TestMethod]
     public void Dispose_WhenCalledBeforeEnumeration_ShouldNotThrow()
@@ -104,7 +105,8 @@ public sealed partial class IEnumerableExtensionsTests_Cache
     }
 
     /// <summary>
-    /// Verifies that calling <see cref="IDisposable.Dispose" /> twice on a cached sequence is idempotent and never throws.
+    /// Verifies that calling <see cref="IDisposable.Dispose" /> twice on a cached sequence is idempotent and never
+    /// throws.
     /// </summary>
     [TestMethod]
     public void Dispose_WhenCalledMultipleTimes_ShouldBeIdempotent()
@@ -122,7 +124,8 @@ public sealed partial class IEnumerableExtensionsTests_Cache
 
     /// <summary>
     /// Resolves the closed generic <c>CacheEnumerable&lt;T&gt;</c> nested type defined by
-    /// <see cref="IEnumerableExtensions" /> so test code can construct it directly without going through the public factory.
+    /// <see cref="IEnumerableExtensions" /> so test code can construct it directly without going through the public
+    /// factory.
     /// </summary>
     /// <typeparam name="T">The element type for the closed generic <c>CacheEnumerable&lt;T&gt;</c>.</typeparam>
     /// <returns>The closed generic <see cref="Type" /> for <c>CacheEnumerable&lt;T&gt;</c>.</returns>

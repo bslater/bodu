@@ -21,7 +21,7 @@ public abstract partial class RingBackedCollection<T> :
     /// <see cref="Enumerator.MoveNext" /> or <see cref="Enumerator.Reset" /> call throws
     /// <see cref="System.InvalidOperationException" />.
     /// </remarks>
-    public Enumerator GetEnumerator() => new Enumerator(this);
+    public Enumerator GetEnumerator() => new(this);
 
     /// <inheritdoc />
     IEnumerator<T> IEnumerable<T>.GetEnumerator() => new Enumerator(this);

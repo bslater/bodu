@@ -33,10 +33,7 @@ public partial class StringExtensionsTests
     /// <param name="expected">The expected return value.</param>
     [DataTestMethod]
     [DynamicData(nameof(GetRemovePrefixCases), DynamicDataSourceType.Method)]
-    public void RemovePrefix_WhenInvoked_ShouldReturnExpected(string value, string prefix, StringComparison comparison, string expected)
-    {
-        Assert.AreEqual(expected, value.RemovePrefix(prefix, comparison));
-    }
+    public void RemovePrefix_WhenInvoked_ShouldReturnExpected(string value, string prefix, StringComparison comparison, string expected) => Assert.AreEqual(expected, value.RemovePrefix(prefix, comparison));
 
     /// <summary>
     /// Verifies that <see cref="StringExtensions.RemovePrefix(string, string, StringComparison)" /> throws

@@ -14,10 +14,7 @@ public partial class ByteBufferTests
     /// Verifies that the constructor throws when called with negative capacity.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenCalledWithNegativeCapacity_ShouldThrowExactly()
-    {
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new ByteBuffer(-1));
-    }
+    public void Ctor_WhenCalledWithNegativeCapacity_ShouldThrowExactly() => Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new ByteBuffer(-1));
 
     /// <summary>
     /// Verifies that the constructor sets the correct capacity.

@@ -12,7 +12,7 @@ public sealed partial class EcbModeTransformTests
 {
     /// <inheritdoc />
     protected override EcbModeTransform CreateTransform(IBlockCipher cipher, byte[] iv)
-        => new EcbModeTransform(cipher);
+        => new(cipher);
 
     /// <inheritdoc />
     /// <remarks>ECB processes every block independently and takes no initialisation vector.</remarks>

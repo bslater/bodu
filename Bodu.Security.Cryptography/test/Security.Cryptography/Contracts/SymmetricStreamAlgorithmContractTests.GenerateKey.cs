@@ -32,10 +32,10 @@ public abstract partial class SymmetricStreamAlgorithmContractTests<TCipher>
     {
         using TCipher cipher = CreateAlgorithm();
         cipher.GenerateKey();
-        byte[] first = (byte[])cipher.Key.Clone();
+        var first = (byte[])cipher.Key.Clone();
 
         cipher.GenerateKey();
-        byte[] second = cipher.Key;
+        var second = cipher.Key;
 
         CollectionAssert.AreNotEqual(first, second);
     }
@@ -70,7 +70,7 @@ public abstract partial class SymmetricStreamAlgorithmContractTests<TCipher>
         Assert.AreEqual(KeyLengthBytes, cipher.Key.Length);
         Assert.AreEqual(NonceLengthBytes, cipher.Nonce.Length);
 
-        byte[] plaintext = CreatePayload(200);
+        var plaintext = CreatePayload(200);
 
         byte[] ciphertext;
         using (ICryptoTransform e = cipher.CreateEncryptor())

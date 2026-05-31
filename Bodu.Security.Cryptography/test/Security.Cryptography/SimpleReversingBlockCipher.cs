@@ -14,27 +14,34 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// This class is intended exclusively for use in test harnesses and diagnostic scenarios. It provides a
-/// deterministic, inspectable transform that makes it straightforward to verify block alignment, padding
-/// behaviour, mode-of-operation chaining, tweak propagation, and streaming correctness without
-/// cryptographic complexity.
+/// This class is intended exclusively for use in test harnesses and diagnostic scenarios. It provides a deterministic,
+/// inspectable transform that makes it straightforward to verify block alignment, padding behaviour, mode-of-operation
+/// chaining, tweak propagation, and streaming correctness without cryptographic complexity.
 /// </para>
 /// <para>
-/// When no tweak is provided, encryption and decryption are identical operations — reversing a reversed
-/// block restores the original input.
+/// When no tweak is provided, encryption and decryption are identical operations — reversing a reversed block restores
+/// the original input.
 /// </para>
 /// <para>
 /// When a tweak is provided the operations differ so that the transform is still self-consistent:
 /// <list type="bullet">
-/// <item><description><b>Encrypt:</b> XOR the plaintext with the tweak (cycling), then reverse the result.</description></item>
-/// <item><description><b>Decrypt:</b> Reverse the ciphertext, then XOR the result with the tweak (cycling).</description></item>
+/// <item>
+/// <description>
+/// <b>Encrypt:</b> XOR the plaintext with the tweak (cycling), then reverse the result.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// <b>Decrypt:</b> Reverse the ciphertext, then XOR the result with the tweak (cycling).
+/// </description>
+/// </item>
 /// </list>
 /// This guarantees <c>Decrypt(Encrypt(pt, tweak), tweak) == pt</c> for any tweak.
 /// </para>
 /// <para>
-/// The tweak is cycled byte-by-byte across the block if it is shorter than the block size, and truncated
-/// if longer. All calls to <see cref="Encrypt" /> and <see cref="Decrypt" /> are recorded in
-/// <see cref="Diagnostics" /> for post-hoc inspection in tests.
+/// The tweak is cycled byte-by-byte across the block if it is shorter than the block size, and truncated if longer. All
+/// calls to <see cref="Encrypt" /> and <see cref="Decrypt" /> are recorded in <see cref="Diagnostics" /> for post-hoc
+/// inspection in tests.
 /// </para>
 /// <note type="warning">This cipher provides no cryptographic security and must not be used in production code.</note>
 /// </remarks>
@@ -69,9 +76,9 @@ internal sealed class SimpleReversingBlockCipher
     /// <param name="key">The key bytes. Must not be <see langword="null" />.</param>
     /// <param name="blockSizeBytes">The block size in bytes. Must be positive.</param>
     /// <param name="tweak">
-    /// An optional tweak value. When non-<see langword="null" />, it is XORed into the block before reversal
-    /// on encrypt and after reversal on decrypt, cycling byte-by-byte if shorter than the block.
-    /// Pass <see langword="null" /> to operate without a tweak, equivalent to using the two-parameter constructor.
+    /// An optional tweak value. When non-<see langword="null" />, it is XORed into the block before reversal on encrypt
+    /// and after reversal on decrypt, cycling byte-by-byte if shorter than the block. Pass <see langword="null" /> to
+    /// operate without a tweak, equivalent to using the two-parameter constructor.
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="blockSizeBytes" /> is not positive.</exception>
@@ -90,7 +97,9 @@ internal sealed class SimpleReversingBlockCipher
     /// <inheritdoc />
     public int BlockSize { get; }
 
-    /// <summary>Gets the key that was provided at construction time.</summary>
+    /// <summary>
+    /// Gets the key that was provided at construction time.
+    /// </summary>
     public byte[] Key { get; private set; }
 
     /// <summary>
@@ -98,12 +107,14 @@ internal sealed class SimpleReversingBlockCipher
     /// </summary>
     public byte[]? Tweak => tweak is null ? null : (byte[])tweak.Clone();
 
-    /// <summary>Gets the diagnostic recorder for this cipher instance.</summary>
+    /// <summary>
+    /// Gets the diagnostic recorder for this cipher instance.
+    /// </summary>
     public SimpleReversingDiagnostics Diagnostics { get; }
 
     /// <summary>
-    /// Encrypts one block by XORing with the tweak (if set) then reversing the result.
-    /// When no tweak is set, this is equivalent to a plain byte reversal.
+    /// Encrypts one block by XORing with the tweak (if set) then reversing the result. When no tweak is set, this is
+    /// equivalent to a plain byte reversal.
     /// </summary>
     /// <param name="input">The plaintext block. Must be at least <see cref="BlockSize" /> bytes.</param>
     /// <param name="output">The output span. Must be at least <see cref="BlockSize" /> bytes.</param>
@@ -130,8 +141,8 @@ internal sealed class SimpleReversingBlockCipher
     }
 
     /// <summary>
-    /// Decrypts one block by reversing the bytes then XORing with the tweak (if set).
-    /// When no tweak is set, this is equivalent to a plain byte reversal.
+    /// Decrypts one block by reversing the bytes then XORing with the tweak (if set). When no tweak is set, this is
+    /// equivalent to a plain byte reversal.
     /// </summary>
     /// <param name="input">The ciphertext block. Must be at least <see cref="BlockSize" /> bytes.</param>
     /// <param name="output">The output span. Must be at least <see cref="BlockSize" /> bytes.</param>
@@ -179,8 +190,8 @@ internal sealed class SimpleReversingBlockCipher
     }
 
     /// <summary>
-    /// XORs <paramref name="block" /> in-place with <paramref name="tweakBytes" />, cycling the tweak
-    /// if it is shorter than the block.
+    /// XORs <paramref name="block" /> in-place with <paramref name="tweakBytes" />, cycling the tweak if it is shorter
+    /// than the block.
     /// </summary>
     private static void ApplyTweak(Span<byte> block, byte[] tweakBytes)
     {
@@ -190,14 +201,13 @@ internal sealed class SimpleReversingBlockCipher
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void ThrowIfDisposed()
-    {
+    private void ThrowIfDisposed() =>
 #if NET8_0_OR_GREATER
         ObjectDisposedException.ThrowIf(disposed, this);
 #else
         if (this.disposed) throw new ObjectDisposedException(nameof(SimpleReversingBlockCipher));
 #endif
-    }
+
 
     private void ValidateSpans(ReadOnlySpan<byte> input, Span<byte> output)
     {

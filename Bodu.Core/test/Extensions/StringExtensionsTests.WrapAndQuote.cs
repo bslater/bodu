@@ -12,10 +12,7 @@ public partial class StringExtensionsTests
     /// Verifies that <see cref="StringExtensions.Quote(string)" /> wraps the input in double-quote characters.
     /// </summary>
     [TestMethod]
-    public void Quote_WhenInvoked_ShouldWrapInDoubleQuotes()
-    {
-        Assert.AreEqual("\"hello\"", "hello".Quote());
-    }
+    public void Quote_WhenInvoked_ShouldWrapInDoubleQuotes() => Assert.AreEqual("\"hello\"", "hello".Quote());
 
     /// <summary>
     /// Verifies that <see cref="StringExtensions.Quote(string)" /> throws <see cref="ArgumentNullException" />
@@ -35,10 +32,7 @@ public partial class StringExtensionsTests
     /// characters.
     /// </summary>
     [TestMethod]
-    public void SingleQuote_WhenInvoked_ShouldWrapInSingleQuotes()
-    {
-        Assert.AreEqual("'hello'", "hello".SingleQuote());
-    }
+    public void SingleQuote_WhenInvoked_ShouldWrapInSingleQuotes() => Assert.AreEqual("'hello'", "hello".SingleQuote());
 
     /// <summary>
     /// Verifies that <see cref="StringExtensions.SingleQuote(string)" /> throws
@@ -58,10 +52,7 @@ public partial class StringExtensionsTests
     /// and suffix.
     /// </summary>
     [TestMethod]
-    public void Wrap_WhenInvoked_ShouldConcatenatePrefixValueSuffix()
-    {
-        Assert.AreEqual("<b>hello</b>", "hello".Wrap("<b>", "</b>"));
-    }
+    public void Wrap_WhenInvoked_ShouldConcatenatePrefixValueSuffix() => Assert.AreEqual("<b>hello</b>", "hello".Wrap("<b>", "</b>"));
 
     /// <summary>
     /// Verifies that <see cref="StringExtensions.Wrap(string, string, string)" /> throws
@@ -80,30 +71,21 @@ public partial class StringExtensionsTests
     /// the prefix and suffix when both are present.
     /// </summary>
     [TestMethod]
-    public void Unwrap_WhenBothEndsMatch_ShouldRemoveBoth()
-    {
-        Assert.AreEqual("hello", "<b>hello</b>".Unwrap("<b>", "</b>"));
-    }
+    public void Unwrap_WhenBothEndsMatch_ShouldRemoveBoth() => Assert.AreEqual("hello", "<b>hello</b>".Unwrap("<b>", "</b>"));
 
     /// <summary>
     /// Verifies that <see cref="StringExtensions.Unwrap(string, string, string, StringComparison)" /> returns
     /// the input unchanged when only the prefix matches.
     /// </summary>
     [TestMethod]
-    public void Unwrap_WhenOnlyPrefixMatches_ShouldReturnInputUnchanged()
-    {
-        Assert.AreEqual("<b>hello", "<b>hello".Unwrap("<b>", "</b>"));
-    }
+    public void Unwrap_WhenOnlyPrefixMatches_ShouldReturnInputUnchanged() => Assert.AreEqual("<b>hello", "<b>hello".Unwrap("<b>", "</b>"));
 
     /// <summary>
     /// Verifies that <see cref="StringExtensions.Unwrap(string, string, string, StringComparison)" /> returns
     /// the input unchanged when only the suffix matches.
     /// </summary>
     [TestMethod]
-    public void Unwrap_WhenOnlySuffixMatches_ShouldReturnInputUnchanged()
-    {
-        Assert.AreEqual("hello</b>", "hello</b>".Unwrap("<b>", "</b>"));
-    }
+    public void Unwrap_WhenOnlySuffixMatches_ShouldReturnInputUnchanged() => Assert.AreEqual("hello</b>", "hello</b>".Unwrap("<b>", "</b>"));
 
     /// <summary>
     /// Verifies that <see cref="StringExtensions.Unwrap(string, string, string, StringComparison)" /> honours

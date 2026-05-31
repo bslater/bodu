@@ -20,10 +20,7 @@ public sealed partial class EncodingExtensionsTests
     [DataRow(1201, false)]
     [DataRow(12000, false)]
     [DataRow(20127, false)]
-    public void IsUtf8_ShouldRecognizeUtf8CodePage(int codePage, bool expected)
-    {
-        Assert.AreEqual(expected, System.Text.Encoding.GetEncoding(codePage).IsUtf8());
-    }
+    public void IsUtf8_ShouldRecognizeUtf8CodePage(int codePage, bool expected) => Assert.AreEqual(expected, System.Text.Encoding.GetEncoding(codePage).IsUtf8());
 
     /// <summary>
     /// Verifies that <see cref="EncodingExtensions.IsUtf16LittleEndian(System.Text.Encoding)" /> returns the
@@ -35,10 +32,7 @@ public sealed partial class EncodingExtensionsTests
     [DataRow(1200, true)]
     [DataRow(1201, false)]
     [DataRow(65001, false)]
-    public void IsUtf16LittleEndian_ShouldRecognizeUnicodeCodePage(int codePage, bool expected)
-    {
-        Assert.AreEqual(expected, System.Text.Encoding.GetEncoding(codePage).IsUtf16LittleEndian());
-    }
+    public void IsUtf16LittleEndian_ShouldRecognizeUnicodeCodePage(int codePage, bool expected) => Assert.AreEqual(expected, System.Text.Encoding.GetEncoding(codePage).IsUtf16LittleEndian());
 
     /// <summary>
     /// Verifies that <see cref="EncodingExtensions.IsUtf16BigEndian(System.Text.Encoding)" /> returns the
@@ -50,10 +44,7 @@ public sealed partial class EncodingExtensionsTests
     [DataRow(1201, true)]
     [DataRow(1200, false)]
     [DataRow(65001, false)]
-    public void IsUtf16BigEndian_ShouldRecognizeBigEndianUnicodeCodePage(int codePage, bool expected)
-    {
-        Assert.AreEqual(expected, System.Text.Encoding.GetEncoding(codePage).IsUtf16BigEndian());
-    }
+    public void IsUtf16BigEndian_ShouldRecognizeBigEndianUnicodeCodePage(int codePage, bool expected) => Assert.AreEqual(expected, System.Text.Encoding.GetEncoding(codePage).IsUtf16BigEndian());
 
     /// <summary>
     /// Verifies that <see cref="EncodingExtensions.IsUtf32LittleEndian(System.Text.Encoding)" /> returns the
@@ -65,10 +56,7 @@ public sealed partial class EncodingExtensionsTests
     [DataRow(12000, true)]
     [DataRow(12001, false)]
     [DataRow(65001, false)]
-    public void IsUtf32LittleEndian_ShouldRecognizeUtf32CodePage(int codePage, bool expected)
-    {
-        Assert.AreEqual(expected, System.Text.Encoding.GetEncoding(codePage).IsUtf32LittleEndian());
-    }
+    public void IsUtf32LittleEndian_ShouldRecognizeUtf32CodePage(int codePage, bool expected) => Assert.AreEqual(expected, System.Text.Encoding.GetEncoding(codePage).IsUtf32LittleEndian());
 
     /// <summary>
     /// Verifies that <see cref="EncodingExtensions.IsUtf32BigEndian(System.Text.Encoding)" /> returns the
@@ -80,10 +68,7 @@ public sealed partial class EncodingExtensionsTests
     [DataRow(12001, true)]
     [DataRow(12000, false)]
     [DataRow(65001, false)]
-    public void IsUtf32BigEndian_ShouldRecognizeBigEndianUtf32CodePage(int codePage, bool expected)
-    {
-        Assert.AreEqual(expected, System.Text.Encoding.GetEncoding(codePage).IsUtf32BigEndian());
-    }
+    public void IsUtf32BigEndian_ShouldRecognizeBigEndianUtf32CodePage(int codePage, bool expected) => Assert.AreEqual(expected, System.Text.Encoding.GetEncoding(codePage).IsUtf32BigEndian());
 
     /// <summary>
     /// Verifies that <see cref="EncodingExtensions.IsAnyUtf(System.Text.Encoding)" /> returns
@@ -98,10 +83,7 @@ public sealed partial class EncodingExtensionsTests
     [DataRow(12000, true)]
     [DataRow(12001, true)]
     [DataRow(20127, false)]
-    public void IsAnyUtf_ShouldRecognizeUtfFamily(int codePage, bool expected)
-    {
-        Assert.AreEqual(expected, System.Text.Encoding.GetEncoding(codePage).IsAnyUtf());
-    }
+    public void IsAnyUtf_ShouldRecognizeUtfFamily(int codePage, bool expected) => Assert.AreEqual(expected, System.Text.Encoding.GetEncoding(codePage).IsAnyUtf());
 
     /// <summary>
     /// Verifies that <see cref="EncodingExtensions.IsAscii(System.Text.Encoding)" /> returns the expected value
@@ -113,30 +95,21 @@ public sealed partial class EncodingExtensionsTests
     [DataRow(20127, true)]
     [DataRow(65001, false)]
     [DataRow(1200, false)]
-    public void IsAscii_ShouldRecognizeAsciiCodePage(int codePage, bool expected)
-    {
-        Assert.AreEqual(expected, System.Text.Encoding.GetEncoding(codePage).IsAscii());
-    }
+    public void IsAscii_ShouldRecognizeAsciiCodePage(int codePage, bool expected) => Assert.AreEqual(expected, System.Text.Encoding.GetEncoding(codePage).IsAscii());
 
     /// <summary>
     /// Verifies that <see cref="EncodingExtensions.GetDisplayName(System.Text.Encoding)" /> appends
     /// <c>-BOM</c> to UTF variants that emit a preamble and uses the canonical short form otherwise.
     /// </summary>
     [TestMethod]
-    public void GetDisplayName_ForUtf8WithBom_ShouldAppendBomSuffix()
-    {
-        Assert.AreEqual("UTF-8-BOM", new System.Text.UTF8Encoding(true).GetDisplayName());
-    }
+    public void GetDisplayName_ForUtf8WithBom_ShouldAppendBomSuffix() => Assert.AreEqual("UTF-8-BOM", new System.Text.UTF8Encoding(true).GetDisplayName());
 
     /// <summary>
     /// Verifies that <see cref="EncodingExtensions.GetDisplayName(System.Text.Encoding)" /> returns the plain
     /// <c>"UTF-8"</c> form for an encoding constructed without a preamble.
     /// </summary>
     [TestMethod]
-    public void GetDisplayName_ForUtf8WithoutBom_ShouldOmitBomSuffix()
-    {
-        Assert.AreEqual("UTF-8", new System.Text.UTF8Encoding(false).GetDisplayName());
-    }
+    public void GetDisplayName_ForUtf8WithoutBom_ShouldOmitBomSuffix() => Assert.AreEqual("UTF-8", new System.Text.UTF8Encoding(false).GetDisplayName());
 
     /// <summary>
     /// Verifies that <see cref="EncodingExtensions.GetDisplayName(System.Text.Encoding)" /> returns the WebName
@@ -199,10 +172,7 @@ public sealed partial class EncodingExtensionsTests
     /// <c>"US-ASCII"</c> for the ASCII encoding.
     /// </summary>
     [TestMethod]
-    public void GetDisplayName_ForAscii_ShouldReturnUsAscii()
-    {
-        Assert.AreEqual("US-ASCII", System.Text.Encoding.ASCII.GetDisplayName());
-    }
+    public void GetDisplayName_ForAscii_ShouldReturnUsAscii() => Assert.AreEqual("US-ASCII", System.Text.Encoding.ASCII.GetDisplayName());
 
     /// <summary>
     /// Verifies that all classification methods throw <see cref="ArgumentNullException" /> when

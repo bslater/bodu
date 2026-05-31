@@ -20,5 +20,5 @@ public sealed partial class GcmModeTransformTests
     protected override int ExpectedInitializationVectorSize => NonceSizeBytes;
 
     protected override GcmModeTransform CreateTransform(IBlockCipher cipher, byte[] iv)
-        => new GcmModeTransform(cipher, iv);
+        => new(cipher, iv);
 }

@@ -75,14 +75,16 @@ public sealed partial class IEnumerableExtensionsTests_Batch
     ];
 
     /// <summary>
-    /// Verifies that <see cref="IEnumerableExtensions.Batch{T}(IEnumerable{T}, int)" /> defers execution until the returned sequence is enumerated.
+    /// Verifies that <see cref="IEnumerableExtensions.Batch{T}(IEnumerable{T}, int)" /> defers execution until the
+    /// returned sequence is enumerated.
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(GetBatchTestCases))]
     public void Batch_WhenCalled_ShouldDeferExecution(EnumerableTestPlan<int> testCase) => AssertExecutionIsDeferred(testCase.Name, testCase.Invoke, testCase.Source);
 
     /// <summary>
-    /// Verifies that enumerating a batched sequence yields the expected groups for even/uneven splits and for projection overloads (selector and indexed selector).
+    /// Verifies that enumerating a batched sequence yields the expected groups for even/uneven splits and for
+    /// projection overloads (selector and indexed selector).
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(GetBatchTestCases))]

@@ -16,12 +16,12 @@ namespace Bodu.Text.Configuration.Test.Infrastructure;
 /// </summary>
 /// <remarks>
 /// <para>
-/// These vectors are intentionally implementation-facing. They are designed to validate the parser, writer,
-/// key mapper, glob matcher, resolver, typed accessors, and Microsoft.Extensions.Configuration bridge.
+/// These vectors are intentionally implementation-facing. They are designed to validate the parser, writer, key mapper,
+/// glob matcher, resolver, typed accessors, and Microsoft.Extensions.Configuration bridge.
 /// </para>
 /// <para>
-/// The format is EditorConfig-inspired, not EditorConfig-compliant. Where behaviour differs from the
-/// EditorConfig specification, the KAT explicitly identifies the expected Bodu behaviour.
+/// The format is EditorConfig-inspired, not EditorConfig-compliant. Where behaviour differs from the EditorConfig
+/// specification, the KAT explicitly identifies the expected Bodu behaviour.
 /// </para>
 /// </remarks>
 public static class ConfigurationKnownAnswerData
@@ -961,28 +961,44 @@ public static class ConfigurationKnownAnswerData
 /// </summary>
 public enum ConfigurationKatKind
 {
-    /// <summary>Parser or lexer behaviour.</summary>
+    /// <summary>
+    /// Parser or lexer behaviour.
+    /// </summary>
     Parse,
 
-    /// <summary>Writer behaviour.</summary>
+    /// <summary>
+    /// Writer behaviour.
+    /// </summary>
     Write,
 
-    /// <summary>Parse-write-parse round-trip behaviour.</summary>
+    /// <summary>
+    /// Parse-write-parse round-trip behaviour.
+    /// </summary>
     RoundTrip,
 
-    /// <summary>Key mapping behaviour.</summary>
+    /// <summary>
+    /// Key mapping behaviour.
+    /// </summary>
     KeyMapping,
 
-    /// <summary>Glob/pattern matching behaviour.</summary>
+    /// <summary>
+    /// Glob/pattern matching behaviour.
+    /// </summary>
     Pattern,
 
-    /// <summary>Document resolution behaviour.</summary>
+    /// <summary>
+    /// Document resolution behaviour.
+    /// </summary>
     Resolve,
 
-    /// <summary>Typed value getter behaviour.</summary>
+    /// <summary>
+    /// Typed value getter behaviour.
+    /// </summary>
     TypedValue,
 
-    /// <summary>Microsoft.Extensions.Configuration bridge behaviour.</summary>
+    /// <summary>
+    /// Microsoft.Extensions.Configuration bridge behaviour.
+    /// </summary>
     ConfigurationBridge,
 }
 
@@ -991,10 +1007,14 @@ public enum ConfigurationKatKind
 /// </summary>
 public enum ConfigurationKatOutcome
 {
-    /// <summary>The scenario should succeed.</summary>
+    /// <summary>
+    /// The scenario should succeed.
+    /// </summary>
     Pass,
 
-    /// <summary>The scenario should fail.</summary>
+    /// <summary>
+    /// The scenario should fail.
+    /// </summary>
     Fail,
 }
 
@@ -1016,94 +1036,154 @@ public sealed record ConfigurationKat : IKat
     }
 
     /// <inheritdoc />
-    /// <remarks>Returns <see cref="Title" /> so the row participates in <see cref="KatDisplayName" />-driven display formatting.</remarks>
+    /// <remarks>
+    /// Returns <see cref="Title" /> so the row participates in <see cref="KatDisplayName" />-driven display formatting.
+    /// </remarks>
     string IKat.Name => Title;
 
-    /// <summary>Gets the stable test identifier.</summary>
+    /// <summary>
+    /// Gets the stable test identifier.
+    /// </summary>
     public string Id { get; }
 
-    /// <summary>Gets the display title.</summary>
+    /// <summary>
+    /// Gets the display title.
+    /// </summary>
     public string Title { get; }
 
-    /// <summary>Gets the subsystem kind.</summary>
+    /// <summary>
+    /// Gets the subsystem kind.
+    /// </summary>
     public ConfigurationKatKind Kind { get; }
 
-    /// <summary>Gets the expected pass/fail outcome.</summary>
+    /// <summary>
+    /// Gets the expected pass/fail outcome.
+    /// </summary>
     public ConfigurationKatOutcome Outcome { get; }
 
-    /// <summary>Gets the milestone or stage, such as M1, M2, M4, M5, M6, P0, or P1.</summary>
+    /// <summary>
+    /// Gets the milestone or stage, such as M1, M2, M4, M5, M6, P0, or P1.
+    /// </summary>
     public string Stage { get; init; } = "M1";
 
-    /// <summary>Gets the profile name to use for the test.</summary>
+    /// <summary>
+    /// Gets the profile name to use for the test.
+    /// </summary>
     public string Profile { get; init; } = "Bodu";
 
-    /// <summary>Gets optional option-set hints used by the test harness.</summary>
+    /// <summary>
+    /// Gets optional option-set hints used by the test harness.
+    /// </summary>
     public string? Options { get; init; }
 
-    /// <summary>Gets the duplicate-key mode hint, when relevant.</summary>
+    /// <summary>
+    /// Gets the duplicate-key mode hint, when relevant.
+    /// </summary>
     public string? DuplicateKeyMode { get; init; }
 
-    /// <summary>Gets the diagnostic mode hint, when relevant.</summary>
+    /// <summary>
+    /// Gets the diagnostic mode hint, when relevant.
+    /// </summary>
     public string? DiagnosticMode { get; init; }
 
-    /// <summary>Gets the source text to parse.</summary>
+    /// <summary>
+    /// Gets the source text to parse.
+    /// </summary>
     public string? Source { get; init; }
 
-    /// <summary>Gets the expected writer output text.</summary>
+    /// <summary>
+    /// Gets the expected writer output text.
+    /// </summary>
     public string? ExpectedText { get; init; }
 
-    /// <summary>Gets the target path used for pattern matching or resolution.</summary>
+    /// <summary>
+    /// Gets the target path used for pattern matching or resolution.
+    /// </summary>
     public string? TargetPath { get; init; }
 
-    /// <summary>Gets the path root used for anchored pattern matching.</summary>
+    /// <summary>
+    /// Gets the path root used for anchored pattern matching.
+    /// </summary>
     public string? PathRoot { get; init; }
 
-    /// <summary>Gets the raw key for key-mapping or typed-value tests.</summary>
+    /// <summary>
+    /// Gets the raw key for key-mapping or typed-value tests.
+    /// </summary>
     public string? Key { get; init; }
 
-    /// <summary>Gets the raw value for typed-value tests.</summary>
+    /// <summary>
+    /// Gets the raw value for typed-value tests.
+    /// </summary>
     public string? RawValue { get; init; }
 
-    /// <summary>Gets the typed getter to exercise.</summary>
+    /// <summary>
+    /// Gets the typed getter to exercise.
+    /// </summary>
     public string? TypedAccessor { get; init; }
 
-    /// <summary>Gets the expected typed value.</summary>
+    /// <summary>
+    /// Gets the expected typed value.
+    /// </summary>
     public object? ExpectedTypedValue { get; init; }
 
-    /// <summary>Gets the raw pattern for pattern tests.</summary>
+    /// <summary>
+    /// Gets the raw pattern for pattern tests.
+    /// </summary>
     public string? Pattern { get; init; }
 
-    /// <summary>Gets the expected pattern match result.</summary>
+    /// <summary>
+    /// Gets the expected pattern match result.
+    /// </summary>
     public bool? ExpectedMatch { get; init; }
 
-    /// <summary>Gets the expected document model.</summary>
+    /// <summary>
+    /// Gets the expected document model.
+    /// </summary>
     public ExpectedDocument? ExpectedDocument { get; init; }
 
-    /// <summary>Gets expected resolved or bridge values.</summary>
+    /// <summary>
+    /// Gets expected resolved or bridge values.
+    /// </summary>
     public IReadOnlyList<ExpectedValue> ExpectedValues { get; init; } = [];
 
-    /// <summary>Gets keys expected to be absent from the resolved view.</summary>
+    /// <summary>
+    /// Gets keys expected to be absent from the resolved view.
+    /// </summary>
     public IReadOnlyList<string> UnexpectedKeys { get; init; } = [];
 
-    /// <summary>Gets the expected mapped configuration key for key tests.</summary>
+    /// <summary>
+    /// Gets the expected mapped configuration key for key tests.
+    /// </summary>
     public string? ExpectedConfigurationKey { get; init; }
 
-    /// <summary>Gets the expected key segments for key tests.</summary>
+    /// <summary>
+    /// Gets the expected key segments for key tests.
+    /// </summary>
     public IReadOnlyList<string> ExpectedSegments { get; init; } = [];
 
-    /// <summary>Gets the expected exception type name.</summary>
+    /// <summary>
+    /// Gets the expected exception type name.
+    /// </summary>
     public string? ExpectedException { get; init; }
 
-    /// <summary>Gets the expected diagnostic code.</summary>
+    /// <summary>
+    /// Gets the expected diagnostic code.
+    /// </summary>
     public string? ExpectedDiagnosticCode { get; init; }
 
-    /// <summary>Gets the expected diagnostic count when a precise count is required.</summary>
+    /// <summary>
+    /// Gets the expected diagnostic count when a precise count is required.
+    /// </summary>
     public int? ExpectedDiagnosticCount { get; init; }
 
-    /// <summary>Gets a mutation that should be applied after resolution to validate snapshot behaviour.</summary>
+    /// <summary>
+    /// Gets a mutation that should be applied after resolution to validate snapshot behaviour.
+    /// </summary>
     public ExpectedMutation? Mutation { get; init; }
 
-    /// <summary>Gets optional notes for implementers.</summary>
+    /// <summary>
+    /// Gets optional notes for implementers.
+    /// </summary>
     public string? Notes { get; init; }
 
     /// <inheritdoc />
@@ -1360,11 +1440,15 @@ public sealed record ExpectedDocument(
     int BlankLineCount = 0,
     int DiagnosticCount = 0)
 {
-    /// <summary>Creates an empty document expectation.</summary>
+    /// <summary>
+    /// Creates an empty document expectation.
+    /// </summary>
     public static ExpectedDocument Empty(int commentCount = 0, int blankLineCount = 0) =>
         new([], [], commentCount, blankLineCount);
 
-    /// <summary>Creates a document expectation.</summary>
+    /// <summary>
+    /// Creates a document expectation.
+    /// </summary>
     public static ExpectedDocument Create(
         IReadOnlyList<ExpectedProperty>? preamble = null,
         IReadOnlyList<ExpectedSection>? sections = null,
@@ -1382,7 +1466,9 @@ public sealed record ExpectedSection(
     IReadOnlyList<ExpectedProperty> Properties,
     IReadOnlyList<string> LeadingComments)
 {
-    /// <summary>Creates an expected section.</summary>
+    /// <summary>
+    /// Creates an expected section.
+    /// </summary>
     public static ExpectedSection Of(
         string pattern,
         IReadOnlyList<ExpectedProperty> properties,
@@ -1401,7 +1487,9 @@ public sealed record ExpectedProperty(
     string? InlineComment,
     char? InlineCommentPrefix)
 {
-    /// <summary>Creates an expected property.</summary>
+    /// <summary>
+    /// Creates an expected property.
+    /// </summary>
     public static ExpectedProperty Of(
         string key,
         string value,
@@ -1417,7 +1505,9 @@ public sealed record ExpectedProperty(
 /// </summary>
 public sealed record ExpectedValue(string Key, string? Value)
 {
-    /// <summary>Creates an expected resolved value.</summary>
+    /// <summary>
+    /// Creates an expected resolved value.
+    /// </summary>
     public static ExpectedValue Of(string key, string? value) => new(key, value);
 }
 
@@ -1426,7 +1516,9 @@ public sealed record ExpectedValue(string Key, string? Value)
 /// </summary>
 public sealed record ExpectedMutation(string Section, string Key, string Value)
 {
-    /// <summary>Creates a mutation that sets a value after resolution.</summary>
+    /// <summary>
+    /// Creates a mutation that sets a value after resolution.
+    /// </summary>
     public static ExpectedMutation SetAfterResolve(string section, string key, string value) =>
         new(section, key, value);
 }

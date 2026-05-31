@@ -34,10 +34,7 @@ public sealed class IbanTests
     /// non-alphanumeric character.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenBbanContainsInvalidCharacter_ShouldReturnFalse()
-    {
-        Assert.IsFalse(Iban.IsValid("GB82WEST123456-8765432".AsSpan()));
-    }
+    public void IsValid_WhenBbanContainsInvalidCharacter_ShouldReturnFalse() => Assert.IsFalse(Iban.IsValid("GB82WEST123456-8765432".AsSpan()));
 
     /// <summary>
     /// Verifies that <see cref="Iban.IsValid(ReadOnlySpan{char})" /> rejects a sequence whose country-code prefix
@@ -45,10 +42,7 @@ public sealed class IbanTests
     /// positions fail <c>TryFold</c>.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenCountryCodePrefixContainsInvalidCharacter_ShouldReturnFalse()
-    {
-        Assert.IsFalse(Iban.IsValid("@B82WEST12345698765432".AsSpan()));
-    }
+    public void IsValid_WhenCountryCodePrefixContainsInvalidCharacter_ShouldReturnFalse() => Assert.IsFalse(Iban.IsValid("@B82WEST12345698765432".AsSpan()));
 
     /// <summary>
     /// Verifies that <see cref="Iban.IsValid(ReadOnlySpan{char})" /> rejects the empty span. A full-sequence
@@ -56,10 +50,7 @@ public sealed class IbanTests
     /// algorithm's invariant.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenSequenceIsEmpty_ShouldReturnFalse()
-    {
-        Assert.IsFalse(Iban.IsValid(ReadOnlySpan<char>.Empty));
-    }
+    public void IsValid_WhenSequenceIsEmpty_ShouldReturnFalse() => Assert.IsFalse(Iban.IsValid(ReadOnlySpan<char>.Empty));
 
     /// <summary>
     /// Verifies that <see cref="Iban.IsValid(ReadOnlySpan{char})" /> rejects sequences shorter than four

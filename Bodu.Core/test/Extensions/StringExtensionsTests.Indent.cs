@@ -49,10 +49,7 @@ public partial class StringExtensionsTests
     /// when <c>count</c> is zero.
     /// </summary>
     [TestMethod]
-    public void Indent_WhenCountIsZero_ShouldReturnInputUnchanged()
-    {
-        Assert.AreEqual("one\ntwo", "one\ntwo".Indent(0));
-    }
+    public void Indent_WhenCountIsZero_ShouldReturnInputUnchanged() => Assert.AreEqual("one\ntwo", "one\ntwo".Indent(0));
 
     /// <summary>
     /// Verifies that <see cref="StringExtensions.Indent(string, int, char)" /> throws

@@ -28,10 +28,7 @@ public partial class CryptoHelpersTests
     /// when associated data has not yet been processed.
     /// </summary>
     [TestMethod]
-    public void ThrowIfAssociatedDataAlreadyProcessed_WhenNotProcessed_ShouldNotThrow()
-    {
-        CryptoHelpers.ThrowIfAssociatedDataAlreadyProcessed(false);
-    }
+    public void ThrowIfAssociatedDataAlreadyProcessed_WhenNotProcessed_ShouldNotThrow() => CryptoHelpers.ThrowIfAssociatedDataAlreadyProcessed(false);
 
     /// <summary>
     /// Verifies that <see cref="CryptoHelpers.ThrowIfAssociatedDataNotProcessed(bool)"/> throws a
@@ -51,8 +48,5 @@ public partial class CryptoHelpersTests
     /// when associated data has been processed.
     /// </summary>
     [TestMethod]
-    public void ThrowIfAssociatedDataNotProcessed_WhenProcessed_ShouldNotThrow()
-    {
-        CryptoHelpers.ThrowIfAssociatedDataNotProcessed(true);
-    }
+    public void ThrowIfAssociatedDataNotProcessed_WhenProcessed_ShouldNotThrow() => CryptoHelpers.ThrowIfAssociatedDataNotProcessed(true);
 }

@@ -86,19 +86,13 @@ public partial class CryptoHelpersTests
     /// Verifies that <see cref="CryptoHelpers.FillWithRandomNonZeroBytes" /> throws ArgumentNullException when the buffer is null.
     /// </summary>
     [TestMethod]
-    public void FillWithRandomNonZeroBytes_WhenBufferIsNull_ShouldThrowExactly()
-    {
-        Assert.ThrowsExactly<ArgumentNullException>(() => CryptoHelpers.FillWithRandomNonZeroBytes(null!));
-    }
+    public void FillWithRandomNonZeroBytes_WhenBufferIsNull_ShouldThrowExactly() => Assert.ThrowsExactly<ArgumentNullException>(() => CryptoHelpers.FillWithRandomNonZeroBytes(null!));
 
     /// <summary>
     /// Verifies that <see cref="CryptoHelpers.FillWithRandomNonZeroBytes" /> throws ArgumentException when the buffer is empty.
     /// </summary>
     [TestMethod]
-    public void FillWithRandomNonZeroBytes_WhenBufferIsEmpty_ShouldThrowExactly()
-    {
-        Assert.ThrowsExactly<ArgumentException>(() => CryptoHelpers.FillWithRandomNonZeroBytes(Array.Empty<byte>()));
-    }
+    public void FillWithRandomNonZeroBytes_WhenBufferIsEmpty_ShouldThrowExactly() => Assert.ThrowsExactly<ArgumentException>(() => CryptoHelpers.FillWithRandomNonZeroBytes(Array.Empty<byte>()));
 
     /// <summary>
     /// Verifies that <see cref="CryptoHelpers.FillWithRandomNonZeroBytes" /> fills the buffer with only non-zero values.

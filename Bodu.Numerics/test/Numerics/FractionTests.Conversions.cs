@@ -31,9 +31,9 @@ public partial class FractionTests
     [DataRow("2.5", 5, 2)]
     public void FromDecimal_WhenGivenDecimal_ShouldProduceExactValue(string text, int expectedNumerator, int expectedDenominator)
     {
-        decimal input = decimal.Parse(text, System.Globalization.CultureInfo.InvariantCulture);
+        var input = decimal.Parse(text, System.Globalization.CultureInfo.InvariantCulture);
 
-        Fraction<int> value = Fraction<int>.FromDecimal(input);
+        var value = Fraction<int>.FromDecimal(input);
 
         Assert.AreEqual(new Fraction<int>(expectedNumerator, expectedDenominator), value);
     }
@@ -66,7 +66,7 @@ public partial class FractionTests
     [TestMethod]
     public void ToDoubleAndToDecimal_WhenConverted_ShouldYieldExpectedValue()
     {
-        Fraction<int> value = new Fraction<int>(3, 4);
+        var value = new Fraction<int>(3, 4);
 
         Assert.AreEqual(0.75, value.ToDouble());
         Assert.AreEqual(0.75m, value.ToDecimal());
@@ -103,7 +103,7 @@ public partial class FractionTests
     [TestMethod]
     public void ExplicitDecimalOperator_WhenConverting_ShouldMatchFromDecimal()
     {
-        Fraction<BigInteger> value = (Fraction<BigInteger>)1.5m;
+        var value = (Fraction<BigInteger>)1.5m;
 
         Assert.AreEqual(new Fraction<BigInteger>(3, 2), value);
     }
@@ -128,7 +128,7 @@ public partial class FractionTests
     [DataRow("100", 100, 1)]
     public void FromDecimal_WhenGivenKnownValues_ShouldProduceExactValue(string text, int en, int ed)
     {
-        decimal input = decimal.Parse(text, System.Globalization.CultureInfo.InvariantCulture);
+        var input = decimal.Parse(text, System.Globalization.CultureInfo.InvariantCulture);
 
         Assert.AreEqual(new Fraction<int>(en, ed), Fraction<int>.FromDecimal(input));
     }
@@ -150,10 +150,7 @@ public partial class FractionTests
     [DataRow(3.0, 3, 1)]
     [DataRow(0.0, 0, 1)]
     [DataRow(-2.5, -5, 2)]
-    public void FromDouble_WhenGivenKnownValues_ShouldProduceExactValue(double input, int en, int ed)
-    {
-        Assert.AreEqual(new Fraction<int>(en, ed), Fraction<int>.FromDouble(input));
-    }
+    public void FromDouble_WhenGivenKnownValues_ShouldProduceExactValue(double input, int en, int ed) => Assert.AreEqual(new Fraction<int>(en, ed), Fraction<int>.FromDouble(input));
 
     /// <summary>
     /// Verifies that <see cref="Fraction{T}.FromDouble" /> rejects every non-finite value.
@@ -181,10 +178,7 @@ public partial class FractionTests
     [DataRow(5, 1, 5.0)]
     [DataRow(0, 1, 0.0)]
     [DataRow(-7, 2, -3.5)]
-    public void ToDouble_WhenConverted_ShouldReturnKnownAnswers(int numerator, int denominator, double expected)
-    {
-        Assert.AreEqual(expected, new Fraction<int>(numerator, denominator).ToDouble());
-    }
+    public void ToDouble_WhenConverted_ShouldReturnKnownAnswers(int numerator, int denominator, double expected) => Assert.AreEqual(expected, new Fraction<int>(numerator, denominator).ToDouble());
 
     /// <summary>
     /// Verifies that an exact binary fraction round-trips through <see cref="double" /> conversion.
@@ -195,10 +189,7 @@ public partial class FractionTests
     [DataRow(-0.375)]
     [DataRow(123.0)]
     [DataRow(0.0)]
-    public void FromDouble_WhenRoundTrippedThroughToDouble_ShouldReproduceValue(double input)
-    {
-        Assert.AreEqual(input, Fraction<long>.FromDouble(input).ToDouble());
-    }
+    public void FromDouble_WhenRoundTrippedThroughToDouble_ShouldReproduceValue(double input) => Assert.AreEqual(input, Fraction<long>.FromDouble(input).ToDouble());
 
     /// <summary>
     /// Verifies that ToSingle, ToBigInteger, and ToInteger convert a value to each primitive type.
@@ -206,7 +197,7 @@ public partial class FractionTests
     [TestMethod]
     public void ToPrimitive_WhenConverting_ShouldReturnExpectedValues()
     {
-        Fraction<int> value = new Fraction<int>(7, 2);
+        var value = new Fraction<int>(7, 2);
 
         Assert.AreEqual(3.5f, value.ToSingle());
         Assert.AreEqual((BigInteger)3, value.ToBigInteger());
@@ -217,10 +208,7 @@ public partial class FractionTests
     /// Verifies that the explicit float conversion operator returns the single-precision approximation.
     /// </summary>
     [TestMethod]
-    public void ExplicitFloatOperator_WhenConverting_ShouldReturnApproximation()
-    {
-        Assert.AreEqual(0.25f, (float)new Fraction<int>(1, 4));
-    }
+    public void ExplicitFloatOperator_WhenConverting_ShouldReturnApproximation() => Assert.AreEqual(0.25f, (float)new Fraction<int>(1, 4));
 
     /// <summary>
     /// Verifies that the non-failing Try-conversions report success and return the converted value.
@@ -228,21 +216,21 @@ public partial class FractionTests
     [TestMethod]
     public void TryToPrimitive_WhenConverting_ShouldAlwaysSucceed()
     {
-        Fraction<int> value = new Fraction<int>(7, 2);
+        var value = new Fraction<int>(7, 2);
 
-        Assert.IsTrue(value.TryToDouble(out double asDouble));
+        Assert.IsTrue(value.TryToDouble(out var asDouble));
         Assert.AreEqual(3.5, asDouble);
 
-        Assert.IsTrue(value.TryToSingle(out float asSingle));
+        Assert.IsTrue(value.TryToSingle(out var asSingle));
         Assert.AreEqual(3.5f, asSingle);
 
         Assert.IsTrue(value.TryToBigInteger(out BigInteger asBig));
         Assert.AreEqual((BigInteger)3, asBig);
 
-        Assert.IsTrue(value.TryToInteger(out int asInt));
+        Assert.IsTrue(value.TryToInteger(out var asInt));
         Assert.AreEqual(3, asInt);
 
-        Assert.IsTrue(value.TryToDecimal(out decimal asDecimal));
+        Assert.IsTrue(value.TryToDecimal(out var asDecimal));
         Assert.AreEqual(3.5m, asDecimal);
     }
 
@@ -252,9 +240,9 @@ public partial class FractionTests
     [TestMethod]
     public void TryToDecimal_WhenValueExceedsDecimalRange_ShouldReturnFalse()
     {
-        Fraction<BigInteger> value = new Fraction<BigInteger>(BigInteger.Pow(10, 40));
+        var value = new Fraction<BigInteger>(BigInteger.Pow(10, 40));
 
-        Assert.IsFalse(value.TryToDecimal(out decimal result));
+        Assert.IsFalse(value.TryToDecimal(out var result));
         Assert.AreEqual(0m, result);
     }
 }

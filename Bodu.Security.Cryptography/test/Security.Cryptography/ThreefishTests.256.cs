@@ -20,7 +20,7 @@ public sealed partial class Threefish256Tests
 
     /// <inheritdoc />
     protected override TweakableSymmetricAlgorithmSpecification GetSpecification() =>
-        new TweakableSymmetricAlgorithmSpecification
+        new()
         {
             BlockSizeBits = 256,
             DefaultKeySizeBits = 256,

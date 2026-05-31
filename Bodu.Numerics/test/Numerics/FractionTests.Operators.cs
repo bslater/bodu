@@ -14,8 +14,8 @@ public partial class FractionTests
     [TestMethod]
     public void Operators_WhenCombiningFractions_ShouldProduceCanonicalResults()
     {
-        Fraction<int> a = new Fraction<int>(2, 3);
-        Fraction<int> b = new Fraction<int>(1, 6);
+        var a = new Fraction<int>(2, 3);
+        var b = new Fraction<int>(1, 6);
 
         Assert.AreEqual(new Fraction<int>(5, 6), a + b);
         Assert.AreEqual(new Fraction<int>(1, 2), a - b);
@@ -51,7 +51,7 @@ public partial class FractionTests
     [TestMethod]
     public void IncrementAndDecrementOperators_WhenApplied_ShouldChangeValueByOne()
     {
-        Fraction<int> value = new Fraction<int>(1, 2);
+        var value = new Fraction<int>(1, 2);
         value++;
         Assert.AreEqual(new Fraction<int>(3, 2), value);
 
@@ -75,8 +75,8 @@ public partial class FractionTests
     [TestMethod]
     public void ComparisonOperators_WhenComparingValues_ShouldOrderCorrectly()
     {
-        Fraction<int> small = new Fraction<int>(1, 3);
-        Fraction<int> large = new Fraction<int>(1, 2);
+        var small = new Fraction<int>(1, 3);
+        var large = new Fraction<int>(1, 2);
 
         Assert.IsTrue(small < large);
         Assert.IsTrue(small <= large);
@@ -104,8 +104,8 @@ public partial class FractionTests
     [DataRow(-1, 1000000, 0, 1, -1)]
     public void Comparison_WhenGivenKnownOperands_ShouldYieldExpectedOrder(int an, int ad, int bn, int bd, int expectedSign)
     {
-        Fraction<int> a = new Fraction<int>(an, ad);
-        Fraction<int> b = new Fraction<int>(bn, bd);
+        var a = new Fraction<int>(an, ad);
+        var b = new Fraction<int>(bn, bd);
 
         Assert.AreEqual(expectedSign, Math.Sign(a.CompareTo(b)));
     }
@@ -120,9 +120,9 @@ public partial class FractionTests
     [DataRow(-1, 2, 1, 4)]
     public void RelationalOperators_WhenCompared_ShouldAgreeWithCompareTo(int an, int ad, int bn, int bd)
     {
-        Fraction<int> a = new Fraction<int>(an, ad);
-        Fraction<int> b = new Fraction<int>(bn, bd);
-        int order = a.CompareTo(b);
+        var a = new Fraction<int>(an, ad);
+        var b = new Fraction<int>(bn, bd);
+        var order = a.CompareTo(b);
 
         Assert.AreEqual(order < 0, a < b);
         Assert.AreEqual(order <= 0, a <= b);

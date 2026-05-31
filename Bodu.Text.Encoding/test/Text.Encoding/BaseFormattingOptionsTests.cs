@@ -29,18 +29,12 @@ public sealed class BaseFormattingOptionsTests
     /// default values and bitwise unions.
     /// </summary>
     [TestMethod]
-    public void None_ShouldEqualZero()
-    {
-        Assert.AreEqual(0, (int)BaseFormattingOptions.None);
-    }
+    public void None_ShouldEqualZero() => Assert.AreEqual(0, (int)BaseFormattingOptions.None);
 
     /// <summary>
     /// Verifies that the enum carries the <see cref="FlagsAttribute" />.
     /// </summary>
     [TestMethod]
-    public void Type_ShouldDeclareFlagsAttribute()
-    {
-        Assert.IsTrue(typeof(BaseFormattingOptions).IsDefined(typeof(FlagsAttribute), inherit: false));
-    }
+    public void Type_ShouldDeclareFlagsAttribute() => Assert.IsTrue(typeof(BaseFormattingOptions).IsDefined(typeof(FlagsAttribute), inherit: false));
 
 }

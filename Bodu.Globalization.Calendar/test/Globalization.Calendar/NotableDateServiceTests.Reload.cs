@@ -151,14 +151,14 @@ public partial class NotableDateServiceTests
             options: new NotableDateServiceOptions { OverrideProviders = [overrides] });
 
         using CancellationTokenSource cts = new();
-        Task readerA = Task.Run(() =>
+        var readerA = Task.Run(() =>
         {
             while (!cts.IsCancellationRequested)
             {
                 _ = service.GetNotableDates(2026);
             }
         });
-        Task readerB = Task.Run(() =>
+        var readerB = Task.Run(() =>
         {
             while (!cts.IsCancellationRequested)
             {
@@ -166,7 +166,7 @@ public partial class NotableDateServiceTests
             }
         });
 
-        for (int i = 0; i < 50; i++)
+        for (var i = 0; i < 50; i++)
         {
             overrides.AddRule(Fixed($"R-{i}", (i % 12) + 1, ((i * 3) % 28) + 1));
             service.Reload();
@@ -240,7 +240,7 @@ public partial class NotableDateServiceTests
         service.Reload();
         service.Reload();
 
-        int matches = service.GetNotableDates(2026).Count(n => n.Name == "Once");
+        var matches = service.GetNotableDates(2026).Count(n => n.Name == "Once");
         Assert.AreEqual(1, matches);
     }
 

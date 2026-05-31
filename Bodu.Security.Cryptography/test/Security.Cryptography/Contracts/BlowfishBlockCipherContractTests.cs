@@ -23,7 +23,7 @@ public sealed class BlowfishBlockCipherContractTests
     protected override byte[] EncryptBlock(byte[] key, byte[] plaintext, byte[]? tweak)
     {
         using BlowfishBlockCipher cipher = new(key);
-        byte[] output = new byte[plaintext.Length];
+        var output = new byte[plaintext.Length];
         cipher.Encrypt(plaintext, output);
         return output;
     }
@@ -32,7 +32,7 @@ public sealed class BlowfishBlockCipherContractTests
     protected override byte[] DecryptBlock(byte[] key, byte[] ciphertext, byte[]? tweak)
     {
         using BlowfishBlockCipher cipher = new(key);
-        byte[] output = new byte[ciphertext.Length];
+        var output = new byte[ciphertext.Length];
         cipher.Decrypt(ciphertext, output);
         return output;
     }

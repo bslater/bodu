@@ -27,18 +27,12 @@ public sealed class BaseFormatStylesTests
     /// values and bitwise unions.
     /// </summary>
     [TestMethod]
-    public void None_ShouldEqualZero()
-    {
-        Assert.AreEqual(0, (int)BaseFormatStyles.None);
-    }
+    public void None_ShouldEqualZero() => Assert.AreEqual(0, (int)BaseFormatStyles.None);
 
     /// <summary>
     /// Verifies that the enum carries the <see cref="FlagsAttribute" />.
     /// </summary>
     [TestMethod]
-    public void Type_ShouldDeclareFlagsAttribute()
-    {
-        Assert.IsTrue(typeof(BaseFormatStyles).IsDefined(typeof(FlagsAttribute), inherit: false));
-    }
+    public void Type_ShouldDeclareFlagsAttribute() => Assert.IsTrue(typeof(BaseFormatStyles).IsDefined(typeof(FlagsAttribute), inherit: false));
 
 }

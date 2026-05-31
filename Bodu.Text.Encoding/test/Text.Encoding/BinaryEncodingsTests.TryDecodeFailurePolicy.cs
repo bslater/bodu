@@ -57,7 +57,7 @@ public sealed class BinaryEncodingsTests_TryDecodeFailurePolicy
 
         Span<byte> destination = stackalloc byte[encoding.GetMaxDecodedLength(malformed.Length)];
 
-        bool success = encoding.TryDecode(malformed.AsSpan(), destination, out int bytesWritten);
+        var success = encoding.TryDecode(malformed.AsSpan(), destination, out var bytesWritten);
 
         Assert.IsFalse(success);
         Assert.AreEqual(0, bytesWritten);

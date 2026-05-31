@@ -17,9 +17,9 @@ public abstract partial class SymmetricStreamAlgorithmContractTests<TCipher>
     [TestMethod]
     public void CreateEncryptor_WhenReusedWithSameKeyAndNonce_ShouldReproduceKeystream()
     {
-        byte[] key = CreateKey();
-        byte[] nonce = CreateNonce();
-        byte[] zeros = new byte[96];
+        var key = CreateKey();
+        var nonce = CreateNonce();
+        var zeros = new byte[96];
 
         byte[] a;
         using (TCipher cipher = CreateAlgorithm())
@@ -42,8 +42,8 @@ public abstract partial class SymmetricStreamAlgorithmContractTests<TCipher>
     public void CreateEncryptor_WhenKeyLengthIsInvalid_ShouldThrowCryptographicException()
     {
         using TCipher cipher = CreateAlgorithm();
-        byte[] shortKey = new byte[KeyLengthBytes - 1];
-        byte[] nonce = CreateNonce();
+        var shortKey = new byte[KeyLengthBytes - 1];
+        var nonce = CreateNonce();
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
@@ -59,8 +59,8 @@ public abstract partial class SymmetricStreamAlgorithmContractTests<TCipher>
     public void CreateEncryptor_WhenNonceLengthIsInvalid_ShouldThrowCryptographicException()
     {
         using TCipher cipher = CreateAlgorithm();
-        byte[] key = CreateKey();
-        byte[] wrongNonce = new byte[NonceLengthBytes + 1];
+        var key = CreateKey();
+        var wrongNonce = new byte[NonceLengthBytes + 1];
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
@@ -76,7 +76,7 @@ public abstract partial class SymmetricStreamAlgorithmContractTests<TCipher>
     public void CreateEncryptor_WhenKeyIsNull_ShouldThrowArgumentNullException()
     {
         using TCipher cipher = CreateAlgorithm();
-        byte[] nonce = CreateNonce();
+        var nonce = CreateNonce();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -92,7 +92,7 @@ public abstract partial class SymmetricStreamAlgorithmContractTests<TCipher>
     public void CreateEncryptor_WhenNonceIsNull_ShouldThrowArgumentNullException()
     {
         using TCipher cipher = CreateAlgorithm();
-        byte[] key = CreateKey();
+        var key = CreateKey();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -107,8 +107,8 @@ public abstract partial class SymmetricStreamAlgorithmContractTests<TCipher>
     public void CreateEncryptor_WhenDisposed_ShouldThrowObjectDisposedException()
     {
         TCipher cipher = CreateAlgorithm();
-        byte[] key = CreateKey();
-        byte[] nonce = CreateNonce();
+        var key = CreateKey();
+        var nonce = CreateNonce();
         cipher.Dispose();
 
         Assert.ThrowsExactly<ObjectDisposedException>(() =>

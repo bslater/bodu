@@ -35,7 +35,7 @@ public static partial class DateTimeExtensions
     ///]]>
     /// </code>
     /// </remarks>
-    public static DateTime FirstDateOfMonth(this DateTime dateTime) => new DateTime(GetFirstDateOfMonthTicks(dateTime), dateTime.Kind);
+    public static DateTime FirstDateOfMonth(this DateTime dateTime) => new(GetFirstDateOfMonthTicks(dateTime), dateTime.Kind);
 
     /// <summary>
     /// Returns a new <see cref="DateTime" /> representing the first day of the specified calendar month and year.

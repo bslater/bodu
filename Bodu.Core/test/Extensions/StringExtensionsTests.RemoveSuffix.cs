@@ -33,10 +33,7 @@ public partial class StringExtensionsTests
     /// <param name="expected">The expected return value.</param>
     [DataTestMethod]
     [DynamicData(nameof(GetRemoveSuffixCases), DynamicDataSourceType.Method)]
-    public void RemoveSuffix_WhenInvoked_ShouldReturnExpected(string value, string suffix, StringComparison comparison, string expected)
-    {
-        Assert.AreEqual(expected, value.RemoveSuffix(suffix, comparison));
-    }
+    public void RemoveSuffix_WhenInvoked_ShouldReturnExpected(string value, string suffix, StringComparison comparison, string expected) => Assert.AreEqual(expected, value.RemoveSuffix(suffix, comparison));
 
     /// <summary>
     /// Verifies that <see cref="StringExtensions.RemoveSuffix(string, string, StringComparison)" /> throws

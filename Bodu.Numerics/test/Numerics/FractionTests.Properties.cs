@@ -36,7 +36,7 @@ public partial class FractionTests
         bool isNegative,
         bool isPositive)
     {
-        Fraction<int> value = new Fraction<int>(numerator, denominator);
+        var value = new Fraction<int>(numerator, denominator);
 
         Assert.AreEqual(isZero, value.IsZero, nameof(value.IsZero));
         Assert.AreEqual(isInteger, value.IsInteger, nameof(value.IsInteger));
@@ -56,9 +56,9 @@ public partial class FractionTests
     [DataRow(9, 2)]
     public void Properties_WhenInspectingSign_ShouldBeMutuallyExclusive(int numerator, int denominator)
     {
-        Fraction<int> value = new Fraction<int>(numerator, denominator);
+        var value = new Fraction<int>(numerator, denominator);
 
-        int trueCount = (value.IsZero ? 1 : 0) + (value.IsNegative ? 1 : 0) + (value.IsPositive ? 1 : 0);
+        var trueCount = (value.IsZero ? 1 : 0) + (value.IsNegative ? 1 : 0) + (value.IsPositive ? 1 : 0);
 
         Assert.AreEqual(1, trueCount);
     }
@@ -83,7 +83,7 @@ public partial class FractionTests
         bool isEvenInteger,
         bool isOddInteger)
     {
-        Fraction<int> value = new Fraction<int>(numerator, denominator);
+        var value = new Fraction<int>(numerator, denominator);
 
         Assert.AreEqual(isWhole, value.IsWhole, nameof(value.IsWhole));
         Assert.AreEqual(isWhole, value.IsInteger, nameof(value.IsInteger));
@@ -98,7 +98,7 @@ public partial class FractionTests
     [TestMethod]
     public void Properties_WhenInspectingCanonicalForm_ShouldReportNeverReducible()
     {
-        Fraction<int> value = new Fraction<int>(2, 4);
+        var value = new Fraction<int>(2, 4);
 
         Assert.IsFalse(value.IsReducible);
         Assert.IsTrue(value.IsCanonical);

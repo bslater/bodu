@@ -169,7 +169,7 @@ public partial class ConcurrentCircularBufferTests
     [TestMethod]
     public void Ctor_WhenConstructedFromEnumerableContainingNulls_ShouldRetainNulls()
     {
-        var source = new TestItem?[] { new TestItem(1), null, new TestItem(3) };
+        var source = new TestItem?[] { new(1), null, new(3) };
         var buffer = new ConcurrentCircularBuffer<TestItem?>(source, 4);
 
         TestItem?[] arr = buffer.ToArray();

@@ -323,8 +323,8 @@ public abstract class BlockNonCryptographicHashAlgorithm<T>
     /// </summary>
     /// <param name="buffer">The input bytes to feed into the hash.</param>
     /// <exception cref="InvalidOperationException">
-    /// Appending <paramref name="buffer" /> would cause the cumulative <see cref="TotalLength" /> counter to
-    /// overflow <see cref="ulong.MaxValue" />.
+    /// Appending <paramref name="buffer" /> would cause the cumulative <see cref="TotalLength" /> counter to overflow
+    /// <see cref="ulong.MaxValue" />.
     /// </exception>
     private void ProcessBlocks(ReadOnlySpan<byte> buffer)
     {

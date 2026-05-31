@@ -12,5 +12,5 @@ public sealed partial class OfbModeTransformTests
 {
     /// <inheritdoc />
     protected override OfbModeTransform CreateTransform(IBlockCipher cipher, byte[] iv)
-        => new OfbModeTransform(cipher, iv);
+        => new(cipher, iv);
 }

@@ -19,10 +19,7 @@ public sealed partial class Base16Tests
     [DataRow('G')]
     [DataRow('!')]
     [DataRow('-')]
-    public void IsHexDigit_WhenNotValid_ShouldReturnFalse(char value)
-    {
-        Assert.IsFalse(Base16.IsHexDigit(value));
-    }
+    public void IsHexDigit_WhenNotValid_ShouldReturnFalse(char value) => Assert.IsFalse(Base16.IsHexDigit(value));
 
     /// <summary>
     /// Verifies that <see cref="Base16.IsHexDigit(char)" /> recognises all valid hex digit characters.
@@ -35,10 +32,7 @@ public sealed partial class Base16Tests
     [DataRow('F')]
     [DataRow('a')]
     [DataRow('f')]
-    public void IsHexDigit_WhenValidDigit_ShouldReturnTrue(char value)
-    {
-        Assert.IsTrue(Base16.IsHexDigit(value));
-    }
+    public void IsHexDigit_WhenValidDigit_ShouldReturnTrue(char value) => Assert.IsTrue(Base16.IsHexDigit(value));
 
     /// <summary>
     /// Verifies that <see cref="Base16.IsValid(ReadOnlySpan{char}, BaseFormatStyles)" /> accepts a decorated input
@@ -57,38 +51,26 @@ public sealed partial class Base16Tests
     /// for an empty input.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenEmpty_ShouldReturnTrue()
-    {
-        Assert.IsTrue(Base16.IsValid(ReadOnlySpan<char>.Empty));
-    }
+    public void IsValid_WhenEmpty_ShouldReturnTrue() => Assert.IsTrue(Base16.IsValid(ReadOnlySpan<char>.Empty));
 
     /// <summary>
     /// Verifies that <see cref="Base16.IsValid(ReadOnlySpan{char}, BaseFormatStyles)" /> returns <see langword="false" />
     /// for non-hex characters.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenInvalidCharacter_ShouldReturnFalse()
-    {
-        Assert.IsFalse(Base16.IsValid("ab!d".AsSpan()));
-    }
+    public void IsValid_WhenInvalidCharacter_ShouldReturnFalse() => Assert.IsFalse(Base16.IsValid("ab!d".AsSpan()));
     /// <summary>
     /// Verifies that <see cref="Base16.IsValid(ReadOnlySpan{char}, BaseFormatStyles)" /> returns <see langword="true" />
     /// for a clean even-length hex string.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenStrictAndCleanEven_ShouldReturnTrue()
-    {
-        Assert.IsTrue(Base16.IsValid("DEADBEEF".AsSpan()));
-    }
+    public void IsValid_WhenStrictAndCleanEven_ShouldReturnTrue() => Assert.IsTrue(Base16.IsValid("DEADBEEF".AsSpan()));
 
     /// <summary>
     /// Verifies that <see cref="Base16.IsValid(ReadOnlySpan{char}, BaseFormatStyles)" /> returns <see langword="false" />
     /// for an odd-length input.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenStrictAndOddLength_ShouldReturnFalse()
-    {
-        Assert.IsFalse(Base16.IsValid("abc".AsSpan()));
-    }
+    public void IsValid_WhenStrictAndOddLength_ShouldReturnFalse() => Assert.IsFalse(Base16.IsValid("abc".AsSpan()));
 
 }

@@ -17,10 +17,7 @@ public sealed class Base58VariantTests
     /// Verifies that <see cref="Base58Variant.BitcoinFlickr" /> is the default value.
     /// </summary>
     [TestMethod]
-    public void BitcoinFlickr_ShouldBeDefaultValue()
-    {
-        Assert.AreEqual(default, Base58Variant.BitcoinFlickr);
-    }
+    public void BitcoinFlickr_ShouldBeDefaultValue() => Assert.AreEqual(default, Base58Variant.BitcoinFlickr);
 
     /// <summary>
     /// Verifies that the variants declare the documented numerical values.

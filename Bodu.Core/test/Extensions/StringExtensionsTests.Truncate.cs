@@ -31,10 +31,7 @@ public partial class StringExtensionsTests
     /// <param name="expected">The expected return value.</param>
     [DataTestMethod]
     [DynamicData(nameof(GetTruncateCases), DynamicDataSourceType.Method)]
-    public void Truncate_NoEllipsis_WhenInvoked_ShouldReturnExpected(string value, int maxLength, string expected)
-    {
-        Assert.AreEqual(expected, value.Truncate(maxLength));
-    }
+    public void Truncate_NoEllipsis_WhenInvoked_ShouldReturnExpected(string value, int maxLength, string expected) => Assert.AreEqual(expected, value.Truncate(maxLength));
 
     /// <summary>
     /// Provides representative inputs for the ellipsis overload of
@@ -59,30 +56,21 @@ public partial class StringExtensionsTests
     /// <param name="expected">The expected return value.</param>
     [DataTestMethod]
     [DynamicData(nameof(GetTruncateWithEllipsisCases), DynamicDataSourceType.Method)]
-    public void Truncate_WithEllipsis_WhenInvoked_ShouldReturnExpected(string value, int maxLength, string ellipsis, string expected)
-    {
-        Assert.AreEqual(expected, value.Truncate(maxLength, ellipsis));
-    }
+    public void Truncate_WithEllipsis_WhenInvoked_ShouldReturnExpected(string value, int maxLength, string ellipsis, string expected) => Assert.AreEqual(expected, value.Truncate(maxLength, ellipsis));
 
     /// <summary>
     /// Verifies that <see cref="StringExtensions.Truncate(string, int)" /> throws
     /// <see cref="ArgumentOutOfRangeException" /> when <c>maxLength</c> is negative.
     /// </summary>
     [TestMethod]
-    public void Truncate_WhenMaxLengthIsNegative_ShouldThrowExactly()
-    {
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => _ = "hello".Truncate(-1));
-    }
+    public void Truncate_WhenMaxLengthIsNegative_ShouldThrowExactly() => Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => _ = "hello".Truncate(-1));
 
     /// <summary>
     /// Verifies that <see cref="StringExtensions.Truncate(string, int, string)" /> throws
     /// <see cref="ArgumentOutOfRangeException" /> when <c>maxLength</c> is smaller than the ellipsis.
     /// </summary>
     [TestMethod]
-    public void Truncate_WhenMaxLengthIsSmallerThanEllipsis_ShouldThrowExactly()
-    {
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => _ = "hello".Truncate(2, "..."));
-    }
+    public void Truncate_WhenMaxLengthIsSmallerThanEllipsis_ShouldThrowExactly() => Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => _ = "hello".Truncate(2, "..."));
 
     /// <summary>
     /// Verifies that the truncate methods throw <see cref="ArgumentNullException" /> for null arguments.

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IntervalTests.Properties.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -18,7 +18,7 @@ public partial class IntervalTests
     [DataRow(5, 1, true, false)]
     public void IsEmpty_WhenLowerExceedsUpper_ShouldReturnTrue(int lower, int upper, bool lowerInclusive, bool upperInclusive)
     {
-        Interval<int> interval = new Interval<int>(lower, upper, lowerInclusive, upperInclusive);
+        var interval = new Interval<int>(lower, upper, lowerInclusive, upperInclusive);
 
         Assert.IsTrue(interval.IsEmpty);
     }
@@ -34,7 +34,7 @@ public partial class IntervalTests
     [DataRow(5, true, true, false)]
     public void IsEmpty_WhenLowerEqualsUpper_ShouldReflectInclusivity(int value, bool lowerInclusive, bool upperInclusive, bool expectedIsEmpty)
     {
-        Interval<int> interval = new Interval<int>(value, value, lowerInclusive, upperInclusive);
+        var interval = new Interval<int>(value, value, lowerInclusive, upperInclusive);
 
         Assert.AreEqual(expectedIsEmpty, interval.IsEmpty);
     }

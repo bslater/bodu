@@ -24,8 +24,8 @@ public sealed class IListExtensionsTests_IndexOf
     ];
 
     /// <summary>
-    /// Verifies that the 3-argument <c>IndexOf</c> overload throws <see cref="ArgumentOutOfRangeException"/>
-    /// when <paramref name="index"/> exceeds <see cref="ICollection{T}.Count"/>.
+    /// Verifies that the 3-argument <c>IndexOf</c> overload throws <see cref="ArgumentOutOfRangeException" /> when
+    /// <paramref name="index" /> exceeds <see cref="ICollection{T}.Count" />.
     /// </summary>
     [TestMethod]
     public void IndexOf_ThreeArg_WhenIndexExceedsCount_ShouldThrowExactly()
@@ -39,8 +39,8 @@ public sealed class IListExtensionsTests_IndexOf
     }
 
     /// <summary>
-    /// Verifies that the 3-argument <c>IndexOf</c> overload throws <see cref="ArgumentOutOfRangeException"/>
-    /// when <paramref name="index"/> is negative, exercising the index-validation branch of that overload.
+    /// Verifies that the 3-argument <c>IndexOf</c> overload throws <see cref="ArgumentOutOfRangeException" /> when
+    /// <paramref name="index" /> is negative, exercising the index-validation branch of that overload.
     /// </summary>
     [TestMethod]
     public void IndexOf_ThreeArg_WhenIndexIsNegative_ShouldThrowExactly()
@@ -54,7 +54,8 @@ public sealed class IListExtensionsTests_IndexOf
     }
 
     /// <summary>
-    /// Verifies that <c>IndexOf</c> throws <see cref="ArgumentOutOfRangeException"/> when <paramref name="count"/> is negative.
+    /// Verifies that <c>IndexOf</c> throws <see cref="ArgumentOutOfRangeException" /> when <paramref name="count" /> is
+    /// negative.
     /// </summary>
     [TestMethod]
     public void IndexOf_WhenCountIsNegative_ShouldThrowExactly()
@@ -110,8 +111,8 @@ public sealed class IListExtensionsTests_IndexOf
     }
 
     /// <summary>
-    /// Verifies that <c>IndexOf</c> throws <see cref="ArgumentOutOfRangeException"/> when
-    /// <c>index + count</c> exceeds the list size.
+    /// Verifies that <c>IndexOf</c> throws <see cref="ArgumentOutOfRangeException" /> when <c>index + count</c> exceeds
+    /// the list size.
     /// </summary>
     [TestMethod]
     public void IndexOf_WhenIndexPlusCountExceedsCount_ShouldThrowExactly()
@@ -138,7 +139,8 @@ public sealed class IListExtensionsTests_IndexOf
     }
 
     /// <summary>
-    /// Verifies that <c>IndexOf</c> works against an <see cref="IList{T}"/> implementation that is not <see cref="List{T}"/>.
+    /// Verifies that <c>IndexOf</c> works against an <see cref="IList{T}" /> implementation that is not
+    /// <see cref="List{T}" />.
     /// </summary>
     [TestMethod]
     public void IndexOf_WhenListIsNotSystemList_ShouldReturnIndex()
@@ -151,7 +153,8 @@ public sealed class IListExtensionsTests_IndexOf
     }
 
     /// <summary>
-    /// Verifies that <c>IndexOf</c> throws <see cref="ArgumentNullException"/> when the list is <see langword="null"/>.
+    /// Verifies that <c>IndexOf</c> throws <see cref="ArgumentNullException" /> when the list is
+    /// <see langword="null" />.
     /// </summary>
     [TestMethod]
     public void IndexOf_WhenListIsNull_ShouldThrowExactly()
@@ -205,7 +208,8 @@ public sealed class IListExtensionsTests_IndexOf
     }
 
     /// <summary>
-    /// Verifies that <c>IndexOf</c> throws <see cref="ArgumentNullException"/> when the predicate is <see langword="null"/>.
+    /// Verifies that <c>IndexOf</c> throws <see cref="ArgumentNullException" /> when the predicate is
+    /// <see langword="null" />.
     /// </summary>
     [TestMethod]
     public void IndexOf_WhenPredicateIsNull_ShouldThrowExactly()
@@ -220,8 +224,8 @@ public sealed class IListExtensionsTests_IndexOf
     }
 
     /// <summary>
-    /// Verifies that <c>IndexOf</c> with <paramref name="count"/> equal to <c>0</c> on a non-empty list
-    /// returns <c>-1</c> without invoking the predicate.
+    /// Verifies that <c>IndexOf</c> with <paramref name="count" /> equal to <c>0</c> on a non-empty list returns
+    /// <c>-1</c> without invoking the predicate.
     /// </summary>
     [TestMethod]
     public void IndexOf_WithRange_WhenCountIsZeroOnNonEmptyList_ShouldReturnMinusOne()
@@ -275,8 +279,8 @@ public sealed class IListExtensionsTests_IndexOf
     }
 
     /// <summary>
-    /// Verifies that the ranged overload of <c>IndexOf</c> honours <paramref name="count"/> by ignoring
-    /// matches outside the window.
+    /// Verifies that the ranged overload of <c>IndexOf</c> honours <paramref name="count" /> by ignoring matches
+    /// outside the window.
     /// </summary>
     [TestMethod]
     public void IndexOf_WithRange_WhenMatchIsOutsideWindow_ShouldReturnMinusOne()
@@ -289,8 +293,8 @@ public sealed class IListExtensionsTests_IndexOf
     }
 
     /// <summary>
-    /// Verifies that <c>IndexOf</c> with a ranged search returns the first matching index inside the window
-    /// when the prefix also contains matches.
+    /// Verifies that <c>IndexOf</c> with a ranged search returns the first matching index inside the window when the
+    /// prefix also contains matches.
     /// </summary>
     [TestMethod]
     public void IndexOf_WithRange_WhenPrefixContainsMatches_ShouldReturnFirstMatchInsideWindow()

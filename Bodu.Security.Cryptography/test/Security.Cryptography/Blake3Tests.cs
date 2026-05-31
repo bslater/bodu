@@ -37,7 +37,7 @@ public partial class Blake3Tests
     protected override HashAlgorithmSpecification GetSpecification(SingleTestVariant variant) => Specification;
 
     /// <inheritdoc />
-    protected override Blake3 CreateAlgorithm(SingleTestVariant variant) => new Blake3();
+    protected override Blake3 CreateAlgorithm(SingleTestVariant variant) => new();
 
     /// <inheritdoc />
     protected override IReadOnlyList<string> GetExpectedHashesForIncrementalInput(SingleTestVariant variant) =>

@@ -19,9 +19,8 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// </summary>
 /// <remarks>
 /// Instances are supplied by derived test classes via
-/// <see cref="CheckDigitAlgorithmTests{TTest, TAlgorithm}.GetSpecification" /> and drive assertions common across
-/// every check-digit algorithm under test — algorithm-name exposure, empty-body behaviour, and known-answer
-/// evaluation.
+/// <see cref="CheckDigitAlgorithmTests{TTest, TAlgorithm}.GetSpecification" /> and drive assertions common across every
+/// check-digit algorithm under test — algorithm-name exposure, empty-body behaviour, and known-answer evaluation.
 /// </remarks>
 public sealed record CheckDigitAlgorithmSpecification
 {

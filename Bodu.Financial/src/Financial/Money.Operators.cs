@@ -154,7 +154,7 @@ public readonly partial struct Money<TCurrency>
     /// rounding is required.
     /// </remarks>
     public Money<TCurrency> Multiply(decimal multiplier) =>
-        new Money<TCurrency>(_amount * multiplier);
+        new(_amount * multiplier);
 
     /// <summary>
     /// Multiplies this amount by <paramref name="multiplier" /> and rounds the result to the currency's minor-unit
@@ -170,7 +170,7 @@ public readonly partial struct Money<TCurrency>
     /// signatures cannot accept a rounding-mode parameter.
     /// </remarks>
     public Money<TCurrency> Multiply(decimal multiplier, MidpointRounding rounding) =>
-        new Money<TCurrency>(_amount * multiplier, rounding);
+        new(_amount * multiplier, rounding);
 
     /// <summary>
     /// Divides this amount by <paramref name="divisor" /> using banker's rounding, identical to the <c>/</c> operator.
@@ -180,7 +180,7 @@ public readonly partial struct Money<TCurrency>
     /// <exception cref="DivideByZeroException"><paramref name="divisor" /> is zero.</exception>
     /// <exception cref="OverflowException">The quotient falls outside the range of <see cref="decimal" />.</exception>
     public Money<TCurrency> Divide(decimal divisor) =>
-        new Money<TCurrency>(_amount / divisor);
+        new(_amount / divisor);
 
     /// <summary>
     /// Divides this amount by <paramref name="divisor" /> and rounds the result to the currency's minor-unit precision
@@ -192,7 +192,7 @@ public readonly partial struct Money<TCurrency>
     /// <exception cref="DivideByZeroException"><paramref name="divisor" /> is zero.</exception>
     /// <exception cref="OverflowException">The quotient falls outside the range of <see cref="decimal" />.</exception>
     public Money<TCurrency> Divide(decimal divisor, MidpointRounding rounding) =>
-        new Money<TCurrency>(_amount / divisor, rounding);
+        new(_amount / divisor, rounding);
 
     /// <summary>
     /// Returns the dimensionless ratio of this amount to <paramref name="other" />.

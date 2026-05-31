@@ -13,13 +13,12 @@ namespace Bodu.Text.DotEnv;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Comments are retained only when <see cref="DotEnvParseOptions.PreserveComments" /> is <see langword="true" />
-/// (the default). Each instance records the prefix character that introduced the line (currently always
-/// <c>'#'</c> — the de facto DotEnv comment marker), the text after the prefix, and the 1-based source line.
+/// Comments are retained only when <see cref="DotEnvParseOptions.PreserveComments" /> is <see langword="true" /> (the
+/// default). Each instance records the prefix character that introduced the line (currently always <c>'#'</c> — the de
+/// facto DotEnv comment marker), the text after the prefix, and the 1-based source line.
 /// </para>
 /// <para>
-/// Pending comments are attached to the next entry in source order via
-/// <see cref="DotEnvEntry.LeadingComments" />.
+/// Pending comments are attached to the next entry in source order via <see cref="DotEnvEntry.LeadingComments" />.
 /// </para>
 /// </remarks>
 [DebuggerDisplay("{Prefix}{Text,nq}")]
@@ -89,7 +88,10 @@ public readonly struct DotEnvComment : IEquatable<DotEnvComment>
     /// <param name="left">The first comment.</param>
     /// <param name="right">The second comment.</param>
     /// <returns><see langword="true" /> when the comments are equal.</returns>
-    public static bool operator ==(DotEnvComment left, DotEnvComment right) => left.Equals(right);
+    public static bool operator ==(DotEnvComment left, DotEnvComment right)
+    {
+        return left.Equals(right);
+    }
 
     /// <summary>
     /// Determines whether two comments are not equal.
@@ -97,5 +99,8 @@ public readonly struct DotEnvComment : IEquatable<DotEnvComment>
     /// <param name="left">The first comment.</param>
     /// <param name="right">The second comment.</param>
     /// <returns><see langword="true" /> when the comments differ.</returns>
-    public static bool operator !=(DotEnvComment left, DotEnvComment right) => !left.Equals(right);
+    public static bool operator !=(DotEnvComment left, DotEnvComment right)
+    {
+        return !left.Equals(right);
+    }
 }

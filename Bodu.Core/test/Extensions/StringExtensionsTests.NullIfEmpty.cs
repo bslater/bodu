@@ -31,10 +31,7 @@ public partial class StringExtensionsTests
     /// <param name="expected">The expected return value.</param>
     [DataTestMethod]
     [DynamicData(nameof(GetNullIfEmptyCases), DynamicDataSourceType.Method)]
-    public void NullIfEmpty_WhenInvoked_ShouldReturnExpected(string? value, string? expected)
-    {
-        Assert.AreEqual(expected, value.NullIfEmpty());
-    }
+    public void NullIfEmpty_WhenInvoked_ShouldReturnExpected(string? value, string? expected) => Assert.AreEqual(expected, value.NullIfEmpty());
 
     /// <summary>
     /// Verifies that <see cref="StringExtensions.NullIfEmpty(string?)" /> returns the original instance — not

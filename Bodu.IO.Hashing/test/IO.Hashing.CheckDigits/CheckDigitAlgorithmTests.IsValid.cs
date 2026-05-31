@@ -35,20 +35,14 @@ public abstract partial class CheckDigitAlgorithmTests<TTest, TAlgorithm>
     /// contains a non-digit character.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenInputContainsNonDigit_ShouldReturnFalse()
-    {
-        Assert.IsFalse(IsValidStatic("123a5".AsSpan()));
-    }
+    public void IsValid_WhenInputContainsNonDigit_ShouldReturnFalse() => Assert.IsFalse(IsValidStatic("123a5".AsSpan()));
 
     /// <summary>
     /// Verifies that <c>IsValid</c> rejects the empty span. A full-sequence validator requires at least a check
     /// digit, so an empty input cannot satisfy the algorithm's invariant.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenInputIsEmpty_ShouldReturnFalse()
-    {
-        Assert.IsFalse(IsValidStatic([]));
-    }
+    public void IsValid_WhenInputIsEmpty_ShouldReturnFalse() => Assert.IsFalse(IsValidStatic([]));
     /// <summary>
     /// Verifies that appending the algorithm's own computed check digit to the body always yields a sequence
     /// that <c>IsValid</c> accepts.

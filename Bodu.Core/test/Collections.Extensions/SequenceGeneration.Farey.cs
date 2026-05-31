@@ -72,7 +72,8 @@ public class FareyTests
         CollectionAssert.AreEqual(expected, actual);
     }
     /// <summary>
-    /// Verifies that <see cref="SequenceGenerator.Farey" /> throws <see cref="ArgumentOutOfRangeException" /> when the order is below the minimum of 1.
+    /// Verifies that <see cref="SequenceGenerator.Farey" /> throws <see cref="ArgumentOutOfRangeException" /> when the
+    /// order is below the minimum of 1.
     /// </summary>
     [TestMethod]
     [DataRow(0)]

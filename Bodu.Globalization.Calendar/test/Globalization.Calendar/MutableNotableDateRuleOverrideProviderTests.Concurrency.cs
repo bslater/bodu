@@ -21,7 +21,7 @@ public partial class MutableNotableDateRuleOverrideProviderTests
 
         Parallel.For(0, threadCount, threadIndex =>
         {
-            for (int i = 0; i < rulesPerThread; i++)
+            for (var i = 0; i < rulesPerThread; i++)
             {
                 provider.AddRule(Fixed($"T{threadIndex}-R{i}"));
             }
@@ -39,7 +39,7 @@ public partial class MutableNotableDateRuleOverrideProviderTests
     public void GetAdditions_WhenEnumeratedDuringConcurrentMutation_ShouldNotThrow()
     {
         MutableNotableDateRuleOverrideProvider provider = new();
-        for (int i = 0; i < 100; i++)
+        for (var i = 0; i < 100; i++)
         {
             provider.AddRule(Fixed($"Seed-{i}"));
         }
@@ -47,9 +47,9 @@ public partial class MutableNotableDateRuleOverrideProviderTests
         IEnumerable<NotableDateRule> snapshot = provider.GetAdditions();
 
         using CancellationTokenSource cts = new();
-        Task mutator = Task.Run(() =>
+        var mutator = Task.Run(() =>
         {
-            int n = 0;
+            var n = 0;
             while (!cts.IsCancellationRequested)
             {
                 provider.AddRule(Fixed($"Live-{n++}"));
@@ -59,9 +59,9 @@ public partial class MutableNotableDateRuleOverrideProviderTests
         try
         {
             // Enumerate the snapshot multiple times while the writer thread mutates the provider.
-            for (int iteration = 0; iteration < 50; iteration++)
+            for (var iteration = 0; iteration < 50; iteration++)
             {
-                int observed = snapshot.Count();
+                var observed = snapshot.Count();
                 Assert.IsTrue(observed >= 100, $"Snapshot must observe at least the seed entries; got {observed}.");
             }
         }
@@ -80,7 +80,7 @@ public partial class MutableNotableDateRuleOverrideProviderTests
     public void Changed_WhenHandlerMutatesProvider_ShouldNotDeadlock()
     {
         MutableNotableDateRuleOverrideProvider provider = new();
-        int handlerInvocations = 0;
+        var handlerInvocations = 0;
         provider.Changed += (_, _) =>
         {
             if (Interlocked.Increment(ref handlerInvocations) == 1)

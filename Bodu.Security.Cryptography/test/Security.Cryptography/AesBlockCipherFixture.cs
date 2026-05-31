@@ -9,15 +9,14 @@ using System.Security.Cryptography;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Wraps the BCL <see cref="Aes" /> algorithm as an <see cref="IBlockCipher" /> for use in
-/// known-answer and real-cipher round-trip tests. Each instance encrypts and decrypts single
-/// 16-byte blocks in ECB mode with no padding, matching the primitive expected by every mode
-/// transform constructor.
+/// Wraps the BCL <see cref="Aes" /> algorithm as an <see cref="IBlockCipher" /> for use in known-answer and real-cipher
+/// round-trip tests. Each instance encrypts and decrypts single 16-byte blocks in ECB mode with no padding, matching
+/// the primitive expected by every mode transform constructor.
 /// </summary>
 /// <remarks>
-/// This fixture is intentionally minimal: it exposes only the single-block primitive required
-/// by <see cref="IBlockCipher" /> and delegates all key scheduling to the BCL. Dispose the
-/// fixture after each test to release the underlying <see cref="Aes" /> instance.
+/// This fixture is intentionally minimal: it exposes only the single-block primitive required by
+/// <see cref="IBlockCipher" /> and delegates all key scheduling to the BCL. Dispose the fixture after each test to
+/// release the underlying <see cref="Aes" /> instance.
 /// </remarks>
 internal sealed class AesBlockCipherFixture
     : IBlockCipher, IDisposable
@@ -26,8 +25,8 @@ internal sealed class AesBlockCipherFixture
     private bool _disposed;
 
     /// <summary>
-    /// Initialises a new instance using <paramref name="key" /> as the AES key.
-    /// Supported key lengths are 16, 24, and 32 bytes (AES-128 / 192 / 256).
+    /// Initialises a new instance using <paramref name="key" /> as the AES key. Supported key lengths are 16, 24, and
+    /// 32 bytes (AES-128 / 192 / 256).
     /// </summary>
     /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
     /// <exception cref="CryptographicException"><paramref name="key" /> length is invalid for AES.</exception>

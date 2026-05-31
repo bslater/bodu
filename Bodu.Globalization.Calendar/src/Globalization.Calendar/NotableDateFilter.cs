@@ -37,8 +37,8 @@ namespace Bodu.Globalization.Calendar;
 /// skipped only if every branch's primary gate returns <see langword="false" />.
 /// </para>
 /// <para>
-/// <b>Evaluation</b>: Filtered queries are served by the same range pipeline as unfiltered ones. The primary gate
-/// is evaluated during rule materialisation so non-matching rules contribute no work; the secondary gate is evaluated
+/// <b>Evaluation</b>: Filtered queries are served by the same range pipeline as unfiltered ones. The primary gate is
+/// evaluated during rule materialisation so non-matching rules contribute no work; the secondary gate is evaluated
 /// against each emitted occurrence.
 /// </para>
 /// </remarks>

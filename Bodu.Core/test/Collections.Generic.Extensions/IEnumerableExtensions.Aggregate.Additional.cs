@@ -10,8 +10,8 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
 {
 
     /// <summary>
-    /// Verifies that the 3-function with-index overload throws <see cref="ArgumentNullException" /> when any accumulator function is
-    /// <see langword="null" />.
+    /// Verifies that the 3-function with-index overload throws <see cref="ArgumentNullException" /> when any
+    /// accumulator function is <see langword="null" />.
     /// </summary>
     [TestMethod]
     public void Aggregate_WhenFuncIsNull_ForThreeFuncWithIndex_ShouldThrowExactly()
@@ -51,7 +51,8 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     }
 
     /// <summary>
-    /// Verifies that the 3-function no-index overload invokes its accumulator functions in declaration order for each element.
+    /// Verifies that the 3-function no-index overload invokes its accumulator functions in declaration order for each
+    /// element.
     /// </summary>
     [TestMethod]
     public void Aggregate_WhenInvoked_ForThreeFuncNoIndex_ShouldInvokeAccumulatorsInOrder()
@@ -71,7 +72,8 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     }
 
     /// <summary>
-    /// Verifies that the 3-function with-index overload computes the correct aggregate values when invoked on a non-empty source.
+    /// Verifies that the 3-function with-index overload computes the correct aggregate values when invoked on a
+    /// non-empty source.
     /// </summary>
     [TestMethod]
     public void Aggregate_WhenInvoked_ForThreeFuncWithIndex_ShouldReturnAllThreeFinalValues()
@@ -93,7 +95,8 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     }
 
     /// <summary>
-    /// Verifies that the 3-function with-index with-selector overload combines index-aware accumulation with the result projection.
+    /// Verifies that the 3-function with-index with-selector overload combines index-aware accumulation with the result
+    /// projection.
     /// </summary>
     [TestMethod]
     public void Aggregate_WhenInvoked_ForThreeFuncWithIndexAndSelector_ShouldTransformTuple()
@@ -114,7 +117,8 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     }
 
     /// <summary>
-    /// Verifies that the 2-function no-index overload invokes its accumulator functions in declaration order for each element.
+    /// Verifies that the 2-function no-index overload invokes its accumulator functions in declaration order for each
+    /// element.
     /// </summary>
     [TestMethod]
     public void Aggregate_WhenInvoked_ForTwoFuncNoIndex_ShouldInvokeAccumulatorsInOrder()
@@ -131,8 +135,8 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     }
 
     /// <summary>
-    /// Verifies that the 3-function with-index with-selector overload throws <see cref="ArgumentNullException" /> when the result selector
-    /// is <see langword="null" />.
+    /// Verifies that the 3-function with-index with-selector overload throws <see cref="ArgumentNullException" /> when
+    /// the result selector is <see langword="null" />.
     /// </summary>
     [TestMethod]
     public void Aggregate_WhenResultSelectorIsNull_ForThreeFuncWithIndexAndSelector_ShouldThrowExactly()
@@ -173,7 +177,8 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     }
 
     /// <summary>
-    /// Verifies that the 3-function with-selector overload returns the projected result of the seeds when invoked on an empty source.
+    /// Verifies that the 3-function with-selector overload returns the projected result of the seeds when invoked on an
+    /// empty source.
     /// </summary>
     [TestMethod]
     public void Aggregate_WhenSourceIsEmpty_ForThreeFuncWithSelector_ShouldApplySelectorToSeeds()
@@ -191,7 +196,8 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     }
 
     /// <summary>
-    /// Verifies that the seeded with-index overload returns the seed unchanged and skips the accumulator when invoked on an empty source.
+    /// Verifies that the seeded with-index overload returns the seed unchanged and skips the accumulator when invoked
+    /// on an empty source.
     /// </summary>
     [TestMethod]
     public void Aggregate_WhenSourceIsEmpty_ForTwoFuncWithIndex_ShouldReturnSeedsUnchanged()
@@ -209,8 +215,8 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     }
 
     /// <summary>
-    /// Verifies that the 2-function with-index with-selector overload returns the projected result of the seeds when invoked on an empty
-    /// source.
+    /// Verifies that the 2-function with-index with-selector overload returns the projected result of the seeds when
+    /// invoked on an empty source.
     /// </summary>
     [TestMethod]
     public void Aggregate_WhenSourceIsEmpty_ForTwoFuncWithIndexAndSelector_ShouldApplySelectorToSeeds()
@@ -228,7 +234,8 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     }
 
     /// <summary>
-    /// Verifies that the 2-function with-selector overload returns the projected result of the seeds when invoked on an empty source.
+    /// Verifies that the 2-function with-selector overload returns the projected result of the seeds when invoked on an
+    /// empty source.
     /// </summary>
     [TestMethod]
     public void Aggregate_WhenSourceIsEmpty_ForTwoFuncWithSelector_ShouldApplySelectorToSeeds()

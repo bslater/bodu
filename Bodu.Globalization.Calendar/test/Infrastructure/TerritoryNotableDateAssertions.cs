@@ -33,16 +33,16 @@ public static class TerritoryNotableDateAssertions
             [ka.ProviderFactory()],
             WorkingDaysOfWeek.MondayToFriday);
 
-        string expectedTerritory = ka.ExpectedTerritoryCode ?? ka.Territory;
+        var expectedTerritory = ka.ExpectedTerritoryCode ?? ka.Territory;
 
         // Filter by name AND expected carrying territory: a country-level query surfaces subdivision
         // shadows alongside the canonical rule, so the row identifies which one is being asserted.
-        List<NotableDate> matches = service.GetNotableDates(ka.Year, ka.Territory)
+        var matches = service.GetNotableDates(ka.Year, ka.Territory)
             .Where(d => d.Name == ka.Name && d.TerritoryCode == expectedTerritory)
             .OrderBy(d => d.Date)
             .ToList();
 
-        string label = $"{ka.Territory} {ka.Year} '{ka.Name}' [{expectedTerritory}]";
+        var label = $"{ka.Territory} {ka.Year} '{ka.Name}' [{expectedTerritory}]";
 
         if (!ka.ShouldExist)
         {
@@ -92,18 +92,18 @@ public static class TerritoryNotableDateAssertions
     {
         ArgumentNullException.ThrowIfNull(expectation);
 
-        HashSet<string> names = expectation.ProviderFactory().LoadRules()
+        var names = expectation.ProviderFactory().LoadRules()
             .Select(r => r.Name)
             .ToHashSet(StringComparer.Ordinal);
 
-        foreach (string include in expectation.Includes)
+        foreach (var include in expectation.Includes)
         {
             Assert.IsTrue(
                 names.Contains(include),
                 $"{expectation.Territory} catalogue: expected rule '{include}' to be present.");
         }
 
-        foreach (string exclude in expectation.Excludes)
+        foreach (var exclude in expectation.Excludes)
         {
             Assert.IsFalse(
                 names.Contains(exclude),
@@ -145,7 +145,7 @@ public static class TerritoryNotableDateAssertions
     /// <returns>The rendered display name.</returns>
     private static string FormatOccurrence(TerritoryNotableDateKnownAnswer ka)
     {
-        string result = ka.ShouldExist
+        var result = ka.ShouldExist
             ? $"{ka.Territory} | {ka.Year} | {ka.Name} -> {ka.ExpectedDate:yyyy-MM-dd}"
             : $"{ka.Territory} | {ka.Year} | {ka.Name} [absent]";
 

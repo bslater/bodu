@@ -211,16 +211,16 @@ public sealed partial class ConcurrentHashSet<T>
 
     /// <summary>
     /// Gets the default number of lock stripes used by the public constructors. Reads
-    /// <see cref="Environment.ProcessorCount" /> and routes through
-    /// <see cref="ClampDefaultConcurrencyLevel(int)" /> so the clamp logic can be exercised in isolation.
+    /// <see cref="Environment.ProcessorCount" /> and routes through <see cref="ClampDefaultConcurrencyLevel(int)" /> so
+    /// the clamp logic can be exercised in isolation.
     /// </summary>
     /// <returns>The clamped default lock striping level for newly created instances.</returns>
     private static int DefaultConcurrencyLevel =>
         ClampDefaultConcurrencyLevel(Environment.ProcessorCount);
 
     /// <summary>
-    /// Clamps a raw processor count to the range used by <see cref="DefaultConcurrencyLevel" />, guaranteeing at
-    /// least one lock and at most <see cref="MaxDefaultConcurrencyLevel" /> locks regardless of the host machine.
+    /// Clamps a raw processor count to the range used by <see cref="DefaultConcurrencyLevel" />, guaranteeing at least
+    /// one lock and at most <see cref="MaxDefaultConcurrencyLevel" /> locks regardless of the host machine.
     /// </summary>
     /// <param name="processorCount">The raw processor count to clamp.</param>
     /// <returns>A value in the range <c>[1, MaxDefaultConcurrencyLevel]</c>.</returns>
@@ -233,8 +233,8 @@ public sealed partial class ConcurrentHashSet<T>
 
     /// <summary>
     /// The upper bound applied to <see cref="DefaultConcurrencyLevel" /> so that the lock array stays small on
-    /// high-core machines where the typical set is also small. Explicit constructors can request a higher level via
-    /// the internal initializer.
+    /// high-core machines where the typical set is also small. Explicit constructors can request a higher level via the
+    /// internal initializer.
     /// </summary>
     internal const int MaxDefaultConcurrencyLevel = 32;
 
@@ -298,9 +298,9 @@ public sealed partial class ConcurrentHashSet<T>
     /// non-empty lock region.
     /// </para>
     /// <para>
-    /// Use this property when the answer must reflect a true snapshot — for example, before tearing down the set
-    /// or before publishing a "set is drained" event. Prefer <see cref="IsEmptyApproximate" /> when callers need a
-    /// fast, lock-free probe and can tolerate a momentary disagreement with reality under concurrent mutation.
+    /// Use this property when the answer must reflect a true snapshot — for example, before tearing down the set or
+    /// before publishing a "set is drained" event. Prefer <see cref="IsEmptyApproximate" /> when callers need a fast,
+    /// lock-free probe and can tolerate a momentary disagreement with reality under concurrent mutation.
     /// </para>
     /// </remarks>
     public bool IsEmpty
@@ -312,7 +312,7 @@ public sealed partial class ConcurrentHashSet<T>
             {
                 AcquireAllLocks(ref locksAcquired);
 
-                int[] countPerLock = _tables._countPerLock;
+                var countPerLock = _tables._countPerLock;
                 for (var i = 0; i < countPerLock.Length; i++)
                 {
                     if (countPerLock[i] != 0)
@@ -332,27 +332,27 @@ public sealed partial class ConcurrentHashSet<T>
     /// Gets an approximate element count without acquiring any stripe lock.
     /// </summary>
     /// <returns>
-    /// The sum of the per-stripe element counters at the moment of the call. The result is correct when no other
-    /// thread is concurrently mutating the set; under concurrent <see cref="Add" />/<see cref="Remove" /> the
-    /// returned value may not reflect any single coherent point-in-time state.
+    /// The sum of the per-stripe element counters at the moment of the call. The result is correct when no other thread
+    /// is concurrently mutating the set; under concurrent <see cref="Add" />/<see cref="Remove" /> the returned value
+    /// may not reflect any single coherent point-in-time state.
     /// </returns>
     /// <remarks>
     /// <para>
-    /// Use this property when callers need a fast size estimate — for capacity hints, telemetry, or display — but
-    /// can tolerate values that lag or slightly under- or over-count active writers. Prefer <see cref="Count" />
-    /// when an exact snapshot is required.
+    /// Use this property when callers need a fast size estimate — for capacity hints, telemetry, or display — but can
+    /// tolerate values that lag or slightly under- or over-count active writers. Prefer <see cref="Count" /> when an
+    /// exact snapshot is required.
     /// </para>
     /// <para>
-    /// The read takes no locks, so it never blocks writers and never contends with them. The cost is bounded by
-    /// the number of lock stripes (the current default is at most
-    /// <see cref="MaxDefaultConcurrencyLevel" />), not the number of elements.
+    /// The read takes no locks, so it never blocks writers and never contends with them. The cost is bounded by the
+    /// number of lock stripes (the current default is at most <see cref="MaxDefaultConcurrencyLevel" />), not the
+    /// number of elements.
     /// </para>
     /// </remarks>
     public int ApproximateCount
     {
         get
         {
-            int[] countPerLock = _tables._countPerLock;
+            var countPerLock = _tables._countPerLock;
             var count = 0;
 
             for (var i = 0; i < countPerLock.Length; i++)
@@ -368,9 +368,9 @@ public sealed partial class ConcurrentHashSet<T>
     }
 
     /// <summary>
-    /// Gets an <strong>approximate</strong> indication of whether the set is empty, computed without acquiring
-    /// any stripe lock. The "Approximate" suffix matches <see cref="ApproximateCount" /> and signals that the
-    /// answer may briefly disagree with reality under concurrent mutation.
+    /// Gets an <strong>approximate</strong> indication of whether the set is empty, computed without acquiring any
+    /// stripe lock. The "Approximate" suffix matches <see cref="ApproximateCount" /> and signals that the answer may
+    /// briefly disagree with reality under concurrent mutation.
     /// </summary>
     /// <returns>
     /// <see langword="true" /> when every per-stripe counter reads as zero at the moment of inspection; otherwise
@@ -381,14 +381,14 @@ public sealed partial class ConcurrentHashSet<T>
     /// </returns>
     /// <remarks>
     /// Use this property as a fast emptiness probe in hot paths where occasional staleness is acceptable. Prefer
-    /// <see cref="IsEmpty" /> when the answer must reflect a true point-in-time snapshot — for example, before
-    /// tearing down the set.
+    /// <see cref="IsEmpty" /> when the answer must reflect a true point-in-time snapshot — for example, before tearing
+    /// down the set.
     /// </remarks>
     public bool IsEmptyApproximate
     {
         get
         {
-            int[] countPerLock = _tables._countPerLock;
+            var countPerLock = _tables._countPerLock;
 
             for (var i = 0; i < countPerLock.Length; i++)
             {
@@ -417,12 +417,12 @@ public sealed partial class ConcurrentHashSet<T>
     {
         ThrowHelper.ThrowIfNull(item);
 
-        int hashCode = _comparer.GetHashCode(item);
+        var hashCode = _comparer.GetHashCode(item);
 
         while (true)
         {
             Tables tables = _tables;
-            GetBucketAndLockNo(hashCode, out int bucketNo, out int lockNo, tables._buckets.Length);
+            GetBucketAndLockNo(hashCode, out var bucketNo, out var lockNo, tables._buckets.Length);
 
             var resizeDesired = false;
             lock (_locks[lockNo])
@@ -471,12 +471,12 @@ public sealed partial class ConcurrentHashSet<T>
     {
         ThrowHelper.ThrowIfNull(item);
 
-        int hashCode = _comparer.GetHashCode(item);
+        var hashCode = _comparer.GetHashCode(item);
 
         while (true)
         {
             Tables tables = _tables;
-            GetBucketAndLockNo(hashCode, out int bucketNo, out int lockNo, tables._buckets.Length);
+            GetBucketAndLockNo(hashCode, out var bucketNo, out var lockNo, tables._buckets.Length);
 
             lock (_locks[lockNo])
             {
@@ -523,9 +523,9 @@ public sealed partial class ConcurrentHashSet<T>
     {
         ThrowHelper.ThrowIfNull(item);
 
-        int hashCode = _comparer.GetHashCode(item);
+        var hashCode = _comparer.GetHashCode(item);
         Tables tables = _tables;
-        int bucketNo = GetBucket(hashCode, tables._buckets.Length);
+        var bucketNo = GetBucket(hashCode, tables._buckets.Length);
 
         for (Node? node = Volatile.Read(ref tables._buckets[bucketNo]); node is not null; node = node._next)
         {
@@ -553,7 +553,7 @@ public sealed partial class ConcurrentHashSet<T>
 
             // Retain the current bucket count so a previously grown set is not forced to immediately regrow, and
             // never drop below the lock count or a stripe would guard zero buckets.
-            int bucketCount = Math.Max(_tables._buckets.Length, _locks.Length);
+            var bucketCount = Math.Max(_tables._buckets.Length, _locks.Length);
             _tables = new Tables(new Node?[bucketCount], new int[_locks.Length]);
             _budget = Math.Max(1, bucketCount / _locks.Length);
         }
@@ -581,7 +581,7 @@ public sealed partial class ConcurrentHashSet<T>
         {
             AcquireAllLocks(ref locksAcquired);
 
-            int count = GetCountNoLocks();
+            var count = GetCountNoLocks();
             if (count == 0)
                 return [];
 
@@ -672,7 +672,7 @@ public sealed partial class ConcurrentHashSet<T>
                 while (current is not null)
                 {
                     Node? next = current._next;
-                    int newBucketNo = GetBucket(current._hashCode, newBucketCount);
+                    var newBucketNo = GetBucket(current._hashCode, newBucketCount);
                     newBuckets[newBucketNo] = new Node(current._item, current._hashCode, newBuckets[newBucketNo]);
 
                     checked
@@ -736,7 +736,7 @@ public sealed partial class ConcurrentHashSet<T>
     private int GetCountNoLocks()
     {
         var count = 0;
-        int[] countPerLock = _tables._countPerLock;
+        var countPerLock = _tables._countPerLock;
         for (var i = 0; i < countPerLock.Length; i++)
         {
             checked

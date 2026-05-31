@@ -70,7 +70,7 @@ key = value
     [TestMethod]
     public void Build_WhenStreamIsNonSeekable_ShouldStillLoad()
     {
-        byte[] bytes = Encoding.UTF8.GetBytes(Sample);
+        var bytes = Encoding.UTF8.GetBytes(Sample);
         using NonSeekableStream stream = new(bytes);
 
         IConfiguration configuration = new ConfigurationBuilder()

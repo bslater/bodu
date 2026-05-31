@@ -130,7 +130,7 @@ public class FiscalYearExtensionsTests
     }
     private static FiscalWeekQuarterProvider BuildProvider() =>
         // 4-4-5 pattern anchored to the Saturday nearest to 31 January (Fiscal-year-end).
-        new FiscalWeekQuarterProvider(
+        new(
             month: 1,
             dayOfWeek: DayOfWeek.Saturday,
             isFiscalYearEnd: true,

@@ -62,10 +62,7 @@ public sealed class AlphanumericTests
     [DataRow('@', 37)]
     [DataRow('#', 38)]
     [TestMethod]
-    public void ExpandCusip_WhenCharacterIsPunctuationSentinel_ShouldReturnAssignedValue(char sentinel, int expected)
-    {
-        Assert.AreEqual(expected, Alphanumeric.ExpandCusip(sentinel));
-    }
+    public void ExpandCusip_WhenCharacterIsPunctuationSentinel_ShouldReturnAssignedValue(char sentinel, int expected) => Assert.AreEqual(expected, Alphanumeric.ExpandCusip(sentinel));
 
     /// <summary>
     /// Verifies that <see cref="Alphanumeric.ExpandCusip(char)" /> maps each uppercase Latin letter to the ISO
@@ -143,10 +140,7 @@ public sealed class AlphanumericTests
     /// digit and every uppercase Latin letter without throwing.
     /// </summary>
     [TestMethod]
-    public void ValidateAlphanumeric_WhenAllCharactersAreValid_ShouldNotThrow()
-    {
-        Alphanumeric.ValidateAlphanumeric("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ".AsSpan(), "value");
-    }
+    public void ValidateAlphanumeric_WhenAllCharactersAreValid_ShouldNotThrow() => Alphanumeric.ValidateAlphanumeric("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ".AsSpan(), "value");
 
     /// <summary>
     /// Verifies that <see cref="Alphanumeric.ValidateAlphanumeric(ReadOnlySpan{char}, string)" /> rejects any
@@ -182,10 +176,7 @@ public sealed class AlphanumericTests
     /// empty span without throwing.
     /// </summary>
     [TestMethod]
-    public void ValidateAlphanumeric_WhenSpanIsEmpty_ShouldNotThrow()
-    {
-        Alphanumeric.ValidateAlphanumeric(ReadOnlySpan<char>.Empty, "value");
-    }
+    public void ValidateAlphanumeric_WhenSpanIsEmpty_ShouldNotThrow() => Alphanumeric.ValidateAlphanumeric(ReadOnlySpan<char>.Empty, "value");
 
     // ─── ValidateCusip ────────────────────────────────────────────────────────────────────────
 
@@ -194,10 +185,7 @@ public sealed class AlphanumericTests
     /// alphabet character — digits, uppercase letters, and the three punctuation sentinels.
     /// </summary>
     [TestMethod]
-    public void ValidateCusip_WhenAllCharactersAreValid_ShouldNotThrow()
-    {
-        Alphanumeric.ValidateCusip("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ*@#".AsSpan(), "value");
-    }
+    public void ValidateCusip_WhenAllCharactersAreValid_ShouldNotThrow() => Alphanumeric.ValidateCusip("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ*@#".AsSpan(), "value");
 
     /// <summary>
     /// Verifies that <see cref="Alphanumeric.ValidateCusip(ReadOnlySpan{char}, string)" /> rejects any character
@@ -231,9 +219,6 @@ public sealed class AlphanumericTests
     /// without throwing.
     /// </summary>
     [TestMethod]
-    public void ValidateCusip_WhenSpanIsEmpty_ShouldNotThrow()
-    {
-        Alphanumeric.ValidateCusip(ReadOnlySpan<char>.Empty, "value");
-    }
+    public void ValidateCusip_WhenSpanIsEmpty_ShouldNotThrow() => Alphanumeric.ValidateCusip(ReadOnlySpan<char>.Empty, "value");
 
 }

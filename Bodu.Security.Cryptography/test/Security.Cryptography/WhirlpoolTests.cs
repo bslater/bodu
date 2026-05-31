@@ -70,11 +70,12 @@ public partial class WhirlpoolTests
         };
 
     /// <inheritdoc />
-    protected override Whirlpool CreateAlgorithm() => new Whirlpool();
+    protected override Whirlpool CreateAlgorithm() => new();
 
     /// <inheritdoc />
     protected override Whirlpool CreateAlgorithm(WhirlpoolVersion variant) =>
-        new Whirlpool { Version = variant };
+        new()
+        { Version = variant };
 
     /// <inheritdoc />
     protected override IReadOnlyList<string> GetExpectedHashesForIncrementalInput(WhirlpoolVersion variant) =>

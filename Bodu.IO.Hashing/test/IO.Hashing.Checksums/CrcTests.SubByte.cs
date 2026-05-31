@@ -36,11 +36,11 @@ public partial class CrcTests
     [DataRow(CrcStandards.CRC7_UMTS)]
     public void ComputeHashFrom_WhenSubByteWidthAndSplitInput_ShouldEqualOneShot(CrcStandards standardId)
     {
-        CrcStandard standard = CrcStandard.Get(standardId);
+        var standard = CrcStandard.Get(standardId);
 
         ReadOnlySpan<byte> input = s_revEngCheckInput;
-        byte[] first = input.Slice(0, 4).ToArray();
-        byte[] rest = input.Slice(4).ToArray();
+        var first = input.Slice(0, 4).ToArray();
+        var rest = input.Slice(4).ToArray();
 
         var firstHash = new Crc(standard).ComputeHash(first);
         var resumed = new Crc(standard).ComputeHashFrom(firstHash, rest);
@@ -64,7 +64,7 @@ public partial class CrcTests
     [DataRow(CrcStandards.CRC7_MMC)]
     public void GetCurrentHash_WhenSubByteWidth_ShouldBeNonDestructive(CrcStandards standardId)
     {
-        CrcStandard standard = CrcStandard.Get(standardId);
+        var standard = CrcStandard.Get(standardId);
 
         ReadOnlySpan<byte> input = s_revEngCheckInput;
 

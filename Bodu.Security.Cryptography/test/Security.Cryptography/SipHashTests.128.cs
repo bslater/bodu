@@ -16,7 +16,7 @@ public partial class SipHash128Tests
     : Security.Cryptography.SipHashTests<SipHash128Tests, SipHash128>
 {
     /// <inheritdoc />
-    protected override SipHash128 CreateAlgorithm() => new SipHash128
+    protected override SipHash128 CreateAlgorithm() => new()
     {
         Key = SipHashTestKey,
         CompressionRounds = 2,

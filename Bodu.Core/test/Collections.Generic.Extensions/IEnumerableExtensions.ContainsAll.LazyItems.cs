@@ -10,8 +10,8 @@ public sealed partial class IEnumerableExtensionsTests_ContainsAll
 {
 
     /// <summary>
-    /// Verifies that <c>ContainsAll</c> returns the correct result when <paramref name="items" /> is a lazy iterator (not an
-    /// <see cref="ICollection{T}" />), exercising the branch where the empty-collection fast path is skipped.
+    /// Verifies that <c>ContainsAll</c> returns the correct result when <paramref name="items" /> is a lazy iterator
+    /// (not an <see cref="ICollection{T}" />), exercising the branch where the empty-collection fast path is skipped.
     /// </summary>
     [TestMethod]
     public void ContainsAll_WhenItemsIsLazyIterator_ShouldReturnExpectedResult()

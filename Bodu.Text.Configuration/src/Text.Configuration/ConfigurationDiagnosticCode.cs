@@ -81,14 +81,13 @@ public enum ConfigurationDiagnosticCode
     DuplicateSection = 12,
 
     /// <summary>
-    /// A glob expression's numeric range (<c>{n1..n2}</c>) would expand to more alternatives than the parser
-    /// permits.
+    /// A glob expression's numeric range (<c>{n1..n2}</c>) would expand to more alternatives than the parser permits.
     /// </summary>
     NumericRangeTooLarge = 13,
 
     /// <summary>
-    /// A configuration section header contained non-whitespace content after the closing <c>]</c> when the
-    /// configured section-header mode did not permit trailing content.
+    /// A configuration section header contained non-whitespace content after the closing <c>]</c> when the configured
+    /// section-header mode did not permit trailing content.
     /// </summary>
     TrailingContentAfterSectionHeader = 14,
 
@@ -99,8 +98,8 @@ public enum ConfigurationDiagnosticCode
     BraceNestingTooDeep = 15,
 
     /// <summary>
-    /// A glob expression exceeded the maximum length the parser is willing to compile, guarding against
-    /// pathological inputs that would allocate a multi-megabyte regex source.
+    /// A glob expression exceeded the maximum length the parser is willing to compile, guarding against pathological
+    /// inputs that would allocate a multi-megabyte regex source.
     /// </summary>
     PatternTooLong = 16,
 }

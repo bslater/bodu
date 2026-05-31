@@ -141,7 +141,7 @@ public sealed partial class CrcStandard
     {
         ThrowHelper.ThrowIfNullOrEmpty(name);
         ThrowHelper.ThrowIfOutOfRange(size, MinSize, MaxSize);
-        ulong widthMask = size == 64 ? ulong.MaxValue : (1UL << size) - 1UL;
+        var widthMask = size == 64 ? ulong.MaxValue : (1UL << size) - 1UL;
         if (polynomial > widthMask) throw new ArgumentOutOfRangeException(nameof(polynomial), polynomial, $"Value must fit in {size} bits (≤ 0x{widthMask:X}).");
         if (initialValue > widthMask) throw new ArgumentOutOfRangeException(nameof(initialValue), initialValue, $"Value must fit in {size} bits (≤ 0x{widthMask:X}).");
         if (xOrOut > widthMask) throw new ArgumentOutOfRangeException(nameof(xOrOut), xOrOut, $"Value must fit in {size} bits (≤ 0x{widthMask:X}).");
@@ -324,10 +324,10 @@ public sealed partial class CrcStandard
     /// </summary>
     /// <param name="other">The other <see cref="CrcStandard" /> object to compare.</param>
     /// <returns>
-    /// <see langword="true" /> if <paramref name="other" /> has the same identity-bearing parameters
-    /// (<see cref="Size" />, <see cref="Polynomial" />, <see cref="InitialValue" />, <see cref="ReflectIn" />,
-    /// <see cref="ReflectOut" />, and <see cref="XOrOut" />); otherwise, <see langword="false" />.
-    /// <see cref="Name" /> is informational and is intentionally excluded from equality.
+    /// <see langword="true" /> if <paramref name="other" /> has the same identity-bearing parameters (
+    /// <see cref="Size" />, <see cref="Polynomial" />, <see cref="InitialValue" />, <see cref="ReflectIn" />,
+    /// <see cref="ReflectOut" />, and <see cref="XOrOut" />); otherwise, <see langword="false" />. <see cref="Name" />
+    /// is informational and is intentionally excluded from equality.
     /// </returns>
     public bool Equals(CrcStandard? other)
         => other is not null &&

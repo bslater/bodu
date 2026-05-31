@@ -29,13 +29,13 @@ public sealed class AsconAead128ContractTests : AeadContractTests<AsconAead128>
         byte[] associatedData,
         byte[] plaintext)
     {
-        byte[] ciphertextWithTag = new byte[plaintext.Length + AsconAead128.TagBytes];
+        var ciphertextWithTag = new byte[plaintext.Length + AsconAead128.TagBytes];
         using AsconAead128 aead = new(key, nonce);
         aead.ProcessAssociatedData(associatedData);
         aead.Encrypt(plaintext, ciphertextWithTag);
 
-        byte[] ciphertext = ciphertextWithTag.AsSpan(0, plaintext.Length).ToArray();
-        byte[] tag = ciphertextWithTag.AsSpan(plaintext.Length, AsconAead128.TagBytes).ToArray();
+        var ciphertext = ciphertextWithTag.AsSpan(0, plaintext.Length).ToArray();
+        var tag = ciphertextWithTag.AsSpan(plaintext.Length, AsconAead128.TagBytes).ToArray();
         return (ciphertext, tag);
     }
 
@@ -47,11 +47,11 @@ public sealed class AsconAead128ContractTests : AeadContractTests<AsconAead128>
         byte[] ciphertext,
         byte[] tag)
     {
-        byte[] ciphertextWithTag = new byte[ciphertext.Length + tag.Length];
+        var ciphertextWithTag = new byte[ciphertext.Length + tag.Length];
         Buffer.BlockCopy(ciphertext, 0, ciphertextWithTag, 0, ciphertext.Length);
         Buffer.BlockCopy(tag, 0, ciphertextWithTag, ciphertext.Length, tag.Length);
 
-        byte[] plaintext = new byte[ciphertext.Length];
+        var plaintext = new byte[ciphertext.Length];
         using AsconAead128 aead = new(key, nonce);
         aead.ProcessAssociatedData(associatedData);
         aead.Decrypt(ciphertextWithTag, plaintext);

@@ -42,10 +42,7 @@ public partial class StringExtensionsTests
     /// input so that the result is never itself an empty file name.
     /// </summary>
     [TestMethod]
-    public void ToSafeFileName_WhenInputIsEmpty_ShouldReturnSingleUnderscore()
-    {
-        Assert.AreEqual("_", string.Empty.ToSafeFileName());
-    }
+    public void ToSafeFileName_WhenInputIsEmpty_ShouldReturnSingleUnderscore() => Assert.AreEqual("_", string.Empty.ToSafeFileName());
 
     /// <summary>
     /// Verifies that <see cref="StringExtensions.ToSafeFileName(string)" /> throws

@@ -75,10 +75,7 @@ public sealed partial class Base32Tests
     /// Verifies that <see cref="Base32.IsValid" /> returns <see langword="true" /> for empty input.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenEmpty_ShouldReturnTrue()
-    {
-        Assert.IsTrue(Base32.IsValid(ReadOnlySpan<char>.Empty));
-    }
+    public void IsValid_WhenEmpty_ShouldReturnTrue() => Assert.IsTrue(Base32.IsValid(ReadOnlySpan<char>.Empty));
 
     /// <summary>
     /// Verifies that <see cref="Base32.IsValid" /> accepts decorated input when the matching styles are set.
@@ -96,28 +93,19 @@ public sealed partial class Base32Tests
     /// Verifies that <see cref="Base32.IsValid" /> returns <see langword="false" /> for an invalid character.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenInvalidCharacter_ShouldReturnFalse()
-    {
-        Assert.IsFalse(Base32.IsValid("MZXW@YTB".AsSpan()));
-    }
+    public void IsValid_WhenInvalidCharacter_ShouldReturnFalse() => Assert.IsFalse(Base32.IsValid("MZXW@YTB".AsSpan()));
 
     /// <summary>
     /// Verifies that <see cref="Base32.IsValid" /> returns <see langword="false" /> when padding is interleaved with
     /// data characters.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenPaddingInMiddle_ShouldReturnFalse()
-    {
-        Assert.IsFalse(Base32.IsValid("MZ=XW6YT".AsSpan()));
-    }
+    public void IsValid_WhenPaddingInMiddle_ShouldReturnFalse() => Assert.IsFalse(Base32.IsValid("MZ=XW6YT".AsSpan()));
     /// <summary>
     /// Verifies that <see cref="Base32.IsValid" /> returns <see langword="true" /> for a canonical Standard input.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenStandardCanonicalInput_ShouldReturnTrue()
-    {
-        Assert.IsTrue(Base32.IsValid("MZXW6YTBOI======".AsSpan()));
-    }
+    public void IsValid_WhenStandardCanonicalInput_ShouldReturnTrue() => Assert.IsTrue(Base32.IsValid("MZXW6YTBOI======".AsSpan()));
 
     /// <summary>
     /// Verifies that <see cref="Base32.IsValid" /> uses the variant alphabet for validation; the Standard alphabet

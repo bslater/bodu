@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IntervalTests.Formatting.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -39,8 +39,8 @@ public partial class IntervalTests
     [TestMethod]
     public void ToString_WithFormatAndProvider_ShouldFormatEndpoints()
     {
-        Interval<double> interval = Interval<double>.Closed(1.5, 2.75);
-        string result = interval.ToString("F2", CultureInfo.InvariantCulture);
+        var interval = Interval<double>.Closed(1.5, 2.75);
+        var result = interval.ToString("F2", CultureInfo.InvariantCulture);
 
         Assert.AreEqual("[1.50, 2.75]", result);
     }
@@ -52,10 +52,10 @@ public partial class IntervalTests
     [TestMethod]
     public void TryFormat_WhenSpanIsLargeEnough_ShouldWriteAndReturnTrue()
     {
-        Interval<int> interval = Interval<int>.Closed(1, 5);
+        var interval = Interval<int>.Closed(1, 5);
         Span<char> buffer = stackalloc char[16];
 
-        bool ok = interval.TryFormat(buffer, out int written, ReadOnlySpan<char>.Empty, CultureInfo.InvariantCulture);
+        var ok = interval.TryFormat(buffer, out var written, ReadOnlySpan<char>.Empty, CultureInfo.InvariantCulture);
 
         Assert.IsTrue(ok);
         Assert.AreEqual("[1, 5]", buffer.Slice(0, written).ToString());
@@ -67,10 +67,10 @@ public partial class IntervalTests
     [TestMethod]
     public void TryFormat_WhenSpanIsTooSmall_ShouldReturnFalse()
     {
-        Interval<int> interval = Interval<int>.Closed(1, 5);
+        var interval = Interval<int>.Closed(1, 5);
         Span<char> buffer = stackalloc char[2];
 
-        bool ok = interval.TryFormat(buffer, out int written, ReadOnlySpan<char>.Empty, CultureInfo.InvariantCulture);
+        var ok = interval.TryFormat(buffer, out var written, ReadOnlySpan<char>.Empty, CultureInfo.InvariantCulture);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(0, written);
@@ -82,13 +82,13 @@ public partial class IntervalTests
     [TestMethod]
     public void TryFormat_Utf8_ShouldWriteCanonicalBytes()
     {
-        Interval<int> interval = Interval<int>.ClosedOpen(1, 5);
+        var interval = Interval<int>.ClosedOpen(1, 5);
         Span<byte> buffer = stackalloc byte[16];
 
-        bool ok = interval.TryFormat(buffer, out int written, ReadOnlySpan<char>.Empty, CultureInfo.InvariantCulture);
+        var ok = interval.TryFormat(buffer, out var written, ReadOnlySpan<char>.Empty, CultureInfo.InvariantCulture);
 
         Assert.IsTrue(ok);
-        string roundTripped = System.Text.Encoding.UTF8.GetString(buffer.Slice(0, written));
+        var roundTripped = System.Text.Encoding.UTF8.GetString(buffer.Slice(0, written));
         Assert.AreEqual("[1, 5)", roundTripped);
     }
 }

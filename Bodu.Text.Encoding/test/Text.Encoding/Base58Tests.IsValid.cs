@@ -38,19 +38,13 @@ public sealed partial class Base58Tests
     /// input.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenCanonicalInput_ShouldReturnTrue()
-    {
-        Assert.IsTrue(Base58.IsValid("9Ajdvzr".AsSpan()));
-    }
+    public void IsValid_WhenCanonicalInput_ShouldReturnTrue() => Assert.IsTrue(Base58.IsValid("9Ajdvzr".AsSpan()));
 
     /// <summary>
     /// Verifies that <see cref="Base58.IsValid" /> returns <see langword="true" /> for empty input.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenEmpty_ShouldReturnTrue()
-    {
-        Assert.IsTrue(Base58.IsValid(ReadOnlySpan<char>.Empty));
-    }
+    public void IsValid_WhenEmpty_ShouldReturnTrue() => Assert.IsTrue(Base58.IsValid(ReadOnlySpan<char>.Empty));
 
     /// <summary>
     /// Verifies that <see cref="Base58.IsValid" /> returns <see langword="false" /> for excluded ambiguous
@@ -62,51 +56,38 @@ public sealed partial class Base58Tests
     [DataRow('O')]
     [DataRow('I')]
     [DataRow('l')]
-    public void IsValid_WhenExcludedCharacter_ShouldReturnFalse(char excluded)
-    {
-        Assert.IsFalse(Base58.IsValid(("2" + excluded + "2").AsSpan()));
-    }
+    public void IsValid_WhenExcludedCharacter_ShouldReturnFalse(char excluded) => Assert.IsFalse(Base58.IsValid(("2" + excluded + "2").AsSpan()));
 
     /// <summary>
     /// Verifies that <see cref="Base58.IsValid" /> with <see cref="BaseFormatStyles.IgnoreWhitespace" /> tolerates
     /// whitespace anywhere in the input — exercises the whitespace-skip branch.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenIgnoreWhitespaceAndInputContainsWhitespace_ShouldReturnTrue()
-    {
-        Assert.IsTrue(Base58.IsValid("9 Aj\tdv\rz\nr".AsSpan(), Base58Variant.BitcoinFlickr, BaseFormatStyles.IgnoreWhitespace));
-    }
+    public void IsValid_WhenIgnoreWhitespaceAndInputContainsWhitespace_ShouldReturnTrue() => Assert.IsTrue(Base58.IsValid("9 Aj\tdv\rz\nr".AsSpan(), Base58Variant.BitcoinFlickr, BaseFormatStyles.IgnoreWhitespace));
 
     /// <summary>
     /// Verifies that <see cref="Base58.IsValid" /> returns <see langword="false" /> for input containing a character
     /// past the 128-entry lookup table range — exercises the <c>c &gt;= lookup.Length</c> branch.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenInputContainsCharAboveLookupRange_ShouldReturnFalse()
-    {
+    public void IsValid_WhenInputContainsCharAboveLookupRange_ShouldReturnFalse() =>
         // 'ÿ' (U+00FF) is outside the 128-entry lookup.
         Assert.IsFalse(Base58.IsValid("9Ajdvÿzr".AsSpan()));
-    }
 
     /// <summary>
     /// Verifies that <see cref="Base58.IsValid" /> without <see cref="BaseFormatStyles.IgnoreWhitespace" /> rejects
     /// input containing whitespace.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenInputContainsWhitespaceWithoutFlag_ShouldReturnFalse()
-    {
-        Assert.IsFalse(Base58.IsValid("9 Ajdvzr".AsSpan()));
-    }
+    public void IsValid_WhenInputContainsWhitespaceWithoutFlag_ShouldReturnFalse() => Assert.IsFalse(Base58.IsValid("9 Ajdvzr".AsSpan()));
 
     /// <summary>
     /// Verifies that <see cref="Base58.IsValid" /> recognises the Ripple variant alphabet — driving the variant
     /// branch independently from the Bitcoin/Flickr default.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenRippleVariantAndRippleAlphabetInput_ShouldReturnTrue()
-    {
+    public void IsValid_WhenRippleVariantAndRippleAlphabetInput_ShouldReturnTrue() =>
         // "rpshn" are the first five Ripple alphabet symbols.
         Assert.IsTrue(Base58.IsValid("rpshn".AsSpan(), Base58Variant.Ripple));
-    }
 
 }

@@ -79,7 +79,7 @@ public partial class ConcurrentHashSetTests
         var stopwatch = Stopwatch.StartNew();
         Parallel.For(0, threadCount, threadId =>
         {
-            int baseKey = threadId * keysPerThread;
+            var baseKey = threadId * keysPerThread;
             for (var k = 0; k < keysPerThread; k++)
                 set.Add(baseKey + k);
             for (var k = 0; k < keysPerThread; k++)

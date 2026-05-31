@@ -258,49 +258,34 @@ public sealed class BinaryEncodingsCoverageTests
     /// <see cref="Base16.ToHexStringLower(ReadOnlySpan{byte})" />.
     /// </summary>
     [TestMethod]
-    public void ToBase16String_SpanExtension_ShouldMatchCanonicalEncoder()
-    {
-        Assert.AreEqual(Base16.ToHexStringLower(Payload.AsSpan()), ((ReadOnlySpan<byte>)Payload).ToBase16String());
-    }
+    public void ToBase16String_SpanExtension_ShouldMatchCanonicalEncoder() => Assert.AreEqual(Base16.ToHexStringLower(Payload.AsSpan()), ((ReadOnlySpan<byte>)Payload).ToBase16String());
 
     /// <summary>
     /// Verifies that <see cref="BinaryEncodingExtensions.ToBase32String(ReadOnlySpan{byte})" /> matches
     /// <see cref="Base32.ToBase32String(ReadOnlySpan{byte})" />.
     /// </summary>
     [TestMethod]
-    public void ToBase32String_SpanExtension_ShouldMatchCanonicalEncoder()
-    {
-        Assert.AreEqual(Base32.ToBase32String(Payload.AsSpan()), ((ReadOnlySpan<byte>)Payload).ToBase32String());
-    }
+    public void ToBase32String_SpanExtension_ShouldMatchCanonicalEncoder() => Assert.AreEqual(Base32.ToBase32String(Payload.AsSpan()), ((ReadOnlySpan<byte>)Payload).ToBase32String());
 
     /// <summary>
     /// Verifies that <see cref="BinaryEncodingExtensions.ToBase58String(ReadOnlySpan{byte})" /> matches
     /// <see cref="Base58.ToBase58String(ReadOnlySpan{byte})" />.
     /// </summary>
     [TestMethod]
-    public void ToBase58String_SpanExtension_ShouldMatchCanonicalEncoder()
-    {
-        Assert.AreEqual(Base58.ToBase58String(Payload.AsSpan()), ((ReadOnlySpan<byte>)Payload).ToBase58String());
-    }
+    public void ToBase58String_SpanExtension_ShouldMatchCanonicalEncoder() => Assert.AreEqual(Base58.ToBase58String(Payload.AsSpan()), ((ReadOnlySpan<byte>)Payload).ToBase58String());
 
     /// <summary>
     /// Verifies that <see cref="BinaryEncodingExtensions.ToBase64String(ReadOnlySpan{byte})" /> matches
     /// <see cref="Base64.ToBase64String(ReadOnlySpan{byte})" />.
     /// </summary>
     [TestMethod]
-    public void ToBase64String_SpanExtension_ShouldMatchCanonicalEncoder()
-    {
-        Assert.AreEqual(Base64.ToBase64String(Payload.AsSpan()), ((ReadOnlySpan<byte>)Payload).ToBase64String());
-    }
+    public void ToBase64String_SpanExtension_ShouldMatchCanonicalEncoder() => Assert.AreEqual(Base64.ToBase64String(Payload.AsSpan()), ((ReadOnlySpan<byte>)Payload).ToBase64String());
 
     /// <summary>
     /// Verifies that <see cref="BinaryEncodingExtensions.ToBase85String(ReadOnlySpan{byte})" /> matches
     /// <see cref="Base85.ToBase85String(ReadOnlySpan{byte})" />.
     /// </summary>
     [TestMethod]
-    public void ToBase85String_SpanExtension_ShouldMatchCanonicalEncoder()
-    {
-        Assert.AreEqual(Base85.ToBase85String(Payload.AsSpan()), ((ReadOnlySpan<byte>)Payload).ToBase85String());
-    }
+    public void ToBase85String_SpanExtension_ShouldMatchCanonicalEncoder() => Assert.AreEqual(Base85.ToBase85String(Payload.AsSpan()), ((ReadOnlySpan<byte>)Payload).ToBase85String());
 
 }

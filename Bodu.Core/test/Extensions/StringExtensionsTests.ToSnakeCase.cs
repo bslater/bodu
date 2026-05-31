@@ -32,18 +32,12 @@ public partial class StringExtensionsTests
     /// <param name="expected">The expected return value.</param>
     [DataTestMethod]
     [DynamicData(nameof(GetToSnakeCaseCases), DynamicDataSourceType.Method)]
-    public void ToSnakeCase_WhenInvoked_ShouldReturnExpected(string value, string expected)
-    {
-        Assert.AreEqual(expected, value.ToSnakeCase());
-    }
+    public void ToSnakeCase_WhenInvoked_ShouldReturnExpected(string value, string expected) => Assert.AreEqual(expected, value.ToSnakeCase());
 
     /// <summary>
     /// Verifies that <see cref="StringExtensions.ToSnakeCase(string)" /> throws
     /// <see cref="ArgumentNullException" /> when <c>value</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void ToSnakeCase_WhenInputIsNull_ShouldThrowExactly()
-    {
-        Assert.ThrowsExactly<ArgumentNullException>(() => _ = StringExtensions.ToSnakeCase(null!));
-    }
+    public void ToSnakeCase_WhenInputIsNull_ShouldThrowExactly() => Assert.ThrowsExactly<ArgumentNullException>(() => _ = StringExtensions.ToSnakeCase(null!));
 }

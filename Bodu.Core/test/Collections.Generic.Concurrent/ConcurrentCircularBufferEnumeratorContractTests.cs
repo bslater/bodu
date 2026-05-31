@@ -21,7 +21,7 @@ public sealed class ConcurrentCircularBufferEnumeratorContractTests
     protected override ConcurrentCircularBuffer<string> Create(params string[] items)
     {
         ConcurrentCircularBuffer<string> buffer = new(capacity: Math.Max(16, items.Length));
-        foreach (string item in items)
+        foreach (var item in items)
             buffer.Enqueue(item);
         return buffer;
     }

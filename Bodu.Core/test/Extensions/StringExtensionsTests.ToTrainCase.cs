@@ -29,18 +29,12 @@ public partial class StringExtensionsTests
     /// <param name="expected">The expected return value.</param>
     [DataTestMethod]
     [DynamicData(nameof(GetToTrainCaseCases), DynamicDataSourceType.Method)]
-    public void ToTrainCase_WhenInvoked_ShouldReturnExpected(string value, string expected)
-    {
-        Assert.AreEqual(expected, value.ToTrainCase());
-    }
+    public void ToTrainCase_WhenInvoked_ShouldReturnExpected(string value, string expected) => Assert.AreEqual(expected, value.ToTrainCase());
 
     /// <summary>
     /// Verifies that <see cref="StringExtensions.ToTrainCase(string)" /> throws
     /// <see cref="ArgumentNullException" /> when <c>value</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void ToTrainCase_WhenInputIsNull_ShouldThrowExactly()
-    {
-        Assert.ThrowsExactly<ArgumentNullException>(() => _ = StringExtensions.ToTrainCase(null!));
-    }
+    public void ToTrainCase_WhenInputIsNull_ShouldThrowExactly() => Assert.ThrowsExactly<ArgumentNullException>(() => _ = StringExtensions.ToTrainCase(null!));
 }

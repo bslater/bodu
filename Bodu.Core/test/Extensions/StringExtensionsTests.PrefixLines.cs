@@ -37,10 +37,7 @@ public partial class StringExtensionsTests
     /// when the prefix is empty.
     /// </summary>
     [TestMethod]
-    public void PrefixLines_WhenPrefixIsEmpty_ShouldReturnInputUnchanged()
-    {
-        Assert.AreEqual("one\ntwo", "one\ntwo".PrefixLines(string.Empty));
-    }
+    public void PrefixLines_WhenPrefixIsEmpty_ShouldReturnInputUnchanged() => Assert.AreEqual("one\ntwo", "one\ntwo".PrefixLines(string.Empty));
 
     /// <summary>
     /// Verifies that <see cref="StringExtensions.PrefixLines(string, string)" /> throws

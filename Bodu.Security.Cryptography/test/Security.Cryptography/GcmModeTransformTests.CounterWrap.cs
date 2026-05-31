@@ -44,7 +44,7 @@ public sealed partial class GcmModeTransformTests
         // J0 is "<12-byte nonce> || 00 00 FF FE". After the constructor's inc32, the running counter is
         // <nonce> || 00 00 FF FF — one increment away from wrapping into the J0-reserved value.
         // Encrypting two 16-byte blocks consumes counters FFFF and then would wrap to 0000.
-        byte[] j0 = new byte[BlockSizeBytes];
+        var j0 = new byte[BlockSizeBytes];
         Array.Fill(j0, (byte)0xCA, 0, 12);
         j0[12] = 0xFF;
         j0[13] = 0xFF;
@@ -52,10 +52,10 @@ public sealed partial class GcmModeTransformTests
         j0[15] = 0xFE;
 
         using var cipher = new AesBlockCipherFixture(new byte[16]);
-        using GcmModeTransform transform = GcmModeTransform.CreateForTesting(cipher, j0);
+        using var transform = GcmModeTransform.CreateForTesting(cipher, j0);
 
-        byte[] plaintext = new byte[BlockSizeBytes * 2];
-        byte[] output = new byte[plaintext.Length + (transform.TagSize / 8)];
+        var plaintext = new byte[BlockSizeBytes * 2];
+        var output = new byte[plaintext.Length + (transform.TagSize / 8)];
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
@@ -74,7 +74,7 @@ public sealed partial class GcmModeTransformTests
         // attempt on its next increment, but the keystream for that single block is itself derived from the
         // counter that, post-encryption, would step into J0's reserved value. The implementation must reject
         // the operation before producing that ciphertext block.
-        byte[] j0 = new byte[BlockSizeBytes];
+        var j0 = new byte[BlockSizeBytes];
         Array.Fill(j0, (byte)0xCA, 0, 12);
         j0[12] = 0xFF;
         j0[13] = 0xFF;
@@ -82,14 +82,14 @@ public sealed partial class GcmModeTransformTests
         j0[15] = 0xFE;
 
         using var cipher = new AesBlockCipherFixture(new byte[16]);
-        using GcmModeTransform transform = GcmModeTransform.CreateForTesting(cipher, j0);
+        using var transform = GcmModeTransform.CreateForTesting(cipher, j0);
 
         // Single block worth of plaintext: encrypts under counter FFFF, then inc32 would wrap to 0000 — but
         // since this is the final block we do not actually consume the wrapped counter. The guard only needs
         // to fire when a counter value would actually be USED. Encrypting one block is therefore expected to
         // succeed; encrypting two blocks must fail. This test documents the boundary: one block at FFFF is OK.
-        byte[] plaintext = new byte[BlockSizeBytes];
-        byte[] output = new byte[plaintext.Length + (transform.TagSize / 8)];
+        var plaintext = new byte[BlockSizeBytes];
+        var output = new byte[plaintext.Length + (transform.TagSize / 8)];
         transform.Encrypt(plaintext, output);
 
         // Reaching here proves the guard does not over-reject; the wrap-rejection contract is exercised by
@@ -105,7 +105,7 @@ public sealed partial class GcmModeTransformTests
     [TestMethod]
     public void Decrypt_WhenCounterWouldWrapPast0xFFFFFFFF_ShouldThrowCryptographicException()
     {
-        byte[] j0 = new byte[BlockSizeBytes];
+        var j0 = new byte[BlockSizeBytes];
         Array.Fill(j0, (byte)0xCA, 0, 12);
         j0[12] = 0xFF;
         j0[13] = 0xFF;
@@ -113,11 +113,11 @@ public sealed partial class GcmModeTransformTests
         j0[15] = 0xFE;
 
         using var cipher = new AesBlockCipherFixture(new byte[16]);
-        using GcmModeTransform transform = GcmModeTransform.CreateForTesting(cipher, j0);
+        using var transform = GcmModeTransform.CreateForTesting(cipher, j0);
 
         // Two-block ciphertext plus tag — same wrap boundary as the encrypt test.
-        byte[] ciphertextWithTag = new byte[(BlockSizeBytes * 2) + (transform.TagSize / 8)];
-        byte[] recovered = new byte[BlockSizeBytes * 2];
+        var ciphertextWithTag = new byte[(BlockSizeBytes * 2) + (transform.TagSize / 8)];
+        var recovered = new byte[BlockSizeBytes * 2];
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {

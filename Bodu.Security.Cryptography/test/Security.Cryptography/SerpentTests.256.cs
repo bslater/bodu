@@ -16,11 +16,11 @@ public partial class Serpent256Tests
     : SerpentTests<Serpent256Tests, Serpent256>
 {
     /// <inheritdoc />
-    protected override Serpent256 CreateAlgorithm() => new Serpent256();
+    protected override Serpent256 CreateAlgorithm() => new();
 
     /// <inheritdoc />
     protected override TweakableSymmetricAlgorithmSpecification GetSpecification() =>
-        new TweakableSymmetricAlgorithmSpecification
+        new()
         {
             BlockSizeBits = 256,
             DefaultKeySizeBits = 256,

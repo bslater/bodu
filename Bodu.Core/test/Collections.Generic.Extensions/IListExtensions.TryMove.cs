@@ -13,8 +13,7 @@ public sealed partial class IListExtensionsTests_TryMove
 {
 
     /// <summary>
-    /// Provides valid <c>TryMove</c> scenarios covering left-moves, right-moves, move-to-end,
-    /// and same-position no-ops.
+    /// Provides valid <c>TryMove</c> scenarios covering left-moves, right-moves, move-to-end, and same-position no-ops.
     /// </summary>
     public static IEnumerable<object[]> GetTryMoveTestCases() =>
     [
@@ -27,8 +26,8 @@ public sealed partial class IListExtensionsTests_TryMove
     ];
 
     /// <summary>
-    /// Verifies that <c>TryMove</c> correctly repositions the specified element and returns <see langword="true" />
-    /// for in-range valid scenarios, including same-position and adjacent-insertion-point no-ops.
+    /// Verifies that <c>TryMove</c> correctly repositions the specified element and returns <see langword="true" /> for
+    /// in-range valid scenarios, including same-position and adjacent-insertion-point no-ops.
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(GetTryMoveTestCases))]
@@ -47,7 +46,8 @@ public sealed partial class IListExtensionsTests_TryMove
     }
 
     /// <summary>
-    /// Verifies that <c>TryMove</c> returns <see langword="false" /> and leaves the list unmodified when an index is out of range.
+    /// Verifies that <c>TryMove</c> returns <see langword="false" /> and leaves the list unmodified when an index is
+    /// out of range.
     /// </summary>
     [TestMethod]
     [DataRow(-1, 0, DisplayName = "Negative oldIndex")]
@@ -66,8 +66,8 @@ public sealed partial class IListExtensionsTests_TryMove
     }
 
     /// <summary>
-    /// Verifies that <c>TryMove</c> on a single-element list is a no-op and returns <see langword="true" />
-    /// when called with <c>(0, 0)</c> or <c>(0, 1)</c>, and returns <see langword="false" /> for invalid indices.
+    /// Verifies that <c>TryMove</c> on a single-element list is a no-op and returns <see langword="true" /> when called
+    /// with <c>(0, 0)</c> or <c>(0, 1)</c>, and returns <see langword="false" /> for invalid indices.
     /// </summary>
     [TestMethod]
     public void TryMove_WhenListContainsOneElement_ShouldHandleAllValidPositions()
@@ -82,8 +82,8 @@ public sealed partial class IListExtensionsTests_TryMove
     }
 
     /// <summary>
-    /// Verifies that <c>TryMove</c> works with a non-<see cref="List{T}"/> <see cref="IList{T}"/> implementation
-    /// (<see cref="Collection{T}"/>), exercising the general path through the list interface.
+    /// Verifies that <c>TryMove</c> works with a non-<see cref="List{T}" /> <see cref="IList{T}" /> implementation (
+    /// <see cref="Collection{T}" />), exercising the general path through the list interface.
     /// </summary>
     [TestMethod]
     public void TryMove_WhenListIsNotSystemList_ShouldMoveElement()
@@ -97,7 +97,8 @@ public sealed partial class IListExtensionsTests_TryMove
     }
 
     /// <summary>
-    /// Verifies that <c>TryMove</c> throws <see cref="ArgumentNullException" /> when the list is <see langword="null" />.
+    /// Verifies that <c>TryMove</c> throws <see cref="ArgumentNullException" /> when the list is
+    /// <see langword="null" />.
     /// </summary>
     [TestMethod]
     public void TryMove_WhenListIsNull_ShouldThrowExactly()
@@ -126,8 +127,8 @@ public sealed partial class IListExtensionsTests_TryMove
     }
 
     /// <summary>
-    /// Verifies that <c>TryMove</c> returns <see langword="true" /> without mutating the list when <paramref name="oldIndex"/>
-    /// equals <paramref name="newIndex"/>.
+    /// Verifies that <c>TryMove</c> returns <see langword="true" /> without mutating the list when
+    /// <paramref name="oldIndex" /> equals <paramref name="newIndex" />.
     /// </summary>
     [TestMethod]
     public void TryMove_WhenOldIndexEqualsNewIndex_ShouldReturnTrueWithoutMutating()

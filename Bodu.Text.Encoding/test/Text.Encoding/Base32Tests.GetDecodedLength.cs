@@ -63,10 +63,7 @@ public sealed partial class Base32Tests
     /// variant length.
     /// </summary>
     [TestMethod]
-    public void GetEncodedLength_WithoutOptionsOverload_ShouldReturnStandardLength()
-    {
-        Assert.AreEqual(16, Base32.GetEncodedLength(6));
-    }
+    public void GetEncodedLength_WithoutOptionsOverload_ShouldReturnStandardLength() => Assert.AreEqual(16, Base32.GetEncodedLength(6));
 
     /// <summary>
     /// Verifies that <see cref="Base32.GetEncodedLength(int, Base32Variant)" /> respects the variant default padding

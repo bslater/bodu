@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRatePairJsonConverterPolicyTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -43,10 +43,7 @@ public class ExchangeRatePairJsonConverterPolicyTests
     /// strict shape automatically.
     /// </summary>
     [TestMethod]
-    public void ExchangeRatePair_WhenInspected_ShouldDeclareJsonConverterAttribute()
-    {
-        Assert.IsTrue(typeof(ExchangeRatePair).IsDefined(typeof(JsonConverterAttribute), inherit: false));
-    }
+    public void ExchangeRatePair_WhenInspected_ShouldDeclareJsonConverterAttribute() => Assert.IsTrue(typeof(ExchangeRatePair).IsDefined(typeof(JsonConverterAttribute), inherit: false));
 
     /// <summary>
     /// Verifies that the canonical object form round-trips under <see cref="FinancialJsonPolicy.Strict" />.

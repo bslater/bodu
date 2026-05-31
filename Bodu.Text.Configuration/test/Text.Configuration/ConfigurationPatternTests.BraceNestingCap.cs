@@ -18,7 +18,7 @@ public partial class ConfigurationPatternTests
     [TestMethod]
     public void Compile_WhenBraceNestingAtCap_ShouldCompile()
     {
-        ConfigurationPattern pattern = ConfigurationPattern.Compile(BuildNestedAlternation(ConfigurationPattern.MaxBraceNestingDepth));
+        var pattern = ConfigurationPattern.Compile(BuildNestedAlternation(ConfigurationPattern.MaxBraceNestingDepth));
 
         // The nested pattern produced by BuildNestedAlternation matches both 'a' and 'b' at every level,
         // so its outer-most match set is {a, b}.
@@ -61,7 +61,7 @@ public partial class ConfigurationPatternTests
         source.Append(".log");
 
         // Should not throw — every '{' is escaped, so depth never exceeds zero.
-        ConfigurationPattern pattern = ConfigurationPattern.Compile(source.ToString());
+        var pattern = ConfigurationPattern.Compile(source.ToString());
 
         StringBuilder expectedMatch = new();
         expectedMatch.Append("prefix");

@@ -348,19 +348,13 @@ public partial class ParallelMerkleTreeHashTests
     /// is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void Diagnostics_Root_WhenNoNodesRecorded_ShouldBeNull()
-    {
-        Assert.IsNull(new MerkleTreeDiagnostics().Root);
-    }
+    public void Diagnostics_Root_WhenNoNodesRecorded_ShouldBeNull() => Assert.IsNull(new MerkleTreeDiagnostics().Root);
 
     /// <summary>
     /// Verifies that <c>GetLevelCount</c> returns zero when no nodes have been recorded.
     /// </summary>
     [TestMethod]
-    public void Diagnostics_GetLevelCount_WhenNoNodesRecorded_ShouldReturnZero()
-    {
-        Assert.AreEqual(0, new MerkleTreeDiagnostics().GetLevelCount());
-    }
+    public void Diagnostics_GetLevelCount_WhenNoNodesRecorded_ShouldReturnZero() => Assert.AreEqual(0, new MerkleTreeDiagnostics().GetLevelCount());
 
     // ═══════════════════════════════════════════════════════════════════════════════════════════
     // Per-call isolation — multi-use with diagnostics

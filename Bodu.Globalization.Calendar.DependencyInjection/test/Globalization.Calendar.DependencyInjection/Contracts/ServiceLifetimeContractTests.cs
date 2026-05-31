@@ -43,7 +43,7 @@ public abstract class ServiceLifetimeContractTests
             kat.Register(services);
             ServiceProvider provider = services.BuildServiceProvider();
 
-            object? resolved = provider.GetService(kat.ServiceType);
+            var resolved = provider.GetService(kat.ServiceType);
 
             Assert.IsNotNull(resolved, $"KAT '{kat.Name}': {kat.ServiceType} should resolve.");
         }

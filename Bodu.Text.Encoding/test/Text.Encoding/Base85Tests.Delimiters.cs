@@ -136,20 +136,14 @@ public sealed partial class Base85Tests
     /// <see cref="BaseFormatStyles.AllowPrefix" /> is set.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenAscii85DelimitedAndAllowPrefix_ShouldReturnTrue()
-    {
-        Assert.IsTrue(Base85.IsValid(("<~" + ManAscii85 + "~>").AsSpan(), Base85Variant.Ascii85, BaseFormatStyles.AllowPrefix));
-    }
+    public void IsValid_WhenAscii85DelimitedAndAllowPrefix_ShouldReturnTrue() => Assert.IsTrue(Base85.IsValid(("<~" + ManAscii85 + "~>").AsSpan(), Base85Variant.Ascii85, BaseFormatStyles.AllowPrefix));
 
     /// <summary>
     /// Verifies that <see cref="Base85.IsValid" /> returns <see langword="false" /> for delimited input when
     /// <see cref="BaseFormatStyles.AllowPrefix" /> is not set.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenAscii85DelimitedWithoutAllowPrefix_ShouldReturnFalse()
-    {
-        Assert.IsFalse(Base85.IsValid(("<~" + ManAscii85 + "~>").AsSpan(), Base85Variant.Ascii85));
-    }
+    public void IsValid_WhenAscii85DelimitedWithoutAllowPrefix_ShouldReturnFalse() => Assert.IsFalse(Base85.IsValid(("<~" + ManAscii85 + "~>").AsSpan(), Base85Variant.Ascii85));
 
     /// <summary>
     /// Verifies that the delimited encoded form round-trips through encode and decode.

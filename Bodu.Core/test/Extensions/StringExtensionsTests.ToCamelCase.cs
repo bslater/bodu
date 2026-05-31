@@ -34,18 +34,12 @@ public partial class StringExtensionsTests
     /// <param name="expected">The expected return value.</param>
     [DataTestMethod]
     [DynamicData(nameof(GetToCamelCaseCases), DynamicDataSourceType.Method)]
-    public void ToCamelCase_WhenInvoked_ShouldReturnExpected(string value, string expected)
-    {
-        Assert.AreEqual(expected, value.ToCamelCase());
-    }
+    public void ToCamelCase_WhenInvoked_ShouldReturnExpected(string value, string expected) => Assert.AreEqual(expected, value.ToCamelCase());
 
     /// <summary>
     /// Verifies that <see cref="StringExtensions.ToCamelCase(string)" /> throws
     /// <see cref="ArgumentNullException" /> when <c>value</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void ToCamelCase_WhenInputIsNull_ShouldThrowExactly()
-    {
-        Assert.ThrowsExactly<ArgumentNullException>(() => _ = StringExtensions.ToCamelCase(null!));
-    }
+    public void ToCamelCase_WhenInputIsNull_ShouldThrowExactly() => Assert.ThrowsExactly<ArgumentNullException>(() => _ = StringExtensions.ToCamelCase(null!));
 }

@@ -11,7 +11,7 @@ public sealed partial class SkipjackTests
     : SymmetricAlgorithmTests<SkipjackTests, Skipjack>
 {
     /// <inheritdoc />
-    protected override Skipjack CreateAlgorithm() => new Skipjack();
+    protected override Skipjack CreateAlgorithm() => new();
 
     /// <inheritdoc />
     protected override void SetBlockMode(Skipjack algorithm, CipherModeKind mode) =>
@@ -23,7 +23,7 @@ public sealed partial class SkipjackTests
 
     /// <inheritdoc />
     protected override SymmetricAlgorithmSpecification GetSpecification() =>
-        new SymmetricAlgorithmSpecification
+        new()
         {
             BlockSizeBits = 64,
             DefaultKeySizeBits = 80,

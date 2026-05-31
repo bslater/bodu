@@ -35,5 +35,5 @@ public static partial class DateTimeExtensions
     ///]]>
     /// </code>
     /// </remarks>
-    public static DateTime LastDateOfYear(this DateTime dateTime) => new DateTime(GetDateTicks(dateTime.Year, 12, 31), dateTime.Kind);
+    public static DateTime LastDateOfYear(this DateTime dateTime) => new(GetDateTicks(dateTime.Year, 12, 31), dateTime.Kind);
 }

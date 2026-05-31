@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Money.Helpers.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -25,7 +25,7 @@ public static class Money
     /// <returns>The constructed monetary value.</returns>
     public static Money<TCurrency> Of<TCurrency>(decimal amount)
         where TCurrency : ICurrency =>
-        new Money<TCurrency>(amount);
+        new(amount);
 
     /// <summary>
     /// Creates a <see cref="Money{TCurrency}" /> from the supplied amount and rounding rule.
@@ -36,7 +36,7 @@ public static class Money
     /// <returns>The constructed monetary value.</returns>
     public static Money<TCurrency> Of<TCurrency>(decimal amount, MidpointRounding rounding)
         where TCurrency : ICurrency =>
-        new Money<TCurrency>(amount, rounding);
+        new(amount, rounding);
 
     /// <summary>
     /// Returns the zero value of <typeparamref name="TCurrency" />.

@@ -116,7 +116,7 @@ public sealed class NotableDateResolutionServiceConvenienceApiTests
     {
         NotableDateService service = CreateService();
 
-        bool actual = service.IsNonWorkingDay(new DateTime(2024, 1, 6));
+        var actual = service.IsNonWorkingDay(new DateTime(2024, 1, 6));
 
         Assert.IsTrue(actual);
     }
@@ -131,7 +131,7 @@ public sealed class NotableDateResolutionServiceConvenienceApiTests
             FixedPublicHolidayRule("Year-End Holiday", month: 12, day: 31),
             FixedNonWorkingRule("New Year Second Day", month: 1, day: 2));
 
-        bool actual = service.IsNonWorkingDay(new DateTime(2023, 1, 3));
+        var actual = service.IsNonWorkingDay(new DateTime(2023, 1, 3));
 
         Assert.IsTrue(actual);
     }
@@ -146,7 +146,7 @@ public sealed class NotableDateResolutionServiceConvenienceApiTests
             FixedPublicHolidayRule("Year-End Holiday", month: 12, day: 31),
             FixedNonWorkingRule("New Year Second Day", month: 1, day: 2));
 
-        bool actual = service.IsNonWorkingDay(new DateTime(2023, 1, 4));
+        var actual = service.IsNonWorkingDay(new DateTime(2023, 1, 4));
 
         Assert.IsFalse(actual);
     }

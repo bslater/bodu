@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IntervalTests.Contains.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -19,7 +19,7 @@ public partial class IntervalTests
     [DataRow(6, false)]
     public void Contains_WhenClosedClosed_ShouldIncludeBothEndpoints(int value, bool expected)
     {
-        Interval<int> interval = Interval<int>.Closed(1, 5);
+        var interval = Interval<int>.Closed(1, 5);
 
         Assert.AreEqual(expected, interval.Contains(value));
     }
@@ -34,7 +34,7 @@ public partial class IntervalTests
     [DataRow(0, false)]
     public void Contains_WhenOpenOpen_ShouldExcludeBothEndpoints(int value, bool expected)
     {
-        Interval<int> interval = Interval<int>.Open(1, 5);
+        var interval = Interval<int>.Open(1, 5);
 
         Assert.AreEqual(expected, interval.Contains(value));
     }
@@ -48,7 +48,7 @@ public partial class IntervalTests
     [DataRow(5, false)]
     public void Contains_WhenClosedOpen_ShouldIncludeLowerExcludeUpper(int value, bool expected)
     {
-        Interval<int> interval = Interval<int>.ClosedOpen(1, 5);
+        var interval = Interval<int>.ClosedOpen(1, 5);
 
         Assert.AreEqual(expected, interval.Contains(value));
     }
@@ -62,7 +62,7 @@ public partial class IntervalTests
     [DataRow(5, true)]
     public void Contains_WhenOpenClosed_ShouldExcludeLowerIncludeUpper(int value, bool expected)
     {
-        Interval<int> interval = Interval<int>.OpenClosed(1, 5);
+        var interval = Interval<int>.OpenClosed(1, 5);
 
         Assert.AreEqual(expected, interval.Contains(value));
     }
@@ -75,10 +75,7 @@ public partial class IntervalTests
     [DataRow(0)]
     [DataRow(1)]
     [DataRow(int.MaxValue)]
-    public void Contains_WhenEmpty_ShouldReturnFalseForAnyValue(int value)
-    {
-        Assert.IsFalse(Interval<int>.Empty.Contains(value));
-    }
+    public void Contains_WhenEmpty_ShouldReturnFalseForAnyValue(int value) => Assert.IsFalse(Interval<int>.Empty.Contains(value));
 
     /// <summary>
     /// Verifies that a degenerate single-point interval contains only its anchor.
@@ -86,7 +83,7 @@ public partial class IntervalTests
     [TestMethod]
     public void Contains_WhenDegenerate_ShouldContainOnlyTheAnchor()
     {
-        Interval<int> interval = Interval<int>.Singleton(7);
+        var interval = Interval<int>.Singleton(7);
 
         Assert.IsTrue(interval.Contains(7));
         Assert.IsFalse(interval.Contains(6));
@@ -100,7 +97,7 @@ public partial class IntervalTests
     [TestMethod]
     public void Contains_WhenGivenInterval_ShouldReturnTrueForSubsets()
     {
-        Interval<int> outer = Interval<int>.Closed(0, 10);
+        var outer = Interval<int>.Closed(0, 10);
 
         Assert.IsTrue(outer.Contains(Interval<int>.Closed(2, 8)));
         Assert.IsTrue(outer.Contains(Interval<int>.Open(2, 8)));

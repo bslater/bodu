@@ -30,10 +30,7 @@ public sealed class EuropeCalendarDataTests
     /// assembly chains.
     /// </summary>
     [TestMethod]
-    public void DataAssembly_ShouldReturnTheCompanionPackAssembly()
-    {
-        Assert.AreEqual(typeof(EuropeCalendarData).Assembly, EuropeCalendarData.DataAssembly);
-    }
+    public void DataAssembly_ShouldReturnTheCompanionPackAssembly() => Assert.AreEqual(typeof(EuropeCalendarData).Assembly, EuropeCalendarData.DataAssembly);
 
     /// <summary>
     /// Verifies that <see cref="EuropeCalendarData.CreateGermanyProvider" /> returns a non-null rule provider whose rules

@@ -45,7 +45,7 @@ public static partial class DateTimeExtensions
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown if the resulting UTC time is outside the supported range of <see cref="DateTimeOffset" />.
     /// </exception>
-    public static DateTimeOffset ToDateTimeOffset(this DateTime dateTime) => new DateTimeOffset(dateTime);
+    public static DateTimeOffset ToDateTimeOffset(this DateTime dateTime) => new(dateTime);
 
     /// <summary>
     /// Returns a new <see cref="DateTimeOffset" /> representing the same clock time as the specified
@@ -73,5 +73,5 @@ public static partial class DateTimeExtensions
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown if the resulting UTC time is outside the supported range of <see cref="DateTimeOffset" />.
     /// </exception>
-    public static DateTimeOffset ToDateTimeOffset(this DateTime dateTime, TimeSpan offset) => new DateTimeOffset(dateTime, offset);
+    public static DateTimeOffset ToDateTimeOffset(this DateTime dateTime, TimeSpan offset) => new(dateTime, offset);
 }

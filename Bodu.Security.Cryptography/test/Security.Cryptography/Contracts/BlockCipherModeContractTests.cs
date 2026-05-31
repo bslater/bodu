@@ -63,7 +63,7 @@ public abstract class BlockCipherModeContractTests<TCipher>
     {
         foreach (BlockCipherModeKat kat in KnownAnswers)
         {
-            byte[] actual = Encrypt(kat.Key, kat.IV, kat.Mode, kat.Padding, kat.Plaintext);
+            var actual = Encrypt(kat.Key, kat.IV, kat.Mode, kat.Padding, kat.Plaintext);
 
             CollectionAssert.AreEqual(
                 kat.Ciphertext,
@@ -80,7 +80,7 @@ public abstract class BlockCipherModeContractTests<TCipher>
     {
         foreach (BlockCipherModeKat kat in KnownAnswers)
         {
-            byte[] actual = Decrypt(kat.Key, kat.IV, kat.Mode, kat.Padding, kat.Ciphertext);
+            var actual = Decrypt(kat.Key, kat.IV, kat.Mode, kat.Padding, kat.Ciphertext);
 
             CollectionAssert.AreEqual(
                 kat.Plaintext,
@@ -100,8 +100,8 @@ public abstract class BlockCipherModeContractTests<TCipher>
     {
         foreach (BlockCipherModeKat kat in RoundTripCases)
         {
-            byte[] ciphertext = Encrypt(kat.Key, kat.IV, kat.Mode, kat.Padding, kat.Plaintext);
-            byte[] roundTripped = Decrypt(kat.Key, kat.IV, kat.Mode, kat.Padding, ciphertext);
+            var ciphertext = Encrypt(kat.Key, kat.IV, kat.Mode, kat.Padding, kat.Plaintext);
+            var roundTripped = Decrypt(kat.Key, kat.IV, kat.Mode, kat.Padding, ciphertext);
 
             CollectionAssert.AreEqual(
                 kat.Plaintext,

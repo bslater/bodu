@@ -75,7 +75,9 @@ public static partial class Base64
     /// Decodes <paramref name="chars" /> using the supplied <paramref name="scratch" /> buffer for normalisation.
     /// </summary>
     /// <param name="chars">The encoded character span.</param>
-    /// <param name="scratch">The caller-allocated scratch span; must be at least <paramref name="chars" />.Length + 4 long.</param>
+    /// <param name="scratch">
+    /// The caller-allocated scratch span; must be at least <paramref name="chars" />.Length + 4 long.
+    /// </param>
     /// <param name="variant">The Base64 variant.</param>
     /// <param name="style">Parsing styles.</param>
     /// <returns>The decoded byte array.</returns>
@@ -103,8 +105,8 @@ public static partial class Base64
     }
 
     /// <summary>
-    /// Returns the exact number of decoded bytes that a normalised, padded Base64 character span will produce —
-    /// the normalised length divided by four times three, less one byte per trailing <c>=</c> padding character.
+    /// Returns the exact number of decoded bytes that a normalised, padded Base64 character span will produce — the
+    /// normalised length divided by four times three, less one byte per trailing <c>=</c> padding character.
     /// </summary>
     /// <param name="normalized">A normalised Base64 character span whose length is a multiple of four.</param>
     /// <returns>The exact decoded byte count, never negative.</returns>

@@ -35,5 +35,5 @@ public static partial class DateTimeExtensions
     ///]]>
     /// </code>
     /// </remarks>
-    public static DateTime FirstDateOfYear(this DateTime dateTime) => new DateTime(GetDateTicks(dateTime.Year, 1, 1), dateTime.Kind);
+    public static DateTime FirstDateOfYear(this DateTime dateTime) => new(GetDateTicks(dateTime.Year, 1, 1), dateTime.Kind);
 }

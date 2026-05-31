@@ -7,8 +7,8 @@
 namespace Bodu.Text.Encoding;
 
 /// <summary>
-/// Provides Known Answer Test vectors for Base64 encodings, sourced from RFC 4648 §10 (Standard alphabet) and the
-/// RFC 4648 §5 URL- and filename-safe alphabet.
+/// Provides Known Answer Test vectors for Base64 encodings, sourced from RFC 4648 §10 (Standard alphabet) and the RFC
+/// 4648 §5 URL- and filename-safe alphabet.
 /// </summary>
 public static class Base64KnownAnswerVectors
 {
@@ -52,8 +52,8 @@ public static class Base64KnownAnswerVectors
     }
 
     /// <summary>
-    /// Returns URL-safe Base64 vectors. The inputs are chosen so the output differs from the Standard alphabet
-    /// (i.e. produces at least one <c>+</c>/<c>/</c> in Standard which becomes <c>-</c>/<c>_</c> in URL-safe).
+    /// Returns URL-safe Base64 vectors. The inputs are chosen so the output differs from the Standard alphabet (i.e.
+    /// produces at least one <c>+</c>/<c>/</c> in Standard which becomes <c>-</c>/<c>_</c> in URL-safe).
     /// </summary>
     /// <returns>A sequence suitable for <c>[DynamicData]</c>.</returns>
     public static IEnumerable<object[]> UrlSafeVectors()

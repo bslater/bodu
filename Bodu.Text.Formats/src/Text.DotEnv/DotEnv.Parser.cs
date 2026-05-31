@@ -126,9 +126,9 @@ public static partial class DotEnv
 
                 if (c == '#')
                 {
-                    int commentLine = _lineNumber;
+                    var commentLine = _lineNumber;
                     _remaining = _remaining[1..]; // consume '#'
-                    int len = 0;
+                    var len = 0;
                     while (len < _remaining.Length && _remaining[len] != '\n' && _remaining[len] != '\r')
                         len++;
 

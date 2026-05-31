@@ -24,8 +24,8 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
     // =========================================================================
 
     /// <summary>
-    /// Verifies that the parameterless <c>Randomize</c> overload returns a permutation containing
-    /// exactly the same elements as the source sequence.
+    /// Verifies that the parameterless <c>Randomize</c> overload returns a permutation containing exactly the same
+    /// elements as the source sequence.
     /// </summary>
     [TestMethod]
     public void Randomize_WhenCalled_ForDefaultOverload_ShouldReturnPermutationOfSource()
@@ -39,8 +39,8 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
 
     /// <summary>
     /// Verifies that <c>Randomize</c> with <see cref="RandomizationMode.BufferAll" /> and a count that exceeds the
-    /// number of available elements throws <see cref="ArgumentException" /> via the
-    /// <c>ThrowIfGreaterThanOther</c> validation inside the buffered implementation.
+    /// number of available elements throws <see cref="ArgumentException" /> via the <c>ThrowIfGreaterThanOther</c>
+    /// validation inside the buffered implementation.
     /// </summary>
     [TestMethod]
     public void Randomize_WhenCountExceedsSourceLength_ForBufferAllMode_ShouldThrowExactly()
@@ -105,8 +105,8 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
     // =========================================================================
 
     /// <summary>
-    /// Verifies that <c>Randomize</c> with <see cref="RandomizationMode.BufferAll"/> and no count returns
-    /// a permutation containing all source elements.
+    /// Verifies that <c>Randomize</c> with <see cref="RandomizationMode.BufferAll" /> and no count returns a
+    /// permutation containing all source elements.
     /// </summary>
     [TestMethod]
     public void Randomize_WhenModeIsBufferAllAndCountIsNull_ShouldReturnPermutationOfSource()
@@ -119,8 +119,8 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
     }
 
     /// <summary>
-    /// Verifies that <c>Randomize</c> with <see cref="RandomizationMode.BufferAll"/> and a count returns
-    /// exactly that number of elements drawn from the source.
+    /// Verifies that <c>Randomize</c> with <see cref="RandomizationMode.BufferAll" /> and a count returns exactly that
+    /// number of elements drawn from the source.
     /// </summary>
     [TestMethod]
     public void Randomize_WhenModeIsBufferAllAndCountIsPositive_ShouldReturnRequestedNumberOfElements()
@@ -135,8 +135,8 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
     }
 
     /// <summary>
-    /// Verifies that <c>Randomize</c> in <see cref="RandomizationMode.StreamWindowed" /> mode defers execution —
-    /// the source is not enumerated until the returned sequence is consumed.
+    /// Verifies that <c>Randomize</c> in <see cref="RandomizationMode.StreamWindowed" /> mode defers execution — the
+    /// source is not enumerated until the returned sequence is consumed.
     /// </summary>
     [TestMethod]
     public void Randomize_WhenModeIsStreamWindowed_ShouldDeferExecution()
@@ -163,8 +163,8 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
     }
 
     /// <summary>
-    /// Verifies that <see cref="RandomizationMode.StreamWindowed"/> yields every element of the source,
-    /// confirming the method does not drop elements when no count is specified.
+    /// Verifies that <see cref="RandomizationMode.StreamWindowed" /> yields every element of the source, confirming the
+    /// method does not drop elements when no count is specified.
     /// </summary>
     [TestMethod]
     public void Randomize_WhenModeIsStreamWindowed_ShouldReturnPermutationOfSource()
@@ -177,7 +177,8 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
     }
 
     /// <summary>
-    /// Verifies that an undefined <see cref="RandomizationMode" /> value throws <see cref="ArgumentOutOfRangeException" />.
+    /// Verifies that an undefined <see cref="RandomizationMode" /> value throws
+    /// <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
     public void Randomize_WhenModeIsUndefined_ShouldThrowExactly()
@@ -191,8 +192,8 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
     }
 
     /// <summary>
-    /// Verifies that each mode requiring a count returns exactly the requested number of elements,
-    /// all of which are members of the source sequence.
+    /// Verifies that each mode requiring a count returns exactly the requested number of elements, all of which are
+    /// members of the source sequence.
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(GetModesRequiringCount))]
@@ -248,8 +249,8 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
     }
 
     /// <summary>
-    /// Verifies that the parameterless <c>Randomize</c> overload throws <see cref="ArgumentNullException" />
-    /// when the source is <see langword="null" />.
+    /// Verifies that the parameterless <c>Randomize</c> overload throws <see cref="ArgumentNullException" /> when the
+    /// source is <see langword="null" />.
     /// </summary>
     [TestMethod]
     public void Randomize_WhenSourceIsNull_ForDefaultOverload_ShouldThrowExactly()
@@ -276,8 +277,8 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
         });
     }
     /// <summary>
-    /// Builds a deterministic <see cref="IRandomGenerator"/> backed by a seeded <see cref="Random"/>
-    /// so tests produce reproducible permutations.
+    /// Builds a deterministic <see cref="IRandomGenerator" /> backed by a seeded <see cref="Random" /> so tests produce
+    /// reproducible permutations.
     /// </summary>
     private static IRandomGenerator CreateSeededRng(int seed = 12345) =>
         new SystemRandomAdapter(new Random(seed));

@@ -106,43 +106,42 @@ public readonly struct DelimitedParseOptions
     public char CommentChar { get; init; } = '#';
 
     /// <summary>
-    /// Gets the policy that controls whether data rows are required to contain exactly as many fields as the
-    /// header row.
+    /// Gets the policy that controls whether data rows are required to contain exactly as many fields as the header
+    /// row.
     /// </summary>
     /// <remarks>
     /// <para>
     /// The default value is <see cref="DelimitedFieldCountBehavior.Strict" />, which raises
-    /// <see cref="DelimitedFormatException" /> for any non-header row whose field count differs from the header.
-    /// Use <see cref="DelimitedFieldCountBehavior.Ragged" /> to admit input that legitimately mixes row widths.
-    /// The policy is not enforced when <see cref="HasHeader" /> is <see langword="false" /> because there is no
-    /// reference row.
+    /// <see cref="DelimitedFormatException" /> for any non-header row whose field count differs from the header. Use
+    /// <see cref="DelimitedFieldCountBehavior.Ragged" /> to admit input that legitimately mixes row widths. The policy
+    /// is not enforced when <see cref="HasHeader" /> is <see langword="false" /> because there is no reference row.
     /// </para>
     /// </remarks>
     /// <returns>The field-count enforcement policy.</returns>
     public DelimitedFieldCountBehavior FieldCountBehavior { get; init; } = DelimitedFieldCountBehavior.Strict;
 
     /// <summary>
-    /// Gets the policy that controls how the parser reacts to a character that appears between a closing quote
-    /// and the next field delimiter or line terminator.
+    /// Gets the policy that controls how the parser reacts to a character that appears between a closing quote and the
+    /// next field delimiter or line terminator.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// The default value is <see cref="DelimitedMalformedRecordBehavior.Throw" />, which surfaces malformed
-    /// records as <see cref="DelimitedFormatException" />. Use <see cref="DelimitedMalformedRecordBehavior.SkipRecord" />
-    /// to retain the historical lenient behaviour of discarding the remainder of the offending record.
+    /// The default value is <see cref="DelimitedMalformedRecordBehavior.Throw" />, which surfaces malformed records as
+    /// <see cref="DelimitedFormatException" />. Use <see cref="DelimitedMalformedRecordBehavior.SkipRecord" /> to
+    /// retain the historical lenient behaviour of discarding the remainder of the offending record.
     /// </para>
     /// </remarks>
     /// <returns>The malformed-record resolution policy.</returns>
     public DelimitedMalformedRecordBehavior MalformedRecordBehavior { get; init; } = DelimitedMalformedRecordBehavior.Throw;
 
     /// <summary>
-    /// Gets the policy that controls how the parser resolves duplicate header names when constructing the
-    /// column name-to-index map.
+    /// Gets the policy that controls how the parser resolves duplicate header names when constructing the column
+    /// name-to-index map.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// The default value is <see cref="DelimitedDuplicateHeaderBehavior.Throw" />, which treats duplicate header
-    /// names as a structural error. Only relevant when <see cref="HasHeader" /> is <see langword="true" />.
+    /// The default value is <see cref="DelimitedDuplicateHeaderBehavior.Throw" />, which treats duplicate header names
+    /// as a structural error. Only relevant when <see cref="HasHeader" /> is <see langword="true" />.
     /// </para>
     /// </remarks>
     /// <returns>The duplicate-header resolution policy.</returns>

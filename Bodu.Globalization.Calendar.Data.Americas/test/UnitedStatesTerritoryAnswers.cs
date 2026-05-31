@@ -7,9 +7,9 @@
 namespace Bodu.Globalization.Calendar.Data;
 
 /// <summary>
-/// Provides <see cref="Microsoft.VisualStudio.TestTools.UnitTesting.DynamicDataAttribute" /> data sources for
-/// the United States rule catalogue shipped in the Americas data pack. Covers cherry-picked rule presence /
-/// absence assertions and the US-specific named-holiday occurrences (Independence Day, Thanksgiving).
+/// Provides <see cref="Microsoft.VisualStudio.TestTools.UnitTesting.DynamicDataAttribute" /> data sources for the
+/// United States rule catalogue shipped in the Americas data pack. Covers cherry-picked rule presence / absence
+/// assertions and the US-specific named-holiday occurrences (Independence Day, Thanksgiving).
 /// </summary>
 public static class UnitedStatesTerritoryAnswers
 {
@@ -19,8 +19,9 @@ public static class UnitedStatesTerritoryAnswers
     /// <summary>
     /// Provides the cherry-pick expectations for the United States flattened rule catalogue.
     /// </summary>
-    /// <returns>A sequence of single-element object arrays whose only entry is a
-    /// <see cref="RuleCatalogueExpectation" />.</returns>
+    /// <returns>
+    /// A sequence of single-element object arrays whose only entry is a <see cref="RuleCatalogueExpectation" />.
+    /// </returns>
     public static IEnumerable<object[]> RuleCatalogueExpectations()
     {
         yield return new object[]
@@ -52,11 +53,12 @@ public static class UnitedStatesTerritoryAnswers
     }
 
     /// <summary>
-    /// Provides the United States named-holiday occurrences. Currently covers Independence Day on 4 July
-    /// 2026; future expansion (Thanksgiving, MLK Day, etc.) appends additional rows here.
+    /// Provides the United States named-holiday occurrences. Currently covers Independence Day on 4 July 2026; future
+    /// expansion (Thanksgiving, MLK Day, etc.) appends additional rows here.
     /// </summary>
-    /// <returns>A sequence of single-element object arrays whose only entry is a
-    /// <see cref="TerritoryNotableDateKnownAnswer" />.</returns>
+    /// <returns>
+    /// A sequence of single-element object arrays whose only entry is a <see cref="TerritoryNotableDateKnownAnswer" />.
+    /// </returns>
     public static IEnumerable<object[]> NamedHolidayOccurrences()
     {
         yield return new object[]

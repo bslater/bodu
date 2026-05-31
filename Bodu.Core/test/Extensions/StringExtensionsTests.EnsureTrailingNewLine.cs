@@ -33,10 +33,7 @@ public partial class StringExtensionsTests
     /// <param name="expected">The expected return value.</param>
     [DataTestMethod]
     [DynamicData(nameof(GetEnsureTrailingNewLineCases), DynamicDataSourceType.Method)]
-    public void EnsureTrailingNewLine_WhenInvoked_ShouldReturnExpected(string value, string newline, string expected)
-    {
-        Assert.AreEqual(expected, value.EnsureTrailingNewLine(newline));
-    }
+    public void EnsureTrailingNewLine_WhenInvoked_ShouldReturnExpected(string value, string newline, string expected) => Assert.AreEqual(expected, value.EnsureTrailingNewLine(newline));
 
     /// <summary>
     /// Verifies that <see cref="StringExtensions.EnsureTrailingNewLine(string, string)" /> returns the

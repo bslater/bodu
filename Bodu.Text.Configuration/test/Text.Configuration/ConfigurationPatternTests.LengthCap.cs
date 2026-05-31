@@ -18,7 +18,7 @@ public partial class ConfigurationPatternTests
     {
         var pattern = new string('a', ConfigurationPattern.MaxPatternLength);
 
-        ConfigurationPattern compiled = ConfigurationPattern.Compile(pattern);
+        var compiled = ConfigurationPattern.Compile(pattern);
 
         Assert.IsTrue(compiled.IsMatch(pattern));
         Assert.IsFalse(compiled.IsMatch(pattern + "b"));

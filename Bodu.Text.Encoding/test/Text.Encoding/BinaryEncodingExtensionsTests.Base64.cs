@@ -30,10 +30,7 @@ public sealed partial class BinaryEncodingExtensionsTests
     /// zero for an empty input span.
     /// </summary>
     [TestMethod]
-    public void GetBase64EncodedLength_WhenSpanIsEmpty_ShouldReturnZero()
-    {
-        Assert.AreEqual(0, ReadOnlySpan<byte>.Empty.GetBase64EncodedLength());
-    }
+    public void GetBase64EncodedLength_WhenSpanIsEmpty_ShouldReturnZero() => Assert.AreEqual(0, ReadOnlySpan<byte>.Empty.GetBase64EncodedLength());
 
     /// <summary>
     /// Verifies that <see cref="BinaryEncodingExtensions.TryEncodeBase64ToUtf8(ReadOnlySpan{byte}, Span{byte}, out int)" />

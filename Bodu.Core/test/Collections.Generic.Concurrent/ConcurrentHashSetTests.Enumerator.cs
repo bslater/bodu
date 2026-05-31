@@ -17,7 +17,7 @@ public partial class ConcurrentHashSetTests
         var set = new ConcurrentHashSet<int>([1, 2, 3, 4, 5]);
 
         var observed = new List<int>();
-        foreach (int item in set)
+        foreach (var item in set)
             observed.Add(item);
 
         CollectionAssert.AreEquivalent(new[] { 1, 2, 3, 4, 5 }, observed);

@@ -114,7 +114,10 @@ public readonly struct Range<T>
     /// <param name="left">The left operand.</param>
     /// <param name="right">The right operand.</param>
     /// <returns><see langword="true" /> if the operands are equal; otherwise, <see langword="false" />.</returns>
-    public static bool operator ==(Range<T> left, Range<T> right) => left.Equals(right);
+    public static bool operator ==(Range<T> left, Range<T> right)
+    {
+        return left.Equals(right);
+    }
 
     /// <summary>
     /// Returns a value indicating whether two ranges have differing endpoints.
@@ -122,7 +125,10 @@ public readonly struct Range<T>
     /// <param name="left">The left operand.</param>
     /// <param name="right">The right operand.</param>
     /// <returns><see langword="true" /> if the operands are not equal; otherwise, <see langword="false" />.</returns>
-    public static bool operator !=(Range<T> left, Range<T> right) => !left.Equals(right);
+    public static bool operator !=(Range<T> left, Range<T> right)
+    {
+        return !left.Equals(right);
+    }
 
     /// <summary>
     /// Validates that the specified endpoints describe a non-empty half-open range under <paramref name="comparer" />.

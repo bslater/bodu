@@ -102,7 +102,7 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
             return;
         }
 
-        byte[] plaintext = BuildIncrementingPlaintext(encryptor.InputBlockSize);
+        var plaintext = BuildIncrementingPlaintext(encryptor.InputBlockSize);
         _ = encryptor.TransformFinalBlock(plaintext, 0, plaintext.Length);
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>

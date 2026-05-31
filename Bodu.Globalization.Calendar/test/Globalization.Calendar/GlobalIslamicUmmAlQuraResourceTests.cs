@@ -24,7 +24,7 @@ public sealed class GlobalIslamicUmmAlQuraResourceTests
     /// </summary>
     /// <returns>The configured service.</returns>
     private static NotableDateService CreateBareService() =>
-        new NotableDateService(
+        new(
             ruleProviders:
             [
                 (INotableDateRuleProvider)new XmlResourceNotableDateRuleProvider(UmmAlQuraResourceName, new ResourcePathResolver()),
@@ -122,18 +122,18 @@ public sealed class GlobalIslamicUmmAlQuraResourceTests
     public void Ramadan_WhenComparedWithTabularHijri_ShouldDifferByUpToOneDayInRepresentativeYears()
     {
         NotableDateService uaq = CreateBareService();
-        NotableDateService tabular = new NotableDateService(
+        var tabular = new NotableDateService(
             ruleProviders:
             [
                 (INotableDateRuleProvider)new XmlResourceNotableDateRuleProvider("Bodu/Globalization/Calendar/Resources/global-islamic.xml", new ResourcePathResolver()),
             ],
             workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 
-        foreach (int year in new[] { 2023, 2024, 2025 })
+        foreach (var year in new[] { 2023, 2024, 2025 })
         {
             DateTime uaqRamadan = uaq.GetNotableDates(year).First(d => d.Name == "Ramadan").Date;
             DateTime tabularRamadan = tabular.GetNotableDates(year).First(d => d.Name == "Ramadan").Date;
-            int delta = Math.Abs((int)(uaqRamadan - tabularRamadan).TotalDays);
+            var delta = Math.Abs((int)(uaqRamadan - tabularRamadan).TotalDays);
             Assert.IsTrue(delta <= 1, $"Ramadan {year}: UmAlQura={uaqRamadan:yyyy-MM-dd}, tabular Hijri={tabularRamadan:yyyy-MM-dd}, delta={delta} days (expected 0-1).");
         }
     }

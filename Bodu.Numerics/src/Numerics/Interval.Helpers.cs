@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Interval.Helpers.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -12,9 +12,9 @@ namespace Bodu.Numerics;
 /// Provides type-inferring factory methods for <see cref="Interval{T}" />.
 /// </summary>
 /// <remarks>
-/// The methods on this class mirror the static factories declared on <see cref="Interval{T}" /> but accept the
-/// endpoint values directly, letting the compiler infer <typeparamref name="T" /> from the arguments. This avoids
-/// the need to repeat the generic parameter at the call site, so <c>Interval.Closed(1, 5)</c> compiles to a
+/// The methods on this class mirror the static factories declared on <see cref="Interval{T}" /> but accept the endpoint
+/// values directly, letting the compiler infer <typeparamref name="T" /> from the arguments. This avoids the need to
+/// repeat the generic parameter at the call site, so <c>Interval.Closed(1, 5)</c> compiles to a
 /// <see cref="Interval{T}" /> over <see cref="int" /> without an explicit type argument.
 /// </remarks>
 public static class Interval
@@ -32,8 +32,7 @@ public static class Interval
         Interval<T>.Closed(lower, upper);
 
     /// <summary>
-    /// Creates an open-open interval <c>(lower, upper)</c> with <typeparamref name="T" /> inferred from the
-    /// arguments.
+    /// Creates an open-open interval <c>(lower, upper)</c> with <typeparamref name="T" /> inferred from the arguments.
     /// </summary>
     /// <typeparam name="T">The endpoint type, inferred at the call site.</typeparam>
     /// <param name="lower">The lower endpoint.</param>
@@ -44,8 +43,7 @@ public static class Interval
         Interval<T>.Open(lower, upper);
 
     /// <summary>
-    /// Creates a closed-open interval <c>[lower, upper)</c> with <typeparamref name="T" /> inferred from the
-    /// arguments.
+    /// Creates a closed-open interval <c>[lower, upper)</c> with <typeparamref name="T" /> inferred from the arguments.
     /// </summary>
     /// <typeparam name="T">The endpoint type, inferred at the call site.</typeparam>
     /// <param name="lower">The lower endpoint (included).</param>
@@ -68,8 +66,8 @@ public static class Interval
         Interval<T>.OpenClosed(lower, upper);
 
     /// <summary>
-    /// Creates a degenerate single-point interval <c>[value, value]</c> with <typeparamref name="T" /> inferred
-    /// from the argument.
+    /// Creates a degenerate single-point interval <c>[value, value]</c> with <typeparamref name="T" /> inferred from
+    /// the argument.
     /// </summary>
     /// <typeparam name="T">The endpoint type, inferred at the call site.</typeparam>
     /// <param name="value">The single value the interval contains.</param>

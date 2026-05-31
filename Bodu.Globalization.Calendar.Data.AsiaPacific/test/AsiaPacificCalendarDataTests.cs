@@ -30,8 +30,5 @@ public sealed class AsiaPacificCalendarDataTests
     /// custom assembly chains.
     /// </summary>
     [TestMethod]
-    public void DataAssembly_ShouldReturnTheCompanionPackAssembly()
-    {
-        Assert.AreEqual(typeof(AsiaPacificCalendarData).Assembly, AsiaPacificCalendarData.DataAssembly);
-    }
+    public void DataAssembly_ShouldReturnTheCompanionPackAssembly() => Assert.AreEqual(typeof(AsiaPacificCalendarData).Assembly, AsiaPacificCalendarData.DataAssembly);
 }

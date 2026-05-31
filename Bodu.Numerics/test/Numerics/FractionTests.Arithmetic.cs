@@ -16,8 +16,8 @@ public partial class FractionTests
     [TestMethod]
     public void NamedArithmeticMethods_WhenInvoked_ShouldMatchOperators()
     {
-        Fraction<int> a = new Fraction<int>(3, 4);
-        Fraction<int> b = new Fraction<int>(1, 6);
+        var a = new Fraction<int>(3, 4);
+        var b = new Fraction<int>(1, 6);
 
         Assert.AreEqual(a + b, Fraction<int>.Add(a, b));
         Assert.AreEqual(a - b, Fraction<int>.Subtract(a, b));
@@ -89,7 +89,7 @@ public partial class FractionTests
     [TestMethod]
     public void Remainder_WhenInvoked_ShouldMatchModulusOperator()
     {
-        Fraction<int> value = new Fraction<int>(7, 4);
+        var value = new Fraction<int>(7, 4);
 
         Assert.AreEqual(value % Fraction<int>.One, value.Remainder(Fraction<int>.One));
     }
@@ -145,10 +145,7 @@ public partial class FractionTests
     [DataRow(7, 10, 3, 10, 1, 1)]
     [DataRow(1, 6, 1, 6, 1, 3)]
     [DataRow(5, 8, -5, 8, 0, 1)]
-    public void Addition_WhenGivenKnownOperands_ShouldReturnCanonicalSum(int an, int ad, int bn, int bd, int en, int ed)
-    {
-        Assert.AreEqual(new Fraction<int>(en, ed), new Fraction<int>(an, ad) + new Fraction<int>(bn, bd));
-    }
+    public void Addition_WhenGivenKnownOperands_ShouldReturnCanonicalSum(int an, int ad, int bn, int bd, int en, int ed) => Assert.AreEqual(new Fraction<int>(en, ed), new Fraction<int>(an, ad) + new Fraction<int>(bn, bd));
 
     /// <summary>
     /// Verifies that subtraction produces the canonical difference for a table of known operands.
@@ -161,10 +158,7 @@ public partial class FractionTests
     [DataRow(0, 1, 1, 4, -1, 4)]
     [DataRow(-1, 2, 1, 2, -1, 1)]
     [DataRow(3, 4, -1, 4, 1, 1)]
-    public void Subtraction_WhenGivenKnownOperands_ShouldReturnCanonicalDifference(int an, int ad, int bn, int bd, int en, int ed)
-    {
-        Assert.AreEqual(new Fraction<int>(en, ed), new Fraction<int>(an, ad) - new Fraction<int>(bn, bd));
-    }
+    public void Subtraction_WhenGivenKnownOperands_ShouldReturnCanonicalDifference(int an, int ad, int bn, int bd, int en, int ed) => Assert.AreEqual(new Fraction<int>(en, ed), new Fraction<int>(an, ad) - new Fraction<int>(bn, bd));
 
     /// <summary>
     /// Verifies that multiplication produces the canonical product for a table of known operands.
@@ -177,10 +171,7 @@ public partial class FractionTests
     [DataRow(-1, 2, -1, 2, 1, 4)]
     [DataRow(5, 6, 6, 5, 1, 1)]
     [DataRow(3, 7, 14, 9, 2, 3)]
-    public void Multiplication_WhenGivenKnownOperands_ShouldReturnCanonicalProduct(int an, int ad, int bn, int bd, int en, int ed)
-    {
-        Assert.AreEqual(new Fraction<int>(en, ed), new Fraction<int>(an, ad) * new Fraction<int>(bn, bd));
-    }
+    public void Multiplication_WhenGivenKnownOperands_ShouldReturnCanonicalProduct(int an, int ad, int bn, int bd, int en, int ed) => Assert.AreEqual(new Fraction<int>(en, ed), new Fraction<int>(an, ad) * new Fraction<int>(bn, bd));
 
     /// <summary>
     /// Verifies that division produces the canonical quotient for a table of known operands.
@@ -193,10 +184,7 @@ public partial class FractionTests
     [DataRow(5, 6, 5, 6, 1, 1)]
     [DataRow(0, 1, 3, 4, 0, 1)]
     [DataRow(3, 4, -3, 8, -2, 1)]
-    public void Division_WhenGivenKnownOperands_ShouldReturnCanonicalQuotient(int an, int ad, int bn, int bd, int en, int ed)
-    {
-        Assert.AreEqual(new Fraction<int>(en, ed), new Fraction<int>(an, ad) / new Fraction<int>(bn, bd));
-    }
+    public void Division_WhenGivenKnownOperands_ShouldReturnCanonicalQuotient(int an, int ad, int bn, int bd, int en, int ed) => Assert.AreEqual(new Fraction<int>(en, ed), new Fraction<int>(an, ad) / new Fraction<int>(bn, bd));
 
     /// <summary>
     /// Verifies that the remainder operation returns the signed remainder for a table of known operands.
@@ -210,10 +198,7 @@ public partial class FractionTests
     [DataRow(1, 2, 1, 3, 1, 6)]
     [DataRow(-1, 2, 1, 3, -1, 6)]
     [DataRow(10, 3, 1, 1, 1, 3)]
-    public void Remainder_WhenGivenKnownOperands_ShouldReturnSignedRemainder(int an, int ad, int bn, int bd, int en, int ed)
-    {
-        Assert.AreEqual(new Fraction<int>(en, ed), new Fraction<int>(an, ad).Remainder(new Fraction<int>(bn, bd)));
-    }
+    public void Remainder_WhenGivenKnownOperands_ShouldReturnSignedRemainder(int an, int ad, int bn, int bd, int en, int ed) => Assert.AreEqual(new Fraction<int>(en, ed), new Fraction<int>(an, ad).Remainder(new Fraction<int>(bn, bd)));
 
     /// <summary>
     /// Verifies that exponentiation returns known answers across positive, zero, and negative exponents.
@@ -229,10 +214,7 @@ public partial class FractionTests
     [DataRow(2, 1, 5, 32, 1)]
     [DataRow(-1, 2, -2, 4, 1)]
     [DataRow(5, 7, 0, 1, 1)]
-    public void Pow_WhenGivenKnownOperands_ShouldReturnKnownAnswers(int numerator, int denominator, int exponent, int en, int ed)
-    {
-        Assert.AreEqual(new Fraction<int>(en, ed), new Fraction<int>(numerator, denominator).Pow(exponent));
-    }
+    public void Pow_WhenGivenKnownOperands_ShouldReturnKnownAnswers(int numerator, int denominator, int exponent, int en, int ed) => Assert.AreEqual(new Fraction<int>(en, ed), new Fraction<int>(numerator, denominator).Pow(exponent));
 
     /// <summary>
     /// Verifies that multiplication overflowing a fixed-width component throws <see cref="OverflowException" />.
@@ -293,10 +275,7 @@ public partial class FractionTests
     /// fits a wider backing type, rather than overflowing through an unsafe negation.
     /// </summary>
     [TestMethod]
-    public void GreatestCommonDivisor_WhenArgumentIsSignedMinimum_ShouldReturnCorrectMagnitude()
-    {
-        Assert.AreEqual(-(long)int.MinValue, Fraction<long>.GreatestCommonDivisor(int.MinValue, 0));
-    }
+    public void GreatestCommonDivisor_WhenArgumentIsSignedMinimum_ShouldReturnCorrectMagnitude() => Assert.AreEqual(-(long)int.MinValue, Fraction<long>.GreatestCommonDivisor(int.MinValue, 0));
 
     /// <summary>
     /// Verifies that the greatest common divisor throws <see cref="OverflowException" /> when its magnitude cannot
@@ -330,7 +309,7 @@ public partial class FractionTests
     [TestMethod]
     public void Invert_WhenValueIsNonZero_ShouldMatchReciprocal()
     {
-        Fraction<int> value = new Fraction<int>(3, 4);
+        var value = new Fraction<int>(3, 4);
 
         Assert.AreEqual(value.Reciprocal(), value.Invert());
     }
@@ -341,7 +320,7 @@ public partial class FractionTests
     [TestMethod]
     public void SquaredAndCubed_WhenInvoked_ShouldReturnExpectedPowers()
     {
-        Fraction<int> value = new Fraction<int>(2, 3);
+        var value = new Fraction<int>(2, 3);
 
         Assert.AreEqual(new Fraction<int>(4, 9), value.Squared());
         Assert.AreEqual(new Fraction<int>(8, 27), value.Cubed());
@@ -353,7 +332,7 @@ public partial class FractionTests
     [TestMethod]
     public void Reduce_WhenInvoked_ShouldReturnEquivalentValue()
     {
-        Fraction<int> value = new Fraction<int>(6, 8);
+        var value = new Fraction<int>(6, 8);
 
         Assert.AreEqual(value, value.Reduce());
         Assert.AreEqual(new Fraction<int>(3, 4), value.Reduce());

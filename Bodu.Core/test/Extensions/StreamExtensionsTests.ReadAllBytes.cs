@@ -18,7 +18,7 @@ public partial class StreamExtensionsTests
         byte[] content = [1, 2, 3, 4, 5];
         using MemoryStream stream = new(content);
 
-        byte[] result = stream.ReadAllBytes();
+        var result = stream.ReadAllBytes();
 
         CollectionAssert.AreEqual(content, result);
     }
@@ -32,7 +32,7 @@ public partial class StreamExtensionsTests
         using MemoryStream stream = new([1, 2, 3, 4, 5]);
         stream.Position = 2;
 
-        byte[] result = stream.ReadAllBytes();
+        var result = stream.ReadAllBytes();
 
         CollectionAssert.AreEqual(new byte[] { 3, 4, 5 }, result);
     }
@@ -46,7 +46,7 @@ public partial class StreamExtensionsTests
         using MemoryStream stream = new([1, 2, 3]);
         stream.Position = stream.Length;
 
-        byte[] result = stream.ReadAllBytes();
+        var result = stream.ReadAllBytes();
 
         Assert.AreEqual(0, result.Length);
     }
@@ -60,7 +60,7 @@ public partial class StreamExtensionsTests
         byte[] content = [10, 20, 30, 40];
         using NonSeekableMemoryStream stream = new(content);
 
-        byte[] result = stream.ReadAllBytes();
+        var result = stream.ReadAllBytes();
 
         CollectionAssert.AreEqual(content, result);
     }

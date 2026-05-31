@@ -9,10 +9,14 @@ namespace Bodu.Security.Cryptography;
 public record KeyedAlgorithmSpecification
     : HashAlgorithmSpecification
 {
-    /// <summary>Gets the minimum accepted key length in bytes.</summary>
+    /// <summary>
+    /// Gets the minimum accepted key length in bytes.
+    /// </summary>
     public required int MinKeyLength { get; init; }
 
-    /// <summary>Gets the maximum accepted key length in bytes.</summary>
+    /// <summary>
+    /// Gets the maximum accepted key length in bytes.
+    /// </summary>
     public required int MaxKeyLength { get; init; }
 
     /// <summary>
@@ -28,8 +32,8 @@ public record KeyedAlgorithmSpecification
     public required byte[] TestKey { get; init; }
 
     /// <summary>
-    /// Gets the keyed known-answer test vectors associated with this variant. Each entry may carry its own per-row
-    /// key, or fall back to <see cref="TestKey" /> when <see cref="KeyedHashAlgorithmKnownAnswer.Key" /> is
+    /// Gets the keyed known-answer test vectors associated with this variant. Each entry may carry its own per-row key,
+    /// or fall back to <see cref="TestKey" /> when <see cref="KeyedHashAlgorithmKnownAnswer.Key" /> is
     /// <see langword="null" />.
     /// </summary>
     /// <value>
@@ -60,13 +64,13 @@ public record KeyedAlgorithmSpecification
             : Enumerable.Range(MinKeyLength, MaxKeyLength - MinKeyLength + 1);
 
     /// <summary>
-    /// Returns a representative set of key lengths that should be rejected by the algorithm — lengths just
-    /// outside the valid range, useful for negative testing.
+    /// Returns a representative set of key lengths that should be rejected by the algorithm — lengths just outside the
+    /// valid range, useful for negative testing.
     /// </summary>
     /// <remarks>
     /// The zero-length entry is emitted only when <see cref="MinKeyLength" /> is strictly positive, allowing
-    /// variable-length-optional-key algorithms (such as Skein, where an empty key selects an unkeyed mode) to
-    /// declare <c>MinKeyLength = 0</c> without causing the length-rejection test to assert that an empty key throws.
+    /// variable-length-optional-key algorithms (such as Skein, where an empty key selects an unkeyed mode) to declare
+    /// <c>MinKeyLength = 0</c> without causing the length-rejection test to assert that an empty key throws.
     /// </remarks>
     public IEnumerable<int> GetRejectedKeyLengths()
     {

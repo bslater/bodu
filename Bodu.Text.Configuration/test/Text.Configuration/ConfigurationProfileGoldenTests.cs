@@ -220,8 +220,8 @@ key = value
     [TestMethod]
     public void Strict_WhenResolveOptionsConstructed_ShouldDifferFromBoduOnStrictnessAxesOnly()
     {
-        ConfigurationResolveOptions strict = ConfigurationResolveOptions.For(ConfigurationProfile.Strict);
-        ConfigurationResolveOptions bodu = ConfigurationResolveOptions.For(ConfigurationProfile.Bodu);
+        var strict = ConfigurationResolveOptions.For(ConfigurationProfile.Strict);
+        var bodu = ConfigurationResolveOptions.For(ConfigurationProfile.Bodu);
 
         // Shared: preamble layering is enabled in both.
         Assert.AreEqual(bodu.ApplyPreambleProperties, strict.ApplyPreambleProperties);
@@ -243,8 +243,8 @@ key = value
     [TestMethod]
     public void Relaxed_WhenResolveOptionsConstructed_ShouldMatchBoduResolveBehaviour()
     {
-        ConfigurationResolveOptions relaxed = ConfigurationResolveOptions.For(ConfigurationProfile.Relaxed);
-        ConfigurationResolveOptions bodu = ConfigurationResolveOptions.For(ConfigurationProfile.Bodu);
+        var relaxed = ConfigurationResolveOptions.For(ConfigurationProfile.Relaxed);
+        var bodu = ConfigurationResolveOptions.For(ConfigurationProfile.Bodu);
 
         Assert.AreEqual(bodu.ApplyPreambleProperties, relaxed.ApplyPreambleProperties);
         Assert.AreEqual(bodu.MissingPathRootMode, relaxed.MissingPathRootMode);

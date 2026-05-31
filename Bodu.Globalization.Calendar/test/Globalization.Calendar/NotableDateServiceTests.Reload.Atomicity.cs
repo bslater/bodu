@@ -30,7 +30,7 @@ public partial class NotableDateServiceTests
             workingWeek: WeekPattern.MondayToFriday,
             options: new NotableDateServiceOptions { OverrideProviders = [overrides] });
 
-        for (int i = 0; i < 100; i++)
+        for (var i = 0; i < 100; i++)
         {
             overrides.Clear();
             overrides.AddRule(Fixed($"Version:{i}", ((i % 12) + 1), 1));
@@ -79,7 +79,7 @@ public partial class NotableDateServiceTests
             if (snapshot.Count == 0)
                 return;
 
-            char prefix = snapshot[0].Name[0];
+            var prefix = snapshot[0].Name[0];
             foreach (NotableDate notable in snapshot)
             {
                 if (notable.Name[0] != prefix)
@@ -117,8 +117,8 @@ public partial class NotableDateServiceTests
             }
         })).ToArray();
 
-        bool useA = false;
-        for (int i = 0; i < 100; i++)
+        var useA = false;
+        for (var i = 0; i < 100; i++)
         {
             useA = !useA;
             overrides.Clear();

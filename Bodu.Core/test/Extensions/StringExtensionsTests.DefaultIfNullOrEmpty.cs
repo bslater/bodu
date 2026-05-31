@@ -31,10 +31,7 @@ public partial class StringExtensionsTests
     /// <param name="expected">The expected return value.</param>
     [DataTestMethod]
     [DynamicData(nameof(GetDefaultIfNullOrEmptyCases), DynamicDataSourceType.Method)]
-    public void DefaultIfNullOrEmpty_WhenInvoked_ShouldReturnExpected(string? value, string defaultValue, string expected)
-    {
-        Assert.AreEqual(expected, value.DefaultIfNullOrEmpty(defaultValue));
-    }
+    public void DefaultIfNullOrEmpty_WhenInvoked_ShouldReturnExpected(string? value, string defaultValue, string expected) => Assert.AreEqual(expected, value.DefaultIfNullOrEmpty(defaultValue));
 
     /// <summary>
     /// Verifies that <see cref="StringExtensions.DefaultIfNullOrEmpty(string?, string)" /> throws

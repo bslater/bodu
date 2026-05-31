@@ -9,27 +9,27 @@ using System.Security.Cryptography;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Performs a diagnostic cryptographic transformation using the <see cref="SimpleReversingBlockCipher" />,
-/// reversing the byte order of each block. This class cannot be inherited.
+/// Performs a diagnostic cryptographic transformation using the <see cref="SimpleReversingBlockCipher" />, reversing
+/// the byte order of each block. This class cannot be inherited.
 /// </summary>
 /// <remarks>
 /// <para>
-/// This transform is intended exclusively for use in test harnesses and diagnostic scenarios. It provides
-/// a deterministic, inspectable transform that makes it straightforward to verify block alignment, padding
-/// behaviour, mode-of-operation chaining, and streaming correctness without cryptographic complexity.
+/// This transform is intended exclusively for use in test harnesses and diagnostic scenarios. It provides a
+/// deterministic, inspectable transform that makes it straightforward to verify block alignment, padding behaviour,
+/// mode-of-operation chaining, and streaming correctness without cryptographic complexity.
 /// </para>
 /// <para>
 /// Both <see cref="SimpleReversingSymmetricAlgorithm.CreateEncryptor(byte[], byte[])" /> and
-/// <see cref="SimpleReversingSymmetricAlgorithm.CreateDecryptor(byte[], byte[])" /> return an instance
-/// of this class. All calls to <see cref="TransformBlock" /> and <see cref="TransformFinalBlock" /> are
-/// recorded in <see cref="Diagnostics" /> for post-hoc inspection.
+/// <see cref="SimpleReversingSymmetricAlgorithm.CreateDecryptor(byte[], byte[])" /> return an instance of this class.
+/// All calls to <see cref="TransformBlock" /> and <see cref="TransformFinalBlock" /> are recorded in
+/// <see cref="Diagnostics" /> for post-hoc inspection.
 /// </para>
 /// <para>
-/// When decrypting with a strippable padding mode (e.g., <see cref="PaddingMode.PKCS7" />), the last
-/// complete input block is deferred until <see cref="TransformFinalBlock" /> is called to allow correct
-/// padding removal.
+/// When decrypting with a strippable padding mode (e.g., <see cref="PaddingMode.PKCS7" />), the last complete input
+/// block is deferred until <see cref="TransformFinalBlock" /> is called to allow correct padding removal.
 /// </para>
-/// <note type="warning">This transform provides no cryptographic security and must not be used in production code.</note>
+/// <note type="warning">This transform provides no cryptographic security and must not be used in production code.
+/// </note>
 /// </remarks>
 public sealed class SimpleReversingCryptoTransform
     : ICryptoTransform, IAsyncDisposable
@@ -50,7 +50,9 @@ public sealed class SimpleReversingCryptoTransform
     /// <param name="cipherMode">The block cipher mode of operation.</param>
     /// <param name="paddingMode">The padding scheme to apply to the final block.</param>
     /// <param name="iv">The initialisation vector. Required for all modes except ECB.</param>
-    /// <param name="encrypt"><see langword="true" /> to configure for encryption; <see langword="false" /> for decryption.</param>
+    /// <param name="encrypt">
+    /// <see langword="true" /> to configure for encryption; <see langword="false" /> for decryption.
+    /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="cipher" /> is <see langword="null" />.</exception>
     internal SimpleReversingCryptoTransform(
         SimpleReversingBlockCipher cipher,
@@ -66,15 +68,15 @@ public sealed class SimpleReversingCryptoTransform
     }
 
     /// <summary>
-    /// Gets the diagnostic recorder for this transform instance. Use this in test assertions to inspect
-    /// the exact inputs and outputs seen at every layer of the transform pipeline.
+    /// Gets the diagnostic recorder for this transform instance. Use this in test assertions to inspect the exact
+    /// inputs and outputs seen at every layer of the transform pipeline.
     /// </summary>
     public SimpleReversingDiagnostics Diagnostics => cipher.Diagnostics;
 
     /// <inheritdoc />
     /// <remarks>
-    /// Returns <see langword="false" />. Each <see cref="SimpleReversingCryptoTransform" /> instance is
-    /// intended for a single-use transform lifetime. Create a new instance for each independent operation.
+    /// Returns <see langword="false" />. Each <see cref="SimpleReversingCryptoTransform" /> instance is intended for a
+    /// single-use transform lifetime. Create a new instance for each independent operation.
     /// </remarks>
     public bool CanReuseTransform => false;
 
@@ -93,10 +95,16 @@ public sealed class SimpleReversingCryptoTransform
     /// Transforms a block-aligned region of the input byte array and writes the result to the output buffer.
     /// </summary>
     /// <param name="inputBuffer">The input data buffer.</param>
-    /// <param name="inputOffset">The byte offset within <paramref name="inputBuffer" /> at which to begin reading.</param>
-    /// <param name="inputCount">The number of bytes to process. Must be a multiple of <see cref="InputBlockSize" />.</param>
+    /// <param name="inputOffset">
+    /// The byte offset within <paramref name="inputBuffer" /> at which to begin reading.
+    /// </param>
+    /// <param name="inputCount">
+    /// The number of bytes to process. Must be a multiple of <see cref="InputBlockSize" />.
+    /// </param>
     /// <param name="outputBuffer">The buffer to write transformed data into.</param>
-    /// <param name="outputOffset">The byte offset within <paramref name="outputBuffer" /> at which to begin writing.</param>
+    /// <param name="outputOffset">
+    /// The byte offset within <paramref name="outputBuffer" /> at which to begin writing.
+    /// </param>
     /// <returns>The number of bytes written to <paramref name="outputBuffer" />.</returns>
     /// <remarks>
     /// When decrypting with a strippable padding mode, the last complete input block is deferred until
@@ -151,10 +159,14 @@ public sealed class SimpleReversingCryptoTransform
     /// Transforms the final block of data, applying or removing padding as appropriate, and returns the result.
     /// </summary>
     /// <param name="inputBuffer">The final input data buffer.</param>
-    /// <param name="inputOffset">The byte offset within <paramref name="inputBuffer" /> at which to begin reading.</param>
+    /// <param name="inputOffset">
+    /// The byte offset within <paramref name="inputBuffer" /> at which to begin reading.
+    /// </param>
     /// <param name="inputCount">The number of bytes to process from <paramref name="inputBuffer" />.</param>
     /// <returns>A new byte array containing the transformed and padded (or de-padded) final block.</returns>
-    /// <exception cref="CryptographicException">The padding is invalid or cannot be removed during decryption.</exception>
+    /// <exception cref="CryptographicException">
+    /// The padding is invalid or cannot be removed during decryption.
+    /// </exception>
     public byte[] TransformFinalBlock(byte[] inputBuffer, int inputOffset, int inputCount)
     {
         ThrowIfDisposed();
@@ -239,12 +251,11 @@ public sealed class SimpleReversingCryptoTransform
         return result;
     }
 
-    private void ThrowIfDisposed()
-    {
+    private void ThrowIfDisposed() =>
 #if NET8_0_OR_GREATER
         ObjectDisposedException.ThrowIf(disposed, this);
 #else
         if (this.disposed) throw new ObjectDisposedException(nameof(SimpleReversingCryptoTransform));
 #endif
-    }
+
 }

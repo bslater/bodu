@@ -10,22 +10,22 @@ using SysGlobal = System.Globalization;
 namespace Bodu.Globalization.Calendar.Algorithms;
 
 /// <summary>
-/// Provides the shared assertion routine that every <see cref="NotableDateAlgorithmKnownAnswer" />-driven
-/// test consumes. Centralising the routine keeps each <c>*NotableDateAlgorithmTests.cs</c> file free of
-/// duplicated tolerance-check boilerplate.
+/// Provides the shared assertion routine that every <see cref="NotableDateAlgorithmKnownAnswer" />-driven test
+/// consumes. Centralising the routine keeps each <c>*NotableDateAlgorithmTests.cs</c> file free of duplicated
+/// tolerance-check boilerplate.
 /// </summary>
 public static class NotableDateAlgorithmAssertions
 {
     /// <summary>
-    /// Invokes the algorithm identified by <paramref name="knownAnswer" /> and asserts that the result
-    /// matches the expected date — exactly when <see cref="NotableDateAlgorithmKnownAnswer.ToleranceDays" />
-    /// is zero, or within the symmetric +/- day window otherwise. Materialises the
-    /// <see cref="SysGlobal.Calendar" /> argument from
+    /// Invokes the algorithm identified by <paramref name="knownAnswer" /> and asserts that the result matches the
+    /// expected date — exactly when <see cref="NotableDateAlgorithmKnownAnswer.ToleranceDays" /> is zero, or within the
+    /// symmetric +/- day window otherwise. Materialises the <see cref="SysGlobal.Calendar" /> argument from
     /// <see cref="NotableDateAlgorithmKnownAnswer.CalendarKind" />.
     /// </summary>
     /// <param name="knownAnswer">The row to verify.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="knownAnswer" /> is
-    /// <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="knownAnswer" /> is <see langword="null" />.
+    /// </exception>
     public static void AssertResultWithinTolerance(NotableDateAlgorithmKnownAnswer knownAnswer)
     {
         ArgumentNullException.ThrowIfNull(knownAnswer);
@@ -48,7 +48,7 @@ public static class NotableDateAlgorithmAssertions
             return;
         }
 
-        int dayDiff = Math.Abs((result!.Value - knownAnswer.ExpectedDate).Days);
+        var dayDiff = Math.Abs((result!.Value - knownAnswer.ExpectedDate).Days);
         Assert.IsTrue(
             dayDiff <= knownAnswer.ToleranceDays,
             $"{knownAnswer.Algorithm} {knownAnswer.Year}: expected within +/- {knownAnswer.ToleranceDays} day(s) of {knownAnswer.ExpectedDate:yyyy-MM-dd}, got {result.Value:yyyy-MM-dd} (diff {dayDiff} day(s)).");

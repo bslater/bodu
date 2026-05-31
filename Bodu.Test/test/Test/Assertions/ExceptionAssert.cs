@@ -136,7 +136,9 @@ public static class ExceptionAssert
     /// <typeparam name="T">The operand type accepted by the guard helper.</typeparam>
     /// <param name="kat">The KAT row carrying the operand pair expected to fail validation.</param>
     /// <param name="invoke">A delegate that invokes the guard helper with <c>(value, other, paramName)</c>.</param>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="kat" /> or <paramref name="invoke" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown if <paramref name="kat" /> or <paramref name="invoke" /> is <see langword="null" />.
+    /// </exception>
     public static void AssertGuard<T>(GuardInvalidKat<T> kat, Action<T, T, string?> invoke)
     {
         ArgumentNullException.ThrowIfNull(kat);

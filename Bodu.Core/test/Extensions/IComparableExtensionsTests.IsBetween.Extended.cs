@@ -65,9 +65,6 @@ public partial class IComparableExtensionsTests
     [DataRow(5, 5, 5, true, DisplayName = "Equal boundaries with matching value returns true")]
     [DataRow(4, 5, 5, false, DisplayName = "Equal boundaries with non-matching value returns false")]
     public void IsBetween_WhenEvaluatingIntegerValues_ShouldReturnExpectedResult(
-        int value, int lower, int upper, bool expected)
-    {
-        Assert.AreEqual(expected, value.IsBetween(lower, upper));
-    }
+        int value, int lower, int upper, bool expected) => Assert.AreEqual(expected, value.IsBetween(lower, upper));
 
 }

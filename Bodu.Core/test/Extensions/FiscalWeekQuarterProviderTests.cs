@@ -77,16 +77,16 @@ public partial class FiscalWeekQuarterProviderTests
     private const int Sunday53FiscalYear = 2020;
 
     private static readonly FiscalWeekQuarterProvider s_monday52Leap =
-        new FiscalWeekQuarterProvider(1, DayOfWeek.Monday, isFiscalYearEnd: false, pattern: FiscalWeekPattern.Weeks445);
+        new(1, DayOfWeek.Monday, isFiscalYearEnd: false, pattern: FiscalWeekPattern.Weeks445);
 
     private static readonly FiscalWeekQuarterProvider s_saturday52 =
-        new FiscalWeekQuarterProvider(4, DayOfWeek.Saturday, isFiscalYearEnd: false, pattern: FiscalWeekPattern.Weeks454);
+        new(4, DayOfWeek.Saturday, isFiscalYearEnd: false, pattern: FiscalWeekPattern.Weeks454);
 
     private static readonly FiscalWeekQuarterProvider s_sunday52 =
-        new FiscalWeekQuarterProvider(1, DayOfWeek.Sunday, isFiscalYearEnd: false, pattern: FiscalWeekPattern.Weeks544);
+        new(1, DayOfWeek.Sunday, isFiscalYearEnd: false, pattern: FiscalWeekPattern.Weeks544);
 
     private static readonly FiscalWeekQuarterProvider s_sunday53 =
-        new FiscalWeekQuarterProvider(1, DayOfWeek.Sunday, isFiscalYearEnd: false, pattern: FiscalWeekPattern.Weeks445);
+        new(1, DayOfWeek.Sunday, isFiscalYearEnd: false, pattern: FiscalWeekPattern.Weeks445);
 
     /// <summary>
     /// Provides quarter boundary test cases: (provider, quarter, fiscalYear, expectedStart, expectedEnd).

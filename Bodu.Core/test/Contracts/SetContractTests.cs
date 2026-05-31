@@ -48,7 +48,7 @@ public abstract class SetContractTests<TSet, TItem>
     {
         TSet set = CreateSet();
 
-        bool added = set.Add(CreateItem(0));
+        var added = set.Add(CreateItem(0));
 
         Assert.IsTrue(added);
     }
@@ -62,9 +62,9 @@ public abstract class SetContractTests<TSet, TItem>
     {
         TItem item = CreateItem(0);
         TSet set = CreateSet(item);
-        int countBefore = set.Count;
+        var countBefore = set.Count;
 
-        bool added = set.Add(item);
+        var added = set.Add(item);
 
         Assert.IsFalse(added);
         Assert.AreEqual(countBefore, set.Count);

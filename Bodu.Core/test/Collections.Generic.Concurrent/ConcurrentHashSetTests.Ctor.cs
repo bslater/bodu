@@ -269,8 +269,5 @@ public partial class ConcurrentHashSetTests
     [DataRow(33, 32)]
     [DataRow(128, 32)]
     [DataRow(int.MaxValue, 32)]
-    public void ClampDefaultConcurrencyLevel_ShouldClampInputToValidRange(int processorCount, int expected)
-    {
-        Assert.AreEqual(expected, ConcurrentHashSet<int>.ClampDefaultConcurrencyLevel(processorCount));
-    }
+    public void ClampDefaultConcurrencyLevel_ShouldClampInputToValidRange(int processorCount, int expected) => Assert.AreEqual(expected, ConcurrentHashSet<int>.ClampDefaultConcurrencyLevel(processorCount));
 }

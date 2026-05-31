@@ -17,7 +17,7 @@ public partial class FractionTests
     [TestMethod]
     public void JsonSerialization_WhenSerializing_ShouldWriteStringForm()
     {
-        string json = JsonSerializer.Serialize(new Fraction<int>(3, 4));
+        var json = JsonSerializer.Serialize(new Fraction<int>(3, 4));
 
         Assert.AreEqual("\"3/4\"", json);
     }
@@ -31,9 +31,9 @@ public partial class FractionTests
     [DataRow(5, 1)]
     public void JsonSerialization_WhenRoundTripped_ShouldPreserveValue(int numerator, int denominator)
     {
-        Fraction<int> original = new Fraction<int>(numerator, denominator);
+        var original = new Fraction<int>(numerator, denominator);
 
-        string json = JsonSerializer.Serialize(original);
+        var json = JsonSerializer.Serialize(original);
         Fraction<int> restored = JsonSerializer.Deserialize<Fraction<int>>(json);
 
         Assert.AreEqual(original, restored);
@@ -45,9 +45,9 @@ public partial class FractionTests
     [TestMethod]
     public void JsonSerialization_WhenBackedByBigInteger_ShouldPreserveValue()
     {
-        Fraction<BigInteger> original = new Fraction<BigInteger>(BigInteger.Pow(10, 30), 3);
+        var original = new Fraction<BigInteger>(BigInteger.Pow(10, 30), 3);
 
-        string json = JsonSerializer.Serialize(original);
+        var json = JsonSerializer.Serialize(original);
         Fraction<BigInteger> restored = JsonSerializer.Deserialize<Fraction<BigInteger>>(json);
 
         Assert.AreEqual(original, restored);
@@ -83,7 +83,7 @@ public partial class FractionTests
     [TestMethod]
     public void ToJsonAndFromJson_WhenRoundTripped_ShouldPreserveValue()
     {
-        Fraction<int> original = new Fraction<int>(-7, 8);
+        var original = new Fraction<int>(-7, 8);
 
         Assert.AreEqual(original, Fraction<int>.FromJson(original.ToJson()));
     }
@@ -99,7 +99,7 @@ public partial class FractionTests
     [DataRow(-11, 3)]
     public void ToXmlAndFromXml_WhenRoundTripped_ShouldPreserveValue(int numerator, int denominator)
     {
-        Fraction<int> original = new Fraction<int>(numerator, denominator);
+        var original = new Fraction<int>(numerator, denominator);
 
         Assert.AreEqual(original, Fraction<int>.FromXml(original.ToXml()));
     }

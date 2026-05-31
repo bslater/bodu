@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateJsonConverterPolicyTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -49,10 +49,7 @@ public class ExchangeRateJsonConverterPolicyTests
     /// Verifies that the <c>[JsonConverter]</c> attribute remains present.
     /// </summary>
     [TestMethod]
-    public void ExchangeRate_WhenInspected_ShouldDeclareJsonConverterAttribute()
-    {
-        Assert.IsTrue(typeof(ExchangeRate).IsDefined(typeof(JsonConverterAttribute), inherit: false));
-    }
+    public void ExchangeRate_WhenInspected_ShouldDeclareJsonConverterAttribute() => Assert.IsTrue(typeof(ExchangeRate).IsDefined(typeof(JsonConverterAttribute), inherit: false));
 
     /// <summary>
     /// Verifies a round-trip under <see cref="FinancialJsonPolicy.Strict" />.

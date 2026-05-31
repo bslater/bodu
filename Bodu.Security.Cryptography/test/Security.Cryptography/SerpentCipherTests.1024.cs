@@ -49,7 +49,7 @@ internal sealed partial class Serpent1024CipherTests
 
     /// <inheritdoc />
     protected override Serpent1024Cipher CreateCipher(byte[] key, byte[] tweak) =>
-        new Serpent1024Cipher(key, tweak);
+        new(key, tweak);
 
     /// <inheritdoc />
     protected override IReadOnlyList<BlockCipherKnownAnswer> GetKnownAnswers(TweakableBlockCipherVariant variant) =>

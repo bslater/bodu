@@ -20,7 +20,7 @@ public sealed partial class MultiValueDictionary<TKey, TValue>
     /// invalidates the enumerator. The next call to <see cref="Enumerator.MoveNext" /> or
     /// <see cref="Enumerator.Reset" /> throws <see cref="InvalidOperationException" />.
     /// </remarks>
-    public Enumerator GetEnumerator() => new Enumerator(this);
+    public Enumerator GetEnumerator() => new(this);
 
     /// <inheritdoc />
     IEnumerator<KeyValuePair<TKey, IReadOnlyList<TValue>>> IEnumerable<KeyValuePair<TKey, IReadOnlyList<TValue>>>.GetEnumerator() =>

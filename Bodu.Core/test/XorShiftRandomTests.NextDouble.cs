@@ -55,9 +55,6 @@ public partial class XorShiftRandomTests
     /// Verifies that <see cref="XorShiftRandom.ScaleToUnitInterval(uint)" /> maps zero to zero.
     /// </summary>
     [TestMethod]
-    public void ScaleToUnitInterval_WhenValueIsZero_ShouldReturnZero()
-    {
-        Assert.AreEqual(0.0, XorShiftRandom.ScaleToUnitInterval(0));
-    }
+    public void ScaleToUnitInterval_WhenValueIsZero_ShouldReturnZero() => Assert.AreEqual(0.0, XorShiftRandom.ScaleToUnitInterval(0));
 
 }

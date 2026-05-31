@@ -20,7 +20,7 @@ public abstract partial class PaddingStrategyTests<TPadding>
     /// <summary>
     /// Creates a new instance of the padding strategy under test.
     /// </summary>
-    protected virtual TPadding CreatePadding() => new TPadding();
+    protected virtual TPadding CreatePadding() => new();
 
     /// <summary>
     /// Gets the block size in bytes used for setting up test buffers and slicing operations.

@@ -43,10 +43,7 @@ public partial class PearsonTests
     /// <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenPermutationTableIsNull_ShouldThrowExactly()
-    {
-        Assert.ThrowsExactly<ArgumentNullException>(() => _ = new Pearson(8, null!));
-    }
+    public void Ctor_WhenPermutationTableIsNull_ShouldThrowExactly() => Assert.ThrowsExactly<ArgumentNullException>(() => _ = new Pearson(8, null!));
 
     /// <summary>
     /// Verifies that constructing with a permutation that is too short throws <see cref="ArgumentException" />.

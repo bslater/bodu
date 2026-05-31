@@ -71,10 +71,7 @@ public sealed partial class Base16Tests
     /// input length for strict input.
     /// </summary>
     [TestMethod]
-    public void GetDecodedLength_WhenStrictEvenInput_ShouldReturnHalf()
-    {
-        Assert.AreEqual(4, Base16.GetDecodedLength("DEADBEEF".AsSpan()));
-    }
+    public void GetDecodedLength_WhenStrictEvenInput_ShouldReturnHalf() => Assert.AreEqual(4, Base16.GetDecodedLength("DEADBEEF".AsSpan()));
 
     /// <summary>
     /// Verifies that <see cref="Base16.GetDecodedLength(ReadOnlySpan{char}, BaseFormatStyles)" /> throws
@@ -94,10 +91,7 @@ public sealed partial class Base16Tests
     /// count.
     /// </summary>
     [TestMethod]
-    public void GetEncodedLength_WithoutOptionsOverload_ShouldReturnTwiceByteCount()
-    {
-        Assert.AreEqual(8, Base16.GetEncodedLength(4));
-    }
+    public void GetEncodedLength_WithoutOptionsOverload_ShouldReturnTwiceByteCount() => Assert.AreEqual(8, Base16.GetEncodedLength(4));
 
     /// <summary>
     /// Regression: verifies that <see cref="Base16.TryGetDecodedLength(ReadOnlySpan{char}, out int, BaseFormatStyles)" />

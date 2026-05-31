@@ -19,10 +19,7 @@ public sealed class BencodedStringComparerTests
     /// <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void Compare_WhenBothNull_ShouldReturnZero()
-    {
-        Assert.AreEqual(0, BencodedStringComparer.Ordinal.Compare(null, null));
-    }
+    public void Compare_WhenBothNull_ShouldReturnZero() => Assert.AreEqual(0, BencodedStringComparer.Ordinal.Compare(null, null));
 
     /// <summary>
     /// Verifies that <see cref="BencodedStringComparer.Compare" /> orders by the first differing byte.
@@ -128,9 +125,6 @@ public sealed class BencodedStringComparerTests
     /// repeated access.
     /// </summary>
     [TestMethod]
-    public void Ordinal_ShouldReturnSingletonInstance()
-    {
-        Assert.AreSame(BencodedStringComparer.Ordinal, BencodedStringComparer.Ordinal);
-    }
+    public void Ordinal_ShouldReturnSingletonInstance() => Assert.AreSame(BencodedStringComparer.Ordinal, BencodedStringComparer.Ordinal);
 
 }

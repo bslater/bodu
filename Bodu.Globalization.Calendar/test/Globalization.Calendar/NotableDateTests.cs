@@ -17,7 +17,7 @@ namespace Bodu.Globalization.Calendar;
 [TestClass]
 public sealed class NotableDateTests
 {
-    private static readonly DateTime Anchor = new DateTime(2026, 4, 1);
+    private static readonly DateTime Anchor = new(2026, 4, 1);
 
     /// <summary>
     /// Verifies that <see cref="NotableDate.EndDate" /> collapses onto the anchor when
@@ -271,7 +271,7 @@ public sealed class NotableDateTests
     }
 
     private static NotableDate Sample(string name = "Test Day", int duration = 1) =>
-        new NotableDate
+        new()
         {
             Date = Anchor,
             Name = name,

@@ -60,10 +60,7 @@ public sealed partial class GcmModeTransformTests
     [DataRow((long)int.MaxValue)]
     [DataRow(GcmModeTransform.MaxPlaintextBytes - 1)]
     [DataRow(GcmModeTransform.MaxPlaintextBytes)]
-    public void ValidatePlaintextLength_WhenAtOrBelowLimit_ShouldNotThrow(long length)
-    {
-        GcmModeTransform.ValidatePlaintextLength(length);
-    }
+    public void ValidatePlaintextLength_WhenAtOrBelowLimit_ShouldNotThrow(long length) => GcmModeTransform.ValidatePlaintextLength(length);
 
     /// <summary>
     /// Verifies that <see cref="GcmModeTransform.ValidatePlaintextLength" /> throws
@@ -94,10 +91,7 @@ public sealed partial class GcmModeTransformTests
     [DataRow((long)int.MaxValue)]
     [DataRow(GcmModeTransform.MaxAadBytes - 1)]
     [DataRow(GcmModeTransform.MaxAadBytes)]
-    public void ValidateAadLength_WhenAtOrBelowLimit_ShouldNotThrow(long length)
-    {
-        GcmModeTransform.ValidateAadLength(length);
-    }
+    public void ValidateAadLength_WhenAtOrBelowLimit_ShouldNotThrow(long length) => GcmModeTransform.ValidateAadLength(length);
 
     /// <summary>
     /// Verifies that <see cref="GcmModeTransform.ValidateAadLength" /> throws
@@ -136,8 +130,8 @@ public sealed partial class GcmModeTransformTests
 
         transform.ProcessAssociatedData(ReadOnlySpan<byte>.Empty);
 
-        byte[] plaintext = new byte[64];
-        byte[] output = new byte[plaintext.Length + (transform.TagSize / 8)];
+        var plaintext = new byte[64];
+        var output = new byte[plaintext.Length + (transform.TagSize / 8)];
 
         var written = transform.Encrypt(plaintext, output);
 

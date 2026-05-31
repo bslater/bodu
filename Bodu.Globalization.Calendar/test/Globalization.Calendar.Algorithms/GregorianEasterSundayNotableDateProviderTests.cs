@@ -37,10 +37,7 @@ public sealed class GregorianEasterSundayNotableDateProviderTests
     [DataRow(9999, true)]
     [DataRow(10000, false)]
     [TestMethod]
-    public void SupportsYear_ShouldReflectBounds(int year, bool expected)
-    {
-        Assert.AreEqual(expected, _provider.SupportsYear(year));
-    }
+    public void SupportsYear_ShouldReflectBounds(int year, bool expected) => Assert.AreEqual(expected, _provider.SupportsYear(year));
 
     /// <summary>
     /// Verifies that requesting Easter below year 1 throws

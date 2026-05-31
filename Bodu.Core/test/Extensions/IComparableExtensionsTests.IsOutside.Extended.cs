@@ -59,10 +59,7 @@ public partial class IComparableExtensionsTests
     [DataRow(5, 5, 5, false, DisplayName = "Equal boundaries with matching value returns false")]
     [DataRow(4, 5, 5, true, DisplayName = "Equal boundaries with non-matching value returns true")]
     public void IsOutside_WhenEvaluatingIntegerValues_ShouldReturnExpectedResult(
-        int value, int lower, int upper, bool expected)
-    {
-        Assert.AreEqual(expected, value.IsOutside(lower, upper));
-    }
+        int value, int lower, int upper, bool expected) => Assert.AreEqual(expected, value.IsOutside(lower, upper));
 
     /// <summary>
     /// Verifies that <see cref="IComparableExtensions.IsOutside{T}(T, T?, T?)" /> returns <see langword="false" /> when either boundary

@@ -48,10 +48,7 @@ public partial class DateTimeExtensionsTests
     [DataRow(2023, 52)]   // 2023-01-01 is Sunday → 52
     [DataRow(2020, 53)]   // 2020-01-01 is Wednesday but Dec 31 is Thursday → 53
     [DataRow(2026, 53)]   // 2026-01-01 is Thursday → 53
-    public void GetIsoWeeksInYear_ShouldReturnExpectedWeekCount(int year, int expected)
-    {
-        Assert.AreEqual(expected, DateTimeExtensions.GetIsoWeeksInYear(year));
-    }
+    public void GetIsoWeeksInYear_ShouldReturnExpectedWeekCount(int year, int expected) => Assert.AreEqual(expected, DateTimeExtensions.GetIsoWeeksInYear(year));
 
     /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.GetIsoWeeksInYear(int)" /> throws when the year is outside the supported range.

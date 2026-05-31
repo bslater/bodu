@@ -18,9 +18,15 @@ namespace Bodu.Financial.Kat;
 /// <param name="Rates">The date/rate observations used to build the series.</param>
 /// <param name="RequestedDate">The date the caller asks about.</param>
 /// <param name="Options">The lookup options supplied to <see cref="ExchangeRateSeries.TryGetRate" />.</param>
-/// <param name="ExpectedSuccess"><see langword="true" /> when the lookup should succeed; otherwise <see langword="false" />.</param>
-/// <param name="ExpectedResolvedDate">The expected resolved date when <paramref name="ExpectedSuccess" /> is <see langword="true" />.</param>
-/// <param name="ExpectedRate">The expected rate value when <paramref name="ExpectedSuccess" /> is <see langword="true" />.</param>
+/// <param name="ExpectedSuccess">
+/// <see langword="true" /> when the lookup should succeed; otherwise <see langword="false" />.
+/// </param>
+/// <param name="ExpectedResolvedDate">
+/// The expected resolved date when <paramref name="ExpectedSuccess" /> is <see langword="true" />.
+/// </param>
+/// <param name="ExpectedRate">
+/// The expected rate value when <paramref name="ExpectedSuccess" /> is <see langword="true" />.
+/// </param>
 public sealed record ExchangeRateSeriesKat(
     string Name,
     ExchangeRatePair Pair,

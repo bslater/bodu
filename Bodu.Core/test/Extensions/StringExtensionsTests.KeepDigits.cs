@@ -12,18 +12,12 @@ public partial class StringExtensionsTests
     /// Verifies that <see cref="StringExtensions.KeepDigits(string)" /> retains only digit characters.
     /// </summary>
     [TestMethod]
-    public void KeepDigits_WhenInputContainsMixedCategories_ShouldRetainOnlyDigits()
-    {
-        Assert.AreEqual("12345", "(123) 456-789 - 5".KeepDigits()[..5]);
-    }
+    public void KeepDigits_WhenInputContainsMixedCategories_ShouldRetainOnlyDigits() => Assert.AreEqual("12345", "(123) 456-789 - 5".KeepDigits()[..5]);
 
     /// <summary>
     /// Verifies that <see cref="StringExtensions.KeepDigits(string)" /> throws
     /// <see cref="ArgumentNullException" /> when <c>value</c> is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void KeepDigits_WhenInputIsNull_ShouldThrowExactly()
-    {
-        Assert.ThrowsExactly<ArgumentNullException>(() => _ = StringExtensions.KeepDigits(null!));
-    }
+    public void KeepDigits_WhenInputIsNull_ShouldThrowExactly() => Assert.ThrowsExactly<ArgumentNullException>(() => _ = StringExtensions.KeepDigits(null!));
 }

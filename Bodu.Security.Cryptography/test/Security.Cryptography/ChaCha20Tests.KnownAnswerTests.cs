@@ -118,14 +118,14 @@ public sealed class ChaCha20Tests
     public void CreateEncryptor_WhenGivenRfc8439Vector_ShouldMatchExpectedCiphertext(
         string keyHex, string nonceHex, uint counter, string plaintextHex, string ciphertextHex, string displayName)
     {
-        byte[] key = Convert.FromHexString(keyHex);
-        byte[] nonce = Convert.FromHexString(nonceHex);
-        byte[] plaintext = Convert.FromHexString(plaintextHex);
-        byte[] expected = Convert.FromHexString(ciphertextHex);
+        var key = Convert.FromHexString(keyHex);
+        var nonce = Convert.FromHexString(nonceHex);
+        var plaintext = Convert.FromHexString(plaintextHex);
+        var expected = Convert.FromHexString(ciphertextHex);
 
         using var cipher = new ChaCha20 { InitialCounter = counter };
         using ICryptoTransform encryptor = cipher.CreateEncryptor(key, nonce);
-        byte[] actual = encryptor.TransformFinalBlock(plaintext, 0, plaintext.Length);
+        var actual = encryptor.TransformFinalBlock(plaintext, 0, plaintext.Length);
 
         CollectionAssert.AreEqual(expected, actual, $"ChaCha20 ciphertext mismatch for {displayName}.");
     }
@@ -145,14 +145,14 @@ public sealed class ChaCha20Tests
     public void CreateDecryptor_WhenGivenRfc8439Vector_ShouldRecoverPlaintext(
         string keyHex, string nonceHex, uint counter, string plaintextHex, string ciphertextHex, string displayName)
     {
-        byte[] key = Convert.FromHexString(keyHex);
-        byte[] nonce = Convert.FromHexString(nonceHex);
-        byte[] ciphertext = Convert.FromHexString(ciphertextHex);
-        byte[] expected = Convert.FromHexString(plaintextHex);
+        var key = Convert.FromHexString(keyHex);
+        var nonce = Convert.FromHexString(nonceHex);
+        var ciphertext = Convert.FromHexString(ciphertextHex);
+        var expected = Convert.FromHexString(plaintextHex);
 
         using var cipher = new ChaCha20 { InitialCounter = counter };
         using ICryptoTransform decryptor = cipher.CreateDecryptor(key, nonce);
-        byte[] actual = decryptor.TransformFinalBlock(ciphertext, 0, ciphertext.Length);
+        var actual = decryptor.TransformFinalBlock(ciphertext, 0, ciphertext.Length);
 
         CollectionAssert.AreEqual(expected, actual, $"ChaCha20 plaintext recovery mismatch for {displayName}.");
     }
@@ -164,18 +164,18 @@ public sealed class ChaCha20Tests
     [TestMethod]
     public void CreateEncryptor_WhenComparedToBclChaCha20Poly1305_ShouldProduceSameKeystream()
     {
-        byte[] key = RandomNumberGenerator.GetBytes(32);
-        byte[] nonce = RandomNumberGenerator.GetBytes(12);
-        byte[] plaintext = RandomNumberGenerator.GetBytes(257);
+        var key = RandomNumberGenerator.GetBytes(32);
+        var nonce = RandomNumberGenerator.GetBytes(12);
+        var plaintext = RandomNumberGenerator.GetBytes(257);
 
-        byte[] bclCiphertext = new byte[plaintext.Length];
-        byte[] tag = new byte[16];
+        var bclCiphertext = new byte[plaintext.Length];
+        var tag = new byte[16];
         using (var aead = new ChaCha20Poly1305(key))
             aead.Encrypt(nonce, plaintext, bclCiphertext, tag);
 
         using var cipher = new ChaCha20 { InitialCounter = 1 };
         using ICryptoTransform encryptor = cipher.CreateEncryptor(key, nonce);
-        byte[] actual = encryptor.TransformFinalBlock(plaintext, 0, plaintext.Length);
+        var actual = encryptor.TransformFinalBlock(plaintext, 0, plaintext.Length);
 
         CollectionAssert.AreEqual(bclCiphertext, actual,
             "ChaCha20 keystream must match the BCL ChaCha20Poly1305 keystream (counter = 1).");
@@ -188,18 +188,18 @@ public sealed class ChaCha20Tests
     [TestMethod]
     public void CreateEncryptor_WhenInitialCounterChangedAfterCreation_ShouldUseCapturedCounter()
     {
-        byte[] key = new byte[32];
-        byte[] nonce = new byte[12];
-        byte[] plaintext = new byte[128];
+        var key = new byte[32];
+        var nonce = new byte[12];
+        var plaintext = new byte[128];
 
         using var cipher = new ChaCha20 { InitialCounter = 5 };
         using ICryptoTransform transform = cipher.CreateEncryptor(key, nonce);
         cipher.InitialCounter = 9;
-        byte[] actual = transform.TransformFinalBlock(plaintext, 0, plaintext.Length);
+        var actual = transform.TransformFinalBlock(plaintext, 0, plaintext.Length);
 
         using var reference = new ChaCha20 { InitialCounter = 5 };
         using ICryptoTransform referenceTransform = reference.CreateEncryptor(key, nonce);
-        byte[] expected = referenceTransform.TransformFinalBlock(plaintext, 0, plaintext.Length);
+        var expected = referenceTransform.TransformFinalBlock(plaintext, 0, plaintext.Length);
 
         CollectionAssert.AreEqual(expected, actual,
             "The transform must use the counter captured at creation, not the algorithm's later value.");

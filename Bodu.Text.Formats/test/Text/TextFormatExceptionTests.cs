@@ -37,10 +37,7 @@ public sealed class TextFormatExceptionTests
     /// callers that catch <see cref="FormatException" /> continue to work.
     /// </summary>
     [TestMethod]
-    public void TextFormatException_ShouldDeriveFromFormatException()
-    {
-        Assert.IsTrue(typeof(FormatException).IsAssignableFrom(typeof(TextFormatException)));
-    }
+    public void TextFormatException_ShouldDeriveFromFormatException() => Assert.IsTrue(typeof(FormatException).IsAssignableFrom(typeof(TextFormatException)));
 
     /// <summary>
     /// Verifies that a Bencode parse failure populates <see cref="TextFormatException.Offset" /> with the byte
@@ -50,7 +47,7 @@ public sealed class TextFormatExceptionTests
     public void BencodeParseFailure_ShouldExposeOffsetThroughBase()
     {
         // "i9223372036854775808e" — out of range, throws at the integer parse step.
-        byte[] payload = System.Text.Encoding.ASCII.GetBytes("i9223372036854775808e");
+        var payload = System.Text.Encoding.ASCII.GetBytes("i9223372036854775808e");
 
         TextFormatException ex = Assert.ThrowsExactly<BencodeFormatException>(() =>
         {

@@ -21,19 +21,13 @@ public sealed class WeightedMod10Tests
     /// non-digit character is encountered, without throwing.
     /// </summary>
     [TestMethod]
-    public void IsValidAba_WhenSequenceContainsNonDigit_ShouldReturnFalse()
-    {
-        Assert.IsFalse(WeightedMod10.IsValidAba("01100A015".AsSpan()));
-    }
+    public void IsValidAba_WhenSequenceContainsNonDigit_ShouldReturnFalse() => Assert.IsFalse(WeightedMod10.IsValidAba("01100A015".AsSpan()));
 
     /// <summary>
     /// Verifies that <see cref="WeightedMod10.IsValidIsbn13" /> returns <see langword="false" /> when the sequence
     /// contains a non-digit, exercising the inline short-circuit on the validation loop.
     /// </summary>
     [TestMethod]
-    public void IsValidIsbn13_WhenSequenceContainsNonDigit_ShouldReturnFalse()
-    {
-        Assert.IsFalse(WeightedMod10.IsValidIsbn13("978030640615X".AsSpan()));
-    }
+    public void IsValidIsbn13_WhenSequenceContainsNonDigit_ShouldReturnFalse() => Assert.IsFalse(WeightedMod10.IsValidIsbn13("978030640615X".AsSpan()));
 
 }

@@ -7,8 +7,8 @@
 namespace Bodu.Tests.KnownAnswers;
 
 /// <summary>
-/// Represents a single string formatting known-answer scenario: an input, the expected output, and the
-/// configuration the formatter is expected to honour.
+/// Represents a single string formatting known-answer scenario: an input, the expected output, and the configuration
+/// the formatter is expected to honour.
 /// </summary>
 /// <param name="Id">Stable identifier such as <c>TITLE-0017</c>.</param>
 /// <param name="Operation">The formatting operation under test.</param>

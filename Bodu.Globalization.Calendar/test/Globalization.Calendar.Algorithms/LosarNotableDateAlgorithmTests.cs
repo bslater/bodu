@@ -70,7 +70,7 @@ public sealed class LosarNotableDateAlgorithmTests
     [TestMethod]
     public void GetDate_WhenIteratingSupportedRange_ShouldAlwaysFallInJanuaryOrFebruary()
     {
-        for (int year = 1901; year <= 2100; year++)
+        for (var year = 1901; year <= 2100; year++)
         {
             DateTime? result = _algorithm.GetDate(year);
 

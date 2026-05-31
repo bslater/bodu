@@ -39,8 +39,8 @@ public sealed class IListExtensionsTests_LastIndexOf
     }
 
     /// <summary>
-    /// Verifies that <c>LastIndexOf</c> throws <see cref="ArgumentOutOfRangeException"/> when <paramref name="count"/>
-    /// is negative.
+    /// Verifies that <c>LastIndexOf</c> throws <see cref="ArgumentOutOfRangeException" /> when
+    /// <paramref name="count" /> is negative.
     /// </summary>
     [TestMethod]
     public void LastIndexOf_WhenCountIsNegative_ShouldThrowExactly()
@@ -54,8 +54,8 @@ public sealed class IListExtensionsTests_LastIndexOf
     }
 
     /// <summary>
-    /// Verifies that the no-arg <c>LastIndexOf</c> overload returns <c>-1</c> on a single-element list
-    /// when the only element does not match.
+    /// Verifies that the no-arg <c>LastIndexOf</c> overload returns <c>-1</c> on a single-element list when the only
+    /// element does not match.
     /// </summary>
     [TestMethod]
     public void LastIndexOf_WhenListHasSingleNonMatchingElement_ShouldReturnMinusOne()
@@ -92,9 +92,9 @@ public sealed class IListExtensionsTests_LastIndexOf
     }
 
     /// <summary>
-    /// Verifies that <c>LastIndexOf</c> throws <see cref="ArgumentOutOfRangeException"/> when the list is
-    /// empty and <paramref name="startIndex"/> is anything other than <c>-1</c>, exercising the empty-list
-    /// branch of the validator.
+    /// Verifies that <c>LastIndexOf</c> throws <see cref="ArgumentOutOfRangeException" /> when the list is empty and
+    /// <paramref name="startIndex" /> is anything other than <c>-1</c>, exercising the empty-list branch of the
+    /// validator.
     /// </summary>
     [TestMethod]
     [DataRow(0)]
@@ -111,7 +111,8 @@ public sealed class IListExtensionsTests_LastIndexOf
     }
 
     /// <summary>
-    /// Verifies that <c>LastIndexOf</c> works against an <see cref="IList{T}"/> implementation that is not <see cref="List{T}"/>.
+    /// Verifies that <c>LastIndexOf</c> works against an <see cref="IList{T}" /> implementation that is not
+    /// <see cref="List{T}" />.
     /// </summary>
     [TestMethod]
     public void LastIndexOf_WhenListIsNotSystemList_ShouldReturnIndex()
@@ -124,7 +125,8 @@ public sealed class IListExtensionsTests_LastIndexOf
     }
 
     /// <summary>
-    /// Verifies that <c>LastIndexOf</c> throws <see cref="ArgumentNullException"/> when the list is <see langword="null"/>.
+    /// Verifies that <c>LastIndexOf</c> throws <see cref="ArgumentNullException" /> when the list is
+    /// <see langword="null" />.
     /// </summary>
     [TestMethod]
     public void LastIndexOf_WhenListIsNull_ShouldThrowExactly()
@@ -178,7 +180,8 @@ public sealed class IListExtensionsTests_LastIndexOf
     }
 
     /// <summary>
-    /// Verifies that <c>LastIndexOf</c> throws <see cref="ArgumentNullException"/> when the predicate is <see langword="null"/>.
+    /// Verifies that <c>LastIndexOf</c> throws <see cref="ArgumentNullException" /> when the predicate is
+    /// <see langword="null" />.
     /// </summary>
     [TestMethod]
     public void LastIndexOf_WhenPredicateIsNull_ShouldThrowExactly()
@@ -223,8 +226,8 @@ public sealed class IListExtensionsTests_LastIndexOf
     }
 
     /// <summary>
-    /// Verifies that <c>LastIndexOf</c> with <paramref name="count"/> equal to <c>0</c> on a non-empty list
-    /// returns <c>-1</c> without invoking the predicate.
+    /// Verifies that <c>LastIndexOf</c> with <paramref name="count" /> equal to <c>0</c> on a non-empty list returns
+    /// <c>-1</c> without invoking the predicate.
     /// </summary>
     [TestMethod]
     public void LastIndexOf_WithRange_WhenCountIsZeroOnNonEmptyList_ShouldReturnMinusOne()
@@ -252,8 +255,7 @@ public sealed class IListExtensionsTests_LastIndexOf
     }
 
     /// <summary>
-    /// Verifies that <c>LastIndexOf</c> can locate a match at the exact startIndex (last slot of the
-    /// backward range).
+    /// Verifies that <c>LastIndexOf</c> can locate a match at the exact startIndex (last slot of the backward range).
     /// </summary>
     [TestMethod]
     public void LastIndexOf_WithRange_WhenMatchIsAtStartIndex_ShouldReturnStartIndex()
@@ -293,8 +295,8 @@ public sealed class IListExtensionsTests_LastIndexOf
     }
 
     /// <summary>
-    /// Verifies that <c>LastIndexOf</c> with a ranged search returns the last matching index inside the window
-    /// when the suffix also contains matches.
+    /// Verifies that <c>LastIndexOf</c> with a ranged search returns the last matching index inside the window when the
+    /// suffix also contains matches.
     /// </summary>
     [TestMethod]
     public void LastIndexOf_WithRange_WhenSuffixContainsMatches_ShouldReturnLastMatchInsideWindow()

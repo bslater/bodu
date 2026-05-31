@@ -15,7 +15,7 @@ public sealed partial class CamelliaTests
     : SymmetricAlgorithmTests<CamelliaTests, Camellia>
 {
     /// <inheritdoc />
-    protected override Camellia CreateAlgorithm() => new Camellia();
+    protected override Camellia CreateAlgorithm() => new();
 
     /// <inheritdoc />
     protected override void SetBlockMode(Camellia algorithm, CipherModeKind mode) =>
@@ -27,7 +27,7 @@ public sealed partial class CamelliaTests
 
     /// <inheritdoc />
     protected override SymmetricAlgorithmSpecification GetSpecification() =>
-        new SymmetricAlgorithmSpecification
+        new()
         {
             BlockSizeBits = 128,
             DefaultKeySizeBits = 256,

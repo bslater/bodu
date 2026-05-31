@@ -15,20 +15,14 @@ public partial class CryptoHelpersTests
     /// associated-data flag is <see langword="true" />.
     /// </summary>
     [TestMethod]
-    public void ThrowIfAssociatedDataNotProcessed_WhenAlreadyProcessed_ShouldNotThrow()
-    {
-        CryptoHelpers.ThrowIfAssociatedDataNotProcessed(true);
-    }
+    public void ThrowIfAssociatedDataNotProcessed_WhenAlreadyProcessed_ShouldNotThrow() => CryptoHelpers.ThrowIfAssociatedDataNotProcessed(true);
 
     /// <summary>
     /// Verifies that <see cref="CryptoHelpers.ThrowIfNotPositiveMultipleOf{T}(T, T, string)" /> does not throw when the
     /// value is a positive multiple of the divisor.
     /// </summary>
     [TestMethod]
-    public void ThrowIfNotPositiveMultipleOf_WhenValueIsPositiveMultiple_ShouldNotThrow()
-    {
-        CryptoHelpers.ThrowIfNotPositiveMultipleOf(16, 8);
-    }
+    public void ThrowIfNotPositiveMultipleOf_WhenValueIsPositiveMultiple_ShouldNotThrow() => CryptoHelpers.ThrowIfNotPositiveMultipleOf(16, 8);
 
     /// <summary>
     /// Verifies that <see cref="CryptoHelpers.ThrowIfNotPositiveMultipleOf{T}(T, T, string)" /> throws
@@ -159,20 +153,14 @@ public partial class CryptoHelpersTests
     /// array is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void FormatLegalSizes_WhenNull_ShouldReturnEmptyString()
-    {
-        Assert.AreEqual(string.Empty, CryptoHelpers.FormatLegalSizes(null));
-    }
+    public void FormatLegalSizes_WhenNull_ShouldReturnEmptyString() => Assert.AreEqual(string.Empty, CryptoHelpers.FormatLegalSizes(null));
 
     /// <summary>
     /// Verifies that <see cref="CryptoHelpers.FormatLegalSizes(KeySizes[])" /> returns the empty string when the
     /// array is empty.
     /// </summary>
     [TestMethod]
-    public void FormatLegalSizes_WhenEmpty_ShouldReturnEmptyString()
-    {
-        Assert.AreEqual(string.Empty, CryptoHelpers.FormatLegalSizes(Array.Empty<KeySizes>()));
-    }
+    public void FormatLegalSizes_WhenEmpty_ShouldReturnEmptyString() => Assert.AreEqual(string.Empty, CryptoHelpers.FormatLegalSizes(Array.Empty<KeySizes>()));
 
     /// <summary>
     /// Verifies that <see cref="CryptoHelpers.FormatLegalSizes(KeySizes[])" /> emits a single, distinct value when

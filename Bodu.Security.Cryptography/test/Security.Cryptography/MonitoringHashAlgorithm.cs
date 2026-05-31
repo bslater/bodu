@@ -10,8 +10,9 @@ using System.Security.Cryptography;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// A test-oriented hash algorithm that computes the sum of all input bytes as a 32-bit unsigned integer, while monitoring usage. This
-/// implementation is non-cryptographic and is designed for verifying calls to <see cref="HashAlgorithm" /> methods during testing.
+/// A test-oriented hash algorithm that computes the sum of all input bytes as a 32-bit unsigned integer, while
+/// monitoring usage. This implementation is non-cryptographic and is designed for verifying calls to
+/// <see cref="HashAlgorithm" /> methods during testing.
 /// </summary>
 public class MonitoringHashAlgorithm
     : HashAlgorithm
@@ -211,13 +212,12 @@ public class MonitoringHashAlgorithm
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void ThrowIfDisposed()
-    {
+    private void ThrowIfDisposed() =>
 #if NET8_0_OR_GREATER
         ObjectDisposedException.ThrowIf(_disposed, this);
 #else
         if (this.disposed)
             throw new ObjectDisposedException(nameof(MonitoringHashAlgorithm));
 #endif
-    }
+
 }

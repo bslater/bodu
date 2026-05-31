@@ -11,8 +11,8 @@ public sealed partial class IEnumerableExtensionsTests_ContainsAll
 {
 
     /// <summary>
-    /// Provides scenarios for <c>ContainsAll</c> covering full-membership, partial-membership,
-    /// empty-items, empty-source, and duplicate-handling cases.
+    /// Provides scenarios for <c>ContainsAll</c> covering full-membership, partial-membership, empty-items,
+    /// empty-source, and duplicate-handling cases.
     /// </summary>
     public static IEnumerable<object[]> GetContainsAllTestCases() =>
     [
@@ -27,8 +27,8 @@ public sealed partial class IEnumerableExtensionsTests_ContainsAll
     ];
 
     /// <summary>
-    /// Verifies that <c>ContainsAll</c> correctly determines whether every item in the query
-    /// sequence is present in the source sequence across full, partial, empty, and duplicate cases.
+    /// Verifies that <c>ContainsAll</c> correctly determines whether every item in the query sequence is present in the
+    /// source sequence across full, partial, empty, and duplicate cases.
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(GetContainsAllTestCases))]

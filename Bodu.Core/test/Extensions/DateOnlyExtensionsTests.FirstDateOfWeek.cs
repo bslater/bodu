@@ -19,8 +19,8 @@ public partial class DateOnlyExtensionsTests
     [DynamicData(nameof(DateTimeExtensionsTests.FirstDateOfWeekCultureInfoTestData), typeof(DateTimeExtensionsTests))]
     public void FirstDateOfWeek_WhenCulture_ShouldReturnExpectedStart(DateTime inputDateTime, CultureInfo culture, DateTime expectedDateTime)
     {
-        DateOnly input = DateOnly.FromDateTime(inputDateTime);
-        DateOnly expected = DateOnly.FromDateTime(expectedDateTime);
+        var input = DateOnly.FromDateTime(inputDateTime);
+        var expected = DateOnly.FromDateTime(expectedDateTime);
 
         DateOnly actual = input.FirstDateOfWeek(culture);
 
@@ -37,9 +37,9 @@ public partial class DateOnlyExtensionsTests
         try
         {
             CultureInfo.CurrentCulture = DateTimeExtensionsTests.TestCulture;
-            DateOnly input = new DateOnly(2024, 4, 18); // Thursday
+            var input = new DateOnly(2024, 4, 18); // Thursday
                                                         // Backtrack to previous Wednesday → 2024-04-17
-            DateOnly expected = new DateOnly(2024, 4, 17);
+            var expected = new DateOnly(2024, 4, 17);
 
             DateOnly actual = input.FirstDateOfWeek((CultureInfo?)null);
 
@@ -62,8 +62,8 @@ public partial class DateOnlyExtensionsTests
         try
         {
             CultureInfo.CurrentCulture = culture;
-            DateOnly input = DateOnly.FromDateTime(inputDateTime);
-            DateOnly expected = DateOnly.FromDateTime(expectedDateTime);
+            var input = DateOnly.FromDateTime(inputDateTime);
+            var expected = DateOnly.FromDateTime(expectedDateTime);
 
             DateOnly actual = input.FirstDateOfWeek();
 

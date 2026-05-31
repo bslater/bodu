@@ -115,7 +115,7 @@ public sealed class Crc
       IResumableHashAlgorithm
 {
     private static Lazy<CrcLookupTableCache> s_globalLookupTableCache =
-        new Lazy<CrcLookupTableCache>(() => new CrcLookupTableCache());
+        new(() => new CrcLookupTableCache());
     private readonly int _hashSizeBits;
     private readonly ulong[] _lookupTable;
 
@@ -216,10 +216,7 @@ public sealed class Crc
     public ulong XOrOut => _standard.XOrOut;
 
     /// <inheritdoc />
-    public override void Append(ReadOnlySpan<byte> source)
-    {
-        ProcessBlocks(source);
-    }
+    public override void Append(ReadOnlySpan<byte> source) => ProcessBlocks(source);
 
     /// <summary>
     /// Computes and returns the CRC hash of the specified input in a single call, resetting internal state first.
@@ -279,10 +276,7 @@ public sealed class Crc
     }
 
     /// <inheritdoc />
-    public override void Reset()
-    {
-        _workingHash = ComputeInitialState();
-    }
+    public override void Reset() => _workingHash = ComputeInitialState();
 
     /// <inheritdoc />
     /// <remarks>
@@ -314,7 +308,7 @@ public sealed class Crc
         // never touched, so any pending Append state on this instance survives the call unchanged.
         Span<byte> fullWord = stackalloc byte[sizeof(ulong)];
         previousHash.CopyTo(fullWord);
-        ulong state = BinaryPrimitives.ReadUInt64LittleEndian(fullWord);
+        var state = BinaryPrimitives.ReadUInt64LittleEndian(fullWord);
 
         // Undo finalization: XOR first, then reflect back to the working-state orientation when the algorithm applies
         // XOR-reflected output.
@@ -502,15 +496,12 @@ public sealed class Crc
     /// </summary>
     /// <param name="data">The input bytes to feed into the CRC accumulator.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void ProcessBlocks(ReadOnlySpan<byte> data)
-    {
-        _workingHash = RunProcessBlocks(data, _workingHash, _lookupTable, _hashSizeBits, _standard.ReflectIn);
-    }
+    private void ProcessBlocks(ReadOnlySpan<byte> data) => _workingHash = RunProcessBlocks(data, _workingHash, _lookupTable, _hashSizeBits, _standard.ReflectIn);
 
     /// <summary>
-    /// Runs <paramref name="data" /> through the bytewise or bitwise CRC step appropriate to <paramref name="hashSizeBits" />
-    /// and <paramref name="reflectIn" />, threading state through the call by value so the caller chooses where to
-    /// store the result.
+    /// Runs <paramref name="data" /> through the bytewise or bitwise CRC step appropriate to
+    /// <paramref name="hashSizeBits" /> and <paramref name="reflectIn" />, threading state through the call by value so
+    /// the caller chooses where to store the result.
     /// </summary>
     /// <param name="data">The input bytes to feed into the CRC accumulator.</param>
     /// <param name="state">The CRC accumulator on entry.</param>

@@ -50,10 +50,7 @@ public partial class StringExtensionsTests
     /// <param name="expected">The expected identifier.</param>
     [DataTestMethod]
     [DynamicData(nameof(GetToIdentifierPreserveCases), DynamicDataSourceType.Method)]
-    public void ToIdentifier_NoArgument_WhenInvoked_ShouldPreserveCasing(string value, string expected)
-    {
-        Assert.AreEqual(expected, value.ToIdentifier());
-    }
+    public void ToIdentifier_NoArgument_WhenInvoked_ShouldPreserveCasing(string value, string expected) => Assert.AreEqual(expected, value.ToIdentifier());
 
     /// <summary>
     /// Verifies that <see cref="StringExtensions.ToIdentifier(string, IdentifierCase)" /> produces the
@@ -64,10 +61,7 @@ public partial class StringExtensionsTests
     /// <param name="expected">The expected identifier.</param>
     [DataTestMethod]
     [DynamicData(nameof(GetToIdentifierCasedCases), DynamicDataSourceType.Method)]
-    public void ToIdentifier_WhenCaseSpecified_ShouldRespectCase(string value, IdentifierCase identifierCase, string expected)
-    {
-        Assert.AreEqual(expected, value.ToIdentifier(identifierCase));
-    }
+    public void ToIdentifier_WhenCaseSpecified_ShouldRespectCase(string value, IdentifierCase identifierCase, string expected) => Assert.AreEqual(expected, value.ToIdentifier(identifierCase));
 
     /// <summary>
     /// Verifies that the result of <see cref="StringExtensions.ToIdentifier(string)" /> is always a valid C#
@@ -80,10 +74,7 @@ public partial class StringExtensionsTests
     [DataRow("123 abc")]
     [DataRow("hello world!")]
     [DataRow("")]
-    public void ToIdentifier_WhenInvoked_ShouldProduceValidIdentifier(string value)
-    {
-        Assert.IsTrue(value.ToIdentifier().IsValidIdentifier());
-    }
+    public void ToIdentifier_WhenInvoked_ShouldProduceValidIdentifier(string value) => Assert.IsTrue(value.ToIdentifier().IsValidIdentifier());
 
     /// <summary>
     /// Verifies that <see cref="StringExtensions.ToIdentifier(string)" /> throws

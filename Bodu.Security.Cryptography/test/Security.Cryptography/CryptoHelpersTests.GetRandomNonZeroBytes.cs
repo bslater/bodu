@@ -12,10 +12,7 @@ public partial class CryptoHelpersTests
     /// Verifies that <see cref="CryptoHelpers.GetRandomNonZeroBytes" /> throws ArgumentOutOfRangeException when length is 0.
     /// </summary>
     [TestMethod]
-    public void GetRandomNonZeroBytes_WhenLengthIsLessThanOrEqualToZero_ShouldThrowExactly()
-    {
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => CryptoHelpers.GetRandomNonZeroBytes(0));
-    }
+    public void GetRandomNonZeroBytes_WhenLengthIsLessThanOrEqualToZero_ShouldThrowExactly() => Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => CryptoHelpers.GetRandomNonZeroBytes(0));
 
     /// <summary>
     /// Verifies that <see cref="CryptoHelpers.GetRandomNonZeroBytes" /> returns a buffer with only non-zero bytes.

@@ -16,7 +16,7 @@ public partial class FractionTests
     [TestMethod]
     public void Parse_WhenGivenUtf8Bytes_ShouldReturnExpectedValue()
     {
-        Fraction<int> value = Fraction<int>.Parse("3/4"u8, null);
+        var value = Fraction<int>.Parse("3/4"u8, null);
 
         Assert.AreEqual(new Fraction<int>(3, 4), value);
     }
@@ -27,7 +27,7 @@ public partial class FractionTests
     [TestMethod]
     public void TryParse_WhenGivenValidUtf8Bytes_ShouldReturnTrueAndValue()
     {
-        bool parsed = Fraction<int>.TryParse("5/8"u8, null, out Fraction<int> value);
+        var parsed = Fraction<int>.TryParse("5/8"u8, null, out Fraction<int> value);
 
         Assert.IsTrue(parsed);
         Assert.AreEqual(new Fraction<int>(5, 8), value);
@@ -39,7 +39,7 @@ public partial class FractionTests
     [TestMethod]
     public void TryParse_WhenGivenInvalidUtf8Bytes_ShouldReturnFalse()
     {
-        bool parsed = Fraction<int>.TryParse("bad"u8, null, out _);
+        var parsed = Fraction<int>.TryParse("bad"u8, null, out _);
 
         Assert.IsFalse(parsed);
     }
@@ -52,7 +52,7 @@ public partial class FractionTests
     {
         Span<byte> buffer = stackalloc byte[16];
 
-        bool formatted = new Fraction<int>(3, 4).TryFormat(buffer, out int written, default, null);
+        var formatted = new Fraction<int>(3, 4).TryFormat(buffer, out var written, default, null);
 
         Assert.IsTrue(formatted);
         Assert.AreEqual("3/4", Encoding.UTF8.GetString(buffer[..written]));

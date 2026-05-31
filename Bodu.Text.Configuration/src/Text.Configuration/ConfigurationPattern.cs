@@ -79,10 +79,10 @@ namespace Bodu.Text.Configuration;
 public sealed partial class ConfigurationPattern
 {
     /// <summary>
-    /// Maximum number of distinct (pattern, comparison) pairs retained in the shared compile cache before the
-    /// cache is cleared. The cache exists to amortize regex compilation across repeated resolve calls; the
-    /// crude eviction strategy is deliberate — patterns are typically tens, not thousands, and clearing the
-    /// cache on overflow keeps memory bounded without an explicit LRU.
+    /// Maximum number of distinct (pattern, comparison) pairs retained in the shared compile cache before the cache is
+    /// cleared. The cache exists to amortize regex compilation across repeated resolve calls; the crude eviction
+    /// strategy is deliberate — patterns are typically tens, not thousands, and clearing the cache on overflow keeps
+    /// memory bounded without an explicit LRU.
     /// </summary>
     private const int CompileCacheCapacity = 512;
 
@@ -121,9 +121,8 @@ public sealed partial class ConfigurationPattern
         Compile(pattern, StringComparison.Ordinal);
 
     /// <summary>
-    /// Compiles the supplied glob expression under the requested string comparison. Case-insensitive
-    /// comparisons (<see cref="StringComparison.OrdinalIgnoreCase" />,
-    /// <see cref="StringComparison.InvariantCultureIgnoreCase" />,
+    /// Compiles the supplied glob expression under the requested string comparison. Case-insensitive comparisons (
+    /// <see cref="StringComparison.OrdinalIgnoreCase" />, <see cref="StringComparison.InvariantCultureIgnoreCase" />,
     /// <see cref="StringComparison.CurrentCultureIgnoreCase" />) compile the regex with
     /// <see cref="RegexOptions.IgnoreCase" />; case-sensitive comparisons do not.
     /// </summary>
@@ -135,9 +134,9 @@ public sealed partial class ConfigurationPattern
     /// </exception>
     /// <exception cref="ConfigurationParseException">The pattern contained an unbalanced brace or bracket.</exception>
     /// <remarks>
-    /// Compiled patterns are memoized in a bounded process-wide cache so that repeated resolve calls against
-    /// the same document avoid re-walking the glob grammar. The cache key is the pair
-    /// <c>(pattern, comparison)</c>; on overflow the cache is cleared in bulk.
+    /// Compiled patterns are memoized in a bounded process-wide cache so that repeated resolve calls against the same
+    /// document avoid re-walking the glob grammar. The cache key is the pair <c>(pattern, comparison)</c>; on overflow
+    /// the cache is cleared in bulk.
     /// </remarks>
     public static ConfigurationPattern Compile(string pattern, StringComparison comparison)
     {
@@ -179,9 +178,9 @@ public sealed partial class ConfigurationPattern
     }
 
     /// <summary>
-    /// Determines whether the supplied <see cref="StringComparison" /> represents a case-insensitive
-    /// comparison. The three case-insensitive variants map onto <see cref="RegexOptions.IgnoreCase" />; the
-    /// case-sensitive variants leave that flag unset.
+    /// Determines whether the supplied <see cref="StringComparison" /> represents a case-insensitive comparison. The
+    /// three case-insensitive variants map onto <see cref="RegexOptions.IgnoreCase" />; the case-sensitive variants
+    /// leave that flag unset.
     /// </summary>
     /// <param name="comparison">The comparison to classify.</param>
     /// <returns><see langword="true" /> when <paramref name="comparison" /> ignores case.</returns>

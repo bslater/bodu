@@ -33,10 +33,7 @@ public partial class StringExtensionsTests
     /// <param name="expected">The expected return value.</param>
     [DataTestMethod]
     [DynamicData(nameof(GetRemoveWhitespaceCases), DynamicDataSourceType.Method)]
-    public void RemoveWhitespace_WhenInvoked_ShouldReturnExpected(string value, string expected)
-    {
-        Assert.AreEqual(expected, value.RemoveWhitespace());
-    }
+    public void RemoveWhitespace_WhenInvoked_ShouldReturnExpected(string value, string expected) => Assert.AreEqual(expected, value.RemoveWhitespace());
 
     /// <summary>
     /// Verifies that <see cref="StringExtensions.RemoveWhitespace(string)" /> returns the original

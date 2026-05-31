@@ -13,9 +13,10 @@ namespace Bodu.Globalization.Calendar.RangeResolution;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The pipeline is the canonical resolution path reached through <see cref="NotableDateService.ResolveNotableDatesInRange" />
-/// and the adapted <c>GetNotableDates</c> overloads. It is intentionally implemented as a single class so the four
-/// tiers and the adjustment phase are visible together; production code may decompose this into separate processors.
+/// The pipeline is the canonical resolution path reached through
+/// <see cref="NotableDateService.ResolveNotableDatesInRange" /> and the adapted <c>GetNotableDates</c> overloads. It is
+/// intentionally implemented as a single class so the four tiers and the adjustment phase are visible together;
+/// production code may decompose this into separate processors.
 /// </para>
 /// <para>
 /// Tiered processing order (each tier reads from the cache populated by earlier tiers):
@@ -54,9 +55,9 @@ internal sealed class NotableDateRangePipeline
     private readonly IReadOnlyList<RuleRemoval> _overrideRemovals;
 
     /// <summary>
-    /// Removals indexed by rule name (ordinal-ignore-case) so <see cref="IsRemovedByOverride" /> can short-circuit
-    /// to the candidate set for the rule being tested rather than scanning every removal contributed across the
-    /// data pack. Empty when no removals are configured.
+    /// Removals indexed by rule name (ordinal-ignore-case) so <see cref="IsRemovedByOverride" /> can short-circuit to
+    /// the candidate set for the rule being tested rather than scanning every removal contributed across the data pack.
+    /// Empty when no removals are configured.
     /// </summary>
     private readonly Dictionary<string, List<RuleRemoval>> _overrideRemovalsByName;
 
@@ -586,10 +587,7 @@ internal sealed class NotableDateRangePipeline
     /// <param name="territoryCode">The territory context.</param>
     /// <param name="calendarType">The calendar context.</param>
     /// <returns><see langword="true" /> when the date is non-working in context.</returns>
-    private bool IsNonWorkingDay(NotableDateRangeResolutionCache cache, DateTime date, string? territoryCode, Type? calendarType)
-    {
-        return IsWeekend(date) ? true : cache.IsNonWorkingDay(date, territoryCode, calendarType);
-    }
+    private bool IsNonWorkingDay(NotableDateRangeResolutionCache cache, DateTime date, string? territoryCode, Type? calendarType) => IsWeekend(date) ? true : cache.IsNonWorkingDay(date, territoryCode, calendarType);
 
     /// <summary>
     /// Determines whether the supplied date falls on a weekend under the configured weekend definition.

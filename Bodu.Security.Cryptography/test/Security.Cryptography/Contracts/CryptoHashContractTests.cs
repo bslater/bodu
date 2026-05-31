@@ -41,7 +41,7 @@ public abstract class CryptoHashContractTests<THash>
     {
         foreach (CryptoHashKat kat in KnownAnswers)
         {
-            byte[] actual = ComputeHash(kat.Input, kat.OutputLengthBytes, kat.Key, kat.Customization);
+            var actual = ComputeHash(kat.Input, kat.OutputLengthBytes, kat.Key, kat.Customization);
 
             CollectionAssert.AreEqual(
                 kat.ExpectedDigest,
@@ -60,7 +60,7 @@ public abstract class CryptoHashContractTests<THash>
     {
         foreach (CryptoHashKat kat in KnownAnswers)
         {
-            byte[] actual = ComputeHash(kat.Input, kat.OutputLengthBytes, kat.Key, kat.Customization);
+            var actual = ComputeHash(kat.Input, kat.OutputLengthBytes, kat.Key, kat.Customization);
 
             Assert.AreEqual(
                 kat.OutputLengthBytes,

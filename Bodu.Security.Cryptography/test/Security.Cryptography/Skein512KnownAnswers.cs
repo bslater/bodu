@@ -7,8 +7,8 @@
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Holds the curated <see cref="Skein512" /> known-answer test vectors, transcribed verbatim from the Skein 1.3 /
-/// NIST CD <c>skein_golden_kat.txt</c> reference distribution.
+/// Holds the curated <see cref="Skein512" /> known-answer test vectors, transcribed verbatim from the Skein 1.3 / NIST
+/// CD <c>skein_golden_kat.txt</c> reference distribution.
 /// </summary>
 /// <remarks>
 /// Skein-512-512 ships with a richer message-length set covering empty, one-byte, one-block, and two-block messages.

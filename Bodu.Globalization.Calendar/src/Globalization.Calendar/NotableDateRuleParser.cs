@@ -653,12 +653,15 @@ public static class NotableDateRuleParser
     /// </para>
     /// </remarks>
     /// <param name="token">The month token from the XML attribute.</param>
-    /// <param name="calendarType">The owning rule's calendar type, or <see langword="null" /> for Gregorian default.</param>
+    /// <param name="calendarType">
+    /// The owning rule's calendar type, or <see langword="null" /> for Gregorian default.
+    /// </param>
     /// <returns>
     /// A tuple of <c>(numericMonth, alias)</c>: exactly one of the two is non-<see langword="null" />.
     /// </returns>
-    /// <exception cref="FormatException"><paramref name="token" /> is not a recognized month token, or month 13 is
-    /// supplied for a Gregorian (default or explicit) calendar context.
+    /// <exception cref="FormatException">
+    /// <paramref name="token" /> is not a recognized month token, or month 13 is supplied for a Gregorian (default or
+    /// explicit) calendar context.
     /// </exception>
     private static (int? numericMonth, string? alias) ParseMonthToken(string token, Type? calendarType)
     {
@@ -702,8 +705,8 @@ public static class NotableDateRuleParser
     }
 
     /// <summary>
-    /// Returns <see langword="true" /> when the supplied calendar type behaves as the 12-month Gregorian default
-    /// (no calendar type configured, or <see cref="SysGlobal.GregorianCalendar" /> selected explicitly).
+    /// Returns <see langword="true" /> when the supplied calendar type behaves as the 12-month Gregorian default (no
+    /// calendar type configured, or <see cref="SysGlobal.GregorianCalendar" /> selected explicitly).
     /// </summary>
     /// <param name="calendarType">The rule's calendar type, or <see langword="null" />.</param>
     /// <returns>

@@ -35,10 +35,7 @@ public partial class StringExtensionsTests
     /// <param name="expected">The expected return value.</param>
     [DataTestMethod]
     [DynamicData(nameof(GetRemoveLineEndingsCases), DynamicDataSourceType.Method)]
-    public void RemoveLineEndings_WhenInvoked_ShouldReturnExpected(string value, string expected)
-    {
-        Assert.AreEqual(expected, value.RemoveLineEndings());
-    }
+    public void RemoveLineEndings_WhenInvoked_ShouldReturnExpected(string value, string expected) => Assert.AreEqual(expected, value.RemoveLineEndings());
 
     /// <summary>
     /// Verifies that <see cref="StringExtensions.RemoveLineEndings(string)" /> returns the original

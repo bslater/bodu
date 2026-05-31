@@ -18,10 +18,10 @@ public enum DateResolutionStrategy
     /// <summary>
     /// Resolved from a fixed month and day in the rule's <see cref="NotableDateRule.CalendarType" />. For Gregorian
     /// rules (the default, when <see cref="NotableDateRule.CalendarType" /> is <see langword="null" />) the date is
-    /// identical every year. For rules authored against a non-Gregorian calendar — Hijri, Umm al-Qura, Hebrew,
-    /// Persian, or Chinese lunisolar — the resolver projects the authored (month, day) tuple through the target
-    /// calendar to a Gregorian date that varies each year, with <see cref="NotableDateRule.SweepCalendarYears" />
-    /// or <see cref="NotableDateRule.SkipLeapMonth" /> assistance as appropriate to the calendar family.
+    /// identical every year. For rules authored against a non-Gregorian calendar — Hijri, Umm al-Qura, Hebrew, Persian,
+    /// or Chinese lunisolar — the resolver projects the authored (month, day) tuple through the target calendar to a
+    /// Gregorian date that varies each year, with <see cref="NotableDateRule.SweepCalendarYears" /> or
+    /// <see cref="NotableDateRule.SkipLeapMonth" /> assistance as appropriate to the calendar family.
     /// </summary>
     Fixed = 0,
 

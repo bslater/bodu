@@ -60,10 +60,7 @@ public sealed class TerritoryCodeTests
     [DataRow("AU-!")]
     [DataRow("AU-NS!")]
     [TestMethod]
-    public void TryParse_WhenInputIsInvalid_ShouldReturnFalse(string? input)
-    {
-        Assert.IsFalse(TerritoryCode.TryParse(input, out _));
-    }
+    public void TryParse_WhenInputIsInvalid_ShouldReturnFalse(string? input) => Assert.IsFalse(TerritoryCode.TryParse(input, out _));
 
     /// <summary>
     /// Verifies that <see cref="TerritoryCode.Parse(string)" /> returns the same canonical form

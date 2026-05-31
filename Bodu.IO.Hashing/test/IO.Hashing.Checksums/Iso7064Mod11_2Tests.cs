@@ -34,10 +34,7 @@ public sealed class Iso7064Mod11_2Tests
     /// contains a non-digit character.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenBodyContainsLetter_ShouldReturnFalse()
-    {
-        Assert.IsFalse(Iso7064Mod11_2.IsValid("07A40".AsSpan()));
-    }
+    public void IsValid_WhenBodyContainsLetter_ShouldReturnFalse() => Assert.IsFalse(Iso7064Mod11_2.IsValid("07A40".AsSpan()));
 
     /// <summary>
     /// Verifies that <see cref="Iso7064Mod11_2.IsValid(ReadOnlySpan{char})" /> rejects a sequence whose check
@@ -68,10 +65,7 @@ public sealed class Iso7064Mod11_2Tests
     /// algorithm's invariant.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenSequenceIsEmpty_ShouldReturnFalse()
-    {
-        Assert.IsFalse(Iso7064Mod11_2.IsValid(ReadOnlySpan<char>.Empty));
-    }
+    public void IsValid_WhenSequenceIsEmpty_ShouldReturnFalse() => Assert.IsFalse(Iso7064Mod11_2.IsValid(ReadOnlySpan<char>.Empty));
 
     /// <inheritdoc />
     protected override char ComputeStatic(ReadOnlySpan<char> body) =>

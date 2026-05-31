@@ -83,7 +83,7 @@ public sealed class AustralianNotableDatesTests
         Assert.IsTrue(results.All(d => !string.IsNullOrEmpty(d.TerritoryCode)),
             "Every Australian notable date must carry its originating TerritoryCode so callers can delineate national from subdivision entries.");
 
-        string[] distinctTerritories = results
+        var distinctTerritories = results
             .Select(d => d.TerritoryCode!)
             .Distinct()
             .OrderBy(t => t, StringComparer.Ordinal)

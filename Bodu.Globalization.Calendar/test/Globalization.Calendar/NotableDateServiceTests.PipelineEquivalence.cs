@@ -246,7 +246,7 @@ public sealed partial class NotableDateServiceTests
             Fixed("Mothers Day", 5, 12, NotableDateCategory.Cultural),
             Fixed("Christmas Day", 12, 25, NotableDateCategory.Holiday, nonWorking: true));
 
-        NotableDateFilter holidayFilter = NotableDateFilter.ForAnyCategory(NotableDateCategory.Holiday);
+        var holidayFilter = NotableDateFilter.ForAnyCategory(NotableDateCategory.Holiday);
 
         IReadOnlyList<NotableDate> legacy = service.GetNotableDates(2026, holidayFilter);
         IReadOnlyList<NotableDate> pipeline = service.ResolveNotableDatesInRange(

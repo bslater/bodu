@@ -17,10 +17,7 @@ public sealed class Base32VariantTests
     /// Verifies that <see cref="Base32Variant.Standard" /> is the default value (numerical zero).
     /// </summary>
     [TestMethod]
-    public void Standard_ShouldBeDefaultValue()
-    {
-        Assert.AreEqual(default, Base32Variant.Standard);
-    }
+    public void Standard_ShouldBeDefaultValue() => Assert.AreEqual(default, Base32Variant.Standard);
 
     /// <summary>
     /// Verifies that the variants declare the documented numerical values so that persisted enum values stay stable.

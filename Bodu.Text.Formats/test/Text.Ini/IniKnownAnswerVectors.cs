@@ -7,9 +7,9 @@
 namespace Bodu.Text.Ini;
 
 /// <summary>
-/// Provides Known Answer Test vectors for the INI file format sourced from the Wikipedia INI file format article
-/// and curated common-practice inputs. Each provider yields rows in the shape expected by MSTest's
-/// <c>[DynamicData]</c> attribute.
+/// Provides Known Answer Test vectors for the INI file format sourced from the Wikipedia INI file format article and
+/// curated common-practice inputs. Each provider yields rows in the shape expected by MSTest's <c>[DynamicData]</c>
+/// attribute.
 /// </summary>
 public static class IniKnownAnswerVectors
 {
@@ -19,8 +19,8 @@ public static class IniKnownAnswerVectors
     private const string Spec = "INI file format (Wikipedia)";
 
     /// <summary>
-    /// Returns the concatenation of all vector providers, used by exhaustive tests that exercise the full
-    /// known-answer catalogue.
+    /// Returns the concatenation of all vector providers, used by exhaustive tests that exercise the full known-answer
+    /// catalogue.
     /// </summary>
     /// <returns>A sequence suitable for <c>[DynamicData]</c>.</returns>
     public static IEnumerable<object[]> AllVectors()
@@ -30,9 +30,8 @@ public static class IniKnownAnswerVectors
     }
 
     /// <summary>
-    /// Returns vectors derived from the Wikipedia INI file format article, covering the core parsing rules:
-    /// key/value separators, sections, comments, blank lines, whitespace trimming, duplicate handling, and
-    /// Unicode content.
+    /// Returns vectors derived from the Wikipedia INI file format article, covering the core parsing rules: key/value
+    /// separators, sections, comments, blank lines, whitespace trimming, duplicate handling, and Unicode content.
     /// </summary>
     /// <returns>A sequence suitable for <c>[DynamicData]</c>.</returns>
     public static IEnumerable<object[]> SpecVectors()

@@ -33,10 +33,7 @@ public partial class StringExtensionsTests
     /// <param name="expected">The expected return value.</param>
     [DataTestMethod]
     [DynamicData(nameof(GetNullIfWhiteSpaceCases), DynamicDataSourceType.Method)]
-    public void NullIfWhiteSpace_WhenInvoked_ShouldReturnExpected(string? value, string? expected)
-    {
-        Assert.AreEqual(expected, value.NullIfWhiteSpace());
-    }
+    public void NullIfWhiteSpace_WhenInvoked_ShouldReturnExpected(string? value, string? expected) => Assert.AreEqual(expected, value.NullIfWhiteSpace());
 
     /// <summary>
     /// Verifies that <see cref="StringExtensions.NullIfWhiteSpace(string?)" /> returns the original instance —

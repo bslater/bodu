@@ -49,10 +49,7 @@ public partial class DateTimeExtensionsTests
     [DataRow(1)]
     [DataRow(6)]
     [DataRow(12)]
-    public void GetMonthName_NoCulture_ShouldReturnCurrentCultureName(int month)
-    {
-        Assert.AreEqual(CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(month), DateTimeExtensions.GetMonthName(month));
-    }
+    public void GetMonthName_NoCulture_ShouldReturnCurrentCultureName(int month) => Assert.AreEqual(CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(month), DateTimeExtensions.GetMonthName(month));
 
     /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.GetMonthName(int)" /> throws when the month is outside [1, 12].

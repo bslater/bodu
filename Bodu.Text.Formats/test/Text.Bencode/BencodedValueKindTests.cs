@@ -19,10 +19,7 @@ public sealed class BencodedValueKindTests
     /// productions.
     /// </summary>
     [TestMethod]
-    public void BencodedValueKind_ShouldDefineExactlyFourMembers()
-    {
-        Assert.AreEqual(4, Enum.GetNames(typeof(BencodedValueKind)).Length);
-    }
+    public void BencodedValueKind_ShouldDefineExactlyFourMembers() => Assert.AreEqual(4, Enum.GetNames(typeof(BencodedValueKind)).Length);
 
     /// <summary>
     /// Verifies that <see cref="BencodedValueKind" /> defines the expected member names.

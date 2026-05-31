@@ -13,10 +13,7 @@ public sealed partial class IniTests
     /// callers get comment trivia without opting in.
     /// </summary>
     [TestMethod]
-    public void PreserveComments_WhenDefaultOptions_ShouldBeTrue()
-    {
-        Assert.IsTrue(new IniParseOptions().PreserveComments);
-    }
+    public void PreserveComments_WhenDefaultOptions_ShouldBeTrue() => Assert.IsTrue(new IniParseOptions().PreserveComments);
 
     /// <summary>
     /// Verifies that comments authored before an entry are attached to

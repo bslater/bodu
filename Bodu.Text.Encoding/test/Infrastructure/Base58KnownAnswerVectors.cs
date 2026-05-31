@@ -11,8 +11,8 @@ namespace Bodu.Text.Encoding;
 /// <c>base58_encode_decode.json</c>.
 /// </summary>
 /// <remarks>
-/// These vectors are the canonical Base58 KAT used by the Bitcoin reference implementation and many derivative
-/// projects (IPFS, Solana, etc.). The decoded form is expressed as hex per the original JSON fixture.
+/// These vectors are the canonical Base58 KAT used by the Bitcoin reference implementation and many derivative projects
+/// (IPFS, Solana, etc.). The decoded form is expressed as hex per the original JSON fixture.
 /// </remarks>
 public static class Base58KnownAnswerVectors
 {

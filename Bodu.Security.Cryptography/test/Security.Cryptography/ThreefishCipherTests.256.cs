@@ -42,7 +42,7 @@ internal sealed partial class Threefish256CipherTests
 
     /// <inheritdoc />
     protected override Threefish256Cipher CreateCipher(byte[] key, byte[] tweak) =>
-        new Threefish256Cipher(key, tweak);
+        new(key, tweak);
 
     /// <inheritdoc />
     protected override IReadOnlyList<BlockCipherKnownAnswer> GetKnownAnswers(TweakableBlockCipherVariant variant) =>

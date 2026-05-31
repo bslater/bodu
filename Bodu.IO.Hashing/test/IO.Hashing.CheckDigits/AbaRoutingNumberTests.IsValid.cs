@@ -14,10 +14,7 @@ public sealed partial class AbaRoutingNumberTests
     /// <see cref="AbaRoutingNumber.IsValid(ReadOnlySpan{char})" />.
     /// </summary>
     [TestMethod]
-    public void IsValid_FrbBostonRoutingNumber_ShouldReturnTrue()
-    {
-        Assert.IsTrue(AbaRoutingNumber.IsValid("011000015".AsSpan()));
-    }
+    public void IsValid_FrbBostonRoutingNumber_ShouldReturnTrue() => Assert.IsTrue(AbaRoutingNumber.IsValid("011000015".AsSpan()));
     /// <summary>
     /// Verifies that <see cref="AbaRoutingNumber.IsValid(ReadOnlySpan{char})" /> rejects a sequence whose length
     /// is not exactly <see cref="AbaRoutingNumber.SequenceLength" />.

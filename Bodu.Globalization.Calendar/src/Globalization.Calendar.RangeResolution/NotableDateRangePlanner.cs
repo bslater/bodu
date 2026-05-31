@@ -188,26 +188,40 @@ internal sealed class NotableDateRangePlanner
     /// same-name rule is present in <paramref name="eligible" />. See the planner's call-site comment for the
     /// motivating data-pack pattern (canonical national rule + per-subdivision overrides).
     /// </summary>
-    /// <param name="eligible">The pre-shadowed eligible-rule list (mutated in place not allowed; returns a new list).</param>
+    /// <param name="eligible">
+    /// The pre-shadowed eligible-rule list (mutated in place not allowed; returns a new list).
+    /// </param>
     /// <param name="request">The originating request.</param>
-    /// <returns>The eligible list with broader-than-request same-name rules removed where a narrower one exists.</returns>
+    /// <returns>
+    /// The eligible list with broader-than-request same-name rules removed where a narrower one exists.
+    /// </returns>
     /// <remarks>
     /// <para>
-    /// Shadowing only fires when the request carries a parseable territory. Any-territory queries (a <see langword="null" />
-    /// or empty request territory) intentionally keep every eligible rule so that callers asking for "everything" still
-    /// see the canonical and per-subdivision variants side by side.
+    /// Shadowing only fires when the request carries a parseable territory. Any-territory queries (a
+    /// <see langword="null" /> or empty request territory) intentionally keep every eligible rule so that callers
+    /// asking for "everything" still see the canonical and per-subdivision variants side by side.
     /// </para>
     /// <para>
     /// Specificity is determined per rule by inspecting its authored territory list:
     /// </para>
     /// <list type="bullet">
-    /// <item><description>A rule is <i>at-or-narrower-than</i> the request when at least one of its territories is contained in (or equal to) the request territory.</description></item>
-    /// <item><description>A rule is <i>strictly broader</i> when every parseable territory it declares strictly contains the request (i.e. is a proper ancestor).</description></item>
+    /// <item>
+    /// <description>
+    /// A rule is <i>at-or-narrower-than</i> the request when at least one of its territories is contained in (or equal
+    /// to) the request territory.
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <description>
+    /// A rule is <i>strictly broader</i> when every parseable territory it declares strictly contains the request (i.e.
+    /// is a proper ancestor).
+    /// </description>
+    /// </item>
     /// </list>
     /// <para>
     /// Only rules in the second category are suppressed, and only when at least one rule in the first category exists
-    /// under the same <see cref="NotableDateRule.Name" /> (case-insensitive). Rules with no <see cref="NotableDateRule.Name" />
-    /// are not grouped — they are passed through unchanged.
+    /// under the same <see cref="NotableDateRule.Name" /> (case-insensitive). Rules with no
+    /// <see cref="NotableDateRule.Name" /> are not grouped — they are passed through unchanged.
     /// </para>
     /// </remarks>
     private static List<RuleStaticProfile> ApplySameNameTerritoryShadowing(
@@ -225,7 +239,7 @@ internal sealed class NotableDateRangePlanner
         List<RuleStaticProfile> unnamed = [];
         foreach (RuleStaticProfile profile in eligible)
         {
-            string? name = profile.Rule.Name;
+            var name = profile.Rule.Name;
             if (string.IsNullOrEmpty(name))
             {
                 unnamed.Add(profile);
@@ -251,7 +265,7 @@ internal sealed class NotableDateRangePlanner
                 continue;
             }
 
-            bool hasNarrowerOrEqual = false;
+            var hasNarrowerOrEqual = false;
             foreach (RuleStaticProfile profile in bucket)
             {
                 if (HasTerritoryNarrowerOrEqualToRequest(profile.Rule, requested))

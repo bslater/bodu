@@ -16,10 +16,7 @@ public partial class CryptoHelpersTests
     [DataRow(128)]
     [DataRow(256)]
     [DataRow(512)]
-    public void ThrowIfInvalidHashSize_WhenSizeIsPermitted_ShouldNotThrow(int size)
-    {
-        CryptoHelpers.ThrowIfInvalidHashSize(size, [128, 256, 512]);
-    }
+    public void ThrowIfInvalidHashSize_WhenSizeIsPermitted_ShouldNotThrow(int size) => CryptoHelpers.ThrowIfInvalidHashSize(size, [128, 256, 512]);
 
     /// <summary>
     /// Verifies that <see cref="CryptoHelpers.ThrowIfInvalidHashSize(int, int[], string)"/> throws an

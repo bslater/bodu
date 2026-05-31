@@ -32,5 +32,5 @@ public static partial class DateTimeExtensions
     ///]]>
     /// </code>
     /// </remarks>
-    public static DateTime Midday(this DateTime dateTime) => new DateTime(dateTime.Date.Ticks + (TicksPerHour * 12), dateTime.Kind);
+    public static DateTime Midday(this DateTime dateTime) => new(dateTime.Date.Ticks + (TicksPerHour * 12), dateTime.Kind);
 }

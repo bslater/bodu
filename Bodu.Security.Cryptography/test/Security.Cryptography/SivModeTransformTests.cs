@@ -49,7 +49,7 @@ public sealed partial class SivModeTransformTests
     /// XOR test cipher creates a degenerate authentication case for SIV (see field comments above).
     /// </summary>
     protected override SivModeTransform CreateTransform(IBlockCipher cipher, byte[] iv)
-        => new SivModeTransform(
+        => new(
             s2vCipher: new AesBlockCipherFixture(s_s2vTestKey),
             ctrCipher: new AesBlockCipherFixture(s_ctrTestKey),
             iv: iv);

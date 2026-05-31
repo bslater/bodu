@@ -30,10 +30,7 @@ public partial class StringExtensionsTests
     /// <param name="expected">The expected return value.</param>
     [DataTestMethod]
     [DynamicData(nameof(GetStartsWithOrdinalIgnoreCaseCases), DynamicDataSourceType.Method)]
-    public void StartsWithOrdinalIgnoreCase_WhenInvoked_ShouldReturnExpected(string value, string valueToFind, bool expected)
-    {
-        Assert.AreEqual(expected, value.StartsWithOrdinalIgnoreCase(valueToFind));
-    }
+    public void StartsWithOrdinalIgnoreCase_WhenInvoked_ShouldReturnExpected(string value, string valueToFind, bool expected) => Assert.AreEqual(expected, value.StartsWithOrdinalIgnoreCase(valueToFind));
 
     /// <summary>
     /// Verifies that <see cref="StringExtensions.StartsWithOrdinalIgnoreCase(string, string)" /> throws

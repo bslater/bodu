@@ -338,8 +338,8 @@ public sealed partial class ConcurrentHashSet<T> :
     }
 
     /// <summary>
-    /// Materializes <paramref name="source" /> into a <see cref="HashSet{T}" /> that uses the set's comparer,
-    /// rejecting any <see langword="null" /> element encountered during enumeration.
+    /// Materializes <paramref name="source" /> into a <see cref="HashSet{T}" /> that uses the set's comparer, rejecting
+    /// any <see langword="null" /> element encountered during enumeration.
     /// </summary>
     /// <param name="source">The collection to copy. Must not contain a <see langword="null" /> element.</param>
     /// <returns>

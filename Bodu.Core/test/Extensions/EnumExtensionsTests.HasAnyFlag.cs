@@ -25,10 +25,7 @@ public partial class EnumExtensionsTests
     /// Verifies that <c>HasAnyFlag</c> returns <see langword="false" /> when the value and the flags share no bits.
     /// </summary>
     [TestMethod]
-    public void HasAnyFlag_WhenValueSharesNoBit_ShouldReturnFalse()
-    {
-        Assert.IsFalse(IntFlags.A.HasAnyFlag(IntFlags.B | IntFlags.C));
-    }
+    public void HasAnyFlag_WhenValueSharesNoBit_ShouldReturnFalse() => Assert.IsFalse(IntFlags.A.HasAnyFlag(IntFlags.B | IntFlags.C));
 
     /// <summary>
     /// Verifies that <c>HasAnyFlag</c> returns <see langword="false" /> when the flags argument has no bits set.

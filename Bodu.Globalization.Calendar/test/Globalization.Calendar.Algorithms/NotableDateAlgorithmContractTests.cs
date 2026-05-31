@@ -39,7 +39,7 @@ public sealed class NotableDateAlgorithmContractTests
     {
         INotableDateAlgorithm sut = algo.Factory();
 
-        foreach (int year in new[] { 0, -1, int.MinValue })
+        foreach (var year in new[] { 0, -1, int.MinValue })
         {
             ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
             {
@@ -66,7 +66,7 @@ public sealed class NotableDateAlgorithmContractTests
     {
         INotableDateAlgorithm sut = algo.Factory();
 
-        foreach (int year in new[] { 10000, int.MaxValue })
+        foreach (var year in new[] { 10000, int.MaxValue })
         {
             ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
             {

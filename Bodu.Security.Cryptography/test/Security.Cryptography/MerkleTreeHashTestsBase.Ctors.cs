@@ -20,10 +20,7 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     /// <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenAlgorithmFactoryIsNull_ShouldThrowExactly()
-    {
-        Assert.ThrowsExactly<ArgumentNullException>(() => Construct(null));
-    }
+    public void Ctor_WhenAlgorithmFactoryIsNull_ShouldThrowExactly() => Assert.ThrowsExactly<ArgumentNullException>(() => Construct(null));
 
     /// <summary>
     /// Verifies that a non-positive block size raises <see cref="ArgumentOutOfRangeException" />.

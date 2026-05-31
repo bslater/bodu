@@ -14,8 +14,8 @@ namespace Bodu.Globalization.Calendar;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The provider exposes <see cref="AddRule" />, <see cref="RemoveRule" />, and <see cref="Clear" /> mutators that
-/// each raise <see cref="Changed" /> after applying their update. Consumers that wire the provider through a service
+/// The provider exposes <see cref="AddRule" />, <see cref="RemoveRule" />, and <see cref="Clear" /> mutators that each
+/// raise <see cref="Changed" /> after applying their update. Consumers that wire the provider through a service
 /// composition root should subscribe <see cref="INotableDateService.Reload" /> to <see cref="Changed" /> so that
 /// mutations take effect against the live service without rebuilding it. Without a corresponding
 /// <see cref="INotableDateService.Reload" /> the service continues to observe the snapshot taken at construction.
@@ -119,9 +119,7 @@ public sealed class MutableNotableDateRuleOverrideProvider : INotableDateRuleOve
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="name" /> is <see langword="null" />.
     /// </exception>
-    /// <exception cref="ArgumentException">
-    /// Thrown when <paramref name="name" /> is empty or whitespace.
-    /// </exception>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="name" /> is empty or whitespace.</exception>
     /// <remarks>
     /// <para>
     /// The method appends a new <see cref="RuleRemoval" /> rather than coalescing overlapping removals. The
@@ -176,8 +174,8 @@ public sealed class MutableNotableDateRuleOverrideProvider : INotableDateRuleOve
     public IEnumerable<RuleRemoval> GetRemovals() => _removals;
 
     /// <summary>
-    /// Raises the <see cref="Changed" /> event with this provider as the sender and
-    /// <see cref="EventArgs.Empty" /> as the payload.
+    /// Raises the <see cref="Changed" /> event with this provider as the sender and <see cref="EventArgs.Empty" /> as
+    /// the payload.
     /// </summary>
     /// <remarks>
     /// The event is raised outside the mutation gate so that subscribed handlers may call back into this provider

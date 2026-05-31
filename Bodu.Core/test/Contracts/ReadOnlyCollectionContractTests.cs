@@ -68,7 +68,7 @@ public abstract class ReadOnlyCollectionContractTests<TCollection, TItem>
     {
         TCollection collection = CreateEmpty();
 
-        int observed = 0;
+        var observed = 0;
         foreach (TItem _ in collection)
         {
             observed++;
@@ -87,7 +87,7 @@ public abstract class ReadOnlyCollectionContractTests<TCollection, TItem>
         TItem[] source = [CreateItem(0), CreateItem(1), CreateItem(2)];
         TCollection collection = Create(source);
 
-        int observed = 0;
+        var observed = 0;
         foreach (TItem _ in collection)
         {
             observed++;

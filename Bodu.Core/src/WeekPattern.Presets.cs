@@ -16,7 +16,7 @@ public partial struct WeekPattern
     /// <remarks>
     /// This is an alias for <see cref="Weekdays" /> and corresponds to <see cref="WorkingDaysOfWeek.MondayToFriday" />.
     /// </remarks>
-    public static readonly WeekPattern MondayToFriday = new WeekPattern(
+    public static readonly WeekPattern MondayToFriday = new(
         DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday);
 
     /// <summary>
@@ -25,7 +25,7 @@ public partial struct WeekPattern
     /// <remarks>
     /// Corresponds to <see cref="WorkingDaysOfWeek.MondayToSaturday" />.
     /// </remarks>
-    public static readonly WeekPattern MondayToSaturday = new WeekPattern(
+    public static readonly WeekPattern MondayToSaturday = new(
         DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday, DayOfWeek.Saturday);
 
     /// <summary>
@@ -34,7 +34,7 @@ public partial struct WeekPattern
     /// <remarks>
     /// Corresponds to <see cref="WorkingDaysOfWeek.MondayToThursdayAndSaturday" />.
     /// </remarks>
-    public static readonly WeekPattern MondayToThursdayAndSaturday = new WeekPattern(
+    public static readonly WeekPattern MondayToThursdayAndSaturday = new(
         DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Saturday);
 
     /// <summary>
@@ -43,7 +43,7 @@ public partial struct WeekPattern
     /// <remarks>
     /// Corresponds to <see cref="WorkingDaysOfWeek.SaturdayToThursday" />.
     /// </remarks>
-    public static readonly WeekPattern SaturdayToThursday = new WeekPattern(
+    public static readonly WeekPattern SaturdayToThursday = new(
         DayOfWeek.Saturday, DayOfWeek.Sunday, DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday);
 
     /// <summary>
@@ -52,7 +52,7 @@ public partial struct WeekPattern
     /// <remarks>
     /// Corresponds to <see cref="WorkingDaysOfWeek.SaturdayToWednesday" />.
     /// </remarks>
-    public static readonly WeekPattern SaturdayToWednesday = new WeekPattern(
+    public static readonly WeekPattern SaturdayToWednesday = new(
         DayOfWeek.Saturday, DayOfWeek.Sunday, DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday);
 
     /// <summary>
@@ -61,7 +61,7 @@ public partial struct WeekPattern
     /// <remarks>
     /// Corresponds to <see cref="WorkingDaysOfWeek.SundayToFriday" />.
     /// </remarks>
-    public static readonly WeekPattern SundayToFriday = new WeekPattern(
+    public static readonly WeekPattern SundayToFriday = new(
         DayOfWeek.Sunday, DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday);
 
     /// <summary>
@@ -70,7 +70,7 @@ public partial struct WeekPattern
     /// <remarks>
     /// Corresponds to <see cref="WorkingDaysOfWeek.SundayToThursday" />.
     /// </remarks>
-    public static readonly WeekPattern SundayToThursday = new WeekPattern(
+    public static readonly WeekPattern SundayToThursday = new(
         DayOfWeek.Sunday, DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday);
 
     /// <summary>
@@ -79,7 +79,7 @@ public partial struct WeekPattern
     /// <remarks>
     /// Corresponds to <see cref="WorkingDaysOfWeek.AllDays" />.
     /// </remarks>
-    public static readonly WeekPattern AllDays = new WeekPattern(
+    public static readonly WeekPattern AllDays = new(
         DayOfWeek.Sunday, DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday, DayOfWeek.Saturday);
 
 #pragma warning restore IDE1006

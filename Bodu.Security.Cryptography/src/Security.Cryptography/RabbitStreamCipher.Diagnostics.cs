@@ -82,8 +82,8 @@ internal sealed partial class RabbitStreamCipher
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="RabbitStreamCipher" /> class as an empty engine for diagnostic tracing;
-    /// no key or IV is bound.
+    /// Initializes a new instance of the <see cref="RabbitStreamCipher" /> class as an empty engine for diagnostic
+    /// tracing; no key or IV is bound.
     /// </summary>
     private RabbitStreamCipher()
     {

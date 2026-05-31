@@ -24,7 +24,7 @@ public sealed class GlobalIslamicResourceTests
     /// </summary>
     /// <returns>The configured service.</returns>
     private static NotableDateService CreateBareService() =>
-        new NotableDateService(
+        new(
             ruleProviders:
             [
                 (INotableDateRuleProvider)new XmlResourceNotableDateRuleProvider(IslamicResourceName, new ResourcePathResolver()),

@@ -33,10 +33,7 @@ public sealed class AmericasCalendarDataTests
     /// assembly chains.
     /// </summary>
     [TestMethod]
-    public void DataAssembly_ShouldReturnTheCompanionPackAssembly()
-    {
-        Assert.AreEqual(typeof(AmericasCalendarData).Assembly, AmericasCalendarData.DataAssembly);
-    }
+    public void DataAssembly_ShouldReturnTheCompanionPackAssembly() => Assert.AreEqual(typeof(AmericasCalendarData).Assembly, AmericasCalendarData.DataAssembly);
 
     /// <summary>
     /// Verifies that <see cref="AmericasCalendarData.CreateProvider(string)" /> rejects a <see langword="null" /> resource

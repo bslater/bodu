@@ -16,13 +16,13 @@ using Bodu.IO.Hashing.Checksums;
 namespace Bodu.IO.Hashing.CheckDigits;
 
 /// <summary>
-/// Describes the expected observable properties of an <see cref="AlphanumericCheckDigitAlgorithm" />
-/// implementation for use in behavioural and known-answer tests.
+/// Describes the expected observable properties of an <see cref="AlphanumericCheckDigitAlgorithm" /> implementation for
+/// use in behavioural and known-answer tests.
 /// </summary>
 /// <remarks>
 /// Instances are supplied by derived test classes via
-/// <see cref="AlphanumericCheckDigitAlgorithmTests{TTest, TAlgorithm}.GetSpecification" /> and drive assertions
-/// common across every algorithm sharing the alphanumeric base.
+/// <see cref="AlphanumericCheckDigitAlgorithmTests{TTest, TAlgorithm}.GetSpecification" /> and drive assertions common
+/// across every algorithm sharing the alphanumeric base.
 /// </remarks>
 public sealed record AlphanumericCheckDigitAlgorithmSpecification
 {
@@ -34,8 +34,8 @@ public sealed record AlphanumericCheckDigitAlgorithmSpecification
     public required string AlgorithmName { get; init; }
 
     /// <summary>
-    /// Gets the check character expected for an empty body, or <see langword="null" /> to indicate that the
-    /// algorithm throws on empty input.
+    /// Gets the check character expected for an empty body, or <see langword="null" /> to indicate that the algorithm
+    /// throws on empty input.
     /// </summary>
     /// <returns>An ASCII character, or <see langword="null" />. Defaults to <c>'0'</c>.</returns>
     public char? EmptyCheckDigit { get; init; } = '0';

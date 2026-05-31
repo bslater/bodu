@@ -90,7 +90,7 @@ public sealed class CalendarBuilderKatTests
     {
         foreach (CalendarBuilderInvalidKat kat in InvalidKats)
         {
-            bool threw = false;
+            var threw = false;
             try
             {
                 _ = NotableDateRuleParser.ParseXml(kat.SourceInput);

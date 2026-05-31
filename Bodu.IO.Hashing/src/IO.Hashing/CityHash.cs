@@ -118,7 +118,7 @@ public abstract class CityHash<T>
 
     private static readonly int[] s_validHashSizes = [32, 64, 128];
 
-    private readonly MemoryStream _inputBuffer = new MemoryStream();
+    private readonly MemoryStream _inputBuffer = new();
     private bool _disposed;
 
     /// <summary>

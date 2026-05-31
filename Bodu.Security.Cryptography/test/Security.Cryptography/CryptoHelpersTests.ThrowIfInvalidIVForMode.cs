@@ -28,10 +28,7 @@ public partial class CryptoHelpersTests
     /// does not throw for <see cref="CipherModeKind.ECB"/> even when no IV is provided.
     /// </summary>
     [TestMethod]
-    public void ThrowIfInvalidIVForMode_WhenIVNullAndModeIsECB_ShouldNotThrow()
-    {
-        CryptoHelpers.ThrowIfInvalidIVForMode(null, CipherModeKind.ECB, 128, LegalBlockSizes);
-    }
+    public void ThrowIfInvalidIVForMode_WhenIVNullAndModeIsECB_ShouldNotThrow() => CryptoHelpers.ThrowIfInvalidIVForMode(null, CipherModeKind.ECB, 128, LegalBlockSizes);
 
     /// <summary>
     /// Verifies that <see cref="CryptoHelpers.ThrowIfInvalidIVForMode(byte[], CipherModeKind, int, KeySizes[], string)"/>

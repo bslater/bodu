@@ -72,10 +72,12 @@ public static partial class Delimited
     /// <param name="headers">The parsed header field values in source order.</param>
     /// <param name="behavior">The duplicate-header resolution policy.</param>
     /// <param name="lineNumber">The 1-based line on which the header row appears.</param>
-    /// <returns>A read-only map from header name to the column index assigned by <paramref name="behavior" />.</returns>
+    /// <returns>
+    /// A read-only map from header name to the column index assigned by <paramref name="behavior" />.
+    /// </returns>
     /// <exception cref="DelimitedFormatException">
-    /// Thrown when <paramref name="behavior" /> is <see cref="DelimitedDuplicateHeaderBehavior.Throw" /> and any
-    /// header name appears more than once.
+    /// Thrown when <paramref name="behavior" /> is <see cref="DelimitedDuplicateHeaderBehavior.Throw" /> and any header
+    /// name appears more than once.
     /// </exception>
     private static IReadOnlyDictionary<string, int> BuildHeaderIndex(
         List<string> headers,

@@ -168,7 +168,7 @@ public static class AustraliaTerritoryAnswers
 
         // Subdivisions without their own substitute rule fall back to the canonical AU Anzac Day rule on
         // Saturday 25 April 2026.
-        foreach (string subdivision in new[] { "AU-VIC", "AU-QLD", "AU-SA", "AU-TAS", "AU-ACT" })
+        foreach (var subdivision in new[] { "AU-VIC", "AU-QLD", "AU-SA", "AU-TAS", "AU-ACT" })
         {
             yield return Row(new TerritoryNotableDateKnownAnswer
             {

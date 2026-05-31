@@ -179,11 +179,11 @@ internal sealed partial class ConfigurationReader
     }
 
     /// <summary>
-    /// Returns <see langword="true" /> when the trailing run of characters in <paramref name="line" />
-    /// starting at <paramref name="from" /> is acceptable under <paramref name="mode" />. Trailing whitespace
-    /// is always permitted; a leading <c>#</c> or <c>;</c> after optional whitespace is permitted only when
-    /// the mode is <see cref="ConfigurationSectionHeaderMode.AllowTrailingInlineComment" />; any other
-    /// non-whitespace content is permitted only under <see cref="ConfigurationSectionHeaderMode.Lenient" />.
+    /// Returns <see langword="true" /> when the trailing run of characters in <paramref name="line" /> starting at
+    /// <paramref name="from" /> is acceptable under <paramref name="mode" />. Trailing whitespace is always permitted;
+    /// a leading <c>#</c> or <c>;</c> after optional whitespace is permitted only when the mode is
+    /// <see cref="ConfigurationSectionHeaderMode.AllowTrailingInlineComment" />; any other non-whitespace content is
+    /// permitted only under <see cref="ConfigurationSectionHeaderMode.Lenient" />.
     /// </summary>
     /// <param name="line">The full section-header line being processed.</param>
     /// <param name="from">The index immediately following the closing <c>]</c>.</param>
@@ -221,11 +221,11 @@ internal sealed partial class ConfigurationReader
     /// <param name="headerLoc">The source location of the header, used when emitting diagnostics.</param>
     /// <returns>The existing or newly created section that subsequent properties are added to.</returns>
     /// <remarks>
-    /// Uses <see cref="IniDocument.TryGetSection(string, out IniSection?)" /> for O(1) duplicate detection
-    /// in <see cref="IniDuplicateSectionBehavior.Disallowed" /> and <see cref="IniDuplicateSectionBehavior.MergeAll" />.
-    /// <see cref="IniDuplicateSectionBehavior.MergeAdjacent" /> checks only the last section in the document,
-    /// which is also O(1). <see cref="IniDuplicateSectionBehavior.Preserve" /> always creates a new section
-    /// and pays no lookup cost.
+    /// Uses <see cref="IniDocument.TryGetSection(string, out IniSection?)" /> for O(1) duplicate detection in
+    /// <see cref="IniDuplicateSectionBehavior.Disallowed" /> and <see cref="IniDuplicateSectionBehavior.MergeAll" />.
+    /// <see cref="IniDuplicateSectionBehavior.MergeAdjacent" /> checks only the last section in the document, which is
+    /// also O(1). <see cref="IniDuplicateSectionBehavior.Preserve" /> always creates a new section and pays no lookup
+    /// cost.
     /// </remarks>
     private IniSection ResolveSectionTarget(IniDocument document, string name, ConfigurationSourceLocation headerLoc)
     {

@@ -11,7 +11,8 @@ public class ThueMorseTests
 {
 
     /// <summary>
-    /// Verifies that <see cref="SequenceGenerator.ThueMorse" /> throws <see cref="ArgumentOutOfRangeException" /> when count is negative.
+    /// Verifies that <see cref="SequenceGenerator.ThueMorse" /> throws <see cref="ArgumentOutOfRangeException" /> when
+    /// count is negative.
     /// </summary>
     [TestMethod]
     public void ThueMorse_WhenCountIsNegative_ShouldThrowExactly()

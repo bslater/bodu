@@ -28,7 +28,7 @@ public sealed partial class IEnumerableExtensionsTests_ForEach
     [TestMethod]
     public void ForEach_WhenSourceIsEmpty_ShouldNotInvokeAction()
     {
-        int count = 0;
+        var count = 0;
 
         Array.Empty<int>().ForEach(_ => count++);
 

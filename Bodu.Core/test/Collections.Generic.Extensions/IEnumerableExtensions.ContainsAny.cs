@@ -11,8 +11,8 @@ public sealed partial class IEnumerableExtensionsTests_ContainsAny
 {
 
     /// <summary>
-    /// Provides scenarios for <c>ContainsAny</c> covering partial overlap, no overlap,
-    /// empty sequences, and duplicate-item handling.
+    /// Provides scenarios for <c>ContainsAny</c> covering partial overlap, no overlap, empty sequences, and
+    /// duplicate-item handling.
     /// </summary>
     public static IEnumerable<object[]> GetContainsAnyTestCases() =>
     [
@@ -26,8 +26,8 @@ public sealed partial class IEnumerableExtensionsTests_ContainsAny
     ];
 
     /// <summary>
-    /// Verifies that <c>ContainsAny</c> correctly reports whether at least one query item appears
-    /// in the source sequence across overlap, non-overlap, empty, and duplicate cases.
+    /// Verifies that <c>ContainsAny</c> correctly reports whether at least one query item appears in the source
+    /// sequence across overlap, non-overlap, empty, and duplicate cases.
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(GetContainsAnyTestCases))]
@@ -37,8 +37,8 @@ public sealed partial class IEnumerableExtensionsTests_ContainsAny
         bool expected) => Assert.AreEqual(expected, source.ContainsAny(items));
 
     /// <summary>
-    /// Verifies the items-built-set branch when item sequence size is unknown by supplying a non-<see cref="ICollection{T}"/>
-    /// enumerable (a lazily-yielded sequence).
+    /// Verifies the items-built-set branch when item sequence size is unknown by supplying a non-
+    /// <see cref="ICollection{T}" /> enumerable (a lazily-yielded sequence).
     /// </summary>
     [TestMethod]
     public void ContainsAny_WhenItemsHasUnknownSize_ShouldReturnExpectedResult()
@@ -86,9 +86,9 @@ public sealed partial class IEnumerableExtensionsTests_ContainsAny
     }
 
     /// <summary>
-    /// Verifies the smaller-source optimisation branch: when <paramref name="source"/> is a known
-    /// <see cref="ICollection{T}"/> with fewer elements than <paramref name="items"/>, the set is
-    /// built from the source and query items are probed against it.
+    /// Verifies the smaller-source optimisation branch: when <paramref name="source" /> is a known
+    /// <see cref="ICollection{T}" /> with fewer elements than <paramref name="items" />, the set is built from the
+    /// source and query items are probed against it.
     /// </summary>
     [TestMethod]
     public void ContainsAny_WhenSourceIsSmallerThanItems_ShouldReturnExpectedResult()

@@ -11,5 +11,5 @@ public sealed partial class CbcModeTransformTests
     : BlockCipherModeTests<CbcModeTransform>
 {
     protected override CbcModeTransform CreateTransform(IBlockCipher cipher, byte[] iv)
-        => new CbcModeTransform(cipher, iv);
+        => new(cipher, iv);
 }

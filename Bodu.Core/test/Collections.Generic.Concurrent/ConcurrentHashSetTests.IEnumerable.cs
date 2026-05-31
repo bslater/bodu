@@ -20,7 +20,7 @@ public partial class ConcurrentHashSetTests
         IEnumerable<int> set = new ConcurrentHashSet<int>([1, 2, 3]);
 
         var observed = new List<int>();
-        foreach (int item in set)
+        foreach (var item in set)
             observed.Add(item);
 
         CollectionAssert.AreEquivalent(new[] { 1, 2, 3 }, observed);
@@ -36,7 +36,7 @@ public partial class ConcurrentHashSetTests
         IEnumerable set = new ConcurrentHashSet<int>([1, 2, 3]);
 
         var observed = new List<int>();
-        foreach (object? item in set)
+        foreach (var item in set)
             observed.Add((int)item!);
 
         CollectionAssert.AreEquivalent(new[] { 1, 2, 3 }, observed);

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IntervalTests.Union.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -14,7 +14,7 @@ public partial class IntervalTests
     [TestMethod]
     public void TryUnion_WhenOverlapping_ShouldReturnSpanningInterval()
     {
-        bool ok = Interval<int>.Closed(1, 5).TryUnion(Interval<int>.Closed(3, 7), out Interval<int> result);
+        var ok = Interval<int>.Closed(1, 5).TryUnion(Interval<int>.Closed(3, 7), out Interval<int> result);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(Interval<int>.Closed(1, 7), result);
@@ -28,7 +28,7 @@ public partial class IntervalTests
     public void TryUnion_WhenAdjacent_ShouldReturnContiguousInterval()
     {
         // [1, 5) ∪ [5, 10] -> [1, 10]
-        bool ok = Interval<int>.ClosedOpen(1, 5).TryUnion(Interval<int>.Closed(5, 10), out Interval<int> result);
+        var ok = Interval<int>.ClosedOpen(1, 5).TryUnion(Interval<int>.Closed(5, 10), out Interval<int> result);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(Interval<int>.Closed(1, 10), result);
@@ -42,7 +42,7 @@ public partial class IntervalTests
     public void TryUnion_WhenBothOpenAtSharedEndpoint_ShouldReturnFalse()
     {
         // [1, 5) ∪ (5, 10] — neither contains 5, so the result is not contiguous.
-        bool ok = Interval<int>.ClosedOpen(1, 5).TryUnion(Interval<int>.OpenClosed(5, 10), out Interval<int> result);
+        var ok = Interval<int>.ClosedOpen(1, 5).TryUnion(Interval<int>.OpenClosed(5, 10), out Interval<int> result);
 
         Assert.IsFalse(ok);
         Assert.IsTrue(result.IsEmpty);
@@ -54,7 +54,7 @@ public partial class IntervalTests
     [TestMethod]
     public void TryUnion_WhenDisjoint_ShouldReturnFalse()
     {
-        bool ok = Interval<int>.Closed(1, 3).TryUnion(Interval<int>.Closed(5, 7), out Interval<int> result);
+        var ok = Interval<int>.Closed(1, 3).TryUnion(Interval<int>.Closed(5, 7), out Interval<int> result);
 
         Assert.IsFalse(ok);
         Assert.IsTrue(result.IsEmpty);
@@ -66,7 +66,7 @@ public partial class IntervalTests
     [TestMethod]
     public void TryUnion_WhenEitherOperandIsEmpty_ShouldReturnTheOther()
     {
-        Interval<int> nonEmpty = Interval<int>.Closed(1, 5);
+        var nonEmpty = Interval<int>.Closed(1, 5);
 
         Assert.IsTrue(Interval<int>.Empty.TryUnion(nonEmpty, out Interval<int> a));
         Assert.AreEqual(nonEmpty, a);

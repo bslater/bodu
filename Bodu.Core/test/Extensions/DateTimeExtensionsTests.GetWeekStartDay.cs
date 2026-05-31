@@ -20,10 +20,7 @@ public partial class DateTimeExtensionsTests
     [DataRow(WorkingDaysOfWeek.MondayToSaturday, DayOfWeek.Monday)]
     [DataRow(WorkingDaysOfWeek.SaturdayToThursday, DayOfWeek.Saturday)]
     [DataRow(WorkingDaysOfWeek.AllDays, DayOfWeek.Monday)]
-    public void GetWeekStartDay_ForDefinedDefinition_ShouldReturnExpectedDay(WorkingDaysOfWeek weekend, DayOfWeek expected)
-    {
-        Assert.AreEqual(expected, DateTimeExtensions.GetWeekStartDay(weekend));
-    }
+    public void GetWeekStartDay_ForDefinedDefinition_ShouldReturnExpectedDay(WorkingDaysOfWeek weekend, DayOfWeek expected) => Assert.AreEqual(expected, DateTimeExtensions.GetWeekStartDay(weekend));
 
     /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.GetWeekStartDay" /> throws <see cref="ArgumentOutOfRangeException" /> when the

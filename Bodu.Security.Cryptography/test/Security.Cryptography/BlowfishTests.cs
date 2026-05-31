@@ -27,7 +27,7 @@ public sealed partial class BlowfishTests
 
     /// <inheritdoc />
     protected override SymmetricAlgorithmSpecification GetSpecification() =>
-        new SymmetricAlgorithmSpecification
+        new()
         {
             BlockSizeBits = 64,
             DefaultKeySizeBits = 128,

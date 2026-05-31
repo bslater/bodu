@@ -15,10 +15,7 @@ public partial class CryptoHelpersTests
     /// when the supplied success flag is <see langword="true"/>.
     /// </summary>
     [TestMethod]
-    public void ThrowIfHashAlgorithmDestinationTooSmall_WhenSuccess_ShouldNotThrow()
-    {
-        CryptoHelpers.ThrowIfHashAlgorithmDestinationTooSmall(true);
-    }
+    public void ThrowIfHashAlgorithmDestinationTooSmall_WhenSuccess_ShouldNotThrow() => CryptoHelpers.ThrowIfHashAlgorithmDestinationTooSmall(true);
 
     /// <summary>
     /// Verifies that <see cref="CryptoHelpers.ThrowIfHashAlgorithmDestinationTooSmall(bool)"/> throws a

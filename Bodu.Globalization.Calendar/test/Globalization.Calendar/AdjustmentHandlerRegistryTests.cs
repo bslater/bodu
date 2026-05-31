@@ -176,6 +176,6 @@ public sealed class AdjustmentHandlerRegistryTests
         : IAdjustmentHandler
     {
         public AdjustmentHandlerResult Apply(AdjustmentHandlerContext context) =>
-            new AdjustmentHandlerResult(false, context.Date, null);
+            new(false, context.Date, null);
     }
 }

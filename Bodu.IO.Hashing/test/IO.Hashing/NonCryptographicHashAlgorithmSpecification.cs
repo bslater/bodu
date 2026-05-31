@@ -9,14 +9,14 @@ using System.IO.Hashing;
 namespace Bodu.IO.Hashing;
 
 /// <summary>
-/// Describes the expected observable properties of a single <see cref="NonCryptographicHashAlgorithm" /> variant
-/// for use in constructor and behavioural tests.
+/// Describes the expected observable properties of a single <see cref="NonCryptographicHashAlgorithm" /> variant for
+/// use in constructor and behavioural tests.
 /// </summary>
 /// <remarks>
 /// Instances are supplied by derived test classes via
-/// <see cref="NonCryptographicHashAlgorithmTests{TTest, TAlgorithm, TVariant}.GetSpecification(TVariant)" /> and
-/// drive assertions that are common across every non-cryptographic hash algorithm under test — output width,
-/// optional block size, and distribution-test boundary parameters.
+/// <see cref="NonCryptographicHashAlgorithmTests{TTest, TAlgorithm, TVariant}.GetSpecification(TVariant)" /> and drive
+/// assertions that are common across every non-cryptographic hash algorithm under test — output width, optional block
+/// size, and distribution-test boundary parameters.
 /// </remarks>
 public record NonCryptographicHashAlgorithmSpecification
 {
@@ -39,29 +39,30 @@ public record NonCryptographicHashAlgorithmSpecification
 
     /// <summary>
     /// Gets the input lengths used to exercise distinct internal algorithm paths during hash distribution tests.
-    /// Defaults to a general-purpose set suitable for most streaming hash algorithms; override for algorithms
-    /// with well-defined internal path boundaries.
+    /// Defaults to a general-purpose set suitable for most streaming hash algorithms; override for algorithms with
+    /// well-defined internal path boundaries.
     /// </summary>
     public IReadOnlyList<int> BoundaryLengths { get; init; } = [1, 8, 16, 64];
-    /// <summary>Gets the expected <see cref="NonCryptographicHashAlgorithm.HashLengthInBytes" />.</summary>
+    /// <summary>
+    /// Gets the expected <see cref="NonCryptographicHashAlgorithm.HashLengthInBytes" />.
+    /// </summary>
     public required int HashLengthInBytes { get; init; }
 
     /// <summary>
-    /// Optional override for the upper bound (in bytes) of the dense incremental-input test.
-    /// When <see langword="null" />, the test defaults to <c>HashLengthInBytes * 4</c> for
-    /// block-based algorithms and <c>16</c> for byte-stream algorithms
-    /// (<see cref="HashLengthInBytes" /> ≤ 1). Override for hierarchical hashes (e.g. Blake3
-    /// chunks, KangarooTwelve leaves) so the test crosses every state-machine boundary.
+    /// Optional override for the upper bound (in bytes) of the dense incremental-input test. When
+    /// <see langword="null" />, the test defaults to <c>HashLengthInBytes * 4</c> for block-based algorithms and
+    /// <c>16</c> for byte-stream algorithms (<see cref="HashLengthInBytes" /> ≤ 1). Override for hierarchical hashes
+    /// (e.g. Blake3 chunks, KangarooTwelve leaves) so the test crosses every state-machine boundary.
     /// </summary>
     public int? IncrementalCoverageBytes { get; init; }
 
     /// <summary>
-    /// Gets a value indicating whether the algorithm implements <see cref="IResumableHashAlgorithm" /> and
-    /// supports continuing a previous finalised hash with additional input data.
+    /// Gets a value indicating whether the algorithm implements <see cref="IResumableHashAlgorithm" /> and supports
+    /// continuing a previous finalised hash with additional input data.
     /// </summary>
     /// <value>
-    /// <see langword="true" /> if the algorithm exposes resume semantics; otherwise, <see langword="false" />.
-    /// Defaults to <see langword="false" />.
+    /// <see langword="true" /> if the algorithm exposes resume semantics; otherwise, <see langword="false" />. Defaults
+    /// to <see langword="false" />.
     /// </value>
     public bool IsResumable { get; init; } = false;
 
@@ -86,15 +87,14 @@ public record NonCryptographicHashAlgorithmSpecification
     public NonCryptographicHashKnownAnswers KnownAnswers { get; init; } = new();
 
     /// <summary>
-    /// Gets the input length used to exercise the long/iterative internal path of the algorithm. Should be large
-    /// enough to guarantee the iterative code path is reached. Defaults to 200 bytes.
+    /// Gets the input length used to exercise the long/iterative internal path of the algorithm. Should be large enough
+    /// to guarantee the iterative code path is reached. Defaults to 200 bytes.
     /// </summary>
     public int LongInputLength { get; init; } = 200;
 
     /// <summary>
     /// Gets the minimum number of non-zero bytes required in the output hash when hashing a long, varied input.
-    /// Defaults to <see langword="null" />, in which case the base test uses half of
-    /// <see cref="HashLengthInBytes" />.
+    /// Defaults to <see langword="null" />, in which case the base test uses half of <see cref="HashLengthInBytes" />.
     /// </summary>
     public int? MinNonZeroBytesForLongInput { get; init; } = null;
 

@@ -11,8 +11,8 @@ public sealed partial class IEnumerableExtensionsTests_BatchPooled
 {
 
     /// <summary>
-    /// Verifies that <see cref="IEnumerableExtensions.BatchPooled{TSource}(IEnumerable{TSource}, int)" /> with a batch size larger than
-    /// the source returns a single trimmed batch.
+    /// Verifies that <see cref="IEnumerableExtensions.BatchPooled{TSource}(IEnumerable{TSource}, int)" /> with a batch
+    /// size larger than the source returns a single trimmed batch.
     /// </summary>
     [TestMethod]
     public void BatchPooled_WhenBatchSizeExceedsSourceLength_ShouldYieldSingleTrimmedBatch()
@@ -26,7 +26,8 @@ public sealed partial class IEnumerableExtensionsTests_BatchPooled
     }
 
     /// <summary>
-    /// Verifies that <see cref="IEnumerableExtensions.BatchPooled{TSource,TResult}(IEnumerable{TSource}, int, Func{TSource, int, TResult})" />
+    /// Verifies that
+    /// <see cref="IEnumerableExtensions.BatchPooled{TSource,TResult}(IEnumerable{TSource}, int, Func{TSource, int, TResult})" />
     /// defers execution until the returned sequence is enumerated.
     /// </summary>
     [TestMethod]
@@ -45,8 +46,8 @@ public sealed partial class IEnumerableExtensionsTests_BatchPooled
     }
 
     /// <summary>
-    /// Verifies that <see cref="IEnumerableExtensions.BatchPooled{TSource}(IEnumerable{TSource}, int)" /> defers execution until the
-    /// returned sequence is enumerated.
+    /// Verifies that <see cref="IEnumerableExtensions.BatchPooled{TSource}(IEnumerable{TSource}, int)" /> defers
+    /// execution until the returned sequence is enumerated.
     /// </summary>
     [TestMethod]
     public void BatchPooled_WhenCalled_ShouldDeferExecution()
@@ -63,8 +64,9 @@ public sealed partial class IEnumerableExtensionsTests_BatchPooled
         Assert.IsFalse(wasEnumerated, "BatchPooled should defer enumeration until the sequence is iterated.");
     }
     /// <summary>
-    /// Verifies that the unprojected overload of <see cref="IEnumerableExtensions.BatchPooled{TSource}(IEnumerable{TSource}, int)" />
-    /// yields batches with the expected contents for an even split.
+    /// Verifies that the unprojected overload of
+    /// <see cref="IEnumerableExtensions.BatchPooled{TSource}(IEnumerable{TSource}, int)" /> yields batches with the
+    /// expected contents for an even split.
     /// </summary>
     [TestMethod]
     public void BatchPooled_WhenEvenSplit_ShouldReturnExpectedBatches()
@@ -80,7 +82,8 @@ public sealed partial class IEnumerableExtensionsTests_BatchPooled
     }
 
     /// <summary>
-    /// Verifies that the projection overload applies the supplied selector with the correct zero-based index for every emitted element.
+    /// Verifies that the projection overload applies the supplied selector with the correct zero-based index for every
+    /// emitted element.
     /// </summary>
     [TestMethod]
     public void BatchPooled_WhenIndexedSelectorIsSupplied_ShouldApplyProjectionWithIndex()
@@ -96,7 +99,8 @@ public sealed partial class IEnumerableExtensionsTests_BatchPooled
     }
 
     /// <summary>
-    /// Verifies that the indexed selector receives a contiguous, monotonically increasing zero-based index across batches.
+    /// Verifies that the indexed selector receives a contiguous, monotonically increasing zero-based index across
+    /// batches.
     /// </summary>
     [TestMethod]
     public void BatchPooled_WhenIndexedSelectorIsSupplied_ShouldPassMonotonicIndexAcrossBatches()
@@ -111,7 +115,8 @@ public sealed partial class IEnumerableExtensionsTests_BatchPooled
     }
 
     /// <summary>
-    /// Verifies that the projection overload throws <see cref="ArgumentNullException" /> when the selector is <see langword="null" />.
+    /// Verifies that the projection overload throws <see cref="ArgumentNullException" /> when the selector is
+    /// <see langword="null" />.
     /// </summary>
     [TestMethod]
     public void BatchPooled_WhenSelectorIsNull_ShouldThrowExactly()
@@ -124,7 +129,8 @@ public sealed partial class IEnumerableExtensionsTests_BatchPooled
     }
 
     /// <summary>
-    /// Verifies that a non-positive batch size for the projection overload throws <see cref="ArgumentOutOfRangeException" />.
+    /// Verifies that a non-positive batch size for the projection overload throws
+    /// <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
     [DataRow(-1)]
@@ -164,7 +170,8 @@ public sealed partial class IEnumerableExtensionsTests_BatchPooled
     }
 
     /// <summary>
-    /// Verifies that the projection overload throws <see cref="ArgumentNullException" /> when the source sequence is <see langword="null" />.
+    /// Verifies that the projection overload throws <see cref="ArgumentNullException" /> when the source sequence is
+    /// <see langword="null" />.
     /// </summary>
     [TestMethod]
     public void BatchPooled_WhenSourceIsNull_ForProjectionOverload_ShouldThrowExactly()
@@ -177,7 +184,8 @@ public sealed partial class IEnumerableExtensionsTests_BatchPooled
     }
 
     /// <summary>
-    /// Verifies that the unprojected overload throws <see cref="ArgumentNullException" /> when the source sequence is <see langword="null" />.
+    /// Verifies that the unprojected overload throws <see cref="ArgumentNullException" /> when the source sequence is
+    /// <see langword="null" />.
     /// </summary>
     [TestMethod]
     public void BatchPooled_WhenSourceIsNull_ShouldThrowExactly()
@@ -190,7 +198,8 @@ public sealed partial class IEnumerableExtensionsTests_BatchPooled
     }
 
     /// <summary>
-    /// Verifies that the final batch is trimmed to its actual element count when the source size is not a multiple of the batch size.
+    /// Verifies that the final batch is trimmed to its actual element count when the source size is not a multiple of
+    /// the batch size.
     /// </summary>
     [TestMethod]
     public void BatchPooled_WhenUnevenSplit_ShouldYieldTrimmedFinalBatch()

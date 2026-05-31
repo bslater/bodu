@@ -26,8 +26,8 @@ public partial class Blake3Tests
         var hasher = new Blake3();
 
         // 2049 bytes spans three 1024-byte chunks, guaranteeing at least one parent CV on the stack.
-        byte[] input = new byte[2049];
-        for (int i = 0; i < input.Length; i++) input[i] = (byte)(i & 0xFF);
+        var input = new byte[2049];
+        for (var i = 0; i < input.Length; i++) input[i] = (byte)(i & 0xFF);
 
         hasher.TransformBlock(input, 0, input.Length, null, 0);
 
@@ -38,8 +38,8 @@ public partial class Blake3Tests
 
         // _cvStack is a readonly flat uint[] buffer; capturing the reference now lets us inspect its contents
         // after Dispose because the reference itself is stable across disposal.
-        uint[] stackBuffer = (uint[])cvStackField.GetValue(hasher)!;
-        int depthBeforeDispose = (int)cvStackDepthField.GetValue(hasher)!;
+        var stackBuffer = (uint[])cvStackField.GetValue(hasher)!;
+        var depthBeforeDispose = (int)cvStackDepthField.GetValue(hasher)!;
         Assert.IsTrue(depthBeforeDispose > 0, "Precondition: hashing 2049 bytes should push at least one chunk CV.");
         Assert.IsTrue(Array.Exists(stackBuffer, v => v != 0),
             "Precondition: stack buffer should hold non-zero chaining values before Dispose.");

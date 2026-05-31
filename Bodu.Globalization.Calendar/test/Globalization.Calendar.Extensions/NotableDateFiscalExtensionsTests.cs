@@ -12,7 +12,7 @@ namespace Bodu.Globalization.Calendar;
 public class NotableDateFiscalExtensionsTests
 {
     private static FiscalWeekQuarterProvider BuildProvider() =>
-        new FiscalWeekQuarterProvider(
+        new(
             month: 1,
             dayOfWeek: DayOfWeek.Saturday,
             isFiscalYearEnd: true,

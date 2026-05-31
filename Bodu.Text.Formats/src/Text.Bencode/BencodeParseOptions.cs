@@ -7,15 +7,15 @@
 namespace Bodu.Text.Bencode;
 
 /// <summary>
-/// Controls parser policy for <see cref="Bencode.Decode(System.ReadOnlySpan{byte}, BencodeParseOptions)" /> and
-/// related decoding entry points.
+/// Controls parser policy for <see cref="Bencode.Decode(System.ReadOnlySpan{byte}, BencodeParseOptions)" /> and related
+/// decoding entry points.
 /// </summary>
 /// <remarks>
 /// <para>
 /// The defaults match the strict, BEP 3-aligned behaviour applied when the parameterless
-/// <see cref="Bencode.Decode(System.ReadOnlySpan{byte})" /> overload is used: complete-document consumption,
-/// dictionary keys in strictly ascending bytewise order, and a recursion-depth ceiling that defends against
-/// pathologically nested input.
+/// <see cref="Bencode.Decode(System.ReadOnlySpan{byte})" /> overload is used: complete-document consumption, dictionary
+/// keys in strictly ascending bytewise order, and a recursion-depth ceiling that defends against pathologically nested
+/// input.
 /// </para>
 /// <para>
 /// Instances are immutable and safe to share across threads.
@@ -28,9 +28,9 @@ public readonly struct BencodeParseOptions
     /// </summary>
     /// <remarks>
     /// <para>
-    /// The value is chosen to comfortably accommodate every realistic torrent metainfo file (which rarely nest
-    /// beyond a depth of ten) while keeping the recursive parser well clear of the platform's per-thread stack
-    /// budget on 64-bit runtimes.
+    /// The value is chosen to comfortably accommodate every realistic torrent metainfo file (which rarely nest beyond a
+    /// depth of ten) while keeping the recursive parser well clear of the platform's per-thread stack budget on 64-bit
+    /// runtimes.
     /// </para>
     /// </remarks>
     public const int DefaultMaxDepth = 512;
@@ -53,12 +53,10 @@ public readonly struct BencodeParseOptions
     }
 
     /// <summary>
-    /// Gets the maximum permitted depth of nested lists and dictionaries that the parser will accept before
-    /// throwing a <see cref="BencodeFormatException" />.
+    /// Gets the maximum permitted depth of nested lists and dictionaries that the parser will accept before throwing a
+    /// <see cref="BencodeFormatException" />.
     /// </summary>
-    /// <returns>
-    /// A positive integer. The default is <see cref="DefaultMaxDepth" />.
-    /// </returns>
+    /// <returns>A positive integer. The default is <see cref="DefaultMaxDepth" />.</returns>
     /// <exception cref="System.ArgumentOutOfRangeException">
     /// Thrown when assigned a value less than or equal to zero.
     /// </exception>
@@ -74,15 +72,16 @@ public readonly struct BencodeParseOptions
     }
 
     /// <summary>
-    /// Gets a value indicating whether <see cref="Bencode.TryDecode(System.ReadOnlySpan{byte}, BencodeParseOptions, out BencodedValue?, out int)" />
+    /// Gets a value indicating whether
+    /// <see cref="Bencode.TryDecode(System.ReadOnlySpan{byte}, BencodeParseOptions, out BencodedValue?, out int)" />
     /// must consume the entire input.
     /// </summary>
     /// <remarks>
     /// <para>
     /// The default is <see langword="false" />, which preserves the lenient TryDecode contract: a prefix that
-    /// successfully decodes returns <see langword="true" /> with <c>bytesConsumed</c> set to the prefix length,
-    /// and trailing bytes are silently ignored. Set to <see langword="true" /> to require that the entire source
-    /// is consumed by a single value, mirroring the strict behaviour of
+    /// successfully decodes returns <see langword="true" /> with <c>bytesConsumed</c> set to the prefix length, and
+    /// trailing bytes are silently ignored. Set to <see langword="true" /> to require that the entire source is
+    /// consumed by a single value, mirroring the strict behaviour of
     /// <see cref="Bencode.Decode(System.ReadOnlySpan{byte})" />.
     /// </para>
     /// </remarks>

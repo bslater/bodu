@@ -34,8 +34,8 @@ public static class StringFormattingKnownAnswers
     ];
 
     /// <summary>
-    /// Gets all known-answer scenarios wrapped in single-element <see cref="object" /> arrays so they can be
-    /// consumed by <c>[DynamicData]</c>.
+    /// Gets all known-answer scenarios wrapped in single-element <see cref="object" /> arrays so they can be consumed
+    /// by <c>[DynamicData]</c>.
     /// </summary>
     /// <returns>The scenarios.</returns>
     public static IEnumerable<object[]> All()

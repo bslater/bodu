@@ -11,5 +11,5 @@ public sealed partial class CcmModeTransformTests
     : AeadBlockCipherModeTests<CcmModeTransformTests, CcmModeTransform>
 {
     protected override CcmModeTransform CreateTransform(IBlockCipher cipher, byte[] iv)
-        => new CcmModeTransform(cipher, iv);
+        => new(cipher, iv);
 }

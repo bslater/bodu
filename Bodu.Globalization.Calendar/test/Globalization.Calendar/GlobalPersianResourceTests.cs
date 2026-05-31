@@ -24,7 +24,7 @@ public sealed class GlobalPersianResourceTests
     /// </summary>
     /// <returns>The configured service.</returns>
     private static NotableDateService CreateBareService() =>
-        new NotableDateService(
+        new(
             ruleProviders:
             [
                 (INotableDateRuleProvider)new XmlResourceNotableDateRuleProvider(PersianResourceName, new ResourcePathResolver()),
@@ -110,7 +110,7 @@ public sealed class GlobalPersianResourceTests
     {
         NotableDateService service = CreateBareService();
 
-        for (int year = 1990; year <= 2050; year++)
+        for (var year = 1990; year <= 2050; year++)
         {
             NotableDate? resolved = service.GetNotableDates(year)
                 .FirstOrDefault(r => string.Equals(r.Name, "Nowruz", StringComparison.OrdinalIgnoreCase));

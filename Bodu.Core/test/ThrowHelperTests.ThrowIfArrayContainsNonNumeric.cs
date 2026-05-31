@@ -85,7 +85,7 @@ public partial class ThrowHelperTests
     {
         yield return new object?[] { "null array → ArgumentNullException", null, typeof(ArgumentNullException), "array" };
         yield return new object?[] { "string element → ArgumentException", new object[] { 1, "x" }, typeof(ArgumentException), "array" };
-        yield return new object?[] { "object element → ArgumentException", new object[] { new object() }, typeof(ArgumentException), "array" };
+        yield return new object?[] { "object element → ArgumentException", new object[] { new() }, typeof(ArgumentException), "array" };
         yield return new object?[] { "char element → ArgumentException", new object[] { 'a' }, typeof(ArgumentException), "array" };
         yield return new object?[] { "bool element → ArgumentException", new object[] { true }, typeof(ArgumentException), "array" };
     }

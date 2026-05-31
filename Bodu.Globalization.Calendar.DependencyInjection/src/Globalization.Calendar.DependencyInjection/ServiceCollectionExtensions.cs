@@ -21,8 +21,8 @@ namespace Bodu.Globalization.Calendar.DependencyInjection;
 /// <para>
 /// The extensions follow the conventions established by <c>Microsoft.Extensions.*</c> packages: registration returns a
 /// builder (<see cref="INotableDateServiceBuilder" />) that exposes a fluent surface for layering in rule providers,
-/// override providers, plugins, algorithm registries, collision resolvers, name localisers, and options projection.
-/// All collaborator interfaces are registered via <c>IEnumerable&lt;T&gt;</c> injection so that consumers can compose
+/// override providers, plugins, algorithm registries, collision resolvers, name localisers, and options projection. All
+/// collaborator interfaces are registered via <c>IEnumerable&lt;T&gt;</c> injection so that consumers can compose
 /// contributions from multiple data packs without overwriting earlier registrations.
 /// </para>
 /// <para>
@@ -83,8 +83,8 @@ public static class ServiceCollectionExtensions
     /// <para>
     /// Repeated calls to <see cref="AddNotableDates(IServiceCollection, IConfiguration?, string)" /> are safe: the
     /// underlying <see cref="INotableDateService" /> factory is registered idempotently via
-    /// <see cref="ServiceCollectionDescriptorExtensions.TryAddSingleton{TService}(IServiceCollection, Func{IServiceProvider, TService})" />,
-    /// so the singleton resolves to the same instance regardless of how many times the method is called. Repeated
+    /// <see cref="ServiceCollectionDescriptorExtensions.TryAddSingleton{TService}(IServiceCollection, Func{IServiceProvider, TService})" />
+    /// , so the singleton resolves to the same instance regardless of how many times the method is called. Repeated
     /// calls layer additional configuration binding sources onto <see cref="NotableDateOptions" />.
     /// </para>
     /// </remarks>
@@ -116,8 +116,8 @@ public static class ServiceCollectionExtensions
     /// </summary>
     /// <param name="services">The service collection to register into. Must not be <see langword="null" />.</param>
     /// <param name="configure">
-    /// A callback invoked with the <see cref="INotableDateServiceBuilder" /> for fluent registration of rule
-    /// providers, override providers, and supporting services. Must not be <see langword="null" />.
+    /// A callback invoked with the <see cref="INotableDateServiceBuilder" /> for fluent registration of rule providers,
+    /// override providers, and supporting services. Must not be <see langword="null" />.
     /// </param>
     /// <returns>
     /// The same <see cref="INotableDateServiceBuilder" /> the callback received, returned for callers that wish to
@@ -182,7 +182,7 @@ public static class ServiceCollectionExtensions
                 Plugins = plugins.ToArray(),
             };
 
-            WeekPattern workingWeek = opts.WorkingDays.ToWeekPattern();
+            var workingWeek = opts.WorkingDays.ToWeekPattern();
 
             NotableDateService service = new(ruleProviders.ToArray(), workingWeek, serviceOptions);
 

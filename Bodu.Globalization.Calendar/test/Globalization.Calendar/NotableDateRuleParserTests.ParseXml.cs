@@ -239,10 +239,7 @@ public partial class NotableDateRuleParserTests
     /// Verifies that <see cref="NotableDateRuleParser.ParseXml(string)" /> throws when given a null or whitespace payload.
     /// </summary>
     [TestMethod]
-    public void ParseXml_WhenInputIsWhitespace_ShouldThrowExactly()
-    {
-        Assert.ThrowsExactly<ArgumentNullException>(() => NotableDateRuleParser.ParseXml("   "));
-    }
+    public void ParseXml_WhenInputIsWhitespace_ShouldThrowExactly() => Assert.ThrowsExactly<ArgumentNullException>(() => NotableDateRuleParser.ParseXml("   "));
 
     /// <summary>
     /// Verifies that the <see cref="NotableDateRuleParser.ParseXml(System.Xml.Linq.XDocument)" />

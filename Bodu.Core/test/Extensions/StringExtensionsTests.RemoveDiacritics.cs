@@ -34,10 +34,7 @@ public partial class StringExtensionsTests
     /// <param name="expected">The expected stripped form.</param>
     [DataTestMethod]
     [DynamicData(nameof(GetRemoveDiacriticsCases), DynamicDataSourceType.Method)]
-    public void RemoveDiacritics_WhenInvoked_ShouldStripCombiningMarks(string value, string expected)
-    {
-        Assert.AreEqual(expected, value.RemoveDiacritics());
-    }
+    public void RemoveDiacritics_WhenInvoked_ShouldStripCombiningMarks(string value, string expected) => Assert.AreEqual(expected, value.RemoveDiacritics());
 
     /// <summary>
     /// Verifies that <see cref="StringExtensions.RemoveDiacritics(string)" /> throws

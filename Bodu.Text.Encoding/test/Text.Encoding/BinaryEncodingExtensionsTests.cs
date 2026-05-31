@@ -75,50 +75,35 @@ public sealed partial class BinaryEncodingExtensionsTests
     /// matching canonical static method.
     /// </summary>
     [TestMethod]
-    public void ToBase16String_OnByteArray_ShouldMatchStaticCanonical()
-    {
-        Assert.AreEqual(Base16.Encode(CanonicalBytes), CanonicalBytes.ToBase16String());
-    }
+    public void ToBase16String_OnByteArray_ShouldMatchStaticCanonical() => Assert.AreEqual(Base16.Encode(CanonicalBytes), CanonicalBytes.ToBase16String());
 
     /// <summary>
     /// Verifies that <see cref="BinaryEncodingExtensions.ToBase32String(byte[])" /> matches the static canonical
     /// Base32 form.
     /// </summary>
     [TestMethod]
-    public void ToBase32String_OnByteArray_ShouldMatchStaticCanonical()
-    {
-        Assert.AreEqual(Base32.ToBase32String(CanonicalBytes), CanonicalBytes.ToBase32String());
-    }
+    public void ToBase32String_OnByteArray_ShouldMatchStaticCanonical() => Assert.AreEqual(Base32.ToBase32String(CanonicalBytes), CanonicalBytes.ToBase32String());
 
     /// <summary>
     /// Verifies that <see cref="BinaryEncodingExtensions.ToBase58String(byte[])" /> matches the static canonical
     /// Base58 form.
     /// </summary>
     [TestMethod]
-    public void ToBase58String_OnByteArray_ShouldMatchStaticCanonical()
-    {
-        Assert.AreEqual(Base58.ToBase58String(CanonicalBytes), CanonicalBytes.ToBase58String());
-    }
+    public void ToBase58String_OnByteArray_ShouldMatchStaticCanonical() => Assert.AreEqual(Base58.ToBase58String(CanonicalBytes), CanonicalBytes.ToBase58String());
 
     /// <summary>
     /// Verifies that <see cref="BinaryEncodingExtensions.ToBase64String(byte[])" /> matches the static canonical
     /// Base64 form.
     /// </summary>
     [TestMethod]
-    public void ToBase64String_OnByteArray_ShouldMatchStaticCanonical()
-    {
-        Assert.AreEqual(Base64.ToBase64String(CanonicalBytes), CanonicalBytes.ToBase64String());
-    }
+    public void ToBase64String_OnByteArray_ShouldMatchStaticCanonical() => Assert.AreEqual(Base64.ToBase64String(CanonicalBytes), CanonicalBytes.ToBase64String());
 
     /// <summary>
     /// Verifies that <see cref="BinaryEncodingExtensions.ToBase85String(byte[])" /> matches the static canonical
     /// Ascii85 form.
     /// </summary>
     [TestMethod]
-    public void ToBase85String_OnByteArray_ShouldMatchStaticCanonical()
-    {
-        Assert.AreEqual(Base85.ToBase85String(CanonicalBytes), CanonicalBytes.ToBase85String());
-    }
+    public void ToBase85String_OnByteArray_ShouldMatchStaticCanonical() => Assert.AreEqual(Base85.ToBase85String(CanonicalBytes), CanonicalBytes.ToBase85String());
 
     /// <summary>
     /// Verifies that the byte-array overloads reject a <see langword="null" /> array.

@@ -37,7 +37,7 @@ public partial class BlockNonCryptographicHashAlgorithmTests
         AllowedUnalignedPadBlockHasher hasher = new();
         hasher.Append(new byte[] { 0xAA });
 
-        byte[] hash = hasher.GetCurrentHash();
+        var hash = hasher.GetCurrentHash();
 
         Assert.IsNotNull(hash);
         Assert.AreEqual(4, hash.Length);

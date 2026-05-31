@@ -22,8 +22,10 @@ public partial struct WeekPattern
     /// <param name="left">The first operand.</param>
     /// <param name="right">The second operand.</param>
     /// <returns><see langword="true" /> if both instances are equal; otherwise, <see langword="false" />.</returns>
-    public static bool operator ==(WeekPattern left, WeekPattern right) =>
-        left._selectedDays == right._selectedDays;
+    public static bool operator ==(WeekPattern left, WeekPattern right)
+    {
+        return left._selectedDays == right._selectedDays;
+    }
 
     /// <summary>
     /// Returns a new <see cref="WeekPattern" /> with all seven days toggled — selected days become unselected and vice
@@ -31,8 +33,10 @@ public partial struct WeekPattern
     /// </summary>
     /// <param name="pattern">The <see cref="WeekPattern" /> to complement.</param>
     /// <returns>The bitwise complement of <paramref name="pattern" />, masked to the valid seven-day range.</returns>
-    public static WeekPattern operator ~(WeekPattern pattern) =>
-        new WeekPattern(~pattern._selectedDays & MaxValue);
+    public static WeekPattern operator ~(WeekPattern pattern)
+    {
+        return new WeekPattern(~pattern._selectedDays & MaxValue);
+    }
 
     /// <summary>
     /// Returns a new <see cref="WeekPattern" /> containing all days selected in either operand (set union).
@@ -40,8 +44,10 @@ public partial struct WeekPattern
     /// <param name="left">The first operand.</param>
     /// <param name="right">The second operand.</param>
     /// <returns>A <see cref="WeekPattern" /> whose selected days are the union of the two operands.</returns>
-    public static WeekPattern operator |(WeekPattern left, WeekPattern right) =>
-        new WeekPattern(left._selectedDays | right._selectedDays);
+    public static WeekPattern operator |(WeekPattern left, WeekPattern right)
+    {
+        return new WeekPattern(left._selectedDays | right._selectedDays);
+    }
 
     /// <summary>
     /// Returns a new <see cref="WeekPattern" /> containing only the days selected in exactly one of the two operands
@@ -52,8 +58,10 @@ public partial struct WeekPattern
     /// <returns>
     /// A <see cref="WeekPattern" /> whose selected days are those that differ between the two operands.
     /// </returns>
-    public static WeekPattern operator ^(WeekPattern left, WeekPattern right) =>
-        new WeekPattern(left._selectedDays ^ right._selectedDays);
+    public static WeekPattern operator ^(WeekPattern left, WeekPattern right)
+    {
+        return new WeekPattern(left._selectedDays ^ right._selectedDays);
+    }
 
     /// <summary>
     /// Returns a new <see cref="WeekPattern" /> containing only the days selected in both operands (set intersection).
@@ -61,8 +69,10 @@ public partial struct WeekPattern
     /// <param name="left">The first operand.</param>
     /// <param name="right">The second operand.</param>
     /// <returns>A <see cref="WeekPattern" /> whose selected days are the intersection of the two operands.</returns>
-    public static WeekPattern operator &(WeekPattern left, WeekPattern right) =>
-        new WeekPattern(left._selectedDays & right._selectedDays);
+    public static WeekPattern operator &(WeekPattern left, WeekPattern right)
+    {
+        return new WeekPattern(left._selectedDays & right._selectedDays);
+    }
 
     /// <summary>
     /// Determines whether two <see cref="WeekPattern" /> instances have different selected days.
@@ -70,6 +80,8 @@ public partial struct WeekPattern
     /// <param name="left">The first operand.</param>
     /// <param name="right">The second operand.</param>
     /// <returns><see langword="true" /> if the instances differ; otherwise, <see langword="false" />.</returns>
-    public static bool operator !=(WeekPattern left, WeekPattern right) =>
-        left._selectedDays != right._selectedDays;
+    public static bool operator !=(WeekPattern left, WeekPattern right)
+    {
+        return left._selectedDays != right._selectedDays;
+    }
 }

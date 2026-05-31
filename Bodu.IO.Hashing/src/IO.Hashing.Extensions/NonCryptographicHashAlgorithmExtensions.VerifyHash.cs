@@ -41,11 +41,12 @@ public static partial class NonCryptographicHashAlgorithmExtensions
     /// digital signatures, message authentication, tamper detection, or other security-sensitive purposes.
     /// </remarks>
     /// <remarks>
-    /// Comparison uses <see cref="System.MemoryExtensions.SequenceEqual{T}(ReadOnlySpan{T}, ReadOnlySpan{T})" />
-    /// and short-circuits on the first mismatching byte. It is <strong>not</strong> constant-time and must not be
-    /// used to verify an authenticator value supplied by an untrusted caller. For constant-time hash verification
-    /// see the <c>Bodu.Security.Cryptography.HashAlgorithmExtensions.VerifyHash</c> overloads, which rely on
-    /// <see cref="System.Security.Cryptography.CryptographicOperations.FixedTimeEquals(ReadOnlySpan{byte}, ReadOnlySpan{byte})" />.
+    /// Comparison uses <see cref="System.MemoryExtensions.SequenceEqual{T}(ReadOnlySpan{T}, ReadOnlySpan{T})" /> and
+    /// short-circuits on the first mismatching byte. It is <strong>not</strong> constant-time and must not be used to
+    /// verify an authenticator value supplied by an untrusted caller. For constant-time hash verification see the
+    /// <c>Bodu.Security.Cryptography.HashAlgorithmExtensions.VerifyHash</c> overloads, which rely on
+    /// <see cref="System.Security.Cryptography.CryptographicOperations.FixedTimeEquals(ReadOnlySpan{byte}, ReadOnlySpan{byte})" />
+    /// .
     /// </remarks>
     public static bool VerifyHash(this NonCryptographicHashAlgorithm algorithm, byte[] input, byte[] expectedHash)
     {
@@ -99,11 +100,12 @@ public static partial class NonCryptographicHashAlgorithmExtensions
     /// digital signatures, message authentication, tamper detection, or other security-sensitive purposes.
     /// </remarks>
     /// <remarks>
-    /// Comparison uses <see cref="System.MemoryExtensions.SequenceEqual{T}(ReadOnlySpan{T}, ReadOnlySpan{T})" />
-    /// and short-circuits on the first mismatching byte. It is <strong>not</strong> constant-time and must not be
-    /// used to verify an authenticator value supplied by an untrusted caller. For constant-time hash verification
-    /// see the <c>Bodu.Security.Cryptography.HashAlgorithmExtensions.VerifyHash</c> overloads, which rely on
-    /// <see cref="System.Security.Cryptography.CryptographicOperations.FixedTimeEquals(ReadOnlySpan{byte}, ReadOnlySpan{byte})" />.
+    /// Comparison uses <see cref="System.MemoryExtensions.SequenceEqual{T}(ReadOnlySpan{T}, ReadOnlySpan{T})" /> and
+    /// short-circuits on the first mismatching byte. It is <strong>not</strong> constant-time and must not be used to
+    /// verify an authenticator value supplied by an untrusted caller. For constant-time hash verification see the
+    /// <c>Bodu.Security.Cryptography.HashAlgorithmExtensions.VerifyHash</c> overloads, which rely on
+    /// <see cref="System.Security.Cryptography.CryptographicOperations.FixedTimeEquals(ReadOnlySpan{byte}, ReadOnlySpan{byte})" />
+    /// .
     /// </remarks>
     public static bool VerifyHash(this NonCryptographicHashAlgorithm algorithm, byte[] input, string expectedHex)
     {
@@ -156,11 +158,12 @@ public static partial class NonCryptographicHashAlgorithmExtensions
     /// digital signatures, message authentication, tamper detection, or other security-sensitive purposes.
     /// </remarks>
     /// <remarks>
-    /// Comparison uses <see cref="System.MemoryExtensions.SequenceEqual{T}(ReadOnlySpan{T}, ReadOnlySpan{T})" />
-    /// and short-circuits on the first mismatching byte. It is <strong>not</strong> constant-time and must not be
-    /// used to verify an authenticator value supplied by an untrusted caller. For constant-time hash verification
-    /// see the <c>Bodu.Security.Cryptography.HashAlgorithmExtensions.VerifyHash</c> overloads, which rely on
-    /// <see cref="System.Security.Cryptography.CryptographicOperations.FixedTimeEquals(ReadOnlySpan{byte}, ReadOnlySpan{byte})" />.
+    /// Comparison uses <see cref="System.MemoryExtensions.SequenceEqual{T}(ReadOnlySpan{T}, ReadOnlySpan{T})" /> and
+    /// short-circuits on the first mismatching byte. It is <strong>not</strong> constant-time and must not be used to
+    /// verify an authenticator value supplied by an untrusted caller. For constant-time hash verification see the
+    /// <c>Bodu.Security.Cryptography.HashAlgorithmExtensions.VerifyHash</c> overloads, which rely on
+    /// <see cref="System.Security.Cryptography.CryptographicOperations.FixedTimeEquals(ReadOnlySpan{byte}, ReadOnlySpan{byte})" />
+    /// .
     /// </remarks>
     public static bool VerifyHash(this NonCryptographicHashAlgorithm algorithm, Stream stream, byte[] expectedHash)
     {
@@ -213,11 +216,12 @@ public static partial class NonCryptographicHashAlgorithmExtensions
     /// digital signatures, message authentication, tamper detection, or other security-sensitive purposes.
     /// </remarks>
     /// <remarks>
-    /// Comparison uses <see cref="System.MemoryExtensions.SequenceEqual{T}(ReadOnlySpan{T}, ReadOnlySpan{T})" />
-    /// and short-circuits on the first mismatching byte. It is <strong>not</strong> constant-time and must not be
-    /// used to verify an authenticator value supplied by an untrusted caller. For constant-time hash verification
-    /// see the <c>Bodu.Security.Cryptography.HashAlgorithmExtensions.VerifyHash</c> overloads, which rely on
-    /// <see cref="System.Security.Cryptography.CryptographicOperations.FixedTimeEquals(ReadOnlySpan{byte}, ReadOnlySpan{byte})" />.
+    /// Comparison uses <see cref="System.MemoryExtensions.SequenceEqual{T}(ReadOnlySpan{T}, ReadOnlySpan{T})" /> and
+    /// short-circuits on the first mismatching byte. It is <strong>not</strong> constant-time and must not be used to
+    /// verify an authenticator value supplied by an untrusted caller. For constant-time hash verification see the
+    /// <c>Bodu.Security.Cryptography.HashAlgorithmExtensions.VerifyHash</c> overloads, which rely on
+    /// <see cref="System.Security.Cryptography.CryptographicOperations.FixedTimeEquals(ReadOnlySpan{byte}, ReadOnlySpan{byte})" />
+    /// .
     /// </remarks>
     public static bool VerifyHash(this NonCryptographicHashAlgorithm algorithm, Stream stream, string expectedHex)
     {
@@ -267,11 +271,12 @@ public static partial class NonCryptographicHashAlgorithmExtensions
     /// digital signatures, message authentication, tamper detection, or other security-sensitive purposes.
     /// </remarks>
     /// <remarks>
-    /// Comparison uses <see cref="System.MemoryExtensions.SequenceEqual{T}(ReadOnlySpan{T}, ReadOnlySpan{T})" />
-    /// and short-circuits on the first mismatching byte. It is <strong>not</strong> constant-time and must not be
-    /// used to verify an authenticator value supplied by an untrusted caller. For constant-time hash verification
-    /// see the <c>Bodu.Security.Cryptography.HashAlgorithmExtensions.VerifyHash</c> overloads, which rely on
-    /// <see cref="System.Security.Cryptography.CryptographicOperations.FixedTimeEquals(ReadOnlySpan{byte}, ReadOnlySpan{byte})" />.
+    /// Comparison uses <see cref="System.MemoryExtensions.SequenceEqual{T}(ReadOnlySpan{T}, ReadOnlySpan{T})" /> and
+    /// short-circuits on the first mismatching byte. It is <strong>not</strong> constant-time and must not be used to
+    /// verify an authenticator value supplied by an untrusted caller. For constant-time hash verification see the
+    /// <c>Bodu.Security.Cryptography.HashAlgorithmExtensions.VerifyHash</c> overloads, which rely on
+    /// <see cref="System.Security.Cryptography.CryptographicOperations.FixedTimeEquals(ReadOnlySpan{byte}, ReadOnlySpan{byte})" />
+    /// .
     /// </remarks>
     public static bool VerifyHash(
         this NonCryptographicHashAlgorithm algorithm,
@@ -312,11 +317,12 @@ public static partial class NonCryptographicHashAlgorithmExtensions
     /// digital signatures, message authentication, tamper detection, or other security-sensitive purposes.
     /// </remarks>
     /// <remarks>
-    /// Comparison uses <see cref="System.MemoryExtensions.SequenceEqual{T}(ReadOnlySpan{T}, ReadOnlySpan{T})" />
-    /// and short-circuits on the first mismatching byte. It is <strong>not</strong> constant-time and must not be
-    /// used to verify an authenticator value supplied by an untrusted caller. For constant-time hash verification
-    /// see the <c>Bodu.Security.Cryptography.HashAlgorithmExtensions.VerifyHash</c> overloads, which rely on
-    /// <see cref="System.Security.Cryptography.CryptographicOperations.FixedTimeEquals(ReadOnlySpan{byte}, ReadOnlySpan{byte})" />.
+    /// Comparison uses <see cref="System.MemoryExtensions.SequenceEqual{T}(ReadOnlySpan{T}, ReadOnlySpan{T})" /> and
+    /// short-circuits on the first mismatching byte. It is <strong>not</strong> constant-time and must not be used to
+    /// verify an authenticator value supplied by an untrusted caller. For constant-time hash verification see the
+    /// <c>Bodu.Security.Cryptography.HashAlgorithmExtensions.VerifyHash</c> overloads, which rely on
+    /// <see cref="System.Security.Cryptography.CryptographicOperations.FixedTimeEquals(ReadOnlySpan{byte}, ReadOnlySpan{byte})" />
+    /// .
     /// </remarks>
     public static bool VerifyHash(
         this NonCryptographicHashAlgorithm algorithm,
@@ -354,11 +360,12 @@ public static partial class NonCryptographicHashAlgorithmExtensions
     /// digital signatures, message authentication, tamper detection, or other security-sensitive purposes.
     /// </remarks>
     /// <remarks>
-    /// Comparison uses <see cref="System.MemoryExtensions.SequenceEqual{T}(ReadOnlySpan{T}, ReadOnlySpan{T})" />
-    /// and short-circuits on the first mismatching byte. It is <strong>not</strong> constant-time and must not be
-    /// used to verify an authenticator value supplied by an untrusted caller. For constant-time hash verification
-    /// see the <c>Bodu.Security.Cryptography.HashAlgorithmExtensions.VerifyHash</c> overloads, which rely on
-    /// <see cref="System.Security.Cryptography.CryptographicOperations.FixedTimeEquals(ReadOnlySpan{byte}, ReadOnlySpan{byte})" />.
+    /// Comparison uses <see cref="System.MemoryExtensions.SequenceEqual{T}(ReadOnlySpan{T}, ReadOnlySpan{T})" /> and
+    /// short-circuits on the first mismatching byte. It is <strong>not</strong> constant-time and must not be used to
+    /// verify an authenticator value supplied by an untrusted caller. For constant-time hash verification see the
+    /// <c>Bodu.Security.Cryptography.HashAlgorithmExtensions.VerifyHash</c> overloads, which rely on
+    /// <see cref="System.Security.Cryptography.CryptographicOperations.FixedTimeEquals(ReadOnlySpan{byte}, ReadOnlySpan{byte})" />
+    /// .
     /// </remarks>
     public static bool VerifyHash(
         this NonCryptographicHashAlgorithm algorithm,

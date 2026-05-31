@@ -192,10 +192,7 @@ public class CurrencyRegistryTests
     /// for a <see langword="null" /> input rather than throwing.
     /// </summary>
     [TestMethod]
-    public void TryRegister_WhenInfoIsNull_ShouldReturnFalse()
-    {
-        Assert.IsFalse(CurrencyRegistry.TryRegister(null!));
-    }
+    public void TryRegister_WhenInfoIsNull_ShouldReturnFalse() => Assert.IsFalse(CurrencyRegistry.TryRegister(null!));
 
     /// <summary>
     /// Verifies that <see cref="CurrencyRegistry.Register(CurrencyInfo)" /> throws

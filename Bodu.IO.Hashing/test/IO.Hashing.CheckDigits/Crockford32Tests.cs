@@ -47,10 +47,7 @@ public sealed class Crockford32Tests
     /// equivalent.
     /// </summary>
     [TestMethod]
-    public void Compute_WhenBodyIsLowercase_ShouldMatchUppercase()
-    {
-        Assert.AreEqual(Crockford32.Compute("16J".AsSpan()), Crockford32.Compute("16j".AsSpan()));
-    }
+    public void Compute_WhenBodyIsLowercase_ShouldMatchUppercase() => Assert.AreEqual(Crockford32.Compute("16J".AsSpan()), Crockford32.Compute("16j".AsSpan()));
 
     /// <summary>
     /// Verifies that the Crockford decode aliases hold: <c>'O'</c> maps to <c>0</c> and <c>'I'</c>/<c>'L'</c> map to
@@ -69,19 +66,13 @@ public sealed class Crockford32Tests
     /// symbol, since check-symbol decoding is also case-insensitive.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenCheckSymbolIsLowercase_ShouldReturnTrue()
-    {
-        Assert.IsTrue(Crockford32.IsValid("16Jd".AsSpan()));
-    }
+    public void IsValid_WhenCheckSymbolIsLowercase_ShouldReturnTrue() => Assert.IsTrue(Crockford32.IsValid("16Jd".AsSpan()));
 
     /// <summary>
     /// Verifies that <see cref="Crockford32.IsValid(ReadOnlySpan{char})" /> rejects the empty span.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenSequenceIsEmpty_ShouldReturnFalse()
-    {
-        Assert.IsFalse(Crockford32.IsValid(ReadOnlySpan<char>.Empty));
-    }
+    public void IsValid_WhenSequenceIsEmpty_ShouldReturnFalse() => Assert.IsFalse(Crockford32.IsValid(ReadOnlySpan<char>.Empty));
 
     /// <inheritdoc />
     protected override char ComputeStatic(ReadOnlySpan<char> body) =>

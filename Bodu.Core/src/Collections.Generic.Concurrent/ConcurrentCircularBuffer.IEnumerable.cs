@@ -30,7 +30,7 @@ public partial class ConcurrentCircularBuffer<T> :
     /// non-concurrent collections.
     /// </para>
     /// </remarks>
-    public Enumerator GetEnumerator() => new Enumerator(this);
+    public Enumerator GetEnumerator() => new(this);
 
     /// <inheritdoc cref="GetEnumerator"/>
     IEnumerator<T> IEnumerable<T>.GetEnumerator() => new Enumerator(this);

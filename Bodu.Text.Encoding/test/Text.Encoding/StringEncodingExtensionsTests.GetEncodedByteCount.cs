@@ -29,10 +29,7 @@ public sealed partial class StringEncodingExtensionsTests
     /// returns zero for an empty string.
     /// </summary>
     [TestMethod]
-    public void GetEncodedByteCount_WhenStringIsEmpty_ShouldReturnZero()
-    {
-        Assert.AreEqual(0, string.Empty.GetEncodedByteCount(System.Text.Encoding.UTF8));
-    }
+    public void GetEncodedByteCount_WhenStringIsEmpty_ShouldReturnZero() => Assert.AreEqual(0, string.Empty.GetEncodedByteCount(System.Text.Encoding.UTF8));
 
     /// <summary>
     /// Verifies that <see cref="StringEncodingExtensions.GetEncodedByteCount(string, System.Text.Encoding)" />

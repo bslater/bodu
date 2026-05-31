@@ -10,7 +10,8 @@ public partial class IEnumerableExtensionsTests_RecursiveSelect
 {
 
     /// <summary>
-    /// Verifies that the projection overload <see cref="IEnumerableExtensions.RecursiveSelect{TSource, TResult}(IEnumerable{TSource}, Func{TSource, IEnumerable{TSource}}, Func{TSource, TResult})" />
+    /// Verifies that the projection overload
+    /// <see cref="IEnumerableExtensions.RecursiveSelect{TSource, TResult}(IEnumerable{TSource}, Func{TSource, IEnumerable{TSource}}, Func{TSource, TResult})" />
     /// applies the supplied selector to every visited element in depth-first order.
     /// </summary>
     [TestMethod]

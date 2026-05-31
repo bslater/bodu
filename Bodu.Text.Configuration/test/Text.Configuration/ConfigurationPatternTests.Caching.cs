@@ -15,8 +15,8 @@ public partial class ConfigurationPatternTests
     [TestMethod]
     public void Compile_WhenSamePatternAndComparison_ShouldReturnCachedInstance()
     {
-        ConfigurationPattern first = ConfigurationPattern.Compile("**/*.cs", StringComparison.Ordinal);
-        ConfigurationPattern second = ConfigurationPattern.Compile("**/*.cs", StringComparison.Ordinal);
+        var first = ConfigurationPattern.Compile("**/*.cs", StringComparison.Ordinal);
+        var second = ConfigurationPattern.Compile("**/*.cs", StringComparison.Ordinal);
 
         Assert.AreSame(first, second);
     }
@@ -28,8 +28,8 @@ public partial class ConfigurationPatternTests
     [TestMethod]
     public void Compile_WhenSamePatternDifferentComparison_ShouldReturnDistinctInstances()
     {
-        ConfigurationPattern ordinal = ConfigurationPattern.Compile("**/*.cs", StringComparison.Ordinal);
-        ConfigurationPattern caseInsensitive = ConfigurationPattern.Compile("**/*.cs", StringComparison.OrdinalIgnoreCase);
+        var ordinal = ConfigurationPattern.Compile("**/*.cs", StringComparison.Ordinal);
+        var caseInsensitive = ConfigurationPattern.Compile("**/*.cs", StringComparison.OrdinalIgnoreCase);
 
         Assert.AreNotSame(ordinal, caseInsensitive);
     }
@@ -41,8 +41,8 @@ public partial class ConfigurationPatternTests
     [TestMethod]
     public void Compile_WhenParameterlessOverload_ShouldShareOrdinalCacheSlot()
     {
-        ConfigurationPattern viaDefault = ConfigurationPattern.Compile("logs/run-{1..3}.log");
-        ConfigurationPattern viaExplicit = ConfigurationPattern.Compile("logs/run-{1..3}.log", StringComparison.Ordinal);
+        var viaDefault = ConfigurationPattern.Compile("logs/run-{1..3}.log");
+        var viaExplicit = ConfigurationPattern.Compile("logs/run-{1..3}.log", StringComparison.Ordinal);
 
         Assert.AreSame(viaDefault, viaExplicit);
     }

@@ -18,13 +18,14 @@ namespace Bodu.Globalization.Calendar;
 public static class FilterScenarioAssertions
 {
     /// <summary>
-    /// Constructs the service via <see cref="FilterScenarioKnownAnswer.ServiceFactory" />, applies the
-    /// filter from <see cref="FilterScenarioKnownAnswer.FilterFactory" />, and asserts that the returned
-    /// occurrence name set is equivalent to <see cref="FilterScenarioKnownAnswer.ExpectedNames" />.
+    /// Constructs the service via <see cref="FilterScenarioKnownAnswer.ServiceFactory" />, applies the filter from
+    /// <see cref="FilterScenarioKnownAnswer.FilterFactory" />, and asserts that the returned occurrence name set is
+    /// equivalent to <see cref="FilterScenarioKnownAnswer.ExpectedNames" />.
     /// </summary>
     /// <param name="ka">The row to verify.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="ka" /> is
-    /// <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="ka" /> is <see langword="null" />.
+    /// </exception>
     public static void AssertResultNamesMatch(FilterScenarioKnownAnswer ka)
     {
         ArgumentNullException.ThrowIfNull(ka);
@@ -36,7 +37,7 @@ public static class FilterScenarioAssertions
             ? query(service, filter)
             : service.GetNotableDates(ka.Year, filter);
 
-        List<string> actualNames = results.Select(d => d.Name).ToList();
+        var actualNames = results.Select(d => d.Name).ToList();
 
         CollectionAssert.AreEquivalent(
             ka.ExpectedNames.ToList(),
@@ -48,8 +49,10 @@ public static class FilterScenarioAssertions
     /// Renders a <see cref="FilterScenarioKnownAnswer" /> row as the MSTest display name. Rows render as
     /// <c>"CategoryFilter_HolidayOnly | year 2024 | expects 2 names"</c>; suffixes the note when populated.
     /// </summary>
-    /// <param name="methodInfo">The test method under discovery. Unused; required by
-    /// <see cref="Microsoft.VisualStudio.TestTools.UnitTesting.DynamicDataAttribute" />.</param>
+    /// <param name="methodInfo">
+    /// The test method under discovery. Unused; required by
+    /// <see cref="Microsoft.VisualStudio.TestTools.UnitTesting.DynamicDataAttribute" />.
+    /// </param>
     /// <param name="data">The single-element row produced by the provider method.</param>
     /// <returns>An ASCII display name no longer than ~100 characters.</returns>
     public static string GetDisplayName(MethodInfo methodInfo, object[] data)
@@ -61,9 +64,9 @@ public static class FilterScenarioAssertions
             return string.Join(", ", data);
         }
 
-        int nameCount = ka.ExpectedNames.Count;
-        string suffix = nameCount == 1 ? string.Empty : "s";
-        string label = $"{ka.Scenario} | year {ka.Year} | expects {nameCount} name{suffix}";
+        var nameCount = ka.ExpectedNames.Count;
+        var suffix = nameCount == 1 ? string.Empty : "s";
+        var label = $"{ka.Scenario} | year {ka.Year} | expects {nameCount} name{suffix}";
 
         if (!string.IsNullOrEmpty(ka.Note))
         {

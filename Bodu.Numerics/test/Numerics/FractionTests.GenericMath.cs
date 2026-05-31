@@ -54,10 +54,7 @@ public partial class FractionTests
     /// Verifies that the generic-math creation routine converts an integer into a <see cref="Fraction{T}" />.
     /// </summary>
     [TestMethod]
-    public void GenericMath_WhenCreatingFromInteger_ShouldProduceWholeNumber()
-    {
-        Assert.AreEqual(new Fraction<int>(5, 1), CreateFromInt32<Fraction<int>>(5));
-    }
+    public void GenericMath_WhenCreatingFromInteger_ShouldProduceWholeNumber() => Assert.AreEqual(new Fraction<int>(5, 1), CreateFromInt32<Fraction<int>>(5));
 
     /// <summary>
     /// Sums a sequence of numbers using only the <see cref="INumber{TSelf}" /> contract.
@@ -139,7 +136,7 @@ public partial class FractionTests
         bool isOddInteger,
         bool isNegative)
     {
-        Fraction<int> value = new Fraction<int>(numerator, denominator);
+        var value = new Fraction<int>(numerator, denominator);
 
         Assert.AreEqual(isInteger, IsIntegerOf(value), nameof(isInteger));
         Assert.AreEqual(isEvenInteger, IsEvenIntegerOf(value), nameof(isEvenInteger));
@@ -164,10 +161,7 @@ public partial class FractionTests
     /// Verifies that <see cref="Fraction{T}" /> reports a radix of two through the generic-math contract.
     /// </summary>
     [TestMethod]
-    public void GenericMath_WhenQueryingRadix_ShouldReturnTwo()
-    {
-        Assert.AreEqual(2, RadixOf<Fraction<int>>());
-    }
+    public void GenericMath_WhenQueryingRadix_ShouldReturnTwo() => Assert.AreEqual(2, RadixOf<Fraction<int>>());
 
     /// <summary>
     /// Determines whether a number is an integer using the <see cref="INumberBase{TSelf}" /> contract.
@@ -266,10 +260,7 @@ public partial class FractionTests
     /// Verifies that converting a non-integer fraction with the checked contract succeeds without throwing.
     /// </summary>
     [TestMethod]
-    public void GenericMath_WhenConvertingNonIntegerToChecked_ShouldSucceedWithoutThrowing()
-    {
-        Assert.AreEqual(0, ConvertChecked<Fraction<int>, int>(new Fraction<int>(1, 2)));
-    }
+    public void GenericMath_WhenConvertingNonIntegerToChecked_ShouldSucceedWithoutThrowing() => Assert.AreEqual(0, ConvertChecked<Fraction<int>, int>(new Fraction<int>(1, 2)));
 
     /// <summary>
     /// Verifies that the checked conversion contract throws for a value outside the destination range.
@@ -287,19 +278,13 @@ public partial class FractionTests
     /// Verifies that converting from a decimal preserves the exact rational value rather than a double.
     /// </summary>
     [TestMethod]
-    public void GenericMath_WhenConvertingFromDecimal_ShouldPreserveExactValue()
-    {
-        Assert.AreEqual(new Fraction<int>(1, 10), ConvertChecked<decimal, Fraction<int>>(0.1m));
-    }
+    public void GenericMath_WhenConvertingFromDecimal_ShouldPreserveExactValue() => Assert.AreEqual(new Fraction<int>(1, 10), ConvertChecked<decimal, Fraction<int>>(0.1m));
 
     /// <summary>
     /// Verifies that a saturating conversion clamps an out-of-range value instead of throwing.
     /// </summary>
     [TestMethod]
-    public void GenericMath_WhenSaturatingConversionOverflows_ShouldClampToBound()
-    {
-        Assert.AreEqual(Fraction<int>.MaxValue, ConvertSaturating<double, Fraction<int>>(1e30));
-    }
+    public void GenericMath_WhenSaturatingConversionOverflows_ShouldClampToBound() => Assert.AreEqual(Fraction<int>.MaxValue, ConvertSaturating<double, Fraction<int>>(1e30));
 
     /// <summary>
     /// Converts a value to a destination type using the checked creation contract.

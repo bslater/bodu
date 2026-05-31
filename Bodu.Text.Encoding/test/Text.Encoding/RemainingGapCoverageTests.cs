@@ -52,10 +52,7 @@ public sealed class RemainingGapCoverageTests
     /// Verifies that <see cref="Base16.GetMaxDecodedLength(int)" /> returns zero for zero input.
     /// </summary>
     [TestMethod]
-    public void Base16_GetMaxDecodedLength_ZeroInput_ShouldReturnZero()
-    {
-        Assert.AreEqual(0, Base16.GetMaxDecodedLength(0));
-    }
+    public void Base16_GetMaxDecodedLength_ZeroInput_ShouldReturnZero() => Assert.AreEqual(0, Base16.GetMaxDecodedLength(0));
 
     /// <summary>
     /// Verifies that <see cref="Base16.TryDecode(ReadOnlySpan{char}, Span{byte}, out int, BaseFormatStyles)" /> with
@@ -135,10 +132,7 @@ public sealed class RemainingGapCoverageTests
     /// 128-entry lookup table.
     /// </summary>
     [TestMethod]
-    public void Base32_IsBase32Digit_WhenCharAboveLookupRange_ShouldReturnFalse()
-    {
-        Assert.IsFalse(Base32.IsBase32Digit((char)200));
-    }
+    public void Base32_IsBase32Digit_WhenCharAboveLookupRange_ShouldReturnFalse() => Assert.IsFalse(Base32.IsBase32Digit((char)200));
 
     /// <summary>
     /// Verifies that <see cref="Base32.TryEncodeToUtf8(ReadOnlySpan{byte}, Span{byte}, out int, Base32Variant, BaseFormattingOptions)" />
@@ -201,10 +195,7 @@ public sealed class RemainingGapCoverageTests
     /// Verifies that <see cref="Base58.GetMaxDecodedLength(int)" /> returns zero for zero input.
     /// </summary>
     [TestMethod]
-    public void Base58_GetMaxDecodedLength_ZeroInput_ShouldReturnZero()
-    {
-        Assert.AreEqual(0, Base58.GetMaxDecodedLength(0));
-    }
+    public void Base58_GetMaxDecodedLength_ZeroInput_ShouldReturnZero() => Assert.AreEqual(0, Base58.GetMaxDecodedLength(0));
 
     /// <summary>
     /// Verifies that <see cref="Base58.GetMaxEncodedLength(int)" /> returns zero for zero input and a positive
@@ -222,10 +213,7 @@ public sealed class RemainingGapCoverageTests
     /// 128-entry lookup table.
     /// </summary>
     [TestMethod]
-    public void Base58_IsBase58Digit_WhenCharAboveLookupRange_ShouldReturnFalse()
-    {
-        Assert.IsFalse(Base58.IsBase58Digit((char)200));
-    }
+    public void Base58_IsBase58Digit_WhenCharAboveLookupRange_ShouldReturnFalse() => Assert.IsFalse(Base58.IsBase58Digit((char)200));
 
     /// <summary>
     /// Verifies that <see cref="Base58.TryEncode(ReadOnlySpan{byte}, Span{char}, out int, Base58Variant)" /> returns
@@ -288,10 +276,7 @@ public sealed class RemainingGapCoverageTests
     /// four-byte checksum after decoding.
     /// </summary>
     [TestMethod]
-    public void Base58Check_IsValid_WhenInputContainsInvalidAlphabet_ShouldReturnFalse()
-    {
-        Assert.IsFalse(Base58Check.IsValid("0Invalid!".AsSpan()));
-    }
+    public void Base58Check_IsValid_WhenInputContainsInvalidAlphabet_ShouldReturnFalse() => Assert.IsFalse(Base58Check.IsValid("0Invalid!".AsSpan()));
 
     /// <summary>
     /// Verifies that <see cref="Base58Check.TryDecode" /> returns <see langword="false" /> for an input that base
@@ -461,10 +446,7 @@ public sealed class RemainingGapCoverageTests
     /// returns zero for empty input without delimiters.
     /// </summary>
     [TestMethod]
-    public void Base85_GetEncodedLength_EmptyInput_ShouldReturnZero()
-    {
-        Assert.AreEqual(0, Base85.GetEncodedLength(ReadOnlySpan<byte>.Empty));
-    }
+    public void Base85_GetEncodedLength_EmptyInput_ShouldReturnZero() => Assert.AreEqual(0, Base85.GetEncodedLength(ReadOnlySpan<byte>.Empty));
 
     /// <summary>
     /// Verifies that <see cref="Base85.GetEncodedLength(ReadOnlySpan{byte}, Base85Variant, BaseFormattingOptions)" />
@@ -483,10 +465,7 @@ public sealed class RemainingGapCoverageTests
     /// Verifies that <see cref="Base85.GetMaxDecodedLength(int)" /> returns zero for zero input.
     /// </summary>
     [TestMethod]
-    public void Base85_GetMaxDecodedLength_ZeroInput_ShouldReturnZero()
-    {
-        Assert.AreEqual(0, Base85.GetMaxDecodedLength(0));
-    }
+    public void Base85_GetMaxDecodedLength_ZeroInput_ShouldReturnZero() => Assert.AreEqual(0, Base85.GetMaxDecodedLength(0));
 
     /// <summary>
     /// Verifies that <see cref="Base85.GetMaxEncodedLength(int, Base85Variant, BaseFormattingOptions)" /> returns the
@@ -504,10 +483,7 @@ public sealed class RemainingGapCoverageTests
     /// 128-entry lookup table.
     /// </summary>
     [TestMethod]
-    public void Base85_IsBase85Digit_WhenCharAboveLookupRange_ShouldReturnFalse()
-    {
-        Assert.IsFalse(Base85.IsBase85Digit((char)200));
-    }
+    public void Base85_IsBase85Digit_WhenCharAboveLookupRange_ShouldReturnFalse() => Assert.IsFalse(Base85.IsBase85Digit((char)200));
 
     /// <summary>
     /// Verifies that <see cref="Base85.TryEncodeToUtf8(ReadOnlySpan{byte}, Span{byte}, out int, Base85Variant)" />

@@ -58,7 +58,7 @@ public partial class TigerTests
     ];
 
     /// <inheritdoc />
-    protected override Tiger CreateAlgorithm() => new Tiger();
+    protected override Tiger CreateAlgorithm() => new();
 
     /// <inheritdoc />
     protected override Tiger CreateAlgorithm(TigerTests.TigerVariant variant) =>

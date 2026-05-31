@@ -22,7 +22,7 @@ public sealed class IndexedSetReadOnlyCollectionContractTests
     protected override IndexedSet<int> Create(params int[] items)
     {
         IndexedSet<int> set = new();
-        foreach (int item in items)
+        foreach (var item in items)
             set.Add(item);
         return set;
     }

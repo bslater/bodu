@@ -10,63 +10,69 @@ using System.Security.Cryptography;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// A diagnostic tweakable symmetric algorithm that reverses the byte order of each block with tweak mixing.
-/// Intended exclusively for use in test harnesses and diagnostic scenarios. This class cannot be inherited.
+/// A diagnostic tweakable symmetric algorithm that reverses the byte order of each block with tweak mixing. Intended
+/// exclusively for use in test harnesses and diagnostic scenarios. This class cannot be inherited.
 /// </summary>
 /// <remarks>
 /// <para>
-/// <see cref="SimpleReversingTweakableSymmetricAlgorithm" /> extends <see cref="TweakableSymmetricAlgorithm" />
-/// and reuses the same <see cref="SimpleReversingBlockCipher" /> and <see cref="SimpleReversingCryptoTransform" />
+/// <see cref="SimpleReversingTweakableSymmetricAlgorithm" /> extends <see cref="TweakableSymmetricAlgorithm" /> and
+/// reuses the same <see cref="SimpleReversingBlockCipher" /> and <see cref="SimpleReversingCryptoTransform" />
 /// infrastructure as <see cref="SimpleReversingSymmetricAlgorithm" />, adding tweak support.
 /// </para>
 /// <para>
 /// The tweak is incorporated into the block cipher as follows:
 /// <list type="bullet">
-/// <item><description><b>Encrypt:</b> XOR the plaintext block with the tweak (cycling), then reverse the bytes.</description></item>
-/// <item><description><b>Decrypt:</b> Reverse the ciphertext block bytes, then XOR with the tweak (cycling).</description></item>
+/// <item>
+/// <description>
+/// <b>Encrypt:</b> XOR the plaintext block with the tweak (cycling), then reverse the bytes.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// <b>Decrypt:</b> Reverse the ciphertext block bytes, then XOR with the tweak (cycling).
+/// </description>
+/// </item>
 /// </list>
 /// This guarantees <c>Decrypt(Encrypt(pt, tweak), tweak) == pt</c> for any tweak and any block size.
 /// </para>
 /// <para>
-/// The tweak is cycled byte-by-byte if it is shorter than the configured block, and truncated if longer.
-/// Each created transform exposes a <see cref="SimpleReversingCryptoTransform.Diagnostics" /> property that
-/// records every block-level and transform-level operation for post-hoc assertion in tests.
+/// The tweak is cycled byte-by-byte if it is shorter than the configured block, and truncated if longer. Each created
+/// transform exposes a <see cref="SimpleReversingCryptoTransform.Diagnostics" /> property that records every
+/// block-level and transform-level operation for post-hoc assertion in tests.
 /// </para>
 /// <para>
-/// Legal tweak sizes mirror the legal block sizes, allowing tests to exercise matching, mismatched, and
-/// cycling tweak lengths across all supported block size ranges.
+/// Legal tweak sizes mirror the legal block sizes, allowing tests to exercise matching, mismatched, and cycling tweak
+/// lengths across all supported block size ranges.
 /// </para>
-/// <note type="warning">This algorithm provides no cryptographic security and must not be used in production code.</note>
+/// <note type="warning">This algorithm provides no cryptographic security and must not be used in production code.
+/// </note>
 /// </remarks>
 /// <example>
-/// <code language="csharp">
-/// using var algo = new SimpleReversingTweakableSymmetricAlgorithm();
-/// algo.GenerateKey();
-/// algo.GenerateIV();
-/// algo.GenerateTweak();
-///
-/// var encryptor = (SimpleReversingCryptoTransform)algo.CreateEncryptor();
-/// byte[] ciphertext = encryptor.TransformFinalBlock(plaintext, 0, plaintext.Length);
-///
-/// var decryptor = (SimpleReversingCryptoTransform)algo.CreateDecryptor();
-/// byte[] recovered = decryptor.TransformFinalBlock(ciphertext, 0, ciphertext.Length);
-///
-/// Assert.AreEqual(1, encryptor.Diagnostics.EncryptLog.Count);
-/// Assert.AreEqual(1, decryptor.Diagnostics.DecryptLog.Count);
-/// </code>
+/// <code language="csharp"> using var algo = new SimpleReversingTweakableSymmetricAlgorithm(); algo.GenerateKey();
+/// algo.GenerateIV(); algo.GenerateTweak(); var encryptor = (SimpleReversingCryptoTransform)algo.CreateEncryptor();
+/// byte[] ciphertext = encryptor.TransformFinalBlock(plaintext, 0, plaintext.Length); var decryptor =
+/// (SimpleReversingCryptoTransform)algo.CreateDecryptor(); byte[] recovered = decryptor.TransformFinalBlock(ciphertext,
+/// 0, ciphertext.Length); Assert.AreEqual(1, encryptor.Diagnostics.EncryptLog.Count); Assert.AreEqual(1,
+/// decryptor.Diagnostics.DecryptLog.Count); </code>
 /// </example>
 public sealed class SimpleReversingTweakableSymmetricAlgorithm
     : TweakableSymmetricAlgorithm
 {
     // ── Constants ─────────────────────────────────────────────────────────────────────────────
 
-    /// <summary>The default block size in bits.</summary>
+    /// <summary>
+    /// The default block size in bits.
+    /// </summary>
     public const int DefaultBlockSizeBits = 128;
 
-    /// <summary>The default key size in bits.</summary>
+    /// <summary>
+    /// The default key size in bits.
+    /// </summary>
     public const int DefaultKeySizeBits = 128;
 
-    /// <summary>The default tweak size in bits.</summary>
+    /// <summary>
+    /// The default tweak size in bits.
+    /// </summary>
     public const int DefaultTweakSizeBits = 128;
 
     // ── Static legal size declarations ────────────────────────────────────────────────────────
@@ -77,9 +83,21 @@ public sealed class SimpleReversingTweakableSymmetricAlgorithm
     /// </summary>
     /// <remarks>
     /// <list type="bullet">
-    /// <item><description>128, 192, 256 bits (step 64)</description></item>
-    /// <item><description>448, 576 bits (step 128)</description></item>
-    /// <item><description>1024, 1536, 2048 bits (step 512)</description></item>
+    /// <item>
+    /// <description>
+    /// 128, 192, 256 bits (step 64)
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <description>
+    /// 448, 576 bits (step 128)
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <description>
+    /// 1024, 1536, 2048 bits (step 512)
+    /// </description>
+    /// </item>
     /// </list>
     /// </remarks>
     public static readonly KeySizes[] BlockSizesValue =
@@ -90,8 +108,8 @@ public sealed class SimpleReversingTweakableSymmetricAlgorithm
     ];
 
     /// <summary>
-    /// The legal key sizes supported by this algorithm.
-    /// Keys may be any byte-aligned length between 8 and 2048 bits (step 8).
+    /// The legal key sizes supported by this algorithm. Keys may be any byte-aligned length between 8 and 2048 bits
+    /// (step 8).
     /// </summary>
     public static readonly KeySizes[] KeySizesValue =
     [
@@ -99,8 +117,8 @@ public sealed class SimpleReversingTweakableSymmetricAlgorithm
     ];
 
     /// <summary>
-    /// The legal tweak sizes supported by this algorithm. Tweak sizes mirror the legal block sizes,
-    /// allowing tests to exercise matching, mismatched, and cycling tweak configurations.
+    /// The legal tweak sizes supported by this algorithm. Tweak sizes mirror the legal block sizes, allowing tests to
+    /// exercise matching, mismatched, and cycling tweak configurations.
     /// </summary>
     public static readonly KeySizes[] TweakSizesValue =
     [
@@ -117,8 +135,8 @@ public sealed class SimpleReversingTweakableSymmetricAlgorithm
     // ── Constructor ───────────────────────────────────────────────────────────────────────────
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="SimpleReversingTweakableSymmetricAlgorithm" /> class with
-    /// default parameters: 128-bit block, 128-bit key, 128-bit tweak, CBC cipher mode, and PKCS7 padding.
+    /// Initialises a new instance of the <see cref="SimpleReversingTweakableSymmetricAlgorithm" /> class with default
+    /// parameters: 128-bit block, 128-bit key, 128-bit tweak, CBC cipher mode, and PKCS7 padding.
     /// </summary>
     public SimpleReversingTweakableSymmetricAlgorithm()
     {
@@ -141,11 +159,13 @@ public sealed class SimpleReversingTweakableSymmetricAlgorithm
     /// <summary>
     /// Gets or sets the block cipher mode of operation used when creating encryptors and decryptors.
     /// </summary>
-    /// <value>One of the <see cref="CipherModeKind" /> values. The default is <see cref="CipherModeKind.CBC" />.</value>
+    /// <value>
+    /// One of the <see cref="CipherModeKind" /> values. The default is <see cref="CipherModeKind.CBC" />.
+    /// </value>
     /// <remarks>
-    /// This property replaces the inherited <see cref="SymmetricAlgorithm.Mode" /> property to support the
-    /// extended set of modes provided by <see cref="BlockCipherModeFactory" />, including
-    /// <see cref="CipherModeKind.CTR" /> and <see cref="CipherModeKind.OFB" />.
+    /// This property replaces the inherited <see cref="SymmetricAlgorithm.Mode" /> property to support the extended set
+    /// of modes provided by <see cref="BlockCipherModeFactory" />, including <see cref="CipherModeKind.CTR" /> and
+    /// <see cref="CipherModeKind.OFB" />.
     /// </remarks>
     /// <exception cref="ObjectDisposedException">This instance has been disposed.</exception>
     public CipherModeKind BlockMode
@@ -169,24 +189,30 @@ public sealed class SimpleReversingTweakableSymmetricAlgorithm
 
     // ── Static factory ────────────────────────────────────────────────────────────────────────
 
-    /// <summary>Creates a new <see cref="SimpleReversingTweakableSymmetricAlgorithm" /> instance with default parameters.</summary>
+    /// <summary>
+    /// Creates a new <see cref="SimpleReversingTweakableSymmetricAlgorithm" /> instance with default parameters.
+    /// </summary>
     public static new SimpleReversingTweakableSymmetricAlgorithm Create() => new();
 
     // ── ICryptoTransform factory overrides ────────────────────────────────────────────────────
 
     /// <summary>
-    /// Creates a <see cref="SimpleReversingCryptoTransform" /> configured for encryption using the specified
-    /// key, initialisation vector, and tweak.
+    /// Creates a <see cref="SimpleReversingCryptoTransform" /> configured for encryption using the specified key,
+    /// initialisation vector, and tweak.
     /// </summary>
     /// <param name="rgbKey">The key bytes. Must match the configured <see cref="SymmetricAlgorithm.KeySize" />.</param>
     /// <param name="rgbIV">The IV bytes. Must match the configured <see cref="SymmetricAlgorithm.BlockSize" />.</param>
-    /// <param name="tweak">The tweak bytes. Must match the configured <see cref="TweakableSymmetricAlgorithm.TweakSize" />.</param>
+    /// <param name="tweak">
+    /// The tweak bytes. Must match the configured <see cref="TweakableSymmetricAlgorithm.TweakSize" />.
+    /// </param>
     /// <returns>
     /// A <see cref="SimpleReversingCryptoTransform" /> that may be cast to access
     /// <see cref="SimpleReversingCryptoTransform.Diagnostics" />.
     /// </returns>
     /// <exception cref="ArgumentNullException">Any parameter is <see langword="null" />.</exception>
-    /// <exception cref="CryptographicException">The key, IV, or tweak length does not match the configured sizes.</exception>
+    /// <exception cref="CryptographicException">
+    /// The key, IV, or tweak length does not match the configured sizes.
+    /// </exception>
     /// <exception cref="ObjectDisposedException">This instance has been disposed.</exception>
     public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[]? rgbIV, byte[] tweak)
     {
@@ -201,18 +227,22 @@ public sealed class SimpleReversingTweakableSymmetricAlgorithm
     }
 
     /// <summary>
-    /// Creates a <see cref="SimpleReversingCryptoTransform" /> configured for decryption using the specified
-    /// key, initialisation vector, and tweak.
+    /// Creates a <see cref="SimpleReversingCryptoTransform" /> configured for decryption using the specified key,
+    /// initialisation vector, and tweak.
     /// </summary>
     /// <param name="rgbKey">The key bytes. Must match the configured <see cref="SymmetricAlgorithm.KeySize" />.</param>
     /// <param name="rgbIV">The IV bytes. Must match the configured <see cref="SymmetricAlgorithm.BlockSize" />.</param>
-    /// <param name="tweak">The tweak bytes. Must match the configured <see cref="TweakableSymmetricAlgorithm.TweakSize" />.</param>
+    /// <param name="tweak">
+    /// The tweak bytes. Must match the configured <see cref="TweakableSymmetricAlgorithm.TweakSize" />.
+    /// </param>
     /// <returns>
     /// A <see cref="SimpleReversingCryptoTransform" /> that may be cast to access
     /// <see cref="SimpleReversingCryptoTransform.Diagnostics" />.
     /// </returns>
     /// <exception cref="ArgumentNullException">Any parameter is <see langword="null" />.</exception>
-    /// <exception cref="CryptographicException">The key, IV, or tweak length does not match the configured sizes.</exception>
+    /// <exception cref="CryptographicException">
+    /// The key, IV, or tweak length does not match the configured sizes.
+    /// </exception>
     /// <exception cref="ObjectDisposedException">This instance has been disposed.</exception>
     public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[]? rgbIV, byte[] tweak)
     {
@@ -229,8 +259,8 @@ public sealed class SimpleReversingTweakableSymmetricAlgorithm
     // ── Key, IV, and tweak generation ─────────────────────────────────────────────────────────
 
     /// <summary>
-    /// Generates a cryptographically random initialisation vector of the configured block size and assigns
-    /// it to <see cref="SymmetricAlgorithm.IV" />.
+    /// Generates a cryptographically random initialisation vector of the configured block size and assigns it to
+    /// <see cref="SymmetricAlgorithm.IV" />.
     /// </summary>
     /// <exception cref="ObjectDisposedException">This instance has been disposed.</exception>
     public override void GenerateIV()
@@ -295,26 +325,33 @@ public sealed class SimpleReversingTweakableSymmetricAlgorithm
 
     // ── Private helpers ───────────────────────────────────────────────────────────────────────
 
-    /// <summary>Gets the block size in bytes.</summary>
+    /// <summary>
+    /// Gets the block size in bytes.
+    /// </summary>
     private int BlockSizeBytes => BlockSizeValue / 8;
 
-    /// <summary>Gets the key size in bytes.</summary>
+    /// <summary>
+    /// Gets the key size in bytes.
+    /// </summary>
     private int KeySizeBytes => KeySizeValue / 8;
 
-    /// <summary>Gets the tweak size in bytes.</summary>
+    /// <summary>
+    /// Gets the tweak size in bytes.
+    /// </summary>
     private int TweakSizeBytes => TweakSizeValue / 8;
 
-    /// <summary>Returns a new <see cref="SimpleReversingBlockCipher" /> for the given key, block size, and tweak.</summary>
+    /// <summary>
+    /// Returns a new <see cref="SimpleReversingBlockCipher" /> for the given key, block size, and tweak.
+    /// </summary>
     private static SimpleReversingBlockCipher CreateCipher(byte[] key, int blockSizeBytes, byte[] tweak)
-        => new SimpleReversingBlockCipher(key, blockSizeBytes, tweak);
+        => new(key, blockSizeBytes, tweak);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void ThrowIfDisposed()
-    {
+    private void ThrowIfDisposed() =>
 #if NET8_0_OR_GREATER
         ObjectDisposedException.ThrowIf(disposed, this);
 #else
         if (this.disposed) throw new ObjectDisposedException(nameof(SimpleReversingTweakableSymmetricAlgorithm));
 #endif
-    }
+
 }

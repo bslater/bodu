@@ -21,7 +21,7 @@ public partial class ConfigurationKeyTests
     [TestMethod]
     public void Parse_WhenBackslashBeforeDotSeparator_ShouldNotEscapeSeparator()
     {
-        ConfigurationKey key = ConfigurationKey.Parse(@"service\.name");
+        var key = ConfigurationKey.Parse(@"service\.name");
 
         Assert.AreEqual(2, key.Segments.Length);
         Assert.AreEqual(@"service\", key.Segments[0]);
@@ -34,7 +34,7 @@ public partial class ConfigurationKeyTests
     [TestMethod]
     public void Parse_WhenBackslashBeforeColonSeparator_ShouldNotEscapeSeparator()
     {
-        ConfigurationKey key = ConfigurationKey.Parse(@"service\:name");
+        var key = ConfigurationKey.Parse(@"service\:name");
 
         Assert.AreEqual(2, key.Segments.Length);
         Assert.AreEqual(@"service\", key.Segments[0]);
@@ -49,7 +49,7 @@ public partial class ConfigurationKeyTests
     [TestMethod]
     public void Parse_WhenDottedKey_ShouldProduceColonDelimitedPath()
     {
-        ConfigurationKey key = ConfigurationKey.Parse("logging.level.default");
+        var key = ConfigurationKey.Parse("logging.level.default");
 
         Assert.AreEqual("logging:level:default", key.Path);
     }
@@ -60,7 +60,7 @@ public partial class ConfigurationKeyTests
     [TestMethod]
     public void Parse_WhenColonDelimitedKey_ShouldProduceColonDelimitedPath()
     {
-        ConfigurationKey key = ConfigurationKey.Parse("logging:level:default");
+        var key = ConfigurationKey.Parse("logging:level:default");
 
         Assert.AreEqual("logging:level:default", key.Path);
     }
@@ -72,7 +72,7 @@ public partial class ConfigurationKeyTests
     [TestMethod]
     public void Parse_WhenMixedSeparators_ShouldProduceSingleCanonicalPath()
     {
-        ConfigurationKey key = ConfigurationKey.Parse("logging.level:default");
+        var key = ConfigurationKey.Parse("logging.level:default");
 
         Assert.AreEqual("logging:level:default", key.Path);
         Assert.AreEqual(3, key.Segments.Length);
@@ -86,7 +86,7 @@ public partial class ConfigurationKeyTests
     [TestMethod]
     public void Parse_WhenSegmentIsPurelyNumeric_ShouldPreserveDigitsAsSegment()
     {
-        ConfigurationKey key = ConfigurationKey.Parse("items.0");
+        var key = ConfigurationKey.Parse("items.0");
 
         Assert.AreEqual("items:0", key.Path);
         Assert.AreEqual(2, key.Segments.Length);
@@ -103,7 +103,7 @@ public partial class ConfigurationKeyTests
     {
         ConfigurationKeyOptions options = new() { SegmentSeparators = ['.'] };
 
-        ConfigurationKey key = ConfigurationKey.Parse("service:name.value", options);
+        var key = ConfigurationKey.Parse("service:name.value", options);
 
         Assert.AreEqual(2, key.Segments.Length);
         Assert.AreEqual("service:name", key.Segments[0]);

@@ -60,8 +60,8 @@ public sealed class BencodeFormatException
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="BencodeFormatException" /> class and records the byte offset
-    /// at which the parse error was detected.
+    /// Initializes a new instance of the <see cref="BencodeFormatException" /> class and records the byte offset at
+    /// which the parse error was detected.
     /// </summary>
     /// <param name="message">The error message.</param>
     /// <param name="offset">The 0-based byte offset from the start of the source.</param>

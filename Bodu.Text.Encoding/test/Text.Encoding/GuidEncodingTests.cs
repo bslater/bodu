@@ -36,10 +36,7 @@ public sealed class GuidEncodingTests
     /// Verifies that Base16 produces 32 hex characters for any GUID.
     /// </summary>
     [TestMethod]
-    public void Base16_EncodeGuid_ShouldProduceThirtyTwoCharacters()
-    {
-        Assert.AreEqual(32, Base16.Encode(TestGuid).Length);
-    }
+    public void Base16_EncodeGuid_ShouldProduceThirtyTwoCharacters() => Assert.AreEqual(32, Base16.Encode(TestGuid).Length);
 
     /// <summary>
     /// Verifies the Base32 GUID round trip.

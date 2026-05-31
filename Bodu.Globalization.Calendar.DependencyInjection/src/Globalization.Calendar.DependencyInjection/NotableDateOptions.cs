@@ -31,8 +31,17 @@ namespace Bodu.Globalization.Calendar.DependencyInjection;
 /// <para>
 /// Binding from <c>appsettings.json</c>:
 /// </para>
-/// <code language="json"> { "NotableDates": { "WorkingDays": "MondayToFriday", "DefaultTerritoryCode": "AU-NSW",
-/// "RegisterAsAmbientDefault": true } } </code>
+/// <code language="json">
+///<![CDATA[
+/// {
+///   "NotableDates": {
+///     "WorkingDays": "MondayToFriday",
+///     "DefaultTerritoryCode": "AU-NSW",
+///     "RegisterAsAmbientDefault": true
+///   }
+/// }
+///]]>
+/// </code>
 /// </example>
 public sealed class NotableDateOptions
 {
@@ -45,10 +54,9 @@ public sealed class NotableDateOptions
     /// <returns>The configured working-week preset.</returns>
     /// <remarks>
     /// Translated to a <see cref="WeekPattern" /> by <see cref="WorkingDaysOfWeek" />'s extension methods before being
-    /// passed to the <see cref="NotableDateService" /> constructor. The value
-    /// <see cref="WorkingDaysOfWeek.Custom" /> has no canonical pattern and will trigger an
-    /// <see cref="ArgumentException" /> during registration — use a builder-supplied <see cref="WeekPattern" /> via
-    /// <c>UseWorkingWeek</c> instead.
+    /// passed to the <see cref="NotableDateService" /> constructor. The value <see cref="WorkingDaysOfWeek.Custom" />
+    /// has no canonical pattern and will trigger an <see cref="ArgumentException" /> during registration — use a
+    /// builder-supplied <see cref="WeekPattern" /> via <c>UseWorkingWeek</c> instead.
     /// </remarks>
     public WorkingDaysOfWeek WorkingDays { get; set; } = WorkingDaysOfWeek.MondayToFriday;
 

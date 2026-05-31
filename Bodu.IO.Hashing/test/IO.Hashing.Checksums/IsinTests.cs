@@ -46,20 +46,14 @@ public sealed class IsinTests
     /// is a letter rather than a digit.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenCheckCharacterIsLetter_ShouldReturnFalse()
-    {
-        Assert.IsFalse(Isin.IsValid("US037833100A".AsSpan()));
-    }
+    public void IsValid_WhenCheckCharacterIsLetter_ShouldReturnFalse() => Assert.IsFalse(Isin.IsValid("US037833100A".AsSpan()));
 
     /// <summary>
     /// Verifies that <see cref="Isin.IsValid(ReadOnlySpan{char})" /> rejects the empty span. A full-sequence
     /// validator requires at least a check digit, so an empty input cannot satisfy the algorithm's invariant.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenSequenceIsEmpty_ShouldReturnFalse()
-    {
-        Assert.IsFalse(Isin.IsValid(ReadOnlySpan<char>.Empty));
-    }
+    public void IsValid_WhenSequenceIsEmpty_ShouldReturnFalse() => Assert.IsFalse(Isin.IsValid(ReadOnlySpan<char>.Empty));
 
     /// <summary>
     /// Verifies that <see cref="Isin.IsValid(ReadOnlySpan{char})" /> rejects a sequence whose length is not

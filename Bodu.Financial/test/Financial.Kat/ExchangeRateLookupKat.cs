@@ -18,7 +18,9 @@ namespace Bodu.Financial.Kat;
 /// <param name="RequestedDate">The date the caller asks about.</param>
 /// <param name="Options">The lookup options supplied to the table.</param>
 /// <param name="Rates">The observations used to populate the table under test.</param>
-/// <param name="ExpectedSuccess"><see langword="true" /> when the lookup should succeed; otherwise <see langword="false" />.</param>
+/// <param name="ExpectedSuccess">
+/// <see langword="true" /> when the lookup should succeed; otherwise <see langword="false" />.
+/// </param>
 /// <param name="ExpectedRate">The expected returned rate value when successful.</param>
 /// <param name="ExpectedResolvedDate">The expected resolved date when successful.</param>
 /// <param name="ExpectedProvider">The expected provider identifier when successful.</param>

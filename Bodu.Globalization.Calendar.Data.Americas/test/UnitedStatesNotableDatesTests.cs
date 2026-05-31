@@ -70,7 +70,7 @@ public sealed class UnitedStatesNotableDatesTests
     [TestMethod]
     public void LoadRules_WhenSourceContainsRulesNotCherryPicked_ShouldNotInheritThem()
     {
-        HashSet<string> common = new XmlResourceNotableDateRuleProvider(
+        var common = new XmlResourceNotableDateRuleProvider(
                 "Bodu/Globalization/Calendar/Resources/global-all.xml",
                 new ResourcePathResolver(),
                 typeof(NotableDateService).Assembly)
@@ -78,7 +78,7 @@ public sealed class UnitedStatesNotableDatesTests
             .Select(r => r.Name)
             .ToHashSet();
 
-        HashSet<string> us = AmericasCalendarData.CreateUnitedStatesProvider().LoadRules().Select(r => r.Name).ToHashSet();
+        var us = AmericasCalendarData.CreateUnitedStatesProvider().LoadRules().Select(r => r.Name).ToHashSet();
 
         Assert.IsTrue(common.Contains("International Workers' Day"));
         Assert.IsFalse(us.Contains("International Workers' Day"));
@@ -98,7 +98,7 @@ public sealed class UnitedStatesNotableDatesTests
             [AmericasCalendarData.CreateUnitedStatesProvider()],
             WorkingDaysOfWeek.MondayToFriday);
 
-        List<NotableDate> bastille = service.GetNotableDates(2026, "FR").Where(d => d.Name == "Bastille Day").ToList();
+        var bastille = service.GetNotableDates(2026, "FR").Where(d => d.Name == "Bastille Day").ToList();
 
         Assert.AreEqual(0, bastille.Count);
     }

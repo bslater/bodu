@@ -107,7 +107,7 @@ public partial class ServiceCollectionExtensionsTests
         services.AddNotableDates();
         services.AddNotableDates();
 
-        int factoryCount = services.Count(d => d.ServiceType == typeof(INotableDateService));
+        var factoryCount = services.Count(d => d.ServiceType == typeof(INotableDateService));
         Assert.AreEqual(1, factoryCount);
     }
 

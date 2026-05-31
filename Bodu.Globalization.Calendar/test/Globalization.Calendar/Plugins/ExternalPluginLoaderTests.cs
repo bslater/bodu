@@ -127,10 +127,7 @@ public sealed class ExternalPluginLoaderTests
     /// <see cref="ExternalPluginLoader.Load" /> call.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenTrustPolicyIsNull_ShouldThrowExactly()
-    {
-        Assert.ThrowsExactly<ArgumentNullException>(() => _ = new ExternalPluginLoader(null!));
-    }
+    public void Ctor_WhenTrustPolicyIsNull_ShouldThrowExactly() => Assert.ThrowsExactly<ArgumentNullException>(() => _ = new ExternalPluginLoader(null!));
 
     private const string Plugin3AssemblyFileName = "Bodu.Globalization.Calendar.Plugin3.TestAssembly.dll";
     private const string Plugin4AssemblyFileName = "Bodu.Globalization.Calendar.Plugin4.TestAssembly.dll";

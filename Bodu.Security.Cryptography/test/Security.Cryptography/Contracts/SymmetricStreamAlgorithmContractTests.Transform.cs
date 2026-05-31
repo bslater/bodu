@@ -17,9 +17,9 @@ public abstract partial class SymmetricStreamAlgorithmContractTests<TCipher>
     [TestMethod]
     public void Transform_WhenDecryptingCiphertext_ShouldRecoverPlaintext()
     {
-        byte[] key = CreateKey();
-        byte[] nonce = CreateNonce();
-        byte[] plaintext = CreatePayload(4097);
+        var key = CreateKey();
+        var nonce = CreateNonce();
+        var plaintext = CreatePayload(4097);
 
         byte[] ciphertext;
         using (TCipher encryptor = CreateAlgorithm())
@@ -41,27 +41,27 @@ public abstract partial class SymmetricStreamAlgorithmContractTests<TCipher>
     [TestMethod]
     public void Transform_WhenInputIsSegmented_ShouldMatchOneShotTransform()
     {
-        byte[] key = CreateKey();
-        byte[] nonce = CreateNonce();
-        byte[] plaintext = CreatePayload(4097);
+        var key = CreateKey();
+        var nonce = CreateNonce();
+        var plaintext = CreatePayload(4097);
 
         byte[] oneShot;
         using (TCipher cipher = CreateAlgorithm())
         using (ICryptoTransform e = cipher.CreateEncryptor(key, nonce))
             oneShot = e.TransformFinalBlock(plaintext, 0, plaintext.Length);
 
-        byte[] segmented = new byte[plaintext.Length];
+        var segmented = new byte[plaintext.Length];
         using (TCipher cipher = CreateAlgorithm())
         using (ICryptoTransform e = cipher.CreateEncryptor(key, nonce))
         {
-            int offset = 0;
-            foreach (int chunk in new[] { 1, 63, 64, 65, 127, 200, 1024, 0 })
+            var offset = 0;
+            foreach (var chunk in new[] { 1, 63, 64, 65, 127, 200, 1024, 0 })
             {
-                int count = Math.Min(chunk, plaintext.Length - offset);
+                var count = Math.Min(chunk, plaintext.Length - offset);
                 offset += e.TransformBlock(plaintext, offset, count, segmented, offset);
             }
 
-            byte[] tail = e.TransformFinalBlock(plaintext, offset, plaintext.Length - offset);
+            var tail = e.TransformFinalBlock(plaintext, offset, plaintext.Length - offset);
             tail.CopyTo(segmented.AsSpan(offset));
         }
 
@@ -75,8 +75,8 @@ public abstract partial class SymmetricStreamAlgorithmContractTests<TCipher>
     [TestMethod]
     public void Transform_WhenPlaintextIsZero_ShouldEqualGeneratedKeystream()
     {
-        byte[] key = CreateKey();
-        byte[] nonce = CreateNonce();
+        var key = CreateKey();
+        var nonce = CreateNonce();
 
         // Two independent instances under the same key/nonce must produce identical keystream.
         byte[] first;
@@ -132,7 +132,7 @@ public abstract partial class SymmetricStreamAlgorithmContractTests<TCipher>
         using TCipher cipher = CreateAlgorithm();
         using ICryptoTransform e = cipher.CreateEncryptor(CreateKey(), CreateNonce());
 
-        byte[] payload = CreatePayload(16);
+        var payload = CreatePayload(16);
         _ = e.TransformFinalBlock(payload, 0, payload.Length);
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
@@ -151,7 +151,7 @@ public abstract partial class SymmetricStreamAlgorithmContractTests<TCipher>
         using TCipher cipher = CreateAlgorithm();
         using ICryptoTransform e = cipher.CreateEncryptor(CreateKey(), CreateNonce());
 
-        byte[] payload = CreatePayload(16);
+        var payload = CreatePayload(16);
         _ = e.TransformFinalBlock(payload, 0, payload.Length);
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
@@ -170,8 +170,8 @@ public abstract partial class SymmetricStreamAlgorithmContractTests<TCipher>
         using TCipher cipher = CreateAlgorithm();
         using ICryptoTransform e = cipher.CreateEncryptor(CreateKey(), CreateNonce());
 
-        byte[] output = new byte[8];
-        int written = e.TransformBlock(new byte[8], 0, 0, output, 0);
+        var output = new byte[8];
+        var written = e.TransformBlock(new byte[8], 0, 0, output, 0);
 
         Assert.AreEqual(0, written);
         CollectionAssert.AreEqual(new byte[8], output);
@@ -186,7 +186,7 @@ public abstract partial class SymmetricStreamAlgorithmContractTests<TCipher>
     {
         using TCipher cipher = CreateAlgorithm();
         ICryptoTransform e = cipher.CreateEncryptor(CreateKey(), CreateNonce());
-        byte[] payload = CreatePayload(16);
+        var payload = CreatePayload(16);
         e.Dispose();
 
         Assert.ThrowsExactly<ObjectDisposedException>(() =>
@@ -205,7 +205,7 @@ public abstract partial class SymmetricStreamAlgorithmContractTests<TCipher>
     {
         using TCipher cipher = CreateAlgorithm();
         ICryptoTransform e = cipher.CreateEncryptor(CreateKey(), CreateNonce());
-        byte[] payload = CreatePayload(16);
+        var payload = CreatePayload(16);
         e.Dispose();
 
         Assert.ThrowsExactly<ObjectDisposedException>(() =>
@@ -238,7 +238,7 @@ public abstract partial class SymmetricStreamAlgorithmContractTests<TCipher>
         using TCipher cipher = CreateAlgorithm();
         using ICryptoTransform e = cipher.CreateEncryptor(CreateKey(), CreateNonce());
 
-        byte[] result = e.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
+        var result = e.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
 
         Assert.AreEqual(0, result.Length);
         Assert.ThrowsExactly<InvalidOperationException>(() =>

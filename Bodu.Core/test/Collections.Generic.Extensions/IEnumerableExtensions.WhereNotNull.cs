@@ -38,7 +38,7 @@ public sealed partial class IEnumerableExtensionsTests_WhereNotNull
     [TestMethod]
     public void WhereNotNull_WhenResultNotEnumerated_ShouldNotEnumerateSource()
     {
-        bool enumerated = false;
+        var enumerated = false;
 
         IEnumerable<string?> Source()
         {

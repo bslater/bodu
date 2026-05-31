@@ -8,8 +8,8 @@ namespace Bodu.Text.Bencode;
 
 /// <summary>
 /// Provides Known Answer Test vectors for the Bencode format sourced from BEP 3 (the canonical bencoding
-/// specification), the Wikipedia Bencode article, and curated edge cases. Each provider yields rows in the
-/// shape expected by MSTest's <c>[DynamicData]</c> attribute.
+/// specification), the Wikipedia Bencode article, and curated edge cases. Each provider yields rows in the shape
+/// expected by MSTest's <c>[DynamicData]</c> attribute.
 /// </summary>
 public static class BencodeKnownAnswerVectors
 {

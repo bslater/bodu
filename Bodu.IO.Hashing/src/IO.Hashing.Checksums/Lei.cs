@@ -59,7 +59,7 @@ public sealed class Lei
     /// </summary>
     public const int SequenceLength = 20;
 
-    private readonly Iso7064Mod97_10 _engine = new Iso7064Mod97_10();
+    private readonly Iso7064Mod97_10 _engine = new();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Lei" /> class.

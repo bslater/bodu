@@ -14,8 +14,8 @@ public partial class FractionTests
     [TestMethod]
     public void Equals_WhenValuesReduceToSameCanonicalForm_ShouldBeEqualAndShareHashCode()
     {
-        Fraction<int> a = new Fraction<int>(1, 2);
-        Fraction<int> b = new Fraction<int>(50, 100);
+        var a = new Fraction<int>(1, 2);
+        var b = new Fraction<int>(50, 100);
 
         Assert.IsTrue(a.Equals(b));
         Assert.AreEqual(a.GetHashCode(), b.GetHashCode());
@@ -38,7 +38,7 @@ public partial class FractionTests
     [TestMethod]
     public void Equals_WhenComparedWithNullOrForeignType_ShouldReturnFalse()
     {
-        Fraction<int> value = new Fraction<int>(3, 4);
+        var value = new Fraction<int>(3, 4);
 
         Assert.IsFalse(value.Equals(null));
         Assert.IsFalse(value.Equals("3/4"));
@@ -48,17 +48,11 @@ public partial class FractionTests
     /// Verifies that a default-initialized fraction is equal to zero.
     /// </summary>
     [TestMethod]
-    public void Equals_WhenComparingDefaultWithZero_ShouldReturnTrue()
-    {
-        Assert.IsTrue(default(Fraction<int>).Equals(Fraction<int>.Zero));
-    }
+    public void Equals_WhenComparingDefaultWithZero_ShouldReturnTrue() => Assert.IsTrue(default(Fraction<int>).Equals(Fraction<int>.Zero));
 
     /// <summary>
     /// Verifies that unequal fractions are reported as unequal.
     /// </summary>
     [TestMethod]
-    public void Equals_WhenValuesDiffer_ShouldReturnFalse()
-    {
-        Assert.IsFalse(new Fraction<int>(1, 2).Equals(new Fraction<int>(1, 3)));
-    }
+    public void Equals_WhenValuesDiffer_ShouldReturnFalse() => Assert.IsFalse(new Fraction<int>(1, 2).Equals(new Fraction<int>(1, 3)));
 }
