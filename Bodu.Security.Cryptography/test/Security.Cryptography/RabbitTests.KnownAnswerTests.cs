@@ -8,11 +8,12 @@ namespace Bodu.Security.Cryptography;
 
 using System.Reflection;
 using System.Security.Cryptography;
+using Bodu.Security.Cryptography.Contracts;
 
 /// <summary>
 /// Locks the <see cref="Rabbit" /> stream cipher against the published RFC 4503 Appendix A conformance vectors and
 /// Appendix B internal-state debugging vectors, and inherits the shared
-/// <see cref="StreamCipherAlgorithmTests{TTest, TAlgorithm}" /> behavioural contract.
+/// <see cref="SymmetricStreamAlgorithmContractTests{TCipher}" /> behavioural contract.
 /// </summary>
 /// <remarks>
 /// RFC 4503 octet strings follow the I2OSP (big-endian) convention: the key and IV are big-endian integers and each
@@ -22,7 +23,7 @@ using System.Security.Cryptography;
 /// </remarks>
 [TestClass]
 public sealed partial class RabbitTests
-    : StreamCipherAlgorithmTests<RabbitTests, Rabbit>
+    : SymmetricStreamAlgorithmContractTests<Rabbit>
 {
     /// <inheritdoc />
     protected override int ExpectedKeySizeBits => 128;

@@ -9,11 +9,12 @@ namespace Bodu.Security.Cryptography;
 using System.Buffers.Binary;
 using System.Reflection;
 using System.Security.Cryptography;
+using Bodu.Security.Cryptography.Contracts;
 
 /// <summary>
 /// Locks the <see cref="Hc128" /> stream cipher against the official Appendix A test vectors from Hongjun Wu's
 /// specification paper <c>The Stream Cipher HC-128</c> (the eSTREAM-author vectors; HC-128 has no RFC), and inherits the
-/// shared <see cref="StreamCipherAlgorithmTests{TTest, TAlgorithm}" /> behavioural contract.
+/// shared <see cref="SymmetricStreamAlgorithmContractTests{TCipher}" /> behavioural contract.
 /// </summary>
 /// <remarks>
 /// HC-128 serializes each 32-bit output word least-significant-byte first, so a printed word such as <c>73150082</c>
@@ -21,7 +22,7 @@ using System.Security.Cryptography;
 /// </remarks>
 [TestClass]
 public sealed class Hc128Tests
-    : StreamCipherAlgorithmTests<Hc128Tests, Hc128>
+    : SymmetricStreamAlgorithmContractTests<Hc128>
 {
     /// <inheritdoc />
     protected override int ExpectedKeySizeBits => 128;

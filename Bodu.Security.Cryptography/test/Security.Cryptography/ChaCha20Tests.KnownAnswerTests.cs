@@ -8,14 +8,15 @@ namespace Bodu.Security.Cryptography;
 
 using System.Reflection;
 using System.Security.Cryptography;
+using Bodu.Security.Cryptography.Contracts;
 
 /// <summary>
 /// Locks the <see cref="ChaCha20" /> stream cipher against the published RFC 8439 known-answer test vectors, and
-/// inherits the shared <see cref="StreamCipherAlgorithmTests{TTest, TAlgorithm}" /> behavioural contract.
+/// inherits the shared <see cref="SymmetricStreamAlgorithmContractTests{TCipher}" /> behavioural contract.
 /// </summary>
 [TestClass]
 public sealed class ChaCha20Tests
-    : StreamCipherAlgorithmTests<ChaCha20Tests, ChaCha20>
+    : SymmetricStreamAlgorithmContractTests<ChaCha20>
 {
     /// <inheritdoc />
     protected override int ExpectedKeySizeBits => 256;

@@ -1,14 +1,14 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="StreamCipherAlgorithmTests.Overlap.cs" company="Bodu Pty. Ltd.">
+// <copyright file="SymmetricStreamAlgorithmContractTests.Overlap.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Security.Cryptography;
-
 using System.Security.Cryptography;
 
-public abstract partial class StreamCipherAlgorithmTests<TTest, TAlgorithm>
+namespace Bodu.Security.Cryptography.Contracts;
+
+public abstract partial class SymmetricStreamAlgorithmContractTests<TCipher>
 {
     /// <summary>
     /// Verifies that an exact in-place <see cref="ICryptoTransform.TransformBlock" /> (identical input and output
@@ -22,12 +22,12 @@ public abstract partial class StreamCipherAlgorithmTests<TTest, TAlgorithm>
         byte[] plaintext = CreatePayload(128);
 
         byte[] expected;
-        using (TAlgorithm cipher = CreateAlgorithm())
+        using (TCipher cipher = CreateAlgorithm())
         using (ICryptoTransform e = cipher.CreateEncryptor(key, nonce))
             expected = e.TransformFinalBlock(plaintext, 0, plaintext.Length);
 
         byte[] buffer = (byte[])plaintext.Clone();
-        using (TAlgorithm cipher = CreateAlgorithm())
+        using (TCipher cipher = CreateAlgorithm())
         using (ICryptoTransform e = cipher.CreateEncryptor(key, nonce))
             _ = e.TransformBlock(buffer, 0, buffer.Length, buffer, 0);
 
@@ -47,14 +47,14 @@ public abstract partial class StreamCipherAlgorithmTests<TTest, TAlgorithm>
         byte[] plaintext = CreatePayload(count);
 
         byte[] expected;
-        using (TAlgorithm cipher = CreateAlgorithm())
+        using (TCipher cipher = CreateAlgorithm())
         using (ICryptoTransform e = cipher.CreateEncryptor(key, nonce))
             expected = e.TransformFinalBlock(plaintext, 0, count);
 
         // Input occupies [0, count); output is written to the disjoint range [count, 2*count).
         byte[] buffer = new byte[count * 2];
         plaintext.CopyTo(buffer.AsSpan(0));
-        using (TAlgorithm cipher = CreateAlgorithm())
+        using (TCipher cipher = CreateAlgorithm())
         using (ICryptoTransform e = cipher.CreateEncryptor(key, nonce))
             _ = e.TransformBlock(buffer, 0, count, buffer, count);
 
@@ -71,7 +71,7 @@ public abstract partial class StreamCipherAlgorithmTests<TTest, TAlgorithm>
         byte[] key = CreateKey();
         byte[] nonce = CreateNonce();
 
-        using TAlgorithm cipher = CreateAlgorithm();
+        using TCipher cipher = CreateAlgorithm();
         using ICryptoTransform e = cipher.CreateEncryptor(key, nonce);
 
         // Input [0, 32) and output [16, 48) share the bytes [16, 32).
@@ -95,12 +95,12 @@ public abstract partial class StreamCipherAlgorithmTests<TTest, TAlgorithm>
         byte[] plaintext = CreatePayload(128);
 
         byte[] expected;
-        using (TAlgorithm cipher = CreateAlgorithm())
+        using (TCipher cipher = CreateAlgorithm())
         using (ICryptoTransform e = cipher.CreateEncryptor(key, nonce))
             expected = e.TransformFinalBlock(plaintext, 0, plaintext.Length);
 
         byte[] output = new byte[plaintext.Length];
-        using (TAlgorithm cipher = CreateAlgorithm())
+        using (TCipher cipher = CreateAlgorithm())
         using (ICryptoTransform e = cipher.CreateEncryptor(key, nonce))
             _ = e.TransformBlock(plaintext, 0, plaintext.Length, output, 0);
 

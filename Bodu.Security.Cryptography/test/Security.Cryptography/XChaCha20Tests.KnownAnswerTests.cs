@@ -8,15 +8,16 @@ namespace Bodu.Security.Cryptography;
 
 using System.Reflection;
 using System.Security.Cryptography;
+using Bodu.Security.Cryptography.Contracts;
 
 /// <summary>
 /// Locks the <see cref="XChaCha20" /> extended-nonce stream cipher and its HChaCha20 subkey-derivation core against the
 /// published <c>draft-irtf-cfrg-xchacha</c> known-answer test vectors, and inherits the shared
-/// <see cref="StreamCipherAlgorithmTests{TTest, TAlgorithm}" /> behavioural contract.
+/// <see cref="SymmetricStreamAlgorithmContractTests{TCipher}" /> behavioural contract.
 /// </summary>
 [TestClass]
 public sealed class XChaCha20Tests
-    : StreamCipherAlgorithmTests<XChaCha20Tests, XChaCha20>
+    : SymmetricStreamAlgorithmContractTests<XChaCha20>
 {
     /// <inheritdoc />
     protected override int ExpectedKeySizeBits => 256;

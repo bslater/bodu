@@ -1,14 +1,14 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="StreamCipherAlgorithmTests.Transform.cs" company="Bodu Pty. Ltd.">
+// <copyright file="SymmetricStreamAlgorithmContractTests.Transform.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Security.Cryptography;
-
 using System.Security.Cryptography;
 
-public abstract partial class StreamCipherAlgorithmTests<TTest, TAlgorithm>
+namespace Bodu.Security.Cryptography.Contracts;
+
+public abstract partial class SymmetricStreamAlgorithmContractTests<TCipher>
 {
     /// <summary>
     /// Verifies that encrypting a payload and then decrypting the result recovers the original plaintext, confirming
@@ -22,12 +22,12 @@ public abstract partial class StreamCipherAlgorithmTests<TTest, TAlgorithm>
         byte[] plaintext = CreatePayload(4097);
 
         byte[] ciphertext;
-        using (TAlgorithm encryptor = CreateAlgorithm())
+        using (TCipher encryptor = CreateAlgorithm())
         using (ICryptoTransform e = encryptor.CreateEncryptor(key, nonce))
             ciphertext = e.TransformFinalBlock(plaintext, 0, plaintext.Length);
 
         byte[] recovered;
-        using (TAlgorithm decryptor = CreateAlgorithm())
+        using (TCipher decryptor = CreateAlgorithm())
         using (ICryptoTransform d = decryptor.CreateDecryptor(key, nonce))
             recovered = d.TransformFinalBlock(ciphertext, 0, ciphertext.Length);
 
@@ -46,12 +46,12 @@ public abstract partial class StreamCipherAlgorithmTests<TTest, TAlgorithm>
         byte[] plaintext = CreatePayload(4097);
 
         byte[] oneShot;
-        using (TAlgorithm cipher = CreateAlgorithm())
+        using (TCipher cipher = CreateAlgorithm())
         using (ICryptoTransform e = cipher.CreateEncryptor(key, nonce))
             oneShot = e.TransformFinalBlock(plaintext, 0, plaintext.Length);
 
         byte[] segmented = new byte[plaintext.Length];
-        using (TAlgorithm cipher = CreateAlgorithm())
+        using (TCipher cipher = CreateAlgorithm())
         using (ICryptoTransform e = cipher.CreateEncryptor(key, nonce))
         {
             int offset = 0;
@@ -80,12 +80,12 @@ public abstract partial class StreamCipherAlgorithmTests<TTest, TAlgorithm>
 
         // Two independent instances under the same key/nonce must produce identical keystream.
         byte[] first;
-        using (TAlgorithm cipher = CreateAlgorithm())
+        using (TCipher cipher = CreateAlgorithm())
         using (ICryptoTransform e = cipher.CreateEncryptor(key, nonce))
             first = e.TransformFinalBlock(new byte[257], 0, 257);
 
         byte[] second;
-        using (TAlgorithm cipher = CreateAlgorithm())
+        using (TCipher cipher = CreateAlgorithm())
         using (ICryptoTransform e = cipher.CreateEncryptor(key, nonce))
             second = e.TransformFinalBlock(new byte[257], 0, 257);
 
@@ -102,7 +102,7 @@ public abstract partial class StreamCipherAlgorithmTests<TTest, TAlgorithm>
     [TestMethod]
     public void CanReuseTransform_WhenQueried_ShouldBeFalse()
     {
-        using TAlgorithm cipher = CreateAlgorithm();
+        using TCipher cipher = CreateAlgorithm();
         using ICryptoTransform e = cipher.CreateEncryptor(CreateKey(), CreateNonce());
 
         Assert.IsFalse(e.CanReuseTransform);
@@ -115,7 +115,7 @@ public abstract partial class StreamCipherAlgorithmTests<TTest, TAlgorithm>
     [TestMethod]
     public void BlockSizes_WhenTransformCreated_ShouldBeOneByte()
     {
-        using TAlgorithm cipher = CreateAlgorithm();
+        using TCipher cipher = CreateAlgorithm();
         using ICryptoTransform e = cipher.CreateEncryptor(CreateKey(), CreateNonce());
 
         Assert.AreEqual(1, e.InputBlockSize);
@@ -129,7 +129,7 @@ public abstract partial class StreamCipherAlgorithmTests<TTest, TAlgorithm>
     [TestMethod]
     public void TransformBlock_WhenCalledAfterFinalBlock_ShouldThrowInvalidOperationException()
     {
-        using TAlgorithm cipher = CreateAlgorithm();
+        using TCipher cipher = CreateAlgorithm();
         using ICryptoTransform e = cipher.CreateEncryptor(CreateKey(), CreateNonce());
 
         byte[] payload = CreatePayload(16);
@@ -148,7 +148,7 @@ public abstract partial class StreamCipherAlgorithmTests<TTest, TAlgorithm>
     [TestMethod]
     public void TransformFinalBlock_WhenCalledTwice_ShouldThrowInvalidOperationException()
     {
-        using TAlgorithm cipher = CreateAlgorithm();
+        using TCipher cipher = CreateAlgorithm();
         using ICryptoTransform e = cipher.CreateEncryptor(CreateKey(), CreateNonce());
 
         byte[] payload = CreatePayload(16);
@@ -167,7 +167,7 @@ public abstract partial class StreamCipherAlgorithmTests<TTest, TAlgorithm>
     [TestMethod]
     public void TransformBlock_WhenInputLengthIsZero_ShouldReturnZeroAndWriteNothing()
     {
-        using TAlgorithm cipher = CreateAlgorithm();
+        using TCipher cipher = CreateAlgorithm();
         using ICryptoTransform e = cipher.CreateEncryptor(CreateKey(), CreateNonce());
 
         byte[] output = new byte[8];
@@ -184,7 +184,7 @@ public abstract partial class StreamCipherAlgorithmTests<TTest, TAlgorithm>
     [TestMethod]
     public void TransformBlock_WhenTransformDisposed_ShouldThrowObjectDisposedException()
     {
-        using TAlgorithm cipher = CreateAlgorithm();
+        using TCipher cipher = CreateAlgorithm();
         ICryptoTransform e = cipher.CreateEncryptor(CreateKey(), CreateNonce());
         byte[] payload = CreatePayload(16);
         e.Dispose();
@@ -203,7 +203,7 @@ public abstract partial class StreamCipherAlgorithmTests<TTest, TAlgorithm>
     [TestMethod]
     public void TransformFinalBlock_WhenTransformDisposed_ShouldThrowObjectDisposedException()
     {
-        using TAlgorithm cipher = CreateAlgorithm();
+        using TCipher cipher = CreateAlgorithm();
         ICryptoTransform e = cipher.CreateEncryptor(CreateKey(), CreateNonce());
         byte[] payload = CreatePayload(16);
         e.Dispose();
@@ -221,7 +221,7 @@ public abstract partial class StreamCipherAlgorithmTests<TTest, TAlgorithm>
     [TestMethod]
     public void Dispose_WhenCalledMultipleTimes_ShouldNotThrow()
     {
-        using TAlgorithm cipher = CreateAlgorithm();
+        using TCipher cipher = CreateAlgorithm();
         ICryptoTransform e = cipher.CreateEncryptor(CreateKey(), CreateNonce());
 
         e.Dispose();
@@ -235,7 +235,7 @@ public abstract partial class StreamCipherAlgorithmTests<TTest, TAlgorithm>
     [TestMethod]
     public void TransformFinalBlock_WhenInputLengthIsZero_ShouldReturnEmptyAndFinalize()
     {
-        using TAlgorithm cipher = CreateAlgorithm();
+        using TCipher cipher = CreateAlgorithm();
         using ICryptoTransform e = cipher.CreateEncryptor(CreateKey(), CreateNonce());
 
         byte[] result = e.TransformFinalBlock(Array.Empty<byte>(), 0, 0);

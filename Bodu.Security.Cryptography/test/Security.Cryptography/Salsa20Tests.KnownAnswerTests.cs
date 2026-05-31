@@ -8,15 +8,16 @@ namespace Bodu.Security.Cryptography;
 
 using System.Reflection;
 using System.Security.Cryptography;
+using Bodu.Security.Cryptography.Contracts;
 
 /// <summary>
 /// Locks the <see cref="Salsa20" /> stream cipher against the published eSTREAM / ECRYPT and Bernstein-specification
 /// known-answer test vectors, and inherits the shared
-/// <see cref="StreamCipherAlgorithmTests{TTest, TAlgorithm}" /> behavioural contract.
+/// <see cref="SymmetricStreamAlgorithmContractTests{TCipher}" /> behavioural contract.
 /// </summary>
 [TestClass]
 public sealed class Salsa20Tests
-    : StreamCipherAlgorithmTests<Salsa20Tests, Salsa20>
+    : SymmetricStreamAlgorithmContractTests<Salsa20>
 {
     /// <inheritdoc />
     protected override int ExpectedKeySizeBits => 256;

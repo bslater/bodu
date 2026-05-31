@@ -1,26 +1,26 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="StreamCipherAlgorithmTests.cs" company="Bodu Pty. Ltd.">
+// <copyright file="SymmetricStreamAlgorithmContractTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Security.Cryptography;
-
-using System.Security.Cryptography;
+namespace Bodu.Security.Cryptography.Contracts;
 
 /// <summary>
-/// Provides the shared behavioural contract for additive stream ciphers derived from
-/// <see cref="StreamCipherAlgorithm" />. Concrete cipher test classes inherit this base to gain common coverage —
-/// self-inverse round-trips, one-shot versus segmented equivalence, zero-plaintext-equals-keystream, mode / padding
-/// rejection, transform lifecycle, buffer-overlap handling, and key / nonce argument validation — mirroring the way
-/// block-cipher tests inherit from <see cref="SymmetricAlgorithmTests{TTest, TAlgorithm}" />.
+/// Reusable behavioural contract test base for an additive (symmetric, shared-key) stream cipher derived from
+/// <see cref="SymmetricStreamAlgorithm" />. Concrete cipher test classes inherit this base to gain common coverage —
+/// self-inverse round-trips, one-shot versus segmented equivalence, zero-plaintext-equals-keystream, transform
+/// lifecycle, buffer-overlap handling, key / nonce generation, and key / nonce argument validation — mirroring the way
+/// block-cipher tests inherit from <see cref="BlockCipherContractTests{TCipher}" />.
 /// </summary>
-/// <typeparam name="TTest">The concrete test class (self-referential, so MSTest can construct it).</typeparam>
-/// <typeparam name="TAlgorithm">The stream-cipher type under test.</typeparam>
-[TestClass]
-public abstract partial class StreamCipherAlgorithmTests<TTest, TAlgorithm>
-    where TTest : StreamCipherAlgorithmTests<TTest, TAlgorithm>, new()
-    where TAlgorithm : StreamCipherAlgorithm, new()
+/// <typeparam name="TCipher">The stream-cipher type under test.</typeparam>
+/// <remarks>
+/// The base is generic over the cipher type and is not itself a <see cref="TestClassAttribute" />; a concrete subclass
+/// supplies the <see cref="TestClassAttribute" /> and the expected key / nonce sizes, after which MSTest discovers the
+/// inherited <see cref="TestMethodAttribute" /> members against the subclass's cipher.
+/// </remarks>
+public abstract partial class SymmetricStreamAlgorithmContractTests<TCipher>
+    where TCipher : SymmetricStreamAlgorithm, new()
 {
     /// <summary>
     /// Gets the key size, in bits, the default-constructed cipher is expected to expose.
@@ -37,8 +37,8 @@ public abstract partial class StreamCipherAlgorithmTests<TTest, TAlgorithm>
     /// <summary>
     /// Creates a new instance of the stream cipher under test.
     /// </summary>
-    /// <returns>A new <typeparamref name="TAlgorithm" /> instance.</returns>
-    protected virtual TAlgorithm CreateAlgorithm() => new();
+    /// <returns>A new <typeparamref name="TCipher" /> instance.</returns>
+    protected virtual TCipher CreateAlgorithm() => new();
 
     /// <summary>
     /// Gets the required key length, in bytes, for the cipher under test.
@@ -48,21 +48,21 @@ public abstract partial class StreamCipherAlgorithmTests<TTest, TAlgorithm>
     {
         get
         {
-            using TAlgorithm alg = CreateAlgorithm();
+            using TCipher alg = CreateAlgorithm();
             return alg.KeySize / 8;
         }
     }
 
     /// <summary>
-    /// Gets the required nonce (IV) length, in bytes, for the cipher under test.
+    /// Gets the required nonce length, in bytes, for the cipher under test.
     /// </summary>
     /// <returns>The nonce length in bytes.</returns>
     protected int NonceLengthBytes
     {
         get
         {
-            using TAlgorithm alg = CreateAlgorithm();
-            return alg.BlockSize / 8;
+            using TCipher alg = CreateAlgorithm();
+            return alg.NonceSize / 8;
         }
     }
 

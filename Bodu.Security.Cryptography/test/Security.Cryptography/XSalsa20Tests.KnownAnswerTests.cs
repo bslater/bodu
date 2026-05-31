@@ -8,15 +8,16 @@ namespace Bodu.Security.Cryptography;
 
 using System.Security.Cryptography;
 using System.Text;
+using Bodu.Security.Cryptography.Contracts;
 
 /// <summary>
 /// Locks the <see cref="XSalsa20" /> extended-nonce stream cipher and its HSalsa20 subkey-derivation core against the
 /// published NaCl / libsodium known-answer test vectors, and inherits the shared
-/// <see cref="StreamCipherAlgorithmTests{TTest, TAlgorithm}" /> behavioural contract.
+/// <see cref="SymmetricStreamAlgorithmContractTests{TCipher}" /> behavioural contract.
 /// </summary>
 [TestClass]
 public sealed class XSalsa20Tests
-    : StreamCipherAlgorithmTests<XSalsa20Tests, XSalsa20>
+    : SymmetricStreamAlgorithmContractTests<XSalsa20>
 {
     /// <inheritdoc />
     protected override int ExpectedKeySizeBits => 256;
