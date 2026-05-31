@@ -17,6 +17,12 @@ using System.Security.Cryptography;
 public sealed class ChaCha20Tests
     : StreamCipherAlgorithmTests<ChaCha20Tests, ChaCha20>
 {
+    /// <inheritdoc />
+    protected override int ExpectedKeySizeBits => 256;
+
+    /// <inheritdoc />
+    protected override int ExpectedNonceSizeBits => 96;
+
     /// <summary>
     /// Represents one ChaCha20 encryption known-answer test row, expressed as continuous hex strings.
     /// </summary>
@@ -174,4 +180,27 @@ public sealed class ChaCha20Tests
             "ChaCha20 keystream must match the BCL ChaCha20Poly1305 keystream (counter = 1).");
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ChaCha20.InitialCounter" /> is captured when the transform is created, so mutating it
+    /// on the algorithm afterwards does not change an already-created transform's keystream.
+    /// </summary>
+    [TestMethod]
+    public void CreateEncryptor_WhenInitialCounterChangedAfterCreation_ShouldUseCapturedCounter()
+    {
+        byte[] key = new byte[32];
+        byte[] nonce = new byte[12];
+        byte[] plaintext = new byte[128];
+
+        using var cipher = new ChaCha20 { InitialCounter = 5 };
+        using ICryptoTransform transform = cipher.CreateEncryptor(key, nonce);
+        cipher.InitialCounter = 9;
+        byte[] actual = transform.TransformFinalBlock(plaintext, 0, plaintext.Length);
+
+        using var reference = new ChaCha20 { InitialCounter = 5 };
+        using ICryptoTransform referenceTransform = reference.CreateEncryptor(key, nonce);
+        byte[] expected = referenceTransform.TransformFinalBlock(plaintext, 0, plaintext.Length);
+
+        CollectionAssert.AreEqual(expected, actual,
+            "The transform must use the counter captured at creation, not the algorithm's later value.");
+    }
 }

@@ -48,4 +48,21 @@ public abstract partial class StreamCipherAlgorithmTests<TTest, TAlgorithm>
             cipher.Mode = CipherMode.CBC;
         });
     }
+
+    /// <summary>
+    /// Verifies that assigning to <see cref="StreamCipherAlgorithm.Mode" /> on a disposed cipher throws
+    /// <see cref="ObjectDisposedException" />, keeping the property lifecycle consistent with the rest of the algorithm
+    /// state.
+    /// </summary>
+    [TestMethod]
+    public void Mode_WhenDisposed_ShouldThrowObjectDisposedException()
+    {
+        TAlgorithm cipher = CreateAlgorithm();
+        cipher.Dispose();
+
+        Assert.ThrowsExactly<ObjectDisposedException>(() =>
+        {
+            cipher.Mode = CipherMode.ECB;
+        });
+    }
 }

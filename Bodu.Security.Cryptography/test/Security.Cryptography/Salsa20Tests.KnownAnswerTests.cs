@@ -18,6 +18,12 @@ using System.Security.Cryptography;
 public sealed class Salsa20Tests
     : StreamCipherAlgorithmTests<Salsa20Tests, Salsa20>
 {
+    /// <inheritdoc />
+    protected override int ExpectedKeySizeBits => 256;
+
+    /// <inheritdoc />
+    protected override int ExpectedNonceSizeBits => 64;
+
     /// <summary>
     /// Represents one Salsa20 keystream known-answer test row, recovered as the ciphertext of an all-zero plaintext.
     /// </summary>
@@ -148,5 +154,29 @@ public sealed class Salsa20Tests
                 digest[i] ^= keystream[offset + i];
 
         CollectionAssert.AreEqual(expected, digest, "Salsa20 long-stream XOR digest mismatch.");
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Salsa20.InitialCounter" /> is captured when the transform is created, so mutating it on
+    /// the algorithm afterwards does not change an already-created transform's keystream.
+    /// </summary>
+    [TestMethod]
+    public void CreateEncryptor_WhenInitialCounterChangedAfterCreation_ShouldUseCapturedCounter()
+    {
+        byte[] key = new byte[32];
+        byte[] nonce = new byte[8];
+        byte[] plaintext = new byte[128];
+
+        using var cipher = new Salsa20 { InitialCounter = 5 };
+        using ICryptoTransform transform = cipher.CreateEncryptor(key, nonce);
+        cipher.InitialCounter = 9;
+        byte[] actual = transform.TransformFinalBlock(plaintext, 0, plaintext.Length);
+
+        using var reference = new Salsa20 { InitialCounter = 5 };
+        using ICryptoTransform referenceTransform = reference.CreateEncryptor(key, nonce);
+        byte[] expected = referenceTransform.TransformFinalBlock(plaintext, 0, plaintext.Length);
+
+        CollectionAssert.AreEqual(expected, actual,
+            "The transform must use the counter captured at creation, not the algorithm's later value.");
     }
 }

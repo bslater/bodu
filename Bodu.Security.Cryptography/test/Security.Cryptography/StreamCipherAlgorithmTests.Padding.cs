@@ -49,4 +49,21 @@ public abstract partial class StreamCipherAlgorithmTests<TTest, TAlgorithm>
             cipher.Padding = PaddingMode.PKCS7;
         });
     }
+
+    /// <summary>
+    /// Verifies that assigning to <see cref="StreamCipherAlgorithm.Padding" /> on a disposed cipher throws
+    /// <see cref="ObjectDisposedException" />, keeping the property lifecycle consistent with the rest of the algorithm
+    /// state.
+    /// </summary>
+    [TestMethod]
+    public void Padding_WhenDisposed_ShouldThrowObjectDisposedException()
+    {
+        TAlgorithm cipher = CreateAlgorithm();
+        cipher.Dispose();
+
+        Assert.ThrowsExactly<ObjectDisposedException>(() =>
+        {
+            cipher.Padding = PaddingMode.None;
+        });
+    }
 }

@@ -18,6 +18,12 @@ using System.Text;
 public sealed class XSalsa20Tests
     : StreamCipherAlgorithmTests<XSalsa20Tests, XSalsa20>
 {
+    /// <inheritdoc />
+    protected override int ExpectedKeySizeBits => 256;
+
+    /// <inheritdoc />
+    protected override int ExpectedNonceSizeBits => 192;
+
     /// <summary>
     /// Verifies that the internal HSalsa20 subkey-derivation core reproduces the canonical NaCl
     /// <c>crypto_core_hsalsa20</c> reference vector.
@@ -83,5 +89,29 @@ public sealed class XSalsa20Tests
 
         CollectionAssert.AreEqual(sActual, xActual,
             "XSalsa20 keystream must equal Salsa20 under the HSalsa20-derived subkey.");
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="XSalsa20.InitialCounter" /> is captured when the transform is created, so mutating it on
+    /// the algorithm afterwards does not change an already-created transform's keystream.
+    /// </summary>
+    [TestMethod]
+    public void CreateEncryptor_WhenInitialCounterChangedAfterCreation_ShouldUseCapturedCounter()
+    {
+        byte[] key = new byte[32];
+        byte[] nonce = new byte[24];
+        byte[] plaintext = new byte[128];
+
+        using var cipher = new XSalsa20 { InitialCounter = 5 };
+        using ICryptoTransform transform = cipher.CreateEncryptor(key, nonce);
+        cipher.InitialCounter = 9;
+        byte[] actual = transform.TransformFinalBlock(plaintext, 0, plaintext.Length);
+
+        using var reference = new XSalsa20 { InitialCounter = 5 };
+        using ICryptoTransform referenceTransform = reference.CreateEncryptor(key, nonce);
+        byte[] expected = referenceTransform.TransformFinalBlock(plaintext, 0, plaintext.Length);
+
+        CollectionAssert.AreEqual(expected, actual,
+            "The transform must use the counter captured at creation, not the algorithm's later value.");
     }
 }

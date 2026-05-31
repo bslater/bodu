@@ -111,6 +111,7 @@ public abstract class StreamCipherAlgorithm
     /// </summary>
     /// <value>Always <see cref="CipherMode.ECB" />.</value>
     /// <returns><see cref="CipherMode.ECB" />, the only mode an additive stream cipher supports.</returns>
+    /// <exception cref="ObjectDisposedException">This instance has been disposed.</exception>
     /// <exception cref="CryptographicException">A value other than <see cref="CipherMode.ECB" /> is assigned.</exception>
     /// <remarks>
     /// A stream cipher does not chain blocks, so no block-cipher mode applies. <see cref="CipherMode.ECB" /> is reported
@@ -122,6 +123,8 @@ public abstract class StreamCipherAlgorithm
         get => CipherMode.ECB;
         set
         {
+            ThrowIfDisposed();
+
             if (value != CipherMode.ECB)
                 throw new CryptographicException(
                     string.Format(CultureInfo.InvariantCulture, CryptoResourceStrings.Crypt_Invalid_StreamCipherMode, value));
@@ -136,6 +139,7 @@ public abstract class StreamCipherAlgorithm
     /// </summary>
     /// <value>Always <see cref="PaddingMode.None" />.</value>
     /// <returns><see cref="PaddingMode.None" />, the only padding an additive stream cipher supports.</returns>
+    /// <exception cref="ObjectDisposedException">This instance has been disposed.</exception>
     /// <exception cref="CryptographicException">A value other than <see cref="PaddingMode.None" /> is assigned.</exception>
     /// <remarks>
     /// An additive stream cipher processes data one byte at a time and never pads. Assigning any padding mode other than
@@ -146,6 +150,8 @@ public abstract class StreamCipherAlgorithm
         get => PaddingMode.None;
         set
         {
+            ThrowIfDisposed();
+
             if (value != PaddingMode.None)
                 throw new CryptographicException(
                     string.Format(CultureInfo.InvariantCulture, CryptoResourceStrings.Crypt_Invalid_StreamCipherPadding, value));

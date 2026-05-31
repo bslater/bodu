@@ -24,6 +24,12 @@ using System.Security.Cryptography;
 public sealed partial class RabbitTests
     : StreamCipherAlgorithmTests<RabbitTests, Rabbit>
 {
+    /// <inheritdoc />
+    protected override int ExpectedKeySizeBits => 128;
+
+    /// <inheritdoc />
+    protected override int ExpectedNonceSizeBits => 64;
+
     /// <summary>
     /// Represents one RFC 4503 keystream conformance vector (Appendix A), recovered as the ciphertext of an all-zero
     /// plaintext.

@@ -23,6 +23,12 @@ using System.Security.Cryptography;
 public sealed class Hc128Tests
     : StreamCipherAlgorithmTests<Hc128Tests, Hc128>
 {
+    /// <inheritdoc />
+    protected override int ExpectedKeySizeBits => 128;
+
+    /// <inheritdoc />
+    protected override int ExpectedNonceSizeBits => 128;
+
     /// <summary>
     /// Represents one HC-128 keystream known-answer test row, recovered as the ciphertext of an all-zero plaintext.
     /// </summary>

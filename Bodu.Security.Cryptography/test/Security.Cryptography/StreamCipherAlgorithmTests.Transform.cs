@@ -194,4 +194,56 @@ public abstract partial class StreamCipherAlgorithmTests<TTest, TAlgorithm>
             _ = e.TransformBlock(payload, 0, payload.Length, new byte[payload.Length], 0);
         });
     }
+
+    /// <summary>
+    /// Verifies that calling <see cref="ICryptoTransform.TransformFinalBlock" /> after the transform has been disposed
+    /// throws <see cref="ObjectDisposedException" />, keeping the lifecycle contract symmetric with
+    /// <see cref="ICryptoTransform.TransformBlock" />.
+    /// </summary>
+    [TestMethod]
+    public void TransformFinalBlock_WhenTransformDisposed_ShouldThrowObjectDisposedException()
+    {
+        using TAlgorithm cipher = CreateAlgorithm();
+        ICryptoTransform e = cipher.CreateEncryptor(CreateKey(), CreateNonce());
+        byte[] payload = CreatePayload(16);
+        e.Dispose();
+
+        Assert.ThrowsExactly<ObjectDisposedException>(() =>
+        {
+            _ = e.TransformFinalBlock(payload, 0, payload.Length);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that disposing a stream-cipher transform more than once is safe and does not throw, honouring the
+    /// idempotent <see cref="IDisposable.Dispose" /> contract.
+    /// </summary>
+    [TestMethod]
+    public void Dispose_WhenCalledMultipleTimes_ShouldNotThrow()
+    {
+        using TAlgorithm cipher = CreateAlgorithm();
+        ICryptoTransform e = cipher.CreateEncryptor(CreateKey(), CreateNonce());
+
+        e.Dispose();
+        e.Dispose();
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ICryptoTransform.TransformFinalBlock" /> with a zero-length input returns an empty
+    /// array and finalizes the transform, confirming that stream-cipher finalization adds no padding.
+    /// </summary>
+    [TestMethod]
+    public void TransformFinalBlock_WhenInputLengthIsZero_ShouldReturnEmptyAndFinalize()
+    {
+        using TAlgorithm cipher = CreateAlgorithm();
+        using ICryptoTransform e = cipher.CreateEncryptor(CreateKey(), CreateNonce());
+
+        byte[] result = e.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
+
+        Assert.AreEqual(0, result.Length);
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            _ = e.TransformBlock(Array.Empty<byte>(), 0, 0, Array.Empty<byte>(), 0);
+        });
+    }
 }

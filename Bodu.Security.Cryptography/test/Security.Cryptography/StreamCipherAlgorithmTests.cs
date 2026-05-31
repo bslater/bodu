@@ -23,6 +23,18 @@ public abstract partial class StreamCipherAlgorithmTests<TTest, TAlgorithm>
     where TAlgorithm : StreamCipherAlgorithm, new()
 {
     /// <summary>
+    /// Gets the key size, in bits, the default-constructed cipher is expected to expose.
+    /// </summary>
+    /// <returns>The expected key size, in bits.</returns>
+    protected abstract int ExpectedKeySizeBits { get; }
+
+    /// <summary>
+    /// Gets the nonce size, in bits, the default-constructed cipher is expected to expose.
+    /// </summary>
+    /// <returns>The expected nonce size, in bits.</returns>
+    protected abstract int ExpectedNonceSizeBits { get; }
+
+    /// <summary>
     /// Creates a new instance of the stream cipher under test.
     /// </summary>
     /// <returns>A new <typeparamref name="TAlgorithm" /> instance.</returns>
