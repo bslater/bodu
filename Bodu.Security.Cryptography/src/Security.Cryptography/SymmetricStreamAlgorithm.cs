@@ -246,7 +246,7 @@ public abstract class SymmetricStreamAlgorithm
         ThrowIfDisposed();
 
         CryptoHelpers.ClearAndNullify(ref _key);
-        _key = CryptoHelpers.GetRandomNonZeroBytes(_keySizeBits / 8);
+        _key = CryptoHelpers.GetRandomBytes(_keySizeBits / 8);
     }
 
     /// <summary>
@@ -258,7 +258,7 @@ public abstract class SymmetricStreamAlgorithm
         ThrowIfDisposed();
 
         CryptoHelpers.ClearAndNullify(ref _nonce);
-        _nonce = CryptoHelpers.GetRandomNonZeroBytes(_nonceSizeBits / 8);
+        _nonce = CryptoHelpers.GetRandomBytes(_nonceSizeBits / 8);
     }
 
     /// <summary>

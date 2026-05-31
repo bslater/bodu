@@ -220,14 +220,14 @@ public sealed class Serpent128
     public override void GenerateIV()
     {
         ThrowIfDisposed();
-        IVValue = CryptoHelpers.GetRandomNonZeroBytes(BlockSizeBits / 8);
+        IVValue = CryptoHelpers.GetRandomBytes(BlockSizeBits / 8);
     }
 
     /// <inheritdoc />
     public override void GenerateKey()
     {
         ThrowIfDisposed();
-        KeyValue = CryptoHelpers.GetRandomNonZeroBytes(KeySizeValue / 8);
+        KeyValue = CryptoHelpers.GetRandomBytes(KeySizeValue / 8);
     }
 
     /// <inheritdoc />

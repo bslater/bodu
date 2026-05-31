@@ -130,21 +130,21 @@ public abstract class Serpent
     public override void GenerateIV()
     {
         ThrowIfDisposed();
-        IVValue = CryptoHelpers.GetRandomNonZeroBytes(BlockSizeBytes);
+        IVValue = CryptoHelpers.GetRandomBytes(BlockSizeBytes);
     }
 
     /// <inheritdoc />
     public override void GenerateKey()
     {
         ThrowIfDisposed();
-        KeyValue = CryptoHelpers.GetRandomNonZeroBytes(KeySizeBytes);
+        KeyValue = CryptoHelpers.GetRandomBytes(KeySizeBytes);
     }
 
     /// <inheritdoc />
     public override void GenerateTweak()
     {
         ThrowIfDisposed();
-        TweakValue = CryptoHelpers.GetRandomNonZeroBytes(_defaultTweakSizeBytes);
+        TweakValue = CryptoHelpers.GetRandomBytes(_defaultTweakSizeBytes);
     }
 
     /// <inheritdoc />
