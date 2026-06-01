@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Collections;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Text.Json.Serialization;
 using Bodu.Financial.Serialization;
@@ -43,16 +44,16 @@ public sealed partial class MoneyBag :
     public static readonly MoneyBag Empty = new();
 
     /// <summary>
-    /// The internal balance dictionary keyed by ISO 4217 code (case-sensitive).
+    /// The internal balance map keyed by ISO 4217 code (case-sensitive) and kept in ISO-code order.
     /// </summary>
-    private readonly Dictionary<string, decimal> _balances;
+    private readonly ImmutableSortedDictionary<string, decimal> _balances;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="MoneyBag" /> class.
     /// </summary>
     public MoneyBag()
     {
-        _balances = new Dictionary<string, decimal>(StringComparer.Ordinal);
+        _balances = ImmutableSortedDictionary.Create<string, decimal>(StringComparer.Ordinal);
     }
 
     /// <summary>
@@ -65,43 +66,30 @@ public sealed partial class MoneyBag :
     {
         ThrowHelper.ThrowIfNull(balances);
 
-        _balances = new Dictionary<string, decimal>(StringComparer.Ordinal);
+        ImmutableSortedDictionary<string, decimal>.Builder builder =
+            ImmutableSortedDictionary.CreateBuilder<string, decimal>(StringComparer.Ordinal);
         foreach (Money balance in balances)
         {
             var iso = balance.IsoCode;
             if (string.IsNullOrEmpty(iso))
                 throw new ArgumentException(FinancialResourceStrings.Arg_Invalid_BalanceMissingIsoCode, nameof(balances));
 
-            if (_balances.TryGetValue(iso, out var existing))
-                _balances[iso] = existing + balance.Amount;
-            else
-                _balances[iso] = balance.Amount;
+            builder[iso] = builder.TryGetValue(iso, out var existing) ? existing + balance.Amount : balance.Amount;
         }
 
         // Prune zero balances introduced by mutual cancellation during the sum.
-        List<string>? toRemove = null;
-        foreach (KeyValuePair<string, decimal> entry in _balances)
-        {
-            if (entry.Value == 0m)
-            {
-                toRemove ??= new List<string>();
-                toRemove.Add(entry.Key);
-            }
-        }
+        foreach (var iso in builder.Where(entry => entry.Value == 0m).Select(entry => entry.Key).ToList())
+            builder.Remove(iso);
 
-        if (toRemove is not null)
-        {
-            foreach (var iso in toRemove)
-                _balances.Remove(iso);
-        }
+        _balances = builder.ToImmutable();
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="MoneyBag" /> class from an already-built dictionary (internal fast
-    /// path used by mutators).
+    /// Initializes a new instance of the <see cref="MoneyBag" /> class from an already-built immutable map (internal
+    /// fast path used by factories and mutators).
     /// </summary>
-    /// <param name="source">The balance dictionary the new bag takes ownership of.</param>
-    private MoneyBag(Dictionary<string, decimal> source)
+    /// <param name="source">The balance map the new bag adopts.</param>
+    private MoneyBag(ImmutableSortedDictionary<string, decimal> source)
     {
         _balances = source;
     }
@@ -121,16 +109,15 @@ public sealed partial class MoneyBag :
         _balances.Count;
 
     /// <summary>
-    /// Gets a read-only snapshot of the balance dictionary keyed by ISO code.
+    /// Gets a read-only view of the balance map keyed by ISO code, in ISO-code order.
     /// </summary>
     /// <returns>
-    /// A genuinely read-only view of the balances. The returned dictionary is a
-    /// <see cref="System.Collections.ObjectModel.ReadOnlyDictionary{TKey, TValue}" /> wrapper around the internal
-    /// storage, so a consumer cannot bypass immutability by casting the result back to
-    /// <see cref="Dictionary{TKey, TValue}" /> and mutating it.
+    /// The immutable balance map. Because the backing store is an
+    /// <see cref="ImmutableSortedDictionary{TKey, TValue}" />, the view is genuinely read-only and is returned without
+    /// allocating a wrapper.
     /// </returns>
     public IReadOnlyDictionary<string, decimal> Balances =>
-        new System.Collections.ObjectModel.ReadOnlyDictionary<string, decimal>(_balances);
+        _balances;
 
     /// <summary>
     /// Enumerates the non-zero balances in ISO-code lexicographic order.
@@ -138,7 +125,7 @@ public sealed partial class MoneyBag :
     /// <returns>An enumerator over <see cref="Money" /> entries.</returns>
     public IEnumerator<Money> GetEnumerator()
     {
-        foreach (KeyValuePair<string, decimal> entry in _balances.OrderBy(p => p.Key, StringComparer.Ordinal))
+        foreach (KeyValuePair<string, decimal> entry in _balances)
             yield return Money.FromNormalized(entry.Value, entry.Key);
     }
 
@@ -163,21 +150,13 @@ public sealed partial class MoneyBag :
         if (amount.IsZero)
             return this;
 
-        Dictionary<string, decimal> copy = new(_balances, StringComparer.Ordinal);
-        if (copy.TryGetValue(iso, out var existing))
+        if (_balances.TryGetValue(iso, out var existing))
         {
             var sum = existing + amount.Amount;
-            if (sum == 0m)
-                copy.Remove(iso);
-            else
-                copy[iso] = sum;
-        }
-        else
-        {
-            copy[iso] = amount.Amount;
+            return new MoneyBag(sum == 0m ? _balances.Remove(iso) : _balances.SetItem(iso, sum));
         }
 
-        return new MoneyBag(copy);
+        return new MoneyBag(_balances.SetItem(iso, amount.Amount));
     }
 
     /// <summary>
@@ -223,24 +202,24 @@ public sealed partial class MoneyBag :
         if (IsEmpty)
             return other;
 
-        Dictionary<string, decimal> copy = new(_balances, StringComparer.Ordinal);
+        ImmutableSortedDictionary<string, decimal>.Builder builder = _balances.ToBuilder();
         foreach (KeyValuePair<string, decimal> entry in other._balances)
         {
-            if (copy.TryGetValue(entry.Key, out var existing))
+            if (builder.TryGetValue(entry.Key, out var existing))
             {
                 var sum = existing + entry.Value;
                 if (sum == 0m)
-                    copy.Remove(entry.Key);
+                    builder.Remove(entry.Key);
                 else
-                    copy[entry.Key] = sum;
+                    builder[entry.Key] = sum;
             }
             else
             {
-                copy[entry.Key] = entry.Value;
+                builder[entry.Key] = entry.Value;
             }
         }
 
-        return new MoneyBag(copy);
+        return new MoneyBag(builder.ToImmutable());
     }
 
     /// <summary>
@@ -299,7 +278,7 @@ public sealed partial class MoneyBag :
     public override int GetHashCode()
     {
         HashCode hash = default;
-        foreach (KeyValuePair<string, decimal> entry in _balances.OrderBy(p => p.Key, StringComparer.Ordinal))
+        foreach (KeyValuePair<string, decimal> entry in _balances)
         {
             hash.Add(entry.Key);
             hash.Add(entry.Value);
