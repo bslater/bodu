@@ -2,7 +2,7 @@
 uid: Bodu.Financial
 ---
 
-![Bodu.Financial](~/images/hero-core.svg)
+![Bodu.Financial](~/images/hero-financial.svg)
 
 ## Purpose
 
