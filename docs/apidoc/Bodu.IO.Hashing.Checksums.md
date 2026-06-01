@@ -6,7 +6,7 @@ uid: Bodu.IO.Hashing.Checksums
 
 ## Purpose
 
-**Bodu.IO.Hashing.Checksums** ships the cyclic redundancy check (CRC) catalogue from the [RevEng project](https://reveng.sourceforge.io/crc-catalogue/) — every variant from CRC-1 through CRC-64, addressable by name. The catalogue is auto-generated and partial; the consumer-facing surface is the static <xref:Bodu.IO.Hashing.Checksums.CrcStandard> class, used as a parameter to <xref:Bodu.IO.Hashing.Crc>.
+**Bodu.IO.Hashing.Checksums** ships the cyclic redundancy check (CRC) catalogue from the [RevEng project](https://reveng.sourceforge.io/crc-catalogue/) — every variant from CRC-1 through CRC-64, addressable by name. The catalogue is auto-generated and partial; the consumer-facing surface is the static <xref:Bodu.IO.Hashing.Checksums.CrcStandard> class, used as a parameter to <xref:Bodu.IO.Hashing.Checksums.Crc>.
 
 ## Key types
 

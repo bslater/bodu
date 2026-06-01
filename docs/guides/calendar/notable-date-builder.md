@@ -56,7 +56,7 @@ INotableDateRuleProvider      provider  = builder.ToProvider();
 - `Build()` — returns the in-memory rule set. Use this when wiring the builder directly into a test, the range-resolution pipeline, or a one-off `NotableDateService` instance.
 - `ToXDocument()` / `ToXml()` — emits the document in the schema-valid XML form recognised by <xref:Bodu.Globalization.Calendar.XmlResourceNotableDateRuleProvider>. The XML conforms to the `urn:bodu:globalization:calendar` namespace and is suitable for embedding in a resource assembly.
 - `ToJsonNode()` / `ToJson()` — emits the JSON peer, conforming to `NotableDates.schema.json` and consumable by <xref:Bodu.Globalization.Calendar.JsonResourceNotableDateRuleProvider>.
-- `ToProvider()` — wraps `Build()` in an <xref:Bodu.Globalization.Calendar.Builder.InlineNotableDateRuleProvider> for passing directly to `NotableDateService`.
+- `ToProvider()` — wraps `Build()` in an <xref:Bodu.Globalization.Calendar.InlineNotableDateRuleProvider> for passing directly to `NotableDateService`.
 
 The XML / JSON forms strip programmatic-only fields that have no schema representation: `AddHandlerParameter` entries on adjustments and `MaxAdjustmentReachDays` are preserved in `Build()` / `ToProvider()` but dropped from `ToXDocument()` / `ToJsonNode()`.
 

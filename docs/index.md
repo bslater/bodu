@@ -137,7 +137,7 @@ Ten focused NuGet packages — plus three companion calendar data packs, a calen
   <div class="bodu-card-links">
     <a href="docs/extensions-configuration-text/index.md">Introduction</a>
     <a href="guides/extensions-configuration-text/index.md">Guides</a>
-    <a href="apidoc/Bodu.Extensions.Configuration.Text.md">API reference</a>
+    <a href="xref:Bodu.Extensions.Configuration.Text">API reference</a>
   </div>
 </div>
 
@@ -178,5 +178,5 @@ dotnet add package Bodu.Financial
   <a href="docs/package-matrix.md">Package matrix</a>
   <a href="docs/getting-started.md">Getting started</a>
   <a href="articles/index.md">Articles</a>
-  <a href="api/index.html">API reference</a>
+  <a href="xref:Bodu">API reference</a>
 </div>

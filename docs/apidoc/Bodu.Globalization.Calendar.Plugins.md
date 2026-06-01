@@ -14,35 +14,35 @@ Reach for this namespace when you need to load notable-date rules and algorithms
 
 **Plugin contracts**
 
-- <xref:Bodu.Globalization.Calendar.INotableDatePlugin> — the minimum surface every external plugin must expose: `string Name`, `System.Version Version`. Plugins additionally implement one or both of the contributor interfaces below.
-- <xref:Bodu.Globalization.Calendar.INotableDateRulePlugin> — contributes rule providers via `IEnumerable<INotableDateRuleProvider> GetRuleProviders()`.
-- <xref:Bodu.Globalization.Calendar.INotableDateAlgorithmPlugin> — contributes algorithm registrations via `IEnumerable<(string key, INotableDateAlgorithm algorithm)> GetAlgorithms()`.
+- <xref:Bodu.Globalization.Calendar.Plugins.INotableDatePlugin> — the minimum surface every external plugin must expose: `string Name`, `System.Version Version`. Plugins additionally implement one or both of the contributor interfaces below.
+- <xref:Bodu.Globalization.Calendar.Plugins.INotableDateRulePlugin> — contributes rule providers via `IEnumerable<INotableDateRuleProvider> GetRuleProviders()`.
+- <xref:Bodu.Globalization.Calendar.Plugins.INotableDateAlgorithmPlugin> — contributes algorithm registrations via `IEnumerable<(string key, INotableDateAlgorithm algorithm)> GetAlgorithms()`.
 
 **Plugin declaration**
 
-- <xref:Bodu.Globalization.Calendar.NotableDatePluginAttribute> — assembly-level attribute declaring the plugin entry-point type. Exactly one attribute is required per plugin assembly. Constructor: `NotableDatePluginAttribute(Type pluginType)` where `pluginType` implements `INotableDatePlugin`.
+- <xref:Bodu.Globalization.Calendar.Plugins.NotableDatePluginAttribute> — assembly-level attribute declaring the plugin entry-point type. Exactly one attribute is required per plugin assembly. Constructor: `NotableDatePluginAttribute(Type pluginType)` where `pluginType` implements `INotableDatePlugin`.
 
 **Plugin loader**
 
-- <xref:Bodu.Globalization.Calendar.ExternalPluginLoader> — static loader: `Load(string filePath, IPluginTrustPolicy trustPolicy)` → `INotableDatePlugin`. Reflects only the `NotableDatePluginAttribute`, evaluates the supplied trust policy, and instantiates the declared entry-point type in its own non-collectible `AssemblyLoadContext`.
+- <xref:Bodu.Globalization.Calendar.Plugins.ExternalPluginLoader> — static loader: `Load(string filePath, IPluginTrustPolicy trustPolicy)` → `INotableDatePlugin`. Reflects only the `NotableDatePluginAttribute`, evaluates the supplied trust policy, and instantiates the declared entry-point type in its own non-collectible `AssemblyLoadContext`.
 
 **Trust policies**
 
-- <xref:Bodu.Globalization.Calendar.IPluginTrustPolicy> — admission gate: `Evaluate(PluginTrustContext) → PluginTrustResult`.
-- <xref:Bodu.Globalization.Calendar.PluginTrustContext> — record struct carrying `AssemblyPath`, `AssemblyName`, and `FileHash` (SHA-256).
-- <xref:Bodu.Globalization.Calendar.PluginTrustResult> — record struct: `Trusted` plus an optional `Reason`.
-- <xref:Bodu.Globalization.Calendar.FileHashPluginTrustPolicy> — admits assemblies whose SHA-256 file hash matches a pinned value keyed by assembly name. Tamper-resistant when combined with a strong-name policy.
-- <xref:Bodu.Globalization.Calendar.StrongNamePluginTrustPolicy> — admits assemblies whose strong-name public-key token is in a consumer-supplied allow-list. Tokens are compared case-insensitively as hex. Does **not** cryptographically verify the signature on its own; compose with `FileHashPluginTrustPolicy` for full tamper resistance.
-- <xref:Bodu.Globalization.Calendar.CompositePluginTrustPolicy> — AND-composes two or more policies; every child must return trusted.
-- <xref:Bodu.Globalization.Calendar.DelegatingPluginTrustPolicy> — adapts an arbitrary callback `Func<PluginTrustContext, PluginTrustResult>` into a policy. Use for runtime-driven decisions (configuration, remote attestation, logged-in user).
-- <xref:Bodu.Globalization.Calendar.AllowAllPluginTrustPolicy> — dev/test only; marks every plugin as trusted. Intentionally easy to spot in code review.
+- <xref:Bodu.Globalization.Calendar.Plugins.IPluginTrustPolicy> — admission gate: `Evaluate(PluginTrustContext) → PluginTrustResult`.
+- <xref:Bodu.Globalization.Calendar.Plugins.PluginTrustContext> — record struct carrying `AssemblyPath`, `AssemblyName`, and `FileHash` (SHA-256).
+- <xref:Bodu.Globalization.Calendar.Plugins.PluginTrustResult> — record struct: `Trusted` plus an optional `Reason`.
+- <xref:Bodu.Globalization.Calendar.Plugins.FileHashPluginTrustPolicy> — admits assemblies whose SHA-256 file hash matches a pinned value keyed by assembly name. Tamper-resistant when combined with a strong-name policy.
+- <xref:Bodu.Globalization.Calendar.Plugins.StrongNamePluginTrustPolicy> — admits assemblies whose strong-name public-key token is in a consumer-supplied allow-list. Tokens are compared case-insensitively as hex. Does **not** cryptographically verify the signature on its own; compose with `FileHashPluginTrustPolicy` for full tamper resistance.
+- <xref:Bodu.Globalization.Calendar.Plugins.CompositePluginTrustPolicy> — AND-composes two or more policies; every child must return trusted.
+- <xref:Bodu.Globalization.Calendar.Plugins.DelegatingPluginTrustPolicy> — adapts an arbitrary callback `Func<PluginTrustContext, PluginTrustResult>` into a policy. Use for runtime-driven decisions (configuration, remote attestation, logged-in user).
+- <xref:Bodu.Globalization.Calendar.Plugins.AllowAllPluginTrustPolicy> — dev/test only; marks every plugin as trusted. Intentionally easy to spot in code review.
 
 **Exception hierarchy**
 
-- <xref:Bodu.Globalization.Calendar.NotableDatePluginException> — abstract base.
-- <xref:Bodu.Globalization.Calendar.PluginNotTrustedException> — thrown when the trust policy rejects the candidate.
-- <xref:Bodu.Globalization.Calendar.PluginMissingAttributeException> — thrown when the assembly lacks a valid `NotableDatePluginAttribute` or the declared type does not implement `INotableDatePlugin`.
-- <xref:Bodu.Globalization.Calendar.PluginActivationException> — thrown when the plugin type lacks a public parameterless constructor or the constructor throws.
+- <xref:Bodu.Globalization.Calendar.Plugins.NotableDatePluginException> — abstract base.
+- <xref:Bodu.Globalization.Calendar.Plugins.PluginNotTrustedException> — thrown when the trust policy rejects the candidate.
+- <xref:Bodu.Globalization.Calendar.Plugins.PluginMissingAttributeException> — thrown when the assembly lacks a valid `NotableDatePluginAttribute` or the declared type does not implement `INotableDatePlugin`.
+- <xref:Bodu.Globalization.Calendar.Plugins.PluginActivationException> — thrown when the plugin type lacks a public parameterless constructor or the constructor throws.
 
 ## Example
 

@@ -19,23 +19,23 @@ Reach for this namespace when an authored rule needs Easter, Vesak, Asalha Puja,
 
 **Easter algorithms**
 
-- <xref:Bodu.Globalization.Calendar.EasterSundayNotableDateAlgorithm> — Computus-based Gregorian Easter Sunday for years ≥ 1583 and Meeus's Julian adaptation for earlier years. Results cached per `(year, calendar)`. Algorithm key: `"easter"`.
-- <xref:Bodu.Globalization.Calendar.GregorianEasterSundayNotableDateProvider> — Gregorian-only provider variant; accepts `null` or `GregorianCalendar`.
-- <xref:Bodu.Globalization.Calendar.OrthodoxEasterSundayNotableDateProvider> — Orthodox (Julian computus) Easter, returned as the Gregorian-equivalent `DateTime`. Accepts `null` or `JulianCalendar`.
+- <xref:Bodu.Globalization.Calendar.Algorithms.EasterSundayNotableDateAlgorithm> — Computus-based Gregorian Easter Sunday for years ≥ 1583 and Meeus's Julian adaptation for earlier years. Results cached per `(year, calendar)`. Algorithm key: `"easter"`.
+- <xref:Bodu.Globalization.Calendar.Algorithms.GregorianEasterSundayNotableDateProvider> — Gregorian-only provider variant; accepts `null` or `GregorianCalendar`.
+- <xref:Bodu.Globalization.Calendar.Algorithms.OrthodoxEasterSundayNotableDateProvider> — Orthodox (Julian computus) Easter, returned as the Gregorian-equivalent `DateTime`. Accepts `null` or `JulianCalendar`.
 - <xref:Bodu.Globalization.Calendar.Algorithms.EasterSundayNotableDateProviderBase> — abstract base for Easter providers with per-year caching via a `ConcurrentDictionary`. Derive when you need a custom Easter variant.
 
 **Lunar / solar-term algorithms**
 
-- <xref:Bodu.Globalization.Calendar.VesakNotableDateAlgorithm> — the first full moon on or after 1 May. Accurate within one day for 1900–2100. Uses Meeus Chapter 49 lunar-phase computation.
-- <xref:Bodu.Globalization.Calendar.AsalhaPujaNotableDateAlgorithm> — the first full moon on or after 15 June (Theravada Dharma Day; start of Vassa).
-- <xref:Bodu.Globalization.Calendar.LosarNotableDateAlgorithm> — Tibetan New Year, approximated as the first new moon on or after 20 January using the Chinese lunisolar approximation. Diverges from the official Tibetan calendar approximately every 3–5 years by ~1 month; register a custom algorithm using TMAI tables when exact dates are required.
-- <xref:Bodu.Globalization.Calendar.QingmingNotableDateAlgorithm> — the Qingming solar term (清明節), when the sun's ecliptic longitude reaches 15° (typically 4–5 April). Accurate within one day for 1901–2100.
+- <xref:Bodu.Globalization.Calendar.Algorithms.VesakNotableDateAlgorithm> — the first full moon on or after 1 May. Accurate within one day for 1900–2100. Uses Meeus Chapter 49 lunar-phase computation.
+- <xref:Bodu.Globalization.Calendar.Algorithms.AsalhaPujaNotableDateAlgorithm> — the first full moon on or after 15 June (Theravada Dharma Day; start of Vassa).
+- <xref:Bodu.Globalization.Calendar.Algorithms.LosarNotableDateAlgorithm> — Tibetan New Year, approximated as the first new moon on or after 20 January using the Chinese lunisolar approximation. Diverges from the official Tibetan calendar approximately every 3–5 years by ~1 month; register a custom algorithm using TMAI tables when exact dates are required.
+- <xref:Bodu.Globalization.Calendar.Algorithms.QingmingNotableDateAlgorithm> — the Qingming solar term (清明節), when the sun's ecliptic longitude reaches 15° (typically 4–5 April). Accurate within one day for 1901–2100.
 
 **Hindu lunisolar**
 
-- <xref:Bodu.Globalization.Calendar.HinduLunarNotableDateAlgorithm> — Hindu festival dates from (month, paksha, tithi) lunisolar coordinates. Constructor: `(HinduLunarMonth month, HinduPaksha paksha, int tithi)`. Uses fixed month-offset approximation with ~19-year Metonic-cycle correction; accurate within 1–2 days for 1900–2100.
-- <xref:Bodu.Globalization.Calendar.HinduLunarMonth> — `Chaitra`, `Vaisakha`, `Jyaistha`, `Asadha`, `Sravana`, `Bhadrapada`, `Asvina`, `Kartika`, `Margasirsa`, `Pausa`, `Magha`, `Phalguna`.
-- <xref:Bodu.Globalization.Calendar.HinduPaksha> — `Shukla` (bright fortnight) or `Krishna` (dark fortnight).
+- <xref:Bodu.Globalization.Calendar.Algorithms.HinduLunarNotableDateAlgorithm> — Hindu festival dates from (month, paksha, tithi) lunisolar coordinates. Constructor: `(HinduLunarMonth month, HinduPaksha paksha, int tithi)`. Uses fixed month-offset approximation with ~19-year Metonic-cycle correction; accurate within 1–2 days for 1900–2100.
+- <xref:Bodu.Globalization.Calendar.Algorithms.HinduLunarMonth> — `Chaitra`, `Vaisakha`, `Jyaistha`, `Asadha`, `Sravana`, `Bhadrapada`, `Asvina`, `Kartika`, `Margasirsa`, `Pausa`, `Magha`, `Phalguna`.
+- <xref:Bodu.Globalization.Calendar.Algorithms.HinduPaksha> — `Shukla` (bright fortnight) or `Krishna` (dark fortnight).
 
 ## Example
 

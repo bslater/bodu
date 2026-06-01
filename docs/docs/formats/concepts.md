@@ -48,7 +48,7 @@ BEP 3 invariants enforced by the parser:
 - The declared payload must fit in the remaining input.
 - The length itself must fit in `Int32`.
 
-A bencoded string is **not** required to be text. Consumers that know a field is UTF-8 can call <xref:Bodu.Text.Bencode.BencodedString.GetUtf8String> to project it, or build one from a `string` via <xref:Bodu.Text.Bencode.BencodedString.FromUtf8>. For arbitrary binary, hold onto the raw `Bytes` directly.
+A bencoded string is **not** required to be text. Consumers that know a field is UTF-8 can call <xref:Bodu.Text.Bencode.BencodedString.GetUtf8String> to project it, or build one from a `string` via <xref:Bodu.Text.Bencode.BencodedString.FromUtf8(System.String)>. For arbitrary binary, hold onto the raw `Bytes` directly.
 
 ### List (`BencodedList`)
 

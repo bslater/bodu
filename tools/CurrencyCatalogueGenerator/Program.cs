@@ -22,6 +22,7 @@ internal static class Program
         //     To regenerate: dotnet run --project tools/CurrencyCatalogueGenerator
         // </auto-generated>
         // ---------------------------------------------------------------------------------------------------------------
+        #nullable enable
 
         """;
 

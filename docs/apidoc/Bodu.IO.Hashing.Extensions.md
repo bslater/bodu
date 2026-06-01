@@ -10,7 +10,7 @@ uid: Bodu.IO.Hashing.Extensions
 
 ## Key types
 
-- <xref:Bodu.IO.Hashing.Extensions.CrcLookupTableBuilder> — builds the precomputed lookup table for a given CRC standard. The same table is cached process-wide by <xref:Bodu.IO.Hashing.CrcLookupTableCache>; reach for the builder directly only when you need to compute a table for a non-standard CRC variant.
+- <xref:Bodu.IO.Hashing.Checksums.CrcLookupTableBuilder> — builds the precomputed lookup table for a given CRC standard. The same table is cached process-wide by <xref:Bodu.IO.Hashing.Checksums.CrcLookupTableCache>; reach for the builder directly only when you need to compute a table for a non-standard CRC variant.
 - <xref:Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions> — convenience methods on `System.IO.Hashing.NonCryptographicHashAlgorithm` — `GetCurrentHashAsUInt32`, `GetCurrentHashAsUInt64`, stream / span overloads, and helpers that fit between the BCL surface and the Bodu hash algorithms.
 
 ## Example
@@ -28,5 +28,5 @@ uint value = crc.GetCurrentHashAsUInt32();
 
 ## Notes
 
-- **Cache, don't rebuild.** Lookup-table construction is non-trivial; prefer <xref:Bodu.IO.Hashing.CrcLookupTableCache> for standard CRC variants. The builder is exposed for non-standard cases (custom polynomial, custom refIn / refOut configuration).
+- **Cache, don't rebuild.** Lookup-table construction is non-trivial; prefer <xref:Bodu.IO.Hashing.Checksums.CrcLookupTableCache> for standard CRC variants. The builder is exposed for non-standard cases (custom polynomial, custom refIn / refOut configuration).
 - **See also:** the [CRC guide](~/guides/io-hashing/crc.md), the [Bodu.IO.Hashing landing page](xref:Bodu.IO.Hashing).

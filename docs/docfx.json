@@ -15,7 +15,8 @@
       "globalNamespaceId": "global",
       "disableDefaultFilter": false,
       "properties": {
-        "TargetFramework": "net8.0"
+        "TargetFramework": "net8.0",
+        "BuildingForDocfx": "true"
       }
     }
   ],
