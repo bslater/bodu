@@ -46,6 +46,12 @@ public sealed class LTL : ICurrency
     public static string? SuccessorIsoCode => "EUR";
 
     /// <summary>
+    /// Gets the English-language name of the currency.
+    /// </summary>
+    /// <returns>The currency's English name in singular Title Case.</returns>
+    public static string EnglishName => "Lithuanian Litas";
+
+    /// <summary>
     /// Prevents instantiation of the <see cref="LTL" /> tag type.
     /// </summary>
     private LTL()

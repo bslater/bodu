@@ -26,7 +26,8 @@ Each row is `{ "iso": "USD", "numeric": 840, "minorUnits": 2, "name": "US Dollar
 - `iso` — three-letter uppercase ISO 4217 alphabetic code.
 - `numeric` — ISO 4217 numeric code (000–999).
 - `minorUnits` — the currency's fractional-digit precision (0, 2, or 3 for active currencies).
-- `name` — short English name; appears in the generated XML doc comment.
+- `name` — short English name in singular Title Case. Feeds `ICurrency.EnglishName`, `CurrencyInfo.EnglishName`, the generated XML doc comment, and the `L` format specifier on `Money<TCurrency>` and `MoneyValue` (e.g. `"1,234.56 US Dollar"`).
+- `cashRoundingIncrement` *(optional)* — smallest physical cash denomination in the major unit (e.g. `0.05` for CHF/AUD/CAD).
 
 The shipped catalogue covers active ISO 4217 currencies. Special-purpose
 codes (precious metals such as `XAU`/`XAG`, `XDR`, testing codes such as

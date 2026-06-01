@@ -103,7 +103,8 @@ internal static class CurrencyMetadata<TCurrency>
             cashIncrement,
             TCurrency.IsHistoric,
             TCurrency.DemonetizedOn,
-            successorIsoCode);
+            successorIsoCode,
+            TCurrency.EnglishName ?? string.Empty);
     }
 
     /// <summary>
@@ -178,6 +179,10 @@ internal static class CurrencyMetadata<TCurrency>
 /// <param name="IsHistoric">Whether the currency has been demonetized.</param>
 /// <param name="DemonetizedOn">The demonetization date, when known.</param>
 /// <param name="SuccessorIsoCode">The replacement currency's ISO code, when applicable.</param>
+/// <param name="EnglishName">
+/// The currency's English-language name in singular Title Case, or an empty string when the
+/// <see cref="ICurrency" /> tag did not supply one.
+/// </param>
 internal readonly record struct CurrencyMetadataDescriptor(
     string IsoCode,
     int MinorUnits,
@@ -185,4 +190,5 @@ internal readonly record struct CurrencyMetadataDescriptor(
     decimal CashRoundingIncrement,
     bool IsHistoric,
     DateOnly? DemonetizedOn,
-    string? SuccessorIsoCode);
+    string? SuccessorIsoCode,
+    string EnglishName);

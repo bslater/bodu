@@ -27,6 +27,12 @@ public sealed class AOA : ICurrency
     public static int MinorUnits => 2;
 
     /// <summary>
+    /// Gets the English-language name of the currency.
+    /// </summary>
+    /// <returns>The currency's English name in singular Title Case.</returns>
+    public static string EnglishName => "Kwanza";
+
+    /// <summary>
     /// Prevents instantiation of the <see cref="AOA" /> tag type.
     /// </summary>
     private AOA()

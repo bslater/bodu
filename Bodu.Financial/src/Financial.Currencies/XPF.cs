@@ -27,6 +27,12 @@ public sealed class XPF : ICurrency
     public static int MinorUnits => 0;
 
     /// <summary>
+    /// Gets the English-language name of the currency.
+    /// </summary>
+    /// <returns>The currency's English name in singular Title Case.</returns>
+    public static string EnglishName => "CFP Franc";
+
+    /// <summary>
     /// Prevents instantiation of the <see cref="XPF" /> tag type.
     /// </summary>
     private XPF()

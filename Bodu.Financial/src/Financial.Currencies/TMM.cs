@@ -46,6 +46,12 @@ public sealed class TMM : ICurrency
     public static string? SuccessorIsoCode => "TMT";
 
     /// <summary>
+    /// Gets the English-language name of the currency.
+    /// </summary>
+    /// <returns>The currency's English name in singular Title Case.</returns>
+    public static string EnglishName => "Old Turkmenistan Manat";
+
+    /// <summary>
     /// Prevents instantiation of the <see cref="TMM" /> tag type.
     /// </summary>
     private TMM()

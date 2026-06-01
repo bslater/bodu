@@ -27,6 +27,12 @@ public sealed class KRW : ICurrency
     public static int MinorUnits => 0;
 
     /// <summary>
+    /// Gets the English-language name of the currency.
+    /// </summary>
+    /// <returns>The currency's English name in singular Title Case.</returns>
+    public static string EnglishName => "Won";
+
+    /// <summary>
     /// Prevents instantiation of the <see cref="KRW" /> tag type.
     /// </summary>
     private KRW()

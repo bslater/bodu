@@ -46,6 +46,12 @@ public sealed class FIM : ICurrency
     public static string? SuccessorIsoCode => "EUR";
 
     /// <summary>
+    /// Gets the English-language name of the currency.
+    /// </summary>
+    /// <returns>The currency's English name in singular Title Case.</returns>
+    public static string EnglishName => "Finnish Markka";
+
+    /// <summary>
     /// Prevents instantiation of the <see cref="FIM" /> tag type.
     /// </summary>
     private FIM()

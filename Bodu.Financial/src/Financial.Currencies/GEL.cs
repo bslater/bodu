@@ -27,6 +27,12 @@ public sealed class GEL : ICurrency
     public static int MinorUnits => 2;
 
     /// <summary>
+    /// Gets the English-language name of the currency.
+    /// </summary>
+    /// <returns>The currency's English name in singular Title Case.</returns>
+    public static string EnglishName => "Lari";
+
+    /// <summary>
     /// Prevents instantiation of the <see cref="GEL" /> tag type.
     /// </summary>
     private GEL()

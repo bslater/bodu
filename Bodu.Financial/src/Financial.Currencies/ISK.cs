@@ -27,6 +27,12 @@ public sealed class ISK : ICurrency
     public static int MinorUnits => 0;
 
     /// <summary>
+    /// Gets the English-language name of the currency.
+    /// </summary>
+    /// <returns>The currency's English name in singular Title Case.</returns>
+    public static string EnglishName => "Iceland Krona";
+
+    /// <summary>
     /// Prevents instantiation of the <see cref="ISK" /> tag type.
     /// </summary>
     private ISK()
