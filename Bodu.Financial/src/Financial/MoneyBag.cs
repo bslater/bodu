@@ -182,7 +182,7 @@ public sealed partial class MoneyBag :
     /// <returns>The updated bag.</returns>
     public MoneyBag Add<TCurrency>(Money<TCurrency> amount)
         where TCurrency : ICurrency =>
-        Add(Money.FromTyped(amount));
+        Add(amount.ToMoney());
 
     /// <summary>
     /// Returns a new bag with <paramref name="amount" /> subtracted from the balance for its currency.
@@ -200,7 +200,7 @@ public sealed partial class MoneyBag :
     /// <returns>The updated bag.</returns>
     public MoneyBag Subtract<TCurrency>(Money<TCurrency> amount)
         where TCurrency : ICurrency =>
-        Subtract(Money.FromTyped(amount));
+        Subtract(amount.ToMoney());
 
     /// <summary>
     /// Returns a new bag containing the union of this bag's balances and <paramref name="other" />'s, summing

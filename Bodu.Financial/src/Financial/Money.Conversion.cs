@@ -19,14 +19,14 @@ public readonly partial struct Money
     /// <exception cref="InvalidOperationException">
     /// The instance's <see cref="IsoCode" /> does not match the ISO code of <typeparamref name="TCurrency" />.
     /// </exception>
-    public Money<TCurrency> ToTyped<TCurrency>()
+    public Money<TCurrency> As<TCurrency>()
         where TCurrency : ICurrency
     {
         return !string.Equals(IsoCode, CurrencyMetadata<TCurrency>.Value.IsoCode, StringComparison.Ordinal)
             ? throw new InvalidOperationException(
                 string.Format(
                     CultureInfo.InvariantCulture,
-                    FinancialResourceStrings.Op_Invalid_CannotConvertMoneyToTyped,
+                    FinancialResourceStrings.Op_Invalid_CurrencyMismatchInAs,
                     IsoCode,
                     typeof(TCurrency).Name,
                     CurrencyMetadata<TCurrency>.Value.IsoCode))
@@ -39,7 +39,7 @@ public readonly partial struct Money
     /// <typeparam name="TCurrency">The target currency type.</typeparam>
     /// <param name="result">When this method returns <see langword="true" />, the strongly-typed value.</param>
     /// <returns><see langword="true" /> when the currencies match; otherwise <see langword="false" />.</returns>
-    public bool TryToTyped<TCurrency>(out Money<TCurrency> result)
+    public bool TryAs<TCurrency>(out Money<TCurrency> result)
         where TCurrency : ICurrency
     {
         if (string.Equals(IsoCode, CurrencyMetadata<TCurrency>.Value.IsoCode, StringComparison.Ordinal))
@@ -51,16 +51,6 @@ public readonly partial struct Money
         result = default;
         return false;
     }
-
-    /// <summary>
-    /// Creates a <see cref="Money" /> from a strongly-typed <see cref="Money{TCurrency}" />.
-    /// </summary>
-    /// <typeparam name="TCurrency">The source currency type.</typeparam>
-    /// <param name="money">The strongly-typed monetary value.</param>
-    /// <returns>The runtime-tagged equivalent.</returns>
-    public static Money FromTyped<TCurrency>(Money<TCurrency> money)
-        where TCurrency : ICurrency =>
-        FromNormalized(money.Amount, CurrencyMetadata<TCurrency>.Value.IsoCode);
 
     /// <summary>
     /// Converts this amount to a different currency at the supplied exchange rate, rounding to the target currency's

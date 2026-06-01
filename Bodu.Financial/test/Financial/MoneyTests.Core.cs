@@ -339,55 +339,55 @@ public partial class MoneyTests
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Verifies that <see cref="Money.ToTyped{TCurrency}" /> succeeds when the runtime currency matches.
+    /// Verifies that <see cref="Money.As{TCurrency}" /> succeeds when the runtime currency matches.
     /// </summary>
     [TestMethod]
-    public void ToTyped_WhenCurrencyMatches_ShouldReturnTypedMoney()
+    public void As_WhenCurrencyMatches_ShouldReturnTypedMoney()
     {
         var runtime = new Money(19.99m, "USD");
 
-        Money<USD> typed = runtime.ToTyped<USD>();
+        Money<USD> typed = runtime.As<USD>();
 
         Assert.AreEqual(new Money<USD>(19.99m), typed);
     }
 
     /// <summary>
-    /// Verifies that <see cref="Money.ToTyped{TCurrency}" /> throws when the runtime currency mismatches.
+    /// Verifies that <see cref="Money.As{TCurrency}" /> throws when the runtime currency mismatches.
     /// </summary>
     [TestMethod]
-    public void ToTyped_WhenCurrencyMismatches_ShouldThrowInvalidOperationException()
+    public void As_WhenCurrencyMismatches_ShouldThrowInvalidOperationException()
     {
         var runtime = new Money(19.99m, "EUR");
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
-            _ = runtime.ToTyped<USD>();
+            _ = runtime.As<USD>();
         });
     }
 
     /// <summary>
-    /// Verifies that <see cref="Money.TryToTyped{TCurrency}" /> returns false on mismatch without throwing.
+    /// Verifies that <see cref="Money.TryAs{TCurrency}" /> returns false on mismatch without throwing.
     /// </summary>
     [TestMethod]
-    public void TryToTyped_WhenCurrencyMismatches_ShouldReturnFalse()
+    public void TryAs_WhenCurrencyMismatches_ShouldReturnFalse()
     {
         var runtime = new Money(19.99m, "EUR");
 
-        var ok = runtime.TryToTyped(out Money<USD> result);
+        var ok = runtime.TryAs(out Money<USD> result);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(default(Money<USD>), result);
     }
 
     /// <summary>
-    /// Verifies that <see cref="Money.FromTyped{TCurrency}" /> round-trips a typed value.
+    /// Verifies that <see cref="Money{TCurrency}.ToMoney" /> round-trips a typed value to its runtime equivalent.
     /// </summary>
     [TestMethod]
-    public void FromTyped_WhenCalled_ShouldYieldEquivalentRuntimeValue()
+    public void ToMoney_WhenCalled_ShouldYieldEquivalentRuntimeValue()
     {
         var typed = new Money<USD>(19.99m);
 
-        var runtime = Money.FromTyped(typed);
+        var runtime = typed.ToMoney();
 
         Assert.AreEqual("USD", runtime.IsoCode);
         Assert.AreEqual(19.99m, runtime.Amount);

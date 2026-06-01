@@ -12,6 +12,39 @@ namespace Bodu.Financial;
 public readonly partial struct Money<TCurrency>
 {
     /// <summary>
+    /// Converts this strongly-typed amount to its runtime-tagged <see cref="Money" /> equivalent.
+    /// </summary>
+    /// <returns>A <see cref="Money" /> carrying the same amount and the ISO code derived from <typeparamref name="TCurrency" />.</returns>
+    /// <remarks>
+    /// The conversion is lossless: <typeparamref name="TCurrency" /> determines the ISO code, which is encoded into the
+    /// runtime <see cref="Money.IsoCode" />. An <c>implicit</c> operator is also provided so typed values flow into
+    /// runtime APIs without an explicit cast.
+    /// </remarks>
+    public Money ToMoney() =>
+        Money.FromNormalized(_amount, CurrencyMetadata<TCurrency>.Value.IsoCode);
+
+    /// <summary>
+    /// Implicitly converts a <see cref="Money{TCurrency}" /> to a runtime-tagged <see cref="Money" />.
+    /// </summary>
+    /// <param name="value">The strongly-typed money.</param>
+    /// <returns>The runtime-tagged equivalent.</returns>
+    public static implicit operator Money(Money<TCurrency> value) =>
+        value.ToMoney();
+
+    /// <summary>
+    /// Explicitly converts a runtime-tagged <see cref="Money" /> to <see cref="Money{TCurrency}" /> when the runtime
+    /// currency matches <typeparamref name="TCurrency" />.
+    /// </summary>
+    /// <param name="value">The runtime-tagged money.</param>
+    /// <returns>The strongly-typed equivalent.</returns>
+    /// <exception cref="InvalidOperationException">
+    /// <paramref name="value" />'s <see cref="Money.IsoCode" /> does not match the ISO code of
+    /// <typeparamref name="TCurrency" />.
+    /// </exception>
+    public static explicit operator Money<TCurrency>(Money value) =>
+        value.As<TCurrency>();
+
+    /// <summary>
     /// Converts this amount to <typeparamref name="TTarget" /> at the supplied exchange rate, rounding the result to
     /// the minor-unit precision of <typeparamref name="TTarget" />.
     /// </summary>

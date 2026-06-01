@@ -603,9 +603,9 @@ namespace Bodu.Financial {
         /// <summary>
         ///   Looks up a localized string similar to Cannot convert Money with currency &apos;{0}&apos; to Money&lt;{1}&gt; (currency &apos;{2}&apos;)..
         /// </summary>
-        internal static string Op_Invalid_CannotConvertMoneyToTyped {
+        internal static string Op_Invalid_CurrencyMismatchInAs {
             get {
-                return ResourceManager.GetString("Op_Invalid_CannotConvertMoneyToTyped", resourceCulture);
+                return ResourceManager.GetString("Op_Invalid_CurrencyMismatchInAs", resourceCulture);
             }
         }
         
