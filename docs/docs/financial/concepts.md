@@ -106,7 +106,23 @@ Custom or future currencies (e.g. cryptocurrencies, in-game tokens, regional vou
 
 ## `ExchangeRateSeries`
 
-<xref:Bodu.Financial.ExchangeRateSeries> stores every observation for one `(pair, provider)` combination in two parallel sorted arrays — dates and rates — so resolution is allocation-free and runs in `O(log n)` over the date array via <xref:System.Array.BinarySearch``1(``0[],``0)>. The two-array layout improves cache locality compared to a <xref:System.Collections.Generic.SortedDictionary`2>, and instances are safe to share across threads after construction.
+<xref:Bodu.Financial.ExchangeRateSeries> stores every observation for one `(pair, provider)` combination in two parallel sorted arrays — day numbers (<xref:System.DateOnly.DayNumber>) and rates — so resolution is allocation-free and runs in `O(log n)` over the day-number array via <xref:System.Array.BinarySearch``1(``0[],``0)>. The two-array layout improves cache locality compared to a <xref:System.Collections.Generic.SortedDictionary`2>, and instances are safe to share across threads after construction. Public APIs continue to accept and return <xref:System.DateOnly>; conversion to and from the internal day-number representation happens at the boundary.
+
+The series is **immutable**. Use the companion <xref:Bodu.Financial.ExchangeRateSeriesBuilder> to construct or edit observations imperatively, or the copy-on-write helpers `ExchangeRateSeries.WithRate(date, rate)` and `ExchangeRateSeries.WithoutRate(date)` for single-edit return-new patterns. `ExchangeRateSeries.GetObservations()` yields the observations as an <xref:Bodu.Financial.ExchangeRateObservation> sequence in strictly ascending date order, and `ExchangeRateSeries.ToBuilder()` returns a fresh builder pre-populated from the snapshot.
+
+## `ExchangeRateObservation`
+
+<xref:Bodu.Financial.ExchangeRateObservation> is the lightweight `(Date, Rate)` `readonly record struct` used as the transport shape for series enumeration, builder mutation, and bulk-import APIs. Unlike <xref:Bodu.Financial.ExchangeRate> it does not carry provider or inversion metadata — those are owned by the enclosing series. The type itself does not validate `Rate`; the surrounding series and builder reject zero or negative values at the boundary.
+
+## `ExchangeRateSeriesBuilder`
+
+<xref:Bodu.Financial.ExchangeRateSeriesBuilder> is the mutable companion to <xref:Bodu.Financial.ExchangeRateSeries>. It maintains strictly ascending unique observation dates and strictly positive rates while supporting single-observation edits and bulk import. The public surface distinguishes intent through three explicit shapes — `Add` (throws on duplicate), `Set` (throws on missing), and `Upsert` (insert-or-replace) — plus their `Try`-prefixed boolean siblings. Bulk import uses `AddRange` (rejects duplicates) and `UpsertRange` (replaces existing dates, rejects in-batch duplicates) with atomic-rollback semantics: a mid-batch validation failure leaves the builder unchanged. `ToSeries()` produces an immutable <xref:Bodu.Financial.ExchangeRateSeries> snapshot; further builder mutations do not affect previously produced snapshots, and vice versa. Instances are not thread-safe.
+
+## `ExchangeRateSeriesKey` and `ExchangeRateTable`
+
+<xref:Bodu.Financial.ExchangeRateSeriesKey> is a `readonly record struct` carrying a <xref:Bodu.Financial.ExchangeRatePair> and the publishing provider's identifier — the natural dictionary key when the same pair has rates from multiple sources.
+
+<xref:Bodu.Financial.ExchangeRateTable> is the higher-level mutable collection that owns one <xref:Bodu.Financial.ExchangeRateSeriesBuilder> per `(pair, provider)` key. It exposes `GetOrAddSeries`, `Upsert(pair, provider, date, rate)`, `TryGetBuilder` (returns the mutable builder), `TryGetSeries` (returns an immutable snapshot), and `ToSeries()` (snapshots every non-empty series). Use it for import workflows that ingest rate observations across many currency pairs and providers before producing immutable snapshots for production lookup. Like the builder it is not thread-safe.
 
 ## Timeless vs. dated provider
 
