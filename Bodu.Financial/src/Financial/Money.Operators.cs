@@ -21,7 +21,7 @@ public readonly partial struct Money
     public static Money operator +(Money left, Money right)
     {
         EnsureSameCurrency(left, right);
-        return FromNormalized(left._amount + right._amount, left.IsoCode);
+        return left.WithAmount(left._amount + right._amount);
     }
 
     /// <summary>
@@ -37,7 +37,7 @@ public readonly partial struct Money
     public static Money operator -(Money left, Money right)
     {
         EnsureSameCurrency(left, right);
-        return FromNormalized(left._amount - right._amount, left.IsoCode);
+        return left.WithAmount(left._amount - right._amount);
     }
 
     /// <summary>
@@ -47,7 +47,7 @@ public readonly partial struct Money
     /// <returns>A <see cref="Money" /> with the same ISO code and negated amount.</returns>
     public static Money operator -(Money value)
     {
-        return FromNormalized(-value._amount, value.IsoCode);
+        return value.WithAmount(-value._amount);
     }
 
     /// <summary>
@@ -68,7 +68,7 @@ public readonly partial struct Money
     /// <returns>The product.</returns>
     public static Money operator *(Money left, decimal right)
     {
-        return new(left._amount * right, left.IsoCode);
+        return left.WithRoundedAmount(left._amount * right);
     }
 
     /// <summary>
@@ -79,7 +79,7 @@ public readonly partial struct Money
     /// <returns>The product.</returns>
     public static Money operator *(decimal left, Money right)
     {
-        return new(left * right._amount, right.IsoCode);
+        return right.WithRoundedAmount(left * right._amount);
     }
 
     /// <summary>
@@ -91,7 +91,7 @@ public readonly partial struct Money
     /// <exception cref="DivideByZeroException"><paramref name="right" /> is zero.</exception>
     public static Money operator /(Money left, decimal right)
     {
-        return new(left._amount / right, left.IsoCode);
+        return left.WithRoundedAmount(left._amount / right);
     }
 
     /// <summary>

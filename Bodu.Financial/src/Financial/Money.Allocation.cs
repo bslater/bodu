@@ -28,12 +28,11 @@ public readonly partial struct Money
         long sign = residual >= 0 ? 1 : -1;
         var residualMagnitude = Math.Abs(residual);
 
-        var iso = IsoCode;
         var result = new Money[parts];
         for (var i = 0; i < parts; i++)
         {
             var share = basePer + (i < residualMagnitude ? sign : 0);
-            result[i] = FromNormalized(share / factor, iso);
+            result[i] = WithAmount(share / factor);
         }
 
         return result;
@@ -86,10 +85,9 @@ public readonly partial struct Money
             }
         }
 
-        var iso = IsoCode;
         var result = new Money[ratios.Length];
         for (var i = 0; i < ratios.Length; i++)
-            result[i] = FromNormalized(shares[i] / factor, iso);
+            result[i] = WithAmount(shares[i] / factor);
 
         return result;
     }

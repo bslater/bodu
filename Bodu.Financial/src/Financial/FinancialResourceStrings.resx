@@ -129,6 +129,12 @@
   <data name="Arg_Invalid_RateSeriesProviderConflict" xml:space="preserve">
     <value>Pair {0}/{1} has rates from multiple providers ('{2}' and '{3}'); use a composite provider to combine sources.</value>
   </data>
+  <data name="Arg_Invalid_UnknownCurrencyRejected" xml:space="preserve">
+    <value>Currency '{0}' is not registered. Register it via CurrencyRegistry or use Money.FromUnchecked / an explicit UnknownCurrencyPolicy to supply a minor-unit scale.</value>
+  </data>
+  <data name="Arg_Invalid_UnknownCurrencyRequiresScale" xml:space="preserve">
+    <value>Currency '{0}' is not registered; UnknownCurrencyPolicy.AllowWithExplicitScale requires a minor-unit scale. Use Money.FromUnchecked to supply one.</value>
+  </data>
   <data name="Arg_Null_ProviderAtIndex" xml:space="preserve">
     <value>Provider at index {0} is null.</value>
   </data>
@@ -143,6 +149,12 @@
   </data>
   <data name="Arg_OutOfRange_UnsupportedMoneyBagRoundingPolicy" xml:space="preserve">
     <value>Unsupported MoneyBag conversion rounding policy.</value>
+  </data>
+  <data name="Arg_OutOfRange_UnknownCurrencyMinorUnits" xml:space="preserve">
+    <value>Explicit minor-unit scale {0} for currency '{1}' is out of the supported range 0 to 28.</value>
+  </data>
+  <data name="Arg_OutOfRange_UnknownCurrencyPolicyUndefined" xml:space="preserve">
+    <value>UnknownCurrencyPolicy '{0}' is not a defined value.</value>
   </data>
   <data name="Format_Invalid_FormatSpecifier" xml:space="preserve">
     <value>The format string '{0}' is not supported.</value>

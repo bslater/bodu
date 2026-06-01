@@ -22,7 +22,6 @@ public partial class MoneyTests
     [DataRow("USD", 1.235, 1.24)]
     [DataRow("JPY", 99.6, 100.0)]
     [DataRow("BHD", 12.3456, 12.346)]
-    [DataRow("XQX", 1.234567, 1.234567)]   // unknown currency — no rounding
     public void Constructor_WhenAmountHasExcessPrecision_ShouldRoundToCurrencyMinorUnits(string iso, double amount, double expected)
     {
         var money = new Money((decimal)amount, iso);
@@ -94,7 +93,6 @@ public partial class MoneyTests
     [DataRow("USD", 2)]
     [DataRow("JPY", 0)]
     [DataRow("BHD", 3)]
-    [DataRow("XQR", 0)]    // unknown — registry returns 0
     public void MinorUnits_WhenInspected_ShouldMatchRegistry(string iso, int expected)
     {
         var money = new Money(0m, iso);

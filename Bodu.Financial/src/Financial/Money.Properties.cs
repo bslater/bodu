@@ -23,14 +23,22 @@ public readonly partial struct Money
         _isoCode ?? string.Empty;
 
     /// <summary>
-    /// Gets the minor-unit precision of the currency, as reported by <see cref="CurrencyRegistry" />.
+    /// Gets the minor-unit precision of this value.
     /// </summary>
     /// <returns>
-    /// The number of fractional digits of the currency's minor unit, or zero when the currency is unknown to the
-    /// registry.
+    /// The explicit scale supplied at construction when this value carries one; otherwise the currency's minor-unit
+    /// precision as reported by <see cref="CurrencyRegistry" />, or zero when the currency is unknown to the registry.
     /// </returns>
+    /// <remarks>
+    /// A value constructed for an unregistered currency through
+    /// <see cref="Money.FromUnchecked(decimal, string, int, MidpointRounding)" /> reports the caller-supplied scale,
+    /// keeping the stored precision and the reported minor units self-consistent. Ordinary construction always resolves
+    /// the precision from the registry.
+    /// </remarks>
     public int MinorUnits =>
-        CurrencyRegistry.TryGet(IsoCode, out CurrencyInfo? info) ? info!.MinorUnits : 0;
+        _explicitScalePlusOne > 0
+            ? _explicitScalePlusOne - 1
+            : CurrencyRegistry.TryGet(IsoCode, out CurrencyInfo? info) ? info!.MinorUnits : 0;
 
     /// <summary>
     /// Gets a value indicating whether this amount is zero.
@@ -67,7 +75,7 @@ public readonly partial struct Money
     /// </summary>
     /// <returns>A <see cref="Money" /> with the same ISO code and a non-negative amount.</returns>
     public Money Abs =>
-        FromNormalized(Math.Abs(_amount), IsoCode);
+        WithAmount(Math.Abs(_amount));
 
     /// <summary>
     /// Returns a <see cref="Money" /> representing zero of the specified currency.

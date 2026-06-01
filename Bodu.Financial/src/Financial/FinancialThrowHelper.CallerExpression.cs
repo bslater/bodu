@@ -140,6 +140,61 @@ internal static partial class FinancialThrowHelper
     }
 
     /// <summary>
+    /// Throws when <paramref name="policy" /> is not a defined <see cref="UnknownCurrencyPolicy" /> member.
+    /// </summary>
+    /// <param name="policy">The policy value to validate.</param>
+    /// <param name="paramName">The parameter name reported in the exception; inferred from the call site.</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="policy" /> is not a defined value.
+    /// </exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static void ThrowIfUnknownCurrencyPolicyUndefined(
+        UnknownCurrencyPolicy policy,
+        [CallerArgumentExpression(nameof(policy))] string? paramName = null)
+    {
+        if (policy is not UnknownCurrencyPolicy.Reject
+            and not UnknownCurrencyPolicy.AllowWithExplicitScale
+            and not UnknownCurrencyPolicy.AllowUnscaled)
+        {
+            throw new ArgumentOutOfRangeException(
+                paramName,
+                policy,
+                string.Format(
+                    CultureInfo.InvariantCulture,
+                    FinancialResourceStrings.Arg_OutOfRange_UnknownCurrencyPolicyUndefined,
+                    policy));
+        }
+    }
+
+    /// <summary>
+    /// Throws when <paramref name="minorUnits" /> is outside the supported range 0 to 28.
+    /// </summary>
+    /// <param name="minorUnits">The candidate minor-unit scale to validate.</param>
+    /// <param name="isoCode">The currency code reported in the exception message for context.</param>
+    /// <param name="paramName">The parameter name reported in the exception; inferred from the call site.</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="minorUnits" /> is less than zero or greater than 28.
+    /// </exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static void ThrowIfMinorUnitsOutOfRange(
+        int minorUnits,
+        string isoCode,
+        [CallerArgumentExpression(nameof(minorUnits))] string? paramName = null)
+    {
+        if ((uint)minorUnits > 28u)
+        {
+            throw new ArgumentOutOfRangeException(
+                paramName,
+                minorUnits,
+                string.Format(
+                    CultureInfo.InvariantCulture,
+                    FinancialResourceStrings.Arg_OutOfRange_UnknownCurrencyMinorUnits,
+                    minorUnits,
+                    isoCode));
+        }
+    }
+
+    /// <summary>
     /// Throws when <paramref name="policy" /> is not a defined <see cref="MoneyBagConversionRoundingPolicy" /> member.
     /// </summary>
     /// <param name="policy">The rounding policy to validate.</param>
