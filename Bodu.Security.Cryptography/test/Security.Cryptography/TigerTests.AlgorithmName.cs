@@ -13,7 +13,7 @@ public partial class TigerTests
     /// Verifies that <see cref="Tiger.AlgorithmName" />, when UsingVariant, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(HashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(HashAlgorithmVariantDisplayName))]
+    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(VariantDisplayNameHelper.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(VariantDisplayNameHelper))]
     public void AlgorithmName_WhenUsingVariant_ShouldReturnCorrectlyFormattedString(TigerVariant variant)
     {
         using Tiger algorithm = CreateAlgorithm(variant);

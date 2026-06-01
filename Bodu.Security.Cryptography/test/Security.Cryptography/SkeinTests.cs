@@ -25,6 +25,15 @@ public abstract partial class SkeinTests<TTest, TAlgorithm, TVariant>
     where TAlgorithm : Skein<TAlgorithm>, new()
     where TVariant : struct, Enum
 {
+    /// <inheritdoc />
+    /// <remarks>
+    /// The base default-construction helper assigns the specification's <see cref="KeyedAlgorithmSpecification.TestKey" />
+    /// to <see cref="Skein{T}.Key" />. For the unkeyed default variant Skein's specifications publish an empty
+    /// <c>TestKey</c> so baseline fixtures exercise the canonical plain-hash profile; keyed variants supply the
+    /// shared <see cref="SkeinTestKey" />.
+    /// </remarks>
+    protected override TAlgorithm CreateAlgorithm() => CreateAlgorithm(DefaultVariant);
+
     /// <summary>
     /// A deterministic 32-byte key used as the variant default for every Skein-MAC profile across every Skein
     /// variant. Per-row keys carried by <see cref="KeyedHashAlgorithmKnownAnswer.Key" /> override this default for

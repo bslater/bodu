@@ -14,7 +14,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
     /// Verifies that the algorithm's key remains unchanged after hashing.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(HashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(HashAlgorithmVariantDisplayName))]
+    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(VariantDisplayNameHelper.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(VariantDisplayNameHelper))]
     public void ComputeHash_WhenHashing_ShouldRespectKeyRetentionPolicy(TVariant variant)
     {
         if (GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
@@ -48,7 +48,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
     /// chaining value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(HashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(HashAlgorithmVariantDisplayName))]
+    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(VariantDisplayNameHelper.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(VariantDisplayNameHelper))]
     public void ComputeHash_WhenKeyIsSet_ShouldDifferFromUnkeyedHashOfSameInput(TVariant variant)
     {
         if (GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
@@ -75,7 +75,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
     /// Verifies that <see cref="KeyedBlockHashAlgorithm.ComputeHash" /> returns the same result when called multiple times with the same key and input.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(HashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(HashAlgorithmVariantDisplayName))]
+    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(VariantDisplayNameHelper.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(VariantDisplayNameHelper))]
     public void ComputeHash_WhenSameKeyAndInputUsed_ShouldReturnIdenticalResults(TVariant variant)
     {
         if (GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
@@ -101,7 +101,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
     /// Verifies that <see cref="KeyedBlockHashAlgorithm.ComputeHash" /> returns different results when different keys are used with the same input.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(HashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(HashAlgorithmVariantDisplayName))]
+    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(VariantDisplayNameHelper.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(VariantDisplayNameHelper))]
     public void ComputeHash_WhenDifferentKeysUsed_ShouldReturnDifferentResults(TVariant variant)
     {
         if (GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
@@ -131,7 +131,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
     /// Verifies that two valid keys with different lengths produce different digests for the same input.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(HashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(HashAlgorithmVariantDisplayName))]
+    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(VariantDisplayNameHelper.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(VariantDisplayNameHelper))]
     public void ComputeHash_WhenValidKeysHaveDifferentLengths_ShouldProduceDifferentDigests(TVariant variant)
     {
         if (GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
@@ -182,7 +182,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
     /// </summary>
     [TestMethod]
 
-    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(HashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(HashAlgorithmVariantDisplayName))]
+    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(VariantDisplayNameHelper.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(VariantDisplayNameHelper))]
     public void ComputeHash_WhenRepresentativeVariableKeyLengthsUsed_ShouldProduceDistinctDigests(TVariant variant)
     {
         if (GetSpecification(variant) is not KeyedAlgorithmSpecification specification)

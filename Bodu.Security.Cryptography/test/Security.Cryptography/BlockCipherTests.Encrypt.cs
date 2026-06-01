@@ -123,7 +123,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     /// with the same input produce the same result.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(BlockCipherVariants))]
+    [DynamicData(nameof(BlockCipherVariants), DynamicDataDisplayName = nameof(VariantDisplayNameHelper.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(VariantDisplayNameHelper))]
     public void Encrypt_WhenCalled_WithDiferentInstances_ShouldBeDeterministic(TVariant variant)
     {
         BlockCipherSpecification specification = GetSpecification(variant);
@@ -146,7 +146,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     /// input produce the same result.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(BlockCipherVariants))]
+    [DynamicData(nameof(BlockCipherVariants), DynamicDataDisplayName = nameof(VariantDisplayNameHelper.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(VariantDisplayNameHelper))]
     public void Encrypt_WhenCalled_WithSameInstsnce_ShouldBeDeterministic(TVariant variant)
     {
         BlockCipherSpecification specification = GetSpecification(variant);
@@ -212,7 +212,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     /// Verifies that encryption and decryption can operate on the same buffer (in-place).
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(BlockCipherVariants))]
+    [DynamicData(nameof(BlockCipherVariants), DynamicDataDisplayName = nameof(VariantDisplayNameHelper.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(VariantDisplayNameHelper))]
     public void EncryptDecrypt_WithInPlaceBuffer_ShouldSucceed(TVariant variant)
     {
         using TCipher cipher = CreateBlockCipher();

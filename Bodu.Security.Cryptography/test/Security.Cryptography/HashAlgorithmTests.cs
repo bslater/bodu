@@ -157,7 +157,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// </summary>
     /// <param name="variant">The algorithm variant under test.</param>
     [TestMethod]
-    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(HashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(HashAlgorithmVariantDisplayName))]
+    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(VariantDisplayNameHelper.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(VariantDisplayNameHelper))]
     public void HashAlgorithm_TestData_IncrementalHashes_ShouldBeDefined(TVariant variant)
     {
         IReadOnlyList<string> incrementalHashes = GetExpectedHashesForIncrementalInput(variant);
@@ -172,7 +172,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// </summary>
     /// <param name="variant">The algorithm variant under test.</param>
     [TestMethod]
-    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(HashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(HashAlgorithmVariantDisplayName))]
+    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(VariantDisplayNameHelper.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(VariantDisplayNameHelper))]
     public void HashAlgorithm_TestData_EmptyKnownAnswer_ShouldBeDefined(TVariant variant)
     {
         var emptyHash = GetSpecification(variant).KnownAnswers.Empty;
@@ -191,7 +191,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// fixed <see cref="HashAlgorithmKnownAnswers.Empty" /> slot and the incremental output series.
     /// </remarks>
     [TestMethod]
-    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(HashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(HashAlgorithmVariantDisplayName))]
+    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(VariantDisplayNameHelper.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(VariantDisplayNameHelper))]
     public void HashAlgorithm_TestData_EmptyKnownAnswer_ShouldMatchFirstIncrementalHash(TVariant variant)
     {
         IReadOnlyList<string> incrementalHashes = GetExpectedHashesForIncrementalInput(variant);

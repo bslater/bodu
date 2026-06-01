@@ -14,7 +14,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// Verifies that <see cref="HashAlgorithm.OutputBlockSize" /> returns the expected default block size.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(HashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(HashAlgorithmVariantDisplayName))]
+    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(VariantDisplayNameHelper.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(VariantDisplayNameHelper))]
     public void OutputBlockSize_ShouldBeExpectedOutputBlockSize(TVariant variant)
     {
         HashAlgorithmSpecification specification = GetSpecification(variant);

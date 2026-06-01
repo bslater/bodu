@@ -97,7 +97,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     /// Verifies that calling <see cref="HashAlgorithm.ComputeHash(byte[], int, int)" /> after disposal throws an <see cref="ObjectDisposedException" />.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(BlockCipherVariants))]
+    [DynamicData(nameof(BlockCipherVariants), DynamicDataDisplayName = nameof(VariantDisplayNameHelper.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(VariantDisplayNameHelper))]
     public void Dispose_WhenDecryptCalledAfterDispose_ShouldThrowExactly(TVariant variant)
     {
         BlockCipherSpecification specification = GetSpecification(variant);
@@ -115,7 +115,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     /// Verifies that calling <see cref="HashAlgorithm.ComputeHash(byte[])" /> after disposal throws an <see cref="ObjectDisposedException" />.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(BlockCipherVariants))]
+    [DynamicData(nameof(BlockCipherVariants), DynamicDataDisplayName = nameof(VariantDisplayNameHelper.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(VariantDisplayNameHelper))]
     public void Dispose_WhenEncryptCalledAfterDispose_ShouldThrowExactly(TVariant variant)
     {
         BlockCipherSpecification specification = GetSpecification(variant);

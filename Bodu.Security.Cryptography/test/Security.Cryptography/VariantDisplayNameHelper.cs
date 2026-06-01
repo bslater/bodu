@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="HashAlgorithmVariantDisplayName.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -9,24 +9,23 @@ using System.Reflection;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Produces variant-named display strings for MSTest <c>[DynamicData]</c> rows whose first element is a hash
-/// algorithm variant value, so that failures in CI and Test Explorer name the variant rather than showing an
-/// opaque row index.
+/// Produces variant-named display strings for MSTest <c>[DynamicData]</c> rows whose first element is a algorithm
+/// variant value, so that failures in CI and Test Explorer name the variant rather than showing an opaque row index.
 /// </summary>
 /// <remarks>
 /// <para>
 /// Wire this helper to a test method via the <c>DynamicDataDisplayName</c> and
-/// <c>DynamicDataDisplayNameDeclaringType</c> arguments of the <c>DynamicData</c> attribute. The signature
-/// matches the MSTest contract <c>static string (MethodInfo methodInfo, object?[] data)</c>.
+/// <c>DynamicDataDisplayNameDeclaringType</c> arguments of the <c>DynamicData</c> attribute. The signature matches the
+/// MSTest contract <c>static string (MethodInfo methodInfo, object?[] data)</c>.
 /// </para>
 /// <para>
-/// Resolution must be wired through <c>DynamicDataDisplayNameDeclaringType</c> because MSTest 4.x resolves the
-/// display name method via <see cref="TypeInfo.GetDeclaredMethod(string)" />, which does not walk inheritance.
-/// Hosting the helper on a non-generic static class lets every test class — base, intermediate, or concrete —
-/// share a single implementation.
+/// Resolution must be wired through <c>DynamicDataDisplayNameDeclaringType</c> because MSTest 4.x resolves the display
+/// name method via <see cref="TypeInfo.GetDeclaredMethod(string)" />, which does not walk inheritance. Hosting the
+/// helper on a non-generic static class lets every test class — base, intermediate, or concrete — share a single
+/// implementation.
 /// </para>
 /// </remarks>
-public static class HashAlgorithmVariantDisplayName
+public static class VariantDisplayNameHelper
 {
     /// <summary>
     /// Returns a display name for a single MSTest <c>[DynamicData]</c> row driven by
@@ -35,14 +34,14 @@ public static class HashAlgorithmVariantDisplayName
     /// <param name="methodInfo">The test method whose row is being named.</param>
     /// <param name="data">The row payload supplied by the dynamic data source.</param>
     /// <returns>
-    /// A readable variant description prefixed with <c>"Variant: "</c>. Falls back to <c>"Variant: Default"</c>
-    /// when the row is empty.
+    /// A readable variant description prefixed with <c>"Variant: "</c>. Falls back to <c>"Variant: Default"</c> when
+    /// the row is empty.
     /// </returns>
     public static string GetDisplayName(MethodInfo methodInfo, object[] data) =>
         FormatVariantForDisplay(data.Length > 0 ? data[0] : null);
 
     /// <summary>
-    /// Formats a hash algorithm variant for use in data-driven test display names.
+    /// Formats a algorithm variant for use in data-driven test display names.
     /// </summary>
     /// <param name="variant">The variant value.</param>
     /// <returns>A readable variant description.</returns>

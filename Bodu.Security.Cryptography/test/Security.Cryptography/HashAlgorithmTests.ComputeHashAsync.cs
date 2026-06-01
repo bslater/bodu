@@ -163,7 +163,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// <param name="variant">The variant identifier supplied by the dynamic data source.</param>
     /// <returns>A task that completes when all incremental lengths have been verified.</returns>
     [TestMethod]
-    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(HashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(HashAlgorithmVariantDisplayName))]
+    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(VariantDisplayNameHelper.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(VariantDisplayNameHelper))]
     public Task ComputeHashAsync_WhenUsingIncrementalInput_ShouldMatchExpected(TVariant variant) =>
         AssertIncrementalInputAsync(variant, async (algorithm, input, byteCount) =>
         {
