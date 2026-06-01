@@ -53,7 +53,7 @@ public static class FinancialJsonSerializerOptionsExtensions
         ThrowHelper.ThrowIfNull(options);
         FinancialThrowHelper.ThrowIfFinancialJsonPolicyUndefined(policy);
 
-        options.Converters.Add(new MoneyJsonConverterFactory(policy));
+        options.Converters.Add(new MoneyOfTCurrencyJsonConverterFactory(policy));
         options.Converters.Add(new MoneyValueJsonConverter(policy));
         options.Converters.Add(new MoneyBagJsonConverter(policy));
         options.Converters.Add(new ExchangeRateJsonConverter(policy));

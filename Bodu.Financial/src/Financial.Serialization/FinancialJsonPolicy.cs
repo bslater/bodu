@@ -13,7 +13,7 @@ namespace Bodu.Financial.Serialization;
 /// <remarks>
 /// <para>
 /// The policy is supplied either by constructing a converter directly (e.g.
-/// <c>new MoneyJsonConverter&lt;USD&gt;(FinancialJsonPolicy.Compact)</c>) or, more commonly, through
+/// <c>new MoneyOfTCurrencyJsonConverter&lt;USD&gt;(FinancialJsonPolicy.Compact)</c>) or, more commonly, through
 /// <see cref="FinancialJsonSerializerOptionsExtensions.AddFinancialJsonConverters" /> which registers a coherent set of
 /// converters on a <see cref="System.Text.Json.JsonSerializerOptions" />.
 /// </para>

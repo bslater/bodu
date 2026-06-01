@@ -9,7 +9,7 @@ namespace Bodu.Financial;
 /// <summary>
 /// Provides extension methods that resolve a dated exchange rate from an <see cref="IDatedExchangeRateProvider" /> and
 /// apply it to a <see cref="MoneyValue" /> — the runtime-tagged counterpart of
-/// <see cref="MoneyExchangeRateExtensions" />.
+/// <see cref="MoneyOfTCurrencyExchangeRateExtensions" />.
 /// </summary>
 public static class MoneyValueExchangeRateExtensions
 {
