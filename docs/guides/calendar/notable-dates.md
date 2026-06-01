@@ -287,4 +287,4 @@ See [The resolution pipeline](resolution-pipeline.md) for the full eight-stage w
 - [Calendar data packs](data-packs.md) — the official Americas / Europe / Asia-Pacific companion assemblies and how to compose them.
 - [Authoring notable date rules](rule-authoring.md) — in-code objects, XML / JSON resource files, companion assemblies, and runtime overrides.
 - [Date calculation algorithms](algorithms.md) — the built-in algorithm types and how to implement a custom one.
-- [Bodu.Globalization.Calendar API reference](../../apidoc/Bodu.Globalization.Calendar.md) — full type reference.
+- [Bodu.Globalization.Calendar API reference](xref:Bodu.Globalization.Calendar) — full type reference.

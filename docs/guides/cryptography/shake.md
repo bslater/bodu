@@ -110,7 +110,7 @@ This is *not* a real KMAC — KMAC has specific encoding rules for the domain, k
 - **You need a fixed-spec hash.** Reach for SHA-2 / SHA-3 (BCL) or [BLAKE2 / 3](blake.md) for fixed-size output.
 - **You need a MAC.** Reach for KMAC, BLAKE2b-MAC, or HMAC-SHA-256. SHAKE absorbed with a domain string is *almost* a MAC but lacks the formal KMAC construction.
 - **You need a KDF.** Reach for the BCL `HKDF` class. HKDF is specifically designed for key derivation; SHAKE can be used as a KDF but HKDF's framing gives you the standard test vectors and the documented security argument.
-- **You need a non-cryptographic fingerprint.** Reach for [`Bodu.IO.Hashing`](~/apidoc/Bodu.IO.Hashing.md).
+- **You need a non-cryptographic fingerprint.** Reach for [`Bodu.IO.Hashing`](xref:Bodu.IO.Hashing).
 
 ## See also
 

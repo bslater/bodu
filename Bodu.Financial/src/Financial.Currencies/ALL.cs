@@ -27,6 +27,12 @@ public sealed class ALL : ICurrency
     public static int MinorUnits => 2;
 
     /// <summary>
+    /// Gets the English-language name of the currency.
+    /// </summary>
+    /// <returns>The currency's English name in singular Title Case.</returns>
+    public static string EnglishName => "Lek";
+
+    /// <summary>
     /// Prevents instantiation of the <see cref="ALL" /> tag type.
     /// </summary>
     private ALL()

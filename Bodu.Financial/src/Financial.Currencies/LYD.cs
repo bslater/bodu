@@ -27,6 +27,12 @@ public sealed class LYD : ICurrency
     public static int MinorUnits => 3;
 
     /// <summary>
+    /// Gets the English-language name of the currency.
+    /// </summary>
+    /// <returns>The currency's English name in singular Title Case.</returns>
+    public static string EnglishName => "Libyan Dinar";
+
+    /// <summary>
     /// Prevents instantiation of the <see cref="LYD" /> tag type.
     /// </summary>
     private LYD()

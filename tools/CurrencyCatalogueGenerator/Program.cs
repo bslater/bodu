@@ -28,8 +28,8 @@ internal static class Program
     private static int Main(string[] args)
     {
         string repoRoot = LocateRepoRoot();
-        string inputPath = Path.Combine(repoRoot, "Bodu.Financial", "src", "Currencies", "currencies.json");
-        string outputDir = Path.Combine(repoRoot, "Bodu.Financial", "src", "Currencies");
+        string inputPath = Path.Combine(repoRoot, "Bodu.Financial", "src", "Financial.Currencies", "currencies.json");
+        string outputDir = Path.Combine(repoRoot, "Bodu.Financial", "src", "Financial.Currencies");
 
         if (!File.Exists(inputPath))
         {
@@ -145,6 +145,8 @@ internal static class Program
                 ? "null"
                 : $"\"{currency.SuccessorIsoCode}\"";
 
+            string englishNameLiteral = ToCSharpStringLiteral(currency.Name);
+
             builder.Append("        yield return new global::Bodu.Financial.CurrencyInfo(\"")
                 .Append(currency.Iso)
                 .Append("\", ")
@@ -157,6 +159,8 @@ internal static class Program
                 .Append(demonetizedExpr)
                 .Append(", ")
                 .Append(successorExpr)
+                .Append(", ")
+                .Append(englishNameLiteral)
                 .AppendLine(");");
         }
 
@@ -289,12 +293,41 @@ internal static class Program
 
         builder.AppendLine();
         builder.AppendLine("    /// <summary>");
+        builder.AppendLine("    /// Gets the English-language name of the currency.");
+        builder.AppendLine("    /// </summary>");
+        builder.AppendLine("    /// <returns>The currency's English name in singular Title Case.</returns>");
+        builder.Append("    public static string EnglishName => ")
+            .Append(ToCSharpStringLiteral(currency.Name))
+            .AppendLine(";");
+
+        builder.AppendLine();
+        builder.AppendLine("    /// <summary>");
         builder.Append("    /// Prevents instantiation of the <see cref=\"").Append(currency.Iso).AppendLine("\" /> tag type.");
         builder.AppendLine("    /// </summary>");
         builder.Append("    private ").Append(currency.Iso).AppendLine("()");
         builder.AppendLine("    {");
         builder.AppendLine("    }");
         builder.AppendLine("}");
+        return builder.ToString();
+    }
+
+    private static string ToCSharpStringLiteral(string value)
+    {
+        var builder = new StringBuilder(value.Length + 2);
+        builder.Append('"');
+        foreach (char c in value)
+        {
+            switch (c)
+            {
+                case '\\': builder.Append("\\\\"); break;
+                case '"': builder.Append("\\\""); break;
+                case '\r': builder.Append("\\r"); break;
+                case '\n': builder.Append("\\n"); break;
+                case '\t': builder.Append("\\t"); break;
+                default: builder.Append(c); break;
+            }
+        }
+        builder.Append('"');
         return builder.ToString();
     }
 

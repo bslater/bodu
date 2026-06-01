@@ -116,4 +116,4 @@ fnv.Reset();                          // back to FNV offset basis
 - [Using CityHash](cityhash.md) — the SIMD-friendly modern alternative.
 - [Using Adler](adler.md) — twin-accumulator checksum with the same `NonCryptographicHashAlgorithm` shape.
 - [Cryptography hashing guide](../cryptography/hashing.md) — when FNV is not enough.
-- [Bodu.IO.Hashing namespace page](../../apidoc/Bodu.IO.Hashing.md) — key types and design notes.
+- [Bodu.IO.Hashing namespace page](xref:Bodu.IO.Hashing) — key types and design notes.

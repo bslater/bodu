@@ -2,5 +2,7 @@
   href: index.md
 - name: Working with Fraction&lt;T&gt;
   href: fraction.md
+- name: Formatting and parsing Fraction&lt;T&gt;
+  href: formatting-and-parsing.md
 - name: Working with Interval&lt;T&gt;
   href: interval.md

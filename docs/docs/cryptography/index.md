@@ -8,6 +8,17 @@ title: Bodu.Security.Cryptography — Introduction
 
 The library lives in two namespaces: `Bodu.Security.Cryptography` for primitives, and `Bodu.Security.Cryptography.Extensions` for ergonomic helpers.
 
+> [!IMPORTANT]
+> **Cryptographic primitives are easy to misuse.** Even algorithm-correct implementations leak security when used incorrectly. Before adopting this library in production, internalise these rules:
+>
+> - **Never reuse a nonce or IV under the same key.** Stream ciphers and most AEAD modes lose all confidentiality on nonce reuse. Use a counter or `RandomNumberGenerator.GetBytes` for unpredictability where required.
+> - **Always verify the AEAD authentication tag** before trusting decrypted plaintext. The library's AEAD transforms reject mismatched tags with `CryptographicException` — do not catch and ignore.
+> - **Compare tags and digests in constant time.** Use `CryptographicOperations.FixedTimeEquals` or the BCL constant-time helpers when checking MAC equality.
+> - **Prefer AEAD over encrypt-then-MAC-by-hand.** Authenticated modes (GCM, OCB, EAX, SIV) bundle confidentiality and authenticity in a single primitive with fewer pitfalls.
+> - **Prefer the BCL where it covers your case.** `System.Security.Cryptography` ships hardware-accelerated AES, AES-GCM, and SHA-2/3 implementations. Reach for the Bodu primitives when you need an algorithm the BCL does not ship (Threefish, Camellia, Ascon, BLAKE2/3, Skein, …).
+>
+> See the [Core concepts](concepts.md) page for the full safety vocabulary and the [cipher-modes](../../guides/cryptography/cipher-modes.md) and [AEAD-modes](../../guides/cryptography/aead-modes.md) guides for worked-example walkthroughs.
+
 ## The shape of the library
 
 ![Algorithm taxonomy across both libraries](../../images/diagrams/algorithm-taxonomy.svg)
@@ -25,6 +36,24 @@ The package contains six subfamilies. They share BCL base classes but differ str
 > **Keyed hash vs cipher.** Both take a key, but they serve opposite purposes. A cipher transforms plaintext to ciphertext and back without summarizing; a MAC summarizes a message into a fixed-size tag without encrypting. Use both together — encrypt-then-MAC, or an AEAD mode — when you need confidentiality *and* integrity.
 
 > **ASCON is multi-role.** The ASCON family (NIST SP 800-232) spans the cryptographic-hash, XOF, and AEAD roles under a single sponge permutation, which makes it a compact one-primitive choice for constrained environments. It appears in both the hash and AEAD tables below.
+
+## Choosing a primitive
+
+A compact decision table for the most common requirements. The "BCL alternative" column flags the case where `System.Security.Cryptography` already ships a hardware-accelerated implementation — start there unless the algorithm column is the specific reason you reached for Bodu.
+
+| If you need… | Reach for | Output | Standards | BCL alternative |
+|---|---|---|---|---|
+| **Confidentiality only**, block cipher | `Camellia`, `Twofish`, `Serpent128/256/512/1024`, `Threefish256/512/1024`, `Blowfish`, `Skipjack` | Block-aligned ciphertext + IV | RFC 3713 / FIPS-181 / NIST CFL / Threefish whitepaper | `Aes` (BCL — preferred for 128-bit-block AES) |
+| **Confidentiality only**, stream cipher | `ChaCha20`, `XChaCha20`, `Salsa20`, `XSalsa20`, `Rabbit`, `Hc128` | Keystream-XOR ciphertext | RFC 7539 / XSalsa20 paper / eSTREAM | None (for these specific algorithms) |
+| **Confidentiality + integrity + authenticity** (AEAD) | `Aes` + `GcmModeTransform` / `CcmModeTransform` / `OcbModeTransform` / `EaxModeTransform` / `SivModeTransform` / `GcmSivModeTransform`; or `AsconAead128` | Ciphertext + auth tag | NIST SP 800-38D / RFC 5116 / RFC 7253 / NIST SP 800-232 | `AesGcm`, `AesCcm` (BCL — preferred for those modes) |
+| **Per-record / per-sector encryption** with public domain separation | `Threefish256/512/1024` with `Tweak`; `XtsModeTransform` | Tweakable ciphertext | IEEE P1619 (XTS) / Threefish whitepaper | None |
+| **Cryptographic digest** for content addressing | `Tiger`, `CubeHash`, `Whirlpool`, `Snefru`, `Blake2b`, `Blake3`, `AsconHash256`, `Skein256/512/1024` | 128 – 1024 bits | NESSIE / SHA-3 / RFC 7693 / NIST SP 800-232 | `SHA256`, `SHA384`, `SHA512`, `SHA3_256` (BCL — preferred where available) |
+| **Variable-length / extendable output** (XOF) | `AsconXof128`, `AsconCxof128`, `Shake`, `Blake3` | Configurable | NIST SP 800-185 / FIPS 202 / NIST SP 800-232 | `Shake128`, `Shake256` (BCL — preferred where available) |
+| **Keyed hash / MAC** (reusable PRF) | `SipHash64`, `SipHash128` | 64 / 128 bits | Aumasson & Bernstein SipHash paper | `HMACSHA256` (BCL) |
+| **One-time message authenticator** (key + message — never reuse key) | `Poly1305` | 128 bits | RFC 8439 | None — paired with `ChaCha20` in BCL `ChaCha20Poly1305` |
+| **Verifiable tree hashing** (Merkle root + inclusion proofs) | `MerkleTreeHash`, `ParallelMerkleTreeHash` | Configurable leaf hash | Merkle 1979 / Certificate Transparency | None |
+
+Cryptographic digests in this table provide **integrity only when the digest itself is transmitted via an authenticated channel**. For integrity + authenticity in a single primitive, pick a MAC or an AEAD mode. See the [Core concepts](concepts.md) page for the full safety vocabulary.
 
 ## Subfamilies and headline types
 
@@ -151,7 +180,8 @@ The package contains six subfamilies. They share BCL base classes but differ str
 
 ## Where to go next
 
+- **[Core concepts](concepts.md)** — glossary the rest of the documentation assumes.
 - **[Getting started](getting-started.md)** — install + minimal sample for a cipher, an AEAD round-trip, a keyed hash, and a digest.
 - **[Bodu.Security.Cryptography guides](../../guides/cryptography/index.md)** — recipe-style walk-throughs.
-- **[Bodu.Security.Cryptography API reference](../../apidoc/Bodu.Security.Cryptography.md)** — full type-by-type docs.
+- **[Bodu.Security.Cryptography API reference](xref:Bodu.Security.Cryptography)** — full type-by-type docs.
 - **For non-cryptographic checksums and fingerprints** (CRC, Fletcher, Adler, FNV, CityHash, MurmurHash3), see [Bodu.IO.Hashing](../io-hashing/index.md).

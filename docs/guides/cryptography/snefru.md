@@ -68,4 +68,4 @@ For everything else, pick a modern digest. The [hashing overview](hashing.md) li
 - [Hashing overview](hashing.md) — how Snefru compares to the other hashes in this package.
 - [Using Tiger](tiger.md) — another classic cryptographic hash with wider deployment.
 - [Using CubeHash](cubehash.md) — a modern, highly tunable cryptographic hash (SHA-3 finalist).
-- [Bodu.Security.Cryptography namespace page](../../apidoc/Bodu.Security.Cryptography.md).
+- [Bodu.Security.Cryptography namespace page](xref:Bodu.Security.Cryptography).

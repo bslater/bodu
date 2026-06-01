@@ -212,4 +212,4 @@ For the strategy contract see [NotableDateRule and ObservanceAdjustment referenc
 - [Using NotableDateService](notable-dates.md) — loading rules, override layers, and caching.
 - [Authoring notable date rules](rule-authoring.md) — in-code objects, XML / JSON resource files, satellite assemblies, and runtime overrides.
 - [NotableDateRule and ObservanceAdjustment reference](rule-reference.md) — field-by-field reference, including the strategy contract.
-- [Bodu.Globalization.Calendar API reference](../../apidoc/Bodu.Globalization.Calendar.md) — full type reference.
+- [Bodu.Globalization.Calendar API reference](xref:Bodu.Globalization.Calendar) — full type reference.

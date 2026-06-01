@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 412" role="img" aria-labelledby="cal-pf-t cal-pf-d">
+  <title id="cal-pf-t">Bodu.Globalization.Calendar — package family</title>
+  <desc id="cal-pf-d">The Bodu.Globalization.Calendar runtime sits at the centre of a family of companion packages. The runtime ships the rule engine, the resolution pipeline, and the working-day extensions. Companion packages ship narrower surfaces that depend on the runtime: Bodu.Globalization.Calendar.Builder provides a fluent rule-authoring API; Bodu.Globalization.Calendar.DependencyInjection wires the service into Microsoft.Extensions.DependencyInjection; the three Bodu.Globalization.Calendar.Data.* packages ship curated public-holiday rules for the Americas, Asia-Pacific, and Europe territory bundles. Each companion can release on its own cadence without forcing a runtime rebuild.</desc>
+
+  <defs>
+    <style>
+      .cpf-bg   { fill: #0F172A; }
+      .cpf-pan  { fill: #1E293B; stroke: #334155; stroke-width: 1; }
+      .cpf-hdr  { fill: #111827; stroke: #334155; stroke-width: 1; }
+      .cpf-ttl  { fill: #F8FAFC; font: 700 15px/1 "Segoe UI",Arial,sans-serif; }
+      .cpf-form { fill: #94A3B8; font: italic 12px/1 "Cambria",Georgia,serif; }
+      .cpf-rt   { fill: #1E3A8A; stroke: #60A5FA; stroke-width: 1.6; }
+      .cpf-rtt  { fill: #F8FAFC; font: 700 13px/1 "Segoe UI",Arial,sans-serif; }
+      .cpf-rts  { fill: #BFDBFE; font: 400 11px/1 "Segoe UI",Arial,sans-serif; }
+      .cpf-rtd  { fill: #DBEAFE; font: 400 10px/1 "Consolas",Menlo,monospace; }
+      .cpf-cmp  { fill: #0D3331; stroke: #2DD4BF; stroke-width: 1; }
+      .cpf-cmpt { fill: #5EEAD4; font: 700 12px/1 "Segoe UI",Arial,sans-serif; }
+      .cpf-cmps { fill: #94A3B8; font: 400 9.5px/1 "Consolas",Menlo,monospace; }
+      .cpf-cmpd { fill: #E2E8F0; font: 400 10px/1 "Segoe UI",Arial,sans-serif; }
+      .cpf-cmpu { fill: #FBBF24; font: italic 10px/1 "Segoe UI",Arial,sans-serif; }
+      .cpf-data { fill: #2E1065; stroke: #A78BFA; stroke-width: 1; }
+      .cpf-datt { fill: #C4B5FD; font: 700 12px/1 "Segoe UI",Arial,sans-serif; }
+      .cpf-dats { fill: #94A3B8; font: 400 9.5px/1 "Consolas",Menlo,monospace; }
+      .cpf-datd { fill: #E2E8F0; font: 400 10px/1 "Segoe UI",Arial,sans-serif; }
+      .cpf-datu { fill: #FBBF24; font: italic 10px/1 "Segoe UI",Arial,sans-serif; }
+    </style>
+    <marker id="cpf-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#64748B"/>
+    </marker>
+  </defs>
+
+  <rect class="cpf-bg" width="820" height="412"/>
+
+  <g transform="translate(10 10)">
+    <rect class="cpf-pan" width="800" height="392" rx="8"/>
+    <rect class="cpf-hdr" width="800" height="46" rx="8"/>
+    <rect class="cpf-hdr" y="38" width="800" height="8"/>
+    <text class="cpf-ttl" x="16" y="29">Bodu.Globalization.Calendar — package family</text>
+    <text class="cpf-form" x="784" y="29" text-anchor="end">runtime · companions · data packs</text>
+
+    <!-- Runtime hub -->
+    <g transform="translate(280 70)">
+      <rect class="cpf-rt" width="240" height="118" rx="10"/>
+      <text class="cpf-rtt" x="120" y="26" text-anchor="middle">Bodu.Globalization.Calendar</text>
+      <text class="cpf-rts" x="120" y="46" text-anchor="middle">runtime · rule engine · resolution pipeline</text>
+      <line x1="20" y1="56" x2="220" y2="56" stroke="#60A5FA" stroke-width="0.8" opacity="0.4"/>
+      <text class="cpf-rtd" x="20" y="74">NotableDateService</text>
+      <text class="cpf-rtd" x="20" y="90">NotableDateRule · NotableDate</text>
+      <text class="cpf-rtd" x="20" y="106">Working-day extensions</text>
+    </g>
+
+    <!-- Connectors from companions to runtime -->
+    <g fill="none" stroke="#64748B" stroke-width="1.4">
+      <!-- Builder (top-left) → runtime -->
+      <path d="M 138,212 L 138,200 Q 138,196 142,196 L 280,196 Q 284,196 284,192 L 284,188" marker-end="url(#cpf-arr)"/>
+      <!-- DI (top-right) → runtime -->
+      <path d="M 662,212 L 662,200 Q 662,196 658,196 L 520,196 Q 516,196 516,192 L 516,188" marker-end="url(#cpf-arr)"/>
+      <!-- Data packs (bottom) → runtime — three arrows -->
+      <path d="M 138,234 L 138,250 Q 138,254 142,254 L 280,254 Q 284,254 284,258 L 284,260" stroke-dasharray="3,3" marker-end="url(#cpf-arr)" />
+      <path d="M 400,330 L 400,260" stroke-dasharray="3,3" marker-end="url(#cpf-arr)"/>
+      <path d="M 662,234 L 662,250 Q 662,254 658,254 L 520,254 Q 516,254 516,258 L 516,260" stroke-dasharray="3,3" marker-end="url(#cpf-arr)"/>
+    </g>
+
+    <!-- Builder card (top-left) -->
+    <g transform="translate(28 212)">
+      <rect class="cpf-cmp" width="220" height="78" rx="7"/>
+      <text class="cpf-cmpt" x="14" y="20">Calendar.Builder</text>
+      <text class="cpf-cmps" x="14" y="34">fluent rule authoring</text>
+      <text class="cpf-cmpd" x="14" y="52">NotableDateDocumentBuilder</text>
+      <text class="cpf-cmpu" x="14" y="68">author rules in C# · XML/JSON round-trip</text>
+    </g>
+
+    <!-- DI card (top-right) -->
+    <g transform="translate(552 212)">
+      <rect class="cpf-cmp" width="220" height="78" rx="7"/>
+      <text class="cpf-cmpt" x="14" y="20">Calendar.DependencyInjection</text>
+      <text class="cpf-cmps" x="14" y="34">Microsoft.Extensions.DependencyInjection</text>
+      <text class="cpf-cmpd" x="14" y="52">services.AddNotableDates(...)</text>
+      <text class="cpf-cmpu" x="14" y="68">DI registration · options binding</text>
+    </g>
+
+    <!-- Data pack cards (bottom row) -->
+    <g transform="translate(28 312)">
+      <rect class="cpf-data" width="240" height="64" rx="7"/>
+      <text class="cpf-datt" x="14" y="20">Calendar.Data.Americas</text>
+      <text class="cpf-dats" x="14" y="34">2 countries</text>
+      <text class="cpf-datd" x="14" y="50">US · CA</text>
+    </g>
+
+    <g transform="translate(280 312)">
+      <rect class="cpf-data" width="240" height="64" rx="7"/>
+      <text class="cpf-datt" x="14" y="20">Calendar.Data.Europe</text>
+      <text class="cpf-dats" x="14" y="34">8 countries</text>
+      <text class="cpf-datd" x="14" y="50">DE · ES · FR · GB · IT · NL · …</text>
+    </g>
+
+    <g transform="translate(532 312)">
+      <rect class="cpf-data" width="240" height="64" rx="7"/>
+      <text class="cpf-datt" x="14" y="20">Calendar.Data.AsiaPacific</text>
+      <text class="cpf-dats" x="14" y="34">8 countries</text>
+      <text class="cpf-datd" x="14" y="50">AU · CN · IN · JP · KR · NZ · …</text>
+    </g>
+  </g>
+</svg>

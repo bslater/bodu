@@ -204,4 +204,4 @@ monitor.OnChange(updated => Console.WriteLine($"Reload — beta = {updated.BetaE
 - **[Core concepts](concepts.md)** — vocabulary refresher.
 - **[Introduction](index.md)** — type map and scenario index.
 - **[Bodu.Text.Configuration](../text-configuration/index.md)** — the underlying parser, resolver, and view.
-- **[Bodu.Extensions.Configuration.Text API reference](../../apidoc/Bodu.Extensions.Configuration.Text.md)** — full type-by-type docs.
+- **[Bodu.Extensions.Configuration.Text API reference](xref:Bodu.Extensions.Configuration.Text)** — full type-by-type docs.

@@ -123,4 +123,4 @@ For new work without an interoperability requirement, the BCL's SHA-2 and SHA-3 
 
 - [Hashing overview](hashing.md) — where CubeHash sits next to Tiger, SipHash, Snefru, and the non-cryptographic families.
 - [Using Tiger](tiger.md), [Using Snefru](snefru.md) — the other cryptographic digests in this package.
-- [Bodu.Security.Cryptography namespace page](../../apidoc/Bodu.Security.Cryptography.md).
+- [Bodu.Security.Cryptography namespace page](xref:Bodu.Security.Cryptography).

@@ -46,6 +46,12 @@ public sealed class MZM : ICurrency
     public static string? SuccessorIsoCode => "MZN";
 
     /// <summary>
+    /// Gets the English-language name of the currency.
+    /// </summary>
+    /// <returns>The currency's English name in singular Title Case.</returns>
+    public static string EnglishName => "Old Mozambican Metical";
+
+    /// <summary>
     /// Prevents instantiation of the <see cref="MZM" /> tag type.
     /// </summary>
     private MZM()

@@ -69,7 +69,7 @@ Fraction<int>.Parse("⅗");                     // 3/5
 Fraction<int>.Parse("75%");                   // 3/4
 ```
 
-`Parse` and `TryParse` accept integers, ratios, mixed numbers, the 19 Unicode vulgar-fraction glyphs, and percentage syntax.
+`Parse` and `TryParse` accept integers, ratios, mixed numbers, the 18 Unicode vulgar-fraction glyphs the library ships, and percentage syntax. See [Formatting and parsing `Fraction<T>`](../../guides/numerics/formatting-and-parsing.md) for the full table.
 
 ### JSON
 
@@ -132,4 +132,4 @@ Money<USD> balance = Money<USD>.FromFraction(exact);   // one rounding event
 - **[Working with `Fraction<T>`](../../guides/numerics/fraction.md)** — construction, arithmetic, parsing/formatting, continued fractions, rational approximation.
 - **[Working with `Interval<T>`](../../guides/numerics/interval.md)** — endpoint inclusivity, membership, intersection, union, adjacency.
 - **[Bodu.Financial getting started](../financial/getting-started.md)** — for monetary primitives built on `Fraction<BigInteger>`.
-- **[Bodu.Numerics API reference](../../apidoc/Bodu.Numerics.md)** — full type-by-type docs.
+- **[Bodu.Numerics API reference](xref:Bodu.Numerics)** — full type-by-type docs.

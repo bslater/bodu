@@ -99,6 +99,28 @@ All three subfamilies derive from the same base type, but they are tuned for dif
 
 > **Need an adversary model?** Everything in this package is forgeable by an attacker who controls the input. For keyed and cryptographic hashes — SipHash, Poly1305, Tiger, ASCON, Merkle trees — that resist a deliberate attacker, see [Bodu.Security.Cryptography](../cryptography/index.md).
 
+## Selecting a specific algorithm
+
+Once the subfamily is chosen, this table compares the algorithms within each subfamily on the dimensions that matter most for picking one: output size, streaming behaviour, resumability, and the typical scenario the algorithm is tuned for.
+
+| Algorithm | Output | Streaming | Resumable | Typical scenario |
+|---|---|---|---|---|
+| `Fnv1a32` / `Fnv1a64` | 32 / 64 bits | Constant memory | No | Hash-table keys; the default fingerprint when in doubt. |
+| `MurmurHash3_32` / `MurmurHash3_128` | 32 / 128 bits | Constant memory | No | Database index keys; widely used in distributed systems. |
+| `CityHash32` / `CityHash64` / `CityHash128` | 32 / 64 / 128 bits | Buffered (SIMD) | No | Fastest on long inputs; CDN and large-blob fingerprints. |
+| `Pearson` | 8 – 2048 bits | Constant memory | No | Configurable output width in 8-bit steps; embedded scenarios. |
+| `Bernstein`, `BKDR`, `SDBM`, `JSHash`, `Elf64`, `ApHash`, `Pjw32`, `SuperFastHash` | 32 / 64 bits | Constant memory | No | Compiler-style string hashing; legacy interop. |
+| `Crc` (any standard from <xref:Bodu.IO.Hashing.Checksums.CrcStandard>) | 1 – 64 bits | Constant memory | **Yes** (`IResumableHashAlgorithm`) | Error-detection checksum on transmission / storage channels; choice driven by published `CrcStandard` (e.g. CRC-32/ISO-HDLC for zlib / PNG / Ethernet). |
+| `Fletcher16` / `Fletcher32` / `Fletcher64` | 16 / 32 / 64 bits | Constant memory | No | Faster than CRC at comparable error coverage; protocol checksums. |
+| `Adler32` / `Adler32C` / `Adler64` | 32 / 32 / 64 bits | Constant memory | No | Used by zlib; checksum for short, low-entropy payloads. |
+| `Luhn`, `Damm`, `Verhoeff`, `Ean8`, `Ean13`, `UpcA`, `Gtin14`, `AbaRoutingNumber` | 1 character | Constant memory | No | Single-character check digit for human-typed numeric identifiers. |
+| `Isbn10`, `Sedol`, `Cusip`, `Isin`, `Iso7064Mod11_2` | 1 character | Constant memory | No | Single-character check digit for mixed numeric / alphanumeric identifiers. |
+| `Iban`, `Lei`, `Iso7064Mod97_10` | 2 characters | Constant memory | No | Two-character check digit (ISO 7064 Mod 97-10) for high-coverage validation. |
+
+> Only `Crc` currently implements `IResumableHashAlgorithm` — the ability to reverse-finalize a stored digest, append more bytes, and finalize again.
+
+> The `Bodu.IO.Hashing.Extensions` namespace adds ergonomic one-shot and async helpers (`ComputeHash`, `ComputeHashAsync`, `VerifyHash`, `TryVerifyHash`) over every algorithm in the table.
+
 ## Common lifecycle
 
 ```csharp
@@ -119,7 +141,8 @@ Only `Crc` currently implements `IResumableHashAlgorithm` (reverse-finalize a st
 
 ## Where to go next
 
+- **[Core concepts](concepts.md)** — glossary the rest of the documentation assumes.
 - **[Getting started](getting-started.md)** — install + one minimal sample per subfamily.
 - **[Bodu.IO.Hashing guides](../../guides/io-hashing/index.md)** — recipe-style walk-throughs per algorithm.
-- **[Bodu.IO.Hashing API reference](../../apidoc/Bodu.IO.Hashing.md)** — full type-by-type docs.
+- **[Bodu.IO.Hashing API reference](xref:Bodu.IO.Hashing)** — full type-by-type docs.
 - **For keyed and cryptographic hashes** (SipHash, Poly1305, Tiger, ASCON, Merkle trees), see [Bodu.Security.Cryptography](../cryptography/index.md).

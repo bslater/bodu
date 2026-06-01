@@ -18,7 +18,12 @@ dotnet add package Bodu.Globalization.Calendar.Data.AsiaPacific
 
 # Optional Microsoft.Extensions.DependencyInjection integration:
 dotnet add package Bodu.Globalization.Calendar.DependencyInjection
+
+# Optional fluent rule-authoring API:
+dotnet add package Bodu.Globalization.Calendar.Builder
 ```
+
+See the [package matrix](../package-matrix.md) for the full taxonomy and the [Calendar package family diagram](index.md#calendar-package-family) for how the runtime and companions compose.
 
 Targets `net8.0`. The base package contains the resolution engine and the built-in algorithms; the data packs contain region-specific rule sets.
 
@@ -160,5 +165,5 @@ See the [Calendar dependency injection guide](../../guides/calendar/dependency-i
 - **[Bodu.Globalization.Calendar introduction](index.md)** — mental model, headline types, scenarios.
 - **[Core concepts](concepts.md)** — vocabulary used across the rest of the documentation.
 - **[Bodu.Globalization.Calendar guides](../../guides/calendar/index.md)** — `NotableDateService` patterns, algorithms, rule authoring, working-day arithmetic, territories, data packs.
-- **[Bodu.Globalization.Calendar API reference](../../apidoc/Bodu.Globalization.Calendar.md)** — full type-by-type docs.
+- **[Bodu.Globalization.Calendar API reference](xref:Bodu.Globalization.Calendar)** — full type-by-type docs.
 - **[Calendar data packs guide](../../guides/calendar/data-packs.md)** — composing `AmericasCalendarData` / `EuropeCalendarData` / `AsiaPacificCalendarData` providers.

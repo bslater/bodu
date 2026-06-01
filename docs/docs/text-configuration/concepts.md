@@ -229,5 +229,5 @@ emits canonical formatting, so the round-trip is semantically stable but may rea
 
 - **[Getting started](getting-started.md)** — install + runnable minimal samples.
 - **[Bodu.Extensions.Configuration.Text](../extensions-configuration-text/index.md)** — `IConfigurationBuilder` integration.
-- **[Bodu.Text.Configuration API reference](../../apidoc/Bodu.Text.Configuration.md)** — full type-by-type docs.
+- **[Bodu.Text.Configuration API reference](xref:Bodu.Text.Configuration)** — full type-by-type docs.
 - **[Introduction](index.md)** — the high-level shape of the library.

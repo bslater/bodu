@@ -30,6 +30,11 @@ that ship in .NET 8+.
 
 ## Articles
 
+- [Working with `Fraction<T>`](fraction.md) — construction, arithmetic,
+  continued fractions, rational approximation.
+- [Formatting and parsing `Fraction<T>`](formatting-and-parsing.md) —
+  general, mixed-number, Unicode vulgar-fraction, and percentage
+  specifiers; what the parser accepts; culture and span surfaces.
 - [Working with `Interval<T>`](interval.md) — endpoint inclusivity,
   set operations, parsing and formatting.
 

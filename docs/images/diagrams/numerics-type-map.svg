@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 348" role="img" aria-labelledby="num-t num-d">
+  <title id="num-t">Bodu.Numerics — type map</title>
+  <desc id="num-d">Bodu.Numerics ships two immutable value types built on the .NET generic-math interfaces. Fraction&lt;T&gt; provides exact rational arithmetic over any IBinaryInteger&lt;T&gt; backing type with GCD-normalised canonical form and BigInteger-promoted intermediates. Interval&lt;T&gt; provides bounded numeric intervals over any INumber&lt;T&gt; endpoint type with independent inclusivity on each side. The non-generic Interval helper offers factory shorthands that infer the endpoint type from the arguments. The Fraction JSON converters round-trip through the string form "numerator/denominator".</desc>
+
+  <defs>
+    <style>
+      .num-bg   { fill: #0F172A; }
+      .num-pan  { fill: #1E293B; stroke: #334155; stroke-width: 1; }
+      .num-hdr  { fill: #111827; stroke: #334155; stroke-width: 1; }
+      .num-ttl  { fill: #F8FAFC; font: 700 15px/1 "Segoe UI",Arial,sans-serif; }
+      .num-form { fill: #94A3B8; font: italic 12px/1 "Cambria",Georgia,serif; }
+      .num-base { fill: #1E1B4B; stroke: #818CF8; stroke-width: 1.4; }
+      .num-bttl { fill: #C7D2FE; font: 700 12px/1 "Consolas",Menlo,monospace; text-anchor: middle; }
+      .num-bsub { fill: #94A3B8; font: 400 10px/1 "Consolas",Menlo,monospace; text-anchor: middle; }
+      .num-card { fill: #0D3331; stroke: #2DD4BF; stroke-width: 1; }
+      .num-name { fill: #5EEAD4; font: 700 12px/1 "Segoe UI",Arial,sans-serif; }
+      .num-ns   { fill: #94A3B8; font: 400 9.5px/1 "Consolas",Menlo,monospace; }
+      .num-type { fill: #E2E8F0; font: 400 10px/1 "Segoe UI",Arial,sans-serif; }
+      .num-use  { fill: #FBBF24; font: italic 10px/1 "Segoe UI",Arial,sans-serif; }
+      .num-aux  { fill: #2E1065; stroke: #A78BFA; stroke-width: 1; }
+      .num-auxt { fill: #C4B5FD; font: 700 11px/1 "Segoe UI",Arial,sans-serif; }
+      .num-auxs { fill: #CBD5E1; font: 400 10px/1 "Segoe UI",Arial,sans-serif; }
+    </style>
+    <marker id="num-arr" viewBox="0 0 10 10" refX="5" refY="9" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,0 L5,10 Z" fill="#64748B"/>
+    </marker>
+  </defs>
+
+  <rect class="num-bg" width="820" height="348"/>
+
+  <g transform="translate(10 10)">
+    <rect class="num-pan" width="800" height="328" rx="8"/>
+    <rect class="num-hdr" width="800" height="46" rx="8"/>
+    <rect class="num-hdr" y="38" width="800" height="8"/>
+    <text class="num-ttl" x="16" y="29">Bodu.Numerics — two value types, one generic-math surface</text>
+    <text class="num-form" x="784" y="29" text-anchor="end">immutable · value-equatable</text>
+
+    <!-- base contract -->
+    <rect class="num-base" x="226" y="58" width="348" height="40" rx="7"/>
+    <text class="num-bttl" x="400" y="76">System.Numerics — IBinaryInteger&lt;T&gt; · INumber&lt;T&gt;</text>
+    <text class="num-bsub" x="400" y="91">generic-math abstractions over any conforming type</text>
+
+    <!-- connectors -->
+    <g stroke="#64748B" stroke-width="1.6" fill="none">
+      <path d="M400,98 L400,112 L146,112 L146,128" marker-end="url(#num-arr)"/>
+      <path d="M400,98 L400,112 L654,112 L654,128" marker-end="url(#num-arr)"/>
+    </g>
+
+    <!-- type 1: Fraction<T> -->
+    <g transform="translate(20 130)">
+      <rect class="num-card" width="378" height="142" rx="7"/>
+      <text class="num-name" x="14" y="22">Fraction&lt;T&gt;</text>
+      <text class="num-ns" x="14" y="37">Bodu.Numerics · over IBinaryInteger&lt;T&gt;</text>
+      <text class="num-type" x="14" y="58">canonical GCD-reduced form on construction</text>
+      <text class="num-type" x="14" y="76">BigInteger-promoted intermediates · exact arithmetic</text>
+      <text class="num-type" x="14" y="94">mixed-number "M" · Unicode-vulgar "U" formatting</text>
+      <text class="num-type" x="14" y="112">continued-fraction expansion · best approximation</text>
+      <text class="num-use" x="14" y="132">exact rationals · audit-grade compound chains</text>
+    </g>
+
+    <!-- type 2: Interval<T> -->
+    <g transform="translate(408 130)">
+      <rect class="num-card" width="378" height="142" rx="7"/>
+      <text class="num-name" x="14" y="22">Interval&lt;T&gt;</text>
+      <text class="num-ns" x="14" y="37">Bodu.Numerics · over INumber&lt;T&gt;</text>
+      <text class="num-type" x="14" y="58">independent endpoint inclusivity per side</text>
+      <text class="num-type" x="14" y="76">closed · open · half-open forms in one type</text>
+      <text class="num-type" x="14" y="94">Contains · Intersect · TryUnion · Overlaps</text>
+      <text class="num-type" x="14" y="112">single canonical Interval&lt;T&gt;.Empty</text>
+      <text class="num-use" x="14" y="132">bounded ranges · scheduling · membership tests</text>
+    </g>
+
+    <!-- aux bar: helpers + JSON converters -->
+    <rect class="num-aux" x="20" y="282" width="378" height="32" rx="6"/>
+    <text class="num-auxt" x="34" y="302">Interval (non-generic)</text>
+    <text class="num-auxs" x="192" y="302">Closed · Open · half-open factory shorthands</text>
+
+    <rect class="num-aux" x="408" y="282" width="378" height="32" rx="6"/>
+    <text class="num-auxt" x="422" y="302">FractionJsonConverter&lt;T&gt;</text>
+    <text class="num-auxs" x="600" y="302">auto-registered · "n/d" wire form</text>
+  </g>
+</svg>

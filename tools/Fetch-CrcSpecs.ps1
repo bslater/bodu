@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    Fetches the CRC RevEng catalogue and rebuilds Bodu.Security.Cryptography/src/crc-specs.json.
+    Fetches the CRC RevEng catalogue and rebuilds Bodu.IO.Hashing/src/crc-specs.json.
 
 .DESCRIPTION
     Downloads the public CRC catalogue page (reveng.sourceforge.io/crc-catalogue/all.htm by

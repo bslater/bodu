@@ -27,6 +27,12 @@ public sealed class ETB : ICurrency
     public static int MinorUnits => 2;
 
     /// <summary>
+    /// Gets the English-language name of the currency.
+    /// </summary>
+    /// <returns>The currency's English name in singular Title Case.</returns>
+    public static string EnglishName => "Ethiopian Birr";
+
+    /// <summary>
     /// Prevents instantiation of the <see cref="ETB" /> tag type.
     /// </summary>
     private ETB()

@@ -131,7 +131,7 @@ The BLAKE3 spec defines a keyed-hash mode and a key-derivation mode. Both requir
 - **You need a fixed-spec hash for interoperability.** Reach for SHA-256 / SHA-512 (BCL) or SHA-3 (BCL on .NET 8+). BLAKE is unbroken but less universally available.
 - **You need an XOF.** Reach for [SHAKE](shake.md) — BLAKE3 does support XOF in principle, but this implementation does not expose it.
 - **You need authenticated encryption.** Reach for [AEAD modes](aead-modes.md) — combining a hash with a cipher correctly is the hard part; AEAD modes hide the foot-guns.
-- **You need a non-cryptographic fingerprint.** Reach for [`Bodu.IO.Hashing`](~/apidoc/Bodu.IO.Hashing.md) (FNV, MurmurHash3, CityHash, CRC) — much faster, no cryptographic guarantees.
+- **You need a non-cryptographic fingerprint.** Reach for [`Bodu.IO.Hashing`](xref:Bodu.IO.Hashing) (FNV, MurmurHash3, CityHash, CRC) — much faster, no cryptographic guarantees.
 
 ## See also
 

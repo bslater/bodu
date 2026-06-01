@@ -8,6 +8,23 @@ title: Bodu.Globalization.Calendar — Introduction
 
 Rules can be supplied from embedded XML / JSON resources, companion data packs, runtime override providers, or external plugins. More advanced scenarios can extend the library with custom algorithms, adjustment handlers, collision resolvers, localizers, and plugin trust policies.
 
+## Calendar package family
+
+The calendar runtime is intentionally small. Region-specific holiday data, fluent rule authoring, and dependency-injection registration ship as separate companion packages so they can release on their own cadence without forcing a main-library rebuild.
+
+![Bodu.Globalization.Calendar package family — runtime, companions, and data packs](../../images/diagrams/calendar-package-family.svg)
+
+| Package | Role |
+|---|---|
+| **`Bodu.Globalization.Calendar`** | The runtime — rule engine, resolution pipeline, working-day extensions. Required by every other calendar package. |
+| `Bodu.Globalization.Calendar.Builder` | Fluent, chainable C# API for authoring `NotableDateRule` documents. Round-trips to and from the XML / JSON forms consumed by the resource providers. See the [builder guide](../../guides/calendar/notable-date-builder.md). |
+| `Bodu.Globalization.Calendar.DependencyInjection` | `IServiceCollection` extensions for registering `NotableDateService`, rule providers, and adjustment handlers in a `Microsoft.Extensions.DependencyInjection` container. See the [DI guide](../../guides/calendar/dependency-injection.md). |
+| `Bodu.Globalization.Calendar.Data.Americas` | Curated public-holiday rules for `US`, `CA`. |
+| `Bodu.Globalization.Calendar.Data.Europe` | Curated rules for eight European countries including `DE`, `ES`, `FR`, `GB`, `IT`, `NL`. |
+| `Bodu.Globalization.Calendar.Data.AsiaPacific` | Curated rules for eight Asia-Pacific countries including `AU` (with subdivisions), `CN`, `IN`, `JP`, `KR`, `NZ`. |
+
+The data packs are independent NuGet packages, so consumers pull in only the regions they need. See the [Calendar data packs guide](../../guides/calendar/data-packs.md) for per-pack install commands, territory coverage, and registration patterns.
+
 ## Core mental model
 
 ![NotableDateService resolution pipeline](../../images/diagrams/calendar-resolution-pipeline.svg)
@@ -137,5 +154,5 @@ External plugin hosting and trust policies for loading rules / algorithms from e
 - **[Core concepts](concepts.md)** — full vocabulary: rule vs. date, nominal vs. observed, provider vs. override, anchor, category vs. tag, working day vs. non-working day.
 - **[Getting started](getting-started.md)** — install + minimal samples for the algorithm, the service, and working-day arithmetic.
 - **[Bodu.Globalization.Calendar guides](../../guides/calendar/index.md)** — using `NotableDateService`, algorithms, rule authoring, working-day arithmetic, territories, data packs.
-- **[Bodu.Globalization.Calendar API reference](../../apidoc/Bodu.Globalization.Calendar.md)** — full type-by-type docs.
+- **[Bodu.Globalization.Calendar API reference](xref:Bodu.Globalization.Calendar)** — full type-by-type docs.
 - **[Calendar data packs](../../guides/calendar/data-packs.md)** — region-specific public-holiday rule providers (`AmericasCalendarData`, `EuropeCalendarData`, `AsiaPacificCalendarData`).

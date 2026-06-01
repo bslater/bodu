@@ -32,7 +32,55 @@ jobs:
         dotnet-version: 8.x
 
     - run: dotnet tool update -g docfx
-    - run: docfx docs/docfx.json
+
+    - name: Build DocFX site
+      run: docfx docs/docfx.json --warningsAsErrors
+
+    - name: Audit content for stale link patterns
+      run: |
+        set -eu
+        echo "Checking for direct apidoc/Bodu.*.md links (should use xref instead)..."
+        if grep -rEn 'apidoc/Bodu\.[A-Za-z0-9_.]+\.md' docs/ --include='*.md' >/dev/null; then
+          echo "::error::Found direct apidoc/Bodu.*.md links in docs/. Use xref:Bodu.<Namespace> instead."
+          grep -rEn 'apidoc/Bodu\.[A-Za-z0-9_.]+\.md' docs/ --include='*.md'
+          exit 1
+        fi
+        echo "Checking for stale Text.Configuration profile names..."
+        if grep -rEn 'Standard, PureIni|"PureIni"|`PureIni`' docs/ --include='*.md' >/dev/null; then
+          echo "::error::Found stale Text.Configuration profile names. Use Bodu/EditorConfigCompatible/Strict/Relaxed."
+          grep -rEn 'Standard, PureIni|"PureIni"|`PureIni`' docs/ --include='*.md'
+          exit 1
+        fi
+        echo "All content audits passed."
+
+    - name: Validate generated API output
+      run: |
+        set -eu
+        SITE_DIR=docs/_site
+        if [ ! -d "$SITE_DIR/api" ]; then
+          echo "::error::DocFX did not produce an api/ directory under $SITE_DIR. Check metadata generation."
+          exit 1
+        fi
+        # Spot-check that every primary library produced a namespace page.
+        missing=0
+        for ns in \
+          Bodu.Collections.Generic \
+          Bodu.IO.Hashing \
+          Bodu.Security.Cryptography \
+          Bodu.Globalization.Calendar \
+          Bodu.Text.Encoding \
+          Bodu.Text.Bencode \
+          Bodu.Text.Configuration \
+          Bodu.Extensions.Configuration.Text \
+          Bodu.Numerics \
+          Bodu.Financial; do
+          if [ ! -f "$SITE_DIR/api/$ns.html" ]; then
+            echo "::error::Missing generated API page: $SITE_DIR/api/$ns.html"
+            missing=1
+          fi
+        done
+        if [ $missing -ne 0 ]; then exit 1; fi
+        echo "All primary-library namespace API pages present."
 
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v3

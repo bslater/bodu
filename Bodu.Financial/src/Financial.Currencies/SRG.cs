@@ -46,6 +46,12 @@ public sealed class SRG : ICurrency
     public static string? SuccessorIsoCode => "SRD";
 
     /// <summary>
+    /// Gets the English-language name of the currency.
+    /// </summary>
+    /// <returns>The currency's English name in singular Title Case.</returns>
+    public static string EnglishName => "Suriname Guilder";
+
+    /// <summary>
     /// Prevents instantiation of the <see cref="SRG" /> tag type.
     /// </summary>
     private SRG()

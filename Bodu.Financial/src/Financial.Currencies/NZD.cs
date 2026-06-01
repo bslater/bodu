@@ -33,6 +33,12 @@ public sealed class NZD : ICurrency
     public static decimal CashRoundingIncrement => 0.1m;
 
     /// <summary>
+    /// Gets the English-language name of the currency.
+    /// </summary>
+    /// <returns>The currency's English name in singular Title Case.</returns>
+    public static string EnglishName => "New Zealand Dollar";
+
+    /// <summary>
     /// Prevents instantiation of the <see cref="NZD" /> tag type.
     /// </summary>
     private NZD()

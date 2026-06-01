@@ -33,6 +33,12 @@ public sealed class NOK : ICurrency
     public static decimal CashRoundingIncrement => 1m;
 
     /// <summary>
+    /// Gets the English-language name of the currency.
+    /// </summary>
+    /// <returns>The currency's English name in singular Title Case.</returns>
+    public static string EnglishName => "Norwegian Krone";
+
+    /// <summary>
     /// Prevents instantiation of the <see cref="NOK" /> tag type.
     /// </summary>
     private NOK()

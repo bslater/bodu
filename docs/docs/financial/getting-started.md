@@ -178,4 +178,4 @@ Money<DOGE> tip = new Money<DOGE>(0.12345678m);
 - **[Bodu.Financial introduction](index.md)** — namespaces, headline types, scenarios.
 - **[Working with `Money<TCurrency>`](../../guides/financial/money.md)** — the full reference for typed money, including formatting/parsing, locale-aware output, cash rounding, historic-currency metadata, `MoneyValue` interop, and `MoneyBag` portfolios.
 - **[Bodu.Numerics getting started](../numerics/getting-started.md)** — for the `Fraction<BigInteger>` precision escape hatch used by `Money<T>.ToFraction()`.
-- **[Bodu.Financial API reference](../../apidoc/Bodu.Financial.md)** — full type-by-type docs.
+- **[Bodu.Financial API reference](xref:Bodu.Financial)** — full type-by-type docs.

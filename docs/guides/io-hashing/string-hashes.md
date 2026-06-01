@@ -119,4 +119,4 @@ For general-purpose fingerprinting where quality and speed both matter, **`CityH
 - [Using FNV](fnv.md), [Using CityHash](cityhash.md) — modern non-cryptographic hashes with better distribution.
 - [Using Pearson](pearson.md) — table-driven classic hash with configurable output width.
 - [Cryptography hashing guide](../cryptography/hashing.md) — when a classic hash is not enough.
-- [Bodu.IO.Hashing namespace page](../../apidoc/Bodu.IO.Hashing.md) — key types and design notes.
+- [Bodu.IO.Hashing namespace page](xref:Bodu.IO.Hashing) — key types and design notes.
