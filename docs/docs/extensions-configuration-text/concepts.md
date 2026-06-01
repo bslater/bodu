@@ -173,5 +173,5 @@ patches).
 
 - **[Getting started](getting-started.md)** — install + runnable minimal samples.
 - **[Bodu.Text.Configuration](../text-configuration/index.md)** — the underlying parser, resolver, and view.
-- **[Bodu.Extensions.Configuration.Text API reference](../../apidoc/Bodu.Extensions.Configuration.Text.md)** — full type-by-type docs.
+- **[Bodu.Extensions.Configuration.Text API reference](xref:Bodu.Extensions.Configuration.Text)** — full type-by-type docs.
 - **[Introduction](index.md)** — the high-level shape of the library.

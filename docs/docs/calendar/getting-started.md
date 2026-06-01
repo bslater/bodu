@@ -160,5 +160,5 @@ See the [Calendar dependency injection guide](../../guides/calendar/dependency-i
 - **[Bodu.Globalization.Calendar introduction](index.md)** — mental model, headline types, scenarios.
 - **[Core concepts](concepts.md)** — vocabulary used across the rest of the documentation.
 - **[Bodu.Globalization.Calendar guides](../../guides/calendar/index.md)** — `NotableDateService` patterns, algorithms, rule authoring, working-day arithmetic, territories, data packs.
-- **[Bodu.Globalization.Calendar API reference](../../apidoc/Bodu.Globalization.Calendar.md)** — full type-by-type docs.
+- **[Bodu.Globalization.Calendar API reference](xref:Bodu.Globalization.Calendar)** — full type-by-type docs.
 - **[Calendar data packs guide](../../guides/calendar/data-packs.md)** — composing `AmericasCalendarData` / `EuropeCalendarData` / `AsiaPacificCalendarData` providers.

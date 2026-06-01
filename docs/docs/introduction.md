@@ -36,7 +36,7 @@ Each library has a dedicated introduction page that explains its namespaces, the
     <a href="core/index.md">Introduction</a>
     <a href="core/getting-started.md">Getting started</a>
     <a href="../guides/core/index.md">Guides</a>
-    <a href="../apidoc/Bodu.Collections.Generic.md">API reference</a>
+    <a href="xref:Bodu.Collections.Generic">API reference</a>
   </div>
 </div>
 
@@ -47,7 +47,7 @@ Each library has a dedicated introduction page that explains its namespaces, the
     <a href="io-hashing/index.md">Introduction</a>
     <a href="io-hashing/getting-started.md">Getting started</a>
     <a href="../guides/io-hashing/index.md">Guides</a>
-    <a href="../apidoc/Bodu.IO.Hashing.md">API reference</a>
+    <a href="xref:Bodu.IO.Hashing">API reference</a>
   </div>
 </div>
 
@@ -58,7 +58,7 @@ Each library has a dedicated introduction page that explains its namespaces, the
     <a href="cryptography/index.md">Introduction</a>
     <a href="cryptography/getting-started.md">Getting started</a>
     <a href="../guides/cryptography/index.md">Guides</a>
-    <a href="../apidoc/Bodu.Security.Cryptography.md">API reference</a>
+    <a href="xref:Bodu.Security.Cryptography">API reference</a>
   </div>
 </div>
 
@@ -69,7 +69,7 @@ Each library has a dedicated introduction page that explains its namespaces, the
     <a href="calendar/index.md">Introduction</a>
     <a href="calendar/getting-started.md">Getting started</a>
     <a href="../guides/calendar/index.md">Guides</a>
-    <a href="../apidoc/Bodu.Globalization.Calendar.md">API reference</a>
+    <a href="xref:Bodu.Globalization.Calendar">API reference</a>
   </div>
 </div>
 
@@ -100,7 +100,7 @@ Each library has a dedicated introduction page that explains its namespaces, the
     <a href="text-configuration/index.md">Introduction</a>
     <a href="text-configuration/getting-started.md">Getting started</a>
     <a href="../guides/text-configuration/index.md">Guides</a>
-    <a href="../apidoc/Bodu.Text.Configuration.md">API reference</a>
+    <a href="xref:Bodu.Text.Configuration">API reference</a>
   </div>
 </div>
 
@@ -111,7 +111,7 @@ Each library has a dedicated introduction page that explains its namespaces, the
     <a href="extensions-configuration-text/index.md">Introduction</a>
     <a href="extensions-configuration-text/getting-started.md">Getting started</a>
     <a href="../guides/extensions-configuration-text/index.md">Guides</a>
-    <a href="../apidoc/Bodu.Extensions.Configuration.Text.md">API reference</a>
+    <a href="xref:Bodu.Extensions.Configuration.Text">API reference</a>
   </div>
 </div>
 
@@ -134,4 +134,4 @@ The solution uses **MSTest** with a partial-class test layout that mirrors the s
 
 - **[Getting started](getting-started.md)** — prerequisites, install commands, and a one-minute sample from each library.
 - **Library introductions:** [Bodu.Core](core/index.md) · [Bodu.IO.Hashing](io-hashing/index.md) · [Bodu.Security.Cryptography](cryptography/index.md) · [Bodu.Globalization.Calendar](calendar/index.md) · [Bodu.Text.Encoding](text-encoding/index.md) · [Bodu.Text.Formats](formats/index.md) · [Bodu.Text.Configuration](text-configuration/index.md) · [Bodu.Extensions.Configuration.Text](extensions-configuration-text/index.md).
-- **API references:** [Bodu.Collections.Generic](../apidoc/Bodu.Collections.Generic.md) · [Bodu.IO.Hashing](../apidoc/Bodu.IO.Hashing.md) · [Bodu.Security.Cryptography](../apidoc/Bodu.Security.Cryptography.md) · [Bodu.Globalization.Calendar](../apidoc/Bodu.Globalization.Calendar.md).
+- **API references:** [Bodu.Collections.Generic](xref:Bodu.Collections.Generic) · [Bodu.IO.Hashing](xref:Bodu.IO.Hashing) · [Bodu.Security.Cryptography](xref:Bodu.Security.Cryptography) · [Bodu.Globalization.Calendar](xref:Bodu.Globalization.Calendar).

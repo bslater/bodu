@@ -135,4 +135,4 @@ In practice you'll rarely need to touch the cache directly — the default behav
 
 - [Using Fletcher](fletcher.md) — the other checksum family in this package.
 - [CRC catalogue](crc-catalogue.md) — the full table of 113 named standards.
-- [Bodu.IO.Hashing namespace page](../../apidoc/Bodu.IO.Hashing.md) — key types and design notes.
+- [Bodu.IO.Hashing namespace page](xref:Bodu.IO.Hashing) — key types and design notes.

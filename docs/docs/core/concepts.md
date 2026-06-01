@@ -153,4 +153,4 @@ These types are pure data carriers. The actual algorithms live on the extension 
 - **[Introduction](index.md)** — the namespace map and headline types.
 - **[Getting started](getting-started.md)** — install + runnable minimal samples for each scenario.
 - **[Bodu.Core guides](../../guides/core/index.md)** — recipe-style walk-throughs for circular buffers, deques, evicting dictionaries, and `WeekPattern`.
-- **[Bodu.Collections.Generic API reference](../../apidoc/Bodu.Collections.Generic.md)** — full type-by-type docs.
+- **[Bodu.Collections.Generic API reference](xref:Bodu.Collections.Generic)** — full type-by-type docs.

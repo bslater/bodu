@@ -8,7 +8,7 @@ Recipe-style walk-throughs for **Bodu.IO.Hashing**, organized by namespace. Each
 
 If you have not yet installed the package or want the high-level shape of the library, start with the [Bodu.IO.Hashing introduction](../../docs/io-hashing/index.md) and the [getting-started page](../../docs/io-hashing/getting-started.md). The introduction's *Choosing a subfamily* section covers the structural differences between fingerprints, checksums, and check digits, and how they relate to the cryptographic families.
 
-For the auto-generated API reference, see the [Bodu.IO.Hashing namespace page](../../apidoc/Bodu.IO.Hashing.md). For keyed or cryptographic hashes (SipHash, Poly1305, Tiger, CubeHash, Merkle trees), see the [Bodu.Security.Cryptography hashing guides](../cryptography/hashing.md).
+For the auto-generated API reference, see the [Bodu.IO.Hashing namespace page](xref:Bodu.IO.Hashing). For keyed or cryptographic hashes (SipHash, Poly1305, Tiger, CubeHash, Merkle trees), see the [Bodu.Security.Cryptography hashing guides](../cryptography/hashing.md).
 
 ## Namespace map
 
@@ -117,4 +117,4 @@ Only `Crc` currently implements `IResumableHashAlgorithm` — see the [CRC guide
 - [Bodu.IO.Hashing introduction](../../docs/io-hashing/index.md) — namespaces, headline types, scenarios.
 - [Bodu.IO.Hashing getting started](../../docs/io-hashing/getting-started.md) — install and minimal samples.
 - [Bodu.Security.Cryptography hashing guide](../cryptography/hashing.md) — keyed and cryptographic hashes.
-- [Bodu.IO.Hashing API reference](../../apidoc/Bodu.IO.Hashing.md) — namespace overview with key types.
+- [Bodu.IO.Hashing API reference](xref:Bodu.IO.Hashing) — namespace overview with key types.

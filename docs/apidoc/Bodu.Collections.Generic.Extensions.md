@@ -38,4 +38,4 @@ foreach (long n in SequenceGenerator.Fibonacci<long>().Take(20))
 
 - **Lazy where possible.** Helpers like `Batch`, `RecursiveSelect`, and `Cache` are lazy. Materialise to `ToList()` / `ToArray()` when you need a stable snapshot.
 - **Argument validation.** Every public extension method validates its arguments via <xref:Bodu.ThrowHelper>.
-- **See also:** the [Bodu.Core introduction](~/docs/core/index.md), the companion <xref:Bodu.Collections.Extensions> namespace, the [Bodu.Extensions](~/apidoc/Bodu.Extensions.md) date / numeric / string extension surface.
+- **See also:** the [Bodu.Core introduction](~/docs/core/index.md), the companion <xref:Bodu.Collections.Extensions> namespace, the [Bodu.Extensions](xref:Bodu.Extensions) date / numeric / string extension surface.

@@ -124,4 +124,4 @@ Pearson is **not cryptographic**. Choosing a different table does not make it ad
 - [Using FNV](fnv.md), [Using CityHash](cityhash.md) — faster, table-free alternatives.
 - [Classic string hashes](string-hashes.md) — Bernstein, BKDR, SDBM, Elf64, and siblings with a similar "one-liner" feel.
 - [Cryptography hashing guide](../cryptography/hashing.md) — when Pearson is not enough.
-- [Bodu.IO.Hashing namespace page](../../apidoc/Bodu.IO.Hashing.md) — key types and design notes.
+- [Bodu.IO.Hashing namespace page](xref:Bodu.IO.Hashing) — key types and design notes.

@@ -101,4 +101,4 @@ CityHash is **not cryptographic**. An attacker who can choose inputs can constru
 - [Using FNV](fnv.md) — the simpler, streaming-friendly alternative.
 - [Using Adler](adler.md), [Using CRC](crc.md), [Using Fletcher](fletcher.md) — the checksum families.
 - [Cryptography hashing guide](../cryptography/hashing.md) — when you need SipHash's adversarial resistance or a cryptographic digest.
-- [Bodu.IO.Hashing namespace page](../../apidoc/Bodu.IO.Hashing.md) — key types and design notes.
+- [Bodu.IO.Hashing namespace page](xref:Bodu.IO.Hashing) — key types and design notes.

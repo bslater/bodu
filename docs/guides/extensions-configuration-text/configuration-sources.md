@@ -162,4 +162,4 @@ Subscribers to `ChangeToken.OnChange(...)` see the new values without re-instant
 - [`Bodu.Text.Configuration` overview](../text-configuration/index.md) — the underlying parse / view layer.
 - [Parsing and profiles](../text-configuration/parsing-and-profiles.md) — the parse-time options surfaced via `ParseOptions`.
 - [Views and resolution](../text-configuration/views-and-resolution.md) — the resolve-time options surfaced via `ResolveOptions` and `TargetPath`.
-- [`Bodu.Extensions.Configuration.Text` API reference](~/apidoc/Bodu.Extensions.Configuration.Text.md).
+- [`Bodu.Extensions.Configuration.Text` API reference](xref:Bodu.Extensions.Configuration.Text).

@@ -204,5 +204,5 @@ Patterns without `/` match at any depth. Patterns with `/` anchor to the start o
 
 - [Parsing and profiles](parsing-and-profiles.md) — the parse half of the surface.
 - [Diagnostics](diagnostics.md) — the diagnostic-code catalogue.
-- [`Bodu.Text.Configuration` API reference](~/apidoc/Bodu.Text.Configuration.md).
+- [`Bodu.Text.Configuration` API reference](xref:Bodu.Text.Configuration).
 - [`Bodu.Extensions.Configuration.Text`](../extensions-configuration-text/index.md) — `IConfiguration` bridge.

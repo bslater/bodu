@@ -29,4 +29,4 @@ uint value = crc.GetCurrentHashAsUInt32();
 ## Notes
 
 - **Cache, don't rebuild.** Lookup-table construction is non-trivial; prefer <xref:Bodu.IO.Hashing.CrcLookupTableCache> for standard CRC variants. The builder is exposed for non-standard cases (custom polynomial, custom refIn / refOut configuration).
-- **See also:** the [CRC guide](~/guides/io-hashing/crc.md), the [Bodu.IO.Hashing landing page](~/apidoc/Bodu.IO.Hashing.md).
+- **See also:** the [CRC guide](~/guides/io-hashing/crc.md), the [Bodu.IO.Hashing landing page](xref:Bodu.IO.Hashing).

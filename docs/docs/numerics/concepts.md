@@ -115,4 +115,4 @@ The **closed-open** shape `[a, b)` is the most common in programming contexts: i
 - **[Getting started](getting-started.md)** — install + runnable minimal samples.
 - **[Working with `Fraction<T>`](../../guides/numerics/fraction.md)** — construction, arithmetic, parsing, formatting, continued fractions, rational approximation.
 - **[Working with `Interval<T>`](../../guides/numerics/interval.md)** — endpoint inclusivity, membership, intersection, union, adjacency.
-- **[Bodu.Numerics API reference](../../apidoc/Bodu.Numerics.md)** — full type-by-type docs.
+- **[Bodu.Numerics API reference](xref:Bodu.Numerics)** — full type-by-type docs.

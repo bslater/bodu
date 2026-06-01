@@ -140,4 +140,4 @@ For AEAD constructions — where authentication is part of the cipher rather tha
 - [Padding](padding.md) — PKCS7, ANSI X.923, ISO 10126, ISO 7816-4, Zero padding.
 - [AEAD modes](aead-modes.md) — GCM, CCM, OCB, EAX, SIV, GCM-SIV.
 - [Composing primitives](composing-primitives.md) — encrypt-then-MAC, key derivation, nonce management.
-- [Bodu.Security.Cryptography landing page](~/apidoc/Bodu.Security.Cryptography.md).
+- [Bodu.Security.Cryptography landing page](xref:Bodu.Security.Cryptography).

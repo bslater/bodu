@@ -23,7 +23,7 @@ _disableBreadcrumb: true
   <p class="tagline">A suite of small, focused .NET libraries for collections, non-cryptographic hashing, cryptography, calendar computation, binary-to-text encoding, and self-framing binary formats.</p>
 </div>
 
-Six independent NuGet packages that share a single solution, a single set of conventions, and a single bar for quality: nullable-enabled, analyzer-clean, deterministic builds, and framework-style XML documentation.
+Ten focused NuGet packages — plus three companion calendar data packs, a calendar builder, and a calendar dependency-injection package — that share a single solution, a single set of conventions, and a single bar for quality: nullable-enabled, analyzer-clean, deterministic builds, and framework-style XML documentation.
 
 ## Libraries
 
@@ -36,7 +36,7 @@ Six independent NuGet packages that share a single solution, a single set of con
   <div class="bodu-card-links">
     <a href="docs/core/index.md">Introduction</a>
     <a href="guides/core/index.md">Guides</a>
-    <a href="apidoc/Bodu.Collections.Generic.md">API reference</a>
+    <a href="xref:Bodu.Collections.Generic">API reference</a>
   </div>
 </div>
 
@@ -47,7 +47,7 @@ Six independent NuGet packages that share a single solution, a single set of con
   <div class="bodu-card-links">
     <a href="docs/io-hashing/index.md">Introduction</a>
     <a href="guides/io-hashing/index.md">Guides</a>
-    <a href="apidoc/Bodu.IO.Hashing.md">API reference</a>
+    <a href="xref:Bodu.IO.Hashing">API reference</a>
   </div>
 </div>
 
@@ -58,7 +58,7 @@ Six independent NuGet packages that share a single solution, a single set of con
   <div class="bodu-card-links">
     <a href="docs/cryptography/index.md">Introduction</a>
     <a href="guides/cryptography/index.md">Guides</a>
-    <a href="apidoc/Bodu.Security.Cryptography.md">API reference</a>
+    <a href="xref:Bodu.Security.Cryptography">API reference</a>
   </div>
 </div>
 
@@ -69,7 +69,7 @@ Six independent NuGet packages that share a single solution, a single set of con
   <div class="bodu-card-links">
     <a href="docs/calendar/index.md">Introduction</a>
     <a href="guides/calendar/index.md">Guides</a>
-    <a href="apidoc/Bodu.Globalization.Calendar.md">API reference</a>
+    <a href="xref:Bodu.Globalization.Calendar">API reference</a>
   </div>
 </div>
 
@@ -80,16 +80,18 @@ Six independent NuGet packages that share a single solution, a single set of con
   <div class="bodu-card-links">
     <a href="docs/text-encoding/index.md">Introduction</a>
     <a href="guides/text-encoding/index.md">Guides</a>
+    <a href="xref:Bodu.Text.Encoding">API reference</a>
   </div>
 </div>
 
 <div class="bodu-card">
   <img src="images/hero-formats.svg" alt="Bodu.Text.Formats" />
   <h3>Bodu.Text.Formats</h3>
-  <p>Self-framing binary serialization formats with a strongly-typed value model and a span- and stream-friendly codec. The first format the package ships is <strong>Bencode</strong> (the BitTorrent serialization grammar from BEP 3) — <code>Bencode.Encode</code> / <code>Decode</code> / <code>TryEncode</code> / <code>TryDecode</code> / <code>GetEncodedLength</code> over <code>ReadOnlySpan&lt;byte&gt;</code>, <code>byte[]</code>, and <code>Stream</code>, an immutable <code>BencodedValue</code> tree (<code>Integer</code>, <code>String</code>, <code>List</code>, <code>Dictionary</code>), and full BEP 3 canonicality enforcement on both sides of the pipeline.</p>
+  <p>Self-framing text and binary document formats with strongly-typed value models and span- and stream-friendly codecs. Ships <strong>Bencode</strong> (BitTorrent BEP 3), <strong>Delimited</strong> (RFC 4180 CSV/TSV with a row-oriented parser), <strong>DotEnv</strong> (<code>.env</code> key/value), and <strong>INI</strong> (round-trippable section/comment-preserving documents). Every format exposes the same modern shape: static <code>Encode</code> / <code>Decode</code> / <code>Try*</code> / <code>GetEncodedLength</code>, an immutable value tree, sync and async <code>Stream</code> overloads, and explicit canonicality enforcement.</p>
   <div class="bodu-card-links">
     <a href="docs/formats/index.md">Introduction</a>
     <a href="guides/formats/index.md">Guides</a>
+    <a href="xref:Bodu.Text.Bencode">API reference</a>
   </div>
 </div>
 
@@ -100,7 +102,7 @@ Six independent NuGet packages that share a single solution, a single set of con
   <div class="bodu-card-links">
     <a href="docs/numerics/index.md">Introduction</a>
     <a href="guides/numerics/index.md">Guides</a>
-    <a href="apidoc/Bodu.Numerics.md">API reference</a>
+    <a href="xref:Bodu.Numerics">API reference</a>
   </div>
 </div>
 
@@ -111,18 +113,18 @@ Six independent NuGet packages that share a single solution, a single set of con
   <div class="bodu-card-links">
     <a href="docs/financial/index.md">Introduction</a>
     <a href="guides/financial/index.md">Guides</a>
-    <a href="apidoc/Bodu.Financial.md">API reference</a>
+    <a href="xref:Bodu.Financial">API reference</a>
   </div>
 </div>
 
 <div class="bodu-card">
   <img src="images/hero-configuration.svg" alt="Bodu.Text.Configuration" />
   <h3>Bodu.Text.Configuration</h3>
-  <p>INI / EditorConfig-style configuration parser with three profiles (Standard, PureIni, Relaxed), structured diagnostics, key pattern matching, and a typed view layer for projecting flattened paths into a <code>ConfigurationView</code> consumers can read without parsing twice.</p>
+  <p>INI / EditorConfig-style configuration parser with four profiles (<code>Bodu</code>, <code>EditorConfigCompatible</code>, <code>Strict</code>, <code>Relaxed</code>), structured diagnostics, key pattern matching, and a typed view layer for projecting flattened paths into a <code>ConfigurationView</code> consumers can read without parsing twice.</p>
   <div class="bodu-card-links">
     <a href="docs/text-configuration/index.md">Introduction</a>
     <a href="guides/text-configuration/index.md">Guides</a>
-    <a href="apidoc/Bodu.Text.Configuration.md">API reference</a>
+    <a href="xref:Bodu.Text.Configuration">API reference</a>
   </div>
 </div>
 
@@ -133,7 +135,7 @@ Six independent NuGet packages that share a single solution, a single set of con
   <div class="bodu-card-links">
     <a href="docs/extensions-configuration-text/index.md">Introduction</a>
     <a href="guides/extensions-configuration-text/index.md">Guides</a>
-    <a href="apidoc/Bodu.Extensions.Configuration.Text.md">API reference</a>
+    <a href="xref:Bodu.Extensions.Configuration.Text">API reference</a>
   </div>
 </div>
 
@@ -164,7 +166,8 @@ dotnet add package Bodu.Financial
 - **Analyzer-clean**: StyleCop, Roslynator, .NET analyzers, AsyncFixer, and Threading analyzers run at build time; doc-comment warnings are treated as errors.
 - **Deterministic builds** for reproducible package outputs.
 - **Documentation-first**: every public type and member carries XML documentation in US English, which drives this API reference.
-- **MIT licensed** and free of external runtime dependencies.
+- **Minimal external runtime dependencies.** Core libraries depend only on the BCL. Extension packages (`Bodu.Extensions.Configuration.Text`, `Bodu.Globalization.Calendar.DependencyInjection`) intentionally bridge to the Microsoft.Extensions ecosystem.
+- **MIT licensed.**
 
 ## Where to go next
 

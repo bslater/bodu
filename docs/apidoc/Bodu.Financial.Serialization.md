@@ -63,4 +63,4 @@ Money<USD> imported = JsonSerializer.Deserialize<Money<USD>>(
 - **MoneyBag pruning.** Zero balances are pruned on round-trip — the deserialised bag matches the canonical form, not the verbatim wire shape.
 - **Strict vs. Lenient on Compact.** The compact policy accepts both `"19.99 USD"` and `"USD 19.99"` regardless of `Strict` / `Lenient` because there is no ambiguity to be strict about; lenient and strict behave identically under `Compact`.
 - **AddFinancialJsonConverters.** Registers every converter on the same `JsonSerializerOptions` instance under a single policy. Call this once per options instance; mixing policies across types is not supported.
-- **See also:** the [`Bodu.Financial` reference](~/apidoc/Bodu.Financial.md), the [`Money<TCurrency>` guide](~/guides/financial/money.md).
+- **See also:** the [`Bodu.Financial` reference](xref:Bodu.Financial), the [`Money<TCurrency>` guide](~/guides/financial/money.md).

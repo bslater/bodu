@@ -41,7 +41,7 @@ General-purpose building blocks: bounded collections, eviction-aware caches, day
 
 </div>
 
-[Bodu.Collections.Generic API reference](../apidoc/Bodu.Collections.Generic.md)
+[Bodu.Collections.Generic API reference](xref:Bodu.Collections.Generic)
 
 ---
 
@@ -128,7 +128,7 @@ Non-cryptographic hashing — fingerprints, checksums, and check digits — buil
 
 </div>
 
-[Bodu.IO.Hashing API reference](../apidoc/Bodu.IO.Hashing.md)
+[Bodu.IO.Hashing API reference](xref:Bodu.IO.Hashing)
 
 ---
 
@@ -187,7 +187,7 @@ Cryptographic primitives with a formal adversary model — block ciphers, stream
 
 </div>
 
-`Camellia`, `Twofish`, and `Serpent128` follow the same `SymmetricAlgorithm` lifecycle — see the [Bodu.Security.Cryptography API reference](../apidoc/Bodu.Security.Cryptography.md) for their parameters.
+`Camellia`, `Twofish`, and `Serpent128` follow the same `SymmetricAlgorithm` lifecycle — see the [Bodu.Security.Cryptography API reference](xref:Bodu.Security.Cryptography) for their parameters.
 
 ### Symmetric ciphers — Tweakable
 
@@ -210,7 +210,7 @@ Cryptographic primitives with a formal adversary model — block ciphers, stream
 
 </div>
 
-`Serpent256` / `Serpent512` / `Serpent1024` are wide-block tweakable Serpent constructions — non-standard, see the [API reference](../apidoc/Bodu.Security.Cryptography.md) for their parameters.
+`Serpent256` / `Serpent512` / `Serpent1024` are wide-block tweakable Serpent constructions — non-standard, see the [API reference](xref:Bodu.Security.Cryptography) for their parameters.
 
 ### Symmetric ciphers — Stream
 
@@ -265,7 +265,7 @@ Cryptographic primitives with a formal adversary model — block ciphers, stream
 
 </div>
 
-`Whirlpool`, `Blake2b`, `Blake2s`, `Blake3`, `Skein256` / `Skein512` / `Skein1024`, and `Shake` ship without dedicated walk-throughs — consult the [API reference](../apidoc/Bodu.Security.Cryptography.md) directly.
+`Whirlpool`, `Blake2b`, `Blake2s`, `Blake3`, `Skein256` / `Skein512` / `Skein1024`, and `Shake` ship without dedicated walk-throughs — consult the [API reference](xref:Bodu.Security.Cryptography) directly.
 
 ### Keyed hashes (MAC)
 
@@ -309,7 +309,7 @@ Cryptographic primitives with a formal adversary model — block ciphers, stream
 
 </div>
 
-[Bodu.Security.Cryptography API reference](../apidoc/Bodu.Security.Cryptography.md)
+[Bodu.Security.Cryptography API reference](xref:Bodu.Security.Cryptography)
 
 ---
 
@@ -346,7 +346,7 @@ Rule-driven notable-date (public holiday, observance, festival) resolution for a
 
 </div>
 
-[Bodu.Globalization.Calendar API reference](../apidoc/Bodu.Globalization.Calendar.md)
+[Bodu.Globalization.Calendar API reference](xref:Bodu.Globalization.Calendar)
 
 ---
 

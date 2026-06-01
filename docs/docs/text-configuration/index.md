@@ -142,5 +142,5 @@ The grammar matches **EditorConfig** verbatim with two Bodu-specific extensions:
 - **[Core concepts](concepts.md)** — vocabulary: document vs view, profile, parse/resolve/write options, key mapping, glob pattern, preamble, target path, diagnostic mode, unset.
 - **[Getting started](getting-started.md)** — install + minimal samples for parse-resolve-read, profile presets, diagnostics, round-trip save.
 - **[Bodu.Extensions.Configuration.Text](../extensions-configuration-text/index.md)** — `IConfigurationBuilder` integration, options binding, file probing.
-- **[Bodu.Text.Configuration API reference](../../apidoc/Bodu.Text.Configuration.md)** — full type-by-type docs.
+- **[Bodu.Text.Configuration API reference](xref:Bodu.Text.Configuration)** — full type-by-type docs.
 - **[Bodu.Text.Formats](../formats/index.md)** — the underlying `IniDocument` model that `ConfigurationDocument.Parse` returns.

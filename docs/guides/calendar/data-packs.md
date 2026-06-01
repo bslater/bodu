@@ -196,4 +196,4 @@ European national rules typically cover the federal calendar plus the major regi
 - [Using NotableDateService](notable-dates.md) — querying patterns, filters, range queries, and overrides.
 - [Authoring notable date rules](rule-authoring.md) — in-code, XML, and companion-assembly authoring patterns.
 - [Territories and regional composition](territories.md) — ISO 3166 codes, subdivision patterns, and the containment rules that drive cross-pack queries.
-- [Bodu.Globalization.Calendar API reference](../../apidoc/Bodu.Globalization.Calendar.md) — full type reference.
+- [Bodu.Globalization.Calendar API reference](xref:Bodu.Globalization.Calendar) — full type reference.

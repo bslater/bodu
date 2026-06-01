@@ -178,4 +178,4 @@ Debug.Assert(original.SequenceEqual(recovered));
 - **[Bodu.Text.Encoding guides](../../guides/text-encoding/index.md)** — per-encoding deep dives.
 - **[Core concepts](concepts.md)** — vocabulary refresher.
 - **[Introduction](index.md)** — type map and scenario index.
-- **[Bodu.Text.Encoding API reference](../../apidoc/Bodu.Text.Encoding.md)** — full type-by-type docs.
+- **[Bodu.Text.Encoding API reference](xref:Bodu.Text.Encoding)** — full type-by-type docs.

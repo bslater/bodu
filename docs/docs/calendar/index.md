@@ -137,5 +137,5 @@ External plugin hosting and trust policies for loading rules / algorithms from e
 - **[Core concepts](concepts.md)** — full vocabulary: rule vs. date, nominal vs. observed, provider vs. override, anchor, category vs. tag, working day vs. non-working day.
 - **[Getting started](getting-started.md)** — install + minimal samples for the algorithm, the service, and working-day arithmetic.
 - **[Bodu.Globalization.Calendar guides](../../guides/calendar/index.md)** — using `NotableDateService`, algorithms, rule authoring, working-day arithmetic, territories, data packs.
-- **[Bodu.Globalization.Calendar API reference](../../apidoc/Bodu.Globalization.Calendar.md)** — full type-by-type docs.
+- **[Bodu.Globalization.Calendar API reference](xref:Bodu.Globalization.Calendar)** — full type-by-type docs.
 - **[Calendar data packs](../../guides/calendar/data-packs.md)** — region-specific public-holiday rule providers (`AmericasCalendarData`, `EuropeCalendarData`, `AsiaPacificCalendarData`).

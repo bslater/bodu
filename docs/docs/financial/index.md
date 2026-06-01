@@ -68,6 +68,6 @@ The tag types only ever exist statically — every one has a `private` construct
 - **[Getting started](getting-started.md)** — install the package and run minimal samples for `Money<TCurrency>`, `MoneyValue`, `MoneyBag`, the FX provider stack, and the JSON policies.
 - **[Working with `Money<TCurrency>`](../../guides/financial/money.md)** — type-parameter currency, allocation, conversion, exact-arithmetic chains, formatting and parsing, cash rounding, historic currencies, `MoneyValue` interop, `MoneyBag` portfolios.
 - **[Bodu.Numerics introduction](../numerics/index.md)** — the rational-arithmetic library that backs `Money<T>.ToFraction()`.
-- **[Bodu.Financial API reference](../../apidoc/Bodu.Financial.md)** — full type-by-type docs.
-- **[Bodu.Financial.Currencies API reference](../../apidoc/Bodu.Financial.Currencies.md)** — the shipped ISO 4217 catalogue.
-- **[Bodu.Financial.Serialization API reference](../../apidoc/Bodu.Financial.Serialization.md)** — JSON converters and policies.
+- **[Bodu.Financial API reference](xref:Bodu.Financial)** — full type-by-type docs.
+- **[Bodu.Financial.Currencies API reference](xref:Bodu.Financial.Currencies)** — the shipped ISO 4217 catalogue.
+- **[Bodu.Financial.Serialization API reference](xref:Bodu.Financial.Serialization)** — JSON converters and policies.

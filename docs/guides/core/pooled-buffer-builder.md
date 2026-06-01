@@ -158,5 +158,5 @@ The function allocates exactly one array — the final result. Every intermediat
 ## See also
 
 - [`PooledBufferBuilder<T>` API reference](xref:Bodu.Buffers.PooledBufferBuilder`1)
-- [`Bodu.Buffers` namespace landing](~/apidoc/Bodu.Buffers.md)
+- [`Bodu.Buffers` namespace landing](xref:Bodu.Buffers)
 - [`Bodu.Collections.Generic.SegmentedBuffer<T>`](xref:Bodu.Collections.Generic.SegmentedBuffer`1) — for streaming scenarios where the total length is unknown and the result is consumed in segments.

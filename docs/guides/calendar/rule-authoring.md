@@ -570,4 +570,4 @@ Use in-code objects for unit tests or small dynamic rule sets. Use XML resource 
 
 - [Using NotableDateService](notable-dates.md) — filtering, territory queries, overrides, and caching.
 - [Date calculation algorithms](algorithms.md) — registering built-in algorithms and implementing custom ones.
-- [Bodu.Globalization.Calendar API reference](../../apidoc/Bodu.Globalization.Calendar.md) — full type reference.
+- [Bodu.Globalization.Calendar API reference](xref:Bodu.Globalization.Calendar) — full type reference.

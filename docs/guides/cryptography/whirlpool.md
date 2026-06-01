@@ -80,7 +80,7 @@ byte[] hash = hasher.Hash!;
 - **You need a faster modern hash.** SHA-512 (BCL), BLAKE2b, BLAKE3, and Skein-512 are all faster than Whirlpool in software.
 - **You need a built-in MAC mode.** Whirlpool does not have a native MAC mode — reach for [BLAKE2b](blake.md) (BLAKE2b-MAC) or [Skein-512](skein.md) (Skein-MAC) instead. Use HMAC-Whirlpool only if interoperability requires it.
 - **You need an XOF or variable-length output.** Reach for [SHAKE](shake.md).
-- **You need a non-cryptographic fingerprint.** Reach for [`Bodu.IO.Hashing`](~/apidoc/Bodu.IO.Hashing.md).
+- **You need a non-cryptographic fingerprint.** Reach for [`Bodu.IO.Hashing`](xref:Bodu.IO.Hashing).
 
 ## See also
 

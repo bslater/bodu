@@ -153,4 +153,4 @@ Because `TerritoryCode` is hierarchical, a call with `"AU-NSW"` honours both nat
 - **[Using NotableDateService](notable-dates.md)** — building the service, filters, range queries, cache invalidation.
 - **[Territories and regional composition](territories.md)** — how the `territoryCode` parameter composes national and regional rules.
 - **[Observance adjustment rules](adjustment-rules.md)** — how a rule's nominal date becomes the observed non-working day that working-day arithmetic ultimately skips.
-- **[Bodu.Globalization.Calendar API reference](../../apidoc/Bodu.Globalization.Calendar.md)** — `NotableDateOnlyExtensions`, `NotableDateTimeExtensions`, `NotableDateContext` field-by-field reference.
+- **[Bodu.Globalization.Calendar API reference](xref:Bodu.Globalization.Calendar)** — `NotableDateOnlyExtensions`, `NotableDateTimeExtensions`, `NotableDateContext` field-by-field reference.

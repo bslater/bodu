@@ -105,5 +105,5 @@ Text and XML helpers used internally by the other Bodu packages; available publi
 - **[Core concepts](concepts.md)** — glossary the rest of the documentation assumes.
 - **[Getting started](getting-started.md)** — install the package and run a minimal sample for each scenario above.
 - **[Bodu.Core guides](../../guides/core/index.md)** — recipe-style walk-throughs for the headline types.
-- **[Bodu.Collections.Generic API reference](../../apidoc/Bodu.Collections.Generic.md)** — full namespace overview.
+- **[Bodu.Collections.Generic API reference](xref:Bodu.Collections.Generic)** — full namespace overview.
 - **[Project introduction](../introduction.md)** — how Bodu.Core relates to the hashing, cryptography, calendar, and text libraries (its `ThrowHelper` underpins them all).

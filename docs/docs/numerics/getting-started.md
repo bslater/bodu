@@ -132,4 +132,4 @@ Money<USD> balance = Money<USD>.FromFraction(exact);   // one rounding event
 - **[Working with `Fraction<T>`](../../guides/numerics/fraction.md)** — construction, arithmetic, parsing/formatting, continued fractions, rational approximation.
 - **[Working with `Interval<T>`](../../guides/numerics/interval.md)** — endpoint inclusivity, membership, intersection, union, adjacency.
 - **[Bodu.Financial getting started](../financial/getting-started.md)** — for monetary primitives built on `Fraction<BigInteger>`.
-- **[Bodu.Numerics API reference](../../apidoc/Bodu.Numerics.md)** — full type-by-type docs.
+- **[Bodu.Numerics API reference](xref:Bodu.Numerics)** — full type-by-type docs.

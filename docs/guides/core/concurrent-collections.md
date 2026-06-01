@@ -142,7 +142,7 @@ Reach for the approximate properties when reading the count on a hot path; reach
 
 ## When *not* to use these collections
 
-- **Single-threaded scenarios.** The Vyukov coordination and lock-striping overhead is a tax that single-threaded code pays for nothing. Use the non-concurrent peers in [`Bodu.Collections.Generic`](~/apidoc/Bodu.Collections.Generic.md).
+- **Single-threaded scenarios.** The Vyukov coordination and lock-striping overhead is a tax that single-threaded code pays for nothing. Use the non-concurrent peers in [`Bodu.Collections.Generic`](xref:Bodu.Collections.Generic).
 - **Value types.** `ConcurrentCircularBuffer<T>` constrains `T : class?` because slot publication relies on `Volatile` reference reads. For a concurrent queue of value types, use the BCL `ConcurrentQueue<T>`.
 - **Bounded waiting.** Neither collection has a blocking dequeue / blocking add. Compose with `BlockingCollection<T>` if you need consumer threads to block until an item is available.
 - **Ordered set semantics.** `ConcurrentHashSet<T>` does not maintain insertion order. For ordered concurrent semantics, an external lock around `SortedSet<T>` is usually clearer than a custom striped implementation.
@@ -152,4 +152,4 @@ Reach for the approximate properties when reading the count on a hot path; reach
 - [`ConcurrentCircularBuffer<T>` API reference](xref:Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer`1)
 - [`ConcurrentHashSet<T>` API reference](xref:Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1)
 - [Circular buffer guide](circular-buffer.md) — the non-concurrent peer.
-- [`Bodu.Collections.Generic.Concurrent` namespace landing](~/apidoc/Bodu.Collections.Generic.Concurrent.md)
+- [`Bodu.Collections.Generic.Concurrent` namespace landing](xref:Bodu.Collections.Generic.Concurrent)
