@@ -11,7 +11,7 @@ namespace Bodu.Financial;
 /// enumeration, and thread safety.
 /// </summary>
 [TestClass]
-public class CurrencyRegistryTests
+public partial class CurrencyRegistryTests
 {
     /// <summary>
     /// Verifies that the shipped catalogue resolves representative currencies across all three minor-unit

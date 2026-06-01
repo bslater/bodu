@@ -46,6 +46,43 @@ public sealed record CurrencyInfo(
     int NumericCode = 0)
 {
     /// <summary>
+    /// Gets the currency's primary symbol (for example, <c>"$"</c> or <c>"€"</c>), or an empty string when none is
+    /// supplied.
+    /// </summary>
+    /// <value>The display symbol associated with the currency.</value>
+    /// <returns>The currency symbol, or an empty string.</returns>
+    public string Symbol { get; init; } = "";
+
+    /// <summary>
+    /// Gets the currency's internationally disambiguated symbol (for example, <c>"US$"</c> or <c>"R$"</c>), or an empty
+    /// string when none is supplied.
+    /// </summary>
+    /// <value>The unambiguous symbol used where the bare <see cref="Symbol" /> would be ambiguous.</value>
+    /// <returns>The international symbol, or an empty string.</returns>
+    public string InternationalSymbol { get; init; } = "";
+
+    /// <summary>
+    /// Gets the currency's name in its primary native language, or an empty string when none is supplied.
+    /// </summary>
+    /// <value>The localized currency name.</value>
+    /// <returns>The native name, or an empty string.</returns>
+    public string NativeName { get; init; } = "";
+
+    /// <summary>
+    /// Gets the ISO 3166 region codes in which the currency is used.
+    /// </summary>
+    /// <value>The regions associated with the currency.</value>
+    /// <returns>A read-only list of region codes, empty when none are supplied.</returns>
+    public IReadOnlyList<string> RegionCodes { get; init; } = Array.Empty<string>();
+
+    /// <summary>
+    /// Gets alternative symbols that may also denote the currency.
+    /// </summary>
+    /// <value>The additional symbols recognised for the currency.</value>
+    /// <returns>A read-only list of alternative symbols, empty when none are supplied.</returns>
+    public IReadOnlyList<string> AlternativeSymbols { get; init; } = Array.Empty<string>();
+
+    /// <summary>
     /// Resolves a <see cref="CurrencyCode" /> enum value to its registered <see cref="CurrencyInfo" />.
     /// </summary>
     /// <param name="code">The active ISO 4217 currency code.</param>

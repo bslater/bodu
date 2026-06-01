@@ -46,6 +46,10 @@
     <Project Path="Bodu.Financial\src\Bodu.Financial.csproj" />
     <Project Path="Bodu.Financial\test\Bodu.Financial.Test.csproj" />
   </Folder>
+  <Folder Name="/Bodu.Financial.DependencyInjection/">
+    <Project Path="Bodu.Financial.DependencyInjection/src/Bodu.Financial.DependencyInjection.csproj" />
+    <Project Path="Bodu.Financial.DependencyInjection/test/Bodu.Financial.DependencyInjection.Test.csproj" />
+  </Folder>
   <Folder Name="/Bodu.Security.Cryptography/">
     <Project Path="Bodu.Security.Cryptography\src\Bodu.Security.Cryptography.csproj" />
     <Project Path="Bodu.Security.Cryptography\test\Bodu.Security.Cryptography.Test.csproj" />

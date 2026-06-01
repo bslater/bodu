@@ -84,6 +84,15 @@
   <data name="Arg_Invalid_CurrencyCodeNotMapped" xml:space="preserve">
     <value>The CurrencyCode value '{0}' (numeric {1}) does not correspond to a registered currency.</value>
   </data>
+  <data name="Arg_Invalid_CurrencyInfoCashRoundingTooFine" xml:space="preserve">
+    <value>Currency '{0}' cash-rounding increment {1} is finer than its declared minor-unit precision {2}.</value>
+  </data>
+  <data name="Arg_Invalid_CustomScaleRequiresValue" xml:space="preserve">
+    <value>ScalePolicy.Custom requires a non-null CustomScale value.</value>
+  </data>
+  <data name="Arg_Invalid_CurrencyInfoHistoricInconsistent" xml:space="preserve">
+    <value>Currency '{0}' is not historic but declares a demonetization date or successor ISO code.</value>
+  </data>
   <data name="Arg_Invalid_ExchangeRateBookDuplicateKey" xml:space="preserve">
     <value>ExchangeRateBook cannot contain two series with the same pair and provider; '{0}/{1}' from '{2}' is duplicated.</value>
   </data>
@@ -126,11 +135,53 @@
   <data name="Arg_Invalid_RateSeriesEmpty" xml:space="preserve">
     <value>Series must contain at least one rate.</value>
   </data>
+  <data name="Arg_Invalid_MoneyDtoNanosRange" xml:space="preserve">
+    <value>Nanos {0} is outside the valid range -999999999 to 999999999.</value>
+  </data>
+  <data name="Arg_Invalid_MoneyDtoSignMismatch" xml:space="preserve">
+    <value>Units {0} and Nanos {1} must have the same sign.</value>
+  </data>
   <data name="Arg_Invalid_RateSeriesProviderConflict" xml:space="preserve">
     <value>Pair {0}/{1} has rates from multiple providers ('{2}' and '{3}'); use a composite provider to combine sources.</value>
   </data>
+  <data name="Arg_Invalid_UnknownCurrencyRejected" xml:space="preserve">
+    <value>Currency '{0}' is not registered. Register it via CurrencyRegistry or use Money.FromUnchecked / an explicit UnknownCurrencyPolicy to supply a minor-unit scale.</value>
+  </data>
+  <data name="Arg_Invalid_UnknownCurrencyRequiresScale" xml:space="preserve">
+    <value>Currency '{0}' is not registered; UnknownCurrencyPolicy.AllowWithExplicitScale requires a minor-unit scale. Use Money.FromUnchecked to supply one.</value>
+  </data>
   <data name="Arg_Null_ProviderAtIndex" xml:space="preserve">
     <value>Provider at index {0} is null.</value>
+  </data>
+  <data name="Arg_OutOfRange_AllocationPolicyUndefined" xml:space="preserve">
+    <value>AllocationPolicy '{0}' is not a defined value.</value>
+  </data>
+  <data name="Arg_OutOfRange_CashRoundingPolicyUndefined" xml:space="preserve">
+    <value>CashRoundingPolicy '{0}' is not a defined value.</value>
+  </data>
+  <data name="Arg_OutOfRange_ConversionRoundingPolicyUndefined" xml:space="preserve">
+    <value>ConversionRoundingPolicy '{0}' is not a defined value.</value>
+  </data>
+  <data name="Arg_OutOfRange_CurrencyInfoCashRoundingNegative" xml:space="preserve">
+    <value>Currency '{0}' declares a negative cash-rounding increment {1}.</value>
+  </data>
+  <data name="Arg_OutOfRange_CurrencyDisplayUndefined" xml:space="preserve">
+    <value>CurrencyDisplay '{0}' is not a defined value.</value>
+  </data>
+  <data name="Arg_OutOfRange_CustomScale" xml:space="preserve">
+    <value>CustomScale {0} is outside the supported range 0 to 28.</value>
+  </data>
+  <data name="Arg_OutOfRange_MoneyParseModeUndefined" xml:space="preserve">
+    <value>MoneyParseMode '{0}' is not a defined value.</value>
+  </data>
+  <data name="Arg_OutOfRange_CurrencyInfoMinorUnits" xml:space="preserve">
+    <value>Currency '{0}' declares minor-unit precision {1}, which is outside the supported range 0 to 28.</value>
+  </data>
+  <data name="Arg_OutOfRange_CurrencyInfoNumericCode" xml:space="preserve">
+    <value>Currency '{0}' declares numeric code {1}, which is outside the supported range 0 to 999.</value>
+  </data>
+  <data name="Arg_OutOfRange_CurrencyRegistrationConflictPolicyUndefined" xml:space="preserve">
+    <value>CurrencyRegistrationConflictPolicy '{0}' is not a defined value.</value>
   </data>
   <data name="Arg_OutOfRange_ExchangeRateNotPositive" xml:space="preserve">
     <value>Exchange rate must be strictly positive.</value>
@@ -138,11 +189,20 @@
   <data name="Arg_OutOfRange_RateNotPositive" xml:space="preserve">
     <value>Rate must be greater than zero.</value>
   </data>
+  <data name="Arg_OutOfRange_ScalePolicyUndefined" xml:space="preserve">
+    <value>ScalePolicy '{0}' is not a defined value.</value>
+  </data>
   <data name="Arg_OutOfRange_UnsupportedMidpointRounding" xml:space="preserve">
     <value>Unsupported midpoint-rounding mode.</value>
   </data>
   <data name="Arg_OutOfRange_UnsupportedMoneyBagRoundingPolicy" xml:space="preserve">
     <value>Unsupported MoneyBag conversion rounding policy.</value>
+  </data>
+  <data name="Arg_OutOfRange_UnknownCurrencyMinorUnits" xml:space="preserve">
+    <value>Explicit minor-unit scale {0} for currency '{1}' is out of the supported range 0 to 28.</value>
+  </data>
+  <data name="Arg_OutOfRange_UnknownCurrencyPolicyUndefined" xml:space="preserve">
+    <value>UnknownCurrencyPolicy '{0}' is not a defined value.</value>
   </data>
   <data name="Format_Invalid_FormatSpecifier" xml:space="preserve">
     <value>The format string '{0}' is not supported.</value>
@@ -281,6 +341,9 @@
   </data>
   <data name="Op_Invalid_DuplicateCustomCurrency" xml:space="preserve">
     <value>A custom currency is already registered under '{0}'.</value>
+  </data>
+  <data name="Op_Invalid_ConversionRateDirectionMismatch" xml:space="preserve">
+    <value>Cannot convert {0} using exchange rate {1}-&gt;{2}: the rate's source currency does not match.</value>
   </data>
   <data name="Op_Invalid_ExchangeRateRuntimeMismatch" xml:space="preserve">
     <value>Cannot adopt ExchangeRate {0}-&gt;{1} as ExchangeRate&lt;{2}, {3}&gt;: ISO codes differ.</value>
