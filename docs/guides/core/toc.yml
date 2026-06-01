@@ -1,5 +1,7 @@
 - name: Overview
   href: index.md
+- name: Choosing a collection
+  href: choosing-a-collection.md
 - name: Bodu.Collections.Generic
   items:
     - name: Circular buffer
