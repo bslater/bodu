@@ -28,7 +28,7 @@ public partial class PearsonTests
     /// </summary>
     /// <param name="variant">The predefined table type under test.</param>
     [TestMethod]
-    [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
+    [DynamicData(nameof(NonCryptographicHashAlgorithmVariants), DynamicDataDisplayName = nameof(NonCryptographicHashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(NonCryptographicHashAlgorithmVariantDisplayName))]
     public void Table_WhenBuiltIn_ShouldBeA256ByteUniquePermutation(Pearson.PearsonTableType variant)
     {
         Pearson algorithm = new(8, variant);

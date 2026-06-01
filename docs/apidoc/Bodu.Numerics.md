@@ -2,7 +2,7 @@
 uid: Bodu.Numerics
 ---
 
-![Bodu.Numerics](~/images/hero-core.svg)
+![Bodu.Numerics](~/images/hero-numerics.svg)
 
 ## Purpose
 

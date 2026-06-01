@@ -17,7 +17,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     /// Verifies that two inputs that span multiple input chunks produce different hashes.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
+    [DynamicData(nameof(NonCryptographicHashAlgorithmVariants), DynamicDataDisplayName = nameof(NonCryptographicHashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(NonCryptographicHashAlgorithmVariantDisplayName))]
     public void GetCurrentHash_ForMultiChunkInputs_ShouldProduceDistinctHashes(TVariant variant)
     {
         NonCryptographicHashAlgorithmSpecification specification = GetSpecification(variant);
@@ -44,7 +44,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     /// </summary>
     /// <param name="variant">The algorithm variant under test.</param>
     [TestMethod]
-    [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
+    [DynamicData(nameof(NonCryptographicHashAlgorithmVariants), DynamicDataDisplayName = nameof(NonCryptographicHashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(NonCryptographicHashAlgorithmVariantDisplayName))]
     public void GetCurrentHash_WhenCalledRepeatedly_ShouldReturnSameDigest(TVariant variant)
     {
         TAlgorithm algorithm = CreateAlgorithm(variant);
@@ -65,7 +65,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     /// <param name="variant">The algorithm variant under test.</param>
     /// <returns>A task that completes when all incremental stages have been verified.</returns>
     [TestMethod]
-    [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
+    [DynamicData(nameof(NonCryptographicHashAlgorithmVariants), DynamicDataDisplayName = nameof(NonCryptographicHashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(NonCryptographicHashAlgorithmVariantDisplayName))]
     public Task GetCurrentHash_WhenUsingIncrementalInput_ShouldMatchExpected(TVariant variant) =>
         AssertIncrementalCurrentHashAsync(variant,
             (algorithm, source) =>
@@ -80,7 +80,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     /// </summary>
     /// <param name="variant">The algorithm variant under test.</param>
     [TestMethod]
-    [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
+    [DynamicData(nameof(NonCryptographicHashAlgorithmVariants), DynamicDataDisplayName = nameof(NonCryptographicHashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(NonCryptographicHashAlgorithmVariantDisplayName))]
     public void GetCurrentHash_WhenWritingToSpan_ShouldMatchArrayOverload(TVariant variant)
     {
         TAlgorithm algorithm = CreateAlgorithm(variant);

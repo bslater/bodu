@@ -12,7 +12,7 @@ public abstract partial class SipHashTests<TTest, TAlgorithm>
     /// Verifies that <see cref="SipHash.AlgorithmName" />, when UsingVariant, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(HashAlgorithmVariants))]
+    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(VariantDisplayNameHelper.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(VariantDisplayNameHelper))]
     public void AlgorithmName_WhenUsingVariant_ShouldReturnCorrectlyFormattedString(SipHashVariant variant)
     {
         using TAlgorithm algorithm = CreateAlgorithm(variant);

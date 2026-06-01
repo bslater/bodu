@@ -65,7 +65,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     /// with the same input produce the same result.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(BlockCipherVariants))]
+    [DynamicData(nameof(BlockCipherVariants), DynamicDataDisplayName = nameof(VariantDisplayNameHelper.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(VariantDisplayNameHelper))]
     public void Decrypt_WhenCalled_WithDiferentInstances_ShouldBeDeterministic(TVariant variant)
     {
         BlockCipherSpecification specification = GetSpecification(variant);
@@ -88,7 +88,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     /// input produce the same result.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(BlockCipherVariants))]
+    [DynamicData(nameof(BlockCipherVariants), DynamicDataDisplayName = nameof(VariantDisplayNameHelper.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(VariantDisplayNameHelper))]
     public void Decrypt_WhenCalled_WithSameInstsnce_ShouldBeDeterministic(TVariant variant)
     {
         BlockCipherSpecification specification = GetSpecification(variant);

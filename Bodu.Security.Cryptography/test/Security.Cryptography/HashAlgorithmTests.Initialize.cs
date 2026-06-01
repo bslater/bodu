@@ -121,7 +121,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// supports reuse.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(HashAlgorithmVariants))]
+    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(VariantDisplayNameHelper.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(VariantDisplayNameHelper))]
     public virtual void Initialize_AfterHashing_ShouldResetInternalState(TVariant variant)
     {
         HashAlgorithmSpecification specification = GetSpecification(variant);
@@ -155,7 +155,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// is <see langword="false" />.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(HashAlgorithmVariants))]
+    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(VariantDisplayNameHelper.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(VariantDisplayNameHelper))]
     public virtual void Initialize_AfterHashing_ShouldClearResidualBlockState(TVariant variant)
     {
         HashAlgorithmSpecification specification = GetSpecification(variant);
@@ -189,7 +189,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// than touching the cleared internal state.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(HashAlgorithmVariants))]
+    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(VariantDisplayNameHelper.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(VariantDisplayNameHelper))]
     public void Initialize_WhenCalledAfterDispose_ShouldThrowExactly(TVariant variant)
     {
         HashAlgorithmSpecification specification = GetSpecification(variant);

@@ -39,7 +39,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     /// <param name="variant">The algorithm variant under test.</param>
     /// <returns>A task that represents the asynchronous test operation.</returns>
     [TestMethod]
-    [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
+    [DynamicData(nameof(NonCryptographicHashAlgorithmVariants), DynamicDataDisplayName = nameof(NonCryptographicHashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(NonCryptographicHashAlgorithmVariantDisplayName))]
     public async Task AppendAsync_WhenHashingStream_ShouldMatchSynchronousAppend(TVariant variant)
     {
         var data = NonCryptographicHashSharedInputs.Sequential0To255;
@@ -80,7 +80,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     /// <param name="variant">The variant identifier supplied by the dynamic data source.</param>
     /// <returns>A task that completes when all incremental lengths have been verified.</returns>
     [TestMethod]
-    [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
+    [DynamicData(nameof(NonCryptographicHashAlgorithmVariants), DynamicDataDisplayName = nameof(NonCryptographicHashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(NonCryptographicHashAlgorithmVariantDisplayName))]
     public Task AppendAsync_WhenUsingIncrementalInput_ShouldMatchExpected(TVariant variant) =>
         AssertIncrementalInputAsync(variant, async (algorithm, input, byteCount) =>
         {

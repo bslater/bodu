@@ -16,7 +16,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     /// regardless of whether published reference vectors exist.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(BlockCipherVariants))]
+    [DynamicData(nameof(BlockCipherVariants), DynamicDataDisplayName = nameof(VariantDisplayNameHelper.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(VariantDisplayNameHelper))]
     public void EncryptThenDecrypt_ShouldRoundTripCorrectly(TVariant variant)
     {
         BlockCipherSpecification spec = GetSpecification(variant);
@@ -37,7 +37,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     /// produces identical ciphertext — confirming the engine is deterministic and stateless between calls.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(BlockCipherVariants))]
+    [DynamicData(nameof(BlockCipherVariants), DynamicDataDisplayName = nameof(VariantDisplayNameHelper.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(VariantDisplayNameHelper))]
     public void Encrypt_WhenCalledMultipleTimesWithSameInput_ShouldProduceSameOutput(TVariant variant)
     {
         BlockCipherSpecification spec = GetSpecification(variant);
@@ -58,7 +58,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     /// against a no-op or identity-transform regression at the cipher tier.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(BlockCipherVariants))]
+    [DynamicData(nameof(BlockCipherVariants), DynamicDataDisplayName = nameof(VariantDisplayNameHelper.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(VariantDisplayNameHelper))]
     public void Encrypt_ShouldTransformBlock(TVariant variant)
     {
         BlockCipherSpecification spec = GetSpecification(variant);
