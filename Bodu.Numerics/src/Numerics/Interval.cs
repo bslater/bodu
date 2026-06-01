@@ -22,16 +22,36 @@ namespace Bodu.Numerics;
 /// </typeparam>
 /// <remarks>
 /// <para>
+/// <see cref="Interval{T}" /> is the value-typed building block for working with numeric ranges as first-class data.
+/// Rather than encoding a range as a <c>(min, max)</c> tuple or a pair of <c>bool</c> predicates and threading the
+/// inclusivity convention through every call site, an interval carries both endpoints and their inclusivity in a single
+/// immutable value, with set algebra — membership, containment, intersection, union, overlap, adjacency — defined on
+/// the type. Reach for it whenever the range itself is a value the code passes around, validates against, intersects,
+/// merges, or persists. <see cref="Interval{T}" /> is more general than <c>System.Range</c> (which is integer-only and
+/// always <c>[start, end)</c>) and safer than untyped tuples or <c>(bool, bool)</c> flags, where the inclusivity
+/// convention lives in comments rather than in the value.
+/// </para>
+/// <para>
+/// The generic-math constraint on <typeparamref name="T" /> means the same code can carry an integer scheduling window,
+/// a <see cref="double" /> percentage range, a <see cref="decimal" /> price band, or a <see cref="BigInteger" />
+/// arbitrary-magnitude bound; any type implementing <see cref="INumber{TSelf}" /> is a valid endpoint type, including
+/// consumer-defined numeric types.
+/// </para>
+/// <para>
 /// An interval is the set of values <c>x</c> such that <c>Lower &#x2264; x &#x2264; Upper</c> (closed-closed),
 /// <c>Lower &lt; x &lt; Upper</c> (open-open), <c>Lower &#x2264; x &lt; Upper</c> (closed-open), or
 /// <c>Lower &lt; x &#x2264; Upper</c> (open-closed). Endpoint inclusion is independent for the two sides and is
-/// preserved through every operation defined on the type.
+/// preserved through every operation defined on the type. The closed-open shape — <c>[a, b)</c> — is the most common in
+/// programming contexts because adjacent half-open intervals partition a span with no overlap and no gap, matching the
+/// conventions of <c>System.Range</c>, LINQ's <c>Enumerable.Range</c>, and slice iterators.
 /// </para>
 /// <para>
 /// An interval is <b>empty</b> when its bounds do not admit any value — either <c>Lower &gt; Upper</c>, or
 /// <c>Lower &#x2261; Upper</c> with at least one endpoint open. All empty intervals are equal to <see cref="Empty" />
 /// by <see cref="IEquatable{T}.Equals(T)" />, and a structural pattern-match against an empty instance always returns
-/// the same canonical projection regardless of how the empty value was constructed.
+/// the same canonical projection regardless of how the empty value was constructed. The default-constructed
+/// <c>Interval&lt;T&gt;</c> is empty, so a <c>default(Interval&lt;T&gt;)</c> field reads as the empty interval rather
+/// than as a malformed value.
 /// </para>
 /// <para>
 /// Unbounded intervals (intervals with no lower or no upper limit, conventionally written <c>(-&#x221E;, b]</c> or
@@ -42,11 +62,34 @@ namespace Bodu.Numerics;
 /// </para>
 /// <para>
 /// Instances are immutable, structurally equatable, and safe to share. They format using ISO 31-11 interval notation
-/// (square brackets for closed endpoints and round brackets for open endpoints) via <see cref="ToString()" />, and
-/// parse the same notation through <see cref="Parse(string, IFormatProvider?)" /> and the
+/// (square brackets for closed endpoints, round brackets for open endpoints, and the U+2205 EMPTY SET glyph for the
+/// empty interval) via <see cref="ToString()" />, and parse the same notation through
+/// <see cref="Parse(string, IFormatProvider?)" /> and the
 /// <see cref="TryParse(string?, IFormatProvider?, out Interval{T})" /> family.
 /// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// using Bodu.Numerics;
+///
+/// // Scheduling windows — closed-open at the end keeps adjacent slots disjoint.
+/// var morning = Interval<int>.ClosedOpen(9, 12);
+/// var meeting = Interval<int>.ClosedOpen(11, 13);
+/// bool clash   = morning.Overlaps(meeting);            // True
+/// var conflict = morning.Intersect(meeting);           // [11, 12)
+///
+/// // Validation predicate — a percentage in [0, 100].
+/// var percentage = Interval<double>.Closed(0.0, 100.0);
+/// bool ok = percentage.Contains(99.5);                 // True
+///
+/// // Adjacent half-open ranges merge into a single contiguous interval.
+/// var q1 = Interval<int>.ClosedOpen(0, 90);
+/// var q2 = Interval<int>.ClosedOpen(90, 181);
+/// q1.TryUnion(q2, out var firstHalf);                  // firstHalf = [0, 181)
+///]]>
+/// </code>
+/// </example>
 [Serializable]
 [DebuggerDisplay("{ToString(),nq}")]
 [JsonConverter(typeof(IntervalJsonConverterFactory))]

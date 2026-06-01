@@ -38,10 +38,9 @@ public readonly partial struct Fraction<T>
     /// <exception cref="JsonException">Thrown if <paramref name="json" /> is not a valid fraction.</exception>
     /// <remarks>
     /// <para>
-    /// The default attribute-driven policy is <c>Strict</c>, which expects the canonical object form. Callers
-    /// needing to accept the compact <c>"3/4"</c> string form should deserialize through a
-    /// <see cref="JsonSerializerOptions" /> on which
-    /// <c>AddNumericsJsonConverters(NumericsJsonPolicy.Compact)</c> has been called.
+    /// The default attribute-driven policy is <c>Strict</c>, which expects the canonical object form. Callers needing
+    /// to accept the compact <c>"3/4"</c> string form should deserialize through a <see cref="JsonSerializerOptions" />
+    /// on which <c>AddNumericsJsonConverters(NumericsJsonPolicy.Compact)</c> has been called.
     /// </para>
     /// </remarks>
     public static Fraction<T> FromJson(string json)

@@ -41,9 +41,9 @@ public static class NumericsJsonSerializerOptionsExtensions
     /// </para>
     /// <para>
     /// Use <see cref="NumericsJsonPolicy.Strict" /> for canonical persistence shapes,
-    /// <see cref="NumericsJsonPolicy.Lenient" /> for import workflows tolerant of <c>"min"</c>/<c>"max"</c> aliases
-    /// and compact-string fallbacks, and <see cref="NumericsJsonPolicy.Compact" /> for the single-string
-    /// representations (<c>"3/4"</c>, <c>"[1, 5)"</c>, <c>"∅"</c>).
+    /// <see cref="NumericsJsonPolicy.Lenient" /> for import workflows tolerant of <c>"min"</c>/<c>"max"</c> aliases and
+    /// compact-string fallbacks, and <see cref="NumericsJsonPolicy.Compact" /> for the single-string representations (
+    /// <c>"3/4"</c>, <c>"[1, 5)"</c>, <c>"∅"</c>).
     /// </para>
     /// </remarks>
     public static JsonSerializerOptions AddNumericsJsonConverters(

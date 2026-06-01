@@ -65,7 +65,7 @@ public sealed class ExchangeRatePairJsonConverter
 
         if (_policy == FinancialJsonPolicy.Compact)
         {
-            writer.WriteStringValue(string.Concat(value.FromIsoCode, "/", value.ToIsoCode));
+            writer.WriteStringValue($"{value.FromIsoCode}/{value.ToIsoCode}");
             return;
         }
 

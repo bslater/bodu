@@ -41,10 +41,9 @@ public readonly partial struct Interval<T> :
     /// </exception>
     public static Interval<T> Parse(ReadOnlySpan<char> s, IFormatProvider? provider)
     {
-        if (!TryParse(s, provider, out Interval<T> value))
-            throw new FormatException($"The value '{s}' is not a valid {nameof(Interval<T>)}<{typeof(T).Name}> representation.");
-
-        return value;
+        return !TryParse(s, provider, out Interval<T> value)
+            ? throw new FormatException($"The value '{s}' is not a valid {nameof(Interval<T>)}<{typeof(T).Name}> representation.")
+            : value;
     }
 
     /// <summary>

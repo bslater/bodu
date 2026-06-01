@@ -145,10 +145,8 @@ public readonly partial struct Money :
         if (specifier == 'R')
         {
             if (elideIfMatched || hasPrecisionSuffix)
-            {
                 throw new FormatException(
                     string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Format_Invalid_FormatSpecifier, format.ToString()));
-            }
 
             return string.Concat(
                 isoCode,
@@ -165,7 +163,7 @@ public readonly partial struct Money :
             case 'G':
                 if (elideIfMatched && MoneyFormattingHelpers.CultureMatchesIsoCode(effective, isoCode))
                     return _amount.ToString("N" + decimalsSuffix, effective) + magnitudeSuffix;
-                return string.Concat(isoCode, " ", _amount.ToString("N" + decimalsSuffix, effective), magnitudeSuffix);
+                return $"{isoCode} {_amount.ToString("N" + decimalsSuffix, effective)}{magnitudeSuffix}";
 
             case 'C':
                 var matchesC = MoneyFormattingHelpers.CultureMatchesIsoCode(effective, isoCode);
@@ -180,8 +178,8 @@ public readonly partial struct Money :
                 if (elideIfMatched && matchesL)
                     return _amount.ToString("N" + decimalsSuffix, effective) + magnitudeSuffix;
                 if (string.IsNullOrEmpty(englishName))
-                    return string.Concat(isoCode, " ", _amount.ToString("N" + decimalsSuffix, effective), magnitudeSuffix);
-                return string.Concat(_amount.ToString("N" + decimalsSuffix, effective), magnitudeSuffix, " ", englishName);
+                    return $"{isoCode} {_amount.ToString("N" + decimalsSuffix, effective)}{magnitudeSuffix}";
+                return $"{_amount.ToString("N" + decimalsSuffix, effective)}{magnitudeSuffix} {englishName}";
 
             case 'N':
                 return _amount.ToString("N" + decimalsSuffix, effective) + magnitudeSuffix;
@@ -203,9 +201,7 @@ public readonly partial struct Money :
     /// <param name="defaultDecimals">The decimal-place count to use when no precision suffix is supplied.</param>
     /// <param name="specifier">The upper-cased specifier letter.</param>
     /// <param name="decimals">The fractional-digit count to apply.</param>
-    /// <param name="elideIfMatched">
-    /// <see langword="true" /> when the format begins with <c>"~"</c>.
-    /// </param>
+    /// <param name="elideIfMatched"><see langword="true" /> when the format begins with <c>"~"</c>.</param>
     /// <param name="hasPrecisionSuffix">
     /// <see langword="true" /> when an explicit precision suffix was supplied in <paramref name="format" />.
     /// </param>

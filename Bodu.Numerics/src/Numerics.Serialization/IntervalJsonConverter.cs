@@ -41,9 +41,10 @@ namespace Bodu.Numerics.Serialization;
 /// </item>
 /// <item>
 /// <description>
-/// <see cref="NumericsJsonPolicy.Compact" /> — string form in ISO 31-11 bracket notation (for example
-/// <c>"[1, 5)"</c>) or the empty-set glyph <c>"∅"</c>. Reads delegate to <see cref="Interval{T}.TryParse(string?, IFormatProvider?, out Interval{T})" />
-/// and writes call <see cref="Interval{T}.ToString(string?, IFormatProvider?)" /> with the invariant culture.
+/// <see cref="NumericsJsonPolicy.Compact" /> — string form in ISO 31-11 bracket notation (for example <c>"[1, 5)"</c>)
+/// or the empty-set glyph <c>"∅"</c>. Reads delegate to
+/// <see cref="Interval{T}.TryParse(string?, IFormatProvider?, out Interval{T})" /> and writes call
+/// <see cref="Interval{T}.ToString(string?, IFormatProvider?)" /> with the invariant culture.
 /// </description>
 /// </item>
 /// </list>
@@ -231,10 +232,9 @@ public sealed class IntervalJsonConverter<T>
 
         if (emptySeen && empty)
         {
-            if (lowerSeen || upperSeen || lowerInclusiveSeen || upperInclusiveSeen)
-                throw new JsonException(NumericsResourceStrings.Json_Invalid_EmptyIntervalExtraProperties);
-
-            return Interval<T>.Empty;
+            return lowerSeen || upperSeen || lowerInclusiveSeen || upperInclusiveSeen
+                ? throw new JsonException(NumericsResourceStrings.Json_Invalid_EmptyIntervalExtraProperties)
+                : Interval<T>.Empty;
         }
 
         if (!lowerSeen)
@@ -294,9 +294,7 @@ public sealed class IntervalJsonConverter<T>
     /// The resource message reported when the token is neither a number nor a parseable string.
     /// </param>
     /// <returns>The parsed <typeparamref name="T" /> value.</returns>
-    /// <exception cref="JsonException">
-    /// The token is neither a number nor a parseable numeric string.
-    /// </exception>
+    /// <exception cref="JsonException">The token is neither a number nor a parseable numeric string.</exception>
     private static T ReadEndpointValue(ref Utf8JsonReader reader, string typeMismatchMessage)
     {
         if (reader.TokenType == JsonTokenType.Number)
@@ -307,20 +305,18 @@ public sealed class IntervalJsonConverter<T>
                 ? Encoding.UTF8.GetString(reader.ValueSequence.ToArray())
                 : Encoding.UTF8.GetString(reader.ValueSpan);
 
-            if (T.TryParse(text.AsSpan(), NumberStyles.Any, CultureInfo.InvariantCulture, out T? parsed))
-                return parsed;
-
-            throw new JsonException(typeMismatchMessage);
+            return T.TryParse(text.AsSpan(), NumberStyles.Any, CultureInfo.InvariantCulture, out T? parsed)
+                ? parsed
+                : throw new JsonException(typeMismatchMessage);
         }
 
         if (reader.TokenType == JsonTokenType.String)
         {
             var stringValue = reader.GetString();
-            if (stringValue is not null
-                && T.TryParse(stringValue.AsSpan(), NumberStyles.Any, CultureInfo.InvariantCulture, out T? parsed))
-                return parsed;
-
-            throw new JsonException(typeMismatchMessage);
+            return stringValue is not null
+                && T.TryParse(stringValue.AsSpan(), NumberStyles.Any, CultureInfo.InvariantCulture, out T? parsed)
+                ? parsed
+                : throw new JsonException(typeMismatchMessage);
         }
 
         throw new JsonException(typeMismatchMessage);
@@ -338,10 +334,9 @@ public sealed class IntervalJsonConverter<T>
         if (reader.TokenType == JsonTokenType.True)
             return true;
 
-        if (reader.TokenType == JsonTokenType.False)
-            return false;
-
-        throw new JsonException(
+        return reader.TokenType == JsonTokenType.False
+            ? false
+            : throw new JsonException(
             string.Format(
                 CultureInfo.InvariantCulture,
                 NumericsResourceStrings.Json_Invalid_PropertyMustBeBoolean,

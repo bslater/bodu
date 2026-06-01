@@ -1,6 +1,6 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyCompactFormattingExtensions.cs" company="Bodu Pty. Ltd.">
-//     Copyright (c) Bodu Pty. Ltd. All rights reserved.
+// Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
@@ -15,16 +15,16 @@ namespace Bodu.Financial;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Compact formatting scales the amount by an order-of-magnitude factor (one thousand, one million, one billion, or
-/// one trillion) and appends a single-letter magnitude suffix (<c>K</c>, <c>M</c>, <c>B</c>, or <c>T</c>) to the
-/// numeric portion of the output. The chosen format specifier (<c>C</c>, <c>G</c>, <c>L</c>, <c>N</c>, <c>F</c>,
-/// <c>D</c>) still drives where the currency designator appears, so the suffix attaches to the numeric portion in the
-/// correct culture position — for example, <c>"$1.2K"</c> in en-US for USD versus <c>"1,2K €"</c> in fr-FR for EUR.
+/// Compact formatting scales the amount by an order-of-magnitude factor (one thousand, one million, one billion, or one
+/// trillion) and appends a single-letter magnitude suffix (<c>K</c>, <c>M</c>, <c>B</c>, or <c>T</c>) to the numeric
+/// portion of the output. The chosen format specifier (<c>C</c>, <c>G</c>, <c>L</c>, <c>N</c>, <c>F</c>, <c>D</c>)
+/// still drives where the currency designator appears, so the suffix attaches to the numeric portion in the correct
+/// culture position — for example, <c>"$1.2K"</c> in en-US for USD versus <c>"1,2K €"</c> in fr-FR for EUR.
 /// </para>
 /// <para>
-/// The <c>R</c> specifier is not compatible with compact formatting because the round-trip form is meant to parse
-/// back to the original value; combining the two would silently lose precision. Compact extensions therefore reject
-/// the <c>R</c> specifier and the <c>"~"</c> prefix on <c>R</c>.
+/// The <c>R</c> specifier is not compatible with compact formatting because the round-trip form is meant to parse back
+/// to the original value; combining the two would silently lose precision. Compact extensions therefore reject the
+/// <c>R</c> specifier and the <c>"~"</c> prefix on <c>R</c>.
 /// </para>
 /// <para>
 /// Magnitude selection is by absolute value: values below 1,000 keep their natural scale, values from 1,000 use
@@ -40,8 +40,8 @@ public static class MoneyCompactFormattingExtensions
     private const int DefaultCompactPrecision = 1;
 
     /// <summary>
-    /// The thresholds at which the magnitude suffix switches, paired with their suffix letter. Ordered from largest
-    /// to smallest so the first match wins.
+    /// The thresholds at which the magnitude suffix switches, paired with their suffix letter. Ordered from largest to
+    /// smallest so the first match wins.
     /// </summary>
     private static readonly (decimal Scale, string Suffix)[] s_thresholds =
     [
@@ -62,14 +62,14 @@ public static class MoneyCompactFormattingExtensions
     /// vocabulary. The <c>R</c> specifier is rejected because compact notation cannot round-trip. Defaults to
     /// <c>"C"</c>.
     /// </param>
-    /// <param name="provider">The culture used to render the numeric portion. When omitted, the current culture is used.</param>
+    /// <param name="provider">
+    /// The culture used to render the numeric portion. When omitted, the current culture is used.
+    /// </param>
     /// <param name="precision">
     /// The fractional-digit count to render in the scaled portion. Must be non-negative; defaults to <c>1</c>.
     /// </param>
     /// <returns>A compact-notation string such as <c>"$1.2K"</c>, <c>"€1.5M"</c>, or <c>"USD 2.3B"</c>.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="precision" /> is negative.
-    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="precision" /> is negative.</exception>
     /// <exception cref="FormatException">
     /// Thrown when <paramref name="format" /> is not a supported specifier, or when it is <c>R</c> (which cannot be
     /// combined with compact notation).
@@ -100,14 +100,14 @@ public static class MoneyCompactFormattingExtensions
     /// vocabulary. The <c>R</c> specifier is rejected because compact notation cannot round-trip. Defaults to
     /// <c>"C"</c>.
     /// </param>
-    /// <param name="provider">The culture used to render the numeric portion. When omitted, the current culture is used.</param>
+    /// <param name="provider">
+    /// The culture used to render the numeric portion. When omitted, the current culture is used.
+    /// </param>
     /// <param name="precision">
     /// The fractional-digit count to render in the scaled portion. Must be non-negative; defaults to <c>1</c>.
     /// </param>
     /// <returns>A compact-notation string such as <c>"$1.2K"</c>, <c>"€1.5M"</c>, or <c>"USD 2.3B"</c>.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="precision" /> is negative.
-    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="precision" /> is negative.</exception>
     /// <exception cref="FormatException">
     /// Thrown when <paramref name="format" /> is not a supported specifier, or when it is <c>R</c> (which cannot be
     /// combined with compact notation).

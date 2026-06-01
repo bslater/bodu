@@ -20,15 +20,12 @@ public readonly partial struct Interval<T> : IEquatable<Interval<T>>
     /// </returns>
     public bool Equals(Interval<T> other)
     {
-        if (IsEmpty)
-            return other.IsEmpty;
-
-        if (other.IsEmpty)
-            return false;
-
-        return _lower == other._lower
-            && _upper == other._upper
-            && _flags == other._flags;
+        return IsEmpty
+            ? other.IsEmpty
+            : !other.IsEmpty
+                && _lower == other._lower
+                && _upper == other._upper
+                && _flags == other._flags;
     }
 
     /// <summary>

@@ -112,6 +112,6 @@ public readonly partial struct Interval<T> :
         var upperBracket = UpperInclusive ? ']' : ')';
         var lowerText = ((IFormattable)_lower).ToString(format, provider);
         var upperText = ((IFormattable)_upper).ToString(format, provider);
-        return string.Concat(lowerBracket.ToString(), lowerText, ", ", upperText, upperBracket.ToString());
+        return $"{lowerBracket}{lowerText}, {upperText}{upperBracket}";
     }
 }

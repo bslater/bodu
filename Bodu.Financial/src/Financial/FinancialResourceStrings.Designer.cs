@@ -196,6 +196,15 @@ namespace Bodu.Financial {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot add observation for {0:yyyy-MM-dd}: a rate already exists for that date..
+        /// </summary>
+        internal static string Arg_Invalid_RateSeriesAddRangeConflict {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_RateSeriesAddRangeConflict", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Series contains duplicate date {0:yyyy-MM-dd}..
         /// </summary>
         internal static string Arg_Invalid_RateSeriesDuplicateDate {
@@ -327,6 +336,15 @@ namespace Bodu.Financial {
         internal static string IO_KeyNotFound_ExchangeRate {
             get {
                 return ResourceManager.GetString("IO_KeyNotFound_ExchangeRate", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No exchange-rate observation exists on {0:yyyy-MM-dd}..
+        /// </summary>
+        internal static string IO_KeyNotFound_RateObservationDate {
+            get {
+                return ResourceManager.GetString("IO_KeyNotFound_RateObservationDate", resourceCulture);
             }
         }
         
@@ -734,7 +752,16 @@ namespace Bodu.Financial {
                 return ResourceManager.GetString("Op_Invalid_RateNotStrictlyPositive", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot create an immutable series snapshot from an empty builder..
+        /// </summary>
+        internal static string Op_Invalid_RateSeriesBuilderEmpty {
+            get {
+                return ResourceManager.GetString("Op_Invalid_RateSeriesBuilderEmpty", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Unable to create a JSON converter for &apos;{0}&apos;..
         /// </summary>

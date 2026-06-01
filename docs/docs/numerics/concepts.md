@@ -66,22 +66,62 @@ The **convergents** of a continued fraction — the rationals produced by trunca
 
 The search walks the convergents of the continued-fraction expansion and selects between the last convergent and a final semiconvergent. Overloads accept `double`, `decimal`, and string input. `Fraction<T>.LimitDenominator(maxDenominator)` is the streaming variant that re-approximates an existing fraction within a tighter denominator bound.
 
+## Range as a first-class value
+
+An <xref:Bodu.Numerics.Interval`1> is a **range encoded as a single value**: lower endpoint, upper endpoint, and the inclusivity of each side, packed into one immutable `readonly struct`. The point of having a dedicated type is that the range can be passed, stored, compared, and operated on without splitting it into separate `min` / `max` / `(bool, bool)` parameters whose meaning depends on convention.
+
+Reach for it whenever the range itself is the data:
+
+- A scheduling window or time slot persisted in a database column.
+- A validation predicate exposed by an API (`var valid = Interval<int>.Closed(0, 100);`).
+- A reservation that needs to detect overlap with other reservations.
+- A bucket whose membership semantics carry through a pipeline.
+
+When the range is *only* an immediate `for (int i = 0; i < count; i++)` loop bound, a plain `int` pair or `System.Range` is enough and `Interval<T>` is overkill. The line is "is the range a value other code receives" — `Interval<T>` when yes, primitive pair when no.
+
+## Comparison with `System.Range`, tuples, and `(bool, bool)` flags
+
+| Alternative | Limitation | When `Interval<T>` wins |
+|---|---|---|
+| `System.Range` | Integer-only; always `[start, end)`; intended for slicing, not membership. | Non-integer endpoints, mixed inclusivity, or set algebra. |
+| `(T min, T max)` tuple | Inclusivity is implicit — readers have to infer or check a comment. | The contract is in the value; the four shapes are distinguishable. |
+| `(T, T, bool, bool)` tuple | Possible but loses the named API (`Contains`, `Intersect`, `TryUnion`) and structural equality on the *set*. | All operations are methods on the type; equality compares sets, not field shapes. |
+| `Predicate<T>` | Composable for membership but throws away the endpoints — no intersection, union, or persistence. | The data form is preserved; predicates are easy to derive when needed. |
+
+`System.Range` and `Interval<T>` are not competitors — `Range` is the right tool for slicing `Span<T>` / arrays, while `Interval<T>` is the right tool when "the range itself" is a value.
+
+## Numeric backing types
+
+The type parameter is constrained as `where T : INumber<T>`, so any .NET generic-math number is a valid endpoint type: `int`, `long`, `Int128`, `double`, `float`, `decimal`, `BigInteger`, and consumer-defined numeric types built on the generic-math interfaces. The same set-algebra code runs over integer scheduling slots, decimal price bands, and arbitrary-magnitude `BigInteger` bounds without a per-type overload.
+
+Endpoints are stored at full `T` precision — no widening, no narrowing — and `Contains`, `Intersect`, `Overlaps`, and `TryUnion` use `T`'s native comparison operators.
+
 ## Endpoint inclusivity
 
 An <xref:Bodu.Numerics.Interval`1> endpoint is either **closed** (included in the set — written with a square bracket: `[`, `]`) or **open** (excluded — written with a round bracket: `(`, `)`). Inclusivity is tracked independently on each side, so a single interval value expresses any of the four conventional shapes; the constructor takes a separate `lowerInclusive` / `upperInclusive` flag for each end.
 
 `Contains(value)` honours inclusivity: a closed endpoint accepts the boundary value, an open endpoint rejects it.
 
+```csharp
+var closed = Interval<int>.Closed(0, 10);       // [0, 10]
+var open   = Interval<int>.Open(0, 10);         // (0, 10)
+
+closed.Contains(0);    // True  — closed lower
+open.Contains(0);      // False — open lower
+closed.Contains(10);   // True  — closed upper
+open.Contains(10);     // False — open upper
+```
+
 ## Interval kinds
 
 The four canonical shapes follow from independent inclusivity flags on each end:
 
-| Shape | Notation | Factory |
-|---|---|---|
-| Closed-closed | `[a, b]` | `Interval<T>.Closed(a, b)` |
-| Open-open | `(a, b)` | `Interval<T>.Open(a, b)` |
-| Closed-open | `[a, b)` | `Interval<T>.ClosedOpen(a, b)` |
-| Open-closed | `(a, b]` | `Interval<T>.OpenClosed(a, b)` |
+| Shape | Notation | Factory | Typical use |
+|---|---|---|---|
+| Closed-closed | `[a, b]` | `Interval<T>.Closed(a, b)` | A percentage `[0, 100]`, a die roll `[1, 6]`, any range whose boundary values are valid members. |
+| Open-open | `(a, b)` | `Interval<T>.Open(a, b)` | Strict-inequality conditions: `0 < rate < 1`, "strictly between". |
+| Closed-open | `[a, b)` | `Interval<T>.ClosedOpen(a, b)` | Spans, slices, scheduling windows, bucket boundaries — see [Half-open by convention](#half-open-by-convention). |
+| Open-closed | `(a, b]` | `Interval<T>.OpenClosed(a, b)` | Billing tiers, histogram bins owning their upper edge, "strictly above X, up to Y". |
 
 A **degenerate** interval is a closed-closed interval whose endpoints are equal — `[5, 5]` — and contains exactly one value. `Interval<T>.Singleton(value)` is the dedicated factory.
 
@@ -91,11 +131,32 @@ An interval is **empty** when its bounds admit no value — either `Lower > Uppe
 
 The default-constructed `Interval<T>` is empty — the all-zero representation `(0, 0, false, false)` satisfies the equal-bounds-both-open case. `IsEmpty` reports the predicate; equality with `Empty` is the same test.
 
+```csharp
+var none      = Interval<int>.Empty;
+var inverted  = new Interval<int>(5, 1, true, true);     // Lower > Upper
+var collapsed = new Interval<int>(0, 0, false, false);   // equal + open
+Interval<int> defaulted = default;
+
+none == inverted && none == collapsed && none == defaulted;  // True
+none.ToString();                                             // "∅"
+```
+
+`Empty` acts as the identity in the set algebra: `Intersect` returns it whenever two operands share no values, and `TryUnion` returns the other operand unchanged when one side is empty.
+
 ## Membership
 
 `Interval<T>.Contains(T value)` reports whether `value` belongs to the interval. The lower test uses `>=` when `LowerInclusive` and `>` otherwise; the upper test mirrors it. An empty interval contains no value, including itself.
 
 `Interval<T>.Contains(Interval<T> other)` tests subset containment — every value of `other` is also a value of this interval. The empty interval is a subset of every interval, so any interval contains the empty interval.
+
+```csharp
+var outer = Interval<int>.Closed(0, 10);
+
+outer.Contains(5);                                    // True — value
+outer.Contains(Interval<int>.Closed(2, 8));           // True — strict subset
+outer.Contains(Interval<int>.Closed(2, 11));          // False — exceeds upper
+outer.Contains(Interval<int>.Empty);                  // True — ∅ ⊆ every set
+```
 
 ## Overlap, intersection, union, adjacency
 
@@ -105,9 +166,34 @@ The default-constructed `Interval<T>` is empty — the all-zero representation `
 
 `TryUnion(other, out result)` succeeds when the union is itself a single contiguous interval — that is, when the operands either overlap or are *adjacent*. Two intervals are **adjacent** when one's upper endpoint equals the other's lower endpoint and at least one of those endpoints is inclusive. On endpoint ties in the union, the **looser** (closed) inclusivity wins. When the operands are disjoint with a true gap, `TryUnion` returns `false` rather than synthesising a two-piece union.
 
+```csharp
+var a = Interval<int>.Closed(1, 5);
+var b = Interval<int>.Closed(3, 7);
+
+a.Overlaps(b);                          // True
+a.Intersect(b);                         // [3, 5] — shared values
+a.TryUnion(b, out var merged);          // merged = [1, 7], result = true
+
+// Adjacent half-open shapes union cleanly.
+Interval<int>.ClosedOpen(1, 5)
+    .TryUnion(Interval<int>.Closed(5, 10), out var span);   // span = [1, 10]
+
+// Disjoint operands cannot form a contiguous union.
+Interval<int>.Closed(1, 2)
+    .TryUnion(Interval<int>.Closed(5, 6), out _);           // returns false
+```
+
 ## Half-open by convention
 
 The **closed-open** shape `[a, b)` is the most common in programming contexts: it matches `System.Range`, `Enumerable.Range`, slice iterators, and the inclusive-start / exclusive-end convention used in scheduling, time windows, and bucket ranges. `Interval<T>.ClosedOpen` and the non-generic `Interval.ClosedOpen` are the factories. Adjacent half-open intervals partition a span cleanly with no overlap and no gap, which is why the convention dominates.
+
+```csharp
+// Quarter buckets that together cover [0, 365) with no overlap and no gap.
+var q1 = Interval<int>.ClosedOpen(0,   90);
+var q2 = Interval<int>.ClosedOpen(90,  181);
+var q3 = Interval<int>.ClosedOpen(181, 273);
+var q4 = Interval<int>.ClosedOpen(273, 365);
+```
 
 ## Where to go next
 
