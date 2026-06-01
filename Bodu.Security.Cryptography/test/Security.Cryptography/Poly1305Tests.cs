@@ -15,6 +15,8 @@ namespace Bodu.Security.Cryptography;
 public partial class Poly1305Tests
     : KeyedBlockHashAlgorithmTests<Poly1305Tests, Poly1305, SingleTestVariant>
 {
+    /// <inheritdoc />
+    protected override Poly1305 CreateAlgorithm(SingleTestVariant variant) => CreateAlgorithm();
 
     /// <summary>
     /// Excludes the <c>_finalized</c> sentinel from the inherited dispose-field-zero test. The flag is
@@ -74,8 +76,6 @@ public partial class Poly1305Tests
 
         CollectionAssert.AreEqual(expected, actual);
     }
-
-    protected override Poly1305 CreateAlgorithm(SingleTestVariant variant) => CreateAlgorithm();
 
     protected override IReadOnlyList<string> GetExpectedHashesForIncrementalInput(SingleTestVariant variant) =>
         [

@@ -16,9 +16,6 @@ public partial class Serpent256Tests
     : SerpentTests<Serpent256Tests, Serpent256>
 {
     /// <inheritdoc />
-    protected override Serpent256 CreateAlgorithm() => new();
-
-    /// <inheritdoc />
     protected override TweakableSymmetricAlgorithmSpecification GetSpecification() =>
         new()
         {

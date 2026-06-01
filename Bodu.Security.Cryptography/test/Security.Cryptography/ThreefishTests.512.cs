@@ -16,9 +16,6 @@ public sealed partial class Threefish512Tests
     : ThreefishTests<Threefish512Tests, Threefish512>
 {
     /// <inheritdoc />
-    protected override Threefish512 CreateAlgorithm() => Threefish512.Create();
-
-    /// <inheritdoc />
     protected override TweakableSymmetricAlgorithmSpecification GetSpecification() =>
         new()
         {

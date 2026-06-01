@@ -19,9 +19,6 @@ public sealed partial class Salsa20Tests
     : SymmetricStreamAlgorithmTests<Salsa20Tests, Salsa20>
 {
     /// <inheritdoc />
-    protected override Salsa20 CreateAlgorithm() => new();
-
-    /// <inheritdoc />
     protected override SymmetricStreamAlgorithmSpecification GetSpecification() =>
         new()
         {

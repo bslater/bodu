@@ -15,9 +15,6 @@ public sealed partial class CamelliaTests
     : SymmetricAlgorithmTests<CamelliaTests, Camellia>
 {
     /// <inheritdoc />
-    protected override Camellia CreateAlgorithm() => new();
-
-    /// <inheritdoc />
     protected override void SetBlockMode(Camellia algorithm, CipherModeKind mode) =>
         algorithm.BlockMode = mode;
 

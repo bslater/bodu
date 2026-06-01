@@ -11,9 +11,6 @@ public sealed partial class SkipjackTests
     : SymmetricAlgorithmTests<SkipjackTests, Skipjack>
 {
     /// <inheritdoc />
-    protected override Skipjack CreateAlgorithm() => new();
-
-    /// <inheritdoc />
     protected override void SetBlockMode(Skipjack algorithm, CipherModeKind mode) =>
         algorithm.BlockMode = mode;
 

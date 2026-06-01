@@ -19,7 +19,7 @@ namespace Bodu.Security.Cryptography;
 public abstract partial class SerpentTests<TTest, TAlgorithm>
     : TweakableSymmetricAlgorithmTests<TTest, TAlgorithm>
     where TTest : SerpentTests<TTest, TAlgorithm>, new()
-    where TAlgorithm : Serpent
+    where TAlgorithm : Serpent, new()
 {
     /// <inheritdoc />
     protected sealed override void SetBlockMode(TAlgorithm algorithm, CipherModeKind mode) =>

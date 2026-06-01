@@ -22,9 +22,6 @@ public partial class CubeHashTests
         BoundaryLengths = [1, 8, 16, 64],
     };
 
-    /// <inheritdoc />
-    protected override CubeHash CreateAlgorithm() => new();
-
     /// <summary>
     /// Verifies that constructing a <see cref="CubeHash"/> with an unsupported hash size throws
     /// <see cref="ArgumentOutOfRangeException"/> with the correct parameter name.

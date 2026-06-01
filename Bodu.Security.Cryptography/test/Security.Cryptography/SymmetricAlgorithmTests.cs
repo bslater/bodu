@@ -16,13 +16,13 @@ namespace Bodu.Security.Cryptography;
 [TestClass]
 public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     where TTest : SymmetricAlgorithmTests<TTest, TAlgorithm>, new()
-    where TAlgorithm : System.Security.Cryptography.SymmetricAlgorithm
+    where TAlgorithm : SymmetricAlgorithm, new()
 {
     /// <summary>
     /// Creates an instance of the symmetric algorithm under test.
     /// </summary>
     /// <returns>An instance of the symmetric algorithm.</returns>
-    protected abstract TAlgorithm CreateAlgorithm();
+    protected virtual TAlgorithm CreateAlgorithm() => new();
 
     /// <summary>
     /// Returns the <see cref="SymmetricAlgorithmSpecification" /> describing the expected observable properties of

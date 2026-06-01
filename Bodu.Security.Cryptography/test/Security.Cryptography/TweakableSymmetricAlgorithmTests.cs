@@ -14,7 +14,7 @@ namespace Bodu.Security.Cryptography;
 public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm>
     : SymmetricAlgorithmTests<TTest, TAlgorithm>
     where TTest : TweakableSymmetricAlgorithmTests<TTest, TAlgorithm>, new()
-    where TAlgorithm : Security.Cryptography.TweakableSymmetricAlgorithm
+    where TAlgorithm : TweakableSymmetricAlgorithm, new()
 {
     /// <summary>
     /// Returns the <see cref="TweakableSymmetricAlgorithmSpecification" /> describing the expected observable

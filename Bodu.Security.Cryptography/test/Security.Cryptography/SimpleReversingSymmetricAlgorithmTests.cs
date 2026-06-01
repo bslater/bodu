@@ -11,9 +11,6 @@ public partial class SimpleReversingSymmetricAlgorithmTests
     : SymmetricAlgorithmTests<SimpleReversingSymmetricAlgorithmTests, SimpleReversingSymmetricAlgorithm>
 {
     /// <inheritdoc />
-    protected override SimpleReversingSymmetricAlgorithm CreateAlgorithm() => new();
-
-    /// <inheritdoc />
     protected override void SetBlockMode(SimpleReversingSymmetricAlgorithm algorithm, CipherModeKind mode) =>
         algorithm.BlockMode = mode;
 

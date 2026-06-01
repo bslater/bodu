@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SymmetricStreamAlgorithmTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -16,13 +16,13 @@ namespace Bodu.Security.Cryptography;
 [TestClass]
 public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
     where TTest : SymmetricStreamAlgorithmTests<TTest, TAlgorithm>, new()
-    where TAlgorithm : SymmetricStreamAlgorithm
+    where TAlgorithm : SymmetricStreamAlgorithm, new()
 {
     /// <summary>
     /// Creates an instance of the stream algorithm under test.
     /// </summary>
     /// <returns>A new <typeparamref name="TAlgorithm" /> instance.</returns>
-    protected abstract TAlgorithm CreateAlgorithm();
+    protected virtual TAlgorithm CreateAlgorithm() => new();
 
     /// <summary>
     /// Returns the <see cref="SymmetricStreamAlgorithmSpecification" /> describing the expected observable properties of

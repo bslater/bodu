@@ -19,7 +19,7 @@ namespace Bodu.Security.Cryptography;
 public abstract partial class ThreefishTests<TTest, TAlgorithm>
     : TweakableSymmetricAlgorithmTests<TTest, TAlgorithm>
     where TTest : ThreefishTests<TTest, TAlgorithm>, new()
-    where TAlgorithm : Threefish
+    where TAlgorithm : Threefish, new()
 {
     /// <inheritdoc />
     protected sealed override void SetBlockMode(TAlgorithm algorithm, CipherModeKind mode) =>

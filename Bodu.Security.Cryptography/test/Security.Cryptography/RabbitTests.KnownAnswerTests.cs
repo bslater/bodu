@@ -25,9 +25,6 @@ public sealed partial class RabbitTests
     : SymmetricStreamAlgorithmTests<RabbitTests, Rabbit>
 {
     /// <inheritdoc />
-    protected override Rabbit CreateAlgorithm() => new();
-
-    /// <inheritdoc />
     protected override SymmetricStreamAlgorithmSpecification GetSpecification() =>
         new()
         {

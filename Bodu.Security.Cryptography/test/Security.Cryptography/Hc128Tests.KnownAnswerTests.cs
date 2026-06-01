@@ -24,9 +24,6 @@ public sealed partial class Hc128Tests
     : SymmetricStreamAlgorithmTests<Hc128Tests, Hc128>
 {
     /// <inheritdoc />
-    protected override Hc128 CreateAlgorithm() => new();
-
-    /// <inheritdoc />
     protected override SymmetricStreamAlgorithmSpecification GetSpecification() =>
         new()
         {

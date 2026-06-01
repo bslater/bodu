@@ -55,15 +55,6 @@ public abstract partial class SkeinTests<TTest, TAlgorithm, TVariant>
     /// </remarks>
     protected override bool EnforcesMinimumKeyLength => false;
 
-    /// <inheritdoc />
-    /// <remarks>
-    /// The base default-construction helper assigns the specification's <see cref="KeyedAlgorithmSpecification.TestKey" />
-    /// to <see cref="Skein{T}.Key" />. For the unkeyed default variant Skein's specifications publish an empty
-    /// <c>TestKey</c> so baseline fixtures exercise the canonical plain-hash profile; keyed variants supply the
-    /// shared <see cref="SkeinTestKey" />.
-    /// </remarks>
-    protected override TAlgorithm CreateAlgorithm() => CreateAlgorithm(DefaultVariant);
-
     /// <summary>
     /// Returns <see langword="true" /> when <paramref name="variant" />'s name begins with <c>"Mac_"</c>, indicating
     /// the keyed Skein-MAC profile. Concrete test classes follow the <c>Hash_<i>n</i></c> / <c>Mac_<i>n</i></c>

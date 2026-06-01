@@ -19,9 +19,6 @@ public sealed partial class XChaCha20Tests
     : SymmetricStreamAlgorithmTests<XChaCha20Tests, XChaCha20>
 {
     /// <inheritdoc />
-    protected override XChaCha20 CreateAlgorithm() => new();
-
-    /// <inheritdoc />
     protected override SymmetricStreamAlgorithmSpecification GetSpecification() =>
         new()
         {

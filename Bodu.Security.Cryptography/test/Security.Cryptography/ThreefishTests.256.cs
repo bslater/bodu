@@ -16,9 +16,6 @@ public sealed partial class Threefish256Tests
     : ThreefishTests<Threefish256Tests, Threefish256>
 {
     /// <inheritdoc />
-    protected override Threefish256 CreateAlgorithm() => Threefish256.Create();
-
-    /// <inheritdoc />
     protected override TweakableSymmetricAlgorithmSpecification GetSpecification() =>
         new()
         {

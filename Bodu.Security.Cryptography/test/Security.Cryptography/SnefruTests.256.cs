@@ -13,11 +13,13 @@ namespace Bodu.Security.Cryptography;
 public partial class Snefru256Tests
     : Security.Cryptography.SnefruTests<Snefru256Tests, Snefru256>
 {
+    /// <inheritdoc />
     public override IEnumerable<SingleTestVariant> GetHashAlgorithmVariants() =>
     [
         SingleTestVariant.Default
     ];
 
+    /// <inheritdoc />
     protected override HashAlgorithmSpecification GetSpecification(SingleTestVariant variant) => new()
     {
         InputBlockSize = 1,
@@ -43,10 +45,9 @@ public partial class Snefru256Tests
     };
 
     /// <inheritdoc />
-    protected override Snefru256 CreateAlgorithm() => new();
-
     protected override Snefru256 CreateAlgorithm(SingleTestVariant variant) => new();
 
+    /// <inheritdoc />
     protected override IReadOnlyList<string> GetExpectedHashesForIncrementalInput(SingleTestVariant variant) =>
     [
         "A4DF4C0A4AF3DAD3B7E9F4200144F74D6F44F875AB32715F5664119D676F8D19", "D40C2A1AC28B11A875157CCB3BB2E75FBAC5138CA354005381080F67BCA0093B", "2D750C03D40A3DD50D581423F5FF80704846D8F292EA758EC0DF1CC980DB568A", "82F59BA1DF602A8816DB44C97012BB450C13D5DF819F89FFB55B560F71D7A99F",

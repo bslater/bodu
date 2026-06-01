@@ -51,9 +51,6 @@ public partial class MonitoringHashAlgorithmTests
     protected override IReadOnlyCollection<string> ExcludedReadablePropertyNames => ExcludedPropertyName;
 
     /// <inheritdoc />
-    protected override MonitoringHashAlgorithm CreateAlgorithm() => new();
-
-    /// <inheritdoc />
     protected override MonitoringHashAlgorithm CreateAlgorithm(SingleTestVariant variant) => new();
 
     /// <inheritdoc />

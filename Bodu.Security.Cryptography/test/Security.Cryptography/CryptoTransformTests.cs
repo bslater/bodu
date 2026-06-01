@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Security.Cryptography;
+
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
@@ -11,7 +13,7 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <typeparam name="TCryptoTransform">The crypto transform type under test.</typeparam>
 public abstract partial class CryptoTransformTests<TCryptoTransform>
-    where TCryptoTransform : System.Security.Cryptography.ICryptoTransform
+    where TCryptoTransform : ICryptoTransform
 {
     /// <summary>
     /// Creates a new instance of the cryptographic transform under test.

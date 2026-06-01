@@ -21,7 +21,7 @@ namespace Bodu.Security.Cryptography;
 /// including reusable hash verification, streaming support, variant differentiation, and named test vector evaluation.
 /// </remarks>
 public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
-    : Security.Cryptography.CryptoTransformTests<TAlgorithm>
+    : CryptoTransformTests<TAlgorithm>
     where TTest : HashAlgorithmTests<TTest, TAlgorithm, TVariant>, new()
     where TAlgorithm : HashAlgorithm, new()
     where TVariant : struct, Enum
