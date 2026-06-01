@@ -23,16 +23,24 @@ Each top-level namespace has a landing page that introduces its purpose, lists i
 - **[Bodu.Text.Formats — self-framing binary serialization formats](../docs/formats/index.md)**
   Strongly-typed value model and a span- and stream-friendly codec for self-framing binary formats. Ships **Bencode** (the BitTorrent BEP 3 grammar) as the first format — `Bencode.Encode` / `Decode` / `TryEncode` / `TryDecode` / `GetEncodedLength` over `ReadOnlySpan<byte>`, `byte[]`, and `Stream`, an immutable `BencodedValue` tree (`Integer`, `String`, `List`, `Dictionary`), and full canonicality enforcement on both sides of the pipeline.
 
+- **[Bodu.Numerics — exact rational arithmetic and bounded intervals](../apidoc/Bodu.Numerics.md)**
+  `Fraction<T>` for canonical rational arithmetic over any `IBinaryInteger<T>` backing type, with `BigInteger`-promoted intermediates, the full `INumber<T>` / `ISignedNumber<T>` surface, mixed-number and Unicode-vulgar-fraction formatting, continued-fraction expansion, and best rational approximation. `Interval<T>` for closed / open / half-open intervals with intersection, union, and adjacency.
+
+- **[Bodu.Financial — type-safe monetary primitives](../apidoc/Bodu.Financial.md)**
+  `Money<TCurrency>` where the currency is encoded as the type parameter so cross-currency arithmetic fails the build; `MoneyValue` for runtime-tagged scenarios; `MoneyBag` for multi-currency portfolios; a shipped catalogue of ~185 ISO 4217 currencies (active + historic with demonetisation metadata); an audit-grade `IDatedExchangeRateProvider` stack; fair allocation; cash rounding; `Fraction<BigInteger>` interop for sub-minor-unit-precise chains; and three JSON wire shapes (strict / lenient / compact).
+
 ## Guides
 
 - **[Bodu.Core guides](../guides/core/index.md)** — circular buffer, deque, evicting dictionary, week pattern.
 - **[Bodu.IO.Hashing guides](../guides/io-hashing/index.md)** — fingerprints (FNV, CityHash, MurmurHash3, Pearson, classic string hashes), checksums (CRC, Fletcher, Adler), and check digits.
 - **[Bodu.Security.Cryptography guides](../guides/cryptography/index.md)** — encryption basics, cipher block modes, AEAD, padding, composing primitives, keyed and cryptographic hashing, the ASCON family.
-- **[Bodu.Globalization.Calendar guides](../guides/calendar/index.md)** — `NotableDateService`, built-in algorithms, rule authoring, data packs.
+- **[Bodu.Globalization.Calendar guides](../guides/calendar/index.md)** — `NotableDateService`, built-in algorithms, rule authoring (XML / JSON / [fluent builder](../guides/calendar/notable-date-builder.md)), [data packs](../guides/calendar/data-packs.md).
 - **[Bodu.Text.Formats guides](../guides/formats/index.md)** — using the `Bencode` codec, the `BencodedValue` tree model, and stream support.
+- **[Bodu.Numerics guides](../guides/numerics/index.md)** — [`Fraction<T>`](../guides/numerics/fraction.md), [`Interval<T>`](../guides/numerics/interval.md).
+- **[Bodu.Financial guides](../guides/financial/index.md)** — [`Money<TCurrency>`](../guides/financial/money.md).
 
 ## Project documentation
 
 - [Introduction](../docs/introduction.md) — project overview, design principles, and the per-library map.
 - [Getting started](../docs/getting-started.md) — prerequisites, install commands, and one-minute samples per library.
-- Per-library introductions: [Bodu.Core](../docs/core/index.md) · [Bodu.IO.Hashing](../docs/io-hashing/index.md) · [Bodu.Security.Cryptography](../docs/cryptography/index.md) · [Bodu.Globalization.Calendar](../docs/calendar/index.md) · [Bodu.Text.Formats](../docs/formats/index.md).
+- Per-library introductions: [Bodu.Core](../docs/core/index.md) · [Bodu.IO.Hashing](../docs/io-hashing/index.md) · [Bodu.Security.Cryptography](../docs/cryptography/index.md) · [Bodu.Globalization.Calendar](../docs/calendar/index.md) · [Bodu.Text.Formats](../docs/formats/index.md) · [Bodu.Numerics](../docs/numerics/index.md) · [Bodu.Financial](../docs/financial/index.md).

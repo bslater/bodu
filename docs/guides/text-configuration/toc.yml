@@ -1,2 +1,8 @@
 - name: Overview
   href: index.md
+- name: Parsing and profiles
+  href: parsing-and-profiles.md
+- name: Views and resolution
+  href: views-and-resolution.md
+- name: Diagnostics
+  href: diagnostics.md

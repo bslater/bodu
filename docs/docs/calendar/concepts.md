@@ -16,6 +16,8 @@ The pipeline reads left to right. A **rule source** loads authored recipes; each
 
 Every term below corresponds to a stage or an input of that pipeline.
 
+> **Conceptual vs. implementation view.** This diagram collapses the resolver into the six conceptual stages that matter to consumers. The implementation expands these into eight discrete stages — *rule loading*, *override merging*, *effective rule list assembly*, *anchor resolution*, *adjustment chain evaluation*, *collision resolution*, *per-year cache*, and (for filtered queries) *filter gate*. The [resolution pipeline guide](../../guides/calendar/resolution-pipeline.md) walks through each one with traces and worked examples.
+
 ## Rule vs. resolved date
 
 A **rule** (<xref:Bodu.Globalization.Calendar.NotableDateRule>) is the authored recipe — *what* the date represents and *how* to compute it for any year. It is immutable, year-independent, and lives in a rule source.

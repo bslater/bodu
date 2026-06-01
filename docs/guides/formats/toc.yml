@@ -6,6 +6,12 @@
       href: bencode.md
     - name: The BencodedValue model
       href: value-model.md
+    - name: Using delimited (CSV / TSV)
+      href: delimited.md
+    - name: Using DotEnv
+      href: dotenv.md
+    - name: Using INI
+      href: ini.md
 - name: Bodu.Text.Formats — I/O
   items:
     - name: Streams and async I/O
