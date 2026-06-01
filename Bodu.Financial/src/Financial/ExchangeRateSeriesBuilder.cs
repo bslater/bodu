@@ -170,9 +170,7 @@ public sealed class ExchangeRateSeriesBuilder
     /// Reports whether an observation exists for <paramref name="date" />.
     /// </summary>
     /// <param name="date">The observation date to query.</param>
-    /// <returns>
-    /// <see langword="true" /> if an observation exists; otherwise <see langword="false" />.
-    /// </returns>
+    /// <returns><see langword="true" /> if an observation exists; otherwise <see langword="false" />.</returns>
     public bool ContainsDate(DateOnly date) => _buffer.Contains(date.DayNumber);
 
     /// <summary>
@@ -183,9 +181,7 @@ public sealed class ExchangeRateSeriesBuilder
     /// When this method returns <see langword="true" />, the rate observed on <paramref name="date" />; otherwise
     /// <see langword="default" />.
     /// </param>
-    /// <returns>
-    /// <see langword="true" /> if an observation exists; otherwise <see langword="false" />.
-    /// </returns>
+    /// <returns><see langword="true" /> if an observation exists; otherwise <see langword="false" />.</returns>
     public bool TryGetRate(DateOnly date, out decimal rate) => _buffer.TryGetRate(date.DayNumber, out rate);
 
     /// <summary>

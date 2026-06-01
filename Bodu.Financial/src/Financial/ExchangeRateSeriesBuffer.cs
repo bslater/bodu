@@ -44,18 +44,13 @@ internal sealed class ExchangeRateSeriesBuffer
     private decimal[] _rates;
 
     /// <summary>
-    /// The number of live observations in the buffer.
-    /// </summary>
-    private int _count;
-
-    /// <summary>
     /// Initializes a new instance of the <see cref="ExchangeRateSeriesBuffer" /> class with zero capacity.
     /// </summary>
     public ExchangeRateSeriesBuffer()
     {
-        _dayNumbers = Array.Empty<int>();
-        _rates = Array.Empty<decimal>();
-        _count = 0;
+        _dayNumbers = [];
+        _rates = [];
+        Count = 0;
     }
 
     /// <summary>
@@ -67,8 +62,8 @@ internal sealed class ExchangeRateSeriesBuffer
     {
         if (capacity <= 0)
         {
-            _dayNumbers = Array.Empty<int>();
-            _rates = Array.Empty<decimal>();
+            _dayNumbers = [];
+            _rates = [];
         }
         else
         {
@@ -76,20 +71,20 @@ internal sealed class ExchangeRateSeriesBuffer
             _rates = new decimal[capacity];
         }
 
-        _count = 0;
+        Count = 0;
     }
 
     /// <summary>
     /// Gets the number of live observations.
     /// </summary>
     /// <returns>A non-negative count.</returns>
-    public int Count => _count;
+    public int Count { get; private set; }
 
     /// <summary>
     /// Gets a value indicating whether the buffer holds no observations.
     /// </summary>
     /// <returns><see langword="true" /> if the buffer is empty; otherwise <see langword="false" />.</returns>
-    public bool IsEmpty => _count == 0;
+    public bool IsEmpty => Count == 0;
 
     /// <summary>
     /// Inserts a new observation, throwing if an observation already exists for <paramref name="dayNumber" />.
@@ -254,9 +249,7 @@ internal sealed class ExchangeRateSeriesBuffer
     /// Reports whether an observation exists for <paramref name="dayNumber" />.
     /// </summary>
     /// <param name="dayNumber">The day number to query.</param>
-    /// <returns>
-    /// <see langword="true" /> if an observation exists; otherwise <see langword="false" />.
-    /// </returns>
+    /// <returns><see langword="true" /> if an observation exists; otherwise <see langword="false" />.</returns>
     public bool Contains(int dayNumber) => IndexOf(dayNumber) >= 0;
 
     /// <summary>
@@ -295,7 +288,7 @@ internal sealed class ExchangeRateSeriesBuffer
     /// </exception>
     public void AddRange(IEnumerable<ExchangeRateObservation> observations, string observationsParamName)
     {
-        var incoming = PrepareIncoming(observations, observationsParamName);
+        List<(int DayNumber, decimal Rate)> incoming = PrepareIncoming(observations, observationsParamName);
         if (incoming.Count == 0)
             return;
 
@@ -312,7 +305,7 @@ internal sealed class ExchangeRateSeriesBuffer
     /// <exception cref="ArgumentException">Thrown if the batch contains a duplicate date.</exception>
     public void UpsertRange(IEnumerable<ExchangeRateObservation> observations, string observationsParamName)
     {
-        var incoming = PrepareIncoming(observations, observationsParamName);
+        List<(int DayNumber, decimal Rate)> incoming = PrepareIncoming(observations, observationsParamName);
         if (incoming.Count == 0)
             return;
 
@@ -325,7 +318,7 @@ internal sealed class ExchangeRateSeriesBuffer
     /// <returns>A lazy sequence of <see cref="ExchangeRateObservation" /> values.</returns>
     public IEnumerable<ExchangeRateObservation> Enumerate()
     {
-        for (var i = 0; i < _count; i++)
+        for (var i = 0; i < Count; i++)
         {
             yield return new ExchangeRateObservation(DateOnly.FromDayNumber(_dayNumbers[i]), _rates[i]);
         }
@@ -338,14 +331,14 @@ internal sealed class ExchangeRateSeriesBuffer
     /// <exception cref="InvalidOperationException">Thrown if the buffer holds no observations.</exception>
     public ExchangeRateSeriesStorage ToStorage()
     {
-        if (_count == 0)
+        if (Count == 0)
             throw new InvalidOperationException(FinancialResourceStrings.Op_Invalid_RateSeriesBuilderEmpty);
 
-        var dayNumbers = new int[_count];
-        var rates = new decimal[_count];
+        var dayNumbers = new int[Count];
+        var rates = new decimal[Count];
 
-        Array.Copy(_dayNumbers, dayNumbers, _count);
-        Array.Copy(_rates, rates, _count);
+        Array.Copy(_dayNumbers, dayNumbers, Count);
+        Array.Copy(_rates, rates, Count);
 
         return ExchangeRateSeriesStorage.CreateFromSortedUnique(dayNumbers, rates);
     }
@@ -362,14 +355,14 @@ internal sealed class ExchangeRateSeriesBuffer
         var buffer = new ExchangeRateSeriesBuffer(count);
 
         var i = 0;
-        foreach (var observation in storage.Enumerate())
+        foreach (ExchangeRateObservation observation in storage.Enumerate())
         {
             buffer._dayNumbers[i] = observation.Date.DayNumber;
             buffer._rates[i] = observation.Rate;
             i++;
         }
 
-        buffer._count = count;
+        buffer.Count = count;
         return buffer;
     }
 
@@ -384,7 +377,7 @@ internal sealed class ExchangeRateSeriesBuffer
         string observationsParamName)
     {
         var incoming = new List<(int DayNumber, decimal Rate)>();
-        foreach (var observation in observations)
+        foreach (ExchangeRateObservation observation in observations)
         {
             if (observation.Rate <= 0m)
             {
@@ -433,7 +426,7 @@ internal sealed class ExchangeRateSeriesBuffer
         string observationsParamName,
         bool throwOnConflict)
     {
-        var maxLength = _count + incoming.Count;
+        var maxLength = Count + incoming.Count;
         var mergedDays = new int[maxLength];
         var mergedRates = new decimal[maxLength];
 
@@ -441,7 +434,7 @@ internal sealed class ExchangeRateSeriesBuffer
         var j = 0;
         var k = 0;
 
-        while (i < _count && j < incoming.Count)
+        while (i < Count && j < incoming.Count)
         {
             var existingDay = _dayNumbers[i];
             var incomingDay = incoming[j].DayNumber;
@@ -480,7 +473,7 @@ internal sealed class ExchangeRateSeriesBuffer
             }
         }
 
-        while (i < _count)
+        while (i < Count)
         {
             mergedDays[k] = _dayNumbers[i];
             mergedRates[k] = _rates[i];
@@ -504,7 +497,7 @@ internal sealed class ExchangeRateSeriesBuffer
 
         _dayNumbers = mergedDays;
         _rates = mergedRates;
-        _count = k;
+        Count = k;
     }
 
     /// <summary>
@@ -514,7 +507,7 @@ internal sealed class ExchangeRateSeriesBuffer
     /// <returns>
     /// A non-negative index if the value is present; otherwise the bitwise complement of the insertion index.
     /// </returns>
-    private int IndexOf(int dayNumber) => Array.BinarySearch(_dayNumbers, 0, _count, dayNumber);
+    private int IndexOf(int dayNumber) => Array.BinarySearch(_dayNumbers, 0, Count, dayNumber);
 
     /// <summary>
     /// Inserts a new entry at <paramref name="index" />, shifting subsequent entries to the right.
@@ -524,9 +517,9 @@ internal sealed class ExchangeRateSeriesBuffer
     /// <param name="rate">The rate to insert.</param>
     private void Insert(int index, int dayNumber, decimal rate)
     {
-        EnsureCapacity(_count + 1);
+        EnsureCapacity(Count + 1);
 
-        var moveCount = _count - index;
+        var moveCount = Count - index;
         if (moveCount > 0)
         {
             Array.Copy(_dayNumbers, index, _dayNumbers, index + 1, moveCount);
@@ -535,7 +528,7 @@ internal sealed class ExchangeRateSeriesBuffer
 
         _dayNumbers[index] = dayNumber;
         _rates[index] = rate;
-        _count++;
+        Count++;
     }
 
     /// <summary>
@@ -544,16 +537,16 @@ internal sealed class ExchangeRateSeriesBuffer
     /// <param name="index">The index to remove from the live segment.</param>
     private void RemoveAt(int index)
     {
-        var moveCount = _count - index - 1;
+        var moveCount = Count - index - 1;
         if (moveCount > 0)
         {
             Array.Copy(_dayNumbers, index + 1, _dayNumbers, index, moveCount);
             Array.Copy(_rates, index + 1, _rates, index, moveCount);
         }
 
-        _count--;
-        _dayNumbers[_count] = 0;
-        _rates[_count] = 0m;
+        Count--;
+        _dayNumbers[Count] = 0;
+        _rates[Count] = 0m;
     }
 
     /// <summary>
