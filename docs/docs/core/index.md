@@ -73,6 +73,13 @@ Date, numeric, span, and array extension methods. Larger surface than the others
 | <xref:Bodu.Extensions.IComparableExtensions>, <xref:Bodu.Extensions.ComparableHelper> | `Min`, `Max`, `Clamp`, `IsGreaterThan` / `IsGreaterThanOrEqual`. |
 | <xref:Bodu.Extensions.CalendarQuarterDefinition>, <xref:Bodu.WorkingDaysOfWeek>, <xref:Bodu.Extensions.IWeekendDefinitionProvider>, <xref:Bodu.Extensions.FiscalWeekPattern>, <xref:Bodu.Extensions.WeekOfMonthOrdinal> | Calendar-shape enums and injection seams for quarter, weekend, fiscal-week, and week-ordinal computations. |
 
+### `Bodu.Globalization.Extensions`
+Culture-aware date / calendar helpers built on top of <xref:System.Globalization.DateTimeFormatInfo>.
+
+| Type | Purpose |
+|---|---|
+| <xref:Bodu.Globalization.Extensions.DateTimeFormatInfoExtensions> | `FirstDayOfWeek`, `LastDayOfWeek`, weekend-aware helpers over `DateTimeFormatInfo`. |
+
 ### `Bodu.Text` and `Bodu.Xml.Linq`
 Text and XML helpers used internally by the other Bodu packages; available publicly when you need them.
 
