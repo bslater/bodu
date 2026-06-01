@@ -167,6 +167,33 @@ internal static partial class FinancialThrowHelper
     }
 
     /// <summary>
+    /// Throws when <paramref name="policy" /> is not a defined <see cref="CurrencyRegistrationConflictPolicy" /> member.
+    /// </summary>
+    /// <param name="policy">The conflict policy to validate.</param>
+    /// <param name="paramName">The parameter name reported in the exception; inferred from the call site.</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="policy" /> is not a defined value.
+    /// </exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static void ThrowIfCurrencyRegistrationConflictPolicyUndefined(
+        CurrencyRegistrationConflictPolicy policy,
+        [CallerArgumentExpression(nameof(policy))] string? paramName = null)
+    {
+        if (policy is not CurrencyRegistrationConflictPolicy.Throw
+            and not CurrencyRegistrationConflictPolicy.Replace
+            and not CurrencyRegistrationConflictPolicy.Ignore)
+        {
+            throw new ArgumentOutOfRangeException(
+                paramName,
+                policy,
+                string.Format(
+                    CultureInfo.InvariantCulture,
+                    FinancialResourceStrings.Arg_OutOfRange_CurrencyRegistrationConflictPolicyUndefined,
+                    policy));
+        }
+    }
+
+    /// <summary>
     /// Throws when <paramref name="minorUnits" /> is outside the supported range 0 to 28.
     /// </summary>
     /// <param name="minorUnits">The candidate minor-unit scale to validate.</param>

@@ -125,20 +125,56 @@ public static class CurrencyRegistry
     /// </summary>
     /// <param name="info">The currency metadata to register.</param>
     /// <exception cref="ArgumentNullException"><paramref name="info" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentException"><paramref name="info" /> carries invalid metadata.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="info" /> carries out-of-range metadata.</exception>
     /// <exception cref="InvalidOperationException">
     /// A custom registration already exists for <paramref name="info" />.<see cref="CurrencyInfo.IsoCode" />.
     /// </exception>
     /// <remarks>
-    /// Use <see cref="TryRegister(CurrencyInfo)" /> when conflicts should be silently ignored rather than raised.
+    /// The metadata is validated with the same rule set <see cref="CurrencyMetadata{TCurrency}" /> applies to tag
+    /// types. Use <see cref="TryRegister(CurrencyInfo)" /> when conflicts should be reported as <see langword="false" />
+    /// rather than raised, or <see cref="Register(CurrencyInfo, CurrencyRegistrationConflictPolicy)" /> to choose the
+    /// conflict behaviour explicitly.
     /// </remarks>
-    public static void Register(CurrencyInfo info)
-    {
-        ThrowHelper.ThrowIfNull(info);
+    public static void Register(CurrencyInfo info) =>
+        Register(info, CurrencyRegistrationConflictPolicy.Throw);
 
-        if (!s_custom.TryAdd(info.IsoCode, info))
+    /// <summary>
+    /// Registers a custom currency, resolving an existing registration for the same ISO code according to
+    /// <paramref name="conflictPolicy" />.
+    /// </summary>
+    /// <param name="info">The currency metadata to register.</param>
+    /// <param name="conflictPolicy">The behaviour applied when a custom registration already exists.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="info" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentException"><paramref name="info" /> carries invalid metadata.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="info" /> carries out-of-range metadata, or <paramref name="conflictPolicy" /> is not a defined
+    /// value.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// <paramref name="conflictPolicy" /> is <see cref="CurrencyRegistrationConflictPolicy.Throw" /> and a custom
+    /// registration already exists for <paramref name="info" />.<see cref="CurrencyInfo.IsoCode" />.
+    /// </exception>
+    public static void Register(CurrencyInfo info, CurrencyRegistrationConflictPolicy conflictPolicy)
+    {
+        CurrencyInfoValidator.Validate(info, nameof(info));
+        FinancialThrowHelper.ThrowIfCurrencyRegistrationConflictPolicyUndefined(conflictPolicy);
+
+        if (s_custom.TryAdd(info.IsoCode, info))
+            return;
+
+        switch (conflictPolicy)
         {
-            throw new InvalidOperationException(
-                string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Op_Invalid_DuplicateCustomCurrency, info.IsoCode));
+            case CurrencyRegistrationConflictPolicy.Replace:
+                s_custom[info.IsoCode] = info;
+                break;
+
+            case CurrencyRegistrationConflictPolicy.Ignore:
+                break;
+
+            default:
+                throw new InvalidOperationException(
+                    string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Op_Invalid_DuplicateCustomCurrency, info.IsoCode));
         }
     }
 
@@ -148,10 +184,47 @@ public static class CurrencyRegistry
     /// <param name="info">The currency metadata to register.</param>
     /// <returns>
     /// <see langword="true" /> when the registration succeeded; <see langword="false" /> when <paramref name="info" />
-    /// is <see langword="null" /> or a custom registration with the same ISO code already exists.
+    /// is <see langword="null" />, carries invalid metadata, or a custom registration with the same ISO code already
+    /// exists.
     /// </returns>
-    public static bool TryRegister(CurrencyInfo info) =>
-        info is not null && s_custom.TryAdd(info.IsoCode, info);
+    public static bool TryRegister(CurrencyInfo info)
+    {
+        if (info is null || !IsValid(info))
+            return false;
+
+        return s_custom.TryAdd(info.IsoCode, info);
+    }
+
+    /// <summary>
+    /// Registers a custom currency, replacing any existing custom registration for the same ISO code.
+    /// </summary>
+    /// <param name="info">The currency metadata to register.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="info" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentException"><paramref name="info" /> carries invalid metadata.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="info" /> carries out-of-range metadata.</exception>
+    public static void Replace(CurrencyInfo info)
+    {
+        CurrencyInfoValidator.Validate(info, nameof(info));
+        s_custom[info.IsoCode] = info;
+    }
+
+    /// <summary>
+    /// Determines whether <paramref name="info" /> satisfies the registry's metadata rules without throwing.
+    /// </summary>
+    /// <param name="info">The currency metadata to test.</param>
+    /// <returns><see langword="true" /> when the metadata is valid; otherwise <see langword="false" />.</returns>
+    private static bool IsValid(CurrencyInfo info)
+    {
+        try
+        {
+            CurrencyInfoValidator.Validate(info, nameof(info));
+            return true;
+        }
+        catch (ArgumentException)
+        {
+            return false;
+        }
+    }
 
     /// <summary>
     /// Builds the frozen shipped catalogue from the source-generated registration list.

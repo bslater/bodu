@@ -84,6 +84,12 @@
   <data name="Arg_Invalid_CurrencyCodeNotMapped" xml:space="preserve">
     <value>The CurrencyCode value '{0}' (numeric {1}) does not correspond to a registered currency.</value>
   </data>
+  <data name="Arg_Invalid_CurrencyInfoCashRoundingTooFine" xml:space="preserve">
+    <value>Currency '{0}' cash-rounding increment {1} is finer than its declared minor-unit precision {2}.</value>
+  </data>
+  <data name="Arg_Invalid_CurrencyInfoHistoricInconsistent" xml:space="preserve">
+    <value>Currency '{0}' is not historic but declares a demonetization date or successor ISO code.</value>
+  </data>
   <data name="Arg_Invalid_ExchangeRateBookDuplicateKey" xml:space="preserve">
     <value>ExchangeRateBook cannot contain two series with the same pair and provider; '{0}/{1}' from '{2}' is duplicated.</value>
   </data>
@@ -137,6 +143,18 @@
   </data>
   <data name="Arg_Null_ProviderAtIndex" xml:space="preserve">
     <value>Provider at index {0} is null.</value>
+  </data>
+  <data name="Arg_OutOfRange_CurrencyInfoCashRoundingNegative" xml:space="preserve">
+    <value>Currency '{0}' declares a negative cash-rounding increment {1}.</value>
+  </data>
+  <data name="Arg_OutOfRange_CurrencyInfoMinorUnits" xml:space="preserve">
+    <value>Currency '{0}' declares minor-unit precision {1}, which is outside the supported range 0 to 28.</value>
+  </data>
+  <data name="Arg_OutOfRange_CurrencyInfoNumericCode" xml:space="preserve">
+    <value>Currency '{0}' declares numeric code {1}, which is outside the supported range 0 to 999.</value>
+  </data>
+  <data name="Arg_OutOfRange_CurrencyRegistrationConflictPolicyUndefined" xml:space="preserve">
+    <value>CurrencyRegistrationConflictPolicy '{0}' is not a defined value.</value>
   </data>
   <data name="Arg_OutOfRange_ExchangeRateNotPositive" xml:space="preserve">
     <value>Exchange rate must be strictly positive.</value>
