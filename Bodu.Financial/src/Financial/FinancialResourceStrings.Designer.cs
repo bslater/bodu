@@ -286,24 +286,6 @@ namespace Bodu.Financial {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Nanos {0} is outside the valid range -999999999 to 999999999..
-        /// </summary>
-        internal static string Arg_Invalid_MoneyDtoNanosRange {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_MoneyDtoNanosRange", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Units {0} and Nanos {1} must have the same sign..
-        /// </summary>
-        internal static string Arg_Invalid_MoneyDtoSignMismatch {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_MoneyDtoSignMismatch", resourceCulture);
-            }
-        }
-
-        /// <summary>
         ///   Looks up a localized string similar to ScalePolicy.Custom requires a non-null CustomScale value..
         /// </summary>
         internal static string Arg_Invalid_CustomScaleRequiresValue {
