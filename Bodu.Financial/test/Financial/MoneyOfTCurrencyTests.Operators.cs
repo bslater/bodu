@@ -86,7 +86,7 @@ public partial class MoneyOfTCurrencyTests
     /// Verifies that dividing two amounts returns their dimensionless ratio.
     /// </summary>
     [TestMethod]
-    public void Division_WhenTwoMoneyValues_ShouldReturnDimensionlessRatio()
+    public void Division_WhenTwoMoneys_ShouldReturnDimensionlessRatio()
     {
         var a = new Money<USD>(10m);
         var b = new Money<USD>(4m);

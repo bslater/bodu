@@ -1,12 +1,12 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="MoneyValue.Properties.cs" company="Bodu Pty. Ltd.">
+// <copyright file="Money.Properties.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.Financial;
 
-public readonly partial struct MoneyValue
+public readonly partial struct Money
 {
     /// <summary>
     /// Gets the rounded monetary amount in the major unit of the currency.
@@ -65,17 +65,17 @@ public readonly partial struct MoneyValue
     /// <summary>
     /// Gets the absolute value of this amount.
     /// </summary>
-    /// <returns>A <see cref="MoneyValue" /> with the same ISO code and a non-negative amount.</returns>
-    public MoneyValue Abs =>
+    /// <returns>A <see cref="Money" /> with the same ISO code and a non-negative amount.</returns>
+    public Money Abs =>
         FromNormalized(Math.Abs(_amount), IsoCode);
 
     /// <summary>
-    /// Returns a <see cref="MoneyValue" /> representing zero of the specified currency.
+    /// Returns a <see cref="Money" /> representing zero of the specified currency.
     /// </summary>
     /// <param name="isoCode">The ISO 4217 code.</param>
-    /// <returns>A zero <see cref="MoneyValue" /> in <paramref name="isoCode" />.</returns>
+    /// <returns>A zero <see cref="Money" /> in <paramref name="isoCode" />.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="isoCode" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException"><paramref name="isoCode" /> is empty or whitespace.</exception>
-    public static MoneyValue Zero(string isoCode) =>
+    public static Money Zero(string isoCode) =>
         new(0m, isoCode);
 }

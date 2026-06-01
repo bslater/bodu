@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="MoneyValueTests.Formatting.cs" company="Bodu Pty. Ltd.">
+// <copyright file="MoneyTests.Formatting.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -9,20 +9,20 @@ using System.Globalization;
 namespace Bodu.Financial;
 
 /// <summary>
-/// Verifies that <see cref="MoneyValue" /> formatting mirrors the <see cref="Money{TCurrency}" /> specifier vocabulary
+/// Verifies that <see cref="Money" /> formatting mirrors the <see cref="Money{TCurrency}" /> specifier vocabulary
 /// (<c>G</c>, <c>C</c>, <c>L</c>, <c>R</c>, <c>N</c>, <c>F</c>, <c>D</c>) and supports the <c>~</c> prefix and
 /// precision-suffix forms uniformly across the typed and runtime-tagged surfaces.
 /// </summary>
-public partial class MoneyValueTests
+public partial class MoneyTests
 {
     /// <summary>
     /// Verifies that the <c>"C"</c> specifier emits the culture's native currency format when the culture's region
-    /// currency matches the <see cref="MoneyValue" />'s ISO code.
+    /// currency matches the <see cref="Money" />'s ISO code.
     /// </summary>
     [TestMethod]
     public void ToString_WhenCSpecifierAndCultureMatches_ShouldUseCultureNativeSymbol()
     {
-        var money = new MoneyValue(1234.56m, "USD");
+        var money = new Money(1234.56m, "USD");
 
         var actual = money.ToString("C", new CultureInfo("en-US"));
 
@@ -36,7 +36,7 @@ public partial class MoneyValueTests
     [TestMethod]
     public void ToString_WhenCSpecifierAndCultureMismatched_ShouldSubstituteIsoCode()
     {
-        var money = new MoneyValue(1234.56m, "USD");
+        var money = new Money(1234.56m, "USD");
 
         var actual = money.ToString("C", new CultureInfo("de-DE"));
 
@@ -49,7 +49,7 @@ public partial class MoneyValueTests
     [TestMethod]
     public void ToString_WhenLSpecifier_ShouldAppendEnglishNameFromRegistry()
     {
-        var money = new MoneyValue(1234.56m, "USD");
+        var money = new Money(1234.56m, "USD");
 
         var actual = money.ToString("L", CultureInfo.InvariantCulture);
 
@@ -64,7 +64,7 @@ public partial class MoneyValueTests
     [TestMethod]
     public void ToString_WhenLSpecifierAndCurrencyNotRegistered_ShouldFallBackToIsoForm()
     {
-        var money = new MoneyValue(1234m, "ZZZ");
+        var money = new Money(1234m, "ZZZ");
 
         var actual = money.ToString("L", CultureInfo.InvariantCulture);
 
@@ -72,12 +72,12 @@ public partial class MoneyValueTests
     }
 
     /// <summary>
-    /// Verifies that the <c>"R"</c> specifier emits the invariant round-trip form for <see cref="MoneyValue" />.
+    /// Verifies that the <c>"R"</c> specifier emits the invariant round-trip form for <see cref="Money" />.
     /// </summary>
     [TestMethod]
     public void ToString_WhenRSpecifier_ShouldEmitInvariantRoundTripForm()
     {
-        var money = new MoneyValue(1234.56m, "USD");
+        var money = new Money(1234.56m, "USD");
 
         var actual = money.ToString("R", new CultureInfo("de-DE"));
 
@@ -86,7 +86,7 @@ public partial class MoneyValueTests
 
     /// <summary>
     /// Verifies that the <c>"R"</c> output round-trips through
-    /// <see cref="MoneyValue.Parse(string, IFormatProvider?)" /> under <see cref="CultureInfo.InvariantCulture" />.
+    /// <see cref="Money.Parse(string, IFormatProvider?)" /> under <see cref="CultureInfo.InvariantCulture" />.
     /// </summary>
     [TestMethod]
     [DataRow("USD", 1234.56)]
@@ -95,22 +95,22 @@ public partial class MoneyValueTests
     [DataRow("BHD", 12.345)]
     public void ToString_WhenRSpecifier_ShouldRoundTripThroughParse(string iso, double amount)
     {
-        var original = new MoneyValue((decimal)amount, iso);
+        var original = new Money((decimal)amount, iso);
 
         var text = original.ToString("R", CultureInfo.InvariantCulture);
-        var recovered = MoneyValue.Parse(text, CultureInfo.InvariantCulture);
+        var recovered = Money.Parse(text, CultureInfo.InvariantCulture);
 
         Assert.AreEqual(original, recovered);
     }
 
     /// <summary>
-    /// Verifies that the <c>"~R"</c> specifier is rejected on <see cref="MoneyValue" /> for the same reason as on
+    /// Verifies that the <c>"~R"</c> specifier is rejected on <see cref="Money" /> for the same reason as on
     /// the typed surface.
     /// </summary>
     [TestMethod]
     public void ToString_WhenTildeRSpecifier_ShouldThrowFormatException()
     {
-        var money = new MoneyValue(1m, "USD");
+        var money = new Money(1m, "USD");
 
         Assert.ThrowsExactly<FormatException>(() =>
         {
@@ -124,7 +124,7 @@ public partial class MoneyValueTests
     [TestMethod]
     public void ToString_WhenTildeCAndCultureMatches_ShouldElideSymbol()
     {
-        var money = new MoneyValue(19.99m, "USD");
+        var money = new Money(19.99m, "USD");
 
         var actual = money.ToString("~C", new CultureInfo("en-US"));
 

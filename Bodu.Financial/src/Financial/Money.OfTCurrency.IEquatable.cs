@@ -78,7 +78,7 @@ public readonly partial struct Money<TCurrency> :
             : throw new ArgumentException(
             string.Format(
                 CultureInfo.InvariantCulture,
-                FinancialResourceStrings.Arg_Invalid_MoneyObject,
+                FinancialResourceStrings.Arg_Invalid_MoneyOfTCurrencyObject,
                 typeof(TCurrency).Name),
             nameof(obj));
     }

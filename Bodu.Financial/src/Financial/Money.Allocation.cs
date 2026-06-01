@@ -1,12 +1,12 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="MoneyValue.Allocation.cs" company="Bodu Pty. Ltd.">
+// <copyright file="Money.Allocation.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.Financial;
 
-public readonly partial struct MoneyValue
+public readonly partial struct Money
 {
     /// <summary>
     /// Distributes this amount as evenly as possible across <paramref name="parts" /> shares, summing exactly to the
@@ -17,7 +17,7 @@ public readonly partial struct MoneyValue
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="parts" /> is less than or equal to zero.
     /// </exception>
-    public MoneyValue[] Allocate(int parts)
+    public Money[] Allocate(int parts)
     {
         ThrowHelper.ThrowIfLessThanOrEqual(parts, 0);
 
@@ -29,7 +29,7 @@ public readonly partial struct MoneyValue
         var residualMagnitude = Math.Abs(residual);
 
         var iso = IsoCode;
-        var result = new MoneyValue[parts];
+        var result = new Money[parts];
         for (var i = 0; i < parts; i++)
         {
             var share = basePer + (i < residualMagnitude ? sign : 0);
@@ -45,7 +45,7 @@ public readonly partial struct MoneyValue
     /// <param name="ratios">The non-negative weights.</param>
     /// <returns>The per-ratio allocation.</returns>
     /// <exception cref="ArgumentException">The ratios are empty, contain a negative value, or sum to zero.</exception>
-    public MoneyValue[] Allocate(ReadOnlySpan<decimal> ratios)
+    public Money[] Allocate(ReadOnlySpan<decimal> ratios)
     {
         FinancialThrowHelper.ThrowIfAllocationRatiosInvalid(ratios);
 
@@ -87,7 +87,7 @@ public readonly partial struct MoneyValue
         }
 
         var iso = IsoCode;
-        var result = new MoneyValue[ratios.Length];
+        var result = new Money[ratios.Length];
         for (var i = 0; i < ratios.Length; i++)
             result[i] = FromNormalized(shares[i] / factor, iso);
 

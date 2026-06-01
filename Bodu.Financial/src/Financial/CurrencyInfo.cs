@@ -24,7 +24,7 @@ namespace Bodu.Financial;
 /// empty string when no name is supplied.
 /// </param>
 /// <remarks>
-/// This record is the runtime counterpart of an <see cref="ICurrency" /> tag type. The runtime-tagged <c>MoneyValue</c>
+/// This record is the runtime counterpart of an <see cref="ICurrency" /> tag type. The runtime-tagged <c>Money</c>
 /// and the <c>MoneyBag</c> aggregate operate against <see cref="CurrencyRegistry" /> entries of this shape so they can
 /// handle currencies the consumer learns about at runtime (for example, from a deserialised JSON payload).
 /// </remarks>

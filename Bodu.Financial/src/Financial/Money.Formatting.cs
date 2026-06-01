@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="MoneyValue.Formatting.cs" company="Bodu Pty. Ltd.">
+// <copyright file="Money.Formatting.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -9,7 +9,7 @@ using System.Text;
 
 namespace Bodu.Financial;
 
-public readonly partial struct MoneyValue :
+public readonly partial struct Money :
     IFormattable,
     ISpanFormattable,
     IUtf8SpanFormattable

@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="MoneyValue.Parse.cs" company="Bodu Pty. Ltd.">
+// <copyright file="Money.Parse.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -8,42 +8,42 @@ using System.Globalization;
 
 namespace Bodu.Financial;
 
-public readonly partial struct MoneyValue :
-    IParsable<MoneyValue>,
-    ISpanParsable<MoneyValue>
+public readonly partial struct Money :
+    IParsable<Money>,
+    ISpanParsable<Money>
 {
     /// <summary>
-    /// Parses a <see cref="MoneyValue" /> from <c>"&lt;ISO&gt; &lt;amount&gt;"</c> or
+    /// Parses a <see cref="Money" /> from <c>"&lt;ISO&gt; &lt;amount&gt;"</c> or
     /// <c>"&lt;amount&gt; &lt;ISO&gt;"</c>.
     /// </summary>
     /// <param name="s">The text to parse.</param>
     /// <param name="provider">The culture used to interpret the numeric component.</param>
     /// <returns>The parsed value.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="s" /> is <see langword="null" />.</exception>
-    /// <exception cref="FormatException">The input is not a valid <see cref="MoneyValue" /> representation.</exception>
-    public static MoneyValue Parse(string s, IFormatProvider? provider)
+    /// <exception cref="FormatException">The input is not a valid <see cref="Money" /> representation.</exception>
+    public static Money Parse(string s, IFormatProvider? provider)
     {
         ThrowHelper.ThrowIfNull(s);
         return Parse(s.AsSpan(), provider);
     }
 
     /// <summary>
-    /// Parses a <see cref="MoneyValue" /> from a span representation.
+    /// Parses a <see cref="Money" /> from a span representation.
     /// </summary>
     /// <param name="s">The text to parse.</param>
     /// <param name="provider">The culture used to interpret the numeric component.</param>
     /// <returns>The parsed value.</returns>
     /// <exception cref="FormatException">The input is not a valid representation.</exception>
-    public static MoneyValue Parse(ReadOnlySpan<char> s, IFormatProvider? provider)
+    public static Money Parse(ReadOnlySpan<char> s, IFormatProvider? provider)
     {
-        return !TryParse(s, provider, out MoneyValue result)
+        return !TryParse(s, provider, out Money result)
             ? throw new FormatException(
-                string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Format_Invalid_MoneyValueString, s.ToString()))
+                string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Format_Invalid_MoneyString, s.ToString()))
             : result;
     }
 
     /// <summary>
-    /// Attempts to parse a <see cref="MoneyValue" /> from a string.
+    /// Attempts to parse a <see cref="Money" /> from a string.
     /// </summary>
     /// <param name="s">The text to parse.</param>
     /// <param name="provider">The culture provider.</param>
@@ -51,7 +51,7 @@ public readonly partial struct MoneyValue :
     /// When this method returns <see langword="true" />, the parsed value; otherwise the default.
     /// </param>
     /// <returns><see langword="true" /> on success.</returns>
-    public static bool TryParse(string? s, IFormatProvider? provider, out MoneyValue result)
+    public static bool TryParse(string? s, IFormatProvider? provider, out Money result)
     {
         if (s is null)
         {
@@ -63,13 +63,13 @@ public readonly partial struct MoneyValue :
     }
 
     /// <summary>
-    /// Attempts to parse a <see cref="MoneyValue" /> from a span.
+    /// Attempts to parse a <see cref="Money" /> from a span.
     /// </summary>
     /// <param name="s">The text to parse.</param>
     /// <param name="provider">The culture provider.</param>
     /// <param name="result">The parsed value or default.</param>
     /// <returns><see langword="true" /> on success.</returns>
-    public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider? provider, out MoneyValue result)
+    public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider? provider, out Money result)
     {
         result = default;
 
@@ -100,14 +100,14 @@ public readonly partial struct MoneyValue :
     }
 
     /// <summary>
-    /// Parses the numeric portion and constructs the <see cref="MoneyValue" /> when both parts are valid.
+    /// Parses the numeric portion and constructs the <see cref="Money" /> when both parts are valid.
     /// </summary>
     /// <param name="numericPart">The numeric span.</param>
     /// <param name="iso">The ISO code.</param>
     /// <param name="provider">The culture provider.</param>
     /// <param name="result">The constructed value.</param>
     /// <returns><see langword="true" /> on success.</returns>
-    private static bool TryComposeWithCulture(ReadOnlySpan<char> numericPart, string iso, IFormatProvider? provider, out MoneyValue result)
+    private static bool TryComposeWithCulture(ReadOnlySpan<char> numericPart, string iso, IFormatProvider? provider, out Money result)
     {
         result = default;
         if (numericPart.IsEmpty) return false;
@@ -116,7 +116,7 @@ public readonly partial struct MoneyValue :
         if (!decimal.TryParse(numericPart, NumberStyles.Number | NumberStyles.AllowLeadingSign, effective, out var amount))
             return false;
 
-        result = new MoneyValue(amount, iso);
+        result = new Money(amount, iso);
         return true;
     }
 

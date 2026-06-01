@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="MoneyValueJsonConverter.cs" company="Bodu Pty. Ltd.">
+// <copyright file="MoneyJsonConverter.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -11,12 +11,12 @@ using System.Text.Json.Serialization;
 namespace Bodu.Financial.Serialization;
 
 /// <summary>
-/// Converts a <see cref="MoneyValue" /> to and from JSON using the policy supplied at construction. Mirrors the shape
+/// Converts a <see cref="Money" /> to and from JSON using the policy supplied at construction. Mirrors the shape
 /// vocabulary of <see cref="MoneyOfTCurrencyJsonConverter{TCurrency}" /> so a single <see cref="FinancialJsonPolicy" /> selection
 /// produces a coherent on-the-wire format across the monetary types.
 /// </summary>
-public sealed class MoneyValueJsonConverter
-    : JsonConverter<MoneyValue>
+public sealed class MoneyJsonConverter
+    : JsonConverter<Money>
 {
     /// <summary>
     /// The policy used by this converter instance.
@@ -24,36 +24,36 @@ public sealed class MoneyValueJsonConverter
     private readonly FinancialJsonPolicy _policy;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="MoneyValueJsonConverter" /> class configured for the
+    /// Initializes a new instance of the <see cref="MoneyJsonConverter" /> class configured for the
     /// <see cref="FinancialJsonPolicy.Strict" /> shape.
     /// </summary>
-    public MoneyValueJsonConverter()
+    public MoneyJsonConverter()
         : this(FinancialJsonPolicy.Strict)
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="MoneyValueJsonConverter" /> class configured for the supplied
+    /// Initializes a new instance of the <see cref="MoneyJsonConverter" /> class configured for the supplied
     /// <paramref name="policy" />.
     /// </summary>
     /// <param name="policy">The serialization policy.</param>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="policy" /> is not a defined <see cref="FinancialJsonPolicy" /> value.
     /// </exception>
-    public MoneyValueJsonConverter(FinancialJsonPolicy policy)
+    public MoneyJsonConverter(FinancialJsonPolicy policy)
     {
         FinancialThrowHelper.ThrowIfFinancialJsonPolicyUndefined(policy);
         _policy = policy;
     }
 
     /// <inheritdoc />
-    public override MoneyValue Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) =>
+    public override Money Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) =>
         _policy == FinancialJsonPolicy.Compact
             ? ReadCompact(ref reader)
             : ReadObject(ref reader);
 
     /// <inheritdoc />
-    public override void Write(Utf8JsonWriter writer, MoneyValue value, JsonSerializerOptions options)
+    public override void Write(Utf8JsonWriter writer, Money value, JsonSerializerOptions options)
     {
         ThrowHelper.ThrowIfNull(writer);
 
@@ -71,24 +71,24 @@ public sealed class MoneyValueJsonConverter
 
     /// <summary>
     /// Reads the compact string form (e.g. <c>"19.99 USD"</c>) via
-    /// <see cref="MoneyValue.TryParse(ReadOnlySpan{char}, IFormatProvider?, out MoneyValue)" />.
+    /// <see cref="Money.TryParse(ReadOnlySpan{char}, IFormatProvider?, out Money)" />.
     /// </summary>
     /// <param name="reader">The reader positioned at the value to convert.</param>
     /// <returns>The deserialized value.</returns>
     /// <exception cref="JsonException">
-    /// The token is not a string, or the string is not a valid MoneyValue representation.
+    /// The token is not a string, or the string is not a valid Money representation.
     /// </exception>
-    private static MoneyValue ReadCompact(ref Utf8JsonReader reader)
+    private static Money ReadCompact(ref Utf8JsonReader reader)
     {
         if (reader.TokenType != JsonTokenType.String)
-            throw new JsonException(FinancialResourceStrings.Json_Invalid_ExpectedCompactString_MoneyValue);
+            throw new JsonException(FinancialResourceStrings.Json_Invalid_ExpectedCompactString_Money);
 
         var text = reader.GetString()!;
-        return !MoneyValue.TryParse(text.AsSpan(), CultureInfo.InvariantCulture, out MoneyValue result)
+        return !Money.TryParse(text.AsSpan(), CultureInfo.InvariantCulture, out Money result)
             ? throw new JsonException(
                 string.Format(
                     CultureInfo.InvariantCulture,
-                    FinancialResourceStrings.Json_Invalid_CompactMoneyValueForm,
+                    FinancialResourceStrings.Json_Invalid_CompactMoneyForm,
                     text))
             : result;
     }
@@ -99,10 +99,10 @@ public sealed class MoneyValueJsonConverter
     /// <param name="reader">The reader positioned at the value to convert.</param>
     /// <returns>The deserialized value.</returns>
     /// <exception cref="JsonException">Thrown when the JSON shape is invalid.</exception>
-    private MoneyValue ReadObject(ref Utf8JsonReader reader)
+    private Money ReadObject(ref Utf8JsonReader reader)
     {
         if (reader.TokenType != JsonTokenType.StartObject)
-            throw new JsonException(FinancialResourceStrings.Json_Invalid_ExpectedObject_MoneyValue);
+            throw new JsonException(FinancialResourceStrings.Json_Invalid_ExpectedObject_Money);
 
         decimal? amount = null;
         string? currency = null;
@@ -169,13 +169,13 @@ public sealed class MoneyValueJsonConverter
             currency = currency.Trim().ToUpperInvariant();
 
         // Pre-validate the ISO shape so a malformed code surfaces as JsonException rather than the
-        // ArgumentException that the MoneyValue constructor would otherwise raise.
+        // ArgumentException that the Money constructor would otherwise raise.
         return currency.Length != 3
             || !char.IsAsciiLetterUpper(currency[0])
             || !char.IsAsciiLetterUpper(currency[1])
             || !char.IsAsciiLetterUpper(currency[2])
             ? throw new JsonException(FinancialResourceStrings.Arg_Invalid_IsoCodeShape)
-            : new MoneyValue(amount.Value, currency);
+            : new Money(amount.Value, currency);
     }
 
     /// <summary>
@@ -185,7 +185,7 @@ public sealed class MoneyValueJsonConverter
     /// </summary>
     /// <param name="value">The value to format.</param>
     /// <returns>The compact textual representation.</returns>
-    private static string FormatCompact(MoneyValue value)
+    private static string FormatCompact(Money value)
     {
         var numericFormat = "F" + value.MinorUnits.ToString(CultureInfo.InvariantCulture);
         return string.Concat(

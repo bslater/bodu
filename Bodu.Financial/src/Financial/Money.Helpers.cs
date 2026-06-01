@@ -6,15 +6,7 @@
 
 namespace Bodu.Financial;
 
-/// <summary>
-/// Provides type-inferring factory methods for <see cref="Money{TCurrency}" />.
-/// </summary>
-/// <remarks>
-/// The methods on this class mirror the constructor and <see cref="Money{TCurrency}.Zero" /> property declared on
-/// <see cref="Money{TCurrency}" /> but accept the currency type-parameter only, letting consumers write
-/// <c>Money.Of&lt;USD&gt;(19.99m)</c> in place of <c>new Money&lt;USD&gt;(19.99m)</c>.
-/// </remarks>
-public static class Money
+public readonly partial struct Money
 {
     /// <summary>
     /// Creates a <see cref="Money{TCurrency}" /> from the supplied amount, rounding to the currency's minor-unit

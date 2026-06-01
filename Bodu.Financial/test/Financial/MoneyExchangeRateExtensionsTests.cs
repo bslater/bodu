@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="MoneyValueExchangeRateExtensionsTests.cs" company="Bodu Pty. Ltd.">
+// <copyright file="MoneyExchangeRateExtensionsTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -9,10 +9,10 @@ using Bodu.Financial.Currencies;
 namespace Bodu.Financial;
 
 /// <summary>
-/// Verifies <see cref="MoneyValueExchangeRateExtensions" /> — the dated-conversion bridge for runtime-tagged money.
+/// Verifies <see cref="MoneyExchangeRateExtensions" /> — the dated-conversion bridge for runtime-tagged money.
 /// </summary>
 [TestClass]
-public class MoneyValueExchangeRateExtensionsTests
+public class MoneyExchangeRateExtensionsTests
 {
     /// <summary>
     /// Shared as-of date for the fixture.
@@ -40,9 +40,9 @@ public class MoneyValueExchangeRateExtensionsTests
     [DataRow("USD", "USD", 50, 50.00)]        // same-currency identity
     public void ConvertTo_WhenRateAvailable_ShouldReturnConvertedRuntimeAmount(string from, string to, double amount, double expected)
     {
-        MoneyValue source = new((decimal)amount, from);
+        Money source = new((decimal)amount, from);
 
-        MoneyValue result = source.ConvertTo(BuildProvider(), to, s_asOf, ExchangeRateLookupOptions.Exact);
+        Money result = source.ConvertTo(BuildProvider(), to, s_asOf, ExchangeRateLookupOptions.Exact);
 
         Assert.AreEqual(to, result.IsoCode);
         Assert.AreEqual((decimal)expected, result.Amount);
@@ -54,7 +54,7 @@ public class MoneyValueExchangeRateExtensionsTests
     [TestMethod]
     public void ConvertToTyped_WhenRateAvailable_ShouldReturnTypedAmount()
     {
-        MoneyValue source = new(100m, "EUR");
+        Money source = new(100m, "EUR");
 
         Money<USD> result = source.ConvertTo<USD>(BuildProvider(), s_asOf, ExchangeRateLookupOptions.Exact);
 
@@ -67,15 +67,15 @@ public class MoneyValueExchangeRateExtensionsTests
     [TestMethod]
     public void ConvertToWithRate_WhenRateAvailable_ShouldReturnAmountAndAuditMetadata()
     {
-        MoneyValue source = new(100m, "EUR");
+        Money source = new(100m, "EUR");
 
-        (MoneyValue target, ExchangeRateLookupResult lookup) = source.ConvertToWithRate(
+        (Money target, ExchangeRateLookupResult lookup) = source.ConvertToWithRate(
             BuildProvider(),
             "USD",
             s_asOf,
             ExchangeRateLookupOptions.Exact);
 
-        Assert.AreEqual(new MoneyValue(110m, "USD"), target);
+        Assert.AreEqual(new Money(110m, "USD"), target);
         Assert.AreEqual(1.10m, lookup.Rate.Rate);
         Assert.AreEqual("RBA", lookup.Rate.Provider);
         Assert.IsFalse(lookup.Rate.IsInverted);
@@ -89,9 +89,9 @@ public class MoneyValueExchangeRateExtensionsTests
     public void ConvertToWithRate_WhenOnlyInverseRateAvailable_ShouldFlagInversion()
     {
         // Only EUR/USD is in the table; converting USD → EUR uses the inverse.
-        MoneyValue source = new(110m, "USD");
+        Money source = new(110m, "USD");
 
-        (MoneyValue target, ExchangeRateLookupResult lookup) = source.ConvertToWithRate(
+        (Money target, ExchangeRateLookupResult lookup) = source.ConvertToWithRate(
             BuildProvider(),
             "EUR",
             s_asOf,
@@ -108,7 +108,7 @@ public class MoneyValueExchangeRateExtensionsTests
     [TestMethod]
     public void ConvertTo_WhenProviderIsNull_ShouldThrowArgumentNullException()
     {
-        MoneyValue source = new(100m, "EUR");
+        Money source = new(100m, "EUR");
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -122,7 +122,7 @@ public class MoneyValueExchangeRateExtensionsTests
     [TestMethod]
     public void ConvertTo_WhenRateUnavailable_ShouldThrowKeyNotFoundException()
     {
-        MoneyValue source = new(100m, "GBP");        // no GBP rates in the fixture
+        Money source = new(100m, "GBP");        // no GBP rates in the fixture
 
         Assert.ThrowsExactly<KeyNotFoundException>(() =>
         {
@@ -138,9 +138,9 @@ public class MoneyValueExchangeRateExtensionsTests
     [TestMethod]
     public void ConvertTo_WhenSourceAndTargetAreSameCurrency_ShouldReturnSourceAmount()
     {
-        MoneyValue source = new(100m, "EUR");
+        Money source = new(100m, "EUR");
 
-        MoneyValue result = source.ConvertTo(BuildProvider(), "EUR", s_asOf, ExchangeRateLookupOptions.Exact);
+        Money result = source.ConvertTo(BuildProvider(), "EUR", s_asOf, ExchangeRateLookupOptions.Exact);
 
         Assert.AreEqual(source, result);
     }
@@ -157,10 +157,10 @@ public class MoneyValueExchangeRateExtensionsTests
             new ExchangeRate("EUR", "USD", s_asOf, 1.225m, "Bench"),
         ]);
 
-        MoneyValue source = new(1m, "EUR");
+        Money source = new(1m, "EUR");
 
-        MoneyValue banker = source.ConvertTo(rates, "USD", s_asOf, ExchangeRateLookupOptions.Exact);
-        MoneyValue awayFromZero = source.ConvertTo(rates, "USD", s_asOf, ExchangeRateLookupOptions.Exact, MidpointRounding.AwayFromZero);
+        Money banker = source.ConvertTo(rates, "USD", s_asOf, ExchangeRateLookupOptions.Exact);
+        Money awayFromZero = source.ConvertTo(rates, "USD", s_asOf, ExchangeRateLookupOptions.Exact, MidpointRounding.AwayFromZero);
 
         Assert.AreEqual(1.22m, banker.Amount);
         Assert.AreEqual(1.23m, awayFromZero.Amount);

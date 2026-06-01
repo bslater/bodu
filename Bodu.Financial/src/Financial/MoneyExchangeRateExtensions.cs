@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="MoneyValueExchangeRateExtensions.cs" company="Bodu Pty. Ltd.">
+// <copyright file="MoneyExchangeRateExtensions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -8,10 +8,10 @@ namespace Bodu.Financial;
 
 /// <summary>
 /// Provides extension methods that resolve a dated exchange rate from an <see cref="IDatedExchangeRateProvider" /> and
-/// apply it to a <see cref="MoneyValue" /> — the runtime-tagged counterpart of
+/// apply it to a <see cref="Money" /> — the runtime-tagged counterpart of
 /// <see cref="MoneyOfTCurrencyExchangeRateExtensions" />.
 /// </summary>
-public static class MoneyValueExchangeRateExtensions
+public static class MoneyExchangeRateExtensions
 {
     /// <summary>
     /// Converts <paramref name="amount" /> to <paramref name="targetIsoCode" /> using the rate resolved by
@@ -26,7 +26,7 @@ public static class MoneyValueExchangeRateExtensions
     /// The rounding mode applied at the destination precision. Defaults to <see cref="MidpointRounding.ToEven" />.
     /// </param>
     /// <returns>
-    /// The converted amount as a <see cref="MoneyValue" /> tagged with <paramref name="targetIsoCode" />.
+    /// The converted amount as a <see cref="Money" /> tagged with <paramref name="targetIsoCode" />.
     /// </returns>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="provider" /> or <paramref name="targetIsoCode" /> is <see langword="null" />.
@@ -37,8 +37,8 @@ public static class MoneyValueExchangeRateExtensions
     /// <exception cref="KeyNotFoundException">
     /// No rate is available for the requested pair under <paramref name="options" />.
     /// </exception>
-    public static MoneyValue ConvertTo(
-        this MoneyValue amount,
+    public static Money ConvertTo(
+        this Money amount,
         IDatedExchangeRateProvider provider,
         string targetIsoCode,
         DateOnly date,
@@ -48,7 +48,7 @@ public static class MoneyValueExchangeRateExtensions
         ThrowHelper.ThrowIfNull(provider);
 
         ExchangeRateLookupResult lookup = provider.GetRate(amount.IsoCode, targetIsoCode, date, options);
-        return new MoneyValue(amount.Amount * lookup.Rate.Rate, targetIsoCode, rounding);
+        return new Money(amount.Amount * lookup.Rate.Rate, targetIsoCode, rounding);
     }
 
     /// <summary>
@@ -70,7 +70,7 @@ public static class MoneyValueExchangeRateExtensions
     /// No rate is available for the requested pair under <paramref name="options" />.
     /// </exception>
     public static Money<TTarget> ConvertTo<TTarget>(
-        this MoneyValue amount,
+        this Money amount,
         IDatedExchangeRateProvider provider,
         DateOnly date,
         ExchangeRateLookupOptions options,
@@ -103,8 +103,8 @@ public static class MoneyValueExchangeRateExtensions
     /// <exception cref="KeyNotFoundException">
     /// No rate is available for the requested pair under <paramref name="options" />.
     /// </exception>
-    public static (MoneyValue Target, ExchangeRateLookupResult Rate) ConvertToWithRate(
-        this MoneyValue amount,
+    public static (Money Target, ExchangeRateLookupResult Rate) ConvertToWithRate(
+        this Money amount,
         IDatedExchangeRateProvider provider,
         string targetIsoCode,
         DateOnly date,
@@ -114,7 +114,7 @@ public static class MoneyValueExchangeRateExtensions
         ThrowHelper.ThrowIfNull(provider);
 
         ExchangeRateLookupResult lookup = provider.GetRate(amount.IsoCode, targetIsoCode, date, options);
-        MoneyValue target = new(amount.Amount * lookup.Rate.Rate, targetIsoCode, rounding);
+        Money target = new(amount.Amount * lookup.Rate.Rate, targetIsoCode, rounding);
         return (target, lookup);
     }
 }

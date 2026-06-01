@@ -48,7 +48,7 @@ public class MoneyOfTCurrencyJsonConverterPolicyTests
     public void MoneyTypes_WhenInspected_ShouldStillDeclareJsonConverterAttribute()
     {
         Assert.IsTrue(typeof(Money<USD>).IsDefined(typeof(JsonConverterAttribute), inherit: false));
-        Assert.IsTrue(typeof(MoneyValue).IsDefined(typeof(JsonConverterAttribute), inherit: false));
+        Assert.IsTrue(typeof(Money).IsDefined(typeof(JsonConverterAttribute), inherit: false));
         Assert.IsTrue(typeof(MoneyBag).IsDefined(typeof(JsonConverterAttribute), inherit: false));
     }
 

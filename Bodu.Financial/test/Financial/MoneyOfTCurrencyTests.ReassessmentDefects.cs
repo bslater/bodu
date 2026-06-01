@@ -216,7 +216,7 @@ public partial class MoneyOfTCurrencyTests
     [TestMethod]
     public void Balances_WhenCastToMutableAndMutated_ShouldNotAffectBagState()
     {
-        var bag = new MoneyBag([new MoneyValue(100m, "USD")]);
+        var bag = new MoneyBag([new Money(100m, "USD")]);
 
         IReadOnlyDictionary<string, decimal> balances = bag.Balances;
 
@@ -311,11 +311,11 @@ public partial class MoneyOfTCurrencyTests
     }
 
     // ---------------------------------------------------------------------------------------------------------------
-    // P0.6 — MoneyValue must reject malformed ISO codes (lowercase, length, non-letter, surrounding whitespace).
+    // P0.6 — Money must reject malformed ISO codes (lowercase, length, non-letter, surrounding whitespace).
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Verifies that <see cref="MoneyValue" />'s constructor rejects lowercase ISO codes — ISO 4217 codes are
+    /// Verifies that <see cref="Money" />'s constructor rejects lowercase ISO codes — ISO 4217 codes are
     /// strictly uppercase.
     /// </summary>
     [TestMethod]
@@ -327,26 +327,26 @@ public partial class MoneyOfTCurrencyTests
     [DataRow("USDX")]
     [DataRow("U$D")]
     [DataRow("12D")]
-    public void MoneyValueConstructor_WhenIsoCodeMalformed_ShouldThrowArgumentException(string iso)
+    public void MoneyConstructor_WhenIsoCodeMalformed_ShouldThrowArgumentException(string iso)
     {
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
-            _ = new MoneyValue(10m, iso);
+            _ = new Money(10m, iso);
         });
     }
 
     // ---------------------------------------------------------------------------------------------------------------
-    // P1.5 — MoneyBag constructor must reject (not silently drop) MoneyValue entries with an empty ISO.
+    // P1.5 — MoneyBag constructor must reject (not silently drop) Money entries with an empty ISO.
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Verifies that a default <see cref="MoneyValue" /> (empty ISO) supplied to <see cref="MoneyBag" />'s
+    /// Verifies that a default <see cref="Money" /> (empty ISO) supplied to <see cref="MoneyBag" />'s
     /// constructor causes <see cref="ArgumentException" /> rather than being silently dropped.
     /// </summary>
     [TestMethod]
     public void MoneyBagConstructor_WhenBalanceCarriesEmptyIsoCode_ShouldThrowArgumentException()
     {
-        MoneyValue[] entries = [new MoneyValue(100m, "USD"), default];
+        Money[] entries = [new Money(100m, "USD"), default];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -355,18 +355,18 @@ public partial class MoneyOfTCurrencyTests
     }
 
     // ---------------------------------------------------------------------------------------------------------------
-    // P1.6 — Default MoneyValue arithmetic must reject (both operands have empty ISO).
+    // P1.6 — Default Money arithmetic must reject (both operands have empty ISO).
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Verifies that arithmetic between two default <see cref="MoneyValue" /> instances throws — empty-ISO
+    /// Verifies that arithmetic between two default <see cref="Money" /> instances throws — empty-ISO
     /// values must not produce more empty-ISO values.
     /// </summary>
     [TestMethod]
-    public void MoneyValueArithmetic_WhenBothOperandsAreDefault_ShouldThrowInvalidOperationException()
+    public void MoneyArithmetic_WhenBothOperandsAreDefault_ShouldThrowInvalidOperationException()
     {
-        MoneyValue a = default;
-        MoneyValue b = default;
+        Money a = default;
+        Money b = default;
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
@@ -375,13 +375,13 @@ public partial class MoneyOfTCurrencyTests
     }
 
     /// <summary>
-    /// Verifies that comparison between two default <see cref="MoneyValue" /> instances also throws.
+    /// Verifies that comparison between two default <see cref="Money" /> instances also throws.
     /// </summary>
     [TestMethod]
-    public void MoneyValueComparison_WhenBothOperandsAreDefault_ShouldThrowInvalidOperationException()
+    public void MoneyComparison_WhenBothOperandsAreDefault_ShouldThrowInvalidOperationException()
     {
-        MoneyValue a = default;
-        MoneyValue b = default;
+        Money a = default;
+        Money b = default;
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
@@ -390,13 +390,13 @@ public partial class MoneyOfTCurrencyTests
     }
 
     /// <summary>
-    /// Verifies that a default <see cref="MoneyValue" /> combined with a real one throws.
+    /// Verifies that a default <see cref="Money" /> combined with a real one throws.
     /// </summary>
     [TestMethod]
-    public void MoneyValueArithmetic_WhenOneOperandIsDefault_ShouldThrowInvalidOperationException()
+    public void MoneyArithmetic_WhenOneOperandIsDefault_ShouldThrowInvalidOperationException()
     {
-        var real = new MoneyValue(100m, "USD");
-        MoneyValue empty = default;
+        var real = new Money(100m, "USD");
+        Money empty = default;
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
@@ -405,21 +405,21 @@ public partial class MoneyOfTCurrencyTests
     }
 
     // ---------------------------------------------------------------------------------------------------------------
-    // P1.8 — MoneyValueJsonConverter must reject duplicate "amount" or "currency" properties.
+    // P1.8 — MoneyJsonConverter must reject duplicate "amount" or "currency" properties.
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
     /// Verifies that a JSON payload with duplicate <c>"amount"</c> properties is rejected for
-    /// <see cref="MoneyValue" /> (mirroring the existing guarantee on <see cref="Money{TCurrency}" />).
+    /// <see cref="Money" /> (mirroring the existing guarantee on <see cref="Money{TCurrency}" />).
     /// </summary>
     [TestMethod]
-    public void MoneyValueJsonDeserialize_WhenAmountPropertyDuplicated_ShouldThrowJsonException()
+    public void MoneyJsonDeserialize_WhenAmountPropertyDuplicated_ShouldThrowJsonException()
     {
         var json = "{\"amount\":10,\"amount\":20,\"currency\":\"USD\"}";
 
         Assert.ThrowsExactly<JsonException>(() =>
         {
-            _ = JsonSerializer.Deserialize<MoneyValue>(json);
+            _ = JsonSerializer.Deserialize<Money>(json);
         });
     }
 
@@ -427,13 +427,13 @@ public partial class MoneyOfTCurrencyTests
     /// Verifies that a JSON payload with duplicate <c>"currency"</c> properties is rejected.
     /// </summary>
     [TestMethod]
-    public void MoneyValueJsonDeserialize_WhenCurrencyPropertyDuplicated_ShouldThrowJsonException()
+    public void MoneyJsonDeserialize_WhenCurrencyPropertyDuplicated_ShouldThrowJsonException()
     {
         var json = "{\"amount\":10,\"currency\":\"USD\",\"currency\":\"EUR\"}";
 
         Assert.ThrowsExactly<JsonException>(() =>
         {
-            _ = JsonSerializer.Deserialize<MoneyValue>(json);
+            _ = JsonSerializer.Deserialize<Money>(json);
         });
     }
 
@@ -449,11 +449,11 @@ public partial class MoneyOfTCurrencyTests
     [TestMethod]
     public void ConvertTo_WhenTwoSubMinorUnitLinesAggregate_ShouldDifferByRoundingPolicy()
     {
-        // Use unregistered currency tags (valid ISO shape, not in the catalogue) so the MoneyValue constructor
+        // Use unregistered currency tags (valid ISO shape, not in the catalogue) so the Money constructor
         // preserves the sub-cent source precision instead of rounding it away.
         MoneyBag bag = MoneyBag.Empty
-            .Add(new MoneyValue(0.005m, "XQT"))
-            .Add(new MoneyValue(0.005m, "XQU"));
+            .Add(new Money(0.005m, "XQT"))
+            .Add(new Money(0.005m, "XQU"));
 
         FixedExchangeRateTable rates = new(new Dictionary<(string From, string To), decimal>
         {

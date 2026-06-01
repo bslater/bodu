@@ -111,7 +111,7 @@ public sealed class MoneyOfTCurrencyJsonConverter<TCurrency>
             throw new JsonException(
                 string.Format(
                     CultureInfo.InvariantCulture,
-                    FinancialResourceStrings.Json_Invalid_ExpectedCompactString_Money,
+                    FinancialResourceStrings.Json_Invalid_ExpectedCompactString_MoneyOfTCurrency,
                     typeof(TCurrency).Name));
         }
 
@@ -120,7 +120,7 @@ public sealed class MoneyOfTCurrencyJsonConverter<TCurrency>
             ? throw new JsonException(
                 string.Format(
                     CultureInfo.InvariantCulture,
-                    FinancialResourceStrings.Json_Invalid_CompactMoneyForm,
+                    FinancialResourceStrings.Json_Invalid_CompactMoneyOfTCurrencyForm,
                     text,
                     typeof(TCurrency).Name))
             : result;
@@ -138,7 +138,7 @@ public sealed class MoneyOfTCurrencyJsonConverter<TCurrency>
     private Money<TCurrency> ReadObject(ref Utf8JsonReader reader)
     {
         if (reader.TokenType != JsonTokenType.StartObject)
-            throw new JsonException(FinancialResourceStrings.Json_Invalid_ExpectedObject_Money);
+            throw new JsonException(FinancialResourceStrings.Json_Invalid_ExpectedObject_MoneyOfTCurrency);
 
         decimal? amount = null;
         string? currency = null;

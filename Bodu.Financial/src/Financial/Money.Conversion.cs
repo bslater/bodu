@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="MoneyValue.Conversion.cs" company="Bodu Pty. Ltd.">
+// <copyright file="Money.Conversion.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -8,10 +8,10 @@ using System.Globalization;
 
 namespace Bodu.Financial;
 
-public readonly partial struct MoneyValue
+public readonly partial struct Money
 {
     /// <summary>
-    /// Converts this <see cref="MoneyValue" /> to a strongly-typed <see cref="Money{TCurrency}" /> when the runtime
+    /// Converts this <see cref="Money" /> to a strongly-typed <see cref="Money{TCurrency}" /> when the runtime
     /// currency matches <typeparamref name="TCurrency" />.
     /// </summary>
     /// <typeparam name="TCurrency">The target currency type.</typeparam>
@@ -26,7 +26,7 @@ public readonly partial struct MoneyValue
             ? throw new InvalidOperationException(
                 string.Format(
                     CultureInfo.InvariantCulture,
-                    FinancialResourceStrings.Op_Invalid_CannotConvertMoneyValueToTyped,
+                    FinancialResourceStrings.Op_Invalid_CannotConvertMoneyToTyped,
                     IsoCode,
                     typeof(TCurrency).Name,
                     CurrencyMetadata<TCurrency>.Value.IsoCode))
@@ -34,7 +34,7 @@ public readonly partial struct MoneyValue
     }
 
     /// <summary>
-    /// Attempts to convert this <see cref="MoneyValue" /> to a strongly-typed <see cref="Money{TCurrency}" />.
+    /// Attempts to convert this <see cref="Money" /> to a strongly-typed <see cref="Money{TCurrency}" />.
     /// </summary>
     /// <typeparam name="TCurrency">The target currency type.</typeparam>
     /// <param name="result">When this method returns <see langword="true" />, the strongly-typed value.</param>
@@ -53,12 +53,12 @@ public readonly partial struct MoneyValue
     }
 
     /// <summary>
-    /// Creates a <see cref="MoneyValue" /> from a strongly-typed <see cref="Money{TCurrency}" />.
+    /// Creates a <see cref="Money" /> from a strongly-typed <see cref="Money{TCurrency}" />.
     /// </summary>
     /// <typeparam name="TCurrency">The source currency type.</typeparam>
     /// <param name="money">The strongly-typed monetary value.</param>
     /// <returns>The runtime-tagged equivalent.</returns>
-    public static MoneyValue FromTyped<TCurrency>(Money<TCurrency> money)
+    public static Money FromTyped<TCurrency>(Money<TCurrency> money)
         where TCurrency : ICurrency =>
         FromNormalized(money.Amount, CurrencyMetadata<TCurrency>.Value.IsoCode);
 
@@ -68,13 +68,13 @@ public readonly partial struct MoneyValue
     /// </summary>
     /// <param name="targetIsoCode">The ISO 4217 code of the destination currency.</param>
     /// <param name="exchangeRate">The rate, expressed as units of the destination per unit of the source.</param>
-    /// <returns>The converted <see cref="MoneyValue" />.</returns>
+    /// <returns>The converted <see cref="Money" />.</returns>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="targetIsoCode" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException"><paramref name="targetIsoCode" /> is empty or whitespace.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="exchangeRate" /> is negative.</exception>
-    public MoneyValue Convert(string targetIsoCode, decimal exchangeRate) =>
+    public Money Convert(string targetIsoCode, decimal exchangeRate) =>
         Convert(targetIsoCode, exchangeRate, MidpointRounding.ToEven);
 
     /// <summary>
@@ -83,16 +83,16 @@ public readonly partial struct MoneyValue
     /// <param name="targetIsoCode">The ISO 4217 code of the destination currency.</param>
     /// <param name="exchangeRate">The rate, expressed as units of the destination per unit of the source.</param>
     /// <param name="rounding">The midpoint-rounding rule applied at the target precision.</param>
-    /// <returns>The converted <see cref="MoneyValue" />.</returns>
+    /// <returns>The converted <see cref="Money" />.</returns>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="targetIsoCode" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException"><paramref name="targetIsoCode" /> is empty or whitespace.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="exchangeRate" /> is negative.</exception>
-    public MoneyValue Convert(string targetIsoCode, decimal exchangeRate, MidpointRounding rounding)
+    public Money Convert(string targetIsoCode, decimal exchangeRate, MidpointRounding rounding)
     {
         FinancialThrowHelper.ThrowIfExchangeRateNotPositive(exchangeRate);
-        return new MoneyValue(_amount * exchangeRate, targetIsoCode, rounding);
+        return new Money(_amount * exchangeRate, targetIsoCode, rounding);
     }
 
     /// <summary>

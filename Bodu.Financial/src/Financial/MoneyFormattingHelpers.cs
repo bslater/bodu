@@ -9,7 +9,7 @@ using System.Globalization;
 namespace Bodu.Financial;
 
 /// <summary>
-/// Shared formatting helpers consumed by <see cref="Money{TCurrency}" /> and <see cref="MoneyValue" /> to keep their
+/// Shared formatting helpers consumed by <see cref="Money{TCurrency}" /> and <see cref="Money" /> to keep their
 /// locale-aware <c>C</c>-specifier output consistent without duplicating the pattern-substitution machinery.
 /// </summary>
 internal static class MoneyFormattingHelpers

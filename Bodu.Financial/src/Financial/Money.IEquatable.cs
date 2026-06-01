@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="MoneyValue.IEquatable.cs" company="Bodu Pty. Ltd.">
+// <copyright file="Money.IEquatable.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -8,9 +8,9 @@ using System.Globalization;
 
 namespace Bodu.Financial;
 
-public readonly partial struct MoneyValue :
-    IEquatable<MoneyValue>,
-    IComparable<MoneyValue>,
+public readonly partial struct Money :
+    IEquatable<Money>,
+    IComparable<Money>,
     IComparable
 {
     /// <summary>
@@ -20,16 +20,16 @@ public readonly partial struct MoneyValue :
     /// <returns>
     /// <see langword="true" /> when both ISO code and amount match; otherwise <see langword="false" />.
     /// </returns>
-    public bool Equals(MoneyValue other) =>
+    public bool Equals(Money other) =>
         _amount == other._amount && string.Equals(IsoCode, other.IsoCode, StringComparison.Ordinal);
 
     /// <summary>
     /// Determines whether this instance equals the boxed <paramref name="obj" />.
     /// </summary>
     /// <param name="obj">The object to compare.</param>
-    /// <returns><see langword="true" /> when <paramref name="obj" /> is a matching <see cref="MoneyValue" />.</returns>
+    /// <returns><see langword="true" /> when <paramref name="obj" /> is a matching <see cref="Money" />.</returns>
     public override bool Equals(object? obj) =>
-        obj is MoneyValue other && Equals(other);
+        obj is Money other && Equals(other);
 
     /// <summary>
     /// Returns a hash code combining the currency and amount.
@@ -44,13 +44,13 @@ public readonly partial struct MoneyValue :
     /// <param name="other">The value to compare against.</param>
     /// <returns>A negative, zero, or positive value.</returns>
     /// <exception cref="InvalidOperationException">The operands have different ISO codes.</exception>
-    public int CompareTo(MoneyValue other)
+    public int CompareTo(Money other)
     {
         return !string.Equals(IsoCode, other.IsoCode, StringComparison.Ordinal)
             ? throw new InvalidOperationException(
                 string.Format(
                     CultureInfo.InvariantCulture,
-                    FinancialResourceStrings.Op_Invalid_MoneyValueCompareSameCurrencyRequired,
+                    FinancialResourceStrings.Op_Invalid_MoneyCompareSameCurrencyRequired,
                     IsoCode,
                     other.IsoCode))
             : _amount.CompareTo(other._amount);
@@ -61,13 +61,13 @@ public readonly partial struct MoneyValue :
     /// </summary>
     /// <param name="obj">The boxed value.</param>
     /// <returns>A negative, zero, or positive value.</returns>
-    /// <exception cref="ArgumentException"><paramref name="obj" /> is not a <see cref="MoneyValue" />.</exception>
+    /// <exception cref="ArgumentException"><paramref name="obj" /> is not a <see cref="Money" />.</exception>
     public int CompareTo(object? obj)
     {
         if (obj is null) return 1;
-        return obj is MoneyValue other
+        return obj is Money other
             ? CompareTo(other)
-            : throw new ArgumentException(FinancialResourceStrings.Arg_Invalid_MoneyValueObject, nameof(obj));
+            : throw new ArgumentException(FinancialResourceStrings.Arg_Invalid_MoneyObject, nameof(obj));
     }
 
     /// <summary>
@@ -76,7 +76,7 @@ public readonly partial struct MoneyValue :
     /// <param name="left">The first value.</param>
     /// <param name="right">The second value.</param>
     /// <returns><see langword="true" /> when equal; otherwise <see langword="false" />.</returns>
-    public static bool operator ==(MoneyValue left, MoneyValue right)
+    public static bool operator ==(Money left, Money right)
     {
         return left.Equals(right);
     }
@@ -87,7 +87,7 @@ public readonly partial struct MoneyValue :
     /// <param name="left">The first value.</param>
     /// <param name="right">The second value.</param>
     /// <returns><see langword="true" /> when they differ; otherwise <see langword="false" />.</returns>
-    public static bool operator !=(MoneyValue left, MoneyValue right)
+    public static bool operator !=(Money left, Money right)
     {
         return !left.Equals(right);
     }

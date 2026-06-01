@@ -27,7 +27,7 @@ public class FinancialJsonSerializerOptionsExtensionsTests
 
         Assert.AreEqual(5, options.Converters.Count);
         Assert.IsTrue(options.Converters.Any(c => c is MoneyOfTCurrencyJsonConverterFactory));
-        Assert.IsTrue(options.Converters.Any(c => c is MoneyValueJsonConverter));
+        Assert.IsTrue(options.Converters.Any(c => c is MoneyJsonConverter));
         Assert.IsTrue(options.Converters.Any(c => c is MoneyBagJsonConverter));
         Assert.IsTrue(options.Converters.Any(c => c is ExchangeRateJsonConverter));
         Assert.IsTrue(options.Converters.Any(c => c is ExchangeRatePairJsonConverter));
