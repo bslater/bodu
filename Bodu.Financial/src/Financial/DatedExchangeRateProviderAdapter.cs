@@ -30,7 +30,7 @@ public sealed class DatedExchangeRateProviderAdapter : IExchangeRateProvider
     private readonly DateOnly _date;
 
     /// <summary>
-    /// The fixed lookup options supplied to <see cref="_inner" /> on every lookup.
+    /// The fixed (non-null) lookup options supplied to <see cref="_inner" /> on every lookup.
     /// </summary>
     private readonly ExchangeRateLookupOptions _options;
 
@@ -39,7 +39,10 @@ public sealed class DatedExchangeRateProviderAdapter : IExchangeRateProvider
     /// </summary>
     /// <param name="inner">The underlying dated provider to delegate to.</param>
     /// <param name="date">The valuation date pinned to every lookup.</param>
-    /// <param name="options">The lookup options pinned to every lookup.</param>
+    /// <param name="options">
+    /// The lookup options pinned to every lookup. <see langword="null" /> is treated as
+    /// <see cref="ExchangeRateLookupOptions.Exact" />.
+    /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="inner" /> is <see langword="null" />.
     /// </exception>
@@ -53,9 +56,10 @@ public sealed class DatedExchangeRateProviderAdapter : IExchangeRateProvider
     public DatedExchangeRateProviderAdapter(
         IDatedExchangeRateProvider inner,
         DateOnly date,
-        ExchangeRateLookupOptions options)
+        ExchangeRateLookupOptions? options = null)
     {
         ThrowHelper.ThrowIfNull(inner);
+        options ??= ExchangeRateLookupOptions.Exact;
         options.Validate();
 
         _inner = inner;

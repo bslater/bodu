@@ -23,7 +23,7 @@ public class MoneyExchangeRateExtensionsTests
     /// Returns the shared test rate table.
     /// </summary>
     /// <returns>A provider with EUR/USD=1.10, JPY/USD=0.0067, USD/EUR=0.9091 (for inverse coverage).</returns>
-    private static IDatedExchangeRateProvider BuildProvider() => new FixedDatedExchangeRateTable(
+    private static IDatedExchangeRateProvider BuildProvider() => new FixedDatedExchangeRateProvider(
     [
         new ExchangeRate("EUR", "USD", s_asOf, 1.10m, "RBA"),
         new ExchangeRate("JPY", "USD", s_asOf, 0.0067m, "RBA"),
@@ -151,7 +151,7 @@ public class MoneyExchangeRateExtensionsTests
     [TestMethod]
     public void ConvertTo_WhenAwayFromZeroRequested_ShouldRoundMidpointAway()
     {
-        IDatedExchangeRateProvider rates = new FixedDatedExchangeRateTable(
+        IDatedExchangeRateProvider rates = new FixedDatedExchangeRateProvider(
         [
             // 1.225 EUR/USD; 1 EUR × 1.225 = 1.225 → midpoint rounds to 1.22 banker's, 1.23 AwayFromZero.
             new ExchangeRate("EUR", "USD", s_asOf, 1.225m, "Bench"),

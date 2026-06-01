@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="FixedDatedExchangeRateTableTests.cs" company="Bodu Pty. Ltd.">
+// <copyright file="FixedDatedExchangeRateProviderTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -10,7 +10,7 @@ using Bodu.Test.Assertions;
 namespace Bodu.Financial;
 
 [TestClass]
-public partial class FixedDatedExchangeRateTableTests
+public partial class FixedDatedExchangeRateProviderTests
 {
     private static readonly DateOnly s_d1 = new(2024, 1, 3);
 
@@ -26,7 +26,7 @@ public partial class FixedDatedExchangeRateTableTests
     [TestCategory(TestCategories.Smoke)]
     public void Constructor_WhenSingleRateSupplied_ShouldResolveExactLookup()
     {
-        FixedDatedExchangeRateTable table = new(SingleRate());
+        FixedDatedExchangeRateProvider table = new(SingleRate());
 
         var found = table.TryGetRate(
             "USD",
@@ -51,7 +51,7 @@ public partial class FixedDatedExchangeRateTableTests
         ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(
             () =>
             {
-                _ = new FixedDatedExchangeRateTable(null!);
+                _ = new FixedDatedExchangeRateProvider((IEnumerable<ExchangeRate>)null!);
             },
             "rates");
     }
@@ -72,7 +72,7 @@ public partial class FixedDatedExchangeRateTableTests
         ExceptionAssert.ThrowsExactlyWithParamName<ArgumentException>(
             () =>
             {
-                _ = new FixedDatedExchangeRateTable(rates);
+                _ = new FixedDatedExchangeRateProvider(rates);
             },
             "rates");
     }
@@ -93,32 +93,32 @@ public partial class FixedDatedExchangeRateTableTests
         ExceptionAssert.ThrowsExactlyWithParamName<ArgumentException>(
             () =>
             {
-                _ = new FixedDatedExchangeRateTable(rates);
+                _ = new FixedDatedExchangeRateProvider(rates);
             },
             "rates");
     }
 
     /// <summary>
-    /// Verifies that <see cref="FixedDatedExchangeRateTable.GetRate" /> throws <see cref="KeyNotFoundException" /> when
+    /// Verifies that <see cref="FixedDatedExchangeRateProvider.GetRate" /> throws <see cref="KeyNotFoundException" /> when
     /// no rate is available.
     /// </summary>
     [TestMethod]
     public void GetRate_WhenNoRateAvailable_ShouldThrowKeyNotFoundException()
     {
-        FixedDatedExchangeRateTable table = new([]);
+        FixedDatedExchangeRateProvider table = new([]);
 
         _ = Assert.ThrowsExactly<KeyNotFoundException>(() =>
             table.GetRate("USD", "AUD", s_d1, ExchangeRateLookupOptions.Exact));
     }
 
     /// <summary>
-    /// Verifies that <see cref="FixedDatedExchangeRateTable.GetRate" /> returns the same result that the matching
-    /// <see cref="FixedDatedExchangeRateTable.TryGetRate" /> call produces.
+    /// Verifies that <see cref="FixedDatedExchangeRateProvider.GetRate" /> returns the same result that the matching
+    /// <see cref="FixedDatedExchangeRateProvider.TryGetRate" /> call produces.
     /// </summary>
     [TestMethod]
     public void GetRate_WhenRateAvailable_ShouldReturnSameResultAsTryGetRate()
     {
-        FixedDatedExchangeRateTable table = new(SingleRate());
+        FixedDatedExchangeRateProvider table = new(SingleRate());
 
         ExchangeRateLookupResult viaGet = table.GetRate("USD", "AUD", s_d1, ExchangeRateLookupOptions.Exact);
 
@@ -133,7 +133,7 @@ public partial class FixedDatedExchangeRateTableTests
     [TestMethod]
     public void TryGetRate_WhenFromIsoCodeMalformed_ShouldThrowArgumentException()
     {
-        FixedDatedExchangeRateTable table = new(SingleRate());
+        FixedDatedExchangeRateProvider table = new(SingleRate());
 
         ExceptionAssert.ThrowsExactlyWithParamName<ArgumentException>(
             () => table.TryGetRate("usd", "AUD", s_d1, ExchangeRateLookupOptions.Exact, out _),
@@ -147,7 +147,7 @@ public partial class FixedDatedExchangeRateTableTests
     [TestMethod]
     public void TryGetRate_WhenToIsoCodeMalformed_ShouldThrowArgumentException()
     {
-        FixedDatedExchangeRateTable table = new(SingleRate());
+        FixedDatedExchangeRateProvider table = new(SingleRate());
 
         ExceptionAssert.ThrowsExactlyWithParamName<ArgumentException>(
             () => table.TryGetRate("USD", "aud", s_d1, ExchangeRateLookupOptions.Exact, out _),

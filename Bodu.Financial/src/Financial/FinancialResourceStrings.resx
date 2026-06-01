@@ -84,6 +84,12 @@
   <data name="Arg_Invalid_CurrencyCodeNotMapped" xml:space="preserve">
     <value>The CurrencyCode value '{0}' (numeric {1}) does not correspond to a registered currency.</value>
   </data>
+  <data name="Arg_Invalid_ExchangeRateBookDuplicateKey" xml:space="preserve">
+    <value>ExchangeRateBook cannot contain two series with the same pair and provider; '{0}/{1}' from '{2}' is duplicated.</value>
+  </data>
+  <data name="Arg_Invalid_ExchangeRatePairDefault" xml:space="preserve">
+    <value>ExchangeRatePair is uninitialised; default(ExchangeRatePair) bypasses currency-code validation and is not a valid directional key.</value>
+  </data>
   <data name="Arg_Invalid_IsoCodeLength" xml:space="preserve">
     <value>ISO 4217 code must be exactly three letters, but '{0}' has {1}.</value>
   </data>
@@ -107,6 +113,9 @@
   </data>
   <data name="Arg_Invalid_ProviderNullOrWhiteSpace" xml:space="preserve">
     <value>Provider identifier must not be empty or white-space.</value>
+  </data>
+  <data name="Arg_Invalid_ProviderPriorityEmpty" xml:space="preserve">
+    <value>Provider-priority list must contain at least one entry.</value>
   </data>
   <data name="Arg_Invalid_RateSeriesAddRangeConflict" xml:space="preserve">
     <value>Cannot add observation for {0:yyyy-MM-dd}: a rate already exists for that date.</value>
@@ -296,6 +305,9 @@
   </data>
   <data name="Op_Invalid_RateSeriesBuilderEmpty" xml:space="preserve">
     <value>Cannot create an immutable series snapshot from an empty builder.</value>
+  </data>
+  <data name="Op_NotSupported_SelectionPolicy" xml:space="preserve">
+    <value>ExchangeRateProviderSelectionPolicy.{0} is reserved for a future release; only ProviderPriorityFirst is supported in this version.</value>
   </data>
   <data name="Op_Invalid_UnableToCreateConverter" xml:space="preserve">
     <value>Unable to create a JSON converter for '{0}'.</value>

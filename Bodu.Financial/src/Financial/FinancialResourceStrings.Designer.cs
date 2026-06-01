@@ -124,6 +124,24 @@ namespace Bodu.Financial {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to ExchangeRateBook cannot contain two series with the same pair and provider; &apos;{0}/{1}&apos; from &apos;{2}&apos; is duplicated..
+        /// </summary>
+        internal static string Arg_Invalid_ExchangeRateBookDuplicateKey {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_ExchangeRateBookDuplicateKey", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to ExchangeRatePair is uninitialised; default(ExchangeRatePair) bypasses currency-code validation and is not a valid directional key..
+        /// </summary>
+        internal static string Arg_Invalid_ExchangeRatePairDefault {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_ExchangeRatePairDefault", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to ISO 4217 code must be exactly three letters, but &apos;{0}&apos; has {1}..
         /// </summary>
         internal static string Arg_Invalid_IsoCodeLength {
@@ -192,6 +210,15 @@ namespace Bodu.Financial {
         internal static string Arg_Invalid_ProviderNullOrWhiteSpace {
             get {
                 return ResourceManager.GetString("Arg_Invalid_ProviderNullOrWhiteSpace", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Provider-priority list must contain at least one entry..
+        /// </summary>
+        internal static string Arg_Invalid_ProviderPriorityEmpty {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_ProviderPriorityEmpty", resourceCulture);
             }
         }
         
@@ -759,6 +786,15 @@ namespace Bodu.Financial {
         internal static string Op_Invalid_RateSeriesBuilderEmpty {
             get {
                 return ResourceManager.GetString("Op_Invalid_RateSeriesBuilderEmpty", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to ExchangeRateProviderSelectionPolicy.{0} is reserved for a future release; only ProviderPriorityFirst is supported in this version..
+        /// </summary>
+        internal static string Op_NotSupported_SelectionPolicy {
+            get {
+                return ResourceManager.GetString("Op_NotSupported_SelectionPolicy", resourceCulture);
             }
         }
 

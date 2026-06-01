@@ -42,7 +42,7 @@ public static class MoneyExchangeRateExtensions
         IDatedExchangeRateProvider provider,
         string targetIsoCode,
         DateOnly date,
-        ExchangeRateLookupOptions options,
+        ExchangeRateLookupOptions? options = null,
         MidpointRounding rounding = MidpointRounding.ToEven)
     {
         ThrowHelper.ThrowIfNull(provider);
@@ -73,7 +73,7 @@ public static class MoneyExchangeRateExtensions
         this Money amount,
         IDatedExchangeRateProvider provider,
         DateOnly date,
-        ExchangeRateLookupOptions options,
+        ExchangeRateLookupOptions? options = null,
         MidpointRounding rounding = MidpointRounding.ToEven)
         where TTarget : ICurrency
     {
@@ -108,7 +108,7 @@ public static class MoneyExchangeRateExtensions
         IDatedExchangeRateProvider provider,
         string targetIsoCode,
         DateOnly date,
-        ExchangeRateLookupOptions options,
+        ExchangeRateLookupOptions? options = null,
         MidpointRounding rounding = MidpointRounding.ToEven)
     {
         ThrowHelper.ThrowIfNull(provider);

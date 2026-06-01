@@ -37,12 +37,12 @@ hand off to `Fraction<BigInteger>` for exact-arithmetic chains via
   for dated lookups with full audit metadata
   ([`ExchangeRate`](xref:Bodu.Financial.ExchangeRate),
   [`ExchangeRateSeries`](xref:Bodu.Financial.ExchangeRateSeries),
-  [`FixedDatedExchangeRateTable`](xref:Bodu.Financial.FixedDatedExchangeRateTable),
+  [`FixedDatedExchangeRateProvider`](xref:Bodu.Financial.FixedDatedExchangeRateProvider),
   [`CompositeDatedExchangeRateProvider`](xref:Bodu.Financial.CompositeDatedExchangeRateProvider)).
 - **FX editing surface:**
   [`ExchangeRateSeriesBuilder`](xref:Bodu.Financial.ExchangeRateSeriesBuilder)
   as the mutable companion to `ExchangeRateSeries`, plus
-  [`ExchangeRateTable`](xref:Bodu.Financial.ExchangeRateTable) for
+  [`ExchangeRateTableBuilder`](xref:Bodu.Financial.ExchangeRateTableBuilder) for
   multi-pair / multi-provider import workflows that produce
   immutable snapshots.
 
@@ -55,7 +55,7 @@ hand off to `Fraction<BigInteger>` for exact-arithmetic chains via
   stack: timeless vs. dated contracts, the audit-grade
   `ExchangeRateLookupResult`, the composite fallback stack, the
   `MoneyConversionResult<,>` audit record, and the
-  `ExchangeRateSeriesBuilder` + `ExchangeRateTable` editing surface.
+  `ExchangeRateSeriesBuilder` + `ExchangeRateTableBuilder` editing surface.
 
 ## See also
 

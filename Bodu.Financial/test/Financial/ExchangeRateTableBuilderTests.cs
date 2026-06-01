@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="ExchangeRateTableTests.cs" company="Bodu Pty. Ltd.">
+// <copyright file="ExchangeRateTableBuilderTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -10,7 +10,7 @@ using Bodu.Test.Assertions;
 namespace Bodu.Financial;
 
 [TestClass]
-public partial class ExchangeRateTableTests
+public partial class ExchangeRateTableBuilderTests
 {
     private static readonly ExchangeRatePair s_usdAud = new("USD", "AUD");
     private static readonly ExchangeRatePair s_usdJpy = new("USD", "JPY");
@@ -23,7 +23,7 @@ public partial class ExchangeRateTableTests
     [TestCategory(TestCategories.Smoke)]
     public void Table_WhenUpsertingTwoSeriesAndSnapshotting_ShouldProduceImmutableSnapshots()
     {
-        ExchangeRateTable table = new();
+        ExchangeRateTableBuilder table = new();
         table.Upsert(s_usdAud, "RBA", new DateOnly(2026, 6, 1), 1.50m);
         table.Upsert(s_usdJpy, "BoJ", new DateOnly(2026, 6, 1), 110m);
 
@@ -39,18 +39,18 @@ public partial class ExchangeRateTableTests
     [TestMethod]
     public void Count_WhenNewTable_ShouldBeZero()
     {
-        ExchangeRateTable table = new();
+        ExchangeRateTableBuilder table = new();
 
         Assert.AreEqual(0, table.Count);
     }
 
     /// <summary>
-    /// Verifies that <see cref="ExchangeRateTable.Remove" /> reports success when removing an existing series.
+    /// Verifies that <see cref="ExchangeRateTableBuilder.Remove" /> reports success when removing an existing series.
     /// </summary>
     [TestMethod]
     public void Remove_WhenSeriesExists_ShouldReturnTrue()
     {
-        ExchangeRateTable table = new();
+        ExchangeRateTableBuilder table = new();
         table.GetOrAddSeries(s_usdAud, "RBA").Add(new DateOnly(2026, 6, 1), 1.50m);
 
         var removed = table.Remove(s_usdAud, "RBA");
@@ -60,12 +60,12 @@ public partial class ExchangeRateTableTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="ExchangeRateTable.Remove" /> reports failure when the series does not exist.
+    /// Verifies that <see cref="ExchangeRateTableBuilder.Remove" /> reports failure when the series does not exist.
     /// </summary>
     [TestMethod]
     public void Remove_WhenSeriesMissing_ShouldReturnFalse()
     {
-        ExchangeRateTable table = new();
+        ExchangeRateTableBuilder table = new();
 
         var removed = table.Remove(s_usdAud, "RBA");
 
@@ -73,12 +73,12 @@ public partial class ExchangeRateTableTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="ExchangeRateTable.ContainsSeries" /> validates the provider argument.
+    /// Verifies that <see cref="ExchangeRateTableBuilder.ContainsSeries" /> validates the provider argument.
     /// </summary>
     [TestMethod]
     public void ContainsSeries_WhenProviderIsNull_ShouldThrowArgumentNullException()
     {
-        ExchangeRateTable table = new();
+        ExchangeRateTableBuilder table = new();
 
         ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(
             () =>
@@ -89,13 +89,13 @@ public partial class ExchangeRateTableTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="ExchangeRateTable.TryGetBuilder" /> returns <see langword="false" /> when the
+    /// Verifies that <see cref="ExchangeRateTableBuilder.TryGetBuilder" /> returns <see langword="false" /> when the
     /// series does not exist.
     /// </summary>
     [TestMethod]
     public void TryGetBuilder_WhenSeriesMissing_ShouldReturnFalse()
     {
-        ExchangeRateTable table = new();
+        ExchangeRateTableBuilder table = new();
 
         var found = table.TryGetBuilder(s_usdAud, "RBA", out var builder);
 
@@ -104,12 +104,12 @@ public partial class ExchangeRateTableTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="ExchangeRateTable.TryGetBuilder" /> returns the existing builder when present.
+    /// Verifies that <see cref="ExchangeRateTableBuilder.TryGetBuilder" /> returns the existing builder when present.
     /// </summary>
     [TestMethod]
     public void TryGetBuilder_WhenSeriesExists_ShouldReturnTrueAndBuilder()
     {
-        ExchangeRateTable table = new();
+        ExchangeRateTableBuilder table = new();
         ExchangeRateSeriesBuilder seeded = table.GetOrAddSeries(s_usdAud, "RBA");
         seeded.Add(new DateOnly(2026, 6, 1), 1.50m);
 
@@ -120,12 +120,12 @@ public partial class ExchangeRateTableTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="ExchangeRateTable.Keys" /> exposes the currently tracked series keys.
+    /// Verifies that <see cref="ExchangeRateTableBuilder.Keys" /> exposes the currently tracked series keys.
     /// </summary>
     [TestMethod]
     public void Keys_WhenSeriesAdded_ShouldEnumerateKeys()
     {
-        ExchangeRateTable table = new();
+        ExchangeRateTableBuilder table = new();
         table.GetOrAddSeries(s_usdAud, "RBA");
         table.GetOrAddSeries(s_usdJpy, "BoJ");
 

@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="ExchangeRateTableTests.Upsert.cs" company="Bodu Pty. Ltd.">
+// <copyright file="ExchangeRateTableBuilderTests.Upsert.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -8,15 +8,15 @@ using Bodu.Test.Assertions;
 
 namespace Bodu.Financial;
 
-public partial class ExchangeRateTableTests
+public partial class ExchangeRateTableBuilderTests
 {
     /// <summary>
-    /// Verifies that <see cref="ExchangeRateTable.Upsert" /> creates a series on first call and inserts the rate.
+    /// Verifies that <see cref="ExchangeRateTableBuilder.Upsert" /> creates a series on first call and inserts the rate.
     /// </summary>
     [TestMethod]
     public void Upsert_WhenSeriesMissing_ShouldCreateAndInsert()
     {
-        ExchangeRateTable table = new();
+        ExchangeRateTableBuilder table = new();
 
         table.Upsert(s_usdAud, "RBA", new DateOnly(2026, 6, 1), 1.50m);
 
@@ -26,12 +26,12 @@ public partial class ExchangeRateTableTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="ExchangeRateTable.Upsert" /> replaces an existing observation in place.
+    /// Verifies that <see cref="ExchangeRateTableBuilder.Upsert" /> replaces an existing observation in place.
     /// </summary>
     [TestMethod]
     public void Upsert_WhenSeriesExists_ShouldReplaceRate()
     {
-        ExchangeRateTable table = new();
+        ExchangeRateTableBuilder table = new();
         table.Upsert(s_usdAud, "RBA", new DateOnly(2026, 6, 1), 1.50m);
 
         table.Upsert(s_usdAud, "RBA", new DateOnly(2026, 6, 1), 1.75m);
@@ -43,12 +43,12 @@ public partial class ExchangeRateTableTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="ExchangeRateTable.Upsert" /> validates the rate.
+    /// Verifies that <see cref="ExchangeRateTableBuilder.Upsert" /> validates the rate.
     /// </summary>
     [TestMethod]
     public void Upsert_WhenRateInvalid_ShouldThrowArgumentOutOfRangeException()
     {
-        ExchangeRateTable table = new();
+        ExchangeRateTableBuilder table = new();
 
         ExceptionAssert.ThrowsExactlyWithParamName<ArgumentOutOfRangeException>(
             () =>
@@ -59,12 +59,12 @@ public partial class ExchangeRateTableTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="ExchangeRateTable.Upsert" /> validates the provider argument.
+    /// Verifies that <see cref="ExchangeRateTableBuilder.Upsert" /> validates the provider argument.
     /// </summary>
     [TestMethod]
     public void Upsert_WhenProviderIsEmpty_ShouldThrowArgumentException()
     {
-        ExchangeRateTable table = new();
+        ExchangeRateTableBuilder table = new();
 
         ExceptionAssert.ThrowsExactlyWithParamName<ArgumentException>(
             () =>

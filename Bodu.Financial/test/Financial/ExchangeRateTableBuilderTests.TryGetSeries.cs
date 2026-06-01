@@ -1,21 +1,21 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="ExchangeRateTableTests.TryGetSeries.cs" company="Bodu Pty. Ltd.">
+// <copyright file="ExchangeRateTableBuilderTests.TryGetSeries.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.Financial;
 
-public partial class ExchangeRateTableTests
+public partial class ExchangeRateTableBuilderTests
 {
     /// <summary>
-    /// Verifies that <see cref="ExchangeRateTable.TryGetSeries" /> returns <see langword="false" /> when the series
+    /// Verifies that <see cref="ExchangeRateTableBuilder.TryGetSeries" /> returns <see langword="false" /> when the series
     /// is unknown.
     /// </summary>
     [TestMethod]
     public void TryGetSeries_WhenSeriesMissing_ShouldReturnFalse()
     {
-        ExchangeRateTable table = new();
+        ExchangeRateTableBuilder table = new();
 
         var found = table.TryGetSeries(s_usdAud, "RBA", out var series);
 
@@ -24,13 +24,13 @@ public partial class ExchangeRateTableTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="ExchangeRateTable.TryGetSeries" /> returns <see langword="false" /> when the
+    /// Verifies that <see cref="ExchangeRateTableBuilder.TryGetSeries" /> returns <see langword="false" /> when the
     /// builder for the key is empty, because immutable series must be non-empty.
     /// </summary>
     [TestMethod]
     public void TryGetSeries_WhenBuilderEmpty_ShouldReturnFalse()
     {
-        ExchangeRateTable table = new();
+        ExchangeRateTableBuilder table = new();
         table.GetOrAddSeries(s_usdAud, "RBA");
 
         var found = table.TryGetSeries(s_usdAud, "RBA", out var series);
@@ -40,13 +40,13 @@ public partial class ExchangeRateTableTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="ExchangeRateTable.TryGetSeries" /> returns a fresh immutable snapshot when the
+    /// Verifies that <see cref="ExchangeRateTableBuilder.TryGetSeries" /> returns a fresh immutable snapshot when the
     /// series exists and is non-empty.
     /// </summary>
     [TestMethod]
     public void TryGetSeries_WhenBuilderHasObservations_ShouldReturnSnapshot()
     {
-        ExchangeRateTable table = new();
+        ExchangeRateTableBuilder table = new();
         table.Upsert(s_usdAud, "RBA", new DateOnly(2026, 6, 1), 1.50m);
 
         var found = table.TryGetSeries(s_usdAud, "RBA", out var series);
@@ -59,13 +59,13 @@ public partial class ExchangeRateTableTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="ExchangeRateTable.TryGetSeries" /> snapshots a fresh series each call so further
+    /// Verifies that <see cref="ExchangeRateTableBuilder.TryGetSeries" /> snapshots a fresh series each call so further
     /// builder mutation does not affect previously returned snapshots.
     /// </summary>
     [TestMethod]
     public void TryGetSeries_WhenBuilderMutatedAfterSnapshot_ShouldNotAffectSnapshot()
     {
-        ExchangeRateTable table = new();
+        ExchangeRateTableBuilder table = new();
         table.Upsert(s_usdAud, "RBA", new DateOnly(2026, 6, 1), 1.50m);
 
         Assert.IsTrue(table.TryGetSeries(s_usdAud, "RBA", out var snapshot));

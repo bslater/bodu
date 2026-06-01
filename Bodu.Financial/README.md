@@ -113,7 +113,7 @@ Bridge between forms via `typed.ToRuntime()` and `ExchangeRate<TBase, TQuote>.Fr
 Provider stack:
 
 - Timeless: `IExchangeRateProvider` with `FixedExchangeRateTable` (inverse-rate fallback).
-- Dated: `IDatedExchangeRateProvider`, `FixedDatedExchangeRateTable`, `CompositeDatedExchangeRateProvider`, `ExchangeRateSeries`, and `DatedExchangeRateProviderAdapter`.
+- Dated: `IDatedExchangeRateProvider`, `FixedDatedExchangeRateProvider`, `CompositeDatedExchangeRateProvider`, `ExchangeRateBook`, `ExchangeRateSeries`, and `DatedExchangeRateProviderAdapter`.
 
 ## `MoneyBag`
 

@@ -165,4 +165,39 @@ public partial class ExchangeRateSeriesTests
             },
             "provider");
     }
+
+    /// <summary>
+    /// Verifies that the tuple-overload constructor rejects a <see langword="default" /> pair, which bypasses the
+    /// pair's own constructor validation and carries null ISO codes.
+    /// </summary>
+    [TestMethod]
+    public void Constructor_WhenPairIsDefault_ForTuples_ShouldThrowArgumentException()
+    {
+        ExceptionAssert.ThrowsExactlyWithParamName<ArgumentException>(
+            () =>
+            {
+                _ = new ExchangeRateSeries(default, "RBA", SampleRates());
+            },
+            "pair");
+    }
+
+    /// <summary>
+    /// Verifies that the observation-overload constructor rejects a <see langword="default" /> pair, which bypasses
+    /// the pair's own constructor validation and carries null ISO codes.
+    /// </summary>
+    [TestMethod]
+    public void Constructor_WhenPairIsDefault_ForObservations_ShouldThrowArgumentException()
+    {
+        ExchangeRateObservation[] observations =
+        [
+            new(new DateOnly(2024, 1, 2), 1.50m),
+        ];
+
+        ExceptionAssert.ThrowsExactlyWithParamName<ArgumentException>(
+            () =>
+            {
+                _ = new ExchangeRateSeries(default, "RBA", observations);
+            },
+            "pair");
+    }
 }

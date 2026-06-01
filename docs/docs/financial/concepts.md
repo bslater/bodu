@@ -118,11 +118,11 @@ The series is **immutable**. Use the companion <xref:Bodu.Financial.ExchangeRate
 
 <xref:Bodu.Financial.ExchangeRateSeriesBuilder> is the mutable companion to <xref:Bodu.Financial.ExchangeRateSeries>. It maintains strictly ascending unique observation dates and strictly positive rates while supporting single-observation edits and bulk import. The public surface distinguishes intent through three explicit shapes — `Add` (throws on duplicate), `Set` (throws on missing), and `Upsert` (insert-or-replace) — plus their `Try`-prefixed boolean siblings. Bulk import uses `AddRange` (rejects duplicates) and `UpsertRange` (replaces existing dates, rejects in-batch duplicates) with atomic-rollback semantics: a mid-batch validation failure leaves the builder unchanged. `ToSeries()` produces an immutable <xref:Bodu.Financial.ExchangeRateSeries> snapshot; further builder mutations do not affect previously produced snapshots, and vice versa. Instances are not thread-safe.
 
-## `ExchangeRateSeriesKey` and `ExchangeRateTable`
+## `ExchangeRateSeriesKey` and `ExchangeRateTableBuilder`
 
 <xref:Bodu.Financial.ExchangeRateSeriesKey> is a `readonly record struct` carrying a <xref:Bodu.Financial.ExchangeRatePair> and the publishing provider's identifier — the natural dictionary key when the same pair has rates from multiple sources.
 
-<xref:Bodu.Financial.ExchangeRateTable> is the higher-level mutable collection that owns one <xref:Bodu.Financial.ExchangeRateSeriesBuilder> per `(pair, provider)` key. It exposes `GetOrAddSeries`, `Upsert(pair, provider, date, rate)`, `TryGetBuilder` (returns the mutable builder), `TryGetSeries` (returns an immutable snapshot), and `ToSeries()` (snapshots every non-empty series). Use it for import workflows that ingest rate observations across many currency pairs and providers before producing immutable snapshots for production lookup. Like the builder it is not thread-safe.
+<xref:Bodu.Financial.ExchangeRateTableBuilder> is the higher-level mutable collection that owns one <xref:Bodu.Financial.ExchangeRateSeriesBuilder> per `(pair, provider)` key. It exposes `GetOrAddSeries`, `Upsert(pair, provider, date, rate)`, `TryGetBuilder` (returns the mutable builder), `TryGetSeries` (returns an immutable snapshot), and `ToSeries()` (snapshots every non-empty series). Use it for import workflows that ingest rate observations across many currency pairs and providers before producing immutable snapshots for production lookup. Like the builder it is not thread-safe.
 
 ## Timeless vs. dated provider
 
@@ -156,7 +156,7 @@ More elaborate cross-provider policies (such as preferring an exact-date hit fro
 
 <xref:Bodu.Financial.FixedExchangeRateTable> implements the timeless <xref:Bodu.Financial.IExchangeRateProvider> from a fixed `(from, to) → rate` dictionary. Same-currency lookups return `1m` without consulting the table, and a missing pair triggers an inverse-pair fallback that returns `1 / rate` — the convention most FX feeds use to keep the table minimal.
 
-<xref:Bodu.Financial.FixedDatedExchangeRateTable> implements the dated <xref:Bodu.Financial.IDatedExchangeRateProvider> from a flat sequence of <xref:Bodu.Financial.ExchangeRate> observations grouped into one <xref:Bodu.Financial.ExchangeRateSeries> per pair. Each pair is described by exactly one series and therefore one provider, so composing rates from multiple publishing sources is done by stacking several tables behind a `CompositeDatedExchangeRateProvider` rather than mixing providers in a single table. Identity (same-currency) results carry the well-known `FixedDatedExchangeRateTable.IdentityProviderName` label so audit consumers can filter by it.
+<xref:Bodu.Financial.FixedDatedExchangeRateProvider> implements the dated <xref:Bodu.Financial.IDatedExchangeRateProvider> from a flat sequence of <xref:Bodu.Financial.ExchangeRate> observations grouped into one <xref:Bodu.Financial.ExchangeRateSeries> per pair. Each pair is described by exactly one series and therefore one provider, so composing rates from multiple publishing sources is done by stacking several tables behind a `CompositeDatedExchangeRateProvider` rather than mixing providers in a single table. Identity (same-currency) results carry the well-known `FixedDatedExchangeRateProvider.IdentityProviderName` label so audit consumers can filter by it.
 
 ## `MoneyConversionResult<TSource, TTarget>`
 

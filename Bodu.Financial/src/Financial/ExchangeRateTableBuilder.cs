@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="ExchangeRateTable.cs" company="Bodu Pty. Ltd.">
+// <copyright file="ExchangeRateTableBuilder.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -20,7 +20,7 @@ namespace Bodu.Financial;
 /// Instances are not thread-safe; concurrent mutation requires external synchronisation.
 /// </para>
 /// </remarks>
-public sealed class ExchangeRateTable
+public sealed class ExchangeRateTableBuilder
 {
     /// <summary>
     /// The series builders, keyed by (pair, provider).
@@ -28,9 +28,9 @@ public sealed class ExchangeRateTable
     private readonly Dictionary<ExchangeRateSeriesKey, ExchangeRateSeriesBuilder> _series;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ExchangeRateTable" /> class with no series.
+    /// Initializes a new instance of the <see cref="ExchangeRateTableBuilder" /> class with no series.
     /// </summary>
-    public ExchangeRateTable()
+    public ExchangeRateTableBuilder()
     {
         _series = new Dictionary<ExchangeRateSeriesKey, ExchangeRateSeriesBuilder>();
     }
@@ -59,6 +59,7 @@ public sealed class ExchangeRateTable
     /// <exception cref="ArgumentException">Thrown if <paramref name="provider" /> is empty or white-space.</exception>
     public ExchangeRateSeriesBuilder GetOrAddSeries(ExchangeRatePair pair, string provider)
     {
+        FinancialThrowHelper.ThrowIfInvalidExchangeRatePair(pair);
         FinancialThrowHelper.ThrowIfNullOrWhiteSpaceProvider(provider);
 
         var key = new ExchangeRateSeriesKey(pair, provider);
@@ -101,6 +102,7 @@ public sealed class ExchangeRateTable
     /// <exception cref="ArgumentException">Thrown if <paramref name="provider" /> is empty or white-space.</exception>
     public bool Remove(ExchangeRatePair pair, string provider)
     {
+        FinancialThrowHelper.ThrowIfInvalidExchangeRatePair(pair);
         FinancialThrowHelper.ThrowIfNullOrWhiteSpaceProvider(provider);
 
         return _series.Remove(new ExchangeRateSeriesKey(pair, provider));
@@ -118,6 +120,7 @@ public sealed class ExchangeRateTable
     /// <exception cref="ArgumentException">Thrown if <paramref name="provider" /> is empty or white-space.</exception>
     public bool ContainsSeries(ExchangeRatePair pair, string provider)
     {
+        FinancialThrowHelper.ThrowIfInvalidExchangeRatePair(pair);
         FinancialThrowHelper.ThrowIfNullOrWhiteSpaceProvider(provider);
 
         return _series.ContainsKey(new ExchangeRateSeriesKey(pair, provider));
@@ -138,6 +141,7 @@ public sealed class ExchangeRateTable
     /// <exception cref="ArgumentException">Thrown if <paramref name="provider" /> is empty or white-space.</exception>
     public bool TryGetBuilder(ExchangeRatePair pair, string provider, out ExchangeRateSeriesBuilder? builder)
     {
+        FinancialThrowHelper.ThrowIfInvalidExchangeRatePair(pair);
         FinancialThrowHelper.ThrowIfNullOrWhiteSpaceProvider(provider);
 
         return _series.TryGetValue(new ExchangeRateSeriesKey(pair, provider), out builder);
@@ -161,6 +165,7 @@ public sealed class ExchangeRateTable
     /// <exception cref="ArgumentException">Thrown if <paramref name="provider" /> is empty or white-space.</exception>
     public bool TryGetSeries(ExchangeRatePair pair, string provider, out ExchangeRateSeries? series)
     {
+        FinancialThrowHelper.ThrowIfInvalidExchangeRatePair(pair);
         FinancialThrowHelper.ThrowIfNullOrWhiteSpaceProvider(provider);
 
         if (_series.TryGetValue(new ExchangeRateSeriesKey(pair, provider), out ExchangeRateSeriesBuilder? builder) && !builder.IsEmpty)
@@ -191,4 +196,17 @@ public sealed class ExchangeRateTable
 
         return snapshots;
     }
+
+    /// <summary>
+    /// Produces an immutable <see cref="ExchangeRateBook" /> snapshot containing one series per non-empty builder.
+    /// </summary>
+    /// <returns>
+    /// A new <see cref="ExchangeRateBook" /> indexed by (pair, provider). Empty builders are skipped because an
+    /// immutable series must contain at least one observation.
+    /// </returns>
+    /// <remarks>
+    /// The returned book preserves multi-provider entries for the same pair, making it the recommended hand-off path
+    /// when feeding rates into a provider facade.
+    /// </remarks>
+    public ExchangeRateBook ToBook() => new(ToSeries());
 }

@@ -21,7 +21,7 @@ public partial class CompositeDatedExchangeRateProviderTests
     [TestCategory(TestCategories.Smoke)]
     public void TryGetRate_WhenSingleInnerProvider_ShouldDelegateAndReturn()
     {
-        FixedDatedExchangeRateTable inner = new(
+        FixedDatedExchangeRateProvider inner = new(
         [
             new ExchangeRate("USD", "AUD", s_d1, 1.50m, "RBA"),
         ]);
@@ -46,8 +46,8 @@ public partial class CompositeDatedExchangeRateProviderTests
     [TestMethod]
     public void TryGetRate_WhenFirstProviderMisses_ShouldFallThroughToSecond()
     {
-        FixedDatedExchangeRateTable first = new([]);
-        FixedDatedExchangeRateTable second = new(
+        FixedDatedExchangeRateProvider first = new([]);
+        FixedDatedExchangeRateProvider second = new(
         [
             new ExchangeRate("USD", "AUD", s_d1, 1.50m, "ECB"),
         ]);
@@ -70,11 +70,11 @@ public partial class CompositeDatedExchangeRateProviderTests
     [TestMethod]
     public void TryGetRate_WhenBothProvidersHaveRate_ShouldReturnFirstProviderResult()
     {
-        FixedDatedExchangeRateTable first = new(
+        FixedDatedExchangeRateProvider first = new(
         [
             new ExchangeRate("USD", "AUD", s_d1, 1.50m, "RBA"),
         ]);
-        FixedDatedExchangeRateTable second = new(
+        FixedDatedExchangeRateProvider second = new(
         [
             new ExchangeRate("USD", "AUD", s_d1, 1.60m, "ECB"),
         ]);
@@ -99,11 +99,11 @@ public partial class CompositeDatedExchangeRateProviderTests
     [TestMethod]
     public void TryGetRate_WhenFirstProviderHasFallbackAndSecondHasExact_ShouldUseFirst()
     {
-        FixedDatedExchangeRateTable first = new(
+        FixedDatedExchangeRateProvider first = new(
         [
             new ExchangeRate("USD", "AUD", new DateOnly(2024, 1, 1), 1.40m, "RBA"),
         ]);
-        FixedDatedExchangeRateTable second = new(
+        FixedDatedExchangeRateProvider second = new(
         [
             new ExchangeRate("USD", "AUD", new DateOnly(2024, 1, 3), 1.50m, "ECB"),
         ]);
@@ -126,7 +126,7 @@ public partial class CompositeDatedExchangeRateProviderTests
     [TestMethod]
     public void TryGetRate_WhenAllProvidersMiss_ShouldReturnFalse()
     {
-        FixedDatedExchangeRateTable empty = new([]);
+        FixedDatedExchangeRateProvider empty = new([]);
         CompositeDatedExchangeRateProvider composite = new([empty, empty]);
 
         var found = composite.TryGetRate(
@@ -146,7 +146,7 @@ public partial class CompositeDatedExchangeRateProviderTests
     [TestMethod]
     public void GetRate_WhenAllProvidersMiss_ShouldThrowKeyNotFoundException()
     {
-        FixedDatedExchangeRateTable empty = new([]);
+        FixedDatedExchangeRateProvider empty = new([]);
         CompositeDatedExchangeRateProvider composite = new([empty]);
 
         _ = Assert.ThrowsExactly<KeyNotFoundException>(() =>

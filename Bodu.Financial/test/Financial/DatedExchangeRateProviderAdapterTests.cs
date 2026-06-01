@@ -20,7 +20,7 @@ public partial class DatedExchangeRateProviderAdapterTests
     [TestMethod]
     public void GetRate_WhenInnerHasRate_ShouldReturnRateValue()
     {
-        FixedDatedExchangeRateTable inner = new(
+        FixedDatedExchangeRateProvider inner = new(
         [
             new ExchangeRate("USD", "AUD", s_d1, 1.50m, "RBA"),
         ]);
@@ -36,7 +36,7 @@ public partial class DatedExchangeRateProviderAdapterTests
     [TestMethod]
     public void GetRate_WhenInnerHasNoRate_ShouldThrowKeyNotFoundException()
     {
-        FixedDatedExchangeRateTable inner = new([]);
+        FixedDatedExchangeRateProvider inner = new([]);
         DatedExchangeRateProviderAdapter adapter = new(inner, s_d1, ExchangeRateLookupOptions.Exact);
 
         _ = Assert.ThrowsExactly<KeyNotFoundException>(() => adapter.GetRate("USD", "AUD"));
@@ -62,7 +62,7 @@ public partial class DatedExchangeRateProviderAdapterTests
     [TestMethod]
     public void Constructor_WhenOptionsInvalid_ShouldThrowArgumentException()
     {
-        FixedDatedExchangeRateTable inner = new([]);
+        FixedDatedExchangeRateProvider inner = new([]);
 
         _ = Assert.ThrowsExactly<ArgumentException>(() =>
         {

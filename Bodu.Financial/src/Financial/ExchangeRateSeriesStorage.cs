@@ -4,7 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Globalization;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace Bodu.Financial;
@@ -148,6 +148,51 @@ internal sealed class ExchangeRateSeriesStorage
     }
 
     /// <summary>
+    /// Reports whether the storage contains an observation on the supplied date.
+    /// </summary>
+    /// <param name="date">The observation date to query.</param>
+    /// <returns><see langword="true" /> if an observation exists for <paramref name="date" />.</returns>
+    public bool Contains(DateOnly date) => Array.BinarySearch(_dayNumbers, date.DayNumber) >= 0;
+
+    /// <summary>
+    /// Attempts to retrieve the rate stored exactly on <paramref name="date" />.
+    /// </summary>
+    /// <param name="date">The observation date to query.</param>
+    /// <param name="rate">
+    /// When this method returns <see langword="true" />, the rate observed on <paramref name="date" />; otherwise
+    /// <see langword="default" />.
+    /// </param>
+    /// <returns><see langword="true" /> if an observation exists for <paramref name="date" />.</returns>
+    public bool TryGetExactRate(DateOnly date, out decimal rate)
+    {
+        var index = Array.BinarySearch(_dayNumbers, date.DayNumber);
+        if (index < 0)
+        {
+            rate = default;
+            return false;
+        }
+
+        rate = _rates[index];
+        return true;
+    }
+
+    /// <summary>
+    /// Copies the storage's contents into the supplied caller-owned arrays. Used by the mutable buffer's seeding
+    /// path so the round-trip through <see cref="DateOnly" /> can be avoided.
+    /// </summary>
+    /// <param name="dayNumbers">The caller-owned target array; must be at least <see cref="Count" /> long.</param>
+    /// <param name="rates">The caller-owned target array; must be at least <see cref="Count" /> long.</param>
+    internal void CopyTo(int[] dayNumbers, decimal[] rates)
+    {
+        Debug.Assert(dayNumbers is not null && rates is not null);
+        Debug.Assert(dayNumbers!.Length >= _dayNumbers.Length);
+        Debug.Assert(rates!.Length >= _dayNumbers.Length);
+
+        Array.Copy(_dayNumbers, dayNumbers, _dayNumbers.Length);
+        Array.Copy(_rates, rates, _rates.Length);
+    }
+
+    /// <summary>
     /// Validates, sorts, and deduplicates the supplied tuple sequence and returns a new storage instance.
     /// </summary>
     /// <param name="rates">The candidate observations.</param>
@@ -164,47 +209,10 @@ internal sealed class ExchangeRateSeriesStorage
         IEnumerable<(DateOnly Date, decimal Rate)> rates,
         string ratesParamName)
     {
-        List<(DateOnly Date, decimal Rate)> buffer = new(rates);
+        List<(int DayNumber, decimal Rate)> normalised =
+            ExchangeRateObservationNormalizer.ToSortedUniqueList(rates, ratesParamName, allowEmpty: false);
 
-        if (buffer.Count == 0)
-            throw new ArgumentException(FinancialResourceStrings.Arg_Invalid_RateSeriesEmpty, ratesParamName);
-
-        for (var i = 0; i < buffer.Count; i++)
-        {
-            if (buffer[i].Rate <= 0m)
-            {
-                throw new ArgumentOutOfRangeException(
-                    ratesParamName,
-                    buffer[i].Rate,
-                    FinancialResourceStrings.Arg_OutOfRange_RateNotPositive);
-            }
-        }
-
-        buffer.Sort(static (a, b) => a.Date.CompareTo(b.Date));
-
-        for (var i = 1; i < buffer.Count; i++)
-        {
-            if (buffer[i].Date == buffer[i - 1].Date)
-            {
-                throw new ArgumentException(
-                    string.Format(
-                        CultureInfo.InvariantCulture,
-                        FinancialResourceStrings.Arg_Invalid_RateSeriesDuplicateDate,
-                        buffer[i].Date),
-                    ratesParamName);
-            }
-        }
-
-        var dayNumbers = new int[buffer.Count];
-        var rateArray = new decimal[buffer.Count];
-
-        for (var i = 0; i < buffer.Count; i++)
-        {
-            dayNumbers[i] = buffer[i].Date.DayNumber;
-            rateArray[i] = buffer[i].Rate;
-        }
-
-        return new ExchangeRateSeriesStorage(dayNumbers, rateArray);
+        return MaterialiseFromNormalised(normalised);
     }
 
     /// <summary>
@@ -224,62 +232,88 @@ internal sealed class ExchangeRateSeriesStorage
         IEnumerable<ExchangeRateObservation> observations,
         string observationsParamName)
     {
-        List<ExchangeRateObservation> buffer = new(observations);
+        List<(int DayNumber, decimal Rate)> normalised =
+            ExchangeRateObservationNormalizer.ToSortedUniqueList(observations, observationsParamName, allowEmpty: false);
 
-        if (buffer.Count == 0)
-            throw new ArgumentException(FinancialResourceStrings.Arg_Invalid_RateSeriesEmpty, observationsParamName);
-
-        for (var i = 0; i < buffer.Count; i++)
-        {
-            if (buffer[i].Rate <= 0m)
-            {
-                throw new ArgumentOutOfRangeException(
-                    observationsParamName,
-                    buffer[i].Rate,
-                    FinancialResourceStrings.Arg_OutOfRange_RateNotPositive);
-            }
-        }
-
-        buffer.Sort(static (a, b) => a.Date.CompareTo(b.Date));
-
-        for (var i = 1; i < buffer.Count; i++)
-        {
-            if (buffer[i].Date == buffer[i - 1].Date)
-            {
-                throw new ArgumentException(
-                    string.Format(
-                        CultureInfo.InvariantCulture,
-                        FinancialResourceStrings.Arg_Invalid_RateSeriesDuplicateDate,
-                        buffer[i].Date),
-                    observationsParamName);
-            }
-        }
-
-        var dayNumbers = new int[buffer.Count];
-        var rateArray = new decimal[buffer.Count];
-
-        for (var i = 0; i < buffer.Count; i++)
-        {
-            dayNumbers[i] = buffer[i].Date.DayNumber;
-            rateArray[i] = buffer[i].Rate;
-        }
-
-        return new ExchangeRateSeriesStorage(dayNumbers, rateArray);
+        return MaterialiseFromNormalised(normalised);
     }
 
     /// <summary>
-    /// Creates a storage instance directly from arrays that the caller guarantees are strictly ascending, unique, and
-    /// strictly positive. Used by the mutable buffer's snapshot path to avoid revalidation.
+    /// Adopts ownership of pre-validated strictly-ascending day-number and rate arrays. Asserts the invariants in
+    /// debug builds and skips revalidation in release builds.
     /// </summary>
-    /// <param name="dayNumbers">
-    /// The strictly ascending unique day numbers. The instance takes ownership; the caller must not mutate the array
-    /// after the call.
-    /// </param>
-    /// <param name="rates">
-    /// The aligned strictly-positive rates. The instance takes ownership; the caller must not mutate the array after
-    /// the call.
-    /// </param>
+    /// <param name="dayNumbers">The strictly ascending unique day numbers. The instance takes ownership.</param>
+    /// <param name="rates">The aligned strictly-positive rates. The instance takes ownership.</param>
+    /// <returns>A new <see cref="ExchangeRateSeriesStorage" /> wrapping the supplied arrays.</returns>
+    internal static ExchangeRateSeriesStorage AdoptSortedUniqueArrays(int[] dayNumbers, decimal[] rates)
+    {
+        Debug.Assert(dayNumbers is not null);
+        Debug.Assert(rates is not null);
+        Debug.Assert(dayNumbers!.Length == rates!.Length);
+        Debug.Assert(dayNumbers.Length > 0);
+        Debug.Assert(IsStrictlyAscending(dayNumbers));
+        Debug.Assert(AllPositive(rates));
+
+        return new ExchangeRateSeriesStorage(dayNumbers, rates);
+    }
+
+    /// <summary>
+    /// Compatibility shim retained for any internal callers built before the rename.
+    /// </summary>
+    /// <param name="dayNumbers">The strictly ascending unique day numbers.</param>
+    /// <param name="rates">The aligned strictly-positive rates.</param>
     /// <returns>A new <see cref="ExchangeRateSeriesStorage" /> wrapping the supplied arrays.</returns>
     internal static ExchangeRateSeriesStorage CreateFromSortedUnique(int[] dayNumbers, decimal[] rates) =>
-        new(dayNumbers, rates);
+        AdoptSortedUniqueArrays(dayNumbers, rates);
+
+    /// <summary>
+    /// Reports whether <paramref name="dayNumbers" /> is strictly ascending. Used only by debug assertions.
+    /// </summary>
+    /// <param name="dayNumbers">The day numbers to check.</param>
+    /// <returns><see langword="true" /> if every adjacent pair satisfies <c>a &lt; b</c>; otherwise <see langword="false" />.</returns>
+    private static bool IsStrictlyAscending(int[] dayNumbers)
+    {
+        for (var i = 1; i < dayNumbers.Length; i++)
+        {
+            if (dayNumbers[i] <= dayNumbers[i - 1])
+                return false;
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// Reports whether every rate in <paramref name="rates" /> is strictly positive. Used only by debug assertions.
+    /// </summary>
+    /// <param name="rates">The rates to check.</param>
+    /// <returns><see langword="true" /> if every rate is &gt; 0; otherwise <see langword="false" />.</returns>
+    private static bool AllPositive(decimal[] rates)
+    {
+        for (var i = 0; i < rates.Length; i++)
+        {
+            if (rates[i] <= 0m)
+                return false;
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// Materialises a normalised list of <c>(dayNumber, rate)</c> pairs into the exact-sized owned arrays.
+    /// </summary>
+    /// <param name="normalised">The pre-sorted, pre-deduplicated, validated buffer to copy from.</param>
+    /// <returns>A new <see cref="ExchangeRateSeriesStorage" /> wrapping the materialised arrays.</returns>
+    private static ExchangeRateSeriesStorage MaterialiseFromNormalised(List<(int DayNumber, decimal Rate)> normalised)
+    {
+        var dayNumbers = new int[normalised.Count];
+        var rateArray = new decimal[normalised.Count];
+
+        for (var i = 0; i < normalised.Count; i++)
+        {
+            dayNumbers[i] = normalised[i].DayNumber;
+            rateArray[i] = normalised[i].Rate;
+        }
+
+        return AdoptSortedUniqueArrays(dayNumbers, rateArray);
+    }
 }

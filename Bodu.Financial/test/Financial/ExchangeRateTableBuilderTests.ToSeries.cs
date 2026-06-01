@@ -1,20 +1,20 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="ExchangeRateTableTests.ToSeries.cs" company="Bodu Pty. Ltd.">
+// <copyright file="ExchangeRateTableBuilderTests.ToSeries.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.Financial;
 
-public partial class ExchangeRateTableTests
+public partial class ExchangeRateTableBuilderTests
 {
     /// <summary>
-    /// Verifies that <see cref="ExchangeRateTable.ToSeries" /> on an empty table returns an empty list.
+    /// Verifies that <see cref="ExchangeRateTableBuilder.ToSeries" /> on an empty table returns an empty list.
     /// </summary>
     [TestMethod]
     public void ToSeries_WhenEmpty_ShouldReturnEmptyList()
     {
-        ExchangeRateTable table = new();
+        ExchangeRateTableBuilder table = new();
 
         IReadOnlyList<ExchangeRateSeries> snapshots = table.ToSeries();
 
@@ -22,12 +22,12 @@ public partial class ExchangeRateTableTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="ExchangeRateTable.ToSeries" /> produces one snapshot per non-empty series.
+    /// Verifies that <see cref="ExchangeRateTableBuilder.ToSeries" /> produces one snapshot per non-empty series.
     /// </summary>
     [TestMethod]
     public void ToSeries_WhenSeriesPopulated_ShouldReturnSnapshotPerSeries()
     {
-        ExchangeRateTable table = new();
+        ExchangeRateTableBuilder table = new();
         table.Upsert(s_usdAud, "RBA", new DateOnly(2026, 6, 1), 1.50m);
         table.Upsert(s_usdJpy, "BoJ", new DateOnly(2026, 6, 1), 110m);
 
@@ -42,7 +42,7 @@ public partial class ExchangeRateTableTests
     [TestMethod]
     public void ToSeries_WhenSomeBuildersEmpty_ShouldSkipThem()
     {
-        ExchangeRateTable table = new();
+        ExchangeRateTableBuilder table = new();
         table.Upsert(s_usdAud, "RBA", new DateOnly(2026, 6, 1), 1.50m);
         table.GetOrAddSeries(s_usdJpy, "BoJ"); // intentionally empty
 
