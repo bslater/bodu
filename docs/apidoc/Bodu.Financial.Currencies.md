@@ -69,7 +69,7 @@ The shipped catalogue covers every active ISO 4217 currency plus a curated set o
 
 ## Adding a custom currency
 
-Implement <xref:Bodu.Financial.ICurrency> directly and register the metadata with <xref:Bodu.Financial.CurrencyRegistry> so `MoneyValue` and `MoneyBag` round at the correct precision when they see the ISO code at runtime:
+Implement <xref:Bodu.Financial.ICurrency> directly and register the metadata with <xref:Bodu.Financial.CurrencyRegistry> so `Money` and `MoneyBag` round at the correct precision when they see the ISO code at runtime:
 
 ```csharp
 public sealed class DOGE : ICurrency

@@ -374,16 +374,16 @@ if (info.IsHistoric && entry.PostedOn > info.DemonetizedOn)
         $"{entry.IsoCode} was demonetized {info.DemonetizedOn:d} (replaced by {info.SuccessorIsoCode}).");
 ```
 
-## Runtime-tagged amounts: `MoneyValue`
+## Runtime-tagged amounts: `Money`
 
-`MoneyValue` is the runtime-tagged sister of `Money<TCurrency>`. The
+`Money` is the runtime-tagged sister of `Money<TCurrency>`. The
 currency is carried as a string field rather than a type parameter,
 so the same code path handles any ISO code at runtime — useful for
 deserialisation, generic invoicing engines, and FX systems where the
 currency comes from data, not type.
 
 ```csharp
-MoneyValue invoice = JsonSerializer.Deserialize<MoneyValue>(payload)!;
+Money invoice = JsonSerializer.Deserialize<Money>(payload)!;
 // invoice could be "USD 19.99", "EUR 19.99", or "JPY 200" — same code.
 ```
 
@@ -392,22 +392,22 @@ throw `InvalidOperationException` at runtime instead of failing the
 build:
 
 ```csharp
-MoneyValue usd = new MoneyValue(10m, "USD");
-MoneyValue eur = new MoneyValue(10m, "EUR");
+Money usd = new Money(10m, "USD");
+Money eur = new Money(10m, "EUR");
 
-MoneyValue total = usd + new MoneyValue(5m, "USD");   // OK
+Money total = usd + new Money(5m, "USD");   // OK
 total = usd + eur;                                     // throws InvalidOperationException
 ```
 
 Bridge to and from a typed `Money<T>` when the boundary is known:
 
 ```csharp
-Money<USD> typed = runtime.ToTyped<USD>();                 // throws on mismatch
-bool ok = runtime.TryToTyped(out Money<USD> result);       // safe, returns false on mismatch
-MoneyValue runtime = MoneyValue.FromTyped(new Money<USD>(19.99m));
+Money<USD> typed = runtime.As<USD>();                  // throws on mismatch
+bool ok = runtime.TryAs(out Money<USD> result);        // safe, returns false on mismatch
+Money runtime = new Money<USD>(19.99m).ToMoney();      // typed → runtime-tagged
 ```
 
-`MoneyValue` rounds to the registry's `MinorUnits` for the supplied
+`Money` rounds to the registry's `MinorUnits` for the supplied
 ISO code on construction. Custom currencies not in the catalogue can
 be pre-registered (see [Custom currencies](#custom-currencies)) so
 the rounding follows your declared precision.
@@ -424,7 +424,7 @@ MoneyBag wallet = MoneyBag.Empty
     .Add(new Money<JPY>(10_000m));
 
 wallet.GetBalance<USD>();           // Money<USD> 100.00
-wallet.GetBalance("EUR");           // MoneyValue { 50, "EUR" }
+wallet.GetBalance("EUR");           // Money { 50, "EUR" }
 wallet.Count;                       // 3
 ```
 
@@ -432,8 +432,8 @@ Operators chain naturally:
 
 ```csharp
 MoneyBag updated = wallet
-    + new MoneyValue(25m, "USD")
-    - new MoneyValue(10m, "EUR");
+    + new Money(25m, "USD")
+    - new Money(10m, "EUR");
 ```
 
 Bags are immutable; every operation returns a new bag. Zero balances
@@ -473,7 +473,7 @@ public sealed class DOGE : ICurrency
 }
 ```
 
-Register it with `CurrencyRegistry` so `MoneyValue` and `MoneyBag`
+Register it with `CurrencyRegistry` so `Money` and `MoneyBag`
 round to the right precision when they see the ISO code at runtime:
 
 ```csharp
@@ -483,13 +483,13 @@ CurrencyRegistry.Register(
         DemonetizedOn: null, SuccessorIsoCode: null));
 
 Money<DOGE> tip = new Money<DOGE>(0.12345678m);
-MoneyValue runtime = JsonSerializer.Deserialize<MoneyValue>(
+Money runtime = JsonSerializer.Deserialize<Money>(
     """{ "amount": 0.12345678, "currency": "DOGE" }""");
 ```
 
 ## JSON wire shape
 
-`Money<TCurrency>` and `MoneyValue` both serialise as:
+`Money<TCurrency>` and `Money` both serialise as:
 
 ```json
 { "amount": 19.99, "currency": "USD" }
@@ -498,7 +498,7 @@ MoneyValue runtime = JsonSerializer.Deserialize<MoneyValue>(
 Deserialisation on `Money<TCurrency>` rejects payloads whose
 `"currency"` field does not match `TCurrency.IsoCode` —
 currency drift surfaces as `JsonException`, not as a silently
-re-interpreted amount. `MoneyValue` accepts any ISO code (and rounds
+re-interpreted amount. `Money` accepts any ISO code (and rounds
 to the registry's `MinorUnits` for that code).
 
 `MoneyBag` uses a `{ "balances": { ... } }` wrapper:
@@ -516,7 +516,7 @@ arbitrary-precision number support.
 - **Calculations that genuinely span unknown currencies.** When you
   cannot fix the currency at the type-system level (for example, a
   generic invoicing engine that handles arbitrary user-supplied
-  currencies), use `MoneyValue` instead — the trade-off is runtime
+  currencies), use `Money` instead — the trade-off is runtime
   cross-currency checks rather than compile-time ones.
 - **Mixed-currency totals.** Use `MoneyBag` and a single
   `ConvertTo<TTarget>` call at the boundary where the total is
@@ -533,7 +533,7 @@ arbitrary-precision number support.
 ## See also
 
 - [`Money<TCurrency>` API reference](xref:Bodu.Financial.Money`1)
-- [`MoneyValue` API reference](xref:Bodu.Financial.MoneyValue)
+- [`Money` API reference](xref:Bodu.Financial.Money)
 - [`MoneyBag` API reference](xref:Bodu.Financial.MoneyBag)
 - [`CurrencyRegistry`](xref:Bodu.Financial.CurrencyRegistry)
 - [`IExchangeRateProvider`](xref:Bodu.Financial.IExchangeRateProvider)

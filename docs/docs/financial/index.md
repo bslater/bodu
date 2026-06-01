@@ -17,7 +17,7 @@ The package depends on `Bodu.Numerics` so `Money<TCurrency>` can round-trip thro
 | Type | Purpose |
 |---|---|
 | <xref:Bodu.Financial.Money`1> | Immutable, value-equatable monetary amount whose currency is encoded as the type parameter. Cross-currency arithmetic fails the build, not at runtime. |
-| <xref:Bodu.Financial.MoneyValue> | Runtime-tagged sister type — currency carried as an ISO code string. The fallback when the currency is data rather than type, e.g. deserialisation or generic invoicing. |
+| <xref:Bodu.Financial.Money> | Runtime-tagged sister type — currency carried as an ISO code string. The fallback when the currency is data rather than type, e.g. deserialisation or generic invoicing. |
 | <xref:Bodu.Financial.MoneyBag> | Immutable mixed-currency portfolio. Aggregates per-ISO balances, prunes zero balances, enumerates in lexicographic ISO order. |
 | <xref:Bodu.Financial.ICurrency> | Static-abstract interface carrying ISO code, minor-unit count, cash rounding increment, and demonetisation metadata. Implemented by every shipped currency tag. |
 | <xref:Bodu.Financial.CurrencyInfo>, <xref:Bodu.Financial.CurrencyRegistry> | Runtime currency metadata record and a thread-safe registry over shipped + caller-registered custom currencies. |
@@ -44,7 +44,7 @@ The tag types only ever exist statically — every one has a `private` construct
 | Scenario | Reach for |
 |---|---|
 | Type-safe monetary arithmetic that catches USD-vs-JPY mistakes at compile time | <xref:Bodu.Financial.Money`1> |
-| Runtime-tagged amount for deserialisation or generic invoicing | <xref:Bodu.Financial.MoneyValue> |
+| Runtime-tagged amount for deserialisation or generic invoicing | <xref:Bodu.Financial.Money> |
 | Multi-currency portfolio with aggregate-then-convert workflows | <xref:Bodu.Financial.MoneyBag> |
 | Sub-minor-unit-precise interest / percentage chains | `Money<T>.ToFraction()` / `FromFraction()` / `MultiplyExact()` |
 | Splitting an amount fairly across N shares without remainder loss | `Money<T>.Allocate(parts)` / `Allocate(ratios)` |
@@ -57,7 +57,7 @@ The tag types only ever exist statically — every one has a `private` construct
 
 ## Design choices
 
-- **Currency in the type system, not as a field.** `Money<USD>` and `Money<JPY>` are different types. Adding them fails the build rather than running with the wrong unit. The escape hatch is `MoneyValue` when the currency is genuinely unknown until runtime.
+- **Currency in the type system, not as a field.** `Money<USD>` and `Money<JPY>` are different types. Adding them fails the build rather than running with the wrong unit. The escape hatch is `Money` when the currency is genuinely unknown until runtime.
 - **Banker's rounding default.** Construction rounds to the currency's minor-unit precision using `MidpointRounding.ToEven`, matching .NET's `decimal` convention and IEEE 754. Pass an explicit `MidpointRounding` argument to opt out.
 - **Audit-friendly FX.** Dated provider lookups return `ExchangeRateLookupResult`, which carries the provider name, the actual date used, the offset-day distance from the requested date, the resolution policy that fired, and an inversion flag — enough to reconstruct any conversion after the fact.
 - **Zero-balance pruning.** `MoneyBag` removes zero balances on every operation, so equality and enumeration are stable across insertion order and across serialisation round trips.
@@ -65,8 +65,8 @@ The tag types only ever exist statically — every one has a `private` construct
 ## Where to go next
 
 - **[Core concepts](concepts.md)** — glossary the rest of the documentation assumes.
-- **[Getting started](getting-started.md)** — install the package and run minimal samples for `Money<TCurrency>`, `MoneyValue`, `MoneyBag`, the FX provider stack, and the JSON policies.
-- **[Working with `Money<TCurrency>`](../../guides/financial/money.md)** — type-parameter currency, allocation, conversion, exact-arithmetic chains, formatting and parsing, cash rounding, historic currencies, `MoneyValue` interop, `MoneyBag` portfolios.
+- **[Getting started](getting-started.md)** — install the package and run minimal samples for `Money<TCurrency>`, `Money`, `MoneyBag`, the FX provider stack, and the JSON policies.
+- **[Working with `Money<TCurrency>`](../../guides/financial/money.md)** — type-parameter currency, allocation, conversion, exact-arithmetic chains, formatting and parsing, cash rounding, historic currencies, `Money` interop, `MoneyBag` portfolios.
 - **[Bodu.Numerics introduction](../numerics/index.md)** — the rational-arithmetic library that backs `Money<T>.ToFraction()`.
 - **[Bodu.Financial API reference](xref:Bodu.Financial)** — full type-by-type docs.
 - **[Bodu.Financial.Currencies API reference](xref:Bodu.Financial.Currencies)** — the shipped ISO 4217 catalogue.
