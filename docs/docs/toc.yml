@@ -61,3 +61,15 @@
       href: extensions-configuration-text/concepts.md
     - name: Getting started
       href: extensions-configuration-text/getting-started.md
+- name: Bodu.Numerics
+  items:
+    - name: Introduction
+      href: numerics/index.md
+    - name: Getting started
+      href: numerics/getting-started.md
+- name: Bodu.Financial
+  items:
+    - name: Introduction
+      href: financial/index.md
+    - name: Getting started
+      href: financial/getting-started.md
