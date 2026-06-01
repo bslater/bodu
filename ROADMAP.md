@@ -4,7 +4,7 @@ Forward-looking plan for the **Bodu** C# utility library. Pairs with
 [`CHANGELOG.md`](CHANGELOG.md) (what shipped) and [`CLAUDE.md`](CLAUDE.md)
 (repository conventions for contributors).
 
-*Last updated: 2026-05-31. The stream-cipher family expansion is complete — ChaCha20 / XChaCha20, Salsa20 / XSalsa20, Rabbit, and HC-128 all ship on the shared StreamCipherAlgorithm base. Next stream-related step: the extended-nonce XChaCha20-Poly1305 / XSalsa20-Poly1305 AEAD constructions.*
+*Last updated: 2026-06-01. Audited the per-project items against the codebase and retired the ones that have since shipped — public `ConcurrentCircularBuffer<T>`, the `ConfigurationDiagnosticCode` enum, `IFileProvider` reload-on-change in the configuration bridge, the documented `ExternalPluginLoader` extension point, and the German `Länder` / UK constituent-country calendar splits. The stream-cipher family expansion is complete — ChaCha20 / XChaCha20, Salsa20 / XSalsa20, Rabbit, and HC-128 all ship on the shared StreamCipherAlgorithm base. Next stream-related step: the extended-nonce XChaCha20-Poly1305 / XSalsa20-Poly1305 AEAD constructions.*
 
 ## How to read this
 
@@ -140,9 +140,6 @@ Current state: mature; 398 src / 784 test files. Hardening pass closed.
   enumerator. `Bodu.Globalization.Calendar` already consumes it
   heavily, and other globalization-adjacent packages should be able to
   take a dependency on the pattern type without pulling all of Core.
-- Promote `ConcurrentCircularBuffer<T>` to a documented public type
-  with the same `IProducerConsumerCollection<T>` story planned for
-  `ConcurrentHashSet<T>`. Today it is reachable but undocumented.
 
 ### `Bodu.Security.Cryptography`
 
@@ -186,11 +183,6 @@ SipHash plus EAX/OFB/GCM/OCB/SIV modes.
   confidentiality-only primitives carrying nonce-reuse and
   unauthenticated-ciphertext warnings in their XML docs; AEAD remains
   the recommended default.
-- **Add the XChaCha20-Poly1305 / XSalsa20-Poly1305 AEAD constructions.**
-  The raw ciphers above plus the existing `Poly1305` MAC are the
-  building blocks. Neither extended-nonce AEAD ships in the BCL (only
-  the 12-byte-nonce `System.Security.Cryptography.ChaCha20Poly1305`
-  does), so both remain genuine gaps.
 - **Add the XChaCha20-Poly1305 / XSalsa20-Poly1305 AEAD constructions.**
   The raw ciphers above plus the existing `Poly1305` MAC are the
   building blocks. Neither extended-nonce AEAD ships in the BCL (only
@@ -276,17 +268,12 @@ resolver, view getters.
   existing `ConfigurationResolver`. Today the resolver story is
   Bodu-specific; standardising on at least one mainstream query
   syntax broadens applicability.
-- **Publish `ConfigurationDiagnosticCode` as a stable enum** with
-  doc-comments tying each code to its meaning, so consumers can write
-  diagnostic-aware error handlers.
 
 ### `Bodu.Extensions.Configuration.Text`
 
 Current state: bridge layer; 7 src / 19 test files. Connects
 `Microsoft.Extensions.Configuration` to `Bodu.Text.Configuration`.
 
-- **Add `IFileProvider` reload-on-change parity** with
-  `Microsoft.Extensions.Configuration.Json`. Today static sources only.
 - **Add Bencode and TOML sources** once `Bodu.Text.Formats` ships them.
 - **Document precedence semantics** when combined with the `Json` and
   `EnvironmentVariables` providers — consumers stack providers and need
@@ -372,9 +359,6 @@ for each supported calendar family.
   calendar table from the Astronomical Applications Department).
 - **Add `IAsyncEnumerable<NotableDate>` projections** for streaming
   large date-range queries (e.g. fiscal calendars across many years).
-- **Promote the plugin loader** (today exercised only by the 4
-  `Plugin*.TestAssembly` projects) to a documented public extension
-  point.
 
 ### `Bodu.Globalization.Calendar.Builder`
 
@@ -437,11 +421,10 @@ MY, NZ, SG.
 Current state: shipping in `[Unreleased]` 1.0.0. DE, ES, FR, GB, IE,
 IT, NL, SE.
 
-- **Add subdivision-level packs** — German *Länder*, Spanish autonomous
-  communities, Swiss cantons. The bulk of European regional holidays
-  are subdivision-specific.
-- **Add UK constituent-country splits** (England, Wales, Scotland,
-  Northern Ireland) — bank holidays diverge meaningfully.
+- **Add subdivision-level packs** — Spanish autonomous communities and
+  Swiss cantons. German *Länder* and the UK constituent-country splits
+  (England, Wales, Scotland, Northern Ireland) already ship; the bulk of
+  remaining European regional holidays are subdivision-specific.
 - **Add Orthodox-calendar overrides** for Greece, Cyprus, Bulgaria,
   Romania. The Orthodox Easter algorithm already exists in Calendar;
   the data pack just needs to wire it.
