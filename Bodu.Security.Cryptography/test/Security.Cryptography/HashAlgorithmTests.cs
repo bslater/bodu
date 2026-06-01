@@ -151,38 +151,108 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// </remarks>
     public virtual IEnumerable<TVariant> GetHashAlgorithmVariants() => Enum.GetValues<TVariant>();
 
+
+    /// <summary>
+    /// Verifies that incremental hash known answers are defined for the algorithm variant.
+    /// </summary>
+    /// <param name="variant">The algorithm variant under test.</param>
+    [TestMethod]
+    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(GetHashAlgorithmVariantDisplayName))]
+    public void HashAlgorithm_TestData_IncrementalHashes_ShouldBeDefined(TVariant variant)
+    {
+        IReadOnlyList<string> incrementalHashes = GetExpectedHashesForIncrementalInput(variant);
+
+        Assert.IsTrue(
+            incrementalHashes.Count > 0,
+            $"No incremental hashes are defined for variant '{variant}'.");
+    }
+
+    /// <summary>
+    /// Verifies that an empty-input known answer is defined for the algorithm variant.
+    /// </summary>
+    /// <param name="variant">The algorithm variant under test.</param>
+    [TestMethod]
+    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(GetHashAlgorithmVariantDisplayName))]
+    public void HashAlgorithm_TestData_EmptyKnownAnswer_ShouldBeDefined(TVariant variant)
+    {
+        var emptyHash = GetSpecification(variant).KnownAnswers.Empty;
+
+        Assert.IsNotNull(
+            emptyHash,
+            $"No empty-input known answer is defined for variant '{variant}'.");
+    }
+
     /// <summary>
     /// Verifies that the expected hash for the "Empty" named input matches the first entry in the incremental hash vector set.
     /// </summary>
     /// <param name="variant">The algorithm variant under test.</param>
     /// <remarks>
-    /// This ensures consistency between fixed test vectors (e.g., the
-    /// <see cref="HashAlgorithmKnownAnswers.Empty" /> slot) and the incremental output series, where the first
-    /// incremental hash corresponds to hashing zero bytes. Algorithms that do not publish incremental hashes
-    /// yet return an empty list from <see cref="GetExpectedHashesForIncrementalInput" />, or omit the
-    /// <see cref="HashAlgorithmKnownAnswers.Empty" /> slot; the consistency check is then skipped as
-    /// inconclusive rather than failing.
+    /// The first incremental hash corresponds to hashing zero bytes. This test ensures consistency between the
+    /// fixed <see cref="HashAlgorithmKnownAnswers.Empty" /> slot and the incremental output series.
     /// </remarks>
     [TestMethod]
-    [DynamicData(nameof(HashAlgorithmVariants))]
-    public void HashAlgorithm_TestData_Check(TVariant variant)
+    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(GetHashAlgorithmVariantDisplayName))]
+    public void HashAlgorithm_TestData_EmptyKnownAnswer_ShouldMatchFirstIncrementalHash(TVariant variant)
     {
         IReadOnlyList<string> incrementalHashes = GetExpectedHashesForIncrementalInput(variant);
+        var emptyHash = GetSpecification(variant).KnownAnswers.Empty;
+
         if (incrementalHashes.Count == 0)
         {
-            Assert.Inconclusive($"No incremental hashes defined for variant '{variant}'; skipping consistency check.");
+            Assert.Inconclusive($"No incremental hashes are defined for variant '{variant}'.");
             return;
         }
 
-        var emptyA = GetSpecification(variant).KnownAnswers.Empty;
-        if (emptyA is null)
+        if (emptyHash is null)
         {
-            Assert.Inconclusive($"No empty-input known answer defined for variant '{variant}'; skipping consistency check.");
+            Assert.Inconclusive($"No empty-input known answer is defined for variant '{variant}'.");
             return;
         }
 
-        var emptyB = incrementalHashes[0];
-        Assert.AreEqual(emptyA, emptyB, "Expected hash value for 'Empty' named input should equal the first item of incremental input.");
+        Assert.AreEqual(
+            emptyHash,
+            incrementalHashes[0],
+            "Expected hash value for 'Empty' named input should equal the first item of incremental input.");
+    }
+
+    /// <summary>
+    /// Gets the display name for hash algorithm variant data-driven tests.
+    /// </summary>
+    /// <param name="methodInfo">The test method being displayed.</param>
+    /// <param name="data">The data row supplied by <see cref="DynamicDataAttribute" />.</param>
+    /// <returns>A display name containing the test method and variant details.</returns>
+    public static string GetHashAlgorithmVariantDisplayName(MethodInfo methodInfo, object[] data)
+    {
+        var variant = data.Length > 0 ? data[0] : null;
+        return $"{FormatVariantForDisplay(variant)}";
+    }
+
+    /// <summary>
+    /// Formats a hash algorithm variant for use in data-driven test display names.
+    /// </summary>
+    /// <param name="variant">The variant value.</param>
+    /// <returns>A readable variant description.</returns>
+    private static string FormatVariantForDisplay(object? variant)
+    {
+        if (variant is null)
+            return "Variant: Default";
+
+        var variantText = variant.ToString();
+        if (!string.IsNullOrWhiteSpace(variantText) &&
+            !string.Equals(variantText, variant.GetType().FullName, StringComparison.Ordinal))
+        {
+            return $"Variant: {variantText}";
+        }
+
+        var properties = variant.GetType()
+            .GetProperties(BindingFlags.Instance | BindingFlags.Public)
+            .Where(p => p.CanRead && p.GetIndexParameters().Length == 0)
+            .Select(p => $"{p.Name}={p.GetValue(variant)}")
+            .ToArray();
+
+        return properties.Length == 0
+            ? $"Variant: {variant.GetType().Name}"
+            : $"Variant: {variant.GetType().Name}({string.Join(", ", properties)})";
     }
 
     /// <summary>
