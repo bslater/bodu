@@ -25,9 +25,18 @@ namespace Bodu.Financial;
 /// </para>
 /// <para>
 /// The amount is rounded on construction to the minor-unit precision reported by <see cref="CurrencyRegistry" /> for
-/// the supplied ISO code, using banker's rounding by default. When the ISO code is not in the registry the amount is
-/// stored at its source precision; consumers can call <see cref="CurrencyRegistry.Register" /> to register custom
-/// currencies ahead of construction.
+/// the supplied ISO code, using banker's rounding by default. A structurally valid but unregistered ISO code is
+/// rejected; register custom currencies via <see cref="CurrencyRegistry.Register(CurrencyInfo)" /> ahead of
+/// construction, or use the explicit-scale escape hatches
+/// <see cref="FromUnchecked(decimal, string, int, MidpointRounding)" /> and
+/// <see cref="From(decimal, string, UnknownCurrencyPolicy, MidpointRounding)" />.
+/// </para>
+/// <para>
+/// The type-level <see cref="JsonConverterAttribute" /> always serializes the canonical
+/// <see cref="Serialization.FinancialJsonPolicy.Strict" /> object shape
+/// (<c>{ "amount": &lt;number&gt;, "currency": "&lt;ISO&gt;" }</c>). The compact and lenient shapes are opt-in only and
+/// must be selected through
+/// <see cref="Serialization.FinancialJsonSerializerOptionsExtensions.AddFinancialJsonConverters(System.Text.Json.JsonSerializerOptions, Serialization.FinancialJsonPolicy)" />.
 /// </para>
 /// </remarks>
 [Serializable]

@@ -50,6 +50,12 @@ namespace Bodu.Financial;
 /// the rounding constructor, so it is safe even when <typeparamref name="TCurrency" /> reports invalid minor-unit
 /// metadata.
 /// </para>
+/// <para>
+/// The type-level <see cref="JsonConverterAttribute" /> always serializes the canonical
+/// <see cref="Serialization.FinancialJsonPolicy.Strict" /> object shape; the compact and lenient shapes are opt-in only
+/// and must be selected through
+/// <see cref="Serialization.FinancialJsonSerializerOptionsExtensions.AddFinancialJsonConverters(System.Text.Json.JsonSerializerOptions, Serialization.FinancialJsonPolicy)" />.
+/// </para>
 /// </remarks>
 [Serializable]
 [DebuggerDisplay("{ToString(),nq}")]
