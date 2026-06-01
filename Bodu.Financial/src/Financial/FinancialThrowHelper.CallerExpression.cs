@@ -66,6 +66,26 @@ internal static partial class FinancialThrowHelper
     }
 
     /// <summary>
+    /// Throws when <paramref name="value" /> is not a fully constructed <see cref="ExchangeRatePair" />.
+    /// </summary>
+    /// <param name="value">The candidate pair to validate.</param>
+    /// <param name="paramName">The parameter name reported in the exception; inferred from the call site.</param>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="value" /> is <see langword="default" />, i.e. its <see cref="ExchangeRatePair.IsValid" />
+    /// property reports <see langword="false" />.
+    /// </exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static void ThrowIfInvalidExchangeRatePair(
+        ExchangeRatePair value,
+        [CallerArgumentExpression(nameof(value))] string? paramName = null)
+    {
+        if (!value.IsValid)
+            throw new ArgumentException(
+                FinancialResourceStrings.Arg_Invalid_ExchangeRatePairDefault,
+                paramName);
+    }
+
+    /// <summary>
     /// Throws when <paramref name="rate" /> is zero or negative.
     /// </summary>
     /// <param name="rate">The exchange-rate value to validate.</param>

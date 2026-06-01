@@ -57,6 +57,22 @@ public readonly record struct ExchangeRatePair
     public string ToIsoCode { get; }
 
     /// <summary>
+    /// Gets a value indicating whether this instance carries two non-null ISO codes and can therefore be used safely
+    /// as a directional key.
+    /// </summary>
+    /// <returns>
+    /// <see langword="true" /> when both <see cref="FromIsoCode" /> and <see cref="ToIsoCode" /> are non-null;
+    /// otherwise <see langword="false" />.
+    /// </returns>
+    /// <remarks>
+    /// Because <see cref="ExchangeRatePair" /> is a value type, <see langword="default" /><c>(ExchangeRatePair)</c>
+    /// bypasses the validating constructor and leaves both codes <see langword="null" />. Public boundaries that
+    /// accept an <see cref="ExchangeRatePair" /> should reject any instance whose <see cref="IsValid" /> property is
+    /// <see langword="false" />.
+    /// </remarks>
+    public bool IsValid => FromIsoCode is not null && ToIsoCode is not null;
+
+    /// <summary>
     /// Returns the inverse pair with <see cref="FromIsoCode" /> and <see cref="ToIsoCode" /> swapped.
     /// </summary>
     /// <returns>A new <see cref="ExchangeRatePair" /> describing the reverse-direction quotation.</returns>

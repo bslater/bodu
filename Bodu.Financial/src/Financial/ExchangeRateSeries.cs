@@ -61,6 +61,7 @@ public sealed class ExchangeRateSeries
         string provider,
         IEnumerable<(DateOnly Date, decimal Rate)> rates)
     {
+        FinancialThrowHelper.ThrowIfInvalidExchangeRatePair(pair);
         FinancialThrowHelper.ThrowIfNullOrWhiteSpaceProvider(provider);
         ThrowHelper.ThrowIfNull(rates);
 
@@ -93,6 +94,7 @@ public sealed class ExchangeRateSeries
         string provider,
         IEnumerable<ExchangeRateObservation> observations)
     {
+        FinancialThrowHelper.ThrowIfInvalidExchangeRatePair(pair);
         FinancialThrowHelper.ThrowIfNullOrWhiteSpaceProvider(provider);
         ThrowHelper.ThrowIfNull(observations);
 

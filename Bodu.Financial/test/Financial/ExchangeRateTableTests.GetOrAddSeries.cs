@@ -69,4 +69,21 @@ public partial class ExchangeRateTableTests
         Assert.AreNotSame(rba, ecb);
         Assert.AreEqual(2, table.Count);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="ExchangeRateTable.GetOrAddSeries" /> rejects a <see langword="default" /> pair, which
+    /// bypasses the pair's own constructor validation and carries null ISO codes.
+    /// </summary>
+    [TestMethod]
+    public void GetOrAddSeries_WhenPairIsDefault_ShouldThrowArgumentException()
+    {
+        ExchangeRateTable table = new();
+
+        ExceptionAssert.ThrowsExactlyWithParamName<ArgumentException>(
+            () =>
+            {
+                _ = table.GetOrAddSeries(default, "RBA");
+            },
+            "pair");
+    }
 }

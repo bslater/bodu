@@ -43,6 +43,7 @@ public sealed class ExchangeRateSeriesBuilder
     /// <exception cref="ArgumentException">Thrown if <paramref name="provider" /> is empty or white-space.</exception>
     public ExchangeRateSeriesBuilder(ExchangeRatePair pair, string provider)
     {
+        FinancialThrowHelper.ThrowIfInvalidExchangeRatePair(pair);
         FinancialThrowHelper.ThrowIfNullOrWhiteSpaceProvider(provider);
 
         Pair = pair;

@@ -111,4 +111,19 @@ public partial class ExchangeRateSeriesBuilderTests
         Assert.AreEqual(3, builder.Count);
         CollectionAssert.AreEqual(series.GetObservations().ToArray(), builder.GetObservations().ToArray());
     }
+
+    /// <summary>
+    /// Verifies that the empty constructor rejects a <see langword="default" /> pair, which bypasses the pair's own
+    /// constructor validation and carries null ISO codes.
+    /// </summary>
+    [TestMethod]
+    public void Constructor_WhenPairIsDefault_ShouldThrowArgumentException()
+    {
+        ExceptionAssert.ThrowsExactlyWithParamName<ArgumentException>(
+            () =>
+            {
+                _ = new ExchangeRateSeriesBuilder(default, "RBA");
+            },
+            "pair");
+    }
 }

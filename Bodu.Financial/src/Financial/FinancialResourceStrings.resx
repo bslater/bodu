@@ -81,6 +81,9 @@
   <data name="Arg_Invalid_CompositeNoProviders" xml:space="preserve">
     <value>At least one provider is required.</value>
   </data>
+  <data name="Arg_Invalid_ExchangeRatePairDefault" xml:space="preserve">
+    <value>ExchangeRatePair is uninitialised; default(ExchangeRatePair) bypasses currency-code validation and is not a valid directional key.</value>
+  </data>
   <data name="Arg_Invalid_IsoCodeLength" xml:space="preserve">
     <value>ISO 4217 code must be exactly three letters, but '{0}' has {1}.</value>
   </data>

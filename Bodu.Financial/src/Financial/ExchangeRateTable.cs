@@ -59,6 +59,7 @@ public sealed class ExchangeRateTable
     /// <exception cref="ArgumentException">Thrown if <paramref name="provider" /> is empty or white-space.</exception>
     public ExchangeRateSeriesBuilder GetOrAddSeries(ExchangeRatePair pair, string provider)
     {
+        FinancialThrowHelper.ThrowIfInvalidExchangeRatePair(pair);
         FinancialThrowHelper.ThrowIfNullOrWhiteSpaceProvider(provider);
 
         var key = new ExchangeRateSeriesKey(pair, provider);
@@ -101,6 +102,7 @@ public sealed class ExchangeRateTable
     /// <exception cref="ArgumentException">Thrown if <paramref name="provider" /> is empty or white-space.</exception>
     public bool Remove(ExchangeRatePair pair, string provider)
     {
+        FinancialThrowHelper.ThrowIfInvalidExchangeRatePair(pair);
         FinancialThrowHelper.ThrowIfNullOrWhiteSpaceProvider(provider);
 
         return _series.Remove(new ExchangeRateSeriesKey(pair, provider));
@@ -118,6 +120,7 @@ public sealed class ExchangeRateTable
     /// <exception cref="ArgumentException">Thrown if <paramref name="provider" /> is empty or white-space.</exception>
     public bool ContainsSeries(ExchangeRatePair pair, string provider)
     {
+        FinancialThrowHelper.ThrowIfInvalidExchangeRatePair(pair);
         FinancialThrowHelper.ThrowIfNullOrWhiteSpaceProvider(provider);
 
         return _series.ContainsKey(new ExchangeRateSeriesKey(pair, provider));
@@ -138,6 +141,7 @@ public sealed class ExchangeRateTable
     /// <exception cref="ArgumentException">Thrown if <paramref name="provider" /> is empty or white-space.</exception>
     public bool TryGetBuilder(ExchangeRatePair pair, string provider, out ExchangeRateSeriesBuilder? builder)
     {
+        FinancialThrowHelper.ThrowIfInvalidExchangeRatePair(pair);
         FinancialThrowHelper.ThrowIfNullOrWhiteSpaceProvider(provider);
 
         return _series.TryGetValue(new ExchangeRateSeriesKey(pair, provider), out builder);
@@ -161,6 +165,7 @@ public sealed class ExchangeRateTable
     /// <exception cref="ArgumentException">Thrown if <paramref name="provider" /> is empty or white-space.</exception>
     public bool TryGetSeries(ExchangeRatePair pair, string provider, out ExchangeRateSeries? series)
     {
+        FinancialThrowHelper.ThrowIfInvalidExchangeRatePair(pair);
         FinancialThrowHelper.ThrowIfNullOrWhiteSpaceProvider(provider);
 
         if (_series.TryGetValue(new ExchangeRateSeriesKey(pair, provider), out var builder) && !builder.IsEmpty)

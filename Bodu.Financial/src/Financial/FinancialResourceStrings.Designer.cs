@@ -113,7 +113,16 @@ namespace Bodu.Financial {
                 return ResourceManager.GetString("Arg_Invalid_CompositeNoProviders", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to ExchangeRatePair is uninitialised; default(ExchangeRatePair) bypasses currency-code validation and is not a valid directional key..
+        /// </summary>
+        internal static string Arg_Invalid_ExchangeRatePairDefault {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_ExchangeRatePairDefault", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to ISO 4217 code must be exactly three letters, but &apos;{0}&apos; has {1}..
         /// </summary>
