@@ -87,6 +87,8 @@ Fraction<int> roundTrip = JsonSerializer.Deserialize<Fraction<int>>(json);
 
 ### Bounded intervals (`Interval<T>`)
 
+`Interval<T>` packs a range — lower endpoint, upper endpoint, and the inclusivity of each side — into a single immutable value over any `INumber<T>` endpoint type. The set algebra (membership, containment, intersection, union, overlap, adjacency) is defined on the type.
+
 ```csharp
 using Bodu.Numerics;
 
@@ -101,10 +103,125 @@ period.Contains(50);                                       // True
 period.Contains(100);                                      // False — upper exclusive
 ```
 
-Use the non-generic `Interval` helper class when you want the compiler to infer the endpoint type:
+#### Inferring the endpoint type
+
+The non-generic `Interval` helper class mirrors every factory on `Interval<T>` but lets the compiler infer `T` from the arguments — useful when the endpoint type is obvious from literals or locals:
 
 ```csharp
-var span = Interval.Closed(1.5, 2.5);   // Interval<double>
+var span    = Interval.Closed(1.5, 2.5);            // Interval<double>
+var prices  = Interval.OpenClosed(1000m, 10_000m);  // Interval<decimal>
+var ints    = Interval.ClosedOpen(0, 100);          // Interval<int>
+```
+
+#### Scheduling: detect a clash and trim it
+
+The closed-open shape `[a, b)` is the natural choice for time slots — adjacent slots share a single boundary without double-counting it.
+
+```csharp
+var morning = Interval<int>.ClosedOpen(9,  12);   // [9, 12) — 9am–noon
+var meeting = Interval<int>.ClosedOpen(11, 13);   // [11, 13) — overlapping meeting
+
+if (morning.Overlaps(meeting))
+{
+    var clash = morning.Intersect(meeting);       // [11, 12)
+    Console.WriteLine($"Clash: {clash}");          // "Clash: [11, 12)"
+}
+```
+
+#### Validation predicate
+
+A `Closed` interval doubles as a "valid input" predicate that documents its own bounds:
+
+```csharp
+var percentage = Interval<double>.Closed(0.0, 100.0);
+
+double Sanitize(double value) =>
+    percentage.Contains(value) ? value : throw new ArgumentOutOfRangeException(nameof(value));
+
+Sanitize(99.5);   // 99.5
+Sanitize(100.0);  // 100.0 — closed upper
+Sanitize(101.0);  // throws
+```
+
+#### Partitioning a span into adjacent buckets
+
+Adjacent half-open intervals partition a range cleanly with no overlap and no gap. Together they cover the whole span and exactly one of them contains any given value.
+
+```csharp
+var q1 = Interval<int>.ClosedOpen(0,   90);
+var q2 = Interval<int>.ClosedOpen(90,  181);
+var q3 = Interval<int>.ClosedOpen(181, 273);
+var q4 = Interval<int>.ClosedOpen(273, 365);
+
+int BucketOf(int dayOfYear) =>
+    q1.Contains(dayOfYear) ? 1 :
+    q2.Contains(dayOfYear) ? 2 :
+    q3.Contains(dayOfYear) ? 3 :
+    q4.Contains(dayOfYear) ? 4 :
+    throw new ArgumentOutOfRangeException(nameof(dayOfYear));
+
+BucketOf(0);    // 1 — closed lower of q1
+BucketOf(90);   // 2 — q1 ends before 90; q2 includes it
+BucketOf(364);  // 4 — q4 contains [273, 365)
+```
+
+#### Formatting and parsing
+
+`Interval<T>` formats using ISO 31-11 bracket notation and parses the same syntax. The empty interval renders as the U+2205 EMPTY SET glyph (`∅`).
+
+```csharp
+using System.Globalization;
+
+Interval<int>.Closed(1, 5).ToString();       // "[1, 5]"
+Interval<int>.ClosedOpen(0, 100).ToString(); // "[0, 100)"
+Interval<int>.Empty.ToString();              // "∅"
+
+Interval<double>
+    .Closed(1.5, 2.75)
+    .ToString("F2", CultureInfo.InvariantCulture);   // "[1.50, 2.75]"
+
+Interval<int> parsed = Interval<int>.Parse("(0, 100]", CultureInfo.InvariantCulture);
+Interval<int>.TryParse("∅", CultureInfo.InvariantCulture, out var none);  // none = Empty
+```
+
+`Interval<T>` implements `ISpanFormattable` and `IUtf8SpanFormattable`, so the same text round-trips through character and UTF-8 byte buffers without allocation.
+
+#### JSON
+
+`Interval<T>` is wired to `System.Text.Json` via `[JsonConverter(typeof(IntervalJsonConverterFactory))]`, so values round-trip without explicit converter registration. The default policy is `Strict` and produces an explicit object shape; pass a different `NumericsJsonPolicy` to the factory when you want the bracket-notation string form on the wire.
+
+```csharp
+using System.Text.Json;
+using Bodu.Numerics;
+using Bodu.Numerics.Serialization;
+
+// Default (Strict) — explicit object shape, all four fields required on read.
+string json = JsonSerializer.Serialize(Interval<int>.ClosedOpen(0, 100));
+// {"lower":0,"upper":100,"lowerInclusive":true,"upperInclusive":false}
+
+Interval<int> roundTrip = JsonSerializer.Deserialize<Interval<int>>(json);
+
+// Compact policy — string form using ISO 31-11 bracket notation.
+JsonSerializerOptions options = new JsonSerializerOptions()
+    .AddNumericsJsonConverters(NumericsJsonPolicy.Compact);
+
+string compact = JsonSerializer.Serialize(Interval<int>.ClosedOpen(0, 100), options);
+// "[0, 100)"
+```
+
+The empty interval serializes to `{"empty":true}` under `Strict` and `Lenient`, and to `"∅"` under `Compact`.
+
+#### The empty interval is unique
+
+Any inverted-bounds or equal-bounds-with-open-endpoint interval compares equal to `Interval<T>.Empty` regardless of the bounds used to construct it. A default-constructed value is empty too, so `Interval<T>` fields never carry a malformed default.
+
+```csharp
+var none      = Interval<int>.Empty;
+var inverted  = new Interval<int>(5, 1, true, true);
+var collapsed = new Interval<int>(0, 0, false, false);
+Interval<int> defaulted = default;
+
+none == inverted && none == collapsed && none == defaulted;  // True
 ```
 
 ### Cross-package: Fraction-backed monetary arithmetic

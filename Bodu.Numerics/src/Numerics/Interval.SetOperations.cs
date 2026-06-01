@@ -18,6 +18,19 @@ public readonly partial struct Interval<T>
     /// under the configured inclusivity rules; otherwise <see langword="false" />. An empty interval contains no value,
     /// including itself.
     /// </returns>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// var window = Interval<int>.ClosedOpen(1, 5);   // [1, 5)
+    /// window.Contains(1);                            // True  — closed lower
+    /// window.Contains(4);                            // True  — interior
+    /// window.Contains(5);                            // False — open upper
+    /// window.Contains(0);                            // False — outside
+    ///
+    /// Interval<int>.Empty.Contains(0);               // False — the empty interval contains nothing
+    ///]]>
+    /// </code>
+    /// </example>
     public bool Contains(T value)
     {
         if (IsEmpty)
@@ -38,6 +51,24 @@ public readonly partial struct Interval<T>
     /// <see langword="false" />. The empty interval is a subset of every interval, so any interval contains the empty
     /// interval; only the empty interval contains the empty interval as a non-empty member.
     /// </returns>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// var outer = Interval<int>.Closed(0, 10);
+    ///
+    /// outer.Contains(Interval<int>.Closed(2, 8));        // True — strict subset
+    /// outer.Contains(Interval<int>.Closed(0, 10));       // True — equal sets
+    /// outer.Contains(Interval<int>.Closed(2, 11));       // False — exceeds upper
+    /// outer.Contains(Interval<int>.Empty);               // True — ∅ ⊆ every set
+    ///
+    /// // Endpoint inclusivity is honored: an open lower fits inside a closed lower at the same value.
+    /// var closed = Interval<int>.Closed(0, 10);          // [0, 10]
+    /// var open   = Interval<int>.Open(0, 10);            // (0, 10)
+    /// closed.Contains(open);                             // True
+    /// open.Contains(closed);                             // False — closed includes 0 and 10
+    ///]]>
+    /// </code>
+    /// </example>
     public bool Contains(Interval<T> other)
     {
         if (other.IsEmpty)
@@ -64,6 +95,21 @@ public readonly partial struct Interval<T>
     /// overlap, because no single value belongs to both. To test whether they are adjacent (touching), inspect the
     /// endpoints directly.
     /// </remarks>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// var a = Interval<int>.Closed(1, 5);
+    /// var b = Interval<int>.Closed(3, 7);
+    /// a.Overlaps(b);                                                     // True — share [3, 5]
+    ///
+    /// // Touching at a boundary but not both including it: NOT overlapping.
+    /// Interval<int>.ClosedOpen(1, 5).Overlaps(Interval<int>.Closed(5, 10));   // False — neither holds 5 jointly
+    /// Interval<int>.OpenClosed(1, 5).Overlaps(Interval<int>.Closed(5, 10));   // True  — both include 5
+    ///
+    /// Interval<int>.Closed(1, 2).Overlaps(Interval<int>.Closed(5, 6));   // False — disjoint
+    ///]]>
+    /// </code>
+    /// </example>
     public bool Overlaps(Interval<T> other)
     {
         if (IsEmpty || other.IsEmpty)
@@ -82,6 +128,25 @@ public readonly partial struct Interval<T>
     /// </summary>
     /// <param name="other">The interval to intersect with.</param>
     /// <returns>The intersection interval, or <see cref="Empty" /> when the two intervals share no values.</returns>
+    /// <remarks>
+    /// <para>
+    /// On endpoint ties, the <b>stricter</b> (open) inclusivity wins so that the result is a true subset of both
+    /// operands. For example, <c>[1, 5]</c> intersected with <c>(1, 5)</c> yields <c>(1, 5)</c>.
+    /// </para>
+    /// </remarks>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// Interval<int>.Closed(1, 5).Intersect(Interval<int>.Closed(3, 7));   // [3, 5]
+    /// Interval<int>.Closed(1, 3).Intersect(Interval<int>.Closed(5, 7));   // ∅ — disjoint
+    ///
+    /// // On ties, the stricter (open) inclusivity wins.
+    /// var closed = Interval<int>.Closed(1, 5);   // [1, 5]
+    /// var open   = Interval<int>.Open(1, 5);     // (1, 5)
+    /// closed.Intersect(open);                    // (1, 5)
+    ///]]>
+    /// </code>
+    /// </example>
     public Interval<T> Intersect(Interval<T> other)
     {
         if (IsEmpty || other.IsEmpty || !Overlaps(other))
@@ -151,9 +216,37 @@ public readonly partial struct Interval<T>
     /// and the result would not be contiguous.
     /// </para>
     /// <para>
-    /// Union with the empty interval is always defined: an empty operand leaves the other operand unchanged.
+    /// On endpoint ties, the <b>looser</b> (closed) inclusivity wins so that the result is a superset of either
+    /// operand. Union with the empty interval is always defined: an empty operand leaves the other operand unchanged.
+    /// </para>
+    /// <para>
+    /// When the two intervals are disjoint with a true gap between them, the union would require two pieces to
+    /// represent and this method returns <see langword="false" /> rather than synthesise a non-contiguous result.
+    /// Callers that need a multi-piece result should accumulate the operands into a higher-level collection of
+    /// intervals.
     /// </para>
     /// </remarks>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// // Adjacent — [1, 5) ∪ [5, 10] → [1, 10]
+    /// Interval<int>.ClosedOpen(1, 5).TryUnion(Interval<int>.Closed(5, 10), out var contiguous);
+    /// // contiguous == [1, 10], result == true
+    ///
+    /// // Overlapping — [1, 5] ∪ [3, 7] → [1, 7]
+    /// Interval<int>.Closed(1, 5).TryUnion(Interval<int>.Closed(3, 7), out var merged);
+    /// // merged == [1, 7], result == true
+    ///
+    /// // Disjoint — [1, 5) ∪ (5, 10] is not contiguous (no operand contains 5).
+    /// bool ok = Interval<int>.ClosedOpen(1, 5).TryUnion(Interval<int>.OpenClosed(5, 10), out _);
+    /// // ok == false
+    ///
+    /// // Empty operand acts as identity.
+    /// Interval<int>.Empty.TryUnion(Interval<int>.Closed(1, 5), out var same);
+    /// // same == [1, 5], result == true
+    ///]]>
+    /// </code>
+    /// </example>
     public bool TryUnion(Interval<T> other, out Interval<T> result)
     {
         if (IsEmpty)
