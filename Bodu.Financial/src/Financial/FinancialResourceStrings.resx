@@ -81,6 +81,9 @@
   <data name="Arg_Invalid_CompositeNoProviders" xml:space="preserve">
     <value>At least one provider is required.</value>
   </data>
+  <data name="Arg_Invalid_CurrencyCodeNotMapped" xml:space="preserve">
+    <value>The CurrencyCode value '{0}' (numeric {1}) does not correspond to a registered currency.</value>
+  </data>
   <data name="Arg_Invalid_IsoCodeLength" xml:space="preserve">
     <value>ISO 4217 code must be exactly three letters, but '{0}' has {1}.</value>
   </data>
@@ -275,6 +278,9 @@
   </data>
   <data name="Op_Invalid_MoneySameCurrencyRequired" xml:space="preserve">
     <value>Money operations require the same currency; got '{0}' and '{1}'.</value>
+  </data>
+  <data name="Op_Invalid_NoCurrencyCodeForIsoCode" xml:space="preserve">
+    <value>There is no CurrencyCode enum member for ISO code '{0}'. Historic or custom currencies are not represented in CurrencyCode.</value>
   </data>
   <data name="Op_Invalid_RateNotStrictlyPositive" xml:space="preserve">
     <value>Exchange rate for {0} → {1} must be strictly positive; rate provider returned {2}.</value>

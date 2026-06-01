@@ -83,6 +83,21 @@ internal static class Program
 
         existing.Remove(registrationFileName);
 
+        const string currencyCodeFileName = "CurrencyCode.cs";
+        string currencyCodePath = Path.Combine(outputDir, currencyCodeFileName);
+        string currencyCodeSource = BuildCurrencyCodeSource(catalogue);
+        if (File.Exists(currencyCodePath) && File.ReadAllText(currencyCodePath) == currencyCodeSource)
+        {
+            unchanged++;
+        }
+        else
+        {
+            File.WriteAllText(currencyCodePath, currencyCodeSource);
+            written++;
+        }
+
+        existing.Remove(currencyCodeFileName);
+
         foreach (string stale in existing)
         {
             if (string.Equals(stale, "currencies.json", StringComparison.Ordinal))
@@ -167,6 +182,51 @@ internal static class Program
         }
 
         builder.AppendLine("    }");
+        builder.AppendLine("}");
+        return builder.ToString();
+    }
+
+    private static string BuildCurrencyCodeSource(Catalogue catalogue)
+    {
+        StringBuilder builder = new();
+        builder.Append(FileHeader);
+        builder.AppendLine("namespace Bodu.Financial.Currencies;");
+        builder.AppendLine();
+        builder.AppendLine("/// <summary>");
+        builder.AppendLine("/// Source-generated enumeration of the active ISO 4217 currencies shipped with Bodu.Financial.");
+        builder.AppendLine("/// </summary>");
+        builder.AppendLine("/// <remarks>");
+        builder.AppendLine("/// Each member name is the three-letter ISO 4217 alphabetic code; each member value is the");
+        builder.AppendLine("/// corresponding ISO 4217 numeric code. Historic / demonetized currencies are intentionally");
+        builder.AppendLine("/// excluded so the enum stays stable when an ISO code is retired; access historic currencies");
+        builder.AppendLine("/// via <see cref=\"global::Bodu.Financial.CurrencyRegistry\" /> or the tag classes in this");
+        builder.AppendLine("/// namespace.");
+        builder.AppendLine("/// </remarks>");
+        builder.AppendLine("public enum CurrencyCode");
+        builder.AppendLine("{");
+
+        bool first = true;
+        foreach (CurrencyEntry currency in catalogue.Currencies)
+        {
+            if (currency.IsHistoric)
+                continue;
+
+            if (!first)
+                builder.AppendLine();
+            first = false;
+
+            builder.Append("    /// <summary>")
+                .Append(currency.Name)
+                .Append(" (numeric ")
+                .Append(currency.Numeric.ToString(CultureInfo.InvariantCulture))
+                .AppendLine(").</summary>");
+            builder.Append("    ")
+                .Append(currency.Iso)
+                .Append(" = ")
+                .Append(currency.Numeric.ToString(CultureInfo.InvariantCulture))
+                .AppendLine(",");
+        }
+
         builder.AppendLine("}");
         return builder.ToString();
     }

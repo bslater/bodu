@@ -113,7 +113,16 @@ namespace Bodu.Financial {
                 return ResourceManager.GetString("Arg_Invalid_CompositeNoProviders", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to The CurrencyCode value &apos;{0}&apos; (numeric {1}) does not correspond to a registered currency..
+        /// </summary>
+        internal static string Arg_Invalid_CurrencyCodeNotMapped {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_CurrencyCodeNotMapped", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to ISO 4217 code must be exactly three letters, but &apos;{0}&apos; has {1}..
         /// </summary>
@@ -698,7 +707,16 @@ namespace Bodu.Financial {
                 return ResourceManager.GetString("Op_Invalid_MoneySameCurrencyRequired", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to There is no CurrencyCode enum member for ISO code &apos;{0}&apos;. Historic or custom currencies are not represented in CurrencyCode..
+        /// </summary>
+        internal static string Op_Invalid_NoCurrencyCodeForIsoCode {
+            get {
+                return ResourceManager.GetString("Op_Invalid_NoCurrencyCodeForIsoCode", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Exchange rate for {0} → {1} must be strictly positive; rate provider returned {2}..
         /// </summary>
