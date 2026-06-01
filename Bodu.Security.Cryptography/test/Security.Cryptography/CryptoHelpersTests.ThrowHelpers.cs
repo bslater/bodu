@@ -11,21 +11,21 @@ namespace Bodu.Security.Cryptography;
 public partial class CryptoHelpersTests
 {
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.ThrowIfAssociatedDataNotProcessed(bool)" /> does not throw when the
+    /// Verifies that <see cref="CryptographyThrowHelper.ThrowIfAssociatedDataNotProcessed(bool)" /> does not throw when the
     /// associated-data flag is <see langword="true" />.
     /// </summary>
     [TestMethod]
-    public void ThrowIfAssociatedDataNotProcessed_WhenAlreadyProcessed_ShouldNotThrow() => CryptoHelpers.ThrowIfAssociatedDataNotProcessed(true);
+    public void ThrowIfAssociatedDataNotProcessed_WhenAlreadyProcessed_ShouldNotThrow() => CryptographyThrowHelper.ThrowIfAssociatedDataNotProcessed(true);
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.ThrowIfNotPositiveMultipleOf{T}(T, T, string)" /> does not throw when the
+    /// Verifies that <see cref="CryptographyThrowHelper.ThrowIfNotPositiveMultipleOf{T}(T, T, string)" /> does not throw when the
     /// value is a positive multiple of the divisor.
     /// </summary>
     [TestMethod]
-    public void ThrowIfNotPositiveMultipleOf_WhenValueIsPositiveMultiple_ShouldNotThrow() => CryptoHelpers.ThrowIfNotPositiveMultipleOf(16, 8);
+    public void ThrowIfNotPositiveMultipleOf_WhenValueIsPositiveMultiple_ShouldNotThrow() => CryptographyThrowHelper.ThrowIfNotPositiveMultipleOf(16, 8);
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.ThrowIfNotPositiveMultipleOf{T}(T, T, string)" /> throws
+    /// Verifies that <see cref="CryptographyThrowHelper.ThrowIfNotPositiveMultipleOf{T}(T, T, string)" /> throws
     /// <see cref="CryptographicException" /> when the value is zero.
     /// </summary>
     [TestMethod]
@@ -33,12 +33,12 @@ public partial class CryptoHelpersTests
     {
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
-            CryptoHelpers.ThrowIfNotPositiveMultipleOf(0, 8);
+            CryptographyThrowHelper.ThrowIfNotPositiveMultipleOf(0, 8);
         });
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.ThrowIfNotPositiveMultipleOf{T}(T, T, string)" /> throws
+    /// Verifies that <see cref="CryptographyThrowHelper.ThrowIfNotPositiveMultipleOf{T}(T, T, string)" /> throws
     /// <see cref="CryptographicException" /> when the value is negative.
     /// </summary>
     [TestMethod]
@@ -46,12 +46,12 @@ public partial class CryptoHelpersTests
     {
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
-            CryptoHelpers.ThrowIfNotPositiveMultipleOf(-8, 8);
+            CryptographyThrowHelper.ThrowIfNotPositiveMultipleOf(-8, 8);
         });
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.ThrowIfNotPositiveMultipleOf{T}(T, T, string)" /> throws
+    /// Verifies that <see cref="CryptographyThrowHelper.ThrowIfNotPositiveMultipleOf{T}(T, T, string)" /> throws
     /// <see cref="CryptographicException" /> when the value is positive but not a multiple of the divisor.
     /// </summary>
     [TestMethod]
@@ -59,12 +59,12 @@ public partial class CryptoHelpersTests
     {
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
-            CryptoHelpers.ThrowIfNotPositiveMultipleOf(10, 8);
+            CryptographyThrowHelper.ThrowIfNotPositiveMultipleOf(10, 8);
         });
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.ThrowIfNotPositiveMultipleOf{T}(T, T, string)" /> throws
+    /// Verifies that <see cref="CryptographyThrowHelper.ThrowIfNotPositiveMultipleOf{T}(T, T, string)" /> throws
     /// <see cref="ArgumentOutOfRangeException" /> when the divisor is zero.
     /// </summary>
     [TestMethod]
@@ -72,12 +72,12 @@ public partial class CryptoHelpersTests
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            CryptoHelpers.ThrowIfNotPositiveMultipleOf(16, 0);
+            CryptographyThrowHelper.ThrowIfNotPositiveMultipleOf(16, 0);
         });
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.ThrowIfNotPositiveMultipleOf{T}(T, T, string)" /> throws
+    /// Verifies that <see cref="CryptographyThrowHelper.ThrowIfNotPositiveMultipleOf{T}(T, T, string)" /> throws
     /// <see cref="ArgumentOutOfRangeException" /> when the divisor is negative.
     /// </summary>
     [TestMethod]
@@ -85,12 +85,12 @@ public partial class CryptoHelpersTests
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            CryptoHelpers.ThrowIfNotPositiveMultipleOf(16, -8);
+            CryptographyThrowHelper.ThrowIfNotPositiveMultipleOf(16, -8);
         });
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.ThrowIfInvalidBlockSize(byte[], int, KeySizes[], string)" /> does not
+    /// Verifies that <see cref="CryptographyThrowHelper.ThrowIfInvalidBlockSize(byte[], int, KeySizes[], string)" /> does not
     /// throw when the value length matches the expected block size.
     /// </summary>
     [TestMethod]
@@ -99,11 +99,11 @@ public partial class CryptoHelpersTests
         var value = new byte[8];
         KeySizes[] legal = new[] { new KeySizes(64, 64, 0) };
 
-        CryptoHelpers.ThrowIfInvalidBlockSize(value, 64, legal);
+        CryptographyThrowHelper.ThrowIfInvalidBlockSize(value, 64, legal);
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.ThrowIfInvalidBlockSize(byte[], int, KeySizes[], string)" /> throws
+    /// Verifies that <see cref="CryptographyThrowHelper.ThrowIfInvalidBlockSize(byte[], int, KeySizes[], string)" /> throws
     /// <see cref="ArgumentNullException" /> when the value array is <see langword="null" />.
     /// </summary>
     [TestMethod]
@@ -113,12 +113,12 @@ public partial class CryptoHelpersTests
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            CryptoHelpers.ThrowIfInvalidBlockSize(null!, 64, legal);
+            CryptographyThrowHelper.ThrowIfInvalidBlockSize(null!, 64, legal);
         });
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.ThrowIfInvalidBlockSize(byte[], int, KeySizes[], string)" /> throws
+    /// Verifies that <see cref="CryptographyThrowHelper.ThrowIfInvalidBlockSize(byte[], int, KeySizes[], string)" /> throws
     /// <see cref="ArgumentNullException" /> when the legal sizes array is <see langword="null" />.
     /// </summary>
     [TestMethod]
@@ -128,12 +128,12 @@ public partial class CryptoHelpersTests
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            CryptoHelpers.ThrowIfInvalidBlockSize(value, 64, null!);
+            CryptographyThrowHelper.ThrowIfInvalidBlockSize(value, 64, null!);
         });
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.ThrowIfInvalidBlockSize(byte[], int, KeySizes[], string)" /> throws
+    /// Verifies that <see cref="CryptographyThrowHelper.ThrowIfInvalidBlockSize(byte[], int, KeySizes[], string)" /> throws
     /// <see cref="CryptographicException" /> when the value length does not equal the expected block size.
     /// </summary>
     [TestMethod]
@@ -144,26 +144,26 @@ public partial class CryptoHelpersTests
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
-            CryptoHelpers.ThrowIfInvalidBlockSize(value, 64, legal);
+            CryptographyThrowHelper.ThrowIfInvalidBlockSize(value, 64, legal);
         });
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.FormatLegalSizes(KeySizes[])" /> returns the empty string when the
+    /// Verifies that <see cref="CryptographyHelper.FormatLegalSizes(KeySizes[])" /> returns the empty string when the
     /// array is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void FormatLegalSizes_WhenNull_ShouldReturnEmptyString() => Assert.AreEqual(string.Empty, CryptoHelpers.FormatLegalSizes(null));
+    public void FormatLegalSizes_WhenNull_ShouldReturnEmptyString() => Assert.AreEqual(string.Empty, CryptographyHelper.FormatLegalSizes(null));
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.FormatLegalSizes(KeySizes[])" /> returns the empty string when the
+    /// Verifies that <see cref="CryptographyHelper.FormatLegalSizes(KeySizes[])" /> returns the empty string when the
     /// array is empty.
     /// </summary>
     [TestMethod]
-    public void FormatLegalSizes_WhenEmpty_ShouldReturnEmptyString() => Assert.AreEqual(string.Empty, CryptoHelpers.FormatLegalSizes([]));
+    public void FormatLegalSizes_WhenEmpty_ShouldReturnEmptyString() => Assert.AreEqual(string.Empty, CryptographyHelper.FormatLegalSizes([]));
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.FormatLegalSizes(KeySizes[])" /> emits a single, distinct value when
+    /// Verifies that <see cref="CryptographyHelper.FormatLegalSizes(KeySizes[])" /> emits a single, distinct value when
     /// <see cref="KeySizes.SkipSize" /> is zero.
     /// </summary>
     [TestMethod]
@@ -171,11 +171,11 @@ public partial class CryptoHelpersTests
     {
         KeySizes[] keySizes = new[] { new KeySizes(128, 256, 0) };
 
-        Assert.AreEqual("128", CryptoHelpers.FormatLegalSizes(keySizes));
+        Assert.AreEqual("128", CryptographyHelper.FormatLegalSizes(keySizes));
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.FormatLegalSizes(KeySizes[])" /> enumerates each permitted size when a
+    /// Verifies that <see cref="CryptographyHelper.FormatLegalSizes(KeySizes[])" /> enumerates each permitted size when a
     /// non-zero <see cref="KeySizes.SkipSize" /> is supplied.
     /// </summary>
     [TestMethod]
@@ -183,11 +183,11 @@ public partial class CryptoHelpersTests
     {
         KeySizes[] keySizes = new[] { new KeySizes(128, 256, 64) };
 
-        Assert.AreEqual("128, 192, 256", CryptoHelpers.FormatLegalSizes(keySizes));
+        Assert.AreEqual("128, 192, 256", CryptographyHelper.FormatLegalSizes(keySizes));
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.FormatLegalSizes(KeySizes[])" /> deduplicates and sorts the values
+    /// Verifies that <see cref="CryptographyHelper.FormatLegalSizes(KeySizes[])" /> deduplicates and sorts the values
     /// emitted by multiple overlapping <see cref="KeySizes" /> entries.
     /// </summary>
     [TestMethod]
@@ -199,6 +199,6 @@ public partial class CryptoHelpersTests
             new KeySizes(128, 192, 64),
         };
 
-        Assert.AreEqual("128, 192, 256", CryptoHelpers.FormatLegalSizes(keySizes));
+        Assert.AreEqual("128, 192, 256", CryptographyHelper.FormatLegalSizes(keySizes));
     }
 }

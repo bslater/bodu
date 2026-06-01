@@ -104,7 +104,7 @@ internal sealed class StreamCipherTransform
         if (_disposed)
             return;
 
-        CryptoHelpers.Clear(_keystream);
+        CryptographyHelper.Clear(_keystream);
         _cipher.Dispose();
 
         _disposed = true;
@@ -148,8 +148,8 @@ internal sealed class StreamCipherTransform
 
         ThrowHelper.ThrowIfNull(inputBuffer);
         ThrowHelper.ThrowIfNull(outputBuffer);
-        CryptoHelpers.ThrowIfArrayOffsetOrCountInvalid(inputBuffer, inputOffset, inputCount);
-        CryptoHelpers.ThrowIfArrayOffsetOrCountInvalid(outputBuffer, outputOffset, inputCount);
+        CryptographyThrowHelper.ThrowIfArrayOffsetOrCountInvalid(inputBuffer, inputOffset, inputCount);
+        CryptographyThrowHelper.ThrowIfArrayOffsetOrCountInvalid(outputBuffer, outputOffset, inputCount);
 
         ReadOnlySpan<byte> input = inputBuffer.AsSpan(inputOffset, inputCount);
         Span<byte> output = outputBuffer.AsSpan(outputOffset, inputCount);
@@ -157,7 +157,7 @@ internal sealed class StreamCipherTransform
         // Forward byte-by-byte XOR is safe for exact in-place (input and output cover the same memory) and for
         // fully disjoint ranges, but a partial overlap would let an earlier write clobber input that has not yet
         // been read.
-        CryptoHelpers.ThrowIfInvalidOverlap(input, output);
+        CryptographyThrowHelper.ThrowIfInvalidOverlap(input, output);
 
         Apply(input, output);
         return inputCount;
@@ -186,7 +186,7 @@ internal sealed class StreamCipherTransform
         ThrowIfFinalized();
 
         ThrowHelper.ThrowIfNull(inputBuffer);
-        CryptoHelpers.ThrowIfArrayOffsetOrCountInvalid(inputBuffer, inputOffset, inputCount);
+        CryptographyThrowHelper.ThrowIfArrayOffsetOrCountInvalid(inputBuffer, inputOffset, inputCount);
 
         // No overlap check is needed: a fresh output array is allocated here, so it can never alias the input buffer.
         var output = new byte[inputCount];

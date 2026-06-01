@@ -316,7 +316,7 @@ public abstract class TweakableSymmetricAlgorithm
             {
                 if (TweakValue?.Length > 0)
                 {
-                    CryptoHelpers.Clear(TweakValue);
+                    CryptographyHelper.Clear(TweakValue);
                     TweakValue = [];
                 }
 
@@ -365,7 +365,7 @@ public abstract class TweakableSymmetricAlgorithm
                 string.Format(
                     CryptoResourceStrings.Crypt_Invalid_TweakSize,
                     bitLength,
-                    CryptoHelpers.FormatLegalSizes(LegalTweakSizes)));
+                    CryptographyHelper.FormatLegalSizes(LegalTweakSizes)));
     }
 
     /// <summary>

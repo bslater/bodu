@@ -88,7 +88,7 @@ public sealed class CtrModeTransform
     public CtrModeTransform(IBlockCipher cipher, byte[] initialCounter)
     {
         ThrowHelper.ThrowIfNull(cipher);
-        CryptoHelpers.ThrowIfIvLengthInvalid(initialCounter, cipher.BlockSize);
+        CryptographyThrowHelper.ThrowIfIvLengthInvalid(initialCounter, cipher.BlockSize);
 
         _cipher = cipher;
         _initialCounter = (byte[])initialCounter.Clone();
@@ -99,7 +99,7 @@ public sealed class CtrModeTransform
     public int Transform(ReadOnlySpan<byte> input, Span<byte> output, bool encrypt)
     {
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, 0, input.Length);
-        CryptoHelpers.ThrowIfInvalidOverlap(input, output);
+        CryptographyThrowHelper.ThrowIfInvalidOverlap(input, output);
 
         var blockSize = _cipher.BlockSize / 8;
         Span<byte> keystream = stackalloc byte[blockSize];
@@ -133,8 +133,8 @@ public sealed class CtrModeTransform
         if (_disposed)
             return;
 
-        CryptoHelpers.Clear(_counter);
-        CryptoHelpers.Clear(_initialCounter);
+        CryptographyHelper.Clear(_counter);
+        CryptographyHelper.Clear(_initialCounter);
         _disposed = true;
         GC.SuppressFinalize(this);
     }

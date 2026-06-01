@@ -77,7 +77,7 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
         using TAlgorithm algorithm = CreateAlgorithm();
         var size = algorithm.LegalKeySizes[0].MinSize;
         var key = new byte[size / 8];
-        CryptoHelpers.FillWithRandomNonZeroBytes(key);
+        CryptographyHelper.FillWithRandomNonZeroBytes(key);
 
         algorithm.Key = key;
         CollectionAssert.AreEqual(key, algorithm.Key);
@@ -92,7 +92,7 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
         using TAlgorithm algorithm = CreateAlgorithm();
         var size = algorithm.LegalKeySizes[0].MinSize;
         var key = new byte[size / 8];
-        CryptoHelpers.FillWithRandomNonZeroBytes(key);
+        CryptographyHelper.FillWithRandomNonZeroBytes(key);
 
         algorithm.Key = key;
         Assert.AreNotSame(key, algorithm.Key);

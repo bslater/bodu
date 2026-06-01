@@ -176,8 +176,8 @@ public sealed class SimpleReversingSymmetricAlgorithm
     public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[]? rgbIV)
     {
         ThrowIfDisposed();
-        CryptoHelpers.ThrowIfInvalidKeySize(rgbKey, this.KeySize, this.LegalKeySizes);
-        CryptoHelpers.ThrowIfInvalidIVForMode(rgbIV, this.BlockMode, this.BlockSize, this.LegalBlockSizes);
+        CryptographyThrowHelper.ThrowIfInvalidKeySize(rgbKey, this.KeySize, this.LegalKeySizes);
+        CryptographyThrowHelper.ThrowIfInvalidIVForMode(rgbIV, this.BlockMode, this.BlockSize, this.LegalBlockSizes);
 
         return new SimpleReversingCryptoTransform(
             CreateCipher(rgbKey, BlockSizeBytes),
@@ -201,8 +201,8 @@ public sealed class SimpleReversingSymmetricAlgorithm
     public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[]? rgbIV)
     {
         ThrowIfDisposed();
-        CryptoHelpers.ThrowIfInvalidKeySize(rgbKey, this.KeySize, this.LegalKeySizes);
-        CryptoHelpers.ThrowIfInvalidIVForMode(rgbIV, this.BlockMode, this.BlockSize, this.LegalBlockSizes);
+        CryptographyThrowHelper.ThrowIfInvalidKeySize(rgbKey, this.KeySize, this.LegalKeySizes);
+        CryptographyThrowHelper.ThrowIfInvalidIVForMode(rgbIV, this.BlockMode, this.BlockSize, this.LegalBlockSizes);
 
         return new SimpleReversingCryptoTransform(
             CreateCipher(rgbKey, BlockSizeBytes),
@@ -219,7 +219,7 @@ public sealed class SimpleReversingSymmetricAlgorithm
     public override void GenerateIV()
     {
         ThrowIfDisposed();
-        IVValue = CryptoHelpers.GetRandomNonZeroBytes(BlockSizeBytes);
+        IVValue = CryptographyHelper.GetRandomNonZeroBytes(BlockSizeBytes);
     }
 
     /// <summary>
@@ -230,7 +230,7 @@ public sealed class SimpleReversingSymmetricAlgorithm
     public override void GenerateKey()
     {
         ThrowIfDisposed();
-        KeyValue = CryptoHelpers.GetRandomNonZeroBytes(KeySizeBytes);
+        KeyValue = CryptographyHelper.GetRandomNonZeroBytes(KeySizeBytes);
     }
 
     // ── Disposal ──────────────────────────────────────────────────────────────────────────────
@@ -242,8 +242,8 @@ public sealed class SimpleReversingSymmetricAlgorithm
         {
             if (disposing)
             {
-                CryptoHelpers.Clear(KeyValue);
-                CryptoHelpers.Clear(IVValue);
+                CryptographyHelper.Clear(KeyValue);
+                CryptographyHelper.Clear(IVValue);
             }
 
             disposed = true;

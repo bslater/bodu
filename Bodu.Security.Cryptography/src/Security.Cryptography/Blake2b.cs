@@ -141,7 +141,7 @@ public sealed partial class Blake2b
     public Blake2b(int hashSize)
         : base(BlockSizeValue, MaxKeySize)
     {
-        CryptoHelpers.ThrowIfInvalidHashSize(hashSize, s_permittedHashSizes);
+        CryptographyThrowHelper.ThrowIfInvalidHashSize(hashSize, s_permittedHashSizes);
 
         HashSizeValue = hashSize;
         InitializeHashState();
@@ -197,7 +197,7 @@ public sealed partial class Blake2b
             ThrowIfDisposed();
             ThrowIfInvalidState();
 
-            CryptoHelpers.ThrowIfInvalidHashSize(value, s_permittedHashSizes);
+            CryptographyThrowHelper.ThrowIfInvalidHashSize(value, s_permittedHashSizes);
 
             HashSizeValue = value;
         }
@@ -228,7 +228,7 @@ public sealed partial class Blake2b
 
         if (disposing)
         {
-            CryptoHelpers.Clear(_h);
+            CryptographyHelper.Clear(_h);
         }
 
         base.Dispose(disposing);

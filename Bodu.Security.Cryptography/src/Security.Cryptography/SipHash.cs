@@ -111,10 +111,10 @@ public abstract class SipHash<T>
     protected SipHash(int hashSize)
         : base(s_blockSize, KeySize)
     {
-        CryptoHelpers.ThrowIfInvalidHashSize(hashSize, s_permittedHashSizes);
+        CryptographyThrowHelper.ThrowIfInvalidHashSize(hashSize, s_permittedHashSizes);
 
         KeyValue = new byte[KeySize / 8];
-        CryptoHelpers.FillWithRandomBytes(KeyValue);
+        CryptographyHelper.FillWithRandomBytes(KeyValue);
         _compressionRounds = MinCompressionRounds;
         _finalizationRounds = MinFinalizationRounds;
         HashSizeValue = hashSize;

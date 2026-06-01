@@ -174,7 +174,7 @@ internal sealed class SimpleReversingBlockCipher
     {
         if (disposed) return;
 
-        CryptoHelpers.Clear(this.Key);
+        CryptographyHelper.Clear(this.Key);
         CryptographicOperations.ZeroMemory(Key);
         Key = [];
 

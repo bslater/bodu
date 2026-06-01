@@ -9,7 +9,7 @@ namespace Bodu.Security.Cryptography;
 public partial class CryptoHelpersTests
 {
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.ThrowIfArrayOffsetOrCountInvalid(Array, int, int, string, string, string)"/>
+    /// Verifies that <see cref="CryptographyThrowHelper.ThrowIfArrayOffsetOrCountInvalid(Array, int, int, string, string, string)"/>
     /// does not throw when the offset and count describe a valid segment.
     /// </summary>
     [TestMethod]
@@ -20,11 +20,11 @@ public partial class CryptoHelpersTests
     public void ThrowIfArrayOffsetOrCountInvalid_WhenSegmentIsValid_ShouldNotThrow(int offset, int count)
     {
         var array = new byte[8];
-        CryptoHelpers.ThrowIfArrayOffsetOrCountInvalid(array, offset, count);
+        CryptographyThrowHelper.ThrowIfArrayOffsetOrCountInvalid(array, offset, count);
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.ThrowIfArrayOffsetOrCountInvalid(Array, int, int, string, string, string)"/>
+    /// Verifies that <see cref="CryptographyThrowHelper.ThrowIfArrayOffsetOrCountInvalid(Array, int, int, string, string, string)"/>
     /// throws an <see cref="ArgumentNullException"/> when the array is <see langword="null"/>.
     /// </summary>
     [TestMethod]
@@ -32,12 +32,12 @@ public partial class CryptoHelpersTests
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            CryptoHelpers.ThrowIfArrayOffsetOrCountInvalid(null!, 0, 0);
+            CryptographyThrowHelper.ThrowIfArrayOffsetOrCountInvalid(null!, 0, 0);
         });
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.ThrowIfArrayOffsetOrCountInvalid(Array, int, int, string, string, string)"/>
+    /// Verifies that <see cref="CryptographyThrowHelper.ThrowIfArrayOffsetOrCountInvalid(Array, int, int, string, string, string)"/>
     /// throws an <see cref="ArgumentOutOfRangeException"/> when the offset is negative or exceeds the array length.
     /// </summary>
     [TestMethod]
@@ -49,12 +49,12 @@ public partial class CryptoHelpersTests
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            CryptoHelpers.ThrowIfArrayOffsetOrCountInvalid(array, offset, count);
+            CryptographyThrowHelper.ThrowIfArrayOffsetOrCountInvalid(array, offset, count);
         });
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.ThrowIfArrayOffsetOrCountInvalid(Array, int, int, string, string, string)"/>
+    /// Verifies that <see cref="CryptographyThrowHelper.ThrowIfArrayOffsetOrCountInvalid(Array, int, int, string, string, string)"/>
     /// throws an <see cref="ArgumentException"/> when the count is negative or exceeds the array length.
     /// </summary>
     [TestMethod]
@@ -66,12 +66,12 @@ public partial class CryptoHelpersTests
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
-            CryptoHelpers.ThrowIfArrayOffsetOrCountInvalid(array, offset, count);
+            CryptographyThrowHelper.ThrowIfArrayOffsetOrCountInvalid(array, offset, count);
         });
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.ThrowIfArrayOffsetOrCountInvalid(Array, int, int, string, string, string)"/>
+    /// Verifies that <see cref="CryptographyThrowHelper.ThrowIfArrayOffsetOrCountInvalid(Array, int, int, string, string, string)"/>
     /// throws an <see cref="ArgumentException"/> when offset + count exceeds the array length.
     /// </summary>
     [TestMethod]
@@ -81,7 +81,7 @@ public partial class CryptoHelpersTests
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
-            CryptoHelpers.ThrowIfArrayOffsetOrCountInvalid(array, 4, 5);
+            CryptographyThrowHelper.ThrowIfArrayOffsetOrCountInvalid(array, 4, 5);
         });
     }
 }

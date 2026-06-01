@@ -353,7 +353,7 @@ public sealed class GcmModeTransform
                 // the destination — defense-in-depth aligned with AsconAead128.Decrypt.
                 if (!CryptographicOperations.FixedTimeEquals(expectedTag, receivedTag))
                 {
-                    CryptoHelpers.Clear(output[..plaintextLength]);
+                    CryptographyHelper.Clear(output[..plaintextLength]);
                     throw new CryptographicException(
                         CryptoResourceStrings.Crypt_Invalid_AuthenticationTagMismatch);
                 }
@@ -364,7 +364,7 @@ public sealed class GcmModeTransform
             }
             finally
             {
-                CryptoHelpers.Clear(expectedTag);
+                CryptographyHelper.Clear(expectedTag);
             }
         }
         finally
@@ -382,10 +382,10 @@ public sealed class GcmModeTransform
     {
         if (_disposed) return;
 
-        CryptoHelpers.ClearAndNullify(ref _h);
-        CryptoHelpers.ClearAndNullify(ref _j0);
-        CryptoHelpers.ClearAndNullify(ref _counter);
-        CryptoHelpers.ClearAndNullify(ref _aad);
+        CryptographyHelper.ClearAndNullify(ref _h);
+        CryptographyHelper.ClearAndNullify(ref _j0);
+        CryptographyHelper.ClearAndNullify(ref _counter);
+        CryptographyHelper.ClearAndNullify(ref _aad);
 
         _completed = true;
         _disposed = true;
@@ -434,7 +434,7 @@ public sealed class GcmModeTransform
             }
             finally
             {
-                CryptoHelpers.Clear(tag);
+                CryptographyHelper.Clear(tag);
             }
         }
         finally
@@ -534,8 +534,8 @@ public sealed class GcmModeTransform
         }
         finally
         {
-            CryptoHelpers.Clear(v);
-            CryptoHelpers.Clear(z);
+            CryptographyHelper.Clear(v);
+            CryptographyHelper.Clear(z);
         }
     }
 
@@ -562,7 +562,7 @@ public sealed class GcmModeTransform
         }
         finally
         {
-            CryptoHelpers.Clear(block);
+            CryptographyHelper.Clear(block);
         }
     }
 
@@ -621,7 +621,7 @@ public sealed class GcmModeTransform
         }
         finally
         {
-            CryptoHelpers.Clear(keystream);
+            CryptographyHelper.Clear(keystream);
         }
     }
 
@@ -657,9 +657,9 @@ public sealed class GcmModeTransform
         }
         finally
         {
-            CryptoHelpers.Clear(encryptedJ0);
-            CryptoHelpers.Clear(lengthBlock);
-            CryptoHelpers.Clear(y);
+            CryptographyHelper.Clear(encryptedJ0);
+            CryptographyHelper.Clear(lengthBlock);
+            CryptographyHelper.Clear(y);
         }
     }
 

@@ -9,13 +9,13 @@ namespace Bodu.Security.Cryptography;
 public partial class CryptoHelpersTests
 {
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.TryFillWithRandomNonZeroBytes" /> returns true and fills span with non-zero bytes.
+    /// Verifies that <see cref="CryptographyHelper.TryFillWithRandomNonZeroBytes" /> returns true and fills span with non-zero bytes.
     /// </summary>
     [TestMethod]
     public void TryFillWithRandomNonZeroBytes_WhenBufferCanBeFilled_ShouldReturnTrue()
     {
         Span<byte> span = stackalloc byte[32];
-        var result = CryptoHelpers.TryFillWithRandomNonZeroBytes(span);
+        var result = CryptographyHelper.TryFillWithRandomNonZeroBytes(span);
         Assert.IsTrue(result);
         foreach (var b in span)
         {
@@ -24,7 +24,7 @@ public partial class CryptoHelpersTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.TryFillWithRandomNonZeroBytes" />, when Successful, returns a value that differs from the baseline.
+    /// Verifies that <see cref="CryptographyHelper.TryFillWithRandomNonZeroBytes" />, when Successful, returns a value that differs from the baseline.
     /// </summary>
     [TestMethod]
     public void TryFillWithRandomNonZeroBytes_WhenSuccessful_ShouldReturnTrueAndFillBuffer()
@@ -34,7 +34,7 @@ public partial class CryptoHelpersTests
         for (var attempt = 0; attempt < 100; attempt++)
         {
             var buffer = new byte[32];
-            var result = CryptoHelpers.TryFillWithRandomNonZeroBytes(buffer.AsSpan());
+            var result = CryptographyHelper.TryFillWithRandomNonZeroBytes(buffer.AsSpan());
 
             Assert.IsTrue(result, "TryFillWithRandomNonZeroBytes should return true on success.");
 
@@ -46,7 +46,7 @@ public partial class CryptoHelpersTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.TryFillWithRandomNonZeroBytes" />, RepeatedCalls, returns a value that differs from the baseline.
+    /// Verifies that <see cref="CryptographyHelper.TryFillWithRandomNonZeroBytes" />, RepeatedCalls, returns a value that differs from the baseline.
     /// </summary>
     [TestMethod]
     public void TryFillWithRandomNonZeroBytes_RepeatedCalls_ShouldProduceIndependentDraws()
@@ -58,8 +58,8 @@ public partial class CryptoHelpersTests
         var first = new byte[64];
         var second = new byte[64];
 
-        Assert.IsTrue(CryptoHelpers.TryFillWithRandomNonZeroBytes(first.AsSpan()));
-        Assert.IsTrue(CryptoHelpers.TryFillWithRandomNonZeroBytes(second.AsSpan()));
+        Assert.IsTrue(CryptographyHelper.TryFillWithRandomNonZeroBytes(first.AsSpan()));
+        Assert.IsTrue(CryptographyHelper.TryFillWithRandomNonZeroBytes(second.AsSpan()));
 
         for (var i = 0; i < first.Length; i++)
             Assert.AreNotEqual((byte)0, first[i]);
@@ -79,13 +79,13 @@ public partial class CryptoHelpersTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.TryFillWithRandomNonZeroBytes" />, BufferBytes, returns a value that differs from the baseline.
+    /// Verifies that <see cref="CryptographyHelper.TryFillWithRandomNonZeroBytes" />, BufferBytes, returns a value that differs from the baseline.
     /// </summary>
     [TestMethod]
     public void TryFillWithRandomNonZeroBytes_BufferBytes_ShouldNotContainZero()
     {
         var buffer = new byte[64];
-        var result = CryptoHelpers.TryFillWithRandomNonZeroBytes(buffer.AsSpan());
+        var result = CryptographyHelper.TryFillWithRandomNonZeroBytes(buffer.AsSpan());
 
         Assert.IsTrue(result);
         for (var i = 0; i < buffer.Length; i++)

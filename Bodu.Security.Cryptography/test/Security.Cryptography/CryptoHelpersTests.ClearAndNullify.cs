@@ -9,7 +9,7 @@ namespace Bodu.Security.Cryptography;
 public partial class CryptoHelpersTests
 {
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.ClearAndNullify{T}(ref T[])"/> zeroes the contents of the
+    /// Verifies that <see cref="CryptographyHelper.ClearAndNullify{T}(ref T[])"/> zeroes the contents of the
     /// supplied unmanaged array and sets the caller's reference to <see langword="null"/>.
     /// </summary>
     [TestMethod]
@@ -17,25 +17,25 @@ public partial class CryptoHelpersTests
     {
         var array = new byte[] { 1, 2, 3, 4 };
 
-        CryptoHelpers.ClearAndNullify(ref array);
+        CryptographyHelper.ClearAndNullify(ref array);
 
         Assert.IsNull(array);
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.ClearAndNullify{T}(ref T[])"/> is a no-op when the supplied
+    /// Verifies that <see cref="CryptographyHelper.ClearAndNullify{T}(ref T[])"/> is a no-op when the supplied
     /// reference is <see langword="null"/>.
     /// </summary>
     [TestMethod]
     public void ClearAndNullify_Array_WhenNull_ShouldNotThrow()
     {
         byte[]? array = null;
-        CryptoHelpers.ClearAndNullify(ref array);
+        CryptographyHelper.ClearAndNullify(ref array);
         Assert.IsNull(array);
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.ClearAndNullify(MemoryStream)"/> overwrites the underlying buffer,
+    /// Verifies that <see cref="CryptographyHelper.ClearAndNullify(MemoryStream)"/> overwrites the underlying buffer,
     /// resets the stream length, and disposes the supplied <see cref="MemoryStream"/>.
     /// </summary>
     [TestMethod]
@@ -46,7 +46,7 @@ public partial class CryptoHelpersTests
         stream.WriteByte(0xBB);
         stream.WriteByte(0xCC);
 
-        CryptoHelpers.ClearAndNullify(stream);
+        CryptographyHelper.ClearAndNullify(stream);
 
         Assert.ThrowsExactly<ObjectDisposedException>(() =>
         {
@@ -55,7 +55,7 @@ public partial class CryptoHelpersTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.ClearAndNullify(MemoryStream)"/> throws an
+    /// Verifies that <see cref="CryptographyHelper.ClearAndNullify(MemoryStream)"/> throws an
     /// <see cref="InvalidOperationException"/> when the supplied stream was constructed in a mode that suppresses
     /// buffer publication.
     /// </summary>
@@ -67,7 +67,7 @@ public partial class CryptoHelpersTests
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
-            CryptoHelpers.ClearAndNullify(stream);
+            CryptographyHelper.ClearAndNullify(stream);
         });
     }
 }

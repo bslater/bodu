@@ -11,7 +11,7 @@ namespace Bodu.Security.Cryptography;
 public partial class CryptoHelpersTests
 {
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf{T}(ReadOnlySpan{T}, int, bool, string)"/>
+    /// Verifies that <see cref="CryptographyThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf{T}(ReadOnlySpan{T}, int, bool, string)"/>
     /// does not throw when the span length is a positive multiple of the divisor.
     /// </summary>
     [TestMethod]
@@ -21,11 +21,11 @@ public partial class CryptoHelpersTests
     public void ThrowIfSpanLengthNotPositiveMultipleOf_WhenSpanIsValidMultiple_ShouldNotThrow(int length, int divisor)
     {
         ReadOnlySpan<byte> span = new byte[length];
-        CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(span, divisor);
+        CryptographyThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf(span, divisor);
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf{T}(ReadOnlySpan{T}, int, bool, string)"/>
+    /// Verifies that <see cref="CryptographyThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf{T}(ReadOnlySpan{T}, int, bool, string)"/>
     /// throws a <see cref="CryptographicException"/> when the span length is not a multiple of the divisor.
     /// </summary>
     [TestMethod]
@@ -39,12 +39,12 @@ public partial class CryptoHelpersTests
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
-            CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf<byte>(bytes, divisor);
+            CryptographyThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf<byte>(bytes, divisor);
         });
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf{T}(ReadOnlySpan{T}, int, bool, string)"/>
+    /// Verifies that <see cref="CryptographyThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf{T}(ReadOnlySpan{T}, int, bool, string)"/>
     /// rejects an empty span by default (<paramref name="throwIfZero"/> defaults to <see langword="true"/>).
     /// </summary>
     [TestMethod]
@@ -52,23 +52,23 @@ public partial class CryptoHelpersTests
     {
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
-            CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf<byte>([], 8);
+            CryptographyThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf<byte>([], 8);
         });
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf{T}(ReadOnlySpan{T}, int, bool, string)"/>
+    /// Verifies that <see cref="CryptographyThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf{T}(ReadOnlySpan{T}, int, bool, string)"/>
     /// accepts an empty span when <paramref name="throwIfZero"/> is <see langword="false"/>.
     /// </summary>
     [TestMethod]
     public void ThrowIfSpanLengthNotPositiveMultipleOf_WhenSpanIsEmptyAndZeroAllowed_ShouldNotThrow()
     {
         ReadOnlySpan<byte> empty = [];
-        CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(empty, 8, throwIfZero: false);
+        CryptographyThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf(empty, 8, throwIfZero: false);
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf{T}(ReadOnlySpan{T}, int, bool, string)"/>
+    /// Verifies that <see cref="CryptographyThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf{T}(ReadOnlySpan{T}, int, bool, string)"/>
     /// throws <see cref="ArgumentOutOfRangeException"/> when the divisor is zero or negative.
     /// </summary>
     [TestMethod]
@@ -79,7 +79,7 @@ public partial class CryptoHelpersTests
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf<byte>(new byte[8], divisor);
+            CryptographyThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf<byte>(new byte[8], divisor);
         });
     }
 }

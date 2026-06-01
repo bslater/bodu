@@ -31,7 +31,7 @@ public abstract partial class BlockCipherModeTests<TMode>
         }
 
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize);
-        var iv = CryptoHelpers.GetRandomNonZeroBytes(ExpectedBlockSize);
+        var iv = CryptographyHelper.GetRandomNonZeroBytes(ExpectedBlockSize);
         TMode transform = CreateTransform(cipher, iv);
 
         var input = new byte[ExpectedBlockSize + 1];
@@ -51,7 +51,7 @@ public abstract partial class BlockCipherModeTests<TMode>
     public void Transform_WhenOutputTooSmall_ShouldThrowExactly()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize);
-        var iv = CryptoHelpers.GetRandomNonZeroBytes(ExpectedBlockSize);
+        var iv = CryptographyHelper.GetRandomNonZeroBytes(ExpectedBlockSize);
         TMode transform = CreateTransform(cipher, iv);
 
         var input = new byte[ExpectedBlockSize];
@@ -70,12 +70,12 @@ public abstract partial class BlockCipherModeTests<TMode>
     public void Transform_WhenRoundTripped_ShouldReturnOriginal()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize);
-        var iv = CryptoHelpers.GetRandomNonZeroBytes(ExpectedBlockSize);
+        var iv = CryptographyHelper.GetRandomNonZeroBytes(ExpectedBlockSize);
 
         TMode transformEncrypt = CreateTransform(cipher, (byte[])iv.Clone());
         TMode transformDecrypt = CreateTransform(cipher, (byte[])iv.Clone());
 
-        var plaintext = CryptoHelpers.GetRandomNonZeroBytes(ExpectedBlockSize * 2);
+        var plaintext = CryptographyHelper.GetRandomNonZeroBytes(ExpectedBlockSize * 2);
         var ciphertext = new byte[plaintext.Length];
         var decrypted = new byte[plaintext.Length];
 
@@ -114,7 +114,7 @@ public abstract partial class BlockCipherModeTests<TMode>
     public void Transform_WithAlternatingBitsAA55_ShouldSucceed()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize);
-        var iv = CryptoHelpers.GetRandomNonZeroBytes(ExpectedBlockSize);
+        var iv = CryptographyHelper.GetRandomNonZeroBytes(ExpectedBlockSize);
         TMode transform = CreateTransform(cipher, iv);
 
         var input = Enumerable.Range(0, ExpectedBlockSize * 2).Select(i => (byte)(i % 2 == 0 ? 0xAA : 0x55)).ToArray();
@@ -159,7 +159,7 @@ public abstract partial class BlockCipherModeTests<TMode>
     public void Transform_WithMirroredPattern_ShouldSucceed()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize);
-        var iv = CryptoHelpers.GetRandomNonZeroBytes(ExpectedBlockSize);
+        var iv = CryptographyHelper.GetRandomNonZeroBytes(ExpectedBlockSize);
         TMode transform = CreateTransform(cipher, iv);
 
         var input = Enumerable.Range(0, ExpectedBlockSize * 2)
@@ -179,7 +179,7 @@ public abstract partial class BlockCipherModeTests<TMode>
     public void Transform_WithNibblePatternF00F_ShouldSucceed()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize);
-        var iv = CryptoHelpers.GetRandomNonZeroBytes(ExpectedBlockSize);
+        var iv = CryptographyHelper.GetRandomNonZeroBytes(ExpectedBlockSize);
         TMode transform = CreateTransform(cipher, iv);
 
         var input = Enumerable.Range(0, ExpectedBlockSize * 2).Select(i => (byte)(i % 2 == 0 ? 0xF0 : 0x0F)).ToArray();
@@ -235,7 +235,7 @@ public abstract partial class BlockCipherModeTests<TMode>
     public void Transform_WithSawtoothPattern_ShouldSucceed()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize);
-        var iv = CryptoHelpers.GetRandomNonZeroBytes(ExpectedBlockSize);
+        var iv = CryptographyHelper.GetRandomNonZeroBytes(ExpectedBlockSize);
         TMode transform = CreateTransform(cipher, iv);
 
         var input = Enumerable.Range(0, ExpectedBlockSize * 2).Select(i => (byte)(i % 16)).ToArray();

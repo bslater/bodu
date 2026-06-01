@@ -81,7 +81,7 @@ public partial class CryptoHelpersTests
         PaddingMode padding, string inputHex, int blockSizeBytes, string expectedHex)
     {
         var input = Convert.FromHexString(inputHex);
-        var result = CryptoHelpers.PadBlock(padding, blockSizeBytes * 8, input, 0, input.Length);
+        var result = CryptographyHelper.PadBlock(padding, blockSizeBytes * 8, input, 0, input.Length);
 
         // If expectedHex is fully specified (not ISO10126 with '?'), match entire byte array Else validate last byte is pad count
         if (!expectedHex.Contains('?'))
@@ -112,7 +112,7 @@ public partial class CryptoHelpersTests
             ? stackalloc byte[expectedLength]
             : new byte[expectedLength];
 
-        _ = CryptoHelpers.PadBlock(padding, blockSizeBytes * 8, input, destination);
+        _ = CryptographyHelper.PadBlock(padding, blockSizeBytes * 8, input, destination);
 
         // If expectedHex is fully specified (not ISO10126 with '?'), match entire byte array Else validate last byte is pad count
         if (!expectedHex.Contains('?'))
@@ -128,7 +128,7 @@ public partial class CryptoHelpersTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.PadBlock" /> returns the expected total output length after padding is applied when using the byte array overload.
+    /// Verifies that <see cref="CryptographyHelper.PadBlock" /> returns the expected total output length after padding is applied when using the byte array overload.
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(CryptoHelpersTests.ValidPaddingCases))]
@@ -137,13 +137,13 @@ public partial class CryptoHelpersTests
     {
         var input = Convert.FromHexString(inputHex);
         var expectedLength = expectedHex.Length / 2;
-        var result = CryptoHelpers.PadBlock(padding, blockSizeBytes * 8, input, 0, input.Length);
+        var result = CryptographyHelper.PadBlock(padding, blockSizeBytes * 8, input, 0, input.Length);
 
         Assert.AreEqual(expectedLength, result.Length);
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.PadBlock" /> returns the expected total output length after padding is applied when using the span-based overload.
+    /// Verifies that <see cref="CryptographyHelper.PadBlock" /> returns the expected total output length after padding is applied when using the span-based overload.
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(CryptoHelpersTests.ValidPaddingCases))]
@@ -157,13 +157,13 @@ public partial class CryptoHelpersTests
             ? stackalloc byte[expectedLength]
             : new byte[expectedLength];
 
-        var result = CryptoHelpers.PadBlock(padding, blockSizeBytes * 8, input, destination);
+        var result = CryptographyHelper.PadBlock(padding, blockSizeBytes * 8, input, destination);
 
         Assert.AreEqual(expectedLength, result);
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.PadBlock" /> preserves the original bytes at the beginning of the padded block when using the byte array overload.
+    /// Verifies that <see cref="CryptographyHelper.PadBlock" /> preserves the original bytes at the beginning of the padded block when using the byte array overload.
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(CryptoHelpersTests.ValidPaddingCases))]
@@ -171,13 +171,13 @@ public partial class CryptoHelpersTests
         PaddingMode padding, string inputHex, int blockSizeBytes, string expectedHex)
     {
         var input = Convert.FromHexString(inputHex);
-        var result = CryptoHelpers.PadBlock(padding, blockSizeBytes * 8, input, 0, input.Length);
+        var result = CryptographyHelper.PadBlock(padding, blockSizeBytes * 8, input, 0, input.Length);
 
         CollectionAssert.AreEqual(input, result.Take(input.Length).ToArray());
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.PadBlock" /> preserves the original bytes at the beginning of the padded block when using the span-based overload.
+    /// Verifies that <see cref="CryptographyHelper.PadBlock" /> preserves the original bytes at the beginning of the padded block when using the span-based overload.
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(CryptoHelpersTests.ValidPaddingCases))]
@@ -191,7 +191,7 @@ public partial class CryptoHelpersTests
             ? stackalloc byte[expectedLength]
             : new byte[expectedLength];
 
-        _ = CryptoHelpers.PadBlock(padding, blockSizeBytes * 8, input, destination);
+        _ = CryptographyHelper.PadBlock(padding, blockSizeBytes * 8, input, destination);
 
         Assert.IsTrue(destination.Slice(0, input.Length).SequenceEqual(input));
     }
@@ -211,7 +211,7 @@ public partial class CryptoHelpersTests
 
         try
         {
-            _ = CryptoHelpers.PadBlock(padding, blockSizeBytes * 8, input, 0, input.Length);
+            _ = CryptographyHelper.PadBlock(padding, blockSizeBytes * 8, input, 0, input.Length);
             Assert.Fail($"Expected {exceptionType.Name} was not thrown.");
         }
         catch (Exception ex)
@@ -238,7 +238,7 @@ public partial class CryptoHelpersTests
 
         try
         {
-            _ = CryptoHelpers.PadBlock(padding, blockSizeBytes * 8, input, destination);
+            _ = CryptographyHelper.PadBlock(padding, blockSizeBytes * 8, input, destination);
             Assert.Fail($"Expected {exceptionType.Name} was not thrown.");
         }
         catch (Exception ex)

@@ -173,7 +173,7 @@ public sealed partial class Whirlpool
     public override void Initialize()
     {
         base.Initialize();
-        CryptoHelpers.Clear(_state);
+        CryptographyHelper.Clear(_state);
         _inputConsumed = false;
     }
 
@@ -204,7 +204,7 @@ public sealed partial class Whirlpool
 
         if (disposing)
         {
-            CryptoHelpers.Clear(_state);
+            CryptographyHelper.Clear(_state);
         }
 
         base.Dispose(disposing);

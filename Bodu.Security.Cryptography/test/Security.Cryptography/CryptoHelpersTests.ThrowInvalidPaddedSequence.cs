@@ -9,7 +9,7 @@ namespace Bodu.Security.Cryptography;
 public partial class CryptoHelpersTests
 {
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.ThrowInvalidPaddedSequence(string, string)"/> throws an
+    /// Verifies that <see cref="CryptographyHelper.ThrowInvalidPaddedSequence(string, string)"/> throws an
     /// <see cref="ArgumentException"/> whose message identifies the supplied padding scheme and whose
     /// <see cref="ArgumentException.ParamName"/> matches the supplied parameter name.
     /// </summary>
@@ -23,7 +23,7 @@ public partial class CryptoHelpersTests
     {
         ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
-            CryptoHelpers.ThrowInvalidPaddedSequence(scheme, paramName);
+            CryptographyHelper.ThrowInvalidPaddedSequence(scheme, paramName);
         });
 
         Assert.IsTrue(ex.Message.Contains(scheme, StringComparison.Ordinal));
@@ -31,7 +31,7 @@ public partial class CryptoHelpersTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.ThrowInvalidPaddedSequence(string, string)"/> throws an
+    /// Verifies that <see cref="CryptographyHelper.ThrowInvalidPaddedSequence(string, string)"/> throws an
     /// <see cref="ArgumentNullException"/> when the padding scheme is <see langword="null"/>.
     /// </summary>
     [TestMethod]
@@ -39,12 +39,12 @@ public partial class CryptoHelpersTests
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            CryptoHelpers.ThrowInvalidPaddedSequence(null!, "input");
+            CryptographyHelper.ThrowInvalidPaddedSequence(null!, "input");
         });
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.ThrowInvalidPaddedSequence(string, string)"/> accepts a
+    /// Verifies that <see cref="CryptographyHelper.ThrowInvalidPaddedSequence(string, string)"/> accepts a
     /// <see langword="null"/> parameter name; the produced <see cref="ArgumentException.ParamName"/> is
     /// <see langword="null"/>.
     /// </summary>
@@ -53,7 +53,7 @@ public partial class CryptoHelpersTests
     {
         ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
-            CryptoHelpers.ThrowInvalidPaddedSequence("PKCS#7", null!);
+            CryptographyHelper.ThrowInvalidPaddedSequence("PKCS#7", null!);
         });
 
         Assert.IsNull(ex.ParamName);

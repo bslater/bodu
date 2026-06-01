@@ -93,7 +93,7 @@ public sealed class CtsModeTransform
     public CtsModeTransform(IBlockCipher cipher, byte[] iv)
     {
         ThrowHelper.ThrowIfNull(cipher);
-        CryptoHelpers.ThrowIfIvLengthInvalid(iv, cipher.BlockSize);
+        CryptographyThrowHelper.ThrowIfIvLengthInvalid(iv, cipher.BlockSize);
 
         _cipher = cipher;
         _iv = (byte[])iv.Clone();
@@ -113,7 +113,7 @@ public sealed class CtsModeTransform
         }
 
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, 0, input.Length);
-        CryptoHelpers.ThrowIfInvalidOverlap(input, output);
+        CryptographyThrowHelper.ThrowIfInvalidOverlap(input, output);
 
         // If perfectly block-aligned (or exactly one block), use plain CBC — no stealing needed.
         if (input.Length % blockSize == 0)
@@ -293,8 +293,8 @@ public sealed class CtsModeTransform
         if (_disposed)
             return;
 
-        CryptoHelpers.Clear(_iv);
-        CryptoHelpers.Clear(_currentIv);
+        CryptographyHelper.Clear(_iv);
+        CryptographyHelper.Clear(_currentIv);
         _disposed = true;
         GC.SuppressFinalize(this);
     }

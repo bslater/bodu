@@ -84,7 +84,7 @@ public partial class CryptoHelpersTests
     ];
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.DepadBlock" /> removes padding and returns the expected unpadded bytes using the byte[] overload.
+    /// Verifies that <see cref="CryptographyHelper.DepadBlock" /> removes padding and returns the expected unpadded bytes using the byte[] overload.
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(CryptoHelpersTests.ValidDepaddingCases))]
@@ -94,13 +94,13 @@ public partial class CryptoHelpersTests
         var input = Convert.FromHexString(inputHex);
         var expected = Convert.FromHexString(expectedHex);
 
-        var result = CryptoHelpers.DepadBlock(padding, input.Length * 8, input, 0, input.Length);
+        var result = CryptographyHelper.DepadBlock(padding, input.Length * 8, input, 0, input.Length);
 
         CollectionAssert.AreEqual(expected, result);
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.DepadBlock" /> removes padding and returns the expected byte count using the Span overload.
+    /// Verifies that <see cref="CryptographyHelper.DepadBlock" /> removes padding and returns the expected byte count using the Span overload.
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(CryptoHelpersTests.ValidDepaddingCases))]
@@ -114,13 +114,13 @@ public partial class CryptoHelpersTests
             ? stackalloc byte[input.Length]
             : new byte[input.Length];
 
-        _ = CryptoHelpers.DepadBlock(padding, input.Length * 8, input, destination);
+        _ = CryptographyHelper.DepadBlock(padding, input.Length * 8, input, destination);
 
         Assert.IsTrue(destination.Slice(0, expected.Length).SequenceEqual(expected));
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.DepadBlock" /> removes padding and returns the expected byte count using the Span overload.
+    /// Verifies that <see cref="CryptographyHelper.DepadBlock" /> removes padding and returns the expected byte count using the Span overload.
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(CryptoHelpersTests.ValidDepaddingCases))]
@@ -134,7 +134,7 @@ public partial class CryptoHelpersTests
             ? stackalloc byte[input.Length]
             : new byte[input.Length];
 
-        var result = CryptoHelpers.DepadBlock(padding, input.Length * 8, input, destination);
+        var result = CryptographyHelper.DepadBlock(padding, input.Length * 8, input, destination);
 
         Assert.AreEqual(expected.Length, result);
     }
@@ -155,7 +155,7 @@ public partial class CryptoHelpersTests
 
         try
         {
-            _ = CryptoHelpers.DepadBlock(padding, blockSize * 8, input, 0, input.Length);
+            _ = CryptographyHelper.DepadBlock(padding, blockSize * 8, input, 0, input.Length);
             Assert.Fail($"Expected {exceptionType.Name} was not thrown.");
         }
         catch (Exception ex)

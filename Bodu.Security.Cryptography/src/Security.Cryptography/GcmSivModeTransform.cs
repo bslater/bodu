@@ -124,7 +124,7 @@ public sealed class GcmSivModeTransform
     {
         ThrowHelper.ThrowIfNull(masterCipher);
         ThrowHelper.ThrowIfNull(cipherFactory);
-        CryptoHelpers.ThrowIfIvLengthInvalid(iv, masterCipher.BlockSize);
+        CryptographyThrowHelper.ThrowIfIvLengthInvalid(iv, masterCipher.BlockSize);
 
         _nonce = new byte[NonceSizeBits / 8];
         iv.AsSpan(0, NonceSizeBits / 8).CopyTo(_nonce);
@@ -142,12 +142,12 @@ public sealed class GcmSivModeTransform
         }
         catch
         {
-            CryptoHelpers.Clear(authKey);
+            CryptographyHelper.Clear(authKey);
             throw;
         }
         finally
         {
-            CryptoHelpers.Clear(encKeyMaterial);
+            CryptographyHelper.Clear(encKeyMaterial);
         }
     }
 
@@ -160,7 +160,7 @@ public sealed class GcmSivModeTransform
     /// <strong>Authentication pattern: write-then-clear.</strong> The candidate plaintext is decrypted into
     /// <paramref name="output" /> first because the synthetic IV used by AES-GCM-SIV is derived over the plaintext. The
     /// tag is then compared in constant time; on mismatch <paramref name="output" /> is zeroed via
-    /// <see cref="CryptoHelpers.Clear" /> and <see cref="CryptographicException" /> is thrown — no plaintext is
+    /// <see cref="CryptographyHelper.Clear" /> and <see cref="CryptographicException" /> is thrown — no plaintext is
     /// observable to the caller. See <see cref="IAeadBlockCipherModeTransform.Decrypt" /> for the library-wide failure
     /// contract.
     /// </remarks>
@@ -169,9 +169,9 @@ public sealed class GcmSivModeTransform
         ThrowIfDisposed();
         ThrowIfCompleted();
 
-        CryptoHelpers.ThrowIfCiphertextTooShort(ciphertextWithTag, TagSizeBits / 8);
+        CryptographyThrowHelper.ThrowIfCiphertextTooShort(ciphertextWithTag, TagSizeBits / 8);
         var plaintextLength = ciphertextWithTag.Length - (TagSizeBits / 8);
-        CryptoHelpers.ThrowIfOutputBufferTooSmall(output, plaintextLength);
+        CryptographyThrowHelper.ThrowIfOutputBufferTooSmall(output, plaintextLength);
         EnsureAadProcessed();
 
         try
@@ -187,7 +187,7 @@ public sealed class GcmSivModeTransform
             var expectedTag = ComputeTag(_aad.AsSpan(), output[..plaintextLength]);
             if (!CryptographicOperations.FixedTimeEquals(expectedTag, receivedTag))
             {
-                CryptoHelpers.Clear(output[..plaintextLength]);
+                CryptographyHelper.Clear(output[..plaintextLength]);
                 throw new CryptographicException(
                     CryptoResourceStrings.Crypt_Invalid_AuthenticationTagMismatch);
             }
@@ -221,7 +221,7 @@ public sealed class GcmSivModeTransform
         ThrowIfCompleted();
 
         var required = plaintext.Length + (TagSizeBits / 8);
-        CryptoHelpers.ThrowIfOutputBufferTooSmall(output, required);
+        CryptographyThrowHelper.ThrowIfOutputBufferTooSmall(output, required);
         EnsureAadProcessed();
 
         try
@@ -245,7 +245,7 @@ public sealed class GcmSivModeTransform
     public void ProcessAssociatedData(ReadOnlySpan<byte> associatedData)
     {
         ThrowIfDisposed();
-        CryptoHelpers.ThrowIfAssociatedDataAlreadyProcessed(_aadProcessed);
+        CryptographyThrowHelper.ThrowIfAssociatedDataAlreadyProcessed(_aadProcessed);
 
         _aad = associatedData.ToArray();
         _aadProcessed = true;
@@ -297,16 +297,16 @@ public sealed class GcmSivModeTransform
         }
         catch
         {
-            CryptoHelpers.Clear(authKey);
-            CryptoHelpers.Clear(encKey);
+            CryptographyHelper.Clear(authKey);
+            CryptographyHelper.Clear(encKey);
             throw;
         }
         finally
         {
-            CryptoHelpers.ClearAndNullify(ref b3);
-            CryptoHelpers.ClearAndNullify(ref b2);
-            CryptoHelpers.ClearAndNullify(ref b1);
-            CryptoHelpers.ClearAndNullify(ref b0);
+            CryptographyHelper.ClearAndNullify(ref b3);
+            CryptographyHelper.ClearAndNullify(ref b2);
+            CryptographyHelper.ClearAndNullify(ref b1);
+            CryptographyHelper.ClearAndNullify(ref b0);
         }
 
         byte[] Derive(int counter)
@@ -330,7 +330,7 @@ public sealed class GcmSivModeTransform
             }
             finally
             {
-                CryptoHelpers.Clear(block);
+                CryptographyHelper.Clear(block);
             }
         }
     }
@@ -465,7 +465,7 @@ public sealed class GcmSivModeTransform
         }
         finally
         {
-            CryptoHelpers.Clear(polyvalResult);
+            CryptographyHelper.Clear(polyvalResult);
         }
     }
 
@@ -519,9 +519,9 @@ public sealed class GcmSivModeTransform
             if (_encCipher is IDisposable disposableCipher)
                 disposableCipher.Dispose();
 
-            CryptoHelpers.Clear(_authKey);
-            CryptoHelpers.Clear(_nonce);
-            CryptoHelpers.ClearAndNullify(ref _aad);
+            CryptographyHelper.Clear(_authKey);
+            CryptographyHelper.Clear(_nonce);
+            CryptographyHelper.ClearAndNullify(ref _aad);
 
             _aadProcessed = false;
         }
@@ -572,7 +572,7 @@ public sealed class GcmSivModeTransform
     /// GCM-SIV transforms are single-use; create a fresh instance per message.
     /// </summary>
     private void ThrowIfCompleted() =>
-        CryptoHelpers.ThrowIfAlreadyCompleted(_completed);
+        CryptographyThrowHelper.ThrowIfAlreadyCompleted(_completed);
 
     /// <summary>
     /// Throws an <see cref="ObjectDisposedException" /> if the algorithm instance has been disposed.

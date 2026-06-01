@@ -217,9 +217,9 @@ public sealed class SimpleReversingTweakableSymmetricAlgorithm
     public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[]? rgbIV, byte[] tweak)
     {
         ThrowIfDisposed();
-        CryptoHelpers.ThrowIfInvalidKeySize(rgbKey, this.KeySize, this.LegalKeySizes);
-        CryptoHelpers.ThrowIfInvalidIVForMode(rgbIV, this.BlockMode, this.BlockSize, this.LegalBlockSizes);
-        CryptoHelpers.ThrowIfInvalidTweakSize(tweak, this.TweakSize, this.LegalTweakSizes);
+        CryptographyThrowHelper.ThrowIfInvalidKeySize(rgbKey, this.KeySize, this.LegalKeySizes);
+        CryptographyThrowHelper.ThrowIfInvalidIVForMode(rgbIV, this.BlockMode, this.BlockSize, this.LegalBlockSizes);
+        CryptographyThrowHelper.ThrowIfInvalidTweakSize(tweak, this.TweakSize, this.LegalTweakSizes);
 
         return new SimpleReversingCryptoTransform(
             CreateCipher(rgbKey, BlockSizeBytes, tweak),
@@ -247,9 +247,9 @@ public sealed class SimpleReversingTweakableSymmetricAlgorithm
     public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[]? rgbIV, byte[] tweak)
     {
         ThrowIfDisposed();
-        CryptoHelpers.ThrowIfInvalidKeySize(rgbKey, this.KeySize, this.LegalKeySizes);
-        CryptoHelpers.ThrowIfInvalidIVForMode(rgbIV, this.BlockMode, this.BlockSize, this.LegalBlockSizes);
-        CryptoHelpers.ThrowIfInvalidTweakSize(tweak, this.TweakSize, this.LegalTweakSizes);
+        CryptographyThrowHelper.ThrowIfInvalidKeySize(rgbKey, this.KeySize, this.LegalKeySizes);
+        CryptographyThrowHelper.ThrowIfInvalidIVForMode(rgbIV, this.BlockMode, this.BlockSize, this.LegalBlockSizes);
+        CryptographyThrowHelper.ThrowIfInvalidTweakSize(tweak, this.TweakSize, this.LegalTweakSizes);
 
         return new SimpleReversingCryptoTransform(
             CreateCipher(rgbKey, BlockSizeBytes, tweak),
@@ -266,7 +266,7 @@ public sealed class SimpleReversingTweakableSymmetricAlgorithm
     public override void GenerateIV()
     {
         ThrowIfDisposed();
-        IVValue = CryptoHelpers.GetRandomNonZeroBytes(BlockSizeBytes);
+        IVValue = CryptographyHelper.GetRandomNonZeroBytes(BlockSizeBytes);
     }
 
     /// <summary>
@@ -277,7 +277,7 @@ public sealed class SimpleReversingTweakableSymmetricAlgorithm
     public override void GenerateKey()
     {
         ThrowIfDisposed();
-        KeyValue = CryptoHelpers.GetRandomNonZeroBytes(KeySizeBytes);
+        KeyValue = CryptographyHelper.GetRandomNonZeroBytes(KeySizeBytes);
     }
 
     /// <summary>
@@ -296,7 +296,7 @@ public sealed class SimpleReversingTweakableSymmetricAlgorithm
             throw new CryptographicException(
                 $"TweakSize ({TweakSizeValue} bits) is not a valid tweak size for this algorithm.");
 
-        TweakValue = CryptoHelpers.GetRandomNonZeroBytes(TweakSizeBytes);
+        TweakValue = CryptographyHelper.GetRandomNonZeroBytes(TweakSizeBytes);
     }
 
     // ── Disposal ──────────────────────────────────────────────────────────────────────────────
@@ -312,8 +312,8 @@ public sealed class SimpleReversingTweakableSymmetricAlgorithm
         {
             if (disposing)
             {
-                CryptoHelpers.Clear(KeyValue);
-                CryptoHelpers.Clear(IVValue);
+                CryptographyHelper.Clear(KeyValue);
+                CryptographyHelper.Clear(IVValue);
                 // TweakValue is zeroed by TweakableSymmetricAlgorithm.Dispose via base.Dispose below.
             }
 

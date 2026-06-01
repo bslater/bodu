@@ -11,7 +11,7 @@ namespace Bodu.Security.Cryptography;
 public partial class CryptoHelpersTests
 {
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.ThrowInvalidPadding(string)"/> throws a
+    /// Verifies that <see cref="CryptographyHelper.ThrowInvalidPadding(string)"/> throws a
     /// <see cref="CryptographicException"/> whose message identifies the supplied padding scheme.
     /// </summary>
     [TestMethod]
@@ -23,14 +23,14 @@ public partial class CryptoHelpersTests
     {
         CryptographicException ex = Assert.ThrowsExactly<CryptographicException>(() =>
         {
-            CryptoHelpers.ThrowInvalidPadding(scheme);
+            CryptographyHelper.ThrowInvalidPadding(scheme);
         });
 
         Assert.IsTrue(ex.Message.Contains(scheme, StringComparison.Ordinal));
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.ThrowInvalidPadding(string)"/> throws an
+    /// Verifies that <see cref="CryptographyHelper.ThrowInvalidPadding(string)"/> throws an
     /// <see cref="ArgumentNullException"/> when the padding scheme is <see langword="null"/>.
     /// </summary>
     [TestMethod]
@@ -38,7 +38,7 @@ public partial class CryptoHelpersTests
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            CryptoHelpers.ThrowInvalidPadding(null!);
+            CryptographyHelper.ThrowInvalidPadding(null!);
         });
     }
 }

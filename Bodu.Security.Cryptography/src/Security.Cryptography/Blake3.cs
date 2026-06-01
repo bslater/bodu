@@ -231,7 +231,7 @@ public sealed partial class Blake3
     public override void Initialize()
     {
         base.Initialize();
-        CryptoHelpers.Clear(_cvStack);
+        CryptographyHelper.Clear(_cvStack);
         _cvStackDepth = 0;
         s_iv.CopyTo(_chunkCv, 0);
     }
@@ -251,11 +251,11 @@ public sealed partial class Blake3
         {
             // Zero the flat CV stack buffer in one call so the secret-derived chaining values produced during
             // streaming do not survive in heap memory until the GC collects.
-            CryptoHelpers.Clear(_cvStack);
+            CryptographyHelper.Clear(_cvStack);
             _cvStackDepth = 0;
 
-            CryptoHelpers.Clear(_parentBlockWords);
-            CryptoHelpers.Clear(_chunkCv);
+            CryptographyHelper.Clear(_parentBlockWords);
+            CryptographyHelper.Clear(_chunkCv);
         }
 
         base.Dispose(disposing);

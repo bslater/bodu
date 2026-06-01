@@ -65,7 +65,7 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     {
         using TAlgorithm algorithm = CreateAlgorithm();
         var iv = new byte[algorithm.BlockSize / 8];
-        CryptoHelpers.FillWithRandomNonZeroBytes(iv);
+        CryptographyHelper.FillWithRandomNonZeroBytes(iv);
 
         algorithm.IV = iv;
         CollectionAssert.AreEqual(iv, algorithm.IV);
@@ -79,7 +79,7 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     {
         using TAlgorithm algorithm = CreateAlgorithm();
         var iv = new byte[algorithm.BlockSize / 8];
-        CryptoHelpers.FillWithRandomNonZeroBytes(iv);
+        CryptographyHelper.FillWithRandomNonZeroBytes(iv);
 
         algorithm.IV = iv;
         Assert.AreNotSame(iv, algorithm.IV);

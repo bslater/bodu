@@ -268,8 +268,8 @@ public abstract partial class ThreefishBlockCipher
         // Key and tweak schedules are owned exclusively by this instance and are zeroed in both
         // the deterministic Dispose() path and the finalizer path so that key material is never
         // retained if the caller omits an explicit Dispose call.
-        CryptoHelpers.Clear(_keySchedule);
-        CryptoHelpers.Clear(_tweakSchedule);
+        CryptographyHelper.Clear(_keySchedule);
+        CryptographyHelper.Clear(_tweakSchedule);
 
         _disposed = true;
     }

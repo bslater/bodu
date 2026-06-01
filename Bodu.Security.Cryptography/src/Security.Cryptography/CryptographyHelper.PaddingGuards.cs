@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="CryptoHelpers.PaddingGuards.cs" company="Bodu Pty. Ltd.">
+// <copyright file="CryptographyHelper.PaddingGuards.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -11,9 +11,9 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Provides padding-related always-throw guards and stream-buffer accessors that complement the <c>ThrowIf*</c>
-/// validators living in the <see cref="CryptoHelpers" /> ThrowHelper partials.
+/// validators living in the <see cref="CryptographyHelper" /> ThrowHelper partials.
 /// </summary>
-internal static partial class CryptoHelpers
+internal static partial class CryptographyHelper
 {
     /// <summary>
     /// Throws a <see cref="CryptographicException" /> indicating that the input contains invalid padding for the

@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="CryptoHelpers.ThrowHelper.NetStandard.cs" company="Bodu Pty. Ltd.">
+// <copyright file="CryptographyThrowHelper.ThrowHelper.NetStandard.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -15,7 +15,7 @@ namespace Bodu.Security.Cryptography;
 [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1117:Parameters should be on same line or separate lines")]
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0011:Add braces")]
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1001:Add braces (when expression spans over multiple lines)")]
-internal static partial class CryptoHelpers
+internal static partial class CryptographyThrowHelper
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfAssociatedDataAlreadyProcessed(bool alreadyProcessed)

@@ -9,7 +9,7 @@ namespace Bodu.Security.Cryptography;
 public partial class CryptoHelpersTests
 {
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.ThrowIfAlreadyCompleted(bool)"/> throws an
+    /// Verifies that <see cref="CryptographyThrowHelper.ThrowIfAlreadyCompleted(bool)"/> throws an
     /// <see cref="InvalidOperationException"/> when the transform is reported as completed.
     /// </summary>
     [TestMethod]
@@ -17,14 +17,14 @@ public partial class CryptoHelpersTests
     {
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
-            CryptoHelpers.ThrowIfAlreadyCompleted(true);
+            CryptographyThrowHelper.ThrowIfAlreadyCompleted(true);
         });
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.ThrowIfAlreadyCompleted(bool)"/> does not throw when the
+    /// Verifies that <see cref="CryptographyThrowHelper.ThrowIfAlreadyCompleted(bool)"/> does not throw when the
     /// transform is not yet completed.
     /// </summary>
     [TestMethod]
-    public void ThrowIfAlreadyCompleted_WhenNotCompleted_ShouldNotThrow() => CryptoHelpers.ThrowIfAlreadyCompleted(false);
+    public void ThrowIfAlreadyCompleted_WhenNotCompleted_ShouldNotThrow() => CryptographyThrowHelper.ThrowIfAlreadyCompleted(false);
 }

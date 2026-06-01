@@ -78,9 +78,9 @@ public sealed class EcbModeTransform
         var blockSize = _cipher.BlockSize / 8;
 
         // Empty input is a no-op, consistent with CbcModeTransform.
-        CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(input, blockSize, throwIfZero: false);
+        CryptographyThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf(input, blockSize, throwIfZero: false);
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, 0, input.Length);
-        CryptoHelpers.ThrowIfInvalidOverlap(input, output);
+        CryptographyThrowHelper.ThrowIfInvalidOverlap(input, output);
 
         for (var offset = 0; offset < input.Length; offset += blockSize)
         {

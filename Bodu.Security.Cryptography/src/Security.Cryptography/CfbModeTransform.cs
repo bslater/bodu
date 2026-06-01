@@ -75,7 +75,7 @@ public sealed class CfbModeTransform
     public CfbModeTransform(IBlockCipher cipher, byte[] iv)
     {
         ThrowHelper.ThrowIfNull(cipher);
-        CryptoHelpers.ThrowIfIvLengthInvalid(iv, cipher.BlockSize);
+        CryptographyThrowHelper.ThrowIfIvLengthInvalid(iv, cipher.BlockSize);
 
         _cipher = cipher;
         _currentIv = (byte[])iv.Clone();
@@ -87,9 +87,9 @@ public sealed class CfbModeTransform
         var blockSize = _cipher.BlockSize / 8;
 
         // Empty input is a no-op, consistent with CbcModeTransform.
-        CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(input, blockSize, throwIfZero: false);
+        CryptographyThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf(input, blockSize, throwIfZero: false);
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, 0, input.Length);
-        CryptoHelpers.ThrowIfInvalidOverlap(input, output);
+        CryptographyThrowHelper.ThrowIfInvalidOverlap(input, output);
 
         Span<byte> feedback = stackalloc byte[blockSize];
 
@@ -137,7 +137,7 @@ public sealed class CfbModeTransform
         if (_disposed)
             return;
 
-        CryptoHelpers.Clear(_currentIv);
+        CryptographyHelper.Clear(_currentIv);
         _disposed = true;
         GC.SuppressFinalize(this);
     }

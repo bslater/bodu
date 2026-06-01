@@ -487,7 +487,7 @@ public sealed class AsconAead128
 
         if (disposing)
         {
-            CryptoHelpers.Clear(ref _state);
+            CryptographyHelper.Clear(ref _state);
             _key.Clear();
 
             _aadProcessed = false;
@@ -602,8 +602,8 @@ public sealed class AsconAead128
         /// </summary>
         public void Clear()
         {
-            CryptoHelpers.Clear(ref _k0);
-            CryptoHelpers.Clear(ref _k1);
+            CryptographyHelper.Clear(ref _k0);
+            CryptographyHelper.Clear(ref _k1);
         }
     }
 }

@@ -217,8 +217,8 @@ public sealed class Camellia
     public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[]? rgbIV)
     {
         ThrowIfDisposed();
-        CryptoHelpers.ThrowIfInvalidKeySize(rgbKey, KeySize, LegalKeySizes);
-        CryptoHelpers.ThrowIfInvalidIVForMode(rgbIV, BlockMode, BlockSize, LegalBlockSizes);
+        CryptographyThrowHelper.ThrowIfInvalidKeySize(rgbKey, KeySize, LegalKeySizes);
+        CryptographyThrowHelper.ThrowIfInvalidIVForMode(rgbIV, BlockMode, BlockSize, LegalBlockSizes);
 
         IBlockCipher engine = CreateCipher(rgbKey);
         return new CamelliaTransform(engine, BlockMode, BlockPadding, rgbIV, false);
@@ -248,8 +248,8 @@ public sealed class Camellia
     public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[]? rgbIV)
     {
         ThrowIfDisposed();
-        CryptoHelpers.ThrowIfInvalidKeySize(rgbKey, KeySize, LegalKeySizes);
-        CryptoHelpers.ThrowIfInvalidIVForMode(rgbIV, BlockMode, BlockSize, LegalBlockSizes);
+        CryptographyThrowHelper.ThrowIfInvalidKeySize(rgbKey, KeySize, LegalKeySizes);
+        CryptographyThrowHelper.ThrowIfInvalidIVForMode(rgbIV, BlockMode, BlockSize, LegalBlockSizes);
 
         IBlockCipher engine = CreateCipher(rgbKey);
         return new CamelliaTransform(engine, BlockMode, BlockPadding, rgbIV, true);
@@ -273,7 +273,7 @@ public sealed class Camellia
     public override void GenerateIV()
     {
         ThrowIfDisposed();
-        IVValue = CryptoHelpers.GetRandomBytes(BlockSizeValue / 8);
+        IVValue = CryptographyHelper.GetRandomBytes(BlockSizeValue / 8);
     }
 
     /// <summary>
@@ -290,7 +290,7 @@ public sealed class Camellia
     public override void GenerateKey()
     {
         ThrowIfDisposed();
-        KeyValue = CryptoHelpers.GetRandomBytes(KeySizeBytes);
+        KeyValue = CryptographyHelper.GetRandomBytes(KeySizeBytes);
     }
 
     /// <summary>
@@ -312,8 +312,8 @@ public sealed class Camellia
             if (disposing)
             {
                 // Zero sensitive key material and IV buffers so their contents do not linger in managed memory.
-                CryptoHelpers.Clear(KeyValue);
-                CryptoHelpers.Clear(IVValue);
+                CryptographyHelper.Clear(KeyValue);
+                CryptographyHelper.Clear(IVValue);
             }
 
             _disposed = true;

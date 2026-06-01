@@ -184,8 +184,8 @@ public abstract class AsconXof<T>
         _squeezing = false;
         _squeezeBufOffset = 0;
         _squeezeBufAvailable = 0;
-        CryptoHelpers.Clear(_residualBuffer.AsSpan(0, BlockSize));
-        CryptoHelpers.Clear(_squeezeBuffer.AsSpan(0, BlockSize));
+        CryptographyHelper.Clear(_residualBuffer.AsSpan(0, BlockSize));
+        CryptographyHelper.Clear(_squeezeBuffer.AsSpan(0, BlockSize));
     }
 
     /// <summary>
@@ -304,9 +304,9 @@ public abstract class AsconXof<T>
         if (disposing)
         {
             _state.Clear();
-            CryptoHelpers.Clear(ref _state);
-            CryptoHelpers.Clear(_residualBuffer);
-            CryptoHelpers.Clear(_squeezeBuffer);
+            CryptographyHelper.Clear(ref _state);
+            CryptographyHelper.Clear(_residualBuffer);
+            CryptographyHelper.Clear(_squeezeBuffer);
         }
 
         _disposed = true;
@@ -344,7 +344,7 @@ public abstract class AsconXof<T>
         _state.AbsorbRate64(pad);
         _state.Permute(_absorptionRounds);
         _residualBytes = 0;
-        CryptoHelpers.Clear(_residualBuffer.AsSpan(0, BlockSize));
+        CryptographyHelper.Clear(_residualBuffer.AsSpan(0, BlockSize));
     }
 
     /// <summary>

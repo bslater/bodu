@@ -129,11 +129,11 @@ public sealed class TwofishBlockCipher
     {
         if (!_disposed)
         {
-            CryptoHelpers.Clear(_k);
-            CryptoHelpers.Clear(_s1);
-            CryptoHelpers.Clear(_s2);
-            CryptoHelpers.Clear(_s3);
-            CryptoHelpers.Clear(_s4);
+            CryptographyHelper.Clear(_k);
+            CryptographyHelper.Clear(_s1);
+            CryptographyHelper.Clear(_s2);
+            CryptographyHelper.Clear(_s3);
+            CryptographyHelper.Clear(_s4);
 
             _disposed = true;
         }

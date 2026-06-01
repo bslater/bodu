@@ -11,31 +11,31 @@ namespace Bodu.Security.Cryptography;
 public partial class CryptoHelpersTests
 {
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.FormatLegalSizes(KeySizes[])"/> returns an empty string when
+    /// Verifies that <see cref="CryptographyHelper.FormatLegalSizes(KeySizes[])"/> returns an empty string when
     /// the supplied array is <see langword="null"/>.
     /// </summary>
     [TestMethod]
     public void FormatLegalSizes_WhenArrayIsNull_ShouldReturnEmptyString()
     {
-        var result = CryptoHelpers.FormatLegalSizes(null);
+        var result = CryptographyHelper.FormatLegalSizes(null);
 
         Assert.AreEqual(string.Empty, result);
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.FormatLegalSizes(KeySizes[])"/> returns an empty string when
+    /// Verifies that <see cref="CryptographyHelper.FormatLegalSizes(KeySizes[])"/> returns an empty string when
     /// the supplied array is empty.
     /// </summary>
     [TestMethod]
     public void FormatLegalSizes_WhenArrayIsEmpty_ShouldReturnEmptyString()
     {
-        var result = CryptoHelpers.FormatLegalSizes([]);
+        var result = CryptographyHelper.FormatLegalSizes([]);
 
         Assert.AreEqual(string.Empty, result);
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.FormatLegalSizes(KeySizes[])"/> returns a single size value when
+    /// Verifies that <see cref="CryptographyHelper.FormatLegalSizes(KeySizes[])"/> returns a single size value when
     /// the <see cref="KeySizes.SkipSize"/> is zero.
     /// </summary>
     [TestMethod]
@@ -43,13 +43,13 @@ public partial class CryptoHelpersTests
     {
         KeySizes[] sizes = new[] { new KeySizes(128, 128, 0) };
 
-        var result = CryptoHelpers.FormatLegalSizes(sizes);
+        var result = CryptographyHelper.FormatLegalSizes(sizes);
 
         Assert.AreEqual("128", result);
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.FormatLegalSizes(KeySizes[])"/> enumerates each value in the range
+    /// Verifies that <see cref="CryptographyHelper.FormatLegalSizes(KeySizes[])"/> enumerates each value in the range
     /// using the supplied skip step.
     /// </summary>
     [TestMethod]
@@ -57,13 +57,13 @@ public partial class CryptoHelpersTests
     {
         KeySizes[] sizes = new[] { new KeySizes(128, 256, 64) };
 
-        var result = CryptoHelpers.FormatLegalSizes(sizes);
+        var result = CryptographyHelper.FormatLegalSizes(sizes);
 
         Assert.AreEqual("128, 192, 256", result);
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.FormatLegalSizes(KeySizes[])"/> merges values from multiple ranges,
+    /// Verifies that <see cref="CryptographyHelper.FormatLegalSizes(KeySizes[])"/> merges values from multiple ranges,
     /// removes duplicates, and orders them in ascending order.
     /// </summary>
     [TestMethod]
@@ -75,7 +75,7 @@ public partial class CryptoHelpersTests
             new KeySizes(128, 192, 64)
         };
 
-        var result = CryptoHelpers.FormatLegalSizes(sizes);
+        var result = CryptographyHelper.FormatLegalSizes(sizes);
 
         Assert.AreEqual("128, 192, 256", result);
     }

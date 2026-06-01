@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="CryptoHelpers.cs" company="Bodu Pty. Ltd.">
+// <copyright file="CryptographyHelper.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -18,14 +18,14 @@ namespace Bodu.Security.Cryptography;
 /// This class is implemented as a partial type, with each file documenting a distinct facet of the surface: memory
 /// clearing (<c>CryptoHelpers.DisposeHelpers.cs</c>), block padding (<c>CryptoHelpers.Padding.cs</c>), secure random
 /// byte generation (<c>CryptoHelpers.RandomNumberGenerator.cs</c>), and internal argument validation helpers (
-/// <c>CryptoHelpers.ThrowHelper.cs</c>).
+/// <c>CryptographyThrowHelper.ThrowHelper.cs</c>).
 /// </para>
 /// <para>
 /// Random byte generation methods use <see cref="RandomNumberGenerator" /> and operate on <see cref="Span{T}" /> where
 /// possible to minimize allocations in performance-sensitive paths.
 /// </para>
 /// </remarks>
-internal static partial class CryptoHelpers
+internal static partial class CryptographyHelper
 {
     /// <summary>
     /// Returns a comma-separated string of valid key sizes (in bits) from the provided <see cref="KeySizes" /> array.

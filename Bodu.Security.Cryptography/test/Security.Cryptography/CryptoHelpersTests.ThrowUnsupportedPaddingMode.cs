@@ -11,7 +11,7 @@ namespace Bodu.Security.Cryptography;
 public partial class CryptoHelpersTests
 {
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.ThrowUnsupportedPaddingMode{T}(T)"/> throws a
+    /// Verifies that <see cref="CryptographyHelper.ThrowUnsupportedPaddingMode{T}(T)"/> throws a
     /// <see cref="CryptographicException"/> for an undefined <see cref="PaddingMode"/> value.
     /// </summary>
     [TestMethod]
@@ -21,14 +21,14 @@ public partial class CryptoHelpersTests
 
         CryptographicException ex = Assert.ThrowsExactly<CryptographicException>(() =>
         {
-            CryptoHelpers.ThrowUnsupportedPaddingMode(undefined);
+            CryptographyHelper.ThrowUnsupportedPaddingMode(undefined);
         });
 
         Assert.IsTrue(ex.Message.Contains("999", StringComparison.Ordinal));
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.ThrowUnsupportedPaddingMode{T}(T)"/> throws a
+    /// Verifies that <see cref="CryptographyHelper.ThrowUnsupportedPaddingMode{T}(T)"/> throws a
     /// <see cref="CryptographicException"/> for an undefined <see cref="PaddingModeKind"/> value.
     /// </summary>
     [TestMethod]
@@ -38,7 +38,7 @@ public partial class CryptoHelpersTests
 
         CryptographicException ex = Assert.ThrowsExactly<CryptographicException>(() =>
         {
-            CryptoHelpers.ThrowUnsupportedPaddingMode(undefined);
+            CryptographyHelper.ThrowUnsupportedPaddingMode(undefined);
         });
 
         Assert.IsTrue(ex.Message.Contains("999", StringComparison.Ordinal));

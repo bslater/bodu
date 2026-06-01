@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SymmetricStreamAlgorithmTests.Nonce.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -80,7 +80,7 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
     {
         using TAlgorithm cipher = CreateAlgorithm();
         var nonce = new byte[NonceLengthBytes];
-        CryptoHelpers.FillWithRandomNonZeroBytes(nonce);
+        CryptographyHelper.FillWithRandomNonZeroBytes(nonce);
 
         cipher.Nonce = nonce;
 
@@ -96,7 +96,7 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
     {
         using TAlgorithm cipher = CreateAlgorithm();
         var nonce = new byte[NonceLengthBytes];
-        CryptoHelpers.FillWithRandomNonZeroBytes(nonce);
+        CryptographyHelper.FillWithRandomNonZeroBytes(nonce);
 
         cipher.Nonce = nonce;
 

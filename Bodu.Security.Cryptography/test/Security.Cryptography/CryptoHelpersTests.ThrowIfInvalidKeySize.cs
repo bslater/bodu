@@ -13,18 +13,18 @@ public partial class CryptoHelpersTests
     private static readonly KeySizes[] LegalKeySizes = [new KeySizes(128, 256, 64)];
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.ThrowIfInvalidKeySize(byte[], int, KeySizes[], string)"/> does not
+    /// Verifies that <see cref="CryptographyThrowHelper.ThrowIfInvalidKeySize(byte[], int, KeySizes[], string)"/> does not
     /// throw when the byte length of the supplied key matches the expected key size in bits.
     /// </summary>
     [TestMethod]
     public void ThrowIfInvalidKeySize_WhenKeyMatchesExpectedSize_ShouldNotThrow()
     {
         var key = new byte[16];
-        CryptoHelpers.ThrowIfInvalidKeySize(key, 128, LegalKeySizes);
+        CryptographyThrowHelper.ThrowIfInvalidKeySize(key, 128, LegalKeySizes);
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.ThrowIfInvalidKeySize(byte[], int, KeySizes[], string)"/> throws an
+    /// Verifies that <see cref="CryptographyThrowHelper.ThrowIfInvalidKeySize(byte[], int, KeySizes[], string)"/> throws an
     /// <see cref="ArgumentNullException"/> when the key is <see langword="null"/>.
     /// </summary>
     [TestMethod]
@@ -32,12 +32,12 @@ public partial class CryptoHelpersTests
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            CryptoHelpers.ThrowIfInvalidKeySize(null!, 128, LegalKeySizes);
+            CryptographyThrowHelper.ThrowIfInvalidKeySize(null!, 128, LegalKeySizes);
         });
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.ThrowIfInvalidKeySize(byte[], int, KeySizes[], string)"/> throws an
+    /// Verifies that <see cref="CryptographyThrowHelper.ThrowIfInvalidKeySize(byte[], int, KeySizes[], string)"/> throws an
     /// <see cref="ArgumentNullException"/> when the legal-key-sizes array is <see langword="null"/>.
     /// </summary>
     [TestMethod]
@@ -45,12 +45,12 @@ public partial class CryptoHelpersTests
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            CryptoHelpers.ThrowIfInvalidKeySize(new byte[16], 128, null!);
+            CryptographyThrowHelper.ThrowIfInvalidKeySize(new byte[16], 128, null!);
         });
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.ThrowIfInvalidKeySize(byte[], int, KeySizes[], string)"/> throws a
+    /// Verifies that <see cref="CryptographyThrowHelper.ThrowIfInvalidKeySize(byte[], int, KeySizes[], string)"/> throws a
     /// <see cref="CryptographicException"/> when the key byte length, expressed in bits, is not one of the values
     /// permitted by the supplied <see cref="KeySizes"/> table.
     /// </summary>
@@ -66,7 +66,7 @@ public partial class CryptoHelpersTests
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
-            CryptoHelpers.ThrowIfInvalidKeySize(key, expectedBits, LegalKeySizes);
+            CryptographyThrowHelper.ThrowIfInvalidKeySize(key, expectedBits, LegalKeySizes);
         });
     }
 }

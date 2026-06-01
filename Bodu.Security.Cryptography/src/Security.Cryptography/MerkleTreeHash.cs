@@ -326,7 +326,7 @@ public sealed class MerkleTreeHash
     {
         using HashAlgorithm hasher = _algorithmFactory();
         var result = new byte[hasher.HashSize >> 3];
-        CryptoHelpers.ThrowIfHashAlgorithmDestinationTooSmall(
+        CryptographyThrowHelper.ThrowIfHashAlgorithmDestinationTooSmall(
             hasher.TryComputeHash(span, result, out var bytesWritten));
         if (bytesWritten == result.Length)
             return result;

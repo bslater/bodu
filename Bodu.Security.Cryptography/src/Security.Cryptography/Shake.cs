@@ -178,7 +178,7 @@ public sealed class Shake
     private static int ValidateAndComputeRateBits(int outputBits, int securityLevel)
     {
         ThrowHelper.ThrowIfNotPositiveMultipleOf(outputBits, 8);
-        CryptoHelpers.ThrowIfInvalidHashSize(securityLevel, s_validSecurityLevels);
+        CryptographyThrowHelper.ThrowIfInvalidHashSize(securityLevel, s_validSecurityLevels);
 
         return 1600 - (2 * securityLevel);
     }
@@ -244,7 +244,7 @@ public sealed class Shake
         {
             ThrowIfDisposed();
             ThrowIfInvalidState();
-            CryptoHelpers.ThrowIfNotPositiveMultipleOf(value, 8);
+            CryptographyThrowHelper.ThrowIfNotPositiveMultipleOf(value, 8);
 
             HashSizeValue = value;
         }
@@ -257,7 +257,7 @@ public sealed class Shake
     public override void Initialize()
     {
         base.Initialize();
-        CryptoHelpers.Clear(_state);
+        CryptographyHelper.Clear(_state);
     }
 
     /// <summary>
@@ -273,7 +273,7 @@ public sealed class Shake
 
         if (disposing)
         {
-            CryptoHelpers.Clear(_state);
+            CryptographyHelper.Clear(_state);
         }
 
         base.Dispose(disposing);

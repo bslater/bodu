@@ -117,7 +117,7 @@ public sealed class EaxModeTransform
     public EaxModeTransform(IBlockCipher cipher, byte[] iv)
     {
         ThrowHelper.ThrowIfNull(cipher);
-        CryptoHelpers.ThrowIfIvLengthInvalid(iv, cipher.BlockSize);
+        CryptographyThrowHelper.ThrowIfIvLengthInvalid(iv, cipher.BlockSize);
 
         _cipher = cipher;
 
@@ -133,7 +133,7 @@ public sealed class EaxModeTransform
     {
         ThrowIfDisposed();
 
-        CryptoHelpers.ThrowIfAssociatedDataAlreadyProcessed(_aadProcessed);
+        CryptographyThrowHelper.ThrowIfAssociatedDataAlreadyProcessed(_aadProcessed);
 
         _aad = associatedData.ToArray();
         _aadProcessed = true;
@@ -146,7 +146,7 @@ public sealed class EaxModeTransform
         ThrowIfCompleted();
 
         var required = plaintext.Length + DefaultTagSize;
-        CryptoHelpers.ThrowIfOutputBufferTooSmall(output, required);
+        CryptographyThrowHelper.ThrowIfOutputBufferTooSmall(output, required);
 
         EnsureAadProcessed();
 
@@ -174,9 +174,9 @@ public sealed class EaxModeTransform
         }
         finally
         {
-            CryptoHelpers.Clear(nPrime);
-            CryptoHelpers.Clear(hPrime);
-            CryptoHelpers.Clear(cPrime);
+            CryptographyHelper.Clear(nPrime);
+            CryptographyHelper.Clear(hPrime);
+            CryptographyHelper.Clear(cPrime);
             _completed = true;
         }
     }
@@ -193,10 +193,10 @@ public sealed class EaxModeTransform
         ThrowIfDisposed();
         ThrowIfCompleted();
 
-        CryptoHelpers.ThrowIfCiphertextTooShort(ciphertextWithTag, DefaultTagSize);
+        CryptographyThrowHelper.ThrowIfCiphertextTooShort(ciphertextWithTag, DefaultTagSize);
 
         var plaintextLength = ciphertextWithTag.Length - DefaultTagSize;
-        CryptoHelpers.ThrowIfOutputBufferTooSmall(output, plaintextLength);
+        CryptographyThrowHelper.ThrowIfOutputBufferTooSmall(output, plaintextLength);
 
         EnsureAadProcessed();
 
@@ -223,7 +223,7 @@ public sealed class EaxModeTransform
             // aligned with AsconAead128.Decrypt.
             if (!CryptographicOperations.FixedTimeEquals(expectedTag, receivedTag))
             {
-                CryptoHelpers.Clear(output[..plaintextLength]);
+                CryptographyHelper.Clear(output[..plaintextLength]);
                 throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_AuthenticationTagMismatch);
             }
 
@@ -233,10 +233,10 @@ public sealed class EaxModeTransform
         }
         finally
         {
-            CryptoHelpers.Clear(expectedTag);
-            CryptoHelpers.Clear(cPrime);
-            CryptoHelpers.Clear(hPrime);
-            CryptoHelpers.Clear(nPrime);
+            CryptographyHelper.Clear(expectedTag);
+            CryptographyHelper.Clear(cPrime);
+            CryptographyHelper.Clear(hPrime);
+            CryptographyHelper.Clear(nPrime);
             _completed = true;
         }
     }
@@ -246,7 +246,7 @@ public sealed class EaxModeTransform
     /// EAX transforms are single-use; create a fresh instance per message.
     /// </summary>
     private void ThrowIfCompleted() =>
-        CryptoHelpers.ThrowIfAlreadyCompleted(_completed);
+        CryptographyThrowHelper.ThrowIfAlreadyCompleted(_completed);
 
     /// <summary>
     /// Releases the resources used by this instance and clears retained nonce and associated-data state from memory.
@@ -274,8 +274,8 @@ public sealed class EaxModeTransform
 
         if (disposing)
         {
-            CryptoHelpers.Clear(_nonce);
-            CryptoHelpers.ClearAndNullify(ref _aad);
+            CryptographyHelper.Clear(_nonce);
+            CryptographyHelper.ClearAndNullify(ref _aad);
 
             _aadProcessed = false;
         }
@@ -315,7 +315,7 @@ public sealed class EaxModeTransform
         }
         finally
         {
-            CryptoHelpers.Clear(prefixed);
+            CryptographyHelper.Clear(prefixed);
         }
     }
 
@@ -365,7 +365,7 @@ public sealed class EaxModeTransform
                 }
                 finally
                 {
-                    CryptoHelpers.Clear(block);
+                    CryptographyHelper.Clear(block);
                 }
             }
 
@@ -394,11 +394,11 @@ public sealed class EaxModeTransform
         }
         finally
         {
-            CryptoHelpers.Clear(lastBlock);
-            CryptoHelpers.Clear(k2);
-            CryptoHelpers.Clear(k1);
-            CryptoHelpers.Clear(l);
-            CryptoHelpers.Clear(zeroBlock);
+            CryptographyHelper.Clear(lastBlock);
+            CryptographyHelper.Clear(k2);
+            CryptographyHelper.Clear(k1);
+            CryptographyHelper.Clear(l);
+            CryptographyHelper.Clear(zeroBlock);
         }
     }
 
@@ -429,8 +429,8 @@ public sealed class EaxModeTransform
         }
         finally
         {
-            CryptoHelpers.Clear(ks);
-            CryptoHelpers.Clear(ctr);
+            CryptographyHelper.Clear(ks);
+            CryptographyHelper.Clear(ctr);
         }
     }
 

@@ -226,7 +226,7 @@ public sealed class Serpent128Cipher
 
         // Round keys are derived from secret key material and are zeroed in both disposal paths
         // so they are not retained if the finalizer runs before an explicit Dispose call.
-        CryptoHelpers.Clear(_roundKeys);
+        CryptographyHelper.Clear(_roundKeys);
 
         base.Dispose(disposing);
     }
@@ -319,8 +319,8 @@ public sealed class Serpent128Cipher
             roundKeys[dst + 3] = x3;
         }
 
-        CryptoHelpers.Clear(prekeys);
-        CryptoHelpers.Clear(seed);
-        CryptoHelpers.Clear(paddedKey);
+        CryptographyHelper.Clear(prekeys);
+        CryptographyHelper.Clear(seed);
+        CryptographyHelper.Clear(paddedKey);
     }
 }
