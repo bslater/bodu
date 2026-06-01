@@ -1,6 +1,8 @@
 # ./<Project Root Dir>/docs/docs/toc.yml
 - name: Introduction
   href: introduction.md
+- name: Package matrix
+  href: package-matrix.md
 - name: Getting Started
   href: getting-started.md
 - name: Bodu.Core
