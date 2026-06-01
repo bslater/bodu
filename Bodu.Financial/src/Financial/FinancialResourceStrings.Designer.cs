@@ -673,6 +673,15 @@ namespace Bodu.Financial {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Cannot adopt ExchangeRate {0}-&gt;{1} as ExchangeRate&lt;{2}, {3}&gt;: ISO codes differ..
+        /// </summary>
+        internal static string Op_Invalid_ExchangeRateRuntimeMismatch {
+            get {
+                return ResourceManager.GetString("Op_Invalid_ExchangeRateRuntimeMismatch", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Unsupported FinancialJsonPolicy value &apos;{0}&apos;..
         /// </summary>
         internal static string Op_Invalid_FinancialJsonPolicyUndefined {

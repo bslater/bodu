@@ -71,6 +71,23 @@ public readonly partial struct Money<TCurrency>
     }
 
     /// <summary>
+    /// Converts this amount to <typeparamref name="TQuote" /> at the supplied typed exchange rate, rounding the result
+    /// to the destination currency's minor-unit precision.
+    /// </summary>
+    /// <typeparam name="TQuote">The destination currency, fixed by the supplied rate's quote leg.</typeparam>
+    /// <param name="exchangeRate">A strongly-typed rate whose base must match <typeparamref name="TCurrency" />.</param>
+    /// <param name="rounding">The midpoint-rounding rule applied when narrowing to the target precision.</param>
+    /// <returns>The converted monetary amount in <typeparamref name="TQuote" />.</returns>
+    /// <remarks>
+    /// This overload is the typed counterpart of <see cref="Convert{TTarget}(decimal, MidpointRounding)" />. The rate's
+    /// direction is enforced at compile time, eliminating the class of bug where a caller multiplies by an
+    /// inverted-direction rate.
+    /// </remarks>
+    public Money<TQuote> Convert<TQuote>(ExchangeRate<TCurrency, TQuote> exchangeRate, MidpointRounding rounding = MidpointRounding.ToEven)
+        where TQuote : ICurrency =>
+        exchangeRate.Convert(this, rounding);
+
+    /// <summary>
     /// Returns a new <see cref="Money{TCurrency}" /> with the amount rounded to <paramref name="decimals" /> fractional
     /// digits using the specified rule.
     /// </summary>
