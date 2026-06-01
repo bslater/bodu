@@ -8,6 +8,18 @@
       href: deque.md
     - name: Evicting dictionary
       href: evicting-dictionary.md
+    - name: Indexed priority queue
+      href: indexed-priority-queue.md
+    - name: Range-keyed lookups
+      href: range-dictionary.md
+- name: Bodu.Collections.Generic.Concurrent
+  items:
+    - name: Concurrent collections
+      href: concurrent-collections.md
+- name: Bodu.Buffers
+  items:
+    - name: Pooled buffer builder
+      href: pooled-buffer-builder.md
 - name: Bodu (root namespace)
   items:
     - name: WeekPattern
