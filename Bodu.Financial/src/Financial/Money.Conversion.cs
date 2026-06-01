@@ -11,6 +11,20 @@ namespace Bodu.Financial;
 public readonly partial struct Money
 {
     /// <summary>
+    /// Returns a high-precision <see cref="CalculatedMoney" /> in the same currency, suitable for deferred-rounding
+    /// calculation chains.
+    /// </summary>
+    /// <returns>A <see cref="CalculatedMoney" /> carrying this value's amount and ISO code.</returns>
+    /// <exception cref="InvalidOperationException">This value carries no ISO code (default-initialised).</exception>
+    public CalculatedMoney ToCalculated()
+    {
+        if (string.IsNullOrEmpty(IsoCode))
+            throw new InvalidOperationException(FinancialResourceStrings.Op_Invalid_MoneyRequiresCurrency);
+
+        return new CalculatedMoney(_amount, IsoCode);
+    }
+
+    /// <summary>
     /// Converts this <see cref="Money" /> to a strongly-typed <see cref="Money{TCurrency}" /> when the runtime
     /// currency matches <typeparamref name="TCurrency" />.
     /// </summary>
