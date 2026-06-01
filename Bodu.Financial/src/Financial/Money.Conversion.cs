@@ -82,6 +82,57 @@ public readonly partial struct Money
         Convert(targetIsoCode, exchangeRate, MidpointRounding.ToEven);
 
     /// <summary>
+    /// Converts this amount using an auditable <see cref="ExchangeRate" /> quote, rounding to the target currency under
+    /// <paramref name="context" />.
+    /// </summary>
+    /// <param name="rate">The exchange-rate quote whose source currency must match this value's currency.</param>
+    /// <param name="context">The monetary context governing rounding; <see langword="null" /> selects
+    /// <see cref="MonetaryContext.Default" />.</param>
+    /// <returns>The converted <see cref="Money" /> in the rate's target currency.</returns>
+    /// <exception cref="InvalidOperationException">
+    /// The rate's source currency does not match this value's <see cref="IsoCode" />.
+    /// </exception>
+    /// <remarks>
+    /// Prefer this quote-first overload over the raw-decimal <see cref="Convert(string, decimal, MidpointRounding)" />
+    /// surface: it preserves the rate's direction, date, provider, and inversion metadata for downstream audit, and the
+    /// companion <see cref="ConvertWithResult(ExchangeRate, MonetaryContext?)" /> returns that metadata alongside the
+    /// rounding adjustment.
+    /// </remarks>
+    public Money Convert(ExchangeRate rate, MonetaryContext? context = null) =>
+        ConvertWithResult(rate, context).Target;
+
+    /// <summary>
+    /// Converts this amount using an auditable <see cref="ExchangeRate" /> quote and returns the full conversion result,
+    /// including the rate, context, and rounding adjustment.
+    /// </summary>
+    /// <param name="rate">The exchange-rate quote whose source currency must match this value's currency.</param>
+    /// <param name="context">The monetary context governing rounding; <see langword="null" /> selects
+    /// <see cref="MonetaryContext.Default" />.</param>
+    /// <returns>The <see cref="MoneyConversionResult" /> describing the conversion.</returns>
+    /// <exception cref="InvalidOperationException">
+    /// The rate's source currency does not match this value's <see cref="IsoCode" />.
+    /// </exception>
+    public MoneyConversionResult ConvertWithResult(ExchangeRate rate, MonetaryContext? context = null)
+    {
+        if (!string.Equals(rate.FromIsoCode, IsoCode, StringComparison.Ordinal))
+        {
+            throw new InvalidOperationException(
+                string.Format(
+                    CultureInfo.InvariantCulture,
+                    FinancialResourceStrings.Op_Invalid_ConversionRateDirectionMismatch,
+                    IsoCode,
+                    rate.FromIsoCode,
+                    rate.ToIsoCode));
+        }
+
+        MonetaryContext effective = context ?? MonetaryContext.Default;
+        var raw = rate.Convert(_amount);
+        Money target = new CalculatedMoney(raw, rate.ToIsoCode).RoundToMoney(effective);
+
+        return new MoneyConversionResult(this, target, rate, effective, target.Amount - raw);
+    }
+
+    /// <summary>
     /// Converts this amount to a different currency at the supplied exchange rate, using the specified rounding rule.
     /// </summary>
     /// <param name="targetIsoCode">The ISO 4217 code of the destination currency.</param>

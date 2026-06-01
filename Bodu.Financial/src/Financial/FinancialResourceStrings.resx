@@ -330,6 +330,9 @@
   <data name="Op_Invalid_DuplicateCustomCurrency" xml:space="preserve">
     <value>A custom currency is already registered under '{0}'.</value>
   </data>
+  <data name="Op_Invalid_ConversionRateDirectionMismatch" xml:space="preserve">
+    <value>Cannot convert {0} using exchange rate {1}-&gt;{2}: the rate's source currency does not match.</value>
+  </data>
   <data name="Op_Invalid_ExchangeRateRuntimeMismatch" xml:space="preserve">
     <value>Cannot adopt ExchangeRate {0}-&gt;{1} as ExchangeRate&lt;{2}, {3}&gt;: ISO codes differ.</value>
   </data>

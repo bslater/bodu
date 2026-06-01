@@ -46,7 +46,7 @@ public partial class MoneyOfTCurrencyExchangeRateExtensionsTests
     {
         Money<Bodu.Financial.Currencies.USD> amount = new(100m);
 
-        MoneyConversionResult<Bodu.Financial.Currencies.USD, Bodu.Financial.Currencies.AUD> result = amount.ConvertToWithRate<Bodu.Financial.Currencies.USD, Bodu.Financial.Currencies.AUD>(
+        TypedMoneyConversionResult<Bodu.Financial.Currencies.USD, Bodu.Financial.Currencies.AUD> result = amount.ConvertToWithRate<Bodu.Financial.Currencies.USD, Bodu.Financial.Currencies.AUD>(
             BuildProvider(),
             s_d1,
             ExchangeRateLookupOptions.Exact);

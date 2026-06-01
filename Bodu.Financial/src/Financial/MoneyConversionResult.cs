@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyConversionResult.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -7,20 +7,20 @@
 namespace Bodu.Financial;
 
 /// <summary>
-/// Bundles the result of a single end-to-end money conversion together with the exchange-rate metadata that produced
-/// it, so consumers can audit which observed rate was used.
+/// Captures the audit trail of a single runtime-tagged currency conversion: the source and settled target amounts, the
+/// exchange rate applied, the monetary context that governed rounding, and how much rounding moved the result.
 /// </summary>
-/// <typeparam name="TSource">The source currency.</typeparam>
-/// <typeparam name="TTarget">The destination currency.</typeparam>
-/// <param name="SourceAmount">The original source amount.</param>
-/// <param name="TargetAmount">The converted, rounded target amount.</param>
-/// <param name="ExchangeRate">
-/// The full lookup result, including provider, dates, and inversion flag, used to compute
-/// <paramref name="TargetAmount" />.
+/// <param name="Source">The original source amount.</param>
+/// <param name="Target">The converted amount, rounded according to <paramref name="Context" />.</param>
+/// <param name="Rate">The exchange rate applied to produce <paramref name="Target" />.</param>
+/// <param name="Context">The monetary context that governed rounding.</param>
+/// <param name="RoundingAdjustment">
+/// The signed difference between the rounded target amount and the exact (unrounded) converted amount, or
+/// <see langword="null" /> when rounding was deferred.
 /// </param>
-public readonly record struct MoneyConversionResult<TSource, TTarget>(
-    Money<TSource> SourceAmount,
-    Money<TTarget> TargetAmount,
-    ExchangeRateLookupResult ExchangeRate)
-    where TSource : ICurrency
-    where TTarget : ICurrency;
+public readonly record struct MoneyConversionResult(
+    Money Source,
+    Money Target,
+    ExchangeRate Rate,
+    MonetaryContext Context,
+    decimal? RoundingAdjustment);

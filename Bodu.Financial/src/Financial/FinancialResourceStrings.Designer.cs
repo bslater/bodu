@@ -862,6 +862,15 @@ namespace Bodu.Financial {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Cannot convert {0} using exchange rate {1}-&gt;{2}: the rate&apos;s source currency does not match..
+        /// </summary>
+        internal static string Op_Invalid_ConversionRateDirectionMismatch {
+            get {
+                return ResourceManager.GetString("Op_Invalid_ConversionRateDirectionMismatch", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Cannot adopt ExchangeRate {0}-&gt;{1} as ExchangeRate&lt;{2}, {3}&gt;: ISO codes differ..
         /// </summary>
         internal static string Op_Invalid_ExchangeRateRuntimeMismatch {
