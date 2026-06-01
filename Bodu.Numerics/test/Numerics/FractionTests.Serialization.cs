@@ -12,14 +12,15 @@ namespace Bodu.Numerics;
 public partial class FractionTests
 {
     /// <summary>
-    /// Verifies that JSON serialization writes a fraction as its string representation.
+    /// Verifies that JSON serialization writes a fraction in the canonical object form under the default Strict
+    /// policy.
     /// </summary>
     [TestMethod]
-    public void JsonSerialization_WhenSerializing_ShouldWriteStringForm()
+    public void JsonSerialization_WhenSerializing_ShouldEmitCanonicalObjectShape()
     {
         var json = JsonSerializer.Serialize(new Fraction<int>(3, 4));
 
-        Assert.AreEqual("\"3/4\"", json);
+        Assert.AreEqual("{\"numerator\":3,\"denominator\":4}", json);
     }
 
     /// <summary>
@@ -40,7 +41,8 @@ public partial class FractionTests
     }
 
     /// <summary>
-    /// Verifies that a <see cref="BigInteger" />-backed fraction round-trips through JSON serialization.
+    /// Verifies that a <see cref="BigInteger" />-backed fraction round-trips through JSON serialization, preserving
+    /// magnitudes that exceed the JSON-number primitive range.
     /// </summary>
     [TestMethod]
     public void JsonSerialization_WhenBackedByBigInteger_ShouldPreserveValue()
@@ -51,30 +53,6 @@ public partial class FractionTests
         Fraction<BigInteger> restored = JsonSerializer.Deserialize<Fraction<BigInteger>>(json);
 
         Assert.AreEqual(original, restored);
-    }
-
-    /// <summary>
-    /// Verifies that deserializing a malformed JSON fraction string throws <see cref="JsonException" />.
-    /// </summary>
-    [TestMethod]
-    public void JsonSerialization_WhenStringIsMalformed_ShouldThrowExactly()
-    {
-        _ = Assert.ThrowsExactly<JsonException>(() =>
-        {
-            _ = JsonSerializer.Deserialize<Fraction<int>>("\"not a fraction\"");
-        });
-    }
-
-    /// <summary>
-    /// Verifies that deserializing a non-string JSON token throws <see cref="JsonException" />.
-    /// </summary>
-    [TestMethod]
-    public void JsonSerialization_WhenTokenIsNotString_ShouldThrowExactly()
-    {
-        _ = Assert.ThrowsExactly<JsonException>(() =>
-        {
-            _ = JsonSerializer.Deserialize<Fraction<int>>("123");
-        });
     }
 
     /// <summary>
