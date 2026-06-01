@@ -322,11 +322,29 @@ namespace Bodu.Financial {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to CurrencyDisplay &apos;{0}&apos; is not a defined value..
+        /// </summary>
+        internal static string Arg_OutOfRange_CurrencyDisplayUndefined {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_CurrencyDisplayUndefined", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to CustomScale {0} is outside the supported range 0 to 28..
         /// </summary>
         internal static string Arg_OutOfRange_CustomScale {
             get {
                 return ResourceManager.GetString("Arg_OutOfRange_CustomScale", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to MoneyParseMode &apos;{0}&apos; is not a defined value..
+        /// </summary>
+        internal static string Arg_OutOfRange_MoneyParseModeUndefined {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_MoneyParseModeUndefined", resourceCulture);
             }
         }
 

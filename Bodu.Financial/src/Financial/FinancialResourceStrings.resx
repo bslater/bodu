@@ -159,8 +159,14 @@
   <data name="Arg_OutOfRange_CurrencyInfoCashRoundingNegative" xml:space="preserve">
     <value>Currency '{0}' declares a negative cash-rounding increment {1}.</value>
   </data>
+  <data name="Arg_OutOfRange_CurrencyDisplayUndefined" xml:space="preserve">
+    <value>CurrencyDisplay '{0}' is not a defined value.</value>
+  </data>
   <data name="Arg_OutOfRange_CustomScale" xml:space="preserve">
     <value>CustomScale {0} is outside the supported range 0 to 28.</value>
+  </data>
+  <data name="Arg_OutOfRange_MoneyParseModeUndefined" xml:space="preserve">
+    <value>MoneyParseMode '{0}' is not a defined value.</value>
   </data>
   <data name="Arg_OutOfRange_CurrencyInfoMinorUnits" xml:space="preserve">
     <value>Currency '{0}' declares minor-unit precision {1}, which is outside the supported range 0 to 28.</value>

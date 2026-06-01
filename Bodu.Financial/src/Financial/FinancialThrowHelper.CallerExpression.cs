@@ -167,6 +167,24 @@ internal static partial class FinancialThrowHelper
     }
 
     /// <summary>
+    /// Throws when <paramref name="mode" /> is not a defined <see cref="MoneyParseMode" /> member.
+    /// </summary>
+    /// <param name="mode">The parse mode to validate.</param>
+    /// <param name="paramName">The parameter name reported in the exception; inferred from the call site.</param>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="mode" /> is not a defined value.</exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static void ThrowIfMoneyParseModeUndefined(
+        MoneyParseMode mode,
+        [CallerArgumentExpression(nameof(mode))] string? paramName = null)
+    {
+        if (mode is not MoneyParseMode.StrictIso and not MoneyParseMode.CultureAware
+            and not MoneyParseMode.LenientImport and not MoneyParseMode.RoundTripOnly)
+        {
+            throw new ArgumentOutOfRangeException(paramName, mode, string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Arg_OutOfRange_MoneyParseModeUndefined, mode));
+        }
+    }
+
+    /// <summary>
     /// Throws when <paramref name="policy" /> is not a defined <see cref="ScalePolicy" /> member.
     /// </summary>
     /// <param name="policy">The scale policy to validate.</param>
