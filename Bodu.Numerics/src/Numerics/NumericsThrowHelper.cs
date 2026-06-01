@@ -1,15 +1,15 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="CryptographyThrowHelper.cs" company="Bodu Pty. Ltd.">
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="NumericsThrowHelper.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Diagnostics.CodeAnalysis;
 
-namespace Bodu.Security.Cryptography;
+namespace Bodu.Numerics;
 
 /// <summary>
-/// Provides <c>ThrowIf</c> guard helpers shared by multiple hashing primitives in <c>Bodu.Security.Cryptography</c>.
+/// Provides <c>ThrowIf</c> guard helpers shared by multiple numeric primitives in <c>Bodu.Numerics</c>.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -18,21 +18,19 @@ namespace Bodu.Security.Cryptography;
 /// belong here.
 /// </para>
 /// <para>
-/// The class follows the same partial-file pattern used by <see cref="Bodu.ThrowHelper" /> in <c>Bodu.Core</c>:
-/// <c>CryptographyThrowHelper.cs</c> holds the root declaration, while
-/// <c>CryptographyThrowHelper.CallerExpression.cs</c> and <c>CryptographyThrowHelper.NetStandard.cs</c> hold the
-/// framework-conditional implementations. The wildcard <c>&lt;Compile Remove&gt;</c> entries in the project file select
-/// the correct partial for the current target.
+/// The class follows the same partial-file pattern used by <see cref="Bodu.ThrowHelper" /> in <c>Bodu.Core</c> and
+/// <c>FinancialThrowHelper</c> in <c>Bodu.Financial</c>: this root holds the declaration while
+/// <c>NumericsThrowHelper.CallerExpression.cs</c> holds the implementation.
 /// </para>
 /// </remarks>
 [SuppressMessage(
     "StyleCop.CSharp.LayoutRules",
     "SA1519:Braces should not be omitted from multi-line child statement",
     Justification = "ThrowHelper methods intentionally use compact guard/throw clauses; adding braces adds noise without improving control-flow clarity.")]
-
 [SuppressMessage(
     "Roslynator",
     "RCS1001:Add braces (when expression spans over multiple lines)",
     Justification = "ThrowHelper methods intentionally use compact guard/throw clauses; adding braces adds noise without improving control-flow clarity.")]
-internal static partial class CryptographyThrowHelper
-{ }
+internal static partial class NumericsThrowHelper
+{
+}

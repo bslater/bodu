@@ -13,14 +13,22 @@ namespace Bodu.Numerics;
 public readonly partial struct Fraction<T>
 {
     /// <summary>
-    /// Serializes this rational value to its JSON string representation.
+    /// Serializes this rational value to JSON using the type's default policy.
     /// </summary>
     /// <returns>The JSON text representing this value.</returns>
+    /// <remarks>
+    /// <para>
+    /// The default attribute-driven policy is <c>Strict</c>, which emits the canonical object form
+    /// <c>{ "numerator": …, "denominator": … }</c>. Callers needing the compact <c>"3/4"</c> string form should
+    /// serialize through a <see cref="JsonSerializerOptions" /> on which
+    /// <c>AddNumericsJsonConverters(NumericsJsonPolicy.Compact)</c> has been called.
+    /// </para>
+    /// </remarks>
     public string ToJson() =>
         JsonSerializer.Serialize(this);
 
     /// <summary>
-    /// Deserializes a <see cref="Fraction{T}" /> from its JSON string representation.
+    /// Deserializes a <see cref="Fraction{T}" /> from its JSON representation using the type's default policy.
     /// </summary>
     /// <param name="json">The JSON text to deserialize.</param>
     /// <returns>The rational value the JSON text represents.</returns>
@@ -28,6 +36,14 @@ public readonly partial struct Fraction<T>
     /// Thrown if <paramref name="json" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="JsonException">Thrown if <paramref name="json" /> is not a valid fraction.</exception>
+    /// <remarks>
+    /// <para>
+    /// The default attribute-driven policy is <c>Strict</c>, which expects the canonical object form. Callers
+    /// needing to accept the compact <c>"3/4"</c> string form should deserialize through a
+    /// <see cref="JsonSerializerOptions" /> on which
+    /// <c>AddNumericsJsonConverters(NumericsJsonPolicy.Compact)</c> has been called.
+    /// </para>
+    /// </remarks>
     public static Fraction<T> FromJson(string json)
     {
         ThrowHelper.ThrowIfNull(json);

@@ -17,7 +17,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     /// </summary>
     /// <param name="variant">The algorithm variant under test.</param>
     [TestMethod]
-    [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
+    [DynamicData(nameof(NonCryptographicHashAlgorithmVariants), DynamicDataDisplayName = nameof(NonCryptographicHashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(NonCryptographicHashAlgorithmVariantDisplayName))]
     public void TryGetHashAndReset_WhenDestinationIsExactSize_ShouldReturnTrueAndWriteHash(TVariant variant)
     {
         NonCryptographicHashAlgorithm snapshot = CreateAlgorithm(variant);
@@ -41,7 +41,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     /// </summary>
     /// <param name="variant">The algorithm variant under test.</param>
     [TestMethod]
-    [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
+    [DynamicData(nameof(NonCryptographicHashAlgorithmVariants), DynamicDataDisplayName = nameof(NonCryptographicHashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(NonCryptographicHashAlgorithmVariantDisplayName))]
     public void TryGetHashAndReset_WhenDestinationIsTooSmall_ShouldReturnFalseAndPreserveState(TVariant variant)
     {
         TAlgorithm algorithm = CreateAlgorithm(variant);
@@ -69,7 +69,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     /// </summary>
     /// <param name="variant">The algorithm variant under test.</param>
     [TestMethod]
-    [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
+    [DynamicData(nameof(NonCryptographicHashAlgorithmVariants), DynamicDataDisplayName = nameof(NonCryptographicHashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(NonCryptographicHashAlgorithmVariantDisplayName))]
     public void TryGetHashAndReset_WhenSuccessful_ShouldResetInstance(TVariant variant)
     {
         TAlgorithm algorithm = CreateAlgorithm(variant);

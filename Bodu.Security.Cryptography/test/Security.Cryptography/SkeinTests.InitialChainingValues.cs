@@ -28,7 +28,7 @@ public abstract partial class SkeinTests<TTest, TAlgorithm, TVariant>
     /// </summary>
     /// <param name="variant">The variant under test.</param>
     [TestMethod]
-    [DynamicData(nameof(HashAlgorithmVariants))]
+    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(VariantDisplayNameHelper.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(VariantDisplayNameHelper))]
     public void InitialChainingValue_WhenComputed_ShouldMatchAppendixB(TVariant variant)
     {
         IReadOnlyList<ulong>? expected = GetExpectedAppendixBChainingValue(variant);

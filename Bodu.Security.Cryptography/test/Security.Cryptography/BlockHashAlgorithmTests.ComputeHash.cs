@@ -21,7 +21,7 @@ public abstract partial class BlockHashAlgorithmTests<TTest, TAlgorithm, TVarian
     /// to guarantee coverage of sub-block, exact-block, and multi-block boundaries.
     /// </remarks>
     [TestMethod]
-    [DynamicData(nameof(HashAlgorithmVariants))]
+    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(VariantDisplayNameHelper.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(VariantDisplayNameHelper))]
     public virtual void ComputeHash_WhenInputStreamedInChunks_ShouldMatchSinglePassResult(TVariant variant)
     {
         HashAlgorithmSpecification specification = GetSpecification(variant);
@@ -67,7 +67,7 @@ public abstract partial class BlockHashAlgorithmTests<TTest, TAlgorithm, TVarian
     /// produces a digest of the size advertised by <see cref="HashAlgorithm.HashSize" />.
     /// </remarks>
     [TestMethod]
-    [DynamicData(nameof(HashAlgorithmVariants))]
+    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(VariantDisplayNameHelper.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(VariantDisplayNameHelper))]
     public virtual void ComputeHash_WhenInputIsUnaligned_ShouldProduceValidHash(TVariant variant)
     {
         HashAlgorithmSpecification specification = GetSpecification(variant);
@@ -103,7 +103,7 @@ public abstract partial class BlockHashAlgorithmTests<TTest, TAlgorithm, TVarian
     /// entropy tests in the suite.
     /// </remarks>
     [TestMethod]
-    [DynamicData(nameof(HashAlgorithmVariants))]
+    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(VariantDisplayNameHelper.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(VariantDisplayNameHelper))]
     public virtual void ComputeHash_WhenInputIsBlockAligned_ShouldMatchAcrossTransformSplits(TVariant variant)
     {
         const int blockCount = 4;

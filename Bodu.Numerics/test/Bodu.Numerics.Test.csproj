@@ -30,4 +30,8 @@
     <ProjectReference Include="..\src\Bodu.Numerics.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Numerics.Serialization\" />
+  </ItemGroup>
+
 </Project>

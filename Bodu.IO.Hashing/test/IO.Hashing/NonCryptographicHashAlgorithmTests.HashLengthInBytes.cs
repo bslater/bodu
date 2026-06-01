@@ -17,7 +17,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     /// </summary>
     /// <param name="variant">The algorithm variant under test.</param>
     [TestMethod]
-    [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
+    [DynamicData(nameof(NonCryptographicHashAlgorithmVariants), DynamicDataDisplayName = nameof(NonCryptographicHashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(NonCryptographicHashAlgorithmVariantDisplayName))]
     public void GetCurrentHash_WhenReturningDigest_ShouldHaveLengthMatchingHashLengthInBytes(TVariant variant)
     {
         TAlgorithm algorithm = CreateAlgorithm(variant);
@@ -33,7 +33,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     /// </summary>
     /// <param name="variant">The algorithm variant under test.</param>
     [TestMethod]
-    [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
+    [DynamicData(nameof(NonCryptographicHashAlgorithmVariants), DynamicDataDisplayName = nameof(NonCryptographicHashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(NonCryptographicHashAlgorithmVariantDisplayName))]
     public void HashLengthInBytes_WhenQueried_ShouldMatchSpecification(TVariant variant)
     {
         NonCryptographicHashAlgorithmSpecification specification = GetSpecification(variant);

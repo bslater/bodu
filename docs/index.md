@@ -99,7 +99,7 @@ Ten focused NuGet packages — plus three companion calendar data packs, a calen
 
 <div class="bodu-card">
   <img src="images/hero-numerics.svg" alt="Bodu.Numerics" />
-  <h3>Bodu.Numerics<span class="bodu-card-status preview">Preview</span></h3>
+  <h3>Bodu.Numerics</h3>
   <p>Exact rational arithmetic (<code>Fraction&lt;T&gt;</code>) over any <code>IBinaryInteger&lt;T&gt;</code> backing type with canonical-form auto-reduction, <code>BigInteger</code>-promoted intermediates, the full <code>INumber&lt;T&gt;</code> / <code>ISignedNumber&lt;T&gt;</code> surface, mixed-number and Unicode-vulgar-fraction formatting, continued-fraction expansion, and best rational approximation — plus <code>Interval&lt;T&gt;</code> for closed / open / half-open bounded numeric intervals with intersection, union, and adjacency operations.</p>
   <div class="bodu-card-links">
     <a href="docs/numerics/index.md">Introduction</a>
@@ -110,7 +110,7 @@ Ten focused NuGet packages — plus three companion calendar data packs, a calen
 
 <div class="bodu-card">
   <img src="images/hero-financial.svg" alt="Bodu.Financial" />
-  <h3>Bodu.Financial<span class="bodu-card-status preview">Preview</span></h3>
+  <h3>Bodu.Financial</h3>
   <p>Type-safe monetary primitives: <code>Money&lt;TCurrency&gt;</code> where the currency is encoded as the type parameter so cross-currency arithmetic fails the build, <code>MoneyValue</code> for runtime-tagged scenarios, <code>MoneyBag</code> for multi-currency portfolios, a shipped catalogue of ~185 ISO 4217 currencies (active and historic), an audit-grade exchange-rate provider stack with both timeless and dated lookup, fair allocation, cash rounding, sub-minor-unit-precise <code>Fraction&lt;BigInteger&gt;</code> interop, and three JSON wire shapes (strict / lenient / compact).</p>
   <div class="bodu-card-links">
     <a href="docs/financial/index.md">Introduction</a>
@@ -137,7 +137,7 @@ Ten focused NuGet packages — plus three companion calendar data packs, a calen
   <div class="bodu-card-links">
     <a href="docs/extensions-configuration-text/index.md">Introduction</a>
     <a href="guides/extensions-configuration-text/index.md">Guides</a>
-    <a href="xref:Bodu.Extensions.Configuration.Text">API reference</a>
+    <a href="apidoc/Bodu.Extensions.Configuration.Text.md">API reference</a>
   </div>
 </div>
 

@@ -36,7 +36,7 @@ public partial class CrcTests
     /// </summary>
     /// <param name="variant">The CRC variant under test.</param>
     [TestMethod]
-    [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
+    [DynamicData(nameof(NonCryptographicHashAlgorithmVariants), DynamicDataDisplayName = nameof(NonCryptographicHashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(NonCryptographicHashAlgorithmVariantDisplayName))]
     public void ComputeHash_WhenComparedToStreamingHash_ShouldAgree(CrcTestVariant variant)
     {
         Crc oneShot = CreateAlgorithm(variant);
@@ -55,7 +55,7 @@ public partial class CrcTests
     /// </summary>
     /// <param name="variant">The CRC variant under test.</param>
     [TestMethod]
-    [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
+    [DynamicData(nameof(NonCryptographicHashAlgorithmVariants), DynamicDataDisplayName = nameof(NonCryptographicHashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(NonCryptographicHashAlgorithmVariantDisplayName))]
     public void ComputeHash_WhenInputIsEmpty_ShouldMatchSpecificationEmptyDigest(CrcTestVariant variant)
     {
         NonCryptographicHashAlgorithmSpecification specification = GetSpecification(variant);
