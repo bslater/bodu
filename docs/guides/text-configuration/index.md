@@ -31,6 +31,6 @@ order; the view exposes typed accessors that return the effective value for each
 - **[Introduction](../../docs/text-configuration/index.md)** — namespaces, headline types, scenarios.
 - **[Core concepts](../../docs/text-configuration/concepts.md)** — full vocabulary.
 - **[Getting started](../../docs/text-configuration/getting-started.md)** — install + runnable minimal samples.
-- **[Bodu.Text.Configuration API reference](../../apidoc/Bodu.Text.Configuration.md)** — full type-by-type docs.
+- **[Bodu.Text.Configuration API reference](xref:Bodu.Text.Configuration)** — full type-by-type docs.
 - **[Bodu.Extensions.Configuration.Text](../extensions-configuration-text/index.md)** — the `Microsoft.Extensions.Configuration` bridge.
 - **[Bodu.Text.Formats](../formats/index.md)** — the underlying `IniDocument` model.

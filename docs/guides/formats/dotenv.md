@@ -155,5 +155,5 @@ string output      = doc.FormatDotEnv();
 ## See also
 
 - [Bencode](bencode.md), [Delimited](delimited.md), [INI](ini.md) — the other formats in the package.
-- [`Bodu.Text.DotEnv` API reference](~/apidoc/Bodu.Text.DotEnv.md)
+- [`Bodu.Text.DotEnv` API reference](xref:Bodu.Text.DotEnv)
 - [`Bodu.Text.Configuration` overview](../text-configuration/index.md) — for hierarchical key / value configuration with sections.

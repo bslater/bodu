@@ -274,7 +274,7 @@ The emitted XML conforms to the schema consumed by <xref:Bodu.Globalization.Cale
 
 ## See also
 
-- [Notable-date builder API reference](~/apidoc/Bodu.Globalization.Calendar.Builder.md) — `NotableDateDocumentBuilder`, `NotableDateBuilder`, `NotableDateRuleBuilder`, `ObservanceAdjustmentBuilder`, `InlineNotableDateRuleProvider`.
+- [Notable-date builder API reference](xref:Bodu.Globalization.Calendar.Builder) — `NotableDateDocumentBuilder`, `NotableDateBuilder`, `NotableDateRuleBuilder`, `ObservanceAdjustmentBuilder`, `InlineNotableDateRuleProvider`.
 - [Authoring notable date rules](rule-authoring.md) — the XML / JSON authoring path.
 - [`NotableDateRule` reference](rule-reference.md) — every field the builder configures.
 - [Observance adjustment rules](adjustment-rules.md) — full trigger and action catalogue.

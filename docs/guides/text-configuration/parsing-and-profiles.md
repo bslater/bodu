@@ -220,6 +220,6 @@ To go from the parsed `IniDocument` to a resolved typed view — including the E
 
 - [Views and resolution](views-and-resolution.md) — `ConfigurationView`, key projection, typed lookup, glob matching.
 - [Diagnostics](diagnostics.md) — the full diagnostic-code catalogue.
-- [`Bodu.Text.Configuration` API reference](~/apidoc/Bodu.Text.Configuration.md).
+- [`Bodu.Text.Configuration` API reference](xref:Bodu.Text.Configuration).
 - [`Bodu.Text.Formats.Ini`](../formats/ini.md) — the underlying codec.
 - [`Bodu.Extensions.Configuration.Text`](../extensions-configuration-text/index.md) — bridge to `Microsoft.Extensions.Configuration`.

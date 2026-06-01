@@ -138,4 +138,4 @@ for (DateOnly d = start; d <= end; d = d.AddDays(1))
 
 - [Circular buffer](circular-buffer.md) — fixed-capacity FIFO ring buffer.
 - [Evicting dictionary](evicting-dictionary.md) — capacity-bounded dictionary with FIFO / LRU / LFU eviction.
-- [Bodu.Collections.Generic API reference](../../apidoc/Bodu.Collections.Generic.md) — full namespace overview.
+- [Bodu.Collections.Generic API reference](xref:Bodu.Collections.Generic) — full namespace overview.

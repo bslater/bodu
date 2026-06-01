@@ -184,4 +184,4 @@ Symbolic(999);    // "unknown"
 - [`RangeSet<T>` API reference](xref:Bodu.Collections.Generic.RangeSet`1)
 - [`ValueRange<TKey, TValue>` API reference](xref:Bodu.Collections.Generic.ValueRange`2)
 - [`Interval<T>` guide](../../guides/numerics/interval.md) — the closed-closed / open-open / half-open numeric interval type.
-- [`Bodu.Collections.Generic` namespace landing](~/apidoc/Bodu.Collections.Generic.md)
+- [`Bodu.Collections.Generic` namespace landing](xref:Bodu.Collections.Generic)

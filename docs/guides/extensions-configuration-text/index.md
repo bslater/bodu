@@ -34,5 +34,5 @@ sections to typed POCO classes through the standard `Microsoft.Extensions.Depend
 - **[Introduction](../../docs/extensions-configuration-text/index.md)** — namespaces, headline types, scenarios.
 - **[Core concepts](../../docs/extensions-configuration-text/concepts.md)** — full vocabulary.
 - **[Getting started](../../docs/extensions-configuration-text/getting-started.md)** — install + runnable minimal samples.
-- **[Bodu.Extensions.Configuration.Text API reference](../../apidoc/Bodu.Extensions.Configuration.Text.md)** — full type-by-type docs.
+- **[Bodu.Extensions.Configuration.Text API reference](xref:Bodu.Extensions.Configuration.Text)** — full type-by-type docs.
 - **[Bodu.Text.Configuration](../text-configuration/index.md)** — the underlying parser, resolver, and view.

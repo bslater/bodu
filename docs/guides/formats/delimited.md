@@ -192,5 +192,5 @@ string output         = doc.FormatDelimited();
 ## See also
 
 - [Bencode](bencode.md), [DotEnv](dotenv.md), [INI](ini.md) — the other formats in the package.
-- [`Bodu.Text.Delimited` API reference](~/apidoc/Bodu.Text.Delimited.md)
+- [`Bodu.Text.Delimited` API reference](xref:Bodu.Text.Delimited)
 - [Streams and async I/O](streaming.md) — buffer-lifecycle details for stream-based pipelines.

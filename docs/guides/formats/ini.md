@@ -182,5 +182,5 @@ A rough decision tree:
 ## See also
 
 - [Bencode](bencode.md), [Delimited](delimited.md), [DotEnv](dotenv.md) — the other formats in the package.
-- [`Bodu.Text.Ini` API reference](~/apidoc/Bodu.Text.Ini.md)
+- [`Bodu.Text.Ini` API reference](xref:Bodu.Text.Ini)
 - [`Bodu.Text.Configuration` overview](../text-configuration/index.md) — for the resolved / view-projecting / `IConfiguration`-bridging surface built on this codec.

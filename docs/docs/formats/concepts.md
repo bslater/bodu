@@ -165,5 +165,5 @@ Dictionary keys are ordered and compared by raw byte ordinal — *not* by Unicod
 
 - **[Getting started](getting-started.md)** — install + runnable minimal samples.
 - **[Bodu.Text.Formats guides](../../guides/formats/index.md)** — deep-dive walk-throughs for every concept above.
-- **API reference** — per-namespace pages: [Bencode](../../apidoc/Bodu.Text.Bencode.md), [Delimited](../../apidoc/Bodu.Text.Delimited.md), [DotEnv](../../apidoc/Bodu.Text.DotEnv.md), [Ini](../../apidoc/Bodu.Text.Ini.md).
+- **API reference** — per-namespace pages: [Bencode](xref:Bodu.Text.Bencode), [Delimited](xref:Bodu.Text.Delimited), [DotEnv](xref:Bodu.Text.DotEnv), [Ini](xref:Bodu.Text.Ini).
 - **[Introduction](index.md)** — the high-level shape of the library.

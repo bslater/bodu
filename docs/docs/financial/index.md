@@ -8,6 +8,8 @@ title: Bodu.Financial — Introduction
 
 The package depends on `Bodu.Numerics` so `Money<TCurrency>` can round-trip through `Fraction<BigInteger>` for sub-minor-unit-precise intermediate calculations — interest accumulation, percentage-of-percentage, and other chains where deferred rounding matters.
 
+![Bodu.Financial namespace map — three namespaces and the exchange-rate provider stack](../../images/diagrams/financial-namespace-map.svg)
+
 ## Namespaces and headline types
 
 ### `Bodu.Financial`
@@ -62,9 +64,10 @@ The tag types only ever exist statically — every one has a `private` construct
 
 ## Where to go next
 
+- **[Core concepts](concepts.md)** — glossary the rest of the documentation assumes.
 - **[Getting started](getting-started.md)** — install the package and run minimal samples for `Money<TCurrency>`, `MoneyValue`, `MoneyBag`, the FX provider stack, and the JSON policies.
 - **[Working with `Money<TCurrency>`](../../guides/financial/money.md)** — type-parameter currency, allocation, conversion, exact-arithmetic chains, formatting and parsing, cash rounding, historic currencies, `MoneyValue` interop, `MoneyBag` portfolios.
 - **[Bodu.Numerics introduction](../numerics/index.md)** — the rational-arithmetic library that backs `Money<T>.ToFraction()`.
-- **[Bodu.Financial API reference](../../apidoc/Bodu.Financial.md)** — full type-by-type docs.
-- **[Bodu.Financial.Currencies API reference](../../apidoc/Bodu.Financial.Currencies.md)** — the shipped ISO 4217 catalogue.
-- **[Bodu.Financial.Serialization API reference](../../apidoc/Bodu.Financial.Serialization.md)** — JSON converters and policies.
+- **[Bodu.Financial API reference](xref:Bodu.Financial)** — full type-by-type docs.
+- **[Bodu.Financial.Currencies API reference](xref:Bodu.Financial.Currencies)** — the shipped ISO 4217 catalogue.
+- **[Bodu.Financial.Serialization API reference](xref:Bodu.Financial.Serialization)** — JSON converters and policies.

@@ -6,7 +6,7 @@ title: Bodu.Core guides
 
 Recipe-style walk-throughs for **Bodu.Core**, organized by namespace. Each guide on this page is a focused walk-through of one headline type.
 
-If you have not yet installed the package or want the high-level shape of the library, start with the [Bodu.Core introduction](../../docs/core/index.md) and the [getting-started page](../../docs/core/getting-started.md). For the auto-generated API reference, see the [Bodu.Collections.Generic namespace page](../../apidoc/Bodu.Collections.Generic.md).
+If you have not yet installed the package or want the high-level shape of the library, start with the [Bodu.Core introduction](../../docs/core/index.md) and the [getting-started page](../../docs/core/getting-started.md). New to the many collection types? Read **[Choosing a collection](choosing-a-collection.md)** — a decision guide that maps requirements to the correct type. For the auto-generated API reference, see the [Bodu.Collections.Generic namespace page](xref:Bodu.Collections.Generic).
 
 ## Namespace map
 
@@ -58,4 +58,4 @@ If you have not yet installed the package or want the high-level shape of the li
 - [Bodu.Core introduction](../../docs/core/index.md) — namespaces, headline types, scenarios.
 - [Bodu.Core getting started](../../docs/core/getting-started.md) — install and minimal samples.
 - [Project introduction](../../docs/introduction.md) — how Bodu.Core relates to the hashing, cryptography, calendar, and text libraries.
-- [Bodu.Collections.Generic API reference](../../apidoc/Bodu.Collections.Generic.md) — full namespace overview.
+- [Bodu.Collections.Generic API reference](xref:Bodu.Collections.Generic) — full namespace overview.

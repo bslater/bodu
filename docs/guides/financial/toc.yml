@@ -2,3 +2,5 @@
   href: index.md
 - name: Working with Money&lt;TCurrency&gt;
   href: money.md
+- name: Working with exchange rates
+  href: exchange-rates.md

@@ -45,6 +45,10 @@ hand off to `Fraction<BigInteger>` for exact-arithmetic chains via
 - [Working with `Money<TCurrency>`](money.md) — type-parameter
   currency, allocation, conversion, exact-arithmetic chains,
   formatting and parsing.
+- [Working with exchange rates](exchange-rates.md) — the FX provider
+  stack: timeless vs. dated contracts, the audit-grade
+  `ExchangeRateLookupResult`, the composite fallback stack, and the
+  `MoneyConversionResult<,>` audit record.
 
 ## See also
 

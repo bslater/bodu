@@ -107,4 +107,4 @@ All three are **non-cryptographic** — none of them resists a motivated adversa
 
 - [Using Fletcher](fletcher.md) — the other twin-accumulator family.
 - [Using CRC](crc.md) — the polynomial-arithmetic family.
-- [Bodu.IO.Hashing namespace page](../../apidoc/Bodu.IO.Hashing.md) — key types and design notes.
+- [Bodu.IO.Hashing namespace page](xref:Bodu.IO.Hashing) — key types and design notes.

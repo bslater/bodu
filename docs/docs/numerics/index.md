@@ -8,6 +8,8 @@ title: Bodu.Numerics — Introduction
 
 `Bodu.Numerics` is the dependency that `Bodu.Financial` reaches for when an accounting workflow needs sub-minor-unit precision: `Money<TCurrency>.ToFraction()` round-trips through `Fraction<BigInteger>` for compound interest, percentage-of-percentage, and other chains where deferred rounding matters.
 
+![Bodu.Numerics type map — Fraction<T> and Interval<T> over the generic-math abstractions](../../images/diagrams/numerics-type-map.svg)
+
 ## Namespaces and headline types
 
 ### `Bodu.Numerics`
@@ -40,8 +42,9 @@ title: Bodu.Numerics — Introduction
 
 ## Where to go next
 
+- **[Core concepts](concepts.md)** — glossary the rest of the documentation assumes.
 - **[Getting started](getting-started.md)** — install the package and run minimal samples for `Fraction<T>` and `Interval<T>`.
 - **[Working with `Fraction<T>`](../../guides/numerics/fraction.md)** — construction, arithmetic, parsing, formatting, continued fractions, rational approximation.
 - **[Working with `Interval<T>`](../../guides/numerics/interval.md)** — endpoint inclusivity, membership, intersection, union, adjacency.
 - **[Bodu.Financial introduction](../financial/index.md)** — the monetary library that uses `Fraction<BigInteger>` as its precision escape hatch.
-- **[Bodu.Numerics API reference](../../apidoc/Bodu.Numerics.md)** — full type-by-type docs.
+- **[Bodu.Numerics API reference](xref:Bodu.Numerics)** — full type-by-type docs.

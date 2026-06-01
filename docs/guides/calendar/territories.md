@@ -149,4 +149,4 @@ See [Calendar data packs](data-packs.md) for the per-country helpers and assembl
 - **[NotableDateRule and ObservanceAdjustment reference](rule-reference.md)** — the `TerritoryCode` property contract on rules and adjustments.
 - **[Authoring notable date rules](rule-authoring.md)** — full authoring workflow with worked examples.
 - **[Calendar data packs](data-packs.md)** — region-specific bundled rule sets.
-- **[Bodu.Globalization.Calendar API reference](../../apidoc/Bodu.Globalization.Calendar.md)** — generated API surface.
+- **[Bodu.Globalization.Calendar API reference](xref:Bodu.Globalization.Calendar)** — generated API surface.

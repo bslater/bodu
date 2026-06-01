@@ -151,4 +151,4 @@ Reach for **MurmurHash3** when you need a seeded 32- or 128-bit fingerprint with
 - [Using FNV](fnv.md) — constant-memory streaming alternative.
 - [Using Pearson](pearson.md) — configurable output width from 8 to 2048 bits.
 - [Bodu.IO.Hashing introduction](../../docs/io-hashing/index.md) — when to use a fingerprint vs a checksum vs a check digit.
-- [Bodu.IO.Hashing namespace page](../../apidoc/Bodu.IO.Hashing.md) — key types and design notes.
+- [Bodu.IO.Hashing namespace page](xref:Bodu.IO.Hashing) — key types and design notes.

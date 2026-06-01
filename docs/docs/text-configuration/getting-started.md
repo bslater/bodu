@@ -235,5 +235,5 @@ Debug.Assert(reparsed.GlobalSection["root"] == doc.GlobalSection["root"]);
 - **[Core concepts](concepts.md)** — vocabulary refresher.
 - **[Introduction](index.md)** — type map, scenario index.
 - **[Bodu.Extensions.Configuration.Text](../extensions-configuration-text/index.md)** — plug into `IConfigurationBuilder`, bind to `IOptions<T>`.
-- **[Bodu.Text.Configuration API reference](../../apidoc/Bodu.Text.Configuration.md)** — full type-by-type docs.
+- **[Bodu.Text.Configuration API reference](xref:Bodu.Text.Configuration)** — full type-by-type docs.
 - **[Bodu.Text.Formats](../formats/index.md)** — the underlying `IniDocument` model.

@@ -4,7 +4,7 @@ title: Bodu.Core — Introduction
 
 # Bodu.Core
 
-**Bodu.Core** is the foundation package of the Bodu suite — a collection of high-performance, framework-style building blocks for .NET applications. It is also the only Bodu package depended on by the others (`Bodu.IO.Hashing`, `Bodu.Security.Cryptography`, and `Bodu.Globalization.Calendar` all use its `ThrowHelper` for shared argument validation).
+**Bodu.Core** is the foundation package of the Bodu suite — a collection of high-performance, framework-style building blocks for .NET applications. Several other Bodu packages share its primitives: `Bodu.IO.Hashing`, `Bodu.Security.Cryptography`, `Bodu.Globalization.Calendar`, `Bodu.Numerics`, and `Bodu.Financial` all reference `Bodu.Core` for shared types like `ThrowHelper`, `WeekPattern`, the calendar-shape enums, and pooled buffers. See the [package matrix](../package-matrix.md) for the full dependency map.
 
 The library is organized around eight focused namespaces, each with a clear responsibility.
 
@@ -71,7 +71,14 @@ Date, numeric, span, and array extension methods. Larger surface than the others
 | <xref:Bodu.Extensions.BufferConverter> | Byte / structure conversion helpers. |
 | <xref:Bodu.Extensions.SpanExtensions> | Span-friendly helpers. |
 | <xref:Bodu.Extensions.IComparableExtensions>, <xref:Bodu.Extensions.ComparableHelper> | `Min`, `Max`, `Clamp`, `IsGreaterThan` / `IsGreaterThanOrEqual`. |
-| <xref:Bodu.Extensions.CalendarQuarterDefinition>, <xref:Bodu.Extensions.CalendarWeekendDefinition>, <xref:Bodu.Extensions.FiscalWeekPattern>, <xref:Bodu.Extensions.WeekOfMonthOrdinal> | Calendar-shape enums for quarter, weekend, fiscal-week, and week-ordinal computations. |
+| <xref:Bodu.Extensions.CalendarQuarterDefinition>, <xref:Bodu.WorkingDaysOfWeek>, <xref:Bodu.Extensions.IWeekendDefinitionProvider>, <xref:Bodu.Extensions.FiscalWeekPattern>, <xref:Bodu.Extensions.WeekOfMonthOrdinal> | Calendar-shape enums and injection seams for quarter, weekend, fiscal-week, and week-ordinal computations. |
+
+### `Bodu.Globalization.Extensions`
+Culture-aware date / calendar helpers built on top of <xref:System.Globalization.DateTimeFormatInfo>.
+
+| Type | Purpose |
+|---|---|
+| <xref:Bodu.Globalization.Extensions.DateTimeFormatInfoExtensions> | `FirstDayOfWeek`, `LastDayOfWeek`, weekend-aware helpers over `DateTimeFormatInfo`. |
 
 ### `Bodu.Text` and `Bodu.Xml.Linq`
 Text and XML helpers used internally by the other Bodu packages; available publicly when you need them.
@@ -102,7 +109,8 @@ Text and XML helpers used internally by the other Bodu packages; available publi
 
 ## Where to go next
 
+- **[Core concepts](concepts.md)** — glossary the rest of the documentation assumes.
 - **[Getting started](getting-started.md)** — install the package and run a minimal sample for each scenario above.
 - **[Bodu.Core guides](../../guides/core/index.md)** — recipe-style walk-throughs for the headline types.
-- **[Bodu.Collections.Generic API reference](../../apidoc/Bodu.Collections.Generic.md)** — full namespace overview.
+- **[Bodu.Collections.Generic API reference](xref:Bodu.Collections.Generic)** — full namespace overview.
 - **[Project introduction](../introduction.md)** — how Bodu.Core relates to the hashing, cryptography, calendar, and text libraries (its `ThrowHelper` underpins them all).

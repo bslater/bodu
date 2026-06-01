@@ -101,7 +101,7 @@ The Skein specification defines optional configuration parameters — personalis
 
 - **You need a standardised hash.** Reach for SHA-2 (BCL `SHA256` / `SHA512`) or SHA-3 (BCL `SHA3_256` / `SHA3_512` on .NET 8+). Skein is unbroken but lost the SHA-3 competition.
 - **You need an XOF.** Reach for [SHAKE](shake.md). Skein supports XOF-style output extension in principle, but this implementation does not expose it.
-- **You need a faster non-cryptographic hash.** Reach for [`Bodu.IO.Hashing`](~/apidoc/Bodu.IO.Hashing.md).
+- **You need a faster non-cryptographic hash.** Reach for [`Bodu.IO.Hashing`](xref:Bodu.IO.Hashing).
 - **You need tweakable block-cipher behaviour rather than hashing.** Reach for [Threefish-256](threefish-256.md) / [-512](threefish-512.md) / [-1024](threefish-1024.md) directly.
 
 ## See also
