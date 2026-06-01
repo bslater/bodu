@@ -115,6 +115,15 @@ namespace Bodu.Financial {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to ExchangeRateBook cannot contain two series with the same pair and provider; &apos;{0}/{1}&apos; from &apos;{2}&apos; is duplicated..
+        /// </summary>
+        internal static string Arg_Invalid_ExchangeRateBookDuplicateKey {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_ExchangeRateBookDuplicateKey", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to ExchangeRatePair is uninitialised; default(ExchangeRatePair) bypasses currency-code validation and is not a valid directional key..
         /// </summary>
         internal static string Arg_Invalid_ExchangeRatePairDefault {

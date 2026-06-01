@@ -81,6 +81,9 @@
   <data name="Arg_Invalid_CompositeNoProviders" xml:space="preserve">
     <value>At least one provider is required.</value>
   </data>
+  <data name="Arg_Invalid_ExchangeRateBookDuplicateKey" xml:space="preserve">
+    <value>ExchangeRateBook cannot contain two series with the same pair and provider; '{0}/{1}' from '{2}' is duplicated.</value>
+  </data>
   <data name="Arg_Invalid_ExchangeRatePairDefault" xml:space="preserve">
     <value>ExchangeRatePair is uninitialised; default(ExchangeRatePair) bypasses currency-code validation and is not a valid directional key.</value>
   </data>
