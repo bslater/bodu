@@ -19,7 +19,7 @@ namespace Bodu.Numerics.Serialization;
 /// rational values serialize through <see cref="System.Text.Json" /> without any explicit converter registration. The
 /// attribute path defaults to <see cref="NumericsJsonPolicy.Strict" />; consumers who need a different policy register
 /// an additional factory via
-/// <c>NumericsJsonSerializerOptionsExtensions.AddNumericsJsonConverters</c>, which takes precedence over the
+/// <see cref="NumericsJsonSerializerOptionsExtensions.AddNumericsJsonConverters" />, which takes precedence over the
 /// type-level attribute.
 /// </remarks>
 public sealed class FractionJsonConverterFactory
