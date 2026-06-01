@@ -141,8 +141,17 @@
   items:
     - name: Overview
       href: numerics/index.md
+    - name: Working with Fraction&lt;T&gt;
+      href: numerics/fraction.md
     - name: Working with Interval&lt;T&gt;
       href: numerics/interval.md
+- name: Bodu.Financial
+  href: financial/
+  items:
+    - name: Overview
+      href: financial/index.md
+    - name: Working with Money&lt;TCurrency&gt;
+      href: financial/money.md
 - name: Bodu.Text.Encoding
   href: text-encoding/
   items:

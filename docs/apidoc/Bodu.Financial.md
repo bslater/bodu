@@ -1,0 +1,72 @@
+---
+uid: Bodu.Financial
+---
+
+![Bodu.Financial](~/images/hero-core.svg)
+
+## Purpose
+
+**Bodu.Financial** is the monetary-primitives package: type-safe money (`Money<TCurrency>`), runtime-tagged money (`MoneyValue`), multi-currency portfolios (`MoneyBag`), a shipped catalogue of ~185 ISO 4217 currencies, an exchange-rate provider stack with both timeless and dated lookup, and JSON converters with strict / lenient / compact policy shapes.
+
+Reach for this library when you need monetary arithmetic that the compiler validates — adding USD to JPY should fail the build, not run with the wrong unit — and when you need audit-grade FX conversion that records which date, which provider, and which fallback policy produced a given rate.
+
+## Static documentation
+
+- **[Bodu.Financial introduction](~/docs/financial/index.md)** — namespaces, headline types, scenarios.
+- **[Bodu.Financial getting started](~/docs/financial/getting-started.md)** — install and minimal samples for typed money, runtime-tagged money, portfolios, FX lookup, and the JSON policies.
+- **[Bodu.Financial guides](~/guides/financial/index.md)** — [Working with `Money<TCurrency>`](~/guides/financial/money.md).
+
+## Key types
+
+**Monetary value types**
+
+- <xref:Bodu.Financial.Money`1> — immutable, value-equatable monetary amount whose currency is encoded as the type parameter. Cross-currency arithmetic is a compile error. Provides arithmetic, allocation, conversion, formatting/parsing, cash rounding, minor-unit interop, and `Fraction<BigInteger>` interop.
+- <xref:Bodu.Financial.MoneyValue> — runtime-tagged sister type with the same surface, where the currency is an ISO 4217 string. Cross-currency arithmetic throws `InvalidOperationException` at runtime. Use for deserialisation and generic invoicing.
+- <xref:Bodu.Financial.MoneyBag> — immutable mixed-currency portfolio. Aggregates per-ISO balances, prunes zero balances, enumerates in lexicographic ISO order.
+
+**Currency catalogue and registry**
+
+- <xref:Bodu.Financial.ICurrency> — static-abstract interface with required `IsoCode` and `MinorUnits` plus optional `CashRoundingIncrement`, `IsHistoric`, `DemonetizedOn`, `SuccessorIsoCode`.
+- <xref:Bodu.Financial.CurrencyInfo> — runtime metadata record carrying the same fields.
+- <xref:Bodu.Financial.CurrencyRegistry> — static, thread-safe registry over the shipped catalogue plus caller-registered custom currencies.
+- The shipped tag types live in <xref:Bodu.Financial.Currencies> (one sealed class per ISO code).
+
+**Exchange rate stack**
+
+- <xref:Bodu.Financial.IExchangeRateProvider>, <xref:Bodu.Financial.IDatedExchangeRateProvider> — timeless and dated contracts.
+- <xref:Bodu.Financial.ExchangeRate>, <xref:Bodu.Financial.ExchangeRatePair>, <xref:Bodu.Financial.ExchangeRateSeries> — observation record, strongly-typed (from, to) key, and an O(log n) time series.
+- <xref:Bodu.Financial.ExchangeRateLookupOptions>, <xref:Bodu.Financial.ExchangeRateLookupResult>, <xref:Bodu.Financial.ExchangeRateDateResolution> — resolution policy options and the audit-grade lookup result.
+- <xref:Bodu.Financial.FixedExchangeRateTable>, <xref:Bodu.Financial.FixedDatedExchangeRateTable>, <xref:Bodu.Financial.CompositeDatedExchangeRateProvider>, <xref:Bodu.Financial.DatedExchangeRateProviderAdapter> — in-memory provider implementations, a composite stack for prioritised fallback, and an adapter that pins a date to a dated provider for codebases that don't need the dated surface.
+- <xref:Bodu.Financial.MoneyConversionResult`2> — audit record bundling source and target money with the full lookup result.
+
+**Related namespaces**
+
+- <xref:Bodu.Financial.Currencies> — ~185 sealed ISO 4217 tag types (active plus ~30 historic / demonetised).
+- <xref:Bodu.Financial.Serialization> — JSON converters and the `FinancialJsonPolicy` enum (`Strict`, `Lenient`, `Compact`).
+
+## Example
+
+```csharp
+using Bodu.Financial;
+using Bodu.Financial.Currencies;
+
+Money<USD> dinner = new Money<USD>(54.30m);
+Money<USD> tip    = dinner * 0.18m;
+Money<USD> total  = dinner + tip;        // OK — same currency
+
+Money<JPY> sushi = new Money<JPY>(2500m);
+// var oops = dinner + sushi;            // Compile error — cannot mix currencies
+
+// Fair allocation that preserves the original total exactly.
+Money<USD>[] shares = new Money<USD>(0.10m).Allocate(3);
+// [0.04, 0.03, 0.03]
+```
+
+## Notes
+
+- **Currency in the type system.** `Money<USD>` and `Money<JPY>` are different types. The compiler enforces same-currency arithmetic; `Convert<TTarget>(rate)` is the explicit cross-currency boundary.
+- **Banker's rounding default.** Construction rounds to `TCurrency.MinorUnits` using `MidpointRounding.ToEven`. Pass an explicit `MidpointRounding` to opt out.
+- **Audit-friendly FX.** Dated lookups return <xref:Bodu.Financial.ExchangeRateLookupResult> carrying the provider name, the date actually used, the offset-day distance from the requested date, the resolution policy that fired, and an inversion flag.
+- **Sub-minor-unit precision.** `Money<T>.ToFraction()` / `FromFraction()` / `MultiplyExact()` round-trip through `Fraction<BigInteger>` so chained multiplications and divisions do not accumulate rounding error. See [`Fraction<T>`](~/guides/numerics/fraction.md).
+- **Zero balances are pruned.** `MoneyBag` removes zero balances on every operation, so equality and enumeration are stable across insertion order and across serialisation round trips.
+- **See also:** the [`Money<TCurrency>` guide](~/guides/financial/money.md), the [`Bodu.Financial.Currencies` reference](~/apidoc/Bodu.Financial.Currencies.md), and the [`Bodu.Financial.Serialization` reference](~/apidoc/Bodu.Financial.Serialization.md).

@@ -20,7 +20,7 @@ public abstract partial class AdlerTests<TTest, TAlgorithm, TModulo>
     /// </summary>
     /// <param name="variant">The algorithm variant under test.</param>
     [TestMethod]
-    [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
+    [DynamicData(nameof(NonCryptographicHashAlgorithmVariants), DynamicDataDisplayName = nameof(NonCryptographicHashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(NonCryptographicHashAlgorithmVariantDisplayName))]
     public void Append_WhenSingleCallEqualsNmaxBoundary_ShouldMatchPerByteRecurrence(SingleTestVariant variant)
     {
         var data = new byte[Nmax];
@@ -54,7 +54,7 @@ public abstract partial class AdlerTests<TTest, TAlgorithm, TModulo>
     /// </para>
     /// </remarks>
     [TestMethod]
-    [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
+    [DynamicData(nameof(NonCryptographicHashAlgorithmVariants), DynamicDataDisplayName = nameof(NonCryptographicHashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(NonCryptographicHashAlgorithmVariantDisplayName))]
     public void Append_WhenSingleCallExceedsNmaxBoundary_ShouldMatchPerByteRecurrence(SingleTestVariant variant)
     {
         // Two NMAX windows plus one trailing byte: forces the scalar NMAX boundary to be crossed twice (at

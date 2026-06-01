@@ -12,8 +12,8 @@ adding USD to JPY — fails the build instead of slipping through to
 production.
 
 ```csharp
-using Bodu.Numerics;
-using Bodu.Numerics.Currencies;
+using Bodu.Financial;
+using Bodu.Financial.Currencies;
 
 Money<USD> dinner = new Money<USD>(54.30m);
 Money<USD> tip    = dinner * 0.18m;
@@ -26,7 +26,7 @@ var oops = dinner + sushi;              // Compile error
 ## The ICurrency tag types
 
 Every currency ships as a sealed tag class in
-`Bodu.Numerics.Currencies`. The class only exists to carry the static
+`Bodu.Financial.Currencies`. The class only exists to carry the static
 metadata `Money<TCurrency>` needs (the ISO 4217 code and minor-unit
 precision) — there is no instance to create:
 
@@ -76,7 +76,7 @@ already have a `using` for the currency tag:
 
 ```csharp
 using static Bodu.Financial.Money;
-using Bodu.Numerics.Currencies;
+using Bodu.Financial.Currencies;
 
 var price = Of<USD>(19.99m);
 var zero  = Zero<JPY>();

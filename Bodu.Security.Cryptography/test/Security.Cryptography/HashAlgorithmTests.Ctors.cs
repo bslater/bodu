@@ -15,7 +15,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// when default-constructed.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(HashAlgorithmVariants))]
+    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(HashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(HashAlgorithmVariantDisplayName))]
     public void HashSize_WhenDefaultConstructed_ShouldBeExpectedBitLength(TVariant variant)
     {
         using TAlgorithm algorithm = CreateAlgorithm(variant);
@@ -28,7 +28,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// one byte when default-constructed.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(HashAlgorithmVariants))]
+    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(HashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(HashAlgorithmVariantDisplayName))]
     public void InputBlockSize_WhenDefaultConstructed_ShouldBePositive(TVariant variant)
     {
         using TAlgorithm algorithm = CreateAlgorithm(variant);
@@ -41,7 +41,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// one byte when default-constructed.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(HashAlgorithmVariants))]
+    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(HashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(HashAlgorithmVariantDisplayName))]
     public void OutputBlockSize_WhenDefaultConstructed_ShouldBePositive(TVariant variant)
     {
         using TAlgorithm algorithm = CreateAlgorithm(variant);
@@ -54,7 +54,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// <see cref="HashAlgorithm" /> contract.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(HashAlgorithmVariants))]
+    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(HashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(HashAlgorithmVariantDisplayName))]
     public void CanReuseTransform_WhenDefaultConstructed_ShouldBeTrue(TVariant variant)
     {
         using TAlgorithm algorithm = CreateAlgorithm(variant);
@@ -67,7 +67,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// required by the <see cref="HashAlgorithm" /> contract.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(HashAlgorithmVariants))]
+    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(HashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(HashAlgorithmVariantDisplayName))]
     public void CanTransformMultipleBlocks_WhenDefaultConstructed_ShouldBeTrue(TVariant variant)
     {
         using TAlgorithm algorithm = CreateAlgorithm(variant);
@@ -80,7 +80,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// <typeparamref name="TAlgorithm" /> before any data has been hashed.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(HashAlgorithmVariants))]
+    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(HashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(HashAlgorithmVariantDisplayName))]
     public void Hash_WhenDefaultConstructed_ShouldBeNull(TVariant variant)
     {
         using TAlgorithm algorithm = CreateAlgorithm(variant);

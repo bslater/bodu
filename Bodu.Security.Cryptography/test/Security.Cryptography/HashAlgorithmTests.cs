@@ -157,7 +157,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// </summary>
     /// <param name="variant">The algorithm variant under test.</param>
     [TestMethod]
-    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(GetHashAlgorithmVariantDisplayName))]
+    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(HashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(HashAlgorithmVariantDisplayName))]
     public void HashAlgorithm_TestData_IncrementalHashes_ShouldBeDefined(TVariant variant)
     {
         IReadOnlyList<string> incrementalHashes = GetExpectedHashesForIncrementalInput(variant);
@@ -172,7 +172,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// </summary>
     /// <param name="variant">The algorithm variant under test.</param>
     [TestMethod]
-    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(GetHashAlgorithmVariantDisplayName))]
+    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(HashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(HashAlgorithmVariantDisplayName))]
     public void HashAlgorithm_TestData_EmptyKnownAnswer_ShouldBeDefined(TVariant variant)
     {
         var emptyHash = GetSpecification(variant).KnownAnswers.Empty;
@@ -191,7 +191,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// fixed <see cref="HashAlgorithmKnownAnswers.Empty" /> slot and the incremental output series.
     /// </remarks>
     [TestMethod]
-    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(GetHashAlgorithmVariantDisplayName))]
+    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(HashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(HashAlgorithmVariantDisplayName))]
     public void HashAlgorithm_TestData_EmptyKnownAnswer_ShouldMatchFirstIncrementalHash(TVariant variant)
     {
         IReadOnlyList<string> incrementalHashes = GetExpectedHashesForIncrementalInput(variant);
@@ -213,46 +213,6 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
             emptyHash,
             incrementalHashes[0],
             "Expected hash value for 'Empty' named input should equal the first item of incremental input.");
-    }
-
-    /// <summary>
-    /// Gets the display name for hash algorithm variant data-driven tests.
-    /// </summary>
-    /// <param name="methodInfo">The test method being displayed.</param>
-    /// <param name="data">The data row supplied by <see cref="DynamicDataAttribute" />.</param>
-    /// <returns>A display name containing the test method and variant details.</returns>
-    public static string GetHashAlgorithmVariantDisplayName(MethodInfo methodInfo, object[] data)
-    {
-        var variant = data.Length > 0 ? data[0] : null;
-        return $"{FormatVariantForDisplay(variant)}";
-    }
-
-    /// <summary>
-    /// Formats a hash algorithm variant for use in data-driven test display names.
-    /// </summary>
-    /// <param name="variant">The variant value.</param>
-    /// <returns>A readable variant description.</returns>
-    private static string FormatVariantForDisplay(object? variant)
-    {
-        if (variant is null)
-            return "Variant: Default";
-
-        var variantText = variant.ToString();
-        if (!string.IsNullOrWhiteSpace(variantText) &&
-            !string.Equals(variantText, variant.GetType().FullName, StringComparison.Ordinal))
-        {
-            return $"Variant: {variantText}";
-        }
-
-        var properties = variant.GetType()
-            .GetProperties(BindingFlags.Instance | BindingFlags.Public)
-            .Where(p => p.CanRead && p.GetIndexParameters().Length == 0)
-            .Select(p => $"{p.Name}={p.GetValue(variant)}")
-            .ToArray();
-
-        return properties.Length == 0
-            ? $"Variant: {variant.GetType().Name}"
-            : $"Variant: {variant.GetType().Name}({string.Join(", ", properties)})";
     }
 
     /// <summary>

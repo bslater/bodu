@@ -13,6 +13,8 @@
       href: composing-primitives.md
 - name: Symmetric ciphers — Standard
   items:
+    - name: AES-family block ciphers
+      href: aes-family.md
     - name: Using Skipjack
       href: skipjack.md
     - name: Using Blowfish
@@ -37,12 +39,20 @@
   items:
     - name: Hashing overview
       href: hashing.md
+    - name: Using BLAKE
+      href: blake.md
+    - name: Using Skein
+      href: skein.md
     - name: Using Tiger
       href: tiger.md
     - name: Using CubeHash
       href: cubehash.md
     - name: Using Snefru
       href: snefru.md
+    - name: Using Whirlpool
+      href: whirlpool.md
+    - name: Using SHAKE (XOF)
+      href: shake.md
     - name: Using Merkle trees
       href: merkle-trees.md
 - name: Keyed hashes (MAC)
