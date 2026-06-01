@@ -161,6 +161,8 @@ internal static class Program
                 .Append(successorExpr)
                 .Append(", ")
                 .Append(englishNameLiteral)
+                .Append(", ")
+                .Append(currency.Numeric.ToString(CultureInfo.InvariantCulture))
                 .AppendLine(");");
         }
 
@@ -233,6 +235,12 @@ internal static class Program
         builder.AppendLine("    /// </summary>");
         builder.AppendLine("    /// <returns>The three-letter ISO 4217 code.</returns>");
         builder.Append("    public static string IsoCode => \"").Append(currency.Iso).AppendLine("\";");
+        builder.AppendLine();
+        builder.AppendLine("    /// <summary>");
+        builder.AppendLine("    /// Gets the ISO 4217 three-digit numeric code for the currency.");
+        builder.AppendLine("    /// </summary>");
+        builder.AppendLine("    /// <returns>The three-digit ISO 4217 numeric code.</returns>");
+        builder.Append("    public static int NumericCode => ").Append(currency.Numeric.ToString(CultureInfo.InvariantCulture)).AppendLine(";");
         builder.AppendLine();
         builder.AppendLine("    /// <summary>");
         builder.AppendLine("    /// Gets the number of fractional digits in the currency's minor unit.");

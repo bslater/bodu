@@ -21,6 +21,12 @@ public sealed class CUP : ICurrency
     public static string IsoCode => "CUP";
 
     /// <summary>
+    /// Gets the ISO 4217 three-digit numeric code for the currency.
+    /// </summary>
+    /// <returns>The three-digit ISO 4217 numeric code.</returns>
+    public static int NumericCode => 192;
+
+    /// <summary>
     /// Gets the number of fractional digits in the currency's minor unit.
     /// </summary>
     /// <returns>The currency's minor-unit precision.</returns>
