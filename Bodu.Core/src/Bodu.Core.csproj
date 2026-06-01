@@ -55,8 +55,13 @@
     <!--
       Wire the in-repo XML-doc analyzer and code-fix as a Roslyn analyzer reference scoped to this project.
       Used to exercise BODU1405 (<code> must begin with CDATA flush against ///) against Bodu.Core in isolation.
+
+      Skipped when DocFX is generating the documentation site (BuildingForDocfx=true): docfx's Roslyn
+      workspace cannot resolve analyzer-only ProjectReferences that fall outside its scanned project set,
+      and emits "Found project reference without a matching metadata reference" warnings that are escalated
+      to errors by the warningsAsErrors flag the docfx workflow sets.
     -->
-    <ItemGroup>
+    <ItemGroup Condition="'$(BuildingForDocfx)' != 'true'">
         <ProjectReference Include="..\..\Bodu.CodeStyle\Bodu.CodeStyle.XmlDocumentation.Analyzers\src\Bodu.CodeStyle.XmlDocumentation.Analyzers.csproj"
                           ReferenceOutputAssembly="false"
                           OutputItemType="Analyzer" />

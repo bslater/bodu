@@ -409,7 +409,7 @@ same rational value compare equal. Equal fractions share a hash code.
 ## See also
 
 - [`Fraction<T>` API reference](xref:Bodu.Numerics.Fraction`1)
-- [`FractionJsonConverter<T>` API reference](xref:Bodu.Numerics.FractionJsonConverter`1)
-- [`FractionJsonConverterFactory`](xref:Bodu.Numerics.FractionJsonConverterFactory)
+- [`FractionJsonConverter<T>` API reference](xref:Bodu.Numerics.Serialization.FractionJsonConverter`1)
+- [`FractionJsonConverterFactory`](xref:Bodu.Numerics.Serialization.FractionJsonConverterFactory)
 - [`Interval<T>` guide](interval.md) — the other `Bodu.Numerics` value type.
 - [`Money<TCurrency>` guide](../financial/money.md) — uses `Fraction<BigInteger>` as the precision escape hatch via `ToFraction()` / `FromFraction()` / `MultiplyExact()`.

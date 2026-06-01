@@ -92,8 +92,8 @@ Every format follows the same shape — a static codec, a typed value tree, a fo
 | Type | Purpose |
 |---|---|
 | <xref:Bodu.Text.Delimited.Delimited> | Static codec — read and write delimited records over span / byte / `Stream` / `TextReader` / `TextWriter`. |
-| <xref:Bodu.Text.Delimited.DelimitedDocument>, <xref:Bodu.Text.Delimited.DelimitedRow>, <xref:Bodu.Text.Delimited.DelimitedField> | Immutable document model. |
-| <xref:Bodu.Text.Delimited.DelimitedParseOptions>, <xref:Bodu.Text.Delimited.DelimitedWriteOptions> | Quoting policy, delimiter selection (comma / tab / custom), header handling. |
+| <xref:Bodu.Text.Delimited.DelimitedDocument>, <xref:Bodu.Text.Delimited.DelimitedRow> | Immutable document model. Each row exposes its `Fields` as `IReadOnlyList<string>`. |
+| <xref:Bodu.Text.Delimited.DelimitedParseOptions> | Quoting policy, delimiter selection (comma / tab / custom), header handling. Shared between read and write paths. |
 | <xref:Bodu.Text.Delimited.DelimitedFormatException> | Thrown for unterminated quotes, ragged rows under strict mode, and other structural violations. |
 
 ### DotEnv — <xref:Bodu.Text.DotEnv>
@@ -102,7 +102,7 @@ Every format follows the same shape — a static codec, a typed value tree, a fo
 |---|---|
 | <xref:Bodu.Text.DotEnv.DotEnv> | Static codec — read and write `.env` documents. |
 | <xref:Bodu.Text.DotEnv.DotEnvDocument>, <xref:Bodu.Text.DotEnv.DotEnvEntry> | Ordered key/value model that preserves entry order. |
-| <xref:Bodu.Text.DotEnv.DotEnvParseOptions>, <xref:Bodu.Text.DotEnv.DotEnvWriteOptions> | Quote handling, comment preservation, escape policy. |
+| <xref:Bodu.Text.DotEnv.DotEnvParseOptions> | Quote handling, comment preservation, escape policy. Shared between read and write paths. |
 | <xref:Bodu.Text.DotEnv.DotEnvFormatException> | Thrown for malformed key/value lines. |
 
 ### INI — <xref:Bodu.Text.Ini>
@@ -111,7 +111,7 @@ Every format follows the same shape — a static codec, a typed value tree, a fo
 |---|---|
 | <xref:Bodu.Text.Ini.Ini> | Static codec — read and write INI documents. |
 | <xref:Bodu.Text.Ini.IniDocument>, <xref:Bodu.Text.Ini.IniSection>, <xref:Bodu.Text.Ini.IniEntry> | Section/entry model that preserves comments, whitespace, and order. |
-| <xref:Bodu.Text.Ini.IniParseOptions>, <xref:Bodu.Text.Ini.IniWriteOptions> | Profile presets, escape rules, duplicate-section policy. |
+| <xref:Bodu.Text.Ini.IniParseOptions> | Profile presets, escape rules, duplicate-section policy. Shared between read and write paths. |
 | <xref:Bodu.Text.Ini.IniFormatException> | Thrown for malformed headers, entries, or escape sequences. |
 
 ## Where to go next

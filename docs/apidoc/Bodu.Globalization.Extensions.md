@@ -12,7 +12,7 @@ uid: Bodu.Globalization.Extensions
 
 The namespace provides helpers for working with `CultureInfo`, `RegionInfo`, `CalendarWeekendDefinition`, and `WorkingDaysOfWeek` in scenarios where the BCL surface is too narrow for calendar-style queries.
 
-For the broader date / time / culture surface, see <xref:Bodu.Extensions.DateTimeExtensions>, <xref:Bodu.Extensions.DateOnlyExtensions>, and <xref:Bodu.Extensions.DateTimeFormatInfoExtensions>.
+For the broader date / time / culture surface, see <xref:Bodu.Extensions.DateTimeExtensions>, <xref:Bodu.Extensions.DateOnlyExtensions>, and <xref:Bodu.Globalization.Extensions.DateTimeFormatInfoExtensions>.
 
 ## Notes
 

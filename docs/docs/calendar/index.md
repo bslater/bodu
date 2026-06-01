@@ -126,7 +126,7 @@ The `Bodu.Globalization.Calendar.Algorithms` namespace ships concrete algorithm 
 | <xref:Bodu.Globalization.Calendar.Algorithms.VesakNotableDateAlgorithm> | Buddhist Vesak / Buddha Day. |
 | <xref:Bodu.Globalization.Calendar.Algorithms.AsalhaPujaNotableDateAlgorithm> | Asalha Puja. |
 | <xref:Bodu.Globalization.Calendar.Algorithms.QingmingNotableDateAlgorithm> | Qingming festival (sun-longitude based). |
-| <xref:Bodu.Globalization.Calendar.Providers.GregorianEasterSundayNotableDateProvider>, <xref:Bodu.Globalization.Calendar.Providers.OrthodoxEasterSundayNotableDateProvider> | Bundled Easter providers — Western (Gregorian) and Eastern (Julian-anchored). |
+| <xref:Bodu.Globalization.Calendar.Algorithms.GregorianEasterSundayNotableDateProvider>, <xref:Bodu.Globalization.Calendar.Algorithms.OrthodoxEasterSundayNotableDateProvider> | Bundled Easter providers — Western (Gregorian) and Eastern (Julian-anchored). |
 
 Region-specific holiday rule providers ship separately in `Bodu.Globalization.Calendar.Data.*` companion packages on independent release schedules — see [Calendar data packs](../../guides/calendar/data-packs.md).
 

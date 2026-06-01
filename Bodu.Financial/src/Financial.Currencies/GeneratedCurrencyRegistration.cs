@@ -4,6 +4,7 @@
 //     To regenerate: dotnet run --project tools/CurrencyCatalogueGenerator
 // </auto-generated>
 // ---------------------------------------------------------------------------------------------------------------
+#nullable enable
 namespace Bodu.Financial.Currencies;
 
 using global::System.Collections.Generic;

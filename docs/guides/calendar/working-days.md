@@ -123,18 +123,18 @@ If `NotableDateContext.Default` is left unassigned, the property lazily construc
 
 ## Weekend behaviour
 
-The service's <xref:Bodu.Globalization.Calendar.CalendarWeekendDefinition> controls which days the working-day extensions treat as weekends:
+The service's `WorkingWeek` property (a <xref:Bodu.WeekPattern>) defines which days are working; any day outside the pattern is treated as a weekend. Use the named presets on <xref:Bodu.WeekPattern> for common shapes, or construct a custom pattern for non-standard schedules:
 
-| Value | Weekend days |
-|---|---|
-| `None` | No weekend — every weekday counts as working unless a non-working notable date applies. |
-| `SaturdaySunday` | Saturday + Sunday (most western territories). |
-| `FridaySaturday` | Friday + Saturday (parts of the Middle East). |
-| `SundayOnly` | Sunday only. |
-| `FridayOnly` | Friday only. |
-| `Custom` | Any explicit subset via `WeekPattern`. |
+| Preset | Working days | Weekend days |
+|---|---|---|
+| `WeekPattern.AllDays` | Every day | No weekend — every day counts as working unless a non-working notable date applies. |
+| `WeekPattern.MondayToFriday` | Mon–Fri | Saturday + Sunday (most western territories). |
+| `WeekPattern.SundayToThursday` | Sun–Thu | Friday + Saturday (parts of the Middle East). |
+| `WeekPattern.MondayToSaturday` | Mon–Sat | Sunday only. |
+| `WeekPattern.SaturdayToThursday` | Sat–Thu | Friday only. |
+| Custom | Any caller-supplied bitmask | Any complementary subset via <xref:Bodu.WeekPattern>. |
 
-Set this at service construction time. Mixed-weekend services are best modelled by composing multiple services or by combining weekend definitions in custom rules.
+Set this at service construction time via the `workingWeek` constructor argument. Mixed-weekend services are best modelled by composing multiple services or by combining weekend definitions in custom rules.
 
 ## Public holidays vs. observances
 
