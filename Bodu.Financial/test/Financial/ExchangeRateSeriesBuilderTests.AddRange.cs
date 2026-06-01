@@ -11,7 +11,8 @@ namespace Bodu.Financial;
 public partial class ExchangeRateSeriesBuilderTests
 {
     /// <summary>
-    /// Verifies that <see cref="ExchangeRateSeriesBuilder.AddRange" /> throws on a null sequence.
+    /// Verifies that <see cref="ExchangeRateSeriesBuilder.AddRange(IEnumerable{ExchangeRateObservation})" /> throws
+    /// on a null observation sequence.
     /// </summary>
     [TestMethod]
     public void AddRange_WhenObservationsNull_ShouldThrowArgumentNullException()
@@ -21,9 +22,51 @@ public partial class ExchangeRateSeriesBuilderTests
         ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(
             () =>
             {
-                builder.AddRange(null!);
+                builder.AddRange((IEnumerable<ExchangeRateObservation>)null!);
             },
             "observations");
+    }
+
+    /// <summary>
+    /// Verifies that the tuple overload of <c>AddRange</c> inserts the same observations as the typed-record
+    /// overload.
+    /// </summary>
+    [TestMethod]
+    public void AddRange_WhenGivenTuples_ShouldInsertSameObservations()
+    {
+        ExchangeRateSeriesBuilder builder = new(s_usdAud, "RBA");
+
+        builder.AddRange(new (DateOnly Date, decimal Rate)[]
+        {
+            (new DateOnly(2024, 1, 1), 1.5m),
+            (new DateOnly(2024, 1, 3), 1.6m),
+        });
+
+        Assert.AreEqual(2, builder.Count);
+        Assert.IsTrue(builder.TryGetRate(new DateOnly(2024, 1, 1), out var first));
+        Assert.AreEqual(1.5m, first);
+        Assert.IsTrue(builder.TryGetRate(new DateOnly(2024, 1, 3), out var second));
+        Assert.AreEqual(1.6m, second);
+    }
+
+    /// <summary>
+    /// Verifies that the tuple overload of <c>UpsertRange</c> replaces existing rates.
+    /// </summary>
+    [TestMethod]
+    public void UpsertRange_WhenGivenTuples_ShouldReplaceExistingObservations()
+    {
+        ExchangeRateSeriesBuilder builder = new(s_usdAud, "RBA");
+        builder.Add(new DateOnly(2024, 1, 1), 1.5m);
+
+        builder.UpsertRange(new (DateOnly Date, decimal Rate)[]
+        {
+            (new DateOnly(2024, 1, 1), 1.55m),
+            (new DateOnly(2024, 1, 2), 1.6m),
+        });
+
+        Assert.AreEqual(2, builder.Count);
+        Assert.IsTrue(builder.TryGetRate(new DateOnly(2024, 1, 1), out var replaced));
+        Assert.AreEqual(1.55m, replaced);
     }
 
     /// <summary>

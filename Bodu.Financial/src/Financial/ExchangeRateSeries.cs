@@ -193,6 +193,9 @@ public sealed class ExchangeRateSeries
     {
         FinancialThrowHelper.ThrowIfExchangeRateNotPositive(rate);
 
+        if (_storage.TryGetExactRate(date, out var existing) && existing == rate)
+            return this;
+
         var builder = ToBuilder();
         builder.Upsert(date, rate);
         return builder.ToSeries();
@@ -208,6 +211,9 @@ public sealed class ExchangeRateSeries
     /// </exception>
     public ExchangeRateSeries WithoutRate(DateOnly date)
     {
+        if (!_storage.Contains(date))
+            return this;
+
         var builder = ToBuilder();
         builder.Remove(date);
         return builder.ToSeries();

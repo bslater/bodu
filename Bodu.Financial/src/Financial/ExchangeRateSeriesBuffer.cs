@@ -361,14 +361,7 @@ internal sealed class ExchangeRateSeriesBuffer
         var count = storage.Count;
         var buffer = new ExchangeRateSeriesBuffer(count);
 
-        var i = 0;
-        foreach (var observation in storage.Enumerate())
-        {
-            buffer._dayNumbers[i] = observation.Date.DayNumber;
-            buffer._rates[i] = observation.Rate;
-            i++;
-        }
-
+        storage.CopyTo(buffer._dayNumbers, buffer._rates);
         buffer._count = count;
         return buffer;
     }

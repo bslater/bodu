@@ -148,6 +148,51 @@ internal sealed class ExchangeRateSeriesStorage
     }
 
     /// <summary>
+    /// Reports whether the storage contains an observation on the supplied date.
+    /// </summary>
+    /// <param name="date">The observation date to query.</param>
+    /// <returns><see langword="true" /> if an observation exists for <paramref name="date" />.</returns>
+    public bool Contains(DateOnly date) => Array.BinarySearch(_dayNumbers, date.DayNumber) >= 0;
+
+    /// <summary>
+    /// Attempts to retrieve the rate stored exactly on <paramref name="date" />.
+    /// </summary>
+    /// <param name="date">The observation date to query.</param>
+    /// <param name="rate">
+    /// When this method returns <see langword="true" />, the rate observed on <paramref name="date" />; otherwise
+    /// <see langword="default" />.
+    /// </param>
+    /// <returns><see langword="true" /> if an observation exists for <paramref name="date" />.</returns>
+    public bool TryGetExactRate(DateOnly date, out decimal rate)
+    {
+        var index = Array.BinarySearch(_dayNumbers, date.DayNumber);
+        if (index < 0)
+        {
+            rate = default;
+            return false;
+        }
+
+        rate = _rates[index];
+        return true;
+    }
+
+    /// <summary>
+    /// Copies the storage's contents into the supplied caller-owned arrays. Used by the mutable buffer's seeding
+    /// path so the round-trip through <see cref="DateOnly" /> can be avoided.
+    /// </summary>
+    /// <param name="dayNumbers">The caller-owned target array; must be at least <see cref="Count" /> long.</param>
+    /// <param name="rates">The caller-owned target array; must be at least <see cref="Count" /> long.</param>
+    internal void CopyTo(int[] dayNumbers, decimal[] rates)
+    {
+        Debug.Assert(dayNumbers is not null && rates is not null);
+        Debug.Assert(dayNumbers!.Length >= _dayNumbers.Length);
+        Debug.Assert(rates!.Length >= _dayNumbers.Length);
+
+        Array.Copy(_dayNumbers, dayNumbers, _dayNumbers.Length);
+        Array.Copy(_rates, rates, _rates.Length);
+    }
+
+    /// <summary>
     /// Validates, sorts, and deduplicates the supplied tuple sequence and returns a new storage instance.
     /// </summary>
     /// <param name="rates">The candidate observations.</param>

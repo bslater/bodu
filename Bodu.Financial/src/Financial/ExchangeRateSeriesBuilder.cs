@@ -228,6 +228,44 @@ public sealed class ExchangeRateSeriesBuilder
     }
 
     /// <summary>
+    /// Tuple-shaped overload of <see cref="AddRange(IEnumerable{ExchangeRateObservation})" /> for import sources that
+    /// hand the builder raw <c>(date, rate)</c> pairs.
+    /// </summary>
+    /// <param name="rates">The observations to insert.</param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown if <paramref name="rates" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown if any rate in <paramref name="rates" /> is zero or negative.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown if the batch contains a duplicate date or a date already present in the builder.
+    /// </exception>
+    public void AddRange(IEnumerable<(DateOnly Date, decimal Rate)> rates)
+    {
+        ThrowHelper.ThrowIfNull(rates);
+        _buffer.AddRange(rates.Select(static r => new ExchangeRateObservation(r.Date, r.Rate)), nameof(rates));
+    }
+
+    /// <summary>
+    /// Tuple-shaped overload of <see cref="UpsertRange(IEnumerable{ExchangeRateObservation})" /> for import sources
+    /// that hand the builder raw <c>(date, rate)</c> pairs.
+    /// </summary>
+    /// <param name="rates">The observations to merge.</param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown if <paramref name="rates" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown if any rate in <paramref name="rates" /> is zero or negative.
+    /// </exception>
+    /// <exception cref="ArgumentException">Thrown if the batch contains a duplicate date.</exception>
+    public void UpsertRange(IEnumerable<(DateOnly Date, decimal Rate)> rates)
+    {
+        ThrowHelper.ThrowIfNull(rates);
+        _buffer.UpsertRange(rates.Select(static r => new ExchangeRateObservation(r.Date, r.Rate)), nameof(rates));
+    }
+
+    /// <summary>
     /// Enumerates the observations in strictly ascending date order.
     /// </summary>
     /// <returns>A lazy sequence of <see cref="ExchangeRateObservation" /> values.</returns>
