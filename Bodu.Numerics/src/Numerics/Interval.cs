@@ -6,6 +6,8 @@
 
 using System.Diagnostics;
 using System.Numerics;
+using System.Text.Json.Serialization;
+using Bodu.Numerics.Serialization;
 
 namespace Bodu.Numerics;
 
@@ -47,6 +49,7 @@ namespace Bodu.Numerics;
 /// </remarks>
 [Serializable]
 [DebuggerDisplay("{ToString(),nq}")]
+[JsonConverter(typeof(IntervalJsonConverterFactory))]
 public readonly partial struct Interval<T>
     where T : INumber<T>
 {

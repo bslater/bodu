@@ -123,11 +123,17 @@
   <data name="Json_Invalid_MissingLower" xml:space="preserve">
     <value>The JSON object is missing the required 'lower' property.</value>
   </data>
+  <data name="Json_Invalid_MissingLowerInclusive" xml:space="preserve">
+    <value>The JSON object is missing the required 'lowerInclusive' property.</value>
+  </data>
   <data name="Json_Invalid_MissingNumerator" xml:space="preserve">
     <value>The JSON object is missing the required 'numerator' property.</value>
   </data>
   <data name="Json_Invalid_MissingUpper" xml:space="preserve">
     <value>The JSON object is missing the required 'upper' property.</value>
+  </data>
+  <data name="Json_Invalid_MissingUpperInclusive" xml:space="preserve">
+    <value>The JSON object is missing the required 'upperInclusive' property.</value>
   </data>
   <data name="Json_Invalid_NumeratorMustBeNumber" xml:space="preserve">
     <value>The 'numerator' property must be a number or a numeric string.</value>

@@ -241,6 +241,15 @@ namespace Bodu.Numerics {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The JSON object is missing the required &apos;lowerInclusive&apos; property..
+        /// </summary>
+        internal static string Json_Invalid_MissingLowerInclusive {
+            get {
+                return ResourceManager.GetString("Json_Invalid_MissingLowerInclusive", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The JSON object is missing the required &apos;numerator&apos; property..
         /// </summary>
         internal static string Json_Invalid_MissingNumerator {
@@ -255,6 +264,15 @@ namespace Bodu.Numerics {
         internal static string Json_Invalid_MissingUpper {
             get {
                 return ResourceManager.GetString("Json_Invalid_MissingUpper", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The JSON object is missing the required &apos;upperInclusive&apos; property..
+        /// </summary>
+        internal static string Json_Invalid_MissingUpperInclusive {
+            get {
+                return ResourceManager.GetString("Json_Invalid_MissingUpperInclusive", resourceCulture);
             }
         }
 
