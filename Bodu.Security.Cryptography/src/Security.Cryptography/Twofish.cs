@@ -202,8 +202,8 @@ public sealed class Twofish
     public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[]? rgbIV)
     {
         ThrowIfDisposed();
-        CryptoHelpers.ThrowIfInvalidKeySize(rgbKey, KeySize, LegalKeySizes);
-        CryptoHelpers.ThrowIfInvalidIVForMode(rgbIV, BlockMode, BlockSize, LegalBlockSizes);
+        CryptographyThrowHelper.ThrowIfInvalidKeySize(rgbKey, KeySize, LegalKeySizes);
+        CryptographyThrowHelper.ThrowIfInvalidIVForMode(rgbIV, BlockMode, BlockSize, LegalBlockSizes);
 
         IBlockCipher engine = CreateCipher(rgbKey);
         return new TwofishTransform(engine, BlockMode, BlockPadding, rgbIV, false);
@@ -213,8 +213,8 @@ public sealed class Twofish
     public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[]? rgbIV)
     {
         ThrowIfDisposed();
-        CryptoHelpers.ThrowIfInvalidKeySize(rgbKey, KeySize, LegalKeySizes);
-        CryptoHelpers.ThrowIfInvalidIVForMode(rgbIV, BlockMode, BlockSize, LegalBlockSizes);
+        CryptographyThrowHelper.ThrowIfInvalidKeySize(rgbKey, KeySize, LegalKeySizes);
+        CryptographyThrowHelper.ThrowIfInvalidIVForMode(rgbIV, BlockMode, BlockSize, LegalBlockSizes);
 
         IBlockCipher engine = CreateCipher(rgbKey);
         return new TwofishTransform(engine, BlockMode, BlockPadding, rgbIV, true);
@@ -224,14 +224,14 @@ public sealed class Twofish
     public override void GenerateIV()
     {
         ThrowIfDisposed();
-        IVValue = CryptoHelpers.GetRandomBytes(BlockSizeValue / 8);
+        IVValue = CryptographyHelper.GetRandomBytes(BlockSizeValue / 8);
     }
 
     /// <inheritdoc />
     public override void GenerateKey()
     {
         ThrowIfDisposed();
-        KeyValue = CryptoHelpers.GetRandomBytes(KeySizeValue / 8);
+        KeyValue = CryptographyHelper.GetRandomBytes(KeySizeValue / 8);
     }
 
     /// <inheritdoc />
@@ -241,8 +241,8 @@ public sealed class Twofish
         {
             if (disposing)
             {
-                CryptoHelpers.Clear(Key);
-                CryptoHelpers.Clear(IVValue!);
+                CryptographyHelper.Clear(Key);
+                CryptographyHelper.Clear(IVValue!);
             }
 
             _disposed = true;

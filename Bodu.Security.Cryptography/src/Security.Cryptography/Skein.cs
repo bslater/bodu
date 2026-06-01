@@ -130,7 +130,7 @@ public abstract partial class Skein<T>
     private protected Skein(ThreefishBlockCipher cipher, int hashSizeBits, int[] validHashSizesBits)
         : base(blockSize: cipher.BlockSize, keySize: cipher.BlockSize)
     {
-        CryptoHelpers.ThrowIfInvalidHashSize(hashSizeBits, validHashSizesBits);
+        CryptographyThrowHelper.ThrowIfInvalidHashSize(hashSizeBits, validHashSizesBits);
 
         _cipher = cipher;
         HashSizeValue = hashSizeBits;
@@ -237,7 +237,7 @@ public abstract partial class Skein<T>
         _pendingBytes = 0;
         _messageBytesProcessed = 0UL;
         _hasProcessedAnyMessageBlock = false;
-        CryptoHelpers.Clear(_pendingBlock);
+        CryptographyHelper.Clear(_pendingBlock);
 
         EnsureChainingValueInitialized();
         Array.Copy(_initialChainingValue, _state, _state.Length);
@@ -301,7 +301,7 @@ public abstract partial class Skein<T>
         var blockBytes = BlockSize / 8;
         if (residual < blockBytes)
         {
-            CryptoHelpers.Clear(_pendingBlock.AsSpan(residual, blockBytes - residual));
+            CryptographyHelper.Clear(_pendingBlock.AsSpan(residual, blockBytes - residual));
         }
 
         _messageBytesProcessed += (ulong)residual;
@@ -396,10 +396,10 @@ public abstract partial class Skein<T>
 
         if (disposing)
         {
-            CryptoHelpers.Clear(_state);
-            CryptoHelpers.Clear(_initialChainingValue);
-            CryptoHelpers.Clear(_pendingBlock);
-            CryptoHelpers.Clear(_ubiCipherOutput);
+            CryptographyHelper.Clear(_state);
+            CryptographyHelper.Clear(_initialChainingValue);
+            CryptographyHelper.Clear(_pendingBlock);
+            CryptographyHelper.Clear(_ubiCipherOutput);
 
             _cipher.Dispose();
 

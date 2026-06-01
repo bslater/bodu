@@ -54,7 +54,7 @@ public sealed class Ansix923Padding
     /// </exception>
     public byte[] Pad(ReadOnlySpan<byte> input, int blockSize)
     {
-        CryptoHelpers.ThrowIfNotPositiveMultipleOf(blockSize, 8);
+        CryptographyThrowHelper.ThrowIfNotPositiveMultipleOf(blockSize, 8);
 
         var size = blockSize / 8;
         var paddingLength = size - (input.Length % size);
@@ -86,12 +86,12 @@ public sealed class Ansix923Padding
     /// <exception cref="CryptographicException">Thrown if the padding is invalid or malformed.</exception>
     public byte[] Unpad(ReadOnlySpan<byte> input, int blockSize)
     {
-        CryptoHelpers.ThrowIfNotPositiveMultipleOf(blockSize, 8);
+        CryptographyThrowHelper.ThrowIfNotPositiveMultipleOf(blockSize, 8);
 
         // Constant-time verification to mitigate CBC padding-oracle attacks.
         var size = blockSize / 8;
         if (input.Length == 0 || input.Length % size != 0)
-            CryptoHelpers.ThrowInvalidPaddedSequence("ANSI X.923", nameof(input));
+            CryptographyHelper.ThrowInvalidPaddedSequence("ANSI X.923", nameof(input));
 
         var length = input.Length;
         int padLen = input[length - 1];
@@ -126,7 +126,7 @@ public sealed class Ansix923Padding
         }
 
         if (valid == 0)
-            CryptoHelpers.ThrowInvalidPadding("ANSI X.923");
+            CryptographyHelper.ThrowInvalidPadding("ANSI X.923");
 
         return input[..(length - padLen)].ToArray();
     }

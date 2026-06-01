@@ -180,7 +180,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     {
         var bufferA = new byte[256];
         var bufferB = new byte[257];
-        CryptoHelpers.FillWithRandomNonZeroBytes(bufferA);
+        CryptographyHelper.FillWithRandomNonZeroBytes(bufferA);
         Array.Copy(bufferA, 0, bufferB, 1, bufferA.Length);
 
         using TAlgorithm algorithm1 = CreateAlgorithm();
@@ -222,7 +222,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
         using TAlgorithm algorithm2 = CreateAlgorithm();
         var input = new byte[size];
         if (size > 0)
-            CryptoHelpers.FillWithRandomNonZeroBytes(input);
+            CryptographyHelper.FillWithRandomNonZeroBytes(input);
 
         var hashA = algorithm1.ComputeHash(input);
         var hashB = algorithm2.ComputeHash(input);

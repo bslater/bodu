@@ -118,10 +118,10 @@ public abstract class SymmetricStreamAlgorithm
                         CultureInfo.InvariantCulture,
                         CryptoResourceStrings.Crypt_Invalid_KeySize,
                         value,
-                        CryptoHelpers.FormatLegalSizes(_legalKeySizes)));
+                        CryptographyHelper.FormatLegalSizes(_legalKeySizes)));
 
             _keySizeBits = value;
-            CryptoHelpers.ClearAndNullify(ref _key);
+            CryptographyHelper.ClearAndNullify(ref _key);
         }
     }
 
@@ -185,9 +185,9 @@ public abstract class SymmetricStreamAlgorithm
         {
             ThrowIfDisposed();
             ThrowHelper.ThrowIfNull(value);
-            CryptoHelpers.ThrowIfInvalidKeySize(value, value.Length * 8, _legalKeySizes);
+            CryptographyThrowHelper.ThrowIfInvalidKeySize(value, value.Length * 8, _legalKeySizes);
 
-            CryptoHelpers.ClearAndNullify(ref _key);
+            CryptographyHelper.ClearAndNullify(ref _key);
             _key = (byte[])value.Clone();
             _keySizeBits = value.Length * 8;
         }
@@ -223,9 +223,9 @@ public abstract class SymmetricStreamAlgorithm
         {
             ThrowIfDisposed();
             ThrowHelper.ThrowIfNull(value);
-            CryptoHelpers.ThrowIfInvalidNonceSize(value, NonceLengthInBytes);
+            CryptographyThrowHelper.ThrowIfInvalidNonceSize(value, NonceLengthInBytes);
 
-            CryptoHelpers.ClearAndNullify(ref _nonce);
+            CryptographyHelper.ClearAndNullify(ref _nonce);
             _nonce = (byte[])value.Clone();
         }
     }
@@ -245,8 +245,8 @@ public abstract class SymmetricStreamAlgorithm
     {
         ThrowIfDisposed();
 
-        CryptoHelpers.ClearAndNullify(ref _key);
-        _key = CryptoHelpers.GetRandomBytes(_keySizeBits / 8);
+        CryptographyHelper.ClearAndNullify(ref _key);
+        _key = CryptographyHelper.GetRandomBytes(_keySizeBits / 8);
     }
 
     /// <summary>
@@ -257,8 +257,8 @@ public abstract class SymmetricStreamAlgorithm
     {
         ThrowIfDisposed();
 
-        CryptoHelpers.ClearAndNullify(ref _nonce);
-        _nonce = CryptoHelpers.GetRandomBytes(_nonceSizeBits / 8);
+        CryptographyHelper.ClearAndNullify(ref _nonce);
+        _nonce = CryptographyHelper.GetRandomBytes(_nonceSizeBits / 8);
     }
 
     /// <summary>
@@ -352,8 +352,8 @@ public abstract class SymmetricStreamAlgorithm
         ThrowIfDisposed();
         ThrowHelper.ThrowIfNull(key);
         ThrowHelper.ThrowIfNull(nonce);
-        CryptoHelpers.ThrowIfInvalidKeySize(key, key.Length * 8, _legalKeySizes);
-        CryptoHelpers.ThrowIfInvalidNonceSize(nonce, NonceLengthInBytes);
+        CryptographyThrowHelper.ThrowIfInvalidKeySize(key, key.Length * 8, _legalKeySizes);
+        CryptographyThrowHelper.ThrowIfInvalidNonceSize(nonce, NonceLengthInBytes);
 
         IStreamCipher engine = CreateStreamCipher(key, nonce);
         return new StreamCipherTransform(engine);
@@ -394,8 +394,8 @@ public abstract class SymmetricStreamAlgorithm
 
         if (disposing)
         {
-            CryptoHelpers.Clear(_key);
-            CryptoHelpers.Clear(_nonce);
+            CryptographyHelper.Clear(_key);
+            CryptographyHelper.Clear(_nonce);
         }
 
         _key = null;

@@ -7,7 +7,7 @@
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Unit tests for the <see cref="CryptoHelpers" /> class.
+/// Unit tests for the <see cref="CryptographyHelper" /> class.
 /// </summary>
 [TestClass]
 public partial class CryptoHelpersTests

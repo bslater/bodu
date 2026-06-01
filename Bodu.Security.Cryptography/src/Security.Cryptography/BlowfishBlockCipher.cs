@@ -109,11 +109,11 @@ public sealed partial class BlowfishBlockCipher
         if (!_disposed)
         {
             // Securely zero all sensitive key material.
-            CryptoHelpers.Clear(_p);
-            CryptoHelpers.Clear(_s0);
-            CryptoHelpers.Clear(_s1);
-            CryptoHelpers.Clear(_s2);
-            CryptoHelpers.Clear(_s3);
+            CryptographyHelper.Clear(_p);
+            CryptographyHelper.Clear(_s0);
+            CryptographyHelper.Clear(_s1);
+            CryptographyHelper.Clear(_s2);
+            CryptographyHelper.Clear(_s3);
 
             _disposed = true;
         }

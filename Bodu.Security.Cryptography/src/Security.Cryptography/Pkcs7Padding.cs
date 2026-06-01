@@ -59,7 +59,7 @@ public sealed class Pkcs7Padding
     /// </exception>
     public byte[] Pad(ReadOnlySpan<byte> input, int blockSize)
     {
-        CryptoHelpers.ThrowIfNotPositiveMultipleOf(blockSize, 8);
+        CryptographyThrowHelper.ThrowIfNotPositiveMultipleOf(blockSize, 8);
 
         var size = blockSize / 8;
         var paddingLength = size - (input.Length % size);
@@ -89,13 +89,13 @@ public sealed class Pkcs7Padding
     /// <exception cref="CryptographicException">Thrown if the padding is invalid or malformed.</exception>
     public byte[] Unpad(ReadOnlySpan<byte> input, int blockSize)
     {
-        CryptoHelpers.ThrowIfNotPositiveMultipleOf(blockSize, 8);
+        CryptographyThrowHelper.ThrowIfNotPositiveMultipleOf(blockSize, 8);
 
         var size = blockSize / 8;
 
         // Constant-time padding verification to mitigate CBC padding-oracle attacks (Vaudenay 2002).
         if (input.Length == 0 || input.Length % size != 0)
-            CryptoHelpers.ThrowInvalidPaddedSequence("PKCS#7", nameof(input));
+            CryptographyHelper.ThrowInvalidPaddedSequence("PKCS#7", nameof(input));
 
         var length = input.Length;
         int padLen = input[length - 1];
@@ -128,7 +128,7 @@ public sealed class Pkcs7Padding
         }
 
         if (valid == 0)
-            CryptoHelpers.ThrowInvalidPadding("PKCS#7");
+            CryptographyHelper.ThrowInvalidPadding("PKCS#7");
 
         return input[..(length - padLen)].ToArray();
     }

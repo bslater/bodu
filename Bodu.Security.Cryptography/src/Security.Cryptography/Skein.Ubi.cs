@@ -118,7 +118,7 @@ public abstract partial class Skein<T>
     /// </summary>
     private void EnsureChainingValueInitialized()
     {
-        CryptoHelpers.Clear(_state);
+        CryptographyHelper.Clear(_state);
 
         if (KeyValue is { Length: > 0 })
         {

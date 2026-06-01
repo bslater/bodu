@@ -105,7 +105,7 @@ public sealed partial class Tiger
     public Tiger(int hashSize)
         : base(512)
     {
-        CryptoHelpers.ThrowIfInvalidHashSize(hashSize, s_permittedHashSizes);
+        CryptographyThrowHelper.ThrowIfInvalidHashSize(hashSize, s_permittedHashSizes);
 
         HashSizeValue = hashSize;
     }
@@ -167,7 +167,7 @@ public sealed partial class Tiger
         {
             ThrowIfDisposed();
             ThrowIfInvalidState();
-            CryptoHelpers.ThrowIfInvalidHashSize(value, s_permittedHashSizes);
+            CryptographyThrowHelper.ThrowIfInvalidHashSize(value, s_permittedHashSizes);
 
             HashSizeValue = value;
         }

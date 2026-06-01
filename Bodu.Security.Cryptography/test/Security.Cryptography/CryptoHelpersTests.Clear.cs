@@ -9,7 +9,7 @@ namespace Bodu.Security.Cryptography;
 public partial class CryptoHelpersTests
 {
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.Clear{T}(Memory{T})"/> zeroes the contents of the supplied
+    /// Verifies that <see cref="CryptographyHelper.Clear{T}(Memory{T})"/> zeroes the contents of the supplied
     /// memory buffer.
     /// </summary>
     [TestMethod]
@@ -17,14 +17,14 @@ public partial class CryptoHelpersTests
     {
         Memory<byte> memory = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 };
 
-        CryptoHelpers.Clear(memory);
+        CryptographyHelper.Clear(memory);
 
         foreach (var b in memory.Span)
             Assert.AreEqual(0, b);
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.Clear{T}(Span{T})"/> zeroes the contents of the supplied span.
+    /// Verifies that <see cref="CryptographyHelper.Clear{T}(Span{T})"/> zeroes the contents of the supplied span.
     /// </summary>
     [TestMethod]
     public void Clear_Span_WhenInvoked_ShouldZeroAllBytes()
@@ -32,21 +32,21 @@ public partial class CryptoHelpersTests
         var array = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 };
         Span<byte> span = array;
 
-        CryptoHelpers.Clear(span);
+        CryptographyHelper.Clear(span);
 
         foreach (var b in array)
             Assert.AreEqual(0, b);
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.Clear(byte[])"/> zeroes the contents of the supplied byte array.
+    /// Verifies that <see cref="CryptographyHelper.Clear(byte[])"/> zeroes the contents of the supplied byte array.
     /// </summary>
     [TestMethod]
     public void Clear_ByteArray_WhenInvoked_ShouldZeroAllBytes()
     {
         var array = new byte[] { 1, 2, 3, 4 };
 
-        CryptoHelpers.Clear(array);
+        CryptographyHelper.Clear(array);
 
         Assert.AreEqual(0, array[0]);
         Assert.AreEqual(0, array[1]);
@@ -55,42 +55,42 @@ public partial class CryptoHelpersTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.Clear(byte[])"/> is a no-op when the supplied array is
+    /// Verifies that <see cref="CryptographyHelper.Clear(byte[])"/> is a no-op when the supplied array is
     /// <see langword="null"/>.
     /// </summary>
     [TestMethod]
-    public void Clear_ByteArray_WhenNull_ShouldNotThrow() => CryptoHelpers.Clear((byte[]?)null);
+    public void Clear_ByteArray_WhenNull_ShouldNotThrow() => CryptographyHelper.Clear((byte[]?)null);
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.Clear{T}(T[])"/> zeroes the contents of the supplied unmanaged array.
+    /// Verifies that <see cref="CryptographyHelper.Clear{T}(T[])"/> zeroes the contents of the supplied unmanaged array.
     /// </summary>
     [TestMethod]
     public void Clear_GenericArray_WhenInvoked_ShouldZeroAllElements()
     {
         var array = new ulong[] { 0x1122334455667788UL, 0x99AABBCCDDEEFF00UL };
 
-        CryptoHelpers.Clear(array);
+        CryptographyHelper.Clear(array);
 
         Assert.AreEqual(0UL, array[0]);
         Assert.AreEqual(0UL, array[1]);
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.Clear{T}(T[])"/> is a no-op when the supplied unmanaged array is
+    /// Verifies that <see cref="CryptographyHelper.Clear{T}(T[])"/> is a no-op when the supplied unmanaged array is
     /// <see langword="null"/>.
     /// </summary>
     [TestMethod]
-    public void Clear_GenericArray_WhenNull_ShouldNotThrow() => CryptoHelpers.Clear<ulong>(null!);
+    public void Clear_GenericArray_WhenNull_ShouldNotThrow() => CryptographyHelper.Clear<ulong>(null!);
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.Clear{T}(ref T)"/> zeroes the bytes of the supplied unmanaged value.
+    /// Verifies that <see cref="CryptographyHelper.Clear{T}(ref T)"/> zeroes the bytes of the supplied unmanaged value.
     /// </summary>
     [TestMethod]
     public void Clear_RefValue_WhenInvoked_ShouldZeroAllBytes()
     {
         var value = 0xDEADBEEFCAFEBABEUL;
 
-        CryptoHelpers.Clear(ref value);
+        CryptographyHelper.Clear(ref value);
 
         Assert.AreEqual(0UL, value);
     }

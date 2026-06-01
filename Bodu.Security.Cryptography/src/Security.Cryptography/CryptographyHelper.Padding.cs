@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="CryptoHelpers.Padding.cs" company="Bodu Pty. Ltd.">
+// <copyright file="CryptographyHelper.Padding.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -8,7 +8,7 @@ using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
 
-internal static partial class CryptoHelpers
+internal static partial class CryptographyHelper
 {
     /// <summary>
     /// Removes padding from a block and returns the depadded data as a newly allocated array.
@@ -63,7 +63,7 @@ internal static partial class CryptoHelpers
         ThrowHelper.ThrowIfLessThanOrEqual(blockSize, 0);
 
         var size = blockSize / 8;
-        CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(source, size);
+        CryptographyThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf(source, size);
 
         var count = source.Length;
 
@@ -325,7 +325,7 @@ internal static partial class CryptoHelpers
         if (padding == PaddingModeKind.ISO7816_4)
         {
             ThrowHelper.ThrowIfLessThanOrEqual(blockSize, 0);
-            CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(source, blockSize / 8);
+            CryptographyThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf(source, blockSize / 8);
 
             var strategy = new Iso7816_4Padding();
             var unpadded = strategy.Unpad(source, blockSize);

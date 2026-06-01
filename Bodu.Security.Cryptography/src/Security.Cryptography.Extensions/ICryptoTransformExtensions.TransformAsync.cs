@@ -203,7 +203,7 @@ public static partial class ICryptoTransformExtensions
 
             await cryptoStream.FlushFinalBlockAsync(cancellationToken).ConfigureAwait(false);
 
-            ArraySegment<byte> segment = CryptoHelpers.GetBufferOrThrowIfInaccessible(ms);
+            ArraySegment<byte> segment = CryptographyHelper.GetBufferOrThrowIfInaccessible(ms);
             segment.AsSpan().CopyTo(destination.Span);
             completed = true;
             return segment.Count;

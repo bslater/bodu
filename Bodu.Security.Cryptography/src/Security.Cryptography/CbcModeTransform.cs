@@ -76,7 +76,7 @@ public sealed class CbcModeTransform
     public CbcModeTransform(IBlockCipher cipher, byte[] iv)
     {
         ThrowHelper.ThrowIfNull(cipher);
-        CryptoHelpers.ThrowIfIvLengthInvalid(iv, cipher.BlockSize);
+        CryptographyThrowHelper.ThrowIfIvLengthInvalid(iv, cipher.BlockSize);
 
         _cipher = cipher;
         _currentIv = (byte[])iv.Clone(); // Used to track the evolving IV during transformation
@@ -87,9 +87,9 @@ public sealed class CbcModeTransform
     {
         var blockSize = _cipher.BlockSize / 8;
 
-        CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(input, blockSize, throwIfZero: false);
+        CryptographyThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf(input, blockSize, throwIfZero: false);
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, 0, input.Length);
-        CryptoHelpers.ThrowIfInvalidOverlap(input, output);
+        CryptographyThrowHelper.ThrowIfInvalidOverlap(input, output);
 
         Span<byte> tempBlock = stackalloc byte[blockSize];
 
@@ -140,7 +140,7 @@ public sealed class CbcModeTransform
         if (_disposed)
             return;
 
-        CryptoHelpers.Clear(_currentIv);
+        CryptographyHelper.Clear(_currentIv);
         _disposed = true;
         GC.SuppressFinalize(this);
     }

@@ -13,18 +13,18 @@ public partial class CryptoHelpersTests
     private static readonly KeySizes[] s_legalBlockSizesForBlockSize = [new KeySizes(128, 128, 0)];
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.ThrowIfInvalidBlockSize(byte[], int, KeySizes[], string)"/> does not
+    /// Verifies that <see cref="CryptographyThrowHelper.ThrowIfInvalidBlockSize(byte[], int, KeySizes[], string)"/> does not
     /// throw when the byte length of the supplied block matches the expected block size in bits.
     /// </summary>
     [TestMethod]
     public void ThrowIfInvalidBlockSize_WhenBlockSizeMatches_ShouldNotThrow()
     {
         var block = new byte[16];
-        CryptoHelpers.ThrowIfInvalidBlockSize(block, 128, s_legalBlockSizesForBlockSize);
+        CryptographyThrowHelper.ThrowIfInvalidBlockSize(block, 128, s_legalBlockSizesForBlockSize);
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.ThrowIfInvalidBlockSize(byte[], int, KeySizes[], string)"/> throws an
+    /// Verifies that <see cref="CryptographyThrowHelper.ThrowIfInvalidBlockSize(byte[], int, KeySizes[], string)"/> throws an
     /// <see cref="ArgumentNullException"/> when the block is <see langword="null"/>.
     /// </summary>
     [TestMethod]
@@ -32,12 +32,12 @@ public partial class CryptoHelpersTests
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            CryptoHelpers.ThrowIfInvalidBlockSize(null!, 128, s_legalBlockSizesForBlockSize);
+            CryptographyThrowHelper.ThrowIfInvalidBlockSize(null!, 128, s_legalBlockSizesForBlockSize);
         });
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.ThrowIfInvalidBlockSize(byte[], int, KeySizes[], string)"/> throws an
+    /// Verifies that <see cref="CryptographyThrowHelper.ThrowIfInvalidBlockSize(byte[], int, KeySizes[], string)"/> throws an
     /// <see cref="ArgumentNullException"/> when the legal-block-sizes array is <see langword="null"/>.
     /// </summary>
     [TestMethod]
@@ -45,12 +45,12 @@ public partial class CryptoHelpersTests
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            CryptoHelpers.ThrowIfInvalidBlockSize(new byte[16], 128, null!);
+            CryptographyThrowHelper.ThrowIfInvalidBlockSize(new byte[16], 128, null!);
         });
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.ThrowIfInvalidBlockSize(byte[], int, KeySizes[], string)"/> throws a
+    /// Verifies that <see cref="CryptographyThrowHelper.ThrowIfInvalidBlockSize(byte[], int, KeySizes[], string)"/> throws a
     /// <see cref="CryptographicException"/> when the block byte length does not match the expected block size in bits.
     /// </summary>
     /// <param name="actualBytes">The byte length of the supplied block.</param>
@@ -64,7 +64,7 @@ public partial class CryptoHelpersTests
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
-            CryptoHelpers.ThrowIfInvalidBlockSize(block, expectedBits, s_legalBlockSizesForBlockSize);
+            CryptographyThrowHelper.ThrowIfInvalidBlockSize(block, expectedBits, s_legalBlockSizesForBlockSize);
         });
     }
 }

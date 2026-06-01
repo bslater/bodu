@@ -127,7 +127,7 @@ public sealed class SivModeTransform
     {
         ThrowHelper.ThrowIfNull(s2vCipher);
         ThrowHelper.ThrowIfNull(ctrCipher);
-        CryptoHelpers.ThrowIfIvLengthInvalid(iv, s2vCipher.BlockSize);
+        CryptographyThrowHelper.ThrowIfIvLengthInvalid(iv, s2vCipher.BlockSize);
 
         if (s2vCipher.BlockSize != BlockSizeBits)
         {
@@ -158,7 +158,7 @@ public sealed class SivModeTransform
     {
         ThrowIfDisposed();
 
-        CryptoHelpers.ThrowIfAssociatedDataAlreadyProcessed(_aadProcessed);
+        CryptographyThrowHelper.ThrowIfAssociatedDataAlreadyProcessed(_aadProcessed);
 
         _aad = associatedData.ToArray();
         _aadProcessed = true;
@@ -171,7 +171,7 @@ public sealed class SivModeTransform
         ThrowIfCompleted();
 
         var required = plaintext.Length + (TagSizeBits / 8);
-        CryptoHelpers.ThrowIfOutputBufferTooSmall(output, required);
+        CryptographyThrowHelper.ThrowIfOutputBufferTooSmall(output, required);
 
         EnsureAadProcessed();
 
@@ -197,8 +197,8 @@ public sealed class SivModeTransform
         }
         finally
         {
-            CryptoHelpers.Clear(ctrSeed);
-            CryptoHelpers.Clear(siv);
+            CryptographyHelper.Clear(ctrSeed);
+            CryptographyHelper.Clear(siv);
             _completed = true;
         }
     }
@@ -209,10 +209,10 @@ public sealed class SivModeTransform
         ThrowIfDisposed();
         ThrowIfCompleted();
 
-        CryptoHelpers.ThrowIfCiphertextTooShort(ciphertextWithTag, TagSizeBits / 8);
+        CryptographyThrowHelper.ThrowIfCiphertextTooShort(ciphertextWithTag, TagSizeBits / 8);
 
         var plaintextLength = ciphertextWithTag.Length - (TagSizeBits / 8);
-        CryptoHelpers.ThrowIfOutputBufferTooSmall(output, plaintextLength);
+        CryptographyThrowHelper.ThrowIfOutputBufferTooSmall(output, plaintextLength);
 
         EnsureAadProcessed();
 
@@ -235,7 +235,7 @@ public sealed class SivModeTransform
             expectedSiv = S2V(_aad!, output[..plaintextLength]);
             if (!CryptographicOperations.FixedTimeEquals(expectedSiv, receivedSiv))
             {
-                CryptoHelpers.Clear(output[..plaintextLength]);
+                CryptographyHelper.Clear(output[..plaintextLength]);
                 throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_AuthenticationTagMismatch);
             }
 
@@ -243,8 +243,8 @@ public sealed class SivModeTransform
         }
         finally
         {
-            CryptoHelpers.Clear(expectedSiv);
-            CryptoHelpers.Clear(ctrSeed);
+            CryptographyHelper.Clear(expectedSiv);
+            CryptographyHelper.Clear(ctrSeed);
             _completed = true;
         }
     }
@@ -254,7 +254,7 @@ public sealed class SivModeTransform
     /// SIV transforms are single-use; create a fresh instance per message.
     /// </summary>
     private void ThrowIfCompleted() =>
-        CryptoHelpers.ThrowIfAlreadyCompleted(_completed);
+        CryptographyThrowHelper.ThrowIfAlreadyCompleted(_completed);
 
     /// <summary>
     /// Releases the resources used by this instance and clears retained associated-data state from memory.
@@ -283,7 +283,7 @@ public sealed class SivModeTransform
 
         if (disposing)
         {
-            CryptoHelpers.ClearAndNullify(ref _aad);
+            CryptographyHelper.ClearAndNullify(ref _aad);
             _aadProcessed = false;
         }
 
@@ -367,11 +367,11 @@ public sealed class SivModeTransform
         }
         finally
         {
-            CryptoHelpers.Clear(padded);
-            CryptoHelpers.Clear(t);
-            CryptoHelpers.Clear(mac);
-            CryptoHelpers.Clear(d);
-            CryptoHelpers.Clear(zeroBlock);
+            CryptographyHelper.Clear(padded);
+            CryptographyHelper.Clear(t);
+            CryptographyHelper.Clear(mac);
+            CryptographyHelper.Clear(d);
+            CryptographyHelper.Clear(zeroBlock);
         }
     }
 
@@ -423,7 +423,7 @@ public sealed class SivModeTransform
                 }
                 finally
                 {
-                    CryptoHelpers.Clear(block);
+                    CryptographyHelper.Clear(block);
                 }
             }
 
@@ -452,16 +452,16 @@ public sealed class SivModeTransform
         }
         catch
         {
-            CryptoHelpers.Clear(mac);
+            CryptographyHelper.Clear(mac);
             throw;
         }
         finally
         {
-            CryptoHelpers.Clear(lastBlock);
-            CryptoHelpers.Clear(k2);
-            CryptoHelpers.Clear(k1);
-            CryptoHelpers.Clear(l);
-            CryptoHelpers.Clear(zeroBlock);
+            CryptographyHelper.Clear(lastBlock);
+            CryptographyHelper.Clear(k2);
+            CryptographyHelper.Clear(k1);
+            CryptographyHelper.Clear(l);
+            CryptographyHelper.Clear(zeroBlock);
         }
     }
 
@@ -494,8 +494,8 @@ public sealed class SivModeTransform
         }
         finally
         {
-            CryptoHelpers.Clear(ks);
-            CryptoHelpers.Clear(ctr);
+            CryptographyHelper.Clear(ks);
+            CryptographyHelper.Clear(ctr);
         }
     }
 

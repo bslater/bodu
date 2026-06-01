@@ -593,7 +593,7 @@ public sealed class ParallelMerkleTreeHash
         // in _blockBuffer are cleared explicitly since the buffer is reused across calls.
         if (_bufferLength > 0)
         {
-            CryptoHelpers.Clear(_blockBuffer.AsSpan(_bufferLength, _blockSize - _bufferLength));
+            CryptographyHelper.Clear(_blockBuffer.AsSpan(_bufferLength, _blockSize - _bufferLength));
             SubmitLeaf(_blockBuffer, _blockSize);
             _bufferLength = 0;
         }
@@ -663,7 +663,7 @@ public sealed class ParallelMerkleTreeHash
     {
         using HashAlgorithm hasher = _algorithmFactory();
         var result = new byte[hasher.HashSize / 8];
-        CryptoHelpers.ThrowIfHashAlgorithmDestinationTooSmall(
+        CryptographyThrowHelper.ThrowIfHashAlgorithmDestinationTooSmall(
             hasher.TryComputeHash(data, result, out _));
         return result;
     }

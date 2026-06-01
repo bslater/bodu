@@ -11,17 +11,17 @@ namespace Bodu.Security.Cryptography;
 public partial class CryptoHelpersTests
 {
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.ThrowIfNotPositiveMultipleOf{T}(T, T, string)"/> does not
+    /// Verifies that <see cref="CryptographyThrowHelper.ThrowIfNotPositiveMultipleOf{T}(T, T, string)"/> does not
     /// throw when the value is a positive multiple of the divisor.
     /// </summary>
     [TestMethod]
     [DataRow(8, 8)]
     [DataRow(16, 8)]
     [DataRow(64, 32)]
-    public void ThrowIfNotPositiveMultipleOf_WhenValueIsValidMultiple_ShouldNotThrow(int value, int divisor) => CryptoHelpers.ThrowIfNotPositiveMultipleOf(value, divisor);
+    public void ThrowIfNotPositiveMultipleOf_WhenValueIsValidMultiple_ShouldNotThrow(int value, int divisor) => CryptographyThrowHelper.ThrowIfNotPositiveMultipleOf(value, divisor);
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.ThrowIfNotPositiveMultipleOf{T}(T, T, string)"/> throws a
+    /// Verifies that <see cref="CryptographyThrowHelper.ThrowIfNotPositiveMultipleOf{T}(T, T, string)"/> throws a
     /// <see cref="CryptographicException"/> when the value is not a multiple of the divisor.
     /// </summary>
     [TestMethod]
@@ -32,12 +32,12 @@ public partial class CryptoHelpersTests
     {
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
-            CryptoHelpers.ThrowIfNotPositiveMultipleOf(value, divisor);
+            CryptographyThrowHelper.ThrowIfNotPositiveMultipleOf(value, divisor);
         });
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.ThrowIfNotPositiveMultipleOf{T}(T, T, string)"/> throws a
+    /// Verifies that <see cref="CryptographyThrowHelper.ThrowIfNotPositiveMultipleOf{T}(T, T, string)"/> throws a
     /// <see cref="CryptographicException"/> when the value is zero or negative.
     /// </summary>
     [TestMethod]
@@ -48,12 +48,12 @@ public partial class CryptoHelpersTests
     {
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
-            CryptoHelpers.ThrowIfNotPositiveMultipleOf(value, 8);
+            CryptographyThrowHelper.ThrowIfNotPositiveMultipleOf(value, 8);
         });
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.ThrowIfNotPositiveMultipleOf{T}(T, T, string)"/> throws an
+    /// Verifies that <see cref="CryptographyThrowHelper.ThrowIfNotPositiveMultipleOf{T}(T, T, string)"/> throws an
     /// <see cref="ArgumentOutOfRangeException"/> when the divisor is zero or negative.
     /// </summary>
     [TestMethod]
@@ -63,7 +63,7 @@ public partial class CryptoHelpersTests
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            CryptoHelpers.ThrowIfNotPositiveMultipleOf(64, divisor);
+            CryptographyThrowHelper.ThrowIfNotPositiveMultipleOf(64, divisor);
         });
     }
 }

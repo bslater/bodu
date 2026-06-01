@@ -11,7 +11,7 @@ namespace Bodu.Security.Cryptography;
 public partial class CryptoHelpersTests
 {
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.TryDepadBlock" /> returns <c>true</c> for valid input input across modes.
+    /// Verifies that <see cref="CryptographyHelper.TryDepadBlock" /> returns <c>true</c> for valid input input across modes.
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(CryptoHelpersTests.ValidDepaddingCases))]
@@ -21,13 +21,13 @@ public partial class CryptoHelpersTests
         var input = Convert.FromHexString(inputHex);
         Span<byte> destination = new byte[input.Length];
 
-        var result = CryptoHelpers.TryDepadBlock(padding, input.Length * 8, input, destination, out var written);
+        var result = CryptographyHelper.TryDepadBlock(padding, input.Length * 8, input, destination, out var written);
 
         Assert.IsTrue(result);
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.TryDepadBlock" /> returns the correct uninput byte count for valid input.
+    /// Verifies that <see cref="CryptographyHelper.TryDepadBlock" /> returns the correct uninput byte count for valid input.
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(CryptoHelpersTests.ValidDepaddingCases))]
@@ -39,13 +39,13 @@ public partial class CryptoHelpersTests
         var expectedLength = expected.Length;
         Span<byte> destination = new byte[input.Length];
 
-        CryptoHelpers.TryDepadBlock(padding, input.Length * 8, input, destination, out var written);
+        CryptographyHelper.TryDepadBlock(padding, input.Length * 8, input, destination, out var written);
 
         Assert.AreEqual(expectedLength, written);
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.TryDepadBlock" /> returns the correct uninput content for valid input.
+    /// Verifies that <see cref="CryptographyHelper.TryDepadBlock" /> returns the correct uninput content for valid input.
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(CryptoHelpersTests.ValidDepaddingCases))]
@@ -57,13 +57,13 @@ public partial class CryptoHelpersTests
         var expectedLength = expected.Length;
         Span<byte> destination = new byte[input.Length];
 
-        CryptoHelpers.TryDepadBlock(padding, input.Length * 8, input, destination, out var written);
+        CryptographyHelper.TryDepadBlock(padding, input.Length * 8, input, destination, out var written);
 
         CollectionAssert.AreEqual(input.Take(expectedLength).ToArray(), destination.Slice(0, written).ToArray());
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.TryDepadBlock" /> returns <c>false</c> for invalid input input across supported modes.
+    /// Verifies that <see cref="CryptographyHelper.TryDepadBlock" /> returns <c>false</c> for invalid input input across supported modes.
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(CryptoHelpersTests.InvalidDepaddingCases))]
@@ -72,7 +72,7 @@ public partial class CryptoHelpersTests
         var input = Convert.FromHexString(inputHex);
         Span<byte> destination = new byte[input.Length];
 
-        var result = CryptoHelpers.TryDepadBlock(padding, blockSizeBytes * 8, input, destination, out var written);
+        var result = CryptographyHelper.TryDepadBlock(padding, blockSizeBytes * 8, input, destination, out var written);
 
         Assert.IsFalse(result);
         Assert.AreEqual(0, written);

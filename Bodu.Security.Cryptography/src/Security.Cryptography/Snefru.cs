@@ -79,7 +79,7 @@ public abstract partial class Snefru<T>
     protected Snefru(int hashSize)
         : base((64 - (hashSize >> 3)) * 8) // BlockSizeBits = 8 * (64 - outputBytes)
     {
-        CryptoHelpers.ThrowIfInvalidHashSize(hashSize, s_permittedHashSizes);
+        CryptographyThrowHelper.ThrowIfInvalidHashSize(hashSize, s_permittedHashSizes);
 
         // _state is zero-filled by `new`; Initialize re-clears it on every reset.
         _state = new uint[hashSize >> 5];
@@ -112,7 +112,7 @@ public abstract partial class Snefru<T>
     public override void Initialize()
     {
         base.Initialize();
-        CryptoHelpers.Clear(_state);
+        CryptographyHelper.Clear(_state);
     }
 
     /// <summary>
@@ -128,8 +128,8 @@ public abstract partial class Snefru<T>
 
         if (disposing)
         {
-            CryptoHelpers.Clear(_buffer);
-            CryptoHelpers.Clear(_state);
+            CryptographyHelper.Clear(_buffer);
+            CryptographyHelper.Clear(_state);
         }
 
         base.Dispose(disposing);

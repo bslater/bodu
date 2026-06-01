@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="CryptoHelpers.DisposeHelpers.cs" company="Bodu Pty. Ltd.">
+// <copyright file="CryptographyHelper.DisposeHelpers.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -10,7 +10,7 @@ using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
 
-internal static partial class CryptoHelpers
+internal static partial class CryptographyHelper
 {
     /// <summary>
     /// Securely zeroes the contents of a <see cref="Memory{T}" /> buffer using
@@ -149,7 +149,7 @@ internal static partial class CryptoHelpers
     /// </remarks>
     public static void ClearAndNullify(MemoryStream stream)
     {
-        ArraySegment<byte> segment = CryptoHelpers.GetBufferOrThrowIfInaccessible(stream);
+        ArraySegment<byte> segment = CryptographyHelper.GetBufferOrThrowIfInaccessible(stream);
 
         if (segment.Array is null)
         {

@@ -169,7 +169,7 @@ public abstract partial class SerpentBlockCipher
         for (var i = 0; i < w; i++)
             BinaryPrimitives.WriteUInt32LittleEndian(output.Slice(i * 4, 4), state[i]);
 
-        CryptoHelpers.Clear(state);
+        CryptographyHelper.Clear(state);
     }
 
     /// <inheritdoc />
@@ -222,7 +222,7 @@ public abstract partial class SerpentBlockCipher
         for (var i = 0; i < w; i++)
             BinaryPrimitives.WriteUInt32LittleEndian(output.Slice(i * 4, 4), state[i]);
 
-        CryptoHelpers.Clear(state);
+        CryptographyHelper.Clear(state);
     }
 
     /// <inheritdoc />
@@ -232,8 +232,8 @@ public abstract partial class SerpentBlockCipher
 
         // Round keys and tweak material are derived from secret inputs and are zeroed in both disposal
         // paths so they are not retained if the finalizer runs before an explicit Dispose call.
-        CryptoHelpers.Clear(_roundKeys);
-        CryptoHelpers.Clear(_tweakSchedule);
+        CryptographyHelper.Clear(_roundKeys);
+        CryptographyHelper.Clear(_tweakSchedule);
 
         base.Dispose(disposing);
     }
@@ -472,8 +472,8 @@ public abstract partial class SerpentBlockCipher
         }
         finally
         {
-            CryptoHelpers.Clear(prekeysArray);
-            CryptoHelpers.Clear(seed);
+            CryptographyHelper.Clear(prekeysArray);
+            CryptographyHelper.Clear(seed);
         }
     }
 }

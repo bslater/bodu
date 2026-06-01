@@ -9,7 +9,7 @@ namespace Bodu.Security.Cryptography;
 public partial class CryptoHelpersTests
 {
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.GetBufferOrThrowIfInaccessible(MemoryStream)"/> returns the underlying
+    /// Verifies that <see cref="CryptographyHelper.GetBufferOrThrowIfInaccessible(MemoryStream)"/> returns the underlying
     /// buffer segment when the <see cref="MemoryStream"/> was constructed in publicly visible mode.
     /// </summary>
     [TestMethod]
@@ -19,7 +19,7 @@ public partial class CryptoHelpersTests
         stream.WriteByte(0x01);
         stream.WriteByte(0x02);
 
-        ArraySegment<byte> segment = CryptoHelpers.GetBufferOrThrowIfInaccessible(stream);
+        ArraySegment<byte> segment = CryptographyHelper.GetBufferOrThrowIfInaccessible(stream);
 
         Assert.IsNotNull(segment.Array);
         Assert.AreEqual(2, segment.Count);
@@ -28,7 +28,7 @@ public partial class CryptoHelpersTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.GetBufferOrThrowIfInaccessible(MemoryStream)"/> returns a segment
+    /// Verifies that <see cref="CryptographyHelper.GetBufferOrThrowIfInaccessible(MemoryStream)"/> returns a segment
     /// with a zero count for an empty stream.
     /// </summary>
     [TestMethod]
@@ -36,13 +36,13 @@ public partial class CryptoHelpersTests
     {
         using var stream = new MemoryStream();
 
-        ArraySegment<byte> segment = CryptoHelpers.GetBufferOrThrowIfInaccessible(stream);
+        ArraySegment<byte> segment = CryptographyHelper.GetBufferOrThrowIfInaccessible(stream);
 
         Assert.AreEqual(0, segment.Count);
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.GetBufferOrThrowIfInaccessible(MemoryStream)"/> throws an
+    /// Verifies that <see cref="CryptographyHelper.GetBufferOrThrowIfInaccessible(MemoryStream)"/> throws an
     /// <see cref="InvalidOperationException"/> when the <see cref="MemoryStream"/> was constructed in a mode
     /// that suppresses buffer publication.
     /// </summary>
@@ -54,12 +54,12 @@ public partial class CryptoHelpersTests
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
-            _ = CryptoHelpers.GetBufferOrThrowIfInaccessible(stream);
+            _ = CryptographyHelper.GetBufferOrThrowIfInaccessible(stream);
         });
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.GetBufferOrThrowIfInaccessible(MemoryStream)"/> throws an
+    /// Verifies that <see cref="CryptographyHelper.GetBufferOrThrowIfInaccessible(MemoryStream)"/> throws an
     /// <see cref="ArgumentNullException"/> when the supplied stream is <see langword="null"/>.
     /// </summary>
     [TestMethod]
@@ -67,7 +67,7 @@ public partial class CryptoHelpersTests
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = CryptoHelpers.GetBufferOrThrowIfInaccessible(null!);
+            _ = CryptographyHelper.GetBufferOrThrowIfInaccessible(null!);
         });
     }
 }

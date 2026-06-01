@@ -122,7 +122,7 @@ public sealed class OcbModeTransform
     public OcbModeTransform(IBlockCipher cipher, byte[] iv, int tagSize = 128)
     {
         if (cipher is null) throw new ArgumentNullException(nameof(cipher));
-        CryptoHelpers.ThrowIfIvLengthInvalid(iv, cipher.BlockSize);
+        CryptographyThrowHelper.ThrowIfIvLengthInvalid(iv, cipher.BlockSize);
 
         if (cipher.BlockSize != BlockSizeBits)
         {
@@ -158,7 +158,7 @@ public sealed class OcbModeTransform
         }
         finally
         {
-            CryptoHelpers.Clear(zeroBlock);
+            CryptographyHelper.Clear(zeroBlock);
         }
 
         // L_$ = double(L_*).
@@ -181,7 +181,7 @@ public sealed class OcbModeTransform
     {
         ThrowIfDisposed();
 
-        CryptoHelpers.ThrowIfAssociatedDataAlreadyProcessed(_aadProcessed);
+        CryptographyThrowHelper.ThrowIfAssociatedDataAlreadyProcessed(_aadProcessed);
 
         _aad = associatedData.ToArray();
         _aadProcessed = true;
@@ -194,7 +194,7 @@ public sealed class OcbModeTransform
         ThrowIfCompleted();
 
         var required = plaintext.Length + _tagLen;
-        CryptoHelpers.ThrowIfOutputBufferTooSmall(output, required);
+        CryptographyThrowHelper.ThrowIfOutputBufferTooSmall(output, required);
 
         EnsureAadProcessed();
 
@@ -267,8 +267,8 @@ public sealed class OcbModeTransform
                     }
                     finally
                     {
-                        CryptoHelpers.Clear(padBlock);
-                        CryptoHelpers.Clear(pad);
+                        CryptographyHelper.Clear(padBlock);
+                        CryptographyHelper.Clear(pad);
                     }
                 }
             }
@@ -288,11 +288,11 @@ public sealed class OcbModeTransform
         }
         finally
         {
-            CryptoHelpers.Clear(hashResult);
-            CryptoHelpers.Clear(tagInput);
-            CryptoHelpers.Clear(block);
-            CryptoHelpers.Clear(checksum);
-            CryptoHelpers.Clear(offset);
+            CryptographyHelper.Clear(hashResult);
+            CryptographyHelper.Clear(tagInput);
+            CryptographyHelper.Clear(block);
+            CryptographyHelper.Clear(checksum);
+            CryptographyHelper.Clear(offset);
             _completed = true;
         }
     }
@@ -309,10 +309,10 @@ public sealed class OcbModeTransform
         ThrowIfDisposed();
         ThrowIfCompleted();
 
-        CryptoHelpers.ThrowIfCiphertextTooShort(ciphertextWithTag, _tagLen);
+        CryptographyThrowHelper.ThrowIfCiphertextTooShort(ciphertextWithTag, _tagLen);
 
         var plaintextLength = ciphertextWithTag.Length - _tagLen;
-        CryptoHelpers.ThrowIfOutputBufferTooSmall(output, plaintextLength);
+        CryptographyThrowHelper.ThrowIfOutputBufferTooSmall(output, plaintextLength);
 
         EnsureAadProcessed();
 
@@ -388,8 +388,8 @@ public sealed class OcbModeTransform
                     }
                     finally
                     {
-                        CryptoHelpers.Clear(padBlock);
-                        CryptoHelpers.Clear(pad);
+                        CryptographyHelper.Clear(padBlock);
+                        CryptographyHelper.Clear(pad);
                     }
                 }
             }
@@ -405,7 +405,7 @@ public sealed class OcbModeTransform
 
             if (!CryptographicOperations.FixedTimeEquals(tagInput.AsSpan(0, _tagLen), receivedTag))
             {
-                CryptoHelpers.Clear(output[..plaintextLength]);
+                CryptographyHelper.Clear(output[..plaintextLength]);
                 throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_AuthenticationTagMismatch);
             }
 
@@ -413,11 +413,11 @@ public sealed class OcbModeTransform
         }
         finally
         {
-            CryptoHelpers.Clear(hashResult);
-            CryptoHelpers.Clear(tagInput);
-            CryptoHelpers.Clear(block);
-            CryptoHelpers.Clear(checksum);
-            CryptoHelpers.Clear(offset);
+            CryptographyHelper.Clear(hashResult);
+            CryptographyHelper.Clear(tagInput);
+            CryptographyHelper.Clear(block);
+            CryptographyHelper.Clear(checksum);
+            CryptographyHelper.Clear(offset);
             _completed = true;
         }
     }
@@ -427,7 +427,7 @@ public sealed class OcbModeTransform
     /// OCB transforms are single-use; create a fresh instance per message.
     /// </summary>
     private void ThrowIfCompleted() =>
-        CryptoHelpers.ThrowIfAlreadyCompleted(_completed);
+        CryptographyThrowHelper.ThrowIfAlreadyCompleted(_completed);
 
     /// <summary>
     /// Releases the resources used by this instance and clears retained nonce, OCB offset constants, and
@@ -456,14 +456,14 @@ public sealed class OcbModeTransform
 
         if (disposing)
         {
-            CryptoHelpers.Clear(_nonce);
-            CryptoHelpers.Clear(_lStar);
-            CryptoHelpers.Clear(_lDollar);
+            CryptographyHelper.Clear(_nonce);
+            CryptographyHelper.Clear(_lStar);
+            CryptographyHelper.Clear(_lDollar);
 
             foreach (var value in _lArray)
-                CryptoHelpers.Clear(value);
+                CryptographyHelper.Clear(value);
 
-            CryptoHelpers.ClearAndNullify(ref _aad);
+            CryptographyHelper.ClearAndNullify(ref _aad);
 
             _aadProcessed = false;
         }
@@ -541,10 +541,10 @@ public sealed class OcbModeTransform
         }
         finally
         {
-            CryptoHelpers.Clear(stretch);
-            CryptoHelpers.Clear(ktop);
-            CryptoHelpers.Clear(ktopInput);
-            CryptoHelpers.Clear(nonceWord);
+            CryptographyHelper.Clear(stretch);
+            CryptographyHelper.Clear(ktop);
+            CryptographyHelper.Clear(ktopInput);
+            CryptographyHelper.Clear(nonceWord);
         }
     }
 
@@ -602,7 +602,7 @@ public sealed class OcbModeTransform
                     }
                     finally
                     {
-                        CryptoHelpers.Clear(padBlock);
+                        CryptographyHelper.Clear(padBlock);
                     }
                 }
             }
@@ -611,13 +611,13 @@ public sealed class OcbModeTransform
         }
         catch
         {
-            CryptoHelpers.Clear(sum);
+            CryptographyHelper.Clear(sum);
             throw;
         }
         finally
         {
-            CryptoHelpers.Clear(block);
-            CryptoHelpers.Clear(offsetHash);
+            CryptographyHelper.Clear(block);
+            CryptographyHelper.Clear(offsetHash);
         }
     }
 

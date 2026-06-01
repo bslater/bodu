@@ -466,10 +466,10 @@ public sealed class SkipjackBlockCipher
     {
         if (!_disposed)
         {
-            CryptoHelpers.Clear(_key0);
-            CryptoHelpers.Clear(_key1);
-            CryptoHelpers.Clear(_key2);
-            CryptoHelpers.Clear(_key3);
+            CryptographyHelper.Clear(_key0);
+            CryptographyHelper.Clear(_key1);
+            CryptographyHelper.Clear(_key2);
+            CryptographyHelper.Clear(_key3);
 
             _disposed = true;
         }

@@ -249,8 +249,8 @@ public abstract class BlockCipherTransform
 
         ThrowHelper.ThrowIfNull(inputBuffer);
         ThrowHelper.ThrowIfNull(outputBuffer);
-        CryptoHelpers.ThrowIfArrayOffsetOrCountInvalid(inputBuffer, inputOffset, inputCount);
-        CryptoHelpers.ThrowIfArrayOffsetOrCountInvalid(outputBuffer, outputOffset, inputCount);
+        CryptographyThrowHelper.ThrowIfArrayOffsetOrCountInvalid(inputBuffer, inputOffset, inputCount);
+        CryptographyThrowHelper.ThrowIfArrayOffsetOrCountInvalid(outputBuffer, outputOffset, inputCount);
 
         ReadOnlySpan<byte> input = inputBuffer.AsSpan(inputOffset, inputCount);
 
@@ -258,10 +258,10 @@ public abstract class BlockCipherTransform
         // call must return 0 rather than throw. CryptoStream and similar callers may invoke this
         // path with no buffered data after a flush. Divide BlockSize (bits) by 8 to obtain the
         // byte-length divisor expected by the span helper.
-        CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf<byte>(input, _cipher.BlockSize / 8, throwIfZero: false);
+        CryptographyThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf<byte>(input, _cipher.BlockSize / 8, throwIfZero: false);
         Span<byte> output = outputBuffer.AsSpan(outputOffset, inputCount);
-        CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf<byte>(output, _cipher.BlockSize / 8, throwIfZero: false);
-        CryptoHelpers.ThrowIfInvalidOverlap(input, output);
+        CryptographyThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf<byte>(output, _cipher.BlockSize / 8, throwIfZero: false);
+        CryptographyThrowHelper.ThrowIfInvalidOverlap(input, output);
 
         if (_encrypt)
             return _mode.Transform(input, output, true);
@@ -294,7 +294,7 @@ public abstract class BlockCipherTransform
         }
         finally
         {
-            CryptoHelpers.Clear(combined);
+            CryptographyHelper.Clear(combined);
         }
     }
 
@@ -322,7 +322,7 @@ public abstract class BlockCipherTransform
         ThrowIfFinalized();
 
         ThrowHelper.ThrowIfNull(inputBuffer);
-        CryptoHelpers.ThrowIfArrayOffsetOrCountInvalid(inputBuffer, inputOffset, inputCount);
+        CryptographyThrowHelper.ThrowIfArrayOffsetOrCountInvalid(inputBuffer, inputOffset, inputCount);
 
         ReadOnlySpan<byte> input = inputBuffer.AsSpan(inputOffset, inputCount);
 
@@ -347,7 +347,7 @@ public abstract class BlockCipherTransform
                 }
                 finally
                 {
-                    CryptoHelpers.Clear(padded);
+                    CryptographyHelper.Clear(padded);
                 }
             }
             else
@@ -357,7 +357,7 @@ public abstract class BlockCipherTransform
                 // as a CryptographicException with a recognizable message rather than crashing
                 // deeper in the mode transform.
                 var combined = Combine(_deferredInput, input);
-                CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf<byte>(
+                CryptographyThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf<byte>(
                     combined,
                     _cipher.BlockSize / 8,
                     throwIfZero: false);
@@ -371,8 +371,8 @@ public abstract class BlockCipherTransform
                 }
                 finally
                 {
-                    CryptoHelpers.Clear(combined);
-                    CryptoHelpers.Clear(decrypted);
+                    CryptographyHelper.Clear(combined);
+                    CryptographyHelper.Clear(decrypted);
                 }
             }
         }
@@ -437,5 +437,5 @@ public abstract class BlockCipherTransform
     /// Zeroes and clears any deferred ciphertext block retained for padded decryption.
     /// </summary>
     private void ClearDeferredInput() =>
-        CryptoHelpers.ClearAndNullify(ref _deferredInput);
+        CryptographyHelper.ClearAndNullify(ref _deferredInput);
 }

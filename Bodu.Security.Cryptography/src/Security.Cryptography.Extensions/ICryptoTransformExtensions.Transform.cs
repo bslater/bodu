@@ -222,7 +222,7 @@ public static partial class ICryptoTransformExtensions
         cryptoStream.Write(input);
         cryptoStream.FlushFinalBlock();
 
-        ArraySegment<byte> segment = CryptoHelpers.GetBufferOrThrowIfInaccessible(ms);
+        ArraySegment<byte> segment = CryptographyHelper.GetBufferOrThrowIfInaccessible(ms);
         segment.AsSpan().CopyTo(destination);
         return segment.Count;
     }

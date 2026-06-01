@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RngBiasContractTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -52,7 +52,7 @@ public sealed class RngBiasContractTests
     public void GenerateKeyIvNonceTweak_AcrossAllAlgorithms_ShouldNotCallNonZeroRng()
     {
         Assembly assembly = typeof(SymmetricStreamAlgorithm).Assembly;
-        Type helpersType = assembly.GetType("Bodu.Security.Cryptography.CryptoHelpers", throwOnError: true, ignoreCase: false)!;
+        Type helpersType = assembly.GetType("Bodu.Security.Cryptography.CryptographyHelper", throwOnError: true, ignoreCase: false)!;
 
         var forbiddenTokens = new HashSet<int>();
         foreach (MethodInfo m in helpersType.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
@@ -61,7 +61,7 @@ public sealed class RngBiasContractTests
                 forbiddenTokens.Add(m.MetadataToken);
         }
 
-        Assert.IsTrue(forbiddenTokens.Count > 0, "Expected CryptoHelpers to expose at least one non-zero RNG helper.");
+        Assert.IsTrue(forbiddenTokens.Count > 0, "Expected CryptographyHelper to expose at least one non-zero RNG helper.");
 
         var violations = new List<string>();
 

@@ -227,7 +227,7 @@ public abstract class KeyedBlockHashAlgorithm<T>
 
         if (disposing)
         {
-            CryptoHelpers.ClearAndNullify(ref KeyValue);
+            CryptographyHelper.ClearAndNullify(ref KeyValue);
         }
 
         base.Dispose(disposing);

@@ -198,8 +198,8 @@ public sealed class Serpent128
     public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[]? rgbIV)
     {
         ThrowIfDisposed();
-        CryptoHelpers.ThrowIfInvalidKeySize(rgbKey, KeySize, LegalKeySizes);
-        CryptoHelpers.ThrowIfInvalidIVForMode(rgbIV, BlockMode, BlockSize, LegalBlockSizes);
+        CryptographyThrowHelper.ThrowIfInvalidKeySize(rgbKey, KeySize, LegalKeySizes);
+        CryptographyThrowHelper.ThrowIfInvalidIVForMode(rgbIV, BlockMode, BlockSize, LegalBlockSizes);
 
         IBlockCipher engine = new Serpent128Cipher(rgbKey);
         return new Serpent128Transform(engine, BlockMode, BlockPadding, rgbIV!, false);
@@ -209,8 +209,8 @@ public sealed class Serpent128
     public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[]? rgbIV)
     {
         ThrowIfDisposed();
-        CryptoHelpers.ThrowIfInvalidKeySize(rgbKey, KeySize, LegalKeySizes);
-        CryptoHelpers.ThrowIfInvalidIVForMode(rgbIV, BlockMode, BlockSize, LegalBlockSizes);
+        CryptographyThrowHelper.ThrowIfInvalidKeySize(rgbKey, KeySize, LegalKeySizes);
+        CryptographyThrowHelper.ThrowIfInvalidIVForMode(rgbIV, BlockMode, BlockSize, LegalBlockSizes);
 
         IBlockCipher engine = new Serpent128Cipher(rgbKey);
         return new Serpent128Transform(engine, BlockMode, BlockPadding, rgbIV!, true);
@@ -220,14 +220,14 @@ public sealed class Serpent128
     public override void GenerateIV()
     {
         ThrowIfDisposed();
-        IVValue = CryptoHelpers.GetRandomBytes(BlockSizeBits / 8);
+        IVValue = CryptographyHelper.GetRandomBytes(BlockSizeBits / 8);
     }
 
     /// <inheritdoc />
     public override void GenerateKey()
     {
         ThrowIfDisposed();
-        KeyValue = CryptoHelpers.GetRandomBytes(KeySizeValue / 8);
+        KeyValue = CryptographyHelper.GetRandomBytes(KeySizeValue / 8);
     }
 
     /// <inheritdoc />
@@ -237,8 +237,8 @@ public sealed class Serpent128
         {
             if (disposing)
             {
-                if (KeyValue is not null) CryptoHelpers.Clear(KeyValue);
-                if (IVValue is not null) CryptoHelpers.Clear(IVValue);
+                if (KeyValue is not null) CryptographyHelper.Clear(KeyValue);
+                if (IVValue is not null) CryptographyHelper.Clear(IVValue);
             }
 
             _disposed = true;

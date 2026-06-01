@@ -9,7 +9,7 @@ namespace Bodu.Security.Cryptography;
 public partial class CryptoHelpersTests
 {
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.FillWithRandomBytesExcluding" /> returns a value that differs from the baseline.
+    /// Verifies that <see cref="CryptographyHelper.FillWithRandomBytesExcluding" /> returns a value that differs from the baseline.
     /// </summary>
     [TestMethod]
     public void FillWithRandomBytesExcluding_ShouldNeverContainExcludedValue()
@@ -19,7 +19,7 @@ public partial class CryptoHelpersTests
         for (var attempt = 0; attempt < 100; attempt++)
         {
             var buffer = new byte[1024];
-            CryptoHelpers.FillWithRandomBytesExcluding(forbidden, buffer.AsSpan());
+            CryptographyHelper.FillWithRandomBytesExcluding(forbidden, buffer.AsSpan());
 
             for (var i = 0; i < buffer.Length; i++)
             {
@@ -29,7 +29,7 @@ public partial class CryptoHelpersTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.FillWithRandomBytesExcluding" /> returns <see langword="true" />.
+    /// Verifies that <see cref="CryptographyHelper.FillWithRandomBytesExcluding" /> returns <see langword="true" />.
     /// </summary>
     [TestMethod]
     public void FillWithRandomBytesExcluding_ShouldNotLeaveTempBufferOnHeap()
@@ -42,8 +42,8 @@ public partial class CryptoHelpersTests
         var first = new byte[32];
         var second = new byte[32];
 
-        CryptoHelpers.FillWithRandomBytesExcluding(0x00, first.AsSpan());
-        CryptoHelpers.FillWithRandomBytesExcluding(0x00, second.AsSpan());
+        CryptographyHelper.FillWithRandomBytesExcluding(0x00, first.AsSpan());
+        CryptographyHelper.FillWithRandomBytesExcluding(0x00, second.AsSpan());
 
         var identical = true;
         for (var i = 0; i < first.Length; i++)
@@ -59,7 +59,7 @@ public partial class CryptoHelpersTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.FillWithRandomBytesExcluding" />, with HighForbiddenFrequency, returns a value that differs from the baseline.
+    /// Verifies that <see cref="CryptographyHelper.FillWithRandomBytesExcluding" />, with HighForbiddenFrequency, returns a value that differs from the baseline.
     /// </summary>
     [TestMethod]
     public void FillWithRandomBytesExcluding_WithHighForbiddenFrequency_ShouldTerminate()
@@ -72,7 +72,7 @@ public partial class CryptoHelpersTests
             for (var i = 0; i < 1000; i++)
             {
                 var buffer = new byte[2];
-                CryptoHelpers.FillWithRandomBytesExcluding(0x00, buffer.AsSpan());
+                CryptographyHelper.FillWithRandomBytesExcluding(0x00, buffer.AsSpan());
 
                 Assert.AreNotEqual((byte)0, buffer[0]);
                 Assert.AreNotEqual((byte)0, buffer[1]);
@@ -83,25 +83,25 @@ public partial class CryptoHelpersTests
         Assert.IsTrue(completed, "FillWithRandomBytesExcluding should terminate in bounded time.");
     }
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.FillWithRandomNonZeroBytes" /> throws ArgumentNullException when the buffer is null.
+    /// Verifies that <see cref="CryptographyHelper.FillWithRandomNonZeroBytes" /> throws ArgumentNullException when the buffer is null.
     /// </summary>
     [TestMethod]
-    public void FillWithRandomNonZeroBytes_WhenBufferIsNull_ShouldThrowExactly() => Assert.ThrowsExactly<ArgumentNullException>(() => CryptoHelpers.FillWithRandomNonZeroBytes(null!));
+    public void FillWithRandomNonZeroBytes_WhenBufferIsNull_ShouldThrowExactly() => Assert.ThrowsExactly<ArgumentNullException>(() => CryptographyHelper.FillWithRandomNonZeroBytes(null!));
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.FillWithRandomNonZeroBytes" /> throws ArgumentException when the buffer is empty.
+    /// Verifies that <see cref="CryptographyHelper.FillWithRandomNonZeroBytes" /> throws ArgumentException when the buffer is empty.
     /// </summary>
     [TestMethod]
-    public void FillWithRandomNonZeroBytes_WhenBufferIsEmpty_ShouldThrowExactly() => Assert.ThrowsExactly<ArgumentException>(() => CryptoHelpers.FillWithRandomNonZeroBytes(Array.Empty<byte>()));
+    public void FillWithRandomNonZeroBytes_WhenBufferIsEmpty_ShouldThrowExactly() => Assert.ThrowsExactly<ArgumentException>(() => CryptographyHelper.FillWithRandomNonZeroBytes(Array.Empty<byte>()));
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.FillWithRandomNonZeroBytes" /> fills the buffer with only non-zero values.
+    /// Verifies that <see cref="CryptographyHelper.FillWithRandomNonZeroBytes" /> fills the buffer with only non-zero values.
     /// </summary>
     [TestMethod]
     public void FillWithRandomNonZeroBytes_WhenBufferHasLength_ShouldContainNoZeroBytes()
     {
         var buffer = new byte[32];
-        CryptoHelpers.FillWithRandomNonZeroBytes(buffer);
+        CryptographyHelper.FillWithRandomNonZeroBytes(buffer);
         CollectionAssert.DoesNotContain(buffer, (byte)0);
     }
 
@@ -112,7 +112,7 @@ public partial class CryptoHelpersTests
     public void FillWithRandomNonZeroBytesSpan_WhenCalled_ShouldContainNoZeroBytes()
     {
         Span<byte> span = stackalloc byte[32];
-        CryptoHelpers.FillWithRandomNonZeroBytes(span);
+        CryptographyHelper.FillWithRandomNonZeroBytes(span);
         foreach (var b in span)
         {
             Assert.AreNotEqual(0, b);

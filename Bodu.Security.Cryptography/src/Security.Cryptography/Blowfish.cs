@@ -246,8 +246,8 @@ public sealed class Blowfish
     public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[]? rgbIV)
     {
         ThrowIfDisposed();
-        CryptoHelpers.ThrowIfInvalidKeySize(rgbKey, KeySizeValue, LegalKeySizes);
-        CryptoHelpers.ThrowIfInvalidIVForMode(rgbIV, BlockMode, BlockSizeValue, LegalBlockSizes);
+        CryptographyThrowHelper.ThrowIfInvalidKeySize(rgbKey, KeySizeValue, LegalKeySizes);
+        CryptographyThrowHelper.ThrowIfInvalidIVForMode(rgbIV, BlockMode, BlockSizeValue, LegalBlockSizes);
 
         IBlockCipher engine = CreateCipher(rgbKey);
         return new BlowfishTransform(engine, BlockMode, BlockPadding, rgbIV, false);
@@ -278,8 +278,8 @@ public sealed class Blowfish
     public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[]? rgbIV)
     {
         ThrowIfDisposed();
-        CryptoHelpers.ThrowIfInvalidKeySize(rgbKey, KeySizeValue, LegalKeySizes);
-        CryptoHelpers.ThrowIfInvalidIVForMode(rgbIV, BlockMode, BlockSizeValue, LegalBlockSizes);
+        CryptographyThrowHelper.ThrowIfInvalidKeySize(rgbKey, KeySizeValue, LegalKeySizes);
+        CryptographyThrowHelper.ThrowIfInvalidIVForMode(rgbIV, BlockMode, BlockSizeValue, LegalBlockSizes);
 
         IBlockCipher engine = CreateCipher(rgbKey);
         return new BlowfishTransform(engine, BlockMode, BlockPadding, rgbIV, true);
@@ -305,7 +305,7 @@ public sealed class Blowfish
     public override void GenerateIV()
     {
         ThrowIfDisposed();
-        IVValue = CryptoHelpers.GetRandomBytes(BlockSizeValue / 8);
+        IVValue = CryptographyHelper.GetRandomBytes(BlockSizeValue / 8);
     }
 
     /// <summary>
@@ -324,7 +324,7 @@ public sealed class Blowfish
     public override void GenerateKey()
     {
         ThrowIfDisposed();
-        KeyValue = CryptoHelpers.GetRandomBytes(KeySizeValue / 8);
+        KeyValue = CryptographyHelper.GetRandomBytes(KeySizeValue / 8);
     }
 
     /// <summary>
@@ -346,8 +346,8 @@ public sealed class Blowfish
             if (disposing)
             {
                 // Zero sensitive key material and IV buffers so their contents do not linger in managed memory after disposal.
-                CryptoHelpers.Clear(Key);
-                CryptoHelpers.Clear(IVValue);
+                CryptographyHelper.Clear(Key);
+                CryptographyHelper.Clear(IVValue);
             }
 
             _disposed = true;

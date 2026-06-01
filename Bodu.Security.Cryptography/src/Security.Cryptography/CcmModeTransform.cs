@@ -126,7 +126,7 @@ public sealed class CcmModeTransform
     public CcmModeTransform(IBlockCipher cipher, byte[] iv)
     {
         ThrowHelper.ThrowIfNull(cipher);
-        CryptoHelpers.ThrowIfIvLengthInvalid(iv, cipher.BlockSize);
+        CryptographyThrowHelper.ThrowIfIvLengthInvalid(iv, cipher.BlockSize);
         _cipher = cipher;
 
         _nonce = new byte[NonceSizeBits / 8];
@@ -142,7 +142,7 @@ public sealed class CcmModeTransform
     {
         ThrowIfDisposed();
 
-        CryptoHelpers.ThrowIfAssociatedDataAlreadyProcessed(_aadProcessed);
+        CryptographyThrowHelper.ThrowIfAssociatedDataAlreadyProcessed(_aadProcessed);
 
         _aad = associatedData.ToArray();
         _aadProcessed = true;
@@ -155,7 +155,7 @@ public sealed class CcmModeTransform
         ThrowIfCompleted();
 
         var required = plaintext.Length + (TagSizeBits / 8);
-        CryptoHelpers.ThrowIfOutputBufferTooSmall(output, required);
+        CryptographyThrowHelper.ThrowIfOutputBufferTooSmall(output, required);
 
         EnsureAadProcessed();
 
@@ -180,10 +180,10 @@ public sealed class CcmModeTransform
         ThrowIfDisposed();
         ThrowIfCompleted();
 
-        CryptoHelpers.ThrowIfCiphertextTooShort(ciphertextWithTag, TagSizeBits / 8);
+        CryptographyThrowHelper.ThrowIfCiphertextTooShort(ciphertextWithTag, TagSizeBits / 8);
 
         var plaintextLength = ciphertextWithTag.Length - (TagSizeBits / 8);
-        CryptoHelpers.ThrowIfOutputBufferTooSmall(output, plaintextLength);
+        CryptographyThrowHelper.ThrowIfOutputBufferTooSmall(output, plaintextLength);
 
         EnsureAadProcessed();
 
@@ -223,7 +223,7 @@ public sealed class CcmModeTransform
     /// CCM transforms are single-use; create a fresh instance per message.
     /// </summary>
     private void ThrowIfCompleted() =>
-        CryptoHelpers.ThrowIfAlreadyCompleted(_completed);
+        CryptographyThrowHelper.ThrowIfAlreadyCompleted(_completed);
 
     /// <summary>
     /// Releases the resources used by this instance.
@@ -239,8 +239,8 @@ public sealed class CcmModeTransform
 
         if (disposing)
         {
-            CryptoHelpers.Clear(_nonce);
-            CryptoHelpers.ClearAndNullify(ref _aad);
+            CryptographyHelper.Clear(_nonce);
+            CryptographyHelper.ClearAndNullify(ref _aad);
 
             _aadProcessed = false;
         }

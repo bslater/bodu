@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SymmetricStreamAlgorithmTests.Key.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -79,7 +79,7 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
     {
         using TAlgorithm cipher = CreateAlgorithm();
         var key = new byte[KeyLengthBytes];
-        CryptoHelpers.FillWithRandomNonZeroBytes(key);
+        CryptographyHelper.FillWithRandomNonZeroBytes(key);
 
         cipher.Key = key;
 
@@ -95,7 +95,7 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
     {
         using TAlgorithm cipher = CreateAlgorithm();
         var key = new byte[KeyLengthBytes];
-        CryptoHelpers.FillWithRandomNonZeroBytes(key);
+        CryptographyHelper.FillWithRandomNonZeroBytes(key);
 
         cipher.Key = key;
 

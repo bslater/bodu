@@ -9,7 +9,7 @@ namespace Bodu.Security.Cryptography;
 public partial class CryptoHelpersTests
 {
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.ClearAndNullify(MemoryStream)" /> zeroes the underlying buffer,
+    /// Verifies that <see cref="CryptographyHelper.ClearAndNullify(MemoryStream)" /> zeroes the underlying buffer,
     /// resets the length to zero, and disposes the stream.
     /// </summary>
     [TestMethod]
@@ -23,7 +23,7 @@ public partial class CryptoHelpersTests
         Assert.IsTrue(stream.TryGetBuffer(out ArraySegment<byte> originalSegment));
         var bufferReference = originalSegment.Array!;
 
-        CryptoHelpers.ClearAndNullify(stream);
+        CryptographyHelper.ClearAndNullify(stream);
 
         for (var i = 0; i < bufferReference.Length; i++)
             Assert.AreEqual((byte)0, bufferReference[i], $"Buffer index {i} was not cleared.");
@@ -35,7 +35,7 @@ public partial class CryptoHelpersTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.ClearAndNullify(MemoryStream)" /> throws
+    /// Verifies that <see cref="CryptographyHelper.ClearAndNullify(MemoryStream)" /> throws
     /// <see cref="ArgumentNullException" /> when the stream is <see langword="null" />.
     /// </summary>
     [TestMethod]
@@ -43,12 +43,12 @@ public partial class CryptoHelpersTests
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            CryptoHelpers.ClearAndNullify((MemoryStream)null!);
+            CryptographyHelper.ClearAndNullify((MemoryStream)null!);
         });
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.ClearAndNullify(MemoryStream)" /> throws
+    /// Verifies that <see cref="CryptographyHelper.ClearAndNullify(MemoryStream)" /> throws
     /// <see cref="InvalidOperationException" /> when the stream does not expose its underlying buffer
     /// (a non-publicly-visible <see cref="MemoryStream" />).
     /// </summary>
@@ -61,18 +61,18 @@ public partial class CryptoHelpersTests
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
-            CryptoHelpers.ClearAndNullify(stream);
+            CryptographyHelper.ClearAndNullify(stream);
         });
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.Clear{T}(T[])" /> is a no-op when the array reference is
+    /// Verifies that <see cref="CryptographyHelper.Clear{T}(T[])" /> is a no-op when the array reference is
     /// <see langword="null" />.
     /// </summary>
     [TestMethod]
     public void Clear_Array_WhenNull_ShouldNotThrow()
     {
         int[]? array = null;
-        CryptoHelpers.Clear(array!);
+        CryptographyHelper.Clear(array!);
     }
 }

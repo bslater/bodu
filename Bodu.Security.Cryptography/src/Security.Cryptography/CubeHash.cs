@@ -170,7 +170,7 @@ public sealed class CubeHash
     /// </exception>
     public CubeHash(int hashSize)
     {
-        CryptoHelpers.ThrowIfInvalidHashSize(hashSize, s_permittedHashSizes);
+        CryptographyThrowHelper.ThrowIfInvalidHashSize(hashSize, s_permittedHashSizes);
         _state = new uint[32];
         _initializedState = new uint[32];
         HashSizeValue = hashSize;
@@ -225,7 +225,7 @@ public sealed class CubeHash
         ThrowHelper.ThrowIfOutOfRange(rounds, MinRounds, MaxRounds);
         ThrowHelper.ThrowIfOutOfRange(transformBlockSize, MinInputBlockSize, MaxInputBlockSize);
         ThrowHelper.ThrowIfOutOfRange(finalizationRounds, MinRounds, MaxRounds);
-        CryptoHelpers.ThrowIfInvalidHashSize(hashSize, s_permittedHashSizes);
+        CryptographyThrowHelper.ThrowIfInvalidHashSize(hashSize, s_permittedHashSizes);
         _state = new uint[32];
         _initializedState = new uint[32];
         HashSizeValue = hashSize;
@@ -348,7 +348,7 @@ public sealed class CubeHash
         {
             ThrowIfDisposed();
             ThrowIfInvalidState();
-            CryptoHelpers.ThrowIfInvalidHashSize(value, s_permittedHashSizes);
+            CryptographyThrowHelper.ThrowIfInvalidHashSize(value, s_permittedHashSizes);
             HashSizeValue = value;
             _isInitializedStateCached = false;
         }
@@ -485,8 +485,8 @@ public sealed class CubeHash
         {
             if (_state is not null)
             {
-                CryptoHelpers.ClearAndNullify(ref _state!);
-                CryptoHelpers.ClearAndNullify(ref _initializedState!);
+                CryptographyHelper.ClearAndNullify(ref _state!);
+                CryptographyHelper.ClearAndNullify(ref _initializedState!);
                 _isInitializedStateCached = false;
             }
 
@@ -498,7 +498,7 @@ public sealed class CubeHash
 
             // CubeHash extends HashAlgorithm directly (not BufferedBlockHashAlgorithm),
             // so the centralized HashValue / HashSizeValue clearing in the latter does not apply here.
-            CryptoHelpers.ClearAndNullify(ref HashValue);
+            CryptographyHelper.ClearAndNullify(ref HashValue);
             HashSizeValue = 0;
         }
 
@@ -646,7 +646,7 @@ public sealed class CubeHash
             return;
 
         // Zero and seed the state with algorithm parameters, then apply initialization rounds
-        CryptoHelpers.Clear(_state);
+        CryptographyHelper.Clear(_state);
         _state[0] = (uint)(HashSizeValue / 8);
         _state[1] = (uint)_inputBlockSizeBytes;
         _state[2] = (uint)_rounds;

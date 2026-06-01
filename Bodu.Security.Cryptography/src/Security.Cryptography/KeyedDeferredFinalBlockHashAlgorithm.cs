@@ -204,7 +204,7 @@ public abstract class KeyedDeferredFinalBlockHashAlgorithm<T>
     {
         if (disposing)
         {
-            CryptoHelpers.ClearAndNullify(ref KeyValue);
+            CryptographyHelper.ClearAndNullify(ref KeyValue);
         }
 
         base.Dispose(disposing);

@@ -56,7 +56,7 @@ public sealed class Iso7816_4Padding
     /// </exception>
     public byte[] Pad(ReadOnlySpan<byte> input, int blockSize)
     {
-        CryptoHelpers.ThrowIfNotPositiveMultipleOf(blockSize, 8);
+        CryptographyThrowHelper.ThrowIfNotPositiveMultipleOf(blockSize, 8);
 
         var size = blockSize / 8;
         var paddingLength = size - (input.Length % size);
@@ -87,12 +87,12 @@ public sealed class Iso7816_4Padding
     /// <exception cref="CryptographicException">Thrown if the padding terminator is missing or malformed.</exception>
     public byte[] Unpad(ReadOnlySpan<byte> input, int blockSize)
     {
-        CryptoHelpers.ThrowIfNotPositiveMultipleOf(blockSize, 8);
+        CryptographyThrowHelper.ThrowIfNotPositiveMultipleOf(blockSize, 8);
 
         var size = blockSize / 8;
 
         if (input.Length == 0 || input.Length % size != 0)
-            CryptoHelpers.ThrowInvalidPaddedSequence("ISO/IEC 7816-4", nameof(input));
+            CryptographyHelper.ThrowInvalidPaddedSequence("ISO/IEC 7816-4", nameof(input));
 
         var length = input.Length;
         var start = length - size;
@@ -132,7 +132,7 @@ public sealed class Iso7816_4Padding
         }
 
         if (terminatorSeen == 0 || valid == 0)
-            CryptoHelpers.ThrowInvalidPadding("ISO/IEC 7816-4");
+            CryptographyHelper.ThrowInvalidPadding("ISO/IEC 7816-4");
 
         return input[..terminatorIndex].ToArray();
     }

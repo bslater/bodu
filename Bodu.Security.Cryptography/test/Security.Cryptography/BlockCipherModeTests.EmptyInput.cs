@@ -64,7 +64,7 @@ public abstract partial class BlockCipherModeTests<TMode>
 
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0x00);
         var iv = UsesInitializationVector
-            ? CryptoHelpers.GetRandomNonZeroBytes(ExpectedBlockSize)
+            ? CryptographyHelper.GetRandomNonZeroBytes(ExpectedBlockSize)
             : new byte[ExpectedBlockSize];
         TMode transform = CreateTransform(cipher, iv);
 

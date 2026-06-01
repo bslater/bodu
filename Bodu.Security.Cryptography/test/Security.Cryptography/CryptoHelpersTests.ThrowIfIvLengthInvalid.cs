@@ -9,18 +9,18 @@ namespace Bodu.Security.Cryptography;
 public partial class CryptoHelpersTests
 {
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.ThrowIfIvLengthInvalid(byte[], int, string)"/> does not throw when
+    /// Verifies that <see cref="CryptographyThrowHelper.ThrowIfIvLengthInvalid(byte[], int, string)"/> does not throw when
     /// the IV byte length matches the expected block size in bits.
     /// </summary>
     [TestMethod]
     public void ThrowIfIvLengthInvalid_WhenLengthMatches_ShouldNotThrow()
     {
         var iv = new byte[16];
-        CryptoHelpers.ThrowIfIvLengthInvalid(iv, 128);
+        CryptographyThrowHelper.ThrowIfIvLengthInvalid(iv, 128);
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.ThrowIfIvLengthInvalid(byte[], int, string)"/> throws an
+    /// Verifies that <see cref="CryptographyThrowHelper.ThrowIfIvLengthInvalid(byte[], int, string)"/> throws an
     /// <see cref="ArgumentNullException"/> when the IV is <see langword="null"/>.
     /// </summary>
     [TestMethod]
@@ -28,12 +28,12 @@ public partial class CryptoHelpersTests
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            CryptoHelpers.ThrowIfIvLengthInvalid(null!, 128);
+            CryptographyThrowHelper.ThrowIfIvLengthInvalid(null!, 128);
         });
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.ThrowIfIvLengthInvalid(byte[], int, string)"/> throws an
+    /// Verifies that <see cref="CryptographyThrowHelper.ThrowIfIvLengthInvalid(byte[], int, string)"/> throws an
     /// <see cref="ArgumentException"/> when the IV byte length does not match the expected block size in bits.
     /// </summary>
     /// <param name="actualBytes">The byte length of the supplied IV.</param>
@@ -47,7 +47,7 @@ public partial class CryptoHelpersTests
 
         ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
-            CryptoHelpers.ThrowIfIvLengthInvalid(iv, expectedBits);
+            CryptographyThrowHelper.ThrowIfIvLengthInvalid(iv, expectedBits);
         });
 
         Assert.AreEqual("iv", ex.ParamName);

@@ -302,9 +302,9 @@ public sealed class CamelliaBlockCipher
     {
         if (!_disposed)
         {
-            CryptoHelpers.Clear(_kw);
-            CryptoHelpers.Clear(_k);
-            CryptoHelpers.Clear(_ke);
+            CryptographyHelper.Clear(_kw);
+            CryptographyHelper.Clear(_k);
+            CryptographyHelper.Clear(_ke);
 
             _disposed = true;
         }

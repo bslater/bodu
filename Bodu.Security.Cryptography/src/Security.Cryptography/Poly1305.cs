@@ -209,10 +209,10 @@ public sealed class Poly1305
 
         if (disposing)
         {
-            CryptoHelpers.Clear(_acc);
-            CryptoHelpers.Clear(_r);
-            CryptoHelpers.Clear(_key);
-            CryptoHelpers.Clear(_s);
+            CryptographyHelper.Clear(_acc);
+            CryptographyHelper.Clear(_r);
+            CryptographyHelper.Clear(_key);
+            CryptographyHelper.Clear(_s);
         }
 
         base.Dispose(disposing);
@@ -345,15 +345,15 @@ public sealed class Poly1305
         // framework's automatic re-initialization at the end of ComputeHash does not trip the
         // key-set check in Initialize.
         if (KeyValue is not null)
-            CryptoHelpers.Clear(KeyValue);
+            CryptographyHelper.Clear(KeyValue);
 
         // Zero the derived key schedule and accumulator before returning so the tag-producing secret
         // material is not observable in memory between ProcessFinalBlock and the framework's automatic
         // re-initialization at the end of ComputeHash. Dispose still clears these as defence in depth.
-        CryptoHelpers.Clear(_r);
-        CryptoHelpers.Clear(_s);
-        CryptoHelpers.Clear(_key);
-        CryptoHelpers.Clear(_acc);
+        CryptographyHelper.Clear(_r);
+        CryptographyHelper.Clear(_s);
+        CryptographyHelper.Clear(_key);
+        CryptographyHelper.Clear(_acc);
 
         return tag.ToArray();
     }
@@ -376,7 +376,7 @@ public sealed class Poly1305
         // Reset accumulator so the next computation starts clean — correct whether this
         // hook runs in response to an explicit Key assignment, from Initialize, or from
         // the constructor's default-key setup.
-        CryptoHelpers.Clear(_acc);
+        CryptographyHelper.Clear(_acc);
 
         // OnKeyChanged is only invoked by the Key setter and Initialize, both of which guarantee
         // KeyValue is non-null and of the expected length before this point.

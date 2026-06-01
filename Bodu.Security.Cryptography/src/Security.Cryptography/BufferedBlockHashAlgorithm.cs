@@ -243,8 +243,8 @@ public abstract class BufferedBlockHashAlgorithm<T>
 
         if (disposing)
         {
-            CryptoHelpers.Clear(_residualBlock);
-            CryptoHelpers.ClearAndNullify(ref HashValue);
+            CryptographyHelper.Clear(_residualBlock);
+            CryptographyHelper.ClearAndNullify(ref HashValue);
             _residualBytes = 0;
             _totalBytes = 0UL;
             HashSizeValue = 0;
@@ -303,7 +303,7 @@ public abstract class BufferedBlockHashAlgorithm<T>
     {
         ThrowHelper.ThrowIfNull(array);
         ThrowIfDisposed();
-        CryptoHelpers.ThrowIfArrayOffsetOrCountInvalid(array, ibStart, cbSize);
+        CryptographyThrowHelper.ThrowIfArrayOffsetOrCountInvalid(array, ibStart, cbSize);
 
 #if !NET6_0_OR_GREATER
         if (_finalized)

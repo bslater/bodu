@@ -11,7 +11,7 @@ namespace Bodu.Security.Cryptography;
 public partial class CryptoHelpersTests
 {
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.ThrowIfHashAlgorithmProducedNoValue(byte[])"/> returns the supplied
+    /// Verifies that <see cref="CryptographyThrowHelper.ThrowIfHashAlgorithmProducedNoValue(byte[])"/> returns the supplied
     /// hash unchanged when the value is non-<see langword="null"/>.
     /// </summary>
     [TestMethod]
@@ -19,13 +19,13 @@ public partial class CryptoHelpersTests
     {
         var hash = new byte[] { 0x01, 0x02, 0x03 };
 
-        var result = CryptoHelpers.ThrowIfHashAlgorithmProducedNoValue(hash);
+        var result = CryptographyThrowHelper.ThrowIfHashAlgorithmProducedNoValue(hash);
 
         Assert.AreSame(hash, result);
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.ThrowIfHashAlgorithmProducedNoValue(byte[])"/> returns the supplied
+    /// Verifies that <see cref="CryptographyThrowHelper.ThrowIfHashAlgorithmProducedNoValue(byte[])"/> returns the supplied
     /// empty array unchanged when the value is non-<see langword="null"/>.
     /// </summary>
     [TestMethod]
@@ -33,13 +33,13 @@ public partial class CryptoHelpersTests
     {
         var hash = Array.Empty<byte>();
 
-        var result = CryptoHelpers.ThrowIfHashAlgorithmProducedNoValue(hash);
+        var result = CryptographyThrowHelper.ThrowIfHashAlgorithmProducedNoValue(hash);
 
         Assert.AreSame(hash, result);
     }
 
     /// <summary>
-    /// Verifies that <see cref="CryptoHelpers.ThrowIfHashAlgorithmProducedNoValue(byte[])"/> throws a
+    /// Verifies that <see cref="CryptographyThrowHelper.ThrowIfHashAlgorithmProducedNoValue(byte[])"/> throws a
     /// <see cref="CryptographicException"/> when the supplied hash is <see langword="null"/>.
     /// </summary>
     [TestMethod]
@@ -47,7 +47,7 @@ public partial class CryptoHelpersTests
     {
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
-            _ = CryptoHelpers.ThrowIfHashAlgorithmProducedNoValue(null);
+            _ = CryptographyThrowHelper.ThrowIfHashAlgorithmProducedNoValue(null);
         });
     }
 }

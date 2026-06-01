@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="CryptoHelpers.ThrowHelper.CallerExpression.cs" company="Bodu Pty. Ltd.">
+// <copyright file="CryptographyThrowHelper.ThrowHelper.CallerExpression.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -14,7 +14,7 @@ namespace Bodu.Security.Cryptography;
 [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1117:Parameters should be on same line or separate lines", Justification = "The [CallerArgumentExpression] parameter shares a line with the preceding parameter to keep the logical parameter grouping compact and to mirror the netstandard sibling file.")]
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0011:Add braces", Justification = "Single-statement throw guards are intentionally brace-free to maintain density; these are pure guard-clause helpers that do not benefit from braces.")]
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1001:Add braces (when expression spans over multiple lines)", Justification = "Single-statement throw guards are intentionally brace-free to maintain density; these are pure guard-clause helpers that do not benefit from braces.")]
-internal static partial class CryptoHelpers
+internal static partial class CryptographyThrowHelper
 {
     /// <summary>
     /// Throws an <see cref="InvalidOperationException" /> if associated data has already been processed.
@@ -46,6 +46,47 @@ internal static partial class CryptoHelpers
     {
         if (!alreadyProcessed)
             throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_AssociatedDataNotProcessed);
+    }
+
+    /// <summary>
+    /// Throws a <see cref="CryptographicException" /> if <paramref name="input" /> and <paramref name="output" />
+    /// partially overlap in memory.
+    /// </summary>
+    /// <param name="input">The input span being read by the transform.</param>
+    /// <param name="output">The output span being written by the transform.</param>
+    /// <param name="allowExactInPlace">
+    /// When <see langword="true" /> (the default) the spans may alias exactly — same start address and same length — so
+    /// that the caller can perform an in-place transform with a single buffer. When <see langword="false" />, any
+    /// overlap (including exact aliasing) is rejected.
+    /// </param>
+    /// <exception cref="CryptographicException">
+    /// The spans overlap in a way that is not safe for forward byte-by-byte processing: either a partial overlap, or
+    /// exact aliasing when <paramref name="allowExactInPlace" /> is <see langword="false" />.
+    /// </exception>
+    /// <remarks>
+    /// <para>
+    /// Cryptographic transforms read input sequentially and write output sequentially. Exact in-place aliasing is safe
+    /// for stream and block ciphers because each output byte is computed and written before the next input byte is
+    /// read. Partial overlap, however, lets a write into not-yet-read input clobber the keystream / chaining input,
+    /// producing a silently corrupted result.
+    /// </para>
+    /// <para>
+    /// The check is short-circuited when either span is empty: zero-length operations cannot overlap meaningfully.
+    /// </para>
+    /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static void ThrowIfInvalidOverlap(ReadOnlySpan<byte> input, Span<byte> output, bool allowExactInPlace = true)
+    {
+        if (input.IsEmpty || output.IsEmpty)
+            return;
+
+        if (!input.Overlaps(output, out var elementOffset))
+            return;
+
+        if (allowExactInPlace && elementOffset == 0 && input.Length == output.Length)
+            return;
+
+        throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_PartialBufferOverlap);
     }
 
     /// <summary>
@@ -290,7 +331,7 @@ internal static partial class CryptoHelpers
                 string.Format(
                     CryptoResourceStrings.Crypt_Invalid_IVSize,
                     iv.Length * 8,
-                    CryptoHelpers.FormatLegalSizes(legalBlockSizes)));
+                    CryptographyHelper.FormatLegalSizes(legalBlockSizes)));
     }
 
     /// <summary>
@@ -347,7 +388,7 @@ internal static partial class CryptoHelpers
                 string.Format(
                     CryptoResourceStrings.Crypt_Invalid_KeySize,
                     keyBits,
-                    CryptoHelpers.FormatLegalSizes(legalKeySizes)),
+                    CryptographyHelper.FormatLegalSizes(legalKeySizes)),
                 paramKeyName);
     }
 
@@ -402,7 +443,7 @@ internal static partial class CryptoHelpers
                 string.Format(
                     CryptoResourceStrings.Crypt_Invalid_TweakSize,
                     tweak.Length * 8,
-                    CryptoHelpers.FormatLegalSizes(legalTweakSizes)),
+                    CryptographyHelper.FormatLegalSizes(legalTweakSizes)),
                 paramTweakName);
     }
 
@@ -432,7 +473,7 @@ internal static partial class CryptoHelpers
                 string.Format(
                     CryptoResourceStrings.Crypt_Invalid_BlockSize,
                     value.Length * 8,
-                    CryptoHelpers.FormatLegalSizes(legalBlockSizes)),
+                    CryptographyHelper.FormatLegalSizes(legalBlockSizes)),
                 paramValueName);
     }
 

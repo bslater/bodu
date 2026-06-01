@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BlockCipherModeTransformOverlapTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -10,7 +10,7 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// End-to-end wire-up tests confirming that every <see cref="IBlockCipherModeTransform" /> implementation invokes
-/// <see cref="CryptoHelpers.ThrowIfInvalidOverlap" /> and rejects partial input/output overlap. The detailed
+/// <see cref="CryptographyThrowHelper.ThrowIfInvalidOverlap" /> and rejects partial input/output overlap. The detailed
 /// helper semantics are covered separately in <c>CryptoHelpersTests.ThrowIfInvalidOverlap</c>.
 /// </summary>
 [TestClass]

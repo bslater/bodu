@@ -100,7 +100,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
         {
             blockSize = initial.InputBlockSize;
             input = new byte[Math.Max(blockSize * 2, 8)];
-            CryptoHelpers.FillWithRandomNonZeroBytes(input);
+            CryptographyHelper.FillWithRandomNonZeroBytes(input);
         }
 
         byte[] expected;

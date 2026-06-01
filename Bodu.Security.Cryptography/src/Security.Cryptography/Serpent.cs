@@ -106,9 +106,9 @@ public abstract class Serpent
     public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[]? rgbIV, byte[] tweak)
     {
         ThrowIfDisposed();
-        CryptoHelpers.ThrowIfInvalidKeySize(rgbKey, KeySize, LegalKeySizes);
-        CryptoHelpers.ThrowIfInvalidIVForMode(rgbIV, BlockMode, BlockSize, LegalBlockSizes);
-        CryptoHelpers.ThrowIfInvalidTweakSize(tweak, TweakSize, LegalTweakSizes);
+        CryptographyThrowHelper.ThrowIfInvalidKeySize(rgbKey, KeySize, LegalKeySizes);
+        CryptographyThrowHelper.ThrowIfInvalidIVForMode(rgbIV, BlockMode, BlockSize, LegalBlockSizes);
+        CryptographyThrowHelper.ThrowIfInvalidTweakSize(tweak, TweakSize, LegalTweakSizes);
 
         IBlockCipher engine = CreateCipher(rgbKey, tweak);
         return new SerpentTransform(engine, BlockMode, Padding, rgbIV, false);
@@ -118,9 +118,9 @@ public abstract class Serpent
     public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[]? rgbIV, byte[] tweak)
     {
         ThrowIfDisposed();
-        CryptoHelpers.ThrowIfInvalidKeySize(rgbKey, KeySize, LegalKeySizes);
-        CryptoHelpers.ThrowIfInvalidIVForMode(rgbIV, BlockMode, BlockSize, LegalBlockSizes);
-        CryptoHelpers.ThrowIfInvalidTweakSize(tweak, TweakSize, LegalTweakSizes);
+        CryptographyThrowHelper.ThrowIfInvalidKeySize(rgbKey, KeySize, LegalKeySizes);
+        CryptographyThrowHelper.ThrowIfInvalidIVForMode(rgbIV, BlockMode, BlockSize, LegalBlockSizes);
+        CryptographyThrowHelper.ThrowIfInvalidTweakSize(tweak, TweakSize, LegalTweakSizes);
 
         IBlockCipher engine = CreateCipher(rgbKey, tweak);
         return new SerpentTransform(engine, BlockMode, Padding, rgbIV, true);
@@ -130,21 +130,21 @@ public abstract class Serpent
     public override void GenerateIV()
     {
         ThrowIfDisposed();
-        IVValue = CryptoHelpers.GetRandomBytes(BlockSizeBytes);
+        IVValue = CryptographyHelper.GetRandomBytes(BlockSizeBytes);
     }
 
     /// <inheritdoc />
     public override void GenerateKey()
     {
         ThrowIfDisposed();
-        KeyValue = CryptoHelpers.GetRandomBytes(KeySizeBytes);
+        KeyValue = CryptographyHelper.GetRandomBytes(KeySizeBytes);
     }
 
     /// <inheritdoc />
     public override void GenerateTweak()
     {
         ThrowIfDisposed();
-        TweakValue = CryptoHelpers.GetRandomBytes(_defaultTweakSizeBytes);
+        TweakValue = CryptographyHelper.GetRandomBytes(_defaultTweakSizeBytes);
     }
 
     /// <inheritdoc />
@@ -158,8 +158,8 @@ public abstract class Serpent
         {
             if (disposing)
             {
-                CryptoHelpers.Clear(KeyValue);
-                CryptoHelpers.Clear(IVValue);
+                CryptographyHelper.Clear(KeyValue);
+                CryptographyHelper.Clear(IVValue);
             }
 
             _disposed = true;
