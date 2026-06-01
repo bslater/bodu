@@ -171,7 +171,7 @@ rate. To preserve provenance, call the dated provider directly.
 `Money<T>.Convert<TTarget>(decimal)` is the lowest-level conversion
 (supply the rate, it rounds to the destination minor-unit precision).
 When the rate comes from a dated provider and provenance matters,
-prefer the extension methods on `Money<T>` and `MoneyValue`. They
+prefer the extension methods on `Money<T>` and `Money`. They
 resolve the rate, apply it, and return either the converted amount
 (`ConvertTo`) or the full audit record (`ConvertToWithRate`):
 
@@ -188,7 +188,7 @@ audited.ExchangeRate.Rate.Provider;  // "ECB"
 audited.ExchangeRate.OffsetDays;     // 1
 ```
 
-`MoneyValue` has analogous `ConvertTo` and `ConvertToWithRate`
+`Money` has analogous `ConvertTo` and `ConvertToWithRate`
 extension methods for runtime-tagged amounts. For bags, see
 `MoneyBag.ConvertToWithAudit<TTarget>(...)`, which returns one
 `MoneyBagConversionLine` per source currency alongside the total.
@@ -202,7 +202,7 @@ extension methods for runtime-tagged amounts. For bags, see
 | Primary feed plus fallbacks | `CompositeDatedExchangeRateProvider` over multiple dated providers |
 | Reporting period that pins one date everywhere | `DatedExchangeRateProviderAdapter` over the period-end date |
 | Ledger entry that records the rate provenance | `Money<T>.ConvertToWithRate<,>(provider, date, options)` returning `MoneyConversionResult<,>` |
-| Runtime-tagged amount via a dated provider | `MoneyValueExchangeRateExtensions.ConvertToWithRate(...)` |
+| Runtime-tagged amount via a dated provider | `MoneyExchangeRateExtensions.ConvertToWithRate(...)` |
 | Aggregate-then-convert a bag with per-line provenance | `MoneyBag.ConvertToWithAudit<TTarget>(provider, date, options)` |
 
 ## See also

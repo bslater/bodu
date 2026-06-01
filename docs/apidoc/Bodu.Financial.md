@@ -6,7 +6,7 @@ uid: Bodu.Financial
 
 ## Purpose
 
-**Bodu.Financial** is the monetary-primitives package: type-safe money (`Money<TCurrency>`), runtime-tagged money (`MoneyValue`), multi-currency portfolios (`MoneyBag`), a shipped catalogue of ~185 ISO 4217 currencies, an exchange-rate provider stack with both timeless and dated lookup, and JSON converters with strict / lenient / compact policy shapes.
+**Bodu.Financial** is the monetary-primitives package: type-safe money (`Money<TCurrency>`), runtime-tagged money (`Money`), multi-currency portfolios (`MoneyBag`), a shipped catalogue of ~185 ISO 4217 currencies, an exchange-rate provider stack with both timeless and dated lookup, and JSON converters with strict / lenient / compact policy shapes.
 
 Reach for this library when you need monetary arithmetic that the compiler validates — adding USD to JPY should fail the build, not run with the wrong unit — and when you need audit-grade FX conversion that records which date, which provider, and which fallback policy produced a given rate.
 
@@ -21,7 +21,7 @@ Reach for this library when you need monetary arithmetic that the compiler valid
 **Monetary value types**
 
 - <xref:Bodu.Financial.Money`1> — immutable, value-equatable monetary amount whose currency is encoded as the type parameter. Cross-currency arithmetic is a compile error. Provides arithmetic, allocation, conversion, formatting/parsing, cash rounding, minor-unit interop, and `Fraction<BigInteger>` interop.
-- <xref:Bodu.Financial.MoneyValue> — runtime-tagged sister type with the same surface, where the currency is an ISO 4217 string. Cross-currency arithmetic throws `InvalidOperationException` at runtime. Use for deserialisation and generic invoicing.
+- <xref:Bodu.Financial.Money> — runtime-tagged sister type with the same surface, where the currency is an ISO 4217 string. Cross-currency arithmetic throws `InvalidOperationException` at runtime. Use for deserialisation and generic invoicing.
 - <xref:Bodu.Financial.MoneyBag> — immutable mixed-currency portfolio. Aggregates per-ISO balances, prunes zero balances, enumerates in lexicographic ISO order.
 
 **Currency catalogue and registry**

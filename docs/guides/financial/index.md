@@ -21,7 +21,7 @@ hand off to `Fraction<BigInteger>` for exact-arithmetic chains via
   immutable monetary amount whose currency is encoded at the type
   level via an `ICurrency` tag, so cross-currency arithmetic fails
   the build rather than running with the wrong unit at runtime.
-- **[`MoneyValue`](xref:Bodu.Financial.MoneyValue)** — the
+- **[`Money`](xref:Bodu.Financial.Money)** — the
   runtime-tagged sister type for "currency unknown until
   deserialisation" scenarios.
 - **[`MoneyBag`](xref:Bodu.Financial.MoneyBag)** — immutable
@@ -53,7 +53,7 @@ hand off to `Fraction<BigInteger>` for exact-arithmetic chains via
 ## See also
 
 - [`Money<TCurrency>` API reference](xref:Bodu.Financial.Money`1)
-- [`MoneyValue` API reference](xref:Bodu.Financial.MoneyValue)
+- [`Money` API reference](xref:Bodu.Financial.Money)
 - [`MoneyBag` API reference](xref:Bodu.Financial.MoneyBag)
 - [`CurrencyRegistry`](xref:Bodu.Financial.CurrencyRegistry)
 - [`IExchangeRateProvider`](xref:Bodu.Financial.IExchangeRateProvider)

@@ -14,11 +14,11 @@ A **currency tag** is a sealed class in `Bodu.Financial.Currencies` (one per ISO
 
 Tags use C# 11 static-abstract members, so metadata is accessed through the type itself (`USD.IsoCode`, `USD.MinorUnits`) and through `TCurrency.IsoCode` from generic code constrained by `where TCurrency : ICurrency`. `IsoCode` and `MinorUnits` are required; `CashRoundingIncrement`, `IsHistoric`, `DemonetizedOn`, and `SuccessorIsoCode` are `static virtual` with sensible defaults so existing custom tags compile unchanged.
 
-## `Money<TCurrency>` vs. `MoneyValue`
+## `Money<TCurrency>` vs. `Money`
 
 <xref:Bodu.Financial.Money`1> is **compile-time-typed**: the currency is the type parameter. `Money<USD>` and `Money<JPY>` are distinct types, and adding them is a compile error. Use it whenever the currency is known at the call site.
 
-<xref:Bodu.Financial.MoneyValue> is **runtime-tagged**: it carries the currency as an ISO 4217 string. Cross-currency arithmetic surfaces as <xref:System.InvalidOperationException> at runtime rather than at build time. Use it when the currency is data — deserialised payloads, generic invoicing engines, configuration-driven accounting — and convert to typed money with `MoneyValue.ToTyped<T>()` or `TryToTyped` at the boundary where the currency becomes known.
+<xref:Bodu.Financial.Money> is **runtime-tagged**: it carries the currency as an ISO 4217 string. Cross-currency arithmetic surfaces as <xref:System.InvalidOperationException> at runtime rather than at build time. Use it when the currency is data — deserialised payloads, generic invoicing engines, configuration-driven accounting — and convert to typed money with `Money.As<T>()` or `TryAs` at the boundary where the currency becomes known.
 
 Both types are immutable, value-equatable readonly structs and both round on construction.
 
@@ -92,7 +92,7 @@ Tag types are source-generated from `currencies.json` and registered with <xref:
 
 ## `CurrencyRegistry`
 
-<xref:Bodu.Financial.CurrencyRegistry> is the thread-safe runtime table over <xref:Bodu.Financial.CurrencyInfo> records — the runtime-shape counterpart of an `ICurrency` tag. It backs <xref:Bodu.Financial.MoneyValue> rounding and <xref:Bodu.Financial.MoneyBag> conversions, both of which only know the ISO code at runtime.
+<xref:Bodu.Financial.CurrencyRegistry> is the thread-safe runtime table over <xref:Bodu.Financial.CurrencyInfo> records — the runtime-shape counterpart of an `ICurrency` tag. It backs <xref:Bodu.Financial.Money> rounding and <xref:Bodu.Financial.MoneyBag> conversions, both of which only know the ISO code at runtime.
 
 Custom or future currencies (e.g. cryptocurrencies, in-game tokens, regional vouchers) are registered via `CurrencyRegistry.Register(CurrencyInfo)` or `TryRegister`. Custom entries layer on top of the shipped catalogue and take precedence on conflict, so consumers can override shipped metadata in pinch.
 
@@ -144,11 +144,11 @@ More elaborate cross-provider policies (such as preferring an exact-date hit fro
 
 ## `MoneyConversionResult<TSource, TTarget>`
 
-<xref:Bodu.Financial.MoneyConversionResult`2> is the audit record returned by the `ConvertTo<TTarget>(IDatedExchangeRateProvider, …)` extension methods on `Money<T>`, `MoneyValue`, and `MoneyBag`. It bundles the original source amount, the rounded target amount, and the full <xref:Bodu.Financial.ExchangeRateLookupResult> that produced it — so the consumer sees both the answer and the provenance of the rate in a single value, without a second lookup.
+<xref:Bodu.Financial.MoneyConversionResult`2> is the audit record returned by the `ConvertTo<TTarget>(IDatedExchangeRateProvider, …)` extension methods on `Money<T>`, `Money`, and `MoneyBag`. It bundles the original source amount, the rounded target amount, and the full <xref:Bodu.Financial.ExchangeRateLookupResult> that produced it — so the consumer sees both the answer and the provenance of the rate in a single value, without a second lookup.
 
 ## `MoneyBag`
 
-<xref:Bodu.Financial.MoneyBag> is an immutable mixed-currency portfolio — a snapshot of balances across multiple ISO codes. Mutators return new instances; zero balances are pruned automatically on every operation; enumeration yields one <xref:Bodu.Financial.MoneyValue> per non-zero currency in lexicographic ISO order, so iteration is stable and reproducible across runs.
+<xref:Bodu.Financial.MoneyBag> is an immutable mixed-currency portfolio — a snapshot of balances across multiple ISO codes. Mutators return new instances; zero balances are pruned automatically on every operation; enumeration yields one <xref:Bodu.Financial.Money> per non-zero currency in lexicographic ISO order, so iteration is stable and reproducible across runs.
 
 The bag is the type that models the **aggregate-then-convert** pattern: accumulate per-currency balances during a batch, then convert the entire bag to a single target currency once at the boundary via `MoneyBag.ConvertTo<TTarget>(IExchangeRateProvider)` or its dated counterpart. Compared to converting each amount on the way in, aggregate-then-convert needs one FX lookup per source currency instead of one per posting.
 
