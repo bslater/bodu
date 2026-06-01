@@ -105,6 +105,9 @@
   <data name="Arg_Invalid_ProviderNullOrWhiteSpace" xml:space="preserve">
     <value>Provider identifier must not be empty or white-space.</value>
   </data>
+  <data name="Arg_Invalid_RateSeriesAddRangeConflict" xml:space="preserve">
+    <value>Cannot add observation for {0:yyyy-MM-dd}: a rate already exists for that date.</value>
+  </data>
   <data name="Arg_Invalid_RateSeriesDuplicateDate" xml:space="preserve">
     <value>Series contains duplicate date {0:yyyy-MM-dd}.</value>
   </data>
@@ -149,6 +152,9 @@
   </data>
   <data name="IO_KeyNotFound_ExchangeRate" xml:space="preserve">
     <value>No exchange rate available for {0} → {1}.</value>
+  </data>
+  <data name="IO_KeyNotFound_RateObservationDate" xml:space="preserve">
+    <value>No exchange-rate observation exists on {0:yyyy-MM-dd}.</value>
   </data>
   <data name="Json_Invalid_AmountMustBeNumber" xml:space="preserve">
     <value>The 'amount' property must be a number.</value>
@@ -278,6 +284,9 @@
   </data>
   <data name="Op_Invalid_RateNotStrictlyPositive" xml:space="preserve">
     <value>Exchange rate for {0} → {1} must be strictly positive; rate provider returned {2}.</value>
+  </data>
+  <data name="Op_Invalid_RateSeriesBuilderEmpty" xml:space="preserve">
+    <value>Cannot create an immutable series snapshot from an empty builder.</value>
   </data>
   <data name="Op_Invalid_UnableToCreateConverter" xml:space="preserve">
     <value>Unable to create a JSON converter for '{0}'.</value>

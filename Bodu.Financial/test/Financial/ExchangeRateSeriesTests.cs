@@ -70,7 +70,7 @@ public partial class ExchangeRateSeriesTests
         ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(
             () =>
             {
-                _ = new ExchangeRateSeries(s_usdAud, "RBA", null!);
+                _ = new ExchangeRateSeries(s_usdAud, "RBA", (IEnumerable<(DateOnly, decimal)>)null!);
             },
             "rates");
     }
@@ -99,7 +99,7 @@ public partial class ExchangeRateSeriesTests
         ExceptionAssert.ThrowsExactlyWithParamName<ArgumentException>(
             () =>
             {
-                _ = new ExchangeRateSeries(s_usdAud, "RBA", []);
+                _ = new ExchangeRateSeries(s_usdAud, "RBA", (IEnumerable<(DateOnly, decimal)>)[]);
             },
             "rates");
     }

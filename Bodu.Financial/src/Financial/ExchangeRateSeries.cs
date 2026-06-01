@@ -1,11 +1,10 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateSeries.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Diagnostics;
-using System.Globalization;
 using System.Runtime.CompilerServices;
 
 namespace Bodu.Financial;
@@ -17,33 +16,30 @@ namespace Bodu.Financial;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The collection is immutable after construction. Internally it stores observations as two parallel sorted arrays — a
-/// <see cref="DateOnly" /> array of observation dates and a <see cref="decimal" /> array of rates — so that the binary
-/// search at lookup time touches only the compact (4 bytes per element) date array. Compared with
+/// The collection is immutable after construction. Internally it stores observations in a shared
+/// <see cref="ExchangeRateSeriesStorage" /> backed by two parallel sorted arrays — an <see cref="int" /> array
+/// of day numbers (<see cref="DateOnly.DayNumber" />) and a <see cref="decimal" /> array of rates — so that the
+/// binary search at lookup time touches only the compact date array. Compared with
 /// <see cref="System.Collections.Generic.SortedDictionary{TKey, TValue}" /> this gives substantially better cache
 /// locality, no per-node allocation, and predictable hot-path performance for the multi-year daily series typical of FX
 /// data.
 /// </para>
 /// <para>
 /// Instances are safe to share across threads after construction because all read paths only touch read-only arrays.
+/// Use <see cref="ExchangeRateSeriesBuilder" /> to construct or edit observations imperatively before producing a
+/// snapshot via <see cref="ExchangeRateSeriesBuilder.ToSeries" />.
 /// </para>
 /// </remarks>
 [DebuggerDisplay("{Pair.FromIsoCode,nq}/{Pair.ToIsoCode,nq} ({Provider,nq}) Count={Count}")]
 public sealed class ExchangeRateSeries
 {
     /// <summary>
-    /// The observation dates in strictly ascending order. Index <c>i</c> corresponds to <see cref="_rates" /> at the
-    /// same index.
+    /// The shared immutable storage holding the validated, sorted, unique day-number / rate arrays.
     /// </summary>
-    private readonly DateOnly[] _dates;
+    private readonly ExchangeRateSeriesStorage _storage;
 
     /// <summary>
-    /// The observed rates aligned positionally with <see cref="_dates" />. Every entry is strictly positive.
-    /// </summary>
-    private readonly decimal[] _rates;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ExchangeRateSeries" /> class.
+    /// Initializes a new instance of the <see cref="ExchangeRateSeries" /> class from a sequence of date/rate tuples.
     /// </summary>
     /// <param name="pair">The currency pair this series describes.</param>
     /// <param name="provider">The non-empty identifier of the publishing source.</param>
@@ -70,46 +66,53 @@ public sealed class ExchangeRateSeries
 
         Pair = pair;
         Provider = provider;
+        _storage = ExchangeRateSeriesStorage.Create(rates, nameof(rates));
+    }
 
-        List<(DateOnly Date, decimal Rate)> buffer = new(rates);
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ExchangeRateSeries" /> class from a sequence of
+    /// <see cref="ExchangeRateObservation" /> records.
+    /// </summary>
+    /// <param name="pair">The currency pair this series describes.</param>
+    /// <param name="provider">The non-empty identifier of the publishing source.</param>
+    /// <param name="observations">
+    /// The observations to include. Must contain at least one entry and must not contain duplicate dates.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown if <paramref name="provider" /> or <paramref name="observations" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown if <paramref name="provider" /> is empty or white-space, if <paramref name="observations" /> is empty,
+    /// or if it contains duplicate dates.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown if any rate in <paramref name="observations" /> is zero or negative.
+    /// </exception>
+    public ExchangeRateSeries(
+        ExchangeRatePair pair,
+        string provider,
+        IEnumerable<ExchangeRateObservation> observations)
+    {
+        FinancialThrowHelper.ThrowIfNullOrWhiteSpaceProvider(provider);
+        ThrowHelper.ThrowIfNull(observations);
 
-        if (buffer.Count == 0)
-            throw new ArgumentException(FinancialResourceStrings.Arg_Invalid_RateSeriesEmpty, nameof(rates));
+        Pair = pair;
+        Provider = provider;
+        _storage = ExchangeRateSeriesStorage.Create(observations, nameof(observations));
+    }
 
-        for (var i = 0; i < buffer.Count; i++)
-        {
-            if (buffer[i].Rate <= 0m)
-            {
-                throw new ArgumentOutOfRangeException(
-                    nameof(rates),
-                    buffer[i].Rate,
-                    FinancialResourceStrings.Arg_OutOfRange_RateNotPositive);
-            }
-        }
-
-        buffer.Sort(static (a, b) => a.Date.CompareTo(b.Date));
-
-        for (var i = 1; i < buffer.Count; i++)
-        {
-            if (buffer[i].Date == buffer[i - 1].Date)
-            {
-                throw new ArgumentException(
-                    string.Format(
-                        CultureInfo.InvariantCulture,
-                        FinancialResourceStrings.Arg_Invalid_RateSeriesDuplicateDate,
-                        buffer[i].Date),
-                    nameof(rates));
-            }
-        }
-
-        _dates = new DateOnly[buffer.Count];
-        _rates = new decimal[buffer.Count];
-
-        for (var i = 0; i < buffer.Count; i++)
-        {
-            _dates[i] = buffer[i].Date;
-            _rates[i] = buffer[i].Rate;
-        }
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ExchangeRateSeries" /> class from pre-validated storage. Used by
+    /// the builder snapshot path to avoid revalidation.
+    /// </summary>
+    /// <param name="pair">The currency pair this series describes.</param>
+    /// <param name="provider">The non-empty identifier of the publishing source.</param>
+    /// <param name="storage">The storage instance the new series should adopt.</param>
+    internal ExchangeRateSeries(ExchangeRatePair pair, string provider, ExchangeRateSeriesStorage storage)
+    {
+        Pair = pair;
+        Provider = provider;
+        _storage = storage;
     }
 
     /// <summary>
@@ -128,7 +131,7 @@ public sealed class ExchangeRateSeries
     /// Gets the number of observations stored in this series.
     /// </summary>
     /// <returns>A non-negative count equal to the number of rate entries supplied at construction.</returns>
-    public int Count => _dates.Length;
+    public int Count => _storage.Count;
 
     /// <summary>
     /// Attempts to resolve a rate for <paramref name="requestedDate" /> under <paramref name="options" />.
@@ -148,12 +151,12 @@ public sealed class ExchangeRateSeries
     /// </returns>
     /// <remarks>
     /// <para>
-    /// The resolution algorithm performs a single <see cref="Array.BinarySearch{T}(T[], T)" /> over the date array. On
-    /// an exact hit the corresponding rate is returned immediately. On a miss the previous and next candidate indices
-    /// are derived from the bitwise complement of the returned index, then selected per <paramref name="options" />.
-    /// For <see cref="ExchangeRateDateResolution.Nearest" /> with a tie (the requested date lies exactly midway between
-    /// two observations), this method returns <see langword="false" /> so callers receive a deterministic failure
-    /// rather than an arbitrary pick.
+    /// The resolution algorithm performs a single <see cref="Array.BinarySearch{T}(T[], T)" /> over the day-number
+    /// array. On an exact hit the corresponding rate is returned immediately. On a miss the previous and next
+    /// candidate indices are derived from the bitwise complement of the returned index, then selected per
+    /// <paramref name="options" />. For <see cref="ExchangeRateDateResolution.Nearest" /> with a tie (the requested
+    /// date lies exactly midway between two observations), this method returns <see langword="false" /> so callers
+    /// receive a deterministic failure rather than an arbitrary pick.
     /// </para>
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -165,171 +168,58 @@ public sealed class ExchangeRateSeries
     {
         options.Validate();
 
-        DateOnly[] dates = _dates;
-        var rates = _rates;
-
-        var index = Array.BinarySearch(dates, requestedDate);
-
-        if (index >= 0)
-        {
-            resolvedDate = dates[index];
-            rate = rates[index];
-            return true;
-        }
-
-        if (options.DateResolution == ExchangeRateDateResolution.Exact)
-        {
-            resolvedDate = default;
-            rate = default;
-            return false;
-        }
-
-        var next = ~index;
-        var previous = next - 1;
-
-        if (!TrySelectCandidate(dates, requestedDate, options.DateResolution, previous, next, out var candidate))
-        {
-            resolvedDate = default;
-            rate = default;
-            return false;
-        }
-
-        var offsetDays = Math.Abs(dates[candidate].DayNumber - requestedDate.DayNumber);
-
-        if (offsetDays > options.ToleranceDays)
-        {
-            resolvedDate = default;
-            rate = default;
-            return false;
-        }
-
-        resolvedDate = dates[candidate];
-        rate = rates[candidate];
-        return true;
+        return _storage.TryGetRate(requestedDate, options, out resolvedDate, out rate);
     }
 
     /// <summary>
-    /// Selects the candidate index for the supplied <paramref name="resolution" /> given the previous and next bracket
-    /// indices produced by the binary search.
+    /// Enumerates the observations in strictly ascending date order.
     /// </summary>
-    /// <param name="dates">The series date array.</param>
-    /// <param name="requestedDate">The date the caller originally requested.</param>
-    /// <param name="resolution">The date-resolution policy in effect.</param>
-    /// <param name="previous">The index immediately before the insertion point, or <c>-1</c> if none.</param>
-    /// <param name="next">The insertion point, or <c><see cref="Count" /></c> if past the end.</param>
-    /// <param name="candidate">When this method returns <see langword="true" />, the chosen index.</param>
-    /// <returns><see langword="true" /> if a candidate was selected; otherwise <see langword="false" />.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static bool TrySelectCandidate(
-        DateOnly[] dates,
-        DateOnly requestedDate,
-        ExchangeRateDateResolution resolution,
-        int previous,
-        int next,
-        out int candidate)
+    /// <returns>A lazy sequence of <see cref="ExchangeRateObservation" /> values.</returns>
+    public IEnumerable<ExchangeRateObservation> GetObservations() => _storage.Enumerate();
+
+    /// <summary>
+    /// Returns a new series with the observation for <paramref name="date" /> upserted to <paramref name="rate" />.
+    /// </summary>
+    /// <param name="date">The observation date to insert or update.</param>
+    /// <param name="rate">The rate to record on <paramref name="date" />.</param>
+    /// <returns>A new <see cref="ExchangeRateSeries" /> reflecting the updated observation.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown if <paramref name="rate" /> is zero or negative.
+    /// </exception>
+    public ExchangeRateSeries WithRate(DateOnly date, decimal rate)
     {
-        var hasPrevious = previous >= 0;
-        var hasNext = next < dates.Length;
+        FinancialThrowHelper.ThrowIfExchangeRateNotPositive(rate);
 
-        switch (resolution)
-        {
-            case ExchangeRateDateResolution.PreviousOnOrBefore:
-                if (hasPrevious)
-                {
-                    candidate = previous;
-                    return true;
-                }
-                break;
-
-            case ExchangeRateDateResolution.NextOnOrAfter:
-                if (hasNext)
-                {
-                    candidate = next;
-                    return true;
-                }
-                break;
-
-            case ExchangeRateDateResolution.Nearest:
-            case ExchangeRateDateResolution.NearestPreferPrevious:
-            case ExchangeRateDateResolution.NearestPreferNext:
-                return TrySelectNearest(dates, requestedDate, resolution, hasPrevious, hasNext, previous, next, out candidate);
-        }
-
-        candidate = -1;
-        return false;
+        var builder = ToBuilder();
+        builder.Upsert(date, rate);
+        return builder.ToSeries();
     }
 
     /// <summary>
-    /// Selects the nearest candidate index, honouring the tie-break preference encoded in
-    /// <paramref name="resolution" />.
+    /// Returns a new series with the observation for <paramref name="date" /> removed if present.
     /// </summary>
-    /// <param name="dates">The series date array.</param>
-    /// <param name="requestedDate">The date the caller originally requested.</param>
-    /// <param name="resolution">A <c>Nearest*</c> resolution.</param>
-    /// <param name="hasPrevious">Whether a previous candidate is available.</param>
-    /// <param name="hasNext">Whether a next candidate is available.</param>
-    /// <param name="previous">The previous candidate index.</param>
-    /// <param name="next">The next candidate index.</param>
-    /// <param name="candidate">When this method returns <see langword="true" />, the chosen index.</param>
-    /// <returns><see langword="true" /> if a candidate was selected; otherwise <see langword="false" />.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static bool TrySelectNearest(
-        DateOnly[] dates,
-        DateOnly requestedDate,
-        ExchangeRateDateResolution resolution,
-        bool hasPrevious,
-        bool hasNext,
-        int previous,
-        int next,
-        out int candidate)
+    /// <param name="date">The observation date to remove.</param>
+    /// <returns>A new <see cref="ExchangeRateSeries" /> reflecting the removal.</returns>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown if removing the observation would leave the series empty.
+    /// </exception>
+    public ExchangeRateSeries WithoutRate(DateOnly date)
     {
-        if (!hasPrevious && !hasNext)
-        {
-            candidate = -1;
-            return false;
-        }
-
-        if (!hasPrevious)
-        {
-            candidate = next;
-            return true;
-        }
-
-        if (!hasNext)
-        {
-            candidate = previous;
-            return true;
-        }
-
-        var requestedDay = requestedDate.DayNumber;
-        var previousDistance = requestedDay - dates[previous].DayNumber;
-        var nextDistance = dates[next].DayNumber - requestedDay;
-
-        if (previousDistance < nextDistance)
-        {
-            candidate = previous;
-            return true;
-        }
-
-        if (nextDistance < previousDistance)
-        {
-            candidate = next;
-            return true;
-        }
-
-        switch (resolution)
-        {
-            case ExchangeRateDateResolution.NearestPreferPrevious:
-                candidate = previous;
-                return true;
-
-            case ExchangeRateDateResolution.NearestPreferNext:
-                candidate = next;
-                return true;
-
-            default:
-                candidate = -1;
-                return false;
-        }
+        var builder = ToBuilder();
+        builder.Remove(date);
+        return builder.ToSeries();
     }
+
+    /// <summary>
+    /// Creates a mutable builder pre-populated from this series.
+    /// </summary>
+    /// <returns>A new <see cref="ExchangeRateSeriesBuilder" /> seeded with the current observations.</returns>
+    public ExchangeRateSeriesBuilder ToBuilder() => new(this);
+
+    /// <summary>
+    /// Provides internal access to the underlying storage so the builder can seed its buffer without copying
+    /// through a public enumeration.
+    /// </summary>
+    /// <returns>The series' immutable storage.</returns>
+    internal ExchangeRateSeriesStorage GetStorage() => _storage;
 }
