@@ -12,7 +12,7 @@ public partial class CubeHashTests
     /// Verifies that <see cref="CubeHash.AlgorithmName" />, when UsingVariant, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(HashAlgorithmVariants))]
+    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(HashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(HashAlgorithmVariantDisplayName))]
     public void AlgorithmName_WhenUsingVariant_ShouldReturnCorrectlyFormattedString(CubeHashVariants variant)
     {
         using CubeHash algorithm = CreateAlgorithm(variant);

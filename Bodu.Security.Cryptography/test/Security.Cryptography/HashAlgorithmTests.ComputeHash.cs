@@ -84,7 +84,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// Verifies that repeated calls to <see cref="HashAlgorithm.ComputeHash(byte[])" /> with the same input produce the same result.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(HashAlgorithmVariants))]
+    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(HashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(HashAlgorithmVariantDisplayName))]
     public void ComputeHash_ShouldBeDeterministic(TVariant variant)
     {
         var input = Enumerable.Range(0, 128).Select(i => (byte)(i % 256)).ToArray();
@@ -238,7 +238,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// <param name="variant">The variant identifier supplied by the dynamic data source.</param>
     /// <returns>A task that completes when all incremental lengths have been verified.</returns>
     [TestMethod]
-    [DynamicData(nameof(HashAlgorithmVariants))]
+    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(HashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(HashAlgorithmVariantDisplayName))]
     public Task ComputeHash_WhenUsingIncrementalInput_ShouldMatchExpected(TVariant variant) =>
         AssertIncrementalInputAsync(variant,
             (algorithm, input, byteCount) => Task.FromResult(algorithm.ComputeHash(input, 0, byteCount)));
@@ -357,7 +357,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// for a representative range of input lengths.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(HashAlgorithmVariants))]
+    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(HashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(HashAlgorithmVariantDisplayName))]
     public void ComputeHash_WhenCalled_ShouldAlwaysReturnCorrectHashSize(TVariant variant)
     {
         using TAlgorithm algorithm = CreateAlgorithm(variant);
@@ -384,7 +384,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// internal algorithm path is exercised correctly and produces well-distributed output.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(HashAlgorithmVariants))]
+    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(HashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(HashAlgorithmVariantDisplayName))]
     public void ComputeHash_AtBoundaryLengths_ShouldProduceDistinctNonZeroHashes(TVariant variant)
     {
         HashAlgorithmSpecification specification = GetSpecification(variant);
@@ -421,7 +421,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// spread across the output bytes. The minimum non-zero byte threshold is declared in the algorithm specification.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(HashAlgorithmVariants))]
+    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(HashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(HashAlgorithmVariantDisplayName))]
     public void ComputeHash_WhenInputIsLong_ShouldDistributeEntropyAcrossAllBytes(TVariant variant)
     {
         HashAlgorithmSpecification specification = GetSpecification(variant);
@@ -451,7 +451,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// Verifies that two inputs that span multiple input chunks produce different hashes.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(HashAlgorithmVariants))]
+    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(HashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(HashAlgorithmVariantDisplayName))]
     public void ComputeHash_ForMultiChunkInputs_ShouldProduceDistinctHashes(TVariant variant)
     {
         HashAlgorithmSpecification specification = GetSpecification(variant);

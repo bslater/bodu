@@ -13,7 +13,7 @@ public partial class Blake2bTests
     /// <c>"BLAKE2b-<i>n</i>"</c>, where <i>n</i> is the configured digest size in bits.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(HashAlgorithmVariants))]
+    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(HashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(HashAlgorithmVariantDisplayName))]
     public void AlgorithmName_WhenUsingVariant_ShouldReturnCorrectlyFormattedString(Blake2bVariant variant)
     {
         using Blake2b algorithm = CreateAlgorithm(variant);

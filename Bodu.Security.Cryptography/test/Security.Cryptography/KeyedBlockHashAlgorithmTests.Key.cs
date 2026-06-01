@@ -61,7 +61,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
     /// <see cref="CryptographicException" /> with the correct message.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(HashAlgorithmVariants))]
+    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(HashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(HashAlgorithmVariantDisplayName))]
     public void Key_WhenSetToInvalidLength_ShouldThrowExactly(TVariant variant)
     {
         if (GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
@@ -91,7 +91,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
     /// without throwing.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(HashAlgorithmVariants))]
+    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(HashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(HashAlgorithmVariantDisplayName))]
     public void Key_WhenSetToValidLength_ShouldNotThrow(TVariant variant)
     {
         if (GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
@@ -122,7 +122,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
     /// valid range declared in the specification.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(HashAlgorithmVariants))]
+    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(HashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(HashAlgorithmVariantDisplayName))]
     public void Key_WhenDefaultConstructed_ShouldNotBeNull(TVariant variant)
     {
         using TAlgorithm algorithm = CreateAlgorithm(variant);
@@ -135,7 +135,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
     /// Verifies the correct get/set behaviour of the <see cref="KeyedHashAlgorithm.Key" /> property.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(HashAlgorithmVariants))]
+    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(HashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(HashAlgorithmVariantDisplayName))]
     public void Key_WhenSetAndRetrieved_ShouldBehaveAsExpected(TVariant variant)
     {
         if (GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
@@ -166,7 +166,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
     /// Verifies that accessing the <see cref="KeyedHashAlgorithm.Key" /> property multiple times returns distinct array instances.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(HashAlgorithmVariants))]
+    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(HashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(HashAlgorithmVariantDisplayName))]
     public void Key_WhenAccessedMultipleTimes_ShouldReturnDistinctInstances(TVariant variant)
     {
         if (GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
@@ -189,7 +189,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
     /// Verifies that updating the key after a hash operation does not retroactively affect the result of the previous hash.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(HashAlgorithmVariants))]
+    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(HashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(HashAlgorithmVariantDisplayName))]
     public void Key_WhenChangedAfterHash_ShouldNotAffectPreviousResult(TVariant variant)
     {
         if (GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
@@ -219,7 +219,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
     /// Verifies that reassigning the same key hashValue multiple times does not throw or alter behaviour.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(HashAlgorithmVariants))]
+    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(HashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(HashAlgorithmVariantDisplayName))]
     public void Key_WhenSetToSameValueMultipleTimes_ShouldNotThrow(TVariant variant)
     {
         if (GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
@@ -241,7 +241,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
     /// Verifies that calling <see cref="HashAlgorithm.Initialise" /> does not reset the key unless explicitly cleared.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(HashAlgorithmVariants))]
+    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(HashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(HashAlgorithmVariantDisplayName))]
     public void Key_WhenInitializeCalled_ShouldNotResetKey(TVariant variant)
     {
         using TAlgorithm algorithm = CreateAlgorithm(variant);
@@ -255,7 +255,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
     /// Verifies that using the same key with different inputs produces different hashes.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(HashAlgorithmVariants))]
+    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(HashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(HashAlgorithmVariantDisplayName))]
     public void Key_WhenCallingComputeHashUsingSameKeyAndDifferentInputs_ShouldReturnDifferentHashes(TVariant variant)
     {
         if (GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
@@ -289,7 +289,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
     /// algorithm supports reuse.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(HashAlgorithmVariants))]
+    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(HashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(HashAlgorithmVariantDisplayName))]
     public void Key_WhenModifiedAfterAssignment_ShouldNotAffectInternalState(TVariant variant)
     {
         if (GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
@@ -336,7 +336,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
     /// Verifies that modifying the input array after setting it as a key does not mutate the internal copy.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(HashAlgorithmVariants))]
+    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(HashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(HashAlgorithmVariantDisplayName))]
     public void Key_WhenInputArrayModified_ShouldNotMutateInternalKey(TVariant variant)
     {
         if (GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
@@ -361,7 +361,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
     /// Verifies that assigning a key larger than the maximum legal length throws a CryptographicException.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(HashAlgorithmVariants))]
+    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(HashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(HashAlgorithmVariantDisplayName))]
     public void Key_WhenAboveMaximumLength_ShouldThrowExactly(TVariant variant)
     {
         if (GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
@@ -391,7 +391,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
     /// Verifies that <see cref="KeyedBlockHashAlgorithm.Key" />, when BelowMinimumLength, throws <see cref="CryptographicException" />.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(HashAlgorithmVariants))]
+    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(HashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(HashAlgorithmVariantDisplayName))]
     public void Key_WhenBelowMinimumLength_ShouldThrowExactly(TVariant variant)
     {
         if (GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
@@ -420,7 +420,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
     /// Verifies that modifying the key after hashing has begun throws an exception.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(HashAlgorithmVariants))]
+    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(HashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(HashAlgorithmVariantDisplayName))]
     public void Key_WhenSetAfterHashingBegins_ShouldThrowExactly(TVariant variant)
     {
         if (GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
@@ -450,7 +450,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
     /// would produce identical digests for reversed keys.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(HashAlgorithmVariants))]
+    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(HashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(HashAlgorithmVariantDisplayName))]
     public void Key_WhenKeyBytesReversed_ShouldProduceDistinctDigest_fix(TVariant variant)
     {
         if (GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
@@ -487,7 +487,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
     /// mutate the internal key material through the accessor.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(HashAlgorithmVariants))]
+    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(HashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(HashAlgorithmVariantDisplayName))]
     public void Key_WhenGetterCalledTwice_ShouldReturnIndependentCopies(TVariant variant)
     {
         if (GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
@@ -510,7 +510,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
     /// <see cref="CryptographicException" />.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(HashAlgorithmVariants))]
+    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(HashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(HashAlgorithmVariantDisplayName))]
     public void Key_WhenAssignedLongerThanMaximum_ShouldThrowExactly(TVariant variant)
     {
         if (GetSpecification(variant) is not KeyedAlgorithmSpecification specification)

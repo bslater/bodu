@@ -17,7 +17,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     /// </summary>
     /// <param name="variant">The algorithm variant under test.</param>
     [TestMethod]
-    [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
+    [DynamicData(nameof(NonCryptographicHashAlgorithmVariants), DynamicDataDisplayName = nameof(NonCryptographicHashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(NonCryptographicHashAlgorithmVariantDisplayName))]
     public void Reset_AfterAppend_ShouldRestoreInitialState(TVariant variant)
     {
         TAlgorithm algorithm = CreateAlgorithm(variant);
@@ -35,7 +35,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     /// </summary>
     /// <param name="variant">The algorithm variant under test.</param>
     [TestMethod]
-    [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
+    [DynamicData(nameof(NonCryptographicHashAlgorithmVariants), DynamicDataDisplayName = nameof(NonCryptographicHashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(NonCryptographicHashAlgorithmVariantDisplayName))]
     public void Reset_BetweenAppends_ShouldDiscardAccumulatedInput(TVariant variant)
     {
         TAlgorithm algorithm = CreateAlgorithm(variant);
@@ -55,7 +55,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     /// </summary>
     /// <param name="variant">The algorithm variant under test.</param>
     [TestMethod]
-    [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
+    [DynamicData(nameof(NonCryptographicHashAlgorithmVariants), DynamicDataDisplayName = nameof(NonCryptographicHashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(NonCryptographicHashAlgorithmVariantDisplayName))]
     public void Reset_OnFreshInstance_ShouldBeNoOp(TVariant variant)
     {
         TAlgorithm algorithm = CreateAlgorithm(variant);

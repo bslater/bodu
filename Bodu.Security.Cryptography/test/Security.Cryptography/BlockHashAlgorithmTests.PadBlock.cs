@@ -45,7 +45,7 @@ public abstract partial class BlockHashAlgorithmTests<TTest, TAlgorithm, TVarian
     /// <c>PadBlock</c> error message.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(HashAlgorithmVariants))]
+    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(HashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(HashAlgorithmVariantDisplayName))]
     public void HashPipeline_ExceptionMessages_ShouldContainOnlyPrintableAscii(TVariant variant)
     {
         HashAlgorithmSpecification specification = GetSpecification(variant);
