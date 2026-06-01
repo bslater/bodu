@@ -1,6 +1,6 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateTable.cs" company="Bodu Pty. Ltd.">
-//     Copyright (c) Bodu Pty. Ltd. All rights reserved.
+// Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
@@ -12,9 +12,9 @@ namespace Bodu.Financial;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The table delegates per-series mutation to the underlying <see cref="ExchangeRateSeriesBuilder" /> instances,
-/// so single-observation edits, bulk import, and snapshot semantics behave identically to working with a builder
-/// directly. The table itself adds only the multi-series indexing, lazy creation, and bulk snapshot operations.
+/// The table delegates per-series mutation to the underlying <see cref="ExchangeRateSeriesBuilder" /> instances, so
+/// single-observation edits, bulk import, and snapshot semantics behave identically to working with a builder directly.
+/// The table itself adds only the multi-series indexing, lazy creation, and bulk snapshot operations.
 /// </para>
 /// <para>
 /// Instances are not thread-safe; concurrent mutation requires external synchronisation.
@@ -56,9 +56,7 @@ public sealed class ExchangeRateTable
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="provider" /> is <see langword="null" />.
     /// </exception>
-    /// <exception cref="ArgumentException">
-    /// Thrown if <paramref name="provider" /> is empty or white-space.
-    /// </exception>
+    /// <exception cref="ArgumentException">Thrown if <paramref name="provider" /> is empty or white-space.</exception>
     public ExchangeRateSeriesBuilder GetOrAddSeries(ExchangeRatePair pair, string provider)
     {
         FinancialThrowHelper.ThrowIfNullOrWhiteSpaceProvider(provider);
@@ -84,9 +82,7 @@ public sealed class ExchangeRateTable
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="provider" /> is <see langword="null" />.
     /// </exception>
-    /// <exception cref="ArgumentException">
-    /// Thrown if <paramref name="provider" /> is empty or white-space.
-    /// </exception>
+    /// <exception cref="ArgumentException">Thrown if <paramref name="provider" /> is empty or white-space.</exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown if <paramref name="rate" /> is zero or negative.
     /// </exception>
@@ -98,15 +94,11 @@ public sealed class ExchangeRateTable
     /// </summary>
     /// <param name="pair">The currency pair.</param>
     /// <param name="provider">The non-empty identifier of the publishing source.</param>
-    /// <returns>
-    /// <see langword="true" /> if a series was removed; <see langword="false" /> if none existed.
-    /// </returns>
+    /// <returns><see langword="true" /> if a series was removed; <see langword="false" /> if none existed.</returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="provider" /> is <see langword="null" />.
     /// </exception>
-    /// <exception cref="ArgumentException">
-    /// Thrown if <paramref name="provider" /> is empty or white-space.
-    /// </exception>
+    /// <exception cref="ArgumentException">Thrown if <paramref name="provider" /> is empty or white-space.</exception>
     public bool Remove(ExchangeRatePair pair, string provider)
     {
         FinancialThrowHelper.ThrowIfNullOrWhiteSpaceProvider(provider);
@@ -119,15 +111,11 @@ public sealed class ExchangeRateTable
     /// </summary>
     /// <param name="pair">The currency pair.</param>
     /// <param name="provider">The non-empty identifier of the publishing source.</param>
-    /// <returns>
-    /// <see langword="true" /> if a series exists; otherwise <see langword="false" />.
-    /// </returns>
+    /// <returns><see langword="true" /> if a series exists; otherwise <see langword="false" />.</returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="provider" /> is <see langword="null" />.
     /// </exception>
-    /// <exception cref="ArgumentException">
-    /// Thrown if <paramref name="provider" /> is empty or white-space.
-    /// </exception>
+    /// <exception cref="ArgumentException">Thrown if <paramref name="provider" /> is empty or white-space.</exception>
     public bool ContainsSeries(ExchangeRatePair pair, string provider)
     {
         FinancialThrowHelper.ThrowIfNullOrWhiteSpaceProvider(provider);
@@ -143,15 +131,11 @@ public sealed class ExchangeRateTable
     /// <param name="builder">
     /// When this method returns <see langword="true" />, the existing builder; otherwise <see langword="null" />.
     /// </param>
-    /// <returns>
-    /// <see langword="true" /> if the builder was found; otherwise <see langword="false" />.
-    /// </returns>
+    /// <returns><see langword="true" /> if the builder was found; otherwise <see langword="false" />.</returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="provider" /> is <see langword="null" />.
     /// </exception>
-    /// <exception cref="ArgumentException">
-    /// Thrown if <paramref name="provider" /> is empty or white-space.
-    /// </exception>
+    /// <exception cref="ArgumentException">Thrown if <paramref name="provider" /> is empty or white-space.</exception>
     public bool TryGetBuilder(ExchangeRatePair pair, string provider, out ExchangeRateSeriesBuilder? builder)
     {
         FinancialThrowHelper.ThrowIfNullOrWhiteSpaceProvider(provider);
@@ -174,9 +158,7 @@ public sealed class ExchangeRateTable
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="provider" /> is <see langword="null" />.
     /// </exception>
-    /// <exception cref="ArgumentException">
-    /// Thrown if <paramref name="provider" /> is empty or white-space.
-    /// </exception>
+    /// <exception cref="ArgumentException">Thrown if <paramref name="provider" /> is empty or white-space.</exception>
     public bool TryGetSeries(ExchangeRatePair pair, string provider, out ExchangeRateSeries? series)
     {
         FinancialThrowHelper.ThrowIfNullOrWhiteSpaceProvider(provider);

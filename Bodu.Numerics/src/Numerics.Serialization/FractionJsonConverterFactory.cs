@@ -18,9 +18,8 @@ namespace Bodu.Numerics.Serialization;
 /// This factory is referenced by the <see cref="JsonConverterAttribute" /> applied to <see cref="Fraction{T}" />, so
 /// rational values serialize through <see cref="System.Text.Json" /> without any explicit converter registration. The
 /// attribute path defaults to <see cref="NumericsJsonPolicy.Strict" />; consumers who need a different policy register
-/// an additional factory via
-/// <see cref="NumericsJsonSerializerOptionsExtensions.AddNumericsJsonConverters" />, which takes precedence over the
-/// type-level attribute.
+/// an additional factory via <see cref="NumericsJsonSerializerOptionsExtensions.AddNumericsJsonConverters" />, which
+/// takes precedence over the type-level attribute.
 /// </remarks>
 public sealed class FractionJsonConverterFactory
     : JsonConverterFactory

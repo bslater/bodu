@@ -68,19 +68,8 @@ public readonly partial struct Interval<T>
     /// </list>
     /// </remarks>
     /// <returns><see langword="true" /> when the interval is empty; otherwise <see langword="false" />.</returns>
-    public bool IsEmpty
-    {
-        get
-        {
-            if (_lower > _upper)
-                return true;
-
-            if (_lower == _upper)
-                return !LowerInclusive || !UpperInclusive;
-
-            return false;
-        }
-    }
+    public bool IsEmpty =>
+        _lower > _upper || (_lower == _upper && (!LowerInclusive || !UpperInclusive));
 
     /// <summary>
     /// Gets a value indicating whether the interval represents a single point — a closed-closed interval whose lower

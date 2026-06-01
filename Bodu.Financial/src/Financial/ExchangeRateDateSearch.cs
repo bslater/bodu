@@ -1,6 +1,6 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateDateSearch.cs" company="Bodu Pty. Ltd.">
-//     Copyright (c) Bodu Pty. Ltd. All rights reserved.
+// Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
@@ -9,17 +9,17 @@ using System.Runtime.CompilerServices;
 namespace Bodu.Financial;
 
 /// <summary>
-/// Provides the shared candidate-selection algorithm used to resolve a requested date to an observation index
-/// under an <see cref="ExchangeRateDateResolution" /> policy.
+/// Provides the shared candidate-selection algorithm used to resolve a requested date to an observation index under an
+/// <see cref="ExchangeRateDateResolution" /> policy.
 /// </summary>
 /// <remarks>
 /// <para>
-/// Both the immutable storage backing <see cref="ExchangeRateSeries" /> and any mutable buffer can route through
-/// this helper so that the previous/next/nearest selection rules — including the tie-break semantics encoded in
+/// Both the immutable storage backing <see cref="ExchangeRateSeries" /> and any mutable buffer can route through this
+/// helper so that the previous/next/nearest selection rules — including the tie-break semantics encoded in
 /// <see cref="ExchangeRateDateResolution.NearestPreferPrevious" /> and
-/// <see cref="ExchangeRateDateResolution.NearestPreferNext" /> — have a single source of truth. The helper
-/// operates on a <see cref="ReadOnlySpan{T}" /> of day numbers so callers can pass either a full backing array
-/// or the active prefix of a growing buffer without allocation.
+/// <see cref="ExchangeRateDateResolution.NearestPreferNext" /> — have a single source of truth. The helper operates on
+/// a <see cref="ReadOnlySpan{T}" /> of day numbers so callers can pass either a full backing array or the active prefix
+/// of a growing buffer without allocation.
 /// </para>
 /// </remarks>
 internal static class ExchangeRateDateSearch
@@ -34,17 +34,13 @@ internal static class ExchangeRateDateSearch
     /// <param name="previous">The index immediately before the insertion point, or <c>-1</c> if none.</param>
     /// <param name="next">The insertion point, or <c><paramref name="dayNumbers" />.Length</c> if past the end.</param>
     /// <param name="candidate">
-    /// When this method returns <see langword="true" />, the index of the selected observation; otherwise
-    /// <c>-1</c>.
+    /// When this method returns <see langword="true" />, the index of the selected observation; otherwise <c>-1</c>.
     /// </param>
-    /// <returns>
-    /// <see langword="true" /> if a candidate was selected; otherwise <see langword="false" />.
-    /// </returns>
+    /// <returns><see langword="true" /> if a candidate was selected; otherwise <see langword="false" />.</returns>
     /// <remarks>
     /// <para>
-    /// For <see cref="ExchangeRateDateResolution.Exact" /> the caller should perform the exact-hit check itself
-    /// before calling; this helper returns <see langword="false" /> for that value because no fallback
-    /// candidate is permitted.
+    /// For <see cref="ExchangeRateDateResolution.Exact" /> the caller should perform the exact-hit check itself before
+    /// calling; this helper returns <see langword="false" /> for that value because no fallback candidate is permitted.
     /// </para>
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

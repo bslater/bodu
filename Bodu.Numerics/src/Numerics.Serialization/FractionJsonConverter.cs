@@ -24,10 +24,9 @@ namespace Bodu.Numerics.Serialization;
 /// <list type="bullet">
 /// <item>
 /// <description>
-/// <see cref="NumericsJsonPolicy.Strict" /> — canonical object form
-/// <c>{ "numerator": 3, "denominator": 4 }</c>; rejects duplicate properties and non-object tokens. Property values
-/// may be either JSON numbers or numeric strings, so <see cref="BigInteger" />-backed values survive without
-/// precision loss.
+/// <see cref="NumericsJsonPolicy.Strict" /> — canonical object form <c>{ "numerator": 3, "denominator": 4 }</c>;
+/// rejects duplicate properties and non-object tokens. Property values may be either JSON numbers or numeric strings,
+/// so <see cref="BigInteger" />-backed values survive without precision loss.
 /// </description>
 /// </item>
 /// <item>
@@ -196,10 +195,9 @@ public sealed class FractionJsonConverter<T>
         if (!denominatorSeen)
             throw new JsonException(NumericsResourceStrings.Json_Invalid_MissingDenominator);
 
-        if (T.IsZero(denominator!))
-            throw new JsonException(NumericsResourceStrings.Json_Invalid_DenominatorZero);
-
-        return new Fraction<T>(numerator!, denominator!);
+        return T.IsZero(denominator!)
+            ? throw new JsonException(NumericsResourceStrings.Json_Invalid_DenominatorZero)
+            : new Fraction<T>(numerator!, denominator!);
     }
 
     /// <summary>
@@ -207,11 +205,11 @@ public sealed class FractionJsonConverter<T>
     /// the invariant culture so <see cref="BigInteger" />-magnitude values round-trip without precision loss.
     /// </summary>
     /// <param name="reader">The reader positioned at the value to convert.</param>
-    /// <param name="typeMismatchMessage">The resource message to report when the token is neither a number nor a parseable string.</param>
+    /// <param name="typeMismatchMessage">
+    /// The resource message to report when the token is neither a number nor a parseable string.
+    /// </param>
     /// <returns>The parsed <typeparamref name="T" /> value.</returns>
-    /// <exception cref="JsonException">
-    /// The token is neither a number nor a parseable integer string.
-    /// </exception>
+    /// <exception cref="JsonException">The token is neither a number nor a parseable integer string.</exception>
     private static T ReadIntegerValue(ref Utf8JsonReader reader, string typeMismatchMessage)
     {
         if (reader.TokenType == JsonTokenType.Number)
@@ -223,20 +221,18 @@ public sealed class FractionJsonConverter<T>
                 ? Encoding.UTF8.GetString(reader.ValueSequence.ToArray())
                 : Encoding.UTF8.GetString(reader.ValueSpan);
 
-            if (T.TryParse(text.AsSpan(), NumberStyles.Integer, CultureInfo.InvariantCulture, out T? parsed))
-                return parsed;
-
-            throw new JsonException(typeMismatchMessage);
+            return T.TryParse(text.AsSpan(), NumberStyles.Integer, CultureInfo.InvariantCulture, out T? parsed)
+                ? parsed
+                : throw new JsonException(typeMismatchMessage);
         }
 
         if (reader.TokenType == JsonTokenType.String)
         {
             var stringValue = reader.GetString();
-            if (stringValue is not null
-                && T.TryParse(stringValue.AsSpan(), NumberStyles.Integer, CultureInfo.InvariantCulture, out T? parsed))
-                return parsed;
-
-            throw new JsonException(typeMismatchMessage);
+            return stringValue is not null
+                && T.TryParse(stringValue.AsSpan(), NumberStyles.Integer, CultureInfo.InvariantCulture, out T? parsed)
+                ? parsed
+                : throw new JsonException(typeMismatchMessage);
         }
 
         throw new JsonException(typeMismatchMessage);

@@ -317,16 +317,9 @@ public readonly partial struct Interval<T>
     /// </summary>
     /// <param name="other">The interval to test for adjacency.</param>
     /// <returns><see langword="true" /> when the intervals are adjacent; otherwise <see langword="false" />.</returns>
-    private bool IsAdjacentTo(Interval<T> other)
-    {
-        if (_upper == other._lower && (UpperInclusive || other.LowerInclusive))
-            return true;
-
-        if (other._upper == _lower && (other.UpperInclusive || LowerInclusive))
-            return true;
-
-        return false;
-    }
+    private bool IsAdjacentTo(Interval<T> other) =>
+        (_upper == other._lower && (UpperInclusive || other.LowerInclusive))
+        || (other._upper == _lower && (other.UpperInclusive || LowerInclusive));
 
     /// <summary>
     /// Compares two lower endpoints, treating an inclusive lower endpoint as less than an open one at the same value
@@ -342,13 +335,7 @@ public readonly partial struct Interval<T>
     private static int CompareLowerEndpoint(T aLower, bool aInclusive, T bLower, bool bInclusive)
     {
         var cmp = aLower.CompareTo(bLower);
-        if (cmp != 0)
-            return cmp;
-
-        if (aInclusive == bInclusive)
-            return 0;
-
-        return aInclusive ? -1 : 1;
+        return cmp != 0 ? cmp : aInclusive == bInclusive ? 0 : aInclusive ? -1 : 1;
     }
 
     /// <summary>
@@ -365,12 +352,6 @@ public readonly partial struct Interval<T>
     private static int CompareUpperEndpoint(T aUpper, bool aInclusive, T bUpper, bool bInclusive)
     {
         var cmp = aUpper.CompareTo(bUpper);
-        if (cmp != 0)
-            return cmp;
-
-        if (aInclusive == bInclusive)
-            return 0;
-
-        return aInclusive ? 1 : -1;
+        return cmp != 0 ? cmp : aInclusive == bInclusive ? 0 : aInclusive ? 1 : -1;
     }
 }

@@ -184,7 +184,7 @@ public sealed class ExchangeRateJsonConverter
 
         if (_policy == FinancialJsonPolicy.Compact)
         {
-            writer.WriteString("pair", string.Concat(value.FromIsoCode, "/", value.ToIsoCode));
+            writer.WriteString("pair", $"{value.FromIsoCode}/{value.ToIsoCode}");
             writer.WriteString("date", value.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
             writer.WriteNumber("rate", value.Rate);
             writer.WriteString("provider", value.Provider);

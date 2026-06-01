@@ -1,6 +1,6 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateSeriesBuilder.cs" company="Bodu Pty. Ltd.">
-//     Copyright (c) Bodu Pty. Ltd. All rights reserved.
+// Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
@@ -15,10 +15,10 @@ namespace Bodu.Financial;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The builder is the natural entry point for assembling rate observations imperatively (manual data entry,
-/// streaming import, merge with prior history). After mutations complete, call <see cref="ToSeries" /> to produce
-/// an immutable <see cref="ExchangeRateSeries" /> snapshot for use in production lookup. Further mutations on the
-/// builder do not affect previously produced snapshots, and vice versa.
+/// The builder is the natural entry point for assembling rate observations imperatively (manual data entry, streaming
+/// import, merge with prior history). After mutations complete, call <see cref="ToSeries" /> to produce an immutable
+/// <see cref="ExchangeRateSeries" /> snapshot for use in production lookup. Further mutations on the builder do not
+/// affect previously produced snapshots, and vice versa.
 /// </para>
 /// <para>
 /// Instances are not thread-safe; concurrent mutation requires external synchronisation.
@@ -40,9 +40,7 @@ public sealed class ExchangeRateSeriesBuilder
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="provider" /> is <see langword="null" />.
     /// </exception>
-    /// <exception cref="ArgumentException">
-    /// Thrown if <paramref name="provider" /> is empty or white-space.
-    /// </exception>
+    /// <exception cref="ArgumentException">Thrown if <paramref name="provider" /> is empty or white-space.</exception>
     public ExchangeRateSeriesBuilder(ExchangeRatePair pair, string provider)
     {
         FinancialThrowHelper.ThrowIfNullOrWhiteSpaceProvider(provider);
@@ -130,9 +128,7 @@ public sealed class ExchangeRateSeriesBuilder
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown if <paramref name="rate" /> is zero or negative.
     /// </exception>
-    /// <exception cref="KeyNotFoundException">
-    /// Thrown if no observation exists for <paramref name="date" />.
-    /// </exception>
+    /// <exception cref="KeyNotFoundException">Thrown if no observation exists for <paramref name="date" />.</exception>
     public void Set(DateOnly date, decimal rate) =>
         _buffer.Set(date.DayNumber, rate, nameof(rate));
 
@@ -213,8 +209,8 @@ public sealed class ExchangeRateSeriesBuilder
     }
 
     /// <summary>
-    /// Merges a batch of observations into the builder: inserts new dates and replaces rates for dates already
-    /// present. Rejects duplicate dates within the batch. On any validation failure the builder remains unchanged.
+    /// Merges a batch of observations into the builder: inserts new dates and replaces rates for dates already present.
+    /// Rejects duplicate dates within the batch. On any validation failure the builder remains unchanged.
     /// </summary>
     /// <param name="observations">The observations to merge.</param>
     /// <exception cref="ArgumentNullException">
@@ -223,9 +219,7 @@ public sealed class ExchangeRateSeriesBuilder
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown if any rate in <paramref name="observations" /> is zero or negative.
     /// </exception>
-    /// <exception cref="ArgumentException">
-    /// Thrown if the batch contains a duplicate date.
-    /// </exception>
+    /// <exception cref="ArgumentException">Thrown if the batch contains a duplicate date.</exception>
     public void UpsertRange(IEnumerable<ExchangeRateObservation> observations)
     {
         ThrowHelper.ThrowIfNull(observations);

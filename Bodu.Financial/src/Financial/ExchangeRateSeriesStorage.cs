@@ -1,6 +1,6 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateSeriesStorage.cs" company="Bodu Pty. Ltd.">
-//     Copyright (c) Bodu Pty. Ltd. All rights reserved.
+// Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
@@ -11,26 +11,25 @@ namespace Bodu.Financial;
 
 /// <summary>
 /// Stores the validated, sorted, deduplicated day-number / rate arrays that back an immutable
-/// <see cref="ExchangeRateSeries" /> snapshot and provides the lookup, enumeration, and construction logic
-/// shared with the mutable buffer.
+/// <see cref="ExchangeRateSeries" /> snapshot and provides the lookup, enumeration, and construction logic shared with
+/// the mutable buffer.
 /// </summary>
 /// <remarks>
 /// <para>
-/// The storage owns its arrays and treats them as immutable. Day numbers are stored as <see cref="int" />
-/// (<see cref="DateOnly.DayNumber" />) to keep comparisons branch-light and to allow direct
-/// <see cref="Array.BinarySearch{T}(T[], int, int, T)" /> dispatch without an <see cref="IComparable{T}" />
-/// virtual call. Public boundaries continue to use <see cref="DateOnly" />.
+/// The storage owns its arrays and treats them as immutable. Day numbers are stored as <see cref="int" /> (
+/// <see cref="DateOnly.DayNumber" />) to keep comparisons branch-light and to allow direct
+/// <see cref="Array.BinarySearch{T}(T[], int, int, T)" /> dispatch without an <see cref="IComparable{T}" /> virtual
+/// call. Public boundaries continue to use <see cref="DateOnly" />.
 /// </para>
 /// <para>
-/// Instances are safe to share across threads after construction because all read paths only touch read-only
-/// arrays.
+/// Instances are safe to share across threads after construction because all read paths only touch read-only arrays.
 /// </para>
 /// </remarks>
 internal sealed class ExchangeRateSeriesStorage
 {
     /// <summary>
-    /// The observation day numbers in strictly ascending order. Index <c>i</c> corresponds to <see cref="_rates" />
-    /// at the same index.
+    /// The observation day numbers in strictly ascending order. Index <c>i</c> corresponds to <see cref="_rates" /> at
+    /// the same index.
     /// </summary>
     private readonly int[] _dayNumbers;
 
@@ -40,8 +39,8 @@ internal sealed class ExchangeRateSeriesStorage
     private readonly decimal[] _rates;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ExchangeRateSeriesStorage" /> class with the supplied
-    /// pre-validated arrays. The instance assumes ownership; callers must not mutate the arrays after the call.
+    /// Initializes a new instance of the <see cref="ExchangeRateSeriesStorage" /> class with the supplied pre-validated
+    /// arrays. The instance assumes ownership; callers must not mutate the arrays after the call.
     /// </summary>
     /// <param name="dayNumbers">The strictly ascending day-number array.</param>
     /// <param name="rates">The aligned strictly-positive rate array.</param>
@@ -160,9 +159,7 @@ internal sealed class ExchangeRateSeriesStorage
     /// <exception cref="ArgumentException">
     /// Thrown if <paramref name="rates" /> is empty or contains duplicate dates.
     /// </exception>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown if any rate is zero or negative.
-    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if any rate is zero or negative.</exception>
     public static ExchangeRateSeriesStorage Create(
         IEnumerable<(DateOnly Date, decimal Rate)> rates,
         string ratesParamName)
@@ -222,9 +219,7 @@ internal sealed class ExchangeRateSeriesStorage
     /// <exception cref="ArgumentException">
     /// Thrown if <paramref name="observations" /> is empty or contains duplicate dates.
     /// </exception>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown if any rate is zero or negative.
-    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if any rate is zero or negative.</exception>
     public static ExchangeRateSeriesStorage Create(
         IEnumerable<ExchangeRateObservation> observations,
         string observationsParamName)
@@ -273,16 +268,16 @@ internal sealed class ExchangeRateSeriesStorage
     }
 
     /// <summary>
-    /// Creates a storage instance directly from arrays that the caller guarantees are strictly ascending, unique,
-    /// and strictly positive. Used by the mutable buffer's snapshot path to avoid revalidation.
+    /// Creates a storage instance directly from arrays that the caller guarantees are strictly ascending, unique, and
+    /// strictly positive. Used by the mutable buffer's snapshot path to avoid revalidation.
     /// </summary>
     /// <param name="dayNumbers">
-    /// The strictly ascending unique day numbers. The instance takes ownership; the caller must not mutate the
-    /// array after the call.
+    /// The strictly ascending unique day numbers. The instance takes ownership; the caller must not mutate the array
+    /// after the call.
     /// </param>
     /// <param name="rates">
-    /// The aligned strictly-positive rates. The instance takes ownership; the caller must not mutate the array
-    /// after the call.
+    /// The aligned strictly-positive rates. The instance takes ownership; the caller must not mutate the array after
+    /// the call.
     /// </param>
     /// <returns>A new <see cref="ExchangeRateSeriesStorage" /> wrapping the supplied arrays.</returns>
     internal static ExchangeRateSeriesStorage CreateFromSortedUnique(int[] dayNumbers, decimal[] rates) =>

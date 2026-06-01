@@ -1,6 +1,6 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateSeriesBuffer.cs" company="Bodu Pty. Ltd.">
-//     Copyright (c) Bodu Pty. Ltd. All rights reserved.
+// Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
@@ -9,17 +9,17 @@ using System.Globalization;
 namespace Bodu.Financial;
 
 /// <summary>
-/// Holds the mutable sorted day-number / rate arrays backing an <see cref="ExchangeRateSeriesBuilder" /> and
-/// implements the validation, search, insert, remove, and bulk-merge primitives shared with the immutable storage.
+/// Holds the mutable sorted day-number / rate arrays backing an <see cref="ExchangeRateSeriesBuilder" /> and implements
+/// the validation, search, insert, remove, and bulk-merge primitives shared with the immutable storage.
 /// </summary>
 /// <remarks>
 /// <para>
-/// The buffer maintains the same invariants as <see cref="ExchangeRateSeriesStorage" /> — strictly ascending unique
-/// day numbers and strictly positive rates — but grows its arrays with spare capacity using the
-/// <see cref="List{T}" /> doubling rule. Single-element mutations perform a <see cref="Array.BinarySearch{T}(T[], int,
-/// int, T)" /> followed by an <see cref="Array.Copy(Array, int, Array, int, int)" /> shift. Range mutations sort and
-/// deduplicate the incoming batch, then run a two-pointer merge against the existing buffer into fresh arrays so a
-/// validation failure leaves the buffer unchanged.
+/// The buffer maintains the same invariants as <see cref="ExchangeRateSeriesStorage" /> — strictly ascending unique day
+/// numbers and strictly positive rates — but grows its arrays with spare capacity using the <see cref="List{T}" />
+/// doubling rule. Single-element mutations perform a <see cref="Array.BinarySearch{T}(T[], int, int, T)" /> followed by
+/// an <see cref="Array.Copy(Array, int, Array, int, int)" /> shift. Range mutations sort and deduplicate the incoming
+/// batch, then run a two-pointer merge against the existing buffer into fresh arrays so a validation failure leaves the
+/// buffer unchanged.
 /// </para>
 /// <para>
 /// Instances are not thread-safe.
@@ -284,16 +284,12 @@ internal sealed class ExchangeRateSeriesBuffer
     }
 
     /// <summary>
-    /// Inserts a batch of observations, rejecting duplicate dates inside the batch and dates that already exist in
-    /// the buffer.
+    /// Inserts a batch of observations, rejecting duplicate dates inside the batch and dates that already exist in the
+    /// buffer.
     /// </summary>
     /// <param name="observations">The observations to insert.</param>
-    /// <param name="observationsParamName">
-    /// The caller's parameter name to report in raised argument exceptions.
-    /// </param>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown if any rate is zero or negative.
-    /// </exception>
+    /// <param name="observationsParamName">The caller's parameter name to report in raised argument exceptions.</param>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if any rate is zero or negative.</exception>
     /// <exception cref="ArgumentException">
     /// Thrown if the batch contains a duplicate date or a date already present in the buffer.
     /// </exception>
@@ -311,15 +307,9 @@ internal sealed class ExchangeRateSeriesBuffer
     /// duplicate dates within the incoming batch.
     /// </summary>
     /// <param name="observations">The observations to merge.</param>
-    /// <param name="observationsParamName">
-    /// The caller's parameter name to report in raised argument exceptions.
-    /// </param>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown if any rate is zero or negative.
-    /// </exception>
-    /// <exception cref="ArgumentException">
-    /// Thrown if the batch contains a duplicate date.
-    /// </exception>
+    /// <param name="observationsParamName">The caller's parameter name to report in raised argument exceptions.</param>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if any rate is zero or negative.</exception>
+    /// <exception cref="ArgumentException">Thrown if the batch contains a duplicate date.</exception>
     public void UpsertRange(IEnumerable<ExchangeRateObservation> observations, string observationsParamName)
     {
         var incoming = PrepareIncoming(observations, observationsParamName);
@@ -345,9 +335,7 @@ internal sealed class ExchangeRateSeriesBuffer
     /// Produces a fresh immutable storage snapshot of the live observations.
     /// </summary>
     /// <returns>A new <see cref="ExchangeRateSeriesStorage" /> instance.</returns>
-    /// <exception cref="InvalidOperationException">
-    /// Thrown if the buffer holds no observations.
-    /// </exception>
+    /// <exception cref="InvalidOperationException">Thrown if the buffer holds no observations.</exception>
     public ExchangeRateSeriesStorage ToStorage()
     {
         if (_count == 0)
@@ -363,8 +351,8 @@ internal sealed class ExchangeRateSeriesBuffer
     }
 
     /// <summary>
-    /// Creates a buffer seeded from the supplied immutable storage. Mutations on the resulting buffer do not affect
-    /// the source storage.
+    /// Creates a buffer seeded from the supplied immutable storage. Mutations on the resulting buffer do not affect the
+    /// source storage.
     /// </summary>
     /// <param name="storage">The storage to copy.</param>
     /// <returns>A new <see cref="ExchangeRateSeriesBuffer" /> with the same observations.</returns>

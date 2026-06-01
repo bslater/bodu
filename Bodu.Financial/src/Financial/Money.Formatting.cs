@@ -110,9 +110,10 @@ public readonly partial struct Money<TCurrency> :
     /// </item>
     /// <item>
     /// <description>
-    /// <c>"C"</c> — the culture's native currency format when its region currency matches <typeparamref name="TCurrency" />
-    /// (e.g. <c>"$1,234.56"</c> in en-US for USD, <c>"19,99 €"</c> in fr-FR for EUR), or the ISO code substituted into the
-    /// culture's currency-position slot when they differ (e.g. <c>"JPY 1,234"</c> in en-US for JPY).
+    /// <c>"C"</c> — the culture's native currency format when its region currency matches
+    /// <typeparamref name="TCurrency" /> (e.g. <c>"$1,234.56"</c> in en-US for USD, <c>"19,99 €"</c> in fr-FR for EUR),
+    /// or the ISO code substituted into the culture's currency-position slot when they differ (e.g. <c>"JPY 1,234"</c>
+    /// in en-US for JPY).
     /// </description>
     /// </item>
     /// <item>
@@ -127,8 +128,8 @@ public readonly partial struct Money<TCurrency> :
     /// <c>"R"</c> — invariant round-trip form: the ISO code followed by the amount under
     /// <see cref="CultureInfo.InvariantCulture" /> with no grouping (e.g. <c>"USD 1234.56"</c>). The supplied
     /// <paramref name="provider" /> is ignored so the output round-trips through
-    /// <see cref="Money{TCurrency}.Parse(string, IFormatProvider?)" /> when invariant culture is supplied to the parser.
-    /// The <c>R</c> specifier rejects the <c>"~"</c> prefix and explicit precision suffixes.
+    /// <see cref="Money{TCurrency}.Parse(string, IFormatProvider?)" /> when invariant culture is supplied to the
+    /// parser. The <c>R</c> specifier rejects the <c>"~"</c> prefix and explicit precision suffixes.
     /// </description>
     /// </item>
     /// <item>
@@ -175,10 +176,14 @@ public readonly partial struct Money<TCurrency> :
     /// The compact-magnitude suffix to append to the numeric portion, or <see cref="string.Empty" /> when no suffix is
     /// required.
     /// </param>
-    /// <param name="format">The format specifier; see <see cref="Format(ReadOnlySpan{char}, IFormatProvider?)" />.</param>
+    /// <param name="format">
+    /// The format specifier; see <see cref="Format(ReadOnlySpan{char}, IFormatProvider?)" />.
+    /// </param>
     /// <param name="provider">The culture used for the numeric component.</param>
     /// <returns>The formatted representation with the suffix embedded in the numeric position.</returns>
-    /// <exception cref="FormatException">Thrown when <paramref name="format" /> is not a supported specifier.</exception>
+    /// <exception cref="FormatException">
+    /// Thrown when <paramref name="format" /> is not a supported specifier.
+    /// </exception>
     internal static string FormatScaled(
         decimal amount,
         string magnitudeSuffix,
@@ -191,10 +196,8 @@ public readonly partial struct Money<TCurrency> :
         if (specifier == 'R')
         {
             if (elideIfMatched || hasPrecisionSuffix)
-            {
                 throw new FormatException(
                     string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Format_Invalid_FormatSpecifier, format.ToString()));
-            }
 
             return string.Concat(
                 metadata.IsoCode,
@@ -211,7 +214,7 @@ public readonly partial struct Money<TCurrency> :
             case 'G':
                 if (elideIfMatched && MoneyFormattingHelpers.CultureMatchesIsoCode(effectiveProvider, metadata.IsoCode))
                     return amount.ToString("N" + decimalsSuffix, effectiveProvider) + magnitudeSuffix;
-                return string.Concat(metadata.IsoCode, " ", amount.ToString("N" + decimalsSuffix, effectiveProvider), magnitudeSuffix);
+                return $"{metadata.IsoCode} {amount.ToString("N" + decimalsSuffix, effectiveProvider)}{magnitudeSuffix}";
 
             case 'C':
                 var matchesC = MoneyFormattingHelpers.CultureMatchesIsoCode(effectiveProvider, metadata.IsoCode);
@@ -226,8 +229,8 @@ public readonly partial struct Money<TCurrency> :
                 if (elideIfMatched && matchesL)
                     return amount.ToString("N" + decimalsSuffix, effectiveProvider) + magnitudeSuffix;
                 if (string.IsNullOrEmpty(metadata.EnglishName))
-                    return string.Concat(metadata.IsoCode, " ", amount.ToString("N" + decimalsSuffix, effectiveProvider), magnitudeSuffix);
-                return string.Concat(amount.ToString("N" + decimalsSuffix, effectiveProvider), magnitudeSuffix, " ", metadata.EnglishName);
+                    return $"{metadata.IsoCode} {amount.ToString("N" + decimalsSuffix, effectiveProvider)}{magnitudeSuffix}";
+                return $"{amount.ToString("N" + decimalsSuffix, effectiveProvider)}{magnitudeSuffix} {metadata.EnglishName}";
 
             case 'N':
                 return amount.ToString("N" + decimalsSuffix, effectiveProvider) + magnitudeSuffix;
