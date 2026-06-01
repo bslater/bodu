@@ -1,12 +1,12 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="ExchangeRateTableTests.ToBook.cs" company="Bodu Pty. Ltd.">
+// <copyright file="ExchangeRateTableBuilderTests.ToBook.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.Financial;
 
-public partial class ExchangeRateTableTests
+public partial class ExchangeRateTableBuilderTests
 {
     /// <summary>
     /// Verifies that <c>ToBook</c> produces an immutable <see cref="ExchangeRateBook" /> preserving every
@@ -15,7 +15,7 @@ public partial class ExchangeRateTableTests
     [TestMethod]
     public void ToBook_WhenBuilderHoldsMultipleProviders_ShouldProduceImmutableBookPreservingKeys()
     {
-        ExchangeRateTable table = new();
+        ExchangeRateTableBuilder table = new();
         table.Upsert(s_usdAud, "RBA", new DateOnly(2024, 1, 1), 1.5m);
         table.Upsert(s_usdAud, "ECB", new DateOnly(2024, 1, 1), 1.6m);
         table.Upsert(new ExchangeRatePair("EUR", "AUD"), "RBA", new DateOnly(2024, 1, 1), 1.7m);
@@ -35,7 +35,7 @@ public partial class ExchangeRateTableTests
     [TestMethod]
     public void ToBook_WhenBuilderHoldsEmptySeries_ShouldSkipIt()
     {
-        ExchangeRateTable table = new();
+        ExchangeRateTableBuilder table = new();
         _ = table.GetOrAddSeries(s_usdAud, "RBA");
         table.Upsert(new ExchangeRatePair("EUR", "AUD"), "RBA", new DateOnly(2024, 1, 1), 1.7m);
 
@@ -51,7 +51,7 @@ public partial class ExchangeRateTableTests
     [TestMethod]
     public void ToBook_AfterFurtherMutation_ShouldNotChangeBook()
     {
-        ExchangeRateTable table = new();
+        ExchangeRateTableBuilder table = new();
         table.Upsert(s_usdAud, "RBA", new DateOnly(2024, 1, 1), 1.5m);
 
         ExchangeRateBook book = table.ToBook();

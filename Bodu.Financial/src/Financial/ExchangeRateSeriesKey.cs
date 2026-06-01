@@ -7,7 +7,7 @@
 namespace Bodu.Financial;
 
 /// <summary>
-/// Identifies a single rate series within an <see cref="ExchangeRateTable" /> by its currency pair and provider.
+/// Identifies a single rate series within an <see cref="ExchangeRateTableBuilder" /> by its currency pair and provider.
 /// </summary>
 /// <remarks>
 /// <para>

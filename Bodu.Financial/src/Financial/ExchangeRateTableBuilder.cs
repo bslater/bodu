@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="ExchangeRateTable.cs" company="Bodu Pty. Ltd.">
+// <copyright file="ExchangeRateTableBuilder.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -20,7 +20,7 @@ namespace Bodu.Financial;
 /// Instances are not thread-safe; concurrent mutation requires external synchronisation.
 /// </para>
 /// </remarks>
-public sealed class ExchangeRateTable
+public sealed class ExchangeRateTableBuilder
 {
     /// <summary>
     /// The series builders, keyed by (pair, provider).
@@ -28,9 +28,9 @@ public sealed class ExchangeRateTable
     private readonly Dictionary<ExchangeRateSeriesKey, ExchangeRateSeriesBuilder> _series;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ExchangeRateTable" /> class with no series.
+    /// Initializes a new instance of the <see cref="ExchangeRateTableBuilder" /> class with no series.
     /// </summary>
-    public ExchangeRateTable()
+    public ExchangeRateTableBuilder()
     {
         _series = new Dictionary<ExchangeRateSeriesKey, ExchangeRateSeriesBuilder>();
     }

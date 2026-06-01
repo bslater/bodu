@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="ExchangeRateTableTests.GetOrAddSeries.cs" company="Bodu Pty. Ltd.">
+// <copyright file="ExchangeRateTableBuilderTests.GetOrAddSeries.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -8,15 +8,15 @@ using Bodu.Test.Assertions;
 
 namespace Bodu.Financial;
 
-public partial class ExchangeRateTableTests
+public partial class ExchangeRateTableBuilderTests
 {
     /// <summary>
-    /// Verifies that <see cref="ExchangeRateTable.GetOrAddSeries" /> returns a new empty builder for an unknown key.
+    /// Verifies that <see cref="ExchangeRateTableBuilder.GetOrAddSeries" /> returns a new empty builder for an unknown key.
     /// </summary>
     [TestMethod]
     public void GetOrAddSeries_WhenSeriesMissing_ShouldCreateAndReturnEmptyBuilder()
     {
-        ExchangeRateTable table = new();
+        ExchangeRateTableBuilder table = new();
 
         ExchangeRateSeriesBuilder builder = table.GetOrAddSeries(s_usdAud, "RBA");
 
@@ -33,7 +33,7 @@ public partial class ExchangeRateTableTests
     [TestMethod]
     public void GetOrAddSeries_WhenCalledTwice_ShouldReturnSameBuilder()
     {
-        ExchangeRateTable table = new();
+        ExchangeRateTableBuilder table = new();
         ExchangeRateSeriesBuilder first = table.GetOrAddSeries(s_usdAud, "RBA");
         ExchangeRateSeriesBuilder second = table.GetOrAddSeries(s_usdAud, "RBA");
 
@@ -41,12 +41,12 @@ public partial class ExchangeRateTableTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="ExchangeRateTable.GetOrAddSeries" /> validates the provider argument.
+    /// Verifies that <see cref="ExchangeRateTableBuilder.GetOrAddSeries" /> validates the provider argument.
     /// </summary>
     [TestMethod]
     public void GetOrAddSeries_WhenProviderIsNull_ShouldThrowArgumentNullException()
     {
-        ExchangeRateTable table = new();
+        ExchangeRateTableBuilder table = new();
 
         ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(
             () =>
@@ -62,7 +62,7 @@ public partial class ExchangeRateTableTests
     [TestMethod]
     public void GetOrAddSeries_WhenDifferentProvidersForSamePair_ShouldCreateSeparateSeries()
     {
-        ExchangeRateTable table = new();
+        ExchangeRateTableBuilder table = new();
         ExchangeRateSeriesBuilder rba = table.GetOrAddSeries(s_usdAud, "RBA");
         ExchangeRateSeriesBuilder ecb = table.GetOrAddSeries(s_usdAud, "ECB");
 
@@ -71,13 +71,13 @@ public partial class ExchangeRateTableTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="ExchangeRateTable.GetOrAddSeries" /> rejects a <see langword="default" /> pair, which
+    /// Verifies that <see cref="ExchangeRateTableBuilder.GetOrAddSeries" /> rejects a <see langword="default" /> pair, which
     /// bypasses the pair's own constructor validation and carries null ISO codes.
     /// </summary>
     [TestMethod]
     public void GetOrAddSeries_WhenPairIsDefault_ShouldThrowArgumentException()
     {
-        ExchangeRateTable table = new();
+        ExchangeRateTableBuilder table = new();
 
         ExceptionAssert.ThrowsExactlyWithParamName<ArgumentException>(
             () =>

@@ -12,7 +12,7 @@ namespace Bodu.Financial;
 /// <summary>
 /// Provides an immutable, read-heavy collection of <see cref="ExchangeRateSeries" /> instances keyed by
 /// <see cref="ExchangeRateSeriesKey" /> (pair + provider), forming the immutable bridge between mutable build-side
-/// types (<see cref="ExchangeRateTable" />) and dated lookup providers
+/// types (<see cref="ExchangeRateTableBuilder" />) and dated lookup providers
 /// (<see cref="FixedDatedExchangeRateTable" /> and friends).
 /// </summary>
 /// <remarks>
