@@ -132,6 +132,65 @@ var provider = new XmlResourceNotableDateRuleProvider(
 
 The provider streams the first match it finds, so anything you place in the leading assembly under the same logical name supersedes the pack version.
 
+## Per-bundle reference
+
+Each bundle exposes a single static factory class with the same shape: per-country `Create<Country>Provider()` methods, a `CreateProviders()` enumeration that yields every supported country in a stable order, an advanced `CreateProvider(resourceName)` escape hatch, public `<Country>ResourceName` constants, and a `DataAssembly` property naming the host assembly.
+
+### Americas — `AmericasCalendarData` {#americas}
+
+**Package:** `Bodu.Globalization.Calendar.Data.Americas`
+**Namespace:** `Bodu.Globalization.Calendar.Data`
+**Factory:** <xref:Bodu.Globalization.Calendar.Data.AmericasCalendarData>
+
+| Country | Factory | Embedded resource |
+|---|---|---|
+| United States (`US`) | `AmericasCalendarData.CreateUnitedStatesProvider()` | `Bodu/Globalization/Calendar/Resources/region-us.xml` |
+| Canada (`CA`) | `AmericasCalendarData.CreateCanadaProvider()` | `Bodu/Globalization/Calendar/Resources/region-ca.xml` |
+
+`CreateProviders()` yields the providers in the order **US, CA**. National rules cover the federal calendar; subdivision rules (e.g. `US-CA` for California, `CA-ON` for Ontario) follow ISO 3166-2 conventions where present in the resource. No external algorithms are required — all rules resolve through `Fixed`, `DayOfWeekInMonth`, or `OffsetFromAnchor` (typically Easter, supplied by the main library).
+
+### Asia-Pacific — `AsiaPacificCalendarData` {#asia-pacific}
+
+**Package:** `Bodu.Globalization.Calendar.Data.AsiaPacific`
+**Namespace:** `Bodu.Globalization.Calendar.Data`
+**Factory:** <xref:Bodu.Globalization.Calendar.Data.AsiaPacificCalendarData>
+
+| Country | Factory | Embedded resource |
+|---|---|---|
+| Australia (`AU`) | `AsiaPacificCalendarData.CreateAustraliaProvider()` | `Bodu/Globalization/Calendar/Resources/region-au.xml` |
+| China (`CN`) | `AsiaPacificCalendarData.CreateChinaProvider()` | `Bodu/Globalization/Calendar/Resources/region-cn.xml` |
+| India (`IN`) | `AsiaPacificCalendarData.CreateIndiaProvider()` | `Bodu/Globalization/Calendar/Resources/region-in.xml` |
+| Japan (`JP`) | `AsiaPacificCalendarData.CreateJapanProvider()` | `Bodu/Globalization/Calendar/Resources/region-jp.xml` |
+| South Korea (`KR`) | `AsiaPacificCalendarData.CreateSouthKoreaProvider()` | `Bodu/Globalization/Calendar/Resources/region-kr.xml` |
+| Malaysia (`MY`) | `AsiaPacificCalendarData.CreateMalaysiaProvider()` | `Bodu/Globalization/Calendar/Resources/region-my.xml` |
+| New Zealand (`NZ`) | `AsiaPacificCalendarData.CreateNewZealandProvider()` | `Bodu/Globalization/Calendar/Resources/region-nz.xml` |
+| Singapore (`SG`) | `AsiaPacificCalendarData.CreateSingaporeProvider()` | `Bodu/Globalization/Calendar/Resources/region-sg.xml` |
+
+`CreateProviders()` yields the providers in the order **AU, CN, IN, JP, KR, MY, NZ, SG**.
+
+**Algorithm dependencies.** Many Asia-Pacific rules delegate to `INotableDateAlgorithm` implementations from `Bodu.Globalization.Calendar.Algorithms` — Lunar New Year and Mid-Autumn Festival (Chinese lunisolar), Vesak and Asalha Puja (lunar), Qingming (solar term), Hindu festivals (lunisolar), Buddhist observances. Register the algorithms before constructing the service; missing algorithms silently produce no occurrences without raising an error. See [Date calculation algorithms](algorithms.md) for the full algorithm-key table.
+
+### Europe — `EuropeCalendarData` {#europe}
+
+**Package:** `Bodu.Globalization.Calendar.Data.Europe`
+**Namespace:** `Bodu.Globalization.Calendar.Data`
+**Factory:** <xref:Bodu.Globalization.Calendar.Data.EuropeCalendarData>
+
+| Country | Factory | Embedded resource |
+|---|---|---|
+| Germany (`DE`) | `EuropeCalendarData.CreateGermanyProvider()` | `Bodu/Globalization/Calendar/Resources/region-de.xml` |
+| Spain (`ES`) | `EuropeCalendarData.CreateSpainProvider()` | `Bodu/Globalization/Calendar/Resources/region-es.xml` |
+| France (`FR`) | `EuropeCalendarData.CreateFranceProvider()` | `Bodu/Globalization/Calendar/Resources/region-fr.xml` |
+| United Kingdom (`GB`) | `EuropeCalendarData.CreateUnitedKingdomProvider()` | `Bodu/Globalization/Calendar/Resources/region-gb.xml` |
+| Ireland (`IE`) | `EuropeCalendarData.CreateIrelandProvider()` | `Bodu/Globalization/Calendar/Resources/region-ie.xml` |
+| Italy (`IT`) | `EuropeCalendarData.CreateItalyProvider()` | `Bodu/Globalization/Calendar/Resources/region-it.xml` |
+| Netherlands (`NL`) | `EuropeCalendarData.CreateNetherlandsProvider()` | `Bodu/Globalization/Calendar/Resources/region-nl.xml` |
+| Sweden (`SE`) | `EuropeCalendarData.CreateSwedenProvider()` | `Bodu/Globalization/Calendar/Resources/region-se.xml` |
+
+`CreateProviders()` yields the providers in the order **DE, ES, FR, GB, IE, IT, NL, SE**.
+
+European national rules typically cover the federal calendar plus the major regional variants (`GB-ENG`, `GB-SCT`, `GB-NIR`, `DE-BY` for Bavaria, etc.). All rules resolve through `Fixed`, `DayOfWeekInMonth`, or `OffsetFromAnchor` (most commonly Gregorian Easter, supplied by the main library) — no external algorithms are required for the shipped European resources.
+
 ## Where to go next
 
 - [Using NotableDateService](notable-dates.md) — querying patterns, filters, range queries, and overrides.

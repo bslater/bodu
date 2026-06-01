@@ -34,7 +34,7 @@ Each top-level namespace has a landing page that introduces its purpose, lists i
 - **[Bodu.Core guides](../guides/core/index.md)** — circular buffer, deque, evicting dictionary, week pattern.
 - **[Bodu.IO.Hashing guides](../guides/io-hashing/index.md)** — fingerprints (FNV, CityHash, MurmurHash3, Pearson, classic string hashes), checksums (CRC, Fletcher, Adler), and check digits.
 - **[Bodu.Security.Cryptography guides](../guides/cryptography/index.md)** — encryption basics, cipher block modes, AEAD, padding, composing primitives, keyed and cryptographic hashing, the ASCON family.
-- **[Bodu.Globalization.Calendar guides](../guides/calendar/index.md)** — `NotableDateService`, built-in algorithms, rule authoring, data packs.
+- **[Bodu.Globalization.Calendar guides](../guides/calendar/index.md)** — `NotableDateService`, built-in algorithms, rule authoring (XML / JSON / [fluent builder](../guides/calendar/notable-date-builder.md)), [data packs](../guides/calendar/data-packs.md).
 - **[Bodu.Text.Formats guides](../guides/formats/index.md)** — using the `Bencode` codec, the `BencodedValue` tree model, and stream support.
 - **[Bodu.Numerics guides](../guides/numerics/index.md)** — [`Fraction<T>`](../guides/numerics/fraction.md), [`Interval<T>`](../guides/numerics/interval.md).
 - **[Bodu.Financial guides](../guides/financial/index.md)** — [`Money<TCurrency>`](../guides/financial/money.md).

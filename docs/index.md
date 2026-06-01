@@ -137,6 +137,26 @@ Six independent NuGet packages that share a single solution, a single set of con
   </div>
 </div>
 
+<div class="bodu-card">
+  <img src="images/hero-calendar.svg" alt="Bodu.Globalization.Calendar.Builder" />
+  <h3>Bodu.Globalization.Calendar.Builder</h3>
+  <p>Fluent, chainable API for programmatically authoring <code>NotableDateRule</code> instances in C# — supports every rule field (strategy, scope, tags, observance adjustments), deep cloning for template-mutate workflows, and round-tripping to / from the schema-valid XML and JSON forms consumed by the embedded-resource rule providers.</p>
+  <div class="bodu-card-links">
+    <a href="guides/calendar/notable-date-builder.md">Guide</a>
+    <a href="apidoc/Bodu.Globalization.Calendar.Builder.md">API reference</a>
+  </div>
+</div>
+
+<div class="bodu-card">
+  <img src="images/hero-calendar.svg" alt="Bodu.Globalization.Calendar.Data" />
+  <h3>Bodu.Globalization.Calendar.Data.*</h3>
+  <p>Region-specific notable-date rule bundles ship as independent NuGet packages so national public-holiday data can be re-released without a main-library rebuild. <code>Data.Americas</code> covers United States and Canada; <code>Data.Europe</code> covers eight countries including DE / ES / FR / GB / IT; <code>Data.AsiaPacific</code> covers eight countries including AU / CN / IN / JP / KR / NZ.</p>
+  <div class="bodu-card-links">
+    <a href="guides/calendar/data-packs.md">Guide</a>
+    <a href="apidoc/Bodu.Globalization.Calendar.Data.md">API reference</a>
+  </div>
+</div>
+
 </div>
 
 ## Install
