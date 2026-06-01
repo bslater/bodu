@@ -135,12 +135,6 @@
   <data name="Arg_Invalid_RateSeriesEmpty" xml:space="preserve">
     <value>Series must contain at least one rate.</value>
   </data>
-  <data name="Arg_Invalid_MoneyDtoNanosRange" xml:space="preserve">
-    <value>Nanos {0} is outside the valid range -999999999 to 999999999.</value>
-  </data>
-  <data name="Arg_Invalid_MoneyDtoSignMismatch" xml:space="preserve">
-    <value>Units {0} and Nanos {1} must have the same sign.</value>
-  </data>
   <data name="Arg_Invalid_RateSeriesProviderConflict" xml:space="preserve">
     <value>Pair {0}/{1} has rates from multiple providers ('{2}' and '{3}'); use a composite provider to combine sources.</value>
   </data>
