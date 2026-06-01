@@ -26,7 +26,7 @@ public abstract partial class AdlerTests<TTest, TAlgorithm, TModulo>
     /// scalar tail.
     /// </remarks>
     [TestMethod]
-    [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
+    [DynamicData(nameof(NonCryptographicHashAlgorithmVariants), DynamicDataDisplayName = nameof(NonCryptographicHashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(NonCryptographicHashAlgorithmVariantDisplayName))]
     public void Append_WhenInputEngagesSimdBranch_ShouldMatchPerByteScalarPath(SingleTestVariant variant)
     {
         var data = AdlerSimdRegressionInputs.ModuloByte8K;
