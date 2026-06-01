@@ -32,7 +32,7 @@ internal static class CurrencyMetadata<TCurrency>
     private static readonly Lazy<CurrencyMetadataDescriptor> s_value = new(Validate);
 
     /// <summary>
-    /// The validated descriptor for <typeparamref name="TCurrency" />.
+    /// Gets the validated descriptor for <typeparamref name="TCurrency" />.
     /// </summary>
     public static CurrencyMetadataDescriptor Value =>
         s_value.Value;

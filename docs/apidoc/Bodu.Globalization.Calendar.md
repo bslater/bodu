@@ -51,7 +51,7 @@ Reach for this library when a `DateTime.DayOfWeek` check is not enough: when you
 
 **Bundled Easter providers — `Bodu.Globalization.Calendar.Providers`**
 
-- <xref:Bodu.Globalization.Calendar.Providers.GregorianEasterSundayNotableDateProvider>, <xref:Bodu.Globalization.Calendar.Providers.OrthodoxEasterSundayNotableDateProvider> — Western (Gregorian) and Eastern (Julian-anchored) Easter providers.
+- <xref:Bodu.Globalization.Calendar.Algorithms.GregorianEasterSundayNotableDateProvider>, <xref:Bodu.Globalization.Calendar.Algorithms.OrthodoxEasterSundayNotableDateProvider> — Western (Gregorian) and Eastern (Julian-anchored) Easter providers.
 
 **Adjustment pipeline**
 

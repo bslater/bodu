@@ -63,7 +63,7 @@ public sealed class ExchangeRateTableBuilder
         FinancialThrowHelper.ThrowIfNullOrWhiteSpaceProvider(provider);
 
         var key = new ExchangeRateSeriesKey(pair, provider);
-        if (!_series.TryGetValue(key, out var builder))
+        if (!_series.TryGetValue(key, out ExchangeRateSeriesBuilder? builder))
         {
             builder = new ExchangeRateSeriesBuilder(pair, provider);
             _series[key] = builder;
@@ -168,7 +168,7 @@ public sealed class ExchangeRateTableBuilder
         FinancialThrowHelper.ThrowIfInvalidExchangeRatePair(pair);
         FinancialThrowHelper.ThrowIfNullOrWhiteSpaceProvider(provider);
 
-        if (_series.TryGetValue(new ExchangeRateSeriesKey(pair, provider), out var builder) && !builder.IsEmpty)
+        if (_series.TryGetValue(new ExchangeRateSeriesKey(pair, provider), out ExchangeRateSeriesBuilder? builder) && !builder.IsEmpty)
         {
             series = builder.ToSeries();
             return true;
@@ -182,13 +182,13 @@ public sealed class ExchangeRateTableBuilder
     /// Produces immutable snapshots for every non-empty series in the table.
     /// </summary>
     /// <returns>
-    /// A list of <see cref="ExchangeRateSeries" /> instances, one per non-empty builder. Empty builders are
-    /// skipped because an immutable series must contain at least one observation.
+    /// A list of <see cref="ExchangeRateSeries" /> instances, one per non-empty builder. Empty builders are skipped
+    /// because an immutable series must contain at least one observation.
     /// </returns>
     public IReadOnlyList<ExchangeRateSeries> ToSeries()
     {
         var snapshots = new List<ExchangeRateSeries>(_series.Count);
-        foreach (var builder in _series.Values)
+        foreach (ExchangeRateSeriesBuilder builder in _series.Values)
         {
             if (!builder.IsEmpty)
                 snapshots.Add(builder.ToSeries());

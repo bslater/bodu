@@ -158,7 +158,7 @@ Construct a custom option set when none of the four profiles fits. Every field i
 
 ### Key shape and encoding
 
-- `KeyOptions` (`ConfigurationKeyOptions`, default `Default`) — segment-separator characters, dotted-to-colon mapping, case sensitivity. See [Views and resolution](views-and-resolution.md#configurationkeyoptions).
+- `KeyOptions` (`ConfigurationKeyOptions`, default `Default`) — segment-separator characters, dotted-to-colon mapping, case sensitivity. See [Views and resolution](views-and-resolution.md#configurationkey-and-configurationkeyoptions).
 - `DefaultEncoding` (`Encoding`, default `Encoding.UTF8`) — encoding used by `Load(string)` and `Load(Stream)` when the source has no BOM.
 
 ## Static presets

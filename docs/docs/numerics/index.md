@@ -19,7 +19,7 @@ title: Bodu.Numerics — Introduction
 | <xref:Bodu.Numerics.Fraction`1> | Immutable canonical rational over any `IBinaryInteger<T>` backing type. Auto-reduces to GCD-normalised form on construction, raises overflow to `BigInteger` precision internally, and implements the full `INumber<T>` / `ISignedNumber<T>` surface. |
 | <xref:Bodu.Numerics.Interval`1> | Immutable bounded interval over any `INumber<T>` endpoint type. Endpoint inclusivity is independent on each side so a single type expresses closed-closed, open-open, closed-open, and open-closed forms. |
 | <xref:Bodu.Numerics.Interval> | Non-generic helper class with factory methods (`Closed`, `Open`, `ClosedOpen`, `OpenClosed`) that infer the endpoint type from the arguments. |
-| <xref:Bodu.Numerics.FractionJsonConverter`1>, <xref:Bodu.Numerics.FractionJsonConverterFactory> | `System.Text.Json` converters auto-registered via `[JsonConverter]` on `Fraction<T>` — wire shape is the string `"numerator/denominator"`. |
+| <xref:Bodu.Numerics.Serialization.FractionJsonConverter`1>, <xref:Bodu.Numerics.Serialization.FractionJsonConverterFactory> | `System.Text.Json` converters auto-registered via `[JsonConverter]` on `Fraction<T>` — wire shape is the string `"numerator/denominator"`. |
 
 ## Scenarios this library covers
 

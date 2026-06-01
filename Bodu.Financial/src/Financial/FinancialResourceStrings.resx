@@ -73,13 +73,16 @@
     <value>Ratios must not be negative.</value>
   </data>
   <data name="Arg_Invalid_BalanceMissingIsoCode" xml:space="preserve">
-    <value>Every balance must carry a non-empty ISO code; default(MoneyValue) is not a valid balance.</value>
+    <value>Every balance must carry a non-empty ISO code; default(Money) is not a valid balance.</value>
   </data>
   <data name="Arg_Invalid_ClampMinGreaterThanMax" xml:space="preserve">
     <value>Min ({0}) must be ≤ Max ({1}).</value>
   </data>
   <data name="Arg_Invalid_CompositeNoProviders" xml:space="preserve">
     <value>At least one provider is required.</value>
+  </data>
+  <data name="Arg_Invalid_CurrencyCodeNotMapped" xml:space="preserve">
+    <value>The CurrencyCode value '{0}' (numeric {1}) does not correspond to a registered currency.</value>
   </data>
   <data name="Arg_Invalid_ExchangeRateBookDuplicateKey" xml:space="preserve">
     <value>ExchangeRateBook cannot contain two series with the same pair and provider; '{0}/{1}' from '{2}' is duplicated.</value>
@@ -99,14 +102,14 @@
   <data name="Arg_Invalid_LookupToleranceWithExactResolution" xml:space="preserve">
     <value>ToleranceDays must be zero when DateResolution is Exact.</value>
   </data>
-  <data name="Arg_Invalid_MoneyObject" xml:space="preserve">
+  <data name="Arg_Invalid_MoneyOfTCurrencyObject" xml:space="preserve">
     <value>Object must be a Money&lt;{0}&gt;.</value>
   </data>
-  <data name="Arg_Invalid_MoneyValueMissingIsoCode" xml:space="preserve">
-    <value>MoneyValue must carry a non-empty ISO code.</value>
+  <data name="Arg_Invalid_MoneyMissingIsoCode" xml:space="preserve">
+    <value>Money must carry a non-empty ISO code.</value>
   </data>
-  <data name="Arg_Invalid_MoneyValueObject" xml:space="preserve">
-    <value>Object must be a MoneyValue.</value>
+  <data name="Arg_Invalid_MoneyObject" xml:space="preserve">
+    <value>Object must be a Money.</value>
   </data>
   <data name="Arg_Invalid_ProviderNullOrWhiteSpace" xml:space="preserve">
     <value>Provider identifier must not be empty or white-space.</value>
@@ -144,11 +147,11 @@
   <data name="Format_Invalid_FormatSpecifier" xml:space="preserve">
     <value>The format string '{0}' is not supported.</value>
   </data>
-  <data name="Format_Invalid_MoneyString" xml:space="preserve">
+  <data name="Format_Invalid_MoneyOfTCurrencyString" xml:space="preserve">
     <value>The input '{0}' is not a valid Money&lt;{1}&gt; representation.</value>
   </data>
-  <data name="Format_Invalid_MoneyValueString" xml:space="preserve">
-    <value>The input '{0}' is not a valid MoneyValue representation.</value>
+  <data name="Format_Invalid_MoneyString" xml:space="preserve">
+    <value>The input '{0}' is not a valid Money representation.</value>
   </data>
   <data name="IO_KeyNotFound_CompositeExchangeRate" xml:space="preserve">
     <value>No exchange rate available for {0} -&gt; {1} on {2:yyyy-MM-dd} across {3} provider(s).</value>
@@ -177,11 +180,11 @@
   <data name="Json_Invalid_CompactExchangeRatePairForm" xml:space="preserve">
     <value>The JSON string '{0}' is not a valid compact ExchangeRatePair form.</value>
   </data>
-  <data name="Json_Invalid_CompactMoneyForm" xml:space="preserve">
+  <data name="Json_Invalid_CompactMoneyOfTCurrencyForm" xml:space="preserve">
     <value>The JSON string '{0}' is not a valid compact Money&lt;{1}&gt; form.</value>
   </data>
-  <data name="Json_Invalid_CompactMoneyValueForm" xml:space="preserve">
-    <value>The JSON string '{0}' is not a valid compact MoneyValue form.</value>
+  <data name="Json_Invalid_CompactMoneyForm" xml:space="preserve">
+    <value>The JSON string '{0}' is not a valid compact Money form.</value>
   </data>
   <data name="Json_Invalid_CurrencyMismatch" xml:space="preserve">
     <value>The JSON 'currency' value '{0}' does not match the expected currency '{1}'.</value>
@@ -201,11 +204,11 @@
   <data name="Json_Invalid_ExpectedCompactString_ExchangeRatePair" xml:space="preserve">
     <value>Expected a JSON string in compact ExchangeRatePair form (e.g. "USD/JPY").</value>
   </data>
-  <data name="Json_Invalid_ExpectedCompactString_Money" xml:space="preserve">
+  <data name="Json_Invalid_ExpectedCompactString_MoneyOfTCurrency" xml:space="preserve">
     <value>Expected a JSON string in compact Money&lt;{0}&gt; form (e.g. "19.99 USD").</value>
   </data>
-  <data name="Json_Invalid_ExpectedCompactString_MoneyValue" xml:space="preserve">
-    <value>Expected a JSON string in compact MoneyValue form (e.g. "19.99 USD").</value>
+  <data name="Json_Invalid_ExpectedCompactString_Money" xml:space="preserve">
+    <value>Expected a JSON string in compact Money form (e.g. "19.99 USD").</value>
   </data>
   <data name="Json_Invalid_ExpectedObject_ExchangeRate" xml:space="preserve">
     <value>Expected a JSON object containing an ExchangeRate.</value>
@@ -213,14 +216,14 @@
   <data name="Json_Invalid_ExpectedObject_ExchangeRatePair" xml:space="preserve">
     <value>Expected a JSON object containing an ExchangeRatePair.</value>
   </data>
-  <data name="Json_Invalid_ExpectedObject_Money" xml:space="preserve">
+  <data name="Json_Invalid_ExpectedObject_MoneyOfTCurrency" xml:space="preserve">
     <value>Expected a JSON object containing a Money amount.</value>
   </data>
   <data name="Json_Invalid_ExpectedObject_MoneyBag" xml:space="preserve">
     <value>Expected a JSON object containing a MoneyBag.</value>
   </data>
-  <data name="Json_Invalid_ExpectedObject_MoneyValue" xml:space="preserve">
-    <value>Expected a JSON object containing a MoneyValue.</value>
+  <data name="Json_Invalid_ExpectedObject_Money" xml:space="preserve">
+    <value>Expected a JSON object containing a Money.</value>
   </data>
   <data name="Json_Invalid_ExpectedPropertyName" xml:space="preserve">
     <value>Expected a JSON property name.</value>
@@ -255,8 +258,8 @@
   <data name="Json_Invalid_UnexpectedEndInBalances" xml:space="preserve">
     <value>Unexpected end of JSON inside 'balances'.</value>
   </data>
-  <data name="Op_Invalid_CannotConvertMoneyValueToTyped" xml:space="preserve">
-    <value>Cannot convert MoneyValue with currency '{0}' to Money&lt;{1}&gt; (currency '{2}').</value>
+  <data name="Op_Invalid_CurrencyMismatchInAs" xml:space="preserve">
+    <value>Cannot convert Money with currency '{0}' to Money&lt;{1}&gt; (currency '{2}').</value>
   </data>
   <data name="Op_Invalid_CurrencyCashRoundingNegative" xml:space="preserve">
     <value>{0}.{1} must be non-negative, but reported {2}.</value>
@@ -279,17 +282,23 @@
   <data name="Op_Invalid_DuplicateCustomCurrency" xml:space="preserve">
     <value>A custom currency is already registered under '{0}'.</value>
   </data>
+  <data name="Op_Invalid_ExchangeRateRuntimeMismatch" xml:space="preserve">
+    <value>Cannot adopt ExchangeRate {0}-&gt;{1} as ExchangeRate&lt;{2}, {3}&gt;: ISO codes differ.</value>
+  </data>
   <data name="Op_Invalid_FinancialJsonPolicyUndefined" xml:space="preserve">
     <value>Unsupported FinancialJsonPolicy value '{0}'.</value>
   </data>
-  <data name="Op_Invalid_MoneyValueCompareSameCurrencyRequired" xml:space="preserve">
-    <value>MoneyValue comparison requires the same currency; got '{0}' and '{1}'.</value>
+  <data name="Op_Invalid_MoneyCompareSameCurrencyRequired" xml:space="preserve">
+    <value>Money comparison requires the same currency; got '{0}' and '{1}'.</value>
   </data>
-  <data name="Op_Invalid_MoneyValueRequiresCurrency" xml:space="preserve">
-    <value>MoneyValue operations require both operands to carry a currency; default(MoneyValue) is not a valid operand.</value>
+  <data name="Op_Invalid_MoneyRequiresCurrency" xml:space="preserve">
+    <value>Money operations require both operands to carry a currency; default(Money) is not a valid operand.</value>
   </data>
-  <data name="Op_Invalid_MoneyValueSameCurrencyRequired" xml:space="preserve">
-    <value>MoneyValue operations require the same currency; got '{0}' and '{1}'.</value>
+  <data name="Op_Invalid_MoneySameCurrencyRequired" xml:space="preserve">
+    <value>Money operations require the same currency; got '{0}' and '{1}'.</value>
+  </data>
+  <data name="Op_Invalid_NoCurrencyCodeForIsoCode" xml:space="preserve">
+    <value>There is no CurrencyCode enum member for ISO code '{0}'. Historic or custom currencies are not represented in CurrencyCode.</value>
   </data>
   <data name="Op_Invalid_RateNotStrictlyPositive" xml:space="preserve">
     <value>Exchange rate for {0} → {1} must be strictly positive; rate provider returned {2}.</value>

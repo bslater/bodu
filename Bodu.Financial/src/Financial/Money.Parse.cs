@@ -8,59 +8,50 @@ using System.Globalization;
 
 namespace Bodu.Financial;
 
-public readonly partial struct Money<TCurrency> :
-    IParsable<Money<TCurrency>>,
-    ISpanParsable<Money<TCurrency>>
+public readonly partial struct Money :
+    IParsable<Money>,
+    ISpanParsable<Money>
 {
     /// <summary>
-    /// Parses a monetary value from its string representation.
+    /// Parses a <see cref="Money" /> from <c>"&lt;ISO&gt; &lt;amount&gt;"</c> or
+    /// <c>"&lt;amount&gt; &lt;ISO&gt;"</c>.
     /// </summary>
-    /// <param name="s">
-    /// The string to parse. See <see cref="TryParse(ReadOnlySpan{char}, IFormatProvider?, out Money{TCurrency})" /> for
-    /// accepted forms.
-    /// </param>
-    /// <param name="provider">The culture used to parse the numeric component.</param>
-    /// <returns>The parsed amount.</returns>
-    /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="s" /> is <see langword="null" />.
-    /// </exception>
-    /// <exception cref="FormatException">Thrown when <paramref name="s" /> is not a valid representation.</exception>
-    public static Money<TCurrency> Parse(string s, IFormatProvider? provider)
+    /// <param name="s">The text to parse.</param>
+    /// <param name="provider">The culture used to interpret the numeric component.</param>
+    /// <returns>The parsed value.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="s" /> is <see langword="null" />.</exception>
+    /// <exception cref="FormatException">The input is not a valid <see cref="Money" /> representation.</exception>
+    public static Money Parse(string s, IFormatProvider? provider)
     {
         ThrowHelper.ThrowIfNull(s);
-
         return Parse(s.AsSpan(), provider);
     }
 
     /// <summary>
-    /// Parses a monetary value from its span representation.
+    /// Parses a <see cref="Money" /> from a span representation.
     /// </summary>
-    /// <param name="s">The span to parse.</param>
-    /// <param name="provider">The culture used to parse the numeric component.</param>
-    /// <returns>The parsed amount.</returns>
-    /// <exception cref="FormatException">Thrown when <paramref name="s" /> is not a valid representation.</exception>
-    public static Money<TCurrency> Parse(ReadOnlySpan<char> s, IFormatProvider? provider)
+    /// <param name="s">The text to parse.</param>
+    /// <param name="provider">The culture used to interpret the numeric component.</param>
+    /// <returns>The parsed value.</returns>
+    /// <exception cref="FormatException">The input is not a valid representation.</exception>
+    public static Money Parse(ReadOnlySpan<char> s, IFormatProvider? provider)
     {
-        return !TryParse(s, provider, out Money<TCurrency> result)
+        return !TryParse(s, provider, out Money result)
             ? throw new FormatException(
-                string.Format(
-                    CultureInfo.InvariantCulture,
-                    FinancialResourceStrings.Format_Invalid_MoneyString,
-                    s.ToString(),
-                    typeof(TCurrency).Name))
+                string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Format_Invalid_MoneyString, s.ToString()))
             : result;
     }
 
     /// <summary>
-    /// Attempts to parse a monetary value from its string representation.
+    /// Attempts to parse a <see cref="Money" /> from a string.
     /// </summary>
-    /// <param name="s">The string to parse.</param>
-    /// <param name="provider">The culture used to parse the numeric component.</param>
+    /// <param name="s">The text to parse.</param>
+    /// <param name="provider">The culture provider.</param>
     /// <param name="result">
-    /// When this method returns <see langword="true" />, the parsed amount; otherwise the default value.
+    /// When this method returns <see langword="true" />, the parsed value; otherwise the default.
     /// </param>
-    /// <returns><see langword="true" /> when parsing succeeded; otherwise <see langword="false" />.</returns>
-    public static bool TryParse(string? s, IFormatProvider? provider, out Money<TCurrency> result)
+    /// <returns><see langword="true" /> on success.</returns>
+    public static bool TryParse(string? s, IFormatProvider? provider, out Money result)
     {
         if (s is null)
         {
@@ -72,20 +63,13 @@ public readonly partial struct Money<TCurrency> :
     }
 
     /// <summary>
-    /// Attempts to parse a monetary value from its span representation.
+    /// Attempts to parse a <see cref="Money" /> from a span.
     /// </summary>
-    /// <param name="s">
-    /// The span to parse. Accepted forms are a bare decimal (<c>"19.99"</c>), the ISO code followed by a decimal (
-    /// <c>"USD 19.99"</c>), or a decimal followed by the ISO code (<c>"19.99 USD"</c>). When an ISO code is present it
-    /// must match <typeparamref name="TCurrency" />.<see cref="ICurrency.IsoCode" /> exactly, including case. Currency
-    /// symbols such as <c>$</c> are not accepted because they are ambiguous across currencies.
-    /// </param>
-    /// <param name="provider">The culture used to parse the numeric component.</param>
-    /// <param name="result">
-    /// When this method returns <see langword="true" />, the parsed amount; otherwise the default value.
-    /// </param>
-    /// <returns><see langword="true" /> when parsing succeeded; otherwise <see langword="false" />.</returns>
-    public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider? provider, out Money<TCurrency> result)
+    /// <param name="s">The text to parse.</param>
+    /// <param name="provider">The culture provider.</param>
+    /// <param name="result">The parsed value or default.</param>
+    /// <returns><see langword="true" /> on success.</returns>
+    public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider? provider, out Money result)
     {
         result = default;
 
@@ -93,109 +77,54 @@ public readonly partial struct Money<TCurrency> :
         if (trimmed.IsEmpty)
             return false;
 
-        var isoCode = CurrencyMetadata<TCurrency>.Value.IsoCode;
-        ReadOnlySpan<char> numericPart;
-
-        // Grammar:
-        //   amount               → bare decimal
-        //   isoCode WS+ amount   → ISO-prefixed decimal
-        //   amount WS+ isoCode   → ISO-suffixed decimal
-        // where WS is a single ASCII space (no tab, no NBSP). Currency symbols ($, ¥) are rejected — they are
-        // ambiguous across currencies and consumers needing locale-aware parsing should pre-strip.
-        if (TryStripIsoPrefix(trimmed, isoCode, out numericPart)
-            || TryStripIsoSuffix(trimmed, isoCode, out numericPart))
+        // ISO prefix: "USD 19.99" — three-letter code, space, amount.
+        if (trimmed.Length >= 5 && trimmed[3] == ' '
+            && IsUppercaseAscii(trimmed[0]) && IsUppercaseAscii(trimmed[1]) && IsUppercaseAscii(trimmed[2]))
         {
-            // ISO-tagged form — proceed to numeric parse.
+            var iso = trimmed[..3].ToString();
+            ReadOnlySpan<char> numericPart = trimmed[4..].TrimStart();
+            return TryComposeWithCulture(numericPart, iso, provider, out result);
         }
-        else if (HasIsoShapedToken(trimmed))
+
+        // ISO suffix: "19.99 USD".
+        if (trimmed.Length >= 5 && trimmed[^4] == ' '
+            && IsUppercaseAscii(trimmed[^3]) && IsUppercaseAscii(trimmed[^2]) && IsUppercaseAscii(trimmed[^1]))
         {
-            // Letters are present and they don't match the expected ISO code at either end (or the format is
-            // otherwise non-grammatical, e.g. "USD19.99" without space, "$19.99", "NaN"). Reject.
+            var iso = trimmed[^3..].ToString();
+            ReadOnlySpan<char> numericPart = trimmed[..^4].TrimEnd();
+            return TryComposeWithCulture(numericPart, iso, provider, out result);
+        }
+
+        // Bare decimal with no currency — cannot construct without an ISO code.
+        return false;
+    }
+
+    /// <summary>
+    /// Parses the numeric portion and constructs the <see cref="Money" /> when both parts are valid.
+    /// </summary>
+    /// <param name="numericPart">The numeric span.</param>
+    /// <param name="iso">The ISO code.</param>
+    /// <param name="provider">The culture provider.</param>
+    /// <param name="result">The constructed value.</param>
+    /// <returns><see langword="true" /> on success.</returns>
+    private static bool TryComposeWithCulture(ReadOnlySpan<char> numericPart, string iso, IFormatProvider? provider, out Money result)
+    {
+        result = default;
+        if (numericPart.IsEmpty) return false;
+
+        IFormatProvider effective = provider ?? CultureInfo.CurrentCulture;
+        if (!decimal.TryParse(numericPart, NumberStyles.Number | NumberStyles.AllowLeadingSign, effective, out var amount))
             return false;
-        }
-        else
-        {
-            numericPart = trimmed;
-        }
 
-        if (numericPart.IsEmpty)
-            return false;
-
-        IFormatProvider effectiveProvider = provider ?? CultureInfo.CurrentCulture;
-        if (!decimal.TryParse(
-                numericPart,
-                NumberStyles.Number | NumberStyles.AllowLeadingSign,
-                effectiveProvider,
-                out var amount))
-        {
-            return false;
-        }
-
-        result = new Money<TCurrency>(amount);
+        result = new Money(amount, iso);
         return true;
     }
 
     /// <summary>
-    /// Strips a leading <paramref name="isoCode" /> followed by a single space from <paramref name="trimmed" />,
-    /// returning the remaining numeric portion.
+    /// Determines whether a character is an ASCII uppercase letter.
     /// </summary>
-    /// <param name="trimmed">The trimmed input span.</param>
-    /// <param name="isoCode">The expected ISO code.</param>
-    /// <param name="numericPart">The numeric portion when the prefix matched.</param>
-    /// <returns><see langword="true" /> when the input had the expected ISO-prefix shape.</returns>
-    private static bool TryStripIsoPrefix(ReadOnlySpan<char> trimmed, string isoCode, out ReadOnlySpan<char> numericPart)
-    {
-        if (trimmed.Length > isoCode.Length
-            && trimmed.StartsWith(isoCode, StringComparison.Ordinal)
-            && trimmed[isoCode.Length] == ' ')
-        {
-            numericPart = trimmed[(isoCode.Length + 1)..];
-            return true;
-        }
-
-        numericPart = default;
-        return false;
-    }
-
-    /// <summary>
-    /// Strips a trailing <paramref name="isoCode" /> preceded by a single space from <paramref name="trimmed" />.
-    /// </summary>
-    /// <param name="trimmed">The trimmed input span.</param>
-    /// <param name="isoCode">The expected ISO code.</param>
-    /// <param name="numericPart">The numeric portion when the suffix matched.</param>
-    /// <returns><see langword="true" /> when the input had the expected ISO-suffix shape.</returns>
-    private static bool TryStripIsoSuffix(ReadOnlySpan<char> trimmed, string isoCode, out ReadOnlySpan<char> numericPart)
-    {
-        if (trimmed.Length > isoCode.Length
-            && trimmed.EndsWith(isoCode, StringComparison.Ordinal)
-            && trimmed[^(isoCode.Length + 1)] == ' ')
-        {
-            numericPart = trimmed[..^(isoCode.Length + 1)];
-            return true;
-        }
-
-        numericPart = default;
-        return false;
-    }
-
-    /// <summary>
-    /// Determines whether <paramref name="s" /> contains any character that is not a digit, sign, or number-format
-    /// glyph permitted by <see cref="NumberStyles.Number" />. Used as a fast rejection check — the production parser
-    /// delegates to <see cref="decimal.TryParse(ReadOnlySpan{char}, NumberStyles, IFormatProvider, out decimal)" /> to
-    /// make the final accept/reject decision on the numeric portion.
-    /// </summary>
-    /// <param name="s">The text to scan.</param>
-    /// <returns><see langword="true" /> if any letter or symbol is present.</returns>
-    private static bool HasIsoShapedToken(ReadOnlySpan<char> s)
-    {
-        foreach (var c in s)
-        {
-            if (char.IsLetter(c))
-                return true;
-            if (c is '$' or '£' or '¥' or '€' or '¤')
-                return true;
-        }
-
-        return false;
-    }
+    /// <param name="c">The character to test.</param>
+    /// <returns><see langword="true" /> when <paramref name="c" /> is in [A-Z].</returns>
+    private static bool IsUppercaseAscii(char c) =>
+        c is >= 'A' and <= 'Z';
 }

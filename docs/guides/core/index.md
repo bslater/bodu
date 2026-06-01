@@ -13,7 +13,7 @@ If you have not yet installed the package or want the high-level shape of the li
 | Namespace | What lives here | Guides |
 |---|---|---|
 | `Bodu.Collections.Generic` | Bounded ring-backed collections — `CircularBuffer<T>`, `Deque<T>`, `EvictingDictionary<TKey,TValue>`, `RingBackedCollection<T>` base. | [Circular buffer](circular-buffer.md) · [Deque](deque.md) · [Evicting dictionary](evicting-dictionary.md) |
-| `Bodu.Collections.Generic.Concurrent` | Thread-safe collection variants — `ConcurrentCircularBuffer<T>`. | (covered in [Circular buffer](circular-buffer.md#thread-safety)) |
+| `Bodu.Collections.Generic.Concurrent` | Thread-safe collection variants — `ConcurrentCircularBuffer<T>`. | (covered in [Circular buffer](circular-buffer.md#pattern-5--concurrent-access-with-concurrentcircularbuffer)) |
 | `Bodu` | Root namespace primitives — `WeekPattern`, `IRandomGenerator`, `XorShiftRandom`, `ThrowHelper`. | [WeekPattern](week-pattern.md) |
 | `Bodu.Buffers` | Pooled buffer infrastructure — `PooledBufferBuilder<T>`. | (no dedicated guide yet — see API reference) |
 | `Bodu.Extensions` | Date, numeric, span, array, and comparable extension methods — `DateTimeExtensions`, `DateOnlyExtensions`, `NumericExtensions`, `ArrayExtensions`, `BufferConverter`, `SpanExtensions`, `IComparableExtensions`. | (no dedicated guide yet — see API reference) |

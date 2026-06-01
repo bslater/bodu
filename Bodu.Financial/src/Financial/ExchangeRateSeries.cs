@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateSeries.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -17,9 +17,9 @@ namespace Bodu.Financial;
 /// <remarks>
 /// <para>
 /// The collection is immutable after construction. Internally it stores observations in a shared
-/// <see cref="ExchangeRateSeriesStorage" /> backed by two parallel sorted arrays — an <see cref="int" /> array
-/// of day numbers (<see cref="DateOnly.DayNumber" />) and a <see cref="decimal" /> array of rates — so that the
-/// binary search at lookup time touches only the compact date array. Compared with
+/// <see cref="ExchangeRateSeriesStorage" /> backed by two parallel sorted arrays — an <see cref="int" /> array of day
+/// numbers (<see cref="DateOnly.DayNumber" />) and a <see cref="decimal" /> array of rates — so that the binary search
+/// at lookup time touches only the compact date array. Compared with
 /// <see cref="System.Collections.Generic.SortedDictionary{TKey, TValue}" /> this gives substantially better cache
 /// locality, no per-node allocation, and predictable hot-path performance for the multi-year daily series typical of FX
 /// data.
@@ -83,8 +83,8 @@ public sealed class ExchangeRateSeries
     /// Thrown if <paramref name="provider" /> or <paramref name="observations" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// Thrown if <paramref name="provider" /> is empty or white-space, if <paramref name="observations" /> is empty,
-    /// or if it contains duplicate dates.
+    /// Thrown if <paramref name="provider" /> is empty or white-space, if <paramref name="observations" /> is empty, or
+    /// if it contains duplicate dates.
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown if any rate in <paramref name="observations" /> is zero or negative.
@@ -154,8 +154,8 @@ public sealed class ExchangeRateSeries
     /// <remarks>
     /// <para>
     /// The resolution algorithm performs a single <see cref="Array.BinarySearch{T}(T[], T)" /> over the day-number
-    /// array. On an exact hit the corresponding rate is returned immediately. On a miss the previous and next
-    /// candidate indices are derived from the bitwise complement of the returned index, then selected per
+    /// array. On an exact hit the corresponding rate is returned immediately. On a miss the previous and next candidate
+    /// indices are derived from the bitwise complement of the returned index, then selected per
     /// <paramref name="options" />. For <see cref="ExchangeRateDateResolution.Nearest" /> with a tie (the requested
     /// date lies exactly midway between two observations), this method returns <see langword="false" /> so callers
     /// receive a deterministic failure rather than an arbitrary pick.
@@ -196,7 +196,7 @@ public sealed class ExchangeRateSeries
         if (_storage.TryGetExactRate(date, out var existing) && existing == rate)
             return this;
 
-        var builder = ToBuilder();
+        ExchangeRateSeriesBuilder builder = ToBuilder();
         builder.Upsert(date, rate);
         return builder.ToSeries();
     }
@@ -214,7 +214,7 @@ public sealed class ExchangeRateSeries
         if (!_storage.Contains(date))
             return this;
 
-        var builder = ToBuilder();
+        ExchangeRateSeriesBuilder builder = ToBuilder();
         builder.Remove(date);
         return builder.ToSeries();
     }
@@ -226,8 +226,8 @@ public sealed class ExchangeRateSeries
     public ExchangeRateSeriesBuilder ToBuilder() => new(this);
 
     /// <summary>
-    /// Provides internal access to the underlying storage so the builder can seed its buffer without copying
-    /// through a public enumeration.
+    /// Provides internal access to the underlying storage so the builder can seed its buffer without copying through a
+    /// public enumeration.
     /// </summary>
     /// <returns>The series' immutable storage.</returns>
     internal ExchangeRateSeriesStorage GetStorage() => _storage;

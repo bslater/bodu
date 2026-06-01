@@ -7,8 +7,9 @@
 namespace Bodu.Financial;
 
 /// <summary>
-/// Verifies the <see cref="Money{TCurrency}" /> type, covering construction, operators, allocation, conversion,
-/// formatting, parsing, and JSON serialization.
+/// Verifies the <see cref="Money" /> runtime-tagged monetary value type, including construction,
+/// arithmetic with same-currency vs cross-currency enforcement, allocation, conversion, formatting, parsing,
+/// and JSON serialisation.
 /// </summary>
 [TestClass]
 public partial class MoneyTests

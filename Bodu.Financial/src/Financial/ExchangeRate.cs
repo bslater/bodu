@@ -116,9 +116,9 @@ public readonly record struct ExchangeRate
     /// <remarks>
     /// Rounding is intentionally deferred to the money boundary so the rate object stays decoupled from the destination
     /// currency's minor-unit precision. Use
-    /// <see cref="MoneyExchangeRateExtensions.ConvertTo{TSource, TTarget}(Money{TSource}, IDatedExchangeRateProvider, DateOnly, ExchangeRateLookupOptions?, MidpointRounding)" />
+    /// <see cref="MoneyOfTCurrencyExchangeRateExtensions.ConvertTo{TSource, TTarget}(Money{TSource}, IDatedExchangeRateProvider, DateOnly, ExchangeRateLookupOptions?, MidpointRounding)" />
     /// ,
-    /// <see cref="MoneyValueExchangeRateExtensions.ConvertTo(MoneyValue, IDatedExchangeRateProvider, string, DateOnly, ExchangeRateLookupOptions?, MidpointRounding)" />
+    /// <see cref="MoneyExchangeRateExtensions.ConvertTo(Money, IDatedExchangeRateProvider, string, DateOnly, ExchangeRateLookupOptions?, MidpointRounding)" />
     /// , or <see cref="Money{TCurrency}.Convert{TTarget}(decimal, MidpointRounding)" /> to apply rounding at the
     /// destination precision.
     /// </remarks>

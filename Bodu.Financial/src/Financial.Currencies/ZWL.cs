@@ -4,6 +4,7 @@
 //     To regenerate: dotnet run --project tools/CurrencyCatalogueGenerator
 // </auto-generated>
 // ---------------------------------------------------------------------------------------------------------------
+#nullable enable
 namespace Bodu.Financial.Currencies;
 
 /// <summary>
@@ -20,6 +21,12 @@ public sealed class ZWL : ICurrency
     /// </summary>
     /// <returns>The three-letter ISO 4217 code.</returns>
     public static string IsoCode => "ZWL";
+
+    /// <summary>
+    /// Gets the ISO 4217 three-digit numeric code for the currency.
+    /// </summary>
+    /// <returns>The three-digit ISO 4217 numeric code.</returns>
+    public static int NumericCode => 932;
 
     /// <summary>
     /// Gets the number of fractional digits in the currency's minor unit.

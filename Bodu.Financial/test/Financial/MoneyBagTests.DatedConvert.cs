@@ -53,7 +53,7 @@ public partial class MoneyBagTests
     [DataRow(MoneyBagConversionRoundingPolicy.RoundEachCurrencyThenSum, 0.00)]
     public void DatedConvertTo_WhenTwoSubMinorUnitLinesAggregate_ShouldHonourPolicy(MoneyBagConversionRoundingPolicy policy, double expected)
     {
-        // Use unregistered currency tags (valid ISO shape, not in the catalogue) so MoneyValue preserves the
+        // Use unregistered currency tags (valid ISO shape, not in the catalogue) so Money preserves the
         // sub-cent source precision — same trick as the timeless-rate test.
         IDatedExchangeRateProvider rates = new FixedDatedExchangeRateProvider(
         [
@@ -62,8 +62,8 @@ public partial class MoneyBagTests
         ]);
 
         MoneyBag bag = MoneyBag.Empty
-            .Add(new MoneyValue(0.005m, "XQT"))
-            .Add(new MoneyValue(0.005m, "XQU"));
+            .Add(new Money(0.005m, "XQT"))
+            .Add(new Money(0.005m, "XQU"));
 
         Money<USD> total = bag.ConvertTo<USD>(rates, s_asOf, ExchangeRateLookupOptions.Exact, policy);
 

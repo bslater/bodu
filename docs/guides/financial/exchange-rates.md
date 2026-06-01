@@ -16,7 +16,10 @@ reports, and multi-source feeds that carry their provenance.
 
 - **Rate** — `ExchangeRate` is an immutable record-struct (`FromIsoCode`, `ToIsoCode`, `Date`, `Rate`, `Provider`, `IsInverted`). Rounding is deferred to the money boundary.
 - **Pair** — `ExchangeRatePair` is the `(From, To)` key. Validates both ISO codes at construction; exposes `Inverse()`.
-- **Series** — `ExchangeRateSeries` stores every observation for one `(pair, provider)` in two parallel sorted arrays. Resolution is `O(log n)` via `Array.BinarySearch`, allocation-free.
+- **Observation** — `ExchangeRateObservation` is the lightweight `(Date, Rate)` carrier used by series enumeration, builder mutation, and bulk-import APIs.
+- **Series** — `ExchangeRateSeries` stores every observation for one `(pair, provider)` in two parallel sorted arrays. Resolution is `O(log n)` via `Array.BinarySearch`, allocation-free. Immutable; use `ExchangeRateSeriesBuilder` to construct or edit observations.
+- **Builder** — `ExchangeRateSeriesBuilder` is the mutable companion that maintains strictly ascending unique dates and produces immutable `ExchangeRateSeries` snapshots via `ToSeries()`.
+- **Table** — `ExchangeRateTableBuilder` keys one builder per `(pair, provider)` for multi-series import workflows.
 - **Provider** — `IExchangeRateProvider` is timeless; `IDatedExchangeRateProvider` is dated and returns an `ExchangeRateLookupResult` with provenance.
 - **Lookup result** — `ExchangeRateLookupResult` carries the rate, requested date, resolution policy, and offset-day distance.
 
@@ -117,6 +120,91 @@ For finer control, construct the record directly with
 `AllowSameCurrencyIdentityRate` (both default `true`) disable the
 reverse-pair fallback and identity short-circuit.
 
+## Building a series imperatively
+
+`ExchangeRateSeries` is immutable, so the construction path for series
+that aren't shipped as a one-shot literal is `ExchangeRateSeriesBuilder`.
+Use it for manual data entry, streaming imports, and merge-with-history
+flows. Three explicit shapes distinguish caller intent:
+
+- `Add(date, rate)` — throws if the date is already present (the data
+  is wrong if you see this).
+- `Set(date, rate)` — throws if the date is missing (you expected an
+  observation to be there).
+- `Upsert(date, rate)` — insert-or-replace; the right shape for merge
+  semantics.
+
+Each has a `Try`-prefixed `bool` sibling. Bulk import uses `AddRange`
+(rejects duplicates outright) and `UpsertRange` (replaces existing
+dates; rejects in-batch duplicates). Both apply atomic rollback: a
+mid-batch validation failure leaves the builder unchanged.
+
+```csharp
+ExchangeRatePair pair = new("USD", "AUD");
+ExchangeRateSeriesBuilder builder = new(pair, "RBA");
+
+builder.Add(new DateOnly(2026, 6, 1), 1.50m);
+builder.AddRange(new[]
+{
+    new ExchangeRateObservation(new DateOnly(2026, 6, 2), 1.51m),
+    new ExchangeRateObservation(new DateOnly(2026, 6, 3), 1.52m),
+});
+builder.Upsert(new DateOnly(2026, 6, 3), 1.53m);  // replaces 1.52m
+
+ExchangeRateSeries snapshot = builder.ToSeries();
+```
+
+`ToSeries()` produces a fresh immutable `ExchangeRateSeries` that is
+isolated from further builder mutations. Calling `ToSeries()` on an
+empty builder throws `InvalidOperationException` because the immutable
+series contract requires at least one observation.
+
+### Copy-on-write edits on an existing series
+
+When the source of truth is already an `ExchangeRateSeries` snapshot,
+the copy-on-write helpers wrap the builder roundtrip for the common
+single-edit case:
+
+```csharp
+ExchangeRateSeries withUpdate = original.WithRate(new DateOnly(2026, 6, 3), 1.55m);
+ExchangeRateSeries withRemoval = original.WithoutRate(new DateOnly(2026, 6, 3));
+
+foreach (var observation in original.GetObservations())
+{
+    // observation.Date / observation.Rate
+}
+```
+
+`original` is unchanged in both cases. `ToBuilder()` returns a fresh
+builder seeded from the snapshot for multi-edit workflows.
+
+## Editing across many pairs and providers
+
+When import data arrives flat — many pairs from many providers — keep
+the builder bookkeeping in `ExchangeRateTableBuilder`. It owns one
+`ExchangeRateSeriesBuilder` per `(pair, provider)` key and exposes
+both lazy creation and a multi-series snapshot operation:
+
+```csharp
+ExchangeRateTableBuilder table = new();
+
+table.Upsert(new ExchangeRatePair("USD", "AUD"), "RBA", new DateOnly(2026, 6, 1), 1.50m);
+table.Upsert(new ExchangeRatePair("USD", "JPY"), "BoJ", new DateOnly(2026, 6, 1), 110m);
+
+// Reach for the underlying builder if you need bulk operations on one series.
+ExchangeRateSeriesBuilder rba = table.GetOrAddSeries(new ExchangeRatePair("USD", "AUD"), "RBA");
+rba.AddRange(/* observations */);
+
+// Snapshot every non-empty series in one pass.
+IReadOnlyList<ExchangeRateSeries> snapshots = table.ToSeries();
+```
+
+`TryGetSeries` returns a fresh immutable snapshot when the series
+exists and is non-empty; `TryGetBuilder` returns the mutable builder
+directly. Empty builders are skipped by `ToSeries()` because an
+immutable series cannot be empty. The table is not thread-safe; use
+external synchronisation for concurrent edits.
+
 ## Composite fallback stack
 
 `CompositeDatedExchangeRateProvider` wraps an ordered set of dated
@@ -171,7 +259,7 @@ rate. To preserve provenance, call the dated provider directly.
 `Money<T>.Convert<TTarget>(decimal)` is the lowest-level conversion
 (supply the rate, it rounds to the destination minor-unit precision).
 When the rate comes from a dated provider and provenance matters,
-prefer the extension methods on `Money<T>` and `MoneyValue`. They
+prefer the extension methods on `Money<T>` and `Money`. They
 resolve the rate, apply it, and return either the converted amount
 (`ConvertTo`) or the full audit record (`ConvertToWithRate`):
 
@@ -188,7 +276,7 @@ audited.ExchangeRate.Rate.Provider;  // "ECB"
 audited.ExchangeRate.OffsetDays;     // 1
 ```
 
-`MoneyValue` has analogous `ConvertTo` and `ConvertToWithRate`
+`Money` has analogous `ConvertTo` and `ConvertToWithRate`
 extension methods for runtime-tagged amounts. For bags, see
 `MoneyBag.ConvertToWithAudit<TTarget>(...)`, which returns one
 `MoneyBagConversionLine` per source currency alongside the total.
@@ -202,13 +290,17 @@ extension methods for runtime-tagged amounts. For bags, see
 | Primary feed plus fallbacks | `CompositeDatedExchangeRateProvider` over multiple dated providers |
 | Reporting period that pins one date everywhere | `DatedExchangeRateProviderAdapter` over the period-end date |
 | Ledger entry that records the rate provenance | `Money<T>.ConvertToWithRate<,>(provider, date, options)` returning `MoneyConversionResult<,>` |
-| Runtime-tagged amount via a dated provider | `MoneyValueExchangeRateExtensions.ConvertToWithRate(...)` |
+| Runtime-tagged amount via a dated provider | `MoneyExchangeRateExtensions.ConvertToWithRate(...)` |
 | Aggregate-then-convert a bag with per-line provenance | `MoneyBag.ConvertToWithAudit<TTarget>(provider, date, options)` |
+| Build a new series imperatively, or merge incoming observations into an existing one | `ExchangeRateSeriesBuilder` + `Add` / `Upsert` / `AddRange` / `UpsertRange` |
+| Single insert/replace/remove that returns a fresh immutable series | `ExchangeRateSeries.WithRate(date, rate)` / `WithoutRate(date)` |
+| Import flat rate data across many `(pair, provider)` combinations before producing immutable snapshots | `ExchangeRateTableBuilder` |
 
 ## See also
 
 - [Bodu.Financial introduction](../../docs/financial/index.md), [Core concepts](../../docs/financial/concepts.md), [Working with `Money<TCurrency>`](money.md)
 - Contracts — [`IExchangeRateProvider`](xref:Bodu.Financial.IExchangeRateProvider), [`IDatedExchangeRateProvider`](xref:Bodu.Financial.IDatedExchangeRateProvider)
-- Values — [`ExchangeRate`](xref:Bodu.Financial.ExchangeRate), [`ExchangeRatePair`](xref:Bodu.Financial.ExchangeRatePair), [`ExchangeRateSeries`](xref:Bodu.Financial.ExchangeRateSeries)
+- Values — [`ExchangeRate`](xref:Bodu.Financial.ExchangeRate), [`ExchangeRatePair`](xref:Bodu.Financial.ExchangeRatePair), [`ExchangeRateObservation`](xref:Bodu.Financial.ExchangeRateObservation), [`ExchangeRateSeries`](xref:Bodu.Financial.ExchangeRateSeries)
+- Editing — [`ExchangeRateSeriesBuilder`](xref:Bodu.Financial.ExchangeRateSeriesBuilder), [`ExchangeRateSeriesKey`](xref:Bodu.Financial.ExchangeRateSeriesKey), [`ExchangeRateTableBuilder`](xref:Bodu.Financial.ExchangeRateTableBuilder), [`ExchangeRateBook`](xref:Bodu.Financial.ExchangeRateBook)
 - Providers — [`FixedExchangeRateTable`](xref:Bodu.Financial.FixedExchangeRateTable), [`FixedDatedExchangeRateProvider`](xref:Bodu.Financial.FixedDatedExchangeRateProvider), [`CompositeDatedExchangeRateProvider`](xref:Bodu.Financial.CompositeDatedExchangeRateProvider), [`DatedExchangeRateProviderAdapter`](xref:Bodu.Financial.DatedExchangeRateProviderAdapter)
 - Lookup metadata — [`ExchangeRateLookupOptions`](xref:Bodu.Financial.ExchangeRateLookupOptions), [`ExchangeRateLookupResult`](xref:Bodu.Financial.ExchangeRateLookupResult), [`ExchangeRateDateResolution`](xref:Bodu.Financial.ExchangeRateDateResolution), [`MoneyConversionResult<TSource, TTarget>`](xref:Bodu.Financial.MoneyConversionResult`2)

@@ -12,7 +12,7 @@ For the high-level shape of the library and the pipeline diagram, start with the
 ## Document and view
 
 A **document** is the parsed-but-not-yet-resolved representation of the source text. It is an
-<xref:Bodu.Text.Ini.IniDocument> from <xref:Bodu.Text.Formats> — the same structure the INI codec produces — with a
+<xref:Bodu.Text.Ini.IniDocument> from the `Bodu.Text.Formats` package — the same structure the INI codec produces — with a
 preamble (the global section) and zero or more named sections in source order. The document preserves comments,
 ordering, and duplicate-policy decisions, so it can be re-emitted byte-for-byte.
 

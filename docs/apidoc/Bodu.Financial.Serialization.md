@@ -16,15 +16,15 @@ uid: Bodu.Financial.Serialization
 ## Key types
 
 - <xref:Bodu.Financial.Serialization.FinancialJsonPolicy> — selects the wire shape (`Strict`, `Lenient`, `Compact`).
-- <xref:Bodu.Financial.Serialization.MoneyJsonConverter`1>, <xref:Bodu.Financial.Serialization.MoneyJsonConverterFactory> — converter and factory for <xref:Bodu.Financial.Money`1>.
-- <xref:Bodu.Financial.Serialization.MoneyValueJsonConverter> — converter for <xref:Bodu.Financial.MoneyValue>.
+- <xref:Bodu.Financial.Serialization.MoneyOfTCurrencyJsonConverter`1>, <xref:Bodu.Financial.Serialization.MoneyOfTCurrencyJsonConverterFactory> — converter and factory for <xref:Bodu.Financial.Money`1>.
+- <xref:Bodu.Financial.Serialization.MoneyJsonConverter> — converter for <xref:Bodu.Financial.Money>.
 - <xref:Bodu.Financial.Serialization.MoneyBagJsonConverter> — converter for <xref:Bodu.Financial.MoneyBag>.
 - <xref:Bodu.Financial.Serialization.ExchangeRateJsonConverter>, <xref:Bodu.Financial.Serialization.ExchangeRatePairJsonConverter> — converters for the FX value objects.
 - <xref:Bodu.Financial.Serialization.FinancialJsonSerializerOptionsExtensions> — the registration extension method `AddFinancialJsonConverters(options, policy)`.
 
 ## Wire shapes
 
-| Policy | `Money<TCurrency>` / `MoneyValue` | `MoneyBag` | Use when |
+| Policy | `Money<TCurrency>` / `Money` | `MoneyBag` | Use when |
 |---|---|---|---|
 | `Strict` *(default)* | `{ "amount": 19.99, "currency": "USD" }` | `{ "balances": { "USD": 100.00, "EUR": 50.00 } }` | Storing canonical ledger payloads. Validates currency match, rejects duplicate keys. |
 | `Lenient` | Same as Strict | Same as Strict | Importing third-party data. Normalises lowercase ISO codes, trims whitespace before validation. |
@@ -59,7 +59,7 @@ Money<USD> imported = JsonSerializer.Deserialize<Money<USD>>(
 
 ## Notes
 
-- **Currency-mismatch on `Money<TCurrency>`.** Strict and Lenient policies both reject payloads whose `"currency"` field does not match `TCurrency.IsoCode` — drift surfaces as `JsonException` rather than a silently re-interpreted amount. `MoneyValue` accepts any ISO code and rounds to the registry's `MinorUnits` for that code.
+- **Currency-mismatch on `Money<TCurrency>`.** Strict and Lenient policies both reject payloads whose `"currency"` field does not match `TCurrency.IsoCode` — drift surfaces as `JsonException` rather than a silently re-interpreted amount. `Money` accepts any ISO code and rounds to the registry's `MinorUnits` for that code.
 - **MoneyBag pruning.** Zero balances are pruned on round-trip — the deserialised bag matches the canonical form, not the verbatim wire shape.
 - **Strict vs. Lenient on Compact.** The compact policy accepts both `"19.99 USD"` and `"USD 19.99"` regardless of `Strict` / `Lenient` because there is no ambiguity to be strict about; lenient and strict behave identically under `Compact`.
 - **AddFinancialJsonConverters.** Registers every converter on the same `JsonSerializerOptions` instance under a single policy. Call this once per options instance; mixing policies across types is not supported.

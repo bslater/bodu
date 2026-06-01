@@ -14,11 +14,11 @@ A **currency tag** is a sealed class in `Bodu.Financial.Currencies` (one per ISO
 
 Tags use C# 11 static-abstract members, so metadata is accessed through the type itself (`USD.IsoCode`, `USD.MinorUnits`) and through `TCurrency.IsoCode` from generic code constrained by `where TCurrency : ICurrency`. `IsoCode` and `MinorUnits` are required; `CashRoundingIncrement`, `IsHistoric`, `DemonetizedOn`, and `SuccessorIsoCode` are `static virtual` with sensible defaults so existing custom tags compile unchanged.
 
-## `Money<TCurrency>` vs. `MoneyValue`
+## `Money<TCurrency>` vs. `Money`
 
 <xref:Bodu.Financial.Money`1> is **compile-time-typed**: the currency is the type parameter. `Money<USD>` and `Money<JPY>` are distinct types, and adding them is a compile error. Use it whenever the currency is known at the call site.
 
-<xref:Bodu.Financial.MoneyValue> is **runtime-tagged**: it carries the currency as an ISO 4217 string. Cross-currency arithmetic surfaces as <xref:System.InvalidOperationException> at runtime rather than at build time. Use it when the currency is data — deserialised payloads, generic invoicing engines, configuration-driven accounting — and convert to typed money with `MoneyValue.ToTyped<T>()` or `TryToTyped` at the boundary where the currency becomes known.
+<xref:Bodu.Financial.Money> is **runtime-tagged**: it carries the currency as an ISO 4217 string. Cross-currency arithmetic surfaces as <xref:System.InvalidOperationException> at runtime rather than at build time. Use it when the currency is data — deserialised payloads, generic invoicing engines, configuration-driven accounting — and convert to typed money with `Money.As<T>()` or `TryAs` at the boundary where the currency becomes known.
 
 Both types are immutable, value-equatable readonly structs and both round on construction.
 
@@ -92,7 +92,7 @@ Tag types are source-generated from `currencies.json` and registered with <xref:
 
 ## `CurrencyRegistry`
 
-<xref:Bodu.Financial.CurrencyRegistry> is the thread-safe runtime table over <xref:Bodu.Financial.CurrencyInfo> records — the runtime-shape counterpart of an `ICurrency` tag. It backs <xref:Bodu.Financial.MoneyValue> rounding and <xref:Bodu.Financial.MoneyBag> conversions, both of which only know the ISO code at runtime.
+<xref:Bodu.Financial.CurrencyRegistry> is the thread-safe runtime table over <xref:Bodu.Financial.CurrencyInfo> records — the runtime-shape counterpart of an `ICurrency` tag. It backs <xref:Bodu.Financial.Money> rounding and <xref:Bodu.Financial.MoneyBag> conversions, both of which only know the ISO code at runtime.
 
 Custom or future currencies (e.g. cryptocurrencies, in-game tokens, regional vouchers) are registered via `CurrencyRegistry.Register(CurrencyInfo)` or `TryRegister`. Custom entries layer on top of the shipped catalogue and take precedence on conflict, so consumers can override shipped metadata in pinch.
 
@@ -106,7 +106,23 @@ Custom or future currencies (e.g. cryptocurrencies, in-game tokens, regional vou
 
 ## `ExchangeRateSeries`
 
-<xref:Bodu.Financial.ExchangeRateSeries> stores every observation for one `(pair, provider)` combination in two parallel sorted arrays — dates and rates — so resolution is allocation-free and runs in `O(log n)` over the date array via <xref:System.Array.BinarySearch``1(``0[],``0)>. The two-array layout improves cache locality compared to a <xref:System.Collections.Generic.SortedDictionary`2>, and instances are safe to share across threads after construction.
+<xref:Bodu.Financial.ExchangeRateSeries> stores every observation for one `(pair, provider)` combination in two parallel sorted arrays — day numbers (<xref:System.DateOnly.DayNumber>) and rates — so resolution is allocation-free and runs in `O(log n)` over the day-number array via <xref:System.Array.BinarySearch``1(``0[],``0)>. The two-array layout improves cache locality compared to a <xref:System.Collections.Generic.SortedDictionary`2>, and instances are safe to share across threads after construction. Public APIs continue to accept and return <xref:System.DateOnly>; conversion to and from the internal day-number representation happens at the boundary.
+
+The series is **immutable**. Use the companion <xref:Bodu.Financial.ExchangeRateSeriesBuilder> to construct or edit observations imperatively, or the copy-on-write helpers `ExchangeRateSeries.WithRate(date, rate)` and `ExchangeRateSeries.WithoutRate(date)` for single-edit return-new patterns. `ExchangeRateSeries.GetObservations()` yields the observations as an <xref:Bodu.Financial.ExchangeRateObservation> sequence in strictly ascending date order, and `ExchangeRateSeries.ToBuilder()` returns a fresh builder pre-populated from the snapshot.
+
+## `ExchangeRateObservation`
+
+<xref:Bodu.Financial.ExchangeRateObservation> is the lightweight `(Date, Rate)` `readonly record struct` used as the transport shape for series enumeration, builder mutation, and bulk-import APIs. Unlike <xref:Bodu.Financial.ExchangeRate> it does not carry provider or inversion metadata — those are owned by the enclosing series. The type itself does not validate `Rate`; the surrounding series and builder reject zero or negative values at the boundary.
+
+## `ExchangeRateSeriesBuilder`
+
+<xref:Bodu.Financial.ExchangeRateSeriesBuilder> is the mutable companion to <xref:Bodu.Financial.ExchangeRateSeries>. It maintains strictly ascending unique observation dates and strictly positive rates while supporting single-observation edits and bulk import. The public surface distinguishes intent through three explicit shapes — `Add` (throws on duplicate), `Set` (throws on missing), and `Upsert` (insert-or-replace) — plus their `Try`-prefixed boolean siblings. Bulk import uses `AddRange` (rejects duplicates) and `UpsertRange` (replaces existing dates, rejects in-batch duplicates) with atomic-rollback semantics: a mid-batch validation failure leaves the builder unchanged. `ToSeries()` produces an immutable <xref:Bodu.Financial.ExchangeRateSeries> snapshot; further builder mutations do not affect previously produced snapshots, and vice versa. Instances are not thread-safe.
+
+## `ExchangeRateSeriesKey` and `ExchangeRateTableBuilder`
+
+<xref:Bodu.Financial.ExchangeRateSeriesKey> is a `readonly record struct` carrying a <xref:Bodu.Financial.ExchangeRatePair> and the publishing provider's identifier — the natural dictionary key when the same pair has rates from multiple sources.
+
+<xref:Bodu.Financial.ExchangeRateTableBuilder> is the higher-level mutable collection that owns one <xref:Bodu.Financial.ExchangeRateSeriesBuilder> per `(pair, provider)` key. It exposes `GetOrAddSeries`, `Upsert(pair, provider, date, rate)`, `TryGetBuilder` (returns the mutable builder), `TryGetSeries` (returns an immutable snapshot), and `ToSeries()` (snapshots every non-empty series). Use it for import workflows that ingest rate observations across many currency pairs and providers before producing immutable snapshots for production lookup. Like the builder it is not thread-safe.
 
 ## Timeless vs. dated provider
 
@@ -144,11 +160,11 @@ More elaborate cross-provider policies (such as preferring an exact-date hit fro
 
 ## `MoneyConversionResult<TSource, TTarget>`
 
-<xref:Bodu.Financial.MoneyConversionResult`2> is the audit record returned by the `ConvertTo<TTarget>(IDatedExchangeRateProvider, …)` extension methods on `Money<T>`, `MoneyValue`, and `MoneyBag`. It bundles the original source amount, the rounded target amount, and the full <xref:Bodu.Financial.ExchangeRateLookupResult> that produced it — so the consumer sees both the answer and the provenance of the rate in a single value, without a second lookup.
+<xref:Bodu.Financial.MoneyConversionResult`2> is the audit record returned by the `ConvertTo<TTarget>(IDatedExchangeRateProvider, …)` extension methods on `Money<T>`, `Money`, and `MoneyBag`. It bundles the original source amount, the rounded target amount, and the full <xref:Bodu.Financial.ExchangeRateLookupResult> that produced it — so the consumer sees both the answer and the provenance of the rate in a single value, without a second lookup.
 
 ## `MoneyBag`
 
-<xref:Bodu.Financial.MoneyBag> is an immutable mixed-currency portfolio — a snapshot of balances across multiple ISO codes. Mutators return new instances; zero balances are pruned automatically on every operation; enumeration yields one <xref:Bodu.Financial.MoneyValue> per non-zero currency in lexicographic ISO order, so iteration is stable and reproducible across runs.
+<xref:Bodu.Financial.MoneyBag> is an immutable mixed-currency portfolio — a snapshot of balances across multiple ISO codes. Mutators return new instances; zero balances are pruned automatically on every operation; enumeration yields one <xref:Bodu.Financial.Money> per non-zero currency in lexicographic ISO order, so iteration is stable and reproducible across runs.
 
 The bag is the type that models the **aggregate-then-convert** pattern: accumulate per-currency balances during a batch, then convert the entire bag to a single target currency once at the boundary via `MoneyBag.ConvertTo<TTarget>(IExchangeRateProvider)` or its dated counterpart. Compared to converting each amount on the way in, aggregate-then-convert needs one FX lookup per source currency instead of one per posting.
 

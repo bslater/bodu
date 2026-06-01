@@ -70,7 +70,7 @@ public sealed class MoneyBagJsonConverter
         if (_policy == FinancialJsonPolicy.Compact)
         {
             writer.WriteStartObject();
-            foreach (MoneyValue balance in value)
+            foreach (Money balance in value)
                 writer.WriteNumber(balance.IsoCode, balance.Amount);
             writer.WriteEndObject();
             return;
@@ -78,7 +78,7 @@ public sealed class MoneyBagJsonConverter
 
         writer.WriteStartObject();
         writer.WriteStartObject("balances");
-        foreach (MoneyValue balance in value)
+        foreach (Money balance in value)
             writer.WriteNumber(balance.IsoCode, balance.Amount);
         writer.WriteEndObject();
         writer.WriteEndObject();
@@ -93,7 +93,7 @@ public sealed class MoneyBagJsonConverter
     /// <returns>The deserialized bag.</returns>
     private static MoneyBag ReadWrappedBalances(ref Utf8JsonReader reader)
     {
-        List<MoneyValue> entries = new();
+        List<Money> entries = new();
 
         while (reader.Read())
         {
@@ -130,7 +130,7 @@ public sealed class MoneyBagJsonConverter
     /// <returns>The deserialized bag.</returns>
     private static MoneyBag ReadCompactBalances(ref Utf8JsonReader reader)
     {
-        List<MoneyValue> entries = new();
+        List<Money> entries = new();
         ReadBalanceMap(ref reader, entries);
         return new MoneyBag(entries);
     }
@@ -141,7 +141,7 @@ public sealed class MoneyBagJsonConverter
     /// </summary>
     /// <param name="reader">The reader positioned at the map's <c>StartObject</c>.</param>
     /// <param name="entries">The list that receives the per-currency balances.</param>
-    private static void ReadBalanceMap(ref Utf8JsonReader reader, List<MoneyValue> entries)
+    private static void ReadBalanceMap(ref Utf8JsonReader reader, List<Money> entries)
     {
         while (reader.Read())
         {
@@ -173,7 +173,7 @@ public sealed class MoneyBagJsonConverter
                     string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Json_Invalid_BalanceMustBeNumber, iso));
             }
 
-            entries.Add(new MoneyValue(amount, iso));
+            entries.Add(new Money(amount, iso));
         }
     }
 }

@@ -6,19 +6,19 @@ uid: Bodu.IO.Hashing.CheckDigits
 
 ## Purpose
 
-**Bodu.IO.Hashing.CheckDigits** ships the catalogue of single-character and multi-character check-digit algorithms — Luhn, Damm, Verhoeff, Pearson, plus the standard catalogues used by financial, retail, securities, and publishing identifiers (IBAN, LEI, EAN, GTIN, UPC, ISBN, ISIN, SEDOL, CUSIP, ABA routing, …). Every algorithm derives from <xref:Bodu.IO.Hashing.CheckDigitAlgorithm>, <xref:Bodu.IO.Hashing.MultiCharCheckDigitAlgorithm>, or <xref:Bodu.IO.Hashing.AlphanumericCheckDigitAlgorithm>.
+**Bodu.IO.Hashing.CheckDigits** ships the catalogue of single-character and multi-character check-digit algorithms — Luhn, Damm, Verhoeff, Pearson, plus the standard catalogues used by financial, retail, securities, and publishing identifiers (IBAN, LEI, EAN, GTIN, UPC, ISBN, ISIN, SEDOL, CUSIP, ABA routing, …). Every algorithm derives from <xref:Bodu.IO.Hashing.CheckDigits.CheckDigitAlgorithm>, <xref:Bodu.IO.Hashing.CheckDigits.MultiCharCheckDigitAlgorithm>, or <xref:Bodu.IO.Hashing.CheckDigits.AlphanumericCheckDigitAlgorithm>.
 
 ## Key types
 
 **Generic algorithms** — applicable to any identifier shape:
 
-- <xref:Bodu.IO.Hashing.CheckDigits.Luhn>, <xref:Bodu.IO.Hashing.CheckDigits.Damm>, <xref:Bodu.IO.Hashing.CheckDigits.Verhoeff>, <xref:Bodu.IO.Hashing.CheckDigits.Pearson>, <xref:Bodu.IO.Hashing.CheckDigits.Gumm>
+- <xref:Bodu.IO.Hashing.CheckDigits.Luhn>, <xref:Bodu.IO.Hashing.CheckDigits.Damm>, <xref:Bodu.IO.Hashing.CheckDigits.Verhoeff>, <xref:Bodu.IO.Hashing.Pearson>, <xref:Bodu.IO.Hashing.CheckDigits.Gumm>
 
 **Financial / banking identifiers:**
 
 - <xref:Bodu.IO.Hashing.CheckDigits.AbaRoutingNumber> — ABA routing number (US).
-- <xref:Bodu.IO.Hashing.CheckDigits.Iban> — IBAN MOD-97.
-- <xref:Bodu.IO.Hashing.CheckDigits.Lei> — Legal Entity Identifier (ISO 17442).
+- <xref:Bodu.IO.Hashing.Checksums.Iban> — IBAN MOD-97.
+- <xref:Bodu.IO.Hashing.Checksums.Lei> — Legal Entity Identifier (ISO 17442).
 
 **Retail / GS1:**
 
@@ -26,11 +26,11 @@ uid: Bodu.IO.Hashing.CheckDigits
 
 **Securities:**
 
-- <xref:Bodu.IO.Hashing.CheckDigits.Cusip>, <xref:Bodu.IO.Hashing.CheckDigits.Isin>, <xref:Bodu.IO.Hashing.CheckDigits.Sedol>
+- <xref:Bodu.IO.Hashing.Checksums.Cusip>, <xref:Bodu.IO.Hashing.CheckDigits.Isin>, <xref:Bodu.IO.Hashing.Checksums.Sedol>
 
 **Publishing:**
 
-- <xref:Bodu.IO.Hashing.CheckDigits.Isbn10>, <xref:Bodu.IO.Hashing.CheckDigits.Isbn13>
+- <xref:Bodu.IO.Hashing.Checksums.Isbn10>, <xref:Bodu.IO.Hashing.Checksums.Isbn13>
 
 **Encoded identifiers:**
 
@@ -38,7 +38,7 @@ uid: Bodu.IO.Hashing.CheckDigits
 
 **ISO 7064:**
 
-- <xref:Bodu.IO.Hashing.CheckDigits.Iso7064Mod11_2>, <xref:Bodu.IO.Hashing.CheckDigits.Iso7064Mod97_10>
+- <xref:Bodu.IO.Hashing.Checksums.Iso7064Mod11_2>, <xref:Bodu.IO.Hashing.Checksums.Iso7064Mod97_10>
 
 ## Example
 

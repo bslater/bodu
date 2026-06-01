@@ -4,142 +4,165 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Test;
-using Bodu.Test.Assertions;
+using Bodu.Financial.Currencies;
 
 namespace Bodu.Financial;
 
+/// <summary>
+/// Verifies <see cref="MoneyExchangeRateExtensions" /> — the dated-conversion bridge for runtime-tagged money.
+/// </summary>
 [TestClass]
-public partial class MoneyExchangeRateExtensionsTests
+public class MoneyExchangeRateExtensionsTests
 {
-    private static readonly DateOnly s_d1 = new(2024, 1, 3);
+    /// <summary>
+    /// Shared as-of date for the fixture.
+    /// </summary>
+    private static readonly DateOnly s_asOf = new(2024, 6, 30);
 
-    private static FixedDatedExchangeRateProvider BuildProvider() => new(
+    /// <summary>
+    /// Returns the shared test rate table.
+    /// </summary>
+    /// <returns>A provider with EUR/USD=1.10, JPY/USD=0.0067, USD/EUR=0.9091 (for inverse coverage).</returns>
+    private static IDatedExchangeRateProvider BuildProvider() => new FixedDatedExchangeRateProvider(
     [
-        new ExchangeRate("USD", "AUD", s_d1, 1.50m, "RBA"),
+        new ExchangeRate("EUR", "USD", s_asOf, 1.10m, "RBA"),
+        new ExchangeRate("JPY", "USD", s_asOf, 0.0067m, "RBA"),
     ]);
 
     /// <summary>
-    /// Verifies that <see cref="MoneyExchangeRateExtensions.ConvertTo" /> converts the supplied amount through the
-    /// resolved exchange rate and rounds to the target's decimal-place count.
+    /// Verifies that the runtime-tagged dated convert path produces the expected target amount across a matrix
+    /// of source/target combinations.
     /// </summary>
     [TestMethod]
-    [TestCategory(TestCategories.Smoke)]
-    public void ConvertTo_WhenRateAvailable_ShouldReturnConvertedAmount()
+    [DataRow("EUR", "USD", 100, 110.00)]      // direct EUR/USD
+    [DataRow("USD", "EUR", 110, 100.00)]      // inverse (allowed)
+    [DataRow("JPY", "USD", 10000, 67.00)]     // direct JPY/USD
+    [DataRow("USD", "USD", 50, 50.00)]        // same-currency identity
+    public void ConvertTo_WhenRateAvailable_ShouldReturnConvertedRuntimeAmount(string from, string to, double amount, double expected)
     {
-        Money<Bodu.Financial.Currencies.USD> amount = new(100m);
+        Money source = new((decimal)amount, from);
 
-        Money<Bodu.Financial.Currencies.AUD> converted = amount.ConvertTo<Bodu.Financial.Currencies.USD, Bodu.Financial.Currencies.AUD>(
+        Money result = source.ConvertTo(BuildProvider(), to, s_asOf, ExchangeRateLookupOptions.Exact);
+
+        Assert.AreEqual(to, result.IsoCode);
+        Assert.AreEqual((decimal)expected, result.Amount);
+    }
+
+    /// <summary>
+    /// Verifies the typed-target overload converts to a strongly-typed <see cref="Money{TTarget}" />.
+    /// </summary>
+    [TestMethod]
+    public void ConvertToTyped_WhenRateAvailable_ShouldReturnTypedAmount()
+    {
+        Money source = new(100m, "EUR");
+
+        Money<USD> result = source.ConvertTo<USD>(BuildProvider(), s_asOf, ExchangeRateLookupOptions.Exact);
+
+        Assert.AreEqual(new Money<USD>(110m), result);
+    }
+
+    /// <summary>
+    /// Verifies that the audit-bearing overload returns the lookup metadata alongside the converted amount.
+    /// </summary>
+    [TestMethod]
+    public void ConvertToWithRate_WhenRateAvailable_ShouldReturnAmountAndAuditMetadata()
+    {
+        Money source = new(100m, "EUR");
+
+        (Money target, ExchangeRateLookupResult lookup) = source.ConvertToWithRate(
             BuildProvider(),
-            s_d1,
+            "USD",
+            s_asOf,
             ExchangeRateLookupOptions.Exact);
 
-        Assert.AreEqual(150.00m, converted.Amount);
+        Assert.AreEqual(new Money(110m, "USD"), target);
+        Assert.AreEqual(1.10m, lookup.Rate.Rate);
+        Assert.AreEqual("RBA", lookup.Rate.Provider);
+        Assert.IsFalse(lookup.Rate.IsInverted);
+        Assert.AreEqual(0, lookup.OffsetDays);
     }
 
     /// <summary>
-    /// Verifies that <see cref="MoneyExchangeRateExtensions.ConvertToWithRate" /> returns the converted amount and the
-    /// complete <see cref="ExchangeRateLookupResult" /> that produced it.
+    /// Verifies that the inverse-direction path correctly flips the rate and marks the result as inverted.
     /// </summary>
     [TestMethod]
-    public void ConvertToWithRate_WhenRateAvailable_ShouldReturnConvertedAmountAndMetadata()
+    public void ConvertToWithRate_WhenOnlyInverseRateAvailable_ShouldFlagInversion()
     {
-        Money<Bodu.Financial.Currencies.USD> amount = new(100m);
+        // Only EUR/USD is in the table; converting USD → EUR uses the inverse.
+        Money source = new(110m, "USD");
 
-        MoneyConversionResult<Bodu.Financial.Currencies.USD, Bodu.Financial.Currencies.AUD> result = amount.ConvertToWithRate<Bodu.Financial.Currencies.USD, Bodu.Financial.Currencies.AUD>(
+        (Money target, ExchangeRateLookupResult lookup) = source.ConvertToWithRate(
             BuildProvider(),
-            s_d1,
+            "EUR",
+            s_asOf,
             ExchangeRateLookupOptions.Exact);
 
-        Assert.AreEqual(100m, result.SourceAmount.Amount);
-        Assert.AreEqual(150.00m, result.TargetAmount.Amount);
-        Assert.AreEqual(1.50m, result.ExchangeRate.Rate.Rate);
-        Assert.AreEqual("RBA", result.ExchangeRate.Rate.Provider);
-        Assert.IsFalse(result.ExchangeRate.Rate.IsInverted);
+        Assert.AreEqual("EUR", target.IsoCode);
+        Assert.IsTrue(lookup.Rate.IsInverted);
+        Assert.AreEqual("RBA", lookup.Rate.Provider);
     }
 
     /// <summary>
-    /// Verifies that <see cref="MoneyExchangeRateExtensions.ConvertTo" /> resolves an inverse rate when the requested
-    /// direction is not stored directly.
-    /// </summary>
-    [TestMethod]
-    public void ConvertTo_WhenUsingInverseRate_ShouldReturnReciprocalConversion()
-    {
-        Money<Bodu.Financial.Currencies.AUD> amount = new(150m);
-
-        Money<Bodu.Financial.Currencies.USD> converted = amount.ConvertTo<Bodu.Financial.Currencies.AUD, Bodu.Financial.Currencies.USD>(
-            BuildProvider(),
-            s_d1,
-            ExchangeRateLookupOptions.Exact);
-
-        Assert.AreEqual(100.00m, converted.Amount);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="MoneyExchangeRateExtensions.ConvertTo" /> applied to the same currency returns the
-    /// original amount (via the identity rate of <c>1</c>).
-    /// </summary>
-    [TestMethod]
-    public void ConvertTo_WhenSameCurrency_ShouldReturnOriginalAmount()
-    {
-        Money<Bodu.Financial.Currencies.USD> amount = new(100m);
-
-        Money<Bodu.Financial.Currencies.USD> converted = amount.ConvertTo<Bodu.Financial.Currencies.USD, Bodu.Financial.Currencies.USD>(
-            BuildProvider(),
-            s_d1,
-            ExchangeRateLookupOptions.Exact);
-
-        Assert.AreEqual(100m, converted.Amount);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="MoneyExchangeRateExtensions.ConvertTo" /> throws <see cref="KeyNotFoundException" />
-    /// when the provider cannot satisfy the request.
-    /// </summary>
-    [TestMethod]
-    public void ConvertTo_WhenRateMissing_ShouldThrowKeyNotFoundException()
-    {
-        Money<Bodu.Financial.Currencies.USD> amount = new(100m);
-        FixedDatedExchangeRateProvider empty = new([]);
-
-        _ = Assert.ThrowsExactly<KeyNotFoundException>(() =>
-            amount.ConvertTo<Bodu.Financial.Currencies.USD, Bodu.Financial.Currencies.JPY>(
-                empty,
-                s_d1,
-                new ExchangeRateLookupOptions(ExchangeRateDateResolution.Exact, allowSameCurrencyIdentityRate: false)));
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="MoneyExchangeRateExtensions.ConvertTo" /> throws when the provider is
-    /// <see langword="null" />.
+    /// Verifies that the dated conversion throws <see cref="ArgumentNullException" /> when the provider is null.
     /// </summary>
     [TestMethod]
     public void ConvertTo_WhenProviderIsNull_ShouldThrowArgumentNullException()
     {
-        Money<Bodu.Financial.Currencies.USD> amount = new(100m);
+        Money source = new(100m, "EUR");
 
-        ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(
-            () => amount.ConvertTo<Bodu.Financial.Currencies.USD, Bodu.Financial.Currencies.AUD>(
-                null!,
-                s_d1,
-                ExchangeRateLookupOptions.Exact),
-            "provider");
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = source.ConvertTo(null!, "USD", s_asOf, ExchangeRateLookupOptions.Exact);
+        });
     }
 
     /// <summary>
-    /// Verifies that <see cref="MoneyExchangeRateExtensions.ConvertToWithRate" /> throws when the provider is
-    /// <see langword="null" />.
+    /// Verifies that the dated conversion throws <see cref="KeyNotFoundException" /> when no rate is available.
     /// </summary>
     [TestMethod]
-    public void ConvertToWithRate_WhenProviderIsNull_ShouldThrowArgumentNullException()
+    public void ConvertTo_WhenRateUnavailable_ShouldThrowKeyNotFoundException()
     {
-        Money<Bodu.Financial.Currencies.USD> amount = new(100m);
+        Money source = new(100m, "GBP");        // no GBP rates in the fixture
 
-        ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(
-            () => amount.ConvertToWithRate<Bodu.Financial.Currencies.USD, Bodu.Financial.Currencies.AUD>(
-                null!,
-                s_d1,
-                ExchangeRateLookupOptions.Exact),
-            "provider");
+        Assert.ThrowsExactly<KeyNotFoundException>(() =>
+        {
+            _ = source.ConvertTo(BuildProvider(), "USD", s_asOf, ExchangeRateLookupOptions.Exact);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that requesting conversion to the source currency under
+    /// <see cref="ExchangeRateLookupOptions.AllowSameCurrencyIdentityRate" /> short-circuits without rate lookup,
+    /// even when the provider has no observation for the (X, X) pair.
+    /// </summary>
+    [TestMethod]
+    public void ConvertTo_WhenSourceAndTargetAreSameCurrency_ShouldReturnSourceAmount()
+    {
+        Money source = new(100m, "EUR");
+
+        Money result = source.ConvertTo(BuildProvider(), "EUR", s_asOf, ExchangeRateLookupOptions.Exact);
+
+        Assert.AreEqual(source, result);
+    }
+
+    /// <summary>
+    /// Verifies that the rounding-rule override is honoured at the target currency's minor-unit boundary.
+    /// </summary>
+    [TestMethod]
+    public void ConvertTo_WhenAwayFromZeroRequested_ShouldRoundMidpointAway()
+    {
+        IDatedExchangeRateProvider rates = new FixedDatedExchangeRateProvider(
+        [
+            // 1.225 EUR/USD; 1 EUR × 1.225 = 1.225 → midpoint rounds to 1.22 banker's, 1.23 AwayFromZero.
+            new ExchangeRate("EUR", "USD", s_asOf, 1.225m, "Bench"),
+        ]);
+
+        Money source = new(1m, "EUR");
+
+        Money banker = source.ConvertTo(rates, "USD", s_asOf, ExchangeRateLookupOptions.Exact);
+        Money awayFromZero = source.ConvertTo(rates, "USD", s_asOf, ExchangeRateLookupOptions.Exact, MidpointRounding.AwayFromZero);
+
+        Assert.AreEqual(1.22m, banker.Amount);
+        Assert.AreEqual(1.23m, awayFromZero.Amount);
     }
 }

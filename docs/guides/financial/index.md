@@ -21,7 +21,7 @@ hand off to `Fraction<BigInteger>` for exact-arithmetic chains via
   immutable monetary amount whose currency is encoded at the type
   level via an `ICurrency` tag, so cross-currency arithmetic fails
   the build rather than running with the wrong unit at runtime.
-- **[`MoneyValue`](xref:Bodu.Financial.MoneyValue)** — the
+- **[`Money`](xref:Bodu.Financial.Money)** — the
   runtime-tagged sister type for "currency unknown until
   deserialisation" scenarios.
 - **[`MoneyBag`](xref:Bodu.Financial.MoneyBag)** — immutable
@@ -39,6 +39,12 @@ hand off to `Fraction<BigInteger>` for exact-arithmetic chains via
   [`ExchangeRateSeries`](xref:Bodu.Financial.ExchangeRateSeries),
   [`FixedDatedExchangeRateProvider`](xref:Bodu.Financial.FixedDatedExchangeRateProvider),
   [`CompositeDatedExchangeRateProvider`](xref:Bodu.Financial.CompositeDatedExchangeRateProvider)).
+- **FX editing surface:**
+  [`ExchangeRateSeriesBuilder`](xref:Bodu.Financial.ExchangeRateSeriesBuilder)
+  as the mutable companion to `ExchangeRateSeries`, plus
+  [`ExchangeRateTableBuilder`](xref:Bodu.Financial.ExchangeRateTableBuilder) for
+  multi-pair / multi-provider import workflows that produce
+  immutable snapshots.
 
 ## Articles
 
@@ -47,13 +53,14 @@ hand off to `Fraction<BigInteger>` for exact-arithmetic chains via
   formatting and parsing.
 - [Working with exchange rates](exchange-rates.md) — the FX provider
   stack: timeless vs. dated contracts, the audit-grade
-  `ExchangeRateLookupResult`, the composite fallback stack, and the
-  `MoneyConversionResult<,>` audit record.
+  `ExchangeRateLookupResult`, the composite fallback stack, the
+  `MoneyConversionResult<,>` audit record, and the
+  `ExchangeRateSeriesBuilder` + `ExchangeRateTableBuilder` editing surface.
 
 ## See also
 
 - [`Money<TCurrency>` API reference](xref:Bodu.Financial.Money`1)
-- [`MoneyValue` API reference](xref:Bodu.Financial.MoneyValue)
+- [`Money` API reference](xref:Bodu.Financial.Money)
 - [`MoneyBag` API reference](xref:Bodu.Financial.MoneyBag)
 - [`CurrencyRegistry`](xref:Bodu.Financial.CurrencyRegistry)
 - [`IExchangeRateProvider`](xref:Bodu.Financial.IExchangeRateProvider)

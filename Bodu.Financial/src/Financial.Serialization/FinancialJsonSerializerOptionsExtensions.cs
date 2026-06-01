@@ -16,7 +16,7 @@ namespace Bodu.Financial.Serialization;
 public static class FinancialJsonSerializerOptionsExtensions
 {
     /// <summary>
-    /// Adds the <see cref="Bodu.Financial.Money{TCurrency}" />, <see cref="Bodu.Financial.MoneyValue" />, and
+    /// Adds the <see cref="Bodu.Financial.Money{TCurrency}" />, <see cref="Bodu.Financial.Money" />, and
     /// <see cref="Bodu.Financial.MoneyBag" /> JSON converters to <paramref name="options" />, configured for the
     /// supplied <paramref name="policy" />.
     /// </summary>
@@ -53,8 +53,8 @@ public static class FinancialJsonSerializerOptionsExtensions
         ThrowHelper.ThrowIfNull(options);
         FinancialThrowHelper.ThrowIfFinancialJsonPolicyUndefined(policy);
 
-        options.Converters.Add(new MoneyJsonConverterFactory(policy));
-        options.Converters.Add(new MoneyValueJsonConverter(policy));
+        options.Converters.Add(new MoneyOfTCurrencyJsonConverterFactory(policy));
+        options.Converters.Add(new MoneyJsonConverter(policy));
         options.Converters.Add(new MoneyBagJsonConverter(policy));
         options.Converters.Add(new ExchangeRateJsonConverter(policy));
         options.Converters.Add(new ExchangeRatePairJsonConverter(policy));

@@ -21,7 +21,7 @@ Reach for this library when you need rational arithmetic that does not lose prec
 **Rational arithmetic**
 
 - <xref:Bodu.Numerics.Fraction`1> — immutable rational with auto-reduction to canonical form, `BigInteger`-promoted intermediates for safe arithmetic, and the full `INumber<T>` / `ISignedNumber<T>` surface. Backed by any `IBinaryInteger<T>` — `int`, `long`, `BigInteger`, or a custom type.
-- <xref:Bodu.Numerics.FractionJsonConverter`1>, <xref:Bodu.Numerics.FractionJsonConverterFactory> — `System.Text.Json` converters auto-registered via `[JsonConverter]`; wire shape is the string form `"numerator/denominator"`.
+- <xref:Bodu.Numerics.Serialization.FractionJsonConverter`1>, <xref:Bodu.Numerics.Serialization.FractionJsonConverterFactory> — `System.Text.Json` converters auto-registered via `[JsonConverter]`; wire shape is the string form `"numerator/denominator"`.
 
 **Bounded intervals**
 
