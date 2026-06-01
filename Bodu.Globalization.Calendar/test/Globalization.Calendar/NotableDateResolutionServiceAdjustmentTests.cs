@@ -80,14 +80,13 @@ public sealed class NotableDateResolutionServiceAdjustmentTests
             Month = month,
             Day = day,
             IsNonWorkingDay = true,
-            Adjustments = ImmutableArray.Create(
-                new ObservanceAdjustment
+            Adjustments = [new ObservanceAdjustment
                 {
                     Key = "weekend-substitute",
                     Trigger = AdjustmentTrigger.IfWeekend,
                     Action = AdjustmentAction.MoveToNextNonWorkingDay,
                     IsNonWorkingDay = true,
-                }),
+                }],
         };
 
     private sealed class InMemoryRuleProvider

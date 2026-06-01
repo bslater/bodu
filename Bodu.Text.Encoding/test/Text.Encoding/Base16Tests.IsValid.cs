@@ -13,7 +13,7 @@ public sealed partial class Base16Tests
     /// Verifies that <see cref="Base16.IsHexDigit(char)" /> rejects non-hex characters.
     /// </summary>
     /// <param name="value">The character to test.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(' ')]
     [DataRow('g')]
     [DataRow('G')]
@@ -25,7 +25,7 @@ public sealed partial class Base16Tests
     /// Verifies that <see cref="Base16.IsHexDigit(char)" /> recognises all valid hex digit characters.
     /// </summary>
     /// <param name="value">The character to test.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow('0')]
     [DataRow('9')]
     [DataRow('A')]
@@ -51,7 +51,7 @@ public sealed partial class Base16Tests
     /// for an empty input.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenEmpty_ShouldReturnTrue() => Assert.IsTrue(Base16.IsValid(ReadOnlySpan<char>.Empty));
+    public void IsValid_WhenEmpty_ShouldReturnTrue() => Assert.IsTrue(Base16.IsValid([]));
 
     /// <summary>
     /// Verifies that <see cref="Base16.IsValid(ReadOnlySpan{char}, BaseFormatStyles)" /> returns <see langword="false" />

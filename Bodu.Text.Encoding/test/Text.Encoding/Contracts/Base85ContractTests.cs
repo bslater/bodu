@@ -35,7 +35,7 @@ public sealed class Base85ContractTests : BinaryEncodingContractTests<object>
     /// <inheritdoc />
     protected override IReadOnlyList<BinaryEncodingKat> KnownAnswers { get; } =
     [
-        new("empty", Array.Empty<byte>(), ""),
+        new("empty", [], ""),
         new("four zero bytes (z shortcut)", [0x00, 0x00, 0x00, 0x00], "z"),
         new("Wikipedia 'Man '", [0x4D, 0x61, 0x6E, 0x20], "9jqo^"),
         new("four 0xFF bytes (boundary)", [0xFF, 0xFF, 0xFF, 0xFF], "s8W-!"),

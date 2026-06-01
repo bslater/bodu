@@ -35,8 +35,8 @@ public partial class StringExtensionsTests
     /// </summary>
     /// <param name="value">The candidate string.</param>
     /// <param name="expected">The expected return value.</param>
-    [DataTestMethod]
-    [DynamicData(nameof(GetCollapseWhitespaceCases), DynamicDataSourceType.Method)]
+    [TestMethod]
+    [DynamicData(nameof(GetCollapseWhitespaceCases))]
     public void CollapseWhitespace_WhenInvoked_ShouldReturnExpected(string value, string expected) => Assert.AreEqual(expected, value.CollapseWhitespace());
 
     /// <summary>

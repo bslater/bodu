@@ -7,6 +7,7 @@
 using System.IO.Hashing;
 
 namespace Bodu.IO.Hashing.Extensions;
+
 public static partial class NonCryptographicHashAlgorithmExtensions
 {
     /// <summary>

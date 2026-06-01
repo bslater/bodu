@@ -263,6 +263,6 @@ public sealed class NotableDateRuleMergerScalarOverridesTests
         Month = 1,
         Day = 1,
         Tags = ImmutableHashSet.Create<string>(StringComparer.OrdinalIgnoreCase),
-        Adjustments = ImmutableArray<ObservanceAdjustment>.Empty,
+        Adjustments = [],
     };
 }

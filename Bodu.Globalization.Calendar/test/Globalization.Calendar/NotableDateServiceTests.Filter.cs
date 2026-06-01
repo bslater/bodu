@@ -142,12 +142,12 @@ public sealed partial class NotableDateServiceTests
         // 1 January 2022 is a Saturday; the IfWeekend trigger fires and moves it to Monday 3 January.
         NotableDateRule rule = Fixed("New Year's Day", 1, 1, nonWorking: true) with
         {
-            Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+            Adjustments = [new ObservanceAdjustment
             {
                 Key = "weekend-roll",
                 Trigger = AdjustmentTrigger.IfWeekend,
                 Action = AdjustmentAction.MoveToNextWeekday,
-            }),
+            }],
         };
 
         NotableDateService service = BuildService(rule);
@@ -169,12 +169,12 @@ public sealed partial class NotableDateServiceTests
         // 1 January 2024 is a Monday; the IfWeekend trigger does not fire.
         NotableDateRule rule = Fixed("New Year's Day", 1, 1, nonWorking: true) with
         {
-            Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+            Adjustments = [new ObservanceAdjustment
             {
                 Key = "weekend-roll",
                 Trigger = AdjustmentTrigger.IfWeekend,
                 Action = AdjustmentAction.MoveToNextWeekday,
-            }),
+            }],
         };
 
         NotableDateService service = BuildService(rule);

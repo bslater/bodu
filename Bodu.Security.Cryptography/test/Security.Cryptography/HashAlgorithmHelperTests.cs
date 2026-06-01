@@ -24,7 +24,7 @@ public sealed class HashAlgorithmHelperTests
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = HashAlgorithmHelper.HashData<MD5>(null!, ReadOnlySpan<byte>.Empty);
+            _ = HashAlgorithmHelper.HashData<MD5>(null!, []);
         });
     }
 
@@ -97,7 +97,7 @@ public sealed class HashAlgorithmHelperTests
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = HashAlgorithmHelper.TryHashData<MD5>(null!, ReadOnlySpan<byte>.Empty, Span<byte>.Empty, out _);
+            _ = HashAlgorithmHelper.TryHashData<MD5>(null!, [], [], out _);
         });
     }
 
@@ -154,7 +154,7 @@ public sealed class HashAlgorithmHelperTests
         var probe = new DisposalProbe();
         DelegateHashAlgorithmFactory<DisposalProbe> factory = HashAlgorithmFactory.From(() => probe);
 
-        _ = HashAlgorithmHelper.HashData(factory, ReadOnlySpan<byte>.Empty);
+        _ = HashAlgorithmHelper.HashData(factory, []);
 
         Assert.IsTrue(probe.DisposedCount > 0,
             "HashAlgorithmHelper.HashData should dispose the algorithm it constructs.");

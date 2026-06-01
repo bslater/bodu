@@ -71,8 +71,8 @@ public sealed partial class NotableDateServiceTests
         yield return Scenario(
             "AndFilter_HolidayNonWorking",
             () => BuildService(
-                FixedWithTags("Holiday Public", 1, 1, NotableDateCategory.Holiday, nonWorking: true, ImmutableHashSet.Create("Public")),
-                FixedWithTags("Holiday Private", 3, 15, NotableDateCategory.Holiday, nonWorking: false, ImmutableHashSet.Create("Regional")),
+                FixedWithTags("Holiday Public", 1, 1, NotableDateCategory.Holiday, nonWorking: true, ["Public"]),
+                FixedWithTags("Holiday Private", 3, 15, NotableDateCategory.Holiday, nonWorking: false, ["Regional"]),
                 Fixed("Observance", 6, 1, NotableDateCategory.Observance, nonWorking: true)),
             () => NotableDateFilter.ForCategory(NotableDateCategory.Holiday).And(NotableDateFilter.IsNonWorkingDay()),
             "Holiday Public");
@@ -81,8 +81,8 @@ public sealed partial class NotableDateServiceTests
         yield return Scenario(
             "TagFilter_PublicOnly",
             () => BuildService(
-                FixedWithTags("Public Holiday", 1, 1, NotableDateCategory.Holiday, nonWorking: true, ImmutableHashSet.Create("Public")),
-                FixedWithTags("Regional Holiday", 6, 1, NotableDateCategory.Holiday, nonWorking: true, ImmutableHashSet.Create("Regional"))),
+                FixedWithTags("Public Holiday", 1, 1, NotableDateCategory.Holiday, nonWorking: true, ["Public"]),
+                FixedWithTags("Regional Holiday", 6, 1, NotableDateCategory.Holiday, nonWorking: true, ["Regional"])),
             () => NotableDateFilter.WithTag("Public"),
             "Public Holiday");
 
@@ -119,9 +119,9 @@ public sealed partial class NotableDateServiceTests
         yield return Scenario(
             "AllOfFilter_HolidayNonWorkingPublic",
             () => BuildService(
-                FixedWithTags("Public Holiday", 1, 1, NotableDateCategory.Holiday, nonWorking: true, ImmutableHashSet.Create("Public")),
-                FixedWithTags("Private Holiday", 3, 15, NotableDateCategory.Holiday, nonWorking: false, ImmutableHashSet.Create("Regional")),
-                FixedWithTags("Observance", 6, 1, NotableDateCategory.Observance, nonWorking: true, ImmutableHashSet.Create("Public"))),
+                FixedWithTags("Public Holiday", 1, 1, NotableDateCategory.Holiday, nonWorking: true, ["Public"]),
+                FixedWithTags("Private Holiday", 3, 15, NotableDateCategory.Holiday, nonWorking: false, ["Regional"]),
+                FixedWithTags("Observance", 6, 1, NotableDateCategory.Observance, nonWorking: true, ["Public"])),
             () => NotableDateFilter.AllOf(
                 NotableDateFilter.ForCategory(NotableDateCategory.Holiday),
                 NotableDateFilter.IsNonWorkingDay(),
@@ -145,9 +145,9 @@ public sealed partial class NotableDateServiceTests
         yield return Scenario(
             "WithAllTagsFilter_PublicAndFederal",
             () => BuildService(
-                FixedWithTags("Both Tags", 1, 1, NotableDateCategory.Holiday, nonWorking: true, ImmutableHashSet.Create("Public", "Federal")),
-                FixedWithTags("One Tag Only", 6, 1, NotableDateCategory.Holiday, nonWorking: true, ImmutableHashSet.Create("Public")),
-                FixedWithTags("No Tags", 12, 25, NotableDateCategory.Holiday, nonWorking: true, ImmutableHashSet<string>.Empty)),
+                FixedWithTags("Both Tags", 1, 1, NotableDateCategory.Holiday, nonWorking: true, ["Public", "Federal"]),
+                FixedWithTags("One Tag Only", 6, 1, NotableDateCategory.Holiday, nonWorking: true, ["Public"]),
+                FixedWithTags("No Tags", 12, 25, NotableDateCategory.Holiday, nonWorking: true, [])),
             () => NotableDateFilter.WithAllTags("Public", "Federal"),
             "Both Tags");
 
@@ -155,9 +155,9 @@ public sealed partial class NotableDateServiceTests
         yield return Scenario(
             "WithAnyTagFilter_FederalOrRegional",
             () => BuildService(
-                FixedWithTags("Federal Tag", 1, 1, NotableDateCategory.Holiday, nonWorking: true, ImmutableHashSet.Create("Federal")),
-                FixedWithTags("Regional Tag", 3, 15, NotableDateCategory.Holiday, nonWorking: true, ImmutableHashSet.Create("Regional")),
-                FixedWithTags("Unrelated Tag", 6, 1, NotableDateCategory.Observance, nonWorking: false, ImmutableHashSet.Create("Christian"))),
+                FixedWithTags("Federal Tag", 1, 1, NotableDateCategory.Holiday, nonWorking: true, ["Federal"]),
+                FixedWithTags("Regional Tag", 3, 15, NotableDateCategory.Holiday, nonWorking: true, ["Regional"]),
+                FixedWithTags("Unrelated Tag", 6, 1, NotableDateCategory.Observance, nonWorking: false, ["Christian"])),
             () => NotableDateFilter.WithAnyTag("Federal", "Regional"),
             "Federal Tag", "Regional Tag");
 

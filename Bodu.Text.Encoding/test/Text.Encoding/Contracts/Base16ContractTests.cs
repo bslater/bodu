@@ -43,7 +43,7 @@ public sealed class Base16ContractTests : BinaryEncodingContractTests<object>
     /// <inheritdoc />
     protected override IReadOnlyList<BinaryEncodingKat> KnownAnswers { get; } =
     [
-        new("empty", Array.Empty<byte>(), ""),
+        new("empty", [], ""),
         new("single zero", [0x00], "00"),
         new("0xDE 0xAD", [0xDE, 0xAD], "DEAD"),
         new("0xDE 0xAD 0xBE 0xEF", [0xDE, 0xAD, 0xBE, 0xEF], "DEADBEEF"),

@@ -30,8 +30,8 @@ public partial class StringExtensionsTests
     /// </summary>
     /// <param name="value">The candidate string.</param>
     /// <param name="expected">The expected return value.</param>
-    [DataTestMethod]
-    [DynamicData(nameof(GetTrimOrEmptyCases), DynamicDataSourceType.Method)]
+    [TestMethod]
+    [DynamicData(nameof(GetTrimOrEmptyCases))]
     public void TrimOrEmpty_WhenInvoked_ShouldReturnExpected(string? value, string expected) => Assert.AreEqual(expected, value.TrimOrEmpty());
 
     /// <summary>

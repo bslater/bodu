@@ -214,12 +214,12 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
         using TAlgorithm cipher = CreateAlgorithm();
         using ICryptoTransform e = cipher.CreateEncryptor(CreateKey(), CreateNonce());
 
-        var result = e.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
+        var result = e.TransformFinalBlock([], 0, 0);
 
         Assert.AreEqual(0, result.Length);
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
-            _ = e.TransformBlock(Array.Empty<byte>(), 0, 0, Array.Empty<byte>(), 0);
+            _ = e.TransformBlock([], 0, 0, [], 0);
         });
     }
 }

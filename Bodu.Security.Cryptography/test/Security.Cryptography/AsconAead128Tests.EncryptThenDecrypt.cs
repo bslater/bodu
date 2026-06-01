@@ -68,10 +68,10 @@ public partial class AsconAead128Tests
     {
         var ciphertext = new byte[AsconAead128.TagBytes];
         using AsconAead128 enc = MakeInstance();
-        enc.Encrypt(ReadOnlySpan<byte>.Empty, ciphertext);
+        enc.Encrypt([], ciphertext);
 
         using AsconAead128 dec = MakeInstance();
-        var written = dec.Decrypt(ciphertext, Span<byte>.Empty);
+        var written = dec.Decrypt(ciphertext, []);
 
         Assert.AreEqual(0, written, "Decrypting tag-only input for an empty plaintext must return 0 bytes written.");
     }

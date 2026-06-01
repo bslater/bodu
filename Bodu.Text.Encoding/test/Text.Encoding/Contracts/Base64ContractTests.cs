@@ -35,7 +35,7 @@ public sealed class Base64ContractTests : BinaryEncodingContractTests<object>
     protected override IReadOnlyList<BinaryEncodingKat> KnownAnswers { get; } =
     [
         // RFC 4648 §10 - Base64 reference vectors.
-        new("empty",   Array.Empty<byte>(),    ""),
+        new("empty",   [],    ""),
         new("f",       "f"u8.ToArray(),        "Zg=="),
         new("fo",      "fo"u8.ToArray(),       "Zm8="),
         new("foo",     "foo"u8.ToArray(),      "Zm9v"),

@@ -310,7 +310,7 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void EncodeToUtf8_WhenEmptyInput_ShouldReturnEmptyArray()
     {
-        var actual = Base16.EncodeToUtf8(ReadOnlySpan<byte>.Empty);
+        var actual = Base16.EncodeToUtf8([]);
 
         Assert.AreEqual(0, actual.Length);
     }

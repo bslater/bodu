@@ -28,7 +28,7 @@ public static partial class EncodingExtensions
     public static byte[] ToUtf8Bytes(this ReadOnlySpan<char> chars)
     {
         var count = System.Text.Encoding.UTF8.GetByteCount(chars);
-        if (count == 0) return Array.Empty<byte>();
+        if (count == 0) return [];
 
         var buffer = new byte[count];
         System.Text.Encoding.UTF8.GetBytes(chars, buffer);

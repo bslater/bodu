@@ -20,7 +20,6 @@ public partial class ThrowHelperTests
     [TestMethod]
     [DynamicData(
         nameof(ThrowIfLessThanOtherInvalidCases),
-        DynamicDataSourceType.Method,
         DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void ThrowIfLessThanOther_WhenValueIsLessThanOther_ShouldThrowExactly(GuardInvalidKat<int> kat) =>
@@ -38,7 +37,6 @@ public partial class ThrowHelperTests
     [TestMethod]
     [DynamicData(
         nameof(ThrowIfLessThanOtherValidCases),
-        DynamicDataSourceType.Method,
         DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void ThrowIfLessThanOther_WhenValueIsEqualOrGreaterThanOther_ShouldNotThrow(GuardValidKat<int> kat) =>
@@ -52,7 +50,6 @@ public partial class ThrowHelperTests
     [TestMethod]
     [DynamicData(
         nameof(ThrowIfLessThanOtherParamNameCases),
-        DynamicDataSourceType.Method,
         DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void ThrowIfLessThanOther_WhenValueIsLessThanOther_ShouldReportParamName(GuardInvalidKat<int> kat) =>

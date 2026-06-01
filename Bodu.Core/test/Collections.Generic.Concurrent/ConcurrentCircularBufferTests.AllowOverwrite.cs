@@ -147,7 +147,7 @@ public partial class ConcurrentCircularBufferTests
         // non-deterministic, but we can confirm the property is readable without error
         // and returns a value consistent with what was written by some thread.
         var final = buffer.AllowOverwrite;
-        Assert.IsTrue(final == true || final == false,
+        Assert.IsTrue(final || !final,
             "AllowOverwrite must remain a valid bool value after concurrent toggles.");
 
         // At minimum, the read path must not have thrown; reaching this line confirms stability.

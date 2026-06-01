@@ -14,8 +14,8 @@ public sealed partial class EncodingExtensionsTests
     /// encoding.
     /// </summary>
     /// <param name="encoding">The encoding under test.</param>
-    [DataTestMethod]
-    [DynamicData(nameof(CanonicalEncodings), DynamicDataSourceType.Method)]
+    [TestMethod]
+    [DynamicData(nameof(CanonicalEncodings))]
     public void GetDecodedCharCount_WhenCalledOnSpan_ShouldMatchBclEncoding(System.Text.Encoding encoding)
     {
         var bytes = encoding.GetBytes(MultiByteText);
@@ -59,8 +59,8 @@ public sealed partial class EncodingExtensionsTests
     /// canonical encoding.
     /// </summary>
     /// <param name="encoding">The encoding under test.</param>
-    [DataTestMethod]
-    [DynamicData(nameof(CanonicalEncodings), DynamicDataSourceType.Method)]
+    [TestMethod]
+    [DynamicData(nameof(CanonicalEncodings))]
     public void ToChars_WhenCalledOnSpan_ShouldMatchBclEncoding(System.Text.Encoding encoding)
     {
         var bytes = encoding.GetBytes(MultiByteText);
@@ -81,7 +81,7 @@ public sealed partial class EncodingExtensionsTests
         var result = ReadOnlySpan<byte>.Empty.ToChars(System.Text.Encoding.UTF8);
 
         Assert.AreEqual(0, result.Length);
-        Assert.AreSame(Array.Empty<char>(), result);
+        Assert.AreSame([], result);
     }
 
     /// <summary>
@@ -104,8 +104,8 @@ public sealed partial class EncodingExtensionsTests
     /// produces the same string as the BCL <see cref="System.Text.Encoding.GetString(byte[])" /> method.
     /// </summary>
     /// <param name="encoding">The encoding under test.</param>
-    [DataTestMethod]
-    [DynamicData(nameof(CanonicalEncodings), DynamicDataSourceType.Method)]
+    [TestMethod]
+    [DynamicData(nameof(CanonicalEncodings))]
     public void DecodeToString_WhenCalledOnSpan_ShouldMatchBclEncoding(System.Text.Encoding encoding)
     {
         var bytes = encoding.GetBytes(MultiByteText);

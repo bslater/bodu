@@ -4,10 +4,10 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Security.Cryptography;
 
 using System.Security.Cryptography;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+namespace Bodu.Security.Cryptography;
 
 public sealed partial class OcbModeTransformTests
 {

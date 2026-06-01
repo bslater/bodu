@@ -96,7 +96,7 @@ public sealed partial class Base32Tests
     {
         var destination = new char[4];
 
-        var ok = Base32.TryEncode(ReadOnlySpan<byte>.Empty, destination, out var charsWritten);
+        var ok = Base32.TryEncode([], destination, out var charsWritten);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(0, charsWritten);

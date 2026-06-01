@@ -26,7 +26,7 @@ public sealed class DeferredFinalBlockHashAlgorithmTests
     {
         using var sut = new MonitoringDeferredFinalBlockHashAlgorithm(BlockSize);
 
-        _ = sut.ComputeHash(Array.Empty<byte>());
+        _ = sut.ComputeHash([]);
 
         Assert.AreEqual(1, sut.ProcessBlockInvocations.Count);
         Assert.IsTrue(sut.ProcessBlockInvocations[0].IsFinal);

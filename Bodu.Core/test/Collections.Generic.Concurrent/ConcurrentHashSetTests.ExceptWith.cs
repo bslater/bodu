@@ -44,7 +44,7 @@ public partial class ConcurrentHashSetTests
     {
         var set = new ConcurrentHashSet<int>([1, 2, 3]);
 
-        set.ExceptWith(Array.Empty<int>());
+        set.ExceptWith([]);
 
         AssertContainsExactly(set, 1, 2, 3);
     }

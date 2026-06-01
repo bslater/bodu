@@ -27,8 +27,8 @@ public partial class StringExtensionsTests
     /// </summary>
     /// <param name="value">The candidate string.</param>
     /// <param name="expected">The expected return value.</param>
-    [DataTestMethod]
-    [DynamicData(nameof(GetToTrainCaseCases), DynamicDataSourceType.Method)]
+    [TestMethod]
+    [DynamicData(nameof(GetToTrainCaseCases))]
     public void ToTrainCase_WhenInvoked_ShouldReturnExpected(string value, string expected) => Assert.AreEqual(expected, value.ToTrainCase());
 
     /// <summary>

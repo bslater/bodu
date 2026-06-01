@@ -39,8 +39,8 @@ public sealed partial class Base58Tests
     /// Known Answer Test vector for the Bitcoin/Flickr alphabet.
     /// </summary>
     /// <param name="vector">A KAT vector.</param>
-    [DataTestMethod]
-    [DynamicData(nameof(Base58KnownAnswerVectors.BitcoinFlickrVectors), typeof(Base58KnownAnswerVectors), DynamicDataSourceType.Method)]
+    [TestMethod]
+    [DynamicData(nameof(Base58KnownAnswerVectors.BitcoinFlickrVectors), typeof(Base58KnownAnswerVectors))]
     public void Encode_ForBitcoinFlickrKnownAnswerVector_ShouldMatch(EncodingKnownAnswerVector vector)
     {
         var actual = Base58.Encode(vector.DecodedBytes, Base58Variant.BitcoinFlickr);
@@ -53,7 +53,7 @@ public sealed partial class Base58Tests
     /// </summary>
     /// <param name="hexInput">The input bytes expressed as hex.</param>
     /// <param name="expected">The expected Base58 output.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("00", "1")]
     [DataRow("0000", "11")]
     [DataRow("0001", "12")]

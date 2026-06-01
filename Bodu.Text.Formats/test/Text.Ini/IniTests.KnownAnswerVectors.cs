@@ -14,7 +14,7 @@ public sealed partial class IniTests
     /// </summary>
     /// <param name="vector">A KAT vector sourced from <see cref="IniKnownAnswerVectors.SpecVectors" />.</param>
     [TestMethod]
-    [DynamicData(nameof(IniKnownAnswerVectors.SpecVectors), typeof(IniKnownAnswerVectors), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(IniKnownAnswerVectors.SpecVectors), typeof(IniKnownAnswerVectors))]
     public void Parse_ForSpecKnownAnswerVector_ShouldProduceExpectedDocument(IniKnownAnswerVector vector)
     {
         IniDocument doc = Ini.Parse(vector.Input, vector.Options ?? IniParseOptions.Default);
@@ -61,7 +61,7 @@ public sealed partial class IniTests
     /// </summary>
     /// <param name="vector">A KAT vector sourced from <see cref="IniKnownAnswerVectors.SpecVectors" />.</param>
     [TestMethod]
-    [DynamicData(nameof(IniKnownAnswerVectors.SpecVectors), typeof(IniKnownAnswerVectors), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(IniKnownAnswerVectors.SpecVectors), typeof(IniKnownAnswerVectors))]
     public void Format_ForSpecKnownAnswerVector_ShouldRoundTripDocument(IniKnownAnswerVector vector)
     {
         IniDocument original = Ini.Parse(vector.Input, vector.Options ?? IniParseOptions.Default);

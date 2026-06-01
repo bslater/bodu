@@ -36,7 +36,7 @@ public sealed partial class Base32Tests
     /// sizes spanning all five residue classes mod 5.
     /// </summary>
     /// <param name="variant">The Base32 variant.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(Base32Variant.Standard)]
     [DataRow(Base32Variant.HexExtended)]
     [DataRow(Base32Variant.Crockford)]

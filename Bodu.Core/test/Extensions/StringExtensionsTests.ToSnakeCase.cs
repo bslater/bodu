@@ -30,8 +30,8 @@ public partial class StringExtensionsTests
     /// </summary>
     /// <param name="value">The candidate string.</param>
     /// <param name="expected">The expected return value.</param>
-    [DataTestMethod]
-    [DynamicData(nameof(GetToSnakeCaseCases), DynamicDataSourceType.Method)]
+    [TestMethod]
+    [DynamicData(nameof(GetToSnakeCaseCases))]
     public void ToSnakeCase_WhenInvoked_ShouldReturnExpected(string value, string expected) => Assert.AreEqual(expected, value.ToSnakeCase());
 
     /// <summary>

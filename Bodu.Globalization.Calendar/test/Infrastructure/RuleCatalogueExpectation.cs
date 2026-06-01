@@ -53,12 +53,12 @@ public sealed record RuleCatalogueExpectation : IKat
     /// Gets the list of rule names that must appear in the flattened catalogue.
     /// </summary>
     /// <returns>An ordered, read-only list of rule names; never <see langword="null" />.</returns>
-    public IReadOnlyList<string> Includes { get; init; } = Array.Empty<string>();
+    public IReadOnlyList<string> Includes { get; init; } = [];
 
     /// <summary>
     /// Gets the list of rule names that must not appear in the flattened catalogue — typically rules from other
     /// territories or unselected categories that the resource deliberately did not opt in to.
     /// </summary>
     /// <returns>An ordered, read-only list of rule names; never <see langword="null" />.</returns>
-    public IReadOnlyList<string> Excludes { get; init; } = Array.Empty<string>();
+    public IReadOnlyList<string> Excludes { get; init; } = [];
 }

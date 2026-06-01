@@ -15,7 +15,7 @@ public sealed partial class Base64Tests
     /// </summary>
     /// <param name="byteCount">The input byte count.</param>
     /// <param name="expectedPaddingCount">The expected count of trailing <c>=</c>.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(1, 2)]
     [DataRow(2, 1)]
     [DataRow(3, 0)]
@@ -43,7 +43,7 @@ public sealed partial class Base64Tests
     /// </summary>
     /// <param name="variantValue">The variant under test.</param>
     /// <param name="omitPadding">Whether to omit padding.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(Base64Variant.Standard, false)]
     [DataRow(Base64Variant.Standard, true)]
     [DataRow(Base64Variant.UrlSafe, false)]

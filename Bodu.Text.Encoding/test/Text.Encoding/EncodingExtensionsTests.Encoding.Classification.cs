@@ -14,7 +14,7 @@ public sealed partial class EncodingExtensionsTests
     /// </summary>
     /// <param name="codePage">The codepage under test.</param>
     /// <param name="expected">The expected return value.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(65001, true)]
     [DataRow(1200, false)]
     [DataRow(1201, false)]
@@ -28,7 +28,7 @@ public sealed partial class EncodingExtensionsTests
     /// </summary>
     /// <param name="codePage">The codepage under test.</param>
     /// <param name="expected">The expected return value.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(1200, true)]
     [DataRow(1201, false)]
     [DataRow(65001, false)]
@@ -40,7 +40,7 @@ public sealed partial class EncodingExtensionsTests
     /// </summary>
     /// <param name="codePage">The codepage under test.</param>
     /// <param name="expected">The expected return value.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(1201, true)]
     [DataRow(1200, false)]
     [DataRow(65001, false)]
@@ -52,7 +52,7 @@ public sealed partial class EncodingExtensionsTests
     /// </summary>
     /// <param name="codePage">The codepage under test.</param>
     /// <param name="expected">The expected return value.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(12000, true)]
     [DataRow(12001, false)]
     [DataRow(65001, false)]
@@ -64,7 +64,7 @@ public sealed partial class EncodingExtensionsTests
     /// </summary>
     /// <param name="codePage">The codepage under test.</param>
     /// <param name="expected">The expected return value.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(12001, true)]
     [DataRow(12000, false)]
     [DataRow(65001, false)]
@@ -76,7 +76,7 @@ public sealed partial class EncodingExtensionsTests
     /// </summary>
     /// <param name="codePage">The codepage under test.</param>
     /// <param name="expected">The expected return value.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(65001, true)]
     [DataRow(1200, true)]
     [DataRow(1201, true)]
@@ -91,7 +91,7 @@ public sealed partial class EncodingExtensionsTests
     /// </summary>
     /// <param name="codePage">The codepage under test.</param>
     /// <param name="expected">The expected return value.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(20127, true)]
     [DataRow(65001, false)]
     [DataRow(1200, false)]

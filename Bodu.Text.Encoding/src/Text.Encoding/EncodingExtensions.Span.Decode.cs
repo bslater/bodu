@@ -52,7 +52,7 @@ public static partial class EncodingExtensions
         ThrowHelper.ThrowIfNull(encoding);
 
         var count = encoding.GetCharCount(bytes);
-        if (count == 0) return Array.Empty<char>();
+        if (count == 0) return [];
 
         var buffer = new char[count];
         encoding.GetChars(bytes, buffer);

@@ -277,6 +277,6 @@ public sealed class NotableDateTests
             Name = name,
             Category = NotableDateCategory.Holiday,
             DurationDays = duration,
-            Tags = ImmutableHashSet<string>.Empty,
+            Tags = [],
         };
 }

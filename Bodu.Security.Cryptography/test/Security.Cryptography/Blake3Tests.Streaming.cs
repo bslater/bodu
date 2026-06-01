@@ -83,7 +83,7 @@ public partial class Blake3Tests
             one[0] = input[i];
             hasher.TransformBlock(one, 0, 1, null, 0);
         }
-        hasher.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
+        hasher.TransformFinalBlock([], 0, 0);
         return hasher.Hash!;
     }
 
@@ -101,7 +101,7 @@ public partial class Blake3Tests
             hasher.TransformBlock(input, offset, chunk, null, 0);
             offset += chunk;
         }
-        hasher.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
+        hasher.TransformFinalBlock([], 0, 0);
         return hasher.Hash!;
     }
 }

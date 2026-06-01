@@ -123,7 +123,7 @@ public partial class ICryptoTransformExtensionsTests
     [TestMethod]
     public async Task TransformAsync_Stream_WhenSourceIsEmpty_ShouldWriteNothingToTarget()
     {
-        using var source = new MemoryStream(Array.Empty<byte>());
+        using var source = new MemoryStream([]);
         using var target = new MemoryStream();
         using SimpleReversingCryptoTransform transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
 

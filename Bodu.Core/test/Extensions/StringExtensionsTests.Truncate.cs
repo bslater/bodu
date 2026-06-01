@@ -29,8 +29,8 @@ public partial class StringExtensionsTests
     /// <param name="value">The candidate string.</param>
     /// <param name="maxLength">The max length.</param>
     /// <param name="expected">The expected return value.</param>
-    [DataTestMethod]
-    [DynamicData(nameof(GetTruncateCases), DynamicDataSourceType.Method)]
+    [TestMethod]
+    [DynamicData(nameof(GetTruncateCases))]
     public void Truncate_NoEllipsis_WhenInvoked_ShouldReturnExpected(string value, int maxLength, string expected) => Assert.AreEqual(expected, value.Truncate(maxLength));
 
     /// <summary>
@@ -54,8 +54,8 @@ public partial class StringExtensionsTests
     /// <param name="maxLength">The max length.</param>
     /// <param name="ellipsis">The ellipsis marker.</param>
     /// <param name="expected">The expected return value.</param>
-    [DataTestMethod]
-    [DynamicData(nameof(GetTruncateWithEllipsisCases), DynamicDataSourceType.Method)]
+    [TestMethod]
+    [DynamicData(nameof(GetTruncateWithEllipsisCases))]
     public void Truncate_WithEllipsis_WhenInvoked_ShouldReturnExpected(string value, int maxLength, string ellipsis, string expected) => Assert.AreEqual(expected, value.Truncate(maxLength, ellipsis));
 
     /// <summary>

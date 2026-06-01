@@ -172,7 +172,7 @@ public static partial class EncodingExtensions
         ReadOnlySpan<byte> preamble = encoding.Preamble;
         var encodedCount = encoding.GetByteCount(chars);
         var total = preamble.Length + encodedCount;
-        if (total == 0) return Array.Empty<byte>();
+        if (total == 0) return [];
 
         var buffer = new byte[total];
         if (!preamble.IsEmpty) preamble.CopyTo(buffer);

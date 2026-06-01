@@ -25,7 +25,7 @@ namespace Bodu.Test.IO;
 /// This class is intended exclusively for test harness use and must not appear in production code.
 /// </para>
 /// </remarks>
-public sealed class NonSeekableStream 
+public sealed class NonSeekableStream
     : System.IO.Stream
 {
     private readonly MemoryStream inner;

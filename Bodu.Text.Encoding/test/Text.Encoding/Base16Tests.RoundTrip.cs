@@ -66,7 +66,7 @@ public sealed partial class Base16Tests
     /// <see cref="BaseFormatStyles" />.
     /// </summary>
     /// <param name="encodeFlags">The encode options applied to the encoder.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow((byte)BaseFormattingOptions.None)]
     [DataRow((byte)BaseFormattingOptions.UpperCase)]
     [DataRow((byte)BaseFormattingOptions.IncludePrefix)]

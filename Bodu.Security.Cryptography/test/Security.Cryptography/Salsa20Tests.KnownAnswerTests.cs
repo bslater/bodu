@@ -4,11 +4,11 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Security.Cryptography;
 
 using System.Reflection;
 using System.Security.Cryptography;
 
+namespace Bodu.Security.Cryptography;
 /// <summary>
 /// Locks the <see cref="Salsa20" /> stream cipher against the published eSTREAM / ECRYPT and Bernstein-specification
 /// known-answer test vectors, and inherits the shared

@@ -348,7 +348,7 @@ public partial class Blake3Tests
         streaming.Initialize();
         foreach (var b in input)
             streaming.TransformBlock([b], 0, 1, null, 0);
-        streaming.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
+        streaming.TransformFinalBlock([], 0, 0);
         var actual = streaming.Hash!;
 
         CollectionAssert.AreEqual(expected, actual,

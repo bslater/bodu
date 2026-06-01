@@ -43,7 +43,7 @@ public partial class ConcurrentHashSetTests
     {
         var set = new ConcurrentHashSet<int>([1, 2, 3]);
 
-        set.IntersectWith(Array.Empty<int>());
+        set.IntersectWith([]);
 
         Assert.AreEqual(0, set.Count);
     }

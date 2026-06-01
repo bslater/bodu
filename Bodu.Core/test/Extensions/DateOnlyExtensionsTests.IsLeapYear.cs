@@ -19,7 +19,7 @@ public partial class DateOnlyExtensionsTests
     /// Verifies that <see cref="DateOnlyExtensions.IsLeapYear" />, when Called, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests.LeapYearTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DateTimeExtensionsTests.LeapYearTestData), typeof(DateTimeExtensionsTests))]
     public void IsLeapYear_WhenCalled_ShouldReturnExpected(int year, bool expected)
     {
         DateTime input = new DateTime(year, 1, 1);

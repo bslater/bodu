@@ -20,7 +20,7 @@ public partial class DateOnlyExtensionsTests
     /// Verifies that <see cref="DateOnlyExtensions.DayName" />, when CultureIsNull, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests.DayNameFrenchTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DateTimeExtensionsTests.DayNameFrenchTestData), typeof(DateTimeExtensionsTests))]
     public void DayName_WhenCultureIsNull_ShouldFallbackToCurrentCulture(DateTime inputDateTime, string expected)
     {
         var original = CultureInfo.CurrentCulture;
@@ -43,7 +43,7 @@ public partial class DateOnlyExtensionsTests
     /// Verifies that <see cref="DateOnlyExtensions.DayName" />, with Culture, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests.DayNameTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DateTimeExtensionsTests.DayNameTestData), typeof(DateTimeExtensionsTests))]
     public void DayName_WithCulture_ShouldReturnLocalizedName(DateTime inputDateTime, CultureInfo culture, string expected)
     {
         var input = DateOnly.FromDateTime(inputDateTime);

@@ -61,7 +61,7 @@ public static partial class Base85
         EnsureValidVariant(variant);
 
         if (source.IsEmpty)
-            return Array.Empty<byte>();
+            return [];
 
         if (variant == Base85Variant.Z85 && (source.Length & 3) != 0)
             throw new ArgumentException(EncodingResourceStrings.Arg_Invalid_Z85InputMultipleOfFour, nameof(source));

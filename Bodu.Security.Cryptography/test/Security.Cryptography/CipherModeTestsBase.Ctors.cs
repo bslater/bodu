@@ -85,7 +85,7 @@ public abstract partial class CipherModeTestsBase<TTransform>
 
         var iv = UsesInitializationVector
             ? new byte[ExpectedInitializationVectorSize]
-            : Array.Empty<byte>();
+            : [];
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -103,7 +103,7 @@ public abstract partial class CipherModeTestsBase<TTransform>
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize);
         var iv = UsesInitializationVector
             ? new byte[ExpectedInitializationVectorSize]
-            : Array.Empty<byte>();
+            : [];
 
         TTransform? transform = CreateTransform(cipher, iv);
 

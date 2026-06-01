@@ -44,7 +44,7 @@ public static partial class Base16
     public static byte[] FromHexString(ReadOnlySpan<byte> utf8Source)
     {
         if (utf8Source.IsEmpty)
-            return Array.Empty<byte>();
+            return [];
 
         if ((utf8Source.Length & 1) != 0)
             throw new FormatException(EncodingResourceStrings.Format_Invalid_HexDigitCountOdd);

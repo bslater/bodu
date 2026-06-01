@@ -17,7 +17,7 @@ namespace Bodu.Security.Cryptography;
 /// </remarks>
 internal static class Skein512KnownAnswers
 {
-    private static readonly KeyedHashAlgorithmKnownAnswer[] Empty = Array.Empty<KeyedHashAlgorithmKnownAnswer>();
+    private static readonly KeyedHashAlgorithmKnownAnswer[] Empty = [];
 
     /// <summary>
     /// Returns the curated KAT vectors for <paramref name="variant" />, or an empty array when the NIST CD KAT
@@ -134,7 +134,7 @@ internal static class Skein512KnownAnswers
             Name = "Mac_NistKat1024",
             Profile = "NIST CD KAT",
             Input = Convert.FromHexString(Mac1024BitsSkein512),
-            Key = Array.Empty<byte>(),
+            Key = [],
             ExpectedHex = "AA703B798B6F472BAA9D1E1689FA0F70F8DCA25A6046BB2C8FB7F34407934AE4",
         },
     ];
@@ -172,7 +172,7 @@ internal static class Skein512KnownAnswers
         {
             Name = "Hash_Empty",
             Profile = "NIST CD KAT",
-            Input = Array.Empty<byte>(),
+            Input = [],
             ExpectedHex =
                 "BC5B4C50925519C290CC634277AE3D6257212395CBA733BBAD37A4AF0FA06AF4" +
                 "1FCA7903D06564FEA7A2D3730DBDB80C1F85562DFCC070334EA4D1D9E72CBA7A",

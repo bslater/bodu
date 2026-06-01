@@ -35,7 +35,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
         NotableDateService service = BuildServiceWithOverrides(
             baseRules: [baseRule],
             additions: [addedRule],
-            removals: Array.Empty<RuleRemoval>());
+            removals: []);
 
         IReadOnlyList<NotableDate> resolved = service.ResolveNotableDatesInRange(
             new DateTime(2026, 1, 1),
@@ -92,7 +92,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 
         NotableDateService service = BuildServiceWithOverrides(
             baseRules: [keep, drop],
-            additions: Array.Empty<NotableDateRule>(),
+            additions: [],
             removals: [new RuleRemoval(RuleName: "Drop")]);
 
         IReadOnlyList<NotableDate> resolved = service.ResolveNotableDatesInRange(
@@ -119,7 +119,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 
         NotableDateService service = BuildServiceWithOverrides(
             baseRules: [rule],
-            additions: Array.Empty<NotableDateRule>(),
+            additions: [],
             removals: [new RuleRemoval(RuleName: "Scoped", FromYear: 2024, ToYear: 2026)]);
 
         IReadOnlyList<NotableDate> resolved = service.ResolveNotableDatesInRange(
@@ -151,7 +151,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 
         NotableDateService service = BuildServiceWithOverrides(
             baseRules: [shared],
-            additions: Array.Empty<NotableDateRule>(),
+            additions: [],
             removals: [new RuleRemoval(RuleName: "Cross-Border Holiday", TerritoryCode: "AU")]);
 
         IReadOnlyList<NotableDate> resolvedAu = service.ResolveNotableDatesInRange(
@@ -239,14 +239,14 @@ public sealed partial class NotableDateRangePipelineScenarioTests
             FirstYear = 2026,
             LastYear = 2026,
             IsNonWorkingDay = true,
-            Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+            Adjustments = [new ObservanceAdjustment
             {
                 Key = "shift-3",
                 Trigger = AdjustmentTrigger.Always,
                 Action = AdjustmentAction.AddDays,
                 OffsetDays = 3,
                 IsNonWorkingDay = true,
-            }),
+            }],
         };
 
         // Filter that matches only 28 Dec 2026 — the adjusted date — and explicitly NOT 25 Dec.
@@ -285,14 +285,14 @@ public sealed partial class NotableDateRangePipelineScenarioTests
             FirstYear = 2026,
             LastYear = 2026,
             IsNonWorkingDay = true,
-            Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+            Adjustments = [new ObservanceAdjustment
             {
                 Key = "shift-3",
                 Trigger = AdjustmentTrigger.Always,
                 Action = AdjustmentAction.AddDays,
                 OffsetDays = 3,
                 IsNonWorkingDay = true,
-            }),
+            }],
         };
 
         NotableDateRule newYears = new()
@@ -305,14 +305,14 @@ public sealed partial class NotableDateRangePipelineScenarioTests
             FirstYear = 2026,
             LastYear = 2026,
             IsNonWorkingDay = true,
-            Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+            Adjustments = [new ObservanceAdjustment
             {
                 Key = "shift-1",
                 Trigger = AdjustmentTrigger.Always,
                 Action = AdjustmentAction.AddDays,
                 OffsetDays = 1,
                 IsNonWorkingDay = true,
-            }),
+            }],
         };
 
         // Christmas adjusted = 28 Dec 2026; New Year's Day adjusted = 2 Jan 2026 (outside Dec range below).
@@ -649,8 +649,8 @@ public sealed partial class NotableDateRangePipelineScenarioTests
             IReadOnlyList<NotableDateRule>? additions = null,
             IReadOnlyList<RuleRemoval>? removals = null)
         {
-            _additions = additions ?? Array.Empty<NotableDateRule>();
-            _removals = removals ?? Array.Empty<RuleRemoval>();
+            _additions = additions ?? [];
+            _removals = removals ?? [];
         }
 
         public IEnumerable<NotableDateRule> GetAdditions() => _additions;

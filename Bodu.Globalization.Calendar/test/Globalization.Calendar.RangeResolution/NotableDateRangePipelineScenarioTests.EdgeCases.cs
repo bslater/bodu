@@ -265,13 +265,13 @@ public sealed partial class NotableDateRangePipelineScenarioTests
             Month = 12,
             Day = 25,
             IsNonWorkingDay = true,
-            Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+            Adjustments = [new ObservanceAdjustment
             {
                 Key = "always-roll",
                 Trigger = AdjustmentTrigger.Always,
                 Action = AdjustmentAction.MoveToNextNonWorkingDay,
                 IsNonWorkingDay = true,
-            }),
+            }],
         };
 
         // Three consecutive non-working blocker rules covering Sat, Sun, Mon (26 Dec, 27 Dec, 28 Dec 2026).

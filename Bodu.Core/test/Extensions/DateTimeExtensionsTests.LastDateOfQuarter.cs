@@ -211,7 +211,7 @@ public partial class DateTimeExtensionsTests
     /// Verifies that <see cref="DateTimeExtensions.LastDateOfQuarter(DateTime, CalendarQuarterDefinition)" /> returns the expected quarter-end date for each supported <see cref="CalendarQuarterDefinition" /> boundary.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(LastDateOfQuarterDateTimeTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(LastDateOfQuarterDateTimeTestData))]
     public void LastDateOfQuarter_WhenUsingQuarterDefinition_ShouldReturnExpectedDate(DateTime input, CalendarQuarterDefinition definition, DateTime expected)
     {
         var actual = input.LastDateOfQuarter(definition);

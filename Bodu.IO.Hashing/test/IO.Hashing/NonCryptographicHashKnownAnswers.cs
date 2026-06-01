@@ -35,8 +35,8 @@ public sealed record NonCryptographicHashKnownAnswers
     /// Gets algorithm-specific known-answer vectors that fall outside the shared-input set.
     /// </summary>
     /// <value>A list of named vectors. Defaults to an empty list.</value>
-    public IReadOnlyList<NonCryptographicHashKnownAnswer> Additional { get; init; } =
-        Array.Empty<NonCryptographicHashKnownAnswer>();
+    public IReadOnlyList<NonCryptographicHashKnownAnswer> Additional { get; init; } = [];
+
     /// <summary>
     /// Gets the expected hex digest for an empty input, or <see langword="null" /> when unspecified.
     /// </summary>

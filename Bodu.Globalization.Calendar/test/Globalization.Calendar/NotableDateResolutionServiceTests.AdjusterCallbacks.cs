@@ -40,13 +40,13 @@ public sealed class NotableDateResolutionServiceAdjusterCallbacksTests
             Month = 6,
             Day = 1,
             IsNonWorkingDay = true,
-            Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+            Adjustments = [new ObservanceAdjustment
             {
                 Key = "replace",
                 Trigger = AdjustmentTrigger.Always,
                 Action = AdjustmentAction.ReplaceWithNamedDate,
                 TargetRuleName = "Substitute Day",
-            }),
+            }],
         };
 
         NotableDateService service = new(
@@ -81,13 +81,13 @@ public sealed class NotableDateResolutionServiceAdjusterCallbacksTests
             Month = 6,
             Day = 1,
             IsNonWorkingDay = true,
-            Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+            Adjustments = [new ObservanceAdjustment
             {
                 Key = "replace",
                 Trigger = AdjustmentTrigger.Always,
                 Action = AdjustmentAction.ReplaceWithNamedDate,
                 TargetRuleName = "Missing Target",
-            }),
+            }],
         };
 
         NotableDateService service = new(

@@ -112,7 +112,7 @@ public sealed class EncodingDetectionTests
     [TestMethod]
     public void TryDetectByPreamble_WhenInputIsEmpty_ShouldReturnFalseAndNull()
     {
-        var ok = EncodingDetection.TryDetectByPreamble(ReadOnlySpan<byte>.Empty, out System.Text.Encoding? encoding);
+        var ok = EncodingDetection.TryDetectByPreamble([], out System.Text.Encoding? encoding);
 
         Assert.IsFalse(ok);
         Assert.IsNull(encoding);

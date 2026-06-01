@@ -96,7 +96,7 @@ public sealed class SimpleReversingSymmetricAlgorithm
     // ── Instance fields ───────────────────────────────────────────────────────────────────────
 
     private bool disposed;
-    private CipherModeKind blockMode = CipherModeKind.CBC;
+    private CipherModeKind _blockMode = CipherModeKind.CBC;
 
     // ── Constructor ───────────────────────────────────────────────────────────────────────────
 
@@ -136,13 +136,13 @@ public sealed class SimpleReversingSymmetricAlgorithm
         get
         {
             ThrowIfDisposed();
-            return blockMode;
+            return _blockMode;
         }
 
         set
         {
             ThrowIfDisposed();
-            blockMode = value;
+            _blockMode = value;
 
             // Keep the inherited ModeValue in sync for callers that inspect it directly.
             if (Enum.TryParse<CipherMode>(value.ToString(), out CipherMode mode) && Enum.IsDefined(mode))
@@ -181,7 +181,7 @@ public sealed class SimpleReversingSymmetricAlgorithm
 
         return new SimpleReversingCryptoTransform(
             CreateCipher(rgbKey, BlockSizeBytes),
-            blockMode, PaddingValue, rgbIV, encrypt: true);
+            _blockMode, PaddingValue, rgbIV, encrypt: true);
     }
 
     /// <summary>
@@ -206,7 +206,7 @@ public sealed class SimpleReversingSymmetricAlgorithm
 
         return new SimpleReversingCryptoTransform(
             CreateCipher(rgbKey, BlockSizeBytes),
-            blockMode, PaddingValue, rgbIV, encrypt: false);
+            _blockMode, PaddingValue, rgbIV, encrypt: false);
     }
 
     // ── Key and IV generation ─────────────────────────────────────────────────────────────────

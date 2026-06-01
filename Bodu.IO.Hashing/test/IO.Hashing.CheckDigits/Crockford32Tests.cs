@@ -72,7 +72,7 @@ public sealed class Crockford32Tests
     /// Verifies that <see cref="Crockford32.IsValid(ReadOnlySpan{char})" /> rejects the empty span.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenSequenceIsEmpty_ShouldReturnFalse() => Assert.IsFalse(Crockford32.IsValid(ReadOnlySpan<char>.Empty));
+    public void IsValid_WhenSequenceIsEmpty_ShouldReturnFalse() => Assert.IsFalse(Crockford32.IsValid([]));
 
     /// <inheritdoc />
     protected override char ComputeStatic(ReadOnlySpan<char> body) =>

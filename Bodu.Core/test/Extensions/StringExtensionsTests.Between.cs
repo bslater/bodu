@@ -33,8 +33,8 @@ public partial class StringExtensionsTests
     /// <param name="end">The closing marker.</param>
     /// <param name="comparison">The comparison.</param>
     /// <param name="expected">The expected return value.</param>
-    [DataTestMethod]
-    [DynamicData(nameof(GetBetweenCases), DynamicDataSourceType.Method)]
+    [TestMethod]
+    [DynamicData(nameof(GetBetweenCases))]
     public void Between_WhenInvoked_ShouldReturnExpected(string value, string start, string end, StringComparison comparison, string? expected) => Assert.AreEqual(expected, value.Between(start, end, comparison));
 
     /// <summary>

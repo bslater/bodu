@@ -5,9 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.Security.Cryptography;
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 /// <summary>
 /// Tests for <see cref="OcbModeTransform" /> (RFC 7253 — OCB3 AES-128, 128-bit tag).
 /// </summary>

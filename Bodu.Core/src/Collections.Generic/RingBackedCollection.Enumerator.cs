@@ -51,7 +51,7 @@ public abstract partial class RingBackedCollection<T>
                 : _current;
 
         /// <inheritdoc />
-        object System.Collections.IEnumerator.Current => Current!;
+        readonly object System.Collections.IEnumerator.Current => Current!;
 
         /// <inheritdoc />
         public readonly void Dispose()

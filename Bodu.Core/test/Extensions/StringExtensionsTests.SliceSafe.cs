@@ -32,8 +32,8 @@ public partial class StringExtensionsTests
     /// <param name="value">The candidate string.</param>
     /// <param name="startIndex">The start index.</param>
     /// <param name="expected">The expected return value.</param>
-    [DataTestMethod]
-    [DynamicData(nameof(GetSliceSafeStartIndexCases), DynamicDataSourceType.Method)]
+    [TestMethod]
+    [DynamicData(nameof(GetSliceSafeStartIndexCases))]
     public void SliceSafe_StartIndex_WhenInvoked_ShouldReturnExpected(string value, int startIndex, string expected) => Assert.AreEqual(expected, value.SliceSafe(startIndex));
 
     /// <summary>
@@ -62,8 +62,8 @@ public partial class StringExtensionsTests
     /// <param name="startIndex">The start index.</param>
     /// <param name="length">The requested length.</param>
     /// <param name="expected">The expected return value.</param>
-    [DataTestMethod]
-    [DynamicData(nameof(GetSliceSafeStartAndLengthCases), DynamicDataSourceType.Method)]
+    [TestMethod]
+    [DynamicData(nameof(GetSliceSafeStartAndLengthCases))]
     public void SliceSafe_StartAndLength_WhenInvoked_ShouldReturnExpected(string value, int startIndex, int length, string expected) => Assert.AreEqual(expected, value.SliceSafe(startIndex, length));
 
     /// <summary>

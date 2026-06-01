@@ -4,11 +4,11 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Security.Cryptography;
 
 using System.Reflection;
 using System.Security.Cryptography;
 
+namespace Bodu.Security.Cryptography;
 /// <summary>
 /// Locks the <see cref="ChaCha20" /> stream cipher against the published RFC 8439 known-answer test vectors, and
 /// inherits the shared <see cref="SymmetricStreamAlgorithmTests{TTest, TAlgorithm}" /> behavioural contract.

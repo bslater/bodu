@@ -99,5 +99,5 @@ public sealed record AeadKnownAnswerVector(
     /// <param name="hex">The hex-encoded string. Must contain an even number of hex characters.</param>
     /// <returns>The decoded byte array.</returns>
     private static byte[] FromHexBytes(string hex) =>
-        hex.Length == 0 ? Array.Empty<byte>() : Convert.FromHexString(hex);
+        hex.Length == 0 ? [] : Convert.FromHexString(hex);
 }

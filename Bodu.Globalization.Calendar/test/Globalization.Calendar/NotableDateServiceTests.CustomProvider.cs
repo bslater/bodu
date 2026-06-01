@@ -61,7 +61,7 @@ public sealed partial class NotableDateServiceTests
     public void Ctor_WhenProviderSequenceIsEmpty_ShouldYieldNoNotableDates()
     {
         var service = new NotableDateService(
-            Array.Empty<INotableDateRuleProvider>(),
+            [],
             WorkingDaysOfWeek.MondayToFriday);
 
         IReadOnlyList<NotableDate> results = service.GetNotableDates(2025);
@@ -220,7 +220,7 @@ public sealed partial class NotableDateServiceTests
         var baseProvider = new InMemoryRuleProvider(Fixed("Custom Holiday", 4, 1));
         var overrideProvider = new TestOverrideProvider(
             removals: [new RuleRemoval("Custom Holiday")],
-            additions: Array.Empty<NotableDateRule>());
+            additions: []);
 
         var service = new NotableDateService(
             [(INotableDateRuleProvider)baseProvider],
@@ -299,7 +299,7 @@ public sealed partial class NotableDateServiceTests
         var baseProvider = new InMemoryRuleProvider(Fixed("Holiday A", 1, 1, territory: "AU-NSW"));
         var override_ = new CountingOverrideProvider(
             removals: [new RuleRemoval("Holiday A", TerritoryCode: "AU-NSW")],
-            additions: Array.Empty<NotableDateRule>());
+            additions: []);
 
         var service = new NotableDateService(
             [(INotableDateRuleProvider)baseProvider],
@@ -328,7 +328,7 @@ public sealed partial class NotableDateServiceTests
     {
         var baseProvider = new InMemoryRuleProvider(Fixed("Holiday A", 1, 1));
         var override_ = new CountingOverrideProvider(
-            removals: Array.Empty<RuleRemoval>(),
+            removals: [],
             additions: [Fixed("One-Off", 6, 15)]);
 
         var service = new NotableDateService(

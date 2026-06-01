@@ -132,7 +132,7 @@ public partial class IndexedSetTests
     {
         IndexedSet<int> sut = CreateSet([1, 2]);
 
-        var added = sut.AddRange(Array.Empty<int>());
+        var added = sut.AddRange([]);
 
         Assert.AreEqual(0, added);
         CollectionAssert.AreEqual(new[] { 1, 2 }, SnapshotByIndexer(sut));

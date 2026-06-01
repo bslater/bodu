@@ -21,7 +21,7 @@ public sealed class LeiTests
     /// validator requires at least the check characters, so an empty input cannot satisfy the algorithm's invariant.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenSequenceIsEmpty_ShouldReturnFalse() => Assert.IsFalse(Lei.IsValid(ReadOnlySpan<char>.Empty));
+    public void IsValid_WhenSequenceIsEmpty_ShouldReturnFalse() => Assert.IsFalse(Lei.IsValid([]));
 
     /// <inheritdoc />
     protected override string ComputeStatic(ReadOnlySpan<char> body) =>

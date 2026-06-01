@@ -157,7 +157,7 @@ public sealed class UseDirectiveInheritanceTests
             SourceRuleName: source.Name,
             OverrideBody: new NotableDateRuleOverrideBody
             {
-                Tags = ImmutableArray.Create("NationalHoliday"),
+                Tags = ["NationalHoliday"],
             });
 
         NotableDateRule merged = NotableDateRuleMerger.Apply(source, directive);
@@ -178,7 +178,7 @@ public sealed class UseDirectiveInheritanceTests
             Trigger = AdjustmentTrigger.IfWeekend,
             Action = AdjustmentAction.MoveToNextWeekday,
         };
-        NotableDateRule source = SampleSourceRule() with { Adjustments = ImmutableArray.Create(inherited) };
+        NotableDateRule source = SampleSourceRule() with { Adjustments = [inherited] };
 
         var overrideAdjustment = new ObservanceAdjustment
         {
@@ -190,7 +190,7 @@ public sealed class UseDirectiveInheritanceTests
             SourceRuleName: source.Name,
             OverrideBody: new NotableDateRuleOverrideBody
             {
-                Adjustments = ImmutableArray.Create(overrideAdjustment),
+                Adjustments = [overrideAdjustment],
             });
 
         NotableDateRule merged = NotableDateRuleMerger.Apply(source, directive);
@@ -211,7 +211,7 @@ public sealed class UseDirectiveInheritanceTests
             Trigger = AdjustmentTrigger.IfWeekend,
             Action = AdjustmentAction.MoveToNextWeekday,
         };
-        NotableDateRule source = SampleSourceRule() with { Adjustments = ImmutableArray.Create(inherited) };
+        NotableDateRule source = SampleSourceRule() with { Adjustments = [inherited] };
 
         var extra = new ObservanceAdjustment
         {
@@ -223,7 +223,7 @@ public sealed class UseDirectiveInheritanceTests
             SourceRuleName: source.Name,
             OverrideBody: new NotableDateRuleOverrideBody
             {
-                Adjustments = ImmutableArray.Create(extra),
+                Adjustments = [extra],
             });
 
         NotableDateRule merged = NotableDateRuleMerger.Apply(source, directive);
@@ -246,7 +246,7 @@ public sealed class UseDirectiveInheritanceTests
             Trigger = AdjustmentTrigger.IfWeekend,
             Action = AdjustmentAction.MoveToNextWeekday,
         };
-        NotableDateRule source = SampleSourceRule() with { Adjustments = ImmutableArray.Create(inherited) };
+        NotableDateRule source = SampleSourceRule() with { Adjustments = [inherited] };
 
         var custom = new ObservanceAdjustment
         {
@@ -259,7 +259,7 @@ public sealed class UseDirectiveInheritanceTests
             ClearAdjustments: true,
             OverrideBody: new NotableDateRuleOverrideBody
             {
-                Adjustments = ImmutableArray.Create(custom),
+                Adjustments = [custom],
             });
 
         NotableDateRule merged = NotableDateRuleMerger.Apply(source, directive);
@@ -284,7 +284,7 @@ public sealed class UseDirectiveInheritanceTests
             ClearTags: true,
             OverrideBody: new NotableDateRuleOverrideBody
             {
-                Tags = ImmutableArray.Create("Secular"),
+                Tags = ["Secular"],
             });
 
         NotableDateRule merged = NotableDateRuleMerger.Apply(source, directive);

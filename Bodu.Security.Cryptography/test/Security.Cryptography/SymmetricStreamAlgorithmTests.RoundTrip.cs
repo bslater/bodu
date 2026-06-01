@@ -74,7 +74,7 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
         byte[] ciphertext;
         using (TAlgorithm encryptor = CreateAlgorithm())
         using (ICryptoTransform e = encryptor.CreateEncryptor(key, nonce))
-            ciphertext = e.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
+            ciphertext = e.TransformFinalBlock([], 0, 0);
 
         Assert.AreEqual(0, ciphertext.Length);
 

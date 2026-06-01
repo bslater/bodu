@@ -103,7 +103,7 @@ public partial class StringExtensionsTests
     {
         WordCasingOptions options = new()
         {
-            Acronyms = Array.Empty<string>(),
+            Acronyms = [],
             MinorWords = ["and"],
             LowerCaseMinorWords = true,
         };
@@ -120,7 +120,7 @@ public partial class StringExtensionsTests
     {
         WordCasingOptions options = new()
         {
-            Acronyms = Array.Empty<string>(),
+            Acronyms = [],
             Culture = CultureInfo.GetCultureInfo("tr-TR"),
         };
 

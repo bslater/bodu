@@ -21,7 +21,7 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
     {
         using TCryptoTransform encryptor = CreateEncryptor();
 
-        _ = encryptor.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
+        _ = encryptor.TransformFinalBlock([], 0, 0);
     }
 
     /// <summary>

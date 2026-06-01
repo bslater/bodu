@@ -20,7 +20,7 @@ public sealed partial class BencodeTests
     /// <see cref="BencodeKnownAnswerVectors.Bep3NegativeVectors" />.</param>
     [TestMethod]
     [TestCategory(TestCategories.Regression)]
-    [DynamicData(nameof(BencodeKnownAnswerVectors.Bep3NegativeVectors), typeof(BencodeKnownAnswerVectors), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(BencodeKnownAnswerVectors.Bep3NegativeVectors), typeof(BencodeKnownAnswerVectors))]
     public void Decode_ForNegativeVector_ShouldThrowExactly(BencodeNegativeDecodeVector vector)
     {
         Exception ex = Assert.ThrowsExactly<BencodeFormatException>(() =>
@@ -56,7 +56,7 @@ public sealed partial class BencodeTests
     /// <see cref="BencodeKnownAnswerVectors.Bep3NegativeVectors" />.</param>
     [TestMethod]
     [TestCategory(TestCategories.Regression)]
-    [DynamicData(nameof(BencodeKnownAnswerVectors.Bep3NegativeVectors), typeof(BencodeKnownAnswerVectors), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(BencodeKnownAnswerVectors.Bep3NegativeVectors), typeof(BencodeKnownAnswerVectors))]
     public void TryDecode_ForNegativeVector_ShouldReturnFalseWithDefaults(BencodeNegativeDecodeVector vector)
     {
         // Skip the trailing-data vector — TryDecode consumes only the value prefix and reports success, while

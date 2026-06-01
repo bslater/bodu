@@ -75,7 +75,7 @@ public sealed partial class Base32Tests
     /// Verifies that <see cref="Base32.IsValid" /> returns <see langword="true" /> for empty input.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenEmpty_ShouldReturnTrue() => Assert.IsTrue(Base32.IsValid(ReadOnlySpan<char>.Empty));
+    public void IsValid_WhenEmpty_ShouldReturnTrue() => Assert.IsTrue(Base32.IsValid([]));
 
     /// <summary>
     /// Verifies that <see cref="Base32.IsValid" /> accepts decorated input when the matching styles are set.

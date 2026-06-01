@@ -11,9 +11,6 @@ namespace Bodu.Collections.Generic.Concurrent;
 [TestClass]
 public partial class ConcurrentCircularBufferTests
 {
-
-    private const int DefaultCapacity = 16;
-
     private const int MinCapacity = 2;
 
     public TestContext TestContext { get; set; }

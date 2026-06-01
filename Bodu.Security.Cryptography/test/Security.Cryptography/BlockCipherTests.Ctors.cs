@@ -27,7 +27,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
         foreach (TVariant variant in instance.GetBlockCipherVariants())
         {
             BlockCipherSpecification spec = instance.GetSpecification(variant);
-            var validTweak = spec.TestTweak ?? (spec.TweakSize > 0 ? new byte[spec.TweakSize] : Array.Empty<byte>());
+            var validTweak = spec.TestTweak ?? (spec.TweakSize > 0 ? new byte[spec.TweakSize] : []);
 
             yield return new object[] { variant, Array.Empty<byte>(), validTweak };
 
@@ -129,8 +129,8 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
             _ = CreateBlockCipherForAnswer(new BlockCipherKnownAnswer
             {
                 Name = "ctor-invalid-key",
-                Plaintext = Array.Empty<byte>(),
-                Ciphertext = Array.Empty<byte>(),
+                Plaintext = [],
+                Ciphertext = [],
                 Key = key,
                 Tweak = tweak.Length > 0 ? tweak : null,
             });
@@ -162,8 +162,8 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
             _ = CreateBlockCipherForAnswer(new BlockCipherKnownAnswer
             {
                 Name = "ctor-invalid-tweak",
-                Plaintext = Array.Empty<byte>(),
-                Ciphertext = Array.Empty<byte>(),
+                Plaintext = [],
+                Ciphertext = [],
                 Key = key,
                 Tweak = tweak,
             });

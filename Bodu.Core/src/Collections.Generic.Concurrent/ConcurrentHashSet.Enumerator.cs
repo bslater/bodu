@@ -69,7 +69,7 @@ public sealed partial class ConcurrentHashSet<T>
         /// Gets the element at the current position of the enumerator.
         /// </summary>
         /// <returns>The element at the enumerator's current position.</returns>
-        object IEnumerator.Current => _current;
+        readonly object IEnumerator.Current => _current;
 
         /// <summary>
         /// Releases all resources used by the enumerator.

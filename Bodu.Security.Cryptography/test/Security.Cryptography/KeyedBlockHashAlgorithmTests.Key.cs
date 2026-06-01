@@ -52,7 +52,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
-            algorithm.Key = Array.Empty<byte>();
+            algorithm.Key = [];
         });
     }
 

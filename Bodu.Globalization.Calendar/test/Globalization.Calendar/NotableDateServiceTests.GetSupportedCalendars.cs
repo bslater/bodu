@@ -129,7 +129,7 @@ public partial class NotableDateServiceTests
     public void GetSupportedCalendars_WhenNoRuleProviders_ShouldReturnEmpty()
     {
         NotableDateService service = new(
-            ruleProviders: Array.Empty<INotableDateRuleProvider>(),
+            ruleProviders: [],
             workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 
         Assert.AreEqual(0, service.GetSupportedCalendars().Count);

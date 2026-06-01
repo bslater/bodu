@@ -17,7 +17,7 @@ public partial class OrderedSetTests
     {
         var sut = new OrderedSet<int>();
 
-        Assert.IsFalse(sut.IsProperSubsetOf(Array.Empty<int>()));
+        Assert.IsFalse(sut.IsProperSubsetOf([]));
     }
 
     /// <summary>
@@ -72,7 +72,7 @@ public partial class OrderedSetTests
     {
         OrderedSet<int> sut = CreateSet([1]);
 
-        Assert.IsTrue(sut.IsProperSupersetOf(Array.Empty<int>()));
+        Assert.IsTrue(sut.IsProperSupersetOf([]));
     }
 
     // --------------------------------------------------------
@@ -105,7 +105,7 @@ public partial class OrderedSetTests
         Assert.IsTrue(sut.IsSubsetOf([1, 2]));
         Assert.IsFalse(sut.IsSubsetOf([1, 3]));
         Assert.IsFalse(sut.IsSubsetOf([1]));
-        Assert.IsFalse(sut.IsSubsetOf(Array.Empty<int>()));
+        Assert.IsFalse(sut.IsSubsetOf([]));
     }
     // --------------------------------------------------------
     // IsSubsetOf
@@ -133,7 +133,7 @@ public partial class OrderedSetTests
     {
         var sut = new OrderedSet<int>();
 
-        Assert.IsTrue(sut.IsSubsetOf(Array.Empty<int>()));
+        Assert.IsTrue(sut.IsSubsetOf([]));
         Assert.IsTrue(sut.IsSubsetOf([1, 2, 3]));
     }
 
@@ -160,8 +160,8 @@ public partial class OrderedSetTests
         var empty = new OrderedSet<int>();
         OrderedSet<int> populated = CreateSet([1, 2]);
 
-        Assert.IsTrue(empty.IsSupersetOf(Array.Empty<int>()));
-        Assert.IsTrue(populated.IsSupersetOf(Array.Empty<int>()));
+        Assert.IsTrue(empty.IsSupersetOf([]));
+        Assert.IsTrue(populated.IsSupersetOf([]));
     }
 
     // --------------------------------------------------------
@@ -193,7 +193,7 @@ public partial class OrderedSetTests
         Assert.IsTrue(sut.Overlaps([3, 4]));
         Assert.IsTrue(sut.Overlaps([1]));
         Assert.IsFalse(sut.Overlaps([4, 5]));
-        Assert.IsFalse(sut.Overlaps(Array.Empty<int>()));
+        Assert.IsFalse(sut.Overlaps([]));
     }
 
     // --------------------------------------------------------
@@ -223,7 +223,7 @@ public partial class OrderedSetTests
         var sut = new OrderedSet<int>();
 
         Assert.IsFalse(sut.Overlaps([1, 2]));
-        Assert.IsFalse(sut.Overlaps(Array.Empty<int>()));
+        Assert.IsFalse(sut.Overlaps([]));
     }
 
     /// <summary>
@@ -234,7 +234,7 @@ public partial class OrderedSetTests
     {
         var sut = new OrderedSet<int>();
 
-        Assert.IsTrue(sut.SetEquals(Array.Empty<int>()));
+        Assert.IsTrue(sut.SetEquals([]));
     }
 
     /// <summary>

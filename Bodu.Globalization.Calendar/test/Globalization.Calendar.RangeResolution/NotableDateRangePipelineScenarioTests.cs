@@ -46,13 +46,13 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 
     private static NotableDateRule ChristmasDayWithWeekendSubstitute() => ChristmasDay() with
     {
-        Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+        Adjustments = [new ObservanceAdjustment
         {
             Key = "christmas-substitute",
             Trigger = AdjustmentTrigger.IfWeekend,
             Action = AdjustmentAction.MoveToNextNonWorkingDay,
             IsNonWorkingDay = true,
-        }),
+        }],
     };
 
     private static NotableDateRule BoxingDayFixed() => new()
@@ -67,13 +67,13 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 
     private static NotableDateRule BoxingDayFixedWithWeekendSubstitute() => BoxingDayFixed() with
     {
-        Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+        Adjustments = [new ObservanceAdjustment
         {
             Key = "boxing-day-substitute",
             Trigger = AdjustmentTrigger.IfWeekend,
             Action = AdjustmentAction.MoveToNextNonWorkingDay,
             IsNonWorkingDay = true,
-        }),
+        }],
     };
 
     private static NotableDateRule BoxingDayOffsetFromChristmas() => new()
@@ -94,13 +94,13 @@ public sealed partial class NotableDateRangePipelineScenarioTests
         Month = 1,
         Day = 1,
         IsNonWorkingDay = true,
-        Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+        Adjustments = [new ObservanceAdjustment
         {
             Key = "new-year-substitute",
             Trigger = AdjustmentTrigger.IfWeekend,
             Action = AdjustmentAction.MoveToNextNonWorkingDay,
             IsNonWorkingDay = true,
-        }),
+        }],
     };
 
     private static NotableDateRule EasterSunday() => new()
@@ -392,7 +392,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
             Month = 7,
             Day = 5,
             IsNonWorkingDay = true,
-            Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+            Adjustments = [new ObservanceAdjustment
             {
                 Key = "back-2",
                 Trigger = AdjustmentTrigger.IfDayOfWeek,
@@ -400,7 +400,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
                 Action = AdjustmentAction.AddDays,
                 OffsetDays = -2,
                 IsNonWorkingDay = true,
-            }),
+            }],
         };
 
         // 5 Jul 2026 = Sunday → IfDayOfWeek trigger fires, AddDays(-2) lands on Fri 3 Jul 2026.

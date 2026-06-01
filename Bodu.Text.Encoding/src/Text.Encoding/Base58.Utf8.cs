@@ -57,7 +57,7 @@ public static partial class Base58
         var alphabet = GetAlphabet(variant);
 
         if (source.IsEmpty)
-            return Array.Empty<byte>();
+            return [];
 
         var upperBound = GetMaxEncodedLength(source.Length);
         var scratch = System.Buffers.ArrayPool<char>.Shared.Rent(upperBound);

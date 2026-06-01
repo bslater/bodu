@@ -30,28 +30,28 @@ public sealed class Blake2sContractTests : CryptoHashContractTests<Blake2s>
     [
         new(
             "BLAKE2s-256 empty",
-            Input: Array.Empty<byte>(),
+            Input: [],
             ExpectedDigest: Convert.FromHexString("69217A3079908094E11121D042354A7C1F55B6482CA1A51E1B250DFD1ED0EEF9"),
             OutputLengthBytes: 32,
             Key: null),
 
         new(
             "BLAKE2s-224 empty",
-            Input: Array.Empty<byte>(),
+            Input: [],
             ExpectedDigest: Convert.FromHexString("1FA1291E65248B37B3433475B2A0DD63D54A11ECC4E3E034E7BC1EF4"),
             OutputLengthBytes: 28,
             Key: null),
 
         new(
             "BLAKE2s-160 empty",
-            Input: Array.Empty<byte>(),
+            Input: [],
             ExpectedDigest: Convert.FromHexString("354C9C33F735962418BDACB9479873429C34916F"),
             OutputLengthBytes: 20,
             Key: null),
 
         new(
             "BLAKE2s-128 empty",
-            Input: Array.Empty<byte>(),
+            Input: [],
             ExpectedDigest: Convert.FromHexString("64550D6FFE2C0A01A14ABA1EADE0200C"),
             OutputLengthBytes: 16,
             Key: null),

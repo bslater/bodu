@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-#nullable enable
-
 using System.Collections.ObjectModel;
 using Bodu.Test.Kat;
 

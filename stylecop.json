@@ -1,15 +1,18 @@
-{
-  "$schema": "https://raw.githubusercontent.com/DotNetAnalyzers/StyleCopAnalyzers/master/StyleCop.Analyzers/StyleCop.Analyzers/Settings/stylecop.schema.json",
-  "settings": {
-    "documentationRules": {
-      "companyName": "Bodu Pty. Ltd.",
-      "documentExposedElements": true,
-      "documentInternalElements": true,
-      "documentPrivateElements": true,
-      "documentPrivateFields": true
-    },
-    "orderingRules": {
-      "usingDirectivesPlacement": "outsideNamespace"
+﻿{
+    "$schema": "https://raw.githubusercontent.com/DotNetAnalyzers/StyleCopAnalyzers/master/StyleCop.Analyzers/StyleCop.Analyzers/Settings/stylecop.schema.json",
+    "settings": {
+        "documentationRules": {
+            "companyName": "Bodu Pty. Ltd.",
+            "copyrightText": "Copyright (c) {companyName}. All rights reserved.",
+            "xmlHeader": true,
+            "headerDecoration": "---------------------------------------------------------------------------------------------------------------",
+            "documentExposedElements": true,
+            "documentInternalElements": true,
+            "documentPrivateElements": true,
+            "documentPrivateFields": true
+        },
+        "orderingRules": {
+            "usingDirectivesPlacement": "outsideNamespace"
+        }
     }
-  }
 }

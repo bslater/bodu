@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Extensions;
-
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
@@ -29,7 +27,7 @@ public sealed partial class NotableDateServiceTests
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             _ = new NotableDateService(
-                Array.Empty<INotableDateRuleProvider>(),
+                [],
                 (WorkingDaysOfWeek)int.MaxValue);
         });
     }

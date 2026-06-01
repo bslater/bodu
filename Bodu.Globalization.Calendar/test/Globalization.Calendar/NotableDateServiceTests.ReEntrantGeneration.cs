@@ -21,12 +21,12 @@ public sealed partial class NotableDateServiceTests
         // The expected substituted public holidays are Monday 27 December and Tuesday 28 December.
         NotableDateRule christmas = Fixed("Christmas Day", 12, 25, nonWorking: true) with
         {
-            Adjustments = ImmutableArray.Create(CreateForwardSubstituteAdjustment("christmas-substitute")),
+            Adjustments = [CreateForwardSubstituteAdjustment("christmas-substitute")],
         };
 
         NotableDateRule boxingDay = Fixed("Boxing Day", 12, 26, nonWorking: true) with
         {
-            Adjustments = ImmutableArray.Create(CreateForwardSubstituteAdjustment("boxing-day-substitute")),
+            Adjustments = [CreateForwardSubstituteAdjustment("boxing-day-substitute")],
         };
 
         NotableDateService service = BuildService(christmas, boxingDay);
@@ -57,7 +57,7 @@ public sealed partial class NotableDateServiceTests
         // Monday 6 January is already a non-working base holiday, so the substitute must move to Tuesday 7 January.
         NotableDateRule sundayHoliday = Fixed("Sunday Holiday", 1, 5, nonWorking: true) with
         {
-            Adjustments = ImmutableArray.Create(CreateForwardSubstituteAdjustment("sunday-substitute")),
+            Adjustments = [CreateForwardSubstituteAdjustment("sunday-substitute")],
         };
 
         NotableDateRule existingMondayHoliday = Fixed("Existing Monday Holiday", 1, 6, nonWorking: true);
@@ -85,7 +85,7 @@ public sealed partial class NotableDateServiceTests
         // The substitute should therefore land on Wednesday 8 January.
         NotableDateRule sundayHoliday = Fixed("Sunday Holiday", 1, 5, nonWorking: true) with
         {
-            Adjustments = ImmutableArray.Create(CreateForwardSubstituteAdjustment("sunday-substitute")),
+            Adjustments = [CreateForwardSubstituteAdjustment("sunday-substitute")],
         };
 
         NotableDateRule blockingSpan = Fixed("Blocking Festival", 1, 6, nonWorking: true) with
@@ -115,14 +115,14 @@ public sealed partial class NotableDateServiceTests
         // during adjustment evaluation.
         NotableDateRule conditionalObservance = Fixed("Conditional Observance", 1, 6, nonWorking: false) with
         {
-            Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+            Adjustments = [new ObservanceAdjustment
             {
                 Key = "if-non-working-day",
                 Trigger = AdjustmentTrigger.IfNonWorkingDay,
                 Action = AdjustmentAction.AddDays,
                 OffsetDays = 1,
                 IsNonWorkingDay = true,
-            }),
+            }],
         };
 
         NotableDateRule existingMondayHoliday = Fixed("Existing Monday Holiday", 1, 6, nonWorking: true);
@@ -153,13 +153,13 @@ public sealed partial class NotableDateServiceTests
     {
         NotableDateRule replacementSource = Fixed("Replacement Source", 1, 2) with
         {
-            Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+            Adjustments = [new ObservanceAdjustment
             {
                 Key = "replace-with-target",
                 Trigger = AdjustmentTrigger.Always,
                 Action = AdjustmentAction.ReplaceWithNamedDate,
                 TargetRuleName = "Target Holiday",
-            }),
+            }],
         };
 
         NotableDateRule targetHoliday = Fixed("Target Holiday", 7, 4);
@@ -189,7 +189,7 @@ public sealed partial class NotableDateServiceTests
     {
         NotableDateRule sundayHoliday = Fixed("Sunday Holiday", 1, 5, nonWorking: true) with
         {
-            Adjustments = ImmutableArray.Create(CreateForwardSubstituteAdjustment("sunday-substitute")),
+            Adjustments = [CreateForwardSubstituteAdjustment("sunday-substitute")],
         };
 
         NotableDateRule existingMondayHoliday = Fixed("Existing Monday Holiday", 1, 6, nonWorking: true);
@@ -216,7 +216,7 @@ public sealed partial class NotableDateServiceTests
         // A US-scoped substitute should not treat the AU holiday as unavailable.
         NotableDateRule usSundayHoliday = Fixed("US Sunday Holiday", 1, 5, nonWorking: true, territory: "US") with
         {
-            Adjustments = ImmutableArray.Create(CreateForwardSubstituteAdjustment("us-sunday-substitute")),
+            Adjustments = [CreateForwardSubstituteAdjustment("us-sunday-substitute")],
         };
 
         NotableDateRule auMondayHoliday = Fixed("AU Monday Holiday", 1, 6, nonWorking: true, territory: "AU");
@@ -246,11 +246,11 @@ public sealed partial class NotableDateServiceTests
             [
                 Fixed("Christmas Day", 12, 25, nonWorking: true) with
                 {
-                    Adjustments = ImmutableArray.Create(CreateForwardSubstituteAdjustment("christmas-substitute")),
+                    Adjustments = [CreateForwardSubstituteAdjustment("christmas-substitute")],
                 },
                 Fixed("Boxing Day", 12, 26, nonWorking: true) with
                 {
-                    Adjustments = ImmutableArray.Create(CreateForwardSubstituteAdjustment("boxing-day-substitute")),
+                    Adjustments = [CreateForwardSubstituteAdjustment("boxing-day-substitute")],
                 },
             ],
             [

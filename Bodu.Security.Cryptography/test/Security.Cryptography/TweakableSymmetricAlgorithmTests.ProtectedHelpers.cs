@@ -132,7 +132,7 @@ public sealed class TweakableSymmetricAlgorithmProtectedHelperTests
         [
             new KeySizes(128, 128, 0),
         ]);
-        algorithm.AssignTweak(Array.Empty<byte>());
+        algorithm.AssignTweak([]);
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {

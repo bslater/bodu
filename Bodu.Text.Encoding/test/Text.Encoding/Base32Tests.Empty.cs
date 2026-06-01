@@ -13,7 +13,7 @@ public sealed partial class Base32Tests
     /// Verifies that decoding an empty string returns an empty byte array for every variant.
     /// </summary>
     /// <param name="variant">The Base32 variant.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(Base32Variant.Standard)]
     [DataRow(Base32Variant.HexExtended)]
     [DataRow(Base32Variant.Crockford)]
@@ -28,14 +28,14 @@ public sealed partial class Base32Tests
     /// Verifies that encoding an empty byte array returns <see cref="string.Empty" /> for every variant.
     /// </summary>
     /// <param name="variant">The Base32 variant.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(Base32Variant.Standard)]
     [DataRow(Base32Variant.HexExtended)]
     [DataRow(Base32Variant.Crockford)]
     [DataRow(Base32Variant.ZBase32)]
     public void Encode_WhenEmptyByteArray_ShouldReturnEmptyString(Base32Variant variant)
     {
-        var actual = Base32.Encode(Array.Empty<byte>(), variant);
+        var actual = Base32.Encode([], variant);
 
         Assert.AreEqual(string.Empty, actual);
     }
@@ -47,13 +47,13 @@ public sealed partial class Base32Tests
     [TestMethod]
     public void TryDecode_WhenSourceIsEmpty_ShouldReturnTrueAndZeroBytesRegardlessOfDestination()
     {
-        Assert.IsTrue(Base32.TryDecode(ReadOnlySpan<char>.Empty, new byte[1], out var t1));
+        Assert.IsTrue(Base32.TryDecode([], new byte[1], out var t1));
         Assert.AreEqual(0, t1);
 
-        Assert.IsTrue(Base32.TryDecode(ReadOnlySpan<char>.Empty, Array.Empty<byte>(), out var t2));
+        Assert.IsTrue(Base32.TryDecode([], [], out var t2));
         Assert.AreEqual(0, t2);
 
-        Assert.IsTrue(Base32.TryDecode(ReadOnlySpan<char>.Empty, new byte[100], out var t3));
+        Assert.IsTrue(Base32.TryDecode([], new byte[100], out var t3));
         Assert.AreEqual(0, t3);
     }
 
@@ -64,13 +64,13 @@ public sealed partial class Base32Tests
     [TestMethod]
     public void TryEncode_WhenSourceIsEmpty_ShouldReturnTrueAndZeroCharsRegardlessOfDestination()
     {
-        Assert.IsTrue(Base32.TryEncode(ReadOnlySpan<byte>.Empty, new char[1], out var t1));
+        Assert.IsTrue(Base32.TryEncode([], new char[1], out var t1));
         Assert.AreEqual(0, t1);
 
-        Assert.IsTrue(Base32.TryEncode(ReadOnlySpan<byte>.Empty, Array.Empty<char>(), out var t2));
+        Assert.IsTrue(Base32.TryEncode([], [], out var t2));
         Assert.AreEqual(0, t2);
 
-        Assert.IsTrue(Base32.TryEncode(ReadOnlySpan<byte>.Empty, new char[100], out var t3));
+        Assert.IsTrue(Base32.TryEncode([], new char[100], out var t3));
         Assert.AreEqual(0, t3);
     }
 

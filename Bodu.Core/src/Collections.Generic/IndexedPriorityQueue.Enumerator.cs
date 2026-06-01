@@ -78,7 +78,7 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
                 : _current;
 
         /// <inheritdoc />
-        object IEnumerator.Current => Current;
+        readonly object IEnumerator.Current => Current;
 
         /// <inheritdoc />
         public readonly void Dispose()

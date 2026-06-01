@@ -47,7 +47,7 @@ public partial class ConcurrentCircularBufferTests
             results.Add(buffer);
         });
 
-        Assert.IsTrue(results.All(b => b.AllowOverwrite == false));
+        Assert.IsTrue(results.All(b => !b.AllowOverwrite));
         Assert.IsTrue(results.All(b => b.Count == 1));
     }
 
@@ -101,7 +101,7 @@ public partial class ConcurrentCircularBufferTests
     public void Ctor_WhenCapacityIsLessThanTwo_WithSourceEnumerable_ShouldThrowExactly(
         int capacity, bool allowOverwrite)
     {
-        TestItem[] empty = Array.Empty<TestItem>();
+        TestItem[] empty = [];
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

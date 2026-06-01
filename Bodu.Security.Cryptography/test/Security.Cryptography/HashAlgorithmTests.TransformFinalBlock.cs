@@ -62,25 +62,25 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
             using TAlgorithm algorithm = CreateAlgorithm();
 
             // Case 1: TransformBlock followed by TransformFinalBlock
-            algorithm.TransformBlock(Array.Empty<byte>(), 0, 0, null, 0);
-            algorithm.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
+            algorithm.TransformBlock([], 0, 0, null, 0);
+            algorithm.TransformFinalBlock([], 0, 0);
             CollectionAssert.AreEqual(expected, algorithm.Hash, "TransformBlock followed by TransformFinalBlock on empty input should match expected hash.");
 
             // Case 2: TransformFinalBlock alone on same instance
             algorithm.Initialize();
-            algorithm.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
+            algorithm.TransformFinalBlock([], 0, 0);
             CollectionAssert.AreEqual(expected, algorithm.Hash, "TransformFinalBlock alone on empty input should match expected hash.");
         }
         else
         {
             // One-shot case: use separate instances
             using TAlgorithm algorithm1 = CreateAlgorithm();
-            algorithm1.TransformBlock(Array.Empty<byte>(), 0, 0, null, 0);
-            algorithm1.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
+            algorithm1.TransformBlock([], 0, 0, null, 0);
+            algorithm1.TransformFinalBlock([], 0, 0);
             CollectionAssert.AreEqual(expected, algorithm1.Hash, "TransformBlock followed by TransformFinalBlock on empty input should match expected hash.");
 
             using TAlgorithm algorithm2 = CreateAlgorithm();
-            algorithm2.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
+            algorithm2.TransformFinalBlock([], 0, 0);
             CollectionAssert.AreEqual(expected, algorithm2.Hash, "TransformFinalBlock alone on empty input should match expected hash.");
         }
     }
@@ -287,7 +287,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
         _ = algorithm.TransformFinalBlock(input, 0, input.Length);
         _ = algorithm.Hash;
 
-        _ = algorithm.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
+        _ = algorithm.TransformFinalBlock([], 0, 0);
 
         CollectionAssert.AreEqual(ExpectedEmptyInputHash, algorithm.Hash);
     }

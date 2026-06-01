@@ -66,7 +66,7 @@ public partial class Blake3Tests
             offset += chunk;
         }
 
-        hasher.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
+        hasher.TransformFinalBlock([], 0, 0);
         return hasher.Hash!;
     }
 }

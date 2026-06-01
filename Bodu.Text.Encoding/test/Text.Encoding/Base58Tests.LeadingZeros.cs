@@ -13,7 +13,7 @@ public sealed partial class Base58Tests
     /// Verifies that leading <c>1</c> characters decode back to leading zero bytes.
     /// </summary>
     /// <param name="leadingOneCount">The number of leading <c>1</c> characters.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(1)]
     [DataRow(3)]
     [DataRow(5)]
@@ -32,7 +32,7 @@ public sealed partial class Base58Tests
     /// Verifies that leading zero bytes are encoded as repeated <c>1</c> characters in the Bitcoin/Flickr alphabet.
     /// </summary>
     /// <param name="leadingZeroCount">The number of leading zero bytes.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(1)]
     [DataRow(3)]
     [DataRow(5)]

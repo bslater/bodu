@@ -125,7 +125,7 @@ public sealed class NotableDateResolutionServiceProductionEasterTests
     private sealed class GregorianEasterSundayAlgorithmAdapter
         : INotableDateAlgorithm
     {
-        private readonly Bodu.Globalization.Calendar.Providers.GregorianEasterSundayNotableDateProvider provider = new();
+        private readonly Bodu.Globalization.Calendar.Algorithms.GregorianEasterSundayNotableDateProvider provider = new();
 
         public DateTime? GetDate(int year, System.Globalization.Calendar? calendar = null)
         {

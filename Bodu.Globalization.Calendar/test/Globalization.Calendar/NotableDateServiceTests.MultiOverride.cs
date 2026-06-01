@@ -31,8 +31,8 @@ public partial class NotableDateServiceTests
             {
                 OverrideProviders =
                 [
-                    new TestOverrideProvider(removals: Array.Empty<RuleRemoval>(), additions: [earlyRule]),
-                    new TestOverrideProvider(removals: Array.Empty<RuleRemoval>(), additions: [lateRule]),
+                    new TestOverrideProvider(removals: [], additions: [earlyRule]),
+                    new TestOverrideProvider(removals: [], additions: [lateRule]),
                 ],
             });
 
@@ -121,13 +121,13 @@ public partial class NotableDateServiceTests
             Month = 12,
             Day = 31,
             IsNonWorkingDay = true,
-            Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+            Adjustments = [new ObservanceAdjustment
             {
                 Key = "weekend-substitute",
                 Trigger = AdjustmentTrigger.IfWeekend,
                 Action = AdjustmentAction.MoveToNextNonWorkingDay,
                 IsNonWorkingDay = true,
-            }),
+            }],
         };
 
         NotableDateService service = BuildService(yearEnd);

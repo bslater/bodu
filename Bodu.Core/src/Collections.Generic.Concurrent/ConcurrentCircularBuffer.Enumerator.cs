@@ -52,13 +52,13 @@ public sealed partial class ConcurrentCircularBuffer<T> :
         }
 
         /// <inheritdoc />
-        public T Current => _current!;
+        public readonly T Current => _current!;
 
         /// <inheritdoc />
-        object IEnumerator.Current => _current!;
+        readonly object IEnumerator.Current => _current!;
 
         /// <inheritdoc />
-        public void Dispose()
+        public readonly void Dispose()
         {
             // No resources to dispose.
         }

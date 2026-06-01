@@ -160,7 +160,7 @@ public partial class CryptoHelpersTests
     /// array is empty.
     /// </summary>
     [TestMethod]
-    public void FormatLegalSizes_WhenEmpty_ShouldReturnEmptyString() => Assert.AreEqual(string.Empty, CryptoHelpers.FormatLegalSizes(Array.Empty<KeySizes>()));
+    public void FormatLegalSizes_WhenEmpty_ShouldReturnEmptyString() => Assert.AreEqual(string.Empty, CryptoHelpers.FormatLegalSizes([]));
 
     /// <summary>
     /// Verifies that <see cref="CryptoHelpers.FormatLegalSizes(KeySizes[])" /> emits a single, distinct value when

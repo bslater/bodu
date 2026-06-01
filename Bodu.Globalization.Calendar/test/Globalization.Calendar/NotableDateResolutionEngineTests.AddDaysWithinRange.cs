@@ -71,6 +71,6 @@ public sealed class NotableDateResolutionEngineAddDaysWithinRangeTests
     private sealed class EmptyRuleProvider
         : INotableDateRuleProvider
     {
-        public IEnumerable<NotableDateRule> LoadRules() => Array.Empty<NotableDateRule>();
+        public IEnumerable<NotableDateRule> LoadRules() => [];
     }
 }

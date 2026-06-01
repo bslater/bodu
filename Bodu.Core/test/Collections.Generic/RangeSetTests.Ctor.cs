@@ -58,7 +58,7 @@ public partial class RangeSetTests
     [TestMethod]
     public void Ctor_WhenCollectionIsEmpty_ShouldBeEmpty()
     {
-        var sut = new RangeSet<int>(Array.Empty<Range<int>>());
+        var sut = new RangeSet<int>([]);
 
         Assert.AreEqual(0, sut.Count);
     }

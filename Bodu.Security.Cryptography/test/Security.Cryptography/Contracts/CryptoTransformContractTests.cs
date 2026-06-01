@@ -61,7 +61,7 @@ public abstract class CryptoTransformContractTests<TTransform>
     {
         using TTransform encryptor = CreateEncryptor();
 
-        _ = encryptor.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
+        _ = encryptor.TransformFinalBlock([], 0, 0);
     }
 
     /// <summary>

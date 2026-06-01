@@ -83,11 +83,11 @@ public partial class HashAlgorithmExtensionsTests
     {
         byte[] emptyHash;
         using (MonitoringHashAlgorithm reference = CreateAlgorithm())
-            emptyHash = reference.ComputeHash(Array.Empty<byte>());
+            emptyHash = reference.ComputeHash([]);
 
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
-        await algorithm.AppendDataAsync(new MemoryStream(Array.Empty<byte>()));
-        algorithm.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
+        await algorithm.AppendDataAsync(new MemoryStream([]));
+        algorithm.TransformFinalBlock([], 0, 0);
 
         CollectionAssert.AreEqual(emptyHash, algorithm.Hash,
             "AppendDataAsync with an empty stream must not alter the hash state.");
@@ -107,7 +107,7 @@ public partial class HashAlgorithmExtensionsTests
 
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         await algorithm.AppendDataAsync(new MemoryStream(SampleData));
-        algorithm.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
+        algorithm.TransformFinalBlock([], 0, 0);
 
         CollectionAssert.AreEqual(expected, algorithm.Hash,
             "AppendDataAsync must feed all stream bytes into the accumulator.");
@@ -135,7 +135,7 @@ public partial class HashAlgorithmExtensionsTests
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         await algorithm.AppendDataAsync(new MemoryStream(part1));
         await algorithm.AppendDataAsync(new MemoryStream(part2));
-        algorithm.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
+        algorithm.TransformFinalBlock([], 0, 0);
 
         CollectionAssert.AreEqual(expected, algorithm.Hash,
             "Multiple AppendDataAsync calls must accumulate all bytes in order.");
@@ -163,7 +163,7 @@ public partial class HashAlgorithmExtensionsTests
         // Synchronous append of first half, async append of second half.
         algorithm.AppendData(part1.AsSpan());
         await algorithm.AppendDataAsync(new MemoryStream(part2));
-        algorithm.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
+        algorithm.TransformFinalBlock([], 0, 0);
 
         CollectionAssert.AreEqual(expected, algorithm.Hash,
             "Sync AppendData and async AppendDataAsync must accumulate bytes on the same hash state.");
@@ -185,7 +185,7 @@ public partial class HashAlgorithmExtensionsTests
 
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         await algorithm.AppendDataAsync(new MemoryStream(data), bufferSize: 7);
-        algorithm.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
+        algorithm.TransformFinalBlock([], 0, 0);
 
         CollectionAssert.AreEqual(expected, algorithm.Hash,
             "AppendDataAsync must produce the correct hash regardless of buffer size.");
@@ -207,7 +207,7 @@ public partial class HashAlgorithmExtensionsTests
 
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         await algorithm.AppendDataAsync(new FixedChunkStream(SampleData, chunkSize: 1));
-        algorithm.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
+        algorithm.TransformFinalBlock([], 0, 0);
 
         CollectionAssert.AreEqual(expected, algorithm.Hash,
             "AppendDataAsync must accumulate correctly from a 1-byte-per-read source.");
@@ -227,7 +227,7 @@ public partial class HashAlgorithmExtensionsTests
 
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         await algorithm.AppendDataAsync(new NonSeekableStream(SampleData));
-        algorithm.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
+        algorithm.TransformFinalBlock([], 0, 0);
 
         CollectionAssert.AreEqual(expected, algorithm.Hash,
             "AppendDataAsync must accumulate correctly from a NonSeekableStream.");
@@ -249,7 +249,7 @@ public partial class HashAlgorithmExtensionsTests
 
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         await algorithm.AppendDataAsync(new ThrottledIncrementingByteStream(length, readDelay: 5));
-        algorithm.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
+        algorithm.TransformFinalBlock([], 0, 0);
 
         CollectionAssert.AreEqual(expected, algorithm.Hash,
             "AppendDataAsync must accumulate correctly from a throttled stream.");

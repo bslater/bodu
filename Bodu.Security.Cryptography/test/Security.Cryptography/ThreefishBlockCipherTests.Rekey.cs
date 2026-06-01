@@ -57,7 +57,7 @@ internal sealed partial class ThreefishBlockCipherTests
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
-            cipher.Rekey(ReadOnlySpan<byte>.Empty, s_validTweak);
+            cipher.Rekey([], s_validTweak);
         });
     }
 
@@ -106,7 +106,7 @@ internal sealed partial class ThreefishBlockCipherTests
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
-            cipher.Rekey(s_validKey256, ReadOnlySpan<byte>.Empty);
+            cipher.Rekey(s_validKey256, []);
         });
     }
 

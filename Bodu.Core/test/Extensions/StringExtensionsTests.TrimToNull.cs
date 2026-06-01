@@ -31,8 +31,8 @@ public partial class StringExtensionsTests
     /// </summary>
     /// <param name="value">The candidate string.</param>
     /// <param name="expected">The expected return value.</param>
-    [DataTestMethod]
-    [DynamicData(nameof(GetTrimToNullCases), DynamicDataSourceType.Method)]
+    [TestMethod]
+    [DynamicData(nameof(GetTrimToNullCases))]
     public void TrimToNull_WhenInvoked_ShouldReturnExpected(string? value, string? expected) => Assert.AreEqual(expected, value.TrimToNull());
 
     /// <summary>

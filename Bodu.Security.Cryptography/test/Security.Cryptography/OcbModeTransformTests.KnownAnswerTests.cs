@@ -4,9 +4,10 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Security.Cryptography;
 
 using System.Reflection;
+
+namespace Bodu.Security.Cryptography;
 
 public sealed partial class OcbModeTransformTests
 {

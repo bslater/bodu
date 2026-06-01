@@ -22,10 +22,9 @@ public class TextConfigurationBridgeKatRunnerTests
     /// Drives every bridge KAT in the catalogue.
     /// </summary>
     /// <param name="kat">The KAT case to execute.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DynamicData(nameof(ConfigurationKnownAnswerData.BridgeData),
         typeof(ConfigurationKnownAnswerData),
-        DynamicDataSourceType.Property,
         DynamicDataDisplayName = nameof(GetKatDisplayName))]
     public void Bridge_Kat(ConfigurationKat kat)
     {

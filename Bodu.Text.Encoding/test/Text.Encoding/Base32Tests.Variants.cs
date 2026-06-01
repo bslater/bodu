@@ -98,7 +98,7 @@ public sealed partial class Base32Tests
     /// </summary>
     /// <param name="input">The input ASCII string.</param>
     /// <param name="expected">The expected base32hex output.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("", "")]
     [DataRow("f", "CO======")]
     [DataRow("fo", "CPNG====")]
@@ -139,7 +139,7 @@ public sealed partial class Base32Tests
     {
         var actual = Base32.Encode(Ascii("foo"), Base32Variant.ZBase32);
 
-        Assert.AreEqual(actual, actual.ToLowerInvariant(), "Z-Base32 output should be lower case.");
+        Assert.AreEqual(actual.ToLowerInvariant(), actual, "Z-Base32 output should be lower case.");
     }
 
     /// <summary>

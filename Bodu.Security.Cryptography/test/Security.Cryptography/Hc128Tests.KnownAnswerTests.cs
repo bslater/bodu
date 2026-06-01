@@ -4,12 +4,12 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Security.Cryptography;
 
 using System.Buffers.Binary;
 using System.Reflection;
 using System.Security.Cryptography;
 
+namespace Bodu.Security.Cryptography;
 /// <summary>
 /// Locks the <see cref="Hc128" /> stream cipher against the official Appendix A test vectors from Hongjun Wu's
 /// specification paper <c>The Stream Cipher HC-128</c> (the eSTREAM-author vectors; HC-128 has no RFC), and inherits the

@@ -26,7 +26,7 @@ public sealed class AsconXof128ContractTests : CryptoHashContractTests<AsconXof1
     [
         new(
             "Ascon-XOF128 empty → 32 bytes",
-            Input: Array.Empty<byte>(),
+            Input: [],
             ExpectedDigest: Convert.FromHexString(
                 "D2AE52E6FD7D4925B8A85DD1E3BAC87A5338708D13CE92F851868ED5782EF084"),
             OutputLengthBytes: 32,
@@ -34,7 +34,7 @@ public sealed class AsconXof128ContractTests : CryptoHashContractTests<AsconXof1
 
         new(
             "Ascon-XOF128 empty → 64 bytes",
-            Input: Array.Empty<byte>(),
+            Input: [],
             ExpectedDigest: Convert.FromHexString(
                 "D2AE52E6FD7D4925B8A85DD1E3BAC87A5338708D13CE92F851868ED5782EF084" +
                 "045B596B30C1AA517E5BE0695A7E2DCE52ED774F493A09DB7890DDC06E61DC2F"),

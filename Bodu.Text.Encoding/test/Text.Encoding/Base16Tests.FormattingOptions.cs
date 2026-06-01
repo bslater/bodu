@@ -78,7 +78,7 @@ public sealed partial class Base16Tests
     /// string length for every combination of flags.
     /// </summary>
     /// <param name="flags">The combination of flags under test.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow((byte)BaseFormattingOptions.None)]
     [DataRow((byte)BaseFormattingOptions.UpperCase)]
     [DataRow((byte)BaseFormattingOptions.IncludePrefix)]

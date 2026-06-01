@@ -15,7 +15,7 @@ namespace Bodu.Security.Cryptography;
 internal static partial class CryptoTestUtilities
 {
     /// <summary>A single zero byte.</summary>
-    public static readonly byte[] EmptyByteArray = Array.Empty<byte>();
+    public static readonly byte[] EmptyByteArray = [];
 
     /// <summary>Sequential bytes 0x00–0x0F (16 bytes) — 128-bit block size.</summary>
     public static readonly byte[] ByteSequence16 = Enumerable.Range(0, 16).Select(i => (byte)i).ToArray();
