@@ -29,7 +29,7 @@ Money<USD> total = price + tax;              // 22.00
 
 // Money<USD> + Money<JPY>  // compile error — currencies cannot be mixed
 
-string display = total.ToString("L", CultureInfo.GetCultureInfo("en-US")); // "$22.00"
+string display = total.ToString("C", CultureInfo.GetCultureInfo("en-US")); // "$22.00"
 ```
 
 Highlights:
@@ -38,8 +38,29 @@ Highlights:
 - `Allocate(int parts)` / `Allocate(ReadOnlySpan<decimal> ratios)` distribute an amount as integer minor-unit shares that sum exactly to the original, sign-stable.
 - Cross-currency conversion exclusively through the explicit `Convert<TTarget>(rate, rounding)` method.
 - Exact-arithmetic escape via `ToFraction()` / `FromFraction(...)` / `MultiplyExact(...)` so chained calculations defer rounding to the final step.
-- Rich formatting (`IFormattable` / `ISpanFormattable` / `IUtf8SpanFormattable`) with ISO-code, locale-symbol, and grouping-controlled specifiers, plus strict parsing.
+- Rich formatting (`IFormattable` / `ISpanFormattable` / `IUtf8SpanFormattable`) — see [format specifiers](#format-specifiers) — plus strict parsing.
+- Compact notation (`$1.2K`, `€1.5M`, `USD 2.3B`) via `ToCompactString(...)` extension methods.
 - `RoundToCash(MidpointRounding)` snaps to cash denominations (CHF 5 rappen, CAD/AUD 5¢, NZD 10¢, SEK/NOK whole-krona).
+
+## Format specifiers
+
+`Money<TCurrency>` and `MoneyValue` share a NodaMoney-aligned, case-insensitive specifier vocabulary:
+
+| Specifier | Behaviour | Example (`Money<USD>(1234.56m)`, en-US) |
+|---|---|---|
+| `G`, `(null)`, `""` | ISO code + culture-grouped number | `USD 1,234.56` |
+| `C` | Culture-native symbol; ISO-substituted in the culture's currency-position slot on culture/currency mismatch | `$1,234.56` (`Money<JPY>` in en-US: `JPY 1,234`) |
+| `L` | Amount followed by the English currency name; falls back to ISO when no name is supplied | `1,234.56 US Dollar` |
+| `R` | Invariant round-trip (always invariant culture, no grouping, natural precision); ignores `provider`; rejects `~` and precision suffixes | `USD 1234.56` |
+| `N` | Number with culture grouping, no currency designator | `1,234.56` |
+| `F`, `D` | Fixed-point, no grouping, no currency designator | `1234.56` |
+
+- Prefix `~` on `C`, `G`, or `L` elides the currency designator when the culture's region currency matches `TCurrency`, while keeping it when they differ.
+- A numeric suffix on `C`, `G`, `L`, `N`, `F`, or `D` overrides the currency's natural precision (e.g. `"C0"` → `$20`, `"L4"` → `19.9900 US Dollar`).
+
+Compact-notation overloads (`ToCompactString(...)`) add a K/M/B/T magnitude suffix to the numeric portion, preserving the chosen specifier's symbol position.
+
+> **Breaking change (Preview → Stable).** The `C` and `L` specifiers changed meaning to align with the NodaMoney letter vocabulary. The pre-1.0 `C` (ISO-code prefix) is now `G`. The pre-1.0 `L` (culture-native symbol) is now `C`. The new `L` emits the English currency name. The new `R` is the invariant round-trip form. Code that depended on the previous semantics should rename `C` → `G` (when ISO-prefix output was required) and `L` → `C` (when culture-native output was required).
 
 ## `MoneyValue`, `MoneyBag`, and `CurrencyRegistry`
 

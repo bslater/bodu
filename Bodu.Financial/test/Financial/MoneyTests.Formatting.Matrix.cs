@@ -84,11 +84,11 @@ public partial class MoneyTests
     }
 
     // ---------------------------------------------------------------------------------------------------------------
-    // L specifier — matched cultures (region currency == TCurrency). Output equals the BCL's native "C" format.
+    // C specifier — matched cultures (region currency == TCurrency). Output equals the BCL's native "C" format.
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Verifies that the <c>"L"</c> specifier produces the same output as the BCL's native <c>"C"</c> format when
+    /// Verifies that the <c>"C"</c> specifier produces the same output as the BCL's native <c>"C"</c> format when
     /// the culture's region currency matches <typeparamref name="TCurrency" />, with the currency's minor-unit
     /// precision substituted for the culture's default.
     /// </summary>
@@ -113,7 +113,7 @@ public partial class MoneyTests
     [DataRow("DKK", "da-DK", 1234.56)]
     [DataRow("KRW", "ko-KR", 50000.0)]
     [DataRow("BHD", "ar-BH", 12.345)]
-    public void ToString_WhenLSpecifierAndCultureMatches_ShouldEqualBclNativeCurrencyFormat(string iso, string cultureName, double amount)
+    public void ToString_WhenCSpecifierAndCultureMatches_ShouldEqualBclNativeCurrencyFormat(string iso, string cultureName, double amount)
     {
         var culture = new CultureInfo(cultureName);
         var minorUnits = GetMinorUnits(iso);
@@ -122,32 +122,32 @@ public partial class MoneyTests
         nfi.CurrencyDecimalDigits = minorUnits;
         var expected = rounded.ToString("C", nfi);
 
-        var actual = FormatViaReflection(iso, (decimal)amount, "L", culture);
+        var actual = FormatViaReflection(iso, (decimal)amount, "C", culture);
 
         Assert.AreEqual(expected, actual);
     }
 
     /// <summary>
-    /// Verifies a small set of hardcoded outputs for the <c>"L"</c> specifier on stable ASCII-digit cultures so
+    /// Verifies a small set of hardcoded outputs for the <c>"C"</c> specifier on stable ASCII-digit cultures so
     /// future drift in CLDR data is caught for the common cases.
     /// </summary>
     [TestMethod]
     [DataRow("USD", "en-US", 1234.56, "$1,234.56")]
     [DataRow("USD", "en-US", 0.0, "$0.00")]
     [DataRow("GBP", "en-GB", 1234.56, "£1,234.56")]
-    public void ToString_WhenLSpecifierAndCultureMatches_ShouldMatchHardcodedExpected(string iso, string cultureName, double amount, string expected)
+    public void ToString_WhenCSpecifierAndCultureMatches_ShouldMatchHardcodedExpected(string iso, string cultureName, double amount, string expected)
     {
-        var actual = FormatViaReflection(iso, (decimal)amount, "L", new CultureInfo(cultureName));
+        var actual = FormatViaReflection(iso, (decimal)amount, "C", new CultureInfo(cultureName));
 
         Assert.AreEqual(expected, actual);
     }
 
     // ---------------------------------------------------------------------------------------------------------------
-    // L specifier — mismatched cultures. Output embeds ISO in the locale's CurrencyPositivePattern slot.
+    // C specifier — mismatched cultures. Output embeds ISO in the locale's CurrencyPositivePattern slot.
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Verifies that the <c>"L"</c> specifier embeds the ISO code in the culture's currency-position slot when
+    /// Verifies that the <c>"C"</c> specifier embeds the ISO code in the culture's currency-position slot when
     /// the culture's region currency does not match <typeparamref name="TCurrency" />.
     /// </summary>
     [TestMethod]
@@ -161,7 +161,7 @@ public partial class MoneyTests
     [DataRow("GBP", "de-DE", 1234.56)]
     [DataRow("BHD", "en-US", 12.345)]
     [DataRow("KWD", "de-DE", 100.0)]
-    public void ToString_WhenLSpecifierAndCultureMismatched_ShouldEmbedIsoInLocalePositionSlot(string iso, string cultureName, double amount)
+    public void ToString_WhenCSpecifierAndCultureMismatched_ShouldEmbedIsoInLocalePositionSlot(string iso, string cultureName, double amount)
     {
         var culture = new CultureInfo(cultureName);
         var minorUnits = GetMinorUnits(iso);
@@ -172,7 +172,7 @@ public partial class MoneyTests
             ? string.Concat(iso, " ", numberPart)
             : string.Concat(numberPart, " ", iso);
 
-        var actual = FormatViaReflection(iso, (decimal)amount, "L", culture);
+        var actual = FormatViaReflection(iso, (decimal)amount, "C", culture);
 
         Assert.AreEqual(expected, actual);
     }
@@ -182,13 +182,12 @@ public partial class MoneyTests
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Verifies that the <c>"~"</c> prefix on <c>C</c>, <c>G</c>, or <c>L</c> emits the bare number when the
-    /// culture's currency matches <typeparamref name="TCurrency" />.
+    /// Verifies that the <c>"~"</c> prefix on <c>C</c> or <c>G</c> emits the bare number when the culture's
+    /// currency matches <typeparamref name="TCurrency" />.
     /// </summary>
     [TestMethod]
     [DataRow("USD", "en-US", "~C", 1234.56, "1,234.56")]
     [DataRow("USD", "en-US", "~G", 1234.56, "1,234.56")]
-    [DataRow("USD", "en-US", "~L", 1234.56, "1,234.56")]
     [DataRow("USD", "en-US", "~C", 0.0, "0.00")]
     [DataRow("USD", "en-US", "~C", -19.99, "-19.99")]
     [DataRow("GBP", "en-GB", "~C", 999.5, "999.50")]
@@ -209,7 +208,6 @@ public partial class MoneyTests
     [TestMethod]
     [DataRow("EUR", "fr-FR", "~C", 1234.56)]
     [DataRow("BHD", "ar-BH", "~C", 12.345)]
-    [DataRow("EUR", "fr-FR", "~L", 1234.56)]
     public void ToString_WhenTildePrefixAndMatchedNonAsciiCulture_ShouldEqualBclNNumberOutput(string iso, string cultureName, string format, double amount)
     {
         var culture = new CultureInfo(cultureName);
@@ -227,12 +225,12 @@ public partial class MoneyTests
     /// match <typeparamref name="TCurrency" /> so cross-currency values remain unambiguous.
     /// </summary>
     [TestMethod]
-    [DataRow("JPY", "en-US", "~C", 1234.0, "JPY 1,234")]
-    [DataRow("USD", "de-DE", "~C", 1234.56, "USD 1.234,56")]
-    [DataRow("USD", "ja-JP", "~C", 1234.56, "USD 1,234.56")]
+    [DataRow("JPY", "en-US", "~G", 1234.0, "JPY 1,234")]
+    [DataRow("USD", "de-DE", "~G", 1234.56, "USD 1.234,56")]
+    [DataRow("USD", "ja-JP", "~G", 1234.56, "USD 1,234.56")]
     [DataRow("EUR", "en-US", "~G", 100.0, "EUR 100.00")]
-    [DataRow("JPY", "en-US", "~L", 1234.0, "JPY 1,234")]
-    [DataRow("USD", "de-DE", "~L", 1234.56, "1.234,56 USD")]
+    [DataRow("JPY", "en-US", "~C", 1234.0, "JPY 1,234")]
+    [DataRow("USD", "de-DE", "~C", 1234.56, "1.234,56 USD")]
     public void ToString_WhenTildePrefixAndCultureMismatched_ShouldKeepIsoDesignator(string iso, string cultureName, string format, double amount, string expected)
     {
         var actual = FormatViaReflection(iso, (decimal)amount, format, new CultureInfo(cultureName));
@@ -288,16 +286,16 @@ public partial class MoneyTests
     }
 
     /// <summary>
-    /// Verifies that explicit precision combines correctly with the <c>"L"</c> specifier under matched cultures
+    /// Verifies that explicit precision combines correctly with the <c>"C"</c> specifier under matched cultures
     /// whose CLDR data is stable (ASCII digits, fixed symbol).
     /// </summary>
     [TestMethod]
-    [DataRow("USD", "en-US", "L0", 19.99, "$20")]
-    [DataRow("USD", "en-US", "L4", 19.99, "$19.9900")]
-    [DataRow("USD", "en-US", "~L0", 19.99, "20")]
-    [DataRow("USD", "en-US", "~L4", 19.99, "19.9900")]
-    [DataRow("GBP", "en-GB", "L0", 1234.0, "£1,234")]
-    public void ToString_WhenLSpecifierWithExplicitPrecisionAndMatched_ShouldRespectPrecision(string iso, string cultureName, string format, double amount, string expected)
+    [DataRow("USD", "en-US", "C0", 19.99, "$20")]
+    [DataRow("USD", "en-US", "C4", 19.99, "$19.9900")]
+    [DataRow("USD", "en-US", "~C0", 19.99, "20")]
+    [DataRow("USD", "en-US", "~C4", 19.99, "19.9900")]
+    [DataRow("GBP", "en-GB", "C0", 1234.0, "£1,234")]
+    public void ToString_WhenCSpecifierWithExplicitPrecisionAndMatched_ShouldRespectPrecision(string iso, string cultureName, string format, double amount, string expected)
     {
         var actual = FormatViaReflection(iso, (decimal)amount, format, new CultureInfo(cultureName));
 
@@ -355,15 +353,14 @@ public partial class MoneyTests
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Verifies that the invariant culture never matches any currency, so <c>"L"</c> falls back to the
-    /// ISO-substitution form and <c>"~C"</c> / <c>"~L"</c> retain the ISO code.
+    /// Verifies that the invariant culture never matches any currency, so <c>"C"</c> falls back to the
+    /// ISO-substitution form and <c>"~C"</c> retains the ISO code.
     /// </summary>
     [TestMethod]
-    [DataRow("USD", "L", 1234.56, "USD 1,234.56")]
+    [DataRow("USD", "C", 1234.56, "USD 1,234.56")]
     [DataRow("USD", "~C", 1234.56, "USD 1,234.56")]
-    [DataRow("USD", "~L", 1234.56, "USD 1,234.56")]
-    [DataRow("JPY", "L", 1234.0, "JPY 1,234")]
-    [DataRow("BHD", "L", 12.345, "BHD 12.345")]
+    [DataRow("JPY", "C", 1234.0, "JPY 1,234")]
+    [DataRow("BHD", "C", 12.345, "BHD 12.345")]
     public void ToString_WhenInvariantCulture_ShouldNeverMatchCurrency(string iso, string format, double amount, string expected)
     {
         var actual = FormatViaReflection(iso, (decimal)amount, format, CultureInfo.InvariantCulture);
@@ -380,7 +377,7 @@ public partial class MoneyTests
     {
         var nfi = (NumberFormatInfo)new CultureInfo("en-US").NumberFormat.Clone();
 
-        var actual = FormatViaReflection("USD", 1234.56m, "L", nfi);
+        var actual = FormatViaReflection("USD", 1234.56m, "C", nfi);
 
         Assert.AreEqual("USD 1,234.56", actual);
     }
@@ -394,11 +391,10 @@ public partial class MoneyTests
     /// </summary>
     [TestMethod]
     [DataRow("USD", "G", "USD 0.00")]
-    [DataRow("USD", "C", "USD 0.00")]
     [DataRow("USD", "N", "0.00")]
     [DataRow("USD", "F", "0.00")]
     [DataRow("USD", "D", "0.00")]
-    [DataRow("USD", "C0", "USD 0")]
+    [DataRow("USD", "G0", "USD 0")]
     [DataRow("JPY", "G", "JPY 0")]
     [DataRow("BHD", "G", "BHD 0.000")]
     public void ToString_WhenAmountIsZero_ShouldRenderAsZeroWithCurrencyPrecision(string iso, string format, string expected)
@@ -427,7 +423,6 @@ public partial class MoneyTests
     [TestMethod]
     [DataRow("USD", "N", "-1,234.56")]
     [DataRow("USD", "F", "-1234.56")]
-    [DataRow("USD", "C", "USD -1,234.56")]
     [DataRow("USD", "G", "USD -1,234.56")]
     public void ToString_WhenAmountIsNegativeAndInvariantCulture_ShouldRespectFormatNegativeStyle(string iso, string format, string expected)
     {
@@ -448,7 +443,6 @@ public partial class MoneyTests
     [DataRow("X")]
     [DataRow("P")]
     [DataRow("E")]
-    [DataRow("R")]
     [DataRow("~Z")]
     [DataRow("~~")]
     public void ToString_WhenSpecifierUnsupported_ShouldThrowFormatException(string format)
