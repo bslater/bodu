@@ -51,7 +51,7 @@ public partial class FixedDatedExchangeRateProviderTests
         ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(
             () =>
             {
-                _ = new FixedDatedExchangeRateProvider(null!);
+                _ = new FixedDatedExchangeRateProvider((IEnumerable<ExchangeRate>)null!);
             },
             "rates");
     }
