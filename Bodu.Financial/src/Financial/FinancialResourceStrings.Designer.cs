@@ -763,6 +763,15 @@ namespace Bodu.Financial {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to ExchangeRateProviderSelectionPolicy.{0} is reserved for a future release; only ProviderPriorityFirst is supported in this version..
+        /// </summary>
+        internal static string Op_NotSupported_SelectionPolicy {
+            get {
+                return ResourceManager.GetString("Op_NotSupported_SelectionPolicy", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Unable to create a JSON converter for &apos;{0}&apos;..
         /// </summary>
         internal static string Op_Invalid_UnableToCreateConverter {

@@ -297,6 +297,9 @@
   <data name="Op_Invalid_RateSeriesBuilderEmpty" xml:space="preserve">
     <value>Cannot create an immutable series snapshot from an empty builder.</value>
   </data>
+  <data name="Op_NotSupported_SelectionPolicy" xml:space="preserve">
+    <value>ExchangeRateProviderSelectionPolicy.{0} is reserved for a future release; only ProviderPriorityFirst is supported in this version.</value>
+  </data>
   <data name="Op_Invalid_UnableToCreateConverter" xml:space="preserve">
     <value>Unable to create a JSON converter for '{0}'.</value>
   </data>

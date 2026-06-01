@@ -28,7 +28,8 @@ public sealed class CompositeDatedExchangeRateProvider : IDatedExchangeRateProvi
     private readonly IDatedExchangeRateProvider[] _providers;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CompositeDatedExchangeRateProvider" /> class.
+    /// Initializes a new instance of the <see cref="CompositeDatedExchangeRateProvider" /> class with the default
+    /// <see cref="ExchangeRateProviderSelectionPolicy.ProviderPriorityFirst" /> selection policy.
     /// </summary>
     /// <param name="providers">The providers to consult, in priority order.</param>
     /// <exception cref="ArgumentNullException">
@@ -37,8 +38,46 @@ public sealed class CompositeDatedExchangeRateProvider : IDatedExchangeRateProvi
     /// </exception>
     /// <exception cref="ArgumentException">Thrown if <paramref name="providers" /> is empty.</exception>
     public CompositeDatedExchangeRateProvider(IEnumerable<IDatedExchangeRateProvider> providers)
+        : this(providers, ExchangeRateProviderSelectionPolicy.ProviderPriorityFirst)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="CompositeDatedExchangeRateProvider" /> class with the supplied
+    /// selection policy.
+    /// </summary>
+    /// <param name="providers">The providers to consult, in priority order.</param>
+    /// <param name="selectionPolicy">
+    /// The policy that controls how the composite picks between providers when more than one can satisfy the
+    /// requested pair. Only <see cref="ExchangeRateProviderSelectionPolicy.ProviderPriorityFirst" /> is implemented
+    /// in v1.0; other defined values throw <see cref="NotSupportedException" />.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown if <paramref name="providers" /> or any element of <paramref name="providers" /> is
+    /// <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentException">Thrown if <paramref name="providers" /> is empty.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown if <paramref name="selectionPolicy" /> is not a defined
+    /// <see cref="ExchangeRateProviderSelectionPolicy" /> member.
+    /// </exception>
+    /// <exception cref="NotSupportedException">
+    /// Thrown if <paramref name="selectionPolicy" /> is a defined value other than
+    /// <see cref="ExchangeRateProviderSelectionPolicy.ProviderPriorityFirst" />.
+    /// </exception>
+    public CompositeDatedExchangeRateProvider(
+        IEnumerable<IDatedExchangeRateProvider> providers,
+        ExchangeRateProviderSelectionPolicy selectionPolicy)
     {
         ThrowHelper.ThrowIfNull(providers);
+        ThrowHelper.ThrowIfEnumValueIsUndefined(selectionPolicy);
+
+        if (selectionPolicy != ExchangeRateProviderSelectionPolicy.ProviderPriorityFirst)
+            throw new NotSupportedException(
+                string.Format(
+                    CultureInfo.InvariantCulture,
+                    FinancialResourceStrings.Op_NotSupported_SelectionPolicy,
+                    selectionPolicy));
 
         IDatedExchangeRateProvider[] snapshot = [.. providers];
 
@@ -54,7 +93,14 @@ public sealed class CompositeDatedExchangeRateProvider : IDatedExchangeRateProvi
         }
 
         _providers = snapshot;
+        SelectionPolicy = selectionPolicy;
     }
+
+    /// <summary>
+    /// Gets the selection policy applied by this composite.
+    /// </summary>
+    /// <returns>The configured <see cref="ExchangeRateProviderSelectionPolicy" />.</returns>
+    public ExchangeRateProviderSelectionPolicy SelectionPolicy { get; }
 
     /// <inheritdoc />
     public ExchangeRateLookupResult GetRate(
