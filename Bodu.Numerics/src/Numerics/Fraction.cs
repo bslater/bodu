@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Numerics.Serialization;
 using System.Diagnostics;
 using System.Numerics;
 using System.Reflection;

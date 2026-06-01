@@ -9,7 +9,7 @@ using System.Numerics;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Bodu.Numerics;
+namespace Bodu.Numerics.Serialization;
 
 /// <summary>
 /// Converts a <see cref="Fraction{T}" /> to and from its JSON string representation.
@@ -20,7 +20,8 @@ namespace Bodu.Numerics;
 /// matching the round-trip contract of <see cref="Fraction{T}.ToString()" /> and
 /// <see cref="Fraction{T}.Parse(string)" />.
 /// </remarks>
-public sealed class FractionJsonConverter<T> : JsonConverter<Fraction<T>>
+public sealed class FractionJsonConverter<T>
+    : JsonConverter<Fraction<T>>
     where T : IBinaryInteger<T>
 {
     /// <summary>

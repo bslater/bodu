@@ -7,7 +7,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Bodu.Numerics;
+namespace Bodu.Numerics.Serialization;
 
 /// <summary>
 /// Creates <see cref="FractionJsonConverter{T}" /> instances for closed <see cref="Fraction{T}" /> types.
@@ -17,7 +17,8 @@ namespace Bodu.Numerics;
 /// <see cref="Fraction{T}" /> values serialize through <see cref="System.Text.Json" /> without any explicit converter
 /// registration.
 /// </remarks>
-public sealed class FractionJsonConverterFactory : JsonConverterFactory
+public sealed class FractionJsonConverterFactory
+    : JsonConverterFactory
 {
     /// <summary>
     /// Determines whether this factory can create a converter for the specified type.
