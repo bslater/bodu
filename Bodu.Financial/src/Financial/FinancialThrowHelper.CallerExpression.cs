@@ -167,6 +167,66 @@ internal static partial class FinancialThrowHelper
     }
 
     /// <summary>
+    /// Throws when <paramref name="policy" /> is not a defined <see cref="ScalePolicy" /> member.
+    /// </summary>
+    /// <param name="policy">The scale policy to validate.</param>
+    /// <param name="paramName">The parameter name reported in the exception; inferred from the call site.</param>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="policy" /> is not a defined value.</exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static void ThrowIfScalePolicyUndefined(
+        ScalePolicy policy,
+        [CallerArgumentExpression(nameof(policy))] string? paramName = null)
+    {
+        if (policy is not ScalePolicy.CurrencyMinorUnits and not ScalePolicy.Unrounded and not ScalePolicy.Custom)
+            throw new ArgumentOutOfRangeException(paramName, policy, string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Arg_OutOfRange_ScalePolicyUndefined, policy));
+    }
+
+    /// <summary>
+    /// Throws when <paramref name="policy" /> is not a defined <see cref="CashRoundingPolicy" /> member.
+    /// </summary>
+    /// <param name="policy">The cash-rounding policy to validate.</param>
+    /// <param name="paramName">The parameter name reported in the exception; inferred from the call site.</param>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="policy" /> is not a defined value.</exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static void ThrowIfCashRoundingPolicyUndefined(
+        CashRoundingPolicy policy,
+        [CallerArgumentExpression(nameof(policy))] string? paramName = null)
+    {
+        if (policy is not CashRoundingPolicy.None and not CashRoundingPolicy.CurrencyCashIncrement)
+            throw new ArgumentOutOfRangeException(paramName, policy, string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Arg_OutOfRange_CashRoundingPolicyUndefined, policy));
+    }
+
+    /// <summary>
+    /// Throws when <paramref name="policy" /> is not a defined <see cref="AllocationPolicy" /> member.
+    /// </summary>
+    /// <param name="policy">The allocation policy to validate.</param>
+    /// <param name="paramName">The parameter name reported in the exception; inferred from the call site.</param>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="policy" /> is not a defined value.</exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static void ThrowIfAllocationPolicyUndefined(
+        AllocationPolicy policy,
+        [CallerArgumentExpression(nameof(policy))] string? paramName = null)
+    {
+        if (policy is not AllocationPolicy.LargestRemainder)
+            throw new ArgumentOutOfRangeException(paramName, policy, string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Arg_OutOfRange_AllocationPolicyUndefined, policy));
+    }
+
+    /// <summary>
+    /// Throws when <paramref name="policy" /> is not a defined <see cref="ConversionRoundingPolicy" /> member.
+    /// </summary>
+    /// <param name="policy">The conversion-rounding policy to validate.</param>
+    /// <param name="paramName">The parameter name reported in the exception; inferred from the call site.</param>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="policy" /> is not a defined value.</exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static void ThrowIfConversionRoundingPolicyUndefined(
+        ConversionRoundingPolicy policy,
+        [CallerArgumentExpression(nameof(policy))] string? paramName = null)
+    {
+        if (policy is not ConversionRoundingPolicy.RoundAtTarget and not ConversionRoundingPolicy.Defer)
+            throw new ArgumentOutOfRangeException(paramName, policy, string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Arg_OutOfRange_ConversionRoundingPolicyUndefined, policy));
+    }
+
+    /// <summary>
     /// Throws when <paramref name="policy" /> is not a defined <see cref="CurrencyRegistrationConflictPolicy" /> member.
     /// </summary>
     /// <param name="policy">The conflict policy to validate.</param>

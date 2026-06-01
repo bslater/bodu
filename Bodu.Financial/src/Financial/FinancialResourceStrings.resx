@@ -87,6 +87,9 @@
   <data name="Arg_Invalid_CurrencyInfoCashRoundingTooFine" xml:space="preserve">
     <value>Currency '{0}' cash-rounding increment {1} is finer than its declared minor-unit precision {2}.</value>
   </data>
+  <data name="Arg_Invalid_CustomScaleRequiresValue" xml:space="preserve">
+    <value>ScalePolicy.Custom requires a non-null CustomScale value.</value>
+  </data>
   <data name="Arg_Invalid_CurrencyInfoHistoricInconsistent" xml:space="preserve">
     <value>Currency '{0}' is not historic but declares a demonetization date or successor ISO code.</value>
   </data>
@@ -144,8 +147,20 @@
   <data name="Arg_Null_ProviderAtIndex" xml:space="preserve">
     <value>Provider at index {0} is null.</value>
   </data>
+  <data name="Arg_OutOfRange_AllocationPolicyUndefined" xml:space="preserve">
+    <value>AllocationPolicy '{0}' is not a defined value.</value>
+  </data>
+  <data name="Arg_OutOfRange_CashRoundingPolicyUndefined" xml:space="preserve">
+    <value>CashRoundingPolicy '{0}' is not a defined value.</value>
+  </data>
+  <data name="Arg_OutOfRange_ConversionRoundingPolicyUndefined" xml:space="preserve">
+    <value>ConversionRoundingPolicy '{0}' is not a defined value.</value>
+  </data>
   <data name="Arg_OutOfRange_CurrencyInfoCashRoundingNegative" xml:space="preserve">
     <value>Currency '{0}' declares a negative cash-rounding increment {1}.</value>
+  </data>
+  <data name="Arg_OutOfRange_CustomScale" xml:space="preserve">
+    <value>CustomScale {0} is outside the supported range 0 to 28.</value>
   </data>
   <data name="Arg_OutOfRange_CurrencyInfoMinorUnits" xml:space="preserve">
     <value>Currency '{0}' declares minor-unit precision {1}, which is outside the supported range 0 to 28.</value>
@@ -161,6 +176,9 @@
   </data>
   <data name="Arg_OutOfRange_RateNotPositive" xml:space="preserve">
     <value>Rate must be greater than zero.</value>
+  </data>
+  <data name="Arg_OutOfRange_ScalePolicyUndefined" xml:space="preserve">
+    <value>ScalePolicy '{0}' is not a defined value.</value>
   </data>
   <data name="Arg_OutOfRange_UnsupportedMidpointRounding" xml:space="preserve">
     <value>Unsupported midpoint-rounding mode.</value>

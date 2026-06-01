@@ -286,6 +286,60 @@ namespace Bodu.Financial {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to ScalePolicy.Custom requires a non-null CustomScale value..
+        /// </summary>
+        internal static string Arg_Invalid_CustomScaleRequiresValue {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_CustomScaleRequiresValue", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to AllocationPolicy &apos;{0}&apos; is not a defined value..
+        /// </summary>
+        internal static string Arg_OutOfRange_AllocationPolicyUndefined {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_AllocationPolicyUndefined", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to CashRoundingPolicy &apos;{0}&apos; is not a defined value..
+        /// </summary>
+        internal static string Arg_OutOfRange_CashRoundingPolicyUndefined {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_CashRoundingPolicyUndefined", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to ConversionRoundingPolicy &apos;{0}&apos; is not a defined value..
+        /// </summary>
+        internal static string Arg_OutOfRange_ConversionRoundingPolicyUndefined {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_ConversionRoundingPolicyUndefined", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to CustomScale {0} is outside the supported range 0 to 28..
+        /// </summary>
+        internal static string Arg_OutOfRange_CustomScale {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_CustomScale", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to ScalePolicy &apos;{0}&apos; is not a defined value..
+        /// </summary>
+        internal static string Arg_OutOfRange_ScalePolicyUndefined {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_ScalePolicyUndefined", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Currency &apos;{0}&apos; is not historic but declares a demonetization date or successor ISO code..
         /// </summary>
         internal static string Arg_Invalid_CurrencyInfoHistoricInconsistent {
