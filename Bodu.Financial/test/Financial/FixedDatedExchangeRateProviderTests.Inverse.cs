@@ -1,12 +1,12 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="FixedDatedExchangeRateTableTests.Inverse.cs" company="Bodu Pty. Ltd.">
+// <copyright file="FixedDatedExchangeRateProviderTests.Inverse.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.Financial;
 
-public partial class FixedDatedExchangeRateTableTests
+public partial class FixedDatedExchangeRateProviderTests
 {
     /// <summary>
     /// Verifies that an inverse-fallback result reports the rate as <c>1 / storedRate</c>, the original requested
@@ -20,7 +20,7 @@ public partial class FixedDatedExchangeRateTableTests
             new ExchangeRate("USD", "AUD", s_d1, 1.50m, "RBA"),
         ];
 
-        FixedDatedExchangeRateTable table = new(direct);
+        FixedDatedExchangeRateProvider table = new(direct);
 
         var found = table.TryGetRate(
             "AUD",
@@ -50,7 +50,7 @@ public partial class FixedDatedExchangeRateTableTests
             new ExchangeRate("AUD", "USD", new DateOnly(2024, 1, 10), 0.67m, "RBA"),
         ];
 
-        FixedDatedExchangeRateTable table = new(rates);
+        FixedDatedExchangeRateProvider table = new(rates);
 
         var previousTwoDays = ExchangeRateLookupOptions.PreviousWithin(2);
 

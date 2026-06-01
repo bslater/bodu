@@ -203,6 +203,15 @@ namespace Bodu.Financial {
                 return ResourceManager.GetString("Arg_Invalid_ProviderNullOrWhiteSpace", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Provider-priority list must contain at least one entry..
+        /// </summary>
+        internal static string Arg_Invalid_ProviderPriorityEmpty {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_ProviderPriorityEmpty", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   Looks up a localized string similar to Cannot add observation for {0:yyyy-MM-dd}: a rate already exists for that date..

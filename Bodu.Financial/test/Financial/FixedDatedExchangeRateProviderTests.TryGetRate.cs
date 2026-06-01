@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="FixedDatedExchangeRateTableTests.TryGetRate.cs" company="Bodu Pty. Ltd.">
+// <copyright file="FixedDatedExchangeRateProviderTests.TryGetRate.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -9,10 +9,10 @@ using Bodu.Test.Kat;
 
 namespace Bodu.Financial;
 
-public partial class FixedDatedExchangeRateTableTests
+public partial class FixedDatedExchangeRateProviderTests
 {
     /// <summary>
-    /// Verifies that <see cref="FixedDatedExchangeRateTable.TryGetRate" /> returns the rate, provider, resolved date,
+    /// Verifies that <see cref="FixedDatedExchangeRateProvider.TryGetRate" /> returns the rate, provider, resolved date,
     /// inversion flag, and offset days expected for the supplied lookup scenario.
     /// </summary>
     [TestMethod]
@@ -22,7 +22,7 @@ public partial class FixedDatedExchangeRateTableTests
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void TryGetRate_WhenLookupRequested_ShouldReturnExpectedRateMetadata(ExchangeRateLookupKat kat)
     {
-        FixedDatedExchangeRateTable table = new(kat.Rates);
+        FixedDatedExchangeRateProvider table = new(kat.Rates);
 
         var actual = table.TryGetRate(
             kat.FromIsoCode,

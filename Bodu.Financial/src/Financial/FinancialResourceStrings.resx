@@ -111,6 +111,9 @@
   <data name="Arg_Invalid_ProviderNullOrWhiteSpace" xml:space="preserve">
     <value>Provider identifier must not be empty or white-space.</value>
   </data>
+  <data name="Arg_Invalid_ProviderPriorityEmpty" xml:space="preserve">
+    <value>Provider-priority list must contain at least one entry.</value>
+  </data>
   <data name="Arg_Invalid_RateSeriesAddRangeConflict" xml:space="preserve">
     <value>Cannot add observation for {0:yyyy-MM-dd}: a rate already exists for that date.</value>
   </data>

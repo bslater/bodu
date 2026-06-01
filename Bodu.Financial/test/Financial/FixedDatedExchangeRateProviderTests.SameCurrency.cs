@@ -1,12 +1,12 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="FixedDatedExchangeRateTableTests.SameCurrency.cs" company="Bodu Pty. Ltd.">
+// <copyright file="FixedDatedExchangeRateProviderTests.SameCurrency.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.Financial;
 
-public partial class FixedDatedExchangeRateTableTests
+public partial class FixedDatedExchangeRateProviderTests
 {
     /// <summary>
     /// Verifies that a same-currency lookup with the identity-rate option enabled returns <c>1</c>, the synthetic
@@ -15,7 +15,7 @@ public partial class FixedDatedExchangeRateTableTests
     [TestMethod]
     public void TryGetRate_WhenSameCurrencyAndIdentityEnabled_ShouldReturnIdentityRate()
     {
-        FixedDatedExchangeRateTable table = new([]);
+        FixedDatedExchangeRateProvider table = new([]);
 
         var found = table.TryGetRate(
             "USD",
@@ -39,7 +39,7 @@ public partial class FixedDatedExchangeRateTableTests
     [TestMethod]
     public void TryGetRate_WhenSameCurrencyAndIdentityDisabled_ShouldFallThroughToTable()
     {
-        FixedDatedExchangeRateTable table = new([]);
+        FixedDatedExchangeRateProvider table = new([]);
 
         ExchangeRateLookupOptions options = new(
             ExchangeRateDateResolution.Exact,

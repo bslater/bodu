@@ -75,7 +75,7 @@ Covers the ~155 active ISO 4217 currencies plus 29 historic / demonetised curren
 ## Foreign exchange
 
 - Timeless: `IExchangeRateProvider` with `FixedExchangeRateTable` (inverse-rate fallback).
-- Dated: `IDatedExchangeRateProvider`, `FixedDatedExchangeRateTable`, `CompositeDatedExchangeRateProvider`, `ExchangeRateSeries`, and `DatedExchangeRateProviderAdapter`.
+- Dated: `IDatedExchangeRateProvider`, `FixedDatedExchangeRateProvider`, `CompositeDatedExchangeRateProvider`, `ExchangeRateSeries`, and `DatedExchangeRateProviderAdapter`.
 
 ## License
 
