@@ -5,6 +5,8 @@
   href: package-matrix.md
 - name: Getting Started
   href: getting-started.md
+- name: Licensing
+  href: licensing.md
 - name: Bodu.Core
   items:
     - name: Introduction

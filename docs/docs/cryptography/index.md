@@ -8,6 +8,17 @@ title: Bodu.Security.Cryptography — Introduction
 
 The library lives in two namespaces: `Bodu.Security.Cryptography` for primitives, and `Bodu.Security.Cryptography.Extensions` for ergonomic helpers.
 
+> [!IMPORTANT]
+> **Cryptographic primitives are easy to misuse.** Even algorithm-correct implementations leak security when used incorrectly. Before adopting this library in production, internalise these rules:
+>
+> - **Never reuse a nonce or IV under the same key.** Stream ciphers and most AEAD modes lose all confidentiality on nonce reuse. Use a counter or `RandomNumberGenerator.GetBytes` for unpredictability where required.
+> - **Always verify the AEAD authentication tag** before trusting decrypted plaintext. The library's AEAD transforms reject mismatched tags with `CryptographicException` — do not catch and ignore.
+> - **Compare tags and digests in constant time.** Use `CryptographicOperations.FixedTimeEquals` or the BCL constant-time helpers when checking MAC equality.
+> - **Prefer AEAD over encrypt-then-MAC-by-hand.** Authenticated modes (GCM, OCB, EAX, SIV) bundle confidentiality and authenticity in a single primitive with fewer pitfalls.
+> - **Prefer the BCL where it covers your case.** `System.Security.Cryptography` ships hardware-accelerated AES, AES-GCM, and SHA-2/3 implementations. Reach for the Bodu primitives when you need an algorithm the BCL does not ship (Threefish, Camellia, Ascon, BLAKE2/3, Skein, …).
+>
+> See the [Core concepts](concepts.md) page for the full safety vocabulary and the [cipher-modes](../../guides/cryptography/cipher-modes.md) and [AEAD-modes](../../guides/cryptography/aead-modes.md) guides for worked-example walkthroughs.
+
 ## The shape of the library
 
 ![Algorithm taxonomy across both libraries](../../images/diagrams/algorithm-taxonomy.svg)
