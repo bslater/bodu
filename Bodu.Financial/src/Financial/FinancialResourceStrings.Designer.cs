@@ -88,7 +88,7 @@ namespace Bodu.Financial {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Every balance must carry a non-empty ISO code; default(MoneyValue) is not a valid balance..
+        ///   Looks up a localized string similar to Every balance must carry a non-empty ISO code; default(Money) is not a valid balance..
         /// </summary>
         internal static string Arg_Invalid_BalanceMissingIsoCode {
             get {
@@ -113,7 +113,16 @@ namespace Bodu.Financial {
                 return ResourceManager.GetString("Arg_Invalid_CompositeNoProviders", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to The CurrencyCode value &apos;{0}&apos; (numeric {1}) does not correspond to a registered currency..
+        /// </summary>
+        internal static string Arg_Invalid_CurrencyCodeNotMapped {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_CurrencyCodeNotMapped", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to ISO 4217 code must be exactly three letters, but &apos;{0}&apos; has {1}..
         /// </summary>
@@ -153,27 +162,27 @@ namespace Bodu.Financial {
         /// <summary>
         ///   Looks up a localized string similar to Object must be a Money&lt;{0}&gt;..
         /// </summary>
+        internal static string Arg_Invalid_MoneyOfTCurrencyObject {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_MoneyOfTCurrencyObject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Money must carry a non-empty ISO code..
+        /// </summary>
+        internal static string Arg_Invalid_MoneyMissingIsoCode {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_MoneyMissingIsoCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Object must be a Money..
+        /// </summary>
         internal static string Arg_Invalid_MoneyObject {
             get {
                 return ResourceManager.GetString("Arg_Invalid_MoneyObject", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to MoneyValue must carry a non-empty ISO code..
-        /// </summary>
-        internal static string Arg_Invalid_MoneyValueMissingIsoCode {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_MoneyValueMissingIsoCode", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Object must be a MoneyValue..
-        /// </summary>
-        internal static string Arg_Invalid_MoneyValueObject {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_MoneyValueObject", resourceCulture);
             }
         }
         
@@ -279,18 +288,18 @@ namespace Bodu.Financial {
         /// <summary>
         ///   Looks up a localized string similar to The input &apos;{0}&apos; is not a valid Money&lt;{1}&gt; representation..
         /// </summary>
-        internal static string Format_Invalid_MoneyString {
+        internal static string Format_Invalid_MoneyOfTCurrencyString {
             get {
-                return ResourceManager.GetString("Format_Invalid_MoneyString", resourceCulture);
+                return ResourceManager.GetString("Format_Invalid_MoneyOfTCurrencyString", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The input &apos;{0}&apos; is not a valid MoneyValue representation..
+        ///   Looks up a localized string similar to The input &apos;{0}&apos; is not a valid Money representation..
         /// </summary>
-        internal static string Format_Invalid_MoneyValueString {
+        internal static string Format_Invalid_MoneyString {
             get {
-                return ResourceManager.GetString("Format_Invalid_MoneyValueString", resourceCulture);
+                return ResourceManager.GetString("Format_Invalid_MoneyString", resourceCulture);
             }
         }
         
@@ -378,18 +387,18 @@ namespace Bodu.Financial {
         /// <summary>
         ///   Looks up a localized string similar to The JSON string &apos;{0}&apos; is not a valid compact Money&lt;{1}&gt; form..
         /// </summary>
-        internal static string Json_Invalid_CompactMoneyForm {
+        internal static string Json_Invalid_CompactMoneyOfTCurrencyForm {
             get {
-                return ResourceManager.GetString("Json_Invalid_CompactMoneyForm", resourceCulture);
+                return ResourceManager.GetString("Json_Invalid_CompactMoneyOfTCurrencyForm", resourceCulture);
             }
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to The JSON string &apos;{0}&apos; is not a valid compact MoneyValue form..
+        ///   Looks up a localized string similar to The JSON string &apos;{0}&apos; is not a valid compact Money form..
         /// </summary>
-        internal static string Json_Invalid_CompactMoneyValueForm {
+        internal static string Json_Invalid_CompactMoneyForm {
             get {
-                return ResourceManager.GetString("Json_Invalid_CompactMoneyValueForm", resourceCulture);
+                return ResourceManager.GetString("Json_Invalid_CompactMoneyForm", resourceCulture);
             }
         }
 
@@ -450,18 +459,18 @@ namespace Bodu.Financial {
         /// <summary>
         ///   Looks up a localized string similar to Expected a JSON string in compact Money&lt;{0}&gt; form (e.g. &quot;19.99 USD&quot;)..
         /// </summary>
-        internal static string Json_Invalid_ExpectedCompactString_Money {
+        internal static string Json_Invalid_ExpectedCompactString_MoneyOfTCurrency {
             get {
-                return ResourceManager.GetString("Json_Invalid_ExpectedCompactString_Money", resourceCulture);
+                return ResourceManager.GetString("Json_Invalid_ExpectedCompactString_MoneyOfTCurrency", resourceCulture);
             }
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Expected a JSON string in compact MoneyValue form (e.g. &quot;19.99 USD&quot;)..
+        ///   Looks up a localized string similar to Expected a JSON string in compact Money form (e.g. &quot;19.99 USD&quot;)..
         /// </summary>
-        internal static string Json_Invalid_ExpectedCompactString_MoneyValue {
+        internal static string Json_Invalid_ExpectedCompactString_Money {
             get {
-                return ResourceManager.GetString("Json_Invalid_ExpectedCompactString_MoneyValue", resourceCulture);
+                return ResourceManager.GetString("Json_Invalid_ExpectedCompactString_Money", resourceCulture);
             }
         }
 
@@ -486,9 +495,9 @@ namespace Bodu.Financial {
         /// <summary>
         ///   Looks up a localized string similar to Expected a JSON object containing a Money amount..
         /// </summary>
-        internal static string Json_Invalid_ExpectedObject_Money {
+        internal static string Json_Invalid_ExpectedObject_MoneyOfTCurrency {
             get {
-                return ResourceManager.GetString("Json_Invalid_ExpectedObject_Money", resourceCulture);
+                return ResourceManager.GetString("Json_Invalid_ExpectedObject_MoneyOfTCurrency", resourceCulture);
             }
         }
         
@@ -502,11 +511,11 @@ namespace Bodu.Financial {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Expected a JSON object containing a MoneyValue..
+        ///   Looks up a localized string similar to Expected a JSON object containing a Money..
         /// </summary>
-        internal static string Json_Invalid_ExpectedObject_MoneyValue {
+        internal static string Json_Invalid_ExpectedObject_Money {
             get {
-                return ResourceManager.GetString("Json_Invalid_ExpectedObject_MoneyValue", resourceCulture);
+                return ResourceManager.GetString("Json_Invalid_ExpectedObject_Money", resourceCulture);
             }
         }
         
@@ -610,11 +619,11 @@ namespace Bodu.Financial {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot convert MoneyValue with currency &apos;{0}&apos; to Money&lt;{1}&gt; (currency &apos;{2}&apos;)..
+        ///   Looks up a localized string similar to Cannot convert Money with currency &apos;{0}&apos; to Money&lt;{1}&gt; (currency &apos;{2}&apos;)..
         /// </summary>
-        internal static string Op_Invalid_CannotConvertMoneyValueToTyped {
+        internal static string Op_Invalid_CurrencyMismatchInAs {
             get {
-                return ResourceManager.GetString("Op_Invalid_CannotConvertMoneyValueToTyped", resourceCulture);
+                return ResourceManager.GetString("Op_Invalid_CurrencyMismatchInAs", resourceCulture);
             }
         }
         
@@ -682,6 +691,15 @@ namespace Bodu.Financial {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Cannot adopt ExchangeRate {0}-&gt;{1} as ExchangeRate&lt;{2}, {3}&gt;: ISO codes differ..
+        /// </summary>
+        internal static string Op_Invalid_ExchangeRateRuntimeMismatch {
+            get {
+                return ResourceManager.GetString("Op_Invalid_ExchangeRateRuntimeMismatch", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Unsupported FinancialJsonPolicy value &apos;{0}&apos;..
         /// </summary>
         internal static string Op_Invalid_FinancialJsonPolicyUndefined {
@@ -691,32 +709,41 @@ namespace Bodu.Financial {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to MoneyValue comparison requires the same currency; got &apos;{0}&apos; and &apos;{1}&apos;..
+        ///   Looks up a localized string similar to Money comparison requires the same currency; got &apos;{0}&apos; and &apos;{1}&apos;..
         /// </summary>
-        internal static string Op_Invalid_MoneyValueCompareSameCurrencyRequired {
+        internal static string Op_Invalid_MoneyCompareSameCurrencyRequired {
             get {
-                return ResourceManager.GetString("Op_Invalid_MoneyValueCompareSameCurrencyRequired", resourceCulture);
+                return ResourceManager.GetString("Op_Invalid_MoneyCompareSameCurrencyRequired", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to MoneyValue operations require both operands to carry a currency; default(MoneyValue) is not a valid operand..
+        ///   Looks up a localized string similar to Money operations require both operands to carry a currency; default(Money) is not a valid operand..
         /// </summary>
-        internal static string Op_Invalid_MoneyValueRequiresCurrency {
+        internal static string Op_Invalid_MoneyRequiresCurrency {
             get {
-                return ResourceManager.GetString("Op_Invalid_MoneyValueRequiresCurrency", resourceCulture);
+                return ResourceManager.GetString("Op_Invalid_MoneyRequiresCurrency", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to MoneyValue operations require the same currency; got &apos;{0}&apos; and &apos;{1}&apos;..
+        ///   Looks up a localized string similar to Money operations require the same currency; got &apos;{0}&apos; and &apos;{1}&apos;..
         /// </summary>
-        internal static string Op_Invalid_MoneyValueSameCurrencyRequired {
+        internal static string Op_Invalid_MoneySameCurrencyRequired {
             get {
-                return ResourceManager.GetString("Op_Invalid_MoneyValueSameCurrencyRequired", resourceCulture);
+                return ResourceManager.GetString("Op_Invalid_MoneySameCurrencyRequired", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to There is no CurrencyCode enum member for ISO code &apos;{0}&apos;. Historic or custom currencies are not represented in CurrencyCode..
+        /// </summary>
+        internal static string Op_Invalid_NoCurrencyCodeForIsoCode {
+            get {
+                return ResourceManager.GetString("Op_Invalid_NoCurrencyCodeForIsoCode", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Exchange rate for {0} → {1} must be strictly positive; rate provider returned {2}..
         /// </summary>

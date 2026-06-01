@@ -21,7 +21,7 @@ namespace Bodu.Financial;
 /// not silently merged. Zero balances are pruned automatically on every operation.
 /// </para>
 /// <para>
-/// Enumeration yields one <see cref="MoneyValue" /> per non-zero currency, in ISO-code lexicographic order so the
+/// Enumeration yields one <see cref="Money" /> per non-zero currency, in ISO-code lexicographic order so the
 /// iteration is stable and reproducible across runs.
 /// </para>
 /// </remarks>
@@ -29,7 +29,7 @@ namespace Bodu.Financial;
 [JsonConverter(typeof(MoneyBagJsonConverter))]
 public sealed partial class MoneyBag :
     IEquatable<MoneyBag>,
-    IEnumerable<MoneyValue>
+    IEnumerable<Money>
 {
     /// <summary>
     /// The shared empty bag instance.
@@ -50,17 +50,17 @@ public sealed partial class MoneyBag :
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="MoneyBag" /> class from a sequence of <see cref="MoneyValue" />
+    /// Initializes a new instance of the <see cref="MoneyBag" /> class from a sequence of <see cref="Money" />
     /// balances, summing amounts with the same ISO code.
     /// </summary>
     /// <param name="balances">The starting balances.</param>
     /// <exception cref="ArgumentNullException"><paramref name="balances" /> is <see langword="null" />.</exception>
-    public MoneyBag(IEnumerable<MoneyValue> balances)
+    public MoneyBag(IEnumerable<Money> balances)
     {
         ThrowHelper.ThrowIfNull(balances);
 
         _balances = new Dictionary<string, decimal>(StringComparer.Ordinal);
-        foreach (MoneyValue balance in balances)
+        foreach (Money balance in balances)
         {
             var iso = balance.IsoCode;
             if (string.IsNullOrEmpty(iso))
@@ -129,11 +129,11 @@ public sealed partial class MoneyBag :
     /// <summary>
     /// Enumerates the non-zero balances in ISO-code lexicographic order.
     /// </summary>
-    /// <returns>An enumerator over <see cref="MoneyValue" /> entries.</returns>
-    public IEnumerator<MoneyValue> GetEnumerator()
+    /// <returns>An enumerator over <see cref="Money" /> entries.</returns>
+    public IEnumerator<Money> GetEnumerator()
     {
         foreach (KeyValuePair<string, decimal> entry in _balances.OrderBy(p => p.Key, StringComparer.Ordinal))
-            yield return MoneyValue.FromNormalized(entry.Value, entry.Key);
+            yield return Money.FromNormalized(entry.Value, entry.Key);
     }
 
     /// <inheritdoc />
@@ -148,11 +148,11 @@ public sealed partial class MoneyBag :
     /// <exception cref="ArgumentException">
     /// <paramref name="amount" /> has no ISO code (default-initialised).
     /// </exception>
-    public MoneyBag Add(MoneyValue amount)
+    public MoneyBag Add(Money amount)
     {
         var iso = amount.IsoCode;
         if (string.IsNullOrEmpty(iso))
-            throw new ArgumentException(FinancialResourceStrings.Arg_Invalid_MoneyValueMissingIsoCode, nameof(amount));
+            throw new ArgumentException(FinancialResourceStrings.Arg_Invalid_MoneyMissingIsoCode, nameof(amount));
 
         if (amount.IsZero)
             return this;
@@ -182,14 +182,14 @@ public sealed partial class MoneyBag :
     /// <returns>The updated bag.</returns>
     public MoneyBag Add<TCurrency>(Money<TCurrency> amount)
         where TCurrency : ICurrency =>
-        Add(MoneyValue.FromTyped(amount));
+        Add(amount.ToMoney());
 
     /// <summary>
     /// Returns a new bag with <paramref name="amount" /> subtracted from the balance for its currency.
     /// </summary>
     /// <param name="amount">The amount to subtract.</param>
     /// <returns>The updated bag.</returns>
-    public MoneyBag Subtract(MoneyValue amount) =>
+    public MoneyBag Subtract(Money amount) =>
         Add(-amount);
 
     /// <summary>
@@ -200,7 +200,7 @@ public sealed partial class MoneyBag :
     /// <returns>The updated bag.</returns>
     public MoneyBag Subtract<TCurrency>(Money<TCurrency> amount)
         where TCurrency : ICurrency =>
-        Subtract(MoneyValue.FromTyped(amount));
+        Subtract(amount.ToMoney());
 
     /// <summary>
     /// Returns a new bag containing the union of this bag's balances and <paramref name="other" />'s, summing
@@ -244,11 +244,11 @@ public sealed partial class MoneyBag :
     /// <param name="isoCode">The ISO 4217 code.</param>
     /// <returns>The runtime-tagged balance, or <see langword="null" /> when absent.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="isoCode" /> is <see langword="null" />.</exception>
-    public MoneyValue? GetBalance(string isoCode)
+    public Money? GetBalance(string isoCode)
     {
         ThrowHelper.ThrowIfNull(isoCode);
         return _balances.TryGetValue(isoCode, out var amount)
-            ? MoneyValue.FromNormalized(amount, isoCode)
+            ? Money.FromNormalized(amount, isoCode)
             : null;
     }
 
@@ -314,24 +314,24 @@ public sealed partial class MoneyBag :
     }
 
     /// <summary>
-    /// Adds a single <see cref="MoneyValue" /> to a bag.
+    /// Adds a single <see cref="Money" /> to a bag.
     /// </summary>
     /// <param name="left">The bag.</param>
     /// <param name="right">The amount to add.</param>
     /// <returns>The updated bag.</returns>
-    public static MoneyBag operator +(MoneyBag left, MoneyValue right)
+    public static MoneyBag operator +(MoneyBag left, Money right)
     {
         ThrowHelper.ThrowIfNull(left);
         return left.Add(right);
     }
 
     /// <summary>
-    /// Subtracts a <see cref="MoneyValue" /> from a bag.
+    /// Subtracts a <see cref="Money" /> from a bag.
     /// </summary>
     /// <param name="left">The bag.</param>
     /// <param name="right">The amount to subtract.</param>
     /// <returns>The updated bag.</returns>
-    public static MoneyBag operator -(MoneyBag left, MoneyValue right)
+    public static MoneyBag operator -(MoneyBag left, Money right)
     {
         ThrowHelper.ThrowIfNull(left);
         return left.Subtract(right);

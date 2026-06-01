@@ -5,151 +5,150 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Diagnostics;
+using System.Globalization;
 using System.Text.Json.Serialization;
 using Bodu.Financial.Serialization;
 
 namespace Bodu.Financial;
 
 /// <summary>
-/// Represents an immutable monetary amount denominated in the currency identified by <typeparamref name="TCurrency" />.
+/// Represents an immutable monetary amount whose currency is identified at runtime by ISO 4217 code, in contrast to
+/// <see cref="Money{TCurrency}" /> where the currency is a type parameter.
 /// </summary>
-/// <typeparam name="TCurrency">
-/// A type implementing <see cref="ICurrency" /> that identifies the currency at the type-system level. Use one of the
-/// shipped tag types in <c>Bodu.Financial.Currencies</c> (for example,
-/// <c>Money&lt;Bodu.Financial.Currencies.USD&gt;</c>).
-/// </typeparam>
 /// <remarks>
 /// <para>
-/// <see cref="Money{TCurrency}" /> represents a <b>settlement-grade</b> monetary value — an amount already rounded to
-/// the currency's minor-unit precision and ready to be posted to a ledger, displayed to a user, or serialized to
-/// storage. It is deliberately not a calculation type: every operation that produces a <see cref="Money{TCurrency}" />
-/// returns a value that respects <c>TCurrency.MinorUnits</c>, so chained scalar operations round at each step rather
-/// than accumulating sub-minor-unit precision.
+/// <see cref="Money" /> is the runtime-tagged counterpart of <see cref="Money{TCurrency}" />. Use it when the
+/// currency is data rather than part of the type — for example, when deserialising payloads that carry the currency
+/// code, or when modelling a generic invoicing engine that processes arbitrary currencies. The trade-off is that
+/// cross-currency arithmetic and comparison surface as <see cref="InvalidOperationException" /> at runtime instead of
+/// as compile errors.
 /// </para>
 /// <para>
-/// The amount is stored as a <see cref="decimal" /> rounded on construction to <c>TCurrency.MinorUnits</c> using
-/// banker's rounding (<see cref="MidpointRounding.ToEven" />). Two <see cref="Money{TCurrency}" /> values that
-/// represent the same monetary amount compare equal regardless of the input expressions that produced them.
-/// </para>
-/// <para>
-/// Arithmetic between two <see cref="Money{TCurrency}" /> instances is permitted only when both operands share the same
-/// <typeparamref name="TCurrency" />. Cross-currency addition, subtraction, and comparison are compile errors, not
-/// runtime exceptions; cross-currency conversion is available exclusively through the explicit
-/// <see cref="Convert{TTarget}(decimal, MidpointRounding)" /> method.
-/// </para>
-/// <para>
-/// Scalar multiplication and division round their result to <c>TCurrency.MinorUnits</c>. For chains where rounding at
-/// each step would accumulate error — compound interest, unit-rate products, percentages — perform the calculation in
-/// <see cref="Bodu.Numerics.Fraction{T}" /> via <see cref="ToFraction" />, then snap to <see cref="Money{TCurrency}" />
-/// only at the final settlement boundary with
-/// <see cref="FromFraction(Bodu.Numerics.Fraction{System.Numerics.BigInteger}, MidpointRounding)" /> or the
-/// <see cref="MultiplyExact(Bodu.Numerics.Fraction{System.Numerics.BigInteger}, MidpointRounding)" /> shortcut.
-/// </para>
-/// <para>
-/// The default value (<c>default(Money&lt;TCurrency&gt;)</c>) represents zero of the given currency without invoking
-/// the rounding constructor, so it is safe even when <typeparamref name="TCurrency" /> reports invalid minor-unit
-/// metadata.
+/// The amount is rounded on construction to the minor-unit precision reported by <see cref="CurrencyRegistry" /> for
+/// the supplied ISO code, using banker's rounding by default. When the ISO code is not in the registry the amount is
+/// stored at its source precision; consumers can call <see cref="CurrencyRegistry.Register" /> to register custom
+/// currencies ahead of construction.
 /// </para>
 /// </remarks>
 [Serializable]
 [DebuggerDisplay("{ToString(),nq}")]
-[JsonConverter(typeof(MoneyJsonConverterFactory))]
-public readonly partial struct Money<TCurrency>
-    where TCurrency : ICurrency
+[JsonConverter(typeof(MoneyJsonConverter))]
+public readonly partial struct Money
 {
     /// <summary>
-    /// The rounded amount in the major unit of <typeparamref name="TCurrency" />.
+    /// The rounded amount in the major unit of the currency identified by <see cref="_isoCode" />.
     /// </summary>
     private readonly decimal _amount;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Money{TCurrency}" /> struct, rounding <paramref name="amount" /> to
-    /// <c>TCurrency.MinorUnits</c> using banker's rounding.
+    /// The ISO 4217 alphabetic code identifying the currency, or <see langword="null" /> for a default-initialised
+    /// value.
     /// </summary>
-    /// <param name="amount">The monetary amount in the major unit of <typeparamref name="TCurrency" />.</param>
+    private readonly string? _isoCode;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Money" /> struct from an amount and ISO 4217 code, rounding
+    /// the amount to the currency's minor-unit precision using banker's rounding.
+    /// </summary>
+    /// <param name="amount">The monetary amount in the major unit.</param>
+    /// <param name="isoCode">The ISO 4217 three-letter alphabetic code identifying the currency.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="isoCode" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentException"><paramref name="isoCode" /> is empty or whitespace.</exception>
+    public Money(decimal amount, string isoCode)
+        : this(amount, isoCode, MidpointRounding.ToEven)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Money" /> struct from an amount and ISO 4217 code, rounding
+    /// the amount to the currency's minor-unit precision using the supplied rule.
+    /// </summary>
+    /// <param name="amount">The monetary amount in the major unit.</param>
+    /// <param name="isoCode">The ISO 4217 three-letter alphabetic code identifying the currency.</param>
+    /// <param name="rounding">The midpoint-rounding rule applied when normalising to the minor-unit precision.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="isoCode" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="isoCode" /> is not exactly three uppercase ASCII letters — empty, whitespace, the wrong length,
+    /// lowercase, or contains non-letter characters.
+    /// </exception>
     /// <remarks>
-    /// <para>
-    /// The supplied amount is rounded to the currency's minor-unit precision using banker's rounding — midpoint values
-    /// round toward the nearer even final digit, in both directions. For example, <c>new Money&lt;USD&gt;(1.225m)</c>
-    /// is stored as <c>1.22m</c> (down toward the even hundredth <c>2</c>) while <c>new Money&lt;USD&gt;(1.235m)</c> is
-    /// stored as <c>1.24m</c> (up toward the even hundredth <c>4</c>). Non-midpoint values round in the natural
-    /// direction: <c>new Money&lt;JPY&gt;(99.6m)</c> is stored as <c>100m</c>.
-    /// </para>
-    /// <para>
-    /// To round with a different rule, use the <see cref="Money{TCurrency}(decimal, MidpointRounding)" /> overload.
-    /// </para>
+    /// Currency integrity matches <see cref="Money{TCurrency}" />: the ISO code is validated to ISO 4217's
+    /// three-uppercase-ASCII-letters shape regardless of whether the code is in <see cref="CurrencyRegistry" />. For
+    /// codes that are registered, the amount is rounded to the registry's <c>MinorUnits</c>; for codes that are valid
+    /// in shape but not registered, the amount is stored at its source precision so consumer code that handles custom
+    /// or test currencies still works.
     /// </remarks>
-    /// <exception cref="InvalidOperationException">
-    /// Thrown when <typeparamref name="TCurrency" /> reports invalid metadata — an <see cref="ICurrency.IsoCode" />
-    /// that is not exactly three uppercase ASCII letters, an <see cref="ICurrency.MinorUnits" /> outside the inclusive
-    /// range <c>[0, 28]</c>, or a <see cref="ICurrency.CashRoundingIncrement" /> that is negative or finer than the
-    /// currency's minor-unit precision.
-    /// </exception>
-    public Money(decimal amount)
+    public Money(decimal amount, string isoCode, MidpointRounding rounding)
     {
-        _amount = decimal.Round(amount, CurrencyMetadata<TCurrency>.Value.MinorUnits, MidpointRounding.ToEven);
+        ThrowHelper.ThrowIfNull(isoCode);
+        ValidateIsoCode(isoCode);
+
+        _isoCode = isoCode;
+        _amount = CurrencyRegistry.TryGet(isoCode, out CurrencyInfo? info) && info is not null
+            ? decimal.Round(amount, info.MinorUnits, rounding)
+            : amount;
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Money{TCurrency}" /> struct, rounding <paramref name="amount" /> to
-    /// <c>TCurrency.MinorUnits</c> using the specified midpoint-rounding rule.
+    /// Validates that <paramref name="isoCode" /> is exactly three uppercase ASCII letters.
     /// </summary>
-    /// <param name="amount">The monetary amount in the major unit of <typeparamref name="TCurrency" />.</param>
-    /// <param name="rounding">The rule used to round midpoint values.</param>
-    /// <exception cref="InvalidOperationException">
-    /// Thrown when <typeparamref name="TCurrency" /> reports invalid metadata.
+    /// <param name="isoCode">The candidate ISO code.</param>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="isoCode" /> is not exactly three uppercase ASCII letters.
     /// </exception>
-    public Money(decimal amount, MidpointRounding rounding)
+    private static void ValidateIsoCode(string isoCode)
     {
-        _amount = decimal.Round(amount, CurrencyMetadata<TCurrency>.Value.MinorUnits, rounding);
+        if (isoCode.Length != 3)
+        {
+            throw new ArgumentException(
+                string.Format(
+                    CultureInfo.InvariantCulture,
+                    FinancialResourceStrings.Arg_Invalid_IsoCodeLength,
+                    isoCode,
+                    isoCode.Length),
+                nameof(isoCode));
+        }
+
+        for (var i = 0; i < 3; i++)
+        {
+            var c = isoCode[i];
+            if (c is < 'A' or > 'Z')
+            {
+                throw new ArgumentException(
+                    string.Format(
+                        CultureInfo.InvariantCulture,
+                        FinancialResourceStrings.Arg_Invalid_IsoCodeNonAscii,
+                        isoCode,
+                        c),
+                    nameof(isoCode));
+            }
+        }
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Money{TCurrency}" /> struct from an already-rounded amount,
-    /// bypassing normalization.
+    /// Initializes a new instance of the <see cref="Money" /> struct from an already-normalised amount and ISO
+    /// code, bypassing rounding.
     /// </summary>
-    /// <param name="amount">The pre-rounded monetary amount.</param>
-    /// <param name="_">
-    /// A typed tag that selects the no-normalization initialization path. The value itself is not inspected.
-    /// </param>
-    private Money(decimal amount, NormalizedTag _)
+    /// <param name="amount">The pre-normalised amount.</param>
+    /// <param name="isoCode">The ISO 4217 code.</param>
+    /// <param name="_">Discriminator that selects the no-normalisation path.</param>
+    private Money(decimal amount, string isoCode, NormalizedTag _)
     {
         _amount = amount;
+        _isoCode = isoCode;
     }
 
     /// <summary>
-    /// Creates a <see cref="Money{TCurrency}" /> from an amount that is already rounded to <c>TCurrency.MinorUnits</c>,
-    /// bypassing the normalization step.
+    /// Creates a <see cref="Money" /> from an amount and ISO code already at the currency's minor-unit precision.
     /// </summary>
-    /// <param name="amount">The already-normalized amount.</param>
-    /// <returns>A <see cref="Money{TCurrency}" /> wrapping <paramref name="amount" />.</returns>
-    /// <remarks>
-    /// This is the internal fast path used by arithmetic operators, allocation, and conversion to avoid a redundant
-    /// <see cref="decimal.Round(decimal, int, MidpointRounding)" /> after every operation when the caller already
-    /// guarantees minor-unit precision. A <see cref="System.Diagnostics.Debug.Assert(bool, string)" /> guards the
-    /// invariant in DEBUG builds so misuse fails noisily during development. External callers should use the public
-    /// constructors.
-    /// </remarks>
-    internal static Money<TCurrency> FromNormalizedAmount(decimal amount)
-    {
-        System.Diagnostics.Debug.Assert(
-            IsAtMinorUnitPrecision(amount),
-            $"FromNormalizedAmount called with non-normalized amount {amount} for {typeof(TCurrency).Name} (MinorUnits={CurrencyMetadata<TCurrency>.Value.MinorUnits}).");
-        return new(amount, default(NormalizedTag));
-    }
+    /// <param name="amount">The normalised amount.</param>
+    /// <param name="isoCode">The ISO 4217 code.</param>
+    /// <returns>The wrapped <see cref="Money" />.</returns>
+    internal static Money FromNormalized(decimal amount, string isoCode) =>
+        new(amount, isoCode, default(NormalizedTag));
 
     /// <summary>
-    /// Determines whether <paramref name="amount" /> already sits at <typeparamref name="TCurrency" />'s minor-unit
-    /// precision (no finer fractional digits).
-    /// </summary>
-    /// <param name="amount">The amount to test.</param>
-    /// <returns><see langword="true" /> when the amount is at minor-unit precision.</returns>
-    private static bool IsAtMinorUnitPrecision(decimal amount) =>
-        decimal.Round(amount, CurrencyMetadata<TCurrency>.Value.MinorUnits, MidpointRounding.ToEven) == amount;
-
-    /// <summary>
-    /// A typed discriminator that selects the no-normalization initialization path on the private
-    /// <see cref="Money{TCurrency}" /> constructor invoked from <see cref="FromNormalizedAmount(decimal)" />.
+    /// Private discriminator selecting the no-normalisation private constructor.
     /// </summary>
     private readonly struct NormalizedTag
     {

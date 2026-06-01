@@ -10,7 +10,7 @@ namespace Bodu.Financial;
 
 /// <summary>
 /// Provides compact-notation formatting (<c>"$1.2K"</c>, <c>"€1.5M"</c>, <c>"USD 2.3B"</c>) for
-/// <see cref="Money{TCurrency}" /> and <see cref="MoneyValue" /> values, on top of the standard format-specifier
+/// <see cref="Money{TCurrency}" /> and <see cref="Money" /> values, on top of the standard format-specifier
 /// vocabulary.
 /// </summary>
 /// <remarks>
@@ -96,7 +96,7 @@ public static class MoneyCompactFormattingExtensions
     /// </summary>
     /// <param name="money">The runtime-tagged monetary amount to format.</param>
     /// <param name="format">
-    /// The format specifier; see <see cref="MoneyValue.ToString(string?, IFormatProvider?)" /> for the supported
+    /// The format specifier; see <see cref="Money.ToString(string?, IFormatProvider?)" /> for the supported
     /// vocabulary. The <c>R</c> specifier is rejected because compact notation cannot round-trip. Defaults to
     /// <c>"C"</c>.
     /// </param>
@@ -113,7 +113,7 @@ public static class MoneyCompactFormattingExtensions
     /// combined with compact notation).
     /// </exception>
     public static string ToCompactString(
-        this MoneyValue money,
+        this Money money,
         string? format = "C",
         IFormatProvider? provider = null,
         int precision = DefaultCompactPrecision)
@@ -124,9 +124,9 @@ public static class MoneyCompactFormattingExtensions
         (decimal scaled, string suffix) = Scale(money.Amount);
         var formatWithPrecision = BuildFormatWithPrecision(format, precision, suffix.Length > 0).ToString();
 
-        // Use MoneyValue's instance Format directly with the scaled amount via a temporary normalised wrapper.
+        // Use Money's instance Format directly with the scaled amount via a temporary normalised wrapper.
         // The wrapped value bypasses normalisation so the scaled fractional portion is preserved.
-        var scaledMoney = MoneyValue.FromNormalized(scaled, money.IsoCode);
+        var scaledMoney = Money.FromNormalized(scaled, money.IsoCode);
         return scaledMoney.Format(formatWithPrecision, provider, suffix);
     }
 

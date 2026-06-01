@@ -11,38 +11,12 @@ using System.Text.Json.Serialization;
 namespace Bodu.Financial.Serialization;
 
 /// <summary>
-/// Converts a <see cref="Money{TCurrency}" /> to and from JSON using the policy supplied at construction.
+/// Converts a <see cref="Money" /> to and from JSON using the policy supplied at construction. Mirrors the shape
+/// vocabulary of <see cref="MoneyOfTCurrencyJsonConverter{TCurrency}" /> so a single <see cref="FinancialJsonPolicy" /> selection
+/// produces a coherent on-the-wire format across the monetary types.
 /// </summary>
-/// <typeparam name="TCurrency">The currency type identifier.</typeparam>
-/// <remarks>
-/// <para>
-/// The converter shape is selected by <see cref="FinancialJsonPolicy" />:
-/// </para>
-/// <list type="bullet">
-/// <item>
-/// <description>
-/// <see cref="FinancialJsonPolicy.Strict" /> — canonical object form <c>{ "amount": 19.99, "currency": "USD" }</c>;
-/// rejects duplicate properties and currency mismatches.
-/// </description>
-/// </item>
-/// <item>
-/// <description>
-/// <see cref="FinancialJsonPolicy.Lenient" /> — same shape as <see cref="FinancialJsonPolicy.Strict" />, with
-/// additional tolerance for lowercase currency codes and whitespace around the currency value.
-/// </description>
-/// </item>
-/// <item>
-/// <description>
-/// <see cref="FinancialJsonPolicy.Compact" /> — string form <c>"19.99 USD"</c>; reads accept either ISO-prefix or
-/// ISO-suffix arrangement and reuse
-/// <see cref="Money{TCurrency}.TryParse(ReadOnlySpan{char}, IFormatProvider?, out Money{TCurrency})" />.
-/// </description>
-/// </item>
-/// </list>
-/// </remarks>
-public sealed class MoneyJsonConverter<TCurrency>
-    : JsonConverter<Money<TCurrency>>
-    where TCurrency : ICurrency
+public sealed class MoneyJsonConverter
+    : JsonConverter<Money>
 {
     /// <summary>
     /// The policy used by this converter instance.
@@ -50,7 +24,7 @@ public sealed class MoneyJsonConverter<TCurrency>
     private readonly FinancialJsonPolicy _policy;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="MoneyJsonConverter{TCurrency}" /> class configured for the
+    /// Initializes a new instance of the <see cref="MoneyJsonConverter" /> class configured for the
     /// <see cref="FinancialJsonPolicy.Strict" /> shape.
     /// </summary>
     public MoneyJsonConverter()
@@ -59,7 +33,7 @@ public sealed class MoneyJsonConverter<TCurrency>
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="MoneyJsonConverter{TCurrency}" /> class configured for the supplied
+    /// Initializes a new instance of the <see cref="MoneyJsonConverter" /> class configured for the supplied
     /// <paramref name="policy" />.
     /// </summary>
     /// <param name="policy">The serialization policy.</param>
@@ -73,13 +47,13 @@ public sealed class MoneyJsonConverter<TCurrency>
     }
 
     /// <inheritdoc />
-    public override Money<TCurrency> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) =>
+    public override Money Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) =>
         _policy == FinancialJsonPolicy.Compact
             ? ReadCompact(ref reader)
             : ReadObject(ref reader);
 
     /// <inheritdoc />
-    public override void Write(Utf8JsonWriter writer, Money<TCurrency> value, JsonSerializerOptions options)
+    public override void Write(Utf8JsonWriter writer, Money value, JsonSerializerOptions options)
     {
         ThrowHelper.ThrowIfNull(writer);
 
@@ -91,38 +65,31 @@ public sealed class MoneyJsonConverter<TCurrency>
 
         writer.WriteStartObject();
         writer.WriteNumber("amount", value.Amount);
-        writer.WriteString("currency", CurrencyMetadata<TCurrency>.Value.IsoCode);
+        writer.WriteString("currency", value.IsoCode);
         writer.WriteEndObject();
     }
 
     /// <summary>
-    /// Reads the compact string form (e.g. <c>"19.99 USD"</c>) and constructs the monetary amount via
-    /// <see cref="Money{TCurrency}.TryParse(ReadOnlySpan{char}, IFormatProvider?, out Money{TCurrency})" />.
+    /// Reads the compact string form (e.g. <c>"19.99 USD"</c>) via
+    /// <see cref="Money.TryParse(ReadOnlySpan{char}, IFormatProvider?, out Money)" />.
     /// </summary>
     /// <param name="reader">The reader positioned at the value to convert.</param>
-    /// <returns>The deserialized monetary amount.</returns>
+    /// <returns>The deserialized value.</returns>
     /// <exception cref="JsonException">
     /// The token is not a string, or the string is not a valid Money representation.
     /// </exception>
-    private static Money<TCurrency> ReadCompact(ref Utf8JsonReader reader)
+    private static Money ReadCompact(ref Utf8JsonReader reader)
     {
         if (reader.TokenType != JsonTokenType.String)
-        {
-            throw new JsonException(
-                string.Format(
-                    CultureInfo.InvariantCulture,
-                    FinancialResourceStrings.Json_Invalid_ExpectedCompactString_Money,
-                    typeof(TCurrency).Name));
-        }
+            throw new JsonException(FinancialResourceStrings.Json_Invalid_ExpectedCompactString_Money);
 
         var text = reader.GetString()!;
-        return !Money<TCurrency>.TryParse(text.AsSpan(), CultureInfo.InvariantCulture, out Money<TCurrency> result)
+        return !Money.TryParse(text.AsSpan(), CultureInfo.InvariantCulture, out Money result)
             ? throw new JsonException(
                 string.Format(
                     CultureInfo.InvariantCulture,
                     FinancialResourceStrings.Json_Invalid_CompactMoneyForm,
-                    text,
-                    typeof(TCurrency).Name))
+                    text))
             : result;
     }
 
@@ -130,12 +97,9 @@ public sealed class MoneyJsonConverter<TCurrency>
     /// Reads the canonical object form (Strict / Lenient policies share the same shape).
     /// </summary>
     /// <param name="reader">The reader positioned at the value to convert.</param>
-    /// <returns>The deserialized monetary amount.</returns>
-    /// <exception cref="JsonException">
-    /// Thrown when the JSON is not an object, is missing one of the expected properties, or carries a <c>"currency"</c>
-    /// code that does not match <typeparamref name="TCurrency" />.
-    /// </exception>
-    private Money<TCurrency> ReadObject(ref Utf8JsonReader reader)
+    /// <returns>The deserialized value.</returns>
+    /// <exception cref="JsonException">Thrown when the JSON shape is invalid.</exception>
+    private Money ReadObject(ref Utf8JsonReader reader)
     {
         if (reader.TokenType != JsonTokenType.StartObject)
             throw new JsonException(FinancialResourceStrings.Json_Invalid_ExpectedObject_Money);
@@ -168,7 +132,6 @@ public sealed class MoneyJsonConverter<TCurrency>
                     var text = reader.GetString();
                     if (text is null || !decimal.TryParse(text, NumberStyles.Number, CultureInfo.InvariantCulture, out var parsed))
                         throw new JsonException(FinancialResourceStrings.Json_Invalid_AmountMustBeNumber);
-
                     amount = parsed;
                 }
                 else if (reader.TokenType == JsonTokenType.Number)
@@ -188,7 +151,6 @@ public sealed class MoneyJsonConverter<TCurrency>
 
                 if (reader.TokenType != JsonTokenType.String)
                     throw new JsonException(FinancialResourceStrings.Json_Invalid_CurrencyMustBeString);
-
                 currency = reader.GetString();
             }
             else
@@ -206,30 +168,29 @@ public sealed class MoneyJsonConverter<TCurrency>
         if (_policy == FinancialJsonPolicy.Lenient)
             currency = currency.Trim().ToUpperInvariant();
 
-        var expectedIso = CurrencyMetadata<TCurrency>.Value.IsoCode;
-        return !string.Equals(currency, expectedIso, StringComparison.Ordinal)
-            ? throw new JsonException(
-                string.Format(
-                    CultureInfo.InvariantCulture,
-                    FinancialResourceStrings.Json_Invalid_CurrencyMismatch,
-                    currency,
-                    expectedIso))
-            : new Money<TCurrency>(amount.Value);
+        // Pre-validate the ISO shape so a malformed code surfaces as JsonException rather than the
+        // ArgumentException that the Money constructor would otherwise raise.
+        return currency.Length != 3
+            || !char.IsAsciiLetterUpper(currency[0])
+            || !char.IsAsciiLetterUpper(currency[1])
+            || !char.IsAsciiLetterUpper(currency[2])
+            ? throw new JsonException(FinancialResourceStrings.Arg_Invalid_IsoCodeShape)
+            : new Money(amount.Value, currency);
     }
 
     /// <summary>
-    /// Formats a monetary value for the compact JSON shape: the amount rendered in the invariant culture with no
-    /// grouping, then a single space, then the ISO code.
+    /// Formats a runtime-tagged monetary value for the compact JSON shape: the amount rendered in the invariant
+    /// culture, then a single space, then the ISO code. When the currency is registered, the registered minor-unit
+    /// precision drives the trailing-zero count; otherwise the amount's natural representation is used.
     /// </summary>
     /// <param name="value">The value to format.</param>
     /// <returns>The compact textual representation.</returns>
-    private static string FormatCompact(Money<TCurrency> value)
+    private static string FormatCompact(Money value)
     {
-        CurrencyMetadataDescriptor metadata = CurrencyMetadata<TCurrency>.Value;
-        var numericFormat = "F" + metadata.MinorUnits.ToString(CultureInfo.InvariantCulture);
+        var numericFormat = "F" + value.MinorUnits.ToString(CultureInfo.InvariantCulture);
         return string.Concat(
             value.Amount.ToString(numericFormat, CultureInfo.InvariantCulture),
             " ",
-            metadata.IsoCode);
+            value.IsoCode);
     }
 }

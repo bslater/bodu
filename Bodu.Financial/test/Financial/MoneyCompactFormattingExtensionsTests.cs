@@ -235,13 +235,13 @@ public class MoneyCompactFormattingExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that the <see cref="MoneyValue" /> overload applies the same magnitude scaling as the typed
+    /// Verifies that the <see cref="Money" /> overload applies the same magnitude scaling as the typed
     /// <see cref="Money{TCurrency}" /> overload.
     /// </summary>
     [TestMethod]
-    public void ToCompactString_WhenMoneyValueInThousands_ShouldUseKSuffix()
+    public void ToCompactString_WhenMoneyInThousands_ShouldUseKSuffix()
     {
-        var money = new MoneyValue(1234.56m, "USD");
+        var money = new Money(1234.56m, "USD");
 
         var actual = money.ToCompactString("C", new CultureInfo("en-US"));
 
@@ -249,13 +249,13 @@ public class MoneyCompactFormattingExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that the <see cref="MoneyValue" /> overload appends the English name from
+    /// Verifies that the <see cref="Money" /> overload appends the English name from
     /// <see cref="CurrencyRegistry" /> when the <c>"L"</c> specifier is supplied.
     /// </summary>
     [TestMethod]
-    public void ToCompactString_WhenMoneyValueLSpecifier_ShouldAppendEnglishNameAfterSuffix()
+    public void ToCompactString_WhenMoneyLSpecifier_ShouldAppendEnglishNameAfterSuffix()
     {
-        var money = new MoneyValue(1_500_000m, "USD");
+        var money = new Money(1_500_000m, "USD");
 
         var actual = money.ToCompactString("L", CultureInfo.InvariantCulture);
 

@@ -11,7 +11,7 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
     <Version>1.0.0</Version>
-    <Description>Financial primitives for .NET. Provides Money&lt;TCurrency&gt; (type-parameter currency safety), MoneyValue (runtime-tagged), MoneyBag (mixed-currency portfolios), CurrencyRegistry (runtime ISO 4217 lookup), and a dated foreign-exchange provider stack (IDatedExchangeRateProvider, FixedDatedExchangeRateTable, CompositeDatedExchangeRateProvider, ExchangeRateSeries). Ships the full active + historic ISO 4217 catalogue, cash rounding (CHF/AUD/CAD/NZD/SEK/NOK), and an exact-arithmetic escape hatch through Fraction&lt;BigInteger&gt; from Bodu.Numerics.</Description>
+    <Description>Financial primitives for .NET. Provides Money (runtime-tagged primary monetary type), Money&lt;TCurrency&gt; (opt-in type-parameter currency safety with implicit conversion to and explicit conversion from the runtime form), MoneyBag (mixed-currency portfolios), CurrencyInfo and CurrencyCode (canonical metadata and source-generated active ISO 4217 enum), CurrencyRegistry (runtime lookup including historic currencies), and a foreign-exchange provider stack with both runtime ExchangeRate and typed ExchangeRate&lt;TBase, TQuote&gt;. Ships the full active + historic ISO 4217 catalogue, cash rounding (CHF/AUD/CAD/NZD/SEK/NOK), and an exact-arithmetic escape hatch through Fraction&lt;BigInteger&gt; from Bodu.Numerics.</Description>
     <PackageTags>bodu;financial;money;currency;iso4217;forex;fx;exchange-rate;accounting;ledger</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>

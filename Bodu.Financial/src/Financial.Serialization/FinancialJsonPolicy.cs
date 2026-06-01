@@ -13,13 +13,13 @@ namespace Bodu.Financial.Serialization;
 /// <remarks>
 /// <para>
 /// The policy is supplied either by constructing a converter directly (e.g.
-/// <c>new MoneyJsonConverter&lt;USD&gt;(FinancialJsonPolicy.Compact)</c>) or, more commonly, through
+/// <c>new MoneyOfTCurrencyJsonConverter&lt;USD&gt;(FinancialJsonPolicy.Compact)</c>) or, more commonly, through
 /// <see cref="FinancialJsonSerializerOptionsExtensions.AddFinancialJsonConverters" /> which registers a coherent set of
 /// converters on a <see cref="System.Text.Json.JsonSerializerOptions" />.
 /// </para>
 /// <para>
 /// The shipped <c>[JsonConverter]</c> attributes on <see cref="Bodu.Financial.Money{TCurrency}" />,
-/// <see cref="Bodu.Financial.MoneyValue" />, and <see cref="Bodu.Financial.MoneyBag" /> default to
+/// <see cref="Bodu.Financial.Money" />, and <see cref="Bodu.Financial.MoneyBag" /> default to
 /// <see cref="Strict" />. Consumers who need a different shape register their own policy through
 /// <see cref="FinancialJsonSerializerOptionsExtensions.AddFinancialJsonConverters" />; converters registered on
 /// <see cref="System.Text.Json.JsonSerializerOptions.Converters" /> take precedence over the type-level attribute.
@@ -44,7 +44,7 @@ public enum FinancialJsonPolicy
     Lenient = 1,
 
     /// <summary>
-    /// Compact JSON shape: <see cref="Bodu.Financial.Money{TCurrency}" /> and <see cref="Bodu.Financial.MoneyValue" />
+    /// Compact JSON shape: <see cref="Bodu.Financial.Money{TCurrency}" /> and <see cref="Bodu.Financial.Money" />
     /// serialize as a single JSON string of the form <c>"&lt;amount&gt; &lt;ISO&gt;"</c> (for example
     /// <c>"19.99 USD"</c>); <see cref="Bodu.Financial.MoneyBag" /> serializes as a flat object mapping ISO codes to
     /// amounts (for example <c>{ "USD": 19.99, "EUR": 12.34 }</c>). Reads accept either ISO-prefix or ISO-suffix string

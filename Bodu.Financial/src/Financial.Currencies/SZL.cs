@@ -21,6 +21,12 @@ public sealed class SZL : ICurrency
     public static string IsoCode => "SZL";
 
     /// <summary>
+    /// Gets the ISO 4217 three-digit numeric code for the currency.
+    /// </summary>
+    /// <returns>The three-digit ISO 4217 numeric code.</returns>
+    public static int NumericCode => 748;
+
+    /// <summary>
     /// Gets the number of fractional digits in the currency's minor unit.
     /// </summary>
     /// <returns>The currency's minor-unit precision.</returns>

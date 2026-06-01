@@ -30,8 +30,8 @@ public class MoneyBagJsonConverterPolicyTests
     public void CompactPolicy_WhenSerializing_ShouldEmitFlatMapWithoutBalancesWrapper()
     {
         MoneyBag bag = MoneyBag.Empty
-            .Add(new MoneyValue(12.34m, "AUD"))
-            .Add(new MoneyValue(56.78m, "USD"));
+            .Add(new Money(12.34m, "AUD"))
+            .Add(new Money(56.78m, "USD"));
 
         var json = JsonSerializer.Serialize(bag, Options(FinancialJsonPolicy.Compact));
 
@@ -60,8 +60,8 @@ public class MoneyBagJsonConverterPolicyTests
     public void CompactPolicy_WhenRoundTripping_ShouldPreserveBalances()
     {
         MoneyBag original = MoneyBag.Empty
-            .Add(new MoneyValue(100m, "EUR"))
-            .Add(new MoneyValue(50m, "GBP"));
+            .Add(new Money(100m, "EUR"))
+            .Add(new Money(50m, "GBP"));
         JsonSerializerOptions options = Options(FinancialJsonPolicy.Compact);
 
         var json = JsonSerializer.Serialize(original, options);
@@ -76,7 +76,7 @@ public class MoneyBagJsonConverterPolicyTests
     [TestMethod]
     public void StrictPolicy_WhenSerializing_ShouldEmitBalancesWrappedForm()
     {
-        MoneyBag bag = MoneyBag.Empty.Add(new MoneyValue(12.34m, "AUD"));
+        MoneyBag bag = MoneyBag.Empty.Add(new Money(12.34m, "AUD"));
 
         var json = JsonSerializer.Serialize(bag, Options(FinancialJsonPolicy.Strict));
 
