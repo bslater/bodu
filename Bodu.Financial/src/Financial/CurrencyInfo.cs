@@ -23,6 +23,10 @@ namespace Bodu.Financial;
 /// The currency's English-language name in singular Title Case (for example, <c>"United States Dollar"</c>), or an
 /// empty string when no name is supplied.
 /// </param>
+/// <param name="NumericCode">
+/// The ISO 4217 three-digit numeric code (for example, <c>840</c> for <c>USD</c>, <c>36</c> for <c>AUD</c>), or
+/// <c>0</c> when the currency is custom or the numeric code is unknown.
+/// </param>
 /// <remarks>
 /// This record is the runtime counterpart of an <see cref="ICurrency" /> tag type. The runtime-tagged <c>Money</c>
 /// and the <c>MoneyBag</c> aggregate operate against <see cref="CurrencyRegistry" /> entries of this shape so they can
@@ -35,4 +39,5 @@ public sealed record CurrencyInfo(
     bool IsHistoric,
     DateOnly? DemonetizedOn,
     string? SuccessorIsoCode,
-    string EnglishName = "");
+    string EnglishName = "",
+    int NumericCode = 0);

@@ -48,6 +48,21 @@ public interface ICurrency
     static abstract int MinorUnits { get; }
 
     /// <summary>
+    /// Gets the ISO 4217 three-digit numeric code that identifies the currency.
+    /// </summary>
+    /// <returns>
+    /// The three-digit numeric code (for example, <c>840</c> for <c>USD</c>, <c>36</c> for <c>AUD</c>,
+    /// <c>392</c> for <c>JPY</c>), or <c>0</c> when the currency is custom or the numeric code is unknown.
+    /// </returns>
+    /// <remarks>
+    /// The numeric code is the second public identifier defined by ISO 4217 and is widely used by payment formats
+    /// (SWIFT MT messages, ISO 20022). The default of <c>0</c> keeps existing custom <see cref="ICurrency" />
+    /// implementations source-compatible; the shipped <c>Bodu.Financial.Currencies</c> tags override it with the
+    /// canonical ISO numeric value.
+    /// </remarks>
+    static virtual int NumericCode => 0;
+
+    /// <summary>
     /// Gets the smallest cash denomination of the currency, expressed in the major unit.
     /// </summary>
     /// <returns>
