@@ -347,7 +347,7 @@ internal sealed class ExchangeRateSeriesBuffer
         Array.Copy(_dayNumbers, dayNumbers, _count);
         Array.Copy(_rates, rates, _count);
 
-        return ExchangeRateSeriesStorage.CreateFromSortedUnique(dayNumbers, rates);
+        return ExchangeRateSeriesStorage.AdoptSortedUniqueArrays(dayNumbers, rates);
     }
 
     /// <summary>
@@ -381,42 +381,8 @@ internal sealed class ExchangeRateSeriesBuffer
     /// <returns>A sorted list of validated incoming observations.</returns>
     private static List<(int DayNumber, decimal Rate)> PrepareIncoming(
         IEnumerable<ExchangeRateObservation> observations,
-        string observationsParamName)
-    {
-        var incoming = new List<(int DayNumber, decimal Rate)>();
-        foreach (var observation in observations)
-        {
-            if (observation.Rate <= 0m)
-            {
-                throw new ArgumentOutOfRangeException(
-                    observationsParamName,
-                    observation.Rate,
-                    FinancialResourceStrings.Arg_OutOfRange_ExchangeRateNotPositive);
-            }
-
-            incoming.Add((observation.Date.DayNumber, observation.Rate));
-        }
-
-        if (incoming.Count == 0)
-            return incoming;
-
-        incoming.Sort(static (a, b) => a.DayNumber.CompareTo(b.DayNumber));
-
-        for (var i = 1; i < incoming.Count; i++)
-        {
-            if (incoming[i].DayNumber == incoming[i - 1].DayNumber)
-            {
-                throw new ArgumentException(
-                    string.Format(
-                        CultureInfo.InvariantCulture,
-                        FinancialResourceStrings.Arg_Invalid_RateSeriesDuplicateDate,
-                        DateOnly.FromDayNumber(incoming[i].DayNumber)),
-                    observationsParamName);
-            }
-        }
-
-        return incoming;
-    }
+        string observationsParamName) =>
+        ExchangeRateObservationNormalizer.ToSortedUniqueList(observations, observationsParamName, allowEmpty: true);
 
     /// <summary>
     /// Merges a pre-validated sorted incoming batch with the existing buffer. The merge writes into fresh arrays and
