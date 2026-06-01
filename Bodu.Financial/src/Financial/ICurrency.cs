@@ -92,4 +92,20 @@ public interface ICurrency
     /// currencies), or <see langword="null" /> when there is no defined successor.
     /// </returns>
     static virtual string? SuccessorIsoCode => null;
+
+    /// <summary>
+    /// Gets the English-language name of the currency.
+    /// </summary>
+    /// <returns>
+    /// The currency's name in English, in singular form and Title Case (for example, <c>"United States Dollar"</c>,
+    /// <c>"Euro"</c>, or <c>"Australian Dollar"</c>), or an empty string when no name is supplied.
+    /// </returns>
+    /// <remarks>
+    /// The English name is used by <see cref="Money{TCurrency}" /> formatting in the <c>L</c> specifier path
+    /// (<c>"1,234.56 Australian Dollar"</c>) and is available through <see cref="CurrencyInfo.EnglishName" /> on the
+    /// runtime-tagged registry entry. The default is the empty string so existing <see cref="ICurrency" />
+    /// implementations remain source-compatible; when empty, the <c>L</c> specifier falls back to the ISO-substitution
+    /// form rather than emitting a trailing space with no name.
+    /// </remarks>
+    static virtual string EnglishName => string.Empty;
 }

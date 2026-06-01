@@ -46,6 +46,12 @@ public sealed class AZM : ICurrency
     public static string? SuccessorIsoCode => "AZN";
 
     /// <summary>
+    /// Gets the English-language name of the currency.
+    /// </summary>
+    /// <returns>The currency's English name in singular Title Case.</returns>
+    public static string EnglishName => "Old Azerbaijan Manat";
+
+    /// <summary>
     /// Prevents instantiation of the <see cref="AZM" /> tag type.
     /// </summary>
     private AZM()

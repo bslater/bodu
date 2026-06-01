@@ -27,6 +27,12 @@ public sealed class YER : ICurrency
     public static int MinorUnits => 2;
 
     /// <summary>
+    /// Gets the English-language name of the currency.
+    /// </summary>
+    /// <returns>The currency's English name in singular Title Case.</returns>
+    public static string EnglishName => "Yemeni Rial";
+
+    /// <summary>
     /// Prevents instantiation of the <see cref="YER" /> tag type.
     /// </summary>
     private YER()

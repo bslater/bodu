@@ -46,6 +46,12 @@ public sealed class VEB : ICurrency
     public static string? SuccessorIsoCode => "VEF";
 
     /// <summary>
+    /// Gets the English-language name of the currency.
+    /// </summary>
+    /// <returns>The currency's English name in singular Title Case.</returns>
+    public static string EnglishName => "Venezuelan Bolívar";
+
+    /// <summary>
     /// Prevents instantiation of the <see cref="VEB" /> tag type.
     /// </summary>
     private VEB()

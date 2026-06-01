@@ -27,6 +27,12 @@ public sealed class OMR : ICurrency
     public static int MinorUnits => 3;
 
     /// <summary>
+    /// Gets the English-language name of the currency.
+    /// </summary>
+    /// <returns>The currency's English name in singular Title Case.</returns>
+    public static string EnglishName => "Rial Omani";
+
+    /// <summary>
     /// Prevents instantiation of the <see cref="OMR" /> tag type.
     /// </summary>
     private OMR()

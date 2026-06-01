@@ -33,6 +33,12 @@ public sealed class CHF : ICurrency
     public static decimal CashRoundingIncrement => 0.05m;
 
     /// <summary>
+    /// Gets the English-language name of the currency.
+    /// </summary>
+    /// <returns>The currency's English name in singular Title Case.</returns>
+    public static string EnglishName => "Swiss Franc";
+
+    /// <summary>
     /// Prevents instantiation of the <see cref="CHF" /> tag type.
     /// </summary>
     private CHF()

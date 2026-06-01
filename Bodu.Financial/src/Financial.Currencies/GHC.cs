@@ -46,6 +46,12 @@ public sealed class GHC : ICurrency
     public static string? SuccessorIsoCode => "GHS";
 
     /// <summary>
+    /// Gets the English-language name of the currency.
+    /// </summary>
+    /// <returns>The currency's English name in singular Title Case.</returns>
+    public static string EnglishName => "Old Ghana Cedi";
+
+    /// <summary>
     /// Prevents instantiation of the <see cref="GHC" /> tag type.
     /// </summary>
     private GHC()

@@ -27,6 +27,12 @@ public sealed class AWG : ICurrency
     public static int MinorUnits => 2;
 
     /// <summary>
+    /// Gets the English-language name of the currency.
+    /// </summary>
+    /// <returns>The currency's English name in singular Title Case.</returns>
+    public static string EnglishName => "Aruban Florin";
+
+    /// <summary>
     /// Prevents instantiation of the <see cref="AWG" /> tag type.
     /// </summary>
     private AWG()

@@ -46,6 +46,12 @@ public sealed class DEM : ICurrency
     public static string? SuccessorIsoCode => "EUR";
 
     /// <summary>
+    /// Gets the English-language name of the currency.
+    /// </summary>
+    /// <returns>The currency's English name in singular Title Case.</returns>
+    public static string EnglishName => "Deutsche Mark";
+
+    /// <summary>
     /// Prevents instantiation of the <see cref="DEM" /> tag type.
     /// </summary>
     private DEM()

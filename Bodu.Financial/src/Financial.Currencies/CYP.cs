@@ -46,6 +46,12 @@ public sealed class CYP : ICurrency
     public static string? SuccessorIsoCode => "EUR";
 
     /// <summary>
+    /// Gets the English-language name of the currency.
+    /// </summary>
+    /// <returns>The currency's English name in singular Title Case.</returns>
+    public static string EnglishName => "Cypriot Pound";
+
+    /// <summary>
     /// Prevents instantiation of the <see cref="CYP" /> tag type.
     /// </summary>
     private CYP()
