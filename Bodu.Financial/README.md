@@ -44,7 +44,7 @@ Highlights:
 
 ## Format specifiers
 
-`Money<TCurrency>` and `MoneyValue` share a NodaMoney-aligned, case-insensitive specifier vocabulary:
+`Money<TCurrency>` and `MoneyValue` share a case-insensitive specifier vocabulary:
 
 | Specifier | Behaviour | Example (`Money<USD>(1234.56m)`, en-US) |
 |---|---|---|
@@ -60,7 +60,7 @@ Highlights:
 
 Compact-notation overloads (`ToCompactString(...)`) add a K/M/B/T magnitude suffix to the numeric portion, preserving the chosen specifier's symbol position.
 
-> **Breaking change (Preview → Stable).** The `C` and `L` specifiers changed meaning to align with the NodaMoney letter vocabulary. The pre-1.0 `C` (ISO-code prefix) is now `G`. The pre-1.0 `L` (culture-native symbol) is now `C`. The new `L` emits the English currency name. The new `R` is the invariant round-trip form. Code that depended on the previous semantics should rename `C` → `G` (when ISO-prefix output was required) and `L` → `C` (when culture-native output was required).
+> **Breaking change (Preview → Stable).** The `C` and `L` specifiers changed meaning. The pre-1.0 `C` (ISO-code prefix) is now `G`. The pre-1.0 `L` (culture-native symbol) is now `C`. The new `L` emits the English currency name. The new `R` is the invariant round-trip form. Code that depended on the previous semantics should rename `C` → `G` (when ISO-prefix output was required) and `L` → `C` (when culture-native output was required).
 
 ## `MoneyValue`, `MoneyBag`, and `CurrencyRegistry`
 
