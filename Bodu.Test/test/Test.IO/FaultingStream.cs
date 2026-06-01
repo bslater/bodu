@@ -25,7 +25,7 @@ namespace Bodu.Test.IO;
 /// This class is intended exclusively for test harness use and must not appear in production code.
 /// </para>
 /// </remarks>
-public sealed class FaultingStream 
+public sealed class FaultingStream
     : System.IO.MemoryStream
 {
     private int _bytesRead;

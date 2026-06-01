@@ -5,7 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
-using System.Numerics;
 
 namespace Bodu.Numerics;
 

@@ -29,7 +29,7 @@ public partial class CryptoHelpersTests
     [TestMethod]
     public void FormatLegalSizes_WhenArrayIsEmpty_ShouldReturnEmptyString()
     {
-        var result = CryptoHelpers.FormatLegalSizes(Array.Empty<KeySizes>());
+        var result = CryptoHelpers.FormatLegalSizes([]);
 
         Assert.AreEqual(string.Empty, result);
     }

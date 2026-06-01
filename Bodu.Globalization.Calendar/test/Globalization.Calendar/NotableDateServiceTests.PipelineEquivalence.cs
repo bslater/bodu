@@ -299,7 +299,7 @@ public sealed partial class NotableDateServiceTests
         NotableDateRule baseRule = Fixed("Holiday", 1, 1);
         TestOverrideProvider provider = new(
             removals: [new RuleRemoval("Holiday")],
-            additions: Array.Empty<NotableDateRule>());
+            additions: []);
 
         NotableDateService service = new(
             [(INotableDateRuleProvider)new InMemoryRuleProvider(baseRule)],

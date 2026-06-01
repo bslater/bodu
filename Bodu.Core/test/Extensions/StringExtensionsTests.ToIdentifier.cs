@@ -48,8 +48,8 @@ public partial class StringExtensionsTests
     /// </summary>
     /// <param name="value">The input string.</param>
     /// <param name="expected">The expected identifier.</param>
-    [DataTestMethod]
-    [DynamicData(nameof(GetToIdentifierPreserveCases), DynamicDataSourceType.Method)]
+    [TestMethod]
+    [DynamicData(nameof(GetToIdentifierPreserveCases))]
     public void ToIdentifier_NoArgument_WhenInvoked_ShouldPreserveCasing(string value, string expected) => Assert.AreEqual(expected, value.ToIdentifier());
 
     /// <summary>
@@ -59,8 +59,8 @@ public partial class StringExtensionsTests
     /// <param name="value">The input string.</param>
     /// <param name="identifierCase">The target identifier casing.</param>
     /// <param name="expected">The expected identifier.</param>
-    [DataTestMethod]
-    [DynamicData(nameof(GetToIdentifierCasedCases), DynamicDataSourceType.Method)]
+    [TestMethod]
+    [DynamicData(nameof(GetToIdentifierCasedCases))]
     public void ToIdentifier_WhenCaseSpecified_ShouldRespectCase(string value, IdentifierCase identifierCase, string expected) => Assert.AreEqual(expected, value.ToIdentifier(identifierCase));
 
     /// <summary>
@@ -68,7 +68,7 @@ public partial class StringExtensionsTests
     /// identifier for a representative range of inputs.
     /// </summary>
     /// <param name="value">The input string.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("UserAccountId")]
     [DataRow("user-account-id")]
     [DataRow("123 abc")]

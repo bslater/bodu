@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
 using Bodu.Test.Kat;
 
 namespace Bodu.Globalization.Calendar;
@@ -81,7 +79,7 @@ public sealed record FilterScenarioKnownAnswer : IKat
     /// rules for the year.
     /// </summary>
     /// <returns>The expected name set; never <see langword="null" />.</returns>
-    public IReadOnlyList<string> ExpectedNames { get; init; } = Array.Empty<string>();
+    public IReadOnlyList<string> ExpectedNames { get; init; } = [];
 
     /// <summary>
     /// Gets an optional free-form annotation appended to the row's display name.

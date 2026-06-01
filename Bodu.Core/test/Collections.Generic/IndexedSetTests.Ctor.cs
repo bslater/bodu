@@ -120,7 +120,7 @@ public partial class IndexedSetTests
     [TestMethod]
     public void Ctor_WhenCollectionIsEmpty_ShouldBeEmpty()
     {
-        var sut = new IndexedSet<int>(Array.Empty<int>());
+        var sut = new IndexedSet<int>([]);
 
         Assert.AreEqual(0, sut.Count);
     }

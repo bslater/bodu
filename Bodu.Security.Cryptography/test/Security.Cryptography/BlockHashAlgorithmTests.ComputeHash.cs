@@ -48,7 +48,7 @@ public abstract partial class BlockHashAlgorithmTests<TTest, TAlgorithm, TVarian
                 offset += count;
             }
 
-            algorithm.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
+            algorithm.TransformFinalBlock([], 0, 0);
 
             CollectionAssert.AreEqual(
                 expected,
@@ -123,7 +123,7 @@ public abstract partial class BlockHashAlgorithmTests<TTest, TAlgorithm, TVarian
         for (var i = 0; i < blockCount; i++)
             algorithm.TransformBlock(input, i * blockSize, blockSize, null, 0);
 
-        algorithm.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
+        algorithm.TransformFinalBlock([], 0, 0);
 
         CollectionAssert.AreEqual(
             expected,

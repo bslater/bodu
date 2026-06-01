@@ -97,7 +97,7 @@ public sealed partial class Base85Tests
     [TestMethod]
     public void Encode_WhenAscii85EmptyPayloadAndIncludePrefix_ShouldReturnDelimiterOnly()
     {
-        var encoded = Base85.Encode(ReadOnlySpan<byte>.Empty, Base85Variant.Ascii85, BaseFormattingOptions.IncludePrefix);
+        var encoded = Base85.Encode([], Base85Variant.Ascii85, BaseFormattingOptions.IncludePrefix);
 
         Assert.AreEqual("<~~>", encoded);
     }

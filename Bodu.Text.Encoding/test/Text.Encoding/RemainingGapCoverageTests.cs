@@ -109,7 +109,7 @@ public sealed class RemainingGapCoverageTests
     [TestMethod]
     public void Base32_EncodeToUtf8_WhenEmpty_ShouldReturnEmptyArray()
     {
-        var result = Base32.EncodeToUtf8(ReadOnlySpan<byte>.Empty);
+        var result = Base32.EncodeToUtf8([]);
 
         Assert.AreEqual(0, result.Length);
     }
@@ -186,7 +186,7 @@ public sealed class RemainingGapCoverageTests
     [TestMethod]
     public void Base58_EncodeToUtf8_WhenEmpty_ShouldReturnEmptyArray()
     {
-        var result = Base58.EncodeToUtf8(ReadOnlySpan<byte>.Empty);
+        var result = Base58.EncodeToUtf8([]);
 
         Assert.AreEqual(0, result.Length);
     }
@@ -254,7 +254,7 @@ public sealed class RemainingGapCoverageTests
     {
         var destination = new byte[1];
 
-        var ok = Base58.TryEncodeToUtf8(ReadOnlySpan<byte>.Empty, destination, out var bytesWritten);
+        var ok = Base58.TryEncodeToUtf8([], destination, out var bytesWritten);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(0, bytesWritten);
@@ -366,7 +366,7 @@ public sealed class RemainingGapCoverageTests
     [TestMethod]
     public void Base64_EncodeToUtf8_WhenEmpty_ShouldReturnEmptyArray()
     {
-        var result = Base64.EncodeToUtf8(ReadOnlySpan<byte>.Empty);
+        var result = Base64.EncodeToUtf8([]);
 
         Assert.AreEqual(0, result.Length);
     }
@@ -393,7 +393,7 @@ public sealed class RemainingGapCoverageTests
     {
         ArrayBufferWriter<char> writer = new();
 
-        var written = Base85.Encode(ReadOnlySpan<byte>.Empty, writer, Base85Variant.Ascii85, BaseFormattingOptions.IncludePrefix);
+        var written = Base85.Encode([], writer, Base85Variant.Ascii85, BaseFormattingOptions.IncludePrefix);
 
         Assert.AreEqual(4, written);
         Assert.AreEqual("<~~>", new string(writer.WrittenSpan));
@@ -433,7 +433,7 @@ public sealed class RemainingGapCoverageTests
     [TestMethod]
     public void Base85_EncodeToUtf8_WhenEmpty_ShouldReturnEmptyArray()
     {
-        Assert.AreEqual(0, Base85.EncodeToUtf8(ReadOnlySpan<byte>.Empty).Length);
+        Assert.AreEqual(0, Base85.EncodeToUtf8([]).Length);
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -446,7 +446,7 @@ public sealed class RemainingGapCoverageTests
     /// returns zero for empty input without delimiters.
     /// </summary>
     [TestMethod]
-    public void Base85_GetEncodedLength_EmptyInput_ShouldReturnZero() => Assert.AreEqual(0, Base85.GetEncodedLength(ReadOnlySpan<byte>.Empty));
+    public void Base85_GetEncodedLength_EmptyInput_ShouldReturnZero() => Assert.AreEqual(0, Base85.GetEncodedLength([]));
 
     /// <summary>
     /// Verifies that <see cref="Base85.GetEncodedLength(ReadOnlySpan{byte}, Base85Variant, BaseFormattingOptions)" />
@@ -509,7 +509,7 @@ public sealed class RemainingGapCoverageTests
     {
         var destination = new byte[1];
 
-        var ok = Base85.TryEncodeToUtf8(ReadOnlySpan<byte>.Empty, destination, out var bytesWritten);
+        var ok = Base85.TryEncodeToUtf8([], destination, out var bytesWritten);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(0, bytesWritten);

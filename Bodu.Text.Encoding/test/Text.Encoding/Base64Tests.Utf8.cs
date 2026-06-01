@@ -132,7 +132,7 @@ public sealed partial class Base64Tests
     [TestMethod]
     public void EncodeToUtf8_WhenEmpty_ShouldReturnEmptyArray()
     {
-        var actual = Base64.EncodeToUtf8(ReadOnlySpan<byte>.Empty);
+        var actual = Base64.EncodeToUtf8([]);
 
         Assert.AreEqual(0, actual.Length);
     }

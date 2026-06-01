@@ -72,7 +72,7 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
         byte[] ciphertext;
         using (TCryptoTransform encryptor = CreateEncryptor())
         {
-            ciphertext = encryptor.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
+            ciphertext = encryptor.TransformFinalBlock([], 0, 0);
         }
 
         byte[] recovered;

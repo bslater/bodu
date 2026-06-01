@@ -50,7 +50,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
-            _ = decTransform.Decrypt(ciphertextWithTag, Array.Empty<byte>());
+            _ = decTransform.Decrypt(ciphertextWithTag, []);
         });
     }
 
@@ -250,10 +250,10 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
         var iv = CreateInitializationVector();
         TTransform encTransform = CreateTransform(cipher, iv);
         var buf = new byte[encTransform.TagSize / 8];
-        encTransform.Encrypt(ReadOnlySpan<byte>.Empty, buf);
+        encTransform.Encrypt([], buf);
 
         TTransform decTransform = CreateTransform(cipher, iv);
-        var written = decTransform.Decrypt(buf, Span<byte>.Empty);
+        var written = decTransform.Decrypt(buf, []);
 
         Assert.AreEqual(0, written, "Decrypting empty ciphertext must return 0.");
     }

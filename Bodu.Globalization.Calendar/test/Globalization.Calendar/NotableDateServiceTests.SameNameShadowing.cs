@@ -25,12 +25,12 @@ public partial class NotableDateServiceTests
         NotableDateRule auBase = Fixed("Anzac Day", 4, 25, nonWorking: true, territory: "AU");
         NotableDateRule nswOverride = Fixed("Anzac Day", 4, 25, nonWorking: true, territory: "AU-NSW") with
         {
-            Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+            Adjustments = [new ObservanceAdjustment
             {
                 Key = "nsw-weekend-sub",
                 Trigger = AdjustmentTrigger.IfWeekend,
                 Action = AdjustmentAction.MoveToNextWeekday,
-            }),
+            }],
         };
 
         NotableDateService service = BuildService(auBase, nswOverride);
@@ -54,12 +54,12 @@ public partial class NotableDateServiceTests
         NotableDateRule auBase = Fixed("Anzac Day", 4, 25, nonWorking: true, territory: "AU");
         NotableDateRule nswOverride = Fixed("Anzac Day", 4, 25, nonWorking: true, territory: "AU-NSW") with
         {
-            Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+            Adjustments = [new ObservanceAdjustment
             {
                 Key = "nsw-weekend-sub",
                 Trigger = AdjustmentTrigger.IfWeekend,
                 Action = AdjustmentAction.MoveToNextWeekday,
-            }),
+            }],
         };
 
         NotableDateService service = BuildService(auBase, nswOverride);
@@ -84,12 +84,12 @@ public partial class NotableDateServiceTests
         NotableDateRule auBase = Fixed("Anzac Day", 4, 25, nonWorking: true, territory: "AU");
         NotableDateRule nswOverride = Fixed("Anzac Day", 4, 25, nonWorking: true, territory: "AU-NSW") with
         {
-            Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+            Adjustments = [new ObservanceAdjustment
             {
                 Key = "nsw-weekend-sub",
                 Trigger = AdjustmentTrigger.IfWeekend,
                 Action = AdjustmentAction.MoveToNextWeekday,
-            }),
+            }],
         };
 
         NotableDateService service = BuildService(auBase, nswOverride);
@@ -118,14 +118,14 @@ public partial class NotableDateServiceTests
         NotableDateRule auBase = Fixed("Anzac Day", 4, 25, nonWorking: true, territory: "AU");
         NotableDateRule nswOverride = Fixed("Anzac Day", 4, 25, nonWorking: true, territory: "AU-NSW") with
         {
-            Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+            Adjustments = [new ObservanceAdjustment
             {
                 Key = "nsw-weekend-sub-2026-2028",
                 Trigger = AdjustmentTrigger.IfWeekend,
                 Action = AdjustmentAction.MoveToNextWeekday,
                 EffectiveFromYear = 2026,
                 EffectiveToYear = 2028,
-            }),
+            }],
         };
 
         NotableDateService service = BuildService(auBase, nswOverride);
@@ -178,12 +178,12 @@ public partial class NotableDateServiceTests
         NotableDateRule auBase = Fixed("Anzac Day", 4, 25, nonWorking: true, territory: "AU");
         NotableDateRule nswOverride = Fixed("Anzac Day", 4, 25, nonWorking: true, territory: "AU-NSW") with
         {
-            Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+            Adjustments = [new ObservanceAdjustment
             {
                 Key = "nsw-weekend-sub",
                 Trigger = AdjustmentTrigger.IfWeekend,
                 Action = AdjustmentAction.MoveToNextWeekday,
-            }),
+            }],
         };
 
         NotableDateService service = BuildService(auBase, nswOverride);

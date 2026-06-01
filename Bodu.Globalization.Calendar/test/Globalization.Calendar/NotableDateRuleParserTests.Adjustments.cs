@@ -39,12 +39,11 @@ public partial class NotableDateRuleParserTests
     /// </summary>
     public static IEnumerable<object[]> AdjustmentTriggerCases =>
     [
-        new object[]
-        {
+        [
             "Always trigger maps to Always",
             BuildAdjustmentXml(@"key=""t"" when=""Always"" action=""None"""),
             AdjustmentTrigger.Always,
-        },
+        ],
         [
             "IfWeekend trigger maps to IfWeekend",
             BuildAdjustmentXml(@"key=""t"" when=""IfWeekend"" action=""None"""),
@@ -97,7 +96,7 @@ public partial class NotableDateRuleParserTests
     /// of an <c>&lt;Adjustment&gt;</c> XML element, using the XML fragment supplied by each test case.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(AdjustmentTriggerCases), DynamicDataSourceType.Property, DynamicDataDisplayName = nameof(GetAdjustmentTestDisplayName))]
+    [DynamicData(nameof(AdjustmentTriggerCases), DynamicDataDisplayName = nameof(GetAdjustmentTestDisplayName))]
     public void ParseXml_WhenAdjustmentTriggerProvided_ShouldMapTrigger(
         string displayName,
         string xmlFragment,
@@ -116,12 +115,11 @@ public partial class NotableDateRuleParserTests
     /// </summary>
     public static IEnumerable<object[]> AdjustmentActionCases =>
     [
-        new object[]
-        {
+        [
             "None action maps to None",
             BuildAdjustmentXml(@"key=""t"" when=""Always"" action=""None"""),
             AdjustmentAction.None,
-        },
+        ],
         [
             "AddDays action maps to AddDays",
             BuildAdjustmentXml(@"key=""t"" when=""Always"" action=""AddDays"" days=""7"""),
@@ -159,7 +157,7 @@ public partial class NotableDateRuleParserTests
     /// of an <c>&lt;Adjustment&gt;</c> XML element, using the XML fragment supplied by each test case.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(AdjustmentActionCases), DynamicDataSourceType.Property, DynamicDataDisplayName = nameof(GetAdjustmentTestDisplayName))]
+    [DynamicData(nameof(AdjustmentActionCases), DynamicDataDisplayName = nameof(GetAdjustmentTestDisplayName))]
     public void ParseXml_WhenAdjustmentActionProvided_ShouldMapAction(
         string displayName,
         string xmlFragment,
@@ -178,12 +176,11 @@ public partial class NotableDateRuleParserTests
     /// </summary>
     public static IEnumerable<object[]> AdjustmentDayOfWeekCases =>
     [
-        new object[]
-        {
+        [
             "dayOfWeek Monday maps to DayOfWeek.Monday",
             BuildAdjustmentXml(@"key=""t"" when=""IfDayOfWeek"" action=""None"" dayOfWeek=""Monday"""),
             DayOfWeek.Monday,
-        },
+        ],
         [
             "dayOfWeek Tuesday maps to DayOfWeek.Tuesday",
             BuildAdjustmentXml(@"key=""t"" when=""IfDayOfWeek"" action=""None"" dayOfWeek=""Tuesday"""),
@@ -221,7 +218,7 @@ public partial class NotableDateRuleParserTests
     /// an <c>&lt;Adjustment&gt;</c> XML element, using the XML fragment supplied by each test case.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(AdjustmentDayOfWeekCases), DynamicDataSourceType.Property, DynamicDataDisplayName = nameof(GetAdjustmentTestDisplayName))]
+    [DynamicData(nameof(AdjustmentDayOfWeekCases), DynamicDataDisplayName = nameof(GetAdjustmentTestDisplayName))]
     public void ParseXml_WhenIfDayOfWeekTriggerProvided_ShouldMapDayOfWeek(
         string displayName,
         string xmlFragment,
@@ -240,12 +237,11 @@ public partial class NotableDateRuleParserTests
     /// </summary>
     public static IEnumerable<object[]> AdjustmentWeekOrdinalCases =>
     [
-        new object[]
-        {
+        [
             "weekOrdinal First maps to WeekOfMonthOrdinal.First",
             BuildAdjustmentXml(@"key=""t"" when=""IfNthOccurrenceInMonth"" action=""None"" dayOfWeek=""Monday"" weekOrdinal=""First"""),
             WeekOfMonthOrdinal.First,
-        },
+        ],
         [
             "weekOrdinal Second maps to WeekOfMonthOrdinal.Second",
             BuildAdjustmentXml(@"key=""t"" when=""IfNthOccurrenceInMonth"" action=""None"" dayOfWeek=""Monday"" weekOrdinal=""Second"""),
@@ -278,7 +274,7 @@ public partial class NotableDateRuleParserTests
     /// attribute of an <c>&lt;Adjustment&gt;</c> XML element, using the XML fragment supplied by each test case.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(AdjustmentWeekOrdinalCases), DynamicDataSourceType.Property, DynamicDataDisplayName = nameof(GetAdjustmentTestDisplayName))]
+    [DynamicData(nameof(AdjustmentWeekOrdinalCases), DynamicDataDisplayName = nameof(GetAdjustmentTestDisplayName))]
     public void ParseXml_WhenIfNthOccurrenceInMonthTriggerProvided_ShouldMapWeekOrdinal(
         string displayName,
         string xmlFragment,
@@ -297,13 +293,12 @@ public partial class NotableDateRuleParserTests
     /// </summary>
     public static IEnumerable<object[]> AdjustmentComparisonDateCases =>
     [
-        new object[]
-        {
+        [
             "IfBeforeFixedDate with January 1 maps ComparisonDate",
             BuildAdjustmentXml(@"key=""t"" when=""IfBeforeFixedDate"" action=""None"" comparisonMonth=""January"" comparisonDay=""1"""),
             1,
             1,
-        },
+        ],
         [
             "IfBeforeFixedDate with June 15 maps ComparisonDate",
             BuildAdjustmentXml(@"key=""t"" when=""IfBeforeFixedDate"" action=""None"" comparisonMonth=""June"" comparisonDay=""15"""),
@@ -330,7 +325,7 @@ public partial class NotableDateRuleParserTests
     /// fragment supplied by each test case.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(AdjustmentComparisonDateCases), DynamicDataSourceType.Property, DynamicDataDisplayName = nameof(GetAdjustmentTestDisplayName))]
+    [DynamicData(nameof(AdjustmentComparisonDateCases), DynamicDataDisplayName = nameof(GetAdjustmentTestDisplayName))]
     public void ParseXml_WhenComparisonDateAttributesProvided_ShouldMapComparisonDate(
         string displayName,
         string xmlFragment,
@@ -353,12 +348,11 @@ public partial class NotableDateRuleParserTests
     /// </summary>
     public static IEnumerable<object[]> AdjustmentOffsetDaysCases =>
     [
-        new object[]
-        {
+        [
             "Positive day offset maps OffsetDays to 7",
             BuildAdjustmentXml(@"key=""t"" when=""Always"" action=""AddDays"" days=""7"""),
             7,
-        },
+        ],
         [
             "Negative day offset maps OffsetDays to -3",
             BuildAdjustmentXml(@"key=""t"" when=""Always"" action=""AddDays"" days=""-3"""),
@@ -377,7 +371,7 @@ public partial class NotableDateRuleParserTests
     /// fragment supplied by each test case.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(AdjustmentOffsetDaysCases), DynamicDataSourceType.Property, DynamicDataDisplayName = nameof(GetAdjustmentTestDisplayName))]
+    [DynamicData(nameof(AdjustmentOffsetDaysCases), DynamicDataDisplayName = nameof(GetAdjustmentTestDisplayName))]
     public void ParseXml_WhenAddDaysActionProvided_ShouldMapOffsetDays(
         string displayName,
         string xmlFragment,
@@ -396,12 +390,11 @@ public partial class NotableDateRuleParserTests
     /// </summary>
     public static IEnumerable<object[]> AdjustmentTargetRuleNameCases =>
     [
-        new object[]
-        {
+        [
             "target Easter Sunday maps TargetRuleName",
             BuildAdjustmentXml(@"key=""t"" when=""Always"" action=""ReplaceWithNamedDate"" target=""Easter Sunday"""),
             "Easter Sunday",
-        },
+        ],
         [
             "target New Year's Day maps TargetRuleName",
             BuildAdjustmentXml(@"key=""t"" when=""Always"" action=""ReplaceWithNamedDate"" target=""New Year's Day"""),
@@ -414,7 +407,7 @@ public partial class NotableDateRuleParserTests
     /// <see cref="ObservanceAdjustment.TargetRuleName" />, using the XML fragment supplied by each test case.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(AdjustmentTargetRuleNameCases), DynamicDataSourceType.Property, DynamicDataDisplayName = nameof(GetAdjustmentTestDisplayName))]
+    [DynamicData(nameof(AdjustmentTargetRuleNameCases), DynamicDataDisplayName = nameof(GetAdjustmentTestDisplayName))]
     public void ParseXml_WhenReplaceWithNamedDateActionProvided_ShouldMapTargetRuleName(
         string displayName,
         string xmlFragment,
@@ -433,12 +426,11 @@ public partial class NotableDateRuleParserTests
     /// </summary>
     public static IEnumerable<object[]> AdjustmentHandlerKeyCases =>
     [
-        new object[]
-        {
+        [
             "Custom trigger with handlerKey maps HandlerKey",
             BuildAdjustmentXml(@"key=""t"" when=""Custom"" action=""None"" handlerKey=""my-trigger-handler"""),
             "my-trigger-handler",
-        },
+        ],
         [
             "Custom action with handlerKey maps HandlerKey",
             BuildAdjustmentXml(@"key=""t"" when=""Always"" action=""Custom"" handlerKey=""my-action-handler"""),
@@ -452,7 +444,7 @@ public partial class NotableDateRuleParserTests
     /// using the XML fragment supplied by each test case.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(AdjustmentHandlerKeyCases), DynamicDataSourceType.Property, DynamicDataDisplayName = nameof(GetAdjustmentTestDisplayName))]
+    [DynamicData(nameof(AdjustmentHandlerKeyCases), DynamicDataDisplayName = nameof(GetAdjustmentTestDisplayName))]
     public void ParseXml_WhenCustomHandlerKeyProvided_ShouldMapHandlerKey(
         string displayName,
         string xmlFragment,
@@ -471,12 +463,11 @@ public partial class NotableDateRuleParserTests
     /// </summary>
     public static IEnumerable<object[]> AdjustmentKeyCases =>
     [
-        new object[]
-        {
+        [
             "Key weekend-roll maps Key",
             BuildAdjustmentXml(@"key=""weekend-roll"" when=""Always"" action=""None"""),
             "weekend-roll",
-        },
+        ],
         [
             "Key boxing-day-sub maps Key",
             BuildAdjustmentXml(@"key=""boxing-day-sub"" when=""Always"" action=""None"""),
@@ -494,7 +485,7 @@ public partial class NotableDateRuleParserTests
     /// <see cref="ObservanceAdjustment.Key" />, using the XML fragment supplied by each test case.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(AdjustmentKeyCases), DynamicDataSourceType.Property, DynamicDataDisplayName = nameof(GetAdjustmentTestDisplayName))]
+    [DynamicData(nameof(AdjustmentKeyCases), DynamicDataDisplayName = nameof(GetAdjustmentTestDisplayName))]
     public void ParseXml_WhenAdjustmentKeyProvided_ShouldMapKey(
         string displayName,
         string xmlFragment,
@@ -513,12 +504,11 @@ public partial class NotableDateRuleParserTests
     /// </summary>
     public static IEnumerable<object[]> AdjustmentPriorityCases =>
     [
-        new object[]
-        {
+        [
             "Priority 1 maps Priority",
             BuildAdjustmentXml(@"key=""t"" when=""Always"" action=""None"" priority=""1"""),
             1,
-        },
+        ],
         [
             "Priority 50 maps Priority",
             BuildAdjustmentXml(@"key=""t"" when=""Always"" action=""None"" priority=""50"""),
@@ -536,7 +526,7 @@ public partial class NotableDateRuleParserTests
     /// into <see cref="ObservanceAdjustment.Priority" />, using the XML fragment supplied by each test case.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(AdjustmentPriorityCases), DynamicDataSourceType.Property, DynamicDataDisplayName = nameof(GetAdjustmentTestDisplayName))]
+    [DynamicData(nameof(AdjustmentPriorityCases), DynamicDataDisplayName = nameof(GetAdjustmentTestDisplayName))]
     public void ParseXml_WhenAdjustmentPriorityProvided_ShouldMapPriority(
         string displayName,
         string xmlFragment,
@@ -555,12 +545,11 @@ public partial class NotableDateRuleParserTests
     /// </summary>
     public static IEnumerable<object[]> AdjustmentTerritoryCases =>
     [
-        new object[]
-        {
+        [
             "Territory AU maps TerritoryCode",
             BuildAdjustmentXml(@"key=""t"" when=""Always"" action=""None"" territory=""AU"""),
             "AU",
-        },
+        ],
         [
             "Territory AU-NSW maps TerritoryCode",
             BuildAdjustmentXml(@"key=""t"" when=""Always"" action=""None"" territory=""AU-NSW"""),
@@ -579,7 +568,7 @@ public partial class NotableDateRuleParserTests
     /// XML fragment supplied by each test case.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(AdjustmentTerritoryCases), DynamicDataSourceType.Property, DynamicDataDisplayName = nameof(GetAdjustmentTestDisplayName))]
+    [DynamicData(nameof(AdjustmentTerritoryCases), DynamicDataDisplayName = nameof(GetAdjustmentTestDisplayName))]
     public void ParseXml_WhenAdjustmentTerritoryProvided_ShouldMapTerritoryCode(
         string displayName,
         string xmlFragment,
@@ -598,12 +587,11 @@ public partial class NotableDateRuleParserTests
     /// </summary>
     public static IEnumerable<object[]> AdjustmentCalendarTypeCases =>
     [
-        new object[]
-        {
+        [
             "GregorianCalendar calendarType maps CalendarType",
             BuildAdjustmentXml(@"key=""t"" when=""Always"" action=""None"" calendarType=""System.Globalization.GregorianCalendar"""),
             typeof(System.Globalization.GregorianCalendar),
-        },
+        ],
     ];
 
     /// <summary>
@@ -611,7 +599,7 @@ public partial class NotableDateRuleParserTests
     /// resolved to the corresponding CLR <see cref="Type" />, using the XML fragment supplied by each test case.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(AdjustmentCalendarTypeCases), DynamicDataSourceType.Property, DynamicDataDisplayName = nameof(GetAdjustmentTestDisplayName))]
+    [DynamicData(nameof(AdjustmentCalendarTypeCases), DynamicDataDisplayName = nameof(GetAdjustmentTestDisplayName))]
     public void ParseXml_WhenAdjustmentCalendarTypeProvided_ShouldMapCalendarType(
         string displayName,
         string xmlFragment,
@@ -631,13 +619,12 @@ public partial class NotableDateRuleParserTests
     /// </summary>
     public static IEnumerable<object[]> AdjustmentEffectiveYearCases =>
     [
-        new object[]
-        {
+        [
             "Both fromYear and toYear set maps effective year bounds",
             BuildAdjustmentXml(@"key=""t"" when=""Always"" action=""None"" fromYear=""2010"" toYear=""2030"""),
             (int?)2010,
             (int?)2030,
-        },
+        ],
         [
             "Only fromYear set maps EffectiveFromYear with null EffectiveToYear",
             BuildAdjustmentXml(@"key=""t"" when=""Always"" action=""None"" fromYear=""2015"""),
@@ -659,7 +646,7 @@ public partial class NotableDateRuleParserTests
     /// XML fragment supplied by each test case.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(AdjustmentEffectiveYearCases), DynamicDataSourceType.Property, DynamicDataDisplayName = nameof(GetAdjustmentTestDisplayName))]
+    [DynamicData(nameof(AdjustmentEffectiveYearCases), DynamicDataDisplayName = nameof(GetAdjustmentTestDisplayName))]
     public void ParseXml_WhenAdjustmentEffectiveYearsProvided_ShouldMapYearBounds(
         string displayName,
         string xmlFragment,
@@ -681,12 +668,11 @@ public partial class NotableDateRuleParserTests
     /// </summary>
     public static IEnumerable<object[]> AdjustmentIsNonWorkingDayCases =>
     [
-        new object[]
-        {
+        [
             "nonWorking true maps IsNonWorkingDay to true",
             BuildAdjustmentXml(@"key=""t"" when=""Always"" action=""None"" nonWorking=""true"""),
             true,
-        },
+        ],
         [
             "nonWorking false maps IsNonWorkingDay to false",
             BuildAdjustmentXml(@"key=""t"" when=""Always"" action=""None"" nonWorking=""false"""),
@@ -700,7 +686,7 @@ public partial class NotableDateRuleParserTests
     /// <see langword="false" /> values, using the XML fragment supplied by each test case.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(AdjustmentIsNonWorkingDayCases), DynamicDataSourceType.Property, DynamicDataDisplayName = nameof(GetAdjustmentTestDisplayName))]
+    [DynamicData(nameof(AdjustmentIsNonWorkingDayCases), DynamicDataDisplayName = nameof(GetAdjustmentTestDisplayName))]
     public void ParseXml_WhenAdjustmentNonWorkingProvided_ShouldMapIsNonWorkingDay(
         string displayName,
         string xmlFragment,

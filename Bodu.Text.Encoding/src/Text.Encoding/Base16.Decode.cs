@@ -49,7 +49,7 @@ public static partial class Base16
     public static byte[] Decode(ReadOnlySpan<char> chars, BaseFormatStyles style = BaseFormatStyles.None)
     {
         if (chars.IsEmpty)
-            return Array.Empty<byte>();
+            return [];
 
         if (style == BaseFormatStyles.None)
         {

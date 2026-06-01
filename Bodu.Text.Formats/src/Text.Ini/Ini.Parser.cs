@@ -299,12 +299,15 @@ public static partial class Ini
                 Name = name;
                 Entries = entries;
                 Lookup = lookup;
-                LeadingComments = Array.Empty<IniComment>();
+                LeadingComments = [];
             }
 
             internal string Name { get; }
+
             internal List<IniEntry> Entries { get; }
+
             internal Dictionary<string, IniEntry> Lookup { get; }
+
             internal IniComment[] LeadingComments { get; set; }
         }
 

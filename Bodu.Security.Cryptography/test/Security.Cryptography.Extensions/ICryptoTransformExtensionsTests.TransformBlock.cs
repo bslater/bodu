@@ -83,7 +83,7 @@ public partial class ICryptoTransformExtensionsTests
     {
         using SimpleReversingCryptoTransform transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
 
-        var written = transform.TransformBlock(Array.Empty<byte>());
+        var written = transform.TransformBlock([]);
 
         Assert.AreEqual(0, written,
             "TransformBlock with an empty input must report zero bytes written, not throw.");

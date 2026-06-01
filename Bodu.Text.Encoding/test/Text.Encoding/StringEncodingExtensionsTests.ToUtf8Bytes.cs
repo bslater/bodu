@@ -26,8 +26,8 @@ public sealed partial class StringEncodingExtensionsTests
     /// sequence for representative input strings.
     /// </summary>
     /// <param name="text">The string under test.</param>
-    [DataTestMethod]
-    [DynamicData(nameof(GetToUtf8BytesCases), DynamicDataSourceType.Method)]
+    [TestMethod]
+    [DynamicData(nameof(GetToUtf8BytesCases))]
     public void ToUtf8Bytes_WhenInvoked_ShouldMatchBclUtf8(string text)
     {
         var expected = System.Text.Encoding.UTF8.GetBytes(text);

@@ -29,7 +29,7 @@ public partial class ConcurrentHashSetTests
     {
         var set = new ConcurrentHashSet<int>([1, 2, 3]);
 
-        set.UnionWith(Array.Empty<int>());
+        set.UnionWith([]);
 
         AssertContainsExactly(set, 1, 2, 3);
     }

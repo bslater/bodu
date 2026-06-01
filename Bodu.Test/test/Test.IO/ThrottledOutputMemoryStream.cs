@@ -9,7 +9,7 @@ namespace Bodu.Test.IO;
 /// <summary>
 /// A memory stream that simulates slow output writes by sleeping on each write call.
 /// </summary>
-public sealed class ThrottledOutputMemoryStream 
+public sealed class ThrottledOutputMemoryStream
     : System.IO.MemoryStream
 {
     private readonly int delayMilliseconds;

@@ -24,7 +24,7 @@ public partial class AsconAead128Tests
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
-            sut.Decrypt(fakeCtWithTag, Array.Empty<byte>());
+            sut.Decrypt(fakeCtWithTag, []);
         });
     }
 
@@ -39,7 +39,7 @@ public partial class AsconAead128Tests
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
-            sut.Decrypt(new byte[AsconAead128.TagBytes - 1], Array.Empty<byte>());
+            sut.Decrypt(new byte[AsconAead128.TagBytes - 1], []);
         });
     }
 
@@ -75,7 +75,7 @@ public partial class AsconAead128Tests
 
         Assert.ThrowsExactly<ObjectDisposedException>(() =>
         {
-            sut.Decrypt(new byte[AsconAead128.TagBytes], Array.Empty<byte>());
+            sut.Decrypt(new byte[AsconAead128.TagBytes], []);
         });
     }
 

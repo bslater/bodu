@@ -59,7 +59,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
         var tagBytes = transform.TagSize / 8;
         var output = new byte[tagBytes];
 
-        var written = transform.Encrypt(ReadOnlySpan<byte>.Empty, output);
+        var written = transform.Encrypt([], output);
 
         Assert.AreEqual(tagBytes, written,
             "Encrypting empty plaintext must write exactly TagSize / 8 bytes.");
@@ -236,7 +236,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
         var plaintext = new byte[ExpectedBlockSize * 2];
 
         TTransform withEmpty = MakeTransform((byte[])iv.Clone());
-        withEmpty.ProcessAssociatedData(ReadOnlySpan<byte>.Empty);
+        withEmpty.ProcessAssociatedData([]);
         var ct1 = new byte[plaintext.Length + (withEmpty.TagSize / 8)];
         withEmpty.Encrypt(plaintext, ct1);
 

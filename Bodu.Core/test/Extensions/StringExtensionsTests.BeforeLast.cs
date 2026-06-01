@@ -28,8 +28,8 @@ public partial class StringExtensionsTests
     /// <param name="marker">The marker.</param>
     /// <param name="comparison">The comparison.</param>
     /// <param name="expected">The expected return value.</param>
-    [DataTestMethod]
-    [DynamicData(nameof(GetBeforeLastCases), DynamicDataSourceType.Method)]
+    [TestMethod]
+    [DynamicData(nameof(GetBeforeLastCases))]
     public void BeforeLast_WhenInvoked_ShouldReturnExpected(string value, string marker, StringComparison comparison, string? expected) => Assert.AreEqual(expected, value.BeforeLast(marker, comparison));
 
     /// <summary>

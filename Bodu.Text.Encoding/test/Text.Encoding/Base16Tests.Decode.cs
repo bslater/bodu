@@ -14,8 +14,8 @@ public sealed partial class Base16Tests
     /// in <see cref="Base16KnownAnswerVectors.NegativeVectors" /> with the expected exception type.
     /// </summary>
     /// <param name="vector">A negative KAT vector.</param>
-    [DataTestMethod]
-    [DynamicData(nameof(Base16KnownAnswerVectors.NegativeVectors), typeof(Base16KnownAnswerVectors), DynamicDataSourceType.Method)]
+    [TestMethod]
+    [DynamicData(nameof(Base16KnownAnswerVectors.NegativeVectors), typeof(Base16KnownAnswerVectors))]
     public void Decode_ForKnownMalformedInput_ShouldThrowExactly(EncodingNegativeDecodeVector vector)
     {
         Exception? actual = null;
@@ -38,8 +38,8 @@ public sealed partial class Base16Tests
     /// RFC 4648 §10 Known Answer Test vector.
     /// </summary>
     /// <param name="vector">A KAT vector.</param>
-    [DataTestMethod]
-    [DynamicData(nameof(Base16KnownAnswerVectors.Rfc4648Vectors), typeof(Base16KnownAnswerVectors), DynamicDataSourceType.Method)]
+    [TestMethod]
+    [DynamicData(nameof(Base16KnownAnswerVectors.Rfc4648Vectors), typeof(Base16KnownAnswerVectors))]
     public void Decode_ForRfc4648KnownAnswerVector_ShouldRecoverBytes(EncodingKnownAnswerVector vector)
     {
         var actual = Base16.Decode(vector.Encoded);
@@ -296,8 +296,8 @@ public sealed partial class Base16Tests
     /// <see langword="false" /> for every malformed input in <see cref="Base16KnownAnswerVectors.NegativeVectors" />.
     /// </summary>
     /// <param name="vector">A negative KAT vector.</param>
-    [DataTestMethod]
-    [DynamicData(nameof(Base16KnownAnswerVectors.NegativeVectors), typeof(Base16KnownAnswerVectors), DynamicDataSourceType.Method)]
+    [TestMethod]
+    [DynamicData(nameof(Base16KnownAnswerVectors.NegativeVectors), typeof(Base16KnownAnswerVectors))]
     public void IsValid_ForKnownMalformedInput_ShouldReturnFalse(EncodingNegativeDecodeVector vector)
     {
         Assert.IsFalse(Base16.IsValid(vector.MalformedInput.AsSpan()),

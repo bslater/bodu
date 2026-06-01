@@ -81,7 +81,7 @@ public sealed partial class Multiset<T>
                 : _current;
 
         /// <inheritdoc />
-        object IEnumerator.Current => Current!;
+        readonly object IEnumerator.Current => Current!;
 
         /// <inheritdoc />
         public void Dispose() => _inner.Dispose();

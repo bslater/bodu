@@ -65,7 +65,7 @@ public partial class SymmetricAlgorithmExtensionTests
         using SymmetricAlgorithm algorithm = CreateAlgorithm();
         algorithm.Padding = PaddingMode.None; // no padding → empty in, empty out
 
-        using var input = new MemoryStream(Array.Empty<byte>());
+        using var input = new MemoryStream([]);
         using var output = new MemoryStream();
 
         await algorithm.EncryptAsync(input, output);

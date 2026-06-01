@@ -41,7 +41,7 @@ public sealed class Isbn10Tests
     /// validator requires at least a check character, so an empty input cannot satisfy the algorithm's invariant.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenSequenceIsEmpty_ShouldReturnFalse() => Assert.IsFalse(Isbn10.IsValid(ReadOnlySpan<char>.Empty));
+    public void IsValid_WhenSequenceIsEmpty_ShouldReturnFalse() => Assert.IsFalse(Isbn10.IsValid([]));
 
     /// <summary>
     /// Verifies that <see cref="Isbn10.IsValid(ReadOnlySpan{char})" /> rejects a sequence whose length is not

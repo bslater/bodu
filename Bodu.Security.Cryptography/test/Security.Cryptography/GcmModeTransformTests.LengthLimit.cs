@@ -128,7 +128,7 @@ public sealed partial class GcmModeTransformTests
         using var cipher = new AesBlockCipherFixture(new byte[16]);
         using var transform = new GcmModeTransform(cipher, nonce);
 
-        transform.ProcessAssociatedData(ReadOnlySpan<byte>.Empty);
+        transform.ProcessAssociatedData([]);
 
         var plaintext = new byte[64];
         var output = new byte[plaintext.Length + (transform.TagSize / 8)];

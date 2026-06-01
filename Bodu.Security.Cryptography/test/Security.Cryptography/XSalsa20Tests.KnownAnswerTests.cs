@@ -4,26 +4,31 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Security.Cryptography;
 
 using System.Security.Cryptography;
 using System.Text;
-using Bodu.Security.Cryptography.Contracts;
 
+namespace Bodu.Security.Cryptography;
 /// <summary>
 /// Locks the <see cref="XSalsa20" /> extended-nonce stream cipher and its HSalsa20 subkey-derivation core against the
 /// published NaCl / libsodium known-answer test vectors, and inherits the shared
-/// <see cref="SymmetricStreamAlgorithmContractTests{TCipher}" /> behavioural contract.
+/// <see cref="SymmetricStreamAlgorithmTests{TTest, TAlgorithm}" /> behavioural contract.
 /// </summary>
 [TestClass]
-public sealed class XSalsa20Tests
-    : SymmetricStreamAlgorithmContractTests<XSalsa20>
+public sealed partial class XSalsa20Tests
+    : SymmetricStreamAlgorithmTests<XSalsa20Tests, XSalsa20>
 {
     /// <inheritdoc />
-    protected override int ExpectedKeySizeBits => 256;
+    protected override XSalsa20 CreateAlgorithm() => new();
 
     /// <inheritdoc />
-    protected override int ExpectedNonceSizeBits => 192;
+    protected override SymmetricStreamAlgorithmSpecification GetSpecification() =>
+        new()
+        {
+            DefaultKeySizeBits = 256,
+            NonceSizeBits = 192,
+            LegalKeySizesBits = [256],
+        };
 
     /// <summary>
     /// Verifies that the internal HSalsa20 subkey-derivation core reproduces the canonical NaCl

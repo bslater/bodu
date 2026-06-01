@@ -30,7 +30,7 @@ public partial class StreamExtensionsTests
     {
         using MemoryStream stream = new();
 
-        stream.WriteAllBytes(ReadOnlySpan<byte>.Empty);
+        stream.WriteAllBytes([]);
 
         Assert.AreEqual(0L, stream.Length);
     }

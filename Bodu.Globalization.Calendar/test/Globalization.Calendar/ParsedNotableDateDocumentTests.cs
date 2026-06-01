@@ -24,7 +24,7 @@ public sealed class ParsedNotableDateDocumentTests
     public void Ctor_WhenUseGroupsIsDefault_ShouldCoerceToEmpty()
     {
         ImmutableArray<NotableDateRuleUseGroup> defaultUseGroups = default;
-        ImmutableArray<NotableDateRule> localRules = ImmutableArray<NotableDateRule>.Empty;
+        ImmutableArray<NotableDateRule> localRules = [];
 
         ParsedNotableDateDocument document = new(defaultUseGroups, localRules);
 
@@ -39,7 +39,7 @@ public sealed class ParsedNotableDateDocumentTests
     [TestMethod]
     public void Ctor_WhenLocalRulesIsDefault_ShouldCoerceToEmpty()
     {
-        ImmutableArray<NotableDateRuleUseGroup> useGroups = ImmutableArray<NotableDateRuleUseGroup>.Empty;
+        ImmutableArray<NotableDateRuleUseGroup> useGroups = [];
         ImmutableArray<NotableDateRule> defaultLocalRules = default;
 
         ParsedNotableDateDocument document = new(useGroups, defaultLocalRules);
@@ -73,7 +73,7 @@ public sealed class ParsedNotableDateDocumentTests
         NotableDateRuleUseGroup useGroup = new(
             SourceResource: "shared.xml",
             UseAll: true,
-            Uses: ImmutableArray<NotableDateRuleUseDirective>.Empty);
+            Uses: []);
 
         NotableDateRule rule = new()
         {
@@ -85,8 +85,8 @@ public sealed class ParsedNotableDateDocumentTests
         };
 
         ParsedNotableDateDocument document = new(
-            ImmutableArray.Create(useGroup),
-            ImmutableArray.Create(rule));
+            [useGroup],
+            [rule]);
 
         Assert.AreEqual(1, document.UseGroups.Length);
         Assert.AreSame(useGroup, document.UseGroups[0]);

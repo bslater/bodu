@@ -39,8 +39,8 @@ public sealed partial class Base85Tests
     /// Known Answer Test vector, including the <c>z</c> shortcut for all-zero groups.
     /// </summary>
     /// <param name="vector">A KAT vector.</param>
-    [DataTestMethod]
-    [DynamicData(nameof(Base85KnownAnswerVectors.Ascii85Vectors), typeof(Base85KnownAnswerVectors), DynamicDataSourceType.Method)]
+    [TestMethod]
+    [DynamicData(nameof(Base85KnownAnswerVectors.Ascii85Vectors), typeof(Base85KnownAnswerVectors))]
     public void Encode_ForAscii85KnownAnswerVector_ShouldMatch(EncodingKnownAnswerVector vector)
     {
         var actual = Base85.Encode(vector.DecodedBytes, Base85Variant.Ascii85);
@@ -53,8 +53,8 @@ public sealed partial class Base85Tests
     /// Answer Test vector, including the RFC 32 reference <c>HelloWorld</c> example.
     /// </summary>
     /// <param name="vector">A KAT vector.</param>
-    [DataTestMethod]
-    [DynamicData(nameof(Base85KnownAnswerVectors.Z85Vectors), typeof(Base85KnownAnswerVectors), DynamicDataSourceType.Method)]
+    [TestMethod]
+    [DynamicData(nameof(Base85KnownAnswerVectors.Z85Vectors), typeof(Base85KnownAnswerVectors))]
     public void Encode_ForZ85KnownAnswerVector_ShouldMatch(EncodingKnownAnswerVector vector)
     {
         var actual = Base85.Encode(vector.DecodedBytes, Base85Variant.Z85);
@@ -265,7 +265,7 @@ public sealed partial class Base85Tests
         var predicted = Base85.GetEncodedLength(bytes.AsSpan(), Base85Variant.Ascii85);
         var actual = Base85.Encode(bytes, Base85Variant.Ascii85).Length;
 
-        Assert.AreEqual(actual, predicted);
+        Assert.AreEqual(predicted, actual);
     }
 
     /// <summary>

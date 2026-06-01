@@ -21,7 +21,7 @@ internal static class HashAlgorithmSharedInputs
     /// <summary>
     /// The empty input (zero bytes).
     /// </summary>
-    public static readonly byte[] Empty = Array.Empty<byte>();
+    public static readonly byte[] Empty = [];
 
     /// <summary>
     /// The three ASCII bytes of the string <c>"ABC"</c>.

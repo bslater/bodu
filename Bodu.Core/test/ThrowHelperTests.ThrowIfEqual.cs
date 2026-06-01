@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Collections.Generic;
 using Bodu.Test.Assertions;
 using Bodu.Test.Kat;
 
@@ -21,7 +20,6 @@ public partial class ThrowHelperTests
     [TestMethod]
     [DynamicData(
         nameof(ThrowIfEqualIntInvalidCases),
-        DynamicDataSourceType.Method,
         DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void ThrowIfEqual_WhenIntValuesAreEqual_ShouldThrowExactly(GuardInvalidKat<int> kat) =>
@@ -39,7 +37,6 @@ public partial class ThrowHelperTests
     [TestMethod]
     [DynamicData(
         nameof(ThrowIfEqualIntValidCases),
-        DynamicDataSourceType.Method,
         DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void ThrowIfEqual_WhenIntValuesAreNotEqual_ShouldNotThrow(GuardValidKat<int> kat) =>
@@ -53,7 +50,6 @@ public partial class ThrowHelperTests
     [TestMethod]
     [DynamicData(
         nameof(ThrowIfEqualStringInvalidCases),
-        DynamicDataSourceType.Method,
         DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void ThrowIfEqual_WhenStringValuesAreEqual_ShouldThrowExactly(GuardInvalidKat<string> kat) =>
@@ -71,7 +67,6 @@ public partial class ThrowHelperTests
     [TestMethod]
     [DynamicData(
         nameof(ThrowIfEqualStringValidCases),
-        DynamicDataSourceType.Method,
         DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void ThrowIfEqual_WhenStringValuesAreNotEqual_ShouldNotThrow(GuardValidKat<string> kat) =>
@@ -85,7 +80,6 @@ public partial class ThrowHelperTests
     [TestMethod]
     [DynamicData(
         nameof(ThrowIfEqualParamNameCases),
-        DynamicDataSourceType.Method,
         DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void ThrowIfEqual_WhenValuesAreEqual_ShouldReportParamName(GuardInvalidKat<int> kat) =>

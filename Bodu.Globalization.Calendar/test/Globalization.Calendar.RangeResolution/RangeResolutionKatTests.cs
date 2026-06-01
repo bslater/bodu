@@ -44,7 +44,7 @@ public sealed class RangeResolutionKatTests
             Territory: "",
             Calendar: "Gregorian",
             RuleNames: ["New Year"],
-            ExpectedDates: Array.Empty<DateOnly>()),
+            ExpectedDates: []),
     ];
 
     /// <summary>

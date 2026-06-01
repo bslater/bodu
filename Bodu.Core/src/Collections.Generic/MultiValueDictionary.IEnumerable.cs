@@ -77,7 +77,7 @@ public sealed partial class MultiValueDictionary<TKey, TValue>
                 : throw new InvalidOperationException(ResourceStrings.Op_Invalid_EnumeratorNotOnElement);
 
         /// <inheritdoc />
-        object IEnumerator.Current => Current;
+        readonly object IEnumerator.Current => Current;
 
         /// <inheritdoc />
         public void Dispose() => _inner.Dispose();

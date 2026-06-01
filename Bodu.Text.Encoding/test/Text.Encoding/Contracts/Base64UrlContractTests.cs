@@ -36,7 +36,7 @@ public sealed class Base64UrlContractTests : BinaryEncodingContractTests<object>
     /// <inheritdoc />
     protected override IReadOnlyList<BinaryEncodingKat> KnownAnswers { get; } =
     [
-        new("empty", Array.Empty<byte>(), ""),
+        new("empty", [], ""),
         new("0xFB 0xFF byte produces hyphen", [0xFB, 0xFF], "-_8"),
         new("0xFF 0xFF 0xFF byte produces underscore", [0xFF, 0xFF, 0xFF], "____"),
         new("ASCII 'foo'", "foo"u8.ToArray(), "Zm9v"),

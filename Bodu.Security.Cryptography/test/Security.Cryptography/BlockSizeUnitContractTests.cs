@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BlockSizeUnitContractTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -38,7 +38,7 @@ public sealed class BlockSizeUnitContractTests
     /// matches the expected value, and is a multiple of eight.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(BlockCipherFactories), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(BlockCipherFactories))]
     public void IBlockCipher_BlockSize_ShouldReportBitsAndBeMultipleOfEight(
         string name,
         Func<IBlockCipher> factory,
@@ -57,7 +57,7 @@ public sealed class BlockSizeUnitContractTests
     /// equal <c>BlockSize / 8</c> (bytes).
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(SymmetricAlgorithmFactories), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(SymmetricAlgorithmFactories))]
     public void SymmetricAlgorithm_BlockSizeAndTransform_ShouldAgreeOnBitsAndBytes(
         string name,
         Func<SymmetricAlgorithm> factory,

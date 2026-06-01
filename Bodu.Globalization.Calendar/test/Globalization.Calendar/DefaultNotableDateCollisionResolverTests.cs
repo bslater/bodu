@@ -34,7 +34,7 @@ public sealed class DefaultNotableDateCollisionResolverTests
     [TestMethod]
     public void Resolve_WhenOverlappingIsEmpty_ShouldReturnEmpty()
     {
-        IReadOnlyList<NotableDate> result = _resolver.Resolve(Anchor, Array.Empty<NotableDate>());
+        IReadOnlyList<NotableDate> result = _resolver.Resolve(Anchor, []);
 
         Assert.AreEqual(0, result.Count);
     }

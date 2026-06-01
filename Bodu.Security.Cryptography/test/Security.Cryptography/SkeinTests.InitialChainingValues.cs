@@ -42,7 +42,7 @@ public abstract partial class SkeinTests<TTest, TAlgorithm, TVariant>
 
         // For the canonical Appendix B IV we compare against the unkeyed configuration: the published constant
         // assumes no preliminary KEY UBI phase, so reset the key to the empty sentinel before reading the IV.
-        algorithm.Key = Array.Empty<byte>();
+        algorithm.Key = [];
 
         var actual = algorithm.GetInitialChainingValueWords();
 

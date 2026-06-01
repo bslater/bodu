@@ -95,7 +95,7 @@ public static partial class Base16
     public static byte[] EncodeToUtf8(ReadOnlySpan<byte> source)
     {
         if (source.IsEmpty)
-            return Array.Empty<byte>();
+            return [];
 
         var result = new byte[source.Length * 2];
         EncodeToUtf8Core(source, result, upperCase: false);

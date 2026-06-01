@@ -14,8 +14,8 @@ public sealed partial class Base64Tests
     /// <see cref="Base64KnownAnswerVectors.StandardNegativeVectors" /> with the expected exception type.
     /// </summary>
     /// <param name="vector">A negative KAT vector.</param>
-    [DataTestMethod]
-    [DynamicData(nameof(Base64KnownAnswerVectors.StandardNegativeVectors), typeof(Base64KnownAnswerVectors), DynamicDataSourceType.Method)]
+    [TestMethod]
+    [DynamicData(nameof(Base64KnownAnswerVectors.StandardNegativeVectors), typeof(Base64KnownAnswerVectors))]
     public void Decode_ForStandardKnownMalformedInput_ShouldThrowExactly(EncodingNegativeDecodeVector vector)
     {
         Exception? actual = null;
@@ -38,8 +38,8 @@ public sealed partial class Base64Tests
     /// recovers the bytes for every RFC 4648 §10 Known Answer Test vector.
     /// </summary>
     /// <param name="vector">A KAT vector.</param>
-    [DataTestMethod]
-    [DynamicData(nameof(Base64KnownAnswerVectors.StandardRfc4648Vectors), typeof(Base64KnownAnswerVectors), DynamicDataSourceType.Method)]
+    [TestMethod]
+    [DynamicData(nameof(Base64KnownAnswerVectors.StandardRfc4648Vectors), typeof(Base64KnownAnswerVectors))]
     public void Decode_ForStandardRfc4648KnownAnswerVector_ShouldRecoverBytes(EncodingKnownAnswerVector vector)
     {
         var actual = Base64.Decode(vector.Encoded, Base64Variant.Standard);
@@ -52,8 +52,8 @@ public sealed partial class Base64Tests
     /// recovers the bytes for every URL-safe Known Answer Test vector.
     /// </summary>
     /// <param name="vector">A URL-safe KAT vector.</param>
-    [DataTestMethod]
-    [DynamicData(nameof(Base64KnownAnswerVectors.UrlSafeVectors), typeof(Base64KnownAnswerVectors), DynamicDataSourceType.Method)]
+    [TestMethod]
+    [DynamicData(nameof(Base64KnownAnswerVectors.UrlSafeVectors), typeof(Base64KnownAnswerVectors))]
     public void Decode_ForUrlSafeKnownAnswerVector_ShouldRecoverBytes(EncodingKnownAnswerVector vector)
     {
         var actual = Base64.Decode(vector.Encoded, Base64Variant.UrlSafe);
@@ -66,8 +66,8 @@ public sealed partial class Base64Tests
     /// <see cref="Base64KnownAnswerVectors.UrlSafeNegativeVectors" /> with the expected exception type.
     /// </summary>
     /// <param name="vector">A negative KAT vector.</param>
-    [DataTestMethod]
-    [DynamicData(nameof(Base64KnownAnswerVectors.UrlSafeNegativeVectors), typeof(Base64KnownAnswerVectors), DynamicDataSourceType.Method)]
+    [TestMethod]
+    [DynamicData(nameof(Base64KnownAnswerVectors.UrlSafeNegativeVectors), typeof(Base64KnownAnswerVectors))]
     public void Decode_ForUrlSafeKnownMalformedInput_ShouldThrowExactly(EncodingNegativeDecodeVector vector)
     {
         Exception? actual = null;
@@ -195,7 +195,7 @@ public sealed partial class Base64Tests
     /// </summary>
     /// <param name="encoded">The Base64 encoded input.</param>
     /// <param name="expected">The expected decoded ASCII string.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("", "")]
     [DataRow("Zg==", "f")]
     [DataRow("Zm8=", "fo")]

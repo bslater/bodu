@@ -88,7 +88,7 @@ public partial class SymmetricAlgorithmExtensionTests
         using SymmetricAlgorithm algorithm = CreateAlgorithm();
         algorithm.Padding = padding;
 
-        using var input = new MemoryStream(Array.Empty<byte>());
+        using var input = new MemoryStream([]);
         using var output = new MemoryStream();
 
         if (expectSuccess)

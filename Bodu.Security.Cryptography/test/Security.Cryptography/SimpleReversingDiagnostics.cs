@@ -22,30 +22,30 @@ namespace Bodu.Security.Cryptography;
 /// </remarks>
 public sealed class SimpleReversingDiagnostics
 {
-    private readonly List<BlockOperation> encryptLog = new();
-    private readonly List<BlockOperation> decryptLog = new();
-    private readonly List<BlockOperation> transformBlockLog = new();
-    private readonly List<BlockOperation> transformFinalBlockLog = new();
+    private readonly List<BlockOperation> _encryptLog = new();
+    private readonly List<BlockOperation> _decryptLog = new();
+    private readonly List<BlockOperation> _transformBlockLog = new();
+    private readonly List<BlockOperation> _transformFinalBlockLog = new();
 
     /// <summary>
     /// Gets the sequence of block-level encrypt operations recorded by the cipher engine.
     /// </summary>
-    public IReadOnlyList<BlockOperation> EncryptLog => encryptLog;
+    public IReadOnlyList<BlockOperation> EncryptLog => _encryptLog;
 
     /// <summary>
     /// Gets the sequence of block-level decrypt operations recorded by the cipher engine.
     /// </summary>
-    public IReadOnlyList<BlockOperation> DecryptLog => decryptLog;
+    public IReadOnlyList<BlockOperation> DecryptLog => _decryptLog;
 
     /// <summary>
     /// Gets the sequence of <see cref="SimpleReversingCryptoTransform.TransformBlock" /> calls.
     /// </summary>
-    public IReadOnlyList<BlockOperation> TransformBlockLog => transformBlockLog;
+    public IReadOnlyList<BlockOperation> TransformBlockLog => _transformBlockLog;
 
     /// <summary>
     /// Gets the sequence of <see cref="SimpleReversingCryptoTransform.TransformFinalBlock" /> calls.
     /// </summary>
-    public IReadOnlyList<BlockOperation> TransformFinalBlockLog => transformFinalBlockLog;
+    public IReadOnlyList<BlockOperation> TransformFinalBlockLog => _transformFinalBlockLog;
 
     /// <summary>
     /// Gets the total number of bytes passed to <see cref="RecordEncrypt" />.
@@ -74,7 +74,7 @@ public sealed class SimpleReversingDiagnostics
     /// <param name="output">The ciphertext bytes produced by the cipher.</param>
     internal void RecordEncrypt(ReadOnlySpan<byte> input, ReadOnlySpan<byte> output)
     {
-        encryptLog.Add(new BlockOperation(input, output, encryptLog.Count));
+        _encryptLog.Add(new BlockOperation(input, output, _encryptLog.Count));
         TotalEncryptedBytes += input.Length;
     }
 
@@ -85,7 +85,7 @@ public sealed class SimpleReversingDiagnostics
     /// <param name="output">The plaintext bytes produced by the cipher.</param>
     internal void RecordDecrypt(ReadOnlySpan<byte> input, ReadOnlySpan<byte> output)
     {
-        decryptLog.Add(new BlockOperation(input, output, decryptLog.Count));
+        _decryptLog.Add(new BlockOperation(input, output, _decryptLog.Count));
         TotalDecryptedBytes += input.Length;
     }
 
@@ -96,7 +96,7 @@ public sealed class SimpleReversingDiagnostics
     /// <param name="output">The bytes written to the output buffer.</param>
     internal void RecordTransformBlock(ReadOnlySpan<byte> input, ReadOnlySpan<byte> output)
     {
-        transformBlockLog.Add(new BlockOperation(input, output, transformBlockLog.Count));
+        _transformBlockLog.Add(new BlockOperation(input, output, _transformBlockLog.Count));
         TotalTransformBlockBytes += input.Length;
     }
 
@@ -107,7 +107,7 @@ public sealed class SimpleReversingDiagnostics
     /// <param name="output">The bytes returned to the caller.</param>
     internal void RecordTransformFinalBlock(ReadOnlySpan<byte> input, ReadOnlySpan<byte> output)
     {
-        transformFinalBlockLog.Add(new BlockOperation(input, output, transformFinalBlockLog.Count));
+        _transformFinalBlockLog.Add(new BlockOperation(input, output, _transformFinalBlockLog.Count));
         TotalTransformFinalBlockBytes += input.Length;
     }
 
@@ -116,10 +116,10 @@ public sealed class SimpleReversingDiagnostics
     /// </summary>
     public void Reset()
     {
-        encryptLog.Clear();
-        decryptLog.Clear();
-        transformBlockLog.Clear();
-        transformFinalBlockLog.Clear();
+        _encryptLog.Clear();
+        _decryptLog.Clear();
+        _transformBlockLog.Clear();
+        _transformFinalBlockLog.Clear();
         TotalEncryptedBytes = 0;
         TotalDecryptedBytes = 0;
         TotalTransformBlockBytes = 0;

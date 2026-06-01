@@ -59,7 +59,7 @@ public sealed record EncodingKnownAnswerVector(
     /// <param name="source">The citation.</param>
     /// <returns>A KAT vector with <paramref name="decodedHex" /> resolved to its byte representation.</returns>
     public static EncodingKnownAnswerVector FromHex(string description, string decodedHex, string encoded, string? source = null) =>
-        new(description, decodedHex.Length == 0 ? Array.Empty<byte>() : Convert.FromHexString(decodedHex), encoded, source);
+        new(description, decodedHex.Length == 0 ? [] : Convert.FromHexString(decodedHex), encoded, source);
 
     /// <summary>
     /// Returns the human-readable label, used by MSTest's <c>[DynamicData]</c> infrastructure when generating test

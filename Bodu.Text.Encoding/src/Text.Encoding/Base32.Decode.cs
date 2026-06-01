@@ -47,7 +47,7 @@ public static partial class Base32
     public static byte[] Decode(ReadOnlySpan<char> chars, Base32Variant variant = Base32Variant.Standard, BaseFormatStyles style = BaseFormatStyles.None)
     {
         if (chars.IsEmpty)
-            return Array.Empty<byte>();
+            return [];
 
         (_, var lookup) = GetVariantConfig(variant);
         var ignoreWhitespace = style.HasFlag(BaseFormatStyles.IgnoreWhitespace);

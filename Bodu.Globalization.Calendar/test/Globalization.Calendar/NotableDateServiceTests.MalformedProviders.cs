@@ -165,13 +165,13 @@ public sealed partial class NotableDateServiceTests
     {
         NotableDateRule rule = Fixed("Target Holiday", 3, 1, nonWorking: true) with
         {
-            Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+            Adjustments = [new ObservanceAdjustment
             {
                 Key = "null-handler",
                 Trigger = AdjustmentTrigger.Custom,
                 Action = AdjustmentAction.Custom,
                 HandlerKey = "null-handler",
-            }),
+            }],
         };
 
         AdjustmentHandlerRegistry handlerRegistry = new AdjustmentHandlerRegistry()
@@ -202,13 +202,13 @@ public sealed partial class NotableDateServiceTests
     {
         NotableDateRule rule = Fixed("Protected Holiday", 4, 1, nonWorking: true) with
         {
-            Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+            Adjustments = [new ObservanceAdjustment
             {
                 Key = "throwing-handler",
                 Trigger = AdjustmentTrigger.Custom,
                 Action = AdjustmentAction.Custom,
                 HandlerKey = "throwing-handler",
-            }),
+            }],
         };
         NotableDateRule sanity = Fixed("Sanity Day", 6, 15);
 
@@ -239,13 +239,13 @@ public sealed partial class NotableDateServiceTests
     {
         NotableDateRule rule = Fixed("Contract Violation", 4, 1, nonWorking: true) with
         {
-            Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+            Adjustments = [new ObservanceAdjustment
             {
                 Key = "ioe-handler",
                 Trigger = AdjustmentTrigger.Custom,
                 Action = AdjustmentAction.Custom,
                 HandlerKey = "ioe-handler",
-            }),
+            }],
         };
         NotableDateRule sanity = Fixed("Sanity Day", 6, 15);
 
@@ -422,7 +422,7 @@ public sealed partial class NotableDateServiceTests
     public void Ctor_WhenPluginGetRuleProvidersReturnsNull_ShouldTreatNullAsEmptyAndNotThrow()
     {
         var service = new NotableDateService(
-            ruleProviders: Array.Empty<INotableDateRuleProvider>(),
+            ruleProviders: [],
             workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
             options: new NotableDateServiceOptions { Plugins = [(INotableDatePlugin)new NullProvidersRulePlugin()] });
 
@@ -439,7 +439,7 @@ public sealed partial class NotableDateServiceTests
     public void Ctor_WhenPluginGetAlgorithmsReturnsNull_ShouldTreatNullAsEmptyAndNotThrow()
     {
         var service = new NotableDateService(
-            ruleProviders: Array.Empty<INotableDateRuleProvider>(),
+            ruleProviders: [],
             workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
             options: new NotableDateServiceOptions { Plugins = [(INotableDatePlugin)new NullAlgorithmsPlugin()] });
 
@@ -677,6 +677,6 @@ public sealed partial class NotableDateServiceTests
         public IEnumerable<RuleRemoval> GetRemovals() => throw _exception;
 
         /// <inheritdoc />
-        public IEnumerable<NotableDateRule> GetAdditions() => Array.Empty<NotableDateRule>();
+        public IEnumerable<NotableDateRule> GetAdditions() => [];
     }
 }

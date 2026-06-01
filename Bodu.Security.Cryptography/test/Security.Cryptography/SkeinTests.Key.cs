@@ -47,7 +47,7 @@ public abstract partial class SkeinTests<TTest, TAlgorithm, TVariant>
         using var skein = new TAlgorithm { Key = SkeinTestKey };
         _ = skein.ComputeHash(input);
 
-        skein.Key = Array.Empty<byte>();
+        skein.Key = [];
         var reverted = skein.ComputeHash(input);
 
         CollectionAssert.AreEqual(plainHash, reverted,

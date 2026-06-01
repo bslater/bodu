@@ -248,7 +248,7 @@ public sealed class NotableDateRuleResolverTests
     [TestMethod]
     public void ResolveAnchorDate_WhenRuleIsNull_ShouldThrowExactly()
     {
-        var resolver = new NotableDateRuleResolver(Array.Empty<NotableDateRule>());
+        var resolver = new NotableDateRuleResolver([]);
 
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

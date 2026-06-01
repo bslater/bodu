@@ -13,7 +13,7 @@ public sealed partial class EncodingExtensionsTests
     /// UTF-8 byte count for canonical pattern inputs.
     /// </summary>
     /// <param name="key">The pattern key from <see cref="GetPatternText" />.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("empty")]
     [DataRow("ascii")]
     [DataRow("multi-byte")]
@@ -33,7 +33,7 @@ public sealed partial class EncodingExtensionsTests
     /// byte sequence for canonical pattern inputs.
     /// </summary>
     /// <param name="key">The pattern key from <see cref="GetPatternText" />.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("empty")]
     [DataRow("ascii")]
     [DataRow("multi-byte")]
@@ -57,7 +57,7 @@ public sealed partial class EncodingExtensionsTests
     {
         var result = ReadOnlySpan<char>.Empty.ToUtf8Bytes();
 
-        Assert.AreSame(Array.Empty<byte>(), result);
+        Assert.AreSame([], result);
     }
 
     /// <summary>
@@ -99,7 +99,7 @@ public sealed partial class EncodingExtensionsTests
     /// </summary>
     /// <param name="extra">Extra capacity added to the required buffer length (negative to undersize).</param>
     /// <param name="expectedOk">Whether the call is expected to succeed.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(0, true)]
     [DataRow(1, true)]
     [DataRow(-1, false)]
@@ -119,7 +119,7 @@ public sealed partial class EncodingExtensionsTests
     /// string after round-tripping through UTF-8 bytes.
     /// </summary>
     /// <param name="key">The pattern key from <see cref="GetPatternText" />.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("empty")]
     [DataRow("ascii")]
     [DataRow("multi-byte")]
@@ -175,7 +175,7 @@ public sealed partial class EncodingExtensionsTests
     /// </summary>
     /// <param name="extra">Extra capacity added to the required buffer length (negative to undersize).</param>
     /// <param name="expectedOk">Whether the call is expected to succeed.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(0, true)]
     [DataRow(1, true)]
     [DataRow(-1, false)]

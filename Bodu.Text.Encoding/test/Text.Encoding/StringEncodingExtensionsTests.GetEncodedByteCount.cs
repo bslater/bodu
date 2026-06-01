@@ -13,8 +13,8 @@ public sealed partial class StringEncodingExtensionsTests
     /// matches the BCL <see cref="System.Text.Encoding.GetByteCount(string)" /> for every canonical encoding.
     /// </summary>
     /// <param name="encoding">The encoding under test.</param>
-    [DataTestMethod]
-    [DynamicData(nameof(CanonicalEncodings), DynamicDataSourceType.Method)]
+    [TestMethod]
+    [DynamicData(nameof(CanonicalEncodings))]
     public void GetEncodedByteCount_WhenInvoked_ShouldMatchBclEncoding(System.Text.Encoding encoding)
     {
         var expected = encoding.GetByteCount(MultiByteText);

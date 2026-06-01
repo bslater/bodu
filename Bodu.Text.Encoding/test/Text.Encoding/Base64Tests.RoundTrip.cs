@@ -36,7 +36,7 @@ public sealed partial class Base64Tests
     /// spanning all four residue classes mod 3.
     /// </summary>
     /// <param name="variant">The Base64 variant.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(Base64Variant.Standard)]
     [DataRow(Base64Variant.UrlSafe)]
     [DataRow(Base64Variant.Mime)]

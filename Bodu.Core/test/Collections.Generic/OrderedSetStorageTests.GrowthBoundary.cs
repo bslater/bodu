@@ -41,7 +41,7 @@ public partial class OrderedSetStorageTests
         var sut = new OrderedSetStorage<int>(capacity: 0, comparer: null);
         var capacityBefore = sut.Capacity;
 
-        var added = sut.AddRange(System.Array.Empty<int>());
+        var added = sut.AddRange([]);
 
         Assert.AreEqual(0, added);
         Assert.AreEqual(capacityBefore, sut.Capacity);

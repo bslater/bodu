@@ -28,7 +28,7 @@ public partial class ParallelMerkleTreeHashTests
     {
         using var hasher = new ParallelMerkleTreeHash(Factory, DefaultBlockSize, DefaultFanOut);
         Assert.ThrowsExactly<InvalidOperationException>(() =>
-            hasher.ComputeHash(ReadOnlySpan<byte>.Empty));
+            hasher.ComputeHash([]));
     }
 
     // ─── Post-dispose access ──────────────────────────────────────────────────────────────────

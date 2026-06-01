@@ -226,7 +226,7 @@ public sealed class NotableDateResolutionServiceTests
             Category = NotableDateCategory.Religious,
             AlgorithmType = typeof(CountingEasterAlgorithm),
             IsNonWorkingDay = false,
-            Tags = ImmutableHashSet.Create("Christian"),
+            Tags = ["Christian"],
         };
 
     private static NotableDateRule OffsetRule(string name, int offsetDays) =>
@@ -238,7 +238,7 @@ public sealed class NotableDateResolutionServiceTests
             AnchorRuleName = "Easter Sunday",
             OffsetDays = offsetDays,
             IsNonWorkingDay = false,
-            Tags = ImmutableHashSet.Create("Christian"),
+            Tags = ["Christian"],
         };
 
     private static NotableDateRule FixedRule(string name, int month, int day) =>

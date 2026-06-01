@@ -20,7 +20,7 @@ public partial class DateOnlyExtensionsTests
     /// Verifies that <see cref="DateOnlyExtensions.MonthName" />, when CultureIsNull, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests.MonthNameFrenchTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DateTimeExtensionsTests.MonthNameFrenchTestData), typeof(DateTimeExtensionsTests))]
     public void MonthName_WhenCultureIsNull_ShouldFallbackToCurrentCulture(int year, int month, string expected)
     {
         var original = CultureInfo.CurrentCulture;
@@ -67,7 +67,7 @@ public partial class DateOnlyExtensionsTests
     /// Verifies that <see cref="DateOnlyExtensions.MonthName" />, with Culture, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests.MonthNameTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DateTimeExtensionsTests.MonthNameTestData), typeof(DateTimeExtensionsTests))]
     public void MonthName_WithCulture_ShouldReturnLocalizedName(int year, int month, CultureInfo culture, string expected)
     {
         DateOnly input = new DateOnly(year, month, 1);

@@ -41,8 +41,8 @@ public sealed partial class Base16Tests
     /// (lower case) output matches the lower-case form of every RFC 4648 §10 Known Answer Test vector.
     /// </summary>
     /// <param name="vector">A KAT vector sourced from <see cref="Base16KnownAnswerVectors" />.</param>
-    [DataTestMethod]
-    [DynamicData(nameof(Base16KnownAnswerVectors.Rfc4648Vectors), typeof(Base16KnownAnswerVectors), DynamicDataSourceType.Method)]
+    [TestMethod]
+    [DynamicData(nameof(Base16KnownAnswerVectors.Rfc4648Vectors), typeof(Base16KnownAnswerVectors))]
     public void Encode_ForRfc4648KnownAnswerVector_DefaultLowerCase_ShouldMatchLowerCase(EncodingKnownAnswerVector vector)
     {
         var actual = Base16.Encode(vector.DecodedBytes);
@@ -56,8 +56,8 @@ public sealed partial class Base16Tests
     /// <see cref="BaseFormattingOptions.UpperCase" />. The reference outputs are in upper case per RFC 4648 §8.
     /// </summary>
     /// <param name="vector">A KAT vector sourced from <see cref="Base16KnownAnswerVectors" />.</param>
-    [DataTestMethod]
-    [DynamicData(nameof(Base16KnownAnswerVectors.Rfc4648Vectors), typeof(Base16KnownAnswerVectors), DynamicDataSourceType.Method)]
+    [TestMethod]
+    [DynamicData(nameof(Base16KnownAnswerVectors.Rfc4648Vectors), typeof(Base16KnownAnswerVectors))]
     public void Encode_ForRfc4648KnownAnswerVector_WithUpperCaseFlag_ShouldMatch(EncodingKnownAnswerVector vector)
     {
         var actual = Base16.Encode(vector.DecodedBytes, BaseFormattingOptions.UpperCase);

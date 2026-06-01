@@ -286,23 +286,23 @@ public static class NotableDateRuleJsonParser
             ? throw new InvalidOperationException(
                 string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Op_Invalid_MissingRequiredAttribute, "key", "adjustment"))
             : new ObservanceAdjustment
-        {
-            Key = dto.Key,
-            Trigger = ParseRequiredEnum<AdjustmentTrigger>(dto.When, "when", "adjustment"),
-            Action = ParseRequiredEnum<AdjustmentAction>(dto.Action, "action", "adjustment"),
-            DayOfWeek = ParseOptionalEnum<DayOfWeek>(dto.DayOfWeek, "dayOfWeek", "adjustment"),
-            WeekOrdinal = ParseOptionalEnum<WeekOfMonthOrdinal>(dto.WeekOrdinal, "weekOrdinal", "adjustment"),
-            IsNonWorkingDay = dto.NonWorking,
-            OffsetDays = dto.Days ?? 0,
-            TerritoryCode = dto.Territory,
-            CalendarType = ParseOptionalType<SysGlobal.Calendar>(dto.CalendarType, "calendarType"),
-            EffectiveFromYear = dto.FromYear,
-            EffectiveToYear = dto.ToYear,
-            ComparisonDate = ParseOptionalMonthDay(dto.ComparisonMonth, dto.ComparisonDay),
-            TargetRuleName = dto.Target,
-            Priority = dto.Priority ?? 100,
-            HandlerKey = dto.HandlerKey,
-        };
+            {
+                Key = dto.Key,
+                Trigger = ParseRequiredEnum<AdjustmentTrigger>(dto.When, "when", "adjustment"),
+                Action = ParseRequiredEnum<AdjustmentAction>(dto.Action, "action", "adjustment"),
+                DayOfWeek = ParseOptionalEnum<DayOfWeek>(dto.DayOfWeek, "dayOfWeek", "adjustment"),
+                WeekOrdinal = ParseOptionalEnum<WeekOfMonthOrdinal>(dto.WeekOrdinal, "weekOrdinal", "adjustment"),
+                IsNonWorkingDay = dto.NonWorking,
+                OffsetDays = dto.Days ?? 0,
+                TerritoryCode = dto.Territory,
+                CalendarType = ParseOptionalType<SysGlobal.Calendar>(dto.CalendarType, "calendarType"),
+                EffectiveFromYear = dto.FromYear,
+                EffectiveToYear = dto.ToYear,
+                ComparisonDate = ParseOptionalMonthDay(dto.ComparisonMonth, dto.ComparisonDay),
+                TargetRuleName = dto.Target,
+                Priority = dto.Priority ?? 100,
+                HandlerKey = dto.HandlerKey,
+            };
     }
 
     // ----------------------------------------------------------------------------

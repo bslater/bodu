@@ -5,9 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.Security.Cryptography;
-
-using System.Collections.Generic;
-
 /// <summary>
 /// Validates the <see cref="Rabbit" /> internal state against the RFC 4503 Appendix B debugging vectors (key setup and
 /// IV setup), confirming the core key expansion, next-state function, counter carries, and final XOR independently of

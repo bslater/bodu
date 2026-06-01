@@ -71,7 +71,7 @@ public abstract partial class BlockCipherModeTests<TMode>
         var written = 0;
         try
         {
-            written = transform.Transform(System.ReadOnlySpan<byte>.Empty, System.Span<byte>.Empty, encrypt: true);
+            written = transform.Transform([], [], encrypt: true);
         }
         catch (System.Exception ex)
         {

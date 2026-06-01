@@ -31,8 +31,8 @@ public partial class StringExtensionsTests
     /// <param name="suffix">The suffix to ensure.</param>
     /// <param name="comparison">The string comparison.</param>
     /// <param name="expected">The expected return value.</param>
-    [DataTestMethod]
-    [DynamicData(nameof(GetEnsureEndsWithCases), DynamicDataSourceType.Method)]
+    [TestMethod]
+    [DynamicData(nameof(GetEnsureEndsWithCases))]
     public void EnsureEndsWith_WhenInvoked_ShouldReturnExpected(string value, string suffix, StringComparison comparison, string expected) => Assert.AreEqual(expected, value.EnsureEndsWith(suffix, comparison));
 
     /// <summary>

@@ -34,14 +34,14 @@ namespace Bodu.Security.Cryptography;
 public sealed class SimpleReversingCryptoTransform
     : ICryptoTransform, IAsyncDisposable
 {
-    private readonly SimpleReversingBlockCipher cipher;
-    private readonly bool encrypt;
-    private readonly IBlockCipherModeTransform mode;
-    private readonly IPaddingStrategy padding;
+    private readonly SimpleReversingBlockCipher _cipher;
+    private readonly bool _encrypt;
+    private readonly IBlockCipherModeTransform _mode;
+    private readonly IPaddingStrategy _padding;
 
     // Holds the last complete ciphertext block when decrypting with strippable padding.
-    private byte[]? deferredInput;
-    private bool disposed;
+    private byte[]? _deferredInput;
+    private bool _disposed;
 
     /// <summary>
     /// Initialises a new instance of the <see cref="SimpleReversingCryptoTransform" /> class.
@@ -61,17 +61,17 @@ public sealed class SimpleReversingCryptoTransform
         byte[]? iv,
         bool encrypt)
     {
-        this.cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
-        this.encrypt = encrypt;
-        mode = BlockCipherModeFactory.Create(cipherMode, cipher, iv);
-        padding = PaddingFactory.Create(paddingMode);
+        this._cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
+        this._encrypt = encrypt;
+        _mode = BlockCipherModeFactory.Create(cipherMode, cipher, iv);
+        _padding = PaddingFactory.Create(paddingMode);
     }
 
     /// <summary>
     /// Gets the diagnostic recorder for this transform instance. Use this in test assertions to inspect the exact
     /// inputs and outputs seen at every layer of the transform pipeline.
     /// </summary>
-    public SimpleReversingDiagnostics Diagnostics => cipher.Diagnostics;
+    public SimpleReversingDiagnostics Diagnostics => _cipher.Diagnostics;
 
     /// <inheritdoc />
     /// <remarks>
@@ -85,11 +85,11 @@ public sealed class SimpleReversingCryptoTransform
 
     /// <inheritdoc />
     /// <value>The configured block size in bytes.</value>
-    public int InputBlockSize => cipher.BlockSize / 8;
+    public int InputBlockSize => _cipher.BlockSize / 8;
 
     /// <inheritdoc />
     /// <value>The configured block size in bytes.</value>
-    public int OutputBlockSize => cipher.BlockSize / 8;
+    public int OutputBlockSize => _cipher.BlockSize / 8;
 
     /// <summary>
     /// Transforms a block-aligned region of the input byte array and writes the result to the output buffer.
@@ -124,18 +124,18 @@ public sealed class SimpleReversingCryptoTransform
 
         int bytesWritten;
 
-        if (encrypt)
+        if (_encrypt)
         {
-            bytesWritten = mode.Transform(input, output, true);
+            bytesWritten = _mode.Transform(input, output, true);
         }
         else
         {
-            var stripPadding = padding is Pkcs7Padding;
-            var blockBytes = cipher.BlockSize / 8;
+            var stripPadding = _padding is Pkcs7Padding;
+            var blockBytes = _cipher.BlockSize / 8;
 
             if (stripPadding && input.Length <= blockBytes)
             {
-                deferredInput = input.ToArray();
+                _deferredInput = input.ToArray();
                 bytesWritten = 0;
             }
             else
@@ -144,10 +144,10 @@ public sealed class SimpleReversingCryptoTransform
                 if (stripPadding)
                 {
                     bytesToProcess -= blockBytes;
-                    deferredInput = input.Slice(bytesToProcess).ToArray();
+                    _deferredInput = input.Slice(bytesToProcess).ToArray();
                 }
 
-                bytesWritten = mode.Transform(input.Slice(0, bytesToProcess), output.Slice(0, bytesToProcess), false);
+                bytesWritten = _mode.Transform(input.Slice(0, bytesToProcess), output.Slice(0, bytesToProcess), false);
             }
         }
 
@@ -174,37 +174,37 @@ public sealed class SimpleReversingCryptoTransform
         ReadOnlySpan<byte> input = inputBuffer.AsSpan(inputOffset, inputCount);
         byte[] result;
 
-        if (encrypt)
+        if (_encrypt)
         {
-            var padded = padding.Pad(input, cipher.BlockSize);
+            var padded = _padding.Pad(input, _cipher.BlockSize);
 
             // CryptoStream calls TransformFinalBlock with zero bytes after consuming all complete
             // blocks via TransformBlock when input is block-aligned. Nothing left to encrypt.
             if (padded.Length == 0)
-                return Array.Empty<byte>();
+                return [];
 
             var output = new byte[padded.Length];
-            mode.Transform(padded, output, true);
+            _mode.Transform(padded, output, true);
             result = output;
         }
         else
         {
-            var combined = Combine(deferredInput, input);
+            var combined = Combine(_deferredInput, input);
 
             if (combined.Length == 0)
             {
                 // No deferred block and no new input.
                 // For padding modes that require a full block (PKCS7, ANSIX923, ISO10126),
                 // this means no padding block was ever received — throw exactly as the BCL does.
-                if (padding is not NoPadding and not ZeroPadding)
+                if (_padding is not NoPadding and not ZeroPadding)
                     throw new CryptographicException("Padding is invalid and cannot be removed.");
 
-                return Array.Empty<byte>();
+                return [];
             }
 
             var decrypted = new byte[combined.Length];
-            mode.Transform(combined, decrypted, false);
-            result = padding.Unpad(decrypted, cipher.BlockSize);
+            _mode.Transform(combined, decrypted, false);
+            result = _padding.Unpad(decrypted, _cipher.BlockSize);
         }
 
         Diagnostics.RecordTransformFinalBlock(input, result);
@@ -216,16 +216,16 @@ public sealed class SimpleReversingCryptoTransform
     /// </summary>
     public void Dispose()
     {
-        if (disposed) return;
+        if (_disposed) return;
 
-        if (deferredInput is not null)
+        if (_deferredInput is not null)
         {
-            CryptographicOperations.ZeroMemory(deferredInput);
-            deferredInput = null;
+            CryptographicOperations.ZeroMemory(_deferredInput);
+            _deferredInput = null;
         }
 
-        cipher.Dispose();
-        disposed = true;
+        _cipher.Dispose();
+        _disposed = true;
 
         GC.SuppressFinalize(this);
     }
@@ -253,7 +253,7 @@ public sealed class SimpleReversingCryptoTransform
 
     private void ThrowIfDisposed() =>
 #if NET8_0_OR_GREATER
-        ObjectDisposedException.ThrowIf(disposed, this);
+        ObjectDisposedException.ThrowIf(_disposed, this);
 #else
         if (this.disposed) throw new ObjectDisposedException(nameof(SimpleReversingCryptoTransform));
 #endif

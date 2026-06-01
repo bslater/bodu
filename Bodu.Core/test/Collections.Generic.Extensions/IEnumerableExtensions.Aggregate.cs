@@ -6,9 +6,6 @@
 
 namespace Bodu.Collections.Generic.Extensions;
 
-using System;
-using System.Collections.Generic;
-
 [TestClass]
 public sealed partial class IEnumerableExtensionsTests_Aggregate
 {

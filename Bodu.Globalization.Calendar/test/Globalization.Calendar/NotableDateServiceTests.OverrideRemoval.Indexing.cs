@@ -30,7 +30,7 @@ public partial class NotableDateServiceTests
             .Concat([new RuleRemoval("Targeted Holiday", FromYear: 2026, ToYear: 2026)])
             .ToArray();
 
-        TestOverrideProvider provider = new(removals, Array.Empty<NotableDateRule>());
+        TestOverrideProvider provider = new(removals, []);
 
         NotableDateService service = new(
             ruleProviders: [(INotableDateRuleProvider)new InMemoryRuleProvider(targeted, untouched)],
@@ -58,7 +58,7 @@ public partial class NotableDateServiceTests
         NotableDateRule rule = Fixed("Mixed Case Holiday", 6, 15, territory: "AU");
         TestOverrideProvider provider = new(
             removals: [new RuleRemoval("MIXED case HOLIDAY")],
-            additions: Array.Empty<NotableDateRule>());
+            additions: []);
 
         NotableDateService service = new(
             ruleProviders: [(INotableDateRuleProvider)new InMemoryRuleProvider(rule)],

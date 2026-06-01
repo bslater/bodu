@@ -43,7 +43,7 @@ public static partial class EncodingExtensions
         ThrowHelper.ThrowIfNull(sourceEncoding);
         ThrowHelper.ThrowIfNull(destinationEncoding);
 
-        if (source.IsEmpty) return Array.Empty<byte>();
+        if (source.IsEmpty) return [];
 
         var charCount = sourceEncoding.GetCharCount(source);
         var charBuffer = ArrayPool<char>.Shared.Rent(charCount);

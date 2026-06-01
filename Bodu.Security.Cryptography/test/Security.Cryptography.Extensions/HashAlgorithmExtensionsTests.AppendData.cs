@@ -38,8 +38,8 @@ public partial class HashAlgorithmExtensionsTests
     {
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
 
-        algorithm.AppendData(ReadOnlySpan<byte>.Empty);
-        algorithm.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
+        algorithm.AppendData([]);
+        algorithm.TransformFinalBlock([], 0, 0);
 
         var expected = BitConverter.GetBytes((uint)0);
         CollectionAssert.AreEqual(expected, algorithm.Hash);
@@ -54,7 +54,7 @@ public partial class HashAlgorithmExtensionsTests
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
 
         algorithm.AppendData(new ReadOnlySpan<byte>([0xFF]));
-        algorithm.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
+        algorithm.TransformFinalBlock([], 0, 0);
 
         var expected = BitConverter.GetBytes((uint)0xFF);
         CollectionAssert.AreEqual(expected, algorithm.Hash);
@@ -71,7 +71,7 @@ public partial class HashAlgorithmExtensionsTests
         byte[] data = [1, 2, 3, 4];
 
         algorithm.AppendData(new ReadOnlySpan<byte>(data));
-        algorithm.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
+        algorithm.TransformFinalBlock([], 0, 0);
 
         // MonitoringHashAlgorithm accumulates input bytes as an unsigned 32-bit sum.
         var expected = BitConverter.GetBytes((uint)(1 + 2 + 3 + 4));
@@ -88,7 +88,7 @@ public partial class HashAlgorithmExtensionsTests
 
         algorithm.AppendData(new ReadOnlySpan<byte>([10, 20]));
         algorithm.AppendData(new ReadOnlySpan<byte>([30, 40]));
-        algorithm.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
+        algorithm.TransformFinalBlock([], 0, 0);
 
         var expected = BitConverter.GetBytes((uint)(10 + 20 + 30 + 40));
         CollectionAssert.AreEqual(expected, algorithm.Hash);
@@ -111,7 +111,7 @@ public partial class HashAlgorithmExtensionsTests
 
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         algorithm.AppendData(new ReadOnlySpan<byte>(data));
-        algorithm.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
+        algorithm.TransformFinalBlock([], 0, 0);
 
         CollectionAssert.AreEqual(expected, algorithm.Hash);
     }

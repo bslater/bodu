@@ -4,31 +4,36 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Security.Cryptography;
 
 using System.Buffers.Binary;
 using System.Reflection;
 using System.Security.Cryptography;
-using Bodu.Security.Cryptography.Contracts;
 
+namespace Bodu.Security.Cryptography;
 /// <summary>
 /// Locks the <see cref="Hc128" /> stream cipher against the official Appendix A test vectors from Hongjun Wu's
 /// specification paper <c>The Stream Cipher HC-128</c> (the eSTREAM-author vectors; HC-128 has no RFC), and inherits the
-/// shared <see cref="SymmetricStreamAlgorithmContractTests{TCipher}" /> behavioural contract.
+/// shared <see cref="SymmetricStreamAlgorithmTests{TTest, TAlgorithm}" /> behavioural contract.
 /// </summary>
 /// <remarks>
 /// HC-128 serializes each 32-bit output word least-significant-byte first, so a printed word such as <c>73150082</c>
 /// appears in the byte keystream as <c>82 00 15 73</c>. The vectors below carry the expected byte keystream directly.
 /// </remarks>
 [TestClass]
-public sealed class Hc128Tests
-    : SymmetricStreamAlgorithmContractTests<Hc128>
+public sealed partial class Hc128Tests
+    : SymmetricStreamAlgorithmTests<Hc128Tests, Hc128>
 {
     /// <inheritdoc />
-    protected override int ExpectedKeySizeBits => 128;
+    protected override Hc128 CreateAlgorithm() => new();
 
     /// <inheritdoc />
-    protected override int ExpectedNonceSizeBits => 128;
+    protected override SymmetricStreamAlgorithmSpecification GetSpecification() =>
+        new()
+        {
+            DefaultKeySizeBits = 128,
+            NonceSizeBits = 128,
+            LegalKeySizesBits = [128],
+        };
 
     /// <summary>
     /// Represents one HC-128 keystream known-answer test row, recovered as the ciphertext of an all-zero plaintext.

@@ -46,7 +46,7 @@ public static partial class EncodingExtensions
         if (required == 0)
         {
             bytesWritten = 0;
-            return Array.Empty<byte>();
+            return [];
         }
 
         var buffer = ArrayPool<byte>.Shared.Rent(required);
@@ -97,7 +97,7 @@ public static partial class EncodingExtensions
         if (required == 0)
         {
             charsWritten = 0;
-            return Array.Empty<char>();
+            return [];
         }
 
         var buffer = ArrayPool<char>.Shared.Rent(required);

@@ -1,14 +1,14 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="SymmetricStreamAlgorithmContractTests.CreateEncryptor.cs" company="Bodu Pty. Ltd.">
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="SymmetricStreamAlgorithmTests.CreateEncryptor.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Security.Cryptography;
 
-namespace Bodu.Security.Cryptography.Contracts;
+namespace Bodu.Security.Cryptography;
 
-public abstract partial class SymmetricStreamAlgorithmContractTests<TCipher>
+public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
 {
     /// <summary>
     /// Verifies that the same key and nonce reproduce the same keystream across fresh instances, confirming
@@ -22,12 +22,12 @@ public abstract partial class SymmetricStreamAlgorithmContractTests<TCipher>
         var zeros = new byte[96];
 
         byte[] a;
-        using (TCipher cipher = CreateAlgorithm())
+        using (TAlgorithm cipher = CreateAlgorithm())
         using (ICryptoTransform e = cipher.CreateEncryptor(key, nonce))
             a = e.TransformFinalBlock(zeros, 0, zeros.Length);
 
         byte[] b;
-        using (TCipher cipher = CreateAlgorithm())
+        using (TAlgorithm cipher = CreateAlgorithm())
         using (ICryptoTransform e = cipher.CreateEncryptor(key, nonce))
             b = e.TransformFinalBlock(zeros, 0, zeros.Length);
 
@@ -36,35 +36,43 @@ public abstract partial class SymmetricStreamAlgorithmContractTests<TCipher>
 
     /// <summary>
     /// Verifies that <see cref="SymmetricStreamAlgorithm.CreateEncryptor(byte[], byte[])" /> rejects a key whose length
-    /// is not the algorithm's key size with a <see cref="CryptographicException" />.
+    /// is not one of the cipher's legal key sizes with a <see cref="CryptographicException" />.
     /// </summary>
+    /// <param name="keySizeBytes">The candidate key length, in bytes, expected to be rejected.</param>
     [TestMethod]
-    public void CreateEncryptor_WhenKeyLengthIsInvalid_ShouldThrowCryptographicException()
+    [DynamicData(nameof(InvalidKeySizeBytesData))]
+    public void CreateEncryptor_WhenKeyLengthIsInvalid_ShouldThrowCryptographicException(int keySizeBytes)
     {
-        using TCipher cipher = CreateAlgorithm();
-        var shortKey = new byte[KeyLengthBytes - 1];
+        if (keySizeBytes < 0) return;
+
+        using TAlgorithm cipher = CreateAlgorithm();
+        var invalidKey = new byte[keySizeBytes];
         var nonce = CreateNonce();
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
-            _ = cipher.CreateEncryptor(shortKey, nonce);
+            _ = cipher.CreateEncryptor(invalidKey, nonce);
         });
     }
 
     /// <summary>
     /// Verifies that <see cref="SymmetricStreamAlgorithm.CreateEncryptor(byte[], byte[])" /> rejects a nonce whose
-    /// length is not the algorithm's nonce size with a <see cref="CryptographicException" />.
+    /// length is not <see cref="SymmetricStreamAlgorithm.NonceSize" /> with a <see cref="CryptographicException" />.
     /// </summary>
+    /// <param name="nonceSizeBytes">The candidate nonce length, in bytes, expected to be rejected.</param>
     [TestMethod]
-    public void CreateEncryptor_WhenNonceLengthIsInvalid_ShouldThrowCryptographicException()
+    [DynamicData(nameof(InvalidNonceSizeBytesData))]
+    public void CreateEncryptor_WhenNonceLengthIsInvalid_ShouldThrowCryptographicException(int nonceSizeBytes)
     {
-        using TCipher cipher = CreateAlgorithm();
+        if (nonceSizeBytes < 0) return;
+
+        using TAlgorithm cipher = CreateAlgorithm();
         var key = CreateKey();
-        var wrongNonce = new byte[NonceLengthBytes + 1];
+        var invalidNonce = new byte[nonceSizeBytes];
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
-            _ = cipher.CreateEncryptor(key, wrongNonce);
+            _ = cipher.CreateEncryptor(key, invalidNonce);
         });
     }
 
@@ -75,7 +83,7 @@ public abstract partial class SymmetricStreamAlgorithmContractTests<TCipher>
     [TestMethod]
     public void CreateEncryptor_WhenKeyIsNull_ShouldThrowArgumentNullException()
     {
-        using TCipher cipher = CreateAlgorithm();
+        using TAlgorithm cipher = CreateAlgorithm();
         var nonce = CreateNonce();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
@@ -91,7 +99,7 @@ public abstract partial class SymmetricStreamAlgorithmContractTests<TCipher>
     [TestMethod]
     public void CreateEncryptor_WhenNonceIsNull_ShouldThrowArgumentNullException()
     {
-        using TCipher cipher = CreateAlgorithm();
+        using TAlgorithm cipher = CreateAlgorithm();
         var key = CreateKey();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
@@ -101,12 +109,13 @@ public abstract partial class SymmetricStreamAlgorithmContractTests<TCipher>
     }
 
     /// <summary>
-    /// Verifies that accessing a disposed cipher's transform factory throws <see cref="ObjectDisposedException" />.
+    /// Verifies that calling <see cref="SymmetricStreamAlgorithm.CreateEncryptor()" /> on a disposed cipher throws
+    /// <see cref="ObjectDisposedException" />.
     /// </summary>
     [TestMethod]
     public void CreateEncryptor_WhenDisposed_ShouldThrowObjectDisposedException()
     {
-        TCipher cipher = CreateAlgorithm();
+        TAlgorithm cipher = CreateAlgorithm();
         var key = CreateKey();
         var nonce = CreateNonce();
         cipher.Dispose();
@@ -115,5 +124,24 @@ public abstract partial class SymmetricStreamAlgorithmContractTests<TCipher>
         {
             _ = cipher.CreateEncryptor(key, nonce);
         });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="SymmetricStreamAlgorithm.CreateEncryptor()" /> succeeds and returns a non-null transform
+    /// for each key size listed in <see cref="SymmetricStreamAlgorithmSpecification.LegalKeySizesBits" />.
+    /// </summary>
+    /// <param name="keySizeBits">The key size, in bits, to assign before creating the encryptor.</param>
+    [TestMethod]
+    [DynamicData(nameof(LegalKeySizeBitsData))]
+    public void CreateEncryptor_ForEachLegalKeySize_ShouldSucceed(int keySizeBits)
+    {
+        using TAlgorithm cipher = CreateAlgorithm();
+        cipher.KeySize = keySizeBits;
+        var key = CreateKey(keySizeBits);
+        var nonce = CreateNonce();
+
+        using ICryptoTransform transform = cipher.CreateEncryptor(key, nonce);
+
+        Assert.IsNotNull(transform);
     }
 }

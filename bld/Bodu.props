@@ -1,57 +1,69 @@
-<Project>
-  <PropertyGroup>
-    <Authors>Bodu Pty. Ltd.</Authors>
-    <Company>Bodu Pty. Ltd.</Company>
-    <Copyright>&#169; Bodu Pty. Ltd.  All rights reserved.</Copyright>
+﻿<Project>
+    <PropertyGroup>
+        <Authors>Bodu Pty. Ltd.</Authors>
+        <Company>Bodu Pty. Ltd.</Company>
+        <Copyright>&#169; Bodu Pty. Ltd.  All rights reserved.</Copyright>
 
-    <Product>Bodu</Product>
-    <!--<PackageProjectUrl>https://www.bodu.com.au/</PackageProjectUrl>-->
+        <Product>Bodu</Product>
+        <!--<PackageProjectUrl>https://www.bodu.com.au/</PackageProjectUrl>-->
 
-    <RepositoryUrl>https://github.com/bodu/bodu</RepositoryUrl>
+        <RepositoryUrl>https://github.com/bodu/bodu</RepositoryUrl>
 
-    <RepositoryType>git</RepositoryType>
+        <RepositoryType>git</RepositoryType>
 
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
 
-    <PackageTags>bodu;utilities;library</PackageTags>
-    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+        <PackageTags>bodu;utilities;library</PackageTags>
+        <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 
-    <NeutralLanguage>en-US</NeutralLanguage>
-    <LangVersion>latest</LangVersion>
+        <NeutralLanguage>en-US</NeutralLanguage>
+        <LangVersion>latest</LangVersion>
 
-    <!-- Ensures deterministic builds -->
-    <Deterministic>true</Deterministic>
+        <!-- Ensures deterministic builds -->
+        <Deterministic>true</Deterministic>
 
-    <!-- Missing XML docs -->
-    <WarningsAsErrors>$(WarningsAsErrors);CS1591;CS1570;CS1571;CS1572;CS1573;CS1574;CS1580;CS1581;CS1584;CS1587;CS1589;CS1590;CS1710;CS1711;CS1712;CS1713;CS1714</WarningsAsErrors>
+        <!-- Missing XML docs -->
+        <WarningsAsErrors>$(WarningsAsErrors);CS1591;CS1570;CS1571;CS1572;CS1573;CS1574;CS1580;CS1581;CS1584;CS1587;CS1589;CS1590;CS1710;CS1711;CS1712;CS1713;CS1714</WarningsAsErrors>
 
-    <!-- Useful for avoiding duplicate metadata conflicts -->
-    <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
-    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
-    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+        <!-- Useful for avoiding duplicate metadata conflicts -->
+        <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
+        <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+        <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
 
-    <!--
+        <!--
       Enables the Bodu XML documentation analyzers (BODU1001-BODU1018 per tag + BODU1040 cross-cutting) on the
       consuming project. The analyzer is shipped as the Bodu.CodeStyle.XmlDocumentation NuGet package (built in
       this repository, restored from the `bodu-local` source declared in the root NuGet.config). Set
       BoduCodeStyleAnalyzers=false to opt out — the Bodu.CodeStyle/* projects do this to avoid analysing
       themselves.
     -->
-    <BoduCodeStyleAnalyzers Condition="'$(BoduCodeStyleAnalyzers)' == ''">true</BoduCodeStyleAnalyzers>
-  </PropertyGroup>
+        <BoduCodeStyleAnalyzers Condition="'$(BoduCodeStyleAnalyzers)' == ''">true</BoduCodeStyleAnalyzers>
+    </PropertyGroup>
 
-  <ItemGroup Condition="'$(BoduCodeStyleAnalyzers)' == 'true'">
-    <PackageReference Include="Bodu.CodeStyle.XmlDocumentation" Version="1.0.0" PrivateAssets="all" />
-  </ItemGroup>
+    <ItemGroup Condition="'$(BoduCodeStyleAnalyzers)' == 'true'">
+        <PackageReference Include="Bodu.CodeStyle.XmlDocumentation" Version="1.0.0" PrivateAssets="all" />
+    </ItemGroup>
 
-  <!--
+    <!--
     Surface the repository-wide bodu.xmldocstyle.json policy to the analyzer via AdditionalFiles so each
     consuming project sees the same rules. The Exists() guard keeps the build green for projects that opt
     out (BoduCodeStyleAnalyzers=false) or for checkouts where the JSON has not been added yet.
   -->
-  <ItemGroup Condition="'$(BoduCodeStyleAnalyzers)' == 'true' AND Exists('$(MSBuildThisFileDirectory)..\bodu.xmldocstyle.json')">
-    <AdditionalFiles Include="$(MSBuildThisFileDirectory)..\bodu.xmldocstyle.json"
-                     Link="bodu.xmldocstyle.json"
-                     Visible="false" />
-  </ItemGroup>
+    <ItemGroup Condition="'$(BoduCodeStyleAnalyzers)' == 'true' AND Exists('$(MSBuildThisFileDirectory)..\bodu.xmldocstyle.json')">
+        <AdditionalFiles Include="$(MSBuildThisFileDirectory)..\bodu.xmldocstyle.json"
+                         Link="bodu.xmldocstyle.json"
+                         Visible="false" />
+    </ItemGroup>
+
+    <!--
+    Surface the repository-wide StyleCop.Analyzers configuration to every consuming project. This ensures
+    rules such as SA1636 use the repository's stylecop.json copyright/header policy instead of analyzer
+    defaults. This is intentionally independent of BoduCodeStyleAnalyzers because StyleCop.Analyzers is a
+    separate analyzer package/configuration path.
+  -->
+    <ItemGroup Condition="Exists('$(MSBuildThisFileDirectory)..\stylecop.json')">
+        <AdditionalFiles Include="$(MSBuildThisFileDirectory)..\stylecop.json"
+                         Link="stylecop.json"
+                         Visible="false" />
+    </ItemGroup>
 </Project>

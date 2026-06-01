@@ -52,7 +52,7 @@ public partial class CryptoHelpersTests
     {
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
-            CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf<byte>(Array.Empty<byte>(), 8);
+            CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf<byte>([], 8);
         });
     }
 
@@ -63,7 +63,7 @@ public partial class CryptoHelpersTests
     [TestMethod]
     public void ThrowIfSpanLengthNotPositiveMultipleOf_WhenSpanIsEmptyAndZeroAllowed_ShouldNotThrow()
     {
-        ReadOnlySpan<byte> empty = Array.Empty<byte>();
+        ReadOnlySpan<byte> empty = [];
         CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(empty, 8, throwIfZero: false);
     }
 

@@ -34,7 +34,7 @@ public partial class NotableDateServiceTests
                 OverrideProviders =
                 [
                     (INotableDateRuleOverrideProvider)new TestOverrideProvider(
-                        removals: Array.Empty<RuleRemoval>(),
+                        removals: [],
                         additions: [nzAddition]),
                 ],
             });
@@ -76,7 +76,7 @@ public partial class NotableDateServiceTests
                 OverrideProviders =
                 [
                     (INotableDateRuleOverrideProvider)new TestOverrideProvider(
-                        removals: Array.Empty<RuleRemoval>(),
+                        removals: [],
                         additions: [julianChristmas]),
                 ],
             });
@@ -125,7 +125,7 @@ public partial class NotableDateServiceTests
                 OverrideProviders =
                 [
                     (INotableDateRuleOverrideProvider)new TestOverrideProvider(
-                        removals: Array.Empty<RuleRemoval>(),
+                        removals: [],
                         additions: [replacement]),
                 ],
             });
@@ -161,7 +161,7 @@ public partial class NotableDateServiceTests
                 OverrideProviders =
                 [
                     (INotableDateRuleOverrideProvider)new TestOverrideProvider(
-                        removals: Array.Empty<RuleRemoval>(),
+                        removals: [],
                         additions: [auReplacement]),
                 ],
             });

@@ -135,7 +135,7 @@ public sealed partial class XmlResourceNotableDateRuleProviderTests
     {
         ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
-            _ = new XmlResourceNotableDateRuleProvider(CommonResource, new ResourcePathResolver(), Array.Empty<Assembly>());
+            _ = new XmlResourceNotableDateRuleProvider(CommonResource, new ResourcePathResolver(), []);
         });
 
         Assert.AreEqual("assemblies", ex.ParamName);

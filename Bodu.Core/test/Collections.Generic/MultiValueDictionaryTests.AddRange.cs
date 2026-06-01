@@ -86,7 +86,7 @@ public partial class MultiValueDictionaryTests
 
         using MultiValueDictionary<string, int>.Enumerator enumerator = mvd.GetEnumerator();
 
-        mvd.AddRange("a", Array.Empty<int>());
+        mvd.AddRange("a", []);
 
         Assert.IsTrue(enumerator.MoveNext());
         Assert.AreEqual("a", enumerator.Current.Key);
@@ -104,7 +104,7 @@ public partial class MultiValueDictionaryTests
 
         using MultiValueDictionary<string, int>.Enumerator enumerator = mvd.GetEnumerator();
 
-        mvd.AddRange("b", Array.Empty<int>());
+        mvd.AddRange("b", []);
 
         Assert.IsTrue(enumerator.MoveNext());
         Assert.AreEqual("a", enumerator.Current.Key);

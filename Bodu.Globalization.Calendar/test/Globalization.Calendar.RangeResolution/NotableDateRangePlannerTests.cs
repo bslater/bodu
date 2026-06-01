@@ -152,7 +152,7 @@ public sealed class NotableDateRangePlannerTests
     [TestMethod]
     public void Ctor_WhenFringeDaysIsNegative_ShouldThrowExactly()
     {
-        var analysis = RuleStaticAnalysis.Build(Array.Empty<NotableDateRule>());
+        var analysis = RuleStaticAnalysis.Build([]);
 
         ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

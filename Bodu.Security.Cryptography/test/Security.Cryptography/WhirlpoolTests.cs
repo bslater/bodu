@@ -26,7 +26,7 @@ public partial class WhirlpoolTests
     };
 
     /// <summary>The empty ISO test corpus payload.</summary>
-    private static readonly byte[] IsoEmptyInput = Array.Empty<byte>();
+    private static readonly byte[] IsoEmptyInput = [];
 
     /// <summary>The ASCII byte <c>"a"</c> from the ISO test corpus.</summary>
     private static readonly byte[] IsoAInput = Encoding.ASCII.GetBytes("a");

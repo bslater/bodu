@@ -127,7 +127,7 @@ public partial class ConcurrentHashSetTests
     {
         var set = new ConcurrentHashSet<int>();
 
-        set.CopyTo(Array.Empty<int>(), 0);
+        set.CopyTo([], 0);
     }
 
     /// <summary>

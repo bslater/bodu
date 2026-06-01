@@ -31,7 +31,7 @@ public sealed class CoverageGapFillTests
             Day = day,
             IsNonWorkingDay = nonWorking,
             TerritoryCode = territory,
-            Adjustments = adjustments.IsDefault ? ImmutableArray<ObservanceAdjustment>.Empty : adjustments,
+            Adjustments = adjustments.IsDefault ? [] : adjustments,
         };
 
     private sealed class InMemoryRuleProvider
@@ -47,9 +47,9 @@ public sealed class CoverageGapFillTests
     private sealed class OverrideProvider
         : INotableDateRuleOverrideProvider
     {
-        public IEnumerable<RuleRemoval> Removals { get; init; } = Array.Empty<RuleRemoval>();
+        public IEnumerable<RuleRemoval> Removals { get; init; } = [];
 
-        public IEnumerable<NotableDateRule> Additions { get; init; } = Array.Empty<NotableDateRule>();
+        public IEnumerable<NotableDateRule> Additions { get; init; } = [];
 
         public IEnumerable<RuleRemoval> GetRemovals() => Removals;
 
@@ -151,7 +151,7 @@ public sealed class CoverageGapFillTests
             OffsetDays = 5,
             EffectiveFromYear = 2099,
         };
-        NotableDateRule rule = FixedRule("Holiday", 1, 1, adjustments: ImmutableArray.Create(outOfScope));
+        NotableDateRule rule = FixedRule("Holiday", 1, 1, adjustments: [outOfScope]);
 
         NotableDateService service = BuildService(rule);
 
@@ -658,8 +658,8 @@ public sealed class CoverageGapFillTests
     [TestMethod]
     public void ParsedNotableDateDocument_RecordEquality_ShouldBehaveAsExpected()
     {
-        var groupA = new NotableDateRuleUseGroup("res", UseAll: false, ImmutableArray<NotableDateRuleUseDirective>.Empty);
-        var groupB = new NotableDateRuleUseGroup("res2", UseAll: false, ImmutableArray<NotableDateRuleUseDirective>.Empty);
+        var groupA = new NotableDateRuleUseGroup("res", UseAll: false, []);
+        var groupB = new NotableDateRuleUseGroup("res2", UseAll: false, []);
         NotableDateRule rule = FixedRule("X", 1, 1);
 
         var sharedGroups = ImmutableArray.Create(groupA);
@@ -667,7 +667,7 @@ public sealed class CoverageGapFillTests
 
         var docA = new ParsedNotableDateDocument(sharedGroups, sharedRules);
         var docACopy = new ParsedNotableDateDocument(sharedGroups, sharedRules);
-        var docB = new ParsedNotableDateDocument(ImmutableArray.Create(groupB), sharedRules);
+        var docB = new ParsedNotableDateDocument([groupB], sharedRules);
 
         Assert.AreEqual(docA, docACopy);
         Assert.AreNotEqual(docA, docB);
@@ -682,8 +682,8 @@ public sealed class CoverageGapFillTests
     public void ParsedNotableDateDocument_ToString_ShouldBeInvokable()
     {
         var doc = new ParsedNotableDateDocument(
-            ImmutableArray<NotableDateRuleUseGroup>.Empty,
-            ImmutableArray<NotableDateRule>.Empty);
+            [],
+            []);
 
         var rendered = doc.ToString()!;
 
@@ -708,7 +708,7 @@ public sealed class CoverageGapFillTests
             OffsetDays = 7,
             TerritoryCode = "###",
         };
-        NotableDateRule rule = FixedRule("Holiday", 1, 1, adjustments: ImmutableArray.Create(adjustment));
+        NotableDateRule rule = FixedRule("Holiday", 1, 1, adjustments: [adjustment]);
 
         NotableDateService service = BuildService(rule);
 

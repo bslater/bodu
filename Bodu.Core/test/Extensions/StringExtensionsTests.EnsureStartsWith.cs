@@ -31,8 +31,8 @@ public partial class StringExtensionsTests
     /// <param name="prefix">The prefix to ensure.</param>
     /// <param name="comparison">The string comparison.</param>
     /// <param name="expected">The expected return value.</param>
-    [DataTestMethod]
-    [DynamicData(nameof(GetEnsureStartsWithCases), DynamicDataSourceType.Method)]
+    [TestMethod]
+    [DynamicData(nameof(GetEnsureStartsWithCases))]
     public void EnsureStartsWith_WhenInvoked_ShouldReturnExpected(string value, string prefix, StringComparison comparison, string expected) => Assert.AreEqual(expected, value.EnsureStartsWith(prefix, comparison));
 
     /// <summary>

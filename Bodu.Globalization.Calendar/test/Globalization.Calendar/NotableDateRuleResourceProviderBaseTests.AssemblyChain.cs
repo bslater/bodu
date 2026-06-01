@@ -82,7 +82,7 @@ public sealed class NotableDateRuleResourceProviderBaseAssemblyChainTests
             _ = new XmlResourceNotableDateRuleProvider(
                 "any.xml",
                 new ResourcePathResolver(),
-                Array.Empty<Assembly>());
+                []);
         });
 
         Assert.AreEqual("assemblies", ex.ParamName);

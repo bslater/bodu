@@ -40,7 +40,7 @@ public static partial class Base85
         EnsureValidVariant(variant);
 
         if (chars.IsEmpty)
-            return Array.Empty<byte>();
+            return [];
 
         var buffer = new byte[GetMaxDecodedLength(chars.Length)];
 

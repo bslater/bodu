@@ -482,7 +482,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
     /// <returns>The trimmed name array.</returns>
     private static string[] ParseExpectedNames(string csv)
     {
-        if (string.IsNullOrWhiteSpace(csv)) return Array.Empty<string>();
+        if (string.IsNullOrWhiteSpace(csv)) return [];
 
         return csv.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
     }
@@ -502,7 +502,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
             Month = 12,
             Day = 25,
             IsNonWorkingDay = true,
-            Tags = ImmutableHashSet.Create("Christian", "Public"),
+            Tags = ["Christian", "Public"],
         },
         new NotableDateRule
         {
@@ -512,7 +512,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
             Month = 12,
             Day = 26,
             IsNonWorkingDay = true,
-            Tags = ImmutableHashSet.Create("Christian", "Public"),
+            Tags = ["Christian", "Public"],
         },
         new NotableDateRule
         {
@@ -522,7 +522,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
             Month = 1,
             Day = 26,
             IsNonWorkingDay = true,
-            Tags = ImmutableHashSet.Create("Public", "Federal"),
+            Tags = ["Public", "Federal"],
         },
         new NotableDateRule
         {
@@ -533,7 +533,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
             Day = 7,
             IsNonWorkingDay = false,
             DurationDays = 8,
-            Tags = ImmutableHashSet.Create("Jewish"),
+            Tags = ["Jewish"],
         },
         new NotableDateRule
         {
@@ -544,7 +544,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
             Day = 17,
             IsNonWorkingDay = false,
             DurationDays = 7,
-            Tags = ImmutableHashSet.Create("Asian", "Festive"),
+            Tags = ["Asian", "Festive"],
         },
         new NotableDateRule
         {
@@ -554,7 +554,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
             Month = 5,
             Day = 1,
             IsNonWorkingDay = true,
-            Tags = ImmutableHashSet.Create("Workers"),
+            Tags = ["Workers"],
         },
         new NotableDateRule
         {
@@ -564,7 +564,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
             Month = 8,
             Day = 26,
             IsNonWorkingDay = true,
-            Tags = ImmutableHashSet.Create("Public"),
+            Tags = ["Public"],
         },
         new NotableDateRule
         {
@@ -574,14 +574,14 @@ public sealed partial class NotableDateRangePipelineScenarioTests
             Month = 12,
             Day = 31,
             IsNonWorkingDay = true,
-            Tags = ImmutableHashSet.Create("Public"),
-            Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+            Tags = ["Public"],
+            Adjustments = [new ObservanceAdjustment
             {
                 Key = "weekend-substitute",
                 Trigger = AdjustmentTrigger.IfWeekend,
                 Action = AdjustmentAction.MoveToNextNonWorkingDay,
                 IsNonWorkingDay = true,
-            }),
+            }],
         },
     ];
 }

@@ -29,8 +29,8 @@ public partial class StringExtensionsTests
     /// <param name="maxLength">The max length.</param>
     /// <param name="separator">The separator marker.</param>
     /// <param name="expected">The expected return value.</param>
-    [DataTestMethod]
-    [DynamicData(nameof(GetTruncateMiddleCases), DynamicDataSourceType.Method)]
+    [TestMethod]
+    [DynamicData(nameof(GetTruncateMiddleCases))]
     public void TruncateMiddle_WhenInvoked_ShouldReturnExpected(string value, int maxLength, string separator, string expected) => Assert.AreEqual(expected, value.TruncateMiddle(maxLength, separator));
 
     /// <summary>

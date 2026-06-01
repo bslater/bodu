@@ -35,7 +35,7 @@ public partial class StringExtensionsTests
     /// <param name="value">The first string.</param>
     /// <param name="other">The second string.</param>
     /// <param name="expected">The expected return value.</param>
-    [DataTestMethod]
-    [DynamicData(nameof(GetEqualsOrdinalIgnoreCaseCases), DynamicDataSourceType.Method)]
+    [TestMethod]
+    [DynamicData(nameof(GetEqualsOrdinalIgnoreCaseCases))]
     public void EqualsOrdinalIgnoreCase_WhenInvoked_ShouldReturnExpected(string? value, string? other, bool expected) => Assert.AreEqual(expected, value.EqualsOrdinalIgnoreCase(other));
 }

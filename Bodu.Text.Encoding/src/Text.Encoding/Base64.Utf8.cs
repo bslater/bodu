@@ -67,7 +67,7 @@ public static partial class Base64
         EnsureUtf8EncodeOptionsSupported(options);
 
         if (source.IsEmpty)
-            return Array.Empty<byte>();
+            return [];
 
         var required = GetEncodedLength(source.Length, variant, options);
         var result = new byte[required];

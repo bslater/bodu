@@ -82,7 +82,7 @@ public partial class IntervalTests
     [TestMethod]
     public void Parse_WhenMalformed_ShouldThrowFormatException()
     {
-        var ex = Assert.ThrowsExactly<FormatException>(() =>
+        FormatException ex = Assert.ThrowsExactly<FormatException>(() =>
         {
             _ = Interval<int>.Parse("not an interval", CultureInfo.InvariantCulture);
         });

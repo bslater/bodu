@@ -161,13 +161,13 @@ public sealed class RuleStaticAnalysisTests
     {
         NotableDateRule rollForward = Fixed("New Year's Day", 1, 1) with
         {
-            Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+            Adjustments = [new ObservanceAdjustment
             {
                 Key = "weekend-roll",
                 Trigger = AdjustmentTrigger.IfWeekend,
                 Action = AdjustmentAction.MoveToNextNonWorkingDay,
                 IsNonWorkingDay = true,
-            }),
+            }],
         };
 
         NotableDateRule longSpan = Fixed("Festival Week", 6, 1) with
@@ -198,14 +198,14 @@ public sealed class RuleStaticAnalysisTests
     {
         NotableDateRule custom = Fixed("Custom Reach Holiday", 7, 1) with
         {
-            Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+            Adjustments = [new ObservanceAdjustment
             {
                 Key = "big-shift",
                 Trigger = AdjustmentTrigger.Always,
                 Action = AdjustmentAction.Custom,
                 HandlerKey = "test-handler",
                 MaxAdjustmentReachDays = 90,
-            }),
+            }],
         };
 
         var analysis = RuleStaticAnalysis.Build([custom]);
@@ -226,13 +226,13 @@ public sealed class RuleStaticAnalysisTests
     {
         NotableDateRule custom = Fixed("Default Reach Holiday", 7, 1) with
         {
-            Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+            Adjustments = [new ObservanceAdjustment
             {
                 Key = "default-shift",
                 Trigger = AdjustmentTrigger.Always,
                 Action = AdjustmentAction.Custom,
                 HandlerKey = "test-handler",
-            }),
+            }],
         };
 
         var analysis = RuleStaticAnalysis.Build([custom]);
@@ -251,14 +251,14 @@ public sealed class RuleStaticAnalysisTests
         // envelope to (-5, 5), which is what the author actually wants for fringe sizing.
         NotableDateRule misdeclared = Fixed("Bounded Shift", 7, 1) with
         {
-            Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+            Adjustments = [new ObservanceAdjustment
             {
                 Key = "tight",
                 Trigger = AdjustmentTrigger.IfWeekend,
                 Action = AdjustmentAction.AddDays,
                 OffsetDays = 60,
                 MaxAdjustmentReachDays = 5,
-            }),
+            }],
         };
 
         var analysis = RuleStaticAnalysis.Build([misdeclared]);

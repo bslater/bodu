@@ -131,7 +131,7 @@ public sealed partial class Base16Tests
     {
         var destination = new byte[4];
 
-        var ok = Base16.TryDecode(ReadOnlySpan<char>.Empty, destination, out var bytesWritten);
+        var ok = Base16.TryDecode([], destination, out var bytesWritten);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(0, bytesWritten);

@@ -87,7 +87,7 @@ public partial class MonitoringHashAlgorithmTests
         _ = algorithm.ComputeHash([0x01, 0x02]);
         algorithm.Initialize();
 
-        var fresh = algorithm.ComputeHash(Array.Empty<byte>());
+        var fresh = algorithm.ComputeHash([]);
 
         // Should match seed state as algorithm result
         var expected = BitConverter.GetBytes((uint)10);

@@ -178,7 +178,7 @@ public class AsconStateTests
     public void Permute_ViaAsconHash256EmptyInput_ShouldMatchNistKat()
     {
         using var hash = new AsconHash256();
-        var digest = hash.ComputeHash(Array.Empty<byte>());
+        var digest = hash.ComputeHash([]);
 
         var hex = Convert.ToHexString(digest);
         Assert.AreEqual(

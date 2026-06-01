@@ -148,23 +148,23 @@ public readonly partial struct Money<TCurrency>
         return remainder.IsZero
             ? quotient
             : rounding switch
-        {
-            MidpointRounding.ToZero => quotient,
+            {
+                MidpointRounding.ToZero => quotient,
 
-            MidpointRounding.ToPositiveInfinity =>
-                numerator.Sign > 0 ? quotient + BigInteger.One : quotient,
+                MidpointRounding.ToPositiveInfinity =>
+                    numerator.Sign > 0 ? quotient + BigInteger.One : quotient,
 
-            MidpointRounding.ToNegativeInfinity =>
-                numerator.Sign < 0 ? quotient - BigInteger.One : quotient,
+                MidpointRounding.ToNegativeInfinity =>
+                    numerator.Sign < 0 ? quotient - BigInteger.One : quotient,
 
-            MidpointRounding.AwayFromZero =>
-                RoundNearest(numerator, denominator, quotient, remainder, tiesAwayFromZero: true),
+                MidpointRounding.AwayFromZero =>
+                    RoundNearest(numerator, denominator, quotient, remainder, tiesAwayFromZero: true),
 
-            MidpointRounding.ToEven =>
-                RoundNearest(numerator, denominator, quotient, remainder, tiesAwayFromZero: false),
+                MidpointRounding.ToEven =>
+                    RoundNearest(numerator, denominator, quotient, remainder, tiesAwayFromZero: false),
 
-            _ => throw new ArgumentOutOfRangeException(nameof(rounding), rounding, FinancialResourceStrings.Arg_OutOfRange_UnsupportedMidpointRounding),
-        };
+                _ => throw new ArgumentOutOfRangeException(nameof(rounding), rounding, FinancialResourceStrings.Arg_OutOfRange_UnsupportedMidpointRounding),
+            };
     }
 
     /// <summary>

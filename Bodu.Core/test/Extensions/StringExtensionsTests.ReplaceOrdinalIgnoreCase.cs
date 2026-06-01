@@ -29,8 +29,8 @@ public partial class StringExtensionsTests
     /// <param name="oldValue">The substring to replace.</param>
     /// <param name="newValue">The replacement substring.</param>
     /// <param name="expected">The expected return value.</param>
-    [DataTestMethod]
-    [DynamicData(nameof(GetReplaceOrdinalIgnoreCaseCases), DynamicDataSourceType.Method)]
+    [TestMethod]
+    [DynamicData(nameof(GetReplaceOrdinalIgnoreCaseCases))]
     public void ReplaceOrdinalIgnoreCase_WhenInvoked_ShouldReturnExpected(string value, string oldValue, string? newValue, string expected) => Assert.AreEqual(expected, value.ReplaceOrdinalIgnoreCase(oldValue, newValue));
 
     /// <summary>

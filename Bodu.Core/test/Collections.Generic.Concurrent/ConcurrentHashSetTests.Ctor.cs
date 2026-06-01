@@ -152,7 +152,7 @@ public partial class ConcurrentHashSetTests
     [TestMethod]
     public void Ctor_WhenSourceIsEmpty_ShouldCreateEmptySet()
     {
-        var set = new ConcurrentHashSet<int>(Array.Empty<int>());
+        var set = new ConcurrentHashSet<int>([]);
 
         Assert.AreEqual(0, set.Count);
         Assert.IsTrue(set.IsEmpty);

@@ -1,14 +1,12 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="SymmetricStreamAlgorithmContractTests.GenerateNonce.cs" company="Bodu Pty. Ltd.">
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="SymmetricStreamAlgorithmTests.GenerateNonce.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Security.Cryptography;
+namespace Bodu.Security.Cryptography;
 
-namespace Bodu.Security.Cryptography.Contracts;
-
-public abstract partial class SymmetricStreamAlgorithmContractTests<TCipher>
+public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
 {
     /// <summary>
     /// Verifies that <see cref="SymmetricStreamAlgorithm.GenerateNonce" /> produces a nonce of the algorithm's required
@@ -17,7 +15,7 @@ public abstract partial class SymmetricStreamAlgorithmContractTests<TCipher>
     [TestMethod]
     public void GenerateNonce_WhenCalled_ShouldProduceNonceOfRequiredLength()
     {
-        using TCipher cipher = CreateAlgorithm();
+        using TAlgorithm cipher = CreateAlgorithm();
         cipher.GenerateNonce();
 
         Assert.AreEqual(NonceLengthBytes, cipher.Nonce.Length);
@@ -30,7 +28,7 @@ public abstract partial class SymmetricStreamAlgorithmContractTests<TCipher>
     [TestMethod]
     public void GenerateNonce_WhenCalledTwice_ShouldProduceDifferentNonces()
     {
-        using TCipher cipher = CreateAlgorithm();
+        using TAlgorithm cipher = CreateAlgorithm();
         cipher.GenerateNonce();
         var first = (byte[])cipher.Nonce.Clone();
 
@@ -47,7 +45,7 @@ public abstract partial class SymmetricStreamAlgorithmContractTests<TCipher>
     [TestMethod]
     public void GenerateNonce_WhenDisposed_ShouldThrowObjectDisposedException()
     {
-        TCipher cipher = CreateAlgorithm();
+        TAlgorithm cipher = CreateAlgorithm();
         cipher.Dispose();
 
         Assert.ThrowsExactly<ObjectDisposedException>(() =>

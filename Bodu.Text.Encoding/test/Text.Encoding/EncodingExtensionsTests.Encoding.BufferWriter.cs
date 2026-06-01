@@ -97,7 +97,7 @@ public sealed partial class EncodingExtensionsTests
     {
         using var writer = new PooledBufferBuilder<byte>(16);
 
-        System.Text.Encoding.UTF8.WriteBytes(ReadOnlySpan<char>.Empty, writer);
+        System.Text.Encoding.UTF8.WriteBytes([], writer);
 
         Assert.AreEqual(0, writer.WrittenCount);
     }
@@ -197,7 +197,7 @@ public sealed partial class EncodingExtensionsTests
     {
         using var writer = new PooledBufferBuilder<char>(16);
 
-        System.Text.Encoding.UTF8.WriteChars(ReadOnlySpan<byte>.Empty, writer);
+        System.Text.Encoding.UTF8.WriteChars([], writer);
 
         Assert.AreEqual(0, writer.WrittenCount);
     }

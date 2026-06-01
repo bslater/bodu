@@ -284,7 +284,7 @@ public sealed partial class NotableDateFilterTests
     public void WithAnyTag_WhenDateHasAtLeastOneMatchingTag_IsMatchReturnsTrue()
     {
         var filter = NotableDateFilter.WithAnyTag("Public", "Federal");
-        NotableDate date = MakeDate(tags: ImmutableHashSet.Create("Regional", "FEDERAL"));
+        NotableDate date = MakeDate(tags: ["Regional", "FEDERAL"]);
 
         Assert.IsTrue(filter.IsMatch(date));
     }
@@ -297,7 +297,7 @@ public sealed partial class NotableDateFilterTests
     public void WithAnyTag_WhenDateHasNoMatchingTag_IsMatchReturnsFalse()
     {
         var filter = NotableDateFilter.WithAnyTag("Public", "Federal");
-        NotableDate date = MakeDate(tags: ImmutableHashSet.Create("Christian"));
+        NotableDate date = MakeDate(tags: ["Christian"]);
 
         Assert.IsFalse(filter.IsMatch(date));
     }
@@ -310,7 +310,7 @@ public sealed partial class NotableDateFilterTests
     public void WithAllTags_WhenDateHasAllRequiredTags_IsMatchReturnsTrue()
     {
         var filter = NotableDateFilter.WithAllTags("Public", "Christian");
-        NotableDate date = MakeDate(tags: ImmutableHashSet.Create("Christian", "Public", "Federal"));
+        NotableDate date = MakeDate(tags: ["Christian", "Public", "Federal"]);
 
         Assert.IsTrue(filter.IsMatch(date));
     }
@@ -323,7 +323,7 @@ public sealed partial class NotableDateFilterTests
     public void WithAllTags_WhenDateIsMissingARequiredTag_IsMatchReturnsFalse()
     {
         var filter = NotableDateFilter.WithAllTags("Public", "Federal");
-        NotableDate date = MakeDate(tags: ImmutableHashSet.Create("Public"));
+        NotableDate date = MakeDate(tags: ["Public"]);
 
         Assert.IsFalse(filter.IsMatch(date));
     }
@@ -395,13 +395,13 @@ public sealed partial class NotableDateFilterTests
         var filter = NotableDateFilter.IsNonWorkingDay();
         NotableDateRule rule = MakeRule(isNonWorkingDay: null) with
         {
-            Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+            Adjustments = [new ObservanceAdjustment
             {
                 Key = "nwd-via-adjustment",
                 Trigger = AdjustmentTrigger.IfWeekend,
                 Action = AdjustmentAction.MoveToNextWeekday,
                 IsNonWorkingDay = true,
-            }),
+            }],
         };
 
         Assert.IsTrue(filter.IsRuleEligible(rule));
@@ -418,12 +418,12 @@ public sealed partial class NotableDateFilterTests
         var filter = NotableDateFilter.IsNonWorkingDay();
         NotableDateRule rule = MakeRule(isNonWorkingDay: null) with
         {
-            Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+            Adjustments = [new ObservanceAdjustment
             {
                 Key = "custom-action",
                 Trigger = AdjustmentTrigger.Always,
                 Action = AdjustmentAction.Custom,
-            }),
+            }],
         };
 
         Assert.IsTrue(filter.IsRuleEligible(rule));
@@ -440,12 +440,12 @@ public sealed partial class NotableDateFilterTests
         var filter = NotableDateFilter.IsNonWorkingDay();
         NotableDateRule rule = MakeRule(isNonWorkingDay: null) with
         {
-            Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+            Adjustments = [new ObservanceAdjustment
             {
                 Key = "custom-trigger",
                 Trigger = AdjustmentTrigger.Custom,
                 Action = AdjustmentAction.MoveToNextWeekday,
-            }),
+            }],
         };
 
         Assert.IsTrue(filter.IsRuleEligible(rule));
@@ -476,13 +476,13 @@ public sealed partial class NotableDateFilterTests
         var filter = NotableDateFilter.IsNonWorkingDay();
         NotableDateRule rule = MakeRule(isNonWorkingDay: null) with
         {
-            Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+            Adjustments = [new ObservanceAdjustment
             {
                 Key = "nwd-false",
                 Trigger = AdjustmentTrigger.IfWeekend,
                 Action = AdjustmentAction.MoveToNextWeekday,
                 IsNonWorkingDay = false,
-            }),
+            }],
         };
 
         Assert.IsFalse(filter.IsRuleEligible(rule));
@@ -613,7 +613,7 @@ public sealed partial class NotableDateFilterTests
         NotableDateRule rule = MakeRule(
             category: NotableDateCategory.Holiday,
             isNonWorkingDay: true,
-            tags: ImmutableHashSet.Create("Public"));
+            tags: ["Public"]);
 
         Assert.IsTrue(filter.IsRuleEligible(rule));
     }
@@ -628,7 +628,7 @@ public sealed partial class NotableDateFilterTests
         var filter = NotableDateFilter.AllOf(
             NotableDateFilter.ForCategory(NotableDateCategory.Holiday),
             NotableDateFilter.WithTag("Public"));
-        NotableDateRule rule = MakeRule(category: NotableDateCategory.Observance, tags: ImmutableHashSet.Create("Public"));
+        NotableDateRule rule = MakeRule(category: NotableDateCategory.Observance, tags: ["Public"]);
 
         Assert.IsFalse(filter.IsRuleEligible(rule));
     }

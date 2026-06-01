@@ -28,8 +28,8 @@ public sealed partial class StringEncodingExtensionsTests
     /// </summary>
     /// <param name="extra">Extra capacity added to the required buffer length (negative to undersize).</param>
     /// <param name="expectedOk">Whether the call is expected to succeed.</param>
-    [DataTestMethod]
-    [DynamicData(nameof(GetTryEncodeToCases), DynamicDataSourceType.Method)]
+    [TestMethod]
+    [DynamicData(nameof(GetTryEncodeToCases))]
     public void TryEncodeTo_ShouldRespectDestinationSize(int extra, bool expectedOk)
     {
         var required = System.Text.Encoding.UTF8.GetByteCount(MultiByteText);

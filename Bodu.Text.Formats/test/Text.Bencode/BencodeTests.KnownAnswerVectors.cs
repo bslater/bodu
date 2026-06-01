@@ -18,7 +18,7 @@ public sealed partial class BencodeTests
     /// <param name="vector">A KAT vector sourced from <see cref="BencodeKnownAnswerVectors.Bep3PositiveVectors" />.</param>
     [TestMethod]
     [TestCategory(TestCategories.Regression)]
-    [DynamicData(nameof(BencodeKnownAnswerVectors.Bep3PositiveVectors), typeof(BencodeKnownAnswerVectors), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(BencodeKnownAnswerVectors.Bep3PositiveVectors), typeof(BencodeKnownAnswerVectors))]
     public void Decode_ForBep3KnownAnswerVector_ShouldReturnExpectedValue(BencodeKnownAnswerVector vector)
     {
         BencodedValue actual = Bencode.Decode(vector.EncodedBytes);
@@ -34,7 +34,7 @@ public sealed partial class BencodeTests
     /// <see cref="BencodeKnownAnswerVectors.EdgeCasePositiveVectors" />.</param>
     [TestMethod]
     [TestCategory(TestCategories.Regression)]
-    [DynamicData(nameof(BencodeKnownAnswerVectors.EdgeCasePositiveVectors), typeof(BencodeKnownAnswerVectors), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(BencodeKnownAnswerVectors.EdgeCasePositiveVectors), typeof(BencodeKnownAnswerVectors))]
     public void Decode_ForEdgeCaseKnownAnswerVector_ShouldReturnExpectedValue(BencodeKnownAnswerVector vector)
     {
         BencodedValue actual = Bencode.Decode(vector.EncodedBytes);
@@ -49,7 +49,7 @@ public sealed partial class BencodeTests
     /// <param name="vector">A KAT vector sourced from <see cref="BencodeKnownAnswerVectors.WikipediaVectors" />.</param>
     [TestMethod]
     [TestCategory(TestCategories.Regression)]
-    [DynamicData(nameof(BencodeKnownAnswerVectors.WikipediaVectors), typeof(BencodeKnownAnswerVectors), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(BencodeKnownAnswerVectors.WikipediaVectors), typeof(BencodeKnownAnswerVectors))]
     public void Decode_ForWikipediaKnownAnswerVector_ShouldReturnExpectedValue(BencodeKnownAnswerVector vector)
     {
         BencodedValue actual = Bencode.Decode(vector.EncodedBytes);
@@ -64,7 +64,7 @@ public sealed partial class BencodeTests
     /// <param name="vector">A KAT vector sourced from <see cref="BencodeKnownAnswerVectors.Bep3PositiveVectors" />.</param>
     [TestMethod]
     [TestCategory(TestCategories.Regression)]
-    [DynamicData(nameof(BencodeKnownAnswerVectors.Bep3PositiveVectors), typeof(BencodeKnownAnswerVectors), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(BencodeKnownAnswerVectors.Bep3PositiveVectors), typeof(BencodeKnownAnswerVectors))]
     public void Encode_ForBep3KnownAnswerVector_ShouldProduceExpectedBytes(BencodeKnownAnswerVector vector)
     {
         var actual = Bencode.Encode(vector.DecodedValue);
@@ -80,7 +80,7 @@ public sealed partial class BencodeTests
     /// <see cref="BencodeKnownAnswerVectors.EdgeCasePositiveVectors" />.</param>
     [TestMethod]
     [TestCategory(TestCategories.Regression)]
-    [DynamicData(nameof(BencodeKnownAnswerVectors.EdgeCasePositiveVectors), typeof(BencodeKnownAnswerVectors), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(BencodeKnownAnswerVectors.EdgeCasePositiveVectors), typeof(BencodeKnownAnswerVectors))]
     public void Encode_ForEdgeCaseKnownAnswerVector_ShouldProduceExpectedBytes(BencodeKnownAnswerVector vector)
     {
         var actual = Bencode.Encode(vector.DecodedValue);
@@ -95,7 +95,7 @@ public sealed partial class BencodeTests
     /// <param name="vector">A KAT vector sourced from <see cref="BencodeKnownAnswerVectors.WikipediaVectors" />.</param>
     [TestMethod]
     [TestCategory(TestCategories.Regression)]
-    [DynamicData(nameof(BencodeKnownAnswerVectors.WikipediaVectors), typeof(BencodeKnownAnswerVectors), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(BencodeKnownAnswerVectors.WikipediaVectors), typeof(BencodeKnownAnswerVectors))]
     public void Encode_ForWikipediaKnownAnswerVector_ShouldProduceExpectedBytes(BencodeKnownAnswerVector vector)
     {
         var actual = Bencode.Encode(vector.DecodedValue);

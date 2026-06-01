@@ -88,7 +88,7 @@ string.Empty,                                  // plaintext (empty)
         var transform = new CcmModeTransform(cipher, new byte[16]);
         var tagBytes = transform.TagSize / 8;
         var output = new byte[tagBytes];
-        var written = transform.Encrypt(ReadOnlySpan<byte>.Empty, output);
+        var written = transform.Encrypt([], output);
         Assert.AreEqual(tagBytes, written, "Encrypting empty plaintext must produce a 16-byte tag.");
     }
 }

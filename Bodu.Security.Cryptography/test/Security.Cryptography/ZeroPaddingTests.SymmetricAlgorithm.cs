@@ -30,7 +30,7 @@ public sealed partial class ZeroPaddingTests
     {
         using SymmetricAlgorithm algorithm = CreateConfiguredAlgorithm(algorithmType, PaddingMode.Zeros);
 
-        var cipherText = EncryptThroughCryptoStream(algorithm, System.Array.Empty<byte>());
+        var cipherText = EncryptThroughCryptoStream(algorithm, []);
 
         Assert.AreEqual(0, cipherText.Length,
             $"Empty plaintext under Zeros on {algorithmType.Name} should produce an empty ciphertext (no padding added).");

@@ -28,7 +28,7 @@ public partial class NotableDateServiceTests
         NotableDateService service = BuildServiceWithOverride(
             [baseRule],
             additions: [added],
-            removals: Array.Empty<RuleRemoval>());
+            removals: []);
 
         IReadOnlyList<NotableDate> emitted = service.GetNotableDates(2026);
 
@@ -48,7 +48,7 @@ public partial class NotableDateServiceTests
         NotableDateService service = BuildServiceWithOverride(
             [baseRule],
             additions: [replacement],
-            removals: Array.Empty<RuleRemoval>());
+            removals: []);
 
         IReadOnlyList<NotableDate> emitted = service.GetNotableDates(2026);
 
@@ -67,7 +67,7 @@ public partial class NotableDateServiceTests
 
         NotableDateService service = BuildServiceWithOverride(
             [baseRule],
-            additions: Array.Empty<NotableDateRule>(),
+            additions: [],
             removals: [new RuleRemoval("Holiday", FromYear: 2026, ToYear: 2026)]);
 
         Assert.IsTrue(service.GetNotableDates(2025).Any(n => n.Name == "Holiday"));
@@ -87,7 +87,7 @@ public partial class NotableDateServiceTests
 
         NotableDateService service = BuildServiceWithOverride(
             [nswRule, ntRule],
-            additions: Array.Empty<NotableDateRule>(),
+            additions: [],
             removals: [new RuleRemoval("Picnic Day", TerritoryCode: "AU-NT")]);
 
         IReadOnlyList<NotableDate> nswResults = service.GetNotableDates(2026, territoryCode: "AU-NSW");
@@ -114,13 +114,13 @@ public partial class NotableDateServiceTests
             Month = 6,
             Day = 1,
             IsNonWorkingDay = true,
-            Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+            Adjustments = [new ObservanceAdjustment
             {
                 Key = "replace",
                 Trigger = AdjustmentTrigger.Always,
                 Action = AdjustmentAction.ReplaceWithNamedDate,
                 TargetRuleName = "Substitute Day",
-            }),
+            }],
         };
 
         NotableDateService service = BuildService(target, redirect);
@@ -162,7 +162,7 @@ public partial class NotableDateServiceTests
 
         NotableDateService service = BuildServiceWithOverride(
             [baseRule],
-            additions: Array.Empty<NotableDateRule>(),
+            additions: [],
             removals: [new RuleRemoval("Unknown")]);
 
         IReadOnlyList<NotableDate> emitted = service.GetNotableDates(2026);

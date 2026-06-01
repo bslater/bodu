@@ -63,12 +63,12 @@ public sealed class MutableNotableDateRuleOverrideProvider : INotableDateRuleOve
     /// <summary>
     /// The current set of override additions in insertion order. Replaced on every mutation; never mutated in place.
     /// </summary>
-    private ImmutableList<NotableDateRule> _additions = ImmutableList<NotableDateRule>.Empty;
+    private ImmutableList<NotableDateRule> _additions = [];
 
     /// <summary>
     /// The current set of override removals in insertion order. Replaced on every mutation; never mutated in place.
     /// </summary>
-    private ImmutableList<RuleRemoval> _removals = ImmutableList<RuleRemoval>.Empty;
+    private ImmutableList<RuleRemoval> _removals = [];
 
     /// <summary>
     /// Raised after every mutation (<see cref="AddRule" />, <see cref="RemoveRule" />, <see cref="Clear" />) so that
@@ -154,8 +154,8 @@ public sealed class MutableNotableDateRuleOverrideProvider : INotableDateRuleOve
     {
         lock (_gate)
         {
-            _additions = ImmutableList<NotableDateRule>.Empty;
-            _removals = ImmutableList<RuleRemoval>.Empty;
+            _additions = [];
+            _removals = [];
         }
 
         OnChanged();

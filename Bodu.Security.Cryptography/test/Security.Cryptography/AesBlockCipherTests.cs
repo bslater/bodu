@@ -67,7 +67,7 @@ public sealed partial class AesBlockCipherTests
     /// <see cref="ArgumentException" /> family used by other cipher engines, so this contract is asserted
     /// explicitly here rather than via the inherited generic tests.
     /// </summary>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(0)]
     [DataRow(8)]
     [DataRow(15)]

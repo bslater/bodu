@@ -41,8 +41,8 @@ public sealed partial class Base32Tests
     /// HexExtended variant reproduces every RFC 4648 §10 base32hex vector.
     /// </summary>
     /// <param name="vector">A KAT vector.</param>
-    [DataTestMethod]
-    [DynamicData(nameof(Base32KnownAnswerVectors.HexExtendedRfc4648Vectors), typeof(Base32KnownAnswerVectors), DynamicDataSourceType.Method)]
+    [TestMethod]
+    [DynamicData(nameof(Base32KnownAnswerVectors.HexExtendedRfc4648Vectors), typeof(Base32KnownAnswerVectors))]
     public void Encode_ForHexExtendedRfc4648KnownAnswerVector_ShouldMatch(EncodingKnownAnswerVector vector)
     {
         var actual = Base32.Encode(vector.DecodedBytes, Base32Variant.HexExtended);
@@ -55,8 +55,8 @@ public sealed partial class Base32Tests
     /// Standard variant reproduces every RFC 4648 §10 Known Answer Test vector.
     /// </summary>
     /// <param name="vector">A KAT vector.</param>
-    [DataTestMethod]
-    [DynamicData(nameof(Base32KnownAnswerVectors.StandardRfc4648Vectors), typeof(Base32KnownAnswerVectors), DynamicDataSourceType.Method)]
+    [TestMethod]
+    [DynamicData(nameof(Base32KnownAnswerVectors.StandardRfc4648Vectors), typeof(Base32KnownAnswerVectors))]
     public void Encode_ForStandardRfc4648KnownAnswerVector_ShouldMatch(EncodingKnownAnswerVector vector)
     {
         var actual = Base32.Encode(vector.DecodedBytes, Base32Variant.Standard);
@@ -159,7 +159,7 @@ public sealed partial class Base32Tests
     /// </summary>
     /// <param name="input">The input ASCII string.</param>
     /// <param name="expected">The expected Base32 output.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("", "")]
     [DataRow("f", "MY======")]
     [DataRow("fo", "MZXQ====")]

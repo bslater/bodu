@@ -29,7 +29,7 @@ public partial class ConcurrentHashSetTests
     {
         Assert.IsTrue(new ConcurrentHashSet<int>([1, 2, 3]).IsSupersetOf([1, 2]));
         Assert.IsTrue(new ConcurrentHashSet<int>([1, 2]).IsSupersetOf([1, 2]));
-        Assert.IsTrue(new ConcurrentHashSet<int>([1]).IsSupersetOf(Array.Empty<int>()));
+        Assert.IsTrue(new ConcurrentHashSet<int>([1]).IsSupersetOf([]));
         Assert.IsFalse(new ConcurrentHashSet<int>([1, 2]).IsSupersetOf([1, 2, 3]));
     }
 
@@ -125,10 +125,10 @@ public partial class ConcurrentHashSetTests
         var empty = new ConcurrentHashSet<int>();
 
         Assert.IsTrue(empty.IsSubsetOf([1, 2]));
-        Assert.IsTrue(empty.IsSubsetOf(Array.Empty<int>()));
+        Assert.IsTrue(empty.IsSubsetOf([]));
         Assert.IsTrue(empty.IsProperSubsetOf([1]));
-        Assert.IsFalse(empty.IsProperSubsetOf(Array.Empty<int>()));
+        Assert.IsFalse(empty.IsProperSubsetOf([]));
         Assert.IsFalse(empty.Overlaps([1, 2]));
-        Assert.IsTrue(empty.SetEquals(Array.Empty<int>()));
+        Assert.IsTrue(empty.SetEquals([]));
     }
 }

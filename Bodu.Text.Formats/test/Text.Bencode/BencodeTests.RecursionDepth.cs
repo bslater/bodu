@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Text;
-
 namespace Bodu.Text.Bencode;
 
 public sealed partial class BencodeTests
