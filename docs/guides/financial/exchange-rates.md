@@ -67,7 +67,7 @@ the timeless contract has only the throwing form.
 
 ## Dated lookup with provenance
 
-`FixedDatedExchangeRateTable` accepts a flat sequence of
+`FixedDatedExchangeRateProvider` accepts a flat sequence of
 `ExchangeRate` observations and groups them into one
 `ExchangeRateSeries` per `(pair, provider)`. Every observation for a
 pair must carry the same provider name; for rates from multiple
@@ -80,7 +80,7 @@ ExchangeRate[] observations =
     new("USD", "EUR", new DateOnly(2024, 6, 17), 0.931m, "ECB"),
     new("USD", "EUR", new DateOnly(2024, 6, 18), 0.930m, "ECB"),
 };
-FixedDatedExchangeRateTable table = new(observations);
+FixedDatedExchangeRateProvider table = new(observations);
 
 ExchangeRateLookupResult lookup = table.GetRate(
     "USD", "EUR",
@@ -96,7 +96,7 @@ lookup.OffsetDays;     // 1   (lookup.IsExactDate => false)
 ```
 
 Same-currency lookups return a synthetic identity rate tagged with
-`FixedDatedExchangeRateTable.IdentityProviderName` (`"Identity"`), so
+`FixedDatedExchangeRateProvider.IdentityProviderName` (`"Identity"`), so
 audit consumers can filter pass-throughs without a magic-string.
 
 ### Lookup options
@@ -126,9 +126,9 @@ first successful result wins.
 ```csharp
 CompositeDatedExchangeRateProvider stack = new(new IDatedExchangeRateProvider[]
 {
-    new FixedDatedExchangeRateTable(ecbObservations),
-    new FixedDatedExchangeRateTable(oandaObservations),
-    new FixedDatedExchangeRateTable(snapshotObservations),
+    new FixedDatedExchangeRateProvider(ecbObservations),
+    new FixedDatedExchangeRateProvider(oandaObservations),
+    new FixedDatedExchangeRateProvider(snapshotObservations),
 });
 
 ExchangeRateLookupResult lookup = stack.GetRate(
@@ -198,7 +198,7 @@ extension methods for runtime-tagged amounts. For bags, see
 | Scenario | Reach for |
 |---|---|
 | Unit-test rates; "current rate" caches | `FixedExchangeRateTable` |
-| In-memory table where the date matters | `FixedDatedExchangeRateTable` + `ExchangeRateLookupOptions.PreviousWithin(...)` |
+| In-memory table where the date matters | `FixedDatedExchangeRateProvider` + `ExchangeRateLookupOptions.PreviousWithin(...)` |
 | Primary feed plus fallbacks | `CompositeDatedExchangeRateProvider` over multiple dated providers |
 | Reporting period that pins one date everywhere | `DatedExchangeRateProviderAdapter` over the period-end date |
 | Ledger entry that records the rate provenance | `Money<T>.ConvertToWithRate<,>(provider, date, options)` returning `MoneyConversionResult<,>` |
@@ -210,5 +210,5 @@ extension methods for runtime-tagged amounts. For bags, see
 - [Bodu.Financial introduction](../../docs/financial/index.md), [Core concepts](../../docs/financial/concepts.md), [Working with `Money<TCurrency>`](money.md)
 - Contracts — [`IExchangeRateProvider`](xref:Bodu.Financial.IExchangeRateProvider), [`IDatedExchangeRateProvider`](xref:Bodu.Financial.IDatedExchangeRateProvider)
 - Values — [`ExchangeRate`](xref:Bodu.Financial.ExchangeRate), [`ExchangeRatePair`](xref:Bodu.Financial.ExchangeRatePair), [`ExchangeRateSeries`](xref:Bodu.Financial.ExchangeRateSeries)
-- Providers — [`FixedExchangeRateTable`](xref:Bodu.Financial.FixedExchangeRateTable), [`FixedDatedExchangeRateTable`](xref:Bodu.Financial.FixedDatedExchangeRateTable), [`CompositeDatedExchangeRateProvider`](xref:Bodu.Financial.CompositeDatedExchangeRateProvider), [`DatedExchangeRateProviderAdapter`](xref:Bodu.Financial.DatedExchangeRateProviderAdapter)
+- Providers — [`FixedExchangeRateTable`](xref:Bodu.Financial.FixedExchangeRateTable), [`FixedDatedExchangeRateProvider`](xref:Bodu.Financial.FixedDatedExchangeRateProvider), [`CompositeDatedExchangeRateProvider`](xref:Bodu.Financial.CompositeDatedExchangeRateProvider), [`DatedExchangeRateProviderAdapter`](xref:Bodu.Financial.DatedExchangeRateProviderAdapter)
 - Lookup metadata — [`ExchangeRateLookupOptions`](xref:Bodu.Financial.ExchangeRateLookupOptions), [`ExchangeRateLookupResult`](xref:Bodu.Financial.ExchangeRateLookupResult), [`ExchangeRateDateResolution`](xref:Bodu.Financial.ExchangeRateDateResolution), [`MoneyConversionResult<TSource, TTarget>`](xref:Bodu.Financial.MoneyConversionResult`2)

@@ -36,7 +36,7 @@ Reach for this library when you need monetary arithmetic that the compiler valid
 - <xref:Bodu.Financial.IExchangeRateProvider>, <xref:Bodu.Financial.IDatedExchangeRateProvider> — timeless and dated contracts.
 - <xref:Bodu.Financial.ExchangeRate>, <xref:Bodu.Financial.ExchangeRatePair>, <xref:Bodu.Financial.ExchangeRateSeries> — observation record, strongly-typed (from, to) key, and an O(log n) time series.
 - <xref:Bodu.Financial.ExchangeRateLookupOptions>, <xref:Bodu.Financial.ExchangeRateLookupResult>, <xref:Bodu.Financial.ExchangeRateDateResolution> — resolution policy options and the audit-grade lookup result.
-- <xref:Bodu.Financial.FixedExchangeRateTable>, <xref:Bodu.Financial.FixedDatedExchangeRateTable>, <xref:Bodu.Financial.CompositeDatedExchangeRateProvider>, <xref:Bodu.Financial.DatedExchangeRateProviderAdapter> — in-memory provider implementations, a composite stack for prioritised fallback, and an adapter that pins a date to a dated provider for codebases that don't need the dated surface.
+- <xref:Bodu.Financial.FixedExchangeRateTable>, <xref:Bodu.Financial.FixedDatedExchangeRateProvider>, <xref:Bodu.Financial.CompositeDatedExchangeRateProvider>, <xref:Bodu.Financial.DatedExchangeRateProviderAdapter> — in-memory provider implementations, a composite stack for prioritised fallback, and an adapter that pins a date to a dated provider for codebases that don't need the dated surface.
 - <xref:Bodu.Financial.MoneyConversionResult`2> — audit record bundling source and target money with the full lookup result.
 
 **Related namespaces**

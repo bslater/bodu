@@ -315,7 +315,7 @@ ISO 4217 catalogue (~185 tag types), the runtime-tagged
 `MoneyValue`, the multi-currency `MoneyBag` aggregate,
 `CurrencyRegistry` for runtime ISO-to-metadata lookup, the timeless
 `IExchangeRateProvider` with `FixedExchangeRateTable`, and the dated
-FX stack (`IDatedExchangeRateProvider`, `FixedDatedExchangeRateTable`,
+FX stack (`IDatedExchangeRateProvider`, `FixedDatedExchangeRateProvider`,
 `CompositeDatedExchangeRateProvider`, `ExchangeRateSeries`,
 `DatedExchangeRateProviderAdapter`). References `Bodu.Numerics` for
 the exact-arithmetic escape hatch through `Fraction<BigInteger>`.

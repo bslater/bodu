@@ -37,7 +37,7 @@ hand off to `Fraction<BigInteger>` for exact-arithmetic chains via
   for dated lookups with full audit metadata
   ([`ExchangeRate`](xref:Bodu.Financial.ExchangeRate),
   [`ExchangeRateSeries`](xref:Bodu.Financial.ExchangeRateSeries),
-  [`FixedDatedExchangeRateTable`](xref:Bodu.Financial.FixedDatedExchangeRateTable),
+  [`FixedDatedExchangeRateProvider`](xref:Bodu.Financial.FixedDatedExchangeRateProvider),
   [`CompositeDatedExchangeRateProvider`](xref:Bodu.Financial.CompositeDatedExchangeRateProvider)).
 
 ## Articles

@@ -23,7 +23,7 @@ The package depends on `Bodu.Numerics` so `Money<TCurrency>` can round-trip thro
 | <xref:Bodu.Financial.CurrencyInfo>, <xref:Bodu.Financial.CurrencyRegistry> | Runtime currency metadata record and a thread-safe registry over shipped + caller-registered custom currencies. |
 | <xref:Bodu.Financial.ExchangeRate>, <xref:Bodu.Financial.ExchangeRatePair>, <xref:Bodu.Financial.ExchangeRateSeries> | Immutable FX observation value object, strongly-typed (from, to) key, and an O(log n) time series over observations. |
 | <xref:Bodu.Financial.IExchangeRateProvider>, <xref:Bodu.Financial.IDatedExchangeRateProvider> | Timeless and dated provider contracts. The dated form returns an <xref:Bodu.Financial.ExchangeRateLookupResult> with provenance metadata (offset days, resolution policy, provider name). |
-| <xref:Bodu.Financial.FixedExchangeRateTable>, <xref:Bodu.Financial.FixedDatedExchangeRateTable>, <xref:Bodu.Financial.CompositeDatedExchangeRateProvider> | In-memory provider implementations and a composite stack for prioritised fallback across multiple FX sources. |
+| <xref:Bodu.Financial.FixedExchangeRateTable>, <xref:Bodu.Financial.FixedDatedExchangeRateProvider>, <xref:Bodu.Financial.CompositeDatedExchangeRateProvider> | In-memory provider implementations and a composite stack for prioritised fallback across multiple FX sources. |
 | <xref:Bodu.Financial.MoneyConversionResult`2> | Audit record returned by extension methods that convert through a dated provider — pairs source and target amount with the full lookup result. |
 
 ### `Bodu.Financial.Currencies`
