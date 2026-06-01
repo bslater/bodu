@@ -1,39 +1,15 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="SymmetricStreamAlgorithmContractTests.Transform.cs" company="Bodu Pty. Ltd.">
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="SymmetricStreamAlgorithmTests.Transform.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Security.Cryptography;
 
-namespace Bodu.Security.Cryptography.Contracts;
+namespace Bodu.Security.Cryptography;
 
-public abstract partial class SymmetricStreamAlgorithmContractTests<TCipher>
+public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
 {
-    /// <summary>
-    /// Verifies that encrypting a payload and then decrypting the result recovers the original plaintext, confirming
-    /// the cipher is self-inverse.
-    /// </summary>
-    [TestMethod]
-    public void Transform_WhenDecryptingCiphertext_ShouldRecoverPlaintext()
-    {
-        var key = CreateKey();
-        var nonce = CreateNonce();
-        var plaintext = CreatePayload(4097);
-
-        byte[] ciphertext;
-        using (TCipher encryptor = CreateAlgorithm())
-        using (ICryptoTransform e = encryptor.CreateEncryptor(key, nonce))
-            ciphertext = e.TransformFinalBlock(plaintext, 0, plaintext.Length);
-
-        byte[] recovered;
-        using (TCipher decryptor = CreateAlgorithm())
-        using (ICryptoTransform d = decryptor.CreateDecryptor(key, nonce))
-            recovered = d.TransformFinalBlock(ciphertext, 0, ciphertext.Length);
-
-        CollectionAssert.AreEqual(plaintext, recovered);
-    }
-
     /// <summary>
     /// Verifies that transforming the input in arbitrary, non-block-aligned segments produces the same output as a
     /// single one-shot transform, confirming the partial-block keystream carry is correct.
@@ -46,12 +22,12 @@ public abstract partial class SymmetricStreamAlgorithmContractTests<TCipher>
         var plaintext = CreatePayload(4097);
 
         byte[] oneShot;
-        using (TCipher cipher = CreateAlgorithm())
+        using (TAlgorithm cipher = CreateAlgorithm())
         using (ICryptoTransform e = cipher.CreateEncryptor(key, nonce))
             oneShot = e.TransformFinalBlock(plaintext, 0, plaintext.Length);
 
         var segmented = new byte[plaintext.Length];
-        using (TCipher cipher = CreateAlgorithm())
+        using (TAlgorithm cipher = CreateAlgorithm())
         using (ICryptoTransform e = cipher.CreateEncryptor(key, nonce))
         {
             var offset = 0;
@@ -80,12 +56,12 @@ public abstract partial class SymmetricStreamAlgorithmContractTests<TCipher>
 
         // Two independent instances under the same key/nonce must produce identical keystream.
         byte[] first;
-        using (TCipher cipher = CreateAlgorithm())
+        using (TAlgorithm cipher = CreateAlgorithm())
         using (ICryptoTransform e = cipher.CreateEncryptor(key, nonce))
             first = e.TransformFinalBlock(new byte[257], 0, 257);
 
         byte[] second;
-        using (TCipher cipher = CreateAlgorithm())
+        using (TAlgorithm cipher = CreateAlgorithm())
         using (ICryptoTransform e = cipher.CreateEncryptor(key, nonce))
             second = e.TransformFinalBlock(new byte[257], 0, 257);
 
@@ -102,7 +78,7 @@ public abstract partial class SymmetricStreamAlgorithmContractTests<TCipher>
     [TestMethod]
     public void CanReuseTransform_WhenQueried_ShouldBeFalse()
     {
-        using TCipher cipher = CreateAlgorithm();
+        using TAlgorithm cipher = CreateAlgorithm();
         using ICryptoTransform e = cipher.CreateEncryptor(CreateKey(), CreateNonce());
 
         Assert.IsFalse(e.CanReuseTransform);
@@ -115,7 +91,7 @@ public abstract partial class SymmetricStreamAlgorithmContractTests<TCipher>
     [TestMethod]
     public void BlockSizes_WhenTransformCreated_ShouldBeOneByte()
     {
-        using TCipher cipher = CreateAlgorithm();
+        using TAlgorithm cipher = CreateAlgorithm();
         using ICryptoTransform e = cipher.CreateEncryptor(CreateKey(), CreateNonce());
 
         Assert.AreEqual(1, e.InputBlockSize);
@@ -129,7 +105,7 @@ public abstract partial class SymmetricStreamAlgorithmContractTests<TCipher>
     [TestMethod]
     public void TransformBlock_WhenCalledAfterFinalBlock_ShouldThrowInvalidOperationException()
     {
-        using TCipher cipher = CreateAlgorithm();
+        using TAlgorithm cipher = CreateAlgorithm();
         using ICryptoTransform e = cipher.CreateEncryptor(CreateKey(), CreateNonce());
 
         var payload = CreatePayload(16);
@@ -148,7 +124,7 @@ public abstract partial class SymmetricStreamAlgorithmContractTests<TCipher>
     [TestMethod]
     public void TransformFinalBlock_WhenCalledTwice_ShouldThrowInvalidOperationException()
     {
-        using TCipher cipher = CreateAlgorithm();
+        using TAlgorithm cipher = CreateAlgorithm();
         using ICryptoTransform e = cipher.CreateEncryptor(CreateKey(), CreateNonce());
 
         var payload = CreatePayload(16);
@@ -167,7 +143,7 @@ public abstract partial class SymmetricStreamAlgorithmContractTests<TCipher>
     [TestMethod]
     public void TransformBlock_WhenInputLengthIsZero_ShouldReturnZeroAndWriteNothing()
     {
-        using TCipher cipher = CreateAlgorithm();
+        using TAlgorithm cipher = CreateAlgorithm();
         using ICryptoTransform e = cipher.CreateEncryptor(CreateKey(), CreateNonce());
 
         var output = new byte[8];
@@ -184,7 +160,7 @@ public abstract partial class SymmetricStreamAlgorithmContractTests<TCipher>
     [TestMethod]
     public void TransformBlock_WhenTransformDisposed_ShouldThrowObjectDisposedException()
     {
-        using TCipher cipher = CreateAlgorithm();
+        using TAlgorithm cipher = CreateAlgorithm();
         ICryptoTransform e = cipher.CreateEncryptor(CreateKey(), CreateNonce());
         var payload = CreatePayload(16);
         e.Dispose();
@@ -203,7 +179,7 @@ public abstract partial class SymmetricStreamAlgorithmContractTests<TCipher>
     [TestMethod]
     public void TransformFinalBlock_WhenTransformDisposed_ShouldThrowObjectDisposedException()
     {
-        using TCipher cipher = CreateAlgorithm();
+        using TAlgorithm cipher = CreateAlgorithm();
         ICryptoTransform e = cipher.CreateEncryptor(CreateKey(), CreateNonce());
         var payload = CreatePayload(16);
         e.Dispose();
@@ -219,9 +195,9 @@ public abstract partial class SymmetricStreamAlgorithmContractTests<TCipher>
     /// idempotent <see cref="IDisposable.Dispose" /> contract.
     /// </summary>
     [TestMethod]
-    public void Dispose_WhenCalledMultipleTimes_ShouldNotThrow()
+    public void Transform_WhenDisposedTwice_ShouldNotThrow()
     {
-        using TCipher cipher = CreateAlgorithm();
+        using TAlgorithm cipher = CreateAlgorithm();
         ICryptoTransform e = cipher.CreateEncryptor(CreateKey(), CreateNonce());
 
         e.Dispose();
@@ -235,7 +211,7 @@ public abstract partial class SymmetricStreamAlgorithmContractTests<TCipher>
     [TestMethod]
     public void TransformFinalBlock_WhenInputLengthIsZero_ShouldReturnEmptyAndFinalize()
     {
-        using TCipher cipher = CreateAlgorithm();
+        using TAlgorithm cipher = CreateAlgorithm();
         using ICryptoTransform e = cipher.CreateEncryptor(CreateKey(), CreateNonce());
 
         var result = e.TransformFinalBlock([], 0, 0);

@@ -7,23 +7,28 @@
 
 using System.Reflection;
 using System.Security.Cryptography;
-using Bodu.Security.Cryptography.Contracts;
 
 namespace Bodu.Security.Cryptography;
 /// <summary>
 /// Locks the <see cref="Salsa20" /> stream cipher against the published eSTREAM / ECRYPT and Bernstein-specification
 /// known-answer test vectors, and inherits the shared
-/// <see cref="SymmetricStreamAlgorithmContractTests{TCipher}" /> behavioural contract.
+/// <see cref="SymmetricStreamAlgorithmTests{TTest, TAlgorithm}" /> behavioural contract.
 /// </summary>
 [TestClass]
-public sealed class Salsa20Tests
-    : SymmetricStreamAlgorithmContractTests<Salsa20>
+public sealed partial class Salsa20Tests
+    : SymmetricStreamAlgorithmTests<Salsa20Tests, Salsa20>
 {
     /// <inheritdoc />
-    protected override int ExpectedKeySizeBits => 256;
+    protected override Salsa20 CreateAlgorithm() => new();
 
     /// <inheritdoc />
-    protected override int ExpectedNonceSizeBits => 64;
+    protected override SymmetricStreamAlgorithmSpecification GetSpecification() =>
+        new()
+        {
+            DefaultKeySizeBits = 256,
+            NonceSizeBits = 64,
+            LegalKeySizesBits = [128, 256],
+        };
 
     /// <summary>
     /// Represents one Salsa20 keystream known-answer test row, recovered as the ciphertext of an all-zero plaintext.
