@@ -69,7 +69,7 @@ Fraction<int>.Parse("⅗");                     // 3/5
 Fraction<int>.Parse("75%");                   // 3/4
 ```
 
-`Parse` and `TryParse` accept integers, ratios, mixed numbers, the 19 Unicode vulgar-fraction glyphs, and percentage syntax.
+`Parse` and `TryParse` accept integers, ratios, mixed numbers, the 18 Unicode vulgar-fraction glyphs the library ships, and percentage syntax. See [Formatting and parsing `Fraction<T>`](../../guides/numerics/formatting-and-parsing.md) for the full table.
 
 ### JSON
 

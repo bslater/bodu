@@ -311,7 +311,7 @@ The backing type is constrained as `where T : IBinaryInteger<T>`.
 | `"3"`, `"-5"` | Whole-number fractions: 3/1, -5/1 |
 | `"3/4"`, `"-7/2"` | Ratios |
 | `"2 1/3"` | Mixed numbers: 7/3 — sign applies to whole result |
-| `"½"`, `"⅖"` | Unicode vulgar fractions (19 glyphs) |
+| `"½"`, `"⅖"` | Unicode vulgar fractions (18 glyphs — see [Formatting and parsing](formatting-and-parsing.md)) |
 | `"2⅜"` | Whole + vulgar fraction: 19/8 |
 | `"50%"`, `"3/4%"` | Percentage form — trailing `%` divides denominator by 100 |
 

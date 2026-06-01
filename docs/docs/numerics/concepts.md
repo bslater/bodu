@@ -52,7 +52,7 @@ A **mixed number** is the `whole + proper-fraction` form — `2 1/3` instead of 
 
 ## Unicode vulgar fraction
 
-A **vulgar fraction** is the single-codepoint glyph form — `½`, `⅗`, `¾`. The `"U"` format specifier emits these glyphs when one exists (the 19 numerator/denominator pairs the Unicode standard defines, with denominator at most 10) and falls back to mixed-number form otherwise. The parser accepts the same glyphs (`"⅗"` parses to `3/5`, `"2⅜"` parses to `19/8`).
+A **vulgar fraction** is the single-codepoint glyph form — `½`, `⅗`, `¾`. The `"U"` format specifier emits these glyphs when one exists (18 numerator/denominator pairs are shipped, with denominator at most 16) and falls back to mixed-number form otherwise. The parser accepts the same glyphs (`"⅗"` parses to `3/5`, `"2⅜"` parses to `19/8`). See [Formatting and parsing `Fraction<T>`](../../guides/numerics/formatting-and-parsing.md) for the full glyph table.
 
 ## Continued fraction expansion
 
