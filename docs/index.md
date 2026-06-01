@@ -94,7 +94,7 @@ Six independent NuGet packages that share a single solution, a single set of con
 </div>
 
 <div class="bodu-card">
-  <img src="images/hero-core.svg" alt="Bodu.Numerics" />
+  <img src="images/hero-numerics.svg" alt="Bodu.Numerics" />
   <h3>Bodu.Numerics</h3>
   <p>Exact rational arithmetic (<code>Fraction&lt;T&gt;</code>) over any <code>IBinaryInteger&lt;T&gt;</code> backing type with canonical-form auto-reduction, <code>BigInteger</code>-promoted intermediates, the full <code>INumber&lt;T&gt;</code> / <code>ISignedNumber&lt;T&gt;</code> surface, mixed-number and Unicode-vulgar-fraction formatting, continued-fraction expansion, and best rational approximation — plus <code>Interval&lt;T&gt;</code> for closed / open / half-open bounded numeric intervals with intersection, union, and adjacency operations.</p>
   <div class="bodu-card-links">
@@ -105,7 +105,7 @@ Six independent NuGet packages that share a single solution, a single set of con
 </div>
 
 <div class="bodu-card">
-  <img src="images/hero-core.svg" alt="Bodu.Financial" />
+  <img src="images/hero-financial.svg" alt="Bodu.Financial" />
   <h3>Bodu.Financial</h3>
   <p>Type-safe monetary primitives: <code>Money&lt;TCurrency&gt;</code> where the currency is encoded as the type parameter so cross-currency arithmetic fails the build, <code>MoneyValue</code> for runtime-tagged scenarios, <code>MoneyBag</code> for multi-currency portfolios, a shipped catalogue of ~185 ISO 4217 currencies (active and historic), an audit-grade exchange-rate provider stack with both timeless and dated lookup, fair allocation, cash rounding, sub-minor-unit-precise <code>Fraction&lt;BigInteger&gt;</code> interop, and three JSON wire shapes (strict / lenient / compact).</p>
   <div class="bodu-card-links">
@@ -116,7 +116,7 @@ Six independent NuGet packages that share a single solution, a single set of con
 </div>
 
 <div class="bodu-card">
-  <img src="images/hero-text.svg" alt="Bodu.Text.Configuration" />
+  <img src="images/hero-configuration.svg" alt="Bodu.Text.Configuration" />
   <h3>Bodu.Text.Configuration</h3>
   <p>INI / EditorConfig-style configuration parser with three profiles (Standard, PureIni, Relaxed), structured diagnostics, key pattern matching, and a typed view layer for projecting flattened paths into a <code>ConfigurationView</code> consumers can read without parsing twice.</p>
   <div class="bodu-card-links">
@@ -127,33 +127,13 @@ Six independent NuGet packages that share a single solution, a single set of con
 </div>
 
 <div class="bodu-card">
-  <img src="images/hero-text.svg" alt="Bodu.Extensions.Configuration.Text" />
+  <img src="images/hero-extensions-config.svg" alt="Bodu.Extensions.Configuration.Text" />
   <h3>Bodu.Extensions.Configuration.Text</h3>
   <p>Bridge between <code>Bodu.Text.Configuration</code> and <code>Microsoft.Extensions.Configuration</code> — file-based and stream-based configuration sources and providers that surface Bodu-parsed INI documents through the standard ASP.NET / Generic Host configuration pipeline.</p>
   <div class="bodu-card-links">
     <a href="docs/extensions-configuration-text/index.md">Introduction</a>
     <a href="guides/extensions-configuration-text/index.md">Guides</a>
     <a href="apidoc/Bodu.Extensions.Configuration.Text.md">API reference</a>
-  </div>
-</div>
-
-<div class="bodu-card">
-  <img src="images/hero-calendar.svg" alt="Bodu.Globalization.Calendar.Builder" />
-  <h3>Bodu.Globalization.Calendar.Builder</h3>
-  <p>Fluent, chainable API for programmatically authoring <code>NotableDateRule</code> instances in C# — supports every rule field (strategy, scope, tags, observance adjustments), deep cloning for template-mutate workflows, and round-tripping to / from the schema-valid XML and JSON forms consumed by the embedded-resource rule providers.</p>
-  <div class="bodu-card-links">
-    <a href="guides/calendar/notable-date-builder.md">Guide</a>
-    <a href="apidoc/Bodu.Globalization.Calendar.Builder.md">API reference</a>
-  </div>
-</div>
-
-<div class="bodu-card">
-  <img src="images/hero-calendar.svg" alt="Bodu.Globalization.Calendar.Data" />
-  <h3>Bodu.Globalization.Calendar.Data.*</h3>
-  <p>Region-specific notable-date rule bundles ship as independent NuGet packages so national public-holiday data can be re-released without a main-library rebuild. <code>Data.Americas</code> covers United States and Canada; <code>Data.Europe</code> covers eight countries including DE / ES / FR / GB / IT; <code>Data.AsiaPacific</code> covers eight countries including AU / CN / IN / JP / KR / NZ.</p>
-  <div class="bodu-card-links">
-    <a href="guides/calendar/data-packs.md">Guide</a>
-    <a href="apidoc/Bodu.Globalization.Calendar.Data.md">API reference</a>
   </div>
 </div>
 
@@ -174,11 +154,6 @@ dotnet add package Bodu.Text.Configuration
 dotnet add package Bodu.Extensions.Configuration.Text
 dotnet add package Bodu.Numerics
 dotnet add package Bodu.Financial
-
-# Optional region-specific calendar data packs:
-dotnet add package Bodu.Globalization.Calendar.Data.Americas
-dotnet add package Bodu.Globalization.Calendar.Data.Europe
-dotnet add package Bodu.Globalization.Calendar.Data.AsiaPacific
 ```
 
 </div>
