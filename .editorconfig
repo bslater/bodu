@@ -131,6 +131,12 @@ dotnet_code_quality_unused_parameters = all:suggestion
 
 # IDE0028: Simplify collection initialization
 dotnet_diagnostic.IDE0028.severity = silent
+dotnet_style_prefer_is_null_check_over_reference_equality_method = true:suggestion
+dotnet_style_prefer_auto_properties = true:silent
+dotnet_style_prefer_conditional_expression_over_assignment = true:silent
+dotnet_style_prefer_conditional_expression_over_return = true:silent
+dotnet_style_explicit_tuple_names = true:suggestion
+dotnet_style_prefer_collection_expression = when_types_loosely_match:suggestion
 
 [*.cs]
 
@@ -291,6 +297,7 @@ dotnet_diagnostic.IDE0290.severity = none
 
 # File header template
 dotnet_diagnostic.IDE0073.severity = none
+csharp_prefer_system_threading_lock = true:suggestion
 
 # ---------------------------------------------------------------------------------------------------------------
 # Bodu code-style analyzer diagnostics (BODU#### family)

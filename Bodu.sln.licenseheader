@@ -1,8 +1,8 @@
-extensions: designer.cs generated.cs
+﻿extensions: designer.cs generated.cs
 extensions: .cs .cpp .h
 // ---------------------------------------------------------------------------------------------------------------
 // <copyright file="%FileName%" company="Bodu Pty. Ltd.">
-// Copyright (c) Bodu Pty. Ltd.. All rights reserved.
+// Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
@@ -17,7 +17,7 @@ extensions:  .xml .config .xsd
 <!--
 // ---------------------------------------------------------------------------------------------------------------
 // <copyright file="$FileName$" company="Bodu Pty. Ltd.">
-// Copyright (c) Bodu Pty. Ltd.. All rights reserved.
+// Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 -->
