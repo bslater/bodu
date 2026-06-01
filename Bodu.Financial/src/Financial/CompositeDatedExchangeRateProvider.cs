@@ -61,7 +61,7 @@ public sealed class CompositeDatedExchangeRateProvider : IDatedExchangeRateProvi
         string fromIsoCode,
         string toIsoCode,
         DateOnly date,
-        ExchangeRateLookupOptions options)
+        ExchangeRateLookupOptions? options = null)
     {
         return TryGetRate(fromIsoCode, toIsoCode, date, options, out ExchangeRateLookupResult result)
             ? result
@@ -80,9 +80,10 @@ public sealed class CompositeDatedExchangeRateProvider : IDatedExchangeRateProvi
         string fromIsoCode,
         string toIsoCode,
         DateOnly date,
-        ExchangeRateLookupOptions options,
+        ExchangeRateLookupOptions? options,
         out ExchangeRateLookupResult result)
     {
+        options ??= ExchangeRateLookupOptions.Exact;
         IDatedExchangeRateProvider[] providers = _providers;
 
         for (var i = 0; i < providers.Length; i++)

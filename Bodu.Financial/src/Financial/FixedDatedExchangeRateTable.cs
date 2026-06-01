@@ -63,7 +63,7 @@ public sealed class FixedDatedExchangeRateTable : IDatedExchangeRateProvider
         string fromIsoCode,
         string toIsoCode,
         DateOnly date,
-        ExchangeRateLookupOptions options)
+        ExchangeRateLookupOptions? options = null)
     {
         return TryGetRate(fromIsoCode, toIsoCode, date, options, out ExchangeRateLookupResult result)
             ? result
@@ -74,8 +74,8 @@ public sealed class FixedDatedExchangeRateTable : IDatedExchangeRateProvider
                     fromIsoCode,
                     toIsoCode,
                     date,
-                    options.DateResolution,
-                    options.ToleranceDays));
+                    (options ?? ExchangeRateLookupOptions.Exact).DateResolution,
+                    (options ?? ExchangeRateLookupOptions.Exact).ToleranceDays));
     }
 
     /// <inheritdoc />
@@ -83,11 +83,12 @@ public sealed class FixedDatedExchangeRateTable : IDatedExchangeRateProvider
         string fromIsoCode,
         string toIsoCode,
         DateOnly date,
-        ExchangeRateLookupOptions options,
+        ExchangeRateLookupOptions? options,
         out ExchangeRateLookupResult result)
     {
         FinancialThrowHelper.ThrowIfNotValidIsoCode(fromIsoCode);
         FinancialThrowHelper.ThrowIfNotValidIsoCode(toIsoCode);
+        options ??= ExchangeRateLookupOptions.Exact;
         options.Validate();
 
         if (options.AllowSameCurrencyIdentityRate &&

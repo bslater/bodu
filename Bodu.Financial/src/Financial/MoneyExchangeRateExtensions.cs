@@ -36,7 +36,7 @@ public static class MoneyExchangeRateExtensions
         this Money<TSource> amount,
         IDatedExchangeRateProvider provider,
         DateOnly date,
-        ExchangeRateLookupOptions options,
+        ExchangeRateLookupOptions? options = null,
         MidpointRounding rounding = MidpointRounding.ToEven)
         where TSource : ICurrency
         where TTarget : ICurrency
@@ -78,7 +78,7 @@ public static class MoneyExchangeRateExtensions
         this Money<TSource> amount,
         IDatedExchangeRateProvider provider,
         DateOnly date,
-        ExchangeRateLookupOptions options,
+        ExchangeRateLookupOptions? options = null,
         MidpointRounding rounding = MidpointRounding.ToEven)
         where TSource : ICurrency
         where TTarget : ICurrency

@@ -43,7 +43,7 @@ public partial class FixedDatedExchangeRateTableTests
 
         ExchangeRateLookupOptions options = new(
             ExchangeRateDateResolution.Exact,
-            AllowSameCurrencyIdentityRate: false);
+            allowSameCurrencyIdentityRate: false);
 
         var found = table.TryGetRate("USD", "USD", s_d1, options, out _);
 

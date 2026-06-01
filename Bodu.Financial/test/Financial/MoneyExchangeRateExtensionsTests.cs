@@ -106,7 +106,7 @@ public partial class MoneyExchangeRateExtensionsTests
             amount.ConvertTo<Bodu.Financial.Currencies.USD, Bodu.Financial.Currencies.JPY>(
                 empty,
                 s_d1,
-                new ExchangeRateLookupOptions(ExchangeRateDateResolution.Exact, AllowSameCurrencyIdentityRate: false)));
+                new ExchangeRateLookupOptions(ExchangeRateDateResolution.Exact, allowSameCurrencyIdentityRate: false)));
     }
 
     /// <summary>

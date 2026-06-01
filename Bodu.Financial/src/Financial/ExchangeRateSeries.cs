@@ -164,10 +164,11 @@ public sealed class ExchangeRateSeries
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool TryGetRate(
         DateOnly requestedDate,
-        ExchangeRateLookupOptions options,
+        ExchangeRateLookupOptions? options,
         out DateOnly resolvedDate,
         out decimal rate)
     {
+        options ??= ExchangeRateLookupOptions.Exact;
         options.Validate();
 
         return _storage.TryGetRate(requestedDate, options, out resolvedDate, out rate);

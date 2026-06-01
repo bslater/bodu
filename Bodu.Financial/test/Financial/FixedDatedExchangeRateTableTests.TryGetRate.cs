@@ -137,7 +137,7 @@ public partial class FixedDatedExchangeRateTableTests
             "Inverse disabled blocks reverse pair",
             "AUD", "USD",
             new DateOnly(2024, 1, 3),
-            new ExchangeRateLookupOptions(ExchangeRateDateResolution.Exact, AllowInverse: false),
+            new ExchangeRateLookupOptions(ExchangeRateDateResolution.Exact, allowInverse: false),
             inverseOnly,
             false,
             null, null, null, false)];
