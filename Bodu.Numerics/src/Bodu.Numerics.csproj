@@ -30,4 +30,16 @@
     <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EmbeddedResource Update="Numerics\NumericsResourceStrings.resx">
+      <LastGenOutput>NumericsResourceStrings.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <Compile Update="Numerics\NumericsResourceStrings.Designer.cs">
+      <DependentUpon>NumericsResourceStrings.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+  </ItemGroup>
+
 </Project>

@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!--
+    Microsoft ResX Schema
+
+    Version 2.0
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Json_Invalid_CompactFractionForm" xml:space="preserve">
+    <value>The JSON string '{0}' is not a valid compact Fraction&lt;{1}&gt; form.</value>
+  </data>
+  <data name="Json_Invalid_CompactIntervalForm" xml:space="preserve">
+    <value>The JSON string '{0}' is not a valid compact Interval&lt;{1}&gt; form.</value>
+  </data>
+  <data name="Json_Invalid_DenominatorMustBeNumber" xml:space="preserve">
+    <value>The 'denominator' property must be a number or a numeric string.</value>
+  </data>
+  <data name="Json_Invalid_DenominatorZero" xml:space="preserve">
+    <value>The 'denominator' property must not be zero.</value>
+  </data>
+  <data name="Json_Invalid_DuplicateDenominator" xml:space="preserve">
+    <value>The JSON object contains a duplicate 'denominator' property.</value>
+  </data>
+  <data name="Json_Invalid_DuplicateEmpty" xml:space="preserve">
+    <value>The JSON object contains a duplicate 'empty' property.</value>
+  </data>
+  <data name="Json_Invalid_DuplicateLower" xml:space="preserve">
+    <value>The JSON object contains a duplicate 'lower' property.</value>
+  </data>
+  <data name="Json_Invalid_DuplicateLowerInclusive" xml:space="preserve">
+    <value>The JSON object contains a duplicate 'lowerInclusive' property.</value>
+  </data>
+  <data name="Json_Invalid_DuplicateNumerator" xml:space="preserve">
+    <value>The JSON object contains a duplicate 'numerator' property.</value>
+  </data>
+  <data name="Json_Invalid_DuplicateUpper" xml:space="preserve">
+    <value>The JSON object contains a duplicate 'upper' property.</value>
+  </data>
+  <data name="Json_Invalid_DuplicateUpperInclusive" xml:space="preserve">
+    <value>The JSON object contains a duplicate 'upperInclusive' property.</value>
+  </data>
+  <data name="Json_Invalid_EmptyIntervalExtraProperties" xml:space="preserve">
+    <value>An empty interval must not carry endpoint properties alongside 'empty'.</value>
+  </data>
+  <data name="Json_Invalid_ExpectedCompactString_Fraction" xml:space="preserve">
+    <value>Expected a JSON string in compact Fraction&lt;{0}&gt; form (e.g. "3/4").</value>
+  </data>
+  <data name="Json_Invalid_ExpectedCompactString_Interval" xml:space="preserve">
+    <value>Expected a JSON string in compact Interval&lt;{0}&gt; form (e.g. "[1, 5)" or "∅").</value>
+  </data>
+  <data name="Json_Invalid_ExpectedObject_Fraction" xml:space="preserve">
+    <value>Expected a JSON object containing a Fraction.</value>
+  </data>
+  <data name="Json_Invalid_ExpectedObject_Interval" xml:space="preserve">
+    <value>Expected a JSON object containing an Interval.</value>
+  </data>
+  <data name="Json_Invalid_ExpectedPropertyName" xml:space="preserve">
+    <value>Expected a JSON property name.</value>
+  </data>
+  <data name="Json_Invalid_LowerMustBeNumber" xml:space="preserve">
+    <value>The 'lower' property must be a number or a numeric string.</value>
+  </data>
+  <data name="Json_Invalid_MissingDenominator" xml:space="preserve">
+    <value>The JSON object is missing the required 'denominator' property.</value>
+  </data>
+  <data name="Json_Invalid_MissingLower" xml:space="preserve">
+    <value>The JSON object is missing the required 'lower' property.</value>
+  </data>
+  <data name="Json_Invalid_MissingNumerator" xml:space="preserve">
+    <value>The JSON object is missing the required 'numerator' property.</value>
+  </data>
+  <data name="Json_Invalid_MissingUpper" xml:space="preserve">
+    <value>The JSON object is missing the required 'upper' property.</value>
+  </data>
+  <data name="Json_Invalid_NumeratorMustBeNumber" xml:space="preserve">
+    <value>The 'numerator' property must be a number or a numeric string.</value>
+  </data>
+  <data name="Json_Invalid_PropertyMustBeBoolean" xml:space="preserve">
+    <value>The '{0}' property must be a boolean.</value>
+  </data>
+  <data name="Json_Invalid_UnexpectedEnd" xml:space="preserve">
+    <value>The JSON ended unexpectedly while reading the value.</value>
+  </data>
+  <data name="Json_Invalid_UpperMustBeNumber" xml:space="preserve">
+    <value>The 'upper' property must be a number or a numeric string.</value>
+  </data>
+  <data name="Op_Invalid_NumericsJsonPolicyUndefined" xml:space="preserve">
+    <value>Unsupported NumericsJsonPolicy value '{0}'.</value>
+  </data>
+  <data name="Op_Invalid_UnableToCreateConverter" xml:space="preserve">
+    <value>Unable to create a JSON converter for '{0}'.</value>
+  </data>
+</root>
