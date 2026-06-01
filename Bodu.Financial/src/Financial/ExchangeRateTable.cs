@@ -196,4 +196,17 @@ public sealed class ExchangeRateTable
 
         return snapshots;
     }
+
+    /// <summary>
+    /// Produces an immutable <see cref="ExchangeRateBook" /> snapshot containing one series per non-empty builder.
+    /// </summary>
+    /// <returns>
+    /// A new <see cref="ExchangeRateBook" /> indexed by (pair, provider). Empty builders are skipped because an
+    /// immutable series must contain at least one observation.
+    /// </returns>
+    /// <remarks>
+    /// The returned book preserves multi-provider entries for the same pair, making it the recommended hand-off path
+    /// when feeding rates into a provider facade.
+    /// </remarks>
+    public ExchangeRateBook ToBook() => new(ToSeries());
 }
