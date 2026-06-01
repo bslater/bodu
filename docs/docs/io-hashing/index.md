@@ -119,6 +119,7 @@ Only `Crc` currently implements `IResumableHashAlgorithm` (reverse-finalize a st
 
 ## Where to go next
 
+- **[Core concepts](concepts.md)** — glossary the rest of the documentation assumes.
 - **[Getting started](getting-started.md)** — install + one minimal sample per subfamily.
 - **[Bodu.IO.Hashing guides](../../guides/io-hashing/index.md)** — recipe-style walk-throughs per algorithm.
 - **[Bodu.IO.Hashing API reference](../../apidoc/Bodu.IO.Hashing.md)** — full type-by-type docs.

@@ -7,18 +7,24 @@
   items:
     - name: Introduction
       href: core/index.md
+    - name: Core concepts
+      href: core/concepts.md
     - name: Getting started
       href: core/getting-started.md
 - name: Bodu.IO.Hashing
   items:
     - name: Introduction
       href: io-hashing/index.md
+    - name: Core concepts
+      href: io-hashing/concepts.md
     - name: Getting started
       href: io-hashing/getting-started.md
 - name: Bodu.Security.Cryptography
   items:
     - name: Introduction
       href: cryptography/index.md
+    - name: Core concepts
+      href: cryptography/concepts.md
     - name: Getting started
       href: cryptography/getting-started.md
 - name: Bodu.Globalization.Calendar
@@ -65,11 +71,15 @@
   items:
     - name: Introduction
       href: numerics/index.md
+    - name: Core concepts
+      href: numerics/concepts.md
     - name: Getting started
       href: numerics/getting-started.md
 - name: Bodu.Financial
   items:
     - name: Introduction
       href: financial/index.md
+    - name: Core concepts
+      href: financial/concepts.md
     - name: Getting started
       href: financial/getting-started.md

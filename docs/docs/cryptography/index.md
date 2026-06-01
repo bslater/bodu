@@ -151,6 +151,7 @@ The package contains six subfamilies. They share BCL base classes but differ str
 
 ## Where to go next
 
+- **[Core concepts](concepts.md)** — glossary the rest of the documentation assumes.
 - **[Getting started](getting-started.md)** — install + minimal sample for a cipher, an AEAD round-trip, a keyed hash, and a digest.
 - **[Bodu.Security.Cryptography guides](../../guides/cryptography/index.md)** — recipe-style walk-throughs.
 - **[Bodu.Security.Cryptography API reference](../../apidoc/Bodu.Security.Cryptography.md)** — full type-by-type docs.

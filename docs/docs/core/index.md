@@ -71,7 +71,7 @@ Date, numeric, span, and array extension methods. Larger surface than the others
 | <xref:Bodu.Extensions.BufferConverter> | Byte / structure conversion helpers. |
 | <xref:Bodu.Extensions.SpanExtensions> | Span-friendly helpers. |
 | <xref:Bodu.Extensions.IComparableExtensions>, <xref:Bodu.Extensions.ComparableHelper> | `Min`, `Max`, `Clamp`, `IsGreaterThan` / `IsGreaterThanOrEqual`. |
-| <xref:Bodu.Extensions.CalendarQuarterDefinition>, <xref:Bodu.Extensions.CalendarWeekendDefinition>, <xref:Bodu.Extensions.FiscalWeekPattern>, <xref:Bodu.Extensions.WeekOfMonthOrdinal> | Calendar-shape enums for quarter, weekend, fiscal-week, and week-ordinal computations. |
+| <xref:Bodu.Extensions.CalendarQuarterDefinition>, <xref:Bodu.WorkingDaysOfWeek>, <xref:Bodu.Extensions.IWeekendDefinitionProvider>, <xref:Bodu.Extensions.FiscalWeekPattern>, <xref:Bodu.Extensions.WeekOfMonthOrdinal> | Calendar-shape enums and injection seams for quarter, weekend, fiscal-week, and week-ordinal computations. |
 
 ### `Bodu.Text` and `Bodu.Xml.Linq`
 Text and XML helpers used internally by the other Bodu packages; available publicly when you need them.
@@ -102,6 +102,7 @@ Text and XML helpers used internally by the other Bodu packages; available publi
 
 ## Where to go next
 
+- **[Core concepts](concepts.md)** — glossary the rest of the documentation assumes.
 - **[Getting started](getting-started.md)** — install the package and run a minimal sample for each scenario above.
 - **[Bodu.Core guides](../../guides/core/index.md)** — recipe-style walk-throughs for the headline types.
 - **[Bodu.Collections.Generic API reference](../../apidoc/Bodu.Collections.Generic.md)** — full namespace overview.
