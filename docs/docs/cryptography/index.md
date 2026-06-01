@@ -37,6 +37,24 @@ The package contains six subfamilies. They share BCL base classes but differ str
 
 > **ASCON is multi-role.** The ASCON family (NIST SP 800-232) spans the cryptographic-hash, XOF, and AEAD roles under a single sponge permutation, which makes it a compact one-primitive choice for constrained environments. It appears in both the hash and AEAD tables below.
 
+## Choosing a primitive
+
+A compact decision table for the most common requirements. The "BCL alternative" column flags the case where `System.Security.Cryptography` already ships a hardware-accelerated implementation — start there unless the algorithm column is the specific reason you reached for Bodu.
+
+| If you need… | Reach for | Output | Standards | BCL alternative |
+|---|---|---|---|---|
+| **Confidentiality only**, block cipher | `Camellia`, `Twofish`, `Serpent128/256/512/1024`, `Threefish256/512/1024`, `Blowfish`, `Skipjack` | Block-aligned ciphertext + IV | RFC 3713 / FIPS-181 / NIST CFL / Threefish whitepaper | `Aes` (BCL — preferred for 128-bit-block AES) |
+| **Confidentiality only**, stream cipher | `ChaCha20`, `XChaCha20`, `Salsa20`, `XSalsa20`, `Rabbit`, `Hc128` | Keystream-XOR ciphertext | RFC 7539 / XSalsa20 paper / eSTREAM | None (for these specific algorithms) |
+| **Confidentiality + integrity + authenticity** (AEAD) | `Aes` + `GcmModeTransform` / `CcmModeTransform` / `OcbModeTransform` / `EaxModeTransform` / `SivModeTransform` / `GcmSivModeTransform`; or `AsconAead128` | Ciphertext + auth tag | NIST SP 800-38D / RFC 5116 / RFC 7253 / NIST SP 800-232 | `AesGcm`, `AesCcm` (BCL — preferred for those modes) |
+| **Per-record / per-sector encryption** with public domain separation | `Threefish256/512/1024` with `Tweak`; `XtsModeTransform` | Tweakable ciphertext | IEEE P1619 (XTS) / Threefish whitepaper | None |
+| **Cryptographic digest** for content addressing | `Tiger`, `CubeHash`, `Whirlpool`, `Snefru`, `Blake2b`, `Blake3`, `AsconHash256`, `Skein256/512/1024` | 128 – 1024 bits | NESSIE / SHA-3 / RFC 7693 / NIST SP 800-232 | `SHA256`, `SHA384`, `SHA512`, `SHA3_256` (BCL — preferred where available) |
+| **Variable-length / extendable output** (XOF) | `AsconXof128`, `AsconCxof128`, `Shake`, `Blake3` | Configurable | NIST SP 800-185 / FIPS 202 / NIST SP 800-232 | `Shake128`, `Shake256` (BCL — preferred where available) |
+| **Keyed hash / MAC** (reusable PRF) | `SipHash64`, `SipHash128` | 64 / 128 bits | Aumasson & Bernstein SipHash paper | `HMACSHA256` (BCL) |
+| **One-time message authenticator** (key + message — never reuse key) | `Poly1305` | 128 bits | RFC 8439 | None — paired with `ChaCha20` in BCL `ChaCha20Poly1305` |
+| **Verifiable tree hashing** (Merkle root + inclusion proofs) | `MerkleTreeHash`, `ParallelMerkleTreeHash` | Configurable leaf hash | Merkle 1979 / Certificate Transparency | None |
+
+Cryptographic digests in this table provide **integrity only when the digest itself is transmitted via an authenticated channel**. For integrity + authenticity in a single primitive, pick a MAC or an AEAD mode. See the [Core concepts](concepts.md) page for the full safety vocabulary.
+
 ## Subfamilies and headline types
 
 ### Standard symmetric block ciphers

@@ -4,7 +4,7 @@ title: Bodu.Core — Introduction
 
 # Bodu.Core
 
-**Bodu.Core** is the foundation package of the Bodu suite — a collection of high-performance, framework-style building blocks for .NET applications. It is also the only Bodu package depended on by the others (`Bodu.IO.Hashing`, `Bodu.Security.Cryptography`, and `Bodu.Globalization.Calendar` all use its `ThrowHelper` for shared argument validation).
+**Bodu.Core** is the foundation package of the Bodu suite — a collection of high-performance, framework-style building blocks for .NET applications. Several other Bodu packages share its primitives: `Bodu.IO.Hashing`, `Bodu.Security.Cryptography`, `Bodu.Globalization.Calendar`, `Bodu.Numerics`, and `Bodu.Financial` all reference `Bodu.Core` for shared types like `ThrowHelper`, `WeekPattern`, the calendar-shape enums, and pooled buffers. See the [package matrix](../package-matrix.md) for the full dependency map.
 
 The library is organized around eight focused namespaces, each with a clear responsibility.
 
