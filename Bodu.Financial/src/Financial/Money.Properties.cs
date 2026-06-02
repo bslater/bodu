@@ -100,7 +100,9 @@ public readonly partial struct Money
     /// Gets the absolute value of this amount.
     /// </summary>
     /// <returns>A <see cref="Money" /> with the same ISO code and a non-negative amount.</returns>
-    /// <exception cref="InvalidOperationException">This value is a default-initialised, currency-less <see cref="Money" />.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// This value is a default-initialised, currency-less <see cref="Money" />.
+    /// </exception>
     public Money Abs
     {
         get

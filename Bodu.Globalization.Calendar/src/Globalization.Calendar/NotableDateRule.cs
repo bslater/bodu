@@ -428,8 +428,8 @@ public sealed record NotableDateRule
     /// example, the Saturday <em>on or after</em> 20 June).
     /// </summary>
     /// <returns>
-    /// One of the defined <see cref="Bodu.Globalization.Calendar.WeekdayProximity" /> values, or <see langword="null" />
-    /// when the strategy does not require it.
+    /// One of the defined <see cref="Bodu.Globalization.Calendar.WeekdayProximity" /> values, or
+    /// <see langword="null" /> when the strategy does not require it.
     /// </returns>
     public WeekdayProximity? WeekdayProximity { get; init; }
 

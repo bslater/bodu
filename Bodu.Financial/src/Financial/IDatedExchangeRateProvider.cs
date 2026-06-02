@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IDatedExchangeRateProvider.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -34,8 +34,8 @@ public interface IDatedExchangeRateProvider
     /// <param name="toIsoCode">The destination-currency ISO-style code.</param>
     /// <param name="date">The calendar date for which a rate is required.</param>
     /// <param name="options">
-    /// The lookup rules to apply, including date-resolution policy and tolerance.
-    /// <see langword="null" /> is treated as <see cref="ExchangeRateLookupOptions.Exact" />.
+    /// The lookup rules to apply, including date-resolution policy and tolerance. <see langword="null" /> is treated as
+    /// <see cref="ExchangeRateLookupOptions.Exact" />.
     /// </param>
     /// <returns>The resolved <see cref="ExchangeRateLookupResult" />.</returns>
     /// <exception cref="ArgumentNullException">
@@ -66,8 +66,8 @@ public interface IDatedExchangeRateProvider
     /// <param name="toIsoCode">The destination-currency ISO-style code.</param>
     /// <param name="date">The calendar date for which a rate is required.</param>
     /// <param name="options">
-    /// The lookup rules to apply, including date-resolution policy and tolerance.
-    /// <see langword="null" /> is treated as <see cref="ExchangeRateLookupOptions.Exact" />.
+    /// The lookup rules to apply, including date-resolution policy and tolerance. <see langword="null" /> is treated as
+    /// <see cref="ExchangeRateLookupOptions.Exact" />.
     /// </param>
     /// <param name="result">
     /// When this method returns <see langword="true" />, contains the resolved <see cref="ExchangeRateLookupResult" />;

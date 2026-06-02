@@ -17,13 +17,13 @@ internal static class MoneyFormattingHelpers
     /// <summary>
     /// The positional templates corresponding to <see cref="NumberFormatInfo.CurrencyPositivePattern" /> values 0–3.
     /// </summary>
-    private static readonly string[] CurrencyPositivePatterns = ["$n", "n$", "$ n", "n $"];
+    private static readonly string[] s_currencyPositivePatterns = ["$n", "n$", "$ n", "n $"];
 
     /// <summary>
     /// The positional templates corresponding to <see cref="NumberFormatInfo.CurrencyNegativePattern" /> values 0–15,
     /// matching the documented BCL pattern table.
     /// </summary>
-    private static readonly string[] CurrencyNegativePatterns =
+    private static readonly string[] s_currencyNegativePatterns =
     [
         "($n)", "-$n", "$-n", "$n-", "(n$)", "-n$", "n-$", "n$-",
         "-n $", "-$ n", "n $-", "$ n-", "$ -n", "n- $", "($ n)", "(n $)",
@@ -158,8 +158,8 @@ internal static class MoneyFormattingHelpers
         var decimalsSuffix = decimals.ToString(CultureInfo.InvariantCulture);
         var numberPart = Math.Abs(amount).ToString("N" + decimalsSuffix, nfi) + magnitudeSuffix;
         var pattern = amount < 0
-            ? CurrencyNegativePatterns[nfi.CurrencyNegativePattern]
-            : CurrencyPositivePatterns[nfi.CurrencyPositivePattern];
+            ? s_currencyNegativePatterns[nfi.CurrencyNegativePattern]
+            : s_currencyPositivePatterns[nfi.CurrencyPositivePattern];
 
         // Substitute the number placeholder first (the formatted number never contains an ASCII '$'), then the symbol —
         // if we substituted the symbol first, a symbol containing the literal letter 'n' (rare but possible for

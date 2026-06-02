@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CalculatedMoney.Conversion.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -12,12 +12,16 @@ public readonly partial struct CalculatedMoney
     /// Materialises this high-precision amount as a settlement <see cref="Money" />, rounding according to
     /// <paramref name="context" />.
     /// </summary>
-    /// <param name="context">The monetary context governing rounding and scale; <see langword="null" /> selects
-    /// <see cref="MonetaryContext.Default" />.</param>
+    /// <param name="context">
+    /// The monetary context governing rounding and scale; <see langword="null" /> selects
+    /// <see cref="MonetaryContext.Default" />.
+    /// </param>
     /// <returns>The settled <see cref="Money" /> in this value's currency.</returns>
     /// <exception cref="InvalidOperationException">This value carries no ISO code (default-initialised).</exception>
     /// <exception cref="ArgumentException"><paramref name="context" /> is invalid.</exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="context" /> carries an out-of-range policy.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="context" /> carries an out-of-range policy.
+    /// </exception>
     /// <remarks>
     /// The scale is resolved from <paramref name="context" />: <see cref="ScalePolicy.CurrencyMinorUnits" /> rounds to
     /// the registered currency's minor units and <see cref="ScalePolicy.Unrounded" /> falls back to that same natural

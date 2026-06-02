@@ -17,11 +17,11 @@ namespace Bodu.Financial;
 /// </summary>
 /// <remarks>
 /// <para>
-/// <see cref="Money" /> is the runtime-tagged counterpart of <see cref="Money{TCurrency}" />. Use it when the
-/// currency is data rather than part of the type — for example, when deserialising payloads that carry the currency
-/// code, or when modelling a generic invoicing engine that processes arbitrary currencies. The trade-off is that
-/// cross-currency arithmetic and comparison surface as <see cref="InvalidOperationException" /> at runtime instead of
-/// as compile errors.
+/// <see cref="Money" /> is the runtime-tagged counterpart of <see cref="Money{TCurrency}" />. Use it when the currency
+/// is data rather than part of the type — for example, when deserialising payloads that carry the currency code, or
+/// when modelling a generic invoicing engine that processes arbitrary currencies. The trade-off is that cross-currency
+/// arithmetic and comparison surface as <see cref="InvalidOperationException" /> at runtime instead of as compile
+/// errors.
 /// </para>
 /// <para>
 /// The amount is rounded on construction to the minor-unit precision reported by <see cref="CurrencyRegistry" /> for
@@ -33,10 +33,11 @@ namespace Bodu.Financial;
 /// </para>
 /// <para>
 /// The type-level <see cref="JsonConverterAttribute" /> always serializes the canonical
-/// <see cref="Serialization.FinancialJsonPolicy.Strict" /> object shape
-/// (<c>{ "amount": &lt;number&gt;, "currency": "&lt;ISO&gt;" }</c>). The compact and lenient shapes are opt-in only and
+/// <see cref="Serialization.FinancialJsonPolicy.Strict" /> object shape (
+/// <c>{ "amount": &lt;number&gt;, "currency": "&lt;ISO&gt;" }</c>). The compact and lenient shapes are opt-in only and
 /// must be selected through
-/// <see cref="Serialization.FinancialJsonSerializerOptionsExtensions.AddFinancialJsonConverters(System.Text.Json.JsonSerializerOptions, Serialization.FinancialJsonPolicy)" />.
+/// <see cref="Serialization.FinancialJsonSerializerOptionsExtensions.AddFinancialJsonConverters(System.Text.Json.JsonSerializerOptions, Serialization.FinancialJsonPolicy)" />
+/// .
 /// </para>
 /// </remarks>
 [Serializable]
@@ -56,6 +57,10 @@ public readonly partial struct Money
     private readonly string? _isoCode;
 
     /// <summary>
+<<<<<<< HEAD
+    /// Initializes a new instance of the <see cref="Money" /> struct from an amount and ISO 4217 code, rounding the
+    /// amount to the currency's minor-unit precision using banker's rounding.
+=======
     /// The explicit minor-unit scale plus one, or <c>0</c> when no explicit scale is associated and the precision is
     /// derived from <see cref="CurrencyRegistry" />.
     /// </summary>
@@ -69,6 +74,7 @@ public readonly partial struct Money
     /// <summary>
     /// Initializes a new instance of the <see cref="Money" /> struct from an amount and ISO 4217 code, rounding
     /// the amount to the currency's minor-unit precision using banker's rounding.
+>>>>>>> 066692f232b4d4e9e85dd58b3fc6144c4d8d78ff
     /// </summary>
     /// <param name="amount">The monetary amount in the major unit.</param>
     /// <param name="isoCode">The ISO 4217 three-letter alphabetic code identifying the currency.</param>
@@ -83,8 +89,8 @@ public readonly partial struct Money
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Money" /> struct from an amount and ISO 4217 code, rounding
-    /// the amount to the currency's minor-unit precision using the supplied rule.
+    /// Initializes a new instance of the <see cref="Money" /> struct from an amount and ISO 4217 code, rounding the
+    /// amount to the currency's minor-unit precision using the supplied rule.
     /// </summary>
     /// <param name="amount">The monetary amount in the major unit.</param>
     /// <param name="isoCode">The ISO 4217 three-letter alphabetic code identifying the currency.</param>
@@ -99,8 +105,9 @@ public readonly partial struct Money
     /// The ISO code is validated to ISO 4217's three-uppercase-ASCII-letters shape and must resolve to a registered
     /// <see cref="CurrencyInfo" />; the amount is then rounded to the registry's <c>MinorUnits</c>. Structurally valid
     /// but unregistered codes are rejected under <see cref="UnknownCurrencyPolicy.Reject" /> so a value can never store
-    /// a precision it cannot describe. Register custom currencies via <see cref="CurrencyRegistry.Register(CurrencyInfo)" />
-    /// ahead of construction, or use <see cref="Money.FromUnchecked(decimal, string, int, MidpointRounding)" /> /
+    /// a precision it cannot describe. Register custom currencies via
+    /// <see cref="CurrencyRegistry.Register(CurrencyInfo)" /> ahead of construction, or use
+    /// <see cref="Money.FromUnchecked(decimal, string, int, MidpointRounding)" /> /
     /// <see cref="Money.From(decimal, string, UnknownCurrencyPolicy, MidpointRounding)" /> for staging scenarios.
     /// </remarks>
     public Money(decimal amount, string isoCode, MidpointRounding rounding)
@@ -157,8 +164,13 @@ public readonly partial struct Money
     }
 
     /// <summary>
+<<<<<<< HEAD
+    /// Initializes a new instance of the <see cref="Money" /> struct from an already-normalised amount and ISO code,
+    /// bypassing rounding.
+=======
     /// Initializes a new instance of the <see cref="Money" /> struct from pre-computed field values, bypassing
     /// validation and rounding.
+>>>>>>> 066692f232b4d4e9e85dd58b3fc6144c4d8d78ff
     /// </summary>
     /// <param name="amount">The stored amount.</param>
     /// <param name="isoCode">The ISO 4217 code, or <see langword="null" /> for a currency-less value.</param>
@@ -212,7 +224,9 @@ public readonly partial struct Money
     /// Throws when this value is a default-initialised, currency-less <see cref="Money" /> that must not participate in
     /// a financial operation.
     /// </summary>
-    /// <exception cref="InvalidOperationException">This value carries no ISO code (a default-initialised <see cref="Money" />).</exception>
+    /// <exception cref="InvalidOperationException">
+    /// This value carries no ISO code (a default-initialised <see cref="Money" />).
+    /// </exception>
     private void EnsureHasCurrency()
     {
         if (_isoCode is null)

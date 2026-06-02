@@ -171,7 +171,9 @@ namespace Bodu.Globalization.Calendar;
 /// <seealso cref="NotableDateFilter" /> <seealso cref="ObservanceAdjustment" />
 /// <seealso cref="INotableDateRuleProvider" /> <seealso cref="INotableDateRuleOverrideProvider" />
 /// <seealso cref="NotableDateServiceOptions" />
-public sealed class NotableDateService : INotableDateService, IDisposable
+public sealed class NotableDateService
+    : INotableDateService
+    , IDisposable
 {
     /// <summary>
     /// The embedded resource path for the minimal default rule set used by the parameterless constructor.

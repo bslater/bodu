@@ -177,7 +177,9 @@ public readonly partial struct Money<TCurrency>
     /// precision using <paramref name="context" />'s rounding strategy.
     /// </summary>
     /// <param name="multiplier">The scalar multiplier.</param>
-    /// <param name="context">The monetary context whose rounding strategy is applied at the settlement boundary.</param>
+    /// <param name="context">
+    /// The monetary context whose rounding strategy is applied at the settlement boundary.
+    /// </param>
     /// <returns>The product, rounded to <c>TCurrency.MinorUnits</c> using <paramref name="context" />.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="context" /> is <see langword="null" />.</exception>
     /// <exception cref="OverflowException">The product falls outside the range of <see cref="decimal" />.</exception>

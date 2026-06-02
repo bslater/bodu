@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateProviderSelectionPolicy.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -7,13 +7,13 @@
 namespace Bodu.Financial;
 
 /// <summary>
-/// Describes how a multi-provider lookup picks between candidate providers when more than one can satisfy the
-/// requested pair.
+/// Describes how a multi-provider lookup picks between candidate providers when more than one can satisfy the requested
+/// pair.
 /// </summary>
 /// <remarks>
 /// <para>
-/// Only <see cref="ProviderPriorityFirst" /> is implemented in v1.0; the remaining members exist so the public API
-/// can express the intent today while later releases add the corresponding lookup strategies.
+/// Only <see cref="ProviderPriorityFirst" /> is implemented in v1.0; the remaining members exist so the public API can
+/// express the intent today while later releases add the corresponding lookup strategies.
 /// </para>
 /// </remarks>
 public enum ExchangeRateProviderSelectionPolicy

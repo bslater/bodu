@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateObservationNormalizer.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -21,8 +21,8 @@ internal static class ExchangeRateObservationNormalizer
     /// <param name="observations">The candidate observations.</param>
     /// <param name="paramName">The caller-side parameter name reported in raised exceptions.</param>
     /// <param name="allowEmpty">
-    /// When <see langword="true" />, an empty input enumerable returns an empty list. When <see langword="false" />,
-    /// an empty input enumerable throws <see cref="ArgumentException" />.
+    /// When <see langword="true" />, an empty input enumerable returns an empty list. When <see langword="false" />, an
+    /// empty input enumerable throws <see cref="ArgumentException" />.
     /// </param>
     /// <returns>A sorted strictly-ascending list of <c>(dayNumber, rate)</c> pairs.</returns>
     /// <exception cref="ArgumentException">
@@ -60,13 +60,13 @@ internal static class ExchangeRateObservationNormalizer
     /// <param name="rates">The candidate observations.</param>
     /// <param name="paramName">The caller-side parameter name reported in raised exceptions.</param>
     /// <param name="allowEmpty">
-    /// When <see langword="true" />, an empty input enumerable returns an empty list. When <see langword="false" />,
-    /// an empty input enumerable throws <see cref="ArgumentException" />.
+    /// When <see langword="true" />, an empty input enumerable returns an empty list. When <see langword="false" />, an
+    /// empty input enumerable throws <see cref="ArgumentException" />.
     /// </param>
     /// <returns>A sorted strictly-ascending list of <c>(dayNumber, rate)</c> pairs.</returns>
     /// <exception cref="ArgumentException">
-    /// Thrown when <paramref name="rates" /> is empty (and <paramref name="allowEmpty" /> is
-    /// <see langword="false" />) or contains duplicate dates.
+    /// Thrown when <paramref name="rates" /> is empty (and <paramref name="allowEmpty" /> is <see langword="false" />)
+    /// or contains duplicate dates.
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <paramref name="rates" /> contains a rate that is zero or negative.
@@ -101,8 +101,8 @@ internal static class ExchangeRateObservationNormalizer
     /// <param name="allowEmpty">Whether an empty buffer is acceptable.</param>
     /// <returns>The normalised buffer.</returns>
     /// <exception cref="ArgumentException">
-    /// Thrown when <paramref name="buffer" /> is empty (and <paramref name="allowEmpty" /> is
-    /// <see langword="false" />) or contains duplicate day numbers.
+    /// Thrown when <paramref name="buffer" /> is empty (and <paramref name="allowEmpty" /> is <see langword="false" />)
+    /// or contains duplicate day numbers.
     /// </exception>
     private static List<(int DayNumber, decimal Rate)> NormalizeBuffer(
         List<(int DayNumber, decimal Rate)> buffer,

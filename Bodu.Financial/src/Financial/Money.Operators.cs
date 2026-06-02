@@ -45,7 +45,9 @@ public readonly partial struct Money
     /// </summary>
     /// <param name="value">The amount to negate.</param>
     /// <returns>A <see cref="Money" /> with the same ISO code and negated amount.</returns>
-    /// <exception cref="InvalidOperationException"><paramref name="value" /> is a default-initialised, currency-less <see cref="Money" />.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// <paramref name="value" /> is a default-initialised, currency-less <see cref="Money" />.
+    /// </exception>
     public static Money operator -(Money value)
     {
         value.EnsureHasCurrency();
@@ -69,7 +71,9 @@ public readonly partial struct Money
     /// <param name="left">The amount.</param>
     /// <param name="right">The scalar.</param>
     /// <returns>The product, rounded to the currency's minor units using banker's rounding.</returns>
-    /// <exception cref="InvalidOperationException"><paramref name="left" /> is a default-initialised, currency-less <see cref="Money" />.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// <paramref name="left" /> is a default-initialised, currency-less <see cref="Money" />.
+    /// </exception>
     /// <remarks>
     /// Use <see cref="Multiply(decimal, MidpointRounding)" /> when a rounding rule other than banker's rounding is
     /// required; the operator cannot accept a rounding-mode parameter.
@@ -87,7 +91,9 @@ public readonly partial struct Money
     /// <param name="left">The scalar.</param>
     /// <param name="right">The amount.</param>
     /// <returns>The product, rounded to the currency's minor units using banker's rounding.</returns>
-    /// <exception cref="InvalidOperationException"><paramref name="right" /> is a default-initialised, currency-less <see cref="Money" />.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// <paramref name="right" /> is a default-initialised, currency-less <see cref="Money" />.
+    /// </exception>
     /// <remarks>
     /// Use <see cref="Multiply(decimal, MidpointRounding)" /> when a rounding rule other than banker's rounding is
     /// required; the operator cannot accept a rounding-mode parameter.
@@ -105,7 +111,9 @@ public readonly partial struct Money
     /// <param name="left">The amount.</param>
     /// <param name="right">The scalar divisor.</param>
     /// <returns>The quotient, rounded to the currency's minor units using banker's rounding.</returns>
-    /// <exception cref="InvalidOperationException"><paramref name="left" /> is a default-initialised, currency-less <see cref="Money" />.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// <paramref name="left" /> is a default-initialised, currency-less <see cref="Money" />.
+    /// </exception>
     /// <exception cref="DivideByZeroException"><paramref name="right" /> is zero.</exception>
     /// <remarks>
     /// Use <see cref="Divide(decimal, MidpointRounding)" /> when a rounding rule other than banker's rounding is
@@ -123,7 +131,9 @@ public readonly partial struct Money
     /// </summary>
     /// <param name="multiplier">The scalar multiplier.</param>
     /// <returns>The product, rounded to the currency's minor units using banker's rounding.</returns>
-    /// <exception cref="InvalidOperationException">This value is a default-initialised, currency-less <see cref="Money" />.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// This value is a default-initialised, currency-less <see cref="Money" />.
+    /// </exception>
     public Money Multiply(decimal multiplier)
     {
         EnsureHasCurrency();
@@ -137,7 +147,9 @@ public readonly partial struct Money
     /// <param name="multiplier">The scalar multiplier.</param>
     /// <param name="rounding">The midpoint-rounding rule applied to the product.</param>
     /// <returns>The product, rounded to the currency's minor units using <paramref name="rounding" />.</returns>
-    /// <exception cref="InvalidOperationException">This value is a default-initialised, currency-less <see cref="Money" />.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// This value is a default-initialised, currency-less <see cref="Money" />.
+    /// </exception>
     /// <remarks>
     /// Use this overload when a non-default rounding rule (for example, <see cref="MidpointRounding.AwayFromZero" />
     /// for retail-tax workflows) must be applied. The <c>*</c> operator forces banker's rounding because operator
@@ -154,7 +166,9 @@ public readonly partial struct Money
     /// </summary>
     /// <param name="divisor">The scalar divisor.</param>
     /// <returns>The quotient, rounded to the currency's minor units using banker's rounding.</returns>
-    /// <exception cref="InvalidOperationException">This value is a default-initialised, currency-less <see cref="Money" />.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// This value is a default-initialised, currency-less <see cref="Money" />.
+    /// </exception>
     /// <exception cref="DivideByZeroException"><paramref name="divisor" /> is zero.</exception>
     public Money Divide(decimal divisor)
     {
@@ -169,7 +183,9 @@ public readonly partial struct Money
     /// <param name="divisor">The scalar divisor.</param>
     /// <param name="rounding">The midpoint-rounding rule applied to the quotient.</param>
     /// <returns>The quotient, rounded to the currency's minor units using <paramref name="rounding" />.</returns>
-    /// <exception cref="InvalidOperationException">This value is a default-initialised, currency-less <see cref="Money" />.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// This value is a default-initialised, currency-less <see cref="Money" />.
+    /// </exception>
     /// <exception cref="DivideByZeroException"><paramref name="divisor" /> is zero.</exception>
     /// <remarks>
     /// Use this overload when a non-default rounding rule must be applied. The <c>/</c> operator forces banker's

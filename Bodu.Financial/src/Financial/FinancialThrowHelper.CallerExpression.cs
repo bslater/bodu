@@ -71,8 +71,8 @@ internal static partial class FinancialThrowHelper
     /// <param name="value">The candidate pair to validate.</param>
     /// <param name="paramName">The parameter name reported in the exception; inferred from the call site.</param>
     /// <exception cref="ArgumentException">
-    /// Thrown when <paramref name="value" /> is <see langword="default" />, i.e. its <see cref="ExchangeRatePair.IsValid" />
-    /// property reports <see langword="false" />.
+    /// Thrown when <paramref name="value" /> is <see langword="default" />, i.e. its
+    /// <see cref="ExchangeRatePair.IsValid" /> property reports <see langword="false" />.
     /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static void ThrowIfInvalidExchangeRatePair(
@@ -171,7 +171,9 @@ internal static partial class FinancialThrowHelper
     /// </summary>
     /// <param name="mode">The parse mode to validate.</param>
     /// <param name="paramName">The parameter name reported in the exception; inferred from the call site.</param>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="mode" /> is not a defined value.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="mode" /> is not a defined value.
+    /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static void ThrowIfMoneyParseModeUndefined(
         MoneyParseMode mode,
@@ -189,7 +191,9 @@ internal static partial class FinancialThrowHelper
     /// </summary>
     /// <param name="policy">The scale policy to validate.</param>
     /// <param name="paramName">The parameter name reported in the exception; inferred from the call site.</param>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="policy" /> is not a defined value.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="policy" /> is not a defined value.
+    /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static void ThrowIfScalePolicyUndefined(
         ScalePolicy policy,
@@ -204,7 +208,9 @@ internal static partial class FinancialThrowHelper
     /// </summary>
     /// <param name="policy">The cash-rounding policy to validate.</param>
     /// <param name="paramName">The parameter name reported in the exception; inferred from the call site.</param>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="policy" /> is not a defined value.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="policy" /> is not a defined value.
+    /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static void ThrowIfCashRoundingPolicyUndefined(
         CashRoundingPolicy policy,
@@ -219,7 +225,9 @@ internal static partial class FinancialThrowHelper
     /// </summary>
     /// <param name="policy">The allocation policy to validate.</param>
     /// <param name="paramName">The parameter name reported in the exception; inferred from the call site.</param>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="policy" /> is not a defined value.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="policy" /> is not a defined value.
+    /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static void ThrowIfAllocationPolicyUndefined(
         AllocationPolicy policy,
@@ -234,7 +242,9 @@ internal static partial class FinancialThrowHelper
     /// </summary>
     /// <param name="policy">The conversion-rounding policy to validate.</param>
     /// <param name="paramName">The parameter name reported in the exception; inferred from the call site.</param>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="policy" /> is not a defined value.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="policy" /> is not a defined value.
+    /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static void ThrowIfConversionRoundingPolicyUndefined(
         ConversionRoundingPolicy policy,

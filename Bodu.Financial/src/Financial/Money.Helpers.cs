@@ -28,7 +28,8 @@ public readonly partial struct Money
 
     /// <summary>
     /// Creates a runtime-tagged <see cref="Money" /> from the supplied amount and ISO 4217 code, applying the given
-    /// <paramref name="policy" /> when the code is structurally valid but not registered in <see cref="CurrencyRegistry" />.
+    /// <paramref name="policy" /> when the code is structurally valid but not registered in
+    /// <see cref="CurrencyRegistry" />.
     /// </summary>
     /// <param name="amount">The monetary amount in the major unit.</param>
     /// <param name="isoCode">The ISO 4217 three-letter alphabetic code identifying the currency.</param>
@@ -39,18 +40,18 @@ public readonly partial struct Money
     /// <exception cref="ArgumentException">
     /// <paramref name="isoCode" /> is not exactly three uppercase ASCII letters; or it is unregistered and
     /// <paramref name="policy" /> is <see cref="UnknownCurrencyPolicy.Reject" />; or it is unregistered and
-    /// <paramref name="policy" /> is <see cref="UnknownCurrencyPolicy.AllowWithExplicitScale" /> (which requires a scale,
-    /// supplied through <see cref="FromUnchecked(decimal, string, int, MidpointRounding)" />).
+    /// <paramref name="policy" /> is <see cref="UnknownCurrencyPolicy.AllowWithExplicitScale" /> (which requires a
+    /// scale, supplied through <see cref="FromUnchecked(decimal, string, int, MidpointRounding)" />).
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="policy" /> is not a defined <see cref="UnknownCurrencyPolicy" /> member.
     /// </exception>
     /// <remarks>
     /// Registered currencies are rounded to the registry's minor units regardless of <paramref name="policy" />. The
-    /// policy governs only the unregistered case: <see cref="UnknownCurrencyPolicy.AllowUnscaled" /> stores the amount at
-    /// its source precision (reporting zero minor units), and <see cref="UnknownCurrencyPolicy.AllowWithExplicitScale" />
-    /// is rejected here because it needs an explicit scale — call
-    /// <see cref="FromUnchecked(decimal, string, int, MidpointRounding)" /> for that path.
+    /// policy governs only the unregistered case: <see cref="UnknownCurrencyPolicy.AllowUnscaled" /> stores the amount
+    /// at its source precision (reporting zero minor units), and
+    /// <see cref="UnknownCurrencyPolicy.AllowWithExplicitScale" /> is rejected here because it needs an explicit scale
+    /// — call <see cref="FromUnchecked(decimal, string, int, MidpointRounding)" /> for that path.
     /// </remarks>
     public static Money From(
         decimal amount,
@@ -83,17 +84,25 @@ public readonly partial struct Money
     /// </summary>
     /// <param name="amount">The monetary amount in the major unit.</param>
     /// <param name="isoCode">The ISO 4217 three-letter alphabetic code identifying the currency.</param>
-    /// <param name="minorUnits">The number of fractional digits to round to and report as the value's minor units.</param>
-    /// <param name="rounding">The midpoint-rounding rule applied when normalising to <paramref name="minorUnits" />.</param>
+    /// <param name="minorUnits">
+    /// The number of fractional digits to round to and report as the value's minor units.
+    /// </param>
+    /// <param name="rounding">
+    /// The midpoint-rounding rule applied when normalising to <paramref name="minorUnits" />.
+    /// </param>
     /// <returns>The constructed monetary value carrying an explicit scale.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="isoCode" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentException"><paramref name="isoCode" /> is not exactly three uppercase ASCII letters.</exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="minorUnits" /> is outside the range 0 to 28.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="isoCode" /> is not exactly three uppercase ASCII letters.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="minorUnits" /> is outside the range 0 to 28.
+    /// </exception>
     /// <remarks>
     /// This is the explicit escape hatch for staging or custom currencies that are intentionally absent from
-    /// <see cref="CurrencyRegistry" />. Because the scale is supplied and stored, the resulting value never exhibits the
-    /// "source precision retained but zero minor units reported" inconsistency that ordinary unregistered construction
-    /// would otherwise produce.
+    /// <see cref="CurrencyRegistry" />. Because the scale is supplied and stored, the resulting value never exhibits
+    /// the "source precision retained but zero minor units reported" inconsistency that ordinary unregistered
+    /// construction would otherwise produce.
     /// </remarks>
     public static Money FromUnchecked(decimal amount, string isoCode, int minorUnits, MidpointRounding rounding = MidpointRounding.ToEven)
     {
@@ -140,6 +149,7 @@ public readonly partial struct Money
                     code,
                     (int)code));
         }
+
         return new(amount, code.ToString(), rounding);
     }
 

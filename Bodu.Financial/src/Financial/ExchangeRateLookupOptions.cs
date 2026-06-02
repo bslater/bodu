@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateLookupOptions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -18,8 +18,8 @@ namespace Bodu.Financial;
 /// </para>
 /// <para>
 /// Use the static factory members (<see cref="Exact" />, <see cref="PreviousWithin(int)" />,
-/// <see cref="NextWithin(int)" />, <see cref="NearestWithin(int)" />) for the common configurations; construct
-/// an options instance directly only when a less common combination is required.
+/// <see cref="NextWithin(int)" />, <see cref="NearestWithin(int)" />) for the common configurations; construct an
+/// options instance directly only when a less common combination is required.
 /// </para>
 /// </remarks>
 public sealed class ExchangeRateLookupOptions
@@ -34,13 +34,12 @@ public sealed class ExchangeRateLookupOptions
     /// </summary>
     /// <param name="dateResolution">The fallback policy when no rate exists on the requested date.</param>
     /// <param name="toleranceDays">
-    /// The maximum permitted absolute distance, in days, between the requested date and the resolved date. Must be
-    /// zero when <paramref name="dateResolution" /> is <see cref="ExchangeRateDateResolution.Exact" />.
+    /// The maximum permitted absolute distance, in days, between the requested date and the resolved date. Must be zero
+    /// when <paramref name="dateResolution" /> is <see cref="ExchangeRateDateResolution.Exact" />.
     /// </param>
     /// <param name="allowInverse">
-    /// When <see langword="true" />, the lookup may fall back to the reverse-direction pair (returning the
-    /// reciprocal rate) when the direct pair has no rate. When <see langword="false" />, only the direct pair is
-    /// consulted.
+    /// When <see langword="true" />, the lookup may fall back to the reverse-direction pair (returning the reciprocal
+    /// rate) when the direct pair has no rate. When <see langword="false" />, only the direct pair is consulted.
     /// </param>
     /// <param name="allowSameCurrencyIdentityRate">
     /// When <see langword="true" />, a lookup whose source and destination ISO codes are equal returns a synthetic
@@ -156,8 +155,8 @@ public sealed class ExchangeRateLookupOptions
     /// Validates the option values, throwing if any rule is violated.
     /// </summary>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown if <see cref="DateResolution" /> is not a defined <see cref="ExchangeRateDateResolution" /> member, or
-    /// if <see cref="ToleranceDays" /> is negative.
+    /// Thrown if <see cref="DateResolution" /> is not a defined <see cref="ExchangeRateDateResolution" /> member, or if
+    /// <see cref="ToleranceDays" /> is negative.
     /// </exception>
     /// <exception cref="ArgumentException">
     /// Thrown if <see cref="DateResolution" /> is <see cref="ExchangeRateDateResolution.Exact" /> and

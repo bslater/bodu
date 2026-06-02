@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CalculatedMoney.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -30,7 +30,8 @@ namespace Bodu.Financial;
 /// significant digits, not exactly. When a calculation must be mathematically exact (for example, apportioning by an
 /// exact fraction before settlement), use the exact-rational escape hatches on the strongly typed form —
 /// <see cref="Money{TCurrency}.FromFraction(Bodu.Numerics.Fraction{System.Numerics.BigInteger}, MidpointRounding)" />
-/// and <see cref="Money{TCurrency}.MultiplyExact(Bodu.Numerics.Fraction{System.Numerics.BigInteger}, MidpointRounding)" />
+/// and
+/// <see cref="Money{TCurrency}.MultiplyExact(Bodu.Numerics.Fraction{System.Numerics.BigInteger}, MidpointRounding)" />
 /// — which compute in <see cref="Bodu.Numerics.Fraction{T}" /> and round once at the settlement boundary. In short:
 /// <see cref="Money" />/<see cref="Money{TCurrency}" /> are rounded settlement values, <see cref="CalculatedMoney" />
 /// is deferred-rounding decimal, and the <c>Fraction</c> APIs are exact rational.
@@ -57,7 +58,9 @@ public readonly partial struct CalculatedMoney
     /// <param name="amount">The unrounded monetary amount in the major unit.</param>
     /// <param name="isoCode">The ISO 4217 three-letter alphabetic code identifying the currency.</param>
     /// <exception cref="ArgumentNullException"><paramref name="isoCode" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentException"><paramref name="isoCode" /> is not three uppercase ASCII letters.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="isoCode" /> is not three uppercase ASCII letters.
+    /// </exception>
     public CalculatedMoney(decimal amount, string isoCode)
     {
         FinancialThrowHelper.ThrowIfNotValidIsoCode(isoCode);

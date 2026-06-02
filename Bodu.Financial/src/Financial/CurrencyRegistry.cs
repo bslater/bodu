@@ -126,15 +126,18 @@ public static class CurrencyRegistry
     /// <param name="info">The currency metadata to register.</param>
     /// <exception cref="ArgumentNullException"><paramref name="info" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException"><paramref name="info" /> carries invalid metadata.</exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="info" /> carries out-of-range metadata.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="info" /> carries out-of-range metadata.
+    /// </exception>
     /// <exception cref="InvalidOperationException">
     /// A custom registration already exists for <paramref name="info" />.<see cref="CurrencyInfo.IsoCode" />.
     /// </exception>
     /// <remarks>
     /// The metadata is validated with the same rule set <see cref="CurrencyMetadata{TCurrency}" /> applies to tag
-    /// types. Use <see cref="TryRegister(CurrencyInfo)" /> when conflicts should be reported as <see langword="false" />
-    /// rather than raised, or <see cref="Register(CurrencyInfo, CurrencyRegistrationConflictPolicy)" /> to choose the
-    /// conflict behaviour explicitly.
+    /// types. Use <see cref="TryRegister(CurrencyInfo)" /> when conflicts should be reported as
+    /// <see langword="false" /> rather than raised, or
+    /// <see cref="Register(CurrencyInfo, CurrencyRegistrationConflictPolicy)" /> to choose the conflict behaviour
+    /// explicitly.
     /// </remarks>
     public static void Register(CurrencyInfo info) =>
         Register(info, CurrencyRegistrationConflictPolicy.Throw);
@@ -201,7 +204,9 @@ public static class CurrencyRegistry
     /// <param name="info">The currency metadata to register.</param>
     /// <exception cref="ArgumentNullException"><paramref name="info" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException"><paramref name="info" /> carries invalid metadata.</exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="info" /> carries out-of-range metadata.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="info" /> carries out-of-range metadata.
+    /// </exception>
     public static void Replace(CurrencyInfo info)
     {
         CurrencyInfoValidator.Validate(info, nameof(info));

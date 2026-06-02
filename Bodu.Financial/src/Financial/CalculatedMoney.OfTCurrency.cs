@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CalculatedMoney.OfTCurrency.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -32,7 +32,9 @@ public readonly struct CalculatedMoney<TCurrency>
     /// Initializes a new instance of the <see cref="CalculatedMoney{TCurrency}" /> struct, preserving the amount's full
     /// precision.
     /// </summary>
-    /// <param name="amount">The unrounded monetary amount in the major unit of <typeparamref name="TCurrency" />.</param>
+    /// <param name="amount">
+    /// The unrounded monetary amount in the major unit of <typeparamref name="TCurrency" />.
+    /// </param>
     public CalculatedMoney(decimal amount)
     {
         _amount = amount;
@@ -108,8 +110,10 @@ public readonly struct CalculatedMoney<TCurrency>
     /// Materialises this high-precision amount as a settlement <see cref="Money{TCurrency}" />, rounding to
     /// <c>TCurrency.MinorUnits</c> using <paramref name="context" />'s rounding strategy.
     /// </summary>
-    /// <param name="context">The monetary context whose rounding strategy is applied; <see langword="null" /> selects
-    /// <see cref="MonetaryContext.Default" />.</param>
+    /// <param name="context">
+    /// The monetary context whose rounding strategy is applied; <see langword="null" /> selects
+    /// <see cref="MonetaryContext.Default" />.
+    /// </param>
     /// <returns>The settled <see cref="Money{TCurrency}" />.</returns>
     public Money<TCurrency> RoundToMoney(MonetaryContext? context = null)
     {

@@ -52,7 +52,8 @@ namespace Bodu.Globalization.Calendar;
 ///]]>
 /// </code>
 /// </example>
-public sealed class MutableNotableDateRuleOverrideProvider : INotableDateRuleOverrideProvider
+public sealed class MutableNotableDateRuleOverrideProvider
+    : INotableDateRuleOverrideProvider
 {
     /// <summary>
     /// Gate protecting writes to <see cref="_additions" /> and <see cref="_removals" />. Reads sample the immutable

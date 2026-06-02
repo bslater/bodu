@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Money.Allocation.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -14,7 +14,9 @@ public readonly partial struct Money
     /// </summary>
     /// <param name="parts">The number of shares to allocate.</param>
     /// <returns>The per-share allocation.</returns>
-    /// <exception cref="InvalidOperationException">This value is a default-initialised, currency-less <see cref="Money" />.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// This value is a default-initialised, currency-less <see cref="Money" />.
+    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="parts" /> is less than or equal to zero.
     /// </exception>
@@ -48,11 +50,13 @@ public readonly partial struct Money
     /// </summary>
     /// <param name="ratios">The non-negative weights.</param>
     /// <returns>
-    /// The per-ratio allocation, whose sum equals this instance. Residual minor units are distributed by the
-    /// <i>largest-remainder method</i> — each slot receives one extra unit in descending order of its fractional
+    /// The per-ratio allocation, whose sum equals this instance. Residual minor units are distributed by the <i>
+    /// largest-remainder method</i> — each slot receives one extra unit in descending order of its fractional
     /// remainder, with ties broken by stable input order. Zero-ratio slots never receive residual.
     /// </returns>
-    /// <exception cref="InvalidOperationException">This value is a default-initialised, currency-less <see cref="Money" />.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// This value is a default-initialised, currency-less <see cref="Money" />.
+    /// </exception>
     /// <exception cref="ArgumentException">The ratios are empty, contain a negative value, or sum to zero.</exception>
     /// <exception cref="OverflowException">
     /// The scaled minor-unit count exceeds the range of a 64-bit signed integer.

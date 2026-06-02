@@ -40,8 +40,8 @@ namespace Bodu.Globalization.Calendar;
 /// </item>
 /// <item>
 /// <description>
-/// A weekday positioned on or after, on or before, or nearest to a <i>fixed calendar date</i> (the Saturday on or
-/// after 20 June; the Wednesday before 23 November) — use <see cref="WeekdayNearDate" />.
+/// A weekday positioned on or after, on or before, or nearest to a <i>fixed calendar date</i> (the Saturday on or after
+/// 20 June; the Wednesday before 23 November) — use <see cref="WeekdayNearDate" />.
 /// </description>
 /// </item>
 /// <item>

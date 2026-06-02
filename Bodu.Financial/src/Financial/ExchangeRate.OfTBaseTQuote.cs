@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRate.OfTBaseTQuote.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -10,17 +10,17 @@ using System.Globalization;
 namespace Bodu.Financial;
 
 /// <summary>
-/// Strongly-typed companion to <see cref="ExchangeRate" /> where the base and quote currencies are domain
-/// invariants encoded as type parameters.
+/// Strongly-typed companion to <see cref="ExchangeRate" /> where the base and quote currencies are domain invariants
+/// encoded as type parameters.
 /// </summary>
 /// <typeparam name="TBase">The source-currency tag.</typeparam>
 /// <typeparam name="TQuote">The destination-currency tag.</typeparam>
 /// <remarks>
 /// Use this typed form when an FX conversion's direction is fixed by the surrounding contract (settlement workflows,
-/// ledger-to-ledger transfers, account-currency mappings). Direction errors that
-/// <see cref="ExchangeRate" /> can surface only at runtime (mismatched <see cref="ExchangeRate.FromIsoCode" /> /
-/// <see cref="ExchangeRate.ToIsoCode" /> against the caller's expectation) become compile errors when the typed form
-/// is used. Bridge to and from the runtime form via <see cref="ToRuntime" /> and <see cref="FromRuntime" />.
+/// ledger-to-ledger transfers, account-currency mappings). Direction errors that <see cref="ExchangeRate" /> can
+/// surface only at runtime (mismatched <see cref="ExchangeRate.FromIsoCode" /> / <see cref="ExchangeRate.ToIsoCode" />
+/// against the caller's expectation) become compile errors when the typed form is used. Bridge to and from the runtime
+/// form via <see cref="ToRuntime" /> and <see cref="FromRuntime" />.
 /// </remarks>
 [DebuggerDisplay("{FromIsoCode,nq}->{ToIsoCode,nq} @ {Date,nq} = {Rate} ({Provider,nq})")]
 public readonly record struct ExchangeRate<TBase, TQuote>
@@ -30,7 +30,9 @@ public readonly record struct ExchangeRate<TBase, TQuote>
     /// <summary>
     /// Initializes a new instance of the <see cref="ExchangeRate{TBase, TQuote}" /> struct.
     /// </summary>
-    /// <param name="rate">The multiplier that converts a <typeparamref name="TBase" /> amount to <typeparamref name="TQuote" />.</param>
+    /// <param name="rate">
+    /// The multiplier that converts a <typeparamref name="TBase" /> amount to <typeparamref name="TQuote" />.
+    /// </param>
     /// <param name="date">The calendar date on which the rate was observed.</param>
     /// <param name="provider">The non-empty identifier of the publishing source.</param>
     /// <param name="isInverted">
@@ -105,14 +107,18 @@ public readonly record struct ExchangeRate<TBase, TQuote>
     /// <summary>
     /// Returns the reciprocal rate that converts in the opposite direction.
     /// </summary>
-    /// <returns>An <see cref="ExchangeRate{TQuote, TBase}" /> whose <see cref="Rate" /> is <c>1 / this.Rate</c>.</returns>
+    /// <returns>
+    /// An <see cref="ExchangeRate{TQuote, TBase}" /> whose <see cref="Rate" /> is <c>1 / this.Rate</c>.
+    /// </returns>
     public ExchangeRate<TQuote, TBase> Inverse() =>
         new(1m / Rate, Date, Provider, !IsInverted);
 
     /// <summary>
     /// Bridges this typed rate to the runtime-tagged <see cref="ExchangeRate" /> record.
     /// </summary>
-    /// <returns>An <see cref="ExchangeRate" /> carrying the same fields with the ISO codes inlined as strings.</returns>
+    /// <returns>
+    /// An <see cref="ExchangeRate" /> carrying the same fields with the ISO codes inlined as strings.
+    /// </returns>
     public ExchangeRate ToRuntime() =>
         new(FromIsoCode, ToIsoCode, Date, Rate, Provider, IsInverted);
 

@@ -605,14 +605,16 @@ internal sealed class NotableDateRuleResolver
     /// <param name="month">The reference month, in the range 1–12.</param>
     /// <param name="day">The reference day-of-month.</param>
     /// <param name="targetDayOfWeek">The weekday the rule resolves to.</param>
-    /// <param name="proximity">The direction used to position <paramref name="targetDayOfWeek" /> relative to the reference date.</param>
+    /// <param name="proximity">
+    /// The direction used to position <paramref name="targetDayOfWeek" /> relative to the reference date.
+    /// </param>
     /// <returns>
     /// The resolved date with <see cref="DateTimeKind.Unspecified" />, or <see langword="null" /> when the reference
     /// (year, month, day) is not a valid date or the shifted result falls outside the representable range.
     /// </returns>
     /// <remarks>
-    /// The forward and backward distances to the nearest occurrence of <paramref name="targetDayOfWeek" /> always sum to
-    /// seven, so for <see cref="WeekdayProximity.Nearest" /> they are never equal and the closer one is unambiguous;
+    /// The forward and backward distances to the nearest occurrence of <paramref name="targetDayOfWeek" /> always sum
+    /// to seven, so for <see cref="WeekdayProximity.Nearest" /> they are never equal and the closer one is unambiguous;
     /// when the reference date already falls on the target weekday every direction yields the reference date itself.
     /// </remarks>
     private static DateTime? ResolveWeekdayNearDate(int year, int month, int day, DayOfWeek targetDayOfWeek, WeekdayProximity proximity)
@@ -641,7 +643,9 @@ internal sealed class NotableDateRuleResolver
     /// <param name="anchorDayOfWeek">The anchor weekday whose ordinal occurrence supplies the reference date.</param>
     /// <param name="weekOrdinal">Which occurrence of <paramref name="anchorDayOfWeek" /> serves as the anchor.</param>
     /// <param name="relativeDayOfWeek">The target weekday the rule resolves to.</param>
-    /// <param name="proximity">The direction used to position <paramref name="relativeDayOfWeek" /> relative to the anchor.</param>
+    /// <param name="proximity">
+    /// The direction used to position <paramref name="relativeDayOfWeek" /> relative to the anchor.
+    /// </param>
     /// <returns>
     /// The resolved date with <see cref="DateTimeKind.Unspecified" />, or <see langword="null" /> when the anchor
     /// occurrence does not exist (for example a fifth occurrence in a month that has only four) or the result falls
@@ -665,8 +669,8 @@ internal sealed class NotableDateRuleResolver
 
     /// <summary>
     /// Positions <paramref name="targetDayOfWeek" /> relative to <paramref name="reference" /> according to
-    /// <paramref name="proximity" /> — the first such weekday on or after the reference, on or before it, or the nearest
-    /// occurrence in either direction. Shared by the <see cref="DateResolutionStrategy.WeekdayNearDate" /> and
+    /// <paramref name="proximity" /> — the first such weekday on or after the reference, on or before it, or the
+    /// nearest occurrence in either direction. Shared by the <see cref="DateResolutionStrategy.WeekdayNearDate" /> and
     /// <see cref="DateResolutionStrategy.RelativeWeekdayInMonth" /> strategies.
     /// </summary>
     /// <param name="reference">The reference date to position the target weekday around.</param>
@@ -677,8 +681,8 @@ internal sealed class NotableDateRuleResolver
     /// result falls outside the representable range.
     /// </returns>
     /// <remarks>
-    /// The forward and backward distances to the nearest occurrence of <paramref name="targetDayOfWeek" /> always sum to
-    /// seven, so for <see cref="WeekdayProximity.Nearest" /> they are never equal and the closer one is unambiguous;
+    /// The forward and backward distances to the nearest occurrence of <paramref name="targetDayOfWeek" /> always sum
+    /// to seven, so for <see cref="WeekdayProximity.Nearest" /> they are never equal and the closer one is unambiguous;
     /// when <paramref name="reference" /> already falls on the target weekday every direction yields the reference date
     /// itself.
     /// </remarks>

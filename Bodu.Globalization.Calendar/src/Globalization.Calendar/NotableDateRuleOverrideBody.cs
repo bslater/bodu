@@ -218,8 +218,8 @@ public sealed record NotableDateRuleOverrideBody
     /// <see cref="DayOfWeek" /> relative to the reference <see cref="Month" /> and <see cref="Day" />.
     /// </summary>
     /// <returns>
-    /// One of the defined <see cref="Bodu.Globalization.Calendar.WeekdayProximity" /> values, or <see langword="null" />
-    /// to inherit the source value.
+    /// One of the defined <see cref="Bodu.Globalization.Calendar.WeekdayProximity" /> values, or
+    /// <see langword="null" /> to inherit the source value.
     /// </returns>
     public WeekdayProximity? WeekdayProximity { get; init; }
 

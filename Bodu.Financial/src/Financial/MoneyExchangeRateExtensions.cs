@@ -25,9 +25,7 @@ public static class MoneyExchangeRateExtensions
     /// <param name="rounding">
     /// The rounding mode applied at the destination precision. Defaults to <see cref="MidpointRounding.ToEven" />.
     /// </param>
-    /// <returns>
-    /// The converted amount as a <see cref="Money" /> tagged with <paramref name="targetIsoCode" />.
-    /// </returns>
+    /// <returns>The converted amount as a <see cref="Money" /> tagged with <paramref name="targetIsoCode" />.</returns>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="provider" /> or <paramref name="targetIsoCode" /> is <see langword="null" />.
     /// </exception>

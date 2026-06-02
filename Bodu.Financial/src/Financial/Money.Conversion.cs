@@ -11,6 +11,10 @@ namespace Bodu.Financial;
 public readonly partial struct Money
 {
     /// <summary>
+<<<<<<< HEAD
+    /// Converts this <see cref="Money" /> to a strongly-typed <see cref="Money{TCurrency}" /> when the runtime currency
+    /// matches <typeparamref name="TCurrency" />.
+=======
     /// Returns a high-precision <see cref="CalculatedMoney" /> in the same currency, suitable for deferred-rounding
     /// calculation chains.
     /// </summary>
@@ -27,6 +31,7 @@ public readonly partial struct Money
     /// <summary>
     /// Converts this <see cref="Money" /> to a strongly-typed <see cref="Money{TCurrency}" /> when the runtime
     /// currency matches <typeparamref name="TCurrency" />.
+>>>>>>> 066692f232b4d4e9e85dd58b3fc6144c4d8d78ff
     /// </summary>
     /// <typeparam name="TCurrency">The target currency type.</typeparam>
     /// <returns>The strongly-typed monetary value.</returns>
@@ -86,8 +91,9 @@ public readonly partial struct Money
     /// <paramref name="context" />.
     /// </summary>
     /// <param name="rate">The exchange-rate quote whose source currency must match this value's currency.</param>
-    /// <param name="context">The monetary context governing rounding; <see langword="null" /> selects
-    /// <see cref="MonetaryContext.Default" />.</param>
+    /// <param name="context">
+    /// The monetary context governing rounding; <see langword="null" /> selects <see cref="MonetaryContext.Default" />.
+    /// </param>
     /// <returns>The converted <see cref="Money" /> in the rate's target currency.</returns>
     /// <exception cref="InvalidOperationException">
     /// The rate's source currency does not match this value's <see cref="IsoCode" />.
@@ -102,12 +108,13 @@ public readonly partial struct Money
         ConvertWithResult(rate, context).Target;
 
     /// <summary>
-    /// Converts this amount using an auditable <see cref="ExchangeRate" /> quote and returns the full conversion result,
-    /// including the rate, context, and rounding adjustment.
+    /// Converts this amount using an auditable <see cref="ExchangeRate" /> quote and returns the full conversion
+    /// result, including the rate, context, and rounding adjustment.
     /// </summary>
     /// <param name="rate">The exchange-rate quote whose source currency must match this value's currency.</param>
-    /// <param name="context">The monetary context governing rounding; <see langword="null" /> selects
-    /// <see cref="MonetaryContext.Default" />.</param>
+    /// <param name="context">
+    /// The monetary context governing rounding; <see langword="null" /> selects <see cref="MonetaryContext.Default" />.
+    /// </param>
     /// <returns>The <see cref="MoneyConversionResult" /> describing the conversion.</returns>
     /// <exception cref="InvalidOperationException">
     /// The rate's source currency does not match this value's <see cref="IsoCode" />.

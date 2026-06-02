@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FixedDatedExchangeRateProvider.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -19,14 +19,14 @@ namespace Bodu.Financial;
 /// <para>
 /// Use this provider as the read-side hand-off from an <see cref="ExchangeRateTableBuilder" /> built during data
 /// ingest. The <see cref="ExchangeRateTableBuilder.ToBook" /> method materialises the multi-provider book, and this
-/// provider then selects rates from it using either the single available provider per pair, or the supplied
-/// priority list.
+/// provider then selects rates from it using either the single available provider per pair, or the supplied priority
+/// list.
 /// </para>
 /// <para>
-/// Lookups walk the provider priority once per pair, perform a <see cref="FrozenDictionary{TKey, TValue}" /> probe
-/// for each candidate (pair, provider), then an <see cref="Array.BinarySearch{T}(T[], T)" /> over the series' date
-/// array. Successful and failing lookups both allocate no managed memory beyond the
-/// <see cref="ExchangeRateLookupResult" /> on success.
+/// Lookups walk the provider priority once per pair, perform a <see cref="FrozenDictionary{TKey, TValue}" /> probe for
+/// each candidate (pair, provider), then an <see cref="Array.BinarySearch{T}(T[], T)" /> over the series' date array.
+/// Successful and failing lookups both allocate no managed memory beyond the <see cref="ExchangeRateLookupResult" /> on
+/// success.
 /// </para>
 /// </remarks>
 public sealed class FixedDatedExchangeRateProvider : IDatedExchangeRateProvider
@@ -56,8 +56,8 @@ public sealed class FixedDatedExchangeRateProvider : IDatedExchangeRateProvider
     /// Thrown if <paramref name="book" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// Thrown if <paramref name="book" /> contains two providers for the same pair; supply a provider-priority list
-    /// to disambiguate, or compose multiple providers with <see cref="CompositeDatedExchangeRateProvider" />.
+    /// Thrown if <paramref name="book" /> contains two providers for the same pair; supply a provider-priority list to
+    /// disambiguate, or compose multiple providers with <see cref="CompositeDatedExchangeRateProvider" />.
     /// </exception>
     public FixedDatedExchangeRateProvider(ExchangeRateBook book)
     {

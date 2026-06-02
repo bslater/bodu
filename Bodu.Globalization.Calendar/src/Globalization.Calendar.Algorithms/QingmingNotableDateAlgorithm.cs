@@ -110,19 +110,19 @@ public sealed class QingmingNotableDateAlgorithm
 
         // Meeus Table 27.a — mean JDE of the March equinox.
         var jde0 = 2451623.80984
-            + 365242.37404 * Y
-            + 0.05169 * Y * Y
-            - 0.00411 * Y * Y * Y
-            - 0.00057 * Y * Y * Y * Y;
+            + (365242.37404 * Y)
+            + (0.05169 * Y * Y)
+            - (0.00411 * Y * Y * Y)
+            - (0.00057 * Y * Y * Y * Y);
 
         // Meeus Table 27.c — periodic correction terms (units: 0.00001 day × coefficient).
         var T = (jde0 - 2451545.0) / 36525.0;
-        var W = DegToRad(35999.373 * T - 2.47);
-        var lambda = 1.0 + 0.0334 * Math.Cos(W) + 0.0007 * Math.Cos(2.0 * W);
+        var W = DegToRad((35999.373 * T) - 2.47);
+        var lambda = 1.0 + (0.0334 * Math.Cos(W)) + (0.0007 * Math.Cos(2.0 * W));
 
         var S = 0.0;
         foreach ((var a, var b, var c) in s_correctionTerms)
-            S += a * Math.Cos(DegToRad(b + c * T));
+            S += a * Math.Cos(DegToRad(b + (c * T)));
 
         return jde0 + (0.00001 * S / lambda);
     }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateBook.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -38,12 +38,10 @@ public sealed class ExchangeRateBook
     /// </summary>
     /// <param name="series">The series to include in the book.</param>
     /// <exception cref="ArgumentNullException">
-    /// Thrown if <paramref name="series" /> is <see langword="null" />, or if any element of
-    /// <paramref name="series" /> is <see langword="null" />.
+    /// Thrown if <paramref name="series" /> is <see langword="null" />, or if any element of <paramref name="series" />
+    /// is <see langword="null" />.
     /// </exception>
-    /// <exception cref="ArgumentException">
-    /// Thrown if two series share the same pair and provider.
-    /// </exception>
+    /// <exception cref="ArgumentException">Thrown if two series share the same pair and provider.</exception>
     public ExchangeRateBook(IEnumerable<ExchangeRateSeries> series)
     {
         ThrowHelper.ThrowIfNull(series);

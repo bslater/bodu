@@ -50,8 +50,8 @@ public sealed class OrthodoxEasterSundayNotableDateProvider
         var a = year % 4;
         var b = year % 7;
         var c = year % 19;
-        var d = (19 * c + 15) % 30;
-        var e = (2 * a + (4 * b) - d + 34) % 7;
+        var d = ((19 * c) + 15) % 30;
+        var e = ((2 * a) + (4 * b) - d + 34) % 7;
         var f = d + e + 114;
         var month = f / 31;
         var day = (f % 31) + 1;

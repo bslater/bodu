@@ -12,8 +12,8 @@ namespace Bodu.Financial.Serialization;
 
 /// <summary>
 /// Converts a <see cref="Money" /> to and from JSON using the policy supplied at construction. Mirrors the shape
-/// vocabulary of <see cref="MoneyOfTCurrencyJsonConverter{TCurrency}" /> so a single <see cref="FinancialJsonPolicy" /> selection
-/// produces a coherent on-the-wire format across the monetary types.
+/// vocabulary of <see cref="MoneyOfTCurrencyJsonConverter{TCurrency}" /> so a single <see cref="FinancialJsonPolicy" />
+/// selection produces a coherent on-the-wire format across the monetary types.
 /// </summary>
 public sealed class MoneyJsonConverter
     : JsonConverter<Money>

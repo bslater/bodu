@@ -22,14 +22,15 @@ namespace Bodu.Financial;
 /// not silently merged. Zero balances are pruned automatically on every operation.
 /// </para>
 /// <para>
-/// Enumeration yields one <see cref="Money" /> per non-zero currency, in ISO-code lexicographic order so the
-/// iteration is stable and reproducible across runs.
+/// Enumeration yields one <see cref="Money" /> per non-zero currency, in ISO-code lexicographic order so the iteration
+/// is stable and reproducible across runs.
 /// </para>
 /// <para>
 /// The type-level <see cref="JsonConverterAttribute" /> always serializes the canonical
 /// <see cref="Serialization.FinancialJsonPolicy.Strict" /> object shape; the compact and lenient shapes are opt-in only
 /// and must be selected through
-/// <see cref="Serialization.FinancialJsonSerializerOptionsExtensions.AddFinancialJsonConverters(System.Text.Json.JsonSerializerOptions, Serialization.FinancialJsonPolicy)" />.
+/// <see cref="Serialization.FinancialJsonSerializerOptionsExtensions.AddFinancialJsonConverters(System.Text.Json.JsonSerializerOptions, Serialization.FinancialJsonPolicy)" />
+/// .
 /// </para>
 /// </remarks>
 [DebuggerDisplay("{Count} currencies")]

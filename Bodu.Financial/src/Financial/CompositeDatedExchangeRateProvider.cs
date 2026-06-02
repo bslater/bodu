@@ -48,9 +48,9 @@ public sealed class CompositeDatedExchangeRateProvider : IDatedExchangeRateProvi
     /// </summary>
     /// <param name="providers">The providers to consult, in priority order.</param>
     /// <param name="selectionPolicy">
-    /// The policy that controls how the composite picks between providers when more than one can satisfy the
-    /// requested pair. Only <see cref="ExchangeRateProviderSelectionPolicy.ProviderPriorityFirst" /> is implemented
-    /// in v1.0; other defined values throw <see cref="NotSupportedException" />.
+    /// The policy that controls how the composite picks between providers when more than one can satisfy the requested
+    /// pair. Only <see cref="ExchangeRateProviderSelectionPolicy.ProviderPriorityFirst" /> is implemented in v1.0;
+    /// other defined values throw <see cref="NotSupportedException" />.
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="providers" /> or any element of <paramref name="providers" /> is

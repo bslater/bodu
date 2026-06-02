@@ -19,8 +19,8 @@ namespace Bodu.Financial.Serialization;
 /// </para>
 /// <para>
 /// The shipped <c>[JsonConverter]</c> attributes on <see cref="Bodu.Financial.Money{TCurrency}" />,
-/// <see cref="Bodu.Financial.Money" />, and <see cref="Bodu.Financial.MoneyBag" /> default to
-/// <see cref="Strict" />. Consumers who need a different shape register their own policy through
+/// <see cref="Bodu.Financial.Money" />, and <see cref="Bodu.Financial.MoneyBag" /> default to <see cref="Strict" />.
+/// Consumers who need a different shape register their own policy through
 /// <see cref="FinancialJsonSerializerOptionsExtensions.AddFinancialJsonConverters" />; converters registered on
 /// <see cref="System.Text.Json.JsonSerializerOptions.Converters" /> take precedence over the type-level attribute.
 /// </para>

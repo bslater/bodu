@@ -55,7 +55,8 @@ namespace Bodu.Financial;
 /// The type-level <see cref="JsonConverterAttribute" /> always serializes the canonical
 /// <see cref="Serialization.FinancialJsonPolicy.Strict" /> object shape; the compact and lenient shapes are opt-in only
 /// and must be selected through
-/// <see cref="Serialization.FinancialJsonSerializerOptionsExtensions.AddFinancialJsonConverters(System.Text.Json.JsonSerializerOptions, Serialization.FinancialJsonPolicy)" />.
+/// <see cref="Serialization.FinancialJsonSerializerOptionsExtensions.AddFinancialJsonConverters(System.Text.Json.JsonSerializerOptions, Serialization.FinancialJsonPolicy)" />
+/// .
 /// </para>
 /// </remarks>
 [Serializable]

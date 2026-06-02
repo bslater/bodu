@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Money.ParseOptions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -36,7 +36,9 @@ public readonly partial struct Money
     /// </summary>
     /// <param name="s">The text to parse.</param>
     /// <param name="options">The parse options controlling mode, culture, and unknown-currency handling.</param>
-    /// <param name="result">When this method returns <see langword="true" />, the parsed value; otherwise the default.</param>
+    /// <param name="result">
+    /// When this method returns <see langword="true" />, the parsed value; otherwise the default.
+    /// </param>
     /// <returns><see langword="true" /> on success.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="options" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentOutOfRangeException">
