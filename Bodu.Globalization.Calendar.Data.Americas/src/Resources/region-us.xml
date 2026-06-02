@@ -153,6 +153,13 @@
     </Rule>
   </NotableDate>
 
+  <NotableDate name="Cyber Monday">
+    <Rule name="offset-thanksgiving+4-us" category="Cultural" territory="US"
+          comment="The Monday after Thanksgiving (four days after the fourth Thursday of November), promoted since 2005 as the online counterpart to Black Friday. Not a federal holiday; observed informally as a major retail event.">
+      <OffsetFromAnchor name="Thanksgiving" offset="4" />
+    </Rule>
+  </NotableDate>
+
   <NotableDate name="Pearl Harbor Remembrance Day">
     <Rule name="fixed-dec-07-us" category="Remembrance" territory="US" firstYear="1994"
           comment="Designated by Congress in 1994 (Public Law 103-308) to honor the 2,403 Americans killed and 1,178 wounded in the Japanese attack on Pearl Harbor on 7 December 1941. Not a federal holiday.">

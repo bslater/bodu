@@ -479,6 +479,61 @@ NotableDateRule electionDay = new NotableDateRule
 
 ---
 
+## Offsets from another holiday
+
+`Strategy = OffsetFromAnchor` is not limited to Easter — the anchor can be **any** named rule.
+A date defined relative to another holiday should offset from that holiday so it tracks any
+change to the anchor, rather than re-deriving the anchor's date independently. The day-after and
+Monday-after retail observances tied to US Thanksgiving (the fourth Thursday of November) are the
+canonical example.
+
+```csharp
+using Bodu.Globalization.Calendar;
+
+// Black Friday — the day after Thanksgiving.
+NotableDateRule blackFriday = new NotableDateRule
+{
+    Name           = "Black Friday",
+    Strategy       = DateResolutionStrategy.OffsetFromAnchor,
+    Category       = NotableDateCategory.Cultural,
+    AnchorRuleName = "Thanksgiving",
+    OffsetDays     = 1,
+    TerritoryCode  = "US",
+};
+
+// Cyber Monday — the Monday after Thanksgiving (four days on).
+NotableDateRule cyberMonday = new NotableDateRule
+{
+    Name           = "Cyber Monday",
+    Strategy       = DateResolutionStrategy.OffsetFromAnchor,
+    Category       = NotableDateCategory.Cultural,
+    AnchorRuleName = "Thanksgiving",
+    OffsetDays     = 4,
+    TerritoryCode  = "US",
+};
+```
+
+```xml
+<NotableDate name="Black Friday">
+  <Rule name="Black Friday" category="Cultural" territory="US">
+    <OffsetFromAnchor name="Thanksgiving" offset="1" />
+  </Rule>
+</NotableDate>
+
+<NotableDate name="Cyber Monday">
+  <Rule name="Cyber Monday" category="Cultural" territory="US">
+    <OffsetFromAnchor name="Thanksgiving" offset="4" />
+  </Rule>
+</NotableDate>
+```
+
+> [!TIP]
+> Prefer `OffsetFromAnchor` over `RelativeWeekdayInMonth` when an anchor rule already exists:
+> "the Monday after Thanksgiving" tracks the Thanksgiving rule, whereas re-deriving it as "the
+> Monday after the fourth Thursday of November" would silently diverge if the anchor ever moved.
+
+---
+
 ## Easter and Easter-relative dates
 
 Easter Sunday is determined by the Gregorian or Orthodox computus algorithm. Easter-relative

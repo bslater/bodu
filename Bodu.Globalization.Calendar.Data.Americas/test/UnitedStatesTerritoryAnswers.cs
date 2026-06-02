@@ -82,6 +82,14 @@ public static class UnitedStatesTerritoryAnswers
         yield return ElectionDay(2022, new DateTime(2022, 11, 8), "latest possible date");
         yield return ElectionDay(2024, new DateTime(2024, 11, 5));
         yield return ElectionDay(2026, new DateTime(2026, 11, 3));
+
+        // Cyber Monday — the Monday after Thanksgiving (four days after the fourth Thursday of November).
+        // Stays in November in some years (2022, 2023, 2026) and rolls into December in others (2024, 2025).
+        yield return CyberMonday(2022, new DateTime(2022, 11, 28));
+        yield return CyberMonday(2023, new DateTime(2023, 11, 27));
+        yield return CyberMonday(2024, new DateTime(2024, 12, 2), "rolls into December");
+        yield return CyberMonday(2025, new DateTime(2025, 12, 1), "rolls into December");
+        yield return CyberMonday(2026, new DateTime(2026, 11, 30));
     }
 
     private static object[] ElectionDay(int year, DateTime expectedDate, string? note = null) =>
@@ -94,6 +102,20 @@ public static class UnitedStatesTerritoryAnswers
                 Name = "Election Day",
                 ExpectedDate = expectedDate,
                 ExpectedDayOfWeek = DayOfWeek.Tuesday,
+                Note = note,
+            },
+        ];
+
+    private static object[] CyberMonday(int year, DateTime expectedDate, string? note = null) =>
+        [
+            new TerritoryNotableDateKnownAnswer
+            {
+                ProviderFactory = UsProvider,
+                Territory = "US",
+                Year = year,
+                Name = "Cyber Monday",
+                ExpectedDate = expectedDate,
+                ExpectedDayOfWeek = DayOfWeek.Monday,
                 Note = note,
             },
         ];
