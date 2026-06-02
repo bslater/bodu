@@ -11,10 +11,6 @@ namespace Bodu.Financial;
 public readonly partial struct Money
 {
     /// <summary>
-<<<<<<< HEAD
-    /// Converts this <see cref="Money" /> to a strongly-typed <see cref="Money{TCurrency}" /> when the runtime currency
-    /// matches <typeparamref name="TCurrency" />.
-=======
     /// Returns a high-precision <see cref="CalculatedMoney" /> in the same currency, suitable for deferred-rounding
     /// calculation chains.
     /// </summary>
@@ -31,7 +27,6 @@ public readonly partial struct Money
     /// <summary>
     /// Converts this <see cref="Money" /> to a strongly-typed <see cref="Money{TCurrency}" /> when the runtime
     /// currency matches <typeparamref name="TCurrency" />.
->>>>>>> 066692f232b4d4e9e85dd58b3fc6144c4d8d78ff
     /// </summary>
     /// <typeparam name="TCurrency">The target currency type.</typeparam>
     /// <returns>The strongly-typed monetary value.</returns>
