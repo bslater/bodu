@@ -118,6 +118,7 @@ Initial release. Provides `IServiceCollection` extensions for registering `Notab
 - BLAKE3 implementation, including AVX-512 vectorised fast path on capable hardware.
 - ASCON-AEAD-128 implementation backed by the shared KAT infrastructure.
 - Shared KAT (known-answer test) infrastructure now covers the BLAKE3 and ASCON algorithm families end-to-end.
+- Extended-nonce Poly1305 AEAD constructions, filling the gap left by the BCL's 12-byte-nonce `ChaCha20Poly1305`: `XChaCha20Poly1305` (RFC 8439 framing over XChaCha20, libsodium `crypto_aead_xchacha20poly1305_ietf`), `XSalsa20Poly1305` (NaCl/libsodium `crypto_secretbox`-compatible), and `XSalsa20Poly1305Ietf` (XSalsa20 under RFC 8439 framing). All three implement `IAeadBlockCipherModeTransform` on the new public `Poly1305AeadTransform` base, reuse the existing ChaCha20/Salsa20 stream engines and Poly1305 MAC, and decrypt verify-before-release. Validated against the RFC 8439 §2.8.2, draft-irtf-cfrg-xchacha A.3.1, and libsodium secretbox vectors.
 
 ### Bodu.IO.Hashing — *(unversioned, next minor)*
 

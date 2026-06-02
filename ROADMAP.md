@@ -4,7 +4,7 @@ Forward-looking plan for the **Bodu** C# utility library. Pairs with
 [`CHANGELOG.md`](CHANGELOG.md) (what shipped) and [`CLAUDE.md`](CLAUDE.md)
 (repository conventions for contributors).
 
-*Last updated: 2026-06-01. Audited the per-project items against the codebase and retired the ones that have since shipped — public `ConcurrentCircularBuffer<T>`, the `ConfigurationDiagnosticCode` enum, `IFileProvider` reload-on-change in the configuration bridge, the documented `ExternalPluginLoader` extension point, and the German `Länder` / UK constituent-country calendar splits. The stream-cipher family expansion is complete — ChaCha20 / XChaCha20, Salsa20 / XSalsa20, Rabbit, and HC-128 all ship on the shared StreamCipherAlgorithm base. Next stream-related step: the extended-nonce XChaCha20-Poly1305 / XSalsa20-Poly1305 AEAD constructions.*
+*Last updated: 2026-06-02. The extended-nonce Poly1305 AEAD constructions have landed — `XChaCha20Poly1305`, the `crypto_secretbox`-compatible `XSalsa20Poly1305`, and `XSalsa20Poly1305Ietf` all ship on the shared `Poly1305AeadTransform` base, closing the stream-cipher AEAD gap left by the BCL's 12-byte-nonce `ChaCha20Poly1305`. With the ChaCha/Salsa stream-cipher family and its AEAD layer complete, the next crypto step is the password-hashing KDFs Argon2 and scrypt — the remaining BCL gap (HKDF and PBKDF2 already ship in `System.Security.Cryptography`).*
 
 ## How to read this
 
@@ -158,8 +158,8 @@ SipHash plus EAX/OFB/GCM/OCB/SIV modes.
   (`ICryptoTransform` glue owning keystream carry, self-inverse XOR,
   and 32-bit counter-overflow protection), and an `IStreamCipherAlgorithm`
   marker so stream ciphers opt out of block padding/mode suites. The
-  remaining ChaCha-family gap is the **XChaCha20-Poly1305 AEAD**, which
-  composes this engine with the existing `Poly1305` MAC.
+  extended-nonce **XChaCha20-Poly1305 AEAD** that composes this engine
+  with the existing `Poly1305` MAC has since shipped (see below).
 - **Expand the stream-cipher family: Salsa20 / XSalsa20, Rabbit, and
   HC-128.** ✅ **Shipped.** All four ciphers are built on the
   `StreamCipherAlgorithm` base and the shared `IStreamCipher` /
@@ -183,11 +183,20 @@ SipHash plus EAX/OFB/GCM/OCB/SIV modes.
   confidentiality-only primitives carrying nonce-reuse and
   unauthenticated-ciphertext warnings in their XML docs; AEAD remains
   the recommended default.
-- **Add the XChaCha20-Poly1305 / XSalsa20-Poly1305 AEAD constructions.**
-  The raw ciphers above plus the existing `Poly1305` MAC are the
-  building blocks. Neither extended-nonce AEAD ships in the BCL (only
-  the 12-byte-nonce `System.Security.Cryptography.ChaCha20Poly1305`
-  does), so both remain genuine gaps.
+- **Extended-nonce Poly1305 AEAD constructions.** ✅ **Shipped.** Three
+  transforms now compose the raw stream ciphers with the existing
+  `Poly1305` MAC on the public `Poly1305AeadTransform` base, all
+  implementing `IAeadBlockCipherModeTransform`: `XChaCha20Poly1305`
+  (RFC 8439 framing over XChaCha20, matching libsodium's
+  `crypto_aead_xchacha20poly1305_ietf`), `XSalsa20Poly1305`
+  (NaCl / libsodium `crypto_secretbox`-compatible — no associated data,
+  MAC over ciphertext only), and `XSalsa20Poly1305Ietf` (XSalsa20 under
+  the RFC 8439 framing, symmetric with the XChaCha20 type). None ship in
+  the BCL, whose `ChaCha20Poly1305` is 12-byte-nonce only. Locked against
+  the RFC 8439 §2.8.2, draft-irtf-cfrg-xchacha A.3.1, and libsodium
+  secretbox vectors; the IETF-framed XSalsa20 hybrid (no published
+  vector) is checked against a derived oracle built from the
+  independently-tested public `XSalsa20` keystream and `Poly1305` MAC.
 - **Add password-hashing KDFs: Argon2 and scrypt.** No
   password-hashing surface today. `HKDF` and `Pbkdf2` are already in
   `System.Security.Cryptography` and are not in scope. Argon2 and
