@@ -31,9 +31,10 @@ internal sealed class NotableDateRuleResolver
     private readonly INotableDateAlgorithmRegistry? _algorithms;
 
     /// <summary>
-    /// A case-insensitive name-keyed lookup of every rule available for resolution, built once at construction.
+    /// An identity-keyed index of every rule available for resolution, built once at construction. Resolves offset
+    /// anchors by canonical name with deterministic disambiguation when several variants share a name.
     /// </summary>
-    private readonly IReadOnlyDictionary<string, NotableDateRule> _rulesByName;
+    private readonly NotableDateRuleIndex _index;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="NotableDateRuleResolver" /> class.
@@ -49,15 +50,9 @@ internal sealed class NotableDateRuleResolver
     {
         ThrowHelper.ThrowIfNull(rules);
 
-        // Build a name-keyed lookup once; rule names are unique within a service. Duplicates collapse silently with the last wins.
-        var lookup = new Dictionary<string, NotableDateRule>(StringComparer.OrdinalIgnoreCase);
-        foreach (NotableDateRule rule in rules)
-        {
-            if (!string.IsNullOrWhiteSpace(rule.Name))
-                lookup[rule.Name] = rule;
-        }
-
-        _rulesByName = lookup;
+        // Build an identity-keyed index once. Same-name variants (e.g. western and orthodox Easter) coexist and are
+        // disambiguated by territory/calendar context when an offset anchor refers to them by name.
+        _index = new NotableDateRuleIndex(rules);
         _algorithms = algorithms;
     }
 
@@ -102,7 +97,7 @@ internal sealed class NotableDateRuleResolver
     {
         ThrowHelper.ThrowIfNull(rule);
 
-        return ResolveInternal(rule, year, new HashSet<string>(StringComparer.OrdinalIgnoreCase));
+        return ResolveInternal(rule, year, []);
     }
 
     /// <summary>
@@ -505,17 +500,19 @@ internal sealed class NotableDateRuleResolver
     /// </summary>
     /// <param name="rule">The rule to resolve.</param>
     /// <param name="year">The civil year.</param>
-    /// <param name="resolving">The set of rule names currently being resolved up the call stack.</param>
+    /// <param name="resolving">The set of rule identities currently being resolved up the call stack.</param>
     /// <returns>The resolved date, or <see langword="null" /> if the rule does not apply.</returns>
     /// <exception cref="InvalidOperationException">A cycle was detected among offset-anchored rules.</exception>
-    private DateTime? ResolveInternal(NotableDateRule rule, int year, HashSet<string> resolving)
+    private DateTime? ResolveInternal(NotableDateRule rule, int year, HashSet<NotableDateRuleIdentity> resolving)
     {
         if (!IsApplicable(rule, year))
             return null;
 
-        if (!resolving.Add(rule.Name))
+        // Track the in-flight chain by full identity so two same-name variants are not mistaken for a cycle.
+        NotableDateRuleIdentity identity = NotableDateRuleIdentity.From(rule);
+        if (!resolving.Add(identity))
         {
-            var chain = string.Join(" -> ", resolving.Concat([rule.Name]));
+            var chain = string.Join(" -> ", resolving.Select(i => i.Name).Concat([rule.Name]));
             throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Op_Invalid_CircularDependencyInRule, rule.Name, chain));
         }
 
@@ -593,7 +590,7 @@ internal sealed class NotableDateRuleResolver
         }
         finally
         {
-            resolving.Remove(rule.Name);
+            resolving.Remove(identity);
         }
     }
 
@@ -710,16 +707,22 @@ internal sealed class NotableDateRuleResolver
     /// </summary>
     /// <param name="rule">The offset-based rule whose anchor must be resolved.</param>
     /// <param name="year">The civil year.</param>
-    /// <param name="resolving">The set of rule names currently being resolved up the call stack.</param>
+    /// <param name="resolving">The set of rule identities currently being resolved up the call stack.</param>
     /// <returns>
     /// The resolved anchor date, or <see langword="null" /> if the anchor rule does not apply in the given year.
     /// </returns>
-    private DateTime? ResolveOffsetAnchor(NotableDateRule rule, int year, HashSet<string> resolving)
+    private DateTime? ResolveOffsetAnchor(NotableDateRule rule, int year, HashSet<NotableDateRuleIdentity> resolving)
     {
         if (string.IsNullOrWhiteSpace(rule.AnchorRuleName))
             return null;
 
-        if (!_rulesByName.TryGetValue(rule.AnchorRuleName!, out NotableDateRule? anchorRule))
+        // Resolve the anchor by name, disambiguating with this rule's territory/calendar context when several
+        // variants share the name. An unresolvable name throws not-found; an undisambiguable match throws ambiguous.
+        RuleReferenceResult result = _index.Resolve(NotableDateRuleReference.ForName(rule.AnchorRuleName!), rule.TerritoryCode, rule.CalendarType);
+        if (result.Match == RuleReferenceMatch.Ambiguous)
+            throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Op_Invalid_AmbiguousAnchorReference, rule.AnchorRuleName, rule.Name, result.CandidateCount));
+
+        if (result.Match != RuleReferenceMatch.Unique || result.Rule is not { } anchorRule)
             throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Op_Invalid_AnchorRuleNotFound, rule.AnchorRuleName, rule.Name));
 
         DateTime? anchorDate = ResolveInternal(anchorRule, year, resolving);

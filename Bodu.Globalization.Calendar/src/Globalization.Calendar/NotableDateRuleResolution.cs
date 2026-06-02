@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Globalization;
-
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
@@ -39,9 +37,9 @@ internal readonly record struct RuleReferenceResult(RuleReferenceMatch Match, No
 /// </summary>
 /// <remarks>
 /// <para>
-/// The index is built once per service from the flattened, override-merged rule set. Because the flatten pipeline keys
-/// rules by full <see cref="NotableDateRuleIdentity" />, two rules with the same identity reaching the index indicate an
-/// authoring error and are rejected at construction time.
+/// The index is built once per service from the flattened, override-merged rule set. Rules sharing a full
+/// <see cref="NotableDateRuleIdentity" /> are de-duplicated (last wins), mirroring the historical name-keyed lookup;
+/// surfacing duplicate identities as a diagnostic is the responsibility of the strict validation pass.
 /// </para>
 /// <para>
 /// A name-only reference still resolves uniquely when a single candidate carries that name (the dominant case for
@@ -68,28 +66,22 @@ internal sealed class NotableDateRuleIndex
     /// </summary>
     /// <param name="rules">The flattened, override-merged rules to index.</param>
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="rules" /> is <see langword="null" />.</exception>
-    /// <exception cref="InvalidOperationException">Thrown if two rules share the same <see cref="NotableDateRuleIdentity" />.</exception>
     public NotableDateRuleIndex(IReadOnlyList<NotableDateRule> rules)
     {
         ThrowHelper.ThrowIfNull(rules);
 
+        // De-duplicate by full identity (last wins), mirroring the historical name-keyed lookup, then group the
+        // survivors by canonical name so a name reference can still enumerate genuine same-name variants.
         foreach (NotableDateRule rule in rules)
         {
             if (rule is null || string.IsNullOrWhiteSpace(rule.Name))
                 continue;
 
-            NotableDateRuleIdentity identity = NotableDateRuleIdentity.From(rule);
-            if (!_byIdentity.TryAdd(identity, rule))
-            {
-                throw new InvalidOperationException(string.Format(
-                    CultureInfo.InvariantCulture,
-                    CalendarResourceStrings.Op_Invalid_DuplicateRuleIdentity,
-                    identity.Name,
-                    identity.RuleName ?? string.Empty,
-                    identity.TerritoryCode ?? string.Empty,
-                    identity.CalendarType?.FullName ?? string.Empty));
-            }
+            _byIdentity[NotableDateRuleIdentity.From(rule)] = rule;
+        }
 
+        foreach (NotableDateRule rule in _byIdentity.Values)
+        {
             if (!_byName.TryGetValue(rule.Name, out List<NotableDateRule>? bucket))
             {
                 bucket = [];
