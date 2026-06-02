@@ -871,6 +871,33 @@ public partial class NotableDateDocumentBuilderTests
     }
 
     /// <summary>
+    /// Verifies that an adjustment's reach envelope, custom-handler parameters, and global opt-in round-trip intact
+    /// (schema/builder alignment for F-010/F-012).
+    /// </summary>
+    [TestMethod]
+    public void RoundTrip_AdjustmentWithReachHandlerParamsAndGlobalOptIn_ShouldPreserveAll()
+    {
+        List<NotableDateRule> parsed = BuildAndReparse(b => b
+            .AddDate("Test", date => date
+                .AddRule(rule => rule
+                    .Category(NotableDateCategory.Holiday)
+                    .Fixed(1, 1)
+                    .AddAdjustment("custom", adj => adj
+                        .When(AdjustmentTrigger.Custom)
+                        .Action(AdjustmentAction.Custom)
+                        .HandlerKey("my-handler")
+                        .AddHandlerParameter("shift", "3")
+                        .MaxAdjustmentReachDays(45)
+                        .AppliesToGlobalRules()))));
+
+        ObservanceAdjustment adj = parsed[0].Adjustments[0];
+        Assert.AreEqual(45, adj.MaxAdjustmentReachDays);
+        Assert.IsNotNull(adj.HandlerParameters);
+        Assert.AreEqual("3", adj.HandlerParameters["shift"]);
+        Assert.IsTrue(adj.AppliesToGlobalRules);
+    }
+
+    /// <summary>
     /// Verifies that an adjustment's non-default priority round-trips intact through the parser.
     /// </summary>
     [TestMethod]

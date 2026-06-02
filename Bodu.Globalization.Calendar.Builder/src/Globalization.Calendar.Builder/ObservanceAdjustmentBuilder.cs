@@ -161,6 +161,11 @@ public sealed class ObservanceAdjustmentBuilder
     private int? _maxAdjustmentReachDays;
 
     /// <summary>
+    /// Whether the scoped adjustment opts into global rules, set via <see cref="AppliesToGlobalRules(bool)" />.
+    /// </summary>
+    private bool _appliesToGlobalRules;
+
+    /// <summary>
     /// Sets the condition that activates this adjustment.
     /// </summary>
     /// <param name="trigger">The activation condition.</param>
@@ -367,9 +372,8 @@ public sealed class ObservanceAdjustmentBuilder
     /// <para>
     /// Repeated calls with the same <paramref name="key" /> replace the previously authored value (last-write-wins).
     /// Values populate <see cref="ObservanceAdjustment.HandlerParameters" /> and are consumed only by registered
-    /// <see cref="IAdjustmentHandler" /> implementations. The dictionary is not part of the <c>NotableDates.xsd</c> or
-    /// <c>NotableDates.schema.json</c> schemas, so values supplied here are honoured by <see cref="Build(string)" />
-    /// but omitted from <see cref="ToXElement(string, XNamespace)" /> and <see cref="ToJsonNode(string)" />.
+    /// <see cref="IAdjustmentHandler" /> implementations. They are serialized as repeated <c>&lt;Param&gt;</c> children
+    /// (XML) and a <c>handlerParameters</c> object (JSON).
     /// </para>
     /// </remarks>
     /// <exception cref="ArgumentException">
@@ -396,10 +400,8 @@ public sealed class ObservanceAdjustmentBuilder
     /// <para>
     /// Consumed by the prototype range-resolution pipeline (<c>NotableDateService.ResolveNotableDatesInRange</c>) to
     /// size the per-rule and global fringe envelope when an adjustment's actual reach exceeds the action's default
-    /// heuristic. The value populates <see cref="ObservanceAdjustment.MaxAdjustmentReachDays" />. It is not part of the
-    /// <c>NotableDates.xsd</c> or <c>NotableDates.schema.json</c> schemas, so values supplied here are honoured by
-    /// <see cref="Build(string)" /> but omitted from <see cref="ToXElement(string, XNamespace)" /> and
-    /// <see cref="ToJsonNode(string)" />.
+    /// heuristic. The value populates <see cref="ObservanceAdjustment.MaxAdjustmentReachDays" /> and is serialized as
+    /// the <c>maxReachDays</c> attribute (XML) / property (JSON).
     /// </para>
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="days" /> is negative.</exception>
@@ -407,6 +409,25 @@ public sealed class ObservanceAdjustmentBuilder
     {
         ThrowHelper.ThrowIfLessThan(days, 0);
         _maxAdjustmentReachDays = days;
+        return this;
+    }
+
+    /// <summary>
+    /// Opts a territory- or calendar-scoped adjustment into rules that are themselves territory/calendar-neutral
+    /// (global).
+    /// </summary>
+    /// <param name="value">
+    /// <see langword="true" /> (the default) to apply the scoped adjustment to global rules; <see langword="false" />
+    /// to restrict it to rules carrying a matching context.
+    /// </param>
+    /// <returns>This builder instance, for method chaining.</returns>
+    /// <remarks>
+    /// Populates <see cref="ObservanceAdjustment.AppliesToGlobalRules" /> and is serialized as the
+    /// <c>appliesToGlobalRules</c> attribute (XML) / property (JSON).
+    /// </remarks>
+    public ObservanceAdjustmentBuilder AppliesToGlobalRules(bool value = true)
+    {
+        _appliesToGlobalRules = value;
         return this;
     }
 
@@ -443,6 +464,7 @@ public sealed class ObservanceAdjustmentBuilder
             _priority = _priority,
             _handlerKey = _handlerKey,
             _maxAdjustmentReachDays = _maxAdjustmentReachDays,
+            _appliesToGlobalRules = _appliesToGlobalRules,
         };
 
         if (_handlerParameters is not null)
@@ -498,6 +520,7 @@ public sealed class ObservanceAdjustmentBuilder
                 ? null
                 : new Dictionary<string, string>(_handlerParameters, StringComparer.Ordinal),
             MaxAdjustmentReachDays = _maxAdjustmentReachDays,
+            AppliesToGlobalRules = _appliesToGlobalRules,
         };
     }
 
@@ -559,8 +582,20 @@ public sealed class ObservanceAdjustmentBuilder
         if (_targetRuleName is not null)
             element.Add(new XAttribute("target", _targetRuleName));
 
+        if (_maxAdjustmentReachDays.HasValue)
+            element.Add(new XAttribute("maxReachDays", _maxAdjustmentReachDays.Value.ToString(CultureInfo.InvariantCulture)));
+
+        if (_appliesToGlobalRules)
+            element.Add(new XAttribute("appliesToGlobalRules", "true"));
+
         if (_handlerKey is not null)
             element.Add(new XAttribute("handlerKey", _handlerKey));
+
+        if (_handlerParameters is not null)
+        {
+            foreach (KeyValuePair<string, string> parameter in _handlerParameters)
+                element.Add(new XElement(ns + "Param", new XAttribute("key", parameter.Key), new XAttribute("value", parameter.Value)));
+        }
 
         return element;
     }
@@ -607,7 +642,17 @@ public sealed class ObservanceAdjustmentBuilder
         }
 
         if (_targetRuleName is not null) node["target"] = _targetRuleName;
+        if (_maxAdjustmentReachDays.HasValue) node["maxReachDays"] = _maxAdjustmentReachDays.Value;
+        if (_appliesToGlobalRules) node["appliesToGlobalRules"] = true;
         if (_handlerKey is not null) node["handlerKey"] = _handlerKey;
+
+        if (_handlerParameters is not null)
+        {
+            JsonObject parameters = new();
+            foreach (KeyValuePair<string, string> parameter in _handlerParameters)
+                parameters[parameter.Key] = parameter.Value;
+            node["handlerParameters"] = parameters;
+        }
 
         return node;
     }

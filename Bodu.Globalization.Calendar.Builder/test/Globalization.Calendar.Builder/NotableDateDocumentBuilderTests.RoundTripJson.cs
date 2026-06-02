@@ -809,6 +809,33 @@ public partial class NotableDateDocumentBuilderTests
     }
 
     /// <summary>
+    /// Verifies that an adjustment's reach envelope, custom-handler parameters, and global opt-in round-trip intact
+    /// through JSON (schema/builder alignment for F-010/F-012).
+    /// </summary>
+    [TestMethod]
+    public void RoundTripJson_AdjustmentWithReachHandlerParamsAndGlobalOptIn_ShouldPreserveAll()
+    {
+        List<NotableDateRule> parsed = BuildAndReparseViaJson(b => b
+            .AddDate("Test", date => date
+                .AddRule(rule => rule
+                    .Category(NotableDateCategory.Holiday)
+                    .Fixed(1, 1)
+                    .AddAdjustment("custom", adj => adj
+                        .When(AdjustmentTrigger.Custom)
+                        .Action(AdjustmentAction.Custom)
+                        .HandlerKey("my-handler")
+                        .AddHandlerParameter("shift", "3")
+                        .MaxAdjustmentReachDays(45)
+                        .AppliesToGlobalRules()))));
+
+        ObservanceAdjustment adj = parsed[0].Adjustments[0];
+        Assert.AreEqual(45, adj.MaxAdjustmentReachDays);
+        Assert.IsNotNull(adj.HandlerParameters);
+        Assert.AreEqual("3", adj.HandlerParameters["shift"]);
+        Assert.IsTrue(adj.AppliesToGlobalRules);
+    }
+
+    /// <summary>
     /// Verifies that an adjustment's non-default priority round-trips intact through JSON.
     /// </summary>
     [TestMethod]
@@ -866,13 +893,12 @@ public partial class NotableDateDocumentBuilderTests
     }
 
     /// <summary>
-    /// Verifies that the programmatic-only <see cref="ObservanceAdjustmentBuilder.AddHandlerParameter" /> and
-    /// <see cref="ObservanceAdjustmentBuilder.MaxAdjustmentReachDays" /> values are omitted from the JSON output
-    /// (they are not part of <c>NotableDates.schema.json</c>) so a JSON round-trip yields the rule with these
-    /// fields unset.
+    /// Verifies that the <see cref="ObservanceAdjustmentBuilder.AddHandlerParameter" /> and
+    /// <see cref="ObservanceAdjustmentBuilder.MaxAdjustmentReachDays" /> values are serialised to JSON (as
+    /// <c>handlerParameters</c> and <c>maxReachDays</c>) and round-trip back onto the rule.
     /// </summary>
     [TestMethod]
-    public void RoundTripJson_AdjustmentWithProgrammaticOnlyFields_ShouldOmitFromJson()
+    public void RoundTripJson_AdjustmentWithReachAndHandlerParams_ShouldSerializeThem()
     {
         NotableDateDocumentBuilder builder = NotableDateDocumentBuilder.Create()
             .AddDate("Test", date => date
@@ -888,14 +914,14 @@ public partial class NotableDateDocumentBuilderTests
 
         JsonObject doc = builder.ToJsonNode();
         JsonObject adjNode = doc["notableDates"]![0]!["rules"]![0]!["adjustments"]![0]!.AsObject();
-        Assert.IsFalse(adjNode.ContainsKey("handlerParameters"));
-        Assert.IsFalse(adjNode.ContainsKey("maxAdjustmentReachDays"));
+        Assert.AreEqual(45, (int)adjNode["maxReachDays"]!);
+        Assert.AreEqual("true", adjNode["handlerParameters"]!["enabled"]!.GetValue<string>());
 
         List<NotableDateRule> parsed = NotableDateRuleJsonParser.ParseJson(builder.ToJson());
         ObservanceAdjustment adj = parsed[0].Adjustments[0];
         Assert.AreEqual("my-handler", adj.HandlerKey);
-        Assert.IsNull(adj.HandlerParameters);
-        Assert.IsNull(adj.MaxAdjustmentReachDays);
+        Assert.AreEqual(45, adj.MaxAdjustmentReachDays);
+        Assert.AreEqual("true", adj.HandlerParameters!["enabled"]);
     }
 
     // ============================================================================

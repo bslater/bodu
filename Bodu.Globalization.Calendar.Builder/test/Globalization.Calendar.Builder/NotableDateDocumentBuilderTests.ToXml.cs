@@ -257,11 +257,11 @@ public partial class NotableDateDocumentBuilderTests
 
     /// <summary>
     /// Verifies that values supplied via <see cref="ObservanceAdjustmentBuilder.AddHandlerParameter" /> and
-    /// <see cref="ObservanceAdjustmentBuilder.MaxAdjustmentReachDays" /> are omitted from the serialised XML
-    /// (they are programmatic-only properties not defined by the schema).
+    /// <see cref="ObservanceAdjustmentBuilder.MaxAdjustmentReachDays" /> are serialised to XML (the reach envelope as
+    /// the <c>maxReachDays</c> attribute and handler parameters as <c>&lt;Param&gt;</c> children) and round-trip.
     /// </summary>
     [TestMethod]
-    public void ToXml_WhenAdjustmentHasProgrammaticOnlyFields_ShouldOmitFromXml()
+    public void ToXml_WhenAdjustmentHasReachAndHandlerParams_ShouldSerializeThem()
     {
         NotableDateDocumentBuilder builder = NotableDateDocumentBuilder.Create()
             .AddDate("Test", date => date
@@ -278,15 +278,15 @@ public partial class NotableDateDocumentBuilderTests
         var doc = builder.ToXDocument();
         XElement adjElement = doc.Descendants(s_calendarNs + "Adjustment").Single();
 
-        Assert.IsNull(adjElement.Attribute("handlerParameters"));
-        Assert.IsNull(adjElement.Attribute("maxAdjustmentReachDays"));
+        Assert.AreEqual("45", adjElement.Attribute("maxReachDays")?.Value);
+        Assert.IsTrue(adjElement.Elements(s_calendarNs + "Param").Any(p => p.Attribute("key")?.Value == "enabled"));
 
-        // The XML must still round-trip cleanly through the parser.
+        // And it round-trips cleanly through the parser.
         List<NotableDateRule> parsed = NotableDateRuleParser.ParseXml(builder.ToXml());
         ObservanceAdjustment adj = parsed[0].Adjustments[0];
         Assert.AreEqual("my-handler", adj.HandlerKey);
-        Assert.IsNull(adj.HandlerParameters);
-        Assert.IsNull(adj.MaxAdjustmentReachDays);
+        Assert.AreEqual(45, adj.MaxAdjustmentReachDays);
+        Assert.AreEqual("true", adj.HandlerParameters!["enabled"]);
     }
 
     /// <summary>
