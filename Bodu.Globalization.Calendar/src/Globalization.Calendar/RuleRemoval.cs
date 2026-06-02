@@ -19,8 +19,10 @@ namespace Bodu.Globalization.Calendar;
 /// name.
 /// </para>
 /// <para>
-/// All filtering parameters are optional. Leaving every filter unset suppresses the rule unconditionally; any
-/// combination of year bounds and territory narrows the suppression to a specific window.
+/// All filtering parameters are optional. <paramref name="RuleName" /> matches the canonical
+/// <see cref="NotableDateRule.Name" />; leaving every other filter unset suppresses every variant of that name
+/// unconditionally, while any combination of <paramref name="RuleVariant" />, <paramref name="CalendarType" />, year
+/// bounds, and territory narrows the suppression.
 /// </para>
 /// </remarks>
 /// <example>
@@ -62,8 +64,19 @@ namespace Bodu.Globalization.Calendar;
 /// Optional territory scope. When supplied, suppression applies only when the active territory falls within the
 /// supplied scope (a country-level scope covers all of its subdivisions).
 /// </param>
+/// <param name="RuleVariant">
+/// Optional rule-level variant filter, matched case-insensitively against <see cref="NotableDateRule.RuleName" />. When
+/// supplied, only the matching variant is suppressed; when <see langword="null" />, every variant sharing the canonical
+/// <see cref="NotableDateRule.Name" /> is suppressed.
+/// </param>
+/// <param name="CalendarType">
+/// Optional calendar-type filter, matched against <see cref="NotableDateRule.CalendarType" />. When
+/// <see langword="null" />, the removal applies regardless of calendar.
+/// </param>
 public sealed record RuleRemoval(
     string RuleName,
     int? FromYear = null,
     int? ToYear = null,
-    string? TerritoryCode = null);
+    string? TerritoryCode = null,
+    string? RuleVariant = null,
+    Type? CalendarType = null);

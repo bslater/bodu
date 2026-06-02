@@ -707,6 +707,16 @@ internal sealed class NotableDateRangePipeline
                 if (!removalScope.Contains(actual)) continue;
             }
 
+            // Variant and calendar filters narrow the removal to a specific rule when several variants share a name.
+            if (!string.IsNullOrEmpty(removal.RuleVariant)
+                && !string.Equals(rule.RuleName ?? string.Empty, removal.RuleVariant, StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            if (removal.CalendarType is not null && rule.CalendarType != removal.CalendarType)
+                continue;
+
             return true;
         }
 
