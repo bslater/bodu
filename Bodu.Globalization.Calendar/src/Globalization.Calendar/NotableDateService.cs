@@ -96,10 +96,13 @@ namespace Bodu.Globalization.Calendar;
 /// <list type="bullet">
 /// <item>
 /// <description>
-/// <b>One emission per rule occurrence.</b> When an <see cref="ObservanceAdjustment" /> activates, the single emitted
-/// <see cref="NotableDate" /> carries the post-adjustment observed date and an <see cref="AdjustmentReason" />
-/// describing the shift. Multiple activating adjustments resolve last-wins by ascending
-/// <see cref="ObservanceAdjustment.Priority" />.
+/// <b>One emission per rule occurrence (by default).</b> When an <see cref="ObservanceAdjustment" /> activates, the
+/// emitted <see cref="NotableDate" /> carries the post-adjustment observed date and an <see cref="AdjustmentReason" />
+/// describing the shift. When several adjustments could activate, the first to activate and move the date — by
+/// ascending <see cref="ObservanceAdjustment.Priority" /> — wins (first-active-wins). Whether the service emits the
+/// observed occurrence only, the actual occurrence only, or both is governed by
+/// <see cref="ObservedDateMode" />; the default <see cref="ObservedDateMode.ObservedOnly" /> yields a single
+/// observed occurrence.
 /// </description>
 /// </item>
 /// <item>
@@ -434,6 +437,27 @@ public sealed class NotableDateService
     /// diagnostics directly.
     /// </remarks>
     /// <returns>The validation diagnostics; empty when the rule set is valid.</returns>
+    /// <example>
+    /// <para>Inspect a rule set for authoring problems without aborting startup:</para>
+    /// <code>
+    ///<![CDATA[
+    /// var service = new NotableDateService(ruleProviders, WorkingDaysOfWeek.MondayToFriday);
+    ///
+    /// foreach (NotableDateValidationDiagnostic diagnostic in service.Validate())
+    /// {
+    ///     Console.WriteLine($"[{diagnostic.Severity}] {diagnostic.Code}: {diagnostic.Message}");
+    /// }
+    ///
+    /// // Fail fast only on errors, tolerating warnings such as UnregisteredAlgorithm.
+    /// bool hasErrors = service.Validate()
+    ///     .Any(d => d.Severity == NotableDateValidationSeverity.Error);
+    ///]]>
+    /// </code>
+    /// <para>
+    /// To throw automatically on any error instead, set <see cref="NotableDateServiceOptions.ValidateRules" /> to
+    /// <see langword="true" /> when constructing the service.
+    /// </para>
+    /// </example>
     public IReadOnlyList<NotableDateValidationDiagnostic> Validate() =>
         NotableDateRuleValidator.Validate(_effectiveRules, _algorithmRegistry);
 
