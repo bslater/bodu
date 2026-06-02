@@ -324,28 +324,43 @@ authoring checklist and worked examples.
   <!-- Adopt Good Friday as a non-working holiday for AU. -->
   <Use name="Good Friday" territory="AU" nonWorking="true" />
 
-  <!-- Rename "Holy Saturday" to "Easter Saturday" for AU and add an adjustment. -->
+  <!-- Adopt Holy Saturday as "Easter Saturday" for AU. The override body targets the
+       inherited variant by ruleName and layers on an adjustment; category is omitted
+       because it is optional, so this is a partial override. -->
   <Use name="Holy Saturday" as="Easter Saturday" territory="AU" nonWorking="true">
-    <Rule name="Australian Christmas Day With Non-Working-Day Roll"
-          category="Holiday" nonWorking="true">
+    <Rule ruleName="Holy Saturday">
       <Adjustment key="weekend-roll" when="IfNonWorkingDay" action="MoveToNextWorkingDay" />
     </Rule>
   </Use>
 </UseFrom>
 ```
 
-**`clearInherited="true"`** — drop all inherited rule variants and replace with the rule declared in the directive body:
+The `name` attribute on a `<Use>` directive is the **canonical** notable-date name being imported. The nested override `<Rule>` body targets a specific inherited **variant** by `ruleName` (the rule-level identifier); the legacy `name` attribute is still accepted as an alias. Both `ruleName` and `category` are optional, so an override body may apply a partial change — for example, only adjusting `priority` or appending an `<Adjustment>` — without re-declaring the strategy or category. When a flat scalar on `<Use>` and the same scalar on the nested `<Rule>` both appear, the innermost (nested `<Rule>`) value wins. To rename the imported rule locally, use the directive's `as` attribute rather than the body's `ruleName`.
+
+**`clearInherited="true"`** — drop all inherited rule variants and rebuild from the directive body alone. The replacement is seeded only with the canonical name (the same value the directive imports); its strategy and category are **not** inherited, so the body must declare them explicitly rather than relying on a partial override:
 
 ```xml
 <UseFrom resource="./christian-gregorian.xml">
   <Use name="Christmas Day" territory="AU-NT" clearInherited="true">
-    <Rule name="NT Christmas Day" category="Holiday" nonWorking="true">
+    <Rule ruleName="NT Christmas Day" category="Holiday" nonWorking="true">
       <Fixed month="December" day="25" />
       <Adjustment key="weekend-roll" when="IfWeekend" action="MoveToNextWeekday" />
     </Rule>
   </Use>
 </UseFrom>
 ```
+
+**`clear="…"`** — reset specific inherited *nullable* fields back to their unset state. Without this, a `<Use>` override can only *set* a field; it cannot return an inherited non-null value to `null`. Supply a whitespace- or comma-separated list of field names. The clearable fields are `territory`, `calendarType`, `firstYear`, `lastYear`, `occurrenceYears`, `nonWorking`, and `comment`:
+
+```xml
+<UseFrom resource="./global-core.xml">
+  <!-- Adopt a globally-scoped rule but drop the inherited firstYear/lastYear window
+       so it applies in every year for this consumer. -->
+  <Use name="International Workers' Day" clear="firstYear, lastYear" />
+</UseFrom>
+```
+
+Clearing is applied before the override body's own values are merged, so a field named in `clear` that is *also* set on the same directive ends up with the directive's value (the clear is superseded by the explicit set).
 
 `resource` paths use forward slashes. Relative paths resolve from the directory of the declaring file; absolute paths (starting with `/`) resolve from the root of the manifest resource namespace.
 

@@ -173,7 +173,7 @@ Prefer `AlgorithmKey` over `AlgorithmType` — key-based lookup is simpler and m
 | Field | Type | Default | Description |
 |---|---|---|---|
 | `IsNonWorkingDay` | `bool` | `false` | Marks the resulting `NotableDate` as a non-working day. Affects `NotableDateService.IsNonWorkingDay` and working-day arithmetic in the extension methods. |
-| `DurationDays` | `int` | `1` | Number of calendar days the event spans, inclusive of the anchor date. Multi-day events set `NotableDate.EndDate = Date + DurationDays - 1`. |
+| `DurationDays` | `int` | `1` | Number of calendar days the event spans, inclusive of the anchor date. Multi-day events set `NotableDate.EndDate = Date + DurationDays - 1` (clamped to `DateTime.MaxValue`). The XML and JSON schemas constrain authored values to **1–366**; schema validation rejects anything outside that range. |
 
 ### Calendar-system fields
 
@@ -310,8 +310,9 @@ trigger condition fires. Adjustments are attached to a `NotableDateRule` via the
 | `IsNonWorkingDay` | `bool` | `false` | Context hint for the `IfNonWorkingDay` trigger. Not usually set directly — the trigger evaluates the live non-working-day context. |
 | `ComparisonDate` | `DateOnly?` | `null` | Fixed date used by `IfBeforeFixedDate` and `IfAfterFixedDate` triggers. |
 | `OffsetDays` | `int` | `0` | Day shift used by the `AddDays` action. May be negative. |
-| `TargetRuleName` | `string?` | `null` | Name of the rule whose resolved date replaces the anchor when `Action = ReplaceWithNamedDate`. |
-| `MaxAdjustmentReachDays` | `int` | `0` | Maximum number of days the anchor may be moved from its original position. `0` means no cap. Prevents runaway shifts when dates fall near month or year boundaries. |
+| `TargetRuleName` | `string?` | `null` | Name of the rule whose resolved date replaces the anchor when `Action = ReplaceWithNamedDate`. Serialized as the `target` attribute / property. |
+| `TargetRuleVariant` | `string?` | `null` | Optional `RuleName` of the `ReplaceWithNamedDate` target, disambiguating when several rules share the canonical `TargetRuleName`. Resolved against the active territory / calendar context when `null`. Programmatic-only — not part of the XML / JSON schema. |
+| `MaxAdjustmentReachDays` | `int?` | `null` | Optional symmetric envelope (±days) the range-resolution pipeline uses to size its fringe scan around this rule. `null` falls back to the action's default heuristic (e.g. `MoveToNextWorkingDay` ≈ +7 days). Serialized as the `maxReachDays` attribute / property. |
 
 ### Scoping fields
 
@@ -321,13 +322,14 @@ trigger condition fires. Adjustments are attached to a `NotableDateRule` via the
 | `CalendarType` | `string?` | `null` | Restricts this adjustment to a specific calendar system. |
 | `EffectiveFromYear` | `int?` | `null` | Inclusive first year this adjustment is active. |
 | `EffectiveToYear` | `int?` | `null` | Inclusive last year this adjustment is active. |
+| `AppliesToGlobalRules` | `bool` | `false` | When this adjustment is territory- or calendar-scoped, controls whether it may also apply to a territory/calendar-neutral (global) rule. `false` (the default) prevents a scoped adjustment from silently applying to a global rule; set `true` to opt in. Serialized as the `appliesToGlobalRules` attribute / property. |
 
 ### Custom handler fields
 
 | Field | Type | Default | Description |
 |---|---|---|---|
 | `HandlerKey` | `string?` | `null` | Key used to look up an `IAdjustmentHandler` in the `AdjustmentHandlerRegistry`. Required when `Trigger = Custom` or `Action = Custom`. |
-| `HandlerParameters` | `ImmutableDictionary<string,string>` | empty | Arbitrary string parameters passed to the handler in `AdjustmentHandlerContext.Parameters`. |
+| `HandlerParameters` | `IReadOnlyDictionary<string,string>?` | `null` | Arbitrary string parameters passed to the handler in `AdjustmentHandlerContext.Parameters`. Serialized as repeated `<Param key="…" value="…"/>` children (XML) or a `handlerParameters` object (JSON). |
 
 ---
 
