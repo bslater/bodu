@@ -331,16 +331,15 @@
         {
           "$ref": "#/$defs/atMostOneStrategy"
         }
-      ],
-      "required": [
-        "name",
-        "category"
       ]
     },
     "ruleBase": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
+        "ruleName": {
+          "type": "string"
+        },
         "name": {
           "type": "string"
         },

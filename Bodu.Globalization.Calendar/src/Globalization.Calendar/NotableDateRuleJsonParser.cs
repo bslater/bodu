@@ -189,14 +189,12 @@ public static class NotableDateRuleJsonParser
     /// <returns>The mapped <see cref="NotableDateRuleOverrideBody" />.</returns>
     private static NotableDateRuleOverrideBody MapOverrideBody(OverrideRuleDto dto)
     {
-        var ruleName = RequireString(dto.Name, "name", "rule");
-        NotableDateCategory category = ParseRequiredEnum<NotableDateCategory>(dto.Category, "category", "rule");
         DateResolutionStrategy? strategy = DetectOverrideStrategy(dto);
 
         var body = new NotableDateRuleOverrideBody
         {
-            RuleName = ruleName,
-            Category = category,
+            RuleName = dto.RuleName ?? dto.Name,
+            Category = ParseOptionalEnum<NotableDateCategory>(dto.Category, "category", "rule"),
             TerritoryCode = dto.Territory,
             IsNonWorkingDay = dto.NonWorking,
             FirstYear = dto.FirstYear,
@@ -910,6 +908,7 @@ public static class NotableDateRuleJsonParser
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1134:Attributes should not share line")]
     private class RuleDto
     {
+        [JsonPropertyName("ruleName")] public string? RuleName { get; init; }
         [JsonPropertyName("name")] public string? Name { get; init; }
         [JsonPropertyName("category")] public string? Category { get; init; }
         [JsonPropertyName("firstYear")] public int? FirstYear { get; init; }

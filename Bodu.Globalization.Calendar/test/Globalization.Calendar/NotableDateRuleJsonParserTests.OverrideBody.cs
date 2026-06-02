@@ -475,4 +475,65 @@ public partial class NotableDateRuleJsonParserTests
 
         Assert.IsNull(directive.OverrideBody);
     }
+
+    /// <summary>
+    /// Verifies that a JSON override body omitting <c>category</c> parses as a partial override rather than being
+    /// rejected by the schema (F-009).
+    /// </summary>
+    [TestMethod]
+    public void ParseDocument_WhenJsonOverrideOmitsCategory_ShouldParseAsPartialOverride()
+    {
+        const string json = @"{
+				""useFrom"": [ {
+					""resource"": ""shared.json"",
+					""uses"": [ { ""name"": ""Foo"", ""rule"": { ""priority"": 10 } } ]
+				} ]
+			}";
+
+        ParsedNotableDateDocument document = NotableDateRuleJsonParser.ParseDocument(json);
+        NotableDateRuleOverrideBody body = document.UseGroups.Single().Uses.Single().OverrideBody!;
+
+        Assert.IsNotNull(body);
+        Assert.AreEqual(10, body.Priority);
+        Assert.IsNull(body.Category);
+        Assert.IsNull(body.RuleName);
+    }
+
+    /// <summary>
+    /// Verifies that the JSON override body's <c>ruleName</c> property maps to
+    /// <see cref="NotableDateRuleOverrideBody.RuleName" /> (F-009).
+    /// </summary>
+    [TestMethod]
+    public void ParseDocument_WhenJsonOverrideUsesRuleName_ShouldMapRuleName()
+    {
+        const string json = @"{
+				""useFrom"": [ {
+					""resource"": ""shared.json"",
+					""uses"": [ { ""name"": ""Easter"", ""rule"": { ""ruleName"": ""western"", ""priority"": 10 } } ]
+				} ]
+			}";
+
+        ParsedNotableDateDocument document = NotableDateRuleJsonParser.ParseDocument(json);
+
+        Assert.AreEqual("western", document.UseGroups.Single().Uses.Single().OverrideBody!.RuleName);
+    }
+
+    /// <summary>
+    /// Verifies that the legacy <c>name</c> property on a JSON override body is still accepted and maps to
+    /// <see cref="NotableDateRuleOverrideBody.RuleName" />.
+    /// </summary>
+    [TestMethod]
+    public void ParseDocument_WhenJsonOverrideUsesLegacyName_ShouldMapRuleName()
+    {
+        const string json = @"{
+				""useFrom"": [ {
+					""resource"": ""shared.json"",
+					""uses"": [ { ""name"": ""Easter"", ""rule"": { ""name"": ""orthodox"", ""priority"": 10 } } ]
+				} ]
+			}";
+
+        ParsedNotableDateDocument document = NotableDateRuleJsonParser.ParseDocument(json);
+
+        Assert.AreEqual("orthodox", document.UseGroups.Single().Uses.Single().OverrideBody!.RuleName);
+    }
 }

@@ -272,8 +272,11 @@
       <xs:element name="Adjustment" type="nd:Adjustment" minOccurs="0" maxOccurs="unbounded" />
     </xs:sequence>
 
-    <xs:attribute name="name" type="xs:string" use="required" />
-    <xs:attribute name="category" type="nd:notableDateCategory" use="required" />
+    <!-- ruleName targets a specific inherited variant; the legacy 'name' attribute is accepted as an alias. Both
+         name and category are optional so a Use may apply a partial override (e.g. priority only). -->
+    <xs:attribute name="ruleName" type="xs:string" use="optional" />
+    <xs:attribute name="name" type="xs:string" use="optional" />
+    <xs:attribute name="category" type="nd:notableDateCategory" use="optional" />
     <xs:attribute name="nonWorking" type="xs:boolean" use="optional" />
     <xs:attribute name="firstYear" type="xs:unsignedShort" use="optional" />
     <xs:attribute name="lastYear" type="xs:unsignedShort" use="optional" />

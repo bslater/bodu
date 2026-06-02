@@ -243,12 +243,12 @@ public static class NotableDateRuleParser
                 _ => throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Op_Invalid_UnknownStrategyElementOnOverrideRule, strategyElement.Name.LocalName))
             };
 
-        // The inner <Rule>'s name attribute is treated as a rule-level identifier (RuleName), used by the merger to target a
+        // The inner <Rule>'s ruleName attribute (or the legacy name attribute) is a rule-level identifier (RuleName), used by the merger to target a
         // specific inherited rule when the source notable date contains more than one. It does not rename the inherited rule —
         // canonical naming flows from the source rule or the directive's `as` attribute.
         var body = new NotableDateRuleOverrideBody
         {
-            RuleName = GetOptionalAttribute(ruleElement, "name"),
+            RuleName = GetOptionalAttribute(ruleElement, "ruleName") ?? GetOptionalAttribute(ruleElement, "name"),
             Category = ParseOptionalEnum<NotableDateCategory>(ruleElement, "category"),
             TerritoryCode = GetOptionalAttribute(ruleElement, "territory"),
             IsNonWorkingDay = ParseOptionalBool(ruleElement, "nonWorking"),
