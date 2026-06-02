@@ -57,10 +57,6 @@ public readonly partial struct Money
     private readonly string? _isoCode;
 
     /// <summary>
-<<<<<<< HEAD
-    /// Initializes a new instance of the <see cref="Money" /> struct from an amount and ISO 4217 code, rounding the
-    /// amount to the currency's minor-unit precision using banker's rounding.
-=======
     /// The explicit minor-unit scale plus one, or <c>0</c> when no explicit scale is associated and the precision is
     /// derived from <see cref="CurrencyRegistry" />.
     /// </summary>
@@ -74,7 +70,6 @@ public readonly partial struct Money
     /// <summary>
     /// Initializes a new instance of the <see cref="Money" /> struct from an amount and ISO 4217 code, rounding
     /// the amount to the currency's minor-unit precision using banker's rounding.
->>>>>>> 066692f232b4d4e9e85dd58b3fc6144c4d8d78ff
     /// </summary>
     /// <param name="amount">The monetary amount in the major unit.</param>
     /// <param name="isoCode">The ISO 4217 three-letter alphabetic code identifying the currency.</param>
@@ -164,13 +159,8 @@ public readonly partial struct Money
     }
 
     /// <summary>
-<<<<<<< HEAD
-    /// Initializes a new instance of the <see cref="Money" /> struct from an already-normalised amount and ISO code,
-    /// bypassing rounding.
-=======
     /// Initializes a new instance of the <see cref="Money" /> struct from pre-computed field values, bypassing
     /// validation and rounding.
->>>>>>> 066692f232b4d4e9e85dd58b3fc6144c4d8d78ff
     /// </summary>
     /// <param name="amount">The stored amount.</param>
     /// <param name="isoCode">The ISO 4217 code, or <see langword="null" /> for a currency-less value.</param>
