@@ -441,6 +441,44 @@ so the result is unambiguous.
 
 ---
 
+## Weekday relative to an ordinal weekday in a month
+
+Some dates are defined relative to an *n*th weekday of a month rather than to a fixed calendar
+date — "the Tuesday **after the first Monday** in November". Use `Strategy = RelativeWeekdayInMonth`:
+the anchor is a `DayOfWeekInMonth`-style ordinal weekday (`month` + `weekOrdinal` + `dayOfWeek`),
+and `relativeDayOfWeek` + `direction` position the target weekday on or after, on or before, or
+nearest to that anchor.
+
+### US Election Day — the Tuesday after the first Monday in November
+
+```csharp
+using Bodu.Globalization.Calendar;
+
+NotableDateRule electionDay = new NotableDateRule
+{
+    Name              = "Election Day",
+    Strategy          = DateResolutionStrategy.RelativeWeekdayInMonth,
+    Category          = NotableDateCategory.Civic,
+    Month             = 11,
+    DayOfWeek         = DayOfWeek.Monday,
+    WeekOrdinal       = WeekOfMonthOrdinal.First,
+    RelativeDayOfWeek = DayOfWeek.Tuesday,
+    WeekdayProximity  = WeekdayProximity.OnOrAfter,
+    TerritoryCode     = "US",
+};
+```
+
+```xml
+<NotableDate name="Election Day">
+  <Rule name="Election Day" category="Civic" territory="US">
+    <RelativeWeekdayInMonth month="November" weekOrdinal="First" dayOfWeek="Monday"
+                            relativeDayOfWeek="Tuesday" direction="OnOrAfter" />
+  </Rule>
+</NotableDate>
+```
+
+---
+
 ## Easter and Easter-relative dates
 
 Easter Sunday is determined by the Gregorian or Orthodox computus algorithm. Easter-relative

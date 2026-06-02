@@ -207,6 +207,7 @@ internal sealed class RuleStaticAnalysis
             case DateResolutionStrategy.Fixed:
             case DateResolutionStrategy.DayOfWeekInMonth:
             case DateResolutionStrategy.WeekdayNearDate:
+            case DateResolutionStrategy.RelativeWeekdayInMonth:
                 return (RuleTier.Fixed, null, 0);
 
             case DateResolutionStrategy.OffsetFromAnchor:
@@ -251,7 +252,7 @@ internal sealed class RuleStaticAnalysis
         return current.Strategy switch
         {
             DateResolutionStrategy.Algorithm => (RuleTier.OffsetFromAlgorithmic, current.Name, aggregateOffset),
-            DateResolutionStrategy.Fixed or DateResolutionStrategy.DayOfWeekInMonth or DateResolutionStrategy.WeekdayNearDate =>
+            DateResolutionStrategy.Fixed or DateResolutionStrategy.DayOfWeekInMonth or DateResolutionStrategy.WeekdayNearDate or DateResolutionStrategy.RelativeWeekdayInMonth =>
                 (RuleTier.OffsetFromFixed, current.Name, aggregateOffset),
             _ => (RuleTier.Fixed, null, 0),
         };

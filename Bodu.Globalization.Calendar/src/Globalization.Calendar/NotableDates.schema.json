@@ -386,6 +386,9 @@
         "weekdayNearDate": {
           "$ref": "#/$defs/weekdayNearDateStrategy"
         },
+        "relativeWeekdayInMonth": {
+          "$ref": "#/$defs/relativeWeekdayInMonthStrategy"
+        },
         "algorithm": {
           "$ref": "#/$defs/algorithmStrategy"
         },
@@ -425,6 +428,11 @@
         {
           "required": [
             "weekdayNearDate"
+          ]
+        },
+        {
+          "required": [
+            "relativeWeekdayInMonth"
           ]
         },
         {
@@ -494,6 +502,36 @@
           {
             "required": [
               "weekdayNearDate",
+              "algorithm"
+            ]
+          },
+          {
+            "required": [
+              "fixed",
+              "relativeWeekdayInMonth"
+            ]
+          },
+          {
+            "required": [
+              "dayOfWeekInMonth",
+              "relativeWeekdayInMonth"
+            ]
+          },
+          {
+            "required": [
+              "offsetFromAnchor",
+              "relativeWeekdayInMonth"
+            ]
+          },
+          {
+            "required": [
+              "weekdayNearDate",
+              "relativeWeekdayInMonth"
+            ]
+          },
+          {
+            "required": [
+              "relativeWeekdayInMonth",
               "algorithm"
             ]
           }
@@ -589,6 +627,34 @@
         "OnOrBefore",
         "Nearest"
       ]
+    },
+    "relativeWeekdayInMonthStrategy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "dayOfWeek",
+        "month",
+        "weekOrdinal",
+        "relativeDayOfWeek",
+        "direction"
+      ],
+      "properties": {
+        "dayOfWeek": {
+          "$ref": "#/$defs/dayOfWeek"
+        },
+        "month": {
+          "$ref": "#/$defs/monthName"
+        },
+        "weekOrdinal": {
+          "$ref": "#/$defs/weekOrdinal"
+        },
+        "relativeDayOfWeek": {
+          "$ref": "#/$defs/dayOfWeek"
+        },
+        "direction": {
+          "$ref": "#/$defs/weekdayProximity"
+        }
+      }
     },
     "algorithmStrategy": {
       "type": "object",

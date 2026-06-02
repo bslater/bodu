@@ -255,6 +255,14 @@ authoring checklist and worked examples.
 <WeekdayNearDate dayOfWeek="Wednesday" month="November" day="22" direction="OnOrBefore" />
 ```
 
+**`<RelativeWeekdayInMonth>`** — a target weekday (`relativeDayOfWeek`) positioned, via `direction`, relative to an anchor that is the `weekOrdinal`-th `dayOfWeek` of the month:
+
+```xml
+<!-- US Election Day: the Tuesday on or after the first Monday in November -->
+<RelativeWeekdayInMonth month="November" weekOrdinal="First" dayOfWeek="Monday"
+                        relativeDayOfWeek="Tuesday" direction="OnOrAfter" />
+```
+
 **`<Algorithm>`** — delegated to a registered algorithm; identified by key or assembly-qualified type name:
 
 ```xml
@@ -386,6 +394,7 @@ The mapping is straightforward:
 | `<DayOfWeekInMonth month="…" dayOfWeek="…" weekOrdinal="…" />` | `"dayOfWeekInMonth": { "month": "…", "dayOfWeek": "…", "weekOrdinal": "…" }` |
 | `<OffsetFromAnchor name="…" offset="…" />` | `"offsetFromAnchor": { "name": "…", "offset": … }` |
 | `<WeekdayNearDate dayOfWeek="…" month="…" day="…" direction="…" />` | `"weekdayNearDate": { "dayOfWeek": "…", "month": "…", "day": …, "direction": "…" }` |
+| `<RelativeWeekdayInMonth month="…" weekOrdinal="…" dayOfWeek="…" relativeDayOfWeek="…" direction="…" />` | `"relativeWeekdayInMonth": { "month": "…", "weekOrdinal": "…", "dayOfWeek": "…", "relativeDayOfWeek": "…", "direction": "…" }` |
 | `<Algorithm key="…" />` | `"algorithm": { "key": "…" }` |
 | `<Tag>…</Tag>` | `"tags": [ "…" ]` |
 | `<Adjustment key="…" when="…" action="…" />` | object inside `"adjustments"` |

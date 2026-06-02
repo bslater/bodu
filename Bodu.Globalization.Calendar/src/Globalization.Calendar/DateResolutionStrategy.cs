@@ -50,4 +50,13 @@ public enum DateResolutionStrategy
     /// November" (German Repentance Day), and "the Monday nearest to a given date" without a custom algorithm.
     /// </summary>
     WeekdayNearDate,
+
+    /// <summary>
+    /// Resolved as the occurrence of a target weekday positioned relative to the <em>n</em>th occurrence of an anchor
+    /// weekday within a month — on or after it, on or before it, or nearest to it. The anchor is a
+    /// <see cref="DayOfWeekInMonth" />-style ordinal weekday; the target is the
+    /// <see cref="NotableDateRule.RelativeDayOfWeek" />. Expresses holidays such as "the Tuesday after the first Monday
+    /// in November" (United States Election Day) without a custom algorithm.
+    /// </summary>
+    RelativeWeekdayInMonth,
 }

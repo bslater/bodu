@@ -152,6 +152,18 @@
             <xs:attribute name="direction" type="nd:weekdayProximity" use="required" />
           </xs:complexType>
         </xs:element>
+        <!-- A target weekday (relativeDayOfWeek) positioned, via direction, relative to
+             an anchor that is the weekOrdinal-th dayOfWeek of the month — for example
+             "the Tuesday on or after the first Monday in November" (US Election Day). -->
+        <xs:element name="RelativeWeekdayInMonth">
+          <xs:complexType>
+            <xs:attribute name="dayOfWeek" type="nd:dayOfWeek" use="required" />
+            <xs:attribute name="month" type="nd:monthName" use="required" />
+            <xs:attribute name="weekOrdinal" type="nd:weekOrdinal" use="required" />
+            <xs:attribute name="relativeDayOfWeek" type="nd:dayOfWeek" use="required" />
+            <xs:attribute name="direction" type="nd:weekdayProximity" use="required" />
+          </xs:complexType>
+        </xs:element>
         <xs:element name="Algorithm">
           <xs:complexType>
             <xs:attribute name="key" type="xs:string" use="optional" />
@@ -231,6 +243,18 @@
             <xs:attribute name="dayOfWeek" type="nd:dayOfWeek" use="required" />
             <xs:attribute name="month" type="nd:monthName" use="required" />
             <xs:attribute name="day" type="nd:day" use="required" />
+            <xs:attribute name="direction" type="nd:weekdayProximity" use="required" />
+          </xs:complexType>
+        </xs:element>
+        <!-- A target weekday (relativeDayOfWeek) positioned, via direction, relative to
+             an anchor that is the weekOrdinal-th dayOfWeek of the month — for example
+             "the Tuesday on or after the first Monday in November" (US Election Day). -->
+        <xs:element name="RelativeWeekdayInMonth">
+          <xs:complexType>
+            <xs:attribute name="dayOfWeek" type="nd:dayOfWeek" use="required" />
+            <xs:attribute name="month" type="nd:monthName" use="required" />
+            <xs:attribute name="weekOrdinal" type="nd:weekOrdinal" use="required" />
+            <xs:attribute name="relativeDayOfWeek" type="nd:dayOfWeek" use="required" />
             <xs:attribute name="direction" type="nd:weekdayProximity" use="required" />
           </xs:complexType>
         </xs:element>

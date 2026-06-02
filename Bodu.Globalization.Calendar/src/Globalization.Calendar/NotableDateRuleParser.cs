@@ -239,6 +239,7 @@ public static class NotableDateRuleParser
                 "Algorithm" => DateResolutionStrategy.Algorithm,
                 "OffsetFromAnchor" => DateResolutionStrategy.OffsetFromAnchor,
                 "WeekdayNearDate" => DateResolutionStrategy.WeekdayNearDate,
+                "RelativeWeekdayInMonth" => DateResolutionStrategy.RelativeWeekdayInMonth,
                 _ => throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Op_Invalid_UnknownStrategyElementOnOverrideRule, strategyElement.Name.LocalName))
             };
 
@@ -315,6 +316,14 @@ public static class NotableDateRuleParser
                 DayOfWeek = ParseRequiredEnum<DayOfWeek>(strategyElement, "dayOfWeek"),
                 WeekdayProximity = ParseRequiredEnum<WeekdayProximity>(strategyElement, "direction"),
             },
+            DateResolutionStrategy.RelativeWeekdayInMonth => body with
+            {
+                Month = ParseMonth(GetRequiredAttribute(strategyElement, "month")),
+                DayOfWeek = ParseRequiredEnum<DayOfWeek>(strategyElement, "dayOfWeek"),
+                WeekOrdinal = ParseRequiredEnum<WeekOfMonthOrdinal>(strategyElement, "weekOrdinal"),
+                RelativeDayOfWeek = ParseRequiredEnum<DayOfWeek>(strategyElement, "relativeDayOfWeek"),
+                WeekdayProximity = ParseRequiredEnum<WeekdayProximity>(strategyElement, "direction"),
+            },
             DateResolutionStrategy.Algorithm => body with
             {
                 AlgorithmKey = GetOptionalAttribute(strategyElement, "key"),
@@ -366,6 +375,7 @@ public static class NotableDateRuleParser
                 "Algorithm" => DateResolutionStrategy.Algorithm,
                 "OffsetFromAnchor" => DateResolutionStrategy.OffsetFromAnchor,
                 "WeekdayNearDate" => DateResolutionStrategy.WeekdayNearDate,
+                "RelativeWeekdayInMonth" => DateResolutionStrategy.RelativeWeekdayInMonth,
                 _ => throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Op_Invalid_UnknownStrategyElementOnRule, strategyElement.Name.LocalName, name))
             };
 
@@ -408,7 +418,7 @@ public static class NotableDateRuleParser
     /// <param name="localName">The local name of the XML element.</param>
     /// <returns><see langword="true" /> if the element names a strategy; otherwise <see langword="false" />.</returns>
     private static bool IsStrategyElement(string localName) =>
-        localName is "Fixed" or "DayOfWeekInMonth" or "Algorithm" or "OffsetFromAnchor" or "WeekdayNearDate";
+        localName is "Fixed" or "DayOfWeekInMonth" or "Algorithm" or "OffsetFromAnchor" or "WeekdayNearDate" or "RelativeWeekdayInMonth";
 
     /// <summary>
     /// Applies strategy-specific attributes and child elements (fixed date, Easter offset, lunar rule, and so on) onto
@@ -450,6 +460,14 @@ public static class NotableDateRuleParser
                 Month = ParseMonth(GetRequiredAttribute(strategyElement, "month")),
                 Day = int.Parse(GetRequiredAttribute(strategyElement, "day"), CultureInfo.InvariantCulture),
                 DayOfWeek = ParseRequiredEnum<DayOfWeek>(strategyElement, "dayOfWeek"),
+                WeekdayProximity = ParseRequiredEnum<WeekdayProximity>(strategyElement, "direction"),
+            },
+            DateResolutionStrategy.RelativeWeekdayInMonth => rule with
+            {
+                Month = ParseMonth(GetRequiredAttribute(strategyElement, "month")),
+                DayOfWeek = ParseRequiredEnum<DayOfWeek>(strategyElement, "dayOfWeek"),
+                WeekOrdinal = ParseRequiredEnum<WeekOfMonthOrdinal>(strategyElement, "weekOrdinal"),
+                RelativeDayOfWeek = ParseRequiredEnum<DayOfWeek>(strategyElement, "relativeDayOfWeek"),
                 WeekdayProximity = ParseRequiredEnum<WeekdayProximity>(strategyElement, "direction"),
             },
             DateResolutionStrategy.Algorithm => rule with

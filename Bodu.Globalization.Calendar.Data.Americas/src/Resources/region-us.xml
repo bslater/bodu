@@ -132,9 +132,9 @@
   </NotableDate>
 
   <NotableDate name="Election Day">
-    <Rule name="weekday-tue-onorafter-nov-02-us" category="Civic" territory="US" firstYear="1845"
-          comment="United States general Election Day. Federal law (since 1845) fixes it as the Tuesday after the first Monday in November — equivalently, the Tuesday on or after 2 November. Not a federal public holiday, though some states observe it as one.">
-      <WeekdayNearDate dayOfWeek="Tuesday" month="November" day="2" direction="OnOrAfter" />
+    <Rule name="weekday-tue-after-1st-mon-nov-us" category="Civic" territory="US" firstYear="1845"
+          comment="United States general Election Day. Federal law (since 1845) fixes it as the Tuesday after the first Monday in November. Not a federal public holiday, though some states observe it as one.">
+      <RelativeWeekdayInMonth month="November" weekOrdinal="First" dayOfWeek="Monday" relativeDayOfWeek="Tuesday" direction="OnOrAfter" />
       <Tag>Civic</Tag>
     </Rule>
   </NotableDate>

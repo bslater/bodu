@@ -41,6 +41,7 @@ determines which other fields are active:
 | `DayOfWeekInMonth` | `Month`, `DayOfWeek`, `WeekOrdinal` | Dates defined as the *n*th occurrence of a weekday within a month. |
 | `OffsetFromAnchor` | `AnchorRuleName`, `OffsetDays` | Dates expressed as a signed day offset from another rule's resolved date. |
 | `WeekdayNearDate` | `Month`, `Day`, `DayOfWeek`, `WeekdayProximity` | A weekday positioned relative to a fixed reference date — on or after it, on or before it, or nearest to it. |
+| `RelativeWeekdayInMonth` | `Month`, `DayOfWeek`, `WeekOrdinal`, `RelativeDayOfWeek`, `WeekdayProximity` | A weekday positioned relative to the *n*th anchor weekday of a month (e.g. the Tuesday after the first Monday in November). |
 | `Algorithm` | `AlgorithmKey`, `AlgorithmType`, `AlgorithmMonth`, `AlgorithmDay` | Dates that require an external calculation (Easter, lunar calendars, solar terms). |
 
 ### Fixed strategy fields
@@ -93,6 +94,23 @@ occurrence within a seven-day window anchored at the reference date:
 This strategy resolves entirely from data, so holidays of this shape need no custom
 `INotableDateAlgorithm`. When the reference (year, month, day) is not a valid Gregorian date
 (for example 29 February in a non-leap year) the rule resolves to no occurrence for that year.
+
+### RelativeWeekdayInMonth strategy fields
+
+| Field | Type | Default | Description |
+|---|---|---|---|
+| `Month` | `int` | `0` | The anchor month (1–12). |
+| `DayOfWeek` | `DayOfWeek?` | `null` | The anchor weekday — combined with `WeekOrdinal` and `Month` it identifies the reference occurrence (exactly as in `DayOfWeekInMonth`). |
+| `WeekOrdinal` | `WeekOfMonthOrdinal?` | `null` | Which occurrence of the anchor weekday: `First`, `Second`, `Third`, `Fourth`, `Fifth`, or `Last`. |
+| `RelativeDayOfWeek` | `DayOfWeek?` | `null` | The target weekday the rule resolves to. |
+| `WeekdayProximity` | `WeekdayProximity?` | `null` | How the target weekday is positioned relative to the anchor: `OnOrAfter`, `OnOrBefore`, or `Nearest`. |
+
+The strategy first computes the anchor — the `WeekOrdinal`-th `DayOfWeek` of `Month` — then
+positions `RelativeDayOfWeek` relative to it using the same window semantics as
+`WeekdayNearDate`. For example, "the Tuesday after the first Monday in November" (United States
+Election Day) is the anchor *first Monday in November* with `RelativeDayOfWeek = Tuesday` and
+`WeekdayProximity = OnOrAfter`. When the anchor occurrence does not exist (a `Fifth` in a month
+with only four) the rule resolves to no occurrence for that year.
 
 ### Algorithm strategy fields
 
@@ -538,6 +556,35 @@ NotableDateRule repentanceDay = new NotableDateRule
         territory="DE-SN"
         nonWorking="true">
     <WeekdayNearDate dayOfWeek="Wednesday" month="November" day="22" direction="OnOrBefore" />
+  </Rule>
+</NotableDate>
+```
+
+### Weekday relative to an ordinal weekday in a month
+
+```csharp
+using Bodu.Globalization.Calendar;
+
+// US Election Day — the Tuesday after the first Monday in November.
+NotableDateRule electionDay = new NotableDateRule
+{
+    Name              = "Election Day",
+    Strategy          = DateResolutionStrategy.RelativeWeekdayInMonth,
+    Category          = NotableDateCategory.Civic,
+    Month             = 11,
+    DayOfWeek         = DayOfWeek.Monday,     // anchor: the first Monday...
+    WeekOrdinal       = WeekOfMonthOrdinal.First,
+    RelativeDayOfWeek = DayOfWeek.Tuesday,    // ...then the Tuesday on or after it
+    WeekdayProximity  = WeekdayProximity.OnOrAfter,
+    TerritoryCode     = "US",
+};
+```
+
+```xml
+<NotableDate name="Election Day">
+  <Rule name="Election Day" category="Civic" territory="US">
+    <RelativeWeekdayInMonth month="November" weekOrdinal="First" dayOfWeek="Monday"
+                            relativeDayOfWeek="Tuesday" direction="OnOrAfter" />
   </Rule>
 </NotableDate>
 ```

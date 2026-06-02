@@ -22,7 +22,7 @@ namespace Bodu.Globalization.Calendar;
 /// priority used to resolve overlaps with other rules.
 /// </para>
 /// <para>
-/// The <see cref="Strategy" /> property selects one of five resolution strategies:
+/// The <see cref="Strategy" /> property selects one of six resolution strategies:
 /// </para>
 /// <list type="bullet">
 /// <item>
@@ -47,6 +47,13 @@ namespace Bodu.Globalization.Calendar;
 /// <see cref="DateResolutionStrategy.WeekdayNearDate" /> — resolves to the <see cref="DayOfWeek" /> positioned on or
 /// after, on or before, or nearest to the reference <see cref="Month" /> and <see cref="Day" /> (for example, the
 /// Saturday on or after 20 June).
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// <see cref="DateResolutionStrategy.RelativeWeekdayInMonth" /> — resolves to the <see cref="RelativeDayOfWeek" />
+/// positioned relative to the <em>n</em>th anchor weekday of a month (for example, the Tuesday after the first Monday
+/// in November).
 /// </description>
 /// </item>
 /// <item>
@@ -425,6 +432,20 @@ public sealed record NotableDateRule
     /// when the strategy does not require it.
     /// </returns>
     public WeekdayProximity? WeekdayProximity { get; init; }
+
+    // --- RelativeWeekdayInMonth strategy fields ----------------------------------------------
+
+    /// <summary>
+    /// Gets the target weekday positioned relative to the anchor ordinal weekday for
+    /// <see cref="DateResolutionStrategy.RelativeWeekdayInMonth" /> (for example, the <em>Tuesday</em> in "the Tuesday
+    /// after the first Monday in November"). The anchor weekday is supplied by <see cref="DayOfWeek" /> together with
+    /// <see cref="WeekOrdinal" /> and <see cref="Month" />; the direction is supplied by
+    /// <see cref="WeekdayProximity" />.
+    /// </summary>
+    /// <returns>
+    /// A <see cref="System.DayOfWeek" /> value, or <see langword="null" /> when the strategy does not require it.
+    /// </returns>
+    public DayOfWeek? RelativeDayOfWeek { get; init; }
 
     // --- OffsetFromAnchor strategy fields ----------------------------------------------------
 
