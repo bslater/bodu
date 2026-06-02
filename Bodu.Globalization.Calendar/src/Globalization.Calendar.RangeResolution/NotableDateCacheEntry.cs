@@ -78,6 +78,12 @@ internal sealed class NotableDateCacheEntry
     public NotableDateCacheState State { get; set; }
 
     /// <summary>
+    /// Gets or sets the provenance of the originating rule, used to arbitrate same-day collisions downstream.
+    /// </summary>
+    /// <returns>One of the defined <see cref="NotableDateProvenance" /> values. Defaults to <see cref="NotableDateProvenance.Local" />.</returns>
+    public NotableDateProvenance Provenance { get; set; } = NotableDateProvenance.Local;
+
+    /// <summary>
     /// Gets or sets a value indicating whether an observance adjustment activated for this entry and moved its date.
     /// </summary>
     /// <returns>

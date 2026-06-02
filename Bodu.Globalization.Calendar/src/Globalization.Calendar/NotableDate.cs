@@ -108,6 +108,17 @@ public sealed record NotableDate
     public DateTime EndDate => Date.AddDays(Math.Max(0, DurationDays - 1));
 
     /// <summary>
+    /// Gets the resolution priority inherited from the originating <see cref="NotableDateRule" />.
+    /// </summary>
+    /// <remarks>
+    /// Lower values take precedence when several notable dates collide on the same day. The default collision resolver
+    /// orders same-day occurrences by ascending priority.
+    /// </remarks>
+    /// <value>An integer priority where a lower value indicates higher precedence.</value>
+    /// <returns>The priority value carried from the originating rule; defaults to <c>100</c>.</returns>
+    public int Priority { get; init; } = 100;
+
+    /// <summary>
     /// Gets the optional <see cref="AdjustmentReason" /> describing why the date was shifted from its original
     /// calculated position by a triggered <see cref="ObservanceAdjustment" />, or <see langword="null" /> when the date
     /// was not adjusted.

@@ -75,6 +75,9 @@
   <data name="Arg_Invalid_AssemblyPathNullOrWhiteSpace" xml:space="preserve">
     <value>Assembly path must not be null or whitespace.</value>
   </data>
+  <data name="Arg_Invalid_CollisionProvenanceCountMismatch" xml:space="preserve">
+    <value>The provenance list must have the same number of entries as the overlapping notable dates.</value>
+  </data>
   <data name="Arg_Invalid_EndDateBeforeStartDate" xml:space="preserve">
     <value>The end date must not be earlier than the start date.</value>
   </data>

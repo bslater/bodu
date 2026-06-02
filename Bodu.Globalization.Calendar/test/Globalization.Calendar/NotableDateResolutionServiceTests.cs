@@ -289,8 +289,8 @@ public sealed class NotableDateResolutionServiceTests
     private sealed class FirstByPriorityCollisionResolver
         : INotableDateCollisionResolver
     {
-        public IReadOnlyList<NotableDate> Resolve(DateTime date, IReadOnlyList<NotableDate> candidates) =>
-            candidates
+        public IReadOnlyList<NotableDate> Resolve(NotableDateCollisionContext context) =>
+            context.Overlapping
                 .OrderBy(candidate => candidate.Name == "Higher Priority" ? 0 : 1)
                 .Take(1)
                 .ToList();

@@ -148,7 +148,7 @@ internal sealed class NotableDateRangePipeline
     /// </item>
     /// </list>
     /// </remarks>
-    public IReadOnlyList<NotableDate> Resolve(NotableDateRangeRequest request)
+    public IReadOnlyList<ResolvedNotableDate> ResolveWithProvenance(NotableDateRangeRequest request)
     {
         ThrowHelper.ThrowIfNull(request);
 
@@ -189,6 +189,16 @@ internal sealed class NotableDateRangePipeline
 
         return BuildEmissionList(plan, cache);
     }
+
+    /// <summary>
+    /// Resolves the request into notable dates, discarding provenance. Equivalent to
+    /// <see cref="ResolveWithProvenance" /> projected onto <see cref="ResolvedNotableDate.Notable" />.
+    /// </summary>
+    /// <param name="request">The chronological range request.</param>
+    /// <returns>The resolved notable dates.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="request" /> is <see langword="null" />.</exception>
+    public IReadOnlyList<NotableDate> Resolve(NotableDateRangeRequest request) =>
+        [.. ResolveWithProvenance(request).Select(r => r.Notable)];
 
     /// <summary>
     /// Materializes adjacent-year rules whose observance adjustment chain or multi-day duration may project an emission
@@ -467,6 +477,9 @@ internal sealed class NotableDateRangePipeline
         // Window intersection and filtering are deferred to emission so that a day's result is independent of the query
         // window width. Real occurrences enter as Candidate; on-demand anchors enter as ContextOnly and never emit.
         NotableDateCacheState state = contextOnly ? NotableDateCacheState.ContextOnly : NotableDateCacheState.Candidate;
+        NotableDateProvenance provenance = _overrideAdditions.Contains(profile.Rule)
+            ? NotableDateProvenance.RuntimeOverride
+            : NotableDateProvenance.Local;
 
         foreach (var territory in EnumerateApplicableTerritories(profile.Rule, plan.Request.TerritoryCode))
         {
@@ -474,7 +487,7 @@ internal sealed class NotableDateRangePipeline
                 continue;
 
             NotableDate notable = BuildNotableDate(profile.Rule, anchorDate, territory, adjustmentReason: null);
-            NotableDateCacheEntry entry = new(profile, year, notable, state);
+            NotableDateCacheEntry entry = new(profile, year, notable, state) { Provenance = provenance };
             cache.Add(entry);
         }
     }
@@ -547,11 +560,11 @@ internal sealed class NotableDateRangePipeline
     /// when each intersects the window.
     /// </para>
     /// </remarks>
-    private static IReadOnlyList<NotableDate> BuildEmissionList(NotableDateRangePlan plan, NotableDateRangeResolutionCache cache)
+    private static IReadOnlyList<ResolvedNotableDate> BuildEmissionList(NotableDateRangePlan plan, NotableDateRangeResolutionCache cache)
     {
         NotableDateRangeRequest request = plan.Request;
         ObservedDateMode mode = request.ObservedDates;
-        List<NotableDate> emitted = [];
+        List<ResolvedNotableDate> emitted = [];
 
         foreach (NotableDateCacheEntry entry in cache.EmissableEntries())
         {
@@ -567,22 +580,22 @@ internal sealed class NotableDateRangePipeline
                 // Observed supersedes actual unless the caller asked for the actual date too. The decision uses only
                 // this entry's own dates, so the answer for a day is independent of the query-window width.
                 if (mode != ObservedDateMode.ActualOnly && adjustedHit)
-                    emitted.Add(adjusted);
+                    emitted.Add(new ResolvedNotableDate(adjusted, entry.Provenance));
 
                 if (mode != ObservedDateMode.ObservedOnly && baseHit)
-                    emitted.Add(baseNotable);
+                    emitted.Add(new ResolvedNotableDate(baseNotable, entry.Provenance));
 
                 continue;
             }
 
             if (baseHit)
-                emitted.Add(baseNotable);
+                emitted.Add(new ResolvedNotableDate(baseNotable, entry.Provenance));
         }
 
         return [.. emitted
-            .OrderBy(n => n.Date)
-            .ThenBy(n => n.Name, StringComparer.OrdinalIgnoreCase)
-            .ThenBy(n => n.TerritoryCode, StringComparer.OrdinalIgnoreCase)];
+            .OrderBy(r => r.Notable.Date)
+            .ThenBy(r => r.Notable.Name, StringComparer.OrdinalIgnoreCase)
+            .ThenBy(r => r.Notable.TerritoryCode, StringComparer.OrdinalIgnoreCase)];
     }
 
     /// <summary>
@@ -625,6 +638,7 @@ internal sealed class NotableDateRangePipeline
             Date = date.Date,
             Name = rule.Name,
             Category = rule.Category,
+            Priority = rule.Priority,
             DurationDays = Math.Max(1, rule.DurationDays),
             IsNonWorkingDay = isNonWorkingOverride ?? rule.IsNonWorkingDay ?? false,
             CalendarType = rule.CalendarType,

@@ -844,7 +844,7 @@ public sealed class NotableDateService
             observedDates ?? _observedDateMode);
 
         RangeResolution.NotableDateRangePipeline pipeline = GetOrBuildRangePipeline();
-        IReadOnlyList<NotableDate> resolved = pipeline.Resolve(request);
+        IReadOnlyList<RangeResolution.ResolvedNotableDate> resolved = pipeline.ResolveWithProvenance(request);
 
         if (recordWindow)
         {
@@ -854,15 +854,47 @@ public sealed class NotableDateService
             }
         }
 
-        List<NotableDate> localized = new(resolved.Count);
-        foreach (NotableDate notable in resolved)
-            localized.Add(LocaliseIfNeeded(notable));
+        // Localize each occurrence while preserving its provenance for collision arbitration.
+        List<RangeResolution.ResolvedNotableDate> localized = new(resolved.Count);
+        foreach (RangeResolution.ResolvedNotableDate item in resolved)
+            localized.Add(item with { Notable = LocaliseIfNeeded(item.Notable) });
 
-        return [.. localized
-            .GroupBy(n => n.Date.Date)
-            .OrderBy(g => g.Key)
-            .SelectMany(g => _collisionResolver.Resolve(g.Key, [.. g]) ?? [])];
+        return ResolveCollisions(localized, request.StartDate == request.EndDate ? request.StartDate : null);
     }
+
+    /// <summary>
+    /// Arbitrates same-day collisions among the resolved occurrences. A single-day query treats every result as
+    /// covering the one requested day (coverage-day collision); a range query arbitrates per start day in chronological
+    /// order.
+    /// </summary>
+    /// <param name="resolved">The localized resolved occurrences with provenance.</param>
+    /// <param name="singleDay">
+    /// The single requested day when the query window is one day; otherwise <see langword="null" /> for a range.
+    /// </param>
+    /// <returns>The collision-resolved notable dates.</returns>
+    private IReadOnlyList<NotableDate> ResolveCollisions(
+        IReadOnlyList<RangeResolution.ResolvedNotableDate> resolved,
+        DateTime? singleDay)
+    {
+        if (singleDay is { } day)
+            return _collisionResolver.Resolve(BuildCollisionContext(day, resolved)) ?? [];
+
+        return [.. resolved
+            .GroupBy(r => r.Notable.Date.Date)
+            .OrderBy(g => g.Key)
+            .SelectMany(g => _collisionResolver.Resolve(BuildCollisionContext(g.Key, [.. g])) ?? [])];
+    }
+
+    /// <summary>
+    /// Builds a <see cref="NotableDateCollisionContext" /> from the resolved occurrences for a single day.
+    /// </summary>
+    /// <param name="day">The shared day.</param>
+    /// <param name="items">The resolved occurrences applying to <paramref name="day" />.</param>
+    /// <returns>The collision context with index-aligned occurrences and provenance.</returns>
+    private static NotableDateCollisionContext BuildCollisionContext(
+        DateTime day,
+        IReadOnlyList<RangeResolution.ResolvedNotableDate> items) =>
+        new(day, [.. items.Select(i => i.Notable)], [.. items.Select(i => i.Provenance)]);
 
     /// <summary>
     /// Applies the pre-materialised list of override additions to the base rule set, producing the merged effective

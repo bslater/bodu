@@ -1,61 +1,49 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DefaultNotableDateCollisionResolver.cs" company="Bodu Pty. Ltd.">
-// Copyright (c) Bodu Pty. Ltd. All rights reserved.
+//     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// Provides the default <see cref="INotableDateCollisionResolver" /> implementation. Sorts overlapping dates by
-/// category, falls back to alphabetic name, and removes exact duplicates.
+/// Provides the default <see cref="INotableDateCollisionResolver" /> implementation. Removes exact duplicates and orders
+/// the overlapping dates by a documented precedence.
 /// </summary>
 /// <remarks>
 /// <para>
-/// This resolver removes structurally equal <see cref="NotableDate" /> entries first, then orders the remaining dates
-/// ascending by <see cref="NotableDateCategory" /> integer value (lower values indicate higher significance) and then
-/// alphabetically by <see cref="NotableDate.Name" />. It is used automatically when no custom
-/// <see cref="INotableDateCollisionResolver" /> is supplied to <see cref="NotableDateService" />.
+/// Same-day occurrences are ordered by the following precedence, most significant first:
 /// </para>
+/// <list type="number">
+/// <item><description>Provenance, descending — a runtime override outranks a local rule, which outranks an imported rule.</description></item>
+/// <item><description>Ascending <see cref="NotableDate.Priority" /> — a lower value indicates higher precedence.</description></item>
+/// <item><description>Ascending <see cref="NotableDateCategory" /> ordinal — a lower value indicates higher significance.</description></item>
+/// <item><description>Alphabetical <see cref="NotableDate.Name" />, then <see cref="NotableDate.TerritoryCode" />.</description></item>
+/// </list>
 /// <para>
-/// The implementation is intentionally conservative: it keeps every distinct occurrence on the colliding day rather
-/// than picking a single "winner". Hosts that need a single canonical entry per day should supply a custom
-/// <see cref="INotableDateCollisionResolver" /> through the <see cref="NotableDateService" /> constructor.
+/// The implementation is intentionally conservative: it keeps every distinct occurrence on the colliding day rather than
+/// picking a single "winner". Hosts that need a single canonical entry per day should supply a custom
+/// <see cref="INotableDateCollisionResolver" /> through the <see cref="NotableDateService" /> constructor and take the
+/// first element.
 /// </para>
 /// </remarks>
-/// <example>
-/// <para>
-/// Given two notable dates resolving to 25 April 2027 — Anzac Day (a public commemoration) and Easter Sunday (a
-/// religious observance) — the default resolver returns them in category-ascending order:
-/// </para>
-/// <code>
-///<![CDATA[
-/// IReadOnlyList<NotableDate> resolved = new DefaultNotableDateCollisionResolver().Resolve(
-///     new DateTime(2027, 4, 25),
-///     new[]
-///     {
-///         new NotableDate { Date = new DateTime(2027, 4, 25), Name = "Easter Sunday",
-///                           Category = NotableDateCategory.Religious },
-///         new NotableDate { Date = new DateTime(2027, 4, 25), Name = "Anzac Day",
-///                           Category = NotableDateCategory.Remembrance },
-///     });
-///
-/// resolved[0].Name == "Anzac Day"     (Remembrance has the lower category ordinal)
-/// resolved[1].Name == "Easter Sunday"
-///]]>
-/// </code>
-/// </example>
 public sealed class DefaultNotableDateCollisionResolver
     : INotableDateCollisionResolver
 {
     /// <inheritdoc />
-    public IReadOnlyList<NotableDate> Resolve(DateTime date, IReadOnlyList<NotableDate> overlapping)
+    public IReadOnlyList<NotableDate> Resolve(NotableDateCollisionContext context)
     {
-        return overlapping is null || overlapping.Count == 0
-            ? []
-            : [.. overlapping
-            .Distinct()
-            .OrderBy(d => (int)d.Category)
-            .ThenBy(d => d.Name, StringComparer.OrdinalIgnoreCase)];
+        if (context is null || context.Overlapping.Count == 0)
+            return [];
+
+        return [.. context.Overlapping
+            .Select((notable, index) => (Notable: notable, Provenance: context.Provenances[index]))
+            .OrderByDescending(pair => (int)pair.Provenance)
+            .ThenBy(pair => pair.Notable.Priority)
+            .ThenBy(pair => (int)pair.Notable.Category)
+            .ThenBy(pair => pair.Notable.Name, StringComparer.OrdinalIgnoreCase)
+            .ThenBy(pair => pair.Notable.TerritoryCode, StringComparer.OrdinalIgnoreCase)
+            .Select(pair => pair.Notable)
+            .Distinct()];
     }
 }

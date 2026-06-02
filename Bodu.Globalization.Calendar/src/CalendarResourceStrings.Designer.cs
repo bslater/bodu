@@ -97,6 +97,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The provenance list must have the same number of entries as the overlapping notable dates..
+        /// </summary>
+        internal static string Arg_Invalid_CollisionProvenanceCountMismatch {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_CollisionProvenanceCountMismatch", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The end date must not be earlier than the start date..
         /// </summary>
         internal static string Arg_Invalid_EndDateBeforeStartDate {
