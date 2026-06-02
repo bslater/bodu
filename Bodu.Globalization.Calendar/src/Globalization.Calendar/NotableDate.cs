@@ -102,10 +102,22 @@ public sealed record NotableDate
     /// <summary>
     /// Gets the inclusive last day of the span, derived from <see cref="Date" /> and <see cref="DurationDays" />.
     /// </summary>
+    /// <remarks>
+    /// The result is clamped to <see cref="DateTime.MaxValue" /> when a large <see cref="DurationDays" /> would otherwise
+    /// push the end date beyond the supported range, so reading this property never throws.
+    /// </remarks>
     /// <returns>
     /// The final <see cref="DateTime" /> of the span. Equal to <see cref="Date" /> for single-day occurrences.
     /// </returns>
-    public DateTime EndDate => Date.AddDays(Math.Max(0, DurationDays - 1));
+    public DateTime EndDate
+    {
+        get
+        {
+            var extraDays = Math.Max(0, DurationDays - 1);
+            var available = (DateTime.MaxValue.Date - Date.Date).Days;
+            return extraDays >= available ? DateTime.MaxValue.Date : Date.AddDays(extraDays);
+        }
+    }
 
     /// <summary>
     /// Gets the resolution priority inherited from the originating <see cref="NotableDateRule" />.

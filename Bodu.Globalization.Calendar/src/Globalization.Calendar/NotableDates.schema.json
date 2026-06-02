@@ -36,6 +36,11 @@
       "type": "integer",
       "minimum": 1
     },
+    "durationDays": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 366
+    },
     "day": {
       "type": "integer",
       "minimum": 1,
@@ -277,7 +282,7 @@
           "$ref": "#/$defs/positiveInteger"
         },
         "durationDays": {
-          "$ref": "#/$defs/positiveInteger"
+          "$ref": "#/$defs/durationDays"
         },
         "priority": {
           "$ref": "#/$defs/int32"
@@ -360,7 +365,7 @@
           "$ref": "#/$defs/positiveInteger"
         },
         "durationDays": {
-          "$ref": "#/$defs/positiveInteger"
+          "$ref": "#/$defs/durationDays"
         },
         "priority": {
           "$ref": "#/$defs/int32"
