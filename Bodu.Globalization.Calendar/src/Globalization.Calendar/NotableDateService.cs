@@ -117,9 +117,10 @@ namespace Bodu.Globalization.Calendar;
 /// </item>
 /// <item>
 /// <description>
-/// <b>Composite rule identity.</b> Override-merge uses a <c>(Name, TerritoryCode, CalendarType)</c> key, so regional
-/// and calendar-system variants of the same named observance coexist as distinct rules. An override addition replaces a
-/// base rule only when all three identity components match exactly.
+/// <b>Composite rule identity.</b> Override-merge uses the full <see cref="NotableDateRuleIdentity" />
+/// (<c>Name, RuleName, TerritoryCode, CalendarType</c>) key, so regional, rule-level, and calendar-system variants of
+/// the same named observance (for example western and orthodox Easter) coexist as distinct rules. An override addition
+/// replaces a base rule only when every identity component matches exactly.
 /// </description>
 /// </item>
 /// <item>
@@ -857,11 +858,12 @@ public sealed class NotableDateService
     /// </param>
     /// <returns>The rule list after all additions have been applied.</returns>
     /// <remarks>
-    /// Additions are layered on top of the base rule set using a composite (name, territory, calendar type) key so that
-    /// regional and calendar-system variants of the same notable date (for example, multiple Labour Day variants across
-    /// Australian states, or Gregorian and Julian Christmas observances) survive instead of collapsing into a single
-    /// entry. An addition only replaces a base rule when all three identity components match exactly. Removals are
-    /// evaluated per (year, territory) downstream so they can be scoped to specific years and territories.
+    /// Additions are layered on top of the base rule set using the full <see cref="NotableDateRuleIdentity" /> (name,
+    /// rule name, territory, calendar type) so that regional, rule-level, and calendar-system variants of the same
+    /// notable date (for example, multiple Labour Day variants across Australian states, western and orthodox Easter,
+    /// or Gregorian and Julian Christmas observances) survive instead of collapsing into a single entry. An addition
+    /// only replaces a base rule when every identity component matches exactly. Removals are evaluated per
+    /// (year, territory) downstream so they can be scoped to specific years and territories.
     /// </remarks>
     private static ImmutableArray<NotableDateRule> ApplyOverrides(
         ImmutableArray<NotableDateRule> baseRules,
@@ -872,35 +874,19 @@ public sealed class NotableDateService
 
         IEnumerable<NotableDateRule> source = baseRules.IsDefault ? Enumerable.Empty<NotableDateRule>() : baseRules;
 
-        var byKey = new Dictionary<(string Name, string Territory, Type? CalendarType), NotableDateRule>();
+        var byKey = new Dictionary<NotableDateRuleIdentity, NotableDateRule>();
         foreach (NotableDateRule rule in source)
         {
-            byKey[CompositeKey(rule)] = rule;
+            byKey[NotableDateRuleIdentity.From(rule)] = rule;
         }
 
         foreach (NotableDateRule addition in overrideAdditions)
         {
-            byKey[CompositeKey(addition)] = addition;
+            byKey[NotableDateRuleIdentity.From(addition)] = addition;
         }
 
         return [.. byKey.Values];
     }
-
-    /// <summary>
-    /// Creates the composite rule identity used when merging base rules with override additions.
-    /// </summary>
-    /// <param name="rule">The notable-date rule whose identity should be calculated.</param>
-    /// <returns>
-    /// A tuple containing the normalized rule name, territory code, and calendar type used as the dictionary key.
-    /// </returns>
-    /// <remarks>
-    /// Rules are keyed by name, territory, and calendar type so that regional variants and calendar-system variants of
-    /// the same named date remain distinct during override application. A <see langword="null" /> name or territory is
-    /// normalized to <see cref="string.Empty" />; calendar type is preserved verbatim (<see langword="null" /> is its
-    /// own bucket).
-    /// </remarks>
-    private static (string Name, string Territory, Type? CalendarType) CompositeKey(NotableDateRule rule)
-        => (rule.Name ?? string.Empty, rule.TerritoryCode ?? string.Empty, rule.CalendarType);
 
     /// <summary>
     /// Returns <see langword="true" /> if <paramref name="notable" /> covers the calendar day of
