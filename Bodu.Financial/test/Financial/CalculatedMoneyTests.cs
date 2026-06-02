@@ -133,4 +133,36 @@ public class CalculatedMoneyTests
         Assert.AreEqual(new CalculatedMoney(1.5m, "USD"), new CalculatedMoney(1.5m, "USD"));
         Assert.AreNotEqual(new CalculatedMoney(1.5m, "USD"), new CalculatedMoney(1.5m, "EUR"));
     }
+
+    /// <summary>
+    /// Verifies the documented settlement-versus-calculation distinction: a per-step <see cref="Money" /> chain rounds
+    /// at every operation and accumulates error, whereas the equivalent <see cref="CalculatedMoney" /> chain defers
+    /// rounding to a single settlement boundary and recovers the exact result. Splitting 10.00 USD into a third and
+    /// recombining yields 9.99 through <see cref="Money" /> but 10.00 through <see cref="CalculatedMoney" />.
+    /// </summary>
+    [TestMethod]
+    public void RoundToMoney_WhenChainDefersRounding_ShouldAvoidPerStepRoundingError()
+    {
+        Money perStep = Money.From(10.00m, "USD") * 0.3333m * 3m;
+
+        CalculatedMoney deferred = new Money(10.00m, "USD").ToCalculated() * 0.3333m * 3m;
+        Money settled = deferred.RoundToMoney();
+
+        Assert.AreEqual(9.99m, perStep.Amount);
+        Assert.AreEqual(10.00m, settled.Amount);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CalculatedMoney" /> carries high-precision <see cref="decimal" /> rather than an exact
+    /// rational: one third stored and read back equals the 28-29 digit <see cref="decimal" /> quotient, not the exact
+    /// mathematical value (which would require the <c>Fraction</c>-based exact APIs).
+    /// </summary>
+    [TestMethod]
+    public void Amount_WhenStoringOneThird_ShouldBeDecimalPrecisionNotExactRational()
+    {
+        CalculatedMoney third = new CalculatedMoney(1m, "USD") / 3m;
+
+        Assert.AreEqual(1m / 3m, third.Amount);
+        Assert.AreNotEqual(1m, third.Amount * 3m);
+    }
 }
