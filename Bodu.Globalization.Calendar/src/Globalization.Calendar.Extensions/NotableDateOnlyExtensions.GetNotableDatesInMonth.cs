@@ -63,8 +63,8 @@ public static partial class NotableDateOnlyExtensions
     {
         ThrowHelper.ThrowIfNull(service);
 
-        var firstOfMonth = new DateTime(date.Year, date.Month, 1);
-        var lastOfMonth = new DateTime(date.Year, date.Month, DateTime.DaysInMonth(date.Year, date.Month));
+        var firstOfMonth = DateTimeExtensions.GetFirstDateOfMonth(date.Year, date.Month);
+        var lastOfMonth = DateTimeExtensions.GetLastDateOfMonth(date.Year, date.Month);
         return service.GetNotableDates(firstOfMonth, lastOfMonth, territoryCode, calendarType);
     }
 
@@ -92,8 +92,8 @@ public static partial class NotableDateOnlyExtensions
         ThrowHelper.ThrowIfNull(service);
         ThrowHelper.ThrowIfNull(filter);
 
-        var firstOfMonth = new DateTime(date.Year, date.Month, 1);
-        var lastOfMonth = new DateTime(date.Year, date.Month, DateTime.DaysInMonth(date.Year, date.Month));
+        var firstOfMonth = DateTimeExtensions.GetFirstDateOfMonth(date.Year, date.Month);
+        var lastOfMonth = DateTimeExtensions.GetLastDateOfMonth(date.Year, date.Month);
         return service.GetNotableDates(firstOfMonth, lastOfMonth, filter, territoryCode, calendarType);
     }
 }
