@@ -49,7 +49,7 @@ A rule's <xref:Bodu.Globalization.Calendar.DateResolutionStrategy> determines ho
 | `RelativeWeekdayInMonth` | A weekday positioned relative to the *n*th anchor weekday of a month (e.g. the Tuesday after the first Monday in November = US Election Day). |
 | `Algorithm` | Delegated to a registered `INotableDateAlgorithm` for astronomical or ecclesiastical computations (Easter, Vesak, …). |
 
-See [NotableDateRule and ObservanceAdjustment reference](../../guides/calendar/rule-reference.md) for the per-field contracts and worked examples.
+See [Choosing a strategy](../../guides/calendar/rule-reference.md#choosing-a-strategy) for guidance on which strategy to pick, and the [NotableDateRule and ObservanceAdjustment reference](../../guides/calendar/rule-reference.md) for the per-field contracts and worked examples.
 
 ## Anchor
 

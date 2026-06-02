@@ -44,6 +44,41 @@ determines which other fields are active:
 | `RelativeWeekdayInMonth` | `Month`, `DayOfWeek`, `WeekOrdinal`, `RelativeDayOfWeek`, `WeekdayProximity` | A weekday positioned relative to the *n*th anchor weekday of a month (e.g. the Tuesday after the first Monday in November). |
 | `Algorithm` | `AlgorithmKey`, `AlgorithmType`, `AlgorithmMonth`, `AlgorithmDay` | Dates that require an external calculation (Easter, lunar calendars, solar terms). |
 
+### Choosing a strategy
+
+Pick the **simplest strategy that matches how the date is defined**, and reach for `Algorithm`
+only when nothing else fits — an unresolved algorithm key produces no occurrence silently, so a
+declarative strategy is always preferable when one applies. Work down this list and take the
+first match:
+
+1. **Same month and day every year** (Gregorian, or another calendar via `CalendarType`) → **`Fixed`**.
+   *Christmas Day (25 December), Bastille Day (14 July).*
+2. **The *n*th or last occurrence of a weekday in a month**, where that weekday *is* the result → **`DayOfWeekInMonth`**.
+   *Third Monday in January (MLK Day), last Monday in May (Memorial Day).*
+3. **A fixed number of days from another date that is itself a rule** → **`OffsetFromAnchor`**, so the date tracks its anchor instead of re-deriving it.
+   *Good Friday (Easter − 2), Black Friday (Thanksgiving + 1), Cyber Monday (Thanksgiving + 4).*
+4. **A weekday on/before/after/nearest a *fixed calendar date*** → **`WeekdayNearDate`**.
+   *The Saturday on or after 20 June (Nordic Midsummer), the Wednesday before 23 November (German Repentance Day).*
+5. **A *different* weekday on/before/after/nearest the *n*th weekday of a month**, with no anchor rule to offset from → **`RelativeWeekdayInMonth`**.
+   *The Tuesday after the first Monday in November (US Election Day).*
+6. **Anything astronomical, ecclesiastical, or lunisolar** → **`Algorithm`** with a registered `INotableDateAlgorithm`.
+   *Easter Sunday, Vesak, the Japanese equinoxes, Matariki.*
+
+**Disambiguating the weekday strategies** — the *anchor* is the deciding factor:
+
+| Question | Strategy |
+|---|---|
+| Is the ordinal weekday itself the answer? (e.g. *the* third Monday) | `DayOfWeekInMonth` |
+| Is the anchor a fixed month + day? (e.g. on/after 20 June) | `WeekdayNearDate` |
+| Is the anchor an ordinal weekday, with a *different* target weekday? (e.g. the Tuesday after the first Monday) | `RelativeWeekdayInMonth` |
+| Is the anchor already modelled as its own rule? (e.g. the Monday after Thanksgiving) | `OffsetFromAnchor` (preferred over the two above) |
+
+> [!NOTE]
+> "The next weekday after a known weekday" is always a *fixed* offset, so `RelativeWeekdayInMonth`
+> and `OffsetFromAnchor` can describe the same date. Use `OffsetFromAnchor` whenever the anchor
+> exists as a rule (it tracks that rule); use `RelativeWeekdayInMonth` only when the ordinal-weekday
+> anchor is *not* itself modelled (US Election Day has no "first Monday of November" rule to offset from).
+
 ### Fixed strategy fields
 
 | Field | Type | Default | Description |

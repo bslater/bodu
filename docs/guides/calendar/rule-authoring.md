@@ -207,7 +207,7 @@ Each `<NotableDate>` element groups one or more `<Rule>` variants under a canoni
 
 ### Strategy elements
 
-Each `<Rule>` contains exactly one strategy element:
+Each `<Rule>` contains exactly one strategy element (see [Choosing a strategy](rule-reference.md#choosing-a-strategy) for which to pick):
 
 **`<Fixed>`** — fixed month and day:
 
