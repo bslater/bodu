@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Croatia (HR) notable-date resource using the Western / Gregorian calendar.
+
+  National public holidays (neradni dani).
+
+  Common European observances are inherited from europe-common.xml and
+  localized with territory="HR"; Croatia-specific holidays are declared below.
+-->
+<NotableDates xmlns="urn:bodu:globalization:calendar"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <UseFrom resource="./europe-common.xml">
+    <Use name="New Year's Day" territory="HR" />
+    <Use name="Epiphany" territory="HR" />
+    <Use name="Easter Sunday" territory="HR" />
+    <Use name="Easter Monday" territory="HR" />
+    <Use name="International Workers' Day" as="Labour Day" territory="HR" />
+    <Use name="Corpus Christi" territory="HR" />
+    <Use name="Assumption of Mary" territory="HR" />
+    <Use name="All Saints' Day" territory="HR" />
+    <Use name="Christmas Day" territory="HR" />
+    <Use name="Boxing Day" as="Saint Stephen's Day" territory="HR" />
+  </UseFrom>
+
+  <!--
+    National Croatian holidays.
+  -->
+
+  <NotableDate name="Statehood Day">
+    <Rule name="fixed-may-30-hr" category="Holiday" territory="HR" nonWorking="true" firstYear="1990"
+          comment="Dan državnosti. Marks the constitution of the first multi-party Croatian Parliament on 30 May 1990.">
+      <Fixed month="May" day="30" />
+      <Tag>National</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Anti-Fascist Struggle Day">
+    <Rule name="fixed-jun-22-hr" category="Holiday" territory="HR" nonWorking="true" firstYear="1941"
+          comment="Dan antifašističke borbe. Commemorates the formation of the first anti-fascist resistance unit in occupied Europe near Sisak on 22 June 1941.">
+      <Fixed month="June" day="22" />
+      <Tag>National</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Victory and Homeland Thanksgiving Day">
+    <Rule name="fixed-aug-05-hr" category="Holiday" territory="HR" nonWorking="true" firstYear="1995"
+          comment="Dan pobjede i domovinske zahvalnosti. Marks Operation Storm and the liberation of Knin on 5 August 1995 during the Croatian War of Independence.">
+      <Fixed month="August" day="5" />
+      <Tag>National</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Remembrance Day">
+    <Rule name="fixed-nov-18-hr" category="Holiday" territory="HR" nonWorking="true"
+          comment="Dan sjećanja na žrtve Domovinskog rata. Commemorates the victims of the Homeland War and the fall of Vukovar in 1991.">
+      <Fixed month="November" day="18" />
+      <Tag>Remembrance</Tag>
+    </Rule>
+  </NotableDate>
+
+</NotableDates>

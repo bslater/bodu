@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Latvia (LV) notable-date resource using the Western / Gregorian calendar.
+
+  National public holidays (svētku dienas).
+
+  Common European observances are inherited from europe-common.xml and
+  localized with territory="LV"; Latvia-specific holidays are declared below.
+-->
+<NotableDates xmlns="urn:bodu:globalization:calendar"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <UseFrom resource="./europe-common.xml">
+    <Use name="New Year's Day" territory="LV" />
+    <Use name="Easter Sunday" territory="LV" />
+    <Use name="Good Friday" territory="LV" />
+    <Use name="Easter Monday" territory="LV" />
+    <Use name="International Workers' Day" as="Labour Day" territory="LV" />
+    <Use name="Christmas Eve" nonWorking="true" category="Holiday" territory="LV" />
+    <Use name="Christmas Day" territory="LV" />
+    <Use name="Boxing Day" as="Second Day of Christmas" territory="LV" />
+    <Use name="New Year's Eve" nonWorking="true" category="Holiday" territory="LV" />
+  </UseFrom>
+
+  <!--
+    National Latvian holidays.
+  -->
+
+  <NotableDate name="Restoration of Independence Day">
+    <Rule name="fixed-may-04-lv" category="Holiday" territory="LV" nonWorking="true" firstYear="1990"
+          comment="Latvijas Republikas Neatkarības atjaunošanas diena. Marks the declaration restoring Latvian independence on 4 May 1990.">
+      <Fixed month="May" day="4" />
+      <Tag>National</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Midsummer Eve">
+    <Rule name="fixed-jun-23-lv" category="Holiday" territory="LV" nonWorking="true"
+          comment="Līgo diena. Eve of the Midsummer celebration, observed together with Jāņi on 23–24 June.">
+      <Fixed month="June" day="23" />
+      <Tag>Cultural</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Saint John's Day">
+    <Rule name="fixed-jun-24-lv" category="Holiday" territory="LV" nonWorking="true"
+          comment="Jāņi. Midsummer celebration on 24 June, Latvia's most widely observed traditional festival.">
+      <Fixed month="June" day="24" />
+      <Tag>Cultural</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Proclamation Day of the Republic of Latvia">
+    <Rule name="fixed-nov-18-lv" category="Holiday" territory="LV" nonWorking="true" firstYear="1918"
+          comment="Latvijas Republikas proklamēšanas diena. Marks the proclamation of the Republic of Latvia on 18 November 1918.">
+      <Fixed month="November" day="18" />
+      <Tag>National</Tag>
+    </Rule>
+  </NotableDate>
+
+</NotableDates>

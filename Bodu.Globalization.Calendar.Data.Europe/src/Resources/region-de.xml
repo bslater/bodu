@@ -24,38 +24,35 @@
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
   <!--
-    Imported global observances.
+    Common European observances, inherited from europe-common.xml. The state-
+    only Christian holidays (Epiphany, Corpus Christi, Assumption, All Saints')
+    are intentionally NOT inherited here; they are declared per-state below.
+  -->
+
+  <UseFrom resource="./europe-common.xml">
+    <Use name="New Year's Day" territory="DE" />
+    <Use name="Valentine's Day" territory="DE" />
+    <Use name="International Workers' Day" territory="DE" />
+    <Use name="Good Friday" territory="DE" />
+    <Use name="Easter Sunday" territory="DE" />
+    <Use name="Easter Monday" territory="DE" />
+    <Use name="Ascension Day" territory="DE" />
+    <Use name="Whit Monday" territory="DE" />
+    <Use name="Christmas Eve" territory="DE" />
+    <Use name="Christmas Day" territory="DE" />
+    <Use name="Boxing Day" as="Second Day of Christmas" territory="DE" />
+    <Use name="Mother's Day" territory="DE" />
+    <Use name="Father's Day" territory="DE" />
+  </UseFrom>
+
+  <!--
+    International Women's Day as a recognition-only observance (it is a state
+    holiday in Berlin and Mecklenburg-Vorpommern, declared separately below).
+    Not part of the pan-European common set, so inherited from the main library.
   -->
 
   <UseFrom resource="./global-all.xml">
-    <Use name="New Year's Day" territory="DE" nonWorking="true" />
-    <Use name="Valentine's Day" territory="DE" />
     <Use name="International Women's Day" territory="DE" />
-    <Use name="International Workers' Day" territory="DE" nonWorking="true" />
-  </UseFrom>
-
-  <!--
-    Imported Christian observances.
-  -->
-
-  <UseFrom resource="./christian-gregorian.xml">
-    <Use name="Good Friday" territory="DE" nonWorking="true" />
-    <Use name="Easter Sunday" territory="DE" />
-    <Use name="Easter Monday" territory="DE" nonWorking="true" />
-    <Use name="Ascension Day" territory="DE" nonWorking="true" />
-    <Use name="Whit Monday" territory="DE" nonWorking="true" />
-    <Use name="Christmas Eve" territory="DE" />
-    <Use name="Christmas Day" territory="DE" nonWorking="true" />
-    <Use name="Boxing Day" as="Second Day of Christmas" territory="DE" nonWorking="true" />
-  </UseFrom>
-
-  <!--
-    Imported family observances.
-  -->
-
-  <UseFrom resource="./global-family.xml">
-    <Use name="Mother's Day" territory="DE" />
-    <Use name="Father's Day" territory="DE" />
   </UseFrom>
 
   <!--

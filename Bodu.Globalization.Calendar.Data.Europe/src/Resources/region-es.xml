@@ -1,8 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<NotableDates xmlns="urn:bodu:globalization:calendar">
+<!--
+  Spain (ES) notable-date resource using the Western / Gregorian calendar.
+
+  National public holidays (fiestas nacionales). Spain's seventeen autonomous
+  communities each add regional holidays under their ISO 3166-2 subdivision
+  codes; only the national set is modelled here.
+
+  Common European observances are inherited from europe-common.xml and
+  localized with territory="ES"; Spain-specific holidays are declared below.
+-->
+<NotableDates xmlns="urn:bodu:globalization:calendar"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <UseFrom resource="./europe-common.xml">
+    <Use name="New Year's Day" territory="ES" />
+    <Use name="Epiphany" territory="ES" />
+    <Use name="Easter Sunday" territory="ES" />
+    <Use name="Good Friday" territory="ES" />
+    <Use name="International Workers' Day" as="Labour Day" territory="ES" />
+    <Use name="Assumption of Mary" territory="ES" />
+    <Use name="All Saints' Day" territory="ES" />
+    <Use name="Immaculate Conception" territory="ES" />
+    <Use name="Christmas Day" territory="ES" />
+  </UseFrom>
+
+  <!--
+    National Spanish holidays.
+  -->
+
   <NotableDate name="National Day of Spain">
-    <Rule name="fixed-oct-12-es" category="Holiday" territory="ES" nonWorking="true">
+    <Rule name="fixed-oct-12-es" category="Holiday" territory="ES" nonWorking="true"
+          comment="Fiesta Nacional de España. Commemorates the arrival of Christopher Columbus in the Americas on 12 October 1492. Also observed as the feast of the Virgen del Pilar.">
       <Fixed month="October" day="12" />
+      <Tag>National</Tag>
     </Rule>
   </NotableDate>
+
+  <NotableDate name="Constitution Day">
+    <Rule name="fixed-dec-06-es" category="Holiday" territory="ES" nonWorking="true"
+          comment="Día de la Constitución. Marks the referendum of 6 December 1978 that approved the current Spanish Constitution.">
+      <Fixed month="December" day="6" />
+      <Tag>National</Tag>
+    </Rule>
+  </NotableDate>
+
 </NotableDates>

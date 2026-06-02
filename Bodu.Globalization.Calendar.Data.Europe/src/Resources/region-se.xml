@@ -1,8 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<NotableDates xmlns="urn:bodu:globalization:calendar">
+<!--
+  Sweden (SE) notable-date resource using the Western / Gregorian calendar.
+
+  Public holidays (allmänna helgdagar) plus the de-facto-closed Christmas Eve.
+  Midsummer Day and All Saints' Day fall on a Saturday in a fixed week each
+  year (movable) and cannot be expressed with the available fixed/weekday
+  strategies, so they are omitted here.
+
+  Common European observances are inherited from europe-common.xml and
+  localized with territory="SE"; Sweden-specific holidays are declared below.
+-->
+<NotableDates xmlns="urn:bodu:globalization:calendar"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <UseFrom resource="./europe-common.xml">
+    <Use name="New Year's Day" territory="SE" />
+    <Use name="Epiphany" territory="SE" />
+    <Use name="Easter Sunday" territory="SE" />
+    <Use name="Good Friday" territory="SE" />
+    <Use name="Easter Monday" territory="SE" />
+    <Use name="International Workers' Day" as="May Day" territory="SE" />
+    <Use name="Ascension Day" territory="SE" />
+    <Use name="Pentecost Sunday" as="Whit Sunday" territory="SE" />
+    <Use name="Christmas Eve" nonWorking="true" category="Holiday" territory="SE" />
+    <Use name="Christmas Day" territory="SE" />
+    <Use name="Boxing Day" as="Second Day of Christmas" territory="SE" />
+    <Use name="New Year's Eve" territory="SE" />
+  </UseFrom>
+
+  <!--
+    National Swedish holidays.
+  -->
+
   <NotableDate name="National Day of Sweden">
-    <Rule name="fixed-jun-06-se" category="Holiday" territory="SE" nonWorking="true">
+    <Rule name="fixed-jun-06-se" category="Holiday" territory="SE" nonWorking="true" firstYear="2005"
+          comment="Sveriges nationaldag. Commemorates the election of Gustav Vasa as king in 1523 and the adoption of the 1809 constitution. A public holiday since 2005.">
       <Fixed month="June" day="6" />
+      <Tag>National</Tag>
     </Rule>
   </NotableDate>
+
 </NotableDates>
