@@ -10,8 +10,7 @@ namespace Bodu.Financial;
 
 /// <summary>
 /// Provides compact-notation formatting (<c>"$1.2K"</c>, <c>"€1.5M"</c>, <c>"USD 2.3B"</c>) for
-/// <see cref="Money{TCurrency}" /> and <see cref="Money" /> values, on top of the standard format-specifier
-/// vocabulary.
+/// <see cref="Money{TCurrency}" /> and <see cref="Money" /> values, on top of the standard format-specifier vocabulary.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -96,9 +95,8 @@ public static class MoneyCompactFormattingExtensions
     /// </summary>
     /// <param name="money">The runtime-tagged monetary amount to format.</param>
     /// <param name="format">
-    /// The format specifier; see <see cref="Money.ToString(string?, IFormatProvider?)" /> for the supported
-    /// vocabulary. The <c>R</c> specifier is rejected because compact notation cannot round-trip. Defaults to
-    /// <c>"C"</c>.
+    /// The format specifier; see <see cref="Money.ToString(string?, IFormatProvider?)" /> for the supported vocabulary.
+    /// The <c>R</c> specifier is rejected because compact notation cannot round-trip. Defaults to <c>"C"</c>.
     /// </param>
     /// <param name="provider">
     /// The culture used to render the numeric portion. When omitted, the current culture is used.

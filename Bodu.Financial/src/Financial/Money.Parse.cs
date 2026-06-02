@@ -13,8 +13,7 @@ public readonly partial struct Money :
     ISpanParsable<Money>
 {
     /// <summary>
-    /// Parses a <see cref="Money" /> from <c>"&lt;ISO&gt; &lt;amount&gt;"</c> or
-    /// <c>"&lt;amount&gt; &lt;ISO&gt;"</c>.
+    /// Parses a <see cref="Money" /> from <c>"&lt;ISO&gt; &lt;amount&gt;"</c> or <c>"&lt;amount&gt; &lt;ISO&gt;"</c>.
     /// </summary>
     /// <param name="s">The text to parse.</param>
     /// <param name="provider">The culture used to interpret the numeric component.</param>

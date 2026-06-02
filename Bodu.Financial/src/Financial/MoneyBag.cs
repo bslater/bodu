@@ -21,8 +21,8 @@ namespace Bodu.Financial;
 /// not silently merged. Zero balances are pruned automatically on every operation.
 /// </para>
 /// <para>
-/// Enumeration yields one <see cref="Money" /> per non-zero currency, in ISO-code lexicographic order so the
-/// iteration is stable and reproducible across runs.
+/// Enumeration yields one <see cref="Money" /> per non-zero currency, in ISO-code lexicographic order so the iteration
+/// is stable and reproducible across runs.
 /// </para>
 /// </remarks>
 [DebuggerDisplay("{Count} currencies")]

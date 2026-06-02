@@ -11,8 +11,8 @@ using System.Text.Json.Serialization;
 namespace Bodu.Financial.Serialization;
 
 /// <summary>
-/// Creates <see cref="MoneyOfTCurrencyJsonConverter{TCurrency}" /> instances for closed <see cref="Money{TCurrency}" /> types,
-/// applying a configurable <see cref="FinancialJsonPolicy" /> to every closed converter the factory produces.
+/// Creates <see cref="MoneyOfTCurrencyJsonConverter{TCurrency}" /> instances for closed <see cref="Money{TCurrency}" />
+/// types, applying a configurable <see cref="FinancialJsonPolicy" /> to every closed converter the factory produces.
 /// </summary>
 /// <remarks>
 /// This factory is referenced by the <see cref="JsonConverterAttribute" /> applied to <see cref="Money{TCurrency}" />,
@@ -40,8 +40,8 @@ public sealed class MoneyOfTCurrencyJsonConverterFactory
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="MoneyOfTCurrencyJsonConverterFactory" /> class configured for the supplied
-    /// <paramref name="policy" />.
+    /// Initializes a new instance of the <see cref="MoneyOfTCurrencyJsonConverterFactory" /> class configured for the
+    /// supplied <paramref name="policy" />.
     /// </summary>
     /// <param name="policy">The policy applied to every closed converter the factory produces.</param>
     /// <exception cref="ArgumentOutOfRangeException">

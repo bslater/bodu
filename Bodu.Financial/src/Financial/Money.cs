@@ -17,11 +17,11 @@ namespace Bodu.Financial;
 /// </summary>
 /// <remarks>
 /// <para>
-/// <see cref="Money" /> is the runtime-tagged counterpart of <see cref="Money{TCurrency}" />. Use it when the
-/// currency is data rather than part of the type — for example, when deserialising payloads that carry the currency
-/// code, or when modelling a generic invoicing engine that processes arbitrary currencies. The trade-off is that
-/// cross-currency arithmetic and comparison surface as <see cref="InvalidOperationException" /> at runtime instead of
-/// as compile errors.
+/// <see cref="Money" /> is the runtime-tagged counterpart of <see cref="Money{TCurrency}" />. Use it when the currency
+/// is data rather than part of the type — for example, when deserialising payloads that carry the currency code, or
+/// when modelling a generic invoicing engine that processes arbitrary currencies. The trade-off is that cross-currency
+/// arithmetic and comparison surface as <see cref="InvalidOperationException" /> at runtime instead of as compile
+/// errors.
 /// </para>
 /// <para>
 /// The amount is rounded on construction to the minor-unit precision reported by <see cref="CurrencyRegistry" /> for
@@ -47,8 +47,8 @@ public readonly partial struct Money
     private readonly string? _isoCode;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Money" /> struct from an amount and ISO 4217 code, rounding
-    /// the amount to the currency's minor-unit precision using banker's rounding.
+    /// Initializes a new instance of the <see cref="Money" /> struct from an amount and ISO 4217 code, rounding the
+    /// amount to the currency's minor-unit precision using banker's rounding.
     /// </summary>
     /// <param name="amount">The monetary amount in the major unit.</param>
     /// <param name="isoCode">The ISO 4217 three-letter alphabetic code identifying the currency.</param>
@@ -60,8 +60,8 @@ public readonly partial struct Money
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Money" /> struct from an amount and ISO 4217 code, rounding
-    /// the amount to the currency's minor-unit precision using the supplied rule.
+    /// Initializes a new instance of the <see cref="Money" /> struct from an amount and ISO 4217 code, rounding the
+    /// amount to the currency's minor-unit precision using the supplied rule.
     /// </summary>
     /// <param name="amount">The monetary amount in the major unit.</param>
     /// <param name="isoCode">The ISO 4217 three-letter alphabetic code identifying the currency.</param>
@@ -126,8 +126,8 @@ public readonly partial struct Money
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Money" /> struct from an already-normalised amount and ISO
-    /// code, bypassing rounding.
+    /// Initializes a new instance of the <see cref="Money" /> struct from an already-normalised amount and ISO code,
+    /// bypassing rounding.
     /// </summary>
     /// <param name="amount">The pre-normalised amount.</param>
     /// <param name="isoCode">The ISO 4217 code.</param>

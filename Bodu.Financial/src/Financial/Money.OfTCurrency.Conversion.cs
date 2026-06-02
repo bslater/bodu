@@ -14,7 +14,9 @@ public readonly partial struct Money<TCurrency>
     /// <summary>
     /// Converts this strongly-typed amount to its runtime-tagged <see cref="Money" /> equivalent.
     /// </summary>
-    /// <returns>A <see cref="Money" /> carrying the same amount and the ISO code derived from <typeparamref name="TCurrency" />.</returns>
+    /// <returns>
+    /// A <see cref="Money" /> carrying the same amount and the ISO code derived from <typeparamref name="TCurrency" />.
+    /// </returns>
     /// <remarks>
     /// The conversion is lossless: <typeparamref name="TCurrency" /> determines the ISO code, which is encoded into the
     /// runtime <see cref="Money.IsoCode" />. An <c>implicit</c> operator is also provided so typed values flow into
@@ -75,7 +77,9 @@ public readonly partial struct Money<TCurrency>
     /// to the destination currency's minor-unit precision.
     /// </summary>
     /// <typeparam name="TQuote">The destination currency, fixed by the supplied rate's quote leg.</typeparam>
-    /// <param name="exchangeRate">A strongly-typed rate whose base must match <typeparamref name="TCurrency" />.</param>
+    /// <param name="exchangeRate">
+    /// A strongly-typed rate whose base must match <typeparamref name="TCurrency" />.
+    /// </param>
     /// <param name="rounding">The midpoint-rounding rule applied when narrowing to the target precision.</param>
     /// <returns>The converted monetary amount in <typeparamref name="TQuote" />.</returns>
     /// <remarks>

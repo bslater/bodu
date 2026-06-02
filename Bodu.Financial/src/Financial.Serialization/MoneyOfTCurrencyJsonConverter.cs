@@ -50,8 +50,8 @@ public sealed class MoneyOfTCurrencyJsonConverter<TCurrency>
     private readonly FinancialJsonPolicy _policy;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="MoneyOfTCurrencyJsonConverter{TCurrency}" /> class configured for the
-    /// <see cref="FinancialJsonPolicy.Strict" /> shape.
+    /// Initializes a new instance of the <see cref="MoneyOfTCurrencyJsonConverter{TCurrency}" /> class configured for
+    /// the <see cref="FinancialJsonPolicy.Strict" /> shape.
     /// </summary>
     public MoneyOfTCurrencyJsonConverter()
         : this(FinancialJsonPolicy.Strict)
@@ -59,8 +59,8 @@ public sealed class MoneyOfTCurrencyJsonConverter<TCurrency>
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="MoneyOfTCurrencyJsonConverter{TCurrency}" /> class configured for the supplied
-    /// <paramref name="policy" />.
+    /// Initializes a new instance of the <see cref="MoneyOfTCurrencyJsonConverter{TCurrency}" /> class configured for
+    /// the supplied <paramref name="policy" />.
     /// </summary>
     /// <param name="policy">The serialization policy.</param>
     /// <exception cref="ArgumentOutOfRangeException">

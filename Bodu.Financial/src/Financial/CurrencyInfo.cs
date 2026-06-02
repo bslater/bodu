@@ -31,8 +31,8 @@ namespace Bodu.Financial;
 /// <c>0</c> when the currency is custom or the numeric code is unknown.
 /// </param>
 /// <remarks>
-/// This record is the runtime counterpart of an <see cref="ICurrency" /> tag type. The runtime-tagged <c>Money</c>
-/// and the <c>MoneyBag</c> aggregate operate against <see cref="CurrencyRegistry" /> entries of this shape so they can
+/// This record is the runtime counterpart of an <see cref="ICurrency" /> tag type. The runtime-tagged <c>Money</c> and
+/// the <c>MoneyBag</c> aggregate operate against <see cref="CurrencyRegistry" /> entries of this shape so they can
 /// handle currencies the consumer learns about at runtime (for example, from a deserialised JSON payload).
 /// </remarks>
 public sealed record CurrencyInfo(
