@@ -66,13 +66,15 @@ internal sealed class NotableDateRangeResolutionCache
     {
         ThrowHelper.ThrowIfNull(entry);
 
-        NotableDateCacheKey key = new(
+        // Key on the rule's variant identity (Name + RuleName) combined with the materialized territory and calendar so
+        // that distinct variants of the same canonical name do not collapse into a single cache slot.
+        NotableDateRuleIdentity identity = new(
             entry.Rule.Name,
-            entry.AnchorYear,
+            entry.Rule.RuleName,
             entry.BaseNotable.TerritoryCode,
             entry.BaseNotable.CalendarType);
 
-        _entries[key] = entry;
+        _entries[new NotableDateCacheKey(identity, entry.AnchorYear)] = entry;
     }
 
     /// <summary>

@@ -51,7 +51,7 @@ public sealed class NotableDateRangeResolutionCacheTests
         NotableDateRangeResolutionCache cache = new();
         cache.Add(entry);
 
-        NotableDateCacheKey key = new(entry.Rule.Name, entry.AnchorYear, entry.BaseNotable.TerritoryCode, entry.BaseNotable.CalendarType);
+        NotableDateCacheKey key = new(new NotableDateRuleIdentity(entry.Rule.Name, entry.Rule.RuleName, entry.BaseNotable.TerritoryCode, entry.BaseNotable.CalendarType), entry.AnchorYear);
 
         Assert.IsTrue(cache.TryGet(key, out NotableDateCacheEntry resolved));
         Assert.AreSame(entry, resolved);
@@ -67,7 +67,7 @@ public sealed class NotableDateRangeResolutionCacheTests
         NotableDateRangeResolutionCache cache = new();
         cache.Add(BuildEntry("New Year's Day", 2026, new DateTime(2026, 1, 1)));
 
-        NotableDateCacheKey missingKey = new("Other", 2026, null, null);
+        NotableDateCacheKey missingKey = new(new NotableDateRuleIdentity("Other", null, null, null), 2026);
 
         Assert.IsFalse(cache.TryGet(missingKey, out _));
     }
@@ -82,7 +82,7 @@ public sealed class NotableDateRangeResolutionCacheTests
         NotableDateRangeResolutionCache cache = new();
         cache.Add(stored);
 
-        NotableDateCacheKey otherKey = new("Labour Day", 2026, "AU-NSW", null);
+        NotableDateCacheKey otherKey = new(new NotableDateRuleIdentity("Labour Day", null, "AU-NSW", null), 2026);
 
         Assert.IsFalse(cache.TryGet(otherKey, out _));
     }
@@ -97,7 +97,7 @@ public sealed class NotableDateRangeResolutionCacheTests
         NotableDateRangeResolutionCache cache = new();
         cache.Add(entry);
 
-        NotableDateCacheKey key = new(entry.Rule.Name, entry.AnchorYear, entry.BaseNotable.TerritoryCode, entry.BaseNotable.CalendarType);
+        NotableDateCacheKey key = new(new NotableDateRuleIdentity(entry.Rule.Name, entry.Rule.RuleName, entry.BaseNotable.TerritoryCode, entry.BaseNotable.CalendarType), entry.AnchorYear);
 
         Assert.IsTrue(cache.Contains(key));
     }
@@ -117,7 +117,7 @@ public sealed class NotableDateRangeResolutionCacheTests
 
         Assert.AreEqual(1, cache.Count);
 
-        NotableDateCacheKey key = new("Holiday", 2026, null, null);
+        NotableDateCacheKey key = new(new NotableDateRuleIdentity("Holiday", null, null, null), 2026);
         Assert.IsTrue(cache.TryGet(key, out NotableDateCacheEntry resolved));
         Assert.AreSame(second, resolved);
     }
