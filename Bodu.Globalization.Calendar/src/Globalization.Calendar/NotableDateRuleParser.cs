@@ -503,8 +503,29 @@ public static class NotableDateRuleParser
             ComparisonDate = ParseOptionalMonthDay(element, "comparisonMonth", "comparisonDay"),
             TargetRuleName = GetOptionalAttribute(element, "target"),
             Priority = ParseOptionalInt(element, "priority") ?? 100,
+            MaxAdjustmentReachDays = ParseOptionalInt(element, "maxReachDays"),
             HandlerKey = GetOptionalAttribute(element, "handlerKey"),
+            HandlerParameters = ParseHandlerParameters(element),
         };
+
+    /// <summary>
+    /// Reads the optional &lt;Param&gt; child elements of an &lt;Adjustment&gt; into a key/value map forwarded to a
+    /// custom <see cref="IAdjustmentHandler" />.
+    /// </summary>
+    /// <param name="element">The &lt;Adjustment&gt; element.</param>
+    /// <returns>The parameter map, or <see langword="null" /> when no &lt;Param&gt; children are present.</returns>
+    private static IReadOnlyDictionary<string, string>? ParseHandlerParameters(XElement element)
+    {
+        List<XElement> parameters = element.Elements(s_namespace + "Param").ToList();
+        if (parameters.Count == 0)
+            return null;
+
+        var map = new Dictionary<string, string>(StringComparer.Ordinal);
+        foreach (XElement parameter in parameters)
+            map[GetRequiredAttribute(parameter, "key")] = GetRequiredAttribute(parameter, "value");
+
+        return map;
+    }
 
     // ----------------------------------------------------------------------------
     // Attribute helpers

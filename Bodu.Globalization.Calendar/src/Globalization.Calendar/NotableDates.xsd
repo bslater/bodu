@@ -296,6 +296,15 @@
        kebab-case (e.g. "weekend-roll", "boxing-day-monday-sub").
        ============================================================ -->
   <xs:complexType name="Adjustment">
+    <!-- Optional Param children supply key/value parameters forwarded to a custom IAdjustmentHandler. -->
+    <xs:sequence>
+      <xs:element name="Param" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:attribute name="key" type="xs:string" use="required" />
+          <xs:attribute name="value" type="xs:string" use="required" />
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
     <xs:attribute name="key" type="xs:string" use="required" />
     <xs:attribute name="when" type="nd:adjustmentTrigger" use="required" />
     <xs:attribute name="action" type="nd:adjustmentAction" use="required" />
@@ -311,6 +320,8 @@
     <xs:attribute name="comparisonMonth" type="nd:monthName" use="optional" />
     <xs:attribute name="comparisonDay" type="nd:day" use="optional" />
     <xs:attribute name="target" type="xs:string" use="optional" />
+    <!-- maxReachDays: symmetric +/- day envelope used by the range planner to size the fringe scan. -->
+    <xs:attribute name="maxReachDays" type="xs:int" use="optional" />
     <xs:attribute name="handlerKey" type="xs:string" use="optional" />
   </xs:complexType>
 

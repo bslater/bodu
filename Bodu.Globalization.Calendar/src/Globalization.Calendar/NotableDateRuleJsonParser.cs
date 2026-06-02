@@ -301,7 +301,9 @@ public static class NotableDateRuleJsonParser
                 ComparisonDate = ParseOptionalMonthDay(dto.ComparisonMonth, dto.ComparisonDay),
                 TargetRuleName = dto.Target,
                 Priority = dto.Priority ?? 100,
+                MaxAdjustmentReachDays = dto.MaxReachDays,
                 HandlerKey = dto.HandlerKey,
+                HandlerParameters = dto.HandlerParameters,
             };
     }
 
@@ -1004,6 +1006,8 @@ public static class NotableDateRuleJsonParser
         [JsonPropertyName("comparisonMonth")] public string? ComparisonMonth { get; init; }
         [JsonPropertyName("comparisonDay")] public int? ComparisonDay { get; init; }
         [JsonPropertyName("target")] public string? Target { get; init; }
+        [JsonPropertyName("maxReachDays")] public int? MaxReachDays { get; init; }
         [JsonPropertyName("handlerKey")] public string? HandlerKey { get; init; }
+        [JsonPropertyName("handlerParameters")] public Dictionary<string, string>? HandlerParameters { get; init; }
     }
 }

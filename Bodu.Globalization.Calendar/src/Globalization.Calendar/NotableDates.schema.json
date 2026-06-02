@@ -728,8 +728,17 @@
         "target": {
           "type": "string"
         },
+        "maxReachDays": {
+          "$ref": "#/$defs/int32"
+        },
         "handlerKey": {
           "type": "string"
+        },
+        "handlerParameters": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
         }
       }
     }
