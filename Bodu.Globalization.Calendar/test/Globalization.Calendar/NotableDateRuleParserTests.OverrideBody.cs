@@ -400,4 +400,26 @@ public partial class NotableDateRuleParserTests
 
         Assert.AreEqual("orthodox", document.UseGroups.Single().Uses.Single().OverrideBody!.RuleName);
     }
+
+    /// <summary>
+    /// Verifies that the <c>clear</c> attribute is parsed into the directive's <see cref="NotableDateRuleUseDirective.ClearFields" />
+    /// as a set of field names (assessment §6.4).
+    /// </summary>
+    [TestMethod]
+    public void ParseDocument_WhenUseDeclaresClearAttribute_ShouldPopulateClearFields()
+    {
+        const string xml = @"
+				<NotableDates xmlns=""urn:bodu:globalization:calendar"">
+					<UseFrom resource=""shared.xml"">
+						<Use name=""Christmas Day"" clear=""territory comment"" />
+					</UseFrom>
+				</NotableDates>";
+
+        ParsedNotableDateDocument document = NotableDateRuleParser.ParseDocument(xml);
+        IReadOnlySet<string>? clear = document.UseGroups.Single().Uses.Single().ClearFields;
+
+        Assert.IsNotNull(clear);
+        Assert.IsTrue(clear.Contains("territory"));
+        Assert.IsTrue(clear.Contains("comment"));
+    }
 }

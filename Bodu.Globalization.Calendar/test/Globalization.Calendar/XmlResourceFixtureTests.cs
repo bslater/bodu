@@ -150,5 +150,12 @@ public sealed class XmlResourceFixtureTests
         Assert.AreEqual("Single NT Variant", only.RuleName);
         Assert.AreEqual("AU-NT", only.TerritoryCode);
         Assert.IsTrue(only.Tags.Contains("ClearedAndReplaced"));
+
+        // clearInherited builds the result solely from the directive/body — it must not arbitrarily inherit fields from
+        // whichever source variant happened to be enumerated first (assessment §6.3).
+        Assert.IsFalse(only.Tags.Contains("SourceJune"), "Cleared result must not inherit a source variant's tags.");
+        Assert.IsFalse(only.Tags.Contains("SourceOctober"), "Cleared result must not inherit a source variant's tags.");
+        Assert.IsNull(only.FirstYear, "Cleared result must not inherit a source variant's effective-year bounds.");
+        Assert.IsNull(only.LastYear, "Cleared result must not inherit a source variant's effective-year bounds.");
     }
 }

@@ -536,4 +536,26 @@ public partial class NotableDateRuleJsonParserTests
 
         Assert.AreEqual("orthodox", document.UseGroups.Single().Uses.Single().OverrideBody!.RuleName);
     }
+
+    /// <summary>
+    /// Verifies that the <c>clear</c> array is parsed into the directive's
+    /// <see cref="NotableDateRuleUseDirective.ClearFields" /> (assessment §6.4).
+    /// </summary>
+    [TestMethod]
+    public void ParseDocument_WhenUseDeclaresClearArray_ShouldPopulateClearFields()
+    {
+        const string json = @"{
+				""useFrom"": [ {
+					""resource"": ""shared.json"",
+					""uses"": [ { ""name"": ""Christmas Day"", ""clear"": [ ""territory"", ""comment"" ] } ]
+				} ]
+			}";
+
+        ParsedNotableDateDocument document = NotableDateRuleJsonParser.ParseDocument(json);
+        IReadOnlySet<string>? clear = document.UseGroups.Single().Uses.Single().ClearFields;
+
+        Assert.IsNotNull(clear);
+        Assert.IsTrue(clear.Contains("territory"));
+        Assert.IsTrue(clear.Contains("comment"));
+    }
 }

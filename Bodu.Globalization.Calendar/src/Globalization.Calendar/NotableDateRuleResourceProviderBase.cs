@@ -211,14 +211,16 @@ public abstract class NotableDateRuleResourceProviderBase
 
                     if (directive.ClearInherited)
                     {
-                        // Drop every inherited match previously copied via UseAll, then promote a single rule built solely from the
-                        // directive (the override body is applied on top of the first match purely to seed strategy/category/etc.).
+                        // Drop every inherited match previously copied via UseAll, then build a single rule solely from
+                        // the directive and its override body. Seeding from a blank rule (carrying only the canonical
+                        // name) keeps the result deterministic: it never inherits fields from whichever source variant
+                        // happened to be enumerated first.
                         foreach (NotableDateRule match in matches)
                         {
                             byKey.Remove(KeyOf(match));
                         }
 
-                        NotableDateRule seed = matches[0];
+                        NotableDateRule seed = new() { Name = matches[0].Name, Strategy = default, Category = default };
                         NotableDateRule localized = ApplyOverrides(seed, directive);
                         byKey[KeyOf(localized)] = localized;
                         continue;

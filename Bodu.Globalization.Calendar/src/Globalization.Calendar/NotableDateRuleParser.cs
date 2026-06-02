@@ -211,7 +211,23 @@ public static class NotableDateRuleParser
             ClearTags: ParseOptionalBool(useElement, "clearTags") ?? false,
             ClearAdjustments: ParseOptionalBool(useElement, "clearAdjustments") ?? false,
             ClearInherited: ParseOptionalBool(useElement, "clearInherited") ?? false,
-            OverrideBody: overrideBody);
+            OverrideBody: overrideBody,
+            ClearFields: ParseClearFields(GetOptionalAttribute(useElement, "clear")));
+    }
+
+    /// <summary>
+    /// Parses the <c>clear</c> attribute (a whitespace/comma-separated list of inherited nullable field names) into a
+    /// case-insensitive set, or <see langword="null" /> when absent.
+    /// </summary>
+    /// <param name="raw">The raw <c>clear</c> attribute value, or <see langword="null" />.</param>
+    /// <returns>The set of field names to clear, or <see langword="null" /> when none are specified.</returns>
+    private static IReadOnlySet<string>? ParseClearFields(string? raw)
+    {
+        if (string.IsNullOrWhiteSpace(raw))
+            return null;
+
+        var fields = raw.Split(new[] { ' ', ',', '\t', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        return fields.Length == 0 ? null : new HashSet<string>(fields, StringComparer.OrdinalIgnoreCase);
     }
 
     /// <summary>

@@ -61,20 +61,23 @@ internal static class NotableDateRuleMerger
     {
         NotableDateRuleOverrideBody? body = directive.OverrideBody;
 
+        // A cleared field is not inherited from the source (reset to null); an explicit override value still wins.
+        bool Cleared(string field) => directive.ClearFields?.Contains(field) == true;
+
         NotableDateRule merged = source with
         {
             Name = ResolveName(source.Name, directive.LocalName, body?.Name),
             RuleName = body?.RuleName ?? source.RuleName,
             Category = body?.Category ?? directive.Category ?? source.Category,
-            TerritoryCode = body?.TerritoryCode ?? directive.TerritoryCode ?? source.TerritoryCode,
-            IsNonWorkingDay = body?.IsNonWorkingDay ?? directive.IsNonWorkingDay ?? source.IsNonWorkingDay,
-            FirstYear = body?.FirstYear ?? directive.FirstYear ?? source.FirstYear,
-            LastYear = body?.LastYear ?? directive.LastYear ?? source.LastYear,
-            OccurrenceYears = body?.OccurrenceYears ?? directive.OccurrenceYears ?? source.OccurrenceYears,
+            TerritoryCode = body?.TerritoryCode ?? directive.TerritoryCode ?? (Cleared("territory") ? null : source.TerritoryCode),
+            IsNonWorkingDay = body?.IsNonWorkingDay ?? directive.IsNonWorkingDay ?? (Cleared("nonWorking") ? null : source.IsNonWorkingDay),
+            FirstYear = body?.FirstYear ?? directive.FirstYear ?? (Cleared("firstYear") ? null : source.FirstYear),
+            LastYear = body?.LastYear ?? directive.LastYear ?? (Cleared("lastYear") ? null : source.LastYear),
+            OccurrenceYears = body?.OccurrenceYears ?? directive.OccurrenceYears ?? (Cleared("occurrenceYears") ? null : source.OccurrenceYears),
             DurationDays = body?.DurationDays ?? directive.DurationDays ?? source.DurationDays,
             Priority = body?.Priority ?? directive.Priority ?? source.Priority,
-            Comment = body?.Comment ?? directive.Comment ?? source.Comment,
-            CalendarType = body?.CalendarType ?? source.CalendarType,
+            Comment = body?.Comment ?? directive.Comment ?? (Cleared("comment") ? null : source.Comment),
+            CalendarType = body?.CalendarType ?? (Cleared("calendarType") ? null : source.CalendarType),
             Tags = MergeTags(source.Tags, body?.Tags ?? [], directive.ClearTags),
             Adjustments = MergeAdjustments(source.Adjustments, body?.Adjustments ?? [], directive.ClearAdjustments),
         };

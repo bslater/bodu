@@ -72,6 +72,9 @@
     <xs:attribute name="clearTags" type="xs:boolean" use="optional" default="false" />
     <xs:attribute name="clearAdjustments" type="xs:boolean" use="optional" default="false" />
     <xs:attribute name="clearInherited" type="xs:boolean" use="optional" default="false" />
+    <!-- clear: whitespace/comma-separated list of inherited nullable fields to reset to null
+         (territory, calendarType, firstYear, lastYear, occurrenceYears, nonWorking, comment). -->
+    <xs:attribute name="clear" type="xs:string" use="optional" />
     <xs:attribute name="category" type="nd:notableDateCategory" use="optional" />
     <xs:attribute name="territory" type="nd:territory" use="optional" />
     <xs:attribute name="nonWorking" type="xs:boolean" use="optional" />

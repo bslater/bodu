@@ -178,7 +178,10 @@ public static class NotableDateRuleJsonParser
             ClearTags: dto.ClearTags ?? false,
             ClearAdjustments: dto.ClearAdjustments ?? false,
             ClearInherited: dto.ClearInherited ?? false,
-            OverrideBody: overrideBody);
+            OverrideBody: overrideBody,
+            ClearFields: dto.Clear is null || dto.Clear.Length == 0
+                ? null
+                : new HashSet<string>(dto.Clear, StringComparer.OrdinalIgnoreCase));
     }
 
     /// <summary>
@@ -908,6 +911,7 @@ public static class NotableDateRuleJsonParser
         [JsonPropertyName("clearTags")] public bool? ClearTags { get; init; }
         [JsonPropertyName("clearAdjustments")] public bool? ClearAdjustments { get; init; }
         [JsonPropertyName("clearInherited")] public bool? ClearInherited { get; init; }
+        [JsonPropertyName("clear")] public string[]? Clear { get; init; }
         [JsonPropertyName("rule")] public OverrideRuleDto? Rule { get; init; }
     }
 

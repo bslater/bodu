@@ -263,6 +263,12 @@
           "type": "boolean",
           "default": false
         },
+        "clear": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
         "category": {
           "$ref": "#/$defs/notableDateCategory"
         },
