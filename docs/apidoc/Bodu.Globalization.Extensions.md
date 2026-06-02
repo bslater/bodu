@@ -10,7 +10,7 @@ uid: Bodu.Globalization.Extensions
 
 ## Key types
 
-The namespace provides helpers for working with `CultureInfo`, `RegionInfo`, `CalendarWeekendDefinition`, and `WorkingDaysOfWeek` in scenarios where the BCL surface is too narrow for calendar-style queries.
+The namespace provides helpers for working with `CultureInfo`, `RegionInfo`, `WeekPattern`, and `WorkingDaysOfWeek` in scenarios where the BCL surface is too narrow for calendar-style queries.
 
 For the broader date / time / culture surface, see <xref:Bodu.Extensions.DateTimeExtensions>, <xref:Bodu.Extensions.DateOnlyExtensions>, and <xref:Bodu.Globalization.Extensions.DateTimeFormatInfoExtensions>.
 

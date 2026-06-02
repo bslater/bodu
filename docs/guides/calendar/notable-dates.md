@@ -34,7 +34,7 @@ using Bodu.Globalization.Calendar.Data.AsiaPacific;
 
 var service = new NotableDateService(
     ruleProviders:     new[] { AsiaPacificCalendarData.CreateAustraliaProvider() },
-    weekendDefinition: CalendarWeekendDefinition.SaturdaySunday);
+    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 
 // All notable dates for Australia in 2026.
 IReadOnlyList<NotableDate> auDates = service.GetNotableDates(2026, territoryCode: "AU");
@@ -61,7 +61,7 @@ using Bodu.Globalization.Calendar.Data.Europe;
 
 var service = new NotableDateService(
     ruleProviders:     new[] { EuropeCalendarData.CreateUnitedKingdomProvider() },
-    weekendDefinition: CalendarWeekendDefinition.SaturdaySunday);
+    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 
 // Only public holidays for Great Britain.
 NotableDateFilter publicFilter = NotableDateFilter.ForCategory(NotableDateCategory.Holiday);
@@ -89,7 +89,7 @@ using Bodu.Globalization.Calendar.Data.AsiaPacific;
 
 var service = new NotableDateService(
     ruleProviders:     new[] { AsiaPacificCalendarData.CreateAustraliaProvider() },
-    weekendDefinition: CalendarWeekendDefinition.SaturdaySunday);
+    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 
 DateTime from = new DateTime(2026, 3, 1);
 DateTime to   = new DateTime(2026, 4, 30);
@@ -108,7 +108,7 @@ using Bodu.Globalization.Calendar.Data.AsiaPacific;
 
 var service = new NotableDateService(
     ruleProviders:     new[] { AsiaPacificCalendarData.CreateAustraliaProvider() },
-    weekendDefinition: CalendarWeekendDefinition.SaturdaySunday);
+    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 
 DateTime anzacDay = new DateTime(2026, 4, 25);
 IReadOnlyList<NotableDate> onDay = service.GetNotableDates(anzacDay, "AU");
@@ -125,7 +125,7 @@ using Bodu.Globalization.Calendar.Data.AsiaPacific;
 
 var service = new NotableDateService(
     ruleProviders:     new[] { AsiaPacificCalendarData.CreateAustraliaProvider() },
-    weekendDefinition: CalendarWeekendDefinition.SaturdaySunday);
+    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 
 DateTime christmas = new DateTime(2026, 12, 25);
 
@@ -175,7 +175,7 @@ var provider = new XmlResourceNotableDateRuleProvider(
 
 var service = new NotableDateService(
     ruleProviders:     new[] { provider },
-    weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
+    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
     options: new NotableDateServiceOptions
     {
         OverrideProviders = new[] { new CompanyCalendarOverrides() },

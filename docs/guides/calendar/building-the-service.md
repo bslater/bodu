@@ -16,7 +16,7 @@ wire up exactly the capabilities your application requires.
 | Parameter | Type | Default | Purpose |
 |---|---|---|---|
 | `ruleProviders` | `IEnumerable<INotableDateRuleProvider>?` | `null` | Ordered list of rule providers. Rules are merged in registration order. When `null` or empty, the service loads the embedded minimal rule set (New Year's Day only). |
-| `weekendDefinition` | `CalendarWeekendDefinition` | `SaturdaySunday` | Defines which days of the week constitute the weekend. Affects `IsWeekend`, `IsNonWorkingDay`, `IfWeekend` trigger evaluation, and all working-day extension methods. |
+| `workingDaysOfWeek` | `WorkingDaysOfWeek` | `MondayToFriday` | Defines the working week — and therefore which days are weekends. Affects `IsWeekend`, `IsNonWorkingDay`, `IfWeekend` trigger evaluation, and all working-day extension methods. An overload accepts a `WeekPattern` instead for irregular weeks. |
 | `overrideProviders` | `IEnumerable<INotableDateRuleOverrideProvider>?` | `null` | Override providers that add or remove rules on top of the base rule set without modifying the source XML. Evaluated after all base providers. |
 | `algorithmRegistry` | `INotableDateAlgorithmRegistry?` | `null` | Registry of `INotableDateAlgorithm` instances looked up by string key. Required when any rule uses `Strategy = DateResolutionStrategy.Algorithm`. |
 | `adjustmentHandlers` | `IAdjustmentHandlerRegistry?` | `null` | Registry of `IAdjustmentHandler` instances. Required when any adjustment uses `Trigger = Custom` or `Action = Custom`. |
@@ -48,7 +48,7 @@ var provider = new XmlResourceNotableDateRuleProvider(
 
 var service = new NotableDateService(
     ruleProviders:     new[] { provider },
-    weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
+    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
     options: new NotableDateServiceOptions { AlgorithmRegistry = registry });
 ```
 
@@ -65,7 +65,7 @@ resolution and authoring safety:
 ```csharp
 var service = new NotableDateService(
     ruleProviders:     new[] { provider },
-    weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
+    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
     options: new NotableDateServiceOptions
     {
         AlgorithmRegistry = registry,
@@ -155,7 +155,7 @@ NotableDateRule mothersDay = new NotableDateRule
 
 var service = new NotableDateService(
     ruleProviders:     new[] { new InMemoryRuleProvider(mothersDay) },
-    weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
+    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
     options: new NotableDateServiceOptions { AlgorithmRegistry = registry });
 ```
 
@@ -178,7 +178,7 @@ AdjustmentHandlerRegistry handlers = new AdjustmentHandlerRegistry()
 
 var service = new NotableDateService(
     ruleProviders:      new[] { provider },
-    weekendDefinition:  CalendarWeekendDefinition.SaturdaySunday,
+    workingDaysOfWeek:  WorkingDaysOfWeek.MondayToFriday,
     options: new NotableDateServiceOptions { AdjustmentHandlers = handlers });
 ```
 
@@ -372,7 +372,7 @@ public sealed class CompanyCalendarOverrides : INotableDateRuleOverrideProvider
 
 var service = new NotableDateService(
     ruleProviders:     new[] { baseProvider },
-    weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
+    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
     options: new NotableDateServiceOptions
     {
         OverrideProviders = new[] { new CompanyCalendarOverrides() },
@@ -487,7 +487,7 @@ var localizer = new ResourceFileNameLocalizer(
 
 var service = new NotableDateService(
     ruleProviders:     new[] { provider },
-    weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
+    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
     options: new NotableDateServiceOptions { NameLocalizer = localizer });
 ```
 
@@ -554,7 +554,7 @@ public sealed class HighestPriorityCollisionResolver : INotableDateCollisionReso
 
 var service = new NotableDateService(
     ruleProviders:     new[] { provider },
-    weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
+    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
     options: new NotableDateServiceOptions { CollisionResolver = new HighestPriorityCollisionResolver() });
 ```
 
@@ -608,7 +608,7 @@ INotableDatePlugin plugin = loader.Load("/path/to/MyCalendarPlugin.dll");
 
 var service = new NotableDateService(
     ruleProviders:     new[] { baseProvider },
-    weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
+    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
     options: new NotableDateServiceOptions { Plugins = new[] { plugin } });
 ```
 
@@ -691,7 +691,7 @@ HighestPriorityCollisionResolver collisionResolver = new HighestPriorityCollisio
 // 7. Assemble the service
 NotableDateService service = new NotableDateService(
     ruleProviders:     new[] { globalRules, apacRules },
-    weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
+    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
     options: new NotableDateServiceOptions
     {
         OverrideProviders  = new[] { overrides },

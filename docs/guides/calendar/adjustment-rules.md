@@ -142,8 +142,10 @@ new ObservanceAdjustment
 ### `IfWeekend`
 
 Fires when the nominal date falls on a weekend day as defined by the service's configured
-`CalendarWeekendDefinition`. For most territories this is Saturday or Sunday, but the
-weekend definition is configurable — Friday/Saturday for some Middle Eastern territories.
+working week (`WorkingDaysOfWeek`, or a `WeekPattern` for irregular weeks). For most
+territories the working week is Monday–Friday so the weekend is Saturday or Sunday, but it
+is configurable — for example `SundayToThursday` makes Friday/Saturday the weekend, as in
+some Middle Eastern territories.
 
 ```csharp
 new ObservanceAdjustment
@@ -349,8 +351,8 @@ new ObservanceAdjustment
 
 ### `MoveToNextWeekday`
 
-Advances the nominal date to the next calendar day that is not a weekend (as defined by
-`CalendarWeekendDefinition`). If the nominal date is already a weekday this action is a no-op —
+Advances the nominal date to the next calendar day that is not a weekend (as defined by the
+configured `WorkingDaysOfWeek`). If the nominal date is already a weekday this action is a no-op —
 trigger conditions should ensure it only fires when the nominal date is on a weekend.
 
 Saturday advances to Monday; Sunday advances to Monday (unless Monday is also a weekend,
@@ -687,7 +689,7 @@ AdjustmentHandlerRegistry handlers = new AdjustmentHandlerRegistry()
 
 var service = new NotableDateService(
     ruleProviders:     new[] { myProvider },
-    weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
+    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
     options: new NotableDateServiceOptions { AdjustmentHandlers = handlers });
 ```
 

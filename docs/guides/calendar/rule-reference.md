@@ -277,7 +277,7 @@ trigger condition fires. Adjustments are attached to a `NotableDateRule` via the
 | Trigger | Required companion fields |
 |---|---|
 | `Always` | *(none)* |
-| `IfWeekend` | *(none — uses configured `CalendarWeekendDefinition`)* |
+| `IfWeekend` | *(none — uses the configured `WorkingDaysOfWeek`)* |
 | `IfWeekday` | *(none)* |
 | `IfDayOfWeek` | `DayOfWeek` |
 | `IfNonWorkingDay` | *(none — uses resolved non-working-day set at time of evaluation)* |

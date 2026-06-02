@@ -149,7 +149,7 @@ var provider = new InMemoryRuleProvider(easterSunday, goodFriday, easterMonday, 
 
 var service = new NotableDateService(
     ruleProviders:     new[] { provider },
-    weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
+    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
     options: new NotableDateServiceOptions { AlgorithmRegistry = registry });
 ```
 
@@ -289,7 +289,7 @@ authoring checklist and worked examples.
 
 | `when` | Fires when… |
 |---|---|
-| `IfWeekend` | The date falls on a weekend (per the configured `CalendarWeekendDefinition`). |
+| `IfWeekend` | The date falls on a weekend (per the configured `WorkingDaysOfWeek`). |
 | `IfWeekday` | The date falls on a weekday. |
 | `IfNonWorkingDay` | The date is already a non-working day (weekend or another notable date). |
 | `IfDayOfWeek` | The date falls on the weekday specified by an additional `dayOfWeek` attribute. |
@@ -387,7 +387,7 @@ var provider = new XmlResourceNotableDateRuleProvider(
 
 var service = new NotableDateService(
     ruleProviders:     new[] { provider },
-    weekendDefinition: CalendarWeekendDefinition.SaturdaySunday);
+    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 ```
 
 The logical path `"MyApp/Calendar/Resources/my-rules.xml"` is mapped to the manifest resource name `MyApp.Calendar.Resources.my-rules.xml`. Ensure the embedded resource path in the `.csproj` produces that manifest name (typically by placing the file under `MyApp/Calendar/Resources/` relative to the project root).
@@ -465,7 +465,7 @@ var provider = new JsonResourceNotableDateRuleProvider(
 
 var service = new NotableDateService(
     ruleProviders:     new[] { provider },
-    weekendDefinition: CalendarWeekendDefinition.SaturdaySunday);
+    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 ```
 
 Embed the JSON file the same way as XML — `<EmbeddedResource Include="…" />` in the `.csproj` — and the logical-to-manifest mapping rules in [Embedding as a resource](#embedding-as-a-resource) apply unchanged. Cross-format `useFrom` directives work too: a JSON rule file can reference an XML resource and vice versa, as long as the resolver finds them.
@@ -516,7 +516,7 @@ var provider = new XmlResourceNotableDateRuleProvider(
 
 var service = new NotableDateService(
     ruleProviders:     new[] { provider },
-    weekendDefinition: CalendarWeekendDefinition.SaturdaySunday);
+    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 ```
 
 ### Cross-assembly cherry-picks
@@ -572,7 +572,7 @@ Register override providers via the `overrideProviders` constructor parameter:
 ```csharp
 var service = new NotableDateService(
     ruleProviders:     new[] { provider },
-    weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
+    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
     options: new NotableDateServiceOptions
     {
         OverrideProviders = new[] { new CompanyCalendarOverrides() },

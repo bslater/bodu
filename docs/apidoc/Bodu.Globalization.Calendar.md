@@ -100,7 +100,7 @@ DateTime goodFriday2026 = easter2026.AddDays(-2);
 INotableDateRuleProvider auRules = AsiaPacificCalendarData.CreateAustraliaProvider();
 INotableDateService service = new NotableDateService(
     ruleProviders:     [ auRules ],
-    weekendDefinition:  CalendarWeekendDefinition.SaturdaySunday);
+    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 
 foreach (NotableDate date in service.GetNotableDates(year: 2026, territoryCode: "AU-NSW"))
     Console.WriteLine($"{date.Date:yyyy-MM-dd}  {date.DisplayName}");

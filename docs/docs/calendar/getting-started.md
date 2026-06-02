@@ -64,7 +64,7 @@ INotableDateRuleProvider auRules = AsiaPacificCalendarData.CreateAustraliaProvid
 
 INotableDateService service = new NotableDateService(
     ruleProviders:    [ auRules ],
-    weekendDefinition: CalendarWeekendDefinition.SaturdaySunday);
+    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 
 IReadOnlyList<NotableDate> nsw2026 =
     service.GetNotableDates(year: 2026, territoryCode: "AU-NSW");
@@ -123,7 +123,7 @@ INotableDateRuleOverrideProvider  overrides = new MyCorporateOverrideProvider();
 
 INotableDateService service = new NotableDateService(
     ruleProviders:     [ auRules ],
-    weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
+    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
     options: new NotableDateServiceOptions { OverrideProviders = [ overrides ] });
 ```
 

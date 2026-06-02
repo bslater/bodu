@@ -139,7 +139,7 @@ A `NotableDate` is the immutable output of one rule for one occurrence in one ye
 
 ## Working day vs. non-working day
 
-A **working day** is any day that is neither a weekend (per the service's `CalendarWeekendDefinition`) nor a resolved notable date with `IsNonWorkingDay = true` for the queried territory.
+A **working day** is any day that is neither a weekend (per the service's configured `WorkingDaysOfWeek`) nor a resolved notable date with `IsNonWorkingDay = true` for the queried territory.
 
 Not every notable date is non-working: Mother's Day, ANZAC commemorations in certain territories, and most cultural observances are notable but not closures. Working-day arithmetic relies entirely on the rule's `IsNonWorkingDay` flag — authors decide which categories of date count as closures.
 
