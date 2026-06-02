@@ -121,11 +121,21 @@ internal sealed class RuleStaticAnalysis
     {
         ThrowHelper.ThrowIfNull(rules);
 
-        Dictionary<string, NotableDateRule> rulesByName = new(StringComparer.OrdinalIgnoreCase);
+        // Group rules by canonical name (multi-map) so an offset chain can bind to the contextually-correct variant
+        // when several rules share a name (for example western and orthodox Easter) rather than collapsing last-wins.
+        Dictionary<string, List<NotableDateRule>> rulesByName = new(StringComparer.OrdinalIgnoreCase);
         foreach (NotableDateRule rule in rules)
         {
-            if (!string.IsNullOrWhiteSpace(rule.Name))
-                rulesByName[rule.Name] = rule;
+            if (string.IsNullOrWhiteSpace(rule.Name))
+                continue;
+
+            if (!rulesByName.TryGetValue(rule.Name, out List<NotableDateRule>? bucket))
+            {
+                bucket = [];
+                rulesByName[rule.Name] = bucket;
+            }
+
+            bucket.Add(rule);
         }
 
         List<RuleStaticProfile> profiles = [];
@@ -170,7 +180,7 @@ internal sealed class RuleStaticAnalysis
     /// <param name="rule">The rule to profile.</param>
     /// <param name="rulesByName">The case-insensitive rule lookup.</param>
     /// <returns>The constructed profile.</returns>
-    private static RuleStaticProfile BuildProfile(NotableDateRule rule, IReadOnlyDictionary<string, NotableDateRule> rulesByName)
+    private static RuleStaticProfile BuildProfile(NotableDateRule rule, IReadOnlyDictionary<string, List<NotableDateRule>> rulesByName)
     {
         (RuleTier baseTier, var rootAnchor, var offsetFromRoot) = ClassifyRule(rule, rulesByName);
 
@@ -197,7 +207,7 @@ internal sealed class RuleStaticAnalysis
     /// </returns>
     private static (RuleTier Tier, string? RootAnchorRuleName, int OffsetFromRoot) ClassifyRule(
         NotableDateRule rule,
-        IReadOnlyDictionary<string, NotableDateRule> rulesByName)
+        IReadOnlyDictionary<string, List<NotableDateRule>> rulesByName)
     {
         switch (rule.Strategy)
         {
@@ -227,9 +237,10 @@ internal sealed class RuleStaticAnalysis
     /// <returns>The classified tier, root anchor rule name, and aggregate offset.</returns>
     private static (RuleTier Tier, string? RootAnchorRuleName, int OffsetFromRoot) ClassifyOffsetChain(
         NotableDateRule rule,
-        IReadOnlyDictionary<string, NotableDateRule> rulesByName)
+        IReadOnlyDictionary<string, List<NotableDateRule>> rulesByName)
     {
-        HashSet<string> visited = new(StringComparer.OrdinalIgnoreCase);
+        // Track visited rules by full identity so two same-name variants in a chain are not mistaken for a cycle.
+        HashSet<NotableDateRuleIdentity> visited = [];
         NotableDateRule current = rule;
         var aggregateOffset = 0;
 
@@ -238,12 +249,16 @@ internal sealed class RuleStaticAnalysis
             if (string.IsNullOrWhiteSpace(current.AnchorRuleName))
                 return (RuleTier.Fixed, null, 0);
 
-            if (!visited.Add(current.Name ?? string.Empty))
+            if (!visited.Add(NotableDateRuleIdentity.From(current)))
                 return (RuleTier.Fixed, null, 0);
 
             aggregateOffset += current.OffsetDays ?? 0;
 
-            if (!rulesByName.TryGetValue(current.AnchorRuleName!, out NotableDateRule? next))
+            if (!rulesByName.TryGetValue(current.AnchorRuleName!, out List<NotableDateRule>? candidates))
+                return (RuleTier.Fixed, null, 0);
+
+            NotableDateRule? next = PickAnchorCandidate(candidates, current);
+            if (next is null)
                 return (RuleTier.Fixed, null, 0);
 
             current = next;
@@ -256,6 +271,29 @@ internal sealed class RuleStaticAnalysis
                 (RuleTier.OffsetFromFixed, current.Name, aggregateOffset),
             _ => (RuleTier.Fixed, null, 0),
         };
+    }
+
+    /// <summary>
+    /// Selects the anchor candidate that best matches the requesting rule's territory and calendar context, preferring
+    /// an exact territory-and-calendar match, then territory, then calendar, and finally the first candidate.
+    /// </summary>
+    /// <param name="candidates">The rules sharing the anchor name.</param>
+    /// <param name="from">The offset rule whose anchor is being resolved, supplying the disambiguation context.</param>
+    /// <returns>The selected anchor rule, or <see langword="null" /> when no candidate exists.</returns>
+    private static NotableDateRule? PickAnchorCandidate(List<NotableDateRule> candidates, NotableDateRule from)
+    {
+        if (candidates.Count <= 1)
+            return candidates.Count == 1 ? candidates[0] : null;
+
+        var territoryKey = NotableDateRuleIdentity.NormalizeTerritory(from.TerritoryCode);
+
+        return candidates.FirstOrDefault(c =>
+                   string.Equals(NotableDateRuleIdentity.NormalizeTerritory(c.TerritoryCode), territoryKey, StringComparison.OrdinalIgnoreCase)
+                   && c.CalendarType == from.CalendarType)
+               ?? candidates.FirstOrDefault(c =>
+                   string.Equals(NotableDateRuleIdentity.NormalizeTerritory(c.TerritoryCode), territoryKey, StringComparison.OrdinalIgnoreCase))
+               ?? candidates.FirstOrDefault(c => c.CalendarType == from.CalendarType)
+               ?? candidates[0];
     }
 
     /// <summary>
