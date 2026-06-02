@@ -197,4 +197,28 @@ public readonly partial struct Money
     /// <returns>The updated <see cref="Money" />.</returns>
     private Money WithRoundedAmount(decimal amount) =>
         new(decimal.Round(amount, MinorUnits, MidpointRounding.ToEven), _isoCode, _explicitScalePlusOne);
+
+    /// <summary>
+    /// Returns a copy of this value with <paramref name="amount" /> rounded to this value's minor-unit precision using
+    /// the supplied <paramref name="rounding" /> rule, preserving the ISO code and any explicit scale.
+    /// </summary>
+    /// <param name="amount">The raw amount to round.</param>
+    /// <param name="rounding">The midpoint-rounding rule applied to <paramref name="amount" />.</param>
+    /// <returns>The updated <see cref="Money" />.</returns>
+    private Money WithRoundedAmount(decimal amount, MidpointRounding rounding) =>
+        new(decimal.Round(amount, MinorUnits, rounding), _isoCode, _explicitScalePlusOne);
+
+    /// <summary>
+    /// Throws when this value is a default-initialised, currency-less <see cref="Money" /> that must not participate in
+    /// a financial operation.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">This value carries no ISO code (a default-initialised <see cref="Money" />).</exception>
+    private void EnsureHasCurrency()
+    {
+        if (_isoCode is null)
+        {
+            throw new InvalidOperationException(
+                FinancialResourceStrings.Op_Invalid_MoneyRequiresCurrency);
+        }
+    }
 }

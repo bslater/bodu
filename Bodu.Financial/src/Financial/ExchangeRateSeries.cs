@@ -189,6 +189,12 @@ public sealed class ExchangeRateSeries
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown if <paramref name="rate" /> is zero or negative.
     /// </exception>
+    /// <remarks>
+    /// Each call materialises a complete new immutable series, so this method is intended for occasional,
+    /// functional-style single updates. For bulk import or repeated mutation, accumulate observations in an
+    /// <see cref="ExchangeRateSeriesBuilder" /> and build the series once rather than calling <see cref="WithRate" />
+    /// in a loop.
+    /// </remarks>
     public ExchangeRateSeries WithRate(DateOnly date, decimal rate)
     {
         FinancialThrowHelper.ThrowIfExchangeRateNotPositive(rate);
