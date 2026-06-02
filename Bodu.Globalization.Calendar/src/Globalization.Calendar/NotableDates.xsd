@@ -137,6 +137,33 @@
             <xs:attribute name="offset" type="xs:int" use="required" />
           </xs:complexType>
         </xs:element>
+        <!-- The target weekday positioned relative to a fixed reference month/day:
+             direction="OnOrAfter" selects the first such weekday on or after the
+             reference (e.g. Nordic Midsummer, the Saturday on or after 20 June);
+             direction="OnOrBefore" selects the first such weekday on or before it
+             (e.g. German Repentance Day, the Wednesday before 23 November = the
+             Wednesday on or before 22 November); direction="Nearest" selects the
+             closest occurrence in either direction (e.g. the Monday nearest a date). -->
+        <xs:element name="WeekdayNearDate">
+          <xs:complexType>
+            <xs:attribute name="dayOfWeek" type="nd:dayOfWeek" use="required" />
+            <xs:attribute name="month" type="nd:monthName" use="required" />
+            <xs:attribute name="day" type="nd:day" use="required" />
+            <xs:attribute name="direction" type="nd:weekdayProximity" use="required" />
+          </xs:complexType>
+        </xs:element>
+        <!-- A target weekday (relativeDayOfWeek) positioned, via direction, relative to
+             an anchor that is the weekOrdinal-th dayOfWeek of the month — for example
+             "the Tuesday on or after the first Monday in November" (US Election Day). -->
+        <xs:element name="RelativeWeekdayInMonth">
+          <xs:complexType>
+            <xs:attribute name="dayOfWeek" type="nd:dayOfWeek" use="required" />
+            <xs:attribute name="month" type="nd:monthName" use="required" />
+            <xs:attribute name="weekOrdinal" type="nd:weekOrdinal" use="required" />
+            <xs:attribute name="relativeDayOfWeek" type="nd:dayOfWeek" use="required" />
+            <xs:attribute name="direction" type="nd:weekdayProximity" use="required" />
+          </xs:complexType>
+        </xs:element>
         <xs:element name="Algorithm">
           <xs:complexType>
             <xs:attribute name="key" type="xs:string" use="optional" />
@@ -202,6 +229,33 @@
           <xs:complexType>
             <xs:attribute name="name" type="xs:string" use="required" />
             <xs:attribute name="offset" type="xs:int" use="required" />
+          </xs:complexType>
+        </xs:element>
+        <!-- The target weekday positioned relative to a fixed reference month/day:
+             direction="OnOrAfter" selects the first such weekday on or after the
+             reference (e.g. Nordic Midsummer, the Saturday on or after 20 June);
+             direction="OnOrBefore" selects the first such weekday on or before it
+             (e.g. German Repentance Day, the Wednesday before 23 November = the
+             Wednesday on or before 22 November); direction="Nearest" selects the
+             closest occurrence in either direction (e.g. the Monday nearest a date). -->
+        <xs:element name="WeekdayNearDate">
+          <xs:complexType>
+            <xs:attribute name="dayOfWeek" type="nd:dayOfWeek" use="required" />
+            <xs:attribute name="month" type="nd:monthName" use="required" />
+            <xs:attribute name="day" type="nd:day" use="required" />
+            <xs:attribute name="direction" type="nd:weekdayProximity" use="required" />
+          </xs:complexType>
+        </xs:element>
+        <!-- A target weekday (relativeDayOfWeek) positioned, via direction, relative to
+             an anchor that is the weekOrdinal-th dayOfWeek of the month — for example
+             "the Tuesday on or after the first Monday in November" (US Election Day). -->
+        <xs:element name="RelativeWeekdayInMonth">
+          <xs:complexType>
+            <xs:attribute name="dayOfWeek" type="nd:dayOfWeek" use="required" />
+            <xs:attribute name="month" type="nd:monthName" use="required" />
+            <xs:attribute name="weekOrdinal" type="nd:weekOrdinal" use="required" />
+            <xs:attribute name="relativeDayOfWeek" type="nd:dayOfWeek" use="required" />
+            <xs:attribute name="direction" type="nd:weekdayProximity" use="required" />
           </xs:complexType>
         </xs:element>
         <xs:element name="Algorithm">
@@ -414,6 +468,16 @@
       <xs:enumeration value="Fourth" />
       <xs:enumeration value="Fifth" />
       <xs:enumeration value="Last" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- weekdayProximity: used by WeekdayNearDate rules to position the target
+       weekday relative to the reference month/day. -->
+  <xs:simpleType name="weekdayProximity">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="OnOrAfter" />
+      <xs:enumeration value="OnOrBefore" />
+      <xs:enumeration value="Nearest" />
     </xs:restriction>
   </xs:simpleType>
 </xs:schema>

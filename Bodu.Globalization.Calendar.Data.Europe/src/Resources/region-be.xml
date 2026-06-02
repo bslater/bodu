@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Belgium (BE) notable-date resource using the Western / Gregorian calendar.
+
+  National public holidays (jours fériés légaux / wettelijke feestdagen).
+  The three regions and communities add a small number of further days; only
+  the national set is modelled here.
+
+  Common European observances are inherited from europe-common.xml and
+  localized with territory="BE"; Belgium-specific holidays are declared below.
+-->
+<NotableDates xmlns="urn:bodu:globalization:calendar"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <UseFrom resource="./europe-common.xml">
+    <Use name="New Year's Day" territory="BE" />
+    <Use name="Easter Sunday" territory="BE" />
+    <Use name="Easter Monday" territory="BE" />
+    <Use name="International Workers' Day" as="Labour Day" territory="BE" />
+    <Use name="Ascension Day" territory="BE" />
+    <Use name="Whit Monday" territory="BE" />
+    <Use name="Assumption of Mary" territory="BE" />
+    <Use name="All Saints' Day" territory="BE" />
+    <Use name="Christmas Day" territory="BE" />
+  </UseFrom>
+
+  <!--
+    National Belgian holidays.
+  -->
+
+  <NotableDate name="Belgian National Day">
+    <Rule name="fixed-jul-21-be" category="Holiday" territory="BE" nonWorking="true" firstYear="1831"
+          comment="Fête nationale belge / Belgische nationale feestdag. Marks the inauguration of Leopold I as the first King of the Belgians on 21 July 1831.">
+      <Fixed month="July" day="21" />
+      <Tag>National</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Armistice Day">
+    <Rule name="fixed-nov-11-be" category="Holiday" territory="BE" nonWorking="true" firstYear="1918"
+          comment="Commemorates the armistice that ended the First World War on 11 November 1918.">
+      <Fixed month="November" day="11" />
+      <Tag>Remembrance</Tag>
+    </Rule>
+  </NotableDate>
+
+</NotableDates>

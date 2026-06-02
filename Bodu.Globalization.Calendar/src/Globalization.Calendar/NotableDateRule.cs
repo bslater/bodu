@@ -22,7 +22,7 @@ namespace Bodu.Globalization.Calendar;
 /// priority used to resolve overlaps with other rules.
 /// </para>
 /// <para>
-/// The <see cref="Strategy" /> property selects one of four resolution strategies:
+/// The <see cref="Strategy" /> property selects one of six resolution strategies:
 /// </para>
 /// <list type="bullet">
 /// <item>
@@ -38,14 +38,28 @@ namespace Bodu.Globalization.Calendar;
 /// </item>
 /// <item>
 /// <description>
-/// <see cref="DateResolutionStrategy.Algorithm" /> — delegates to a registered <see cref="INotableDateAlgorithm" />
-/// identified by <see cref="AlgorithmKey" /> (for example, Easter or Lunar New Year).
+/// <see cref="DateResolutionStrategy.OffsetFromAnchor" /> — resolves by adding <see cref="OffsetDays" /> to the date
+/// produced by another named rule.
 /// </description>
 /// </item>
 /// <item>
 /// <description>
-/// <see cref="DateResolutionStrategy.OffsetFromAnchor" /> — resolves by adding <see cref="OffsetDays" /> to the date
-/// produced by another named rule.
+/// <see cref="DateResolutionStrategy.WeekdayNearDate" /> — resolves to the <see cref="DayOfWeek" /> positioned on or
+/// after, on or before, or nearest to the reference <see cref="Month" /> and <see cref="Day" /> (for example, the
+/// Saturday on or after 20 June).
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// <see cref="DateResolutionStrategy.RelativeWeekdayInMonth" /> — resolves to the <see cref="RelativeDayOfWeek" />
+/// positioned relative to the <em>n</em>th anchor weekday of a month (for example, the Tuesday after the first Monday
+/// in November).
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// <see cref="DateResolutionStrategy.Algorithm" /> — delegates to a registered <see cref="INotableDateAlgorithm" />
+/// identified by <see cref="AlgorithmKey" /> (for example, Easter or Lunar New Year).
 /// </description>
 /// </item>
 /// </list>
@@ -405,6 +419,33 @@ public sealed record NotableDateRule
     /// not require it.
     /// </returns>
     public WeekOfMonthOrdinal? WeekOrdinal { get; init; }
+
+    // --- WeekdayNearDate strategy fields -----------------------------------------------------
+
+    /// <summary>
+    /// Gets the direction used to position the target <see cref="DayOfWeek" /> relative to the reference
+    /// <see cref="Month" /> and <see cref="Day" /> for <see cref="DateResolutionStrategy.WeekdayNearDate" /> (for
+    /// example, the Saturday <em>on or after</em> 20 June).
+    /// </summary>
+    /// <returns>
+    /// One of the defined <see cref="Bodu.Globalization.Calendar.WeekdayProximity" /> values, or <see langword="null" />
+    /// when the strategy does not require it.
+    /// </returns>
+    public WeekdayProximity? WeekdayProximity { get; init; }
+
+    // --- RelativeWeekdayInMonth strategy fields ----------------------------------------------
+
+    /// <summary>
+    /// Gets the target weekday positioned relative to the anchor ordinal weekday for
+    /// <see cref="DateResolutionStrategy.RelativeWeekdayInMonth" /> (for example, the <em>Tuesday</em> in "the Tuesday
+    /// after the first Monday in November"). The anchor weekday is supplied by <see cref="DayOfWeek" /> together with
+    /// <see cref="WeekOrdinal" /> and <see cref="Month" />; the direction is supplied by
+    /// <see cref="WeekdayProximity" />.
+    /// </summary>
+    /// <returns>
+    /// A <see cref="System.DayOfWeek" /> value, or <see langword="null" /> when the strategy does not require it.
+    /// </returns>
+    public DayOfWeek? RelativeDayOfWeek { get; init; }
 
     // --- OffsetFromAnchor strategy fields ----------------------------------------------------
 

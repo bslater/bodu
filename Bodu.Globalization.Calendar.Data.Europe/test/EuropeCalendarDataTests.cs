@@ -14,15 +14,15 @@ namespace Bodu.Globalization.Calendar.Data;
 public sealed class EuropeCalendarDataTests
 {
     /// <summary>
-    /// Verifies that <see cref="EuropeCalendarData.CreateProviders" /> yields a provider for each of the eight supported
-    /// European countries.
+    /// Verifies that <see cref="EuropeCalendarData.CreateProviders" /> yields a provider for each of the twenty-eight
+    /// supported European countries (the United Kingdom and all twenty-seven European Union member states).
     /// </summary>
     [TestMethod]
     public void CreateProviders_ShouldYieldOneProviderPerSupportedCountry()
     {
         var providers = EuropeCalendarData.CreateProviders().ToList();
 
-        Assert.AreEqual(8, providers.Count);
+        Assert.AreEqual(28, providers.Count);
     }
 
     /// <summary>

@@ -12,9 +12,9 @@
   legislation and are listed by their state codes.
 
   Note on Buß- und Bettag (Repentance Day, Saxony only): This holiday falls on the
-  Wednesday before 23 November and cannot be expressed precisely using the available
-  resolution strategies. To resolve it, register a custom INotableDateAlgorithm
-  under the key "buss-und-bettag".
+  Wednesday before 23 November. It is expressed declaratively with the
+  WeekdayNearDate strategy (the Wednesday on or before 22 November) and needs no
+  custom algorithm.
 
   Country-specific rules explicitly import only the inherited global and Christian
   dates that Germany observes, and override naming, territory, nonWorking, adjustment,
@@ -24,38 +24,35 @@
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
   <!--
-    Imported global observances.
+    Common European observances, inherited from europe-common.xml. The state-
+    only Christian holidays (Epiphany, Corpus Christi, Assumption, All Saints')
+    are intentionally NOT inherited here; they are declared per-state below.
+  -->
+
+  <UseFrom resource="./europe-common.xml">
+    <Use name="New Year's Day" territory="DE" />
+    <Use name="Valentine's Day" territory="DE" />
+    <Use name="International Workers' Day" territory="DE" />
+    <Use name="Good Friday" territory="DE" />
+    <Use name="Easter Sunday" territory="DE" />
+    <Use name="Easter Monday" territory="DE" />
+    <Use name="Ascension Day" territory="DE" />
+    <Use name="Whit Monday" territory="DE" />
+    <Use name="Christmas Eve" territory="DE" />
+    <Use name="Christmas Day" territory="DE" />
+    <Use name="Boxing Day" as="Second Day of Christmas" territory="DE" />
+    <Use name="Mother's Day" territory="DE" />
+    <Use name="Father's Day" territory="DE" />
+  </UseFrom>
+
+  <!--
+    International Women's Day as a recognition-only observance (it is a state
+    holiday in Berlin and Mecklenburg-Vorpommern, declared separately below).
+    Not part of the pan-European common set, so inherited from the main library.
   -->
 
   <UseFrom resource="./global-all.xml">
-    <Use name="New Year's Day" territory="DE" nonWorking="true" />
-    <Use name="Valentine's Day" territory="DE" />
     <Use name="International Women's Day" territory="DE" />
-    <Use name="International Workers' Day" territory="DE" nonWorking="true" />
-  </UseFrom>
-
-  <!--
-    Imported Christian observances.
-  -->
-
-  <UseFrom resource="./christian-gregorian.xml">
-    <Use name="Good Friday" territory="DE" nonWorking="true" />
-    <Use name="Easter Sunday" territory="DE" />
-    <Use name="Easter Monday" territory="DE" nonWorking="true" />
-    <Use name="Ascension Day" territory="DE" nonWorking="true" />
-    <Use name="Whit Monday" territory="DE" nonWorking="true" />
-    <Use name="Christmas Eve" territory="DE" />
-    <Use name="Christmas Day" territory="DE" nonWorking="true" />
-    <Use name="Boxing Day" as="Second Day of Christmas" territory="DE" nonWorking="true" />
-  </UseFrom>
-
-  <!--
-    Imported family observances.
-  -->
-
-  <UseFrom resource="./global-family.xml">
-    <Use name="Mother's Day" territory="DE" />
-    <Use name="Father's Day" territory="DE" />
   </UseFrom>
 
   <!--
@@ -176,12 +173,12 @@
   -->
 
   <NotableDate name="Repentance Day">
-    <Rule name="algo-buss-und-bettag-de-sn"
+    <Rule name="weekday-wed-onorbefore-nov-22-de-sn"
           category="Holiday"
           territory="DE-SN"
           nonWorking="true"
-          comment="Buß- und Bettag. A public holiday in Saxony only. Falls on the Wednesday before 23 November. This rule requires a custom INotableDateAlgorithm registered under the key 'buss-und-bettag'.">
-      <Algorithm key="buss-und-bettag" />
+          comment="Buß- und Bettag. A public holiday in Saxony only. Falls on the Wednesday before 23 November — that is, the Wednesday on or before 22 November.">
+      <WeekdayNearDate dayOfWeek="Wednesday" month="November" day="22" direction="OnOrBefore" />
       <Tag>Christian</Tag>
       <Tag>StateHoliday</Tag>
     </Rule>

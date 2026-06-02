@@ -40,7 +40,44 @@ determines which other fields are active:
 | `Fixed` | `Month`, `Day` | Dates that always fall on the same month and day every year. |
 | `DayOfWeekInMonth` | `Month`, `DayOfWeek`, `WeekOrdinal` | Dates defined as the *n*th occurrence of a weekday within a month. |
 | `OffsetFromAnchor` | `AnchorRuleName`, `OffsetDays` | Dates expressed as a signed day offset from another rule's resolved date. |
+| `WeekdayNearDate` | `Month`, `Day`, `DayOfWeek`, `WeekdayProximity` | A weekday positioned relative to a fixed reference date — on or after it, on or before it, or nearest to it. |
+| `RelativeWeekdayInMonth` | `Month`, `DayOfWeek`, `WeekOrdinal`, `RelativeDayOfWeek`, `WeekdayProximity` | A weekday positioned relative to the *n*th anchor weekday of a month (e.g. the Tuesday after the first Monday in November). |
 | `Algorithm` | `AlgorithmKey`, `AlgorithmType`, `AlgorithmMonth`, `AlgorithmDay` | Dates that require an external calculation (Easter, lunar calendars, solar terms). |
+
+### Choosing a strategy
+
+Pick the **simplest strategy that matches how the date is defined**, and reach for `Algorithm`
+only when nothing else fits — an unresolved algorithm key produces no occurrence silently, so a
+declarative strategy is always preferable when one applies. Work down this list and take the
+first match:
+
+1. **Same month and day every year** (Gregorian, or another calendar via `CalendarType`) → **`Fixed`**.
+   *Christmas Day (25 December), Bastille Day (14 July).*
+2. **The *n*th or last occurrence of a weekday in a month**, where that weekday *is* the result → **`DayOfWeekInMonth`**.
+   *Third Monday in January (MLK Day), last Monday in May (Memorial Day).*
+3. **A fixed number of days from another date that is itself a rule** → **`OffsetFromAnchor`**, so the date tracks its anchor instead of re-deriving it.
+   *Good Friday (Easter − 2), Black Friday (Thanksgiving + 1), Cyber Monday (Thanksgiving + 4).*
+4. **A weekday on/before/after/nearest a *fixed calendar date*** → **`WeekdayNearDate`**.
+   *The Saturday on or after 20 June (Nordic Midsummer), the Wednesday before 23 November (German Repentance Day).*
+5. **A *different* weekday on/before/after/nearest the *n*th weekday of a month**, with no anchor rule to offset from → **`RelativeWeekdayInMonth`**.
+   *The Tuesday after the first Monday in November (US Election Day).*
+6. **Anything astronomical, ecclesiastical, or lunisolar** → **`Algorithm`** with a registered `INotableDateAlgorithm`.
+   *Easter Sunday, Vesak, the Japanese equinoxes, Matariki.*
+
+**Disambiguating the weekday strategies** — the *anchor* is the deciding factor:
+
+| Question | Strategy |
+|---|---|
+| Is the ordinal weekday itself the answer? (e.g. *the* third Monday) | `DayOfWeekInMonth` |
+| Is the anchor a fixed month + day? (e.g. on/after 20 June) | `WeekdayNearDate` |
+| Is the anchor an ordinal weekday, with a *different* target weekday? (e.g. the Tuesday after the first Monday) | `RelativeWeekdayInMonth` |
+| Is the anchor already modelled as its own rule? (e.g. the Monday after Thanksgiving) | `OffsetFromAnchor` (preferred over the two above) |
+
+> [!NOTE]
+> "The next weekday after a known weekday" is always a *fixed* offset, so `RelativeWeekdayInMonth`
+> and `OffsetFromAnchor` can describe the same date. Use `OffsetFromAnchor` whenever the anchor
+> exists as a rule (it tracks that rule); use `RelativeWeekdayInMonth` only when the ordinal-weekday
+> anchor is *not* itself modelled (US Election Day has no "first Monday of November" rule to offset from).
 
 ### Fixed strategy fields
 
@@ -66,6 +103,49 @@ determines which other fields are active:
 
 The resolver detects and rejects circular chains — a rule may not directly or transitively
 anchor to itself.
+
+### WeekdayNearDate strategy fields
+
+| Field | Type | Default | Description |
+|---|---|---|---|
+| `Month` | `int` | `0` | Reference month (1–12). |
+| `Day` | `int` | `0` | Reference day of month (1–31). |
+| `DayOfWeek` | `DayOfWeek?` | `null` | The target weekday the rule resolves to. |
+| `WeekdayProximity` | `WeekdayProximity?` | `null` | How the target weekday is positioned relative to the reference: `OnOrAfter`, `OnOrBefore`, or `Nearest`. |
+
+Because a weekday recurs every seven days, each direction selects a single, unambiguous
+occurrence within a seven-day window anchored at the reference date:
+
+- **`OnOrAfter`** — the reference date itself when it already falls on the target weekday,
+  otherwise the first such weekday in the following six days. Models "the Saturday between
+  20 and 26 June" (Nordic Midsummer Day) as the Saturday *on or after* 20 June.
+- **`OnOrBefore`** — the reference date itself when it already falls on the target weekday,
+  otherwise the most recent such weekday in the preceding six days. Models "the Wednesday
+  before 23 November" (German Repentance Day) as the Wednesday *on or before* 22 November.
+- **`Nearest`** — the closest occurrence in either direction. The forward and backward
+  distances always sum to seven, so they are never equal and the nearest occurrence is
+  unique. Models "the Monday nearest to" a given date.
+
+This strategy resolves entirely from data, so holidays of this shape need no custom
+`INotableDateAlgorithm`. When the reference (year, month, day) is not a valid Gregorian date
+(for example 29 February in a non-leap year) the rule resolves to no occurrence for that year.
+
+### RelativeWeekdayInMonth strategy fields
+
+| Field | Type | Default | Description |
+|---|---|---|---|
+| `Month` | `int` | `0` | The anchor month (1–12). |
+| `DayOfWeek` | `DayOfWeek?` | `null` | The anchor weekday — combined with `WeekOrdinal` and `Month` it identifies the reference occurrence (exactly as in `DayOfWeekInMonth`). |
+| `WeekOrdinal` | `WeekOfMonthOrdinal?` | `null` | Which occurrence of the anchor weekday: `First`, `Second`, `Third`, `Fourth`, `Fifth`, or `Last`. |
+| `RelativeDayOfWeek` | `DayOfWeek?` | `null` | The target weekday the rule resolves to. |
+| `WeekdayProximity` | `WeekdayProximity?` | `null` | How the target weekday is positioned relative to the anchor: `OnOrAfter`, `OnOrBefore`, or `Nearest`. |
+
+The strategy first computes the anchor — the `WeekOrdinal`-th `DayOfWeek` of `Month` — then
+positions `RelativeDayOfWeek` relative to it using the same window semantics as
+`WeekdayNearDate`. For example, "the Tuesday after the first Monday in November" (United States
+Election Day) is the anchor *first Monday in November* with `RelativeDayOfWeek = Tuesday` and
+`WeekdayProximity = OnOrAfter`. When the anchor occurrence does not exist (a `Fifth` in a month
+with only four) the rule resolves to no occurrence for that year.
 
 ### Algorithm strategy fields
 
@@ -456,6 +536,90 @@ NotableDateRule easterMonday = new NotableDateRule
         nonWorking="true">
     <OffsetFromAnchor name="Easter Sunday" offset="1" />
     <Tag>Christian</Tag>
+  </Rule>
+</NotableDate>
+```
+
+### Weekday near a reference date
+
+```csharp
+using System.Collections.Immutable;
+using Bodu.Globalization.Calendar;
+
+// Midsummer Day (Sweden, Finland) — the Saturday between 20 and 26 June,
+// i.e. the Saturday on or after 20 June.
+NotableDateRule midsummerDay = new NotableDateRule
+{
+    Name             = "Midsummer Day",
+    Strategy         = DateResolutionStrategy.WeekdayNearDate,
+    Category         = NotableDateCategory.Holiday,
+    Month            = 6,
+    Day              = 20,
+    DayOfWeek        = DayOfWeek.Saturday,
+    WeekdayProximity = WeekdayProximity.OnOrAfter,
+    IsNonWorkingDay  = true,
+};
+
+// Buß- und Bettag (Germany, Saxony) — the Wednesday before 23 November,
+// i.e. the Wednesday on or before 22 November.
+NotableDateRule repentanceDay = new NotableDateRule
+{
+    Name             = "Repentance Day",
+    Strategy         = DateResolutionStrategy.WeekdayNearDate,
+    Category         = NotableDateCategory.Holiday,
+    Month            = 11,
+    Day              = 22,
+    DayOfWeek        = DayOfWeek.Wednesday,
+    WeekdayProximity = WeekdayProximity.OnOrBefore,
+    TerritoryCode    = "DE-SN",
+    IsNonWorkingDay  = true,
+};
+```
+
+```xml
+<NotableDate name="Midsummer Day">
+  <Rule name="Midsummer Day"
+        category="Holiday"
+        nonWorking="true">
+    <WeekdayNearDate dayOfWeek="Saturday" month="June" day="20" direction="OnOrAfter" />
+  </Rule>
+</NotableDate>
+
+<NotableDate name="Repentance Day">
+  <Rule name="Repentance Day"
+        category="Holiday"
+        territory="DE-SN"
+        nonWorking="true">
+    <WeekdayNearDate dayOfWeek="Wednesday" month="November" day="22" direction="OnOrBefore" />
+  </Rule>
+</NotableDate>
+```
+
+### Weekday relative to an ordinal weekday in a month
+
+```csharp
+using Bodu.Globalization.Calendar;
+
+// US Election Day — the Tuesday after the first Monday in November.
+NotableDateRule electionDay = new NotableDateRule
+{
+    Name              = "Election Day",
+    Strategy          = DateResolutionStrategy.RelativeWeekdayInMonth,
+    Category          = NotableDateCategory.Civic,
+    Month             = 11,
+    DayOfWeek         = DayOfWeek.Monday,     // anchor: the first Monday...
+    WeekOrdinal       = WeekOfMonthOrdinal.First,
+    RelativeDayOfWeek = DayOfWeek.Tuesday,    // ...then the Tuesday on or after it
+    WeekdayProximity  = WeekdayProximity.OnOrAfter,
+    TerritoryCode     = "US",
+};
+```
+
+```xml
+<NotableDate name="Election Day">
+  <Rule name="Election Day" category="Civic" territory="US">
+    <RelativeWeekdayInMonth month="November" weekOrdinal="First" dayOfWeek="Monday"
+                            relativeDayOfWeek="Tuesday" direction="OnOrAfter" />
   </Rule>
 </NotableDate>
 ```

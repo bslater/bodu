@@ -8,10 +8,9 @@
   CA-NS, CA-NT, CA-NU, CA-ON, CA-PE, CA-QC, CA-SK, CA-YT).
 
   Note on Victoria Day: Victoria Day falls on the Monday immediately preceding
-  25 May (Canada Holidays Act, RSC 1985 c H-5.1). This date cannot be expressed
-  precisely using the available DayOfWeekInMonth or OffsetFromAnchor strategies.
-  To resolve Victoria Day, register a custom INotableDateAlgorithm under the key
-  "victoria-day" with the INotableDateAlgorithmRegistry.
+  25 May (Canada Holidays Act, RSC 1985 c H-5.1) — that is, the Monday on or
+  before 24 May. It is expressed declaratively with the WeekdayNearDate
+  strategy and needs no custom algorithm.
 
   Country-specific rules explicitly import only the inherited global and Christian
   dates that Canada observes, and override naming, territory, nonWorking, adjustment,
@@ -66,9 +65,9 @@
   -->
 
   <NotableDate name="Victoria Day">
-    <Rule name="algo-victoria-day-ca" category="Holiday" territory="CA" nonWorking="true"
-          comment="Victoria Day falls on the Monday immediately preceding 25 May (Canada Holidays Act, RSC 1985 c H-5.1). This rule requires a custom INotableDateAlgorithm registered under the key 'victoria-day'.">
-      <Algorithm key="victoria-day" />
+    <Rule name="weekday-mon-onorbefore-may-24-ca" category="Holiday" territory="CA" nonWorking="true"
+          comment="Victoria Day falls on the Monday immediately preceding 25 May (Canada Holidays Act, RSC 1985 c H-5.1) — that is, the Monday on or before 24 May.">
+      <WeekdayNearDate dayOfWeek="Monday" month="May" day="24" direction="OnOrBefore" />
       <Tag>FederalHoliday</Tag>
     </Rule>
   </NotableDate>

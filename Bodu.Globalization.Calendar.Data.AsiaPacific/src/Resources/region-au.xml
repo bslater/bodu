@@ -498,15 +498,14 @@
   </NotableDate>
 
   <NotableDate name="Reconciliation Day">
-    <Rule name="weekday-last-mon-may-au-act"
+    <Rule name="weekday-mon-onorafter-may-27-au-act"
           category="Holiday"
           territory="AU-ACT"
           firstYear="2018"
           nonWorking="true"
-          comment="Introduced in 2018. Statutorily defined as the first Monday on or after 27 May; approximated here as the last Monday of May.">
-      <DayOfWeekInMonth month="May" dayOfWeek="Monday" weekOrdinal="Last" />
+          comment="Introduced in 2018. Statutorily defined as the first Monday on or after 27 May.">
+      <WeekdayNearDate dayOfWeek="Monday" month="May" day="27" direction="OnOrAfter" />
       <Tag>TerritoryHoliday</Tag>
-      <Tag>Approximate</Tag>
     </Rule>
   </NotableDate>
 

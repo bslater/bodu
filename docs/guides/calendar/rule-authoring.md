@@ -207,7 +207,7 @@ Each `<NotableDate>` element groups one or more `<Rule>` variants under a canoni
 
 ### Strategy elements
 
-Each `<Rule>` contains exactly one strategy element:
+Each `<Rule>` contains exactly one strategy element (see [Choosing a strategy](rule-reference.md#choosing-a-strategy) for which to pick):
 
 **`<Fixed>`** — fixed month and day:
 
@@ -243,6 +243,24 @@ authoring checklist and worked examples.
 ```xml
 <!-- Good Friday: 2 days before Easter Sunday -->
 <OffsetFromAnchor name="Easter Sunday" offset="-2" />
+```
+
+**`<WeekdayNearDate>`** — a weekday positioned relative to a fixed reference date; `direction` is `OnOrAfter`, `OnOrBefore`, or `Nearest`:
+
+```xml
+<!-- Midsummer Day: the Saturday on or after 20 June -->
+<WeekdayNearDate dayOfWeek="Saturday" month="June" day="20" direction="OnOrAfter" />
+
+<!-- Repentance Day: the Wednesday on or before 22 November -->
+<WeekdayNearDate dayOfWeek="Wednesday" month="November" day="22" direction="OnOrBefore" />
+```
+
+**`<RelativeWeekdayInMonth>`** — a target weekday (`relativeDayOfWeek`) positioned, via `direction`, relative to an anchor that is the `weekOrdinal`-th `dayOfWeek` of the month:
+
+```xml
+<!-- US Election Day: the Tuesday on or after the first Monday in November -->
+<RelativeWeekdayInMonth month="November" weekOrdinal="First" dayOfWeek="Monday"
+                        relativeDayOfWeek="Tuesday" direction="OnOrAfter" />
 ```
 
 **`<Algorithm>`** — delegated to a registered algorithm; identified by key or assembly-qualified type name:
@@ -375,6 +393,8 @@ The mapping is straightforward:
 | `<Fixed month="…" day="…" />` | `"fixed": { "month": "…", "day": … }` |
 | `<DayOfWeekInMonth month="…" dayOfWeek="…" weekOrdinal="…" />` | `"dayOfWeekInMonth": { "month": "…", "dayOfWeek": "…", "weekOrdinal": "…" }` |
 | `<OffsetFromAnchor name="…" offset="…" />` | `"offsetFromAnchor": { "name": "…", "offset": … }` |
+| `<WeekdayNearDate dayOfWeek="…" month="…" day="…" direction="…" />` | `"weekdayNearDate": { "dayOfWeek": "…", "month": "…", "day": …, "direction": "…" }` |
+| `<RelativeWeekdayInMonth month="…" weekOrdinal="…" dayOfWeek="…" relativeDayOfWeek="…" direction="…" />` | `"relativeWeekdayInMonth": { "month": "…", "weekOrdinal": "…", "dayOfWeek": "…", "relativeDayOfWeek": "…", "direction": "…" }` |
 | `<Algorithm key="…" />` | `"algorithm": { "key": "…" }` |
 | `<Tag>…</Tag>` | `"tags": [ "…" ]` |
 | `<Adjustment key="…" when="…" action="…" />` | object inside `"adjustments"` |

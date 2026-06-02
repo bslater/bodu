@@ -23,43 +23,38 @@
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
   <!--
-    Imported global observances.
+    Common European observances, inherited from europe-common.xml. Christmas
+    Day re-adds the United Kingdom's substitute-day behavior (when 25 December
+    is a non-working day, the bank holiday moves to the next non-working day).
+    Boxing Day is declared locally below because it carries the same bank-holiday
+    substitution. Father's Day uses the inherited third-Sunday-in-June form;
+    Mothering Sunday is declared separately below (fourth Sunday of Lent).
   -->
 
-  <UseFrom resource="./global-all.xml">
+  <UseFrom resource="./europe-common.xml">
     <Use name="Valentine's Day" territory="GB" />
-    <Use name="International Women's Day" territory="GB" />
-    <Use name="April Fool's Day" territory="GB" />
-    <Use name="Halloween" territory="GB" />
-    <Use name="Remembrance Day" territory="GB" />
-  </UseFrom>
-
-  <!--
-    Imported Christian observances.
-  -->
-
-  <UseFrom resource="./christian-gregorian.xml">
-    <Use name="Good Friday" territory="GB" nonWorking="true" />
+    <Use name="Good Friday" territory="GB" />
     <Use name="Easter Sunday" territory="GB" />
-    <Use name="Easter Monday" territory="GB" nonWorking="true" />
+    <Use name="Easter Monday" territory="GB" />
     <Use name="Christmas Eve" territory="GB" />
-    <Use name="Christmas Day" territory="GB" nonWorking="true">
+    <Use name="Christmas Day" territory="GB">
       <Rule name="fixed-dec-25-nonworking-roll-gb" category="Holiday" nonWorking="true">
         <Adjustment key="weekend-roll" when="IfNonWorkingDay" action="MoveToNextNonWorkingDay" />
       </Rule>
     </Use>
+    <Use name="Father's Day" territory="GB" />
   </UseFrom>
 
   <!--
-    Imported family observances.
-
-    Father's Day uses the global third-Sunday-in-June form.
-    Mothering Sunday is defined separately below because it falls on a
-    different date (fourth Sunday of Lent) and has a distinct name.
+    Observances not part of the pan-European common set, inherited from the
+    main library globals.
   -->
 
-  <UseFrom resource="./global-family.xml">
-    <Use name="Father's Day" territory="GB" />
+  <UseFrom resource="./global-all.xml">
+    <Use name="International Women's Day" territory="GB" />
+    <Use name="April Fool's Day" territory="GB" />
+    <Use name="Halloween" territory="GB" />
+    <Use name="Remembrance Day" territory="GB" />
   </UseFrom>
 
   <!--
