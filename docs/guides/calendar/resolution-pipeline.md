@@ -233,7 +233,7 @@ For each adjustment (in priority order):
 
 ### The NotableDateGenerationContext
 
-The `IfNonWorkingDay` trigger, `MoveToNextNonWorkingDay` action, and `Custom` handlers all
+The `IfNonWorkingDay` trigger, `MoveToNextWorkingDay` action, and `Custom` handlers all
 receive a `NotableDateGenerationContext` that exposes two capabilities:
 
 - **`IsNonWorkingDay(date, territory)`** — returns `true` when `date` is a weekend or when a
@@ -421,7 +421,7 @@ At this point the generation context knows that 27 Dec 2027 (Monday) is now a no
 day (Christmas Day substitute).
 
 Adjustments (AU rule):
-- Priority 1: `IfNonWorkingDay → MoveToNextNonWorkingDay` — evaluates 26 Dec:
+- Priority 1: `IfNonWorkingDay → MoveToNextWorkingDay` — evaluates 26 Dec:
   - Is 26 Dec (Sunday) a non-working day? Yes (weekend) → advance
   - Is 27 Dec (Monday) a non-working day? Yes (Christmas Day substitute) → advance
   - Is 28 Dec (Tuesday) a non-working day? No → **stop**

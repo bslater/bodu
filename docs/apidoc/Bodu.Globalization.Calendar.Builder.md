@@ -38,7 +38,7 @@ INotableDateRuleProvider provider = NotableDateDocumentBuilder.Create()
             .NonWorking(true)
             .AddAdjustment("weekend-roll", adj => adj
                 .When(AdjustmentTrigger.IfWeekend)
-                .Action(AdjustmentAction.MoveToNextMonday)
+                .Action(AdjustmentAction.MoveToNextWorkingDay)
                 .NonWorking(true))))
     .AddDate("Good Friday", date => date
         .AddRule(rule => rule
@@ -52,6 +52,6 @@ INotableDateRuleProvider provider = NotableDateDocumentBuilder.Create()
 
 - **One strategy per rule.** Resolution strategies are mutually exclusive — `Fixed`, `DayOfWeekInMonth`, `OffsetFromAnchor`, and `Algorithm` cannot be combined on a single rule. Use `ClearStrategy()` to reset before applying a different strategy in template-mutate workflows.
 - **Adjustment keys are unique within a rule.** Each `AddAdjustment` call must supply a key that is unique within the rule's adjustment set. The key is consumed during rule inheritance / `<Use>` merging, so it must be present even for programmatic-only rules.
-- **Programmatic-only fields.** `AddHandlerParameter(key, value)` and `MaxAdjustmentReachDays(int)` on `ObservanceAdjustmentBuilder` are not part of the XML / JSON schema; they survive into the in-memory rule set and the range-resolution pipeline but are stripped from `ToXDocument()` / `ToJsonNode()` output.
+- **Adjustment metadata round-trips.** `AddHandlerParameter(key, value)`, `MaxAdjustmentReachDays(int)`, and `AppliesToGlobalRules(bool)` on `ObservanceAdjustmentBuilder` populate the in-memory rule set *and* serialize through `ToXDocument()` / `ToJsonNode()` — handler parameters as repeated `<Param key="…" value="…"/>` children (XML) or a `handlerParameters` object (JSON), the reach envelope as the `maxReachDays` attribute / property, and the global opt-in as the `appliesToGlobalRules` attribute / property. They round-trip cleanly through both parsers.
 - **Deep clone supported.** Every builder exposes `Clone()` for template-factory patterns: build a baseline rule, clone it per territory or per variant, mutate the clone, append to the document.
 - **See also:** the [Notable-date builder guide](~/guides/calendar/notable-date-builder.md), the [`NotableDateRule` reference](~/guides/calendar/rule-reference.md), and the [authoring guide](~/guides/calendar/rule-authoring.md) for the equivalent XML / JSON authoring path.

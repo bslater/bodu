@@ -34,7 +34,7 @@ The **nominal date** is what the resolution strategy computes from the rule befo
 
 The **observed date** is what the adjustment pipeline emits — e.g. *Monday 27 December 2027* when Christmas falls on a Saturday and a weekend-rollover adjustment relocates it.
 
-Most rules have a single occurrence per year and `nominal == observed`. When an adjustment fires, `NotableDate.WasAdjusted` is set to `true` and `NotableDate.AdjustmentReason` records the original nominal date, trigger, and action. Some patterns (UK bank holidays) emit *both* the nominal day and a substitute observed day; others (AU New Year's Day) move the single occurrence. See [Observance adjustment rules](../../guides/calendar/adjustment-rules.md) for the design choice.
+Most rules have a single occurrence per year and `nominal == observed`. When an adjustment fires, `NotableDate.WasAdjusted` is set to `true` and `NotableDate.AdjustmentReason` records the original nominal date, trigger, and action. Whether the service emits the observed day alone, the nominal day alone, or *both* is governed by <xref:Bodu.Globalization.Calendar.ObservedDateMode>: `ObservedOnly` (the default) supersedes the nominal date with its substitute (e.g. AU New Year's Day moving off the weekend), `ActualAndObserved` emits the nominal day *and* its substitute (e.g. UK bank holidays), and `ActualOnly` suppresses the substitute entirely. The mode is applied consistently regardless of query-window width. See [Identity, priority, and observed dates](../../guides/calendar/identity-and-resolution.md) for the design choice and [Observance adjustment rules](../../guides/calendar/adjustment-rules.md) for the trigger/action catalogue.
 
 ## Resolution strategy
 
@@ -61,7 +61,7 @@ See [Date calculation algorithms](../../guides/calendar/algorithms.md) for the a
 
 ## Adjustment
 
-An **adjustment** (<xref:Bodu.Globalization.Calendar.ObservanceAdjustment>) is a post-resolution shift evaluated against the nominal date. It pairs a `Trigger` (when it fires — `IfWeekend`, `IfNonWorkingDay`, `IfDayOfWeek`, …) with an `Action` (what it does — `MoveToNextWeekday`, `MoveToNextNonWorkingDay`, `AddDays`, `ReplaceWithNamedDate`, …) and an optional scope (territory, year range).
+An **adjustment** (<xref:Bodu.Globalization.Calendar.ObservanceAdjustment>) is a post-resolution shift evaluated against the nominal date. It pairs a `Trigger` (when it fires — `IfWeekend`, `IfNonWorkingDay`, `IfDayOfWeek`, …) with an `Action` (what it does — `MoveToNextWeekday`, `MoveToNextWorkingDay`, `AddDays`, `ReplaceWithNamedDate`, …) and an optional scope (territory, year range).
 
 A rule can carry multiple adjustments. The pipeline sorts them by priority, fires the first whose trigger matches, and stops. See [Observance adjustment rules](../../guides/calendar/adjustment-rules.md) for the full trigger / action catalogue and pattern examples.
 

@@ -279,8 +279,8 @@ authoring checklist and worked examples.
   <Rule name="Christmas Day With Substitute" category="Holiday" nonWorking="true">
     <Fixed month="December" day="25" />
     <Tag>Christian</Tag>
-    <!-- Move to the next non-working day when Christmas falls on a Saturday or Sunday. -->
-    <Adjustment key="weekend-roll" when="IfNonWorkingDay" action="MoveToNextNonWorkingDay" />
+    <!-- Move to the next working day when Christmas falls on a Saturday or Sunday. -->
+    <Adjustment key="weekend-roll" when="IfNonWorkingDay" action="MoveToNextWorkingDay" />
   </Rule>
 </NotableDate>
 ```
@@ -299,7 +299,7 @@ authoring checklist and worked examples.
 |---|---|
 | `MoveToNextWeekday` | Advance to the next weekday. |
 | `MoveToPreviousWeekday` | Retreat to the previous weekday. |
-| `MoveToNextNonWorkingDay` | Advance past all non-working days. |
+| `MoveToNextWorkingDay` | Advance past all non-working days to the next working day. *(The legacy token `MoveToNextNonWorkingDay` is still accepted by the parsers as an alias.)* |
 | `AddDays` | Add a fixed `offset` in days (negative moves backwards). |
 
 ### Composing rule sets with UseFrom
@@ -328,7 +328,7 @@ authoring checklist and worked examples.
   <Use name="Holy Saturday" as="Easter Saturday" territory="AU" nonWorking="true">
     <Rule name="Australian Christmas Day With Non-Working-Day Roll"
           category="Holiday" nonWorking="true">
-      <Adjustment key="weekend-roll" when="IfNonWorkingDay" action="MoveToNextNonWorkingDay" />
+      <Adjustment key="weekend-roll" when="IfNonWorkingDay" action="MoveToNextWorkingDay" />
     </Rule>
   </Use>
 </UseFrom>

@@ -297,8 +297,8 @@ trigger condition fires. Adjustments are attached to a `NotableDateRule` via the
 | `AddDays` | `OffsetDays` |
 | `MoveToNextWeekday` | *(none)* |
 | `MoveToPreviousWeekday` | *(none)* |
-| `MoveToNextNonWorkingDay` | *(none)* |
-| `ReplaceWithNamedDate` | `TargetRuleName` |
+| `MoveToNextWorkingDay` | *(none — legacy token `MoveToNextNonWorkingDay` still accepted by the parsers)* |
+| `ReplaceWithNamedDate` | `TargetRuleName`, optionally `TargetRuleVariant` |
 | `Custom` | `HandlerKey`, optionally `HandlerParameters` |
 
 ### Condition companion fields
