@@ -358,6 +358,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Algorithm key '{0}' referenced by rule '{1}' is not registered..
+        /// </summary>
+        internal static string Op_Invalid_AlgorithmKeyNotRegistered {
+            get {
+                return ResourceManager.GetString("Op_Invalid_AlgorithmKeyNotRegistered", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Anchor reference '{0}' on rule '{1}' matches {2} rules and cannot be resolved unambiguously. Qualify the reference with a rule name, territory, or calendar type..
         /// </summary>
         internal static string Op_Invalid_AmbiguousAnchorReference {

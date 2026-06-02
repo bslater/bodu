@@ -411,7 +411,31 @@ public sealed class NotableDateService
         _adjustmentHandlers = opts.AdjustmentHandlers;
 
         (_overrideRemovals, _overrideAdditions, _effectiveRules, _resolver) = BuildOverrideState();
+
+        if (opts.ValidateRules)
+        {
+            var errors = Validate()
+                .Where(d => d.Severity == NotableDateValidationSeverity.Error)
+                .Select(d => d.Message)
+                .ToList();
+
+            if (errors.Count > 0)
+                throw new InvalidOperationException(string.Join(Environment.NewLine, errors));
+        }
     }
+
+    /// <summary>
+    /// Runs the strict-validation pass over the effective rule set and returns the diagnostics it produced.
+    /// </summary>
+    /// <remarks>
+    /// Reports duplicate rule identities, missing or ambiguous offset anchors, missing or ambiguous replacement targets,
+    /// and unregistered algorithm keys. This is the same pass the constructor runs when
+    /// <see cref="NotableDateServiceOptions.ValidateRules" /> is set, but it never throws — callers can inspect the
+    /// diagnostics directly.
+    /// </remarks>
+    /// <returns>The validation diagnostics; empty when the rule set is valid.</returns>
+    public IReadOnlyList<NotableDateValidationDiagnostic> Validate() =>
+        NotableDateRuleValidator.Validate(_effectiveRules, _algorithmRegistry);
 
     /// <summary>
     /// Re-queries every registered <see cref="INotableDateRuleOverrideProvider" /> and returns the freshly snapshotted
