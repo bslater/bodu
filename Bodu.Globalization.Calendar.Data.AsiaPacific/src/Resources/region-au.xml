@@ -41,7 +41,7 @@
     <Use name="Christmas Eve" territory="AU" />
     <Use name="Christmas Day" territory="AU" nonWorking="true">
       <Rule name="fixed-dec-25-nonworking-roll-au" category="Holiday" nonWorking="true">
-        <Adjustment key="weekend-roll" when="IfNonWorkingDay" action="MoveToNextNonWorkingDay" />
+        <Adjustment key="weekend-roll" when="IfNonWorkingDay" action="MoveToNextWorkingDay" />
       </Rule>
     </Use>
   </UseFrom>
@@ -146,7 +146,7 @@
           nonWorking="true">
       <Fixed month="December" day="26" />
       <Tag>NationalHoliday</Tag>
-      <Adjustment key="weekend-roll" when="IfNonWorkingDay" action="MoveToNextNonWorkingDay" />
+      <Adjustment key="weekend-roll" when="IfNonWorkingDay" action="MoveToNextWorkingDay" />
     </Rule>
   </NotableDate>
 

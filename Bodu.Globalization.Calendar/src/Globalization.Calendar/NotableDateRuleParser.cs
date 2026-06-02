@@ -52,7 +52,7 @@ namespace Bodu.Globalization.Calendar;
 ///         <Fixed month="1" day="26" />
 ///         <Adjustment key="weekend-roll"
 ///                     trigger="IfWeekend"
-///                     action="MoveToNextMonday"
+///                     action="MoveToNextWorkingDay"
 ///                     isNonWorkingDay="true" />
 ///       </Rule>
 ///       <Rule name="Easter Sunday" category="Religious">
@@ -211,7 +211,23 @@ public static class NotableDateRuleParser
             ClearTags: ParseOptionalBool(useElement, "clearTags") ?? false,
             ClearAdjustments: ParseOptionalBool(useElement, "clearAdjustments") ?? false,
             ClearInherited: ParseOptionalBool(useElement, "clearInherited") ?? false,
-            OverrideBody: overrideBody);
+            OverrideBody: overrideBody,
+            ClearFields: ParseClearFields(GetOptionalAttribute(useElement, "clear")));
+    }
+
+    /// <summary>
+    /// Parses the <c>clear</c> attribute (a whitespace/comma-separated list of inherited nullable field names) into a
+    /// case-insensitive set, or <see langword="null" /> when absent.
+    /// </summary>
+    /// <param name="raw">The raw <c>clear</c> attribute value, or <see langword="null" />.</param>
+    /// <returns>The set of field names to clear, or <see langword="null" /> when none are specified.</returns>
+    private static IReadOnlySet<string>? ParseClearFields(string? raw)
+    {
+        if (string.IsNullOrWhiteSpace(raw))
+            return null;
+
+        var fields = raw.Split(new[] { ' ', ',', '\t', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        return fields.Length == 0 ? null : new HashSet<string>(fields, StringComparer.OrdinalIgnoreCase);
     }
 
     /// <summary>
@@ -243,12 +259,12 @@ public static class NotableDateRuleParser
                 _ => throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Op_Invalid_UnknownStrategyElementOnOverrideRule, strategyElement.Name.LocalName))
             };
 
-        // The inner <Rule>'s name attribute is treated as a rule-level identifier (RuleName), used by the merger to target a
+        // The inner <Rule>'s ruleName attribute (or the legacy name attribute) is a rule-level identifier (RuleName), used by the merger to target a
         // specific inherited rule when the source notable date contains more than one. It does not rename the inherited rule —
         // canonical naming flows from the source rule or the directive's `as` attribute.
         var body = new NotableDateRuleOverrideBody
         {
-            RuleName = GetOptionalAttribute(ruleElement, "name"),
+            RuleName = GetOptionalAttribute(ruleElement, "ruleName") ?? GetOptionalAttribute(ruleElement, "name"),
             Category = ParseOptionalEnum<NotableDateCategory>(ruleElement, "category"),
             TerritoryCode = GetOptionalAttribute(ruleElement, "territory"),
             IsNonWorkingDay = ParseOptionalBool(ruleElement, "nonWorking"),
@@ -491,7 +507,7 @@ public static class NotableDateRuleParser
         {
             Key = GetRequiredAttribute(element, "key"),
             Trigger = ParseRequiredEnum<AdjustmentTrigger>(element, "when"),
-            Action = ParseRequiredEnum<AdjustmentAction>(element, "action"),
+            Action = ParseAdjustmentActionAttribute(element),
             DayOfWeek = ParseOptionalEnum<DayOfWeek>(element, "dayOfWeek"),
             WeekOrdinal = ParseOptionalEnum<WeekOfMonthOrdinal>(element, "weekOrdinal"),
             IsNonWorkingDay = ParseOptionalBool(element, "nonWorking"),
@@ -503,8 +519,49 @@ public static class NotableDateRuleParser
             ComparisonDate = ParseOptionalMonthDay(element, "comparisonMonth", "comparisonDay"),
             TargetRuleName = GetOptionalAttribute(element, "target"),
             Priority = ParseOptionalInt(element, "priority") ?? 100,
+            MaxAdjustmentReachDays = ParseOptionalInt(element, "maxReachDays"),
+            AppliesToGlobalRules = ParseOptionalBool(element, "appliesToGlobalRules") ?? false,
             HandlerKey = GetOptionalAttribute(element, "handlerKey"),
+            HandlerParameters = ParseHandlerParameters(element),
         };
+
+    /// <summary>
+    /// Reads the optional &lt;Param&gt; child elements of an &lt;Adjustment&gt; into a key/value map forwarded to a
+    /// custom <see cref="IAdjustmentHandler" />.
+    /// </summary>
+    /// <param name="element">The &lt;Adjustment&gt; element.</param>
+    /// <returns>The parameter map, or <see langword="null" /> when no &lt;Param&gt; children are present.</returns>
+    private static IReadOnlyDictionary<string, string>? ParseHandlerParameters(XElement element)
+    {
+        List<XElement> parameters = element.Elements(s_namespace + "Param").ToList();
+        if (parameters.Count == 0)
+            return null;
+
+        var map = new Dictionary<string, string>(StringComparer.Ordinal);
+        foreach (XElement parameter in parameters)
+            map[GetRequiredAttribute(parameter, "key")] = GetRequiredAttribute(parameter, "value");
+
+        return map;
+    }
+
+    /// <summary>
+    /// Parses the <c>action</c> attribute into an <see cref="AdjustmentAction" />, accepting the legacy
+    /// <c>MoveToNextNonWorkingDay</c> token as an alias for the renamed <see cref="AdjustmentAction.MoveToNextWorkingDay" />.
+    /// </summary>
+    /// <param name="element">The &lt;Adjustment&gt; element.</param>
+    /// <returns>The parsed action.</returns>
+    /// <exception cref="InvalidOperationException">The <c>action</c> value is not a recognised token.</exception>
+    private static AdjustmentAction ParseAdjustmentActionAttribute(XElement element)
+    {
+        var raw = GetRequiredAttribute(element, "action");
+
+        if (string.Equals(raw, "MoveToNextNonWorkingDay", StringComparison.OrdinalIgnoreCase))
+            return AdjustmentAction.MoveToNextWorkingDay;
+
+        return Enum.TryParse<AdjustmentAction>(raw, ignoreCase: true, out AdjustmentAction result)
+            ? result
+            : throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Op_Invalid_InvalidAttributeValue, "action", element.Name.LocalName));
+    }
 
     // ----------------------------------------------------------------------------
     // Attribute helpers

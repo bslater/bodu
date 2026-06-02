@@ -108,4 +108,25 @@ public sealed class NotableDateServiceOptions
     /// </para>
     /// </remarks>
     public IEnumerable<Plugins.INotableDatePlugin>? Plugins { get; init; }
+
+    /// <summary>
+    /// Gets the policy controlling whether actual dates, observed (adjusted) dates, or both are emitted when an
+    /// observance adjustment shifts a notable date from its calculated position.
+    /// </summary>
+    /// <value>One of the <see cref="ObservedDateMode" /> values. Defaults to <see cref="ObservedDateMode.ObservedOnly" />.</value>
+    /// <returns>The configured observed-date mode applied as the service-wide default.</returns>
+    public ObservedDateMode ObservedDates { get; init; } = ObservedDateMode.ObservedOnly;
+
+    /// <summary>
+    /// Gets a value indicating whether the effective rule set is strictly validated when the service is constructed.
+    /// </summary>
+    /// <remarks>
+    /// When <see langword="true" />, the constructor runs the strict-validation pass (see
+    /// <see cref="NotableDateService.Validate" />) and throws an <see cref="InvalidOperationException" /> if any
+    /// <see cref="NotableDateValidationSeverity.Error" /> diagnostics are produced, so authoring errors surface eagerly
+    /// rather than at first query.
+    /// </remarks>
+    /// <value><see langword="true" /> to validate eagerly; otherwise <see langword="false" />.</value>
+    /// <returns>The configured strict-validation flag; defaults to <see langword="false" />.</returns>
+    public bool ValidateRules { get; init; }
 }

@@ -168,10 +168,10 @@ NotableDateRule ukChristmas = new NotableDateRule
     <Tag>BankHoliday</Tag>
     <Adjustment key="sat-to-mon" priority="1"
                 when="IfDayOfWeek" dayOfWeek="Saturday"
-                action="AddDays" offset="2" />
+                action="AddDays" days="2" />
     <Adjustment key="sun-to-tue" priority="2"
                 when="IfDayOfWeek" dayOfWeek="Sunday"
-                action="AddDays" offset="2" />
+                action="AddDays" days="2" />
   </Rule>
 </NotableDate>
 ```
@@ -877,14 +877,14 @@ with Christmas Day substitutes:
                 when="IfWeekend" action="MoveToNextWeekday" />
   </Rule>
 
-  <!-- All other Australian states: skip past any non-working day -->
+  <!-- All other Australian states: skip past any non-working day to the next working day -->
   <Rule name="Boxing Day (AU)"
         category="Holiday"
         territory="AU"
         nonWorking="true">
     <Fixed month="December" day="26" />
     <Adjustment key="au-nonworking-roll"
-                when="IfNonWorkingDay" action="MoveToNextNonWorkingDay" />
+                when="IfNonWorkingDay" action="MoveToNextWorkingDay" />
   </Rule>
 
 </NotableDate>

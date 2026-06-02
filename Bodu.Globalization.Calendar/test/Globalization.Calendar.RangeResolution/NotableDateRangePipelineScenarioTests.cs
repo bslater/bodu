@@ -50,7 +50,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
         {
             Key = "christmas-substitute",
             Trigger = AdjustmentTrigger.IfWeekend,
-            Action = AdjustmentAction.MoveToNextNonWorkingDay,
+            Action = AdjustmentAction.MoveToNextWorkingDay,
             IsNonWorkingDay = true,
         }],
     };
@@ -71,7 +71,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
         {
             Key = "boxing-day-substitute",
             Trigger = AdjustmentTrigger.IfWeekend,
-            Action = AdjustmentAction.MoveToNextNonWorkingDay,
+            Action = AdjustmentAction.MoveToNextWorkingDay,
             IsNonWorkingDay = true,
         }],
     };
@@ -98,7 +98,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
         {
             Key = "new-year-substitute",
             Trigger = AdjustmentTrigger.IfWeekend,
-            Action = AdjustmentAction.MoveToNextNonWorkingDay,
+            Action = AdjustmentAction.MoveToNextWorkingDay,
             IsNonWorkingDay = true,
         }],
     };
@@ -352,7 +352,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 
     /// <summary>
     /// Verifies that two adjacent fixed-date holidays whose weekend substitutes would otherwise collide are allocated distinct
-    /// observed days when each rule's <see cref="AdjustmentAction.MoveToNextNonWorkingDay" /> walk skips the other holiday
+    /// observed days when each rule's <see cref="AdjustmentAction.MoveToNextWorkingDay" /> walk skips the other holiday
     /// already in the cache.
     /// </summary>
     [TestMethod]

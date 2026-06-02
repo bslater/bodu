@@ -33,7 +33,7 @@
     <Use name="Christmas Eve" territory="US" />
     <Use name="Christmas Day" territory="US" nonWorking="true">
       <Rule name="fixed-dec-25-nonworking-roll-us" category="Holiday" nonWorking="true">
-        <Adjustment key="weekend-roll" when="IfNonWorkingDay" action="MoveToNextNonWorkingDay" />
+        <Adjustment key="weekend-roll" when="IfNonWorkingDay" action="MoveToNextWorkingDay" />
       </Rule>
     </Use>
   </UseFrom>

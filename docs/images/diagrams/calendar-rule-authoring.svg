@@ -91,7 +91,7 @@
       <rect class="svc" width="288" height="100" rx="5"/>
       <text class="lbl" x="144" y="18">NotableDateService</text>
       <text class="sub" x="144" y="36">ruleProviders: INotableDateRuleProvider[]</text>
-      <text class="sub" x="144" y="51">workingWeek: WeekPattern (or CalendarWeekendDefinition)</text>
+      <text class="sub" x="144" y="51">workingWeek: WeekPattern (or WorkingDaysOfWeek)</text>
       <text class="sub" x="144" y="66">options: NotableDateServiceOptions { OverrideProviders, … }</text>
       <text class="mut" x="144" y="82">AlgorithmRegistry · AdjustmentHandlers · Plugins · …</text>
       <text class="mut" x="144" y="95">per-year cache (ConcurrentDictionary)</text>

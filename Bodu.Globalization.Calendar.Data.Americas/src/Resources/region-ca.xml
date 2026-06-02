@@ -46,7 +46,7 @@
     <Use name="Christmas Eve" territory="CA" />
     <Use name="Christmas Day" territory="CA" nonWorking="true">
       <Rule name="fixed-dec-25-nonworking-roll-ca" category="Holiday" nonWorking="true">
-        <Adjustment key="weekend-roll" when="IfNonWorkingDay" action="MoveToNextNonWorkingDay" />
+        <Adjustment key="weekend-roll" when="IfNonWorkingDay" action="MoveToNextWorkingDay" />
       </Rule>
     </Use>
   </UseFrom>
@@ -113,7 +113,7 @@
           comment="A federal statutory holiday. Also a provincial holiday in Ontario and New Brunswick.">
       <Fixed month="December" day="26" />
       <Tag>FederalHoliday</Tag>
-      <Adjustment key="weekend-roll" when="IfNonWorkingDay" action="MoveToNextNonWorkingDay" />
+      <Adjustment key="weekend-roll" when="IfNonWorkingDay" action="MoveToNextWorkingDay" />
     </Rule>
   </NotableDate>
 

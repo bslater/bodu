@@ -178,7 +178,10 @@ public static class NotableDateRuleJsonParser
             ClearTags: dto.ClearTags ?? false,
             ClearAdjustments: dto.ClearAdjustments ?? false,
             ClearInherited: dto.ClearInherited ?? false,
-            OverrideBody: overrideBody);
+            OverrideBody: overrideBody,
+            ClearFields: dto.Clear is null || dto.Clear.Length == 0
+                ? null
+                : new HashSet<string>(dto.Clear, StringComparer.OrdinalIgnoreCase));
     }
 
     /// <summary>
@@ -189,14 +192,12 @@ public static class NotableDateRuleJsonParser
     /// <returns>The mapped <see cref="NotableDateRuleOverrideBody" />.</returns>
     private static NotableDateRuleOverrideBody MapOverrideBody(OverrideRuleDto dto)
     {
-        var ruleName = RequireString(dto.Name, "name", "rule");
-        NotableDateCategory category = ParseRequiredEnum<NotableDateCategory>(dto.Category, "category", "rule");
         DateResolutionStrategy? strategy = DetectOverrideStrategy(dto);
 
         var body = new NotableDateRuleOverrideBody
         {
-            RuleName = ruleName,
-            Category = category,
+            RuleName = dto.RuleName ?? dto.Name,
+            Category = ParseOptionalEnum<NotableDateCategory>(dto.Category, "category", "rule"),
             TerritoryCode = dto.Territory,
             IsNonWorkingDay = dto.NonWorking,
             FirstYear = dto.FirstYear,
@@ -289,7 +290,7 @@ public static class NotableDateRuleJsonParser
             {
                 Key = dto.Key,
                 Trigger = ParseRequiredEnum<AdjustmentTrigger>(dto.When, "when", "adjustment"),
-                Action = ParseRequiredEnum<AdjustmentAction>(dto.Action, "action", "adjustment"),
+                Action = ParseAdjustmentActionToken(dto.Action, "adjustment"),
                 DayOfWeek = ParseOptionalEnum<DayOfWeek>(dto.DayOfWeek, "dayOfWeek", "adjustment"),
                 WeekOrdinal = ParseOptionalEnum<WeekOfMonthOrdinal>(dto.WeekOrdinal, "weekOrdinal", "adjustment"),
                 IsNonWorkingDay = dto.NonWorking,
@@ -301,9 +302,24 @@ public static class NotableDateRuleJsonParser
                 ComparisonDate = ParseOptionalMonthDay(dto.ComparisonMonth, dto.ComparisonDay),
                 TargetRuleName = dto.Target,
                 Priority = dto.Priority ?? 100,
+                MaxAdjustmentReachDays = dto.MaxReachDays,
+                AppliesToGlobalRules = dto.AppliesToGlobalRules ?? false,
                 HandlerKey = dto.HandlerKey,
+                HandlerParameters = dto.HandlerParameters,
             };
     }
+
+    /// <summary>
+    /// Parses the adjustment <c>action</c> token, accepting the legacy <c>MoveToNextNonWorkingDay</c> value as an alias
+    /// for the renamed <see cref="AdjustmentAction.MoveToNextWorkingDay" />.
+    /// </summary>
+    /// <param name="raw">The raw action token.</param>
+    /// <param name="context">The owning element name, used for diagnostics.</param>
+    /// <returns>The parsed action.</returns>
+    private static AdjustmentAction ParseAdjustmentActionToken(string? raw, string context) =>
+        string.Equals(raw, "MoveToNextNonWorkingDay", StringComparison.OrdinalIgnoreCase)
+            ? AdjustmentAction.MoveToNextWorkingDay
+            : ParseRequiredEnum<AdjustmentAction>(raw, "action", context);
 
     // ----------------------------------------------------------------------------
     // Strategy detection and projection
@@ -895,6 +911,7 @@ public static class NotableDateRuleJsonParser
         [JsonPropertyName("clearTags")] public bool? ClearTags { get; init; }
         [JsonPropertyName("clearAdjustments")] public bool? ClearAdjustments { get; init; }
         [JsonPropertyName("clearInherited")] public bool? ClearInherited { get; init; }
+        [JsonPropertyName("clear")] public string[]? Clear { get; init; }
         [JsonPropertyName("rule")] public OverrideRuleDto? Rule { get; init; }
     }
 
@@ -908,6 +925,7 @@ public static class NotableDateRuleJsonParser
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1134:Attributes should not share line")]
     private class RuleDto
     {
+        [JsonPropertyName("ruleName")] public string? RuleName { get; init; }
         [JsonPropertyName("name")] public string? Name { get; init; }
         [JsonPropertyName("category")] public string? Category { get; init; }
         [JsonPropertyName("firstYear")] public int? FirstYear { get; init; }
@@ -1004,6 +1022,9 @@ public static class NotableDateRuleJsonParser
         [JsonPropertyName("comparisonMonth")] public string? ComparisonMonth { get; init; }
         [JsonPropertyName("comparisonDay")] public int? ComparisonDay { get; init; }
         [JsonPropertyName("target")] public string? Target { get; init; }
+        [JsonPropertyName("maxReachDays")] public int? MaxReachDays { get; init; }
+        [JsonPropertyName("appliesToGlobalRules")] public bool? AppliesToGlobalRules { get; init; }
         [JsonPropertyName("handlerKey")] public string? HandlerKey { get; init; }
+        [JsonPropertyName("handlerParameters")] public Dictionary<string, string>? HandlerParameters { get; init; }
     }
 }

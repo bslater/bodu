@@ -126,6 +126,11 @@ namespace Bodu.Globalization.Calendar;
 /// Optional override body supplied via a nested <c>&lt;Rule&gt;</c> child. Fields on the body win over the flat
 /// attributes where both are present.
 /// </param>
+/// <param name="ClearFields">
+/// Optional set of inherited nullable field names to reset to <see langword="null" /> (for example <c>territory</c>,
+/// <c>calendarType</c>, <c>firstYear</c>, <c>lastYear</c>, <c>occurrenceYears</c>, <c>nonWorking</c>, <c>comment</c>).
+/// A cleared field is not inherited from the source; an explicitly supplied override value still wins over a clear.
+/// </param>
 public sealed record NotableDateRuleUseDirective(
     string SourceRuleName,
     string? LocalName = null,
@@ -141,4 +146,5 @@ public sealed record NotableDateRuleUseDirective(
     bool ClearTags = false,
     bool ClearAdjustments = false,
     bool ClearInherited = false,
-    NotableDateRuleOverrideBody? OverrideBody = null);
+    NotableDateRuleOverrideBody? OverrideBody = null,
+    IReadOnlySet<string>? ClearFields = null);

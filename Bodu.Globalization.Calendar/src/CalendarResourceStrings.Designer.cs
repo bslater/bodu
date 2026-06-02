@@ -97,6 +97,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The provenance list must have the same number of entries as the overlapping notable dates..
+        /// </summary>
+        internal static string Arg_Invalid_CollisionProvenanceCountMismatch {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_CollisionProvenanceCountMismatch", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The end date must not be earlier than the start date..
         /// </summary>
         internal static string Arg_Invalid_EndDateBeforeStartDate {
@@ -349,6 +358,42 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Algorithm key '{0}' referenced by rule '{1}' is not registered..
+        /// </summary>
+        internal static string Op_Invalid_AlgorithmKeyNotRegistered {
+            get {
+                return ResourceManager.GetString("Op_Invalid_AlgorithmKeyNotRegistered", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Anchor reference '{0}' on rule '{1}' matches {2} rules and cannot be resolved unambiguously. Qualify the reference with a rule name, territory, or calendar type..
+        /// </summary>
+        internal static string Op_Invalid_AmbiguousAnchorReference {
+            get {
+                return ResourceManager.GetString("Op_Invalid_AmbiguousAnchorReference", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Replacement target '{0}' on adjustment '{1}' (rule '{2}') matches {3} rules and cannot be resolved unambiguously. Qualify the target with a rule name, territory, or calendar type..
+        /// </summary>
+        internal static string Op_Invalid_AmbiguousReplacementTarget {
+            get {
+                return ResourceManager.GetString("Op_Invalid_AmbiguousReplacementTarget", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Rule reference '{0}' matches {1} rules and cannot be resolved unambiguously..
+        /// </summary>
+        internal static string Op_Invalid_AmbiguousRuleReference {
+            get {
+                return ResourceManager.GetString("Op_Invalid_AmbiguousRuleReference", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Anchor rule '{0}' referenced by '{1}' was not found..
         /// </summary>
         internal static string Op_Invalid_AnchorRuleNotFound {
@@ -390,6 +435,15 @@ namespace Bodu {
         internal static string Op_Invalid_DuplicateAdjustmentKey {
             get {
                 return ResourceManager.GetString("Op_Invalid_DuplicateAdjustmentKey", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Two rules share the same identity (Name '{0}', RuleName '{1}', Territory '{2}', Calendar '{3}'). Rule identities must be unique within a service..
+        /// </summary>
+        internal static string Op_Invalid_DuplicateRuleIdentity {
+            get {
+                return ResourceManager.GetString("Op_Invalid_DuplicateRuleIdentity", resourceCulture);
             }
         }
 

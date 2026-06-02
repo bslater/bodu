@@ -51,7 +51,7 @@ public sealed class NotableDateRangeResolutionCacheTests
         NotableDateRangeResolutionCache cache = new();
         cache.Add(entry);
 
-        NotableDateCacheKey key = new(entry.Rule.Name, entry.AnchorYear, entry.BaseNotable.TerritoryCode, entry.BaseNotable.CalendarType);
+        NotableDateCacheKey key = new(new NotableDateRuleIdentity(entry.Rule.Name, entry.Rule.RuleName, entry.BaseNotable.TerritoryCode, entry.BaseNotable.CalendarType), entry.AnchorYear);
 
         Assert.IsTrue(cache.TryGet(key, out NotableDateCacheEntry resolved));
         Assert.AreSame(entry, resolved);
@@ -67,7 +67,7 @@ public sealed class NotableDateRangeResolutionCacheTests
         NotableDateRangeResolutionCache cache = new();
         cache.Add(BuildEntry("New Year's Day", 2026, new DateTime(2026, 1, 1)));
 
-        NotableDateCacheKey missingKey = new("Other", 2026, null, null);
+        NotableDateCacheKey missingKey = new(new NotableDateRuleIdentity("Other", null, null, null), 2026);
 
         Assert.IsFalse(cache.TryGet(missingKey, out _));
     }
@@ -82,7 +82,7 @@ public sealed class NotableDateRangeResolutionCacheTests
         NotableDateRangeResolutionCache cache = new();
         cache.Add(stored);
 
-        NotableDateCacheKey otherKey = new("Labour Day", 2026, "AU-NSW", null);
+        NotableDateCacheKey otherKey = new(new NotableDateRuleIdentity("Labour Day", null, "AU-NSW", null), 2026);
 
         Assert.IsFalse(cache.TryGet(otherKey, out _));
     }
@@ -97,7 +97,7 @@ public sealed class NotableDateRangeResolutionCacheTests
         NotableDateRangeResolutionCache cache = new();
         cache.Add(entry);
 
-        NotableDateCacheKey key = new(entry.Rule.Name, entry.AnchorYear, entry.BaseNotable.TerritoryCode, entry.BaseNotable.CalendarType);
+        NotableDateCacheKey key = new(new NotableDateRuleIdentity(entry.Rule.Name, entry.Rule.RuleName, entry.BaseNotable.TerritoryCode, entry.BaseNotable.CalendarType), entry.AnchorYear);
 
         Assert.IsTrue(cache.Contains(key));
     }
@@ -110,14 +110,14 @@ public sealed class NotableDateRangeResolutionCacheTests
     {
         NotableDateRangeResolutionCache cache = new();
         NotableDateCacheEntry first = BuildEntry("Holiday", 2026, new DateTime(2026, 6, 1));
-        NotableDateCacheEntry second = BuildEntry("Holiday", 2026, new DateTime(2026, 6, 1), state: NotableDateCacheState.InWindow);
+        NotableDateCacheEntry second = BuildEntry("Holiday", 2026, new DateTime(2026, 6, 1), state: NotableDateCacheState.Candidate);
 
         cache.Add(first);
         cache.Add(second);
 
         Assert.AreEqual(1, cache.Count);
 
-        NotableDateCacheKey key = new("Holiday", 2026, null, null);
+        NotableDateCacheKey key = new(new NotableDateRuleIdentity("Holiday", null, null, null), 2026);
         Assert.IsTrue(cache.TryGet(key, out NotableDateCacheEntry resolved));
         Assert.AreSame(second, resolved);
     }
@@ -172,7 +172,7 @@ public sealed class NotableDateRangeResolutionCacheTests
         NotableDateRangeResolutionCache cache = new();
         cache.Add(BuildEntry("New Year's Day", 2026, new DateTime(2026, 1, 1)));
 
-        Assert.AreEqual(new DateTime(2026, 1, 1), cache.ResolveObservedByName("New Year's Day", 2026, null, null));
+        Assert.AreEqual(new DateTime(2026, 1, 1), cache.ResolveObservedByName("New Year's Day", null, 2026, null, null));
     }
 
     /// <summary>
@@ -188,7 +188,7 @@ public sealed class NotableDateRangeResolutionCacheTests
         NotableDateRangeResolutionCache cache = new();
         cache.Add(entry);
 
-        Assert.AreEqual(new DateTime(2026, 1, 2), cache.ResolveObservedByName("New Year's Day", 2026, null, null));
+        Assert.AreEqual(new DateTime(2026, 1, 2), cache.ResolveObservedByName("New Year's Day", null, 2026, null, null));
     }
 
     /// <summary>
@@ -201,7 +201,7 @@ public sealed class NotableDateRangeResolutionCacheTests
         NotableDateRangeResolutionCache cache = new();
         cache.Add(BuildEntry("Labour Day", 2026, new DateTime(2026, 3, 9), territory: "AU-VIC"));
 
-        Assert.IsNull(cache.ResolveObservedByName("Labour Day", 2026, "AU-NSW", null));
+        Assert.IsNull(cache.ResolveObservedByName("Labour Day", null, 2026, "AU-NSW", null));
     }
 
     /// <summary>
@@ -214,7 +214,7 @@ public sealed class NotableDateRangeResolutionCacheTests
         NotableDateRangeResolutionCache cache = new();
         cache.Add(BuildEntry("Christmas Day", 2026, new DateTime(2026, 12, 25)));
 
-        Assert.AreEqual(new DateTime(2026, 12, 25), cache.ResolveObservedByName("Christmas Day", 2026, "AU", null));
+        Assert.AreEqual(new DateTime(2026, 12, 25), cache.ResolveObservedByName("Christmas Day", null, 2026, "AU", null));
     }
 
     /// <summary>
@@ -227,7 +227,7 @@ public sealed class NotableDateRangeResolutionCacheTests
         NotableDateRangeResolutionCache cache = new();
         cache.Add(BuildEntry("Rosh Hashanah", 2026, new DateTime(2026, 9, 12), calendarType: typeof(System.Globalization.HebrewCalendar)));
 
-        Assert.IsNull(cache.ResolveObservedByName("Rosh Hashanah", 2026, null, typeof(System.Globalization.GregorianCalendar)));
+        Assert.IsNull(cache.ResolveObservedByName("Rosh Hashanah", null, 2026, null, typeof(System.Globalization.GregorianCalendar)));
     }
 
     /// <summary>
@@ -270,21 +270,21 @@ public sealed class NotableDateRangeResolutionCacheTests
     }
 
     /// <summary>
-    /// Verifies that the cache <see cref="NotableDateRangeResolutionCache.EmissableEntries" /> yields only entries whose
-    /// state qualifies them for emission.
+    /// Verifies that <see cref="NotableDateRangeResolutionCache.EmissableEntries" /> yields only entries whose role is
+    /// <see cref="NotableDateCacheState.Candidate" />, excluding context-only entries.
     /// </summary>
     [TestMethod]
-    public void EmissableEntries_WhenSomeEntriesAreComputed_ShouldOnlyYieldInWindowEntries()
+    public void EmissableEntries_WhenSomeEntriesAreContextOnly_ShouldOnlyYieldCandidateEntries()
     {
         NotableDateRangeResolutionCache cache = new();
-        cache.Add(BuildEntry("InWindow", 2026, new DateTime(2026, 1, 1), state: NotableDateCacheState.InWindow));
-        cache.Add(BuildEntry("Computed", 2026, new DateTime(2026, 1, 1), state: NotableDateCacheState.Computed));
+        cache.Add(BuildEntry("Candidate", 2026, new DateTime(2026, 1, 1), state: NotableDateCacheState.Candidate));
+        cache.Add(BuildEntry("ContextOnly", 2026, new DateTime(2026, 1, 1), state: NotableDateCacheState.ContextOnly));
 
         IEnumerable<NotableDateCacheEntry> emissable = cache.EmissableEntries();
         var names = emissable.Select(e => e.Rule.Name).ToList();
 
         Assert.AreEqual(1, names.Count);
-        Assert.AreEqual("InWindow", names[0]);
+        Assert.AreEqual("Candidate", names[0]);
     }
 
     /// <summary>
@@ -297,7 +297,7 @@ public sealed class NotableDateRangeResolutionCacheTests
         string? territory = null,
         Type? calendarType = null,
         bool isNonWorking = false,
-        NotableDateCacheState state = NotableDateCacheState.Computed)
+        NotableDateCacheState state = NotableDateCacheState.Candidate)
     {
         NotableDateRule rule = new()
         {

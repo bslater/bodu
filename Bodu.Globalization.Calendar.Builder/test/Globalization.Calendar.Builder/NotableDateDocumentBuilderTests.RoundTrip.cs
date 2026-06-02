@@ -766,7 +766,7 @@ public partial class NotableDateDocumentBuilderTests
     [DataRow(AdjustmentAction.AddDays)]
     [DataRow(AdjustmentAction.MoveToNextWeekday)]
     [DataRow(AdjustmentAction.MoveToPreviousWeekday)]
-    [DataRow(AdjustmentAction.MoveToNextNonWorkingDay)]
+    [DataRow(AdjustmentAction.MoveToNextWorkingDay)]
     [DataRow(AdjustmentAction.ReplaceWithNamedDate)]
     [DataRow(AdjustmentAction.Custom)]
     public void RoundTrip_AdjustmentAllActions_ShouldPreserveAction(AdjustmentAction action)
@@ -868,6 +868,33 @@ public partial class NotableDateDocumentBuilderTests
         ObservanceAdjustment adj = parsed[0].Adjustments[0];
         Assert.AreEqual(2010, adj.EffectiveFromYear);
         Assert.AreEqual(2050, adj.EffectiveToYear);
+    }
+
+    /// <summary>
+    /// Verifies that an adjustment's reach envelope, custom-handler parameters, and global opt-in round-trip intact
+    /// (schema/builder alignment for F-010/F-012).
+    /// </summary>
+    [TestMethod]
+    public void RoundTrip_AdjustmentWithReachHandlerParamsAndGlobalOptIn_ShouldPreserveAll()
+    {
+        List<NotableDateRule> parsed = BuildAndReparse(b => b
+            .AddDate("Test", date => date
+                .AddRule(rule => rule
+                    .Category(NotableDateCategory.Holiday)
+                    .Fixed(1, 1)
+                    .AddAdjustment("custom", adj => adj
+                        .When(AdjustmentTrigger.Custom)
+                        .Action(AdjustmentAction.Custom)
+                        .HandlerKey("my-handler")
+                        .AddHandlerParameter("shift", "3")
+                        .MaxAdjustmentReachDays(45)
+                        .AppliesToGlobalRules()))));
+
+        ObservanceAdjustment adj = parsed[0].Adjustments[0];
+        Assert.AreEqual(45, adj.MaxAdjustmentReachDays);
+        Assert.IsNotNull(adj.HandlerParameters);
+        Assert.AreEqual("3", adj.HandlerParameters["shift"]);
+        Assert.IsTrue(adj.AppliesToGlobalRules);
     }
 
     /// <summary>

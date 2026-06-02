@@ -333,4 +333,93 @@ public partial class NotableDateRuleParserTests
 
         Assert.IsNull(directive.OverrideBody);
     }
+
+    /// <summary>
+    /// Verifies that an override body omitting <c>category</c> parses as a partial override rather than being rejected
+    /// by the schema (F-009).
+    /// </summary>
+    [TestMethod]
+    public void ParseDocument_WhenXmlOverrideOmitsCategory_ShouldParseAsPartialOverride()
+    {
+        const string xml = @"
+				<NotableDates xmlns=""urn:bodu:globalization:calendar"">
+					<UseFrom resource=""shared.xml"">
+						<Use name=""Foo"">
+							<Rule priority=""10"" />
+						</Use>
+					</UseFrom>
+				</NotableDates>";
+
+        ParsedNotableDateDocument document = NotableDateRuleParser.ParseDocument(xml);
+        NotableDateRuleOverrideBody body = document.UseGroups.Single().Uses.Single().OverrideBody!;
+
+        Assert.IsNotNull(body);
+        Assert.AreEqual(10, body.Priority);
+        Assert.IsNull(body.Category);
+        Assert.IsNull(body.RuleName);
+    }
+
+    /// <summary>
+    /// Verifies that the override body's <c>ruleName</c> attribute maps to
+    /// <see cref="NotableDateRuleOverrideBody.RuleName" /> (F-009).
+    /// </summary>
+    [TestMethod]
+    public void ParseDocument_WhenXmlOverrideUsesRuleName_ShouldMapRuleName()
+    {
+        const string xml = @"
+				<NotableDates xmlns=""urn:bodu:globalization:calendar"">
+					<UseFrom resource=""shared.xml"">
+						<Use name=""Easter"">
+							<Rule ruleName=""western"" priority=""10"" />
+						</Use>
+					</UseFrom>
+				</NotableDates>";
+
+        ParsedNotableDateDocument document = NotableDateRuleParser.ParseDocument(xml);
+
+        Assert.AreEqual("western", document.UseGroups.Single().Uses.Single().OverrideBody!.RuleName);
+    }
+
+    /// <summary>
+    /// Verifies that the legacy <c>name</c> attribute on an override body is still accepted and maps to
+    /// <see cref="NotableDateRuleOverrideBody.RuleName" /> (back-compatible with the pre-rename vocabulary).
+    /// </summary>
+    [TestMethod]
+    public void ParseDocument_WhenXmlOverrideUsesLegacyName_ShouldMapRuleName()
+    {
+        const string xml = @"
+				<NotableDates xmlns=""urn:bodu:globalization:calendar"">
+					<UseFrom resource=""shared.xml"">
+						<Use name=""Easter"">
+							<Rule name=""orthodox"" priority=""10"" />
+						</Use>
+					</UseFrom>
+				</NotableDates>";
+
+        ParsedNotableDateDocument document = NotableDateRuleParser.ParseDocument(xml);
+
+        Assert.AreEqual("orthodox", document.UseGroups.Single().Uses.Single().OverrideBody!.RuleName);
+    }
+
+    /// <summary>
+    /// Verifies that the <c>clear</c> attribute is parsed into the directive's <see cref="NotableDateRuleUseDirective.ClearFields" />
+    /// as a set of field names (assessment §6.4).
+    /// </summary>
+    [TestMethod]
+    public void ParseDocument_WhenUseDeclaresClearAttribute_ShouldPopulateClearFields()
+    {
+        const string xml = @"
+				<NotableDates xmlns=""urn:bodu:globalization:calendar"">
+					<UseFrom resource=""shared.xml"">
+						<Use name=""Christmas Day"" clear=""territory comment"" />
+					</UseFrom>
+				</NotableDates>";
+
+        ParsedNotableDateDocument document = NotableDateRuleParser.ParseDocument(xml);
+        IReadOnlySet<string>? clear = document.UseGroups.Single().Uses.Single().ClearFields;
+
+        Assert.IsNotNull(clear);
+        Assert.IsTrue(clear.Contains("territory"));
+        Assert.IsTrue(clear.Contains("comment"));
+    }
 }

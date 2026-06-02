@@ -34,7 +34,7 @@ using Bodu.Globalization.Calendar.Data.AsiaPacific;
 
 var service = new NotableDateService(
     ruleProviders:     new[] { AsiaPacificCalendarData.CreateAustraliaProvider() },
-    weekendDefinition: CalendarWeekendDefinition.SaturdaySunday);
+    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 
 // All notable dates for Australia in 2026.
 IReadOnlyList<NotableDate> auDates = service.GetNotableDates(2026, territoryCode: "AU");
@@ -61,7 +61,7 @@ using Bodu.Globalization.Calendar.Data.Europe;
 
 var service = new NotableDateService(
     ruleProviders:     new[] { EuropeCalendarData.CreateUnitedKingdomProvider() },
-    weekendDefinition: CalendarWeekendDefinition.SaturdaySunday);
+    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 
 // Only public holidays for Great Britain.
 NotableDateFilter publicFilter = NotableDateFilter.ForCategory(NotableDateCategory.Holiday);
@@ -89,7 +89,7 @@ using Bodu.Globalization.Calendar.Data.AsiaPacific;
 
 var service = new NotableDateService(
     ruleProviders:     new[] { AsiaPacificCalendarData.CreateAustraliaProvider() },
-    weekendDefinition: CalendarWeekendDefinition.SaturdaySunday);
+    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 
 DateTime from = new DateTime(2026, 3, 1);
 DateTime to   = new DateTime(2026, 4, 30);
@@ -108,13 +108,13 @@ using Bodu.Globalization.Calendar.Data.AsiaPacific;
 
 var service = new NotableDateService(
     ruleProviders:     new[] { AsiaPacificCalendarData.CreateAustraliaProvider() },
-    weekendDefinition: CalendarWeekendDefinition.SaturdaySunday);
+    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 
 DateTime anzacDay = new DateTime(2026, 4, 25);
 IReadOnlyList<NotableDate> onDay = service.GetNotableDates(anzacDay, "AU");
 ```
 
-This overload also returns multi-day spans whose nominal date lies on a preceding day but whose span covers the queried date.
+This overload also returns multi-day spans whose nominal date lies on a preceding day but whose span covers the queried date. The answer is **window-independent** — a single-day query agrees with that same day inside a wider range query — and whether an adjusted occurrence supersedes its nominal date or both are returned is governed by [`ObservedDateMode`](identity-and-resolution.md#observed-date-modes).
 
 ## Pattern 6 — check non-working days and weekends
 
@@ -125,7 +125,7 @@ using Bodu.Globalization.Calendar.Data.AsiaPacific;
 
 var service = new NotableDateService(
     ruleProviders:     new[] { AsiaPacificCalendarData.CreateAustraliaProvider() },
-    weekendDefinition: CalendarWeekendDefinition.SaturdaySunday);
+    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 
 DateTime christmas = new DateTime(2026, 12, 25);
 
@@ -175,7 +175,7 @@ var provider = new XmlResourceNotableDateRuleProvider(
 
 var service = new NotableDateService(
     ruleProviders:     new[] { provider },
-    weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
+    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
     options: new NotableDateServiceOptions
     {
         OverrideProviders = new[] { new CompanyCalendarOverrides() },
@@ -206,6 +206,7 @@ service.Invalidate();
 | `Name` | Canonical English name. |
 | `DisplayName` | Name qualified with territory and calendar suffix when scoped. |
 | `Category` | `NotableDateCategory` value. |
+| `Priority` | Tie-break weight carried from the rule (lower wins). Used by the collision resolver when several dates share a day. |
 | `TerritoryCode` | Territory the date applies to, or `null` for global. |
 | `IsNonWorkingDay` | Whether the date is flagged as a non-working day. |
 | `WasAdjusted` | Whether the observed date was shifted from its nominal date by an `ObservanceAdjustment`. |

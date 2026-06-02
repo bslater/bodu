@@ -16,8 +16,9 @@ namespace Bodu.Globalization.Calendar;
 public sealed class NotableDateResolutionServiceConvenienceApiTests
 {
     /// <summary>
-    /// Verifies that the year overload returns occurrences whose observed date falls within the supplied civil year,
-    /// matching the equivalent <c>(Jan 1, Dec 31)</c> range query under the same pipeline.
+    /// Verifies that the year overload returns occurrences by their observed date under the default
+    /// <see cref="ObservedDateMode.ObservedOnly" /> mode: a holiday whose weekend substitute rolls into the next civil
+    /// year is excluded from the current year and reported in the following year, keeping the result window-independent.
     /// </summary>
     [TestMethod]
     public void GetNotableDates_WhenYearRequested_ShouldReturnDatesObservedInYear()
@@ -26,22 +27,22 @@ public sealed class NotableDateResolutionServiceConvenienceApiTests
             FixedPublicHolidayRule("Year-End Holiday", month: 12, day: 31),
             FixedNonWorkingRule("New Year Second Day", month: 1, day: 2));
 
-        IReadOnlyList<NotableDate> actual = service.GetNotableDates(2022);
+        IReadOnlyList<NotableDate> year2022 = service.GetNotableDates(2022);
 
-        Assert.IsTrue(actual.Any(date =>
+        // 31 Dec 2022 is a Saturday; under ObservedOnly the substitute moves the observed occurrence to 3 Jan 2023, so
+        // the holiday is not part of 2022's observed dates (the actual 31 Dec date is superseded).
+        Assert.IsFalse(year2022.Any(date => date.Name == "Year-End Holiday"),
+            "Under ObservedOnly the actual 31 Dec is superseded and the observed substitute falls in 2023.");
+
+        // The 2 Jan 2023 occurrence of New Year Second Day lies outside 2022, so the year overload does not emit it.
+        Assert.IsFalse(year2022.Any(date => date.Name == "New Year Second Day" && date.Date == new DateTime(2023, 1, 2)));
+
+        // The observed substitute is reported in 2023, demonstrating the occurrence moved across the year boundary.
+        IReadOnlyList<NotableDate> year2023 = service.GetNotableDates(2023);
+        Assert.IsTrue(year2023.Any(date =>
             date.Name == "Year-End Holiday" &&
-            date.Date == new DateTime(2022, 12, 31) &&
-            !date.WasAdjusted));
-
-        // The adjusted observation falls on 2023-01-03 — outside 2022, so it is not emitted by the year overload.
-        Assert.IsFalse(actual.Any(date =>
-            date.Name == "Year-End Holiday" &&
-            date.Date == new DateTime(2023, 1, 3)));
-
-        // New Year Second Day is anchored in 2023, so the 2022 year overload does not emit it.
-        Assert.IsFalse(actual.Any(date =>
-            date.Name == "New Year Second Day" &&
-            date.Date == new DateTime(2023, 1, 2)));
+            date.Date == new DateTime(2023, 1, 3) &&
+            date.WasAdjusted));
     }
 
     /// <summary>
@@ -181,7 +182,7 @@ public sealed class NotableDateResolutionServiceConvenienceApiTests
                 {
                     Key = "weekend-substitute",
                     Trigger = AdjustmentTrigger.IfWeekend,
-                    Action = AdjustmentAction.MoveToNextNonWorkingDay,
+                    Action = AdjustmentAction.MoveToNextWorkingDay,
                     IsNonWorkingDay = true,
                 }],
         };

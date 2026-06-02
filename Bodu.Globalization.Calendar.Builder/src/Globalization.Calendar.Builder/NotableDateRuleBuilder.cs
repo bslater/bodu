@@ -45,7 +45,7 @@ namespace Bodu.Globalization.Calendar.Builder;
 ///     .AddTag("Religious")
 ///     .AddAdjustment("weekend-roll", adj => adj
 ///         .When(AdjustmentTrigger.IfWeekend)
-///         .Action(AdjustmentAction.MoveToNextMonday)
+///         .Action(AdjustmentAction.MoveToNextWorkingDay)
 ///         .NonWorking(true));
 ///
 /// Day-of-week-in-month rule — the second Monday of October.

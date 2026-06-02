@@ -165,12 +165,11 @@ public partial class NotableDateRuleJsonParserTests
     }
 
     /// <summary>
-    /// Verifies that a <c>useFrom</c> directive's override-body (the nested <c>rule</c>) is rejected by
-    /// schema validation when it omits the required <c>name</c> attribute — matching the XSD's literal
-    /// <c>OverrideRule</c> requirement.
+    /// Verifies that a <c>useFrom</c> directive's override-body (the nested <c>rule</c>) is accepted by schema
+    /// validation when it omits <c>name</c>, allowing a partial override (F-009).
     /// </summary>
     [TestMethod]
-    public void ParseJson_WhenOverrideRuleOmitsName_ShouldThrowExactly()
+    public void ParseJson_WhenOverrideRuleOmitsName_ShouldParseAsPartialOverride()
     {
         const string json = @"{
 			""useFrom"": [
@@ -186,19 +185,19 @@ public partial class NotableDateRuleJsonParserTests
 			]
 		}";
 
-        Assert.ThrowsExactly<JsonException>(() =>
-        {
-            _ = NotableDateRuleJsonParser.ParseJson(json);
-        });
+        ParsedNotableDateDocument document = NotableDateRuleJsonParser.ParseDocument(json);
+        NotableDateRuleOverrideBody body = document.UseGroups.Single().Uses.Single().OverrideBody!;
+
+        Assert.IsNull(body.RuleName);
+        Assert.AreEqual(NotableDateCategory.Holiday, body.Category);
     }
 
     /// <summary>
-    /// Verifies that a <c>useFrom</c> directive's override-body is rejected by schema validation when
-    /// it omits the required <c>category</c> attribute — matching the XSD's literal <c>OverrideRule</c>
-    /// requirement.
+    /// Verifies that a <c>useFrom</c> directive's override-body is accepted by schema validation when it omits
+    /// <c>category</c>, allowing a partial override (F-009).
     /// </summary>
     [TestMethod]
-    public void ParseJson_WhenOverrideRuleOmitsCategory_ShouldThrowExactly()
+    public void ParseJson_WhenOverrideRuleOmitsCategory_ShouldParseAsPartialOverride()
     {
         const string json = @"{
 			""useFrom"": [
@@ -214,10 +213,11 @@ public partial class NotableDateRuleJsonParserTests
 			]
 		}";
 
-        Assert.ThrowsExactly<JsonException>(() =>
-        {
-            _ = NotableDateRuleJsonParser.ParseJson(json);
-        });
+        ParsedNotableDateDocument document = NotableDateRuleJsonParser.ParseDocument(json);
+        NotableDateRuleOverrideBody body = document.UseGroups.Single().Uses.Single().OverrideBody!;
+
+        Assert.AreEqual("Local Override", body.RuleName);
+        Assert.IsNull(body.Category);
     }
 
     /// <summary>

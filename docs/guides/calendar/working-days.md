@@ -111,7 +111,7 @@ When a service is registered once at composition time, the parameterless overloa
 // In Program.cs / Startup.cs:
 NotableDateContext.Default = new NotableDateService(
     ruleProviders:     AsiaPacificCalendarData.CreateProviders(),
-    weekendDefinition: CalendarWeekendDefinition.SaturdaySunday);
+    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 
 // Anywhere downstream — no service parameter needed:
 DateOnly today    = DateOnly.FromDateTime(DateTime.Today);

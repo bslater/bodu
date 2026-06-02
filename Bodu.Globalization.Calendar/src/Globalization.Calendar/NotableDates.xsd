@@ -72,13 +72,16 @@
     <xs:attribute name="clearTags" type="xs:boolean" use="optional" default="false" />
     <xs:attribute name="clearAdjustments" type="xs:boolean" use="optional" default="false" />
     <xs:attribute name="clearInherited" type="xs:boolean" use="optional" default="false" />
+    <!-- clear: whitespace/comma-separated list of inherited nullable fields to reset to null
+         (territory, calendarType, firstYear, lastYear, occurrenceYears, nonWorking, comment). -->
+    <xs:attribute name="clear" type="xs:string" use="optional" />
     <xs:attribute name="category" type="nd:notableDateCategory" use="optional" />
     <xs:attribute name="territory" type="nd:territory" use="optional" />
     <xs:attribute name="nonWorking" type="xs:boolean" use="optional" />
     <xs:attribute name="firstYear" type="xs:unsignedShort" use="optional" />
     <xs:attribute name="lastYear" type="xs:unsignedShort" use="optional" />
     <xs:attribute name="occurrenceYears" type="xs:positiveInteger" use="optional" />
-    <xs:attribute name="durationDays" type="xs:positiveInteger" use="optional" />
+    <xs:attribute name="durationDays" type="nd:durationDays" use="optional" />
     <xs:attribute name="priority" type="xs:int" use="optional" />
     <xs:attribute name="comment" type="xs:string" use="optional" />
   </xs:complexType>
@@ -184,7 +187,7 @@
     <xs:attribute name="firstYear" type="xs:unsignedShort" use="optional" />
     <xs:attribute name="lastYear" type="xs:unsignedShort" use="optional" />
     <xs:attribute name="occurrenceYears" type="xs:positiveInteger" use="optional" />
-    <xs:attribute name="durationDays" type="xs:positiveInteger" use="optional" />
+    <xs:attribute name="durationDays" type="nd:durationDays" use="optional" />
     <xs:attribute name="priority" type="xs:int" use="optional" />
     <xs:attribute name="calendarType" type="nd:assemblyTypeName" use="optional" />
     <xs:attribute name="territory" type="nd:territory" use="optional" />
@@ -272,13 +275,16 @@
       <xs:element name="Adjustment" type="nd:Adjustment" minOccurs="0" maxOccurs="unbounded" />
     </xs:sequence>
 
-    <xs:attribute name="name" type="xs:string" use="required" />
-    <xs:attribute name="category" type="nd:notableDateCategory" use="required" />
+    <!-- ruleName targets a specific inherited variant; the legacy 'name' attribute is accepted as an alias. Both
+         name and category are optional so a Use may apply a partial override (e.g. priority only). -->
+    <xs:attribute name="ruleName" type="xs:string" use="optional" />
+    <xs:attribute name="name" type="xs:string" use="optional" />
+    <xs:attribute name="category" type="nd:notableDateCategory" use="optional" />
     <xs:attribute name="nonWorking" type="xs:boolean" use="optional" />
     <xs:attribute name="firstYear" type="xs:unsignedShort" use="optional" />
     <xs:attribute name="lastYear" type="xs:unsignedShort" use="optional" />
     <xs:attribute name="occurrenceYears" type="xs:positiveInteger" use="optional" />
-    <xs:attribute name="durationDays" type="xs:positiveInteger" use="optional" />
+    <xs:attribute name="durationDays" type="nd:durationDays" use="optional" />
     <xs:attribute name="priority" type="xs:int" use="optional" />
     <xs:attribute name="calendarType" type="nd:assemblyTypeName" use="optional" />
     <xs:attribute name="territory" type="nd:territory" use="optional" />
@@ -296,6 +302,15 @@
        kebab-case (e.g. "weekend-roll", "boxing-day-monday-sub").
        ============================================================ -->
   <xs:complexType name="Adjustment">
+    <!-- Optional Param children supply key/value parameters forwarded to a custom IAdjustmentHandler. -->
+    <xs:sequence>
+      <xs:element name="Param" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:attribute name="key" type="xs:string" use="required" />
+          <xs:attribute name="value" type="xs:string" use="required" />
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
     <xs:attribute name="key" type="xs:string" use="required" />
     <xs:attribute name="when" type="nd:adjustmentTrigger" use="required" />
     <xs:attribute name="action" type="nd:adjustmentAction" use="required" />
@@ -311,6 +326,10 @@
     <xs:attribute name="comparisonMonth" type="nd:monthName" use="optional" />
     <xs:attribute name="comparisonDay" type="nd:day" use="optional" />
     <xs:attribute name="target" type="xs:string" use="optional" />
+    <!-- maxReachDays: symmetric +/- day envelope used by the range planner to size the fringe scan. -->
+    <xs:attribute name="maxReachDays" type="xs:int" use="optional" />
+    <!-- appliesToGlobalRules: opt a territory/calendar-scoped adjustment into territory/calendar-neutral rules. -->
+    <xs:attribute name="appliesToGlobalRules" type="xs:boolean" use="optional" />
     <xs:attribute name="handlerKey" type="xs:string" use="optional" />
   </xs:complexType>
 
@@ -338,6 +357,8 @@
       <xs:enumeration value="AddDays" />
       <xs:enumeration value="MoveToNextWeekday" />
       <xs:enumeration value="MoveToPreviousWeekday" />
+      <xs:enumeration value="MoveToNextWorkingDay" />
+      <!-- MoveToNextNonWorkingDay: legacy alias for MoveToNextWorkingDay, retained for back-compatibility. -->
       <xs:enumeration value="MoveToNextNonWorkingDay" />
       <xs:enumeration value="ReplaceWithNamedDate" />
       <xs:enumeration value="Custom" />
@@ -377,6 +398,14 @@
     <xs:restriction base="xs:int">
       <xs:minInclusive value="1" />
       <xs:maxInclusive value="31" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- durationDays: a multi-day span length, bounded to a single year so EndDate cannot run away. -->
+  <xs:simpleType name="durationDays">
+    <xs:restriction base="xs:int">
+      <xs:minInclusive value="1" />
+      <xs:maxInclusive value="366" />
     </xs:restriction>
   </xs:simpleType>
 

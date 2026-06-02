@@ -36,6 +36,11 @@
       "type": "integer",
       "minimum": 1
     },
+    "durationDays": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 366
+    },
     "day": {
       "type": "integer",
       "minimum": 1,
@@ -183,6 +188,7 @@
         "AddDays",
         "MoveToNextWeekday",
         "MoveToPreviousWeekday",
+        "MoveToNextWorkingDay",
         "MoveToNextNonWorkingDay",
         "ReplaceWithNamedDate",
         "Custom"
@@ -257,6 +263,12 @@
           "type": "boolean",
           "default": false
         },
+        "clear": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
         "category": {
           "$ref": "#/$defs/notableDateCategory"
         },
@@ -276,7 +288,7 @@
           "$ref": "#/$defs/positiveInteger"
         },
         "durationDays": {
-          "$ref": "#/$defs/positiveInteger"
+          "$ref": "#/$defs/durationDays"
         },
         "priority": {
           "$ref": "#/$defs/int32"
@@ -331,16 +343,15 @@
         {
           "$ref": "#/$defs/atMostOneStrategy"
         }
-      ],
-      "required": [
-        "name",
-        "category"
       ]
     },
     "ruleBase": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
+        "ruleName": {
+          "type": "string"
+        },
         "name": {
           "type": "string"
         },
@@ -360,7 +371,7 @@
           "$ref": "#/$defs/positiveInteger"
         },
         "durationDays": {
-          "$ref": "#/$defs/positiveInteger"
+          "$ref": "#/$defs/durationDays"
         },
         "priority": {
           "$ref": "#/$defs/int32"
@@ -728,8 +739,20 @@
         "target": {
           "type": "string"
         },
+        "maxReachDays": {
+          "$ref": "#/$defs/int32"
+        },
+        "appliesToGlobalRules": {
+          "type": "boolean"
+        },
         "handlerKey": {
           "type": "string"
+        },
+        "handlerParameters": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
         }
       }
     }

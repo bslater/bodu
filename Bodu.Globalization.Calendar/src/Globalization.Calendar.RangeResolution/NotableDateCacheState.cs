@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateCacheState.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -7,39 +7,29 @@
 namespace Bodu.Globalization.Calendar.RangeResolution;
 
 /// <summary>
-/// Identifies the current qualification state of a <see cref="NotableDateCacheEntry" /> within the chronological
+/// Identifies the materialization role of a <see cref="NotableDateCacheEntry" /> within the chronological
 /// range-resolution pipeline.
 /// </summary>
 /// <remarks>
 /// <para>
-/// The state distinguishes entries that are eligible for emission to the caller from those that are present only as
-/// adjustment context. Adjustment chains may need to consult dates that lie outside the requested window — for example
-/// a prior-year <c>31 December</c> non-working day used as a blocker for a new-year roll-forward — without those dates
-/// appearing in the caller's output.
+/// The role distinguishes entries that represent a real rule occurrence (and are therefore eligible for emission) from
+/// entries materialized purely to support adjustment or offset-anchor resolution. Whether a <see cref="Candidate" />
+/// entry actually appears in the output is decided independently at emission time by intersecting its base and adjusted
+/// dates with the requested window under the active <see cref="ObservedDateMode" /> — so the answer for a given day is
+/// independent of the query-window width.
 /// </para>
 /// </remarks>
 internal enum NotableDateCacheState
 {
     /// <summary>
-    /// The entry is computed and cached but its observed date does not intersect the requested window. The entry
-    /// participates only as adjustment context (for example, as a non-working blocker).
+    /// The entry exists only as context for adjustment or offset-anchor resolution (for example, an on-demand fringe
+    /// anchor materialized so a dependent offset rule can read it). It is never emitted to the caller.
     /// </summary>
-    Computed = 0,
+    ContextOnly = 0,
 
     /// <summary>
-    /// The entry's base observed date intersects the requested window and is eligible for emission.
+    /// The entry represents a real rule occurrence and is eligible for emission. Whether it is emitted, and whether the
+    /// base or adjusted form is used, is determined at emission time from the requested window and observed-date mode.
     /// </summary>
-    InWindow,
-
-    /// <summary>
-    /// An observance adjustment was applied and the resulting adjusted date intersects the requested window. The
-    /// adjusted date is eligible for emission.
-    /// </summary>
-    Adjusted,
-
-    /// <summary>
-    /// An observance adjustment was applied but the resulting adjusted date lies outside the requested window. The
-    /// adjusted date is retained as adjustment context only.
-    /// </summary>
-    AdjustedBlocker,
+    Candidate,
 }

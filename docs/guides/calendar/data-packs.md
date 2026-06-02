@@ -41,7 +41,7 @@ using Bodu.Globalization.Calendar.Data.Americas;
 
 var service = new NotableDateService(
     ruleProviders:     new[] { AmericasCalendarData.CreateUnitedStatesProvider() },
-    weekendDefinition: CalendarWeekendDefinition.SaturdaySunday);
+    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 
 IReadOnlyList<NotableDate> july4 = service.GetNotableDates(new DateTime(2026, 7, 4), "US");
 // → Independence Day, 4 July 2026
@@ -65,7 +65,7 @@ var providers = AmericasCalendarData.CreateProviders()
 
 var service = new NotableDateService(
     ruleProviders:     providers,
-    weekendDefinition: CalendarWeekendDefinition.SaturdaySunday);
+    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 ```
 
 A single query then resolves cleanly across every loaded pack:
@@ -109,7 +109,7 @@ var registry = new NotableDateAlgorithmRegistry()
 
 var service = new NotableDateService(
     ruleProviders:     AsiaPacificCalendarData.CreateProviders(),
-    weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
+    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
     options: new NotableDateServiceOptions { AlgorithmRegistry = registry });
 ```
 

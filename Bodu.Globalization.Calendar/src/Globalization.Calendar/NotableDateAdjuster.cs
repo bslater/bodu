@@ -21,7 +21,7 @@ namespace Bodu.Globalization.Calendar;
 /// </para>
 /// <para>
 /// The adjuster also implements every previously-stubbed <see cref="AdjustmentTrigger" /> and
-/// <see cref="AdjustmentAction" /> value, including <see cref="AdjustmentAction.MoveToNextNonWorkingDay" />,
+/// <see cref="AdjustmentAction" /> value, including <see cref="AdjustmentAction.MoveToNextWorkingDay" />,
 /// <see cref="AdjustmentAction.ReplaceWithNamedDate" />, and the custom handler dispatch path.
 /// </para>
 /// </remarks>
@@ -49,10 +49,10 @@ internal sealed class NotableDateAdjuster
     private readonly IAdjustmentHandlerRegistry? _handlerRegistry;
 
     /// <summary>
-    /// An optional callback that resolves another rule's observed date by name, used by
-    /// <see cref="AdjustmentAction.ReplaceWithNamedDate" />.
+    /// An optional callback that resolves another rule's observed date by canonical name and optional variant, used by
+    /// <see cref="AdjustmentAction.ReplaceWithNamedDate" />. Arguments are (name, variant, year, territory, calendar).
     /// </summary>
-    private readonly Func<string, int, string?, Type?, DateTime?>? _resolveByName;
+    private readonly Func<string, string?, int, string?, Type?, DateTime?>? _resolveByName;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="NotableDateAdjuster" /> class.
@@ -67,7 +67,7 @@ internal sealed class NotableDateAdjuster
     /// </param>
     /// <param name="resolveByName">
     /// An optional callback used by <see cref="AdjustmentAction.ReplaceWithNamedDate" /> to look up another rule's
-    /// resolved date for the same year.
+    /// resolved date for the same year, by canonical name and optional rule-level variant.
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="isWeekend" /> or <paramref name="isNonWorkingDay" /> is <see langword="null" />.
@@ -77,7 +77,7 @@ internal sealed class NotableDateAdjuster
         Func<DateTime, string?, Type?, bool> isNonWorkingDay,
         WeekPattern workingWeek,
         IAdjustmentHandlerRegistry? handlerRegistry = null,
-        Func<string, int, string?, Type?, DateTime?>? resolveByName = null)
+        Func<string, string?, int, string?, Type?, DateTime?>? resolveByName = null)
     {
         _isWeekend = isWeekend ?? throw new ArgumentNullException(nameof(isWeekend));
         _isNonWorkingDay = isNonWorkingDay ?? throw new ArgumentNullException(nameof(isNonWorkingDay));
@@ -102,32 +102,47 @@ internal sealed class NotableDateAdjuster
         if (adjustment.EffectiveFromYear is { } from && year < from) return false;
         if (adjustment.EffectiveToYear is { } to && year > to) return false;
 
-        if (adjustment.CalendarType is not null && calendarType is not null && adjustment.CalendarType != calendarType)
-            return false;
-
-        if (!string.IsNullOrEmpty(adjustment.TerritoryCode) && !string.IsNullOrEmpty(territoryCode))
+        // Calendar scope: a calendar-scoped adjustment applies to a calendar-neutral (global) rule only when opted in.
+        if (adjustment.CalendarType is not null)
         {
-            if (!TerritoryCode.TryParse(territoryCode, out TerritoryCode requested))
-                return false;
-
-            // Bidirectional containment: the adjustment is in scope when either party
-            // contains the other. Parent-containing-child (adjustment="AU" queried
-            // against "AU-NSW") lets country-level shifts apply to every subdivision.
-            // Child-containing-parent (adjustment="AU-WA" evaluated while generating
-            // for rule territory "AU") lets a subdivision-specific substitute fire
-            // during generation of the parent rule; the emitted occurrence is then
-            // tagged with the adjustment's own territory by the generator.
-            var matched = false;
-            foreach (TerritoryCode scoped in TerritoryCode.ParseList(adjustment.TerritoryCode))
+            if (calendarType is null)
             {
-                if (scoped.Contains(requested) || requested.Contains(scoped))
-                {
-                    matched = true;
-                    break;
-                }
+                if (!adjustment.AppliesToGlobalRules) return false;
             }
+            else if (adjustment.CalendarType != calendarType)
+            {
+                return false;
+            }
+        }
 
-            if (!matched) return false;
+        // Territory scope: a territory-scoped adjustment applies to a territory-neutral (global) rule only when opted in.
+        if (!string.IsNullOrEmpty(adjustment.TerritoryCode))
+        {
+            if (string.IsNullOrEmpty(territoryCode))
+            {
+                if (!adjustment.AppliesToGlobalRules) return false;
+            }
+            else
+            {
+                if (!TerritoryCode.TryParse(territoryCode, out TerritoryCode requested))
+                    return false;
+
+                // Bidirectional containment: the adjustment is in scope when either party contains the other.
+                // Parent-containing-child (adjustment="AU" against "AU-NSW") lets country-level shifts apply to every
+                // subdivision; child-containing-parent (adjustment="AU-WA" while generating rule territory "AU") lets a
+                // subdivision-specific substitute fire during generation of the parent rule.
+                var matched = false;
+                foreach (TerritoryCode scoped in TerritoryCode.ParseList(adjustment.TerritoryCode))
+                {
+                    if (scoped.Contains(requested) || requested.Contains(scoped))
+                    {
+                        matched = true;
+                        break;
+                    }
+                }
+
+                if (!matched) return false;
+            }
         }
 
         return true;
@@ -233,7 +248,7 @@ internal sealed class NotableDateAdjuster
         string? territoryCode,
         Type? calendarType)
     {
-        // Day-arithmetic actions (AddDays, MoveToNextWeekday, MoveToPreviousWeekday, MoveToNextNonWorkingDay) all eventually call
+        // Day-arithmetic actions (AddDays, MoveToNextWeekday, MoveToPreviousWeekday, MoveToNextWorkingDay) all eventually call
         // DateTime.AddDays / DateTime.AddTicks, which throw ArgumentOutOfRangeException when the result would land outside the
         // supported range (years 1..9999). Catch that here so a single misconfigured adjustment does not abort the entire
         // resolution; the activated result simply falls back to the original date and downstream "AdjustedDate == original"
@@ -247,7 +262,7 @@ internal sealed class NotableDateAdjuster
                 AdjustmentAction.AddDays => original.AddDays(adjustment.OffsetDays),
                 AdjustmentAction.MoveToNextWeekday => original.NextWeekday(_workingWeek),
                 AdjustmentAction.MoveToPreviousWeekday => original.PreviousWeekday(_workingWeek),
-                AdjustmentAction.MoveToNextNonWorkingDay => MoveToNextNonWorkingDay(original, territoryCode, calendarType),
+                AdjustmentAction.MoveToNextWorkingDay => MoveToNextWorkingDay(original, territoryCode, calendarType),
                 AdjustmentAction.ReplaceWithNamedDate => ResolveReplacement(adjustment, original, territoryCode, calendarType),
                 AdjustmentAction.Custom => ApplyCustomHandler(adjustment, rule, original, territoryCode, calendarType).AdjustedDate,
                 _ => original,
@@ -318,7 +333,7 @@ internal sealed class NotableDateAdjuster
     /// The first working day strictly after <paramref name="original" />, or <paramref name="original" /> itself if no
     /// working day is found within 366 days.
     /// </returns>
-    private DateTime MoveToNextNonWorkingDay(DateTime original, string? territoryCode, Type? calendarType)
+    private DateTime MoveToNextWorkingDay(DateTime original, string? territoryCode, Type? calendarType)
     {
         // Skip days that are already non-working (weekends, other holidays) and stop on the first working day.
         // That working day is promoted to a non-working substitute. For example, if Boxing Day falls on Saturday,
@@ -353,7 +368,7 @@ internal sealed class NotableDateAdjuster
         if (string.IsNullOrWhiteSpace(adjustment.TargetRuleName) || _resolveByName is null)
             return original;
 
-        DateTime? resolved = _resolveByName(adjustment.TargetRuleName!, original.Year, territoryCode, calendarType);
+        DateTime? resolved = _resolveByName(adjustment.TargetRuleName!, adjustment.TargetRuleVariant, original.Year, territoryCode, calendarType);
         return resolved ?? original;
     }
 

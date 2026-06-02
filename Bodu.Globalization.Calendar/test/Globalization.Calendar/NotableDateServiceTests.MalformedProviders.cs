@@ -554,7 +554,7 @@ public sealed partial class NotableDateServiceTests
         : INotableDateCollisionResolver
     {
         /// <inheritdoc />
-        public IReadOnlyList<NotableDate> Resolve(DateTime date, IReadOnlyList<NotableDate> overlapping) => null!;
+        public IReadOnlyList<NotableDate> Resolve(NotableDateCollisionContext context) => null!;
     }
 
     /// <summary>

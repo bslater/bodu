@@ -75,6 +75,9 @@
   <data name="Arg_Invalid_AssemblyPathNullOrWhiteSpace" xml:space="preserve">
     <value>Assembly path must not be null or whitespace.</value>
   </data>
+  <data name="Arg_Invalid_CollisionProvenanceCountMismatch" xml:space="preserve">
+    <value>The provenance list must have the same number of entries as the overlapping notable dates.</value>
+  </data>
   <data name="Arg_Invalid_EndDateBeforeStartDate" xml:space="preserve">
     <value>The end date must not be earlier than the start date.</value>
   </data>
@@ -159,6 +162,18 @@
   <data name="Op_Invalid_ActivatorCreateInstanceNull" xml:space="preserve">
     <value>Activator.CreateInstance returned null for type '{0}'.</value>
   </data>
+  <data name="Op_Invalid_AlgorithmKeyNotRegistered" xml:space="preserve">
+    <value>Algorithm key '{0}' referenced by rule '{1}' is not registered.</value>
+  </data>
+  <data name="Op_Invalid_AmbiguousAnchorReference" xml:space="preserve">
+    <value>Anchor reference '{0}' on rule '{1}' matches {2} rules and cannot be resolved unambiguously. Qualify the reference with a rule name, territory, or calendar type.</value>
+  </data>
+  <data name="Op_Invalid_AmbiguousReplacementTarget" xml:space="preserve">
+    <value>Replacement target '{0}' on adjustment '{1}' (rule '{2}') matches {3} rules and cannot be resolved unambiguously. Qualify the target with a rule name, territory, or calendar type.</value>
+  </data>
+  <data name="Op_Invalid_AmbiguousRuleReference" xml:space="preserve">
+    <value>Rule reference '{0}' matches {1} rules and cannot be resolved unambiguously.</value>
+  </data>
   <data name="Op_Invalid_AnchorRuleNotFound" xml:space="preserve">
     <value>Anchor rule '{0}' referenced by '{1}' was not found.</value>
   </data>
@@ -173,6 +188,9 @@
   </data>
   <data name="Op_Invalid_DuplicateAdjustmentKey" xml:space="preserve">
     <value>Duplicate adjustment key '{0}' on element '{1}'. Keys must be unique within a single rule or override body.</value>
+  </data>
+  <data name="Op_Invalid_DuplicateRuleIdentity" xml:space="preserve">
+    <value>Two rules share the same identity (Name '{0}', RuleName '{1}', Territory '{2}', Calendar '{3}'). Rule identities must be unique within a service.</value>
   </data>
   <data name="Op_Invalid_InvalidAttributeValue" xml:space="preserve">
     <value>Invalid value for attribute '{0}' on element '{1}'.</value>

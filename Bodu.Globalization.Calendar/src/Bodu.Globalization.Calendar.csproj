@@ -65,7 +65,6 @@
     <None Remove="Globalization.Calendar.Resources\global-remembrance.xml" />
     <None Remove="Globalization.Calendar.Resources\global-social.xml" />
     <None Remove="Globalization.Calendar.Resources\global-un.xml" />
-    <None Remove="Globalization.Calendar\NotableDates.xml" />
     <None Remove="Globalization.Calendar\NotableDates.xsd" />
     <None Remove="Globalization.Calendar\NotableDates.schema.json" />
     <None Remove="Globalization.Calendar.Resources\global-animals.xml" />
@@ -100,7 +99,6 @@
     <EmbeddedResource Include="Globalization.Calendar.Resources\global-remembrance.xml" />
     <EmbeddedResource Include="Globalization.Calendar.Resources\global-social.xml" />
     <EmbeddedResource Include="Globalization.Calendar.Resources\global-un.xml" />
-    <EmbeddedResource Include="Globalization.Calendar\NotableDates.xml" />
     <EmbeddedResource Include="Globalization.Calendar\NotableDates.xsd">
       <SubType>Designer</SubType>
     </EmbeddedResource>

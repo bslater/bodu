@@ -125,7 +125,7 @@ rule.RuleName("au-melbourne-cup-2023-+");
 ```csharp
 rule.AddAdjustment("weekend-roll", adj => adj
     .When(AdjustmentTrigger.IfWeekend)
-    .Action(AdjustmentAction.MoveToNextMonday)
+    .Action(AdjustmentAction.MoveToNextWorkingDay)
     .NonWorking(true));
 ```
 
@@ -148,7 +148,7 @@ Some triggers require additional context:
 |---|---|---|
 | `AddDays` | `.OffsetDays(int)` | Required — can be negative. |
 | `ReplaceWithNamedDate` | `.Target(ruleName)` | Required — the rule whose date replaces this one. |
-| `UseCustomHandler` | `.HandlerKey(string)` | Required — the registered custom-handler key. |
+| `Custom` | `.HandlerKey(string)` | Required — the registered custom-handler key. |
 
 ### Adjustment scope
 
@@ -159,10 +159,11 @@ adj
     .FromYear(2010)
     .ToYear(2099)
     .Priority(10)                    // evaluated first when multiple adjustments fire
-    .MaxAdjustmentReachDays(7);      // limits the range-resolution envelope
+    .MaxAdjustmentReachDays(7)       // bounds the range-resolution envelope
+    .AppliesToGlobalRules(true);     // lets a scoped adjustment touch global rules
 ```
 
-`MaxAdjustmentReachDays` and `AddHandlerParameter` are programmatic-only fields — they are honoured by the range-resolution pipeline and the custom-handler dispatch but are not part of the XML / JSON schema.
+`MaxAdjustmentReachDays`, `AddHandlerParameter`, and `AppliesToGlobalRules` round-trip through the schema: they are honoured by the range-resolution pipeline and custom-handler dispatch *and* serialize via `ToXDocument()` / `ToJsonNode()` (the `maxReachDays` attribute, repeated `<Param>` children / a `handlerParameters` object, and the `appliesToGlobalRules` attribute respectively).
 
 ### Removing adjustments
 
@@ -216,7 +217,7 @@ INotableDateRuleProvider provider = NotableDateDocumentBuilder.Create()
             .NonWorking(true)
             .AddAdjustment("weekend-roll", adj => adj
                 .When(AdjustmentTrigger.IfWeekend)
-                .Action(AdjustmentAction.MoveToNextMonday)
+                .Action(AdjustmentAction.MoveToNextWorkingDay)
                 .NonWorking(true))))
 
     // Good Friday — anchored to Easter.

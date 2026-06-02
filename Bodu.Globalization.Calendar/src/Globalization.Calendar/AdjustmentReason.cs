@@ -41,7 +41,7 @@ namespace Bodu.Globalization.Calendar;
 ///         // date.Date           == 2026-04-27 (Monday — observed)
 ///         // reason.OriginalDate == 2026-04-25 (Saturday — actual)
 ///         // reason.Trigger      == AdjustmentTrigger.IfWeekend
-///         // reason.Action       == AdjustmentAction.MoveToNextMonday
+///         // reason.Action       == AdjustmentAction.MoveToNextWorkingDay
 ///         Console.WriteLine(
 ///             $"{date.Name}: observed {date.Date:d} (actual {reason.OriginalDate:d}, " +
 ///             $"shifted because {reason.Trigger} via {reason.Action})");

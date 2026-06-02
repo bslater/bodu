@@ -136,14 +136,16 @@ new ObservanceAdjustment
 ```
 
 ```xml
-<Adjustment key="permanent-offset" when="Always" action="AddDays" offset="1" />
+<Adjustment key="permanent-offset" when="Always" action="AddDays" days="1" />
 ```
 
 ### `IfWeekend`
 
 Fires when the nominal date falls on a weekend day as defined by the service's configured
-`CalendarWeekendDefinition`. For most territories this is Saturday or Sunday, but the
-weekend definition is configurable — Friday/Saturday for some Middle Eastern territories.
+working week (`WorkingDaysOfWeek`, or a `WeekPattern` for irregular weeks). For most
+territories the working week is Monday–Friday so the weekend is Saturday or Sunday, but it
+is configurable — for example `SundayToThursday` makes Friday/Saturday the weekend, as in
+some Middle Eastern territories.
 
 ```csharp
 new ObservanceAdjustment
@@ -208,19 +210,19 @@ This is the correct trigger for Christmas and Boxing Day substitution in the UK 
 Australia, where Boxing Day moves when Christmas Day has already taken Monday:
 
 ```csharp
-// Boxing Day: if Boxing Day is already a non-working day, move to the next non-working day
+// Boxing Day: if Boxing Day is already a non-working day, skip ahead to the next working day
 new ObservanceAdjustment
 {
     Key     = "boxing-day-substitute",
     Trigger = AdjustmentTrigger.IfNonWorkingDay,
-    Action  = AdjustmentAction.MoveToNextNonWorkingDay,
+    Action  = AdjustmentAction.MoveToNextWorkingDay,
 }
 ```
 
 ```xml
 <Adjustment key="boxing-day-substitute"
             when="IfNonWorkingDay"
-            action="MoveToNextNonWorkingDay" />
+            action="MoveToNextWorkingDay" />
 ```
 
 > **Note:** Because `IfNonWorkingDay` depends on the live non-working-day set, the output
@@ -245,7 +247,7 @@ new ObservanceAdjustment
 ```
 
 ```xml
-<Adjustment key="leap-year-variant" when="IfLeapYear" action="AddDays" offset="1" />
+<Adjustment key="leap-year-variant" when="IfLeapYear" action="AddDays" days="1" />
 ```
 
 ### `IfNthOccurrenceInMonth`
@@ -317,7 +319,7 @@ new ObservanceAdjustment
 <Adjustment key="corporate-closure"
             when="Custom" action="Custom"
             handlerKey="corporate-closure-handler">
-  <Parameter name="closureType" value="earlyClose" />
+  <Param key="closureType" value="earlyClose" />
 </Adjustment>
 ```
 
@@ -349,8 +351,8 @@ new ObservanceAdjustment
 
 ### `MoveToNextWeekday`
 
-Advances the nominal date to the next calendar day that is not a weekend (as defined by
-`CalendarWeekendDefinition`). If the nominal date is already a weekday this action is a no-op —
+Advances the nominal date to the next calendar day that is not a weekend (as defined by the
+configured `WorkingDaysOfWeek`). If the nominal date is already a weekday this action is a no-op —
 trigger conditions should ensure it only fires when the nominal date is on a weekend.
 
 Saturday advances to Monday; Sunday advances to Monday (unless Monday is also a weekend,
@@ -361,7 +363,7 @@ which can occur for non-standard weekend definitions).
 Retreats to the nearest preceding weekday. Saturday retreats to Friday; Sunday retreats to
 Friday.
 
-### `MoveToNextNonWorkingDay`
+### `MoveToNextWorkingDay`
 
 Advances past all consecutive non-working days (weekends and other notable dates flagged
 `IsNonWorkingDay`) until the first day that is a working day. This is the action to use for
@@ -371,6 +373,13 @@ holiday.
 For example, if Christmas falls on a Friday (non-working) then Boxing Day (Saturday) is
 already non-working, and its substitute must skip Saturday (weekend), Sunday (weekend), and
 Monday (Christmas substitute) to land on Tuesday.
+
+> **Renamed.** This action was previously named `MoveToNextNonWorkingDay`, whose name
+> inverted its behaviour (it always lands on a *working* day). The XML and JSON parsers
+> still accept the old `MoveToNextNonWorkingDay` token as an alias, so existing authored
+> resources continue to load; new rules should use `MoveToNextWorkingDay`. The
+> `AdjustmentAction.MoveToNextNonWorkingDay` enum member no longer exists, so C# code must
+> use `AdjustmentAction.MoveToNextWorkingDay`.
 
 ### `ReplaceWithNamedDate`
 
@@ -457,7 +466,7 @@ ImmutableArray.Create(
 `MaxAdjustmentReachDays` caps how many days the observed date may be moved from the nominal
 date. When set to a positive value, the adjustment is not applied if the resulting date would
 exceed the cap. This prevents pathological cases near month or year boundaries where a
-`MoveToNextNonWorkingDay` action would skip into the wrong month.
+`MoveToNextWorkingDay` action would skip into the wrong month.
 
 ---
 
@@ -485,13 +494,13 @@ Adjustments = ImmutableArray.Create(
         Action        = AdjustmentAction.MoveToNextWeekday,
         TerritoryCode = "AU-NT",
     },
-    // All other AU: move to next non-working day
+    // All other AU: skip ahead to the next working day
     new ObservanceAdjustment
     {
         Key           = "au-nonworking-roll",
         Priority      = 2,
         Trigger       = AdjustmentTrigger.IfNonWorkingDay,
-        Action        = AdjustmentAction.MoveToNextNonWorkingDay,
+        Action        = AdjustmentAction.MoveToNextWorkingDay,
         TerritoryCode = "AU",
     }
 )
@@ -573,7 +582,7 @@ Adjustments = ImmutableArray.Create(
 ### Boxing Day collision avoidance
 
 When Christmas Day moves to Monday, Boxing Day (26 December) must skip to Tuesday rather
-than also landing on Monday. `IfNonWorkingDay` with `MoveToNextNonWorkingDay` handles this
+than also landing on Monday. `IfNonWorkingDay` with `MoveToNextWorkingDay` handles this
 automatically by checking the live non-working-day context:
 
 ```csharp
@@ -582,7 +591,7 @@ Adjustments = ImmutableArray.Create(new ObservanceAdjustment
 {
     Key     = "boxing-day-collision",
     Trigger = AdjustmentTrigger.IfNonWorkingDay,
-    Action  = AdjustmentAction.MoveToNextNonWorkingDay,
+    Action  = AdjustmentAction.MoveToNextWorkingDay,
 })
 ```
 
@@ -591,7 +600,7 @@ For 2027 (Christmas on Saturday):
 | Date | Event | Adjustment |
 |---|---|---|
 | 25 Dec (Sat) | Christmas Day nominal date | `IfWeekend → MoveToNextWeekday` → observed Mon 27 Dec |
-| 26 Dec (Sun) | Boxing Day nominal date | `IfNonWorkingDay → MoveToNextNonWorkingDay`: Sun is non-working → skip to Mon → Mon 27 is already non-working (Christmas substitute) → observed Tue 28 Dec |
+| 26 Dec (Sun) | Boxing Day nominal date | `IfNonWorkingDay → MoveToNextWorkingDay`: Sun is non-working → skip to Mon → Mon 27 is already non-working (Christmas substitute) → observed Tue 28 Dec |
 
 ### Easter Monday collision with another holiday
 
@@ -601,7 +610,7 @@ Adjustments = ImmutableArray.Create(new ObservanceAdjustment
 {
     Key                   = "collision-skip",
     Trigger               = AdjustmentTrigger.IfNonWorkingDay,
-    Action                = AdjustmentAction.MoveToNextNonWorkingDay,
+    Action                = AdjustmentAction.MoveToNextWorkingDay,
     MaxAdjustmentReachDays = 3,  // never shift more than 3 days
 })
 ```
@@ -680,7 +689,7 @@ AdjustmentHandlerRegistry handlers = new AdjustmentHandlerRegistry()
 
 var service = new NotableDateService(
     ruleProviders:     new[] { myProvider },
-    weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
+    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
     options: new NotableDateServiceOptions { AdjustmentHandlers = handlers });
 ```
 

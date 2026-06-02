@@ -45,7 +45,7 @@ namespace Bodu.Globalization.Calendar.Builder;
 ///             .FirstYear(1994)
 ///             .AddAdjustment("weekend-roll", adj => adj
 ///                 .When(AdjustmentTrigger.IfWeekend)
-///                 .Action(AdjustmentAction.MoveToNextMonday)
+///                 .Action(AdjustmentAction.MoveToNextWorkingDay)
 ///                 .NonWorking(true))));
 ///]]>
 /// </example>

@@ -18,6 +18,8 @@
       href: adjustment-rules.md
     - name: The resolution pipeline
       href: resolution-pipeline.md
+    - name: Rule identity, priority, and observed-date resolution
+      href: identity-and-resolution.md
     - name: Working with non-Gregorian calendars
       href: non-gregorian-calendars.md
 - name: Bodu.Globalization.Calendar — Patterns

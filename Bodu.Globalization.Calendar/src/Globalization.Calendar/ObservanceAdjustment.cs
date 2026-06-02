@@ -15,8 +15,9 @@ namespace Bodu.Globalization.Calendar;
 /// <remarks>
 /// <para>
 /// An <see cref="ObservanceAdjustment" /> consists of a <see cref="Trigger" /> describing the activation condition and
-/// an <see cref="Action" /> describing the resulting modification. Adjustments are evaluated in <see cref="Priority" />
-/// order during date generation and may be scoped to a single territory, calendar, or year range.
+/// an <see cref="Action" /> describing the resulting modification. Adjustments are evaluated in ascending
+/// <see cref="Priority" /> order under a first-active-wins policy — the first adjustment that activates and moves the
+/// date wins — and may be scoped to a single territory, calendar, or year range.
 /// </para>
 /// <para>
 /// Multiple adjustments on a single rule allow layered logic — for example, one entry rolls a Saturday observance to
@@ -25,9 +26,9 @@ namespace Bodu.Globalization.Calendar;
 /// another resource.
 /// </para>
 /// <para>
-/// When an adjustment activates the <see cref="NotableDateService" /> emits an <em>additional</em>
-/// <see cref="NotableDate" /> at the adjusted date, leaving the original calculated date in place so consumers see both
-/// the actual and the observed occurrence. The shifted occurrence carries an <see cref="AdjustmentReason" /> on its
+/// When an adjustment activates the <see cref="NotableDateService" /> emits the shifted occurrence according to the
+/// configured <see cref="ObservedDateMode" /> (default <see cref="ObservedDateMode.ObservedOnly" />, where the observed
+/// date supersedes the actual date). The shifted occurrence carries an <see cref="AdjustmentReason" /> on its
 /// <see cref="NotableDate.AdjustmentReason" /> property, naming the trigger and action that caused the shift; this also
 /// flips <see cref="NotableDate.WasAdjusted" /> to <see langword="true" />. When <see cref="IsNonWorkingDay" /> is set
 /// on the adjustment, that value overrides the rule's non-working flag for the shifted occurrence only.
@@ -47,7 +48,7 @@ namespace Bodu.Globalization.Calendar;
 /// {
 ///     Key = "weekend-to-monday",
 ///     Trigger = AdjustmentTrigger.IfWeekend,
-///     Action = AdjustmentAction.MoveToNextMonday,
+///     Action = AdjustmentAction.MoveToNextWorkingDay,
 ///     TerritoryCode = "AU",
 ///     IsNonWorkingDay = true,
 /// };
@@ -58,7 +59,7 @@ namespace Bodu.Globalization.Calendar;
 ///     Key = "anzac-day-wa-sub",
 ///     Trigger = AdjustmentTrigger.IfDayOfWeek,
 ///     DayOfWeek = DayOfWeek.Sunday,
-///     Action = AdjustmentAction.MoveToNextMonday,
+///     Action = AdjustmentAction.MoveToNextWorkingDay,
 ///     TerritoryCode = "AU-WA",
 ///     IsNonWorkingDay = true,
 ///     Priority = 10,
@@ -196,6 +197,16 @@ public sealed record ObservanceAdjustment
     public string? TargetRuleName { get; init; }
 
     /// <summary>
+    /// Gets the optional rule-level variant of the <see cref="AdjustmentAction.ReplaceWithNamedDate" /> target, used to
+    /// disambiguate when several rules share the canonical <see cref="TargetRuleName" />.
+    /// </summary>
+    /// <returns>
+    /// The target rule's <see cref="NotableDateRule.RuleName" />, or <see langword="null" /> to resolve by name using
+    /// territory and calendar context.
+    /// </returns>
+    public string? TargetRuleVariant { get; init; }
+
+    /// <summary>
     /// Gets the evaluation priority. Lower values are evaluated first; the default of 100 leaves room for both higher-
     /// and lower-priority adjustments to be inserted later.
     /// </summary>
@@ -253,7 +264,7 @@ public sealed record ObservanceAdjustment
     /// <para>
     /// The value is interpreted as a symmetric absolute envelope: the adjustment may shift the date by at most
     /// <c>±value</c> days. When <see langword="null" />, the pipeline falls back to action-specific defaults (for
-    /// example, <see cref="AdjustmentAction.MoveToNextNonWorkingDay" /> ≈ +7 days).
+    /// example, <see cref="AdjustmentAction.MoveToNextWorkingDay" /> ≈ +7 days).
     /// </para>
     /// </remarks>
     /// <returns>
@@ -261,4 +272,18 @@ public sealed record ObservanceAdjustment
     /// heuristic.
     /// </returns>
     public int? MaxAdjustmentReachDays { get; init; }
+
+    /// <summary>
+    /// Gets a value indicating whether a territory- or calendar-scoped adjustment may apply to a rule that is itself
+    /// territory- or calendar-neutral (global).
+    /// </summary>
+    /// <remarks>
+    /// By default (<see langword="false" />) a scoped adjustment only activates when the rule being resolved carries a
+    /// matching territory or calendar context, so a regional substitute does not silently apply to a global rule. Set
+    /// this to <see langword="true" /> to opt a scoped adjustment into global rules.
+    /// </remarks>
+    /// <returns>
+    /// <see langword="true" /> to allow a scoped adjustment to apply to a global rule; otherwise <see langword="false" />.
+    /// </returns>
+    public bool AppliesToGlobalRules { get; init; }
 }

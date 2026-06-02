@@ -15,7 +15,7 @@ namespace Bodu.Globalization.Calendar;
 /// <see cref="NotableDate.DisplayName" />).
 /// </summary>
 [TestClass]
-public sealed class NotableDateTests
+public sealed partial class NotableDateTests
 {
     private static readonly DateTime Anchor = new(2026, 4, 1);
 

@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateCacheKey.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -9,22 +9,19 @@ namespace Bodu.Globalization.Calendar.RangeResolution;
 /// <summary>
 /// Identifies a unique entry within the chronological range-resolution cache.
 /// </summary>
-/// <param name="RuleName">The notable-date rule name.</param>
+/// <param name="Identity">
+/// The composite identity (canonical name, rule-level variant name, materialized territory, and calendar type) of the
+/// cached occurrence.
+/// </param>
 /// <param name="AnchorYear">The civil year of the rule's anchor date.</param>
-/// <param name="TerritoryCode">
-/// The territory the entry was materialized for, or <see langword="null" /> for territory-neutral.
-/// </param>
-/// <param name="CalendarType">
-/// The calendar type the entry was materialized against, or <see langword="null" /> for calendar-neutral.
-/// </param>
 /// <remarks>
 /// <para>
-/// Cache keys preserve the rule's authored territory and calendar context so that the same rule materialized against
-/// multiple territories does not collapse into a single entry.
+/// Keying on the full <see cref="NotableDateRuleIdentity" /> preserves the rule's variant
+/// (<see cref="NotableDateRule.RuleName" />), materialized territory, and calendar context, so that distinct variants
+/// of the same canonical name — for example western and orthodox Easter — and the same rule materialized against
+/// multiple territories never collapse into a single cache entry.
 /// </para>
 /// </remarks>
 internal readonly record struct NotableDateCacheKey(
-    string RuleName,
-    int AnchorYear,
-    string? TerritoryCode,
-    Type? CalendarType);
+    NotableDateRuleIdentity Identity,
+    int AnchorYear);

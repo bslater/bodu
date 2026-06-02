@@ -144,25 +144,25 @@ public abstract class NotableDateRuleResourceProviderBase
     private List<NotableDateRule> LoadAndFlatten()
     {
         var documentCache = new Dictionary<string, ParsedNotableDateDocument>(StringComparer.OrdinalIgnoreCase);
-        var flattenedCache = new Dictionary<string, IReadOnlyDictionary<RuleKey, NotableDateRule>>(StringComparer.OrdinalIgnoreCase);
+        var flattenedCache = new Dictionary<string, IReadOnlyDictionary<NotableDateRuleIdentity, NotableDateRule>>(StringComparer.OrdinalIgnoreCase);
         var inProgress = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-        IReadOnlyDictionary<RuleKey, NotableDateRule> byKey = FlattenResource(_rootResourceName, _resourcePathResolver, documentCache, flattenedCache, inProgress);
+        IReadOnlyDictionary<NotableDateRuleIdentity, NotableDateRule> byKey = FlattenResource(_rootResourceName, _resourcePathResolver, documentCache, flattenedCache, inProgress);
         return [.. byKey.Values];
     }
 
     /// <summary>
-    /// Flattens a single parsed resource document into a rule dictionary keyed by <see cref="RuleKey" />, resolving
-    /// <c>Use</c> directives against already-loaded sources.
+    /// Flattens a single parsed resource document into a rule dictionary keyed by <see cref="NotableDateRuleIdentity" />,
+    /// resolving <c>Use</c> directives against already-loaded sources.
     /// </summary>
-    private IReadOnlyDictionary<RuleKey, NotableDateRule> FlattenResource(
+    private IReadOnlyDictionary<NotableDateRuleIdentity, NotableDateRule> FlattenResource(
         string resourceName,
         IResourcePathResolver pathResolver,
         Dictionary<string, ParsedNotableDateDocument> documentCache,
-        Dictionary<string, IReadOnlyDictionary<RuleKey, NotableDateRule>> flattenedCache,
+        Dictionary<string, IReadOnlyDictionary<NotableDateRuleIdentity, NotableDateRule>> flattenedCache,
         HashSet<string> inProgress)
     {
-        if (flattenedCache.TryGetValue(resourceName, out IReadOnlyDictionary<RuleKey, NotableDateRule>? cachedFlattened))
+        if (flattenedCache.TryGetValue(resourceName, out IReadOnlyDictionary<NotableDateRuleIdentity, NotableDateRule>? cachedFlattened))
             return cachedFlattened;
 
         if (!inProgress.Add(resourceName))
@@ -175,17 +175,17 @@ public abstract class NotableDateRuleResourceProviderBase
         try
         {
             ParsedNotableDateDocument document = LoadDocument(resourceName, documentCache);
-            var byKey = new Dictionary<RuleKey, NotableDateRule>();
+            var byKey = new Dictionary<NotableDateRuleIdentity, NotableDateRule>();
 
             foreach (NotableDateRuleUseGroup group in document.UseGroups)
             {
                 var resolvedPath = pathResolver.Resolve(resourceName, group.SourceResource);
-                IReadOnlyDictionary<RuleKey, NotableDateRule> sourceRules = FlattenResource(resolvedPath, pathResolver, documentCache, flattenedCache, inProgress);
+                IReadOnlyDictionary<NotableDateRuleIdentity, NotableDateRule> sourceRules = FlattenResource(resolvedPath, pathResolver, documentCache, flattenedCache, inProgress);
 
                 if (group.UseAll)
                 {
                     // Wildcard: copy every rule. Explicit Use directives below may then override individual entries.
-                    foreach (KeyValuePair<RuleKey, NotableDateRule> pair in sourceRules)
+                    foreach (KeyValuePair<NotableDateRuleIdentity, NotableDateRule> pair in sourceRules)
                     {
                         byKey[pair.Key] = pair.Value;
                     }
@@ -211,14 +211,16 @@ public abstract class NotableDateRuleResourceProviderBase
 
                     if (directive.ClearInherited)
                     {
-                        // Drop every inherited match previously copied via UseAll, then promote a single rule built solely from the
-                        // directive (the override body is applied on top of the first match purely to seed strategy/category/etc.).
+                        // Drop every inherited match previously copied via UseAll, then build a single rule solely from
+                        // the directive and its override body. Seeding from a blank rule (carrying only the canonical
+                        // name) keeps the result deterministic: it never inherits fields from whichever source variant
+                        // happened to be enumerated first.
                         foreach (NotableDateRule match in matches)
                         {
                             byKey.Remove(KeyOf(match));
                         }
 
-                        NotableDateRule seed = matches[0];
+                        NotableDateRule seed = new() { Name = matches[0].Name, Strategy = default, Category = default };
                         NotableDateRule localized = ApplyOverrides(seed, directive);
                         byKey[KeyOf(localized)] = localized;
                         continue;
@@ -290,10 +292,10 @@ public abstract class NotableDateRuleResourceProviderBase
     /// <param name="sourceRules">The already-loaded rule dictionary.</param>
     /// <param name="name">The canonical rule name from the <c>Use</c> directive.</param>
     /// <returns>The matching rules; empty if none are present.</returns>
-    private static List<NotableDateRule> FindSourceRules(IReadOnlyDictionary<RuleKey, NotableDateRule> sourceRules, string name)
+    private static List<NotableDateRule> FindSourceRules(IReadOnlyDictionary<NotableDateRuleIdentity, NotableDateRule> sourceRules, string name)
     {
         var matches = new List<NotableDateRule>();
-        foreach (KeyValuePair<RuleKey, NotableDateRule> pair in sourceRules)
+        foreach (KeyValuePair<NotableDateRuleIdentity, NotableDateRule> pair in sourceRules)
         {
             if (string.Equals(pair.Key.Name, name, StringComparison.OrdinalIgnoreCase))
                 matches.Add(pair.Value);
@@ -303,15 +305,15 @@ public abstract class NotableDateRuleResourceProviderBase
     }
 
     /// <summary>
-    /// Builds the composite <see cref="RuleKey" /> (name + territory + rule name) used to deduplicate rules within a
-    /// single resource. Including <see cref="NotableDateRule.RuleName" /> lets a single notable date carry more than
-    /// one rule (for example, an era-split <c>King's Birthday</c>) without collapsing variants under the same canonical
-    /// name and territory.
+    /// Builds the composite <see cref="NotableDateRuleIdentity" /> (name, rule name, territory, and calendar type) used
+    /// to deduplicate rules within a single resource. Including <see cref="NotableDateRule.RuleName" /> and
+    /// <see cref="NotableDateRule.CalendarType" /> lets a single notable date carry more than one rule (for example, an
+    /// era-split <c>King's Birthday</c> or a western/orthodox calendar pair) without collapsing variants.
     /// </summary>
     /// <param name="rule">The rule to key.</param>
-    /// <returns>The composite key.</returns>
-    private static RuleKey KeyOf(NotableDateRule rule) =>
-        new(rule.Name, rule.TerritoryCode, rule.RuleName);
+    /// <returns>The composite identity.</returns>
+    private static NotableDateRuleIdentity KeyOf(NotableDateRule rule) =>
+        NotableDateRuleIdentity.From(rule);
 
     /// <summary>
     /// Returns a copy of <paramref name="source" /> with every override from <paramref name="directive" /> applied via
@@ -323,36 +325,6 @@ public abstract class NotableDateRuleResourceProviderBase
     /// <returns>The overridden rule.</returns>
     private static NotableDateRule ApplyOverrides(NotableDateRule source, NotableDateRuleUseDirective directive) =>
         NotableDateRuleMerger.Apply(source, directive);
-
-    /// <summary>
-    /// Compound dedupe key used inside the flatten pipeline. Rules survive as independent entries when any of the three
-    /// components differ — so regional variants (e.g. the Scotland-only Summer Bank Holiday alongside the
-    /// England/Wales/Northern-Ireland one) and era splits (e.g. Queensland's June and October King's Birthday) are not
-    /// collapsed.
-    /// </summary>
-    private readonly record struct RuleKey(string Name, string? Territory, string? RuleName)
-    {
-        /// <summary>
-        /// Returns <see langword="true" /> if <paramref name="other" /> has the same canonical name, territory, and
-        /// rule-level identifier as this key.
-        /// </summary>
-        /// <param name="other">The key to compare against.</param>
-        /// <returns><see langword="true" /> if equal; otherwise <see langword="false" />.</returns>
-        public bool Equals(RuleKey other) =>
-            string.Equals(Name, other.Name, StringComparison.OrdinalIgnoreCase)
-            && string.Equals(Territory ?? string.Empty, other.Territory ?? string.Empty, StringComparison.OrdinalIgnoreCase)
-            && string.Equals(RuleName ?? string.Empty, other.RuleName ?? string.Empty, StringComparison.OrdinalIgnoreCase);
-
-        /// <summary>
-        /// Returns the hash code combining the rule name, territory, and rule-level identifier.
-        /// </summary>
-        /// <returns>The composite hash code.</returns>
-        public override int GetHashCode() =>
-            HashCode.Combine(
-                StringComparer.OrdinalIgnoreCase.GetHashCode(Name ?? string.Empty),
-                StringComparer.OrdinalIgnoreCase.GetHashCode(Territory ?? string.Empty),
-                StringComparer.OrdinalIgnoreCase.GetHashCode(RuleName ?? string.Empty));
-    }
 
     /// <summary>
     /// Loads a single embedded resource, dispatches to the format-specific parser, and returns the parsed

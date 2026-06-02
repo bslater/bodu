@@ -26,7 +26,7 @@ public sealed partial class NotableDateAdjusterTests
         Func<DateTime, bool>? isWeekend = null,
         Func<DateTime, string?, Type?, bool>? isNonWorking = null,
         IAdjustmentHandlerRegistry? handlers = null,
-        Func<string, int, string?, Type?, DateTime?>? resolveByName = null)
+        Func<string, string?, int, string?, Type?, DateTime?>? resolveByName = null)
     {
         return new NotableDateAdjuster(
             isWeekend ?? (d => d.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday),
@@ -212,7 +212,7 @@ public sealed partial class NotableDateAdjusterTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="AdjustmentAction.MoveToNextNonWorkingDay" /> skips days that are already non-working and
+    /// Verifies that <see cref="AdjustmentAction.MoveToNextWorkingDay" /> skips days that are already non-working and
     /// stops on the first working day, which becomes the substitute observance.
     /// </summary>
     [TestMethod]
@@ -227,7 +227,7 @@ public sealed partial class NotableDateAdjusterTests
         {
             Key = "test",
             Trigger = AdjustmentTrigger.Always,
-            Action = AdjustmentAction.MoveToNextNonWorkingDay,
+            Action = AdjustmentAction.MoveToNextWorkingDay,
         };
 
         var saturday = new DateTime(2025, 1, 4); // Sat
@@ -244,7 +244,7 @@ public sealed partial class NotableDateAdjusterTests
     public void Apply_WhenReplaceWithNamedDate_ShouldUseResolverCallback()
     {
         var target = new DateTime(2025, 12, 26);
-        NotableDateAdjuster adjuster = CreateAdjuster(resolveByName: (name, year, t, c) =>
+        NotableDateAdjuster adjuster = CreateAdjuster(resolveByName: (name, variant, year, t, c) =>
             string.Equals(name, "Boxing Day", StringComparison.OrdinalIgnoreCase) ? target : null);
 
         var adjustment = new ObservanceAdjustment
@@ -551,7 +551,7 @@ public sealed partial class NotableDateAdjusterTests
     // -----------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Verifies that <see cref="AdjustmentAction.MoveToNextNonWorkingDay" /> returns the
+    /// Verifies that <see cref="AdjustmentAction.MoveToNextWorkingDay" /> returns the
     /// original date if no working day is found within 366 days (the bounded-walk fallback).
     /// </summary>
     [TestMethod]
@@ -563,7 +563,7 @@ public sealed partial class NotableDateAdjusterTests
         {
             Key = "k",
             Trigger = AdjustmentTrigger.Always,
-            Action = AdjustmentAction.MoveToNextNonWorkingDay,
+            Action = AdjustmentAction.MoveToNextWorkingDay,
         };
 
         var original = new DateTime(2025, 6, 1);
@@ -584,7 +584,7 @@ public sealed partial class NotableDateAdjusterTests
     [TestMethod]
     public void Apply_WhenReplaceWithNamedDateAndTargetIsMissing_ShouldReturnOriginal(string? target)
     {
-        NotableDateAdjuster adjuster = CreateAdjuster(resolveByName: (name, year, t, c) => new DateTime(year, 12, 26));
+        NotableDateAdjuster adjuster = CreateAdjuster(resolveByName: (name, variant, year, t, c) => new DateTime(year, 12, 26));
         var adjustment = new ObservanceAdjustment
         {
             Key = "k",
@@ -631,7 +631,7 @@ public sealed partial class NotableDateAdjusterTests
     [TestMethod]
     public void Apply_WhenReplaceWithNamedDateAndResolverReturnsNull_ShouldReturnOriginal()
     {
-        NotableDateAdjuster adjuster = CreateAdjuster(resolveByName: (name, year, t, c) => null);
+        NotableDateAdjuster adjuster = CreateAdjuster(resolveByName: (name, variant, year, t, c) => null);
         var adjustment = new ObservanceAdjustment
         {
             Key = "k",

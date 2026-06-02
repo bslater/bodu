@@ -40,7 +40,7 @@ var service = new NotableDateService(
     ruleProviders:     new[] { new XmlResourceNotableDateRuleProvider(
                            "MyApp/Calendar/Resources/rules.xml",
                            new ResourcePathResolver()) },
-    weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
+    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
     options: new NotableDateServiceOptions { AlgorithmRegistry = registry });
 ```
 
@@ -153,7 +153,7 @@ NotableDateRule mothersDay = new NotableDateRule
 
 var service = new NotableDateService(
     ruleProviders:     new[] { new InMemoryRuleProvider(mothersDay) },
-    weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
+    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
     options: new NotableDateServiceOptions { AlgorithmRegistry = registry });
 ```
 

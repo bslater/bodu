@@ -233,7 +233,7 @@ For each adjustment (in priority order):
 
 ### The NotableDateGenerationContext
 
-The `IfNonWorkingDay` trigger, `MoveToNextNonWorkingDay` action, and `Custom` handlers all
+The `IfNonWorkingDay` trigger, `MoveToNextWorkingDay` action, and `Custom` handlers all
 receive a `NotableDateGenerationContext` that exposes two capabilities:
 
 - **`IsNonWorkingDay(date, territory)`** — returns `true` when `date` is a weekend or when a
@@ -261,8 +261,10 @@ is called with the conflicting `NotableDate` instances.
 `DefaultNotableDateCollisionResolver`:
 
 1. Removes entries that are exact duplicates (same name, category, territory, and date).
-2. Preserves all distinct entries, ordered by `Category` (ascending enum value) then `Name`
-   (ordinal string comparison).
+2. Preserves all distinct entries, ordered — most significant first — by **provenance**
+   (runtime override > local > imported), then ascending `Priority` (lower wins), then
+   `Category` (ascending enum value), then `Name` then `TerritoryCode` (ordinal string
+   comparison).
 
 This means two different holidays that land on the same date both appear in the result — the
 resolver does not silently suppress either.
@@ -270,18 +272,18 @@ resolver does not silently suppress either.
 ### Replacing the resolver
 
 Supply a custom `INotableDateCollisionResolver` to the `NotableDateService` constructor to
-change this behaviour — for example, to keep only the highest-priority entry:
+change this behaviour. `Resolve` receives a `NotableDateCollisionContext` exposing the shared
+`Day`, the `Overlapping` occurrences, and their `Provenances` — for example, to keep only the
+highest-priority entry:
 
 ```csharp
 public sealed class PriorityCollisionResolver : INotableDateCollisionResolver
 {
-    public IReadOnlyList<NotableDate> Resolve(
-        DateTime date,
-        IReadOnlyList<NotableDate> overlapping)
+    public IReadOnlyList<NotableDate> Resolve(NotableDateCollisionContext context)
     {
-        // Return only the entry whose source rule has the lowest Priority value
-        NotableDate winner = overlapping
-            .OrderBy(d => d.Rule?.Priority ?? 100)
+        // Return only the entry with the lowest Priority value (highest precedence)
+        NotableDate winner = context.Overlapping
+            .OrderBy(d => d.Priority)
             .First();
 
         return new[] { winner };
@@ -421,7 +423,7 @@ At this point the generation context knows that 27 Dec 2027 (Monday) is now a no
 day (Christmas Day substitute).
 
 Adjustments (AU rule):
-- Priority 1: `IfNonWorkingDay → MoveToNextNonWorkingDay` — evaluates 26 Dec:
+- Priority 1: `IfNonWorkingDay → MoveToNextWorkingDay` — evaluates 26 Dec:
   - Is 26 Dec (Sunday) a non-working day? Yes (weekend) → advance
   - Is 27 Dec (Monday) a non-working day? Yes (Christmas Day substitute) → advance
   - Is 28 Dec (Tuesday) a non-working day? No → **stop**

@@ -165,7 +165,7 @@ public sealed class RuleStaticAnalysisTests
             {
                 Key = "weekend-roll",
                 Trigger = AdjustmentTrigger.IfWeekend,
-                Action = AdjustmentAction.MoveToNextNonWorkingDay,
+                Action = AdjustmentAction.MoveToNextWorkingDay,
                 IsNonWorkingDay = true,
             }],
         };

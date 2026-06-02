@@ -96,10 +96,13 @@ namespace Bodu.Globalization.Calendar;
 /// <list type="bullet">
 /// <item>
 /// <description>
-/// <b>One emission per rule occurrence.</b> When an <see cref="ObservanceAdjustment" /> activates, the single emitted
-/// <see cref="NotableDate" /> carries the post-adjustment observed date and an <see cref="AdjustmentReason" />
-/// describing the shift. Multiple activating adjustments resolve last-wins by ascending
-/// <see cref="ObservanceAdjustment.Priority" />.
+/// <b>One emission per rule occurrence (by default).</b> When an <see cref="ObservanceAdjustment" /> activates, the
+/// emitted <see cref="NotableDate" /> carries the post-adjustment observed date and an <see cref="AdjustmentReason" />
+/// describing the shift. When several adjustments could activate, the first to activate and move the date — by
+/// ascending <see cref="ObservanceAdjustment.Priority" /> — wins (first-active-wins). Whether the service emits the
+/// observed occurrence only, the actual occurrence only, or both is governed by
+/// <see cref="ObservedDateMode" />; the default <see cref="ObservedDateMode.ObservedOnly" /> yields a single
+/// observed occurrence.
 /// </description>
 /// </item>
 /// <item>
@@ -117,9 +120,10 @@ namespace Bodu.Globalization.Calendar;
 /// </item>
 /// <item>
 /// <description>
-/// <b>Composite rule identity.</b> Override-merge uses a <c>(Name, TerritoryCode, CalendarType)</c> key, so regional
-/// and calendar-system variants of the same named observance coexist as distinct rules. An override addition replaces a
-/// base rule only when all three identity components match exactly.
+/// <b>Composite rule identity.</b> Override-merge uses the full <see cref="NotableDateRuleIdentity" />
+/// (<c>Name, RuleName, TerritoryCode, CalendarType</c>) key, so regional, rule-level, and calendar-system variants of
+/// the same named observance (for example western and orthodox Easter) coexist as distinct rules. An override addition
+/// replaces a base rule only when every identity component matches exactly.
 /// </description>
 /// </item>
 /// <item>
@@ -211,6 +215,11 @@ public sealed class NotableDateService
     /// The optional localizer used to translate notable date names into the active culture.
     /// </summary>
     private readonly INotableDateNameLocalizer? _nameLocalizer;
+
+    /// <summary>
+    /// The service-wide observed-date emission policy applied when an adjustment shifts a notable date.
+    /// </summary>
+    private readonly ObservedDateMode _observedDateMode;
 
     /// <summary>
     /// Identity-keyed set of every rule contributed by an <see cref="INotableDateRuleOverrideProvider" /> addition.
@@ -399,12 +408,58 @@ public sealed class NotableDateService
         WorkingWeek = workingWeek;
         _collisionResolver = opts.CollisionResolver ?? new DefaultNotableDateCollisionResolver();
         _nameLocalizer = opts.NameLocalizer;
+        _observedDateMode = opts.ObservedDates;
         _resourcePathResolver = opts.ResourcePathResolver ?? new ResourcePathResolver();
         _algorithmRegistry = effectiveRegistry;
         _adjustmentHandlers = opts.AdjustmentHandlers;
 
         (_overrideRemovals, _overrideAdditions, _effectiveRules, _resolver) = BuildOverrideState();
+
+        if (opts.ValidateRules)
+        {
+            var errors = Validate()
+                .Where(d => d.Severity == NotableDateValidationSeverity.Error)
+                .Select(d => d.Message)
+                .ToList();
+
+            if (errors.Count > 0)
+                throw new InvalidOperationException(string.Join(Environment.NewLine, errors));
+        }
     }
+
+    /// <summary>
+    /// Runs the strict-validation pass over the effective rule set and returns the diagnostics it produced.
+    /// </summary>
+    /// <remarks>
+    /// Reports duplicate rule identities, missing or ambiguous offset anchors, missing or ambiguous replacement targets,
+    /// and unregistered algorithm keys. This is the same pass the constructor runs when
+    /// <see cref="NotableDateServiceOptions.ValidateRules" /> is set, but it never throws — callers can inspect the
+    /// diagnostics directly.
+    /// </remarks>
+    /// <returns>The validation diagnostics; empty when the rule set is valid.</returns>
+    /// <example>
+    /// <para>Inspect a rule set for authoring problems without aborting startup:</para>
+    /// <code>
+    ///<![CDATA[
+    /// var service = new NotableDateService(ruleProviders, WorkingDaysOfWeek.MondayToFriday);
+    ///
+    /// foreach (NotableDateValidationDiagnostic diagnostic in service.Validate())
+    /// {
+    ///     Console.WriteLine($"[{diagnostic.Severity}] {diagnostic.Code}: {diagnostic.Message}");
+    /// }
+    ///
+    /// // Fail fast only on errors, tolerating warnings such as UnregisteredAlgorithm.
+    /// bool hasErrors = service.Validate()
+    ///     .Any(d => d.Severity == NotableDateValidationSeverity.Error);
+    ///]]>
+    /// </code>
+    /// <para>
+    /// To throw automatically on any error instead, set <see cref="NotableDateServiceOptions.ValidateRules" /> to
+    /// <see langword="true" /> when constructing the service.
+    /// </para>
+    /// </example>
+    public IReadOnlyList<NotableDateValidationDiagnostic> Validate() =>
+        NotableDateRuleValidator.Validate(_effectiveRules, _algorithmRegistry);
 
     /// <summary>
     /// Re-queries every registered <see cref="INotableDateRuleOverrideProvider" /> and returns the freshly snapshotted
@@ -775,6 +830,10 @@ public sealed class NotableDateService
     /// <param name="territoryCode">The optional territory context.</param>
     /// <param name="calendarType">The optional calendar context.</param>
     /// <param name="filter">The optional notable-date filter.</param>
+    /// <param name="observedDates">
+    /// The observed-date policy for this query, or <see langword="null" /> to use the service-wide default configured
+    /// via <see cref="NotableDateServiceOptions.ObservedDates" />.
+    /// </param>
     /// <returns>The resolved notable dates ordered by observed date.</returns>
     /// <exception cref="ArgumentException">
     /// <paramref name="endDate" /> is earlier than <paramref name="startDate" />.
@@ -792,8 +851,9 @@ public sealed class NotableDateService
         DateTime endDate,
         string? territoryCode = null,
         Type? calendarType = null,
-        NotableDateFilter? filter = null)
-        => ResolveRangeInternal(startDate, endDate, filter, territoryCode, calendarType, recordWindow: true);
+        NotableDateFilter? filter = null,
+        ObservedDateMode? observedDates = null)
+        => ResolveRangeInternal(startDate, endDate, filter, territoryCode, calendarType, recordWindow: true, observedDates);
 
     /// <summary>
     /// Resolves notable dates for the supplied window through the range pipeline, optionally recording the requested
@@ -810,6 +870,9 @@ public sealed class NotableDateService
     /// for hot-path predicate queries (for example single-day non-working checks) that should not extend the resolved
     /// coverage set.
     /// </param>
+    /// <param name="observedDates">
+    /// The per-query observed-date policy, or <see langword="null" /> to use the service-wide default.
+    /// </param>
     /// <returns>The resolved notable dates ordered by observed date.</returns>
     private IReadOnlyList<NotableDate> ResolveRangeInternal(
         DateTime startDate,
@@ -817,17 +880,19 @@ public sealed class NotableDateService
         NotableDateFilter? filter,
         string? territoryCode,
         Type? calendarType,
-        bool recordWindow)
+        bool recordWindow,
+        ObservedDateMode? observedDates = null)
     {
         RangeResolution.NotableDateRangeRequest request = new(
             startDate,
             endDate,
             territoryCode,
             calendarType,
-            filter);
+            filter,
+            observedDates ?? _observedDateMode);
 
         RangeResolution.NotableDateRangePipeline pipeline = GetOrBuildRangePipeline();
-        IReadOnlyList<NotableDate> resolved = pipeline.Resolve(request);
+        IReadOnlyList<RangeResolution.ResolvedNotableDate> resolved = pipeline.ResolveWithProvenance(request);
 
         if (recordWindow)
         {
@@ -837,15 +902,47 @@ public sealed class NotableDateService
             }
         }
 
-        List<NotableDate> localized = new(resolved.Count);
-        foreach (NotableDate notable in resolved)
-            localized.Add(LocaliseIfNeeded(notable));
+        // Localize each occurrence while preserving its provenance for collision arbitration.
+        List<RangeResolution.ResolvedNotableDate> localized = new(resolved.Count);
+        foreach (RangeResolution.ResolvedNotableDate item in resolved)
+            localized.Add(item with { Notable = LocaliseIfNeeded(item.Notable) });
 
-        return [.. localized
-            .GroupBy(n => n.Date.Date)
-            .OrderBy(g => g.Key)
-            .SelectMany(g => _collisionResolver.Resolve(g.Key, [.. g]) ?? [])];
+        return ResolveCollisions(localized, request.StartDate == request.EndDate ? request.StartDate : null);
     }
+
+    /// <summary>
+    /// Arbitrates same-day collisions among the resolved occurrences. A single-day query treats every result as
+    /// covering the one requested day (coverage-day collision); a range query arbitrates per start day in chronological
+    /// order.
+    /// </summary>
+    /// <param name="resolved">The localized resolved occurrences with provenance.</param>
+    /// <param name="singleDay">
+    /// The single requested day when the query window is one day; otherwise <see langword="null" /> for a range.
+    /// </param>
+    /// <returns>The collision-resolved notable dates.</returns>
+    private IReadOnlyList<NotableDate> ResolveCollisions(
+        IReadOnlyList<RangeResolution.ResolvedNotableDate> resolved,
+        DateTime? singleDay)
+    {
+        if (singleDay is { } day)
+            return _collisionResolver.Resolve(BuildCollisionContext(day, resolved)) ?? [];
+
+        return [.. resolved
+            .GroupBy(r => r.Notable.Date.Date)
+            .OrderBy(g => g.Key)
+            .SelectMany(g => _collisionResolver.Resolve(BuildCollisionContext(g.Key, [.. g])) ?? [])];
+    }
+
+    /// <summary>
+    /// Builds a <see cref="NotableDateCollisionContext" /> from the resolved occurrences for a single day.
+    /// </summary>
+    /// <param name="day">The shared day.</param>
+    /// <param name="items">The resolved occurrences applying to <paramref name="day" />.</param>
+    /// <returns>The collision context with index-aligned occurrences and provenance.</returns>
+    private static NotableDateCollisionContext BuildCollisionContext(
+        DateTime day,
+        IReadOnlyList<RangeResolution.ResolvedNotableDate> items) =>
+        new(day, [.. items.Select(i => i.Notable)], [.. items.Select(i => i.Provenance)]);
 
     /// <summary>
     /// Applies the pre-materialised list of override additions to the base rule set, producing the merged effective
@@ -857,11 +954,12 @@ public sealed class NotableDateService
     /// </param>
     /// <returns>The rule list after all additions have been applied.</returns>
     /// <remarks>
-    /// Additions are layered on top of the base rule set using a composite (name, territory, calendar type) key so that
-    /// regional and calendar-system variants of the same notable date (for example, multiple Labour Day variants across
-    /// Australian states, or Gregorian and Julian Christmas observances) survive instead of collapsing into a single
-    /// entry. An addition only replaces a base rule when all three identity components match exactly. Removals are
-    /// evaluated per (year, territory) downstream so they can be scoped to specific years and territories.
+    /// Additions are layered on top of the base rule set using the full <see cref="NotableDateRuleIdentity" /> (name,
+    /// rule name, territory, calendar type) so that regional, rule-level, and calendar-system variants of the same
+    /// notable date (for example, multiple Labour Day variants across Australian states, western and orthodox Easter,
+    /// or Gregorian and Julian Christmas observances) survive instead of collapsing into a single entry. An addition
+    /// only replaces a base rule when every identity component matches exactly. Removals are evaluated per
+    /// (year, territory) downstream so they can be scoped to specific years and territories.
     /// </remarks>
     private static ImmutableArray<NotableDateRule> ApplyOverrides(
         ImmutableArray<NotableDateRule> baseRules,
@@ -872,35 +970,19 @@ public sealed class NotableDateService
 
         IEnumerable<NotableDateRule> source = baseRules.IsDefault ? Enumerable.Empty<NotableDateRule>() : baseRules;
 
-        var byKey = new Dictionary<(string Name, string Territory, Type? CalendarType), NotableDateRule>();
+        var byKey = new Dictionary<NotableDateRuleIdentity, NotableDateRule>();
         foreach (NotableDateRule rule in source)
         {
-            byKey[CompositeKey(rule)] = rule;
+            byKey[NotableDateRuleIdentity.From(rule)] = rule;
         }
 
         foreach (NotableDateRule addition in overrideAdditions)
         {
-            byKey[CompositeKey(addition)] = addition;
+            byKey[NotableDateRuleIdentity.From(addition)] = addition;
         }
 
         return [.. byKey.Values];
     }
-
-    /// <summary>
-    /// Creates the composite rule identity used when merging base rules with override additions.
-    /// </summary>
-    /// <param name="rule">The notable-date rule whose identity should be calculated.</param>
-    /// <returns>
-    /// A tuple containing the normalized rule name, territory code, and calendar type used as the dictionary key.
-    /// </returns>
-    /// <remarks>
-    /// Rules are keyed by name, territory, and calendar type so that regional variants and calendar-system variants of
-    /// the same named date remain distinct during override application. A <see langword="null" /> name or territory is
-    /// normalized to <see cref="string.Empty" />; calendar type is preserved verbatim (<see langword="null" /> is its
-    /// own bucket).
-    /// </remarks>
-    private static (string Name, string Territory, Type? CalendarType) CompositeKey(NotableDateRule rule)
-        => (rule.Name ?? string.Empty, rule.TerritoryCode ?? string.Empty, rule.CalendarType);
 
     /// <summary>
     /// Returns <see langword="true" /> if <paramref name="notable" /> covers the calendar day of

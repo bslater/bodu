@@ -16,7 +16,7 @@ wire up exactly the capabilities your application requires.
 | Parameter | Type | Default | Purpose |
 |---|---|---|---|
 | `ruleProviders` | `IEnumerable<INotableDateRuleProvider>?` | `null` | Ordered list of rule providers. Rules are merged in registration order. When `null` or empty, the service loads the embedded minimal rule set (New Year's Day only). |
-| `weekendDefinition` | `CalendarWeekendDefinition` | `SaturdaySunday` | Defines which days of the week constitute the weekend. Affects `IsWeekend`, `IsNonWorkingDay`, `IfWeekend` trigger evaluation, and all working-day extension methods. |
+| `workingDaysOfWeek` | `WorkingDaysOfWeek` | `MondayToFriday` | Defines the working week — and therefore which days are weekends. Affects `IsWeekend`, `IsNonWorkingDay`, `IfWeekend` trigger evaluation, and all working-day extension methods. An overload accepts a `WeekPattern` instead for irregular weeks. |
 | `overrideProviders` | `IEnumerable<INotableDateRuleOverrideProvider>?` | `null` | Override providers that add or remove rules on top of the base rule set without modifying the source XML. Evaluated after all base providers. |
 | `algorithmRegistry` | `INotableDateAlgorithmRegistry?` | `null` | Registry of `INotableDateAlgorithm` instances looked up by string key. Required when any rule uses `Strategy = DateResolutionStrategy.Algorithm`. |
 | `adjustmentHandlers` | `IAdjustmentHandlerRegistry?` | `null` | Registry of `IAdjustmentHandler` instances. Required when any adjustment uses `Trigger = Custom` or `Action = Custom`. |
@@ -48,9 +48,35 @@ var provider = new XmlResourceNotableDateRuleProvider(
 
 var service = new NotableDateService(
     ruleProviders:     new[] { provider },
-    weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
+    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
     options: new NotableDateServiceOptions { AlgorithmRegistry = registry });
 ```
+
+### Service options
+
+`NotableDateServiceOptions` carries the registries above plus two policy switches that shape
+resolution and authoring safety:
+
+| Option | Type | Default | Purpose |
+|---|---|---|---|
+| `ObservedDates` | `ObservedDateMode` | `ObservedOnly` | Whether the service emits the observed (adjusted) date, the actual (calculated) date, or both when an adjustment shifts a date. Applied consistently regardless of query-window width. See [Observed-date modes](identity-and-resolution.md#observed-date-modes). |
+| `ValidateRules` | `bool` | `false` | When `true`, the constructor runs the strict-validation pass and throws `InvalidOperationException` if any `Error`-severity diagnostics are produced, surfacing authoring mistakes eagerly. See [Validating a rule set](identity-and-resolution.md#validating-a-rule-set). |
+
+```csharp
+var service = new NotableDateService(
+    ruleProviders:     new[] { provider },
+    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
+    options: new NotableDateServiceOptions
+    {
+        AlgorithmRegistry = registry,
+        ObservedDates     = ObservedDateMode.ActualAndObserved,  // emit nominal *and* substitute
+        ValidateRules     = true,                                // fail fast on authoring errors
+    });
+```
+
+To inspect diagnostics without throwing, call `service.Validate()`, which returns the
+`NotableDateValidationDiagnostic` list directly (the same pass `ValidateRules` runs at
+construction).
 
 ---
 
@@ -129,7 +155,7 @@ NotableDateRule mothersDay = new NotableDateRule
 
 var service = new NotableDateService(
     ruleProviders:     new[] { new InMemoryRuleProvider(mothersDay) },
-    weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
+    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
     options: new NotableDateServiceOptions { AlgorithmRegistry = registry });
 ```
 
@@ -152,7 +178,7 @@ AdjustmentHandlerRegistry handlers = new AdjustmentHandlerRegistry()
 
 var service = new NotableDateService(
     ruleProviders:      new[] { provider },
-    weekendDefinition:  CalendarWeekendDefinition.SaturdaySunday,
+    workingDaysOfWeek:  WorkingDaysOfWeek.MondayToFriday,
     options: new NotableDateServiceOptions { AdjustmentHandlers = handlers });
 ```
 
@@ -346,7 +372,7 @@ public sealed class CompanyCalendarOverrides : INotableDateRuleOverrideProvider
 
 var service = new NotableDateService(
     ruleProviders:     new[] { baseProvider },
-    weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
+    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
     options: new NotableDateServiceOptions
     {
         OverrideProviders = new[] { new CompanyCalendarOverrides() },
@@ -461,7 +487,7 @@ var localizer = new ResourceFileNameLocalizer(
 
 var service = new NotableDateService(
     ruleProviders:     new[] { provider },
-    weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
+    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
     options: new NotableDateServiceOptions { NameLocalizer = localizer });
 ```
 
@@ -474,25 +500,34 @@ localiser returns `null` or throws, `DisplayName` falls back to `Name`.
 ## INotableDateCollisionResolver
 
 `INotableDateCollisionResolver` is called when two or more rules resolve to the same
-calendar date. The resolver receives the conflicting `NotableDate` instances and returns the
-list to include in the output.
+calendar day. The resolver receives a `NotableDateCollisionContext` describing the day, the
+overlapping occurrences, and their provenance, and returns the list to include in the output.
 
 ### Interface
 
 ```csharp
 public interface INotableDateCollisionResolver
 {
-    IReadOnlyList<NotableDate> Resolve(
-        DateTime date,
-        IReadOnlyList<NotableDate> overlapping);
+    IReadOnlyList<NotableDate> Resolve(NotableDateCollisionContext context);
 }
 ```
 
+`NotableDateCollisionContext` exposes:
+
+| Member | Type | Description |
+|---|---|---|
+| `Day` | `DateTime` | The shared calendar day (time-of-day truncated). |
+| `Overlapping` | `IReadOnlyList<NotableDate>` | The notable dates that cover `Day`. |
+| `Provenances` | `IReadOnlyList<NotableDateProvenance>` | Parallel to `Overlapping` — where each occurrence came from (`Imported`, `Local`, or `RuntimeOverride`). |
+
 ### Default behaviour
 
-`DefaultNotableDateCollisionResolver` removes exact duplicates (same name, category,
-territory, and date) and preserves all distinct entries, ordered by `Category` then `Name`.
-Both entries are returned when two unrelated holidays land on the same date.
+`DefaultNotableDateCollisionResolver` removes exact duplicates and preserves all distinct
+entries, ordered by **provenance** (strongest first), then ascending `NotableDate.Priority`
+(lower wins), then `Category`, then `Name`. Both entries are returned when two unrelated
+holidays land on the same date — hosts that want a single winner take `Overlapping[0]` after
+resolution. See [Priority and same-day collisions](identity-and-resolution.md#priority-and-same-day-collisions)
+for the full precedence ladder.
 
 ### Example — keep highest-priority entry only
 
@@ -501,16 +536,15 @@ using Bodu.Globalization.Calendar;
 
 public sealed class HighestPriorityCollisionResolver : INotableDateCollisionResolver
 {
-    public IReadOnlyList<NotableDate> Resolve(
-        DateTime date,
-        IReadOnlyList<NotableDate> overlapping)
+    public IReadOnlyList<NotableDate> Resolve(NotableDateCollisionContext context)
     {
-        if (overlapping.Count <= 1)
-            return overlapping;
+        if (context.Overlapping.Count <= 1)
+            return context.Overlapping;
 
         // Lower Priority number = higher precedence
-        NotableDate winner = overlapping
-            .OrderBy(d => d.Rule?.Priority ?? 100)
+        NotableDate winner = context.Overlapping
+            .OrderBy(d => d.Priority)
+            .ThenBy(d => (int)d.Category)
             .ThenBy(d => d.Name, StringComparer.Ordinal)
             .First();
 
@@ -520,7 +554,7 @@ public sealed class HighestPriorityCollisionResolver : INotableDateCollisionReso
 
 var service = new NotableDateService(
     ruleProviders:     new[] { provider },
-    weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
+    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
     options: new NotableDateServiceOptions { CollisionResolver = new HighestPriorityCollisionResolver() });
 ```
 
@@ -574,7 +608,7 @@ INotableDatePlugin plugin = loader.Load("/path/to/MyCalendarPlugin.dll");
 
 var service = new NotableDateService(
     ruleProviders:     new[] { baseProvider },
-    weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
+    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
     options: new NotableDateServiceOptions { Plugins = new[] { plugin } });
 ```
 
@@ -657,7 +691,7 @@ HighestPriorityCollisionResolver collisionResolver = new HighestPriorityCollisio
 // 7. Assemble the service
 NotableDateService service = new NotableDateService(
     ruleProviders:     new[] { globalRules, apacRules },
-    weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
+    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
     options: new NotableDateServiceOptions
     {
         OverrideProviders  = new[] { overrides },

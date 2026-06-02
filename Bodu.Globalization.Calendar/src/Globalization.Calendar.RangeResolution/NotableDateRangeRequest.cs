@@ -25,6 +25,7 @@ internal sealed record NotableDateRangeRequest
     /// <param name="territoryCode">The optional territory context.</param>
     /// <param name="calendarType">The optional calendar context.</param>
     /// <param name="filter">The optional notable-date filter.</param>
+    /// <param name="observedDates">The observed-date emission policy for the request.</param>
     /// <exception cref="ArgumentException">
     /// <paramref name="endDate" /> is earlier than <paramref name="startDate" />.
     /// </exception>
@@ -33,7 +34,8 @@ internal sealed record NotableDateRangeRequest
         DateTime endDate,
         string? territoryCode = null,
         Type? calendarType = null,
-        NotableDateFilter? filter = null)
+        NotableDateFilter? filter = null,
+        ObservedDateMode observedDates = ObservedDateMode.ObservedOnly)
     {
         DateTime start = startDate.Date;
         DateTime end = endDate.Date;
@@ -45,6 +47,7 @@ internal sealed record NotableDateRangeRequest
         TerritoryCode = territoryCode;
         CalendarType = calendarType;
         Filter = filter;
+        ObservedDates = observedDates;
     }
 
     /// <summary>
@@ -81,4 +84,11 @@ internal sealed record NotableDateRangeRequest
     /// is supplied.
     /// </returns>
     public NotableDateFilter? Filter { get; }
+
+    /// <summary>
+    /// Gets the observed-date emission policy applied when an adjustment shifts a notable date from its calculated
+    /// position.
+    /// </summary>
+    /// <returns>One of the <see cref="ObservedDateMode" /> values.</returns>
+    public ObservedDateMode ObservedDates { get; }
 }
