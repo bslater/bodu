@@ -56,51 +56,154 @@ public sealed class NotableDateRuleResolverRelativeWeekdayInMonthTests
     }
 
     /// <summary>
-    /// Verifies that an <see cref="WeekdayProximity.OnOrBefore" /> target retreats from the anchor, including across a
-    /// month boundary: the Friday on or before the first Monday of September 2024 is 30 August 2024.
+    /// Verifies that the strategy resolves the expected date across the three positioning directions, every anchor
+    /// ordinal, the <see cref="WeekdayProximity.Nearest" /> tie boundary in both directions, the on-the-anchor case
+    /// where the relative weekday equals the anchor weekday, a leap-day anchor (the fifth Thursday of February 2024 is
+    /// 29 February), and month and calendar-year boundaries (a backward search rolling into the previous December and a
+    /// forward search rolling into the next January).
     /// </summary>
+    /// <param name="year">The resolution year.</param>
+    /// <param name="month">The anchor month.</param>
+    /// <param name="anchorDayOfWeek">The anchor weekday whose ordinal occurrence supplies the reference date.</param>
+    /// <param name="ordinal">Which occurrence of <paramref name="anchorDayOfWeek" /> serves as the anchor.</param>
+    /// <param name="relativeDayOfWeek">The target weekday positioned relative to the anchor.</param>
+    /// <param name="proximity">The positioning direction.</param>
+    /// <param name="expectedYear">The expected resolved year.</param>
+    /// <param name="expectedMonth">The expected resolved month.</param>
+    /// <param name="expectedDay">The expected resolved day.</param>
     [TestMethod]
-    public void ResolveAnchorDate_WhenOnOrBeforeCrossesMonthBoundary_ShouldRetreatIntoPreviousMonth()
+    [DataRow(2024, 9, DayOfWeek.Monday, WeekOfMonthOrdinal.First, DayOfWeek.Friday, WeekdayProximity.OnOrBefore, 2024, 8, 30)]    // OnOrBefore retreats into the previous month (first Monday 2 Sep → Fri 30 Aug)
+    [DataRow(2024, 5, DayOfWeek.Monday, WeekOfMonthOrdinal.Last, DayOfWeek.Tuesday, WeekdayProximity.OnOrAfter, 2024, 5, 28)]     // Last ordinal anchor (last Monday 27 May → Tue 28 May)
+    [DataRow(2024, 6, DayOfWeek.Sunday, WeekOfMonthOrdinal.Third, DayOfWeek.Saturday, WeekdayProximity.OnOrBefore, 2024, 6, 15)]  // Third ordinal anchor (third Sunday 16 Jun → Sat 15 Jun)
+    [DataRow(2024, 11, DayOfWeek.Thursday, WeekOfMonthOrdinal.Fourth, DayOfWeek.Friday, WeekdayProximity.OnOrAfter, 2024, 11, 29)] // Fourth ordinal anchor — US "Black Friday" (Thanksgiving 28 Nov → Fri 29 Nov)
+    [DataRow(2024, 10, DayOfWeek.Monday, WeekOfMonthOrdinal.Second, DayOfWeek.Tuesday, WeekdayProximity.Nearest, 2024, 10, 15)]   // Nearest: forward (1) closer than back (6) — anchor 14 Oct → Tue 15 Oct
+    [DataRow(2024, 10, DayOfWeek.Monday, WeekOfMonthOrdinal.Second, DayOfWeek.Sunday, WeekdayProximity.Nearest, 2024, 10, 13)]    // Nearest: back (1) closer than forward (6) — anchor 14 Oct → Sun 13 Oct
+    [DataRow(2024, 10, DayOfWeek.Monday, WeekOfMonthOrdinal.Second, DayOfWeek.Monday, WeekdayProximity.OnOrAfter, 2024, 10, 14)]  // Relative weekday equals anchor weekday — OnOrAfter lands on the anchor
+    [DataRow(2024, 10, DayOfWeek.Monday, WeekOfMonthOrdinal.Second, DayOfWeek.Monday, WeekdayProximity.OnOrBefore, 2024, 10, 14)] // Relative weekday equals anchor weekday — OnOrBefore lands on the anchor
+    [DataRow(2024, 10, DayOfWeek.Monday, WeekOfMonthOrdinal.Second, DayOfWeek.Monday, WeekdayProximity.Nearest, 2024, 10, 14)]    // Relative weekday equals anchor weekday — Nearest lands on the anchor
+    [DataRow(2023, 2, DayOfWeek.Thursday, WeekOfMonthOrdinal.Fourth, DayOfWeek.Thursday, WeekdayProximity.OnOrAfter, 2023, 2, 23)] // 28-day February — Fourth and Last Thursday coincide on 23 Feb
+    [DataRow(2024, 2, DayOfWeek.Thursday, WeekOfMonthOrdinal.Fifth, DayOfWeek.Thursday, WeekdayProximity.OnOrAfter, 2024, 2, 29)]  // Leap-day anchor — fifth Thursday of February 2024 is 29 Feb
+    [DataRow(2024, 2, DayOfWeek.Thursday, WeekOfMonthOrdinal.Last, DayOfWeek.Sunday, WeekdayProximity.OnOrAfter, 2024, 3, 3)]      // Leap-day anchor rolls forward across the month boundary (Thu 29 Feb → Sun 3 Mar)
+    [DataRow(2024, 1, DayOfWeek.Monday, WeekOfMonthOrdinal.First, DayOfWeek.Friday, WeekdayProximity.OnOrBefore, 2023, 12, 29)]    // Backward across the calendar-year boundary (first Monday 1 Jan → Fri 29 Dec of previous year)
+    [DataRow(2024, 12, DayOfWeek.Monday, WeekOfMonthOrdinal.Last, DayOfWeek.Wednesday, WeekdayProximity.OnOrAfter, 2025, 1, 1)]    // Forward across the calendar-year boundary (last Monday 30 Dec → Wed 1 Jan of next year)
+    public void ResolveAnchorDate_WhenRelativeWeekdayInMonth_ShouldResolveExpectedDate(
+        int year, int month, DayOfWeek anchorDayOfWeek, WeekOfMonthOrdinal ordinal, DayOfWeek relativeDayOfWeek, WeekdayProximity proximity,
+        int expectedYear, int expectedMonth, int expectedDay)
     {
-        NotableDateRule rule = RelativeRule("Friday Before First Monday", 9, DayOfWeek.Monday, WeekOfMonthOrdinal.First, DayOfWeek.Friday, WeekdayProximity.OnOrBefore);
+        NotableDateRule rule = RelativeRule("Sweep", month, anchorDayOfWeek, ordinal, relativeDayOfWeek, proximity);
 
-        Assert.AreEqual(new DateTime(2024, 8, 30), Resolve(rule, 2024));
+        Assert.AreEqual(new DateTime(expectedYear, expectedMonth, expectedDay), Resolve(rule, year));
     }
 
     /// <summary>
-    /// Verifies that a <see cref="WeekdayProximity.Nearest" /> target is positioned around the anchor: the Tuesday
-    /// nearest the second Monday of October 2024 (13 October... 14 October is the Monday) is 15 October.
+    /// Verifies that a fifth-occurrence anchor that exists only in a leap February flips across adjacent years: the
+    /// fifth Thursday of February resolves to 29 February in the leap year 2024 but yields no occurrence in the
+    /// surrounding common years 2023 and 2025, where February has only four Thursdays.
     /// </summary>
     [TestMethod]
-    public void ResolveAnchorDate_WhenNearestRelativeToAnchor_ShouldSelectClosestOccurrence()
+    public void ResolveAnchorDate_WhenFifthWeekdayOnlyExistsInLeapFebruary_ShouldFlipAcrossYears()
     {
-        NotableDateRule rule = RelativeRule("Tuesday Near Second Monday", 10, DayOfWeek.Monday, WeekOfMonthOrdinal.Second, DayOfWeek.Tuesday, WeekdayProximity.Nearest);
+        NotableDateRule rule = RelativeRule("Fifth Thursday", 2, DayOfWeek.Thursday, WeekOfMonthOrdinal.Fifth, DayOfWeek.Thursday, WeekdayProximity.OnOrAfter);
 
-        Assert.AreEqual(new DateTime(2024, 10, 15), Resolve(rule, 2024));
+        // 2024 is a leap year whose February begins on a Thursday, so a fifth Thursday exists on the 29th.
+        Assert.AreEqual(new DateTime(2024, 2, 29), Resolve(rule, 2024));
+
+        // 2023 and 2025 are common years with only four Thursdays in February, so the anchor does not exist.
+        Assert.IsNull(Resolve(rule, 2023));
+        Assert.IsNull(Resolve(rule, 2025));
     }
 
     /// <summary>
-    /// Verifies that a <see cref="WeekOfMonthOrdinal.Last" /> anchor is honoured: the Tuesday on or after the last
-    /// Monday of May 2024 (27 May) is 28 May 2024.
+    /// Verifies that when the requested anchor ordinal does not occur in the month (a fifth weekday in a month with only
+    /// four), the rule resolves to <see langword="null" /> rather than throwing, in both leap and common Februarys and
+    /// in a 30-day month.
     /// </summary>
+    /// <param name="year">The resolution year.</param>
+    /// <param name="month">The anchor month.</param>
+    /// <param name="anchorDayOfWeek">The anchor weekday whose fifth occurrence is requested.</param>
     [TestMethod]
-    public void ResolveAnchorDate_WhenAnchorIsLastOrdinal_ShouldPositionRelativeToLastOccurrence()
+    [DataRow(2024, 2, DayOfWeek.Monday)]    // February 2024 (leap) has Mondays on the 5th, 12th, 19th, and 26th only.
+    [DataRow(2023, 2, DayOfWeek.Thursday)]  // February 2023 (common) has Thursdays on the 2nd, 9th, 16th, and 23rd only.
+    [DataRow(2025, 2, DayOfWeek.Thursday)]  // February 2025 (common) has Thursdays on the 6th, 13th, 20th, and 27th only.
+    [DataRow(2024, 4, DayOfWeek.Wednesday)] // April 2024 (30 days) has Wednesdays on the 3rd, 10th, 17th, and 24th only.
+    public void ResolveAnchorDate_WhenAnchorOrdinalDoesNotExist_ShouldReturnNull(int year, int month, DayOfWeek anchorDayOfWeek)
     {
-        NotableDateRule rule = RelativeRule("Tuesday After Last Monday", 5, DayOfWeek.Monday, WeekOfMonthOrdinal.Last, DayOfWeek.Tuesday, WeekdayProximity.OnOrAfter);
+        NotableDateRule rule = RelativeRule("No Fifth", month, anchorDayOfWeek, WeekOfMonthOrdinal.Fifth, DayOfWeek.Tuesday, WeekdayProximity.OnOrAfter);
 
-        Assert.AreEqual(new DateTime(2024, 5, 28), Resolve(rule, 2024));
+        Assert.IsNull(Resolve(rule, year));
     }
 
     /// <summary>
-    /// Verifies that when the requested anchor ordinal does not occur in the month (a fifth Monday in a month with only
-    /// four), the rule resolves to <see langword="null" /> rather than throwing.
+    /// Verifies that the strategy resolves to <see langword="null" /> rather than throwing when any of the five required
+    /// fields — month, anchor weekday, week ordinal, relative weekday, or proximity — is absent.
     /// </summary>
+    /// <param name="month">The anchor month, or <see langword="null" /> to omit it.</param>
+    /// <param name="anchorDayOfWeek">The anchor weekday, or <see langword="null" /> to omit it.</param>
+    /// <param name="ordinal">The week ordinal, or <see langword="null" /> to omit it.</param>
+    /// <param name="relativeDayOfWeek">The relative weekday, or <see langword="null" /> to omit it.</param>
+    /// <param name="proximity">The positioning direction, or <see langword="null" /> to omit it.</param>
     [TestMethod]
-    public void ResolveAnchorDate_WhenAnchorOrdinalDoesNotExist_ShouldReturnNull()
+    [DataRow(null!, DayOfWeek.Monday, WeekOfMonthOrdinal.First, DayOfWeek.Tuesday, WeekdayProximity.OnOrAfter)]  // Month missing
+    [DataRow(11, null!, WeekOfMonthOrdinal.First, DayOfWeek.Tuesday, WeekdayProximity.OnOrAfter)]                // anchor DayOfWeek missing
+    [DataRow(11, DayOfWeek.Monday, null!, DayOfWeek.Tuesday, WeekdayProximity.OnOrAfter)]                        // WeekOrdinal missing
+    [DataRow(11, DayOfWeek.Monday, WeekOfMonthOrdinal.First, null!, WeekdayProximity.OnOrAfter)]                 // RelativeDayOfWeek missing
+    [DataRow(11, DayOfWeek.Monday, WeekOfMonthOrdinal.First, DayOfWeek.Tuesday, null!)]                          // WeekdayProximity missing
+    public void ResolveAnchorDate_WhenRequiredFieldMissing_ShouldReturnNull(
+        int? month, DayOfWeek? anchorDayOfWeek, WeekOfMonthOrdinal? ordinal, DayOfWeek? relativeDayOfWeek, WeekdayProximity? proximity)
     {
-        // February 2024 has Mondays on the 5th, 12th, 19th, and 26th only — there is no fifth Monday.
-        NotableDateRule rule = RelativeRule("No Fifth Monday", 2, DayOfWeek.Monday, WeekOfMonthOrdinal.Fifth, DayOfWeek.Tuesday, WeekdayProximity.OnOrAfter);
+        var rule = new NotableDateRule
+        {
+            Name = "Incomplete Relative",
+            Strategy = DateResolutionStrategy.RelativeWeekdayInMonth,
+            Category = NotableDateCategory.Holiday,
+            Month = month,
+            DayOfWeek = anchorDayOfWeek,
+            WeekOrdinal = ordinal,
+            RelativeDayOfWeek = relativeDayOfWeek,
+            WeekdayProximity = proximity,
+        };
 
         Assert.IsNull(Resolve(rule, 2024));
+    }
+
+    /// <summary>
+    /// Verifies that when positioning the relative weekday rolls the result outside the representable
+    /// <see cref="DateTime" /> range — forward past <see cref="DateTime.MaxValue" /> or backward before
+    /// <see cref="DateTime.MinValue" /> — the strategy resolves to <see langword="null" /> rather than throwing, across
+    /// the <see cref="WeekdayProximity.OnOrAfter" />, <see cref="WeekdayProximity.OnOrBefore" />, and
+    /// <see cref="WeekdayProximity.Nearest" /> directions.
+    /// </summary>
+    /// <param name="year">The resolution year, pinned to a calendar boundary.</param>
+    /// <param name="month">The anchor month.</param>
+    /// <param name="anchorDayOfWeek">The anchor weekday whose ordinal occurrence lands on the boundary date.</param>
+    /// <param name="ordinal">Which occurrence of <paramref name="anchorDayOfWeek" /> serves as the anchor.</param>
+    /// <param name="relativeDayOfWeek">The target weekday positioned relative to the anchor.</param>
+    /// <param name="proximity">The positioning direction.</param>
+    [TestMethod]
+    [DataRow(9999, 12, DayOfWeek.Friday, WeekOfMonthOrdinal.Last, DayOfWeek.Saturday, WeekdayProximity.OnOrAfter)]  // last Friday of Dec 9999 is the 31st; the Saturday on or after rolls into year 10000
+    [DataRow(9999, 12, DayOfWeek.Friday, WeekOfMonthOrdinal.Last, DayOfWeek.Saturday, WeekdayProximity.Nearest)]    // nearest Saturday is one day forward, past DateTime.MaxValue
+    [DataRow(1, 1, DayOfWeek.Monday, WeekOfMonthOrdinal.First, DayOfWeek.Sunday, WeekdayProximity.OnOrBefore)]      // first Monday of Jan 0001 is the 1st; the Sunday on or before rolls before DateTime.MinValue
+    public void ResolveAnchorDate_WhenRelativePositioningRollsOutsideRepresentableRange_ShouldReturnNull(
+        int year, int month, DayOfWeek anchorDayOfWeek, WeekOfMonthOrdinal ordinal, DayOfWeek relativeDayOfWeek, WeekdayProximity proximity)
+    {
+        NotableDateRule rule = RelativeRule("Boundary", month, anchorDayOfWeek, ordinal, relativeDayOfWeek, proximity);
+
+        Assert.IsNull(Resolve(rule, year));
+    }
+
+    /// <summary>
+    /// Verifies that a year outside the range supported for anchor computation — less than 1 or greater than 9999 —
+    /// resolves to <see langword="null" /> rather than throwing, because the <em>n</em>th-weekday anchor cannot be
+    /// computed for such a year.
+    /// </summary>
+    /// <param name="year">The unsupported resolution year.</param>
+    [TestMethod]
+    [DataRow(0)]      // below the minimum supported year
+    [DataRow(10000)]  // above the maximum supported year
+    public void ResolveAnchorDate_WhenYearOutsideSupportedCalendarRange_ShouldReturnNull(int year)
+    {
+        NotableDateRule rule = RelativeRule("Out Of Range Year", 11, DayOfWeek.Monday, WeekOfMonthOrdinal.First, DayOfWeek.Tuesday, WeekdayProximity.OnOrAfter);
+
+        Assert.IsNull(Resolve(rule, year));
     }
 }
