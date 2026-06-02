@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Pan-European common notable-date resource (Western / Gregorian calendar).
+
+  Curated re-export. This file cherry-picks the public holidays and widely
+  observed dates that recur across most European countries from the main
+  library's global resources, and additionally defines the common Catholic
+  fixed-date holidays the main library does not carry (Assumption of Mary,
+  Immaculate Conception).
+
+  Design:
+    - Every entry is country-neutral: no territory is assigned here. Each
+      country resource includes this file via a <UseFrom resource="./europe-common.xml">
+      group and assigns its own territory on each <Use>.
+    - Re-exported public holidays carry category="Holiday" and
+      nonWorking="true", because a country only cherry-picks the dates it
+      actually observes as non-working public holidays. A country may still
+      override category, nonWorking, naming (via 'as'), tags, or adjustments
+      on its own <Use> directive — for example to add a weekend-substitution
+      adjustment (United Kingdom, Ireland) or to demote a date to a
+      recognition-only observance.
+    - Recognition-only dates (Valentine's Day, Mother's Day, Father's Day)
+      are re-exported as working observances.
+    - Christmas Day is re-exported with clearAdjustments="true" so the
+      continental-European default (no weekend substitution) applies; the
+      United Kingdom and Ireland re-add their substitution adjustment locally.
+
+  Anchor note: any Easter-derived date a country adopts (Good Friday, Easter
+  Monday, Ascension Day, Whit Monday, Corpus Christi) also requires the
+  "Easter Sunday" anchor to be cherry-picked, since OffsetFromAnchor rules
+  resolve against it. Orthodox-tradition countries (Bulgaria, Cyprus, Greece,
+  Romania) instead cherry-pick the Orthodox Easter cycle directly from the
+  main library's christian-orthodox.xml and supply the "Orthodox Easter
+  Sunday" anchor.
+-->
+<NotableDates xmlns="urn:bodu:globalization:calendar"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <!--
+    Civic core observances — New Year's Day, Labour Day, New Year's Eve.
+    Labour Day is re-exported under its global canonical name
+    "International Workers' Day"; countries that use a distinct local name
+    (France's "Fête du Travail") define their own rule instead.
+  -->
+
+  <UseFrom resource="./global-core.xml">
+    <Use name="New Year's Day" category="Holiday" nonWorking="true" />
+    <Use name="International Workers' Day" category="Holiday" nonWorking="true" />
+    <Use name="New Year's Eve" />
+  </UseFrom>
+
+  <!--
+    Western Christian public holidays and the Easter anchor. Easter Sunday and
+    Pentecost Sunday are re-exported as religious observances (they fall on a
+    Sunday); the working/non-working public holidays derived from them carry
+    nonWorking="true".
+  -->
+
+  <UseFrom resource="./christian-gregorian.xml">
+    <Use name="Epiphany" category="Holiday" nonWorking="true" />
+    <Use name="Easter Sunday" category="Religious" />
+    <Use name="Good Friday" category="Holiday" nonWorking="true" />
+    <Use name="Easter Monday" category="Holiday" nonWorking="true" />
+    <Use name="Ascension Day" category="Holiday" nonWorking="true" />
+    <Use name="Pentecost Sunday" category="Religious" />
+    <Use name="Whit Monday" category="Holiday" nonWorking="true" />
+    <Use name="Corpus Christi" category="Holiday" nonWorking="true" />
+    <Use name="All Saints' Day" category="Holiday" nonWorking="true" />
+    <Use name="All Souls' Day" />
+    <Use name="Christmas Eve" />
+    <Use name="Christmas Day" clearAdjustments="true" />
+    <Use name="Boxing Day" category="Holiday" nonWorking="true" />
+  </UseFrom>
+
+  <!--
+    Family observances (recognition-only by default; countries may localize
+    the date — for example France's last-Sunday-in-May Mother's Day).
+  -->
+
+  <UseFrom resource="./global-family.xml">
+    <Use name="Mother's Day" />
+    <Use name="Father's Day" />
+  </UseFrom>
+
+  <!--
+    Cultural observances (recognition-only).
+  -->
+
+  <UseFrom resource="./global-cultural.xml">
+    <Use name="Valentine's Day" />
+  </UseFrom>
+
+  <!--
+    Common Catholic fixed-date holidays not carried by the main library.
+    Defined here as the single European source of truth so the Catholic
+    member states can cherry-pick them uniformly.
+  -->
+
+  <NotableDate name="Assumption of Mary">
+    <Rule name="fixed-aug-15-eu" category="Holiday" nonWorking="true"
+          comment="Assumption of the Blessed Virgin Mary, observed on 15 August. A public holiday across Catholic Europe (and, as the Dormition of the Theotokos, in Orthodox countries such as Greece and Romania).">
+      <Fixed month="August" day="15" />
+      <Tag>Christian</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Immaculate Conception">
+    <Rule name="fixed-dec-08-eu" category="Holiday" nonWorking="true"
+          comment="Feast of the Immaculate Conception of the Blessed Virgin Mary, observed on 8 December. A public holiday in several Catholic member states including Austria, Italy, Malta, Portugal, and Spain.">
+      <Fixed month="December" day="8" />
+      <Tag>Christian</Tag>
+    </Rule>
+  </NotableDate>
+
+</NotableDates>

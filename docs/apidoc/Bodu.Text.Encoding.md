@@ -10,7 +10,7 @@ uid: Bodu.Text.Encoding
 
 The package fills two gaps that <xref:System.Convert> and `System.Buffers.Text.Base64` leave open: **variants** the BCL does not cover (base32hex, Crockford Base32, z-base-32, Base58 Bitcoin / Flickr / Ripple, Ascii85, Z85), and **lenient parsing** / **formatting decoration** — `0x` prefix tolerance, whitespace stripping, byte spacing, line breaks every 64 / 76 characters — for the encodings that benefit from them.
 
-For structured binary serialization formats with their own framing grammar (Bencode, INI), see the companion <xref:Bodu.Text.Formats> package.
+For structured binary serialization formats with their own framing grammar (Bencode, INI), see the companion `Bodu.Text.Formats` package — namespaces <xref:Bodu.Text.Bencode>, <xref:Bodu.Text.Delimited>, <xref:Bodu.Text.DotEnv>, and <xref:Bodu.Text.Ini>.
 
 ## Static documentation
 

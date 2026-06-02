@@ -36,9 +36,9 @@ public class CompositeProviderBenchmarks
 
         List<IDatedExchangeRateProvider> providers = new(ProviderCount);
         for (int i = 0; i < ProviderCount - 1; i++)
-            providers.Add(new FixedDatedExchangeRateTable(System.Array.Empty<ExchangeRate>()));
+            providers.Add(new FixedDatedExchangeRateProvider(System.Array.Empty<ExchangeRate>()));
 
-        providers.Add(new FixedDatedExchangeRateTable(new[]
+        providers.Add(new FixedDatedExchangeRateProvider(new[]
         {
             new ExchangeRate("USD", "AUD", _date, 1.50m, "Last"),
         }));

@@ -155,6 +155,63 @@ public static class AustraliaTerritoryAnswers
             ExpectedDayOfWeek = DayOfWeek.Monday,
         });
 
+        // ACT Reconciliation Day — the first Monday on or after 27 May — across years that exercise the
+        // strategy's nuances: 27 May itself a Monday (2019, 2024), and a roll forward into June when 27 May
+        // is a Tuesday-through-Sunday late enough that the next Monday lands in June (2020, 2025).
+        yield return Row(new TerritoryNotableDateKnownAnswer
+        {
+            ProviderFactory = AuProvider,
+            Territory = "AU-ACT",
+            Year = 2019,
+            Name = "Reconciliation Day",
+            ExpectedDate = new DateTime(2019, 5, 27),
+            ExpectedDayOfWeek = DayOfWeek.Monday,
+            Note = "27 May is itself a Monday",
+        });
+
+        yield return Row(new TerritoryNotableDateKnownAnswer
+        {
+            ProviderFactory = AuProvider,
+            Territory = "AU-ACT",
+            Year = 2020,
+            Name = "Reconciliation Day",
+            ExpectedDate = new DateTime(2020, 6, 1),
+            ExpectedDayOfWeek = DayOfWeek.Monday,
+            Note = "rolls forward into June",
+        });
+
+        yield return Row(new TerritoryNotableDateKnownAnswer
+        {
+            ProviderFactory = AuProvider,
+            Territory = "AU-ACT",
+            Year = 2023,
+            Name = "Reconciliation Day",
+            ExpectedDate = new DateTime(2023, 5, 29),
+            ExpectedDayOfWeek = DayOfWeek.Monday,
+        });
+
+        yield return Row(new TerritoryNotableDateKnownAnswer
+        {
+            ProviderFactory = AuProvider,
+            Territory = "AU-ACT",
+            Year = 2024,
+            Name = "Reconciliation Day",
+            ExpectedDate = new DateTime(2024, 5, 27),
+            ExpectedDayOfWeek = DayOfWeek.Monday,
+            Note = "27 May is itself a Monday",
+        });
+
+        yield return Row(new TerritoryNotableDateKnownAnswer
+        {
+            ProviderFactory = AuProvider,
+            Territory = "AU-ACT",
+            Year = 2025,
+            Name = "Reconciliation Day",
+            ExpectedDate = new DateTime(2025, 6, 2),
+            ExpectedDayOfWeek = DayOfWeek.Monday,
+            Note = "rolls forward into June",
+        });
+
         // Melbourne Cup Day resolves to the first Tuesday of November.
         yield return Row(new TerritoryNotableDateKnownAnswer
         {

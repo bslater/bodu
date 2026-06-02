@@ -124,6 +124,24 @@ namespace Bodu.Financial {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to ExchangeRateBook cannot contain two series with the same pair and provider; &apos;{0}/{1}&apos; from &apos;{2}&apos; is duplicated..
+        /// </summary>
+        internal static string Arg_Invalid_ExchangeRateBookDuplicateKey {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_ExchangeRateBookDuplicateKey", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to ExchangeRatePair is uninitialised; default(ExchangeRatePair) bypasses currency-code validation and is not a valid directional key..
+        /// </summary>
+        internal static string Arg_Invalid_ExchangeRatePairDefault {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_ExchangeRatePairDefault", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to ISO 4217 code must be exactly three letters, but &apos;{0}&apos; has {1}..
         /// </summary>
         internal static string Arg_Invalid_IsoCodeLength {
@@ -194,6 +212,15 @@ namespace Bodu.Financial {
                 return ResourceManager.GetString("Arg_Invalid_ProviderNullOrWhiteSpace", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Provider-priority list must contain at least one entry..
+        /// </summary>
+        internal static string Arg_Invalid_ProviderPriorityEmpty {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_ProviderPriorityEmpty", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   Looks up a localized string similar to Cannot add observation for {0:yyyy-MM-dd}: a rate already exists for that date..
@@ -239,7 +266,151 @@ namespace Bodu.Financial {
                 return ResourceManager.GetString("Arg_Null_ProviderAtIndex", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Currency &apos;{0}&apos; is not registered. Register it via CurrencyRegistry or use Money.FromUnchecked / an explicit UnknownCurrencyPolicy to supply a minor-unit scale..
+        /// </summary>
+        internal static string Arg_Invalid_UnknownCurrencyRejected {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_UnknownCurrencyRejected", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Currency &apos;{0}&apos; cash-rounding increment {1} is finer than its declared minor-unit precision {2}..
+        /// </summary>
+        internal static string Arg_Invalid_CurrencyInfoCashRoundingTooFine {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_CurrencyInfoCashRoundingTooFine", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to ScalePolicy.Custom requires a non-null CustomScale value..
+        /// </summary>
+        internal static string Arg_Invalid_CustomScaleRequiresValue {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_CustomScaleRequiresValue", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to AllocationPolicy &apos;{0}&apos; is not a defined value..
+        /// </summary>
+        internal static string Arg_OutOfRange_AllocationPolicyUndefined {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_AllocationPolicyUndefined", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to CashRoundingPolicy &apos;{0}&apos; is not a defined value..
+        /// </summary>
+        internal static string Arg_OutOfRange_CashRoundingPolicyUndefined {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_CashRoundingPolicyUndefined", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to ConversionRoundingPolicy &apos;{0}&apos; is not a defined value..
+        /// </summary>
+        internal static string Arg_OutOfRange_ConversionRoundingPolicyUndefined {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_ConversionRoundingPolicyUndefined", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to CurrencyDisplay &apos;{0}&apos; is not a defined value..
+        /// </summary>
+        internal static string Arg_OutOfRange_CurrencyDisplayUndefined {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_CurrencyDisplayUndefined", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to CustomScale {0} is outside the supported range 0 to 28..
+        /// </summary>
+        internal static string Arg_OutOfRange_CustomScale {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_CustomScale", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to MoneyParseMode &apos;{0}&apos; is not a defined value..
+        /// </summary>
+        internal static string Arg_OutOfRange_MoneyParseModeUndefined {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_MoneyParseModeUndefined", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to ScalePolicy &apos;{0}&apos; is not a defined value..
+        /// </summary>
+        internal static string Arg_OutOfRange_ScalePolicyUndefined {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_ScalePolicyUndefined", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Currency &apos;{0}&apos; is not historic but declares a demonetization date or successor ISO code..
+        /// </summary>
+        internal static string Arg_Invalid_CurrencyInfoHistoricInconsistent {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_CurrencyInfoHistoricInconsistent", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Currency &apos;{0}&apos; declares a negative cash-rounding increment {1}..
+        /// </summary>
+        internal static string Arg_OutOfRange_CurrencyInfoCashRoundingNegative {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_CurrencyInfoCashRoundingNegative", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Currency &apos;{0}&apos; declares minor-unit precision {1}, which is outside the supported range 0 to 28..
+        /// </summary>
+        internal static string Arg_OutOfRange_CurrencyInfoMinorUnits {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_CurrencyInfoMinorUnits", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Currency &apos;{0}&apos; declares numeric code {1}, which is outside the supported range 0 to 999..
+        /// </summary>
+        internal static string Arg_OutOfRange_CurrencyInfoNumericCode {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_CurrencyInfoNumericCode", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to CurrencyRegistrationConflictPolicy &apos;{0}&apos; is not a defined value..
+        /// </summary>
+        internal static string Arg_OutOfRange_CurrencyRegistrationConflictPolicyUndefined {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_CurrencyRegistrationConflictPolicyUndefined", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Currency &apos;{0}&apos; is not registered; UnknownCurrencyPolicy.AllowWithExplicitScale requires a minor-unit scale. Use Money.FromUnchecked to supply one..
+        /// </summary>
+        internal static string Arg_Invalid_UnknownCurrencyRequiresScale {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_UnknownCurrencyRequiresScale", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Exchange rate must be strictly positive..
         /// </summary>
@@ -275,7 +446,25 @@ namespace Bodu.Financial {
                 return ResourceManager.GetString("Arg_OutOfRange_UnsupportedMoneyBagRoundingPolicy", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Explicit minor-unit scale {0} for currency &apos;{1}&apos; is out of the supported range 0 to 28..
+        /// </summary>
+        internal static string Arg_OutOfRange_UnknownCurrencyMinorUnits {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_UnknownCurrencyMinorUnits", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to UnknownCurrencyPolicy &apos;{0}&apos; is not a defined value..
+        /// </summary>
+        internal static string Arg_OutOfRange_UnknownCurrencyPolicyUndefined {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_UnknownCurrencyPolicyUndefined", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to The format string &apos;{0}&apos; is not supported..
         /// </summary>
@@ -691,6 +880,15 @@ namespace Bodu.Financial {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Cannot convert {0} using exchange rate {1}-&gt;{2}: the rate&apos;s source currency does not match..
+        /// </summary>
+        internal static string Op_Invalid_ConversionRateDirectionMismatch {
+            get {
+                return ResourceManager.GetString("Op_Invalid_ConversionRateDirectionMismatch", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Cannot adopt ExchangeRate {0}-&gt;{1} as ExchangeRate&lt;{2}, {3}&gt;: ISO codes differ..
         /// </summary>
         internal static string Op_Invalid_ExchangeRateRuntimeMismatch {
@@ -759,6 +957,15 @@ namespace Bodu.Financial {
         internal static string Op_Invalid_RateSeriesBuilderEmpty {
             get {
                 return ResourceManager.GetString("Op_Invalid_RateSeriesBuilderEmpty", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to ExchangeRateProviderSelectionPolicy.{0} is reserved for a future release; only ProviderPriorityFirst is supported in this version..
+        /// </summary>
+        internal static string Op_NotSupported_SelectionPolicy {
+            get {
+                return ResourceManager.GetString("Op_NotSupported_SelectionPolicy", resourceCulture);
             }
         }
 

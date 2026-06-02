@@ -61,6 +61,7 @@ public sealed class ExchangeRateSeries
         string provider,
         IEnumerable<(DateOnly Date, decimal Rate)> rates)
     {
+        FinancialThrowHelper.ThrowIfInvalidExchangeRatePair(pair);
         FinancialThrowHelper.ThrowIfNullOrWhiteSpaceProvider(provider);
         ThrowHelper.ThrowIfNull(rates);
 
@@ -93,6 +94,7 @@ public sealed class ExchangeRateSeries
         string provider,
         IEnumerable<ExchangeRateObservation> observations)
     {
+        FinancialThrowHelper.ThrowIfInvalidExchangeRatePair(pair);
         FinancialThrowHelper.ThrowIfNullOrWhiteSpaceProvider(provider);
         ThrowHelper.ThrowIfNull(observations);
 
@@ -162,10 +164,11 @@ public sealed class ExchangeRateSeries
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool TryGetRate(
         DateOnly requestedDate,
-        ExchangeRateLookupOptions options,
+        ExchangeRateLookupOptions? options,
         out DateOnly resolvedDate,
         out decimal rate)
     {
+        options ??= ExchangeRateLookupOptions.Exact;
         options.Validate();
 
         return _storage.TryGetRate(requestedDate, options, out resolvedDate, out rate);
@@ -186,9 +189,18 @@ public sealed class ExchangeRateSeries
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown if <paramref name="rate" /> is zero or negative.
     /// </exception>
+    /// <remarks>
+    /// Each call materialises a complete new immutable series, so this method is intended for occasional,
+    /// functional-style single updates. For bulk import or repeated mutation, accumulate observations in an
+    /// <see cref="ExchangeRateSeriesBuilder" /> and build the series once rather than calling <see cref="WithRate" />
+    /// in a loop.
+    /// </remarks>
     public ExchangeRateSeries WithRate(DateOnly date, decimal rate)
     {
         FinancialThrowHelper.ThrowIfExchangeRateNotPositive(rate);
+
+        if (_storage.TryGetExactRate(date, out var existing) && existing == rate)
+            return this;
 
         ExchangeRateSeriesBuilder builder = ToBuilder();
         builder.Upsert(date, rate);
@@ -205,6 +217,9 @@ public sealed class ExchangeRateSeries
     /// </exception>
     public ExchangeRateSeries WithoutRate(DateOnly date)
     {
+        if (!_storage.Contains(date))
+            return this;
+
         ExchangeRateSeriesBuilder builder = ToBuilder();
         builder.Remove(date);
         return builder.ToSeries();

@@ -81,7 +81,7 @@ Cryptographic digests in this table provide **integrity only when the digest its
 | <xref:Bodu.Security.Cryptography.Serpent1024> | 1024 bits | 1024 bits | 128 bits | Wide-block tweakable Serpent — non-standard construction. |
 
 ### Stream ciphers
-*<xref:Bodu.Security.Cryptography.StreamCipherAlgorithm> lifecycle (a `SymmetricAlgorithm` with no block mode or padding): configure `Key` and `IV` (the nonce), then `CreateEncryptor()` / `Encrypt`. Self-inverse and raw — **confidentiality only, no authentication**. Never reuse a `(key, nonce)` pair; pair with a MAC or prefer AEAD.*
+*<xref:Bodu.Security.Cryptography.SymmetricStreamAlgorithm> lifecycle (a `SymmetricAlgorithm` with no block mode or padding): configure `Key` and `IV` (the nonce), then `CreateEncryptor()` / `Encrypt`. Self-inverse and raw — **confidentiality only, no authentication**. Never reuse a `(key, nonce)` pair; pair with a MAC or prefer AEAD.*
 
 | Type | Key | Nonce / IV | Notes |
 |---|---|---|---|
@@ -161,8 +161,9 @@ Cryptographic digests in this table provide **integrity only when the digest its
 
 | Type | Purpose |
 |---|---|
-| <xref:Bodu.Security.Cryptography.CryptoHelpers> | Random key/IV/tweak generation, padding helpers, secure-clear helpers. |
 | <xref:Bodu.Security.Cryptography.HashAlgorithmHelper> | Helper utilities for `HashAlgorithm` consumers. |
+
+Random key/IV/tweak generation, padding helpers, and secure-clear helpers ship as internal infrastructure; consumers reach them indirectly through the extension surfaces above.
 
 ## Scenarios this library covers
 

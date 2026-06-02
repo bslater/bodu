@@ -475,6 +475,15 @@ namespace Bodu {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The XSalsa20-Poly1305 secretbox construction does not authenticate associated data; supply an empty span..
+        /// </summary>
+        internal static string Crypt_Invalid_SecretboxAssociatedData {
+            get {
+                return ResourceManager.GetString("Crypt_Invalid_SecretboxAssociatedData", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The stream cipher block counter has wrapped to its initial value. Continuing would reuse the keystream..
         /// </summary>
         internal static string Crypt_Invalid_StreamCounterExhausted {

@@ -13,8 +13,8 @@ uid: Bodu.Collections.Generic.Extensions
 - <xref:Bodu.Collections.Generic.Extensions.IEnumerableExtensions> — generic enumerable utilities: `Aggregate`, `Batch`, `Cache`, `ContainsAll`, `ContainsAny`, `ForEach`, `Index`, `IsNullOrEmpty`, `Randomize`, `RecursiveSelect`, `WhereNotNull`, and more.
 - <xref:Bodu.Collections.Generic.Extensions.IListExtensions> — list-specific utilities: `IndexOf`, `LastIndexOf`, `ReplaceAll`, `TryMove`, `TrySwap`.
 - <xref:Bodu.Collections.Generic.Extensions.IDictionaryExtensions> — dictionary utilities: `AddOrUpdate`, `GetOrAdd`.
-- <xref:Bodu.Collections.Generic.Extensions.SequenceGenerator> — common sequence factories: `Fibonacci`, `Farey`, `Leibniz`, `LookAndSay`, `ThueMorse`, `Range`, `Repeat`, …
-- <xref:Bodu.Collections.Generic.ShuffleHelpers>, <xref:Bodu.Collections.Generic.SystemRandomAdapter>, <xref:Bodu.RandomizationMode> — pluggable randomness-driven shuffles backed by <xref:Bodu.IRandomGenerator>.
+- <xref:Bodu.Collections.Generic.SequenceGenerator> — common sequence factories: `Range`, `Repeat`, `NextWhile`. The richer mathematical series (`Fibonacci`, `Farey`, `Leibniz`, `LookAndSay`, `ThueMorse`) live on the companion <xref:Bodu.Collections.Extensions.SequenceGenerator> in <xref:Bodu.Collections.Extensions>.
+- <xref:Bodu.Collections.Generic.ShuffleHelpers>, <xref:Bodu.Collections.Generic.Extensions.SystemRandomAdapter>, <xref:Bodu.Collections.Generic.Extensions.RandomizationMode> — pluggable randomness-driven shuffles backed by <xref:Bodu.IRandomGenerator>.
 
 ## Example
 

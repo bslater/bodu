@@ -9,7 +9,7 @@ using Bodu.Test.Kat;
 namespace Bodu.Financial.Kat;
 
 /// <summary>
-/// Represents a known-answer test row exercising a full <see cref="FixedDatedExchangeRateTable.TryGetRate" /> call,
+/// Represents a known-answer test row exercising a full <see cref="FixedDatedExchangeRateProvider.TryGetRate" /> call,
 /// including the full resulting metadata.
 /// </summary>
 /// <param name="Name">The short label identifying the scenario.</param>

@@ -40,7 +40,7 @@ namespace Bodu.Security.Cryptography.Extensions;
 /// <term><c>Encrypt(transform, plaintext, associatedData)</c></term>
 /// <description>
 /// One-shot encrypt with associated data; returns ciphertext concatenated with the
-/// <see cref="IAeadBlockCipherModeTransform.TagSize" /> / 8 byte authentication tag.
+/// <see cref="IAeadTransform.TagSize" /> / 8 byte authentication tag.
 /// </description>
 /// </item>
 /// <item>
@@ -107,7 +107,7 @@ public static class AeadBlockCipherModeTransformExtensions
     /// </param>
     /// <returns>
     /// A newly allocated byte array of length <c>plaintext.Length + (transform.TagSize / 8)</c>, containing the
-    /// ciphertext followed by the <see cref="IAeadBlockCipherModeTransform.TagSize" /> / 8 byte tag.
+    /// ciphertext followed by the <see cref="IAeadTransform.TagSize" /> / 8 byte tag.
     /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="transform" /> is <see langword="null" />.</exception>
     /// <exception cref="InvalidOperationException">
@@ -154,8 +154,8 @@ public static class AeadBlockCipherModeTransformExtensions
     /// </summary>
     /// <param name="transform">The AEAD transform. Must not be <see langword="null" />.</param>
     /// <param name="ciphertextWithTag">
-    /// The ciphertext followed immediately by the <see cref="IAeadBlockCipherModeTransform.TagSize" /> / 8 byte tag.
-    /// Must be at least <c>transform.TagSize / 8</c> bytes long.
+    /// The ciphertext followed immediately by the <see cref="IAeadTransform.TagSize" /> / 8 byte tag. Must be at least
+    /// <c>transform.TagSize / 8</c> bytes long.
     /// </param>
     /// <param name="associatedData">
     /// The data authenticated alongside the ciphertext. Must match what was supplied at encryption time.
@@ -207,7 +207,7 @@ public static class AeadBlockCipherModeTransformExtensions
     /// </summary>
     /// <param name="transform">The AEAD transform. Must not be <see langword="null" />.</param>
     /// <param name="ciphertextWithTag">
-    /// The ciphertext followed immediately by the <see cref="IAeadBlockCipherModeTransform.TagSize" /> / 8 byte tag.
+    /// The ciphertext followed immediately by the <see cref="IAeadTransform.TagSize" /> / 8 byte tag.
     /// </param>
     /// <returns>A newly allocated byte array containing the recovered plaintext.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="transform" /> is <see langword="null" />.</exception>

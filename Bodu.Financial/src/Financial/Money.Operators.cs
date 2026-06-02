@@ -21,7 +21,7 @@ public readonly partial struct Money
     public static Money operator +(Money left, Money right)
     {
         EnsureSameCurrency(left, right);
-        return FromNormalized(left._amount + right._amount, left.IsoCode);
+        return left.WithAmount(left._amount + right._amount);
     }
 
     /// <summary>
@@ -37,7 +37,7 @@ public readonly partial struct Money
     public static Money operator -(Money left, Money right)
     {
         EnsureSameCurrency(left, right);
-        return FromNormalized(left._amount - right._amount, left.IsoCode);
+        return left.WithAmount(left._amount - right._amount);
     }
 
     /// <summary>
@@ -45,9 +45,13 @@ public readonly partial struct Money
     /// </summary>
     /// <param name="value">The amount to negate.</param>
     /// <returns>A <see cref="Money" /> with the same ISO code and negated amount.</returns>
+    /// <exception cref="InvalidOperationException">
+    /// <paramref name="value" /> is a default-initialised, currency-less <see cref="Money" />.
+    /// </exception>
     public static Money operator -(Money value)
     {
-        return FromNormalized(-value._amount, value.IsoCode);
+        value.EnsureHasCurrency();
+        return value.WithAmount(-value._amount);
     }
 
     /// <summary>
@@ -61,37 +65,136 @@ public readonly partial struct Money
     }
 
     /// <summary>
-    /// Multiplies a monetary value by a scalar, rounding to the currency's minor-unit precision.
+    /// Multiplies a monetary value by a scalar, rounding the product to the currency's minor-unit precision using
+    /// banker's rounding (<see cref="MidpointRounding.ToEven" />).
     /// </summary>
     /// <param name="left">The amount.</param>
     /// <param name="right">The scalar.</param>
-    /// <returns>The product.</returns>
+    /// <returns>The product, rounded to the currency's minor units using banker's rounding.</returns>
+    /// <exception cref="InvalidOperationException">
+    /// <paramref name="left" /> is a default-initialised, currency-less <see cref="Money" />.
+    /// </exception>
+    /// <remarks>
+    /// Use <see cref="Multiply(decimal, MidpointRounding)" /> when a rounding rule other than banker's rounding is
+    /// required; the operator cannot accept a rounding-mode parameter.
+    /// </remarks>
     public static Money operator *(Money left, decimal right)
     {
-        return new(left._amount * right, left.IsoCode);
+        left.EnsureHasCurrency();
+        return left.WithRoundedAmount(left._amount * right);
     }
 
     /// <summary>
-    /// Multiplies a scalar by a monetary value.
+    /// Multiplies a scalar by a monetary value, rounding the product to the currency's minor-unit precision using
+    /// banker's rounding (<see cref="MidpointRounding.ToEven" />).
     /// </summary>
     /// <param name="left">The scalar.</param>
     /// <param name="right">The amount.</param>
-    /// <returns>The product.</returns>
+    /// <returns>The product, rounded to the currency's minor units using banker's rounding.</returns>
+    /// <exception cref="InvalidOperationException">
+    /// <paramref name="right" /> is a default-initialised, currency-less <see cref="Money" />.
+    /// </exception>
+    /// <remarks>
+    /// Use <see cref="Multiply(decimal, MidpointRounding)" /> when a rounding rule other than banker's rounding is
+    /// required; the operator cannot accept a rounding-mode parameter.
+    /// </remarks>
     public static Money operator *(decimal left, Money right)
     {
-        return new(left * right._amount, right.IsoCode);
+        right.EnsureHasCurrency();
+        return right.WithRoundedAmount(left * right._amount);
     }
 
     /// <summary>
-    /// Divides a monetary value by a scalar.
+    /// Divides a monetary value by a scalar, rounding the quotient to the currency's minor-unit precision using
+    /// banker's rounding (<see cref="MidpointRounding.ToEven" />).
     /// </summary>
     /// <param name="left">The amount.</param>
     /// <param name="right">The scalar divisor.</param>
-    /// <returns>The quotient.</returns>
+    /// <returns>The quotient, rounded to the currency's minor units using banker's rounding.</returns>
+    /// <exception cref="InvalidOperationException">
+    /// <paramref name="left" /> is a default-initialised, currency-less <see cref="Money" />.
+    /// </exception>
     /// <exception cref="DivideByZeroException"><paramref name="right" /> is zero.</exception>
+    /// <remarks>
+    /// Use <see cref="Divide(decimal, MidpointRounding)" /> when a rounding rule other than banker's rounding is
+    /// required; the operator cannot accept a rounding-mode parameter.
+    /// </remarks>
     public static Money operator /(Money left, decimal right)
     {
-        return new(left._amount / right, left.IsoCode);
+        left.EnsureHasCurrency();
+        return left.WithRoundedAmount(left._amount / right);
+    }
+
+    /// <summary>
+    /// Multiplies this amount by <paramref name="multiplier" /> using banker's rounding, identical to the <c>*</c>
+    /// operator.
+    /// </summary>
+    /// <param name="multiplier">The scalar multiplier.</param>
+    /// <returns>The product, rounded to the currency's minor units using banker's rounding.</returns>
+    /// <exception cref="InvalidOperationException">
+    /// This value is a default-initialised, currency-less <see cref="Money" />.
+    /// </exception>
+    public Money Multiply(decimal multiplier)
+    {
+        EnsureHasCurrency();
+        return WithRoundedAmount(_amount * multiplier);
+    }
+
+    /// <summary>
+    /// Multiplies this amount by <paramref name="multiplier" /> and rounds the result to the currency's minor-unit
+    /// precision using the supplied rule.
+    /// </summary>
+    /// <param name="multiplier">The scalar multiplier.</param>
+    /// <param name="rounding">The midpoint-rounding rule applied to the product.</param>
+    /// <returns>The product, rounded to the currency's minor units using <paramref name="rounding" />.</returns>
+    /// <exception cref="InvalidOperationException">
+    /// This value is a default-initialised, currency-less <see cref="Money" />.
+    /// </exception>
+    /// <remarks>
+    /// Use this overload when a non-default rounding rule (for example, <see cref="MidpointRounding.AwayFromZero" />
+    /// for retail-tax workflows) must be applied. The <c>*</c> operator forces banker's rounding because operator
+    /// signatures cannot accept a rounding-mode parameter.
+    /// </remarks>
+    public Money Multiply(decimal multiplier, MidpointRounding rounding)
+    {
+        EnsureHasCurrency();
+        return WithRoundedAmount(_amount * multiplier, rounding);
+    }
+
+    /// <summary>
+    /// Divides this amount by <paramref name="divisor" /> using banker's rounding, identical to the <c>/</c> operator.
+    /// </summary>
+    /// <param name="divisor">The scalar divisor.</param>
+    /// <returns>The quotient, rounded to the currency's minor units using banker's rounding.</returns>
+    /// <exception cref="InvalidOperationException">
+    /// This value is a default-initialised, currency-less <see cref="Money" />.
+    /// </exception>
+    /// <exception cref="DivideByZeroException"><paramref name="divisor" /> is zero.</exception>
+    public Money Divide(decimal divisor)
+    {
+        EnsureHasCurrency();
+        return WithRoundedAmount(_amount / divisor);
+    }
+
+    /// <summary>
+    /// Divides this amount by <paramref name="divisor" /> and rounds the result to the currency's minor-unit precision
+    /// using the supplied rule.
+    /// </summary>
+    /// <param name="divisor">The scalar divisor.</param>
+    /// <param name="rounding">The midpoint-rounding rule applied to the quotient.</param>
+    /// <returns>The quotient, rounded to the currency's minor units using <paramref name="rounding" />.</returns>
+    /// <exception cref="InvalidOperationException">
+    /// This value is a default-initialised, currency-less <see cref="Money" />.
+    /// </exception>
+    /// <exception cref="DivideByZeroException"><paramref name="divisor" /> is zero.</exception>
+    /// <remarks>
+    /// Use this overload when a non-default rounding rule must be applied. The <c>/</c> operator forces banker's
+    /// rounding because operator signatures cannot accept a rounding-mode parameter.
+    /// </remarks>
+    public Money Divide(decimal divisor, MidpointRounding rounding)
+    {
+        EnsureHasCurrency();
+        return WithRoundedAmount(_amount / divisor, rounding);
     }
 
     /// <summary>

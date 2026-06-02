@@ -131,6 +131,14 @@
     </Rule>
   </NotableDate>
 
+  <NotableDate name="Election Day">
+    <Rule name="weekday-tue-after-1st-mon-nov-us" category="Civic" territory="US" firstYear="1845"
+          comment="United States general Election Day. Federal law (since 1845) fixes it as the Tuesday after the first Monday in November. Not a federal public holiday, though some states observe it as one.">
+      <RelativeWeekdayInMonth month="November" weekOrdinal="First" dayOfWeek="Monday" relativeDayOfWeek="Tuesday" direction="OnOrAfter" />
+      <Tag>Civic</Tag>
+    </Rule>
+  </NotableDate>
+
   <NotableDate name="Thanksgiving">
     <Rule name="weekday-4th-thu-nov-us" category="Holiday" territory="US" nonWorking="true"
           comment="A national holiday giving thanks for the harvest and blessings of the previous year. Set on the fourth Thursday of November by Congress in 1941.">
@@ -142,6 +150,13 @@
     <Rule name="offset-thanksgiving+1-us" category="Cultural" territory="US"
           comment="The day after Thanksgiving, traditionally regarded as the start of the Christmas shopping season. Not a federal holiday; observed informally as a major retail event.">
       <OffsetFromAnchor name="Thanksgiving" offset="1" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Cyber Monday">
+    <Rule name="offset-thanksgiving+4-us" category="Cultural" territory="US"
+          comment="The Monday after Thanksgiving (four days after the fourth Thursday of November), promoted since 2005 as the online counterpart to Black Friday. Not a federal holiday; observed informally as a major retail event.">
+      <OffsetFromAnchor name="Thanksgiving" offset="4" />
     </Rule>
   </NotableDate>
 

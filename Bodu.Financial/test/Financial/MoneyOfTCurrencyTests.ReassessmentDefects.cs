@@ -253,10 +253,7 @@ public partial class MoneyOfTCurrencyTests
     public void ConvertTo_WhenProviderReturnsZeroRate_ShouldThrowInvalidOperationException()
     {
         MoneyBag bag = MoneyBag.Empty.Add(new Money<EUR>(100m));
-        FixedExchangeRateTable rates = new(new Dictionary<(string From, string To), decimal>
-        {
-            { ("EUR", "USD"), 0m },
-        });
+        IExchangeRateProvider rates = new ConstantRateProvider(0m);
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
@@ -271,15 +268,36 @@ public partial class MoneyOfTCurrencyTests
     public void ConvertTo_WhenProviderReturnsNegativeRate_ShouldThrowInvalidOperationException()
     {
         MoneyBag bag = MoneyBag.Empty.Add(new Money<EUR>(100m));
-        FixedExchangeRateTable rates = new(new Dictionary<(string From, string To), decimal>
-        {
-            { ("EUR", "USD"), -1.10m },
-        });
+        IExchangeRateProvider rates = new ConstantRateProvider(-1.10m);
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
             _ = bag.ConvertTo<USD>(rates);
         });
+    }
+
+    /// <summary>
+    /// A minimal <see cref="IExchangeRateProvider" /> that returns a fixed rate for every pair, used to drive the
+    /// bag's defensive zero/negative-rate check independently of <see cref="FixedExchangeRateTable" />.
+    /// </summary>
+    private sealed class ConstantRateProvider : IExchangeRateProvider
+    {
+        /// <summary>
+        /// The fixed rate this provider returns from every lookup.
+        /// </summary>
+        private readonly decimal _rate;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ConstantRateProvider" /> class.
+        /// </summary>
+        /// <param name="rate">The fixed rate to return.</param>
+        public ConstantRateProvider(decimal rate)
+        {
+            _rate = rate;
+        }
+
+        /// <inheritdoc />
+        public decimal GetRate(string fromIsoCode, string toIsoCode) => _rate;
     }
 
     /// <summary>
@@ -449,11 +467,11 @@ public partial class MoneyOfTCurrencyTests
     [TestMethod]
     public void ConvertTo_WhenTwoSubMinorUnitLinesAggregate_ShouldDifferByRoundingPolicy()
     {
-        // Use unregistered currency tags (valid ISO shape, not in the catalogue) so the Money constructor
-        // preserves the sub-cent source precision instead of rounding it away.
+        // Use unregistered currency tags (valid ISO shape, not in the catalogue) with an explicit minor-unit scale so
+        // Money preserves the sub-cent source precision instead of rounding it away.
         MoneyBag bag = MoneyBag.Empty
-            .Add(new Money(0.005m, "XQT"))
-            .Add(new Money(0.005m, "XQU"));
+            .Add(Money.FromUnchecked(0.005m, "XQT", 3))
+            .Add(Money.FromUnchecked(0.005m, "XQU", 3));
 
         FixedExchangeRateTable rates = new(new Dictionary<(string From, string To), decimal>
         {

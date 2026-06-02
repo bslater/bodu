@@ -39,9 +39,10 @@ namespace Bodu.Financial;
 /// </para>
 /// <para>
 /// Scalar multiplication and division round their result to <c>TCurrency.MinorUnits</c>. For chains where rounding at
-/// each step would accumulate error — compound interest, unit-rate products, percentages — perform the calculation in
-/// <see cref="Bodu.Numerics.Fraction{T}" /> via <see cref="ToFraction" />, then snap to <see cref="Money{TCurrency}" />
-/// only at the final settlement boundary with
+/// each step would accumulate error — compound interest, unit-rate products, percentages — defer rounding: use
+/// <see cref="CalculatedMoney" /> for high-precision <see cref="decimal" /> calculation rounded once at settlement, or,
+/// when the calculation must be mathematically exact, perform it in <see cref="Bodu.Numerics.Fraction{T}" /> via
+/// <see cref="ToFraction" /> and snap to <see cref="Money{TCurrency}" /> only at the final settlement boundary with
 /// <see cref="FromFraction(Bodu.Numerics.Fraction{System.Numerics.BigInteger}, MidpointRounding)" /> or the
 /// <see cref="MultiplyExact(Bodu.Numerics.Fraction{System.Numerics.BigInteger}, MidpointRounding)" /> shortcut.
 /// </para>
@@ -49,6 +50,13 @@ namespace Bodu.Financial;
 /// The default value (<c>default(Money&lt;TCurrency&gt;)</c>) represents zero of the given currency without invoking
 /// the rounding constructor, so it is safe even when <typeparamref name="TCurrency" /> reports invalid minor-unit
 /// metadata.
+/// </para>
+/// <para>
+/// The type-level <see cref="JsonConverterAttribute" /> always serializes the canonical
+/// <see cref="Serialization.FinancialJsonPolicy.Strict" /> object shape; the compact and lenient shapes are opt-in only
+/// and must be selected through
+/// <see cref="Serialization.FinancialJsonSerializerOptionsExtensions.AddFinancialJsonConverters(System.Text.Json.JsonSerializerOptions, Serialization.FinancialJsonPolicy)" />
+/// .
 /// </para>
 /// </remarks>
 [Serializable]

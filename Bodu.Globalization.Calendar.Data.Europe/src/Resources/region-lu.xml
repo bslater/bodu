@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Luxembourg (LU) notable-date resource using the Western / Gregorian calendar.
+
+  National public holidays (jours fériés légaux).
+
+  Common European observances are inherited from europe-common.xml and
+  localized with territory="LU"; Luxembourg-specific holidays are declared below.
+-->
+<NotableDates xmlns="urn:bodu:globalization:calendar"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <UseFrom resource="./europe-common.xml">
+    <Use name="New Year's Day" territory="LU" />
+    <Use name="Easter Sunday" territory="LU" />
+    <Use name="Easter Monday" territory="LU" />
+    <Use name="International Workers' Day" as="Labour Day" territory="LU" />
+    <Use name="Ascension Day" territory="LU" />
+    <Use name="Whit Monday" territory="LU" />
+    <Use name="Assumption of Mary" territory="LU" />
+    <Use name="All Saints' Day" territory="LU" />
+    <Use name="Christmas Day" territory="LU" />
+    <Use name="Boxing Day" as="Saint Stephen's Day" territory="LU" />
+  </UseFrom>
+
+  <!--
+    National Luxembourg holidays.
+  -->
+
+  <NotableDate name="Europe Day">
+    <Rule name="fixed-may-09-lu" category="Holiday" territory="LU" nonWorking="true" firstYear="2019"
+          comment="Marks the Schuman Declaration of 9 May 1950. Declared a public holiday in Luxembourg from 2019.">
+      <Fixed month="May" day="9" />
+      <Tag>National</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="National Day">
+    <Rule name="fixed-jun-23-lu" category="Holiday" territory="LU" nonWorking="true"
+          comment="Public celebration of the official birthday of the Grand Duke, fixed on 23 June regardless of the reigning monarch's actual birthday.">
+      <Fixed month="June" day="23" />
+      <Tag>National</Tag>
+    </Rule>
+  </NotableDate>
+
+</NotableDates>

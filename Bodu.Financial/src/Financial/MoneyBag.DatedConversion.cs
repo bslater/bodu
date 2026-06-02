@@ -22,7 +22,7 @@ public sealed partial class MoneyBag
     /// <exception cref="KeyNotFoundException">
     /// No rate is available for one of the bag's currencies under <paramref name="options" />.
     /// </exception>
-    public Money<TTarget> ConvertTo<TTarget>(IDatedExchangeRateProvider rates, DateOnly date, ExchangeRateLookupOptions options)
+    public Money<TTarget> ConvertTo<TTarget>(IDatedExchangeRateProvider rates, DateOnly date, ExchangeRateLookupOptions? options = null)
         where TTarget : ICurrency =>
         ConvertTo<TTarget>(rates, date, options, MoneyBagConversionRoundingPolicy.SumRawThenRound);
 
@@ -44,7 +44,7 @@ public sealed partial class MoneyBag
     public Money<TTarget> ConvertTo<TTarget>(
         IDatedExchangeRateProvider rates,
         DateOnly date,
-        ExchangeRateLookupOptions options,
+        ExchangeRateLookupOptions? options,
         MoneyBagConversionRoundingPolicy policy)
         where TTarget : ICurrency
     {
@@ -77,7 +77,7 @@ public sealed partial class MoneyBag
     public MoneyBagConversionAudit<TTarget> ConvertToWithAudit<TTarget>(
         IDatedExchangeRateProvider rates,
         DateOnly date,
-        ExchangeRateLookupOptions options,
+        ExchangeRateLookupOptions? options,
         MoneyBagConversionRoundingPolicy policy = MoneyBagConversionRoundingPolicy.SumRawThenRound)
         where TTarget : ICurrency
     {
@@ -128,7 +128,7 @@ public sealed partial class MoneyBag
 
 /// <summary>
 /// Captures the per-line audit metadata produced by
-/// <see cref="MoneyBag.ConvertToWithAudit{TTarget}(IDatedExchangeRateProvider, DateOnly, ExchangeRateLookupOptions, MoneyBagConversionRoundingPolicy)" />
+/// <see cref="MoneyBag.ConvertToWithAudit{TTarget}(IDatedExchangeRateProvider, DateOnly, ExchangeRateLookupOptions?, MoneyBagConversionRoundingPolicy)" />
 /// for a single source currency in the bag.
 /// </summary>
 /// <param name="SourceIsoCode">The source-currency ISO code for this line.</param>

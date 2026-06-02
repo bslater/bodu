@@ -573,6 +573,17 @@ internal sealed class NotableDateRuleResolver
                 case DateResolutionStrategy.OffsetFromAnchor:
                     return ResolveOffsetAnchor(rule, year, resolving);
 
+                case DateResolutionStrategy.WeekdayNearDate:
+                    if (rule.Month is { } wnm && rule.Day is { } wnd && rule.DayOfWeek is { } wndow && rule.WeekdayProximity is { } proximity)
+                        return ResolveWeekdayNearDate(year, wnm, wnd, wndow, proximity);
+                    return null;
+
+                case DateResolutionStrategy.RelativeWeekdayInMonth:
+                    if (rule.Month is { } rwm && rule.DayOfWeek is { } anchorDow && rule.WeekOrdinal is { } anchorOrd
+                        && rule.RelativeDayOfWeek is { } relativeDow && rule.WeekdayProximity is { } relativeProximity)
+                        return ResolveRelativeWeekdayInMonth(year, rwm, anchorDow, anchorOrd, relativeDow, relativeProximity);
+                    return null;
+
                 case DateResolutionStrategy.Algorithm:
                     return ResolveAlgorithm(rule, year);
 
@@ -583,6 +594,121 @@ internal sealed class NotableDateRuleResolver
         finally
         {
             resolving.Remove(rule.Name);
+        }
+    }
+
+    /// <summary>
+    /// Resolves a <see cref="DateResolutionStrategy.WeekdayNearDate" /> rule by positioning the target weekday relative
+    /// to the reference (month, day) in the supplied Gregorian year.
+    /// </summary>
+    /// <param name="year">The Gregorian year.</param>
+    /// <param name="month">The reference month, in the range 1–12.</param>
+    /// <param name="day">The reference day-of-month.</param>
+    /// <param name="targetDayOfWeek">The weekday the rule resolves to.</param>
+    /// <param name="proximity">
+    /// The direction used to position <paramref name="targetDayOfWeek" /> relative to the reference date.
+    /// </param>
+    /// <returns>
+    /// The resolved date with <see cref="DateTimeKind.Unspecified" />, or <see langword="null" /> when the reference
+    /// (year, month, day) is not a valid date or the shifted result falls outside the representable range.
+    /// </returns>
+    /// <remarks>
+    /// The forward and backward distances to the nearest occurrence of <paramref name="targetDayOfWeek" /> always sum
+    /// to seven, so for <see cref="WeekdayProximity.Nearest" /> they are never equal and the closer one is unambiguous;
+    /// when the reference date already falls on the target weekday every direction yields the reference date itself.
+    /// </remarks>
+    private static DateTime? ResolveWeekdayNearDate(int year, int month, int day, DayOfWeek targetDayOfWeek, WeekdayProximity proximity)
+    {
+        DateTime reference;
+        try
+        {
+            reference = new DateTime(year, month, day, 0, 0, 0, DateTimeKind.Unspecified);
+        }
+        catch (ArgumentOutOfRangeException)
+        {
+            // Reference (year, month, day) is not a valid Gregorian date; treat as no occurrence.
+            return null;
+        }
+
+        return PositionWeekday(reference, targetDayOfWeek, proximity);
+    }
+
+    /// <summary>
+    /// Resolves a <see cref="DateResolutionStrategy.RelativeWeekdayInMonth" /> rule by computing the anchor — the
+    /// <paramref name="weekOrdinal" /> occurrence of <paramref name="anchorDayOfWeek" /> in <paramref name="month" /> —
+    /// and then positioning <paramref name="relativeDayOfWeek" /> relative to that anchor.
+    /// </summary>
+    /// <param name="year">The Gregorian year.</param>
+    /// <param name="month">The anchor month, in the range 1–12.</param>
+    /// <param name="anchorDayOfWeek">The anchor weekday whose ordinal occurrence supplies the reference date.</param>
+    /// <param name="weekOrdinal">Which occurrence of <paramref name="anchorDayOfWeek" /> serves as the anchor.</param>
+    /// <param name="relativeDayOfWeek">The target weekday the rule resolves to.</param>
+    /// <param name="proximity">
+    /// The direction used to position <paramref name="relativeDayOfWeek" /> relative to the anchor.
+    /// </param>
+    /// <returns>
+    /// The resolved date with <see cref="DateTimeKind.Unspecified" />, or <see langword="null" /> when the anchor
+    /// occurrence does not exist (for example a fifth occurrence in a month that has only four) or the result falls
+    /// outside the representable range.
+    /// </returns>
+    private static DateTime? ResolveRelativeWeekdayInMonth(int year, int month, DayOfWeek anchorDayOfWeek, WeekOfMonthOrdinal weekOrdinal, DayOfWeek relativeDayOfWeek, WeekdayProximity proximity)
+    {
+        DateTime anchor;
+        try
+        {
+            anchor = DateTimeExtensions.GetNthDateOfWeekInMonth(year, month, anchorDayOfWeek, weekOrdinal);
+        }
+        catch (ArgumentOutOfRangeException)
+        {
+            // The requested ordinal occurrence does not exist in the month; treat as no occurrence.
+            return null;
+        }
+
+        return PositionWeekday(anchor, relativeDayOfWeek, proximity);
+    }
+
+    /// <summary>
+    /// Positions <paramref name="targetDayOfWeek" /> relative to <paramref name="reference" /> according to
+    /// <paramref name="proximity" /> — the first such weekday on or after the reference, on or before it, or the
+    /// nearest occurrence in either direction. Shared by the <see cref="DateResolutionStrategy.WeekdayNearDate" /> and
+    /// <see cref="DateResolutionStrategy.RelativeWeekdayInMonth" /> strategies.
+    /// </summary>
+    /// <param name="reference">The reference date to position the target weekday around.</param>
+    /// <param name="targetDayOfWeek">The weekday to resolve to.</param>
+    /// <param name="proximity">The positioning direction.</param>
+    /// <returns>
+    /// The resolved date with <see cref="DateTimeKind.Unspecified" />, or <see langword="null" /> when the shifted
+    /// result falls outside the representable range.
+    /// </returns>
+    /// <remarks>
+    /// The forward and backward distances to the nearest occurrence of <paramref name="targetDayOfWeek" /> always sum
+    /// to seven, so for <see cref="WeekdayProximity.Nearest" /> they are never equal and the closer one is unambiguous;
+    /// when <paramref name="reference" /> already falls on the target weekday every direction yields the reference date
+    /// itself.
+    /// </remarks>
+    private static DateTime? PositionWeekday(DateTime reference, DayOfWeek targetDayOfWeek, WeekdayProximity proximity)
+    {
+        // Days to advance forward / retreat backward from the reference to reach the target weekday, each in 0..6.
+        var forwardDelta = ((((int)targetDayOfWeek - (int)reference.DayOfWeek) % 7) + 7) % 7;
+        var backwardDelta = ((((int)reference.DayOfWeek - (int)targetDayOfWeek) % 7) + 7) % 7;
+
+        var delta = proximity switch
+        {
+            WeekdayProximity.OnOrAfter => forwardDelta,
+            WeekdayProximity.OnOrBefore => -backwardDelta,
+
+            // Forward and backward distances sum to seven, so they are never equal; pick the strictly smaller side.
+            WeekdayProximity.Nearest => forwardDelta <= backwardDelta ? forwardDelta : -backwardDelta,
+            _ => 0,
+        };
+
+        try
+        {
+            return reference.AddDays(delta);
+        }
+        catch (ArgumentOutOfRangeException)
+        {
+            return null;
         }
     }
 

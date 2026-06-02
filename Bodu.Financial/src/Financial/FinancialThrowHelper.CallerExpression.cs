@@ -66,6 +66,26 @@ internal static partial class FinancialThrowHelper
     }
 
     /// <summary>
+    /// Throws when <paramref name="value" /> is not a fully constructed <see cref="ExchangeRatePair" />.
+    /// </summary>
+    /// <param name="value">The candidate pair to validate.</param>
+    /// <param name="paramName">The parameter name reported in the exception; inferred from the call site.</param>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="value" /> is <see langword="default" />, i.e. its
+    /// <see cref="ExchangeRatePair.IsValid" /> property reports <see langword="false" />.
+    /// </exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static void ThrowIfInvalidExchangeRatePair(
+        ExchangeRatePair value,
+        [CallerArgumentExpression(nameof(value))] string? paramName = null)
+    {
+        if (!value.IsValid)
+            throw new ArgumentException(
+                FinancialResourceStrings.Arg_Invalid_ExchangeRatePairDefault,
+                paramName);
+    }
+
+    /// <summary>
     /// Throws when <paramref name="rate" /> is zero or negative.
     /// </summary>
     /// <param name="rate">The exchange-rate value to validate.</param>
@@ -117,6 +137,176 @@ internal static partial class FinancialThrowHelper
             throw new ArgumentException(
                 FinancialResourceStrings.Arg_Invalid_AllocationRatiosAllZero,
                 paramName);
+    }
+
+    /// <summary>
+    /// Throws when <paramref name="policy" /> is not a defined <see cref="UnknownCurrencyPolicy" /> member.
+    /// </summary>
+    /// <param name="policy">The policy value to validate.</param>
+    /// <param name="paramName">The parameter name reported in the exception; inferred from the call site.</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="policy" /> is not a defined value.
+    /// </exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static void ThrowIfUnknownCurrencyPolicyUndefined(
+        UnknownCurrencyPolicy policy,
+        [CallerArgumentExpression(nameof(policy))] string? paramName = null)
+    {
+        if (policy is not UnknownCurrencyPolicy.Reject
+            and not UnknownCurrencyPolicy.AllowWithExplicitScale
+            and not UnknownCurrencyPolicy.AllowUnscaled)
+        {
+            throw new ArgumentOutOfRangeException(
+                paramName,
+                policy,
+                string.Format(
+                    CultureInfo.InvariantCulture,
+                    FinancialResourceStrings.Arg_OutOfRange_UnknownCurrencyPolicyUndefined,
+                    policy));
+        }
+    }
+
+    /// <summary>
+    /// Throws when <paramref name="mode" /> is not a defined <see cref="MoneyParseMode" /> member.
+    /// </summary>
+    /// <param name="mode">The parse mode to validate.</param>
+    /// <param name="paramName">The parameter name reported in the exception; inferred from the call site.</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="mode" /> is not a defined value.
+    /// </exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static void ThrowIfMoneyParseModeUndefined(
+        MoneyParseMode mode,
+        [CallerArgumentExpression(nameof(mode))] string? paramName = null)
+    {
+        if (mode is not MoneyParseMode.StrictIso and not MoneyParseMode.CultureAware
+            and not MoneyParseMode.LenientImport and not MoneyParseMode.RoundTripOnly)
+        {
+            throw new ArgumentOutOfRangeException(paramName, mode, string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Arg_OutOfRange_MoneyParseModeUndefined, mode));
+        }
+    }
+
+    /// <summary>
+    /// Throws when <paramref name="policy" /> is not a defined <see cref="ScalePolicy" /> member.
+    /// </summary>
+    /// <param name="policy">The scale policy to validate.</param>
+    /// <param name="paramName">The parameter name reported in the exception; inferred from the call site.</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="policy" /> is not a defined value.
+    /// </exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static void ThrowIfScalePolicyUndefined(
+        ScalePolicy policy,
+        [CallerArgumentExpression(nameof(policy))] string? paramName = null)
+    {
+        if (policy is not ScalePolicy.CurrencyMinorUnits and not ScalePolicy.Unrounded and not ScalePolicy.Custom)
+            throw new ArgumentOutOfRangeException(paramName, policy, string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Arg_OutOfRange_ScalePolicyUndefined, policy));
+    }
+
+    /// <summary>
+    /// Throws when <paramref name="policy" /> is not a defined <see cref="CashRoundingPolicy" /> member.
+    /// </summary>
+    /// <param name="policy">The cash-rounding policy to validate.</param>
+    /// <param name="paramName">The parameter name reported in the exception; inferred from the call site.</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="policy" /> is not a defined value.
+    /// </exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static void ThrowIfCashRoundingPolicyUndefined(
+        CashRoundingPolicy policy,
+        [CallerArgumentExpression(nameof(policy))] string? paramName = null)
+    {
+        if (policy is not CashRoundingPolicy.None and not CashRoundingPolicy.CurrencyCashIncrement)
+            throw new ArgumentOutOfRangeException(paramName, policy, string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Arg_OutOfRange_CashRoundingPolicyUndefined, policy));
+    }
+
+    /// <summary>
+    /// Throws when <paramref name="policy" /> is not a defined <see cref="AllocationPolicy" /> member.
+    /// </summary>
+    /// <param name="policy">The allocation policy to validate.</param>
+    /// <param name="paramName">The parameter name reported in the exception; inferred from the call site.</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="policy" /> is not a defined value.
+    /// </exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static void ThrowIfAllocationPolicyUndefined(
+        AllocationPolicy policy,
+        [CallerArgumentExpression(nameof(policy))] string? paramName = null)
+    {
+        if (policy is not AllocationPolicy.LargestRemainder)
+            throw new ArgumentOutOfRangeException(paramName, policy, string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Arg_OutOfRange_AllocationPolicyUndefined, policy));
+    }
+
+    /// <summary>
+    /// Throws when <paramref name="policy" /> is not a defined <see cref="ConversionRoundingPolicy" /> member.
+    /// </summary>
+    /// <param name="policy">The conversion-rounding policy to validate.</param>
+    /// <param name="paramName">The parameter name reported in the exception; inferred from the call site.</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="policy" /> is not a defined value.
+    /// </exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static void ThrowIfConversionRoundingPolicyUndefined(
+        ConversionRoundingPolicy policy,
+        [CallerArgumentExpression(nameof(policy))] string? paramName = null)
+    {
+        if (policy is not ConversionRoundingPolicy.RoundAtTarget and not ConversionRoundingPolicy.Defer)
+            throw new ArgumentOutOfRangeException(paramName, policy, string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Arg_OutOfRange_ConversionRoundingPolicyUndefined, policy));
+    }
+
+    /// <summary>
+    /// Throws when <paramref name="policy" /> is not a defined <see cref="CurrencyRegistrationConflictPolicy" /> member.
+    /// </summary>
+    /// <param name="policy">The conflict policy to validate.</param>
+    /// <param name="paramName">The parameter name reported in the exception; inferred from the call site.</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="policy" /> is not a defined value.
+    /// </exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static void ThrowIfCurrencyRegistrationConflictPolicyUndefined(
+        CurrencyRegistrationConflictPolicy policy,
+        [CallerArgumentExpression(nameof(policy))] string? paramName = null)
+    {
+        if (policy is not CurrencyRegistrationConflictPolicy.Throw
+            and not CurrencyRegistrationConflictPolicy.Replace
+            and not CurrencyRegistrationConflictPolicy.Ignore)
+        {
+            throw new ArgumentOutOfRangeException(
+                paramName,
+                policy,
+                string.Format(
+                    CultureInfo.InvariantCulture,
+                    FinancialResourceStrings.Arg_OutOfRange_CurrencyRegistrationConflictPolicyUndefined,
+                    policy));
+        }
+    }
+
+    /// <summary>
+    /// Throws when <paramref name="minorUnits" /> is outside the supported range 0 to 28.
+    /// </summary>
+    /// <param name="minorUnits">The candidate minor-unit scale to validate.</param>
+    /// <param name="isoCode">The currency code reported in the exception message for context.</param>
+    /// <param name="paramName">The parameter name reported in the exception; inferred from the call site.</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="minorUnits" /> is less than zero or greater than 28.
+    /// </exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static void ThrowIfMinorUnitsOutOfRange(
+        int minorUnits,
+        string isoCode,
+        [CallerArgumentExpression(nameof(minorUnits))] string? paramName = null)
+    {
+        if ((uint)minorUnits > 28u)
+        {
+            throw new ArgumentOutOfRangeException(
+                paramName,
+                minorUnits,
+                string.Format(
+                    CultureInfo.InvariantCulture,
+                    FinancialResourceStrings.Arg_OutOfRange_UnknownCurrencyMinorUnits,
+                    minorUnits,
+                    isoCode));
+        }
     }
 
     /// <summary>

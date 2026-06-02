@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Romania (RO) notable-date resource.
+
+  National public holidays (sărbători legale). Romania celebrates Christmas on
+  the Gregorian date but follows the Eastern Orthodox calendar for the movable
+  Easter and Pentecost cycle, cherry-picked from the main library's
+  christian-orthodox.xml (anchored on Orthodox Easter Sunday); the fixed
+  Gregorian observances come from europe-common.xml.
+
+  Algorithm note: resolving the Orthodox movable feasts requires the
+  "orthodox-easter-sunday" INotableDateAlgorithm to be registered with the
+  service.
+-->
+<NotableDates xmlns="urn:bodu:globalization:calendar"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <UseFrom resource="./europe-common.xml">
+    <Use name="New Year's Day" territory="RO" />
+    <Use name="International Workers' Day" as="Labour Day" territory="RO" />
+    <Use name="Assumption of Mary" as="Dormition of the Mother of God" territory="RO" />
+    <Use name="Christmas Day" territory="RO" />
+    <Use name="Boxing Day" as="Second Day of Christmas" territory="RO" />
+  </UseFrom>
+
+  <UseFrom resource="./christian-orthodox.xml">
+    <Use name="Orthodox Good Friday" as="Good Friday" nonWorking="true" territory="RO" />
+    <Use name="Orthodox Easter Sunday" territory="RO" />
+    <Use name="Orthodox Easter Monday" nonWorking="true" territory="RO" />
+    <Use name="Orthodox Pentecost" as="Pentecost" category="Holiday" nonWorking="true" territory="RO" />
+    <Use name="Orthodox Pentecost Monday" as="Pentecost Monday" category="Holiday" nonWorking="true" territory="RO" />
+  </UseFrom>
+
+  <!--
+    National Romanian holidays.
+  -->
+
+  <NotableDate name="Day after New Year's Day">
+    <Rule name="fixed-jan-02-ro" category="Holiday" territory="RO" nonWorking="true"
+          comment="Second day of the New Year, a public holiday in Romania.">
+      <Fixed month="January" day="2" />
+      <Tag>National</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Union Day">
+    <Rule name="fixed-jan-24-ro" category="Holiday" territory="RO" nonWorking="true" firstYear="1859"
+          comment="Unirea Principatelor Române. Marks the union of the principalities of Moldavia and Wallachia on 24 January 1859.">
+      <Fixed month="January" day="24" />
+      <Tag>National</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Children's Day">
+    <Rule name="fixed-jun-01-ro" category="Holiday" territory="RO" nonWorking="true" firstYear="2017"
+          comment="Ziua Copilului. International Children's Day, a public holiday in Romania since 2017.">
+      <Fixed month="June" day="1" />
+      <Tag>National</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Saint Andrew's Day">
+    <Rule name="fixed-nov-30-ro" category="Holiday" territory="RO" nonWorking="true"
+          comment="Sfântul Andrei. Feast of Saint Andrew, patron saint of Romania, on 30 November.">
+      <Fixed month="November" day="30" />
+      <Tag>Christian</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Great Union Day">
+    <Rule name="fixed-dec-01-ro" category="Holiday" territory="RO" nonWorking="true" firstYear="1918"
+          comment="Ziua Națională a României. National day marking the union of Transylvania with Romania on 1 December 1918.">
+      <Fixed month="December" day="1" />
+      <Tag>National</Tag>
+    </Rule>
+  </NotableDate>
+
+</NotableDates>

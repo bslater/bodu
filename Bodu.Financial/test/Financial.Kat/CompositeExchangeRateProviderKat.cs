@@ -10,7 +10,7 @@ namespace Bodu.Financial.Kat;
 
 /// <summary>
 /// Represents a known-answer test row exercising <see cref="CompositeDatedExchangeRateProvider" /> against a set of
-/// independent inner <see cref="FixedDatedExchangeRateTable" />s.
+/// independent inner <see cref="FixedDatedExchangeRateProvider" />s.
 /// </summary>
 /// <param name="Name">The short label identifying the scenario.</param>
 /// <param name="FromIsoCode">The source-currency code passed to the composite provider.</param>

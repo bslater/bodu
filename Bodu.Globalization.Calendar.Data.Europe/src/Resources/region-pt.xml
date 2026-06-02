@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Portugal (PT) notable-date resource using the Western / Gregorian calendar.
+
+  National public holidays (feriados nacionais). Municipal holidays and the
+  optional Carnival Tuesday are omitted.
+
+  Common European observances are inherited from europe-common.xml and
+  localized with territory="PT"; Portugal-specific holidays are declared below.
+-->
+<NotableDates xmlns="urn:bodu:globalization:calendar"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <UseFrom resource="./europe-common.xml">
+    <Use name="New Year's Day" territory="PT" />
+    <Use name="Easter Sunday" territory="PT" />
+    <Use name="Good Friday" territory="PT" />
+    <Use name="International Workers' Day" as="Labour Day" territory="PT" />
+    <Use name="Corpus Christi" territory="PT" />
+    <Use name="Assumption of Mary" territory="PT" />
+    <Use name="All Saints' Day" territory="PT" />
+    <Use name="Immaculate Conception" territory="PT" />
+    <Use name="Christmas Day" territory="PT" />
+  </UseFrom>
+
+  <!--
+    National Portuguese holidays.
+  -->
+
+  <NotableDate name="Freedom Day">
+    <Rule name="fixed-apr-25-pt" category="Holiday" territory="PT" nonWorking="true" firstYear="1974"
+          comment="Dia da Liberdade. Commemorates the Carnation Revolution of 25 April 1974, which ended the Estado Novo dictatorship.">
+      <Fixed month="April" day="25" />
+      <Tag>National</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Portugal Day">
+    <Rule name="fixed-jun-10-pt" category="Holiday" territory="PT" nonWorking="true"
+          comment="Dia de Portugal, de Camões e das Comunidades Portuguesas. National day, marking the death of the poet Luís de Camões on 10 June 1580.">
+      <Fixed month="June" day="10" />
+      <Tag>National</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Republic Day">
+    <Rule name="fixed-oct-05-pt" category="Holiday" territory="PT" nonWorking="true" firstYear="1910"
+          comment="Implantação da República. Marks the proclamation of the Portuguese Republic on 5 October 1910.">
+      <Fixed month="October" day="5" />
+      <Tag>National</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Restoration of Independence">
+    <Rule name="fixed-dec-01-pt" category="Holiday" territory="PT" nonWorking="true" firstYear="1640"
+          comment="Restauração da Independência. Commemorates the end of the Iberian Union and the restoration of Portuguese independence in 1640.">
+      <Fixed month="December" day="1" />
+      <Tag>National</Tag>
+    </Rule>
+  </NotableDate>
+
+</NotableDates>

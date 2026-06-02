@@ -74,5 +74,49 @@ public static class UnitedStatesTerritoryAnswers
                 Note = "no weekend substitute",
             },
         };
+
+        // Election Day — the Tuesday on or after 2 November (the Tuesday after the first Monday in November).
+        // Spans the full window: 2 November itself a Tuesday (on-the-day, earliest), through 8 November (latest).
+        yield return ElectionDay(2010, new DateTime(2010, 11, 2), "2 November is itself a Tuesday (earliest)");
+        yield return ElectionDay(2020, new DateTime(2020, 11, 3));
+        yield return ElectionDay(2022, new DateTime(2022, 11, 8), "latest possible date");
+        yield return ElectionDay(2024, new DateTime(2024, 11, 5));
+        yield return ElectionDay(2026, new DateTime(2026, 11, 3));
+
+        // Cyber Monday — the Monday after Thanksgiving (four days after the fourth Thursday of November).
+        // Stays in November in some years (2022, 2023, 2026) and rolls into December in others (2024, 2025).
+        yield return CyberMonday(2022, new DateTime(2022, 11, 28));
+        yield return CyberMonday(2023, new DateTime(2023, 11, 27));
+        yield return CyberMonday(2024, new DateTime(2024, 12, 2), "rolls into December");
+        yield return CyberMonday(2025, new DateTime(2025, 12, 1), "rolls into December");
+        yield return CyberMonday(2026, new DateTime(2026, 11, 30));
     }
+
+    private static object[] ElectionDay(int year, DateTime expectedDate, string? note = null) =>
+        [
+            new TerritoryNotableDateKnownAnswer
+            {
+                ProviderFactory = UsProvider,
+                Territory = "US",
+                Year = year,
+                Name = "Election Day",
+                ExpectedDate = expectedDate,
+                ExpectedDayOfWeek = DayOfWeek.Tuesday,
+                Note = note,
+            },
+        ];
+
+    private static object[] CyberMonday(int year, DateTime expectedDate, string? note = null) =>
+        [
+            new TerritoryNotableDateKnownAnswer
+            {
+                ProviderFactory = UsProvider,
+                Territory = "US",
+                Year = year,
+                Name = "Cyber Monday",
+                ExpectedDate = expectedDate,
+                ExpectedDayOfWeek = DayOfWeek.Monday,
+                Note = note,
+            },
+        ];
 }

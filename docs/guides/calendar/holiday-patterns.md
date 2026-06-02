@@ -356,6 +356,184 @@ NotableDateRule ukSummerBankHoliday = new NotableDateRule
 
 ---
 
+## Weekday near a reference date
+
+Some holidays are a weekday positioned relative to a fixed reference date rather than an
+*n*th-of-the-month occurrence: "the Saturday between 20 and 26 June", "the Wednesday before
+23 November", or "the Monday nearest to" a date. These cannot be expressed with
+`DayOfWeekInMonth` because the target is not a fixed ordinal — and the All Saints' window even
+straddles a month boundary. Use `Strategy = WeekdayNearDate` with `Month`, `Day`, `DayOfWeek`,
+and a `WeekdayProximity` direction (`OnOrAfter`, `OnOrBefore`, or `Nearest`). The reference
+date plus the direction defines the seven-day window in which the single matching weekday is
+selected.
+
+### Midsummer Day (SE, FI) — the Saturday on or after 20 June
+
+The Saturday falling between 20 and 26 June is the first Saturday on or after 20 June.
+
+```csharp
+using Bodu.Globalization.Calendar;
+
+NotableDateRule midsummerDay = new NotableDateRule
+{
+    Name             = "Midsummer Day",
+    Strategy         = DateResolutionStrategy.WeekdayNearDate,
+    Category         = NotableDateCategory.Holiday,
+    Month            = 6,
+    Day              = 20,
+    DayOfWeek        = DayOfWeek.Saturday,
+    WeekdayProximity = WeekdayProximity.OnOrAfter,
+    IsNonWorkingDay  = true,
+};
+```
+
+```xml
+<NotableDate name="Midsummer Day">
+  <Rule name="Midsummer Day" category="Holiday" nonWorking="true">
+    <WeekdayNearDate dayOfWeek="Saturday" month="June" day="20" direction="OnOrAfter" />
+  </Rule>
+</NotableDate>
+```
+
+### Repentance Day (DE-SN) — the Wednesday before 23 November
+
+Buß- und Bettag is the Wednesday before 23 November, i.e. the Wednesday on or before 22
+November. It is a public holiday only in Saxony.
+
+```csharp
+using Bodu.Globalization.Calendar;
+
+NotableDateRule repentanceDay = new NotableDateRule
+{
+    Name             = "Repentance Day",
+    Strategy         = DateResolutionStrategy.WeekdayNearDate,
+    Category         = NotableDateCategory.Holiday,
+    Month            = 11,
+    Day              = 22,
+    DayOfWeek        = DayOfWeek.Wednesday,
+    WeekdayProximity = WeekdayProximity.OnOrBefore,
+    TerritoryCode    = "DE-SN",
+    IsNonWorkingDay  = true,
+};
+```
+
+```xml
+<NotableDate name="Repentance Day">
+  <Rule name="Repentance Day" category="Holiday" territory="DE-SN" nonWorking="true">
+    <WeekdayNearDate dayOfWeek="Wednesday" month="November" day="22" direction="OnOrBefore" />
+  </Rule>
+</NotableDate>
+```
+
+### Monday nearest to a date — the `Nearest` direction
+
+`Nearest` selects the closest occurrence of the weekday in either direction. Because the
+forward and backward distances to the same weekday always sum to seven, they are never equal,
+so the result is unambiguous.
+
+```xml
+<NotableDate name="Example Observed Day">
+  <Rule name="Example Observed Day" category="Observance">
+    <WeekdayNearDate dayOfWeek="Monday" month="October" day="9" direction="Nearest" />
+  </Rule>
+</NotableDate>
+```
+
+---
+
+## Weekday relative to an ordinal weekday in a month
+
+Some dates are defined relative to an *n*th weekday of a month rather than to a fixed calendar
+date — "the Tuesday **after the first Monday** in November". Use `Strategy = RelativeWeekdayInMonth`:
+the anchor is a `DayOfWeekInMonth`-style ordinal weekday (`month` + `weekOrdinal` + `dayOfWeek`),
+and `relativeDayOfWeek` + `direction` position the target weekday on or after, on or before, or
+nearest to that anchor.
+
+### US Election Day — the Tuesday after the first Monday in November
+
+```csharp
+using Bodu.Globalization.Calendar;
+
+NotableDateRule electionDay = new NotableDateRule
+{
+    Name              = "Election Day",
+    Strategy          = DateResolutionStrategy.RelativeWeekdayInMonth,
+    Category          = NotableDateCategory.Civic,
+    Month             = 11,
+    DayOfWeek         = DayOfWeek.Monday,
+    WeekOrdinal       = WeekOfMonthOrdinal.First,
+    RelativeDayOfWeek = DayOfWeek.Tuesday,
+    WeekdayProximity  = WeekdayProximity.OnOrAfter,
+    TerritoryCode     = "US",
+};
+```
+
+```xml
+<NotableDate name="Election Day">
+  <Rule name="Election Day" category="Civic" territory="US">
+    <RelativeWeekdayInMonth month="November" weekOrdinal="First" dayOfWeek="Monday"
+                            relativeDayOfWeek="Tuesday" direction="OnOrAfter" />
+  </Rule>
+</NotableDate>
+```
+
+---
+
+## Offsets from another holiday
+
+`Strategy = OffsetFromAnchor` is not limited to Easter — the anchor can be **any** named rule.
+A date defined relative to another holiday should offset from that holiday so it tracks any
+change to the anchor, rather than re-deriving the anchor's date independently. The day-after and
+Monday-after retail observances tied to US Thanksgiving (the fourth Thursday of November) are the
+canonical example.
+
+```csharp
+using Bodu.Globalization.Calendar;
+
+// Black Friday — the day after Thanksgiving.
+NotableDateRule blackFriday = new NotableDateRule
+{
+    Name           = "Black Friday",
+    Strategy       = DateResolutionStrategy.OffsetFromAnchor,
+    Category       = NotableDateCategory.Cultural,
+    AnchorRuleName = "Thanksgiving",
+    OffsetDays     = 1,
+    TerritoryCode  = "US",
+};
+
+// Cyber Monday — the Monday after Thanksgiving (four days on).
+NotableDateRule cyberMonday = new NotableDateRule
+{
+    Name           = "Cyber Monday",
+    Strategy       = DateResolutionStrategy.OffsetFromAnchor,
+    Category       = NotableDateCategory.Cultural,
+    AnchorRuleName = "Thanksgiving",
+    OffsetDays     = 4,
+    TerritoryCode  = "US",
+};
+```
+
+```xml
+<NotableDate name="Black Friday">
+  <Rule name="Black Friday" category="Cultural" territory="US">
+    <OffsetFromAnchor name="Thanksgiving" offset="1" />
+  </Rule>
+</NotableDate>
+
+<NotableDate name="Cyber Monday">
+  <Rule name="Cyber Monday" category="Cultural" territory="US">
+    <OffsetFromAnchor name="Thanksgiving" offset="4" />
+  </Rule>
+</NotableDate>
+```
+
+> [!TIP]
+> Prefer `OffsetFromAnchor` over `RelativeWeekdayInMonth` when an anchor rule already exists:
+> "the Monday after Thanksgiving" tracks the Thanksgiving rule, whereas re-deriving it as "the
+> Monday after the fourth Thursday of November" would silently diverge if the anchor ever moved.
+
+---
+
 ## Easter and Easter-relative dates
 
 Easter Sunday is determined by the Gregorian or Orthodox computus algorithm. Easter-relative

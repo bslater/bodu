@@ -77,16 +77,16 @@ Money<USD> balance = Money<USD>.FromFraction(exact);   // one rounding event
 
 Single-step variant: `principal.MultiplyExact(growth)`.
 
-### Runtime-tagged amounts (`MoneyValue`)
+### Runtime-tagged amounts (`Money`)
 
 ```csharp
-MoneyValue invoice = JsonSerializer.Deserialize<MoneyValue>(payload)!;
+Money invoice = JsonSerializer.Deserialize<Money>(payload)!;
 // invoice could be "USD 19.99", "EUR 19.99", or "JPY 200" — same code path.
 
-MoneyValue total = invoice + new MoneyValue(5m, invoice.IsoCode);
+Money total = invoice + new Money(5m, invoice.IsoCode);
 
-Money<USD> typed = invoice.ToTyped<USD>();        // throws if mismatch
-bool ok = invoice.TryToTyped(out Money<USD> r);   // safe variant
+Money<USD> typed = invoice.As<USD>();        // throws if mismatch
+bool ok = invoice.TryAs(out Money<USD> r);   // safe variant
 ```
 
 ### Mixed-currency portfolios (`MoneyBag`)
@@ -98,7 +98,7 @@ MoneyBag wallet = MoneyBag.Empty
     .Add(new Money<JPY>(10_000m));
 
 wallet.GetBalance<USD>();      // Money<USD>? 100.00
-wallet.GetBalance("EUR");      // MoneyValue? { 50, "EUR" }
+wallet.GetBalance("EUR");      // Money? { 50, "EUR" }
 wallet.Count;                  // 3
 ```
 
@@ -141,7 +141,7 @@ The currency's `CashRoundingIncrement` (e.g. `0.05m` for CHF) drives the snap. E
 
 ### JSON
 
-`Money<T>`, `MoneyValue`, and `MoneyBag` all carry `[JsonConverter]` attributes, so the default `Strict` policy works without extra wiring:
+`Money<T>`, `Money`, and `MoneyBag` all carry `[JsonConverter]` attributes, so the default `Strict` policy works without extra wiring:
 
 ```json
 { "amount": 19.99, "currency": "USD" }
@@ -176,6 +176,6 @@ Money<DOGE> tip = new Money<DOGE>(0.12345678m);
 ## Where to go next
 
 - **[Bodu.Financial introduction](index.md)** — namespaces, headline types, scenarios.
-- **[Working with `Money<TCurrency>`](../../guides/financial/money.md)** — the full reference for typed money, including formatting/parsing, locale-aware output, cash rounding, historic-currency metadata, `MoneyValue` interop, and `MoneyBag` portfolios.
+- **[Working with `Money<TCurrency>`](../../guides/financial/money.md)** — the full reference for typed money, including formatting/parsing, locale-aware output, cash rounding, historic-currency metadata, `Money` interop, and `MoneyBag` portfolios.
 - **[Bodu.Numerics getting started](../numerics/getting-started.md)** — for the `Fraction<BigInteger>` precision escape hatch used by `Money<T>.ToFraction()`.
 - **[Bodu.Financial API reference](xref:Bodu.Financial)** — full type-by-type docs.

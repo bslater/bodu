@@ -78,6 +78,18 @@ Highlights:
 
 Bridge between them: typed → runtime is implicit (lossless); runtime → typed is explicit via `As<T>()` / `TryAs<T>(...)` / `(Money<T>)money`.
 
+### Settlement vs calculation
+
+There are three precision models; pick by how rounding should behave:
+
+| Type | Purpose | Precision | Rounding boundary |
+|---|---|---|---|
+| `Money` / `Money<TCurrency>` | Settlement amount — safe to persist, display, post | Rounded to the currency's minor units | At every construction/operation |
+| `CalculatedMoney` | Intermediate calculation chain (interest, unit-rate, apportionment) | High-precision `decimal` (not exact rational) | Once, at `RoundToMoney(...)` |
+| `Fraction` APIs (`Money<TCurrency>.FromFraction` / `MultiplyExact`) | Calculations that must be mathematically exact | Exact rational | Once, on conversion to `Money<TCurrency>` |
+
+Scalar `*` and `/` on `Money` use banker's rounding (`MidpointRounding.ToEven`); use `Multiply(factor, rounding)` / `Divide(divisor, rounding)` for any other rule.
+
 ## `CurrencyInfo` and `CurrencyCode`
 
 `CurrencyInfo` is the canonical runtime metadata record: ISO 4217 alphabetic and numeric codes, minor-unit precision, cash-rounding increment, historicity flag, demonetization date, English name. Looked up via `CurrencyRegistry.Get("AUD")` / `TryGet(...)`; custom currencies register via `CurrencyRegistry.Register(...)`.
@@ -113,7 +125,7 @@ Bridge between forms via `typed.ToRuntime()` and `ExchangeRate<TBase, TQuote>.Fr
 Provider stack:
 
 - Timeless: `IExchangeRateProvider` with `FixedExchangeRateTable` (inverse-rate fallback).
-- Dated: `IDatedExchangeRateProvider`, `FixedDatedExchangeRateTable`, `CompositeDatedExchangeRateProvider`, `ExchangeRateSeries`, and `DatedExchangeRateProviderAdapter`.
+- Dated: `IDatedExchangeRateProvider`, `FixedDatedExchangeRateProvider`, `CompositeDatedExchangeRateProvider`, `ExchangeRateBook`, `ExchangeRateSeries`, and `DatedExchangeRateProviderAdapter`.
 
 ## `MoneyBag`
 

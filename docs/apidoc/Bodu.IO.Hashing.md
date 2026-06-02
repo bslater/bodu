@@ -26,7 +26,7 @@ Reach for this library when you need a fast, deterministic checksum for error de
 - <xref:Bodu.IO.Hashing.Fnv1a32> / <xref:Bodu.IO.Hashing.Fnv1a64>, <xref:Bodu.IO.Hashing.Fnv132> / <xref:Bodu.IO.Hashing.Fnv164> — constant-memory streaming FNV; prefer `Fnv1a*` for better avalanche.
 - <xref:Bodu.IO.Hashing.CityHash32> / <xref:Bodu.IO.Hashing.CityHash64> / <xref:Bodu.IO.Hashing.CityHash128> — SIMD-friendly hashes optimized for long inputs.
 - <xref:Bodu.IO.Hashing.MurmurHash3_32> / <xref:Bodu.IO.Hashing.MurmurHash3_128> — seeded high-avalanche fingerprints.
-- <xref:Bodu.IO.Hashing.Pearson> — table-driven hash with output widths from 8 to 2048 bits in 8-bit steps; five built-in permutation tables via <xref:Bodu.IO.Hashing.PearsonTableType>.
+- <xref:Bodu.IO.Hashing.Pearson> — table-driven hash with output widths from 8 to 2048 bits in 8-bit steps; five built-in permutation tables via <xref:Bodu.IO.Hashing.Pearson.PearsonTableType>.
 - <xref:Bodu.IO.Hashing.Bernstein>, <xref:Bodu.IO.Hashing.BKDR>, <xref:Bodu.IO.Hashing.SDBM>, <xref:Bodu.IO.Hashing.JSHash>, <xref:Bodu.IO.Hashing.Elf64>, <xref:Bodu.IO.Hashing.ApHash>, <xref:Bodu.IO.Hashing.Pjw32>, <xref:Bodu.IO.Hashing.SuperFastHash> — classic string hashes from compilers and early web tooling.
 - <xref:Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm`1> — abstract CRTP base for buffered block-oriented algorithms.
 - <xref:Bodu.IO.Hashing.IResumableHashAlgorithm> — optional contract that reverse-finalizes a stored digest and continues appending; implemented by <xref:Bodu.IO.Hashing.Checksums.Crc>.

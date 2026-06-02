@@ -86,7 +86,7 @@ byte[] full = murmur.GetCurrentHash();
 murmur.Reset();                             // discards the buffer and resets to seed
 ```
 
-> **Memory note.** The internal buffer grows with each `Append`. For very large inputs (hundreds of MB) where you do not want to hold the entire payload in memory, prefer a streaming algorithm such as <xref:Bodu.IO.Hashing.Fnv1a64>, <xref:Bodu.IO.Hashing.Crc>, or <xref:Bodu.IO.Hashing.Fletcher32>.
+> **Memory note.** The internal buffer grows with each `Append`. For very large inputs (hundreds of MB) where you do not want to hold the entire payload in memory, prefer a streaming algorithm such as <xref:Bodu.IO.Hashing.Fnv1a64>, <xref:Bodu.IO.Hashing.Checksums.Crc>, or <xref:Bodu.IO.Hashing.Checksums.Fletcher32>.
 > **Memory note.** The internal buffer grows with each `Append`. For very large inputs (hundreds of MB) where you do not want to hold the entire payload in memory, prefer a streaming algorithm such as <xref:Bodu.IO.Hashing.Fnv1a64>, <xref:Bodu.IO.Hashing.Checksums.Crc>, or <xref:Bodu.IO.Hashing.Checksums.Fletcher32>.
 
 ## Pattern 5 — Bloom filter with two hash functions

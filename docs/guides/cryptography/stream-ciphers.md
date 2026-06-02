@@ -4,7 +4,7 @@ title: Using stream ciphers
 
 # Using stream ciphers
 
-A **stream cipher** generates a key- and nonce-dependent keystream and XORs it with the plaintext. Unlike the block ciphers elsewhere in this library, there is no cipher block, no block mode, and no padding: any byte length is encrypted directly. All of Bodu's stream ciphers derive from <xref:Bodu.Security.Cryptography.StreamCipherAlgorithm> (itself a <xref:System.Security.Cryptography.SymmetricAlgorithm>), so they flow through `CreateEncryptor()` / `CreateDecryptor()`, a `CryptoStream`, and the `Encrypt` / `Decrypt` extension methods exactly like the block ciphers.
+A **stream cipher** generates a key- and nonce-dependent keystream and XORs it with the plaintext. Unlike the block ciphers elsewhere in this library, there is no cipher block, no block mode, and no padding: any byte length is encrypted directly. All of Bodu's stream ciphers derive from <xref:Bodu.Security.Cryptography.SymmetricStreamAlgorithm> (itself a <xref:System.Security.Cryptography.SymmetricAlgorithm>), so they flow through `CreateEncryptor()` / `CreateDecryptor()`, a `CryptoStream`, and the `Encrypt` / `Decrypt` extension methods exactly like the block ciphers.
 
 Because the keystream is XORed in, every stream cipher here is **self-inverse**: encryption and decryption are the same operation, and `CreateEncryptor()` and `CreateDecryptor()` are interchangeable. The nonce / IV is supplied as the <xref:System.Security.Cryptography.SymmetricAlgorithm.IV> property.
 

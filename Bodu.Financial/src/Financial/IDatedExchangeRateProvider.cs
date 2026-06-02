@@ -14,10 +14,14 @@ namespace Bodu.Financial;
 /// <para>
 /// Implementations are expected to validate their string and option arguments and throw rather than return failure when
 /// inputs are invalid. The distinction between
-/// <see cref="GetRate(string, string, DateOnly, ExchangeRateLookupOptions)" /> and
-/// <see cref="TryGetRate(string, string, DateOnly, ExchangeRateLookupOptions, out ExchangeRateLookupResult)" /> is
+/// <see cref="GetRate(string, string, DateOnly, ExchangeRateLookupOptions?)" /> and
+/// <see cref="TryGetRate(string, string, DateOnly, ExchangeRateLookupOptions?, out ExchangeRateLookupResult)" /> is
 /// reserved for the case where no rate is available for an otherwise valid request: the former throws
 /// <see cref="KeyNotFoundException" />, the latter returns <see langword="false" /> without allocating.
+/// </para>
+/// <para>
+/// Implementations must accept a <see langword="null" /> <paramref name="options" /> argument and substitute
+/// <see cref="ExchangeRateLookupOptions.Exact" /> so callers can opt into the documented safe default by omission.
 /// </para>
 /// </remarks>
 public interface IDatedExchangeRateProvider
@@ -29,7 +33,10 @@ public interface IDatedExchangeRateProvider
     /// <param name="fromIsoCode">The source-currency ISO-style code.</param>
     /// <param name="toIsoCode">The destination-currency ISO-style code.</param>
     /// <param name="date">The calendar date for which a rate is required.</param>
-    /// <param name="options">The lookup rules to apply, including date-resolution policy and tolerance.</param>
+    /// <param name="options">
+    /// The lookup rules to apply, including date-resolution policy and tolerance. <see langword="null" /> is treated as
+    /// <see cref="ExchangeRateLookupOptions.Exact" />.
+    /// </param>
     /// <returns>The resolved <see cref="ExchangeRateLookupResult" />.</returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="fromIsoCode" /> or <paramref name="toIsoCode" /> is <see langword="null" />.
@@ -48,7 +55,7 @@ public interface IDatedExchangeRateProvider
         string fromIsoCode,
         string toIsoCode,
         DateOnly date,
-        ExchangeRateLookupOptions options);
+        ExchangeRateLookupOptions? options = null);
 
     /// <summary>
     /// Attempts to resolve the exchange rate from <paramref name="fromIsoCode" /> to <paramref name="toIsoCode" /> on
@@ -58,7 +65,10 @@ public interface IDatedExchangeRateProvider
     /// <param name="fromIsoCode">The source-currency ISO-style code.</param>
     /// <param name="toIsoCode">The destination-currency ISO-style code.</param>
     /// <param name="date">The calendar date for which a rate is required.</param>
-    /// <param name="options">The lookup rules to apply, including date-resolution policy and tolerance.</param>
+    /// <param name="options">
+    /// The lookup rules to apply, including date-resolution policy and tolerance. <see langword="null" /> is treated as
+    /// <see cref="ExchangeRateLookupOptions.Exact" />.
+    /// </param>
     /// <param name="result">
     /// When this method returns <see langword="true" />, contains the resolved <see cref="ExchangeRateLookupResult" />;
     /// otherwise, contains <see langword="default" />.
@@ -78,6 +88,6 @@ public interface IDatedExchangeRateProvider
         string fromIsoCode,
         string toIsoCode,
         DateOnly date,
-        ExchangeRateLookupOptions options,
+        ExchangeRateLookupOptions? options,
         out ExchangeRateLookupResult result);
 }

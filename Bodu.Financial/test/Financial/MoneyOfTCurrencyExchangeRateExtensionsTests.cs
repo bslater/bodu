@@ -14,7 +14,7 @@ public partial class MoneyOfTCurrencyExchangeRateExtensionsTests
 {
     private static readonly DateOnly s_d1 = new(2024, 1, 3);
 
-    private static FixedDatedExchangeRateTable BuildProvider() => new(
+    private static FixedDatedExchangeRateProvider BuildProvider() => new(
     [
         new ExchangeRate("USD", "AUD", s_d1, 1.50m, "RBA"),
     ]);
@@ -46,7 +46,7 @@ public partial class MoneyOfTCurrencyExchangeRateExtensionsTests
     {
         Money<Bodu.Financial.Currencies.USD> amount = new(100m);
 
-        MoneyConversionResult<Bodu.Financial.Currencies.USD, Bodu.Financial.Currencies.AUD> result = amount.ConvertToWithRate<Bodu.Financial.Currencies.USD, Bodu.Financial.Currencies.AUD>(
+        TypedMoneyConversionResult<Bodu.Financial.Currencies.USD, Bodu.Financial.Currencies.AUD> result = amount.ConvertToWithRate<Bodu.Financial.Currencies.USD, Bodu.Financial.Currencies.AUD>(
             BuildProvider(),
             s_d1,
             ExchangeRateLookupOptions.Exact);
@@ -100,13 +100,13 @@ public partial class MoneyOfTCurrencyExchangeRateExtensionsTests
     public void ConvertTo_WhenRateMissing_ShouldThrowKeyNotFoundException()
     {
         Money<Bodu.Financial.Currencies.USD> amount = new(100m);
-        FixedDatedExchangeRateTable empty = new([]);
+        FixedDatedExchangeRateProvider empty = new([]);
 
         _ = Assert.ThrowsExactly<KeyNotFoundException>(() =>
             amount.ConvertTo<Bodu.Financial.Currencies.USD, Bodu.Financial.Currencies.JPY>(
                 empty,
                 s_d1,
-                new ExchangeRateLookupOptions(ExchangeRateDateResolution.Exact, AllowSameCurrencyIdentityRate: false)));
+                new ExchangeRateLookupOptions(ExchangeRateDateResolution.Exact, allowSameCurrencyIdentityRate: false)));
     }
 
     /// <summary>

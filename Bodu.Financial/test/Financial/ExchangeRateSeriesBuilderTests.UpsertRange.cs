@@ -21,7 +21,7 @@ public partial class ExchangeRateSeriesBuilderTests
         ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(
             () =>
             {
-                builder.UpsertRange(null!);
+                builder.UpsertRange((IEnumerable<ExchangeRateObservation>)null!);
             },
             "observations");
     }

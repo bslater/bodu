@@ -85,8 +85,8 @@ Text and XML helpers used internally by the other Bodu packages; available publi
 
 | Type | Purpose |
 |---|---|
-| <xref:Bodu.Text.BaseEncoding> | Entry points for Base16, Base24, Base32, and Base64 over text or binary input. |
-| <xref:Bodu.Text.BaseFormatStyles>, <xref:Bodu.Text.BaseFormattingOptions> | Formatting-style and option flags consumed by `BaseEncoding`. |
+| <xref:Bodu.Text.Encoding.Base16>, <xref:Bodu.Text.Encoding.Base32>, <xref:Bodu.Text.Encoding.Base58>, <xref:Bodu.Text.Encoding.Base64>, <xref:Bodu.Text.Encoding.Base85> | Per-radix codec entry points over text or binary input. Ship in the companion `Bodu.Text.Encoding` package. |
+| <xref:Bodu.Text.Encoding.BaseFormatStyles>, <xref:Bodu.Text.Encoding.BaseFormattingOptions> | Formatting-style and option flags consumed by every per-radix codec. |
 | <xref:Bodu.Xml.Linq.XmlNamespaceResolver> | `IXmlNamespaceResolver` helper used by the calendar rule parsers. |
 
 ## Scenarios this library covers
@@ -104,7 +104,7 @@ Text and XML helpers used internally by the other Bodu packages; available publi
 | Pooled byte / char buffer for zero-allocation building | <xref:Bodu.Buffers.PooledBufferBuilder`1> |
 | Date arithmetic — first Monday, ISO week-of-year, age | <xref:Bodu.Extensions.DateTimeExtensions>, <xref:Bodu.Extensions.DateOnlyExtensions> |
 | Bit / byte rotation and reversal | <xref:Bodu.Extensions.NumericExtensions> |
-| Base16 / Base24 / Base32 / Base64 encoding | <xref:Bodu.Text.BaseEncoding> |
+| Base16 / Base32 / Base58 / Base64 / Base85 encoding | <xref:Bodu.Text.Encoding.Base16>, <xref:Bodu.Text.Encoding.Base32>, <xref:Bodu.Text.Encoding.Base58>, <xref:Bodu.Text.Encoding.Base64>, <xref:Bodu.Text.Encoding.Base85> (in `Bodu.Text.Encoding`) |
 | Centralized argument validation in your own code | <xref:Bodu.ThrowHelper> |
 
 ## Where to go next

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Slovenia (SI) notable-date resource using the Western / Gregorian calendar.
+
+  National public holidays and work-free days (prazniki in dela prosti dnevi).
+
+  Common European observances are inherited from europe-common.xml and
+  localized with territory="SI"; Slovenia-specific holidays are declared below.
+-->
+<NotableDates xmlns="urn:bodu:globalization:calendar"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <UseFrom resource="./europe-common.xml">
+    <Use name="New Year's Day" territory="SI" />
+    <Use name="Easter Sunday" territory="SI" />
+    <Use name="Easter Monday" territory="SI" />
+    <Use name="International Workers' Day" as="Labour Day" territory="SI" />
+    <Use name="Pentecost Sunday" as="Whit Sunday" territory="SI" />
+    <Use name="Assumption of Mary" territory="SI" />
+    <Use name="All Saints' Day" as="Day of Remembrance of the Dead" territory="SI" />
+    <Use name="Christmas Day" territory="SI" />
+  </UseFrom>
+
+  <!--
+    National Slovenian holidays.
+  -->
+
+  <NotableDate name="New Year Holiday">
+    <Rule name="fixed-jan-02-si" category="Holiday" territory="SI" nonWorking="true"
+          comment="Second day of the New Year, a work-free day in Slovenia.">
+      <Fixed month="January" day="2" />
+      <Tag>National</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Prešeren Day">
+    <Rule name="fixed-feb-08-si" category="Holiday" territory="SI" nonWorking="true"
+          comment="Prešernov dan, slovenski kulturni praznik. Slovenian Cultural Holiday, marking the death of the poet France Prešeren on 8 February 1849.">
+      <Fixed month="February" day="8" />
+      <Tag>Cultural</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Day of Uprising Against Occupation">
+    <Rule name="fixed-apr-27-si" category="Holiday" territory="SI" nonWorking="true" firstYear="1941"
+          comment="Dan upora proti okupatorju. Commemorates the founding of the Liberation Front of the Slovenian People in 1941.">
+      <Fixed month="April" day="27" />
+      <Tag>National</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Labour Day Holiday">
+    <Rule name="fixed-may-02-si" category="Holiday" territory="SI" nonWorking="true"
+          comment="Second day of the May Day holiday, a work-free day in Slovenia.">
+      <Fixed month="May" day="2" />
+      <Tag>National</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Statehood Day">
+    <Rule name="fixed-jun-25-si" category="Holiday" territory="SI" nonWorking="true" firstYear="1991"
+          comment="Dan državnosti. Marks Slovenia's declaration of independence from Yugoslavia on 25 June 1991.">
+      <Fixed month="June" day="25" />
+      <Tag>National</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Reformation Day">
+    <Rule name="fixed-oct-31-si" category="Holiday" territory="SI" nonWorking="true"
+          comment="Dan reformacije. Marks the Protestant Reformation, significant for the development of the Slovene literary language.">
+      <Fixed month="October" day="31" />
+      <Tag>Christian</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Independence and Unity Day">
+    <Rule name="fixed-dec-26-si" category="Holiday" territory="SI" nonWorking="true" firstYear="1990"
+          comment="Dan samostojnosti in enotnosti. Marks the official proclamation of the results of the independence plebiscite of 23 December 1990.">
+      <Fixed month="December" day="26" />
+      <Tag>National</Tag>
+    </Rule>
+  </NotableDate>
+
+</NotableDates>

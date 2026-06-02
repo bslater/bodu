@@ -21,7 +21,7 @@ Reach for this namespace when you need to author calendar rules in C# rather tha
 - <xref:Bodu.Globalization.Calendar.Builder.NotableDateBuilder> — accumulates one or more resolution rules under a single notable-date name. Obtained via `NotableDateDocumentBuilder.AddDate(name, configure)`.
 - <xref:Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder> — the fluent rule configurator. Supports every field of <xref:Bodu.Globalization.Calendar.NotableDateRule> — strategy, category, territory, year bounds, tags, observance adjustments, calendar type, comments. Exactly one resolution strategy must be set; a second strategy call throws `InvalidOperationException`.
 - <xref:Bodu.Globalization.Calendar.Builder.ObservanceAdjustmentBuilder> — the fluent adjustment configurator. Supports trigger, action, day-of-week / fixed-date / ordinal conditional parameters, target rule for `ReplaceWithNamedDate`, custom-handler key + parameters, territory / calendar / year scope, priority, and `MaxAdjustmentReachDays` envelope.
-- <xref:Bodu.Globalization.Calendar.Builder.InlineNotableDateRuleProvider> — in-memory `INotableDateRuleProvider` over a pre-built `IReadOnlyList<NotableDateRule>`. Produced by `NotableDateDocumentBuilder.ToProvider()` and suitable for passing directly to `NotableDateService`.
+- <xref:Bodu.Globalization.Calendar.InlineNotableDateRuleProvider> — in-memory `INotableDateRuleProvider` over a pre-built `IReadOnlyList<NotableDateRule>`. Produced by `NotableDateDocumentBuilder.ToProvider()` and suitable for passing directly to `NotableDateService`.
 
 ## Example
 

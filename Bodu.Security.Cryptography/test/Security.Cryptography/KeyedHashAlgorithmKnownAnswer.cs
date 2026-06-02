@@ -48,7 +48,10 @@ public sealed record KeyedHashAlgorithmKnownAnswer : IKat
     /// Gets the per-row key applied to the algorithm before computing the digest, or <see langword="null" /> when the
     /// variant's default <see cref="KeyedAlgorithmSpecification.TestKey" /> should be used.
     /// </summary>
-    /// <value>The key bytes, an empty array for the unkeyed sentinel, or <see langword="null" /> to defer to the variant default.</value>
+    /// <value>
+    /// The key bytes, an empty array for the unkeyed sentinel, or <see langword="null" /> to defer to the variant
+    /// default.
+    /// </value>
     public byte[]? Key { get; init; }
 
     /// <summary>

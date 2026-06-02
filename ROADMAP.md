@@ -4,7 +4,7 @@ Forward-looking plan for the **Bodu** C# utility library. Pairs with
 [`CHANGELOG.md`](CHANGELOG.md) (what shipped) and [`CLAUDE.md`](CLAUDE.md)
 (repository conventions for contributors).
 
-*Last updated: 2026-05-31. The stream-cipher family expansion is complete — ChaCha20 / XChaCha20, Salsa20 / XSalsa20, Rabbit, and HC-128 all ship on the shared StreamCipherAlgorithm base. Next stream-related step: the extended-nonce XChaCha20-Poly1305 / XSalsa20-Poly1305 AEAD constructions.*
+*Last updated: 2026-06-02. The extended-nonce Poly1305 AEAD constructions have landed — `XChaCha20Poly1305`, the `crypto_secretbox`-compatible `XSalsa20Poly1305`, and the Bodu-defined `XSalsa20Poly1305Aead` ship on the shared `Poly1305AeadTransform` base and the new construction-neutral `IAeadTransform` / `IStreamAeadTransform` surface, closing the stream-cipher AEAD gap left by the BCL's 12-byte-nonce `ChaCha20Poly1305`. With the ChaCha/Salsa stream-cipher family and its AEAD layer complete, the next crypto step is the password-hashing KDFs Argon2 and scrypt — the remaining BCL gap (HKDF and PBKDF2 already ship in `System.Security.Cryptography`).*
 
 ## How to read this
 
@@ -140,9 +140,6 @@ Current state: mature; 398 src / 784 test files. Hardening pass closed.
   enumerator. `Bodu.Globalization.Calendar` already consumes it
   heavily, and other globalization-adjacent packages should be able to
   take a dependency on the pattern type without pulling all of Core.
-- Promote `ConcurrentCircularBuffer<T>` to a documented public type
-  with the same `IProducerConsumerCollection<T>` story planned for
-  `ConcurrentHashSet<T>`. Today it is reachable but undocumented.
 
 ### `Bodu.Security.Cryptography`
 
@@ -161,8 +158,8 @@ SipHash plus EAX/OFB/GCM/OCB/SIV modes.
   (`ICryptoTransform` glue owning keystream carry, self-inverse XOR,
   and 32-bit counter-overflow protection), and an `IStreamCipherAlgorithm`
   marker so stream ciphers opt out of block padding/mode suites. The
-  remaining ChaCha-family gap is the **XChaCha20-Poly1305 AEAD**, which
-  composes this engine with the existing `Poly1305` MAC.
+  extended-nonce **XChaCha20-Poly1305 AEAD** that composes this engine
+  with the existing `Poly1305` MAC has since shipped (see below).
 - **Expand the stream-cipher family: Salsa20 / XSalsa20, Rabbit, and
   HC-128.** ✅ **Shipped.** All four ciphers are built on the
   `StreamCipherAlgorithm` base and the shared `IStreamCipher` /
@@ -186,16 +183,23 @@ SipHash plus EAX/OFB/GCM/OCB/SIV modes.
   confidentiality-only primitives carrying nonce-reuse and
   unauthenticated-ciphertext warnings in their XML docs; AEAD remains
   the recommended default.
-- **Add the XChaCha20-Poly1305 / XSalsa20-Poly1305 AEAD constructions.**
-  The raw ciphers above plus the existing `Poly1305` MAC are the
-  building blocks. Neither extended-nonce AEAD ships in the BCL (only
-  the 12-byte-nonce `System.Security.Cryptography.ChaCha20Poly1305`
-  does), so both remain genuine gaps.
-- **Add the XChaCha20-Poly1305 / XSalsa20-Poly1305 AEAD constructions.**
-  The raw ciphers above plus the existing `Poly1305` MAC are the
-  building blocks. Neither extended-nonce AEAD ships in the BCL (only
-  the 12-byte-nonce `System.Security.Cryptography.ChaCha20Poly1305`
-  does), so both remain genuine gaps.
+- **Extended-nonce Poly1305 AEAD constructions.** ✅ **Shipped.** Three
+  transforms now compose the raw stream ciphers with the existing
+  `Poly1305` MAC on the public `Poly1305AeadTransform` base and the
+  construction-neutral `IAeadTransform` / `IStreamAeadTransform` surface
+  (one-shot `Encrypt`/`Decrypt` with optional associated data):
+  `XChaCha20Poly1305` (RFC 8439 framing over XChaCha20, matching
+  libsodium's `crypto_aead_xchacha20poly1305_ietf`), `XSalsa20Poly1305`
+  (NaCl / libsodium `crypto_secretbox`-compatible — no associated data,
+  MAC over ciphertext only, with explicit `tag ‖ ciphertext` layout
+  converters), and the Bodu-defined `XSalsa20Poly1305Aead` (XSalsa20
+  under the RFC 8439 framing — not an IETF standard and not
+  interoperable). None ship in the BCL, whose `ChaCha20Poly1305` is
+  12-byte-nonce only. Locked against the RFC 8439 §2.8.2,
+  draft-irtf-cfrg-xchacha A.3.1, and libsodium secretbox vectors; the
+  Bodu-defined XSalsa20 hybrid (no published
+  vector) is checked against a derived oracle built from the
+  independently-tested public `XSalsa20` keystream and `Poly1305` MAC.
 - **Add password-hashing KDFs: Argon2 and scrypt.** No
   password-hashing surface today. `HKDF` and `Pbkdf2` are already in
   `System.Security.Cryptography` and are not in scope. Argon2 and
@@ -276,17 +280,12 @@ resolver, view getters.
   existing `ConfigurationResolver`. Today the resolver story is
   Bodu-specific; standardising on at least one mainstream query
   syntax broadens applicability.
-- **Publish `ConfigurationDiagnosticCode` as a stable enum** with
-  doc-comments tying each code to its meaning, so consumers can write
-  diagnostic-aware error handlers.
 
 ### `Bodu.Extensions.Configuration.Text`
 
 Current state: bridge layer; 7 src / 19 test files. Connects
 `Microsoft.Extensions.Configuration` to `Bodu.Text.Configuration`.
 
-- **Add `IFileProvider` reload-on-change parity** with
-  `Microsoft.Extensions.Configuration.Json`. Today static sources only.
 - **Add Bencode and TOML sources** once `Bodu.Text.Formats` ships them.
 - **Document precedence semantics** when combined with the `Json` and
   `EnvironmentVariables` providers — consumers stack providers and need
@@ -315,7 +314,7 @@ ISO 4217 catalogue (~185 tag types), the runtime-tagged
 `MoneyValue`, the multi-currency `MoneyBag` aggregate,
 `CurrencyRegistry` for runtime ISO-to-metadata lookup, the timeless
 `IExchangeRateProvider` with `FixedExchangeRateTable`, and the dated
-FX stack (`IDatedExchangeRateProvider`, `FixedDatedExchangeRateTable`,
+FX stack (`IDatedExchangeRateProvider`, `FixedDatedExchangeRateProvider`,
 `CompositeDatedExchangeRateProvider`, `ExchangeRateSeries`,
 `DatedExchangeRateProviderAdapter`). References `Bodu.Numerics` for
 the exact-arithmetic escape hatch through `Fraction<BigInteger>`.
@@ -372,9 +371,6 @@ for each supported calendar family.
   calendar table from the Astronomical Applications Department).
 - **Add `IAsyncEnumerable<NotableDate>` projections** for streaming
   large date-range queries (e.g. fiscal calendars across many years).
-- **Promote the plugin loader** (today exercised only by the 4
-  `Plugin*.TestAssembly` projects) to a documented public extension
-  point.
 
 ### `Bodu.Globalization.Calendar.Builder`
 
@@ -437,11 +433,10 @@ MY, NZ, SG.
 Current state: shipping in `[Unreleased]` 1.0.0. DE, ES, FR, GB, IE,
 IT, NL, SE.
 
-- **Add subdivision-level packs** — German *Länder*, Spanish autonomous
-  communities, Swiss cantons. The bulk of European regional holidays
-  are subdivision-specific.
-- **Add UK constituent-country splits** (England, Wales, Scotland,
-  Northern Ireland) — bank holidays diverge meaningfully.
+- **Add subdivision-level packs** — Spanish autonomous communities and
+  Swiss cantons. German *Länder* and the UK constituent-country splits
+  (England, Wales, Scotland, Northern Ireland) already ship; the bulk of
+  remaining European regional holidays are subdivision-specific.
 - **Add Orthodox-calendar overrides** for Greece, Cyprus, Bulgaria,
   Romania. The Orthodox Easter algorithm already exists in Calendar;
   the data pack just needs to wire it.

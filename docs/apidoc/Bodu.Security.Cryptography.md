@@ -34,7 +34,7 @@ For non-cryptographic checksums and hash-table hashes (CRC, Fletcher, Adler, FNV
 - <xref:Bodu.Security.Cryptography.Threefish256>, <xref:Bodu.Security.Cryptography.Threefish512>, <xref:Bodu.Security.Cryptography.Threefish1024> — 256 / 512 / 1024-bit blocks and keys, all with a 128-bit tweak. Threefish-512 is the recommended general-purpose variant; Threefish-256 underpins Skein-256.
 - <xref:Bodu.Security.Cryptography.Serpent256>, <xref:Bodu.Security.Cryptography.Serpent512>, <xref:Bodu.Security.Cryptography.Serpent1024> — wide-block tweakable Serpent constructions (non-standard).
 
-**Stream ciphers** (<xref:Bodu.Security.Cryptography.StreamCipherAlgorithm> lifecycle — a `SymmetricAlgorithm` with no block mode or padding; the nonce is the `IV`. Self-inverse and **confidentiality-only — no authentication**)
+**Stream ciphers** (<xref:Bodu.Security.Cryptography.SymmetricStreamAlgorithm> lifecycle — a `SymmetricAlgorithm` with no block mode or padding; the nonce is the `IV`. Self-inverse and **confidentiality-only — no authentication**)
 
 - <xref:Bodu.Security.Cryptography.ChaCha20> — 256-bit key, 96-bit nonce, 32-bit counter (Bernstein; RFC 8439). The modern default.
 - <xref:Bodu.Security.Cryptography.XChaCha20> — 256-bit key, 192-bit nonce; extended-nonce ChaCha20 via an HChaCha20 subkey, so the nonce can be chosen at random.
@@ -80,7 +80,7 @@ For non-cryptographic checksums and hash-table hashes (CRC, Fletcher, Adler, FNV
 **Extensions and helpers**
 
 - <xref:Bodu.Security.Cryptography.Extensions.SymmetricAlgorithmExtensions>, <xref:Bodu.Security.Cryptography.Extensions.TweakableSymmetricAlgorithmExtensions>, <xref:Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions>, <xref:Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions>, <xref:Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions> — ergonomic one-shot, async, and verify helpers.
-- <xref:Bodu.Security.Cryptography.CryptoHelpers> — secure zeroization, padding helpers, cryptographically secure random key/IV/tweak generation, bit reflection.
+- Secure-zeroization, padding, and cryptographically secure random key/IV/tweak generation helpers ship as internal infrastructure; consumers reach them indirectly through the extension surfaces above (for example `SymmetricAlgorithmExtensions.GenerateNonce`, `HashAlgorithmExtensions.VerifyHash`).
 - <xref:Bodu.Security.Cryptography.HashAlgorithmHelper>, <xref:Bodu.Security.Cryptography.HashAlgorithmFactory>, <xref:Bodu.Security.Cryptography.IHashAlgorithmFactory`1>, <xref:Bodu.Security.Cryptography.DelegateHashAlgorithmFactory`1> — helper utilities for `HashAlgorithm` consumers and factory abstractions used by the keyed / Merkle constructions.
 
 ## Example

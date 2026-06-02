@@ -14,41 +14,35 @@
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
   <!--
-    Imported global observances.
+    Common European observances, inherited from europe-common.xml. France does
+    not observe Labour Day under the global "International Workers' Day" name —
+    it is declared locally below as "Fête du Travail" — so that entry is not
+    inherited here.
+  -->
+
+  <UseFrom resource="./europe-common.xml">
+    <Use name="New Year's Day" territory="FR" />
+    <Use name="Valentine's Day" territory="FR" />
+    <Use name="Easter Sunday" territory="FR" />
+    <Use name="Easter Monday" territory="FR" />
+    <Use name="Ascension Day" territory="FR" />
+    <Use name="Pentecost Sunday" territory="FR" />
+    <Use name="Whit Monday" territory="FR" />
+    <Use name="Christmas Eve" territory="FR" />
+    <Use name="Christmas Day" territory="FR" />
+    <Use name="Father's Day" territory="FR" />
+  </UseFrom>
+
+  <!--
+    Observances not part of the pan-European common set, inherited from the
+    main library globals. Mother's Day falls on the last Sunday in May in
+    France, differing from the global second-Sunday-in-May default, so it is
+    declared separately below rather than inherited.
   -->
 
   <UseFrom resource="./global-all.xml">
-    <Use name="New Year's Day" territory="FR" nonWorking="true" />
-    <Use name="Valentine's Day" territory="FR" />
     <Use name="International Women's Day" territory="FR" />
     <Use name="April Fool's Day" territory="FR" />
-  </UseFrom>
-
-  <!--
-    Imported Christian observances.
-  -->
-
-  <UseFrom resource="./christian-gregorian.xml">
-    <Use name="Easter Sunday" territory="FR" />
-    <Use name="Easter Monday" territory="FR" nonWorking="true" />
-    <Use name="Ascension Day" territory="FR" nonWorking="true" />
-    <Use name="Pentecost Sunday" territory="FR" />
-    <Use name="Whit Monday" territory="FR" nonWorking="true" />
-    <Use name="Christmas Eve" territory="FR" />
-    <Use name="Christmas Day" territory="FR" nonWorking="true" />
-  </UseFrom>
-
-  <!--
-    Imported family observances.
-
-    Father's Day uses the global third-Sunday-in-June form, consistent with
-    French practice. Mother's Day falls on the last Sunday in May in France,
-    which differs from the global second-Sunday-in-May default, so it is
-    defined separately below.
-  -->
-
-  <UseFrom resource="./global-family.xml">
-    <Use name="Father's Day" territory="FR" />
   </UseFrom>
 
   <!--

@@ -8,7 +8,7 @@ uid: Bodu.Text.Configuration
 
 **Bodu.Text.Configuration** is the configuration-layering package of the Bodu suite. It parses INI / EditorConfig-style text, optionally collects diagnostics, layers a preamble plus glob-anchored sections in source order for a target path, and projects the result into a flat, colon-delimited <xref:Bodu.Text.Configuration.ConfigurationView>. The view exposes typed accessors (`GetString`, `GetInt32`, `GetBoolean`, `GetEnum<T>`, `GetValue<T>` for any <xref:System.ISpanParsable`1>) and integrates directly with `Microsoft.Extensions.Configuration` through the sibling <xref:Bodu.Extensions.Configuration.Text> package.
 
-Reach for this library when you need EditorConfig-style file-targeted configuration layering, programmatic INI parsing with diagnostic collection, or a `Microsoft.Extensions.Configuration`-compatible flat key/value view without taking a dependency on `Microsoft.Extensions.*` from the parser itself. The underlying data model is <xref:Bodu.Text.Ini.IniDocument> from the <xref:Bodu.Text.Formats> package, so anything the INI codec can read is something `Bodu.Text.Configuration` can resolve.
+Reach for this library when you need EditorConfig-style file-targeted configuration layering, programmatic INI parsing with diagnostic collection, or a `Microsoft.Extensions.Configuration`-compatible flat key/value view without taking a dependency on `Microsoft.Extensions.*` from the parser itself. The underlying data model is <xref:Bodu.Text.Ini.IniDocument> from the `Bodu.Text.Formats` package, so anything the INI codec can read is something `Bodu.Text.Configuration` can resolve.
 
 ## Static documentation
 

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Hungary (HU) notable-date resource using the Western / Gregorian calendar.
+
+  National public holidays (munkaszüneti napok).
+
+  Common European observances are inherited from europe-common.xml and
+  localized with territory="HU"; Hungary-specific holidays are declared below.
+-->
+<NotableDates xmlns="urn:bodu:globalization:calendar"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <UseFrom resource="./europe-common.xml">
+    <Use name="New Year's Day" territory="HU" />
+    <Use name="Easter Sunday" territory="HU" />
+    <Use name="Good Friday" territory="HU" />
+    <Use name="Easter Monday" territory="HU" />
+    <Use name="International Workers' Day" as="Labour Day" territory="HU" />
+    <Use name="Pentecost Sunday" as="Whit Sunday" territory="HU" />
+    <Use name="Whit Monday" territory="HU" />
+    <Use name="All Saints' Day" territory="HU" />
+    <Use name="Christmas Day" territory="HU" />
+    <Use name="Boxing Day" as="Second Day of Christmas" territory="HU" />
+  </UseFrom>
+
+  <!--
+    National Hungarian holidays.
+  -->
+
+  <NotableDate name="1848 Revolution Memorial Day">
+    <Rule name="fixed-mar-15-hu" category="Holiday" territory="HU" nonWorking="true" firstYear="1848"
+          comment="Az 1848-as forradalom ünnepe. Commemorates the Hungarian Revolution of 1848 against Habsburg rule.">
+      <Fixed month="March" day="15" />
+      <Tag>National</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="State Foundation Day">
+    <Rule name="fixed-aug-20-hu" category="Holiday" territory="HU" nonWorking="true"
+          comment="Az államalapítás ünnepe. Honors Saint Stephen, founder of the Hungarian state, and the foundation of the Kingdom of Hungary around the year 1000.">
+      <Fixed month="August" day="20" />
+      <Tag>National</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="1956 Revolution Memorial Day">
+    <Rule name="fixed-oct-23-hu" category="Holiday" territory="HU" nonWorking="true" firstYear="1956"
+          comment="Az 1956-os forradalom ünnepe. Commemorates the Hungarian Revolution of 1956 and the proclamation of the Third Hungarian Republic in 1989.">
+      <Fixed month="October" day="23" />
+      <Tag>National</Tag>
+    </Rule>
+  </NotableDate>
+
+</NotableDates>

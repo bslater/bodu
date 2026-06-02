@@ -21,15 +21,15 @@ This is the single highest-leverage namespace in `Bodu.Core` by surface area. Re
 
 - <xref:Bodu.Extensions.DateTimeExtensions> — first / last / next / previous day-of-week within month / quarter / year, ISO week-of-year, day name, weekday tests, midday, end-of-day, truncation. 50+ methods.
 - <xref:Bodu.Extensions.DateOnlyExtensions> — `DateOnly`-specific equivalents plus `Age` calculation.
-- <xref:Bodu.Extensions.DateTimeFormatInfoExtensions> — culture-aware day-of-week and month-name helpers.
+- <xref:Bodu.Globalization.Extensions.DateTimeFormatInfoExtensions> — culture-aware day-of-week and month-name helpers.
 - <xref:Bodu.Extensions.IQuarterDefinitionProvider>, <xref:Bodu.Extensions.IWeekendDefinitionProvider>, <xref:Bodu.Extensions.IWeekendDefinitionProviderExtensions> — pluggable calendar-shape providers for non-Gregorian or fiscal quarters and non-Saturday/Sunday weekend conventions.
 - <xref:Bodu.Extensions.WorkingDaysOfWeekExtensions>, <xref:Bodu.WorkingDaysOfWeek> — working-day bitmask helpers.
 
 **Calendar-shape enums**
 
-- <xref:Bodu.CalendarQuarterDefinition> — `Fiscal`, `Calendar`.
-- <xref:Bodu.DateTimeResolution> — truncation resolution.
-- <xref:Bodu.FiscalWeekPattern> — fiscal-week enumeration.
+- <xref:Bodu.Extensions.CalendarQuarterDefinition> — `Fiscal`, `Calendar`.
+- <xref:Bodu.Extensions.DateTimeResolution> — truncation resolution.
+- <xref:Bodu.Extensions.FiscalWeekPattern> — fiscal-week enumeration.
 - <xref:Bodu.Extensions.WeekOfMonthOrdinal> — `First`, `Second`, `Third`, `Fourth`, `Fifth`, `Last`.
 
 **Numeric**
@@ -46,7 +46,7 @@ This is the single highest-leverage namespace in `Bodu.Core` by surface area. Re
 **Strings**
 
 - <xref:Bodu.Extensions.StringExtensions> — `After`, `Before`, `Between`, `Brace`, `Bracket`, `CollapseWhitespace`, `Contains` / `EndsWith` / `StartsWith` variants, `EnsureEndsWith` / `EnsureStartsWith`, `Indent`, `IsValidIdentifier`, `Keep` / `Remove` variants, `Normalize`, `Outdent`, `Parenthesize`, `Parse`, `PrefixLines`, `Quote`, `RemoveControlCharacters`, `RemoveDiacritics`, `Slice`, case conversions (`ToCamelCase`, `ToPascalCase`, `ToSnakeCase`, `ToKebabCase`, …), `Truncate`, `Unwrap`, `Wrap`, slug generation.
-- <xref:Bodu.IdentifierCase> — case convention enum used by `IsValidIdentifier` / case conversions.
+- <xref:Bodu.Extensions.IdentifierCase> — case convention enum used by `IsValidIdentifier` / case conversions.
 - <xref:Bodu.Extensions.SentenceCaseOptions>, <xref:Bodu.Extensions.TitleCaseOptions>, <xref:Bodu.Extensions.WordCasingOptions>, <xref:Bodu.Extensions.SlugOptions> — option flags consumed by the casing helpers.
 
 **Comparable**
