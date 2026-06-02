@@ -236,6 +236,80 @@ public partial class NotableDateDocumentBuilderTests
     }
 
     // ============================================================================
+    // Strategy: WeekdayNearDate (JSON)
+    // ============================================================================
+
+    /// <summary>
+    /// Verifies that a <see cref="DateResolutionStrategy.WeekdayNearDate" /> strategy round-trips through JSON
+    /// preserving every strategy field (Nordic Midsummer Day pattern).
+    /// </summary>
+    [TestMethod]
+    public void RoundTripJson_WeekdayNearDateOnOrAfter_ShouldPreserveAllStrategyFields()
+    {
+        List<NotableDateRule> parsed = BuildAndReparseViaJson(b => b
+            .AddDate("Midsummer Day", date => date
+                .AddRule(rule => rule
+                    .Category(NotableDateCategory.Holiday)
+                    .WeekdayNearDate(month: 6, day: 20, DayOfWeek.Saturday, WeekdayProximity.OnOrAfter))));
+
+        Assert.HasCount(1, parsed);
+        NotableDateRule rule = parsed[0];
+        Assert.AreEqual(DateResolutionStrategy.WeekdayNearDate, rule.Strategy);
+        Assert.AreEqual(6, rule.Month);
+        Assert.AreEqual(20, rule.Day);
+        Assert.AreEqual(DayOfWeek.Saturday, rule.DayOfWeek);
+        Assert.AreEqual(WeekdayProximity.OnOrAfter, rule.WeekdayProximity);
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="DateResolutionStrategy.WeekdayNearDate" /> strategy with the
+    /// <see cref="WeekdayProximity.OnOrBefore" /> direction round-trips through JSON with the direction preserved.
+    /// </summary>
+    [TestMethod]
+    public void RoundTripJson_WeekdayNearDateOnOrBefore_ShouldPreserveDirection()
+    {
+        List<NotableDateRule> parsed = BuildAndReparseViaJson(b => b
+            .AddDate("Repentance Day", date => date
+                .AddRule(rule => rule
+                    .Category(NotableDateCategory.Religious)
+                    .WeekdayNearDate(month: 11, day: 22, DayOfWeek.Wednesday, WeekdayProximity.OnOrBefore))));
+
+        Assert.AreEqual(WeekdayProximity.OnOrBefore, parsed[0].WeekdayProximity);
+    }
+
+    // ============================================================================
+    // Strategy: RelativeWeekdayInMonth (JSON)
+    // ============================================================================
+
+    /// <summary>
+    /// Verifies that a <see cref="DateResolutionStrategy.RelativeWeekdayInMonth" /> strategy round-trips through
+    /// JSON preserving every strategy field (US Election Day pattern).
+    /// </summary>
+    [TestMethod]
+    public void RoundTripJson_RelativeWeekdayInMonthElectionDay_ShouldPreserveAllStrategyFields()
+    {
+        List<NotableDateRule> parsed = BuildAndReparseViaJson(b => b
+            .AddDate("Election Day", date => date
+                .AddRule(rule => rule
+                    .Category(NotableDateCategory.Holiday)
+                    .RelativeWeekdayInMonth(
+                        month: 11,
+                        DayOfWeek.Monday,
+                        WeekOfMonthOrdinal.First,
+                        DayOfWeek.Tuesday,
+                        WeekdayProximity.OnOrAfter))));
+
+        Assert.HasCount(1, parsed);
+        NotableDateRule rule = parsed[0];
+        Assert.AreEqual(DateResolutionStrategy.RelativeWeekdayInMonth, rule.Strategy);
+        Assert.AreEqual(11, rule.Month);
+        Assert.AreEqual(DayOfWeek.Monday, rule.DayOfWeek);
+        Assert.AreEqual(WeekOfMonthOrdinal.First, rule.WeekOrdinal);
+        Assert.AreEqual(DayOfWeek.Tuesday, rule.RelativeDayOfWeek);
+        Assert.AreEqual(WeekdayProximity.OnOrAfter, rule.WeekdayProximity);
+    }
+
+    // ============================================================================
     // Strategy: Algorithm (JSON)
     // ============================================================================
 

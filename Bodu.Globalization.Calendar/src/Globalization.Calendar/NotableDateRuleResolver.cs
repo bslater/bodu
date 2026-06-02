@@ -688,23 +688,15 @@ internal sealed class NotableDateRuleResolver
     /// </remarks>
     private static DateTime? PositionWeekday(DateTime reference, DayOfWeek targetDayOfWeek, WeekdayProximity proximity)
     {
-        // Days to advance forward / retreat backward from the reference to reach the target weekday, each in 0..6.
-        var forwardDelta = ((((int)targetDayOfWeek - (int)reference.DayOfWeek) % 7) + 7) % 7;
-        var backwardDelta = ((((int)reference.DayOfWeek - (int)targetDayOfWeek) % 7) + 7) % 7;
-
-        var delta = proximity switch
-        {
-            WeekdayProximity.OnOrAfter => forwardDelta,
-            WeekdayProximity.OnOrBefore => -backwardDelta,
-
-            // Forward and backward distances sum to seven, so they are never equal; pick the strictly smaller side.
-            WeekdayProximity.Nearest => forwardDelta <= backwardDelta ? forwardDelta : -backwardDelta,
-            _ => 0,
-        };
-
         try
         {
-            return reference.AddDays(delta);
+            return proximity switch
+            {
+                WeekdayProximity.OnOrAfter => reference.NextOrSameDateOfWeek(targetDayOfWeek),
+                WeekdayProximity.OnOrBefore => reference.PreviousOrSameDateOfWeek(targetDayOfWeek),
+                WeekdayProximity.Nearest => reference.NearestDateOfWeek(targetDayOfWeek),
+                _ => reference,
+            };
         }
         catch (ArgumentOutOfRangeException)
         {
