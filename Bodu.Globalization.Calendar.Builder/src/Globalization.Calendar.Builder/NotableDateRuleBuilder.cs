@@ -26,10 +26,12 @@ namespace Bodu.Globalization.Calendar.Builder;
 /// <para>
 /// Exactly one strategy method — <see cref="Fixed(int, int, bool, bool)" />,
 /// <see cref="Fixed(string, int, bool, bool)" />, <see cref="DayOfWeekInMonth(int, DayOfWeek, WeekOfMonthOrdinal)" />,
-/// <see cref="OffsetFromAnchor(string, int)" />, or <see cref="Algorithm(string?, Type?, string?, int?)" /> — must be
-/// called before the rule can be built or serialised. Calling a strategy method when a strategy has already been
-/// selected throws <see cref="InvalidOperationException" />; each builder instance commits to its strategy on the first
-/// successful strategy call.
+/// <see cref="OffsetFromAnchor(string, int)" />,
+/// <see cref="WeekdayNearDate(int, int, DayOfWeek, Calendar.WeekdayProximity)" />,
+/// <see cref="RelativeWeekdayInMonth(int, DayOfWeek, WeekOfMonthOrdinal, DayOfWeek, Calendar.WeekdayProximity)" />, or
+/// <see cref="Algorithm(string?, Type?, string?, int?)" /> — must be called before the rule can be built or serialised.
+/// Calling a strategy method when a strategy has already been selected throws <see cref="InvalidOperationException" />;
+/// each builder instance commits to its strategy on the first successful strategy call.
 /// </para>
 /// </remarks>
 /// <example>
@@ -61,6 +63,16 @@ namespace Bodu.Globalization.Calendar.Builder;
 /// rule
 ///     .Category(NotableDateCategory.Public)
 ///     .OffsetFromAnchor(anchorName: "Easter Sunday", offsetDays: -2);
+///
+/// Weekday-near-date rule — Nordic Midsummer Day, the Saturday on or after 20 June.
+/// rule
+///     .Category(NotableDateCategory.Public)
+///     .WeekdayNearDate(month: 6, day: 20, DayOfWeek.Saturday, WeekdayProximity.OnOrAfter);
+///
+/// Relative-weekday-in-month rule — US Election Day, the Tuesday after the first Monday in November.
+/// rule
+///     .Category(NotableDateCategory.Public)
+///     .RelativeWeekdayInMonth(month: 11, DayOfWeek.Monday, WeekOfMonthOrdinal.First, DayOfWeek.Tuesday, WeekdayProximity.OnOrAfter);
 ///]]>
 /// </example>
 public sealed class NotableDateRuleBuilder
@@ -145,9 +157,9 @@ public sealed class NotableDateRuleBuilder
     // Strategy discriminator
 
     /// <summary>
-    /// The selected resolution strategy, set by the strategy-specific configurator (
-    /// <see cref="Fixed(int, int, bool, bool)" />, <see cref="DayOfWeekInMonth(int, DayOfWeek, WeekOfMonthOrdinal)" />,
-    /// <see cref="OffsetFromAnchor(string, int)" />, or <see cref="Algorithm(string?, Type?, string?, int?)" />).
+    /// The selected resolution strategy, set by the strategy-specific configurator (one of <c>Fixed</c>,
+    /// <c>DayOfWeekInMonth</c>, <c>OffsetFromAnchor</c>, <c>WeekdayNearDate</c>, <c>RelativeWeekdayInMonth</c>, or
+    /// <c>Algorithm</c>).
     /// </summary>
     private DateResolutionStrategy? _strategy;
 
@@ -237,6 +249,55 @@ public sealed class NotableDateRuleBuilder
     /// <see cref="Algorithm(string?, Type?, string?, int?)" />.
     /// </summary>
     private int? _algorithmDay;
+
+    // WeekdayNearDate strategy
+
+    /// <summary>
+    /// The reference Gregorian month for the WeekdayNearDate strategy.
+    /// </summary>
+    private int? _weekdayNearMonth;
+
+    /// <summary>
+    /// The reference day-of-month for the WeekdayNearDate strategy.
+    /// </summary>
+    private int? _weekdayNearDay;
+
+    /// <summary>
+    /// The target weekday for the WeekdayNearDate strategy.
+    /// </summary>
+    private DayOfWeek? _weekdayNearDayOfWeek;
+
+    /// <summary>
+    /// The positioning direction for the WeekdayNearDate strategy.
+    /// </summary>
+    private WeekdayProximity? _weekdayNearDirection;
+
+    // RelativeWeekdayInMonth strategy
+
+    /// <summary>
+    /// The Gregorian month for the RelativeWeekdayInMonth strategy.
+    /// </summary>
+    private int? _relativeMonth;
+
+    /// <summary>
+    /// The anchor weekday for the RelativeWeekdayInMonth strategy.
+    /// </summary>
+    private DayOfWeek? _relativeAnchorDayOfWeek;
+
+    /// <summary>
+    /// The anchor ordinal occurrence within the month for the RelativeWeekdayInMonth strategy.
+    /// </summary>
+    private WeekOfMonthOrdinal? _relativeWeekOrdinal;
+
+    /// <summary>
+    /// The target weekday positioned relative to the anchor for the RelativeWeekdayInMonth strategy.
+    /// </summary>
+    private DayOfWeek? _relativeTargetDayOfWeek;
+
+    /// <summary>
+    /// The positioning direction for the RelativeWeekdayInMonth strategy.
+    /// </summary>
+    private WeekdayProximity? _relativeDirection;
 
     /// <summary>
     /// Sets the optional rule-level identifier. When a notable date is described by more than one rule, this name
@@ -594,6 +655,85 @@ public sealed class NotableDateRuleBuilder
     }
 
     /// <summary>
+    /// Selects the <see cref="DateResolutionStrategy.WeekdayNearDate" /> strategy, resolving to the occurrence of
+    /// <paramref name="dayOfWeek" /> positioned by <paramref name="direction" /> relative to the fixed reference
+    /// Gregorian <paramref name="month" /> and <paramref name="day" /> (for example, the Saturday on or after 20 June
+    /// for Nordic Midsummer Day).
+    /// </summary>
+    /// <param name="month">The reference Gregorian month (1–12).</param>
+    /// <param name="day">The reference day of the month (1–31).</param>
+    /// <param name="dayOfWeek">The target weekday positioned relative to the reference month and day.</param>
+    /// <param name="direction">
+    /// The positioning direction — <see cref="Calendar.WeekdayProximity.OnOrAfter" />,
+    /// <see cref="Calendar.WeekdayProximity.OnOrBefore" />, or <see cref="Calendar.WeekdayProximity.Nearest" />.
+    /// </param>
+    /// <returns>This builder instance, for method chaining.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="month" /> is less than 1 or greater than 12, or <paramref name="day" /> is less than
+    /// 1 or greater than 31.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when a resolution strategy has already been selected for this rule.
+    /// </exception>
+    public NotableDateRuleBuilder WeekdayNearDate(int month, int day, DayOfWeek dayOfWeek, WeekdayProximity direction)
+    {
+        ThrowHelper.ThrowIfOutOfRange(month, 1, 12);
+        ThrowHelper.ThrowIfOutOfRange(day, 1, 31);
+        ThrowIfStrategyAlreadySet();
+
+        _strategy = DateResolutionStrategy.WeekdayNearDate;
+        _weekdayNearMonth = month;
+        _weekdayNearDay = day;
+        _weekdayNearDayOfWeek = dayOfWeek;
+        _weekdayNearDirection = direction;
+
+        return this;
+    }
+
+    /// <summary>
+    /// Selects the <see cref="DateResolutionStrategy.RelativeWeekdayInMonth" /> strategy, resolving to the occurrence
+    /// of <paramref name="relativeDayOfWeek" /> positioned by <paramref name="direction" /> relative to the
+    /// <paramref name="weekOrdinal" />-th <paramref name="anchorDayOfWeek" /> of the specified Gregorian
+    /// <paramref name="month" /> (for example, the Tuesday on or after the first Monday in November for US Election
+    /// Day).
+    /// </summary>
+    /// <param name="month">The Gregorian month (1–12).</param>
+    /// <param name="anchorDayOfWeek">
+    /// The anchor weekday. The anchor date is the <paramref name="weekOrdinal" />-th occurrence of this weekday in
+    /// <paramref name="month" />.
+    /// </param>
+    /// <param name="weekOrdinal">
+    /// The ordinal occurrence of <paramref name="anchorDayOfWeek" /> within the month (e.g.
+    /// <see cref="WeekOfMonthOrdinal.First" />).
+    /// </param>
+    /// <param name="relativeDayOfWeek">The target weekday positioned relative to the anchor.</param>
+    /// <param name="direction">
+    /// The positioning direction — <see cref="Calendar.WeekdayProximity.OnOrAfter" />,
+    /// <see cref="Calendar.WeekdayProximity.OnOrBefore" />, or <see cref="Calendar.WeekdayProximity.Nearest" />.
+    /// </param>
+    /// <returns>This builder instance, for method chaining.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="month" /> is less than 1 or greater than 12.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when a resolution strategy has already been selected for this rule.
+    /// </exception>
+    public NotableDateRuleBuilder RelativeWeekdayInMonth(int month, DayOfWeek anchorDayOfWeek, WeekOfMonthOrdinal weekOrdinal, DayOfWeek relativeDayOfWeek, WeekdayProximity direction)
+    {
+        ThrowHelper.ThrowIfOutOfRange(month, 1, 12);
+        ThrowIfStrategyAlreadySet();
+
+        _strategy = DateResolutionStrategy.RelativeWeekdayInMonth;
+        _relativeMonth = month;
+        _relativeAnchorDayOfWeek = anchorDayOfWeek;
+        _relativeWeekOrdinal = weekOrdinal;
+        _relativeTargetDayOfWeek = relativeDayOfWeek;
+        _relativeDirection = direction;
+
+        return this;
+    }
+
+    /// <summary>
     /// Adds an <see cref="ObservanceAdjustment" /> to the rule using the specified key and configuration callback.
     /// </summary>
     /// <param name="key">
@@ -697,8 +837,10 @@ public sealed class NotableDateRuleBuilder
     /// Resets the previously selected resolution strategy and clears every strategy-specific field, so that
     /// <see cref="Fixed(int, int, bool, bool)" />, <see cref="Fixed(string, int, bool, bool)" />,
     /// <see cref="DayOfWeekInMonth(int, DayOfWeek, WeekOfMonthOrdinal)" />,
-    /// <see cref="OffsetFromAnchor(string, int)" />, or <see cref="Algorithm(string?, Type?, string?, int?)" /> can be
-    /// called again on the same builder.
+    /// <see cref="OffsetFromAnchor(string, int)" />,
+    /// <see cref="WeekdayNearDate(int, int, DayOfWeek, Calendar.WeekdayProximity)" />,
+    /// <see cref="RelativeWeekdayInMonth(int, DayOfWeek, WeekOfMonthOrdinal, DayOfWeek, Calendar.WeekdayProximity)" />,
+    /// or <see cref="Algorithm(string?, Type?, string?, int?)" /> can be called again on the same builder.
     /// </summary>
     /// <returns>This builder instance, for method chaining.</returns>
     /// <remarks>
@@ -729,6 +871,17 @@ public sealed class NotableDateRuleBuilder
         _algorithmType = null;
         _algorithmMonth = null;
         _algorithmDay = null;
+
+        _weekdayNearMonth = null;
+        _weekdayNearDay = null;
+        _weekdayNearDayOfWeek = null;
+        _weekdayNearDirection = null;
+
+        _relativeMonth = null;
+        _relativeAnchorDayOfWeek = null;
+        _relativeWeekOrdinal = null;
+        _relativeTargetDayOfWeek = null;
+        _relativeDirection = null;
 
         return this;
     }
@@ -776,6 +929,15 @@ public sealed class NotableDateRuleBuilder
             _algorithmType = _algorithmType,
             _algorithmMonth = _algorithmMonth,
             _algorithmDay = _algorithmDay,
+            _weekdayNearMonth = _weekdayNearMonth,
+            _weekdayNearDay = _weekdayNearDay,
+            _weekdayNearDayOfWeek = _weekdayNearDayOfWeek,
+            _weekdayNearDirection = _weekdayNearDirection,
+            _relativeMonth = _relativeMonth,
+            _relativeAnchorDayOfWeek = _relativeAnchorDayOfWeek,
+            _relativeWeekOrdinal = _relativeWeekOrdinal,
+            _relativeTargetDayOfWeek = _relativeTargetDayOfWeek,
+            _relativeDirection = _relativeDirection,
         };
 
         copy._tags.AddRange(_tags);
@@ -842,6 +1004,21 @@ public sealed class NotableDateRuleBuilder
             {
                 AnchorRuleName = _anchorRuleName,
                 OffsetDays = _offsetDays,
+            },
+            DateResolutionStrategy.WeekdayNearDate => rule with
+            {
+                Month = _weekdayNearMonth,
+                Day = _weekdayNearDay,
+                DayOfWeek = _weekdayNearDayOfWeek,
+                WeekdayProximity = _weekdayNearDirection,
+            },
+            DateResolutionStrategy.RelativeWeekdayInMonth => rule with
+            {
+                Month = _relativeMonth,
+                DayOfWeek = _relativeAnchorDayOfWeek,
+                WeekOrdinal = _relativeWeekOrdinal,
+                RelativeDayOfWeek = _relativeTargetDayOfWeek,
+                WeekdayProximity = _relativeDirection,
             },
             DateResolutionStrategy.Algorithm => rule with
             {
@@ -965,6 +1142,25 @@ public sealed class NotableDateRuleBuilder
                 {
                     ["name"] = _anchorRuleName!,
                     ["offset"] = _offsetDays!.Value,
+                };
+                break;
+            case DateResolutionStrategy.WeekdayNearDate:
+                node["weekdayNearDate"] = new JsonObject
+                {
+                    ["dayOfWeek"] = _weekdayNearDayOfWeek!.Value.ToString(),
+                    ["month"] = GregorianMonthName(_weekdayNearMonth!.Value),
+                    ["day"] = _weekdayNearDay!.Value,
+                    ["direction"] = _weekdayNearDirection!.Value.ToString(),
+                };
+                break;
+            case DateResolutionStrategy.RelativeWeekdayInMonth:
+                node["relativeWeekdayInMonth"] = new JsonObject
+                {
+                    ["dayOfWeek"] = _relativeAnchorDayOfWeek!.Value.ToString(),
+                    ["month"] = GregorianMonthName(_relativeMonth!.Value),
+                    ["weekOrdinal"] = _relativeWeekOrdinal!.Value.ToString(),
+                    ["relativeDayOfWeek"] = _relativeTargetDayOfWeek!.Value.ToString(),
+                    ["direction"] = _relativeDirection!.Value.ToString(),
                 };
                 break;
             case DateResolutionStrategy.Algorithm:
@@ -1104,6 +1300,19 @@ public sealed class NotableDateRuleBuilder
                 ns + "OffsetFromAnchor",
                 new XAttribute("name", _anchorRuleName!),
                 new XAttribute("offset", _offsetDays!.Value.ToString(CultureInfo.InvariantCulture))),
+            DateResolutionStrategy.WeekdayNearDate => new XElement(
+                ns + "WeekdayNearDate",
+                new XAttribute("dayOfWeek", _weekdayNearDayOfWeek!.Value.ToString()),
+                new XAttribute("month", GregorianMonthName(_weekdayNearMonth!.Value)),
+                new XAttribute("day", _weekdayNearDay!.Value.ToString(CultureInfo.InvariantCulture)),
+                new XAttribute("direction", _weekdayNearDirection!.Value.ToString())),
+            DateResolutionStrategy.RelativeWeekdayInMonth => new XElement(
+                ns + "RelativeWeekdayInMonth",
+                new XAttribute("dayOfWeek", _relativeAnchorDayOfWeek!.Value.ToString()),
+                new XAttribute("month", GregorianMonthName(_relativeMonth!.Value)),
+                new XAttribute("weekOrdinal", _relativeWeekOrdinal!.Value.ToString()),
+                new XAttribute("relativeDayOfWeek", _relativeTargetDayOfWeek!.Value.ToString()),
+                new XAttribute("direction", _relativeDirection!.Value.ToString())),
             DateResolutionStrategy.Algorithm => BuildAlgorithmElement(ns),
             _ => throw new NotSupportedException(string.Format(System.Globalization.CultureInfo.InvariantCulture, BuilderResourceStrings.Op_NotSupported_Strategy, _strategy.Value)),
         };
@@ -1207,6 +1416,8 @@ public sealed class NotableDateRuleBuilder
             DateResolutionStrategy.Fixed => "Fixed",
             DateResolutionStrategy.DayOfWeekInMonth => "DayOfWeekInMonth",
             DateResolutionStrategy.OffsetFromAnchor => "OffsetFromAnchor",
+            DateResolutionStrategy.WeekdayNearDate => "WeekdayNearDate",
+            DateResolutionStrategy.RelativeWeekdayInMonth => "RelativeWeekdayInMonth",
             DateResolutionStrategy.Algorithm => "Algorithm",
             _ => _strategy.Value.ToString(),
         };

@@ -254,6 +254,123 @@ public partial class NotableDateDocumentBuilderTests
     }
 
     // ============================================================================
+    // Strategy: WeekdayNearDate
+    // ============================================================================
+
+    /// <summary>
+    /// Verifies that a <see cref="DateResolutionStrategy.WeekdayNearDate" /> strategy with the
+    /// <see cref="WeekdayProximity.OnOrAfter" /> direction (Nordic Midsummer Day pattern) round-trips with every
+    /// strategy field preserved.
+    /// </summary>
+    [TestMethod]
+    public void RoundTrip_WeekdayNearDateOnOrAfter_ShouldPreserveAllStrategyFields()
+    {
+        List<NotableDateRule> parsed = BuildAndReparse(b => b
+            .AddDate("Midsummer Day", date => date
+                .AddRule(rule => rule
+                    .Category(NotableDateCategory.Holiday)
+                    .WeekdayNearDate(month: 6, day: 20, DayOfWeek.Saturday, WeekdayProximity.OnOrAfter))));
+
+        Assert.HasCount(1, parsed);
+        NotableDateRule rule = parsed[0];
+        Assert.AreEqual(DateResolutionStrategy.WeekdayNearDate, rule.Strategy);
+        Assert.AreEqual(6, rule.Month);
+        Assert.AreEqual(20, rule.Day);
+        Assert.AreEqual(DayOfWeek.Saturday, rule.DayOfWeek);
+        Assert.AreEqual(WeekdayProximity.OnOrAfter, rule.WeekdayProximity);
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="DateResolutionStrategy.WeekdayNearDate" /> strategy with the
+    /// <see cref="WeekdayProximity.OnOrBefore" /> direction (German Buß- und Bettag pattern) round-trips with the
+    /// direction preserved.
+    /// </summary>
+    [TestMethod]
+    public void RoundTrip_WeekdayNearDateOnOrBefore_ShouldPreserveDirection()
+    {
+        List<NotableDateRule> parsed = BuildAndReparse(b => b
+            .AddDate("Repentance Day", date => date
+                .AddRule(rule => rule
+                    .Category(NotableDateCategory.Religious)
+                    .WeekdayNearDate(month: 11, day: 22, DayOfWeek.Wednesday, WeekdayProximity.OnOrBefore))));
+
+        Assert.AreEqual(WeekdayProximity.OnOrBefore, parsed[0].WeekdayProximity);
+        Assert.AreEqual(DayOfWeek.Wednesday, parsed[0].DayOfWeek);
+        Assert.AreEqual(11, parsed[0].Month);
+        Assert.AreEqual(22, parsed[0].Day);
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="DateResolutionStrategy.WeekdayNearDate" /> strategy with the
+    /// <see cref="WeekdayProximity.Nearest" /> direction round-trips with the direction preserved.
+    /// </summary>
+    [TestMethod]
+    public void RoundTrip_WeekdayNearDateNearest_ShouldPreserveDirection()
+    {
+        List<NotableDateRule> parsed = BuildAndReparse(b => b
+            .AddDate("Observed Holiday", date => date
+                .AddRule(rule => rule
+                    .Category(NotableDateCategory.Holiday)
+                    .WeekdayNearDate(month: 7, day: 4, DayOfWeek.Monday, WeekdayProximity.Nearest))));
+
+        Assert.AreEqual(WeekdayProximity.Nearest, parsed[0].WeekdayProximity);
+    }
+
+    // ============================================================================
+    // Strategy: RelativeWeekdayInMonth
+    // ============================================================================
+
+    /// <summary>
+    /// Verifies that a <see cref="DateResolutionStrategy.RelativeWeekdayInMonth" /> strategy (US Election Day
+    /// pattern) round-trips with every strategy field preserved.
+    /// </summary>
+    [TestMethod]
+    public void RoundTrip_RelativeWeekdayInMonthElectionDay_ShouldPreserveAllStrategyFields()
+    {
+        List<NotableDateRule> parsed = BuildAndReparse(b => b
+            .AddDate("Election Day", date => date
+                .AddRule(rule => rule
+                    .Category(NotableDateCategory.Holiday)
+                    .RelativeWeekdayInMonth(
+                        month: 11,
+                        DayOfWeek.Monday,
+                        WeekOfMonthOrdinal.First,
+                        DayOfWeek.Tuesday,
+                        WeekdayProximity.OnOrAfter))));
+
+        Assert.HasCount(1, parsed);
+        NotableDateRule rule = parsed[0];
+        Assert.AreEqual(DateResolutionStrategy.RelativeWeekdayInMonth, rule.Strategy);
+        Assert.AreEqual(11, rule.Month);
+        Assert.AreEqual(DayOfWeek.Monday, rule.DayOfWeek);
+        Assert.AreEqual(WeekOfMonthOrdinal.First, rule.WeekOrdinal);
+        Assert.AreEqual(DayOfWeek.Tuesday, rule.RelativeDayOfWeek);
+        Assert.AreEqual(WeekdayProximity.OnOrAfter, rule.WeekdayProximity);
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="DateResolutionStrategy.RelativeWeekdayInMonth" /> strategy with the
+    /// <see cref="WeekdayProximity.OnOrBefore" /> direction round-trips with the direction preserved.
+    /// </summary>
+    [TestMethod]
+    public void RoundTrip_RelativeWeekdayInMonthOnOrBefore_ShouldPreserveDirection()
+    {
+        List<NotableDateRule> parsed = BuildAndReparse(b => b
+            .AddDate("Sample Date", date => date
+                .AddRule(rule => rule
+                    .Category(NotableDateCategory.Holiday)
+                    .RelativeWeekdayInMonth(
+                        month: 10,
+                        DayOfWeek.Friday,
+                        WeekOfMonthOrdinal.Last,
+                        DayOfWeek.Thursday,
+                        WeekdayProximity.OnOrBefore))));
+
+        Assert.AreEqual(WeekdayProximity.OnOrBefore, parsed[0].WeekdayProximity);
+        Assert.AreEqual(WeekOfMonthOrdinal.Last, parsed[0].WeekOrdinal);
+    }
+
+    // ============================================================================
     // Strategy: Algorithm
     // ============================================================================
 

@@ -55,7 +55,7 @@ internal static class BuilderResourceStrings
     /// <summary>
     /// No resolution strategy was selected before <c>Build()</c> was invoked.
     /// </summary>
-    internal const string Op_Invalid_RuleStrategyMissingBuild = "A resolution strategy must be selected (Fixed, DayOfWeekInMonth, OffsetFromAnchor, or Algorithm) before building the rule for '{0}'.";
+    internal const string Op_Invalid_RuleStrategyMissingBuild = "A resolution strategy must be selected (Fixed, DayOfWeekInMonth, OffsetFromAnchor, WeekdayNearDate, RelativeWeekdayInMonth, or Algorithm) before building the rule for '{0}'.";
 
     /// <summary>
     /// No resolution strategy was selected before serialisation.

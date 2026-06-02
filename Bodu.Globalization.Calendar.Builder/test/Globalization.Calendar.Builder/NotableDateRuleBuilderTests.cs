@@ -193,6 +193,8 @@ public partial class NotableDateRuleBuilderTests
     [DataRow("Fixed")]
     [DataRow("DayOfWeekInMonth")]
     [DataRow("OffsetFromAnchor")]
+    [DataRow("WeekdayNearDate")]
+    [DataRow("RelativeWeekdayInMonth")]
     [DataRow("Algorithm")]
     public void Fixed_WhenStrategyAlreadySet_ForNumericMonth_ShouldThrowExactly(string firstStrategy)
     {
@@ -214,6 +216,8 @@ public partial class NotableDateRuleBuilderTests
     [DataRow("Fixed")]
     [DataRow("DayOfWeekInMonth")]
     [DataRow("OffsetFromAnchor")]
+    [DataRow("WeekdayNearDate")]
+    [DataRow("RelativeWeekdayInMonth")]
     [DataRow("Algorithm")]
     public void Fixed_WhenStrategyAlreadySet_ForMonthToken_ShouldThrowExactly(string firstStrategy)
     {
@@ -235,6 +239,8 @@ public partial class NotableDateRuleBuilderTests
     [DataRow("Fixed")]
     [DataRow("DayOfWeekInMonth")]
     [DataRow("OffsetFromAnchor")]
+    [DataRow("WeekdayNearDate")]
+    [DataRow("RelativeWeekdayInMonth")]
     [DataRow("Algorithm")]
     public void DayOfWeekInMonth_WhenStrategyAlreadySet_ShouldThrowExactly(string firstStrategy)
     {
@@ -256,6 +262,8 @@ public partial class NotableDateRuleBuilderTests
     [DataRow("Fixed")]
     [DataRow("DayOfWeekInMonth")]
     [DataRow("OffsetFromAnchor")]
+    [DataRow("WeekdayNearDate")]
+    [DataRow("RelativeWeekdayInMonth")]
     [DataRow("Algorithm")]
     public void OffsetFromAnchor_WhenStrategyAlreadySet_ShouldThrowExactly(string firstStrategy)
     {
@@ -277,6 +285,8 @@ public partial class NotableDateRuleBuilderTests
     [DataRow("Fixed")]
     [DataRow("DayOfWeekInMonth")]
     [DataRow("OffsetFromAnchor")]
+    [DataRow("WeekdayNearDate")]
+    [DataRow("RelativeWeekdayInMonth")]
     [DataRow("Algorithm")]
     public void Algorithm_WhenStrategyAlreadySet_ShouldThrowExactly(string firstStrategy)
     {
@@ -289,9 +299,192 @@ public partial class NotableDateRuleBuilderTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="NotableDateRuleBuilder.WeekdayNearDate" /> throws
+    /// <see cref="ArgumentOutOfRangeException" /> when the month is less than 1.
+    /// </summary>
+    [TestMethod]
+    public void WeekdayNearDate_WhenMonthIsZero_ShouldThrowExactly()
+    {
+        NotableDateRuleBuilder builder = new();
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = builder.WeekdayNearDate(0, 20, DayOfWeek.Saturday, WeekdayProximity.OnOrAfter);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="NotableDateRuleBuilder.WeekdayNearDate" /> throws
+    /// <see cref="ArgumentOutOfRangeException" /> when the month exceeds 12.
+    /// </summary>
+    [TestMethod]
+    public void WeekdayNearDate_WhenMonthExceedsTwelve_ShouldThrowExactly()
+    {
+        NotableDateRuleBuilder builder = new();
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = builder.WeekdayNearDate(13, 20, DayOfWeek.Saturday, WeekdayProximity.OnOrAfter);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="NotableDateRuleBuilder.WeekdayNearDate" /> throws
+    /// <see cref="ArgumentOutOfRangeException" /> when the day is less than 1.
+    /// </summary>
+    [TestMethod]
+    public void WeekdayNearDate_WhenDayIsZero_ShouldThrowExactly()
+    {
+        NotableDateRuleBuilder builder = new();
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = builder.WeekdayNearDate(6, 0, DayOfWeek.Saturday, WeekdayProximity.OnOrAfter);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="NotableDateRuleBuilder.WeekdayNearDate" /> throws
+    /// <see cref="ArgumentOutOfRangeException" /> when the day exceeds 31.
+    /// </summary>
+    [TestMethod]
+    public void WeekdayNearDate_WhenDayExceedsThirtyOne_ShouldThrowExactly()
+    {
+        NotableDateRuleBuilder builder = new();
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = builder.WeekdayNearDate(6, 32, DayOfWeek.Saturday, WeekdayProximity.OnOrAfter);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="NotableDateRuleBuilder.RelativeWeekdayInMonth" /> throws
+    /// <see cref="ArgumentOutOfRangeException" /> when the month is less than 1.
+    /// </summary>
+    [TestMethod]
+    public void RelativeWeekdayInMonth_WhenMonthIsZero_ShouldThrowExactly()
+    {
+        NotableDateRuleBuilder builder = new();
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = builder.RelativeWeekdayInMonth(0, DayOfWeek.Monday, WeekOfMonthOrdinal.First, DayOfWeek.Tuesday, WeekdayProximity.OnOrAfter);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="NotableDateRuleBuilder.RelativeWeekdayInMonth" /> throws
+    /// <see cref="ArgumentOutOfRangeException" /> when the month exceeds 12.
+    /// </summary>
+    [TestMethod]
+    public void RelativeWeekdayInMonth_WhenMonthExceedsTwelve_ShouldThrowExactly()
+    {
+        NotableDateRuleBuilder builder = new();
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = builder.RelativeWeekdayInMonth(13, DayOfWeek.Monday, WeekOfMonthOrdinal.First, DayOfWeek.Tuesday, WeekdayProximity.OnOrAfter);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="NotableDateRuleBuilder.WeekdayNearDate" /> throws
+    /// <see cref="InvalidOperationException" /> when any other strategy has already been selected on the builder,
+    /// including a previous call to itself.
+    /// </summary>
+    /// <param name="firstStrategy">The strategy name applied to the builder before the WeekdayNearDate call.</param>
+    [TestMethod]
+    [DataRow("Fixed")]
+    [DataRow("DayOfWeekInMonth")]
+    [DataRow("OffsetFromAnchor")]
+    [DataRow("WeekdayNearDate")]
+    [DataRow("RelativeWeekdayInMonth")]
+    [DataRow("Algorithm")]
+    public void WeekdayNearDate_WhenStrategyAlreadySet_ShouldThrowExactly(string firstStrategy)
+    {
+        NotableDateRuleBuilder builder = NewBuilderWithStrategy(firstStrategy);
+
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            _ = builder.WeekdayNearDate(6, 20, DayOfWeek.Saturday, WeekdayProximity.OnOrAfter);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="NotableDateRuleBuilder.RelativeWeekdayInMonth" /> throws
+    /// <see cref="InvalidOperationException" /> when any other strategy has already been selected on the builder,
+    /// including a previous call to itself.
+    /// </summary>
+    /// <param name="firstStrategy">The strategy name applied before the RelativeWeekdayInMonth call.</param>
+    [TestMethod]
+    [DataRow("Fixed")]
+    [DataRow("DayOfWeekInMonth")]
+    [DataRow("OffsetFromAnchor")]
+    [DataRow("WeekdayNearDate")]
+    [DataRow("RelativeWeekdayInMonth")]
+    [DataRow("Algorithm")]
+    public void RelativeWeekdayInMonth_WhenStrategyAlreadySet_ShouldThrowExactly(string firstStrategy)
+    {
+        NotableDateRuleBuilder builder = NewBuilderWithStrategy(firstStrategy);
+
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            _ = builder.RelativeWeekdayInMonth(11, DayOfWeek.Monday, WeekOfMonthOrdinal.First, DayOfWeek.Tuesday, WeekdayProximity.OnOrAfter);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="NotableDateRuleBuilder.ClearStrategy" /> wipes the WeekdayNearDate strategy-specific
+    /// fields, so a re-authored strategy does not pick up stale values.
+    /// </summary>
+    [TestMethod]
+    public void ClearStrategy_WhenWeekdayNearDateSet_ShouldWipeStrategySpecificFields()
+    {
+        NotableDateRule rule = new NotableDateRuleBuilder()
+            .Category(NotableDateCategory.Holiday)
+            .WeekdayNearDate(6, 20, DayOfWeek.Saturday, WeekdayProximity.OnOrAfter)
+            .ClearStrategy()
+            .Fixed(12, 25)
+            .Build("Test");
+
+        Assert.AreEqual(DateResolutionStrategy.Fixed, rule.Strategy);
+        Assert.AreEqual(12, rule.Month);
+        Assert.AreEqual(25, rule.Day);
+        Assert.IsNull(rule.DayOfWeek);
+        Assert.IsNull(rule.WeekdayProximity);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="NotableDateRuleBuilder.ClearStrategy" /> wipes the RelativeWeekdayInMonth
+    /// strategy-specific fields, so a re-authored strategy does not pick up stale values.
+    /// </summary>
+    [TestMethod]
+    public void ClearStrategy_WhenRelativeWeekdayInMonthSet_ShouldWipeStrategySpecificFields()
+    {
+        NotableDateRule rule = new NotableDateRuleBuilder()
+            .Category(NotableDateCategory.Holiday)
+            .RelativeWeekdayInMonth(11, DayOfWeek.Monday, WeekOfMonthOrdinal.First, DayOfWeek.Tuesday, WeekdayProximity.OnOrAfter)
+            .ClearStrategy()
+            .Fixed(12, 25)
+            .Build("Test");
+
+        Assert.AreEqual(DateResolutionStrategy.Fixed, rule.Strategy);
+        Assert.AreEqual(12, rule.Month);
+        Assert.AreEqual(25, rule.Day);
+        Assert.IsNull(rule.DayOfWeek);
+        Assert.IsNull(rule.WeekOrdinal);
+        Assert.IsNull(rule.RelativeDayOfWeek);
+        Assert.IsNull(rule.WeekdayProximity);
+    }
+
+    /// <summary>
     /// Creates a new <see cref="NotableDateRuleBuilder" /> with the named strategy already selected.
     /// </summary>
-    /// <param name="strategy">The strategy identifier — one of <c>Fixed</c>, <c>DayOfWeekInMonth</c>, <c>OffsetFromAnchor</c>, or <c>Algorithm</c>.</param>
+    /// <param name="strategy">
+    /// The strategy identifier — one of <c>Fixed</c>, <c>DayOfWeekInMonth</c>, <c>OffsetFromAnchor</c>,
+    /// <c>WeekdayNearDate</c>, <c>RelativeWeekdayInMonth</c>, or <c>Algorithm</c>.
+    /// </param>
     /// <returns>A builder whose strategy has been applied; subsequent strategy calls must throw.</returns>
     /// <exception cref="ArgumentException">Thrown when <paramref name="strategy" /> is not a recognised strategy identifier.</exception>
     private static NotableDateRuleBuilder NewBuilderWithStrategy(string strategy) =>
@@ -300,6 +493,8 @@ public partial class NotableDateRuleBuilderTests
             "Fixed" => new NotableDateRuleBuilder().Fixed(1, 1),
             "DayOfWeekInMonth" => new NotableDateRuleBuilder().DayOfWeekInMonth(1, DayOfWeek.Monday, WeekOfMonthOrdinal.First),
             "OffsetFromAnchor" => new NotableDateRuleBuilder().OffsetFromAnchor("anchor", 1),
+            "WeekdayNearDate" => new NotableDateRuleBuilder().WeekdayNearDate(6, 20, DayOfWeek.Saturday, WeekdayProximity.OnOrAfter),
+            "RelativeWeekdayInMonth" => new NotableDateRuleBuilder().RelativeWeekdayInMonth(11, DayOfWeek.Monday, WeekOfMonthOrdinal.First, DayOfWeek.Tuesday, WeekdayProximity.OnOrAfter),
             "Algorithm" => new NotableDateRuleBuilder().Algorithm(key: "algo"),
             _ => throw new ArgumentException($"Unknown strategy identifier: {strategy}", nameof(strategy)),
         };
@@ -598,6 +793,8 @@ public partial class NotableDateRuleBuilderTests
     [DataRow("Fixed")]
     [DataRow("DayOfWeekInMonth")]
     [DataRow("OffsetFromAnchor")]
+    [DataRow("WeekdayNearDate")]
+    [DataRow("RelativeWeekdayInMonth")]
     [DataRow("Algorithm")]
     public void ClearStrategy_WhenStrategySet_ShouldAllowSubsequentStrategyCall(string firstStrategy)
     {
