@@ -323,7 +323,7 @@ internal sealed class RuleStaticAnalysis
     /// <remarks>
     /// <para>
     /// The estimate is conservative: it overstates rather than understates so that on-demand expansion is rarely
-    /// required. <see cref="AdjustmentAction.MoveToNextNonWorkingDay" /> is bounded by the adjuster's 366-day cap; in
+    /// required. <see cref="AdjustmentAction.MoveToNextWorkingDay" /> is bounded by the adjuster's 366-day cap; in
     /// practice the chains are short and this prototype caps the static estimate at one week.
     /// </para>
     /// </remarks>
@@ -342,7 +342,7 @@ internal sealed class RuleStaticAnalysis
                 : (adjustment.OffsetDays, 0),
             AdjustmentAction.MoveToNextWeekday => (0, 3),
             AdjustmentAction.MoveToPreviousWeekday => (-3, 0),
-            AdjustmentAction.MoveToNextNonWorkingDay => (0, 7),
+            AdjustmentAction.MoveToNextWorkingDay => (0, 7),
             AdjustmentAction.ReplaceWithNamedDate => (-31, 31),
             // Custom handlers are arbitrary by definition. Default to a conservative ±31-day envelope so handlers whose shift
             // fits inside one month are admitted out of the box. Authors whose handlers shift further must declare their reach

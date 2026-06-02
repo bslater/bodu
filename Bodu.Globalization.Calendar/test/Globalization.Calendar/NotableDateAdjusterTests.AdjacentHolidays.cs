@@ -89,7 +89,7 @@ public sealed partial class NotableDateAdjusterTests
 
     /// <summary>
     /// Verifies that <see cref="AdjustmentTrigger.IfWeekend" /> combined with
-    /// <see cref="AdjustmentAction.MoveToNextNonWorkingDay" /> produces the correct substitute observance date for
+    /// <see cref="AdjustmentAction.MoveToNextWorkingDay" /> produces the correct substitute observance date for
     /// each scenario supplied by <see cref="AdjacentHolidayCases" />, including cases where an earlier holiday's
     /// observance has already claimed the immediately following weekday.
     /// </summary>
@@ -110,7 +110,7 @@ public sealed partial class NotableDateAdjusterTests
         {
             Key = "weekend-roll",
             Trigger = AdjustmentTrigger.IfWeekend,
-            Action = AdjustmentAction.MoveToNextNonWorkingDay,
+            Action = AdjustmentAction.MoveToNextWorkingDay,
         };
 
         AdjustmentApplyResult result = adjuster.Apply(adjustment, SampleRule(), holidayDate);

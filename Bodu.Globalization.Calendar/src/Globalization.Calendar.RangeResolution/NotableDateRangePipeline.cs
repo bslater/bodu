@@ -205,7 +205,7 @@ internal sealed class NotableDateRangePipeline
     /// <item>
     /// <description>
     /// <b>Tier 1 (Fixed) with adjustment</b> — for example, a <c>31 Dec</c> holiday whose
-    /// <see cref="AdjustmentAction.MoveToNextNonWorkingDay" /> rolls forward into the new year.
+    /// <see cref="AdjustmentAction.MoveToNextWorkingDay" /> rolls forward into the new year.
     /// </description>
     /// </item>
     /// <item>

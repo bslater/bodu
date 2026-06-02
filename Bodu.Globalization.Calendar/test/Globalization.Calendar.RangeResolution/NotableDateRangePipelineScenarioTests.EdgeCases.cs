@@ -269,7 +269,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
             {
                 Key = "always-roll",
                 Trigger = AdjustmentTrigger.Always,
-                Action = AdjustmentAction.MoveToNextNonWorkingDay,
+                Action = AdjustmentAction.MoveToNextWorkingDay,
                 IsNonWorkingDay = true,
             }],
         };

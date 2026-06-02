@@ -579,7 +579,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
             {
                 Key = "weekend-substitute",
                 Trigger = AdjustmentTrigger.IfWeekend,
-                Action = AdjustmentAction.MoveToNextNonWorkingDay,
+                Action = AdjustmentAction.MoveToNextWorkingDay,
                 IsNonWorkingDay = true,
             }],
         },

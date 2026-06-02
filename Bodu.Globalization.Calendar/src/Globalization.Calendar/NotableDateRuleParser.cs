@@ -52,7 +52,7 @@ namespace Bodu.Globalization.Calendar;
 ///         <Fixed month="1" day="26" />
 ///         <Adjustment key="weekend-roll"
 ///                     trigger="IfWeekend"
-///                     action="MoveToNextMonday"
+///                     action="MoveToNextWorkingDay"
 ///                     isNonWorkingDay="true" />
 ///       </Rule>
 ///       <Rule name="Easter Sunday" category="Religious">
@@ -491,7 +491,7 @@ public static class NotableDateRuleParser
         {
             Key = GetRequiredAttribute(element, "key"),
             Trigger = ParseRequiredEnum<AdjustmentTrigger>(element, "when"),
-            Action = ParseRequiredEnum<AdjustmentAction>(element, "action"),
+            Action = ParseAdjustmentActionAttribute(element),
             DayOfWeek = ParseOptionalEnum<DayOfWeek>(element, "dayOfWeek"),
             WeekOrdinal = ParseOptionalEnum<WeekOfMonthOrdinal>(element, "weekOrdinal"),
             IsNonWorkingDay = ParseOptionalBool(element, "nonWorking"),
@@ -525,6 +525,25 @@ public static class NotableDateRuleParser
             map[GetRequiredAttribute(parameter, "key")] = GetRequiredAttribute(parameter, "value");
 
         return map;
+    }
+
+    /// <summary>
+    /// Parses the <c>action</c> attribute into an <see cref="AdjustmentAction" />, accepting the legacy
+    /// <c>MoveToNextNonWorkingDay</c> token as an alias for the renamed <see cref="AdjustmentAction.MoveToNextWorkingDay" />.
+    /// </summary>
+    /// <param name="element">The &lt;Adjustment&gt; element.</param>
+    /// <returns>The parsed action.</returns>
+    /// <exception cref="InvalidOperationException">The <c>action</c> value is not a recognised token.</exception>
+    private static AdjustmentAction ParseAdjustmentActionAttribute(XElement element)
+    {
+        var raw = GetRequiredAttribute(element, "action");
+
+        if (string.Equals(raw, "MoveToNextNonWorkingDay", StringComparison.OrdinalIgnoreCase))
+            return AdjustmentAction.MoveToNextWorkingDay;
+
+        return Enum.TryParse<AdjustmentAction>(raw, ignoreCase: true, out AdjustmentAction result)
+            ? result
+            : throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Op_Invalid_InvalidAttributeValue, "action", element.Name.LocalName));
     }
 
     // ----------------------------------------------------------------------------

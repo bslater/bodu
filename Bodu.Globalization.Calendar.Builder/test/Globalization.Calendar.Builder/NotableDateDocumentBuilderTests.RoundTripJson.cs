@@ -704,7 +704,7 @@ public partial class NotableDateDocumentBuilderTests
     [DataRow(AdjustmentAction.AddDays)]
     [DataRow(AdjustmentAction.MoveToNextWeekday)]
     [DataRow(AdjustmentAction.MoveToPreviousWeekday)]
-    [DataRow(AdjustmentAction.MoveToNextNonWorkingDay)]
+    [DataRow(AdjustmentAction.MoveToNextWorkingDay)]
     [DataRow(AdjustmentAction.ReplaceWithNamedDate)]
     [DataRow(AdjustmentAction.Custom)]
     public void RoundTripJson_AdjustmentAllActions_ShouldPreserveAction(AdjustmentAction action)

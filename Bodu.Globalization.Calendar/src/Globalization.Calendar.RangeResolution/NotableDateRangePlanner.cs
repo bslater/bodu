@@ -28,7 +28,7 @@ internal sealed class NotableDateRangePlanner
     /// The default fringe distance in days, applied either side of the request window when scanning for
     /// adjustment-driven candidates. Most observance adjustments shift dates by less than a week (weekend roll-forward,
     /// weekday substitute), so seven days is a safe envelope that covers
-    /// <see cref="AdjustmentAction.MoveToNextNonWorkingDay" /> chains in typical rule sets without inflating the search
+    /// <see cref="AdjustmentAction.MoveToNextWorkingDay" /> chains in typical rule sets without inflating the search
     /// space.
     /// </summary>
     public const int DefaultFringeDays = 7;

@@ -352,6 +352,8 @@
       <xs:enumeration value="AddDays" />
       <xs:enumeration value="MoveToNextWeekday" />
       <xs:enumeration value="MoveToPreviousWeekday" />
+      <xs:enumeration value="MoveToNextWorkingDay" />
+      <!-- MoveToNextNonWorkingDay: legacy alias for MoveToNextWorkingDay, retained for back-compatibility. -->
       <xs:enumeration value="MoveToNextNonWorkingDay" />
       <xs:enumeration value="ReplaceWithNamedDate" />
       <xs:enumeration value="Custom" />

@@ -39,10 +39,11 @@ public enum AdjustmentAction
     MoveToPreviousWeekday,
 
     /// <summary>
-    /// Moves the date forward, skipping all days flagged as non-working for the active territory (weekends and other
-    /// notable non-working dates).
+    /// Moves the date forward to the next working day, skipping all days flagged as non-working for the active
+    /// territory (weekends and other notable non-working dates). The resulting working day becomes the observance
+    /// substitute. Replaces the previous, misleadingly-named <c>MoveToNextNonWorkingDay</c> value.
     /// </summary>
-    MoveToNextNonWorkingDay,
+    MoveToNextWorkingDay,
 
     /// <summary>
     /// Replaces the date with the resolved date of another notable date rule named by

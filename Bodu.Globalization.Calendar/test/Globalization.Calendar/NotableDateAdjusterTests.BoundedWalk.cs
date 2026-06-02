@@ -9,7 +9,7 @@ namespace Bodu.Globalization.Calendar;
 public sealed partial class NotableDateAdjusterTests
 {
     /// <summary>
-    /// Verifies that the forward walk in <see cref="AdjustmentAction.MoveToNextNonWorkingDay" /> invokes the non-working-day
+    /// Verifies that the forward walk in <see cref="AdjustmentAction.MoveToNextWorkingDay" /> invokes the non-working-day
     /// predicate at most 366 times. This pins the bound so that a regression which removes the guard or substitutes an unbounded
     /// loop is detected immediately rather than manifesting as a run-time hang.
     /// </summary>
@@ -28,7 +28,7 @@ public sealed partial class NotableDateAdjusterTests
         {
             Key = "bound-regression",
             Trigger = AdjustmentTrigger.Always,
-            Action = AdjustmentAction.MoveToNextNonWorkingDay,
+            Action = AdjustmentAction.MoveToNextWorkingDay,
         };
 
         _ = adjuster.Apply(adjustment, SampleRule(), new DateTime(2025, 1, 1));
@@ -52,7 +52,7 @@ public sealed partial class NotableDateAdjusterTests
         {
             Key = "boundary-inclusive",
             Trigger = AdjustmentTrigger.Always,
-            Action = AdjustmentAction.MoveToNextNonWorkingDay,
+            Action = AdjustmentAction.MoveToNextWorkingDay,
         };
 
         AdjustmentApplyResult result = adjuster.Apply(adjustment, SampleRule(), original);
@@ -78,7 +78,7 @@ public sealed partial class NotableDateAdjusterTests
         {
             Key = "boundary-exclusive",
             Trigger = AdjustmentTrigger.Always,
-            Action = AdjustmentAction.MoveToNextNonWorkingDay,
+            Action = AdjustmentAction.MoveToNextWorkingDay,
         };
 
         AdjustmentApplyResult result = adjuster.Apply(adjustment, SampleRule(), original);

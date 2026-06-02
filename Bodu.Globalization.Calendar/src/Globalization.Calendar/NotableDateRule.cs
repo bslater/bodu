@@ -88,7 +88,7 @@ namespace Bodu.Globalization.Calendar;
 ///     {
 ///         Key = "weekend-roll",
 ///         Trigger = AdjustmentTrigger.IfWeekend,
-///         Action = AdjustmentAction.MoveToNextMonday,
+///         Action = AdjustmentAction.MoveToNextWorkingDay,
 ///         IsNonWorkingDay = true,
 ///     }),
 /// };

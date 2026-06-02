@@ -98,7 +98,7 @@ public partial class NotableDateRuleJsonParserTests
     [DataRow("AddDays", AdjustmentAction.AddDays)]
     [DataRow("MoveToNextWeekday", AdjustmentAction.MoveToNextWeekday)]
     [DataRow("MoveToPreviousWeekday", AdjustmentAction.MoveToPreviousWeekday)]
-    [DataRow("MoveToNextNonWorkingDay", AdjustmentAction.MoveToNextNonWorkingDay)]
+    [DataRow("MoveToNextNonWorkingDay", AdjustmentAction.MoveToNextWorkingDay)]
     [DataRow("ReplaceWithNamedDate", AdjustmentAction.ReplaceWithNamedDate)]
     [DataRow("Custom", AdjustmentAction.Custom)]
     [TestMethod]

@@ -212,7 +212,7 @@ public sealed partial class NotableDateAdjusterTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="AdjustmentAction.MoveToNextNonWorkingDay" /> skips days that are already non-working and
+    /// Verifies that <see cref="AdjustmentAction.MoveToNextWorkingDay" /> skips days that are already non-working and
     /// stops on the first working day, which becomes the substitute observance.
     /// </summary>
     [TestMethod]
@@ -227,7 +227,7 @@ public sealed partial class NotableDateAdjusterTests
         {
             Key = "test",
             Trigger = AdjustmentTrigger.Always,
-            Action = AdjustmentAction.MoveToNextNonWorkingDay,
+            Action = AdjustmentAction.MoveToNextWorkingDay,
         };
 
         var saturday = new DateTime(2025, 1, 4); // Sat
@@ -551,7 +551,7 @@ public sealed partial class NotableDateAdjusterTests
     // -----------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Verifies that <see cref="AdjustmentAction.MoveToNextNonWorkingDay" /> returns the
+    /// Verifies that <see cref="AdjustmentAction.MoveToNextWorkingDay" /> returns the
     /// original date if no working day is found within 366 days (the bounded-walk fallback).
     /// </summary>
     [TestMethod]
@@ -563,7 +563,7 @@ public sealed partial class NotableDateAdjusterTests
         {
             Key = "k",
             Trigger = AdjustmentTrigger.Always,
-            Action = AdjustmentAction.MoveToNextNonWorkingDay,
+            Action = AdjustmentAction.MoveToNextWorkingDay,
         };
 
         var original = new DateTime(2025, 6, 1);

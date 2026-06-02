@@ -39,7 +39,7 @@ namespace Bodu.Globalization.Calendar.Builder;
 /// Weekend roll-forward — common for public holidays observed on a fixed date.
 /// rule.AddAdjustment("weekend-roll", adj => adj
 ///     .When(AdjustmentTrigger.IfWeekend)
-///     .Action(AdjustmentAction.MoveToNextMonday)
+///     .Action(AdjustmentAction.MoveToNextWorkingDay)
 ///     .NonWorking(true));
 ///
 /// Day-of-week conditional adjustment — move only when the date falls on a Saturday.

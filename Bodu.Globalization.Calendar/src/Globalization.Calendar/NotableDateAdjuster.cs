@@ -21,7 +21,7 @@ namespace Bodu.Globalization.Calendar;
 /// </para>
 /// <para>
 /// The adjuster also implements every previously-stubbed <see cref="AdjustmentTrigger" /> and
-/// <see cref="AdjustmentAction" /> value, including <see cref="AdjustmentAction.MoveToNextNonWorkingDay" />,
+/// <see cref="AdjustmentAction" /> value, including <see cref="AdjustmentAction.MoveToNextWorkingDay" />,
 /// <see cref="AdjustmentAction.ReplaceWithNamedDate" />, and the custom handler dispatch path.
 /// </para>
 /// </remarks>
@@ -233,7 +233,7 @@ internal sealed class NotableDateAdjuster
         string? territoryCode,
         Type? calendarType)
     {
-        // Day-arithmetic actions (AddDays, MoveToNextWeekday, MoveToPreviousWeekday, MoveToNextNonWorkingDay) all eventually call
+        // Day-arithmetic actions (AddDays, MoveToNextWeekday, MoveToPreviousWeekday, MoveToNextWorkingDay) all eventually call
         // DateTime.AddDays / DateTime.AddTicks, which throw ArgumentOutOfRangeException when the result would land outside the
         // supported range (years 1..9999). Catch that here so a single misconfigured adjustment does not abort the entire
         // resolution; the activated result simply falls back to the original date and downstream "AdjustedDate == original"
@@ -247,7 +247,7 @@ internal sealed class NotableDateAdjuster
                 AdjustmentAction.AddDays => original.AddDays(adjustment.OffsetDays),
                 AdjustmentAction.MoveToNextWeekday => original.NextWeekday(_workingWeek),
                 AdjustmentAction.MoveToPreviousWeekday => original.PreviousWeekday(_workingWeek),
-                AdjustmentAction.MoveToNextNonWorkingDay => MoveToNextNonWorkingDay(original, territoryCode, calendarType),
+                AdjustmentAction.MoveToNextWorkingDay => MoveToNextWorkingDay(original, territoryCode, calendarType),
                 AdjustmentAction.ReplaceWithNamedDate => ResolveReplacement(adjustment, original, territoryCode, calendarType),
                 AdjustmentAction.Custom => ApplyCustomHandler(adjustment, rule, original, territoryCode, calendarType).AdjustedDate,
                 _ => original,
@@ -318,7 +318,7 @@ internal sealed class NotableDateAdjuster
     /// The first working day strictly after <paramref name="original" />, or <paramref name="original" /> itself if no
     /// working day is found within 366 days.
     /// </returns>
-    private DateTime MoveToNextNonWorkingDay(DateTime original, string? territoryCode, Type? calendarType)
+    private DateTime MoveToNextWorkingDay(DateTime original, string? territoryCode, Type? calendarType)
     {
         // Skip days that are already non-working (weekends, other holidays) and stop on the first working day.
         // That working day is promoted to a non-working substitute. For example, if Boxing Day falls on Saturday,

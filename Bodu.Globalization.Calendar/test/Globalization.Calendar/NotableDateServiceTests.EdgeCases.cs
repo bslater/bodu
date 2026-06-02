@@ -146,7 +146,7 @@ public sealed partial class NotableDateServiceTests
     }
 
     /// <summary>
-    /// Verifies that a <see cref="AdjustmentAction.MoveToNextNonWorkingDay" /> adjustment fired during pipeline materialisation
+    /// Verifies that a <see cref="AdjustmentAction.MoveToNextWorkingDay" /> adjustment fired during pipeline materialisation
     /// emits a bounded-walk result without infinite recursion. The pipeline's generation-local context lets dependent rules
     /// observe in-flight occurrences without forcing re-entry into the year cache, so the walk terminates on the first working
     /// candidate.
@@ -162,7 +162,7 @@ public sealed partial class NotableDateServiceTests
             {
                 Key = "walk",
                 Trigger = AdjustmentTrigger.Always,
-                Action = AdjustmentAction.MoveToNextNonWorkingDay,
+                Action = AdjustmentAction.MoveToNextWorkingDay,
             }],
         };
 
@@ -193,7 +193,7 @@ public sealed partial class NotableDateServiceTests
             {
                 Key = "always-next-non-working",
                 Trigger = AdjustmentTrigger.Always,
-                Action = AdjustmentAction.MoveToNextNonWorkingDay,
+                Action = AdjustmentAction.MoveToNextWorkingDay,
             }],
         };
 
@@ -214,7 +214,7 @@ public sealed partial class NotableDateServiceTests
     }
 
     /// <summary>
-    /// Verifies that a <see cref="AdjustmentAction.MoveToNextNonWorkingDay" /> walk anchored near year-end crosses the
+    /// Verifies that a <see cref="AdjustmentAction.MoveToNextWorkingDay" /> walk anchored near year-end crosses the
     /// Dec 31 → Jan 1 boundary and emits the adjusted occurrence on the following January day. The range pipeline
     /// materialises anchors and dependent adjustments coherently across year boundaries through a generation-local
     /// context, so the walk reaches Jan 1 2026 without the legacy re-entry guard's empty-snapshot side effect.
@@ -230,7 +230,7 @@ public sealed partial class NotableDateServiceTests
             {
                 Key = "walk",
                 Trigger = AdjustmentTrigger.Always,
-                Action = AdjustmentAction.MoveToNextNonWorkingDay,
+                Action = AdjustmentAction.MoveToNextWorkingDay,
             }],
         };
 
@@ -252,7 +252,7 @@ public sealed partial class NotableDateServiceTests
 
     /// <summary>
     /// <see cref="IWeekendDefinitionProvider" /> that classifies every day of the week as a weekend, used to exercise the
-    /// bounded-walk fallback when the adjuster's <see cref="AdjustmentAction.MoveToNextNonWorkingDay" /> walk can never find a
+    /// bounded-walk fallback when the adjuster's <see cref="AdjustmentAction.MoveToNextWorkingDay" /> walk can never find a
     /// working day.
     /// </summary>
     private sealed class AlwaysWeekendProvider

@@ -287,7 +287,7 @@ public static class NotableDateRuleJsonParser
             {
                 Key = dto.Key,
                 Trigger = ParseRequiredEnum<AdjustmentTrigger>(dto.When, "when", "adjustment"),
-                Action = ParseRequiredEnum<AdjustmentAction>(dto.Action, "action", "adjustment"),
+                Action = ParseAdjustmentActionToken(dto.Action, "adjustment"),
                 DayOfWeek = ParseOptionalEnum<DayOfWeek>(dto.DayOfWeek, "dayOfWeek", "adjustment"),
                 WeekOrdinal = ParseOptionalEnum<WeekOfMonthOrdinal>(dto.WeekOrdinal, "weekOrdinal", "adjustment"),
                 IsNonWorkingDay = dto.NonWorking,
@@ -304,6 +304,18 @@ public static class NotableDateRuleJsonParser
                 HandlerParameters = dto.HandlerParameters,
             };
     }
+
+    /// <summary>
+    /// Parses the adjustment <c>action</c> token, accepting the legacy <c>MoveToNextNonWorkingDay</c> value as an alias
+    /// for the renamed <see cref="AdjustmentAction.MoveToNextWorkingDay" />.
+    /// </summary>
+    /// <param name="raw">The raw action token.</param>
+    /// <param name="context">The owning element name, used for diagnostics.</param>
+    /// <returns>The parsed action.</returns>
+    private static AdjustmentAction ParseAdjustmentActionToken(string? raw, string context) =>
+        string.Equals(raw, "MoveToNextNonWorkingDay", StringComparison.OrdinalIgnoreCase)
+            ? AdjustmentAction.MoveToNextWorkingDay
+            : ParseRequiredEnum<AdjustmentAction>(raw, "action", context);
 
     // ----------------------------------------------------------------------------
     // Strategy detection and projection

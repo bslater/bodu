@@ -183,6 +183,7 @@
         "AddDays",
         "MoveToNextWeekday",
         "MoveToPreviousWeekday",
+        "MoveToNextWorkingDay",
         "MoveToNextNonWorkingDay",
         "ReplaceWithNamedDate",
         "Custom"

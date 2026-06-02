@@ -107,7 +107,7 @@ public partial class NotableDateServiceTests
     }
 
     /// <summary>
-    /// Verifies that an adjustment using <see cref="AdjustmentAction.MoveToNextNonWorkingDay" /> drives the re-entry
+    /// Verifies that an adjustment using <see cref="AdjustmentAction.MoveToNextWorkingDay" /> drives the re-entry
     /// guard in <c>GetOrGenerateYear</c> without infinite recursion or premature year-boundary expansion.
     /// </summary>
     [TestMethod]
@@ -125,7 +125,7 @@ public partial class NotableDateServiceTests
             {
                 Key = "weekend-substitute",
                 Trigger = AdjustmentTrigger.IfWeekend,
-                Action = AdjustmentAction.MoveToNextNonWorkingDay,
+                Action = AdjustmentAction.MoveToNextWorkingDay,
                 IsNonWorkingDay = true,
             }],
         };

@@ -386,7 +386,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="AdjustmentAction.MoveToNextNonWorkingDay" /> walks past every cached non-working blocker before
+    /// Verifies that <see cref="AdjustmentAction.MoveToNextWorkingDay" /> walks past every cached non-working blocker before
     /// landing on the next clean working day.
     /// </summary>
     [TestMethod]
@@ -401,7 +401,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
             adjustments: [MakeAddOneDayAdjustment() with
             {
                 Trigger = AdjustmentTrigger.Always,
-                Action = AdjustmentAction.MoveToNextNonWorkingDay,
+                Action = AdjustmentAction.MoveToNextWorkingDay,
             }]);
 
         NotableDateService noBlockerService = BuildService(withoutBlockers);

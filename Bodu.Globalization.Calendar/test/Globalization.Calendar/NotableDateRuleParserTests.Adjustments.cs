@@ -138,7 +138,7 @@ public partial class NotableDateRuleParserTests
         [
             "MoveToNextNonWorkingDay action maps to MoveToNextNonWorkingDay",
             BuildAdjustmentXml(@"key=""t"" when=""Always"" action=""MoveToNextNonWorkingDay"""),
-            AdjustmentAction.MoveToNextNonWorkingDay,
+            AdjustmentAction.MoveToNextWorkingDay,
         ],
         [
             "ReplaceWithNamedDate action maps to ReplaceWithNamedDate",

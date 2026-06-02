@@ -48,7 +48,7 @@ namespace Bodu.Globalization.Calendar;
 /// {
 ///     Key = "weekend-to-monday",
 ///     Trigger = AdjustmentTrigger.IfWeekend,
-///     Action = AdjustmentAction.MoveToNextMonday,
+///     Action = AdjustmentAction.MoveToNextWorkingDay,
 ///     TerritoryCode = "AU",
 ///     IsNonWorkingDay = true,
 /// };
@@ -59,7 +59,7 @@ namespace Bodu.Globalization.Calendar;
 ///     Key = "anzac-day-wa-sub",
 ///     Trigger = AdjustmentTrigger.IfDayOfWeek,
 ///     DayOfWeek = DayOfWeek.Sunday,
-///     Action = AdjustmentAction.MoveToNextMonday,
+///     Action = AdjustmentAction.MoveToNextWorkingDay,
 ///     TerritoryCode = "AU-WA",
 ///     IsNonWorkingDay = true,
 ///     Priority = 10,
@@ -264,7 +264,7 @@ public sealed record ObservanceAdjustment
     /// <para>
     /// The value is interpreted as a symmetric absolute envelope: the adjustment may shift the date by at most
     /// <c>±value</c> days. When <see langword="null" />, the pipeline falls back to action-specific defaults (for
-    /// example, <see cref="AdjustmentAction.MoveToNextNonWorkingDay" /> ≈ +7 days).
+    /// example, <see cref="AdjustmentAction.MoveToNextWorkingDay" /> ≈ +7 days).
     /// </para>
     /// </remarks>
     /// <returns>
