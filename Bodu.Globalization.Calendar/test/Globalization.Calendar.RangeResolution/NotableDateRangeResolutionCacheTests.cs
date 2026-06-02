@@ -172,7 +172,7 @@ public sealed class NotableDateRangeResolutionCacheTests
         NotableDateRangeResolutionCache cache = new();
         cache.Add(BuildEntry("New Year's Day", 2026, new DateTime(2026, 1, 1)));
 
-        Assert.AreEqual(new DateTime(2026, 1, 1), cache.ResolveObservedByName("New Year's Day", 2026, null, null));
+        Assert.AreEqual(new DateTime(2026, 1, 1), cache.ResolveObservedByName("New Year's Day", null, 2026, null, null));
     }
 
     /// <summary>
@@ -188,7 +188,7 @@ public sealed class NotableDateRangeResolutionCacheTests
         NotableDateRangeResolutionCache cache = new();
         cache.Add(entry);
 
-        Assert.AreEqual(new DateTime(2026, 1, 2), cache.ResolveObservedByName("New Year's Day", 2026, null, null));
+        Assert.AreEqual(new DateTime(2026, 1, 2), cache.ResolveObservedByName("New Year's Day", null, 2026, null, null));
     }
 
     /// <summary>
@@ -201,7 +201,7 @@ public sealed class NotableDateRangeResolutionCacheTests
         NotableDateRangeResolutionCache cache = new();
         cache.Add(BuildEntry("Labour Day", 2026, new DateTime(2026, 3, 9), territory: "AU-VIC"));
 
-        Assert.IsNull(cache.ResolveObservedByName("Labour Day", 2026, "AU-NSW", null));
+        Assert.IsNull(cache.ResolveObservedByName("Labour Day", null, 2026, "AU-NSW", null));
     }
 
     /// <summary>
@@ -214,7 +214,7 @@ public sealed class NotableDateRangeResolutionCacheTests
         NotableDateRangeResolutionCache cache = new();
         cache.Add(BuildEntry("Christmas Day", 2026, new DateTime(2026, 12, 25)));
 
-        Assert.AreEqual(new DateTime(2026, 12, 25), cache.ResolveObservedByName("Christmas Day", 2026, "AU", null));
+        Assert.AreEqual(new DateTime(2026, 12, 25), cache.ResolveObservedByName("Christmas Day", null, 2026, "AU", null));
     }
 
     /// <summary>
@@ -227,7 +227,7 @@ public sealed class NotableDateRangeResolutionCacheTests
         NotableDateRangeResolutionCache cache = new();
         cache.Add(BuildEntry("Rosh Hashanah", 2026, new DateTime(2026, 9, 12), calendarType: typeof(System.Globalization.HebrewCalendar)));
 
-        Assert.IsNull(cache.ResolveObservedByName("Rosh Hashanah", 2026, null, typeof(System.Globalization.GregorianCalendar)));
+        Assert.IsNull(cache.ResolveObservedByName("Rosh Hashanah", null, 2026, null, typeof(System.Globalization.GregorianCalendar)));
     }
 
     /// <summary>

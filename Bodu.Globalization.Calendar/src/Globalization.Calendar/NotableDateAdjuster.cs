@@ -49,10 +49,10 @@ internal sealed class NotableDateAdjuster
     private readonly IAdjustmentHandlerRegistry? _handlerRegistry;
 
     /// <summary>
-    /// An optional callback that resolves another rule's observed date by name, used by
-    /// <see cref="AdjustmentAction.ReplaceWithNamedDate" />.
+    /// An optional callback that resolves another rule's observed date by canonical name and optional variant, used by
+    /// <see cref="AdjustmentAction.ReplaceWithNamedDate" />. Arguments are (name, variant, year, territory, calendar).
     /// </summary>
-    private readonly Func<string, int, string?, Type?, DateTime?>? _resolveByName;
+    private readonly Func<string, string?, int, string?, Type?, DateTime?>? _resolveByName;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="NotableDateAdjuster" /> class.
@@ -67,7 +67,7 @@ internal sealed class NotableDateAdjuster
     /// </param>
     /// <param name="resolveByName">
     /// An optional callback used by <see cref="AdjustmentAction.ReplaceWithNamedDate" /> to look up another rule's
-    /// resolved date for the same year.
+    /// resolved date for the same year, by canonical name and optional rule-level variant.
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="isWeekend" /> or <paramref name="isNonWorkingDay" /> is <see langword="null" />.
@@ -77,7 +77,7 @@ internal sealed class NotableDateAdjuster
         Func<DateTime, string?, Type?, bool> isNonWorkingDay,
         WeekPattern workingWeek,
         IAdjustmentHandlerRegistry? handlerRegistry = null,
-        Func<string, int, string?, Type?, DateTime?>? resolveByName = null)
+        Func<string, string?, int, string?, Type?, DateTime?>? resolveByName = null)
     {
         _isWeekend = isWeekend ?? throw new ArgumentNullException(nameof(isWeekend));
         _isNonWorkingDay = isNonWorkingDay ?? throw new ArgumentNullException(nameof(isNonWorkingDay));
@@ -353,7 +353,7 @@ internal sealed class NotableDateAdjuster
         if (string.IsNullOrWhiteSpace(adjustment.TargetRuleName) || _resolveByName is null)
             return original;
 
-        DateTime? resolved = _resolveByName(adjustment.TargetRuleName!, original.Year, territoryCode, calendarType);
+        DateTime? resolved = _resolveByName(adjustment.TargetRuleName!, adjustment.TargetRuleVariant, original.Year, territoryCode, calendarType);
         return resolved ?? original;
     }
 

@@ -489,7 +489,7 @@ internal sealed class NotableDateRangePipeline
             (date, territory, calendar) => IsNonWorkingDay(cache, date, territory, calendar),
             _workingWeek,
             _handlerRegistry,
-            (name, year, territory, calendar) => cache.ResolveObservedByName(name, year, territory, calendar));
+            (name, variant, year, territory, calendar) => cache.ResolveObservedByName(name, variant, year, territory, calendar));
 
         // Snapshot first — entries can be mutated as adjustments are applied.
         var snapshot = cache.Entries.ToList();

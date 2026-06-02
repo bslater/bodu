@@ -196,6 +196,16 @@ public sealed record ObservanceAdjustment
     public string? TargetRuleName { get; init; }
 
     /// <summary>
+    /// Gets the optional rule-level variant of the <see cref="AdjustmentAction.ReplaceWithNamedDate" /> target, used to
+    /// disambiguate when several rules share the canonical <see cref="TargetRuleName" />.
+    /// </summary>
+    /// <returns>
+    /// The target rule's <see cref="NotableDateRule.RuleName" />, or <see langword="null" /> to resolve by name using
+    /// territory and calendar context.
+    /// </returns>
+    public string? TargetRuleVariant { get; init; }
+
+    /// <summary>
     /// Gets the evaluation priority. Lower values are evaluated first; the default of 100 leaves room for both higher-
     /// and lower-priority adjustments to be inserted later.
     /// </summary>

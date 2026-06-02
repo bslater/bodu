@@ -167,17 +167,27 @@ internal sealed class NotableDateRangeResolutionCache
     /// Resolves the observed date for the named rule in the supplied year and context, preferring the adjusted date
     /// when present.
     /// </summary>
-    /// <param name="ruleName">The rule name.</param>
+    /// <param name="ruleName">The canonical rule name.</param>
+    /// <param name="ruleVariant">
+    /// The optional rule-level variant to match against <see cref="NotableDateRule.RuleName" />, or
+    /// <see langword="null" /> to resolve by name with context only.
+    /// </param>
     /// <param name="year">The civil year.</param>
     /// <param name="territoryCode">The territory context, or <see langword="null" />.</param>
     /// <param name="calendarType">The calendar context, or <see langword="null" />.</param>
     /// <returns>The observed date, or <see langword="null" /> when no matching entry exists.</returns>
-    public DateTime? ResolveObservedByName(string ruleName, int year, string? territoryCode, Type? calendarType)
+    public DateTime? ResolveObservedByName(string ruleName, string? ruleVariant, int year, string? territoryCode, Type? calendarType)
     {
         foreach (NotableDateCacheEntry entry in _entries.Values)
         {
             if (entry.AnchorYear != year) continue;
             if (!string.Equals(entry.Rule.Name, ruleName, StringComparison.OrdinalIgnoreCase)) continue;
+            if (!string.IsNullOrEmpty(ruleVariant)
+                && !string.Equals(entry.Rule.RuleName ?? string.Empty, ruleVariant, StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
             if (!ContextMatches(entry.BaseNotable.TerritoryCode, entry.BaseNotable.CalendarType, territoryCode, calendarType)) continue;
 
             return (entry.Adjusted ?? entry.BaseNotable).Date;
