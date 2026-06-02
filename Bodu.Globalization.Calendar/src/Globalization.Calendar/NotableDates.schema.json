@@ -383,6 +383,9 @@
         "offsetFromAnchor": {
           "$ref": "#/$defs/offsetFromAnchorStrategy"
         },
+        "weekdayNearDate": {
+          "$ref": "#/$defs/weekdayNearDateStrategy"
+        },
         "algorithm": {
           "$ref": "#/$defs/algorithmStrategy"
         },
@@ -417,6 +420,11 @@
         {
           "required": [
             "offsetFromAnchor"
+          ]
+        },
+        {
+          "required": [
+            "weekdayNearDate"
           ]
         },
         {
@@ -462,6 +470,30 @@
           {
             "required": [
               "offsetFromAnchor",
+              "algorithm"
+            ]
+          },
+          {
+            "required": [
+              "fixed",
+              "weekdayNearDate"
+            ]
+          },
+          {
+            "required": [
+              "dayOfWeekInMonth",
+              "weekdayNearDate"
+            ]
+          },
+          {
+            "required": [
+              "offsetFromAnchor",
+              "weekdayNearDate"
+            ]
+          },
+          {
+            "required": [
+              "weekdayNearDate",
               "algorithm"
             ]
           }
@@ -525,6 +557,38 @@
           "$ref": "#/$defs/int32"
         }
       }
+    },
+    "weekdayNearDateStrategy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "dayOfWeek",
+        "month",
+        "day",
+        "direction"
+      ],
+      "properties": {
+        "dayOfWeek": {
+          "$ref": "#/$defs/dayOfWeek"
+        },
+        "month": {
+          "$ref": "#/$defs/monthName"
+        },
+        "day": {
+          "$ref": "#/$defs/day"
+        },
+        "direction": {
+          "$ref": "#/$defs/weekdayProximity"
+        }
+      }
+    },
+    "weekdayProximity": {
+      "type": "string",
+      "enum": [
+        "OnOrAfter",
+        "OnOrBefore",
+        "Nearest"
+      ]
     },
     "algorithmStrategy": {
       "type": "object",

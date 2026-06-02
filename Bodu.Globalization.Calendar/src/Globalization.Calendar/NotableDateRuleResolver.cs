@@ -573,6 +573,11 @@ internal sealed class NotableDateRuleResolver
                 case DateResolutionStrategy.OffsetFromAnchor:
                     return ResolveOffsetAnchor(rule, year, resolving);
 
+                case DateResolutionStrategy.WeekdayNearDate:
+                    if (rule.Month is { } wnm && rule.Day is { } wnd && rule.DayOfWeek is { } wndow && rule.WeekdayProximity is { } proximity)
+                        return ResolveWeekdayNearDate(year, wnm, wnd, wndow, proximity);
+                    return null;
+
                 case DateResolutionStrategy.Algorithm:
                     return ResolveAlgorithm(rule, year);
 
@@ -583,6 +588,61 @@ internal sealed class NotableDateRuleResolver
         finally
         {
             resolving.Remove(rule.Name);
+        }
+    }
+
+    /// <summary>
+    /// Resolves a <see cref="DateResolutionStrategy.WeekdayNearDate" /> rule by positioning the target weekday relative
+    /// to the reference (month, day) in the supplied Gregorian year.
+    /// </summary>
+    /// <param name="year">The Gregorian year.</param>
+    /// <param name="month">The reference month, in the range 1–12.</param>
+    /// <param name="day">The reference day-of-month.</param>
+    /// <param name="targetDayOfWeek">The weekday the rule resolves to.</param>
+    /// <param name="proximity">The direction used to position <paramref name="targetDayOfWeek" /> relative to the reference date.</param>
+    /// <returns>
+    /// The resolved date with <see cref="DateTimeKind.Unspecified" />, or <see langword="null" /> when the reference
+    /// (year, month, day) is not a valid date or the shifted result falls outside the representable range.
+    /// </returns>
+    /// <remarks>
+    /// The forward and backward distances to the nearest occurrence of <paramref name="targetDayOfWeek" /> always sum to
+    /// seven, so for <see cref="WeekdayProximity.Nearest" /> they are never equal and the closer one is unambiguous;
+    /// when the reference date already falls on the target weekday every direction yields the reference date itself.
+    /// </remarks>
+    private static DateTime? ResolveWeekdayNearDate(int year, int month, int day, DayOfWeek targetDayOfWeek, WeekdayProximity proximity)
+    {
+        DateTime reference;
+        try
+        {
+            reference = new DateTime(year, month, day, 0, 0, 0, DateTimeKind.Unspecified);
+        }
+        catch (ArgumentOutOfRangeException)
+        {
+            // Reference (year, month, day) is not a valid Gregorian date; treat as no occurrence.
+            return null;
+        }
+
+        // Days to advance forward / retreat backward from the reference to reach the target weekday, each in 0..6.
+        var forwardDelta = (((int)targetDayOfWeek - (int)reference.DayOfWeek) % 7 + 7) % 7;
+        var backwardDelta = (((int)reference.DayOfWeek - (int)targetDayOfWeek) % 7 + 7) % 7;
+
+        var delta = proximity switch
+        {
+            WeekdayProximity.OnOrAfter => forwardDelta,
+            WeekdayProximity.OnOrBefore => -backwardDelta,
+
+            // Forward and backward distances sum to seven, so they are never equal; pick the strictly smaller side.
+            WeekdayProximity.Nearest => forwardDelta <= backwardDelta ? forwardDelta : -backwardDelta,
+            _ => 0,
+        };
+
+        try
+        {
+            return reference.AddDays(delta);
+        }
+        catch (ArgumentOutOfRangeException)
+        {
+            return null;
         }
     }
 

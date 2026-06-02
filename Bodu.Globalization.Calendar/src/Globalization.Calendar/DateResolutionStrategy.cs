@@ -42,4 +42,12 @@ public enum DateResolutionStrategy
     /// Easter Sunday + 1).
     /// </summary>
     OffsetFromAnchor,
+
+    /// <summary>
+    /// Resolved as the occurrence of a specified weekday positioned relative to a fixed reference month and day — the
+    /// first such weekday on or after the reference, on or before it, or the nearest occurrence in either direction.
+    /// Expresses holidays such as "the Saturday between 20 and 26 June" (Nordic Midsummer), "the Wednesday before 23
+    /// November" (German Repentance Day), and "the Monday nearest to a given date" without a custom algorithm.
+    /// </summary>
+    WeekdayNearDate,
 }

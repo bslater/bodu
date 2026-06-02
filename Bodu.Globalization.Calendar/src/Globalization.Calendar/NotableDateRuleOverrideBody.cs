@@ -214,6 +214,16 @@ public sealed record NotableDateRuleOverrideBody
     public WeekOfMonthOrdinal? WeekOrdinal { get; init; }
 
     /// <summary>
+    /// Gets the direction used by <see cref="DateResolutionStrategy.WeekdayNearDate" /> to position the target
+    /// <see cref="DayOfWeek" /> relative to the reference <see cref="Month" /> and <see cref="Day" />.
+    /// </summary>
+    /// <returns>
+    /// One of the defined <see cref="Bodu.Globalization.Calendar.WeekdayProximity" /> values, or <see langword="null" />
+    /// to inherit the source value.
+    /// </returns>
+    public WeekdayProximity? WeekdayProximity { get; init; }
+
+    /// <summary>
     /// Gets the anchor rule name used by <see cref="DateResolutionStrategy.OffsetFromAnchor" />.
     /// </summary>
     /// <returns>

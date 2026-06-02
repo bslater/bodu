@@ -406,6 +406,19 @@ public sealed record NotableDateRule
     /// </returns>
     public WeekOfMonthOrdinal? WeekOrdinal { get; init; }
 
+    // --- WeekdayNearDate strategy fields -----------------------------------------------------
+
+    /// <summary>
+    /// Gets the direction used to position the target <see cref="DayOfWeek" /> relative to the reference
+    /// <see cref="Month" /> and <see cref="Day" /> for <see cref="DateResolutionStrategy.WeekdayNearDate" /> (for
+    /// example, the Saturday <em>on or after</em> 20 June).
+    /// </summary>
+    /// <returns>
+    /// One of the defined <see cref="Bodu.Globalization.Calendar.WeekdayProximity" /> values, or <see langword="null" />
+    /// when the strategy does not require it.
+    /// </returns>
+    public WeekdayProximity? WeekdayProximity { get; init; }
+
     // --- OffsetFromAnchor strategy fields ----------------------------------------------------
 
     /// <summary>

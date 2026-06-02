@@ -12,9 +12,9 @@
   legislation and are listed by their state codes.
 
   Note on Buß- und Bettag (Repentance Day, Saxony only): This holiday falls on the
-  Wednesday before 23 November and cannot be expressed precisely using the available
-  resolution strategies. To resolve it, register a custom INotableDateAlgorithm
-  under the key "buss-und-bettag".
+  Wednesday before 23 November. It is expressed declaratively with the
+  WeekdayNearDate strategy (the Wednesday on or before 22 November) and needs no
+  custom algorithm.
 
   Country-specific rules explicitly import only the inherited global and Christian
   dates that Germany observes, and override naming, territory, nonWorking, adjustment,
@@ -173,12 +173,12 @@
   -->
 
   <NotableDate name="Repentance Day">
-    <Rule name="algo-buss-und-bettag-de-sn"
+    <Rule name="weekday-wed-onorbefore-nov-22-de-sn"
           category="Holiday"
           territory="DE-SN"
           nonWorking="true"
-          comment="Buß- und Bettag. A public holiday in Saxony only. Falls on the Wednesday before 23 November. This rule requires a custom INotableDateAlgorithm registered under the key 'buss-und-bettag'.">
-      <Algorithm key="buss-und-bettag" />
+          comment="Buß- und Bettag. A public holiday in Saxony only. Falls on the Wednesday before 23 November — that is, the Wednesday on or before 22 November.">
+      <WeekdayNearDate dayOfWeek="Wednesday" month="November" day="22" direction="OnOrBefore" />
       <Tag>Christian</Tag>
       <Tag>StateHoliday</Tag>
     </Rule>

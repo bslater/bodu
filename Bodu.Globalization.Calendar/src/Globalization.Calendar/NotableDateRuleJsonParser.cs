@@ -323,6 +323,7 @@ public static class NotableDateRuleJsonParser
         if (dto.Fixed is not null) { result = DateResolutionStrategy.Fixed; count++; }
         if (dto.DayOfWeekInMonth is not null) { result = DateResolutionStrategy.DayOfWeekInMonth; count++; }
         if (dto.OffsetFromAnchor is not null) { result = DateResolutionStrategy.OffsetFromAnchor; count++; }
+        if (dto.WeekdayNearDate is not null) { result = DateResolutionStrategy.WeekdayNearDate; count++; }
         if (dto.Algorithm is not null) { result = DateResolutionStrategy.Algorithm; count++; }
 
         if (count == 0)
@@ -349,6 +350,7 @@ public static class NotableDateRuleJsonParser
         if (dto.Fixed is not null) { result = DateResolutionStrategy.Fixed; count++; }
         if (dto.DayOfWeekInMonth is not null) { result = DateResolutionStrategy.DayOfWeekInMonth; count++; }
         if (dto.OffsetFromAnchor is not null) { result = DateResolutionStrategy.OffsetFromAnchor; count++; }
+        if (dto.WeekdayNearDate is not null) { result = DateResolutionStrategy.WeekdayNearDate; count++; }
         if (dto.Algorithm is not null) { result = DateResolutionStrategy.Algorithm; count++; }
 
         if (count == 0)
@@ -402,6 +404,18 @@ public static class NotableDateRuleJsonParser
                     {
                         AnchorRuleName = RequireString(o.Name, "name", "offsetFromAnchor"),
                         OffsetDays = RequireInt(o.Offset, "offset", "offsetFromAnchor"),
+                    };
+                }
+
+            case DateResolutionStrategy.WeekdayNearDate:
+                {
+                    WeekdayNearDateDto w = dto.WeekdayNearDate!;
+                    return rule with
+                    {
+                        Month = ParseMonth(RequireString(w.Month, "month", "weekdayNearDate")),
+                        Day = RequireInt(w.Day, "day", "weekdayNearDate"),
+                        DayOfWeek = ParseRequiredEnum<DayOfWeek>(w.DayOfWeek, "dayOfWeek", "weekdayNearDate"),
+                        WeekdayProximity = ParseRequiredEnum<WeekdayProximity>(w.Direction, "direction", "weekdayNearDate"),
                     };
                 }
 
@@ -465,6 +479,18 @@ public static class NotableDateRuleJsonParser
                     {
                         AnchorRuleName = RequireString(o.Name, "name", "offsetFromAnchor"),
                         OffsetDays = RequireInt(o.Offset, "offset", "offsetFromAnchor"),
+                    };
+                }
+
+            case DateResolutionStrategy.WeekdayNearDate:
+                {
+                    WeekdayNearDateDto w = dto.WeekdayNearDate!;
+                    return body with
+                    {
+                        Month = ParseMonth(RequireString(w.Month, "month", "weekdayNearDate")),
+                        Day = RequireInt(w.Day, "day", "weekdayNearDate"),
+                        DayOfWeek = ParseRequiredEnum<DayOfWeek>(w.DayOfWeek, "dayOfWeek", "weekdayNearDate"),
+                        WeekdayProximity = ParseRequiredEnum<WeekdayProximity>(w.Direction, "direction", "weekdayNearDate"),
                     };
                 }
 
@@ -868,6 +894,7 @@ public static class NotableDateRuleJsonParser
         [JsonPropertyName("fixed")] public FixedDto? Fixed { get; init; }
         [JsonPropertyName("dayOfWeekInMonth")] public DayOfWeekInMonthDto? DayOfWeekInMonth { get; init; }
         [JsonPropertyName("offsetFromAnchor")] public OffsetFromAnchorDto? OffsetFromAnchor { get; init; }
+        [JsonPropertyName("weekdayNearDate")] public WeekdayNearDateDto? WeekdayNearDate { get; init; }
         [JsonPropertyName("algorithm")] public AlgorithmDto? Algorithm { get; init; }
         [JsonPropertyName("tags")] public string[]? Tags { get; init; }
         [JsonPropertyName("adjustments")] public AdjustmentDto[]? Adjustments { get; init; }
@@ -900,6 +927,15 @@ public static class NotableDateRuleJsonParser
     {
         [JsonPropertyName("name")] public string? Name { get; init; }
         [JsonPropertyName("offset")] public int? Offset { get; init; }
+    }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1134:Attributes should not share line")]
+    private sealed class WeekdayNearDateDto
+    {
+        [JsonPropertyName("month")] public string? Month { get; init; }
+        [JsonPropertyName("day")] public int? Day { get; init; }
+        [JsonPropertyName("dayOfWeek")] public string? DayOfWeek { get; init; }
+        [JsonPropertyName("direction")] public string? Direction { get; init; }
     }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1134:Attributes should not share line")]

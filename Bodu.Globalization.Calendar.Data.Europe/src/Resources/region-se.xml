@@ -3,9 +3,9 @@
   Sweden (SE) notable-date resource using the Western / Gregorian calendar.
 
   Public holidays (allmänna helgdagar) plus the de-facto-closed Christmas Eve.
-  Midsummer Day and All Saints' Day fall on a Saturday in a fixed week each
-  year (movable) and cannot be expressed with the available fixed/weekday
-  strategies, so they are omitted here.
+  Midsummer Day and All Saints' Day each fall on the Saturday within a fixed
+  seven-day window and are expressed with the WeekdayNearDate strategy (the
+  Saturday on or after the window's first day).
 
   Common European observances are inherited from europe-common.xml and
   localized with territory="SE"; Sweden-specific holidays are declared below.
@@ -31,6 +31,22 @@
   <!--
     National Swedish holidays.
   -->
+
+  <NotableDate name="Midsummer Day">
+    <Rule name="weekday-sat-onorafter-jun-20-se" category="Holiday" territory="SE" nonWorking="true"
+          comment="Midsommardagen. The Saturday falling between 20 and 26 June.">
+      <WeekdayNearDate dayOfWeek="Saturday" month="June" day="20" direction="OnOrAfter" />
+      <Tag>Cultural</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="All Saints' Day">
+    <Rule name="weekday-sat-onorafter-oct-31-se" category="Holiday" territory="SE" nonWorking="true"
+          comment="Alla helgons dag. The Saturday falling between 31 October and 6 November.">
+      <WeekdayNearDate dayOfWeek="Saturday" month="October" day="31" direction="OnOrAfter" />
+      <Tag>Christian</Tag>
+    </Rule>
+  </NotableDate>
 
   <NotableDate name="National Day of Sweden">
     <Rule name="fixed-jun-06-se" category="Holiday" territory="SE" nonWorking="true" firstYear="2005"

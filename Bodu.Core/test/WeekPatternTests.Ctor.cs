@@ -46,7 +46,11 @@ public partial class WeekPatternTests
     [TestMethod]
     public void Ctor_WhenEmptyArrayProvided_ShouldBeEmpty()
     {
-        var pattern = new WeekPattern([]);
+        // Array.Empty<DayOfWeek>() rather than the collection expression []: with both a
+        // params DayOfWeek[] and a string constructor present, an empty [] is ambiguous
+        // between them under C# 12 overload resolution, whereas an explicitly typed empty
+        // array selects the params overload unambiguously.
+        var pattern = new WeekPattern(Array.Empty<DayOfWeek>());
         Assert.AreEqual(0, pattern.Count);
     }
 
