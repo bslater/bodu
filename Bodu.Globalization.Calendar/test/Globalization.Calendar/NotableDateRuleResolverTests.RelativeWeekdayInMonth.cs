@@ -165,4 +165,45 @@ public sealed class NotableDateRuleResolverRelativeWeekdayInMonthTests
 
         Assert.IsNull(Resolve(rule, 2024));
     }
+
+    /// <summary>
+    /// Verifies that when positioning the relative weekday rolls the result outside the representable
+    /// <see cref="DateTime" /> range — forward past <see cref="DateTime.MaxValue" /> or backward before
+    /// <see cref="DateTime.MinValue" /> — the strategy resolves to <see langword="null" /> rather than throwing, across
+    /// the <see cref="WeekdayProximity.OnOrAfter" />, <see cref="WeekdayProximity.OnOrBefore" />, and
+    /// <see cref="WeekdayProximity.Nearest" /> directions.
+    /// </summary>
+    /// <param name="year">The resolution year, pinned to a calendar boundary.</param>
+    /// <param name="month">The anchor month.</param>
+    /// <param name="anchorDayOfWeek">The anchor weekday whose ordinal occurrence lands on the boundary date.</param>
+    /// <param name="ordinal">Which occurrence of <paramref name="anchorDayOfWeek" /> serves as the anchor.</param>
+    /// <param name="relativeDayOfWeek">The target weekday positioned relative to the anchor.</param>
+    /// <param name="proximity">The positioning direction.</param>
+    [TestMethod]
+    [DataRow(9999, 12, DayOfWeek.Friday, WeekOfMonthOrdinal.Last, DayOfWeek.Saturday, WeekdayProximity.OnOrAfter)]  // last Friday of Dec 9999 is the 31st; the Saturday on or after rolls into year 10000
+    [DataRow(9999, 12, DayOfWeek.Friday, WeekOfMonthOrdinal.Last, DayOfWeek.Saturday, WeekdayProximity.Nearest)]    // nearest Saturday is one day forward, past DateTime.MaxValue
+    [DataRow(1, 1, DayOfWeek.Monday, WeekOfMonthOrdinal.First, DayOfWeek.Sunday, WeekdayProximity.OnOrBefore)]      // first Monday of Jan 0001 is the 1st; the Sunday on or before rolls before DateTime.MinValue
+    public void ResolveAnchorDate_WhenRelativePositioningRollsOutsideRepresentableRange_ShouldReturnNull(
+        int year, int month, DayOfWeek anchorDayOfWeek, WeekOfMonthOrdinal ordinal, DayOfWeek relativeDayOfWeek, WeekdayProximity proximity)
+    {
+        NotableDateRule rule = RelativeRule("Boundary", month, anchorDayOfWeek, ordinal, relativeDayOfWeek, proximity);
+
+        Assert.IsNull(Resolve(rule, year));
+    }
+
+    /// <summary>
+    /// Verifies that a year outside the range supported for anchor computation — less than 1 or greater than 9999 —
+    /// resolves to <see langword="null" /> rather than throwing, because the <em>n</em>th-weekday anchor cannot be
+    /// computed for such a year.
+    /// </summary>
+    /// <param name="year">The unsupported resolution year.</param>
+    [TestMethod]
+    [DataRow(0)]      // below the minimum supported year
+    [DataRow(10000)]  // above the maximum supported year
+    public void ResolveAnchorDate_WhenYearOutsideSupportedCalendarRange_ShouldReturnNull(int year)
+    {
+        NotableDateRule rule = RelativeRule("Out Of Range Year", 11, DayOfWeek.Monday, WeekOfMonthOrdinal.First, DayOfWeek.Tuesday, WeekdayProximity.OnOrAfter);
+
+        Assert.IsNull(Resolve(rule, year));
+    }
 }
