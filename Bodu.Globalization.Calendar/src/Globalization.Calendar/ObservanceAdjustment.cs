@@ -15,8 +15,9 @@ namespace Bodu.Globalization.Calendar;
 /// <remarks>
 /// <para>
 /// An <see cref="ObservanceAdjustment" /> consists of a <see cref="Trigger" /> describing the activation condition and
-/// an <see cref="Action" /> describing the resulting modification. Adjustments are evaluated in <see cref="Priority" />
-/// order during date generation and may be scoped to a single territory, calendar, or year range.
+/// an <see cref="Action" /> describing the resulting modification. Adjustments are evaluated in ascending
+/// <see cref="Priority" /> order under a first-active-wins policy — the first adjustment that activates and moves the
+/// date wins — and may be scoped to a single territory, calendar, or year range.
 /// </para>
 /// <para>
 /// Multiple adjustments on a single rule allow layered logic — for example, one entry rolls a Saturday observance to
@@ -25,9 +26,9 @@ namespace Bodu.Globalization.Calendar;
 /// another resource.
 /// </para>
 /// <para>
-/// When an adjustment activates the <see cref="NotableDateService" /> emits an <em>additional</em>
-/// <see cref="NotableDate" /> at the adjusted date, leaving the original calculated date in place so consumers see both
-/// the actual and the observed occurrence. The shifted occurrence carries an <see cref="AdjustmentReason" /> on its
+/// When an adjustment activates the <see cref="NotableDateService" /> emits the shifted occurrence according to the
+/// configured <see cref="ObservedDateMode" /> (default <see cref="ObservedDateMode.ObservedOnly" />, where the observed
+/// date supersedes the actual date). The shifted occurrence carries an <see cref="AdjustmentReason" /> on its
 /// <see cref="NotableDate.AdjustmentReason" /> property, naming the trigger and action that caused the shift; this also
 /// flips <see cref="NotableDate.WasAdjusted" /> to <see langword="true" />. When <see cref="IsNonWorkingDay" /> is set
 /// on the adjustment, that value overrides the rule's non-working flag for the shifted occurrence only.

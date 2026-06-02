@@ -125,25 +125,25 @@ internal sealed class NotableDateRangePipeline
     /// <list type="number">
     /// <item>
     /// <description>
-    /// <b>Main pass</b> — every eligible rule is materialized for the civil years that the request range spans. Rules
-    /// whose resolved date falls inside the request window enter the cache in
-    /// <see cref="NotableDateCacheState.InWindow" />; those just outside enter as
-    /// <see cref="NotableDateCacheState.Computed" /> for adjustment context.
+    /// <b>Main pass</b> — every eligible rule is materialized for the civil years that the request range spans. Real
+    /// occurrences enter the cache as <see cref="NotableDateCacheState.Candidate" />; window intersection is recomputed
+    /// at emission so a day's result does not depend on the query-window width.
     /// </description>
     /// </item>
     /// <item>
     /// <description>
     /// <b>Fringe pass</b> — for each adjacent civil year the request window touches inside the planner's fringe
-    /// distance, every <see cref="RuleTier.Fixed" /> rule with at least one adjustment is materialized when its
-    /// resolved date falls inside the fringe window. This catches cross-year roll-overs such as <c>31 Dec</c> rolling
-    /// forward to <c>3 Jan</c> without a global reach expansion.
+    /// distance, every <see cref="RuleTier.Fixed" /> rule with at least one adjustment is materialized. On-demand root
+    /// anchors needed only to resolve dependent offset rules enter as
+    /// <see cref="NotableDateCacheState.ContextOnly" />. This catches cross-year roll-overs such as <c>31 Dec</c>
+    /// rolling forward to <c>3 Jan</c> without a global reach expansion.
     /// </description>
     /// </item>
     /// <item>
     /// <description>
-    /// <b>Adjustment phase</b> — observance adjustments are applied using the cache as the non-working day context.
-    /// Adjusted dates that intersect the request promote the entry to <see cref="NotableDateCacheState.Adjusted" /> and
-    /// supersede the base on emission.
+    /// <b>Adjustment phase</b> — observance adjustments are applied using the cache as the non-working day context. The
+    /// first activating adjustment (by ascending priority) records the observed date, which supersedes the base on
+    /// emission under the active <see cref="ObservedDateMode" />.
     /// </description>
     /// </item>
     /// </list>
@@ -311,7 +311,7 @@ internal sealed class NotableDateRangePipeline
 
             if (rootDate is null) return null;
 
-            AddEntries(rootProfile, year, rootDate.Value, plan, cache);
+            AddEntries(rootProfile, year, rootDate.Value, plan, cache, contextOnly: true);
             rootAnchor = rootDate;
         }
 
@@ -451,27 +451,29 @@ internal sealed class NotableDateRangePipeline
     /// <param name="anchorDate">The resolved anchor date.</param>
     /// <param name="plan">The active resolution plan.</param>
     /// <param name="cache">The shared cache being populated.</param>
+    /// <param name="contextOnly">
+    /// <see langword="true" /> to add the entries as <see cref="NotableDateCacheState.ContextOnly" /> (never emitted,
+    /// present only as adjustment or offset-anchor context); otherwise they enter as
+    /// <see cref="NotableDateCacheState.Candidate" />.
+    /// </param>
     private void AddEntries(
         RuleStaticProfile profile,
         int year,
         DateTime anchorDate,
         NotableDateRangePlan plan,
-        NotableDateRangeResolutionCache cache)
+        NotableDateRangeResolutionCache cache,
+        bool contextOnly = false)
     {
+        // Window intersection and filtering are deferred to emission so that a day's result is independent of the query
+        // window width. Real occurrences enter as Candidate; on-demand anchors enter as ContextOnly and never emit.
+        NotableDateCacheState state = contextOnly ? NotableDateCacheState.ContextOnly : NotableDateCacheState.Candidate;
+
         foreach (var territory in EnumerateApplicableTerritories(profile.Rule, plan.Request.TerritoryCode))
         {
             if (IsRemovedByOverride(profile.Rule, year, territory))
                 continue;
 
             NotableDate notable = BuildNotableDate(profile.Rule, anchorDate, territory, adjustmentReason: null);
-
-            NotableDateCacheState state = NotableDateCacheState.Computed;
-            if (Intersects(plan.Request.StartDate, plan.Request.EndDate, notable.Date, notable.EndDate))
-            {
-                if (plan.Request.Filter is null || plan.Request.Filter.IsMatch(notable))
-                    state = NotableDateCacheState.InWindow;
-            }
-
             NotableDateCacheEntry entry = new(profile, year, notable, state);
             cache.Add(entry);
         }
@@ -498,6 +500,9 @@ internal sealed class NotableDateRangePipeline
         {
             if (entry.Rule.Adjustments.IsDefaultOrEmpty) continue;
 
+            // First-active-wins: evaluate adjustments in ascending priority and stop at the first that activates and
+            // moves the date, so the observed result is deterministic and independent of authored order. Whether the
+            // base, adjusted, or both forms are emitted is decided later by the emission stage under the active mode.
             foreach (ObservanceAdjustment adjustment in entry.Rule.Adjustments.OrderBy(a => a.Priority))
             {
                 if (!NotableDateAdjuster.IsInScope(adjustment, entry.AnchorYear, entry.BaseNotable.TerritoryCode, entry.Rule.CalendarType))
@@ -519,19 +524,10 @@ internal sealed class NotableDateRangePipeline
 
                 var isNonWorking = result.IsNonWorkingOverride ?? entry.Rule.IsNonWorkingDay ?? false;
                 AdjustmentReason reason = new(entry.BaseNotable.Date, result.Trigger, result.Action, result.HandlerKey);
-                NotableDate adjusted = BuildNotableDate(entry.Rule, result.AdjustedDate, emittedTerritory, reason, isNonWorking);
 
-                entry.Adjusted = adjusted;
-
-                var adjustedIntersects = Intersects(plan.Request.StartDate, plan.Request.EndDate, adjusted.Date, adjusted.EndDate);
-                var filterMatch = plan.Request.Filter is null || plan.Request.Filter.IsMatch(adjusted);
-
-                // Always promote to Adjusted when the adjusted date lands inside the request window. The emission step
-                // independently checks whether the base date also intersects, so we never lose the base when both are visible.
-                if (adjustedIntersects && filterMatch)
-                    entry.State = NotableDateCacheState.Adjusted;
-                else if (entry.State == NotableDateCacheState.Computed)
-                    entry.State = NotableDateCacheState.AdjustedBlocker;
+                entry.Adjusted = BuildNotableDate(entry.Rule, result.AdjustedDate, emittedTerritory, reason, isNonWorking);
+                entry.AdjustmentActivated = true;
+                break;
             }
         }
     }
@@ -544,34 +540,46 @@ internal sealed class NotableDateRangePipeline
     /// <returns>The emission list, ordered by observed date and rule name.</returns>
     /// <remarks>
     /// <para>
-    /// Emission policy: an observance adjustment replaces the base anchor — when an entry's
-    /// <see cref="NotableDateCacheState" /> is <see cref="NotableDateCacheState.Adjusted" /> only the
-    /// <see cref="NotableDateCacheEntry.Adjusted" /> form is emitted, never the underlying anchor. This guarantees that
-    /// the emitted count equals the notable-date count for the requested window.
+    /// Emission recomputes window intersection from each candidate entry's base and adjusted dates, so a given day's
+    /// result does not depend on the width of the query window. Under <see cref="ObservedDateMode.ObservedOnly" /> (the
+    /// default) an activated adjustment's observed date supersedes the actual date; <see cref="ObservedDateMode.ActualOnly" />
+    /// keeps the actual date and suppresses the substitute; <see cref="ObservedDateMode.ActualAndObserved" /> emits both
+    /// when each intersects the window.
     /// </para>
     /// </remarks>
     private static IReadOnlyList<NotableDate> BuildEmissionList(NotableDateRangePlan plan, NotableDateRangeResolutionCache cache)
     {
+        NotableDateRangeRequest request = plan.Request;
+        ObservedDateMode mode = request.ObservedDates;
         List<NotableDate> emitted = [];
 
         foreach (NotableDateCacheEntry entry in cache.EmissableEntries())
         {
-            if (entry.State == NotableDateCacheState.Adjusted && entry.Adjusted is not null)
+            NotableDate baseNotable = entry.BaseNotable;
+            var baseHit = Intersects(request.StartDate, request.EndDate, baseNotable.Date, baseNotable.EndDate)
+                && (request.Filter is null || request.Filter.IsMatch(baseNotable));
+
+            if (entry.AdjustmentActivated && entry.Adjusted is { } adjusted)
             {
-                // Adjusted form supersedes the base — the original anchor is recorded on the adjusted date's AdjustmentReason
-                // rather than emitted as a separate entry.
-                emitted.Add(entry.Adjusted);
+                var adjustedHit = Intersects(request.StartDate, request.EndDate, adjusted.Date, adjusted.EndDate)
+                    && (request.Filter is null || request.Filter.IsMatch(adjusted));
+
+                // Observed supersedes actual unless the caller asked for the actual date too. The decision uses only
+                // this entry's own dates, so the answer for a day is independent of the query-window width.
+                if (mode != ObservedDateMode.ActualOnly && adjustedHit)
+                    emitted.Add(adjusted);
+
+                if (mode != ObservedDateMode.ObservedOnly && baseHit)
+                    emitted.Add(baseNotable);
+
                 continue;
             }
 
-            if (entry.State == NotableDateCacheState.InWindow)
-                emitted.Add(entry.BaseNotable);
+            if (baseHit)
+                emitted.Add(baseNotable);
         }
 
-        // Defensive: never emit a notable date whose span lies outside the requested window. The state transitions enforce this on
-        // their own, but the explicit guard catches any future regression in the state machine.
         return [.. emitted
-            .Where(n => Intersects(plan.Request.StartDate, plan.Request.EndDate, n.Date, n.EndDate))
             .OrderBy(n => n.Date)
             .ThenBy(n => n.Name, StringComparer.OrdinalIgnoreCase)
             .ThenBy(n => n.TerritoryCode, StringComparer.OrdinalIgnoreCase)];

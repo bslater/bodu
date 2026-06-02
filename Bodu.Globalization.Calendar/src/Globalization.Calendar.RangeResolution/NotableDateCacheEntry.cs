@@ -12,9 +12,10 @@ namespace Bodu.Globalization.Calendar.RangeResolution;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Entries are mutable on the <see cref="State" /> and <see cref="Adjusted" /> fields so the pipeline can promote a
-/// <see cref="NotableDateCacheState.Computed" /> entry to <see cref="NotableDateCacheState.InWindow" /> or
-/// <see cref="NotableDateCacheState.Adjusted" /> as more information becomes available during processing.
+/// Entries are mutable on the <see cref="Adjusted" /> and <see cref="AdjustmentActivated" /> fields so the pipeline can
+/// record an observance adjustment as it is applied. The emission stage recomputes window intersection from the base
+/// and adjusted dates, so the entry's role (<see cref="NotableDateCacheState" />) only distinguishes a real occurrence
+/// from pure adjustment context.
 /// </para>
 /// </remarks>
 internal sealed class NotableDateCacheEntry
@@ -71,10 +72,19 @@ internal sealed class NotableDateCacheEntry
     public NotableDate? Adjusted { get; set; }
 
     /// <summary>
-    /// Gets or sets the entry's emission qualification state.
+    /// Gets or sets the entry's materialization role.
     /// </summary>
     /// <returns>One of the defined <see cref="NotableDateCacheState" /> values.</returns>
     public NotableDateCacheState State { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether an observance adjustment activated for this entry and moved its date.
+    /// </summary>
+    /// <returns>
+    /// <see langword="true" /> when an adjustment fired and produced <see cref="Adjusted" />; otherwise
+    /// <see langword="false" />.
+    /// </returns>
+    public bool AdjustmentActivated { get; set; }
 
     /// <summary>
     /// Gets the originating rule.
@@ -85,12 +95,16 @@ internal sealed class NotableDateCacheEntry
     public NotableDateRule Rule => Profile.Rule;
 
     /// <summary>
-    /// Gets a value indicating whether the entry should be emitted to the caller in the resolution output.
+    /// Gets a value indicating whether the entry represents a real occurrence eligible for emission consideration.
     /// </summary>
+    /// <remarks>
+    /// Eligibility does not by itself emit the entry: the emission stage still intersects the base and adjusted dates
+    /// with the requested window under the active <see cref="ObservedDateMode" />.
+    /// </remarks>
     /// <returns>
-    /// <see langword="true" /> when <see cref="State" /> is <see cref="NotableDateCacheState.InWindow" /> or
-    /// <see cref="NotableDateCacheState.Adjusted" />; otherwise <see langword="false" />.
+    /// <see langword="true" /> when <see cref="State" /> is <see cref="NotableDateCacheState.Candidate" />; otherwise
+    /// <see langword="false" />.
     /// </returns>
     public bool IsEmissable =>
-        State is NotableDateCacheState.InWindow or NotableDateCacheState.Adjusted;
+        State is NotableDateCacheState.Candidate;
 }

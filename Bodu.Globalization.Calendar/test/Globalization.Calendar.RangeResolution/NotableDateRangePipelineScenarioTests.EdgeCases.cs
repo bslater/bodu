@@ -328,26 +328,25 @@ public sealed partial class NotableDateRangePipelineScenarioTests
     // =====================================================================================================================
 
     /// <summary>
-    /// Verifies that when an adjustment fires but its adjusted observed date lands outside the requested window, the rule
-    /// falls back to emitting its base anchor date (the rule's "1 emission per (year, territory)" guarantee). The adjusted
-    /// substitute is observed elsewhere; consumers querying the base date still see the holiday on its calendar day.
+    /// Verifies that when an adjustment fires but its observed substitute lies outside the requested window, the default
+    /// <see cref="ObservedDateMode.ObservedOnly" /> mode suppresses the actual date: the holiday's observed occurrence is
+    /// the substitute day, so it is not reported in a window that covers only the actual day. This keeps a day's result
+    /// independent of the query-window width.
     /// </summary>
     [TestMethod]
-    public void Resolve_WhenAdjustmentShiftsAdjustedDateOutOfWindow_ShouldEmitBaseAnchor()
+    public void Resolve_WhenObservedSubstituteOutsideWindow_ShouldSuppressActualUnderObservedOnly()
     {
-        // 25 Dec 2021 = Saturday → Christmas with weekend roll lands on Mon 27 Dec 2021 (the substitute).
-        // Window 24 Dec .. 26 Dec covers the base anchor (Sat 25 Dec) but excludes the Mon substitute.
+        // 25 Dec 2021 = Saturday → Christmas with weekend roll is observed on Mon 27 Dec 2021 (the substitute).
+        // Window 24 Dec .. 26 Dec covers the actual Saturday but excludes the observed Monday.
         NotableDateService service = BuildService(ChristmasDayWithWeekendSubstitute());
 
         IReadOnlyList<NotableDate> resolved = service.ResolveNotableDatesInRange(
             new DateTime(2021, 12, 24),
             new DateTime(2021, 12, 26));
 
-        NotableDate christmas = resolved.Single(n => n.Name == "Christmas Day");
-        Assert.AreEqual(new DateTime(2021, 12, 25), christmas.Date,
-            "The base anchor is emitted because the adjusted substitute lies outside the requested window.");
-        Assert.IsFalse(christmas.WasAdjusted,
-            "The emitted occurrence is the base anchor, not the adjusted substitute, so AdjustmentReason should not be populated.");
+        Assert.IsFalse(
+            resolved.Any(n => n.Name == "Christmas Day"),
+            "Under ObservedOnly the actual date is superseded once the weekend roll activates; the observed substitute (Mon 27 Dec) lies outside the window, so Christmas Day is not reported.");
     }
 
     /// <summary>

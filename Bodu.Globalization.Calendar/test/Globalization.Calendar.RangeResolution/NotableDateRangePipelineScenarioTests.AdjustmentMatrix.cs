@@ -480,19 +480,18 @@ public sealed partial class NotableDateRangePipelineScenarioTests
     // =====================================================================================================================
 
     /// <summary>
-    /// Verifies that when a rule has multiple <see cref="ObservanceAdjustment" /> entries, only those whose triggers activate
-    /// contribute to the emitted observed date. The pipeline iterates adjustments in <see cref="ObservanceAdjustment.Priority" />
-    /// order (lower first) and the last activating adjustment wins on the entry's <c>Adjusted</c> field — a documented
-    /// limitation of the prototype pipeline.
+    /// Verifies that when a rule has multiple activating <see cref="ObservanceAdjustment" /> entries, the pipeline applies
+    /// first-active-wins: it iterates adjustments in <see cref="ObservanceAdjustment.Priority" /> order (lower first) and
+    /// stops at the first that activates and moves the date, so the emitted observed date is deterministic and
+    /// independent of authored order.
     /// </summary>
     [TestMethod]
-    public void MultipleAdjustments_WhenSecondActivatingAdjustmentRunsLast_ShouldOverwriteFirst()
+    public void MultipleAdjustments_WhenSeveralActivate_ShouldKeepFirstByAscendingPriority()
     {
         // Anchor: Fri 25 Dec 2026.
         // Adjustment A (priority 10): IfWeekday + AddDays(+1) → activates → Sat 26 Dec.
         // Adjustment B (priority 20): IfWeekday + AddDays(+3) → activates → Mon 28 Dec.
-        // Both trigger on the original Friday anchor; B has lower priority precedence (higher number) and therefore runs last.
-        // Last-wins on entry.Adjusted, so the emitted observed date is Mon 28 Dec.
+        // First-active-wins by ascending priority: A (priority 10) activates first and wins; B is never applied.
         NotableDateRule probe = new()
         {
             Name = "Probe",
@@ -529,8 +528,8 @@ public sealed partial class NotableDateRangePipelineScenarioTests
             new DateTime(2026, 12, 31));
 
         NotableDate match = resolved.Single(n => n.Name == "Probe");
-        Assert.AreEqual(new DateTime(2026, 12, 28), match.Date,
-            "Last-applied activating adjustment should win on the entry's Adjusted field (documented prototype limitation).");
+        Assert.AreEqual(new DateTime(2026, 12, 26), match.Date,
+            "First activating adjustment by ascending priority wins; the priority-10 (+1 day) result is kept and the priority-20 (+3 day) adjustment is not applied.");
         Assert.IsTrue(match.WasAdjusted);
     }
 

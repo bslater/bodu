@@ -222,8 +222,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 
     /// <summary>
     /// Verifies that a filter scoped by date-range matches the post-adjustment observed date — even when the base anchor
-    /// would not have matched. The pipeline applies the date-level filter against the adjusted form before promoting the
-    /// entry to <see cref="NotableDateCacheState.Adjusted" />.
+    /// would not have matched. The pipeline applies the date-level filter against the adjusted form at emission.
     /// </summary>
     [TestMethod]
     public void Filter_WhenDateRangeFilterMatchesAdjustedDateButNotBase_ShouldEmitAdjusted()

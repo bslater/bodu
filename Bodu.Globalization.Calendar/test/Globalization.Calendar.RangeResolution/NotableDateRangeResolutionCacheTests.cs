@@ -110,7 +110,7 @@ public sealed class NotableDateRangeResolutionCacheTests
     {
         NotableDateRangeResolutionCache cache = new();
         NotableDateCacheEntry first = BuildEntry("Holiday", 2026, new DateTime(2026, 6, 1));
-        NotableDateCacheEntry second = BuildEntry("Holiday", 2026, new DateTime(2026, 6, 1), state: NotableDateCacheState.InWindow);
+        NotableDateCacheEntry second = BuildEntry("Holiday", 2026, new DateTime(2026, 6, 1), state: NotableDateCacheState.Candidate);
 
         cache.Add(first);
         cache.Add(second);
@@ -270,21 +270,21 @@ public sealed class NotableDateRangeResolutionCacheTests
     }
 
     /// <summary>
-    /// Verifies that the cache <see cref="NotableDateRangeResolutionCache.EmissableEntries" /> yields only entries whose
-    /// state qualifies them for emission.
+    /// Verifies that <see cref="NotableDateRangeResolutionCache.EmissableEntries" /> yields only entries whose role is
+    /// <see cref="NotableDateCacheState.Candidate" />, excluding context-only entries.
     /// </summary>
     [TestMethod]
-    public void EmissableEntries_WhenSomeEntriesAreComputed_ShouldOnlyYieldInWindowEntries()
+    public void EmissableEntries_WhenSomeEntriesAreContextOnly_ShouldOnlyYieldCandidateEntries()
     {
         NotableDateRangeResolutionCache cache = new();
-        cache.Add(BuildEntry("InWindow", 2026, new DateTime(2026, 1, 1), state: NotableDateCacheState.InWindow));
-        cache.Add(BuildEntry("Computed", 2026, new DateTime(2026, 1, 1), state: NotableDateCacheState.Computed));
+        cache.Add(BuildEntry("Candidate", 2026, new DateTime(2026, 1, 1), state: NotableDateCacheState.Candidate));
+        cache.Add(BuildEntry("ContextOnly", 2026, new DateTime(2026, 1, 1), state: NotableDateCacheState.ContextOnly));
 
         IEnumerable<NotableDateCacheEntry> emissable = cache.EmissableEntries();
         var names = emissable.Select(e => e.Rule.Name).ToList();
 
         Assert.AreEqual(1, names.Count);
-        Assert.AreEqual("InWindow", names[0]);
+        Assert.AreEqual("Candidate", names[0]);
     }
 
     /// <summary>
@@ -297,7 +297,7 @@ public sealed class NotableDateRangeResolutionCacheTests
         string? territory = null,
         Type? calendarType = null,
         bool isNonWorking = false,
-        NotableDateCacheState state = NotableDateCacheState.Computed)
+        NotableDateCacheState state = NotableDateCacheState.Candidate)
     {
         NotableDateRule rule = new()
         {

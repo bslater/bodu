@@ -98,28 +98,29 @@ public sealed partial class NotableDateServiceTests
     }
 
     /// <summary>
-    /// Verifies that when a rule carries multiple observance adjustments, each adjustment is evaluated against the <em>original</em>
-    /// anchor date rather than the result produced by a prior adjustment. This invariant is what prevents adjustment chains from
-    /// forming an unbounded feedback loop (e.g. a weekend-roll producing a date that itself triggers a further weekend-roll).
+    /// Verifies that adjustments are evaluated in ascending priority under first-active-wins: a lower-priority adjustment
+    /// whose trigger does not activate is skipped, and the next activating adjustment is applied against the <em>original</em>
+    /// anchor date (never a prior adjustment's result), which prevents adjustment chains from forming a feedback loop.
     /// </summary>
     [TestMethod]
-    public void GetNotableDates_WhenMultipleAdjustmentsFireOnSameAnchor_ShouldEvaluateEachAgainstOriginalAnchor()
+    public void GetNotableDates_WhenLowerPriorityAdjustmentInactive_ShouldApplyNextActivatingAgainstOriginalAnchor()
     {
-        // 1 January 2022 is a Saturday. "Always + AddDays(+1)" yields Sunday; if the second adjustment were fed that result,
-        // "IfWeekend + AddDays(+2)" would fire on the Sunday and shift it to Tuesday. Because each adjustment sees only the
-        // original anchor, the second adjustment evaluates IfWeekend on the Saturday and yields Monday (anchor + 2).
+        // 1 January 2022 is a Saturday. The lower-priority adjustment (IfDayOfWeek = Sunday) does not activate on the
+        // Saturday anchor, so the next adjustment by ascending priority (IfWeekend + AddDays(+2)) is applied. It evaluates
+        // against the original Saturday anchor and yields Monday 3 January (anchor + 2).
         NotableDateRule rule = Fixed("Layered Holiday", 1, 1, nonWorking: true) with
         {
             Adjustments =
             [
                 new ObservanceAdjustment
-                        {
-                            Key = "always-plus-one",
-                            Trigger = AdjustmentTrigger.Always,
-                            Action = AdjustmentAction.AddDays,
-                            OffsetDays = 1,
-                            Priority = 10,
-                        },
+                {
+                    Key = "sunday-plus-one",
+                    Trigger = AdjustmentTrigger.IfDayOfWeek,
+                    DayOfWeek = DayOfWeek.Sunday,
+                    Action = AdjustmentAction.AddDays,
+                    OffsetDays = 1,
+                    Priority = 10,
+                },
                 new ObservanceAdjustment
                 {
                     Key = "weekend-plus-two",
@@ -138,14 +139,10 @@ public sealed partial class NotableDateServiceTests
             .OrderBy(d => d.Date)
             .ToList();
 
-        // The range pipeline emits one observed occurrence per rule and evaluates each adjustment against the *original*
-        // anchor. With multiple activating adjustments, the highest-priority value (last-wins by ascending Priority) sets
-        // the emitted observed date. Adj1 (priority 10) → anchor+1 = Sun Jan 2; Adj2 (priority 20) → anchor+2 = Mon Jan 3.
-        // Both saw Saturday (the original anchor); the priority-20 result wins.
-        Assert.AreEqual(1, layered.Count, "Pipeline emits a single occurrence per rule; last-wins by priority sets the observed date.");
+        Assert.AreEqual(1, layered.Count, "The pipeline emits a single observed occurrence per rule.");
         Assert.IsTrue(layered[0].WasAdjusted);
         Assert.AreEqual(new DateTime(2022, 1, 3), layered[0].Date,
-            "Last-wins: priority-20 adjustment (anchor + 2 days) overwrites priority-10 (anchor + 1 day) and demonstrates each adjustment saw the original Saturday anchor.");
+            "The inactive priority-10 adjustment is skipped; the priority-20 IfWeekend adjustment fires against the original Saturday anchor and yields Monday (anchor + 2).");
     }
 
     /// <summary>

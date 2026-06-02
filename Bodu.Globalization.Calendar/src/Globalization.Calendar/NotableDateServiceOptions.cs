@@ -108,4 +108,12 @@ public sealed class NotableDateServiceOptions
     /// </para>
     /// </remarks>
     public IEnumerable<Plugins.INotableDatePlugin>? Plugins { get; init; }
+
+    /// <summary>
+    /// Gets the policy controlling whether actual dates, observed (adjusted) dates, or both are emitted when an
+    /// observance adjustment shifts a notable date from its calculated position.
+    /// </summary>
+    /// <value>One of the <see cref="ObservedDateMode" /> values. Defaults to <see cref="ObservedDateMode.ObservedOnly" />.</value>
+    /// <returns>The configured observed-date mode applied as the service-wide default.</returns>
+    public ObservedDateMode ObservedDates { get; init; } = ObservedDateMode.ObservedOnly;
 }

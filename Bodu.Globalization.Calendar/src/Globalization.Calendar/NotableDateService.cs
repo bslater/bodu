@@ -214,6 +214,11 @@ public sealed class NotableDateService
     private readonly INotableDateNameLocalizer? _nameLocalizer;
 
     /// <summary>
+    /// The service-wide observed-date emission policy applied when an adjustment shifts a notable date.
+    /// </summary>
+    private readonly ObservedDateMode _observedDateMode;
+
+    /// <summary>
     /// Identity-keyed set of every rule contributed by an <see cref="INotableDateRuleOverrideProvider" /> addition.
     /// Used downstream to exempt override additions from same-name <see cref="RuleRemoval" /> suppression, so an
     /// addition can replace a removed base rule of the same name. Rebuilt by <see cref="Reload" /> alongside
@@ -400,6 +405,7 @@ public sealed class NotableDateService
         WorkingWeek = workingWeek;
         _collisionResolver = opts.CollisionResolver ?? new DefaultNotableDateCollisionResolver();
         _nameLocalizer = opts.NameLocalizer;
+        _observedDateMode = opts.ObservedDates;
         _resourcePathResolver = opts.ResourcePathResolver ?? new ResourcePathResolver();
         _algorithmRegistry = effectiveRegistry;
         _adjustmentHandlers = opts.AdjustmentHandlers;
@@ -776,6 +782,10 @@ public sealed class NotableDateService
     /// <param name="territoryCode">The optional territory context.</param>
     /// <param name="calendarType">The optional calendar context.</param>
     /// <param name="filter">The optional notable-date filter.</param>
+    /// <param name="observedDates">
+    /// The observed-date policy for this query, or <see langword="null" /> to use the service-wide default configured
+    /// via <see cref="NotableDateServiceOptions.ObservedDates" />.
+    /// </param>
     /// <returns>The resolved notable dates ordered by observed date.</returns>
     /// <exception cref="ArgumentException">
     /// <paramref name="endDate" /> is earlier than <paramref name="startDate" />.
@@ -793,8 +803,9 @@ public sealed class NotableDateService
         DateTime endDate,
         string? territoryCode = null,
         Type? calendarType = null,
-        NotableDateFilter? filter = null)
-        => ResolveRangeInternal(startDate, endDate, filter, territoryCode, calendarType, recordWindow: true);
+        NotableDateFilter? filter = null,
+        ObservedDateMode? observedDates = null)
+        => ResolveRangeInternal(startDate, endDate, filter, territoryCode, calendarType, recordWindow: true, observedDates);
 
     /// <summary>
     /// Resolves notable dates for the supplied window through the range pipeline, optionally recording the requested
@@ -811,6 +822,9 @@ public sealed class NotableDateService
     /// for hot-path predicate queries (for example single-day non-working checks) that should not extend the resolved
     /// coverage set.
     /// </param>
+    /// <param name="observedDates">
+    /// The per-query observed-date policy, or <see langword="null" /> to use the service-wide default.
+    /// </param>
     /// <returns>The resolved notable dates ordered by observed date.</returns>
     private IReadOnlyList<NotableDate> ResolveRangeInternal(
         DateTime startDate,
@@ -818,14 +832,16 @@ public sealed class NotableDateService
         NotableDateFilter? filter,
         string? territoryCode,
         Type? calendarType,
-        bool recordWindow)
+        bool recordWindow,
+        ObservedDateMode? observedDates = null)
     {
         RangeResolution.NotableDateRangeRequest request = new(
             startDate,
             endDate,
             territoryCode,
             calendarType,
-            filter);
+            filter,
+            observedDates ?? _observedDateMode);
 
         RangeResolution.NotableDateRangePipeline pipeline = GetOrBuildRangePipeline();
         IReadOnlyList<NotableDate> resolved = pipeline.Resolve(request);
