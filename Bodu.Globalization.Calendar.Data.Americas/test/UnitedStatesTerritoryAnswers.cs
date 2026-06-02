@@ -74,5 +74,27 @@ public static class UnitedStatesTerritoryAnswers
                 Note = "no weekend substitute",
             },
         };
+
+        // Election Day — the Tuesday on or after 2 November (the Tuesday after the first Monday in November).
+        // Spans the full window: 2 November itself a Tuesday (on-the-day, earliest), through 8 November (latest).
+        yield return ElectionDay(2010, new DateTime(2010, 11, 2), "2 November is itself a Tuesday (earliest)");
+        yield return ElectionDay(2020, new DateTime(2020, 11, 3));
+        yield return ElectionDay(2022, new DateTime(2022, 11, 8), "latest possible date");
+        yield return ElectionDay(2024, new DateTime(2024, 11, 5));
+        yield return ElectionDay(2026, new DateTime(2026, 11, 3));
     }
+
+    private static object[] ElectionDay(int year, DateTime expectedDate, string? note = null) =>
+        [
+            new TerritoryNotableDateKnownAnswer
+            {
+                ProviderFactory = UsProvider,
+                Territory = "US",
+                Year = year,
+                Name = "Election Day",
+                ExpectedDate = expectedDate,
+                ExpectedDayOfWeek = DayOfWeek.Tuesday,
+                Note = note,
+            },
+        ];
 }

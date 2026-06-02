@@ -131,6 +131,14 @@
     </Rule>
   </NotableDate>
 
+  <NotableDate name="Election Day">
+    <Rule name="weekday-tue-onorafter-nov-02-us" category="Civic" territory="US" firstYear="1845"
+          comment="United States general Election Day. Federal law (since 1845) fixes it as the Tuesday after the first Monday in November — equivalently, the Tuesday on or after 2 November. Not a federal public holiday, though some states observe it as one.">
+      <WeekdayNearDate dayOfWeek="Tuesday" month="November" day="2" direction="OnOrAfter" />
+      <Tag>Civic</Tag>
+    </Rule>
+  </NotableDate>
+
   <NotableDate name="Thanksgiving">
     <Rule name="weekday-4th-thu-nov-us" category="Holiday" territory="US" nonWorking="true"
           comment="A national holiday giving thanks for the harvest and blessings of the previous year. Set on the fourth Thursday of November by Congress in 1941.">
