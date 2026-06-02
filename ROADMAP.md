@@ -4,7 +4,7 @@ Forward-looking plan for the **Bodu** C# utility library. Pairs with
 [`CHANGELOG.md`](CHANGELOG.md) (what shipped) and [`CLAUDE.md`](CLAUDE.md)
 (repository conventions for contributors).
 
-*Last updated: 2026-06-02. The extended-nonce Poly1305 AEAD constructions have landed — `XChaCha20Poly1305`, the `crypto_secretbox`-compatible `XSalsa20Poly1305`, and `XSalsa20Poly1305Ietf` all ship on the shared `Poly1305AeadTransform` base, closing the stream-cipher AEAD gap left by the BCL's 12-byte-nonce `ChaCha20Poly1305`. With the ChaCha/Salsa stream-cipher family and its AEAD layer complete, the next crypto step is the password-hashing KDFs Argon2 and scrypt — the remaining BCL gap (HKDF and PBKDF2 already ship in `System.Security.Cryptography`).*
+*Last updated: 2026-06-02. The extended-nonce Poly1305 AEAD constructions have landed — `XChaCha20Poly1305`, the `crypto_secretbox`-compatible `XSalsa20Poly1305`, and the Bodu-defined `XSalsa20Poly1305Aead` ship on the shared `Poly1305AeadTransform` base and the new construction-neutral `IAeadTransform` / `IStreamAeadTransform` surface, closing the stream-cipher AEAD gap left by the BCL's 12-byte-nonce `ChaCha20Poly1305`. With the ChaCha/Salsa stream-cipher family and its AEAD layer complete, the next crypto step is the password-hashing KDFs Argon2 and scrypt — the remaining BCL gap (HKDF and PBKDF2 already ship in `System.Security.Cryptography`).*
 
 ## How to read this
 
@@ -185,16 +185,19 @@ SipHash plus EAX/OFB/GCM/OCB/SIV modes.
   the recommended default.
 - **Extended-nonce Poly1305 AEAD constructions.** ✅ **Shipped.** Three
   transforms now compose the raw stream ciphers with the existing
-  `Poly1305` MAC on the public `Poly1305AeadTransform` base, all
-  implementing `IAeadBlockCipherModeTransform`: `XChaCha20Poly1305`
-  (RFC 8439 framing over XChaCha20, matching libsodium's
-  `crypto_aead_xchacha20poly1305_ietf`), `XSalsa20Poly1305`
+  `Poly1305` MAC on the public `Poly1305AeadTransform` base and the
+  construction-neutral `IAeadTransform` / `IStreamAeadTransform` surface
+  (one-shot `Encrypt`/`Decrypt` with optional associated data):
+  `XChaCha20Poly1305` (RFC 8439 framing over XChaCha20, matching
+  libsodium's `crypto_aead_xchacha20poly1305_ietf`), `XSalsa20Poly1305`
   (NaCl / libsodium `crypto_secretbox`-compatible — no associated data,
-  MAC over ciphertext only), and `XSalsa20Poly1305Ietf` (XSalsa20 under
-  the RFC 8439 framing, symmetric with the XChaCha20 type). None ship in
-  the BCL, whose `ChaCha20Poly1305` is 12-byte-nonce only. Locked against
-  the RFC 8439 §2.8.2, draft-irtf-cfrg-xchacha A.3.1, and libsodium
-  secretbox vectors; the IETF-framed XSalsa20 hybrid (no published
+  MAC over ciphertext only, with explicit `tag ‖ ciphertext` layout
+  converters), and the Bodu-defined `XSalsa20Poly1305Aead` (XSalsa20
+  under the RFC 8439 framing — not an IETF standard and not
+  interoperable). None ship in the BCL, whose `ChaCha20Poly1305` is
+  12-byte-nonce only. Locked against the RFC 8439 §2.8.2,
+  draft-irtf-cfrg-xchacha A.3.1, and libsodium secretbox vectors; the
+  Bodu-defined XSalsa20 hybrid (no published
   vector) is checked against a derived oracle built from the
   independently-tested public `XSalsa20` keystream and `Poly1305` MAC.
 - **Add password-hashing KDFs: Argon2 and scrypt.** No
