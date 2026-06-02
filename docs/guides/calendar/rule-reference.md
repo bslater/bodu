@@ -40,6 +40,7 @@ determines which other fields are active:
 | `Fixed` | `Month`, `Day` | Dates that always fall on the same month and day every year. |
 | `DayOfWeekInMonth` | `Month`, `DayOfWeek`, `WeekOrdinal` | Dates defined as the *n*th occurrence of a weekday within a month. |
 | `OffsetFromAnchor` | `AnchorRuleName`, `OffsetDays` | Dates expressed as a signed day offset from another rule's resolved date. |
+| `WeekdayNearDate` | `Month`, `Day`, `DayOfWeek`, `WeekdayProximity` | A weekday positioned relative to a fixed reference date — on or after it, on or before it, or nearest to it. |
 | `Algorithm` | `AlgorithmKey`, `AlgorithmType`, `AlgorithmMonth`, `AlgorithmDay` | Dates that require an external calculation (Easter, lunar calendars, solar terms). |
 
 ### Fixed strategy fields
@@ -66,6 +67,32 @@ determines which other fields are active:
 
 The resolver detects and rejects circular chains — a rule may not directly or transitively
 anchor to itself.
+
+### WeekdayNearDate strategy fields
+
+| Field | Type | Default | Description |
+|---|---|---|---|
+| `Month` | `int` | `0` | Reference month (1–12). |
+| `Day` | `int` | `0` | Reference day of month (1–31). |
+| `DayOfWeek` | `DayOfWeek?` | `null` | The target weekday the rule resolves to. |
+| `WeekdayProximity` | `WeekdayProximity?` | `null` | How the target weekday is positioned relative to the reference: `OnOrAfter`, `OnOrBefore`, or `Nearest`. |
+
+Because a weekday recurs every seven days, each direction selects a single, unambiguous
+occurrence within a seven-day window anchored at the reference date:
+
+- **`OnOrAfter`** — the reference date itself when it already falls on the target weekday,
+  otherwise the first such weekday in the following six days. Models "the Saturday between
+  20 and 26 June" (Nordic Midsummer Day) as the Saturday *on or after* 20 June.
+- **`OnOrBefore`** — the reference date itself when it already falls on the target weekday,
+  otherwise the most recent such weekday in the preceding six days. Models "the Wednesday
+  before 23 November" (German Repentance Day) as the Wednesday *on or before* 22 November.
+- **`Nearest`** — the closest occurrence in either direction. The forward and backward
+  distances always sum to seven, so they are never equal and the nearest occurrence is
+  unique. Models "the Monday nearest to" a given date.
+
+This strategy resolves entirely from data, so holidays of this shape need no custom
+`INotableDateAlgorithm`. When the reference (year, month, day) is not a valid Gregorian date
+(for example 29 February in a non-leap year) the rule resolves to no occurrence for that year.
 
 ### Algorithm strategy fields
 
@@ -456,6 +483,61 @@ NotableDateRule easterMonday = new NotableDateRule
         nonWorking="true">
     <OffsetFromAnchor name="Easter Sunday" offset="1" />
     <Tag>Christian</Tag>
+  </Rule>
+</NotableDate>
+```
+
+### Weekday near a reference date
+
+```csharp
+using System.Collections.Immutable;
+using Bodu.Globalization.Calendar;
+
+// Midsummer Day (Sweden, Finland) — the Saturday between 20 and 26 June,
+// i.e. the Saturday on or after 20 June.
+NotableDateRule midsummerDay = new NotableDateRule
+{
+    Name             = "Midsummer Day",
+    Strategy         = DateResolutionStrategy.WeekdayNearDate,
+    Category         = NotableDateCategory.Holiday,
+    Month            = 6,
+    Day              = 20,
+    DayOfWeek        = DayOfWeek.Saturday,
+    WeekdayProximity = WeekdayProximity.OnOrAfter,
+    IsNonWorkingDay  = true,
+};
+
+// Buß- und Bettag (Germany, Saxony) — the Wednesday before 23 November,
+// i.e. the Wednesday on or before 22 November.
+NotableDateRule repentanceDay = new NotableDateRule
+{
+    Name             = "Repentance Day",
+    Strategy         = DateResolutionStrategy.WeekdayNearDate,
+    Category         = NotableDateCategory.Holiday,
+    Month            = 11,
+    Day              = 22,
+    DayOfWeek        = DayOfWeek.Wednesday,
+    WeekdayProximity = WeekdayProximity.OnOrBefore,
+    TerritoryCode    = "DE-SN",
+    IsNonWorkingDay  = true,
+};
+```
+
+```xml
+<NotableDate name="Midsummer Day">
+  <Rule name="Midsummer Day"
+        category="Holiday"
+        nonWorking="true">
+    <WeekdayNearDate dayOfWeek="Saturday" month="June" day="20" direction="OnOrAfter" />
+  </Rule>
+</NotableDate>
+
+<NotableDate name="Repentance Day">
+  <Rule name="Repentance Day"
+        category="Holiday"
+        territory="DE-SN"
+        nonWorking="true">
+    <WeekdayNearDate dayOfWeek="Wednesday" month="November" day="22" direction="OnOrBefore" />
   </Rule>
 </NotableDate>
 ```

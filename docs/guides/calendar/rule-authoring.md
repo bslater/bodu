@@ -245,6 +245,16 @@ authoring checklist and worked examples.
 <OffsetFromAnchor name="Easter Sunday" offset="-2" />
 ```
 
+**`<WeekdayNearDate>`** — a weekday positioned relative to a fixed reference date; `direction` is `OnOrAfter`, `OnOrBefore`, or `Nearest`:
+
+```xml
+<!-- Midsummer Day: the Saturday on or after 20 June -->
+<WeekdayNearDate dayOfWeek="Saturday" month="June" day="20" direction="OnOrAfter" />
+
+<!-- Repentance Day: the Wednesday on or before 22 November -->
+<WeekdayNearDate dayOfWeek="Wednesday" month="November" day="22" direction="OnOrBefore" />
+```
+
 **`<Algorithm>`** — delegated to a registered algorithm; identified by key or assembly-qualified type name:
 
 ```xml
@@ -375,6 +385,7 @@ The mapping is straightforward:
 | `<Fixed month="…" day="…" />` | `"fixed": { "month": "…", "day": … }` |
 | `<DayOfWeekInMonth month="…" dayOfWeek="…" weekOrdinal="…" />` | `"dayOfWeekInMonth": { "month": "…", "dayOfWeek": "…", "weekOrdinal": "…" }` |
 | `<OffsetFromAnchor name="…" offset="…" />` | `"offsetFromAnchor": { "name": "…", "offset": … }` |
+| `<WeekdayNearDate dayOfWeek="…" month="…" day="…" direction="…" />` | `"weekdayNearDate": { "dayOfWeek": "…", "month": "…", "day": …, "direction": "…" }` |
 | `<Algorithm key="…" />` | `"algorithm": { "key": "…" }` |
 | `<Tag>…</Tag>` | `"tags": [ "…" ]` |
 | `<Adjustment key="…" when="…" action="…" />` | object inside `"adjustments"` |

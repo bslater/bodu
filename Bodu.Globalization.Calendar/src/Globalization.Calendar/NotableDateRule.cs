@@ -22,7 +22,7 @@ namespace Bodu.Globalization.Calendar;
 /// priority used to resolve overlaps with other rules.
 /// </para>
 /// <para>
-/// The <see cref="Strategy" /> property selects one of four resolution strategies:
+/// The <see cref="Strategy" /> property selects one of five resolution strategies:
 /// </para>
 /// <list type="bullet">
 /// <item>
@@ -38,14 +38,21 @@ namespace Bodu.Globalization.Calendar;
 /// </item>
 /// <item>
 /// <description>
-/// <see cref="DateResolutionStrategy.Algorithm" /> — delegates to a registered <see cref="INotableDateAlgorithm" />
-/// identified by <see cref="AlgorithmKey" /> (for example, Easter or Lunar New Year).
+/// <see cref="DateResolutionStrategy.OffsetFromAnchor" /> — resolves by adding <see cref="OffsetDays" /> to the date
+/// produced by another named rule.
 /// </description>
 /// </item>
 /// <item>
 /// <description>
-/// <see cref="DateResolutionStrategy.OffsetFromAnchor" /> — resolves by adding <see cref="OffsetDays" /> to the date
-/// produced by another named rule.
+/// <see cref="DateResolutionStrategy.WeekdayNearDate" /> — resolves to the <see cref="DayOfWeek" /> positioned on or
+/// after, on or before, or nearest to the reference <see cref="Month" /> and <see cref="Day" /> (for example, the
+/// Saturday on or after 20 June).
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// <see cref="DateResolutionStrategy.Algorithm" /> — delegates to a registered <see cref="INotableDateAlgorithm" />
+/// identified by <see cref="AlgorithmKey" /> (for example, Easter or Lunar New Year).
 /// </description>
 /// </item>
 /// </list>

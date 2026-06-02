@@ -356,6 +356,91 @@ NotableDateRule ukSummerBankHoliday = new NotableDateRule
 
 ---
 
+## Weekday near a reference date
+
+Some holidays are a weekday positioned relative to a fixed reference date rather than an
+*n*th-of-the-month occurrence: "the Saturday between 20 and 26 June", "the Wednesday before
+23 November", or "the Monday nearest to" a date. These cannot be expressed with
+`DayOfWeekInMonth` because the target is not a fixed ordinal — and the All Saints' window even
+straddles a month boundary. Use `Strategy = WeekdayNearDate` with `Month`, `Day`, `DayOfWeek`,
+and a `WeekdayProximity` direction (`OnOrAfter`, `OnOrBefore`, or `Nearest`). The reference
+date plus the direction defines the seven-day window in which the single matching weekday is
+selected.
+
+### Midsummer Day (SE, FI) — the Saturday on or after 20 June
+
+The Saturday falling between 20 and 26 June is the first Saturday on or after 20 June.
+
+```csharp
+using Bodu.Globalization.Calendar;
+
+NotableDateRule midsummerDay = new NotableDateRule
+{
+    Name             = "Midsummer Day",
+    Strategy         = DateResolutionStrategy.WeekdayNearDate,
+    Category         = NotableDateCategory.Holiday,
+    Month            = 6,
+    Day              = 20,
+    DayOfWeek        = DayOfWeek.Saturday,
+    WeekdayProximity = WeekdayProximity.OnOrAfter,
+    IsNonWorkingDay  = true,
+};
+```
+
+```xml
+<NotableDate name="Midsummer Day">
+  <Rule name="Midsummer Day" category="Holiday" nonWorking="true">
+    <WeekdayNearDate dayOfWeek="Saturday" month="June" day="20" direction="OnOrAfter" />
+  </Rule>
+</NotableDate>
+```
+
+### Repentance Day (DE-SN) — the Wednesday before 23 November
+
+Buß- und Bettag is the Wednesday before 23 November, i.e. the Wednesday on or before 22
+November. It is a public holiday only in Saxony.
+
+```csharp
+using Bodu.Globalization.Calendar;
+
+NotableDateRule repentanceDay = new NotableDateRule
+{
+    Name             = "Repentance Day",
+    Strategy         = DateResolutionStrategy.WeekdayNearDate,
+    Category         = NotableDateCategory.Holiday,
+    Month            = 11,
+    Day              = 22,
+    DayOfWeek        = DayOfWeek.Wednesday,
+    WeekdayProximity = WeekdayProximity.OnOrBefore,
+    TerritoryCode    = "DE-SN",
+    IsNonWorkingDay  = true,
+};
+```
+
+```xml
+<NotableDate name="Repentance Day">
+  <Rule name="Repentance Day" category="Holiday" territory="DE-SN" nonWorking="true">
+    <WeekdayNearDate dayOfWeek="Wednesday" month="November" day="22" direction="OnOrBefore" />
+  </Rule>
+</NotableDate>
+```
+
+### Monday nearest to a date — the `Nearest` direction
+
+`Nearest` selects the closest occurrence of the weekday in either direction. Because the
+forward and backward distances to the same weekday always sum to seven, they are never equal,
+so the result is unambiguous.
+
+```xml
+<NotableDate name="Example Observed Day">
+  <Rule name="Example Observed Day" category="Observance">
+    <WeekdayNearDate dayOfWeek="Monday" month="October" day="9" direction="Nearest" />
+  </Rule>
+</NotableDate>
+```
+
+---
+
 ## Easter and Easter-relative dates
 
 Easter Sunday is determined by the Gregorian or Orthodox computus algorithm. Easter-relative

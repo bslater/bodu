@@ -115,4 +115,55 @@ public sealed class NotableDateRuleResolverWeekdayNearDateTests
 
         Assert.IsNull(Resolve(rule, 2024));
     }
+
+    /// <summary>
+    /// Verifies that the strategy resolves the expected date across directions, weekdays, on-the-day references, the
+    /// <see cref="WeekdayProximity.Nearest" /> tie boundary in both directions, and year boundaries (a forward search
+    /// rolling into the next January and a backward search rolling into the previous December).
+    /// </summary>
+    /// <param name="year">The resolution year.</param>
+    /// <param name="month">The reference month.</param>
+    /// <param name="day">The reference day.</param>
+    /// <param name="dayOfWeek">The target weekday.</param>
+    /// <param name="proximity">The positioning direction.</param>
+    /// <param name="expectedYear">The expected resolved year.</param>
+    /// <param name="expectedMonth">The expected resolved month.</param>
+    /// <param name="expectedDay">The expected resolved day.</param>
+    [TestMethod]
+    [DataRow(2024, 6, 20, DayOfWeek.Saturday, WeekdayProximity.OnOrAfter, 2024, 6, 22)]   // Midsummer 2024
+    [DataRow(2025, 6, 20, DayOfWeek.Saturday, WeekdayProximity.OnOrAfter, 2025, 6, 21)]   // Midsummer 2025
+    [DataRow(2024, 10, 31, DayOfWeek.Saturday, WeekdayProximity.OnOrAfter, 2024, 11, 2)]  // All Saints window straddles month end
+    [DataRow(2024, 11, 22, DayOfWeek.Wednesday, WeekdayProximity.OnOrBefore, 2024, 11, 20)] // Repentance 2024
+    [DataRow(2025, 11, 22, DayOfWeek.Wednesday, WeekdayProximity.OnOrBefore, 2025, 11, 19)] // Repentance 2025
+    [DataRow(2025, 6, 21, DayOfWeek.Saturday, WeekdayProximity.OnOrAfter, 2025, 6, 21)]   // on-the-day, OnOrAfter
+    [DataRow(2024, 11, 20, DayOfWeek.Wednesday, WeekdayProximity.OnOrBefore, 2024, 11, 20)] // on-the-day, OnOrBefore
+    [DataRow(2024, 11, 20, DayOfWeek.Wednesday, WeekdayProximity.Nearest, 2024, 11, 20)]  // on-the-day, Nearest
+    [DataRow(2024, 11, 1, DayOfWeek.Monday, WeekdayProximity.Nearest, 2024, 11, 4)]       // Nearest: forward (3) closer than back (4)
+    [DataRow(2024, 11, 6, DayOfWeek.Sunday, WeekdayProximity.Nearest, 2024, 11, 3)]       // Nearest: back (3) closer than forward (4)
+    [DataRow(2024, 12, 31, DayOfWeek.Monday, WeekdayProximity.OnOrAfter, 2025, 1, 6)]     // forward across the year boundary
+    [DataRow(2025, 1, 1, DayOfWeek.Friday, WeekdayProximity.OnOrBefore, 2024, 12, 27)]    // backward across the year boundary
+    public void ResolveAnchorDate_WhenWeekdayNearDate_ShouldResolveExpectedDate(
+        int year, int month, int day, DayOfWeek dayOfWeek, WeekdayProximity proximity,
+        int expectedYear, int expectedMonth, int expectedDay)
+    {
+        NotableDateRule rule = WeekdayRule("Sweep", dayOfWeek, month, day, proximity);
+
+        Assert.AreEqual(new DateTime(expectedYear, expectedMonth, expectedDay), Resolve(rule, year));
+    }
+
+    /// <summary>
+    /// Verifies that a 29 February reference resolves in a leap year (2024) but yields no occurrence in a non-leap year
+    /// (2023), exercising the invalid-reference guard on a date that is only sometimes valid.
+    /// </summary>
+    [TestMethod]
+    public void ResolveAnchorDate_WhenFebruary29Reference_ShouldResolveOnlyInLeapYears()
+    {
+        NotableDateRule rule = WeekdayRule("Leap Window", DayOfWeek.Saturday, 2, 29, WeekdayProximity.OnOrAfter);
+
+        // 29 February 2024 is a Thursday; the Saturday on or after it is 2 March 2024.
+        Assert.AreEqual(new DateTime(2024, 3, 2), Resolve(rule, 2024));
+
+        // 2023 is not a leap year, so the reference date does not exist and the rule yields no occurrence.
+        Assert.IsNull(Resolve(rule, 2023));
+    }
 }
