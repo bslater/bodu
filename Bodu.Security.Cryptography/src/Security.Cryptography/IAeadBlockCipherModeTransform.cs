@@ -127,18 +127,8 @@ namespace Bodu.Security.Cryptography;
 /// examples)</seealso> <seealso cref="AesBlockCipher"/>
 /// <seealso cref="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions"/>
 public interface IAeadBlockCipherModeTransform
-    : System.IDisposable
+    : IAeadTransform
 {
-    /// <summary>
-    /// Gets the authentication-tag size, in bits, of the cryptographic operation for the AEAD mode (for example, 128
-    /// bits / 16 bytes for GCM and CCM).
-    /// </summary>
-    /// <value>The authentication-tag size, in bits.</value>
-    /// <returns>
-    /// The tag size in bits. Divide by 8 to obtain the equivalent byte length emitted alongside the ciphertext.
-    /// </returns>
-    int TagSize { get; }
-
     /// <summary>
     /// Processes associated data (AAD) that will be authenticated but not encrypted. Must be called before
     /// <see cref="Encrypt" /> or <see cref="Decrypt" />.
@@ -155,8 +145,8 @@ public interface IAeadBlockCipherModeTransform
     /// </summary>
     /// <param name="plaintext">The data to encrypt.</param>
     /// <param name="output">
-    /// Receives the ciphertext followed immediately by the <see cref="TagSize" /> / 8 byte tag. Must be at least
-    /// <c>plaintext.Length + (TagSize / 8)</c> bytes long.
+    /// Receives the ciphertext followed immediately by the <see cref="IAeadTransform.TagSize" /> / 8 byte tag. Must be
+    /// at least <c>plaintext.Length + (TagSize / 8)</c> bytes long.
     /// </param>
     /// <returns>Total bytes written: <c>plaintext.Length + (TagSize / 8)</c>.</returns>
     /// <exception cref="ArgumentException"><paramref name="output" /> is too small.</exception>
@@ -170,8 +160,8 @@ public interface IAeadBlockCipherModeTransform
     /// Decrypts <paramref name="ciphertextWithTag" /> and verifies the authentication tag.
     /// </summary>
     /// <param name="ciphertextWithTag">
-    /// The ciphertext followed immediately by the <see cref="TagSize" /> / 8 byte authentication tag. Must be at least
-    /// <see cref="TagSize" /> / 8 bytes long.
+    /// The ciphertext followed immediately by the <see cref="IAeadTransform.TagSize" /> / 8 byte authentication tag.
+    /// Must be at least <see cref="IAeadTransform.TagSize" /> / 8 bytes long.
     /// </param>
     /// <param name="output">
     /// Receives the decrypted plaintext. Must be at least <c>ciphertextWithTag.Length - (TagSize / 8)</c> bytes long.
@@ -179,7 +169,7 @@ public interface IAeadBlockCipherModeTransform
     /// <returns>Bytes written: <c>ciphertextWithTag.Length - (TagSize / 8)</c>.</returns>
     /// <exception cref="CryptographicException">The authentication tag did not match.</exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="ciphertextWithTag" /> is shorter than <see cref="TagSize" /> / 8 bytes, or
+    /// <paramref name="ciphertextWithTag" /> is shorter than <see cref="IAeadTransform.TagSize" /> / 8 bytes, or
     /// <paramref name="output" /> is too small.
     /// </exception>
     /// <exception cref="InvalidOperationException">
@@ -215,4 +205,32 @@ public interface IAeadBlockCipherModeTransform
     /// </para>
     /// </remarks>
     int Decrypt(ReadOnlySpan<byte> ciphertextWithTag, Span<byte> output);
+
+    /// <summary>
+    /// Bridges the construction-neutral <see cref="IAeadTransform.Encrypt" /> to the block-cipher AEAD shape by
+    /// processing <paramref name="associatedData" /> and then encrypting in a single call.
+    /// </summary>
+    /// <param name="plaintext">The data to encrypt.</param>
+    /// <param name="output">Receives the ciphertext followed by the authentication tag.</param>
+    /// <param name="associatedData">The data authenticated but not encrypted.</param>
+    /// <returns>Total bytes written.</returns>
+    int IAeadTransform.Encrypt(ReadOnlySpan<byte> plaintext, Span<byte> output, ReadOnlySpan<byte> associatedData)
+    {
+        ProcessAssociatedData(associatedData);
+        return Encrypt(plaintext, output);
+    }
+
+    /// <summary>
+    /// Bridges the construction-neutral <see cref="IAeadTransform.Decrypt" /> to the block-cipher AEAD shape by
+    /// processing <paramref name="associatedData" /> and then decrypting in a single call.
+    /// </summary>
+    /// <param name="ciphertextWithTag">The ciphertext followed by its authentication tag.</param>
+    /// <param name="output">Receives the recovered plaintext.</param>
+    /// <param name="associatedData">The data that must match what was supplied at encryption time.</param>
+    /// <returns>Bytes written.</returns>
+    int IAeadTransform.Decrypt(ReadOnlySpan<byte> ciphertextWithTag, Span<byte> output, ReadOnlySpan<byte> associatedData)
+    {
+        ProcessAssociatedData(associatedData);
+        return Decrypt(ciphertextWithTag, output);
+    }
 }

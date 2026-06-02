@@ -136,6 +136,9 @@
   <data name="Crypt_Invalid_CtrCounterWrapped" xml:space="preserve">
     <value>The CTR counter has wrapped to its initial value. Continuing would reuse the keystream.</value>
   </data>
+  <data name="Crypt_Invalid_SecretboxAssociatedData" xml:space="preserve">
+    <value>The XSalsa20-Poly1305 secretbox construction does not authenticate associated data; supply an empty span.</value>
+  </data>
   <data name="Crypt_Invalid_StreamCounterExhausted" xml:space="preserve">
     <value>The stream cipher block counter has wrapped to its initial value. Continuing would reuse the keystream.</value>
   </data>
