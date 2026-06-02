@@ -300,6 +300,7 @@ public static class NotableDateRuleJsonParser
                 TargetRuleName = dto.Target,
                 Priority = dto.Priority ?? 100,
                 MaxAdjustmentReachDays = dto.MaxReachDays,
+                AppliesToGlobalRules = dto.AppliesToGlobalRules ?? false,
                 HandlerKey = dto.HandlerKey,
                 HandlerParameters = dto.HandlerParameters,
             };
@@ -1018,6 +1019,7 @@ public static class NotableDateRuleJsonParser
         [JsonPropertyName("comparisonDay")] public int? ComparisonDay { get; init; }
         [JsonPropertyName("target")] public string? Target { get; init; }
         [JsonPropertyName("maxReachDays")] public int? MaxReachDays { get; init; }
+        [JsonPropertyName("appliesToGlobalRules")] public bool? AppliesToGlobalRules { get; init; }
         [JsonPropertyName("handlerKey")] public string? HandlerKey { get; init; }
         [JsonPropertyName("handlerParameters")] public Dictionary<string, string>? HandlerParameters { get; init; }
     }

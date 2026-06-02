@@ -325,6 +325,8 @@
     <xs:attribute name="target" type="xs:string" use="optional" />
     <!-- maxReachDays: symmetric +/- day envelope used by the range planner to size the fringe scan. -->
     <xs:attribute name="maxReachDays" type="xs:int" use="optional" />
+    <!-- appliesToGlobalRules: opt a territory/calendar-scoped adjustment into territory/calendar-neutral rules. -->
+    <xs:attribute name="appliesToGlobalRules" type="xs:boolean" use="optional" />
     <xs:attribute name="handlerKey" type="xs:string" use="optional" />
   </xs:complexType>
 

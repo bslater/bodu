@@ -504,6 +504,7 @@ public static class NotableDateRuleParser
             TargetRuleName = GetOptionalAttribute(element, "target"),
             Priority = ParseOptionalInt(element, "priority") ?? 100,
             MaxAdjustmentReachDays = ParseOptionalInt(element, "maxReachDays"),
+            AppliesToGlobalRules = ParseOptionalBool(element, "appliesToGlobalRules") ?? false,
             HandlerKey = GetOptionalAttribute(element, "handlerKey"),
             HandlerParameters = ParseHandlerParameters(element),
         };

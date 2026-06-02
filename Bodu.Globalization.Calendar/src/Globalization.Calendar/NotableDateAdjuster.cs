@@ -102,32 +102,47 @@ internal sealed class NotableDateAdjuster
         if (adjustment.EffectiveFromYear is { } from && year < from) return false;
         if (adjustment.EffectiveToYear is { } to && year > to) return false;
 
-        if (adjustment.CalendarType is not null && calendarType is not null && adjustment.CalendarType != calendarType)
-            return false;
-
-        if (!string.IsNullOrEmpty(adjustment.TerritoryCode) && !string.IsNullOrEmpty(territoryCode))
+        // Calendar scope: a calendar-scoped adjustment applies to a calendar-neutral (global) rule only when opted in.
+        if (adjustment.CalendarType is not null)
         {
-            if (!TerritoryCode.TryParse(territoryCode, out TerritoryCode requested))
-                return false;
-
-            // Bidirectional containment: the adjustment is in scope when either party
-            // contains the other. Parent-containing-child (adjustment="AU" queried
-            // against "AU-NSW") lets country-level shifts apply to every subdivision.
-            // Child-containing-parent (adjustment="AU-WA" evaluated while generating
-            // for rule territory "AU") lets a subdivision-specific substitute fire
-            // during generation of the parent rule; the emitted occurrence is then
-            // tagged with the adjustment's own territory by the generator.
-            var matched = false;
-            foreach (TerritoryCode scoped in TerritoryCode.ParseList(adjustment.TerritoryCode))
+            if (calendarType is null)
             {
-                if (scoped.Contains(requested) || requested.Contains(scoped))
-                {
-                    matched = true;
-                    break;
-                }
+                if (!adjustment.AppliesToGlobalRules) return false;
             }
+            else if (adjustment.CalendarType != calendarType)
+            {
+                return false;
+            }
+        }
 
-            if (!matched) return false;
+        // Territory scope: a territory-scoped adjustment applies to a territory-neutral (global) rule only when opted in.
+        if (!string.IsNullOrEmpty(adjustment.TerritoryCode))
+        {
+            if (string.IsNullOrEmpty(territoryCode))
+            {
+                if (!adjustment.AppliesToGlobalRules) return false;
+            }
+            else
+            {
+                if (!TerritoryCode.TryParse(territoryCode, out TerritoryCode requested))
+                    return false;
+
+                // Bidirectional containment: the adjustment is in scope when either party contains the other.
+                // Parent-containing-child (adjustment="AU" against "AU-NSW") lets country-level shifts apply to every
+                // subdivision; child-containing-parent (adjustment="AU-WA" while generating rule territory "AU") lets a
+                // subdivision-specific substitute fire during generation of the parent rule.
+                var matched = false;
+                foreach (TerritoryCode scoped in TerritoryCode.ParseList(adjustment.TerritoryCode))
+                {
+                    if (scoped.Contains(requested) || requested.Contains(scoped))
+                    {
+                        matched = true;
+                        break;
+                    }
+                }
+
+                if (!matched) return false;
+            }
         }
 
         return true;

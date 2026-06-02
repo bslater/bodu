@@ -736,6 +736,9 @@
         "maxReachDays": {
           "$ref": "#/$defs/int32"
         },
+        "appliesToGlobalRules": {
+          "type": "boolean"
+        },
         "handlerKey": {
           "type": "string"
         },

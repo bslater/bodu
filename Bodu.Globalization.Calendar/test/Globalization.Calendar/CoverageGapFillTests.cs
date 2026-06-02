@@ -700,6 +700,8 @@ public sealed class CoverageGapFillTests
     [TestMethod]
     public void GetNotableDates_WhenAdjustmentEmitsMalformedTerritory_ShouldReturnRuleEmissionAgainstValidQuery()
     {
+        // AppliesToGlobalRules opts the scoped adjustment into the territory-less rule; the malformed "###" territory
+        // must be normalized away rather than emitted verbatim.
         var adjustment = new ObservanceAdjustment
         {
             Key = "bad-territory",
@@ -707,6 +709,7 @@ public sealed class CoverageGapFillTests
             Action = AdjustmentAction.AddDays,
             OffsetDays = 7,
             TerritoryCode = "###",
+            AppliesToGlobalRules = true,
         };
         NotableDateRule rule = FixedRule("Holiday", 1, 1, adjustments: [adjustment]);
 
@@ -716,5 +719,6 @@ public sealed class CoverageGapFillTests
 
         Assert.AreEqual(1, result.Count);
         Assert.IsTrue(result[0].WasAdjusted);
+        Assert.AreNotEqual("###", result[0].TerritoryCode, "A malformed adjustment territory must not be emitted verbatim.");
     }
 }

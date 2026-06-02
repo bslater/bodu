@@ -272,4 +272,18 @@ public sealed record ObservanceAdjustment
     /// heuristic.
     /// </returns>
     public int? MaxAdjustmentReachDays { get; init; }
+
+    /// <summary>
+    /// Gets a value indicating whether a territory- or calendar-scoped adjustment may apply to a rule that is itself
+    /// territory- or calendar-neutral (global).
+    /// </summary>
+    /// <remarks>
+    /// By default (<see langword="false" />) a scoped adjustment only activates when the rule being resolved carries a
+    /// matching territory or calendar context, so a regional substitute does not silently apply to a global rule. Set
+    /// this to <see langword="true" /> to opt a scoped adjustment into global rules.
+    /// </remarks>
+    /// <returns>
+    /// <see langword="true" /> to allow a scoped adjustment to apply to a global rule; otherwise <see langword="false" />.
+    /// </returns>
+    public bool AppliesToGlobalRules { get; init; }
 }

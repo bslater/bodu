@@ -531,9 +531,7 @@ internal sealed class NotableDateRangePipeline
                 if (!result.Activated || result.AdjustedDate.Date == entry.BaseNotable.Date.Date)
                     continue;
 
-                var emittedTerritory = !string.IsNullOrEmpty(adjustment.TerritoryCode)
-                    ? adjustment.TerritoryCode
-                    : entry.BaseNotable.TerritoryCode;
+                var emittedTerritory = ResolveAdjustmentTerritory(adjustment.TerritoryCode, entry.BaseNotable.TerritoryCode);
 
                 var isNonWorking = result.IsNonWorkingOverride ?? entry.Rule.IsNonWorkingDay ?? false;
                 AdjustmentReason reason = new(entry.BaseNotable.Date, result.Trigger, result.Action, result.HandlerKey);
@@ -647,6 +645,23 @@ internal sealed class NotableDateRangePipeline
             Comment = rule.Comment,
             AdjustmentReason = adjustmentReason,
         };
+
+    /// <summary>
+    /// Resolves the single, normalized territory to tag onto an adjusted occurrence. A single explicit adjustment
+    /// territory re-tags the occurrence (normalized to its canonical form); an empty or multi-territory adjustment scope
+    /// keeps the entry's own (already single) territory so a comma-separated string is never emitted.
+    /// </summary>
+    /// <param name="adjustmentTerritory">The adjustment's authored territory scope, or <see langword="null" />.</param>
+    /// <param name="baseTerritory">The materialized base territory of the entry.</param>
+    /// <returns>The single normalized territory code, or <see langword="null" /> when territory-neutral.</returns>
+    private static string? ResolveAdjustmentTerritory(string? adjustmentTerritory, string? baseTerritory)
+    {
+        if (string.IsNullOrEmpty(adjustmentTerritory))
+            return baseTerritory;
+
+        IReadOnlyList<TerritoryCode> parsed = TerritoryCode.ParseList(adjustmentTerritory);
+        return parsed.Count == 1 ? parsed[0].ToString() : baseTerritory;
+    }
 
     /// <summary>
     /// Splits a comma-separated territory list and returns the entries that overlap the requested territory under
